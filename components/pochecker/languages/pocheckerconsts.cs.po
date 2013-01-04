@@ -192,7 +192,7 @@ msgstr "Nalezeno celkem %d chyb / varování."
 
 #: pocheckerconsts.stotalwarnings
 msgid "Total warnings found: %d"
-msgstr "Celkem nalezeno varování:"
+msgstr "Celkem nalezeno varování: %d"
 
 #: pocheckerconsts.stranslation
 msgid "Translation"
@@ -201,3 +201,4 @@ msgstr "Překlad"
 #: pocheckerconsts.sunselectalltests
 msgid "Unselect all tests"
 msgstr "Zruš výběr všech testů"
+
