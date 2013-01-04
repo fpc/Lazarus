@@ -513,8 +513,9 @@ begin
   Percent:=(p-ZoomTrackbar.Min)/(ZoomTrackbar.Max-ZoomTrackbar.Min);
   lnPos:=lnMinPos+Percent*(lnMaxPos-lnMinPos);
   Result:=exp(lnPos);
+  //debugln(['TADCustomLayoutTreeView.ZoomTrackBarPosToScale ScaleMin=',ScaleMin,' ScaleMax=',ScaleMax,' lnMinPos=',lnMinPos,' lnMaxPos=',lnMaxPos,' TrackBar=Min=',ZoomTrackbar.Min,',Max=',ZoomTrackbar.Max,',Position=',ZoomTrackbar.Position,' Percent=',Percent,' lnPos=',lnPos,' Result=',Result]);
   // avoid out of bounds due to rounding errors
-  Result:=Max(lnMinPos,Min(lnMaxPos,Result));
+  Result:=Max(ScaleMin,Min(ScaleMax,Result));
 end;
 
 end.
