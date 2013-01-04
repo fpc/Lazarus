@@ -5,7 +5,7 @@ unit ValEdit;
 interface
 
 uses
-  Classes, SysUtils, Grids, LResources;
+  Classes, SysUtils, Grids, LResources, Dialogs, LazUtf8;
 
 type
 
@@ -16,6 +16,8 @@ type
   TValueListStrings = class(TStringList)
   private
     FOwner: TValueListEditor;
+  protected
+    procedure SetTextStr(const Value: string); override;
   public
     constructor Create(AOwner: TValueListEditor);
     destructor Destroy; override;
@@ -76,6 +78,7 @@ type
     procedure SetCells(ACol, ARow: Integer; const AValue: string); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure TitlesChanged(Sender: TObject);
+    function ValidateEntry(const ACol,ARow:Integer; const OldValue:string; var NewValue:string): boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -202,11 +205,29 @@ type
 
   end;
 
+const
+  //ToDo: Make this a resourcestring in lclstrconsts unit, once we are satisfied with the implementation of validating
+  rsVLEDuplicateKey = 'Duplicate Key:'+LineEnding+'A key with name "%s" already exists at column %d';
+
 procedure Register;
 
 implementation
 
 { TValueListStrings }
+
+procedure TValueListStrings.SetTextStr(const Value: string);
+var
+  IsShowingEditor: Boolean;
+begin
+  with FOwner do begin
+    // Don't show editor while changing values. Edited cell would not be changed.
+    IsShowingEditor := goAlwaysShowEditor in Options;
+    Options := Options - [goAlwaysShowEditor];
+    inherited SetTextStr(Value);
+    if IsShowingEditor then
+      Options := Options + [goAlwaysShowEditor];
+  end;
+end;
 
 constructor TValueListStrings.Create(AOwner: TValueListEditor);
 begin
@@ -493,9 +514,6 @@ procedure TValueListEditor.SetEditText(ACol, ARow: Longint; const Value: string)
 begin
   inherited SetEditText(ACol, ARow, Value);
   Cells[ACol, ARow] := Value;
-  // ToDo: There must be a check for duplicate keys but it must
-  //  not be triggered while the user is typing.
-  // The error must be postponed until user moves to other cell.
 end;
 
 procedure TValueListEditor.TitlesChanged(Sender: TObject);
@@ -504,6 +522,30 @@ begin
   ShowColumnTitles;
   AdjustRowCount;
   Invalidate;
+end;
+
+function TValueListEditor.ValidateEntry(const ACol, ARow: Integer;
+  const OldValue: string; var NewValue: string): boolean;
+var
+  Index, i: Integer;
+begin
+  Result := inherited ValidateEntry(ACol, ARow, OldValue, NewValue);
+  if ((ACol - FixedCols) = 0) then
+  begin//Check for duplicate key names (only in "Key" column)
+    Index := ARow - FixedRows;
+    for i := 0 to FStrings.Count - 1 do
+    begin
+      if (Index <> i) then
+      begin
+        if (Utf8CompareText(FStrings.Names[i], NewValue) = 0) then
+        begin
+          Result := False;
+          ShowMessage(Format(rsVLEDuplicateKey,[NewValue, i + FixedRows]));
+          if Editor is TStringCellEditor then TStringCelleditor(Editor).SelectAll;
+        end;
+      end;
+    end;
+  end;
 end;
 
 class procedure TValueListEditor.WSRegisterClass;
