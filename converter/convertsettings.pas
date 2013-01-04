@@ -568,7 +568,7 @@ begin
     AddFunc(Categ,'FindClose',           'FindCloseUTF8($1)',           'LCL','FileUtil');
     AddFunc(Categ,'FileSetDate',         'FileSetDateUTF8($1,$2)',      'LCL','FileUtil');
     AddFunc(Categ,'FileGetAttr',         'FileGetAttrUTF8($1)',         'LCL','FileUtil');
-    AddFunc(Categ,'FileSetAttr',         'FileSetAttrUTF8($1)',         'LCL','FileUtil');
+    AddFunc(Categ,'FileSetAttr',         'FileSetAttrUTF8($1,$2)',      'LCL','FileUtil');
     AddFunc(Categ,'DeleteFile',          'DeleteFileUTF8($1)',          'LCL','FileUtil');
     AddFunc(Categ,'RenameFile',          'RenameFileUTF8($1,$2)',       'LCL','FileUtil');
     AddFunc(Categ,'FileSearch',          'FileSearchUTF8($1,$2)',       'LCL','FileUtil');
