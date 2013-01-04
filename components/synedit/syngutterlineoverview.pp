@@ -111,6 +111,7 @@ type
   private
     FItemHeight: Integer;
     FPixelHeight: Integer;
+    FPixelPerLine: Integer;
     FTextLineCount: Integer;
     function GetLineMarks(Index: Integer): TSynGutterLOvLineMarks;
     procedure PutLineMarks(Index: Integer; const AValue: TSynGutterLOvLineMarks);
@@ -540,8 +541,18 @@ end;
 
 function TSynGutterLOvLineMarksList.TextLineToPixLine(ATxtLine: Integer): Integer;
 begin
-  Result := Int64(ATxtLine - 1) * Int64(Max(1, PixelHeight - ItemHeight + 1)) div TextLineCount - 1;
-  //Result := MulDiv(ATxtLine - 1, Max(1, PixelHeight - ItemHeight + 1), TextLineCount) - 1;
+  if PixelHeight < 1 then exit(0);
+
+  Result := Int64(ATxtLine - 1) * Int64(PixelHeight) div TextLineCount;
+
+  If FPixelPerLine * 2 < ItemHeight then
+    dec(Result)
+  else
+  if FPixelPerLine > ItemHeight + 2 then
+    inc(Result);
+
+  if Result + ItemHeight > PixelHeight then Result := PixelHeight - ItemHeight;
+  if Result < 0 then Result := 0;
 end;
 
 procedure TSynGutterLOvLineMarksList.ReBuild(AFromIndex: Integer = -1);
@@ -744,6 +755,7 @@ procedure TSynGutterLOvLineMarksList.SetPixelHeight(const AValue: Integer);
 begin
   if FPixelHeight = AValue then exit;
   FPixelHeight := AValue;
+  FPixelPerLine := FPixelHeight div TextLineCount;
   ReBuild;
 end;
 
