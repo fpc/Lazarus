@@ -31,7 +31,7 @@ msgstr "составная часть %s не является каталого�
 
 #: lazutilsstrconsts.lrscannotexecute
 msgid "can not execute %s"
-msgstr ""
+msgstr "невозможно выполнить %s"
 
 #: lazutilsstrconsts.lrsfiledoesnotexist
 msgid "file \"%s\" does not exist"
@@ -69,7 +69,7 @@ msgstr "  изменён "
 
 #: lazutilsstrconsts.lrsprogramfilenotfound
 msgid "program file not found %s"
-msgstr ""
+msgstr "файл программы %s не найден"
 
 #: lazutilsstrconsts.lrsreadaccessdeniedfor
 msgid "read access denied for %s"

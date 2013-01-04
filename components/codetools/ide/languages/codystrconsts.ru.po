@@ -401,7 +401,7 @@ msgstr "Скомпонованные файлы"
 
 #: codystrconsts.crslinks
 msgid "Links"
-msgstr ""
+msgstr "Ссылки"
 
 #: codystrconsts.crsloaddictionaryafter
 msgid "Load dictionary after %s"
