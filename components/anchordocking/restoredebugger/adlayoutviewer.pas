@@ -5,8 +5,8 @@ unit ADLayoutViewer;
 interface
 
 uses
-  Classes, SysUtils, types, math, Controls, Graphics, AnchorDockStorage,
-  LazLogger;
+  Classes, SysUtils, types, math, Controls, Graphics, ComCtrls,
+  AnchorDockStorage, LazLogger;
 
 type
   TADLTVMonitor = class
@@ -17,16 +17,21 @@ type
     X, Y: integer;
   end;
 
-  { TADLayoutTreeView }
+  { TADCustomLayoutTreeView }
 
-  TADLayoutTreeView = class(TCustomControl)
+  TADCustomLayoutTreeView = class(TCustomControl)
   private
     FLayout: TAnchorDockLayoutTree;
+    FScaleMax: double;
+    FScaleMin: double;
     FScale: double;
     FBounds: TRect;
     FScaledBounds: TRect;
     FScaledScroll: TPoint;
     FMonitors: array of TADLTVMonitor;
+    FZoomTrackbar: TCustomTrackBar;
+    FOldZoombarOnChange: TNotifyEvent;
+    FIgnoreZoomTrackbarChange: boolean;
     function GetLayoutMaxX: integer;
     function GetLayoutMaxY: integer;
     function GetLayoutMinX: integer;
@@ -38,12 +43,20 @@ type
     function GetScaledMinY: integer;
     function GetScaledOffsetX: integer;
     function GetScaledOffsetY: integer;
+    procedure SetScaleMax(AValue: double);
+    procedure SetScaleMin(AValue: double);
     procedure SetScale(AValue: double);
     procedure SetScaledOffsetX(AValue: integer);
     procedure SetScaledOffsetY(AValue: integer);
     procedure ComputeLayout;
     procedure ClearMonitors;
     function FindMonitor(Monitor: integer): TADLTVMonitor;
+    procedure SetZoomTrackbar(AValue: TCustomTrackBar);
+    procedure UpdateZoomTrackBar;
+    procedure ZoomTrackbarChange(Sender: TObject);
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -64,90 +77,135 @@ type
     property ScaledMaxY: integer read GetScaledMaxY;
     function MonitorCount: integer;
     property Monitors[Index: integer]: TADLTVMonitor read GetMonitors;
+    property ZoomTrackbar: TCustomTrackBar read FZoomTrackbar write SetZoomTrackbar;
+    function ScaleToZoomTrackBarPos(aScale: double): integer;
+    function ZoomTrackBarPosToScale(p: integer): double;
+    property ScaleMin: double read FScaleMin write SetScaleMin;
+    property ScaleMax: double read FScaleMax write SetScaleMax;
+  end;
+
+  TADLayoutTreeView = class(TADCustomLayoutTreeView)
+  published
+    property Scale: double read FScale write SetScale;
+    property ScaledOffsetX: integer read GetScaledOffsetX write SetScaledOffsetX;
+    property ScaledOffsetY: integer read GetScaledOffsetY write SetScaledOffsetY;
+    property ZoomTrackbar: TCustomTrackBar read FZoomTrackbar write SetZoomTrackbar;
+    property ScaleMin: double read FScaleMin write SetScaleMin;
+    property ScaleMax: double read FScaleMax write SetScaleMax;
   end;
 
 implementation
 
-{ TADLayoutTreeView }
+{ TADCustomLayoutTreeView }
 
-procedure TADLayoutTreeView.SetScale(AValue: double);
+procedure TADCustomLayoutTreeView.SetScale(AValue: double);
 begin
+  AValue:=Min(ScaleMax,Max(AValue,ScaleMin));
   if FScale=AValue then Exit;
   FScale:=AValue;
   FScaledBounds:=ScaleRect(FBounds);
+  UpdateZoomTrackBar;
   Invalidate;
 end;
 
-function TADLayoutTreeView.GetLayoutMaxX: integer;
+procedure TADCustomLayoutTreeView.ZoomTrackbarChange(Sender: TObject);
+begin
+  if not FIgnoreZoomTrackbarChange then
+    Scale:=ZoomTrackBarPosToScale(ZoomTrackbar.Position);
+  if Assigned(FOldZoombarOnChange) then
+    FOldZoombarOnChange(Sender);
+end;
+
+function TADCustomLayoutTreeView.GetLayoutMaxX: integer;
 begin
   Result:=FBounds.Right;
 end;
 
-function TADLayoutTreeView.GetLayoutMaxY: integer;
+function TADCustomLayoutTreeView.GetLayoutMaxY: integer;
 begin
   Result:=FBounds.Bottom;
 end;
 
-function TADLayoutTreeView.GetLayoutMinX: integer;
+function TADCustomLayoutTreeView.GetLayoutMinX: integer;
 begin
   Result:=FBounds.Left;
 end;
 
-function TADLayoutTreeView.GetLayoutMinY: integer;
+function TADCustomLayoutTreeView.GetLayoutMinY: integer;
 begin
   Result:=FBounds.Top;
 end;
 
-function TADLayoutTreeView.GetMonitors(Index: integer): TADLTVMonitor;
+function TADCustomLayoutTreeView.GetMonitors(Index: integer): TADLTVMonitor;
 begin
   Result:=FMonitors[Index];
 end;
 
-function TADLayoutTreeView.GetScaledMaxX: integer;
+function TADCustomLayoutTreeView.GetScaledMaxX: integer;
 begin
   Result:=FScaledBounds.Right;
 end;
 
-function TADLayoutTreeView.GetScaledMaxY: integer;
+function TADCustomLayoutTreeView.GetScaledMaxY: integer;
 begin
   Result:=FScaledBounds.Bottom;
 end;
 
-function TADLayoutTreeView.GetScaledMinX: integer;
+function TADCustomLayoutTreeView.GetScaledMinX: integer;
 begin
   Result:=FScaledBounds.Left;
 end;
 
-function TADLayoutTreeView.GetScaledMinY: integer;
+function TADCustomLayoutTreeView.GetScaledMinY: integer;
 begin
   Result:=FScaledBounds.Top;
 end;
 
-function TADLayoutTreeView.GetScaledOffsetX: integer;
+function TADCustomLayoutTreeView.GetScaledOffsetX: integer;
 begin
   Result:=FScaledScroll.X;
 end;
 
-function TADLayoutTreeView.GetScaledOffsetY: integer;
+function TADCustomLayoutTreeView.GetScaledOffsetY: integer;
 begin
   Result:=FScaledScroll.Y;
 end;
 
-procedure TADLayoutTreeView.SetScaledOffsetX(AValue: integer);
+procedure TADCustomLayoutTreeView.SetScaleMax(AValue: double);
+// must be >=1.0
+begin
+  AValue:=Max(AValue,1.0);
+  if FScaleMax=AValue then Exit;
+  FScaleMax:=AValue;
+  Scale:=Min(ScaleMax,Max(Scale,ScaleMin));
+  UpdateZoomTrackBar;
+end;
+
+procedure TADCustomLayoutTreeView.SetScaleMin(AValue: double);
+// must be between 0.00001 and 1.0
+begin
+  AValue:=Min(1.0,Max(AValue,0.00001));
+  if FScaleMin=AValue then Exit;
+  FScaleMin:=AValue;
+  Scale:=Min(ScaleMax,Max(Scale,ScaleMin));
+  UpdateZoomTrackBar;
+end;
+
+procedure TADCustomLayoutTreeView.SetScaledOffsetX(AValue: integer);
 begin
   if FScaledScroll.X=AValue then Exit;
   FScaledScroll.X:=AValue;
   Invalidate;
 end;
 
-procedure TADLayoutTreeView.SetScaledOffsetY(AValue: integer);
+procedure TADCustomLayoutTreeView.SetScaledOffsetY(AValue: integer);
 begin
   if FScaledScroll.Y=AValue then Exit;
   FScaledScroll.Y:=AValue;
   Invalidate;
 end;
 
-procedure TADLayoutTreeView.ComputeLayout;
+procedure TADCustomLayoutTreeView.ComputeLayout;
 
   procedure ComputeMonitors(Node: TAnchorDockLayoutTreeNode);
   var
@@ -242,7 +300,7 @@ begin
   FScaledBounds:=ScaleRect(FBounds);
 end;
 
-procedure TADLayoutTreeView.ClearMonitors;
+procedure TADCustomLayoutTreeView.ClearMonitors;
 var
   i: Integer;
 begin
@@ -250,7 +308,7 @@ begin
   SetLength(FMonitors,0);
 end;
 
-function TADLayoutTreeView.FindMonitor(Monitor: integer): TADLTVMonitor;
+function TADCustomLayoutTreeView.FindMonitor(Monitor: integer): TADLTVMonitor;
 var
   i: Integer;
 begin
@@ -261,21 +319,63 @@ begin
   Result:=nil;
 end;
 
-constructor TADLayoutTreeView.Create(AOwner: TComponent);
+procedure TADCustomLayoutTreeView.SetZoomTrackbar(AValue: TCustomTrackBar);
+begin
+  if FZoomTrackbar=AValue then Exit;
+  if ZoomTrackbar<>nil then begin
+    ZoomTrackbar.OnChange:=FOldZoombarOnChange;
+  end;
+  FZoomTrackbar:=AValue;
+  if ZoomTrackbar<>nil then begin
+    FreeNotification(ZoomTrackbar);
+    fOldZoombarOnChange:=ZoomTrackbar.OnChange;
+    ZoomTrackbar.OnChange:=@ZoomTrackbarChange;
+    UpdateZoomTrackBar;
+  end;
+end;
+
+procedure TADCustomLayoutTreeView.UpdateZoomTrackBar;
+var
+  OldChange: Boolean;
+begin
+  OldChange:=FIgnoreZoomTrackbarChange;
+  try
+    FIgnoreZoomTrackbarChange:=true;
+    //debugln(['TADCustomLayoutTreeView.UpdateZoomTrackBar Scale=',Scale,' Zoom=',ScaleToZoomTrackBarPos(Scale)]);
+    ZoomTrackbar.Position:=ScaleToZoomTrackBarPos(Scale);
+  finally
+    FIgnoreZoomTrackbarChange:=OldChange;
+  end;
+  ZoomTrackbar.Caption:='';
+end;
+
+procedure TADCustomLayoutTreeView.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then begin
+    if AComponent=ZoomTrackbar then
+      ZoomTrackbar:=nil;
+  end;
+end;
+
+constructor TADCustomLayoutTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FLayout:=TAnchorDockLayoutTree.Create;
   FScale:=0.25;
+  FScaleMin:=1/20;
+  FScaleMax:=5;
 end;
 
-destructor TADLayoutTreeView.Destroy;
+destructor TADCustomLayoutTreeView.Destroy;
 begin
   FreeAndNil(FLayout);
   ClearMonitors;
   inherited Destroy;
 end;
 
-procedure TADLayoutTreeView.Paint;
+procedure TADCustomLayoutTreeView.Paint;
 
   procedure DrawContent(Node: TAnchorDockLayoutTreeNode;
     OriginX, OriginY: integer);
@@ -367,7 +467,7 @@ begin
   inherited Paint;
 end;
 
-function TADLayoutTreeView.ScaleRect(const r: TRect): TRect;
+function TADCustomLayoutTreeView.ScaleRect(const r: TRect): TRect;
 begin
   Result.Left:=floor(r.Left*Scale)+FScaledScroll.X;
   Result.Top:=floor(r.Top*Scale)+FScaledScroll.Y;
@@ -375,14 +475,46 @@ begin
   Result.Bottom:=ceil(r.Bottom*Scale)+FScaledScroll.Y;
 end;
 
-procedure TADLayoutTreeView.LayoutChanged;
+procedure TADCustomLayoutTreeView.LayoutChanged;
 begin
   ComputeLayout;
 end;
 
-function TADLayoutTreeView.MonitorCount: integer;
+function TADCustomLayoutTreeView.MonitorCount: integer;
 begin
   Result:=length(FMonitors);
+end;
+
+function TADCustomLayoutTreeView.ScaleToZoomTrackBarPos(aScale: double
+  ): integer;
+var
+  lnMinPos, lnMaxPos, lnPos, Percent: Double;
+begin
+  // ZoomTrackbar.Min corresponds to ln(ScaleMin)
+  // ZoomTrackbar.Max corresponds to ln(ScaleMax)
+  lnMinPos:=ln(ScaleMin);
+  lnMaxPos:=ln(ScaleMax);
+  lnPos:=ln(aScale);
+  Percent:=(lnPos-lnMinPos)/(lnMaxPos-lnMinPos);
+  Result:=ZoomTrackbar.Min+round(Percent*(ZoomTrackbar.Max-ZoomTrackbar.Min));
+  //debugln(['TADCustomLayoutTreeView.ScaleToZoomTrackBarPos ScaleMin=',ScaleMin,' ScaleMax=',ScaleMax,' lnMinPos=',lnMinPos,' lnMaxPos=',lnMaxPos,' lnPos=',lnPos,' Percent=',Percent,' TrackBar=Min=',ZoomTrackbar.Min,',Max=',ZoomTrackbar.Max,' Result=',Result]);
+  // avoid out of bounds due to rounding errors
+  Result:=Min(ZoomTrackbar.Max,Max(ZoomTrackbar.Min,Result));
+end;
+
+function TADCustomLayoutTreeView.ZoomTrackBarPosToScale(p: integer): double;
+var
+  lnMinPos, lnMaxPos, lnPos, Percent: Double;
+begin
+  // ZoomTrackbar.Min corresponds to ln(ScaleMin)
+  // ZoomTrackbar.Max corresponds to ln(ScaleMax)
+  lnMinPos:=ln(ScaleMin);
+  lnMaxPos:=ln(ScaleMax);
+  Percent:=(p-ZoomTrackbar.Min)/(ZoomTrackbar.Max-ZoomTrackbar.Min);
+  lnPos:=lnMinPos+Percent*(lnMaxPos-lnMinPos);
+  Result:=exp(lnPos);
+  // avoid out of bounds due to rounding errors
+  Result:=Max(lnMinPos,Min(lnMaxPos,Result));
 end;
 
 end.

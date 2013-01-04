@@ -46,9 +46,13 @@ type
   TADRestDbg = class(TForm)
     OriginalFileLabel: TLabel;
     OriginalLayoutPanel: TPanel;
+    OriginalLayoutToolBar: TPanel;
+    OriginalZoomTrackBar: TTrackBar;
     RestoredFileLabel: TLabel;
     RestoredLayoutPanel: TPanel;
-    RestoredLayoutToolBar: TToolBar;
+    RestoredLayoutToolBar: TPanel;
+    RestoredZoomLabel: TLabel;
+    RestoredZoomTrackBar: TTrackBar;
     SplitterXMLLayout: TSplitter;
     SplitterBetweenXML: TSplitter;
     OriginalSynEdit: TSynEdit;
@@ -58,12 +62,14 @@ type
     MainToolBar: TToolBar;
     OpenToolButton: TToolButton;
     OpenRecentToolButton: TToolButton;
-    OriginalLayoutToolBar: TToolBar;
+    OriginalZoomLabel: TLabel;
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure OpenRecentToolButtonClick(Sender: TObject);
     procedure OpenToolButtonClick(Sender: TObject);
+    procedure OriginalZoomTrackBarChange(Sender: TObject);
+    procedure RestoredZoomTrackBarChange(Sender: TObject);
   private
     FConfigFilename: string;
     FOriginalFilename: string;
@@ -113,6 +119,7 @@ begin
     Name:='OriginalView';
     Parent:=OriginalLayoutPanel;
     Align:=alClient;
+    ZoomTrackbar:=OriginalZoomTrackBar;
   end;
 
   RestoredView:=TADLayoutTreeView.Create(Self);
@@ -120,6 +127,7 @@ begin
     Name:='RestoredView';
     Parent:=RestoredLayoutPanel;
     Align:=alClient;
+    ZoomTrackbar:=RestoredZoomTrackBar;
   end;
 
   LoadConfig;
@@ -146,6 +154,16 @@ end;
 procedure TADRestDbg.OpenToolButtonClick(Sender: TObject);
 begin
   ShowMessage('not implemented yet');
+end;
+
+procedure TADRestDbg.OriginalZoomTrackBarChange(Sender: TObject);
+begin
+  OriginalZoomLabel.Caption:=FloatToStrF(OriginalView.Scale,ffGeneral,6,3);
+end;
+
+procedure TADRestDbg.RestoredZoomTrackBarChange(Sender: TObject);
+begin
+  RestoredZoomLabel.Caption:=FloatToStrF(RestoredView.Scale,ffGeneral,6,3);
 end;
 
 function TADRestDbg.GetOriginalLayout: TAnchorDockLayoutTree;

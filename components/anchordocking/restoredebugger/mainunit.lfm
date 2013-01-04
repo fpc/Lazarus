@@ -1103,46 +1103,6 @@ object ADRestDbg: TADRestDbg
     Anchors = [akTop, akLeft, akRight]
     ResizeAnchor = akTop
   end
-  object OriginalLayoutToolBar: TToolBar
-    AnchorSideLeft.Control = SplitterXMLLayout
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = MainToolBar
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 336
-    Height = 26
-    Top = 32
-    Width = 373
-    Align = alNone
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
-    BorderSpacing.Right = 6
-    Caption = 'OriginalLayoutToolBar'
-    Flat = False
-    TabOrder = 6
-  end
-  object RestoredLayoutToolBar: TToolBar
-    AnchorSideLeft.Control = SplitterXMLLayout
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = SplitterBetweenLayouts
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 336
-    Height = 26
-    Top = 296
-    Width = 373
-    Align = alNone
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
-    BorderSpacing.Right = 6
-    Caption = 'RestoredLayoutToolBar'
-    Flat = False
-    TabOrder = 7
-  end
   object OriginalLayoutPanel: TPanel
     AnchorSideLeft.Control = SplitterXMLLayout
     AnchorSideLeft.Side = asrBottom
@@ -1152,15 +1112,15 @@ object ADRestDbg: TADRestDbg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = SplitterBetweenLayouts
     Left = 336
-    Height = 221
-    Top = 58
+    Height = 201
+    Top = 78
     Width = 373
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     Caption = 'OriginalLayoutPanel'
-    TabOrder = 8
+    TabOrder = 6
   end
   object RestoredLayoutPanel: TPanel
     AnchorSideLeft.Control = SplitterXMLLayout
@@ -1172,15 +1132,102 @@ object ADRestDbg: TADRestDbg
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 336
-    Height = 239
-    Top = 322
+    Height = 219
+    Top = 342
     Width = 373
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     Caption = 'RestoredLayoutPanel'
+    TabOrder = 7
+  end
+  object OriginalLayoutToolBar: TPanel
+    AnchorSideLeft.Control = SplitterXMLLayout
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = MainToolBar
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 336
+    Height = 46
+    Top = 32
+    Width = 373
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    ClientHeight = 46
+    ClientWidth = 373
+    TabOrder = 8
+    object OriginalZoomTrackBar: TTrackBar
+      Left = 1
+      Height = 44
+      Top = 1
+      Width = 100
+      Max = 30
+      OnChange = OriginalZoomTrackBarChange
+      Position = 0
+      ScalePos = trLeft
+      ShowSelRange = False
+      TabOrder = 0
+    end
+    object OriginalZoomLabel: TLabel
+      AnchorSideLeft.Control = OriginalZoomTrackBar
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = OriginalZoomTrackBar
+      AnchorSideTop.Side = asrCenter
+      Left = 101
+      Height = 15
+      Top = 16
+      Width = 103
+      Caption = 'OriginalZoomLabel'
+      ParentColor = False
+    end
+  end
+  object RestoredLayoutToolBar: TPanel
+    AnchorSideLeft.Control = SplitterXMLLayout
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = SplitterBetweenLayouts
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 336
+    Height = 46
+    Top = 296
+    Width = 373
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    ClientHeight = 46
+    ClientWidth = 373
     TabOrder = 9
+    object RestoredZoomTrackBar: TTrackBar
+      Left = 1
+      Height = 44
+      Top = 1
+      Width = 100
+      Max = 30
+      OnChange = RestoredZoomTrackBarChange
+      Position = 0
+      ScalePos = trLeft
+      TabOrder = 0
+    end
+    object RestoredZoomLabel: TLabel
+      AnchorSideLeft.Control = RestoredZoomTrackBar
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = RestoredZoomTrackBar
+      AnchorSideTop.Side = asrCenter
+      Left = 101
+      Height = 15
+      Top = 16
+      Width = 111
+      Caption = 'RestoredZoomLabel'
+      ParentColor = False
+    end
   end
   object SynXMLSyn1: TSynXMLSyn
     DefaultFilter = 'XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd'
