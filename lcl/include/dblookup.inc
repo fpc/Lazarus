@@ -345,6 +345,8 @@ begin
   if (ValueIndex < 0) or (ValueIndex >= Length(FListKeys)) then
     Exit;
   Key := FListKeys[ValueIndex];
+  if ScrollDataset then
+    FListLink.DataSet.Locate(FKeyFieldNames, Key, []);
   if FControlLink.Active then
   begin
     if VarSameValue(Key, FControlLink.DataSet.FieldValues[FDataFieldNames]) then
@@ -362,8 +364,6 @@ begin
         TField(FDataFields[I]).Value := Key[I];
     end;
   end;
-  if ScrollDataset then
-    FListLink.DataSet.Locate(FKeyFieldNames, Key, []);
 end;
 
 function TDBLookup.GetKeyValue(ValueIndex: Integer): Variant;

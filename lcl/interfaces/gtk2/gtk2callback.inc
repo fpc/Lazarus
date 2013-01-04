@@ -457,13 +457,14 @@ begin
         begin
           // if we change selstart in OnChange event new cursor pos need to
           // be postponed in TGtk2WSCustomEdit.SetSelStart
+          NeedCursorCheck := True;
           if g_object_get_data(PGObject(Widget),'lcl-gtkentry-pasted-data') <> nil then
           begin
             g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',nil);
             gtk_editable_set_position(PGtkEditable(Widget), GStart);
           end else
           begin
-            NeedCursorCheck := True;
+            //NeedCursorCheck := True;
             if gtk_minor_version < 17 then
             begin
               g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',Widget);
