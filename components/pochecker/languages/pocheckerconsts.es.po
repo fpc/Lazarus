@@ -63,7 +63,7 @@ msgstr "[Línea %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
 msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
-msgstr "El valor (sin traducir) \"%s\ " se utiliza para más de 1 entrada:"
+msgstr "El valor (sin traducir) \"%s \" se utiliza para más de 1 entrada:"
 
 #: pocheckerconsts.serroroncleanup
 msgid ""
@@ -71,8 +71,8 @@ msgid ""
 "%s\n"
 "Please close the program\n"
 msgstr ""
-"A ocurrido\n un error irrecuperable"
-"%s\n"
+"A ocurrido\n"
+" un error irrecuperable%s\n"
 "Por favor, cierre la program\n"
 
 #: pocheckerconsts.serroroncreate
@@ -100,7 +100,9 @@ msgid "Identifier [%s] not found in %s"
 msgstr "Identificador [%s] no se encuentra en %s"
 
 #: pocheckerconsts.sincompatibleformatargs
-msgid "[Line: %d] Incompatible format() arguments for:"
+#, fuzzy
+#| msgid "[Line: %d] Incompatible format() arguments for:"
+msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Línea: %d] format() argumentos incompatibles para:"
 
 #: pocheckerconsts.slineinfilename

@@ -83,7 +83,7 @@ msgid "Identifier [%s] not found in %s"
 msgstr ""
 
 #: pocheckerconsts.sincompatibleformatargs
-msgid "[Line: %d] Incompatible format() arguments for:"
+msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr ""
 
 #: pocheckerconsts.slineinfilename

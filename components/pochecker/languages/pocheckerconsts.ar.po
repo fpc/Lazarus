@@ -1,7 +1,7 @@
-# Arabic translation of Free Pascal Lazarus Project.
-# Copyright (C) 2012 Lazarus Project
-# This file is distributed under the same license as the Lazarus package.
-# Khaled Shagrouni <shagrouni@gmail.com>, 2012.
+ Arabic translation of Free Pascal Lazarus Project.
+ Copyright (C) 2012 Lazarus Project
+ This file is distributed under the same license as the Lazarus package.
+ Khaled Shagrouni <shagrouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
@@ -108,7 +108,9 @@ msgid "Identifier [%s] not found in %s"
 msgstr "المعرّف [%s] لم يتّم إيجاده في %s"
 
 #: pocheckerconsts.sincompatibleformatargs
-msgid "[Line: %d] Incompatible format() arguments for:"
+#, fuzzy
+#| msgid "[Line: %d] Incompatible format() arguments for:"
+msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[السطر: %d] معطيات format() غير متوافقة ل:"
 
 #: pocheckerconsts.slineinfilename
@@ -208,3 +210,4 @@ msgstr "الترجمة"
 #: pocheckerconsts.sunselectalltests
 msgid "Unselect all tests"
 msgstr "إزالة اختيار كل الإختبارات"
+

@@ -91,7 +91,7 @@ msgid "Identifier [%s] not found in %s"
 msgstr "Bezeichner [%s] nicht gefunden in %s"
 
 #: pocheckerconsts.sincompatibleformatargs
-msgid "[Line: %d] Incompatible format() arguments for:"
+msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr ""
 
 #: pocheckerconsts.slineinfilename

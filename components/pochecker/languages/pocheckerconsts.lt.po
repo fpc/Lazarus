@@ -1,4 +1,4 @@
-# Valdas Jankunas <zmuogs@gmail.com>, 2012.
+ Valdas Jankunas <zmuogs@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9,8 +9,7 @@ msgstr ""
 "Language: lt\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 1.5\n"
 
 #: pocheckerconsts.rspochecker
@@ -104,7 +103,9 @@ msgid "Identifier [%s] not found in %s"
 msgstr "Ieškota identifikatoriaus [%s], tačiau %s jo neturi"
 
 #: pocheckerconsts.sincompatibleformatargs
-msgid "[Line: %d] Incompatible format() arguments for:"
+#, fuzzy
+#| msgid "[Line: %d] Incompatible format() arguments for:"
+msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Eilutė: %d] Nesuderinamų „format()“ argumentų turi:"
 
 #: pocheckerconsts.slineinfilename
@@ -204,5 +205,4 @@ msgstr "Vertimas"
 #: pocheckerconsts.sunselectalltests
 msgid "Unselect all tests"
 msgstr "Naikinti testavimų žymėjimą"
-
 

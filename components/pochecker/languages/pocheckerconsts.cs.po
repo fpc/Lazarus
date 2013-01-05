@@ -101,7 +101,9 @@ msgid "Identifier [%s] not found in %s"
 msgstr "Identifikátor [%s] nenalezen v %s"
 
 #: pocheckerconsts.sincompatibleformatargs
-msgid "[Line: %d] Incompatible format() arguments for:"
+#, fuzzy
+#| msgid "[Line: %d] Incompatible format() arguments for:"
+msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Řádek %d] Nekompatibilní argumenty fce format() pro:"
 
 #: pocheckerconsts.slineinfilename

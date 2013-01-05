@@ -19,7 +19,7 @@ msgid ""
 "%s\n"
 "for selected file\n"
 "%s\n"
-msgstr "Impossível localizar o arquivo po mestre:\n"
+msgstr "Impossível localizar o arquivo po mestre:"
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
 msgid "Check for duplicate untranslated values"
@@ -66,13 +66,13 @@ msgid ""
 "An unrecoverable error occurred\n"
 "%s\n"
 "Please close the program\n"
-msgstr "Ocorreu um erro irrecuperável\n"
+msgstr "Ocorreu um erro irrecuperável"
 
 #: pocheckerconsts.serroroncreate
 msgid ""
 "Error creating an instance of TPoFamily:\n"
 "%s\n"
-msgstr "Erro ao criar uma instância de TPoFamily:\n"
+msgstr "Erro ao criar uma instância de TPoFamily:"
 
 #: pocheckerconsts.serrorsbytest
 msgid "Errors / warnings reported by %s for:"
@@ -91,7 +91,9 @@ msgid "Identifier [%s] not found in %s"
 msgstr "Identificador [%s] não encontrado em %s"
 
 #: pocheckerconsts.sincompatibleformatargs
-msgid "[Line: %d] Incompatible format() arguments for:"
+#, fuzzy
+#| msgid "[Line: %d] Incompatible format() arguments for:"
+msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Linha: %d] formato() incompatível de argumentos para:"
 
 #: pocheckerconsts.slineinfilename

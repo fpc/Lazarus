@@ -78,7 +78,7 @@ Type
     property OnTestEnd: TTestEndEvent read FOnTestEnd write FOnTestEnd;
   end;
 
-function ExtractFormatArgs(S: String): String;
+function ExtractFormatArgs(S: String; out ArgumentError: boolean): String;
 function IsMasterPoName(const Fn: String): Boolean;
 function ExtractMasterNameFromChildName(const AChildName: String): String;
 function FindAllTranslatedPoFiles(const Filename: string): TStringList;
@@ -114,42 +114,42 @@ const
 
 //Helper functions
 
-function ExtractFormatArgs(S: String): String;
+function ExtractFormatArgs(S: String; out ArgumentError: boolean): String;
 const
-  FormatSpecs = ['D','E','F','G','M','N','P','S','U','X'];
+  FormatArgs = 'DEFGMNPSUX';
+  FormatChar = '%';
+  FormatSpecs = ':-.0123456789';
 var
-  i,p: Integer;
-  InFormat: Boolean;
-  NewStr: String;
-  c: Char;
+  p: PtrInt;
+  NewStr, Symb: String;
 begin
-  SetLength(NewStr, Length(S));
-  InFormat := False;
-  p := 0;
-  for i := 1 to length(S) do
+  NewStr := '';
+  ArgumentError := false;
+  p := UTF8Pos(FormatChar, S);
+  while (Length(S)>0) and (p>0) do
   begin
-    c := S[i];
-    if (c = '%') then InFormat := not InFormat;
-    //debugln('i = ',dbgs(i),' c = ',c,' InFormat = ',dbgs(informat));
-    if InFormat and (UpCase(c) in (FormatSpecs+['%']))  then
+    UTF8Delete(S, 1, p);
+    if Length(S)>0 then
     begin
+      Symb := UTF8UpperCase(UTF8Copy(S, 1, 1));
+      while (Length(S)>1) and (UTF8Pos(Symb, FormatSpecs)>0) do
       begin
-        Inc(p);
-        NewStr[p] := c;
+        //weak syntax check for formatting options, skip them if found
+        UTF8Delete(S, 1, 1);
+        Symb := UTF8UpperCase(UTF8Copy(S, 1, 1));
       end;
-    end
-    else
-    begin
-      if (c = '%') and (i > 1) and (S[i-1] = '%')  and (p > 0) and (NewStr[p] = '%') then
-      begin//2 consecutive % means a literal % and is not a format specifier
-        //debugln('p = ',dbgs(p), 'i = ',dbgs(i));
-        NewStr[p] := '#';
-        Dec(p);
+      if Symb <> FormatChar then
+      begin
+        NewStr := NewStr+Symb;
+        if UTF8Pos(Symb, FormatArgs)=0 then
+          ArgumentError := true;
       end;
     end;
-    if InFormat and (Upcase(c) in FormatSpecs) then InFormat := False;
+    //removing processed symbol
+    UTF8Delete(S, 1, 1);
+    //searching for next argument
+    p := UTF8Pos(FormatChar, S);
   end;
-  SetLength(NewStr, p);
   Result := NewStr;
 end;
 
@@ -226,8 +226,18 @@ end;
 
 
 function CompareFormatArgs(S1, S2: String): Boolean;
+var
+  ArgErr1, ArgErr2: boolean;
 begin
-  Result := CompareText(ExtractFormatArgs(S1), ExtractFormatArgs(S2)) = 0;
+  Result := true;
+  //do not check arguments if strings are equal to save time and avoid some
+  //false positives, e.g. for '{%Region}' string in lazarusidestrconsts
+  if S1 <> S2 then
+  begin
+    Result := CompareText(ExtractFormatArgs(S1, ArgErr1), ExtractFormatArgs(S2, ArgErr2)) = 0;
+    //setting result to false if invalid arguments were found even if the match
+    Result := Result and not ArgErr1 and not ArgErr2;
+  end;
 end;
 
 { TPoFamily }
@@ -347,7 +357,7 @@ begin
     //CPoItem := FChild.FindPoItem(MPoItem.Identifier);
     if Assigned(CPoItem) then
     begin
-      if (Pos('%', CPoItem.Translation) > 0) and not CompareFormatArgs(CPoItem.Original, CPoItem.Translation) then
+      if CompareFormatArgs(CPoItem.Original, CPoItem.Translation) = false then
       begin
         if (ErrorCount = 0) then
         begin

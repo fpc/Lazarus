@@ -44,7 +44,7 @@ resourcestring
   sCheckForDuplicateUntranslatedValues = 'Check for duplicate untranslated '
     +'values';
   sFindAllTranslatedPoFiles = 'Find all translated po-files';
-  sIncompatibleFormatArgs = '[Line: %d] Incompatible format() arguments for:' ;
+  sIncompatibleFormatArgs = '[Line: %d] Incompatible and/or invalid format() arguments for:' ;
 
   sNrErrorsFound = 'Found %d errors.';
   sNrWarningsFound = 'Found %d warnings.';
