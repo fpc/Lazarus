@@ -357,7 +357,7 @@ begin
     //CPoItem := FChild.FindPoItem(MPoItem.Identifier);
     if Assigned(CPoItem) then
     begin
-      if CompareFormatArgs(CPoItem.Original, CPoItem.Translation) = false then
+      if (Length(CPoItem.Translation) > 0) and (CompareFormatArgs(CPoItem.Original, CPoItem.Translation) = false) then
       begin
         if (ErrorCount = 0) then
         begin
