@@ -144,11 +144,14 @@ begin
         if UTF8Pos(Symb, FormatArgs)=0 then
           ArgumentError := true;
       end;
-    end;
-    //removing processed symbol
-    UTF8Delete(S, 1, 1);
-    //searching for next argument
-    p := UTF8Pos(FormatChar, S);
+      //removing processed symbol
+      UTF8Delete(S, 1, 1);
+      //searching for next argument
+      p := UTF8Pos(FormatChar, S);
+    end
+    else
+      //in this case formatting symbol doesn't have its argument
+      ArgumentError := true;
   end;
   Result := NewStr;
 end;
