@@ -249,7 +249,7 @@ type
                                   AsFirst: boolean = false);
     procedure RemoveHandlerOnDestroy(const OnDestroyEvent: TNotifyEvent);
     procedure AddHandler(HandlerType: TMenuItemHandlerType;
-                         const AMethod: TMethod; AsFirst: boolean);
+                         const AMethod: TMethod; AsFirst: boolean = false);
     procedure RemoveHandler(HandlerType: TMenuItemHandlerType;
                             const AMethod: TMethod);
   public
