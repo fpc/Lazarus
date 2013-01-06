@@ -91,6 +91,7 @@
     - http://bugs.freepascal.org/view.php?id=20845 restore/load tabs
     - http://bugs.freepascal.org/view.php?id=21076 views
     - http://bugs.freepascal.org/view.php?id=22149 keep caption of a custom dock site
+    - http://bugs.freepascal.org/view.php?id=23593 open package editor not on top
 }
 unit AnchorDocking;
 
