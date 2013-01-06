@@ -246,10 +246,10 @@ type
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure AddHandlerOnDestroy(const OnDestroyEvent: TNotifyEvent;
-                                  AsLast: boolean = false);
+                                  AsFirst: boolean = false);
     procedure RemoveHandlerOnDestroy(const OnDestroyEvent: TNotifyEvent);
     procedure AddHandler(HandlerType: TMenuItemHandlerType;
-                         const AMethod: TMethod; AsLast: boolean);
+                         const AMethod: TMethod; AsFirst: boolean);
     procedure RemoveHandler(HandlerType: TMenuItemHandlerType;
                             const AMethod: TMethod);
   public

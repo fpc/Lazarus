@@ -963,9 +963,9 @@ begin
 end;
 
 procedure TMenuItem.AddHandlerOnDestroy(const OnDestroyEvent: TNotifyEvent;
-  AsLast: boolean);
+  AsFirst: boolean);
 begin
-  AddHandler(mihtDestroy, TMethod(OnDestroyEvent),AsLast);
+  AddHandler(mihtDestroy, TMethod(OnDestroyEvent),not AsFirst);
 end;
 
 procedure TMenuItem.RemoveHandlerOnDestroy(const OnDestroyEvent: TNotifyEvent);
@@ -974,11 +974,11 @@ begin
 end;
 
 procedure TMenuItem.AddHandler(HandlerType: TMenuItemHandlerType;
-  const AMethod: TMethod; AsLast: boolean);
+  const AMethod: TMethod; AsFirst: boolean);
 begin
   if FMenuItemHandlers[HandlerType] = nil then
     FMenuItemHandlers[HandlerType] := TMethodList.Create;
-  FMenuItemHandlers[HandlerType].Add(AMethod);
+  FMenuItemHandlers[HandlerType].Add(AMethod,not AsFirst);
 end;
 
 procedure TMenuItem.RemoveHandler(HandlerType: TMenuItemHandlerType;
