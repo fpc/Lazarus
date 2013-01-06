@@ -338,14 +338,14 @@ begin
         Link:=Scanner.Links[i];
         s:=dbgs(i)+'/'+dbgs(Scanner.LinkCount)+': Kind='+dbgs(Link.Kind);
         if Link.Code<>nil then
-          s+=',Code='+ExtractFileName(TCodeBuffer(Link.Code).Filename);
+          s+=',File='+ExtractFileName(TCodeBuffer(Link.Code).Filename);
         s+=',CleanedPos='+dbgs(Link.CleanedPos)+',SrcPos='+dbgs(Link.SrcPos);
         LinkSize:=Scanner.LinkSize(i);
         s+=',Size='+dbgs(LinkSize);
         if LinkSize>60 then
-          s+=dbgstr(Scanner.CleanedSrc,Link.CleanedPos,30)+'...'+dbgstr(Scanner.CleanedSrc,Link.CleanedPos+LinkSize-30,30)
+          s+=',Code="'+dbgstr(Scanner.CleanedSrc,Link.CleanedPos,30)+'...'+dbgstr(Scanner.CleanedSrc,Link.CleanedPos+LinkSize-30,30)+'"'
         else
-          s+=dbgstr(Scanner.CleanedSrc,Link.CleanedPos,LinkSize);
+          s+=',Code="'+dbgstr(Scanner.CleanedSrc,Link.CleanedPos,LinkSize)+'"';
         sl.Add(s);
       end;
       sl.Add('===================================');
