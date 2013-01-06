@@ -92,6 +92,7 @@
     - http://bugs.freepascal.org/view.php?id=21076 views
     - http://bugs.freepascal.org/view.php?id=22149 keep caption of a custom dock site
     - http://bugs.freepascal.org/view.php?id=23593 open package editor not on top
+    - http://bugs.freepascal.org/view.php?id=23596 (patch) docksite disapears after undocking
 }
 unit AnchorDocking;
 
