@@ -501,7 +501,7 @@ type
     procedure CMActivate(var Message: TLMessage); message CM_ACTIVATE;
     procedure CMDeactivate(var Message: TLMessage); message CM_DEACTIVATE;
     procedure AddHandler(HandlerType: TFormHandlerType;
-                         const Handler: TMethod; AsFirst: Boolean);
+                         const Handler: TMethod; AsFirst: Boolean = false);
     procedure RemoveHandler(HandlerType: TFormHandlerType;
                             const Handler: TMethod);
     function FindDefaultForActiveControl: TWinControl;
@@ -620,11 +620,11 @@ type
     // handlers
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure AddHandlerFirstShow(OnFirstShowHandler: TNotifyEvent;
-                                  AsFirst: Boolean=true);
+                                  AsFirst: Boolean=false);
     procedure RemoveHandlerFirstShow(OnFirstShowHandler: TNotifyEvent);
-    procedure AddHandlerClose(OnCloseHandler: TCloseEvent; AsFirst: Boolean=true);
+    procedure AddHandlerClose(OnCloseHandler: TCloseEvent; AsFirst: Boolean=false);
     procedure RemoveHandlerClose(OnCloseHandler: TCloseEvent);
-    procedure AddHandlerCreate(OnCreateHandler: TNotifyEvent; AsFirst: Boolean=true);
+    procedure AddHandlerCreate(OnCreateHandler: TNotifyEvent; AsFirst: Boolean=false);
     procedure RemoveHandlerCreate(OnCreateHandler: TNotifyEvent);
   public
     {MDI implementation}
