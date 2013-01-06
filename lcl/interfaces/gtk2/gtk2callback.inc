@@ -339,6 +339,9 @@ begin
   if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
 
   FillChar(Mess{%H-}, SizeOf(Mess), #0);
+  {$IFDEF VerboseIDEDisplayState}
+  debugln(['gtkactivateCB ',DbgSName(TObject(Data))]);
+  {$ENDIF}
   Mess.Msg := LM_ACTIVATE;
   Mess.Active := WA_ACTIVE;
   Mess.Minimized := False;
@@ -788,6 +791,9 @@ begin
   try
     if (Info <> nil) then
       Include(Info^.Flags, wwiActivating);
+    {$IFDEF VerboseIDEDisplayState}
+    debugln(['gtkfrmactivateAfter ',DbgSName(TObject(Data))]);
+    {$ENDIF}
     Mess.Msg := LM_ACTIVATE;
     Mess.Active := WA_ACTIVE;
     Mess.Minimized := False;
@@ -834,6 +840,9 @@ begin
     if (Info<>nil) then
       Include(Info^.Flags, wwiDeactivating);
     FillChar(Mess{%H-}, SizeOf(Mess), #0);
+    {$IFDEF VerboseIDEDisplayState}
+    debugln(['gtkfrmdeactivateAfter ',DbgSName(TObject(Data))]);
+    {$ENDIF}
     Mess.Msg := LM_ACTIVATE;
     Mess.Active := WA_INACTIVE;
     Mess.Minimized := False;

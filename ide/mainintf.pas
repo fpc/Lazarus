@@ -60,8 +60,8 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, LCLType, LCLIntf, StdCtrls, Buttons, Menus, ComCtrls, SysUtils,
-  Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms, CodeToolManager,
-  CodeCache, AVL_Tree, SynEditKeyCmds,
+  typinfo, Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms,
+  CodeToolManager, CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDE
   PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, ProjectIntf, MacroIntf,
   CompOptsIntf, LazIDEIntf,
@@ -299,6 +299,8 @@ type
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
   end;
+
+function dbgs(d: TDisplayState): string; overload;
   
 implementation
 
@@ -334,6 +336,11 @@ begin
     end;
   end;
   Result:='['+Result+']';
+end;
+
+function dbgs(d: TDisplayState): string;
+begin
+  Result:=GetEnumName(typeinfo(d),ord(d));
 end;
 
 { TMainIDEInterface }

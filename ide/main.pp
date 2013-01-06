@@ -6063,8 +6063,13 @@ begin
     if ObjectInspector1.IsVisible then
     begin
       ObjectInspector1.FocusGrid;
-      if DisplayState <> high(TDisplayState) then
-        DisplayState:= Succ(DisplayState);
+      {$IFDEF VerboseIDEDisplayState}
+      debugln(['TMainIDE.DoShowInspector old=',dbgs(DisplayState)]);
+      {$ENDIF}
+      case DisplayState of
+      dsSource: DisplayState:=dsInspector;
+      dsForm: DisplayState:=dsInspector2;
+      end;
     end;
   end;
 end;
@@ -8793,10 +8798,13 @@ end;
 
 procedure TMainIDE.DoBringToFrontFormOrUnit;
 begin
-  if DisplayState = dsSource then begin
-    DoShowDesignerFormOfCurrentSrc;
-  end else begin
+  {$IFDEF VerboseIDEDisplayState}
+  debugln(['TMainIDE.DoBringToFrontFormOrUnit ',dbgs(DisplayState)]);
+  {$ENDIF}
+  if DisplayState <> dsSource then begin
     DoShowSourceOfActiveDesignerForm;
+  end else begin
+    DoShowDesignerFormOfCurrentSrc;
   end;
 end;
 
@@ -8806,16 +8814,14 @@ begin
     DoShowInspector(true);
     exit;
   end;
+  {$IFDEF VerboseIDEDisplayState}
+  debugln(['TMainIDE.DoBringToFrontFormOrInspector old=',dbgs(DisplayState)]);
+  {$ENDIF}
   case DisplayState of
-
-    dsInspector:
-      DoShowDesignerFormOfCurrentSrc;
-
-    dsInspector2:
-      DoShowSourceOfActiveDesignerForm;
-
-    else
-      DoShowInspector(true);
+  dsInspector: DoShowDesignerFormOfCurrentSrc;
+  dsInspector2: DoShowSourceOfActiveDesignerForm;
+  else
+    DoShowInspector(true);
   end;
 end;
 
@@ -8826,6 +8832,9 @@ var
   AForm: TCustomForm;
   UnitCodeBuf: TCodeBuffer;
 begin
+  {$IFDEF VerboseIDEDisplayState}
+  debugln(['TMainIDE.DoShowDesignerFormOfCurrentSrc ']);
+  {$ENDIF}
   GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
   if (ActiveUnitInfo = nil) then exit;
 
@@ -8849,7 +8858,7 @@ begin
   // load the form, if not already done
   AForm:=GetDesignerFormOfSource(ActiveUnitInfo,true);
   if AForm=nil then exit;
-  DisplayState:= dsForm;
+  DisplayState:=dsForm;
   LastFormActivated:=AForm;
   ShowDesignerForm(AForm);
   if TheControlSelection.SelectionForm<>AForm then begin
@@ -8872,7 +8881,10 @@ begin
     end;
   end;
   SourceEditorManager.ShowActiveWindowOnTop(False);
-  DisplayState:= dsSource;
+  {$IFDEF VerboseIDEDisplayState}
+  debugln(['TMainIDE.DoShowSourceOfActiveDesignerForm ']);
+  {$ENDIF}
+  DisplayState:=dsSource;
 end;
 
 procedure TMainIDE.GetIDEFileState(Sender: TObject; const AFilename: string;
@@ -11655,11 +11667,20 @@ end;
 
 procedure TMainIDE.OnSrcNoteBookActivated(Sender: TObject);
 begin
-  DisplayState:= dsSource;
+  {$IFDEF VerboseIDEDisplayState}
+  debugln(['TMainIDE.OnSrcNoteBookActivated']);
+  {$ENDIF}
+  DisplayState:=dsSource;
 end;
 
 procedure TMainIDE.OnDesignerActivated(Sender: TObject);
 begin
+  {$IFDEF VerboseIDEDisplayState}
+  if DisplayState<>dsForm then begin
+    debugln(['TMainIDE.OnDesignerActivated ']);
+    DumpStack;
+  end;
+  {$ENDIF}
   DisplayState:= dsForm;
   LastFormActivated := (Sender as TDesigner).Form;
   UpdateIDEComponentPalette;

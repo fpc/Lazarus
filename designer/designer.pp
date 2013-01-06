@@ -244,8 +244,8 @@ type
 
     // hook
     function GetPropertyEditorHook: TPropertyEditorHook; override;
-    function OnFormActivated: boolean;
-    function OnFormCloseQuery: boolean;
+    function DoFormActivated(Active: boolean): boolean;
+    function DoFormCloseQuery: boolean;
 
     property PopupMenuComponentEditor: TBaseComponentEditor read FPopupMenuComponentEditor write SetPopupMenuComponentEditor;
   public
@@ -2573,26 +2573,29 @@ begin
   if csDesigning in Sender.ComponentState then begin
     Result:=true;
     Inc(FProcessingDesignerEvent);
-    case TheMessage.Msg of
-      LM_PAINT:       Result := PaintControl(Sender, TLMPaint(TheMessage));
-      CN_KEYDOWN,CN_SYSKEYDOWN: KeyDown(Sender,TLMKey(TheMessage));
-      CN_KEYUP,CN_SYSKEYUP:     KeyUP(Sender,TLMKey(TheMessage));
-      LM_LBUTTONDOWN,
-      LM_RBUTTONDOWN,
-      LM_LBUTTONDBLCLK: MouseDownOnControl(Sender,TLMMouse(TheMessage));
-      LM_LBUTTONUP,
-      LM_RBUTTONUP:   MouseUpOnControl(Sender, TLMMouse(TheMessage));
-      LM_MOUSEMOVE:   MouseMoveOnControl(Sender, TLMMouse(TheMessage));
-      LM_SIZE:        Result:=SizeControl(Sender, TLMSize(TheMessage));
-      LM_MOVE:        Result:=MoveControl(Sender, TLMMove(TheMessage));
-      LM_ACTIVATE:    Result:=OnFormActivated;
-      LM_CLOSEQUERY:  Result:=OnFormCloseQuery;
-      LM_SETCURSOR:   Result:=HandleSetCursor(TheMessage);
-      LM_CONTEXTMENU: HandlePopupMenu(Sender, TLMContextMenu(TheMessage));
-    else
-      Result:=false;
+    try
+      case TheMessage.Msg of
+        LM_PAINT:       Result := PaintControl(Sender, TLMPaint(TheMessage));
+        CN_KEYDOWN,CN_SYSKEYDOWN: KeyDown(Sender,TLMKey(TheMessage));
+        CN_KEYUP,CN_SYSKEYUP:     KeyUP(Sender,TLMKey(TheMessage));
+        LM_LBUTTONDOWN,
+        LM_RBUTTONDOWN,
+        LM_LBUTTONDBLCLK: MouseDownOnControl(Sender,TLMMouse(TheMessage));
+        LM_LBUTTONUP,
+        LM_RBUTTONUP:   MouseUpOnControl(Sender, TLMMouse(TheMessage));
+        LM_MOUSEMOVE:   MouseMoveOnControl(Sender, TLMMouse(TheMessage));
+        LM_SIZE:        Result:=SizeControl(Sender, TLMSize(TheMessage));
+        LM_MOVE:        Result:=MoveControl(Sender, TLMMove(TheMessage));
+        LM_ACTIVATE:    Result:=DoFormActivated(TLMActivate(TheMessage).Active=WA_ACTIVE);
+        LM_CLOSEQUERY:  Result:=DoFormCloseQuery;
+        LM_SETCURSOR:   Result:=HandleSetCursor(TheMessage);
+        LM_CONTEXTMENU: HandlePopupMenu(Sender, TLMContextMenu(TheMessage));
+      else
+        Result:=false;
+      end;
+    finally
+      Dec(FProcessingDesignerEvent);
     end;
-    Dec(FProcessingDesignerEvent);
   end else begin
     if (TheMessage.Msg=LM_PAINT)
     or (TheMessage.Msg=CN_KEYDOWN)
@@ -3806,17 +3809,21 @@ begin
   EnvironmentOptions.SnapToGrid:=AValue;
 end;
 
-function TDesigner.OnFormActivated: boolean;
+function TDesigner.DoFormActivated(Active: boolean): boolean;
 begin
-  //the form was activated.
-  if Assigned(FOnActivated) then FOnActivated(Self);
-  Result:=true;
+  if Active then begin
+    // designer form was activated.
+    if Assigned(FOnActivated) then FOnActivated(Self);
+  end else begin
+    // designer form deactivated
+  end;
+  Result:=false; // pass message to form, needed for focussing
 end;
 
-function TDesigner.OnFormCloseQuery: boolean;
+function TDesigner.DoFormCloseQuery: boolean;
 begin
   if Assigned(FOnCloseQuery) then FOnCloseQuery(Self);
-  Result:=true;
+  Result:=true; // do not pass to form
 end;
 
 function TDesigner.GetPropertyEditorHook: TPropertyEditorHook;

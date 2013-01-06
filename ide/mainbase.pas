@@ -89,6 +89,7 @@ type
     FDisplayState: TDisplayState;
     // used to find the last form so you can display the correct tab
     FLastFormActivated: TCustomForm;
+    procedure SetDisplayState(AValue: TDisplayState);
   protected
     FNeedUpdateHighlighters: boolean;
 
@@ -194,7 +195,7 @@ type
   public
     property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;
     property WindowMenuActiveForm: TCustomForm read FWindowMenuActiveForm write FWindowMenuActiveForm;
-    property DisplayState: TDisplayState read FDisplayState write FDisplayState;
+    property DisplayState: TDisplayState read FDisplayState write SetDisplayState;
     property LastFormActivated: TCustomForm read FLastFormActivated write FLastFormActivated;
   end;
 
@@ -451,6 +452,15 @@ end;
 procedure TMainIDEBase.DoMnuWindowClicked(Sender: TObject);
 begin
   UpdateWindowMenu;
+end;
+
+procedure TMainIDEBase.SetDisplayState(AValue: TDisplayState);
+begin
+  if FDisplayState=AValue then Exit;
+  FDisplayState:=AValue;
+  {$IFDEF VerboseIDEDisplayState}
+  debugln(['TMainIDEBase.SetDisplayState ',dbgs(DisplayState)]);
+  {$ENDIF}
 end;
 
 function TMainIDEBase.CreateMenuSeparator : TMenuItem;
