@@ -430,6 +430,14 @@ begin
   // OpenGL will be replaced with dglOpenGL in uses section. Download dglOpenGL :
   //  http://wiki.delphigl.com/index.php/dglOpenGL.pas/en#Download
   fOmitProjUnits['OpenGL']             :='';
+  fOmitProjUnits['uPSCompiler']        :='pascalscript';
+  fOmitProjUnits['uPSUtils']           :='pascalscript';
+  fOmitProjUnits['uPSComponent']       :='pascalscript';
+  fOmitProjUnits['uPSRuntime']         :='pascalscript';
+  fOmitProjUnits['uPSDebugger']        :='pascalscript';
+  fOmitProjUnits['uPSPreProcessor']    :='pascalscript';
+  fOmitProjUnits['uPSR_dll']           :='pascalscript';
+  fOmitProjUnits['uPSC_dll']           :='pascalscript';
   fOmitProjUnits['SynEdit']            :='SynEdit';
   fOmitProjUnits['SynEditMiscProcs']   :='SynEdit';
   fOmitProjUnits['SynEditTextBuffer']  :='SynEdit';
