@@ -26,15 +26,6 @@
   You should have received a copy of the GNU Library General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-
-  ToDo:
-    - save settings after options dialog
-    - bug: opening a package editor does not put it to front
-    - close source editor and show again
-    - qt: focus on close page
-    - gtk2: focus on cancel completion box
-    - gtk2: focus on execute completion box
-    - gtk2: restore fails for mainidebar
 }
 unit RegisterAnchorDocking;
 
@@ -66,7 +57,6 @@ type
   TIDEAnchorDockMaster = class(TIDEDockMaster)
   private
     FChangeStamp: int64;
-    FEnabled: boolean;
     FSavedChangeStamp: int64;
     FSavedDMChangeStamp: int64;
     FUserLayoutLoaded: boolean;
@@ -75,7 +65,6 @@ type
     procedure GetDefaultBounds(AForm: TCustomForm; out Creator: TIDEWindowCreator;
       out NewBounds: TRect; out DockSiblingName: string; out DockAlign: TAlign);
     function GetModified: boolean;
-    procedure SetEnabled(const AValue: boolean);
     procedure SetModified(const AValue: boolean);
     procedure SetUserLayoutLoaded(const AValue: boolean);
   public
@@ -94,7 +83,6 @@ type
     procedure LoadLayoutFromFile(Filename: string);
     procedure SaveLayoutToFile(Filename: string);
     property UserLayoutLoaded: boolean read FUserLayoutLoaded write SetUserLayoutLoaded;
-    property Enabled: boolean read FEnabled write SetEnabled;
     // events
     procedure MakeIDEWindowDockSite(AForm: TCustomForm; ASides: TDockSides = [alBottom]); override;
     procedure MakeIDEWindowDockable(AControl: TWinControl); override;
@@ -113,7 +101,6 @@ type
   { TAnchorDockIDEFrame }
 
   TAnchorDockIDEFrame = class(TAbstractIDEOptionsEditor)
-    EnableCheckBox: TCheckBox;
     NoteLabel: TLabel;
   private
     FSettings: TAnchorDockSettings;
@@ -216,13 +203,6 @@ begin
   Result:=false;
 end;
 
-procedure TIDEAnchorDockMaster.SetEnabled(const AValue: boolean);
-begin
-  if FEnabled=AValue then exit;
-  FEnabled:=AValue;
-  IncreaseChangeStamp;
-end;
-
 procedure TIDEAnchorDockMaster.SetModified(const AValue: boolean);
 begin
   if AValue then
@@ -242,7 +222,6 @@ end;
 constructor TIDEAnchorDockMaster.Create;
 begin
   inherited Create;
-  fEnabled:=true;
   IDEAnchorDockMaster:=Self;
   DockMaster.OnCreateControl:=@DockMasterCreateControl;
   DockMaster.OnShowOptions:=@ShowAnchorDockOptions;
@@ -652,11 +631,8 @@ begin
   if ADialog=nil then ;
   if IDEDockMaster=IDEAnchorDockMaster then begin
     NoteLabel.Visible:=false;
-    EnableCheckBox.AnchorParallel(akTop,6,Self);
-    OptionsFrame.Align:=alBottom;
-    OptionsFrame.AnchorToNeighbour(akTop,6,EnableCheckBox);
+    OptionsFrame.Align:=alClient;
     OptionsFrame.Parent:=Self;
-    EnableCheckBox.Caption:=adrsDockingEnabledRequiresARestartOfTheIDE;
   end else begin
     NoteLabel.Visible:=true;
     NoteLabel.Caption:=Format(adrsToUseAnchordockingYouMustFirstUninstall, [
@@ -664,7 +640,6 @@ begin
     NoteLabel.Hint:=Format(
       adrsThereIsAnotherDockMasterInstalledOnlyOneDockingPac, [DbgSName(
       IDEDockMaster)]);
-    EnableCheckBox.Visible:=false;
     OptionsFrame.Parent:=nil;
   end;
 end;
@@ -672,7 +647,6 @@ end;
 procedure TAnchorDockIDEFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   if not (AOptions is SupportedOptionsClass) then exit;
-  EnableCheckBox.Checked:=IDEAnchorDockMaster.Enabled;
   DockMaster.SaveSettings(FSettings);
   OptionsFrame.LoadFromSettings(FSettings);
 end;
@@ -680,7 +654,6 @@ end;
 procedure TAnchorDockIDEFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   if not (AOptions is SupportedOptionsClass) then exit;
-  IDEAnchorDockMaster.Enabled:=EnableCheckBox.Checked;
   OptionsFrame.SaveToSettings(FSettings);
   if (not DockMaster.SettingsAreEqual(FSettings))
   or (not FileExistsUTF8(IDEAnchorDockMaster.GetDefaultLayoutFilename(true)))

@@ -1,4 +1,3 @@
- Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2011-04-21 23:43+0200\n"
@@ -66,10 +65,6 @@ msgstr "Il sito di docking personalizzato %s%s%s può avere un solo sito."
 #: anchordockstr.adrsdockinganchordocking
 msgid "Docking / Anchordocking"
 msgstr ""
-
-#: anchordockstr.adrsdockingenabledrequiresarestartoftheide
-msgid "Docking enabled (Requires a restart of the IDE)"
-msgstr "docking abilitato (richiede il riavvio dell'IDE)"
 
 #: anchordockstr.adrsdockingoptions
 msgid "Docking options"

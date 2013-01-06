@@ -65,10 +65,6 @@ msgstr "Sitio de anclaje personalizado %s%s%s puede tener sólo un sitio."
 msgid "Docking / Anchordocking"
 msgstr "Acoplamiento / Anclaje de acoplamiento"
 
-#: anchordockstr.adrsdockingenabledrequiresarestartoftheide
-msgid "Docking enabled (Requires a restart of the IDE)"
-msgstr "Acoplamiento habilitado (requiere un reinicio del IDE)"
-
 #: anchordockstr.adrsdockingoptions
 msgid "Docking options"
 msgstr "Opciones de acoplamiento"

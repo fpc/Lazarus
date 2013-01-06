@@ -57,10 +57,6 @@ msgstr ""
 msgid "Docking / Anchordocking"
 msgstr ""
 
-#: anchordockstr.adrsdockingenabledrequiresarestartoftheide
-msgid "Docking enabled (Requires a restart of the IDE)"
-msgstr ""
-
 #: anchordockstr.adrsdockingoptions
 msgid "Docking options"
 msgstr ""

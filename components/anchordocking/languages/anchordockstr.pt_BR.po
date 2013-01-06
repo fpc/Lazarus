@@ -67,10 +67,6 @@ msgstr "Local de ancoragem customizado %s%s%s só pode ter um local."
 msgid "Docking / Anchordocking"
 msgstr "Docking / Anchordocking"
 
-#: anchordockstr.adrsdockingenabledrequiresarestartoftheide
-msgid "Docking enabled (Requires a restart of the IDE)"
-msgstr "Ancoragem habilitada (Requer reinicio da IDE)"
-
 #: anchordockstr.adrsdockingoptions
 msgid "Docking options"
 msgstr "Opções Ancoragem"

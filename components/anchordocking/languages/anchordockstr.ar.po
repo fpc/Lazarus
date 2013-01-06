@@ -1,7 +1,3 @@
- Arabic translation of Free Pascal Lazarus Project.
- Copyright (C) 2012 Lazarus Project
- This file is distributed under the same license as the Lazarus package.
- Khaled Shagrouni <shagrouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
@@ -72,10 +68,6 @@ msgstr "موقع إرساء مخصّص %s%s%s يمكنه امتلاك موقع �
 #: anchordockstr.adrsdockinganchordocking
 msgid "Docking / Anchordocking"
 msgstr "الإرساء / تعليق الإرساء"
-
-#: anchordockstr.adrsdockingenabledrequiresarestartoftheide
-msgid "Docking enabled (Requires a restart of the IDE)"
-msgstr "تمكين الإرساء (يتطلّب إعادة تشغيل بيئة التطوير)"
 
 #: anchordockstr.adrsdockingoptions
 msgid "Docking options"

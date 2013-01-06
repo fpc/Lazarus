@@ -65,10 +65,6 @@ msgstr ""
 msgid "Docking / Anchordocking"
 msgstr ""
 
-#: anchordockstr.adrsdockingenabledrequiresarestartoftheide
-msgid "Docking enabled (Requires a restart of the IDE)"
-msgstr "Ukotvení povoleno (Vyžaduje restart IDE)"
-
 #: anchordockstr.adrsdockingoptions
 msgid "Docking options"
 msgstr "Volby ukotvení"

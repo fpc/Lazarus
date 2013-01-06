@@ -65,10 +65,6 @@ msgstr "Пользовательская область стыковки %s%s%s 
 msgid "Docking / Anchordocking"
 msgstr "Стыковка / Anchordocking"
 
-#: anchordockstr.adrsdockingenabledrequiresarestartoftheide
-msgid "Docking enabled (Requires a restart of the IDE)"
-msgstr "Включить стыковку (требует перезапуска IDE)"
-
 #: anchordockstr.adrsdockingoptions
 msgid "Docking options"
 msgstr "Параметры стыковки"

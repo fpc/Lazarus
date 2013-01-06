@@ -1,26 +1,16 @@
-inherited AnchorDockIDEFrame: TAnchorDockIDEFrame
+object AnchorDockIDEFrame: TAnchorDockIDEFrame
+  Left = 0
   Height = 388
+  Top = 0
   Width = 495
   ClientHeight = 388
   ClientWidth = 495
   TabOrder = 0
   DesignLeft = 407
   DesignTop = 295
-  object EnableCheckBox: TCheckBox[0]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = NoteLabel
-    AnchorSideTop.Side = asrBottom
+  object NoteLabel: TLabel
     Left = 6
-    Height = 22
-    Top = 30
-    Width = 133
-    BorderSpacing.Around = 6
-    Caption = 'EnableCheckBox'
-    TabOrder = 0
-  end
-  object NoteLabel: TLabel[1]
-    Left = 6
-    Height = 18
+    Height = 15
     Top = 6
     Width = 483
     Align = alTop

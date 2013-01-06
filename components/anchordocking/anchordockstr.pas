@@ -103,8 +103,6 @@ resourcestring
     +'shown in the normal window title';
   adrsErrorWritingWindowLayoutToFile = 'Error writing window layout to file "%'
     +'s"%s%s';
-  adrsDockingEnabledRequiresARestartOfTheIDE = 'Docking enabled (Requires a '
-    +'restart of the IDE)';
   adrsToUseAnchordockingYouMustFirstUninstall = 'To use anchordocking you '
     +'must first uninstall %s';
   adrsThereIsAnotherDockMasterInstalledOnlyOneDockingPac = 'There is another '

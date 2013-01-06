@@ -1,4 +1,3 @@
- Igor Paliychuk <mansonigor@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
@@ -68,10 +67,6 @@ msgstr "Користув. область стикування %s%s%s може м
 #: anchordockstr.adrsdockinganchordocking
 msgid "Docking / Anchordocking"
 msgstr "Стикування / Якірне Стикування"
-
-#: anchordockstr.adrsdockingenabledrequiresarestartoftheide
-msgid "Docking enabled (Requires a restart of the IDE)"
-msgstr "Стикування ввімкнене (Потребує перезавантажння IDE)"
 
 #: anchordockstr.adrsdockingoptions
 msgid "Docking options"
