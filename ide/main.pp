@@ -11240,6 +11240,11 @@ begin
   ASrcEdit := SourceEditorManager.SenderToEditor(Sender);
   if ASrcEdit=nil then exit;
 
+  {$IFDEF VerboseIDEDisplayState}
+  debugln(['TMainIDE.OnSrcNotebookEditorActived']);
+  {$ENDIF}
+  DisplayState:=dsSource;
+
   Project1.UpdateVisibleUnit(ASrcEdit,
     SourceEditorManager.IndexOfSourceWindow(ASrcEdit.SourceNotebook));
 
