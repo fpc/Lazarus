@@ -1470,7 +1470,7 @@ begin
   if Handler.Code=nil then RaiseGDBException('TApplication.AddHandler');
   if FApplicationHandlers[HandlerType]=nil then
     FApplicationHandlers[HandlerType]:=TMethodList.Create;
-  FApplicationHandlers[HandlerType].Add(Handler,AsFirst);
+  FApplicationHandlers[HandlerType].Add(Handler,not AsFirst);
 end;
 
 procedure TApplication.RemoveHandler(HandlerType: TApplicationHandlerType;

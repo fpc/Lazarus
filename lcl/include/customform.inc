@@ -857,7 +857,7 @@ begin
   if Handler.Code=nil then RaiseGDBException('TCustomForm.AddHandler');
   if FFormHandlers[HandlerType]=nil then
     FFormHandlers[HandlerType]:=TMethodList.Create;
-  FFormHandlers[HandlerType].Add(Handler,AsFirst);
+  FFormHandlers[HandlerType].Add(Handler,not AsFirst);
 end;
 
 procedure TCustomForm.RemoveHandler(HandlerType: TFormHandlerType;

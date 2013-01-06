@@ -1032,7 +1032,7 @@ begin
     RaiseGDBException('TScreen.AddHandler');
   if FScreenHandlers[HandlerType] = nil then
     FScreenHandlers[HandlerType] := TMethodList.Create;
-  FScreenHandlers[HandlerType].Add(Handler, AsFirst);
+  FScreenHandlers[HandlerType].Add(Handler, not AsFirst);
 end;
 
 procedure TScreen.RemoveHandler(HandlerType: TScreenNotification; const Handler: TMethod);

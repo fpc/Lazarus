@@ -1823,7 +1823,7 @@ procedure TControl.AddHandler(HandlerType: TControlHandlerType;
 begin
   if FControlHandlers[HandlerType]=nil then
     FControlHandlers[HandlerType]:=TMethodList.Create;
-  FControlHandlers[HandlerType].Add(AMethod);
+  FControlHandlers[HandlerType].Add(AMethod,not AsFirst);
 end;
 
 procedure TControl.RemoveHandler(HandlerType: TControlHandlerType;
