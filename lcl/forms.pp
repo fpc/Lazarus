@@ -1035,21 +1035,21 @@ type
     // handler
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure AddHandlerFormAdded(OnFormAdded: TScreenFormEvent;
-                                  AsFirst: Boolean=true);
+                                  AsFirst: Boolean=false);
     procedure RemoveHandlerFormAdded(OnFormAdded: TScreenFormEvent);
     procedure AddHandlerRemoveForm(OnRemoveForm: TScreenFormEvent;
-                                   AsFirst: Boolean=true);
+                                   AsFirst: Boolean=false);
     procedure RemoveHandlerRemoveForm(OnRemoveForm: TScreenFormEvent);
     procedure AddHandlerActiveControlChanged(
                                     OnActiveControlChanged: TScreenControlEvent;
-                                    AsFirst: Boolean=true);
+                                    AsFirst: Boolean=false);
     procedure RemoveHandlerActiveControlChanged(
                                    OnActiveControlChanged: TScreenControlEvent);
     procedure AddHandlerActiveFormChanged(OnActiveFormChanged: TScreenFormEvent;
-                                          AsFirst: Boolean=true);
+                                          AsFirst: Boolean=false);
     procedure RemoveHandlerActiveFormChanged(OnActiveFormChanged: TScreenFormEvent);
     procedure AddHandlerFormVisibleChanged(OnFormVisibleChanged: TScreenFormEvent;
-                                           AsFirst: Boolean=true);
+                                           AsFirst: Boolean=false);
     procedure RemoveHandlerFormVisibleChanged(OnFormVisibleChanged: TScreenFormEvent);
 
     function DisableForms(SkipForm: TCustomForm; DisabledList: TList = nil): TList;
