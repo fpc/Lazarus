@@ -109,6 +109,7 @@ type
     property IntegralHeight;
     property Items;
     property ItemHeight;
+    property ItemIndex;
     property MultiSelect;
     property OnChangeBounds;
     property OnClick;

@@ -578,7 +578,7 @@ type
     property Font;
     property IntegralHeight: boolean read FIntegralHeight write FIntegralHeight default False; // not implemented
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
-    property ItemIndex: integer read GetItemIndex write SetItemIndex;
+    property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
     property Items: TStrings read FItems write SetItems;
     property MultiSelect: boolean read FMultiSelect write SetMultiSelect default False;
     property OnChangeBounds;
@@ -642,6 +642,7 @@ type
     property IntegralHeight;
     property Items;
     property ItemHeight;
+    property ItemIndex;
     property MultiSelect;
     property OnChangeBounds;
     property OnClick;
