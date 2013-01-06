@@ -182,7 +182,8 @@ type
     function ExtractOptionsFromDOF(const DOFFilename: string): TModalResult;
     function ExtractOptionsFromCFG(const CFGFilename: string): TModalResult;
     function DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer; override;
-    function CheckPackageDependency(AUnitName: string): Boolean;
+    function CheckPackageDep(AUnitName: string): Boolean;
+    function TryAddPackageDep(AUnitName, ADefaultPkgName: string): Boolean;
   protected
     function CreateInstance: TModalResult; virtual; abstract;
     function CreateMainSourceFile: TModalResult; virtual;
@@ -539,7 +540,7 @@ begin
   fUsedUnitsTool:=TUsedUnitsTool.Create(fCTLink, fOrigUnitFilename);
   if fOwnerConverter is TConvertDelphiProjPack then
     with TConvertDelphiProjPack(fOwnerConverter) do begin
-      fUsedUnitsTool.OnCheckPackageDependency:=@CheckPackageDependency;
+      fUsedUnitsTool.OnCheckPackageDependency:=@CheckPackageDep;
       fUsedUnitsTool.IsConsoleApp:=fIsConsoleApp;
     end;
   if fOwnerConverter is TConvertDelphiProject then
@@ -1095,7 +1096,7 @@ var
                   ';'+lowercase(DelphiPkgNames)+';')>0 then begin
       AddPackageDependency(LazarusPkgName);
       IDEMessagesWindow.AddMsg(
-          Format(lisConvDelphiAddedPackageRequirement, [LazarusPkgName]), '', -1);
+          Format(lisConvDelphiAddedPackageDependency, [LazarusPkgName]), '', -1);
     end;
   end;
 
@@ -1265,7 +1266,7 @@ function TConvertDelphiProjPack.DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): 
         fUnitsToAddToProject.Add(sUnitPath+RealFileName);
         AUsedUnits.MissingUnits.Delete(i);      // No more missing, delete from list.
       end
-      else if CheckPackageDependency(mUnit) then
+      else if CheckPackageDep(mUnit) then
         AUsedUnits.MissingUnits.Delete(i);
     end;
   end;
@@ -1276,7 +1277,9 @@ begin
   Result:=AUsedUnitsTool.MissingUnitCount;
 end;
 
-function TConvertDelphiProjPack.CheckPackageDependency(AUnitName: string): Boolean;
+function TConvertDelphiProjPack.CheckPackageDep(AUnitName: string): Boolean;
+// Check if the given unit can be found in existing packages. Add a dependency if found.
+// This is called only if the unit is reported as missing.
 var
   Pack: TPkgFile;
   Dep: TPkgDependency;
@@ -1290,13 +1293,29 @@ begin
     if s='LCLBase' then
       s:='LCL';
     AddPackageDependency(s);
-    IDEMessagesWindow.AddMsg(Format(lisConvDelphiAddedPackageRequirement, [s]), '', -1);
+    IDEMessagesWindow.AddMsg(Format(lisConvDelphiAddedPackageDependency, [s]), '', -1);
     Dep:=FindDependencyByName(s);
     if Assigned(Dep) then
       PackageGraph.OpenDependency(Dep,false);
     Result:=True;
   end else begin;
     // ToDo: Install the required package automatically from a repository...
+  end;
+end;
+
+function TConvertDelphiProjPack.TryAddPackageDep(AUnitName, ADefaultPkgName: string): Boolean;
+var
+  Dep: TPkgDependency;
+begin
+  Result:=False;
+  if ADefaultPkgName<>'' then begin
+    Dep:=FindDependencyByName(ADefaultPkgName);
+    if not Assigned(Dep) then begin
+      Result:=CheckPackageDep(AUnitName); // Add dependency based on unit name (default is ignored)
+      if not Result then
+        // Package was not found. Add a message about a package that must be installed.
+        IDEMessagesWindow.AddMsg(Format(lisConvDelphiPackageRequired, [ADefaultPkgName]), '', -1);
+    end;
   end;
 end;
 
@@ -1418,7 +1437,6 @@ function TConvertDelphiProject.AddUnit(AFileName: string;
 var
   CurUnitInfo: TUnitInfo;
   RP, PureUnitName: String;
-  x: Integer;
 begin
   Result:=mrOK;
   OutUnitInfo:=nil;
@@ -1432,7 +1450,13 @@ begin
   if (RP<>'') and (fUnitSearchPaths.IndexOf(RP)<0) then
     fUnitSearchPaths.Add(RP);
   PureUnitName:=ExtractFileNameOnly(AFileName);
-  if not fSettings.OmitProjUnits.Find(PureUnitName, x) then begin
+  if fSettings.OmitProjUnits.Contains(PureUnitName) then
+  begin
+    fMainUnitConverter.fUsedUnitsTool.Remove(PureUnitName);
+    IDEMessagesWindow.AddMsg(Format(lisConvDelphiProjOmittedUnit,[PureUnitName]), '', -1);
+    TryAddPackageDep(PureUnitName, fSettings.OmitProjUnits[PureUnitName]);
+  end
+  else begin
     // Check unitname and create UnitInfo.
     CurUnitInfo:=LazProject.UnitInfoWithFilename(AFileName);
     if CurUnitInfo=nil then begin
@@ -1461,10 +1485,6 @@ begin
     end;
     CurUnitInfo.IsPartOfProject:=true;
     OutUnitInfo:=CurUnitInfo;
-  end
-  else begin
-    fMainUnitConverter.fUsedUnitsTool.Remove(PureUnitName);
-    IDEMessagesWindow.AddMsg(Format(lisConvDelphiProjOmittedUnit,[PureUnitName]), '', -1);
   end;
 end;
 

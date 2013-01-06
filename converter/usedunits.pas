@@ -211,7 +211,6 @@ var
   OldUnitName, OldInFilename: String;
   NewUnitName, NewInFilename: String;
   AFilename, s, LowNU: String;
-  x: Integer;
   OmitUnit: Boolean;
 begin
   UsesNode:=UsesSectionNode;
@@ -236,7 +235,7 @@ begin
       if NewInFilename<>'' then
         s:=s+' in '''+NewInFilename+'''';
       if AFilename<>'' then begin                         // unit found
-        OmitUnit := Settings.OmitProjUnits.Find(NewUnitName,x);
+        OmitUnit := Settings.OmitProjUnits.Contains(NewUnitName);
         if (NewUnitName<>OldUnitName) and not OmitUnit then begin
           // Character case differs, fix it.
           fUnitsToFixCase[OldUnitName]:=NewUnitName;
@@ -443,10 +442,10 @@ procedure TUsedUnits.OmitUnits;
 // Remove globally omitted units from MissingUnits.
 // Those units were added to MissingUnits to find possible replacements.
 var
-  i, x: Integer;
+  i: Integer;
 begin
   for i:=fMissingUnits.Count-1 downto 0 do
-    if fCTLink.Settings.OmitProjUnits.Find(fMissingUnits[i], x) then
+    if fCTLink.Settings.OmitProjUnits.Contains(fMissingUnits[i]) then
       fMissingUnits.Delete(i);
 end;
 

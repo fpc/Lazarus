@@ -5360,7 +5360,8 @@ resourcestring
   lisConvDelphiKeepBoth = 'Keep both';
   lisConvDelphiPackageNameExists = 'Package name exists';
   lisConvDelphiProjOmittedUnit = 'Omitted unit %s from project';
-  lisConvDelphiAddedPackageRequirement = 'Added Package %s as a requirement.';
+  lisConvDelphiAddedPackageDependency = 'Added Package %s as a dependency.';
+  lisConvDelphiPackageRequired = 'Package %s is required but not installed in Lazarus! Install it later.';
   lisConvDelphiThereIsAlreadyAPackageWithTheNamePleaseCloseThisPa = 'There is '
     +'already a package with the name "%s"%sPlease close this package first.';
   lisConvDelphiDelphiPackageMainSourceDpkFileNotFoundForPackage = 'Delphi '

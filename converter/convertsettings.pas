@@ -68,7 +68,7 @@ type
     fFuncReplaceMode: TReplaceModeShort;
     fCoordOffsMode: TReplaceModeShort;
     // Unit names to leave out of a project. Currently not user editable.
-    fOmitProjUnits: TStringList;
+    fOmitProjUnits: TStringToStringTree;
     // Delphi units mapped to Lazarus units, will be replaced or removed.
     fReplaceUnits: TStringToStringTree;
     // Delphi types mapped to Lazarus types, will be replaced.
@@ -116,7 +116,7 @@ type
     property TypeReplaceMode: TReplaceModeAllow read fTypeReplaceMode;
     property FuncReplaceMode: TReplaceModeShort read fFuncReplaceMode;
     property CoordOffsMode:   TReplaceModeShort read fCoordOffsMode;
-    property OmitProjUnits: TStringList read fOmitProjUnits;
+    property OmitProjUnits: TStringToStringTree read fOmitProjUnits;
     property ReplaceUnits: TStringToStringTree read fReplaceUnits;
     property ReplaceTypes: TStringToStringTree read fReplaceTypes;
     property ReplaceFuncs: TFuncsAndCategories read fReplaceFuncs;
@@ -382,7 +382,7 @@ begin
   fMainPath:='';
   fEnabled:=True;
   fSettingsForm:=Nil;
-  fOmitProjUnits:=TStringList.Create;
+  fOmitProjUnits:=TStringToStringTree.Create(false);
   fReplaceUnits:=TStringToStringTree.Create(false);
   fReplaceTypes:=TStringToStringTree.Create(false);
   fReplaceFuncs:=TFuncsAndCategories.Create;
@@ -404,50 +404,49 @@ begin
   LoadFuncReplacements(fConfigStorage, 'FuncReplacements/', 'Categories/', fReplaceFuncs);
   LoadVisualOffsets(fConfigStorage, 'VisualOffsets/', fCoordOffsets);
 
-  // * Add default values for configuration if ConfigStorage doesn't have them *
-
   // Units left out of project. Some projects include them although there are
   //  Lazarus packages for them. This setting is not saved in configuration.
-  with fOmitProjUnits do begin
-    Add('FastMM4');
-    Add('FastMM4Messages');
-    Add('GR32');
-    Add('GR32_Blend');
-    Add('GR32_Containers');
-    Add('GR32_DrawingEx');
-    Add('GR32_Filters');
-    Add('GR32_Image');
-    Add('GR32_Layers');
-    Add('GR32_LowLevel');
-    Add('GR32_Math');
-    Add('GR32_MicroTiles');
-    Add('GR32_OrdinalMaps');
-    Add('GR32_RangeBars');
-    Add('GR32_Rasterizers');
-    Add('GR32_RepaintOpt');
-    Add('GR32_Resamplers');
-    Add('GR32_System');
-    Add('GR32_Transforms');
-    Add('GR32_VectorMaps');
-    Add('OpenGL');
-    Add('SynEdit');
-    Add('SynEditMiscProcs');
-    Add('SynEditTextBuffer');
-    Add('SynEditTypes');
-    Add('SynEditHighlighter');
-    Add('SynEditKbdHandler');
-    Add('SynEditKeyCmds');
-    Add('SynEditKeyConst');
-    Add('SynEditMiscClasses');
-    Add('SynTextDrawer');
-    Add('SynHighlighterMulti');
-    Add('SynRegExpr');
-    Add('SynEditStrConst');
-    Add('SynEditWordWrap');
-    Add('SynHighlighterPas');
-    CaseSensitive:=False;
-    Sorted:=True;
-  end;
+  //  Key = Unit name, Value = Lazarus Package to be added to project as dependency
+  fOmitProjUnits['FastMM4']            :='';  // FastMM4 is not needed as FPC's
+  fOmitProjUnits['FastMM4Messages']    :='';  // memory manager does its job well.
+  fOmitProjUnits['GR32']               :='GR32_Lazarus';
+  fOmitProjUnits['GR32_Blend']         :='GR32_Lazarus';
+  fOmitProjUnits['GR32_Containers']    :='GR32_Lazarus';
+  fOmitProjUnits['GR32_DrawingEx']     :='GR32_Lazarus';
+  fOmitProjUnits['GR32_Filters']       :='GR32_Lazarus';
+  fOmitProjUnits['GR32_Image']         :='GR32_Lazarus';
+  fOmitProjUnits['GR32_Layers']        :='GR32_Lazarus';
+  fOmitProjUnits['GR32_LowLevel']      :='GR32_Lazarus';
+  fOmitProjUnits['GR32_Math']          :='GR32_Lazarus';
+  fOmitProjUnits['GR32_MicroTiles']    :='GR32_Lazarus';
+  fOmitProjUnits['GR32_OrdinalMaps']   :='GR32_Lazarus';
+  fOmitProjUnits['GR32_RangeBars']     :='GR32_Lazarus';
+  fOmitProjUnits['GR32_Rasterizers']   :='GR32_Lazarus';
+  fOmitProjUnits['GR32_RepaintOpt']    :='GR32_Lazarus';
+  fOmitProjUnits['GR32_Resamplers']    :='GR32_Lazarus';
+  fOmitProjUnits['GR32_System']        :='GR32_Lazarus';
+  fOmitProjUnits['GR32_Transforms']    :='GR32_Lazarus';
+  fOmitProjUnits['GR32_VectorMaps']    :='GR32_Lazarus';
+  // OpenGL will be replaced with dglOpenGL in uses section. Download dglOpenGL :
+  //  http://wiki.delphigl.com/index.php/dglOpenGL.pas/en#Download
+  fOmitProjUnits['OpenGL']             :='';
+  fOmitProjUnits['SynEdit']            :='SynEdit';
+  fOmitProjUnits['SynEditMiscProcs']   :='SynEdit';
+  fOmitProjUnits['SynEditTextBuffer']  :='SynEdit';
+  fOmitProjUnits['SynEditTypes']       :='SynEdit';
+  fOmitProjUnits['SynEditHighlighter'] :='SynEdit';
+  fOmitProjUnits['SynEditKbdHandler']  :='SynEdit';
+  fOmitProjUnits['SynEditKeyCmds']     :='SynEdit';
+  fOmitProjUnits['SynEditKeyConst']    :='SynEdit';
+  fOmitProjUnits['SynEditMiscClasses'] :='SynEdit';
+  fOmitProjUnits['SynEditStrConst']    :='SynEdit';
+  fOmitProjUnits['SynEditWordWrap']    :='SynEdit';
+  fOmitProjUnits['SynHighlighterMulti']:='SynEdit';
+  fOmitProjUnits['SynHighlighterPas']  :='SynEdit';
+  fOmitProjUnits['SynTextDrawer']      :='SynEdit';
+  fOmitProjUnits['SynRegExpr']         :='SynEdit';
+
+  // * Add default values for configuration if ConfigStorage doesn't have them *
 
   // Map Delphi units to Lazarus units.
   TheMap:=fReplaceUnits;
@@ -456,8 +455,8 @@ begin
   MapReplacement('WinProcs',            'LCLIntf, LCLType, LMessages');
   MapReplacement('Mask',                'MaskEdit');
   MapReplacement('TabNotBk',            'ComCtrls');
-  MapReplacement('OpenGL',              'GL, GLu');
-  MapReplacement('dglOpenGL',           'GL, GLu, GLut');  // ?
+  MapReplacement('OpenGL',              'dglOpenGL');
+//  MapReplacement('dglOpenGL',           'GL, GLu, GLut');  // ?
   // Database components
   MapReplacement('SqlExpr',             'sqldb');
   MapReplacement('DBLocalS',            'sqldb');
