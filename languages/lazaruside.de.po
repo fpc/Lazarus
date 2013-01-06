@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-10-06 20:13+0100\n"
+"PO-Revision-Date: 2013-01-06 15:33+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -574,7 +574,7 @@ msgstr "Beim Kompilieren warnen"
 
 #: lazarusidestrconsts.dlgansicommenttab
 msgid "Ansi (* *)"
-msgstr ""
+msgstr "ANSI (* *)"
 
 #: lazarusidestrconsts.dlgapplicationsettings
 #| msgid "Application Settings"
@@ -668,11 +668,11 @@ msgstr "Blockeinrückung (Leerzeichen)"
 
 #: lazarusidestrconsts.dlgblockindentkeys
 msgid "Block indent"
-msgstr ""
+msgstr "Blockeinrückung"
 
 #: lazarusidestrconsts.dlgblockindentlink
 msgid "(edit keys)"
-msgstr ""
+msgstr "(Tasten bearbeiten)"
 
 #: lazarusidestrconsts.dlgblockindenttype
 msgid "Indent method"
@@ -1039,7 +1039,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcommentalignmaxtoken
 msgid "Limit indent to"
-msgstr ""
+msgstr "Einrückung beschränken auf"
 
 #: lazarusidestrconsts.dlgcommentcontinue
 msgid "Prefix comments on linebreak"
@@ -1083,7 +1083,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcommentindentgroupoptions
 msgid "Comments"
-msgstr ""
+msgstr "Kommentare"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
 msgid "Extend, if matched or not matched"
@@ -1252,7 +1252,7 @@ msgstr "Strg-Mittelklick auf Tab schließt alle anderen"
 
 #: lazarusidestrconsts.dlgcurlycommenttab
 msgid "Curly { }"
-msgstr ""
+msgstr "Geschweifte Klammern {}"
 
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
@@ -1572,7 +1572,7 @@ msgstr "An"
 
 #: lazarusidestrconsts.dlgedtabindent
 msgid "Tab and Indent"
-msgstr ""
+msgstr "Einrückung und Tabulatoren"
 
 #: lazarusidestrconsts.dlgedunder
 msgid "Underline"
@@ -2057,7 +2057,7 @@ msgstr "Code einrücken auf"
 
 #: lazarusidestrconsts.dlgindentsindentgroupoptions
 msgid "Indent"
-msgstr ""
+msgstr "Einrückung"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
 #, fuzzy
@@ -2115,7 +2115,7 @@ msgstr "X-Position des Cursors beibehalten"
 
 #: lazarusidestrconsts.dlgkeylink
 msgid "(Edit Key)"
-msgstr ""
+msgstr "(Taste bearbeiten)"
 
 #: lazarusidestrconsts.dlgkeymapping
 msgid "Key Mappings"
@@ -3212,7 +3212,7 @@ msgstr "\"forward\" Klassendeklarationen überspringen"
 
 #: lazarusidestrconsts.dlgslashcommenttab
 msgid "Slash //"
-msgstr ""
+msgstr "Schrägstriche //"
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"
@@ -4081,7 +4081,7 @@ msgstr "Paketabhängigkeit hinzufügen?"
 
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
-msgstr ""
+msgstr "Package(s) zur Liste der installierten Packages hinzufügen (in Verbindung mit --build-ide um die IDE zu rekompilieren)"
 
 #: lazarusidestrconsts.lisaddpackagetoproject
 msgid "Add package %s to project?"
@@ -5270,7 +5270,7 @@ msgstr "Wählen Sie eine Beispieldatei"
 
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
-msgstr ""
+msgstr "Eine FPC-Nachrichtendatei auswählen"
 
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
@@ -6459,7 +6459,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconversiontook
 msgid "Conversion took: %s"
-msgstr ""
+msgstr "Konvertierung benötigte: %s"
 
 #: lazarusidestrconsts.lisconvdelphiconvertdelphipackage
 msgid "Convert Delphi package"
@@ -6478,7 +6478,6 @@ msgid "* Converting file %s *"
 msgstr "* Konvertiere Datei %s *"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-#, fuzzy
 #| msgid "*** Converting unit files ... ***"
 msgid "*** Converting unit files ***"
 msgstr "*** Konvertiere Unitdateien ... ***"
@@ -6559,7 +6558,6 @@ msgid "* Repairing form file %s *"
 msgstr "* Repariere Form-Datei %s *"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
-#, fuzzy
 #| msgid "*** Repairing form files ... ***"
 msgid "*** Fixing used units and Repairing form files ***"
 msgstr "*** Repariere Formulardateien ... ***"
@@ -8311,7 +8309,7 @@ msgstr "Debuggerausnahmen-Nachricht"
 
 #: lazarusidestrconsts.lisexcludedatruntime
 msgid "%s excluded at run time"
-msgstr "&s zur Laufzeit ausgenommen"
+msgstr "%s zur Laufzeit ausgenommen"
 
 #: lazarusidestrconsts.lisexcludefilter
 #| msgid "Exclude Filter"
@@ -8633,11 +8631,11 @@ msgstr "Alle &Projektdateien durchsuchen"
 
 #: lazarusidestrconsts.lisfindfilesearchallopenfiles
 msgid "search all &open files"
-msgstr "alle &offenen Dateien suchen"
+msgstr "alle &offenen Dateien durchsuchen"
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
 msgid "search in &active file"
-msgstr ""
+msgstr "&aktive Datei durchsuchen"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
 msgid "search in &directories"
@@ -9307,7 +9305,7 @@ msgstr "Abgeleitete Projekt-Komponente"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
-msgstr "Um eine saubere Kopie des Projekts oder Packages zu erhalten, werden alle Dateien im folgenden Verzeichnis gelöscht, der gesamte Inhalt geht verloren.%s%sAlle Dateien in %s%s% löschen?"
+msgstr "Um eine saubere Kopie des Projekts oder Packages zu erhalten, werden alle Dateien im folgenden Verzeichnis gelöscht, der gesamte Inhalt geht verloren.%s%sAlle Dateien in %s%s%s löschen?"
 
 #: lazarusidestrconsts.lisinsert
 msgctxt "lazarusidestrconsts.lisinsert"
@@ -11056,7 +11054,6 @@ msgid "Find Other End of Code Block"
 msgstr "Anderes Ende des Quelltextblocks suchen"
 
 #: lazarusidestrconsts.lismenufindcodeblockstart
-#, fuzzy
 #| msgid "Find code block start"
 msgid "Find Start of Code Block"
 msgstr "Zu Quelltextblockanfang gehen"
@@ -11903,11 +11900,11 @@ msgstr "Seite verschieben"
 
 #: lazarusidestrconsts.lismoveselecteddown
 msgid "Move selected item down (Ctrl+Down)"
-msgstr ""
+msgstr "Gewähltes Element nach unten bewegen (Strg+unten)"
 
 #: lazarusidestrconsts.lismoveselectedup
 msgid "Move selected item up (Ctrl+Up)"
-msgstr ""
+msgstr "Gewähltes Element nach oben bewegen (Strg+hoch)"
 
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
@@ -12681,7 +12678,7 @@ msgstr "Compilereinstellungen für Package %s"
 
 #: lazarusidestrconsts.lispckeditcreatefpmakefile
 msgid "Create fpmake.pp"
-msgstr ""
+msgstr "fpmake.pp erzeugen"
 
 #: lazarusidestrconsts.lispckeditcreatemakefile
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
@@ -14544,7 +14541,7 @@ msgstr "Umbenennen der Datei ist fehlgeschlagen"
 
 #: lazarusidestrconsts.lisrenameshowresult
 msgid "Show list of renamed Identifiers"
-msgstr ""
+msgstr "Zeige Liste der umbenannten Bezeichner"
 
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
@@ -16134,11 +16131,11 @@ msgstr "Suche: %s"
 
 #: lazarusidestrconsts.lisuesearchstringcontinuebeg
 msgid "Continue search from the beginning?"
-msgstr ""
+msgstr "Suche am Beginn fortsetzen?"
 
 #: lazarusidestrconsts.lisuesearchstringcontinueend
 msgid "Continue search from the end?"
-msgstr ""
+msgstr "Suche am Ende fortsetzen?"
 
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"

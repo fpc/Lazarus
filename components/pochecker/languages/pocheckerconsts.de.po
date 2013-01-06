@@ -73,6 +73,8 @@ msgid ""
 "Error creating an instance of TPoFamily:\n"
 "%s\n"
 msgstr ""
+"Fehler bei Erzeugung einer Instanz von TPoFamily:\n"
+"%s\n"
 
 #: pocheckerconsts.serrorsbytest
 msgid "Errors / warnings reported by %s for:"
@@ -92,7 +94,7 @@ msgstr "Bezeichner [%s] nicht gefunden in %s"
 
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
-msgstr ""
+msgstr "[Zeile: %d] Inkompatible und/oder ungültige Format()-Argumente für:"
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -116,6 +118,10 @@ msgid ""
 "%s\n"
 "does not seem to be a proper name for a po-file\n"
 msgstr ""
+"Gewählter Dateiname\n"
+"%s\n"
+"sieht nicht wie ein geeigneter Name für eine po-file\n"
+" aus"
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."
