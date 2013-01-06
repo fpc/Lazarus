@@ -3921,7 +3921,7 @@ function TLinkScanner.CursorToCleanPos(ACursorPos: integer; ACode: pointer;
 // 1=CursorPos beyond scanned code
 // ACleanPos starts at 1
 type
-  TLinkQuality = (qNone,qSkipped,qDisabled,qClean);
+  TLinkQuality = (qNone,qSkipped,qSkippedInFront,qDisabled,qClean);
 var
   i, BestCleanPos: integer;
   Link: PSourceLink;
@@ -3944,34 +3944,46 @@ begin
     else if Link^.Kind=slkSkipEnd then
       Enabled:=true;
     //DebugLn(['[TLinkScanner.CursorToCleanPos] A ACursorPos=',ACursorPos,', Code=',Link^.Code=ACode,', Link^.SrcPos=',Link^.SrcPos,', Link^.CleanedPos=',Link^.CleanedPos]);
-    if (Link^.Code=ACode) and (Link^.SrcPos<=ACursorPos) then begin
+    if (Link^.Code=ACode) then begin
       // link in same code found
-      ACleanPos:=ACursorPos-Link^.SrcPos+Link^.CleanedPos;
-      //DebugLn(['[TLinkScanner.CursorToCleanPos] Same code ACursorPos=',ACursorPos,', Code=',Link^.Code=ACode,', Link^.SrcPos=',Link^.SrcPos,', Link^.CleanedPos=',Link^.CleanedPos,' EndCleanPos=',Link^.CleanedPos+LinkSize(i)]);
-      LinkEnd:=LinkCleanedEndPos_Inline(i);
-      if ACleanPos<LinkEnd then begin
-        // link covers the cursor position
-        //debugln(['TLinkScanner.CursorToCleanPos Found LinkStartInSrc="',dbgstr(LinkSourceLog(i).Source,Link^.SrcPos,40),'" LinkStartInCleanSrc="',dbgstr(FCleanedSrc,Link^.CleanedPos,40),'" CursorSrc="',dbgstr(copy(LinkSourceLog(i).Source,ACursorPos-20,20)),'|',dbgstr(copy(LinkSourceLog(i).Source,ACursorPos,20)),'" CleanCursorSrc="',dbgstr(FCleanedSrc,ACleanPos-20,20),'|',dbgstr(FCleanedSrc,ACleanPos,20),'"']);
-        if Enabled then begin
-          exit(0);  // position in parsed code
+      if (Link^.SrcPos<=ACursorPos) then begin
+        ACleanPos:=ACursorPos-Link^.SrcPos+Link^.CleanedPos;
+        //DebugLn(['[TLinkScanner.CursorToCleanPos] Same code ACursorPos=',ACursorPos,', Code=',Link^.Code=ACode,', Link^.SrcPos=',Link^.SrcPos,', Link^.CleanedPos=',Link^.CleanedPos,' EndCleanPos=',Link^.CleanedPos+LinkSize(i)]);
+        LinkEnd:=LinkCleanedEndPos_Inline(i);
+        if ACleanPos<LinkEnd then begin
+          // link covers the cursor position
+          //debugln(['TLinkScanner.CursorToCleanPos Found LinkStartInSrc="',dbgstr(LinkSourceLog(i).Source,Link^.SrcPos,40),'" LinkStartInCleanSrc="',dbgstr(FCleanedSrc,Link^.CleanedPos,40),'" CursorSrc="',dbgstr(copy(LinkSourceLog(i).Source,ACursorPos-20,20)),'|',dbgstr(copy(LinkSourceLog(i).Source,ACursorPos,20)),'" CleanCursorSrc="',dbgstr(FCleanedSrc,ACleanPos-20,20),'|',dbgstr(FCleanedSrc,ACleanPos,20),'"']);
+          if Enabled then begin
+            exit(0);  // position in parsed code
+          end else begin
+            // position in disabled code
+            // Note: maybe this include file was parsed a second time and the
+            // position is then enabled => save position and continue search
+            if BestQuality<qDisabled then begin
+              BestQuality:=qDisabled;
+              BestCleanPos:=ACleanPos;
+            end;
+          end;
         end else begin
-          // position in disabled code
-          // Note: maybe this include file was parsed a second time and the
-          // position is then enabled => save position and continue search
-          if BestQuality<qDisabled then begin
-            BestQuality:=qDisabled;
-            BestCleanPos:=ACleanPos;
+          // link is in front of the cursor
+          if BestQuality<=qSkipped then begin
+            // remember last link in front
+            BestQuality:=qSkipped;
+            BestCleanPos:=LinkEnd;
           end;
         end;
-      end else if BestQuality<qSkipped then begin
-        BestQuality:=qSkipped;
-        BestCleanPos:=LinkEnd;
+      end else begin
+        // link is behind cursor
+        if BestQuality=qSkipped then begin
+          // the cursor lies in between two links
+          BestQuality:=qSkippedInFront;
+        end;
       end;
     end;
     inc(i);
   end;
   ACleanPos:=BestCleanPos;
-  if (BestQuality=qSkipped) and (ACleanPos<=CleanedLen) then begin
+  if (BestQuality=qSkippedInFront) and (ACleanPos<=CleanedLen) then begin
     // cursor position lies between two links
     Result:=-1;
   end else if BestQuality=qDisabled then begin

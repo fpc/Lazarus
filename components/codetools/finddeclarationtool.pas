@@ -1420,7 +1420,7 @@ var
         Link:=Scanner.Links[i];
         if Link.Code=Pointer(CursorPos.Code) then begin
           if LinkIndex<0 then
-            dbgout([', First Link of Code: ID=',i,'CleanedPos=',Link.CleanedPos,',Size=',Scanner.LinkSize(i),',SrcPos=',Link.SrcPos,',Kind=',dbgs(Link.Kind)]);
+            dbgout([', First Link of Code: ID=',i,',CleanedPos=',Link.CleanedPos,',Size=',Scanner.LinkSize(i),',SrcPos=',Link.SrcPos,',Kind=',dbgs(Link.Kind)]);
           LinkIndex:=i;
         end;
         inc(i);
