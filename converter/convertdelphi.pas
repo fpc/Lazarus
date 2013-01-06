@@ -1292,12 +1292,15 @@ begin
     s:=Pack.LazPackage.Name;
     if s='LCLBase' then
       s:='LCL';
-    AddPackageDependency(s);
-    IDEMessagesWindow.AddMsg(Format(lisConvDelphiAddedPackageDependency, [s]), '', -1);
     Dep:=FindDependencyByName(s);
-    if Assigned(Dep) then
-      PackageGraph.OpenDependency(Dep,false);
-    Result:=True;
+    if not Assigned(Dep) then begin
+      AddPackageDependency(s);
+      IDEMessagesWindow.AddMsg(Format(lisConvDelphiAddedPackageDependency, [s]), '', -1);
+      Dep:=FindDependencyByName(s);
+      if Assigned(Dep) then
+        PackageGraph.OpenDependency(Dep,false);
+      Result:=True;
+    end;
   end else begin;
     // ToDo: Install the required package automatically from a repository...
   end;
