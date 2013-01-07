@@ -155,7 +155,7 @@ var
   i: Integer;
 begin
   cb := Sender as TCheckBox;
-  // Set / reset all CheckListBox items.
+  // Set / reset "basic" CheckListBox items.
   for i := 0 to TestListBox.Count - 2 do
     TestListBox.Checked[i] := cb.Checked;
 end;
