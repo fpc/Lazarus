@@ -548,6 +548,55 @@ var
     Result:=nil;
   end;
 
+  procedure ReplaceMultiByteWithResize(List: PItem; ListLen: SizeInt; Src: PChar);
+  var
+    c: Char;
+    clen: Integer;
+    NewSIndex, i: SizeInt;
+    Item: PItem;
+    NewS: string;
+    NewSP: PChar;
+    NewCharLen: Integer;
+    NewCharP: PChar;
+  begin
+    SetLength(NewS,length(s));
+    NewSIndex:=Src-PChar(s)+1;
+    if NewSIndex>1 then
+      Move(s[1],NewS[1],NewSIndex-1);
+    while true do begin
+      c:=Src^;
+      if (c=#0) and (Src-PChar(s)=length(s)) then break;
+      clen:=UTF8CharacterLength(Src);
+      NewCharP:=Src;
+      NewCharLen:=clen;
+      // do a quick test via Pos
+      i:=Pos(c,SrcChars);
+      if i>0 then begin
+        // quick test positive, now search correctly
+        Item:=FindItem(List,ListLen,Src,clen);
+        if Item<>nil then begin
+          // replace
+          NewCharP:=@Item^.Dst[0];
+          NewCharLen:=Item^.DstLen;
+        end;
+      end;
+      inc(Src,clen);
+      if NewSIndex+NewCharLen-1>length(NewS) then begin
+        // need more space => grow
+        SetLength(NewS,NewSIndex+((length(NewS)-NewSIndex-NewCharLen)*3 div 2)+2);
+      end;
+      // copy character
+      NewSP:=@NewS[NewSIndex];
+      for i:=1 to NewCharLen do begin
+        NewSP^:=NewCharP^;
+        inc(NewCharP);
+        inc(NewSP);
+      end;
+      inc(NewSIndex,NewCharLen);
+    end;
+    s:=LeftStr(NewS,NewSIndex-1);
+  end;
+
   procedure ReplaceMultiByte;
   var
     p: PChar;
@@ -579,7 +628,10 @@ var
               Move(Item^.Dst[0],p^,clen);
             end else begin
               // replace with different size
-              // ToDo
+              // all following characters are moved
+              // => use an optimized algorithm for this
+              ReplaceMultiByteWithResize(List,ListLen,p);
+              exit;
             end;
           end;
         end;

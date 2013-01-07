@@ -79,9 +79,11 @@ begin
   T('switch a,b','abaa','ab','ba','babb');
   T('delete a','a','a','','');
   T('delete a','aba','a','','b');
-  //T('replace ä with ö','bä','ä','ö','bö');
-  //T('replace ä with ö','äbä','ä','ö','öbö');
+  T('replace ä with ö','bä','ä','ö','bö');
+  T('replace ä with ö','äbä','ä','ö','öbö');
   T('switch ä,ö','äbö','äö','öä','öbä');
+  T('delete ä','äbö','ä','','bö');
+  T('replace ä with a','äbö','ä','a','abö');
 end;
 
 initialization
