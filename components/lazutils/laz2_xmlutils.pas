@@ -395,6 +395,15 @@ procedure TranslateUTF8Chars(var s: TXMLUtilString; SrcChars, DstChars: string);
   character of DstChars. If there is no n-th character in DstChars then the
   character will be deleted in s.
 }
+type
+  TItem = packed record
+    SrcLen: byte;
+    Src: array[0..4] of char;
+    DstLen: byte;
+    Dst: array[0..4] of char;
+  end;
+  PItem = ^TItem;
+
 var
   unique: boolean;
 
@@ -427,8 +436,9 @@ var
   begin
     UniqString(Src);
     Dst:=Src;
-    while Src^<>#0 do begin
+    while true do begin
       c:=Src^;
+      if (c=#0) and (Src-PChar(s)=length(s)) then break;
       i:=Pos(c,SrcChars);
       if i<1 then begin
         // keep character
@@ -457,10 +467,13 @@ var
   var
     i: SizeInt;
     p: PChar;
+    c: Char;
   begin
     p:=PChar(s);
-    while p^<>#0 do begin
-      i:=Pos(p^,SrcChars);
+    while true do begin
+      c:=p^;
+      if (c=#0) and (p-PChar(s)=length(s)) then break;
+      i:=Pos(c,SrcChars);
       if i<1 then begin
         // keep character
         inc(p);
@@ -481,19 +494,99 @@ var
     end;
   end;
 
+  procedure BuildMultiByteCompareArray(var List: PItem; var Count: SizeInt);
+  var
+    SrcP: PChar;
+    DstP: PChar;
+    Item: PItem;
+    i: Integer;
+  begin
+    Count:=UTF8Length(SrcChars);
+    GetMem(List,Count*SizeOf(TItem));
+    FillByte(List^,Count*SizeOf(TItem),0);
+    SrcP:=PChar(SrcChars);
+    DstP:=PChar(DstChars);
+    Item:=List;
+    for i:=1 to Count do begin
+      Item^.SrcLen:=UTF8CharacterLength(SrcP);
+      Move(SrcP^,Item^.Src[0],Item^.SrcLen);
+      if (DstP^<>#0) or (DstP-PChar(DstChars)<length(DstChars)) then begin
+        Item^.DstLen:=UTF8CharacterLength(DstP);
+        Move(DstP^,Item^.Dst[0],Item^.DstLen);
+      end;
+      inc(Item);
+      inc(SrcP,UTF8CharacterLength(SrcP));
+      inc(DstP,UTF8CharacterLength(DstP));
+    end;
+  end;
+
+  function FindItem(var List: PItem; var ListLen: SizeInt; p: PChar; clen: integer): PItem; inline;
+  // Search p in list
+  var
+    Item: PItem;
+    i: SizeInt;
+    c: Char;
+    j: Integer;
+  begin
+    if List=nil then
+      BuildMultiByteCompareArray(List,ListLen);
+    Item:=List;
+    c:=p^;
+    for i:=0 to ListLen-1 do begin
+      if (Item^.SrcLen=clen)
+      and (Item^.Src[0]=c) then begin
+        j:=1;
+        while true do begin
+          if (Item^.Src[j]=#0) then
+            exit(Item);
+          if (Item^.Src[j]<>p[j]) then break;
+          inc(j);
+        end;
+      end;
+      inc(Item);
+    end;
+    Result:=nil;
+  end;
+
   procedure ReplaceMultiByte;
   var
     p: PChar;
-    sp: PChar;
     clen: Integer;
-    sclen: Integer;
+    c: Char;
+    i: SizeInt;
+    List: PItem;
+    ListLen: SizeInt;
+    Item: PItem;
   begin
     p:=PChar(s);
-    while p^<>#0 do begin
-      clen:=UTF8CharacterLength(p);
-      if Pos(p^,SrcChars)>0 then begin
-        sp:=PChar(SrcChars);
+    List:=nil;
+    ListLen:=0;
+    try
+      while true do begin
+        c:=p^;
+        if (c=#0) and (p-PChar(s)=length(s)) then break;
+        clen:=UTF8CharacterLength(p);
+        // do a quick test via Pos
+        i:=Pos(c,SrcChars);
+        if i>0 then begin
+          // quick test positive, now search correctly
+          Item:=FindItem(List,ListLen,p,clen);
+          if Item<>nil then begin
+            // replace
+            if Item^.DstLen=clen then begin
+              // simple replace
+              UniqString(p);
+              Move(Item^.Dst[0],p^,clen);
+            end else begin
+              // replace with different size
+              // ToDo
+            end;
+          end;
+        end;
+        inc(p,clen);
       end;
+    finally
+      if List<>nil then Freemem(List);
     end;
   end;
 
