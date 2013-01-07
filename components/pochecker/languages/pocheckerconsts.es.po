@@ -179,9 +179,9 @@ msgstr ""
 "Error guardando archivo:\n"
 "%s\n"
 
-#: pocheckerconsts.sselectalltests
-msgid "Select all tests"
-msgstr "Seleccione todas las pruebas"
+#: pocheckerconsts.sselectbasictests
+msgid "Select basic tests"
+msgstr ""
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
@@ -198,8 +198,4 @@ msgstr "Total de avisos encontrados: %d"
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr "Traducción"
-
-#: pocheckerconsts.sunselectalltests
-msgid "Unselect all tests"
-msgstr "Deseleccionar todas las pruebas"
 

@@ -155,13 +155,8 @@ var
   i: Integer;
 begin
   cb := Sender as TCheckBox;
-  // Caption text : select all / unselect all
-  if cb.Checked then
-    cb.Caption := sUnSelectAllTests
-  else
-    cb.Caption := sSelectAllTests;
   // Set / reset all CheckListBox items.
-  for i := 0 to TestListBox.Count - 1 do
+  for i := 0 to TestListBox.Count - 2 do
     TestListBox.Checked[i] := cb.Checked;
 end;
 
@@ -195,7 +190,7 @@ begin
       else
         TestListBox.Items.Add(PoTestOptionNames[Opt]);
     end;
-  SelectAllCheckBox.Caption := sSelectAllTests;
+  SelectAllCheckBox.Caption := sSelectBasicTests;
 end;
 
 function TPoCheckerForm.GetOptionsFromListBox: TPoTestOptions;

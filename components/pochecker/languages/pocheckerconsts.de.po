@@ -121,7 +121,7 @@ msgstr ""
 "Gewählter Dateiname\n"
 "%s\n"
 "sieht nicht wie ein geeigneter Name für eine po-file\n"
-" aus"
+" aus\n"
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."
@@ -171,9 +171,9 @@ msgstr ""
 "Fehler beim Speichern von Datei:\n"
 "%s\n"
 
-#: pocheckerconsts.sselectalltests
-msgid "Select all tests"
-msgstr "Alle Tests auswählen"
+#: pocheckerconsts.sselectbasictests
+msgid "Select basic tests"
+msgstr ""
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
@@ -190,8 +190,4 @@ msgstr "Insgesamt %d Warnungen gefunden"
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr "Übersetzung"
-
-#: pocheckerconsts.sunselectalltests
-msgid "Unselect all tests"
-msgstr "Alle Tests abwählen"
 

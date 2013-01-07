@@ -180,9 +180,9 @@ msgstr ""
 "Chyba ukládání souboru:\n"
 "%s\n"
 
-#: pocheckerconsts.sselectalltests
-msgid "Select all tests"
-msgstr "Vybrat všechny testy"
+#: pocheckerconsts.sselectbasictests
+msgid "Select basic tests"
+msgstr ""
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
@@ -199,8 +199,4 @@ msgstr "Celkem nalezeno varování: %d"
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr "Překlad"
-
-#: pocheckerconsts.sunselectalltests
-msgid "Unselect all tests"
-msgstr "Zruš výběr všech testů"
 

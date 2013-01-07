@@ -155,8 +155,8 @@ msgid ""
 "%s\n"
 msgstr ""
 
-#: pocheckerconsts.sselectalltests
-msgid "Select all tests"
+#: pocheckerconsts.sselectbasictests
+msgid "Select basic tests"
 msgstr ""
 
 #: pocheckerconsts.sselecttesttypes
@@ -173,9 +173,5 @@ msgstr ""
 
 #: pocheckerconsts.stranslation
 msgid "Translation"
-msgstr ""
-
-#: pocheckerconsts.sunselectalltests
-msgid "Unselect all tests"
 msgstr ""
 

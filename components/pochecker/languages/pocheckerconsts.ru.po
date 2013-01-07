@@ -178,9 +178,9 @@ msgstr ""
 "Ошибка сохранения файла:\n"
 "%s\n"
 
-#: pocheckerconsts.sselectalltests
-msgid "Select all tests"
-msgstr "Выбрать все тесты"
+#: pocheckerconsts.sselectbasictests
+msgid "Select basic tests"
+msgstr "Выбрать базовые тесты"
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
@@ -197,8 +197,4 @@ msgstr "Всего найдено предупреждений: %d"
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr "Перевод"
-
-#: pocheckerconsts.sunselectalltests
-msgid "Unselect all tests"
-msgstr "Отменить выбор всех тестов"
 

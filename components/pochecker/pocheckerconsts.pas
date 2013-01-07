@@ -7,8 +7,7 @@ interface
 resourcestring
   //Main form
   rsPoChecker = 'PO File Checker';
-  sSelectAllTests = 'Select all tests';
-  sUnSelectAllTests = 'Unselect all tests';
+  sSelectBasicTests = 'Select basic tests';
   sGUIPoFileCheckingTool = 'GUI Po-file checking tool';
   sSelectTestTypes = 'Select test types';
   sOpenAPoFile = '&Open a po-file';

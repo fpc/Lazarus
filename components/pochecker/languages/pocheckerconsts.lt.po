@@ -1,4 +1,3 @@
- Valdas Jankunas <zmuogs@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -182,9 +181,9 @@ msgstr ""
 "Rašant į failą įvyko klaida:\n"
 "%s\n"
 
-#: pocheckerconsts.sselectalltests
-msgid "Select all tests"
-msgstr "Pažymėti visus testavimus"
+#: pocheckerconsts.sselectbasictests
+msgid "Select basic tests"
+msgstr ""
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
@@ -201,8 +200,4 @@ msgstr "Viso rasta perspėjimų: %d"
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr "Vertimas"
-
-#: pocheckerconsts.sunselectalltests
-msgid "Unselect all tests"
-msgstr "Naikinti testavimų žymėjimą"
 

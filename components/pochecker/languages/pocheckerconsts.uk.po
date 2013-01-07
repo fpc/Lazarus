@@ -1,4 +1,3 @@
- Igor Paliychuk <mansonigor@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2012-04-23 11:40+0300\n"
@@ -179,9 +178,9 @@ msgstr ""
 "Помилка збереження файлу:\n"
 "%s\n"
 
-#: pocheckerconsts.sselectalltests
-msgid "Select all tests"
-msgstr "Вибрати всі тести"
+#: pocheckerconsts.sselectbasictests
+msgid "Select basic tests"
+msgstr ""
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
@@ -198,8 +197,4 @@ msgstr "Знайдено всього попереджень: %d"
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr "Переклад"
-
-#: pocheckerconsts.sunselectalltests
-msgid "Unselect all tests"
-msgstr "Зняти вибір з всіх тестів"
 
