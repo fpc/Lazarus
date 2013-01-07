@@ -396,7 +396,6 @@ procedure TranslateUTF8Chars(var s: TXMLUtilString; SrcChars, DstChars: string);
   character will be deleted in s.
 }
 var
-  p: PChar;
   unique: boolean;
 
   function IsASCII(const h: string): boolean;
@@ -404,15 +403,16 @@ var
     i: Integer;
   begin
     for i:=1 to length(h) do
-      if ord(h[i])>128 then exit(false);
+      if ord(h[i])>=128 then exit(false);
     Result:=true;
   end;
 
-  procedure UniqString; inline;
+  procedure UniqString(var p: PChar); inline;
   var
     OldPos: SizeInt;
   begin
     if unique then exit;
+    unique:=true;
     OldPos:=p-PChar(s);
     UniqueString(s);
     p:=PChar(s)+OldPos;
@@ -422,6 +422,7 @@ var
   var
     OldPos: SizeInt;
     i: SizeInt;
+    p: PChar;
   begin
     p:=PChar(s);
     while p^<>#0 do begin
@@ -432,7 +433,7 @@ var
       end else begin
         if i<=length(DstChars) then begin
           // replace a character
-          UniqString;
+          UniqString(p);
           p^:=DstChars[i];
           inc(p);
         end else begin
@@ -447,6 +448,7 @@ var
 
   procedure ReplaceMultiByte;
   var
+    p: PChar;
     sp: PChar;
     clen: Integer;
     sclen: Integer;
