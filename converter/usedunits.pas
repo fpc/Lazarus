@@ -210,7 +210,7 @@ var
   InAtom, UnitNameAtom: TAtomPosition;
   OldUnitName, OldInFilename: String;
   NewUnitName, NewInFilename: String;
-  AFilename, s, LowNU: String;
+  FullFileN, LowFileN: String;
   OmitUnit: Boolean;
 begin
   UsesNode:=UsesSectionNode;
@@ -228,37 +228,39 @@ begin
         OldInFilename:='';
       // find unit file
       NewUnitName:=OldUnitName;
-      LowNU:=LowerCase(NewUnitName);
+      LowFileN:=LowerCase(NewUnitName);
       NewInFilename:=OldInFilename;
-      AFilename:=CodeTool.FindUnitCaseInsensitive(NewUnitName,NewInFilename);
-      s:=NewUnitName;
-      if NewInFilename<>'' then
-        s:=s+' in '''+NewInFilename+'''';
-      if AFilename<>'' then begin                         // unit found
+      FullFileN:=CodeTool.FindUnitCaseInsensitive(NewUnitName,NewInFilename);
+      if FullFileN<>'' then begin                         // * Unit found *
         OmitUnit := Settings.OmitProjUnits.Contains(NewUnitName);
-        if (NewUnitName<>OldUnitName) and not OmitUnit then begin
-          // Character case differs, fix it.
-          fUnitsToFixCase[OldUnitName]:=NewUnitName;
-          IDEMessagesWindow.AddMsg(Format(lisConvDelphiFixedUnitCase,
-                                          [OldUnitName, NewUnitName]), '', -1);
-        end;
         // Report omitted units as missing, pretend they don't exist here,
         if OmitUnit then                       // but they can have replacements.
-          fMissingUnits.Add(NewUnitName)
-        // Report Windows specific units as missing if target is CrossPlatform.
-        //  Needed if work-platform is Windows.
-        else if Settings.CrossPlatform and IsWinSpecificUnit(LowNU) then
-          fMissingUnits.Add(s);
-        // Check if the unit is not part of project and needs conversion, too.
+          fMissingUnits.Add(OldUnitName)
+        else begin
+          if NewUnitName<>OldUnitName then begin
+            // Character case differs, fix it.
+            fUnitsToFixCase[OldUnitName]:=NewUnitName;
+            IDEMessagesWindow.AddMsg(Format(lisConvDelphiFixedUnitCase,
+                                            [OldUnitName, NewUnitName]), '', -1);
+          end;
+          // Report Windows specific units as missing if target is CrossPlatform.
+          //  Needed if work-platform is Windows.
+          if Settings.CrossPlatform and IsWinSpecificUnit(LowFileN) then
+            fMissingUnits.Add(OldUnitName);
+        end;
+        // Check if the unit is not part of project. It will be added and converted then.
         if Assigned(fOwnerTool.OnCheckUnitForConversion) then
-          fOwnerTool.OnCheckUnitForConversion(AFilename);
+          fOwnerTool.OnCheckUnitForConversion(FullFileN);
       end
-      else begin
-        // If the unit is not found, add it to fMissingUnits, but don't add
-        //  Windows specific units if target is "Windows only".
-        //  Needed if work-platform is different from Windows.
-        if Settings.CrossPlatform or not IsWinSpecificUnit(LowNU) then
-          fMissingUnits.Add(s);
+      else begin                                          // * Unit not found *
+        // Add unit to fMissingUnits, but don't add Windows specific units if target
+        //  is "Windows only". Needed if work-platform is different from Windows.
+        if Settings.CrossPlatform or not IsWinSpecificUnit(LowFileN) then begin
+          FullFileN:=NewUnitName;
+          if NewInFilename<>'' then
+            FullFileN:=FullFileN+' in '''+NewInFilename+'''';
+          fMissingUnits.Add(FullFileN);
+        end;
       end;
       if CodeTool.CurPos.Flag=cafComma then begin
         // read next unit name
