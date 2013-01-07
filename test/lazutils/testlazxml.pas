@@ -69,7 +69,7 @@ procedure TTestLazXML.TestTranslateUTF8Chars;
     h:=s;
     TranslateUTF8Chars(h,SrcChars,DstChars);
     if h=Expected then exit;
-    AssertEquals(Title+' s="'+s+'" SrcChars="'+SrcChars+'" DstChars="'+DstChars+'"',Expected,h);
+    AssertEquals(Title+': s="'+s+'" SrcChars="'+SrcChars+'" DstChars="'+DstChars+'"',Expected,h);
   end;
 
 begin
@@ -77,6 +77,8 @@ begin
   T('nop','a','b','b','a');
   T('a to b','a','a','b','b');
   T('switch a,b','abaa','ab','ba','babb');
+  T('delete a','a','a','','');
+  T('delete a','aba','a','','b');
 end;
 
 initialization

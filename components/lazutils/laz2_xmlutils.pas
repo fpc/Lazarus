@@ -418,9 +418,43 @@ var
     p:=PChar(s)+OldPos;
   end;
 
-  procedure ReplaceASCII;
+  procedure ReplaceASCIIWithDelete(Src: PChar);
   var
-    OldPos: SizeInt;
+    c: Char;
+    Dst: PChar;
+    NewLen: SizeInt;
+    i: SizeInt;
+  begin
+    UniqString(Src);
+    Dst:=Src;
+    while Src^<>#0 do begin
+      c:=Src^;
+      i:=Pos(c,SrcChars);
+      if i<1 then begin
+        // keep character
+        Dst^:=c;
+        inc(Src);
+        inc(Dst);
+      end else begin
+        if i<=length(DstChars) then begin
+          // replace a character
+          Dst^:=DstChars[i];
+          inc(Src);
+          inc(Dst);
+        end else begin
+          // delete a character = skip
+          inc(Src);
+        end;
+      end;
+    end;
+    NewLen:=Dst-PChar(s);
+    SetLength(s,NewLen);
+  end;
+
+  procedure ReplaceASCII;
+  // use a simple byte replace
+  // if a delete is needed then switch to another algorithm
+  var
     i: SizeInt;
     p: PChar;
   begin
@@ -438,9 +472,10 @@ var
           inc(p);
         end else begin
           // delete a character
-          OldPos:=p-PChar(s);
-          Delete(s,OldPos+1,1);
-          p:=PChar(s)+OldPos;
+          // all following characters are moved
+          // => use an optimized algorithm for this
+          ReplaceASCIIWithDelete(p);
+          exit;
         end;
       end;
     end;
