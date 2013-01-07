@@ -6229,9 +6229,9 @@ msgstr "Přidá posunutí k hornímu okraji prvků uvnitř vizuálních kontejne
 msgid "Coordinate offsets"
 msgstr "Posunutí okrajů"
 
-#: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
-msgid "Added Package %s as a requirement."
-msgstr "Balíček %s přidán jako vyžadovaný."
+#: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
+msgid "Added Package %s as a dependency."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -6337,6 +6337,10 @@ msgstr "Jméno Delphi"
 #: lazarusidestrconsts.lisconvdelphipackagenameexists
 msgid "Package name exists"
 msgstr "Jméno balíčku existuje"
+
+#: lazarusidestrconsts.lisconvdelphipackagerequired
+msgid "Package %s is required but not installed in Lazarus! Install it later."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiprojomittedunit
 msgid "Omitted unit %s from project"

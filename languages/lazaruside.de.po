@@ -6428,9 +6428,9 @@ msgstr "Ein Offset wird zur oberen Koordinate von Steuerelementen in sichtbaren 
 msgid "Coordinate offsets"
 msgstr "Koordinaten-Offsets"
 
-#: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
-msgid "Added Package %s as a requirement."
-msgstr "Package %s als Abhängigkeit hinzugefügt."
+#: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
+msgid "Added Package %s as a dependency."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -6535,6 +6535,10 @@ msgstr "Delphi Name"
 #: lazarusidestrconsts.lisconvdelphipackagenameexists
 msgid "Package name exists"
 msgstr "Package-Name existiert"
+
+#: lazarusidestrconsts.lisconvdelphipackagerequired
+msgid "Package %s is required but not installed in Lazarus! Install it later."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiprojomittedunit
 msgid "Omitted unit %s from project"

@@ -6543,8 +6543,8 @@ msgstr "E' stato aggiunto un offset alla coordinata Top nei contenitori visuali"
 msgid "Coordinate offsets"
 msgstr "Offset delle coordinate"
 
-#: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
-msgid "Added Package %s as a requirement."
+#: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
+msgid "Added Package %s as a dependency."
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
@@ -6651,6 +6651,10 @@ msgstr "Nome Delphi"
 #: lazarusidestrconsts.lisconvdelphipackagenameexists
 msgid "Package name exists"
 msgstr "Il nome del package esiste già"
+
+#: lazarusidestrconsts.lisconvdelphipackagerequired
+msgid "Package %s is required but not installed in Lazarus! Install it later."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiprojomittedunit
 msgid "Omitted unit %s from project"

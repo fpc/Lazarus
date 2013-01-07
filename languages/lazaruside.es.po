@@ -6528,9 +6528,9 @@ msgstr "Un desplazamiento es añadido a la coordenada superior de los controles 
 msgid "Coordinate offsets"
 msgstr "Coordinar desplazamientos"
 
-#: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
-msgid "Added Package %s as a requirement."
-msgstr "Añadido Paquete %s como un requisito."
+#: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
+msgid "Added Package %s as a dependency."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -6636,6 +6636,10 @@ msgstr "Nombre Delphi"
 #: lazarusidestrconsts.lisconvdelphipackagenameexists
 msgid "Package name exists"
 msgstr "El nombre del paquete existe"
+
+#: lazarusidestrconsts.lisconvdelphipackagerequired
+msgid "Package %s is required but not installed in Lazarus! Install it later."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiprojomittedunit
 msgid "Omitted unit %s from project"

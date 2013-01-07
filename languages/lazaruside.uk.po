@@ -6354,9 +6354,9 @@ msgstr "Зсув додається до координати Верху кон�
 msgid "Coordinate offsets"
 msgstr "Зміщення координат"
 
-#: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
-msgid "Added Package %s as a requirement."
-msgstr "Додано Пакунок %s як необхідний."
+#: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
+msgid "Added Package %s as a dependency."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -6462,6 +6462,10 @@ msgstr "Ім'я Delphi"
 #: lazarusidestrconsts.lisconvdelphipackagenameexists
 msgid "Package name exists"
 msgstr "Ім'я пакунку існує"
+
+#: lazarusidestrconsts.lisconvdelphipackagerequired
+msgid "Package %s is required but not installed in Lazarus! Install it later."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiprojomittedunit
 msgid "Omitted unit %s from project"

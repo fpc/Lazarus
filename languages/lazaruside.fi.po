@@ -6201,9 +6201,9 @@ msgstr "Siirtymä lisätään komponentin Top koordinaattiin"
 msgid "Coordinate offsets"
 msgstr "Koordinaattien siirtymä"
 
-#: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
-msgid "Added Package %s as a requirement."
-msgstr "Paketti %s lisättiin riippuvuuksiin."
+#: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
+msgid "Added Package %s as a dependency."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgid "All sub-directories will be scanned for unit files"
@@ -6308,6 +6308,10 @@ msgstr "Delphi nimi"
 #: lazarusidestrconsts.lisconvdelphipackagenameexists
 msgid "Package name exists"
 msgstr "Paketti tuolla nimellä on jo olemassa"
+
+#: lazarusidestrconsts.lisconvdelphipackagerequired
+msgid "Package %s is required but not installed in Lazarus! Install it later."
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiprojomittedunit
 msgid "Omitted unit %s from project"

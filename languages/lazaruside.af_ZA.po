@@ -6238,8 +6238,8 @@ msgstr ""
 msgid "Coordinate offsets"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
-msgid "Added Package %s as a requirement."
+#: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
+msgid "Added Package %s as a dependency."
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
@@ -6341,6 +6341,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphipackagenameexists
 msgid "Package name exists"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvdelphipackagerequired
+msgid "Package %s is required but not installed in Lazarus! Install it later."
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiprojomittedunit
