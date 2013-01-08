@@ -72,6 +72,7 @@ type
     property Locked: Boolean read GetLocked;
   end;
 
+  TSynEditBaseCaret = class;
   TSynEditCaret = class;
 
   { TSynEditSelection }
@@ -81,7 +82,7 @@ type
     FAutoExtend: Boolean;
     FCaret: TSynEditCaret;
     FHide: Boolean;
-    FInternalCaret: TSynEditCaret;
+    FInternalCaret: TSynEditBaseCaret;
     FInvalidateLinesMethod: TInvalidateLines;
     FEnabled: Boolean;
     FHookedLines: Boolean;
@@ -162,7 +163,7 @@ type
     property  InvalidateLinesMethod : TInvalidateLines write FInvalidateLinesMethod;
     property  Caret: TSynEditCaret read FCaret write SetCaret;
     property  Persistent: Boolean read FPersistent write SetPersistent;
-    // automatically Start/Exctend selection if caret moves
+    // automatically Start/Extend selection if caret moves
     // (depends if caret was at block border or not)
     property  AutoExtend: Boolean read FAutoExtend write FAutoExtend;
     property  StickyAutoExtend: Boolean read FStickyAutoExtend write FStickyAutoExtend;
@@ -171,22 +172,82 @@ type
 
   { TSynEditCaret }
 
-  TSynEditCaretFlag = (scLinesEditedRegistered);
+  TSynEditCaretFlag = (
+      scCharPosValid, scBytePosValid
+    );
   TSynEditCaretFlags = set of TSynEditCaretFlag;
 
-  TSynEditCaret = class(TSynEditPointBase)
+  TSynEditCaretUpdateFlag = (
+      scuForceSet,                // Change even if equal to old
+      scuChangedX, scuChangedY,   //
+      scuNoInvalidate             // Keep the Char/Byte ValidFlags
+    );
+  TSynEditCaretUpdateFlags = set of TSynEditCaretUpdateFlag;
+
+
+  { TSynEditBaseCaret
+    No Checks at all.
+    Caller MUST ensure at least not to set x to invalid pos (middle of char) (incl update x, after SetLine)
+  }
+
+  TSynEditBaseCaret = class(TSynEditPointBase)
   private
+    FFlags: TSynEditCaretFlags;
+    FLinePos: Integer;     // 1 based
+    FCharPos: Integer;     // 1 based
+    FBytePos, FBytePosOffset: Integer;     // 1 based
+
+    function  GetBytePos: Integer;
+    function  GetBytePosOffset: Integer;
+    function  GetCharPos: Integer;
+    function  GetLineBytePos: TPoint;
+    function  GetLineCharPos: TPoint;
+    procedure SetBytePos(AValue: Integer);
+    procedure SetBytePosOffset(AValue: Integer);
+    procedure SetCharPos(AValue: Integer);
+    procedure SetLineBytePos(AValue: TPoint);
+    procedure SetLineCharPos(AValue: TPoint);
+    procedure SetLinePos(AValue: Integer);
+
+    function  GetLineText: string;
+    procedure SetLineText(AValue: string);
+  protected
+    procedure ValidateBytePos;
+    procedure ValidateCharPos;
+
+    procedure InternalSetLineCharPos(NewLine, NewCharPos: Integer;
+                                     UpdFlags: TSynEditCaretUpdateFlags); virtual;
+    procedure InternalSetLineByterPos(NewLine, NewBytePos, NewByteOffs: Integer;
+                                     UpdFlags: TSynEditCaretUpdateFlags); virtual;
+  public
+    constructor Create;
+    procedure AssignFrom(Src: TSynEditBaseCaret);
+
+    function IsAtLineChar(aPoint: TPoint): Boolean;
+    function IsAtLineByte(aPoint: TPoint; aByteOffset: Integer = -1): Boolean;
+    function IsAtPos(aCaret: TSynEditCaret): Boolean;
+
+    property LinePos: Integer read FLinePos write SetLinePos;
+    property CharPos: Integer read GetCharPos write SetCharPos;
+    property LineCharPos: TPoint read GetLineCharPos write SetLineCharPos;
+    property BytePos: Integer read GetBytePos write SetBytePos;
+    property BytePosOffset: Integer read GetBytePosOffset write SetBytePosOffset;
+    property LineBytePos: TPoint read GetLineBytePos write SetLineBytePos;
+
+    property LineText: string read GetLineText write SetLineText;
+  end;
+
+  { TSynEditCaret }
+
+  TSynEditCaret = class(TSynEditBaseCaret)
+  private
+    FLinesEditedRegistered: Boolean;
     FAllowPastEOL: Boolean;
     FAutoMoveOnEdit: Integer;
     FForcePastEOL: Integer;
     FForceAdjustToNextChar: Integer;
     FKeepCaretX: Boolean;
-
-    FLinePos: Integer;     // 1 based
-    FCharPos: Integer;     // 1 based
     FLastCharPos: Integer; // used by KeepCaretX
-
-    FBytePos, FBytePosOffset: Integer;     // 1 based
 
     FOldLinePos: Integer; // 1 based
     FOldCharPos: Integer; // 1 based
@@ -196,40 +257,34 @@ type
     FChangeOnTouch: Boolean;
     FSkipTabs: Boolean;
     FTouched: Boolean;
-    FFlags: TSynEditCaretFlags;
 
     procedure AdjustToChar;
-    procedure UpdateBytePos;
-    function GetOldLineBytePos: TPoint;
-    function GetOldLineCharPos: TPoint;
-    procedure InternalSetLineCharPos(NewLine, NewCharPos: Integer;
-                                     KeepLastCharPos: Boolean = False;
-                                     ForceSet: Boolean = False);
-    procedure SetCharPos(const AValue: Integer);
+    function GetMaxLeftPastEOL: Integer;
+
+    function  GetOldLineCharPos: TPoint;
+    function  GetOldLineBytePos: TPoint;
+
     procedure SetAllowPastEOL(const AValue: Boolean);
-    procedure SetKeepCaretX(const AValue: Boolean);
-    procedure setLinePos(const AValue: Integer);
-    function  GetLineCharPos: TPoint;
-    procedure SetLineCharPos(AValue: TPoint);
-    function  GetBytePosOffset: Integer;
-    function  GetBytePos: Integer;
-    procedure SetBytePos(const AValue: Integer);
-    function  GetLineBytePos: TPoint;
-    procedure SetLineBytePos(const AValue: TPoint);
-    function  GetLineText: string;
-    procedure SetLineText(const AValue : string);
     procedure SetSkipTabs(const AValue: Boolean);
+    procedure SetKeepCaretX(const AValue: Boolean);
+
     procedure RegisterLinesEditedHandler;
   protected
-    procedure SetLines(const AValue: TSynEditStrings); override;
+    procedure InternalSetLineCharPos(NewLine, NewCharPos: Integer;
+                                     UpdFlags: TSynEditCaretUpdateFlags); override;
+    procedure InternalSetLineByterPos(NewLine, NewBytePos, NewByteOffs: Integer;
+                                     UpdFlags: TSynEditCaretUpdateFlags); override;
+
     procedure DoLock; override;
     Procedure DoUnlock; override;
+    procedure SetLines(const AValue: TSynEditStrings); override;
     procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
                             aLineBrkCnt: Integer; aText: String);
   public
     constructor Create;
     destructor Destroy; override;
-    procedure AssignFrom(Src: TSynEditCaret);
+    procedure AssignFrom(Src: TSynEditBaseCaret);
+
     procedure IncForcePastEOL;
     procedure DecForcePastEOL;
     procedure IncForceAdjustToNextChar;
@@ -237,27 +292,17 @@ type
     procedure IncAutoMoveOnEdit;
     procedure DecAutoMoveOnEdit;
     procedure ChangeOnTouch;
-    function IsAtLineChar(aPoint: TPoint): Boolean;
-    function IsAtLineByte(aPoint: TPoint): Boolean;
+
     function WasAtLineChar(aPoint: TPoint): Boolean;
     function WasAtLineByte(aPoint: TPoint): Boolean;
-    function IsAtPos(aCaret: TSynEditCaret): Boolean;
-    function MoveHoriz(ACount: Integer): Boolean; // Logical
+    function MoveHoriz(ACount: Integer): Boolean; // Logical // False, if past EOL (not mowed)/BOl
 
     property OldLinePos: Integer read FOldLinePos;
     property OldCharPos: Integer read FOldCharPos;
     property OldLineCharPos: TPoint read GetOldLineCharPos;
     property OldLineBytePos: TPoint read GetOldLineBytePos;
 
-    property LinePos: Integer read fLinePos write setLinePos;
-    property CharPos: Integer read fCharPos write setCharPos;
-    property LineCharPos: TPoint read GetLineCharPos write SetLineCharPos;
-    property BytePos: Integer read GetBytePos write SetBytePos;
-    property BytePosOffset: Integer read GetBytePosOffset;
-    property LineBytePos: TPoint read GetLineBytePos write SetLineBytePos;
-    property LineText: string read GetLineText write SetLineText;
-
-    property AdjustToNextChar: Boolean read FAdjustToNextChar write FAdjustToNextChar;
+    property AdjustToNextChar: Boolean read FAdjustToNextChar write FAdjustToNextChar; deprecated;
     property SkipTabs: Boolean read FSkipTabs write SetSkipTabs;
     property AllowPastEOL: Boolean read FAllowPastEOL write SetAllowPastEOL;
     property KeepCaretX: Boolean read FKeepCaretX write SetKeepCaretX;
@@ -342,6 +387,200 @@ type
 
 implementation
 
+{ TSynEditBaseCaret }
+
+function TSynEditBaseCaret.GetBytePos: Integer;
+begin
+  ValidateBytePos;
+  Result := FBytePos;
+end;
+
+function TSynEditBaseCaret.GetBytePosOffset: Integer;
+begin
+  ValidateBytePos;
+  Result := FBytePosOffset;
+end;
+
+function TSynEditBaseCaret.GetCharPos: Integer;
+begin
+  ValidateCharPos;
+  Result := FCharPos;
+end;
+
+function TSynEditBaseCaret.GetLineBytePos: TPoint;
+begin
+  ValidateBytePos;
+  Result := Point(FBytePos, FLinePos);
+end;
+
+function TSynEditBaseCaret.GetLineCharPos: TPoint;
+begin
+  ValidateCharPos;
+  Result := Point(FCharPos, FLinePos);
+end;
+
+procedure TSynEditBaseCaret.SetBytePos(AValue: Integer);
+begin
+  InternalSetLineByterPos(FLinePos, AValue, 0, [scuChangedX]);
+end;
+
+procedure TSynEditBaseCaret.SetBytePosOffset(AValue: Integer);
+begin
+  ValidateBytePos;
+  InternalSetLineByterPos(FLinePos, FBytePos, AValue, [scuChangedX]);
+end;
+
+procedure TSynEditBaseCaret.SetCharPos(AValue: Integer);
+begin
+  InternalSetLineCharPos(FLinePos, AValue, [scuChangedX]);
+end;
+
+procedure TSynEditBaseCaret.SetLineBytePos(AValue: TPoint);
+begin
+  InternalSetLineByterPos(AValue.y, AValue.x, 0, [scuChangedX, scuChangedY]);
+end;
+
+procedure TSynEditBaseCaret.SetLineCharPos(AValue: TPoint);
+begin
+  InternalSetLineCharPos(AValue.y, AValue.X, [scuChangedX, scuChangedY]);
+end;
+
+procedure TSynEditBaseCaret.SetLinePos(AValue: Integer);
+begin
+  // TODO: may temporary lead to invalid x bytepos. Must be adjusted *before* calculating char
+  //if scBytePosValid in FFlags then
+  //  InternalSetLineByterPos(AValue, FBytePos, FBytePosOffset, [scuChangedY])
+  //else
+    ValidateCharPos;
+    InternalSetLineCharPos(AValue, FCharPos, [scuChangedY]);
+end;
+
+function TSynEditBaseCaret.GetLineText: string;
+begin
+  if (LinePos >= 1) and (LinePos <= FLines.Count) then
+    Result := FLines[LinePos - 1]
+  else
+    Result := '';
+end;
+
+procedure TSynEditBaseCaret.SetLineText(AValue: string);
+begin
+  if (LinePos >= 1) and (LinePos <= Max(1, FLines.Count)) then
+    FLines[LinePos - 1] := AValue;
+end;
+
+procedure TSynEditBaseCaret.ValidateBytePos;
+begin
+  if scBytePosValid in FFlags then
+    exit;
+  assert(scCharPosValid in FFlags, 'ValidateBytePos: no charpos set');
+  Include(FFlags, scBytePosValid);
+  FBytePos := FLines.LogPhysConvertor.PhysicalToLogical(FLinePos-1, FCharPos, FBytePosOffset);
+end;
+
+procedure TSynEditBaseCaret.ValidateCharPos;
+begin
+  if scCharPosValid in FFlags then
+    exit;
+  assert(scBytePosValid in FFlags, 'ValidateCharPos: no bytepos set');
+  Include(FFlags, scCharPosValid);
+  FCharPos := FLines.LogPhysConvertor.LogicalToPhysical(FLinePos-1, FBytePos, FBytePosOffset);
+end;
+
+procedure TSynEditBaseCaret.InternalSetLineCharPos(NewLine, NewCharPos: Integer;
+  UpdFlags: TSynEditCaretUpdateFlags);
+begin
+  if (fCharPos = NewCharPos) and (fLinePos = NewLine) and
+     (scCharPosValid in FFlags) and not (scuForceSet in UpdFlags)
+  then
+    exit;
+
+  if not (scuNoInvalidate in UpdFlags) then
+    Exclude(FFlags, scBytePosValid);
+  Include(FFlags, scCharPosValid);
+
+  if NewLine < 1 then begin
+    NewLine := 1;
+    Exclude(FFlags, scBytePosValid);
+  end;
+
+  if NewCharPos < 1 then begin
+    NewCharPos := 1;
+    Exclude(FFlags, scBytePosValid);
+  end;
+
+  FCharPos := NewCharPos;
+  FLinePos := NewLine;
+end;
+
+procedure TSynEditBaseCaret.InternalSetLineByterPos(NewLine, NewBytePos, NewByteOffs: Integer;
+  UpdFlags: TSynEditCaretUpdateFlags);
+begin
+  if (FBytePos = NewBytePos) and (FBytePosOffset = NewByteOffs) and
+     (FLinePos = NewLine) and (scBytePosValid in FFlags) and not (scuForceSet in UpdFlags)
+  then
+    exit;
+
+  if not (scuNoInvalidate in UpdFlags) then
+    Exclude(FFlags, scCharPosValid);
+  Include(FFlags, scBytePosValid);
+
+  if NewLine < 1 then begin
+    NewLine := 1;
+    Exclude(FFlags, scCharPosValid);
+  end;
+
+  if NewBytePos < 1 then begin
+    NewBytePos := 1;
+    Exclude(FFlags, scCharPosValid);
+  end;
+
+  FBytePos       := NewBytePos;
+  FBytePosOffset := NewByteOffs;
+  FLinePos       := NewLine;
+end;
+
+constructor TSynEditBaseCaret.Create;
+begin
+  inherited Create;
+  fLinePos       := 1;
+  fCharPos       := 1;
+  FBytePos       := 1;
+  FBytePosOffset := 0;
+  FFlags := [scCharPosValid, scBytePosValid];
+end;
+
+procedure TSynEditBaseCaret.AssignFrom(Src: TSynEditBaseCaret);
+begin
+  FLinePos       := Src.FLinePos;
+  FCharPos       := Src.FCharPos;
+  FBytePos       := Src.FBytePos;
+  FBytePosOffset := Src.FBytePosOffset;
+  FFlags         := Src.FFlags;
+  SetLines(Src.FLines);
+end;
+
+function TSynEditBaseCaret.IsAtLineChar(aPoint: TPoint): Boolean;
+begin
+  ValidateCharPos;
+  Result := (FLinePos = aPoint.y) and (FCharPos = aPoint.x);
+end;
+
+function TSynEditBaseCaret.IsAtLineByte(aPoint: TPoint; aByteOffset: Integer): Boolean;
+begin
+  ValidateBytePos;
+  Result := (FLinePos = aPoint.y) and (BytePos = aPoint.x) and
+            ( (aByteOffset < 0) or (FBytePosOffset = aByteOffset) );
+end;
+
+function TSynEditBaseCaret.IsAtPos(aCaret: TSynEditCaret): Boolean;
+begin
+  if (scBytePosValid in FFlags) or (scBytePosValid in aCaret.FFlags) then
+    Result := IsAtLineByte(aCaret.LineBytePos, aCaret.BytePosOffset)
+  else
+    Result := IsAtLineChar(aCaret.LineCharPos);
+end;
+
 { TSynEditPointBase }
 
 function TSynEditPointBase.GetLocked: Boolean;
@@ -409,8 +648,6 @@ constructor TSynEditCaret.Create;
 begin
   inherited Create;
   FMaxLeftChar := nil;
-  fLinePos:= 1;
-  fCharPos:= 1;
   FAllowPastEOL := True;
   FForcePastEOL := 0;
   FAutoMoveOnEdit := 0;
@@ -425,370 +662,30 @@ begin
   inherited Destroy;
 end;
 
-procedure TSynEditCaret.AssignFrom(Src: TSynEditCaret);
+procedure TSynEditCaret.AssignFrom(Src: TSynEditBaseCaret);
 begin
   FOldCharPos := FCharPos;
   FOldLinePos := FLinePos;
 
-  FLines := Src.FLines;
-  FMaxLeftChar := Src.FMaxLeftChar;
-  FAllowPastEOL := Src.FAllowPastEOL;
-  FKeepCaretX := Src.FKeepCaretX;
-  FLinePos := Src.FLinePos;
-  FCharPos := Src.FCharPos;
-  FLastCharPos := Src.FLastCharPos;
-end;
+  inherited AssignFrom(Src);
 
-procedure TSynEditCaret.IncForcePastEOL;
-begin
-  inc(FForcePastEOL);
-end;
-
-procedure TSynEditCaret.DecForcePastEOL;
-begin
-  dec(FForcePastEOL);
-end;
-
-procedure TSynEditCaret.IncForceAdjustToNextChar;
-begin
-  Inc(FForceAdjustToNextChar);
-end;
-
-procedure TSynEditCaret.DecForceAdjustToNextChar;
-begin
-  Dec(FForceAdjustToNextChar);
-end;
-
-procedure TSynEditCaret.IncAutoMoveOnEdit;
-begin
-  if FAutoMoveOnEdit = 0 then begin
-    RegisterLinesEditedHandler;
-    UpdateBytePos;
-  end;
-  inc(FAutoMoveOnEdit);
-end;
-
-procedure TSynEditCaret.DecAutoMoveOnEdit;
-begin
-  dec(FAutoMoveOnEdit);
-end;
-
-procedure TSynEditCaret.ChangeOnTouch;
-begin
-  FChangeOnTouch := True;
-  if not Locked then
-    FTouched := False;
-end;
-
-function TSynEditCaret.IsAtLineChar(aPoint: TPoint): Boolean;
-begin
-  Result := (FLinePos = aPoint.y) and (FCharPos = aPoint.x);
-end;
-
-function TSynEditCaret.IsAtLineByte(aPoint: TPoint): Boolean;
-begin
-  Result := (FLinePos = aPoint.y) and (BytePos = aPoint.x);
-end;
-
-function TSynEditCaret.WasAtLineChar(aPoint: TPoint): Boolean;
-begin
-  Result := (FOldLinePos = aPoint.y) and (FOldCharPos = aPoint.x);
-end;
-
-function TSynEditCaret.WasAtLineByte(aPoint: TPoint): Boolean;
-begin
-  Result := (FOldLinePos = aPoint.y) and
-            (FLines.PhysicalToLogicalPos(Point(FOldCharPos, FOldLinePos)).X = aPoint.x);
-end;
-
-function TSynEditCaret.IsAtPos(aCaret: TSynEditCaret): Boolean;
-begin
-  Result := IsAtLineChar(aCaret.LineCharPos);
-end;
-
-function TSynEditCaret.MoveHoriz(ACount: Integer): Boolean;
-var
-  L: String;
-  CharWidths: TPhysicalCharWidths;
-  GotCharWidths: Boolean;
-  MaxOffs: Integer;
-  Flag: TSynLogPhysFlags;
-
-  function GetMaxOffs(AlogPos: Integer): Integer;
-  begin
-    if not GotCharWidths then
-      CharWidths := FLines.GetPhysicalCharWidths(Pchar(L), length(L), FLinePos-1);
-    GotCharWidths := True;
-    Result := CharWidths[AlogPos-1];
-  end;
-
-begin
-  GotCharWidths := False;
-  L := LineText;
-  UpdateBytePos;
-
-  If ACount > 0 then begin
-    Flag := [lpfAdjustToNextChar];
-    if (FBytePos <= length(L)) and (L[FBytePos] = #9) and (not FSkipTabs) then
-      MaxOffs := GetMaxOffs(FBytePos) - 1
-    else
-      MaxOffs := 0;
-
-    while ACount > 0 do begin
-      if FBytePosOffset < MaxOffs then
-        inc(FBytePosOffset)
-      else begin
-        FBytePos := FLines.LogicPosAddChars(L, FBytePos, 1, True);
-        FBytePosOffset := 0;
-        if (FBytePos <= length(L)) and (L[FBytePos] = #9) and (not FSkipTabs) then
-          MaxOffs := GetMaxOffs(FBytePos) - 1
-        else
-          MaxOffs := 0;
-      end;
-      dec(ACount);
-    end;
-    Result := FBytePos <= length(L) + 1;
+  if Src is TSynEditCaret then begin
+    FMaxLeftChar   := TSynEditCaret(Src).FMaxLeftChar;
+    FAllowPastEOL  := TSynEditCaret(Src).FAllowPastEOL;
+    FKeepCaretX    := TSynEditCaret(Src).FKeepCaretX;
+    FLastCharPos   := TSynEditCaret(Src).FLastCharPos;
   end
   else begin
-    Flag := [lpfAdjustToCharBegin];
-    while ACount < 0 do begin
-      if FBytePosOffset > 0 then
-        dec(FBytePosOffset)
-      else begin
-        if FBytePos = 1 then
-          break;
-        FBytePos := FLines.LogicPosAddChars(L, FBytePos, -1, True);
-        if (FBytePos <= length(L)) and (L[FBytePos] = #9) and (not FSkipTabs) then
-          FBytePosOffset := GetMaxOffs(FBytePos) - 1
-        else
-          FBytePosOffset := 0;
-      end;
-      inc(ACount);
-    end;
-    Result := ACount = 0;
-  end;
-  CharPos := FLines.LogPhysConvertor.LogicalToPhysical(FLinePos - 1, FBytePos,
-    FBytePosOffset, cslFollowLtr, Flag);
-  if FBytePos <> FLines.LogPhysConvertor.LastLogicalResultPos then begin
-    FBytePos := FLines.LogPhysConvertor.LastLogicalResultPos;
-    FBytePosOffset := 0;
-  end;
-end;
-
-procedure TSynEditCaret.setLinePos(const AValue : Integer);
-begin
-  InternalSetLineCharPos(AValue, FLastCharPos, True);
-end;
-
-procedure TSynEditCaret.AdjustToChar;
-var
-  CharWidths: TPhysicalCharWidths;
-  LogLen: Integer;
-  ScreenPos: Integer;
-  LogPos: Integer;
-  L: String;
-begin
-  L := LineText;
-  CharWidths := FLines.GetPhysicalCharWidths(Pchar(L), length(L), FLinePos-1);
-  LogLen := Length(CharWidths);
-  ScreenPos := 1;
-  LogPos := 0;
-
-  while LogPos < LogLen do begin
-    if ScreenPos = FCharPos then exit;
-    if ScreenPos + (CharWidths[LogPos] and PCWMask) > FCharPos then begin
-      if (L[LogPos+1] = #9) and (not FSkipTabs) then exit;
-      if FAdjustToNextChar or (FForceAdjustToNextChar > 0) then
-        FCharPos := ScreenPos + (CharWidths[LogPos] and PCWMask)
-      else
-        FCharPos := ScreenPos;
-      exit;
-    end;
-    ScreenPos := ScreenPos + (CharWidths[LogPos] and PCWMask);
-    inc(LogPos);
-  end;
-end;
-
-function TSynEditCaret.GetBytePosOffset: Integer;
-begin
-  FLines.LogPhysConvertor.PhysicalToLogical(FLinePos-1, FCharPos, Result);
-  // TODO: the below, will interfere with auto-move caret
-  //UpdateBytePos;
-  //Result := FBytePosOffset;
-end;
-
-procedure TSynEditCaret.UpdateBytePos;
-begin
-  FBytePos := FLines.LogPhysConvertor.PhysicalToLogical(FLinePos-1, FCharPos, FBytePosOffset);
-end;
-
-function TSynEditCaret.GetOldLineBytePos: TPoint;
-begin
-  Result := FLines.PhysicalToLogicalPos(OldLineCharPos);
-end;
-
-function TSynEditCaret.GetOldLineCharPos: TPoint;
-begin
-  Result := Point(FOldCharPos, FOldLinePos);
-end;
-
-procedure TSynEditCaret.SetCharPos(const AValue : Integer);
-begin
-  InternalSetLineCharPos(FLinePos, AValue);
-end;
-
-procedure TSynEditCaret.SetAllowPastEOL(const AValue: Boolean);
-begin
-  if FAllowPastEOL = AValue then exit;
-  FAllowPastEOL := AValue;
-  if not FAllowPastEOL then
-    InternalSetLineCharPos(FLinePos, FCharPos, True, True);
-end;
-
-procedure TSynEditCaret.SetKeepCaretX(const AValue: Boolean);
-begin
-  if FKeepCaretX = AValue then exit;
-  FKeepCaretX := AValue;
-  if FKeepCaretX then
-    FLastCharPos := FCharPos;
-end;
-
-function TSynEditCaret.GetLineCharPos : TPoint;
-begin
-  Result := Point(fCharPos, fLinePos);
-end;
-
-procedure TSynEditCaret.SetLineCharPos(AValue : TPoint);
-begin
-  InternalSetLineCharPos(AValue.y, AValue.X);
-end;
-
-procedure TSynEditCaret.InternalSetLineCharPos(NewLine, NewCharPos: Integer;
-  KeepLastCharPos: Boolean = False; ForceSet: Boolean = False);
-
-  function GetMaxLeftPastEOL: Integer;
-  begin
-    if FMaxLeftChar <> nil then
-      Result := FMaxLeftChar()
-    else
-      Result := MaxInt;
-  end;
-
-var
-  nMaxX, i: Integer;
-begin
-  Lock;
-  FTouched := True;
-  try
-    if (fCharPos <> NewCharPos) or (fLinePos <> NewLine) or ForceSet then begin
-      if NewLine > FLines.Count then
-        NewLine := FLines.Count;
-
-      if NewLine < 1 then begin
-        nMaxX := 1;
-        if (NewCharPos > 1) and (FAllowPastEOL or (FForcePastEOL > 0)) then
-          nMaxX := GetMaxLeftPastEOL;
-        // this is just to make sure if Lines stringlist should be empty
-        NewLine := 1;
-      end else begin
-        i := Lines.LogPhysConvertor.LogicalToPhysical(NewLine-1, length(Lines[NewLine - 1])+1);
-        nMaxX := i;
-        if (NewCharPos > i) and (FAllowPastEOL or (FForcePastEOL > 0)) then
-          nMaxX := GetMaxLeftPastEOL;
-        if (nMaxX < i) then
-          nMaxX := i;
-      end;
-
-      if NewCharPos > nMaxX then
-        NewCharPos := nMaxX;
-      if NewCharPos < 1 then
-        NewCharPos := 1;
-
-      fCharPos:= NewCharPos;
-      fLinePos:= NewLine;
-      AdjustToChar;
-      if (not KeepLastCharPos) or (not FKeepCaretX) then
-        FLastCharPos := FCharPos;
-      if FAutoMoveOnEdit <> 0 then
-        UpdateBytePos;
-    end;
-  finally
-    Unlock;
-  end;
-end;
-
-function TSynEditCaret.GetBytePos: Integer;
-begin
-  Result := LineBytePos.X;
-end;
-
-procedure TSynEditCaret.SetBytePos(const AValue: Integer);
-begin
-  CharPos :=  FLines.LogicalToPhysicalPos(Point(FLines.LogicPosAdjustToChar
-    (LineText, AValue, FAdjustToNextChar or (FForceAdjustToNextChar > 0), True),
-    LinePos)).X;
-end;
-
-function TSynEditCaret.GetLineBytePos: TPoint;
-begin
-  Result := FLines.PhysicalToLogicalPos(LineCharPos);
-  // TODO: the below, will interfere with auto-move caret
-  //UpdateBytePos;
-  //Result := Point(FBytePos, FLinePos);
-end;
-
-procedure TSynEditCaret.SetLineBytePos(const AValue: TPoint);
-begin
-  LineCharPos := FLines.LogicalToPhysicalPos(AValue);
-end;
-
-function TSynEditCaret.GetLineText : string;
-begin
-  if (LinePos >= 1) and (LinePos <= FLines.Count) then
-    Result := FLines[LinePos - 1]
-  else
-    Result := '';
-end;
-
-procedure TSynEditCaret.SetLineText(const AValue : string);
-begin
-  if (LinePos >= 1) and (LinePos <= Max(1, FLines.Count)) then
-    FLines[LinePos - 1] := AValue;
-end;
-
-procedure TSynEditCaret.SetSkipTabs(const AValue: Boolean);
-begin
-  if FSkipTabs = AValue then exit;
-  FSkipTabs := AValue;
-  if FSkipTabs then begin
-    Lock;
     AdjustToChar;
-    Unlock;
+    FLastCharPos   := FCharPos;
   end;
-end;
-
-procedure TSynEditCaret.RegisterLinesEditedHandler;
-begin
-  if (scLinesEditedRegistered in FFlags) or (FLines = nil) then
-    exit;
-  Include(FFlags, scLinesEditedRegistered);
-  FLines.AddEditHandler(@DoLinesEdited);
-end;
-
-procedure TSynEditCaret.SetLines(const AValue: TSynEditStrings);
-begin
-  if FLines = AValue then exit;
-  if (FLines <> nil) then
-    FLines.RemoveEditHandler(@DoLinesEdited);
-  Exclude(FFlags, scLinesEditedRegistered);
-  inherited SetLines(AValue);
-  if FAutoMoveOnEdit > 0 then
-    RegisterLinesEditedHandler;
 end;
 
 procedure TSynEditCaret.DoLock;
 begin
   FTouched := False;
+  ValidateCharPos;
+  //ValidateBytePos;
   FOldCharPos := FCharPos;
   FOldLinePos := FLinePos;
 end;
@@ -798,12 +695,34 @@ begin
   if not FChangeOnTouch then
     FTouched := False;
   FChangeOnTouch := False;
+  ValidateCharPos;
+  //ValidateBytePos;
   if (FOldCharPos <> FCharPos) or (FOldLinePos <> FLinePos) or FTouched then
     fOnChangeList.CallNotifyEvents(self);
   // All notifications called, reset oldpos
   FTouched := False;
   FOldCharPos := FCharPos;
   FOldLinePos := FLinePos;
+end;
+
+procedure TSynEditCaret.SetLines(const AValue: TSynEditStrings);
+begin
+  if FLines = AValue then exit;
+  // Do not check flag. It will be cleared in Assign
+  if (FLines <> nil) then
+    FLines.RemoveEditHandler(@DoLinesEdited);
+  FLinesEditedRegistered := False;
+  inherited SetLines(AValue);
+  if FAutoMoveOnEdit > 0 then
+    RegisterLinesEditedHandler;
+end;
+
+procedure TSynEditCaret.RegisterLinesEditedHandler;
+begin
+  if FLinesEditedRegistered or (FLines = nil) then
+    exit;
+  FLinesEditedRegistered := True;
+  FLines.AddEditHandler(@DoLinesEdited);
 end;
 
 procedure TSynEditCaret.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
@@ -844,13 +763,420 @@ var
 begin
   if FAutoMoveOnEdit > 0 then begin
     IncForcePastEOL;
+    ValidateBytePos;
     p :=  AdjustPoint(Point(FBytePos, FLinePos));
-    p.x := FLines.LogPhysConvertor.LogicalToPhysical(p.y-1, p.x, FBytePosOffset);
-    FBytePos := -1;
-    LineCharPos := p;
-    if FBytePos < 0 then
-      UpdateBytePos;
+    InternalSetLineByterPos(p.y, p.x, FBytePosOffset, [scuChangedX, scuChangedY, scuForceSet]);
     DecForcePastEOL;
+  end;
+end;
+
+procedure TSynEditCaret.AdjustToChar;
+var
+  CharWidthsArr: TPhysicalCharWidths;
+  CharWidths: PPhysicalCharWidth;
+  i, LogLen: Integer;
+  ScreenPos: Integer;
+  LogPos: Integer;
+  L: String;
+begin
+  ValidateCharPos;
+  L := LineText;
+  if FLines.LogPhysConvertor.CurrentLine = FLinePos then begin
+    CharWidths := FLines.LogPhysConvertor.CurrentWidths;
+    LogLen     := FLines.LogPhysConvertor.CurrentWidthsCount;
+  end
+  else begin
+    CharWidthsArr := FLines.GetPhysicalCharWidths(Pchar(L), length(L), FLinePos-1);
+    LogLen        := Length(CharWidthsArr);
+    if LogLen > 0 then
+      CharWidths := @CharWidthsArr[0];
+  end;
+
+  ScreenPos := 1;
+  LogPos := 0;
+
+  while LogPos < LogLen do begin
+    if ScreenPos = FCharPos then exit;
+    if ScreenPos + (CharWidths[LogPos] and PCWMask) > FCharPos then begin
+      if (L[LogPos+1] = #9) and (not FSkipTabs) then exit;
+      i := FCharPos;
+      if FAdjustToNextChar or (FForceAdjustToNextChar > 0) then
+        FCharPos := ScreenPos + (CharWidths[LogPos] and PCWMask)
+      else
+        FCharPos := ScreenPos;
+      if FCharPos <> i then
+        Exclude(FFlags, scBytePosValid);
+      exit;
+    end;
+    ScreenPos := ScreenPos + (CharWidths[LogPos] and PCWMask);
+    inc(LogPos);
+  end;
+end;
+
+function TSynEditCaret.GetMaxLeftPastEOL: Integer;
+begin
+  if FMaxLeftChar <> nil then
+    Result := FMaxLeftChar()
+  else
+    Result := MaxInt;
+end;
+
+procedure TSynEditCaret.InternalSetLineCharPos(NewLine, NewCharPos: Integer;
+  UpdFlags: TSynEditCaretUpdateFlags);
+var
+  LogEolPos, MaxPhysX, NewLogCharPos, Offs: Integer;
+  L: String;
+begin
+  if not (scuChangedX in UpdFlags) and FKeepCaretX then
+    NewCharPos := FLastCharPos;
+
+  Lock;
+  FTouched := True;
+  try
+    if (fCharPos = NewCharPos) and (fLinePos = NewLine) and
+       (scCharPosValid in FFlags) and not (scuForceSet in UpdFlags)
+    then begin
+      // Lines may have changed, so the other pos can be invalid
+      if not (scuNoInvalidate in UpdFlags) then
+        Exclude(FFlags, scBytePosValid);
+      exit;
+    end;
+
+    if NewLine > FLines.Count then begin
+      NewLine := FLines.Count;
+      Exclude(UpdFlags, scuNoInvalidate);
+    end;
+
+    if NewLine < 1 then begin // Only allowed, if Lines.Count = 0
+      NewLine := 1;
+      if (NewCharPos > 1) and (FAllowPastEOL or (FForcePastEOL > 0))
+      then MaxPhysX := GetMaxLeftPastEOL
+      else MaxPhysX := 1;
+
+      if NewCharPos > MaxPhysX then
+        NewCharPos := MaxPhysX;
+
+      NewLogCharPos := NewCharPos;
+      Offs := 0;
+      Exclude(UpdFlags, scuNoInvalidate);
+    end else begin
+      if FAdjustToNextChar or (FForceAdjustToNextChar > 0) then
+        NewLogCharPos := Lines.LogPhysConvertor.PhysicalToLogical(NewLine-1, NewCharPos, Offs, cspDefault, [lpfAdjustToNextChar])
+      else
+        NewLogCharPos := Lines.LogPhysConvertor.PhysicalToLogical(NewLine-1, NewCharPos, Offs, cspDefault, [lpfAdjustToCharBegin]);
+      Offs := Lines.LogPhysConvertor.UnAdjustedPhysToLogColOffs;
+      L := Lines[NewLine - 1];
+
+      if (Offs > 0) and (not FSkipTabs) and (L[NewLogCharPos] = #9) then begin
+        // get the unadjusted result
+        NewLogCharPos  := Lines.LogPhysConvertor.UnAdjustedPhysToLogResult
+      end
+      else begin
+        // get adjusted Result
+        NewCharPos := Lines.LogPhysConvertor.AdjustedPhysToLogOrigin;
+        Offs := 0;
+      end;
+
+      LogEolPos := length(L)+1;
+      if NewLogCharPos > LogEolPos then begin
+        if FAllowPastEOL or (FForcePastEOL > 0) then begin
+          MaxPhysX := GetMaxLeftPastEOL;
+          if NewCharPos > MaxPhysX then begin
+            NewLogCharPos := NewLogCharPos - (NewCharPos - MaxPhysX);
+            NewCharPos := MaxPhysX;
+            Exclude(UpdFlags, scuNoInvalidate);
+          end;
+        end
+        else begin
+          NewCharPos := NewCharPos - (NewLogCharPos - LogEolPos);
+          NewLogCharPos := LogEolPos;
+          Exclude(UpdFlags, scuNoInvalidate);
+        end;
+      end;
+
+    end;
+
+    if NewCharPos < 1 then begin
+      NewCharPos := 1;
+      Exclude(UpdFlags, scuNoInvalidate);
+    end;
+
+    inherited InternalSetLineCharPos(NewLine, NewCharPos, UpdFlags);
+    inherited InternalSetLineByterPos(NewLine, NewLogCharPos, Offs, [scuNoInvalidate, scuChangedX]);
+
+    if (scuChangedX in UpdFlags) or (not FKeepCaretX) then
+      FLastCharPos := FCharPos;
+  finally
+    Unlock;
+  end;
+end;
+
+procedure TSynEditCaret.InternalSetLineByterPos(NewLine, NewBytePos, NewByteOffs: Integer;
+  UpdFlags: TSynEditCaretUpdateFlags);
+var
+  MaxPhysX, NewCharPos, LogEolPos: Integer;
+  L: String;
+begin
+  if not (scuChangedX in UpdFlags) and FKeepCaretX then begin
+    Exclude(UpdFlags, scuNoInvalidate);
+    InternalSetLineCharPos(NewLine, FLastCharPos, UpdFlags);
+    exit;
+  end;
+
+  Lock;
+  FTouched := True;
+  try
+    if (FBytePos = NewBytePos) and (FBytePosOffset = NewByteOffs) and
+       (FLinePos = NewLine) and (scBytePosValid in FFlags) and not (scuForceSet in UpdFlags)
+    then begin
+      // Lines may have changed, so the other pos can be invalid
+      if not (scuNoInvalidate in UpdFlags) then
+        Exclude(FFlags, scCharPosValid);
+      exit;
+    end;
+
+    if NewLine > FLines.Count then begin
+      NewLine := FLines.Count;
+      Exclude(UpdFlags, scuNoInvalidate);
+    end;
+
+    if NewLine < 1 then begin // Only allowed, if Lines.Count = 0
+      L := '';
+      NewLine := 1;
+      LogEolPos := 1;
+      if (NewBytePos > 1) and (FAllowPastEOL or (FForcePastEOL > 0))
+      then MaxPhysX := GetMaxLeftPastEOL
+      else MaxPhysX := 1;
+      if NewBytePos > MaxPhysX then
+        NewBytePos := MaxPhysX;
+      NewByteOffs := 0;
+      NewCharPos := NewBytePos;
+      Exclude(UpdFlags, scuNoInvalidate);
+    end else begin
+      L := Lines[NewLine - 1];
+      LogEolPos := length(L)+1;
+
+      if (NewBytePos > LogEolPos) then begin
+        if not(FAllowPastEOL or (FForcePastEOL > 0)) then
+          NewBytePos := LogEolPos;
+        NewByteOffs := 0;
+      end
+      else
+      if (NewByteOffs > 0) and ( (FSkipTabs) or (L[NewBytePos] <> #9) ) then
+        NewByteOffs := 0;
+
+
+      if FAdjustToNextChar or (FForceAdjustToNextChar > 0) then
+        NewCharPos := Lines.LogPhysConvertor.LogicalToPhysical(NewLine-1, NewBytePos, NewByteOffs, cslDefault, [lpfAdjustToNextChar])
+      else
+        NewCharPos := Lines.LogPhysConvertor.LogicalToPhysical(NewLine-1, NewBytePos, NewByteOffs, cslDefault, [lpfAdjustToCharBegin]);
+      NewBytePos := Lines.LogPhysConvertor.AdjustedLogToPhysOrigin;
+
+      if (NewBytePos > LogEolPos) then begin
+        MaxPhysX := GetMaxLeftPastEOL;
+        if NewCharPos > MaxPhysX then begin
+          NewBytePos := NewBytePos - (NewCharPos - MaxPhysX);
+          NewCharPos := MaxPhysX;
+          Exclude(UpdFlags, scuNoInvalidate);
+        end;
+      end;
+
+    end;
+
+    if NewBytePos < 1 then begin
+      NewBytePos := 1;
+      Exclude(UpdFlags, scuNoInvalidate);
+    end;
+
+    inherited InternalSetLineByterPos(NewLine, NewBytePos, NewByteOffs, UpdFlags);
+    inherited InternalSetLineCharPos(NewLine, NewCharPos, [scuNoInvalidate, scuChangedX]);
+
+    if (scuChangedX in UpdFlags) and FKeepCaretX then
+      FLastCharPos := FCharPos;
+  finally
+    Unlock;
+  end;
+end;
+
+function TSynEditCaret.GetOldLineCharPos: TPoint;
+begin
+  Result := Point(FOldCharPos, FOldLinePos);
+end;
+
+function TSynEditCaret.GetOldLineBytePos: TPoint;
+begin
+  Result := FLines.PhysicalToLogicalPos(OldLineCharPos);
+end;
+
+procedure TSynEditCaret.SetAllowPastEOL(const AValue: Boolean);
+begin
+  if FAllowPastEOL = AValue then exit;
+  FAllowPastEOL := AValue;
+  if not FAllowPastEOL then begin
+    // TODO: this would set x=LastX
+    //if scBytePosValid in FFlags then
+    //  InternalSetLineByterPos(FLinePos, FBytePos, FBytePosOffset, [scuForceSet]); // NO scuChangedX => FLastCharPos is kept
+    //else
+    ValidateCharPos;
+    InternalSetLineCharPos(FLinePos, FCharPos, [scuForceSet]); // NO scuChangedX => FLastCharPos is kept
+  end;
+end;
+
+procedure TSynEditCaret.SetKeepCaretX(const AValue: Boolean);
+begin
+  if FKeepCaretX = AValue then exit;
+  FKeepCaretX := AValue;
+  if FKeepCaretX then begin
+    ValidateCharPos;
+    FLastCharPos := FCharPos;
+  end;
+end;
+
+procedure TSynEditCaret.SetSkipTabs(const AValue: Boolean);
+begin
+  if FSkipTabs = AValue then exit;
+  FSkipTabs := AValue;
+  if FSkipTabs then begin
+    Lock;
+    AdjustToChar;
+    Unlock;
+  end;
+end;
+
+procedure TSynEditCaret.IncForcePastEOL;
+begin
+  inc(FForcePastEOL);
+end;
+
+procedure TSynEditCaret.DecForcePastEOL;
+begin
+  dec(FForcePastEOL);
+end;
+
+procedure TSynEditCaret.IncForceAdjustToNextChar;
+begin
+  Inc(FForceAdjustToNextChar);
+end;
+
+procedure TSynEditCaret.DecForceAdjustToNextChar;
+begin
+  Dec(FForceAdjustToNextChar);
+end;
+
+procedure TSynEditCaret.IncAutoMoveOnEdit;
+begin
+  if FAutoMoveOnEdit = 0 then begin
+    RegisterLinesEditedHandler;
+    ValidateBytePos;
+  end;
+  inc(FAutoMoveOnEdit);
+end;
+
+procedure TSynEditCaret.DecAutoMoveOnEdit;
+begin
+  dec(FAutoMoveOnEdit);
+end;
+
+procedure TSynEditCaret.ChangeOnTouch;
+begin
+  FChangeOnTouch := True;
+  if not Locked then
+    FTouched := False;
+end;
+
+
+function TSynEditCaret.WasAtLineChar(aPoint: TPoint): Boolean;
+begin
+  Result := (FOldLinePos = aPoint.y) and (FOldCharPos = aPoint.x);
+end;
+
+function TSynEditCaret.WasAtLineByte(aPoint: TPoint): Boolean;
+begin
+  Result := (FOldLinePos = aPoint.y) and
+            (FLines.PhysicalToLogicalPos(Point(FOldCharPos, FOldLinePos)).X = aPoint.x);
+end;
+
+function TSynEditCaret.MoveHoriz(ACount: Integer): Boolean;
+var
+  L: String;
+  CharWidths: TPhysicalCharWidths;
+  GotCharWidths: Boolean;
+  MaxOffs: Integer;
+  Flag: TSynLogPhysFlags;
+  p: Integer;
+  MaxX: Integer;
+  NC: Boolean;
+  NF: Integer;
+
+  function GetMaxOffs(AlogPos: Integer): Integer;
+  begin
+    if not GotCharWidths then
+      CharWidths := FLines.GetPhysicalCharWidths(Pchar(L), length(L), FLinePos-1);
+    GotCharWidths := True;
+    Result := CharWidths[AlogPos-1];
+  end;
+
+begin
+  GotCharWidths := False;
+  L := LineText;
+  ValidateBytePos;
+
+  If ACount > 0 then begin
+    Flag := [lpfAdjustToNextChar];
+    if (FBytePos <= length(L)) and (L[FBytePos] = #9) and (not FSkipTabs) then
+      MaxOffs := GetMaxOffs(FBytePos) - 1
+    else
+      MaxOffs := 0;
+
+    while ACount > 0 do begin
+      if FBytePosOffset < MaxOffs then
+        inc(FBytePosOffset)
+      else begin
+        if (FBytePos > length(L)) and not (FAllowPastEOL or (FForcePastEOL > 0)) then
+          break;
+        FBytePos := FLines.LogicPosAddChars(L, FBytePos, 1, True);
+        FBytePosOffset := 0;
+        if (FBytePos <= length(L)) and (L[FBytePos] = #9) and (not FSkipTabs) then
+          MaxOffs := GetMaxOffs(FBytePos) - 1
+        else
+          MaxOffs := 0;
+      end;
+      dec(ACount);
+    end;
+    Result := ACount = 0;
+
+    p := FBytePos;
+    IncForceAdjustToNextChar;
+    InternalSetLineByterPos(FLinePos, FBytePos, FBytePosOffset, [scuChangedX, scuForceSet]);
+    DecForceAdjustToNextChar;
+    if p > FBytePos then
+      Result := False; // MaxLeftChar
+  end
+  else begin
+    Flag := [lpfAdjustToCharBegin];
+    while ACount < 0 do begin
+      if FBytePosOffset > 0 then
+        dec(FBytePosOffset)
+      else begin
+        if FBytePos = 1 then
+          break;
+        FBytePos := FLines.LogicPosAddChars(L, FBytePos, -1, True);
+        if (FBytePos <= length(L)) and (L[FBytePos] = #9) and (not FSkipTabs) then
+          FBytePosOffset := GetMaxOffs(FBytePos) - 1
+        else
+          FBytePosOffset := 0;
+      end;
+      inc(ACount);
+    end;
+    Result := ACount = 0;
+
+    NC := FAdjustToNextChar;
+    NF := FForceAdjustToNextChar;
+    FAdjustToNextChar      := False;
+    FForceAdjustToNextChar := 0;
+    InternalSetLineByterPos(FLinePos, FBytePos, FBytePosOffset, [scuChangedX, scuForceSet]);
+    FAdjustToNextChar      := NC;
+    FForceAdjustToNextChar := NF;
   end;
 end;
 
@@ -859,7 +1185,7 @@ end;
 constructor TSynEditSelection.Create(ALines : TSynEditStrings; aActOnLineChanges: Boolean);
 begin
   Inherited Create(ALines);
-  FInternalCaret := TSynEditCaret.Create; // TODO: does not need FLines.AddEditHandler
+  FInternalCaret := TSynEditBaseCaret.Create;
   FInternalCaret.Lines := FLines;
 
   FActiveSelectionMode := smNormal;
@@ -1027,7 +1353,6 @@ begin
           // Calculate the byte positions for each line
           SetLength(Col, Last - First + 1);
           SetLength(Len, Last - First + 1);
-          FInternalCaret.AllowPastEOL := True;
           FInternalCaret.LineBytePos := FirstLineBytePos;
           C1 := FInternalCaret.CharPos;
           FInternalCaret.LineBytePos := LastLineBytePos;
@@ -1349,7 +1674,6 @@ var
     begin
       // Insert string at current position
       Result := 0;
-      FInternalCaret.IncForcePastEOL;
       Start := PChar(Value);
       repeat
         P := GetEOL(Start);
@@ -1371,7 +1695,6 @@ var
         Start := P;
       until P^ = #0;
       FInternalCaret.BytePos:= FInternalCaret.BytePos + Length(Str);
-      FInternalCaret.DecForcePastEOL;
     end;
 
     function InsertLine: Integer;

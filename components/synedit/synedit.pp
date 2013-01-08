@@ -7076,6 +7076,8 @@ var
   nAction: TSynReplaceAction;
   CurReplace: string;
   ptFoundStart, ptFoundEnd: TPoint;
+  ptFoundStartSel, ptFoundEndSel: TPoint;
+
 
   function InValidSearchRange(First, Last: integer): boolean;
   begin
@@ -7087,6 +7089,16 @@ var
       smColumn:
         Result := (First >= ptStart.X) and (Last <= ptEnd.X);
     end;
+  end;
+
+  procedure SetFoundCaretAndSel;
+  begin
+    if ptFoundStartSel.y < 0 then
+      exit;
+    BlockBegin := ptFoundStartSel;
+    if bBackward then LogicalCaretXY := BlockBegin;
+    BlockEnd := ptFoundEndSel;
+    if not bBackward then LogicalCaretXY := ptFoundEndSel;
   end;
 
 begin
@@ -7139,6 +7151,7 @@ begin
   // search while the current search position is inside of the search range
   IncPaintLock;
   try
+    ptFoundStartSel.y := -1;
     //DebugLn(['TCustomSynEdit.SearchReplace ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd),' ASearch="',dbgstr(ASearch),'" AReplace="',dbgstr(AReplace),'"']);
     while fTSearch.FindNextOne(FTheLinesView,ptStart,ptEnd,ptFoundStart,ptFoundEnd, True) do
     begin
@@ -7152,10 +7165,9 @@ begin
         Inc(Result);
         // Select the text, so the user can see it in the OnReplaceText event
         // handler or as the search result.
-        BlockBegin := ptFoundStart;
-        if bBackward then LogicalCaretXY := BlockBegin;
-        BlockEnd := ptFoundEnd;
-        if not bBackward then LogicalCaretXY := ptFoundEnd;
+        ptFoundStartSel := ptFoundStart;
+        ptFoundEndSel   := ptFoundEnd;
+//SetFoundCaretAndSel;
         // If it's a 'search' only we can leave the procedure now.
         if not (bReplace or bReplaceAll) then exit;
         // Prompt and replace or replace all.  If user chooses to replace
@@ -7164,6 +7176,7 @@ begin
         if ssoRegExpr in AOptions then
           CurReplace:=fTSearch.RegExprReplace;
         if bPrompt and Assigned(fOnReplaceText) then begin
+          SetFoundCaretAndSel;
           EnsureCursorPosVisible;
           try
             DecPaintLock;
@@ -7184,7 +7197,8 @@ begin
           end;
           // replace text
           //DebugLn(['TCustomSynEdit.SearchReplace OldSel="',dbgstr(SelText),'"']);
-          SetSelTextExternal(CurReplace);
+//SetSelTextExternal(CurReplace);
+          SetTextBetweenPoints(ptFoundStart, ptFoundEnd, CurReplace, [setSelect], scamIgnore);
           //DebugLn(['TCustomSynEdit.SearchReplace NewSel="',dbgstr(SelText),'"']);
           // adjust positions
           ptEnd:=AdjustPositionAfterReplace(ptEnd,ptFoundStart,ptFoundEnd,
@@ -7212,6 +7226,7 @@ begin
       //DebugLn(['TCustomSynEdit.SearchReplace FIND NEXT ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd)]);
     end;
   finally
+    SetFoundCaretAndSel;
     DecPaintLock;
   end;
 end;

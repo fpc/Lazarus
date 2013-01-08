@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, SysUtils, testregistry, LCLProc, LCLType, Forms, TestBase,
-  SynEdit, SynEditTextTrimmer, SynEditKeyCmds, LazSynEditText;
+  SynEdit, SynEditTextTrimmer, SynEditKeyCmds, LazSynEditText, SynEditPointClasses;
 
 type
 
@@ -23,18 +23,25 @@ type
     TrimType: TSynEditStringTrimmingType;
     TrimEnabled: Boolean;
   protected
+    function TestMaxLeftProc: Integer;
     procedure ReCreateEdit; reintroduce;
   published
     procedure TestEditEmpty;
     procedure TestEditTabs;
     procedure TestEditEcChar;
-    procedure TestPhysicalLogical;
+    procedure TestPhysicalLogical; // TODO adjust to char tests
     procedure TestLogicalAdjust;
+    procedure TestCaretObject;
     procedure TestCaretAutoMove;
     procedure TestCaretDeleteWord_LastWord;
   end;
 
 implementation
+
+function TTestBasicSynEdit.TestMaxLeftProc: Integer;
+begin
+  Result := 6000;
+end;
 
 procedure TTestBasicSynEdit.ReCreateEdit;
 begin
@@ -452,7 +459,7 @@ procedure TTestBasicSynEdit.TestPhysicalLogical;
     expXcsRtl: integer = -1; expColCsRtl: integer = -1);
   var
     gotX, gotCol: Integer;
-    expDef, expColDef: Integer;
+    expDef: Integer;
   begin
     name := name + ' y='+inttostr(y)+' x='+inttostr(x);
 
@@ -856,6 +863,538 @@ begin
 //AssertEquals('LogicPosAddChars 11, -2C  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',11, -2, [lpStopAtCodePoint])); // mid ü
 
 
+
+end;
+
+procedure TTestBasicSynEdit.TestCaretObject;
+var
+  TestCaret, TestCaret2: TSynEditCaret;
+  TestOrder: Integer;
+  UseAdjustToNextChar, UseIncAdjustToNextChar: Boolean;
+  UseAllowPastEOL, UseIncAllowPastEOL: Boolean;
+  UseKeepCaretX: Boolean;
+  UseLock: Boolean;
+  UseChangeOnTouch: Boolean;
+  UseIncAutoMoveOnEdit: Boolean;
+  UseSkipTabs: Boolean;
+  UseMaxLeft: Boolean;
+
+
+  procedure CheckPhys(AName: String; ExpY, ExpX: Integer);
+    procedure CheckEach;
+    begin
+      AssertEquals(AName + 'Phys.Y', ExpY, TestCaret.LinePos);
+      AssertEquals(AName + 'Phys.X', ExpX, TestCaret.CharPos);
+    end;
+    procedure CheckPoint;
+    begin
+      AssertEquals(AName + 'Phys.XY.Y', ExpY, TestCaret.LineCharPos.Y);
+      AssertEquals(AName + 'Phys.XY.X', ExpX, TestCaret.LineCharPos.x);
+    end;
+  begin
+    if ExpX <= 0 then exit;
+    AName := BaseTestName + ' ' + AName;
+    if (TestOrder and 1) = 0 then begin
+      CheckEach;
+      CheckPoint;
+    end else begin
+      CheckPoint;
+      CheckEach;
+    end;
+  end;
+  procedure CheckIsAtChar(AName: String; ExpY, ExpX: Integer);
+  begin
+    if ExpX <= 0 then exit;
+    AName := BaseTestName + ' ' + AName;
+    if (TestOrder and 1) = 1 then exit; // Only one order
+    AssertEquals(AName + 'IsAtLineChar',     True,  TestCaret.IsAtLineChar(point(ExpX, ExpY)));
+    AssertEquals(AName + 'NOT IsAtLineChar', False, TestCaret.IsAtLineChar(point(ExpX+1, ExpY)));
+  end;
+
+  procedure CheckLog(AName: String; ExpY, ExpX, ExpOffs: Integer);
+    procedure CheckEach;
+    begin
+      AssertEquals(AName + 'Log.Y', ExpY, TestCaret.LinePos);
+      AssertEquals(AName + 'Log.X', ExpX, TestCaret.BytePos);
+      AssertEquals(AName + 'Log.Offs', ExpOffs, TestCaret.BytePosOffset);
+    end;
+    procedure CheckPoint;
+    begin
+      AssertEquals(AName + 'Log.XY.Y', ExpY, TestCaret.LineBytePos.y);
+      AssertEquals(AName + 'Log.XY.X', ExpX, TestCaret.LineBytePos.x);
+    end;
+  begin
+    if ExpX <= 0 then exit;
+    AName := BaseTestName + ' ' + AName;
+    AName := BaseTestName + ' ' + AName;
+    if (TestOrder and 1) = 0 then begin
+      CheckEach;
+      CheckPoint;
+    end else begin
+      CheckPoint;
+      CheckEach;
+    end;
+  end;
+  procedure CheckIsAtByte(AName: String; ExpY, ExpX, ExpOffs: Integer);
+  begin
+    if ExpX <= 0 then exit;
+    AName := BaseTestName + ' ' + AName;
+    if (TestOrder and 1) = 1 then exit; // Only one order
+    AssertEquals(AName + 'IsAtLineChar',     True,  TestCaret.IsAtLineByte(point(ExpX, ExpY), ExpOffs));
+    AssertEquals(AName + 'NOT IsAtLineByte', False, TestCaret.IsAtLineByte(point(ExpX+1, ExpY), ExpOffs));
+    if ExpOffs = 0 then begin
+      AssertEquals(AName + 'IsAtLineChar',     True,  TestCaret.IsAtLineByte(point(ExpX, ExpY)));
+      AssertEquals(AName + 'NOT IsAtLineByte', False, TestCaret.IsAtLineByte(point(ExpX+1, ExpY)));
+      AssertEquals(AName + 'NOT IsAtLineByte', False, TestCaret.IsAtLineByte(point(ExpX, ExpY), 1));
+    end;
+  end;
+
+
+  procedure CheckLogPhys(AName: String; ExpY, ExpX, ExpLogX, ExpOffs:  Integer);
+    procedure CheckAtPos;
+      procedure CheckAtPosChar;
+      begin
+        TestCaret2.LineBytePos := point(1, 1);
+        TestCaret2.LineCharPos := point(ExpX, ExpY);
+        AssertTrue(AName + 'IsAtPos(Char)', TestCaret.IsAtPos(TestCaret2));
+        TestCaret2.LineCharPos := point(1, ExpY-1);
+        AssertFalse(AName + 'not IsAtPos(Char)', TestCaret.IsAtPos(TestCaret2));
+      end;
+      procedure CheckAtPosByte;
+      begin
+        TestCaret2.LineCharPos := point(1, 1);
+        TestCaret2.LineBytePos := point(ExpLogX, ExpY);
+        //TestCaret2.BytePosOffset := ExpOffs;
+        if ExpOffs = 0 then // TODO
+        AssertTrue(AName + 'IsAtPos(Byte)', TestCaret.IsAtPos(TestCaret2));
+        TestCaret2.LineBytePos := point(1, ExpY-1);
+        AssertFalse(AName + 'not IsAtPos(Byte)', TestCaret.IsAtPos(TestCaret2));
+      end;
+    begin
+      if ((TestOrder and 1) = 0) and (ExpX > 0)    then CheckAtPosChar;
+      if                             (ExpLogX > 0) then CheckAtPosByte;
+      if ((TestOrder and 1) = 1) and (ExpX > 0)    then CheckAtPosChar;
+    end;
+    procedure CheckPos;
+    begin
+      if (TestOrder and 2) = 0 then begin
+        if ExpX > 0    then CheckPhys(AName, ExpY, ExpX);
+        if ExpLogX > 0 then CheckLog (AName, ExpY, ExpLogX, ExpOffs);
+      end else begin
+        if ExpLogX > 0 then CheckLog (AName, ExpY, ExpLogX, ExpOffs);
+        if ExpX > 0    then CheckPhys(AName, ExpY, ExpX);
+      end;
+    end;
+  begin
+    if (TestOrder and 8) = 8 then
+      CheckAtPos;
+
+    if (TestOrder and 4) = 4 then
+      CheckPos;
+
+    if (TestOrder and 2) = 2 then begin
+      CheckIsAtChar(AName, ExpY, ExpX);
+      CheckIsAtByte(AName, ExpY, ExpLogX, ExpOffs);
+    end else begin
+      CheckIsAtByte(AName, ExpY, ExpLogX, ExpOffs);
+      CheckIsAtChar(AName, ExpY, ExpX);
+    end;
+
+    if (TestOrder and 4) = 0 then
+      CheckPos;
+
+    if (TestOrder and 8) = 0 then
+      CheckAtPos;
+  end;
+
+
+  Procedure DoOneTest(AName: String; AY, AX, ALogX, ALogOffs: Integer;
+    ExpY, ExpX, ExpLogX, ExpLogOffs: Integer;
+    // X,LogX,LogOffs, [X,LogX,LogOffs]
+    AMoveHorizNext: array of integer; AMoveHorizPrev: array of integer;
+    ExpMoveHorizFalse: Boolean = False;
+    ALineForKeepX: Integer = -1; ExpNotKeptX: Integer = -1; ExpNotKeptLogX: Integer = -1
+    );
+    procedure DoOneSetLine(Y: Integer);
+    begin
+      if UseLock then TestCaret.Lock;
+      if UseChangeOnTouch then TestCaret.ChangeOnTouch;
+      TestCaret.LinePos := Y;
+      if UseLock then TestCaret.Unlock;
+    end;
+    procedure DoOneSetChar(Y, X: Integer; ChangeToLine: Integer = -1);
+    begin
+      if UseLock then TestCaret.Lock;
+      if UseChangeOnTouch then TestCaret.ChangeOnTouch;
+      TestCaret.LineCharPos := point(X, Y);
+      if ChangeToLine > 0 then TestCaret.LinePos := ChangeToLine;
+      if UseLock then TestCaret.Unlock;
+    end;
+    procedure DoOneSetByte(Y, X, {%H-}O: Integer; ChangeToLine: Integer = -1);
+    begin
+      if UseLock then TestCaret.Lock;
+      if UseChangeOnTouch then TestCaret.ChangeOnTouch;
+      TestCaret.LineBytePos := point(X, Y);
+      //TestCaret.BytePosOffset := O;
+      if ChangeToLine > 0 then TestCaret.LinePos := ChangeToLine;
+      if UseLock then TestCaret.Unlock;
+    end;
+    procedure DoOneMoveHoriz(C: Integer);
+    begin
+      if UseLock then TestCaret.Lock;
+      if UseChangeOnTouch then TestCaret.ChangeOnTouch;
+      AssertEquals(AName + 'MoveHoriz is '+dbgs(ExpMoveHorizFalse), not ExpMoveHorizFalse, TestCaret.MoveHoriz(C));
+      if UseLock then TestCaret.Unlock;
+    end;
+    procedure DoOneMoveHorizFromChar(C, Y, X: Integer);
+    begin
+      if UseLock then TestCaret.Lock;
+      if UseChangeOnTouch then TestCaret.ChangeOnTouch;
+      TestCaret.LineCharPos := point(X, Y);
+      AssertEquals(AName + 'MoveHoriz is '+dbgs(ExpMoveHorizFalse), not ExpMoveHorizFalse, TestCaret.MoveHoriz(C));
+      if UseLock then TestCaret.Unlock;
+    end;
+    procedure DoOneMoveHorizFromByte(C, Y, X, {%H-}O: Integer);
+    begin
+      if UseLock then TestCaret.Lock;
+      if UseChangeOnTouch then TestCaret.ChangeOnTouch;
+      TestCaret.LineBytePos := point(X, Y);
+      //TestCaret.BytePosOffset := O;
+      AssertEquals(AName + 'MoveHoriz is '+dbgs(ExpMoveHorizFalse), not ExpMoveHorizFalse, TestCaret.MoveHoriz(C));
+      if UseLock then TestCaret.Unlock;
+    end;
+  begin
+    DoOneSetChar(AY, AX);
+    CheckLogPhys(AName + ' from CharPos',  ExpY,  ExpX,  ExpLogX, ExpLogOffs);
+
+    // KeepX
+    if (ALineForKeepX > 0) and UseKeepCaretX then begin
+      if (TestOrder and 4) = 4 then begin
+        TestCaret.LineCharPos := point(1, 1);
+        if (TestOrder and 6) = 4 then
+          TestCaret.LineCharPos := point(AX, AY);
+      end;
+
+      if (TestOrder and 6) = 6
+      then DoOneSetChar(AY, AX, ALineForKeepX)
+      else DoOneSetLine(ALineForKeepX);
+      CheckLogPhys(AName + ' from CharPos',  ALineForKeepX,  ExpNotKeptX,  ExpNotKeptLogX, 0);
+      if ExpNotKeptX < 0    then AssertFalse(AName + '(char) keepx moved (c)', ExpX    = TestCaret.CharPos);
+      if ExpNotKeptLogX < 0 then AssertFalse(AName + '(char) keepx moved (b)', ExpLogX = TestCaret.BytePos);
+
+      DoOneSetLine(AY);
+      CheckLogPhys(AName + ' from CharPos',  ExpY,  ExpX,  ExpLogX, ExpLogOffs);
+    end;
+
+    if length(AMoveHorizNext) >= 3 then begin
+      DoOneMoveHorizFromChar(1, AY, AX);
+      CheckLogPhys(AName + ' from CharPos',  ExpY,  AMoveHorizNext[0],  AMoveHorizNext[1], AMoveHorizNext[2]);
+
+      if not ExpMoveHorizFalse then begin
+        DoOneMoveHoriz(-1);
+        CheckLogPhys(AName + ' from CharPos',  ExpY,  ExpX,  ExpLogX, ExpLogOffs);
+      end;
+    end;
+    if length(AMoveHorizNext) >= 6 then begin
+      TestCaret.LineCharPos := point(AX, AY);
+      if UseLock then TestCaret.Lock;
+      if UseChangeOnTouch then TestCaret.ChangeOnTouch;
+      AssertEquals(AName + 'MoveHoriz is '+dbgs(ExpMoveHorizFalse), not ExpMoveHorizFalse, TestCaret.MoveHoriz(1));
+      AssertEquals(AName + 'MoveHoriz is '+dbgs(ExpMoveHorizFalse), not ExpMoveHorizFalse, TestCaret.MoveHoriz(1));
+      if UseLock then TestCaret.Unlock;
+      CheckLogPhys(AName + ' from CharPos',  ExpY,  AMoveHorizNext[3],  AMoveHorizNext[4], AMoveHorizNext[5]);
+
+      if not ExpMoveHorizFalse then begin
+        DoOneMoveHoriz(-1);
+        CheckLogPhys(AName + ' from CharPos',  ExpY,  AMoveHorizNext[0],  AMoveHorizNext[1], AMoveHorizNext[2]);
+        DoOneMoveHoriz(-1);
+        CheckLogPhys(AName + ' from CharPos',  ExpY,  ExpX,  ExpLogX, ExpLogOffs);
+
+        TestCaret.LineCharPos := point(AX, AY);
+        DoOneMoveHoriz(2);
+        CheckLogPhys(AName + ' from CharPos',  ExpY,  AMoveHorizNext[3],  AMoveHorizNext[4], AMoveHorizNext[5]);
+      end;
+    end;
+
+    if length(AMoveHorizPrev) >= 3 then begin
+      DoOneMoveHorizFromChar(-1, AY, AX);
+      CheckLogPhys(AName + ' from CharPos',  ExpY,  AMoveHorizPrev[0],  AMoveHorizPrev[1], AMoveHorizPrev[2]);
+
+      if not ExpMoveHorizFalse then begin
+        DoOneMoveHoriz(1);
+        CheckLogPhys(AName + ' from CharPos',  ExpY,  ExpX,  ExpLogX, ExpLogOffs);
+      end;
+    end;
+    if length(AMoveHorizPrev) >= 6 then begin
+      TestCaret.LineCharPos := point(AX, AY);
+      if UseLock then TestCaret.Lock;
+      if UseChangeOnTouch then TestCaret.ChangeOnTouch;
+      AssertEquals(AName + 'MoveHoriz is '+dbgs(ExpMoveHorizFalse), not ExpMoveHorizFalse, TestCaret.MoveHoriz(-1));
+      AssertEquals(AName + 'MoveHoriz is '+dbgs(ExpMoveHorizFalse), not ExpMoveHorizFalse, TestCaret.MoveHoriz(-1));
+      if UseLock then TestCaret.Unlock;
+      CheckLogPhys(AName + ' from CharPos',  ExpY,  AMoveHorizPrev[3],  AMoveHorizPrev[4], AMoveHorizPrev[5]);
+
+      if not ExpMoveHorizFalse then begin
+        DoOneMoveHoriz(1);
+        CheckLogPhys(AName + ' from CharPos',  ExpY,  AMoveHorizPrev[0],  AMoveHorizPrev[1], AMoveHorizPrev[2]);
+        DoOneMoveHoriz(1);
+        CheckLogPhys(AName + ' from CharPos',  ExpY,  ExpX,  ExpLogX, ExpLogOffs);
+
+        TestCaret.LineCharPos := point(AX, AY);
+        DoOneMoveHoriz(-2);
+        CheckLogPhys(AName + ' from CharPos',  ExpY,  AMoveHorizPrev[3],  AMoveHorizPrev[4], AMoveHorizPrev[5]);
+      end;
+    end;
+
+
+
+    // Logical
+    if ALogOffs <> 0 then exit; // TODO;
+    if ALogX > 0 then begin
+      DoOneSetByte(AY, ALogX, ALogOffs);
+      CheckLogPhys(AName + ' from BytePos',  ExpY,  ExpX,  ExpLogX, ExpLogOffs);
+
+      // KeepX
+      if (ALineForKeepX > 0) and UseKeepCaretX then begin
+        if (TestOrder and 4) = 4 then begin
+          TestCaret.LineBytePos := point(1, 1);
+          if (TestOrder and 6) = 4 then
+            TestCaret.LineBytePos := point(ALogX, AY);
+        end;
+
+        if (TestOrder and 6) = 6
+        then DoOneSetByte(AY, ALogX, ALogOffs, ALineForKeepX)
+        else DoOneSetLine(ALineForKeepX);
+        CheckLogPhys(AName + ' from CharPos',  ALineForKeepX,  ExpNotKeptX,  ExpNotKeptLogX, 0);
+        if ExpNotKeptX < 0    then AssertFalse(AName + '(char) keepx moved (c)', ExpX    = TestCaret.CharPos);
+        if ExpNotKeptLogX < 0 then AssertFalse(AName + '(char) keepx moved (b)', ExpLogX = TestCaret.BytePos);
+
+        DoOneSetLine(AY);
+        CheckLogPhys(AName + ' from CharPos',  ExpY,  ExpX,  ExpLogX, ExpLogOffs);
+      end;
+
+      if length(AMoveHorizNext) >= 3 then begin
+        DoOneMoveHorizFromByte(1, AY, ALogX, ALogOffs);
+        CheckLogPhys(AName + ' from CharPos',  ExpY,  AMoveHorizNext[0],  AMoveHorizNext[1], AMoveHorizNext[2]);
+
+        if not ExpMoveHorizFalse then begin
+          DoOneMoveHoriz(-1);
+          CheckLogPhys(AName + ' from CharPos',  ExpY,  ExpX,  ExpLogX, ExpLogOffs);
+        end;
+      end;
+      if length(AMoveHorizNext) >= 6 then begin
+        TestCaret.LineBytePos := point(ALogX, AY);
+        if UseLock then TestCaret.Lock;
+        if UseChangeOnTouch then TestCaret.ChangeOnTouch;
+        TestCaret.MoveHoriz(1);
+        TestCaret.MoveHoriz(1);
+        if UseLock then TestCaret.Unlock;
+        CheckLogPhys(AName + ' from CharPos',  ExpY,  AMoveHorizNext[3],  AMoveHorizNext[4], AMoveHorizNext[5]);
+
+        if not ExpMoveHorizFalse then begin
+          DoOneMoveHoriz(-1);
+          CheckLogPhys(AName + ' from CharPos',  ExpY,  AMoveHorizNext[0],  AMoveHorizNext[1], AMoveHorizNext[2]);
+          DoOneMoveHoriz(-1);
+          CheckLogPhys(AName + ' from CharPos',  ExpY,  ExpX,  ExpLogX, ExpLogOffs);
+
+          TestCaret.LineBytePos := point(ALogX, AY);
+          DoOneMoveHoriz(2);
+          CheckLogPhys(AName + ' from CharPos',  ExpY,  AMoveHorizNext[3],  AMoveHorizNext[4], AMoveHorizNext[5]);
+        end;
+      end;
+
+      if length(AMoveHorizPrev) >= 3 then begin
+        DoOneMoveHorizFromByte(-1, AY, ALogX, ALogOffs);
+        CheckLogPhys(AName + ' from CharPos',  ExpY,  AMoveHorizPrev[0],  AMoveHorizPrev[1], AMoveHorizPrev[2]);
+
+        if not ExpMoveHorizFalse then begin
+          DoOneMoveHoriz(1);
+          CheckLogPhys(AName + ' from CharPos',  ExpY,  ExpX,  ExpLogX, ExpLogOffs);
+        end;
+      end;
+      if length(AMoveHorizPrev) >= 6 then begin
+        TestCaret.LineBytePos := point(ALogX, AY);
+        if UseLock then TestCaret.Lock;
+        if UseChangeOnTouch then TestCaret.ChangeOnTouch;
+        TestCaret.MoveHoriz(-1);
+        TestCaret.MoveHoriz(-1);
+        if UseLock then TestCaret.Unlock;
+        CheckLogPhys(AName + ' from CharPos',  ExpY,  AMoveHorizPrev[3],  AMoveHorizPrev[4], AMoveHorizPrev[5]);
+
+        if not ExpMoveHorizFalse then begin
+          DoOneMoveHoriz(1);
+          CheckLogPhys(AName + ' from CharPos',  ExpY,  AMoveHorizPrev[0],  AMoveHorizPrev[1], AMoveHorizPrev[2]);
+          DoOneMoveHoriz(1);
+          CheckLogPhys(AName + ' from CharPos',  ExpY,  ExpX,  ExpLogX, ExpLogOffs);
+
+          TestCaret.LineBytePos := point(ALogX, AY);
+          DoOneMoveHoriz(-2);
+          CheckLogPhys(AName + ' from CharPos',  ExpY,  AMoveHorizPrev[3],  AMoveHorizPrev[4], AMoveHorizPrev[5]);
+        end;
+      end;
+
+    end;
+
+  end;
+
+  procedure DoTests;
+  begin
+    if (TestOrder >= 4) and (UseIncAllowPastEOL or UseIncAdjustToNextChar) then
+      exit;
+
+    ReCreateEdit;
+    SynEdit.TabWidth := 6;
+    SetLines(['x',
+              StringOfChar('x', 40),
+              ' äääbc', // EOL = 7, 10
+              'X嗚呼あ嗚呼嗚呼あ嗚呼嗚呼あ嗚呼嗚呼あ',
+              '嗚呼嗚呼あ嗚呼嗚呼あ嗚呼嗚呼あ嗚呼嗚呼あ',
+              ' '#9#9#9'mn',
+              '',
+              'X ab',
+              '']);
+    try
+      PushBaseName(Format('UseLock=%s, AdjustToNextChar=%s, IncAdjustToNextChar=%s,'+
+                          ' AllowPastEOL=%s, IncAllowPastEOL=%s, KeepCaretX=%s,' +
+                          ' ChangeOnTouch=%s, IncAutoMoveOnEdit=%s, SkipTabs=%s' +
+                          ' MaxLeft=%s',
+                          [dbgs(UseLock), dbgs(UseAdjustToNextChar), dbgs(UseIncAdjustToNextChar),
+                           dbgs(UseAllowPastEOL), dbgs(UseIncAllowPastEOL),
+                           dbgs(UseKeepCaretX), dbgs(UseChangeOnTouch),
+                           dbgs(UseIncAutoMoveOnEdit), dbgs(UseSkipTabs), dbgs(UseMaxLeft)
+                          ]));
+
+//debugln(BaseTestName);
+
+      TestCaret := TSynEditCaret.Create;
+      TestCaret.Lines := SynEdit.ViewedTextBuffer;
+
+      TestCaret.AdjustToNextChar := UseAdjustToNextChar;
+      if UseIncAdjustToNextChar then TestCaret.IncForceAdjustToNextChar;
+
+      TestCaret.AllowPastEOL := UseAllowPastEOL;
+      if UseIncAllowPastEOL then TestCaret.IncForcePastEOL;
+
+      TestCaret.KeepCaretX := UseKeepCaretX;
+      if UseIncAutoMoveOnEdit then TestCaret.IncAutoMoveOnEdit;
+      TestCaret.SkipTabs := UseSkipTabs;
+      if UseMaxLeft then
+        TestCaret.MaxLeftChar := @TestMaxLeftProc; // 6000
+
+      TestCaret2 := TSynEditCaret.Create;
+      TestCaret2.Lines := SynEdit.ViewedTextBuffer;
+
+
+
+      if UseAdjustToNextChar or UseIncAdjustToNextChar
+      then DoOneTest('Basic',     2, 3, 3, 0,    2, 3, 3, 0,
+                     [4,4,0,  5,5,0], [2,2,0,  1,1,0], False,   // MoveHoriz
+                     4, 4, 5  // KeepX
+                    )
+      else DoOneTest('Basic',     2, 3, 3, 0,    2, 3, 3, 0,
+                     [4,4,0,  5,5,0], [2,2,0,  1,1,0], False,    // MoveHoriz
+                     4, 2, 2  // KeepX
+                    );
+
+      // past EOL
+      if UseAllowPastEOL or UseIncAllowPastEOL
+      then DoOneTest('past EOL',     8, 9, 9, 0,    8, 9, 9, 0,
+                     [10,10,0], [8,8,0])
+      else DoOneTest('past EOL',     8, 9, 9, 0,    8, 5, 5, 0,
+                     [5,5,0,  5,5,0],[], True);
+      // BOL
+      DoOneTest('at BOL',     8, 1, 1, 0,    8, 1, 1, 0,
+                [],[1,1,0,  1,1,0], True);
+
+      // one past EOL
+      if UseAllowPastEOL or UseIncAllowPastEOL
+      then DoOneTest('one past EOL',     3, 8,11, 0,    3, 8,11, 0,
+                     [ 9,12,0,  10,13,0],  [7,10,0,  6,9,0])
+      else DoOneTest('one past EOL',     3, 8,11, 0,    3, 7,10, 0,
+                     [7,10,0,  7,10,0], [], True);
+
+      // MaxLeftChar 6000 (5999 char / EOL = 6000)
+      if UseAllowPastEOL or UseIncAllowPastEOL
+      then if UseMaxLeft
+           then DoOneTest('past EOL',     3, 6001, 6004, 0,    3, 6000, 6003, 0,
+                          [6000, 6003, 0], [], True)
+           else DoOneTest('past EOL',     3, 6001, 6004, 0,    3, 6001, 6004, 0,
+                          [], [])
+      else DoOneTest('past EOL',     3, 6001, 6004, 0,    3, 7,10, 0,
+                     [],[]
+                    );
+
+
+      // ' äääbc'
+      if UseAdjustToNextChar or UseIncAdjustToNextChar
+      then DoOneTest('LogPhys',   3, 4, 6, 0,    3, 4, 6, 0,
+                     [5,8,0,  6,9,0], [3,4,0,  2,2,0], False,
+                     5, 5, 7
+                    )
+      else DoOneTest('LogPhys',   3, 4, 6, 0,    3, 4, 6, 0,
+                     [5,8,0,  6,9,0], [3,4,0,  2,2,0], False,
+                     5, 3, 4
+                    );
+
+      // 'X嗚呼あ'  // skip "from byte"
+      if UseAdjustToNextChar or UseIncAdjustToNextChar
+      then DoOneTest('Mid Dbl-Width',   4, 3, -3, 0,    4, 4, 5, 0,
+                     [6,8,0], [2,2,0], False,
+                     5, 5, 7
+                    )
+      else DoOneTest('Mid Dbl-Width',   4, 3, -3, 0,    4, 2, 2, 0,
+                     [4,5,0], [1,1,0], False,
+                     5, 1, 1
+                    );
+
+      // ' '#9#9#9'mn'   // skip "from byte" TODO
+      if UseSkipTabs
+      then if UseAdjustToNextChar or UseIncAdjustToNextChar
+           then DoOneTest('Mid Tab',   6, 8, -3, 1,    6,13, 4, 0,
+                          [19,5,0,  20,6,0],  [7,3,0,  2,2,0], False
+                          //7,1,1
+                         )
+           else if UseAllowPastEOL or UseIncAllowPastEOL
+                then DoOneTest('Mid Tab',   6, 8, -3, 1,    6, 7, 3, 0,
+                               [13,4,0,  19,5,0],  [2,2,0,  1,1,0], False
+                              )
+                else DoOneTest('Mid Tab',   6, 8, -3, 1,    6, 7, 3, 0,
+                               [13,4,0,  19,5,0],  [2,2,0,  1,1,0], False,
+                               7,1,1
+                              )
+      else if UseAllowPastEOL or UseIncAllowPastEOL
+           then DoOneTest('Mid Tab',   6, 8, -3, 1,    6, 8, 3, 1,
+                          [9,3,2,  10,3,3],  [7,3,0,  6,2,4],  False
+                         )
+           else DoOneTest('Mid Tab',   6, 8, -3, 1,    6, 8, 3, 1,
+                          [9,3,2,  10,3,3],  [7,3,0,  6,2,4], False,
+                          7,1,1
+                         );
+
+
+
+    finally
+      PopBaseName;
+      FreeAndNil(TestCaret);
+      FreeAndNil(TestCaret2);
+    end;
+  end;
+
+begin
+  for TestOrder := 0 to 11 do // CheckAtPos (8) only runs first 4
+    for UseLock := low(Boolean) to high(Boolean) do
+      for UseAdjustToNextChar := low(Boolean) to high(Boolean) do
+      for UseIncAdjustToNextChar := low(Boolean) to high(Boolean) do
+        for UseAllowPastEOL := low(Boolean) to high(Boolean) do
+        for UseIncAllowPastEOL := low(Boolean) to high(Boolean) do
+          for UseKeepCaretX := low(Boolean) to high(Boolean) do
+            for UseChangeOnTouch := low(Boolean) to high(Boolean) do
+              for UseIncAutoMoveOnEdit := low(Boolean) to high(Boolean) do
+                for UseSkipTabs := low(Boolean) to high(Boolean) do
+                  for UseMaxLeft := low(Boolean) to high(Boolean) do
+// OldPos, MoveHoriz
+// IsAtPos /
+    DoTests;
 
 end;
 

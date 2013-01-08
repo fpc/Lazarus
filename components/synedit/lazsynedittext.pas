@@ -84,6 +84,10 @@ type
   TSynLogPhysFlag  = (lpfAdjustToCharBegin, lpfAdjustToNextChar);
   TSynLogPhysFlags = set of TSynLogPhysFlag;
 
+const
+  cspDefault = cspFollowLtr;
+  cslDefault = cslFollowLtr;
+
 (** LRL    // L=Ltr-Char / R=RTl-Char
 
    * LogToPhys
@@ -123,37 +127,50 @@ type
    (3, cspRight) => 3 // looking to the right, using 2nd L   = Log 3
 *)
 
+type
 
   TSynLogicalPhysicalConvertor = class
   private
-    FLastLogicalResultPos: Integer;
-    FLastPhysicalResultPos: Integer;
+    FAdjustedLogToPhysOrigin: Integer;
+    FAdjustedPhysToLogOrigin: Integer;
     FLines: TSynEditStrings;
     FCurrentWidths: TPhysicalCharWidths;
     FCurrentWidthsLen, FCurrentWidthsAlloc: Integer;
     FCurrentLine: Integer;
     FTextChangeStamp, FViewChangeStamp: Int64;
+    FUnAdjustedPhysToLogColOffs: Integer;
+    FUnAdjustedPhysToLogResult: Integer;
     // TODOtab-width
+    function GetCurrentLine: Integer;
+    function GetCurrentWidths: PPhysicalCharWidth;
     procedure PrepareWidthsForLine(AIndex: Integer; AForce: Boolean = False);
   protected
     procedure SetWidthsForLine(AIndex: Integer; ANewWidths: TPhysicalCharWidths);
   public
     constructor Create(ALines: TSynEditStrings);
     destructor Destroy; override;
+
+    property CurrentLine: Integer read GetCurrentLine;
+    property CurrentWidths: PPhysicalCharWidth read GetCurrentWidths;
+    property CurrentWidthsCount: Integer read FCurrentWidthsLen;
+  public
     // Line is 0-based // Column is 1-based
     function PhysicalToLogical(AIndex, AColumn: Integer): Integer;
     function PhysicalToLogical(AIndex, AColumn: Integer; out AColOffset: Integer;
-                               ACharSide: TSynPhysCharSide= cspFollowLtr//;
-                               {AFlags: TSynLogPhysFlags = []}): Integer;
+                               ACharSide: TSynPhysCharSide= cspDefault;
+                               AFlags: TSynLogPhysFlags = []): Integer;
     // ACharPos 1=before 1st char
     function LogicalToPhysical(AIndex, ABytePos: Integer): Integer;
     function LogicalToPhysical(AIndex, ABytePos: Integer; var AColOffset: Integer;
-                               ACharSide: TSynLogCharSide = cslFollowLtr;
+                               ACharSide: TSynLogCharSide = cslDefault;
                                AFlags: TSynLogPhysFlags = []): Integer;
     // properties set, if lpfAdjustTo... is used
-    property LastLogicalResultPos: Integer read FLastLogicalResultPos;
-    //property LastLogicalResultColOffs: Integer read FLastLogicalResultColOffs;
-    property LastPhysicalResultPos: Integer read FLastPhysicalResultPos;
+    //  By LogToPhys
+    property AdjustedLogToPhysOrigin: Integer read FAdjustedLogToPhysOrigin;
+    //  By PhysToLog
+    property AdjustedPhysToLogOrigin: Integer read FAdjustedPhysToLogOrigin;
+    property UnAdjustedPhysToLogResult: Integer read FUnAdjustedPhysToLogResult;
+    property UnAdjustedPhysToLogColOffs: Integer read FUnAdjustedPhysToLogColOffs;
   end;
 
   (*
@@ -589,6 +606,20 @@ begin
   FCurrentLine := AIndex;
 end;
 
+function TSynLogicalPhysicalConvertor.GetCurrentWidths: PPhysicalCharWidth;
+begin
+  if FCurrentWidthsLen > 0
+  then Result := @FCurrentWidths[0]
+  else Result := nil;
+end;
+
+function TSynLogicalPhysicalConvertor.GetCurrentLine: Integer;
+begin
+  if (FLines.TextChangeStamp = FTextChangeStamp) and (FLines.ViewChangeStamp = FViewChangeStamp)
+  then Result := FCurrentLine
+  else Result := -1;
+end;
+
 procedure TSynLogicalPhysicalConvertor.SetWidthsForLine(AIndex: Integer;
   ANewWidths: TPhysicalCharWidths);
 begin
@@ -625,11 +656,24 @@ begin
 end;
 
 function TSynLogicalPhysicalConvertor.PhysicalToLogical(AIndex, AColumn: Integer; out
-  AColOffset: Integer; ACharSide: TSynPhysCharSide{; AFlags: TSynLogPhysFlags}): Integer;
+  AColOffset: Integer; ACharSide: TSynPhysCharSide; AFlags: TSynLogPhysFlags): Integer;
 var
   BytePos, ScreenPos, ScreenPosOld: integer;
   RtlPos, RtlScreen: Integer;
 begin
+  FAdjustedPhysToLogOrigin    := AColumn;
+  FUnAdjustedPhysToLogResult  := AColumn;
+  FUnAdjustedPhysToLogColOffs := 0;
+  AColOffset := 0;
+
+  {$IFnDEF WithOutSynBiDi}
+  if (AColumn = 0) or ((AColumn = 1) and (ACharSide in [cspLeft, cspFollowLtr])) then
+    exit(AColumn);
+  {$ELSE}
+  if (AColumn = 0) or (AColumn = 1) then
+    exit(AColumn);
+  {$ENDIF}
+
   PrepareWidthsForLine(AIndex);
 
   ScreenPos := 1;
@@ -644,6 +688,7 @@ begin
     // currently Ltr
     if (ScreenPos = AColumn) and (ACharSide in [cspLeft, cspFollowLtr]) then begin
       AColOffset := 0;
+      FUnAdjustedPhysToLogResult := BytePos+1;
       exit(BytePos+1);
     end;
 
@@ -667,6 +712,7 @@ begin
       ScreenPos := ScreenPos + RtlScreen;
       if (ScreenPos = AColumn) and (ACharSide in [cspLeft, cspFollowRtl]) then begin
         AColOffset := 0;
+        FUnAdjustedPhysToLogResult := BytePos+1;
         exit(BytePos+1);
       end
       else
@@ -684,6 +730,21 @@ begin
 
           if (ScreenPos < AColumn) then begin
             AColOffset := ScreenPosOld - AColumn;
+            FUnAdjustedPhysToLogResult := BytePos;
+            FUnAdjustedPhysToLogColOffs := AColOffset;
+            if (AColOffset <> 0) then begin
+              if lpfAdjustToCharBegin in AFlags then begin
+                FAdjustedPhysToLogOrigin := ScreenPosOld;
+                AColOffset := 0;
+              end
+              else if lpfAdjustToNextChar in AFlags then begin
+                FAdjustedPhysToLogOrigin := ScreenPos;
+                AColOffset := 0;
+                while (BytePos < FCurrentWidthsLen) and ((FCurrentWidths[BytePos] and PCWMask) = 0) do
+                  inc(BytePos);
+                inc(BytePos);
+              end;
+            end;
             exit(BytePos);
           end;
 
@@ -691,6 +752,7 @@ begin
 
         if (ScreenPos = AColumn) then begin
           AColOffset := 0;
+          FUnAdjustedPhysToLogResult := BytePos+1;
           exit(BytePos+1);
         end;
 
@@ -712,6 +774,21 @@ begin
 
     if ScreenPos > AColumn then begin
       AColOffset := AColumn - ScreenPosOld;
+      FUnAdjustedPhysToLogResult := BytePos;
+      FUnAdjustedPhysToLogColOffs := AColOffset;
+      if (AColOffset <> 0) then begin
+        if lpfAdjustToCharBegin in AFlags then begin
+          FAdjustedPhysToLogOrigin := ScreenPosOld;
+          AColOffset := 0;
+        end
+        else if lpfAdjustToNextChar in AFlags then begin
+          FAdjustedPhysToLogOrigin := ScreenPos;
+          AColOffset := 0;
+          while (BytePos < FCurrentWidthsLen) and ((FCurrentWidths[BytePos] and PCWMask) = 0) do
+            inc(BytePos);
+          inc(BytePos);
+        end;
+      end;
       exit(BytePos);
     end;
   end;
@@ -722,6 +799,21 @@ begin
     inc(BytePos);
     if ScreenPos > AColumn then begin
       AColOffset := AColumn - ScreenPosOld;
+      FUnAdjustedPhysToLogResult := BytePos;
+      FUnAdjustedPhysToLogColOffs := AColOffset;
+      if (AColOffset <> 0) then begin
+        if lpfAdjustToCharBegin in AFlags then begin
+          FAdjustedPhysToLogOrigin := ScreenPosOld;
+          AColOffset := 0;
+        end
+        else if lpfAdjustToNextChar in AFlags then begin
+          FAdjustedPhysToLogOrigin := ScreenPos;
+          AColOffset := 0;
+          while (BytePos < FCurrentWidthsLen) and ((FCurrentWidths[BytePos] and PCWMask) = 0) do
+            inc(BytePos);
+          inc(BytePos);
+        end;
+      end;
       exit(BytePos);
     end;
   end;
@@ -730,6 +822,7 @@ begin
   // Column at/past end of line
   AColOffset := 0;
   Result := BytePos + 1 + AColumn - ScreenPos;
+  FUnAdjustedPhysToLogResult := Result;
 end;
 
 function TSynLogicalPhysicalConvertor.LogicalToPhysical(AIndex,
@@ -747,8 +840,7 @@ var
   i: integer;
   RtlLen: Integer;
 begin
-  FLastLogicalResultPos := ABytePos;
-  FLastPhysicalResultPos := ABytePos;
+  FAdjustedLogToPhysOrigin := ABytePos;
   {$IFDEF AssertSynMemIndex}
   if (ABytePos <= 0) then
     raise Exception.Create(Format('Bad Bytpos for PhystoLogical BytePos=%d ColOffs= %d idx= %d',[ABytePos, AColOffset, AIndex]));
@@ -776,7 +868,7 @@ begin
         while (ABytePos < FCurrentWidthsLen) and ((FCurrentWidths[ABytePos] and PCWMask) = 0) do
           inc(ABytePos);
       end;
-      FLastLogicalResultPos := ABytePos+1;
+      FAdjustedLogToPhysOrigin := ABytePos+1;
       assert((FCurrentWidths[ABytePos] and PCWMask) <> 0, 'LogicalToPhysical at char');
     end;
     if ABytePos < FCurrentWidthsLen then
@@ -834,7 +926,6 @@ begin
   then
     Result := Result + RtlLen;
   {$ENDIF}
-  FLastPhysicalResultPos := Result;
 end;
 
 { TSynEditStrings }
