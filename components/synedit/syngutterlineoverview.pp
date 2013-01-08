@@ -543,7 +543,7 @@ function TSynGutterLOvLineMarksList.TextLineToPixLine(ATxtLine: Integer): Intege
 begin
   if PixelHeight < 1 then exit(0);
 
-  Result := Int64(ATxtLine - 1) * Int64(PixelHeight) div TextLineCount;
+  Result := Int64({%H-}ATxtLine - 1) * Int64(PixelHeight) div TextLineCount;
 
   If FPixelPerLine * 2 < ItemHeight then
     dec(Result)
