@@ -5,8 +5,8 @@ unit TestSearch;
 interface
 
 uses
-  Classes, SysUtils, testregistry, LCLProc, LCLType, Forms, TestBase,
-  SynEdit, SynEditTextTrimmer, SynEditKeyCmds, SynEditSearch, SynHighlighterPas;
+  Classes, SysUtils, testregistry, TestBase,
+  SynEdit, SynEditSearch, SynHighlighterPas;
 
 type
 

@@ -6,9 +6,9 @@ unit TestSynTextArea;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testregistry, TestBase, LazSynTextArea, SynEditTypes,
-  SynEditMarkupBracket, SynEdit, SynHighlighterPosition, SynEditMarkup, SynEditMiscClasses,
-  Graphics, Forms;
+  Classes, SysUtils, testregistry, TestBase, LazSynTextArea, SynEditTypes,
+  SynEditMarkupBracket, SynEdit, SynHighlighterPosition, SynEditMiscClasses,
+  Graphics;
 
 type
 

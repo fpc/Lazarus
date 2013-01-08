@@ -9,8 +9,8 @@ unit TestNavigation;
 interface
 
 uses
-  Classes, SysUtils, testregistry, LCLProc, LCLType, Forms, TestBase,
-  SynEdit, SynEditTextTrimmer, SynEditKeyCmds, LazSynEditText;
+  SysUtils, testregistry, LCLProc, Forms, TestBase,
+  SynEdit, SynEditKeyCmds;
 
 type
 

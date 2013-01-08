@@ -5,7 +5,7 @@ unit TestHighlightXml;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testregistry, TestBase, TestHighlightFoldBase, SynHighlighterXML,
+  testregistry, TestBase, TestHighlightFoldBase, SynHighlighterXML,
   SynEditHighlighterFoldBase;
 
 type
@@ -35,8 +35,6 @@ procedure THighlightXml.TestXml;
     Result[2] := '</qwe>';
     Result[3] := '';
   end;
-var
-  hl: TSynXMLSyn;
 begin
   ReCreateEdit;
   SetLines(TestText);

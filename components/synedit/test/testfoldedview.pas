@@ -24,7 +24,7 @@ type
     FoldedView: TSynEditFoldedView;
     DoAutoFoldDescTests, DoAutoFoldDescTestsReadOnly: Boolean;
     DoAllowScrollPastEof: Boolean;
-    EnableDebug: Boolean;
+    //EnableDebug: Boolean;
 
     procedure TestFoldedText(AName: String; ALines: Array of Integer);
     procedure SetLines(AText: Array of String); reintroduce;

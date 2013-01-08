@@ -5,8 +5,7 @@ unit TestHighlighterLfm;
 interface
 
 uses
-  Classes, SysUtils, testregistry, TestBase, Forms, LCLProc, TestHighlightFoldBase,
-  SynEdit, SynEditTypes, SynHighlighterLFM, SynEditHighlighterFoldBase;
+  SysUtils, testregistry, TestBase, TestHighlightFoldBase, SynHighlighterLFM, SynEditHighlighterFoldBase;
 
 type
 

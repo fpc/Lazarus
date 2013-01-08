@@ -5,8 +5,8 @@ unit TestHighlightFoldBase;
 interface
 
 uses
-  Classes, SysUtils, testregistry, TestBase, Forms, LCLProc,
-  SynEdit, SynEditTypes, SynEditHighlighterFoldBase;
+  SysUtils, TestBase,
+  SynEdit, SynEditHighlighterFoldBase;
 
 type
 

@@ -5,7 +5,7 @@ unit TestHighlightMulti;
 interface
 
 uses
-  Classes, SysUtils, math, LCLProc, fpcunit, testregistry, TestBase, Forms, SynEditHighlighter,
+  Classes, SysUtils, math, LCLProc, testregistry, TestBase, Forms, SynEditHighlighter,
   SynHighlighterMulti, SynHighlighterLFM, SynHighlighterXML, SynHighlighterPas, SynEditKeyCmds,
   LazSynEditText, SynEditTextBuffer, LazLogger;
 
@@ -117,9 +117,6 @@ begin
 end;
 
 procedure TTestHighlightMulti.DumpSections(ASectList: TSynHLightMultiSectionList);
-var
-  s: TSynHLightMultiVirtualSection;
-  i: Integer;
 begin
   ASectList.Debug;
 end;

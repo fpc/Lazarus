@@ -5,9 +5,8 @@ unit TestBlockIndent;
 interface
 
 uses
-  Classes, SysUtils, testregistry, TestBase, math,
-  SynEdit, SynEditTypes, SynEditTextTrimmer, SynEditKeyCmds,
-  LCLType, LCLProc;
+  SysUtils, testregistry, TestBase, math,
+  SynEdit, SynEditKeyCmds;
 
 type
 
