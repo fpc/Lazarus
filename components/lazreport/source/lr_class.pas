@@ -1380,31 +1380,7 @@ var
 {$IFDEF DebugLR}
 function Bandtyp2str(typ: TfrBandType): string;
 begin
-  case typ of
-    btReportTitle: result := 'btReportTitle';
-    btReportSummary: result := 'btReportSummary';
-    btPageHeader: result := 'btPageHeader';
-    btPageFooter: result := 'btPageFooter';
-    btMasterHeader: result := 'btMasterHeader';
-    btMasterData: result := 'btMasterData';
-    btMasterFooter: result := 'btMasterFooter';
-    btDetailHeader: result := 'btDetailHeader';
-    btDetailData: result := 'btDetailData';
-    btDetailFooter: result := 'btDetailFooter';
-    btSubDetailHeader: result := 'btSubDetailHeader';
-    btSubDetailData: result := 'btSubDetailData';
-    btSubDetailFooter: result := 'btSubDetailFooter';
-    btOverlay: result := 'btOverlay';
-    btColumnHeader: result := 'btColumnHeader';
-    btColumnFooter: result := 'btColumnFooter';
-    btGroupHeader: result := 'btGroupHeader';
-    btGroupFooter: result := 'btGroupFooter';
-    btCrossHeader: result := 'btCrossHeader';
-    btCrossData: result := 'btCrossData';
-    btCrossFooter: result := 'btCrossFooter';
-    btNone: result:='btNone';
-  end;
-
+  WriteStr(Result, typ);
 end;
 
 function BandInfo(Band: TfrBand): string;
@@ -1415,6 +1391,13 @@ end;
 function ViewInfo(View: TfrView): string;
 begin
   result := format('"%s":%s typ=%s',[View.Name, dbgsname(View), frTypeObjectToStr(View.Typ)]);
+end;
+
+function ViewInfoDim(View: TfrView): string;
+begin
+  with View do
+  result := sysutils.format('"%s":%s typ=%s DIM:%d %d %d %d',
+    [Name, dbgsname(View), frTypeObjectToStr(Typ), x, y, dx, dy]);
 end;
 
 function VarStr(V:Variant): string;
@@ -1916,9 +1899,6 @@ begin
   wx2 := Round(FrameWidth * ScaleX / 2);
   wy1 := Round((FrameWidth * ScaleY - 1) / 2);
   wy2 := Round(FrameWidth * ScaleY / 2);
-  {$IFDEF DebugLR}
-  DebugLn('CalcGaps: dx=%d ScaleX=%f',[dx,ScaleX]);
-  {$ENDIF}
   fFrameWidth := FrameWidth * ScaleX;
   gapx := wx2 + 2;
   gapy := wy2 div 2 + 1;
@@ -1932,6 +1912,10 @@ begin
   if frbBottom in Frames then Inc(bx, wx1);
   if frbRight in Frames  then Inc(by, wy1);
   DRect := Rect(bx, by, bx1 + 1, by1 + 1);
+  {$IFDEF DebugLR}
+  DebugLn('CalcGaps: ScaleXY:%f %f OLD:%d %d %d %d NEW: %d %d %d %d GAPS: %d %d DRECT: %s',
+  [ScaleX,ScaleY,SaveX,SaveY,SaveDx,SaveDy,x,y,dx,dy,gapx,gapy,dbgs(drect)]);
+  {$ENDIF}
 end;
 
 procedure TfrView.RestoreCoord;
@@ -2249,9 +2233,13 @@ procedure TfrView.SaveToStream(Stream: TStream);
 var
   S: Single;
   B: Integer;
+  {$IFDEF DebugLR}
+  st: string;
+  {$ENDIF}
 begin
   {$IFDEF DebugLR}
-  DebugLn('%s.SaveToStream begin',[name]);
+  WriteStr(st, StreamMode);
+  DebugLn('%s.SaveToStream begin StreamMode=%s',[name, st]);
   {$ENDIF}
 
   with Stream do
@@ -2864,8 +2852,8 @@ var
     if (n > 0) and (str[n] = #1) then
       w := WCanvas.TextWidth(Copy(str, 1, n - 1)) else
       w := WCanvas.TextWidth(str);
-    {$IFDEF DebugLR}
-    debugLn('Outline: str="%s" w/=%d w%%=%d',[str,w div 256, w mod 256]);
+    {$IFDEF DebugLR_detail}
+    debugLn('Outline: str="%s" w/=%d w%%=%d',[copy(str,1,12),w div 256, w mod 256]);
     {$ENDIF}
     SMemo.Add(str + Chr(w div 256) + Chr(w mod 256));
     Inc(size, size1);
@@ -3003,7 +2991,8 @@ var
     size1 := -WCanvas.Font.Height + LineSpacing;
     maxWidth := dx - gapx - gapx;
     {$IFDEF DebugLR}
-    DebugLn('OutMemo I: Size=%d Size1=%d MaxWidth=%d y=%d dx=%d gapy=%d gapx=%d',[Size,Size1,MaxWidth,y,dx,gapy,gapx]);
+    DebugLn('OutMemo I: Size=%d Size1=%d MaxWidth=%d DIM:%d %d %d %d gapxy:%d %d',
+      [Size,Size1,MaxWidth,x,y,dx,dy,gapx,gapy]);
     {$ENDIF}
     for i := 0 to Memo1.Count - 1 do
     begin
@@ -3015,7 +3004,8 @@ var
     VHeight := size - y + gapy;
     TextHeight := size1;
     {$IFDEF DebugLR}
-    DebugLn('OutMemo E: Size=%d Size1=%d MaxWidth=%d y=%d dx=%d gapy=%d gapx=%d VHeight=%d',[Size,Size1,MaxWidth,y,dx,gapy,gapx,VHeight]);
+    DebugLn('OutMemo E: Size=%d Size1=%d MaxWidth=%d DIM:%d %d %d %d gapxy:%d %d',
+      [Size,Size1,MaxWidth,x,y,dx,dy,gapx,gapy]);
     {$ENDIF}
   end;
 
@@ -3080,8 +3070,8 @@ var
       n, nw, w, curx: Integer;
       Ts: TTextStyle;
     begin
-      {$IFDEF DebugLR}
-      DebugLn('OutLine Cury=%d + th=%d = %d < dr.bottom=%d == %s',[cury,th,cury+th,dr.bottom,dbgs(cury+th<dr.bottom)]);
+      {$IFDEF DebugLR_detail}
+      DebugLn('OutLine Cury=%d + th=%d = %d <= dr.bottom=%d == %s',[cury,th,cury+th,dr.bottom,dbgs(cury+th<=dr.bottom)]);
       {$ENDIF}
       // TODO: needs to check that th is calculated precisely
       if not Streaming and (cury + th <= DR.Bottom) then
@@ -3105,7 +3095,7 @@ var
         Canvas.TextStyle := Ts;
         
         nw := Round(w * ScaleX);                    // needed width
-        {$IFDEF DebugLR}
+        {$IFDEF DebugLR_detail}
         DebugLn('Canvas.Font.Size=%d TextWidth=%d',[Canvas.Font.Size,Canvas.TextWidth(St)]);
         {$ENDIF}
         (*
@@ -3117,7 +3107,7 @@ var
           {$ENDIF}
         end;
         *)
-        {$IFDEF DebugLR}
+        {$IFDEF DebugLR_detail}
         DebugLn('Th=%d Canvas.TextHeight(H)=%d',[Th,Canvas.TextHeight('H')]);
         Debugln('Canvas.Font.Size=%d TextWidth=%d',[Canvas.Font.Size,Canvas.TextWidth(St)]);
         aw := Canvas.TextWidth(St);                // actual width
@@ -3154,13 +3144,18 @@ var
 
     th := -Canvas.Font.Height+Round(LineSpacing * ScaleY);
     {$IFDEF DebugLR}
-    DebugLn('Th=%d Canvas.TextHeight(H)=%d DR=%s',[Th,Canvas.TextHeight('H'),dbgs(DR)]);
+    DebugLn('CurY=%d Th=%d Canvas.TextHeight(H)=%d Font.Size=%d DR=%s Memo1.Count=%d',
+      [cury, Th,Canvas.TextHeight('H'),Canvas.Font.Size, dbgs(DR), Memo1.Count]);
     {$ENDIF}
 
     CurStrNo := 0;
     for i := 0 to Memo1.Count - 1 do
       if OutLine(Memo1[i]) then
         break;
+
+    {$IFDEF DebugLR}
+    DebugLn('CurStrNo=%d CurY=%d Last"i"=%d',[CurStrNo, CurY, i]);
+    {$ENDIF}
   end;
 
   procedure OutMemo90;
@@ -3405,7 +3400,8 @@ var
   i: Integer;
 begin
   {$IFDEF DebugLR}
-  DebugLn('TfrMemoView.Print %s',[Name]);
+  WriteStr(St, DrawMode);
+  DebugLnEnter('TfrMemoView.Print INIT %s DrawMode=%s',[ViewInfoDIM(Self), st]);
   {$ENDIF}
   BeginDraw(TempBmp.Canvas);
   Streaming := True;
@@ -3483,6 +3479,10 @@ begin
   OldFont.Free;
   fFillColor := OldFill;
   DrawMode := drAll;
+  {$IFDEF DebugLR}
+  WriteStr(St, DrawMode);
+  DebugLnExit('TfrMemoView.Print DONE %s DrawMode=%s',[ViewInfo(Self), st]);
+  {$ENDIF}
 end;
 
 procedure TfrMemoView.ExportData;
@@ -5153,8 +5153,8 @@ var
   ox,oy: Integer;
 begin
   {$IFDEF DebugLR}
-  DebugLnEnter('TfrBand.DrawObject INI t=%s:%s Xadj=%d Margin=%d DiableDrawing=%s',
-  [dbgsname(t),t.name,Parent.XAdjust,Parent.LeftMargin,BoolToStr(DisableDrawing,true)]);
+  DebugLnEnter('TfrBand.DrawObject INI y=%d t=%s Xadj=%d Margin=%d DiableDrawing=%s',
+  [y,ViewInfoDIM(t),Parent.XAdjust,Parent.LeftMargin,BoolToStr(DisableDrawing,true)]);
   {$ENDIF}
   CurPage := Parent;
   CurBand := Self;
@@ -5164,13 +5164,7 @@ begin
     begin
       ox := t.x; Inc(t.x, Parent.XAdjust - Parent.LeftMargin);
       oy := t.y; Inc(t.y, y);
-      {$IFDEF DebugLR}
-      DebugLnEnter('Printing view %s x=%d y=%d dx=%d dy=%d',[ViewInfo(t),t.x,t.y,t.dx,t.dy]);
-      {$ENDIF}
       t.Print(MasterReport.EMFPages[PageNo]^.Stream);
-      {$IFDEF DebugLR}
-      DebugLnExit('');
-      {$ENDIF}
       t.x := ox; t.y := oy;
       if (t is TfrMemoView) and
          (TfrMemoView(t).DrawMode in [drAll, drAfterCalcHeight]) then
@@ -5449,7 +5443,7 @@ begin
   Result := False;
   with Parent do begin
     {$IFDEF DebugLR}
-    DebugLn('ay+dy+ady=%d CurBottomY=%d',[ay+Bands[btColumnFooter].dy+ady,CurBottomY]);
+    DebugLn('ay+ColFoot.dy+ady=%d CurBottomY=%d',[ay+Bands[btColumnFooter].dy+ady,CurBottomY]);
     {$ENDIF}
     if not RowsLayout then begin
       if ay + Bands[btColumnFooter].dy + ady > CurBottomY then
@@ -5543,6 +5537,9 @@ begin
     repeat
       newDy := Parent.CurBottomY - Parent.Bands[btColumnFooter].dy - y - 2;
       aMaxy := 0;
+      {$IFDEF DebugLR}
+      WriteLn('Parent.CurBottomy=',Parent.CurBottomY,' NewDY=',newDY);
+      {$ENDIF}
       for i := 0 to Objects.Count - 1 do
       begin
         t :=TfrView(Objects[i]);
@@ -5583,6 +5580,10 @@ begin
             // drawing the remaining part of some object
             if t.y + t.dy > newdy then
             begin
+              {$IFDEF DebugLR}
+              DebugLn('BIGGER THAN PAGE: t=%s Acumdy=%d y+dy=%d newdy=%d',
+                [ViewInfoDIM(t), TfrStretcheable(t).ActualHeight, t.y + t.dy,newdy]);
+              {$ENDIF}
               // the rest of "t" is too large to fit in the rest of the page
               oldy := t.y; olddy := t.dy;
               t.y := 0; t.dy := newdy;
@@ -5593,6 +5594,10 @@ begin
               t.Selected := true;
             end else
             begin
+              {$IFDEF DebugLR}
+              DebugLn('REMAINING OF PAGE: t=%s Acumdy=%d y+dy=%d newdy=%d',
+                [ViewInfoDIM(t),TfrStretcheable(t).ActualHeight, t.y + t.dy,newdy]);
+              {$ENDIF}
               // the rest of "t" fits within the remaining space on page
               oldy := t.y; olddy := t.dy;
               t.dy := t.y + t.dy;
@@ -5771,7 +5776,7 @@ var
   b: TfrBand;
 begin
   {$IFDEF debugLr}
-  DebugLnEnter('TFrBand.Draw INI Band=%s y=%d vis=%s',[BandInfo(self),y,BoolToStr(Visible,true)]);
+  DebugLnEnter('TFrBand.Draw INI Band=%s y=%d dy=%d vis=%s',[BandInfo(self),y,dy,BoolToStr(Visible,true)]);
   {$endif}
   Result := False;
   CurView := View;
@@ -6827,6 +6832,9 @@ var
   BooksBkUp            : array of TBookRecord;
   CurGroupValue        : variant;
   BookPrev             : pointer;
+  {$IFDEF DebugLR}
+  mys                  : string;
+  {$ENDIF}
   
   procedure AddToStack(b: TfrBand);
   begin
@@ -7054,7 +7062,8 @@ var
 
 begin
   {$IFDEF DebugLR}
-  DebugLnEnter('TfrPage.FormPage INI Mode=%d',[ord(mode)]);
+  WriteStr(Mys, Mode);
+  DebugLnEnter('TfrPage.FormPage INI Mode=%s',[MyS]);
   {$ENDIF}
   if Mode = pmNormal then
   begin
