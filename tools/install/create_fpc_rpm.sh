@@ -85,7 +85,7 @@ ReplaceScript=replace_in_files.pl
 
 # set version numbers in all Makefiles
 echo "set version numbers in all Makefiles ..."
-perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile(.fpc)?' $TmpDir/fpc/*
+perl replace_in_files.pl -sR -f 'version=\d.\d.\d' -r version=$CompilerVersionStr -m 'Makefile(.fpc)?' $TmpDir/fpc/*
 
 # update smart_strip.sh
 #ATM: not needed: cp $SmartStripScript $TmpDir/fpc/install/
