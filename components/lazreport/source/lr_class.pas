@@ -15,7 +15,7 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  SysUtils, {$IFDEF UNIX}CLocale,{$ENDIF} Classes, MaskUtils, Controls, FileUtil,
+  SysUtils, Math, {$IFDEF UNIX}CLocale,{$ENDIF} Classes, MaskUtils, Controls, FileUtil,
   Forms, Dialogs, Menus, Variants, DB, Graphics, Printers, osPrinters,
   DOM, XMLWrite, XMLRead, XMLConf, LCLType, LCLIntf, TypInfo, LCLProc, LR_View, LR_Pars,
   LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const, LMessages;
@@ -3073,7 +3073,6 @@ var
       {$IFDEF DebugLR_detail}
       DebugLn('OutLine Cury=%d + th=%d = %d <= dr.bottom=%d == %s',[cury,th,cury+th,dr.bottom,dbgs(cury+th<=dr.bottom)]);
       {$ENDIF}
-      // TODO: needs to check that th is calculated precisely
       if not Streaming and (cury + th <= DR.Bottom) then
       begin
         n := Length(St);
@@ -3127,7 +3126,8 @@ var
         Inc(CurStrNo);
         Result := False;
       end
-      else  Result := True;
+      else
+        Result := True;
 
       cury := cury + th;
     end;
@@ -5484,10 +5484,11 @@ end;
 
 procedure TfrBand.DrawPageBreak;
 var
-  i: Integer;
+  i, j, k, ty: Integer;
   newDy, oldy, olddy, aMaxy: Integer;
   t: TfrView;
   Flag: Boolean;
+  PgArr: array of integer;
 
   procedure CorrY(t: TfrView; dy: Integer);
   var
@@ -5513,10 +5514,15 @@ begin
     t.Selected := True;
     t.OriginalRect := Rect(t.x, t.y, t.dx, t.dy);
   end;
+
   if not CheckPageBreak(y, maxdy, True) then
     DrawObjects
   else
   begin
+
+    // space left of each column after headers and footers
+    newDy := Parent.CurBottomY - Parent.Bands[btColumnFooter].dy - y - 2;
+
     for i := 0 to Objects.Count - 1 do
     begin
       t :=TfrView(Objects[i]);
@@ -5532,10 +5538,51 @@ begin
         {$IFDEF DebugLR}
         DebugLnExit('CalcHeight Memo DONE');
         {$ENDIF}
+        // all stretcheable objects "end" at the same pixel
+        // here t.y coordinate is relative to current band, so is 0 based
+
+        // roughly, how many columns we will need?
+        k := ((t.y+t.dy) div newDy) + 2; // +2 = 1 for probable remainder + 1 extra
+        if  k > Length(pgArr) then
+          SetLength(pgArr, k);
       end;
     end;
+
+    // some objects do not fully use "newdy" pixels on each page, because of
+    // the granularity of "min height", some use as much space as "lines" fit
+    for j:=0 to Length(pgArr)-1 do
+    begin
+
+      pgArr[j] := newDy;
+
+      for i := 0 to Objects.Count - 1 do
+      begin
+        // calc the number of pixels really used by stretchable objects
+        // on each page.
+        t :=TfrView(Objects[i]);
+        if not (t is TfrStretcheable) then
+          continue;
+
+        ty := t.y;
+        if j>0 then
+          ty := 0;  // on each additional page, each object starts at 0, not t.y
+
+        // additionally, when objects are drawn, they are offseted t.gapy pixels
+        // but this is object dependant, for TfrMemoView they are.
+        if (t is TfrMemoView) then
+          ty := ty + t.gapy;
+
+        k := Max(TfrStretcheable(t).MinHeight, 1);
+        pgArr[j] := Min(pgArr[j], ty + (newDy-ty) div k * k);
+      end;
+    end;
+
+    k := 0;
     repeat
-      newDy := Parent.CurBottomY - Parent.Bands[btColumnFooter].dy - y - 2;
+      if k>(Length(pgArr)-1) then
+        break; // TODO: raise exception?
+      newDy := pgArr[k];
+
       aMaxy := 0;
       {$IFDEF DebugLR}
       WriteLn('Parent.CurBottomy=',Parent.CurBottomY,' NewDY=',newDY);
@@ -5550,6 +5597,8 @@ begin
         begin
           if (t.y + t.dy < newdy) then
           begin
+            // draw objects that fit on page and remove from
+            // pending objects
             if aMaxy < t.y + t.dy then
               aMaxy := t.y + t.dy;
             DrawObject(t);
@@ -5557,6 +5606,7 @@ begin
           end
           else
           begin
+            // objects that doesn't fit on page
             if t is TfrStretcheable then
             begin
               olddy := t.dy;
@@ -5602,15 +5652,11 @@ begin
               oldy := t.y; olddy := t.dy;
               t.dy := t.y + t.dy;
               t.y := 0;
-              if t.dy > TfrStretcheable(t).MinHeight div 2 then
-              begin
-                t.dy := TfrStretcheable(t).RemainHeight + t.gapy * 2 + 1;
-                Inc(TfrStretcheable(t).ActualHeight, t.dy - 1);
-                if aMaxy < t.y + t.dy then
-                  aMaxy := t.y + t.dy;
-                TfrStretcheable(t).DrawMode := drPart;
-                DrawObject(t);
-              end;
+              Inc(TfrStretcheable(t).ActualHeight, t.dy);
+              TfrStretcheable(t).DrawMode := drPart;
+              DrawObject(t);
+              if aMaxy < t.y + t.dy then
+                aMaxy := t.y + t.dy;
               t.y := oldy; t.dy := olddy;
               CorrY(t, TfrStretcheable(t).ActualHeight - t.dy);
               t.Selected := False;
@@ -5626,9 +5672,15 @@ begin
         if t.Selected then Flag := True;
         Dec(t.y, newdy);
       end;
-      if Flag then CheckPageBreak(y, 10000, False);
+
+      if Flag then
+        CheckPageBreak(y, 10000, False);
       y := Parent.CurY;
-      if MasterReport.Terminated then break;
+
+      inc(k);
+
+      if MasterReport.Terminated then
+        break;
     until not Flag;
     maxdy := aMaxy;
   end;
@@ -5639,6 +5691,7 @@ begin
     t.dy := t.OriginalRect.Bottom;
   end;
   Inc(Parent.CurY, maxdy);
+  SetLength(pgArr, 0);
   {$IFDEF DebugLR}
   DebugLnExit('DrawPageBreak END Parent.CurY=%d',[Parent.CurY]);
   {$ENDIF}
