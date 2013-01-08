@@ -5,7 +5,7 @@
 # Usage: ./create_lazarus_export_tgz.sh [chmhelp] [download] outputfilename
 #
 #   Options:
-#     chmhelp    add chm,kwd,xct,txt files in docs/chm
+#     chmhelp    add chm,kwd files in docs/chm
 #     download   download instead of using the current files
 #
 
@@ -66,7 +66,7 @@ else
     echo
     echo "Copying chm files"
     cd $LazSrcDir/docs/chm
-    cp -v *.txt *.kwd *.chm *.xct $TmpLazDir/docs/chm/
+    cp -v *.kwd *.chm $TmpLazDir/docs/chm/
     cd -
   fi
 fi

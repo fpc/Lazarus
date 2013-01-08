@@ -5,7 +5,7 @@
 # Usage: ./create_lazarus_rpm.sh [chmhelp]
 #
 #   Options:
-#     chmhelp           add package chmhelp and add chm,kwd,xct,txt files in docs/chm
+#     chmhelp           add package chmhelp and add chm,kwd files in docs/chm
 #
 # Note: To create an rpm as normal user, see the script rpm/create_nonroot_rpmmacros.sh 
 
