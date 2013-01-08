@@ -7150,6 +7150,7 @@ begin
   fTSearch.Backwards:=bBackward;
   // search while the current search position is inside of the search range
   IncPaintLock;
+  BeginUndoBlock;
   try
     ptFoundStartSel.y := -1;
     //DebugLn(['TCustomSynEdit.SearchReplace ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd),' ASearch="',dbgstr(ASearch),'" AReplace="',dbgstr(AReplace),'"']);
@@ -7179,11 +7180,13 @@ begin
           SetFoundCaretAndSel;
           EnsureCursorPosVisible;
           try
+            EndUndoBlock;
             DecPaintLock;
             nAction := DoOnReplaceText(ASearch,CurReplace,
                                        ptFoundStart.Y,ptFoundStart.X);
           finally
             IncPaintLock;
+            BeginUndoBlock
           end;
           if nAction = raCancel then exit;
         end else
@@ -7227,6 +7230,7 @@ begin
     end;
   finally
     SetFoundCaretAndSel;
+    EndUndoBlock;
     DecPaintLock;
   end;
 end;
