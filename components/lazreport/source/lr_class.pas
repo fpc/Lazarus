@@ -3073,7 +3073,7 @@ var
       {$IFDEF DebugLR_detail}
       DebugLn('OutLine Cury=%d + th=%d = %d <= dr.bottom=%d == %s',[cury,th,cury+th,dr.bottom,dbgs(cury+th<=dr.bottom)]);
       {$ENDIF}
-      if not Streaming and (cury + th <= DR.Bottom) then
+      if not Streaming and (cury + th -1 <= DR.Bottom) then
       begin
         n := Length(St);
         w := Ord(St[n - 1]) * 256 + Ord(St[n]);
