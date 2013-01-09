@@ -57,6 +57,7 @@ type
     function GetShowInLegend: Boolean; virtual; abstract;
     procedure SetActive(AValue: Boolean); virtual; abstract;
     procedure SetDepth(AValue: TChartDistance); virtual; abstract;
+    procedure SetShowInLegend(AValue: Boolean); virtual; abstract;
     procedure SetZPosition(AValue: TChartDistance); virtual; abstract;
     procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); virtual;
     procedure VisitSources(
@@ -995,7 +996,12 @@ begin
   try
     for s in Series do
       if AIncludeHidden or (s.Active and s.GetShowInLegend) then
-        s.GetLegendItemsBasic(Result);
+        try
+          s.GetLegendItemsBasic(Result);
+        except
+          s.SetShowInLegend(AIncludeHidden);
+          raise;
+        end;
   except
     FreeAndNil(Result);
     raise;

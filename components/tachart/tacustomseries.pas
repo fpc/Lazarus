@@ -56,7 +56,6 @@ type
     procedure SetAxisIndexX(AValue: Integer);
     procedure SetAxisIndexY(AValue: Integer);
     procedure SetLegend(AValue: TChartSeriesLegend);
-    procedure SetShowInLegend(AValue: Boolean);
 
   protected
     procedure AfterAdd; override;
@@ -66,6 +65,7 @@ type
     function GetShowInLegend: Boolean; override;
     procedure SetActive(AValue: Boolean); override;
     procedure SetDepth(AValue: TChartDistance); override;
+    procedure SetShowInLegend(AValue: Boolean); override;
     procedure SetTitle(AValue: String); virtual;
     procedure SetZPosition(AValue: TChartDistance); override;
     procedure StyleChanged(Sender: TObject);
