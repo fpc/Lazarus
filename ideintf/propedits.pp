@@ -442,12 +442,11 @@ type
     procedure SetValue(const NewValue: ansistring); override;
   end;
 
-{ TBoolPropertyEditor
-  Default property editor for all boolean properties }
+const PropCheckBoxSquareWidth = 15;
 
-  const PropCheckBoxSquareWidth = 15;
-  type
-  { TBoolPropertyEditor }
+type
+  { TBoolPropertyEditor
+    Default property editor for all boolean properties }
 
   TBoolPropertyEditor = class(TEnumPropertyEditor)
   public
