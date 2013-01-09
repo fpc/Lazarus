@@ -69,6 +69,9 @@ type
 
   TAxisScale = (asIncreasing, asDecreasing, asLogIncreasing, asLogDecreasing);
 
+  TOverrideColor = (ocBrush, ocPen);
+  TOverrideColors = set of TOverrideColor;
+
   TSeriesMarksStyle = (
     smsCustom,         { user-defined }
     smsNone,           { no labels }

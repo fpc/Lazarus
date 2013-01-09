@@ -917,8 +917,10 @@ begin
   if Source is TSeriesPointer then
     with TSeriesPointer(Source) do begin
       Self.FBrush.Assign(Brush);
+      Self.FHorizSize := HorizSize;
       Self.FPen.Assign(Pen);
       Self.FStyle := Style;
+      Self.FVertSize := VertSize;
     end;
   inherited Assign(Source);
 end;
