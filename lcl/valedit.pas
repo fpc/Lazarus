@@ -133,6 +133,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function InsertRow(const KeyName, Value: string; Append: Boolean): Integer;
     property FixedRows: Integer read GetFixedRows write SetFixedRows default 1;
     property Modified;
     property Keys[Index: Integer]: string read GetKey write SetKey;
@@ -505,6 +506,28 @@ begin
   FTitleCaptions.Free;
   FStrings.Free;
   inherited Destroy;
+end;
+
+function TValueListEditor.InsertRow(const KeyName, Value: string; Append: Boolean): Integer;
+begin
+  Result := Row;
+  if (Row > Strings.Count) or ((Row - FixedRows) >= Strings.Count)
+  or (Cells[0, Row] <> '') or (Cells[1, Row] <> '') then
+  begin                                    // Add a new Key=Value pair
+    Strings.BeginUpdate;
+    try
+      if Append then
+        Result := Strings.Add(KeyName+'='+Value) + FixedRows
+      else
+        Strings.Insert(Result - FixedRows, KeyName+'='+Value);
+    finally
+      Strings.EndUpdate;
+    end;
+  end
+  else begin   // Use an existing row, just update the Key and Value.
+    Cells[0, Result] := KeyName;
+    Cells[1, Result] := Value;
+  end;
 end;
 
 procedure TValueListEditor.StringsChange(Sender: TObject);
