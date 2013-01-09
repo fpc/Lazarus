@@ -5107,7 +5107,7 @@ end;
 
 procedure TSourceEditor.Activate;
 begin
-{ $note: avoid this if FSourceNoteBook.FUpdateLock > 0 / e.g. debugger calls ProcessMessages, and the internall Index is lost/undone}
+  { $note: avoid this if FSourceNoteBook.FUpdateLock > 0 / e.g. debugger calls ProcessMessages, and the internall Index is lost/undone}
   if (FSourceNoteBook=nil) then exit;
   if (FSourceNoteBook.FUpdateLock = 0) then
     FSourceNoteBook.ActiveEditor := Self;

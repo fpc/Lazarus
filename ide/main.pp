@@ -11107,6 +11107,7 @@ begin
 
     // switch back to source
     ActiveSrcEdit.Activate;
+    ActiveSrcEdit.EditorComponent.SetFocus;
 
     Result:=mrOk;
   finally
