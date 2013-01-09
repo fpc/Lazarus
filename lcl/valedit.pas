@@ -5,7 +5,7 @@ unit ValEdit;
 interface
 
 uses
-  Classes, SysUtils, Grids, LResources, Dialogs, LazUtf8, variants;
+  Classes, Controls, StdCtrls, SysUtils, Grids, LResources, Dialogs, LazUtf8, variants;
 
 type
 
@@ -103,6 +103,8 @@ type
     procedure SetItemProp(const AKeyOrIndex: Variant; AValue: TItemProp);
     procedure StringsChange(Sender: TObject);
     procedure StringsChanging(Sender: TObject);
+    procedure SelectValueEditor(Sender: TObject; aCol, aRow: Integer; var aEditor: TWinControl);
+//    procedure EditButtonClick(Sender: TObject);
     function GetOptions: TGridOptions;
     function GetKey(Index: Integer): string;
     function GetValue(const Key: string): string;
@@ -458,6 +460,8 @@ begin
       if i = -1 then
         raise Exception.Create('TValueListStrings.GetItemProp: Key not found: '+s);
     end;
+    if i >= Length(FItemProps) then
+      SetLength(FItemProps, i+1);
     Result := FItemProps[i];
     if not Assigned(Result) then begin
       Result := TItemProp.Create(FOwner);
@@ -472,10 +476,13 @@ constructor TValueListEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FStrings := TValueListStrings.Create(Self);
-  FStrings.OnChange:=@StringsChange;
-  FStrings.OnChanging:=@StringsChanging;
+  FStrings.OnChange := @StringsChange;
+  FStrings.OnChanging := @StringsChanging;
   FTitleCaptions := TStringList.Create;
   TStringList(FTitleCaptions).OnChange := @TitlesChanged;
+  OnSelectEditor := @SelectValueEditor;
+//  OnEditButtonClick := @EditButtonClick;
+
   //Don't use Columns.Add, it interferes with setting FixedCols := 1 (it will then insert an extra column)
   {
   with Columns.Add do
@@ -509,6 +516,8 @@ begin
 end;
 
 function TValueListEditor.InsertRow(const KeyName, Value: string; Append: Boolean): Integer;
+var
+  NewInd: Integer;
 begin
   Result := Row;
   if (Row > Strings.Count) or ((Row - FixedRows) >= Strings.Count)
@@ -517,9 +526,10 @@ begin
     Strings.BeginUpdate;
     try
       if Append then
-        Result := Strings.Add(KeyName+'='+Value) + FixedRows
+        NewInd := Strings.Count
       else
-        Strings.Insert(Result - FixedRows, KeyName+'='+Value);
+        NewInd := Result - FixedRows;
+      Strings.InsertItem(NewInd, KeyName+'='+Value, Nil);
     finally
       Strings.EndUpdate;
     end;
@@ -543,6 +553,32 @@ begin
   if Assigned(OnStringsChanging) then
     OnStringsChanging(Self);
 end;
+
+procedure TValueListEditor.SelectValueEditor(Sender: TObject; aCol, aRow: Integer;
+  var aEditor: TWinControl);
+// Choose the cell editor based on ItemProp.EditStyle
+var
+  ItemProp: TItemProp;
+begin
+  if aCol <> 1 then Exit;     // Only for the Value column
+  ItemProp := Strings.GetItemProp(aRow-FixedRows);
+  if Assigned(ItemProp) then
+    case ItemProp.EditStyle of
+      esSimple: aEditor := EditorByStyle(cbsAuto);
+      esEllipsis: aEditor := EditorByStyle(cbsEllipsis);
+      esPickList: begin
+        aEditor := EditorByStyle(cbsPickList);
+        (aEditor as TCustomComboBox).Items.Assign(ItemProp.PickList);
+        //Style := csDropDown, default = csDropDownList;
+      end;
+    end;
+end;
+
+// Triggering Action ...
+//procedure TValueListEditor.EditButtonClick(Sender: TObject);
+//begin
+  // ToDo: support button clicks
+//end;
 
 function TValueListEditor.GetFixedRows: Integer;
 begin
@@ -835,7 +871,6 @@ begin
   inherited DoOnResize;
   if (doAutoColResize in DisplayOptions) then AdjustColumnWidths;
 end;
-
 
 
 procedure Register;
