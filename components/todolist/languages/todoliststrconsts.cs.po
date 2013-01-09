@@ -4,14 +4,15 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Chronos <robie@centrum.cz>\n"
+"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: todoliststrconsts.dlgfropts
 msgid "Options"
-msgstr "volby"
+msgstr "Volby"
 
 #: todoliststrconsts.dlgunitdeprefresh
 msgid "Refresh"
@@ -31,7 +32,7 @@ msgstr "Tisk"
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
-msgstr "Vložit úkol"
+msgstr "Nový úkol"
 
 #: todoliststrconsts.listodoexport
 msgid "Export"
@@ -54,28 +55,26 @@ msgid "Module"
 msgstr "Modul"
 
 #: todoliststrconsts.listodolist
-#, fuzzy
 #| msgid "ToDo list"
 msgid "ToDo List"
 msgstr "Seznam úkolů"
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
-msgstr "Jít na zdrojový řádek"
+msgstr "Přeskočí na umístění úkolu ve zdroji"
 
 #: todoliststrconsts.listodolistoptions
-#, fuzzy
 #| msgid "ToDo options..."
 msgid "ToDo options ..."
-msgstr "Volby úkolů..."
+msgstr "Volby úkolů ..."
 
 #: todoliststrconsts.listodolistprintlist
 msgid "Print todo items"
-msgstr "Tisk položek úkolů"
+msgstr "Tisk úkolů"
 
 #: todoliststrconsts.listodolistrefresh
 msgid "Refresh todo items"
-msgstr "Obnovit položky úkolů"
+msgstr "Obnoví úkoly"
 
 #: todoliststrconsts.listodolline
 msgid "Line"
@@ -94,8 +93,6 @@ msgid "Category"
 msgstr "Kategorie"
 
 #: todoliststrconsts.lisviewtodolist
-#, fuzzy
 #| msgid "View ToDo list"
 msgid "View ToDo List"
-msgstr "Ukázat seznamk úkolů"
-
+msgstr "Ukaž seznam úkolů"
