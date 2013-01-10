@@ -2,13 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-27 17:12+0100\n"
-"Last-Translator: Chronos <robie@centrum.cz>\n"
+"PO-Revision-Date: 2013-01-09 20:28+0100\n"
+"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Czech\n"
+"Language: cs\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
@@ -28,7 +29,7 @@ msgstr "Nepodařilo se nalézt HTML prohlížeč."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
-msgstr ""
+msgstr "HTML prohlížeč nenalezen%sProsím nastav jeden v Nástroje -> Volby -> Nápověda -> Volby Nápovědy"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
@@ -73,7 +74,7 @@ msgstr "Vyčistit"
 
 #: lclstrconsts.ifsvk_cmd
 msgid "Cmd"
-msgstr ""
+msgstr "Cmd"
 
 #: lclstrconsts.ifsvk_control
 msgid "Control"
@@ -160,7 +161,7 @@ msgstr "Nabídka"
 
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
-msgstr ""
+msgstr "Meta"
 
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
@@ -235,7 +236,7 @@ msgstr "Mezerník"
 
 #: lclstrconsts.ifsvk_super
 msgid "Super"
-msgstr ""
+msgstr "Super"
 
 #: lclstrconsts.ifsvk_tab
 msgctxt "lclstrconsts.ifsvk_tab"
@@ -253,7 +254,7 @@ msgstr "Nahoru"
 
 #: lclstrconsts.liscefilter
 msgid "(filter)"
-msgstr ""
+msgstr "(filtr)"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
@@ -368,7 +369,7 @@ msgstr "Prvek '%s' nemá rodičovské okno"
 
 #: lclstrconsts.rscontrolisnotaparent
 msgid "'%s' is not a parent of '%s'"
-msgstr ""
+msgstr "\"%s\" není předchůdcem \"%s\""
 
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
@@ -542,7 +543,7 @@ msgstr "Formulář"
 
 #: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
 msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used. See the global variable RequireDerivedFormResource."
-msgstr ""
+msgstr "Zdroj formuláře %s nenalezen. Pro formuláře bez resource musí být použit konstruktor CreateNew. Podívejte se na globální proměnnou RequireDerivedFormResource."
 
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
@@ -574,11 +575,11 @@ msgstr ""
 
 #: lclstrconsts.rsgradientactivecaptioncolorcaption
 msgid "Gradient Active Caption"
-msgstr ""
+msgstr "Gradient Aktivního popisku"
 
 #: lclstrconsts.rsgradientinactivecaptioncolorcaption
 msgid "Gradient Inactive Caption"
-msgstr ""
+msgstr "Gradient Neaktivního Popisku"
 
 #: lclstrconsts.rsgraphic
 msgid "Graphic"
@@ -657,13 +658,11 @@ msgid "%s: Already registered"
 msgstr "%s: Již zaregistrováno"
 
 #: lclstrconsts.rshelpcontextnotfound
-#, fuzzy
 #| msgid "Help Context not found"
 msgid "A help database was found for this topic, but this topic was not found"
-msgstr "Kontext nápovědy nenalezen"
+msgstr "Databáze pro téma nalezena ale téma v databázi ne"
 
 #: lclstrconsts.rshelpdatabasenotfound
-#, fuzzy
 #| msgid "Help Database not found"
 msgid "There is no help database installed for this topic"
 msgstr "Databáze nápovědy nenalezena"
@@ -690,11 +689,11 @@ msgstr "Databáze nápovědy %s%s%s nenalezena"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
 msgid "Help for directive %s%s%s not found."
-msgstr ""
+msgstr "Nápověda pro direktivu %s%s%s nenalezena"
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
 msgid "Help for directive %s%s%s not found in Database %s%s%s."
-msgstr ""
+msgstr "Nápověda pro direktivu %s%s%s nenalezena v databázi %s%s%s."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
@@ -713,16 +712,14 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Nápověda nenalezena pro řádek %d, sloupce %d pro %s."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-#, fuzzy
 #| msgid "No help nodes available"
 msgid "No help entries available for this topic"
 msgstr "Uzly nápovědy nejsou dostupné"
 
 #: lclstrconsts.rshelpnotfound
-#, fuzzy
 #| msgid "Help not found"
 msgid "No help found for this topic"
-msgstr "Nápověda nenalezena"
+msgstr "Nápověda pro téna nenalezena"
 
 #: lclstrconsts.rshelpnotregistered
 msgid "%s: Not registered"
@@ -741,10 +738,9 @@ msgid "Help Viewer Error"
 msgstr "Chyba prohlížeče nápovědy"
 
 #: lclstrconsts.rshelpviewernotfound
-#, fuzzy
 #| msgid "Help Viewer not found"
 msgid "No viewer was found for this type of help content"
-msgstr "Prohlížeč nápovědy nenalezen"
+msgstr "Prohlížeč nápovědy nenalezen pro tento typ"
 
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
@@ -756,13 +752,12 @@ msgstr "Zvýrazněný text"
 
 #: lclstrconsts.rshotlightcolorcaption
 msgid "Hot Light"
-msgstr ""
+msgstr "Hot Light"
 
 #: lclstrconsts.rsicns
-#, fuzzy
 #| msgid "OSX Icon Resource"
 msgid "Mac OS X Icon"
-msgstr "Zdroj ikony OSX"
+msgstr "Zdroj ikony OS X"
 
 #: lclstrconsts.rsicon
 msgid "Icon"
@@ -1054,7 +1049,7 @@ msgstr "Předchozí"
 
 #: lclstrconsts.rspromptonreplace
 msgid "Prompt on replace"
-msgstr ""
+msgstr "Dotázat se před nahrazením"
 
 #: lclstrconsts.rspropertydoesnotexist
 msgid "Property %s does not exist"
@@ -1146,7 +1141,7 @@ msgstr ""
 
 #: lclstrconsts.rsqtoptionx11title
 msgid "-title title, sets the application title."
-msgstr ""
+msgstr "-title titulek, nastavuje titulek aplikace"
 
 #: lclstrconsts.rsqtoptionx11visual
 msgid "-visual TrueColor, forces the application to use a TrueColor visual on an 8-bit display."
@@ -1215,7 +1210,7 @@ msgstr "Nebeská modrá"
 
 #: lclstrconsts.rstcustomtabcontrolaccessibilitydescription
 msgid "A control with tabs"
-msgstr ""
+msgstr "Ovládací prvek s panely"
 
 #: lclstrconsts.rstealcolorcaption
 msgid "Teal"
@@ -1232,17 +1227,17 @@ msgstr "Označkovaný obrazový formát souboru"
 #: lclstrconsts.rstpanelaccessibilitydescription
 msgctxt "lclstrconsts.rstpanelaccessibilitydescription"
 msgid "Panel"
-msgstr ""
+msgstr "Panel"
 
 #: lclstrconsts.rstsplitteraccessibilitydescription
 msgctxt "lclstrconsts.rstsplitteraccessibilitydescription"
 msgid "A grip to control how much size to give two parts of an area"
-msgstr ""
+msgstr "Rukojeť k ovládání místa, které zabírají dvě části oblasti"
 
 #: lclstrconsts.rsttreeviewaccessibilitydescription
 msgctxt "lclstrconsts.rsttreeviewaccessibilitydescription"
 msgid "A tree of items"
-msgstr ""
+msgstr "Strom položek"
 
 #: lclstrconsts.rsunabletoloaddefaultfont
 msgid "Unable to load default font"
@@ -1358,7 +1353,7 @@ msgstr "Neplatný index ImageList"
 
 #: lclstrconsts.smaskeditnomatch
 msgid "The current text does not match the specified mask."
-msgstr ""
+msgstr "Současný text neodpovídá specifikované masce"
 
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
@@ -1476,10 +1471,9 @@ msgid "Invalid integer number: %s"
 msgstr "Neplatné celé číslo: %s"
 
 #: lclstrconsts.sparlocinfo
-#, fuzzy
 #| msgid " (at %d,%d, stream offset %.8x)"
 msgid " (at %d,%d, stream offset %d)"
-msgstr " (u %d,%d, posun proudu %.8x)"
+msgstr " (u %d,%d, posun proudu %d)"
 
 #: lclstrconsts.sparunterminatedbinvalue
 msgid "Unterminated byte value"

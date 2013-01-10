@@ -2,13 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-19 13:36+0100\n"
-"Last-Translator: Chronos <robie@centrum.cz>\n"
+"PO-Revision-Date: 2013-01-09 16:21+0100\n"
+"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Czech\n"
+"Language: cs\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -152,10 +153,9 @@ msgid "&Dataset:"
 msgstr "&Datová sada"
 
 #: objinspstrconsts.fesfetitle
-#, fuzzy
 #| msgid "Edit Fields..."
 msgid "Edit Fields ..."
-msgstr "Upravit pole..."
+msgstr "Upravit pole ..."
 
 #: objinspstrconsts.fesfieldcantbec
 msgid "Field %s cannot be created!"
@@ -213,7 +213,7 @@ msgstr "OK"
 
 #: objinspstrconsts.fespersistentcompname
 msgid "Co&mponent Name:"
-msgstr ""
+msgstr "Jméno ko&mponenty"
 
 #: objinspstrconsts.fesresultfield
 msgid "&Result Fields:"
@@ -261,40 +261,34 @@ msgid "Set value"
 msgstr "Nastavit hodnotu"
 
 #: objinspstrconsts.nbcesaddpage
-#, fuzzy
 #| msgid "Add page"
 msgid "Add Page"
 msgstr "Přidat stránku"
 
 #: objinspstrconsts.nbcesdeletepage
-#, fuzzy
 #| msgid "Delete page"
 msgid "Delete Page"
 msgstr "Smazat stránku"
 
 #: objinspstrconsts.nbcesinsertpage
-#, fuzzy
 #| msgid "Insert page"
 msgid "Insert Page"
 msgstr "Vložit stránku"
 
 #: objinspstrconsts.nbcesmovepageleft
-#, fuzzy
 #| msgid "Move page left"
 msgid "Move Page Left"
 msgstr "Přesunout stránku vlevo"
 
 #: objinspstrconsts.nbcesmovepageright
-#, fuzzy
 #| msgid "Move page right"
 msgid "Move Page Right"
 msgstr "Přesunout stránku vpravo"
 
 #: objinspstrconsts.nbcesshowpage
-#, fuzzy
 #| msgid "Show page ..."
 msgid "Show Page"
-msgstr "Ukázat stránku..."
+msgstr "Ukázat stránku"
 
 #: objinspstrconsts.oicoleditadd
 msgctxt "objinspstrconsts.oicoleditadd"
@@ -333,10 +327,9 @@ msgid "Action"
 msgstr "Akce"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
-#, fuzzy
 #| msgid "Action&List Editor..."
 msgid "Action&List Editor ..."
-msgstr "Editor &ActionList"
+msgstr "Editor &ActionList ..."
 
 #: objinspstrconsts.oisactionlisteditor
 msgid "ActionList Editor"
@@ -379,7 +372,6 @@ msgid "&Add"
 msgstr "&Přidat"
 
 #: objinspstrconsts.oiscancel
-#, fuzzy
 #| msgid "&Cancel"
 msgctxt "objinspstrconsts.oiscancel"
 msgid "Cancel"
@@ -391,7 +383,7 @@ msgstr "Kategorie"
 
 #: objinspstrconsts.oiscdelete
 msgid "Delete?"
-msgstr ""
+msgstr "Odstranit?"
 
 #: objinspstrconsts.oischar
 msgid "Char"
@@ -515,13 +507,12 @@ msgstr "Desetinné číslo"
 
 #: objinspstrconsts.oishelp
 msgid "&Help"
-msgstr ""
+msgstr "&Pomoc"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
-#, fuzzy
 #| msgid "I&mageList Editor..."
 msgid "I&mageList Editor ..."
-msgstr "Editor I&mageList"
+msgstr "Editor I&mageList ..."
 
 #: objinspstrconsts.oisincompatibleidentifier
 msgid "Incompatible Identifier"
@@ -576,10 +567,9 @@ msgid "Load picture"
 msgstr "Načíst obrázek"
 
 #: objinspstrconsts.oismasks
-#, fuzzy
 #| msgid "Masks..."
 msgid "Masks ..."
-msgstr "Masky..."
+msgstr "Masky ..."
 
 #: objinspstrconsts.oismethod
 msgid "Method"
@@ -591,7 +581,7 @@ msgstr "Přesunout &dolů"
 
 #: objinspstrconsts.oismovedownhint
 msgid "Move field down"
-msgstr ""
+msgstr "Posunoud pole níže"
 
 #: objinspstrconsts.oismoveup
 msgctxt "objinspstrconsts.oismoveup"
@@ -600,7 +590,7 @@ msgstr "Přesunout &nahoru"
 
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
-msgstr ""
+msgstr "Posunout pole výše"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -713,7 +703,7 @@ msgstr "Vybrat vše"
 
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
-msgstr ""
+msgstr "Vybrat všechna pole"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -725,19 +715,19 @@ msgstr "Množina"
 
 #: objinspstrconsts.oissetmaxconstraints
 msgid "Set MaxHeight=%d, MaxWidth=%d"
-msgstr ""
+msgstr "MaxHeight=%d, MaxWidth=%d"
 
 #: objinspstrconsts.oissetmaxconstraintshint
 msgid "Use current size as Max Constraints"
-msgstr ""
+msgstr "Použít aktuální velikost jako Maximální rozměry"
 
 #: objinspstrconsts.oissetminconstraints
 msgid "Set MinHeight=%d, MinWidth=%d"
-msgstr ""
+msgstr "MinHeight=%d, MinWidth=%d"
 
 #: objinspstrconsts.oissetminconstraintshint
 msgid "Use current size as Min Constraints"
-msgstr ""
+msgstr "Použít aktuální velikost jako Minimální rozměry"
 
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
@@ -745,7 +735,7 @@ msgstr "Nastavit na výchozí: %s"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr ""
+msgstr "Natavit hodnotu vlastnosti jako Výchozí"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
@@ -776,10 +766,9 @@ msgid "Strings Editor Dialog"
 msgstr "Dialog editoru řetězců"
 
 #: objinspstrconsts.oistdactcolorselect1headline
-#, fuzzy
 #| msgid "Select &Color..."
 msgid "Select &Color ..."
-msgstr "Vybrat barvu"
+msgstr "Vybrat barvu ..."
 
 #: objinspstrconsts.oistdactcolorselecthint
 msgid "Color Select"
@@ -960,10 +949,9 @@ msgid "Exit"
 msgstr "Odejít"
 
 #: objinspstrconsts.oistdactfileopenheadline
-#, fuzzy
 #| msgid "&Open..."
 msgid "&Open ..."
-msgstr "&Otevřít"
+msgstr "&Otevřít ..."
 
 #: objinspstrconsts.oistdactfileopenhint
 msgctxt "objinspstrconsts.oistdactfileopenhint"
@@ -975,30 +963,27 @@ msgid "Ctrl+O"
 msgstr "Ctrl+O"
 
 #: objinspstrconsts.oistdactfileopenwithheadline
-#, fuzzy
 #| msgid "Open with..."
 msgid "Open with ..."
-msgstr "Otevřít s..."
+msgstr "Otevřít s ..."
 
 #: objinspstrconsts.oistdactfileopenwithhint
 msgid "Open with"
 msgstr "Otevřít s"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
-#, fuzzy
 #| msgid "Save &As..."
 msgid "Save &As ..."
-msgstr "Uložit jako..."
+msgstr "Uložit jako ..."
 
 #: objinspstrconsts.oistdactfilesaveashint
 msgid "Save As"
 msgstr "Uložit jako"
 
 #: objinspstrconsts.oistdactfonteditheadline
-#, fuzzy
 #| msgid "Select &Font..."
 msgid "Select &Font ..."
-msgstr "Vybrat &písmo"
+msgstr "Vybrat &písmo ..."
 
 #: objinspstrconsts.oistdactfontedithint
 msgid "Font Select"
@@ -1037,10 +1022,9 @@ msgid "Find first"
 msgstr "Hledat první"
 
 #: objinspstrconsts.oistdactsearchfindheadline
-#, fuzzy
 #| msgid "&Find..."
 msgid "&Find ..."
-msgstr "&Hledat..."
+msgstr "&Hledat ..."
 
 #: objinspstrconsts.oistdactsearchfindhint
 msgid "Find"
@@ -1071,30 +1055,42 @@ msgid "Replace"
 msgstr "Nahradit"
 
 #: objinspstrconsts.oistestdialog
-#, fuzzy
 #| msgid "Test dialog..."
 msgid "Test dialog ..."
-msgstr "Zkušební dialog..."
+msgstr "Zkušební dialog ..."
 
 #: objinspstrconsts.oistestinput
 msgid "Test Input"
 msgstr "Zkušební vstup"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Identifikátor %s%s%s není metoda.%sStiskněte Zrušit k návratu zpět,%sstiskněte Ignorovat k vynucení."
+msgid ""
+"The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore "
+"to force it."
+msgstr ""
+"Identifikátor %s%s%s není metoda.%sStiskněte Zrušit k návratu zpět,"
+"%sstiskněte Ignorovat k vynucení."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Metoda %s%s%s není kompatibilní s touto událostí (%s).%sStiskněte Zrušit pro návrat zpět, %sstiskněte Ignorovat pro vynucení."
+msgid ""
+"The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,"
+"%spress Ignore to force it."
+msgstr ""
+"Metoda %s%s%s není kompatibilní s touto událostí (%s).%sStiskněte Zrušit pro "
+"návrat zpět, %sstiskněte Ignorovat pro vynucení."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Metoda %s%s%s není zveřejněná.%sStiskněte Zrušit pro návrat zpět,%sstiskněte Ignorovat pro vynucení."
+msgid ""
+"The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to "
+"force it."
+msgstr ""
+"Metoda %s%s%s není zveřejněná.%sStiskněte Zrušit pro návrat zpět,%sstiskněte "
+"Ignorovat pro vynucení."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
-msgstr "Nelze změnit rodiče ovládacího prvku %s%s%s na nového rodiče %s%s%s.%s%s"
+msgstr ""
+"Nelze změnit rodiče ovládacího prvku %s%s%s na nového rodiče %s%s%s.%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
@@ -1112,7 +1108,7 @@ msgstr "&Nevybrat nic"
 
 #: objinspstrconsts.oisunselectallhint
 msgid "Unselect All"
-msgstr ""
+msgstr "Odznač vše"
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"
@@ -1151,10 +1147,9 @@ msgid "Filter name"
 msgstr "Jméno filtru"
 
 #: objinspstrconsts.pirsunit
-#, fuzzy
 #| msgid "Unit"
 msgid "Pascal unit"
-msgstr "Jednotka"
+msgstr "Jednotka pascal"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"
@@ -1212,17 +1207,15 @@ msgid "Sections Editor ..."
 msgstr "Editor výběru..."
 
 #: objinspstrconsts.sccsiledtadd
-#, fuzzy
 #| msgid "Add ..."
 msgid "&Add ..."
-msgstr "Přidat..."
+msgstr "Přidat ..."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr "Seřízení"
 
 #: objinspstrconsts.sccsiledtapply
-#, fuzzy
 #| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
@@ -1237,7 +1230,6 @@ msgid "Center"
 msgstr "Vystředit"
 
 #: objinspstrconsts.sccsiledtclear
-#, fuzzy
 #| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "&Clear"
@@ -1248,11 +1240,10 @@ msgid "Crop"
 msgstr "Oříznout"
 
 #: objinspstrconsts.sccsiledtdelete
-#, fuzzy
 #| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
-msgstr "Smazat"
+msgstr "Odstranit"
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1263,18 +1254,16 @@ msgid "Selected Image"
 msgstr "Vybraný obrázek"
 
 #: objinspstrconsts.sccsiledtmovedown
-#, fuzzy
 #| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move D&own"
-msgstr "Přesunout dolů"
+msgstr "Přesunout d&olů"
 
 #: objinspstrconsts.sccsiledtmoveup
-#, fuzzy
 #| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move &Up"
-msgstr "Přesunout nahoru"
+msgstr "Přesunout nahor&u"
 
 #: objinspstrconsts.sccsiledtnone
 msgid "None"
@@ -1289,17 +1278,15 @@ msgid "Transparent Color:"
 msgstr "Průhledná barva:"
 
 #: objinspstrconsts.sccsiledtsave
-#, fuzzy
 #| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "&Save ..."
-msgstr "Uložit..."
+msgstr "&Uložit ..."
 
 #: objinspstrconsts.sccsiledtsaveall
-#, fuzzy
 #| msgid "Save All..."
 msgid "Save All ..."
-msgstr "Uložit vše..."
+msgstr "Uložit vše ..."
 
 #: objinspstrconsts.sccsiledtsavedialog
 msgid "Save Image"
@@ -1314,11 +1301,10 @@ msgid "Edit Columns ..."
 msgstr "Editovat sloupce..."
 
 #: objinspstrconsts.sccslvedt
-#, fuzzy
 #| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items ..."
-msgstr "Upravit položky..."
+msgstr "Upravit položky ..."
 
 #: objinspstrconsts.sccslvedtapply
 msgctxt "objinspstrconsts.sccslvedtapply"
@@ -1374,20 +1360,18 @@ msgid "New SubItem"
 msgstr "Nová podpoložka"
 
 #: objinspstrconsts.sccsmaskeditor
-#, fuzzy
 #| msgid "Edit Mask Editor..."
 msgid "Edit Mask Editor ..."
-msgstr "Upravit editor masky..."
+msgstr "Upravit editor masky ..."
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
 msgstr "Editor panelů..."
 
 #: objinspstrconsts.sccssgedt
-#, fuzzy
 #| msgid "Edit StringGrid..."
 msgid "Edit StringGrid ..."
-msgstr "Editovat StringGrid..."
+msgstr "Editovat StringGrid ..."
 
 #: objinspstrconsts.sccssgedtapply
 msgctxt "objinspstrconsts.sccssgedtapply"
@@ -1407,10 +1391,9 @@ msgid "String Grid"
 msgstr "Řetězcová mřížka"
 
 #: objinspstrconsts.sccssgedtload
-#, fuzzy
 #| msgid "Load..."
 msgid "Load ..."
-msgstr "Načít..."
+msgstr "Načít ..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
 msgid "Move Rows/Cols"
@@ -1422,11 +1405,10 @@ msgid "Open"
 msgstr "Otevřít"
 
 #: objinspstrconsts.sccssgedtsave
-#, fuzzy
 #| msgid "Save..."
 msgctxt "objinspstrconsts.sccssgedtsave"
 msgid "Save ..."
-msgstr "Uložit..."
+msgstr "Uložit ..."
 
 #: objinspstrconsts.sccssgedtsavedialog
 msgctxt "objinspstrconsts.sccssgedtsavedialog"
@@ -1434,11 +1416,10 @@ msgid "Save"
 msgstr "Uložit"
 
 #: objinspstrconsts.sccstredt
-#, fuzzy
 #| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items ..."
-msgstr "Upravit položky..."
+msgstr "Upravit položky ..."
 
 #: objinspstrconsts.sccstredtapply
 msgctxt "objinspstrconsts.sccstredtapply"
@@ -1534,19 +1515,19 @@ msgstr "Chcete rozdělit obrázek?"
 
 #: objinspstrconsts.tbcenewbutton
 msgid "New Button"
-msgstr ""
+msgstr "Nový Button"
 
 #: objinspstrconsts.tbcenewcheckbutton
 msgid "New CheckButton"
-msgstr ""
+msgstr "Nový CheckButton"
 
 #: objinspstrconsts.tbcenewdivider
 msgid "New Divider"
-msgstr ""
+msgstr "Nový Divider (rozdělovník)"
 
 #: objinspstrconsts.tbcenewseparator
 msgid "New Separator"
-msgstr ""
+msgstr "Nový Separator"
 
 #: objinspstrconsts.tccesaddtab
 msgid "Add tab"
@@ -1567,4 +1548,3 @@ msgstr "Přesunout záložku vlevo"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Přesunou záložku vpravo"
-

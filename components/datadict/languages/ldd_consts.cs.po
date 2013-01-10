@@ -1,0 +1,211 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: ldd_consts.ldd_availablecodegenerators
+msgid "Available code generators"
+msgstr "Dostupné generátory kódu"
+
+#: ldd_consts.ldd_cancel
+msgid "&Cancel"
+msgstr "Zrušit"
+
+#: ldd_consts.ldd_close
+msgid "&Close"
+msgstr "Zavřít"
+
+#: ldd_consts.ldd_configuredatadictionary
+msgid "Configure Data Dictionary"
+msgstr "Konfigurovat datový slovník"
+
+#: ldd_consts.ldd_configuregeneratedcode
+msgid "Configure generated code"
+msgstr "Konfigurovat generovaný kód"
+
+#: ldd_consts.ldd_databasedesktopapplication
+msgid "Database desktop application"
+msgstr "Databázová desktop aplikace"
+
+#: ldd_consts.ldd_datadictionary
+msgid "Data dictionary &file:"
+msgstr "Soubor dat. slovníku:"
+
+#: ldd_consts.ldd_defaultdatadictdirectory
+msgid "Default data dictionary directory"
+msgstr "Výchozí složka dat. slovníku"
+
+#: ldd_consts.ldd_fields
+msgid "Fields"
+msgstr "Políčka"
+
+#: ldd_consts.ldd_fieldstogeneratecodefor
+msgid "Fields to generate code for"
+msgstr "Políčka ke generování kódu pro"
+
+#: ldd_consts.ldd_filenameapplicationsfilter
+msgid "Applications|*.exe|Any file|*.*"
+msgstr "Aplikace|*.exe|Všechny soubory|*.*"
+
+#: ldd_consts.ldd_filenameedit
+msgid "Data dictionary|*.fdd|Any file|*.*"
+msgstr "Slovník dat|*.fdd|Všechny soubory|*.*"
+
+#: ldd_consts.ldd_generatedcode
+msgid "Generated code"
+msgstr "Generovaný kód"
+
+#: ldd_consts.ldd_knowndatadictionary
+msgid "Known data dictionary"
+msgstr "Známý slovník dat."
+
+#: ldd_consts.ldd_ok
+msgid "&OK"
+msgstr "&OK"
+
+#: ldd_consts.ldd_openexistingfile
+msgid "Open existing file"
+msgstr "Otevřít existující slovník"
+
+#: ldd_consts.ldd_options
+msgid "Options"
+msgstr "Volby"
+
+#: ldd_consts.ldd_propertiesforselected
+msgid "Properties for selected fields"
+msgstr "Volby pro vybraná pole"
+
+#: ldd_consts.ldd_save
+msgid "&Save"
+msgstr "Uložit"
+
+#: ldd_consts.ldd_saveto
+msgid "Save to"
+msgstr "Uložit jako"
+
+#: ldd_consts.ldd_sdcodefilter
+msgid "Pascal files|*.pp;*.pas;*.inc|All files|*.*"
+msgstr "Pascal soubory|*.pp;*.pas;*.inc|Všechny soubory|*.*"
+
+#: ldd_consts.ldd_sdcodetitle
+msgid "Save file as"
+msgstr "Uložit soubor jako"
+
+#: ldd_consts.ldd_selectcodetobegenerated
+msgid "Select code to be generated"
+msgstr "Vyber kód ke generování"
+
+#: ldd_consts.ldd_setprojectdatadictionary
+msgid "Set project Data Dictionary"
+msgstr "Nastavit datový slovník projektu"
+
+#: ldd_consts.ldd_showgeneratedcode
+msgid "Show generated code"
+msgstr "Ukaž generovaný kód"
+
+#: ldd_consts.ldd_usedatadictionary
+msgid "&Use Data dictionary for this project"
+msgstr "Použít datový slovník pro tento projekt"
+
+#: ldd_consts.sapplicationfilter
+msgid "Applications|*"
+msgstr "Aplikace|*"
+
+#: ldd_consts.sapplyingddtodataset
+msgid "Applying data dictionary to dataset %s"
+msgstr "Aplikuji datový slovník na dataset %s"
+
+#: ldd_consts.sapplyingddtofield
+msgid "Applying data dictionary to field %s"
+msgstr "Aplikuji datový slovník na pole %s"
+
+#: ldd_consts.serrnodatadesktopdoselect
+msgid ""
+"Could not locate the database desktop application.\n"
+"Would you like to select it ?\n"
+msgstr ""
+"Nemohu lokalizovat databázovou dekstop apliaci.\n"
+"Přejete si zvolit ji?\n"
+
+#: ldd_consts.serrnodatadictactive
+msgid ""
+"No datadictionary active.\n"
+"Please set a data dictionary for the project\n"
+msgstr ""
+"Žádný datový slovník není aktivní.\n"
+"\vProsím nastavte datový slovník pro projekt\n"
+
+#: ldd_consts.serrselectdd
+msgid "Please select a known data dictionary"
+msgstr "Prosím zvolte známý datový slovník"
+
+#: ldd_consts.serrselectdir
+msgid "Please select an existing directory"
+msgstr "Prosím zvolte existující slovník"
+
+#: ldd_consts.serrselectexe
+msgid "Please select an existing database desktop application"
+msgstr "Prosím zvolte existující databázovou dektop aplikaci"
+
+#: ldd_consts.serrselectfile
+msgid "Please select an existing data dictionary file"
+msgstr "Prosím zvolte existující soubor dat. slovníku"
+
+#: ldd_consts.sfromfile
+msgid "from file: "
+msgstr "ze souboru:"
+
+#: ldd_consts.sloadingdatadict
+msgid "Loading data dictionary "
+msgstr "Načítám datový slovník"
+
+#: ldd_consts.smenuconfdatadict
+msgid "Configuration"
+msgstr "Konfigurace"
+
+#: ldd_consts.smenuconfprojdatadict
+msgid "Set ..."
+msgstr "Nastav ...."
+
+#: ldd_consts.smenudatadesktop
+msgid "Database Desktop"
+msgstr "Desktop DB"
+
+#: ldd_consts.smenudatadict
+msgid "Data dictionary"
+msgstr "Datový slovník"
+
+#: ldd_consts.smenudatadictapply
+msgid "Apply"
+msgstr "Aplikuj"
+
+#: ldd_consts.smenudatadictcreatecode
+msgid "Create code from dataset"
+msgstr "Vytvoř kód z datasetu"
+
+#: ldd_consts.smenudatadictdesignsql
+msgid "Design SQL"
+msgstr "Navrhnout SQL"
+
+#: ldd_consts.smenuopendatadict
+msgid "Open"
+msgstr "Otevřít"
+
+#: ldd_consts.snotyetimplemted
+msgid "Not yet implemented"
+msgstr "Není zatím iplementováno"
+
+#: ldd_consts.swarningnoddforfield
+msgid "Warning: No definition in data dictionary for field %s"
+msgstr "Varování: Žádná definice v datovém slovníku pro pole %s"
+
+#: ldd_consts.swrongselection
+msgid "Wrong selection count : %d"
+msgstr "Špatný výběr: %d"

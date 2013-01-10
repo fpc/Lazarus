@@ -1,14 +1,14 @@
 msgid ""
 msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-01-07 19:03+0100\n"
-"Last-Translator: Chronos <robie@centrum.cz>\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Czech\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: tlazconverterform.button1.caption
 msgid "Path"
@@ -20,34 +20,34 @@ msgstr "Hledat"
 
 #: tlazconverterform.button3.caption
 msgid "Convert"
-msgstr "Převést"
+msgstr "Převéct"
 
 #: tlazconverterform.caption
 msgctxt "TLAZCONVERTERFORM.CAPTION"
 msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
-msgstr "Kódová stránka LazConverteru pro PAS, LFM, LRS, LRT a INC soubory v0.0.6"
+msgstr ""
+"LazConverter kódové stránky pro PAS, LFM, LRS, LRT a INC soubory v0.0.6"
 
 #: tlazconverterform.label1.caption
 msgid "Path to your project:"
-msgstr "Cesta k vašemu projektu:"
+msgstr "Cesta k Vašemu projektu:"
 
 #: tlazconverterform.label2.caption
 msgid "Convert From:"
-msgstr "Převést z:"
+msgstr "Převéct z:"
 
 #: tlazconverterform.label3.caption
 msgid "Convert To:"
-msgstr "Převést do:"
+msgstr "Převéct do:"
 
 #: tlazconverterform.label6.caption
 msgid "Ready..."
-msgstr "Připraveno..."
+msgstr "Připraven ..."
 
 #: tlazconverterform.menuitem1.caption
 msgid "Remove from conversion"
-msgstr "Odebrat z převodu"
+msgstr "Odebrat z konverze"
 
 #: tlazconverterform.selectdirectorydialog1.title
 msgid "Select Directory"
-msgstr ""
-
+msgstr "Vybrat složku"
