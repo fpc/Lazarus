@@ -141,7 +141,7 @@ msgstr "Encontrados %d errores."
 
 #: pocheckerconsts.snrofitemsmismatch
 msgid "Mismatch in number of items for master and child"
-msgstr "Discrepancia en el número de elementos para el maestro y el niño"
+msgstr "Discrepancia en el número de elementos para el maestro y el hijo"
 
 #: pocheckerconsts.snrofitemsmismatchd
 msgid "%s: %d items"

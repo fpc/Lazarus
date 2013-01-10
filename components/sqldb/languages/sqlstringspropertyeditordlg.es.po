@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
+"PO-Revision-Date: 2012-10-04 16:30+0100\n"
+"Language-Team: \n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: sqldb\n"
+"POT-Creation-Date: \n"
+"MIME-Version: 1.0\n"
+
+#: sqlstringspropertyeditordlg.smetacolumns
+msgid "Columns"
+msgstr "Columnas"
+
+#: sqlstringspropertyeditordlg.smetapleasespecifyatableintheobjectfield
+msgid "Please specify a table in the object field."
+msgstr "Porfavor especifica una tabla en el campo del objeto"
+
+#: sqlstringspropertyeditordlg.smetaprocedures
+msgid "Procedures"
+msgstr "Procedimientos"
+
+#: sqlstringspropertyeditordlg.smetasystables
+msgid "SysTables"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetatabcaption
+msgid "Metadata"
+msgstr "Metadatos"
+
+#: sqlstringspropertyeditordlg.smetatables
+msgid "Tables"
+msgstr "Tablas"
+
+#: sqlstringspropertyeditordlg.sresulttabcaption
+msgid "Results"
+msgstr "Resultados"
+
+#: sqlstringspropertyeditordlg.ssqltabcaption
+msgid "SQL Code"
+msgstr "Código SQL"
+

@@ -1,0 +1,15 @@
+msgid ""
+msgstr ""
+"Last-Translator: Lucas Martín <codedeep@hotmail.com>\n"
+"PO-Revision-Date: \n"
+"Project-Id-Version: tdbf\n"
+"Language-Team: Español\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: \n"
+"MIME-Version: 1.0\n"
+
+#: registerdbf.dbfsalldbasefiles
+msgid "DBase Files"
+msgstr "Archivos DBase"
+
