@@ -138,8 +138,9 @@ const
   ctnGenericName        = 92;
   ctnGenericParams      = 93;
   ctnGenericParameter   = 94;
-  ctnConstant           = 95;
-  ctnHintModifier       = 96; // deprecated, platform, unimplemented, library, experimental
+  ctnGenericConstraint  = 95;
+  ctnConstant           = 96;
+  ctnHintModifier       = 97; // deprecated, platform, unimplemented, library, experimental
 
   ctnBeginBlock         =100;
   ctnAsmBlock           =101;
@@ -439,6 +440,7 @@ begin
   ctnGenericName: Result:='Generic Type Name';
   ctnGenericParams: Result:='Generic Type Params';
   ctnGenericParameter: Result:='Generic Type Parameter';
+  ctnGenericConstraint: Result:='Generic Type Parameter Constraint';
   ctnConstant: Result:='Constant';
   ctnHintModifier: Result:='Hint Modifier';
 

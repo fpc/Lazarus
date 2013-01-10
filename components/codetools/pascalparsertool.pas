@@ -155,6 +155,7 @@ type
     procedure ReadConstExpr;
     // types
     procedure ReadTypeNameAndDefinition;
+    procedure ReadGenericParamList;
     procedure ReadTypeReference;
     function KeyWordFuncTypeClass: boolean;
     function KeyWordFuncTypeClassInterface: boolean;
@@ -3797,6 +3798,7 @@ procedure TPascalParserTool.ReadTypeNameAndDefinition;
     generic name<> = type;  // fpc style
     generic name<name>=type;  // this is the only case where >= are two operators
     name<name,name> = type;  // delphi style
+    TTest19<T1: record; T2,T3: class; T4: constructor; T5: name> = type
 }
 var
   TypeNode: TCodeTreeNode;
@@ -3826,40 +3828,7 @@ begin
     //debugln(['TPascalParserTool.ReadTypeNameAndDefinition Name="',copy(Src,NamePos.StartPos,NamePos.EndPos-NamePos.StartPos),'"']);
     EndChildNode;
     // read parameter list
-    CreateChildNode;
-    CurNode.Desc:=ctnGenericParams;
-    ReadNextAtom;
-    if AtomIsIdentifier then begin
-      repeat
-        CreateChildNode;
-        CurNode.Desc:=ctnGenericParameter;
-        CurNode.EndPos:=CurPos.EndPos;
-        EndChildNode;
-        // read name
-        ReadNextAtom;
-        if CurPos.Flag=cafComma then begin
-          ReadNextAtom;
-          AtomIsIdentifierSaveE;
-        end else if AtomIsChar('>') then begin
-          break;
-        end else if AtomIs('>=') then begin
-          // this is the rare case where >= are two separate atoms
-          dec(CurPos.EndPos);
-          break;
-        end else
-          SaveRaiseCharExpectedButAtomFound('>');
-      until false;
-    end else begin
-      if AtomIs('>=') then
-        // this is the rare case where >= are two separate atoms
-        dec(CurPos.EndPos);
-      if not AtomIsChar('>') then
-        SaveRaiseCharExpectedButAtomFound('>');
-    end;
-    // close ctnGenericParams
-    CurNode.EndPos:=CurPos.EndPos;
-    EndChildNode;
-    ReadNextAtom;
+    ReadGenericParamList;
   end;
   // read =
   if (CurPos.Flag<>cafEqual) then
@@ -3875,6 +3844,94 @@ begin
   // close ctnTypeDefinition, ctnGenericType
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
+end;
+
+procedure TPascalParserTool.ReadGenericParamList;
+{ At start cursor is on <
+  At end cursor is on atom after >
+
+ Examples:
+  <> = type;  // fpc style
+  <name>=type;  // this is the only case where >= are two operators
+  <name,name> = type;  // delphi style
+  <T1: record; T2,T3: class; T4: constructor; T5: name> = type
+}
+begin
+  CreateChildNode;
+  CurNode.Desc:=ctnGenericParams;
+  ReadNextAtom;
+  //debugln(['TPascalParserTool.ReadGenericParamList START ctnGenericParams ',GetAtom]);
+  if AtomIsIdentifier then begin
+    CreateChildNode;
+    CurNode.Desc:=ctnGenericParameter;
+    ReadNextAtom;
+    repeat
+      // read name
+      //debugln(['TPascalParserTool.ReadGenericParamList AFTER NAMESTART ctnGenericParams ',GetAtom]);
+      if AtomIs('>=') then begin
+        // this is the rare case where >= are two separate atoms
+        dec(CurPos.EndPos);
+      end;
+      if CurPos.Flag in [cafComma,cafSemicolon] then begin
+        // read next name
+        EndChildNode;
+        ReadNextAtom;
+        AtomIsIdentifierSaveE;
+        CreateChildNode;
+        CurNode.Desc:=ctnGenericParameter;
+        ReadNextAtom;
+      end else if AtomIsChar('>') then begin
+        break;
+      end else if CurPos.Flag=cafColon then begin
+        // read constraints
+        ReadNextAtom;
+        if CurPos.Flag<>cafNone then begin
+          CreateChildNode;
+          CurNode.Desc:=ctnGenericConstraint;
+        end;
+        repeat
+          CurNode.EndPos:=CurPos.EndPos;
+          if UpAtomIs('RECORD') or UpAtomIs('CLASS') or UpAtomIs('CONSTRUCTOR')
+          then begin
+            // keyword
+            ReadNextAtom;
+          end else begin
+            // a type
+            AtomIsIdentifierSaveE;
+            ReadNextAtom;
+          end;
+          if AtomIs('>=') then begin
+            // this is the rare case where >= are two separate atoms
+            dec(CurPos.EndPos);
+          end;
+          if (CurPos.Flag=cafSemicolon) or AtomIsChar('>') then begin
+            break;
+          end else if CurPos.Flag<>cafComma then
+            SaveRaiseCharExpectedButAtomFound('>');
+          ReadNextAtom;
+        until false;
+        // close ctnGenericConstraint
+        CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
+        EndChildNode;
+        if AtomIsChar('>') then break;
+        // cursor is now on ;
+      end else
+        SaveRaiseCharExpectedButAtomFound('>');
+    until false;
+    // close ctnGenericParameter
+    CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
+    EndChildNode;
+  end else begin
+    if AtomIs('>=') then
+      // this is the rare case where >= are two separate atoms
+      dec(CurPos.EndPos);
+    if not AtomIsChar('>') then
+      SaveRaiseCharExpectedButAtomFound('>');
+  end;
+  // close ctnGenericParams
+  CurNode.EndPos:=CurPos.EndPos;
+  EndChildNode;
+  ReadNextAtom;
 end;
 
 procedure TPascalParserTool.ReadTypeReference;
