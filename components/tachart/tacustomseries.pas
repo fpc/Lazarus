@@ -626,7 +626,7 @@ procedure TChartSeries.Assign(ASource: TPersistent);
 begin
   if ASource is TChartSeries then
     with TChartSeries(ASource) do begin
-      Self.Marks := FMarks;
+      Self.Marks.Assign(FMarks);
       Self.FOnGetMark := FOnGetMark;
       Self.Source := FSource;
       Self.Styles := FStyles;
@@ -908,7 +908,9 @@ procedure TBasicPointSeries.Assign(ASource: TPersistent);
 begin
   if ASource is TBasicPointSeries then
     with TBasicPointSeries(ASource) do begin
-      Self.FPointer := Pointer;
+      Self.FMarkPositions := MarkPositions;
+      if Self.FPointer <> nil then
+        Self.FPointer.Assign(Pointer);
       Self.FUseReticule := UseReticule;
     end;
   inherited Assign(ASource);
