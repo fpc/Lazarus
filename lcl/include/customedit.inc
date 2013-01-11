@@ -364,6 +364,7 @@ begin
   end;
   if HandleAllocated then
     TWSCustomEditClass(WidgetSetClass).SetPasswordChar(Self, AValue);
+  Invalidate;
 end;
 
 class procedure TCustomEdit.WSRegisterClass;
