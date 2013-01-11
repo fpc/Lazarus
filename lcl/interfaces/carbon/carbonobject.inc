@@ -599,7 +599,7 @@ begin
     FreePendingWidgets;
     if ReceiveNextEvent(0, nil, kEventDurationNoWait, True,
       Event{%H-}) <> noErr then Break;
-      
+
     CurEventClass.Int := GetEventClass(Event);
     CurEventKind.Int := GetEventKind(Event);
 
@@ -610,6 +610,9 @@ begin
     if CurEventClass.Chars = LCLCarbonEventClass then
     begin
       // internal carbon intf message
+      {$IFDEF DebugEventLoop}
+      DebugLn('EventKind: ',CurEventKind.Chars);
+      {$ENDIF}
       if (CurEventKind.Chars = LCLCarbonEventKindWake) and IsMultiThread then
       begin
         // a thread is waiting -> synchronize
@@ -1107,12 +1110,16 @@ var
   EventSpec: EventTypeSpec;
   DummyEvent: EventRef;
 begin
-  if FMainEventQueue=nil then exit;
+  if FMainEventQueue=nil then
+  begin
+    //DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage FMainEventQueue=nil');
+    exit;
+  end;
   
   {$IFDEF VerboseObject}
-    DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage ');
+  DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage START');
   {$ENDIF}
-  
+
   EventSpec := MakeEventSpec(LCLCarbonEventClass,LCLCarbonEventKindWake);
   DummyEvent:=nil;
   try
@@ -1120,23 +1127,21 @@ begin
       0{GetCurrentEventTime}, kEventAttributeNone, DummyEvent) <> noErr then
     begin
       {$IFDEF VerboseObject}
-        DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage Create event FAILED');
+      DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage Create event FAILED');
       {$ENDIF}
-      
       Exit;
     end;
     
     {$IFDEF VerboseObject}
-      DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage GetMainEventQueue='+dbgs(GetMainEventQueue));
+    DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage GetMainEventQueue='+dbgs(GetMainEventQueue));
     {$ENDIF}
 
     if PostEventToQueue(FMainEventQueue, DummyEvent,
       kEventPriorityHigh) <> noErr then
     begin
       {$IFDEF VerboseObject}
-        DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage Post event FAILED');
+      DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage Post event FAILED');
       {$ENDIF}
-      
       Exit;
     end;
   finally
@@ -1144,7 +1149,7 @@ begin
   end;
   
   {$IFDEF VerboseObject}
-    DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage END');
+  DebugLnThreadLog('TCarbonWidgetSet.SendCheckSynchronizeMessage END');
   {$ENDIF}
 end;
 
