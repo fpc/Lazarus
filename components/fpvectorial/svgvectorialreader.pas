@@ -1452,12 +1452,12 @@ begin
   if UnitStr = 'mm' then
   begin
     ValueStr := Copy(AStr, 1, Len-2);
-    Result := StrToInt(ValueStr);
+    Result := StrToFloat(ValueStr, FPointSeparator);
   end
   else if UnitStr = 'cm' then
   begin
     ValueStr := Copy(AStr, 1, Len-2);
-    Result := StrToInt(ValueStr) * 10;
+    Result := StrToFloat(ValueStr, FPointSeparator) * 10;
   end
   else if UnitStr = 'px' then
   begin

@@ -17,6 +17,28 @@ Specifications obtained from:
 
 http://docs.oasis-open.org/office/v1.1/OS/OpenDocument-v1.1.pdf
 
+Example of content.xml structure:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document-content xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" .....>
+<office:scripts/>
+<office:automatic-styles>
+  <style:style style:name="dp1" style:family="drawing-page"/>
+  <style:style style:name="gr1" style:family="graphic" style:parent-style-name="standard">
+  ....
+</office:automatic-styles>
+<office:body>
+<office:drawing>
+  <draw:page draw:name="page1" draw:style-name="dp1" draw:master-page-name="Oletus">
+    <draw:ellipse draw:style-name="gr2" draw:text-style-name="P1" draw:layer="layout" svg:width="11cm" svg:height="3cm" svg:x="5.5cm" svg:y="6.5cm">
+      <text:p/>
+    </draw:ellipse>
+    ... other elements in the page...
+  </draw:page>
+</office:drawing>
+</office:body>
+</office:document-content>
+
 AUTHORS: Felipe Monteiro de Carvalho
 }
 unit odgvectorialreader;
@@ -75,7 +97,10 @@ type
   private
     FPointSeparator, FCommaSeparator: TFormatSettings;
     //FSVGPathTokenizer: TSVGPathTokenizer;
+    procedure ReadElement(ANode: TDOMNode; ACurPage: TvVectorialPage; AData: TvVectorialDocument);
+    procedure ReadEllipseNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     function GetAttrValue(ANode : TDOMNode; AAttrName : string) : string;
+    function  StringWithUnitToFloat(AStr: string): Double;
     procedure ConvertODGCoordinatesToFPVCoordinates(
       const AData: TvVectorialPage;
       const ASrcX, ASrcY: Double; var ADestX, ADestY: Double);
@@ -86,8 +111,9 @@ type
     { General reading methods }
     constructor Create; override;
     Destructor Destroy; override;
-    //procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); override;
+    procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); override;
     procedure ReadFromFile(AFileName: string; AData: TvVectorialDocument); override;
+    procedure ReadFromContentXMLDocument(AXMLDocument: TXMLDocument; AData: TvVectorialDocument);
   end;
 
 implementation
@@ -131,6 +157,17 @@ const
   SCHEMAS_XMLNS_XFORMS   = 'http://www.w3.org/2002/xforms';
   SCHEMAS_XMLNS_XSD      = 'http://www.w3.org/2001/XMLSchema';
   SCHEMAS_XMLNS_XSI      = 'http://www.w3.org/2001/XMLSchema-instance';
+
+  // SVG requires hardcoding a DPI value
+
+  // The Opera Browser and Inkscape use 90 DPI, so we follow that
+
+  // 1 Inch = 25.4 milimiters
+  // 90 inches per pixel = (1 / 90) * 25.4 = 0.2822
+  // FLOAT_MILIMETERS_PER_PIXEL = 0.3528; // DPI 72 = 1 / 72 inches per pixel
+
+  FLOAT_MILIMETERS_PER_PIXEL = 0.2822; // DPI 90 = 1 / 90 inches per pixel
+  FLOAT_PIXELS_PER_MILIMETER = 3.5433; // DPI 90 = 1 / 90 inches per pixel
 
 { TSVGPathTokenizer }
 
@@ -264,6 +301,71 @@ begin
   if (lState = 0) and (lTmpStr <> '') then AddToken(lTmpStr);
 end;}
 
+procedure TvODGVectorialReader.ReadElement(ANode: TDOMNode;
+  ACurPage: TvVectorialPage; AData: TvVectorialDocument);
+begin
+  case ANode.NodeName of
+  'draw:ellipse': ReadEllipseNode(ANode, ACurPage, AData);
+  end;
+end;
+
+{
+  <draw:ellipse
+    draw:style-name="gr2" draw:text-style-name="P1" draw:layer="layout"
+    svg:width="11cm" svg:height="3cm" svg:x="5.5cm" svg:y="6.5cm">
+    <text:p/>
+  </draw:ellipse>
+}
+procedure TvODGVectorialReader.ReadEllipseNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  cx, cy, crx, cry: double;
+  lEllipse: TvEllipse;
+  i: Integer;
+  lNodeName: DOMString;
+begin
+  cx := 0.0;
+  cy := 0.0;
+  crx := 0.0;
+  cry := 0.0;
+
+  lEllipse := TvEllipse.Create;
+  // SVG entities start without any pen drawing, but with a black brush
+  lEllipse.Pen.Style := psClear;
+  lEllipse.Brush.Style := bsSolid;
+  lEllipse.Brush.Color := colBlack;
+
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if  lNodeName = 'svg:x' then
+      cx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'svg:y' then
+      cy := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'svg:width' then
+      crx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue) / 2
+    else if lNodeName = 'svg:height' then
+      cry := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue) / 2
+//    else if lNodeName = 'id' then
+//      lEllipse.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
+//    else if lNodeName = 'draw:style-name' then
+//      AddStyleToElement(ANode.Attributes.Item[i].NodeValue, lEllipse);
+  end;
+
+  // The svg:x and svg:y coordinates are relative to the top-left in ODG,
+  // but in fpvectorial we use the center, so correct now
+  cx := cx + crx;
+  cy := cy + cry;
+
+  ConvertODGDeltaToFPVDelta(
+        AData, cx, cy, lEllipse.X, lEllipse.Y);
+  ConvertODGDeltaToFPVDelta(
+        AData, crx, cry, lEllipse.HorzHalfAxis, lEllipse.VertHalfAxis);
+
+  AData.AddEntity(lEllipse);
+end;
+
 function TvODGVectorialReader.GetAttrValue(ANode : TDOMNode; AAttrName : string) : string;
 var
   i : integer;
@@ -281,20 +383,51 @@ begin
   end;
 end;
 
+function TvODGVectorialReader.StringWithUnitToFloat(AStr: string): Double;
+var
+  UnitStr, ValueStr: string;
+  Len: Integer;
+begin
+  if AStr = '' then Exit(0.0);
+
+  // Check the unit
+  Len := Length(AStr);
+  UnitStr := Copy(AStr, Len-1, 2);
+  if UnitStr = 'mm' then
+  begin
+    ValueStr := Copy(AStr, 1, Len-2);
+    Result := StrToFloat(ValueStr, FPointSeparator);
+  end
+  else if UnitStr = 'cm' then
+  begin
+    ValueStr := Copy(AStr, 1, Len-2);
+    Result := StrToFloat(ValueStr, FPointSeparator) * 10;
+  end
+  else if UnitStr = 'px' then
+  begin
+    ValueStr := Copy(AStr, 1, Len-2);
+    Result := StrToInt(ValueStr);
+  end
+  else // If there is no unit, just use StrToFloat
+  begin
+    Result := StrToFloat(AStr, FPointSeparator);
+  end;
+end;
+
 procedure TvODGVectorialReader.ConvertODGCoordinatesToFPVCoordinates(
   const AData: TvVectorialPage; const ASrcX, ASrcY: Double;
   var ADestX,ADestY: Double);
 begin
-//  ADestX := ASrcX * FLOAT_MILIMETERS_PER_PIXEL;
-//  ADestY := AData.Height - ASrcY * FLOAT_MILIMETERS_PER_PIXEL;
+  ADestX := ASrcX * FLOAT_MILIMETERS_PER_PIXEL;
+  ADestY := AData.Height - ASrcY * FLOAT_MILIMETERS_PER_PIXEL;
 end;
 
 procedure TvODGVectorialReader.ConvertODGDeltaToFPVDelta(
   const AData: TvVectorialPage; const ASrcX, ASrcY: Double; var ADestX,
   ADestY: Double);
 begin
-//  ADestX := ASrcX * FLOAT_MILIMETERS_PER_PIXEL;
-//  ADestY := - ASrcY * FLOAT_MILIMETERS_PER_PIXEL;
+  ADestX := ASrcX * FLOAT_MILIMETERS_PER_PIXEL;
+  ADestY := - ASrcY * FLOAT_MILIMETERS_PER_PIXEL;
 end;
 
 constructor TvODGVectorialReader.Create;
@@ -315,14 +448,14 @@ begin
   inherited Destroy;
 end;
 
-{procedure TvODGVectorialReader.ReadFromStream(AStream: TStream;
+procedure TvODGVectorialReader.ReadFromStream(AStream: TStream;
   AData: TvVectorialDocument);
 var
   Doc: TXMLDocument;
   lCurNode: TDOMNode;
   lPage: TvVectorialPage;
 begin
-  try
+{  try
     // Read in xml file from the stream
     ReadXMLFile(Doc, AStream);
 
@@ -343,21 +476,17 @@ begin
   finally
     // finally, free the document
     Doc.Free;
-  end;
-end;}
+  end;}
+end;
 
 procedure TvODGVectorialReader.ReadFromFile(AFileName: string; AData: TvVectorialDocument);
 var
-  Col, Row : integer;
   FilePath : string;
   UnZip : TUnZipper;
   FileList : TStringList;
   Doc : TXMLDocument;
-  BodyNode, SpreadSheetNode, TableNode, RowNode, CellNode : TDOMNode;
-  ParamRowsRepeated, ParamColsRepeated, ParamValueType, ParamFormula : string;
-  RowsCount, ColsCount : integer;
 begin
-{  //unzip content.xml into AFileName path
+  //unzip content.xml into AFileName path
   FilePath:=GetTempDir(false);
   UnZip:=TUnZipper.Create;
   UnZip.OutputPath:=FilePath;
@@ -376,64 +505,42 @@ begin
     ReadXMLFile(Doc,FilePath+'content.xml');
     DeleteFile(FilePath+'content.xml');
 
-    BodyNode:= Doc.DocumentElement.FindNode('office:body');
-    if not Assigned(BodyNode) then Exit;
-
-    SpreadSheetNode:=BodyNode.FindNode('office:spreadsheet');
-    if not Assigned(SpreadSheetNode) then Exit;
-
-    //process each table (sheet)
-    TableNode:=SpreadSheetNode.FindNode('table:table');
-    while Assigned(TableNode) do
-    begin
-      FWorkSheet:=aData.AddWorksheet(GetAttrValue(TableNode,'table:name'));
-      Row:=0;
-
-      //process each row inside the sheet
-      RowNode:=TableNode.FindNode('table:table-row');
-      while Assigned(RowNode) do begin
-
-        Col:=0;
-
-        ParamRowsRepeated:=GetAttrValue(RowNode,'table:number-rows-repeated');
-        if ParamRowsRepeated='' then ParamRowsRepeated:='1';
-
-        //process each cell of the row
-        CellNode:=RowNode.FindNode('table:table-cell');
-        while Assigned(CellNode) do
-        begin
-          ParamColsRepeated:=GetAttrValue(CellNode,'table:number-columns-repeated');
-          if ParamColsRepeated='' then ParamColsRepeated:='1';
-
-          //select this cell value's type
-          ParamValueType:=GetAttrValue(CellNode,'office:value-type');
-          ParamFormula:=GetAttrValue(CellNode,'table:formula');
-          for RowsCount:=0 to StrToInt(ParamRowsRepeated)-1 do begin
-            for ColsCount:=0 to StrToInt(ParamColsRepeated)-1 do begin
-              if ParamValueType='string' then
-                ReadLabel(Row+RowsCount,Col+ColsCount,CellNode)
-              else if ParamFormula<>'' then
-                ReadFormula(Row+RowsCount,Col+ColsCount,CellNode)
-              else if ParamValueType='float' then
-                ReadNumber(Row+RowsCount,Col+ColsCount,CellNode)
-              else if ParamValueType='date' then
-                ReadDate(Row+RowsCount,Col+ColsCount,CellNode);
-            end; //for ColsCount
-          end; //for RowsCount
-
-          Inc(Col,ColsCount+1);
-          CellNode:=CellNode.NextSibling;
-        end; //while Assigned(CellNode)
-
-        Inc(Row,RowsCount+1);
-        RowNode:=RowNode.NextSibling;
-      end; // while Assigned(RowNode)
-
-      TableNode:=TableNode.NextSibling;
-    end; //while Assigned(TableNode)
+    ReadFromContentXMLDocument(Doc, AData);
   finally
     Doc.Free;
-  end;}
+  end;
+end;
+
+procedure TvODGVectorialReader.ReadFromContentXMLDocument(
+  AXMLDocument: TXMLDocument; AData: TvVectorialDocument);
+var
+  BodyNode, DrawingNode, PageNode, ElementNode: TDOMNode;
+  CurPage: TvVectorialPage;
+begin
+  BodyNode := AXMLDocument.DocumentElement.FindNode('office:body');
+  if not Assigned(BodyNode) then raise Exception.Create('[TvODGVectorialReader.ReadFromContentXMLDocument] node office:body not found');
+
+  DrawingNode := BodyNode.FindNode('office:drawing');
+  if not Assigned(DrawingNode) then raise Exception.Create('[TvODGVectorialReader.ReadFromContentXMLDocument] node office:drawing not found');
+
+  //process each page
+  PageNode := DrawingNode.FindNode('draw:page');
+  while Assigned(PageNode) do
+  begin
+    CurPage := aData.AddPage();
+    //CurPage..AddWorksheet(GetAttrValue(TableNode,'table:name'));
+
+    //process each element inside the page
+    ElementNode := PageNode.FirstChild;
+    while Assigned(ElementNode) do
+    begin
+      ReadElement(ElementNode, CurPage, AData);
+
+      ElementNode:=ElementNode.NextSibling;
+    end; // while Assigned(ElementNode)
+
+    PageNode:=PageNode.NextSibling;
+  end; //while Assigned(PageNode)
 end;
 
 initialization
