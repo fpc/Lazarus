@@ -361,6 +361,26 @@ begin
   Application.IntfAppActivate;
 end;
 
+{------------------------------------------------------------------------------
+  Name:  CarbonApp_Activated
+  Handles application activation
+ ------------------------------------------------------------------------------}
+function CarbonApp_LazWake(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  {%H-}AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  {$IFDEF VerboseAppEvent}
+    DebugLn('CarbonApp_LazWake');
+  {$ENDIF}
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+
+  if IsMultiThread then
+  begin
+    // a thread is waiting -> synchronize
+    CheckSynchronize;
+  end;
+end;
 
 
 {------------------------------------------------------------------------------
@@ -613,10 +633,8 @@ begin
       {$IFDEF DebugEventLoop}
       DebugLn('EventKind: ',CurEventKind.Chars);
       {$ENDIF}
-      if (CurEventKind.Chars = LCLCarbonEventKindWake) and IsMultiThread then
+      if (CurEventKind.Chars = LCLCarbonEventKindUser) then
       begin
-        // a thread is waiting -> synchronize
-        CheckSynchronize;
       end;
     end;
 
@@ -1195,6 +1213,10 @@ begin
   InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_Activated),
     1, @TmpSpec, nil, @FAEventHandlerRef[4]);
 
+  TmpSpec := MakeEventSpec(LCLCarbonEventClass, LCLCarbonEventKindWake);
+  InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_LazWake),
+    1, @TmpSpec, nil, @FAEventHandlerRef[5]);
+
   FOpenEventHandlerUPP := NewAEEventHandlerUPP(AEEventHandlerProcPtr(@CarbonApp_Open));
   FQuitEventHandlerUPP := NewAEEventHandlerUPP(AEEventHandlerProcPtr(@CarbonApp_Quit));
   OSError(
@@ -1225,7 +1247,7 @@ begin
   {$ENDIF}
   FUserTerm:=True;
   QuitApplicationEventLoop;
-  for i:=0 to 4 do
+  for i:=Low(FAEventHandlerRef) to High(FAEventHandlerRef) do
     OSError(MacOSALL.RemoveEventHandler(FAEventHandlerRef[i]),
     TClass(Self), SName, 'RemoveEventHandler');
 end;
