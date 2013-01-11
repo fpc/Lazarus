@@ -96,9 +96,18 @@ type
   TvODGVectorialReader = class(TvCustomVectorialReader)
   private
     FPointSeparator, FCommaSeparator: TFormatSettings;
+    FStyles: TFPList; // of TvEntityWithPenBrushAndFont;
     //FSVGPathTokenizer: TSVGPathTokenizer;
-    procedure ReadElement(ANode: TDOMNode; ACurPage: TvVectorialPage; AData: TvVectorialDocument);
+    //
+    procedure DeleteStyle(data,arg:pointer);
+    //
+    procedure ReadStyleNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadStyleStyleNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    //
+    procedure ReadElement(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadEllipseNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    //
+    function ReadSVGColor(AValue: string): TFPColor;
     function GetAttrValue(ANode : TDOMNode; AAttrName : string) : string;
     function  StringWithUnitToFloat(AStr: string): Double;
     procedure ConvertODGCoordinatesToFPVCoordinates(
@@ -301,11 +310,63 @@ begin
   if (lState = 0) and (lTmpStr <> '') then AddToken(lTmpStr);
 end;}
 
-procedure TvODGVectorialReader.ReadElement(ANode: TDOMNode;
-  ACurPage: TvVectorialPage; AData: TvVectorialDocument);
+procedure TvODGVectorialReader.DeleteStyle(data, arg: pointer);
 begin
-  case ANode.NodeName of
-  'draw:ellipse': ReadEllipseNode(ANode, ACurPage, AData);
+  TvEntityWithPenBrushAndFont(data).Free;
+end;
+
+procedure TvODGVectorialReader.ReadStyleNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  Str: String;
+begin
+  Str := LowerCase(ANode.NodeName);
+  case Str of
+  'style:style': ReadStyleStyleNode(ANode, AData, ADoc);
+  end;
+end;
+
+{
+<style:style style:name="gr2" style:family="graphic" style:parent-style-name="standard">
+  <style:graphic-properties draw:fill="solid" draw:fill-color="#ffff99"
+   draw:textarea-horizontal-align="center" draw:textarea-vertical-align="middle"/>
+</style:style>
+}
+procedure TvODGVectorialReader.ReadStyleStyleNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  lStyle: TvEntityWithPenBrushAndFont;
+  lGraphicPropertiesNode: TDOMNode;
+  i: Integer;
+  lNodeName: DOMString;
+begin
+  lStyle := TvEntityWithPenBrushAndFont.Create;
+  lGraphicPropertiesNode := ANode.FindNode('style:graphic-properties');
+  if lGraphicPropertiesNode <> nil then
+  begin
+    for i := 0 to lGraphicPropertiesNode.Attributes.Length - 1 do
+    begin
+      lNodeName := lGraphicPropertiesNode.Attributes.Item[i].NodeName;
+      case lNodeName of
+      //'draw:fill':
+      'draw:fill-color':
+      begin
+        //lColor := lStyle.Brush.Color;
+      end;
+      end;
+    end;
+  end;
+  FStyles.Add(lStyle);
+end;
+
+procedure TvODGVectorialReader.ReadElement(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  Str: String;
+begin
+  Str := LowerCase(ANode.NodeName);
+  case Str of
+  'draw:ellipse': ReadEllipseNode(ANode, AData, ADoc);
   end;
 end;
 
@@ -364,6 +425,379 @@ begin
         AData, crx, cry, lEllipse.HorzHalfAxis, lEllipse.VertHalfAxis);
 
   AData.AddEntity(lEllipse);
+end;
+
+function TvODGVectorialReader.ReadSVGColor(AValue: string): TFPColor;
+var
+  lValue, lStr: string;
+  lStrings: TStringList;
+  i: Integer;
+begin
+  Result := colBlack;
+  lValue := Trim(LowerCase(AValue));
+
+  // Support for rgb(255,255,0)
+  if (Length(lValue) > 3) and (Copy(lValue, 0, 3) = 'rgb') then
+  begin
+    lStrings := TStringList.Create;
+    try
+      lStr := Copy(lValue, 5, Length(lValue)-5);
+      lStrings.Delimiter := ',';
+      lStrings.DelimitedText := lStr;
+      if lStrings.Count = 3 then
+      begin
+        Result.Red := StrToInt(lStrings.Strings[0]) * $101;
+        Result.Blue := StrToInt(lStrings.Strings[1]) * $101;
+        Result.Green := StrToInt(lStrings.Strings[2]) * $101;
+      end
+      else
+        raise Exception.Create(Format('[TvSVGVectorialReader.ReadSVGColor] An unexpected number of channels was found: %d', [lStrings.Count]));
+    finally
+      lStrings.Free;
+    end;
+    Exit;
+  end;
+
+  // Support for RGB hex
+  // ex: #0000ff
+  // Another wierd valid variant: #000
+  if (Length(lValue) > 1) and (lValue[1] = '#') then
+  begin
+    lStr := Copy(lValue, 2, 2);
+    Result.Red := StrToInt('$'+lStr)*$101;
+    lStr := Copy(lValue, 4, 2);
+    if lStr = '' then Result.Green := 0
+    else Result.Green := StrToInt('$'+lStr)*$101;
+    lStr := Copy(lValue, 6, 2);
+    if lStr = '' then Result.Blue := 0
+    else Result.Blue := StrToInt('$'+lStr)*$101;
+    Exit;
+  end;
+
+  // Support for named colors
+  // List here: http://www.december.com/html/spec/colorsvghex.html
+  case lValue of
+  'black':   Result := colBlack;
+  'navy':    Result.Blue := $8080;
+  'darkblue':Result.Blue := $8B8B;
+  'mediumblue':Result.Blue := $CDCD;
+  'blue':    Result := colBlue;
+  'darkgreen':Result.Green := $6464;
+  'green':   Result.Green := $8080;
+  'teal':
+  begin
+    Result.Green := $8080;
+    Result.Blue := $8080;
+  end;
+  'darkcyan':
+  begin
+    Result.Green := $8B8B;
+    Result.Blue := $8B8B;
+  end;
+  'deepskyblue':
+  begin
+    Result.Green := $BFBF;
+    Result.Blue := $FFFF;
+  end;
+  'darkturquoise':
+  begin
+    Result.Green := $CECE;
+    Result.Blue := $D1D1;
+  end;
+  'mediumspringgreen':
+  begin
+    Result.Green := $FAFA;
+    Result.Blue := $9A9A;
+  end;
+  'lime': Result := colGreen;
+  'springgreen':
+  begin
+    Result.Green := $FFFF;
+    Result.Blue := $7F7F;
+  end;
+  'cyan':   Result := colCyan;
+  'aqua':   Result := colCyan;
+  'midnightblue':
+  begin
+    Result.Red := $1919;
+    Result.Green := $1919;
+    Result.Blue := $7070;
+  end;
+  'dodgerblue':
+  begin
+    Result.Red := $1E1E;
+    Result.Green := $9090;
+    Result.Blue := $FFFF;
+  end;
+  'lightseagreen':
+  begin
+    Result.Red := $2020;
+    Result.Green := $B2B2;
+    Result.Blue := $AAAA;
+  end;
+  'forestgreen':
+  begin
+    Result.Red := $2222;
+    Result.Green := $8B8B;
+    Result.Blue := $2222;
+  end;
+  'seagreen':
+  begin
+    Result.Red := $2E2E;
+    Result.Green := $8B8B;
+    Result.Blue := $5757;
+  end;
+  'darkslategray', 'darkslategrey':
+  begin
+    Result.Red := $2F2F;
+    Result.Green := $4F4F;
+    Result.Blue := $4F4F;
+  end;
+  'limegreen':
+  begin
+    Result.Red := $3232;
+    Result.Green := $CDCD;
+    Result.Blue := $3232;
+  end;
+  'mediumseagreen':
+  begin
+    Result.Red := $3C3C;
+    Result.Green := $CBCB;
+    Result.Blue := $7171;
+  end;
+  'turquoise':
+  begin
+    Result.Red := $4040;
+    Result.Green := $E0E0;
+    Result.Blue := $D0D0;
+  end;
+  'royalblue':
+  begin
+    Result.Red := $4141;
+    Result.Green := $6969;
+    Result.Blue := $E1E1;
+  end;
+  'steelblue':
+  begin
+    Result.Red := $4646;
+    Result.Green := $8282;
+    Result.Blue := $B4B4;
+  end;
+  'darkslateblue':
+  begin
+    Result.Red := $4848;
+    Result.Green := $3D3D;
+    Result.Blue := $8B8B;
+  end;
+  'mediumturquoise':
+  begin
+    Result.Red := $4848;
+    Result.Green := $D1D1;
+    Result.Blue := $CCCC;
+  end;
+{
+indigo #4B0082
+ 	darkolivegreen #556B2F		cadetblue #5F9EA0
+cornflowerblue #6495ED
+ 	mediumaquamarine #66CDAA		dimgrey #696969
+dimgray #696969
+ 	slateblue #6A5ACD		olivedrab #6B8E23
+slategrey #708090
+ 	slategray #708090		lightslategray(Hex3) #778899
+lightslategrey(Hex3) #778899
+ 	mediumslateblue #7B68EE		lawngreen #7CFC00
+chartreuse #7FFF00
+}
+  'aquamarine':
+  begin
+    Result.Red := $7F7F;
+    Result.Green := $FFFF;
+    Result.Blue := $D4D4;
+  end;
+  'maroon': Result.Red := $8080;
+  'purple': Result := colPurple;
+  'olive':  Result := colOlive;
+  'gray', 'grey': Result := colGray;
+  'skyblue':
+  begin
+    Result.Red := $8787;
+    Result.Green := $CECE;
+    Result.Blue := $EBEB;
+  end;
+  'lightskyblue':
+  begin
+    Result.Red := $8787;
+    Result.Green := $CECE;
+    Result.Blue := $FAFA;
+  end;
+  'blueviolet':
+  begin
+    Result.Red := $8A8A;
+    Result.Green := $2B2B;
+    Result.Blue := $E2E2;
+  end;
+  'darkred': Result.Red := $8B8B;
+  'darkmagenta':
+  begin
+    Result.Red := $8B8B;
+    Result.Blue := $8B8B;
+  end;
+{
+saddlebrown #8B4513
+ 	darkseagreen #8FBC8F		lightgreen #90EE90
+mediumpurple #9370DB
+ 	darkviolet #9400D3		palegreen #98FB98
+darkorchid #9932CC
+ 	yellowgreen #9ACD32		sienna #A0522D
+brown #A52A2A
+ 	darkgray #A9A9A9		darkgrey #A9A9A9
+lightblue #ADD8E6
+ 	greenyellow #ADFF2F		paleturquoise #AFEEEE
+lightsteelblue #B0C4DE
+ 	powderblue #B0E0E6		firebrick #B22222
+darkgoldenrod #B8860B
+ 	mediumorchid #BA55D3		rosybrown #BC8F8F
+darkkhaki #BDB76B
+}
+  'silver': Result := colSilver;
+  'mediumvioletred':
+  begin
+    Result.Red := $C7C7;
+    Result.Green := $1515;
+    Result.Blue := $8585;
+  end;
+  'indianred':
+  begin
+    Result.Red := $CDCD;
+    Result.Green := $5C5C;
+    Result.Blue := $5C5C;
+  end;
+  'peru':
+  begin
+    Result.Red := $CDCD;
+    Result.Green := $8585;
+    Result.Blue := $3F3F;
+  end;
+  'chocolate':
+  begin
+    Result.Red := $D2D2;
+    Result.Green := $6969;
+    Result.Blue := $1E1E;
+  end;
+{
+tan #D2B48C
+ 	lightgray #D3D3D3		lightgrey #D3D3D3
+thistle #D8BFD8
+ 	orchid #DA70D6		goldenrod #DAA520
+palevioletred #DB7093
+ 	crimson #DC143C		gainsboro #DCDCDC
+plum #DDA0DD
+ 	burlywood #DEB887		lightcyan #E0FFFF
+lavender #E6E6FA
+}
+  'darksalmon':
+  begin
+    Result.Red := $E9E9;
+    Result.Green := $9696;
+    Result.Blue := $7A7A;
+  end;
+  'violet':
+  begin
+    Result.Red := $EEEE;
+    Result.Green := $8282;
+    Result.Blue := $EEEE;
+  end;
+  'palegoldenrod':
+  begin
+    Result.Red := $EEEE;
+    Result.Green := $E8E8;
+    Result.Blue := $AAAA;
+  end;
+  'lightcoral':
+  begin
+    Result.Red := $F0F0;
+    Result.Green := $8080;
+    Result.Blue := $8080;
+  end;
+  'khaki':
+  begin
+    Result.Red := $F0F0;
+    Result.Green := $E6E6;
+    Result.Blue := $8C8C;
+  end;
+  'aliceblue':
+  begin
+    Result.Red := $F0F0;
+    Result.Green := $F8F8;
+    Result.Blue := $FFFF;
+  end;
+  'honeydew':
+  begin
+    Result.Red := $F0F0;
+    Result.Green := $FFFF;
+    Result.Blue := $F0F0;
+  end;
+  'azure':
+  begin
+    Result.Red := $F0F0;
+    Result.Green := $FFFF;
+    Result.Blue := $FFFF;
+  end;
+  'sandybrown':
+  begin
+    Result.Red := $F4F4;
+    Result.Green := $A4A4;
+    Result.Blue := $6060;
+  end;
+{
+ 	wheat #F5DEB3		beige #F5F5DC
+whitesmoke #F5F5F5
+ 	mintcream #F5FFFA		ghostwhite #F8F8FF
+salmon #FA8072
+ 	antiquewhite #FAEBD7		linen #FAF0E6
+lightgoldenrodyellow #FAFAD2
+ 	oldlace #FDF5E6
+}
+  'red':   Result := colRed;
+  'fuchsia':   Result := colFuchsia;
+  'magenta':   Result := colMagenta;
+{	deeppink #FF1493
+orangered #FF4500
+ 	tomato #FF6347		hotpink #FF69B4
+coral #FF7F50
+ 	darkorange #FF8C00		lightsalmon #FFA07A
+orange #FFA500
+ 	lightpink #FFB6C1		pink #FFC0CB
+gold #FFD700
+ 	peachpuff #FFDAB9		navajowhite #FFDEAD
+moccasin #FFE4B5
+ 	bisque #FFE4C4		mistyrose #FFE4E1
+blanchedalmond #FFEBCD
+ 	papayawhip #FFEFD5		lavenderblush #FFF0F5
+seashell #FFF5EE
+ 	cornsilk #FFF8DC		lemonchiffon #FFFACD
+floralwhite #FFFAF0
+}
+  'snow':
+  begin
+    Result.Red := $FFFF;
+    Result.Green := $FAFA;
+    Result.Blue := $FAFA;
+  end;
+  'yellow': Result := colYellow;
+  'lightyellow':
+  begin
+    Result.Red := $FFFF;
+    Result.Green := $FEFE;
+  end;
+  'ivory':
+  begin
+    Result.Red := $FFFF;
+    Result.Green := $FFFF;
+    Result.Blue := $F0F0;
+  end;
+  'white': Result := colWhite;
+  end;
 end;
 
 function TvODGVectorialReader.GetAttrValue(ANode : TDOMNode; AAttrName : string) : string;
@@ -439,10 +873,13 @@ begin
   FPointSeparator.ThousandSeparator := '#';// disable the thousand separator
 
 //  FSVGPathTokenizer := TSVGPathTokenizer.Create;
+  FStyles := TFPList.Create;
 end;
 
 destructor TvODGVectorialReader.Destroy;
 begin
+  FStyles.ForEachCall(@DeleteStyle, nil);
+  FStyles.Free;
 //  FSVGPathTokenizer.Free;
 
   inherited Destroy;
