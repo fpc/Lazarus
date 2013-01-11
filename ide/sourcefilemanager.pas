@@ -83,7 +83,9 @@ type
                                Flags: TCloseFlags): TModalResult;
     function OpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
                               AEditorInfo: TUnitEditorInfo;
-                              Flags: TOpenFlags): TModalResult;
+                              Flags: TOpenFlags;
+                              UseWindowID: Boolean = False // WindowIndex is WindowID
+                            ): TModalResult;
     function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
       ActiveUnitInfo: TUnitInfo): TModalResult;
     function InitNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
@@ -135,11 +137,17 @@ type
     function LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
         const AFilename: string; Flags: TLoadBufferFlags; ShowAbort: boolean): TModalResult;
   public
-    function OpenMainUnit(PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
+    function OpenMainUnit(PageIndex, WindowIndex: integer;
+                          Flags: TOpenFlags;
+                          UseWindowID: Boolean = False // WindowIndex is WindowID
+                         ): TModalResult;
     function RevertMainUnit: TModalResult;
     function CheckLFMInEditor(LFMUnitInfo: TUnitInfo; Quiet: boolean): TModalResult;
     function OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
-        PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
+                                    PageIndex, WindowIndex: integer;
+                                    Flags: TOpenFlags;
+                                    UseWindowID: Boolean = False // WindowIndex is WindowID
+                                   ): TModalResult;
     function LoadLFM(AnUnitInfo: TUnitInfo; OpenFlags: TOpenFlags;
                        CloseFlags: TCloseFlags): TModalResult;
     function LoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
@@ -1109,7 +1117,8 @@ begin
 end;
 
 function TLazSourceFileManager.OpenEditorFile(AFileName: string; PageIndex,
-  WindowIndex: integer; AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags): TModalResult;
+  WindowIndex: integer; AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags;
+  UseWindowID: Boolean): TModalResult;
 var
   UnitIndex: integer;
   UnknownFile, Handled: boolean;
@@ -1182,11 +1191,16 @@ begin
     AFilename:=ExpandFileNameUTF8(AFilename);
   end;
 
-  // revert: use source editor filename
-  if (ofRevert in Flags) and (PageIndex>=0) then
-    AFilename := SourceEditorManager.SourceEditorsByPage[WindowIndex, PageIndex].FileName;
-
   if (ofRevert in Flags) then begin
+    // revert: use source editor filename
+    if (PageIndex>=0) then begin
+      if UseWindowID then
+        WindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(WindowIndex); // Revert must have a valid ID
+      UseWindowID := False;
+      assert((WindowIndex >= 0) and (WindowIndex < SourceEditorManager.SourceWindowCount), 'WindowIndex for revert');
+      AFilename := SourceEditorManager.SourceEditorsByPage[WindowIndex, PageIndex].FileName;
+    end;
+
     UnitIndex:=Project1.IndexOfFilename(AFilename);
     if (UnitIndex > 0) then begin
       NewUnitInfo:=Project1.Units[UnitIndex];
@@ -1197,7 +1211,7 @@ begin
           if MacroListViewer.MacroByFullName(AFileName) <> nil then
             NewUnitInfo.Source.Source := MacroListViewer.MacroByFullName(AFileName).GetAsSource;
           Result:=OpenFileInSourceEditor(NewEditorInfo, NewEditorInfo.PageIndex,
-            NewEditorInfo.WindowIndex, Flags);
+            NewEditorInfo.WindowID, Flags, True);
           exit;
         end;
         // unknown internal file
@@ -1227,12 +1241,12 @@ begin
 
       if NewUnitInfo.OpenEditorInfoCount > 0 then begin
         NewEditorInfo := NewUnitInfo.OpenEditorInfo[0];
-        SourceEditorManager.ActiveSourceWindowIndex := NewEditorInfo.WindowIndex;
+        SourceEditorManager.ActiveSourceWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(NewEditorInfo.WindowID);
         SourceEditorManager.ActiveSourceWindow.PageIndex:= NewEditorInfo.PageIndex;
       end
       else begin
         NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo;
-        Result:=OpenFileInSourceEditor(NewEditorInfo, PageIndex, WindowIndex, Flags);
+        Result:=OpenFileInSourceEditor(NewEditorInfo, PageIndex, WindowIndex, Flags, UseWindowID);
       end;
       Result:=mrOK;
       exit;
@@ -1277,7 +1291,7 @@ begin
   and (CompareFilenames(Project1.MainFilename,AFilename,
        not (ofVirtualFile in Flags))=0)
   then begin
-    Result:=OpenMainUnit(PageIndex,WindowIndex,Flags);
+    Result:=OpenMainUnit(PageIndex,WindowIndex,Flags,UseWindowID);
     exit;
   end;
 
@@ -1320,8 +1334,12 @@ begin
   if (ofRevert in Flags) then begin
     // revert
     UnknownFile := False;
-    NewEditorInfo := Project1.EditorInfoWithEditorComponent(
-      SourceEditorManager.SourceEditorsByPage[WindowIndex, PageIndex]);
+    if UseWindowID then
+      NewEditorInfo := Project1.EditorInfoWithEditorComponent(
+        SourceEditorManager.SourceEditorsByPage[SourceEditorManager.IndexOfSourceWindowWithID(WindowIndex), PageIndex])
+    else
+      NewEditorInfo := Project1.EditorInfoWithEditorComponent(
+        SourceEditorManager.SourceEditorsByPage[WindowIndex, PageIndex]);
     NewUnitInfo := NewEditorInfo.UnitInfo;
     UnitIndex:=Project1.IndexOf(NewUnitInfo);
     AFilename:=NewUnitInfo.Filename;
@@ -1359,9 +1377,9 @@ begin
 
   if (NewEditorInfo <> nil) and (Flags * [ofProjectLoading, ofRevert] = []) and (NewEditorInfo.EditorComponent <> nil) then
   begin
-    //DebugLn(['TLazSourceFileManager.OpenEditorFile file already open ',NewUnitInfo.Filename,' WindowIndex=',NewEditorInfo.WindowIndex,' PageIndex=',NewEditorInfo.PageIndex]);
+    //DebugLn(['TLazSourceFileManager.OpenEditorFile file already open ',NewUnitInfo.Filename,' WindowIndex=',NewEditorInfo.WindowID,' PageIndex=',NewEditorInfo.PageIndex]);
     // file already open -> change source notebook page
-    SourceEditorManager.ActiveSourceWindowIndex := NewEditorInfo.WindowIndex;
+    SourceEditorManager.ActiveSourceWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(NewEditorInfo.WindowID);
     SourceEditorManager.ActiveSourceWindow.PageIndex:= NewEditorInfo.PageIndex;
     if ofDoLoadResource in Flags then
       Result:=OpenResource
@@ -1437,7 +1455,7 @@ begin
                               and (not FileIsWritable(NewUnitInfo.Filename));
     //writeln('[TLazSourceFileManager.OpenEditorFile] B');
     // open file in source notebook
-    Result:=OpenFileInSourceEditor(NewEditorInfo, PageIndex, WindowIndex, Flags);
+    Result:=OpenFileInSourceEditor(NewEditorInfo, PageIndex, WindowIndex, Flags, UseWindowID);
     if Result<>mrOk then begin
       DebugLn(['TLazSourceFileManager.OpenEditorFile failed DoOpenFileInSourceEditor: ',AFilename]);
       exit;
@@ -1720,7 +1738,7 @@ end;
 function TLazSourceFileManager.InitOpenedProjectFile(AFileName: string;
   Flags: TOpenFlags): TModalResult;
 var
-  EditorInfoIndex, i: Integer;
+  EditorInfoIndex, i, j: Integer;
   NewBuf: TCodeBuffer;
   LastDesigner: TDesigner;
   AnUnitInfo: TUnitInfo;
@@ -1777,8 +1795,8 @@ begin
       else begin
         // reopen file
         // This will adjust Page/WindowIndex if they are not continious
-        Result:=OpenEditorFile(AnUnitInfo.Filename, -1, AnEditorInfo.WindowIndex,
-                      AnEditorInfo, [ofProjectLoading,ofMultiOpen,ofOnlyIfExists]);
+        Result:=OpenEditorFile(AnUnitInfo.Filename, -1, AnEditorInfo.WindowID,
+                      AnEditorInfo, [ofProjectLoading,ofMultiOpen,ofOnlyIfExists], True);
         if Result=mrAbort then
           exit;
       end;
@@ -1800,16 +1818,18 @@ begin
       AnEditorInfo := Project1.AllEditorsInfo[i];
       if AnEditorInfo.IsVisibleTab then
       begin
-        if AnEditorInfo.WindowIndex >= SourceEditorManager.SourceWindowCount
+        if (AnEditorInfo.WindowID < 0) then continue;
+        j := SourceEditorManager.IndexOfSourceWindowWithID(AnEditorInfo.WindowID);
+        if j < 0
         then begin
           // session info is invalid (buggy lps file?) => auto fix
           AnEditorInfo.IsVisibleTab:=false;
-          AnEditorInfo.WindowIndex:=-1;
+          AnEditorInfo.WindowID:=-1;
+          Continue;
         end;
-        if (AnEditorInfo.WindowIndex < 0) then continue;
-        if (SourceEditorManager.SourceWindows[AnEditorInfo.WindowIndex] <> nil)
+        if (SourceEditorManager.SourceWindows[j] <> nil)
         then
-          SourceEditorManager.SourceWindows[AnEditorInfo.WindowIndex].PageIndex :=
+          SourceEditorManager.SourceWindows[j].PageIndex :=
             AnEditorInfo.PageIndex;
       end;
     end;
@@ -3587,7 +3607,7 @@ begin
 end;
 
 function TLazSourceFileManager.OpenMainUnit(PageIndex, WindowIndex: integer;
-  Flags: TOpenFlags): TModalResult;
+  Flags: TOpenFlags; UseWindowID: Boolean): TModalResult;
 var
   MainUnitInfo: TUnitInfo;
 begin
@@ -3610,7 +3630,7 @@ begin
 
   // open file in source notebook
   Result:=OpenFileInSourceEditor(MainUnitInfo.GetClosedOrNewEditorInfo,
-                                 PageIndex,WindowIndex,Flags);
+                                 PageIndex,WindowIndex,Flags,UseWindowID);
   if Result<>mrOk then exit;
 
   Result:=mrOk;
@@ -3626,7 +3646,7 @@ begin
   if Project1.MainUnitInfo.OpenEditorInfoCount > 0 then
     // main unit is loaded, so we can just revert
     Result:=OpenEditorFile('',Project1.MainUnitInfo.EditorInfo[0].PageIndex,
-      Project1.MainUnitInfo.EditorInfo[0].WindowIndex, nil, [ofRevert])
+      Project1.MainUnitInfo.EditorInfo[0].WindowID, nil, [ofRevert], True)
   else begin
     // main unit is only loaded in background
     // -> just reload the source and update the source name
@@ -3713,7 +3733,7 @@ begin
 end;
 
 function TLazSourceFileManager.OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
-  PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
+  PageIndex, WindowIndex: integer; Flags: TOpenFlags; UseWindowID: Boolean): TModalResult;
 var
   NewSrcEdit: TSourceEditor;
   AFilename: string;
@@ -3733,9 +3753,13 @@ begin
   if (WindowIndex < 0) then
     SrcNotebook := SourceEditorManager.ActiveOrNewSourceWindow
   else
+  if UseWindowID then begin
+    SrcNotebook := SourceEditorManager.SourceWindowWithID(WindowIndex);
+    WindowIndex := SourceEditorManager.IndexOfSourceWindow(SrcNotebook);
+  end
+  else
   if (WindowIndex >= SourceEditorManager.SourceWindowCount) then begin
     SrcNotebook := SourceEditorManager.NewSourceWindow;
-    Project1.MoveUnitWindowIndex(WindowIndex, SourceEditorManager.ActiveSourceWindowIndex);
   end
   else
     SrcNotebook := SourceEditorManager.SourceWindows[WindowIndex];
@@ -4118,8 +4142,8 @@ begin
           if AnUnitInfo.OpenEditorInfoCount > 0 then
             Result:=OpenEditorFile(LFMBuf.Filename,
               AnUnitInfo.OpenEditorInfo[0].PageIndex+1,
-              AnUnitInfo.OpenEditorInfo[0].WindowIndex, Nil,
-              OpenFlags+[ofOnlyIfExists,ofQuiet,ofRegularFile])
+              AnUnitInfo.OpenEditorInfo[0].WindowID, Nil,
+              OpenFlags+[ofOnlyIfExists,ofQuiet,ofRegularFile], True)
           else
             Result:=OpenEditorFile(LFMBuf.Filename, -1, -1, nil,
               OpenFlags+[ofOnlyIfExists,ofQuiet,ofRegularFile]);

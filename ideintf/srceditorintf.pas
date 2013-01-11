@@ -291,6 +291,7 @@ type
     // List of SourceEditorWindows
     function SourceWindowWithEditor(const AEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
              virtual; abstract;
+    function  IndexOfSourceWindowWithID(const AnID: Integer): Integer; virtual; abstract;
     function SourceWindowCount: integer; virtual; abstract;
     property SourceWindows[Index: integer]: TSourceEditorWindowInterface
              read GetSourceWindows;

@@ -6440,10 +6440,12 @@ begin
   if (Project1=nil) then exit;
   AnUnitInfo:=Project1.UnitInfoWithFilename(Filename,[]);
   if (AnUnitInfo<>nil) and (AnUnitInfo.OpenEditorInfoCount > 0) then
-    Result:=DoOpenEditorFile(AnUnitInfo.Filename,
+    Result:=SourceFileMgr.OpenEditorFile(AnUnitInfo.Filename,
                              AnUnitInfo.OpenEditorInfo[0].PageIndex,
-                             AnUnitInfo.OpenEditorInfo[0].WindowIndex,
-                             [ofRevert]); // Reverting one will revert all
+                             AnUnitInfo.OpenEditorInfo[0].WindowID,
+                             nil,
+                             [ofRevert],
+                             True); // Reverting one will revert all
 end;
 
 function TMainIDE.CreateProjectObject(ProjectDesc,
@@ -8489,8 +8491,8 @@ begin
         if Result=mrOk then begin
           if CurUnit.OpenEditorInfoCount > 0 then begin
             // Revert one Editor-View, the others follow
-            Result:=DoOpenEditorFile(CurUnit.Filename, CurUnit.OpenEditorInfo[0].PageIndex,
-              CurUnit.OpenEditorInfo[0].WindowIndex, [ofRevert]);
+            Result:=SourceFileMgr.OpenEditorFile(CurUnit.Filename, CurUnit.OpenEditorInfo[0].PageIndex,
+              CurUnit.OpenEditorInfo[0].WindowID, nil, [ofRevert], True);
             //DebugLn(['TMainIDE.DoCheckFilesOnDisk DoOpenEditorFile=',Result]);
           end else if CurUnit.IsMainUnit then begin
             Result:=SourceFileMgr.RevertMainUnit;
@@ -11245,9 +11247,7 @@ begin
   debugln(['TMainIDE.OnSrcNotebookEditorActived']);
   {$ENDIF}
   DisplayState:=dsSource;
-
-  Project1.UpdateVisibleUnit(ASrcEdit,
-    SourceEditorManager.IndexOfSourceWindow(ASrcEdit.SourceNotebook));
+   Project1.UpdateVisibleUnit(ASrcEdit, ASrcEdit.SourceNotebook.WindowID);
 
   ActiveUnitInfo := Project1.UnitWithEditorComponent(ASrcEdit);
   if ActiveUnitInfo = nil then Exit;
@@ -11523,7 +11523,8 @@ begin
   p :=Project1.EditorInfoWithEditorComponent(SrcEdit);
   if p <> nil then begin
     p.PageIndex := SrcEdit.PageIndex;
-    p.WindowIndex := SourceEditorManager.IndexOfSourceWindow(SrcEdit.SourceNotebook);
+    p.WindowID := SrcEdit.SourceNotebook.WindowID;
+    //SourceEditorManager.IndexOfSourceWindow(SrcEdit.SourceNotebook);
     p.IsLocked := SrcEdit.IsLocked;
   end
   else if SrcEdit.IsNewSharedEditor then begin
@@ -12040,7 +12041,8 @@ begin
   LFMFilename:=ChangeFileExt(AnUnitInfo.Filename, '.lfm');
   if not FileExistsUTF8(LFMFilename) then
     LFMFilename:=ChangeFileExt(AnUnitInfo.Filename, '.dfm');
-  DoOpenEditorFile(LFMFilename, EditorInfo.PageIndex+1, EditorInfo.WindowIndex, []);
+  SourceFileMgr.OpenEditorFile(LFMFilename, EditorInfo.PageIndex+1,
+                               EditorInfo.WindowID, nil, [], True);
 end;
 
 procedure TMainIDE.OnDesignerSaveAsXML(Sender: TObject);

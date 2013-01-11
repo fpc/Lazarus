@@ -175,7 +175,7 @@ type
     FIsLocked: Boolean;
     FIsVisibleTab: Boolean;
     FPageIndex: integer;
-    FWindowIndex: integer;
+    FWindowID: integer;
     FTopLine: integer;
     FCursorPos: TPoint;  // physical (screen) position
     FFoldState: String;
@@ -198,7 +198,7 @@ type
   public
     property IsVisibleTab: Boolean read FIsVisibleTab write SetIsVisibleTab;
     property PageIndex: Integer read FPageIndex write SetPageIndex;
-    property WindowIndex: Integer read FWindowIndex write SetWindowIndex;
+    property WindowID: Integer read FWindowID write SetWindowIndex;
     property TopLine: Integer read FTopLine write FTopLine;
     property CursorPos: TPoint read FCursorPos write FCursorPos;
     property FoldState: String read FFoldState write FFoldState;
@@ -919,9 +919,8 @@ type
                          RemoveFromUsesSection: boolean = true); override;
     procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean = true);
     function CreateProjectFile(const Filename: string): TLazProjectFile; override;
-    procedure UpdateVisibleUnit(AnEditor: TSourceEditorInterface; AWindowIndex: Integer);
+    procedure UpdateVisibleUnit(AnEditor: TSourceEditorInterface; AWindowID: Integer);
     procedure UpdateAllVisibleUnits;
-    procedure MoveUnitWindowIndex(OldIndex, NewIndex: Integer);
     // search
     function IndexOf(AUnitInfo: TUnitInfo): integer;
     function IndexOfUnitWithName(const AnUnitName: string;
@@ -1227,8 +1226,8 @@ end;
 
 procedure TUnitEditorInfo.SetWindowIndex(const AValue: Integer);
 begin
-  if FWindowIndex = AValue then exit;
-  FWindowIndex := AValue;
+  if FWindowID = AValue then exit;
+  FWindowID := AValue;
   FUnitInfo.SessionModified := True;
 end;
 
@@ -1236,7 +1235,7 @@ procedure TUnitEditorInfo.Clear;
 begin
   FIsVisibleTab := False;
   FPageIndex := -1;
-  FWindowIndex := -1;
+  FWindowID := -1;
   FTopLine := -1;
   FCursorPos.X := -1;
   FCursorPos.Y := -1;
@@ -1264,10 +1263,10 @@ procedure TUnitEditorInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: s
 begin
   IsVisibleTab := XMLConfig.GetValue(Path+'IsVisibleTab/Value', False);
   PageIndex    := XMLConfig.GetValue(Path+'EditorIndex/Value',-1);
-  WindowIndex  := XMLConfig.GetValue(Path+'WindowIndex/Value',-1);
+  WindowID  := XMLConfig.GetValue(Path+'WindowIndex/Value',-1);
   // update old data
-  if (FPageIndex >= 0) and (FWindowIndex < 0) then
-    WindowIndex := 0;
+  if (FPageIndex >= 0) and (FWindowID < 0) then
+    WindowID := 1;
   FTopLine  := XMLConfig.GetValue(Path+'TopLine/Value',-1);
   CursorPos := Point(XMLConfig.GetValue(Path+'CursorPos/X',-1),
                      XMLConfig.GetValue(Path+'CursorPos/Y',-1));
@@ -1283,7 +1282,7 @@ procedure TUnitEditorInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: str
 begin
     XMLConfig.SetDeleteValue(Path+'IsVisibleTab/Value', FIsVisibleTab, False);
     XMLConfig.SetDeleteValue(Path+'EditorIndex/Value', FPageIndex, -1);
-    XMLConfig.SetDeleteValue(Path+'WindowIndex/Value', FWindowIndex, -1);
+    XMLConfig.SetDeleteValue(Path+'WindowIndex/Value', FWindowID, -1);
     XMLConfig.SetDeleteValue(Path+'TopLine/Value', FTopLine, -1);
     XMLConfig.SetDeleteValue(Path+'CursorPos/X', FCursorPos.X, -1);
     XMLConfig.SetDeleteValue(Path+'CursorPos/Y', FCursorPos.Y, -1);
@@ -1342,7 +1341,7 @@ end;
 
 function CompareEditorInfoByPageIndex(EditorInfo1, EditorInfo2: TUnitEditorInfo): integer;
 begin
-  Result := EditorInfo1.WindowIndex - EditorInfo2.WindowIndex;
+  Result := EditorInfo1.WindowID - EditorInfo2.WindowID;
   if Result = 0 then
     Result := EditorInfo1.PageIndex - EditorInfo2.PageIndex;
 end;
@@ -3337,7 +3336,7 @@ var
     end;
     if BestUnitInfo<>nil then begin
       BestUnitInfo.EditorInfo[0].PageIndex := 0;
-      BestUnitInfo.EditorInfo[0].WindowIndex := 0;
+      BestUnitInfo.EditorInfo[0].WindowID := 0;
       BestUnitInfo.EditorInfo[0].IsVisibleTab := True;
       ActiveWindowIndexAtStart:=0;
       BestUnitInfo.Loaded:=true;
@@ -3658,58 +3657,27 @@ begin
   Result:=AnUnitInfo;
 end;
 
-procedure TProject.UpdateVisibleUnit(AnEditor: TSourceEditorInterface;
-  AWindowIndex: Integer);
+procedure TProject.UpdateVisibleUnit(AnEditor: TSourceEditorInterface; AWindowID: Integer);
 var
   i: Integer;
 begin
   for i := 0 to AllEditorsInfoCount - 1 do
-    if AllEditorsInfo[i].WindowIndex = AWindowIndex then
+    if AllEditorsInfo[i].WindowID = AWindowID then
       AllEditorsInfo[i].IsVisibleTab := AllEditorsInfo[i].EditorComponent = AnEditor;
 end;
 
 procedure TProject.UpdateAllVisibleUnits;
 var
-  i: Integer;
+  i, j: Integer;
   aWndId: LongInt;
   Info: TUnitEditorInfo;
 begin
   for i := 0 to AllEditorsInfoCount - 1 do begin
     Info:=AllEditorsInfo[i];
-    aWndId:=Info.WindowIndex;
-    Info.IsVisibleTab := (aWndId>=0)
-      and (aWndId<SourceEditorManagerIntf.SourceWindowCount)
-      and (Info.EditorComponent = SourceEditorManagerIntf.SourceWindows[aWndId].ActiveEditor);
-  end;
-end;
-
-procedure TProject.MoveUnitWindowIndex(OldIndex, NewIndex: Integer);
-var
-  i: Integer;
-  AnEditorInfo: TUnitEditorInfo;
-begin
-  i := AllEditorsInfoCount - 1;
-  while (i >= 0) do begin
-    AnEditorInfo := AllEditorsInfo[i];
-
-    if (OldIndex < 0) then begin
-      // index inserted
-      if (AnEditorInfo.WindowIndex >= NewIndex) then
-        AnEditorInfo.WindowIndex := AnEditorInfo.WindowIndex + 1;
-    end
-    else if AnEditorInfo.WindowIndex = OldIndex then begin
-      AnEditorInfo.WindowIndex := NewIndex;
-    end
-    else if (OldIndex > NewIndex) then begin
-      if (AnEditorInfo.WindowIndex >= NewIndex) and (AnEditorInfo.WindowIndex < OldIndex) then
-        AnEditorInfo.WindowIndex := AnEditorInfo.WindowIndex + 1;
-    end
-    else if (OldIndex < NewIndex) then begin
-      if (AnEditorInfo.WindowIndex > OldIndex) and (AnEditorInfo.WindowIndex <= NewIndex) then
-        AnEditorInfo.WindowIndex := AnEditorInfo.WindowIndex - 1;
-    end;
-
-    dec(i);
+    aWndId:=Info.WindowID;
+    j := SourceEditorManagerIntf.IndexOfSourceWindowWithID(aWndId);
+    Info.IsVisibleTab := (aWndId>=0) and (j >= 0)
+      and (Info.EditorComponent = SourceEditorManagerIntf.SourceWindows[j].ActiveEditor);
   end;
 end;
 

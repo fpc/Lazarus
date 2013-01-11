@@ -631,6 +631,7 @@ type
     FStopBtnIdx: Integer;
   private
     FUpdateTabAndPageTimer: TTimer;
+    FWindowID: Integer;
     // PopupMenu
     procedure BuildPopupMenu;
     //forwarders to FNoteBook
@@ -791,7 +792,8 @@ type
     procedure CheckFont;
 
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override; overload;
+    constructor Create(AOwner: TComponent; AWindowID: Integer); overload;
     destructor Destroy; override;
 
     property Editors[Index:integer]:TSourceEditor read GetEditors; // !!! not ordered for PageIndex
@@ -818,6 +820,8 @@ type
                       FocusIt: boolean; AShareEditor: TSourceEditor = nil): TSourceEditor;
     procedure CloseFile(APageIndex:integer);
     procedure FocusEditor;
+    property WindowID: Integer read FWindowID; // The number in the Form.Caption minus 1 (0-based)
+                                               // (if multiple Win are open)
 
   public
     // These were deprecated at 0.9.29 March 2010
@@ -986,6 +990,8 @@ type
     function  SourceWindowWithPage(const APage: TTabSheet): TSourceNotebook;
     property  SourceWindowByLastFocused[Index: Integer]: TSourceNotebook
               read GetSourceNbByLastFocused;
+    function  IndexOfSourceWindowWithID(const AnID: Integer): Integer; override;
+    function  SourceWindowWithID(const AnID: Integer): TSourceNotebook;
     // Editors
     function  SourceEditorCount: integer; override;
     function  GetActiveSE: TSourceEditor;                                       { $note deprecate and use ActiveEditor}
@@ -1080,7 +1086,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function CreateNewWindow(Activate: Boolean= False;
-                             DoDisableAutoSizing: boolean = False): TSourceNotebook;
+                             DoDisableAutoSizing: boolean = False;
+                             AnID: Integer = -1
+                            ): TSourceNotebook;
     function SenderToEditor(Sender: TObject): TSourceEditor;
   private
     // Context-Menu
@@ -5345,24 +5353,32 @@ var
   i: Integer;
   n: TComponent;
 begin
+  i := 1;
+  n := AOwner.FindComponent(NonModalIDEWindowNames[nmiwSourceNoteBookName]);
+  while (n <> nil) do begin
+    inc(i);
+    n := AOwner.FindComponent(NonModalIDEWindowNames[nmiwSourceNoteBookName]+IntToStr(i));
+  end;
+
+  Create(AOwner, i-1);
+end;
+
+constructor TSourceNotebook.Create(AOwner: TComponent; AWindowID: Integer);
+begin
   inherited Create(AOwner);
   FManager := TSourceEditorManager(AOwner);
   FUpdateLock := 0;
   FFocusLock := 0;
   Visible:=false;
   FIsClosing := False;
-  i := 2;
-  n := Owner.FindComponent(NonModalIDEWindowNames[nmiwSourceNoteBookName]);
-  if (n <> nil) and (n <> self) then begin
-    while Owner.FindComponent(NonModalIDEWindowNames[nmiwSourceNoteBookName]+IntToStr(i)) <> nil do
-      inc(i);
-    Name := NonModalIDEWindowNames[nmiwSourceNoteBookName] + IntToStr(i);
-  end
+  FWindowID := AWindowID;
+  if AWindowID > 0 then
+    Name := NonModalIDEWindowNames[nmiwSourceNoteBookName] + IntToStr(AWindowID+1)
   else
     Name := NonModalIDEWindowNames[nmiwSourceNoteBookName];
 
-  if Manager.SourceWindowCount > 0 then
-    FBaseCaption := locWndSrcEditor + ' (' + IntToStr(Manager.SourceWindowCount+1) + ')'
+  if AWindowID > 0 then
+    FBaseCaption := locWndSrcEditor + ' (' + IntToStr(AWindowID+1) + ')'
   else
     FBaseCaption := locWndSrcEditor;
   Caption := FBaseCaption;
@@ -9037,11 +9053,19 @@ end;
 
 procedure TSourceEditorManager.CreateSourceWindow(Sender: TObject;
   aFormName: string; var AForm: TCustomForm; DoDisableAutoSizing: boolean);
+var
+  i: integer;
 begin
   {$IFDEF VerboseIDEDocking}
   debugln(['TSourceEditorManager.CreateSourceWindow Sender=',DbgSName(Sender),' FormName="',aFormName,'"']);
   {$ENDIF}
-  AForm := CreateNewWindow(false,DoDisableAutoSizing);
+  // Get ID from Name
+  i := length(aFormName);
+  while (i >= 1) and (aFormName[i] in ['0'..'9']) do
+    dec(i);
+  inc(i);
+  i := StrToIntDef(copy(aFormName, i, MaxInt), 1)-1;
+  AForm := CreateNewWindow(false,DoDisableAutoSizing, i);
   AForm.Name:=aFormName;
 end;
 
@@ -9087,6 +9111,26 @@ begin
       break;
     end;
   end;
+end;
+
+function TSourceEditorManager.IndexOfSourceWindowWithID(const AnID: Integer): Integer;
+begin
+  Result := SourceWindowCount - 1;
+  while Result >= 0 do begin
+    if SourceWindows[Result].WindowID = AnID then break;
+    dec(Result);
+  end;
+end;
+
+function TSourceEditorManager.SourceWindowWithID(const AnID: Integer): TSourceNotebook;
+var
+  i: Integer;
+begin
+  i := IndexOfSourceWindowWithID(AnID);
+  if i >= 0 then
+    Result := SourceWindows[i]
+  else
+    Result := CreateNewWindow(False, False, AnID);
 end;
 
 function TSourceEditorManager.SourceEditorCount: integer;
@@ -9889,14 +9933,17 @@ begin
   Result := AnsiStrComp(PChar(SrcWin1.Caption), PChar(SrcWin2.Caption));
 end;
 
-function TSourceEditorManager.CreateNewWindow(Activate: Boolean= False;
-  DoDisableAutoSizing: boolean = false): TSourceNotebook;
+function TSourceEditorManager.CreateNewWindow(Activate: Boolean; DoDisableAutoSizing: boolean;
+  AnID: Integer): TSourceNotebook;
 var
   i: Integer;
 begin
   Result := TSourceNotebook(TSourceNotebook.NewInstance);
   Result.DisableAutoSizing;
-  Result.Create(Self);
+  if AnID > 0 then
+    Result.Create(Self, AnID)
+  else
+    Result.Create(Self);
   Result.OnDropFiles := @OnFilesDroping;
 
   for i := 1 to FUpdateLock do
