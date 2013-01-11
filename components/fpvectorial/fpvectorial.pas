@@ -40,7 +40,7 @@ uses
 type
   TvVectorialFormat = (
     { Multi-purpose document formats }
-    vfPDF, vfSVG, vfCorelDrawCDR, vfWindowsMetafileWMF,
+    vfPDF, vfSVG, vfCorelDrawCDR, vfWindowsMetafileWMF, vfODG,
     { CAD formats }
     vfDXF,
     { Geospatial formats }
@@ -79,6 +79,7 @@ const
   STR_LAZ_EXTENSION = '.laz';
   STR_RAW_EXTENSION = '.raw';
   STR_MATHML_EXTENSION = '.mathml';
+  STR_ODG_EXTENSION = '.odg';
 
   STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE = 'Ćą';
 
@@ -3750,6 +3751,7 @@ begin
   else if AnsiCompareText(lExt, STR_LAZ_EXTENSION) = 0 then Result := vfLAZ
   else if AnsiCompareText(lExt, STR_RAW_EXTENSION) = 0 then Result := vfRAW
   else if AnsiCompareText(lExt, STR_MATHML_EXTENSION) = 0 then Result := vfMathML
+  else if AnsiCompareText(lExt, STR_ODG_EXTENSION) = 0 then Result := vfODG
   else
     raise Exception.Create('TvVectorialDocument.GetFormatFromExtension: The extension (' + lExt + ') doesn''t match any supported formats.');
 end;

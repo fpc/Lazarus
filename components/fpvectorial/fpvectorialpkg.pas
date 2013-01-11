@@ -10,8 +10,9 @@ uses
   fpvectorial, fpvtocanvas, fpvectbuildunit, fpvutils, avisozlib, 
   avisocncgcodewriter, avisocncgcodereader, cdrvectorialreader, 
   dxfvectorialreader, epsvectorialreader, lasvectorialreader, 
-  lazvectorialreader, mathmlvectorialreader, rawvectorialreadwrite, 
-  svgvectorialreader, svgvectorialwriter, LazarusPackageIntf;
+  lazvectorialreader, mathmlvectorialreader, odgvectorialreader, 
+  rawvectorialreadwrite, svgvectorialreader, svgvectorialwriter, 
+  LazarusPackageIntf;
 
 implementation
 
