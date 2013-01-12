@@ -1536,8 +1536,10 @@ var
                 SetString(Str, Start, P - Start);
 
                 if BE.y > BB.y then begin
-                  FLines.EditDelete(BB.x, BB.Y, 1+Length(FLines[BB.y-1]) - BB.x);
-                  FLines.EditInsert(BB.x, BB.Y, Str);
+//                  FLines.EditDelete(BB.x, BB.Y, 1+Length(FLines[BB.y-1]) - BB.x);
+////                  if Str <> '' then
+//                  FLines.EditInsert(BB.x, BB.Y, Str);
+                  FLines.EditReplace(BB.x, BB.Y, 1+Length(FLines[BB.y-1]) - BB.x, Str);
                   if (PasteMode = smLine) or (Value > P) then begin
                     inc(BB.y);
                     BB.x := 1;
@@ -1546,16 +1548,23 @@ var
                     BB.X := BB.X + length(Str);
                 end
                 else begin
-                  FLines.EditDelete(BB.x, BB.Y, BE.x - BB.x);
                   // BE will be block-.nd, also used by SynEdit to set caret
                   if (ActiveSelectionMode = smLine) or (Value > P) then begin
-                    FLines.EditLineBreak(BB.x, BB.Y);
+                    FLines.EditReplace(BB.x, BB.Y, BE.x - BB.x, Str);
+                    FLines.EditLineBreak(BB.x+length(Str), BB.Y);
+                    //FLines.EditDelete(BB.x, BB.Y, BE.x - BB.x);
+                    //FLines.EditLineBreak(BB.x, BB.Y);
+                    //FLines.EditInsert(BB.x, BB.Y, Str);
                     inc(BE.y);
                     BE.x := 1;
                   end
-                  else
+                  else begin
+                    //FLines.EditDelete(BB.x, BB.Y, BE.x - BB.x);
+//                  if Str <> '' then
+                    //FLines.EditInsert(BB.x, BB.Y, Str);
+                    FLines.EditReplace(BB.x, BB.Y, BE.x - BB.x, Str);
                     BE.X := BB.X + length(Str);
-                  FLines.EditInsert(BB.x, BB.Y, Str);
+                  end;
                   BB := BE; // end of selection
                 end;
 

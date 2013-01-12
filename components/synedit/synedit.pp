@@ -5491,7 +5491,7 @@ begin
 
     FInternalBlockSelection.SetSelTextPrimitive(FInternalBlockSelection.ActiveSelectionMode,
                                                 PChar(AValue),
-                                                aMarksMode = smaKeep
+                                                (aMarksMode = smaKeep) or (aStartPoint.y = aEndPoint.y)
                                                );
     if aCaretMode = scamEnd then
       FCaret.LineBytePos := FInternalBlockSelection.StartLineBytePos;

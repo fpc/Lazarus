@@ -124,6 +124,7 @@ type
   public
     procedure EditInsert(LogX, LogY: Integer; AText: String); override;
     Function  EditDelete(LogX, LogY, ByteLen: Integer): String; override;
+    function  EditReplace(LogX, LogY, ByteLen: Integer; AText: String): String; override;
     procedure EditLineBreak(LogX, LogY: Integer); override;
     procedure EditLineJoin(LogY: Integer; FillText: String = ''); override;
     procedure EditLinesInsert(LogY, ACount: Integer; AText: String = ''); override;
@@ -932,19 +933,29 @@ begin
     exit;
   end;
 
+  t := fSynStrings[LogY - 1];
+  Len := length(t);
+  if ( (LogX <= Len) and not(t[Len] in [#9, #32]) ) or
+     ( AText = '') or
+     ( (LogX <= Len+1) and not(AText[Length(AText)] in [#9, #32]) )
+  then begin
+    fSynStrings.EditInsert(LogX, LogY, AText);
+    exit;
+  end;
+
   IncIsInEditAction;
   if Count = 0 then fSynStrings.Add('');
   FlushNotificationCache;
   IgnoreSendNotification(senrEditAction, True);
   SaveText := AText;
   SaveLogX := LogX;
-  t := Strings[LogY - 1];  // include trailing
-  if LogX - 1 > Length(t) then begin
-    AText := StringOfChar(' ', LogX - 1 - Length(t)) + AText;
-    LogX := 1 + Length(t);
+
+  Len := Length(t) + Length(Spaces(LogY-1));
+  if LogX - 1 > Len then begin
+    AText := StringOfChar(' ', LogX - 1 - Len) + AText;
+    LogX := 1 + Len;
   end;
   IsSpaces := LastNoneSpacePos(AText) = 0;
-  t := fSynStrings[LogY - 1];
   Len := length(t);
   LenNS := LastNoneSpacePos(t);
   if (LenNS < LogX - 1) and not IsSpaces then
@@ -992,7 +1003,14 @@ var
   Len: Integer;
   SaveByteLen: LongInt;
 begin
-  if (not fEnabled) then begin
+  if (not fEnabled) or (ByteLen <= 0) then begin
+    fSynStrings.EditDelete(LogX, LogY, ByteLen);
+    exit;
+  end;
+
+  t := fSynStrings[LogY - 1];
+  Len := length(t);
+  if (LogX + ByteLen <= Len) and not(t[Len] in [#9, #32]) then begin
     fSynStrings.EditDelete(LogX, LogY, ByteLen);
     exit;
   end;
@@ -1001,11 +1019,9 @@ begin
   FlushNotificationCache;
   SaveByteLen := ByteLen;
   Result := '';
-  t := fSynStrings[LogY - 1];
-  Len := length(t);
 
   IgnoreSendNotification(senrEditAction, True);
-  // Delete uncommited spaces (could laso be ByteLen too big, due to past EOL)
+  // Delete uncommited spaces (could also be ByteLen too big, due to past EOL)
   if LogX + ByteLen > Len + 1 then begin
     if LogX > Len + 1 then
       ByteLen := ByteLen - (LogX - (Len + 1));
@@ -1027,6 +1043,117 @@ begin
 
   IgnoreSendNotification(senrEditAction, False);
   SendNotification(senrEditAction, self, LogY, 0, LogX, -SaveByteLen, '');
+  DecIsInEditAction;
+end;
+
+function TSynEditStringTrimmingList.EditReplace(LogX, LogY, ByteLen: Integer;
+  AText: String): String;
+var
+  t: String;
+  SaveByteLen: LongInt;
+  Len, LenNS, SaveLogX: Integer;
+  IsSpaces: Boolean;
+  SaveText: String;
+begin
+  if (not fEnabled) then begin
+    Result := inherited EditReplace(LogX, LogY, ByteLen, AText);
+    exit;
+  end;
+
+  if (Count = 0) or (ByteLen <= 0)
+  then begin
+    Result := '';
+    EditInsert(LogX, LogY, AText);
+    exit;
+  end;
+
+  t := fSynStrings[LogY - 1];
+  Len := length(t);
+  if ( (LogX + ByteLen <= Len) and not(t[Len] in [#9, #32]) ) or
+     ( AText = '') or
+     ( (LogX + ByteLen <= Len+1) and not(AText[Length(AText)] in [#9, #32]) )
+  then begin
+    Result := inherited EditReplace(LogX, LogY, ByteLen, AText);
+    exit;
+  end;
+
+  IncIsInEditAction;
+  FlushNotificationCache;
+  IgnoreSendNotification(senrEditAction, True);
+
+  SaveByteLen := ByteLen;
+  SaveText := AText;
+  SaveLogX := LogX;
+  Result := '';
+
+  // Delete uncommited spaces (could also be ByteLen too big, due to past EOL)
+  if LogX + ByteLen > Len + 1 then begin
+    if LogX > Len + 1 then
+      ByteLen := ByteLen - (LogX - (Len + 1));
+    Result := EditDeleteTrim(max(LogX - Len, 1), LogY, LogX - 1 + ByteLen - Len);
+    ByteLen :=  Len + 1 - LogX;
+  end;
+
+  if ByteLen > 0 then
+    Result := inherited EditDelete(LogX, LogY, ByteLen) + Result
+  else
+  begin
+    SendNotification(senrLineChange, self, LogY - 1, 1);
+  end;
+
+  //// Trim any existing (committed/real) spaces
+  //t := fSynStrings[LogY - 1];
+  //EditMoveToTrim(LogY, length(t) - LastNoneSpacePos(t));
+
+  // Insert
+
+  t := fSynStrings[LogY - 1];
+  Len := Length(t) + Length(Spaces(LogY-1));
+  if LogX - 1 > Len then begin
+    AText := StringOfChar(' ', LogX - 1 - Len) + AText;
+    LogX := 1 + Len;
+  end;
+  IsSpaces := LastNoneSpacePos(AText) = 0;
+  Len := length(t);
+  LenNS := LastNoneSpacePos(t);
+  if (LenNS < LogX - 1) and not IsSpaces then
+    LenNs := LogX - 1;
+
+  // Trim any existing (committed/real) spaces // skip if we append none-spaces
+  if (LenNS < Len) and (IsSpaces or (LogX <= len)) then
+  begin
+    EditMoveToTrim(LogY, Len - LenNS);
+    Len := LenNS;
+  end;
+
+  if LogX > len then begin
+    if IsSpaces then begin
+      EditInsertTrim(LogX - Len, LogY, AText);
+      AText := '';
+    end else begin
+      // Get Fill Spaces
+      EditMoveFromTrim(LogY, LogX - 1 - len);
+      // Trim
+      Len := length(AText);
+      LenNS := LastNoneSpacePos(AText);
+      if LenNS < Len then begin
+        EditInsertTrim(1, LogY, copy(AText, 1 + LenNS, Len));
+        AText := copy(AText, 1, LenNS);
+      end;
+    end;
+  end;
+
+  if AText <> '' then
+    inherited EditInsert(LogX, LogY, AText)
+  else
+    SendNotification(senrLineChange, self, LogY - 1, 1);
+
+  // update spaces
+  UpdateLineText(LogY);
+
+  IgnoreSendNotification(senrEditAction, False);
+  SendNotification(senrEditAction, self, LogY, 0, LogX, -SaveByteLen, '');
+  SendNotification(senrEditAction, self, LogY, 0, SaveLogX, length(SaveText), SaveText);
   DecIsInEditAction;
 end;
 

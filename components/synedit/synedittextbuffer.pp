@@ -245,6 +245,7 @@ type
     property RedoList: TSynEditUndoList read GetRedoList write fRedoList;
     procedure EditInsert(LogX, LogY: Integer; AText: String); override;
     function  EditDelete(LogX, LogY, ByteLen: Integer): String; override;
+    function  EditReplace(LogX, LogY, ByteLen: Integer; AText: String): String; override;
     procedure EditLineBreak(LogX, LogY: Integer); override;
     procedure EditLineJoin(LogY: Integer; FillText: String = ''); override;
     procedure EditLinesInsert(LogY, ACount: Integer; AText: String = ''); override;
@@ -1230,7 +1231,8 @@ begin
     LogX := Length(s) + 1;
   end;
   Strings[LogY - 1] := copy(s,1, LogX - 1) + AText + copy(s, LogX, length(s));
-  CurUndoList.AddChange(TSynEditUndoTxtInsert.Create(LogX, LogY, Length(AText)));
+  if AText <> '' then
+    CurUndoList.AddChange(TSynEditUndoTxtInsert.Create(LogX, LogY, Length(AText)));
   MarkModified(LogY, LogY);
   SendNotification(senrEditAction, self, LogY, 0, LogX, length(AText), AText);
   DecIsInEditAction;
@@ -1240,15 +1242,57 @@ function TSynEditStringList.EditDelete(LogX, LogY, ByteLen: Integer): String;
 var
   s: string;
 begin
+  if ByteLen <= 0 then
+    exit;
   IncIsInEditAction;
   s := Strings[LogY - 1];
   if LogX - 1 > Length(s) then
     exit;
   Result := copy(s, LogX, ByteLen);
   Strings[LogY - 1] := copy(s,1, LogX - 1) + copy(s, LogX +  ByteLen, length(s));
-  CurUndoList.AddChange(TSynEditUndoTxtDelete.Create(LogX, LogY, Result));
+  if Result <> '' then
+    CurUndoList.AddChange(TSynEditUndoTxtDelete.Create(LogX, LogY, Result));
   MarkModified(LogY, LogY);
   SendNotification(senrEditAction, self, LogY, 0, LogX, -ByteLen, '');
+  DecIsInEditAction;
+end;
+
+function TSynEditStringList.EditReplace(LogX, LogY, ByteLen: Integer; AText: String): String;
+var
+  s, s2: string;
+begin
+  IncIsInEditAction;
+
+  if ByteLen <= 0 then
+    ByteLen := 0;
+  s := Strings[LogY - 1];
+  if LogX - 1 > Length(s) then begin
+    AText := StringOfChar(' ', LogX - 1 - Length(s)) + AText;
+    LogX := Length(s) + 1;
+  end;
+
+  if LogX - 1 + ByteLen > Length(s) then
+    ByteLen := Length(s) - (LogX-1);
+  Result := copy(s, LogX, ByteLen);
+
+  SetLength(s2, Length(s) - ByteLen + Length(AText));
+  if LogX > 1 then
+    system.Move(s[1], s2[1], LogX-1);
+  if AText <> '' then
+    system.Move(AText[1], s2[LogX], Length(AText));
+  if Length(s)-(LogX-1)-ByteLen > 0 then
+    system.Move(s[LogX+ByteLen], s2[LogX+Length(AText)], Length(s)-(LogX-1)-ByteLen);
+  Strings[LogY - 1] := s2;
+  //Strings[LogY - 1] := copy(s,1, LogX - 1) + AText + copy(s, LogX +  ByteLen, length(s));
+
+  if Result <> '' then
+    CurUndoList.AddChange(TSynEditUndoTxtDelete.Create(LogX, LogY, Result));
+  if AText <> '' then
+    CurUndoList.AddChange(TSynEditUndoTxtInsert.Create(LogX, LogY, Length(AText)));
+
+  MarkModified(LogY, LogY);
+  SendNotification(senrEditAction, self, LogY, 0, LogX, -ByteLen, '');
+  SendNotification(senrEditAction, self, LogY, 0, LogX, length(AText), AText);
   DecIsInEditAction;
 end;
 
