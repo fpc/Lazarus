@@ -1575,8 +1575,11 @@ begin
   end;
   // CurPos.StartPos now points to the last char of the prior atom
   CurPos.EndPos:=CurPos.StartPos+1;
-  if CurPos.StartPos<1 then
+  if CurPos.StartPos<1 then begin
+    CurPos.StartPos:=1;
+    CurPos.EndPos:=1;
     exit;
+  end;
   // read atom
   if IsStringConstant then begin
     CurPos.StartPos:=OldPrePos;
