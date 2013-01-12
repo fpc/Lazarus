@@ -3060,23 +3060,30 @@ var
   
   procedure OutMemo;
   var
-    i, cury, th: Integer;
+    i: Integer;
+    curyf, thf, linespc: double;
 
     function OutLine(st: String): Boolean;
     var
       {$IFDEF DebugLR}
       aw: Integer;
       {$ENDIF}
-      n, nw, w, curx: Integer;
+      cond: boolean;
+      n, {nw, w, }curx, lasty: Integer;
+      lastyf: Double;
       Ts: TTextStyle;
     begin
+      lastyf := curyf + thf - LineSpc - 1;
+      lastY := Round(lastyf);
+      cond := not streaming and (lasty<=DR.Bottom);
       {$IFDEF DebugLR_detail}
-      DebugLn('OutLine Cury=%d + th=%d = %d <= dr.bottom=%d == %s',[cury,th,cury+th,dr.bottom,dbgs(cury+th<=dr.bottom)]);
+      DebugLn('OutLine curyf=%f + thf=%f - gapy=%d = %f (%d) <= dr.bottom=%d == %s',
+        [curyf,thf,gapy,lastyf,lasty,dr.bottom,dbgs(Cond)]);
       {$ENDIF}
-      if not Streaming and (cury + th -1 <= DR.Bottom) then
+      if not Streaming and cond then
       begin
         n := Length(St);
-        w := Ord(St[n - 1]) * 256 + Ord(St[n]);
+        //w := Ord(St[n - 1]) * 256 + Ord(St[n]);
         SetLength(St, n - 2);
         if Length(St) > 0 then
         begin
@@ -3092,12 +3099,14 @@ var
         Ts.SingleLine:=True;
         Ts.Clipping  :=True;
         Canvas.TextStyle := Ts;
-        
+
+        (*
+        // the disabled code allows for text-autofitting adjusting font size
+        // TODO: waiting for users mising this and make it an option or remove it
         nw := Round(w * ScaleX);                    // needed width
         {$IFDEF DebugLR_detail}
-        DebugLn('Canvas.Font.Size=%d TextWidth=%d',[Canvas.Font.Size,Canvas.TextWidth(St)]);
+        DebugLn('TextWidth=%d st=%s',[Canvas.TextWidth(St),copy(st, 1, 20)]);
         {$ENDIF}
-        (*
         while (Canvas.TextWidth(St) > nw) and (Canvas.Font.Size>1) do
         begin
           Canvas.Font.Size := Canvas.Font.Size-1;
@@ -3105,13 +3114,12 @@ var
           DebugLn('Rescal font %d',[Canvas.Font.Size]);
           {$ENDIF}
         end;
-        *)
         {$IFDEF DebugLR_detail}
-        DebugLn('Th=%d Canvas.TextHeight(H)=%d',[Th,Canvas.TextHeight('H')]);
         Debugln('Canvas.Font.Size=%d TextWidth=%d',[Canvas.Font.Size,Canvas.TextWidth(St)]);
         aw := Canvas.TextWidth(St);                // actual width
         DebugLn('nw=%d  aw=%d',[nw,aw]);
         {$ENDIF}
+        *)
         case Alignment of
           Classes.taLeftJustify : CurX :=x+gapx;
           Classes.taRightJustify: CurX :=x+dx-1-gapx-Canvas.TextWidth(St);
@@ -3119,9 +3127,9 @@ var
         end;
 
         if not Exporting then
-          Canvas.TextRect(DR, CurX, CurY, St)
+          Canvas.TextRect(DR, CurX, round(curYf), St)
         else
-          CurReport.InternalOnExportText(X, CurY, St, Self);
+          CurReport.InternalOnExportText(X, round(curYf), St, Self);
 
         Inc(CurStrNo);
         Result := False;
@@ -3129,7 +3137,7 @@ var
       else
         Result := True;
 
-      cury := cury + th;
+      curyf := curyf + thf;
     end;
 
   begin {OutMemo}
@@ -3140,21 +3148,26 @@ var
       else if Layout=tlBottom then
         y:=y+dy-VHeight;
     end;
-    cury := y + gapy;
+    curyf := y + gapy;
 
-    th := -Canvas.Font.Height+Round(LineSpacing * ScaleY);
+    LineSpc := LineSpacing * ScaleY;
+    // calc our reference at 100% and then scale it
+    // NOTE: this should not be r((Self.Font.Size*96/72 + LineSpacing)*ScaleY)
+    //       as our base at 100% is rounded.
+    thf := Round(Self.Font.Size*96/72 + LineSpacing)* ScaleY;
+    // Corrects font height, that's the total line height minus the scaled linespacing
+    Canvas.Font.Height := -Round(thf - LineSpc);
     {$IFDEF DebugLR}
-    DebugLn('CurY=%d Th=%d Canvas.TextHeight(H)=%d Font.Size=%d DR=%s Memo1.Count=%d',
-      [cury, Th,Canvas.TextHeight('H'),Canvas.Font.Size, dbgs(DR), Memo1.Count]);
+    DebugLn('curyf=%f thf=%f Font.height=%d TextHeight(H)=%d DR=%s Memo1.Count=%d',
+      [curyf, thf, Canvas.Font.Height, Canvas.Textheight('H'), dbgs(DR), Memo1.Count]);
     {$ENDIF}
-
     CurStrNo := 0;
     for i := 0 to Memo1.Count - 1 do
       if OutLine(Memo1[i]) then
         break;
 
     {$IFDEF DebugLR}
-    DebugLn('CurStrNo=%d CurY=%d Last"i"=%d',[CurStrNo, CurY, i]);
+    DebugLn('CurStrNo=%d CurYf=%f Last"i"=%d',[CurStrNo, CurYf, i]);
     {$ENDIF}
   end;
 
@@ -3324,11 +3337,9 @@ var
 begin
   BeginDraw(aCanvas);
   {$IFDEF DebugLR}
-  if IsPrinting then begin
     DebugLn('');
-    Debugln('TfrMemoView.Draw: Name=%s Printing=%s Canvas.Font.PPI=%d',
+    DebuglnEnter('TfrMemoView.Draw: Name=%s Printing=%s Canvas.Font.PPI=%d',
       [Name,dbgs(IsPrinting),Canvas.Font.PixelsPerInch]);
-  end;
   NewDx := 0;
   {$ENDIF}
   if ((Flags and flAutoSize) <> 0) and (Memo.Count > 0) and  (DocMode <> dmDesigning) then
@@ -3389,6 +3400,9 @@ begin
   end;
 
   RestoreCoord;
+  {$IFDEF DebugLR}
+  DebuglnExit('TfrMemoView.Draw: DONE',[]);
+  {$Endif}
 end;
 
 procedure TfrMemoView.Print(Stream: TStream);
