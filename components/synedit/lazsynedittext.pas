@@ -340,6 +340,7 @@ type
     // Currently Lines are physical
     procedure EditInsert(LogX, LogY: Integer; AText: String); virtual; abstract;
     function  EditDelete(LogX, LogY, ByteLen: Integer): String; virtual; abstract;
+    function  EditReplace(LogX, LogY, ByteLen: Integer; AText: String): String; virtual; abstract;
     procedure EditLineBreak(LogX, LogY: Integer); virtual; abstract;
     procedure EditLineJoin(LogY: Integer; FillText: String = ''); virtual; abstract;
     procedure EditLinesInsert(LogY, ACount: Integer; AText: String = ''); virtual; abstract;
@@ -451,6 +452,7 @@ type
     // LogX, LogY are 1-based
     procedure EditInsert(LogX, LogY: Integer; AText: String); override;
     function  EditDelete(LogX, LogY, ByteLen: Integer): String; override;
+    function  EditReplace(LogX, LogY, ByteLen: Integer; AText: String): String; override;
     procedure EditLineBreak(LogX, LogY: Integer); override;
     procedure EditLineJoin(LogY: Integer; FillText: String = ''); override;
     procedure EditLinesInsert(LogY, ACount: Integer; AText: String = ''); override;
@@ -1374,6 +1376,12 @@ end;
 function TSynEditStringsLinked.EditDelete(LogX, LogY, ByteLen: Integer): String;
 begin
   Result := fSynStrings.EditDelete(LogX, LogY, ByteLen);
+end;
+
+function TSynEditStringsLinked.EditReplace(LogX, LogY, ByteLen: Integer;
+  AText: String): String;
+begin
+  fSynStrings.EditReplace(LogX, LogY, ByteLen, AText);
 end;
 
 procedure TSynEditStringsLinked.EditLineBreak(LogX, LogY: Integer);
