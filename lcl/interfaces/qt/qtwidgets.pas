@@ -710,6 +710,7 @@ type
     procedure DetachEvents; override;
     function CanPaintBackground: Boolean; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    function getClientBounds: TRect; override;
     function getText: WideString; override;
     procedure setText(const W: WideString); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
@@ -1751,6 +1752,7 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    function getClientBounds: TRect; override;
     function getIcon: QIconH;
     function getIndex(const ATextChanging: Boolean = False): Integer;
     function getTabWidget: QTabWidgetH;
@@ -6954,6 +6956,12 @@ begin
     else
       Result := inherited EventFilter(Sender, Event);
   end;
+end;
+
+function TQtGroupBox.getClientBounds: TRect;
+begin
+  QWidget_contentsRect(Widget, @Result);
+  OffsetRect(Result, -Result.Left, -Result.Top);
 end;
 
 function TQtGroupBox.getText: WideString;
@@ -15539,6 +15547,19 @@ begin
     end;
   end;
   Result := inherited EventFilter(Sender, Event);
+end;
+
+function TQtPage.getClientBounds: TRect;
+var
+  w: QWidgetH;
+begin
+  w := QWidget_parentWidget(Widget);
+  if (FChildOfComplexWidget = ccwTabWidget) and (w <> nil) then
+  begin
+    QWidget_contentsRect(w, @Result);
+    OffsetRect(Result, -Result.Left, -Result.Top);
+  end else
+    Result := inherited getClientBounds;
 end;
 
 function TQtPage.getIcon: QIconH;
