@@ -288,7 +288,7 @@ begin
 
   DlgType := DlgTypeComboBox.Text;
   MsgButtons := EmptyStr;
-  if ButtonsCheckGroup.Enabled then begin  //MessageDlg();
+  if ButtonsNotebook.PageIndex = 0 then begin  //MessageDlg();
     if ButtonsCheckGroup.Checked[0] then
       MsgButtons := MsgButtons+' mbYes,';
     if ButtonsCheckGroup.Checked[1] then
