@@ -10633,8 +10633,8 @@ begin
         s1 := InputBox('', frParser.Calc(p1), frParser.Calc(p2));
         val := s1;
       end;
-    7:val := Length(frParser.Calc(p1));                       //Add('LENGTH');            {7}
-    8: val := AnsiLowerCase(frParser.Calc(p1)); //Add('LOWERCASE');         {8}
+    7:val := UTF8Length(frParser.Calc(p1));                       //Add('LENGTH');            {7}
+    8: val := UTF8LowerCase(frParser.Calc(p1)); //Add('LOWERCASE');         {8}
     9: dk := dkMax;                                           //Add('MAX');               {9}
    10:begin                                                   //Add('MAXNUM');            {10}
         v2 := frParser.Calc(p1);
@@ -10655,9 +10655,9 @@ begin
       end;
    14: val := MonthOf(frParser.Calc(p1));                     //Add('MONTHOF');           {14}
    15:begin                                                   //Add('NAMECASE');          {15}
-        s1 := AnsiLowerCase(frParser.Calc(p1));
+        s1 := UTF8LowerCase(frParser.Calc(p1));
         if Length(s1) > 0 then
-          val := AnsiUpperCase(s1[1]) + Copy(s1, 2, Length(s1) - 1)
+          val := UTF8UpperCase(UTF8Copy(S1, 1, 1)) + UTF8Copy(s1, 2, UTF8Length(s1))
         else
           val := '';
       end;
@@ -10673,7 +10673,7 @@ begin
          S1:=frParser.Calc(p1);
          val := Trim(S1);
        end;
-   21: val := AnsiUpperCase(frParser.Calc(p1)); //Add('UPPERCASE');         {21}
+   21: val := UTF8UpperCase(frParser.Calc(p1)); //Add('UPPERCASE');         {21}
    22: val := YearOf(frParser.Calc(p1));                      //Add('YEAROF');            {22}
   end;
   
