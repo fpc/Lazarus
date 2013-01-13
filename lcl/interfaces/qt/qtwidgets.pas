@@ -6853,7 +6853,10 @@ begin
   QLayout_invalidate(ALayout);
 
   if LCLObject <> nil then
+  begin
     LCLObject.DoAdjustClientRectChange(False);
+    LCLObject.InvalidateClientRectCache(True);
+  end;
 end;
 
 function TQtGroupBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
