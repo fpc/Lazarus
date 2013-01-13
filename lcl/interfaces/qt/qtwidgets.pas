@@ -1752,7 +1752,6 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
-    function getClientBounds: TRect; override;
     function getIcon: QIconH;
     function getIndex(const ATextChanging: Boolean = False): Integer;
     function getTabWidget: QTabWidgetH;
@@ -15547,19 +15546,6 @@ begin
     end;
   end;
   Result := inherited EventFilter(Sender, Event);
-end;
-
-function TQtPage.getClientBounds: TRect;
-var
-  w: QWidgetH;
-begin
-  w := QWidget_parentWidget(Widget);
-  if (FChildOfComplexWidget = ccwTabWidget) and (w <> nil) then
-  begin
-    QWidget_contentsRect(w, @Result);
-    OffsetRect(Result, -Result.Left, -Result.Top);
-  end else
-    Result := inherited getClientBounds;
 end;
 
 function TQtPage.getIcon: QIconH;
