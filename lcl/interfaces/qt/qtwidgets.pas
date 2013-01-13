@@ -6835,7 +6835,6 @@ begin
   finally
     QFontMetrics_destroy(FontMetrics);
   end;
-
   {currently applies only to wrong TopMargin calculation (eg.gtk style).}
   if (TopMargin - FontHeight < 2) then
     TopMargin := FontHeight + 2 // top & bottom +1px
@@ -6846,6 +6845,9 @@ begin
     BottomMargin := 0;
   end;
   {$ENDIF}
+  {if there's no text set margin to bottom margin size. issue #23642}
+  if getText = '' then
+    TopMargin := BottomMargin;
 
   QLayout_setContentsMargins(ALayout, LeftMargin, TopMargin, RightMargin, BottomMargin);
   QLayout_invalidate(ALayout);
