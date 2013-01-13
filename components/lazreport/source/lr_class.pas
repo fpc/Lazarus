@@ -11009,8 +11009,11 @@ begin
   if t is TfrBandView then
     t := TfrBandView(t).Parent;
 
-  if not Assigned(T) then exit;
-  PropInfo:=GetPropInfo(t,Prop);
+  if Assigned(t) then
+    PropInfo:=GetPropInfo(t,Prop)
+  else
+    PropInfo:=nil;
+
   if Assigned(PropInfo) then
   begin
     St:=VarToStr(Value);
@@ -11035,7 +11038,7 @@ begin
   end
   else
   begin
-    if not (t is TfrBandView) then
+    if Assigned(t) and not (t is TfrBandView) then
     begin
       // try with customized properties not included directly in t
       for i:=0 to propcount-1 do
@@ -11063,7 +11066,6 @@ begin
     DebugLn('frVariables[',Name,'] := ',Value);
     {$ENDIF}
     frVariables[Name] := Value;
-    Exit;
   end;
 end;
 
@@ -11546,25 +11548,22 @@ end;
 
 procedure TfrPageDialog.ExecScript;
 var
-//  FSaveView:TfrView;
   FSavePage:TfrPage;
   CmdList, ErrorList:TStringList;
 begin
   if DocMode = dmPrinting then
   begin
-//    FSaveView:=CurView;
     FSavePage:=CurPage;
 
     CmdList:=TStringList.Create;
     ErrorList:=TStringList.Create;
     try
-//      CurView := Self;
-      CurPage:=Self;
+      CurView := nil;
+      CurPage := Self;
       frInterpretator.PrepareScript(Script, CmdList, ErrorList);
       frInterpretator.DoScript(CmdList);
     finally
       CurPage:=FSavePage;
-//      CurView := FSaveView;
       FreeAndNil(CmdList);
       FreeAndNil(ErrorList);
     end;
