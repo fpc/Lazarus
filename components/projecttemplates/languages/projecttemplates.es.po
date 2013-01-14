@@ -1,21 +1,21 @@
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
+"Project-Id-Version: projecttemplates\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: javivf <javivf@gmail.com>\n"
+"PO-Revision-Date: 2013-1-13 18:21+0100\n"
+"Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
 "Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: projecttemplates.sbtncancel
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: projecttemplates.sbtnok
 msgid "&OK"
-msgstr ""
+msgstr "&Aceptar"
 
 #: projecttemplates.serrcouldnotcreatedir
 msgid "Could not create directory \"%s\""

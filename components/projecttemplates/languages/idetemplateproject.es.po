@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
+"Project-Id-Version: projecttemplates\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: javivf <javivf@gmail.com>\n"
+"PO-Revision-Date: 2013-1-13 18:21+0100\n"
+"Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
 "Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: idetemplateproject.snewfromtemplate
 msgid "New project from template"
@@ -17,9 +17,9 @@ msgstr "Nuevo proyecto desde plantilla"
 #, fuzzy
 #| msgid "Project templates options"
 msgid "Project templates options ..."
-msgstr "Opciones de las plantillas del proyecto"
+msgstr "Opciones de las plantillas del proyecto ..."
 
 #: idetemplateproject.stemplatecategory
 msgid "Template projects"
-msgstr ""
+msgstr "Proyectos de plantilla"
 

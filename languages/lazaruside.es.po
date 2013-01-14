@@ -4786,7 +4786,7 @@ msgstr "Sólo se puede cambiar la clase de TComponents."
 #: lazarusidestrconsts.liscaptiondiff
 msgctxt "lazarusidestrconsts.liscaptiondiff"
 msgid "Diff"
-msgstr "Diff"
+msgstr "Difrencias"
 
 #: lazarusidestrconsts.liscbpfiles
 msgid "%s (%s files)"
@@ -7621,7 +7621,7 @@ msgstr "Sólo selección"
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
-msgstr "Abrir Diff en editor"
+msgstr "Abrir Difrencias en editor"
 
 #: lazarusidestrconsts.lisdiffdlgtext1
 msgid "Text1"
@@ -15851,7 +15851,7 @@ msgstr "El archivo %s no parece un archivo lpi."
 
 #: lazarusidestrconsts.listhefileindexisneededforfunctionslikefinddeclaratio
 msgid "The file index is needed for functions like find declaration. While scanning you can edit sources and compile, but functions like find declaration will show unit-not-found errors. This can take a minute."
-msgstr "El índice de archivos es necesario para funciones como la busqueda de declaraciones. Durante la exploración puede editar las fuentes y compilar, pero funciones como la busqueda de declaraciones mostrarán errores de unidad-no-encontrada. Esto puede tardar un minuto."
+msgstr "El índice de archivos es necesario para funciones como la busqueda de declaraciones. Durante el escaneo puede editar las fuentes y compilar, pero funciones como la busqueda de declaraciones mostrarán errores de unidad-no-encontrada. Esto puede tardar un minuto."
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
