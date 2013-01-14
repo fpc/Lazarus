@@ -34,7 +34,7 @@ type
     FGotFirstLinePos, FGotLastLinePos: Integer;
     FGotReason: TSynEditorCommand;
     function GetIndentCallBack( Sender: TObject;                       // the beautifier
-                                Editor: TObject;                       // the synedit
+                                {%H-}Editor: TObject;                  // the synedit
                                 LogCaret, OldLogCaret: TPoint;
                                 FirstLinePos, LastLinePos: Integer;
                                 Reason: TSynEditorCommand;             // what caused the evnt

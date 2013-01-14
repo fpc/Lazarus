@@ -819,6 +819,7 @@ if MultiHl.CurrentLines <> nil then DumpAll(MultiHl) else debugln('#');
   end;
 
 begin
+  Name := '';
   form.Width := 700;
 
   PushBaseName('SetupXmlLfmPas start empty');
@@ -835,9 +836,9 @@ procedure TTestHighlightMulti.TestMultiHLEdit;
 var
   MultiHl: TSynMultiSyn;
   XmlHl: TSynXMLSyn;
-  EmptyScheme, PasScheme: TSynHighlighterMultiScheme;
+  {EmptyScheme, }PasScheme: TSynHighlighterMultiScheme;
   AtXmlEl, AtXmlSym, AtXmlTxt: TSynHighlighterAttributes;
-  AtPasMark, AtPasSym, AtPasId, AtPasKey, AtPasSp, AtPasCom: TSynHighlighterAttributes;
+  AtPasMark, AtPasSym, AtPasId, AtPasKey, {AtPasSp, }AtPasCom: TSynHighlighterAttributes;
   PasHl: TSynPasSyn;
   i, j: Integer;
 
@@ -848,7 +849,8 @@ var
     XmlHl.ElementAttri.Foreground := 255;
 
     MultiHl.DefaultHighlighter := XmlHl;
-    EmptyScheme := TSynHighlighterMultiScheme(MultiHl.Schemes.Add);
+    //EmptyScheme := TSynHighlighterMultiScheme(MultiHl.Schemes.Add);
+    MultiHl.Schemes.Add; // EmptyScheme
 
     AtXmlEl  := XmlHl.ElementAttri;
     AtXmlSym := XmlHl.SymbolAttri;
@@ -890,7 +892,7 @@ var
     AtPasSym := PasHl.SymbolAttri;
     AtPasId  := PasHl.IdentifierAttri;
     AtPasKey := PasHl.KeyAttri;
-    AtPasSp  := PasHl.SpaceAttri;
+    //AtPasSp  := PasHl.SpaceAttri;
     AtPasCom := PasHl.CommentAttri;
   end;
   procedure FinishMultiXmlPasHl;

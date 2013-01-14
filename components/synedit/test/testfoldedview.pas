@@ -1576,7 +1576,7 @@ end;
 
 procedure TTestFoldedView.TestFoldStateDesc;
 var
-  a1,a2, a3, a4: String;
+  a1,a2{, a3, a4}: String;
 begin
   (* - The values returned by GetFoldDescription can change in future versions
        Therefore there is only a limited number of tests.
@@ -1633,8 +1633,8 @@ begin
 
   a1 := FoldedView.GetFoldDescription(0, 0, -1, -1, True,  False);
   a2 := FoldedView.GetFoldDescription(0, 0, -1, -1, False, False);
-  a3 := FoldedView.GetFoldDescription(0, 0, -1, -1, True,  True);
-  a4 := FoldedView.GetFoldDescription(0, 0, -1, -1, False, True);
+  {a3 := }FoldedView.GetFoldDescription(0, 0, -1, -1, True,  True);
+  {a4 := }FoldedView.GetFoldDescription(0, 0, -1, -1, False, True);
 
   SetCaretAndSel(1,5, 2,6);
   FoldedView.FoldAtTextIndex(4, 0, 1, False, 0);

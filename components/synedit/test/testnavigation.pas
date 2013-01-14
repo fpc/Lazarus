@@ -444,7 +444,7 @@ procedure TTestSynNavigation.TestCaretLeftRight;
   begin
     if ExpCaretY < 0 then ExpCaretY := ALine;
 
-    EditorCommandToIdent(ACommand, s);
+    EditorCommandToIdent(ACommand, s{%H-});
     AName := Format('%s (%s Y=%d, X=%d) ', [AName, s, ALine, AStartPhysX]);
 
     {%region NO eoKeepCaretX}

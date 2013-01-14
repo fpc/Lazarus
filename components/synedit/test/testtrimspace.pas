@@ -392,7 +392,7 @@ begin
   test_undo('-newlin 3(r)',  cr+'  ab ',                    6,2);
   test_caret('no trim', 1,1, cr+'  ab ', 1,1);
 
-(*
+{
   (* *)
   test_start('insert newline+indent before space', cr+'  ab ');
   test_cmd  ('insert 5,2', 5,2, ecLineBreak, ' ', cr+'  ab'+cr+'   ',              3,3);
@@ -453,7 +453,7 @@ begin
   test_undo('-linebreak 2(r)',  cr+'  ab ',      5,2);
   test_caret('no trim', 1,1, cr+'  ab ', 1,1);
 *)
-*)
+}
 
   { Join Lines }
   (* *)
