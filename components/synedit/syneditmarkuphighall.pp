@@ -32,31 +32,6 @@ uses
 
 type
 
-(*
-  TSynMarkupHighAllLineState = (hlsValid, hlsInvalid);
-  
-  TSynMarkupHighAllLine = Record
-    MatchIndex : Integer;
-    State : TSynMarkupHighAllLineState;
-  end;
-  
-  { TSynMarkupHighAllLines }
-
-  TSynMarkupHighAllLines = class(TObject)
-  private
-    FCount, FCapacity : Integer;
-    FLines : Array of TSynMarkupHighAllLine;
-    function GetLine(const Index : Integer) : TSynMarkupHighAllLine;
-    procedure SetCount(const AValue : Integer);
-    procedure SetLine(const Index : Integer; const AValue : TSynMarkupHighAllLine);
-  public
-    constructor Create;
-    Function MaybeReduceCapacity : Boolean;
-    property Count : Integer read FCount write SetCount;
-    property Line [const Index : Integer] : TSynMarkupHighAllLine read GetLine write SetLine; default;
-  end;
-*)
-
   { TSynMarkupHighAllMatch }
   TSynMarkupHighAllMatch = Record
     StartPoint, EndPoint : TPoint;
@@ -80,6 +55,11 @@ type
   public
     constructor Create;
     Function MaybeReduceCapacity : Boolean;
+    function IndexOfFirstMatchForLine(ALine: Integer): Integer;
+    function IndexOfLastMatchForLine(ALine: Integer): Integer;
+    procedure Delete(AIndex: Integer; ACount: Integer = 1);
+    procedure Insert(AIndex: Integer; ACount: Integer = 1);
+    procedure Insert(AIndex: Integer; AStartPoint, AEndPoint: TPoint);
     property Count : Integer read FCount write SetCount;
     property Match [const Index : Integer] : TSynMarkupHighAllMatch read GetMatch write SetMatch; default;
     property StartPoint [const Index : Integer] : TPoint read GetStartPoint write SetStartPoint;
@@ -94,20 +74,28 @@ type
   TSynEditMarkupHighlightAll = class(TSynEditMarkup)
   private
     FFoldView: TSynEditFoldedView;
-    fSearchString : string;            // for highlighting all occurences of a word/term
-    fSearchOptions: TSynSearchOptions;
-    fSearch: TSynEditSearch;
+    FSearchString : string;            // for highlighting all occurences of a word/term
+    FSearchOptions: TSynSearchOptions;
+    FSearchStringMaxLines: Integer;
+    FSearch: TSynEditSearch;
+    FNextPosIdx, FNextPosRow: Integer;
 
-    fStartPoint : TPoint;        // First found position, before TopLine of visible area
-    fMatches : TSynMarkupHighAllMatchList;
-    fHasInvalidLines : Boolean;
+    FStartPoint : TPoint;        // First found position, before TopLine of visible area
+    FMatches : TSynMarkupHighAllMatchList;
+    FFirstInvalidLine, FLastInvalidLine: Integer;
     FHideSingleMatch: Boolean;
 
-    Procedure FindStartPoint;
-    Procedure FindInitialize(Backward: Boolean);
+    function  SearchStringMaxLines: Integer;
+    Procedure FindInitialize;
     function GetMatchCount: Integer;
     procedure SetFoldView(AValue: TSynEditFoldedView);
-    Procedure ValidateMatches(RePaint: Boolean = True; KeepStartPoint: Boolean = False);
+    Procedure FindMatches(AStartPoint, AEndPoint: TPoint;
+                          var AIndex: Integer;
+                          AStopAfterLine: Integer = -1; // AEndPoint may be set further down, for multi-line matches
+                          ABackward : Boolean = False
+                         );
+    procedure SetHideSingleMatch(AValue: Boolean);
+    Procedure ValidateMatches(SkipPaint: Boolean = False);
     procedure SetSearchOptions(const AValue : TSynSearchOptions);
     procedure DoFoldChanged(aLine: Integer);
   protected
@@ -115,13 +103,14 @@ type
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
-    procedure DoTextChanged(StartLine, EndLine: Integer); override;
-    property  HideSingleMatch: Boolean read FHideSingleMatch write FHideSingleMatch;
+    procedure DoTextChanged(StartLine, EndLine: Integer); override; // 1 based
+    property  HideSingleMatch: Boolean read FHideSingleMatch write SetHideSingleMatch;
     property MatchCount: Integer read GetMatchCount;
   public
     constructor Create(ASynEdit : TSynEditBase);
     destructor Destroy; override;
 
+    procedure PrepareMarkupForRow(aRow: Integer); override;
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
                                         const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
@@ -130,8 +119,10 @@ type
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
                                          out   ANextPhys, ANextLog: Integer); override;
 
-    Procedure Invalidate(RePaint: Boolean = True);
-    Procedure SendLineInvalidation;
+    // AFirst/ ALast are 1 based
+    Procedure Invalidate(SkipPaint: Boolean = False);
+    Procedure InvalidateLines(AFirstLine: Integer = 0; ALastLine: Integer = 0; SkipPaint: Boolean = False);
+    Procedure SendLineInvalidation(AFirstIndex: Integer = -1;ALastIndex: Integer = -1);
 
     property FoldView: TSynEditFoldedView read FFoldView write SetFoldView;
 
@@ -189,6 +180,12 @@ type
 
 implementation
 uses SynEdit;
+
+const
+  SEARCH_START_OFFS = 100; // Search n lises before/after visible area. (Before applies only, if no exact offset can not be calculated from searchtext)
+  MATCHES_CLEAN_CNT_THRESHOLD = 2500; // Remove matches out of range, only if more Matches are present
+  MATCHES_CLEAN_LINE_THRESHOLD = 300; // Remove matches out of range, only if they are at least n lines from visible area.
+  MATCHES_CLEAN_LINE_KEEP = 200; // LinesKept, if cleaning. MUST be LESS than MATCHES_CLEAN_LINE_THRESHOLD
 
 { TSynMarkupHighAllLines }
 
@@ -255,6 +252,74 @@ begin
   result := true;
 end;
 
+function TSynMarkupHighAllMatchList.IndexOfFirstMatchForLine(ALine: Integer): Integer;
+var
+  l, h: Integer;
+begin
+  if FCount = 0 then
+    exit(-1);
+  l := 0;
+  h := FCount -1;
+  Result := (l+h) div 2;
+  while (h > l) do begin
+    if FMatches[Result].EndPoint.y >= ALine then
+      h := Result
+    else
+      l := Result + 1;
+    Result := (l+h) div 2;
+  end;
+  if (FMatches[Result].EndPoint.y < ALine) then
+    Result := -1;
+end;
+
+function TSynMarkupHighAllMatchList.IndexOfLastMatchForLine(ALine: Integer): Integer;
+var
+  l, h: Integer;
+begin
+  if FCount = 0 then
+    exit(-1);
+  l := 0;
+  h := FCount -1;
+  Result := (l+h) div 2;
+  while (h > l) do begin
+    if FMatches[Result].StartPoint.y <= ALine then
+      l := Result + 1
+    else
+      h := Result;
+    Result := (l+h) div 2;
+  end;
+  if (FMatches[Result].StartPoint.y > ALine) then
+    Result := -1;
+end;
+
+procedure TSynMarkupHighAllMatchList.Delete(AIndex: Integer; ACount: Integer);
+begin
+  if AIndex >= FCount then
+    exit;
+  if AIndex + ACount > FCount then
+    ACount := FCount - AIndex
+  else
+  if AIndex + ACount < FCount then
+    System.Move(FMatches[AIndex+ACount], FMatches[AIndex], (FCount-AIndex-ACount)*SizeOf(TSynMarkupHighAllMatch));
+  Count := Count - ACount;
+end;
+
+procedure TSynMarkupHighAllMatchList.Insert(AIndex: Integer; ACount: Integer);
+begin
+  if AIndex > FCount then
+    exit;
+  Count := FCount + ACount;
+  if AIndex < FCount then
+    System.Move(FMatches[AIndex], FMatches[AIndex+ACount], (FCount-AIndex-ACount)*SizeOf(TSynMarkupHighAllMatch));
+end;
+
+procedure TSynMarkupHighAllMatchList.Insert(AIndex: Integer; AStartPoint, AEndPoint: TPoint);
+begin
+  Insert(AIndex);
+  FMatches[AIndex].StartPoint := AStartPoint;
+  FMatches[AIndex].EndPoint   := AEndPoint;
+end;
+
 procedure TSynMarkupHighAllMatchList.SetCount(const AValue : Integer);
 begin
   if FCount=AValue then exit;
@@ -270,7 +335,7 @@ end;
 
 function TSynMarkupHighAllMatchList.GetPointCount : Integer;
 begin
-  result := Count << 1;
+  result := Count * 2;
 end;
 
 function TSynMarkupHighAllMatchList.GetPoint(const Index : Integer) : TPoint;
@@ -326,7 +391,8 @@ begin
   fSearch := TSynEditSearch.Create;
   fMatches := TSynMarkupHighAllMatchList.Create;
   fSearchString:='';
-  fHasInvalidLines:=True;
+  FFirstInvalidLine := 1;
+  FLastInvalidLine := MaxInt;
   FHideSingleMatch := False;
 end;
 
@@ -342,46 +408,49 @@ procedure TSynEditMarkupHighlightAll.SetSearchOptions(const AValue : TSynSearchO
 begin
   if fSearchOptions = AValue then exit;
   fSearchOptions := AValue;
+  FSearchStringMaxLines := -1;
   Invalidate;
-  ValidateMatches;
 end;
 
 procedure TSynEditMarkupHighlightAll.SetSearchString(const AValue : String);
 begin
   if fSearchString = AValue then exit;
   fSearchString := AValue;
-  Invalidate;
-  ValidateMatches; // bad if options and string search at the same time *and* string is <> ''
+  FSearchStringMaxLines := -1;
+  //DebugLnEnter(['TSynEditMarkupHighlightAll.SetSearchString ', fSearchString]);
+  Invalidate; // bad if options and string search at the same time *and* string is <> ''
+  //DebugLnExit(['TSynEditMarkupHighlightAll.SetSearchString ']);
 end;
 
 procedure TSynEditMarkupHighlightAll.DoTopLineChanged(OldTopLine : Integer);
 begin
   // {TODO: Only do a partial search on the new area}
-  Invalidate(False);
-  ValidateMatches(False, (fStartPoint.y < TopLine) and (fStartPoint.y >= 0));
+  //DebugLnEnter(['TSynEditMarkupHighlightAll.DoTopLineChanged ',FSearchString]);
+  ValidateMatches(True);
+  //DebugLnExit(['TSynEditMarkupHighlightAll.DoTopLineChanged ']);
 end;
 
 procedure TSynEditMarkupHighlightAll.DoLinesInWindoChanged(OldLinesInWindow : Integer);
 begin
   // {TODO: Only do a partial search on the new area}
-  Invalidate(False);;
-  ValidateMatches(False, True);
+  //DebugLnEnter(['TSynEditMarkupHighlightAll.DoLinesInWindoChanged ',FSearchString]);
+  ValidateMatches(True);
+  //DebugLnExit(['TSynEditMarkupHighlightAll.DoLinesInWindoChanged ']);
 end;
 
 procedure TSynEditMarkupHighlightAll.DoMarkupChanged(AMarkup : TSynSelectedColor);
 begin
-  Invalidate; {TODO: only redraw, no search}
-  ValidateMatches;
+  SendLineInvalidation;
 end;
 
-procedure TSynEditMarkupHighlightAll.FindInitialize(Backward : Boolean);
+procedure TSynEditMarkupHighlightAll.FindInitialize;
 begin
   fSearch.Pattern   := fSearchString;
   fSearch.Sensitive := ssoMatchCase in fSearchOptions;
   fSearch.Whole     := ssoWholeWord in fSearchOptions;
   fSearch.RegularExpressions := ssoRegExpr in fSearchOptions;
   fSearch.RegExprMultiLine   := ssoRegExprMultiLine in fSearchOptions;
-  fSearch.Backwards := Backward;
+  fSearch.Backwards := False;
 end;
 
 function TSynEditMarkupHighlightAll.GetMatchCount: Integer;
@@ -402,30 +471,56 @@ begin
     FFoldView.AddFoldChangedHandler(@DoFoldChanged);
 end;
 
-procedure TSynEditMarkupHighlightAll.DoFoldChanged(aLine: Integer);
+procedure TSynEditMarkupHighlightAll.FindMatches(AStartPoint, AEndPoint: TPoint;
+  var AIndex: Integer; AStopAfterLine: Integer; ABackward: Boolean);
+var
+  ptFoundStart, ptFoundEnd: TPoint;
 begin
-  Invalidate(False);
-  ValidateMatches(False, (fStartPoint.y < TopLine) and (fStartPoint.y >= 0));
+  //debugln(['FindMatches IDX=', AIndex,' # ',dbgs(AStartPoint),' - ',dbgs(AEndPoint), 'AStopAfterLine=',AStopAfterLine, ' cnt=',FMatches.Count]);
+  fSearch.Backwards := ABackward;
+  While (true) do begin
+    if not fSearch.FindNextOne(Lines, AStartPoint, AEndPoint, ptFoundStart, ptFoundEnd)
+    then break;
+    AStartPoint := ptFoundEnd;
+
+    FMatches.Insert(AIndex, ptFoundStart, ptFoundEnd);
+    inc(AIndex); // BAckward learch needs final index to point to last inserted (currently support only find ONE)
+
+    if (AStopAfterLine >= 0) and (ptFoundStart.Y > AStopAfterLine) then
+      break;
+  end;
+  //debugln(['FindMatches IDX=', AIndex]);
 end;
 
-procedure TSynEditMarkupHighlightAll.FindStartPoint;
+procedure TSynEditMarkupHighlightAll.SetHideSingleMatch(AValue: Boolean);
+begin
+  if FHideSingleMatch = AValue then Exit;
+  FHideSingleMatch := AValue;
+  if FMatches.Count = 1 then
+    if FHideSingleMatch then
+      Invalidate // TODO only need extend search
+      //ValidateMatches()  // May find a 2nd, by extending startpos
+    else
+      SendLineInvalidation; // Show the existing match
+end;
+
+procedure TSynEditMarkupHighlightAll.DoFoldChanged(aLine: Integer);
+begin
+  InvalidateLines(aLine+1, MaxInt, True);
+end;
+
+function TSynEditMarkupHighlightAll.SearchStringMaxLines: Integer;
 var
-  ptStart, ptEnd, ptFoundStart, ptFoundEnd: TPoint;
   i, j: Integer;
 begin
-  if fSearchString = '' then exit;
-
-  if (ssoWholeWord in fSearchOptions) and (not HideSingleMatch) then begin
-    // can not wrap around lines
-    fStartPoint := Point(1, TopLine);
+  Result := FSearchStringMaxLines;
+  if Result > 0 then
     exit;
-  end;
 
-  if (fSearchOptions * [ssoRegExpr, ssoRegExprMultiLine] = []) and
-     (not HideSingleMatch)
+  if (fSearchOptions * [ssoRegExpr, ssoRegExprMultiLine] = [])
   then begin
     // can not wrap around lines
-    j := 0;
+    j := 1;
     i := Length(fSearchString);
     while i > 0 do begin
       if fSearchString[i] = #13 then begin
@@ -439,163 +534,350 @@ begin
       end;
       dec(i);
     end;
-    fStartPoint := Point(1, Max(1, TopLine - j));
-    exit;
+    FSearchStringMaxLines := j;
+  end
+  else begin
+    if (fSearchOptions * [ssoRegExpr, ssoRegExprMultiLine] = [ssoRegExpr]) then
+      FSearchStringMaxLines := 1    // Only ssoRegExprMultiLine can expand accross lines (actually \n\r should anymay...)
+    else
+      FSearchStringMaxLines := 0; // Unknown
   end;
 
-  FindInitialize(true);
-  ptStart := Point(1, Max(1, TopLine-100));
-  ptEnd.Y := TopLine;
-  ptEnd.X := 1;
-  if fSearch.FindNextOne(Lines, ptStart, ptEnd, ptFoundStart, ptFoundEnd)
-  then fStartPoint := ptFoundStart
-  else fStartPoint := ptEnd;
+  Result := FSearchStringMaxLines;
 end;
 
-procedure TSynEditMarkupHighlightAll.ValidateMatches(RePaint: Boolean = True;
-  KeepStartPoint: Boolean = False);
+procedure TSynEditMarkupHighlightAll.ValidateMatches(SkipPaint: Boolean);
+
+  function IsStartPosValid: Boolean;
+  begin
+    Result := (FStartPoint.y > 0) and
+       (FStartPoint.y < TopLine) and
+       ( (FFirstInvalidLine < 1) or (FStartPoint.y < FFirstInvalidLine) or
+         ( (FLastInvalidLine > 0) and (FStartPoint.y > FLastInvalidLine) )
+       );
+       // or to far back
+  end;
+
 var
-  LastLine : Integer;
-  Pos : Integer;
-  ptStart, ptEnd, ptFoundStart, ptFoundEnd: TPoint;
+  LastLine : Integer;     // Last visible
+  EndOffsLine : Integer;  // Stop search (LastLine + Offs)
+  Idx, Idx2 : Integer;
+  FirstInvalIdx, LastInvalIdx: Integer;
 begin
   if (fSearchString = '') or (not MarkupInfo.IsEnabled) then begin
     fMatches.Count := 0;
     exit;
   end;
 
-  if not fHasInvalidLines
-  then exit;
-  fHasInvalidLines := false;
-
   LastLine := ScreenRowToRow(LinesInWindow);
 
-  { TODO: need a list of invalidated lines, so we can keep valid matches }
-  if not KeepStartPoint then
-    FindStartPoint;
-  ptStart := fStartPoint;
-  Pos := 0;
-
-  FindInitialize(false);
-  ptEnd.Y:= min(ScreenRowToRow(LinesInWindow)+100, Lines.Count);
-  ptEnd.X:= Length(Lines[ptEnd.y - 1]);
-
-  While (true) do begin
-    if not fSearch.FindNextOne(Lines, ptStart, ptEnd, ptFoundStart, ptFoundEnd)
-    then break;
-    ptStart := ptFoundEnd;
-
-    fMatches.StartPoint[Pos] := ptFoundStart;
-    fMatches.EndPoint[Pos]   := ptFoundEnd;
-
-    if ptFoundStart.Y > LastLine
-    then break;
-    inc(Pos);
+  // remove matches, that are too far off the current visible area
+  if FMatches.Count > MATCHES_CLEAN_CNT_THRESHOLD then begin
+    if TopLine - FMatches.EndPoint[0].y > MATCHES_CLEAN_LINE_THRESHOLD then begin
+      Idx := FMatches.IndexOfFirstMatchForLine(TopLine - MATCHES_CLEAN_LINE_KEEP) - 1;
+      FMatches.Delete(0, Idx);
+    end;
+    if FMatches.StartPoint[FMatches.Count-1].y - LastLine > MATCHES_CLEAN_LINE_THRESHOLD then begin
+      Idx := FMatches.IndexOfLastMatchForLine(LastLine  + MATCHES_CLEAN_LINE_KEEP) + 1;
+      FMatches.Delete(Idx, FMatches.Count - Idx);
+    end;
   end;
 
-  fMatches.Count := Pos;
-  fMatches.MaybeReduceCapacity;
-  if RePaint and ( not(HideSingleMatch) or (fMatches.Count > 1) ) then
-    SendLineInvalidation;
+  FirstInvalIdx := -1;
+  LastInvalIdx  := -1;
+  if (FFirstInvalidLine > 0) or (FLastInvalidLine > 0) then begin
+    FirstInvalIdx := FMatches.IndexOfFirstMatchForLine(FFirstInvalidLine);
+    LastInvalIdx  := FMatches.IndexOfLastMatchForLine(FLastInvalidLine);
+    if (FirstInvalIdx >= 0) xor (LastInvalIdx >= 0) then begin
+      if FirstInvalIdx < 0 then
+        FirstInvalIdx := 0;
+      if LastInvalIdx < 0 then
+        LastInvalIdx := FMatches.Count - 1;
+    end;
+    if FirstInvalIdx >= 0 then begin
+      if (not SkipPaint) then
+        SendLineInvalidation(FirstInvalIdx, LastInvalIdx);
+      FMatches.Delete(FirstInvalIdx, LastInvalIdx-FirstInvalIdx+1);
+      if FirstInvalIdx >= FMatches.Count then
+        FirstInvalIdx := -1;
+    end;
+  end;
+  //DebugLnEnter(['>>> ValidateMatches ', FFirstInvalidLine, ' - ',FLastInvalidLine, ' Cnt=',FMatches.Count, ' Idx: ', FirstInvalIdx, ' - ',LastInvalIdx, '  ',SynEdit.Name]);
+
+  FindInitialize;
+
+  if not IsStartPosValid then begin
+
+    if (FMatches.Count > 0) and (FMatches.StartPoint[0].y < TopLine) then begin
+      // New StartPoint from existing matches
+      FStartPoint := FMatches.StartPoint[0];
+      if FirstInvalIdx = 0 then
+        FirstInvalIdx := -1;
+    end
+
+    else begin
+      // New StartPoint
+      Idx := 0;
+      if SearchStringMaxLines > 0 then
+        FStartPoint := Point(1, TopLine - (SearchStringMaxLines - 1))
+      else begin // Search backward
+        FindMatches(Point(1, Max(1, TopLine-SEARCH_START_OFFS)), Point(1, TopLine), Idx, 0, True); // stopAfterline=0, do only ONE find
+        if Idx = 0
+        then FStartPoint := Point(1, TopLine)     // no previous match found
+        else FStartPoint := FMatches.EndPoint[0];
+      end;
+      //debugln(['ValidateMatches:  startpoint ', dbgs(FStartPoint)]);
+      if FMatches.Count > Idx then begin
+        // Fill at start
+        Idx2 := Idx;
+        FindMatches(FStartPoint, FMatches.StartPoint[Idx], Idx);
+        if (not SkipPaint) and (Idx > Idx2) and
+           ( (not HideSingleMatch) or (FMatches.Count > 1) or
+             // Might still get more matches.
+             (FirstInvalIdx > 0) or (FMatches.EndPoint[FMatches.Count - 1].y <= LastLine)
+           )
+        then
+          SendLineInvalidation(Idx2, Idx-1);
+        if FirstInvalIdx = 0 then
+          FirstInvalIdx := -1;
+      end;
+      if (FirstInvalIdx >= 0) and (Idx > 0) then begin
+        inc(FirstInvalIdx, Idx);
+        inc(LastInvalIdx, Idx);
+      end;
+    end;
+
+  end; // StartPoint
+
+  if FMatches.Count = 0 then begin
+    //debugln(['ValidateMatches  cnt was 0']);
+    Idx := 0;
+    EndOffsLine := min(LastLine+SEARCH_START_OFFS, Lines.Count);
+    FindMatches(FStartPoint, Point(Length(Lines[EndOffsLine - 1]), EndOffsLine), Idx, LastLine);
+    if (not SkipPaint) and (Idx > 0) and
+       ( (not HideSingleMatch) or (FMatches.Count > 1) )
+    then
+      SendLineInvalidation(0, Idx-1);
+  end
+  else begin
+
+    if (FirstInvalIdx >= 0) then begin
+      //debugln(['ValidateMatches  REPLACE']);
+      // Replace invalidated
+      Idx := FirstInvalIdx; // actually first valid now
+      if Idx > 0 then begin
+        FindMatches(FMatches.EndPoint[Idx-1], FMatches.StartPoint[Idx], Idx);
+      end
+      else begin
+        FindMatches(FStartPoint, FMatches.StartPoint[Idx], Idx);
+      end;
+      if (not SkipPaint) and (Idx > FirstInvalIdx) and
+         ( (not HideSingleMatch) or (FMatches.Count > 1) or
+           // Might still get more matches.
+           (FMatches.EndPoint[FMatches.Count - 1].y <= LastLine)
+         )
+      then
+        SendLineInvalidation(FirstInvalIdx, Idx-1);
+    end;
+
+    // TODO: store a searched until position
+    if FMatches.EndPoint[FMatches.Count - 1].y <= LastLine then begin
+      //debugln(['ValidateMatches  AT END']);
+      // extend at end
+      Idx := FMatches.Count;
+      Idx2 := Idx;
+      EndOffsLine := min(LastLine+SEARCH_START_OFFS, Lines.Count);
+      FindMatches(FMatches.EndPoint[Idx-1], Point(Length(Lines[EndOffsLine - 1]), EndOffsLine), Idx, LastLine);
+      if (not SkipPaint) and (Idx > Idx2) and
+         ( (not HideSingleMatch) or (FMatches.Count > 1) )
+      then
+        SendLineInvalidation(Idx2, Idx-1);
+    end;
+
+  end;
+
+  //DebugLnExit(['<<< ValidateMatches Cnt=',FMatches.Count]);
+  FFirstInvalidLine := 0;
+  FLastInvalidLine := 0;
+  FNextPosRow := -1;
 end;
 
 procedure TSynEditMarkupHighlightAll.DoTextChanged(StartLine, EndLine: Integer);
 begin
   if (fSearchString = '') then exit;
-  Invalidate;
-  ValidateMatches;
+  InvalidateLines(StartLine, MaxInt); // EndLine); // Might be LineCount changed
 end;
 
-procedure TSynEditMarkupHighlightAll.Invalidate(RePaint: Boolean = True);
+procedure TSynEditMarkupHighlightAll.InvalidateLines(AFirstLine: Integer; ALastLine: Integer;
+  SkipPaint: Boolean);
 begin
-  if RePaint then
-    SendLineInvalidation;
-  fHasInvalidLines := True;
-  fMatches.Count := 0;
-  if SearchString = '' then fMatches.MaybeReduceCapacity;
+  if AFirstLine < 1 then
+    AFirstLine := 1;
+  if (ALastLine < 1) then
+    ALastLine := MaxInt
+  else
+  if ALastLine < AFirstLine then
+    ALastLine := AFirstLine;
+
+  //if (FMatches.Count > 0) and
+  //   (ALastLine < FMatches.StartPoint[0].y) or
+  //   (AFirstLine > FMatches.EndPoint[FMatches.Count-1].y)
+  //then
+  //  exit;
+
+  if (FStartPoint.y < 0) or (ALastLine >= FStartPoint.y) then begin
+
+    if (AFirstLine < FFirstInvalidLine) or (FFirstInvalidLine <= 0) then
+      FFirstInvalidLine := AFirstLine;
+    if (ALastLine > FLastInvalidLine) then
+      FLastInvalidLine := ALastLine;
+  end;
+
+  ValidateMatches(SkipPaint);
 end;
 
-procedure TSynEditMarkupHighlightAll.SendLineInvalidation;
+procedure TSynEditMarkupHighlightAll.SendLineInvalidation(AFirstIndex: Integer;
+  ALastIndex: Integer);
 var
   Pos: Integer;
+  Line1, Line2: Integer;
 begin
   // Inform SynEdit which lines need repainting
-  Pos := 0;
-  while (Pos < fMatches.PointCount)
+  if fMatches.Count = 0 then
+    exit;
+
+  if AFirstIndex < 0 then
+    AFirstIndex := 0;
+  if (ALastIndex < 0) or (ALastIndex > FMatches.Count - 1) then
+    ALastIndex := FMatches.Count - 1;
+
+  Line1 := fMatches.StartPoint[AFirstIndex].y;
+  Line2 := fMatches.EndPoint[AFirstIndex].y;
+  Pos := AFirstIndex;
+  while (Pos < ALastIndex)
   do begin
-    // first block, or new-end bigger last-end
-    if ( (Pos = 0) or (fMatches.Point[Pos+1].y > fMatches.Point[Pos-1].y) )
-    then
-      InvalidateSynLines(fMatches.Point[Pos].y, fMatches.Point[Pos+1].y);
-    inc(pos,2);
+    inc(Pos);
+    if fMatches.EndPoint[Pos].y <= Line2 then
+      Continue;
+    if fMatches.StartPoint[Pos].y <= Line2 + 1 then begin
+      Line2 := fMatches.EndPoint[Pos].y;
+      Continue;
+    end;
+
+    InvalidateSynLines(Line1, Line2);
+    Line1 := fMatches.StartPoint[Pos].y;
+    Line2 := fMatches.EndPoint[Pos].y;
   end;
+
+  InvalidateSynLines(Line1, Line2);
+end;
+
+procedure TSynEditMarkupHighlightAll.PrepareMarkupForRow(aRow: Integer);
+begin
+  if (FNextPosRow > 0) and (aRow > FNextPosRow) and
+     ( (FNextPosIdx = -2) or // No match after FNextPosRow
+       ( (FNextPosIdx >= 0) and (FNextPosIdx < FMatches.PointCount) and (aRow <= FMatches.Point[FNextPosIdx].y) )
+      )
+  then begin
+    if (FNextPosIdx >= 0) and
+      ( (aRow = FMatches.Point[FNextPosIdx].y) or (FNextPosIdx and 1 = 1) )
+    then
+      FNextPosRow := aRow;
+    exit;
+  end;
+
+  FNextPosRow := aRow;
+  FNextPosIdx := FMatches.IndexOfFirstMatchForLine(aRow) * 2;
+  if FNextPosIdx < 0 then
+    exit;
+  if (FMatches.Point[FNextPosIdx].y < aRow) then
+    inc(FNextPosIdx);  // Use EndPoint
 end;
 
 function TSynEditMarkupHighlightAll.GetMarkupAttributeAtRowCol(const aRow: Integer;
   const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
 var
-  Pos, s, e: Integer;
+  pos, s, e: Integer;
 begin
   result := nil;
   if (fSearchString = '') then
   exit;
 
-  if HideSingleMatch and (fMatches.Count <= 1) then exit;
+  if (HideSingleMatch and (fMatches.Count <= 1)) or (aRow <> FNextPosRow) or (FNextPosIdx < 0)
+  then
+    exit;
 
-  Pos:= 0;
-  while (Pos < fMatches.PointCount)
-  and ( (fMatches.Point[Pos].y < aRow)
-       or ((fMatches.Point[Pos].y = aRow) and (fMatches.Point[Pos].x <= aStartCol.Logical)) )
-  do inc(Pos);
+  while (FNextPosIdx < fMatches.PointCount) and
+        (fMatches.Point[FNextPosIdx].y = aRow) and
+        (fMatches.Point[FNextPosIdx].x <= aStartCol.Logical)
+  do
+    inc(FNextPosIdx);
 
-  if Pos = fMatches.PointCount // last point was EndPoint => no markup
+  if FNextPosIdx = fMatches.PointCount // last point was EndPoint => no markup
+  then exit;
+
+  pos := FNextPosIdx - 1;
+  while (pos >= 0) and (fMatches.Point[pos].y = aRow) and
+        (fMatches.Point[pos].x > aStartCol.Logical)
+  do
+    dec(pos);
+
+  if pos < 0 then
+    exit;
+
+  //pos is the point at or before LogPos
+  if (pos and 1)= 1 // the Point is a EndPoint => Outside Match
   then exit;
   
-  if (Pos and 1)=0 // the next Point is a StartPoint => Outside Match
-  then exit;
-  
-  //debugLN('+++>MARUP *ON* ',dbgs(@result),' / ',dbgs(ARow), ' at index ', dbgs(Pos));
-  if fMatches.Point[Pos-1].y < aRow then
+  //debugLN('+++>MARUP *ON* ',dbgs(@result),' / ',dbgs(ARow), ' at index ', dbgs(FNextPosIdx));
+  if fMatches.Point[pos].y < aRow then
     s := -1
   else
-    s := fMatches.Point[Pos-1].x;
-  if fMatches.Point[Pos].y > aRow then
+    s := fMatches.Point[pos].x;
+  if (pos = FMatches.PointCount) or (fMatches.Point[pos+1].y > aRow) then
     e := -1
   else
-    e := fMatches.Point[Pos].x;
+    e := fMatches.Point[pos+1].x;
   MarkupInfo.SetFrameBoundsLog(s, e);
-  result := MarkupInfo;
+  Result := MarkupInfo;
 end;
 
 procedure TSynEditMarkupHighlightAll.GetNextMarkupColAfterRowCol(const aRow: Integer;
   const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo; out ANextPhys,
   ANextLog: Integer);
-var
-  Pos: Integer;
 begin
   ANextLog := -1;
   ANextPhys := -1;
   if (fSearchString = '') then
   exit;
+  if (HideSingleMatch and (fMatches.Count <= 1)) or
+     (aRow <> FNextPosRow) or (FNextPosIdx < 0) or
+     (FNextPosIdx >= fMatches.PointCount) or (FMatches.Point[FNextPosIdx].y > aRow)
+  then
+    exit;
 
-  if HideSingleMatch and (fMatches.Count <= 1) then exit;
+  while (FNextPosIdx < fMatches.PointCount) and
+        (fMatches.Point[FNextPosIdx].y = aRow) and
+        (fMatches.Point[FNextPosIdx].x <= aStartCol.Logical)
+  do
+    inc(FNextPosIdx);
 
-  Pos:= 0;
-  while (Pos < fMatches.PointCount)
-  and ( (fMatches.Point[Pos].y < aRow)
-       or ((fMatches.Point[Pos].y = aRow) and (fMatches.Point[Pos].x <= aStartCol.Logical)) )
-  do inc(Pos);
-
-  // what is ifthe next is an END, with a start at the same pos?
-
-  if Pos = fMatches.PointCount
+  if FNextPosIdx = fMatches.PointCount
   then exit;
-  
-  if fMatches.Point[Pos].y <> aRow
+  if fMatches.Point[FNextPosIdx].y <> aRow
   then exit;
 
-  ANextLog := fMatches.Point[Pos].x;
+  ANextLog := fMatches.Point[FNextPosIdx].x;
   //debugLN('--->NEXT POS ',dbgs(ANextLog),' / ',dbgs(ARow), ' at index ', dbgs(Pos));
+end;
+
+procedure TSynEditMarkupHighlightAll.Invalidate(SkipPaint: Boolean);
+begin
+  if not SkipPaint then
+    SendLineInvalidation;
+  FStartPoint.y := -1;
+  FMatches.Count := 0;
+  ValidateMatches(SkipPaint);
 end;
 
 { TSynEditMarkupHighlightAllCaret }

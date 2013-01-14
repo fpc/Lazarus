@@ -77,7 +77,7 @@ type
     procedure DoCaretChanged(Sender: TObject); virtual;
     procedure DoTopLineChanged(OldTopLine : Integer); virtual;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); virtual;
-    procedure DoTextChanged(StartLine, EndLine : Integer); virtual;
+    procedure DoTextChanged(StartLine, EndLine : Integer); virtual; // 1 based
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); virtual;
 
     procedure InvalidateSynLines(FirstLine, LastLine: integer); // Call Synedt to invalidate lines
@@ -108,7 +108,7 @@ type
                                            AMarkup: TSynSelectedColor); virtual;
 
     // Notifications about Changes to the text
-    Procedure TextChanged(aFirstCodeLine, aLastCodeLine: Integer); virtual;
+    Procedure TextChanged(aFirstCodeLine, aLastCodeLine: Integer); virtual; // 1 based
     Procedure TempDisable;
     Procedure TempEnable;
     procedure IncPaintLock; virtual;
