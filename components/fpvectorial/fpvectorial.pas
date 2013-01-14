@@ -114,7 +114,7 @@ type
     Bold: boolean;
     Italic: boolean;
     Underline: boolean;
-    StrikeTrough: boolean;
+    StrikeThrough: boolean;
   end;
 
   { Coordinates and polyline segments }
@@ -264,6 +264,7 @@ type
     Pen: TvPen;
     constructor Create; override;
     procedure ApplyPenToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo);
+    procedure AssignPen(APen: TvPen);
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
@@ -277,8 +278,10 @@ type
     Brush: TvBrush;
     constructor Create; override;
     procedure ApplyBrushToCanvas(ADest: TFPCustomCanvas);
+    procedure AssignBrush(ABrush: TvBrush);
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   { TvEntityWithPenBrushAndFont }
@@ -288,8 +291,10 @@ type
     Font: TvFont;
     constructor Create; override;
     procedure ApplyFontToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; AMulX: Double = 1.0);
+    procedure AssignFont(AFont: TvFont);
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   TvClipMode = (vcmNonzeroWindingRule, vcmEvenOddRule);
@@ -1113,6 +1118,13 @@ begin
   ADest.Pen.Style := Pen.Style;
 end;
 
+procedure TvEntityWithPen.AssignPen(APen: TvPen);
+begin
+  Pen.Style := APen.Style;
+  Pen.Color := APen.Color;
+  Pen.Width := APen.Width;
+end;
+
 procedure TvEntityWithPen.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 begin
@@ -1135,11 +1147,33 @@ begin
   ADest.Brush.Style := Brush.Style;
 end;
 
+procedure TvEntityWithPenAndBrush.AssignBrush(ABrush: TvBrush);
+begin
+  Brush.Style := ABrush.Style;
+  Brush.Color := ABrush.Color;
+end;
+
 procedure TvEntityWithPenAndBrush.Render(ADest: TFPCustomCanvas;
    ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
   ApplyBrushToCanvas(ADest);
+end;
+
+function TvEntityWithPenAndBrush.GenerateDebugTree(
+  ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer;
+var
+  lStr: string;
+  lCurPathSeg: TPathSegment;
+begin
+  lStr := Format('[%s] Name=%s Pen.Color=%s Pen.Style=%s Brush.Color=%s Brush.Style=%s',
+    [Self.ClassName, Self.Name,
+    GenerateDebugStrForFPColor(Pen.Color),
+    GetEnumName(TypeInfo(TFPPenStyle), integer(Pen.Style)),
+    GenerateDebugStrForFPColor(Brush.Color),
+    GetEnumName(TypeInfo(TFPBrushStyle), integer(Brush.Style))
+    ]);
+  Result := ADestRoutine(lStr, APageItem);
 end;
 
 
@@ -1164,11 +1198,23 @@ begin
   ADest.Font.Bold := Font.Bold;
   ADest.Font.Italic := Font.Italic;
   ADest.Font.Underline := Font.Underline;
-  ADest.Font.StrikeTrough := Font.StrikeTrough;
+  ADest.Font.StrikeTrough := Font.StrikeThrough;
   {$ifdef USE_LCL_CANVAS}
   ALCLDest.Font.Orientation := Round(Font.Orientation * 16);
   {$endif}
   ADest.Font.FPColor := AdjustColorToBackground(Font.Color, ARenderInfo);
+end;
+
+procedure TvEntityWithPenBrushAndFont.AssignFont(AFont: TvFont);
+begin
+  Font.Color := AFont.Color;
+  Font.Size := AFont.Size;
+  Font.Name := AFont.Name;
+  Font.Orientation := AFont.Orientation;
+  Font.Bold := AFont.Bold;
+  Font.Italic := AFont.Italic;
+  Font.Underline := AFont.Underline;
+  Font.StrikeThrough := AFont.StrikeThrough;
 end;
 
 procedure TvEntityWithPenBrushAndFont.Render(ADest: TFPCustomCanvas;
@@ -1177,6 +1223,25 @@ procedure TvEntityWithPenBrushAndFont.Render(ADest: TFPCustomCanvas;
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
   ApplyFontToCanvas(ADest, ARenderInfo, AMulX);
+end;
+
+function TvEntityWithPenBrushAndFont.GenerateDebugTree(
+  ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer;
+var
+  lStr: string;
+  lCurPathSeg: TPathSegment;
+begin
+  Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
+  // Add the font debug info in a sub-item
+  lStr := Format('[Font] Color=%s Size=%d Name=%s Orientation=%f Bold=%s Italic=%s Underline=%s StrikeThrough=%s',
+    [GenerateDebugStrForFPColor(Font.Color),
+    Font.Size, Font.Name, Font.Orientation,
+    BoolToStr(Font.Bold),
+    BoolToStr(Font.Italic),
+    BoolToStr(Font.Underline),
+    BoolToStr(Font.StrikeThrough)
+    ]);
+  ADestRoutine(lStr, Result);
 end;
 
 { TPath }

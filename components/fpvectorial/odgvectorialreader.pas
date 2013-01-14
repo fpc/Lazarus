@@ -91,21 +91,52 @@ type
     procedure TokenizePathString(AStr: string);
   end;      }
 
+  TODGMasterPage = class
+  public
+    Name: string;
+    PageLayoutName: string;
+    StyleName: string;
+  end;
+
+  TODGStyle = class(TvEntityWithPenBrushAndFont)
+  public
+  end;
+
+  TODGPageLayout = class
+  public
+    Name: string;
+    MarginTop, MarginBottom, MarginLeft, MarginRight: Double;
+    PageWidth, PageHeight: Double;
+  end;
+
   { TvODGVectorialReader }
 
   TvODGVectorialReader = class(TvCustomVectorialReader)
   private
     FPointSeparator, FCommaSeparator: TFormatSettings;
-    FStyles: TFPList; // of TvEntityWithPenBrushAndFont;
+    FStyles: TFPList; // of TODGStyle;
+    FAutomaticStyles: TFPList; // of TODGStyle;
+    FPageLayouts: TFPList; // of TODGPageLayout;
+    FMasterPages: TFPList; // of TODGMasterPage;
     //FSVGPathTokenizer: TSVGPathTokenizer;
     //
     procedure DeleteStyle(data,arg:pointer);
+    procedure ApplyGraphicAttributeToEntity(ANodeName, ANodeValue: string; ADest: TvEntityWithPen);
+    procedure ApplyStyleByNameToEntity(AStyleName: string; ADest: TvEntityWithPen);
+    procedure ApplyTextStyleByNameToEntity(AStyleName: string; ADest: TvEntityWithPen);
+    procedure ApplyMasterPageToPage(AMasterPageName: string; ADest: TvVectorialPage);
     //
     procedure ReadStyleNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadStyleStyleNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     //
     procedure ReadElement(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadEllipseNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadFrameNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadLineNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadPathNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    //
+    procedure ReadStylesMasterPage(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadStylesPageLayout(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     //
     function ReadSVGColor(AValue: string): TFPColor;
     function GetAttrValue(ANode : TDOMNode; AAttrName : string) : string;
@@ -123,6 +154,7 @@ type
     procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); override;
     procedure ReadFromFile(AFileName: string; AData: TvVectorialDocument); override;
     procedure ReadFromContentXMLDocument(AXMLDocument: TXMLDocument; AData: TvVectorialDocument);
+    procedure ReadFromStylesXMLDocument(AXMLDocument: TXMLDocument; AData: TvVectorialDocument);
   end;
 
 implementation
@@ -312,7 +344,188 @@ end;}
 
 procedure TvODGVectorialReader.DeleteStyle(data, arg: pointer);
 begin
-  TvEntityWithPenBrushAndFont(data).Free;
+  TObject(data).Free;
+end;
+
+procedure TvODGVectorialReader.ApplyGraphicAttributeToEntity(ANodeName,
+  ANodeValue: string; ADest: TvEntityWithPen);
+var
+  i: Integer;
+  lColor: TFPColor;
+  lDestBrush: TvEntityWithPenAndBrush absolute ADest;
+  lDestFont: TvEntityWithPenBrushAndFont absolute ADest;
+begin
+  case ANodeName of
+  // "none", "solid"
+  'draw:fill':
+  begin
+    if not (ADest is TvEntityWithPenAndBrush) then Exit;
+    case ANodeValue of
+    'none': lDestBrush.Brush.Style := bsClear;
+    'solid': lDestBrush.Brush.Style := bsSolid;
+    end;
+  end;
+  // "#ffffff"
+  'draw:fill-color':
+  begin
+    if not (ADest is TvEntityWithPenAndBrush) then Exit;
+    lColor := ReadSVGColor(ANodeValue);
+    lDestBrush.Brush.Color := lColor;
+  end;
+  // Values: "justify", "center", "left"
+  'draw:textarea-horizontal-align':
+  begin
+  end;
+  // Values: "middle"
+  'draw:textarea-vertical-align':
+  begin
+  end;
+  // true-false
+  'draw:auto-grow-height':
+  begin
+  end;
+  // true-false
+  'draw:auto-grow-width':
+  begin
+  end;
+  // "none", "dash"
+  'draw:stroke':
+  begin
+    case ANodeValue of
+    'none': ADest.Pen.Style := psClear;
+    'dash': ADest.Pen.Style := psDash;
+    end;
+  end;
+  // "Fine_20_Dashed_20__28_var_29_"
+  'draw:stroke-dash':
+  begin
+  end;
+  // "Arrow"
+  'draw:marker-start':
+  begin
+  end;
+  // "0.45cm"
+  'draw:marker-start-width':
+  begin
+  end;
+  // "Circle"
+  'draw:marker-end':
+  begin
+  end;
+  // "0.45cm"
+  'draw:marker-end-width':
+  begin
+  end;
+  // "Transparency_20_1"
+  'draw:opacity-name':
+  begin
+  end;
+  // "0.1cm"
+  'svg:stroke-width': ADest.Pen.Width := Round(StringWithUnitToFloat(ANodeValue));
+  // "#000000"
+  'svg:stroke-color': ADest.Pen.Color := ReadSVGColor(ANodeValue);
+  // "0cm"
+  'fo:min-height':
+  begin
+  end;
+  // "0cm"
+  'fo:min-width':
+  begin
+  end;
+  // "wrap"
+  'fo:wrap-option':
+  begin
+  end;
+  // "0.175cm"
+  'fo:padding-top':
+  begin
+  end;
+  // "0.175cm"
+  'fo:padding-bottom':
+  begin
+  end;
+  // "0.3cm"
+  'fo:padding-left':
+  begin
+  end;
+  // "0.3cm"
+  'fo:padding-right':
+  begin
+  end;
+  end;
+end;
+
+// Don't apply font properties here, because there is a separate method for this
+procedure TvODGVectorialReader.ApplyStyleByNameToEntity(AStyleName: string;
+  ADest: TvEntityWithPen);
+var
+  i: Integer;
+  lCurStyle: TvEntityWithPenBrushAndFont;
+begin
+  for i := 0 to FStyles.Count-1 do
+  begin
+    lCurStyle := TvEntityWithPenBrushAndFont(FStyles.Items[i]);
+    if lCurStyle.Name = AStyleName then
+    begin
+      ADest.AssignPen(lCurStyle.Pen);
+      if ADest is TvEntityWithPenAndBrush then
+        TvEntityWithPenAndBrush(ADest).AssignBrush(lCurStyle.Brush);
+
+      Exit;
+    end;
+  end;
+end;
+
+procedure TvODGVectorialReader.ApplyTextStyleByNameToEntity(AStyleName: string;
+  ADest: TvEntityWithPen);
+var
+  i: Integer;
+  lCurStyle: TvEntityWithPenBrushAndFont;
+begin
+  for i := 0 to FStyles.Count-1 do
+  begin
+    lCurStyle := TvEntityWithPenBrushAndFont(FStyles.Items[i]);
+    if lCurStyle.Name = AStyleName then
+    begin
+      if ADest is TvEntityWithPenBrushAndFont then
+        TvEntityWithPenBrushAndFont(ADest).AssignFont(lCurStyle.Font);
+
+      Exit;
+    end;
+  end;
+end;
+
+procedure TvODGVectorialReader.ApplyMasterPageToPage(AMasterPageName: string;
+  ADest: TvVectorialPage);
+var
+  i: Integer;
+  lMasterPage: TODGMasterPage;
+  lMasterPageLayout: TODGPageLayout;
+begin
+  // Find the Master Page
+  for i := 0 to FMasterPages.Count-1 do
+  begin
+    lMasterPage := TODGMasterPage(FMasterPages.Items[i]);
+    if lMasterPage.Name = AMasterPageName then Break
+    else lMasterPage := nil;
+  end;
+
+  if lMasterPage = nil then
+    raise Exception.Create(Format('[TvODGVectorialReader.ApplyMasterPageToPage] Master page not found: %s', [AMasterPageName]));
+
+  // Find the Master Page Properties
+  for i := 0 to FPageLayouts.Count-1 do
+  begin
+    lMasterPageLayout := TODGPageLayout(FPageLayouts.Items[i]);
+    if lMasterPageLayout.Name = lMasterPage.PageLayoutName then Break
+    else lMasterPageLayout := nil;
+  end;
+
+  if lMasterPageLayout = nil then
+    raise Exception.Create(Format('[TvODGVectorialReader.ApplyMasterPageToPage] Master page layout not found: %s', [lMasterPage.PageLayoutName]));
+
+  ADest.Width := lMasterPageLayout.PageWidth;
+  ADest.Height := lMasterPageLayout.PageHeight;
 end;
 
 procedure TvODGVectorialReader.ReadStyleNode(ANode: TDOMNode;
@@ -338,22 +551,41 @@ var
   lStyle: TvEntityWithPenBrushAndFont;
   lGraphicPropertiesNode: TDOMNode;
   i: Integer;
-  lNodeName: DOMString;
+  lNodeName, lNodeValue: DOMString;
 begin
-  lStyle := TvEntityWithPenBrushAndFont.Create;
+  lStyle := TODGStyle.Create;
+
+  // Read attributes of the main style tag
+  // <style:style style:name="gr4" style:family="graphic" style:parent-style-name="standard">;
+  for i := 0 to lGraphicPropertiesNode.Attributes.Length - 1 do
+  begin
+    lNodeName := LowerCase(ANode.Attributes.Item[i].NodeName);
+    case lNodeName of
+    'style:parent-style-name':
+    begin
+      lNodeValue := LowerCase(ANode.Attributes.Item[i].NodeValue);
+      case lNodeValue of
+      // "standard"
+      'standard': Continue;
+      // "objectwithoutfill"
+      'objectwithoutfill':
+      begin
+        lStyle.Brush.Style := bsClear;
+      end;
+      end;
+    end;
+    end;
+  end;
+
+  // Read graphic properties
   lGraphicPropertiesNode := ANode.FindNode('style:graphic-properties');
   if lGraphicPropertiesNode <> nil then
   begin
     for i := 0 to lGraphicPropertiesNode.Attributes.Length - 1 do
     begin
-      lNodeName := lGraphicPropertiesNode.Attributes.Item[i].NodeName;
-      case lNodeName of
-      //'draw:fill':
-      'draw:fill-color':
-      begin
-        //lColor := lStyle.Brush.Color;
-      end;
-      end;
+      lNodeName := LowerCase(lGraphicPropertiesNode.Attributes.Item[i].NodeName);
+      lNodeValue := LowerCase(lGraphicPropertiesNode.Attributes.Item[i].NodeValue);
+      ApplyGraphicAttributeToEntity(lNodeName, lNodeValue, lStyle);
     end;
   end;
   FStyles.Add(lStyle);
@@ -367,6 +599,9 @@ begin
   Str := LowerCase(ANode.NodeName);
   case Str of
   'draw:ellipse': ReadEllipseNode(ANode, AData, ADoc);
+  'draw:frame': ReadFrameNode(ANode, AData, ADoc);
+  'draw:line': ReadLineNode(ANode, AData, ADoc);
+  'draw:path': ReadPathNode(ANode, AData, ADoc);
   end;
 end;
 
@@ -408,10 +643,14 @@ begin
       crx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue) / 2
     else if lNodeName = 'svg:height' then
       cry := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue) / 2
-//    else if lNodeName = 'id' then
-//      lEllipse.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
-//    else if lNodeName = 'draw:style-name' then
-//      AddStyleToElement(ANode.Attributes.Item[i].NodeValue, lEllipse);
+    else if lNodeName = 'draw:style-name' then
+      ApplyStyleByNameToEntity(ANode.Attributes.Item[i].NodeValue, lEllipse)
+    else if lNodeName = 'draw:text-style-name' then
+      ApplyTextStyleByNameToEntity(ANode.Attributes.Item[i].NodeValue, lEllipse)
+    //    else if lNodeName = 'id' then
+    //      lEllipse.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
+    else
+      ApplyGraphicAttributeToEntity(lNodeName, ANode.Attributes.Item[i].NodeValue, lEllipse);
   end;
 
   // The svg:x and svg:y coordinates are relative to the top-left in ODG,
@@ -419,12 +658,169 @@ begin
   cx := cx + crx;
   cy := cy + cry;
 
-  ConvertODGDeltaToFPVDelta(
+  ConvertODGCoordinatesToFPVCoordinates(
         AData, cx, cy, lEllipse.X, lEllipse.Y);
   ConvertODGDeltaToFPVDelta(
         AData, crx, cry, lEllipse.HorzHalfAxis, lEllipse.VertHalfAxis);
 
   AData.AddEntity(lEllipse);
+end;
+
+{
+<draw:frame draw:style-name="gr12" draw:text-style-name="P2" draw:layer="layout" svg:width="4.5cm" svg:height="1.25cm" svg:x="4cm" svg:y="20cm">
+  <draw:text-box><text:p text:style-name="P2"><text:span text:style-name="T1">Kesäyö</text:span></text:p></draw:text-box>
+</draw:frame>
+}
+procedure TvODGVectorialReader.ReadFrameNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+begin
+
+end;
+
+{
+<draw:line draw:style-name="gr9" draw:text-style-name="P1" draw:layer="layout"
+ svg:x1="14cm" svg:y1="22.5cm" svg:x2="14cm" svg:y2="23.5cm"><text:p/></draw:line>
+<draw:line draw:style-name="gr9" draw:text-style-name="P1" draw:layer="layout"
+ svg:x1="14cm" svg:y1="23.5cm" svg:x2="13.5cm" svg:y2="25.5cm"><text:p/></draw:line>
+}
+procedure TvODGVectorialReader.ReadLineNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  x1, y1, x2, y2: double;
+  lPath: TPath;
+  i: Integer;
+  lNodeName: DOMString;
+begin
+  x1 := 0.0;
+  y1 := 0.0;
+  x2 := 0.0;
+  y2 := 0.0;
+
+  lPath := TPath.Create;
+
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if  lNodeName = 'svg:x1' then
+      x1 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'svg:y1' then
+      y1 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'svg:x2' then
+      x2 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'svg:y2' then
+      y2 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'draw:style-name' then
+      ApplyStyleByNameToEntity(ANode.Attributes.Item[i].NodeValue, lPath)
+    else if lNodeName = 'draw:text-style-name' then
+      ApplyTextStyleByNameToEntity(ANode.Attributes.Item[i].NodeValue, lPath)
+//    else if lNodeName = 'id' then
+//      lEllipse.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
+    else
+      ApplyGraphicAttributeToEntity(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
+  end;
+
+  ConvertODGCoordinatesToFPVCoordinates(
+        AData, x1, y1, x1, y1);
+  ConvertODGCoordinatesToFPVCoordinates(
+        AData, x2, y2, x2, y2);
+
+  lPath.AppendMoveToSegment(x1, y1);
+  lPath.AppendLineToSegment(x2, y2);
+  AData.AddEntity(lPath);
+end;
+
+{
+<draw:path draw:style-name="gr11" draw:text-style-name="P1" draw:layer="layout"
+ svg:width="9.429cm" svg:height="4.491cm"
+ draw:transform="skewX (-4.3967693286338E-017) rotate (0.417482757076965) translate (6.73314019682066cm 26.0928070675985cm)"
+ svg:viewBox="0 0 9430 4492" svg:d="m0 5c688-5 1345-23 2075 66 1374 167-412 989 814 1282 591 141 1129 504 1795 401 694-107 1142 607 1686 945 551 342 1077 719 1509 1195l501 355 549 243 501-238">
+ <text:p/></draw:path>
+}
+procedure TvODGVectorialReader.ReadPathNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+begin
+
+end;
+
+{
+<office:master-styles>
+  <style:master-page style:name="Oletus" style:page-layout-name="PM0" draw:style-name="Mdp1"/>
+</office:master-styles>
+}
+procedure TvODGVectorialReader.ReadStylesMasterPage(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  lMasterPage: TODGMasterPage;
+  i: Integer;
+  lNodeName, lNodeValue: string;
+begin
+  lMasterPage := TODGMasterPage.Create;
+
+  // Read properties
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := LowerCase(ANode.Attributes.Item[i].NodeName);
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
+
+    case lNodeName of
+    'style:name': lMasterPage.Name := lNodeValue;
+    'style:page-layout-name': lMasterPage.PageLayoutName := lNodeValue;
+    'draw:style-name': lMasterPage.StyleName := lNodeValue;
+    end;
+  end;
+  FMasterPages.Add(lMasterPage);
+end;
+
+{
+<style:page-layout style:name="PM0">
+  <style:page-layout-properties fo:margin-top="1cm" fo:margin-bottom="1cm"
+   fo:margin-left="1cm" fo:margin-right="1cm"
+   fo:page-width="21cm" fo:page-height="29.7cm"
+   style:print-orientation="portrait"/>
+</style:page-layout>
+}
+procedure TvODGVectorialReader.ReadStylesPageLayout(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  lPageLayout: TODGPageLayout;
+  lPageLayoutPropertiesNode: TDOMNode;
+  i: Integer;
+  lNodeName, lNodeValue: string;
+begin
+  lPageLayout := TODGPageLayout.Create;
+
+  // Read properties
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := LowerCase(ANode.Attributes.Item[i].NodeName);
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
+
+    case lNodeName of
+    'style:name':  lPageLayout.Name := lNodeValue;
+    end;
+  end;
+
+  // Read properties in the internal item
+  lPageLayoutPropertiesNode := ANode.FindNode('style:page-layout-properties');
+  if lPageLayoutPropertiesNode <> nil then
+  begin
+    for i := 0 to lPageLayoutPropertiesNode.Attributes.Length - 1 do
+    begin
+      lNodeName := LowerCase(lPageLayoutPropertiesNode.Attributes.Item[i].NodeName);
+      lNodeValue := lPageLayoutPropertiesNode.Attributes.Item[i].NodeValue;
+
+      case lNodeName of
+      'fo:margin-top':  lPageLayout.MarginTop := StringWithUnitToFloat(lNodeValue);
+      'fo:margin-bottom':lPageLayout.MarginBottom := StringWithUnitToFloat(lNodeValue);
+      'fo:margin-left': lPageLayout.MarginLeft := StringWithUnitToFloat(lNodeValue);
+      'fo:margin-right':lPageLayout.MarginRight := StringWithUnitToFloat(lNodeValue);
+      'fo:page-width':  lPageLayout.PageWidth := StringWithUnitToFloat(lNodeValue);
+      'fo:page-height': lPageLayout.PageHeight := StringWithUnitToFloat(lNodeValue);
+      end;
+    end;
+  end;
+  FPageLayouts.Add(lPageLayout);
 end;
 
 function TvODGVectorialReader.ReadSVGColor(AValue: string): TFPColor;
@@ -874,12 +1270,21 @@ begin
 
 //  FSVGPathTokenizer := TSVGPathTokenizer.Create;
   FStyles := TFPList.Create;
+  FAutomaticStyles := TFPList.Create;
+  FPageLayouts := TFPList.Create;
+  FMasterPages := TFPList.Create;
 end;
 
 destructor TvODGVectorialReader.Destroy;
 begin
   FStyles.ForEachCall(@DeleteStyle, nil);
   FStyles.Free;
+  FAutomaticStyles.ForEachCall(@DeleteStyle, nil);
+  FAutomaticStyles.Free;
+  FPageLayouts.ForEachCall(@DeleteStyle, nil);
+  FPageLayouts.Free;
+  FMasterPages.ForEachCall(@DeleteStyle, nil);
+  FMasterPages.Free;
 //  FSVGPathTokenizer.Free;
 
   inherited Destroy;
@@ -929,6 +1334,7 @@ begin
   UnZip.OutputPath:=FilePath;
   FileList:=TStringList.Create;
   FileList.Add('content.xml');
+  FileList.Add('styles.xml');
   try
     Unzip.UnZipFiles(AFileName,FileList);
   finally
@@ -938,21 +1344,30 @@ begin
 
   Doc:=nil;
   try
-    //process the xml file
+    // First read the master styles
+    ReadXMLFile(Doc,FilePath+'styles.xml');
+    DeleteFile(FilePath+'styles.xml');
+    ReadFromStylesXMLDocument(Doc, AData);
+
+    // Now process the contents
     ReadXMLFile(Doc,FilePath+'content.xml');
     DeleteFile(FilePath+'content.xml');
-
     ReadFromContentXMLDocument(Doc, AData);
   finally
     Doc.Free;
   end;
 end;
 
+{
+<draw:page draw:name="page1" draw:style-name="dp1" draw:master-page-name="Oletus">
+}
 procedure TvODGVectorialReader.ReadFromContentXMLDocument(
   AXMLDocument: TXMLDocument; AData: TvVectorialDocument);
 var
   BodyNode, DrawingNode, PageNode, ElementNode: TDOMNode;
   CurPage: TvVectorialPage;
+  i: Integer;
+  lNodeName, lNodeValue: String;
 begin
   BodyNode := AXMLDocument.DocumentElement.FindNode('office:body');
   if not Assigned(BodyNode) then raise Exception.Create('[TvODGVectorialReader.ReadFromContentXMLDocument] node office:body not found');
@@ -967,6 +1382,16 @@ begin
     CurPage := aData.AddPage();
     //CurPage..AddWorksheet(GetAttrValue(TableNode,'table:name'));
 
+    //process attributes of the page
+    for i := 0 to PageNode.Attributes.Length - 1 do
+    begin
+      lNodeName := LowerCase(PageNode.Attributes.Item[i].NodeName);
+      lNodeValue := PageNode.Attributes.Item[i].NodeValue;
+      case lNodeName of
+      'draw:master-page-name': ApplyMasterPageToPage(lNodeValue, CurPage);
+      end;
+    end;
+
     //process each element inside the page
     ElementNode := PageNode.FirstChild;
     while Assigned(ElementNode) do
@@ -978,6 +1403,50 @@ begin
 
     PageNode:=PageNode.NextSibling;
   end; //while Assigned(PageNode)
+end;
+
+procedure TvODGVectorialReader.ReadFromStylesXMLDocument(
+  AXMLDocument: TXMLDocument; AData: TvVectorialDocument);
+var
+  DocStylesNode, AutomaticStylesNode, MasterStylesNode, ElementNode: TDOMNode;
+  CurPage: TvVectorialPage;
+  i: Integer;
+  lNodeName: String;
+begin
+  DocStylesNode := AXMLDocument.DocumentElement;//.FindNode('office:document-styles');
+  if not Assigned(DocStylesNode) then raise Exception.Create('[TvODGVectorialReader.ReadFromStylesXMLDocument] node document-styles not found');
+
+  AutomaticStylesNode := DocStylesNode.FindNode('office:automatic-styles');
+  if Assigned(AutomaticStylesNode) then
+  begin
+    //process each master style
+    ElementNode := AutomaticStylesNode.FirstChild;
+    while Assigned(ElementNode) do
+    begin
+      lNodeName := LowerCase(ElementNode.NodeName);
+      case lNodeName of
+      'style:page-layout': ReadStylesPageLayout(ElementNode, CurPage, AData);
+      end;
+
+      ElementNode := ElementNode.NextSibling;
+    end; //while Assigned(MasterStyleNode)
+  end;
+
+  MasterStylesNode := DocStylesNode.FindNode('office:master-styles');
+  if Assigned(MasterStylesNode) then
+  begin
+    //process each master style
+    ElementNode := MasterStylesNode.FirstChild;
+    while Assigned(ElementNode) do
+    begin
+      lNodeName := LowerCase(ElementNode.NodeName);
+      case lNodeName of
+      'style:master-page': ReadStylesMasterPage(ElementNode, CurPage, AData);
+      end;
+
+      ElementNode := ElementNode.NextSibling;
+    end; //while Assigned(MasterStyleNode)
+  end;
 end;
 
 initialization
