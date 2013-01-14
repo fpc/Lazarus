@@ -643,13 +643,13 @@ begin
           ImmGetCompositionStringW(imc, GCS_COMPATTR, p, ImeCount + 2);
           //DebugLn(dbgMemRange(PByte( p), ImeCount));
           i := 0;
-          while i < ImeCount do begin
+          while {%H-}i < ImeCount do begin
             if ord(p[i]) = ATTR_TARGET_CONVERTED then begin
               x := FImeBlockSelection.StartBytePos;
               xy.x := x + CharToByte(x, i);
               FImeBlockSelection2.StartLineBytePos := xy;
               inc(i);
-              while i < ImeCount do begin
+              while {%H-}i < ImeCount do begin
                 if (ord(p[i]) <> ATTR_TARGET_CONVERTED) or (i = ImeCount-1) then begin
                   if (ord(p[i]) = ATTR_TARGET_CONVERTED) then
                     inc(i);

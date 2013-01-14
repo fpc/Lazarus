@@ -277,6 +277,7 @@ procedure TSynEditFileWriter.WriteLine(const S: string);
 var
   L: Cardinal;
 begin
+  {$PUSH}{$HINTS OFF} // Lots of mixing signed/unsigned
   L := Length(S);
   repeat
     if fBufPtr + L + FLineEndLen <= fBufSize then begin
@@ -292,6 +293,7 @@ begin
     if L + FLineEndLen > fBufSize then
       SetBufferSize(L + FLineEndLen);
   until FALSE;
+  {$POP}
 end;
 
 { TSynEditLines }

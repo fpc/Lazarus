@@ -1102,7 +1102,6 @@ var
   CharWidths: TPhysicalCharWidths;
   GotCharWidths: Boolean;
   MaxOffs: Integer;
-  Flag: TSynLogPhysFlags;
   p: Integer;
   NC: Boolean;
   NF: Integer;
@@ -1121,7 +1120,6 @@ begin
   ValidateBytePos;
 
   If ACount > 0 then begin
-    Flag := [lpfAdjustToNextChar];
     if (FBytePos <= length(L)) and (L[FBytePos] = #9) and (not FSkipTabs) then
       MaxOffs := GetMaxOffs(FBytePos) - 1
     else
@@ -1152,7 +1150,6 @@ begin
       Result := False; // MaxLeftChar
   end
   else begin
-    Flag := [lpfAdjustToCharBegin];
     while ACount < 0 do begin
       if FBytePosOffset > 0 then
         dec(FBytePosOffset)
