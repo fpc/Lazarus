@@ -2100,7 +2100,7 @@ function TRegExpr.ParseAtom (out flagp : integer) : PRegExprChar;
     do EmitC (s [i]);
   end;
 
- function HexDig (ch : REChar) : PtrInt;
+ function HexDig (ch : REChar) : PtrUInt;
   begin
    Result := 0;
    if (ch >= 'a') and (ch <= 'f')
