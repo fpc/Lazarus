@@ -1381,7 +1381,7 @@ end;
 function TSynEditStringsLinked.EditReplace(LogX, LogY, ByteLen: Integer;
   AText: String): String;
 begin
-  fSynStrings.EditReplace(LogX, LogY, ByteLen, AText);
+  Result:=fSynStrings.EditReplace(LogX, LogY, ByteLen, AText);
 end;
 
 procedure TSynEditStringsLinked.EditLineBreak(LogX, LogY: Integer);
