@@ -612,13 +612,12 @@ var
           //DebugLn(['MultiLinePatternFits Forward: line too short']);
           exit; // line too short
         end;
-        if (LineEndPos=length(Pat)) and (CompareEndPos>length(CurLineStr)) then
-        begin
-          //DebugLn(['MultiLinePatternFits Forward: line too long']);
-          exit; // line too long
-        end;
-        if (LineStartPos<=length(Pat))
-        and (not CompareContent(PChar(CurLineStr),@Pat[LineStartPos],
+        If (CompareEndPos <> length(CurLineStr)) and
+           (LineEndPos+1+Length(LineEnding) <= length(Pat)) and
+           CompareMem(@Pat[LineEndPos+1], PChar(LineEnding), length(LineEnding))
+        then
+          exit; // Not last line, and not same length
+        if (not CompareContent(PChar(CurLineStr),@Pat[LineStartPos],
                                 CompareEndPos))
         then begin
           //DebugLn(['MultiLinePatternFits Forward: line mismatches']);

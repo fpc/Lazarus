@@ -26,6 +26,7 @@ type
     procedure TestSearchSimpleUtf8;
     procedure TestSearchSimpleRegEx;
     procedure FindMatchingBracket;
+    procedure TestSearchMultiLine; // not regex
   end;
 
 implementation
@@ -249,6 +250,36 @@ begin
   end;
 
   hl.Free;
+end;
+
+procedure TTestSynSearch.TestSearchMultiLine;
+begin
+  ReCreateEdit;
+  SetLines(['', // 1
+            'a',
+            '',
+            'b',
+            '', // 5
+            'a',
+            'x',
+            'b',
+            '',
+            'a', // 10
+            'x2',
+            'b',
+            '']);
+
+  fTSearch := TSynEditSearch.Create;
+  fTSearch.Sensitive := False;
+  fTSearch.Whole     := False;
+  fTSearch.Backwards := False;
+  fTSearch.RegularExpressions := False;
+  fTSearch.RegExprMultiLine   := False;
+  fTSearch.Replacement := '';
+
+  TestFindNext('3 lines middle empty',  'a'+LineEnding+LineEnding+'b',  1,1,  1,9,  true,   1,2, 2,4);
+  TestFindNext('3 lines middle empty - no match',  'a'+LineEnding+LineEnding+'b',  1,5,  1,9,  False,   1,2, 2,4);
+
 end;
 
 //more ftsearch:
