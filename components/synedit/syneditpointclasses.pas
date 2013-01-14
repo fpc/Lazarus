@@ -1104,7 +1104,6 @@ var
   MaxOffs: Integer;
   Flag: TSynLogPhysFlags;
   p: Integer;
-  MaxX: Integer;
   NC: Boolean;
   NF: Integer;
 
