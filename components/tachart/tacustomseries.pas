@@ -154,7 +154,7 @@ type
     function GetGraphPointX(AIndex: Integer): Double; inline;
     function GetGraphPointY(AIndex: Integer): Double; inline;
     function GetSeriesColor: TColor; virtual;
-    function GetXMaxVal: Integer;
+    function GetXMaxVal: Double;
     procedure SourceChanged(ASender: TObject); virtual;
     procedure VisitSources(
       AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData); override;
@@ -762,10 +762,10 @@ begin
   Result := Extent.b.X;
 end;
 
-function TChartSeries.GetXMaxVal: Integer;
+function TChartSeries.GetXMaxVal: Double;
 begin
   if Count > 0 then
-    Result := Round(Source[Count - 1]^.X)
+    Result := Source[Count - 1]^.X
   else
     Result := 0;
 end;
