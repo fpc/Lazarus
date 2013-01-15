@@ -81,30 +81,33 @@ type
     FNextPosIdx, FNextPosRow: Integer;
 
     FStartPoint : TPoint;        // First found position, before TopLine of visible area
+    FSearchedEnd: TPoint;
     FMatches : TSynMarkupHighAllMatchList;
     FFirstInvalidLine, FLastInvalidLine: Integer;
     FHideSingleMatch: Boolean;
 
-    function  SearchStringMaxLines: Integer;
-    Procedure FindInitialize;
     function GetMatchCount: Integer;
     procedure SetFoldView(AValue: TSynEditFoldedView);
-    Procedure FindMatches(AStartPoint, AEndPoint: TPoint;
+    procedure SetHideSingleMatch(AValue: Boolean);
+    procedure SetSearchOptions(const AValue : TSynSearchOptions);
+    procedure DoFoldChanged(aLine: Integer);
+
+    Procedure ValidateMatches(SkipPaint: Boolean = False);
+
+    function  SearchStringMaxLines: Integer;
+    procedure FindInitialize;
+    function  FindMatches(AStartPoint, AEndPoint: TPoint;
                           var AIndex: Integer;
                           AStopAfterLine: Integer = -1; // AEndPoint may be set further down, for multi-line matches
                           ABackward : Boolean = False
-                         );
-    procedure SetHideSingleMatch(AValue: Boolean);
-    Procedure ValidateMatches(SkipPaint: Boolean = False);
-    procedure SetSearchOptions(const AValue : TSynSearchOptions);
-    procedure DoFoldChanged(aLine: Integer);
+                         ): TPoint; // returns searhed until point
   protected
     procedure SetSearchString(const AValue : String); virtual;
+
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
     procedure DoTextChanged(StartLine, EndLine: Integer); override; // 1 based
-    property  HideSingleMatch: Boolean read FHideSingleMatch write SetHideSingleMatch;
     property MatchCount: Integer read GetMatchCount;
   public
     constructor Create(ASynEdit : TSynEditBase);
@@ -128,6 +131,7 @@ type
 
     property SearchString : String read fSearchString write SetSearchString;
     property SearchOptions : TSynSearchOptions read fSearchOptions write SetSearchOptions;
+    property HideSingleMatch: Boolean read FHideSingleMatch write SetHideSingleMatch;
   end;
 
   { TSynEditMarkupHighlightAllCaret }
@@ -145,7 +149,7 @@ type
     FLowBound, FUpBound, FOldLowBound, FOldUpBound: TPoint;
     FToggledWord: String;
     FToggledOption: TSynSearchOptions;
-    FStateChanged: Boolean;
+    FStateChanged, FValidateNeeded: Boolean;
     procedure SetFullWord(const AValue: Boolean);
     procedure SetFullWordMaxLen(const AValue: Integer);
     procedure SetHighlighter(const AValue: TSynCustomHighlighter);
@@ -388,6 +392,7 @@ constructor TSynEditMarkupHighlightAll.Create(ASynEdit : TSynEditBase);
 begin
   inherited Create(ASynEdit);
   fStartPoint.y := -1;
+  FSearchedEnd.y := -1;
   fSearch := TSynEditSearch.Create;
   fMatches := TSynMarkupHighAllMatchList.Create;
   fSearchString:='';
@@ -471,12 +476,12 @@ begin
     FFoldView.AddFoldChangedHandler(@DoFoldChanged);
 end;
 
-procedure TSynEditMarkupHighlightAll.FindMatches(AStartPoint, AEndPoint: TPoint;
-  var AIndex: Integer; AStopAfterLine: Integer; ABackward: Boolean);
+function TSynEditMarkupHighlightAll.FindMatches(AStartPoint, AEndPoint: TPoint;
+  var AIndex: Integer; AStopAfterLine: Integer; ABackward: Boolean): TPoint;
 var
   ptFoundStart, ptFoundEnd: TPoint;
 begin
-  //debugln(['FindMatches IDX=', AIndex,' # ',dbgs(AStartPoint),' - ',dbgs(AEndPoint), 'AStopAfterLine=',AStopAfterLine, ' cnt=',FMatches.Count]);
+  debugln(['FindMatches IDX=', AIndex,' # ',dbgs(AStartPoint),' - ',dbgs(AEndPoint), 'AStopAfterLine=',AStopAfterLine, ' cnt=',FMatches.Count]);
   fSearch.Backwards := ABackward;
   While (true) do begin
     if not fSearch.FindNextOne(Lines, AStartPoint, AEndPoint, ptFoundStart, ptFoundEnd)
@@ -486,10 +491,13 @@ begin
     FMatches.Insert(AIndex, ptFoundStart, ptFoundEnd);
     inc(AIndex); // BAckward learch needs final index to point to last inserted (currently support only find ONE)
 
-    if (AStopAfterLine >= 0) and (ptFoundStart.Y > AStopAfterLine) then
+    if (AStopAfterLine >= 0) and (ptFoundStart.Y > AStopAfterLine) then begin
+      AEndPoint := ptFoundEnd;
       break;
+    end;
   end;
-  //debugln(['FindMatches IDX=', AIndex]);
+  Result := AEndPoint;
+  debugln(['FindMatches IDX=', AIndex, ' ## ',dbgs(Result)]);
 end;
 
 procedure TSynEditMarkupHighlightAll.SetHideSingleMatch(AValue: Boolean);
@@ -548,14 +556,25 @@ end;
 
 procedure TSynEditMarkupHighlightAll.ValidateMatches(SkipPaint: Boolean);
 
-  function IsStartPosValid: Boolean;
+  function IsPosValid(APos: TPoint): Boolean; // Check if point is in invalid range
   begin
-    Result := (FStartPoint.y > 0) and
-       (FStartPoint.y < TopLine) and
-       ( (FFirstInvalidLine < 1) or (FStartPoint.y < FFirstInvalidLine) or
-         ( (FLastInvalidLine > 0) and (FStartPoint.y > FLastInvalidLine) )
+    Result := (APos.y > 0) and
+       ( (FFirstInvalidLine < 1) or (APos.y < FFirstInvalidLine) or
+         ( (FLastInvalidLine > 0) and (APos.y > FLastInvalidLine) )
        );
        // or to far back
+  end;
+
+  function IsStartAtMatch0: Boolean; // Check if FStartPoint = FMatches[0]
+  begin
+    Result := (FMatches.Count > 0) and
+              (FStartPoint.y = FMatches.EndPoint[0].y)and (FStartPoint.x = FMatches.EndPoint[0].x);
+  end;
+
+  function AdjustedSearchStrMaxLines: Integer;
+  begin
+    Result := SearchStringMaxLines - 1;
+    if Result < 0 then Result := SEARCH_START_OFFS;
   end;
 
 var
@@ -563,6 +582,7 @@ var
   EndOffsLine : Integer;  // Stop search (LastLine + Offs)
   Idx, Idx2 : Integer;
   FirstInvalIdx, LastInvalIdx: Integer;
+  p: TPoint;
 begin
   if (fSearchString = '') or (not MarkupInfo.IsEnabled) then begin
     fMatches.Count := 0;
@@ -602,11 +622,19 @@ begin
         FirstInvalIdx := -1;
     end;
   end;
-  //DebugLnEnter(['>>> ValidateMatches ', FFirstInvalidLine, ' - ',FLastInvalidLine, ' Cnt=',FMatches.Count, ' Idx: ', FirstInvalIdx, ' - ',LastInvalIdx, '  ',SynEdit.Name]);
+  if not IsPosValid(FSearchedEnd) then
+    FSearchedEnd.y := -1;
+  DebugLnEnter(['>>> ValidateMatches ', FFirstInvalidLine, ' - ',FLastInvalidLine, ' Cnt=',FMatches.Count, ' Idx: ', FirstInvalIdx, ' - ',LastInvalIdx, '  ',SynEdit.Name, ' # ',fSearchString]);
+
 
   FindInitialize;
-
-  if not IsStartPosValid then begin
+  if not ( IsPosValid(FStartPoint) and
+           ( (IsStartAtMatch0 and (FStartPoint.y < TopLine)) or
+             (FStartPoint.y < TopLine - AdjustedSearchStrMaxLines) or
+             ((FStartPoint.y = TopLine - AdjustedSearchStrMaxLines) and (FStartPoint.x > 1))
+           )
+         )
+  then begin
 
     if (FMatches.Count > 0) and (FMatches.StartPoint[0].y < TopLine) then begin
       // New StartPoint from existing matches
@@ -621,12 +649,14 @@ begin
       if SearchStringMaxLines > 0 then
         FStartPoint := Point(1, TopLine - (SearchStringMaxLines - 1))
       else begin // Search backward
-        FindMatches(Point(1, Max(1, TopLine-SEARCH_START_OFFS)), Point(1, TopLine), Idx, 0, True); // stopAfterline=0, do only ONE find
+        FindMatches(Point(1, Max(1, TopLine-SEARCH_START_OFFS)),
+                    Point(1, TopLine),
+                    Idx, 0, True); // stopAfterline=0, do only ONE find
         if Idx = 0
         then FStartPoint := Point(1, TopLine)     // no previous match found
         else FStartPoint := FMatches.EndPoint[0];
       end;
-      //debugln(['ValidateMatches:  startpoint ', dbgs(FStartPoint)]);
+      debugln(['ValidateMatches:  startpoint ', dbgs(FStartPoint)]);
       if FMatches.Count > Idx then begin
         // Fill at start
         Idx2 := Idx;
@@ -653,15 +683,19 @@ begin
     //debugln(['ValidateMatches  cnt was 0']);
     Idx := 0;
     EndOffsLine := min(LastLine+SEARCH_START_OFFS, Lines.Count);
-    FindMatches(FStartPoint, Point(Length(Lines[EndOffsLine - 1]), EndOffsLine), Idx, LastLine);
-    if (not SkipPaint) and (Idx > 0) and
-       ( (not HideSingleMatch) or (FMatches.Count > 1) )
-    then
-      SendLineInvalidation(0, Idx-1);
+    if (FSearchedEnd.y < 0) or (EndOffsLine > FSearchedEnd.y) then begin
+      FSearchedEnd := FindMatches(FStartPoint,
+                                  Point(Length(Lines[EndOffsLine - 1]), EndOffsLine),
+                                  Idx, LastLine);
+      if (not SkipPaint) and (Idx > 0) and
+         ( (not HideSingleMatch) or (FMatches.Count > 1) )
+      then
+        SendLineInvalidation(0, Idx-1);
+    end;
   end
   else begin
 
-    if (FirstInvalIdx >= 0) then begin
+    if (FirstInvalIdx >= 0) and (FirstInvalIdx < FMatches.Count) then begin
       //debugln(['ValidateMatches  REPLACE']);
       // Replace invalidated
       Idx := FirstInvalIdx; // actually first valid now
@@ -687,16 +721,25 @@ begin
       Idx := FMatches.Count;
       Idx2 := Idx;
       EndOffsLine := min(LastLine+SEARCH_START_OFFS, Lines.Count);
-      FindMatches(FMatches.EndPoint[Idx-1], Point(Length(Lines[EndOffsLine - 1]), EndOffsLine), Idx, LastLine);
-      if (not SkipPaint) and (Idx > Idx2) and
-         ( (not HideSingleMatch) or (FMatches.Count > 1) )
-      then
-        SendLineInvalidation(Idx2, Idx-1);
+      if (FSearchedEnd.y < 0) or (EndOffsLine > FSearchedEnd.y) then begin
+        p := FMatches.EndPoint[Idx-1];
+        if (FSearchedEnd.y - AdjustedSearchStrMaxLines > p.y) then
+          p := point(1, FSearchedEnd.y - AdjustedSearchStrMaxLines);
+        FSearchedEnd := FindMatches(p,
+                                    Point(Length(Lines[EndOffsLine - 1]), EndOffsLine),
+                                    Idx, LastLine);
+        if (not SkipPaint) and (Idx > Idx2) and
+           ( (not HideSingleMatch) or (FMatches.Count > 1) )
+        then
+          SendLineInvalidation(Idx2, Idx-1);
+      end;
     end;
 
   end;
 
-  //DebugLnExit(['<<< ValidateMatches Cnt=',FMatches.Count]);
+if FMatches.Count = 0 then
+  DebugLnExit(['<<< ValidateMatches Cnt=',FMatches.Count]) //;
+else  DebugLnExit(['<<< ValidateMatches Cnt=',FMatches.Count, '  # ', dbgs(FMatches.StartPoint[0]), '  # ', dbgs(FMatches.EndPoint[FMatches.Count-1])]);
   FFirstInvalidLine := 0;
   FLastInvalidLine := 0;
   FNextPosRow := -1;
@@ -719,14 +762,10 @@ begin
   if ALastLine < AFirstLine then
     ALastLine := AFirstLine;
 
-  //if (FMatches.Count > 0) and
-  //   (ALastLine < FMatches.StartPoint[0].y) or
-  //   (AFirstLine > FMatches.EndPoint[FMatches.Count-1].y)
-  //then
-  //  exit;
 
-  if (FStartPoint.y < 0) or (ALastLine >= FStartPoint.y) then begin
-
+  if ( (FStartPoint.y < 0) or (ALastLine >= FStartPoint.y) ) and
+     ( (FSearchedEnd.y < 0) or (AFirstLine <= FSearchedEnd.y) )
+  then begin
     if (AFirstLine < FFirstInvalidLine) or (FFirstInvalidLine <= 0) then
       FFirstInvalidLine := AFirstLine;
     if (ALastLine > FLastInvalidLine) then
@@ -876,6 +915,7 @@ begin
   if not SkipPaint then
     SendLineInvalidation;
   FStartPoint.y := -1;
+  FSearchedEnd.y := -1;
   FMatches.Count := 0;
   ValidateMatches(SkipPaint);
 end;
@@ -949,20 +989,31 @@ procedure TSynEditMarkupHighlightAllCaret.CheckState;
 var
   t: String;
 begin
-  if (not FStateChanged) or (Caret = nil) then
+  if (not FStateChanged) or (Caret = nil) then begin
+    if FValidateNeeded then
+      ValidateMatches;
+    FValidateNeeded := False;
     exit;
+  end;
   FStateChanged := False;
+
   t := GetCurrentText;
   if (SearchString = t) and (SearchOptions = GetCurrentOption) then begin
     SearchString := t; // Update old bounds
+    if FValidateNeeded then
+      ValidateMatches;
+    FValidateNeeded := False;
     exit;
   end;
+
+  FValidateNeeded := False;
   if (SearchString <> '') and
      ( ((CompareCarets(FLowBound, FOldLowBound) = 0) and
        (CompareCarets(Caret.LineBytePos, FUpBound) >= 0) and (MatchCount > 1) )
       OR ((CompareCarets(FUpBound, FOldUpBound) = 0) and
        (CompareCarets(Caret.LineBytePos, FLowBound) <= 0) and (MatchCount > 1) )
-     ) then begin
+     )
+  then begin
     ScrollTimerHandler(self);
     exit;
   end;
@@ -986,7 +1037,10 @@ end;
 procedure TSynEditMarkupHighlightAllCaret.DoTextChanged(StartLine, EndLine: Integer);
 begin
   FStateChanged := True; // Something changed, paint will be called
-  inherited;
+  if ( (not HideSingleMatch) and (MatchCount > 0) ) or
+     ( (HideSingleMatch) and (MatchCount > 1) )
+  then
+    FValidateNeeded := True;
 end;
 
 procedure TSynEditMarkupHighlightAllCaret.DoMarkupChanged(AMarkup: TSynSelectedColor);
@@ -1073,6 +1127,7 @@ constructor TSynEditMarkupHighlightAllCaret.Create(ASynEdit: TSynEditBase);
 begin
   inherited Create(ASynEdit);
   FStateChanged := False;
+  FValidateNeeded := False;
   HideSingleMatch := True;
   FFullWord := False;
   FWaitTime := 1500;
