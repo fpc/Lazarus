@@ -459,18 +459,18 @@ end;
 
 (*   ClipBoard   *)
 
-function HandleGetClipboard(Caller: TPSExec; p: TPSExternalProcRec; Global, Stack: TPSStack): Boolean;
-var
-  e: TPSExec;
+function HandleGetClipboard({%H-}Caller: TPSExec; {%H-}p: TPSExternalProcRec; {%H-}Global, Stack: TPSStack): Boolean;
+//var
+//  e: TPSExec;
 begin
-  e := TPSExec(p.Ext1);
+  //e := TPSExec(p.Ext1);
   Stack.SetClass(-1, Clipboard);
   Result :=  True;
 end;
 
-procedure TClipboard_AsText_W(Self: TClipboard; S: String);
+procedure TClipboard_AsText_W({%H-}Self: TClipboard; S: String);
 begin   Clipboard.AsText := S;   end;
-procedure TClipboard_AsText_R(Self: TClipboard; var S: String);
+procedure TClipboard_AsText_R({%H-}Self: TClipboard; var S: String);
 begin   S := Clipboard.AsText;   end;
 
 procedure CompRegisterTClipboard(AComp: TPSPascalCompiler);

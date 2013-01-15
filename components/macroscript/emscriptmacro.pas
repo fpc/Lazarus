@@ -28,7 +28,7 @@ type
     function  GetErrorMsg: String; override;
     function  GetKeyBinding: TEditorMacroKeyBinding; override;
 
-    procedure DoRecordMacro(aEditor: TWinControl); override;
+    procedure DoRecordMacro({%H-}aEditor: TWinControl); override;
     procedure DoPlaybackMacro(aEditor: TWinControl); override;
     procedure DoStop; override;
     procedure DoPause; override;
@@ -50,7 +50,7 @@ type
 
     function  IsEmpty: Boolean; override;
     function  IsInvalid: Boolean; override;
-    function  IsRecording(AnEditor: TWinControl): Boolean; override;
+    function  IsRecording({%H-}AnEditor: TWinControl): Boolean; override;
   end;
 
 
@@ -77,7 +77,7 @@ var
   TheCLassImp: TPSRuntimeClassImporter;
 
 
-function HandleEcCommandFoo(Caller: TPSExec; p: TPSExternalProcRec; Global, Stack: TPSStack): Boolean;
+function HandleEcCommandFoo({%H-}Caller: TPSExec; p: TPSExternalProcRec; {%H-}Global, Stack: TPSStack): Boolean;
 var
   i: integer;
   pt: TPoint;
@@ -100,12 +100,13 @@ begin
   Result := True;
 end;
 
-function HandleGetCaller(Caller: TPSExec; p: TPSExternalProcRec; Global, Stack: TPSStack): Boolean;
+function HandleGetCaller({%H-}Caller: TPSExec; p: TPSExternalProcRec; {%H-}Global, Stack: TPSStack): Boolean;
 var
   e: TEMSTPSExec;
 begin
   e := TEMSTPSExec(p.Ext1);
   Stack.SetClass(-1, e.SynEdit);
+  Result := True;
 end;
 
 function CompilerOnUses(Sender: TPSPascalCompiler; const Name: TbtString): Boolean;
@@ -237,7 +238,7 @@ begin
     Compile;
     if IsInvalid then exit;
 
-    TheCompiler.GetOutput(s);
+    TheCompiler.GetOutput({%H-}s);
     if not TheExec.LoadData(s) then // Load the data from the Data string.
       exit;
 
