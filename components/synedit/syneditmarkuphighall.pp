@@ -1040,7 +1040,8 @@ begin
   if ( (not HideSingleMatch) and (MatchCount > 0) ) or
      ( (HideSingleMatch) and (MatchCount > 1) )
   then
-    FValidateNeeded := True;
+    inherited;
+    //FValidateNeeded := True;
 end;
 
 procedure TSynEditMarkupHighlightAllCaret.DoMarkupChanged(AMarkup: TSynSelectedColor);
