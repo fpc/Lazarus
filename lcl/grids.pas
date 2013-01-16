@@ -8616,6 +8616,7 @@ begin
   FreeThenNil(FCols);
   FreeThenNil(FRows);
   FreeThenNil(FTitleFont);
+  FEditor := nil;
   inherited Destroy;
 end;
 
