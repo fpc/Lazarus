@@ -10,6 +10,7 @@
      ./runtests --format=plain --suite=TestCTScanRangeImplementationToEnd
      ./runtests --format=plain --suite=TestCTScanRangeInitializationModified
      ./runtests --format=plain --suite=TestCTScanRangeLibraryInitializationModified
+     ./runtests --format=plain --suite=TestCTScanRangeScannerAtEnd
 }
 unit TestCTRangeScan;
 
@@ -21,8 +22,11 @@ interface
 
 uses
   Classes, SysUtils, fpcunit, testglobals, FileProcs, CodeToolManager,
-  CodeCache, CustomCodeTool, LinkScanner, CodeTree, EventCodeTool;
+  CodeCache, CustomCodeTool, LinkScanner, CodeTree, EventCodeTool,
+  PascalParserTool;
 
+const
+  ctrsCommentOfProc1 = 'comment of Proc1';
 type
   TCTRgSrcFlag = (
     crsfWithProc1,
@@ -42,6 +46,7 @@ type
   protected
     function GetSource(Flags: TCTRgSrcFlags): string;
     procedure CheckTree(Tool: TCodeTool);
+    function FindPos(Code: TCodeBuffer; SearchText: string; out Line,Col: integer; ErrorOnNotFound: boolean = true): boolean;
   published
     procedure TestCTScanRange;
     procedure TestCTScanRangeAscending;
@@ -50,6 +55,7 @@ type
     procedure TestCTScanRangeImplementationToEnd;
     procedure TestCTScanRangeInitializationModified;
     procedure TestCTScanRangeLibraryInitializationModified;
+    procedure TestCTScanRangeScannerAtEnd;
   end;
 
 implementation
@@ -85,7 +91,7 @@ begin
   if crsfWithProc1Modified in Flags then
     Result+='procedure Proc1;'+LineEnding
       +'begin'+LineEnding
-      +'  // comment'+LineEnding
+      +'  // '+ctrsCommentOfProc1+LineEnding
       +'end;'+LineEnding;
   if crsfWithInitialization in Flags then begin
     Result+='initialization'+LineEnding;
@@ -119,6 +125,23 @@ begin
     end;
     Node:=Node.Next;
   end;
+end;
+
+function TTestCodetoolsRangeScan.FindPos(Code: TCodeBuffer; SearchText: string;
+  out Line, Col: integer; ErrorOnNotFound: boolean): boolean;
+var
+  p: SizeInt;
+begin
+  Line:=0;
+  Col:=0;
+  p:=Pos(SearchText,Code.Source);
+  if p<1 then begin
+    if ErrorOnNotFound then
+      raise Exception.Create('TTestCodetoolsRangeScan.FindPos SearchText "'+SearchText+'" not found in "'+Code.Filename+'"');
+    exit(false);
+  end;
+  Code.AbsoluteToLineCol(p,Line,Col);
+  Result:=Line>=0;
 end;
 
 procedure TTestCodetoolsRangeScan.TestCTScanRange;
@@ -338,6 +361,34 @@ begin
 
   CheckTree(Tool);
   //Tool.WriteDebugTreeReport;
+end;
+
+procedure TTestCodetoolsRangeScan.TestCTScanRangeScannerAtEnd;
+var
+  Code: TCodeBuffer;
+  Tool: TCodeTool;
+  CursorPos: TCodeXYPosition;
+  CleanCursorPos: integer;
+begin
+  Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
+  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
+
+  // scan source til implementation uses end
+  Code.Source:=GetSource([crsfWithProc1Modified]);
+  Tool.BuildTree(lsrImplementationUsesSectionEnd);
+
+  // let LinkScanner scan til end
+  Tool.Scanner.Scan(lsrEnd,false);
+
+  AssertEquals('scanner at end, tool at impl uses end',true,Tool.ScannedRange=lsrImplementationUsesSectionEnd);
+  AssertEquals('scanner at end, tool at impl uses end',true,Tool.Scanner.ScannedRange=lsrEnd);
+  // test BuildTreeAndGetCleanPos in implementation section
+  CursorPos.Code:=Code;
+  FindPos(Code,ctrsCommentOfProc1,CursorPos.Y,CursorPos.X);
+  Tool.BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
+                          [btSetIgnoreErrorPos]);
+  AssertEquals('scanner and tool at end',true,Tool.ScannedRange=lsrEnd);
+  AssertEquals('scanner and tool at end',true,Tool.Scanner.ScannedRange=lsrEnd);
 end;
 
 initialization
