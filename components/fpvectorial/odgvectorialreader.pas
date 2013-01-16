@@ -138,6 +138,8 @@ type
     procedure ReadStylesMasterPage(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadStylesPageLayout(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     //
+    procedure ParsePathString(AInputStr: string; ADest: TPath);
+    procedure GetDrawTransforms(AInputStr: string; out ASkewX, ASkewY, ARotate, ATranslateX, ATranslateY: Double);
     function ReadSVGColor(AValue: string): TFPColor;
     function GetAttrValue(ANode : TDOMNode; AAttrName : string) : string;
     function  StringWithUnitToFloat(AStr: string): Double;
@@ -739,8 +741,52 @@ end;
 }
 procedure TvODGVectorialReader.ReadPathNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  x1, y1, x2, y2, lWidth, lHeight: double;
+  lPath: TPath;
+  i: Integer;
+  lNodeName: DOMString;
+  lSkewX, lSkewY, lRotate, lTranslateX, lTranslateY: Double;
 begin
+  x1 := 0.0;
+  y1 := 0.0;
+  x2 := 0.0;
+  y2 := 0.0;
+  lWidth := 0.0;
+  lHeight := 0.0;
 
+  lPath := TPath.Create;
+
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if  lNodeName = 'svg:width' then
+      lWidth := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'svg:height' then
+      lHeight := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'draw:transform' then
+      GetDrawTransforms(ANode.Attributes.Item[i].NodeValue, lSkewX, lSkewY, lRotate, lTranslateX, lTranslateY)
+    else if lNodeName = 'svg:d' then
+      ParsePathString(ANode.Attributes.Item[i].NodeValue, lPath)
+    else if lNodeName = 'draw:style-name' then
+      ApplyStyleByNameToEntity(ANode.Attributes.Item[i].NodeValue, lPath)
+    else if lNodeName = 'draw:text-style-name' then
+      ApplyTextStyleByNameToEntity(ANode.Attributes.Item[i].NodeValue, lPath)
+//    else if lNodeName = 'id' then
+//      lEllipse.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
+    else
+      ApplyGraphicAttributeToEntity(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
+  end;
+
+  ConvertODGCoordinatesToFPVCoordinates(
+        AData, x1, y1, x1, y1);
+  ConvertODGCoordinatesToFPVCoordinates(
+        AData, x2, y2, x2, y2);
+  ConvertODGDeltaToFPVDelta(
+        AData, lWidth, lHeight, lWidth, lHeight);
+
+  AData.AddEntity(lPath);
 end;
 
 {
@@ -821,6 +867,23 @@ begin
     end;
   end;
   FPageLayouts.Add(lPageLayout);
+end;
+
+procedure TvODGVectorialReader.ParsePathString(AInputStr: string; ADest: TPath);
+begin
+
+end;
+
+procedure TvODGVectorialReader.GetDrawTransforms(AInputStr: string; out ASkewX,
+  ASkewY, ARotate, ATranslateX, ATranslateY: Double);
+begin
+  ASkewX := 0.0;
+  ASkewY := 0.0;
+  ARotate := 0.0;
+  ATranslateX := 0.0;
+  ATranslateY := 0.0;
+
+
 end;
 
 function TvODGVectorialReader.ReadSVGColor(AValue: string): TFPColor;
