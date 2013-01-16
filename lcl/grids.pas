@@ -6549,7 +6549,7 @@ end;
 
 procedure TCustomGrid.KeyDown(var Key: Word; Shift: TShiftState);
 var
-  Sh: Boolean;
+  Sh, PreserveRowAutoInserted: Boolean;
   R: TRect;
   Relaxed: Boolean;
   DeltaCol,DeltaRow: Integer;
@@ -6580,11 +6580,26 @@ var
     end;
   end;
 
+  function IsEmptyRow(ARow: Integer): Boolean;
+  var
+    i: Integer;
+  begin
+    Result := False;
+    for i:=FixedCols to ColCount-1 do
+    if GetCells(i, FRow)<>'' then begin
+      Exit;
+    end;
+    Result := True;
+  end;
+
 const
   cBidiMove: array[Boolean] of Integer = (1, -1);
 begin
   {$ifdef dbgGrid}DebugLn('Grid.KeyDown INIT Key=',IntToStr(Key));{$endif}
   inherited KeyDown(Key, Shift);
+  //Don't touch FRowAutoInserted flag if user presses only Ctrl,Shift,Altor Meta/Win key
+  PreserveRowAutoInserted := (Key in [VK_SHIFT,VK_CONTROL,VK_LWIN,VK_RWIN,VK_MENU]);
+
   //if not FGCache.ValidGrid then Exit;
   if not CanGridAcceptKey(Key, Shift) then
     Key:=0;  // Allow CanGridAcceptKey to override Key behaviour
@@ -6597,7 +6612,12 @@ begin
         if GetDeltaMoveNext(Sh, DeltaCol,DeltaRow) then begin
           Sh := False;
           MoveSel(True, DeltaCol, DeltaRow);
+          PreserveRowAutoInserted := True;
           Key:=0;
+        end else if (goAutoAddRows in Options) and (Col>=GetLastVisibleColumn) then begin
+          if not IsEmptyRow(Row) then MoveSel(True, DeltaCol, DeltaRow);
+          Key := 0;
+          PreserveRowAutoInserted := True;
         end else
         if (AutoAdvance=aaNone) or
            ((AutoAdvance=aaDown) and (Row>=GetLastVisibleRow)) or
@@ -6605,7 +6625,7 @@ begin
            ((not sh) and (Col>=GetLastVisibleColumn)) then
           TabCheckEditorKey
         else
-          Key := 0;
+          Key := 0
       end else
         TabCheckEditorKey;
     VK_LEFT:
@@ -6681,7 +6701,7 @@ begin
         Key := 0;
       end;
   end;
-  if FEditorKey then
+  if FEditorKey and (not PreserveRowAutoInserted) then
     FRowAutoInserted:=False;
   {$ifdef dbgGrid}DebugLn('Grid.KeyDown END Key=',IntToStr(Key));{$endif}
 end;
