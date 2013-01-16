@@ -34,6 +34,11 @@
      - Implemente few methods
 }
 
+{
+12 December 2012     
+TextRect  implemented     T. P. Launchbury 
+} 
+
 {$DEFINE ASCII85}
 
 unit PostScriptCanvas;
@@ -43,8 +48,8 @@ unit PostScriptCanvas;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Math, Types, Graphics, Forms, GraphMath,
-  GraphType, FPImage, IntfGraphics, Printers, LCLType, LCLIntf,
+  Classes, SysUtils, strutils, FileUtil, Math, Types, Graphics, Forms, GraphMath,
+  GraphType, FPImage, IntfGraphics, Printers, LCLType, LCLIntf, LCLProc,
   PostScriptUnicode;
   
 Type
@@ -166,7 +171,9 @@ Type
 
     procedure TextOut(X,Y: Integer; const Text: String); override;
     function TextExtent(const Text: string): TSize; override;
-    
+    procedure TextRect(ARect: TRect; X, Y: integer; const Text: string;
+                       const Style: TTextStyle); override;
+
     procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); override;
     procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); override;
 
@@ -184,8 +191,6 @@ Type
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
                   StartX,StartY,EndX,EndY: Integer); override;
     procedure SetPixel(X,Y: Integer; Value: TColor); override;
-    procedure TextRect(ARect: TRect; X, Y: integer; const Text: string;
-                       const Style: TTextStyle); override;
 
 
   end;
@@ -2280,20 +2285,642 @@ procedure TPostScriptPrinterCanvas.TextRect(ARect: TRect; X, Y: integer;
   const Text: string; const Style: TTextStyle);
 var
   OldClip: TRect;
+  Options: longint;
+  ReqState: TCanvasState;
+  fRect: TRect;
+  Offset: Integer;
+
+  procedure WordWrap(AText: PChar; MaxWidthInPixel: integer;
+    out Lines: PPChar; out LineCount: integer);
+
+    function FindLineEnd(LineStart: integer): integer;
+    var
+      CharLen, LineStop, LineWidth, WordWidth, WordEnd, CharWidth: integer;
+    begin
+      // first search line break or text break
+      Result := LineStart;
+      while not (AText[Result] in [#0, #10, #13]) do
+        Inc(Result);
+      if Result <= LineStart + 1 then
+        exit;
+      lineStop := Result;
+
+      // get current line width in pixel
+      LineWidth := TextWidth(AText);
+      if LineWidth > MaxWidthInPixel then
+      begin
+        // line too long -> add words till line size reached
+        LineWidth := 0;
+        WordEnd := LineStart;
+        WordWidth := 0;
+        repeat
+          Result := WordEnd;
+          Inc(LineWidth, WordWidth);
+          // find word start
+          while AText[WordEnd] in [' ', #9] do
+            Inc(WordEnd);
+          // find word end
+          while not (AText[WordEnd] in [#0, ' ', #9, #10, #13]) do
+            Inc(WordEnd);
+          // calculate word width
+          if wordEnd = Result then break;
+          WordWidth := TextWidth(MidStr(AText, Result, WordEnd - Result));
+        until LineWidth + WordWidth > MaxWidthInPixel;
+        if LineWidth = 0 then
+        begin
+          // the first word is longer than the maximum width
+          // -> add chars till line size reached
+          Result := LineStart;
+          LineWidth := 0;
+          repeat
+            charLen := UTF8CharacterLength(@AText[Result]);
+            CharWidth := TextWidth(MidStr(AText, Result, charLen));
+            Inc(LineWidth, CharWidth);
+            if LineWidth > MaxWidthInPixel then
+              break;
+            if Result >= lineStop then
+              break;
+            Inc(Result, charLen);
+          until False;
+          // at least one char
+          if Result = LineStart then
+          begin
+            charLen := UTF8CharacterLength(@AText[Result]);
+            Inc(Result, charLen);
+          end;
+        end;
+      end;
+    end;
+
+    function IsEmptyText: boolean;
+    begin
+      if (AText = nil) or (AText[0] = #0) then
+      begin
+        // no text
+        GetMem(Lines, SizeOf(PChar));
+        Lines[0] := nil;
+        LineCount := 0;
+        Result := True;
+      end
+      else
+        Result := False;
+    end;
+
+  var
+    LinesList: TFPList;
+    LineStart, LineEnd, LineLen: integer;
+    ArraySize, TotalSize: integer;
+    i: integer;
+    CurLineEntry: PPChar;
+    CurLineStart: PChar;
+  begin
+    if IsEmptyText then
+    begin
+      Lines := nil;
+      LineCount := 0;
+      exit;
+    end;
+    LinesList := TFPList.Create;
+    LineStart := 0;
+
+    // find all line starts and line ends
+    repeat
+      LinesList.Add({%H-}Pointer(PtrInt(LineStart)));
+      // find line end
+      LineEnd := FindLineEnd(LineStart);
+      LinesList.Add({%H-}Pointer(PtrInt(LineEnd)));
+      // find next line start
+      LineStart := LineEnd;
+      if AText[LineStart] in [#10, #13] then
+      begin
+        // skip new line chars
+        Inc(LineStart);
+        if (AText[LineStart] in [#10, #13]) and
+          (AText[LineStart] <> AText[LineStart - 1]) then
+          Inc(LineStart);
+      end
+      else if AText[LineStart] in [' ', #9] then
+      begin
+        // skip space
+        while AText[LineStart] in [' ', #9] do
+          Inc(LineStart);
+      end;
+    until AText[LineStart] = #0;
+
+    // create mem block for 'Lines': array of PChar + all lines
+    LineCount := LinesList.Count shr 1;
+    ArraySize := (LineCount + 1) * SizeOf(PChar);
+    TotalSize := ArraySize;
+    i := 0;
+    while i < LinesList.Count do
+    begin
+      // add  LineEnd - LineStart + 1 for the #0
+      LineLen :={%H-}PtrUInt(LinesList[i + 1]) -{%H-}PtrUInt(LinesList[i]) + 1;
+      Inc(TotalSize, LineLen);
+      Inc(i, 2);
+    end;
+    GetMem(Lines, TotalSize);
+    FillChar(Lines^, TotalSize, 0);
+
+    // create Lines
+    CurLineEntry := Lines;
+    CurLineStart := PChar(CurLineEntry) + ArraySize;
+    i := 0;
+    while i < LinesList.Count do
+    begin
+      // set the pointer to the start of the current line
+      CurLineEntry[i shr 1] := CurLineStart;
+      // copy the line
+      LineStart := integer({%H-}PtrUInt(LinesList[i]));
+      LineEnd := integer({%H-}PtrUInt(LinesList[i + 1]));
+      LineLen := LineEnd - LineStart;
+      if LineLen > 0 then
+        Move(AText[LineStart], CurLineStart^, LineLen);
+      Inc(CurLineStart, LineLen);
+      // add #0 as line end
+      CurLineStart^ := #0;
+      Inc(CurLineStart);
+      // next line
+      Inc(i, 2);
+    end;
+    CurLineEntry[i shr 1] := nil;
+
+    LinesList.Free;
+  end;
+
+  function DrawText(Str: PChar; Count: integer; var Rect: TRect;
+    Flags: cardinal): integer;
+  const
+    TabString = '        ';
+  var
+    pIndex: longint;
+    AStr: string;
+
+    TM: TLCLTextmetric;
+    theRect: TRect;
+    Lines: PPChar;
+    I, NumLines: longint;
+
+    l: longint;
+    Pt: TPoint;
+    SavedRect: TRect; // if font orientation <> 0
+
+    function LeftOffset: longint;
+    begin
+      if (Flags and DT_RIGHT) = DT_RIGHT then
+        Result := DT_RIGHT
+      else
+      if (Flags and DT_CENTER) = DT_CENTER then
+        Result := DT_CENTER
+      else
+        Result := DT_LEFT;
+    end;
+
+    function TopOffset: longint;
+    begin
+      if (Flags and DT_BOTTOM) = DT_BOTTOM then
+        Result := DT_BOTTOM
+      else
+      if (Flags and DT_VCENTER) = DT_VCENTER then
+        Result := DT_VCENTER
+      else
+        Result := DT_TOP;
+    end;
+
+    function CalcRect: boolean;
+    begin
+      Result := (Flags and DT_CALCRECT) = DT_CALCRECT;
+    end;
+
+
+    procedure DoCalcRect;
+    var
+      AP: TSize;
+      J, MaxWidth, LineWidth: integer;
+    begin
+      theRect := Rect;
+
+      MaxWidth := theRect.Right - theRect.Left;
+
+      if (Flags and DT_SINGLELINE) > 0 then
+      begin
+        // ignore word and line breaks
+        AP := TextExtent(PChar(AStr));
+        theRect.Bottom := theRect.Top + TM.Height;
+        if (Flags and DT_CALCRECT) <> 0 then
+          theRect.Right := theRect.Left + AP.cX
+        else
+        begin
+          theRect.Right := theRect.Left + Min(MaxWidth, AP.cX);
+          if (Flags and DT_VCENTER) > 0 then
+          begin
+            OffsetRect(theRect, 0, ((Rect.Bottom - Rect.Top) -
+              (theRect.Bottom - theRect.Top)) div 2);
+          end
+          else
+          if (Flags and DT_BOTTOM) > 0 then
+          begin
+            OffsetRect(theRect, 0, (Rect.Bottom - Rect.Top) -
+              (theRect.Bottom - theRect.Top));
+          end;
+        end;
+      end
+      else
+      begin
+        // consider line breaks
+        if (Flags and DT_WORDBREAK) = 0 then
+        begin
+          // do not break at word boundaries
+          AP := TextExtent(PChar(AStr));
+          MaxWidth := AP.cX;
+        end;
+        WordWrap(PChar(AStr), MaxWidth, Lines, NumLines);
+
+        if (Flags and DT_CALCRECT) <> 0 then
+        begin
+          LineWidth := 0;
+          if (Lines <> nil) then
+          begin
+            for J := 0 to NumLines - 1 do
+            begin
+              AP := TextExtent(Lines[J]);
+              LineWidth := Max(LineWidth, AP.cX);
+            end;
+          end;
+          LineWidth := Min(MaxWidth, LineWidth);
+        end
+        else
+          LineWidth := MaxWidth;
+
+        theRect.Right := theRect.Left + LineWidth;
+        theRect.Bottom := theRect.Top + NumLines * TM.Height;
+        if NumLines > 1 then
+          Inc(theRect.Bottom, ((NumLines - 1) * TM.Descender));// space between lines
+      end;
+
+      if not CalcRect then
+        case LeftOffset of
+          DT_CENTER:
+          begin
+            Offset := (Rect.Right - theRect.Right) div 2;
+            OffsetRect(theRect, offset, 0);
+          end;
+          DT_RIGHT:
+          begin
+            Offset := Rect.Right - theRect.Right;
+            OffsetRect(theRect, offset, 0);
+          end;
+        end;
+    end;
+
+    // if our Font.Orientation <> 0 we must recalculate X,Y offset
+    // also it works only with DT_TOP DT_LEFT.
+    procedure CalculateOffsetWithAngle(const AFontAngle: integer;
+    var TextLeft, TextTop: integer);
+    var
+      OffsX, OffsY: integer;
+      Angle: integer;
+      Size: TSize;
+      R: TRect;
+    begin
+      R := SavedRect;
+      OffsX := R.Right - R.Left;
+      OffsY := R.Bottom - R.Top;
+      Size.cX := OffsX;
+      Size.cy := OffsY;
+      Angle := AFontAngle div 10;
+      if Angle < 0 then
+        Angle := 360 + Angle;
+
+      if Angle <= 90 then
+      begin
+        OffsX := 0;
+        OffsY := Trunc(Size.cx * sin(Angle * Pi / 180));
+      end
+      else
+      if Angle <= 180 then
+      begin
+        OffsX := Trunc(Size.cx * -cos(Angle * Pi / 180));
+        OffsY := Trunc(Size.cx * sin(Angle * Pi / 180) + Size.cy *
+          cos((180 - Angle) * Pi / 180));
+      end
+      else
+      if Angle <= 270 then
+      begin
+        OffsX := Trunc(Size.cx * -cos(Angle * Pi / 180) + Size.cy *
+          sin((Angle - 180) * Pi / 180));
+        OffsY := Trunc(Size.cy * sin((270 - Angle) * Pi / 180));
+      end
+      else
+      if Angle <= 360 then
+      begin
+        OffsX := Trunc(Size.cy * sin((360 - Angle) * Pi / 180));
+        OffsY := 0;
+      end;
+      TextTop := OffsY;
+      TextLeft := OffsX;
+    end;
+
+    function NeedOffsetCalc: boolean;
+    begin
+      Result := (Font.Orientation <> 0) and (Flags and DT_SINGLELINE <> 0) and
+        (Flags and DT_VCENTER = 0) and (Flags and DT_CENTER = 0) and
+        (Flags and DT_RIGHT = 0) and (Flags and DT_BOTTOM = 0) and
+        (Flags and DT_CALCRECT = 0) and not IsRectEmpty(SavedRect);
+    end;
+
+
+    procedure DrawLineRaw(theLine: PChar; LineLength, TopPos: longint);
+    var
+      Points: array[0..1] of TSize;
+      LeftPos: longint;
+    begin
+      if LeftOffset <> DT_LEFT then
+        Points[0] := TextExtent(theLine);
+
+       case LeftOffset of
+        DT_LEFT:
+          LeftPos := theRect.Left;
+        DT_CENTER:
+          LeftPos := theRect.Left + (theRect.Right - theRect.Left) div
+            2 - Points[0].cX div 2;
+        DT_RIGHT:
+          LeftPos := theRect.Right - Points[0].cX;
+      end;
+
+      Pt := Point(0, 0);
+      // Draw line of Text
+      if NeedOffsetCalc then
+      begin
+        Pt.X := SavedRect.Left;
+        Pt.Y := SavedRect.Top;
+         CalculateOffsetWithAngle(Font.Orientation, Pt.X, Pt.Y);
+      end;
+      TextOut(LeftPos + Pt.X, TopPos + Pt.Y, theLine);
+    end;
+
+    procedure DrawLine(theLine: PChar; LineLength, TopPos: longint);
+    var
+      Points: array[0..1] of TSize;
+      //LogP: TLogPen;
+      LeftPos: longint;
+    begin
+      FillByte({%H-}Points[0], SizeOf(Points[0]) * 2, 0);
+      if LeftOffset <> DT_Left then
+        Points[0] := TextExtent(theLine);
+
+      case LeftOffset of
+        DT_LEFT:
+          LeftPos := theRect.Left;
+        DT_CENTER:
+          LeftPos := theRect.Left + (theRect.Right - theRect.Left) div
+            2 - Points[0].cX div 2;
+        DT_RIGHT:
+          LeftPos := theRect.Right - Points[0].cX;
+      end;
+
+      Pt := Point(0, 0);
+      if NeedOffsetCalc then
+      begin
+        Pt.X := SavedRect.Left;
+        Pt.Y := SavedRect.Top;
+        CalculateOffsetWithAngle(Font.Orientation, Pt.X, Pt.Y);
+      end;
+      // Draw line of Text
+      TextOut(LeftPos + Pt.X, TopPos + Pt.Y, theLine);
+
+      // Draw Prefix
+      if (pIndex > 0) and (pIndex <= LineLength) then
+      begin
+        //LogP.lopnStyle := PS_SOLID;
+        //LogP.lopnWidth.X := 1;
+        //LogP.lopnColor := FcPenColor;   // FIXME is this required?
+
+        {Get prefix line position}
+        Points[0] := TextExtent(theLine);
+        Points[0].cX := LeftPos + Points[0].cX;
+        Points[0].cY := TopPos + tm.Height - TM.Descender + 1;
+
+        Points[0] := TextExtent(aStr[pIndex]);
+        Points[1].cX := Points[0].cX + Points[1].cX;
+        Points[1].cY := Points[0].cY;
+
+        {Draw prefix line}
+        Polyline(PPoint(@Points[0]), 2);
+      end;
+    end;
+
+  begin
+    if (Str = nil) or (Str[0] = #0) then
+      Exit(0);
+
+    if (Count < -1) or (IsRectEmpty(Rect) and
+      ((Flags and DT_CALCRECT = 0) and (Flags and DT_NOCLIP = 0))) then
+      Exit(0);
+
+    // Don't try to use StrLen(Str) in cases count >= 0
+    // In those cases str is NOT required to have a null terminator !
+    if Count = -1 then
+      Count := StrLen(Str);
+
+    Lines := nil;
+    NumLines := 0;
+
+    try
+      if (Flags and (DT_SINGLELINE or DT_CALCRECT or DT_NOPREFIX or
+        DT_NOCLIP or DT_EXPANDTABS)) = (DT_SINGLELINE or DT_NOPREFIX or
+        DT_NOCLIP) then
+      begin
+        LCLIntf.CopyRect(theRect,  Rect);
+        SavedRect := Rect;
+        DrawLineRaw(Str, Count, Rect.Top);
+        Result := Rect.Bottom - Rect.Top;
+        Exit;
+      end;
+
+      SetLength(AStr, Count);
+      if Count > 0 then
+        System.Move(Str^, AStr[1], Count);
+
+      if (Flags and DT_EXPANDTABS) <> 0 then
+        AStr := StringReplace(AStr, #9, TabString, [rfReplaceAll]);
+
+
+      if (Flags and DT_NOPREFIX) <> DT_NOPREFIX then
+      begin
+        pIndex := DeleteAmpersands(AStr);
+        if pIndex > Length(AStr) then
+          pIndex := -1; // String ended in '&', which was deleted
+      end
+      else
+        pIndex := -1;
+
+
+      GetTextMetrics(TM{%H-});
+      DoCalcRect;
+      Result := theRect.Bottom - theRect.Top;
+      if (Flags and DT_CALCRECT) = DT_CALCRECT then
+      begin
+        LCLIntf.CopyRect(Rect, theRect);
+        exit;
+      end;
+
+      if (Flags and DT_NOCLIP) <> DT_NOCLIP then
+      begin
+        if theRect.Right > Rect.Right then
+          theRect.Right := Rect.Right;
+        if theRect.Bottom > Rect.Bottom then
+          theRect.Bottom := Rect.Bottom;
+// FIXME  I don't know what to do here
+//          IntersectClipRect( theRect.Left, theRect.Top,
+//          theRect.Right, theRect.Bottom);
+      end;
+
+      if (Flags and DT_SINGLELINE) = DT_SINGLELINE then
+      begin
+        SavedRect := TheRect;
+        DrawLine(PChar(AStr), length(AStr), theRect.Top);
+        Exit;
+      end;
+
+      // multiple lines
+      if Lines = nil then
+        Exit;  // nothing to do
+      if NumLines = 0 then
+        Exit;
+
+      SavedRect := Classes.Rect(0, 0, 0, 0);
+      // no font orientation change if multilined text
+      for i := 0 to NumLines - 1 do
+      begin
+        if theRect.Top > theRect.Bottom then
+          Break;
+
+        if ((Flags and DT_EDITCONTROL) = DT_EDITCONTROL) and
+          (tm.Height > (theRect.Bottom - theRect.Top)) then
+          Break;
+
+        if Lines[i] <> nil then
+        begin
+          l := StrLen(Lines[i]);
+          DrawLine(Lines[i], l, theRect.Top);
+          Dec(pIndex, l + length(LineEnding));
+        end;
+        Inc(theRect.Top, (TM.Descender + TM.Height));// space between lines
+      end;
+
+    finally
+      Reallocmem(Lines, 0);
+    end;
+  end;
+
 begin
-  {$IFDEF VerboseLCLTodos}{$WARNING TPostScriptPrinterCanvas.TextRect is not yet fully implemented!}{$ENDIF}
   //TODO: layout, etc.
+  Changing;
+
+  Options := 0;
+  case Style.Alignment of
+    taRightJustify:
+      Options := DT_RIGHT;
+    taCenter:
+      Options := DT_CENTER;
+  end;
+  case Style.Layout of
+    tlCenter:
+      Options := Options or DT_VCENTER;
+    tlBottom:
+      Options := Options or DT_BOTTOM;
+  end;
+  if Style.EndEllipsis then
+    Options := Options or DT_END_ELLIPSIS;
+  if Style.WordBreak then
+  begin
+    Options := Options or DT_WORDBREAK;
+    if Style.EndEllipsis then
+      Options := Options and not DT_END_ELLIPSIS;
+  end;
+
+  if Style.SingleLine then
+    Options := Options or DT_SINGLELINE;
+
+  if not Style.Clipping then
+    Options := Options or DT_NOCLIP;
+
+  if Style.ExpandTabs then
+    Options := Options or DT_EXPANDTABS;
+
+  if not Style.ShowPrefix then
+    Options := Options or DT_NOPREFIX;
+
+  if Style.RightToLeft then
+    Options := Options or DT_RTLREADING;
+
+  ReqState := [csHandleValid];
+  if not Style.SystemFont then
+    Include(ReqState, csFontValid);
+  if Style.Opaque then
+    Include(ReqState, csBrushValid);
+
+  // calculate text rectangle
+  fRect := ARect;
+  if Style.Alignment = taLeftJustify then
+    fRect.Left := X;
+  if Style.Layout = tlTop then
+    fRect.Top := Y;
+
+  if (Style.Alignment in [taRightJustify, taCenter]) or
+    (Style.Layout in [tlCenter, tlBottom]) then
+  begin
+    DrawText( pChar(Text), Length(Text), fRect, DT_CALCRECT or Options);
+    case Style.Alignment of
+      taRightJustify:
+      begin
+        Offset := ARect.Right - fRect.Right;
+        LCLIntf.OffsetRect(fRect, Offset, 0);
+      end;
+      taCenter:
+      begin
+        Offset :=  (ARect.Right - fRect.Right) div 2;
+        LCLIntf.OffsetRect(fRect, offset, 0);
+      end;
+    end;
+    case Style.Layout of
+      tlCenter:
+      begin
+        Offset :=  ((ARect.Bottom - ARect.Top) - (fRect.Bottom - fRect.Top)) div 2;
+        LCLIntf.OffsetRect(fRect, 0, offset);
+      end;
+      tlBottom:
+      begin
+        Offset :=  ARect.Bottom - fRect.Bottom;
+        LCLIntf.OffsetRect(fRect, 0, offset);
+      end;
+    end;
+  end;
 
   if Style.Clipping then begin
     OldClip := GetClipRect;
     SetClipRect(ARect);
+    Options := Options or DT_NOCLIP; // no clipping as we are handling it here
   end;
 
-  TextOut(X,Y, Text);
+  if Style.Opaque then
+  begin
+    FillRect(fRect)
+  end;
+
+  if Style.SystemFont then
+    UpdateFont();
+
+  DrawText(PChar(Text), Length(Text), fRect, Options);
 
   if Style.Clipping then
     SetClipRect(OldClip);
+
+  Changed;
+
 end;
+
 
 function IsMaxClip(ARect:TRect):boolean;
 begin
