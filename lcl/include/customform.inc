@@ -1271,6 +1271,8 @@ var
 begin
   if (Parent <> nil) or (ParentWindow <> 0) then exit;
 
+  if not (WindowState in [wsNormal,wsMinimized]) then exit;
+
   // first make sure X and Y are assigned
   X := Left;
   Y := Top;
