@@ -1219,7 +1219,7 @@ procedure TCustomForm.MoveToDefaultPosition;
     // delphi compatibility: if no main form then DefaultMonitor has no effect
     if Application.MainForm = nil then Exit;
     // find the monitor of the center of the form (the boundaries might be on another monitor)
-    Source := Screen.MonitorFromPoint(Point(X+(Width div 2), Y+(Height div 2)));
+    Source := Screen.MonitorFromRect(Rect(X,Y,X+Width,Y+Height));
     case DefaultMonitor of
       dmDesktop:
         Target := Source; // no need to move
