@@ -853,6 +853,7 @@ type
     procedure AssignTo(Dest: TPersistent); override;
     procedure AutoAdjustColumn(aCol: Integer); virtual;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); virtual;
+    procedure BeginAutoDrag; override;
     function  BoxRect(ALeft,ATop,ARight,ABottom: Longint): TRect;
     procedure CacheMouseDown(const X,Y:Integer);
     procedure CalcAutoSizeColumn(const Index: Integer; var AMin,AMax,APriority: Integer); virtual;
@@ -7057,6 +7058,17 @@ end;
 procedure TCustomGrid.BeforeMoveSelection(const DCol,DRow: Integer);
 begin
   if Assigned(OnBeforeSelection) then OnBeforeSelection(Self, DCol, DRow);
+end;
+
+procedure TCustomGrid.BeginAutoDrag;
+begin
+  if ((goColSizing in Options) and (Cursor=crHSplit)) or
+     ((goRowSizing in Options) and (Cursor=crVSplit))
+  then
+    // TODO: Resizing in progress, add an option to forbid resizing
+    //       when DragMode=dmAutomatic
+  else
+    BeginDrag(False);
 end;
 
 procedure TCustomGrid.CalcAutoSizeColumn(const Index: Integer; var AMin, AMax,

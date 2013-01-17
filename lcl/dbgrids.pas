@@ -493,6 +493,7 @@ type
     function  EditorByStyle(Style: TColumnButtonStyle): TWinControl; override;
     procedure ResetColWidths;
     destructor Destroy; override;
+    function MouseToRecordOffset(const x,y: Integer; out Column: TColumn; out RecordOffset: Integer): TGridZone;
     property AllowOutboundEvents;
     property SelectedField: TField read GetCurrentField write SetCurrentField;
     property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex;
@@ -3321,6 +3322,31 @@ begin
   FDataLink.OnRecordChanged:=nil;
   FDataLink.Free;
   inherited Destroy;
+end;
+
+function TCustomDBGrid.MouseToRecordOffset(const x, y: Integer; out
+  Column: TColumn; out RecordOffset: Integer): TGridZone;
+var
+  aCol,aRow: Integer;
+begin
+  Result := MouseToGridZone(x, y);
+
+  Column := nil;
+  RecordOffset := 0;
+
+  if (Result=gzInvalid) or (Result=gzFixedCells) then
+    exit;
+
+  MouseToCell(x, y, aCol, aRow);
+
+  if (Result=gzFixedRows) or (Result=gzNormal) then
+    RecordOffset := aRow - Row;
+
+  if (Result=gzFixedCols) or (Result=gzNormal) then begin
+    aRow := ColumnIndexFromGridColumn(aCol);
+    if aRow>=0 then
+      Column := Columns[aRow];
+  end;
 end;
 
 { TComponentDataLink }
