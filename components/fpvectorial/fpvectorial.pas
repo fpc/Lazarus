@@ -1198,7 +1198,7 @@ begin
   ADest.Font.Bold := Font.Bold;
   ADest.Font.Italic := Font.Italic;
   ADest.Font.Underline := Font.Underline;
-  ADest.Font.StrikeTrough := Font.StrikeThrough;
+  //ADest.Font.StrikeThrough := Font.StrikeThrough; uncomment when FPC 2.6.2+ only is supported
   {$ifdef USE_LCL_CANVAS}
   ALCLDest.Font.Orientation := Round(Font.Orientation * 16);
   {$endif}

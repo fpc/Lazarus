@@ -382,7 +382,7 @@ type
     property Bold; // only windows
     property Italic; // only windows
     property Underline; // not supported
-    property StrikeTrough; // not supported
+    //property StrikeThrough; // not supported, uncomment when FPC 2.6.2+ only is supported
   end;
 
   { TAggFPPath }

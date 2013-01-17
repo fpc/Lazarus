@@ -761,7 +761,7 @@ begin
   Font.Bold := AFont.Bold;
   Font.Italic := AFont.Italic;
   Font.Underline := AFont.Underline;
-  Font.StrikeTrough := AFont.StrikeTrough;
+  //Font.StrikeThrough := AFont.StrikeThrough; uncomment when FPC 2.6.2+ only is supported
 end;
 
 { TFPWindowsSharpInterpolation }

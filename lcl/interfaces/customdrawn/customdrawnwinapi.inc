@@ -4090,7 +4090,7 @@ begin
   TM.tmBreakChar := '?';
   TM.tmItalic := Ord(lFont.Italic);
   TM.tmUnderlined := Ord(lFont.Underline);
-  TM.tmStruckOut := Ord(lFont.StrikeTrough);
+  //TM.tmStruckOut := Ord(lFont.StrikeThrough); uncomment when FPC 2.6.2+ only is supported
 
   { Defaults to a TrueType font.
     Note that the meaning of the FIXED_PITCH constant is the opposite of
