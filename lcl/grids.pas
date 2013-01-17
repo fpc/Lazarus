@@ -2684,7 +2684,12 @@ begin
       end;
     end;
     SizeChanged(OldValue, OldCount);
-    FixPosition(True, Col);
+    // if new count makes current col out of range, adjust position
+    // if not, position should not change (fake changed col to be the last one)
+    Dec(NewValue);
+    if NewValue<Col then
+      NewValue:=Col;
+    FixPosition(True, NewValue);
   end else begin
     AddDel(FRows, NewValue);
     FGCache.AccumHeight.Count:=NewValue;
@@ -2714,7 +2719,12 @@ begin
       end;
     end;
     SizeChanged(OldCount, OldValue);
-    FixPosition(False, Row);
+    // if new count makes current row out of range, adjust position
+    // if not, position should not change (fake changed row to be the last one)
+    Dec(NewValue);
+    if NewValue<Row then
+      NewValue:=Row;
+    FixPosition(False, NewValue);
   end;
 end;
 
