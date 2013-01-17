@@ -10305,6 +10305,7 @@ begin
       GetCurrentUnit(SrcEdit,ActiveUnitInfo);
 
     if (jfAddJumpPoint in Flags) and (ActiveUnitInfo <> nil) and (SrcEdit <> nil)
+    and (SrcEdit.EditorComponent<>nil)
     then begin
       if (NewSource<>ActiveUnitInfo.Source)
       or (SrcEdit.EditorComponent.CaretX<>NewX)
