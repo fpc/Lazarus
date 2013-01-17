@@ -1269,54 +1269,53 @@ var
   p: TPosition;
   AForm: TCustomForm;
 begin
-  if (Parent = nil) and (ParentWindow = 0) then
-  begin
-    // first make sure X and Y are assigned
-    X := Left;
-    Y := Top;
+  if (Parent <> nil) or (ParentWindow <> 0) then exit;
 
-    p := Position;
-    if (Position = poMainFormCenter) and (Application.Mainform=nil) then
-      p := poScreenCenter;
-    case P of
-      poDesktopCenter:
+  // first make sure X and Y are assigned
+  X := Left;
+  Y := Top;
+
+  p := Position;
+  if (Position = poMainFormCenter) and (Application.Mainform=nil) then
+    p := poScreenCenter;
+  case P of
+    poDesktopCenter:
+      begin
+        X := (Screen.DesktopWidth - Width) div 2;
+        Y := (Screen.DesktopHeight - Height) div 2;
+      end;
+    poScreenCenter:
+      begin
+        X := (Screen.Width - Width) div 2;
+        Y := (Screen.Height - Height) div 2;
+      end;
+    poMainFormCenter,
+    poOwnerFormCenter:
+      begin
+        if (P = poOwnerFormCenter) and (Owner is TCustomForm) then
+          AForm := TCustomForm(Owner)
+        else
+          AForm := Application.MainForm;
+        if (Self <> AForm) then
         begin
-          X := (Screen.DesktopWidth - Width) div 2;
-          Y := (Screen.DesktopHeight - Height) div 2;
-        end;
-      poScreenCenter:
-        begin
-          X := (Screen.Width - Width) div 2;
-          Y := (Screen.Height - Height) div 2;
-        end;
-      poMainFormCenter,
-      poOwnerFormCenter:
-        begin
-          if (P = poOwnerFormCenter) and (Owner is TCustomForm) then
-            AForm := TCustomForm(Owner)
-          else
-            AForm := Application.MainForm;
-          if (Self <> AForm) then
+          if FormStyle = fsMDIChild then
           begin
-            if FormStyle = fsMDIChild then
-            begin
-              X := (AForm.ClientWidth - Width) div 2;
-              Y := (AForm.ClientHeight - Height) div 2;
-            end else
-            begin
-              X := ((AForm.Width - Width) div 2) + AForm.Left;
-              Y := ((AForm.Height - Height) div 2) + AForm.Top;
-            end;
+            X := (AForm.ClientWidth - Width) div 2;
+            Y := (AForm.ClientHeight - Height) div 2;
+          end else
+          begin
+            X := ((AForm.Width - Width) div 2) + AForm.Left;
+            Y := ((AForm.Height - Height) div 2) + AForm.Top;
           end;
         end;
-    end;
-    // get current widgetset position
-    if (p in [poDefault, poDefaultPosOnly]) and HandleAllocated then
-      GetWindowRelativePosition(Handle,X,Y);
-    if (Position in [poScreenCenter, poMainFormCenter, poOwnerFormCenter]) then
-      MoveToDefaultMonitor(X, Y);
-    SetBounds(X, Y, Width, Height);
+      end;
   end;
+  // get current widgetset position
+  if (p in [poDefault, poDefaultPosOnly]) and HandleAllocated then
+    GetWindowRelativePosition(Handle,X,Y);
+  if (Position in [poScreenCenter, poMainFormCenter, poOwnerFormCenter]) then
+    MoveToDefaultMonitor(X, Y);
+  SetBounds(X, Y, Width, Height);
 end;
 
 {------------------------------------------------------------------------------
