@@ -302,7 +302,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('[TEventsCodeTool.GetCompatiblePublishedMethods] C ',dbgs(ClassNode<>nil));
   {$ENDIF}
-  if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (TypeData=nil)
+  if (ClassNode=nil) or (not (ClassNode.Desc in [ctnClass,ctnObjCClass])) or (TypeData=nil)
   or (Proc=nil) or (fGatheredCompatibleMethods<>nil) then exit;
   Params:=nil;
   ActivateGlobalWriteLock;
@@ -450,7 +450,7 @@ var
   Params: TFindDeclarationParams;
 begin
   Result:=CleanFindContext;
-  if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
+  if (ClassNode=nil) or (not (ClassNode.Desc in [ctnClass, ctnObjCClass])) or (AMethodName='')
   or (Scanner=nil) then begin
     DebugLn(['TEventsCodeTool.FindPublishedMethodNodeInClass invalid parameters']);
     exit;
@@ -711,7 +711,7 @@ begin
     end;
     SrcTool:=TEventsCodeTool(AFindContext.Tool);
     ClassNode:=AFindContext.Node.Parent.Parent;
-    if ClassNode.Desc<>ctnClass then begin
+    if not (ClassNode.Desc in [ctnClass,ctnObjCClass]) then begin
       if ErrorOnNotFound then
         RaiseExceptionFmt('method "%s" not found in class "%s" (%s) in %s', [AClassName,AMethodName,ClassNode.DescAsString,SrcTool.MainFilename]);
       DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method found in non class: ',AClassName,'.',AMethodName,' in ',SrcTool.MainFilename,' Node=',ClassNode.DescAsString]);
@@ -753,7 +753,7 @@ var ProcNode, ProcHeadNode: TCodeTreeNode;
   ProcBodyNode: TCodeTreeNode;
 begin
   Result:=false;
-  if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) then
+  if (ClassNode=nil) or not (ClassNode.Desc in [ctnClass,ctnObjCClass]) then
     RaiseException('Invalid class node');
   if (AOldMethodName='') then
     RaiseException('Invalid AOldMethodName="'+AOldMethodName+'"');
@@ -909,7 +909,7 @@ var
 begin
   Result:=false;
   try
-    if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
+    if (ClassNode=nil) or (not (ClassNode.Desc in [ctnClass,ctnObjCClass])) or (AMethodName='')
     or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
     {$IFDEF CTDEBUG}
     DebugLn(['[TEventsCodeTool.CreateMethod] A AMethodName="',AMethodName,'" in "',MainFilename,'" UseTypeInfoForParameters=',UseTypeInfoForParameters]);
