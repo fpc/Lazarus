@@ -1198,7 +1198,12 @@ begin
   ADest.Font.Bold := Font.Bold;
   ADest.Font.Italic := Font.Italic;
   ADest.Font.Underline := Font.Underline;
-  //ADest.Font.StrikeThrough := Font.StrikeThrough; uncomment when FPC 2.6.2+ only is supported
+  {$IF FPC_FULLVERSION>=20601} //changed in 2.6.2 and 2.7; remove when FPC 2.6.2+ only is supported
+  ADest.Font.StrikeThrough := Font.StrikeThrough;
+  {$ELSE}
+  ADest.Font.StrikeTrough := Font.StrikeTrough; //old version with typo
+  {$END}
+
   {$ifdef USE_LCL_CANVAS}
   ALCLDest.Font.Orientation := Round(Font.Orientation * 16);
   {$endif}
