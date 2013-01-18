@@ -4461,11 +4461,15 @@ begin
       // -> if this is the last page, then add a dummy page
       APage:=TCustomPage(Sender);
       if (APage.Parent<>nil) and APage.Parent.HandleAllocated
-      and (APage.Parent is TCustomTabControl) then begin
+      and (APage.Parent is TCustomTabControl) then
+      begin
         NoteBookWidget:={%H-}PGtkNotebook(TCustomTabControl(APage.Parent).Handle);
-        if GetGtkNoteBookPageCount(NoteBookWidget)=1 then begin
+        if GetGtkNoteBookPageCount(NoteBookWidget)=1 then
+        begin
+          {$IFDEF GTK2USEDUMMYNOTEBOOKPAGE}
           AddDummyNoteBookPage(NoteBookWidget);
           UpdateNoteBookClientWidget(TCustomTabControl(APage.Parent));
+          {$ENDIF}
         end;
       end;
     end;
@@ -5041,6 +5045,7 @@ end;
   no pages at all. Therefore at least a dummy page is added. This dummy page is
   removed as soon as other pages are added.
 -------------------------------------------------------------------------------}
+{$IFDEF GTK2USEDUMMYNOTEBOOKPAGE}
 procedure TGtk2WidgetSet.AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
 var
   DummyWidget: PGtkWidget;
@@ -5062,7 +5067,7 @@ begin
     SetGtkNoteBookDummyPage(NoteBookWidget,DummyWidget);
   end;
 end;
-
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   Method: TGtk2WidgetSet.SetPixel

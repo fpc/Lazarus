@@ -4083,6 +4083,7 @@ end;
 
   Retrieves the DummyWidget associated with the ANoteBookWidget
 -------------------------------------------------------------------------------}
+{$IFDEF GTK2USEDUMMYNOTEBOOKPAGE}
 function GetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook): PGtkWidget;
 begin
   Result:=g_object_get_data(PGObject(ANoteBookWidget),'LCLDummyPage');
@@ -4099,6 +4100,7 @@ procedure SetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook;
 begin
   g_object_set_data(PGObject(ANoteBookWidget),'LCLDummyPage',DummyWidget);
 end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   UpdateNoteBookClientWidget
@@ -4142,6 +4144,7 @@ end;
   Removes the dummy page.
   See also AddDummyNoteBookPage
 -------------------------------------------------------------------------------}
+{$IFDEF GTK2USEDUMMYNOTEBOOKPAGE}
 procedure RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
 var
   DummyWidget: PGtkWidget;
@@ -4153,6 +4156,7 @@ begin
   DummyWidget:=nil;
   SetGtkNoteBookDummyPage(NoteBookWidget,DummyWidget);
 end;
+{$ENDIF}
 
 {-------------------------------------------------------------------------------
   method UpdateNotebookPageTab

@@ -247,7 +247,9 @@ type
     function DestroyTimer(TimerHandle: THandle) : boolean; override;
     procedure DestroyLCLComponent(Sender: TObject);
     // notebook
+    {$IFDEF GTK2USEDUMMYNOTEBOOKPAGE}
     procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
+    {$ENDIF}
 
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
