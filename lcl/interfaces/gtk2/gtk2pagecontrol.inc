@@ -677,11 +677,18 @@ begin
 end;
 
 class procedure TGtk2WSCustomPage.ShowHide(const AWinControl: TWinControl);
+var
+  AShow: Boolean;
 begin
+  if not WSCheckHandleAllocated(AWinControl, 'ShowHide') then
+    exit;
   if (csDesigning in AWinControl.ComponentState) then
+  begin
+    AShow := Assigned(AWinControl.Parent) and (AWinControl.Parent is TCustomTabControl) and
+      TCustomTabControl(AWinControl.Parent).ShowTabs;
     TGtk2WidgetSet(WidgetSet).SetVisible(AWinControl,
-      AWinControl.HandleObjectShouldBeVisible)
-  else
+      AShow);
+  end else
     TGtk2WidgetSet(WidgetSet).SetVisible(AWinControl,
       TCustomPage(AWinControl).TabVisible);
 end;
