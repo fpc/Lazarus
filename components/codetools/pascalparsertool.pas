@@ -709,14 +709,16 @@ begin
           and (Node.LastChild.FirstChild=nil) then begin
             // uses section was not parsed completely => reopen it
             {$IFDEF VerboseUpdateNeeded}
-            debugln(['TPascalParserTool.BuildTree REOPEN uses section, section=',Node.DescAsString]);
+            debugln(['TPascalParserTool.BuildTree REOPEN uses section in ',Node.DescAsString]);
             {$ENDIF}
-            Node:=CurNode.LastChild;
+            Node:=Node.LastChild;
             Node.EndPos:=-1;
             MoveCursorToCleanPos(Node.StartPos);
           end else begin
             if Node.FirstChild.Desc=ctnUsesSection then begin
               // uses section is already parsed
+              if Node.FirstChild.FirstChild=nil then
+                RaiseException('TPascalParserTool.BuildTree inconsistency: uses section was not scanned completely and was not deleted');
               if ScannedRange<lsrMainUsesSectionEnd then
                 ScannedRange:=lsrMainUsesSectionEnd
               else if ScannedRange=lsrImplementationStart then
@@ -752,7 +754,7 @@ begin
 
       ReadNextAtom;
       {$IFDEF VerboseUpdateNeeded}
-      debugln(['TPascalParserTool.BuildTree ScannedRange=',dbgs(ScannedRange),' CurNode=',CurNode.DescAsString,' first atom=',GetAtom]);
+      debugln(['TPascalParserTool.BuildTree ScannedRange=',dbgs(ScannedRange),' CurNode=',CurNode.DescAsString,' first atom=',GetAtom,' Range=',dbgs(Range)]);
       {$ENDIF}
 
       if (CurNode.Desc in (AllSourceTypes+[ctnInterface]))
@@ -812,7 +814,7 @@ begin
     finally
       FRangeValidTill:=ScannedRange;
       {$IFDEF VerboseUpdateNeeded}
-      debugln(['TPascalParserTool.BuildTree scanned till ',dbgs(FRangeValidTill),' Atom="',dbgstr(GetAtom),'"']);
+      debugln(['TPascalParserTool.BuildTree scanned till ',dbgs(FRangeValidTill),' (wanted:',dbgs(ScanTill),') Atom="',dbgstr(GetAtom),'" at ',CleanPosToStr(CurPos.StartPos)]);
       {$ENDIF}
       ScanTill:=lsrEnd;
       CloseUnfinishedNodes;
@@ -5079,6 +5081,9 @@ begin
               {$ENDIF}
             end else begin
               // some nodes can be kept
+              {$IFDEF VerboseUpdateNeeded}
+              debugln(['TPascalParserTool.FetchScannerSource some nodes can be kept. DiffPos=',DiffPos,' NewSrc="',dbgstr(NewSrc,DiffPos-40,40),'|',dbgstr(NewSrc,DiffPos,40),'", TopNode=',Node.DescAsString,',StartPos=',Node.StartPos,',EndPos=',Node.EndPos,', Node.NextBrother=',Node.NextBrother<>nil,' File=',MainFilename]);
+              {$ENDIF}
               // find first node to delete
               if Node.Desc in [ctnInitialization,ctnFinalization,ctnBeginBlock]
               then begin
