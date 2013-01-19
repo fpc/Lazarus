@@ -5627,7 +5627,7 @@ function TWinControl.DoKeyDownBeforeInterface(var Message: TLMKey; IsRecurseCall
   begin
     Result := False;
     // check popup menu
-    if Assigned(FPopupMenu) and FPopupMenu.IsShortCut(Message) then
+    if Assigned(PopupMenu) and PopupMenu.IsShortCut(Message) then
       Exit(True);
 
     if IsRecurseCall then
