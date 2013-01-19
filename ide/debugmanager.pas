@@ -687,7 +687,8 @@ begin
     FUserSourceFiles.Insert(0, SrcFile);
   end;
 
-  if SrcFile<>''
+  if (SrcFile<>'') and
+     ( (not FilenameIsAbsolute(SrcFile)) or FileExistsUTF8(SrcFile) )
   then begin
     Filename:=SrcFile;
     Result:=True;
