@@ -382,7 +382,7 @@ type
     property Bold; // only windows
     property Italic; // only windows
     property Underline; // not supported
-    {$IF FPC_FULLVERSION>=20601} //changed in 2.6.2 and 2.7; remove when FPC 2.6.2+ only is supported
+    {$IF (FPC_FULLVERSION=20601) or (FPC_FULLVERSION>=20701)} //changed in 2.6.1 and 2.7; remove when FPC 2.6.2+ only is supported
     property StrikeThrough;
     {$ELSE}
     property StrikeTrough; //old version with typo
