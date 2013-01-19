@@ -283,9 +283,9 @@ begin
   try
     FInifile.ReadSections(Lines);
     for I := 0 to Lines.Count - 1 do begin
-      if (Lines[I] = IniSection) or
-        (IsWild(Lines[I], IniSection + '.*', False) or
-        IsWild(Lines[I], IniSection + '\*', False)) then
+      if (Lines[I] = ARootSection) or
+        (IsWild(Lines[I], ARootSection + '.*', False) or
+        IsWild(Lines[I], ARootSection + '\*', False)) then
         FInifile.EraseSection(Lines[I]);
     end;
   finally

@@ -581,6 +581,7 @@ begin
         try
           Section := RootSection;
           OnWriteString := @DoWriteString;
+          OnEraseSection := @DoEraseSections;
           try
             StoreObjectsProps(Owner,AStoredList);
           except
