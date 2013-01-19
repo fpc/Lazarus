@@ -368,7 +368,7 @@ begin
   if not ATabControl.ShowTabs then
     Exit;
 
-  Index := AChild.PageIndex;
+  Index := AChild.VisibleIndex;
   TCI.Mask := TCIF_IMAGE or TCIF_PARAM;
   {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
