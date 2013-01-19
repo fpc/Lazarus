@@ -2454,7 +2454,6 @@ begin
       if CurPos.Flag<>cafSemicolon then
         UndoReadNextAtom;
       if ord(ScanTill)<=ord(ScannedRange) then exit;
-      CurNode.EndPos:=CurPos.EndPos;
     end else
       UndoReadNextAtom;
     ScannedRange:=lsrImplementationUsesSectionEnd;
@@ -2502,7 +2501,6 @@ begin
         EndChildNode;
         CreateChildNode;
         CurNode.Desc:=ctnFinalization;
-        CurNode.EndPos:=CurPos.EndPos;
         CurSection:=CurNode.Desc;
         ScannedRange:=lsrFinalizationStart;
         if ord(ScanTill)<=ord(ScannedRange) then exit;
