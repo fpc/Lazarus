@@ -3066,8 +3066,10 @@ begin
     if CurNode.EndPos<1 then begin
       if CurNode.StartPos>p then p:=CurNode.StartPos;
       CurNode.EndPos:=p;
-    end else if p<CurNode.EndPos then
+    end else if p<CurNode.EndPos then begin
       p:=CurNode.EndPos;
+    end else if (CurNode.LastChild<>nil) and (CurNode.EndPos<CurNode.LastChild.EndPos) then
+      CurNode.EndPos:=CurNode.LastChild.EndPos;
     //debugln(['TCustomCodeTool.CloseUnfinishedNodes AFTER ',CurNode.DescAsString,' CurNode.EndPos=',CleanPosToStr(CurNode.EndPos)]);
     CurNode:=CurNode.Parent;
   end;
