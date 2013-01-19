@@ -70,11 +70,6 @@ begin
 end;
 {$ENDIF}
 
-function FileAgeUTF8(const FileName: String): Longint;
-begin
-  Result:=SysUtils.FileAge(UTF8ToSys(Filename));
-end;
-
 // For ExpandFileNameUTF8 and ExpandUNCFileNameUTF8
 //
 // Don't convert to and from Sys, because this RTL routines

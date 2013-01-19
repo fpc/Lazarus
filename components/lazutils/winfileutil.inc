@@ -185,6 +185,39 @@ begin
   {$endif}
 end;
 
+{-------------------------------------------------------------------------------
+function FileAgeUTF8(const FileName: String): Longint;
+-------------------------------------------------------------------------------}
+function FileAgeAnsi(const FileName: String): Longint;
+begin
+  Result:=SysUtils.FileAge(UTF8ToSys(Filename));
+end;
+
+{$ifndef WinCE}
+function FileAgeWide(const FileName: String): Longint;
+   Function AWinToDosTime (Var Wtime : TFileTime;var DTime:longint):longbool;
+   var
+    lft : TFileTime;
+   begin
+     AWinToDosTime:=FileTimeToLocalFileTime(WTime,lft) and
+                FileTimeToDosDateTime(lft,Longrec(Dtime).Hi,LongRec(DTIME).lo);
+   end;
+var
+  Hnd: THandle;
+  FindData: TWin32FindDataW;
+begin
+  Hnd := FindFirstFileW(PWideChar(UTF8ToUTF16(FileName)), FindData);
+   if Hnd <> INVALID_HANDLE_VALUE then
+    begin
+      Windows.FindClose(Hnd);
+      if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) = 0 then
+        If AWinToDosTime(FindData.ftLastWriteTime,Result) then
+          exit;
+    end;
+   Result := -1;
+end;
+{$endif}
+
 {------------------------------------------------------------------------------
   FileSize
  ------------------------------------------------------------------------------}
@@ -518,6 +551,7 @@ begin
 end;
 
 var
+  FileAge_         : function (const Filename:string):Longint = @FileAgeWide;
   FileSize_        : function (const Filename: string): int64 = @FileSizeWide;
   FindFirst_       : function (const Path: string; Attr: Longint;
                        out Rslt: TSearchRec): Longint = @FindFirstWide;
@@ -532,6 +566,16 @@ var
   CreateDir_       : function (const NewDir: String): Boolean = @CreateDirWide;
   RemoveDir_       : function (const Dir: String): Boolean = @RemoveDirWide;
 
+  
+function FileAgeUTF8(const FileName: String): Longint;
+begin
+  {$ifndef WinCE}
+    Result:=FileAge_(FileName);
+  {$else}
+    Result:=SysUtils.FileAge(UTF8ToSys(Filename));
+  {$endif}
+end;
+  
 function FileSize(const Filename: string): int64;
 begin
   Result:=FileSize_(FileName);
@@ -687,6 +731,7 @@ begin
   {$ifndef WinCE}
   if Win32MajorVersion <= 4 then
   begin
+    FileAge_:=@FileAgeAnsi;
     FileSize_:=@FileSizeAnsi;
     FileGetAttr_:=@FileGetAttrAnsi;
     FileSetAttr_:=@FileSetAttrAnsi;
