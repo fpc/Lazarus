@@ -1715,6 +1715,8 @@ begin
     if not Assigned(SortProc) then SortProc:=@DefaultTreeViewSort;
     Sort(FItems, FCount, SortProc, true);
   end;
+  if (TreeView <> nil) then
+    Include(TreeView.FStates, tvsTopsNeedsUpdate);
   Result:=true;
 end;
 
