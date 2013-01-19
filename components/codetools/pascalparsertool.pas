@@ -814,7 +814,8 @@ begin
     finally
       FRangeValidTill:=ScannedRange;
       {$IFDEF VerboseUpdateNeeded}
-      debugln(['TPascalParserTool.BuildTree scanned till ',dbgs(FRangeValidTill),' (wanted:',dbgs(ScanTill),') Atom="',dbgstr(GetAtom),'" at ',CleanPosToStr(CurPos.StartPos)]);
+      Node:=Tree.GetLastNode;
+      debugln(['TPascalParserTool.BuildTree scanned till ',dbgs(FRangeValidTill),' (wanted:',dbgs(ScanTill),') Atom="',dbgstr(GetAtom),'" at ',CleanPosToStr(CurPos.StartPos),' LastNode=',Node.DescAsString,',Start=',Node.StartPos]);
       {$ENDIF}
       ScanTill:=lsrEnd;
       CloseUnfinishedNodes;

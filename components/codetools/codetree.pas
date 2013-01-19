@@ -258,6 +258,7 @@ type
     function GetTopMostNodeOfType(ADesc: TCodeTreeNodeDesc): TCodeTreeNode;
     function GetFindContextParent: TCodeTreeNode;
     function GetLevel: integer;
+    function GetLastNode: TCodeTreeNode;
     function DescAsString: string;
     function FindOwner: TObject;
     procedure Clear;
@@ -281,6 +282,7 @@ type
     function FindLastPosition: integer;
     function ContainsNode(ANode: TCodeTreeNode): boolean;
     function FindRootNode(Desc: TCodeTreeNodeDesc): TCodeTreeNode;
+    function GetLastNode: TCodeTreeNode;
     procedure Clear;
     constructor Create;
     destructor Destroy; override;
@@ -858,6 +860,13 @@ begin
   end;
 end;
 
+function TCodeTreeNode.GetLastNode: TCodeTreeNode;
+begin
+  Result:=Self;
+  while Result.LastChild<>nil do
+    Result:=Result.LastChild;
+end;
+
 function TCodeTreeNode.DescAsString: string;
 begin
   if Self=nil then
@@ -1004,6 +1013,13 @@ begin
   Result:=Root;
   while (Result<>nil) and (Result.Desc<>Desc) do
     Result:=Result.NextBrother;
+end;
+
+function TCodeTree.GetLastNode: TCodeTreeNode;
+begin
+  Result:=Root;
+  if Result=nil then exit;
+  Result:=Result.GetLastNode;
 end;
 
 procedure TCodeTree.ConsistencyCheck;
