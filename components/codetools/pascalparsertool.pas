@@ -517,6 +517,8 @@ var
   p: PChar;
   HasSourceType: Boolean;
   ok: Boolean;
+  OldLastNode: TCodeTreeNode;
+  OldLastPos: Integer;
 begin
   {$IFDEF MEM_CHECK}CheckHeap('TPascalParserTool.BuildTree A '+IntToStr(MemCheck_GetMem_Cnt));{$ENDIF}
   {$IFDEF CTDEBUG}
@@ -572,6 +574,10 @@ begin
     WordIsKeyWordFuncList:=WordIsKeyWord;
 
   ok:=false;
+  OldLastNode:=Tree.GetLastNode;
+  OldLastPos:=0;
+  if OldLastNode<>nil then
+    OldLastPos:=OldLastNode.EndPos;
   try
     try
       ScanTill:=Range;
@@ -678,6 +684,7 @@ begin
       end else if CurNode.Desc=ctnEndPoint then begin
         // all parts were already parsed
         ScannedRange:=lsrEnd;
+        ok:=true;
         //debugln(['TPascalParserTool.BuildTree ALL nodes were already parsed. Change was behind pascal source.']);
         exit;
       end else begin
@@ -816,16 +823,25 @@ begin
       ok:=true;
     finally
       FRangeValidTill:=ScannedRange;
-      if not Ok then begin
-        // there is an error in the next scan range
+      if not ok then begin
+        if ord(Range)<=ord(ScannedRange) then
+          ok:=true;
+        // range reached or t here is an error in the next scan range
       end;
-      {$IFDEF VerboseUpdateNeeded}
       Node:=Tree.GetLastNode;
-      debugln(['TPascalParserTool.BuildTree scanned ',BoolToStr(ok,'till ','without error till '),dbgs(FRangeValidTill),' (wanted:',dbgs(ScanTill),') Atom="',dbgstr(GetAtom),'" at ',CurPos.StartPos,'=',CleanPosToStr(CurPos.StartPos),' LastNode=',Node.DescAsString,',Start=',Node.StartPos]);
+      {$IFDEF VerboseUpdateNeeded}
+      dbgout(['TPascalParserTool.BuildTree scanned ',
+        BoolToStr(ok ,'till ','without error till '),
+        dbgs(FRangeValidTill),' (wanted:',dbgs(ScanTill),')',
+        ' Atom="',dbgstr(GetAtom),'" at ',CurPos.StartPos,'=',CleanPosToStr(CurPos.StartPos)]);
+      if (Node<>nil) then
+        dbgout([' LastNode=',Node.DescAsString,',Start=',Node.StartPos]);
+      debugln;
       {$ENDIF}
       ScanTill:=lsrEnd;
       CloseUnfinishedNodes;
-      IncreaseTreeChangeStep(false);
+      if (OldLastNode<>Node) or ((Node<>nil) and (OldLastPos<>Node.EndPos)) then
+        IncreaseTreeChangeStep(false);
     end;
   except
     {$IFDEF ShowIgnoreErrorAfter}
@@ -5065,6 +5081,7 @@ begin
           {$IFDEF VerboseUpdateNeeded}
           debugln(['TPascalParserTool.FetchScannerSource cleansrc has not changed => keep all nodes ',MainFilename]);
           {$ENDIF}
+          exit;
         end else begin
           // some parts are the same
           Node:=Tree.Root;
@@ -5073,22 +5090,23 @@ begin
             {$IFDEF VerboseUpdateNeeded}
             debugln(['TPascalParserTool.FetchScannerSource difference is in front of first node => all changed ',MainFilename]);
             {$ENDIF}
-            AllChanged:=true
+            AllChanged:=true;
           end else begin
             while (Node.NextBrother<>nil) and (Node.NextBrother.StartPos<DiffPos) do
               Node:=Node.NextBrother;
-            // mark section as unfinished
-            Node.EndPos:=-1;
             if (Node.Desc=ctnEndPoint) and (not LastErrorValid) then begin
               // difference is behind nodes => keep all nodes
               {$IFDEF VerboseUpdateNeeded}
               debugln(['TPascalParserTool.FetchScannerSource cleansrc was changed after scanned nodes => keep all nodes, last node=',Node.DescAsString,' ',MainFilename]);
               {$ENDIF}
+              exit;
             end else begin
               // some nodes can be kept
               {$IFDEF VerboseUpdateNeeded}
               debugln(['TPascalParserTool.FetchScannerSource some nodes can be kept. DiffPos=',DiffPos,' NewSrc="',dbgstr(NewSrc,DiffPos-40,40),'|',dbgstr(NewSrc,DiffPos,40),'", TopNode=',Node.DescAsString,',StartPos=',Node.StartPos,',EndPos=',Node.EndPos,', Node.NextBrother=',Node.NextBrother<>nil,' File=',MainFilename]);
               {$ENDIF}
+              // mark section as unfinished
+              Node.EndPos:=-1;
               // find first node to delete
               if Node.Desc in [ctnInitialization,ctnFinalization,ctnBeginBlock]
               then begin
