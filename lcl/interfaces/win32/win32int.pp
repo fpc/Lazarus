@@ -161,6 +161,7 @@ type
     { Destructor of the class }
     destructor Destroy; override;
 
+    procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); override;
     function LCLPlatform: TLCLPlatform; override;
     function GetLCLCapability(ACapability: TLCLCapability): PtrUInt; override;
 

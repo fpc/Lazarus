@@ -3720,7 +3720,10 @@ var
       else
         if ShrinkWidth or ShrinkHeight
         then ScaleMethod := GDK_INTERP_BILINEAR//GDK_INTERP_HYPER
-        else ScaleMethod := GDK_INTERP_BILINEAR;
+        else begin
+          if DstDevContext.Antialiasing then ScaleMethod := GDK_INTERP_BILINEAR
+            else ScaleMethod := GDK_INTERP_NEAREST;
+        end;
 
       // Scale the src part to a temporary pixmap with the size of the
       // destination rectangle
@@ -5223,6 +5226,21 @@ begin
             and ({%H-}PGdiObject(GDIObject)^.GDIType = GDIType);
 end;
 
+
+procedure TGtk2WidgetSet.DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean
+  );
+var
+  DC: TGtk2DeviceContext;
+begin
+  if IsValidDC(CanvasHandle) then
+  begin
+    //if CanvasHandle = 1 then
+      //DC := Gtk2DefaultContext
+    //else
+      DC := TGtk2DeviceContext(CanvasHandle);
+    DC.Antialiasing := AEnabled;
+  end;
+end;
 
 
 {------------------------------------------------------------------------------

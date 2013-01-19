@@ -3567,7 +3567,6 @@ begin
     Blend.AlphaFormat := AC_SRC_ALPHA;
   end;
 
-  Windows.SetStretchBltMode(DestDC, STRETCH_HALFTONE);
   Windows.SetBrushOrgEx(DestDC, 0, 0, nil);
   if Mask = 0 then
   begin

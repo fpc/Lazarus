@@ -345,6 +345,7 @@ type
     DCTextMetric: TDevContextTextMetric; // only valid if dcfTextMetricsValid set
     PaintRectangle: TRect;// set during paint, BeginPaint/EndPaint
     SavedContext: TGtkDeviceContext; // linked list of saved DCs
+    Antialiasing: Boolean;
 
     constructor Create; virtual;
     procedure CreateGDIObject(AGDIType: TGDIType);

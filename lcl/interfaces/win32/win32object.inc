@@ -105,6 +105,12 @@ begin
   inherited Destroy;
 end;
 
+procedure TWin32WidgetSet.DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean);
+begin
+  if AEnabled then SetStretchBltMode(CanvasHandle, HALFTONE)
+    else SetStretchBltMode(CanvasHandle, COLORONCOLOR);
+end;
+
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.AppInit
   Params:  None

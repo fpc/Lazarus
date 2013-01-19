@@ -251,6 +251,7 @@ type
     procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
     {$ENDIF}
 
+    procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     procedure DCRedraw(CanvasHandle: HDC); override;

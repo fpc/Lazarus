@@ -464,6 +464,7 @@ type
 
   TCustomImage = class(TGraphicControl)
   private
+    FAntialiasingMode: TAntialiasingMode;
     FOnPictureChanged: TNotifyEvent;
     FPicture: TPicture;
     FCenter: Boolean;
@@ -472,6 +473,7 @@ type
     FStretch: Boolean;
     FUseAncestorCanvas: boolean;
     function  GetCanvas: TCanvas;
+    procedure SetAntialiasingMode(AValue: TAntialiasingMode);
     procedure SetPicture(const AValue: TPicture);
     procedure SetCenter(const AValue : Boolean);
     procedure SetProportional(const AValue: Boolean);
@@ -491,6 +493,7 @@ type
     property Canvas: TCanvas read GetCanvas;
     function DestRect: TRect; virtual;
   public
+    property AntialiasingMode: TAntialiasingMode read FAntialiasingMode write SetAntialiasingMode default amDontCare;
     property Align;
     property AutoSize;
     property Center: Boolean read FCenter write SetCenter default False;
@@ -512,6 +515,7 @@ type
 
   TImage = class(TCustomImage)
   published
+    property AntialiasingMode;
     property Align;
     property Anchors;
     property AutoSize;

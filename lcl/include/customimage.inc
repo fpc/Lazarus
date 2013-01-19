@@ -65,6 +65,13 @@ begin
     Result := inherited Canvas;
 end;
 
+procedure TCustomImage.SetAntialiasingMode(AValue: TAntialiasingMode);
+begin
+  if FAntialiasingMode = AValue then Exit;
+  FAntialiasingMode := AValue;
+  PictureChanged(Self);
+end;
+
 procedure TCustomImage.SetPicture(const AValue: TPicture);
 begin
   if FPicture=AValue then exit;
@@ -206,6 +213,7 @@ begin
 
   C := inherited Canvas;
   R := DestRect;
+  C.AntialiasingMode := FAntialiasingMode;
   C.StretchDraw(R, Picture.Graphic);
 
   FUseAncestorCanvas := True;
