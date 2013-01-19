@@ -93,7 +93,7 @@ procedure TCustomPage.WMPaint(var Msg: TLMPaint);
 var
     Notebook: TCustomTabControl;
 begin
-  if (Parent <> nil) and (Parent is TCustomTabControl) then
+  if Parent is TCustomTabControl then
   begin
     NoteBook := TCustomTabControl(Parent);
     if (NoteBook.PageIndex >= 0) and (NoteBook.Page[NoteBook.PageIndex] = Self) then
@@ -117,8 +117,8 @@ begin
   if (AParent = Parent) or (pfInserting in FFlags) then Exit;
   CheckNewParent(AParent);
   OldParent := Parent;
-  if (OldParent <> AParent) and (OldParent <> nil) and
-     (OldParent is TCustomTabControl) and (not (pfRemoving in FFlags)) then
+  if (OldParent <> AParent) and (OldParent is TCustomTabControl) and
+    (not (pfRemoving in FFlags)) then
   begin
     // remove from old pagelist
     ParentNotebook := TCustomTabControl(OldParent);
@@ -129,7 +129,7 @@ begin
 
   inherited SetParent(AParent);
 
-  if (OldParent <> AParent) and (Parent <> nil) and (Parent is TCustomTabControl) then
+  if (OldParent <> AParent) and (Parent is TCustomTabControl) then
   begin
     // add to new pagelist
     ParentNotebook := TCustomTabControl(Parent);
@@ -144,7 +144,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomPage.CMHitTest(var Message: TLMNCHITTEST);
 begin
-  if (Parent<>nil) and (Parent is TCustomTabControl) and
+  if Parent is TCustomTabControl and
      (TCustomTabControl(Parent).ActivePageComponent <> Self) then
     Message.Result := 0 // no hit
   else
@@ -171,7 +171,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomPage.GetPageIndex: integer;
 begin
-  if (Parent <> nil) and (Parent is TCustomTabControl) then
+  if Parent is TCustomTabControl then
     Result := TCustomTabControl(Parent).IndexOf(Self)
   else
     Result := -1;
@@ -179,7 +179,7 @@ end;
 
 procedure TCustomPage.SetPageIndex(AValue: Integer);
 begin
-  if (Parent <> nil) and (Parent is TCustomTabControl) then
+  if Parent is TCustomTabControl then
     TCustomTabControl(Parent).MoveTab(Self,AValue);
   //DebugLn('TCustomPage.SetPageIndex Old=',dbgs(PageIndex),' New=',dbgs(AValue));
 end;
@@ -190,7 +190,7 @@ begin
   if (not (csDesigning in ComponentState)) and IsAccel(Message.CharCode, Caption) and TabVisible then
   begin
     Result := True;
-    if (Parent <> nil) and (Parent is TCustomTabControl) then
+    if Parent is TCustomTabControl then
       TCustomTabControl(Parent).PageIndex := PageIndex;
   end
   else
