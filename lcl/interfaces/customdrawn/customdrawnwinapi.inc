@@ -4094,7 +4094,7 @@ begin
   TM.tmStruckOut := Ord(lFont.StrikeThrough);
   {$ELSE}
   TM.tmStruckOut := Ord(lFont.StrikeTrough); //old version with typo
-  {$END}
+  {$ENDIF}
 
   { Defaults to a TrueType font.
     Note that the meaning of the FIXED_PITCH constant is the opposite of

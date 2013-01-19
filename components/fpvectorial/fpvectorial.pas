@@ -1201,8 +1201,8 @@ begin
   {$IF FPC_FULLVERSION>=20601} //changed in 2.6.2 and 2.7; remove when FPC 2.6.2+ only is supported
   ADest.Font.StrikeThrough := Font.StrikeThrough;
   {$ELSE}
-  ADest.Font.StrikeTrough := Font.StrikeTrough; //old version with typo
-  {$END}
+  ADest.Font.StrikeTrough := Font.StrikeThrough; //old version with typo
+  {$ENDIF}
 
   {$ifdef USE_LCL_CANVAS}
   ALCLDest.Font.Orientation := Round(Font.Orientation * 16);

@@ -386,7 +386,7 @@ type
     property StrikeThrough;
     {$ELSE}
     property StrikeTrough; //old version with typo
-    {$END}
+    {$ENDIF}
   end;
 
   { TAggFPPath }
