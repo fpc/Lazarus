@@ -89,38 +89,6 @@ begin
   Result:=SysUtils.ExpandUNCFileName(Filename);
 end;
 
-function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
-{$IFDEF Windows}
- {$ifdef WindowsUnicodeSupport}
- Function ADosTimeToWinTime (DosTime:longint;Var Wintime : TFileTime):longbool;
- var
-  lft : TFileTime;
- begin
-  ADosTimeToWinTime:=DosDateTimeToFileTime(longrec(DosTime).hi,longrec(DosTime).lo,@lft) and
-                                           LocalFileTimeToFileTime(lft,Wintime);
- end;
-var
- FT:TFileTime;
-  {$endif}
-{$ENDIF}
-begin
- {$IFDEF WINDOWS}
-  {$ifdef WindowsUnicodeSupport}
-   if (ADosTimeToWinTime(Age,FT) and
-    SetFileTime(CreateFileW(PWideChar(UTF8ToUTF16(FileName)),
-                                            FILE_WRITE_ATTRIBUTES,
-                                            0, nil, OPEN_EXISTING,
-                                            FILE_ATTRIBUTE_NORMAL, 0),
-                                            nil, nil, @FT)) then Exit;
-   Result := GetLastError;
-  {$else}
-   Result:=SysUtils.FileSetDate(UTF8ToSys(Filename),Age);
-  {$endif}
- {$ELSE}
-  Result:=SysUtils.FileSetDate(UTF8ToSys(Filename),Age);
- {$ENDIF}
-end;  
-
 function ParamStrUTF8(Param: Integer): string;
 begin
   Result:=SysToUTF8(ObjPas.ParamStr(Param));
