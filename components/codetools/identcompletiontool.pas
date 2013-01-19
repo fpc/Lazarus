@@ -1738,6 +1738,24 @@ begin
   {$ENDIF}
   BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
                           [btSetIgnoreErrorPos]);
+  if FindDeepestNodeAtPos(CleanCursorPos,false)=nil then begin
+    debugln(['TIdentCompletionTool.ParseSourceTillCollectionStart',
+      ' BuildTreeAndGetCleanPos worked, but no node found.',
+      ' CursorPos=',dbgs(CursorPos),' CleanCursorPos=',CleanCursorPos,
+      ' ScannedRange=',dbgs(ScannedRange),
+      ' Scanner.ScannedRange=',dbgs(Scanner.ScannedRange),
+      ' IgnoreErrorAfterValid=',IgnoreErrorAfterValid
+      ]);
+    if IgnoreErrorAfterValid then
+      debugln(['  IgnoreErrorAfter=',dbgs(IgnoreErrorAfter),' IgnoreErrorAfterCleanedPos=',IgnoreErrorAfterCleanedPos,' CleanPosIsAfterIgnorePos=',CleanPosIsAfterIgnorePos(CleanCursorPos)]);
+    if CursorPos.Y<=CursorPos.Code.LineCount then
+      debugln(['  Line=',dbgstr(CursorPos.Code.GetLine(CursorPos.Y-1),1,CursorPos.X-1),'|',dbgstr(CursorPos.Code.GetLine(CursorPos.Y-1),CursorPos.X,100)]);
+    CursorNode:=Tree.Root;
+    while CursorNode<>nil do begin
+      debugln(['  Node=',CursorNode.DescAsString,',Start=',CursorNode.StartPos,',End=',CursorNode.EndPos,',Src="...',dbgstr(RightStr(ExtractNode(CursorNode,[]),100)),'"']);
+      CursorNode:=CursorNode.LastChild;
+    end;
+  end;
 
   // find node at position
   ContextPos:=CleanCursorPos;
