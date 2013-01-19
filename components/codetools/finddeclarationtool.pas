@@ -2994,7 +2994,8 @@ var
   begin
     Result:=false;
     //debugln(['SearchInTypeOfVarConst ',ContextNode.Parent.DescAsString]);
-    if ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition] then
+    if (ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition])
+    and (Src[ContextNode.StartPos]='(') then
     begin
       if FindIdentifierInTypeOfConstant(ContextNode.Parent,Params) then begin
         Result:=CheckResult(true,false);
@@ -3392,7 +3393,7 @@ begin
 
         ctnIdentifier:
           if (ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition])
-          and (ContextNode=ContextNode.Parent.FirstChild)
+          and (ContextNode=ContextNode.Parent.LastChild)
           and SearchInTypeOfVarConst then exit;
 
         ctnEnumIdentifier:
@@ -7204,7 +7205,7 @@ var
 
       // search ...
       {$IFDEF ShowExprEval}
-      DebugLn(['  FindExpressionTypeOfTerm ResolveIdentifier backward SubIdent="',GetIdentifier(Params.Identifier),'" ContextNode="',Params.ContextNode.DescAsString,'" "',dbgstr(Context.Tool.Src,Params.ContextNode.StartPos,15),'" ',dbgs(Params.Flags)]);
+      Dbgout(['  FindExpressionTypeOfTerm ResolveIdentifier backward ',BoolToStr(IsStart,'Main','Sub'),'Ident="',GetIdentifier(Params.Identifier),'" ContextNode="',Params.ContextNode.DescAsString,'" "',dbgstr(Context.Tool.Src,Params.ContextNode.StartPos,15),'" ',dbgs(Params.Flags)]);
       {$ENDIF}
       ExprType.Desc:=xtNone;
       // first search backwards
