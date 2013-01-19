@@ -226,7 +226,7 @@ type
   public
     CurSection: TCodeTreeNodeDesc;
 
-    ScannedRange: TLinkScannerRange;
+    ScannedRange: TLinkScannerRange; // excluding the section with a syntax error
     ScanTill: TLinkScannerRange;
 
     procedure ValidateToolDependencies; virtual;
@@ -818,11 +818,10 @@ begin
       FRangeValidTill:=ScannedRange;
       if not Ok then begin
         // there is an error in the next scan range
-
       end;
       {$IFDEF VerboseUpdateNeeded}
       Node:=Tree.GetLastNode;
-      debugln(['TPascalParserTool.BuildTree scanned without error till ',dbgs(FRangeValidTill),' (wanted:',dbgs(ScanTill),') Atom="',dbgstr(GetAtom),'" at ',CleanPosToStr(CurPos.StartPos),' LastNode=',Node.DescAsString,',Start=',Node.StartPos]);
+      debugln(['TPascalParserTool.BuildTree scanned ',BoolToStr(ok,'till ','without error till '),dbgs(FRangeValidTill),' (wanted:',dbgs(ScanTill),') Atom="',dbgstr(GetAtom),'" at ',CurPos.StartPos,'=',CleanPosToStr(CurPos.StartPos),' LastNode=',Node.DescAsString,',Start=',Node.StartPos]);
       {$ENDIF}
       ScanTill:=lsrEnd;
       CloseUnfinishedNodes;

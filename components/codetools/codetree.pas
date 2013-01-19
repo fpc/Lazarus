@@ -1019,6 +1019,8 @@ function TCodeTree.GetLastNode: TCodeTreeNode;
 begin
   Result:=Root;
   if Result=nil then exit;
+  while Result.NextBrother<>nil do
+    Result:=Result.NextBrother;
   Result:=Result.GetLastNode;
 end;
 
