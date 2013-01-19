@@ -516,6 +516,7 @@ var
   Node: TCodeTreeNode;
   p: PChar;
   HasSourceType: Boolean;
+  ok: Boolean;
 begin
   {$IFDEF MEM_CHECK}CheckHeap('TPascalParserTool.BuildTree A '+IntToStr(MemCheck_GetMem_Cnt));{$ENDIF}
   {$IFDEF CTDEBUG}
@@ -558,7 +559,7 @@ begin
   // scan code
   BeginParsing(Range);
   {$IFDEF VerboseUpdateNeeded}
-  DebugLn(['TPascalParserTool.BuildTree PARSING ... ScannedRange=',dbgs(ScannedRange),' new Range=',dbgs(Range),' ',MainFilename]);
+  DebugLn(['TPascalParserTool.BuildTree PARSING ... LastScannedRange=',dbgs(ScannedRange),' new Range=',dbgs(Range),' ',MainFilename]);
   {$ENDIF}
   //debugln(['TPascalParserTool.BuildTree "',Src,'"']);
 
@@ -570,6 +571,7 @@ begin
   else
     WordIsKeyWordFuncList:=WordIsKeyWord;
 
+  ok:=false;
   try
     try
       ScanTill:=Range;
@@ -811,11 +813,16 @@ begin
       if (Range=lsrEnd) and (CurSection<>ctnNone) then
         SaveRaiseException(ctsEndOfSourceNotFound);
 
+      ok:=true;
     finally
       FRangeValidTill:=ScannedRange;
+      if not Ok then begin
+        // there is an error in the next scan range
+
+      end;
       {$IFDEF VerboseUpdateNeeded}
       Node:=Tree.GetLastNode;
-      debugln(['TPascalParserTool.BuildTree scanned till ',dbgs(FRangeValidTill),' (wanted:',dbgs(ScanTill),') Atom="',dbgstr(GetAtom),'" at ',CleanPosToStr(CurPos.StartPos),' LastNode=',Node.DescAsString,',Start=',Node.StartPos]);
+      debugln(['TPascalParserTool.BuildTree scanned without error till ',dbgs(FRangeValidTill),' (wanted:',dbgs(ScanTill),') Atom="',dbgstr(GetAtom),'" at ',CleanPosToStr(CurPos.StartPos),' LastNode=',Node.DescAsString,',Start=',Node.StartPos]);
       {$ENDIF}
       ScanTill:=lsrEnd;
       CloseUnfinishedNodes;

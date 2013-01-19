@@ -110,7 +110,7 @@ type
     FIgnoreErrorAfter: TCodePosition;
     KeyWordFuncList: TKeyWordFunctionList;
     WordIsKeyWordFuncList: TKeyWordFunctionList;
-    FRangeValidTill: TLinkScannerRange;
+    FRangeValidTill: TLinkScannerRange; // if there was an error, it excludes the last section
     function DefaultKeyWordFunc: boolean;
     procedure BuildDefaultKeyWordFunctions; virtual;
     procedure SetScanner(NewScanner: TLinkScanner); virtual;
@@ -2924,8 +2924,7 @@ begin
     {$IFDEF VerboseUpdateNeeded}
     DebugLn(['TCustomCodeTool.UpdateNeeded because range increased from ',dbgs(FRangeValidTill),' to ',dbgs(Range),' ',MainFilename]);
     {$ENDIF}
-    Result:=true;
-    exit;
+    exit(true);
   end;
   if (FLastScannerChangeStep<>Scanner.ChangeStep) then begin
     {$IFDEF VerboseUpdateNeeded}
@@ -2941,6 +2940,7 @@ begin
       {$ENDIF}
       // decrease valid range
       FRangeValidTill:=Pred(Range);
+      ClearLastError;
     end;
   end;
   {$IFDEF CTDEBUG}
