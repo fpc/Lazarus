@@ -150,75 +150,75 @@ const
   that ,| are not mixed in a model group
   content of literals }
 
- KW_ANY : array[0..3 ] of char = (
-  ASCII_A ,ASCII_N ,ASCII_Y ,#0 );
+ {KW_ANY : array[0..3 ] of char = (
+  ASCII_A ,ASCII_N ,ASCII_Y ,#0 );}
 
- KW_ATTLIST : array[0..7 ] of char = (
-  ASCII_A ,ASCII_T ,ASCII_T ,ASCII_L ,ASCII_I ,ASCII_S ,ASCII_T ,#0 );
+ {KW_ATTLIST : array[0..7 ] of char = (
+  ASCII_A ,ASCII_T ,ASCII_T ,ASCII_L ,ASCII_I ,ASCII_S ,ASCII_T ,#0 );}
 
- KW_CDATA : array[0..5 ] of char = (
-  ASCII_C ,ASCII_D ,ASCII_A ,ASCII_T ,ASCII_A ,#0 );
+ {KW_CDATA : array[0..5 ] of char = (
+  ASCII_C ,ASCII_D ,ASCII_A ,ASCII_T ,ASCII_A ,#0 );}
 
  KW_DOCTYPE : array[0..7 ] of char = (
   ASCII_D ,ASCII_O ,ASCII_C ,ASCII_T ,ASCII_Y ,ASCII_P ,ASCII_E ,#0 );
 
- KW_ELEMENT : array[0..7 ] of char = (
-  ASCII_E ,ASCII_L ,ASCII_E ,ASCII_M ,ASCII_E ,ASCII_N ,ASCII_T ,#0 );
+ {KW_ELEMENT : array[0..7 ] of char = (
+  ASCII_E ,ASCII_L ,ASCII_E ,ASCII_M ,ASCII_E ,ASCII_N ,ASCII_T ,#0 );}
 
- KW_EMPTY : array[0..5 ] of char = (
-  ASCII_E ,ASCII_M ,ASCII_P ,ASCII_T ,ASCII_Y ,#0 );
+ {KW_EMPTY : array[0..5 ] of char = (
+  ASCII_E ,ASCII_M ,ASCII_P ,ASCII_T ,ASCII_Y ,#0 );}
 
- KW_ENTITIES : array[0..8 ] of char = (
+ {KW_ENTITIES : array[0..8 ] of char = (
   ASCII_E ,ASCII_N ,ASCII_T ,ASCII_I ,ASCII_T ,ASCII_I ,ASCII_E ,ASCII_S ,
-  #0 );
+  #0 );}
 
- KW_ENTITY : array[0..6 ] of char = (
-  ASCII_E ,ASCII_N ,ASCII_T ,ASCII_I ,ASCII_T ,ASCII_Y ,#0 );
+ {KW_ENTITY : array[0..6 ] of char = (
+  ASCII_E ,ASCII_N ,ASCII_T ,ASCII_I ,ASCII_T ,ASCII_Y ,#0 );}
 
- KW_FIXED : array[0..5 ] of char = (
-  ASCII_F ,ASCII_I ,ASCII_X ,ASCII_E ,ASCII_D ,#0 );
+ {KW_FIXED : array[0..5 ] of char = (
+  ASCII_F ,ASCII_I ,ASCII_X ,ASCII_E ,ASCII_D ,#0 );}
 
- KW_ID : array[0..2 ] of char = (
-  ASCII_I ,ASCII_D ,#0 );
+ {KW_ID : array[0..2 ] of char = (
+  ASCII_I ,ASCII_D ,#0 );}
 
- KW_IDREF : array[0..5 ] of char = (
-  ASCII_I ,ASCII_D ,ASCII_R ,ASCII_E ,ASCII_F ,#0 );
+ {KW_IDREF : array[0..5 ] of char = (
+  ASCII_I ,ASCII_D ,ASCII_R ,ASCII_E ,ASCII_F ,#0 );}
 
- KW_IDREFS : array[0..6 ] of char = (
-  ASCII_I ,ASCII_D ,ASCII_R ,ASCII_E ,ASCII_F ,ASCII_S ,#0 );
+ {KW_IDREFS : array[0..6 ] of char = (
+  ASCII_I ,ASCII_D ,ASCII_R ,ASCII_E ,ASCII_F ,ASCII_S ,#0 );}
 
- KW_IGNORE : array[0..6 ] of char = (
-  ASCII_I ,ASCII_G ,ASCII_N ,ASCII_O ,ASCII_R ,ASCII_E ,#0 );
+ {KW_IGNORE : array[0..6 ] of char = (
+  ASCII_I ,ASCII_G ,ASCII_N ,ASCII_O ,ASCII_R ,ASCII_E ,#0 );}
 
- KW_IMPLIED : array[0..7 ] of char = (
-  ASCII_I ,ASCII_M ,ASCII_P ,ASCII_L ,ASCII_I ,ASCII_E ,ASCII_D ,#0 );
+ {KW_IMPLIED : array[0..7 ] of char = (
+  ASCII_I ,ASCII_M ,ASCII_P ,ASCII_L ,ASCII_I ,ASCII_E ,ASCII_D ,#0 );}
 
- KW_INCLUDE : array[0..7 ] of char = (
-  ASCII_I ,ASCII_N ,ASCII_C ,ASCII_L ,ASCII_U ,ASCII_D ,ASCII_E ,#0 );
+ {KW_INCLUDE : array[0..7 ] of char = (
+  ASCII_I ,ASCII_N ,ASCII_C ,ASCII_L ,ASCII_U ,ASCII_D ,ASCII_E ,#0 );}
 
- KW_NDATA : array[0..5 ] of char = (
-  ASCII_N ,ASCII_D ,ASCII_A ,ASCII_T ,ASCII_A ,#0 );
+ {KW_NDATA : array[0..5 ] of char = (
+  ASCII_N ,ASCII_D ,ASCII_A ,ASCII_T ,ASCII_A ,#0 );}
 
- KW_NMTOKEN : array[0..7 ] of char = (
-  ASCII_N ,ASCII_M ,ASCII_T ,ASCII_O ,ASCII_K ,ASCII_E ,ASCII_N ,#0 );
+ {KW_NMTOKEN : array[0..7 ] of char = (
+  ASCII_N ,ASCII_M ,ASCII_T ,ASCII_O ,ASCII_K ,ASCII_E ,ASCII_N ,#0 );}
 
- KW_NMTOKENS : array[0..8 ] of char = (
+ {KW_NMTOKENS : array[0..8 ] of char = (
   ASCII_N ,ASCII_M ,ASCII_T ,ASCII_O ,ASCII_K ,ASCII_E ,ASCII_N ,ASCII_S ,
-  #0 );
+  #0 );}
 
- KW_NOTATION : array[0..8 ] of char = (
+ {KW_NOTATION : array[0..8 ] of char = (
   ASCII_N ,ASCII_O ,ASCII_T ,ASCII_A ,ASCII_T ,ASCII_I ,ASCII_O ,ASCII_N ,
-  #0 );
+  #0 );}
 
- KW_PCDATA : array[0..6 ] of char = (
-  ASCII_P ,ASCII_C ,ASCII_D ,ASCII_A ,ASCII_T ,ASCII_A ,#0 );
+ {KW_PCDATA : array[0..6 ] of char = (
+  ASCII_P ,ASCII_C ,ASCII_D ,ASCII_A ,ASCII_T ,ASCII_A ,#0 );}
 
  KW_PUBLIC : array[0..6 ] of char = (
   ASCII_P ,ASCII_U ,ASCII_B ,ASCII_L ,ASCII_I ,ASCII_C ,#0 );
 
- KW_REQUIRED : array[0..8 ] of char = (
+ {KW_REQUIRED : array[0..8 ] of char = (
   ASCII_R ,ASCII_E ,ASCII_Q ,ASCII_U ,ASCII_I ,ASCII_R ,ASCII_E ,ASCII_D ,
-  #0 );
+  #0 );}
 
  KW_SYSTEM : array[0..6 ] of char = (
   ASCII_S ,ASCII_Y ,ASCII_S ,ASCII_T ,ASCII_E ,ASCII_M ,#0 );

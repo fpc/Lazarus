@@ -677,8 +677,8 @@ end;
 
 { PREMULTIPLY }
 procedure Image.premultiply;
-var
- pixf : pixel_formats;
+//var
+// pixf : pixel_formats;
 
 begin
 { pixfmt_rgba32(pixf ,@renBuf );
@@ -689,8 +689,8 @@ end;
 
 { DEMULTIPLY }
 procedure Image.demultiply;
-var
- pixf : pixel_formats;
+//var
+// pixf : pixel_formats;
 
 begin
 { pixfmt_rgba32(pixf ,@renBuf );
@@ -2108,9 +2108,10 @@ procedure Agg2D.font(
            italic : boolean = false;
            ch : FontCacheType = RasterFontCache;
            angle : double = 0.0 );
+{$IFDEF AGG2D_USE_WINFONTS}
 var
  b : int;
-
+{$ENDIF}
 begin
  m_textAngle    :=angle;
  m_fontHeight   :=height;

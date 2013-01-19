@@ -37,14 +37,14 @@
 { xmltok_ns.inc }
 const
 {$IFDEF XML_NS }
- encodingsNS : array[0..6 ] of ENCODING_ptr = (
+ {encodingsNS : array[0..6 ] of ENCODING_ptr = (
   @latin1_encoding_ns.enc  ,
   @ascii_encoding_ns.enc   ,
   @utf8_encoding_ns.enc    ,
   @big2_encoding_ns.enc    ,
   @big2_encoding_ns.enc    ,
   @little2_encoding_ns.enc ,
-  @utf8_encoding_ns.enc    ); { NO_ENC }
+  @utf8_encoding_ns.enc    );} { NO_ENC }
 
 {$ENDIF }
 

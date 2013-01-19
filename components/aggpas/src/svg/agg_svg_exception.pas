@@ -133,7 +133,7 @@ var
  buf : array[0..49 ] of char;
  dst ,
  max : char_ptr;
- err : integer;
+ {%H-}err : integer;
 
 begin
  dst:=@buf[0 ];

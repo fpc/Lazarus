@@ -158,7 +158,7 @@ var
 
  fg : array[0..3 ] of int;
 
- diameter ,filter_size ,radius_x ,radius_y ,maxx ,maxy ,y_lr ,y_hr ,
+ diameter ,filter_size ,radius_x ,radius_y ,{%H-}maxx ,{%H-}maxy ,y_lr ,y_hr ,
  total_weight ,x_lr_ini ,x_hr_ini ,weight_y ,x_lr ,x_hr ,weight : int;
 
  row_ptr ,fg_ptr : int8u_ptr;
@@ -345,7 +345,7 @@ var
 
  fg : array[0..3 ] of int;
 
- diameter ,filter_size ,rx ,ry ,rx_inv ,ry_inv ,radius_x ,radius_y ,maxx ,maxy ,
+ diameter ,filter_size ,rx ,ry ,rx_inv ,ry_inv ,radius_x ,radius_y ,{%H-}maxx ,{%H-}maxy ,
  y_lr ,y_hr ,total_weight ,x_lr_ini ,x_hr_ini ,weight_y ,x_lr ,x_hr ,weight : int;
 
  row_ptr ,fg_ptr : int8u_ptr;

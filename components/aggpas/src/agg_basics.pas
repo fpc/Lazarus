@@ -1149,7 +1149,6 @@ var
  fr : integer;
 
  get : shortstring;
- flg : char;
  dth ,
  prc ,
  err : integer;
@@ -1254,7 +1253,6 @@ begin
  fr:=trunc(system.frac(val ) );
  sc:=_string;
 
- flg:=#0;
  dth:=1;
  prc:=0;
  prf:=#0;
@@ -1283,7 +1281,7 @@ begin
     _flags :
      case src^ of
       '-' ,'+' ,'0' ,' ' ,'#' :
-       flg:=src^;
+             ;
 
       '1'..'9' :
        begin

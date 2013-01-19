@@ -244,13 +244,12 @@ end;
 { FROM_WAVELENGTH }
 constructor aggclr.from_wavelength(wl ,gamma : double );
 var
- tr ,tg ,tb ,ta ,s : double;
+ tr ,tg ,tb ,s : double;
 
 begin
  tr:=0;
  tg:=0;
  tb:=0;
- ta:=0;
 
  if (wl >= 380.0 ) and
     (wl <= 440.0 ) then

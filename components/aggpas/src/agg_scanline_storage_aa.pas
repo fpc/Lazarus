@@ -1671,9 +1671,6 @@ end;
 
 { REWIND_SCANLINES }
 function serialized_scanlines_adaptor_aa.rewind_scanlines;
-var
- x : int;
-
 begin
  m_ptr:=m_data;
 

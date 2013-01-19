@@ -666,47 +666,47 @@ const
   isInvalid4:utf8_isInvalid4 );
 
 {$IFDEF XML_NS }
- internal_utf8_encoding_ns : normal_encoding = (
-  enc:(scanners       :(normal_prologTok ,normal_contentTok ,normal_cdataSectionTok {$IFDEF XML_DTD },normal_ignoreSectionTok {$ENDIF } );
-       literalScanners:(normal_attributeValueTok ,normal_entityValueTok );
-
-       sameName            :normal_sameName;
-       nameMatchesAscii    :normal_nameMatchesAscii;
-       nameLength          :normal_nameLength;
-       skipS               :normal_skipS;
-       getAtts             :normal_getAtts;
-       charRefNumber       :normal_charRefNumber;
-       predefinedEntityName:normal_predefinedEntityName;
-       updatePosition      :normal_updatePosition;
-       isPublicId          :normal_isPublicId;
-       utf8Convert         :utf8_toUtf8;
-       utf16Convert        :utf8_toUtf16;
-
-       minBytesPerChar:1;
-
-       isUtf8 :#1;
-       isUtf16:#0 );
-  type_:({$I iasciitab.inc}
-         {$I utf8tab.inc});
-
- {$IFDEF XML_MIN_SIZE }
-  byteType   :sb_byteType;
-  isNameMin  :isNever;
-  isNmstrtMin:isNever;
-  byteToAscii:sb_byteToAscii;
-  charMatches:sb_charMatches;
-
- {$ENDIF }
-
-  isName2   :utf8_isName2;
-  isName3   :utf8_isName3;
-  isName4   :isNever;
-  isNmstrt2 :utf8_isNmstrt2;
-  isNmstrt3 :utf8_isNmstrt3;
-  isNmstrt4 :isNever;
-  isInvalid2:utf8_isInvalid2;
-  isInvalid3:utf8_isInvalid3;
-  isInvalid4:utf8_isInvalid4 );
+ //internal_utf8_encoding_ns : normal_encoding = (
+ // enc:(scanners       :(normal_prologTok ,normal_contentTok ,normal_cdataSectionTok {$IFDEF XML_DTD },normal_ignoreSectionTok {$ENDIF } );
+ //      literalScanners:(normal_attributeValueTok ,normal_entityValueTok );
+ //
+ //      sameName            :normal_sameName;
+ //      nameMatchesAscii    :normal_nameMatchesAscii;
+ //      nameLength          :normal_nameLength;
+ //      skipS               :normal_skipS;
+ //      getAtts             :normal_getAtts;
+ //      charRefNumber       :normal_charRefNumber;
+ //      predefinedEntityName:normal_predefinedEntityName;
+ //      updatePosition      :normal_updatePosition;
+ //      isPublicId          :normal_isPublicId;
+ //      utf8Convert         :utf8_toUtf8;
+ //      utf16Convert        :utf8_toUtf16;
+ //
+ //      minBytesPerChar:1;
+ //
+ //      isUtf8 :#1;
+ //      isUtf16:#0 );
+ // type_:({$I iasciitab.inc}
+ //        {$I utf8tab.inc});
+ //
+ //{$IFDEF XML_MIN_SIZE }
+ // byteType   :sb_byteType;
+ // isNameMin  :isNever;
+ // isNmstrtMin:isNever;
+ // byteToAscii:sb_byteToAscii;
+ // charMatches:sb_charMatches;
+ //
+ //{$ENDIF }
+ //
+ // isName2   :utf8_isName2;
+ // isName3   :utf8_isName3;
+ // isName4   :isNever;
+ // isNmstrt2 :utf8_isNmstrt2;
+ // isNmstrt3 :utf8_isNmstrt3;
+ // isNmstrt4 :isNever;
+ // isInvalid2:utf8_isInvalid2;
+ // isInvalid3:utf8_isInvalid3;
+ // isInvalid4:utf8_isInvalid4 );
 
 {$ENDIF }
 
