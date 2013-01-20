@@ -90,6 +90,28 @@ begin
 end;
 
 procedure TTestLazXML.TestXPath;
+
+  procedure CheckNode(Node: TDOMElement; XPath: string;
+    ExpCount: integer; ExpFirstTagName: string);
+  var
+    V: TXPathVariable;
+    FirstNode: TDOMElement;
+  begin
+    V:=nil;
+    try
+      V:=EvaluateXPathExpression(XPath,Node);
+      AssertEquals('xpath="'+XPath+'": AsNodeSet',True,V.AsNodeSet<>nil);
+      AssertEquals('xpath="'+XPath+'": AsNodeSet.Count',ExpCount,V.ASNodeSet.Count);
+      if V.ASNodeSet.Count=0 then exit;
+      FirstNode:=TDOMElement(V.AsNodeSet[0]);
+      if ExpFirstTagName<>'' then begin
+        AssertEquals('xpath="'+XPath+'": node',ExpFirstTagName,FirstNode.TagName);
+      end;
+    finally
+      V.Free;
+    end;
+  end;
+
 var
   xml: String;
   ss: TStringStream;
@@ -103,10 +125,10 @@ begin
       +'<bookstore>'+LineEnding
       +'  <book>'+LineEnding
       +'    <title lang="en">Lazarus</title>'+LineEnding
-      +'    <author>Michael Van Canneyt</author>'+LineEnding
-      +'    <author>Mattias Gaertner</author>'+LineEnding
-      +'    <author>Felipe Monteiro de Carvalho</author>'+LineEnding
-      +'    <author>Swen Heinig</author>'+LineEnding
+      +'    <author forename="Michael" surname="Van Canneyt"/>'+LineEnding
+      +'    <author forname="Mattias" surname="Gaertner"/>'+LineEnding
+      +'    <author forename="Felipe" surname="de Carvalho">Felipe Monteiro de Carvalho</author>'+LineEnding
+      +'    <author forename="Swen" surname="Heinig"/>'+LineEnding
       +'    <year>2011</year>'+LineEnding
       +'    <price>37,50</price>'+LineEnding
       +'  </book>'+LineEnding
@@ -118,7 +140,7 @@ begin
     ReadXMLFile(Doc,ss);
     BookStoreNode:=Doc.DocumentElement;
 
-    // check return type
+    // CheckNode return type
     V:=EvaluateXPathExpression('/bookstore',BookStoreNode);
     debugln(['TTestLazXML.TestXPath ',dbgsname(V)]);
     AssertEquals('/bookstore returns class',TXPathNodeSetVariable,V.ClassType);
@@ -130,13 +152,12 @@ begin
     AssertEquals('/bookstore node',True,Node=BookStoreNode);
     FreeAndNil(V);
 
-    // check //
-    V:=EvaluateXPathExpression('//book',BookStoreNode);
-    AssertEquals('//book AsNodeSet',True,V.AsNodeSet<>nil);
-    AssertEquals('//book AsNodeSet.Count',1,V.ASNodeSet.Count);
-    Node:=TDOMElement(V.AsNodeSet[0]);
-    AssertEquals('//book node','book',Node.TagName);
-
+    // CheckNode //
+    CheckNode(BookStoreNode,'book',1,'book');
+    CheckNode(BookStoreNode,'//book',1,'book');
+    CheckNode(BookStoreNode,'book/title',1,'title');
+    CheckNode(BookStoreNode,'book/author',4,'author');
+    CheckNode(BookStoreNode,'book//title',1,'title');
   finally
     V.Free;
     Doc.Free;
