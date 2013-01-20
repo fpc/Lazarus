@@ -22,7 +22,7 @@ unit BaseIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazConfigStorage, Dialogs;
+  Classes, SysUtils, FileUtil, LazConfigStorage, Dialogs, MacroIntf;
   
 type
   TGetIDEConfigStorage = function(const Filename: string; LoadFromDisk: Boolean
@@ -73,6 +73,7 @@ begin
       for i:=0 to Overrides.Count-1 do begin
         Variable:=Overrides.Names[i];
         Value:=Overrides.Values[Variable];
+        IDEMacros.SubstituteMacros(Value);
         EnvList.Values[Variable]:=Value;
       end;
     end;
