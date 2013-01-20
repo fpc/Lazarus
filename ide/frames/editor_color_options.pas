@@ -31,49 +31,23 @@ uses
   SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynTextDrawer,
   DividerBevel, Laz2_XMLCfg, EditorOptions, IDEOptionsIntf,
   editor_general_options, IDEImagesIntf, LazarusIDEStrConsts, IDEProcs, typinfo,
-  LazConf, types;
+  LazConf, SynColorAttribEditor, types;
 
 type
 
   { TEditorColorOptionsFrame }
 
   TEditorColorOptionsFrame = class(TAbstractIDEOptionsEditor)
-    BackGroundColorBox: TColorBox;
-    BackGroundLabel: TLabel;
     bvlAttributeSection: TDividerBevel;
-    ColumnPosBevel: TPanel;
-    FrameStyleBox: TComboBox;
-    FrameEdgesBox: TComboBox;
     FileExtensionsComboBox: TComboBox;
-    FrameColorBox: TColorBox;
-    BackGroundUseDefaultCheckBox: TCheckBox;
-    FrameColorUseDefaultCheckBox: TCheckBox;
-    ForegroundColorBox: TColorBox;
     ExportSaveDialog: TSaveDialog;
-    pnlUnderline: TPanel;
-    pnlBold: TPanel;
-    pnlItalic: TPanel;
     PnlTop2: TPanel;
     pnlTop: TPanel;
     LanguageMenu: TPopupMenu;
     ColorSchemeMenu: TPopupMenu;
     Splitter1: TSplitter;
-    TextBoldCheckBox: TCheckBox;
-    TextBoldRadioInvert: TRadioButton;
-    TextBoldRadioOff: TRadioButton;
-    TextBoldRadioOn: TRadioButton;
-    TextBoldRadioPanel: TPanel;
-    TextItalicCheckBox: TCheckBox;
-    TextItalicRadioInvert: TRadioButton;
-    TextItalicRadioOff: TRadioButton;
-    TextItalicRadioOn: TRadioButton;
-    TextItalicRadioPanel: TPanel;
-    TextUnderlineCheckBox: TCheckBox;
-    TextUnderlineRadioInvert: TRadioButton;
-    TextUnderlineRadioOff: TRadioButton;
-    TextUnderlineRadioOn: TRadioButton;
-    TextUnderlineRadioPanel: TPanel;
     ColorElementTree: TTreeView;
+    SynColorAttrEditor1: TSynColorAttrEditor;
     ToolBar: TToolBar;
     ToolBar1: TToolBar;
     tbtnGlobal: TToolButton;
@@ -88,8 +62,6 @@ type
     SetAllAttributesToDefaultButton: TToolButton;
     SetAttributeToDefaultButton: TToolButton;
     ColorPreview: TSynEdit;
-    ForeGroundLabel: TLabel;
-    ForeGroundUseDefaultCheckBox: TCheckBox;
     pnlElementAttributes: TPanel;
     procedure btnExportClick(Sender: TObject);
     procedure ColorElementTreeAdvancedCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
@@ -100,19 +72,12 @@ type
     procedure ColorPreviewMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ColorSchemeButtonClick(Sender: TObject);
-    procedure ForegroundColorBoxChange(Sender: TObject);
-    procedure ForegroundColorBoxGetColors(Sender: TCustomColorBox; Items: TStrings);
-    procedure FrameEdgesBoxDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
-      State: TOwnerDrawState);
-    procedure FrameStyleBoxDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
-      State: TOwnerDrawState);
+    procedure DoColorChanged(Sender: TObject);
     procedure GeneralCheckBoxOnChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
     procedure LanguageButtonClick(Sender: TObject);
-    procedure pnlElementAttributesResize(Sender: TObject);
     procedure SetAllAttributesToDefaultButtonClick(Sender: TObject);
     procedure SetAttributeToDefaultButtonClick(Sender: TObject);
-    procedure TextStyleRadioOnChange(Sender: TObject);
     procedure ComboBoxOnChange(Sender: TObject);
     procedure ComboBoxOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure tglGlobalChange(Sender: TObject);
@@ -122,7 +87,6 @@ type
     FDialog: TAbstractOptionsEditorDialog;
     FCurHighlightElement: TColorSchemeAttribute;
 
-    UpdatingColor: Boolean;
     FFileExtensions: TStringList;  // list of LanguageName=FileExtensions
     FColorSchemes: TStringList;    // list of LanguageName=ColorScheme
 
@@ -477,226 +441,17 @@ begin
   ColorSchemeButton.CheckMenuDropdown;
 end;
 
-procedure TEditorColorOptionsFrame.ForegroundColorBoxChange(Sender: TObject);
-var
-  AttrToEdit: TColorSchemeAttribute;
+procedure TEditorColorOptionsFrame.DoColorChanged(Sender: TObject);
 begin
-  if (FCurHighlightElement = nil) or UpdatingColor then
-    exit;
-  UpdatingColor := True;
-
-  AttrToEdit := FCurHighlightElement;
-  if FCurHighlightElement.IsUsingSchemeGlobals then
-    AttrToEdit := FCurHighlightElement.GetSchemeGlobal;
-
-  if Sender = ForegroundColorBox then
-  begin
-    AttrToEdit.Foreground := DefaultToNone(ForeGroundColorBox.Selected);
-    ForeGroundUseDefaultCheckBox.Checked := ForeGroundColorBox.Selected <> clDefault;
-  end;
-  if Sender = BackGroundColorBox then
-  begin
-    AttrToEdit.Background := DefaultToNone(BackGroundColorBox.Selected);
-    BackGroundUseDefaultCheckBox.Checked := BackGroundColorBox.Selected <> clDefault;
-  end;
-  if Sender = FrameColorBox then
-  begin
-    AttrToEdit.FrameColor := DefaultToNone(FrameColorBox.Selected);
-    FrameColorUseDefaultCheckBox.Checked := FrameColorBox.Selected <> clDefault;
-    FrameEdgesBox.Enabled := FrameColorBox.Selected <> clDefault;
-    FrameStyleBox.Enabled := FrameColorBox.Selected <> clDefault;
-  end;
-  if Sender = FrameEdgesBox then
-  begin
-    AttrToEdit.FrameEdges := TSynFrameEdges(FrameEdgesBox.ItemIndex);
-  end;
-  if Sender = FrameStyleBox then
-  begin
-    AttrToEdit.FrameStyle := TSynLineStyle(FrameStyleBox.ItemIndex);
-  end;
-
-  UpdatingColor := False;
   UpdateCurrentScheme;
 end;
 
-procedure TEditorColorOptionsFrame.ForegroundColorBoxGetColors(Sender: TCustomColorBox;
-  Items: TStrings);
-var
-  i: longint;
-begin
-  i := Items.IndexOfObject(TObject(PtrInt(clDefault)));
-  if i >= 0 then begin
-    Items[i] := dlgColorNotModified;
-    Items.Move(i, 1);
-  end;
-end;
-
-procedure TEditorColorOptionsFrame.FrameEdgesBoxDrawItem(Control: TWinControl; Index: Integer;
-  ARect: TRect; State: TOwnerDrawState);
-var
-  r: TRect;
-  PCol: Integer;
-begin
-  if Index  < 0 then exit;;
-
-  r.top := ARect.top + 3;
-  r.bottom := ARect.bottom - 3;
-  r.left := ARect.left + 5;
-  r.right := ARect.Right - 5;
-
-  with TCustomComboBox(Control).Canvas do
-  begin
-    FillRect(ARect);
-    Pen.Width := 1;
-    PCol := pen.Color;
-    Pen.Color := clGray;
-    Pen.Style := psDot;
-    Pen.EndCap := pecFlat;
-    Rectangle(r);
-    Pen.Width := 2;
-    pen.Color := PCol;
-    Pen.Style := psSolid;
-    case Index of
-      ord(sfeAround): Rectangle(r);
-      ord(sfeBottom): begin
-          MoveTo(r.Left, r.Bottom);
-          LineTo(r.Right-1, r.Bottom);
-        end;
-      ord(sfeLeft): begin
-          MoveTo(r.Left, r.Top);
-          LineTo(r.Left, r.Bottom-1);
-        end;
-    end;
-  end;
-end;
-
-procedure TEditorColorOptionsFrame.FrameStyleBoxDrawItem(Control: TWinControl; Index: Integer;
-  ARect: TRect; State: TOwnerDrawState);
-var
-  p: TPoint;
-begin
-  if Index  < 0 then exit;;
-
-  with TCustomComboBox(Control).Canvas do
-  begin
-    FillRect(ARect);
-    Pen.Width := 2;
-    pen.EndCap := pecFlat;
-    case Index of
-      0: Pen.Style := psSolid;
-      1: Pen.Style := psDash;
-      2: Pen.Style := psDot;
-      3: Pen.Style := psSolid;
-    end;
-    if Index = 3 then begin
-      MoveToEx(Handle, ARect.Left + 5, (ARect.Top + ARect.Bottom) div 2 - 2, @p);
-      WaveTo(Handle, ARect.Right - 5, (ARect.Top + ARect.Bottom) div 2 - 2, 4);
-    end else begin
-      MoveTo(ARect.Left + 5, (ARect.Top + ARect.Bottom) div 2);
-      LineTo(ARect.Right - 5, (ARect.Top + ARect.Bottom) div 2);
-    end;
-  end;
-end;
-
 procedure TEditorColorOptionsFrame.GeneralCheckBoxOnChange(Sender: TObject);
-var
-  TheColorBox: TColorBox;
-  AttrToEdit: TColorSchemeAttribute;
 begin
   if Sender = UseSyntaxHighlightCheckBox then
   begin
     ApplyCurrentScheme;
     Exit;
-  end;
-
-  if FCurHighlightElement = nil then
-    exit;
-
-  AttrToEdit := FCurHighlightElement;
-  if FCurHighlightElement.IsUsingSchemeGlobals then
-    AttrToEdit := FCurHighlightElement.GetSchemeGlobal;
-
-  if UpdatingColor = False then begin
-    UpdatingColor := True;
-
-    TheColorBox := nil;
-    if Sender = ForeGroundUseDefaultCheckBox then TheColorBox := ForegroundColorBox;
-    if Sender = BackGroundUseDefaultCheckBox then TheColorBox := BackGroundColorBox;
-    if Sender = FrameColorUseDefaultCheckBox then TheColorBox := FrameColorBox;
-    if Assigned(TheColorBox) then begin
-      if TCheckBox(Sender).Checked then begin
-        TheColorBox.Selected := TheColorBox.Tag;
-      end
-      else begin
-        TheColorBox.Tag := TheColorBox.Selected;
-        TheColorBox.Selected := clDefault;
-      end;
-
-      if (Sender = ForeGroundUseDefaultCheckBox) and
-         (DefaultToNone(ForegroundColorBox.Selected) <> AttrToEdit.Foreground)
-      then begin
-        AttrToEdit.Foreground := DefaultToNone(ForegroundColorBox.Selected);
-        UpdateCurrentScheme;
-      end;
-      if (Sender = BackGroundUseDefaultCheckBox) and
-         (DefaultToNone(BackGroundColorBox.Selected) <> AttrToEdit.Background)
-      then begin
-        AttrToEdit.Background := DefaultToNone(BackGroundColorBox.Selected);
-        UpdateCurrentScheme;
-      end;
-      if (Sender = FrameColorUseDefaultCheckBox) and
-         (DefaultToNone(FrameColorBox.Selected) <> AttrToEdit.FrameColor)
-      then begin
-        AttrToEdit.FrameColor := DefaultToNone(FrameColorBox.Selected);
-        FrameEdgesBox.Enabled := TCheckBox(Sender).Checked;
-        FrameStyleBox.Enabled := TCheckBox(Sender).Checked;
-        UpdateCurrentScheme;
-      end;
-    end;
-
-    UpdatingColor := False;
-  end;
-
-  if Sender = TextBoldCheckBox then begin
-    if hafStyleMask in AttrToEdit.Features then
-      TextStyleRadioOnChange(Sender)
-    else
-    if TextBoldCheckBox.Checked xor (fsBold in AttrToEdit.Style) then
-    begin
-      if TextBoldCheckBox.Checked then
-        AttrToEdit.Style := AttrToEdit.Style + [fsBold]
-      else
-        AttrToEdit.Style := AttrToEdit.Style - [fsBold];
-      UpdateCurrentScheme;
-    end;
-  end;
-
-  if Sender = TextItalicCheckBox then begin
-    if hafStyleMask in AttrToEdit.Features then
-      TextStyleRadioOnChange(Sender)
-    else
-    if TextItalicCheckBox.Checked xor (fsItalic in AttrToEdit.Style) then
-    begin
-      if TextItalicCheckBox.Checked then
-        AttrToEdit.Style := AttrToEdit.Style + [fsItalic]
-      else
-        AttrToEdit.Style := AttrToEdit.Style - [fsItalic];
-      UpdateCurrentScheme;
-    end;
-  end;
-
-  if Sender = TextUnderlineCheckBox then begin
-    if hafStyleMask in AttrToEdit.Features then
-      TextStyleRadioOnChange(Sender)
-    else
-    if TextUnderlineCheckBox.Checked xor (fsUnderline in AttrToEdit.Style) then
-    begin
-      if TextUnderlineCheckBox.Checked then
-        AttrToEdit.Style := AttrToEdit.Style + [fsUnderline]
-      else
-        AttrToEdit.Style := AttrToEdit.Style - [fsUnderline];
-      UpdateCurrentScheme;
-    end;
   end;
 end;
 
@@ -721,32 +476,6 @@ begin
   LanguageButton.CheckMenuDropdown;
 end;
 
-procedure TEditorColorOptionsFrame.pnlElementAttributesResize(Sender: TObject);
-var
-  MinAnchor: TControl;
-  MinWidth: Integer;
-
-  procedure CheckControl(Other: TControl);
-  var w,h: Integer;
-  begin
-    if not Other.Visible then exit;
-    Other.GetPreferredSize(w,h);
-    if w <= MinWidth then exit;
-    MinAnchor := Other;
-    MinWidth := w;
-  end;
-begin
-  MinWidth := -1;
-  MinAnchor := ForeGroundLabel;
-  CheckControl(ForeGroundLabel);
-  CheckControl(BackGroundLabel);
-  CheckControl(ForeGroundUseDefaultCheckBox);
-  CheckControl(BackGroundUseDefaultCheckBox);
-  CheckControl(FrameColorUseDefaultCheckBox);
-
-  ColumnPosBevel.AnchorSide[akLeft].Control := MinAnchor;
-end;
-
 procedure TEditorColorOptionsFrame.SetAllAttributesToDefaultButtonClick(
   Sender: TObject);
 begin
@@ -759,232 +488,37 @@ begin
   SetColorElementsToDefaults(True);
 end;
 
-procedure TEditorColorOptionsFrame.TextStyleRadioOnChange(Sender: TObject);
-var
-  AttrToEdit: TColorSchemeAttribute;
-
-  procedure CalcNewStyle(CheckBox: TCheckBox; RadioOn, RadioOff,
-                         RadioInvert: TRadioButton; fs : TFontStyle;
-                         Panel: TPanel);
-  begin
-    if CheckBox.Checked then
-    begin
-      Panel.Enabled := True;
-      if RadioInvert.Checked then
-      begin
-        AttrToEdit.Style     := AttrToEdit.Style + [fs];
-        AttrToEdit.StyleMask := AttrToEdit.StyleMask - [fs];
-      end
-      else
-      if RadioOn.Checked then
-      begin
-        AttrToEdit.Style     := AttrToEdit.Style + [fs];
-        AttrToEdit.StyleMask := AttrToEdit.StyleMask + [fs];
-      end
-      else
-      if RadioOff.Checked then
-      begin
-        AttrToEdit.Style     := AttrToEdit.Style - [fs];
-        AttrToEdit.StyleMask := AttrToEdit.StyleMask + [fs];
-      end
-    end
-    else
-    begin
-      Panel.Enabled := False;
-      AttrToEdit.Style     := AttrToEdit.Style - [fs];
-      AttrToEdit.StyleMask := AttrToEdit.StyleMask - [fs];
-    end;
-  end;
-begin
-  if UpdatingColor or not (hafStyleMask in FCurHighlightElement.Features) then
-    Exit;
-
-  AttrToEdit := FCurHighlightElement;
-  if FCurHighlightElement.IsUsingSchemeGlobals then
-    AttrToEdit := FCurHighlightElement.GetSchemeGlobal;
-
-  if (Sender = TextBoldCheckBox) or
-     (Sender = TextBoldRadioOn) or
-     (Sender = TextBoldRadioOff) or
-     (Sender = TextBoldRadioInvert) then
-    CalcNewStyle(TextBoldCheckBox, TextBoldRadioOn, TextBoldRadioOff,
-                    TextBoldRadioInvert, fsBold, TextBoldRadioPanel);
-
-  if (Sender = TextItalicCheckBox) or
-     (Sender = TextItalicRadioOn) or
-     (Sender = TextItalicRadioOff) or
-     (Sender = TextItalicRadioInvert) then
-    CalcNewStyle(TextItalicCheckBox, TextItalicRadioOn, TextItalicRadioOff,
-                    TextItalicRadioInvert, fsItalic, TextItalicRadioPanel);
-
-  if (Sender = TextUnderlineCheckBox) or
-     (Sender = TextUnderlineRadioOn) or
-     (Sender = TextUnderlineRadioOff) or
-     (Sender = TextUnderlineRadioInvert) then
-    CalcNewStyle(TextUnderlineCheckBox, TextUnderlineRadioOn, TextUnderlineRadioOff,
-                    TextUnderlineRadioInvert, fsUnderline, TextUnderlineRadioPanel);
-
-
-  UpdateCurrentScheme;
-end;
-
 procedure TEditorColorOptionsFrame.ShowCurAttribute;
 var
-  AttrToShow: TColorSchemeAttribute;
   CanGlobal: Boolean;
 begin
-  if (FCurHighlightElement = nil) or UpdatingColor then
+  if (FCurHighlightElement = nil) then
     Exit;
-  UpdatingColor := True;
   DisableAlign;
   try
 
-  CanGlobal := (FCurHighlightElement.GetSchemeGlobal <> nil) and
-                          not FIsEditingDefaults;
-  tbtnGlobal.Enabled := CanGlobal;
-  tbtnLocal.Enabled := CanGlobal;
-  tbtnGlobal.AllowAllUp := not CanGlobal;
-  tbtnLocal.AllowAllUp := not CanGlobal;
-  tbtnGlobal.Down := FCurHighlightElement.IsUsingSchemeGlobals and
-                     CanGlobal;
-  tbtnLocal.Down  := (not FCurHighlightElement.IsUsingSchemeGlobals) and
-                     CanGlobal;
+    CanGlobal := (FCurHighlightElement.GetSchemeGlobal <> nil) and
+                            not FIsEditingDefaults;
+    tbtnGlobal.Enabled := CanGlobal;
+    tbtnLocal.Enabled := CanGlobal;
+    tbtnGlobal.AllowAllUp := not CanGlobal;
+    tbtnLocal.AllowAllUp := not CanGlobal;
+    tbtnGlobal.Down := FCurHighlightElement.IsUsingSchemeGlobals and
+                       CanGlobal;
+    tbtnLocal.Down  := (not FCurHighlightElement.IsUsingSchemeGlobals) and
+                       CanGlobal;
 
-  AttrToShow := FCurHighlightElement;
-  if FCurHighlightElement.IsUsingSchemeGlobals then
-    AttrToShow := FCurHighlightElement.GetSchemeGlobal;
-
-  // Adjust color captions
-  ForeGroundUseDefaultCheckBox.Caption := dlgForecolor;
-  FrameColorUseDefaultCheckBox.Caption := dlgFrameColor;
-  if (FCurrentColorScheme.AttributeByEnum[ahaModifiedLine] <> nil) and
-     (AttrToShow.StoredName = FCurrentColorScheme.AttributeByEnum[ahaModifiedLine].StoredName)
-  then begin
-    ForeGroundUseDefaultCheckBox.Caption := dlgSavedLineColor;
-    FrameColorUseDefaultCheckBox.Caption := dlgUnsavedLineColor;
-  end else
-  if (FCurrentColorScheme.AttributeByEnum[ahaCodeFoldingTree] <> nil) and
-     (AttrToShow.StoredName = FCurrentColorScheme.AttributeByEnum[ahaCodeFoldingTree].StoredName)
-  then begin
-    FrameColorUseDefaultCheckBox.Caption := dlgGutterCollapsedColor;
-  end;
-
-  if AttrToShow.Group = agnDefault then begin
-    ForegroundColorBox.Style := ForegroundColorBox.Style - [cbIncludeDefault];
-    BackGroundColorBox.Style := BackGroundColorBox.Style - [cbIncludeDefault];
-  end else begin
-    ForegroundColorBox.Style := ForegroundColorBox.Style + [cbIncludeDefault];
-    BackGroundColorBox.Style := BackGroundColorBox.Style + [cbIncludeDefault];
-  end;
-
-  // Forground
-  ForeGroundLabel.Visible              := (hafForeColor in AttrToShow.Features) and
-                                          (AttrToShow.Group = agnDefault);
-  ForeGroundUseDefaultCheckBox.Visible := (hafForeColor in AttrToShow.Features) and
-                                          not(AttrToShow.Group = agnDefault);
-  ForegroundColorBox.Visible           := (hafForeColor in AttrToShow.Features);
-
-  ForegroundColorBox.Selected := NoneToDefault(AttrToShow.Foreground);
-  if ForegroundColorBox.Selected = clDefault then
-    ForegroundColorBox.Tag := ForegroundColorBox.DefaultColorColor
-  else
-    ForegroundColorBox.Tag := ForegroundColorBox.Selected;
-  ForeGroundUseDefaultCheckBox.Checked := ForegroundColorBox.Selected <> clDefault;
-
-  // BackGround
-  BackGroundLabel.Visible              := (hafBackColor in AttrToShow.Features) and
-                                          (AttrToShow.Group = agnDefault);
-  BackGroundUseDefaultCheckBox.Visible := (hafBackColor in AttrToShow.Features) and
-                                          not(AttrToShow.Group = agnDefault);
-  BackGroundColorBox.Visible           := (hafBackColor in AttrToShow.Features);
-
-  BackGroundColorBox.Selected := NoneToDefault(AttrToShow.Background);
-  if BackGroundColorBox.Selected = clDefault then
-    BackGroundColorBox.Tag := BackGroundColorBox.DefaultColorColor
-  else
-    BackGroundColorBox.Tag := BackGroundColorBox.Selected;
-  BackGroundUseDefaultCheckBox.Checked := BackGroundColorBox.Selected <> clDefault;
-
-  // Frame
-  FrameColorUseDefaultCheckBox.Visible := hafFrameColor in AttrToShow.Features;
-  FrameColorBox.Visible                := hafFrameColor in AttrToShow.Features;
-  FrameEdgesBox.Visible                := hafFrameEdges in AttrToShow.Features;
-  FrameStyleBox.Visible                := hafFrameStyle in AttrToShow.Features;
-
-  FrameColorBox.Selected := NoneToDefault(AttrToShow.FrameColor);
-  if FrameColorBox.Selected = clDefault then
-    FrameColorBox.Tag := FrameColorBox.DefaultColorColor
-  else
-    FrameColorBox.Tag := FrameColorBox.Selected;
-  FrameColorUseDefaultCheckBox.Checked := FrameColorBox.Selected <> clDefault;
-  FrameEdgesBox.ItemIndex := integer(AttrToShow.FrameEdges);
-  FrameStyleBox.ItemIndex := integer(AttrToShow.FrameStyle);
-  FrameEdgesBox.Enabled := FrameColorUseDefaultCheckBox.Checked;
-  FrameStyleBox.Enabled := FrameColorUseDefaultCheckBox.Checked;
-
-  // Styles
-  TextBoldCheckBox.Visible      := hafStyle in AttrToShow.Features;
-  TextItalicCheckBox.Visible    := hafStyle in AttrToShow.Features;
-  TextUnderlineCheckBox.Visible := hafStyle in AttrToShow.Features;
-
-  TextBoldRadioPanel.Visible      := hafStyleMask in AttrToShow.Features;
-  TextItalicRadioPanel.Visible    := hafStyleMask in AttrToShow.Features;
-  TextUnderlineRadioPanel.Visible := hafStyleMask in AttrToShow.Features;
-
-  if hafStyleMask in AttrToShow.Features then begin
-    TextBoldCheckBox.Checked   := (fsBold in AttrToShow.Style) or
-                                  (fsBold in AttrToShow.StyleMask);
-    TextBoldRadioPanel.Enabled := TextBoldCheckBox.Checked;
-
-    if not(fsBold in AttrToShow.StyleMask) then
-      TextBoldRadioInvert.Checked := True
+    if FCurHighlightElement.IsUsingSchemeGlobals then
+      SynColorAttrEditor1.CurHighlightElement := FCurHighlightElement.GetSchemeGlobal
     else
-    if fsBold in AttrToShow.Style then
-      TextBoldRadioOn.Checked := True
-    else
-      TextBoldRadioOff.Checked := True;
-
-    TextItalicCheckBox.Checked   := (fsItalic in AttrToShow.Style) or
-                                    (fsItalic in AttrToShow.StyleMask);
-    TextItalicRadioPanel.Enabled := TextItalicCheckBox.Checked;
-
-    if not(fsItalic in AttrToShow.StyleMask) then
-      TextItalicRadioInvert.Checked := True
-    else
-    if fsItalic in AttrToShow.Style then
-      TextItalicRadioOn.Checked := True
-    else
-      TextItalicRadioOff.Checked := True;
-
-    TextUnderlineCheckBox.Checked := (fsUnderline in AttrToShow.Style) or
-                                (fsUnderline in AttrToShow.StyleMask);
-    TextUnderlineRadioPanel.Enabled := TextUnderlineCheckBox.Checked;
-
-    if not(fsUnderline in AttrToShow.StyleMask) then
-      TextUnderlineRadioInvert.Checked := True
-    else
-    if fsUnderline in AttrToShow.Style then
-      TextUnderlineRadioOn.Checked := True
-    else
-      TextUnderlineRadioOff.Checked := True;
-  end
-  else
-  begin
-    TextBoldCheckBox.Checked      := fsBold in AttrToShow.Style;
-    TextItalicCheckBox.Checked    := fsItalic in AttrToShow.Style;
-    TextUnderlineCheckBox.Checked := fsUnderline in AttrToShow.Style;
-  end;
-
-  UpdatingColor := False;
+      SynColorAttrEditor1.CurHighlightElement := FCurHighlightElement;
+    //SynColorAttrEditor1.UpdateAll;
   finally
     EnableAlign;
   end;
-  pnlElementAttributesResize(nil);
 end;
 
 procedure TEditorColorOptionsFrame.FindCurHighlightElement;
-var
-  Old: TColorSchemeAttribute;
 begin
   if (ColorElementTree.Selected <> nil) and
      (ColorElementTree.Selected.Parent = nil) and
@@ -994,12 +528,11 @@ begin
   if (ColorElementTree.Selected = nil) or (ColorElementTree.Selected.Data = nil) then
     exit;
 
-  Old := FCurHighlightElement;
+  if FCurHighlightElement = TColorSchemeAttribute(ColorElementTree.Selected.Data) then
+    exit;
 
   FCurHighlightElement := TColorSchemeAttribute(ColorElementTree.Selected.Data);
-
-  if (Old <> FCurHighlightElement) then
-    ShowCurAttribute;
+  ShowCurAttribute;
 end;
 
 procedure TEditorColorOptionsFrame.FillColorElementListBox;
@@ -1139,8 +672,10 @@ begin
     exit;
 
   FCurrentColorScheme := NewColorScheme;
-  if not FIsEditingDefaults then
+  if not FIsEditingDefaults then begin
     FCurrentHighlighter := FCurrentColorScheme.Highlighter;
+    SynColorAttrEditor1.CurrentColorScheme := FCurrentColorScheme;
+  end;
   ApplyCurrentScheme;
   FillColorElementListBox;
 end;
@@ -1317,7 +852,6 @@ begin
   // Prevent the caret from moving
   ColorPreview.RegisterMouseActionSearchHandler(@DoSynEditMouse);
   FDialog := ADialog;
-  UpdatingColor := False;
   FCurHighlightElement := nil;
   ToolBar.Images := IDEImages.Images_16;
   ToolBar1.Images := IDEImages.Images_16;
@@ -1338,7 +872,6 @@ begin
     Items.Free;
   end;
 
-  ColumnPosBevel.Height := 1;
 
   UseSyntaxHighlightCheckBox.ImageIndex := IDEImages.LoadImage(16, 'laz_highlighter');
   UseSyntaxHighlightCheckBox.Hint := dlgUseSyntaxHighlight;
@@ -1355,27 +888,9 @@ begin
   tbtnGlobal.Caption := dlgUseSchemeDefaults;
   tbtnLocal.Caption := dlgUseSchemeLocal;
 
-  ForeGroundLabel.Caption := dlgForecolor;
-  BackGroundLabel.Caption := dlgBackColor;
-  ForeGroundUseDefaultCheckBox.Caption := dlgForecolor;
-  BackGroundUseDefaultCheckBox.Caption := dlgBackColor;
-  FrameColorUseDefaultCheckBox.Caption := dlgFrameColor;
   bvlAttributeSection.Caption := dlgElementAttributes;
-
-  TextBoldCheckBox.Caption := dlgEdBold;
-  TextBoldRadioOn.Caption := dlgEdOn;
-  TextBoldRadioOff.Caption := dlgEdOff;
-  TextBoldRadioInvert.Caption := dlgEdInvert;
-
-  TextItalicCheckBox.Caption := dlgEdItal;
-  TextItalicRadioOn.Caption := dlgEdOn;
-  TextItalicRadioOff.Caption := dlgEdOff;
-  TextItalicRadioInvert.Caption := dlgEdInvert;
-
-  TextUnderlineCheckBox.Caption := dlgEdUnder;
-  TextUnderlineRadioOn.Caption := dlgEdOn;
-  TextUnderlineRadioOff.Caption := dlgEdOff;
-  TextUnderlineRadioInvert.Caption := dlgEdInvert;
+  SynColorAttrEditor1.Setup;
+  SynColorAttrEditor1.OnChanged := @DoColorChanged;
 
   with GeneralPage do
     AddPreviewEdit(ColorPreview);
@@ -1493,7 +1008,7 @@ end;
 
 procedure TEditorColorOptionsFrame.tglGlobalChange(Sender: TObject);
 begin
-  if (FCurHighlightElement = nil) or UpdatingColor then
+  if (FCurHighlightElement = nil) then
     exit;
 
   if (FCurHighlightElement.GetSchemeGlobal <> nil) then begin

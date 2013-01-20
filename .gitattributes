@@ -5012,6 +5012,8 @@ ide/startlazarus.ico -text svneol=unset#image/ico
 ide/startlazarus.lpi svneol=native#text/plain
 ide/startlazarus.lpr svneol=native#text/pascal
 ide/startlazarus.res -text
+ide/syncolorattribeditor.lfm svneol=native#text/pascal
+ide/syncolorattribeditor.pas svneol=native#text/pascal
 ide/sysvaruseroverridedlg.lfm svneol=native#text/plain
 ide/sysvaruseroverridedlg.pas svneol=native#text/pascal
 ide/transfermacros.pp svneol=native#text/pascal
