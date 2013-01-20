@@ -2115,6 +2115,7 @@ components/lazutils/laz2_xmlcfg.pas svneol=native#text/pascal
 components/lazutils/laz2_xmlread.pas svneol=native#text/pascal
 components/lazutils/laz2_xmlutils.pas svneol=native#text/pascal
 components/lazutils/laz2_xmlwrite.pas svneol=native#text/pascal
+components/lazutils/laz2_xpath.pas svneol=native#text/plain
 components/lazutils/laz_dom.pas svneol=native#text/pascal
 components/lazutils/laz_xmlcfg.pas svneol=native#text/pascal
 components/lazutils/laz_xmlread.pas svneol=native#text/pascal
