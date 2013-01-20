@@ -325,6 +325,28 @@ begin
   end;
 end;
 
+procedure CurPageChanged(CurPageID: Integer);
+var
+  m: TMemo;
+begin
+  if CurPageID = wpInstalling then
+  begin
+    WizardForm.ProgressGauge.Parent.Handle;
+    m:= TMemo.Create(WizardForm);
+    m.Parent:=WizardForm.ProgressGauge.Parent;
+    m.Top := WizardForm.ProgressGauge.Top + WizardForm.ProgressGauge.Height + 10;
+    m.Left := WizardForm.ProgressGauge.Left;
+    m.Width := WizardForm.ProgressGauge.Width ;
+    m.Height := WizardForm.ProgressGauge.Parent.Height - WizardForm.ProgressGauge.Height - WizardForm.ProgressGauge.Top - 15;
+	m.ReadOnly  := True;
+	m.WordWrap  := True;
+	m.ScrollBars := ssVertical;
+	
+	m.Text := Format(CustomMessage('DuringInstall'), [#13#10]);
+
+  end;
+end;
+
 function NextButtonClick(CurPage: Integer): Boolean;
 var
     s, folder: String;
@@ -332,7 +354,7 @@ var
 begin
   // by default go to next page
   Result := true;
-
+  
   // if curpage is wpSelectDir check is filesystem
   if CurPage = wpSelectDir then
   begin
@@ -539,6 +561,7 @@ procedure InitializeWizard();
 var
   s, s2 : String;
 begin
+
   try 
     s := CustomMessage('AskUninstallTitle1');
     s2 := CustomMessage('AskUninstallTitle2');
