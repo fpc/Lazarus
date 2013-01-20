@@ -167,6 +167,9 @@ begin
     CheckNode(BookStoreNode,'book/author[last()]',1,'author');
     CheckNode(BookStoreNode,'book/author[last()-1]',1,'author');
     CheckNode(BookStoreNode,'book/author[last()-1][@forename=''Felipe'']',1,'author');
+    CheckNode(BookStoreNode,'book[year>2000]',1,'book');
+    CheckNode(BookStoreNode,'book/*[@forename]',4,'author');
+    CheckNode(BookStoreNode,'book/title|book/price',2,'title');
   finally
     V.Free;
     Doc.Free;
