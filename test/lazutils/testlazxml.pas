@@ -126,7 +126,7 @@ begin
       +'  <book>'+LineEnding
       +'    <title lang="en">Lazarus</title>'+LineEnding
       +'    <author forename="Michael" surname="Van Canneyt"/>'+LineEnding
-      +'    <author forname="Mattias" surname="Gaertner"/>'+LineEnding
+      +'    <author forename="Mattias" surname="Gaertner"/>'+LineEnding
       +'    <author forename="Felipe" surname="de Carvalho">Felipe Monteiro de Carvalho</author>'+LineEnding
       +'    <author forename="Swen" surname="Heinig"/>'+LineEnding
       +'    <year>2011</year>'+LineEnding
@@ -158,6 +158,15 @@ begin
     CheckNode(BookStoreNode,'book/title',1,'title');
     CheckNode(BookStoreNode,'book/author',4,'author');
     CheckNode(BookStoreNode,'book//title',1,'title');
+    CheckNode(BookStoreNode,'book/author[@forename=''Mattias'']',1,'author');
+    CheckNode(BookStoreNode,'book/author[@surname=''Gaertner'']',1,'author');
+    CheckNode(BookStoreNode,'book/author[@forename=''Mattias'' and @surname=''Gaertner'']',1,'author');
+    CheckNode(BookStoreNode,'book/author[2]',1,'author');
+    CheckNode(BookStoreNode,'book/author[2][1]',1,'author');
+    CheckNode(BookStoreNode,'book/author[2][@forename=''Mattias'']',1,'author');
+    CheckNode(BookStoreNode,'book/author[last()]',1,'author');
+    CheckNode(BookStoreNode,'book/author[last()-1]',1,'author');
+    CheckNode(BookStoreNode,'book/author[last()-1][@forename=''Felipe'']',1,'author');
   finally
     V.Free;
     Doc.Free;
