@@ -5123,6 +5123,7 @@ ideintf/lazstringgridedit.lfm svneol=native#text/plain
 ideintf/lazstringgridedit.pas svneol=native#text/plain
 ideintf/listviewpropedit.lfm svneol=native#text/plain
 ideintf/listviewpropedit.pp svneol=native#text/pascal
+ideintf/macrodefintf.pas svneol=native#text/plain
 ideintf/macrointf.pas svneol=native#text/pascal
 ideintf/maskpropedit.lfm svneol=native#text/plain
 ideintf/maskpropedit.pas svneol=native#text/plain
