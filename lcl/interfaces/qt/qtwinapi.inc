@@ -2526,6 +2526,13 @@ begin
     // Capture widget can be child of complex control. In any case we should return TQtWidget as result.
     // So we will look for parent while not found apropriate LCL handle.
     Widget := GetFirstQtObjectFromWidgetH(w);
+    {$IFDEF MSWINDOWS}
+    if Widget <> nil then
+    begin
+      if Widget is TQtCustomControl then
+        Widget := TQtCustomControl(Widget).Viewport;
+    end;
+    {$ENDIF}
     Result := HWND(Widget);
   end
   else
@@ -5530,7 +5537,11 @@ begin
     if IsValidHandle(AHandle) then
     begin
       {$IFDEF MSWINDOWS}
-      Windows.SetCapture(QWidget_winID(TQtWidget(AHandle).Widget));
+      if TQtWidget(AHandle) is TQtCustomControl then
+      begin
+        Windows.SetCapture(QWidget_winID(TQtCustomControl(AHandle).Viewport.Widget))
+      end else
+        Windows.SetCapture(QWidget_winID(TQtWidget(AHandle).Widget));
       {$ELSE}
       TQtWidget(AHandle).grabMouse();
       {$ENDIF}

@@ -710,6 +710,7 @@ type
     procedure DetachEvents; override;
     function CanPaintBackground: Boolean; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    function getClientBounds: TRect; override;
     function getText: WideString; override;
     procedure setText(const W: WideString); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
@@ -6837,7 +6838,6 @@ begin
   finally
     QFontMetrics_destroy(FontMetrics);
   end;
-
   {currently applies only to wrong TopMargin calculation (eg.gtk style).}
   if (TopMargin - FontHeight < 2) then
     TopMargin := FontHeight + 2 // top & bottom +1px
@@ -6848,12 +6848,18 @@ begin
     BottomMargin := 0;
   end;
   {$ENDIF}
+  {if there's no text set margin to bottom margin size. issue #23642}
+  if getText = '' then
+    TopMargin := BottomMargin;
 
   QLayout_setContentsMargins(ALayout, LeftMargin, TopMargin, RightMargin, BottomMargin);
   QLayout_invalidate(ALayout);
 
   if LCLObject <> nil then
+  begin
     LCLObject.DoAdjustClientRectChange(False);
+    LCLObject.InvalidateClientRectCache(True);
+  end;
 end;
 
 function TQtGroupBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -6957,6 +6963,12 @@ begin
     else
       Result := inherited EventFilter(Sender, Event);
   end;
+end;
+
+function TQtGroupBox.getClientBounds: TRect;
+begin
+  QWidget_contentsRect(Widget, @Result);
+  OffsetRect(Result, -Result.Left, -Result.Top);
 end;
 
 function TQtGroupBox.getText: WideString;
