@@ -73,7 +73,8 @@ begin
       for i:=0 to Overrides.Count-1 do begin
         Variable:=Overrides.Names[i];
         Value:=Overrides.Values[Variable];
-        IDEMacros.SubstituteMacros(Value);
+        if Assigned(IDEMacros) then
+          IDEMacros.SubstituteMacros(Value);
         EnvList.Values[Variable]:=Value;
       end;
     end;
