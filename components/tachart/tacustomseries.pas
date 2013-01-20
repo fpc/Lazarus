@@ -149,7 +149,7 @@ type
     function GetGraphPointX(AIndex: Integer): Double; inline;
     function GetGraphPointY(AIndex: Integer): Double; inline;
     function GetSeriesColor: TColor; virtual;
-    function GetXMaxVal: Integer;
+    function GetXMaxVal: Double;
     procedure SourceChanged(ASender: TObject); virtual;
     procedure VisitSources(
       AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData); override;
@@ -602,7 +602,7 @@ procedure TChartSeries.Assign(ASource: TPersistent);
 begin
   if ASource is TChartSeries then
     with TChartSeries(ASource) do begin
-      Self.Marks := FMarks;
+      Self.Marks.Assign(FMarks);
       Self.FOnGetMark := FOnGetMark;
       Self.Source := FSource;
       Self.Styles := FStyles;
@@ -738,10 +738,10 @@ begin
   Result := Extent.b.X;
 end;
 
-function TChartSeries.GetXMaxVal: Integer;
+function TChartSeries.GetXMaxVal: Double;
 begin
   if Count > 0 then
-    Result := Round(Source[Count - 1]^.X)
+    Result := Source[Count - 1]^.X
   else
     Result := 0;
 end;
@@ -879,7 +879,9 @@ procedure TBasicPointSeries.Assign(ASource: TPersistent);
 begin
   if ASource is TBasicPointSeries then
     with TBasicPointSeries(ASource) do begin
-      Self.FPointer := Pointer;
+      Self.FMarkPositions := MarkPositions;
+      if Self.FPointer <> nil then
+        Self.FPointer.Assign(Pointer);
       Self.FUseReticule := UseReticule;
     end;
   inherited Assign(ASource);

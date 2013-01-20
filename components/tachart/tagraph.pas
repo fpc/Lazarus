@@ -1661,7 +1661,6 @@ procedure TBasicChartTool.Deactivate;
 begin
   FChart.MouseCapture := false;
   FChart.FActiveToolIndex := -1;
-  FChart := nil;
 end;
 
 procedure SkipObsoleteChartProperties;
