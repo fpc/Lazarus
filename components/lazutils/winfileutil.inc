@@ -188,20 +188,37 @@ end;
 {-------------------------------------------------------------------------------
 function FileAgeUTF8(const FileName: String): Longint;
 -------------------------------------------------------------------------------}
+
+function WinToDosTime (Var Wtime : TFileTime;var DTime:longint):longbool;
+var
+  lft : TFileTime;
+begin
+  WinToDosTime:=FileTimeToLocalFileTime(WTime,lft)
+    {$ifndef WinCE}
+    and FileTimeToDosDateTime(lft,Longrec(Dtime).Hi,LongRec(DTIME).lo)
+    {$endif}
+    ;
+end;
+
+Function DosToWinTime (DosTime:longint;Var Wintime : TFileTime):longbool;
+var
+ lft : TFileTime;
+begin
+ DosToWinTime:=
+   {$ifndef wince}
+   DosDateTimeToFileTime(longrec(DosTime).hi,longrec(DosTime).lo,@lft) and
+   {$endif}
+   LocalFileTimeToFileTime(lft,Wintime);                                        ;
+end;
+
+{$ifndef WinCE}
 function FileAgeAnsi(const FileName: String): Longint;
 begin
   Result:=SysUtils.FileAge(UTF8ToSys(Filename));
 end;
+{$endif}
 
-{$ifndef WinCE}
 function FileAgeWide(const FileName: String): Longint;
-   Function AWinToDosTime (Var Wtime : TFileTime;var DTime:longint):longbool;
-   var
-    lft : TFileTime;
-   begin
-     AWinToDosTime:=FileTimeToLocalFileTime(WTime,lft) and
-                FileTimeToDosDateTime(lft,Longrec(Dtime).Hi,LongRec(DTIME).lo);
-   end;
 var
   Hnd: THandle;
   FindData: TWin32FindDataW;
@@ -211,12 +228,12 @@ begin
     begin
       Windows.FindClose(Hnd);
       if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) = 0 then
-        If AWinToDosTime(FindData.ftLastWriteTime,Result) then
+        If WinToDosTime(FindData.ftLastWriteTime,Result) then
           exit;
     end;
    Result := -1;
 end;
-{$endif}
+
 
 {------------------------------------------------------------------------------
   FileSize
@@ -266,22 +283,14 @@ end;
 {-------------------------------------------------------------------------------
 FileSetDateUTF8
 -------------------------------------------------------------------------------}
+{$ifndef WinCE}
 function FileSetDateAnsi(const FileName: String; Age: Longint): Longint;
 begin
  Result:=SysUtils.FileSetDate(UTF8ToSys(Filename),Age);
 end;
+{$endif}
 
-{$ifndef WinCE}
 function FileSetDateWide(const FileName: String; Age: Longint): Longint;
-
- Function ADosTimeToWinTime (DosTime:longint;Var Wintime : TFileTime):longbool;
- var
-  lft : TFileTime;
- begin
-  ADosTimeToWinTime:=DosDateTimeToFileTime(longrec(DosTime).hi,longrec(DosTime).lo,@lft) and
-                                           LocalFileTimeToFileTime(lft,Wintime);
- end;
-
 var
  FT:TFileTime;
  fh: HANDLE;
@@ -291,7 +300,7 @@ begin
                        FILE_WRITE_ATTRIBUTES,
                        0, nil, OPEN_EXISTING,
                        FILE_ATTRIBUTE_NORMAL, 0);
-     if (fh <> feInvalidHandle) and (ADosTimeToWinTime(Age,FT) and SetFileTime(fh, nil, nil, @FT)) then
+     if (fh <> feInvalidHandle) and (DosToWinTime(Age,FT) and SetFileTime(fh, nil, nil, @FT)) then
        Result := 0
      else
        Result := GetLastError;
@@ -299,7 +308,7 @@ begin
      if (fh <> feInvalidHandle) then FileClose(fh);
    end;
 end;
-{$endif} 
+
 
 {------------------------------------------------------------------------------
   FindFirstUTF8
@@ -312,16 +321,7 @@ begin
 end;
 {$endif}
 
-function WinToDosTime (Var Wtime : TFileTime;var DTime:longint):longbool;
-var
-  lft : TFileTime;
-begin
-  WinToDosTime:=FileTimeToLocalFileTime(WTime,lft)
-    {$ifndef WinCE}
-    and FileTimeToDosDateTime(lft,Longrec(Dtime).Hi,LongRec(DTIME).lo)
-    {$endif}
-    ;
-end;
+
 
 function FindMatch(var f: TSearchRec) : Longint;
 begin
@@ -608,11 +608,7 @@ var
   
 function FileAgeUTF8(const FileName: String): Longint;
 begin
-  {$ifndef WinCE}
-    Result:=FileAge_(FileName);
-  {$else}
-    Result:=SysUtils.FileAge(UTF8ToSys(Filename));
-  {$endif}
+  Result:=FileAge_(FileName);
 end;
   
 function FileSize(const Filename: string): int64;
@@ -622,11 +618,7 @@ end;
 
 function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
 begin
-  {$ifndef WinCE}
-   Result:=FileSetDate_(FileName, Age);
-  {$else}
-    Result:=SysUtils.FileSetDate(UTF8ToSys(Filename),Age);
-  {$endif}
+  Result:=FileSetDate_(FileName, Age);
 end;               
 
 function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
