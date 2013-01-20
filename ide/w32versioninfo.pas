@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, Process, LCLProc, Controls, Forms, FileUtil, laz2_DOM,
   Laz2_XMLCfg, CodeToolManager, LazConf, IDEProcs, ProjectIntf, CompOptsIntf,
-  ProjectResourcesIntf, resource, versionresource, versiontypes;
+  ProjectResourcesIntf, resource, versionresource, versiontypes, TransferMacros;
 
 type
 
@@ -358,6 +358,7 @@ var
   lang: string;
   charset: string;
   i: integer;
+  VersionValue : String;
 begin
   Result := True;
   if UseVersionInfo then
@@ -379,8 +380,11 @@ begin
     FStringTable['FileVersion'] := BuildFileVersionString;
 
     st := TVersionStringTable.Create(lang + charset);
-    for i := 0 to FStringTable.Count - 1 do
-      st.Add(Utf8ToAnsi(FStringTable.Keys[i]), Utf8ToAnsi(FStringTable.ValuesByIndex[i]));
+    for i := 0 to FStringTable.Count - 1 do Begin
+      VersionValue := FStringTable.ValuesByIndex[i];
+      GlobalMacroList.SubstituteStr(VersionValue);
+      st.Add(Utf8ToAnsi(FStringTable.Keys[i]), Utf8ToAnsi(VersionValue));
+    end;
     ARes.StringFileInfo.Add(st);
 
     ti.language := StrToInt('$' + lang);
