@@ -248,15 +248,32 @@
         <descr>
           <p>
             <var>FileIsSymLink</var> - check if file name is a symbolic link</p>
-          <p>On Windows systems, always returns false. On others, returns true if it is a symbolic link</p>
+          <p>On Windows systems, symbolic links are supported only on NT based Windows, the function returns false on Win9x and WinCE systems. On others, returns true if it is a symbolic link</p>
         </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="FileIsSymlink.Result">
-        <short>Returns True if file name is a symbolic link (always false in Windows systems)</short>
+        <short>Returns True if file name is a symbolic link (always false in Win9x and WinCE systems)</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FileIsSymlink.AFilename">
+        <short>Name of the file for checking</short>
+      </element>
+      <element name="FileIsHardLink">
+        <short>
+          <var>FileIsHardLink</var> - check if file name is a hard link</short>
+        <descr>
+          <p>
+            <var>FileIsHardLink</var> - check if file name is a hard link</p>
+          <p>On Windows systems, hard links are supported only on NT based Windows, the function returns false on Win9x and WinCE systems. On others, returns true if the hard link reference count is bigger than one</p>
+        </descr>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="FileIsHardLink.Result">
+        <short>Returns True if file name is a hard link (always false in Win9x and WinCE systems)</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="FileIsHardLink.AFilename">
         <short>Name of the file for checking</short>
       </element>
       <!-- function Visibility: default -->
