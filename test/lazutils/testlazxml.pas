@@ -6,6 +6,7 @@
      ./runtests --format=plain --suite=TestStrToXMLValue
      ./runtests --format=plain --suite=TestXMLValueToStr
      ./runtests --format=plain --suite=TestTranslateUTF8Chars
+     ./runtests --format=plain --suite=TestXPath
 }
 unit TestLazXML;
 
@@ -14,7 +15,8 @@ unit TestLazXML;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testglobals, laz2_DOM, laz2_xmlutils;
+  Classes, SysUtils, fpcunit, testglobals, laz2_DOM, laz2_xmlutils, laz2_xpath,
+  laz2_XMLRead, LazLogger;
 
 type
 
@@ -26,6 +28,7 @@ type
     procedure TestStrToXMLValue;
     procedure TestXMLValueToStr;
     procedure TestTranslateUTF8Chars;
+    procedure TestXPath;
   end;
 
 implementation
@@ -84,6 +87,42 @@ begin
   T('switch ä,ö','äbö','äö','öä','öbä');
   T('delete ä','äbö','ä','','bö');
   T('replace ä with a','äbö','ä','a','abö');
+end;
+
+procedure TTestLazXML.TestXPath;
+var
+  xml: String;
+  ss: TStringStream;
+  Doc: TXMLDocument;
+  BookStoreNode: TDOMElement;
+  V: TXPathVariable;
+begin
+  xml:='<?xml version="1.0"?>'+LineEnding
+      +'<bookstore>'+LineEnding
+      +'  <book>'+LineEnding
+      +'    <title lang="en">Lazarus</title>'+LineEnding
+      +'    <author>Michael Van Canneyt</author>'+LineEnding
+      +'    <author>Mattias Gaertner</author>'+LineEnding
+      +'    <author>Felipe Monteiro de Carvalho</author>'+LineEnding
+      +'    <author>Swen Heinig</author>'+LineEnding
+      +'    <year>2011</year>'+LineEnding
+      +'    <price>37,50</price>'+LineEnding
+      +'  </book>'+LineEnding
+      +'</bookstore>'+LineEnding;
+  Doc:=nil;
+  V:=nil;
+  ss:=TStringStream.Create(xml);
+  try
+    ReadXMLFile(Doc,ss);
+    BookStoreNode:=Doc.DocumentElement;
+    V:=EvaluateXPathExpression('/book',BookStoreNode);
+    debugln(['TTestLazXML.TestXPath ',dbgsname(V)]);
+    AssertEquals('EvaluateXPathExpression returns class',TXPathNodeSetVariable,V.ClassType);
+  finally
+    V.Free;
+    Doc.Free;
+    ss.Free;
+  end;
 end;
 
 initialization

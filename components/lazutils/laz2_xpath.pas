@@ -23,6 +23,7 @@ interface
 
 uses Math, SysUtils, Classes, laz2_DOM, laz2_xmlutils;
 
+// ToDo: move to shared unit
 resourcestring
   { XPath variables type names }
   SNodeSet = 'node set';
@@ -56,7 +57,6 @@ resourcestring
   SEvalInvalidArgCount = 'Invalid number of function arguments';
 
 type
-
   TXPathContext = class;
   TXPathEnvironment = class;
   TXPathVariable = class;
@@ -273,7 +273,7 @@ type
       AEnvironment: TXPathEnvironment): TXPathVariable; override;
   end;
 
-{ Exceptions }
+  { Exceptions }
 
   EXPathEvaluationError = class(Exception);
 
@@ -283,7 +283,7 @@ type
 
 type
 
-{ XPath variables and results classes }
+  { XPath variables and results classes }
 
   TXPathVariable = class
   protected
@@ -351,7 +351,7 @@ type
 
   TXPathNSResolver = TDOMNode {!!! experimental};
 
-{ XPath lexical scanner }
+  { XPath lexical scanner }
 
   TXPathScanner = class
   private
@@ -391,7 +391,7 @@ type
   end;
 
 
-{ XPath context }
+  { XPath context }
 
   TXPathContext = class
   public
@@ -404,9 +404,9 @@ type
   end;
 
 
-{ XPath environments (not defined in XPath standard: an environment contains
-  the variables and functions, which are part of the context in the official
-  standard). }
+  { XPath environments (not defined in XPath standard: an environment contains
+    the variables and functions, which are part of the context in the official
+    standard). }
 
   TXPathVarList = TFPList;
 
@@ -2805,8 +2805,7 @@ begin
   if Args.Count <> 3 then
     EvaluationError(SEvalInvalidArgCount);
   S := TXPathVariable(Args[0]).AsText;
-  {$Note: ToDo: implement TranslateUTF8Chars}
-  //TranslateUTF8Chars(S, TXPathVariable(Args[1]).AsText, TXPathVariable(Args[2]).AsText);
+  TranslateUTF8Chars(S, TXPathVariable(Args[1]).AsText, TXPathVariable(Args[2]).AsText);
   Result := TXPathStringVariable.Create(S);
 end;
 
