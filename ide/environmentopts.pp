@@ -1788,7 +1788,7 @@ begin
                   and (ParsedValue[SpacePos]<>'"') do
                     inc(SpacePos);
                   if SpacePos<=length(ParsedValue) then
-                    System.Delete(ParsedValue,1,1); // dleete ending "
+                    System.Delete(ParsedValue,1,1); // delete ending "
                 end else if ParsedValue[SpacePos]=' ' then
                   break
                 else
