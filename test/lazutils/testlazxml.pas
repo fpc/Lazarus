@@ -96,6 +96,8 @@ var
   Doc: TXMLDocument;
   BookStoreNode: TDOMElement;
   V: TXPathVariable;
+  NodeSet: TNodeSet;
+  Node: TDOMElement;
 begin
   xml:='<?xml version="1.0"?>'+LineEnding
       +'<bookstore>'+LineEnding
@@ -115,9 +117,26 @@ begin
   try
     ReadXMLFile(Doc,ss);
     BookStoreNode:=Doc.DocumentElement;
-    V:=EvaluateXPathExpression('/book',BookStoreNode);
+
+    // check return type
+    V:=EvaluateXPathExpression('/bookstore',BookStoreNode);
     debugln(['TTestLazXML.TestXPath ',dbgsname(V)]);
-    AssertEquals('EvaluateXPathExpression returns class',TXPathNodeSetVariable,V.ClassType);
+    AssertEquals('/bookstore returns class',TXPathNodeSetVariable,V.ClassType);
+    NodeSet:=V.AsNodeSet;
+    AssertEquals('/bookstore AsNodeSet',True,NodeSet<>nil);
+    AssertEquals('/bookstore AsNodeSet.Count',1,NodeSet.Count);
+    Node:=TDOMElement(NodeSet[0]);
+    AssertEquals('/bookstore AsNodeSet[0] class',TDOMElement,Node.ClassType);
+    AssertEquals('/bookstore node',True,Node=BookStoreNode);
+    FreeAndNil(V);
+
+    // check //
+    V:=EvaluateXPathExpression('//book',BookStoreNode);
+    AssertEquals('//book AsNodeSet',True,V.AsNodeSet<>nil);
+    AssertEquals('//book AsNodeSet.Count',1,V.ASNodeSet.Count);
+    Node:=TDOMElement(V.AsNodeSet[0]);
+    AssertEquals('//book node','book',Node.TagName);
+
   finally
     V.Free;
     Doc.Free;
