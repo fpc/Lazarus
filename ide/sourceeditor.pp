@@ -57,7 +57,7 @@ uses
   SynExportHTML, SynHighlighterPas,
   // Intf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
-  IDEWindowIntf, ProjectIntf,
+  IDEWindowIntf, ProjectIntf, MacroDefIntf,
   // IDE units
   IDEDialogs, LazarusIDEStrConsts, IDECommands, EditorOptions,
   EnvironmentOpts, WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,

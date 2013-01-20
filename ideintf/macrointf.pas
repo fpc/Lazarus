@@ -21,7 +21,7 @@ unit MacroIntf;
 interface
 
 uses
-  Classes, SysUtils, LazFileUtils;
+  Classes, SysUtils, LazFileUtils, MacroDefIntf;
 
 type
   { TIDEMacros - macros for paths and compiler settings }
@@ -41,6 +41,7 @@ type
     // file utility functions
     function CreateAbsoluteSearchPath(var SearchPath: string;
                                       const BaseDirectory: string): boolean;
+    procedure Add(NewMacro: TTransferMacro);virtual;
   end;
   
 var
@@ -134,6 +135,10 @@ begin
   if not SubstituteMacros(BaseDir) then exit(false);
   Result:=SubstituteMacros(SearchPath);
   SearchPath:=MinimizeSearchPath(LazFileUtils.CreateAbsoluteSearchPath(SearchPath,BaseDir));
+end;
+
+procedure TIDEMacros.Add(NewMacro: TTransferMacro);
+Begin
 end;
 
 end.

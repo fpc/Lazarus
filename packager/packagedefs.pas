@@ -48,7 +48,7 @@ uses
   Forms, FileProcs, FileUtil, AVL_Tree, LazConfigStorage, Laz2_XMLCfg,
   BasicCodeTools, CodeToolsCfgScript, DefineTemplates, CodeToolManager,
   CodeCache, CodeToolsStructs,
-  PropEdits, LazIDEIntf, MacroIntf, PackageIntf, IDEOptionsIntf,
+  PropEdits, LazIDEIntf, MacroIntf, MacroDefIntf, PackageIntf, IDEOptionsIntf,
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, 
   LazarusIDEStrConsts, IDEProcs, ComponentReg,
   TransferMacros, FileReferenceList, PublishModule;

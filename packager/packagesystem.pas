@@ -53,7 +53,7 @@ uses
   CodeToolManager, DirectoryCacher,
   // IDEIntf,
   SrcEditorIntf, IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
-  CompOptsIntf, LazIDEIntf,
+  CompOptsIntf, LazIDEIntf, MacroDefIntf,
   // package registration
   LazarusPackageIntf,
   // IDE

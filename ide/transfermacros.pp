@@ -46,33 +46,9 @@ unit TransferMacros;
 interface
 
 uses Classes, SysUtils, LCLProc, FileUtil, FileProcs, LazarusIDEStrConsts,
-  MacroIntf;
+  MacroIntf, MacroDefIntf;
 
 type
-  TTransferMacro = class;
-
-  TOnSubstitution = procedure(TheMacro: TTransferMacro; const MacroName: string;
-    var s:string; const Data: PtrInt; var Handled, Abort: boolean;
-    Depth: integer) of object;
-
-  TMacroFunction = function(const s: string; const Data: PtrInt;
-                            var Abort: boolean): string of object;
-  
-  TTransferMacroFlag = (
-    tmfInteractive
-    );
-  TTransferMacroFlags = set of TTransferMacroFlag;
-
-  TTransferMacro = class
-  public
-    Name: string;
-    Value: string;
-    Description: string;
-    MacroFunction: TMacroFunction;
-    Flags: TTransferMacroFlags;
-    constructor Create(AName, AValue, ADescription:string;
-      AMacroFunction: TMacroFunction; TheFlags: TTransferMacroFlags);
-  end;
 
   { TTransferMacroList }
 
@@ -130,6 +106,7 @@ type
     function StrHasMacros(const s: string): boolean; override;
     function SubstituteMacros(var s: string): boolean; override;
     function IsMacro(const Name: string): boolean; override;
+    procedure Add(NewMacro: TTransferMacro);override;
   end;
   
 var
@@ -163,18 +140,6 @@ procedure IncreaseBuildMacroChangeStamp;
 begin
   IncreaseCompilerParseStamp;
   CTIncreaseChangeStamp(BuildMacroChangeStamp);
-end;
-
-{ TTransferMacro }
-
-constructor TTransferMacro.Create(AName, AValue, ADescription:string;
-  AMacroFunction: TMacroFunction; TheFlags: TTransferMacroFlags);
-begin
-  Name:=AName;
-  Value:=AValue;
-  Description:=ADescription;
-  MacroFunction:=AMacroFunction;
-  Flags:=TheFlags;
 end;
 
 { TTransferMacroList }
@@ -576,6 +541,11 @@ end;
 function TLazIDEMacros.IsMacro(const Name: string): boolean;
 begin
   Result:=GlobalMacroList.FindByName(Name)<>nil;
+end;
+
+procedure TLazIDEMacros.Add(NewMacro: TTransferMacro);
+Begin
+  GlobalMacroList.Add(NewMacro);
 end;
 
 procedure InternalInit;

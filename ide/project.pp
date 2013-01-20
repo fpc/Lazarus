@@ -54,7 +54,7 @@ uses
   CodeToolsConfig, ExprEval, FileProcs, DefineTemplates,
   BasicCodeTools, CodeToolsCfgScript, CodeToolManager, CodeCache,
   // IDEIntf
-  PropEdits, CompOptsIntf, ProjectIntf, MacroIntf, LazIDEIntf,
+  PropEdits, CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, LazIDEIntf,
   // IDE
   CompOptsModes, ProjectResources, LazConf, W32Manifest, ProjectIcon,
   LazarusIDEStrConsts, CompilerOptions,

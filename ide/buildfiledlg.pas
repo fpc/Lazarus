@@ -9,7 +9,8 @@ uses
   Dialogs, Buttons, ExtCtrls, StdCtrls, FileUtil, ButtonPanel,
   BasicCodeTools,
   IDEHelpIntf,
-  IDEProcs, InputHistory, LazarusIDEStrConsts, EnvironmentOpts, TransferMacros;
+  IDEProcs, InputHistory, LazarusIDEStrConsts, EnvironmentOpts, TransferMacros,
+  MacroDefIntf;
 
 type
   TIDEDirective = (

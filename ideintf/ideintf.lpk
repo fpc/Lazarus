@@ -22,7 +22,7 @@
     <Description Value="IDEIntf - the interface units for the Lazarus IDE"/>
     <License Value="Modified LPGL2"/>
     <Version Major="1"/>
-    <Files Count="69">
+    <Files Count="70">
       <Item1>
         <Filename Value="actionseditor.lfm"/>
         <Type Value="LFM"/>
@@ -300,6 +300,10 @@
         <Filename Value="oifavoriteproperties.pas"/>
         <UnitName Value="OIFavouriteProperties"/>
       </Item69>
+      <Item70>
+        <Filename Value="macrodefintf.pas"/>
+        <UnitName Value="macrodefintf"/>
+      </Item70>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>
