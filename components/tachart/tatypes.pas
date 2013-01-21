@@ -43,7 +43,7 @@ type
   TCustomChart = class(TCustomControl)
   public
     procedure StyleChanged(Sender: TObject); virtual; abstract;
-    procedure ZoomFull; virtual; abstract;
+    procedure ZoomFull(AImmediateRecalc: Boolean = false); virtual; abstract;
   end;
 
   { TChartPen }

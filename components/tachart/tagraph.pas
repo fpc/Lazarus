@@ -311,7 +311,7 @@ type
     procedure SaveToFile(AClass: TRasterImageClass; AFileName: String);
     function SaveToImage(AClass: TRasterImageClass): TRasterImage;
     procedure StyleChanged(Sender: TObject); override;
-    procedure ZoomFull; override;
+    procedure ZoomFull(AImmediateRecalc: Boolean = false); override;
     property Drawer: IChartDrawer read FDrawer;
 
   public // Coordinate conversion
@@ -1538,8 +1538,10 @@ begin
   Result := (AY - FOffset.Y) / FScale.Y;
 end;
 
-procedure TChart.ZoomFull;
+procedure TChart.ZoomFull(AImmediateRecalc: Boolean);
 begin
+  if AImmediateRecalc then
+    FLogicalExtent := GetFullExtent;
   if not FIsZoomed then exit;
   HideReticule;
   FIsZoomed := false;
