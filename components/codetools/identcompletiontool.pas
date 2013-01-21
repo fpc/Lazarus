@@ -1300,8 +1300,19 @@ end;
 
 procedure TIdentCompletionTool.GatherUsefulIdentifiers(CleanPos: integer;
   const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
+
+  procedure AddPropertyProc(ProcName: string);
+  var
+    NewItem: TIdentifierListItem;
+  begin
+    NewItem:=TIdentifierListItem.Create(
+        icompExact,true,0,
+        CurrentIdentifierList.CreateIdentifier(ProcName),
+        0,nil,nil,ctnProcedure);
+    CurrentIdentifierList.Add(NewItem);
+  end;
+
 var
-  NewItem: TIdentifierListItem;
   PropertyName: String;
 begin
   while (CleanPos>1) and (IsIdentChar[Src[CleanPos-1]]) do dec(CleanPos);
@@ -1313,41 +1324,21 @@ begin
     ReadPriorAtom;
     if UpAtomIs('READ') then begin
       // add the default class completion 'read' specifier function
-      NewItem:=TIdentifierListItem.Create(
-          icompUnknown,true,0,
-          CurrentIdentifierList.CreateIdentifier(
-            BeautifyCodeOptions.PropertyReadIdentPrefix+PropertyName),
-          0,nil,nil,ctnProcedure);
-      CurrentIdentifierList.Add(NewItem);
+      AddPropertyProc(BeautifyCodeOptions.PropertyReadIdentPrefix+PropertyName);
     end;
     if UpAtomIs('WRITE') then begin
       // add the default class completion 'write' specifier function
-      NewItem:=TIdentifierListItem.Create(
-          icompUnknown,true,0,
-          CurrentIdentifierList.CreateIdentifier(
-            BeautifyCodeOptions.PropertyWriteIdentPrefix+PropertyName),
-          0,nil,nil,ctnProcedure);
-      CurrentIdentifierList.Add(NewItem);
+      AddPropertyProc(BeautifyCodeOptions.PropertyWriteIdentPrefix+PropertyName);
     end;
     if (UpAtomIs('READ') or UpAtomIs('WRITE'))
     and (Context.Tool.FindClassOrInterfaceNode(Context.Node)<>nil)
     then begin
       // add the default class completion 'read'/'write' specifier variable
-      NewItem:=TIdentifierListItem.Create(
-          icompUnknown,true,0,
-          CurrentIdentifierList.CreateIdentifier(
-            BeautifyCodeOptions.PrivateVariablePrefix+PropertyName),
-          0,nil,nil,ctnVarDefinition);
-      CurrentIdentifierList.Add(NewItem);
+      AddPropertyProc(BeautifyCodeOptions.PrivateVariablePrefix+PropertyName);
     end;
     if UpAtomIs('STORED') then begin
       // add the default class completion 'stored' specifier function
-      NewItem:=TIdentifierListItem.Create(
-          icompUnknown,true,0,
-          CurrentIdentifierList.CreateIdentifier(
-            PropertyName+BeautifyCodeOptions.PropertyStoredIdentPostfix),
-          0,nil,nil,ctnProcedure);
-      CurrentIdentifierList.Add(NewItem);
+      AddPropertyProc(PropertyName+BeautifyCodeOptions.PropertyStoredIdentPostfix);
     end;
   end;
 end;
