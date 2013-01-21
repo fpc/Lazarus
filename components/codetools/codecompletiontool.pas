@@ -7622,6 +7622,7 @@ begin
   ProcsCopied:=false;
   Bodies:=nil;
   try
+    // create a mapping in ClassProcs Data to ProcBodyNodes
     GuessMethodDefBodyMapping(ClassProcs,ProcBodyNodes);
 
     // replace body proc head(s) with class proc head(s)
@@ -7639,7 +7640,7 @@ begin
         // compare body and definition
         NewProcCode:=ExtractProcHead(DefNodeExt.Node,ProcAttrCopyDefToBody);
         OldProcCode:=ExtractProcHead(BodyNodeExt.Node,ProcAttrCopyDefToBody);
-        if CompareTextIgnoringSpace(NewProcCode,OldProcCode,false)<>0 then begin
+        if CompareTextIgnoringSpace(NewProcCode,OldProcCode,true)<>0 then begin
           // update body
           BodyProcHeadNode:=BodyNodeExt.Node.FirstChild;
           InsertPos:=BodyNodeExt.Node.StartPos;
@@ -7668,6 +7669,9 @@ end;
 
 procedure TCodeCompletionCodeTool.GuessMethodDefBodyMapping(ClassProcs,
   ProcBodyNodes: TAVLTree);
+{ ClassProcs and ProcBodyNodes are trees of TCodeTreeNodeExtension
+  ClassProcs Data points to mapped ProcBodyNodes nodes
+}
 
   procedure MapBodiesAndDefsByNameAndParams;
   var
@@ -8190,10 +8194,12 @@ begin
     // check for double defined methods in ClassProcs
     CheckForDoubleDefinedMethods;
 
-    // check for changed procs (existing proc bodies without definitions in the class)
+    // check for changed procs
     if not UpdateProcBodySignatures(ClassProcs,ProcBodyNodes,ProcAttrDefToBody,
       ProcsCopied)
     then exit;
+
+    // there are new methods
 
     CurNode:=FirstExistingProcBody;
     
