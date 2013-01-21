@@ -284,8 +284,9 @@ begin
                 // codetools skip comment
                 inc(CurCommentPos);
                 while (CurCommentPos<CommentEnd) do begin
-                  if (Src[CurCommentPos]=#3) and (CurCommentPos+1<CommentEnd)
-                  and (Src[CurCommentPos]='}') then begin
+                  if (Src[CurCommentPos]=#3)
+                  and (CurCommentPos+1<CommentEnd) and (Src[CurCommentPos+1]='}')
+                  then begin
                     inc(CurCommentPos,2);
                     break;
                   end;
