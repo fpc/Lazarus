@@ -160,6 +160,9 @@ begin
     ch := TLinkedChart(c).Chart;
     // Do not sync if the chart was never drawn yet.
     if (ch = nil) or (ch.LogicalExtent = EmptyExtent) then continue;
+    // ZoomFull is lazy by default, so full extent may be not recalculated yet.
+    if not ch.IsZoomed and (ch <> AChart) then
+      ch.LogicalExtent := ch.GetFullExtent;
     // An event loop will be broken since setting LogicalExtent to
     // the same value does not initiale the extent broadcast.
     case Mode of
