@@ -170,10 +170,21 @@ uses
 
 type
 
-  { TLegendItemOHLCLine }
-
   TLegendItemOHLCLine = class(TLegendItemLine)
   public
+    procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
+  end;
+
+  TLegendItemBoxAndWhiskers = class(TLegendItem)
+  strict private
+    FBoxBrush: TBrush;
+    FBoxPen: TPen;
+    FBoxWidth: Integer;
+    FMedianPen: TPen;
+    FWhiskersPen: TPen;
+    FWhiskersWidth: Integer;
+  public
+    constructor Create(ASeries: TBoxAndWhiskerSeries; const AText: String);
     procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
   end;
 
@@ -190,6 +201,46 @@ begin
   ADrawer.Line(x, y, x, y + 2);
   x += dx;
   ADrawer.Line(x, y, x, y - 2);
+end;
+
+{ TLegendItemBoxAndWhiskers }
+
+constructor TLegendItemBoxAndWhiskers.Create(
+  ASeries: TBoxAndWhiskerSeries; const AText: String);
+begin
+  FBoxBrush := ASeries.BoxBrush;
+  FBoxPen := ASeries.BoxPen;
+  FBoxWidth := ASeries.BoxWidth;
+  FMedianPen := ASeries.MedianPen;
+  FWhiskersPen := ASeries.WhiskersPen;
+  FWhiskersWidth := ASeries.WhiskersWidth;
+end;
+
+procedure TLegendItemBoxAndWhiskers.Draw(
+  ADrawer: IChartDrawer; const ARect: TRect);
+var
+  center: TPoint;
+  m, ww, bw: Integer;
+begin
+  inherited Draw(ADrawer, ARect);
+  center := (ARect.TopLeft + ARect.BottomRight) div 2;
+  ADrawer.Pen := FWhiskersPen;
+  ADrawer.SetBrushParams(bsClear, clTAColor);
+  m := MaxValue([FWhiskersWidth, FBoxWidth, 1]) * 2;
+  ww := (ARect.Bottom - ARect.Top) * FWhiskersWidth div m;
+  ADrawer.Line(ARect.Left, center.y, ARect.Right, center.y);
+  ADrawer.Line(ARect.Left, center.y - ww, ARect.Left, center.y + ww + 1);
+  ADrawer.Line(ARect.Right, center.y - ww, ARect.Right, center.y + ww + 1);
+  ADrawer.Pen := FBoxPen;
+  ADrawer.Brush:= FBoxBrush;
+  bw := (ARect.Bottom - ARect.Top) * FBoxWidth div m;
+  ADrawer.Rectangle(
+    (ARect.Left * 2 + ARect.Right) div 3, center.y - bw,
+    (ARect.Left + ARect.Right * 2) div 3, center.y + bw
+  );
+  ADrawer.Pen := FMedianPen;
+  bw -= IfThen(FBoxPen.Style = psClear, 0, (FBoxPen.Width + 1) div 2);
+  ADrawer.Line(center.x, center.y - bw, center.x, center.y + bw - 1);
 end;
 
 { TBubbleSeries }
@@ -433,7 +484,7 @@ end;
 
 procedure TBoxAndWhiskerSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  GetLegendItemsRect(AItems, BoxBrush);
+  AItems.Add(TLegendItemBoxAndWhiskers.Create(Self, LegendTextSingle));
 end;
 
 function TBoxAndWhiskerSeries.GetSeriesColor: TColor;
