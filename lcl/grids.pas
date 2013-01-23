@@ -109,7 +109,8 @@ type
     goCellHints,          // show individual cell hints
     goTruncCellHints,     // show cell hints if cell text is too long
     goCellEllipsis,       // show "..." if cell text is too long
-    goTabIgnoreAutoAdvance// BB move through cells with Tab key in aaRightDown fashion (like tables in wordprocessors)
+    goTabIgnoreAutoAdvance,// BB move through cells with Tab key in aaRightDown fashion (like tables in wordprocessors)
+    goIgnoreRowContentForAutoAddRows//BB Also add a row (if AutoAddRows in Options) if last row is empty
   );
   TGridOptions = set of TGridOption;
 
@@ -2469,6 +2470,8 @@ begin
   end else begin
     EditorHide;
   end;
+  if goIgnoreRowContentForAutoAddRows in Options then
+    FRowAutoInserted := False;
   VisualChange;
 end;
 
@@ -6631,7 +6634,7 @@ begin
           PreserveRowAutoInserted := True;
           Key:=0;
         end else if (goAutoAddRows in Options) and (Col>=GetLastVisibleColumn) then begin
-          if not IsEmptyRow(Row) then MoveSel(True, DeltaCol, DeltaRow);
+          if (goIgnoreRowContentForAutoAddRows in Options) or (not IsEmptyRow(Row)) then MoveSel(True, DeltaCol, DeltaRow);
           Key := 0;
           PreserveRowAutoInserted := True;
         end else
@@ -6915,6 +6918,19 @@ var
   NCol,NRow: Integer;
   SelOk: Boolean;
   i: Integer;
+
+  function IsEmptyRow(ARow: Integer): Boolean;
+  var
+    i: Integer;
+  begin
+    Result := False;
+    for i:=FixedCols to ColCount-1 do
+    if GetCells(i, FRow)<>'' then begin
+      Exit;
+    end;
+    Result := True;
+  end;
+
 begin
   // Reference
   if not Relative then begin
@@ -6927,14 +6943,13 @@ begin
     NRow:=FRow+DRow;
     if (goEditing in options) and (goAutoAddRows in options) then begin
       if (DRow=1) and (NRow>=RowCount) then begin
-        // If the last row has data, add a new row.
-        if not FRowAutoInserted then
-          for i:=FixedCols to ColCount-1 do
-            if GetCells(i, FRow)<>'' then begin
-              RowCount:=RowCount+1;
-              FRowAutoInserted:=True;
-              Break;
-            end;
+        // If the last row has data or goIgnoreRowContentForAutoAddRows is set, add a new row.
+        if (not FRowAutoInserted) then begin
+          if (goIgnoreRowContentForAutoAddRows in Options) or (not IsEmptyRow(FRow)) then begin
+            RowCount:=RowCount+1;
+            if not (goIgnoreRowContentForAutoAddRows in Options) then FRowAutoInserted:=True;
+          end;
+        end;
       end
       else if FRowAutoInserted and (DRow=-1) then begin
         RowCount:=RowCount-1;
@@ -8341,6 +8356,7 @@ begin
     cfg.SetValue(Path+'goDblClickAutoSize/value', goDblClickAutoSize in options);
     Cfg.SetValue(Path+'goSmoothScroll/value', goSmoothScroll in Options);
     Cfg.SetValue(Path+'goTabIgnoreAutoAdvance/value', goTabIgnoreAutoAdvance in Options);
+    Cfg.SetValue(Path+'goIgnoreRowContentForAutoAddRows/value', goIgnoreRowContentForAutoAddRows in Options);
   end;
 
   Cfg.SetValue('grid/saveoptions/position', soPosition in SaveOptions);
@@ -8485,6 +8501,7 @@ begin
       GetValue('goRelaxedRowSelect',goRelaxedRowSelect);
       GetValue('goDblClickAutoSize',goDblClickAutoSize);
       GetValue('goTabIgnoreAutoAdvance',goTabIgnoreAutoAdvance);
+      GetValue('goIgnoreRowContentForAutoAddRows',goIgnoreRowContentForAutoAddRows);
       if Version>=2 then begin
         GetValue('goSmoothScroll',goSmoothScroll);
       end;
