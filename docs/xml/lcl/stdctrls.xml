@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
   <package name="LCL">
     <!--
@@ -2428,7 +2428,10 @@ Assign an new string to replace the selected text.</descr>
       <element name="TListBox.Font" link="#LCL.Controls.TControl.Font"/>
       <element name="TListBox.IntegralHeight" link="#LCL.StdCtrls.TCustomListBox.IntegralHeight"/>
       <element name="TListBox.Items" link="#LCL.StdCtrls.TCustomListBox.Items"/>
-      <element name="TListBox.ItemHeight" link="#LCL.StdCtrls.TCustomListBox.ItemHeight"/>
+      <element name="TListBox.ItemHeight" link="#LCL.StdCtrls.TCustomListBox.ItemHeight"><short>Get or set the height of a single item</short><descr>Works on Windows.
+Implemented on Gtk2, but some Gtk versions ignores it.
+Qt and Carbon have not implemented it.</descr>
+      </element>
       <element name="TListBox.MultiSelect" link="#LCL.StdCtrls.TCustomListBox.MultiSelect"/>
       <element name="TListBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
       <element name="TListBox.OnClick" link="#LCL.Controls.TControl.OnClick"/>
