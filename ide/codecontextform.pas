@@ -51,6 +51,7 @@ type
   public
     Code: string;
     Hint: string;
+    NewBounds: TRect;
     CopyAllButton: TSpeedButton;
     destructor Destroy; override;
   end;
@@ -65,8 +66,10 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormPaint(Sender: TObject);
     procedure FormUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+    procedure OnSrcEditStatusChange(Sender: TObject);
   private
     FHints: TFPList; // list of TCodeContextItem
+    FIdleConnected: boolean;
     FLastParameterIndex: integer;
     FParamListBracketOpenCodeXYPos: TCodeXYPosition;
     FProcNameCodeXYPos: TCodeXYPosition;
@@ -80,6 +83,7 @@ type
     procedure DrawHints(var MaxWidth, MaxHeight: Integer; Draw: boolean);
     procedure CompleteParameters(DeclCode: string);
     procedure ClearHints;
+    procedure SetIdleConnected(AValue: boolean);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
@@ -95,6 +99,7 @@ type
     property SourceEditorTopIndex: integer read FSourceEditorTopIndex;
     property LastParameterIndex: integer read FLastParameterIndex;
     property Hints[Index: integer]: TCodeContextItem read GetHints;
+    property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
 
 var
@@ -144,6 +149,7 @@ procedure TCodeContextFrm.ApplicationIdle(Sender: TObject; var Done: Boolean);
 begin
   if not Visible then exit;
   UpdateHints;
+  IdleConnected:=false;
 end;
 
 procedure TCodeContextFrm.CopyAllBtnClick(Sender: TObject);
@@ -167,11 +173,14 @@ procedure TCodeContextFrm.FormCreate(Sender: TObject);
 begin
   FBtnWidth:=16;
   FHints:=TFPList.Create;
-  Application.AddOnIdleHandler(@ApplicationIdle);
+  IdleConnected:=true;
+  SourceEditorManagerIntf.RegisterChangeEvent(semEditorStatus,@OnSrcEditStatusChange);
 end;
 
 procedure TCodeContextFrm.FormDestroy(Sender: TObject);
 begin
+  SourceEditorManagerIntf.UnregisterChangeEvent(semEditorStatus,@OnSrcEditStatusChange);
+  IdleConnected:=false;
   ClearHints;
   FreeAndNil(FHints);
 end;
@@ -220,6 +229,11 @@ begin
   end;
 end;
 
+procedure TCodeContextFrm.OnSrcEditStatusChange(Sender: TObject);
+begin
+  IdleConnected:=true;
+end;
+
 procedure TCodeContextFrm.SetCodeContexts(const CodeContexts: TCodeContextInfo);
 begin
   FillChar(FProcNameCodeXYPos,SizeOf(FProcNameCodeXYPos),0);
@@ -258,6 +272,8 @@ var
   TokenStart: LongInt;
   KeepOpen: Boolean;
   BracketLevel: Integer;
+  i: Integer;
+  Item: TCodeContextItem;
 begin
   if not Visible then exit;
   
@@ -328,6 +344,13 @@ begin
       end;
     until false;
     KeepOpen:=true;
+
+    // show buttons
+    for i:=0 to FHints.Count-1 do begin
+      Item:=TCodeContextItem(FHints[i]);
+      Item.CopyAllButton.BoundsRect:=Item.NewBounds;
+      Item.CopyAllButton.Visible:=Item.NewBounds.Right>0;
+    end;
   finally
     if not KeepOpen then
       Hide
@@ -713,6 +736,7 @@ var
     Line: string;
     Item: TCodeContextItem;
     y: LongInt;
+    r: TRect;
   begin
     Item:=Hints[Index];
     Line:=Item.Hint;
@@ -823,8 +847,10 @@ var
       y:=ATextRect.Top;
       if LineHeight>FBtnWidth then
         inc(y,(LineHeight-FBtnWidth) div 2);
-      Item.CopyAllButton.SetBounds(AHintRect.Right-RightSpace-1,y,FBtnWidth,FBtnWidth);
-      Item.CopyAllButton.Visible:=true;
+      Item.NewBounds:=Bounds(AHintRect.Right-RightSpace-1,y,FBtnWidth,FBtnWidth);
+      r:=Item.CopyAllButton.BoundsRect;
+      if not CompareRect(@r,@Item.NewBounds) then
+        IdleConnected:=true;
     end;
     //debugln(['DrawHint ',y,' Line="',dbgstr(Line),'" LineHeight=',LineHeight,' ']);
   end;
@@ -1080,6 +1106,16 @@ begin
   for i:=0 to FHints.Count-1 do
     TObject(FHints[i]).Free;
   FHints.Clear;
+end;
+
+procedure TCodeContextFrm.SetIdleConnected(AValue: boolean);
+begin
+  if FIdleConnected=AValue then Exit;
+  FIdleConnected:=AValue;
+  if IdleConnected then
+    Application.AddOnIdleHandler(@ApplicationIdle)
+  else
+    Application.RemoveOnIdleHandler(@ApplicationIdle);
 end;
 
 procedure TCodeContextFrm.Notification(AComponent: TComponent;
