@@ -397,13 +397,27 @@ type
 
   { TvRectangle }
 
-  TvRectangle = class(TvEntityWithPenAndBrush)
+  TvRectangle = class(TvEntityWithPenBrushAndFont)
   public
+    // A text displayed in the center of the square, usually empty
+    Text: string;
     // Mandatory fields
     CX, CY, CZ: Double;
     // Corner rounding, zero indicates no rounding
     RX, RY: Double;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+  end;
+
+  { TvPolygon }
+
+  TvPolygon = class(TvEntityWithPenBrushAndFont)
+  public
+    // A text displayed in the center of the square, usually empty
+    Text: string;
+    // All points of the polygon
+    Points: array of T3DPoint;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
@@ -2033,6 +2047,37 @@ begin
   {$else}
   ADest.Rectangle(x1, y1, x2, y2)
   {$endif}
+end;
+
+{ TvPolygon }
+
+procedure TvPolygon.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo;
+  ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  lPoints: array of TPoint;
+  i: Integer;
+begin
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+
+  SetLength(lPoints, Length(Points));
+  for i := 0 to Length(Points)-1 do
+  begin
+    lPoints[i].X := CoordToCanvasX(Points[i].X);
+    lPoints[i].Y := CoordToCanvasY(Points[i].Y);
+  end;
+
+  ADest.Polygon(lPoints);
 end;
 
 { TvAlignedDimension }

@@ -104,6 +104,7 @@ type
     procedure ReadBLOCKS_BLOCK(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadBLOCKS_ENDBLK(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadENTITIES(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    function  ReadENTITIES_3DFACE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument; AOnlyCreate: Boolean = False): TvCircularArc;
     function  ReadENTITIES_LINE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument; AOnlyCreate: Boolean = False): TPath;
     function  ReadENTITIES_ARC(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument; AOnlyCreate: Boolean = False): TvCircularArc;
     function  ReadENTITIES_CIRCLE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument; AOnlyCreate: Boolean = False): TvCircle;
@@ -125,6 +126,7 @@ type
     function  ConvertDXFStringToUTF8(AStr: string): string;
     //
     function DXFColorIndexToFPColor(AColorIndex: Integer): TFPColor;
+    procedure DXFCoordsToFPCoords(AInX, AInY, AInZ: Double; out AOutX, AOutY, AOutZ: Double);
   public
     { General reading methods }
     Tokenizer: TDXFTokenizer;
@@ -944,6 +946,80 @@ begin
     CurToken := TDXFToken(ATokens.Items[i]);
     lEntity := InternalReadENTITIES(CurToken.StrValue, CurToken.Childs, AData, ADoc);
   end;
+end;
+
+function TvDXFVectorialReader.ReadENTITIES_3DFACE(ATokens: TDXFTokens;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument; AOnlyCreate: Boolean
+  ): TvCircularArc;
+var
+  CurToken: TDXFToken;
+  lPolygon: TvPolygon;
+  i: Integer;
+begin
+  Result := nil;
+  lPolygon := TvPolygon.Create;
+  SetLength(lPolygon.Points, 3);
+
+  for i := 0 to ATokens.Count - 1 do
+  begin
+    // Now read and process the item name
+    CurToken := TDXFToken(ATokens.Items[i]);
+
+    // Avoid an exception by previously checking if the conversion can be made
+    if CurToken.GroupCode in [10, 20, 30, 11, 21, 31, 12, 22, 32, 13, 23, 33, 70] then
+    begin
+      CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    end;
+
+    case CurToken.GroupCode of
+      10: lPolygon.Points[0].X := CurToken.FloatValue;
+      20: lPolygon.Points[0].Y := CurToken.FloatValue;
+      30: lPolygon.Points[0].Z := CurToken.FloatValue;
+      11: lPolygon.Points[1].X := CurToken.FloatValue;
+      21: lPolygon.Points[1].Y := CurToken.FloatValue;
+      31: lPolygon.Points[1].Z := CurToken.FloatValue;
+      12: lPolygon.Points[2].X := CurToken.FloatValue;
+      22: lPolygon.Points[2].Y := CurToken.FloatValue;
+      32: lPolygon.Points[2].Z := CurToken.FloatValue;
+      13:
+      begin
+        SetLength(lPolygon.Points, 4);
+        lPolygon.Points[3].X := CurToken.FloatValue;
+      end;
+      23:
+      begin
+        SetLength(lPolygon.Points, 4);
+        lPolygon.Points[3].Y := CurToken.FloatValue;
+      end;
+      33:
+      begin
+        SetLength(lPolygon.Points, 4);
+        lPolygon.Points[3].Z := CurToken.FloatValue;
+      end;
+      {
+        Invisible edge flags (optional; default = 0):
+        1 = First edge is invisible
+        2 = Second edge is invisible
+        4 = Third edge is invisible
+        8 = Fourth edge is invisible
+      }
+      70:
+      begin
+      end;
+    end;
+  end;
+
+  DXFCoordsToFPCoords(lPolygon.Points[0].X, lPolygon.Points[0].Y, lPolygon.Points[0].Z,
+    lPolygon.Points[0].X, lPolygon.Points[0].Y, lPolygon.Points[0].Z);
+  DXFCoordsToFPCoords(lPolygon.Points[1].X, lPolygon.Points[1].Y, lPolygon.Points[1].Z,
+    lPolygon.Points[1].X, lPolygon.Points[1].Y, lPolygon.Points[1].Z);
+  DXFCoordsToFPCoords(lPolygon.Points[2].X, lPolygon.Points[2].Y, lPolygon.Points[2].Z,
+    lPolygon.Points[2].X, lPolygon.Points[2].Y, lPolygon.Points[2].Z);
+  if Length(lPolygon.Points) >= 4 then
+    DXFCoordsToFPCoords(lPolygon.Points[3].X, lPolygon.Points[3].Y, lPolygon.Points[3].Z,
+      lPolygon.Points[3].X, lPolygon.Points[3].Y, lPolygon.Points[3].Z);
+
+  AData.AddEntity(lPolygon);
 end;
 
 function TvDXFVectorialReader.ReadENTITIES_LINE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument; AOnlyCreate: Boolean = False): TPath;
@@ -1920,6 +1996,7 @@ function TvDXFVectorialReader.InternalReadENTITIES(ATokenStr: string;
 begin
   Result := nil;
   case ATokenStr of
+    '3DFACE':   Result := ReadENTITIES_3DFACE(ATokens, AData, ADoc, AOnlyCreate);
     'ARC':      Result := ReadENTITIES_ARC(ATokens, AData, ADoc, AOnlyCreate);
     'CIRCLE':   Result := ReadENTITIES_CIRCLE(ATokens, AData, ADoc, AOnlyCreate);
     'DIMENSION':Result := ReadENTITIES_DIMENSION(ATokens, AData, ADoc, AOnlyCreate);
@@ -1980,6 +2057,14 @@ begin
     Result := AUTOCAD_COLOR_PALETTE[AColorIndex]
   else
     raise Exception.Create(Format('[TvDXFVectorialReader.DXFColorIndexToFPVColor] Invalid DXF Color Index: %d', [AColorIndex]));
+end;
+
+procedure TvDXFVectorialReader.DXFCoordsToFPCoords(AInX, AInY, AInZ: Double;
+  out AOutX, AOutY, AOutZ: Double);
+begin
+  AOutX := AInX - DOC_OFFSET.X;
+  AOutY := AInY - DOC_OFFSET.Y;
+  AOutZ := AInZ;
 end;
 
 constructor TvDXFVectorialReader.Create;
