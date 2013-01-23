@@ -208,6 +208,7 @@ end;
 constructor TLegendItemBoxAndWhiskers.Create(
   ASeries: TBoxAndWhiskerSeries; const AText: String);
 begin
+  inherited Create(AText);
   FBoxBrush := ASeries.BoxBrush;
   FBoxPen := ASeries.BoxPen;
   FBoxWidth := ASeries.BoxWidth;
@@ -228,9 +229,9 @@ begin
   ADrawer.SetBrushParams(bsClear, clTAColor);
   m := MaxValue([FWhiskersWidth, FBoxWidth, 1]) * 2;
   ww := (ARect.Bottom - ARect.Top) * FWhiskersWidth div m;
-  ADrawer.Line(ARect.Left, center.y, ARect.Right, center.y);
+  ADrawer.Line(ARect.Left, center.y, ARect.Right - 1, center.y);
   ADrawer.Line(ARect.Left, center.y - ww, ARect.Left, center.y + ww + 1);
-  ADrawer.Line(ARect.Right, center.y - ww, ARect.Right, center.y + ww + 1);
+  ADrawer.Line(ARect.Right - 1, center.y - ww, ARect.Right - 1, center.y + ww + 1);
   ADrawer.Pen := FBoxPen;
   ADrawer.Brush:= FBoxBrush;
   bw := (ARect.Bottom - ARect.Top) * FBoxWidth div m;
@@ -240,7 +241,7 @@ begin
   );
   ADrawer.Pen := FMedianPen;
   bw -= IfThen(FBoxPen.Style = psClear, 0, (FBoxPen.Width + 1) div 2);
-  ADrawer.Line(center.x, center.y - bw, center.x, center.y + bw - 1);
+  ADrawer.Line(center.x, center.y - bw, center.x, center.y + bw);
 end;
 
 { TBubbleSeries }
