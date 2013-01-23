@@ -348,6 +348,12 @@ type
     FIDTFoundMethods: TAVLTree;// tree of TCodeTreeNodeExtension Txt=clean text
     FIDTTreeOfUnitFiles: TAVLTree;// tree of TUnitFileInfo
     procedure AddToTreeOfUnitFileInfo(const AFilename: string);
+    procedure AddBaseConstant(const BaseName: PChar);
+    procedure AddBaseType(const BaseName: PChar);
+    procedure AddCompilerFunction(const AProcName, AParameterList,
+      AResultType: PChar);
+    procedure AddCompilerProcedure(const AProcName, AParameterList: PChar);
+    procedure AddKeyWord(aKeyWord: string);
   protected
     CurrentIdentifierList: TIdentifierList;
     CurrentIdentifierContexts: TCodeContextInfo;
@@ -381,6 +387,7 @@ type
     function CollectMethods(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
     function IsInCompilerDirective(CursorPos: TCodeXYPosition): boolean;
+    procedure AddCompilerDirectiveMacros(Directive: string);
   public
     function GatherAvailableUnitNames(const CursorPos: TCodeXYPosition;
                              var IdentifierList: TIdentifierList): Boolean;
@@ -399,6 +406,10 @@ type
   end;
   
 implementation
+
+const
+  CompilerFuncHistoryIndex = 10;
+  CompilerFuncLevel = 10;
 
 function CompareIdentListItems(Data1, Data2: Pointer): integer;
 var
@@ -799,6 +810,97 @@ begin
   AddToTreeOfUnitFiles(FIDTTreeOfUnitFiles,AFilename,false);
 end;
 
+procedure TIdentCompletionTool.AddCompilerProcedure(const AProcName, AParameterList: PChar);
+var
+  NewItem: TIdentifierListItem;
+begin
+  //DebugLn(['AddCompilerProcedure ',AProcName,' ',ilcfStartOfStatement in CurrentIdentifierList.ContextFlags]);
+  if not (ilcfStartOfStatement in CurrentIdentifierList.ContextFlags) then exit;
+  if not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) then exit;
+
+  NewItem:=TIdentifierListItem.Create(
+      icompUnknown,
+      false,
+      CompilerFuncHistoryIndex,
+      AProcName,
+      CompilerFuncLevel,
+      nil,
+      nil,
+      ctnProcedure);
+  NewItem.ParamTypeList:=AParameterList;
+  NewItem.ParamNameList:=AParameterList;
+  NewItem.Flags:=NewItem.Flags+[iliParamTypeListValid,iliParamNameListValid];
+  CurrentIdentifierList.Add(NewItem);
+end;
+
+procedure TIdentCompletionTool.AddKeyWord(aKeyWord: string);
+var
+  NewItem: TIdentifierListItem;
+begin
+  NewItem:=TIdentifierListItem.Create(
+      icompExact,false,0,
+      CurrentIdentifierList.CreateIdentifier(aKeyWord),
+      1000,nil,nil,ctnNone);
+  include(NewItem.Flags,iliKeyword);
+  CurrentIdentifierList.Add(NewItem);
+end;
+
+procedure TIdentCompletionTool.AddCompilerFunction(const AProcName, AParameterList,
+  AResultType: PChar);
+var
+  NewItem: TIdentifierListItem;
+begin
+  if not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) then exit;
+
+  NewItem:=TIdentifierListItem.Create(
+      icompUnknown,
+      false,
+      CompilerFuncHistoryIndex,
+      AProcName,
+      CompilerFuncLevel,
+      nil,
+      nil,
+      ctnProcedure);
+  NewItem.ParamTypeList:=AParameterList;
+  NewItem.ParamNameList:=AParameterList;
+  NewItem.ResultType:=AResultType;
+  NewItem.Flags:=NewItem.Flags+[iliParamTypeListValid,iliParamNameListValid,
+                         iliIsFunction,iliIsFunctionValid,iliResultTypeValid];
+  CurrentIdentifierList.Add(NewItem);
+end;
+
+procedure TIdentCompletionTool.AddBaseType(const BaseName: PChar);
+var
+  NewItem: TIdentifierListItem;
+begin
+  NewItem:=TIdentifierListItem.Create(
+      icompUnknown,
+      false,
+      CompilerFuncHistoryIndex,
+      BaseName,
+      CompilerFuncLevel,
+      nil,
+      nil,
+      ctnTypeDefinition);
+  CurrentIdentifierList.Add(NewItem);
+end;
+
+procedure TIdentCompletionTool.AddBaseConstant(const BaseName: PChar);
+var
+  NewItem: TIdentifierListItem;
+begin
+  NewItem:=TIdentifierListItem.Create(
+      icompUnknown,
+      false,
+      CompilerFuncHistoryIndex,
+      BaseName,
+      CompilerFuncLevel,
+      nil,
+      nil,
+      ctnConstant);
+  CurrentIdentifierList.Add(NewItem);
+end;
+
 function TIdentCompletionTool.CollectAllIdentifiers(
   Params: TFindDeclarationParams; const FoundContext: TFindContext
   ): TIdentifierFoundResult;
@@ -1046,9 +1148,6 @@ end;
 procedure TIdentCompletionTool.GatherPredefinedIdentifiers(CleanPos: integer;
   const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
 // Add predefined identifiers
-const
-  CompilerFuncHistoryIndex = 10;
-  CompilerFuncLevel = 10;
 
   function StatementLevel: integer;
   var
@@ -1064,85 +1163,6 @@ const
     if ANode=nil then Result:=0;
   end;
   
-  procedure AddCompilerProcedure(const AProcName, AParameterList: PChar);
-  var
-    NewItem: TIdentifierListItem;
-  begin
-    //DebugLn(['AddCompilerProcedure ',AProcName,' ',ilcfStartOfStatement in CurrentIdentifierList.ContextFlags]);
-    if not (ilcfStartOfStatement in CurrentIdentifierList.ContextFlags) then exit;
-    if not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) then exit;
-
-    NewItem:=TIdentifierListItem.Create(
-        icompUnknown,
-        false,
-        CompilerFuncHistoryIndex,
-        AProcName,
-        CompilerFuncLevel,
-        nil,
-        nil,
-        ctnProcedure);
-    NewItem.ParamTypeList:=AParameterList;
-    NewItem.ParamNameList:=AParameterList;
-    NewItem.Flags:=NewItem.Flags+[iliParamTypeListValid,iliParamNameListValid];
-    CurrentIdentifierList.Add(NewItem);
-  end;
-  
-  procedure AddCompilerFunction(const AProcName, AParameterList,
-    AResultType: PChar);
-  var
-    NewItem: TIdentifierListItem;
-  begin
-    if not (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) then exit;
-
-    NewItem:=TIdentifierListItem.Create(
-        icompUnknown,
-        false,
-        CompilerFuncHistoryIndex,
-        AProcName,
-        CompilerFuncLevel,
-        nil,
-        nil,
-        ctnProcedure);
-    NewItem.ParamTypeList:=AParameterList;
-    NewItem.ParamNameList:=AParameterList;
-    NewItem.ResultType:=AResultType;
-    NewItem.Flags:=NewItem.Flags+[iliParamTypeListValid,iliParamNameListValid,
-                           iliIsFunction,iliIsFunctionValid,iliResultTypeValid];
-    CurrentIdentifierList.Add(NewItem);
-  end;
-
-  procedure AddBaseType(const BaseName: PChar);
-  var
-    NewItem: TIdentifierListItem;
-  begin
-    NewItem:=TIdentifierListItem.Create(
-        icompUnknown,
-        false,
-        CompilerFuncHistoryIndex,
-        BaseName,
-        CompilerFuncLevel,
-        nil,
-        nil,
-        ctnTypeDefinition);
-    CurrentIdentifierList.Add(NewItem);
-  end;
-
-  procedure AddBaseConstant(const BaseName: PChar);
-  var
-    NewItem: TIdentifierListItem;
-  begin
-    NewItem:=TIdentifierListItem.Create(
-        icompUnknown,
-        false,
-        CompilerFuncHistoryIndex,
-        BaseName,
-        CompilerFuncLevel,
-        nil,
-        nil,
-        ctnConstant);
-    CurrentIdentifierList.Add(NewItem);
-  end;
-
   procedure AddSystemUnit(const AnUnitName: PChar);
   var
     NewItem: TIdentifierListItem;
@@ -1975,44 +1995,6 @@ end;
 
 function TIdentCompletionTool.IsInCompilerDirective(CursorPos: TCodeXYPosition
   ): boolean;
-
-  procedure Key(const DirectiveName: string);
-  var
-    NewItem: TIdentifierListItem;
-  begin
-    NewItem:=TIdentifierListItem.Create(
-        icompExact,false,0,
-        CurrentIdentifierList.CreateIdentifier(DirectiveName),
-        1000,nil,nil,ctnNone);
-    include(NewItem.Flags,iliKeyword);
-    CurrentIdentifierList.Add(NewItem);
-  end;
-
-  procedure AddMacros;
-  var
-    Macros: TStringToStringTree;
-    StrItem: PStringToStringTreeItem;
-
-    procedure Add(e: TExpressionEvaluator);
-    var
-      i: Integer;
-    begin
-      for i:=0 to e.Count-1 do
-        Macros[e.Names(i)]:=e.Values(i);
-    end;
-
-  begin
-    Macros:=TStringToStringTree.Create(false);
-    try
-      Add(Scanner.InitialValues);
-      Add(Scanner.Values);
-      for StrItem in Macros do
-        Key(StrItem^.Name);
-    finally
-      Macros.Free;
-    end;
-  end;
-
 var
   Line: String;
   p: Integer;
@@ -2042,85 +2024,85 @@ begin
       or ((CursorPos.X>=InnerStart) and (InnerStart<=length(Line))
           and (CursorPos.X<=InnerStart+GetIdentLen(@Line[InnerStart])))
       then begin
-        Key('ALIGN');
-        Key('ALIGNASSERTIONS');
-        Key('ASMMODE');
-        Key('ASSERTIONS');
-        Key('BITPACKING');
-        Key('BOOLEVAL');
-        Key('CALLING');
-        Key('CHECKPOINTER');
-        Key('CODEALIGN');
-        Key('COPERATORS');
-        Key('DEBUGINFO');
-        Key('DEFINE');
-        Key('ELIFC');
-        Key('ELSE');
-        Key('ELSEC');
-        Key('ELSEIF');
-        Key('ENDC');
-        Key('ENDIF');
-        Key('ERROR');
-        Key('ERRORC');
-        Key('EXTENDEDSYNTAX');
-        Key('FATAL');
-        Key('FPUTYPE');
-        Key('GOTO');
-        Key('HINT');
-        Key('HINTS');
-        Key('IFC');
-        Key('IFDEF');
-        Key('IFEND');
-        Key('IFNDEF');
-        Key('IFOPT');
-        Key('IMPLICITEXCEPTIONS');
-        Key('INCLUDE');
-        Key('INCLUDEPATH');
-        Key('INFO');
-        Key('INLINE');
-        Key('INTERFACES');
-        Key('IOCHECKS');
-        Key('LINK');
-        Key('LINKFRAMEWORK');
-        Key('LINKLIB');
-        Key('LOCALSYMBOLS');
-        Key('LONGSTRINGS');
-        Key('MACRO');
-        Key('MAXFPUREGISTERS');
-        Key('MESSAGE');
-        Key('MINENUMSIZE');
-        Key('MMX');
-        Key('MODE');
-        Key('MODESWITCH');
-        Key('NAMESPACE');
-        Key('NOTE');
-        Key('NOTES');
-        Key('OBJECTCHECKS');
-        Key('OPENSTRINGS');
-        Key('OPTIMIZATION');
-        Key('OUTPUT_FORMAT');
-        Key('OV');
-        Key('OVERFLOWCHECKS');
-        Key('PACKENUM');
-        Key('PACKRECORDS');
-        Key('PACKSET');
-        Key('POINTERMATH');
-        Key('POP');
-        Key('PUSH');
-        Key('RANGECHECKS');
-        Key('REFERENCEINFO');
-        Key('SETC');
-        Key('STACKFRAMES');
-        Key('STOP');
-        Key('THREADING');
-        Key('TYPEADDRESS');
-        Key('TYPEINFO');
-        Key('UNDEF');
-        Key('VARSTRINGCHECKS');
-        Key('WAIT');
-        Key('WARNING');
-        Key('WARNINGS');
-        Key('WRITABLECONST');
+        AddKeyWord('ALIGN');
+        AddKeyWord('ALIGNASSERTIONS');
+        AddKeyWord('ASMMODE');
+        AddKeyWord('ASSERTIONS');
+        AddKeyWord('BITPACKING');
+        AddKeyWord('BOOLEVAL');
+        AddKeyWord('CALLING');
+        AddKeyWord('CHECKPOINTER');
+        AddKeyWord('CODEALIGN');
+        AddKeyWord('COPERATORS');
+        AddKeyWord('DEBUGINFO');
+        AddKeyWord('DEFINE');
+        AddKeyWord('ELIFC');
+        AddKeyWord('ELSE');
+        AddKeyWord('ELSEC');
+        AddKeyWord('ELSEIF');
+        AddKeyWord('ENDC');
+        AddKeyWord('ENDIF');
+        AddKeyWord('ERROR');
+        AddKeyWord('ERRORC');
+        AddKeyWord('EXTENDEDSYNTAX');
+        AddKeyWord('FATAL');
+        AddKeyWord('FPUTYPE');
+        AddKeyWord('GOTO');
+        AddKeyWord('HINT');
+        AddKeyWord('HINTS');
+        AddKeyWord('IFC');
+        AddKeyWord('IFDEF');
+        AddKeyWord('IFEND');
+        AddKeyWord('IFNDEF');
+        AddKeyWord('IFOPT');
+        AddKeyWord('IMPLICITEXCEPTIONS');
+        AddKeyWord('INCLUDE');
+        AddKeyWord('INCLUDEPATH');
+        AddKeyWord('INFO');
+        AddKeyWord('INLINE');
+        AddKeyWord('INTERFACES');
+        AddKeyWord('IOCHECKS');
+        AddKeyWord('LINK');
+        AddKeyWord('LINKFRAMEWORK');
+        AddKeyWord('LINKLIB');
+        AddKeyWord('LOCALSYMBOLS');
+        AddKeyWord('LONGSTRINGS');
+        AddKeyWord('MACRO');
+        AddKeyWord('MAXFPUREGISTERS');
+        AddKeyWord('MESSAGE');
+        AddKeyWord('MINENUMSIZE');
+        AddKeyWord('MMX');
+        AddKeyWord('MODE');
+        AddKeyWord('MODESWITCH');
+        AddKeyWord('NAMESPACE');
+        AddKeyWord('NOTE');
+        AddKeyWord('NOTES');
+        AddKeyWord('OBJECTCHECKS');
+        AddKeyWord('OPENSTRINGS');
+        AddKeyWord('OPTIMIZATION');
+        AddKeyWord('OUTPUT_FORMAT');
+        AddKeyWord('OV');
+        AddKeyWord('OVERFLOWCHECKS');
+        AddKeyWord('PACKENUM');
+        AddKeyWord('PACKRECORDS');
+        AddKeyWord('PACKSET');
+        AddKeyWord('POINTERMATH');
+        AddKeyWord('POP');
+        AddKeyWord('PUSH');
+        AddKeyWord('RANGECHECKS');
+        AddKeyWord('REFERENCEINFO');
+        AddKeyWord('SETC');
+        AddKeyWord('STACKFRAMES');
+        AddKeyWord('STOP');
+        AddKeyWord('THREADING');
+        AddKeyWord('TYPEADDRESS');
+        AddKeyWord('TYPEINFO');
+        AddKeyWord('UNDEF');
+        AddKeyWord('VARSTRINGCHECKS');
+        AddKeyWord('WAIT');
+        AddKeyWord('WARNING');
+        AddKeyWord('WARNINGS');
+        AddKeyWord('WRITABLECONST');
       end else if InnerStart<=length(Line) then begin
         Directive:=lowercase(GetIdentifier(@Line[InnerStart]));
         if (Directive='ifdef')
@@ -2129,52 +2111,151 @@ begin
         or (Directive='elseif')
         or (Directive='ifc')
         then begin
-          AddMacros;
+          AddCompilerDirectiveMacros(Directive);
         end else if Directive='modeswitch' then begin
           for ms:=low(TCompilerModeSwitch) to high(TCompilerModeSwitch) do
-            Key(lowercase(CompilerModeSwitchNames[ms]));
+            AddKeyWord(lowercase(CompilerModeSwitchNames[ms]));
         end else if Directive='mode' then begin
           for cm:=low(TCompilerMode) to high(TCompilerMode) do
-            Key(lowercase(CompilerModeNames[cm]));
+            AddKeyWord(lowercase(CompilerModeNames[cm]));
         end else if Directive='warn' then begin
-          Key('constructing_abstract');
-          Key('implicit_variants');
-          Key('no_retval');
-          Key('symbol_deprecated');
-          Key('symbol_experimental');
-          Key('symbol_library');
-          Key('symbol_platform');
-          Key('symbol_unimplemented');
-          Key('unit_deprecated');
-          Key('unit_experimental');
-          Key('unit_library');
-          Key('unit_platform');
-          Key('unit_unimplemented');
-          Key('zero_nil_compat');
-          Key('implicit_string_cast');
-          Key('implicit_variants');
-          Key('no_retval');
-          Key('symbol_deprecated');
-          Key('symbol_experimental');
-          Key('symbol_library');
-          Key('symbol_platform');
-          Key('symbol_unimplemented');
-          Key('unit_deprecated');
-          Key('unit_experimental');
-          Key('unit_library');
-          Key('unit_platform');
-          Key('unit_unimplemented');
-          Key('zero_nil_compat');
-          Key('implicit_string_cast');
-          Key('implicit_string_cast_loss');
-          Key('explicit_string_cast');
-          Key('explicit_string_cast_loss');
-          Key('cvt_narrowing_string_lost');
+          AddKeyWord('constructing_abstract');
+          AddKeyWord('implicit_variants');
+          AddKeyWord('no_retval');
+          AddKeyWord('symbol_deprecated');
+          AddKeyWord('symbol_experimental');
+          AddKeyWord('symbol_library');
+          AddKeyWord('symbol_platform');
+          AddKeyWord('symbol_unimplemented');
+          AddKeyWord('unit_deprecated');
+          AddKeyWord('unit_experimental');
+          AddKeyWord('unit_library');
+          AddKeyWord('unit_platform');
+          AddKeyWord('unit_unimplemented');
+          AddKeyWord('zero_nil_compat');
+          AddKeyWord('implicit_string_cast');
+          AddKeyWord('implicit_variants');
+          AddKeyWord('no_retval');
+          AddKeyWord('symbol_deprecated');
+          AddKeyWord('symbol_experimental');
+          AddKeyWord('symbol_library');
+          AddKeyWord('symbol_platform');
+          AddKeyWord('symbol_unimplemented');
+          AddKeyWord('unit_deprecated');
+          AddKeyWord('unit_experimental');
+          AddKeyWord('unit_library');
+          AddKeyWord('unit_platform');
+          AddKeyWord('unit_unimplemented');
+          AddKeyWord('zero_nil_compat');
+          AddKeyWord('implicit_string_cast');
+          AddKeyWord('implicit_string_cast_loss');
+          AddKeyWord('explicit_string_cast');
+          AddKeyWord('explicit_string_cast_loss');
+          AddKeyWord('cvt_narrowing_string_lost');
         end;
       end;
       exit;
     end;
     p:=EndPos;
+  end;
+end;
+
+procedure TIdentCompletionTool.AddCompilerDirectiveMacros(Directive: string);
+var
+  Macros: TStringToStringTree;
+  StrItem: PStringToStringTreeItem;
+  CodeBufs: TAVLTree;
+  AVLNode: TAVLTreeNode;
+
+  procedure Add(e: TExpressionEvaluator);
+  var
+    i: Integer;
+  begin
+    for i:=0 to e.Count-1 do
+      Macros[e.Names(i)]:=e.Values(i);
+  end;
+
+  procedure AddExprWords(CodeBuf: TCodeBuffer);
+  var
+    CurSrc: String;
+    p: Integer;
+    sp: PChar;
+    NamePos: PChar;
+    EndP: PChar;
+    CurName: String;
+  begin
+    p:=1;
+    CurSrc:=CodeBuf.Source;
+    while p<=length(CurSrc) do begin
+      p:=FindNextCompilerDirective(CurSrc,p,Scanner.NestedComments);
+      if p>length(CurSrc) then break;
+      sp:=@CurSrc[p];
+      p:=FindCommentEnd(CurSrc,p,Scanner.NestedComments);
+      // skip comment start
+      if sp^='{' then inc(sp,2)
+      else if sp^='(' then inc(sp,3);
+      if not IsIdentStartChar[sp^] then break;
+      NamePos:=sp;
+      inc(sp,GetIdentLen(NamePos));
+      if sp^=#0 then break;
+      if (CompareIdentifiers(NamePos,'ifdef')=0)
+      or (CompareIdentifiers(NamePos,'ifndef')=0)
+      or (CompareIdentifiers(NamePos,'if')=0)
+      or (CompareIdentifiers(NamePos,'ifc')=0)
+      or (CompareIdentifiers(NamePos,'elseif')=0)
+      or (CompareIdentifiers(NamePos,'elifc')=0)
+      or (CompareIdentifiers(NamePos,'define')=0)
+      or (CompareIdentifiers(NamePos,'unde')=0)
+      or (CompareIdentifiers(NamePos,'setc')=0)
+      then begin
+        // add all identifiers in directive
+        if p>length(CurSrc) then
+          EndP:=PChar(CurSrc)+length(CurSrc)
+        else
+          EndP:=@CurSrc[p];
+        while (sp<EndP) do begin
+          if IsIdentStartChar[sp^] then begin
+            CurName:=GetIdentifier(sp);
+            if (CompareIdentifiers(sp,'defined')<>0)
+            and (CompareIdentifiers(sp,'undefined')<>0) then begin
+              if not Macros.Contains(CurName) then begin
+                Macros[CurName]:='';
+              end;
+            end;
+            inc(sp,length(CurName));
+          end else begin
+            inc(sp);
+          end;
+        end;
+      end;
+    end;
+  end;
+
+begin
+  CodeBufs:=nil;
+  Macros:=TStringToStringTree.Create(false);
+  try
+    Add(Scanner.InitialValues);
+    Add(Scanner.Values);
+    if (Directive='if') or (Directive='elseif')
+    or (Directive='ifc') or (Directive='elifc') then begin
+      AddCompilerFunction('defined','','boolean');
+      AddCompilerFunction('undefined','','boolean');
+    end;
+
+    // add all words of all directives in unit
+    CodeBufs:=Scanner.CreateTreeOfSourceCodes;
+    AVLNode:=CodeBufs.FindLowest;
+    while AVLNode<>nil do begin
+      AddExprWords(TCodeBuffer(AVLNode.Data));
+      AVLNode:=CodeBufs.FindSuccessor(AVLNode);
+    end;
+
+    for StrItem in Macros do
+      AddKeyWord(StrItem^.Name);
+  finally
+    CodeBufs.Free;
+    Macros.Free;
   end;
 end;
 
