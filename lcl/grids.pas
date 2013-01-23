@@ -108,7 +108,8 @@ type
     goDontScrollPartCell, // clicking partially visible cells will not scroll
     goCellHints,          // show individual cell hints
     goTruncCellHints,     // show cell hints if cell text is too long
-    goCellEllipsis        // show "..." if cell text is too long
+    goCellEllipsis,       // show "..." if cell text is too long
+    goTabIgnoreAutoAdvance// BB move through cells with Tab key in aaRightDown fashion (like tables in wordprocessors)
   );
   TGridOptions = set of TGridOption;
 
@@ -6564,6 +6565,7 @@ var
   R: TRect;
   Relaxed: Boolean;
   DeltaCol,DeltaRow: Integer;
+  SavedAutoAdvance: TAutoAdvance;
 
   procedure MoveSel(Rel: Boolean; aCol,aRow: Integer);
   begin
@@ -6620,6 +6622,9 @@ begin
   case Key of
     VK_TAB:
       if goTabs in Options then begin
+        SavedAutoAdvance := FAutoAdvance;
+        //Allow Tab to browse cells in aaRightDown fashion
+        if (goTabIgnoreAutoAdvance in Options) then FAutoAdvance := aaRightDown;
         if GetDeltaMoveNext(Sh, DeltaCol,DeltaRow) then begin
           Sh := False;
           MoveSel(True, DeltaCol, DeltaRow);
@@ -6636,7 +6641,8 @@ begin
            ((not sh) and (Col>=GetLastVisibleColumn)) then
           TabCheckEditorKey
         else
-          Key := 0
+          Key := 0;
+        FAutoAdvance := SavedAutoAdvance;
       end else
         TabCheckEditorKey;
     VK_LEFT:
@@ -8334,6 +8340,7 @@ begin
     cfg.SetValue(Path+'goRelaxedRowSelect/value', goRelaxedRowSelect in options);
     cfg.SetValue(Path+'goDblClickAutoSize/value', goDblClickAutoSize in options);
     Cfg.SetValue(Path+'goSmoothScroll/value', goSmoothScroll in Options);
+    Cfg.SetValue(Path+'goTabIgnoreAutoAdvance/value', goTabIgnoreAutoAdvance in Options);
   end;
 
   Cfg.SetValue('grid/saveoptions/position', soPosition in SaveOptions);
@@ -8477,6 +8484,7 @@ begin
       GetValue('goColSpanning', goColSpanning);
       GetValue('goRelaxedRowSelect',goRelaxedRowSelect);
       GetValue('goDblClickAutoSize',goDblClickAutoSize);
+      GetValue('goTabIgnoreAutoAdvance',goTabIgnoreAutoAdvance);
       if Version>=2 then begin
         GetValue('goSmoothScroll',goSmoothScroll);
       end;
