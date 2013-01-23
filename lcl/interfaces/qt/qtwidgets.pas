@@ -712,6 +712,8 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getClientBounds: TRect; override;
     function getText: WideString; override;
+    procedure preferredSize(var PreferredWidth, PreferredHeight: integer;
+      WithThemeSpace: Boolean); override;
     procedure setText(const W: WideString); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     property GroupBoxType: TQtGroupBoxType read FGroupBoxType write FGroupBoxType;
@@ -6824,7 +6826,6 @@ var
 begin
   if ALayout = nil then
     exit;
-
   QWidget_getContentsMargins(AWidget,@LeftMargin, @TopMargin, @RightMargin, @BottomMargin);
 
   {if contentsMargins TopMargin is huge then we must rethink about TopMargin
@@ -6895,8 +6896,8 @@ begin
   inherited AttachEvents;
   if FCentralWidget <> nil then
   begin
-    FCWEventHook := QObject_hook_create(FCentralWidget);
-    QObject_hook_hook_events(FCWEventHook, @EventFilter);
+    // FCWEventHook := QObject_hook_create(FCentralWidget);
+    // QObject_hook_hook_events(FCWEventHook, @EventFilter);
   end;
 end;
 
@@ -6904,8 +6905,8 @@ procedure TQtGroupBox.DetachEvents;
 begin
   if FCWEventHook <> nil then
   begin
-    QObject_hook_destroy(FCWEventHook);
-    FCWEventHook := nil;
+    // QObject_hook_destroy(FCWEventHook);
+    // FCWEventHook := nil;
   end;
   inherited DetachEvents;
 end;
@@ -6930,9 +6931,6 @@ begin
 
   if (Sender = FCentralWidget) then
   begin
-    if (QEvent_type(Event) = QEventResize) and
-      LCLObject.ClientRectNeedsInterfaceUpdate then
-        LCLObject.InvalidateClientRectCache(False);
     exit;
   end;
 
@@ -6974,6 +6972,36 @@ end;
 function TQtGroupBox.getText: WideString;
 begin
   QGroupBox_title(QGroupBoxH(Widget), @Result);
+end;
+
+procedure TQtGroupBox.preferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  L: Integer;
+  T: Integer;
+  R: Integer;
+  B: Integer;
+  PH: Integer;
+  ASize: TSize;
+  R1: TRect;
+begin
+  QWidget_getContentsMargins(Widget,@L, @T, @R, @B);
+  QWidget_sizeHint(Widget, @ASize);
+  PreferredWidth := ASize.cx + L + R;
+  PreferredHeight := ASize.cy + B + T;
+  if LCLObject.AutoSize and Assigned(FCentralWidget) and Assigned(LCLObject) then
+  begin
+    L := 0;
+    PH := 0;
+    for L := 0 to LCLObject.ControlCount - 1 do
+    begin
+      R1 := LCLObject.Controls[L].BoundsRect;
+      if PH < (R1.Top + (R1.Bottom - R1.Top) + T + B) then
+        PH := R1.Top + (R1.Bottom - R1.Top) + T + B;
+    end;
+    if PH > 0 then
+      PreferredHeight := PH;
+  end;
 end;
 
 procedure TQtGroupBox.setText(const W: WideString);
@@ -7197,8 +7225,9 @@ begin
   {$ifdef VerboseQt}
   writeln('TQtAbstractSlider.rangeChanged() to min=',minimum,' max=',maximum);
   {$endif}
-  if (FOwner <> nil) and
-    (FOwner.FChildOfComplexWidget = ccwScrollingWinControl) then
+  if (FOwner <> nil) and Assigned(FOwner.LCLObject) and
+    (FOwner.FChildOfComplexWidget = ccwScrollingWinControl) and
+    not (caspComputingBounds in FOwner.LCLObject.AutoSizePhases) then
       LCLObject.InvalidateClientRectCache(True);
 end;
 
