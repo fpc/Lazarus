@@ -408,6 +408,7 @@ type
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   { TvPolygon }
@@ -2047,6 +2048,22 @@ begin
   {$else}
   ADest.Rectangle(x1, y1, x2, y2)
   {$endif}
+end;
+
+function TvRectangle.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  lStr: string;
+  lCurPathSeg: TPathSegment;
+begin
+  Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
+  // Add the font debug info in a sub-item
+  lStr := Format('[TvRectangle] Text=%s CX=%f CY=%f CZ=%f RX=%f RY=%f',
+    [Text,
+    CX, CY, CZ,
+    RX, RY
+    ]);
+  ADestRoutine(lStr, Result);
 end;
 
 { TvPolygon }

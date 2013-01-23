@@ -55,7 +55,7 @@ uses
   fpvectorial, fpvutils, lazutf8;
 
 type
-{  TSVGTokenType = (
+  TSVGTokenType = (
     // moves
     sttMoveTo, sttRelativeMoveTo,
     // Close Path
@@ -69,6 +69,8 @@ type
     sttQuadraticBezierTo, sttRelativeQuadraticBezierTo,
     // Elliptic curves
     sttEllipticArcTo, sttRelativeEllipticArcTo,
+    // ToDo: Find out what these are
+    sttUnknown,
     // numbers
     sttFloatValue);
 
@@ -89,7 +91,7 @@ type
     Destructor Destroy; override;
     procedure AddToken(AStr: string);
     procedure TokenizePathString(AStr: string);
-  end;      }
+  end;
 
   TODGMasterPage = class
   public
@@ -128,8 +130,11 @@ type
     //
     procedure ReadStyleNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadStyleStyleNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadEnhancedGeometryNodeToTPath(ANode: TDOMNode; AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double);
+    procedure ConvertPathStringToTPath(AStr: string; AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double);
     //
     procedure ReadElement(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadCustomShapeNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadEllipseNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadFrameNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadLineNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
@@ -214,7 +219,7 @@ const
 
 { TSVGPathTokenizer }
 
-{constructor TSVGPathTokenizer.Create;
+constructor TSVGPathTokenizer.Create;
 begin
   inherited Create;
 
@@ -232,6 +237,22 @@ begin
   inherited Destroy;
 end;
 
+{
+<draw:enhanced-geometry
+ svg:viewBox="0 0 1000 1000"
+ draw:modifiers="0 0"
+ draw:enhanced-path="M 0 1000 L $0 $1 1000 1000 Z N
+ M 0 1000 L ?f0 ?f1 F N">
+  <draw:equation draw:name="f0" draw:formula="($0 + right) / 2"/>
+  <draw:equation draw:name="f1" draw:formula="($1 + bottom) / 2"/>
+  <draw:equation draw:name="f2" draw:formula="2*(bottom - top) / 3"/>
+  <draw:handle draw:handle-position="$0 $1"
+   draw:handle-range-x-minimum="0"
+   draw:handle-range-x-maximum="right"
+   draw:handle-range-y-minimum="0"
+   draw:handle-range-y-maximum="?f2"/>
+</draw:enhanced-geometry>
+}
 procedure TSVGPathTokenizer.AddToken(AStr: string);
 var
   lToken: TSVGToken;
@@ -243,29 +264,43 @@ begin
   if lStr = '' then Exit;
 
   // Moves
-  if lStr[1] = 'M' then lToken.TokenType := sttMoveTo
-  else if lStr[1] = 'm' then lToken.TokenType := sttRelativeMoveTo
+  case lStr[1] of
+  'M': lToken.TokenType := sttMoveTo;
+  'm': lToken.TokenType := sttRelativeMoveTo;
   // Close Path
-  else if lStr[1] = 'Z' then lToken.TokenType := sttClosePath
-  else if lStr[1] = 'z' then lToken.TokenType := sttClosePath
+  'Z': lToken.TokenType := sttClosePath;
+  'z': lToken.TokenType := sttClosePath;
   // Lines
-  else if lStr[1] = 'L' then lToken.TokenType := sttLineTo
-  else if lStr[1] = 'l' then lToken.TokenType := sttRelativeLineTo
-  else if lStr[1] = 'H' then lToken.TokenType := sttHorzLineTo
-  else if lStr[1] = 'h' then lToken.TokenType := sttRelativeHorzLineTo
-  else if lStr[1] = 'V' then lToken.TokenType := sttVertLineTo
-  else if lStr[1] = 'v' then lToken.TokenType := sttRelativeVertLineTo
+  'L': lToken.TokenType := sttLineTo;
+  'l': lToken.TokenType := sttRelativeLineTo;
+  'H': lToken.TokenType := sttHorzLineTo;
+  'h': lToken.TokenType := sttRelativeHorzLineTo;
+  'V': lToken.TokenType := sttVertLineTo;
+  'v': lToken.TokenType := sttRelativeVertLineTo;
   // cubic Bézier curve commands
-  else if lStr[1] = 'C' then lToken.TokenType := sttBezierTo
-  else if lStr[1] = 'c' then lToken.TokenType := sttRelativeBezierTo
+  'C': lToken.TokenType := sttBezierTo;
+  'c': lToken.TokenType := sttRelativeBezierTo;
   // quadratic beziers
-  else if lStr[1] = 'Q' then lToken.TokenType := sttQuadraticBezierTo
-  else if lStr[1] = 'q' then lToken.TokenType := sttRelativeQuadraticBezierTo
+  'Q': lToken.TokenType := sttQuadraticBezierTo;
+  'q': lToken.TokenType := sttRelativeQuadraticBezierTo;
   // Elliptic curves
-  else if lStr[1] = 'A' then lToken.TokenType := sttEllipticArcTo
-  else if lStr[1] = 'a' then lToken.TokenType := sttRelativeEllipticArcTo
-  else
+  'A': lToken.TokenType := sttEllipticArcTo;
+  'a': lToken.TokenType := sttRelativeEllipticArcTo;
+  // Types that I don't know what they do
+  'U', 'N', 'e':  lToken.TokenType := sttUnknown;
+  // Constants
+  '$':
   begin
+    lToken.TokenType := sttFloatValue;
+    lToken.Value := 0; // ToDo
+  end;
+  // Named Equations
+  '?':
+  begin
+    lToken.TokenType := sttFloatValue;
+    lToken.Value := 0; // ToDo
+  end;
+  else
     lToken.TokenType := sttFloatValue;
     lToken.Value := StrToFloat(AStr, FPointSeparator);
   end;
@@ -312,6 +347,12 @@ begin
         AddToken(lTmpStr);
         lTmpStr := '';
       end
+      else if lCurChar in ['?', '$'] then
+      begin
+        if lTmpStr <> '' then AddToken(lTmpStr);
+        lState := 2;
+        lTmpStr := lCurChar;
+      end
       else
       begin
         // Check for a break, from letter to number
@@ -337,12 +378,26 @@ begin
       if AStr[i] <> Str_Space then lState := 0
       else Inc(i);
     end;
+    2: // Adding a special group, such as "$2" or "?f3", which stop only at a space
+    begin
+      lCurChar := AStr[i];
+      if lCurChar = Str_Space then
+      begin
+        lState := 1;
+        AddToken(lTmpStr);
+        lTmpStr := '';
+      end
+      else
+        lTmpStr := lTmpStr + lCurChar;
+
+      Inc(i);
+    end;
     end;
   end;
 
   // If there is a token still to be added, add it now
   if (lState = 0) and (lTmpStr <> '') then AddToken(lTmpStr);
-end;}
+end;
 
 procedure TvODGVectorialReader.DeleteStyle(data, arg: pointer);
 begin
@@ -593,6 +648,110 @@ begin
   FStyles.Add(lStyle);
 end;
 
+{
+<draw:custom-shape draw:style-name="gr1" draw:text-style-name="P1" draw:layer="layout"
+ svg:width="5.2cm" svg:height="1.3cm" svg:x="2.6cm" svg:y="3cm">
+  <text:p text:style-name="P1">Rectangle</text:p>
+  <draw:enhanced-geometry svg:viewBox="0 0 21600 21600" draw:type="rectangle"
+   draw:enhanced-path="M 0 0 L 21600 0 21600 21600 0 21600 0 0 Z N"/>
+</draw:custom-shape>
+}
+procedure TvODGVectorialReader.ReadEnhancedGeometryNodeToTPath(ANode: TDOMNode;
+  AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double);
+var
+  i: Integer;
+  lNodeName, lNodeValue: string;
+begin
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
+    if lNodeName = 'draw:enhanced-path' then
+    begin
+      ConvertPathStringToTPath(lNodeValue, AData, ADest, ADeltaX, ADeltaY);
+    end;
+  end;
+end;
+
+procedure TvODGVectorialReader.ConvertPathStringToTPath(AStr: string;
+  AData: TvVectorialPage; ADest: TPath; ADeltaX, ADeltaY: Double);
+var
+  x1, y1, x2, y2, lCurX, lCurY: double;
+  j: Integer;
+  lNodeName, lNodeValue: string;
+  lTokenizer: TSVGPathTokenizer;
+  CurToken: TSVGToken;
+begin
+  x1 := 0.0;
+  y1 := 0.0;
+  x2 := 0.0;
+  y2 := 0.0;
+  lCurX := 0.0;
+  lCurY := 0.0;
+
+  lTokenizer := TSVGPathTokenizer.Create;
+  try
+    lTokenizer.TokenizePathString(AStr);
+
+    j := 0;
+    while j < lTokenizer.Tokens.Count do
+    begin
+      CurToken := TSVGToken(lTokenizer.Tokens.Items[j]);
+
+      case CurToken.TokenType of
+      // moves
+      sttMoveTo, sttRelativeMoveTo:
+      begin
+        CurToken := TSVGToken(lTokenizer.Tokens.Items[j+1]);
+        x1 := CurToken.Value + ADeltaX;
+        CurToken := TSVGToken(lTokenizer.Tokens.Items[j+2]);
+        y1 := CurToken.Value + ADeltaY;
+        ConvertODGCoordinatesToFPVCoordinates(
+              AData, x1, y1, x1, y1);
+        ADest.AppendMoveToSegment(x1, y1);
+        Inc(j, 3);
+      end;
+      // Close Path
+      sttClosePath: Inc(j);
+      // lines
+      sttLineTo, sttRelativeLineTo,
+      sttHorzLineTo, sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo:
+      begin
+        Inc(j);
+        while TSVGToken(lTokenizer.Tokens.Items[j]).TokenType = sttFloatValue do
+        begin
+          CurToken := TSVGToken(lTokenizer.Tokens.Items[j+1]);
+          x1 := CurToken.Value + ADeltaX;
+          CurToken := TSVGToken(lTokenizer.Tokens.Items[j+2]);
+          y1 := CurToken.Value + ADeltaY;
+          ConvertODGCoordinatesToFPVCoordinates(
+                AData, x1, y1, x1, y1);
+          ADest.AppendLineToSegment(x1, y1);
+
+          Inc(j, 2);
+
+          if j >= lTokenizer.Tokens.Count then Break;
+        end;
+      end;
+{      // cubic beziers
+      sttBezierTo, sttRelativeBezierTo,
+      // quadratic beziers
+      sttQuadraticBezierTo, sttRelativeQuadraticBezierTo,
+      // Elliptic curves
+      sttEllipticArcTo, sttRelativeEllipticArcTo,
+      // numbers
+      sttFloatValue);}
+      else
+        Inc(j);
+        //raise Exception.Create('[TvODGVectorialReader.ConvertPathStringToTPath] Unexpected token type!');
+      end;
+    end;
+  finally
+    lTokenizer.Free;
+  end;
+end;
+
 procedure TvODGVectorialReader.ReadElement(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
@@ -600,11 +759,101 @@ var
 begin
   Str := LowerCase(ANode.NodeName);
   case Str of
+  'draw:custom-shape': ReadCustomShapeNode(ANode, AData, ADoc);
   'draw:ellipse': ReadEllipseNode(ANode, AData, ADoc);
   'draw:frame': ReadFrameNode(ANode, AData, ADoc);
   'draw:line': ReadLineNode(ANode, AData, ADoc);
   'draw:path': ReadPathNode(ANode, AData, ADoc);
   end;
+end;
+
+{
+<draw:custom-shape draw:style-name="gr1" draw:text-style-name="P1" draw:layer="layout"
+ svg:width="5.2cm" svg:height="1.3cm" svg:x="2.6cm" svg:y="3cm">
+  <text:p text:style-name="P1">Rectangle</text:p>
+  <draw:enhanced-geometry svg:viewBox="0 0 21600 21600" draw:type="rectangle"
+   draw:enhanced-path="M 0 0 L 21600 0 21600 21600 0 21600 0 0 Z N"/>
+</draw:custom-shape>
+}
+procedure TvODGVectorialReader.ReadCustomShapeNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  x1, y1, x2, y2, lWidth, lHeight: double;
+  i: Integer;
+  lNodeName, lNodeValue: string;
+  lCurNode, lTextNode, lEnhancedGeometryNode, lDrawTypeAttrib: TDOMNode;
+  lSkewX, lSkewY, lRotate, lTranslateX, lTranslateY: Double;
+  // various possible custom shape types
+  lGroup: TvEntityWithSubEntities;
+  lPath: TPath;
+  lText: TvText;
+begin
+  x1 := 0.0;
+  y1 := 0.0;
+  x2 := 0.0;
+  y2 := 0.0;
+  lWidth := 0.0;
+  lHeight := 0.0;
+
+  lGroup := TvEntityWithSubEntities.Create;
+  lPath := TPath.Create;
+  lGroup.AddEntity(lPath);
+
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
+    if lNodeName = 'svg:width' then
+      lWidth := StringWithUnitToFloat(lNodeValue)
+    else if lNodeName = 'svg:height' then
+      lHeight := StringWithUnitToFloat(lNodeValue)
+    else if lNodeName = 'draw:transform' then
+      GetDrawTransforms(ANode.Attributes.Item[i].NodeValue, lSkewX, lSkewY, lRotate, lTranslateX, lTranslateY)
+    else if lNodeName = 'svg:x' then
+      x1 := StringWithUnitToFloat(lNodeValue)
+    else if lNodeName = 'svg:y' then
+      y1 := StringWithUnitToFloat(lNodeValue)
+    else if lNodeName = 'draw:style-name' then
+      ApplyStyleByNameToEntity(lNodeValue, lPath)
+    else if lNodeName = 'draw:text-style-name' then
+      ApplyTextStyleByNameToEntity(lNodeValue, lPath);
+//    else if lNodeName = 'id' then
+//      lEllipse.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
+  end;
+
+  ConvertODGCoordinatesToFPVCoordinates(
+        AData, x1, y1, x2, y2);
+  ConvertODGDeltaToFPVDelta(
+        AData, lWidth, lHeight, lWidth, lHeight);
+
+  // Go through sub-nodes
+  lCurNode := ANode.FirstChild;
+  while lCurNode <> nil do
+  begin
+    lNodeName := lCurNode.NodeName;
+
+    case lNodeName of
+    'text:p':
+    begin
+      if lCurNode.FirstChild <> nil then
+      begin
+        lText := TvText.Create;
+        lNodeValue := lCurNode.FirstChild.NodeValue;
+        lText.Value.Add(lNodeValue);
+        lGroup.AddEntity(lText);
+      end;
+    end;
+    'draw:enhanced-geometry':
+    begin
+      ReadEnhancedGeometryNodeToTPath(lCurNode, AData, lPath, x1, y1);
+    end;
+    end;
+
+    lCurNode := lCurNode.NextSibling;
+  end;
+
+  AData.AddEntity(lGroup);
 end;
 
 {
