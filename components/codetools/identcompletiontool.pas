@@ -2722,7 +2722,7 @@ begin
 
     if CursorNode<>nil then begin
       if not CheckContextIsParameter(Result) then begin
-        //DebugLn(['TIdentCompletionTool.FindCodeContext cursor not at parameter']);
+        DebugLn(['TIdentCompletionTool.FindCodeContext cursor not at parameter']);
         exit;
       end;
     end;
