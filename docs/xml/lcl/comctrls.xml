@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
   <package name="LCL">
     <!--
@@ -17239,7 +17239,7 @@ the comparision is case sensitive.
       <element name="TCustomTreeView.DefaultItemHeight">
         <short>
           <var>DefaultItemHeight</var> - default height for items on the list</short>
-        <descr/>
+        <descr>If tvoAutoItemHeight is set in Options this value is set automatically depending on font and icons.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
