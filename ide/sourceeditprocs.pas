@@ -577,6 +577,8 @@ begin
   with CodeToolBoss.SourceChangeCache.BeautifyCodeOptions do
     IsWordPolicyExcept:=WordExceptions.CheckExceptions(Result);
 
+  //debugln(['GetIdentCompletionValue IdentItem.GetDesc=',NodeDescriptionAsString(IdentItem.GetDesc),' IdentList.ContextFlags=',dbgs(IdentList.ContextFlags),' IdentItem.Node=',IdentItem.Node<>nil]);
+
   case IdentItem.GetDesc of
 
     ctnProcedure:
