@@ -438,7 +438,7 @@ var
   CodeBuf: TCodeBuffer;
   MissingUnitname: String;
   UsedByUnit: String;
-  NewFilename: String;
+  NewFilename: String; // referencing unit
   Dir: String;
   PPUFilename: String;
   s: String;
@@ -556,12 +556,20 @@ begin
         s:='Can not find unit '+MissingUnitname;
         if UsedByUnit<>'' then
           s+=' used by '+UsedByUnit;
-        if PkgName<>'' then
-          s+='. Check if package '+PkgName+' is in the dependencies';
-        if UsedByOwner is TLazProject then
-          s+=' of the project inspector'
-        else if UsedByOwner is TIDEPackage then
-          s+=' of package '+TIDEPackage(UsedByOwner).Name;
+        if (UsedByOwner is TIDEPackage)
+        and (CompareTextCT(TIDEPackage(UsedByOwner).Name,PkgName)=0) then
+        begin
+          // unit of package is not found by a unit of package
+          s+='. Check search path of package '+TIDEPackage(UsedByOwner).Name
+            +' and unit cycles.';
+        end else begin
+          if PkgName<>'' then
+            s+='. Check if package '+PkgName+' is in the dependencies';
+          if UsedByOwner is TLazProject then
+            s+=' of the project inspector'
+          else if UsedByOwner is TIDEPackage then
+            s+=' of package '+TIDEPackage(UsedByOwner).Name;
+        end;
         s+='.';
       end;
       Msg.GetSourcePosition(Filename,Line,Col);
