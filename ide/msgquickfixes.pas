@@ -474,6 +474,7 @@ begin
   if Dir='' then exit;
 
   Msg.GetSourcePosition(Filename,Line,Col);
+  Filename:=TrimFilename(Filename);
   MissingUnitname:=REVar(2);
   UsedByUnit:='';
   if REMatches(Msg.Msg,'Can(''t| not) find unit ([a-z_.0-9]+) used by ([a-z_.0-9]+)','I')
@@ -517,6 +518,8 @@ begin
 
   // load source
   CodeBuf:=nil;
+  if (NewFilename='') and (FilenameIsAbsolute(Filename)) then
+    NewFilename:=Filename;
   if NewFilename<>'' then begin
     CodeBuf:=CodeToolBoss.LoadFile(NewFilename,false,false);
     if CodeBuf=nil then begin
