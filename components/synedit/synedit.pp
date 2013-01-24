@@ -780,6 +780,7 @@ type
                                  AnInfo: TSynEditMouseActionInfo): Boolean;
 
   protected
+    procedure SetVisible(Value: Boolean); override;
     procedure SetColor(Value: TColor); override;
     procedure DragOver(Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean); override;
@@ -3155,6 +3156,13 @@ begin
   end;
 end;
 
+procedure TCustomSynEdit.SetVisible(Value: Boolean);
+begin
+  inherited SetVisible(Value);
+  if fMarkupManager <> nil then
+    fMarkupManager.DoVisibleChanged(Value);
+end;
+
 procedure TCustomSynEdit.SetColor(Value: TColor);
 begin
   inherited SetColor(Value);
@@ -3966,7 +3974,8 @@ begin
   DoDecPaintLock(Self);
 end;
 
-procedure TCustomSynEdit.SetHighlightSearch(const ASearch : String; AOptions : TSynSearchOptions);
+procedure TCustomSynEdit.SetHighlightSearch(const ASearch: String;
+  AOptions: TSynSearchOptions);
 begin
   fMarkupHighAll.SearchOptions := AOptions;
   fMarkupHighAll.SearchString := ASearch;
@@ -4699,8 +4708,8 @@ begin
   Done := False;
 end;
 
-procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings;
-  AIndex, ACount: Integer);
+procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings; AIndex,
+  ACount: Integer);
 begin
   {$IFDEF SynFoldDebug}debugln(['FOLD-- LineCountChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
   FBlockSelection.StickyAutoExtend := False;
@@ -4735,8 +4744,8 @@ begin
     UpdateScrollBars;
 end;
 
-procedure TCustomSynEdit.LineTextChanged(Sender: TSynEditStrings;
-  AIndex, ACount: Integer);
+procedure TCustomSynEdit.LineTextChanged(Sender: TSynEditStrings; AIndex,
+  ACount: Integer);
 begin
   {$IFDEF SynFoldDebug}debugln(['FOLD-- LineTextChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
   FBlockSelection.StickyAutoExtend := False;

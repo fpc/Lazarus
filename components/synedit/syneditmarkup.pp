@@ -79,6 +79,7 @@ type
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); virtual;
     procedure DoTextChanged(StartLine, EndLine : Integer); virtual; // 1 based
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); virtual;
+    procedure DoVisibleChanged(AVisible: Boolean); virtual;
 
     procedure InvalidateSynLines(FirstLine, LastLine: integer); // Call Synedt to invalidate lines
     function ScreenRowToRow(aRow : Integer) : Integer;
@@ -147,6 +148,7 @@ type
     destructor Destroy; override;
     procedure IncPaintLock; override;
     procedure DecPaintLock; override;
+    procedure DoVisibleChanged(AVisible: Boolean); override;
 
     Procedure AddMarkUp(aMarkUp : TSynEditMarkup; AsFirst: Boolean = False);
     Procedure RemoveMarkUp(aMarkUp : TSynEditMarkup);
@@ -317,6 +319,11 @@ procedure TSynEditMarkup.DoMarkupChanged(AMarkup : TSynSelectedColor);
 begin
 end;
 
+procedure TSynEditMarkup.DoVisibleChanged(AVisible: Boolean);
+begin
+  //
+end;
+
 procedure TSynEditMarkup.InvalidateSynLines(FirstLine, LastLine : integer);
 begin
   if assigned(fInvalidateLinesMethod)
@@ -371,7 +378,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TSynEditMarkup.FinishMarkupForRow(aRow : Integer);
+procedure TSynEditMarkup.FinishMarkupForRow(aRow: Integer);
 begin
 end;
 
@@ -415,7 +422,7 @@ begin
   dec(FPaintLock);
 end;
 
-procedure TSynEditMarkup.PrepareMarkupForRow(aRow : Integer);
+procedure TSynEditMarkup.PrepareMarkupForRow(aRow: Integer);
 begin
 end;
 
@@ -456,7 +463,8 @@ begin
     TSynEditMarkup(fMarkUpList[i]).DecPaintLock;
 end;
 
-procedure TSynEditMarkupManager.AddMarkUp(aMarkUp : TSynEditMarkup; AsFirst: Boolean = False);
+procedure TSynEditMarkupManager.AddMarkUp(aMarkUp: TSynEditMarkup;
+  AsFirst: Boolean);
 begin
   if AsFirst then
     fMarkUpList.Insert(0, aMarkUp)
@@ -486,7 +494,7 @@ begin
   Result := fMarkUpList.Count;
 end;
 
-procedure TSynEditMarkupManager.FinishMarkupForRow(aRow : Integer);
+procedure TSynEditMarkupManager.FinishMarkupForRow(aRow: Integer);
 var
   i : integer;
 begin
@@ -504,7 +512,7 @@ begin
       TSynEditMarkup(fMarkUpList[i]).EndMarkup;
 end;
 
-procedure TSynEditMarkupManager.PrepareMarkupForRow(aRow : Integer);
+procedure TSynEditMarkupManager.PrepareMarkupForRow(aRow: Integer);
 var
   i : integer;
 begin
@@ -527,7 +535,8 @@ begin
 end;
 
 function TSynEditMarkupManager.GetMarkupAttributeAtRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo) : TSynSelectedColor;
+  const aStartCol: TLazSynDisplayTokenBound;
+  const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
 begin
   assert(false);
   Result := MarkupInfo;
@@ -575,7 +584,8 @@ begin
   end;
 end;
 
-procedure TSynEditMarkupManager.TextChanged(aFirstCodeLine, aLastCodeLine: Integer);
+procedure TSynEditMarkupManager.TextChanged(aFirstCodeLine,
+  aLastCodeLine: Integer);
 var
   i : integer;
 begin
@@ -642,6 +652,16 @@ begin
   if fMarkUpList = nil then exit;
   for i := 0 to fMarkUpList.Count-1 do
     TSynEditMarkup(fMarkUpList[i]).SetCaret(AValue);
+end;
+
+procedure TSynEditMarkupManager.DoVisibleChanged(AVisible: Boolean);
+var
+  i: Integer;
+begin
+  inherited DoVisibleChanged(AVisible);
+  if fMarkUpList = nil then exit;
+  for i := 0 to fMarkUpList.Count-1 do
+    TSynEditMarkup(fMarkUpList[i]).DoVisibleChanged(AVisible);
 end;
 
 end.

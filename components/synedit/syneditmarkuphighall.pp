@@ -110,6 +110,7 @@ type
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
     procedure DoTextChanged(StartLine, EndLine: Integer); override; // 1 based
+    procedure DoVisibleChanged(AVisible: Boolean); override;
     function  HasVisibleMatch: Boolean; // does not check, if in visible line range. Only Count and DideSingleMatch
     property  MatchCount: Integer read GetMatchCount;
     property  MarkupEnabled: Boolean read FMarkupEnabled;
@@ -697,7 +698,7 @@ var
   FirstKeptValidIdx: Integer; // The first index, kept after the removed invalidated range
   p: TPoint;
 begin
-  if FPaintLock > 0 then begin
+  if (FPaintLock > 0) or (not SynEdit.IsVisible) then begin
     FNeedValidate := True;
     if not SkipPaint then
       FNeedValidatePaint := True;
@@ -718,7 +719,6 @@ begin
   MaybeDropOldMatches;
   FirstKeptValidIdx := DeleteInvalidMatches;
   //DebugLnEnter(['>>> ValidateMatches ', FFirstInvalidLine, ' - ',FLastInvalidLine, ' Cnt=',FMatches.Count, ' Idx: ', FirstKeptValidIdx, '  ',SynEdit.Name, ' # ',fSearchString]);
-
   FindInitialize;
 
   if not IsPosValid(FSearchedEnd) then
@@ -841,14 +841,21 @@ begin
   InvalidateLines(StartLine, MaxInt); // EndLine); // Might be LineCount changed
 end;
 
+procedure TSynEditMarkupHighlightAll.DoVisibleChanged(AVisible: Boolean);
+begin
+  inherited DoVisibleChanged(AVisible);
+  if FNeedValidate and SynEdit.IsVisible then
+    ValidateMatches(True);
+end;
+
 function TSynEditMarkupHighlightAll.HasVisibleMatch: Boolean;
 begin
   Result := ( HideSingleMatch and (FMatches.Count > 1) ) or
             ( (not HideSingleMatch) and (FMatches.Count > 0) );
 end;
 
-procedure TSynEditMarkupHighlightAll.InvalidateLines(AFirstLine: Integer; ALastLine: Integer;
-  SkipPaint: Boolean);
+procedure TSynEditMarkupHighlightAll.InvalidateLines(AFirstLine: Integer;
+  ALastLine: Integer; SkipPaint: Boolean);
 begin
   if AFirstLine < 1 then
     AFirstLine := 1;

@@ -52,6 +52,7 @@ type
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoTextChanged(StartLine, EndLine : Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoVisibleChanged(AVisible: Boolean); override;
   public
     constructor Create(ASynEdit: TSynEditBase);
     procedure DecPaintLock; override;
@@ -172,12 +173,21 @@ begin
   InvalidateBracketHighlight;
 end;
 
+procedure TSynEditMarkupBracket.DoVisibleChanged(AVisible: Boolean);
+begin
+  inherited DoVisibleChanged(AVisible);
+  if SynEdit.IsVisible then
+    InvalidateBracketHighlight;
+end;
+
 procedure TSynEditMarkupBracket.InvalidateBracketHighlight;
 var
   NewPos, NewAntiPos, SwapPos : TPoint;
 begin
   FNeedInvalidate := True;
-  if (Caret = nil) or (not SynEdit.HandleAllocated) or (FPaintLock > 0) then
+  if (Caret = nil) or (not SynEdit.HandleAllocated) or (FPaintLock > 0) or
+     (not SynEdit.IsVisible)
+  then
     exit;
 
   FNeedInvalidate := False;

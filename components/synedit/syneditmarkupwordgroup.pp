@@ -56,6 +56,7 @@ type
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoTextChanged(StartLine, EndLine : Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoVisibleChanged(AVisible: Boolean); override;
     procedure InvalidateCurrentHighlight;
   public
     constructor Create(ASynEdit: TSynEditBase);
@@ -329,12 +330,21 @@ begin
   InvalidateCurrentHighlight;
 end;
 
+procedure TSynEditMarkupWordGroup.DoVisibleChanged(AVisible: Boolean);
+begin
+  inherited DoVisibleChanged(AVisible);
+  if SynEdit.IsVisible then
+    InvalidateCurrentHighlight;
+end;
+
 procedure TSynEditMarkupWordGroup.InvalidateCurrentHighlight;
 var
   NewPos, NewAntiPos, NewMiddlePos : TWordPoint;
 begin
   FNeedInvalidate := True;
-  if (Caret = nil) or (not SynEdit.HandleAllocated) or (FPaintLock > 0) then
+  if (Caret = nil) or (not SynEdit.HandleAllocated) or (FPaintLock > 0) or
+     (not SynEdit.IsVisible)
+  then
     exit;
 
   FNeedInvalidate := False;
