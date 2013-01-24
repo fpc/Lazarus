@@ -48,12 +48,14 @@ type
     procedure ClearAllSeries;
     procedure Populate;
   public
+    procedure ReadData(AStream: TStream); override;
+    procedure WriteData(AStream: TStream); override;
+  public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetSeries(AImgIndex: Integer): TCustomChartSeries;
     function ImageIndexOfSeries(ASeries: TCustomChartSeries): Integer;
     procedure SeriesChanged(ASender: TObject);
-    procedure WriteData(AStream: TStream); override;
     property FirstSeriesIndex: Integer read FFirstSeriesIndex;
     property SeriesCount: Integer read FSeriesCount;
   published
@@ -78,6 +80,17 @@ end;
 
 { TChartImageList }
 
+procedure TChartImageList.ClearAllSeries;
+var
+  i: Integer;
+begin
+  if FFirstSeriesIndex < 0 then exit;
+  for i := FFirstSeriesIndex + FSeriesCount - 1 downto FFirstSeriesIndex do
+    Delete(i);
+  FFirstSeriesIndex := -1;
+  FSeriesCount := 0;
+end;
+
 constructor TChartImageList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -90,17 +103,6 @@ destructor TChartImageList.Destroy;
 begin
   FreeAndNil(FListener);
   inherited Destroy;
-end;
-
-procedure TChartImageList.ClearAllSeries;
-var
-  i: Integer;
-begin
-  if FFirstSeriesIndex < 0 then exit;
-  for i := FFirstSeriesIndex + FSeriesCount - 1 downto FFirstSeriesIndex do
-    Delete(i);
-  FFirstSeriesIndex := -1;
-  FSeriesCount := 0;
 end;
 
 function TChartImageList.GetSeries(AImgIndex: Integer): TCustomChartSeries;
@@ -166,6 +168,12 @@ begin
   end;
 end;
 
+procedure TChartImageList.ReadData(AStream: TStream);
+begin
+  Unused(AStream);
+  Clear;
+end;
+
 // Notification procedure of the listener. Responds to chart broadcasts
 // by populating the imagelist with the chart's series icons.
 procedure TChartImageList.SeriesChanged(ASender:TObject);
@@ -188,18 +196,10 @@ begin
 end;
 
 procedure TChartImageList.WriteData(AStream: TStream);
-var
-  ch: TChart;
 begin
-  ch := Chart;
-  try
-    // Don't write the series images to stream.
-    // They will be recreated automatically when the chart is assigned on loading.
-    Chart := nil;
-    inherited WriteData(AStream);
-  finally
-    Chart := ch;
-  end;
+  // Don't write the series images to stream.
+  // They will be recreated automatically when the chart is assigned on loading.
+  Unused(AStream);
 end;
 
 end.
