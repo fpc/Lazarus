@@ -69,19 +69,21 @@ type
     property Source;
   end;
 
-  { TBoxAndWhiskerSeries }
+  TBoxAndWhiskerSeriesLegendDir = (bwlHorizontal, bwlVertical, bwlAuto);
 
   TBoxAndWhiskerSeries = class(TBasicPointSeries)
-  private
+  strict private
     FBoxBrush: TBrush;
     FBoxPen: TPen;
     FBoxWidth: Integer;
+    FLegendDirection: TBoxAndWhiskerSeriesLegendDir;
     FMedianPen: TPen;
     FWhiskersPen: TPen;
     FWhiskersWidth: Integer;
     procedure SetBoxBrush(AValue: TBrush);
     procedure SetBoxPen(AValue: TPen);
     procedure SetBoxWidth(AValue: Integer);
+    procedure SetLegendDirection(AValue: TBoxAndWhiskerSeriesLegendDir);
     procedure SetMedianPen(AValue: TPen);
     procedure SetWhiskersPen(AValue: TPen);
     procedure SetWhiskersWidth(AValue: Integer);
@@ -103,6 +105,8 @@ type
     property BoxPen: TPen read FBoxPen write SetBoxPen;
     property BoxWidth: Integer
       read FBoxWidth write SetBoxWidth default DEF_BOX_WIDTH;
+    property LegendDirection: TBoxAndWhiskerSeriesLegendDir
+      read FLegendDirection write SetLegendDirection default bwlHorizontal;
     property MedianPen: TPen read FMedianPen write SetMedianPen;
     property WhiskersPen: TPen read FWhiskersPen write SetWhiskersPen;
     property WhiskersWidth: Integer
@@ -180,6 +184,7 @@ type
     FBoxBrush: TBrush;
     FBoxPen: TPen;
     FBoxWidth: Integer;
+    FIsVertical: Boolean;
     FMedianPen: TPen;
     FWhiskersPen: TPen;
     FWhiskersWidth: Integer;
@@ -209,39 +214,66 @@ constructor TLegendItemBoxAndWhiskers.Create(
   ASeries: TBoxAndWhiskerSeries; const AText: String);
 begin
   inherited Create(AText);
-  FBoxBrush := ASeries.BoxBrush;
-  FBoxPen := ASeries.BoxPen;
-  FBoxWidth := ASeries.BoxWidth;
-  FMedianPen := ASeries.MedianPen;
-  FWhiskersPen := ASeries.WhiskersPen;
-  FWhiskersWidth := ASeries.WhiskersWidth;
+  with ASeries do begin
+    FBoxBrush := BoxBrush;
+    FBoxPen := BoxPen;
+    FBoxWidth := BoxWidth;
+    FIsVertical :=
+      (LegendDirection = bwlVertical) or
+      (LegendDirection = bwlAuto) and IsRotated;
+    FMedianPen := MedianPen;
+    FWhiskersPen := WhiskersPen;
+    FWhiskersWidth := WhiskersWidth;
+  end;
 end;
 
 procedure TLegendItemBoxAndWhiskers.Draw(
   ADrawer: IChartDrawer; const ARect: TRect);
+
+  function FlipRect(const AR: TRect): TRect;
+  begin
+    Result := Rect(AR.Top, AR.Left, AR.Bottom, AR.Right);
+  end;
+
+var
+  symbol: array [1..5] of TRect;
 var
   center: TPoint;
-  m, ww, bw: Integer;
+  i, m, ww, bw: Integer;
+  r: TRect;
 begin
   inherited Draw(ADrawer, ARect);
-  center := (ARect.TopLeft + ARect.BottomRight) div 2;
+  r := ARect;
+  r.BottomRight -= Point(1, 1);
+  if FIsVertical then
+    r := FlipRect(r);
+
+  center := (r.TopLeft + r.BottomRight) div 2;
+  m := MaxValue([FWhiskersWidth, FBoxWidth, 1]) * 2;
+  ww := (r.Bottom - r.Top) * FWhiskersWidth div m;
+  symbol[1] := Rect(r.Left, center.y, r.Right, center.y);
+  symbol[2] := Rect(r.Left, center.y - ww, r.Left, center.y + ww + 1);
+  symbol[3] := Rect(r.Right, center.y - ww, r.Right, center.y + ww + 1);
+  bw := (r.Bottom - r.Top) * FBoxWidth div m;
+  symbol[4] := Rect(
+    (r.Left * 2 + r.Right) div 3, center.y - bw,
+    (r.Left + r.Right * 2) div 3, center.y + bw);
+  bw -= IfThen(FBoxPen.Style = psClear, 0, (FBoxPen.Width + 1) div 2);
+  symbol[5] := Rect(center.x, center.y - bw, center.x, center.y + bw);
+
+  if FIsVertical then
+    for i := 1 to High(symbol) do
+      symbol[i] := FlipRect(symbol[i]);
+
   ADrawer.Pen := FWhiskersPen;
   ADrawer.SetBrushParams(bsClear, clTAColor);
-  m := MaxValue([FWhiskersWidth, FBoxWidth, 1]) * 2;
-  ww := (ARect.Bottom - ARect.Top) * FWhiskersWidth div m;
-  ADrawer.Line(ARect.Left, center.y, ARect.Right - 1, center.y);
-  ADrawer.Line(ARect.Left, center.y - ww, ARect.Left, center.y + ww + 1);
-  ADrawer.Line(ARect.Right - 1, center.y - ww, ARect.Right - 1, center.y + ww + 1);
+  for i := 1 to 3 do
+    ADrawer.Line(symbol[i].TopLeft, symbol[i].BottomRight);
   ADrawer.Pen := FBoxPen;
   ADrawer.Brush:= FBoxBrush;
-  bw := (ARect.Bottom - ARect.Top) * FBoxWidth div m;
-  ADrawer.Rectangle(
-    (ARect.Left * 2 + ARect.Right) div 3, center.y - bw,
-    (ARect.Left + ARect.Right * 2) div 3, center.y + bw
-  );
+  ADrawer.Rectangle(symbol[4]);
   ADrawer.Pen := FMedianPen;
-  bw -= IfThen(FBoxPen.Style = psClear, 0, (FBoxPen.Width + 1) div 2);
-  ADrawer.Line(center.x, center.y - bw, center.x, center.y + bw);
+  ADrawer.Line(symbol[5].TopLeft, symbol[5].BottomRight);
 end;
 
 { TBubbleSeries }
@@ -511,6 +543,14 @@ procedure TBoxAndWhiskerSeries.SetBoxWidth(AValue: Integer);
 begin
   if FBoxWidth = AValue then exit;
   FBoxWidth := AValue;
+  UpdateParentChart;
+end;
+
+procedure TBoxAndWhiskerSeries.SetLegendDirection(
+  AValue: TBoxAndWhiskerSeriesLegendDir);
+begin
+  if FLegendDirection = AValue then exit;
+  FLegendDirection := AValue;
   UpdateParentChart;
 end;
 
