@@ -1004,18 +1004,13 @@ end;
 
 function TQuickFixUnitNotFound_Remove.IsApplicable(Line: TIDEMessageLine
   ): boolean;
-const
-  SearchStr = ') Fatal: Can''t find unit ';
 var
   Msg: String;
-  p: integer;
 begin
-  Result:=false;
-  if (Line.Parts=nil) then exit;
+  if Line.Parts=nil then exit(false);
   Msg:=Line.Msg;
-  p:=System.Pos(SearchStr,Msg);
-  if p<1 then exit;
-  Result:=true;
+  Result:=(System.Pos(') Fatal: Can''t find unit ',Msg)>0)
+       or (System.Pos(') Fatal: Can not find unit ',Msg)>0);
 end;
 
 procedure TQuickFixUnitNotFound_Remove.Execute(const Msg: TIDEMessageLine;
@@ -1037,12 +1032,12 @@ begin
     end;
 
     // get unitname
-    if not REMatches(Msg.Msg,'Fatal: Can''t find unit ([a-z_0-9]+) ','I') then begin
+    if not REMatches(Msg.Msg,'Fatal: Can(''t| not) find unit ([a-z_0-9]+) ','I') then begin
       DebugLn('TQuickFixUnitNotFound_Remove invalid message ',Msg.Msg);
       ShowError('QuickFix: UnitNotFound_Remove invalid message '+Msg.Msg);
       exit;
     end;
-    AnUnitName:=REVar(1);
+    AnUnitName:=REVar(2);
     DebugLn(['TQuickFixUnitNotFound_Remove.Execute Unit=',AnUnitName]);
 
     if (AnUnitName='') or (not IsValidIdent(AnUnitName)) then begin
