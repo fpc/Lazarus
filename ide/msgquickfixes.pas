@@ -338,9 +338,15 @@ end;
 
 function TQuickFixUnitNotFoundPosition.IsApplicable(Line: TIDEMessageLine
   ): boolean;
+var
+  Msg: String;
 begin
-  Result:=(Line.Parts<>nil)
-          and (System.Pos(') Fatal: Can''t find unit ',Line.Msg)>0);
+  if Line.Parts=nil then exit(false);
+  Msg:=Line.Msg;
+  Result:=(System.Pos(') Fatal: Can''t find unit ',Msg)>0)
+       or (System.Pos(') Fatal: Can not find unit ',Msg)>0)
+       or (System.Pos('Fatal: Can''t find unit ',Msg)=1)
+       or (System.Pos('Fatal: Can not find unit ',Msg)=1);
 end;
 
 procedure TQuickFixUnitNotFoundPosition.Execute(const Msg: TIDEMessageLine;
@@ -357,7 +363,9 @@ procedure TQuickFixUnitNotFoundPosition.Execute(const Msg: TIDEMessageLine;
     InPos: Integer;
     NamePos: Integer;
   begin
+    {$IFDEF VerboseQuickFixUnitNotFoundPosition}
     debugln(['TQuickFixUnitNotFoundPosition.Execute File=',CodeBuf.Filename]);
+    {$ENDIF}
     LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
     if not CodeToolBoss.FindUnitInAllUsesSections(CodeBuf,MissingUnitname,NamePos,InPos)
     then begin
@@ -451,22 +459,29 @@ var
   UsedByOwner: TObject;
 begin
   if Step<>imqfoImproveMessage then exit;
-  //DebugLn('QuickFixUnitNotFoundPosition ');
+  {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+  DebugLn('QuickFixUnitNotFoundPosition START');
+  {$ENDIF}
 
-  if not REMatches(Msg.Msg,'Can''t find unit ([a-z_.0-9]+) used by ','I') then begin
+  if not REMatches(Msg.Msg,'Can(''t| not) find unit ([a-z_.0-9]+) used by ','I')
+  then begin
+    {$IFDEF VerboseQuickFixUnitNotFoundPosition}
     DebugLn('QuickFixUnitNotFoundPosition invalid message ',Msg.Msg);
+    {$ENDIF}
     exit;
   end;
   Dir:=AppendPathDelim(TrimFilename(Msg.Directory));
   if Dir='' then exit;
 
   Msg.GetSourcePosition(Filename,Line,Col);
-  MissingUnitname:=REVar(1);
+  MissingUnitname:=REVar(2);
   UsedByUnit:='';
-  if REMatches(Msg.Msg,'Can''t find unit ([a-z_.0-9]+) used by ([a-z_.0-9]+)','I')
+  if REMatches(Msg.Msg,'Can(''t| not) find unit ([a-z_.0-9]+) used by ([a-z_.0-9]+)','I')
   then begin
-    UsedByUnit:=REVar(2);
-    //debugln(['TQuickFixUnitNotFoundPosition.Execute Missing="',MissingUnitname,'" used by "',UsedByUnit,'"']);
+    UsedByUnit:=REVar(3);
+    {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+    debugln(['TQuickFixUnitNotFoundPosition.Execute Missing="',MissingUnitname,'" used by "',UsedByUnit,'"']);
+    {$ENDIF}
 
     if (CompareFilenames(ExtractFileName(Filename),'staticpackages.inc')=0)
     and IsFileInIDESrcDir(Dir+'test') then begin
@@ -491,7 +506,9 @@ begin
       if NewFilename='' then begin
         NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit);
         if NewFilename='' then begin
+          {$IFDEF VerboseQuickFixUnitNotFoundPosition}
           DebugLn('QuickFixUnitNotFoundPosition unit not found: ',UsedByUnit);
+          {$ENDIF}
           //ShowError('QuickFix: UnitNotFoundPosition unit not found: '+UsedByUnit);
         end;
       end;
@@ -503,9 +520,15 @@ begin
   if NewFilename<>'' then begin
     CodeBuf:=CodeToolBoss.LoadFile(NewFilename,false,false);
     if CodeBuf=nil then begin
+      {$IFDEF VerboseQuickFixUnitNotFoundPosition}
       DebugLn('QuickFixUnitNotFoundPosition unable to load unit: ',NewFilename);
+      {$ENDIF}
       //ShowError('QuickFix: UnitNotFoundPosition unable to load unit: '+NewFilename);
     end;
+  end else begin
+    {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+    DebugLn('QuickFixUnitNotFoundPosition unable to locate UsedByUnit: ',UsedByUnit);
+    {$ENDIF}
   end;
 
   // fix line and column
@@ -520,11 +543,15 @@ begin
     end;
 
     // if the ppu is there then improve the message
-    //debugln(['TQuickFixUnitNotFoundPosition.Execute Dir=',Dir]);
+    {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+    debugln(['TQuickFixUnitNotFoundPosition.Execute Dir=',Dir]);
+    {$ENDIF}
     if FilenameIsAbsolute(Dir) then begin
       PPUFilename:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
                                                              Dir,MissingUnitname);
-      //debugln(['TQuickFixUnitNotFoundPosition.Execute PPUFilename=',PPUFilename,' IsFileInIDESrcDir=',IsFileInIDESrcDir(Dir+'test')]);
+      {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+      debugln(['TQuickFixUnitNotFoundPosition.Execute PPUFilename=',PPUFilename,' IsFileInIDESrcDir=',IsFileInIDESrcDir(Dir+'test')]);
+      {$ENDIF}
       PkgName:='';
       OnlyInstalled:=IsFileInIDESrcDir(Dir+'test');
       if OnlyInstalled and (PPUFilename='') then begin
@@ -575,6 +602,9 @@ begin
       Msg.GetSourcePosition(Filename,Line,Col);
       Msg.Msg:=CreateRelativePath(Filename,Msg.Directory)
           +'('+IntToStr(Line)+','+IntToStr(Col)+') Fatal: '+s;
+      {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+      debugln(['TQuickFixUnitNotFoundPosition.Execute Msg.Msg="',Msg.Msg,'"']);
+      {$ENDIF}
     end;
   finally
     Owners.Free;
