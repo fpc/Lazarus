@@ -47,10 +47,11 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, CodeTree, CodeAtom, CodeCache, CustomCodeTool,
-  CodeToolsStrConsts, KeywordFuncLists, BasicCodeTools, LinkScanner, AVL_Tree,
-  CodeToolMemManager, DefineTemplates, SourceChanger, FindDeclarationTool,
-  PascalReaderTool, PascalParserTool, CodeToolsStructs, ExprEval;
+  Classes, SysUtils, typinfo, FileProcs, CodeTree, CodeAtom, CodeCache,
+  CustomCodeTool, CodeToolsStrConsts, KeywordFuncLists, BasicCodeTools,
+  LinkScanner, AVL_Tree, CodeToolMemManager, DefineTemplates, SourceChanger,
+  FindDeclarationTool, PascalReaderTool, PascalParserTool, CodeToolsStructs,
+  ExprEval;
   
 type
   TIdentCompletionTool = class;
@@ -404,6 +405,9 @@ type
 
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
+
+function dbgs(Flag: TIdentifierListContextFlag): string; overload;
+function dbgs(Flags: TIdentifierListContextFlags): string; overload;
   
 implementation
 
@@ -517,6 +521,24 @@ begin
 
   //debugln('CompareIdentItemWithHistListItem ',HistItem.Identifier,'=',GetIdentifier(IdentItem.Identifier));
   Result:=SysUtils.CompareText(HistItem.ParamList,IdentItem.ParamTypeList);
+end;
+
+function dbgs(Flag: TIdentifierListContextFlag): string;
+begin
+  Result:=GetEnumName(typeinfo(Flag),ord(Flag));
+end;
+
+function dbgs(Flags: TIdentifierListContextFlags): string;
+var
+  f: TIdentifierListContextFlag;
+begin
+  Result:='';
+  for f:=Low(TIdentifierListContextFlag) to High(TIdentifierListContextFlag) do
+    if f in Flags then begin
+      if Result<>'' then Result+=',';
+      Result+=dbgs(f);
+    end;
+  Result:='['+Result+']';
 end;
 
 { TIdentifierList }
