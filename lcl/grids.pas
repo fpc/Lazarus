@@ -6952,7 +6952,11 @@ begin
         end;
       end
       else if FRowAutoInserted and (DRow=-1) then begin
-        RowCount:=RowCount-1;
+        //there is a glitch: when goAlwaysShowEditor is not in Options
+        //it is possible that FRowAutoInserted = True, even if there is text in the current row
+        //(because TCustomGrid.EditorKeyDown is not called on the first key pressed in this scenario)
+        // therefore until that is fixed: always set FRowAutoInserted to False, but only delete the row if it is empty
+        if IsEmptyRow(FRow) then RowCount:=RowCount-1;
         FRowAutoInserted:=False;
       end;
     end;
