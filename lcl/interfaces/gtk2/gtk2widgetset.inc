@@ -5230,14 +5230,14 @@ end;
 procedure TGtk2WidgetSet.DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean
   );
 var
-  DC: TGtk2DeviceContext;
+  DC: TGtkDeviceContext;
 begin
   if IsValidDC(CanvasHandle) then
   begin
     //if CanvasHandle = 1 then
       //DC := Gtk2DefaultContext
     //else
-      DC := TGtk2DeviceContext(CanvasHandle);
+      DC := TGtkDeviceContext(CanvasHandle);
     DC.Antialiasing := AEnabled;
   end;
 end;
