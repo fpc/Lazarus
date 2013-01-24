@@ -6952,11 +6952,7 @@ begin
         end;
       end
       else if FRowAutoInserted and (DRow=-1) then begin
-        //there is a glitch: when goAlwaysShowEditor is not in Options
-        //it is possible that FRowAutoInserted = True, even if there is text in the current row
-        //(because TCustomGrid.EditorKeyDown is not called on the first key pressed in this scenario)
-        // therefore until that is fixed: always set FRowAutoInserted to False, but only delete the row if it is empty
-        if IsEmptyRow(FRow) then RowCount:=RowCount-1;
+        RowCount:=RowCount-1;
         FRowAutoInserted:=False;
       end;
     end;
@@ -7809,6 +7805,9 @@ begin
     if EditorCanAcceptKey(ch) and not EditorIsReadOnly then begin
       EditorShow(true);
       TWSCustomGridClass(WidgetSetClass).SendCharToEditor(Editor, Ch);
+      //this method bypasses Self.KeyDown and therefore will not reset FRowAutoInserted there
+      //So, set it to false, unless pressing a backspace caused the editor to pop-up
+      if (Ch <> ^H) then FRowAutoInserted := False;
     end;
   end;
 end;
