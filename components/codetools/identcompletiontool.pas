@@ -2673,11 +2673,11 @@ var
       exit;
     end;
     // check if cursor is in a parameter list
-    if not CheckParameterSyntax(CursorNode, CleanCursorPos,
+    if not CheckParameterSyntax(CursorNode.StartPos, CleanCursorPos,
                                 VarNameAtom, ProcNameAtom, ParameterIndex)
     then begin
       if VarNameAtom.StartPos=0 then ;
-      //DebugLn(['TIdentCompletionTool.FindCodeContext.CheckContextIsParameter not in a parameter list']);
+      DebugLn(['TIdentCompletionTool.FindCodeContext.CheckContextIsParameter not in a parameter list']);
       exit;
     end;
     //DebugLn('CheckContextIsParameter Variable=',GetAtom(VarNameAtom),' Proc=',GetAtom(ProcNameAtom),' ParameterIndex=',dbgs(ParameterIndex));

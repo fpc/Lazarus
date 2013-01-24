@@ -2114,7 +2114,7 @@ begin
   DebugLn('  CompleteLocalIdentifierByParameter: B check if it is a parameter ...');
   {$ENDIF}
   // check parameter syntax
-  if not CheckParameterSyntax(CursorNode,CleanCursorPos,
+  if not CheckParameterSyntax(CursorNode.StartPos,CleanCursorPos,
                               VarNameRange,ProcNameAtom,ParameterIndex)
   then
     exit;

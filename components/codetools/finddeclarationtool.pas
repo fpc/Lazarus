@@ -66,6 +66,7 @@ interface
 { $DEFINE ShowProcSearch}
 { $DEFINE VerboseFindDeclarationFail}
 { $DEFINE DebugAddToolDependency}
+{ $DEFINE VerboseCPS}
 
 {$IFDEF CTDEBUG}{$DEFINE DebugPrefix}{$ENDIF}
 {$IFDEF ShowTriedIdentifiers}{$DEFINE DebugPrefix}{$ENDIF}
@@ -723,8 +724,8 @@ type
       Params: TFindDeclarationParams): TTypeCompatibility;
     function IsBaseCompatible(const TargetType, ExpressionType: TExpressionType;
       Params: TFindDeclarationParams): TTypeCompatibility;
-    function CheckParameterSyntax(CursorNode: TCodeTreeNode;
-      CleanCursorPos: integer; out ParameterAtom, ProcNameAtom: TAtomPosition;
+    function CheckParameterSyntax(StartPos, CleanCursorPos: integer;
+      out ParameterAtom, ProcNameAtom: TAtomPosition;
       out ParameterIndex: integer): boolean;
   protected
     function CheckDirectoryCache: boolean;
@@ -9180,7 +9181,7 @@ begin
   {$ENDIF}
 end;
 
-function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
+function TFindDeclarationTool.CheckParameterSyntax(StartPos,
   CleanCursorPos: integer; out ParameterAtom, ProcNameAtom: TAtomPosition; out
   ParameterIndex: integer): boolean;
 // check for Identifier(expr,expr,...,expr,VarName
@@ -9328,21 +9329,30 @@ function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
     end;
   end;
 
+var
+  CommentStart: integer;
+  CommentEnd: integer;
 begin
-  {$IFDEF CheckNodeTool}CheckNodeTool(CursorNode);{$ENDIF}
   Result:=false;
   ParameterAtom:=CleanAtomPosition;
   ProcNameAtom:=CleanAtomPosition;
   ParameterIndex:=0;
   //DebugLn('TFindDeclarationTool.CheckParameterSyntax START');
 
+  if StartPos<1 then exit;
   // read code in front to find ProcName and check the syntax
-  MoveCursorToNodeStart(CursorNode);
+  MoveCursorToCleanPos(StartPos);
   repeat
     ReadNextAtom;
-    {$IFDEF VerboseCPS}DebugLn('TCodeCompletionCodeTool.CheckParameterSyntax ',GetAtom,' ',dbgs(CurPos.EndPos),'<',dbgs(CleanCursorPos));{$ENDIF}
-    if CurPos.EndPos>CleanCursorPos then exit;
-    if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen])
+    {$IFDEF VerboseCPS}DebugLn('TFindDeclarationTool.CheckParameterSyntax ',GetAtom,' at ',CleanPosToStr(CurPos.StartPos),' ',dbgs(CurPos.EndPos),'<',dbgs(CleanCursorPos));{$ENDIF}
+    if CurPos.EndPos>CleanCursorPos then begin
+      if LastAtoms.Count=0 then exit;
+      if not CleanPosIsInComment(CleanCursorPos,LastAtoms.GetValueAt(0).EndPos,
+        CommentStart,CommentEnd,false) then exit;
+      // cursor in a comment
+      // => parse within the comment
+      MoveCursorToCleanPos(CommentStart);
+    end else if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen])
     and (LastAtoms.GetValueAt(0).Flag=cafWord) then begin
       UndoReadNextAtom;
       if CheckIdentifierAndParameterList then exit(true);

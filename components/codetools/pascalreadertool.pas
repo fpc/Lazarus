@@ -60,7 +60,8 @@ type
   public
     // comments
     function CleanPosIsInComment(CleanPos, CleanCodePosInFront: integer;
-        var CommentStart, CommentEnd: integer): boolean;
+        var CommentStart, CommentEnd: integer;
+        OuterCommentBounds: boolean = true): boolean;
 
     // general extraction
     function ExtractNode(ANode: TCodeTreeNode;
@@ -255,9 +256,11 @@ begin
 end;
 
 function TPascalReaderTool.CleanPosIsInComment(CleanPos,
-  CleanCodePosInFront: integer; var CommentStart, CommentEnd: integer
-  ): boolean;
+  CleanCodePosInFront: integer; var CommentStart, CommentEnd: integer;
+  OuterCommentBounds: boolean): boolean;
 var CommentLvl, CurCommentPos: integer;
+  CurEnd: Integer;
+  CurCommentInnerEnd: Integer;
 begin
   Result:=false;
   if CleanPos>SrcLen then exit;
@@ -270,23 +273,29 @@ begin
     if CurPos.StartPos>CleanPos then begin
       //DebugLn(['TPascalReaderTool.CleanPosIsInComment ',GetATom,' StartPos=',CurPos.StartPos,' CleanPos=',CleanPos]);
       // CleanPos between two atoms -> parse space between for comments
-      CommentStart:=CleanCodePosInFront;
-      CommentEnd:=CurPos.StartPos;
-      if CommentEnd>SrcLen then CommentEnd:=SrcLen+1;
-      while CommentStart<CommentEnd do begin
+      if LastAtoms.Count>0 then
+        CommentStart:=LastAtoms.GetValueAt(0).EndPos
+      else
+        CommentStart:=CleanCodePosInFront;
+      CurEnd:=CurPos.StartPos;
+      if CurEnd>SrcLen then CurEnd:=SrcLen+1;
+      while CommentStart<CurEnd do begin
         if IsCommentStartChar[Src[CommentStart]] then begin
           CurCommentPos:=CommentStart;
-          case Src[CurCommentPos] of
+          CurCommentInnerEnd:=CurEnd;
+          case Src[CommentStart] of
           '{':
             begin
               inc(CurCommentPos);
-              if (CurCommentPos<CommentEnd) and (Src[CurCommentPos]=#3) then begin
+              if (CurCommentPos<=SrcLen) and (Src[CurCommentPos]=#3) then begin
                 // codetools skip comment
                 inc(CurCommentPos);
-                while (CurCommentPos<CommentEnd) do begin
+                if not OuterCommentBounds then CommentStart:=CurCommentPos;
+                while (CurCommentPos<CurEnd) do begin
                   if (Src[CurCommentPos]=#3)
-                  and (CurCommentPos+1<CommentEnd) and (Src[CurCommentPos+1]='}')
+                  and (CurCommentPos+1<CurEnd) and (Src[CurCommentPos+1]='}')
                   then begin
+                    CurCommentInnerEnd:=CurCommentPos;
                     inc(CurCommentPos,2);
                     break;
                   end;
@@ -294,48 +303,67 @@ begin
                 end;
               end else begin
                 // pascal comment
+                if not OuterCommentBounds then CommentStart:=CurCommentPos;
                 CommentLvl:=1;
-                while (CurCommentPos<CommentEnd) and (CommentLvl>0) do begin
+                while (CurCommentPos<CurEnd) do begin
                   case Src[CurCommentPos] of
                   '{': if Scanner.NestedComments then inc(CommentLvl);
-                  '}': dec(CommentLvl);
+                  '}':
+                    begin
+                      dec(CommentLvl);
+                      if (CommentLvl=0) then begin
+                        CurCommentInnerEnd:=CurCommentPos;
+                        inc(CurCommentPos);
+                        break;
+                      end;
+                    end;
                   end;
                   inc(CurCommentPos);
                 end;
               end;
             end;
           '/':  // Delphi comment
-            if (CurCommentPos<CommentEnd-1) and (Src[CurCommentPos+1]='/') then
+            if (CurCommentPos<SrcLen) and (Src[CurCommentPos+1]='/') then
             begin
               inc(CurCommentPos,2);
-              while (CurCommentPos<CommentEnd)
+              if not OuterCommentBounds then CommentStart:=CurCommentPos;
+              while (CurCommentPos<CurEnd)
               and (not (Src[CurCommentPos] in [#10,#13])) do
                 inc(CurCommentPos);
+              CurCommentInnerEnd:=CurCommentPos;
               inc(CurCommentPos);
-              if (CurCommentPos<CommentEnd)
+              if (CurCommentPos<CurEnd)
               and (Src[CurCommentPos] in [#10,#13])
               and (Src[CurCommentPos-1]<>Src[CurCommentPos]) then
                 inc(CurCommentPos);
             end else
               break;
-          '(': // old turbo pascal comment
-            if (CurCommentPos<CommentEnd-1) and (Src[CurCommentPos+1]='*') then
+          '(': // Turbo pascal comment
+            if (CurCommentPos<SrcLen) and (Src[CurCommentPos+1]='*') then
             begin
-              inc(CurCommentPos,3);
-              while (CurCommentPos<CommentEnd)
-              and ((Src[CurCommentPos-1]<>'*') or (Src[CurCommentPos]<>')'))
-              do
+              inc(CurCommentPos,2);
+              if not OuterCommentBounds then CommentStart:=CurCommentPos;
+              while (CurCommentPos<CurEnd) do begin
+                if (Src[CurCommentPos]='*') and (CurCommentPos+1<CurEnd)
+                and (Src[CurCommentPos+1]=')') then
+                begin
+                  CurCommentInnerEnd:=CurCommentPos;
+                  inc(CurCommentPos,2);
+                  break;
+                end;
                 inc(CurCommentPos);
-              inc(CurCommentPos);
+              end;
             end else
               break;
           end;
           if (CurCommentPos>CommentStart) and (CleanPos<CurCommentPos) then
           begin
             // CleanPos in comment
-            CommentEnd:=CurCommentPos;
-            Result:=true;
-            exit;
+            if OuterCommentBounds then
+              CommentEnd:=CurCommentPos
+            else
+              CommentEnd:=CurCommentInnerEnd;
+            exit(true);
           end;
           CommentStart:=CurCommentPos;
         end else if IsSpaceChar[Src[CommentStart]] then begin
