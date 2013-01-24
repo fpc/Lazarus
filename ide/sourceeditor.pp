@@ -1060,6 +1060,8 @@ type
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure LockAllEditorsInSourceChangeCache;
     procedure UnlockAllEditorsInSourceChangeCache;
+    procedure BeginGlobalUpdate;
+    procedure EndGlobalUpdate;
     procedure CloseFile(AEditor: TSourceEditorInterface);
     // history jumping
     procedure HistoryJump(Sender: TObject; CloseAction: TJumpHistoryAction);
@@ -9652,6 +9654,22 @@ begin
     then
       SourceEditors[i].EndGlobalUpdate;
   end;
+end;
+
+procedure TSourceEditorManager.BeginGlobalUpdate;
+var
+  i: integer;
+begin
+  for i:=0 to SourceEditorCount - 1 do
+    SourceEditors[i].BeginGlobalUpdate;
+end;
+
+procedure TSourceEditorManager.EndGlobalUpdate;
+var
+  i: integer;
+begin
+  for i:=0 to SourceEditorCount - 1 do
+    SourceEditors[i].EndGlobalUpdate;
 end;
 
 procedure TSourceEditorManager.CloseFile(AEditor: TSourceEditorInterface);

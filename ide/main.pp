@@ -4780,10 +4780,15 @@ begin
   if Restore then exit;
   if Project1<>nil then
     Project1.UpdateAllSyntaxHighlighter;
-  UpdateHighlighters(True);
-  SourceEditorManager.ReloadEditorOptions;
-  ReloadMenuShortCuts;
-  UpdateMacroListViewer;
+  SourceEditorManager.BeginGlobalUpdate;
+  try
+    UpdateHighlighters(True);
+    SourceEditorManager.ReloadEditorOptions;
+    ReloadMenuShortCuts;
+    UpdateMacroListViewer;
+  finally
+    SourceEditorManager.EndGlobalUpdate;
+  end;
 end;
 
 procedure TMainIDE.DoCodetoolsOptionsAfterWrite(Sender: TObject; Restore: boolean);
