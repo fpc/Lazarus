@@ -704,6 +704,7 @@ begin
     exit;
   end;
   FNeedValidate := False;
+  FNextPosIdx := -1;
 
   if (fSearchString = '') or (not MarkupInfo.IsEnabled) then begin
     if (not SkipPaint) and (fMatches.Count > 0) then
@@ -740,6 +741,7 @@ begin
         if FMatches.StartPoint[Idx].y > LastLine+SEARCH_START_OFFS then begin
            // New search has smaller range than gap
           FMatches.Delete(Idx, FMatches.Count - Idx);
+          FSearchedEnd.y := -1;
         end
         else begin
           // *** Fill gap at start
