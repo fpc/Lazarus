@@ -139,7 +139,7 @@ begin
   end;
 
   if ATimeOut > 0
-  then t := GetTickCount;
+  then t := GetTickCount64;
 
   // wait for all handles
   Step:=0;
@@ -152,7 +152,7 @@ begin
     R := FpSelect(Max + 1, @FDSWait, nil, nil, TimeOut);
 
     if (ATimeOut > 0) then begin
-      t2 := GetTickCount;
+      t2 := GetTickCount64;
       if t2 < t
       then t3 := t2 + (High(t) - t)
       else t3 := t2 - t;
