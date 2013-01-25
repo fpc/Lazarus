@@ -77,7 +77,7 @@ type
     procedure DoCaretChanged(Sender: TObject); virtual;
     procedure DoTopLineChanged(OldTopLine : Integer); virtual;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); virtual;
-    procedure DoTextChanged(StartLine, EndLine : Integer); virtual; // 1 based
+    procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); virtual; // 1 based
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); virtual;
     procedure DoVisibleChanged(AVisible: Boolean); virtual;
 
@@ -109,7 +109,7 @@ type
                                            AMarkup: TSynSelectedColor); virtual;
 
     // Notifications about Changes to the text
-    Procedure TextChanged(aFirstCodeLine, aLastCodeLine: Integer); virtual; // 1 based
+    Procedure TextChanged(aFirstCodeLine, aLastCodeLine, ACountDiff: Integer); virtual; // 1 based
     Procedure TempDisable;
     Procedure TempEnable;
     procedure IncPaintLock; virtual;
@@ -174,7 +174,7 @@ type
                                            AMarkup: TSynSelectedColor); override;
 
     // Notifications about Changes to the text
-    Procedure TextChanged(aFirstCodeLine, aLastCodeLine: Integer); override;
+    Procedure TextChanged(aFirstCodeLine, aLastCodeLine, ACountDiff: Integer); override;
   end;
 
 
@@ -311,7 +311,7 @@ procedure TSynEditMarkup.DoLinesInWindoChanged(OldLinesInWindow : Integer);
 begin
 end;
 
-procedure TSynEditMarkup.DoTextChanged(StartLine, EndLine: Integer);
+procedure TSynEditMarkup.DoTextChanged(StartLine, EndLine, ACountDiff: Integer);
 begin
 end;
 
@@ -396,9 +396,9 @@ begin
     AMarkup.Merge(c, aStartCol, AEndCol);
 end;
 
-procedure TSynEditMarkup.TextChanged(aFirstCodeLine, aLastCodeLine: Integer);
+procedure TSynEditMarkup.TextChanged(aFirstCodeLine, aLastCodeLine, ACountDiff: Integer);
 begin
-  DoTextChanged(aFirstCodeLine, aLastCodeLine);
+  DoTextChanged(aFirstCodeLine, aLastCodeLine, ACountDiff);
 end;
 
 procedure TSynEditMarkup.TempDisable;
@@ -584,13 +584,13 @@ begin
   end;
 end;
 
-procedure TSynEditMarkupManager.TextChanged(aFirstCodeLine,
-  aLastCodeLine: Integer);
+procedure TSynEditMarkupManager.TextChanged(aFirstCodeLine, aLastCodeLine,
+  ACountDiff: Integer);
 var
   i : integer;
 begin
   for i := 0 to fMarkUpList.Count-1 do
-    TSynEditMarkup(fMarkUpList[i]).TextChanged(aFirstCodeLine, aLastCodeLine);
+    TSynEditMarkup(fMarkUpList[i]).TextChanged(aFirstCodeLine, aLastCodeLine, ACountDiff);
 end;
 
 function TSynEditMarkupManager.GetMarkup(Index: integer): TSynEditMarkup;

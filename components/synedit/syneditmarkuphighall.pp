@@ -109,7 +109,7 @@ type
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
-    procedure DoTextChanged(StartLine, EndLine: Integer); override; // 1 based
+    procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override; // 1 based
     procedure DoVisibleChanged(AVisible: Boolean); override;
     function  HasVisibleMatch: Boolean; // does not check, if in visible line range. Only Count and DideSingleMatch
     property  MatchCount: Integer read GetMatchCount;
@@ -169,7 +169,7 @@ type
     procedure SetSearchString(const AValue : String); override;
     procedure SelectionChanged(Sender: TObject);
     procedure DoCaretChanged(Sender: TObject); override;
-    procedure DoTextChanged(StartLine, EndLine : Integer); override;
+    procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
     procedure RestartTimer;
     procedure ScrollTimerHandler(Sender: TObject);
@@ -835,10 +835,14 @@ begin
   FNextPosRow := -1;
 end;
 
-procedure TSynEditMarkupHighlightAll.DoTextChanged(StartLine, EndLine: Integer);
+procedure TSynEditMarkupHighlightAll.DoTextChanged(StartLine, EndLine,
+  ACountDiff: Integer);
 begin
   if (fSearchString = '') then exit;
-  InvalidateLines(StartLine, MaxInt); // EndLine); // Might be LineCount changed
+  if ACountDiff = 0 then
+    InvalidateLines(StartLine, EndLine+1)
+  else
+    InvalidateLines(StartLine, MaxInt); // LineCount changed
 end;
 
 procedure TSynEditMarkupHighlightAll.DoVisibleChanged(AVisible: Boolean);
@@ -1134,7 +1138,8 @@ begin
   inherited;
 end;
 
-procedure TSynEditMarkupHighlightAllCaret.DoTextChanged(StartLine, EndLine: Integer);
+procedure TSynEditMarkupHighlightAllCaret.DoTextChanged(StartLine, EndLine,
+  ACountDiff: Integer);
 begin
   FStateChanged := True; // Something changed, paint will be called
   if ( (not HideSingleMatch) and (MatchCount > 0) ) or

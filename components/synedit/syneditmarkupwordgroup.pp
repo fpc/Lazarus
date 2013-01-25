@@ -54,7 +54,7 @@ type
     procedure DoCaretChanged(Sender: TObject); override;
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
-    procedure DoTextChanged(StartLine, EndLine : Integer); override;
+    procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
     procedure DoVisibleChanged(AVisible: Boolean); override;
     procedure InvalidateCurrentHighlight;
@@ -319,7 +319,8 @@ procedure TSynEditMarkupWordGroup.DoLinesInWindoChanged(OldLinesInWindow: Intege
 begin
 end;
 
-procedure TSynEditMarkupWordGroup.DoTextChanged(StartLine, EndLine: Integer);
+procedure TSynEditMarkupWordGroup.DoTextChanged(StartLine, EndLine,
+  ACountDiff: Integer);
 begin
   InvalidateCurrentHighlight;
 end;

@@ -466,6 +466,7 @@ type
     FLastMousePoint: TPoint;  // Pixel
     FChangedLinesStart: integer; // 1 based, 0 means invalid
     FChangedLinesEnd: integer; // 1 based, 0 means invalid, -1 means rest of screen
+    FChangedLinesDiff: integer; // count changed +/-
     FBeautifier, FDefaultBeautifier: TSynCustomBeautifier;
     FBeautifyStartLineIdx, FBeautifyEndLineIdx: Integer;
 
@@ -2239,6 +2240,7 @@ begin
       end;
       FChangedLinesStart:=0;
       FChangedLinesEnd:=0;
+      FChangedLinesDiff:=0;
     end;
     FCaret.Unlock;            // Maybe after FFoldedLinesView
     FBlockSelection.Unlock;
@@ -4677,7 +4679,7 @@ begin
   end;
   if not assigned(FHighlighter) then begin
     if ATextChanged then begin
-      fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd);
+      fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd, FChangedLinesDiff);
       // TODO: see TSynEditFoldedView.LineCountChanged, this is only needed, because NeedFixFrom does not always work
       FFoldedLinesView.FixFoldingAtTextIndex(FChangedLinesStart, FChangedLinesEnd);
     end;
@@ -4689,7 +4691,7 @@ begin
 
   // Todo: text may not have changed
   if ATextChanged then
-    fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd);
+    fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd, FChangedLinesDiff);
   TopView := TopView;
 end;
 
@@ -4732,6 +4734,7 @@ begin
     if (FChangedLinesStart<1) or (FChangedLinesStart>AIndex+1) then
       FChangedLinesStart:=AIndex+1;
     FChangedLinesEnd := -1; // Invalidate the rest of lines
+    FChangedLinesDiff := FChangedLinesDiff + ACount;
   end else begin
     ScanRanges;
     InvalidateLines(AIndex + 1, -1);
@@ -7649,7 +7652,7 @@ begin
   if fHighlighter.AttributeChangeNeedScan then begin
     FHighlighter.CurrentLines := FTheLinesView;
     FHighlighter.ScanAllRanges;
-    fMarkupManager.TextChanged(0, FTheLinesView.Count - 1);
+    fMarkupManager.TextChanged(0, FTheLinesView.Count - 1, 0);
     TopView := TopView;
   end;
 end;

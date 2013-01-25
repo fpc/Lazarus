@@ -50,7 +50,7 @@ type
     procedure DoCaretChanged(Sender: TObject); override;
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
-    procedure DoTextChanged(StartLine, EndLine : Integer); override;
+    procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
   public
     constructor Create(ASynEdit: TSynEditBase);
@@ -110,7 +110,8 @@ begin
   InvalidateLineHighlight;
 end;
 
-procedure TSynEditMarkupSpecialLine.DoTextChanged(StartLine, EndLine: Integer);
+procedure TSynEditMarkupSpecialLine.DoTextChanged(StartLine, EndLine,
+  ACountDiff: Integer);
 begin
   InvalidateLineHighlight;
 end;
