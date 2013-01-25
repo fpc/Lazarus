@@ -657,7 +657,7 @@ var
 
   function FindStartPoint(var AFirstKeptValidIdx: Integer): Boolean;
   var
-    Idx, Idx2 : Integer;
+    Idx: Integer;
   begin
     Result := False; // No Gap at start to fill
 
