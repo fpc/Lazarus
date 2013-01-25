@@ -5,6 +5,7 @@
    ./runtests --format=plain --suite=TestHasTxtWord
    ./runtests --format=plain --suite=TestBasicFindCommentEnd
    ./runtests --format=plain --suite=TestBasicFindNextComment
+   ./runtests --format=plain --suite=TestCompareTextIgnoringSpace
 }
 unit TestBasicCodetools;
 
@@ -25,6 +26,7 @@ type
     procedure TestHasTxtWord;
     procedure TestBasicFindCommentEnd;
     procedure TestBasicFindNextComment;
+    procedure TestCompareTextIgnoringSpace;
   end;
 
 implementation
@@ -139,6 +141,25 @@ begin
   TestFindNextComment('(*',1);
   TestFindNextComment('(',2);
   TestFindNextComment('/',2);
+end;
+
+procedure TTestBasicCodeTools.TestCompareTextIgnoringSpace;
+
+  procedure t(Txt1, Txt2: string; Expected: integer; CaseSensitive: boolean = false);
+  var
+    r: Integer;
+  begin
+    r:=CompareTextIgnoringSpace(Txt1,Txt2,CaseSensitive);
+    AssertEquals('Txt1="'+dbgstr(Txt1)+'",Txt2="'+dbgstr(Txt2)+'"',Expected,r);
+  end;
+
+begin
+  t('a','a',0);
+  t('a','A',0);
+  t('a',' a',0);
+  t(' a','a',0);
+  t(' a','a ',0);
+  t(' a: b','a:b',0);
 end;
 
 initialization
