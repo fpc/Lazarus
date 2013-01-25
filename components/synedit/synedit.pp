@@ -7220,6 +7220,7 @@ begin
                                             CurReplace);
           ptFoundEnd:=AdjustPositionAfterReplace(ptFoundEnd,
                                             ptFoundStart,ptFoundEnd,CurReplace);
+          ptFoundEndSel   := ptFoundEnd;
         end;
         if not bReplaceAll then
           exit;
