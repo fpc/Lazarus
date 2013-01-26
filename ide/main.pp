@@ -4649,8 +4649,6 @@ begin
     IDEOptionsDialog.ReadAll;
     if IDEOptionsDialog.ShowModal = mrOk then begin
       IDEOptionsDialog.WriteAll(false);
-      UpdateHighlighters(True);
-      SourceEditorManager.ReloadEditorOptions;
       if EnvironmentOptions.SingleTaskBarButton then
         Application.TaskBarBehavior := tbSingleButton
       else
