@@ -237,8 +237,9 @@ const
       EdtOptionsIndent      = 110;
       EdtOptionsGeneralMisc = 120;
     EdtOptionsDisplay     = 200;
-      EdtOptionsColors    = 500;
-      EdtOptionsMarkup    = 502;
+      EdtOptionsColors      = 500;
+      EdtOptionsMarkup      = 502;
+      EdtOptionsUserDefined = 504;
     EdtOptionsKeys        = 300;
     EdtOptionsMouse       = 400;
     EdtOptionsMouseAdv    = 401;
