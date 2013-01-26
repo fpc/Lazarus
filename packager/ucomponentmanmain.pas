@@ -43,19 +43,19 @@ type
   { TFrmComponentMan }
 
   TFrmComponentMan = class(TForm)
-    BtnCancel: TBITBTN;
-    Bitbtn2: TBITBTN;
+    BtnCancel: TBitBtn;
+    Bitbtn2: TBitBtn;
     BtnRemove: TBitBtn;
     Button1: TBitBtn;
-    DlgLoad: TOPENDIALOG;
+    DlgLoad: TOpenDialog;
     TxtPage: TEDIT;
-    Label1: TLABEL;
-    Label2: TLABEL;
-    Label3: TLABEL;
-    Label4: TLABEL;
-    LblUnit: TLABEL;
-    LblComponent: TLABEL;
-    ListComps: TLISTBOX;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    LblUnit: TLabel;
+    LblComponent: TLabel;
+    ListComps: TListBox;
     procedure Bitbtn2CLICK(Sender: TObject);
     procedure BtnCancelCLICK(Sender: TObject);
     procedure BtnRemoveCLICK(Sender: TObject);

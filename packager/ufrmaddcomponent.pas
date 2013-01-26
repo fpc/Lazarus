@@ -32,14 +32,12 @@ uses
 
 type
   TFrmAddComponent = class(TForm)
-    Bitbtn1: TBITBTN;
-    Bitbtn2: TBITBTN;
-    ListCompAdd: TLISTBOX;
+    Bitbtn1: TBitBtn;
+    Bitbtn2: TBitBtn;
+    ListCompAdd: TListBox;
   private
-    { private declarations }
   public
-    { public declarations }
-  end; 
+  end;
 
 var
   FrmAddComponent: TFrmAddComponent = nil;
