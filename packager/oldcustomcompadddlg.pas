@@ -20,7 +20,7 @@
 
   Author: Anthony Maro
 }
-unit UFrmAddComponent;
+unit OldCustomCompAddDlg;
 
 {$mode objfpc}{$H+}
 
