@@ -2087,11 +2087,18 @@ begin
 
   // FPC source directory
   UpdateFPCSrcDirCandidates;
+  {$IFDEF DebugSearchFPCSrcThread}
+  IsFirstStart:=true;
+  {$ENDIF}
   if IsFirstStart or (EnvironmentOptions.FPCSourceDirectory='')
   or (not FileExistsCached(EnvironmentOptions.GetParsedFPCSourceDirectory))
   then begin
     // first start => choose first best candidate
+    {$IFDEF DebugSearchFPCSrcThread}
+    Candidate:=nil;
+    {$ELSE}
     Candidate:=GetFirstCandidate(FCandidates[sddtFPCSrcDir]);
+    {$ENDIF}
     if Candidate<>nil then begin
       EnvironmentOptions.FPCSourceDirectory:=Candidate.Caption;
     end

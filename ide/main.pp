@@ -9869,6 +9869,10 @@ begin
 
   if InteractiveSetup then
   begin
+    {$IFDEF DebugSearchFPCSrcThread}
+    ShowSetupDialog:=true;
+    {$ENDIF}
+
     if (not ShowSetupDialog)
     and (CheckLazarusDirectoryQuality(EnvironmentOptions.GetParsedLazarusDirectory,Note)<>sddqCompatible)
     then begin
