@@ -55,7 +55,7 @@ uses
   // IDE
   LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, IDECommands,
   IDEOptionDefs, EnvironmentOpts, MiscOptions, InputHistory,
-  Project, ComponentReg, UComponentManMain, PackageEditor, AddToPackageDlg,
+  Project, ComponentReg, OldCustomCompDlg, PackageEditor, AddToPackageDlg,
   PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
   PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
   IDETranslations, TransferMacros, BuildLazDialog, NewDialog,

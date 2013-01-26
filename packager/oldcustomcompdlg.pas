@@ -20,7 +20,7 @@
   Author: Anthony Maro
 }
 
-unit UComponentManMain;
+unit OldCustomCompDlg;
 
 {$mode objfpc}{$H+}
 
@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, FileUtil, lazutf8classes, LazUTF8, IDEProcs, UFrmAddComponent;
+  Buttons, FileUtil, lazutf8classes, LazUTF8, IDEProcs, OldCustomCompAddDlg;
   
 Type
   TRComponent = class(TObject)
