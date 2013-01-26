@@ -123,10 +123,7 @@ begin
     end;
   end;
   CleanUpPIDFile;
-  if (SplashForm<>nil) then begin
-    SplashForm.Free;
-    SplashForm:=nil;
-  end;
+  FreeThenNil(SplashForm);
 
   debugln('LAZARUS END - cleaning up ...');
 
