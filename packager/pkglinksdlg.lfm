@@ -7,11 +7,12 @@ object PackageLinksDialog: TPackageLinksDialog
   ClientHeight = 451
   ClientWidth = 659
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '1.1'
   object ScopeGroupBox: TGroupBox
     Left = 0
-    Height = 113
+    Height = 83
     Top = 0
     Width = 659
     Align = alTop
@@ -22,46 +23,37 @@ object PackageLinksDialog: TPackageLinksDialog
     ChildSizing.HorizontalSpacing = 6
     ChildSizing.VerticalSpacing = 6
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ClientHeight = 96
+    ClientHeight = 66
     ClientWidth = 655
     TabOrder = 0
-    object FileMustExistCheckBox: TCheckBox
-      Left = 6
-      Height = 24
-      Top = 6
-      Width = 170
-      Caption = 'FileMustExistCheckBox'
-      OnChange = FileMustExistCheckBoxChange
-      TabOrder = 0
-    end
     object ShowGlobalLinksCheckBox: TCheckBox
       Left = 6
       Height = 24
-      Top = 36
+      Top = 6
       Width = 170
       Caption = 'ShowGlobalLinksCheckBox'
       Checked = True
       OnChange = ShowGlobalLinksCheckBoxChange
       State = cbChecked
-      TabOrder = 1
+      TabOrder = 0
     end
     object ShowUserLinksCheckBox: TCheckBox
       Left = 6
       Height = 24
-      Top = 66
+      Top = 36
       Width = 170
       Caption = 'ShowUserLinksCheckBox'
       Checked = True
       OnChange = ShowUserLinksCheckBoxChange
       State = cbChecked
-      TabOrder = 2
+      TabOrder = 1
     end
   end
   object PkgStringGrid: TStringGrid
     AnchorSideBottom.Control = BtnPanel
     Left = 0
-    Height = 296
-    Top = 113
+    Height = 326
+    Top = 83
     Width = 659
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -108,5 +100,10 @@ object PackageLinksDialog: TPackageLinksDialog
       OnClick = UpdateGlobalLinksButtonClick
       TabOrder = 1
     end
+  end
+  object LPKParsingTimer: TTimer
+    OnTimer = LPKParsingTimerTimer
+    left = 355
+    top = 190
   end
 end

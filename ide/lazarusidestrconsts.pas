@@ -237,7 +237,6 @@ resourcestring
   lisDoNotCloseTheProject = 'Do not close the project';
   lisDoNotCloseTheIDE = 'Do not close the IDE';
   lisConvert = 'Convert';
-  lisPLDOnlyExistingFiles = 'Only existing files';
   lisPLDShowGlobalLinks = 'Show global links';
   lisPLDShowUserLinks = 'Show user links';
   lisPLDGlobal = 'Global';

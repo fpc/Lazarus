@@ -38,18 +38,23 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, Grids, ExtCtrls, AVL_Tree,
+  Buttons, Grids, ExtCtrls, AvgLvlTree,
   FileProcs, PackageIntf,
-  LazarusIDEStrConsts, PackageDefs, PackageLinks;
+  LazarusIDEStrConsts, PackageDefs, PackageLinks, LPKCache;
 
 type
 
   { TPkgLinkInfo }
 
   TPkgLinkInfo = class(TPackageLink)
+  private
+    FLPKInfo: TLPKInfo;
   public
+    constructor Create;
+    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     property Origin;
+    property LPKInfo: TLPKInfo read FLPKInfo;
   end;
 
   { TPackageLinksDialog }
@@ -57,27 +62,27 @@ type
   TPackageLinksDialog = class(TForm)
     BtnPanel: TPanel;
     CloseBitBtn: TBitBtn;
+    LPKParsingTimer: TTimer;
     ShowUserLinksCheckBox: TCheckBox;
     ShowGlobalLinksCheckBox: TCheckBox;
-    FileMustExistCheckBox: TCheckBox;
     ScopeGroupBox: TGroupBox;
     PkgStringGrid: TStringGrid;
     UpdateGlobalLinksButton: TButton;
-    procedure FileMustExistCheckBoxChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure LPKParsingTimerTimer(Sender: TObject);
+    procedure OnAllLPKParsed(Sender: TObject);
     procedure ShowGlobalLinksCheckBoxChange(Sender: TObject);
     procedure ShowUserLinksCheckBoxChange(Sender: TObject);
     procedure UpdateGlobalLinksButtonClick(Sender: TObject);
   private
-    FLinks: TAVLTree;// tree of TPkgLinkInfo sorted for names
+    FLinks: TAvglVLTree;// tree of TPkgLinkInfo sorted for names
     FCollectingOrigin: TPkgLinkOrigin;
-    procedure UpdateAll;
     procedure UpdatePackageList;
     procedure ClearLinks;
     procedure IteratePackages(APackage: TLazPackageID);
   public
-    destructor Destroy; override;
-  end; 
+  end;
 
 function ShowPackageLinks: TModalResult;
 
@@ -103,7 +108,6 @@ procedure TPackageLinksDialog.FormCreate(Sender: TObject);
 begin
   Caption:=lisPLDPackageLinks;
   ScopeGroupBox.Caption:=dlgScope;
-  FileMustExistCheckBox.Caption:=lisPLDOnlyExistingFiles;
   ShowGlobalLinksCheckBox.Caption:=lisPLDShowGlobalLinks
                                  +' ('+PkgLinks.GetGlobalLinkDirectory+'*.lpl)';
   ShowUserLinksCheckBox.Caption:=lisPLDShowUserLinks
@@ -111,7 +115,27 @@ begin
   UpdateGlobalLinksButton.Caption:=lrsReadLplFiles;
   CloseBitBtn.Caption:=lisClose;
 
-  UpdateAll;
+  LPKInfoCache.StartLPKReaderWithAllAvailable;
+  LPKInfoCache.AddOnQueueEmpty(@OnAllLPKParsed);
+
+  UpdatePackageList;
+end;
+
+procedure TPackageLinksDialog.FormDestroy(Sender: TObject);
+begin
+  LPKInfoCache.EndLPKReader;
+  ClearLinks;
+end;
+
+procedure TPackageLinksDialog.LPKParsingTimerTimer(Sender: TObject);
+begin
+  UpdatePackageList;
+end;
+
+procedure TPackageLinksDialog.OnAllLPKParsed(Sender: TObject);
+begin
+  LPKParsingTimer.Enabled:=false;
+  UpdatePackageList;
 end;
 
 procedure TPackageLinksDialog.ShowGlobalLinksCheckBoxChange(Sender: TObject);
@@ -131,35 +155,44 @@ begin
   UpdatePackageList;
 end;
 
-procedure TPackageLinksDialog.FileMustExistCheckBoxChange(Sender: TObject);
-begin
-  UpdatePackageList;
-end;
-
-procedure TPackageLinksDialog.UpdateAll;
-begin
-  UpdatePackageList;
-end;
-
 procedure TPackageLinksDialog.UpdatePackageList;
 var
-  Node: TAVLTreeNode;
+  Node: TAvgLvlTreeNode;
   Link: TPkgLinkInfo;
   i: Integer;
   OriginStr: String;
+  Info: TLPKInfo;
 begin
+  // collect links
   ClearLinks;
-  
-  FLinks:=TAVLTree.Create(@ComparePackageLinks);
+
+  if FLinks=nil then
+    FLinks:=TAvgLvlTree.Create(@ComparePackageLinks);
   if ShowGlobalLinksCheckBox.Checked then begin
     FCollectingOrigin:=ploGlobal;
-    PkgLinks.IteratePackages(FileMustExistCheckBox.Checked,@IteratePackages,[ploGlobal]);
+    PkgLinks.IteratePackages(false,@IteratePackages,[ploGlobal]);
   end;
   if ShowUserLinksCheckBox.Checked then begin
     FCollectingOrigin:=ploUser;
-    PkgLinks.IteratePackages(FileMustExistCheckBox.Checked,@IteratePackages,[ploUser]);
+    PkgLinks.IteratePackages(false,@IteratePackages,[ploUser]);
   end;
 
+  // query additional information from lpk files
+  LPKInfoCache.EnterCritSection;
+  try
+    Node:=FLinks.FindLowest;
+    while Node<>nil do begin
+      Link:=TPkgLinkInfo(Node.Data);
+      Info:=LPKInfoCache.FindPkgInfoWithFilename(Link.GetEffectiveFilename);
+      if Info<>nil then
+        Link.LPKInfo.Assign(Info);
+      Node:=Node.Successor;
+    end;
+  finally
+    LPKInfoCache.LeaveCritSection;
+  end;
+
+  // fill/update grid
   PkgStringGrid.ColCount:=5;
   PkgStringGrid.RowCount:=FLinks.Count+1;
   PkgStringGrid.Cells[0, 0]:=lisName;
@@ -182,7 +215,7 @@ begin
     PkgStringGrid.Cells[3,i]:=dbgs(FileExistsCached(Link.GetEffectiveFilename));
     PkgStringGrid.Cells[4,i]:=Link.GetEffectiveFilename;
     inc(i);
-    Node:=FLinks.FindSuccessor(Node);
+    Node:=Node.Successor;
   end;
   
   PkgStringGrid.AutoAdjustColumns;
@@ -206,13 +239,19 @@ begin
   FLinks.Add(NewLink);
 end;
 
-destructor TPackageLinksDialog.Destroy;
+{ TPkgLinkInfo }
+
+constructor TPkgLinkInfo.Create;
 begin
-  ClearLinks;
-  inherited Destroy;
+  inherited Create;
+  FLPKInfo:=TLPKInfo.Create(TLazPackageID.Create,false);
 end;
 
-{ TPkgLinkInfo }
+destructor TPkgLinkInfo.Destroy;
+begin
+  FreeAndNil(FLPKInfo);
+  inherited Destroy;
+end;
 
 procedure TPkgLinkInfo.Assign(Source: TPersistent);
 var
@@ -220,10 +259,12 @@ var
 begin
   if Source is TLazPackageID then begin
     AssignID(TLazPackageID(Source));
+    LPKInfo.Assign(Source);
     if Source is TPackageLink then begin
       Link:=TPackageLink(Source);
       Origin:=Link.Origin;
       LPKFilename:=Link.LPKFilename;
+      LPLFilename:=Link.LPLFilename;
       AutoCheckExists:=Link.AutoCheckExists;
       NotFoundCount:=Link.NotFoundCount;
       LastCheckValid:=Link.LastCheckValid;

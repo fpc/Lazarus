@@ -52,8 +52,8 @@ interface
 
 uses
   Classes, SysUtils, PackageLinks, PackageDefs, PackageSystem, PackageIntf,
-  EnvironmentOpts, LazFileUtils, AvgLvlTree, Laz2_XMLCfg, LazLoggerBase,
-  LazMethodList;
+  EnvironmentOpts, LCLProc, LazFileUtils, AvgLvlTree, Laz2_XMLCfg,
+  LazLoggerBase, LazMethodList;
 
 type
   TLPKInfoState = (
@@ -82,6 +82,7 @@ type
     License: string;
     PkgType: TLazPackageType; // design, runtime
 
+    procedure Assign(Source: TObject);
     constructor Create(TheID: TLazPackageID; CreateNewID: boolean);
     destructor Destroy; override;
   end;
@@ -624,6 +625,32 @@ begin
   end else begin
     ID:=TheID;
   end;
+end;
+
+procedure TLPKInfo.Assign(Source: TObject);
+var
+  SrcInfo: TLPKInfo;
+  SrcID: TLazPackageID;
+begin
+  if Source is TLPKInfo then
+  begin
+    SrcInfo:=TLPKInfo(Source);
+    PkgType:=SrcInfo.PkgType;
+    LPKParsed:=SrcInfo.LPKParsed;
+    LPKFilename:=SrcInfo.LPKFilename;
+    LPKError:=SrcInfo.LPKError;
+    License:=SrcInfo.License;
+    Installed:=SrcInfo.Installed;
+    InLazSrc:=SrcInfo.InLazSrc;
+    ID.AssignID(SrcInfo.ID);
+    Description:=SrcInfo.Description;
+    Base:=SrcInfo.Base;
+    Author:=SrcInfo.Author;
+  end else if Source is TLazPackageID then begin
+    SrcID:=TLazPackageID(Source);
+    ID.AssignID(SrcID);
+  end else
+    RaiseGDBException('');
 end;
 
 destructor TLPKInfo.Destroy;
