@@ -1563,13 +1563,14 @@ begin
     end;
 end;
 
-function frGetExportFilterIndex(ClassRef: TfrExportFilterClass): Integer;
+function frGetExportFilterIndex(ClassRef: TfrExportFilterClass; const AFilterExt:string): Integer;
 var
   i: Integer;
 begin
   result := -1;
   for i:=0 to Length(frFilters)-1 do
-    if frFilters[i].ClassRef=ClassRef then
+  with frFilters[i] do
+    if (ClassRef=ClassRef) and (FilterExt=AFilterExt) then
     begin
       result := i;
       break;
@@ -1612,7 +1613,7 @@ end;
 procedure frRegisterExportFilter(ClassRef: TfrExportFilterClass;
   const FilterDesc, FilterExt: String);
 begin
-  if frGetExportFilterIndex(ClassRef)<0 then
+  if frGetExportFilterIndex(ClassRef, FilterExt)<0 then
   begin
     frFilters[frFiltersCount].ClassRef := ClassRef;
     frFilters[frFiltersCount].FilterDesc := FilterDesc;
