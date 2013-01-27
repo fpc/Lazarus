@@ -346,7 +346,7 @@ begin
   if APackage is TLazPackage then
     fAvailableFiles.Add(TLazPackage(APackage).Filename)
   else if APackage is TPackageLink then
-    fAvailableFiles.Add(TPackageLink(APackage).Filename);
+    fAvailableFiles.Add(TPackageLink(APackage).LPKFilename);
 end;
 
 procedure TLPKInfoCache.QueueEmpty;

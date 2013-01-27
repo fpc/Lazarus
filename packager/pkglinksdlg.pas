@@ -211,7 +211,7 @@ begin
     if Source is TPackageLink then begin
       Link:=TPackageLink(Source);
       Origin:=Link.Origin;
-      Filename:=Link.Filename;
+      LPKFilename:=Link.LPKFilename;
       AutoCheckExists:=Link.AutoCheckExists;
       NotFoundCount:=Link.NotFoundCount;
       LastCheckValid:=Link.LastCheckValid;

@@ -85,6 +85,7 @@ type
     FLastCheck: TDateTime;
     FLastCheckValid: boolean;
     FLastUsed: TDateTime;
+    FLPLFilename: string;
     FNotFoundCount: integer;
     FOrigin: TPkgLinkOrigin;
     fReferenceCount: integer;
@@ -99,7 +100,8 @@ type
     procedure Release;
   public
     property Origin: TPkgLinkOrigin read FOrigin write SetOrigin;
-    property Filename: string read FFilename write SetFilename;
+    property LPKFilename: string read FFilename write SetFilename; // if relative it is relative to the LazarusDir
+    property LPLFilename: string read FLPLFilename write FLPLFilename;
     property AutoCheckExists: boolean read FAutoCheckExists write FAutoCheckExists;
     property NotFoundCount: integer read FNotFoundCount write FNotFoundCount;
     property LastCheckValid: boolean read FLastCheckValid write FLastCheckValid;
@@ -239,7 +241,7 @@ begin
   Link1:=TPackageLink(Data1);
   Link2:=TPackageLink(Data2);
   // first compare filenames
-  Result:=CompareFilenames(Link1.Filename,Link2.Filename);
+  Result:=CompareFilenames(Link1.LPKFilename,Link2.LPKFilename);
   if Result<>0 then exit;
   // then compare file date
   if Link1.FileDateValid then begin
@@ -291,13 +293,13 @@ end;
 function TPackageLink.MakeSense: boolean;
 begin
   Result:=(Name<>'') and IsValidUnitName(Name)
-           and PackageFileNameIsValid(Filename)
-           and (CompareText(Name,ExtractFileNameOnly(Filename))=0);
+           and PackageFileNameIsValid(LPKFilename)
+           and (CompareText(Name,ExtractFileNameOnly(LPKFilename))=0);
 end;
 
 function TPackageLink.GetEffectiveFilename: string;
 begin
-  Result:=Filename;
+  Result:=LPKFilename;
   if (not FilenameIsAbsolute(Result)) then
     Result:=TrimFilename(EnvironmentOptions.GetParsedLazarusDirectory+PathDelim+Result);
 end;
@@ -426,12 +428,14 @@ var
   GlobalLinksDir: String;
   NewPkgName: string;
   PkgVersion: TPkgVersion;
-  NewPkgLink: TPackageLink;
+  CurPkgLink: TPackageLink;
   sl: TStringListUTF8;
   LPLFilename: String;
   LPKFilename: string;
   Files: TStrings;
   i: Integer;
+  Node: TAvgLvlTreeNode;
+  NextNode: TAvgLvlTreeNode;
 begin
   if fUpdateLock>0 then begin
     Include(FStates,plsGlobalLinksNeedUpdate);
@@ -444,6 +448,23 @@ begin
   {$ENDIF}
   FGlobalLinks.FreeAndClear;
   GlobalLinksDir:=GetGlobalLinkDirectory;
+
+  // delete old entries
+  Node:=FGlobalLinks.FindLowest;
+  while Node<>nil do begin
+    NextNode:=Node.Successor;
+    CurPkgLink:=TPackageLink(Node.Data);
+    if (not FileIsInDirectory(CurPkgLink.LPLFilename,GlobalLinksDir))
+    or (not FileExistsCached(CurPkgLink.LPLFilename)) then begin
+      {$IFDEF VerboseGlobalPkgLinks}
+      debugln(['TPackageLinks.UpdateGlobalLinks Delete ',CurPkgLink.LPLFilename]);
+      {$ENDIF}
+      FGlobalLinks.Delete(Node);
+      CurPkgLink.Free;
+    end;
+    Node:=NextNode;
+  end;
+
   Files:=TStringListUTF8.Create;
   try
     CodeToolBoss.DirectoryCachePool.GetListing(GlobalLinksDir,Files,false);
@@ -474,25 +495,26 @@ begin
       if LPKFilename='' then continue;
       //debugln(['TPackageLinks.UpdateGlobalLinks NewFilename="',LPKFilename,'"']);
 
-      NewPkgLink:=TPackageLink.Create;
-      NewPkgLink.Reference;
-      NewPkgLink.Origin:=ploGlobal;
-      NewPkgLink.Name:=NewPkgName;
-      NewPkgLink.Version.Assign(PkgVersion);
+      CurPkgLink:=TPackageLink.Create;
+      CurPkgLink.Reference;
+      CurPkgLink.Origin:=ploGlobal;
+      CurPkgLink.LPLFilename:=LPLFilename;
+      CurPkgLink.Name:=NewPkgName;
+      CurPkgLink.Version.Assign(PkgVersion);
       IDEMacros.SubstituteMacros(LPKFilename);
       //debugln(['TPackageLinks.UpdateGlobalLinks EnvironmentOptions.LazarusDirectory=',EnvironmentOptions.LazarusDirectory]);
       LPKFilename:=TrimFilename(LPKFilename);
       if (FileIsInDirectory(LPKFilename,EnvironmentOptions.GetParsedLazarusDirectory)) then
         LPKFilename:=CreateRelativePath(LPKFilename,EnvironmentOptions.GetParsedLazarusDirectory);
-      NewPkgLink.Filename:=LPKFilename;
-      //debugln('TPackageLinks.UpdateGlobalLinks PkgName="',NewPkgLink.Name,'" ',
-      //  ' PkgVersion=',NewPkgLink.Version.AsString,
-      //  ' Filename="',NewPkgLink.Filename,'"',
-      //  ' MakeSense=',dbgs(NewPkgLink.MakeSense));
-      if NewPkgLink.MakeSense then
-        FGlobalLinks.Add(NewPkgLink)
+      CurPkgLink.LPKFilename:=LPKFilename;
+      //debugln('TPackageLinks.UpdateGlobalLinks PkgName="',CurPkgLink.Name,'" ',
+      //  ' PkgVersion=',CurPkgLink.Version.AsString,
+      //  ' Filename="',CurPkgLink.LPKFilename,'"',
+      //  ' MakeSense=',dbgs(CurPkgLink.MakeSense));
+      if CurPkgLink.MakeSense then
+        FGlobalLinks.Add(CurPkgLink)
       else
-        NewPkgLink.Release;
+        CurPkgLink.Release;
     end;
     //WriteLinkTree(FGlobalLinks);
     if PkgVersion<>nil then PkgVersion.Free;
@@ -546,7 +568,7 @@ begin
       NewPkgLink.Name:=XMLConfig.GetValue(ItemPath+'Name/Value','');
       PkgVersionLoadFromXMLConfig(NewPkgLink.Version,XMLConfig,ItemPath+'Version/',
                                                           LazPkgXMLFileVersion);
-      NewPkgLink.Filename:=XMLConfig.GetValue(ItemPath+'Filename/Value','');
+      NewPkgLink.LPKFilename:=XMLConfig.GetValue(ItemPath+'Filename/Value','');
       NewPkgLink.AutoCheckExists:=
                       XMLConfig.GetValue(ItemPath+'AutoCheckExists/Value',true);
                       
@@ -685,7 +707,7 @@ begin
       PkgVersionSaveToXMLConfig(CurPkgLink.Version,XMLConfig,ItemPath+'Version/');
 
       // save package files in lazarus directory relative
-      AFilename:=CurPkgLink.Filename;
+      AFilename:=CurPkgLink.LPKFilename;
       if (LazSrcDir<>'') and FileIsInPath(AFilename,LazSrcDir) then begin
         AFilename:=CreateRelativePath(AFilename,LazSrcDir);
         //DebugLn(['TPackageLinks.SaveUserLinks ',AFilename]);
@@ -822,7 +844,7 @@ begin
   ANode:=LinkTree.FindLowest;
   while ANode<>nil do begin
     PkgLink:=TPackageLink(ANode.Data);
-    //debugln('TPackageLinks.IteratePackagesInTree PkgLink.Filename=',PkgLink.Filename);
+    //debugln('TPackageLinks.IteratePackagesInTree PkgLink.Filename=',PkgLink.LPKFilename);
     AFilename:=PkgLink.GetEffectiveFilename;
     if (not MustExist) or FileExistsUTF8(AFilename) then
       Event(PkgLink);
@@ -903,7 +925,7 @@ begin
     NewLink:=TPackageLink.Create;
     NewLink.Reference;
     NewLink.AssignID(APackage);
-    NewLink.Filename:=APackage.Filename;
+    NewLink.LPKFilename:=APackage.Filename;
     if NewLink.MakeSense then begin
       FUserLinksSortID.Add(NewLink);
       FUserLinksSortFile.Add(NewLink);
@@ -952,7 +974,7 @@ begin
     NewLink:=TPackageLink.Create;
     NewLink.Reference;
     NewLink.Name:=PkgName;
-    NewLink.Filename:=PkgFilename;
+    NewLink.LPKFilename:=PkgFilename;
     if LPK<>nil then
       NewLink.Version.Assign(PkgVersion);
     if NewLink.MakeSense then begin

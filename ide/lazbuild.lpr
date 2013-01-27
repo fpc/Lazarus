@@ -342,7 +342,7 @@ begin
           Result:=true;
         end
         else
-          Result:=BuildPackage(Package.Filename)
+          Result:=BuildPackage(Package.LPKFilename)
       end;
     end
     else begin
@@ -972,7 +972,7 @@ begin
         ErrorMsg+='Can not find package '+PackageNamesOrFiles[i]+', so it is not marked for installation.'+LineEnding;
         continue;
       end;
-      PkgFilename:=PackageLink.Filename;
+      PkgFilename:=PackageLink.LPKFilename;
     end else begin
       ErrorMsg+=PackageNamesOrFiles[i]+' is not a package, so it is not marked for installation.'+LineEnding;
       continue;

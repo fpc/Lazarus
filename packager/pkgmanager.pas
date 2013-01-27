@@ -2516,7 +2516,7 @@ var
     // check if there is a package in the new version
     Link:=PkgLinks.FindLinkWithPkgName(APackage.Name);
     if Link<>nil then begin
-      Filename:=TrimFilename(Link.Filename);
+      Filename:=TrimFilename(Link.LPKFilename);
       if not FilenameIsAbsolute(Filename) then
         Filename:=AppendPathDelim(NewLazarusSrcDir)+Filename;
       if FileIsInPath(Filename,NewLazarusSrcDir)
