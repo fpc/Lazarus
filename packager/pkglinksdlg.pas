@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, Grids, AVL_Tree,
+  Buttons, Grids, ExtCtrls, AVL_Tree,
   FileProcs, PackageIntf,
   LazarusIDEStrConsts, PackageDefs, PackageLinks;
 
@@ -55,16 +55,19 @@ type
   { TPackageLinksDialog }
 
   TPackageLinksDialog = class(TForm)
+    BtnPanel: TPanel;
     CloseBitBtn: TBitBtn;
     ShowUserLinksCheckBox: TCheckBox;
     ShowGlobalLinksCheckBox: TCheckBox;
     FileMustExistCheckBox: TCheckBox;
     ScopeGroupBox: TGroupBox;
     PkgStringGrid: TStringGrid;
+    UpdateGlobalLinksButton: TButton;
     procedure FileMustExistCheckBoxChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ShowGlobalLinksCheckBoxChange(Sender: TObject);
     procedure ShowUserLinksCheckBoxChange(Sender: TObject);
+    procedure UpdateGlobalLinksButtonClick(Sender: TObject);
   private
     FLinks: TAVLTree;// tree of TPkgLinkInfo sorted for names
     FCollectingOrigin: TPkgLinkOrigin;
@@ -99,13 +102,15 @@ end;
 procedure TPackageLinksDialog.FormCreate(Sender: TObject);
 begin
   Caption:=lisPLDPackageLinks;
-  CloseBitBtn.Caption:=lisClose;
   ScopeGroupBox.Caption:=dlgScope;
   FileMustExistCheckBox.Caption:=lisPLDOnlyExistingFiles;
   ShowGlobalLinksCheckBox.Caption:=lisPLDShowGlobalLinks
                                  +' ('+PkgLinks.GetGlobalLinkDirectory+'*.lpl)';
   ShowUserLinksCheckBox.Caption:=lisPLDShowUserLinks
                                       +' ('+PkgLinks.GetUserLinkFile+')';
+  UpdateGlobalLinksButton.Caption:=lrsReadLplFiles;
+  CloseBitBtn.Caption:=lisClose;
+
   UpdateAll;
 end;
 
@@ -116,6 +121,13 @@ end;
 
 procedure TPackageLinksDialog.ShowUserLinksCheckBoxChange(Sender: TObject);
 begin
+  UpdatePackageList;
+end;
+
+procedure TPackageLinksDialog.UpdateGlobalLinksButtonClick(Sender: TObject);
+begin
+  PkgLinks.ClearGlobalLinks;
+  PkgLinks.UpdateGlobalLinks;
   UpdatePackageList;
 end;
 

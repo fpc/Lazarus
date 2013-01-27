@@ -3,34 +3,15 @@ object PackageLinksDialog: TPackageLinksDialog
   Height = 451
   Top = 189
   Width = 659
-  ActiveControl = CloseBitBtn
   Caption = 'PackageLinksDialog'
   ClientHeight = 451
   ClientWidth = 659
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
-  object CloseBitBtn: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 582
-    Height = 26
-    Top = 419
-    Width = 71
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&Close'
-    Kind = bkClose
-    ModalResult = 1
-    NumGlyphs = 0
-    TabOrder = 0
-  end
+  LCLVersion = '1.1'
   object ScopeGroupBox: TGroupBox
     Left = 0
-    Height = 93
+    Height = 113
     Top = 0
     Width = 659
     Align = alTop
@@ -41,23 +22,23 @@ object PackageLinksDialog: TPackageLinksDialog
     ChildSizing.HorizontalSpacing = 6
     ChildSizing.VerticalSpacing = 6
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ClientHeight = 75
+    ClientHeight = 96
     ClientWidth = 655
-    TabOrder = 1
+    TabOrder = 0
     object FileMustExistCheckBox: TCheckBox
       Left = 6
-      Height = 17
+      Height = 24
       Top = 6
-      Width = 149
+      Width = 170
       Caption = 'FileMustExistCheckBox'
       OnChange = FileMustExistCheckBoxChange
       TabOrder = 0
     end
     object ShowGlobalLinksCheckBox: TCheckBox
       Left = 6
-      Height = 17
-      Top = 29
-      Width = 149
+      Height = 24
+      Top = 36
+      Width = 170
       Caption = 'ShowGlobalLinksCheckBox'
       Checked = True
       OnChange = ShowGlobalLinksCheckBoxChange
@@ -66,9 +47,9 @@ object PackageLinksDialog: TPackageLinksDialog
     end
     object ShowUserLinksCheckBox: TCheckBox
       Left = 6
-      Height = 17
-      Top = 52
-      Width = 149
+      Height = 24
+      Top = 66
+      Width = 170
       Caption = 'ShowUserLinksCheckBox'
       Checked = True
       OnChange = ShowUserLinksCheckBoxChange
@@ -77,16 +58,55 @@ object PackageLinksDialog: TPackageLinksDialog
     end
   end
   object PkgStringGrid: TStringGrid
-    AnchorSideBottom.Control = CloseBitBtn
+    AnchorSideBottom.Control = BtnPanel
     Left = 0
-    Height = 320
-    Top = 93
+    Height = 296
+    Top = 113
     Width = 659
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     ColCount = 4
     FixedCols = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goTabs, goColSpanning, goDblClickAutoSize, goSmoothScroll]
+    TabOrder = 1
+  end
+  object BtnPanel: TPanel
+    Left = 0
+    Height = 42
+    Top = 409
+    Width = 659
+    Align = alBottom
+    AutoSize = True
+    ClientHeight = 42
+    ClientWidth = 659
     TabOrder = 2
+    object CloseBitBtn: TBitBtn
+      AnchorSideRight.Control = BtnPanel
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = BtnPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 592
+      Height = 28
+      Top = 7
+      Width = 60
+      Anchors = [akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&Close'
+      Kind = bkClose
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object UpdateGlobalLinksButton: TButton
+      Left = 7
+      Height = 27
+      Top = 7
+      Width = 152
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'UpdateGlobalLinksButton'
+      OnClick = UpdateGlobalLinksButtonClick
+      TabOrder = 1
+    end
   end
 end

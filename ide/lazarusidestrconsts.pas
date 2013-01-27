@@ -67,6 +67,7 @@ resourcestring
   lisFile = 'File';
   lisNew = 'New';
   lisClose = 'Close';
+  lrsReadLplFiles = 'Read lpl files';
   lisBtnClose = '&Close';
   lisOk = 'OK';
   lisMenuOk = '&OK';

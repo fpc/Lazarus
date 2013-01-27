@@ -111,7 +111,6 @@ type
     property LastUsed: TDateTime read FLastUsed write FLastUsed;
   end;
 
-
   { TPackageLinks }
   
   TPackageLinks = class;
@@ -466,9 +465,9 @@ begin
   end;
 
   Files:=TStringListUTF8.Create;
+  PkgVersion:=TPkgVersion.Create;
   try
     CodeToolBoss.DirectoryCachePool.GetListing(GlobalLinksDir,Files,false);
-    PkgVersion:=TPkgVersion.Create;
     for i:=0 to Files.Count-1 do begin
       LPLFilename:=GlobalLinksDir+Files[i];
       if CompareFileExt(LPLFilename,'lpl')<>0 then continue;
@@ -517,9 +516,9 @@ begin
         CurPkgLink.Release;
     end;
     //WriteLinkTree(FGlobalLinks);
-    if PkgVersion<>nil then PkgVersion.Free;
   finally
     Files.Free;
+    PkgVersion.Free;
   end;
 end;
 
