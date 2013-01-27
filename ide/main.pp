@@ -9984,7 +9984,7 @@ begin
         continue;
 
       //DebugLn(['TMainIDE.OnBeforeCodeToolBossApplyChanges i=',i,' ',CodeBUf.Filename]);
-      Flags:=[ofOnlyIfExists,ofDoNotLoadResource];
+      Flags:=[ofOnlyIfExists,ofDoNotLoadResource,ofRegularFile];
       if CodeBuf.IsVirtual then
         Include(Flags,ofVirtualFile);
       if DoOpenEditorFile(Manager.SourceChangeCache.BuffersToModify[i].Filename,

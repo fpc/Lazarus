@@ -299,7 +299,7 @@ begin
     CodeToolBoss.GetIdentifierAt(DeclarationCode,
       DeclarationCaretXY.X,DeclarationCaretXY.Y,Identifier);
     // create a search result page
-    debugln(['ShowIdentifierReferences ',DbgSName(SearchResultsView)]);
+    //debugln(['ShowIdentifierReferences ',DbgSName(SearchResultsView)]);
     SearchPageIndex:=SearchResultsView.AddSearch(
       'References of '+Identifier,
       Identifier,
