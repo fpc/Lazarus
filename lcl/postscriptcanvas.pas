@@ -131,6 +131,7 @@ Type
     procedure RegionChanging(APen: TObject); override;
     procedure RequiredState(ReqState: TCanvasState); override;
     procedure DoEllipseAndFill(const Bounds: TRect); override;
+    procedure RealizeAntialiasing; override;
 
     function GetClipRect: TRect; override;
     procedure SetClipRect(const ARect: TRect); override;
@@ -1160,6 +1161,11 @@ end;
 procedure TPostScriptPrinterCanvas.CreateHandle;
 begin
   SetHandle(1); // set dummy handle
+end;
+
+procedure TPostScriptPrinterCanvas.RealizeAntialiasing;
+begin
+  // handle is dummy, so do nothing here
 end;
 
 procedure TPostScriptPrinterCanvas.CreateBrush;
