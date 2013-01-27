@@ -5824,6 +5824,7 @@ lcl/include/controlactionlink.inc svneol=native#text/pascal
 lcl/include/controlcanvas.inc svneol=native#text/pascal
 lcl/include/controlscrollbar.inc svneol=native#text/pascal
 lcl/include/controlsproc.inc svneol=native#text/pascal
+lcl/include/coolbar.inc svneol=native#text/plain
 lcl/include/cursorimage.inc svneol=native#text/pascal
 lcl/include/customaction.inc svneol=native#text/pascal
 lcl/include/customactionlist.inc svneol=native#text/pascal
