@@ -1492,6 +1492,20 @@ begin
     end;
 end;
 
+function frGetExportFilterIndex(ClassRef: TfrExportFilterClass; const AFilterExt:string): Integer;
+var
+  i: Integer;
+begin
+  result := -1;
+  for i:=0 to Length(frFilters)-1 do
+  with frFilters[i] do
+    if (ClassRef=ClassRef) and (FilterExt=AFilterExt) then
+    begin
+      result := i;
+      break;
+    end;
+end;
+
 procedure frSetAddinEditor(ClassRef: TfrViewClass; EditorForm: TfrObjEditorForm);
 var
   i: Integer;
@@ -1528,10 +1542,13 @@ end;
 procedure frRegisterExportFilter(ClassRef: TfrExportFilterClass;
   const FilterDesc, FilterExt: String);
 begin
-  frFilters[frFiltersCount].ClassRef := ClassRef;
-  frFilters[frFiltersCount].FilterDesc := FilterDesc;
-  frFilters[frFiltersCount].FilterExt := FilterExt;
-  Inc(frFiltersCount);
+  if frGetExportFilterIndex(ClassRef, FilterExt)<0 then
+  begin
+    frFilters[frFiltersCount].ClassRef := ClassRef;
+    frFilters[frFiltersCount].FilterDesc := FilterDesc;
+    frFilters[frFiltersCount].FilterExt := FilterExt;
+    Inc(frFiltersCount);
+  end;
 end;
 
 procedure frRegisterFunctionLibrary(ClassRef: TClass);
