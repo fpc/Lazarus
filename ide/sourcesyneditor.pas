@@ -703,7 +703,7 @@ begin
       TopLine := t;
       TSourceLazSynSurfaceManager(FPaintArea).TopLineCount := ListCnt;
       SizeOrFontChanged(FALSE);
-      Invalidate;
+      Invalidate; // TODO: move to PaintArea
     end;
 
     for i := 0 to ListCnt - 1 do begin
@@ -735,10 +735,14 @@ procedure TIDESynEditor.SetShowTopInfo(AValue: boolean);
 begin
   if FShowTopInfo = AValue then Exit;
   FShowTopInfo := AValue;
-  if FShowTopInfo then
+  if FShowTopInfo then begin
     SrcSynCaretChanged(nil)
+  end
   else
+  if TSourceLazSynSurfaceManager(FPaintArea).TopLineCount <> 0 then begin
     TSourceLazSynSurfaceManager(FPaintArea).TopLineCount := 0;
+    Invalidate; // TODO: move to PaintArea
+  end;
 end;
 
 procedure TIDESynEditor.SetTopInfoMarkup(AValue: TSynSelectedColor);
