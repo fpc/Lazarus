@@ -2148,9 +2148,6 @@ type
 
   { TCoolBar }
 
-//  const
-//    CN_BANDCHANGE = WM_USER + $1000;
-
   TCustomCoolBar = class;
 
   { TCoolBand }
