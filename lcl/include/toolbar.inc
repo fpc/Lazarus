@@ -405,14 +405,9 @@ begin
   UpdateVisibleBar;
 end;
 
-procedure TToolBar.BeginUpdate;
-begin
-  Inc(FUpdateCount);
-end;
-
 procedure TToolBar.EndUpdate;
 begin
-  Dec(FUpdateCount);
+  inherited EndUpdate;
   if FUpdateCount=0 then begin
     if tbfUpdateVisibleBarNeeded in FToolBarFlags then
       UpdateVisibleBar;

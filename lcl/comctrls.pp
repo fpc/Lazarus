@@ -2025,7 +2025,6 @@ type
     FSrcMenu: TMenu;
     FSrcMenuItem: TMenuItem;
     FToolBarFlags: TToolBarFlags;
-    FUpdateCount: Integer;
     FWrapable: Boolean;
     procedure ApplyFontForButtons;
     procedure CloseCurrentMenu;
@@ -2066,6 +2065,7 @@ type
     function FindButtonFromAccel(Accel: Word): TToolButton;
     procedure FontChanged(Sender: TObject); override;
     procedure Loaded; override;
+    procedure EndUpdate; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RepositionButton(Index: Integer);
     procedure RepositionButtons(Index: Integer);
@@ -2077,8 +2077,6 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure FlipChildren(AllLevels: Boolean); override;
-    procedure BeginUpdate; virtual;
-    procedure EndUpdate; virtual;
     function GetEnumerator: TToolBarEnumerator;
     procedure Paint; override;
     procedure SetButtonSize(NewButtonWidth, NewButtonHeight: integer);
@@ -2147,6 +2145,210 @@ type
     property OnStartDrag;
   end;
   
+
+  { TCoolBar }
+
+//  const
+//    CN_BANDCHANGE = WM_USER + $1000;
+
+  TCustomCoolBar = class;
+
+  { TCoolBand }
+
+  TCoolBand = class(TCollectionItem)
+  private
+    FCoolBar: TCustomCoolBar;
+    FControl: TControl;  // Associated control
+    FTextLabel: TLabel;  // Possible text is shown in a Label
+    FBorderStyle: TBorderStyle;
+    FBreak: Boolean;
+    FFixedSize: Boolean;
+    FVisible: Boolean;
+    FHorizontalOnly: Boolean;
+    FImageIndex: TImageIndex;
+    FFixedBackground: Boolean;
+    FMinHeight: Integer;
+    FMinWidth: Integer;
+    FColor: TColor;
+    FParentColor: Boolean;
+    FParentBitmap: Boolean;
+    FBitmap: TBitmap;
+    FTop: Integer;
+    function GetText: string;
+    function GetWidth: Integer;
+    function IsBitmapStored: Boolean;
+    function IsColorStored: Boolean;
+    function GetHeight: Integer;
+    function GetVisible: Boolean;
+    procedure SetBorderStyle(aValue: TBorderStyle);
+    procedure SetBreak(aValue: Boolean);
+    procedure SetFixedSize(aValue: Boolean);
+    procedure SetMinHeight(aValue: Integer);
+    procedure SetMinWidth(aValue: Integer);
+    procedure SetVisible(aValue: Boolean);
+    procedure SetHorizontalOnly(aValue: Boolean);
+    procedure SetImageIndex(aValue: TImageIndex);
+    procedure SetFixedBackground(aValue: Boolean);
+    procedure SetColor(aValue: TColor);
+    procedure SetControlWidth;
+    procedure UpdControl;
+    procedure CalcTop(var aTop: Integer);
+    procedure SetControl(aValue: TControl);
+    procedure SetParentColor(aValue: Boolean);
+    procedure SetParentBitmap(aValue: Boolean);
+    procedure SetBitmap(aValue: TBitmap);
+    procedure SetText(const aValue: string);
+    procedure SetWidth(aValue: Integer);
+  protected
+    function GetDisplayName: string; override;
+    procedure SetIndex(aValue: Integer); override;
+  public
+    constructor Create(aCollection: TCollection); override;
+    destructor Destroy; override;
+    procedure Assign(aSource: TPersistent); override;
+    property Height: Integer read GetHeight;
+  published
+    property Bitmap: TBitmap read FBitmap write SetBitmap stored IsBitmapStored;
+    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsNone;
+    property Break: Boolean read FBreak write SetBreak default True;
+    property Color: TColor read FColor write SetColor stored IsColorStored default clBtnFace;
+    property Control: TControl read FControl write SetControl;
+    property FixedBackground: Boolean read FFixedBackground write SetFixedBackground default True;
+    property FixedSize: Boolean read FFixedSize write SetFixedSize default False;
+    property HorizontalOnly: Boolean read FHorizontalOnly write SetHorizontalOnly default False;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
+    property MinHeight: Integer read FMinHeight write SetMinHeight default 25;
+    property MinWidth: Integer read FMinWidth write SetMinWidth default 0;
+    property ParentColor: Boolean read FParentColor write SetParentColor default True;
+    property ParentBitmap: Boolean read FParentBitmap write SetParentBitmap default True;
+    property Text: string read GetText write SetText;
+    property Visible: Boolean read GetVisible write SetVisible default True;
+    property Width: Integer read GetWidth write SetWidth;
+  end;
+
+  { TCoolBands }
+
+  TCoolBands = class(TCollection)
+  private
+    FCoolBar: TCustomCoolBar;
+    FVisibleCount: Longword;
+    function GetItem(Index: Integer): TCoolBand;
+    procedure SetItem(Index: Integer; aValue: TCoolBand);
+  protected
+    function GetOwner: TPersistent; override;
+    procedure Update(aItem: TCollectionItem); override;
+    procedure Notify(aItem: TCollectionItem; aAction: TCollectionNotification); override;
+  public
+    constructor Create(aCoolBar: TCustomCoolBar);
+    function Add: TCoolBand;
+    function FindBand(aControl: TControl): TCoolBand;
+//    property CoolBar: TCustomCoolBar read FCoolBar;  v
+    property Items[Index: Integer]: TCoolBand read GetItem write SetItem; default;
+  end;
+
+
+  // BandMaximize is not used now but is needed for Delphi compatibility.
+  // It is not used in Delphi's TCoolBar either.
+  TCoolBandMaximize = (bmNone, bmClick, bmDblClick);
+
+  { TCustomCoolBar }
+
+  TCustomCoolBar = class(TToolWindow)
+  private
+    FBands: TCoolBands;
+    FBandBorderStyle: TBorderStyle;
+    FBandMaximize: TCoolBandMaximize;
+    FBitmap: TBitmap;
+    FFixedSize: Boolean;
+    FFixedOrder: Boolean;
+    FImages: TCustomImageList;
+    FImageChangeLink: TChangeLink;
+    FShowText: Boolean;
+    FVertical: Boolean;
+    FOnChange: TNotifyEvent;
+    function GetAlign: TAlign;
+    procedure SetAlign(aValue: TAlign);
+    procedure SetBands(aValue: TCoolBands);
+    procedure SetBitmap(aValue: TBitmap);
+    procedure SetImages(aValue: TCustomImageList);
+    procedure SetShowText(aValue: Boolean);
+    procedure SetVertical(aValue: Boolean);
+    procedure ImageListChange(Sender: TObject);
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure Loaded; override;
+    procedure Paint; override;
+    procedure Resize; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  public
+    property Align read GetAlign write SetAlign default alTop;
+    property BandBorderStyle: TBorderStyle read FBandBorderStyle write FBandBorderStyle default bsSingle;
+    property BandMaximize: TCoolBandMaximize read FBandMaximize write FBandMaximize default bmClick;
+    property Bands: TCoolBands read FBands write SetBands;
+    property FixedSize: Boolean read FFixedSize write FFixedSize default False;
+    property FixedOrder: Boolean read FFixedOrder write FFixedOrder default False;
+    property Images: TCustomImageList read FImages write SetImages;
+    property Bitmap: TBitmap read FBitmap write SetBitmap;
+    property ShowText: Boolean read FShowText write SetShowText default True;
+    property Vertical: Boolean read FVertical write SetVertical default False;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
+
+  { TCoolBar }
+
+  TCoolBar = class(TCustomCoolBar)
+  published
+    property Align;
+    property Anchors;
+    property AutoSize;
+    property BandBorderStyle;
+    property BandMaximize;
+    property Bands;
+    property BorderWidth;
+    property Color;
+    property Constraints;
+    property DockSite;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property EdgeBorders;
+    property EdgeInner;
+    property EdgeOuter;
+    property Enabled;
+    property FixedSize;
+    property FixedOrder;
+    property Font;
+    property Images;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property Bitmap;
+    property PopupMenu;
+    property ShowHint;
+    property ShowText;
+    property Vertical;
+    property Visible;
+    property OnChange;
+    property OnClick;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDockDrop;
+    property OnDockOver;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnGetSiteInfo;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnStartDock;
+    property OnStartDrag;
+    property OnUnDock;
+  end;
 
   { TCustomTrackBar }
 
@@ -3431,6 +3633,7 @@ const
 {$I customupdown.inc}
 {$I toolbutton.inc}
 {$I toolbar.inc}
+{$I coolbar.inc}
 {$I trackbar.inc}
 {$I treeview.inc}
 {$I headercontrol.inc}
@@ -3498,7 +3701,7 @@ end;
 procedure Register;
 begin
   RegisterComponents('Common Controls',[TTrackbar,TProgressBar,TTreeView,
-    TListView,TStatusBar,TToolBar,TUpDown,TPageControl,TTabControl,
+    TListView,TStatusBar,TToolBar,TCoolBar,TUpDown,TPageControl,TTabControl,
     THeaderControl]);
   RegisterNoIcon([TToolButton,TTabSheet]);
 end;

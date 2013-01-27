@@ -62,8 +62,11 @@ type
     procedure SetEdgeInner(Value: TEdgeStyle);
     procedure SetEdgeOuter(Value: TEdgeStyle);
   protected
+    FUpdateCount: Integer;
     procedure AdjustClientRect(var ARect: TRect); override;
     procedure Paint; override;
+    procedure BeginUpdate; virtual;
+    procedure EndUpdate; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
   public

@@ -79,18 +79,28 @@ var
 begin
   FEdgeBorderType := 0;
   if (ebTop in FEdgeBorders)  then
-  FEdgeBorderType := FEdgeBorderType or longint(BF_TOP);
+    FEdgeBorderType := FEdgeBorderType or longint(BF_TOP);
   if (ebBottom in FEdgeBorders)  then
-  FEdgeBorderType := FEdgeBorderType or longint(BF_BOTTOM);
+    FEdgeBorderType := FEdgeBorderType or longint(BF_BOTTOM);
   if (ebLeft in FEdgeBorders)  then
-  FEdgeBorderType := FEdgeBorderType or longint(BF_LEFT);
+    FEdgeBorderType := FEdgeBorderType or longint(BF_LEFT);
   if (ebRight in FEdgeBorders)  then
-  FEdgeBorderType := FEdgeBorderType or longint(BF_RIGHT);
+    FEdgeBorderType := FEdgeBorderType or longint(BF_RIGHT);
   ARect:=ClientRect;
   DrawEdge(Canvas.Handle,ARect,
            InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],FEdgeBorderType);
 
   inherited Paint;
+end;
+
+procedure TToolWindow.BeginUpdate;
+begin
+  Inc(FUpdateCount);
+end;
+
+procedure TToolWindow.EndUpdate;
+begin
+  Dec(FUpdateCount);
 end;
 
 // included by toolwin.pp
