@@ -35,7 +35,7 @@ interface
 uses
   SysUtils, Types, Classes, LCLStrConsts, LCLType, LCLProc, LResources, Controls,
   Forms, StdCtrls, lMessages, GraphType, Graphics, LCLIntf, CustomTimer, Themes,
-  LCLClasses, Menus, popupnotifier, ImgList;
+  LCLClasses, Menus, PopupNotifier, ImgList, contnrs;
 
 type
 
@@ -1139,6 +1139,140 @@ type
     property OnPaint;
   end;
 
+  { TControlBar }
+
+  TBandPaintOption = (bpoGrabber, bpoFrame);
+  TBandPaintOptions = set of TBandPaintOption;
+  TBandDragEvent = procedure (Sender: TObject; Control: TControl; var Drag: Boolean) of object;
+  TBandInfoEvent = procedure (Sender: TObject; Control: TControl;
+    var Insets: TRect; var PreferredSize, RowCount: Integer) of object;
+  TBandMoveEvent = procedure (Sender: TObject; Control: TControl; var ARect: TRect) of object;
+  TBandPaintEvent = procedure (Sender: TObject; Control: TControl; Canvas: TCanvas;
+    var ARect: TRect; var Options: TBandPaintOptions) of object;
+  //  TCheckDoAgainEvent = function (cbi: TControlBarInfo; const aPos: TPoint; aWidth: Integer): Boolean; of object;
+  TRowSize = 1..MaxInt;
+
+  { TCustomControlBar }
+
+  TCustomControlBar = class(TCustomPanel)
+  private
+    FAutoDrag: Boolean;
+    FAutoDock: Boolean;
+    FDockingControl: TControl;
+    FDragControl: TControl;
+    FDragOffset: TPoint;
+    FDrawing: Boolean;
+    FPicture: TPicture;
+    FRowSize: TRowSize;
+    FRowSnap: Boolean;
+    FOnBandDrag: TBandDragEvent;
+    FOnBandInfo: TBandInfoEvent;
+    FOnBandMove: TBandMoveEvent;
+    FOnBandPaint: TBandPaintEvent;
+    FOnCanResize: TCanResizeEvent;
+    FOnPaint: TNotifyEvent;
+    procedure SetPicture(aValue: TPicture);
+  protected
+    procedure AlignControls(aControl: TControl; var aRect: TRect); override;
+    function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
+    procedure CreateParams(var aParams: TCreateParams); override;
+    procedure DoBandMove(aControl: TControl; var aRect: TRect); virtual;
+    procedure DoBandPaint(aControl: TControl; aCanvas: TCanvas;
+      var aRect: TRect; var aOptions: TBandPaintOptions); virtual;
+    function DragControl(aControl: TControl; X, Y: Integer;
+      KeepCapture: Boolean = False): Boolean; virtual;
+    procedure GetControlInfo(aControl: TControl; var Insets: TRect;
+      var PreferredSize, RowCount: Integer); virtual;
+    function GetPalette: HPALETTE; override;
+    function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject;
+                       ATarget: TControl; ADocking: Boolean): LRESULT; override;
+    procedure DockOver(aSource: TDragDockObject; X, Y: Integer; aState: TDragState;
+      var Accept: Boolean); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure Paint; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure FlipChildren(AllLevels: Boolean); override;
+    procedure StickControls; virtual;
+    property Picture: TPicture read FPicture write SetPicture;
+  protected
+    property AutoDock: Boolean read FAutoDock write FAutoDock default True;
+    property AutoDrag: Boolean read FAutoDrag write FAutoDrag default True;
+    property AutoSize;
+    property DockSite default True;
+    property RowSize: TRowSize read FRowSize write FRowSize default 26;
+    property RowSnap: Boolean read FRowSnap write FRowSnap default True;
+    property OnBandDrag: TBandDragEvent read FOnBandDrag write FOnBandDrag;
+    property OnBandInfo: TBandInfoEvent read FOnBandInfo write FOnBandInfo;
+    property OnBandMove: TBandMoveEvent read FOnBandMove write FOnBandMove;
+    property OnBandPaint: TBandPaintEvent read FOnBandPaint write FOnBandPaint;
+    property OnCanResize: TCanResizeEvent read FOnCanResize write FOnCanResize;
+    property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
+  end;
+
+  TControlBar = class(TCustomControlBar)
+  public
+    property Canvas;
+  published
+    property Align;
+    property Anchors;
+    property AutoDock;
+    property AutoDrag;
+    property AutoSize;
+    property BevelInner;
+    property BevelOuter;
+    property BevelWidth;
+    property BorderWidth;
+    property Color nodefault;
+    property Constraints;
+    property DockSite;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+//    property Picture;
+    property PopupMenu;
+    property RowSize;
+    property RowSnap;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property OnBandDrag;
+    property OnBandInfo;
+    property OnBandMove;
+    property OnBandPaint;
+    property OnCanResize;
+    property OnClick;
+    property OnConstrainedResize;
+    property OnContextPopup;
+    property OnDockDrop;
+    property OnDockOver;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnGetSiteInfo;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnPaint;
+    property OnResize;
+    property OnStartDock;
+    property OnStartDrag;
+    property OnUnDock;
+  end;
+
+
 procedure Frame3D(ACanvas: TCanvas; var ARect: TRect;
   TopColor, BottomColor: TColor; const FrameWidth: integer);
 
@@ -1163,7 +1297,7 @@ procedure Register;
 begin
   RegisterComponents('Standard',[TRadioGroup,TCheckGroup,TPanel]);
   RegisterComponents('Additional',[TImage,TShape,TBevel,TPaintBox,
-    TNotebook, TLabeledEdit, TSplitter, TTrayIcon]);
+    TNotebook, TLabeledEdit, TSplitter, TTrayIcon, TControlBar]);
   RegisterComponents('System',[TTimer,TIdleTimer]);
   RegisterNoIcon([TPage]);
 end;
@@ -1182,6 +1316,7 @@ end;
 {$I bevel.inc}
 {$I customimage.inc}
 {$I customtrayicon.inc}
+{$I controlbar.inc}
 
 initialization
   DockSplitterClass := TSplitter;
