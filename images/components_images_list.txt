@@ -21,6 +21,8 @@ components/tcolorbutton.png
 components/tcolordialog.png
 components/tcolorlistbox.png
 components/tcombobox.png
+components/tcontrolbar.png
+components/tcoolbar.png
 components/tdatasource.png
 components/tdateedit.png
 components/tdbcalendar.png
