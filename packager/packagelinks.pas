@@ -152,6 +152,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure ClearGlobalLinks;
     function GetUserLinkFile(WithPath: boolean = true): string;
     function GetGlobalLinkDirectory: string;
     procedure UpdateGlobalLinks;
@@ -345,10 +346,16 @@ end;
 
 procedure TPackageLinks.Clear;
 begin
-  FGlobalLinks.FreeAndClear;
+  ClearGlobalLinks;
   FUserLinksSortID.FreeAndClear;
   FUserLinksSortFile.Clear;
   FStates:=[plsUserLinksNeedUpdate,plsGlobalLinksNeedUpdate];
+end;
+
+procedure TPackageLinks.ClearGlobalLinks;
+begin
+  FGlobalLinks.FreeAndClear;
+  Include(FStates,plsGlobalLinksNeedUpdate);
 end;
 
 function TPackageLinks.GetUserLinkFile(WithPath: boolean): string;
@@ -417,62 +424,67 @@ procedure TPackageLinks.UpdateGlobalLinks;
 
 var
   GlobalLinksDir: String;
-  FileInfo: TSearchRec;
   NewPkgName: string;
   PkgVersion: TPkgVersion;
   NewPkgLink: TPackageLink;
   sl: TStringListUTF8;
-  CurFilename: String;
-  NewFilename: string;
+  LPLFilename: String;
+  LPKFilename: string;
+  Files: TStrings;
+  i: Integer;
 begin
   if fUpdateLock>0 then begin
     Include(FStates,plsGlobalLinksNeedUpdate);
     exit;
   end;
   Exclude(FStates,plsGlobalLinksNeedUpdate);
-  
+
+  {$IFDEF VerboseGlobalPkgLinks}
+  debugln(['TPackageLinks.UpdateGlobalLinks START']);
+  {$ENDIF}
   FGlobalLinks.FreeAndClear;
   GlobalLinksDir:=GetGlobalLinkDirectory;
-  if FindFirstUTF8(GlobalLinksDir+'*.lpl', faAnyFile, FileInfo)=0 then begin
+  Files:=TStringListUTF8.Create;
+  try
+    CodeToolBoss.DirectoryCachePool.GetListing(GlobalLinksDir,Files,false);
     PkgVersion:=TPkgVersion.Create;
-    repeat
-      CurFilename:=GlobalLinksDir+FileInfo.Name;
-      //debugln('UpdateGlobalLinks B CurFilename=',CurFilename);
-      if ((FileInfo.Attr and faDirectory)<>0)
-      or (not ParseFilename(FileInfo.Name,NewPkgName,PkgVersion))
+    for i:=0 to Files.Count-1 do begin
+      LPLFilename:=GlobalLinksDir+Files[i];
+      if CompareFileExt(LPLFilename,'lpl')<>0 then continue;
+      if (not ParseFilename(Files[i],NewPkgName,PkgVersion))
       then begin
-        DebugLn('WARNING: suspicious pkg link file found (name): ',CurFilename);
+        DebugLn('WARNING: suspicious pkg link file found (name): ',LPLFilename);
         continue;
       end;
-      NewFilename:='';
+      LPKFilename:='';
       sl:=TStringListUTF8.Create;
       try
-        sl.LoadFromFile(CurFilename);
+        sl.LoadFromFile(LPLFilename);
         if sl.Count<=0 then begin
-          DebugLn('WARNING: suspicious pkg link file found (content): ',CurFilename);
+          DebugLn('WARNING: pkg link file is empty: ',LPLFilename);
           continue;
         end;
-        NewFilename:=SetDirSeparators(sl[0]);
+        LPKFilename:=SetDirSeparators(sl[0]);
       except
         on E: Exception do begin
-          DebugLn('ERROR: unable to read pkg link file: ',CurFilename,' : ',E.Message);
+          DebugLn('WARNING: unable to read pkg link file: ',LPLFilename,' : ',E.Message);
         end;
       end;
       sl.Free;
-      if NewFilename='' then continue;
-      //debugln(['TPackageLinks.UpdateGlobalLinks NewFilename="',NewFilename,'"']);
+      if LPKFilename='' then continue;
+      //debugln(['TPackageLinks.UpdateGlobalLinks NewFilename="',LPKFilename,'"']);
 
       NewPkgLink:=TPackageLink.Create;
       NewPkgLink.Reference;
       NewPkgLink.Origin:=ploGlobal;
       NewPkgLink.Name:=NewPkgName;
       NewPkgLink.Version.Assign(PkgVersion);
-      IDEMacros.SubstituteMacros(NewFilename);
+      IDEMacros.SubstituteMacros(LPKFilename);
       //debugln(['TPackageLinks.UpdateGlobalLinks EnvironmentOptions.LazarusDirectory=',EnvironmentOptions.LazarusDirectory]);
-      NewFilename:=TrimFilename(NewFilename);
-      if (FileIsInDirectory(NewFilename,EnvironmentOptions.GetParsedLazarusDirectory)) then
-        NewFilename:=CreateRelativePath(NewFilename,EnvironmentOptions.GetParsedLazarusDirectory);
-      NewPkgLink.Filename:=NewFilename;
+      LPKFilename:=TrimFilename(LPKFilename);
+      if (FileIsInDirectory(LPKFilename,EnvironmentOptions.GetParsedLazarusDirectory)) then
+        LPKFilename:=CreateRelativePath(LPKFilename,EnvironmentOptions.GetParsedLazarusDirectory);
+      NewPkgLink.Filename:=LPKFilename;
       //debugln('TPackageLinks.UpdateGlobalLinks PkgName="',NewPkgLink.Name,'" ',
       //  ' PkgVersion=',NewPkgLink.Version.AsString,
       //  ' Filename="',NewPkgLink.Filename,'"',
@@ -481,12 +493,12 @@ begin
         FGlobalLinks.Add(NewPkgLink)
       else
         NewPkgLink.Release;
-      
-    until FindNextUTF8(FileInfo)<>0;
+    end;
     //WriteLinkTree(FGlobalLinks);
     if PkgVersion<>nil then PkgVersion.Free;
+  finally
+    Files.Free;
   end;
-  FindCloseUTF8(FileInfo);
 end;
 
 procedure TPackageLinks.UpdateUserLinks;
