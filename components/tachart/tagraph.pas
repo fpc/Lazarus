@@ -323,6 +323,7 @@ type
     property ClipRect: TRect read FClipRect;
     property CurrentExtent: TDoubleRect read FCurrentExtent;
     property ExtentBroadcaster: TBroadcaster read FExtentBroadcaster;
+    property IsZoomed: Boolean read FIsZoomed;
     property LogicalExtent: TDoubleRect read FLogicalExtent write SetLogicalExtent;
     property OnChartPaint: TChartPaintEvent
       read FOnChartPaint write SetOnChartPaint; experimental;

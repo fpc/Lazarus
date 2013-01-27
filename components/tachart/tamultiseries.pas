@@ -287,11 +287,11 @@ procedure TBoxAndWhiskerSeries.Assign(ASource: TPersistent);
 begin
   if ASource is TBoxAndWhiskerSeries then
     with TBoxAndWhiskerSeries(ASource) do begin
-      Self.BoxBrush := FBoxBrush;
-      Self.BoxPen := FBoxPen;
+      Self.BoxBrush.Assign(FBoxBrush);
+      Self.BoxPen.Assign(FBoxPen);
       Self.FBoxWidth := FBoxWidth;
-      Self.MedianPen := FMedianPen;
-      Self.WhiskersPen := FWhiskersPen;
+      Self.MedianPen.Assign(FMedianPen);
+      Self.WhiskersPen.Assign(FWhiskersPen);
       Self.FWhiskersWidth := FWhiskersWidth;
     end;
   inherited Assign(ASource);
