@@ -48,13 +48,17 @@ type
 
   TPkgLinkInfo = class(TPackageLink)
   private
+    FIsValid: boolean;
     FLPKInfo: TLPKInfo;
+    FVisible: boolean;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     property Origin;
     property LPKInfo: TLPKInfo read FLPKInfo;
+    property Visible: boolean read FVisible write FVisible;
+    property IsValid: boolean read FIsValid write FIsValid;
   end;
 
   { TPackageLinksDialog }
@@ -62,6 +66,8 @@ type
   TPackageLinksDialog = class(TForm)
     BtnPanel: TPanel;
     CloseBitBtn: TBitBtn;
+    LPKFileValidCheckBox: TCheckBox;
+    LPKFileInvalidCheckBox: TCheckBox;
     LPKParsingTimer: TTimer;
     ShowUserLinksCheckBox: TCheckBox;
     ShowGlobalLinksCheckBox: TCheckBox;
@@ -70,18 +76,25 @@ type
     UpdateGlobalLinksButton: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure LPKFileValidCheckBoxChange(Sender: TObject);
+    procedure LPKFileInvalidCheckBoxChange(Sender: TObject);
     procedure LPKParsingTimerTimer(Sender: TObject);
     procedure OnAllLPKParsed(Sender: TObject);
     procedure ShowGlobalLinksCheckBoxChange(Sender: TObject);
     procedure ShowUserLinksCheckBoxChange(Sender: TObject);
     procedure UpdateGlobalLinksButtonClick(Sender: TObject);
   private
+    FCountLPKValid: integer;
+    FCountLPKInvalid: integer;
     FLinks: TAvglVLTree;// tree of TPkgLinkInfo sorted for names
     FCollectingOrigin: TPkgLinkOrigin;
+    procedure UpdateFacets;
     procedure UpdatePackageList;
     procedure ClearLinks;
     procedure IteratePackages(APackage: TLazPackageID);
   public
+    property CountLPKValid: integer read FCountLPKValid;
+    property CountLPKInvalid: integer read FCountLPKInvalid;
   end;
 
 function ShowPackageLinks: TModalResult;
@@ -108,10 +121,7 @@ procedure TPackageLinksDialog.FormCreate(Sender: TObject);
 begin
   Caption:=lisPLDPackageLinks;
   ScopeGroupBox.Caption:=dlgScope;
-  ShowGlobalLinksCheckBox.Caption:=lisPLDShowGlobalLinks
-                                 +' ('+PkgLinks.GetGlobalLinkDirectory+'*.lpl)';
-  ShowUserLinksCheckBox.Caption:=lisPLDShowUserLinks
-                                      +' ('+PkgLinks.GetUserLinkFile+')';
+  UpdateFacets;
   UpdateGlobalLinksButton.Caption:=lrsReadLplFiles;
   CloseBitBtn.Caption:=lisClose;
 
@@ -125,6 +135,16 @@ procedure TPackageLinksDialog.FormDestroy(Sender: TObject);
 begin
   LPKInfoCache.EndLPKReader;
   ClearLinks;
+end;
+
+procedure TPackageLinksDialog.LPKFileValidCheckBoxChange(Sender: TObject);
+begin
+  UpdatePackageList;
+end;
+
+procedure TPackageLinksDialog.LPKFileInvalidCheckBoxChange(Sender: TObject);
+begin
+  UpdatePackageList;
 end;
 
 procedure TPackageLinksDialog.LPKParsingTimerTimer(Sender: TObject);
@@ -162,6 +182,7 @@ var
   i: Integer;
   OriginStr: String;
   Info: TLPKInfo;
+  NextNode: TAvgLvlTreeNode;
 begin
   // collect links
   ClearLinks;
@@ -180,13 +201,47 @@ begin
   // query additional information from lpk files
   LPKInfoCache.EnterCritSection;
   try
+    FCountLPKValid:=0;
+    FCountLPKInvalid:=0;
     Node:=FLinks.FindLowest;
     while Node<>nil do begin
       Link:=TPkgLinkInfo(Node.Data);
+      Link.Visible:=true;
+      NextNode:=Node.Successor;
       Info:=LPKInfoCache.FindPkgInfoWithFilename(Link.GetEffectiveFilename);
-      if Info<>nil then
-        Link.LPKInfo.Assign(Info);
-      Node:=Node.Successor;
+
+      // filter for Validity
+      if Link.Visible then begin
+        Link.IsValid:=true;
+        if Info<>nil then begin
+          Link.LPKInfo.Assign(Info);
+          if Link.LPKInfo.LPKParsed=lpkiParsedError then
+            Link.IsValid:=false;
+        end;
+        if Link.IsValid then begin
+          if not LPKFileValidCheckBox.Checked then Link.Visible:=false;
+        end else begin
+          if not LPKFileInvalidCheckBox.Checked then Link.Visible:=false;
+        end;
+      end;
+
+      if Link.Visible then begin
+        // todo filter for text
+
+      end;
+
+      if Link.Visible then begin
+        // this link is shown => increase facet counters
+        if Link.IsValid then
+          inc(FCountLPKValid)
+        else
+          inc(FCountLPKInvalid);
+      end else begin
+        // delete link
+        Link.Free;
+        FLinks.Delete(Node);
+      end;
+      Node:=NextNode;
     end;
   finally
     LPKInfoCache.LeaveCritSection;
@@ -205,6 +260,13 @@ begin
   Node:=FLinks.FindLowest;
   while Node<>nil do begin
     Link:=TPkgLinkInfo(Node.Data);
+    Node:=Node.Successor;
+
+    Info:=Link.LPKInfo;
+    if Info<>nil then begin
+
+    end;
+
     PkgStringGrid.Cells[0,i]:=Link.Name;
     PkgStringGrid.Cells[1,i]:=Link.Version.AsString;
     if Link.Origin=ploGlobal then
@@ -214,11 +276,24 @@ begin
     PkgStringGrid.Cells[2,i]:=OriginStr;
     PkgStringGrid.Cells[3,i]:=dbgs(FileExistsCached(Link.GetEffectiveFilename));
     PkgStringGrid.Cells[4,i]:=Link.GetEffectiveFilename;
+
     inc(i);
-    Node:=Node.Successor;
   end;
   
   PkgStringGrid.AutoAdjustColumns;
+  UpdateFacets;
+end;
+
+procedure TPackageLinksDialog.UpdateFacets;
+begin
+  ShowGlobalLinksCheckBox.Caption:=lisPLDShowGlobalLinks
+                                 +' ('+PkgLinks.GetGlobalLinkDirectory+'*.lpl)';
+  ShowUserLinksCheckBox.Caption:=lisPLDShowUserLinks
+                                      +' ('+PkgLinks.GetUserLinkFile+')';
+  LPKFileValidCheckBox.Caption:=Format(lrsPLDLpkFileValid, [IntToStr(
+    CountLPKValid)]);
+  LPKFileInvalidCheckBox.Caption:=Format(lrsPLDLpkFileInvalid, [IntToStr(
+    CountLPKInvalid)]);
 end;
 
 procedure TPackageLinksDialog.ClearLinks;

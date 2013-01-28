@@ -12,7 +12,7 @@ object PackageLinksDialog: TPackageLinksDialog
   LCLVersion = '1.1'
   object ScopeGroupBox: TGroupBox
     Left = 0
-    Height = 83
+    Height = 113
     Top = 0
     Width = 659
     Align = alTop
@@ -22,11 +22,12 @@ object PackageLinksDialog: TPackageLinksDialog
     ChildSizing.TopBottomSpacing = 6
     ChildSizing.HorizontalSpacing = 6
     ChildSizing.VerticalSpacing = 6
-    ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ClientHeight = 66
+    ClientHeight = 96
     ClientWidth = 655
     TabOrder = 0
     object ShowGlobalLinksCheckBox: TCheckBox
+      AnchorSideLeft.Control = ScopeGroupBox
+      AnchorSideTop.Control = ScopeGroupBox
       Left = 6
       Height = 24
       Top = 6
@@ -38,22 +39,55 @@ object PackageLinksDialog: TPackageLinksDialog
       TabOrder = 0
     end
     object ShowUserLinksCheckBox: TCheckBox
+      AnchorSideLeft.Control = ScopeGroupBox
+      AnchorSideTop.Control = ShowGlobalLinksCheckBox
+      AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 24
       Top = 36
-      Width = 170
+      Width = 161
       Caption = 'ShowUserLinksCheckBox'
       Checked = True
       OnChange = ShowUserLinksCheckBoxChange
       State = cbChecked
       TabOrder = 1
     end
+    object LPKFileValidCheckBox: TCheckBox
+      AnchorSideLeft.Control = ScopeGroupBox
+      AnchorSideTop.Control = ShowUserLinksCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 24
+      Top = 66
+      Width = 147
+      Caption = 'LPKFileValidCheckBox'
+      Checked = True
+      OnChange = LPKFileValidCheckBoxChange
+      State = cbChecked
+      TabOrder = 2
+    end
+    object LPKFileInvalidCheckBox: TCheckBox
+      AnchorSideLeft.Control = LPKFileValidCheckBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = LPKFileValidCheckBox
+      AnchorSideTop.Side = asrCenter
+      Left = 168
+      Height = 24
+      Top = 66
+      Width = 155
+      BorderSpacing.Left = 15
+      Caption = 'LPKFileInvalidCheckBox'
+      Checked = True
+      OnChange = LPKFileInvalidCheckBoxChange
+      State = cbChecked
+      TabOrder = 3
+    end
   end
   object PkgStringGrid: TStringGrid
     AnchorSideBottom.Control = BtnPanel
     Left = 0
-    Height = 326
-    Top = 83
+    Height = 296
+    Top = 113
     Width = 659
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]

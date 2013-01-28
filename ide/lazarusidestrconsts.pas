@@ -239,6 +239,8 @@ resourcestring
   lisConvert = 'Convert';
   lisPLDShowGlobalLinks = 'Show global links';
   lisPLDShowUserLinks = 'Show user links';
+  lrsPLDLpkFileValid = 'lpk file valid %s';
+  lrsPLDLpkFileInvalid = 'lpk file invalid %s';
   lisPLDGlobal = 'Global';
   lisCTDefDefineTemplates = 'Define templates';
   lisMenuCloseAll = 'Close A&ll';
