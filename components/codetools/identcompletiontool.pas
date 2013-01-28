@@ -2108,6 +2108,7 @@ begin
         AddKeyWord('PACKENUM');
         AddKeyWord('PACKRECORDS');
         AddKeyWord('PACKSET');
+        AddKeyWord('PIC');
         AddKeyWord('POINTERMATH');
         AddKeyWord('POP');
         AddKeyWord('PUSH');
