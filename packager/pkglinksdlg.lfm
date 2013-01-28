@@ -109,28 +109,34 @@ object PackageLinksDialog: TPackageLinksDialog
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     ColCount = 6
+    ColumnClickSorts = True
     Columns = <    
       item
         ButtonStyle = cbsCheckboxColumn
         Title.Caption = 'Select'
       end    
       item
+        ReadOnly = True
         Title.Caption = 'Name'
       end    
       item
+        ReadOnly = True
         Title.Caption = 'Version'
       end    
       item
+        ReadOnly = True
         Title.Caption = 'Group'
       end    
       item
+        ReadOnly = True
         Title.Caption = 'State'
       end    
       item
+        ReadOnly = True
         Title.Caption = 'Filename'
       end>
     FixedCols = 0
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goTabs, goColSpanning, goDblClickAutoSize, goSmoothScroll]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goTabs, goColSpanning, goDblClickAutoSize, goSmoothScroll]
     TabOrder = 1
     OnCheckboxToggled = PkgStringGridCheckboxToggled
     OnSelection = PkgStringGridSelection

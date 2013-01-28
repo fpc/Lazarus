@@ -355,6 +355,7 @@ begin
 
     end;
 
+    PkgStringGrid.Cells[0,i]:=PkgStringGrid.Columns[0].ValueUnchecked;
     PkgStringGrid.Cells[1,i]:=Link.Name;
     PkgStringGrid.Cells[2,i]:=Link.Version.AsString;
     if Link.Origin=ploGlobal then
