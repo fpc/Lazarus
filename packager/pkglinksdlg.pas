@@ -68,6 +68,7 @@ type
   TPackageLinksDialog = class(TForm)
     BtnPanel: TPanel;
     CloseBitBtn: TBitBtn;
+    DeleteSelectedButton: TButton;
     FilterEdit: TEdit;
     LPKFileValidCheckBox: TCheckBox;
     LPKFileInvalidCheckBox: TCheckBox;
@@ -81,11 +82,13 @@ type
     PkgStringGrid: TStringGrid;
     UpdateGlobalLinksButton: TButton;
     procedure CopyCellToClipboardMenuItemClick(Sender: TObject);
+    procedure DeleteSelectedButtonClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
     procedure FilterEditEnter(Sender: TObject);
     procedure FilterEditExit(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure GridPopupMenuPopup(Sender: TObject);
     procedure LPKFileValidCheckBoxChange(Sender: TObject);
     procedure LPKFileInvalidCheckBoxChange(Sender: TObject);
     procedure LPKParsingTimerTimer(Sender: TObject);
@@ -98,12 +101,17 @@ type
     FCountLPKValid: integer;
     FCountLPKInvalid: integer;
     FCountUserLinks: Integer;
-    FLinks: TAvglVLTree;// tree of TPkgLinkInfo sorted for names
+    FLinks: TAvglVLTree;// tree of TPkgLinkInfo sorted for name and version
     FCollectingOrigin: TPkgLinkOrigin;
+    fFiles: TStringList;
+    procedure RescanGlobalLinks;
     procedure UpdateFacets;
     procedure UpdatePackageList;
     procedure ClearLinks;
     procedure IteratePackages(APackage: TLazPackageID);
+    function GetLinkAtRow(Row: integer): TPkgLinkInfo;
+    function GetLinkWithEffectiveFilename(Filename: string;
+      Origins: TPkgLinkOrigins): TPkgLinkInfo;
   public
     property CountLPKValid: integer read FCountLPKValid;
     property CountLPKInvalid: integer read FCountLPKInvalid;
@@ -133,9 +141,11 @@ end;
 
 procedure TPackageLinksDialog.FormCreate(Sender: TObject);
 begin
+  fFiles:=TStringList.Create;
   Caption:=lisPLDPackageLinks;
   ScopeGroupBox.Caption:=dlgScope;
   CopyCellToClipboardMenuItem.Caption:=srkmecCopy;
+  DeleteSelectedButton.Caption:=lrsPLDDeleteSelected;
   UpdateGlobalLinksButton.Caption:=lrsRescanLplFiles;
   CloseBitBtn.Caption:=lisClose;
   FilterEdit.Text:=lisCEFilter;
@@ -158,6 +168,35 @@ begin
   PkgStringGrid.CopyToClipboard(true);
 end;
 
+procedure TPackageLinksDialog.DeleteSelectedButtonClick(Sender: TObject);
+var
+  i: Integer;
+  Link: TPkgLinkInfo;
+  ErrMsg: String;
+begin
+  ErrMsg:='';
+  for i:=1 to PkgStringGrid.RowCount-1 do begin
+    if PkgStringGrid.Cells[0,i]=PkgStringGrid.Columns[0].ValueChecked then begin
+      Link:=GetLinkAtRow(i);
+      if Link=nil then exit;
+      if Link.Origin=ploGlobal then begin
+        // delete lpl file
+        if FileExistsCached(Link.LPLFilename) then begin
+          if not DeleteFileUTF8(Link.LPLFilename) then
+            ErrMsg+=Format(lrsPLDUnableToDeleteFile, [Link.LPLFilename])+
+              LineEnding;
+        end;
+      end else begin
+        // delete user link
+        PkgLinks.RemoveUserLinks(Link);
+      end;
+    end;
+  end;
+  RescanGlobalLinks;
+  UpdatePackageList;
+  PkgLinks.SaveUserLinks;
+end;
+
 procedure TPackageLinksDialog.FilterEditEnter(Sender: TObject);
 begin
   if FilterEdit.Text=lisCEFilter then
@@ -174,6 +213,12 @@ procedure TPackageLinksDialog.FormDestroy(Sender: TObject);
 begin
   LPKInfoCache.EndLPKReader;
   ClearLinks;
+  FreeAndNil(fFiles);
+end;
+
+procedure TPackageLinksDialog.GridPopupMenuPopup(Sender: TObject);
+begin
+
 end;
 
 procedure TPackageLinksDialog.LPKFileValidCheckBoxChange(Sender: TObject);
@@ -211,8 +256,7 @@ end;
 
 procedure TPackageLinksDialog.UpdateGlobalLinksButtonClick(Sender: TObject);
 begin
-  PkgLinks.ClearGlobalLinks;
-  PkgLinks.UpdateGlobalLinks;
+  RescanGlobalLinks;
   UpdatePackageList;
 end;
 
@@ -331,14 +375,12 @@ begin
 
   i:=1;
   Node:=FLinks.FindLowest;
+  fFiles.Clear;
   while Node<>nil do begin
     Link:=TPkgLinkInfo(Node.Data);
     Node:=Node.Successor;
 
-    Info:=Link.LPKInfo;
-    if Info<>nil then begin
-
-    end;
+    fFiles.Add(Link.EffectiveFilename);
 
     PkgStringGrid.Cells[0,i]:=PkgStringGrid.Columns[0].ValueUnchecked;
     PkgStringGrid.Cells[1,i]:=Link.Name;
@@ -378,6 +420,12 @@ begin
     CountLPKInvalid)]);
 end;
 
+procedure TPackageLinksDialog.RescanGlobalLinks;
+begin
+  PkgLinks.ClearGlobalLinks;
+  PkgLinks.UpdateGlobalLinks;
+end;
+
 procedure TPackageLinksDialog.ClearLinks;
 begin
   if FLinks<>nil then begin
@@ -394,6 +442,34 @@ begin
   NewLink.Assign(APackage);
   NewLink.Origin:=FCollectingOrigin;
   FLinks.Add(NewLink);
+end;
+
+function TPackageLinksDialog.GetLinkAtRow(Row: integer): TPkgLinkInfo;
+var
+  Origin: TPkgLinkOrigin;
+begin
+  Result:=nil;
+  if (Row<1) or (Row>fFiles.Count) or (Row>=PkgStringGrid.RowCount) then exit;
+  if PkgStringGrid.Cells[3,Row]=lisPLDGlobal then
+    Origin:=ploGlobal
+  else
+    Origin:=ploUser;
+  Result:=GetLinkWithEffectiveFilename(fFiles[Row-1],[Origin]);
+end;
+
+function TPackageLinksDialog.GetLinkWithEffectiveFilename(Filename: string;
+  Origins: TPkgLinkOrigins): TPkgLinkInfo;
+var
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FLinks.FindLowest;
+  while Node<>nil do begin
+    Result:=TPkgLinkInfo(Node.Data);
+    if (Result.Origin in Origins) and (Result.EffectiveFilename=Filename) then
+      exit;
+    Node:=Node.Successor;
+  end;
+  Result:=nil;
 end;
 
 { TPkgLinkInfo }

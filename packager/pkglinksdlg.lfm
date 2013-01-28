@@ -151,6 +151,7 @@ object PackageLinksDialog: TPackageLinksDialog
     ClientWidth = 659
     TabOrder = 2
     object CloseBitBtn: TBitBtn
+      AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = BtnPanel
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = BtnPanel
@@ -168,15 +169,33 @@ object PackageLinksDialog: TPackageLinksDialog
       TabOrder = 0
     end
     object UpdateGlobalLinksButton: TButton
-      Left = 7
+      AnchorSideLeft.Control = DeleteSelectedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CloseBitBtn
+      AnchorSideTop.Side = asrCenter
+      Left = 150
       Height = 27
-      Top = 7
+      Top = 8
       Width = 152
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'UpdateGlobalLinksButton'
       OnClick = UpdateGlobalLinksButtonClick
       TabOrder = 1
+    end
+    object DeleteSelectedButton: TButton
+      AnchorSideLeft.Control = BtnPanel
+      AnchorSideTop.Control = CloseBitBtn
+      AnchorSideTop.Side = asrCenter
+      Left = 7
+      Height = 27
+      Top = 8
+      Width = 137
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'DeleteSelectedButton'
+      OnClick = DeleteSelectedButtonClick
+      TabOrder = 2
     end
   end
   object ProgressBar1: TProgressBar
@@ -193,6 +212,7 @@ object PackageLinksDialog: TPackageLinksDialog
     top = 190
   end
   object GridPopupMenu: TPopupMenu
+    OnPopup = GridPopupMenuPopup
     left = 206
     top = 288
     object CopyCellToClipboardMenuItem: TMenuItem

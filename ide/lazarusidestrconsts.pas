@@ -68,6 +68,7 @@ resourcestring
   lisNew = 'New';
   lisClose = 'Close';
   lrsRescanLplFiles = 'Rescan lpl files';
+  lrsPLDDeleteSelected = 'Delete selected';
   lisBtnClose = '&Close';
   lisOk = 'OK';
   lisMenuOk = '&OK';
@@ -2299,6 +2300,7 @@ resourcestring
   lisBFOnRunProjectExecuteTheRunFileCommandInstead = 'On run project execute '
     +'the Run File command instead';
   lisCEFilter = '(filter)';
+  lrsPLDUnableToDeleteFile = 'Unable to delete file "%s"';
   lisPESortFilesAlphabetically = 'Sort files alphabetically';
   lisPEShowDirectoryHierarchy = 'Show directory hierarchy';
   dlgCaseSensitive = '&Case sensitive';
