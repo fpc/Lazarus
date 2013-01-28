@@ -297,9 +297,10 @@ const
   ecNewPkgComponent         = ecFirstLazarus + 604;
 //  ecAddCurUnitToPkg         = ecAddCurFileToPkg deprecated;
   ecPackageGraph            = ecFirstLazarus + 605;
-  ecEditInstallPkgs         = ecFirstLazarus + 606;
-  ecConfigCustomComps       = ecFirstLazarus + 607;
-  ecNewPackage              = ecFirstLazarus + 608;
+  ecPackageLinks            = ecFirstLazarus + 606;
+  ecEditInstallPkgs         = ecFirstLazarus + 607;
+  ecConfigCustomComps       = ecFirstLazarus + 608;
+  ecNewPackage              = ecFirstLazarus + 609;
 
   // custom tools menu
   ecExtToolFirst            = ecFirstLazarus + 700;

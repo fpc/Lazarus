@@ -135,7 +135,7 @@ type
     procedure MainIDEitmOpenRecentPackageClicked(Sender: TObject);
     procedure MainIDEitmPkgOpenPackageClicked(Sender: TObject);
     procedure MainIDEitmPkgNewPackageClick(Sender: TObject);
-    procedure MainIDEViewPackageLinksClicked(Sender: TObject);
+    procedure MainIDEitmPackageLinksClicked(Sender: TObject);
 
     // component palette
     procedure IDEComponentPaletteEndUpdate(Sender: TObject;
@@ -938,7 +938,7 @@ begin
   DoShowOpenInstalledPckDlg;
 end;
 
-procedure TPkgManager.MainIDEViewPackageLinksClicked(Sender: TObject);
+procedure TPkgManager.MainIDEitmPackageLinksClicked(Sender: TObject);
 begin
   ShowPackageLinks;
 end;
@@ -1600,12 +1600,11 @@ begin
     itmPkgAddCurFileToPkg.OnClick:=@MainIDEitmPkgAddCurFileToPkgClick;
     itmPkgAddNewComponentToPkg.OnClick:=@MainIDEitmPkgNewComponentClick;
     itmPkgPkgGraph.OnClick:=@MainIDEitmPkgPkgGraphClick;
+    itmPkgPackageLinks.OnClick := @MainIDEitmPackageLinksClicked;
     itmPkgEditInstallPkgs.OnClick:=@MainIDEitmPkgEditInstallPkgsClick;
     {$IFDEF CustomIDEComps}
     itmCompsConfigCustomComps.OnClick :=@MainIDEitmConfigCustomCompsClicked;
     {$ENDIF}
-    
-    itmViewPackageLinks.OnClick := @MainIDEViewPackageLinksClicked;
   end;
   
   SetRecentPackagesMenu;

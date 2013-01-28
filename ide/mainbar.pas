@@ -194,7 +194,6 @@ type
           itmViewPseudoTerminal: TIDEMenuCommand;
           itmViewDbgHistory: TIDEMenuCommand;
         //itmViewIDEInternalsWindows: TIDEMenuSection;
-          itmViewPackageLinks: TIDEMenuCommand;
           itmViewFPCInfo: TIDEMenuCommand;
           itmViewIDEInfo: TIDEMenuCommand;
           itmViewNeedBuild: TIDEMenuCommand;
@@ -323,6 +322,7 @@ type
         itmPkgAddNewComponentToPkg: TIDEMenuCommand;
       //itmPkgGraphSection: TIDEMenuSection;
         itmPkgPkgGraph: TIDEMenuCommand;
+        itmPkgPackageLinks: TIDEMenuCommand;
         itmPkgEditInstallPkgs: TIDEMenuCommand;
         {$IFDEF CustomIDEComps}
         itmCompsConfigCustomComps: TIDEMenuCommand;

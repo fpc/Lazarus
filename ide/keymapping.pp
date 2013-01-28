@@ -616,6 +616,7 @@ begin
     ecAddCurFileToPkg         : Result:= lisMenuAddCurFileToPkg;
     ecNewPkgComponent         : Result:= lisMenuPkgNewPackageComponent;
     ecPackageGraph            : Result:= lisMenuPackageGraph;
+    ecPackageLinks            : Result:= lisMenuPackageLinks;
     ecEditInstallPkgs         : Result:= lisMenuEditInstallPkgs;
     ecConfigCustomComps       : Result:= lisMenuConfigCustomComps;
 
@@ -1231,6 +1232,7 @@ begin
   ecAddCurFileToPkg:     SetSingle(VK_UNKNOWN,[]);
   ecNewPkgComponent:     SetSingle(VK_UNKNOWN,[]);
   ecPackageGraph:        SetSingle(VK_UNKNOWN,[]);
+  ecPackageLinks:        SetSingle(VK_UNKNOWN,[]);
   ecEditInstallPkgs:     SetSingle(VK_UNKNOWN,[]);
   ecConfigCustomComps:   SetSingle(VK_UNKNOWN,[]);
 
@@ -1664,6 +1666,7 @@ begin
   ecAddCurFileToPkg:     SetSingle(VK_UNKNOWN,[]);
   ecNewPkgComponent:     SetSingle(VK_UNKNOWN,[]);
   ecPackageGraph:        SetSingle(VK_UNKNOWN,[]);
+  ecPackageLinks:        SetSingle(VK_UNKNOWN,[]);
   ecEditInstallPkgs:     SetSingle(VK_UNKNOWN,[]);
   ecConfigCustomComps:   SetSingle(VK_UNKNOWN,[]);
 
@@ -2286,6 +2289,7 @@ begin
   ecAddCurFileToPkg:     SetSingle(VK_UNKNOWN,[]);
   ecNewPkgComponent:     SetSingle(VK_UNKNOWN,[]);
   ecPackageGraph:        SetSingle(VK_UNKNOWN,[]);
+  ecPackageLinks:        SetSingle(VK_UNKNOWN,[]);
   ecEditInstallPkgs:     SetSingle(VK_UNKNOWN,[]);
   ecConfigCustomComps:   SetSingle(VK_UNKNOWN,[]);
 
@@ -2936,6 +2940,7 @@ begin
   AddDefault(C, 'Add active unit to a package', lisMenuAddCurFileToPkg, ecAddCurFileToPkg);
   AddDefault(C, 'Add new component to a package', lisMenuPkgNewPackageComponent, ecNewPkgComponent);
   AddDefault(C, 'Package graph', lisMenuPackageGraph, ecPackageGraph);
+  AddDefault(C, 'Package links', lisMenuPackageLinks, ecPackageLinks);
   AddDefault(C, 'Configure installed packages', lisInstallUninstallPackages, ecEditInstallPkgs);
   AddDefault(C, 'Configure custom components', lisKMConfigureCustomComponents, ecConfigCustomComps);
 

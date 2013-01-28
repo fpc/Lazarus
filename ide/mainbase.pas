@@ -706,7 +706,6 @@ begin
     end;
     CreateMenuSubSection(ParentMI, itmViewIDEInternalsWindows, 'itmViewIDEInternalsWindows', lisMenuIDEInternals);
     begin
-      CreateMenuItem(itmViewIDEInternalsWindows, itmViewPackageLinks, 'itmViewPackageLinks', lisMenuPackageLinks);
       CreateMenuItem(itmViewIDEInternalsWindows, itmViewFPCInfo, 'itmViewFPCInfo', lisMenuAboutFPC);
       CreateMenuItem(itmViewIDEInternalsWindows, itmViewIDEInfo, 'itmViewIDEInfo', lisAboutIDE);
       CreateMenuItem(itmViewIDEInternalsWindows, itmViewNeedBuild, 'itmViewNeedBuild', lisMenuWhatNeedsBuilding);
@@ -904,6 +903,7 @@ begin
     CreateMenuSeparatorSection(mnuComponent,itmPkgGraphSection,'itmPkgGraphSection');
     ParentMI:=itmPkgGraphSection;
     CreateMenuItem(ParentMI,itmPkgPkgGraph,'itmPkgPkgGraph',lisMenuPackageGraph,'pkg_graph');
+    CreateMenuItem(ParentMI,itmPkgPackageLinks,'itmPkgPackageLinks',lisMenuPackageLinks);
     CreateMenuItem(ParentMI,itmPkgEditInstallPkgs,'itmPkgEditInstallPkgs',lisMenuEditInstallPkgs,'pkg_properties');
 
     {$IFDEF CustomIDEComps}
@@ -1095,7 +1095,7 @@ begin
     itmViewTabOrder.Command:=GetCommand(ecViewTabOrder);
     itmViewComponentPalette.Command:=GetCommand(ecToggleCompPalette);
     itmViewIDESpeedButtons.Command:=GetCommand(ecToggleIDESpeedBtns);
-    //itmViewPackageLinks.Command:=GetCommand(ec?);
+    //itmPkgPackageLinks.Command:=GetCommand(ec?);
 
     // source menu
     itmSourceCommentBlock.Command:=GetCommand(ecSelectionComment);
@@ -1189,6 +1189,7 @@ begin
     itmPkgAddCurFileToPkg.Command:=GetCommand(ecAddCurFileToPkg);
     itmPkgAddNewComponentToPkg.Command:=GetCommand(ecNewPkgComponent);
     itmPkgPkgGraph.Command:=GetCommand(ecPackageGraph);
+    itmPkgPackageLinks.Command:=GetCommand(ecPackageLinks);
     itmPkgEditInstallPkgs.Command:=GetCommand(ecEditInstallPkgs);
     {$IFDEF CustomIDEComps}
     itmCompsConfigCustomComps.Command:=GetCommand(ecConfigCustomComps);
