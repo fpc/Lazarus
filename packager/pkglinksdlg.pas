@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, Grids, ExtCtrls, ComCtrls, AvgLvlTree, LazUTF8,
+  Buttons, Grids, ExtCtrls, ComCtrls, Menus, AvgLvlTree, LazUTF8,
   FileProcs, PackageIntf,
   LazarusIDEStrConsts, PackageDefs, PackageLinks, LPKCache;
 
@@ -72,12 +72,15 @@ type
     LPKFileValidCheckBox: TCheckBox;
     LPKFileInvalidCheckBox: TCheckBox;
     LPKParsingTimer: TTimer;
+    CopyCellToClipboardMenuItem: TMenuItem;
+    GridPopupMenu: TPopupMenu;
     ProgressBar1: TProgressBar;
     ShowUserLinksCheckBox: TCheckBox;
     ShowGlobalLinksCheckBox: TCheckBox;
     ScopeGroupBox: TGroupBox;
     PkgStringGrid: TStringGrid;
     UpdateGlobalLinksButton: TButton;
+    procedure CopyCellToClipboardMenuItemClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
     procedure FilterEditEnter(Sender: TObject);
     procedure FilterEditExit(Sender: TObject);
@@ -87,11 +90,6 @@ type
     procedure LPKFileInvalidCheckBoxChange(Sender: TObject);
     procedure LPKParsingTimerTimer(Sender: TObject);
     procedure OnAllLPKParsed(Sender: TObject);
-    procedure PkgStringGridCheckboxToggled(sender: TObject; aCol,
-      aRow: Integer; aState: TCheckboxState);
-    procedure PkgStringGridSelection(Sender: TObject; aCol, aRow: Integer);
-    procedure PkgStringGridValidateEntry(sender: TObject; aCol, aRow: Integer;
-      const OldValue: string; var NewValue: String);
     procedure ShowGlobalLinksCheckBoxChange(Sender: TObject);
     procedure ShowUserLinksCheckBoxChange(Sender: TObject);
     procedure UpdateGlobalLinksButtonClick(Sender: TObject);
@@ -137,7 +135,7 @@ procedure TPackageLinksDialog.FormCreate(Sender: TObject);
 begin
   Caption:=lisPLDPackageLinks;
   ScopeGroupBox.Caption:=dlgScope;
-  UpdateFacets;
+  CopyCellToClipboardMenuItem.Caption:=srkmecCopy;
   UpdateGlobalLinksButton.Caption:=lrsRescanLplFiles;
   CloseBitBtn.Caption:=lisClose;
   FilterEdit.Text:=lisCEFilter;
@@ -153,6 +151,11 @@ end;
 procedure TPackageLinksDialog.FilterEditChange(Sender: TObject);
 begin
   UpdatePackageList;
+end;
+
+procedure TPackageLinksDialog.CopyCellToClipboardMenuItemClick(Sender: TObject);
+begin
+  PkgStringGrid.CopyToClipboard(true);
 end;
 
 procedure TPackageLinksDialog.FilterEditEnter(Sender: TObject);
@@ -194,24 +197,6 @@ begin
   ProgressBar1.Visible:=false;
   ProgressBar1.Style:=pbstNormal;
   UpdatePackageList;
-end;
-
-procedure TPackageLinksDialog.PkgStringGridCheckboxToggled(sender: TObject;
-  aCol, aRow: Integer; aState: TCheckboxState);
-begin
-
-end;
-
-procedure TPackageLinksDialog.PkgStringGridSelection(Sender: TObject; aCol,
-  aRow: Integer);
-begin
-
-end;
-
-procedure TPackageLinksDialog.PkgStringGridValidateEntry(sender: TObject; aCol,
-  aRow: Integer; const OldValue: string; var NewValue: String);
-begin
-
 end;
 
 procedure TPackageLinksDialog.ShowGlobalLinksCheckBoxChange(Sender: TObject);

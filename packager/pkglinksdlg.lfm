@@ -137,10 +137,8 @@ object PackageLinksDialog: TPackageLinksDialog
       end>
     FixedCols = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goTabs, goColSpanning, goDblClickAutoSize, goSmoothScroll]
+    PopupMenu = GridPopupMenu
     TabOrder = 1
-    OnCheckboxToggled = PkgStringGridCheckboxToggled
-    OnSelection = PkgStringGridSelection
-    OnValidateEntry = PkgStringGridValidateEntry
   end
   object BtnPanel: TPanel
     Left = 0
@@ -193,5 +191,13 @@ object PackageLinksDialog: TPackageLinksDialog
     OnTimer = LPKParsingTimerTimer
     left = 355
     top = 190
+  end
+  object GridPopupMenu: TPopupMenu
+    left = 206
+    top = 288
+    object CopyCellToClipboardMenuItem: TMenuItem
+      Caption = 'CopyCellToClipboard'
+      OnClick = CopyCellToClipboardMenuItemClick
+    end
   end
 end
