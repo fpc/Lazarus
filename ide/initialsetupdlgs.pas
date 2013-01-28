@@ -2104,8 +2104,11 @@ begin
     end
     else begin
       // No candidates found => start a thread to scan the file system.
+      {$IFNDEF LCLCarbon}
+      // carbon interface does not support Synchronize outside Application.Run
       StartFPCSrcThread;
       SelectPage(TVNodeFPCSources.Text);
+      {$ENDIF}
     end;
   end;
   ShowHideScanControls(fSearchFpcSourceThread<>nil);
