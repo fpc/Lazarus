@@ -29,6 +29,8 @@ type
 procedure LoadStringsFromFileUTF8(List: TStrings; const FileName: string);
 procedure SaveStringsToFileUTF8(List: TStrings; const FileName: string);
 
+function CompareStringListItemsUTF8LowerCase(List: TStringList; Index1, Index2: Integer): Integer;
+
 implementation
 
 procedure LoadStringsFromFileUTF8(List: TStrings; const FileName: string);
@@ -65,6 +67,12 @@ begin
   finally
     uList.Free;
   end;
+end;
+
+function CompareStringListItemsUTF8LowerCase(List: TStringList; Index1,
+  Index2: Integer): Integer;
+begin
+  Result:=CompareStr(UTF8LowerCase(List[Index1]),UTF8LowerCase(List[Index2]));
 end;
 
 constructor TFileStreamUTF8.Create(const AFileName: utf8string; Mode: Word);
