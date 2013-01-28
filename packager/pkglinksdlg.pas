@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, Grids, ExtCtrls, AvgLvlTree,
+  Buttons, Grids, ExtCtrls, ComCtrls, AvgLvlTree,
   FileProcs, PackageIntf,
   LazarusIDEStrConsts, PackageDefs, PackageLinks, LPKCache;
 
@@ -69,6 +69,7 @@ type
     LPKFileValidCheckBox: TCheckBox;
     LPKFileInvalidCheckBox: TCheckBox;
     LPKParsingTimer: TTimer;
+    ProgressBar1: TProgressBar;
     ShowUserLinksCheckBox: TCheckBox;
     ShowGlobalLinksCheckBox: TCheckBox;
     ScopeGroupBox: TGroupBox;
@@ -155,6 +156,8 @@ end;
 procedure TPackageLinksDialog.OnAllLPKParsed(Sender: TObject);
 begin
   LPKParsingTimer.Enabled:=false;
+  ProgressBar1.Visible:=false;
+  ProgressBar1.Style:=pbstNormal;
   UpdatePackageList;
 end;
 

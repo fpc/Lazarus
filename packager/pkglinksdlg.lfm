@@ -135,6 +135,15 @@ object PackageLinksDialog: TPackageLinksDialog
       TabOrder = 1
     end
   end
+  object ProgressBar1: TProgressBar
+    Left = 0
+    Height = 20
+    Top = 389
+    Width = 659
+    Align = alBottom
+    Style = pbstMarquee
+    TabOrder = 3
+  end
   object LPKParsingTimer: TTimer
     OnTimer = LPKParsingTimerTimer
     left = 355
