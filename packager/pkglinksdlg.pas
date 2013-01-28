@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, Grids, ExtCtrls, ComCtrls, AvgLvlTree,
+  Buttons, Grids, ExtCtrls, ComCtrls, AvgLvlTree, LazUTF8,
   FileProcs, PackageIntf,
   LazarusIDEStrConsts, PackageDefs, PackageLinks, LPKCache;
 
@@ -48,6 +48,7 @@ type
 
   TPkgLinkInfo = class(TPackageLink)
   private
+    FEffectiveFilename: string;
     FIsValid: boolean;
     FLPKInfo: TLPKInfo;
     FVisible: boolean;
@@ -59,6 +60,7 @@ type
     property LPKInfo: TLPKInfo read FLPKInfo;
     property Visible: boolean read FVisible write FVisible;
     property IsValid: boolean read FIsValid write FIsValid;
+    property EffectiveFilename: string read FEffectiveFilename write FEffectiveFilename;
   end;
 
   { TPackageLinksDialog }
@@ -66,6 +68,7 @@ type
   TPackageLinksDialog = class(TForm)
     BtnPanel: TPanel;
     CloseBitBtn: TBitBtn;
+    FilterEdit: TEdit;
     LPKFileValidCheckBox: TCheckBox;
     LPKFileInvalidCheckBox: TCheckBox;
     LPKParsingTimer: TTimer;
@@ -75,6 +78,9 @@ type
     ScopeGroupBox: TGroupBox;
     PkgStringGrid: TStringGrid;
     UpdateGlobalLinksButton: TButton;
+    procedure FilterEditChange(Sender: TObject);
+    procedure FilterEditEnter(Sender: TObject);
+    procedure FilterEditExit(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure LPKFileValidCheckBoxChange(Sender: TObject);
@@ -129,6 +135,7 @@ begin
   UpdateFacets;
   UpdateGlobalLinksButton.Caption:=lrsRescanLplFiles;
   CloseBitBtn.Caption:=lisClose;
+  FilterEdit.Text:=lisCEFilter;
 
   LPKInfoCache.StartLPKReaderWithAllAvailable;
   LPKInfoCache.AddOnQueueEmpty(@OnAllLPKParsed);
@@ -136,6 +143,23 @@ begin
   ProgressBar1.Visible:=true;
 
   UpdatePackageList;
+end;
+
+procedure TPackageLinksDialog.FilterEditChange(Sender: TObject);
+begin
+  UpdatePackageList;
+end;
+
+procedure TPackageLinksDialog.FilterEditEnter(Sender: TObject);
+begin
+  if FilterEdit.Text=lisCEFilter then
+    FilterEdit.Text:='';
+end;
+
+procedure TPackageLinksDialog.FilterEditExit(Sender: TObject);
+begin
+  if FilterEdit.Text='' then
+    FilterEdit.Text:=lisCEFilter;
 end;
 
 procedure TPackageLinksDialog.FormDestroy(Sender: TObject);
@@ -186,6 +210,27 @@ end;
 
 procedure TPackageLinksDialog.UpdatePackageList;
 var
+  FilterCase: TCaption;
+  FilterLo: String;
+
+  function HasFilterText(Link: TPkgLinkInfo): boolean;
+  begin
+    Result:=true;
+    if Pos(FilterLo,UTF8LowerCase(Link.Name))>0 then
+      exit;
+    if Pos(FilterLo,UTF8LowerCase(Link.Version.AsString))>0 then
+      exit;
+    if FilenamesCaseSensitive then {%H-}begin
+      if Pos(FilterCase,Link.EffectiveFilename)>0 then
+        exit;
+    end else {%H-}begin
+      if Pos(FilterLo,UTF8LowerCase(Link.EffectiveFilename))>0 then
+        exit;
+    end;
+    Result:=false;
+  end;
+
+var
   Node: TAvgLvlTreeNode;
   Link: TPkgLinkInfo;
   i: Integer;
@@ -215,11 +260,15 @@ begin
     FCountGlobalLinks:=0;
     FCountUserLinks:=0;
     Node:=FLinks.FindLowest;
+    FilterCase:=FilterEdit.Text;
+    if FilterCase=lisCEFilter then FilterCase:='';
+    FilterLo:=UTF8LowerCase(FilterCase);
     while Node<>nil do begin
       Link:=TPkgLinkInfo(Node.Data);
       Link.Visible:=true;
       NextNode:=Node.Successor;
-      Info:=LPKInfoCache.FindPkgInfoWithFilename(Link.GetEffectiveFilename);
+      Link.EffectiveFilename:=Link.GetEffectiveFilename;
+      Info:=LPKInfoCache.FindPkgInfoWithFilename(Link.EffectiveFilename);
 
       // filter for Validity
       if Link.Visible then begin
@@ -236,9 +285,9 @@ begin
         end;
       end;
 
-      if Link.Visible then begin
-        // todo filter for text
-
+      if Link.Visible and (FilterCase<>'') then begin
+        // filter for text
+        Link.Visible:=HasFilterText(Link);
       end;
 
       if Link.Visible then begin
@@ -289,8 +338,8 @@ begin
     else
       OriginStr:=lisPLDUser;
     PkgStringGrid.Cells[2,i]:=OriginStr;
-    PkgStringGrid.Cells[3,i]:=dbgs(FileExistsCached(Link.GetEffectiveFilename));
-    PkgStringGrid.Cells[4,i]:=Link.GetEffectiveFilename;
+    PkgStringGrid.Cells[3,i]:=dbgs(FileExistsCached(Link.EffectiveFilename));
+    PkgStringGrid.Cells[4,i]:=Link.EffectiveFilename;
 
     inc(i);
   end;

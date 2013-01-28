@@ -12,7 +12,7 @@ object PackageLinksDialog: TPackageLinksDialog
   LCLVersion = '1.1'
   object ScopeGroupBox: TGroupBox
     Left = 0
-    Height = 113
+    Height = 144
     Top = 0
     Width = 659
     Align = alTop
@@ -22,7 +22,7 @@ object PackageLinksDialog: TPackageLinksDialog
     ChildSizing.TopBottomSpacing = 6
     ChildSizing.HorizontalSpacing = 6
     ChildSizing.VerticalSpacing = 6
-    ClientHeight = 96
+    ClientHeight = 127
     ClientWidth = 655
     TabOrder = 0
     object ShowGlobalLinksCheckBox: TCheckBox
@@ -82,12 +82,29 @@ object PackageLinksDialog: TPackageLinksDialog
       State = cbChecked
       TabOrder = 3
     end
+    object FilterEdit: TEdit
+      AnchorSideLeft.Control = ScopeGroupBox
+      AnchorSideTop.Control = LPKFileValidCheckBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = ScopeGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 25
+      Top = 96
+      Width = 643
+      Anchors = [akTop, akLeft, akRight]
+      OnChange = FilterEditChange
+      OnEnter = FilterEditEnter
+      OnExit = FilterEditExit
+      TabOrder = 4
+      Text = 'FilterEdit'
+    end
   end
   object PkgStringGrid: TStringGrid
     AnchorSideBottom.Control = BtnPanel
     Left = 0
-    Height = 296
-    Top = 113
+    Height = 265
+    Top = 144
     Width = 659
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
