@@ -248,19 +248,19 @@ implementation
 
 procedure ShowUnitDictionaryDialog(Sender: TObject);
 var
-  CodyIdentifiersDlg: TCodyIdentifiersDlg;
+  Dlg: TCodyIdentifiersDlg;
 begin
-  CodyIdentifiersDlg:=TCodyIdentifiersDlg.Create(nil);
+  Dlg:=TCodyIdentifiersDlg.Create(nil);
   try
-    if not CodyIdentifiersDlg.Init then exit;
-    if CodyIdentifiersDlg.ShowModal=mrOk then begin
-      case CodyIdentifiersDlg.DlgAction of
-      cidaUseIdentifier: CodyIdentifiersDlg.UseIdentifier;
-      cidaJumpToIdentifier: CodyIdentifiersDlg.JumpToIdentifier;
+    if not Dlg.Init then exit;
+    if Dlg.ShowModal=mrOk then begin
+      case Dlg.DlgAction of
+      cidaUseIdentifier: Dlg.UseIdentifier;
+      cidaJumpToIdentifier: Dlg.JumpToIdentifier;
       end;
     end;
   finally
-    CodyIdentifiersDlg.Free;
+    Dlg.Free;
   end;
 end;
 

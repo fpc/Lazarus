@@ -32,11 +32,12 @@ interface
 uses
   Classes, SysUtils, LazUTF8, LResources, LCLProc, Controls, Forms,
   MenuIntf, IDEWindowIntf, SrcEditorIntf, IDEOptionsIntf, ProjectIntf,
-  IDECommands,
+  IDECommands, NewIDEWndDlg,
   CodeToolManager,
-  CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg,
-  CodyUtils, CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyCopyDeclaration,
-  CodyIdentifiersDlg, CodyMiscOptsFrame, CodyOpts, NewIDEWndDlg;
+  CodyStrConsts, CodyUtils, CodyCtrls, CodyOpts,
+  PPUListDlg, CodyUnitDepWnd, AddAssignMethodDlg, AddWithBlockDlg,
+  CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyCopyDeclaration,
+  CodyIdentifiersDlg, CodyMiscOptsFrame;
 
 procedure Register;
 
@@ -130,6 +131,12 @@ begin
   InitUnitDictionary;
   CreateSourceCommand(CmdCatCodeTools,'ShowUnitDictionary',
     crsShowUnitIdentifierDictionary,nil,@ShowUnitDictionaryDialog);
+
+  // Unit dependencies
+  {$IFDEF EnableCodyExperiments}
+  CreateSourceCommand(CmdCatCodeTools,'UnitDependencies',
+    'Cody Unit Dependencies',nil,@ShowUnitDependenciesDialog);
+  {$ENDIF}
 
   // Refactor menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
