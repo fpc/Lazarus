@@ -127,11 +127,13 @@ begin
   Caption:=lisPLDPackageLinks;
   ScopeGroupBox.Caption:=dlgScope;
   UpdateFacets;
-  UpdateGlobalLinksButton.Caption:=lrsReadLplFiles;
+  UpdateGlobalLinksButton.Caption:=lrsRescanLplFiles;
   CloseBitBtn.Caption:=lisClose;
 
   LPKInfoCache.StartLPKReaderWithAllAvailable;
   LPKInfoCache.AddOnQueueEmpty(@OnAllLPKParsed);
+  ProgressBar1.Style:=pbstMarquee;
+  ProgressBar1.Visible:=true;
 
   UpdatePackageList;
 end;
