@@ -85,8 +85,10 @@ type
     procedure ShowUserLinksCheckBoxChange(Sender: TObject);
     procedure UpdateGlobalLinksButtonClick(Sender: TObject);
   private
+    FCountGlobalLinks: integer;
     FCountLPKValid: integer;
     FCountLPKInvalid: integer;
+    FCountUserLinks: Integer;
     FLinks: TAvglVLTree;// tree of TPkgLinkInfo sorted for names
     FCollectingOrigin: TPkgLinkOrigin;
     procedure UpdateFacets;
@@ -96,6 +98,8 @@ type
   public
     property CountLPKValid: integer read FCountLPKValid;
     property CountLPKInvalid: integer read FCountLPKInvalid;
+    property CountUserLinks: Integer read FCountUserLinks;
+    property CountGlobalLinks: integer read FCountGlobalLinks;
   end;
 
 function ShowPackageLinks: TModalResult;
@@ -206,6 +210,8 @@ begin
   try
     FCountLPKValid:=0;
     FCountLPKInvalid:=0;
+    FCountGlobalLinks:=0;
+    FCountUserLinks:=0;
     Node:=FLinks.FindLowest;
     while Node<>nil do begin
       Link:=TPkgLinkInfo(Node.Data);
@@ -239,6 +245,10 @@ begin
           inc(FCountLPKValid)
         else
           inc(FCountLPKInvalid);
+        if Link.Origin=ploGlobal then
+          inc(FCountGlobalLinks)
+        else
+          inc(FCountUserLinks);
       end else begin
         // delete link
         Link.Free;
@@ -290,9 +300,11 @@ end;
 procedure TPackageLinksDialog.UpdateFacets;
 begin
   ShowGlobalLinksCheckBox.Caption:=lisPLDShowGlobalLinks
-                                 +' ('+PkgLinks.GetGlobalLinkDirectory+'*.lpl)';
+     +' in '+PkgLinks.GetGlobalLinkDirectory+'*.lpl'
+     +' ('+IntToStr(CountGlobalLinks)+')';
   ShowUserLinksCheckBox.Caption:=lisPLDShowUserLinks
-                                      +' ('+PkgLinks.GetUserLinkFile+')';
+     +' in '+PkgLinks.GetUserLinkFile
+     +' ('+IntToStr(CountUserLinks)+')';
   LPKFileValidCheckBox.Caption:=Format(lrsPLDLpkFileValid, [IntToStr(
     CountLPKValid)]);
   LPKFileInvalidCheckBox.Caption:=Format(lrsPLDLpkFileInvalid, [IntToStr(
