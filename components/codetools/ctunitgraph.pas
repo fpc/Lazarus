@@ -96,6 +96,7 @@ type
   private
     FFiles: TAVLTree; // tree of TUGUnit sorted for Filename
     FStartFiles: TAVLTree; // tree of TUGUnit sorted for Filename
+    FTargetAll: boolean;
     FTargetFiles: TAVLTree; // tree of TUGUnit sorted for Filename
     FTargetDirsValid: boolean;
     FTargetDirs: string;
@@ -113,16 +114,18 @@ type
 
     procedure AddStartUnit(ExpFilename: string);
     procedure AddTargetUnit(ExpFilename: string);
-    function Parse(IgnoreErrors: boolean; out Complete: boolean;
+    procedure AddSystemUnitAsTarget;
+    function Parse(IgnoreErrors: boolean; out Completed: boolean;
                    StopAfterMs: integer = -1): boolean;
     function GetUnitsTreeUsingTargets: TAVLTree; // tree of TUGUnit sorted for filename
     function GetCodeTreeUsingTargets: TAVLTree; // tree of TCodeBuffer sorted for filename
     function UnitCanFindTarget(ExpFilename: string): boolean;
     function IsTargetDir(ExpDir: string): boolean;
 
-    property FilesTree: TAVLTree read FFiles;
-    property StartFilesTree: TAVLTree read FStartFiles;
-    property TargetFilesTree: TAVLTree read FTargetFiles;
+    property FilesTree: TAVLTree read FFiles; // tree of TUGUnit sorted for Filename
+    property StartFilesTree: TAVLTree read FStartFiles; // tree of TUGUnit sorted for Filename
+    property TargetFilesTree: TAVLTree read FTargetFiles; // tree of TUGUnit sorted for Filename
+    property TargetAll: boolean read FTargetAll write FTargetAll;
   end;
 
 function CompareUGUnitFilenames(UGUnit1, UGUnit2: Pointer): integer;
@@ -313,7 +316,12 @@ begin
   FTargetDirsValid:=false;
 end;
 
-function TUsesGraph.Parse(IgnoreErrors: boolean; out Complete: boolean;
+procedure TUsesGraph.AddSystemUnitAsTarget;
+begin
+  AddTargetUnit(DirectoryCachePool.FindUnitInUnitSet('','system'));
+end;
+
+function TUsesGraph.Parse(IgnoreErrors: boolean; out Completed: boolean;
   StopAfterMs: integer): boolean;
 
   procedure AddUses(CurUnit: TUGUnit; UsedFiles: TStrings;
@@ -415,7 +423,7 @@ var
   CurUnit: TUGUnit;
 begin
   Result:=false;
-  Complete:=false;
+  Completed:=false;
   if StopAfterMs>=0 then
     StartTime:=Now
   else
@@ -425,16 +433,16 @@ begin
     CurUnit:=TUGUnit(AVLNode.Data);
     FStartFiles.Delete(AVLNode);
     Include(CurUnit.Flags,ugufReached);
-    //debugln(['TUsesGraph.Parse Unit=',CurUnit.Filename]);
+    //debugln(['TUsesGraph.Parse Unit=',CurUnit.Filename,' UnitCanFindTarget=',UnitCanFindTarget(CurUnit.Filename)]);
     if UnitCanFindTarget(CurUnit.Filename) then begin
-      if not ParseUnit(CurUnit) then exit;
+      ParseUnit(CurUnit);
     end;
 
     if (StopAfterMs>=0) and (Abs(Now-StartTime)*86400000>=StopAfterMs) then
       exit(true);
   end;
 
-  Complete:=true;
+  Completed:=true;
   Result:=true;
 end;
 
@@ -499,7 +507,7 @@ var
   ReachableDir: String;
 begin
   Result:=true;
-  if FTargetInFPCSrc then exit; // standard units can always be found
+  if FTargetInFPCSrc or TargetAll then exit; // standard units can always be found
 
   BaseDir:=ExtractFilePath(ExpFilename);
   if IsTargetDir(BaseDir) then exit;
@@ -528,11 +536,11 @@ var
   p: Integer;
   TargetDir: String;
 begin
-  if FTargetFiles.Count=0 then exit(false);
+  if FTargetFiles.Count=0 then exit(TargetAll);
 
   if not FTargetDirsValid then begin
     FTargetDirsValid:=true;
-    FTargetInFPCSrc:=false;
+    FTargetInFPCSrc:=TargetAll;
     // build list of target directories for quick lookup
     AVLNode:=FTargetFiles.FindLowest;
     while AVLNode<>nil do begin
@@ -561,6 +569,7 @@ begin
   end;
 
   Result:=true;
+  if TargetAll then exit;
   if (ExpDir='') and (FTargetDirs[1]=';') then exit;
   p:=1;
   repeat
