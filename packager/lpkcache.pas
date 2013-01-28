@@ -215,7 +215,10 @@ var
   NeedsStart: Boolean;
   Pkg: TLazPackage;
 begin
-  if (Filenames=nil) or (Filenames.Count=0) then exit;
+  if (Filenames=nil) or (Filenames.Count=0) then begin
+    QueueEmpty;
+    exit;
+  end;
   NeedsStart:=false;
   EnterCritSection;
   try
@@ -257,7 +260,9 @@ begin
   end;
 
   if NeedsStart then
-    FLPKReader.Start;
+    FLPKReader.Start
+  else
+    QueueEmpty;
 end;
 
 procedure TLPKInfoCache.EndLPKReader;

@@ -207,10 +207,10 @@ begin
   HelpButton.Caption:=lisMenuHelp;
   CancelButton.Caption:=lisCancel;
 
-  LPKInfoCache.StartLPKReaderWithAllAvailable;
-  LPKInfoCache.AddOnQueueEmpty(@OnAllLPKParsed);
   FNewInstalledPackages:=TObjectList.Create(true);
   PkgInfoMemo.Clear;
+  LPKInfoCache.AddOnQueueEmpty(@OnAllLPKParsed);
+  LPKInfoCache.StartLPKReaderWithAllAvailable;
 
   UpdateAvailablePackages;
   UpdateButtonStates;
@@ -374,6 +374,7 @@ end;
 procedure TInstallPkgSetDialog.InstallPkgSetDialogDestroy(Sender: TObject);
 begin
   LPKInfoCache.EndLPKReader;
+  LPKInfoCache.RemoveOnQueueEmpty(@OnAllLPKParsed);
   ClearNewInstalledPackages;
   FreeAndNil(FNewInstalledPackages);
 end;

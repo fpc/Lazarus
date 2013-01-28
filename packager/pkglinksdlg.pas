@@ -150,10 +150,10 @@ begin
   CloseBitBtn.Caption:=lisClose;
   FilterEdit.Text:=lisCEFilter;
 
-  LPKInfoCache.StartLPKReaderWithAllAvailable;
-  LPKInfoCache.AddOnQueueEmpty(@OnAllLPKParsed);
   ProgressBar1.Style:=pbstMarquee;
   ProgressBar1.Visible:=true;
+  LPKInfoCache.AddOnQueueEmpty(@OnAllLPKParsed);
+  LPKInfoCache.StartLPKReaderWithAllAvailable;
 
   UpdatePackageList;
 end;
@@ -212,6 +212,7 @@ end;
 procedure TPackageLinksDialog.FormDestroy(Sender: TObject);
 begin
   LPKInfoCache.EndLPKReader;
+  LPKInfoCache.RemoveOnQueueEmpty(@OnAllLPKParsed);
   ClearLinks;
   FreeAndNil(fFiles);
 end;
