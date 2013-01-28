@@ -87,6 +87,11 @@ type
     procedure LPKFileInvalidCheckBoxChange(Sender: TObject);
     procedure LPKParsingTimerTimer(Sender: TObject);
     procedure OnAllLPKParsed(Sender: TObject);
+    procedure PkgStringGridCheckboxToggled(sender: TObject; aCol,
+      aRow: Integer; aState: TCheckboxState);
+    procedure PkgStringGridSelection(Sender: TObject; aCol, aRow: Integer);
+    procedure PkgStringGridValidateEntry(sender: TObject; aCol, aRow: Integer;
+      const OldValue: string; var NewValue: String);
     procedure ShowGlobalLinksCheckBoxChange(Sender: TObject);
     procedure ShowUserLinksCheckBoxChange(Sender: TObject);
     procedure UpdateGlobalLinksButtonClick(Sender: TObject);
@@ -191,6 +196,24 @@ begin
   UpdatePackageList;
 end;
 
+procedure TPackageLinksDialog.PkgStringGridCheckboxToggled(sender: TObject;
+  aCol, aRow: Integer; aState: TCheckboxState);
+begin
+
+end;
+
+procedure TPackageLinksDialog.PkgStringGridSelection(Sender: TObject; aCol,
+  aRow: Integer);
+begin
+
+end;
+
+procedure TPackageLinksDialog.PkgStringGridValidateEntry(sender: TObject; aCol,
+  aRow: Integer; const OldValue: string; var NewValue: String);
+begin
+
+end;
+
 procedure TPackageLinksDialog.ShowGlobalLinksCheckBoxChange(Sender: TObject);
 begin
   UpdatePackageList;
@@ -237,6 +260,7 @@ var
   OriginStr: String;
   Info: TLPKInfo;
   NextNode: TAvgLvlTreeNode;
+  s: String;
 begin
   // collect links
   ClearLinks;
@@ -312,13 +336,13 @@ begin
   end;
 
   // fill/update grid
-  PkgStringGrid.ColCount:=5;
   PkgStringGrid.RowCount:=FLinks.Count+1;
-  PkgStringGrid.Cells[0, 0]:=lisName;
-  PkgStringGrid.Cells[1, 0]:=lisVersion;
-  PkgStringGrid.Cells[2, 0]:=dlgPLDPackageGroup;
-  PkgStringGrid.Cells[3, 0]:=lisPLDExists;
-  PkgStringGrid.Cells[4, 0]:=lisA2PFilename2;
+  PkgStringGrid.Columns[0].Title.Caption:=lisMenuSelect;
+  PkgStringGrid.Columns[1].Title.Caption:=lisName;
+  PkgStringGrid.Columns[2].Title.Caption:=lisVersion;
+  PkgStringGrid.Columns[3].Title.Caption:=lisGroup;
+  PkgStringGrid.Columns[4].Title.Caption:=lisOIPState;
+  PkgStringGrid.Columns[5].Title.Caption:=lisA2PFilename2;
 
   i:=1;
   Node:=FLinks.FindLowest;
@@ -331,15 +355,21 @@ begin
 
     end;
 
-    PkgStringGrid.Cells[0,i]:=Link.Name;
-    PkgStringGrid.Cells[1,i]:=Link.Version.AsString;
+    PkgStringGrid.Cells[1,i]:=Link.Name;
+    PkgStringGrid.Cells[2,i]:=Link.Version.AsString;
     if Link.Origin=ploGlobal then
       OriginStr:=lisPLDGlobal
     else
       OriginStr:=lisPLDUser;
-    PkgStringGrid.Cells[2,i]:=OriginStr;
-    PkgStringGrid.Cells[3,i]:=dbgs(FileExistsCached(Link.EffectiveFilename));
-    PkgStringGrid.Cells[4,i]:=Link.EffectiveFilename;
+    PkgStringGrid.Cells[3,i]:=OriginStr;
+    if Link.IsValid then
+      s:=lrsPLDValid
+    else if (Info<>nil) and (Info.LPKError<>'') then
+      s:=Info.LPKError
+    else
+      s:=lrsPLDInvalid;
+    PkgStringGrid.Cells[4,i]:=s;
+    PkgStringGrid.Cells[5,i]:=Link.EffectiveFilename;
 
     inc(i);
   end;

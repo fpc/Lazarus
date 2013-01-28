@@ -74,7 +74,6 @@ resourcestring
   lisCancel = 'Cancel';
   lisImportPackageListXml = 'Import package list (*.xml)';
   lisExportPackageListXml = 'Export package list (*.xml)';
-//  lisYes = 'Yes';
   lisNo = 'No';
   lisContinue = 'Continue';
   lisBreak = 'Break';
@@ -239,8 +238,8 @@ resourcestring
   lisConvert = 'Convert';
   lisPLDShowGlobalLinks = 'Show global links';
   lisPLDShowUserLinks = 'Show user links';
-  lrsPLDLpkFileValid = 'lpk file valid %s';
-  lrsPLDLpkFileInvalid = 'lpk file invalid %s';
+  lrsPLDLpkFileValid = 'lpk file valid (%s)';
+  lrsPLDLpkFileInvalid = 'lpk file invalid (%s)';
   lisPLDGlobal = 'Global';
   lisCTDefDefineTemplates = 'Define templates';
   lisMenuCloseAll = 'Close A&ll';
@@ -2313,8 +2312,6 @@ resourcestring
   dlgPromptOnReplace = '&Prompt on replace';
   lisAskBeforeReplacingEachFoundText = 'Ask before replacing each found text';
   dlgSROrigin = 'Origin';
-  dlgPLDPackageGroup = 'Package group';
-  lisPLDExists = 'Exists';
   dlgFromCursor = '&From cursor';
   dlgFromBeginning = 'From b&eginning';
   dlgScope = 'Scope';
@@ -2368,6 +2365,8 @@ resourcestring
   lisFRIRenameAllReferences = 'Rename all References';
   dlgGlobal = '&Global';
   lisPLDUser = 'User';
+  lrsPLDValid = 'valid';
+  lrsPLDInvalid = 'invalid';
   dlgSelectedText = '&Selected text';
   dlgDirection = 'Direction';
   lisFRForwardSearch = 'Forwar&d search';
