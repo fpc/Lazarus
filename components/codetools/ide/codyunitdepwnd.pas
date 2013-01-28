@@ -5,7 +5,7 @@ unit CodyUnitDepWnd;
 interface
 
 uses
-  Classes, SysUtils, types, AVL_Tree, contnrs, FileUtil, lazutf8classes,
+  Classes, SysUtils, types, math, AVL_Tree, contnrs, FileUtil, lazutf8classes,
   LazLogger, TreeFilterEdit, CTUnitGraph, CodeToolManager, DefineTemplates,
   Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons, ComCtrls,
   LCLType, LazIDEIntf, ProjectIntf, IDEWindowIntf;
@@ -18,7 +18,8 @@ resourcestring
 const
   DefaultCategoryGap = 0.04;
   DefaultFirstCategory = 0;
-  DefaultCategoryMinSize = 0.05;
+  DefaultCategoryMinSize = 1.0;
+  DefaultItemSize = 1.0;
 type
   TCustomCircleDiagramControl = class;
   TCircleDiagramCategory = class;
@@ -29,7 +30,9 @@ type
   private
     FCaption: TCaption;
     FCategory: TCircleDiagramCategory;
+    FEndDegree: single;
     FSize: single;
+    FStartDegree: single;
     procedure SetCaption(AValue: TCaption);
     procedure SetSize(AValue: single);
     procedure UpdateLayout;
@@ -38,7 +41,9 @@ type
     destructor Destroy; override;
     property Category: TCircleDiagramCategory read FCategory;
     property Caption: TCaption read FCaption write SetCaption;
-    property Size: single read FSize write SetSize;
+    property Size: single read FSize write SetSize default DefaultItemSize; // scaled to fit
+    property StartDegree: single read FStartDegree;
+    property EndDegree: single read FEndDegree;
   end;
 
   { TCircleDiagramCategory }
@@ -48,8 +53,11 @@ type
     FCaption: TCaption;
     FColor: TColor;
     FDiagram: TCustomCircleDiagramControl;
+    FEndDegree: single;
     FMinSize: single;
     fItems: TObjectList; // list of TCircleDiagramItem
+    FSize: single;
+    FStartDegree: single;
     function GetItems(Index: integer): TCircleDiagramItem;
     procedure SetCaption(AValue: TCaption);
     procedure SetColor(AValue: TColor);
@@ -64,10 +72,13 @@ type
     function AddItem(aCaption: string): TCircleDiagramItem;
     property Diagram: TCustomCircleDiagramControl read FDiagram;
     property Caption: TCaption read FCaption write SetCaption;
-    property MinSize: single read FMinSize write SetMinSize default DefaultCategoryMinSize;
+    property MinSize: single read FMinSize write SetMinSize default DefaultCategoryMinSize; // scaled to fit
     function Count: integer;
-    property Items[Index: integer]: TCircleDiagramItem read GetItems;
+    property Items[Index: integer]: TCircleDiagramItem read GetItems; default;
     property Color: TColor read FColor write SetColor;
+    property Size: single read FSize;
+    property StartDegree: single read FStartDegree;
+    property EndDegree: single read FEndDegree;
   end;
 
   TCircleDiagramCtrlFlag = (
@@ -80,10 +91,13 @@ type
   TCustomCircleDiagramControl = class(TCustomControl)
   private
     FCategoryGap: single;
+    FCenter: TPoint;
     FCenterCaption: TCaption;
     FCenterCaptionRect: TRect;
     FFirstCategory: single;
     fCategories: TObjectList; // list of TCircleDiagramCategory
+    FInnerRadius: single;
+    FOuterRadius: single;
     fUpdateLock: integer;
     fFlags: TCircleDiagramCtrlFlags;
     function GetCategories(Index: integer): TCircleDiagramCategory;
@@ -107,6 +121,7 @@ type
     //procedure HandleKeyUp(var Key: Word; Shift: TShiftState); virtual;
 
     procedure Paint; override;
+    procedure DrawCategory(i: integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -120,12 +135,16 @@ type
     function AddCategory(aCaption: TCaption): TCircleDiagramCategory;
     function IndexOfCategory(aCaption: TCaption): integer;
     function FindCategory(aCaption: TCaption): TCircleDiagramCategory;
-    property CategoryGap: single read FCategoryGap write SetCategoryGap default DefaultCategoryGap; // in part of a full circle
-    property FirstCategory: single read FFirstCategory write SetFirstCategory default DefaultFirstCategory; // in part of a full circle starting at top
+    property CategoryGap: single read FCategoryGap write SetCategoryGap default DefaultCategoryGap; // 0..0.3 part of a full circle
+    property FirstCategoryDeg: single read FFirstCategory write SetFirstCategory default DefaultFirstCategory; // 0..1 part of a full circle starting at top
     function CategoryCount: integer;
-    property Categories[Index: integer]: TCircleDiagramCategory read GetCategories;
+    property Categories[Index: integer]: TCircleDiagramCategory read GetCategories; default;
     property Color default clWhite;
+    // computed values
     property CenterCaptionRect: TRect read FCenterCaptionRect;
+    property Center: TPoint read FCenter;
+    property InnerRadius: single read FInnerRadius;
+    property OuterRadius: single read FOuterRadius;
   end;
 
   { TCircleDiagramControl }
@@ -296,6 +315,8 @@ begin
 end;
 
 procedure TCustomCircleDiagramControl.Paint;
+var
+  i: Integer;
 begin
   inherited Paint;
   if cdcNeedUpdateLayout in fFlags then
@@ -306,8 +327,25 @@ begin
   Canvas.Brush.Color:=Color;
   Canvas.FillRect(ClientRect);
 
+  Canvas.Brush.Color:=clRed;
+  //Canvas.Chord(FCenter.X,FCenter.Y,FCenter.X+50,FCenter.Y+50,0,3000);
+
+  // draw categories
+  for i:=0 to CategoryCount-1 do
+    DrawCategory(i);
+
   // center caption
+  Canvas.Brush.Style:=bsSolid;
+  Canvas.Brush.Color:=clNone;
   Canvas.TextOut(FCenterCaptionRect.Left,FCenterCaptionRect.Top,CenterCaption);
+end;
+
+procedure TCustomCircleDiagramControl.DrawCategory(i: integer);
+var
+  Cat: TCircleDiagramCategory;
+begin
+  Cat:=Categories[i];
+  //Canvas.Chord();
 end;
 
 constructor TCustomCircleDiagramControl.Create(AOwner: TComponent);
@@ -316,6 +354,8 @@ begin
   try
     inherited Create(AOwner);
     fCategories:=TObjectList.create(true);
+    FFirstCategory:=DefaultFirstCategory;
+    fCategoryGap:=DefaultCategoryGap;
     Color:=clWhite;
   finally
     EndUpdate;
@@ -359,6 +399,15 @@ end;
 procedure TCustomCircleDiagramControl.UpdateLayout;
 var
   aSize: TSize;
+  aCategory: TCircleDiagramCategory;
+  i: Integer;
+  j: Integer;
+  TotalSize: Single;
+  CurCategoryDegree: Single;
+  GapDegree: Single;
+  TotalItemDegree: Single;
+  Item: TCircleDiagramItem;
+  CurItemDegree: Single;
 begin
   if (fUpdateLock>0) or (not IsVisible) or (not HandleAllocated) then begin
     Include(fFlags,cdcNeedUpdateLayout);
@@ -367,9 +416,54 @@ begin
   Exclude(fFlags,cdcNeedUpdateLayout);
 
   // center caption
+  FCenter:=Point(ClientWidth div 2,ClientHeight div 2);
   aSize:=Canvas.TextExtent(CenterCaption);
-  FCenterCaptionRect:=Bounds((ClientWidth-aSize.cx) div 2,
-    (ClientHeight-aSize.cy) div 2,aSize.cx,aSize.cy);
+  FCenterCaptionRect:=Bounds(FCenter.X-(aSize.cx div 2),FCenter.Y-(aSize.cy div 2)
+    ,aSize.cx,aSize.cy);
+
+  // radius
+  fInnerRadius:=0.5*Min(ClientWidth,ClientHeight);
+  fOuterRadius:=1.1*InnerRadius;
+
+  // degrees
+  TotalSize:=0.0;
+  CurCategoryDegree:=FirstCategoryDeg;
+  if CategoryCount>0 then begin
+    // calculate TotalSize
+    for i:=0 to CategoryCount-1 do begin
+      aCategory:=Categories[i];
+      aCategory.FSize:=0;
+      for j:=0 to aCategory.Count-1 do
+        aCategory.FSize+=aCategory[j].Size;
+      aCategory.FSize:=Max(aCategory.FSize,aCategory.MinSize);
+      TotalSize+=aCategory.FSize;
+    end;
+
+    // calculate degrees
+    GapDegree:=Min(CategoryGap,0.8/CategoryCount);
+    TotalItemDegree:=1.0-(GapDegree*CategoryCount);
+    for i:=0 to CategoryCount-1 do begin
+      aCategory:=Categories[i];
+      aCategory.FStartDegree:=CurCategoryDegree;
+      if TotalSize>0 then
+        CurCategoryDegree+=TotalItemDegree*aCategory.Size/TotalSize;
+      aCategory.FEndDegree:=CurCategoryDegree;
+
+      // item degrees
+      CurItemDegree:=aCategory.StartDegree;
+      for j:=0 to aCategory.Count-1 do begin
+        Item:=aCategory[j];
+
+        Item.FStartDegree:=CurItemDegree;
+        if aCategory.Size>0 then
+          CurItemDegree+=(aCategory.EndDegree-aCategory.StartDegree)*Item.Size/aCategory.Size;
+        Item.FEndDegree:=CurItemDegree;
+      end;
+
+      CurCategoryDegree+=GapDegree;
+    end;
+  end;
+
 end;
 
 procedure TCustomCircleDiagramControl.EraseBackground(DC: HDC);
@@ -440,8 +534,10 @@ end;
 
 procedure TCircleDiagramCategory.SetMinSize(AValue: single);
 begin
+  if AValue<0 then AValue:=0;
   if FMinSize=AValue then Exit;
   FMinSize:=AValue;
+  UpdateLayout;
 end;
 
 procedure TCircleDiagramCategory.UpdateLayout;
@@ -467,6 +563,7 @@ constructor TCircleDiagramCategory.Create(
 begin
   FDiagram:=TheDiagram;
   fItems:=TObjectList.Create(true);
+  FMinSize:=DefaultCategoryMinSize;
 end;
 
 destructor TCircleDiagramCategory.Destroy;
@@ -506,6 +603,7 @@ end;
 
 procedure TCircleDiagramItem.SetSize(AValue: single);
 begin
+  if AValue<0 then AValue:=0;
   if FSize=AValue then Exit;
   FSize:=AValue;
   UpdateLayout;
@@ -520,6 +618,7 @@ end;
 constructor TCircleDiagramItem.Create(TheCategory: TCircleDiagramCategory);
 begin
   FCategory:=TheCategory;
+  FSize:=DefaultItemSize;
 end;
 
 destructor TCircleDiagramItem.Destroy;
