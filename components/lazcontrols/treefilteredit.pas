@@ -64,7 +64,7 @@ type
     fImageIndexDirectory: integer;  // Needed if directory structure is shown.
     fSelectionList: TStringList;    // Store/restore the old selections here.
     fShowDirHierarchy: Boolean;     // Show direcories / files as a tree structure.
-    fBranches: TBranchList;         // Items are under these nodes can be sorted.
+    fBranches: TBranchList;         // Items under these nodes can be sorted.
     fExpandAllInitially: Boolean;   // Expand all levels when searched for the first time.
     fIsFirstTime: Boolean;          // Needed for fExpandAllInitially.
     fOnGetImageIndex: TImageIndexEvent;
