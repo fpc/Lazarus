@@ -4049,10 +4049,6 @@ begin
             DebugLn(['TLazSourceFileManager.LoadLFM loading nested class ',NestedClassName,' needed by ',AnUnitInfo.Filename]);
             NestedClass:=nil;
             NestedUnitInfo:=nil;
-            if Result<>mrOk then begin
-              DebugLn(['TLazSourceFileManager.LoadLFM DoLoadComponentDependencyHidden NestedClassName=',NestedClassName,' failed for ',AnUnitInfo.Filename]);
-              exit;
-            end;
             Result:=LoadComponentDependencyHidden(AnUnitInfo,NestedClassName,
                                      OpenFlags,true,NestedClass,NestedUnitInfo);
             if Result<>mrOk then begin
@@ -4410,6 +4406,22 @@ function TLazSourceFileManager.FindComponentClass(AnUnitInfo: TUnitInfo;
   const AComponentClassName: string; Quiet: boolean;
   var ComponentUnitInfo: TUnitInfo; out AComponentClass: TComponentClass; out
   LFMFilename: string; out AncestorClass: TComponentClass): TModalResult;
+var
+  CTErrorMsg: String;
+  CTErrorCode: TCodeBuffer;
+  CTErrorLine: Integer;
+  CTErrorCol: Integer;
+
+  procedure StoreCodetoolsError;
+  begin
+    if CTErrorMsg<>'' then exit;
+    if CodeToolBoss.ErrorMessage<>'' then begin
+      CTErrorMsg:=CodeToolBoss.ErrorMessage;
+      CTErrorCode:=CodeToolBoss.ErrorCode;
+      CTErrorLine:=CodeToolBoss.ErrorLine;
+      CTErrorCol:=CodeToolBoss.ErrorColumn;
+    end;
+  end;
 
   function TryUnitComponent(const UnitFilename: string;
     out TheModalResult: TModalResult): boolean;
@@ -4435,12 +4447,13 @@ function TLazSourceFileManager.FindComponentClass(AnUnitInfo: TUnitInfo;
     TheModalResult:=mrOk;
   end;
 
-  function TryRegisteredClasses(aClassName: string; out TheModalResult: TModalResult): boolean;
+  function TryRegisteredClasses(aClassName: string;
+    out TheModalResult: TModalResult; out FoundCompClass: TComponentClass): boolean;
   begin
     Result:=false;
-    AComponentClass:=FormEditor1.FindDesignerBaseClassByName(aClassName,true);
-    if AComponentClass<>nil then begin
-      DebugLn(['TLazSourceFileManager.FindComponentClass.TryRegisteredClasses found: ',AComponentClass.ClassName]);
+    FoundCompClass:=FormEditor1.FindDesignerBaseClassByName(aClassName,true);
+    if FoundCompClass<>nil then begin
+      DebugLn(['TLazSourceFileManager.FindComponentClass.TryRegisteredClasses found: ',FoundCompClass.ClassName]);
       TheModalResult:=mrOk;
       Result:=true;
     end;
@@ -4523,7 +4536,10 @@ function TLazSourceFileManager.FindComponentClass(AnUnitInfo: TUnitInfo;
     TheModalResult:=mrCancel;
     // parse interface current unit
     Code:=CodeToolBoss.LoadFile(AnUnitInfo.Filename,false,false);
-    if Code=nil then exit;
+    if Code=nil then begin
+      debugln(['TLazSourceFileManager.FindComponentClass unbale to load ',AnUnitInfo.Filename]);
+      exit;
+    end;
     if not CodeToolBoss.Explore(Code,Tool,false,true) then begin
       if not Quiet then
         MainIDE.DoJumpToCodeToolBossError;
@@ -4555,8 +4571,7 @@ function TLazSourceFileManager.FindComponentClass(AnUnitInfo: TUnitInfo;
           CodeToolBoss.HandleException(E);
       end;
       if not ok then begin
-        if not Quiet then
-          MainIDE.DoJumpToCodeToolBossError;
+        StoreCodetoolsError;
         exit;
       end;
       // declaration found
@@ -4593,16 +4608,37 @@ function TLazSourceFileManager.FindComponentClass(AnUnitInfo: TUnitInfo;
       // search ancestor in registered classes
       AncestorNode:=InheritedNode.FirstChild;
       AncestorClassName:=GetIdentifier(@NewTool.Src[AncestorNode.StartPos]);
-      if TryRegisteredClasses(AncestorClassName,TheModalResult) then begin
-        AncestorClass:=AComponentClass;
-        AComponentClass:=nil;
-        TheModalResult:=mrOk;
+      if TryRegisteredClasses(AncestorClassName,TheModalResult,AncestorClass) then
         exit(true);
-      end;
 
     finally
       Params.Free;
     end;
+  end;
+
+  function TryUsedUnitInterface(UnitFilename: string;
+    out TheModalResult: TModalResult): boolean;
+  var
+    Code: TCodeBuffer;
+    AncestorClassName: string;
+  begin
+    Result:=false;
+    TheModalResult:=mrCancel;
+    AncestorClassName:='';
+    Code:=CodeToolBoss.LoadFile(UnitFilename,true,false);
+    if Code=nil then begin
+      debugln(['TLazSourceFileManager.FindComponentClass unbale to load ',AnUnitInfo.Filename]);
+      exit;
+    end;
+    if not CodeToolBoss.FindFormAncestor(Code,AComponentClassName,
+      AncestorClassName,true) then
+    begin
+      StoreCodetoolsError;
+      exit;
+    end;
+    if AncestorClassName='' then exit;
+    if TryRegisteredClasses(AncestorClassName,TheModalResult,AncestorClass) then
+      exit(true);
   end;
 
 var
@@ -4613,6 +4649,10 @@ begin
   AComponentClass:=nil;
   AncestorClass:=nil;
   LFMFilename:='';
+  CTErrorMsg:='';
+  CTErrorCode:=nil;
+  CTErrorLine:=0;
+  CTErrorCol:=0;
 
   if (AComponentClassName='') or (not IsValidIdent(AComponentClassName)) then
   begin
@@ -4630,7 +4670,7 @@ begin
   end;
 
   // then try registered global classes
-  if TryRegisteredClasses(AComponentClassName,Result) then exit;
+  if TryRegisteredClasses(AComponentClassName,Result,AComponentClass) then exit;
 
   // search in used units
   UsedUnitFilenames:=nil;
@@ -4649,13 +4689,27 @@ begin
       end;
       // search class via codetools
       if TryFindDeclaration(Result) then exit;
+      // search the class in every used unit
+      for i:=UsedUnitFilenames.Count-1 downto 0 do begin
+        if TryUsedUnitInterface(UsedUnitFilenames[i],Result) then exit;
+      end;
     end;
   finally
     UsedUnitFilenames.Free;
   end;
 
-  // not found => tell the user
+  // not found
   if Quiet then exit(mrCancel);
+
+  // show codetool error
+  if (CTErrorMsg<>'') and (not Quiet) then begin
+    CodeToolBoss.SetError(CTErrorCode,CTErrorLine,CTErrorCol,CTErrorMsg);
+    MainIDE.DoJumpToCodeToolBossError;
+    Result:=mrAbort;
+    exit;
+  end;
+
+  // just not found
   Result:=IDEQuestionDialog(lisCodeTemplError,
     Format(lisUnableToFindTheComponentClassItIsNotRegisteredViaR, [
       AComponentClassName, LineEnding, LineEnding, LineEnding, AnUnitInfo.Filename]),
