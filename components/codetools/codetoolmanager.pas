@@ -643,7 +643,7 @@ type
     function RemoveUnitFromAllUsesSections(Code: TCodeBuffer;
           const AnUnitName: string): boolean;
     function FindUsedUnitFiles(Code: TCodeBuffer; var MainUsesSection: TStrings
-          ): boolean;
+          ): boolean; // only main uses section
     function FindUsedUnitFiles(Code: TCodeBuffer; var MainUsesSection,
           ImplementationUsesSection: TStrings): boolean;
     function FindUsedUnitNames(Code: TCodeBuffer; var MainUsesSection,
