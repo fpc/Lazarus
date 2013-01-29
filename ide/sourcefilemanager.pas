@@ -38,7 +38,7 @@ uses
   LazIDEIntf, MainBase, MainBar, MainIntf, MenuIntf, NewItemIntf,
   ProjectIntf, Project, ProjectDefs, ProjectInspector, CompilerOptions,
   BasePkgManager, PackageIntf, PackageDefs, PackageSystem,
-  SrcEditorIntf, IDEWindowIntf, SourceEditor, EditorOptions,
+  SrcEditorIntf, IDEWindowIntf, ComponentReg, SourceEditor, EditorOptions,
   CustomFormEditor, FormEditor, EmptyMethodsDlg, BaseDebugManager,
   ControlSelection, TransferMacros, EnvironmentOpts, BuildManager, Designer,
   EditorMacroListViewer, KeywordFuncLists, FindRenameIdentifier, MsgView,
@@ -133,7 +133,7 @@ type
         out AncestorClass: TComponentClass; out AncestorUnitInfo: TUnitInfo): TModalResult;
     function FindComponentClass(AnUnitInfo: TUnitInfo;
         const AComponentClassName: string; Quiet: boolean;
-        var ComponentUnitInfo: TUnitInfo; out AComponentClass: TComponentClass;
+        out ComponentUnitInfo: TUnitInfo; out AComponentClass: TComponentClass;
         out LFMFilename: string;  out AncestorClass: TComponentClass): TModalResult;
     function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
         const AComponentClassName: string; Flags: TOpenFlags; MustHaveLFM: boolean;
@@ -4053,12 +4053,18 @@ begin
             NestedClass:=nil;
             NestedUnitInfo:=nil;
             Result:=LoadComponentDependencyHidden(AnUnitInfo,NestedClassName,
-                       OpenFlags,true,NestedClass,NestedUnitInfo,AncestorClass);
+                      OpenFlags,
+                      {$IFDEF EnableNestedComponentsWithoutLFM}
+                      false,
+                      {$ENDIF}
+                      NestedClass,NestedUnitInfo,AncestorClass);
             if Result<>mrOk then begin
               DebugLn(['TLazSourceFileManager.LoadLFM DoLoadComponentDependencyHidden NestedClassName=',NestedClassName,' failed for ',AnUnitInfo.Filename]);
               exit;
             end;
-            if AncestorClass<>nil then
+            if NestedClass<>nil then
+              MissingClasses.Objects[i]:=TObject(Pointer(NestedClass))
+            else if AncestorClass<>nil then
               MissingClasses.Objects[i]:=TObject(Pointer(AncestorClass));
           end;
         end;
@@ -4420,7 +4426,7 @@ end;
 
 function TLazSourceFileManager.FindComponentClass(AnUnitInfo: TUnitInfo;
   const AComponentClassName: string; Quiet: boolean;
-  var ComponentUnitInfo: TUnitInfo; out AComponentClass: TComponentClass; out
+  out ComponentUnitInfo: TUnitInfo; out AComponentClass: TComponentClass; out
   LFMFilename: string; out AncestorClass: TComponentClass): TModalResult;
 { Possible results:
   mrOk:
@@ -4479,14 +4485,20 @@ var
   end;
 
   function TryRegisteredClasses(aClassName: string;
-    out FoundCompClass: TComponentClass;
+    out FoundComponentClass: TComponentClass;
     out TheModalResult: TModalResult): boolean;
+  var
+    RegComp: TRegisteredComponent;
   begin
     Result:=false;
     TheModalResult:=mrCancel;
-    FoundCompClass:=FormEditor1.FindDesignerBaseClassByName(aClassName,true);
-    if FoundCompClass<>nil then begin
-      DebugLn(['TLazSourceFileManager.FindComponentClass.TryRegisteredClasses found: ',FoundCompClass.ClassName]);
+    RegComp:=IDEComponentPalette.FindComponent(aClassName);
+    if RegComp<>nil then
+      FoundComponentClass:=RegComp.ComponentClass
+    else
+      FoundComponentClass:=FormEditor1.FindDesignerBaseClassByName(aClassName,true);
+    if FoundComponentClass<>nil then begin
+      DebugLn(['TLazSourceFileManager.FindComponentClass.TryRegisteredClasses found: ',FoundComponentClass.ClassName]);
       TheModalResult:=mrOk;
       Result:=true;
     end;
@@ -4536,9 +4548,11 @@ var
       if Node.Desc=ctnVarDefinition then begin
         TypeNode:=Tool.FindTypeNodeOfDefinition(Node);
         if (TypeNode=nil) or (TypeNode.Desc<>ctnIdentifier) then exit;
-        debugln(['Traverse ',Tool.ExtractNode(Node,[])]);
         if Tool.CompareSrcIdentifiers(TypeNode.StartPos,PChar(AComponentClassName))
         then exit(TypeNode);
+      end else if Node.Desc=ctnTypeDefinition then begin
+        if Tool.CompareSrcIdentifiers(Node.StartPos,PChar(AComponentClassName))
+        then exit(Node);
       end;
       // increase level on identifier nodes
       if Node.Desc in AllIdentifierDefinitions then begin
@@ -4577,25 +4591,36 @@ var
       StoreCodetoolsError;
       exit;
     end;
-    // search a class reference in the unit
-    Node:=FindTypeNode(Tool.Tree.Root,0);
-    if Node=nil then begin
-      debugln('TLazSourceFileManager.FindComponentClass Failed finding reference of ',AComponentClassName,' in ',Code.Filename);
-      exit;
-    end;
     Params:=TFindDeclarationParams.Create;
     try
-      Params.ContextNode:=Node;
-      Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
-                     fdfExceptionOnPredefinedIdent,
-                     fdfTopLvlResolving,fdfSearchInAncestors,
-                     fdfIgnoreCurContextNode];
-      Params.SetIdentifier(Tool,@Tool.Src[Node.StartPos],nil);
       ok:=false;
       try
-        if not Tool.FindIdentifierInContext(Params) then begin
-          debugln(['TLazSourceFileManager.FindComponentClass find declaration failed at ',Tool.CleanPosToStr(Node.StartPos,true)]);
+        // search a class reference in the unit
+        Node:=Tool.FindInterfaceNode;
+        if Node=nil then
+          Node:=Tool.Tree.Root;
+        Node:=FindTypeNode(Node,0);
+        if Node=nil then begin
+          debugln('TLazSourceFileManager.FindComponentClass Failed finding reference of ',AComponentClassName,' in ',Code.Filename);
           exit;
+        end;
+        if Node.Desc=ctnIdentifier then begin
+          //debugln(['TryFindDeclaration found reference of ',AComponentClassName,' at ',Tool.CleanPosToStr(Node.StartPos)]);
+          Params.ContextNode:=Node;
+          Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
+                         fdfExceptionOnPredefinedIdent,
+                         fdfTopLvlResolving,fdfSearchInAncestors,
+                         fdfIgnoreCurContextNode];
+          Params.SetIdentifier(Tool,@Tool.Src[Node.StartPos],nil);
+          if not Tool.FindIdentifierInContext(Params) then begin
+            debugln(['TLazSourceFileManager.FindComponentClass find declaration failed at ',Tool.CleanPosToStr(Node.StartPos,true)]);
+            exit;
+          end;
+          NewNode:=Params.NewNode;
+          NewTool:=Params.NewCodeTool;
+        end else begin
+          NewNode:=Node;
+          NewTool:=Tool;
         end;
         ok:=true;
       except
@@ -4607,8 +4632,6 @@ var
         exit;
       end;
       // declaration found
-      NewNode:=Params.NewNode;
-      NewTool:=Params.NewCodeTool;
       ClassNode:=NewNode.FirstChild;
       if (NewNode.Desc<>ctnTypeDefinition)
       or (ClassNode=nil) or (ClassNode.Desc<>ctnClass) then
@@ -4624,6 +4647,9 @@ var
         debugln(['TLazSourceFileManager.FindComponentClass ',AComponentClassName,' is not a TComponent at ',NewTool.CleanPosToStr(NewNode.StartPos,true)]);
         exit;
       end;
+      AncestorNode:=InheritedNode.FirstChild;
+      AncestorClassName:=GetIdentifier(@NewTool.Src[AncestorNode.StartPos]);
+      //debugln(['TryFindDeclaration declaration of ',AComponentClassName,' found at ',NewTool.CleanPosToStr(NewNode.StartPos),' ancestor="',AncestorClassName,'"']);
 
       // try unit component
       if TryUnitComponent(NewTool.MainFilename,TheModalResult) then
@@ -4634,8 +4660,6 @@ var
         exit(true);
 
       // search ancestor in registered classes
-      AncestorNode:=InheritedNode.FirstChild;
-      AncestorClassName:=GetIdentifier(@NewTool.Src[AncestorNode.StartPos]);
       if TryRegisteredClasses(AncestorClassName,AncestorClass,TheModalResult) then
         exit(true);
 
@@ -4655,7 +4679,7 @@ var
     AncestorClassName:='';
     Code:=CodeToolBoss.LoadFile(UnitFilename,true,false);
     if Code=nil then begin
-      debugln(['TLazSourceFileManager.FindComponentClass unbale to load ',AnUnitInfo.Filename]);
+      debugln(['TLazSourceFileManager.FindComponentClass unable to load ',AnUnitInfo.Filename]);
       exit;
     end;
     if not CodeToolBoss.FindFormAncestor(Code,AComponentClassName,
@@ -4675,6 +4699,7 @@ var
 begin
   Result:=mrCancel;
   AComponentClass:=nil;
+  ComponentUnitInfo:=nil;
   AncestorClass:=nil;
   LFMFilename:='';
   CTErrorMsg:='';
@@ -4690,11 +4715,11 @@ begin
 
   // search component lfm
   {$ifdef VerboseFormEditor}
-  debugln('TLazSourceFileManager.FindComponentClass ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName,' AComponentClass=',dbgsName(AComponentClass));
+  debugln('TLazSourceFileManager.FindComponentClass START ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName);
   {$endif}
   // first search the resource of ComponentUnitInfo
-  if ComponentUnitInfo<>nil then begin
-    if TryUnitComponent(ComponentUnitInfo.Filename,Result) then exit;
+  if AnUnitInfo<>nil then begin
+    if TryUnitComponent(AnUnitInfo.Filename,Result) then exit;
   end;
 
   // then try registered global classes

@@ -2055,14 +2055,32 @@ var
   AnUnitInfo: TUnitInfo;
   Component: TComponent;
   RegComp: TRegisteredComponent;
+  JITList: TJITComponentList;
+  i: Integer;
 begin
-  //DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName]);
+  DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName]);
   RegComp:=IDEComponentPalette.FindComponent(ComponentClassName);
   if RegComp<>nil then begin
     //DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName,' is registered as ',DbgSName(RegComp.ComponentClass)]);
     ComponentClass:=RegComp.ComponentClass;
   end else begin
-    // ToDo: search only in reachable forms
+    JITList:=Sender as TJITComponentList;
+    debugln(['TCustomFormEditor.JITListFindClass JITList.ContextObject=',DbgSName(JITList.ContextObject)]);
+    if JITList.ContextObject is TUnitInfo then begin
+      AnUnitInfo:=TUnitInfo(JITList.ContextObject);
+      if AnUnitInfo.ComponentFallbackClasses<>nil then
+        for i:=0 to AnUnitInfo.ComponentFallbackClasses.Count-1 do begin
+          if SysUtils.CompareText(AnUnitInfo.ComponentFallbackClasses[i],ComponentClassName)=0
+          then begin
+            ComponentClass:=TComponentClass(Pointer(AnUnitInfo.ComponentFallbackClasses.Objects[i]));
+            if ComponentClass<>nil then begin
+              debugln(['TCustomFormEditor.JITListFindClass searched "',ComponentClassName,'", found fallback class "',DbgSName(ComponentClass),'" of unitinfo ',AnUnitInfo.Filename]);
+              exit;
+            end;
+          end;
+        end;
+    end;
+
     AnUnitInfo:=Project1.FirstUnitWithComponent;
     while AnUnitInfo<>nil do begin
       Component:=AnUnitInfo.Component;
