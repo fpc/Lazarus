@@ -75,6 +75,7 @@ type
     FProcNameCodeXYPos: TCodeXYPosition;
     FSourceEditorTopIndex: integer;
     FBtnWidth: integer;
+    fDestroying: boolean;
     procedure CreateHints(const CodeContexts: TCodeContextInfo);
     procedure ClearMarksInHints;
     function GetHints(Index: integer): TCodeContextItem;
@@ -1110,6 +1111,7 @@ end;
 
 procedure TCodeContextFrm.SetIdleConnected(AValue: boolean);
 begin
+  if fDestroying then AValue:=false;
   if FIdleConnected=AValue then Exit;
   FIdleConnected:=AValue;
   if IdleConnected then
@@ -1149,7 +1151,8 @@ end;
 
 destructor TCodeContextFrm.Destroy;
 begin
-  Application.RemoveAllHandlersOfObject(Self);
+  fDestroying:=true;
+  IdleConnected:=false;
   if CodeContextFrm=Self then
     CodeContextFrm:=nil;
   inherited Destroy;

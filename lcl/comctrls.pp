@@ -2262,7 +2262,7 @@ type
     FVertical: Boolean;
     FOnChange: TNotifyEvent;
     function GetAlign: TAlign;
-    procedure SetAlign(aValue: TAlign);
+    procedure SetAlign(aValue: TAlign); reintroduce;
     procedure SetBands(aValue: TCoolBands);
     procedure SetBitmap(aValue: TBitmap);
     procedure SetImages(aValue: TCustomImageList);
