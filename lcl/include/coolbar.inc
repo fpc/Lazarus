@@ -160,6 +160,7 @@ end;
 
 procedure TCoolBand.UpdControl;
 begin
+  if FCoolBar = Nil then Exit;
   if Assigned(FTextLabel) then
   begin
     if Assigned(FControl) then
@@ -196,19 +197,6 @@ begin
   end;
 end;
 
-procedure TCoolBand.CalcTop(var aTop: Integer);
-// aTop is a cumulative value, set by the caller.
-var
-  hh: Integer;
-begin
-  hh := Height;
-  Assert(Assigned(FCoolBar), 'TCoolBand.CalcTop: FCoolBar is not assigned');
-  if FCoolBar.BandBorderStyle = bsSingle then
-    Inc(hh, 2);
-  FTop := aTop;
-  Inc(aTop, hh+3);
-end;
-
 procedure TCoolBand.SetControl(aValue: TControl);
 var
   Band: TCoolBand;
@@ -222,7 +210,6 @@ begin
   end;
   FControl := aValue;
   Changed(True);
-//  FCoolBar.Invalidate;
 end;
 
 procedure TCoolBand.SetParentColor(aValue: Boolean);
@@ -340,7 +327,7 @@ end;
 
 procedure TCoolBands.Update(aItem: TCollectionItem);
 var
-  i, yy: Integer;
+  i: Integer;
 begin
   inherited Update(aItem);
   if FCoolBar = Nil then Exit;
@@ -355,13 +342,7 @@ begin
     for i := 0 to Count-1 do
       Items[i].UpdControl;
   end;
-  // Top positions for controls must be a loop because y-position is cumulative.
-  yy := 3;
-  for i := 0 to Count-1 do
-  begin
-    Items[i].CalcTop(yy);
-    if Assigned(aItem) and (Items[i] = aItem) then Break;
-  end;
+  CalcTops;
 end;
 
 procedure TCoolBands.Notify(aItem: TCollectionItem; aAction: TCollectionNotification);
@@ -397,6 +378,24 @@ begin
       Result := GetItem(i);
       Exit;
     end;
+  end;
+end;
+
+procedure TCoolBands.CalcTops;
+// Calculate Top positions for controls. The value is cumulative and a loop must be used.
+var
+  i, hh, yy: Integer;
+begin
+  yy := 3;
+  for i := 0 to Count-1 do
+  begin
+    hh := Items[i].Height;
+    Assert(Assigned(FCoolBar), 'TCoolBands.CalcTops: FCoolBar is not assigned');
+    if FCoolBar.BandBorderStyle = bsSingle then
+      Inc(hh, 2);
+    Items[i].FTop := yy;
+    //DebugLn(['TCoolBands.CalcTops, FTop=', Items[i].FTop]);
+    Inc(yy, hh+3);
   end;
 end;
 
@@ -525,6 +524,7 @@ var
   i, BottomY: Integer;
 begin
   inherited Paint;
+  FBands.CalcTops;
   for i := 0 to FBands.Count-1 do
   begin
     BottomY := FBands[i].FTop + FBands[i].Height + 1;
@@ -540,7 +540,6 @@ begin
   inherited Resize;
   if [csLoading, csDestroying] * ComponentState <> [] then Exit;
   if not Assigned(FBands) then Exit;
-  DebugLn('TCoolBar.Resize');
   for i := 0 to FBands.Count-1 do
     if Assigned(FBands[i].FControl) then
       FBands[i].SetControlWidth;

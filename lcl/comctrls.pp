@@ -2150,8 +2150,6 @@ type
 
   TCustomCoolBar = class;
 
-  { TCoolBand }
-
   TCoolBand = class(TCollectionItem)
   private
     FCoolBar: TCustomCoolBar;
@@ -2189,7 +2187,6 @@ type
     procedure SetColor(aValue: TColor);
     procedure SetControlWidth;
     procedure UpdControl;
-    procedure CalcTop(var aTop: Integer);
     procedure SetControl(aValue: TControl);
     procedure SetParentColor(aValue: Boolean);
     procedure SetParentBitmap(aValue: Boolean);
@@ -2231,6 +2228,7 @@ type
     FVisibleCount: Longword;
     function GetItem(Index: Integer): TCoolBand;
     procedure SetItem(Index: Integer; aValue: TCoolBand);
+    procedure CalcTops;
   protected
     function GetOwner: TPersistent; override;
     procedure Update(aItem: TCollectionItem); override;
@@ -2239,7 +2237,7 @@ type
     constructor Create(aCoolBar: TCustomCoolBar);
     function Add: TCoolBand;
     function FindBand(aControl: TControl): TCoolBand;
-//    property CoolBar: TCustomCoolBar read FCoolBar;  v
+//    property CoolBar: TCustomCoolBar read FCoolBar;
     property Items[Index: Integer]: TCoolBand read GetItem write SetItem; default;
   end;
 
