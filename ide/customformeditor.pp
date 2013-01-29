@@ -2072,11 +2072,14 @@ begin
         for i:=0 to AnUnitInfo.ComponentFallbackClasses.Count-1 do begin
           if SysUtils.CompareText(AnUnitInfo.ComponentFallbackClasses[i],ComponentClassName)=0
           then begin
+            {$IFDEF EnableNestedComponentsWithoutLFM}
             ComponentClass:=TComponentClass(Pointer(AnUnitInfo.ComponentFallbackClasses.Objects[i]));
             if ComponentClass<>nil then begin
+              // ToDo: create or share a jitclass
               debugln(['TCustomFormEditor.JITListFindClass searched "',ComponentClassName,'", found fallback class "',DbgSName(ComponentClass),'" of unitinfo ',AnUnitInfo.Filename]);
               exit;
             end;
+            {$ENDIF}
           end;
         end;
     end;
