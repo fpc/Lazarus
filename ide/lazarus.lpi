@@ -63,7 +63,7 @@
         <PackageName Value="SynEdit"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="95">
+    <Units Count="98">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -158,6 +158,7 @@
         <Filename Value="frames/editor_color_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="EditorColorOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="editor_color_options"/>
       </Unit13>
@@ -715,6 +716,27 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="editor_markup_options"/>
       </Unit94>
+      <Unit95>
+        <Filename Value="editormacrolistviewer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MacroListView"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="EditorMacroListViewer"/>
+      </Unit95>
+      <Unit96>
+        <Filename Value="sourcesyneditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="SourceSynEditor"/>
+      </Unit96>
+      <Unit97>
+        <Filename Value="editoroptions.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="EditorOptionsForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="EditorOptions"/>
+      </Unit97>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
