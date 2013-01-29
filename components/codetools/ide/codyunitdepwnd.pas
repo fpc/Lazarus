@@ -5,10 +5,10 @@ unit CodyUnitDepWnd;
 interface
 
 uses
-  Classes, SysUtils, types, math, AVL_Tree, contnrs, FileUtil, lazutf8classes,
-  LazLogger, TreeFilterEdit, CTUnitGraph, CodeToolManager, DefineTemplates,
-  Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons, ComCtrls,
-  LCLType, LazIDEIntf, ProjectIntf, IDEWindowIntf;
+  Classes, SysUtils, types, math, typinfo, AVL_Tree, contnrs, FPCanvas,
+  FileUtil, lazutf8classes, LazLogger, TreeFilterEdit, CTUnitGraph,
+  CodeToolManager, DefineTemplates, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls, Buttons, ComCtrls, LCLType, LazIDEIntf, ProjectIntf, IDEWindowIntf;
 
 resourcestring
   a='';
@@ -16,8 +16,9 @@ resourcestring
   rsClose = 'Close';
 
 const
-  DefaultCategoryGap = 0.04;
-  DefaultFirstCategory = 0;
+  FullCircle16 = 360*16;
+  DefaultCategoryGapDegree16 = 0.04*FullCircle16;
+  DefaultFirstCategoryDegree16 = 0;
   DefaultCategoryMinSize = 1.0;
   DefaultItemSize = 1.0;
 type
@@ -30,9 +31,9 @@ type
   private
     FCaption: TCaption;
     FCategory: TCircleDiagramCategory;
-    FEndDegree: single;
+    FEndDegree16: single;
     FSize: single;
-    FStartDegree: single;
+    FStartDegree16: single;
     procedure SetCaption(AValue: TCaption);
     procedure SetSize(AValue: single);
     procedure UpdateLayout;
@@ -42,8 +43,8 @@ type
     property Category: TCircleDiagramCategory read FCategory;
     property Caption: TCaption read FCaption write SetCaption;
     property Size: single read FSize write SetSize default DefaultItemSize; // scaled to fit
-    property StartDegree: single read FStartDegree;
-    property EndDegree: single read FEndDegree;
+    property StartDegree16: single read FStartDegree16; // 360*16 = one full circle, 0 at 3o'clock
+    property EndDegree16: single read FEndDegree16;     // 360*16 = one full circle, 0 at 3o'clock
   end;
 
   { TCircleDiagramCategory }
@@ -53,11 +54,11 @@ type
     FCaption: TCaption;
     FColor: TColor;
     FDiagram: TCustomCircleDiagramControl;
-    FEndDegree: single;
+    FEndDegree16: single;
     FMinSize: single;
     fItems: TObjectList; // list of TCircleDiagramItem
     FSize: single;
-    FStartDegree: single;
+    FStartDegree16: single;
     function GetItems(Index: integer): TCircleDiagramItem;
     procedure SetCaption(AValue: TCaption);
     procedure SetColor(AValue: TColor);
@@ -77,8 +78,8 @@ type
     property Items[Index: integer]: TCircleDiagramItem read GetItems; default;
     property Color: TColor read FColor write SetColor;
     property Size: single read FSize;
-    property StartDegree: single read FStartDegree;
-    property EndDegree: single read FEndDegree;
+    property StartDegree16: single read FStartDegree16; // 360*16 = one full circle, 0 at 3o'clock
+    property EndDegree16: single read FEndDegree16;     // 360*16 = one full circle, 0 at 3o'clock
   end;
 
   TCircleDiagramCtrlFlag = (
@@ -90,20 +91,20 @@ type
 
   TCustomCircleDiagramControl = class(TCustomControl)
   private
-    FCategoryGap: single;
+    FCategoryGapDegree16: single;
     FCenter: TPoint;
     FCenterCaption: TCaption;
     FCenterCaptionRect: TRect;
-    FFirstCategory: single;
+    FFirstCategoryDegree16: single;
     fCategories: TObjectList; // list of TCircleDiagramCategory
     FInnerRadius: single;
     FOuterRadius: single;
     fUpdateLock: integer;
     fFlags: TCircleDiagramCtrlFlags;
     function GetCategories(Index: integer): TCircleDiagramCategory;
-    procedure SetCategoryGap(AValue: single);
+    procedure SetCategoryGapDegree16(AValue: single);
     procedure SetCenterCaption(AValue: TCaption);
-    procedure SetFirstCategory(AValue: single);
+    procedure SetFirstCategoryDegree16(AValue: single);
     procedure InternalRemoveCategory(Category: TCircleDiagramCategory);
   protected
     //procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
@@ -135,8 +136,8 @@ type
     function AddCategory(aCaption: TCaption): TCircleDiagramCategory;
     function IndexOfCategory(aCaption: TCaption): integer;
     function FindCategory(aCaption: TCaption): TCircleDiagramCategory;
-    property CategoryGap: single read FCategoryGap write SetCategoryGap default DefaultCategoryGap; // 0..0.3 part of a full circle
-    property FirstCategoryDeg: single read FFirstCategory write SetFirstCategory default DefaultFirstCategory; // 0..1 part of a full circle starting at top
+    property CategoryGapDegree16: single read FCategoryGapDegree16 write SetCategoryGapDegree16 default DefaultCategoryGapDegree16; // 360*16 = one full circle, 0 at 3o'clock
+    property FirstCategoryDegree16: single read FFirstCategoryDegree16 write SetFirstCategoryDegree16 default DefaultFirstCategoryDegree16; // 360*16 = one full circle, 0 at 3o'clock
     function CategoryCount: integer;
     property Categories[Index: integer]: TCircleDiagramCategory read GetCategories; default;
     property Color default clWhite;
@@ -145,6 +146,9 @@ type
     property Center: TPoint read FCenter;
     property InnerRadius: single read FInnerRadius;
     property OuterRadius: single read FOuterRadius;
+
+    // debugging
+    procedure WriteDebugReport(Msg: string);
   end;
 
   { TCircleDiagramControl }
@@ -244,6 +248,12 @@ var
 
 procedure ShowUnitDependenciesDialog(Sender: TObject);
 
+procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2: integer;
+  InnerSize: single; StartAngle16, EndAngle16: integer); overload;
+procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2, InnerSize, StartAngle, EndAngle: single); overload;
+
+function dbgs(t: TUDDUsesType): string; overload;
+
 implementation
 
 procedure ShowUnitDependenciesDialog(Sender: TObject);
@@ -258,14 +268,66 @@ begin
   end;
 end;
 
+procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2: integer;
+  InnerSize: single; StartAngle16, EndAngle16: integer);
+begin
+  RingSector(Canvas,single(x1),single(y1),single(x2),single(y2),InnerSize,
+    single(StartAngle16)/16,single(EndAngle16)/16);
+end;
+
+procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2, InnerSize, StartAngle,
+  EndAngle: single);
+var
+  OuterCnt: integer;
+  centerx, centery: single;
+  i: Integer;
+  Ang: single;
+  OuterRadiusX, OuterRadiusY, InnerRadiusX, InnerRadiusY: single;
+  Points: array of TPoint;
+  j: Integer;
+begin
+  OuterCnt:=Round(SQRT((Abs(x2-x1)+Abs(y2-y1))*Abs(EndAngle-StartAngle)/FullCircle16)+0.5);
+  centerx:=(x1+x2)/2;
+  centery:=(y1+y2)/2;
+  OuterRadiusX:=(x2-x1)/2;
+  OuterRadiusY:=(y2-y1)/2;
+  InnerRadiusX:=OuterRadiusX*InnerSize;
+  InnerRadiusY:=OuterRadiusY*InnerSize;
+  SetLength(Points,OuterCnt*2+2);
+  j:=0;
+  // outer arc
+  for i:=0 to OuterCnt do begin
+    Ang:=StartAngle+((EndAngle-StartAngle)/OuterCnt)*single(i);
+    Ang:=(Ang/FullCircle16)*2*pi;
+    Points[j].x:=round(centerx+cos(Ang)*OuterRadiusX);
+    Points[j].y:=round(centery-sin(Ang)*OuterRadiusY);
+    inc(j);
+  end;
+  // inner arc
+  for i:=OuterCnt downto 0 do begin
+    Ang:=StartAngle+((EndAngle-StartAngle)/OuterCnt)*single(i);
+    Ang:=(Ang/FullCircle16)*2*pi;
+    Points[j].x:=round(centerx+cos(Ang)*InnerRadiusX);
+    Points[j].y:=round(centery-sin(Ang)*InnerRadiusY);
+    inc(j);
+  end;
+  Canvas.Polygon(Points);
+  SetLength(Points,0);
+end;
+
+function dbgs(t: TUDDUsesType): string;
+begin
+  Result:=GetEnumName(typeinfo(TUDDUsesType),ord(t));
+end;
+
 { TCustomCircleDiagramControl }
 
-procedure TCustomCircleDiagramControl.SetCategoryGap(AValue: single);
+procedure TCustomCircleDiagramControl.SetCategoryGapDegree16(AValue: single);
 begin
   if AValue<0 then AValue:=0;
   if AValue>0.3 then AValue:=0.3;
-  if FCategoryGap=AValue then Exit;
-  FCategoryGap:=AValue;
+  if FCategoryGapDegree16=AValue then Exit;
+  FCategoryGapDegree16:=AValue;
   UpdateLayout;
 end;
 
@@ -282,10 +344,10 @@ begin
   UpdateLayout;
 end;
 
-procedure TCustomCircleDiagramControl.SetFirstCategory(AValue: single);
+procedure TCustomCircleDiagramControl.SetFirstCategoryDegree16(AValue: single);
 begin
-  if FFirstCategory=AValue then Exit;
-  FFirstCategory:=AValue;
+  if FFirstCategoryDegree16=AValue then Exit;
+  FFirstCategoryDegree16:=AValue;
   UpdateLayout;
 end;
 
@@ -328,7 +390,6 @@ begin
   Canvas.FillRect(ClientRect);
 
   Canvas.Brush.Color:=clRed;
-  //Canvas.Chord(FCenter.X,FCenter.Y,FCenter.X+50,FCenter.Y+50,0,3000);
 
   // draw categories
   for i:=0 to CategoryCount-1 do
@@ -345,7 +406,10 @@ var
   Cat: TCircleDiagramCategory;
 begin
   Cat:=Categories[i];
-  //Canvas.Chord();
+  RingSector(Canvas,Center.X-OuterRadius,Center.Y-OuterRadius,
+    Center.X+OuterRadius,Center.Y+OuterRadius,
+    single(InnerRadius)/single(OuterRadius),
+    Cat.StartDegree16,Cat.EndDegree16);
 end;
 
 constructor TCustomCircleDiagramControl.Create(AOwner: TComponent);
@@ -354,8 +418,8 @@ begin
   try
     inherited Create(AOwner);
     fCategories:=TObjectList.create(true);
-    FFirstCategory:=DefaultFirstCategory;
-    fCategoryGap:=DefaultCategoryGap;
+    FFirstCategoryDegree16:=DefaultFirstCategoryDegree16;
+    FCategoryGapDegree16:=DefaultCategoryGapDegree16;
     Color:=clWhite;
   finally
     EndUpdate;
@@ -427,7 +491,7 @@ begin
 
   // degrees
   TotalSize:=0.0;
-  CurCategoryDegree:=FirstCategoryDeg;
+  CurCategoryDegree:=FirstCategoryDegree16;
   if CategoryCount>0 then begin
     // calculate TotalSize
     for i:=0 to CategoryCount-1 do begin
@@ -440,30 +504,31 @@ begin
     end;
 
     // calculate degrees
-    GapDegree:=Min(CategoryGap,0.8/CategoryCount);
-    TotalItemDegree:=1.0-(GapDegree*CategoryCount);
+    GapDegree:=Min(CategoryGapDegree16,(0.8/CategoryCount)*FullCircle16);
+    TotalItemDegree:=FullCircle16-(GapDegree*CategoryCount);
     for i:=0 to CategoryCount-1 do begin
       aCategory:=Categories[i];
-      aCategory.FStartDegree:=CurCategoryDegree;
+      aCategory.FStartDegree16:=CurCategoryDegree;
       if TotalSize>0 then
         CurCategoryDegree+=TotalItemDegree*aCategory.Size/TotalSize;
-      aCategory.FEndDegree:=CurCategoryDegree;
+      aCategory.FEndDegree16:=CurCategoryDegree;
 
       // item degrees
-      CurItemDegree:=aCategory.StartDegree;
+      CurItemDegree:=aCategory.StartDegree16;
       for j:=0 to aCategory.Count-1 do begin
         Item:=aCategory[j];
 
-        Item.FStartDegree:=CurItemDegree;
+        Item.FStartDegree16:=CurItemDegree;
         if aCategory.Size>0 then
-          CurItemDegree+=(aCategory.EndDegree-aCategory.StartDegree)*Item.Size/aCategory.Size;
-        Item.FEndDegree:=CurItemDegree;
+          CurItemDegree+=(aCategory.EndDegree16-aCategory.StartDegree16)*Item.Size/aCategory.Size;
+        Item.FEndDegree16:=CurItemDegree;
       end;
 
       CurCategoryDegree+=GapDegree;
     end;
   end;
 
+  WriteDebugReport('TCustomCircleDiagramControl.UpdateLayout');
 end;
 
 procedure TCustomCircleDiagramControl.EraseBackground(DC: HDC);
@@ -510,6 +575,30 @@ end;
 function TCustomCircleDiagramControl.CategoryCount: integer;
 begin
   Result:=fCategories.Count;
+end;
+
+procedure TCustomCircleDiagramControl.WriteDebugReport(Msg: string);
+var
+  aCat: TCircleDiagramCategory;
+  i: Integer;
+  j: Integer;
+  Item: TCircleDiagramItem;
+begin
+  debugln([Msg,' CategoryCount=',CategoryCount]);
+  for i:=0 to CategoryCount-1 do begin
+    aCat:=Categories[i];
+    debugln(['  Category: ',i,'/',CategoryCount,' ',aCat.Caption,
+      ' MinSize=',aCat.MinSize,
+      ' Size=',aCat.Size,
+      ' Start=',round(aCat.StartDegree16),' End=',round(aCat.EndDegree16)]);
+    for j:=0 to aCat.Count-1 do begin
+      Item:=aCat.Items[j];
+      debugln(['    Item: ',j,'/',aCat.Count,' ',Item.Caption,
+        ' Size=',Item.Size,
+        ' Start=',round(Item.StartDegree16),
+        ' End=',round(Item.EndDegree16)]);
+    end;
+  end;
 end;
 
 { TCircleDiagramCategory }
@@ -762,6 +851,7 @@ procedure TUnitDependenciesDialog.UpdateCurUnitDiagram;
       else
         CurUnit:=CurUses.UsesUnit;
       s:=ExtractFileName(CurUnit.Filename);
+      debugln(['UpdateCircleCategory ',s,' ',dbgs(t)]);
       if fCircleCategories[t].Count>Cnt then begin
         Item:=fCircleCategories[t].Items[Cnt];
         Item.Caption:=s
@@ -777,6 +867,7 @@ begin
   CurUnitDiagram.BeginUpdate;
   try
     if CurrentUnit<>nil then begin
+      debugln(['TUnitDependenciesDialog.UpdateCurUnitDiagram ',CurrentUnit.Filename]);
       CurUnitDiagram.CenterCaption:=ExtractFilename(CurrentUnit.Filename);
       UpdateCircleCategory(CurrentUnit.UsesUnits,uddutInterfaceUses);
       UpdateCircleCategory(CurrentUnit.UsesUnits,uddutImplementationUses);
