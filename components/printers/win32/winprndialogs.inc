@@ -41,12 +41,13 @@ function TPageSetupDialog.Execute: Boolean;
 var
   lpp        : tagPSD;
   PDev       : TPrinterDevice;
-  DevMode    : PDeviceMode;
   DeviceMode : THandle;
   DevNames   : PDevNames;
   {$IFDEF USEUNICODE}
+  DevMode    : PDeviceModeW;
   St         : PWidechar;
   {$ELSE}
+  DevMode    : PDeviceMode;
   St         : PChar;
   {$ENDIF}
 begin
@@ -67,7 +68,7 @@ begin
       // Pdev.DevMode has the required size, just copy to the global memory
       DeviceMode := GLobalAlloc(GHND, PDev.DevModeSize);
       try
-        DevMode := PDeviceMode(GlobalLock(DeviceMode));
+        DevMode := {$IFDEF USEUNICODE}PDeviceModeW{$ELSE}PDeviceMode{$ENDIF}(GlobalLock(DeviceMode));
         try
           CopyMemory(DevMode, PDev.DevMode, Pdev.DevModeSize);
         finally
@@ -107,7 +108,7 @@ begin
 
           if lpp.hDevMode <> 0 then
           begin
-            DevMode := PDeviceMode(GlobalLock(lpp.hDevMode));
+            DevMode := {$IFDEF USEUNICODE}PDeviceModeW{$ELSE}PDeviceMode{$ENDIF}(GlobalLock(lpp.hDevMode));
             try
               //Set the properties for the selected printer
               PDev := TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
@@ -131,12 +132,13 @@ function TPrinterSetupDialog.Execute: Boolean;
 var
   lpp        : tagPD;
   PDev       : TPrinterDevice;
-  DevMode    : PDeviceMode;
   DeviceMode : THandle;
   DevNames   : PDevNames;
   {$IFDEF USEUNICODE}
+  DevMode    : PDeviceModeW;
   St         : PWidechar;
   {$ELSE}
+  DevMode    : PDeviceMode;
   St         : PChar;
   {$ENDIF}
 begin
@@ -156,7 +158,7 @@ begin
       // Pdev.DevMode has the required size, just copy to the global memory
       DeviceMode := GlobalAlloc(GHND, PDev.DevModeSize);
       try
-        DevMode := PDeviceMode(GlobalLock(DeviceMode));
+        DevMode := {$IFDEF USEUNICODE}PDeviceModeW{$ELSE}PDeviceMode{$ENDIF}(GlobalLock(DeviceMode));
         try
           CopyMemory(DevMode, Pdev.DevMode, Pdev.DevModeSize);
         finally
@@ -192,7 +194,7 @@ begin
 
           if lpp.hDevMode <> 0 then
           begin
-            DevMode := PDeviceMode(GlobalLock(lpp.hDevMode));
+            DevMode := {$IFDEF USEUNICODE}PDeviceModeW{$ELSE}PDeviceMode{$ENDIF}(GlobalLock(lpp.hDevMode));
             try
               //Set the properties for the selected printer
               PDev := TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
@@ -217,12 +219,13 @@ function TPrintDialog.Execute: Boolean;
 var
   lpp        : tagPD;
   PDev       : TPrinterDevice;
-  DevMode    : PDeviceMode;
   DeviceMode : THandle;
   DevNames   : PDevNames;
   {$IFDEF USEUNICODE}
+  DevMode    : PDeviceModeW;
   St         : PWidechar;
   {$ELSE}
+  DevMode    : PDeviceMode;
   St         : PChar;
   {$ENDIF}
 begin
@@ -260,7 +263,7 @@ begin
       // Pdev.DevMode has the required size, just copy to the global memory
       DeviceMode := GlobalAlloc(GHND, PDEV.DevModeSize);
       try
-        DevMode := PDeviceMode(GlobalLock(DeviceMode));
+        DevMode := {$IFDEF USEUNICODE}PDeviceModeW{$ELSE}PDeviceMode{$ENDIF}(GlobalLock(DeviceMode));
         try
           CopyMemory(DevMode, PDev.DevMode, PDev.DevModeSize);
         finally
@@ -306,7 +309,7 @@ begin
           PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
           if (lpp.hDevMode<>0) and (Pdev.DevMode<>nil) then
           begin
-            DevMode:=PDeviceMode(GlobalLock(lpp.hDevMode));
+            DevMode:={$IFDEF USEUNICODE}PDeviceModeW{$ELSE}PDeviceMode{$ENDIF}(GlobalLock(lpp.hDevMode));
             try
               CopyMemory(PDev.DevMode,DevMode,PDev.DevModeSize);
               
