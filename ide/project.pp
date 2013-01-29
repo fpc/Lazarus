@@ -243,6 +243,7 @@ type
 
   TUnitInfo = class(TLazProjectFile)
   private
+    FComponentFallbackClasses: TStrings;
     FCustomDefaultHighlighter: boolean;
     FDefaultSyntaxHighlighter: TLazSyntaxHighlighter;
     FDisableI18NForLFM: boolean;
@@ -425,6 +426,8 @@ type
     property ComponentName: string read fComponentName write fComponentName;
     property ComponentResourceName: string read fComponentResourceName
                                            write fComponentResourceName;
+    property ComponentFallbackClasses: TStrings read FComponentFallbackClasses
+      write FComponentFallbackClasses; // classname to componentclass, for not registered classes in lfm
     property ComponentState: TWindowState read FComponentState write FComponentState;
     property ResourceBaseClass: TPFComponentBaseClass read FResourceBaseClass
                                                       write FResourceBaseClass;
@@ -1487,6 +1490,7 @@ begin
   FreeAndNil(FBookmarks);
   Project:=nil;
   FreeAndNil(FEditorInfoList);
+  FreeAndNil(FComponentFallbackClasses);
   inherited Destroy;
 end;
 

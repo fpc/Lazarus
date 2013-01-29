@@ -4058,9 +4058,16 @@ begin
               DebugLn(['TLazSourceFileManager.LoadLFM DoLoadComponentDependencyHidden NestedClassName=',NestedClassName,' failed for ',AnUnitInfo.Filename]);
               exit;
             end;
+            if AncestorClass<>nil then
+              MissingClasses.Objects[i]:=TObject(Pointer(AncestorClass));
           end;
         end;
         //DebugLn(['TLazSourceFileManager.LoadLFM had nested: ',AnUnitInfo.Filename]);
+        if AnUnitInfo.ComponentFallbackClasses<>nil then begin
+          AnUnitInfo.ComponentFallbackClasses.Free;
+          AnUnitInfo.ComponentFallbackClasses:=nil;
+        end;
+        AnUnitInfo.ComponentFallbackClasses:=MissingClasses;
       end;
 
       BinStream:=nil;
