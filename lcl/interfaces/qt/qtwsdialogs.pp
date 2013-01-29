@@ -134,6 +134,16 @@ begin
     Result := TQtWidget(Application.MainForm.Handle).Widget
   else
     Result := nil;
+  {$IFDEF MSWINDOWS}
+  if Assigned(Result) then
+  begin
+    if (QWidget_windowFlags(Result) and QtTool <> 0) or
+      (QWidget_windowFlags(Result) and QtDrawer <> 0) or
+      (QWidget_windowFlags(Result) and QtSheet <> 0) or
+      (QWidget_windowFlags(Result) and QtPopup <> 0) then
+      Result := QApplication_desktop;
+  end;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
