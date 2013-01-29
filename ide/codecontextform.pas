@@ -180,7 +180,8 @@ end;
 
 procedure TCodeContextFrm.FormDestroy(Sender: TObject);
 begin
-  SourceEditorManagerIntf.UnregisterChangeEvent(semEditorStatus,@OnSrcEditStatusChange);
+  if SourceEditorManagerIntf<>nil then
+    SourceEditorManagerIntf.UnregisterChangeEvent(semEditorStatus,@OnSrcEditStatusChange);
   IdleConnected:=false;
   ClearHints;
   FreeAndNil(FHints);
