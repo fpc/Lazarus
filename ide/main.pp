@@ -111,7 +111,7 @@ uses
   Backup_Options, naming_options, fpdoc_options,
   editor_display_options, editor_keymapping_options, editor_mouseaction_options,
   editor_mouseaction_options_advanced, editor_color_options, editor_markup_options,
-  editor_codetools_options, editor_codefolding_options,
+  editor_markup_userdefined, editor_codetools_options, editor_codefolding_options,
   editor_general_misc_options, editor_dividerdraw_options,
   editor_multiwindow_options, editor_indent_options,
   codetools_general_options, codetools_codecreation_options,
@@ -1273,6 +1273,10 @@ begin
   EditorOpts.OnBeforeRead := @DoEditorOptionsBeforeRead;
   EditorOpts.OnAfterWrite := @DoEditorOptionsAfterWrite;
   SetupIDECommands;
+  // Only after EditorOpts.KeyMap.DefineCommandCategories; in SetupIDECommands
+  IDECommandList.CreateCategory(nil, EditorUserDefinedWordsKeyCatName,
+    lisUserDefinedMarkupKeyGroup, IDECmdScopeSrcEditOnly);
+
   SetupIDEMsgQuickFixItems;
   EditorOpts.Load;
   EditorMacroListViewer.LoadGlobalInfo;

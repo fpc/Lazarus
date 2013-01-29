@@ -43,7 +43,7 @@ uses
   Classes, SysUtils, resource,
   // LCL
   Controls, ExtCtrls, Graphics, LCLProc, FileUtil, Laz2_XMLCfg, lazutf8classes,
-  LResources, Forms, Dialogs, ComCtrls,
+  LResources, Forms, Dialogs, ComCtrls, LCLType,
   // Synedit
   SynEdit, SynEditAutoComplete, SynEditKeyCmds, SynEditTypes,
   SynEditMiscClasses, SynBeautifier, SynEditTextTrimmer, SynEditMouseCmds,
@@ -1162,6 +1162,90 @@ type
              read FSearchOrder write FSearchOrder;
   end;
 
+const
+  EditorUserDefinedWordsKeyCatName = 'User defined word markup';
+var
+  EditorUserDefinedWordsGlobalId: string = 'a';
+
+type
+
+  TEditorUserDefinedWordsList = class;
+
+  { TEditorUserDefinedWords }
+
+  TEditorUserDefinedWords = class(TSourceSynSearchTermList)
+  private
+    FId: String; // Used for TIDECommand.Name
+    FKeyAddCase: Boolean;
+    FKeyAddSelectBoundMaxLen: Integer;
+    FKeyAddSelectSmart: Boolean;
+    FKeyAddTermBounds: TSynSearchTermOptsBounds;
+    FKeyAddWordBoundMaxLen: Integer;
+    FList: TEditorUserDefinedWordsList;
+    FColorAttr: TColorSchemeAttribute;
+    FName: String;
+    FAddTermCmd: TIDECommand;
+    FRemoveTermCmd: TIDECommand;
+    FToggleTermCmd: TIDECommand;
+    procedure SetName(AValue: String);
+    procedure UpdateIdeCommands;
+    procedure ClearIdeCommands;
+  public
+    constructor Create(AList: TEditorUserDefinedWordsList);
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+
+    procedure LoadFromXMLConfig(XMLConfig:TRttiXMLConfig; Path: String);
+    procedure SaveToXMLConfig(XMLConfig:TRttiXMLConfig; Path: String);
+
+    property ColorAttr: TColorSchemeAttribute read FColorAttr;
+
+    property AddTermCmd: TIDECommand read FAddTermCmd;
+    property RemoveTermCmd: TIDECommand read FRemoveTermCmd;
+    property ToggleTermCmd: TIDECommand read FToggleTermCmd;
+
+    //property MatchWordBounds: TSynSearchTermOptsBounds read FMatchWordBounds write SetMatchWordBounds;
+    //property MatchCase: Boolean read FMatchCase write SetMatchCase;
+  published
+    property Name: String read FName write SetName;
+    property KeyAddTermBounds: TSynSearchTermOptsBounds read FKeyAddTermBounds write FKeyAddTermBounds;
+    property KeyAddCase: Boolean read FKeyAddCase write FKeyAddCase;
+    property KeyAddWordBoundMaxLen: Integer read FKeyAddWordBoundMaxLen write FKeyAddWordBoundMaxLen;
+    property KeyAddSelectBoundMaxLen: Integer read FKeyAddSelectBoundMaxLen write FKeyAddSelectBoundMaxLen;
+    property KeyAddSelectSmart: Boolean read FKeyAddSelectSmart write FKeyAddSelectSmart;
+  end;
+
+  { TEditorUserDefinedWordsList }
+
+  TEditorUserDefinedWordsList = class(TPersistent)
+  private
+    FList: TList;
+    FKeyCommandList: TIDECommands;
+    FUseGlobalIDECommandList: Boolean;
+    function GetKeyCommandList: TIDECommands;
+    function GetLists(AIndex: Integer): TEditorUserDefinedWords;
+    procedure SetLists(AIndex: Integer; AValue: TEditorUserDefinedWords);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Assign(Src: TEditorUserDefinedWordsList); reintroduce;
+
+    procedure LoadFromXMLConfig(XMLConfig:TRttiXMLConfig; Path: String);
+    procedure SaveToXMLConfig(XMLConfig:TRttiXMLConfig; Path: String);
+
+    procedure Clear;
+    function  Add(AList: TEditorUserDefinedWords): Integer;
+    function  Add(AName: String): TEditorUserDefinedWords;
+    function  IndexOf(AName: String): Integer;
+    function  IndexOf(AList: TEditorUserDefinedWords): Integer;
+    procedure Remove(AName: String; FreeList: Boolean = True);
+    procedure Remove(AList: TEditorUserDefinedWords; FreeList: Boolean = True);
+    procedure Delete(AIndex: Integer);
+    function  Count: Integer;
+    property Lists[AIndex: Integer]: TEditorUserDefinedWords read GetLists write SetLists;
+    property KeyCommandList: TIDECommands read GetKeyCommandList write FKeyCommandList;
+    property UseGlobalIDECommandList: Boolean read FUseGlobalIDECommandList write FUseGlobalIDECommandList;
+  end;
 
   { TEditorOptions - Editor Options object used to hold the editor options }
 
@@ -1225,6 +1309,7 @@ type
     // Color options
     fHighlighterList: TEditOptLangList;
     FUserColorSchemeSettings: TColorSchemeFactory;
+    FUserDefinedColors: TEditorUserDefinedWordsList;
 
     // Markup Current Word
     FMarkupCurWordTime: Integer;
@@ -1394,6 +1479,7 @@ type
     // Color options
     property HighlighterList: TEditOptLangList read fHighlighterList;
     property UserColorSchemeGroup: TColorSchemeFactory read FUserColorSchemeSettings;
+    property UserDefinedColors: TEditorUserDefinedWordsList read FUserDefinedColors;
 
     // Markup Current Word
     property MarkupCurWordTime: Integer
@@ -1596,6 +1682,415 @@ begin
   AFont.Height := Height;
   Result := AFont.Size;
   AFont.Free;
+end;
+
+{ TEditorUserDefinedWordsList }
+
+function TEditorUserDefinedWordsList.GetLists(AIndex: Integer): TEditorUserDefinedWords;
+begin
+  Result := TEditorUserDefinedWords(FList[AINdex]);
+end;
+
+function TEditorUserDefinedWordsList.GetKeyCommandList: TIDECommands;
+begin
+  if FUseGlobalIDECommandList then
+    Result := IDECommandList
+  else
+    Result := FKeyCommandList;
+end;
+
+procedure TEditorUserDefinedWordsList.SetLists(AIndex: Integer;
+  AValue: TEditorUserDefinedWords);
+begin
+  FList[AINdex] := AValue;
+end;
+
+constructor TEditorUserDefinedWordsList.Create;
+begin
+  FList := TList.Create;
+end;
+
+destructor TEditorUserDefinedWordsList.Destroy;
+begin
+  inherited Destroy;
+  Clear;
+  FreeAndNil(FList);
+end;
+
+procedure TEditorUserDefinedWordsList.Assign(Src: TEditorUserDefinedWordsList);
+var
+  i: Integer;
+begin
+  Clear;
+  for i := 0 to Src.Count - 1 do
+    Add('').Assign(Src.Lists[i]);
+end;
+
+procedure TEditorUserDefinedWordsList.LoadFromXMLConfig(XMLConfig: TRttiXMLConfig;
+  Path: String);
+var
+  c, i: Integer;
+begin
+  Clear;
+  Path := Path + 'Entry/';
+  c := XMLConfig.GetValue(Path + 'Count', 0);
+  for i := 0 to c - 1 do
+    Add('').LoadFromXMLConfig(XMLConfig, Path + 'E' + IntToStr(i) + '/');
+end;
+
+procedure TEditorUserDefinedWordsList.SaveToXMLConfig(XMLConfig: TRttiXMLConfig; Path: String);
+var
+  c, i: Integer;
+begin
+  Path := Path + 'Entry/';
+  c := XMLConfig.GetValue(Path + 'Count', 0);
+  XMLConfig.SetDeleteValue(Path + 'Count', Count, 0);
+  for i := 0 to Count - 1 do
+    Lists[i].SaveToXMLConfig(XMLConfig, Path + 'E' + IntToStr(i) + '/');
+  for i := Count to c - 1 do
+    XMLConfig.DeletePath(Path + 'E' + IntToStr(i));
+end;
+
+procedure TEditorUserDefinedWordsList.Clear;
+begin
+  while Count > 0 do
+    Remove(Lists[0], True);
+end;
+
+function TEditorUserDefinedWordsList.Add(AList: TEditorUserDefinedWords): Integer;
+begin
+  Result := FList.Add(AList);
+end;
+
+function TEditorUserDefinedWordsList.Add(AName: String): TEditorUserDefinedWords;
+begin
+  Result := TEditorUserDefinedWords.Create(Self);
+  Result.Name := AName;
+  FList.Add(Result);
+end;
+
+function TEditorUserDefinedWordsList.IndexOf(AName: String): Integer;
+begin
+  Result := FList.Count - 1;
+  while (Result >= 0) and (Lists[Result].Name <> AName) do
+    dec(Result);
+end;
+
+function TEditorUserDefinedWordsList.IndexOf(AList: TEditorUserDefinedWords): Integer;
+begin
+  Result := FList.IndexOf(AList);
+end;
+
+procedure TEditorUserDefinedWordsList.Remove(AName: String; FreeList: Boolean);
+var
+  i: Integer;
+begin
+  i := IndexOf(AName);
+  if i >= 0 then
+    FList.Delete(i);
+end;
+
+procedure TEditorUserDefinedWordsList.Remove(AList: TEditorUserDefinedWords;
+  FreeList: Boolean);
+begin
+  FList.Remove(AList);
+  if FreeList then
+    FreeAndNil(AList);
+end;
+
+procedure TEditorUserDefinedWordsList.Delete(AIndex: Integer);
+begin
+  FList.Delete(AIndex);
+end;
+
+function TEditorUserDefinedWordsList.Count: Integer;
+begin
+  Result := FList.Count;
+end;
+
+{ TEditorUserDefinedWords }
+
+procedure TEditorUserDefinedWords.SetName(AValue: String);
+begin
+  if FName = AValue then Exit;
+  FName := AValue;
+  UpdateIdeCommands;
+end;
+
+procedure TEditorUserDefinedWords.UpdateIdeCommands;
+var
+  Keys: TKeyCommandRelationList;
+  Cat: TIDECommandCategory;
+begin
+  if (FList = nil) or (FList.KeyCommandList = nil) or (FName = '') then
+    exit;
+
+  Keys := FList.KeyCommandList as TKeyCommandRelationList;
+  Cat := nil;
+
+  if FAddTermCmd = nil then
+    FAddTermCmd := Keys.FindCommandByName('UserDefinedMarkup_Add_'+FId);
+  if FAddTermCmd = nil then begin
+    if Cat = nil then
+      Cat := keys.FindCategoryByName(EditorUserDefinedWordsKeyCatName);
+    FAddTermCmd := Keys.CreateCommand(
+      Cat,
+      'UserDefinedMarkup_Add_'+FId,
+      Format(lisUserDefinedMarkupKeyAdd, [FName]),
+      IDEShortCut(VK_UNKNOWN, [], VK_UNKNOWN, []),
+      IDEShortCut(VK_UNKNOWN, [], VK_UNKNOWN, []),
+      nil, nil
+    );
+    (FAddTermCmd as TKeyCommandRelation).SkipSaving := True;
+  end
+  else
+    FAddTermCmd.LocalizedName := Format(lisUserDefinedMarkupKeyAdd, [FName]);
+
+  if FRemoveTermCmd = nil then
+    FRemoveTermCmd := Keys.FindCommandByName('UserDefinedMarkup_Remove_'+FId);
+  if FRemoveTermCmd = nil then begin
+    if Cat = nil then
+      Cat := keys.FindCategoryByName(EditorUserDefinedWordsKeyCatName);
+    FRemoveTermCmd := Keys.CreateCommand(
+      Cat,
+      'UserDefinedMarkup_Remove_'+FId,
+      Format(lisUserDefinedMarkupKeyRemove, [FName]),
+      IDEShortCut(VK_UNKNOWN, [], VK_UNKNOWN, []),
+      IDEShortCut(VK_UNKNOWN, [], VK_UNKNOWN, []),
+      nil, nil
+    );
+    (FRemoveTermCmd as TKeyCommandRelation).SkipSaving := True;
+  end
+  else
+    FRemoveTermCmd.LocalizedName := Format(lisUserDefinedMarkupKeyRemove, [FName]);
+
+  if FToggleTermCmd = nil then
+    FToggleTermCmd := Keys.FindCommandByName('UserDefinedMarkup_Toggle_'+FId);
+  if FToggleTermCmd = nil then begin
+    if Cat = nil then
+      Cat := keys.FindCategoryByName(EditorUserDefinedWordsKeyCatName);
+    FToggleTermCmd := Keys.CreateCommand(
+      Cat,
+      'UserDefinedMarkup_Toggle_'+FId,
+      Format(lisUserDefinedMarkupKeyToggle, [FName]),
+      IDEShortCut(VK_UNKNOWN, [], VK_UNKNOWN, []),
+      IDEShortCut(VK_UNKNOWN, [], VK_UNKNOWN, []),
+      nil, nil
+    );
+    (FToggleTermCmd as TKeyCommandRelation).SkipSaving := True;
+  end
+  else
+    FToggleTermCmd.LocalizedName := Format(lisUserDefinedMarkupKeyToggle, [FName]);
+end;
+
+procedure TEditorUserDefinedWords.ClearIdeCommands;
+begin
+  if (FList <> nil) and (FList.KeyCommandList <> nil) then begin
+    if (FAddTermCmd <> nil) then
+      (FList.KeyCommandList as TKeyCommandRelationList).RemoveCommand(FAddTermCmd);
+    if (FRemoveTermCmd <> nil) then
+      (FList.KeyCommandList as TKeyCommandRelationList).RemoveCommand(FRemoveTermCmd);
+    if (FToggleTermCmd <> nil) then
+      (FList.KeyCommandList as TKeyCommandRelationList).RemoveCommand(FToggleTermCmd);
+  end;
+  FreeAndNil(FAddTermCmd);
+  FreeAndNil(FRemoveTermCmd);
+  FreeAndNil(FToggleTermCmd);
+end;
+
+constructor TEditorUserDefinedWords.Create(AList: TEditorUserDefinedWordsList);
+var
+  i: Integer;
+begin
+  FList := AList;
+  FId := EditorUserDefinedWordsGlobalId;
+  i := 1;
+  UniqueString(EditorUserDefinedWordsGlobalId);
+  while i <= Length(EditorUserDefinedWordsGlobalId) do begin
+    if EditorUserDefinedWordsGlobalId[i] < 'z' then begin
+      inc(EditorUserDefinedWordsGlobalId[i]);
+      break;
+    end;
+    inc(i);
+  end;
+  if i > Length(EditorUserDefinedWordsGlobalId) then
+    EditorUserDefinedWordsGlobalId := EditorUserDefinedWordsGlobalId + 'a';
+
+  inherited Create;
+  FColorAttr := TColorSchemeAttribute.Create(nil, '');
+  FColorAttr.Features := [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask];
+  FColorAttr.Group := agnText;
+  FKeyAddSelectSmart := True;
+end;
+
+destructor TEditorUserDefinedWords.Destroy;
+begin
+  Clear;
+  FreeAndNil(FColorAttr);
+  ClearIdeCommands;
+  inherited Destroy;
+end;
+
+procedure TEditorUserDefinedWords.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if not(Source is TEditorUserDefinedWords) then
+    exit;
+  ClearIdeCommands;
+
+  FId := TEditorUserDefinedWords(Source).FId;
+  FName := TEditorUserDefinedWords(Source).FName;
+  FKeyAddCase              := TEditorUserDefinedWords(Source).FKeyAddCase;
+  FKeyAddSelectBoundMaxLen := TEditorUserDefinedWords(Source).FKeyAddSelectBoundMaxLen;
+  FKeyAddSelectSmart       := TEditorUserDefinedWords(Source).FKeyAddSelectSmart;
+  FKeyAddTermBounds        := TEditorUserDefinedWords(Source).FKeyAddTermBounds;
+  FKeyAddWordBoundMaxLen   := TEditorUserDefinedWords(Source).FKeyAddWordBoundMaxLen;
+
+  FColorAttr.Assign(TEditorUserDefinedWords(Source).FColorAttr);
+  UpdateIdeCommands;
+end;
+
+procedure TEditorUserDefinedWords.LoadFromXMLConfig(XMLConfig: TRttiXMLConfig; Path: String);
+  procedure Load(SubPath: string; out Key: TIDEShortCut);
+  begin
+    key.Key1   := XMLConfig.GetValue(SubPath+'Key1',VK_UNKNOWN);
+    key.Shift1 := CfgStrToShiftState(XMLConfig.GetValue(SubPath+'Shift1',''));
+    key.Key2   := XMLConfig.GetValue(SubPath+'Key2',VK_UNKNOWN);
+    key.Shift2 := CfgStrToShiftState(XMLConfig.GetValue(SubPath+'Shift2',''));
+  end;
+var
+  c, i: Integer;
+  def: TEditorUserDefinedWords;
+  ColorDef: TColorSchemeAttribute;
+  DefEntry: TSynSearchTerm;
+  SCut: TIDEShortCut;
+  Keys: TKeyCommandRelationList;
+begin
+  Clear;
+  def := TEditorUserDefinedWords.Create(nil);
+  XMLConfig.ReadObject(Path + 'Main/', self, def);
+  def.Free;
+
+  ColorDef := TColorSchemeAttribute.Create(nil, '');
+  FColorAttr.StoredName := 'c1';
+  FColorAttr.LoadFromXml(XMLConfig, Path + 'Color/', ColorDef, EditorOptsFormatVersion);
+  ColorDef.Free;
+
+  c := XMLConfig.GetValue(Path + 'Count', 0);
+  Path := Path + 'Entry/';
+  DefEntry := TSynSearchTerm.Create(nil);
+  for i := 0 to c - 1 do
+    XMLConfig.ReadObject(Path + 'Entry' + IntToStr(i) + '/', Add, DefEntry);
+  DefEntry.Free;
+
+  UpdateIdeCommands;
+
+  if (FList <> nil) and (FList.KeyCommandList <> nil) then begin
+    Keys := FList.KeyCommandList as TKeyCommandRelationList;
+
+    if (FAddTermCmd <> nil) then begin
+      Load(Path+'AddKeyA/', SCut);
+      if Keys.Find(SCut, TSourceEditorWindowInterface) = nil then
+        FAddTermCmd.ShortcutA := SCut;
+      Load(Path+'AddKeyB/', SCut);
+      if Keys.Find(SCut, TSourceEditorWindowInterface) = nil then
+        FAddTermCmd.ShortcutB := SCut;
+    end;
+
+    if (FRemoveTermCmd <> nil) then begin
+      Load(Path+'RemoveKeyA/', SCut);
+      if Keys.Find(SCut, TSourceEditorWindowInterface) = nil then
+        FRemoveTermCmd.ShortcutA := SCut;
+      Load(Path+'RemoveKeyB/', SCut);
+      if Keys.Find(SCut, TSourceEditorWindowInterface) = nil then
+        FRemoveTermCmd.ShortcutB := SCut;
+    end;
+
+    if (FToggleTermCmd <> nil) then begin
+      Load(Path+'ToggleKeyA/', SCut);
+      if Keys.Find(SCut, TSourceEditorWindowInterface) = nil then
+        FToggleTermCmd.ShortcutA := SCut;
+      Load(Path+'ToggleKeyB/', SCut);
+      if Keys.Find(SCut, TSourceEditorWindowInterface) = nil then
+        FToggleTermCmd.ShortcutB := SCut;
+    end;
+  end;
+end;
+
+procedure TEditorUserDefinedWords.SaveToXMLConfig(XMLConfig: TRttiXMLConfig; Path: String);
+  procedure ClearKey(const SubPath: string);
+  begin
+    XMLConfig.DeleteValue(SubPath+'Key1');
+    XMLConfig.DeleteValue(SubPath+'Shift1');
+    XMLConfig.DeleteValue(SubPath+'Key2');
+    XMLConfig.DeleteValue(SubPath+'Shift2');
+  end;
+  procedure Store(const SubPath: string; Key: TIDEShortCut);
+  var
+    s: TShiftState;
+  begin
+    XMLConfig.SetDeleteValue(SubPath+'Key1', key.Key1, VK_UNKNOWN);
+    if key.Key1=VK_UNKNOWN then
+      s:=[]
+    else
+      s:=key.Shift1;
+    XMLConfig.SetDeleteValue(SubPath+'Shift1',ShiftStateToCfgStr(s),ShiftStateToCfgStr([]));
+    XMLConfig.SetDeleteValue(SubPath+'Key2',key.Key2,VK_UNKNOWN);
+    if key.Key2=VK_UNKNOWN then
+      s:=[]
+    else
+      s:=key.Shift2;
+    XMLConfig.SetDeleteValue(SubPath+'Shift2',ShiftStateToCfgStr(s),ShiftStateToCfgStr([]));
+  end;
+var
+  i, c: Integer;
+  def: TEditorUserDefinedWords;
+  ColorDef: TColorSchemeAttribute;
+  DefEntry: TSynSearchTerm;
+begin
+  def := TEditorUserDefinedWords.Create(nil);
+  XMLConfig.WriteObject(Path + 'Main/', Self, def);
+  def.Free;
+
+  ColorDef := TColorSchemeAttribute.Create(nil, '');
+  FColorAttr.StoredName := 'c1';
+  FColorAttr.SaveToXml(XMLConfig, Path + 'Color/', ColorDef);
+  ColorDef.Free;
+
+  c := XMLConfig.GetValue(Path + 'Count', 0);
+  XMLConfig.SetDeleteValue(Path + 'Count', Count, 0);
+  Path := Path + 'Entry/';
+  DefEntry := TSynSearchTerm.Create(nil);
+  for i := 0 to Count - 1 do
+    XMLConfig.WriteObject(Path + 'Entry' + IntToStr(i) + '/', Items[i], DefEntry);
+  DefEntry.Free;
+  for i := Count to c - 1 do
+    XMLConfig.DeletePath(Path + 'Entry' + IntToStr(i));
+
+  if (FAddTermCmd = nil) then begin
+    ClearKey(Path + 'AddKeyA/');
+    ClearKey(Path + 'AddKeyB/');
+  end else begin
+    Store(Path + 'AddKeyA/', FAddTermCmd.ShortcutA);
+    Store(Path + 'AddKeyB/', FAddTermCmd.ShortcutB);
+  end;
+
+  if (FRemoveTermCmd = nil) then begin
+    ClearKey(Path + 'RemoveKeyA/');
+    ClearKey(Path + 'RemoveKeyB/');
+  end else begin
+    Store(Path + 'RemoveKeyA/', FRemoveTermCmd.ShortcutA);
+    Store(Path + 'RemoveKeyB/', FRemoveTermCmd.ShortcutB);
+  end;
+
+  if (FToggleTermCmd = nil) then begin
+    ClearKey(Path + 'ToggleKeyA/');
+    ClearKey(Path + 'ToggleKeyB/');
+  end else begin
+    Store(Path + 'ToggleKeyA/', FToggleTermCmd.ShortcutA);
+    Store(Path + 'ToggleKeyB/', FToggleTermCmd.ShortcutB);
+  end;
+
 end;
 
 { TSynEditMouseActionKeyCmdHelper }
@@ -3753,6 +4248,7 @@ end;
 destructor TEditorOptions.Destroy;
 begin
   FreeAndNil(FUserColorSchemeSettings);
+  FreeAndNil(FUserDefinedColors);
   fKeyMap.Free;
   FreeAndNil(FMultiWinEditAccessOrder);
   XMLConfig.Free;
@@ -3799,6 +4295,8 @@ begin
   fHighlighterList := HighlighterListSingleton;
   FUserColorSchemeSettings := TColorSchemeFactory.Create;
   FUserColorSchemeSettings.Assign(ColorSchemeFactory);
+  FUserDefinedColors := TEditorUserDefinedWordsList.Create;
+  FUserDefinedColors.UseGlobalIDECommandList := True;
 
   FMarkupCurWordTime := 1500;
   FMarkupCurWordFullLen := 3;
@@ -4012,6 +4510,8 @@ begin
       // color attributes are stored in the highlighters
     ;
 
+    FUserDefinedColors.LoadFromXMLConfig(xmlconfig, 'EditorOptions/UserDefinedColors');
+
     FMarkupCurWordTime :=
       XMLConfig.GetValue(
       'EditorOptions/Display/MarkupCurrentWord/Time', 1500);
@@ -4203,6 +4703,7 @@ begin
       // color attributes are stored in the highlighters
     ;
 
+    FUserDefinedColors.SaveToXMLConfig(xmlconfig, 'EditorOptions/UserDefinedColors');
 
     XMLConfig.SetDeleteValue('EditorOptions/Display/MarkupCurrentWord/Time',
       FMarkupCurWordTime, 1500);
@@ -4773,140 +5274,169 @@ procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit;
 var
   MarkCaret: TSynEditMarkupHighlightAllCaret;
   b: TSynBeautifierPascal;
+  i: Integer;
+  mw: TSourceSynEditMarkupHighlightAllMulti;
 begin
   // general options
-  ASynEdit.Options := fSynEditOptions;
-  ASynEdit.Options2 := fSynEditOptions2;
-  ASynEdit.BlockIndent := fBlockIndent;
-  ASynEdit.BlockTabIndent := FBlockTabIndent;
-  (ASynEdit.Beautifier as TSynBeautifier).IndentType := fBlockIndentType;
-  if ASynEdit.Beautifier is TSynBeautifierPascal then begin
-    b := ASynEdit.Beautifier as TSynBeautifierPascal;
+  ASynEdit.BeginUpdate(False);
+  try
+    ASynEdit.Options := fSynEditOptions;
+    ASynEdit.Options2 := fSynEditOptions2;
+    ASynEdit.BlockIndent := fBlockIndent;
+    ASynEdit.BlockTabIndent := FBlockTabIndent;
+    (ASynEdit.Beautifier as TSynBeautifier).IndentType := fBlockIndentType;
+    if ASynEdit.Beautifier is TSynBeautifierPascal then begin
+      b := ASynEdit.Beautifier as TSynBeautifierPascal;
 
-    if FAnsiCommentContinueEnabled then begin
-      b.AnsiCommentMode := sccPrefixMatch;
-      b.AnsiIndentMode := FAnsiIndentMode;
-      b.AnsiMatch := FAnsiCommentMatch;
-      b.AnsiPrefix := FAnsiCommentPrefix;
-      b.AnsiMatchLine := sclMatchPrev;
-      b.AnsiMatchMode := AnsiCommentMatchMode;
-      b.AnsiCommentIndent := sbitCopySpaceTab;
-      b.AnsiIndentFirstLineMax := AnsiIndentAlignMax;
-    end
-    else begin
-      b.AnsiCommentMode := sccNoPrefix;
-      b.AnsiIndentMode := [];
+      if FAnsiCommentContinueEnabled then begin
+        b.AnsiCommentMode := sccPrefixMatch;
+        b.AnsiIndentMode := FAnsiIndentMode;
+        b.AnsiMatch := FAnsiCommentMatch;
+        b.AnsiPrefix := FAnsiCommentPrefix;
+        b.AnsiMatchLine := sclMatchPrev;
+        b.AnsiMatchMode := AnsiCommentMatchMode;
+        b.AnsiCommentIndent := sbitCopySpaceTab;
+        b.AnsiIndentFirstLineMax := AnsiIndentAlignMax;
+      end
+      else begin
+        b.AnsiCommentMode := sccNoPrefix;
+        b.AnsiIndentMode := [];
+      end;
+
+      if FCurlyCommentContinueEnabled then begin
+        b.BorCommentMode := sccPrefixMatch;
+        b.BorIndentMode := FCurlyIndentMode;
+        b.BorMatch := FCurlyCommentMatch;
+        b.BorPrefix := FCurlyCommentPrefix;
+        b.BorMatchLine := sclMatchPrev;
+        b.BorMatchMode := CurlyCommentMatchMode;
+        b.BorCommentIndent := sbitCopySpaceTab;
+        b.BorIndentFirstLineMax := CurlyIndentAlignMax;
+      end
+      else begin
+        b.BorCommentMode := sccNoPrefix;
+        b.BorIndentMode := [];
+      end;
+
+      if FSlashCommentContinueEnabled then begin
+        b.SlashCommentMode := sccPrefixMatch;
+        b.SlashIndentMode := FSlashIndentMode;
+        b.SlashMatch := FSlashCommentMatch;
+        b.SlashPrefix := FSlashCommentPrefix;
+        b.SlashMatchLine := sclMatchPrev;
+        b.SlashMatchMode := SlashCommentMatchMode;
+        b.SlashCommentIndent := sbitCopySpaceTab;
+        b.ExtendSlashCommentMode := FSlashCommentExtend;
+        b.SlashIndentFirstLineMax := SlashIndentAlignMax;
+      end
+      else begin
+        b.SlashCommentMode := sccNoPrefix;
+        b.SlashIndentMode := [];
+      end;
+
+
     end;
 
-    if FCurlyCommentContinueEnabled then begin
-      b.BorCommentMode := sccPrefixMatch;
-      b.BorIndentMode := FCurlyIndentMode;
-      b.BorMatch := FCurlyCommentMatch;
-      b.BorPrefix := FCurlyCommentPrefix;
-      b.BorMatchLine := sclMatchPrev;
-      b.BorMatchMode := CurlyCommentMatchMode;
-      b.BorCommentIndent := sbitCopySpaceTab;
-      b.BorIndentFirstLineMax := CurlyIndentAlignMax;
-    end
-    else begin
-      b.BorCommentMode := sccNoPrefix;
-      b.BorIndentMode := [];
+    ASynEdit.TrimSpaceType := FTrimSpaceType;
+    ASynEdit.TabWidth := fTabWidth;
+    ASynEdit.BracketHighlightStyle := FBracketHighlightStyle;
+    {$IFDEF WinIME}
+    if ASynEdit is TIDESynEditor then begin
+      if UseMinimumIme
+      then TIDESynEditor(ASynEdit).CreateMinimumIme
+      else TIDESynEditor(ASynEdit).CreateFullIme;
+    end;
+    {$ENDIF}
+
+    if ASynEdit is TIDESynEditor then begin
+      TIDESynEditor(ASynEdit).HighlightUserWordCount := UserDefinedColors.Count;
+      for i := 0 to UserDefinedColors.Count - 1 do begin
+        mw := TIDESynEditor(ASynEdit).HighlightUserWords[i];
+        mw.MarkupInfo.Assign(UserDefinedColors.Lists[i].ColorAttr);
+        mw.Clear;
+        mw.Terms.Assign(UserDefinedColors.Lists[i]);
+        mw.RestoreLocalChanges;
+        if UserDefinedColors.Lists[i].AddTermCmd <> nil then
+          mw.AddTermCmd := UserDefinedColors.Lists[i].AddTermCmd.Command;
+        if UserDefinedColors.Lists[i].RemoveTermCmd <> nil then
+          mw.RemoveTermCmd := UserDefinedColors.Lists[i].RemoveTermCmd.Command;
+        if UserDefinedColors.Lists[i].ToggleTermCmd <> nil then
+          mw.ToggleTermCmd := UserDefinedColors.Lists[i].ToggleTermCmd.Command;
+        mw.KeyAddTermBounds        := UserDefinedColors.Lists[i].KeyAddTermBounds;
+        mw.KeyAddCase              := UserDefinedColors.Lists[i].KeyAddCase;
+        mw.KeyAddWordBoundMaxLen   := UserDefinedColors.Lists[i].KeyAddWordBoundMaxLen;
+        mw.KeyAddSelectBoundMaxLen := UserDefinedColors.Lists[i].KeyAddSelectBoundMaxLen;
+        mw.KeyAddSelectSmart       := UserDefinedColors.Lists[i].KeyAddSelectSmart;
+      end;
     end;
 
-    if FSlashCommentContinueEnabled then begin
-      b.SlashCommentMode := sccPrefixMatch;
-      b.SlashIndentMode := FSlashIndentMode;
-      b.SlashMatch := FSlashCommentMatch;
-      b.SlashPrefix := FSlashCommentPrefix;
-      b.SlashMatchLine := sclMatchPrev;
-      b.SlashMatchMode := SlashCommentMatchMode;
-      b.SlashCommentIndent := sbitCopySpaceTab;
-      b.ExtendSlashCommentMode := FSlashCommentExtend;
-      b.SlashIndentFirstLineMax := SlashIndentAlignMax;
-    end
-    else begin
-      b.SlashCommentMode := sccNoPrefix;
-      b.SlashIndentMode := [];
-    end;
 
+    // Display options
+    ASynEdit.Gutter.Visible := fVisibleGutter;
+    ASynEdit.Gutter.AutoSize := true;
+    ASynEdit.Gutter.LineNumberPart.Visible := fShowLineNumbers;
+    ASynEdit.Gutter.LineNumberPart(0).ShowOnlyLineNumbersMultiplesOf :=
+      fShowOnlyLineNumbersMultiplesOf;
+    ASynEdit.RightGutter.Visible := ShowOverviewGutter;
+    if ASynEdit is TIDESynEditor then
+      TIDESynEditor(ASynEdit).ShowTopInfo := TopInfoView;
 
-  end;
+    ASynEdit.Gutter.CodeFoldPart.Visible := FUseCodeFolding;
+    if not FUseCodeFolding then
+      ASynEdit.UnfoldAll;
+    ASynEdit.Gutter.CodeFoldPart.ReversePopMenuOrder := ReverseFoldPopUpOrder;
 
-  ASynEdit.TrimSpaceType := FTrimSpaceType;
-  ASynEdit.TabWidth := fTabWidth;
-  ASynEdit.BracketHighlightStyle := FBracketHighlightStyle;
-  {$IFDEF WinIME}
-  if ASynEdit is TIDESynEditor then begin
-    if UseMinimumIme
-    then TIDESynEditor(ASynEdit).CreateMinimumIme
-    else TIDESynEditor(ASynEdit).CreateFullIme;
-  end;
-  {$ENDIF}
+    ASynEdit.Gutter.Width := fGutterWidth;
+    ASynEdit.Gutter.SeparatorPart.Visible := FGutterSeparatorIndex <> -1;
+    if FGutterSeparatorIndex <> -1 then
+    ASynEdit.Gutter.SeparatorPart(0).Index := FGutterSeparatorIndex;
 
-
-  // Display options
-  ASynEdit.Gutter.Visible := fVisibleGutter;
-  ASynEdit.Gutter.AutoSize := true;
-  ASynEdit.Gutter.LineNumberPart.Visible := fShowLineNumbers;
-  ASynEdit.Gutter.LineNumberPart(0).ShowOnlyLineNumbersMultiplesOf :=
-    fShowOnlyLineNumbersMultiplesOf;
-  ASynEdit.RightGutter.Visible := ShowOverviewGutter;
-  if ASynEdit is TIDESynEditor then
-    TIDESynEditor(ASynEdit).ShowTopInfo := TopInfoView;
-
-  ASynEdit.Gutter.CodeFoldPart.Visible := FUseCodeFolding;
-  if not FUseCodeFolding then
-    ASynEdit.UnfoldAll;
-  ASynEdit.Gutter.CodeFoldPart.ReversePopMenuOrder := ReverseFoldPopUpOrder;
-
-  ASynEdit.Gutter.Width := fGutterWidth;
-  ASynEdit.Gutter.SeparatorPart.Visible := FGutterSeparatorIndex <> -1;
-  if FGutterSeparatorIndex <> -1 then
-  ASynEdit.Gutter.SeparatorPart(0).Index := FGutterSeparatorIndex;
-
-  ASynEdit.RightEdge := fRightMargin;
-  if fVisibleRightMargin then
-    ASynEdit.Options := ASynEdit.Options - [eoHideRightMargin]
-  else
-    ASynEdit.Options := ASynEdit.Options + [eoHideRightMargin];
-
-  ApplyFontSettingsTo(ASynEdit);
-  //debugln(['TEditorOptions.GetSynEditSettings ',ASynEdit.font.height]);
-
-  ASynEdit.ExtraCharSpacing := fExtraCharSpacing;
-  ASynEdit.ExtraLineSpacing := fExtraLineSpacing;
-  ASynEdit.MaxUndo := fUndoLimit;
-  // The Highlighter on the SynEdit will have been initialized with the configured
-  // values already (including all the additional-attributes.
-  // Just copy the colors from the SynEdit's highlighter to the SynEdit's Markup and co
-  SetMarkupColors(ASynEdit);
-
-  MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
-  if assigned(MarkCaret) then begin
-    if FMarkupCurWordNoTimer then
-      MarkCaret.WaitTime := 0
+    ASynEdit.RightEdge := fRightMargin;
+    if fVisibleRightMargin then
+      ASynEdit.Options := ASynEdit.Options - [eoHideRightMargin]
     else
-      MarkCaret.WaitTime := FMarkupCurWordTime;
-    MarkCaret.FullWord := FMarkupCurWordFullLen > 0;
-    MarkCaret.FullWordMaxLen := FMarkupCurWordFullLen;
-    MarkCaret.IgnoreKeywords := FMarkupCurWordNoKeyword;
-    MarkCaret.Trim := FMarkupCurWordTrim;
-  end;
+      ASynEdit.Options := ASynEdit.Options + [eoHideRightMargin];
 
-  AssignKeyMapTo(ASynEdit, SimilarEdit);
+    ApplyFontSettingsTo(ASynEdit);
+    //debugln(['TEditorOptions.GetSynEditSettings ',ASynEdit.font.height]);
 
-  ASynEdit.MouseOptions := [emUseMouseActions];
-  ASynEdit.MouseActions.Assign(FUserMouseSettings.MainActions);
-  ASynEdit.MouseSelActions.Assign(FUserMouseSettings.SelActions);
-  ASynEdit.MouseTextActions.Assign(FUserMouseSettings.TextActions);
-  ASynEdit.Gutter.MouseActions.Assign(FUserMouseSettings.GutterActions);
-  if ASynEdit.Gutter.CodeFoldPart <> nil then begin
-    ASynEdit.Gutter.CodeFoldPart.MouseActions.Assign(FUserMouseSettings.GutterActionsFold);
-    ASynEdit.Gutter.CodeFoldPart.MouseActionsCollapsed.Assign(FUserMouseSettings.GutterActionsFoldCol);
-    ASynEdit.Gutter.CodeFoldPart.MouseActionsExpanded.Assign(FUserMouseSettings.GutterActionsFoldExp);
-  end;
-  if ASynEdit.Gutter.LineNumberPart <> nil then begin
-    ASynEdit.Gutter.LineNumberPart.MouseActions.Assign(FUserMouseSettings.GutterActionsLines);
+    ASynEdit.ExtraCharSpacing := fExtraCharSpacing;
+    ASynEdit.ExtraLineSpacing := fExtraLineSpacing;
+    ASynEdit.MaxUndo := fUndoLimit;
+    // The Highlighter on the SynEdit will have been initialized with the configured
+    // values already (including all the additional-attributes.
+    // Just copy the colors from the SynEdit's highlighter to the SynEdit's Markup and co
+    SetMarkupColors(ASynEdit);
+
+    MarkCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
+    if assigned(MarkCaret) then begin
+      if FMarkupCurWordNoTimer then
+        MarkCaret.WaitTime := 0
+      else
+        MarkCaret.WaitTime := FMarkupCurWordTime;
+      MarkCaret.FullWord := FMarkupCurWordFullLen > 0;
+      MarkCaret.FullWordMaxLen := FMarkupCurWordFullLen;
+      MarkCaret.IgnoreKeywords := FMarkupCurWordNoKeyword;
+      MarkCaret.Trim := FMarkupCurWordTrim;
+    end;
+
+    AssignKeyMapTo(ASynEdit, SimilarEdit);
+
+    ASynEdit.MouseOptions := [emUseMouseActions];
+    ASynEdit.MouseActions.Assign(FUserMouseSettings.MainActions);
+    ASynEdit.MouseSelActions.Assign(FUserMouseSettings.SelActions);
+    ASynEdit.MouseTextActions.Assign(FUserMouseSettings.TextActions);
+    ASynEdit.Gutter.MouseActions.Assign(FUserMouseSettings.GutterActions);
+    if ASynEdit.Gutter.CodeFoldPart <> nil then begin
+      ASynEdit.Gutter.CodeFoldPart.MouseActions.Assign(FUserMouseSettings.GutterActionsFold);
+      ASynEdit.Gutter.CodeFoldPart.MouseActionsCollapsed.Assign(FUserMouseSettings.GutterActionsFoldCol);
+      ASynEdit.Gutter.CodeFoldPart.MouseActionsExpanded.Assign(FUserMouseSettings.GutterActionsFoldExp);
+    end;
+    if ASynEdit.Gutter.LineNumberPart <> nil then begin
+      ASynEdit.Gutter.LineNumberPart.MouseActions.Assign(FUserMouseSettings.GutterActionsLines);
+    end;
+  finally
+    ASynEdit.EndUpdate;
   end;
 end;
 

@@ -47,12 +47,13 @@ uses
   LazSynIMM,
   {$ENDIF}
   Classes, SysUtils, Controls, LCLProc, LCLType, Graphics, Menus, math, LazarusIDEStrConsts,
-  SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
-  SynEditTypes,  SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
+  SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks, SynEditTypes,
+  SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
   SynGutterLineOverview, SynEditMarkup, SynEditMarkupGutterMark, SynEditMarkupSpecialLine,
   SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase, LazSynEditText,
-  SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea,
-  SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterPas, SynEditMouseCmds;
+  SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea, SynEditHighlighter,
+  SynEditHighlighterFoldBase, SynHighlighterPas, SynEditMouseCmds, SynEditMarkupHighAll,
+  SynEditKeyCmds;
 
 type
 
@@ -125,6 +126,70 @@ type
     property TopLineCount: Integer read FTopLineCount write SetTopLineCount;
   end;
 
+  { TSourceSynSearchTermList }
+
+  TSourceSynSearchTermList = class(TSynSearchTermList)
+  public
+    function FindMatchFor(ATerm: String; ACasesSensitive: Boolean;
+                          ABoundaries: TSynSearchTermOptsBounds;
+                          AStartAtIndex: Integer = 0;
+                          AIgnoreIndex: Integer = -1): Integer;
+    function FindSimilarMatchFor(ATerm: String; ACasesSensitive: Boolean;
+                          ABoundaries: TSynSearchTermOptsBounds;
+                          AEnabled: Boolean;
+                          AStartAtIndex: Integer = 0;
+                          AIgnoreIndex: Integer = -1;
+                          AnOnlyWeakerOrEqual: Boolean = False;
+                          AnSkipDisabled: Boolean = False): Integer; // weaker = matches less (subset of stronger)
+    function FindSimilarMatchFor(ATerm: TSynSearchTerm;
+                          AStartAtIndex: Integer = 0;
+                          AIgnoreIndex: Integer = -1;
+                          AnOnlyWeakerOrEqual: Boolean = False;
+                          AnSkipDisabled: Boolean = False): Integer; // weaker = matches less (subset of stronger)
+    procedure ClearSimilarMatches;
+  end;
+
+  TSourceSynSearchTermDict = class(TSynSearchTermDict)
+  public
+    property Terms;
+  end;
+
+  { TSourceSynEditMarkupHighlightAllMulti }
+
+  TSourceSynEditMarkupHighlightAllMulti = class(TSynEditMarkupHighlightAllMulti)
+  private
+    FAddTermCmd: TSynEditorCommand;
+    FKeyAddCase: Boolean;
+    FKeyAddSelectBoundMaxLen: Integer;
+    FKeyAddSelectSmart: Boolean;
+    FKeyAddWordBoundMaxLen: Integer;
+    FKeyAddTermBounds: TSynSearchTermOptsBounds;
+    FRemoveTermCmd: TSynEditorCommand;
+    FToggleTermCmd: TSynEditorCommand;
+
+    FModifiedTerms: TSynSearchTermList;
+    FAddedByKeyWords: TSynSearchTermList;
+    FFirstLocal: Integer;
+
+    procedure ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
+              var Handled: boolean; var Command: TSynEditorCommand;
+              var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
+  protected
+    function CreateTermsList: TSynSearchTermDict; override;
+  public
+    constructor Create(ASynEdit: TSynEditBase);
+    destructor Destroy; override;
+    procedure RestoreLocalChanges;
+    property AddTermCmd: TSynEditorCommand read FAddTermCmd write FAddTermCmd;
+    property RemoveTermCmd: TSynEditorCommand read FRemoveTermCmd write FRemoveTermCmd;
+    property ToggleTermCmd: TSynEditorCommand read FToggleTermCmd write FToggleTermCmd;
+    property KeyAddTermBounds: TSynSearchTermOptsBounds read FKeyAddTermBounds write FKeyAddTermBounds;
+    property KeyAddCase: Boolean read FKeyAddCase write FKeyAddCase;
+    property KeyAddWordBoundMaxLen: Integer read FKeyAddWordBoundMaxLen write FKeyAddWordBoundMaxLen;
+    property KeyAddSelectBoundMaxLen: Integer read FKeyAddSelectBoundMaxLen write FKeyAddSelectBoundMaxLen;
+    property KeyAddSelectSmart: Boolean read FKeyAddSelectSmart write FKeyAddSelectSmart;
+  end;
+
   { TIDESynEditor }
 
   TIDESynEditor = class(TSynEdit)
@@ -138,10 +203,14 @@ type
     FExtraMarkupLine: TSynEditMarkupSpecialLine;
     FExtraMarkupMgr: TSynEditMarkupManager;
     FTopInfoMarkup: TSynSelectedColor;
+    FUserWordsList: TList;
 
+    function GetHighlightUserWordCount: Integer;
+    function GetHighlightUserWords(AIndex: Integer): TSourceSynEditMarkupHighlightAllMulti;
     function GetIDEGutterMarks: TIDESynGutterMarks;
     procedure GetTopInfoMarkupForLine(Sender: TObject; {%H-}Line: integer; var Special: boolean;
       aMarkup: TSynSelectedColor);
+    procedure SetHighlightUserWordCount(AValue: Integer);
     procedure SetShowTopInfo(AValue: boolean);
     procedure SetTopInfoMarkup(AValue: TSynSelectedColor);
     procedure SrcSynCaretChanged(Sender: TObject);
@@ -149,6 +218,7 @@ type
     procedure DoOnStatusChange(Changes: TSynStatusChanges); override;
     function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
                           ATextDrawer: TheTextDrawer): TSynGutter; override;
+    procedure SetHighlighter(const Value: TSynCustomHighlighter); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -156,6 +226,7 @@ type
     property IDEGutterMarks: TIDESynGutterMarks read GetIDEGutterMarks;
     property TopView;
     property TextBuffer;
+    property ViewedTextBuffer;
     property TemplateEdit: TSynPluginTemplateEdit read FTemplateEdit;
     property SyncroEdit: TSynPluginSyncroEdit read FSyncroEdit;
     //////
@@ -165,6 +236,9 @@ type
     procedure CreateMinimumIme;
     procedure CreateFullIme;
     {$ENDIF}
+    property HighlightUserWordCount: Integer read GetHighlightUserWordCount write SetHighlightUserWordCount;
+    property HighlightUserWords[AIndex: Integer]: TSourceSynEditMarkupHighlightAllMulti read GetHighlightUserWords;
+    property MarkupMgr;
   end;
 
   TIDESynHighlighterPasRangeList = class(TSynHighlighterPasRangeList)
@@ -332,6 +406,415 @@ type
   {$ENDIF}
 
 implementation
+
+{ TSourceSynSearchTermList }
+
+function TSourceSynSearchTermList.FindMatchFor(ATerm: String; ACasesSensitive: Boolean;
+  ABoundaries: TSynSearchTermOptsBounds; AStartAtIndex: Integer;
+  AIgnoreIndex: Integer): Integer;
+var
+  c: Integer;
+  Entry: TSynSearchTerm;
+begin
+  Result := AStartAtIndex - 1;
+  c := Count - 1;
+  while Result < c do begin
+    inc(Result);
+    if Result = AIgnoreIndex then
+      continue;
+
+    Entry := Items[Result];
+    if (ATerm = Entry.SearchTerm) and
+       (ACasesSensitive = Entry.MatchCase) and
+       (ABoundaries = Entry.MatchWordBounds)
+    then
+      exit;
+  end;
+   Result := -1;
+end;
+
+function TSourceSynSearchTermList.FindSimilarMatchFor(ATerm: String; ACasesSensitive: Boolean;
+  ABoundaries: TSynSearchTermOptsBounds; AEnabled: Boolean; AStartAtIndex: Integer;
+  AIgnoreIndex: Integer; AnOnlyWeakerOrEqual: Boolean; AnSkipDisabled: Boolean): Integer;
+var
+  c: Integer;
+  Entry: TSynSearchTerm;
+  WeakerByEnabled, WeakerByCase, WeakerByBounds: (wParam,  wEntry, wEqual);
+begin
+  Result := AStartAtIndex - 1;
+  c := Count - 1;
+  while Result < c do begin
+    inc(Result);
+    if Result = AIgnoreIndex then
+      continue;
+
+    Entry := Items[Result];
+    (* if one has soBoundsAtStart, and the other has soBoundsAtEnd then they
+        match 2 different sets, which may overlap
+       In all other cases, one will match a subset of the other
+    *)
+    if [ABoundaries, Entry.MatchWordBounds] = [soBoundsAtStart, soBoundsAtEnd] then
+      Continue; // Match different sets
+    if AnSkipDisabled and not Entry.Enabled then
+      Continue;
+
+
+    WeakerByEnabled := wEqual;
+    if (not Entry.Enabled) and AEnabled then WeakerByEnabled := wEntry;
+    if Entry.Enabled and (not AEnabled) then WeakerByEnabled := wParam;
+
+    if AnOnlyWeakerOrEqual and (WeakerByEnabled = wParam) then  // Entry can not be weaker
+      continue;
+
+
+    if (ATerm <> Entry.SearchTerm) and
+       ( (ACasesSensitive and Entry.MatchCase) or
+         (LowerCase(ATerm) <> LowerCase(Entry.SearchTerm))
+       )
+    then
+      continue;
+
+
+    // which one is weakerByCase?
+    WeakerByCase := wEqual;
+    if (ACasesSensitive) and (not Entry.MatchCase) then
+      WeakerByCase := wParam  // param matches a sub-set of entry
+    else
+    if (not ACasesSensitive) and (Entry.MatchCase) then
+      WeakerByCase := wEntry;  // Entry matches a sub-set of param
+
+    if AnOnlyWeakerOrEqual and (WeakerByCase = wParam) then  // Entry can not be weaker
+      continue;
+
+
+    WeakerByBounds := wEqual;
+    case ABoundaries of
+      soNoBounds: begin
+          if Entry.MatchWordBounds <> soNoBounds then
+            WeakerByBounds := wEntry; // Entry matches less
+        end;
+      soBoundsAtStart, soBoundsAtEnd: begin // Combination of one at Start, other at End has already been filtered
+          if Entry.MatchWordBounds = soNoBounds then
+            WeakerByBounds := wParam
+          else
+          if Entry.MatchWordBounds = soBothBounds then
+            WeakerByBounds := wEntry;
+        end;
+      soBothBounds: begin
+          if Entry.MatchWordBounds <> soBothBounds then
+            WeakerByBounds := wParam;
+        end;
+    end;
+
+    if AnOnlyWeakerOrEqual and (WeakerByBounds = wParam) then  // Entry can not be weaker
+      continue;
+
+    if not ( ([WeakerByEnabled, WeakerByBounds, WeakerByCase] - [wEqual] = [wEntry]) or
+             ([WeakerByEnabled, WeakerByBounds, WeakerByCase] - [wEqual] = [wParam])
+           )
+    then
+      exit;
+
+  end;
+  Result := -1;
+end;
+
+function TSourceSynSearchTermList.FindSimilarMatchFor(ATerm: TSynSearchTerm;
+  AStartAtIndex: Integer; AIgnoreIndex: Integer; AnOnlyWeakerOrEqual: Boolean;
+  AnSkipDisabled: Boolean): Integer;
+begin
+  Result := FindSimilarMatchFor(ATerm.SearchTerm, ATerm.MatchCase, ATerm.MatchWordBounds,
+    ATerm.Enabled, AStartAtIndex, AIgnoreIndex, AnOnlyWeakerOrEqual, AnSkipDisabled);
+end;
+
+procedure TSourceSynSearchTermList.ClearSimilarMatches;
+var
+  i, j: Integer;
+begin
+  i := 0;
+  while (i < Count) do begin
+    j := FindSimilarMatchFor(Items[i].SearchTerm,
+      Items[i].MatchCase, Items[i].MatchWordBounds, Items[i].Enabled,
+      0, i, True);
+    if (j >= 0) then begin
+      Delete(j);
+      if j < i then // May have more than one weaker duplicate
+        dec(i);
+    end
+    else
+      inc(i);
+  end;
+end;
+
+{ TSourceSynEditMarkupHighlightAllMulti }
+
+procedure TSourceSynEditMarkupHighlightAllMulti.ProcessSynCommand(Sender: TObject;
+  AfterProcessing: boolean; var Handled: boolean; var Command: TSynEditorCommand;
+  var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
+var
+  syn: TIDESynEditor;
+  TermList: TSourceSynSearchTermList;
+
+  function FindTermAtCaret: Integer;
+  var
+    i, y, x, x1, x2: Integer;
+    s: string;
+    b1, b2: Boolean;
+    t: TSynSearchTerm;
+  begin
+    Result := -1;
+    y := syn.CaretY;
+    i := Matches.IndexOfFirstMatchForLine(y);
+    if i < 0 then exit;
+    x := syn.LogicalCaretXY.x;
+    while (i < Matches.Count) and (Matches[i].StartPoint.y <= y) do begin
+      if ((Matches[i].StartPoint.y < y) or (Matches[i].StartPoint.x <= x)) and
+         ((Matches[i].EndPoint.y > y) or (Matches[i].EndPoint.x >= x))
+      then
+        break;
+      inc(i);
+    end;
+    if (i >= Matches.Count) or (Matches[i].StartPoint.y > y) or (Matches[i].StartPoint.x > x) then
+      exit;
+
+    x1 := Matches[i].StartPoint.x;
+    x2 := Matches[i].EndPoint.x;
+    //if Matches[i].StartPoint.y < y then x1 := 1; // only one liners allowed
+    s := syn.ViewedTextBuffer[y-1];
+    b1 := (x1 = 1) or (s[x1-1] in WordBreakChars);
+    b2 := (x2 > length(s)) or (s[x2] in WordBreakChars);
+    s := copy(s, x1, x2-x1);
+
+    Result := 0;
+    while Result < Terms.Count do begin
+      t := Terms[Result];
+      if t.Enabled and
+         ( (t.SearchTerm = s) or
+           ( (not t.MatchCase) and (LowerCase(t.SearchTerm)= LowerCase(s)) )  ) and
+         ( (t.MatchWordBounds = soNoBounds) or
+           ( (t.MatchWordBounds = soBoundsAtEnd) and b1 ) or
+           ( (t.MatchWordBounds = soBoundsAtEnd) and b2 ) or
+           ( (t.MatchWordBounds = soBothBounds) and b1 and b2 )
+         )
+      then
+        exit;
+      inc(Result);
+    end;
+
+    assert(false, 'TSourceSynEditMarkupHighlightAllMulti match not found');
+    Result := -1; // Should never reach
+  end;
+
+  procedure AddTermByKey;
+  var
+    NewTerm, LineTxt: String;
+    B1, B2: Boolean;
+    NewBounds: TSynSearchTermOptsBounds;
+    i, j, PresetIdx: Integer;
+  begin
+    NewTerm := '';
+    if syn.SelAvail and (syn.BlockBegin.y = syn.BlockEnd.y) then begin
+      NewTerm := syn.SelText;
+      LineTxt := syn.Lines[syn.CaretY-1];
+      B1 := (KeyAddTermBounds in [soBoundsAtStart, soBothBounds]) and
+            ( (KeyAddSelectBoundMaxLen < 1) or (length(NewTerm) <= KeyAddSelectBoundMaxLen) ) and
+            ( (not KeyAddSelectSmart) or
+              ( (Syn.BlockBegin.X <= 1) or (LineTxt[Syn.BlockBegin.X-1] in WordBreakChars) )
+            );
+      B2 := (KeyAddTermBounds in [soBoundsAtEnd, soBothBounds]) and
+            ( (KeyAddSelectBoundMaxLen < 1) or (length(NewTerm) <= KeyAddSelectBoundMaxLen) ) and
+            ( (not KeyAddSelectSmart) or
+              ( (Syn.BlockEnd.X <= length(LineTxt)) or (LineTxt[Syn.BlockEnd.X] in WordBreakChars) )
+            );
+    end
+    else
+    if not syn.SelAvail then begin
+      NewTerm := syn.GetWordAtRowCol(syn.LogicalCaretXY);
+      if NewTerm <> '' then begin
+        B1 := (KeyAddTermBounds in [soBoundsAtStart, soBothBounds]) and
+              ( (KeyAddWordBoundMaxLen < 1) or (length(NewTerm) <= KeyAddWordBoundMaxLen) );
+        B2 := (KeyAddTermBounds in [soBoundsAtEnd, soBothBounds]) and
+              ( (KeyAddWordBoundMaxLen < 1) or (length(NewTerm) <= KeyAddWordBoundMaxLen) );
+      end;
+    end;
+
+    if B1 and B2 then NewBounds := soBothBounds
+    else if B1   then NewBounds := soBoundsAtStart
+    else if B2   then NewBounds := soBoundsAtEnd
+    else              NewBounds := soNoBounds;
+
+    // check for pre-defined, compare text only
+    PresetIdx := TermList.IndexOfSearchTerm(NewTerm, False);
+    if PresetIdx >= FFirstLocal then
+      PresetIdx := -1;
+
+    // Disable or remove weaker terms
+    i := TermList.FindSimilarMatchFor(NewTerm, FKeyAddCase, NewBounds, True, 0, -1, True, True);
+    while i >= 0 do begin
+      if i >= FFirstLocal then begin
+        j := FAddedByKeyWords.IndexOfSearchTerm(TermList[i]);
+        TermList.Delete(i);
+        if j >= 0 then
+          FAddedByKeyWords.Delete(j);
+      end
+      else begin
+        TermList[i].Enabled := False;
+        j := FModifiedTerms.IndexOfSearchTerm(TermList[i]);
+        if j < 0 then
+          FModifiedTerms.Add.Assign(TermList[i])
+        else
+          FModifiedTerms[j].Assign(TermList[i]);
+      end;
+      i := TermList.FindSimilarMatchFor(NewTerm, FKeyAddCase, NewBounds, True, 0, -1, True, True);
+    end;
+
+    if PresetIdx >= 0 then begin
+      while PresetIdx >= 0 do begin
+        TermList[PresetIdx].Enabled := True;
+        j := FModifiedTerms.IndexOfSearchTerm(TermList[PresetIdx]);
+        if j < 0 then
+          FModifiedTerms.Add.Assign(TermList[PresetIdx])
+        else
+          FModifiedTerms[j].Assign(TermList[PresetIdx]);
+        PresetIdx := TermList.IndexOfSearchTerm(NewTerm, False, PresetIdx+1);
+        if PresetIdx >= FFirstLocal then
+          PresetIdx := -1;
+      end;
+    end
+    else begin
+      // Could be adding selection that is not at bounds, but forcing bounds
+      if TermList.FindMatchFor(NewTerm, FKeyAddCase, NewBounds) >= FFirstLocal then
+        exit;
+      i := AddSearchTerm(NewTerm);
+      TermList[i].MatchCase := KeyAddCase;
+      TermList[i].MatchWordBounds := NewBounds;
+      FAddedByKeyWords.Add.Assign(TermList[i]);
+    end;
+  end;
+
+  procedure RemoveTermByKey(RemoveIdx: Integer);
+  var
+    i: Integer;
+  begin
+    if RemoveIdx >= FFirstLocal then begin
+      i := FAddedByKeyWords.IndexOfSearchTerm(TermList[RemoveIdx]);
+      Assert(i >= 0, 'FAddedByKeyWords.IndexOfSearchTerm(TermList[RemoveIdx])');
+      FAddedByKeyWords.Delete(i);
+      TermList.Delete(RemoveIdx);
+    end
+    else begin
+      TermList[RemoveIdx].Enabled := False;
+      i := FModifiedTerms.IndexOfSearchTerm(TermList[RemoveIdx]);
+      if i < 0 then
+        FModifiedTerms.Add.Assign(TermList[RemoveIdx])
+      else
+        FModifiedTerms[i].Assign(TermList[RemoveIdx]);
+    end;
+  end;
+
+var
+  i: Integer;
+  TermDict: TSourceSynSearchTermDict;
+begin
+  if Handled then
+    exit;
+  syn := TIDESynEditor(SynEdit);
+  TermDict := (Terms as TSourceSynSearchTermDict);
+  TermList := (TermDict.Terms as TSourceSynSearchTermList);
+  TermDict.IncChangeNotifyLock;
+  try
+
+    if Command = FAddTermCmd then begin
+      AddTermByKey;
+      Handled := True;
+    end;
+
+    if Command = FRemoveTermCmd then begin
+      i := FindTermAtCaret;
+      if i >= 0 then
+        RemoveTermByKey(i);
+      Handled := True;
+    end;
+
+    if Command = FToggleTermCmd then begin
+      i := FindTermAtCaret;
+      if i >= 0 then
+        RemoveTermByKey(i)
+      else
+        AddTermByKey;
+      Handled := True;
+    end;
+
+  finally
+    TermDict.DecChangeNotifyLock;
+  end;
+end;
+
+function TSourceSynEditMarkupHighlightAllMulti.CreateTermsList: TSynSearchTermDict;
+begin
+  Result := TSourceSynSearchTermDict.Create(TSourceSynSearchTermList);
+end;
+
+constructor TSourceSynEditMarkupHighlightAllMulti.Create(ASynEdit: TSynEditBase);
+begin
+  inherited Create(ASynEdit);
+  TCustomSynEdit(SynEdit).RegisterCommandHandler(@ProcessSynCommand, nil, [hcfInit]);
+  FModifiedTerms := TSynSearchTermList.Create;
+  FAddedByKeyWords := TSynSearchTermList.Create;
+end;
+
+destructor TSourceSynEditMarkupHighlightAllMulti.Destroy;
+begin
+  inherited Destroy;
+  TCustomSynEdit(SynEdit).UnregisterCommandHandler(@ProcessSynCommand);
+  FreeAndNil(FModifiedTerms);
+  FreeAndNil(FAddedByKeyWords);
+end;
+
+procedure TSourceSynEditMarkupHighlightAllMulti.RestoreLocalChanges;
+var
+  i, j, k: Integer;
+  TermList: TSourceSynSearchTermList;
+  TermDict: TSourceSynSearchTermDict;
+begin
+  FFirstLocal := Terms.Count;
+  TermDict := (Terms as TSourceSynSearchTermDict);
+  TermList := (TermDict.Terms as TSourceSynSearchTermList);
+  TermDict.IncChangeNotifyLock;
+  try
+
+    for i := FModifiedTerms.Count - 1 downto 0 do begin
+      j := TermList.IndexOfSearchTerm(FModifiedTerms[i]);
+      if (j < 0) or (TermList[j].Enabled = FModifiedTerms[i].Enabled) then
+        FModifiedTerms.Delete(i)
+      else
+        TermList[j].Enabled := FModifiedTerms[i].Enabled;
+    end;
+
+    for i := 0 to FAddedByKeyWords.Count - 1 do begin
+      // disable global (there may be new globals)
+      j := TermList.FindSimilarMatchFor(FAddedByKeyWords[i], 0, -1, True, True);
+      while j >= 0 do begin
+        Assert(j < FFirstLocal, 'DISABLE preset in RESTORE j < FFirstLocal');
+        if j < FFirstLocal then begin  // should always be true
+  DebugLn(['DISABLE preset in RESTORE ',j]);
+          TermList[j].Enabled := False;
+          k := FModifiedTerms.IndexOfSearchTerm(TermList[j]);
+          if k < 0 then
+            FModifiedTerms.Add.Assign(TermList[j])
+          else
+            FModifiedTerms[k].Assign(TermList[j]);
+        end;
+        j := TermList.FindSimilarMatchFor(FAddedByKeyWords[i], 0, -1, True, True);
+      end;
+
+      TermList.Add.Assign(FAddedByKeyWords[i]);
+    end;
+
+  finally
+    TermDict.DecChangeNotifyLock;
+  end;
+end;
 
 {$IFDEF WithSynDebugGutter}
 { TIDESynGutterDebugHL }
@@ -898,6 +1381,31 @@ begin
   aMarkup.Assign(FTopInfoMarkup);
 end;
 
+procedure TIDESynEditor.SetHighlightUserWordCount(AValue: Integer);
+var
+  m: TSourceSynEditMarkupHighlightAllMulti;
+begin
+  if AValue = FUserWordsList.Count then
+    exit;
+
+  while FUserWordsList.Count > AValue do begin
+    TSynEditMarkupManager(MarkupMgr).RemoveMarkUp(TSourceSynEditMarkupHighlightAllMulti(FUserWordsList[AValue]));
+    TSourceSynEditMarkupHighlightAllMulti(FUserWordsList[AValue]).Free;
+    FUserWordsList.Delete(AValue);
+  end;
+
+  while AValue > FUserWordsList.Count do begin
+    m := TSourceSynEditMarkupHighlightAllMulti.Create(self);
+    if PaintLock > 0 then
+      m.IncPaintLock;
+    m.FoldView := TSynEditFoldedView(FoldedTextBuffer);
+    if Highlighter <> nil then
+      m.WordBreakChars := Highlighter.WordBreakChars + TSynWhiteChars;
+    FUserWordsList.Add(m);
+    TSynEditMarkupManager(MarkupMgr).AddMarkUp(m);
+  end;
+end;
+
 procedure TIDESynEditor.SetShowTopInfo(AValue: boolean);
 begin
   if FShowTopInfo = AValue then Exit;
@@ -923,15 +1431,47 @@ begin
   Result := TIDESynGutterMarks(Gutter.Parts.ByClass[TIDESynGutterMarks, 0]);
 end;
 
+function TIDESynEditor.GetHighlightUserWordCount: Integer;
+begin
+  Result := FUserWordsList.Count;
+end;
+
+function TIDESynEditor.GetHighlightUserWords(AIndex: Integer): TSourceSynEditMarkupHighlightAllMulti;
+begin
+  Result := TSourceSynEditMarkupHighlightAllMulti(FUserWordsList[AIndex])
+end;
+
 function TIDESynEditor.CreateGutter(AOwner: TSynEditBase; ASide: TSynGutterSide;
   ATextDrawer: TheTextDrawer): TSynGutter;
 begin
   Result := TIDESynGutter.Create(AOwner, ASide, ATextDrawer);
 end;
 
+procedure TIDESynEditor.SetHighlighter(const Value: TSynCustomHighlighter);
+var
+  i: Integer;
+begin
+  if Value = Highlighter then begin
+    inherited SetHighlighter(Value);
+    exit
+  end;
+
+  inherited SetHighlighter(Value);
+
+  if FUserWordsList = nil then
+    exit;
+  if Highlighter <> nil then
+    for i := 0 to FUserWordsList.Count - 1 do
+      HighlightUserWords[i].WordBreakChars := Highlighter.WordBreakChars + TSynWhiteChars
+  else
+    for i := 0 to FUserWordsList.Count - 1 do
+      HighlightUserWords[i].ResetWordBreaks;
+end;
+
 constructor TIDESynEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FUserWordsList := TList.Create;
   FTemplateEdit:=TSynPluginTemplateEdit.Create(Self);
   FSyncroEdit := TSynPluginSyncroEdit.Create(Self);
   FMarkupForGutterMark := TSynEditMarkupGutterMark.Create(Self, FWordBreaker);
@@ -966,6 +1506,8 @@ end;
 
 destructor TIDESynEditor.Destroy;
 begin
+  HighlightUserWordCount := 0;
+  FreeAndNil(FUserWordsList);
   FExtraMarkupMgr.RemoveMarkUp(TSynEditMarkup(MarkupMgr));
   FreeAndNil(FTopInfoDisplay);
   FreeAndNil(FExtraMarkupMgr);

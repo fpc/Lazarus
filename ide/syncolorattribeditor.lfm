@@ -1,11 +1,11 @@
 object SynColorAttrEditor: TSynColorAttrEditor
   Left = 0
-  Height = 149
+  Height = 145
   Top = 0
   Width = 444
-  ClientHeight = 149
+  ClientHeight = 145
   ClientWidth = 444
-  LCLVersion = '1.1'
+  Constraints.MinHeight = 145
   OnResize = pnlElementAttributesResize
   TabOrder = 0
   DesignLeft = 399
@@ -50,6 +50,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
   object ForegroundColorBox: TColorBox
     AnchorSideLeft.Control = ColumnPosBevel
     AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 204
     Height = 22
@@ -69,6 +70,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Control = ColumnPosBevel
     AnchorSideTop.Control = ForegroundColorBox
     AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 204
     Height = 22
@@ -101,6 +103,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Control = ColumnPosBevel
     AnchorSideTop.Control = BackGroundColorBox
     AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 204
     Height = 22
@@ -142,7 +145,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     BevelOuter = bvNone
     ClientHeight = 40
     ClientWidth = 145
-    TabOrder = 6
+    TabOrder = 8
     object TextUnderlineRadioPanel: TPanel
       AnchorSideLeft.Control = TextUnderlineCheckBox
       AnchorSideTop.Control = TextUnderlineCheckBox
@@ -233,7 +236,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     BevelOuter = bvNone
     ClientHeight = 40
     ClientWidth = 134
-    TabOrder = 7
+    TabOrder = 9
     object TextBoldRadioPanel: TPanel
       AnchorSideLeft.Control = TextBoldCheckBox
       AnchorSideTop.Control = TextBoldCheckBox
@@ -324,7 +327,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     BevelOuter = bvNone
     ClientHeight = 40
     ClientWidth = 134
-    TabOrder = 8
+    TabOrder = 10
     object TextItalicRadioPanel: TPanel
       AnchorSideLeft.Control = TextItalicCheckBox
       AnchorSideTop.Control = TextItalicCheckBox
@@ -423,7 +426,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     OnDrawItem = FrameStyleBoxDrawItem
     ReadOnly = True
     Style = csOwnerDrawFixed
-    TabOrder = 9
+    TabOrder = 7
     Text = 'slsSolid'
   end
   object FrameEdgesBox: TComboBox
@@ -446,7 +449,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     OnDrawItem = FrameEdgesBoxDrawItem
     ReadOnly = True
     Style = csOwnerDrawFixed
-    TabOrder = 10
+    TabOrder = 6
     Text = 'Around'
   end
   object ColumnPosBevel: TPanel

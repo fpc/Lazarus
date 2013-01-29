@@ -54,7 +54,7 @@ uses
   SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
   SynBeautifier, LazSynEditText,
   SynPluginSyncronizedEditBase, SourceSynEditor, SynMacroRecorder,
-  SynExportHTML, SynHighlighterPas,
+  SynExportHTML, SynHighlighterPas, SynEditMarkup,
   // Intf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf, MacroDefIntf,
@@ -7714,6 +7714,7 @@ Begin
         // As long as SynEdit had no Handle, it had kept all those Values untouched
         CaretXY := TempEditor.EditorComponent.CaretXY;
         TopLine := TempEditor.EditorComponent.TopLine;
+        TSynEditMarkupManager(TempEditor.EditorComponent.MarkupMgr).IncPaintLock;
         TempEditor.BeginUpdate;
         TempEditor.Visible := True;
         TempEditor.EndUpdate;
@@ -7721,6 +7722,7 @@ Begin
         TempEditor.EditorComponent.LeftChar := 1;
         TempEditor.EditorComponent.CaretXY := CaretXY;
         TempEditor.EditorComponent.TopLine := TopLine;
+        TSynEditMarkupManager(TempEditor.EditorComponent.MarkupMgr).DecPaintLock;
       end;
       if (fAutoFocusLock=0) and (Screen.ActiveCustomForm=GetParentForm(Self)) and
          not(Manager.HasAutoFocusLock)

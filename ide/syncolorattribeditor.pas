@@ -400,16 +400,18 @@ begin
     // Adjust color captions
     ForeGroundUseDefaultCheckBox.Caption := dlgForecolor;
     FrameColorUseDefaultCheckBox.Caption := dlgFrameColor;
-    if (FCurrentColorScheme.AttributeByEnum[ahaModifiedLine] <> nil) and
-       (FCurHighlightElement.StoredName = FCurrentColorScheme.AttributeByEnum[ahaModifiedLine].StoredName)
-    then begin
-      ForeGroundUseDefaultCheckBox.Caption := dlgSavedLineColor;
-      FrameColorUseDefaultCheckBox.Caption := dlgUnsavedLineColor;
-    end else
-    if (FCurrentColorScheme.AttributeByEnum[ahaCodeFoldingTree] <> nil) and
-       (FCurHighlightElement.StoredName = FCurrentColorScheme.AttributeByEnum[ahaCodeFoldingTree].StoredName)
-    then begin
-      FrameColorUseDefaultCheckBox.Caption := dlgGutterCollapsedColor;
+    if FCurrentColorScheme <> nil then begin
+      if (FCurrentColorScheme.AttributeByEnum[ahaModifiedLine] <> nil) and
+         (FCurHighlightElement.StoredName = FCurrentColorScheme.AttributeByEnum[ahaModifiedLine].StoredName)
+      then begin
+        ForeGroundUseDefaultCheckBox.Caption := dlgSavedLineColor;
+        FrameColorUseDefaultCheckBox.Caption := dlgUnsavedLineColor;
+      end else
+      if (FCurrentColorScheme.AttributeByEnum[ahaCodeFoldingTree] <> nil) and
+         (FCurHighlightElement.StoredName = FCurrentColorScheme.AttributeByEnum[ahaCodeFoldingTree].StoredName)
+      then begin
+        FrameColorUseDefaultCheckBox.Caption := dlgGutterCollapsedColor;
+      end;
     end;
 
     if FCurHighlightElement.Group = agnDefault then begin

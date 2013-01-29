@@ -1676,6 +1676,36 @@ resourcestring
   lisAutomaticFeatures = 'Completion and Hints';
   lisAutoMarkup = 'Markup and Matches';
 
+  dlgMarkupUserDefined = 'User defined words';
+  dlgMarkupUserDefinedNoLists = 'No lists';
+  dlgMarkupUserDefinedNoListsSel = 'select ...';
+  dlgMarkupUserDefinedNewName = 'New list';
+  dlgMarkupUserDefinedListNew = 'Add list';
+  dlgMarkupUserDefinedListDel = 'delete list';
+  dlgMarkupUserDefinedPageMain = 'Main settings';
+  dlgMarkupUserDefinedPageKeys = 'Key Settings';
+  dlgMarkupUserDefinedMatchCase = 'Casesensitive';
+  dlgMarkupUserDefinedMatchStartBound = 'Wordbound at start';
+  dlgMarkupUserDefinedMatchEndBound = 'Wordbound at end';
+  dlgMarkupUserDefinedDivKeyAdd = 'Add Word or Term';
+  dlgMarkupUserDefinedDivKeyRemove = 'Remove Word or Term';
+  dlgMarkupUserDefinedDivKeyToggle = 'Toggle Word or Term';
+  dlgMarkupUserDefinedDelCaption = 'Delete';
+  dlgMarkupUserDefinedDelPrompt = 'Delete list "%s"?';
+  dlgMarkupUserDefinedListName = 'Name';
+  dlgMarkupUserDefinedNewByKeyOpts = 'Settings for terms added by key';
+  dlgMarkupUserDefinedNewByKeyLen = 'Ignore bounds for terms longer than';
+  dlgMarkupUserDefinedNewByKeyLenWord = 'current words';
+  dlgMarkupUserDefinedNewByKeyLenSelect = 'selection';
+  dlgMarkupUserDefinedNewByKeySmartSelect = 'Smart match selection bounds';
+  dlgMarkupUserDefinedDuplicate = 'Duplicate Term';
+  dlgMarkupUserDefinedDuplicateMsg = 'The term %s already exists. Duplicates be removed when the list is saved.';
+
+  lisUserDefinedMarkupKeyGroup = 'User defined word markup';
+  lisUserDefinedMarkupKeyAdd = 'Add to list "%s"';
+  lisUserDefinedMarkupKeyRemove = 'Remove from list "%s"';
+  lisUserDefinedMarkupKeyToggle = 'Toggle on list "%s"';
+
   dlgMultiWinOptions = 'Pages and Windows';
   dlgMultiWinTabGroup = 'Notebook Tabs';
   dlgMultiWinAccessGroup = 'Find Editor for Jump Targets';

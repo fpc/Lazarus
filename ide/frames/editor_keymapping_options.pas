@@ -65,7 +65,7 @@ type
     procedure PopupMenu1Popup(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
-    EditingKeyMap: TKeyCommandRelationList;
+    FEditingKeyMap: TKeyCommandRelationList;
     KeyMapKeyFilter: TIDEShortCut;
     fModified: Boolean;
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
@@ -86,6 +86,8 @@ type
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
     procedure SelectByIdeCommand(ACmd: word);
+    procedure UpdateTree;
+    property EditingKeyMap: TKeyCommandRelationList read FEditingKeyMap;
   end;
 
 implementation
@@ -164,7 +166,7 @@ end;
 constructor TEditorKeymappingOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  EditingKeyMap := TKeyCommandRelationList.Create;
+  FEditingKeyMap := TKeyCommandRelationList.Create;
   EditButton.Enabled:=false;
   ClearButton.Enabled:=false;
   fModified:=False;
@@ -172,7 +174,7 @@ end;
 
 destructor TEditorKeymappingOptionsFrame.Destroy;
 begin
-  EditingKeyMap.Free;
+  FEditingKeyMap.Free;
   inherited Destroy;
 end;
 
@@ -183,7 +185,7 @@ begin
   NewScheme := EditorOpts.KeyMappingScheme;
   if ShowChooseKeySchemeDialog(NewScheme) = mrOk then begin
     EditorOpts.KeyMappingScheme := NewScheme;
-    EditingKeyMap.LoadScheme(NewScheme);
+    FEditingKeyMap.LoadScheme(NewScheme);
     FillKeyMappingTreeView;
     fModified:=False;
     UpdateSchemeLabel;
@@ -209,7 +211,7 @@ var
 begin
   Protocol := TStringList.Create;
   try
-    ErrorCount := FindKeymapConflicts(EditingKeyMap, Protocol, Index1, Index2);
+    ErrorCount := FindKeymapConflicts(FEditingKeyMap, Protocol, Index1, Index2);
     if ErrorCount > 0 then
     begin
       KeyMapErrorsForm := TKeyMapErrorsForm.Create(nil);
@@ -367,19 +369,19 @@ var
   i: integer;
 begin
   with AOptions as TEditorOptions do
-    EditingKeyMap.Assign(KeyMap);
+    FEditingKeyMap.Assign(KeyMap);
   FillKeyMappingTreeView;
   UpdateSchemeLabel;
   with GeneralPage do
     for i := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[i] <> nil then
-        EditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
+        FEditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
 end;
 
 procedure TEditorKeymappingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TEditorOptions do
-    KeyMap.Assign(EditingKeyMap);
+    KeyMap.Assign(FEditingKeyMap);
 end;
 
 class function TEditorKeymappingOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
@@ -401,9 +403,9 @@ begin
   begin
     BeginUpdate;
     CategoryNodeIndex:=0;
-    for i := 0 to EditingKeyMap.CategoryCount - 1 do
+    for i := 0 to FEditingKeyMap.CategoryCount - 1 do
     begin
-      CurCategory := EditingKeyMap.Categories[i];
+      CurCategory := FEditingKeyMap.Categories[i];
       if Items.TopLvlCount > CategoryNodeIndex then
       begin
         NewCategoryNode := Items.TopLvlItems[CategoryNodeIndex];
@@ -445,7 +447,7 @@ end;
 
 function TEditorKeymappingOptionsFrame.KeyMappingRelationToString(Index: Integer): String;
 begin
-  Result := KeyMappingRelationToString(EditingKeyMap.Relations[Index]);
+  Result := KeyMappingRelationToString(FEditingKeyMap.Relations[Index]);
 end;
 
 function TEditorKeymappingOptionsFrame.KeyMappingRelationToString(
@@ -519,14 +521,19 @@ begin
   end;
 end;
 
+procedure TEditorKeymappingOptionsFrame.UpdateTree;
+begin
+  FillKeyMappingTreeView;
+end;
+
 procedure TEditorKeymappingOptionsFrame.EditCommandMapping(ANode: TTreeNode);
 var
   i: integer;
   ARelation: TKeyCommandRelation;
 begin
   ARelation := TKeyCommandRelation(ANode.Data);
-  i := EditingKeyMap.IndexOf(ARelation);
-  if (i >= 0) and (ShowKeyMappingEditForm(i, EditingKeyMap) = mrOk) then
+  i := FEditingKeyMap.IndexOf(ARelation);
+  if (i >= 0) and (ShowKeyMappingEditForm(i, FEditingKeyMap) = mrOk) then
   begin
     FillKeyMappingTreeView;
     fModified:=True;
@@ -534,7 +541,7 @@ begin
     with GeneralPage do
       for i := Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[i] <> nil then
-          EditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
+          FEditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
   end;
 end;
 
@@ -544,8 +551,8 @@ var
   ARelation: TKeyCommandRelation;
 begin
   ARelation := TKeyCommandRelation(ANode.Data);
-  i := EditingKeyMap.IndexOf(ARelation);
-  if (i >= 0) {and (ShowKeyMappingEditForm(i, EditingKeyMap) = mrOk)} then
+  i := FEditingKeyMap.IndexOf(ARelation);
+  if (i >= 0) {and (ShowKeyMappingEditForm(i, FEditingKeyMap) = mrOk)} then
   begin
     ARelation.ShortcutA := IDEShortCut(VK_UNKNOWN, []);
     ARelation.ShortcutB := IDEShortCut(VK_UNKNOWN, []);
@@ -555,7 +562,7 @@ begin
     with GeneralPage do
       for i := Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[i] <> nil then
-          EditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
+          FEditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
   end;
 end;
 
