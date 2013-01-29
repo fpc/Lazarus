@@ -341,6 +341,43 @@ begin
                +'  except|'+LineEnding
                +'  end;'+LineEnding
                +'end.');
+{ ToDo:
+  if True then
+    i:=1
+  else
+    if True then
+      if True then
+        i:=2
+      else
+        i:=3
+    else
+      i:=4;
+
+  if True then Caption:='retz'
+  else if False then Caption:='qretz';
+
+  try
+
+  except
+    on e: Exception do begin
+      fErrorMsg:=e.Message;
+    end;
+    else begin
+      fErrorMsg:='Error';
+    end;
+    MyResult:=mrAbort;
+  end;
+  try
+    try
+    finally
+
+    end;
+  except
+    on E: Exception do begin
+
+    end;
+  end;
+}
 end;
 
 procedure TTestCodetoolsCompleteBlock.TestCompleteBlockAsm;
