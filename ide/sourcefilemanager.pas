@@ -4056,6 +4056,8 @@ begin
                       OpenFlags,
                       {$IFDEF EnableNestedComponentsWithoutLFM}
                       false,
+                      {$ELSE}
+                      true,
                       {$ENDIF}
                       NestedClass,NestedUnitInfo,AncestorClass);
             if Result<>mrOk then begin
