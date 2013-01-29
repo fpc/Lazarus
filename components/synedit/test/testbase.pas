@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, fpcunit, SynEdit, LCLType, LCLProc, math,
-  SynEditTypes, SynEditPointClasses, SynEditKeyCmds, LazSynTextArea, Clipbrd;
+  SynEditTypes, SynEditPointClasses, SynEditKeyCmds, LazSynTextArea, SynEditMarkup, Clipbrd;
 
 type
 
@@ -23,6 +23,8 @@ type
   { TTestSynEdit }
 
   TTestSynEdit = class(TSynEdit)
+  private
+    function TestGetMarkupMgr: TSynEditMarkupManager;
   public
     procedure TestKeyPress(Key: Word; Shift: TShiftState);
     procedure TestTypeText(ALogCaretX, ALogCaretY: Integer; Input: String; WithSimulatedPaint: Boolean = False);
@@ -38,6 +40,7 @@ type
     property TextView; // foldedview
     property CaretObj: TSynEditCaret read GetCaretObj;
     property TextArea: TLazSynTextArea read FTextArea;
+    property MarkupMgr: TSynEditMarkupManager read TestGetMarkupMgr;
   end;
 
   { TTestBase }
@@ -134,6 +137,11 @@ begin
 end;
 
 { TTestSynEdit }
+
+function TTestSynEdit.TestGetMarkupMgr: TSynEditMarkupManager;
+begin
+  Result := TSynEditMarkupManager(inherited MarkupMgr);
+end;
 
 procedure TTestSynEdit.TestKeyPress(Key: Word; Shift: TShiftState);
 var

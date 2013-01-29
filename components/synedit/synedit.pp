@@ -673,7 +673,6 @@ type
     procedure SetGutter(const Value: TSynGutter);
     procedure SetRightGutter(const AValue: TSynGutter);
     procedure SetHideSelection(const Value: boolean);
-    procedure SetHighlighter(const Value: TSynCustomHighlighter);
     procedure RemoveHooksFromHighlighter;
     procedure SetInsertCaret(const Value: TSynEditCaretType);
     procedure SetInsertMode(const Value: boolean);
@@ -781,6 +780,7 @@ type
                                  AnInfo: TSynEditMouseActionInfo): Boolean;
 
   protected
+    procedure SetHighlighter(const Value: TSynCustomHighlighter); virtual;
     procedure SetVisible(Value: Boolean); override;
     procedure SetColor(Value: TColor); override;
     procedure DragOver(Source: TObject; X, Y: Integer;
@@ -2209,9 +2209,9 @@ begin
     FInvalidateRect := Rect(-1, -1, -2, -2);
     FOldTopView := TopView;
     FLastTextChangeStamp := TSynEditStringList(FLines).TextChangeStamp;
+    FMarkupManager.IncPaintLock;
   end;
   inc(FPaintLock);
-  FMarkupManager.IncPaintLock;
   FFoldedLinesView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
   FTrimmedLinesView.Lock; // Lock before caret
   FBlockSelection.Lock;
@@ -2246,7 +2246,6 @@ begin
     FBlockSelection.Unlock;
     FTrimmedLinesView.UnLock; // Must be unlocked after caret // May Change lines
     FFoldedLinesView.UnLock;  // after ScanFrom, but before UpdateCaret
-    FMarkupManager.DecPaintLock;
     Dec(FPaintLock);
     if (FPaintLock = 0) and HandleAllocated then begin
       ScrollAfterTopLineChanged;
@@ -2267,6 +2266,7 @@ begin
                                    // Todo: Markup can do invalidation, should be before ScrollAfterTopLineChanged;
     end;
     if (FPaintLock = 0) then begin
+      FMarkupManager.DecPaintLock;
       FBlockSelection.AutoExtend := False;
       if fStatusChanges <> [] then
         DoOnStatusChange(fStatusChanges);

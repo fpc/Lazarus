@@ -419,7 +419,8 @@ end;
 
 procedure TSynEditMarkup.DecPaintLock;
 begin
-  dec(FPaintLock);
+  if FPaintLock > 0 then
+    dec(FPaintLock);
 end;
 
 procedure TSynEditMarkup.PrepareMarkupForRow(aRow: Integer);
@@ -463,8 +464,7 @@ begin
     TSynEditMarkup(fMarkUpList[i]).DecPaintLock;
 end;
 
-procedure TSynEditMarkupManager.AddMarkUp(aMarkUp: TSynEditMarkup;
-  AsFirst: Boolean);
+procedure TSynEditMarkupManager.AddMarkUp(aMarkUp: TSynEditMarkup; AsFirst: Boolean);
 begin
   if AsFirst then
     fMarkUpList.Insert(0, aMarkUp)
