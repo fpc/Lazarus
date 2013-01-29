@@ -1492,14 +1492,14 @@ begin
     end;
 end;
 
-function frGetExportFilterIndex(ClassRef: TfrExportFilterClass; const AFilterExt:string): Integer;
+function frGetExportFilterIndex(AClassRef: TfrExportFilterClass; const AFilterExt:string): Integer;
 var
   i: Integer;
 begin
   result := -1;
   for i:=0 to Length(frFilters)-1 do
   with frFilters[i] do
-    if (ClassRef=ClassRef) and (FilterExt=AFilterExt) then
+    if (ClassRef=AClassRef) and (FilterExt=AFilterExt) then
     begin
       result := i;
       break;
