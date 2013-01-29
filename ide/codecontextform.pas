@@ -41,7 +41,7 @@ uses
   Graphics, Dialogs, LCLType, LCLIntf, Themes, Buttons, SynEdit, SynEditKeyCmds,
   BasicCodeTools, KeywordFuncLists, LinkScanner, CodeCache, FindDeclarationTool,
   IdentCompletionTool, CodeTree, CodeAtom, PascalParserTool, CodeToolManager,
-  SourceChanger, SrcEditorIntf, IDEProcs, LazarusIDEStrConsts;
+  SourceChanger, SrcEditorIntf, LazIDEIntf, IDEProcs, LazarusIDEStrConsts;
 
 type
 
@@ -126,7 +126,7 @@ begin
       (CodeContexts = nil) or (CodeContexts.Count = 0) then
       Exit;
     if CodeContextFrm = nil then
-      CodeContextFrm := TCodeContextFrm.Create(nil);
+      CodeContextFrm := TCodeContextFrm.Create(LazarusIDE.OwningComponent);
     CodeContextFrm.SetCodeContexts(CodeContexts);
 
     CodeContextFrm.Visible := True;
@@ -1158,9 +1158,6 @@ begin
     CodeContextFrm:=nil;
   inherited Destroy;
 end;
-
-finalization
-  FreeThenNil(CodeContextFrm);
 
 end.
 
