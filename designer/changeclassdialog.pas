@@ -269,6 +269,8 @@ var
 
 begin
   Result:=mrCancel;
+  if NewClass = nil then
+    exit;
   if CompareText(APersistent.ClassName,NewClass.ClassName)=0 then begin
     Result:=mrOk;
     exit;
