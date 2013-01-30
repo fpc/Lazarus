@@ -324,6 +324,7 @@ type
 
     procedure DoMatchFound(MatchEnd: PChar; MatchIdx: Integer; var IsMatch: Boolean;
       var StopSeach: Boolean);
+    procedure SetTerms(AValue: TSynSearchTermDict);
     procedure SetWordBreakChars(AValue: TSynIdentChars);
   protected
     procedure DoTermsChanged(Sender: TObject);
@@ -348,7 +349,7 @@ type
     procedure DeleteSearchTerm(AIndex: Integer);
 
     property WordBreakChars: TSynIdentChars read FWordBreakChars write SetWordBreakChars;
-    property Terms: TSynSearchTermDict read FTermDict;
+    property Terms: TSynSearchTermDict read FTermDict write SetTerms;
   end;
 
   { TSynEditMarkupHighlightAllCaret }
@@ -1138,6 +1139,24 @@ begin
     FBackwardReplace := True;
 end;
 
+procedure TSynEditMarkupHighlightAllMulti.SetTerms(AValue: TSynSearchTermDict);
+begin
+  if FTermDict = AValue then Exit;
+
+  if FTermDict <> nil then begin
+    FTermDict.UnRegisterChangedHandler(@DoTermsChanged);
+    FTermDict.ReleaseReference;
+  end;
+
+  if AValue = nil then
+    FTermDict := CreateTermsList
+  else
+    FTermDict := AValue;
+
+  FTermDict.AddReference;
+  FTermDict.RegisterChangedHandler(@DoTermsChanged);
+end;
+
 procedure TSynEditMarkupHighlightAllMulti.SetWordBreakChars(AValue: TSynIdentChars);
 begin
   if FWordBreakChars = AValue then Exit;
@@ -1246,15 +1265,14 @@ end;
 constructor TSynEditMarkupHighlightAllMulti.Create(ASynEdit: TSynEditBase);
 begin
   inherited Create(ASynEdit);
-  FTermDict := CreateTermsList;
-  FTermDict.AddReference;
-  FTermDict.RegisterChangedHandler(@DoTermsChanged);
-  ResetWordBreaks
+  Terms := CreateTermsList;
+  ResetWordBreaks;
 end;
 
 destructor TSynEditMarkupHighlightAllMulti.Destroy;
 begin
   inherited Destroy;
+  FTermDict.UnRegisterChangedHandler(@DoTermsChanged);
   ReleaseRefAndNil(FTermDict);
 end;
 

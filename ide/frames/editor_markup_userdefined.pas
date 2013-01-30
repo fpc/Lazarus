@@ -41,6 +41,7 @@ type
     cbKeyBoundStart: TCheckBox;
     cbKeyBoundEnd: TCheckBox;
     cbSmartSelectBound: TCheckBox;
+    cbGlobalList: TCheckBox;
     divKeyAdd: TDividerBevel;
     divKeyRemove: TDividerBevel;
     divKeyToggle: TDividerBevel;
@@ -267,30 +268,8 @@ var
 begin
   if (FUpdatingDisplay > 0) or (FUserWords = nil) then exit;
 
-  i := PtrInt(WordList.Objects[0, FSelectedRow])-1;
-  if (i < 0) or (i >= FUserWords.Count) then
-    exit;
-
   if WordList.EditorMode then
     WordList.EditingDone;
-
-  if Sender = cbCaseSense then begin
-    FUserWords.Items[i].MatchCase := cbCaseSense.Checked;
-    CheckDuplicate(FSelectedRow);
-  end;
-
-  if (Sender = cbMatchStartBound) or (Sender = cbMatchEndBound) then begin
-    if cbMatchStartBound.Checked then begin
-      if cbMatchEndBound.Checked
-      then FUserWords.Items[i].MatchWordBounds := soBothBounds
-      else FUserWords.Items[i].MatchWordBounds := soBoundsAtStart;
-    end
-    else begin
-      if cbMatchEndBound.Checked
-      then FUserWords.Items[i].MatchWordBounds := soBoundsAtEnd
-      else FUserWords.Items[i].MatchWordBounds := soNoBounds;
-    end;
-  end;
 
   if Sender = cbKeyCase then begin
     FUserWords.KeyAddCase := cbKeyCase.Checked;
@@ -323,6 +302,33 @@ begin
 
   if Sender = edSelectMin then begin
     FUserWords.KeyAddSelectBoundMaxLen := edSelectMin.Value;
+  end;
+
+  if Sender = cbGlobalList then
+    FUserWords.GlobalList := cbGlobalList.Checked;
+
+
+  // Related to current word
+  i := PtrInt(WordList.Objects[0, FSelectedRow])-1;
+  if (i < 0) or (i >= FUserWords.Count) then
+    exit;
+
+  if Sender = cbCaseSense then begin
+    FUserWords.Items[i].MatchCase := cbCaseSense.Checked;
+    CheckDuplicate(FSelectedRow);
+  end;
+
+  if (Sender = cbMatchStartBound) or (Sender = cbMatchEndBound) then begin
+    if cbMatchStartBound.Checked then begin
+      if cbMatchEndBound.Checked
+      then FUserWords.Items[i].MatchWordBounds := soBothBounds
+      else FUserWords.Items[i].MatchWordBounds := soBoundsAtStart;
+    end
+    else begin
+      if cbMatchEndBound.Checked
+      then FUserWords.Items[i].MatchWordBounds := soBoundsAtEnd
+      else FUserWords.Items[i].MatchWordBounds := soNoBounds;
+    end;
   end;
 
 end;
@@ -607,11 +613,12 @@ begin
     cbKeyBoundStart.Checked    := FUserWords.KeyAddTermBounds in [soBoundsAtStart, soBothBounds];
     cbKeyBoundEnd.Checked      := FUserWords.KeyAddTermBounds in [soBoundsAtEnd, soBothBounds];
     cbSmartSelectBound.Checked := FUserWords.KeyAddSelectSmart;
+    cbGlobalList.Checked       := FUserWords.GlobalList;
     edWordMin.Value   := FUserWords.KeyAddWordBoundMaxLen;
     edSelectMin.Value := FUserWords.KeyAddSelectBoundMaxLen;
     cbSmartSelectBound.Enabled := FUserWords.KeyAddTermBounds <> soNoBounds;
-    edWordMin.Enabled   := FUserWords.KeyAddTermBounds <> soNoBounds;
-    edSelectMin.Enabled := FUserWords.KeyAddTermBounds <> soNoBounds;
+    edWordMin.Enabled          := FUserWords.KeyAddTermBounds <> soNoBounds;
+    edSelectMin.Enabled        := FUserWords.KeyAddTermBounds <> soNoBounds;
   finally
     dec(FUpdatingDisplay)
   end;
@@ -676,6 +683,7 @@ begin
   lbWordMin.Caption          := dlgMarkupUserDefinedNewByKeyLenWord;
   lbSelectMin.Caption        := dlgMarkupUserDefinedNewByKeyLenSelect;
   cbSmartSelectBound.Caption := dlgMarkupUserDefinedNewByKeySmartSelect;
+  cbGlobalList.Caption       := dlgMarkupUserDefinedGlobalList;
 
   FKeyOptFrame := TEditorKeymappingOptionsFrame(ADialog.FindEditor(TEditorKeymappingOptionsFrame));
   FUserWordsList.KeyCommandList := FKeyOptFrame.EditingKeyMap;

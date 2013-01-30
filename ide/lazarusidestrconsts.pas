@@ -1698,6 +1698,7 @@ resourcestring
   dlgMarkupUserDefinedNewByKeyLenWord = 'current word';
   dlgMarkupUserDefinedNewByKeyLenSelect = 'selection';
   dlgMarkupUserDefinedNewByKeySmartSelect = 'Smart match selection bounds';
+  dlgMarkupUserDefinedGlobalList = 'Add/Remove to all editors';
   dlgMarkupUserDefinedDuplicate = 'Duplicate Term';
   dlgMarkupUserDefinedDuplicateMsg = 'The term %s already exists. Duplicates will be removed when the list is saved.';
 

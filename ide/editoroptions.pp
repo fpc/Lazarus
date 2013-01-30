@@ -42,7 +42,7 @@ uses
   // RTL, FCL
   Classes, SysUtils, resource,
   // LCL
-  Controls, ExtCtrls, Graphics, LCLProc, FileUtil, Laz2_XMLCfg, lazutf8classes,
+  Controls, ExtCtrls, Graphics, LCLProc, FileUtil, Laz2_XMLCfg, lazutf8classes, LazClasses,
   LResources, Forms, Dialogs, ComCtrls, LCLType,
   // Synedit
   SynEdit, SynEditAutoComplete, SynEditKeyCmds, SynEditTypes,
@@ -1175,6 +1175,8 @@ type
 
   TEditorUserDefinedWords = class(TSourceSynSearchTermList)
   private
+    FGlobalList: Boolean;
+    FGlobalTermsCache: TSynSearchTermDict;
     FId: String; // Used for TIDECommand.Name
     FKeyAddCase: Boolean;
     FKeyAddSelectBoundMaxLen: Integer;
@@ -1187,9 +1189,12 @@ type
     FAddTermCmd: TIDECommand;
     FRemoveTermCmd: TIDECommand;
     FToggleTermCmd: TIDECommand;
+    procedure SetGlobalTermsCache(AValue: TSynSearchTermDict);
     procedure SetName(AValue: String);
     procedure UpdateIdeCommands;
     procedure ClearIdeCommands;
+  protected
+    property GlobalTermsCache: TSynSearchTermDict read FGlobalTermsCache write SetGlobalTermsCache;
   public
     constructor Create(AList: TEditorUserDefinedWordsList);
     destructor Destroy; override;
@@ -1200,6 +1205,7 @@ type
 
     property ColorAttr: TColorSchemeAttribute read FColorAttr;
 
+    function HasKeyAssigned: Boolean;
     property AddTermCmd: TIDECommand read FAddTermCmd;
     property RemoveTermCmd: TIDECommand read FRemoveTermCmd;
     property ToggleTermCmd: TIDECommand read FToggleTermCmd;
@@ -1213,6 +1219,7 @@ type
     property KeyAddWordBoundMaxLen: Integer read FKeyAddWordBoundMaxLen write FKeyAddWordBoundMaxLen;
     property KeyAddSelectBoundMaxLen: Integer read FKeyAddSelectBoundMaxLen write FKeyAddSelectBoundMaxLen;
     property KeyAddSelectSmart: Boolean read FKeyAddSelectSmart write FKeyAddSelectSmart;
+    property GlobalList: Boolean read FGlobalList write FGlobalList;
   end;
 
   { TEditorUserDefinedWordsList }
@@ -1817,6 +1824,19 @@ begin
   UpdateIdeCommands;
 end;
 
+procedure TEditorUserDefinedWords.SetGlobalTermsCache(AValue: TSynSearchTermDict);
+begin
+  if FGlobalTermsCache = AValue then Exit;
+
+  if FGlobalTermsCache <> nil then
+    FGlobalTermsCache.ReleaseReference;
+
+  FGlobalTermsCache := AValue;
+
+  if FGlobalTermsCache <> nil then
+    FGlobalTermsCache.AddReference;
+end;
+
 procedure TEditorUserDefinedWords.UpdateIdeCommands;
 var
   Keys: TKeyCommandRelationList;
@@ -1925,6 +1945,7 @@ end;
 
 destructor TEditorUserDefinedWords.Destroy;
 begin
+  ReleaseRefAndNil(FGlobalTermsCache);
   Clear;
   FreeAndNil(FColorAttr);
   ClearIdeCommands;
@@ -1938,8 +1959,9 @@ begin
     exit;
   ClearIdeCommands;
 
-  FId := TEditorUserDefinedWords(Source).FId;
-  FName := TEditorUserDefinedWords(Source).FName;
+  FId                      := TEditorUserDefinedWords(Source).FId;
+  FName                    := TEditorUserDefinedWords(Source).FName;
+  FGlobalList              := TEditorUserDefinedWords(Source).FGlobalList;
   FKeyAddCase              := TEditorUserDefinedWords(Source).FKeyAddCase;
   FKeyAddSelectBoundMaxLen := TEditorUserDefinedWords(Source).FKeyAddSelectBoundMaxLen;
   FKeyAddSelectSmart       := TEditorUserDefinedWords(Source).FKeyAddSelectSmart;
@@ -2091,6 +2113,16 @@ begin
     Store(Path + 'ToggleKeyB/', FToggleTermCmd.ShortcutB);
   end;
 
+end;
+
+function TEditorUserDefinedWords.HasKeyAssigned: Boolean;
+begin
+  Result := (FAddTermCmd.ShortcutA.Key1 <> VK_UNKNOWN) or
+            (FAddTermCmd.ShortcutB.Key1 <> VK_UNKNOWN) or
+            (FRemoveTermCmd.ShortcutA.Key1 <> VK_UNKNOWN) or
+            (FRemoveTermCmd.ShortcutB.Key1 <> VK_UNKNOWN) or
+            (FToggleTermCmd.ShortcutA.Key1 <> VK_UNKNOWN) or
+            (FToggleTermCmd.ShortcutB.Key1 <> VK_UNKNOWN);
 end;
 
 { TSynEditMouseActionKeyCmdHelper }
@@ -5276,6 +5308,7 @@ var
   b: TSynBeautifierPascal;
   i: Integer;
   mw: TSourceSynEditMarkupHighlightAllMulti;
+  TermsConf: TEditorUserDefinedWords;
 begin
   // general options
   ASynEdit.BeginUpdate(False);
@@ -5351,22 +5384,37 @@ begin
     if ASynEdit is TIDESynEditor then begin
       TIDESynEditor(ASynEdit).HighlightUserWordCount := UserDefinedColors.Count;
       for i := 0 to UserDefinedColors.Count - 1 do begin
+        TermsConf := UserDefinedColors.Lists[i];
         mw := TIDESynEditor(ASynEdit).HighlightUserWords[i];
-        mw.MarkupInfo.Assign(UserDefinedColors.Lists[i].ColorAttr);
+        if TermsConf.GlobalList or (not TermsConf.HasKeyAssigned)
+        then begin
+          if TermsConf.GlobalTermsCache = nil then
+            TermsConf.GlobalTermsCache := mw.Terms
+          else
+            mw.Terms := TermsConf.GlobalTermsCache;
+        end
+        else begin
+          if mw.Terms = TermsConf.GlobalTermsCache then
+            mw.Terms := nil;
+          if TermsConf.GlobalTermsCache <> nil then
+            TermsConf.GlobalTermsCache.Clear;
+        end;
+
+        mw.MarkupInfo.Assign(TermsConf.ColorAttr);
         mw.Clear;
-        mw.Terms.Assign(UserDefinedColors.Lists[i]);
+        mw.Terms.Assign(TermsConf);
         mw.RestoreLocalChanges;
-        if UserDefinedColors.Lists[i].AddTermCmd <> nil then
-          mw.AddTermCmd := UserDefinedColors.Lists[i].AddTermCmd.Command;
-        if UserDefinedColors.Lists[i].RemoveTermCmd <> nil then
-          mw.RemoveTermCmd := UserDefinedColors.Lists[i].RemoveTermCmd.Command;
-        if UserDefinedColors.Lists[i].ToggleTermCmd <> nil then
-          mw.ToggleTermCmd := UserDefinedColors.Lists[i].ToggleTermCmd.Command;
-        mw.KeyAddTermBounds        := UserDefinedColors.Lists[i].KeyAddTermBounds;
-        mw.KeyAddCase              := UserDefinedColors.Lists[i].KeyAddCase;
-        mw.KeyAddWordBoundMaxLen   := UserDefinedColors.Lists[i].KeyAddWordBoundMaxLen;
-        mw.KeyAddSelectBoundMaxLen := UserDefinedColors.Lists[i].KeyAddSelectBoundMaxLen;
-        mw.KeyAddSelectSmart       := UserDefinedColors.Lists[i].KeyAddSelectSmart;
+        if TermsConf.AddTermCmd <> nil then
+          mw.AddTermCmd := TermsConf.AddTermCmd.Command;
+        if TermsConf.RemoveTermCmd <> nil then
+          mw.RemoveTermCmd := TermsConf.RemoveTermCmd.Command;
+        if TermsConf.ToggleTermCmd <> nil then
+          mw.ToggleTermCmd := TermsConf.ToggleTermCmd.Command;
+        mw.KeyAddTermBounds        := TermsConf.KeyAddTermBounds;
+        mw.KeyAddCase              := TermsConf.KeyAddCase;
+        mw.KeyAddWordBoundMaxLen   := TermsConf.KeyAddWordBoundMaxLen;
+        mw.KeyAddSelectBoundMaxLen := TermsConf.KeyAddSelectBoundMaxLen;
+        mw.KeyAddSelectSmart       := TermsConf.KeyAddSelectSmart;
       end;
     end;
 
