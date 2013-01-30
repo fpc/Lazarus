@@ -58,6 +58,7 @@ type
     function CreateProjectGroup(AProject: TLazProject): TUGGroup;
     function CreatePackageGroup(APackage: TIDEPackage): TUGGroup;
     procedure CreateFPCSrcGroups;
+    procedure GuessGroupOfUnits;
     procedure AddStartAndTargetUnits;
     procedure UpdateAll;
     procedure UpdateCurUnitDiagram;
@@ -200,6 +201,7 @@ begin
   for i:=0 to PackageEditingInterface.GetPackageCount-1 do
     CreatePackageGroup(PackageEditingInterface.GetPackages(i));
   CreateFPCSrcGroups;
+  GuessGroupOfUnits;
 end;
 
 function TUnitDependenciesDialog.CreateProjectGroup(AProject: TLazProject
@@ -214,8 +216,10 @@ begin
   for i:=0 to AProject.FileCount-1 do begin
     Filename:=AProject.Files[i].Filename;
     CurUnit:=UsesGraph.GetUnit(Filename,false);
-    if CurUnit is TUGGroupUnit then
+    if CurUnit is TUGGroupUnit then begin
+      if TUGGroupUnit(CurUnit).Group<>nil then continue;
       Result.AddUnit(TUGGroupUnit(CurUnit));
+    end;
   end;
 end;
 
@@ -231,8 +235,10 @@ begin
   for i:=0 to APackage.FileCount-1 do begin
     Filename:=APackage.Files[i].GetFullFilename;
     CurUnit:=UsesGraph.GetUnit(Filename,false);
-    if CurUnit is TUGGroupUnit then
+    if CurUnit is TUGGroupUnit then begin
+      if TUGGroupUnit(CurUnit).Group<>nil then continue;
       Result.AddUnit(TUGGroupUnit(CurUnit));
+    end;
   end;
 end;
 
@@ -249,13 +255,29 @@ begin
   Node:=UsesGraph.FilesTree.FindLowest;
   while Node<>nil do begin
     CurUnit:=TUGGroupUnit(Node.Data);
-    if CompareFilenames(FPCSrcDir,LeftStr(CurUnit.Filename,length(FPCSrcDir)))=0
+    if (TUGGroupUnit(CurUnit).Group=nil)
+    and (CompareFilenames(FPCSrcDir,LeftStr(CurUnit.Filename,length(FPCSrcDir)))=0)
     then begin
       // a unit in the FPC sources
       Directory:=ExtractFilePath(CurUnit.Filename);
       Directory:=copy(Directory,length(FPCSrcDir)+1,length(Directory));
       Grp:=Groups.GetGroup(GroupPrefixFPCSrc+Directory,true);
-      Grp.AddUnit(CurUnit);
+      Grp.AddUnit(TUGGroupUnit(CurUnit));
+    end;
+    Node:=UsesGraph.FilesTree.FindSuccessor(Node);
+  end;
+end;
+
+procedure TUnitDependenciesDialog.GuessGroupOfUnits;
+var
+  Node: TAVLTreeNode;
+  CurUnit: TUGGroupUnit;
+begin
+  Node:=UsesGraph.FilesTree.FindLowest;
+  while Node<>nil do begin
+    CurUnit:=TUGGroupUnit(Node.Data);
+    if TUGGroupUnit(CurUnit).Group=nil then begin
+
     end;
     Node:=UsesGraph.FilesTree.FindSuccessor(Node);
   end;
