@@ -89,7 +89,7 @@ type
     function TitleIsStored: Boolean; virtual;
 
   public
-    function AxisToGraph(const APoint: TDoublePoint): TDoublePoint;
+    function AxisToGraph(const APoint: TDoublePoint): TDoublePoint; inline;
     function AxisToGraphX(AX: Double): Double; override;
     function AxisToGraphY(AY: Double): Double; override;
     function GetAxisX: TChartAxis;
@@ -242,26 +242,28 @@ type
     FUpBound: Integer;
     FUseReticule: Boolean;
 
-  strict protected
-    procedure DrawLabels(ADrawer: IChartDrawer);
-    function GetLabelDataPoint(AIndex: Integer): TDoublePoint; virtual;
-    procedure UpdateGraphPoints(AIndex: Integer); overload; inline;
-    procedure UpdateGraphPoints(AIndex, ALo, AUp: Integer); overload;
-  protected
-    procedure AfterAdd; override;
     procedure AfterDrawPointer(
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); virtual;
+    procedure DrawLabels(ADrawer: IChartDrawer);
     procedure DrawPointers(ADrawer: IChartDrawer);
+    procedure FindExtentInterval(
+      const AExtent: TDoubleRect; AFilterByExtent: Boolean);
+    function GetLabelDataPoint(AIndex: Integer): TDoublePoint; virtual;
     procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush);
     function GetXRange(AX: Double; AIndex: Integer): Double;
     function GetZeroLevel: Double; virtual;
     function NearestXNumber(var AIndex: Integer; ADir: Integer): Double;
     procedure PrepareGraphPoints(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
-    procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
+    procedure UpdateGraphPoints(AIndex: Integer); overload; inline;
+    procedure UpdateGraphPoints(AIndex, ALo, AUp: Integer); overload;
     procedure UpdateMinXRange;
 
     property Pointer: TSeriesPointer read FPointer write SetPointer;
+  protected
+    procedure AfterAdd; override;
+    procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
+
   public
     destructor Destroy; override;
   public
@@ -993,6 +995,27 @@ begin
   end;
 end;
 
+// Find an interval of x-values intersecting the extent.
+// Requires monotonic (but not necessarily increasing) axis transformation.
+procedure TBasicPointSeries.FindExtentInterval(
+  const AExtent: TDoubleRect; AFilterByExtent: Boolean);
+var
+  axisExtent: TDoubleInterval;
+begin
+  FLoBound := 0;
+  FUpBound := Count - 1;
+  if AFilterByExtent then begin
+    with AExtent do
+      if IsRotated then
+        axisExtent := DoubleInterval(GraphToAxisY(a.Y), GraphToAxisY(b.Y))
+      else
+        axisExtent := DoubleInterval(GraphToAxisX(a.X), GraphToAxisX(b.X));
+    Source.FindBounds(axisExtent.FStart, axisExtent.FEnd, FLoBound, FUpBound);
+    FLoBound := Max(FLoBound - 1, 0);
+    FUpBound := Min(FUpBound + 1, Count - 1);
+  end;
+end;
+
 function TBasicPointSeries.GetLabelDataPoint(AIndex: Integer): TDoublePoint;
 begin
   Result := GetGraphPoint(AIndex);
@@ -1129,23 +1152,9 @@ end;
 procedure TBasicPointSeries.PrepareGraphPoints(
   const AExtent: TDoubleRect; AFilterByExtent: Boolean);
 var
-  axisExtent: TDoubleInterval;
   i: Integer;
 begin
-  // Find an interval of x-values intersecting the extent.
-  // Requires monotonic (but not necessarily increasing) axis transformation.
-  FLoBound := 0;
-  FUpBound := Count - 1;
-  if AFilterByExtent then begin
-    with AExtent do
-      if IsRotated then
-        axisExtent := DoubleInterval(GraphToAxisY(a.Y), GraphToAxisY(b.Y))
-      else
-        axisExtent := DoubleInterval(GraphToAxisX(a.X), GraphToAxisX(b.X));
-    Source.FindBounds(axisExtent.FStart, axisExtent.FEnd, FLoBound, FUpBound);
-    FLoBound := Max(FLoBound - 1, 0);
-    FUpBound := Min(FUpBound + 1, Count - 1);
-  end;
+  FindExtentInterval(AExtent, AFilterByExtent);
 
   SetLength(FGraphPoints, FUpBound - FLoBound + 1);
   if (AxisIndexX < 0) and (AxisIndexY < 0) then
