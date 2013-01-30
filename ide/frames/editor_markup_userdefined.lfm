@@ -146,7 +146,7 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
           Caption = 'lbListName'
           ParentColor = False
         end
-        object WordList: TStringGrid
+        object WordList: TColorStringGrid
           AnchorSideLeft.Control = HCenter
           AnchorSideTop.Control = PageMain
           AnchorSideRight.Control = PageMain

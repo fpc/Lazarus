@@ -14,6 +14,23 @@ uses
 
 type
 
+  { TColorStringGrid }
+
+  TColorStringGrid = class(TStringGrid)
+  private
+    FRowFontColor: Array of TColor;
+    function GetRowFontColor(AIndex: Integer): TColor;
+    procedure SetRowFontColor(AIndex: Integer; AValue: TColor);
+  protected
+    procedure PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState); override;
+    procedure ColRowDeleted(IsColumn: Boolean; index: Integer); override;
+    procedure ColRowInserted(IsColumn: boolean; index: integer); override;
+    // no exchanged or move
+    procedure SizeChanged(OldColCount, OldRowCount: Integer); override;
+  public
+    property RowFontColor[AIndex: Integer]: TColor read GetRowFontColor write SetRowFontColor;
+  end;
+
   { TEditorMarkupUserDefinedFrame }
 
   TEditorMarkupUserDefinedFrame = class(TAbstractIDEOptionsEditor)
@@ -61,7 +78,7 @@ type
     ToolButton2: TToolButton;
     tbMainPage: TToolButton;
     tbKeyPage: TToolButton;
-    WordList: TStringGrid;
+    WordList: TColorStringGrid;
     procedure edListNameEditingDone(Sender: TObject);
     procedure edListNameKeyPress(Sender: TObject; var Key: char);
     procedure KeyEditClicked(Sender: TObject);
@@ -92,7 +109,7 @@ type
     procedure UpdateTermOptions;
     procedure UpdateListDropDownFull;
     procedure UpdateListDropDownCaption;
-    procedure UpdateListDisplay;
+    procedure UpdateListDisplay(KeepDuplicates: Boolean = False);
   protected
     procedure SetVisible(Value: Boolean); override;
   public
@@ -106,6 +123,66 @@ type
   end;
 
 implementation
+
+{ TColorStringGrid }
+
+function TColorStringGrid.GetRowFontColor(AIndex: Integer): TColor;
+begin
+  assert(AIndex < Length(FRowFontColor), 'GetRowFontColor');
+  Result := FRowFontColor[AIndex];
+end;
+
+procedure TColorStringGrid.SetRowFontColor(AIndex: Integer; AValue: TColor);
+begin
+  assert(AIndex < Length(FRowFontColor), 'SetRowFontColor');
+  if FRowFontColor[AIndex] = AValue then
+    exit;
+  FRowFontColor[AIndex] := AValue;
+  Invalidate;
+end;
+
+procedure TColorStringGrid.PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState);
+begin
+  assert(aRow < Length(FRowFontColor));
+  inherited PrepareCanvas(aCol, aRow, aState);
+  Canvas.Font.Color := FRowFontColor[aRow];
+end;
+
+procedure TColorStringGrid.ColRowDeleted(IsColumn: Boolean; index: Integer);
+begin
+  inherited ColRowDeleted(IsColumn, index);
+  if IsColumn then exit;
+  assert(index < Length(FRowFontColor), 'ColRowDeleted');
+  if index < Length(FRowFontColor) - 1 then
+    move(FRowFontColor[index+1], FRowFontColor[index],
+      (Length(FRowFontColor)-index) * SizeOf(TColor));
+  SetLength(FRowFontColor, Length(FRowFontColor) - 1);
+end;
+
+procedure TColorStringGrid.ColRowInserted(IsColumn: boolean; index: integer);
+begin
+  inherited ColRowInserted(IsColumn, index);
+  if IsColumn then exit;
+  SetLength(FRowFontColor, Length(FRowFontColor) + 1);
+  assert(index < Length(FRowFontColor), 'ColRowInserted');
+  if index < Length(FRowFontColor) - 1 then
+    move(FRowFontColor[index], FRowFontColor[index+1],
+      (Length(FRowFontColor)-index) * SizeOf(TColor));
+  FRowFontColor[index] := Font.Color;
+end;
+
+procedure TColorStringGrid.SizeChanged(OldColCount, OldRowCount: Integer);
+var
+  i: Integer;
+begin
+  inherited SizeChanged(OldColCount, OldRowCount);
+  i := Length(FRowFontColor);
+  SetLength(FRowFontColor, RowCount);
+  while i < RowCount do begin
+    FRowFontColor[i] := Font.Color;
+    inc(i);
+  end;
+end;
 
 {$R *.lfm}
 
@@ -265,7 +342,7 @@ procedure TEditorMarkupUserDefinedFrame.WordListColRowDeleted(Sender: TObject;
   IsColumn: Boolean; sIndex, tIndex: Integer);
 begin
   if (FUpdatingDisplay > 0) or (FUserWords = nil) then exit;
-  UpdateListDisplay;
+  UpdateListDisplay(True);
 end;
 
 procedure TEditorMarkupUserDefinedFrame.WordListEditingDone(Sender: TObject);
@@ -286,10 +363,9 @@ begin
   if FUserWords.Items[i].SearchTerm = WordList.Cells[0, FSelectedRow] then
     exit;
 
-  CheckDuplicate(FSelectedRow);
-
   FUserWords.Items[i].SearchTerm := WordList.Cells[0, FSelectedRow];
   UpdateTermOptions;
+  CheckDuplicate(FSelectedRow);
 end;
 
 procedure TEditorMarkupUserDefinedFrame.WordListExit(Sender: TObject);
@@ -330,19 +406,42 @@ begin
 end;
 
 procedure TEditorMarkupUserDefinedFrame.CheckDuplicate(AnIndex: Integer);
+
+  procedure UpdateDupErrors;
+  var
+    i: Integer;
+  begin
+    i := 0;
+    while (i < FUserWords.Count) do begin
+      if (FUserWords.FindSimilarMatchFor(FUserWords[i], 0, i) >= 0) then
+        WordList.RowFontColor[i] := clRed
+      else
+        WordList.RowFontColor[i] := clDefault;
+      inc(i);
+    end;
+  end;
+
 var
-  s: String;
   j: Integer;
 begin
-  s := WordList.Cells[0, FSelectedRow];
-  j := FUserWords.FindSimilarMatchFor(s, FUserWords[AnIndex].MatchCase,
-    FUserWords[AnIndex].MatchWordBounds, FUserWords[AnIndex].Enabled, 0, AnIndex);
-  if (j >= 0) then begin
-    MessageDlg(dlgMarkupUserDefinedDuplicate,
-               Format(dlgMarkupUserDefinedDuplicateMsg, [s]),
-               mtConfirmation, [mbOK], 0
-              );
+  if AnIndex < 0 then begin
+    UpdateDupErrors;
+    exit;
   end;
+
+  j := FUserWords.FindSimilarMatchFor(FUserWords[AnIndex], 0, AnIndex);
+  if (j >= 0) then begin
+    if WordList.RowFontColor[FSelectedRow] <> clRed then begin
+      UpdateDupErrors;
+      MessageDlg(dlgMarkupUserDefinedDuplicate,
+                 Format(dlgMarkupUserDefinedDuplicateMsg, [FUserWords[AnIndex].SearchTerm]),
+                 mtConfirmation, [mbOK], 0
+                );
+    end;
+  end
+  else
+  if WordList.RowFontColor[FSelectedRow] <> clDefault then
+    UpdateDupErrors;
 end;
 
 procedure TEditorMarkupUserDefinedFrame.DoListSelected(Sender: TObject);
@@ -381,7 +480,7 @@ begin
       if FSelectedRow > aRow then
         dec(FSelectedRow);
       i := FSelectedRow;
-      UpdateListDisplay;
+      UpdateListDisplay(True);
       if i >= WordList.RowCount then
         dec(i);
       WordList.Row := i;
@@ -467,14 +566,14 @@ begin
   end;
 end;
 
-procedure TEditorMarkupUserDefinedFrame.UpdateListDisplay;
+procedure TEditorMarkupUserDefinedFrame.UpdateListDisplay(KeepDuplicates: Boolean);
 var
   i: Integer;
 begin
   WordList.EditorMode := False;
   inc(FUpdatingDisplay);
 
-  if FUserWords <> nil then
+  if (FUserWords <> nil) and not (KeepDuplicates) then
     FUserWords.ClearSimilarMatches;
 
   UpdateListDropDownCaption;
@@ -502,6 +601,7 @@ begin
     WordList.Col := 0;
     WordList.Row := 0;
 
+    CheckDuplicate(-1);
     UpdateKeys;
     cbKeyCase.Checked          := FUserWords.KeyAddCase;
     cbKeyBoundStart.Checked    := FUserWords.KeyAddTermBounds in [soBoundsAtStart, soBothBounds];
