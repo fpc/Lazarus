@@ -303,7 +303,8 @@ type
 implementation
 
 uses
-  ipf, Math, StrUtils, SysUtils, TAGeometry, TAGraph, TAMath;
+  ipf, GraphType, IntfGraphics, Math, StrUtils, SysUtils,
+  TAGeometry, TAGraph, TAMath;
 
 type
   TFitSeriesRange = class(TChartRange)
@@ -1249,6 +1250,9 @@ var
   pt, next, offset: TPoint;
   gp: TDoublePoint;
   v: Double;
+  img: TLazIntfImage;
+  rawImage: TRawImage;
+  optimize: Boolean;
 begin
   if not (csDesigning in ComponentState) and IsEmpty then exit;
 
@@ -1267,30 +1271,52 @@ begin
   ADrawer.Brush := Brush;
   ADrawer.SetPenParams(psClear, clTAColor);
   pt.Y := (r.Top div StepY - 1) * StepY + offset.Y mod StepY;
-  while pt.Y <= r.Bottom do begin
-    next.Y := pt.Y + StepY;
-    if next.Y <= r.Top then begin
-      pt.Y := next.Y;
-      continue;
-    end;
-    pt.X := (r.Left div StepX - 1) * StepX + offset.X mod StepX;
-    while pt.X <= r.Right do begin
-      next.X := pt.X + StepX;
-      if next.X <= r.Left then begin
-        pt.X := next.X;
+
+  optimize := (StepX = 1) and (StepY = 1);
+  if optimize then begin
+    rawImage.Init;
+    rawImage.Description.Init_BPP32_B8G8R8A8_BIO_TTB(
+      r.Right - r.Left, r.Bottom - r.Top);
+    rawImage.CreateData(true);
+    img := TLazIntfImage.Create(0, 0);
+    img.SetRawImage(rawImage);
+  end;
+  try
+    while pt.Y <= r.Bottom do begin
+      next.Y := pt.Y + StepY;
+      if next.Y <= r.Top then begin
+        pt.Y := next.Y;
         continue;
       end;
-      gp := GraphToAxis(ParentChart.ImageToGraph((pt + next) div 2));
-      if not (csDesigning in ComponentState) then
-        OnCalculate(gp.X, gp.Y, v);
-      if ColorSource <> nil then
-        ADrawer.BrushColor := ColorByValue(v);
-      ADrawer.Rectangle(
-        Max(pt.X, r.Left), Max(pt.Y, r.Top),
-        Min(next.X, r.Right) + 1, Min(next.Y, r.Bottom) + 1);
-      pt.X := next.X;
+      pt.X := (r.Left div StepX - 1) * StepX + offset.X mod StepX;
+      while pt.X <= r.Right do begin
+        next.X := pt.X + StepX;
+        if next.X <= r.Left then begin
+          pt.X := next.X;
+          continue;
+        end;
+        gp := GraphToAxis(ParentChart.ImageToGraph((pt + next) div 2));
+        if not (csDesigning in ComponentState) then
+          OnCalculate(gp.X, gp.Y, v);
+        if ColorSource <> nil then
+          ADrawer.BrushColor := ColorByValue(v);
+        if optimize then begin
+          if PtInRect(r, pt) then
+            img.TColors[pt.X - r.Left, pt.Y - r.Top] := ADrawer.GetBrushColor;
+        end
+        else
+          ADrawer.Rectangle(
+            Max(pt.X, r.Left), Max(pt.Y, r.Top),
+            Min(next.X, r.Right) + 1, Min(next.Y, r.Bottom) + 1);
+        pt.X := next.X;
+      end;
+      pt.Y := next.Y;
     end;
-    pt.Y := next.Y;
+  finally
+    if optimize then begin
+      ADrawer.PutImage(r.Left, r.Top, img);
+      img.Free;
+    end;
   end;
 end;
 
