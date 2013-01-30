@@ -250,10 +250,6 @@ msgctxt "lclstrconsts.ifsvk_up"
 msgid "Up"
 msgstr "Amunt"
 
-#: lclstrconsts.liscefilter
-msgid "(filter)"
-msgstr ""
-
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
@@ -515,6 +511,11 @@ msgstr "(fitxer no trobat: \"%s\")"
 #: lclstrconsts.rsfileinformation
 msgid "File information"
 msgstr "Informació del fitxer"
+
+#: lclstrconsts.rsfilter
+msgctxt "lclstrconsts.rsfilter"
+msgid "(filter)"
+msgstr ""
 
 #: lclstrconsts.rsfind
 msgid "Find"

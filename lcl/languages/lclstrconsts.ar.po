@@ -254,10 +254,6 @@ msgctxt "lclstrconsts.ifsvk_up"
 msgid "Up"
 msgstr "أعلى"
 
-#: lclstrconsts.liscefilter
-msgid "(filter)"
-msgstr "(فرز)"
-
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
@@ -517,6 +513,11 @@ msgstr "(لم يتم إيجاد الملف: \"%s\")"
 #: lclstrconsts.rsfileinformation
 msgid "File information"
 msgstr "معلومات الملف"
+
+#: lclstrconsts.rsfilter
+msgctxt "lclstrconsts.rsfilter"
+msgid "(filter)"
+msgstr "(فرز)"
 
 #: lclstrconsts.rsfind
 msgid "Find"

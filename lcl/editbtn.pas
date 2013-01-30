@@ -979,13 +979,13 @@ procedure TCustomControlFilterEdit.SetFilter(const AValue: string);
 var
   NewValue: String;
 begin
-  if AValue=lisCEFilter then
+  if AValue=rsFilter then
     NewValue:=''
   else
     NewValue:=AValue;
   Button.Enabled:=NewValue<>'';
   if (NewValue='') and not (Focused or fJustActivated) then begin
-    Text:=lisCEFilter;
+    Text:=rsFilter;
     Font.Color:=clBtnShadow;
   end
   else begin
@@ -1034,7 +1034,7 @@ procedure TCustomControlFilterEdit.DoEnter;
 begin
 //  inherited;
   fJustActivated:=False;
-  if Text=lisCEFilter then
+  if Text=rsFilter then
     Text:='';
 end;
 

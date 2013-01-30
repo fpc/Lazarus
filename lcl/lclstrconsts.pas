@@ -497,7 +497,7 @@ resourceString
   rsMenuBarColorCaption = 'Menu Bar';
   rsFormColorCaption = 'Form';
 
-  lisCEFilter = '(filter)';
+  rsFilter = '(filter)';
 
   // Accessibility
   rsTTreeViewAccessibilityDescription = 'A tree of items';

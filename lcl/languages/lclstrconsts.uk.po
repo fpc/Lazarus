@@ -253,11 +253,6 @@ msgctxt "lclstrconsts.ifsvk_up"
 msgid "Up"
 msgstr "Вверх"
 
-#: lclstrconsts.liscefilter
-#| msgid "(Filter)"
-msgid "(filter)"
-msgstr "(фільтр)"
-
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
@@ -517,6 +512,11 @@ msgstr "(файл не знайдений: \"%s\")"
 #: lclstrconsts.rsfileinformation
 msgid "File information"
 msgstr "Інформація про файл"
+
+#: lclstrconsts.rsfilter
+msgctxt "lclstrconsts.rsfilter"
+msgid "(filter)"
+msgstr "(фільтр)"
 
 #: lclstrconsts.rsfind
 msgid "Find"

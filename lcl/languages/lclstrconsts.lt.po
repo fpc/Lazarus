@@ -253,10 +253,6 @@ msgctxt "lclstrconsts.ifsvk_up"
 msgid "Up"
 msgstr "Aukštyn"
 
-#: lclstrconsts.liscefilter
-msgid "(filter)"
-msgstr "(filtras)"
-
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
@@ -517,6 +513,11 @@ msgstr "(failas nerastas: „%s“)"
 #: lclstrconsts.rsfileinformation
 msgid "File information"
 msgstr "Informacija apie failą"
+
+#: lclstrconsts.rsfilter
+msgctxt "lclstrconsts.rsfilter"
+msgid "(filter)"
+msgstr "(filtras)"
 
 #: lclstrconsts.rsfind
 msgid "Find"

@@ -250,10 +250,6 @@ msgctxt "lclstrconsts.ifsvk_up"
 msgid "Up"
 msgstr "Arriba"
 
-#: lclstrconsts.liscefilter
-msgid "(filter)"
-msgstr "(filtro)"
-
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
@@ -514,6 +510,11 @@ msgstr "(archivo no encontrado: \"%s\")"
 #: lclstrconsts.rsfileinformation
 msgid "File information"
 msgstr "Información de archivo"
+
+#: lclstrconsts.rsfilter
+msgctxt "lclstrconsts.rsfilter"
+msgid "(filter)"
+msgstr "(filtro)"
 
 #: lclstrconsts.rsfind
 msgid "Find"

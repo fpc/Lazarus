@@ -253,10 +253,6 @@ msgctxt "lclstrconsts.ifsvk_up"
 msgid "Up"
 msgstr "上"
 
-#: lclstrconsts.liscefilter
-msgid "(filter)"
-msgstr ""
-
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
@@ -518,6 +514,11 @@ msgstr "(未找到文件: \"%s\")"
 #: lclstrconsts.rsfileinformation
 msgid "File information"
 msgstr "文件信息"
+
+#: lclstrconsts.rsfilter
+msgctxt "lclstrconsts.rsfilter"
+msgid "(filter)"
+msgstr ""
 
 #: lclstrconsts.rsfind
 msgid "Find"

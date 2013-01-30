@@ -245,10 +245,6 @@ msgctxt "lclstrconsts.ifsvk_up"
 msgid "Up"
 msgstr "Ylös"
 
-#: lclstrconsts.liscefilter
-msgid "(filter)"
-msgstr "(suodatin)"
-
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
@@ -508,6 +504,11 @@ msgstr "(tiedostoa ei löytynyt: \"%s\")"
 #: lclstrconsts.rsfileinformation
 msgid "File information"
 msgstr "Tiedoston tietoja"
+
+#: lclstrconsts.rsfilter
+msgctxt "lclstrconsts.rsfilter"
+msgid "(filter)"
+msgstr "(suodatin)"
 
 #: lclstrconsts.rsfind
 msgid "Find"
