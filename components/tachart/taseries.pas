@@ -405,19 +405,25 @@ var
   // Drawing long polylines with wide pen is very inefficient on Windows and GTK.
   // On Windows it is so bad that trying to draw polyline with 50000 points
   // will cause hard freeze of entire OS. (!)
+  // Also, Windows refuses to draw any polyline with number of points
+  // above approximately one million.
   // So, split long polylines into segments.
   function PolylineIsTooLong: Boolean; inline;
   const
     // There is a trade-off between the call overhead for short serment and
     // the above-mentioned inefficiency for long ones.
-    // This value was selected by some experiments as "optimal enough" for
+    // First value was selected by some experiments as "optimal enough" for
     // both affected platforms.
-    MAX_LENGTH = 50;
+    MAX_LENGTH: array [Boolean] of Integer = (50000, 1000000);
   begin
-    {$IF defined(WIN32) or defined(GTK2)}
+    {$IF defined(WIN32)}
+    Result :=
+      (breakCount > 0) and
+      (pointCount - breaks[breakCount - 1] > MAX_LENGTH[LinePen.Width = 1]);
+    {$ELSEIF defined(GTK2)}
     Result :=
       (LinePen.Width > 1) and (breakCount > 0) and
-      (pointCount - breaks[breakCount - 1] > MAX_LENGTH);
+      (pointCount - breaks[breakCount - 1] > MAX_LENGTH[false]);
     {$ELSE}
     Result := false;
     {$ENDIF}
