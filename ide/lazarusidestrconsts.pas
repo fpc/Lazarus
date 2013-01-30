@@ -1678,15 +1678,15 @@ resourcestring
 
   dlgMarkupUserDefined = 'User defined words';
   dlgMarkupUserDefinedNoLists = 'No lists';
-  dlgMarkupUserDefinedNoListsSel = 'select ...';
+  dlgMarkupUserDefinedNoListsSel = 'Select ...';
   dlgMarkupUserDefinedNewName = 'New list';
   dlgMarkupUserDefinedListNew = 'Add list';
-  dlgMarkupUserDefinedListDel = 'delete list';
+  dlgMarkupUserDefinedListDel = 'Delete list';
   dlgMarkupUserDefinedPageMain = 'Main settings';
   dlgMarkupUserDefinedPageKeys = 'Key Settings';
-  dlgMarkupUserDefinedMatchCase = 'Casesensitive';
-  dlgMarkupUserDefinedMatchStartBound = 'Wordbound at start';
-  dlgMarkupUserDefinedMatchEndBound = 'Wordbound at end';
+  dlgMarkupUserDefinedMatchCase = 'Case sensitive';
+  dlgMarkupUserDefinedMatchStartBound = 'Word bound at start';
+  dlgMarkupUserDefinedMatchEndBound = 'Word bound at end';
   dlgMarkupUserDefinedDivKeyAdd = 'Add Word or Term';
   dlgMarkupUserDefinedDivKeyRemove = 'Remove Word or Term';
   dlgMarkupUserDefinedDivKeyToggle = 'Toggle Word or Term';
@@ -1695,11 +1695,11 @@ resourcestring
   dlgMarkupUserDefinedListName = 'Name';
   dlgMarkupUserDefinedNewByKeyOpts = 'Settings for terms added by key';
   dlgMarkupUserDefinedNewByKeyLen = 'Ignore bounds for terms longer than';
-  dlgMarkupUserDefinedNewByKeyLenWord = 'current words';
+  dlgMarkupUserDefinedNewByKeyLenWord = 'current word';
   dlgMarkupUserDefinedNewByKeyLenSelect = 'selection';
   dlgMarkupUserDefinedNewByKeySmartSelect = 'Smart match selection bounds';
   dlgMarkupUserDefinedDuplicate = 'Duplicate Term';
-  dlgMarkupUserDefinedDuplicateMsg = 'The term %s already exists. Duplicates be removed when the list is saved.';
+  dlgMarkupUserDefinedDuplicateMsg = 'The term %s already exists. Duplicates will be removed when the list is saved.';
 
   lisUserDefinedMarkupKeyGroup = 'User defined word markup';
   lisUserDefinedMarkupKeyAdd = 'Add to list "%s"';
