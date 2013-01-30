@@ -1,11 +1,11 @@
 object UnitDependenciesDialog: TUnitDependenciesDialog
   Left = 235
-  Height = 390
+  Height = 477
   Top = 232
-  Width = 486
+  Width = 669
   Caption = 'UnitDependenciesDialog'
-  ClientHeight = 390
-  ClientWidth = 486
+  ClientHeight = 477
+  ClientWidth = 669
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -14,19 +14,19 @@ object UnitDependenciesDialog: TUnitDependenciesDialog
   object BtnPanel: TPanel
     Left = 0
     Height = 41
-    Top = 349
-    Width = 486
+    Top = 436
+    Width = 669
     Align = alBottom
     AutoSize = True
     ClientHeight = 41
-    ClientWidth = 486
+    ClientWidth = 669
     TabOrder = 0
     object CloseBitBtn: TBitBtn
       AnchorSideRight.Control = BtnPanel
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = BtnPanel
       AnchorSideBottom.Side = asrBottom
-      Left = 402
+      Left = 585
       Height = 27
       Top = 7
       Width = 77
@@ -41,19 +41,19 @@ object UnitDependenciesDialog: TUnitDependenciesDialog
   object ProgressBar1: TProgressBar
     Left = 0
     Height = 20
-    Top = 329
-    Width = 486
+    Top = 416
+    Width = 669
     Align = alBottom
     TabOrder = 1
   end
   object CurUnitPanel: TPanel
     Left = 0
-    Height = 329
+    Height = 416
     Top = 0
     Width = 155
     Align = alLeft
     Caption = 'CurUnitPanel'
-    ClientHeight = 329
+    ClientHeight = 416
     ClientWidth = 155
     TabOrder = 2
     object CurUnitTreeView: TTreeView
@@ -65,7 +65,7 @@ object UnitDependenciesDialog: TUnitDependenciesDialog
       AnchorSideBottom.Control = CurUnitPanel
       AnchorSideBottom.Side = asrBottom
       Left = 1
-      Height = 302
+      Height = 389
       Top = 26
       Width = 153
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -92,7 +92,7 @@ object UnitDependenciesDialog: TUnitDependenciesDialog
   end
   object CurUnitSplitter: TSplitter
     Left = 155
-    Height = 329
+    Height = 416
     Top = 0
     Width = 5
   end

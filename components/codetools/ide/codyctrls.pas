@@ -30,7 +30,7 @@ unit CodyCtrls;
 interface
 
 uses
-  types, math, contnrs, Classes, SysUtils, FPCanvas,
+  types, math, contnrs, Classes, SysUtils, FPCanvas, FPimage,
   LazLogger, ComCtrls, Controls, Graphics, LCLType;
 
 type
@@ -227,6 +227,142 @@ type
     property OnUTF8KeyPress;
   end;
 
+  TLvlGraph = class;
+  TLvlGraphEdge = class;
+
+  { TLvlGraphNode }
+
+  TLvlGraphNode = class(TPersistent)
+  private
+    FCaption: string;
+    FColor: TFPColor;
+    FGraph: TLvlGraph;
+    FInEdges: TFPList; // list of TLvlGraphEdge
+    FInSize: integer;
+    FLevel: integer;
+    FOutEdges: TFPList; // list of TLvlGraphEdge
+    FOutSize: integer;
+    FPosition: integer;
+    function GetInEdges(Index: integer): TLvlGraphEdge;
+    function GetOutEdges(Index: integer): TLvlGraphEdge;
+    procedure SetCaption(AValue: string);
+    procedure SetColor(AValue: TFPColor);
+  public
+    constructor Create(TheGraph: TLvlGraph; TheCaption: string);
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Invalidate;
+    property Color: TFPColor read FColor write SetColor;
+    property Caption: string read FCaption write SetCaption;
+    property Graph: TLvlGraph read FGraph;
+    function IndexOfInEdge(Source: TLvlGraphNode): integer;
+    function FindInEdge(Source: TLvlGraphNode): TLvlGraphEdge;
+    function InEdgeCount: integer;
+    property InEdges[Index: integer]: TLvlGraphEdge read GetInEdges;
+    function IndexOfOutEdge(Target: TLvlGraphNode): integer;
+    function FindOutEdge(Target: TLvlGraphNode): TLvlGraphEdge;
+    function OutEdgeCount: integer;
+    property OutEdges[Index: integer]: TLvlGraphEdge read GetOutEdges;
+    property Level: integer read FLevel; // computed, Sources have level 0
+    property Position: integer read FPosition write FPosition; // position in a level
+    property InSize: integer read FInSize;
+    property OutSize: integer read FOutSize;
+  end;
+
+  { TLvlGraphEdge }
+
+  TLvlGraphEdge = class(TPersistent)
+  private
+    FSource: TLvlGraphNode;
+    FTarget: TLvlGraphNode;
+    FWeight: single;
+    procedure SetWeight(AValue: single);
+  public
+    constructor Create(TheSource: TLvlGraphNode; TheTarget: TLvlGraphNode);
+    destructor Destroy; override;
+    property Source: TLvlGraphNode read FSource;
+    property Target: TLvlGraphNode read FTarget;
+    property Weight: single read FWeight write SetWeight;
+  end;
+
+  { TLvlGraph }
+
+  TLvlGraph = class(TPersistent)
+  private
+    FOnInvalidate: TNotifyEvent;
+    FNodes: TFPList; // list of TLvlGraphNode
+    function GetNodes(Index: integer): TLvlGraphNode;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Invalidate;
+    property OnInvalidate: TNotifyEvent read FOnInvalidate write FOnInvalidate;
+    function NodeCount: integer;
+    property Nodes[Index: integer]: TLvlGraphNode read GetNodes;
+    function GetNode(aCaption: string; CreateIfNotExists: boolean): TLvlGraphNode;
+    function GetEdge(SourceCaption, TargetCaption: string;
+      CreateIfNotExists: boolean): TLvlGraphEdge;
+    function GetEdge(Source, Target: TLvlGraphNode;
+      CreateIfNotExists: boolean): TLvlGraphEdge;
+  end;
+
+  { TCustomLvlGraphControl }
+
+  TCustomLvlGraphControl = class(TCustomControl)
+    procedure FGraphInvalidate(Sender: TObject);
+  private
+    FGraph: TLvlGraph;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property Graph: TLvlGraph read FGraph;
+  end;
+
+  TLvlGraphControl = class(TCustomLvlGraphControl)
+  published
+    property Align;
+    property Anchors;
+    property BorderSpacing;
+    property BorderStyle;
+    property BorderWidth;
+    property Color;
+    property Constraints;
+    property DragKind;
+    property DragCursor;
+    property DragMode;
+    property Enabled;
+    property Font;
+    property ParentColor default False;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop default True;
+    property Tag;
+    property Visible;
+    property OnClick;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnShowHint;
+    property OnStartDrag;
+    property OnUTF8KeyPress;
+  end;
+
 procedure FreeTVNodeData(TV: TCustomTreeView);
 
 procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2: integer;
@@ -297,6 +433,227 @@ begin
   end;
   Canvas.Polygon(Points);
   SetLength(Points,0);
+end;
+
+{ TCustomLvlGraphControl }
+
+procedure TCustomLvlGraphControl.FGraphInvalidate(Sender: TObject);
+begin
+  Invalidate;
+end;
+
+constructor TCustomLvlGraphControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FGraph:=TLvlGraph.Create;
+  FGraph.OnInvalidate:=@FGraphInvalidate;
+end;
+
+destructor TCustomLvlGraphControl.Destroy;
+begin
+  FreeAndNil(FGraph);
+  inherited Destroy;
+end;
+
+{ TLvlGraph }
+
+function TLvlGraph.GetNodes(Index: integer): TLvlGraphNode;
+begin
+  Result:=TLvlGraphNode(FNodes[Index]);
+end;
+
+constructor TLvlGraph.Create;
+begin
+  FNodes:=TFPList.Create;
+end;
+
+destructor TLvlGraph.Destroy;
+begin
+  Clear;
+  FreeAndNil(FNodes);
+  inherited Destroy;
+end;
+
+procedure TLvlGraph.Clear;
+begin
+  while NodeCount>0 do
+    Nodes[NodeCount-1].Free;
+end;
+
+procedure TLvlGraph.Invalidate;
+begin
+  if OnInvalidate<>nil then
+    OnInvalidate(Self);
+end;
+
+function TLvlGraph.NodeCount: integer;
+begin
+  Result:=FNodes.Count;
+end;
+
+function TLvlGraph.GetNode(aCaption: string; CreateIfNotExists: boolean
+  ): TLvlGraphNode;
+var
+  i: Integer;
+begin
+  i:=NodeCount-1;
+  while (i>=0) and (aCaption<>Nodes[i].Caption) do dec(i);
+  if i>=0 then begin
+    Result:=Nodes[i];
+  end else if CreateIfNotExists then begin
+    Result:=TLvlGraphNode.Create(Self,aCaption);
+    FNodes.Add(Result);
+  end else
+    Result:=nil;
+end;
+
+function TLvlGraph.GetEdge(SourceCaption, TargetCaption: string;
+  CreateIfNotExists: boolean): TLvlGraphEdge;
+var
+  Source: TLvlGraphNode;
+  Target: TLvlGraphNode;
+begin
+  Source:=GetNode(SourceCaption,CreateIfNotExists);
+  if Source=nil then exit(nil);
+  Target:=GetNode(TargetCaption,CreateIfNotExists);
+  if Target=nil then exit(nil);
+  Result:=GetEdge(Source,Target,CreateIfNotExists);
+end;
+
+function TLvlGraph.GetEdge(Source, Target: TLvlGraphNode;
+  CreateIfNotExists: boolean): TLvlGraphEdge;
+begin
+  Result:=Source.FindOutEdge(Target);
+  if Result<>nil then exit;
+  if CreateIfNotExists then
+    Result:=TLvlGraphEdge.Create(Source,Target);
+end;
+
+{ TLvlGraphEdge }
+
+procedure TLvlGraphEdge.SetWeight(AValue: single);
+begin
+  if FWeight=AValue then Exit;
+  FWeight:=AValue;
+  Source.Invalidate;
+end;
+
+constructor TLvlGraphEdge.Create(TheSource: TLvlGraphNode;
+  TheTarget: TLvlGraphNode);
+begin
+  FSource:=TheSource;
+  FTarget:=TheTarget;
+  Source.FOutEdges.Add(Self);
+  Target.FInEdges.Add(Self);
+end;
+
+destructor TLvlGraphEdge.Destroy;
+begin
+  Source.FOutEdges.Remove(Self);
+  Target.FInEdges.Remove(Self);
+  FSource:=nil;
+  FTarget:=nil;
+  inherited Destroy;
+end;
+
+{ TLvlGraphNode }
+
+function TLvlGraphNode.GetInEdges(Index: integer): TLvlGraphEdge;
+begin
+  Result:=TLvlGraphEdge(FInEdges[Index]);
+end;
+
+function TLvlGraphNode.GetOutEdges(Index: integer): TLvlGraphEdge;
+begin
+  Result:=TLvlGraphEdge(FOutEdges[Index]);
+end;
+
+procedure TLvlGraphNode.SetCaption(AValue: string);
+begin
+  if FCaption=AValue then Exit;
+  FCaption:=AValue;
+  Invalidate;
+end;
+
+procedure TLvlGraphNode.SetColor(AValue: TFPColor);
+begin
+  if FColor=AValue then Exit;
+  FColor:=AValue;
+  Invalidate;
+end;
+
+procedure TLvlGraphNode.Invalidate;
+begin
+  if Graph<>nil then
+    Graph.Invalidate;
+end;
+
+constructor TLvlGraphNode.Create(TheGraph: TLvlGraph; TheCaption: string);
+begin
+  FGraph:=TheGraph;
+  FCaption:=TheCaption;
+  FInEdges:=TFPList.Create;
+  FOutEdges:=TFPList.Create;
+end;
+
+destructor TLvlGraphNode.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TLvlGraphNode.Clear;
+begin
+  while InEdgeCount>0 do
+    InEdges[InEdgeCount-1].Free;
+  while OutEdgeCount>0 do
+    OutEdges[OutEdgeCount-1].Free;
+end;
+
+function TLvlGraphNode.IndexOfInEdge(Source: TLvlGraphNode): integer;
+begin
+  for Result:=0 to InEdgeCount-1 do
+    if InEdges[Result].Source=Source then exit;
+  Result:=-1;
+end;
+
+function TLvlGraphNode.FindInEdge(Source: TLvlGraphNode): TLvlGraphEdge;
+var
+  i: Integer;
+begin
+  i:=IndexOfInEdge(Source);
+  if i>=0 then
+    Result:=InEdges[i]
+  else
+    Result:=nil;
+end;
+
+function TLvlGraphNode.InEdgeCount: integer;
+begin
+  Result:=FInEdges.Count;
+end;
+
+function TLvlGraphNode.IndexOfOutEdge(Target: TLvlGraphNode): integer;
+begin
+  for Result:=0 to OutEdgeCount-1 do
+    if OutEdges[Result].Target=Target then exit;
+  Result:=-1;
+end;
+
+function TLvlGraphNode.FindOutEdge(Target: TLvlGraphNode): TLvlGraphEdge;
+var
+  i: Integer;
+begin
+  i:=IndexOfOutEdge(Target);
+  if i>=0 then
+    Result:=OutEdges[i]
+  else
+    Result:=nil;
+end;
+
+function TLvlGraphNode.OutEdgeCount: integer;
+begin
+  Result:=FOutEdges.Count;
 end;
 
 { TCodyTreeView }
