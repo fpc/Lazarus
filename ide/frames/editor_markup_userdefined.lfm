@@ -1,9 +1,9 @@
 object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
   Left = 0
-  Height = 382
+  Height = 362
   Top = 0
   Width = 507
-  ClientHeight = 382
+  ClientHeight = 362
   ClientWidth = 507
   TabOrder = 0
   DesignLeft = 432
@@ -69,19 +69,21 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
   end
   object MainPanel: TPanel
     Left = 0
-    Height = 360
+    Height = 338
     Top = 24
     Width = 507
     Align = alClient
+    AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 360
+    ClientHeight = 338
     ClientWidth = 507
-    Constraints.MinHeight = 360
     TabOrder = 1
     inline SynColorAttrEditor1: TSynColorAttrEditor
-      Top = 215
+      Height = 146
+      Top = 195
       Width = 507
-      Align = alBottom
+      Align = alTop
+      ClientHeight = 146
       ClientWidth = 507
       TabOrder = 1
       inherited ForeGroundUseDefaultCheckBox: TCheckBox
@@ -100,11 +102,13 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
     end
     object Notebook1: TNotebook
       Left = 0
-      Height = 215
+      Height = 195
       Top = 0
       Width = 507
       PageIndex = 0
-      Align = alClient
+      Align = alTop
+      AutoSize = True
+      Constraints.MinHeight = 195
       TabOrder = 0
       TabStop = True
       object PageMain: TPage
@@ -151,9 +155,10 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
           AnchorSideTop.Control = PageMain
           AnchorSideRight.Control = PageMain
           AnchorSideRight.Side = asrBottom
-          AnchorSideBottom.Control = SynColorAttrEditor1
+          AnchorSideBottom.Control = PageMain
+          AnchorSideBottom.Side = asrBottom
           Left = 259
-          Height = 162
+          Height = 183
           Top = 6
           Width = 242
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -264,12 +269,12 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
           AnchorSideBottom.Control = PageKeys
           AnchorSideBottom.Side = asrBottom
           Left = 253
-          Height = 215
+          Height = 195
           Top = 0
           Width = 254
           Anchors = [akTop, akLeft, akRight, akBottom]
           BevelOuter = bvNone
-          ClientHeight = 215
+          ClientHeight = 195
           ClientWidth = 254
           TabOrder = 1
           object divKeyAdd: TDividerBevel
@@ -448,6 +453,7 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
+            BorderSpacing.Bottom = 6
             Caption = 'lbKeyToggle2'
             ParentColor = False
           end
@@ -611,6 +617,7 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
           BorderSpacing.Right = 20
+          BorderSpacing.Bottom = 6
           Caption = 'cbSmartSelectBound'
           OnChange = GeneralCheckBoxChange
           TabOrder = 6

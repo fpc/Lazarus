@@ -11,7 +11,7 @@ uses
   SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynTextDrawer,
   DividerBevel, Laz2_XMLCfg, EditorOptions, IDEOptionsIntf,
   editor_general_options, IDEImagesIntf, LazarusIDEStrConsts, IDEProcs, typinfo,
-  LazConf, types;
+  LazConf, types, math;
 
 type
 
@@ -567,6 +567,11 @@ begin
   TextUnderlineRadioOff.Caption := dlgEdOff;
   TextUnderlineRadioInvert.Caption := dlgEdInvert;
 
+  Constraints.MinHeight := max(Constraints.MinHeight,
+                               pnlUnderline.Top + pnlUnderline.Height +
+                               Max(pnlUnderline.BorderSpacing.Around,
+                                   pnlUnderline.BorderSpacing.Bottom)
+                              );
 end;
 
 end.
