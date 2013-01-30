@@ -18,6 +18,7 @@ resourcestring
   rsClose = 'Close';
 const
   GroupPrefixProject = '-Project-';
+  GroupPrefixFPCSrc = 'FPC:';
 type
   TUDDUsesType = (
     uddutInterfaceUses,
@@ -56,6 +57,7 @@ type
     procedure CreateGroups;
     function CreateProjectGroup(AProject: TLazProject): TUGGroup;
     function CreatePackageGroup(APackage: TIDEPackage): TUGGroup;
+    procedure CreateFPCSrcGroups;
     procedure AddStartAndTargetUnits;
     procedure UpdateAll;
     procedure UpdateCurUnitDiagram;
@@ -192,30 +194,12 @@ end;
 
 procedure TUnitDependenciesDialog.CreateGroups;
 var
-  Node: TAVLTreeNode;
-  CurUnit: TUGGroupUnit;
-  FPCSrcDir: String;
   i: Integer;
 begin
   CreateProjectGroup(LazarusIDE.ActiveProject);
   for i:=0 to PackageEditingInterface.GetPackageCount-1 do
     CreatePackageGroup(PackageEditingInterface.GetPackages(i));
-
-  FPCSrcDir:=AppendPathDelim(GetFPCSrcDir);
-
-  Node:=UsesGraph.FilesTree.FindLowest;
-  while Node<>nil do begin
-    CurUnit:=TUGGroupUnit(Node.Data);
-    if CompareFilenames(FPCSrcDir,LeftStr(CurUnit.Filename,length(FPCSrcDir)))=0
-    then begin
-      // a unit in the FPC sources
-
-    end;
-    if CurUnit.Group=nil then begin
-
-    end;
-    Node:=UsesGraph.FilesTree.FindSuccessor(Node);
-  end;
+  CreateFPCSrcGroups;
 end;
 
 function TUnitDependenciesDialog.CreateProjectGroup(AProject: TLazProject
@@ -249,6 +233,31 @@ begin
     CurUnit:=UsesGraph.GetUnit(Filename,false);
     if CurUnit is TUGGroupUnit then
       Result.AddUnit(TUGGroupUnit(CurUnit));
+  end;
+end;
+
+procedure TUnitDependenciesDialog.CreateFPCSrcGroups;
+var
+  FPCSrcDir: String;
+  Node: TAVLTreeNode;
+  CurUnit: TUGGroupUnit;
+  Directory: String;
+  Grp: TUGGroup;
+begin
+  FPCSrcDir:=AppendPathDelim(GetFPCSrcDir);
+
+  Node:=UsesGraph.FilesTree.FindLowest;
+  while Node<>nil do begin
+    CurUnit:=TUGGroupUnit(Node.Data);
+    if CompareFilenames(FPCSrcDir,LeftStr(CurUnit.Filename,length(FPCSrcDir)))=0
+    then begin
+      // a unit in the FPC sources
+      Directory:=ExtractFilePath(CurUnit.Filename);
+      Directory:=copy(Directory,length(FPCSrcDir)+1,length(Directory));
+      Grp:=Groups.GetGroup(GroupPrefixFPCSrc+Directory,true);
+      Grp.AddUnit(CurUnit);
+    end;
+    Node:=UsesGraph.FilesTree.FindSuccessor(Node);
   end;
 end;
 
