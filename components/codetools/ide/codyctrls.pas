@@ -413,16 +413,18 @@ end;
 destructor TCustomCircleDiagramControl.Destroy;
 begin
   BeginUpdate; // disable updates
+  Clear;
   FreeAndNil(fCategories);
   inherited Destroy;
 end;
 
 procedure TCustomCircleDiagramControl.Clear;
 begin
+  if CategoryCount=0 then exit;
   BeginUpdate;
   try
     while CategoryCount>0 do
-      Categories[0].Free;
+      fCategories.Delete(CategoryCount-1);
   finally
     EndUpdate;
   end;
