@@ -4076,6 +4076,7 @@ begin
           AnUnitInfo.ComponentFallbackClasses:=nil;
         end;
         AnUnitInfo.ComponentFallbackClasses:=MissingClasses;
+        MissingClasses:=nil;
       end;
 
       BinStream:=nil;
