@@ -207,7 +207,7 @@ begin
     if FXor then
       Color := clWhite
     else
-      Color := AColor;
+      Color := ColorOrMono(AColor);
     Style := psSolid;
     if FXor then
       Mode := pmXor
@@ -244,24 +244,28 @@ procedure TCanvasDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
   GetCanvas.Brush.Assign(ABrush);
   if FXor then
-    GetCanvas.Brush.Style := bsClear;
+    GetCanvas.Brush.Style := bsClear
+  else if FMonochromeColor <> clTAColor then
+    GetCanvas.Brush.Color := FMonochromeColor;
 end;
 
 procedure TCanvasDrawer.SetBrushColor(AColor: TChartColor);
 begin
-  GetCanvas.Brush.Color := AColor;
+  GetCanvas.Brush.Color := ColorOrMono(AColor);
 end;
 
 procedure TCanvasDrawer.SetBrushParams(
   AStyle: TFPBrushStyle; AColor: TChartColor);
 begin
-  GetCanvas.Brush.Color := AColor;
+  GetCanvas.Brush.Color := ColorOrMono(AColor);
   GetCanvas.Brush.Style := AStyle;
 end;
 
 procedure TCanvasDrawer.SetFont(AFont: TFPCustomFont);
 begin
   GetCanvas.Font.Assign(AFont);
+  if FMonochromeColor <> clTAColor then
+    GetCanvas.Font.Color := FMonochromeColor;
 end;
 
 procedure TCanvasDrawer.SetPen(APen: TFPCustomPen);
@@ -280,15 +284,18 @@ begin
       else
         Pen.Width := APen.Width;
     end
-  else
+  else begin
     GetCanvas.Pen.Assign(APen);
+    if FMonochromeColor <> clTAColor then
+      GetCanvas.Pen.Color := FMonochromeColor;
+  end;
 end;
 
 procedure TCanvasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
 begin
   GetCanvas.Pen.Style := AStyle;
   if not FXor then
-    GetCanvas.Pen.Color := AColor;
+    GetCanvas.Pen.Color := ColorOrMono(AColor);
 end;
 
 procedure TCanvasDrawer.SetTransparency(ATransparency: TChartTransparency);

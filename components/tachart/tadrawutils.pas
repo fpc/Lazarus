@@ -103,6 +103,7 @@ type
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetFont(AValue: TFPCustomFont);
     procedure SetGetFontOrientationFunc(AValue: TGetFontOrientationFunc);
+    procedure SetMonochromeColor(AColor: TChartColor);
     procedure SetPen(APen: TFPCustomPen);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
     procedure SetTransparency(ATransparency: TChartTransparency);
@@ -127,8 +128,10 @@ type
   strict protected
     FChartColorToFPColorFunc: TChartColorToFPColorFunc;
     FGetFontOrientationFunc: TGetFontOrientationFunc;
+    FMonochromeColor: TChartColor;
     FTransparency: TChartTransparency;
     FXor: Boolean;
+    function ColorOrMono(AColor: TChartColor): TChartColor; inline;
     function GetFontAngle: Double; virtual; abstract;
     function SimpleTextExtent(const AText: String): TPoint; virtual; abstract;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); virtual; abstract;
@@ -148,6 +151,7 @@ type
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetDoChartColorToFPColorFunc(AValue: TChartColorToFPColorFunc);
     procedure SetGetFontOrientationFunc(AValue: TGetFontOrientationFunc);
+    procedure SetMonochromeColor(AColor: TChartColor);
     procedure SetTransparency(ATransparency: TChartTransparency);
     procedure SetXor(AXor: Boolean);
     function TextExtent(const AText: String): TPoint;
@@ -288,10 +292,16 @@ end;
 
 { TBasicDrawer }
 
+function TBasicDrawer.ColorOrMono(AColor: TChartColor): TChartColor;
+begin
+  Result := ColorDef(FMonochromeColor, AColor);
+end;
+
 constructor TBasicDrawer.Create;
 begin
   FChartColorToFPColorFunc := @ChartColorToFPColor;
   FGetFontOrientationFunc := @DummyGetFontOrientationFunc;
+  FMonochromeColor := clTAColor;
 end;
 
 procedure TBasicDrawer.DrawingBegin(const ABoundingBox: TRect);
@@ -347,6 +357,11 @@ procedure TBasicDrawer.SetGetFontOrientationFunc(
   AValue: TGetFontOrientationFunc);
 begin
   FGetFontOrientationFunc := AValue;
+end;
+
+procedure TBasicDrawer.SetMonochromeColor(AColor: TChartColor);
+begin
+  FMonochromeColor := AColor;
 end;
 
 procedure TBasicDrawer.SetTransparency(ATransparency: TChartTransparency);
