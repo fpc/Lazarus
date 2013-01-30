@@ -362,6 +362,8 @@ procedure TSynColorAttrEditor.TextStyleRadioOnChange(Sender: TObject);
     end;
   end;
 begin
+  if FCurHighlightElement = nil then
+    exit;
   if UpdatingColor or not (hafStyleMask in FCurHighlightElement.Features) then
     Exit;
 
