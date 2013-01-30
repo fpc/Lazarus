@@ -18,6 +18,7 @@
 unit TACustomSource;
 
 {$mode objfpc}{$H+}
+{$modeswitch advancedrecords}
 
 interface
 
@@ -86,9 +87,8 @@ type
 
   TChartValueTextArray = array of TChartValueText;
 
-  { TChartDataItem }
-
-  TChartDataItem = object
+  TChartDataItem = packed record
+  public
     X, Y: Double;
     Color: TChartColor;
     Text: String;
