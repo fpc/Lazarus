@@ -19,6 +19,7 @@ resourcestring
 const
   GroupPrefixProject = '-Project-';
   GroupPrefixFPCSrc = 'FPC:';
+  GroupNone = '-None-';
 type
   TUDDUsesType = (
     uddutInterfaceUses,
@@ -272,15 +273,44 @@ procedure TUnitDependenciesDialog.GuessGroupOfUnits;
 var
   Node: TAVLTreeNode;
   CurUnit: TUGGroupUnit;
+  Filename: String;
+  Owners: TFPList;
+  i: Integer;
+  Group: TUGGroup;
+  CurDirectory: String;
+  LastDirectory: Char;
 begin
+  Owners:=nil;
+  LastDirectory:='.';
   Node:=UsesGraph.FilesTree.FindLowest;
   while Node<>nil do begin
     CurUnit:=TUGGroupUnit(Node.Data);
     if TUGGroupUnit(CurUnit).Group=nil then begin
-
+      Filename:=CurUnit.Filename;
+      CurDirectory:=ExtractFilePath(Filename);
+      if CompareFilenames(CurDirectory,LastDirectory)<>0 then begin
+        FreeAndNil(Owners);
+        Owners:=PackageEditingInterface.GetPossibleOwnersOfUnit(Filename,[piosfIncludeSourceDirectories]);
+      end;
+      Group:=nil;
+      if (Owners<>nil) then begin
+        for i:=0 to Owners.Count-1 do begin
+          if TObject(Owners[i]) is TLazProject then begin
+            Group:=Groups.GetGroup(GroupPrefixProject,true);
+            break;
+          end else if TObject(Owners[i]) is TIDEPackage then begin
+            Group:=Groups.GetGroup(TIDEPackage(Owners[i]).Name,true);
+            break;
+          end;
+        end;
+      end;
+      if Group=nil then
+        Group:=Groups.GetGroup(GroupNone,true);
+      Group.AddUnit(TUGGroupUnit(CurUnit));
     end;
     Node:=UsesGraph.FilesTree.FindSuccessor(Node);
   end;
+  FreeAndNil(Owners);
 end;
 
 procedure TUnitDependenciesDialog.SetCurrentUnit(AValue: TUGUnit);
