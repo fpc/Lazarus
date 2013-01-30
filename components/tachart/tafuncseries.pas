@@ -247,9 +247,11 @@ type
   TFuncCalculate3DEvent =
     procedure (const AX, AY: Double; out AZ: Double) of object;
 
-  { TColorMapSeries }
 
   TColorMapSeries = class(TBasicFuncSeries)
+  public
+  type
+    TUseImage = (cmuiAuto, cmuiAlways, cmuiNever);
   strict private
     FBrush: TBrush;
     FColorSource: TCustomChartSource;
@@ -258,12 +260,14 @@ type
     FOnCalculate: TFuncCalculate3DEvent;
     FStepX: TFuncSeriesStep;
     FStepY: TFuncSeriesStep;
+    FUseImage: TUseImage;
     procedure SetBrush(AValue: TBrush);
     procedure SetColorSource(AValue: TCustomChartSource);
     procedure SetInterpolate(AValue: Boolean);
     procedure SetOnCalculate(AValue: TFuncCalculate3DEvent);
     procedure SetStepX(AValue: TFuncSeriesStep);
     procedure SetStepY(AValue: TFuncSeriesStep);
+    procedure SetUseImage(AValue: TUseImage);
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
 
@@ -290,6 +294,8 @@ type
       read FStepX write SetStepX default DEF_COLORMAP_STEP;
     property StepY: TFuncSeriesStep
       read FStepY write SetStepY default DEF_COLORMAP_STEP;
+    property UseImage: TUseImage
+      read FUseImage write SetUseImage default cmuiAuto;
   end;
 
   // Builds an equation string based on the parameters and the type of equation.
@@ -1246,13 +1252,15 @@ procedure TColorMapSeries.Draw(ADrawer: IChartDrawer);
 var
   ext: TDoubleRect;
   bounds: TDoubleRect;
-  r: TRect;
+  r, cell: TRect;
   pt, next, offset: TPoint;
   gp: TDoublePoint;
   v: Double;
   img: TLazIntfImage;
   rawImage: TRawImage;
   optimize: Boolean;
+  x, y: Integer;
+  cellColor: TChartColor;
 begin
   if not (csDesigning in ComponentState) and IsEmpty then exit;
 
@@ -1272,7 +1280,12 @@ begin
   ADrawer.SetPenParams(psClear, clTAColor);
   pt.Y := (r.Top div StepY - 1) * StepY + offset.Y mod StepY;
 
-  optimize := (StepX = 1) and (StepY = 1);
+  case UseImage of
+    cmuiAuto: optimize := (StepX <= 2) and (StepY <= 2);
+    cmuiAlways: optimize := true;
+    cmuiNever: optimize := false;
+  end;
+
   if optimize then begin
     rawImage.Init;
     rawImage.Description.Init_BPP32_B8G8R8A8_BIO_TTB(
@@ -1298,16 +1311,23 @@ begin
         gp := GraphToAxis(ParentChart.ImageToGraph((pt + next) div 2));
         if not (csDesigning in ComponentState) then
           OnCalculate(gp.X, gp.Y, v);
-        if ColorSource <> nil then
-          ADrawer.BrushColor := ColorByValue(v);
+        cell := Rect(
+          Max(pt.X, r.Left), Max(pt.Y, r.Top),
+          Min(next.X, r.Right) + 1, Min(next.Y, r.Bottom) + 1);
         if optimize then begin
-          if PtInRect(r, pt) then
-            img.TColors[pt.X - r.Left, pt.Y - r.Top] := ADrawer.GetBrushColor;
+          if ColorSource = nil then
+            cellColor := Brush.Color
+          else
+            cellColor := ColorByValue(v);
+          for y := cell.Top - r.Top to cell.Bottom - r.Top - 2 do
+            for x := cell.Left - r.Left to cell.Right - r.Left - 2 do
+              img.TColors[x, y] := cellColor;
         end
-        else
-          ADrawer.Rectangle(
-            Max(pt.X, r.Left), Max(pt.Y, r.Top),
-            Min(next.X, r.Right) + 1, Min(next.Y, r.Bottom) + 1);
+        else begin
+          if ColorSource <> nil then
+            ADrawer.BrushColor := ColorByValue(v);
+          ADrawer.Rectangle(cell);
+        end;
         pt.X := next.X;
       end;
       pt.Y := next.Y;
@@ -1441,6 +1461,13 @@ procedure TColorMapSeries.SetStepY(AValue: TFuncSeriesStep);
 begin
   if FStepY = AValue then exit;
   FStepY := AValue;
+  UpdateParentChart;
+end;
+
+procedure TColorMapSeries.SetUseImage(AValue: TUseImage);
+begin
+  if FUseImage = AValue then exit;
+  FUseImage := AValue;
   UpdateParentChart;
 end;
 
