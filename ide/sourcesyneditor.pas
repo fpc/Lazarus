@@ -510,7 +510,8 @@ begin
       continue;
 
     if ( ([WeakerByEnabled, WeakerByBounds, WeakerByCase] - [wEqual] = [wEntry]) or
-         ([WeakerByEnabled, WeakerByBounds, WeakerByCase] - [wEqual] = [wParam])
+         ([WeakerByEnabled, WeakerByBounds, WeakerByCase] - [wEqual] = [wParam]) or
+         ([WeakerByEnabled, WeakerByBounds, WeakerByCase] = [wEqual])
        )
     then
       exit;
