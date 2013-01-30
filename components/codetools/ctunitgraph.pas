@@ -71,13 +71,14 @@ type
     Filename: string;
     Code: TCodeBuffer;
     Tool: TStandardCodeTool;
-    UsesUnits: TFPList; // list of TUGUses
-    UsedByUnits: TFPList; // list of TUGUses
+    UsesUnits: TFPList; // list of TUGUses, can be nil
+    UsedByUnits: TFPList; // list of TUGUses, can be nil
     constructor Create(const aFilename: string);
     destructor Destroy; override;
     procedure Clear;
     function IndexOfUses(const aFilename: string): integer;
   end;
+  TUGUnitClass = class of TUGUnit;
 
   { TUGUses }
 
@@ -89,6 +90,7 @@ type
     constructor Create(TheOwner, TheUses: TUGUnit);
     destructor Destroy; override;
   end;
+  TUGUsesClass = class of TUGUses;
 
   { TUsesGraph }
 
@@ -101,6 +103,8 @@ type
     FTargetDirsValid: boolean;
     FTargetDirs: string;
     FTargetInFPCSrc: boolean;
+    FUnitClass: TUGUnitClass;
+    FUsesClass: TUGUsesClass;
   public
     DirectoryCachePool: TCTDirectoryCachePool;
     OnGetCodeToolForBuffer: TOnGetCodeToolForBuffer;
@@ -126,6 +130,9 @@ type
     property QueuedFilesTree: TAVLTree read FQueuedFiles; // tree of TUGUnit sorted for Filename
     property TargetFilesTree: TAVLTree read FTargetFiles; // tree of TUGUnit sorted for Filename
     property TargetAll: boolean read FTargetAll write FTargetAll;
+
+    property UnitClass: TUGUnitClass read FUnitClass;
+    property UsesClass: TUGUsesClass read FUsesClass;
   end;
 
 function CompareUGUnitFilenames(UGUnit1, UGUnit2: Pointer): integer;
@@ -228,6 +235,8 @@ end;
 
 constructor TUsesGraph.Create;
 begin
+  FUnitClass:=TUGUnit;
+  FUsesClass:=TUGUses;
   FFiles:=TAVLTree.Create(@CompareUGUnitFilenames);
   FQueuedFiles:=TAVLTree.Create(@CompareUGUnitFilenames);
   FTargetFiles:=TAVLTree.Create(@CompareUGUnitFilenames);
