@@ -25,8 +25,8 @@ unit editor_multiwindow_options;
 interface
 
 uses
-  Classes, SysUtils, StdCtrls, ExtCtrls,
-  LCLType, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, CheckLst;
+  Classes, SysUtils, StdCtrls, ExtCtrls, LCLType, EditorOptions, LazarusIDEStrConsts,
+  SourceEditor, IDEOptionsIntf, CheckLst, ComCtrls;
 
 type
 
@@ -122,7 +122,13 @@ begin
 end;
 
 procedure TEditorMultiWindowOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+var
+  TmpNB: TSourceNotebook;
 begin
+  TmpNB := TSourceNotebook.Create(nil, -1);
+  chkShowCloseBtn.Enabled := nbcShowCloseButtons in TmpNB.GetCapabilities;
+  TmpNB.Free;
+
   lblMultiWinTabSection.Caption := dlgMultiWinTabGroup;
   lblEditActivationOrderSection.Caption := dlgMultiWinAccessGroup;
   lblAccessOrder.Caption := dlgMultiWinAccessOrder;
@@ -134,6 +140,7 @@ begin
   chkShowCloseBtn.Caption := dlgCloseButtonsNotebook;
   chkUseTabHistory.Caption := dlgUseTabsHistory;
   chkCtrlMiddleCloseOthers.Caption := dlgCtrlMiddleTabCloseOtherPages;
+
 end;
 
 procedure TEditorMultiWindowOptionsFrame.ReadSettings(
@@ -144,7 +151,7 @@ begin
   with TEditorOptions(AOptions) do begin
     chkHideSingleTab.Checked := HideSingleTabInWindow;
     chkShowNumbers.Checked := ShowTabNumbers;
-    chkShowCloseBtn.Checked := ShowTabCloseButtons;
+    chkShowCloseBtn.Checked := ShowTabCloseButtons and chkShowCloseBtn.Enabled;
     chkUseTabHistory.Checked := UseTabHistory;
     chkCtrlMiddleCloseOthers.Checked := CtrlMiddleTabClickClosesOthers;
   end;
