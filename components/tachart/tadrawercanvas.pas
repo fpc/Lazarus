@@ -133,6 +133,7 @@ end;
 
 constructor TCanvasDrawer.Create(ACanvas: TCanvas);
 begin
+  inherited Create;
   FCanvas := ACanvas;
 end;
 
