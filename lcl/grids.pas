@@ -109,7 +109,6 @@ type
     goCellHints,          // show individual cell hints
     goTruncCellHints,     // show cell hints if cell text is too long
     goCellEllipsis,       // show "..." if cell text is too long
-    goTabIgnoreAutoAdvance,// BB move through cells with Tab key in aaRightDown fashion (like tables in wordprocessors)
     goIgnoreRowContentForAutoAddRows//BB Also add a row (if AutoAddRows in Options) if last row is empty
   );
   TGridOptions = set of TGridOption;
@@ -674,6 +673,7 @@ type
     FOnUserCheckboxBitmap: TUserCheckboxBitmapEvent;
     FSortOrder: TSortOrder;
     FSortColumn: Integer;
+    FTabAdvance: TAutoAdvance;
     FTitleImageList: TImageList;
     FTitleStyle: TTitleStyle;
     FAscImgInd: Integer;
@@ -952,7 +952,7 @@ type
     function  GetColumnReadonly(Column: Integer): boolean;
     function  GetColumnTitle(Column: Integer): string;
     function  GetColumnWidth(Column: Integer): Integer;
-    function  GetDeltaMoveNext(const Inverse: boolean; var ACol,ARow: Integer): boolean; virtual;
+    function  GetDeltaMoveNext(const Inverse: boolean; var ACol,ARow: Integer; const AAutoAdvance: TAutoAdvance): boolean; virtual;
     function  GetDefaultColumnAlignment(Column: Integer): TAlignment; virtual;
     function  GetDefaultColumnWidth(Column: Integer): Integer; virtual;
     function  GetDefaultColumnLayout(Column: Integer): TTextLayout; virtual;
@@ -1097,6 +1097,7 @@ type
     property GridWidth: Integer read FGCache.GridWidth;
     property HeaderHotZones: TGridZoneSet read FHeaderHotZones write FHeaderHotZones default [gzFixedCols];
     property HeaderPushZones: TGridZoneSet read FHeaderPushZones write FHeaderPushZones default [gzFixedCols];
+    property TabAdvance: TAutoAdvance read FTabAdvance write FTabAdvance default aaRightDown;
     property TitleImageList: TImageList read FTitleImageList write SetTitleImageList;
     property InplaceEditor: TWinControl read FEditor;
     property IsCellSelected[aCol,aRow: Integer]: boolean read GetIsCellSelected;
@@ -1321,6 +1322,7 @@ type
     property RowCount;
     property ScrollBars;
     property ShowHint;
+    property TabAdvance;
     property TabOrder;
     property TabStop;
     property Visible;
@@ -1418,6 +1420,7 @@ type
     property RowCount;
     property ScrollBars;
     property ShowHint;
+    property TabAdvance;
     property TabOrder;
     property TabStop;
     property TitleFont;
@@ -1631,6 +1634,7 @@ type
     property RowCount;
     property ScrollBars;
     property ShowHint;
+    property TabAdvance;
     property TabOrder;
     property TabStop;
     property TitleFont;
@@ -6568,7 +6572,6 @@ var
   R: TRect;
   Relaxed: Boolean;
   DeltaCol,DeltaRow: Integer;
-  SavedAutoAdvance: TAutoAdvance;
 
   procedure MoveSel(Rel: Boolean; aCol,aRow: Integer);
   begin
@@ -6625,27 +6628,25 @@ begin
   case Key of
     VK_TAB:
       if goTabs in Options then begin
-        SavedAutoAdvance := FAutoAdvance;
-        //Allow Tab to browse cells in aaRightDown fashion
-        if (goTabIgnoreAutoAdvance in Options) then FAutoAdvance := aaRightDown;
-        if GetDeltaMoveNext(Sh, DeltaCol,DeltaRow) then begin
+        if GetDeltaMoveNext(Sh, DeltaCol,DeltaRow,FTabAdvance) then begin
           Sh := False;
           MoveSel(True, DeltaCol, DeltaRow);
           PreserveRowAutoInserted := True;
           Key:=0;
-        end else if (goAutoAddRows in Options) and (Col>=GetLastVisibleColumn) then begin
+        end else if (goAutoAddRows in Options) and (DeltaRow = 1) then begin
+          //prevent selecting multiple cells when user presses Shift
+          Sh := False;
           if (goIgnoreRowContentForAutoAddRows in Options) or (not IsEmptyRow(Row)) then MoveSel(True, DeltaCol, DeltaRow);
           Key := 0;
           PreserveRowAutoInserted := True;
         end else
-        if (AutoAdvance=aaNone) or
-           ((AutoAdvance=aaDown) and (Row>=GetLastVisibleRow)) or
+        if (TabAdvance=aaNone) or
+           ((TabAdvance=aaDown) and (Row>=GetLastVisibleRow)) or
            (sh and (Col<=GetFirstVisibleColumn)) or
            ((not sh) and (Col>=GetLastVisibleColumn)) then
           TabCheckEditorKey
         else
           Key := 0;
-        FAutoAdvance := SavedAutoAdvance;
       end else
         TabCheckEditorKey;
     VK_LEFT:
@@ -6903,7 +6904,7 @@ function TCustomGrid.MoveNextAuto(const Inverse: boolean): boolean;
 var
   aCol,aRow: Integer;
 begin
-  Result := GetDeltaMoveNext(Inverse, ACol, ARow);
+  Result := GetDeltaMoveNext(Inverse, ACol, ARow, FAutoAdvance);
   if result then begin
     FGCache.TLColOff:=0;
     FGCache.TLRowOff:=0;
@@ -7230,8 +7231,8 @@ begin
 
   try
     // try first normal movement then inverse movement
-    if GetDeltaMoveNext(false, DeltaCol,DeltaRow) or
-       GetDeltaMoveNext(true,  DeltaCol,DeltaRow)
+    if GetDeltaMoveNext(false, DeltaCol,DeltaRow,FAutoAdvance) or
+       GetDeltaMoveNext(true,  DeltaCol,DeltaRow,FAutoAdvance)
     then begin
       MoveNextSelectable(True, DeltaCol, DeltaRow)
     end else begin
@@ -7968,7 +7969,7 @@ end;
 // return the relative cell coordinate of the next cell
 // considering AutoAdvance property and selectable cells.
 function TCustomGrid.GetDeltaMoveNext(const Inverse: boolean;
-  var ACol, ARow: Integer): boolean;
+  var ACol, ARow: Integer; const AAutoAdvance: TAutoAdvance): boolean;
 var
 
   DeltaCol,DeltaRow: Integer;
@@ -7982,9 +7983,9 @@ var
     DeltaCol := 0;
     DeltaRow := 0;
 
-    aa := FAutoAdvance;
+    aa := AAutoAdvance;
     if UseRightToLeftAlignment then
-      case FAutoAdvance of
+      case AAutoAdvance of
         aaLeftUp:     aa := aaRightUp;
         aaLeftDown:   aa := aaRightDown;
         aaLeft:       aa := aaRight;
@@ -8055,13 +8056,12 @@ var
       (CRow<=RowCount-1)and(CRow>=FixedRows);
   end;
 begin
-
   ACol := FCol;
   ARow := FRow;
 
   result := False;
 
-  if FAutoAdvance=aaNone then
+  if AAutoAdvance=aaNone then
     exit; // quick case, no auto movement allowed
 
   if [goRowSelect,goRelaxedRowSelect]*Options=[goRowSelect] then begin
@@ -8358,7 +8358,6 @@ begin
     cfg.SetValue(Path+'goRelaxedRowSelect/value', goRelaxedRowSelect in options);
     cfg.SetValue(Path+'goDblClickAutoSize/value', goDblClickAutoSize in options);
     Cfg.SetValue(Path+'goSmoothScroll/value', goSmoothScroll in Options);
-    Cfg.SetValue(Path+'goTabIgnoreAutoAdvance/value', goTabIgnoreAutoAdvance in Options);
     Cfg.SetValue(Path+'goIgnoreRowContentForAutoAddRows/value', goIgnoreRowContentForAutoAddRows in Options);
   end;
 
@@ -8503,7 +8502,6 @@ begin
       GetValue('goColSpanning', goColSpanning);
       GetValue('goRelaxedRowSelect',goRelaxedRowSelect);
       GetValue('goDblClickAutoSize',goDblClickAutoSize);
-      GetValue('goTabIgnoreAutoAdvance',goTabIgnoreAutoAdvance);
       GetValue('goIgnoreRowContentForAutoAddRows',goIgnoreRowContentForAutoAddRows);
       if Version>=2 then begin
         GetValue('goSmoothScroll',goSmoothScroll);
@@ -8565,6 +8563,7 @@ begin
   FTitleFontIsDefault := True;
 
   FAutoAdvance := aaRight;
+  FTabAdvance := aaRightDown;
   FAutoEdit := True;
   FFocusRectVisible := True;
   FDefaultDrawing := True;

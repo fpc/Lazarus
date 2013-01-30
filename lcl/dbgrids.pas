@@ -560,6 +560,7 @@ type
     property ReadOnly;
     property Scrollbars default ssBoth;
     property ShowHint;
+    property TabAdvance;
     property TabOrder;
     property TabStop;
     property TitleFont;
@@ -2123,7 +2124,7 @@ begin
               exit;
             end;
 
-            GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow);
+            GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow, TabAdvance);
 
             if (not (ssShift in Shift)) and (Row>=GetLastVisibleRow) and
                (DeltaRow>0) and (Col=GetLastVisibleColumn) and
@@ -2145,7 +2146,7 @@ begin
           if (dgEditing in Options) and not EditorMode then
             EditorMode:=true
           else begin
-            GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow);
+            GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow, AutoAdvance);
             MoveSel(True);
           end;
         end;
