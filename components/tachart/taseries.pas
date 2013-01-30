@@ -239,6 +239,29 @@ type
   // Use TLineSeries instead.
   TSerie = TLineSeries deprecated;
 
+  // Scatter plot displaying a single pixel per data point.
+  // Optimized to work efficiently for millions of points.
+  // See http://en.wikipedia.org/wiki/Manhattan_plot
+  TManhattanSeries = class(TBasicPointSeries)
+  private
+    FSeriesColor: TColor;
+
+    procedure SetSeriesColor(AValue: TColor);
+  protected
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
+  public
+    procedure Assign(ASource: TPersistent); override;
+
+    procedure Draw(ADrawer: IChartDrawer); override;
+  published
+    property AxisIndexX;
+    property AxisIndexY;
+    property SeriesColor: TColor
+      read FSeriesColor write SetSeriesColor default clBlack;
+    property Source;
+    property UseReticule;
+  end;
+
   TLineStyle = (lsVertical, lsHorizontal);
 
   { TConstantLine }
@@ -324,7 +347,7 @@ type
 implementation
 
 uses
-  GraphMath, LResources, Math, PropEdits, SysUtils,
+  GraphMath, GraphType, IntfGraphics, LResources, Math, PropEdits, SysUtils,
   TADrawerCanvas, TAGeometry, TAGraph, TAMath, TAStyles;
 
 { TLineSeries }
@@ -618,6 +641,86 @@ procedure TLineSeries.SetShowPoints(AValue: Boolean);
 begin
   if ShowPoints = AValue then exit;
   FShowPoints := AValue;
+  UpdateParentChart;
+end;
+
+{ TManhattanSeries }
+
+procedure TManhattanSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TManhattanSeries then
+    with TManhattanSeries(ASource) do
+      Self.FSeriesColor := SeriesColor;
+  inherited Assign(ASource);
+end;
+
+procedure TManhattanSeries.Draw(ADrawer: IChartDrawer);
+var
+  img: TLazIntfImage;
+  topLeft, pt: TPoint;
+  i, cnt: Integer;
+  ext: TDoubleRect;
+  rawImage: TRawImage;
+  r: TRect;
+
+  procedure PutPixel(const APoint: TPoint; AColor: TChartColor); inline;
+  begin
+    PCardinal(rawImage.Data)[APoint.Y * r.Right + APoint.X] :=
+      Cardinal(ColorDef(AColor, SeriesColor)) or $FF000000; // Opacity.
+    cnt += 1;
+  end;
+
+begin
+  with Extent do begin
+    ext.a := AxisToGraph(a);
+    ext.b := AxisToGraph(b);
+  end;
+  NormalizeRect(ext);
+  if not RectIntersectsRect(ext, ParentChart.CurrentExtent) then exit;
+
+  // Do not cache graph points to reduce memory overhead.
+  FindExtentInterval(ext, true);
+  topLeft := ParentChart.ClipRect.TopLeft;
+  r := BoundsSize(0, 0, ParentChart.ClipRect.BottomRight - topLeft);
+
+  rawImage.Init;
+  rawImage.Description.Init_BPP32_B8G8R8A8_BIO_TTB(r.Right, r.Bottom);
+  rawImage.CreateData(true);
+  img := TLazIntfImage.Create(0, 0);
+  img.SetRawImage(rawImage);
+  cnt := 0;
+  try
+    // AxisToGraph is slow, so split loop to optimize non-transformed case.
+    if (AxisIndexX = -1) and (AxisIndexY = -1) then
+      for i := FLoBound to FUpBound do
+        with Source[i]^ do begin
+          pt := ParentChart.GraphToImage(Point) - topLeft;
+          if PtInRect(r, pt) then
+            PutPixel(pt, Color);
+        end
+    else
+      for i := FLoBound to FUpBound do
+        with Source[i]^ do begin
+          pt := ParentChart.GraphToImage(AxisToGraph(Point)) - topLeft;
+          if PtInRect(r, pt) then
+            PutPixel(pt, Color);
+        end;
+    if cnt > 0 then
+      ADrawer.PutImage(topLeft.X, topLeft.Y, img);
+  finally
+    img.Free;
+  end;
+end;
+
+procedure TManhattanSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  Unused(AItems); // TODO
+end;
+
+procedure TManhattanSeries.SetSeriesColor(AValue: TColor);
+begin
+  if FSeriesColor = AValue then exit;
+  FSeriesColor := AValue;
   UpdateParentChart;
 end;
 
@@ -1361,6 +1464,7 @@ initialization
   RegisterSeriesClass(TPieSeries, 'Pie series');
   RegisterSeriesClass(TUserDrawnSeries, 'User-drawn series');
   RegisterSeriesClass(TConstantLine, 'Constant line');
+  RegisterSeriesClass(TManhattanSeries, 'Manhattan plot series');
   {$WARNINGS OFF}RegisterSeriesClass(TLine, '');{$WARNINGS ON}
   SkipObsoleteProperties;
 
