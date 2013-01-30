@@ -124,6 +124,7 @@ end;
 
 constructor TCanvasDrawer.Create(ACanvas: TCanvas);
 begin
+  inherited Create;
   FCanvas := ACanvas;
   FBuffer := TBitmap.Create;
   FBuffer.PixelFormat := pf32bit;
