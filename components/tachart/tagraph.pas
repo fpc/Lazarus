@@ -48,6 +48,7 @@ type
     FActive: Boolean;
     FChart: TChart;
     FDepth: TChartDistance;
+    FShadow: TChartShadow;
     FTransparency: TChartTransparency;
     FZPosition: TChartDistance;
 
@@ -58,6 +59,7 @@ type
     function GetShowInLegend: Boolean; virtual; abstract;
     procedure SetActive(AValue: Boolean); virtual; abstract;
     procedure SetDepth(AValue: TChartDistance); virtual; abstract;
+    procedure SetShadow(AValue: TChartShadow); virtual; abstract;
     procedure SetShowInLegend(AValue: Boolean); virtual; abstract;
     procedure SetTransparency(AValue: TChartTransparency); virtual; abstract;
     procedure SetZPosition(AValue: TChartDistance); virtual; abstract;
@@ -85,6 +87,7 @@ type
     property Active: Boolean read FActive write SetActive default true;
     property Depth: TChartDistance read FDepth write SetDepth default 0;
     property ParentChart: TChart read FChart;
+    property Shadow: TChartShadow read FShadow write SetShadow;
     property Transparency: TChartTransparency
       read FTransparency write SetTransparency default 0;
     property ZPosition: TChartDistance read FZPosition write SetZPosition default 0;
@@ -674,13 +677,30 @@ end;
 
 procedure TChart.DisplaySeries(ADrawer: IChartDrawer);
 
-  procedure OffsetDrawArea(AZPos, ADepth: Integer);
+  procedure OffsetDrawArea(ADX, ADY: Integer); inline;
   begin
-    FOffset.X -= AZPos;
-    FOffset.Y += AZPos;
-    OffsetRect(FClipRect, -AZPos, AZPos);
+    FOffset.X += ADX;
+    FOffset.Y += ADY;
+    OffsetRect(FClipRect, ADX, ADY);
+  end;
+
+  procedure OffsetWithDepth(AZPos, ADepth: Integer);
+  begin
+    OffsetDrawArea(-AZPos, AZPos);
     FClipRect.Right += ADepth;
     FClipRect.Top -= ADepth;
+  end;
+
+  procedure DrawOrDeactivate(
+    ASeries: TBasicChartSeries; ATransparency: TChartTransparency);
+  begin
+    try
+      ADrawer.SetTransparency(ATransparency);
+      ASeries.Draw(ADrawer);
+    except
+      ASeries.Active := false;
+      raise;
+    end;
   end;
 
 var
@@ -700,18 +720,24 @@ begin
         // Interleave axises with series according to ZPosition.
         if AxisVisible then
           AxisList.Draw(s.ZPosition, axisIndex);
-        OffsetDrawArea(Min(s.ZPosition, Depth), Min(s.Depth, Depth));
+        OffsetWithDepth(Min(s.ZPosition, Depth), Min(s.Depth, Depth));
         ADrawer.ClippingStart(ClipRectWithoutFrame(s.ZPosition));
+
         try
-          try
-            ADrawer.SetTransparency(s.Transparency);
-            s.Draw(ADrawer);
-          except
-            s.Active := false;
-            raise;
-          end;
+          with s.Shadow do
+            if Visible then begin
+              OffsetDrawArea(OffsetX, OffsetY);
+              ADrawer.SetMonochromeColor(Color);
+              try
+                DrawOrDeactivate(s, Transparency);
+              finally
+                ADrawer.SetMonochromeColor(clTAColor);
+                OffsetDrawArea(-OffsetX, -OffsetY);
+              end;
+            end;
+          DrawOrDeactivate(s, s.Transparency);
         finally
-          OffsetDrawArea(-Min(s.ZPosition, Depth), -Min(s.Depth, Depth));
+          OffsetWithDepth(-Min(s.ZPosition, Depth), -Min(s.Depth, Depth));
           ADrawer.ClippingStop;
         end;
       end;

@@ -38,6 +38,8 @@ const
   MARKS_YINDEX_ALL = -1;
   DEF_ARROW_LENGTH = 10;
   DEF_ARROW_WIDTH = 5;
+  DEF_SHADOW_OFFSET = 8;
+  DEF_SHADOW_TRANSPARENCY = 128;
 
 type
   TCustomChart = class(TCustomControl)
@@ -233,6 +235,28 @@ type
     property Visible default false;
     property Width: TChartDistance
       read FWidth write SetWidth default DEF_ARROW_WIDTH;
+  end;
+
+  TChartShadow = class(TChartElement)
+  strict private
+    FColor: TColor;
+    FOffset: TPoint;
+    FTransparency: TChartTransparency;
+    procedure SetColor(AValue: TColor);
+    procedure SetOffsetX(AValue: Integer);
+    procedure SetOffsetY(AValue: Integer);
+    procedure SetTransparency(AValue: TChartTransparency);
+  public
+    constructor Create(AOwner: TCustomChart);
+  public
+    procedure Assign(ASource: TPersistent); override;
+  published
+    property Color: TColor read FColor write SetColor default clBlack;
+    property OffsetX: Integer read FOffset.X write SetOffsetX default DEF_SHADOW_OFFSET;
+    property OffsetY: Integer read FOffset.Y write SetOffsetY default DEF_SHADOW_OFFSET;
+    property Transparency: TChartTransparency
+      read FTransparency write SetTransparency default DEF_SHADOW_TRANSPARENCY;
+    property Visible default false;
   end;
 
 implementation
@@ -663,6 +687,55 @@ procedure TChartArrow.SetWidth(AValue: TChartDistance);
 begin
   if FWidth = AValue then exit;
   FWidth := AValue;
+  StyleChanged(Self);
+end;
+
+{ TChartShadow }
+
+procedure TChartShadow.Assign(ASource: TPersistent);
+begin
+  if ASource is TChartShadow then
+    with TChartShadow(ASource) do begin
+      Self.FColor := Color;
+      Self.FOffset := FOffset;
+      Self.FTransparency := Transparency;
+    end;
+  inherited Assign(ASource);
+end;
+
+constructor TChartShadow.Create(AOwner: TCustomChart);
+begin
+  inherited Create(AOwner);
+  FColor := clBlack;
+  FOffset := Point(DEF_SHADOW_OFFSET, DEF_SHADOW_OFFSET);
+  FTransparency := DEF_SHADOW_TRANSPARENCY;
+end;
+
+procedure TChartShadow.SetColor(AValue: TColor);
+begin
+  if FColor = AValue then exit;
+  FColor := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartShadow.SetOffsetX(AValue: Integer);
+begin
+  if FOffset.X = AValue then exit;
+  FOffset.X := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartShadow.SetOffsetY(AValue: Integer);
+begin
+  if FOffset.Y = AValue then exit;
+  FOffset.Y := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartShadow.SetTransparency(AValue: TChartTransparency);
+begin
+  if FTransparency = AValue then exit;
+  FTransparency := AValue;
   StyleChanged(Self);
 end;
 

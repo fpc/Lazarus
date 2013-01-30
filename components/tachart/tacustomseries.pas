@@ -66,6 +66,7 @@ type
     function GetShowInLegend: Boolean; override;
     procedure SetActive(AValue: Boolean); override;
     procedure SetDepth(AValue: TChartDistance); override;
+    procedure SetShadow(AValue: TChartShadow); override;
     procedure SetShowInLegend(AValue: Boolean); override;
     procedure SetTitle(AValue: String); virtual;
     procedure SetTransparency(AValue: TChartTransparency); override;
@@ -118,10 +119,11 @@ type
 
   published
     property Legend: TChartSeriesLegend read FLegend write SetLegend;
-    property Transparency;
+    property Shadow;
     property ShowInLegend: Boolean
       read GetShowInLegend write SetShowInLegend stored false default true;
       deprecated;
+    property Transparency;
   end;
 
   TChartGetMarkEvent = procedure (
@@ -323,12 +325,14 @@ begin
   FAxisIndexX := DEF_AXIS_INDEX;
   FAxisIndexY := DEF_AXIS_INDEX;
   FLegend := TChartSeriesLegend.Create(FChart);
+  FShadow := TChartShadow.Create(FChart);
 end;
 
 destructor TCustomChartSeries.Destroy;
 begin
   FreeAndNil(FLegend);
-  inherited Destroy;
+  FreeAndNil(FShadow);
+  inherited;
 end;
 
 function TCustomChartSeries.GetAxisX: TChartAxis;
@@ -518,6 +522,13 @@ procedure TCustomChartSeries.SetParentComponent(AParent: TComponent);
 begin
   if not (csLoading in ComponentState) then
     (AParent as TChart).AddSeries(Self);
+end;
+
+procedure TCustomChartSeries.SetShadow(AValue: TChartShadow);
+begin
+  if FShadow = AValue then exit;
+  FShadow.Assign(AValue);
+  UpdateParentChart;
 end;
 
 procedure TCustomChartSeries.SetShowInLegend(AValue: Boolean);
