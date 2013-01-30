@@ -31,7 +31,7 @@ interface
 
 uses
   types, math, contnrs, Classes, SysUtils, FPCanvas, FPimage,
-  LazLogger, ComCtrls, Controls, Graphics, LCLType;
+  LazLogger, AvgLvlTree, ComCtrls, Controls, Graphics, LCLType;
 
 type
 
@@ -248,6 +248,7 @@ type
     procedure SetCaption(AValue: string);
     procedure SetColor(AValue: TFPColor);
   public
+    Data: Pointer; // free for user data
     constructor Create(TheGraph: TLvlGraph; TheCaption: string);
     destructor Destroy; override;
     procedure Clear;
@@ -273,16 +274,19 @@ type
 
   TLvlGraphEdge = class(TPersistent)
   private
+    FBackEdge: boolean;
     FSource: TLvlGraphNode;
     FTarget: TLvlGraphNode;
     FWeight: single;
     procedure SetWeight(AValue: single);
   public
+    Data: Pointer; // free for user data
     constructor Create(TheSource: TLvlGraphNode; TheTarget: TLvlGraphNode);
     destructor Destroy; override;
     property Source: TLvlGraphNode read FSource;
     property Target: TLvlGraphNode read FTarget;
     property Weight: single read FWeight write SetWeight;
+    property BackEdge: boolean read FBackEdge; // edge was disabled to break a cycle
   end;
 
   { TLvlGraph }
@@ -293,6 +297,7 @@ type
     FNodes: TFPList; // list of TLvlGraphNode
     function GetNodes(Index: integer): TLvlGraphNode;
   public
+    Data: Pointer; // free for user data
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
@@ -305,6 +310,7 @@ type
       CreateIfNotExists: boolean): TLvlGraphEdge;
     function GetEdge(Source, Target: TLvlGraphNode;
       CreateIfNotExists: boolean): TLvlGraphEdge;
+    procedure UpdateLevels;
   end;
 
   { TCustomLvlGraphControl }
@@ -313,11 +319,17 @@ type
     procedure FGraphInvalidate(Sender: TObject);
   private
     FGraph: TLvlGraph;
+  protected
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+    procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure EraseBackground({%H-}DC: HDC); override;
     property Graph: TLvlGraph read FGraph;
   end;
+
+  { TLvlGraphControl }
 
   TLvlGraphControl = class(TCustomLvlGraphControl)
   published
@@ -442,6 +454,21 @@ begin
   Invalidate;
 end;
 
+procedure TCustomLvlGraphControl.DoSetBounds(ALeft, ATop, AWidth,
+  AHeight: integer);
+begin
+  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+end;
+
+procedure TCustomLvlGraphControl.Paint;
+begin
+  inherited Paint;
+  // background
+  Canvas.Brush.Style:=bsSolid;
+  Canvas.Brush.Color:=Color;
+  Canvas.FillRect(ClientRect);
+end;
+
 constructor TCustomLvlGraphControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -453,6 +480,11 @@ destructor TCustomLvlGraphControl.Destroy;
 begin
   FreeAndNil(FGraph);
   inherited Destroy;
+end;
+
+procedure TCustomLvlGraphControl.EraseBackground(DC: HDC);
+begin
+  // Paint paints all, no need to erase background
 end;
 
 { TLvlGraph }
@@ -527,6 +559,112 @@ begin
   if Result<>nil then exit;
   if CreateIfNotExists then
     Result:=TLvlGraphEdge.Create(Source,Target);
+end;
+
+procedure TLvlGraph.UpdateLevels;
+var
+  RemainingInEdgeCounts: TPointerToPointerTree;
+  InNodes: TAvgLvlTree;
+  VisitedNodes: TAvgLvlTree;
+
+  function GetRemainingInEdgeCounts(Node: TLvlGraphNode): PtrInt;
+  begin
+    Result:={%H-}PtrInt(RemainingInEdgeCounts[Node]);
+  end;
+
+  procedure DecRemainingInEdgeCount(Node: TLvlGraphNode);
+  var
+    i: PtrInt;
+  begin
+    i:=GetRemainingInEdgeCounts(Node)-1;
+    RemainingInEdgeCounts[Node]:={%H-}Pointer(i);
+    if i=0 then
+      InNodes.Add(Node);
+  end;
+
+  function HasVisited(Node: TLvlGraphNode): boolean;
+  begin
+    Result:=VisitedNodes.Find(Node)<>nil;
+  end;
+
+var
+  i: Integer;
+  Node: TLvlGraphNode;
+  j: Integer;
+  AVLNode: TAvgLvlTreeNode;
+  Edge: TLvlGraphEdge;
+  BestNode: TLvlGraphNode;
+begin
+  RemainingInEdgeCounts:=TPointerToPointerTree.Create; // number of InEdges of not visited nodes
+  InNodes:=TAvgLvlTree.Create; // nodes with RemainingInEdgeCount=0, not yet visited
+  VisitedNodes:=TAvgLvlTree.Create; // processed nodes (RemainingInEdgeCount=0)
+  try
+    // find start nodes with InEdgeCount=0
+    // clear BackEdge flags
+    // init RemainingInEdgeCounts
+    for i:=0 to NodeCount-1 do begin
+      Node:=Nodes[i];
+      if Node.InEdgeCount=0 then
+        InNodes.Add(Node);
+      RemainingInEdgeCounts[Node]:={%H-}Pointer(PtrInt(Node.InEdgeCount));
+      for j:=0 to Node.InEdgeCount-1 do begin
+        Edge:=Node.InEdges[j];
+        Edge.fBackEdge:=false;
+        if Edge.Source=Node then begin
+          // edge Source=Target
+          Edge.fBackEdge:=true;
+          DecRemainingInEdgeCount(Node);
+        end;
+      end;
+    end;
+    while VisitedNodes.Count<NodeCount do begin
+      if InNodes.Count=0 then begin
+        // all nodes have InEdges => all nodes in cycles
+        // find a not visited node with the smallest number of active InEdges
+        BestNode:=nil;
+        for i:=0 to NodeCount-1 do begin
+          Node:=Nodes[i];
+          if HasVisited(Node) then continue;
+          if (BestNode=nil)
+          or (GetRemainingInEdgeCounts(BestNode)>GetRemainingInEdgeCounts(Node))
+          then
+            BestNode:=Node;
+        end;
+        // disable all InEdges to get a cycle free node
+        for i:=0 to BestNode.InEdgeCount-1 do begin
+          Edge:=BestNode.InEdges[i];
+          if Edge.BackEdge then continue;
+          if HasVisited(Edge.Source) then continue;
+          Edge.fBackEdge:=true;
+          DecRemainingInEdgeCount(BestNode); // this adds BestNode to InNodes
+        end;
+        // now InNodes contains BestNode
+      end;
+      // get next node with no active InEdges
+      AVLNode:=InNodes.FindLowest;
+      Node:=TLvlGraphNode(AVLNode.Data);
+      InNodes.Delete(AVLNode);
+      // mark Node as visited
+      VisitedNodes.Add(Node);
+      // set level to the maximum of all InEdges +1
+      Node.FLevel:=0;
+      for i:=0 to Node.InEdgeCount-1 do begin
+        Edge:=Node.InEdges[i];
+        if not Edge.BackEdge then
+          Node.FLevel:=Max(Node.FLevel,Edge.Source.Level+1);
+      end;
+      // forget all out edges
+      for i:=0 to Node.OutEdgeCount-1 do begin
+        Edge:=Node.OutEdges[i];
+        if Edge.BackEdge then continue;
+        DecRemainingInEdgeCount(Edge.Target);
+      end;
+    end;
+  finally
+    RemainingInEdgeCounts.Free;
+    InNodes.Free;
+    VisitedNodes.Free;
+  end;
 end;
 
 { TLvlGraphEdge }
