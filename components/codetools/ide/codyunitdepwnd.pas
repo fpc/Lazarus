@@ -16,6 +16,8 @@ uses
 resourcestring
   rsSelectAUnit = 'Select an unit';
   rsClose = 'Close';
+const
+  GroupPrefixProject = '-Project-';
 type
   TUDDUsesType = (
     uddutInterfaceUses,
@@ -51,12 +53,15 @@ type
     fCircleCategories: array[TUDDUsesType] of TCircleDiagramCategory;
     procedure SetCurrentUnit(AValue: TUGUnit);
     procedure SetIdleConnected(AValue: boolean);
+    procedure CreateGroups;
+    procedure CreateProjectGroup(AProject: TLazProject);
     procedure AddStartAndTargetUnits;
     procedure UpdateAll;
     procedure UpdateCurUnitDiagram;
     procedure UpdateCurUnitTreeView;
     function NodeTextToUnit(NodeText: string): TUGUnit;
     function UGUnitToNodeText(UGUnit: TUGUnit): string;
+    function GetFPCSrcDir: string;
   public
     CurUnitDiagram: TCircleDiagramControl;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -160,6 +165,7 @@ var
 begin
   UsesGraph.Parse(true,Completed,200);
   if Completed then begin
+    CreateGroups;
     IdleConnected:=false;
     ProgressBar1.Visible:=false;
     ProgressBar1.Style:=pbstNormal;
@@ -181,6 +187,49 @@ begin
     Application.AddOnIdleHandler(@OnIdle)
   else
     Application.RemoveOnIdleHandler(@OnIdle);
+end;
+
+procedure TUnitDependenciesDialog.CreateGroups;
+var
+  Node: TAVLTreeNode;
+  CurUnit: TUGGroupUnit;
+  FPCSrcDir: String;
+begin
+  CreateProjectGroup(LazarusIDE.ActiveProject);
+
+
+  FPCSrcDir:=AppendPathDelim(GetFPCSrcDir);
+
+  Node:=UsesGraph.FilesTree.FindLowest;
+  while Node<>nil do begin
+    CurUnit:=TUGGroupUnit(Node.Data);
+    if CompareFilenames(FPCSrcDir,LeftStr(CurUnit.Filename,length(FPCSrcDir)))=0
+    then begin
+      // a unit in the FPC sources
+
+    end;
+    if CurUnit.Group=nil then begin
+
+    end;
+    Node:=UsesGraph.FilesTree.FindSuccessor(Node);
+  end;
+end;
+
+procedure TUnitDependenciesDialog.CreateProjectGroup(AProject: TLazProject);
+var
+  Grp: TUGGroup;
+  i: Integer;
+  Filename: String;
+  CurUnit: TUGUnit;
+begin
+  if AProject=nil then exit;
+  Grp:=Groups.GetGroup(GroupPrefixProject,true);
+  for i:=0 to AProject.FileCount-1 do begin
+    Filename:=AProject.Files[i].Filename;
+    CurUnit:=UsesGraph.GetUnit(Filename,false);
+    if CurUnit is TUGGroupUnit then
+      Grp.AddUnit(TUGGroupUnit(CurUnit));
+  end;
 end;
 
 procedure TUnitDependenciesDialog.SetCurrentUnit(AValue: TUGUnit);
@@ -309,6 +358,14 @@ end;
 function TUnitDependenciesDialog.UGUnitToNodeText(UGUnit: TUGUnit): string;
 begin
   Result:=ExtractFileName(UGUnit.Filename);
+end;
+
+function TUnitDependenciesDialog.GetFPCSrcDir: string;
+var
+  UnitSet: TFPCUnitSetCache;
+begin
+  UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
+  Result:=UnitSet.FPCSourceDirectory;
 end;
 
 {$R *.lfm}

@@ -476,8 +476,8 @@ begin
     ,aSize.cx,aSize.cy);
 
   // radius
-  fInnerRadius:=0.25*Min(ClientWidth,ClientHeight);
-  fOuterRadius:=1.1*InnerRadius;
+  fInnerRadius:=0.24*Min(ClientWidth,ClientHeight);
+  fOuterRadius:=1.2*InnerRadius;
 
   // degrees
   TotalSize:=0.0;
