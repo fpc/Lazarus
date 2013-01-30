@@ -115,11 +115,7 @@ begin
     end;
   end;
   for i := 0 to ADataPoints.Count - 1 do
-    with sgData.Rows[i + 1] do begin
-      Delimiter := '|';
-      StrictDelimiter := true;
-      DelimitedText := '|' + ADataPoints[i];
-  end;
+    Split('|' + ADataPoints[i], sgData.Rows[i + 1])
 end;
 
 procedure TDataPointsEditorForm.miDeleteRowClick(Sender: TObject);
