@@ -29,7 +29,7 @@
     <License Value="GPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="59">
+    <Files Count="60">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -267,6 +267,10 @@
         <Filename Value="ctloadlaz.pas"/>
         <UnitName Value="ctloadlaz"/>
       </Item59>
+      <Item60>
+        <Filename Value="ctunitgroupgraph.pas"/>
+        <UnitName Value="ctunitgroupgraph"/>
+      </Item60>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

@@ -131,8 +131,8 @@ type
     property TargetFilesTree: TAVLTree read FTargetFiles; // tree of TUGUnit sorted for Filename
     property TargetAll: boolean read FTargetAll write FTargetAll;
 
-    property UnitClass: TUGUnitClass read FUnitClass;
-    property UsesClass: TUGUsesClass read FUsesClass;
+    property UnitClass: TUGUnitClass read FUnitClass write FUnitClass;
+    property UsesClass: TUGUsesClass read FUsesClass write FUsesClass;
   end;
 
 function CompareUGUnitFilenames(UGUnit1, UGUnit2: Pointer): integer;
