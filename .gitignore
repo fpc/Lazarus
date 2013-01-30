@@ -203,6 +203,10 @@ components/tachart/demo/line/lib
 components/tachart/demo/listbox/*.exe
 components/tachart/demo/listbox/*.lps
 components/tachart/demo/listbox/lib
+components/tachart/demo/manhattan/*.exe
+components/tachart/demo/manhattan/*.lps
+components/tachart/demo/manhattan/*.res
+components/tachart/demo/manhattan/lib
 components/tachart/demo/multi/*.exe
 components/tachart/demo/multi/*.lps
 components/tachart/demo/multi/lib
