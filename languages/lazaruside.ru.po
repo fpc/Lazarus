@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-01-07 16:21+0400\n"
+"PO-Revision-Date: 2013-01-31 02:35+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2244,6 +2244,104 @@ msgstr "Маркер"
 msgid "Highlight of Word under Caret"
 msgstr "Подсветка текущего слова под курсором"
 
+#: lazarusidestrconsts.dlgmarkupuserdefined
+msgid "User defined words"
+msgstr "Пользовательские слова"
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddelcaption
+msgctxt "lazarusidestrconsts.dlgmarkupuserdefineddelcaption"
+msgid "Delete"
+msgstr "Удалить"
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddelprompt
+msgid "Delete list \"%s\"?"
+msgstr "Удалить список \"%s\"?"
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
+msgid "Add Word or Term"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
+msgid "Remove Word or Term"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
+msgid "Toggle Word or Term"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
+msgid "Duplicate Term"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedduplicatemsg
+msgid "The term %s already exists. Duplicates will be removed when the list is saved."
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedlistdel
+msgid "Delete list"
+msgstr "Удалить список"
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedlistname
+msgctxt "lazarusidestrconsts.dlgmarkupuserdefinedlistname"
+msgid "Name"
+msgstr "Имя"
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedlistnew
+msgid "Add list"
+msgstr "Добавить список"
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedmatchcase
+msgid "Case sensitive"
+msgstr "Учитывать регистр"
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedmatchendbound
+msgid "Word bound at end"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedmatchstartbound
+msgid "Word bound at start"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylen
+msgid "Ignore bounds for terms longer than"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylenselect
+msgid "selection"
+msgstr "выделение"
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylenword
+msgid "current word"
+msgstr "текущее слово"
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeyopts
+msgid "Settings for terms added by key"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeysmartselect
+msgid "Smart match selection bounds"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewname
+msgid "New list"
+msgstr "Новый список"
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednolists
+msgid "No lists"
+msgstr "Нет списков"
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednolistssel
+msgid "Select ..."
+msgstr "Выбрать ..."
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
+msgid "Key Settings"
+msgstr "Параметры клавиш"
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedpagemain
+msgid "Main settings"
+msgstr "Основные параметры"
+
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 #| msgid "Ignore bounds for words longer than"
 msgid "Match word boundaries for words up to this length:"
@@ -2787,10 +2885,6 @@ msgstr "Постоянное выделение"
 #: lazarusidestrconsts.dlgpersistentcursor
 msgid "Persistent cursor"
 msgstr "Постоянный курсор"
-
-#: lazarusidestrconsts.dlgpldpackagegroup
-msgid "Package group"
-msgstr "Группа пакетов"
 
 #: lazarusidestrconsts.dlgpoapplication
 msgid "Application"
@@ -13815,18 +13909,10 @@ msgstr "Невозможно прочитать файл пакета %s%s%s.%s�
 msgid "Play"
 msgstr "Воспроизвести"
 
-#: lazarusidestrconsts.lispldexists
-msgid "Exists"
-msgstr "Имеется"
-
 #: lazarusidestrconsts.lispldglobal
 msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr "Глобальные"
-
-#: lazarusidestrconsts.lispldonlyexistingfiles
-msgid "Only existing files"
-msgstr "Только существующие файлы"
 
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
@@ -16696,6 +16782,22 @@ msgstr "Использовать пакет %s в проекте"
 msgid "Use package in project"
 msgstr "Использовать пакет в проекте"
 
+#: lazarusidestrconsts.lisuserdefinedmarkupkeyadd
+msgid "Add to list \"%s\""
+msgstr "Добавить в список \"%s\""
+
+#: lazarusidestrconsts.lisuserdefinedmarkupkeygroup
+msgid "User defined word markup"
+msgstr ""
+
+#: lazarusidestrconsts.lisuserdefinedmarkupkeyremove
+msgid "Remove from list \"%s\""
+msgstr "Удалить из списка \"%s\""
+
+#: lazarusidestrconsts.lisuserdefinedmarkupkeytoggle
+msgid "Toggle on list \"%s\""
+msgstr "Переключить для списка \"%s\""
+
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Домашний каталог пользователя"
@@ -17001,6 +17103,34 @@ msgstr "Вы не можете пересобрать Lazarus при отлад�
 msgctxt "lazarusidestrconsts.locwndsrceditor"
 msgid "Source Editor"
 msgstr "Редактор исходного кода"
+
+#: lazarusidestrconsts.lrsplddeleteselected
+msgid "Delete selected"
+msgstr "Удалить выделенные"
+
+#: lazarusidestrconsts.lrspldinvalid
+msgid "invalid"
+msgstr "некорректен"
+
+#: lazarusidestrconsts.lrspldlpkfileinvalid
+msgid "lpk file invalid (%s)"
+msgstr "некорректные файлы LPK (%s)"
+
+#: lazarusidestrconsts.lrspldlpkfilevalid
+msgid "lpk file valid (%s)"
+msgstr "корректные файлы LPK (%s)"
+
+#: lazarusidestrconsts.lrspldunabletodeletefile
+msgid "Unable to delete file \"%s\""
+msgstr "Невозможно удалить файл \"%s\""
+
+#: lazarusidestrconsts.lrspldvalid
+msgid "valid"
+msgstr "корректен"
+
+#: lazarusidestrconsts.lrsrescanlplfiles
+msgid "Rescan lpl files"
+msgstr "Пересмотреть файлы LPL"
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"

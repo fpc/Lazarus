@@ -2139,6 +2139,104 @@ msgstr "Merkattu väri"
 msgid "Highlight of Word under Caret"
 msgstr "Tekstikursorin kohdalla olevan sanan korostus"
 
+#: lazarusidestrconsts.dlgmarkupuserdefined
+msgid "User defined words"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddelcaption
+msgctxt "lazarusidestrconsts.dlgmarkupuserdefineddelcaption"
+msgid "Delete"
+msgstr "Poista"
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddelprompt
+msgid "Delete list \"%s\"?"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
+msgid "Add Word or Term"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
+msgid "Remove Word or Term"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
+msgid "Toggle Word or Term"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
+msgid "Duplicate Term"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedduplicatemsg
+msgid "The term %s already exists. Duplicates will be removed when the list is saved."
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedlistdel
+msgid "Delete list"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedlistname
+msgctxt "lazarusidestrconsts.dlgmarkupuserdefinedlistname"
+msgid "Name"
+msgstr "Nimi"
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedlistnew
+msgid "Add list"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedmatchcase
+msgid "Case sensitive"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedmatchendbound
+msgid "Word bound at end"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedmatchstartbound
+msgid "Word bound at start"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylen
+msgid "Ignore bounds for terms longer than"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylenselect
+msgid "selection"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylenword
+msgid "current word"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeyopts
+msgid "Settings for terms added by key"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeysmartselect
+msgid "Smart match selection bounds"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewname
+msgid "New list"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednolists
+msgid "No lists"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednolistssel
+msgid "Select ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
+msgid "Key Settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedpagemain
+msgid "Main settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match word boundaries for words up to this length:"
 msgstr "Käytä sanan rajoja tähän pituuteen saakka:"
@@ -2662,10 +2760,6 @@ msgstr "Pysyvä lohko"
 #: lazarusidestrconsts.dlgpersistentcursor
 msgid "Persistent cursor"
 msgstr "Pysyvä kursori"
-
-#: lazarusidestrconsts.dlgpldpackagegroup
-msgid "Package group"
-msgstr "Pakettiryhmä"
 
 #: lazarusidestrconsts.dlgpoapplication
 msgid "Application"
@@ -13326,18 +13420,10 @@ msgstr "Paketin %s%s%s lukeminen ei onnistu.%sVirhe: %s"
 msgid "Play"
 msgstr ""
 
-#: lazarusidestrconsts.lispldexists
-msgid "Exists"
-msgstr "On olemassa"
-
 #: lazarusidestrconsts.lispldglobal
 msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr "Yleinen"
-
-#: lazarusidestrconsts.lispldonlyexistingfiles
-msgid "Only existing files"
-msgstr "Vain olemassaolevat tiedostot"
 
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
@@ -16152,6 +16238,22 @@ msgstr "Käytä pakettia %s projektissa"
 msgid "Use package in project"
 msgstr "Käytä pakettia projektissa"
 
+#: lazarusidestrconsts.lisuserdefinedmarkupkeyadd
+msgid "Add to list \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lisuserdefinedmarkupkeygroup
+msgid "User defined word markup"
+msgstr ""
+
+#: lazarusidestrconsts.lisuserdefinedmarkupkeyremove
+msgid "Remove from list \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lisuserdefinedmarkupkeytoggle
+msgid "Toggle on list \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Käyttäjän kotihakemisto"
@@ -16450,6 +16552,34 @@ msgstr "Lazarusta ei voi koota kun ohjelmaa ajetaan tai käännetään."
 msgctxt "lazarusidestrconsts.locwndsrceditor"
 msgid "Source Editor"
 msgstr "Lähdekoodi-editori"
+
+#: lazarusidestrconsts.lrsplddeleteselected
+msgid "Delete selected"
+msgstr ""
+
+#: lazarusidestrconsts.lrspldinvalid
+msgid "invalid"
+msgstr ""
+
+#: lazarusidestrconsts.lrspldlpkfileinvalid
+msgid "lpk file invalid (%s)"
+msgstr ""
+
+#: lazarusidestrconsts.lrspldlpkfilevalid
+msgid "lpk file valid (%s)"
+msgstr ""
+
+#: lazarusidestrconsts.lrspldunabletodeletefile
+msgid "Unable to delete file \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lrspldvalid
+msgid "valid"
+msgstr ""
+
+#: lazarusidestrconsts.lrsrescanlplfiles
+msgid "Rescan lpl files"
+msgstr ""
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"

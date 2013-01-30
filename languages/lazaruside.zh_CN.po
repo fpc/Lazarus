@@ -2266,6 +2266,104 @@ msgstr "书签颜色"
 msgid "Highlight of Word under Caret"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmarkupuserdefined
+msgid "User defined words"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddelcaption
+msgctxt "lazarusidestrconsts.dlgmarkupuserdefineddelcaption"
+msgid "Delete"
+msgstr "删除"
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddelprompt
+msgid "Delete list \"%s\"?"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
+msgid "Add Word or Term"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
+msgid "Remove Word or Term"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
+msgid "Toggle Word or Term"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
+msgid "Duplicate Term"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedduplicatemsg
+msgid "The term %s already exists. Duplicates will be removed when the list is saved."
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedlistdel
+msgid "Delete list"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedlistname
+msgctxt "lazarusidestrconsts.dlgmarkupuserdefinedlistname"
+msgid "Name"
+msgstr "名称"
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedlistnew
+msgid "Add list"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedmatchcase
+msgid "Case sensitive"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedmatchendbound
+msgid "Word bound at end"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedmatchstartbound
+msgid "Word bound at start"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylen
+msgid "Ignore bounds for terms longer than"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylenselect
+msgid "selection"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylenword
+msgid "current word"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeyopts
+msgid "Settings for terms added by key"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeysmartselect
+msgid "Smart match selection bounds"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewname
+msgid "New list"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednolists
+msgid "No lists"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednolistssel
+msgid "Select ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
+msgid "Key Settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedpagemain
+msgid "Main settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match word boundaries for words up to this length:"
 msgstr ""
@@ -2807,10 +2905,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgpersistentcursor
 msgid "Persistent cursor"
 msgstr ""
-
-#: lazarusidestrconsts.dlgpldpackagegroup
-msgid "Package group"
-msgstr "包分组"
 
 #: lazarusidestrconsts.dlgpoapplication
 msgid "Application"
@@ -14020,18 +14114,10 @@ msgstr "无法读取包文件 %s%s%s.%s错误: %s"
 msgid "Play"
 msgstr ""
 
-#: lazarusidestrconsts.lispldexists
-msgid "Exists"
-msgstr "存在"
-
 #: lazarusidestrconsts.lispldglobal
 msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr "全局"
-
-#: lazarusidestrconsts.lispldonlyexistingfiles
-msgid "Only existing files"
-msgstr "只在存在的文件"
 
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
@@ -16923,6 +17009,22 @@ msgstr ""
 msgid "Use package in project"
 msgstr ""
 
+#: lazarusidestrconsts.lisuserdefinedmarkupkeyadd
+msgid "Add to list \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lisuserdefinedmarkupkeygroup
+msgid "User defined word markup"
+msgstr ""
+
+#: lazarusidestrconsts.lisuserdefinedmarkupkeyremove
+msgid "Remove from list \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lisuserdefinedmarkupkeytoggle
+msgid "Toggle on list \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "用户主目录"
@@ -17228,6 +17330,34 @@ msgstr "在调试或编译时不能构建 Lazarus."
 msgctxt "lazarusidestrconsts.locwndsrceditor"
 msgid "Source Editor"
 msgstr "源代码编辑器"
+
+#: lazarusidestrconsts.lrsplddeleteselected
+msgid "Delete selected"
+msgstr ""
+
+#: lazarusidestrconsts.lrspldinvalid
+msgid "invalid"
+msgstr ""
+
+#: lazarusidestrconsts.lrspldlpkfileinvalid
+msgid "lpk file invalid (%s)"
+msgstr ""
+
+#: lazarusidestrconsts.lrspldlpkfilevalid
+msgid "lpk file valid (%s)"
+msgstr ""
+
+#: lazarusidestrconsts.lrspldunabletodeletefile
+msgid "Unable to delete file \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lrspldvalid
+msgid "valid"
+msgstr ""
+
+#: lazarusidestrconsts.lrsrescanlplfiles
+msgid "Rescan lpl files"
+msgstr ""
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"

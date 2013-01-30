@@ -2238,6 +2238,104 @@ msgstr "Markierungsfarbe"
 msgid "Highlight of Word under Caret"
 msgstr "Wort unter Cursor hervorheben"
 
+#: lazarusidestrconsts.dlgmarkupuserdefined
+msgid "User defined words"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddelcaption
+msgctxt "lazarusidestrconsts.dlgmarkupuserdefineddelcaption"
+msgid "Delete"
+msgstr "Löschen"
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddelprompt
+msgid "Delete list \"%s\"?"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
+msgid "Add Word or Term"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
+msgid "Remove Word or Term"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
+msgid "Toggle Word or Term"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
+msgid "Duplicate Term"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedduplicatemsg
+msgid "The term %s already exists. Duplicates will be removed when the list is saved."
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedlistdel
+msgid "Delete list"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedlistname
+msgctxt "lazarusidestrconsts.dlgmarkupuserdefinedlistname"
+msgid "Name"
+msgstr "Name"
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedlistnew
+msgid "Add list"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedmatchcase
+msgid "Case sensitive"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedmatchendbound
+msgid "Word bound at end"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedmatchstartbound
+msgid "Word bound at start"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylen
+msgid "Ignore bounds for terms longer than"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylenselect
+msgid "selection"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylenword
+msgid "current word"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeyopts
+msgid "Settings for terms added by key"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewbykeysmartselect
+msgid "Smart match selection bounds"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednewname
+msgid "New list"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednolists
+msgid "No lists"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinednolistssel
+msgid "Select ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
+msgid "Key Settings"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedpagemain
+msgid "Main settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 #, fuzzy
 #| msgid "Ignore bounds for words longer than"
@@ -2781,10 +2879,6 @@ msgstr "Persistenter Block"
 #: lazarusidestrconsts.dlgpersistentcursor
 msgid "Persistent cursor"
 msgstr "Persistenter Cursor"
-
-#: lazarusidestrconsts.dlgpldpackagegroup
-msgid "Package group"
-msgstr "Package-Gruppe"
 
 #: lazarusidestrconsts.dlgpoapplication
 msgid "Application"
@@ -13829,18 +13923,10 @@ msgstr "Kann Package-Datei %s%s%s nicht lesen.%sFehler: %s"
 msgid "Play"
 msgstr "Ausführen"
 
-#: lazarusidestrconsts.lispldexists
-msgid "Exists"
-msgstr "Vorhanden"
-
 #: lazarusidestrconsts.lispldglobal
 msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr "Allgemein"
-
-#: lazarusidestrconsts.lispldonlyexistingfiles
-msgid "Only existing files"
-msgstr "Nur vorhandene Dateien"
 
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
@@ -16716,6 +16802,22 @@ msgstr "Verwende Package %s in Projekt"
 msgid "Use package in project"
 msgstr "Verwende Package in Projekt"
 
+#: lazarusidestrconsts.lisuserdefinedmarkupkeyadd
+msgid "Add to list \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lisuserdefinedmarkupkeygroup
+msgid "User defined word markup"
+msgstr ""
+
+#: lazarusidestrconsts.lisuserdefinedmarkupkeyremove
+msgid "Remove from list \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lisuserdefinedmarkupkeytoggle
+msgid "Toggle on list \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Heimatverzeichnis des Users"
@@ -17020,6 +17122,34 @@ msgstr "Lazarus kann während des Debuggens oder Kompilierens nicht neu kompilie
 msgctxt "lazarusidestrconsts.locwndsrceditor"
 msgid "Source Editor"
 msgstr "Quelltexteditor"
+
+#: lazarusidestrconsts.lrsplddeleteselected
+msgid "Delete selected"
+msgstr ""
+
+#: lazarusidestrconsts.lrspldinvalid
+msgid "invalid"
+msgstr ""
+
+#: lazarusidestrconsts.lrspldlpkfileinvalid
+msgid "lpk file invalid (%s)"
+msgstr ""
+
+#: lazarusidestrconsts.lrspldlpkfilevalid
+msgid "lpk file valid (%s)"
+msgstr ""
+
+#: lazarusidestrconsts.lrspldunabletodeletefile
+msgid "Unable to delete file \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lrspldvalid
+msgid "valid"
+msgstr ""
+
+#: lazarusidestrconsts.lrsrescanlplfiles
+msgid "Rescan lpl files"
+msgstr ""
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
