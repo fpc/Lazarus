@@ -509,9 +509,9 @@ begin
     if AnOnlyWeakerOrEqual and (WeakerByBounds = wParam) then  // Entry can not be weaker
       continue;
 
-    if not ( ([WeakerByEnabled, WeakerByBounds, WeakerByCase] - [wEqual] = [wEntry]) or
-             ([WeakerByEnabled, WeakerByBounds, WeakerByCase] - [wEqual] = [wParam])
-           )
+    if ( ([WeakerByEnabled, WeakerByBounds, WeakerByCase] - [wEqual] = [wEntry]) or
+         ([WeakerByEnabled, WeakerByBounds, WeakerByCase] - [wEqual] = [wParam])
+       )
     then
       exit;
 
