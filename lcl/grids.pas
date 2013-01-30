@@ -109,7 +109,7 @@ type
     goCellHints,          // show individual cell hints
     goTruncCellHints,     // show cell hints if cell text is too long
     goCellEllipsis,       // show "..." if cell text is too long
-    goIgnoreRowContentForAutoAddRows//BB Also add a row (if AutoAddRows in Options) if last row is empty
+    goAutoAddRowsSkipContentCheck//BB Also add a row (if AutoAddRows in Options) if last row is empty
   );
   TGridOptions = set of TGridOption;
 
@@ -2474,7 +2474,7 @@ begin
   end else begin
     EditorHide;
   end;
-  if goIgnoreRowContentForAutoAddRows in Options then
+  if goAutoAddRowsSkipContentCheck in Options then
     FRowAutoInserted := False;
   VisualChange;
 end;
@@ -6636,7 +6636,7 @@ begin
         end else if (goAutoAddRows in Options) and (DeltaRow = 1) then begin
           //prevent selecting multiple cells when user presses Shift
           Sh := False;
-          if (goIgnoreRowContentForAutoAddRows in Options) or (not IsEmptyRow(Row)) then MoveSel(True, DeltaCol, DeltaRow);
+          if (goAutoAddRowsSkipContentCheck in Options) or (not IsEmptyRow(Row)) then MoveSel(True, DeltaCol, DeltaRow);
           Key := 0;
           PreserveRowAutoInserted := True;
         end else
@@ -6944,11 +6944,11 @@ begin
     NRow:=FRow+DRow;
     if (goEditing in options) and (goAutoAddRows in options) then begin
       if (DRow=1) and (NRow>=RowCount) then begin
-        // If the last row has data or goIgnoreRowContentForAutoAddRows is set, add a new row.
+        // If the last row has data or goAutoAddRowsSkipContentCheck is set, add a new row.
         if (not FRowAutoInserted) then begin
-          if (goIgnoreRowContentForAutoAddRows in Options) or (not IsEmptyRow(FRow)) then begin
+          if (goAutoAddRowsSkipContentCheck in Options) or (not IsEmptyRow(FRow)) then begin
             RowCount:=RowCount+1;
-            if not (goIgnoreRowContentForAutoAddRows in Options) then FRowAutoInserted:=True;
+            if not (goAutoAddRowsSkipContentCheck in Options) then FRowAutoInserted:=True;
           end;
         end;
       end
@@ -8358,7 +8358,7 @@ begin
     cfg.SetValue(Path+'goRelaxedRowSelect/value', goRelaxedRowSelect in options);
     cfg.SetValue(Path+'goDblClickAutoSize/value', goDblClickAutoSize in options);
     Cfg.SetValue(Path+'goSmoothScroll/value', goSmoothScroll in Options);
-    Cfg.SetValue(Path+'goIgnoreRowContentForAutoAddRows/value', goIgnoreRowContentForAutoAddRows in Options);
+    Cfg.SetValue(Path+'goAutoAddRowsSkipContentCheck/value', goAutoAddRowsSkipContentCheck in Options);
   end;
 
   Cfg.SetValue('grid/saveoptions/position', soPosition in SaveOptions);
@@ -8502,7 +8502,7 @@ begin
       GetValue('goColSpanning', goColSpanning);
       GetValue('goRelaxedRowSelect',goRelaxedRowSelect);
       GetValue('goDblClickAutoSize',goDblClickAutoSize);
-      GetValue('goIgnoreRowContentForAutoAddRows',goIgnoreRowContentForAutoAddRows);
+      GetValue('goAutoAddRowsSkipContentCheck',goAutoAddRowsSkipContentCheck);
       if Version>=2 then begin
         GetValue('goSmoothScroll',goSmoothScroll);
       end;
