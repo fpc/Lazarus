@@ -65,6 +65,7 @@ type
     procedure SetSize(AValue: single);
     procedure UpdateLayout;
   public
+    Data: Pointer; // free to use by user
     constructor Create(TheCategory: TCircleDiagramCategory);
     destructor Destroy; override;
     property Category: TCircleDiagramCategory read FCategory;
@@ -83,7 +84,7 @@ type
     FDiagram: TCustomCircleDiagramControl;
     FEndDegree16: single;
     FMinSize: single;
-    fItems: TObjectList; // list of TCircleDiagramItem
+    fItems: TFPList; // list of TCircleDiagramItem
     FSize: single;
     FStartDegree16: single;
     function GetItems(Index: integer): TCircleDiagramItem;
@@ -94,8 +95,10 @@ type
     procedure Invalidate;
     procedure InternalRemoveItem(Item: TCircleDiagramItem);
   public
+    Data: Pointer; // free to use by user
     constructor Create(TheDiagram: TCustomCircleDiagramControl);
     destructor Destroy; override;
+    procedure Clear;
     function InsertItem(Index: integer; aCaption: string): TCircleDiagramItem;
     function AddItem(aCaption: string): TCircleDiagramItem;
     property Diagram: TCustomCircleDiagramControl read FDiagram;
@@ -356,6 +359,7 @@ procedure TCustomCircleDiagramControl.DoSetBounds(ALeft, ATop, AWidth,
   AHeight: integer);
 begin
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+  UpdateLayout;
   UpdateScrollBar;
 end;
 
@@ -514,6 +518,7 @@ begin
     end;
   end;
 
+  Invalidate;
   WriteDebugReport('TCustomCircleDiagramControl.UpdateLayout');
 end;
 
@@ -629,6 +634,7 @@ end;
 
 procedure TCircleDiagramCategory.InternalRemoveItem(Item: TCircleDiagramItem);
 begin
+  Item.FCategory:=nil;
   fItems.Remove(Item);
   UpdateLayout;
 end;
@@ -637,7 +643,7 @@ constructor TCircleDiagramCategory.Create(
   TheDiagram: TCustomCircleDiagramControl);
 begin
   FDiagram:=TheDiagram;
-  fItems:=TObjectList.Create(true);
+  fItems:=TFPList.Create;
   FMinSize:=DefaultCategoryMinSize;
 end;
 
@@ -645,8 +651,23 @@ destructor TCircleDiagramCategory.Destroy;
 begin
   if Diagram<>nil then
     Diagram.InternalRemoveCategory(Self);
+  Clear;
   FreeAndNil(fItems);
   inherited Destroy;
+end;
+
+procedure TCircleDiagramCategory.Clear;
+begin
+  if Count=0 then exit;
+  if Diagram<>nil then
+    Diagram.BeginUpdate;
+  try
+    while Count>0 do
+      Items[Count-1].Free;
+  finally
+    if Diagram<>nil then
+      Diagram.EndUpdate;
+  end;
 end;
 
 function TCircleDiagramCategory.InsertItem(Index: integer; aCaption: string
