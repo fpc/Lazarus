@@ -372,10 +372,14 @@ begin
     end;
   end;
   FillAncestorListBox(NewClass,NewAncestorsListBox);
-  if NewClass<>nil then
-    NewClassComboBox.Text:=NewClass.ClassName
-  else
+  if NewClass<>nil then begin
+    NewClassComboBox.Text:=NewClass.ClassName;
+    BtnPanel.OKButton.Enabled:=true;
+  end
+  else begin
     NewClassComboBox.Text:='';
+    BtnPanel.OKButton.Enabled:=false;
+  end;
 end;
 
 procedure TChangeClassDlg.FillAncestorListBox(AClass: TClass; AListBox: TListBox);
