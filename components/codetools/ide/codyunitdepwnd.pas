@@ -12,12 +12,12 @@ uses
 
 resourcestring
   a='';
-  rsSelectAUnit = 'Select a unit';
+  rsSelectAUnit = 'Select an unit';
   rsClose = 'Close';
 
 const
   FullCircle16 = 360*16;
-  DefaultCategoryGapDegree16 = 0.04*FullCircle16;
+  DefaultCategoryGapDegree16 = 0.02*FullCircle16;
   DefaultFirstCategoryDegree16 = 0;
   DefaultCategoryMinSize = 1.0;
   DefaultItemSize = 1.0;
@@ -406,6 +406,7 @@ var
   Cat: TCircleDiagramCategory;
 begin
   Cat:=Categories[i];
+  Canvas.Brush.Color:=Cat.Color;
   RingSector(Canvas,Center.X-OuterRadius,Center.Y-OuterRadius,
     Center.X+OuterRadius,Center.Y+OuterRadius,
     single(InnerRadius)/single(OuterRadius),
@@ -486,7 +487,7 @@ begin
     ,aSize.cx,aSize.cy);
 
   // radius
-  fInnerRadius:=0.5*Min(ClientWidth,ClientHeight);
+  fInnerRadius:=0.25*Min(ClientWidth,ClientHeight);
   fOuterRadius:=1.1*InnerRadius;
 
   // degrees
@@ -756,10 +757,15 @@ begin
   with CurUnitDiagram do begin
     Name:='CurUnitDiagram';
     Align:=alClient;
-    fCircleCategories[uddutInterfaceUses]:=AddCategory('Interface uses');
-    fCircleCategories[uddutImplementationUses]:=AddCategory('Implementation uses');
+    FirstCategoryDegree16:=90*16;
     fCircleCategories[uddutUsedByInterface]:=AddCategory('Used by interfaces');
+    fCircleCategories[uddutUsedByInterface].Color:=clOlive;
     fCircleCategories[uddutUsedByImplementation]:=AddCategory('Used by implementations');
+    fCircleCategories[uddutUsedByImplementation].Color:=clMaroon;
+    fCircleCategories[uddutImplementationUses]:=AddCategory('Implementation');
+    fCircleCategories[uddutImplementationUses].Color:=clRed;
+    fCircleCategories[uddutInterfaceUses]:=AddCategory('Interface');
+    fCircleCategories[uddutInterfaceUses].Color:=clGreen;
     CenterCaption:=rsSelectAUnit;
     Parent:=Self;
   end;
@@ -842,22 +848,24 @@ procedure TUnitDependenciesDialog.UpdateCurUnitDiagram;
     s: String;
   begin
     Cnt:=0;
-    for i:=0 to List.Count-1 do begin
-      CurUses:=TUGUses(List[i]);
-      if CurUses.InImplementation<>(t in [uddutImplementationUses,uddutUsedByImplementation])
-      then continue;
-      if t in [uddutInterfaceUses,uddutImplementationUses] then
-        CurUnit:=CurUses.Owner
-      else
-        CurUnit:=CurUses.UsesUnit;
-      s:=ExtractFileName(CurUnit.Filename);
-      debugln(['UpdateCircleCategory ',s,' ',dbgs(t)]);
-      if fCircleCategories[t].Count>Cnt then begin
-        Item:=fCircleCategories[t].Items[Cnt];
-        Item.Caption:=s
-      end else
-        Item:=fCircleCategories[t].AddItem(s);
-      inc(Cnt);
+    if List<>nil then begin
+      for i:=0 to List.Count-1 do begin
+        CurUses:=TUGUses(List[i]);
+        if CurUses.InImplementation<>(t in [uddutImplementationUses,uddutUsedByImplementation])
+        then continue;
+        if t in [uddutInterfaceUses,uddutImplementationUses] then
+          CurUnit:=CurUses.Owner
+        else
+          CurUnit:=CurUses.UsesUnit;
+        s:=ExtractFileName(CurUnit.Filename);
+        debugln(['UpdateCircleCategory ',s,' ',dbgs(t)]);
+        if fCircleCategories[t].Count>Cnt then begin
+          Item:=fCircleCategories[t].Items[Cnt];
+          Item.Caption:=s
+        end else
+          Item:=fCircleCategories[t].AddItem(s);
+        inc(Cnt);
+      end;
     end;
     while fCircleCategories[t].Count>Cnt do
       fCircleCategories[t].Items[Cnt].Free;

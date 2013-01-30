@@ -95,7 +95,7 @@ type
   TUsesGraph = class
   private
     FFiles: TAVLTree; // tree of TUGUnit sorted for Filename
-    FStartFiles: TAVLTree; // tree of TUGUnit sorted for Filename
+    FQueuedFiles: TAVLTree; // tree of TUGUnit sorted for Filename
     FTargetAll: boolean;
     FTargetFiles: TAVLTree; // tree of TUGUnit sorted for Filename
     FTargetDirsValid: boolean;
@@ -122,8 +122,8 @@ type
     function UnitCanFindTarget(ExpFilename: string): boolean;
     function IsTargetDir(ExpDir: string): boolean;
 
-    property FilesTree: TAVLTree read FFiles; // tree of TUGUnit sorted for Filename
-    property StartFilesTree: TAVLTree read FStartFiles; // tree of TUGUnit sorted for Filename
+    property FilesTree: TAVLTree read FFiles; // tree of TUGUnit sorted for Filename (all parsed)
+    property QueuedFilesTree: TAVLTree read FQueuedFiles; // tree of TUGUnit sorted for Filename
     property TargetFilesTree: TAVLTree read FTargetFiles; // tree of TUGUnit sorted for Filename
     property TargetAll: boolean read FTargetAll write FTargetAll;
   end;
@@ -229,14 +229,14 @@ end;
 constructor TUsesGraph.Create;
 begin
   FFiles:=TAVLTree.Create(@CompareUGUnitFilenames);
-  FStartFiles:=TAVLTree.Create(@CompareUGUnitFilenames);
+  FQueuedFiles:=TAVLTree.Create(@CompareUGUnitFilenames);
   FTargetFiles:=TAVLTree.Create(@CompareUGUnitFilenames);
 end;
 
 destructor TUsesGraph.Destroy;
 begin
   Clear;
-  FreeAndNil(FStartFiles);
+  FreeAndNil(FQueuedFiles);
   FreeAndNil(FTargetFiles);
   FreeAndNil(FFiles);
   inherited Destroy;
@@ -244,7 +244,7 @@ end;
 
 procedure TUsesGraph.Clear;
 begin
-  FStartFiles.Clear; // all files of StartFiles are in Files too
+  FQueuedFiles.Clear; // all files of StartFiles are in Files too
   FTargetFiles.Clear; // all files of TargetFiles are in Files too
   FFiles.FreeAndClear;
 end;
@@ -256,17 +256,17 @@ var
 begin
   if FFiles.ConsistencyCheck<>0 then
     raise Exception.Create('FFiles.ConsistencyCheck');
-  if FStartFiles.ConsistencyCheck<>0 then
+  if FQueuedFiles.ConsistencyCheck<>0 then
     raise Exception.Create('FStartFiles.ConsistencyCheck');
 
-  AVLNode:=FStartFiles.FindLowest;
+  AVLNode:=FQueuedFiles.FindLowest;
   while AVLNode<>nil do begin
     AnUnit:=TUGUnit(AVLNode.Data);
     if AnUnit.Filename='' then
       raise Exception.Create('AnUnit without filename');
     if FFiles.FindKey(PChar(AnUnit.Filename),@CompareFilenameAndUGUnit)=nil then
       raise Exception.Create('startfile not in files: '+AnUnit.Filename);
-    AVLNode:=FStartFiles.FindSuccessor(AVLNode);
+    AVLNode:=FQueuedFiles.FindSuccessor(AVLNode);
   end;
 end;
 
@@ -296,19 +296,19 @@ var
   NewUnit: TUGUnit;
 begin
   if ExpFilename='' then exit;
-  if FStartFiles.FindKey(PChar(ExpFilename),@CompareFilenameAndUGUnit)<>nil then
+  if FQueuedFiles.FindKey(PChar(ExpFilename),@CompareFilenameAndUGUnit)<>nil then
     exit; // already a start file
   NewUnit:=GetUnit(ExpFilename,true);
   if ugufReached in NewUnit.Flags then exit; // already parsed
-  // add to FFiles and FStartFiles
+  // add to FFiles and FQueuedFiles
   //debugln(['TUsesGraph.AddStartUnit ',ExpFilename]);
-  FStartFiles.Add(NewUnit);
+  FQueuedFiles.Add(NewUnit);
 end;
 
 procedure TUsesGraph.AddTargetUnit(ExpFilename: string);
 begin
   if ExpFilename='' then exit;
-  if FStartFiles.FindKey(PChar(ExpFilename),@CompareFilenameAndUGUnit)<>nil then
+  if FQueuedFiles.FindKey(PChar(ExpFilename),@CompareFilenameAndUGUnit)<>nil then
     exit; // already a start file
   // add to FFiles and FTargetFiles
   //debugln(['TUsesGraph.AddTargetUnit ',ExpFilename]);
@@ -428,10 +428,10 @@ begin
     StartTime:=Now
   else
     StartTime:=0;
-  while FStartFiles.Count>0 do begin
-    AVLNode:=FStartFiles.FindLowest;
+  while FQueuedFiles.Count>0 do begin
+    AVLNode:=FQueuedFiles.FindLowest;
     CurUnit:=TUGUnit(AVLNode.Data);
-    FStartFiles.Delete(AVLNode);
+    FQueuedFiles.Delete(AVLNode);
     Include(CurUnit.Flags,ugufReached);
     //debugln(['TUsesGraph.Parse Unit=',CurUnit.Filename,' UnitCanFindTarget=',UnitCanFindTarget(CurUnit.Filename)]);
     if UnitCanFindTarget(CurUnit.Filename) then begin
