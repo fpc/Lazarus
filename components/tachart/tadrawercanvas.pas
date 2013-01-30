@@ -64,6 +64,7 @@ type
     procedure Polyline(
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
+    procedure PutImage(AX, AY: Integer; AImage: TFPCustomImage); override;
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
       AStartAngle16Deg, AAngleLength16Deg: Integer);
@@ -82,7 +83,7 @@ type
 implementation
 
 uses
-  GraphType, LCLIntf, LCLType,
+  GraphType, LCLIntf, LCLType, IntfGraphics,
   TAGeometry;
 
 function CanvasGetFontOrientationFunc(AFont: TFPCustomFont): Integer;
@@ -214,6 +215,31 @@ begin
     else
       Mode := pmCopy;
     Width := 1;
+  end;
+end;
+
+procedure TCanvasDrawer.PutImage(AX, AY: Integer; AImage: TFPCustomImage);
+var
+  x, y: Integer;
+  bmp: TBitmap;
+begin
+  bmp := TBitmap.Create;
+  try
+    if AImage is TLazIntfImage then
+      bmp.LoadFromIntfImage(TLazIntfImage(AImage))
+    else begin
+      bmp.SetSize(AImage.Width, AImage.Height);
+      bmp.Transparent := true;
+      bmp.TransparentMode := tmFixed;
+      bmp.TransparentColor := bmp.Canvas.Pixels[0, 0];
+      for y := 0 to AImage.Height - 1 do
+        for x := 0 to AImage.Width - 1 do
+          if AImage[x, y].alpha > 0 then
+            bmp.Canvas.Colors[x, y] := AImage[x, y];
+    end;
+    GetCanvas.Draw(AX, AY, bmp);
+  finally
+    bmp.Free;
   end;
 end;
 

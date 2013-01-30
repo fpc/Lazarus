@@ -65,8 +65,6 @@ type
 
   TChartTransparency = 0..255;
 
-  { IChartDrawer }
-
   IChartDrawer = interface
     procedure AddToFontOrientation(ADelta: Integer);
     procedure ClippingStart(const AClipRect: TRect);
@@ -91,6 +89,7 @@ type
     procedure Polyline(
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
+    procedure PutImage(AX, AY: Integer; AImage: TFPCustomImage);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
       AStartAngle16Deg, AAngleLength16Deg: Integer);
@@ -147,6 +146,7 @@ type
     procedure MoveTo(const AP: TPoint);
     procedure Polygon(
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer); virtual; abstract;
+    procedure PutImage(AX, AY: Integer; AImage: TFPCustomImage); virtual;
     function Scale(ADistance: Integer): Integer; virtual;
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetDoChartColorToFPColorFunc(AValue: TChartColorToFPColorFunc);
@@ -335,6 +335,12 @@ end;
 procedure TBasicDrawer.MoveTo(const AP: TPoint);
 begin
   MoveTo(AP.X, AP.Y)
+end;
+
+procedure TBasicDrawer.PutImage(AX, AY: Integer; AImage: TFPCustomImage);
+begin
+  Unused(AX, AY);
+  Unused(AImage);
 end;
 
 function TBasicDrawer.Scale(ADistance: Integer): Integer;
