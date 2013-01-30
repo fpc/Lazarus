@@ -9,7 +9,7 @@ uses
   FileUtil, lazutf8classes, LazLogger,
   TreeFilterEdit, Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons,
   ComCtrls, LCLType,
-  LazIDEIntf, ProjectIntf, IDEWindowIntf,
+  LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf,
   CTUnitGraph, CodeToolManager, DefineTemplates, CTUnitGroupGraph,
   CodyCtrls;
 
@@ -54,7 +54,8 @@ type
     procedure SetCurrentUnit(AValue: TUGUnit);
     procedure SetIdleConnected(AValue: boolean);
     procedure CreateGroups;
-    procedure CreateProjectGroup(AProject: TLazProject);
+    function CreateProjectGroup(AProject: TLazProject): TUGGroup;
+    function CreatePackageGroup(APackage: TIDEPackage): TUGGroup;
     procedure AddStartAndTargetUnits;
     procedure UpdateAll;
     procedure UpdateCurUnitDiagram;
@@ -194,9 +195,11 @@ var
   Node: TAVLTreeNode;
   CurUnit: TUGGroupUnit;
   FPCSrcDir: String;
+  i: Integer;
 begin
   CreateProjectGroup(LazarusIDE.ActiveProject);
-
+  for i:=0 to PackageEditingInterface.GetPackageCount-1 do
+    CreatePackageGroup(PackageEditingInterface.GetPackages(i));
 
   FPCSrcDir:=AppendPathDelim(GetFPCSrcDir);
 
@@ -215,20 +218,37 @@ begin
   end;
 end;
 
-procedure TUnitDependenciesDialog.CreateProjectGroup(AProject: TLazProject);
+function TUnitDependenciesDialog.CreateProjectGroup(AProject: TLazProject
+  ): TUGGroup;
 var
-  Grp: TUGGroup;
   i: Integer;
   Filename: String;
   CurUnit: TUGUnit;
 begin
   if AProject=nil then exit;
-  Grp:=Groups.GetGroup(GroupPrefixProject,true);
+  Result:=Groups.GetGroup(GroupPrefixProject,true);
   for i:=0 to AProject.FileCount-1 do begin
     Filename:=AProject.Files[i].Filename;
     CurUnit:=UsesGraph.GetUnit(Filename,false);
     if CurUnit is TUGGroupUnit then
-      Grp.AddUnit(TUGGroupUnit(CurUnit));
+      Result.AddUnit(TUGGroupUnit(CurUnit));
+  end;
+end;
+
+function TUnitDependenciesDialog.CreatePackageGroup(APackage: TIDEPackage
+  ): TUGGroup;
+var
+  i: Integer;
+  Filename: String;
+  CurUnit: TUGUnit;
+begin
+  if APackage=nil then exit;
+  Result:=Groups.GetGroup(APackage.Name,true);
+  for i:=0 to APackage.FileCount-1 do begin
+    Filename:=APackage.Files[i].GetFullFilename;
+    CurUnit:=UsesGraph.GetUnit(Filename,false);
+    if CurUnit is TUGGroupUnit then
+      Result.AddUnit(TUGGroupUnit(CurUnit));
   end;
 end;
 
