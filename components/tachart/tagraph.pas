@@ -684,39 +684,39 @@ procedure TChart.DisplaySeries(ADrawer: IChartDrawer);
   end;
 
 var
-  i, d, axisIndex: Integer;
-  seriesInZOrder: TFPList;
+  axisIndex: Integer;
+  seriesInZOrder: TChartSeriesList;
+  s: TBasicChartSeries;
 begin
-  d := Depth;
   axisIndex := 0;
   if SeriesCount > 0 then begin
-    seriesInZOrder := TFPList.Create;
+    seriesInZOrder := TChartSeriesList.Create;
     try
-      seriesInZOrder.Assign(FSeries.FList);
-      seriesInZOrder.Sort(@CompareZPosition);
+      seriesInZOrder.List.Assign(FSeries.List);
+      seriesInZOrder.List.Sort(@CompareZPosition);
 
-      for i := 0 to SeriesCount - 1 do
-        with TBasicChartSeries(seriesInZOrder[i]) do begin
-          if not Active then continue;
-          // Interleave axises with series according to ZPosition.
-          if AxisVisible then
-            AxisList.Draw(ZPosition, axisIndex);
-          OffsetDrawArea(Min(ZPosition, d), Min(Depth, d));
-          ADrawer.ClippingStart(ClipRectWithoutFrame(ZPosition));
+      for s in seriesInZOrder do begin
+        if not s.Active then continue;
+        // Interleave axises with series according to ZPosition.
+        if AxisVisible then
+          AxisList.Draw(s.ZPosition, axisIndex);
+        OffsetDrawArea(Min(s.ZPosition, Depth), Min(s.Depth, Depth));
+        ADrawer.ClippingStart(ClipRectWithoutFrame(s.ZPosition));
+        try
           try
-            try
-              ADrawer.SetTransparency(Transparency);
-              Draw(ADrawer);
-            except
-              Active := false;
-              raise;
-            end;
-          finally
-            OffsetDrawArea(-Min(ZPosition, d), -Min(Depth, d));
-            ADrawer.ClippingStop;
+            ADrawer.SetTransparency(s.Transparency);
+            s.Draw(ADrawer);
+          except
+            s.Active := false;
+            raise;
           end;
+        finally
+          OffsetDrawArea(-Min(s.ZPosition, Depth), -Min(s.Depth, Depth));
+          ADrawer.ClippingStop;
         end;
+      end;
     finally
+      seriesInZOrder.List.Clear; // Avoid freeing series.
       seriesInZOrder.Free;
       ADrawer.SetTransparency(0);
     end;
