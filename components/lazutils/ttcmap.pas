@@ -19,6 +19,8 @@ unit TTCMap;
 
 interface
 
+{$R-} // TODO: Fix out-of-bounds accesses.
+
 uses TTTypes;
 
 type

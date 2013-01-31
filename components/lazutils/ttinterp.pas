@@ -25,6 +25,7 @@ unit TTInterp;
 
 interface
 
+{$R-} // TODO: Fix out-of-bounds accesses.
 {$mode Delphi}
 
 uses TTTypes,

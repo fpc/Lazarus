@@ -19,6 +19,7 @@ Unit TTGLoad;
 
 interface
 
+{$R-} // TODO: Fix out-of-bounds accesses.
 {$I TTCONFIG.INC}
 
 uses
