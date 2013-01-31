@@ -417,6 +417,8 @@ function CompareAnsiStringWithStrToStrItem(Key, Data: Pointer): Integer;
 function CompareStringToStringItemsI(Data1, Data2: Pointer): integer;
 function CompareAnsiStringWithStrToStrItemI(Key, Data: Pointer): Integer;
 
+function ComparePointer(Data1, Data2: Pointer): integer;
+
 
 implementation
 
