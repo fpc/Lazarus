@@ -4517,6 +4517,7 @@ var
   begin
     Result:=false;
     TheModalResult:=mrCancel;
+    if not FilenameIsPascalSource(UnitFilename) then exit;
     CurLFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
     if not FileExistsUTF8(CurLFMFilename) then
       CurLFMFilename:=ChangeFileExt(UnitFilename,'.dfm');
@@ -4679,6 +4680,7 @@ var
   begin
     Result:=false;
     TheModalResult:=mrCancel;
+    if not FilenameIsPascalSource(UnitFilename) then exit;
     AncestorClassName:='';
     Code:=CodeToolBoss.LoadFile(UnitFilename,true,false);
     if Code=nil then begin
@@ -4831,6 +4833,9 @@ function TLazSourceFileManager.LoadComponentDependencyHidden(
       end;
     end else begin
       // load unit source
+      UnitFilename:=ChangeFileExt(LFMFilename,'.pas');
+      if not FileExistsUTF8(UnitFilename) then
+        UnitFilename:=ChangeFileExt(LFMFilename,'.pp');
       TheModalResult:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText],true);
       if TheModalResult<>mrOk then exit(TheModalResult=mrAbort);
       // create unit info
