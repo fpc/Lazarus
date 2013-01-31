@@ -115,6 +115,7 @@ end;
 
 constructor TBGRABitmapDrawer.Create(ABitmap: TBGRABitmap);
 begin
+  inherited Create;
   FBitmap := ABitmap;
 end;
 
