@@ -748,7 +748,7 @@ var
          ( (t.SearchTerm = s) or
            ( (not t.MatchCase) and (LowerCase(t.SearchTerm)= LowerCase(s)) )  ) and
          ( (t.MatchWordBounds = soNoBounds) or
-           ( (t.MatchWordBounds = soBoundsAtEnd) and b1 ) or
+           ( (t.MatchWordBounds = soBoundsAtStart) and b1 ) or
            ( (t.MatchWordBounds = soBoundsAtEnd) and b2 ) or
            ( (t.MatchWordBounds = soBothBounds) and b1 and b2 )
          )
