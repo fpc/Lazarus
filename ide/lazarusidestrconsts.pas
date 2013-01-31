@@ -1676,7 +1676,7 @@ resourcestring
   lisAutomaticFeatures = 'Completion and Hints';
   lisAutoMarkup = 'Markup and Matches';
 
-  dlgMarkupUserDefined = 'User defined words';
+  dlgMarkupUserDefined = 'User defined markup';
   dlgMarkupUserDefinedNoLists = 'No lists';
   dlgMarkupUserDefinedNoListsSel = 'Select ...';
   dlgMarkupUserDefinedNewName = 'New list';
@@ -1685,8 +1685,8 @@ resourcestring
   dlgMarkupUserDefinedPageMain = 'Main settings';
   dlgMarkupUserDefinedPageKeys = 'Key Settings';
   dlgMarkupUserDefinedMatchCase = 'Case sensitive';
-  dlgMarkupUserDefinedMatchStartBound = 'Word bound at start';
-  dlgMarkupUserDefinedMatchEndBound = 'Word bound at end';
+  dlgMarkupUserDefinedMatchStartBound = 'Set bound at term start';
+  dlgMarkupUserDefinedMatchEndBound = 'Set bound at term end';
   dlgMarkupUserDefinedDivKeyAdd = 'Add Word or Term';
   dlgMarkupUserDefinedDivKeyRemove = 'Remove Word or Term';
   dlgMarkupUserDefinedDivKeyToggle = 'Toggle Word or Term';
@@ -1698,11 +1698,11 @@ resourcestring
   dlgMarkupUserDefinedNewByKeyLenWord = 'current word';
   dlgMarkupUserDefinedNewByKeyLenSelect = 'selection';
   dlgMarkupUserDefinedNewByKeySmartSelect = 'Smart match selection bounds';
-  dlgMarkupUserDefinedGlobalList = 'Add/Remove to all editors';
+  dlgMarkupUserDefinedGlobalList = 'Add/Remove in all editors';
   dlgMarkupUserDefinedDuplicate = 'Duplicate Term';
   dlgMarkupUserDefinedDuplicateMsg = 'The term %s already exists. Duplicates will be removed when the list is saved.';
 
-  lisUserDefinedMarkupKeyGroup = 'User defined word markup';
+  lisUserDefinedMarkupKeyGroup = 'User defined text markup';
   lisUserDefinedMarkupKeyAdd = 'Add to list "%s"';
   lisUserDefinedMarkupKeyRemove = 'Remove from list "%s"';
   lisUserDefinedMarkupKeyToggle = 'Toggle on list "%s"';
