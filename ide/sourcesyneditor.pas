@@ -779,7 +779,7 @@ var
       B2 := (KeyAddTermBounds in [soBoundsAtEnd, soBothBounds]) and
             ( (KeyAddSelectBoundMaxLen < 1) or (length(NewTerm) <= KeyAddSelectBoundMaxLen) ) and
             ( (not KeyAddSelectSmart) or
-              ( (Syn.BlockEnd.X <= length(LineTxt)) or (LineTxt[Syn.BlockEnd.X] in WordBreakChars) )
+              ( (Syn.BlockEnd.X > length(LineTxt)) or (LineTxt[Syn.BlockEnd.X] in WordBreakChars) )
             );
     end
     else
