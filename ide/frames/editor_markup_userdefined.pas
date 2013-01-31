@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, StdCtrls, ComCtrls, Graphics, sysutils, math, EditorOptions, LazarusIDEStrConsts,
-  SynColorAttribEditor, KeyMapping, KeyMapShortCutDlg, IDEOptionsIntf, Spin, ExtCtrls,
-  SynEditMarkupBracket, editor_color_options, editor_general_options,
+  SynColorAttribEditor, KeyMapping, KeyMapShortCutDlg, IDEOptionsIntf, IDECommands, Spin,
+  ExtCtrls, SynEditMarkupBracket, editor_color_options, editor_general_options,
   editor_keymapping_options, SynEdit, SynCompletion, SynHighlighterPas, SynEditKeyCmds,
   SynEditMarkupHighAll, DividerBevel, LazLoggerBase, LCLType, Menus, Grids, Controls, Dialogs,
   Buttons;
@@ -500,8 +500,18 @@ begin
 end;
 
 procedure TEditorMarkupUserDefinedFrame.UpdateKeys;
+const
+  NoKey: TIDEShortCut = (Key1: VK_UNKNOWN; Shift1: []; Key2: VK_UNKNOWN; Shift2: [];);
 begin
-  if (FUserWords = nil) then exit;
+  if (FUserWords = nil) then begin
+    lbKeyAdd1.Caption    := KeyAndShiftStateToEditorKeyString(NoKey);
+    lbKeyAdd2.Caption    := KeyAndShiftStateToEditorKeyString(NoKey);
+    lbKeyRemove1.Caption := KeyAndShiftStateToEditorKeyString(NoKey);
+    lbKeyRemove2.Caption := KeyAndShiftStateToEditorKeyString(NoKey);
+    lbKeyToggle1.Caption := KeyAndShiftStateToEditorKeyString(NoKey);
+    lbKeyToggle2.Caption := KeyAndShiftStateToEditorKeyString(NoKey);
+    exit;
+  end;
 
   lbKeyAdd1.Caption    := KeyAndShiftStateToEditorKeyString(FUserWords.AddTermCmd.ShortcutA);
   lbKeyAdd2.Caption    := KeyAndShiftStateToEditorKeyString(FUserWords.AddTermCmd.ShortcutB);
@@ -635,6 +645,7 @@ begin
     UpdateListDisplay;
     tbDeleteList.Enabled := FUserWordsList.Count > 0;
     FGlobalColors := nil;
+    UpdateKeys;
   end
   else
     UpdateKeys;
@@ -687,6 +698,7 @@ begin
 
   FKeyOptFrame := TEditorKeymappingOptionsFrame(ADialog.FindEditor(TEditorKeymappingOptionsFrame));
   FUserWordsList.KeyCommandList := FKeyOptFrame.EditingKeyMap;
+  edListName.Text := '';
 end;
 
 procedure TEditorMarkupUserDefinedFrame.ReadSettings(AOptions: TAbstractIDEOptions);
