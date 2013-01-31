@@ -2065,8 +2065,8 @@ type
     function FindButtonFromAccel(Accel: Word): TToolButton;
     procedure FontChanged(Sender: TObject); override;
     procedure Loaded; override;
-    procedure EndUpdate; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure Paint; override;
     procedure RepositionButton(Index: Integer);
     procedure RepositionButtons(Index: Integer);
     function WrapButtons(UseSize: integer;
@@ -2076,9 +2076,9 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure EndUpdate; override;
     procedure FlipChildren(AllLevels: Boolean); override;
     function GetEnumerator: TToolBarEnumerator;
-    procedure Paint; override;
     procedure SetButtonSize(NewButtonWidth, NewButtonHeight: integer);
     function CanFocus: Boolean; override;
   public

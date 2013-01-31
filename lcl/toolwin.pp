@@ -65,10 +65,10 @@ type
     FUpdateCount: Integer;
     procedure AdjustClientRect(var ARect: TRect); override;
     procedure Paint; override;
-    procedure BeginUpdate; virtual;
-    procedure EndUpdate; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
+    procedure BeginUpdate; virtual;
+    procedure EndUpdate; virtual;
   public
     property EdgeBorders: TEdgeBorders read FEdgeBorders write SetEdgeBorders default [ebLeft, ebTop, ebRight, ebBottom];
     property EdgeInner: TEdgeStyle read FEdgeInner write SetEdgeInner default esRaised;
