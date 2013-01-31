@@ -830,7 +830,7 @@ begin
     gtk_window_set_skip_taskbar_hint(GtkWindow, True);
 
   {$IFDEF VerboseTransient}
-  DebugLn('TGtkWidgetSet.ShowModal ',Sender.ClassName);
+  DebugLn('TGtkWidgetSet.GtkWindowShowModal ',DbgSName(AForm));
   {$ENDIF}
   GTK2WidgetSet.UpdateTransientWindows;
 end;
@@ -3455,7 +3455,7 @@ begin
   if (ADialog=nil) or (not ADialog.HandleAllocated) then exit;
   DlgWindow:={%H-}PGtkWidget(ADialog.Handle);
   {$IFDEF VerboseTransient}
-  DebugLn('DestroyCommonDialogAddOns ',ADialog.Name,':',ADialog.ClassName);
+  DebugLn('DestroyCommonDialogAddOns ',DbgSName(ADialog));
   {$ENDIF}
   gtk_window_set_transient_for(PGtkWindow(DlgWindow),nil);
   if ADialog is TOpenDialog then begin

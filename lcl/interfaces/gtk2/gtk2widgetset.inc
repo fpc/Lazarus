@@ -1940,10 +1940,8 @@ begin
       for i:=AllWindows.Count-1 downto 0 do begin
         ATransientWindow:=PTransientWindow(AllWindows[i]);
         {$IFDEF VerboseTransient}
-        DbgOut('TGtk2WidgetSet.UpdateTransientWindows  Untransient ',i);
-        if ATransientWindow^.Component<>nil then
-          DbgOut(' ',ATransientWindow^.Component.Name,':',ATransientWindow^.Component.ClassName);
-        DebugLn('');
+        debugln(['TGtk2WidgetSet.UpdateTransientWindows  Untransient ',i,
+          ' ',dbgsname(ATransientWindow^.Component)]);
         {$ENDIF}
         gtk_window_set_transient_for(ATransientWindow^.GtkWindow,nil);
       end;
@@ -1985,17 +1983,15 @@ begin
         begin
           if ParentTransientWindow<>nil then begin
             {$IFDEF VerboseTransient}
-            DebugLn('Define TRANSIENT ',
+            DebugLn(['Define TRANSIENT ',
             ' Parent=',
-              ParentTransientWindow^.Component.Name,':',
-                ParentTransientWindow^.Component.ClassName,
+              dbgsname(ParentTransientWindow^.Component),
               ' Index=',ParentTransientWindow^.SortIndex,
               ' Wnd=',DbgS(ParentTransientWindow^.GtkWindow),
-            ' Child=',ATransientWindow^.Component.Name,':',
-                               ATransientWindow^.Component.ClassName,
+            ' Child=',dbgsname(ATransientWindow^.Component),
               ' Index=',ATransientWindow^.SortIndex,
               ' Wnd=',DbgS(ATransientWindow^.GtkWindow),
-              '');
+              '']);
             {$ENDIF}
             ATransientWindow^.TransientParent:=ParentTransientWindow^.GtkWindow;
           end;
@@ -2013,13 +2009,12 @@ begin
         OldTransientParent:=ATransientWindow^.GtkWindow^.transient_parent;
         if (OldTransientParent<>ATransientWindow^.TransientParent) then begin
           {$IFDEF VerboseTransient}
-          DebugLn('Break old TRANSIENT i=',i,'/',AllWindows.Count,
+          DebugLn(['Break old TRANSIENT i=',i,'/',AllWindows.Count,
           ' OldTransientParent=',DbgS(OldTransientParent),
-          ' Child=',ATransientWindow^.Component.Name,':',
-                             ATransientWindow^.Component.ClassName,
+          ' Child=',dbgsname(ATransientWindow^.Component),
             ' Index=',ATransientWindow^.SortIndex,
             ' Wnd=',DbgS(ATransientWindow^.GtkWindow),
-            '');
+            '']);
           {$ENDIF}
           gtk_window_set_transient_for(ATransientWindow^.GtkWindow,nil);
         end;
@@ -2030,13 +2025,12 @@ begin
         ATransientWindow:=PTransientWindow(AllWindows[i]);
         if ATransientWindow^.TransientParent=nil then continue;
         {$IFDEF VerboseTransient}
-        DebugLn('Set TRANSIENT i=',i,'/',AllWindows.Count,
-        ' Child=',ATransientWindow^.Component.Name,':',
-                           ATransientWindow^.Component.ClassName,
+        DebugLn(['Set TRANSIENT i=',i,'/',AllWindows.Count,
+        ' Child=',dbgsname(ATransientWindow^.Component),
           ' Index=',ATransientWindow^.SortIndex,
           ' Wnd=',DbgS(ATransientWindow^.GtkWindow),
           ' Parent=',DbgS(ATransientWindow^.TransientParent),
-          '');
+          '']);
         {$ENDIF}
         gtk_window_set_transient_for(ATransientWindow^.GtkWindow,
                                      ATransientWindow^.TransientParent);
