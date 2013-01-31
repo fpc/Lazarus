@@ -19,6 +19,7 @@ type
     FFace: TT_Face;
     FFaceUsage: integer;
     FUsePostscriptStyle: boolean;
+    FDestroyListeners: array of TFontCollectionItemDestroyListener;
     procedure UpdateStyles;
     procedure SetInformation(AIndex: TFreeTypeInformation; AValue: string);
     procedure SetUsePostscriptStyle(AValue: boolean);
@@ -31,6 +32,7 @@ type
     function GetStyles: string; override;
     function GetStyle(AIndex: integer): string; override;
     function GetVersionNumber: string; override;
+    procedure NotifyDestroy; override;
   public
     constructor Create(AFilename: string);
     destructor Destroy; override;
@@ -38,8 +40,8 @@ type
     property Information[AIndex: TFreeTypeInformation]: string read GetInformation write SetInformation;
     property VersionNumber: string read GetVersionNumber write FVersionNumber;
     function CreateFont: TFreeTypeFont; override;
-    function QueryFace: TT_Face; override;
-    procedure ReleaseFace; override;
+    function QueryFace(AListener: TFontCollectionItemDestroyListener): TT_Face; override;
+    procedure ReleaseFace(AListener: TFontCollectionItemDestroyListener); override;
     property UsePostscriptStyle: boolean read FUsePostscriptStyle write SetUsePostscriptStyle;
   end;
 
@@ -108,6 +110,8 @@ type
     function FamilyEnumerator: IFreeTypeFamilyEnumerator; override;
   end;
 
+procedure SetDefaultFreeTypeFontCollection(ACollection : TCustomFreeTypeFontCollection);
+
 implementation
 
 type
@@ -134,6 +138,12 @@ type
      function MoveNext: boolean;
      function GetCurrent: TCustomFontCollectionItem;
    end;
+
+procedure SetDefaultFreeTypeFontCollection(
+  ACollection: TCustomFreeTypeFontCollection);
+begin
+  EasyLazFreeType.FontCollection := ACollection;
+end;
 
 { TFontCollectionItem }
 
@@ -245,10 +255,20 @@ begin
   FStyleList := nil;
   FFaceUsage := 0;
   FUsePostscriptStyle:= false;
+  FDestroyListeners := nil;
+end;
+
+procedure TFontCollectionItem.NotifyDestroy;
+var i: integer;
+begin
+  for i := 0 to high(FDestroyListeners) do
+    FDestroyListeners[i]();
+  FDestroyListeners := nil;
 end;
 
 destructor TFontCollectionItem.Destroy;
 begin
+  NotifyDestroy;
   if FFaceUsage <> 0 then
   begin
     TT_Close_Face(FFace);
@@ -280,7 +300,7 @@ begin
   result.Name := Filename;
 end;
 
-function TFontCollectionItem.QueryFace: TT_Face;
+function TFontCollectionItem.QueryFace(AListener: TFontCollectionItemDestroyListener): TT_Face;
 var errorNum: TT_Error;
 begin
   if FFaceUsage = 0 then
@@ -291,10 +311,24 @@ begin
   end;
   result := FFace;
   inc(FFaceUsage);
+  if Assigned(AListener) then
+  begin
+    setlength(FDestroyListeners,length(FDestroyListeners)+1);
+    FDestroyListeners[high(FDestroyListeners)] := AListener;
+  end;
 end;
 
-procedure TFontCollectionItem.ReleaseFace;
+procedure TFontCollectionItem.ReleaseFace(AListener: TFontCollectionItemDestroyListener);
+var i,j: integer;
 begin
+  for i := 0 to high(FDestroyListeners) do
+    if FDestroyListeners[i] = AListener then
+    begin
+      for j := i to high(FDestroyListeners)-1 do
+        FDestroyListeners[j] := FDestroyListeners[j+1];
+      setlength(FDestroyListeners, length(FDestroyListeners)-1);
+      break;
+    end;
   if FFaceUsage > 0 then
   begin
     dec(FFaceUsage);

@@ -27,7 +27,7 @@ type
     yTop,yBase,yBottom: single;
   end;
   ArrayOfCharPosition = array of TCharPosition;
-  TFreeTypeAlignment = (ftaLeft,ftaCenter,ftaRight,ftaJustify,ftaTop,ftaBaseline,ftaBottom);
+  TFreeTypeAlignment = (ftaLeft,ftaCenter,ftaRight,ftaJustify,ftaTop,ftaVerticalCenter,ftaBaseline,ftaBottom);
   TFreeTypeAlignments = set of TFreeTypeAlignment;
 
   TFreeTypeInformation = (ftiCopyrightNotice, ftiFamily, ftiStyle, ftiIdentifier, ftiFullName,
@@ -36,6 +36,7 @@ type
 
   TFreeTypeStyle = (ftsBold, ftsItalic);
   TFreeTypeStyles = set of TFreeTypeStyle;
+  TFreeTypeWordBreakHandler = procedure(var ABefore, AAfter: string) of object;
 
 const
   FreeTypeInformationStr : array[TFreeTypeInformation] of string =
@@ -47,6 +48,9 @@ type
   TFreeTypeGlyph = class;
   TFreeTypeFont = class;
 
+  TFontCollectionItemDestroyListener = procedure() of object;
+  ArrayOfFontCollectionItemDestroyListener = array of TFontCollectionItemDestroyListener;
+
   TCustomFontCollectionItem = class
   protected
     function GetBold: boolean; virtual; abstract;
@@ -57,11 +61,12 @@ type
     function GetFilename: string; virtual; abstract;
     function GetVersionNumber: string; virtual; abstract;
     function GetStyle(AIndex: integer): string; virtual; abstract;
+    procedure NotifyDestroy; virtual; abstract;
   public
     function HasStyle(AStyle: string): boolean; virtual; abstract;
     function CreateFont: TFreeTypeFont; virtual; abstract;
-    function QueryFace: TT_Face; virtual; abstract;
-    procedure ReleaseFace; virtual; abstract;
+    function QueryFace(AListener: TFontCollectionItemDestroyListener): TT_Face; virtual; abstract;
+    procedure ReleaseFace(AListener: TFontCollectionItemDestroyListener); virtual; abstract;
 
     property Styles: string read GetStyles;
     property Italic: boolean read GetItalic;
@@ -138,16 +143,19 @@ type
 
   TFreeTypeRenderableFont = class
   protected
+    FWordBreakHandler: TFreeTypeWordBreakHandler;
     function GetClearType: boolean; virtual; abstract;
     procedure SetClearType(const AValue: boolean); virtual; abstract;
     function GetLineFullHeight: single; virtual; abstract;
     function GetAscent: single; virtual; abstract;
     function GetDescent: single; virtual; abstract;
     function GetLineSpacing: single; virtual; abstract;
-
+    procedure DefaultWordBreakHandler(var ABefore, AAfter: string);
   public
     function TextWidth(AText: string): single; virtual; abstract;
     function TextHeight(AText: string): single; virtual; abstract;
+    function CharWidthFromUnicode(AUnicode: integer): single; virtual; abstract;
+    procedure SplitText(var AText: string; AMaxWidth: single; out ARemains: string);
     procedure GetTextSize(AText: string; out w,h: single); virtual;
     procedure RenderText(AText: string; x,y: single; ARect: TRect; OnRender : TDirectRenderingFunction); virtual; abstract;
     property ClearType: boolean read GetClearType write SetClearType;
@@ -155,6 +163,7 @@ type
     property Descent: single read GetDescent;
     property LineSpacing: single read GetLineSpacing;
     property LineFullHeight: single read GetLineFullHeight;
+    property OnWordBreak: TFreeTypeWordBreakHandler read FWordBreakHandler write FWordBreakHandler;
   end;
 
   { TFreeTypeDrawer }
@@ -164,6 +173,8 @@ type
     procedure DrawText(AText: string; AFont: TFreeTypeRenderableFont; x,y: single; AColor: TFPColor; AOpacity: Byte; AAlign: TFreeTypeAlignments); virtual; overload;
     procedure DrawText(AText: string; AFont: TFreeTypeRenderableFont; x,y: single; AColor: TFPColor); virtual; abstract; overload;
     procedure DrawText(AText: string; AFont: TFreeTypeRenderableFont; x,y: single; AColor: TFPColor; AAlign: TFreeTypeAlignments); virtual; overload;
+    procedure DrawTextWordBreak(AText: string; AFont: TFreeTypeRenderableFont; x, y, AMaxWidth: Single; AColor: TFPColor; AAlign: TFreeTypeAlignments);
+    procedure DrawTextRect(AText: string; AFont: TFreeTypeRenderableFont; X1,Y1,X2,Y2: Single; AColor: TFPColor; AAlign: TFreeTypeAlignments);
   end;
 
 {********************************* Font implementation **********************************}
@@ -224,6 +235,7 @@ type
     function GetAscent: single; override;
     function GetDescent: single; override;
     function GetLineSpacing: single; override;
+    procedure OnDestroyFontItem;
     procedure FetchNames;
     function GetCollection: TCustomFreeTypeFontCollection;
   public
@@ -232,8 +244,11 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure RenderText(AText: string; x,y: single; ARect: TRect; OnRender : TDirectRenderingFunction); override;
+    procedure SetNameAndStyle(AName: string; AStyle: string); overload;
+    procedure SetNameAndStyle(AName: string; AStyle: TFreeTypeStyles); overload;
     function TextWidth(AText: string): single; override;
     function TextHeight(AText: string): single; override;
+    function CharWidthFromUnicode(AUnicode: integer): single; override;
     function CharsWidth(AText: string): ArrayOfSingle;
     function CharsPosition(AText: string): ArrayOfCharPosition; overload;
     function CharsPosition(AText: string; AAlign: TFreeTypeAlignments): ArrayOfCharPosition; overload;
@@ -401,6 +416,75 @@ end;
 
 { TFreeTypeRenderableFont }
 
+procedure TFreeTypeRenderableFont.DefaultWordBreakHandler(var ABefore,
+  AAfter: string);
+var p: integer;
+begin
+  if (AAfter <> '') and (ABefore <> '') and (AAfter[1]<> ' ') and (ABefore[length(ABefore)] <> ' ') then
+  begin
+    p := length(ABefore);
+    while (p > 1) and (ABefore[p-1] <> ' ') do dec(p);
+    if p > 1 then //can put the word after
+    begin
+      AAfter := copy(ABefore,p,length(ABefore)-p+1)+AAfter;
+      ABefore := copy(ABefore,1,p-1);
+    end else
+    begin //cannot put the word after, so before
+
+    end;
+  end;
+  while (ABefore <> '') and (ABefore[length(ABefore)] =' ') do delete(ABefore,length(ABefore),1);
+  while (AAfter <> '') and (AAfter[1] =' ') do delete(AAfter,1,1);
+end;
+
+procedure TFreeTypeRenderableFont.SplitText(var AText: string;
+  AMaxWidth: single; out ARemains: string);
+var
+  pstr: pchar;
+  left,charlen: integer;
+  totalWidth: single;
+  firstChar: boolean;
+  glyphWidth: single;
+  glyphCode: cardinal;
+begin
+  totalWidth := 0;
+  if AText = '' then
+  begin
+    ARemains := '';
+    exit;
+  end else
+  begin
+    pstr := @AText[1];
+    left := length(AText);
+    firstChar := true;
+    while left > 0 do
+    begin
+      charlen := UTF8CharacterLength(pstr);
+      glyphCode := UTF8CharacterToUnicode(pstr, charlen);
+      inc(pstr,charlen);
+
+      glyphWidth := CharWidthFromUnicode(glyphCode);
+      if glyphWidth <> 0 then
+      begin
+        totalWidth += glyphWidth;
+        if (totalWidth > AMaxWidth) and not firstChar then
+        begin
+          ARemains:= copy(AText,length(AText)-left+1,left);
+          AText := copy(AText, 1, length(AText)-left);
+          if Assigned(FWordBreakHandler) then
+            FWordBreakHandler(AText,ARemains) else
+              DefaultWordBreakHandler(AText,ARemains);
+          exit;
+        end;
+      end;
+
+      dec(left,charlen);
+      firstChar := false;
+    end;
+  end;
+  ARemains := ''; //no split
+end;
+
 procedure TFreeTypeRenderableFont.GetTextSize(AText: string; out w, h: single);
 begin
   w := TextWidth(AText);
@@ -436,9 +520,11 @@ begin
     if ftaTop in AAlign then
       y += AFont.Ascent else
     if ftaBottom in AAlign then
-      y -= AFont.TextHeight(AText) - AFont.Ascent;
+      y += AFont.Ascent - AFont.TextHeight(AText) else
+    if ftaVerticalCenter in AAlign then
+      y += AFont.Ascent - AFont.TextHeight(AText)*0.5;
   end;
-  AAlign -= [ftaTop,ftaBaseline,ftaBottom];
+  AAlign -= [ftaTop,ftaBaseline,ftaBottom,ftaVerticalCenter];
 
   idx := pos(LineEnding, AText);
   while idx <> 0 do
@@ -457,6 +543,76 @@ begin
       x -= AFont.TextWidth(AText);
   end;
   DrawText(AText, AFont, x,y, AColor);
+end;
+
+procedure TFreeTypeDrawer.DrawTextWordBreak(AText: string;
+  AFont: TFreeTypeRenderableFont; x, y, AMaxWidth: Single;
+  AColor: TFPColor; AAlign: TFreeTypeAlignments);
+var ARemains: string;
+  stepX,stepY: single;
+  lines: TStringList;
+  i: integer;
+  lineShift: single;
+  lineAlignment: TFreeTypeAlignments;
+begin
+  if (AText = '') or (AMaxWidth <= 0) then exit;
+
+  stepX := 0;
+  stepY := AFont.LineFullHeight;
+
+  AAlign -= [ftaBaseline]; //ignored
+  if AAlign * [ftaTop,ftaVerticalCenter,ftaBottom] = [] then AAlign += [ftaTop]; //top by default
+  lineAlignment := AAlign * [ftaLeft,ftaCenter,ftaRight] + [ftaVerticalCenter];
+
+  if ftaTop in AAlign then
+  begin
+    lineShift := 0.5;
+    X += stepX*lineShift;
+    Y += stepY*lineShift;
+    repeat
+      AFont.SplitText(AText, AMaxWidth, ARemains);
+      DrawText(AText,AFont,X,Y,AColor,lineAlignment);
+      AText := ARemains;
+      X+= stepX;
+      Y+= stepY;
+    until ARemains = '';
+  end else
+  begin
+    lines := TStringList.Create;
+    repeat
+      AFont.SplitText(AText, AMaxWidth, ARemains);
+      lines.Add(AText);
+      AText := ARemains;
+    until ARemains = '';
+    if ftaVerticalCenter in AAlign then lineShift := lines.Count/2-0.5
+    else if ftaBottom in AAlign then lineShift := lines.Count-0.5
+    else lineShift := -0.5;
+
+    X -= stepX*lineShift;
+    Y -= stepY*lineShift;
+    for i := 0 to lines.Count-1 do
+    begin
+      DrawText(lines[i],AFont,X,Y,AColor,lineAlignment);
+      X+= stepX;
+      Y+= stepY;
+    end;
+    lines.Free;
+  end;
+end;
+
+procedure TFreeTypeDrawer.DrawTextRect(AText: string;
+  AFont: TFreeTypeRenderableFont; X1, Y1, X2, Y2: Single; AColor: TFPColor;
+  AAlign: TFreeTypeAlignments);
+var X,Y: single;
+begin
+  if X2 <= X1 then exit;
+  if ftaVerticalCenter in AAlign then Y := (Y1+Y2)/2 else
+  if ftaBottom in AAlign then Y := Y2 else
+    Y := Y1;
+  if ftaCenter in AAlign then X := (X1+X2)/2 else
+  if ftaRight in AAlign then X := X2 else
+    X := X1;
+  DrawTextWordBreak(AText,AFont,X,Y,X2-X1,AColor,AAlign);
 end;
 
 { TFreeTypeGlyph }
@@ -600,7 +756,7 @@ begin
     fontItem := familyItem.GetFont(FStyleStr);
     if fontItem = nil then
       raise exception.Create('Font style not found');
-    FFace := fontItem.QueryFace;
+    FFace := fontItem.QueryFace(@OnDestroyFontItem);
     FFaceItem := fontItem;
   end;
 
@@ -744,6 +900,11 @@ begin
     result := FLineGapValue*SizeInPixels;
 end;
 
+procedure TFreeTypeFont.OnDestroyFontItem;
+begin
+  DiscardFace;
+end;
+
 function TFreeTypeFont.GetPixelSize: single;
 begin
   result := SizeInPoints * DPI / 72;
@@ -812,6 +973,7 @@ end;
 
 procedure TFreeTypeFont.SetStyleAsString(AValue: string);
 begin
+  AValue := Trim(AValue);
   if FStyleStr=AValue then Exit;
   FStyleStr:=AValue;
   UpdateFace(FName);
@@ -824,7 +986,7 @@ begin
     DiscardInstance;
     if FFaceItem <> nil then
     begin
-      FFaceItem.ReleaseFace;
+      FFaceItem.ReleaseFace(@OnDestroyFontItem);
       FFaceItem := nil;
     end
     else
@@ -1087,6 +1249,24 @@ begin
   end;
 end;
 
+procedure TFreeTypeFont.SetNameAndStyle(AName: String; AStyle: string);
+begin
+  AStyle := Trim(AStyle);
+  if (AName = FName) and (AStyle = FStyleStr) then exit;
+  FName := AName;
+  FStyleStr := AStyle;
+  UpdateFace(FName);
+end;
+
+procedure TFreeTypeFont.SetNameAndStyle(AName: string; AStyle: TFreeTypeStyles);
+var styleStr: string;
+begin
+  styleStr := '';
+  if ftsBold in AStyle then styleStr += 'Bold ';
+  if ftsItalic in AStyle then styleStr += 'Italic ';
+  SetNameAndStyle(AName, Trim(styleStr));
+end;
+
 function TFreeTypeFont.TextWidth(AText: string): single;
 var
   pstr: pchar;
@@ -1153,6 +1333,16 @@ begin
     end;
     result *= nb;
   end;
+end;
+
+function TFreeTypeFont.CharWidthFromUnicode(AUnicode: integer): single;
+var g: TFreeTypeGlyph;
+begin
+  g := Glyph[CharIndex[AUnicode]];
+  if g = nil then result := 0
+  else
+    result := g.Advance;
+  if FClearType then result /= 3;
 end;
 
 function TFreeTypeFont.CharsWidth(AText: string): ArrayOfSingle;
@@ -1234,13 +1424,13 @@ begin
   resultIndex := 0;
   resultLineStart := 0;
   if ftaLeft in AAlign then AAlign -= [ftaLeft, ftaCenter, ftaRight];
-  if ftaBaseline in AAlign then AAlign -= [ftaTop, ftaBaseline, ftaBottom];
+  if ftaBaseline in AAlign then AAlign -= [ftaTop, ftaBaseline, ftaBottom, ftaVerticalCenter];
   curX := 0;
   y := 0;
   if ftaTop in AAlign then
   begin
     y += Ascent;
-    AAlign -= [ftaTop, ftaBottom];
+    AAlign -= [ftaTop, ftaBottom, ftaVerticalCenter];
   end;
   yTopRel := -Ascent;
   yBottomRel := Descent;
@@ -1318,6 +1508,17 @@ begin
   if ftaBottom in AAlign then
   begin
     y += LineFullHeight-Ascent;
+    for i := 0 to high(result) do
+    with result[i] do
+    begin
+      yTop -= y;
+      yBase -= y;
+      yBottom -= y;
+    end;
+  end else
+  if ftaVerticalCenter in AAlign then
+  begin
+    y += LineFullHeight/2-Ascent;
     for i := 0 to high(result) do
     with result[i] do
     begin

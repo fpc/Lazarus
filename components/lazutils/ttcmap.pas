@@ -375,7 +375,7 @@ uses
 
  function code_to_index4( charCode : UShort; var cmap4 : TCMap4 ) : UShort;
  var
-   i, index1, num_segs : Int;
+   i, index1, num_segs, rangeStart : Int;
  label
    Found;
  begin
@@ -402,8 +402,10 @@ uses
         code_to_index4 := (charCode + idDelta) and $FFFF
       else
       begin
-        index1 := idRangeOffset div 2 + (charCode - startCount) -
-                    -(num_segs-i);
+        //the offset in glyphIdArray is given in bytes from the
+        //position after idRangeOffset value itself
+        rangeStart := idRangeOffset div 2 - (num_segs-i);
+        index1 := rangeStart + (charCode - startCount);
 
         if ( index1 < cmap4.numGlyphId ) and
            ( cmap4.glyphIdArray^[index1] <> 0 ) then
