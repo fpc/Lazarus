@@ -5,7 +5,7 @@ unit Main;
 interface
 
 uses
-  Classes, ComCtrls, ExtCtrls, Spin, StdCtrls, SysUtils, FileUtil, Forms,
+  Classes, ComCtrls, ExtCtrls, StdCtrls, SysUtils, FileUtil, Forms,
   Controls, Graphics, Dialogs,
   TAGraph, TASeries, TASources, TAAnimatedSource, TACustomSource,
   BGRASliceScaling;
@@ -67,38 +67,26 @@ uses
   Math, BGRABitmap, BGRABitmapTypes, BGRAGradients,
   TAChartUtils, TADrawerBGRA, TADrawerCanvas, TADrawUtils, TAGeometry;
 
-function CreateChocolateTexture(ATx, ATy: integer): TBGRABitmap;
+function CreateChocolateBar(
+  ALightPos: TPoint; ARect: TRect; ABackColor: TBGRAPixel;
+  ARoundedCorners: Boolean; AOptions: TRectangleMapOptions): TBGRABitmap;
 var
-  square, map: TBGRABitmap;
   phong: TPhongShading;
-  margin: Integer;
+  t: TPoint;
 begin
-  margin := ATx div 20;
-  map := TBGRABitmap.Create(ATx, ATy, BGRABlack);
+  t := MaxPoint(ARect.BottomRight - ARect.TopLeft, Point(0, 0));
+  Result := TBGRABitmap.Create(t.X, t.Y, ABackColor);
+  if (t.X = 0) and (t.Y = 0) then exit;
+  phong := TPhongShading.Create;
   try
-    square := CreateRectangleMap(ATx - 2 * margin, ATy - 2 * margin, ATx div 8);
-    try
-      map.PutImage(margin, margin, square, dmDrawWithTransparency);
-      BGRAReplace(map, map.FilterBlurRadial(ATx div 40, rbFast));
-    finally
-      square.free;
-    end;
-
-    Result := TBGRABitmap.Create(ATx, ATy);
-    phong := TPhongShading.Create;
-    try
-      phong.LightSourceDistanceFactor := 0;
-      phong.LightDestFactor := 0;
-      phong.LightSourceIntensity := 200;
-      phong.AmbientFactor := 0.5;
-      phong.LightPosition := Point(-50, -100);
-      phong.LightPositionZ := 80;
-      phong.Draw(Result, map, 20, 0, 0, BGRA(86, 41, 38));
-    finally
-      phong.Free;
-    end;
+    phong.AmbientFactor := 0.5;
+    phong.LightPosition := ALightPos - ARect.TopLeft;
+    phong.DrawRectangle(
+      Result, BoundsSize(0, 0, t), t.X div 8, t.X div 8,
+      GammaCompression(SetIntensity(GammaExpansion(BGRA(86, 41, 38)), 30000)),
+      ARoundedCorners, AOptions);
   finally
-    map.Free;
+    phong.Free;
   end;
 end;
 
@@ -135,8 +123,9 @@ procedure TForm1.chBarEffectsBarSeries1BeforeDrawBar(ASender: TBarSeries;
   ACanvas: TCanvas; const ARect: TRect; APointIndex, AStackIndex: Integer;
   var ADoDefaultDrawing: Boolean);
 var
-  temp, chocolate: TBGRABitmap;
+  temp, stretched: TBGRABitmap;
   sz: TPoint;
+  lightPos: TPoint;
 begin
   Unused(ASender);
   Unused(APointIndex, AStackIndex);
@@ -147,23 +136,27 @@ begin
       temp := TBGRABitmap.Create(
         FSliceScaling.BitmapWidth,
         Round(FSliceScaling.BitmapWidth * sz.Y / sz.X));
+      stretched := nil;
       try
         FSliceScaling.Draw(temp, 0, 0, temp.Width, temp.Height);
-        temp.Draw(ACanvas, ARect);
+        temp.ResampleFilter := rfLinear;
+        stretched := temp.Resample(sz.x, sz.Y, rmFineResample) as TBGRABitmap;
+        stretched.Draw(ACanvas, ARect, False);
       finally
         temp.Free;
+        stretched.Free;
       end;
     end;
     1: begin
-      chocolate := CreateChocolateTexture(sz.X, sz.X);
-      temp := TBGRABitmap.Create(sz.X, sz.Y);
-      try
-        temp.FillRect(0, 0, sz.X, sz.Y, chocolate, dmSet);
-        temp.Draw(ACanvas, ARect);
-      finally
-        temp.Free;
-        chocolate.Free;
-      end;
+      lightPos := Point(chBarEffects.ClientWidth div 2, 0);
+      with CreateChocolateBar(
+        lightPos, ARect, BGRAPixelTransparent, false, [rmoNoBottomBorder])
+      do
+        try
+          Draw(ACanvas, ARect.Left, ARect.Top, false);
+        finally
+          Free;
+        end;
     end;
   end;
 end;
@@ -175,7 +168,12 @@ begin
   FAnimatedSource.AnimationInterval := 30;
   FAnimatedSource.AnimationTime := 1000;
   FAnimatedSource.OnGetItem := @OnGetItem;
+
   chBarEffectsBarSeries1.Source := FAnimatedSource;
+  chBarEffects.BackColor:= BGRAToColor(CSSDarkSlateBlue);
+  chSimple.BackColor:= BGRAToColor(CSSYellowGreen);
+  chSimple.Color:= BGRAToColor(CSSYellowGreen);
+  chSimple.BackColor := BGRAToColor(CSSBeige);
 
   FSliceScaling := TBGRASliceScaling.Create(Image1.Picture.Bitmap, 70, 0, 35, 0);
   FSliceScaling.AutodetectRepeat;
