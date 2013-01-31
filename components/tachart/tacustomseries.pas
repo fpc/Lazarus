@@ -288,6 +288,7 @@ uses
 procedure TCustomChartSeries.AfterAdd;
 begin
   Legend.SetOwner(FChart);
+  Shadow.SetOwner(FChart);
 end;
 
 procedure TCustomChartSeries.Assign(ASource: TPersistent);
