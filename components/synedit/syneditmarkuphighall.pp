@@ -292,8 +292,8 @@ type
     procedure DecChangeNotifyLock;
     procedure RegisterChangedHandler(AEvent: TNotifyEvent);
     procedure UnRegisterChangedHandler(AEvent: TNotifyEvent);
-    Procedure Assign(Src: TSynSearchTermDict);
-    Procedure Assign(Src: TSynSearchTermList);
+    Procedure Assign(Src: TSynSearchTermDict); virtual;
+    Procedure Assign(Src: TSynSearchTermList); virtual;
 
     procedure Clear;
     procedure ClearDictionary;

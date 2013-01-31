@@ -149,9 +149,23 @@ type
     procedure ClearSimilarMatches;
   end;
 
+  { TSourceSynSearchTermDict }
+
   TSourceSynSearchTermDict = class(TSynSearchTermDict)
+  private
+    FModifiedTerms: TSynSearchTermList;
+    FAddedByKeyWords: TSynSearchTermList;
+    FFirstLocal: Integer;
+    function GetTerms: TSourceSynSearchTermList;
+    function  AddSearchTerm(ATerm: String): Integer;
   public
-    property Terms;
+    constructor Create(ATermListClass: TSynSearchTermListClass);
+    destructor Destroy; override;
+    procedure AddTermByKey(ATerm: String; ACaseSensitive: Boolean;
+      ABounds: TSynSearchTermOptsBounds);
+    procedure RemoveTermByKey(RemoveIdx: Integer);
+    procedure RestoreLocalChanges;
+    property Terms: TSourceSynSearchTermList read GetTerms;
   end;
 
   { TSourceSynEditMarkupHighlightAllMulti }
@@ -166,10 +180,6 @@ type
     FKeyAddTermBounds: TSynSearchTermOptsBounds;
     FRemoveTermCmd: TSynEditorCommand;
     FToggleTermCmd: TSynEditorCommand;
-
-    FModifiedTerms: TSynSearchTermList;
-    FAddedByKeyWords: TSynSearchTermList;
-    FFirstLocal: Integer;
 
     procedure ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
               var Handled: boolean; var Command: TSynEditorCommand;
@@ -407,6 +417,151 @@ type
 
 implementation
 
+{ TSourceSynSearchTermDict }
+
+function TSourceSynSearchTermDict.GetTerms: TSourceSynSearchTermList;
+begin
+  Result := TSourceSynSearchTermList(inherited Terms);
+end;
+
+function TSourceSynSearchTermDict.AddSearchTerm(ATerm: String): Integer;
+var
+  Itm: TSynSearchTerm;
+begin
+  Itm := Terms.Add;
+  Itm.SearchTerm := ATerm;
+  Result := Itm.Index;
+end;
+
+constructor TSourceSynSearchTermDict.Create(ATermListClass: TSynSearchTermListClass);
+begin
+  inherited Create(ATermListClass);
+  FModifiedTerms := TSynSearchTermList.Create;
+  FAddedByKeyWords := TSynSearchTermList.Create;
+end;
+
+destructor TSourceSynSearchTermDict.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FModifiedTerms);
+  FreeAndNil(FAddedByKeyWords);
+end;
+
+procedure TSourceSynSearchTermDict.AddTermByKey(ATerm: String; ACaseSensitive: Boolean;
+  ABounds: TSynSearchTermOptsBounds);
+var
+  i, j, PresetIdx: Integer;
+begin
+  // check for pre-defined, compare text only
+  PresetIdx := Terms.IndexOfSearchTerm(ATerm, False);
+  if PresetIdx >= FFirstLocal then
+    PresetIdx := -1;
+
+  // Disable or remove weaker terms
+  i := Terms.FindSimilarMatchFor(ATerm, ACaseSensitive, ABounds, True, 0, -1, True, True);
+  while i >= 0 do begin
+    if i >= FFirstLocal then begin
+      j := FAddedByKeyWords.IndexOfSearchTerm(Terms[i]);
+      Terms.Delete(i);
+      if j >= 0 then
+        FAddedByKeyWords.Delete(j);
+    end
+    else begin
+      Terms[i].Enabled := False;
+      j := FModifiedTerms.IndexOfSearchTerm(Terms[i]);
+      if j < 0 then
+        FModifiedTerms.Add.Assign(Terms[i])
+      else
+        FModifiedTerms[j].Assign(Terms[i]);
+    end;
+    i := Terms.FindSimilarMatchFor(ATerm, ACaseSensitive, ABounds, True, 0, -1, True, True);
+  end;
+
+  if PresetIdx >= 0 then begin
+    while PresetIdx >= 0 do begin
+      Terms[PresetIdx].Enabled := True;
+      j := FModifiedTerms.IndexOfSearchTerm(Terms[PresetIdx]);
+      if j < 0 then
+        FModifiedTerms.Add.Assign(Terms[PresetIdx])
+      else
+        FModifiedTerms[j].Assign(Terms[PresetIdx]);
+      PresetIdx := Terms.IndexOfSearchTerm(ATerm, False, PresetIdx+1);
+      if PresetIdx >= FFirstLocal then
+        PresetIdx := -1;
+    end;
+  end
+  else begin
+    // Could be adding selection that is not at bounds, but forcing bounds
+    if Terms.FindMatchFor(ATerm, ACaseSensitive, ABounds) >= FFirstLocal then
+      exit;
+    i := AddSearchTerm(ATerm);
+    Terms[i].MatchCase := ACaseSensitive;
+    Terms[i].MatchWordBounds := ABounds;
+    FAddedByKeyWords.Add.Assign(Terms[i]);
+  end;
+end;
+
+procedure TSourceSynSearchTermDict.RemoveTermByKey(RemoveIdx: Integer);
+var
+  i: Integer;
+begin
+  if RemoveIdx >= FFirstLocal then begin
+    i := FAddedByKeyWords.IndexOfSearchTerm(Terms[RemoveIdx]);
+    Assert(i >= 0, 'FAddedByKeyWords.IndexOfSearchTerm(Terms[RemoveIdx])');
+    FAddedByKeyWords.Delete(i);
+    Terms.Delete(RemoveIdx);
+  end
+  else begin
+    Terms[RemoveIdx].Enabled := False;
+    i := FModifiedTerms.IndexOfSearchTerm(Terms[RemoveIdx]);
+    if i < 0 then
+      FModifiedTerms.Add.Assign(Terms[RemoveIdx])
+    else
+      FModifiedTerms[i].Assign(Terms[RemoveIdx]);
+  end;
+end;
+
+procedure TSourceSynSearchTermDict.RestoreLocalChanges;
+var
+  i, j, k: Integer;
+begin
+  FFirstLocal := Terms.Count;
+  IncChangeNotifyLock;
+  try
+
+    for i := FModifiedTerms.Count - 1 downto 0 do begin
+      j := Terms.IndexOfSearchTerm(FModifiedTerms[i]);
+      if (j < 0) or (Terms[j].Enabled = FModifiedTerms[i].Enabled) then
+        FModifiedTerms.Delete(i)
+      else
+        Terms[j].Enabled := FModifiedTerms[i].Enabled;
+    end;
+
+    for i := 0 to FAddedByKeyWords.Count - 1 do begin
+      // disable global (there may be new globals)
+      j := Terms.FindSimilarMatchFor(FAddedByKeyWords[i], 0, -1, True, True);
+      while j >= 0 do begin
+        Assert(j < FFirstLocal, 'DISABLE preset in RESTORE j < FFirstLocal');
+        if j < FFirstLocal then begin  // should always be true
+  DebugLn(['DISABLE preset in RESTORE ',j]);
+          Terms[j].Enabled := False;
+          k := FModifiedTerms.IndexOfSearchTerm(Terms[j]);
+          if k < 0 then
+            FModifiedTerms.Add.Assign(Terms[j])
+          else
+            FModifiedTerms[k].Assign(Terms[j]);
+        end;
+        j := Terms.FindSimilarMatchFor(FAddedByKeyWords[i], 0, -1, True, True);
+      end;
+
+      Terms.Add.Assign(FAddedByKeyWords[i]);
+    end;
+
+  finally
+    DecChangeNotifyLock;
+  end;
+end;
+
 { TSourceSynSearchTermList }
 
 function TSourceSynSearchTermList.FindMatchFor(ATerm: String; ACasesSensitive: Boolean;
@@ -554,7 +709,7 @@ procedure TSourceSynEditMarkupHighlightAllMulti.ProcessSynCommand(Sender: TObjec
   var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
 var
   syn: TIDESynEditor;
-  TermList: TSourceSynSearchTermList;
+  TermDict: TSourceSynSearchTermDict;
 
   function FindTermAtCaret: Integer;
   var
@@ -611,7 +766,6 @@ var
     NewTerm, LineTxt: String;
     B1, B2: Boolean;
     NewBounds: TSynSearchTermOptsBounds;
-    i, j, PresetIdx: Integer;
   begin
     NewTerm := '';
     if syn.SelAvail and (syn.BlockBegin.y = syn.BlockEnd.y) then begin
@@ -644,84 +798,16 @@ var
     else if B2   then NewBounds := soBoundsAtEnd
     else              NewBounds := soNoBounds;
 
-    // check for pre-defined, compare text only
-    PresetIdx := TermList.IndexOfSearchTerm(NewTerm, False);
-    if PresetIdx >= FFirstLocal then
-      PresetIdx := -1;
-
-    // Disable or remove weaker terms
-    i := TermList.FindSimilarMatchFor(NewTerm, FKeyAddCase, NewBounds, True, 0, -1, True, True);
-    while i >= 0 do begin
-      if i >= FFirstLocal then begin
-        j := FAddedByKeyWords.IndexOfSearchTerm(TermList[i]);
-        TermList.Delete(i);
-        if j >= 0 then
-          FAddedByKeyWords.Delete(j);
-      end
-      else begin
-        TermList[i].Enabled := False;
-        j := FModifiedTerms.IndexOfSearchTerm(TermList[i]);
-        if j < 0 then
-          FModifiedTerms.Add.Assign(TermList[i])
-        else
-          FModifiedTerms[j].Assign(TermList[i]);
-      end;
-      i := TermList.FindSimilarMatchFor(NewTerm, FKeyAddCase, NewBounds, True, 0, -1, True, True);
-    end;
-
-    if PresetIdx >= 0 then begin
-      while PresetIdx >= 0 do begin
-        TermList[PresetIdx].Enabled := True;
-        j := FModifiedTerms.IndexOfSearchTerm(TermList[PresetIdx]);
-        if j < 0 then
-          FModifiedTerms.Add.Assign(TermList[PresetIdx])
-        else
-          FModifiedTerms[j].Assign(TermList[PresetIdx]);
-        PresetIdx := TermList.IndexOfSearchTerm(NewTerm, False, PresetIdx+1);
-        if PresetIdx >= FFirstLocal then
-          PresetIdx := -1;
-      end;
-    end
-    else begin
-      // Could be adding selection that is not at bounds, but forcing bounds
-      if TermList.FindMatchFor(NewTerm, FKeyAddCase, NewBounds) >= FFirstLocal then
-        exit;
-      i := AddSearchTerm(NewTerm);
-      TermList[i].MatchCase := KeyAddCase;
-      TermList[i].MatchWordBounds := NewBounds;
-      FAddedByKeyWords.Add.Assign(TermList[i]);
-    end;
-  end;
-
-  procedure RemoveTermByKey(RemoveIdx: Integer);
-  var
-    i: Integer;
-  begin
-    if RemoveIdx >= FFirstLocal then begin
-      i := FAddedByKeyWords.IndexOfSearchTerm(TermList[RemoveIdx]);
-      Assert(i >= 0, 'FAddedByKeyWords.IndexOfSearchTerm(TermList[RemoveIdx])');
-      FAddedByKeyWords.Delete(i);
-      TermList.Delete(RemoveIdx);
-    end
-    else begin
-      TermList[RemoveIdx].Enabled := False;
-      i := FModifiedTerms.IndexOfSearchTerm(TermList[RemoveIdx]);
-      if i < 0 then
-        FModifiedTerms.Add.Assign(TermList[RemoveIdx])
-      else
-        FModifiedTerms[i].Assign(TermList[RemoveIdx]);
-    end;
+    TermDict.AddTermByKey(NewTerm, FKeyAddCase, NewBounds);
   end;
 
 var
   i: Integer;
-  TermDict: TSourceSynSearchTermDict;
 begin
   if Handled then
     exit;
   syn := TIDESynEditor(SynEdit);
   TermDict := (Terms as TSourceSynSearchTermDict);
-  TermList := (TermDict.Terms as TSourceSynSearchTermList);
   TermDict.IncChangeNotifyLock;
   try
 
@@ -733,14 +819,14 @@ begin
     if Command = FRemoveTermCmd then begin
       i := FindTermAtCaret;
       if i >= 0 then
-        RemoveTermByKey(i);
+        TermDict.RemoveTermByKey(i);
       Handled := True;
     end;
 
     if Command = FToggleTermCmd then begin
       i := FindTermAtCaret;
       if i >= 0 then
-        RemoveTermByKey(i)
+        TermDict.RemoveTermByKey(i)
       else
         AddTermByKey;
       Handled := True;
@@ -760,61 +846,17 @@ constructor TSourceSynEditMarkupHighlightAllMulti.Create(ASynEdit: TSynEditBase)
 begin
   inherited Create(ASynEdit);
   TCustomSynEdit(SynEdit).RegisterCommandHandler(@ProcessSynCommand, nil, [hcfInit]);
-  FModifiedTerms := TSynSearchTermList.Create;
-  FAddedByKeyWords := TSynSearchTermList.Create;
 end;
 
 destructor TSourceSynEditMarkupHighlightAllMulti.Destroy;
 begin
   inherited Destroy;
   TCustomSynEdit(SynEdit).UnregisterCommandHandler(@ProcessSynCommand);
-  FreeAndNil(FModifiedTerms);
-  FreeAndNil(FAddedByKeyWords);
 end;
 
 procedure TSourceSynEditMarkupHighlightAllMulti.RestoreLocalChanges;
-var
-  i, j, k: Integer;
-  TermList: TSourceSynSearchTermList;
-  TermDict: TSourceSynSearchTermDict;
 begin
-  FFirstLocal := Terms.Count;
-  TermDict := (Terms as TSourceSynSearchTermDict);
-  TermList := (TermDict.Terms as TSourceSynSearchTermList);
-  TermDict.IncChangeNotifyLock;
-  try
-
-    for i := FModifiedTerms.Count - 1 downto 0 do begin
-      j := TermList.IndexOfSearchTerm(FModifiedTerms[i]);
-      if (j < 0) or (TermList[j].Enabled = FModifiedTerms[i].Enabled) then
-        FModifiedTerms.Delete(i)
-      else
-        TermList[j].Enabled := FModifiedTerms[i].Enabled;
-    end;
-
-    for i := 0 to FAddedByKeyWords.Count - 1 do begin
-      // disable global (there may be new globals)
-      j := TermList.FindSimilarMatchFor(FAddedByKeyWords[i], 0, -1, True, True);
-      while j >= 0 do begin
-        Assert(j < FFirstLocal, 'DISABLE preset in RESTORE j < FFirstLocal');
-        if j < FFirstLocal then begin  // should always be true
-  DebugLn(['DISABLE preset in RESTORE ',j]);
-          TermList[j].Enabled := False;
-          k := FModifiedTerms.IndexOfSearchTerm(TermList[j]);
-          if k < 0 then
-            FModifiedTerms.Add.Assign(TermList[j])
-          else
-            FModifiedTerms[k].Assign(TermList[j]);
-        end;
-        j := TermList.FindSimilarMatchFor(FAddedByKeyWords[i], 0, -1, True, True);
-      end;
-
-      TermList.Add.Assign(FAddedByKeyWords[i]);
-    end;
-
-  finally
-    TermDict.DecChangeNotifyLock;
-  end;
+  (Terms as TSourceSynSearchTermDict).RestoreLocalChanges;
 end;
 
 {$IFDEF WithSynDebugGutter}
