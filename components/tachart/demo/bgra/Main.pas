@@ -23,8 +23,8 @@ type
     chSimpleBarSeries1: TBarSeries;
     chSimpleLineSeries1: TLineSeries;
     chSimplePieSeries1: TPieSeries;
-    chSliceScaling: TChart;
-    chSliceScalingBarSeries1: TBarSeries;
+    chBarEffects: TChart;
+    chBarEffectsBarSeries1: TBarSeries;
     Image1: TImage;
     ListChartSource1: TListChartSource;
     PageControl1: TPageControl;
@@ -32,21 +32,22 @@ type
     Panel1: TPanel;
     Panel2: TPanel;
     RandomChartSource1: TRandomChartSource;
-    rgMethod: TRadioGroup;
+    rgAnimation: TRadioGroup;
+    rgStyle: TRadioGroup;
     Splitter1: TSplitter;
     tsSimple: TTabSheet;
-    tsSliceScaling: TTabSheet;
+    tsBarEffects: TTabSheet;
     procedure btnStartStopClick(Sender: TObject);
     procedure cbAntialiasingChange(Sender: TObject);
     procedure cbPieChange(Sender: TObject);
     procedure chSimpleAfterPaint(ASender: TChart);
-    procedure chSliceScalingBarSeries1BeforeDrawBar(ASender: TBarSeries;
+    procedure chBarEffectsBarSeries1BeforeDrawBar(ASender: TBarSeries;
       ACanvas: TCanvas; const ARect: TRect; APointIndex, AStackIndex: Integer;
       var ADoDefaultDrawing: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure PaintBox1Paint(Sender: TObject);
-    procedure rgMethodClick(Sender: TObject);
+    procedure rgAnimationClick(Sender: TObject);
   private
     FAnimatedSource: TCustomAnimatedChartSource;
     FSliceScaling: TBGRASliceScaling;
@@ -63,8 +64,43 @@ implementation
 {$R *.lfm}
 
 uses
-  Math, BGRABitmap, BGRABitmapTypes,
+  Math, BGRABitmap, BGRABitmapTypes, BGRAGradients,
   TAChartUtils, TADrawerBGRA, TADrawerCanvas, TADrawUtils, TAGeometry;
+
+function CreateChocolateTexture(ATx, ATy: integer): TBGRABitmap;
+var
+  square, map: TBGRABitmap;
+  phong: TPhongShading;
+  margin: Integer;
+begin
+  margin := ATx div 20;
+  map := TBGRABitmap.Create(ATx, ATy, BGRABlack);
+  try
+    square := CreateRectangleMap(ATx - 2 * margin, ATy - 2 * margin, ATx div 8);
+    try
+      map.PutImage(margin, margin, square, dmDrawWithTransparency);
+      BGRAReplace(map, map.FilterBlurRadial(ATx div 40, rbFast));
+    finally
+      square.free;
+    end;
+
+    Result := TBGRABitmap.Create(ATx, ATy);
+    phong := TPhongShading.Create;
+    try
+      phong.LightSourceDistanceFactor := 0;
+      phong.LightDestFactor := 0;
+      phong.LightSourceIntensity := 200;
+      phong.AmbientFactor := 0.5;
+      phong.LightPosition := Point(-50, -100);
+      phong.LightPositionZ := 80;
+      phong.Draw(Result, map, 20, 0, 0, BGRA(86, 41, 38));
+    finally
+      phong.Free;
+    end;
+  finally
+    map.Free;
+  end;
+end;
 
 { TForm1 }
 
@@ -95,24 +131,40 @@ begin
   PaintBox1.Invalidate;
 end;
 
-procedure TForm1.chSliceScalingBarSeries1BeforeDrawBar(ASender: TBarSeries;
+procedure TForm1.chBarEffectsBarSeries1BeforeDrawBar(ASender: TBarSeries;
   ACanvas: TCanvas; const ARect: TRect; APointIndex, AStackIndex: Integer;
   var ADoDefaultDrawing: Boolean);
 var
-  temp: TBGRABitmap;
+  temp, chocolate: TBGRABitmap;
   sz: TPoint;
 begin
   Unused(ASender);
   Unused(APointIndex, AStackIndex);
   ADoDefaultDrawing := false;
   sz := ARect.BottomRight - ARect.TopLeft;
-  temp := TBGRABitmap.Create(
-    FSliceScaling.BitmapWidth, Round(FSliceScaling.BitmapWidth * sz.Y / sz.X));
-  try
-    FSliceScaling.Draw(temp, 0, 0, temp.Width, temp.Height);
-    temp.Draw(ACanvas, ARect);
-  finally
-    temp.Free;
+  case rgStyle.ItemIndex of
+    0: begin
+      temp := TBGRABitmap.Create(
+        FSliceScaling.BitmapWidth,
+        Round(FSliceScaling.BitmapWidth * sz.Y / sz.X));
+      try
+        FSliceScaling.Draw(temp, 0, 0, temp.Width, temp.Height);
+        temp.Draw(ACanvas, ARect);
+      finally
+        temp.Free;
+      end;
+    end;
+    1: begin
+      chocolate := CreateChocolateTexture(sz.X, sz.X);
+      temp := TBGRABitmap.Create(sz.X, sz.Y);
+      try
+        temp.FillRect(0, 0, sz.X, sz.Y, chocolate, dmSet);
+        temp.Draw(ACanvas, ARect);
+      finally
+        temp.Free;
+        chocolate.Free;
+      end;
+    end;
   end;
 end;
 
@@ -123,7 +175,7 @@ begin
   FAnimatedSource.AnimationInterval := 30;
   FAnimatedSource.AnimationTime := 1000;
   FAnimatedSource.OnGetItem := @OnGetItem;
-  chSliceScalingBarSeries1.Source := FAnimatedSource;
+  chBarEffectsBarSeries1.Source := FAnimatedSource;
 
   FSliceScaling := TBGRASliceScaling.Create(Image1.Picture.Bitmap, 70, 0, 35, 0);
   FSliceScaling.AutodetectRepeat;
@@ -161,7 +213,7 @@ procedure TForm1.OnGetItem(
   ASource: TCustomAnimatedChartSource;
   AIndex: Integer; var AItem: TChartDataItem);
 begin
-  case rgMethod.ItemIndex of
+  case rgAnimation.ItemIndex of
   0: AItem.Y *= ASource.Progress;
   1:
     if ASource.Count * ASource.Progress < AIndex then
@@ -174,7 +226,7 @@ begin
   end;
 end;
 
-procedure TForm1.rgMethodClick(Sender: TObject);
+procedure TForm1.rgAnimationClick(Sender: TObject);
 begin
   FAnimatedSource.Start;
 end;
