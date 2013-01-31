@@ -26,7 +26,6 @@ type
     chSliceScaling: TChart;
     chSliceScalingBarSeries1: TBarSeries;
     Image1: TImage;
-    lblSkipped: TLabel;
     ListChartSource1: TListChartSource;
     PageControl1: TPageControl;
     PaintBox1: TPaintBox;
@@ -50,12 +49,10 @@ type
     procedure rgMethodClick(Sender: TObject);
   private
     FAnimatedSource: TCustomAnimatedChartSource;
+    FSliceScaling: TBGRASliceScaling;
     procedure OnGetItem(
       ASource: TCustomAnimatedChartSource;
       AIndex: Integer; var AItem: TChartDataItem);
-    procedure OnStop(ASource: TCustomAnimatedChartSource);
-  public
-    sliceScaling: TBGRASliceScaling;
   end;
 
 var
@@ -105,11 +102,14 @@ var
   temp: TBGRABitmap;
   sz: TPoint;
 begin
+  Unused(ASender);
+  Unused(APointIndex, AStackIndex);
+  ADoDefaultDrawing := false;
   sz := ARect.BottomRight - ARect.TopLeft;
   temp := TBGRABitmap.Create(
-    sliceScaling.BitmapWidth, Round(sliceScaling.BitmapWidth * sz.Y / sz.X));
+    FSliceScaling.BitmapWidth, Round(FSliceScaling.BitmapWidth * sz.Y / sz.X));
   try
-    sliceScaling.Draw(temp, 0, 0, temp.Width, temp.Height);
+    FSliceScaling.Draw(temp, 0, 0, temp.Width, temp.Height);
     temp.Draw(ACanvas, ARect);
   finally
     temp.Free;
@@ -123,16 +123,15 @@ begin
   FAnimatedSource.AnimationInterval := 30;
   FAnimatedSource.AnimationTime := 1000;
   FAnimatedSource.OnGetItem := @OnGetItem;
-  FAnimatedSource.OnStop := @OnStop;
   chSliceScalingBarSeries1.Source := FAnimatedSource;
 
-  sliceScaling := TBGRASliceScaling.Create(Image1.Picture.Bitmap, 70, 0, 35, 0);
-  sliceScaling.AutodetectRepeat;
+  FSliceScaling := TBGRASliceScaling.Create(Image1.Picture.Bitmap, 70, 0, 35, 0);
+  FSliceScaling.AutodetectRepeat;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
 begin
-  sliceScaling.Free;
+  FSliceScaling.Free;
 end;
 
 procedure TForm1.PaintBox1Paint(Sender: TObject);
@@ -173,11 +172,6 @@ begin
       -1: AItem.Y := 0;
     end;
   end;
-end;
-
-procedure TForm1.OnStop(ASource: TCustomAnimatedChartSource);
-begin
-  lblSkipped.Caption := Format('Skipped frames: %d', [ASource.SkippedFramesCount]);
 end;
 
 procedure TForm1.rgMethodClick(Sender: TObject);

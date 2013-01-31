@@ -172,17 +172,10 @@ object Form1: TForm1
           OnClick = btnStartStopClick
           TabOrder = 1
         end
-        object lblSkipped: TLabel
-          Left = 9
-          Height = 1
-          Top = 340
-          Width = 1
-          ParentColor = False
-        end
         object Image1: TImage
-          Left = 9
+          Left = 10
           Height = 148
-          Top = 176
+          Top = 146
           Width = 61
           Picture.Data = {
             1754506F727461626C654E6574776F726B477261706869636D0C000089504E47
