@@ -24,15 +24,15 @@ uses
 
 type
 
-  { TSVGDrawer }
-
   TSVGDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
     FAntialiasingMode: TChartAntialiasingMode;
     FBrushColor: TFPColor;
+    FBrushStyle: TFPBrushStyle;
     FClippingPathId: Integer;
     FFont: TFPCustomFont;
     FFontAngle: Double;
+    FPatterns: TStrings;
     FPen: TFPCustomPen;
     FPrevPos: TPoint;
     FStream: TStream;
@@ -152,6 +152,7 @@ constructor TSVGDrawer.Create(AStream: TStream; AWriteDocType: Boolean);
 begin
   inherited Create;
   FStream := AStream;
+  FPatterns := TStringList.Create;
   FPen := TFPCustomPen.Create;
   if AWriteDocType then begin
     WriteStr('<?xml version="1.0"?>');
@@ -162,6 +163,7 @@ end;
 
 destructor TSVGDrawer.Destroy;
 begin
+  FreeAndNil(FPatterns);
   FreeAndNil(FPen);
   inherited Destroy;
 end;
@@ -180,9 +182,21 @@ begin
 end;
 
 procedure TSVGDrawer.DrawingEnd;
+var
+  i: Integer;
 begin
   if FAntialiasingMode <> amDontCare then
     WriteStr('</g>');
+  if FPatterns.Count > 0 then
+    WriteStr('<defs>');
+  for i := 0 to FPatterns.Count - 1 do begin
+    WriteFmt(
+      '<pattern id="bs%d" width="8" height="8" patternUnits="userSpaceOnUse">' +
+      '%s</pattern>',
+      [i, FPatterns[i]]);
+  end;
+  if FPatterns.Count > 0 then
+    WriteStr('</defs>');
   WriteStr('</svg>');
 end;
 
@@ -284,7 +298,6 @@ begin
 end;
 
 procedure TSVGDrawer.PutImage(AX, AY: Integer; AImage: TFPCustomImage);
-
 var
   s: TStringStream = nil;
   w: TFPWriterPNG = nil;
@@ -351,6 +364,7 @@ end;
 procedure TSVGDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
   FBrushColor := FPColorOrMono(ABrush.FPColor);
+  FBrushStyle := ABrush.Style;
 end;
 
 procedure TSVGDrawer.SetBrushColor(AColor: TChartColor);
@@ -362,7 +376,7 @@ procedure TSVGDrawer.SetBrushParams(
   AStyle: TFPBrushStyle; AColor: TChartColor);
 begin
   FBrushColor := FChartColorToFPColorFunc(ColorOrMono(AColor));
-  Unused(AStyle);
+  FBrushStyle := AStyle;
 end;
 
 procedure TSVGDrawer.SetFont(AFont: TFPCustomFont);
@@ -408,10 +422,41 @@ begin
 end;
 
 function TSVGDrawer.StyleFill: String;
+
+function AddPattern(APattern: String): String;
+  var
+    i: Integer;
+  begin
+    i := FPatterns.IndexOf(APattern);
+    if i < 0 then
+      i := FPatterns.Add(APattern);
+    Result := Format('url(#bs%d)', [i]);
+  end;
+
+const
+  PATTERNS: array [TFPBrushStyle] of String = (
+    '', '',
+    'M0,4 h8',              // bsHorizontal
+    'M4,0 v8',              // bsVertical
+    'M0,0 l8,8',            // bsFDiagonal
+    'M0,8 l8,-8',           // bsBDiagonal
+    'M0,4 h8 M4,0 v8',      // bsCross
+    'M0,0 l8,8 M0,8 l8,-8', // bsDiagCross
+    '', '');
+var
+  fill: String;
 begin
+  case FBrushStyle of
+    bsClear: exit('fill: none;');
+    bsHorizontal..bsDiagCross:
+      fill := AddPattern(Format(
+        '<path d="%s" stroke="%s"/>',
+        [PATTERNS[FBrushStyle], ColorToHex(FBrushColor)]));
+    else
+      fill := ColorToHex(FBrushColor);
+  end;
   Result :=
-    Format('fill:%s;', [ColorToHex(FBrushColor)]) +
-    FormatIfNotEmpty('fill-opacity:%s;', OpacityStr);
+    Format('fill:%s;', [fill]) + FormatIfNotEmpty('fill-opacity:%s;', OpacityStr);
 end;
 
 function TSVGDrawer.StyleStroke: String;
