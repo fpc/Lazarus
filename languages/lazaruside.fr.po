@@ -2227,7 +2227,8 @@ msgid "Highlight of Word under Caret"
 msgstr "Mot sous le curseur surligné"
 
 #: lazarusidestrconsts.dlgmarkupuserdefined
-msgid "User defined words"
+msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
+msgid "User defined markup"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddelcaption
@@ -2259,6 +2260,10 @@ msgstr ""
 msgid "The term %s already exists. Duplicates will be removed when the list is saved."
 msgstr ""
 
+#: lazarusidestrconsts.dlgmarkupuserdefinedgloballist
+msgid "Add/Remove in all editors"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupuserdefinedlistdel
 msgid "Delete list"
 msgstr ""
@@ -2277,11 +2282,11 @@ msgid "Case sensitive"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedmatchendbound
-msgid "Word bound at end"
+msgid "Set bound at term end"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedmatchstartbound
-msgid "Word bound at start"
+msgid "Set bound at term start"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylen
@@ -16936,7 +16941,8 @@ msgid "Add to list \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeygroup
-msgid "User defined word markup"
+msgctxt "lazarusidestrconsts.lisuserdefinedmarkupkeygroup"
+msgid "User defined text markup"
 msgstr ""
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeyremove

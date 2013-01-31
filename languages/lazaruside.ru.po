@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-01-31 02:35+0400\n"
+"PO-Revision-Date: 2013-02-01 01:03+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2245,8 +2245,10 @@ msgid "Highlight of Word under Caret"
 msgstr "Подсветка текущего слова под курсором"
 
 #: lazarusidestrconsts.dlgmarkupuserdefined
-msgid "User defined words"
-msgstr "Пользовательские слова"
+#| msgid "User defined words"
+msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
+msgid "User defined markup"
+msgstr "Пользовательская разметка"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddelcaption
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefineddelcaption"
@@ -2259,23 +2261,27 @@ msgstr "Удалить список \"%s\"?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
 msgid "Add Word or Term"
-msgstr ""
+msgstr "Добавление слова или терма"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
 msgid "Remove Word or Term"
-msgstr ""
+msgstr "Удаление слова или терма"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
 msgid "Toggle Word or Term"
-msgstr ""
+msgstr "Переключение слова или терма"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
 msgid "Duplicate Term"
-msgstr ""
+msgstr "Дублирующийся терм"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicatemsg
 msgid "The term %s already exists. Duplicates will be removed when the list is saved."
-msgstr ""
+msgstr "Терм %s уже существует. Дубликаты будут удалены при сохранении списка."
+
+#: lazarusidestrconsts.dlgmarkupuserdefinedgloballist
+msgid "Add/Remove in all editors"
+msgstr "Добавлять/удалять во всех редакторах"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedlistdel
 msgid "Delete list"
@@ -2295,16 +2301,16 @@ msgid "Case sensitive"
 msgstr "Учитывать регистр"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedmatchendbound
-msgid "Word bound at end"
-msgstr ""
+msgid "Set bound at term end"
+msgstr "Установить границу в конце терма"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedmatchstartbound
-msgid "Word bound at start"
-msgstr ""
+msgid "Set bound at term start"
+msgstr "Установить границу в начале терма"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylen
 msgid "Ignore bounds for terms longer than"
-msgstr ""
+msgstr "Игнорировать границы термов длиннее, чем"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylenselect
 msgid "selection"
@@ -2316,11 +2322,11 @@ msgstr "текущее слово"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeyopts
 msgid "Settings for terms added by key"
-msgstr ""
+msgstr "Параметры термов, добавленных клавишами"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeysmartselect
 msgid "Smart match selection bounds"
-msgstr ""
+msgstr "Умное назначение границ"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewname
 msgid "New list"
@@ -16787,8 +16793,10 @@ msgid "Add to list \"%s\""
 msgstr "Добавить в список \"%s\""
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeygroup
-msgid "User defined word markup"
-msgstr ""
+#| msgid "User defined markup"
+msgctxt "lazarusidestrconsts.lisuserdefinedmarkupkeygroup"
+msgid "User defined text markup"
+msgstr "Пользовательская разметка текста"
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeyremove
 msgid "Remove from list \"%s\""
