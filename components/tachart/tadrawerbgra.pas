@@ -20,7 +20,7 @@ unit TADrawerBGRA;
 interface
 
 uses
-  BGRABitmap, BGRABitmapTypes, BGRACanvas, Classes, FPCanvas,
+  BGRABitmap, BGRABitmapTypes, BGRACanvas, Classes, FPCanvas, FPImage,
   TAChartUtils, TADrawUtils;
 
 type
@@ -58,6 +58,7 @@ type
     procedure Polyline(
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
+    procedure PutImage(AX, AY: Integer; AImage: TFPCustomImage); override;
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
       AStartAngle16Deg, AAngleLength16Deg: Integer);
@@ -173,6 +174,16 @@ begin
   Canvas.Pen.Style := psSolid;
   Canvas.Pen.Width := 1;
   Canvas.Pen.Opacity := Opacity;
+end;
+
+procedure TBGRABitmapDrawer.PutImage(AX, AY: Integer; AImage: TFPCustomImage);
+var
+  x, y: Integer;
+begin
+  for y := 0 to AImage.Height - 1 do
+    for x := 0 to AImage.Width - 1 do
+      if AImage[x, y].alpha > 0 then
+        Canvas.Colors[x, y] := AImage[x, y];
 end;
 
 procedure TBGRABitmapDrawer.RadialPie(
