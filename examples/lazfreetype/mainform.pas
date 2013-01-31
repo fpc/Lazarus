@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ComCtrls, ExtCtrls, Spin, fpimage,
+  ComCtrls, ExtCtrls, Spin, fpimage, LCLType,
 
   IntfGraphics, GraphType,      //Intf basic routines
 
@@ -32,13 +32,12 @@ type
     procedure TrackBar_SizeChange(Sender: TObject);
   private
     procedure UpdateSizeLabel;
-    { private declarations }
   public
-    { public declarations }
     lazimg: TLazIntfImage;
     drawer: TIntfFreeTypeDrawer;
     ftFont1,ftFont2,ftFont3: TFreeTypeFont;
     mx,my: integer; //mouse position
+    procedure EraseBackground(DC: HDC); override;
   end;
 
 var
@@ -47,6 +46,11 @@ var
 implementation
 
 { TForm1 }
+
+procedure TForm1.EraseBackground(DC: HDC);
+begin
+  // empty
+end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin

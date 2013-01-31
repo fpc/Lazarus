@@ -12,7 +12,7 @@ object Form1: TForm1
   OnDestroy = FormDestroy
   OnMouseMove = FormMouseMove
   OnPaint = FormPaint
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object Panel_Option: TPanel
     Left = 0
     Height = 40
@@ -48,15 +48,15 @@ object Form1: TForm1
     end
     object Label1: TLabel
       Left = 6
-      Height = 16
+      Height = 13
       Top = 12
-      Width = 33
+      Width = 26
       Caption = 'Zoom'
       ParentColor = False
     end
     object SpinEdit_Zoom: TSpinEdit
       Left = 48
-      Height = 23
+      Height = 21
       Top = 8
       Width = 40
       MaxValue = 9
