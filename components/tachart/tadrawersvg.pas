@@ -77,6 +77,7 @@ type
     procedure Polyline(
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
+    procedure PutImage(AX, AY: Integer; AImage: TFPCustomImage); override;
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
       AStartAngle16Deg, AAngleLength16Deg: Integer);
@@ -91,7 +92,7 @@ type
 implementation
 
 uses
-  Math, SysUtils, TAGeometry;
+  Base64, FPWritePNG, Math, SysUtils, TAGeometry;
 
 const
   RECT_FMT =
@@ -280,6 +281,32 @@ begin
   FPen.FPColor := FChartColorToFPColorFunc(ColorOrMono(AColor));
   FPen.Style := psSolid;
   FPen.Width := 1;
+end;
+
+procedure TSVGDrawer.PutImage(AX, AY: Integer; AImage: TFPCustomImage);
+
+var
+  s: TStringStream = nil;
+  w: TFPWriterPNG = nil;
+  b: TBase64EncodingStream = nil;
+begin
+  s := TStringStream.Create('');
+  b := TBase64EncodingStream.Create(s);
+  w := TFPWriterPNG.Create;
+  try
+    w.Indexed := false;
+    w.UseAlpha := true;
+    AImage.SaveToStream(b, w);
+    b.Flush;
+    WriteFmt(
+      '<image x="%d" y="%d" width="%d" height="%d" ' +
+      'xlink:href="data:image/png;base64,%s"/>',
+      [AX, AY, AImage.Width, AImage.Height, s.DataString]);
+  finally
+    w.Free;
+    s.Free;
+    b.Free;
+  end;
 end;
 
 procedure TSVGDrawer.RadialPie(
