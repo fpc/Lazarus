@@ -165,6 +165,9 @@ type
   { TChart }
 
   TChart = class(TCustomChart, ICoordTransformer)
+  public
+  type
+    TDrawEvent = procedure (ASender: TChart; ADrawer: IChartDrawer) of object;
   strict private // Property fields
     FAllowZoom: Boolean;
     FAntialiasingMode: TChartAntialiasingMode;
@@ -181,6 +184,7 @@ type
     FLogicalExtent: TDoubleRect;
     FMargins: TChartMargins;
     FMarginsExternal: TChartMargins;
+    FOnAfterDraw: TDrawEvent;
     FOnAfterDrawBackground: TChartAfterDrawEvent;
     FOnAfterDrawBackWall: TChartAfterDrawEvent;
     FOnBeforeDrawBackground: TChartBeforeDrawEvent;
@@ -239,6 +243,7 @@ type
     procedure SetLogicalExtent(const AValue: TDoubleRect);
     procedure SetMargins(AValue: TChartMargins);
     procedure SetMarginsExternal(AValue: TChartMargins);
+    procedure SetOnAfterDraw(AValue: TDrawEvent);
     procedure SetOnAfterDrawBackground(AValue: TChartAfterDrawEvent);
     procedure SetOnAfterDrawBackWall(AValue: TChartAfterDrawEvent);
     procedure SetOnBeforeDrawBackground(AValue: TChartBeforeDrawEvent);
@@ -377,6 +382,7 @@ type
     property Toolset: TBasicChartToolset read FToolset write SetToolset;
 
   published
+    property OnAfterDraw: TDrawEvent read FOnAfterDraw write SetOnAfterDraw;
     property OnAfterDrawBackground: TChartAfterDrawEvent
       read FOnAfterDrawBackground write SetOnAfterDrawBackground;
     property OnAfterDrawBackWall: TChartAfterDrawEvent
@@ -816,6 +822,9 @@ begin
 
   for s in Series do
     s.AfterDraw;
+
+  if Assigned(OnAfterDraw) then
+    OnAfterDraw(Self, ADrawer);
   ADrawer.DrawingEnd;
 
   if FPrevLogicalExtent <> FLogicalExtent then begin
@@ -1432,6 +1441,13 @@ begin
   inherited SetName(AValue);
   if csDesigning in ComponentState then
     Series.List.ChangeNamePrefix(oldName, AValue);
+end;
+
+procedure TChart.SetOnAfterDraw(AValue: TDrawEvent);
+begin
+  if TMethod(FOnAfterDraw) = TMethod(AValue) then exit;
+  FOnAfterDraw := AValue;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetOnAfterDrawBackground(AValue: TChartAfterDrawEvent);
