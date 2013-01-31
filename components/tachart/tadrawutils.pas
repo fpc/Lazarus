@@ -131,6 +131,7 @@ type
     FTransparency: TChartTransparency;
     FXor: Boolean;
     function ColorOrMono(AColor: TChartColor): TChartColor; inline;
+    function FPColorOrMono(const AColor: TFPColor): TFPColor; inline;
     function GetFontAngle: Double; virtual; abstract;
     function SimpleTextExtent(const AText: String): TPoint; virtual; abstract;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); virtual; abstract;
@@ -325,6 +326,14 @@ var
 begin
   d := Point(ADepth, -ADepth);
   Polygon([AP1, AP1 + d, AP2 + d, AP2], 0, 4);
+end;
+
+function TBasicDrawer.FPColorOrMono(const AColor: TFPColor): TFPColor;
+begin
+  if FMonochromeColor = clTAColor then
+    Result := AColor
+  else
+    Result := FChartColorToFPColorFunc(FMonochromeColor);
 end;
 
 procedure TBasicDrawer.LineTo(const AP: TPoint);

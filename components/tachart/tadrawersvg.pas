@@ -277,7 +277,7 @@ end;
 
 procedure TSVGDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
-  FPen.FPColor := FChartColorToFPColorFunc(AColor);
+  FPen.FPColor := FChartColorToFPColorFunc(ColorOrMono(AColor));
   FPen.Style := psSolid;
   FPen.Width := 1;
 end;
@@ -323,36 +323,38 @@ end;
 
 procedure TSVGDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
-  FBrushColor := ABrush.FPColor;
+  FBrushColor := FPColorOrMono(ABrush.FPColor);
 end;
 
 procedure TSVGDrawer.SetBrushColor(AColor: TChartColor);
 begin
-  FBrushColor := FChartColorToFPColorFunc(AColor);
+  FBrushColor := FChartColorToFPColorFunc(ColorOrMono(AColor));
 end;
 
 procedure TSVGDrawer.SetBrushParams(
   AStyle: TFPBrushStyle; AColor: TChartColor);
 begin
-  FBrushColor := FChartColorToFPColorFunc(AColor);
+  FBrushColor := FChartColorToFPColorFunc(ColorOrMono(AColor));
   Unused(AStyle);
 end;
 
 procedure TSVGDrawer.SetFont(AFont: TFPCustomFont);
 begin
   FFont := AFont;
+  if FMonochromeColor <> clTAColor then
+    FFont.FPColor := FChartColorToFPColorFunc(FMonochromeColor);
 end;
 
 procedure TSVGDrawer.SetPen(APen: TFPCustomPen);
 begin
-  FPen.FPColor := APen.FPColor;
+  FPen.FPColor := FPColorOrMono(APen.FPColor);
   FPen.Style := APen.Style;
   FPen.Width := APen.Width;
 end;
 
 procedure TSVGDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
 begin
-  FPen.FPColor := FChartColorToFPColorFunc(AColor);
+  FPen.FPColor := FChartColorToFPColorFunc(ColorOrMono(AColor));
   FPen.Style := AStyle;
 end;
 
