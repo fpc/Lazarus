@@ -683,12 +683,8 @@ begin
   topLeft := ParentChart.ClipRect.TopLeft;
   r := BoundsSize(0, 0, ParentChart.ClipRect.BottomRight - topLeft);
 
-  rawImage.Init;
-  rawImage.Description.Init_BPP32_B8G8R8A8_BIO_TTB(r.Right, r.Bottom);
-  rawImage.CreateData(true);
-  img := TLazIntfImage.Create(0, 0);
-  img.SetRawImage(rawImage);
   cnt := 0;
+  img := CreateLazIntfImage(rawImage, r.BottomRight);
   try
     // AxisToGraph is slow, so split loop to optimize non-transformed case.
     if (AxisIndexX = -1) and (AxisIndexY = -1) then

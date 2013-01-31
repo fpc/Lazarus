@@ -1256,7 +1256,7 @@ var
   pt, next, offset: TPoint;
   gp: TDoublePoint;
   v: Double;
-  img: TLazIntfImage;
+  img: TLazIntfImage = nil;
   rawImage: TRawImage;
   optimize: Boolean;
   x, y: Integer;
@@ -1275,9 +1275,6 @@ begin
   r.BottomRight := ParentChart.GraphToImage(ext.b);
   NormalizeRect(r);
   offset := ParentChart.GraphToImage(ZeroDoublePoint);
-
-  ADrawer.Brush := Brush;
-  ADrawer.SetPenParams(psClear, clTAColor);
   pt.Y := (r.Top div StepY - 1) * StepY + offset.Y mod StepY;
 
   case UseImage of
@@ -1285,15 +1282,13 @@ begin
     cmuiAlways: optimize := true;
     cmuiNever: optimize := false;
   end;
-
-  if optimize then begin
-    rawImage.Init;
-    rawImage.Description.Init_BPP32_B8G8R8A8_BIO_TTB(
-      r.Right - r.Left, r.Bottom - r.Top);
-    rawImage.CreateData(true);
-    img := TLazIntfImage.Create(0, 0);
-    img.SetRawImage(rawImage);
+  if optimize then
+    img := CreateLazIntfImage(rawImage, r.BottomRight - r.TopLeft)
+  else begin
+    ADrawer.Brush := Brush;
+    ADrawer.SetPenParams(psClear, clTAColor);
   end;
+
   try
     while pt.Y <= r.Bottom do begin
       next.Y := pt.Y + StepY;
@@ -1332,11 +1327,10 @@ begin
       end;
       pt.Y := next.Y;
     end;
-  finally
-    if optimize then begin
+    if optimize then
       ADrawer.PutImage(r.Left, r.Top, img);
-      img.Free;
-    end;
+  finally
+    FreeAndNil(img);
   end;
 end;
 

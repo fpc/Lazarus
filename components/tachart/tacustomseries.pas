@@ -23,7 +23,7 @@ unit TACustomSeries;
 interface
 
 uses
-  Classes, Graphics, SysUtils,
+  Classes, GraphType, Graphics, IntfGraphics, SysUtils,
   TAChartAxis, TAChartUtils, TACustomSource, TADrawUtils, TAGraph, TALegend,
   TASources, TAStyles, TATextElements, TATypes;
 
@@ -278,10 +278,23 @@ type
       read FUseReticule write SetUseReticule default false;
   end;
 
+  function CreateLazIntfImage(
+    out ARawImage: TRawImage; const ASize: TPoint): TLazIntfImage;
+
 implementation
 
 uses
   Math, PropEdits, StrUtils, TAGeometry, TAMath, Types;
+
+function CreateLazIntfImage(
+  out ARawImage: TRawImage; const ASize: TPoint): TLazIntfImage;
+begin
+  ARawImage.Init;
+  ARawImage.Description.Init_BPP32_B8G8R8A8_BIO_TTB(ASize.X, ASize.Y);
+  ARawImage.CreateData(true);
+  Result := TLazIntfImage.Create(0, 0);
+  Result.SetRawImage(ARawImage);
+end;
 
 { TCustomChartSeries }
 
