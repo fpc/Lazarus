@@ -29,6 +29,7 @@ type
   strict private
     FBitmap: TBGRABitmap;
 
+    function BGRAColorOrMono(AColor: TFPColor): TBGRAPixel; inline;
     function Canvas: TBGRACanvas; inline;
     function Opacity: Byte; inline;
     procedure SetBrush(ABrush: TFPCustomBrush);
@@ -81,6 +82,14 @@ procedure TBGRABitmapDrawer.AddToFontOrientation(ADelta: Integer);
 begin
   with Canvas.Font do
     Orientation := Orientation + ADelta;
+end;
+
+function TBGRABitmapDrawer.BGRAColorOrMono(AColor: TFPColor): TBGRAPixel;
+begin
+  if FMonochromeColor = clTAColor then
+    Result := FPColorToBGRA(AColor)
+  else
+    Result := ColorToBGRA(FMonochromeColor);
 end;
 
 function TBGRABitmapDrawer.Canvas: TBGRACanvas;
@@ -183,7 +192,7 @@ begin
   for y := 0 to AImage.Height - 1 do
     for x := 0 to AImage.Width - 1 do
       if AImage[x, y].alpha > 0 then
-        Canvas.Colors[x, y] := AImage[x, y];
+        Canvas.Colors[AX + x, AY + y] := AImage[x, y];
 end;
 
 procedure TBGRABitmapDrawer.RadialPie(
@@ -212,21 +221,21 @@ end;
 
 procedure TBGRABitmapDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
-  Canvas.Brush.BGRAColor := FPColorToBGRA(ABrush.FPColor);
+  Canvas.Brush.BGRAColor := BGRAColorOrMono(ABrush.FPColor);
   Canvas.Brush.Style := ABrush.Style;
   Canvas.Brush.Opacity := Opacity;
 end;
 
 procedure TBGRABitmapDrawer.SetBrushColor(AColor: TChartColor);
 begin
-  Canvas.Brush.Color := AColor;
+  Canvas.Brush.Color := ColorOrMono(AColor);
 end;
 
 procedure TBGRABitmapDrawer.SetBrushParams(
   AStyle: TFPBrushStyle; AColor: TChartColor);
 begin
   Canvas.Brush.Style := AStyle;
-  Canvas.Brush.Color := AColor;
+  Canvas.Brush.Color := ColorOrMono(AColor);
   Canvas.Brush.Opacity := Opacity;
 end;
 
@@ -235,7 +244,7 @@ begin
   Canvas.Font.Name := AFont.Name;
   Canvas.Font.Height := AFont.Size * 96 div 72;
   Canvas.Font.Orientation := FGetFontOrientationFunc(AFont);
-  Canvas.Font.BGRAColor := FPColorToBGRA(AFont.FPColor);
+  Canvas.Font.BGRAColor := BGRAColorOrMono(AFont.FPColor);
   if AFont is TFont then
     Canvas.Font.Style := (AFont as TFont).Style;
   Canvas.Font.Opacity := Opacity;
@@ -246,7 +255,7 @@ begin
   Canvas.Pen.Style := APen.Style;
   Canvas.Pen.Width := APen.Width;
   // TODO: JoinStyle
-  Canvas.Pen.BGRAColor := FPColorToBGRA(APen.FPColor);
+  Canvas.Pen.BGRAColor := BGRAColorOrMono(APen.FPColor);
   Canvas.Pen.Opacity := Opacity;
 end;
 
@@ -254,7 +263,7 @@ procedure TBGRABitmapDrawer.SetPenParams(
   AStyle: TFPPenStyle; AColor: TChartColor);
 begin
   Canvas.Pen.Style := AStyle;
-  Canvas.Pen.Color := AColor;
+  Canvas.Pen.Color := ColorOrMono(AColor);
   Canvas.Pen.Opacity := Opacity;
 end;
 
