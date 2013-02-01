@@ -1253,7 +1253,7 @@ var CurName:string;
   CurParentRow:TOIPropertyGridRow;
 begin
   Result:=nil;
-  if FRows.Count=0 then exit;
+  if (PropPath='') or (FRows.Count=0) then exit;
   CurParentRow:=nil;
   s:=1;
   while (s<=length(PropPath)) do begin
@@ -1815,7 +1815,7 @@ begin
       inc(a);
   end;
   if CurRow.Parent <> nil then
-    FExpandedProperties.Add(PropertyPath(CurRow.Parent.Index));
+    FExpandedProperties.Add(UpperCase(PropertyPath(CurRow.Parent.Index)));
   UpdateScrollBar;
   Invalidate;
 end;
