@@ -323,6 +323,7 @@ object Form1: TForm1
             Title.LabelFont.Orientation = 900
           end        
           item
+            Grid.Visible = False
             Alignment = calBottom
             Minors = <>
           end>

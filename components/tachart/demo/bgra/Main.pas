@@ -321,6 +321,7 @@ begin
   chBarEffects.Depth := d;
   chBarEffectsBarSeries1.Depth := d;
   chBarEffectsBarSeries1.ZPosition := d;
+  chBarEffects.BottomAxis.ZPosition := d;
   FAnimatedSource.Start;
 end;
 
