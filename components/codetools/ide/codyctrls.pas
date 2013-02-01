@@ -229,6 +229,7 @@ type
 
   TLvlGraph = class;
   TLvlGraphEdge = class;
+  TLvlGraphLevel = class;
 
   { TLvlGraphNode }
 
@@ -239,7 +240,7 @@ type
     FGraph: TLvlGraph;
     FInEdges: TFPList; // list of TLvlGraphEdge
     FInSize: integer;
-    FLevel: integer;
+    FLevel: TLvlGraphLevel;
     FOutEdges: TFPList; // list of TLvlGraphEdge
     FOutSize: integer;
     FPosition: integer;
@@ -247,9 +248,12 @@ type
     function GetOutEdges(Index: integer): TLvlGraphEdge;
     procedure SetCaption(AValue: string);
     procedure SetColor(AValue: TFPColor);
+    procedure OnLevelDestroy;
+    procedure SetLevel(AValue: TLvlGraphLevel);
+    procedure UnbindLevel;
   public
     Data: Pointer; // free for user data
-    constructor Create(TheGraph: TLvlGraph; TheCaption: string);
+    constructor Create(TheGraph: TLvlGraph; TheCaption: string; TheLevel: TLvlGraphLevel);
     destructor Destroy; override;
     procedure Clear;
     procedure Invalidate;
@@ -264,10 +268,10 @@ type
     function FindOutEdge(Target: TLvlGraphNode): TLvlGraphEdge;
     function OutEdgeCount: integer;
     property OutEdges[Index: integer]: TLvlGraphEdge read GetOutEdges;
-    property Level: integer read FLevel; // computed, Sources have level 0
     property Position: integer read FPosition write FPosition; // position in a level
     property InSize: integer read FInSize;
     property OutSize: integer read FOutSize;
+    property Level: TLvlGraphLevel read FLevel write SetLevel;
   end;
 
   { TLvlGraphEdge }
@@ -289,13 +293,35 @@ type
     property BackEdge: boolean read FBackEdge; // edge was disabled to break a cycle
   end;
 
+  { TLvlGraphLevel }
+
+  TLvlGraphLevel = class(TPersistent)
+  private
+    FGraph: TLvlGraph;
+    FIndex: integer;
+    fNodes: TFPList;
+    function GetNodes(Index: integer): TLvlGraphNode;
+  public
+    constructor Create(TheGraph: TLvlGraph; TheIndex: integer);
+    destructor Destroy; override;
+    property Nodes[Index: integer]: TLvlGraphNode read GetNodes;
+    function Count: integer;
+    property Index: integer read FIndex;
+    property Graph: TLvlGraph read FGraph;
+  end;
+
   { TLvlGraph }
 
   TLvlGraph = class(TPersistent)
   private
     FOnInvalidate: TNotifyEvent;
     FNodes: TFPList; // list of TLvlGraphNode
+    fLevels: TFPList;
+    function GetLevelCount: integer;
+    function GetLevels(Index: integer): TLvlGraphLevel;
     function GetNodes(Index: integer): TLvlGraphNode;
+    procedure SetLevelCount(AValue: integer);
+    procedure InternalRemoveLevel(Lvl: TLvlGraphLevel);
   public
     Data: Pointer; // free for user data
     constructor Create;
@@ -310,7 +336,9 @@ type
       CreateIfNotExists: boolean): TLvlGraphEdge;
     function GetEdge(Source, Target: TLvlGraphNode;
       CreateIfNotExists: boolean): TLvlGraphEdge;
-    procedure UpdateLevels;
+    property Levels[Index: integer]: TLvlGraphLevel read GetLevels;
+    property LevelCount: integer read GetLevelCount write SetLevelCount;
+    procedure CreateTopologicalLevels; // create levels from edges
   end;
 
   { TCustomLvlGraphControl }
@@ -447,6 +475,37 @@ begin
   SetLength(Points,0);
 end;
 
+{ TLvlGraphLevel }
+
+function TLvlGraphLevel.GetNodes(Index: integer): TLvlGraphNode;
+begin
+  Result:=TLvlGraphNode(fNodes[Index]);
+end;
+
+constructor TLvlGraphLevel.Create(TheGraph: TLvlGraph; TheIndex: integer);
+begin
+  FGraph:=TheGraph;
+  FGraph.fLevels.Add(Self);
+  FIndex:=TheIndex;
+  fNodes:=TFPList.Create;
+end;
+
+destructor TLvlGraphLevel.Destroy;
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do
+    Nodes[i].OnLevelDestroy;
+  Graph.InternalRemoveLevel(Self);
+  FreeAndNil(fNodes);
+  inherited Destroy;
+end;
+
+function TLvlGraphLevel.Count: integer;
+begin
+  Result:=fNodes.Count;
+end;
+
 { TCustomLvlGraphControl }
 
 procedure TCustomLvlGraphControl.FGraphInvalidate(Sender: TObject);
@@ -487,6 +546,33 @@ begin
   // Paint paints all, no need to erase background
 end;
 
+type
+
+  { TGraphLevelerNode - used by TLvlGraph.UpdateLevels }
+
+  TGraphLevelerNode = class
+  public
+    Node: TLvlGraphNode;
+    Level: integer;
+    Visited: boolean;
+    InEdgeCount: integer;
+  end;
+
+function CompareGraphLevelerNodes(Node1, Node2: Pointer): integer;
+var
+  LNode1: TGraphLevelerNode absolute Node1;
+  LNode2: TGraphLevelerNode absolute Node2;
+begin
+  Result:=ComparePointer(LNode1.Node,LNode2.Node);
+end;
+
+function CompareLGNodeWithLevelerNode(GNode, LNode: Pointer): integer;
+var
+  LevelerNode: TGraphLevelerNode absolute LNode;
+begin
+  Result:=ComparePointer(GNode,LevelerNode.Node);
+end;
+
 { TLvlGraph }
 
 function TLvlGraph.GetNodes(Index: integer): TLvlGraphNode;
@@ -494,22 +580,49 @@ begin
   Result:=TLvlGraphNode(FNodes[Index]);
 end;
 
+procedure TLvlGraph.SetLevelCount(AValue: integer);
+begin
+  if AValue<1 then
+    raise Exception.Create('at least one level');
+  if LevelCount=AValue then Exit;
+  while LevelCount<AValue do
+    TLvlGraphLevel.Create(Self,LevelCount);
+  while LevelCount>AValue do
+    Levels[LevelCount-1].Free;
+end;
+
+function TLvlGraph.GetLevels(Index: integer): TLvlGraphLevel;
+begin
+  Result:=TLvlGraphLevel(fLevels[Index]);
+end;
+
+function TLvlGraph.GetLevelCount: integer;
+begin
+  Result:=fLevels.Count;
+end;
+
 constructor TLvlGraph.Create;
 begin
   FNodes:=TFPList.Create;
+  fLevels:=TFPList.Create;
 end;
 
 destructor TLvlGraph.Destroy;
 begin
   Clear;
+  FreeAndNil(fLevels);
   FreeAndNil(FNodes);
   inherited Destroy;
 end;
 
 procedure TLvlGraph.Clear;
+var
+  i: Integer;
 begin
   while NodeCount>0 do
     Nodes[NodeCount-1].Free;
+  for i:=LevelCount-1 downto 0 do
+    Levels[i].Free;
 end;
 
 procedure TLvlGraph.Invalidate;
@@ -533,7 +646,9 @@ begin
   if i>=0 then begin
     Result:=Nodes[i];
   end else if CreateIfNotExists then begin
-    Result:=TLvlGraphNode.Create(Self,aCaption);
+    if LevelCount=0 then
+      LevelCount:=1;
+    Result:=TLvlGraphNode.Create(Self,aCaption,Levels[0]);
     FNodes.Add(Result);
   end else
     Result:=nil;
@@ -561,52 +676,81 @@ begin
     Result:=TLvlGraphEdge.Create(Source,Target);
 end;
 
-procedure TLvlGraph.UpdateLevels;
+procedure TLvlGraph.InternalRemoveLevel(Lvl: TLvlGraphLevel);
 var
-  RemainingInEdgeCounts: TPointerToPointerTree;
+  i: Integer;
+begin
+  if Levels[Lvl.Index]<>Lvl then
+    raise Exception.Create('inconsistency');
+  fLevels.Delete(Lvl.Index);
+  // update level Index
+  for i:=Lvl.Index to LevelCount-1 do
+    Levels[i].FIndex:=i;
+end;
+
+procedure TLvlGraph.CreateTopologicalLevels;
+{$DEFINE LvlGraphConsistencyCheck}
+var
   InNodes: TAvgLvlTree;
-  VisitedNodes: TAvgLvlTree;
+  ExtNodes: TAvgLvlTree;
+
+  function GetExtNode(Node: TLvlGraphNode): TGraphLevelerNode;
+  begin
+    Result:=TGraphLevelerNode(ExtNodes.FindKey(Pointer(Node),@CompareLGNodeWithLevelerNode).Data);
+  end;
 
   function GetRemainingInEdgeCounts(Node: TLvlGraphNode): PtrInt;
   begin
-    Result:={%H-}PtrInt(RemainingInEdgeCounts[Node]);
+    Result:=GetExtNode(Node).InEdgeCount;
   end;
 
   procedure DecRemainingInEdgeCount(Node: TLvlGraphNode);
   var
     i: PtrInt;
   begin
+    {$IFDEF LvlGraphConsistencyCheck}
+    if GetExtNode(Node).Visited then
+      raise Exception.Create('DecRemainingInEdgeCount already visited: '+Node.Caption);
+    {$ENDIF}
     i:=GetRemainingInEdgeCounts(Node)-1;
-    RemainingInEdgeCounts[Node]:={%H-}Pointer(i);
+    {$IFDEF LvlGraphConsistencyCheck}
+    if i<0 then
+      raise Exception.Create('DecRemainingInEdgeCount InEdgeCount<0 '+Node.Caption);
+    {$ENDIF}
+    GetExtNode(Node).InEdgeCount:=i;
     if i=0 then
       InNodes.Add(Node);
   end;
 
   function HasVisited(Node: TLvlGraphNode): boolean;
   begin
-    Result:=VisitedNodes.Find(Node)<>nil;
+    Result:=GetExtNode(Node).Visited;
   end;
 
 var
   i: Integer;
   Node: TLvlGraphNode;
+  ExtNode: TGraphLevelerNode;
   j: Integer;
   AVLNode: TAvgLvlTreeNode;
   Edge: TLvlGraphEdge;
   BestNode: TLvlGraphNode;
+  MaxLevel: Integer;
 begin
-  RemainingInEdgeCounts:=TPointerToPointerTree.Create; // number of InEdges of not visited nodes
-  InNodes:=TAvgLvlTree.Create; // nodes with RemainingInEdgeCount=0, not yet visited
-  VisitedNodes:=TAvgLvlTree.Create; // processed nodes (RemainingInEdgeCount=0)
+  ExtNodes:=TAvgLvlTree.Create(@CompareGraphLevelerNodes);
+  InNodes:=TAvgLvlTree.Create; // nodes with remaining InEdgeCount=0, not yet visited
   try
     // find start nodes with InEdgeCount=0
     // clear BackEdge flags
-    // init RemainingInEdgeCounts
+    // init ExtNodes
     for i:=0 to NodeCount-1 do begin
       Node:=Nodes[i];
+      ExtNode:=TGraphLevelerNode.Create;
+      ExtNode.Node:=Node;
+      ExtNodes.Add(ExtNode);
+      ExtNode.InEdgeCount:=Node.InEdgeCount;
       if Node.InEdgeCount=0 then
         InNodes.Add(Node);
-      RemainingInEdgeCounts[Node]:={%H-}Pointer(PtrInt(Node.InEdgeCount));
       for j:=0 to Node.InEdgeCount-1 do begin
         Edge:=Node.InEdges[j];
         Edge.fBackEdge:=false;
@@ -617,13 +761,14 @@ begin
         end;
       end;
     end;
-    while VisitedNodes.Count<NodeCount do begin
+    MaxLevel:=0;
+    for i:=1 to NodeCount do begin
       if InNodes.Count=0 then begin
         // all nodes have InEdges => all nodes in cycles
         // find a not visited node with the smallest number of active InEdges
         BestNode:=nil;
-        for i:=0 to NodeCount-1 do begin
-          Node:=Nodes[i];
+        for j:=0 to NodeCount-1 do begin
+          Node:=Nodes[j];
           if HasVisited(Node) then continue;
           if (BestNode=nil)
           or (GetRemainingInEdgeCounts(BestNode)>GetRemainingInEdgeCounts(Node))
@@ -631,39 +776,49 @@ begin
             BestNode:=Node;
         end;
         // disable all InEdges to get a cycle free node
-        for i:=0 to BestNode.InEdgeCount-1 do begin
-          Edge:=BestNode.InEdges[i];
+        for j:=0 to BestNode.InEdgeCount-1 do begin
+          Edge:=BestNode.InEdges[j];
           if Edge.BackEdge then continue;
           if HasVisited(Edge.Source) then continue;
           Edge.fBackEdge:=true;
           DecRemainingInEdgeCount(BestNode); // this adds BestNode to InNodes
         end;
         // now InNodes contains BestNode
+        {$IFDEF LvlGraphConsistencyCheck}
+        if InNodes.Count=0 then
+          raise Exception.Create('BestNode='+BestNode.Caption+' missing in InNodes. InEdgeCount='+dbgs(GetExtNode(BestNode).InEdgeCount)+' should be 0');
+        {$ENDIF}
       end;
       // get next node with no active InEdges
       AVLNode:=InNodes.FindLowest;
       Node:=TLvlGraphNode(AVLNode.Data);
       InNodes.Delete(AVLNode);
+      ExtNode:=GetExtNode(Node);
       // mark Node as visited
-      VisitedNodes.Add(Node);
+      ExtNode.Visited:=true;
       // set level to the maximum of all InEdges +1
-      Node.FLevel:=0;
-      for i:=0 to Node.InEdgeCount-1 do begin
-        Edge:=Node.InEdges[i];
-        if not Edge.BackEdge then
-          Node.FLevel:=Max(Node.FLevel,Edge.Source.Level+1);
+      ExtNode.Level:=0;
+      for j:=0 to Node.InEdgeCount-1 do begin
+        Edge:=Node.InEdges[j];
+        if Edge.BackEdge then continue;
+        ExtNode.Level:=Max(ExtNode.Level,GetExtNode(Edge.Source).Level+1);
+        MaxLevel:=Max(ExtNode.Level,MaxLevel);
+        LevelCount:=Max(LevelCount,MaxLevel+1);
+        ExtNode.Node.Level:=Levels[ExtNode.Level];
       end;
       // forget all out edges
-      for i:=0 to Node.OutEdgeCount-1 do begin
-        Edge:=Node.OutEdges[i];
+      for j:=0 to Node.OutEdgeCount-1 do begin
+        Edge:=Node.OutEdges[j];
         if Edge.BackEdge then continue;
         DecRemainingInEdgeCount(Edge.Target);
       end;
     end;
+    // delete unneeded levels
+    LevelCount:=MaxLevel+1;
   finally
-    RemainingInEdgeCounts.Free;
+    ExtNodes.FreeAndClear;
+    ExtNodes.Free;
     InNodes.Free;
-    VisitedNodes.Free;
   end;
 end;
 
@@ -720,23 +875,55 @@ begin
   Invalidate;
 end;
 
+procedure TLvlGraphNode.OnLevelDestroy;
+begin
+  if Level.Index>0 then
+    Level:=Graph.Levels[0]
+  else if Graph.LevelCount>1 then
+    Level:=Graph.Levels[1]
+  else
+    fLevel:=nil;
+end;
+
+procedure TLvlGraphNode.SetLevel(AValue: TLvlGraphLevel);
+begin
+  if AValue=nil then
+    raise Exception.Create('node needs a level');
+  if AValue.Graph<>Graph then
+    raise Exception.Create('wrong graph');
+  if FLevel=AValue then Exit;
+  if FLevel<>nil then
+    UnbindLevel;
+  FLevel:=AValue;
+  FLevel.fNodes.Add(Self);
+end;
+
+procedure TLvlGraphNode.UnbindLevel;
+begin
+  if FLevel<>nil then
+    FLevel.fNodes.Remove(Self);
+end;
+
 procedure TLvlGraphNode.Invalidate;
 begin
   if Graph<>nil then
     Graph.Invalidate;
 end;
 
-constructor TLvlGraphNode.Create(TheGraph: TLvlGraph; TheCaption: string);
+constructor TLvlGraphNode.Create(TheGraph: TLvlGraph; TheCaption: string;
+  TheLevel: TLvlGraphLevel);
 begin
   FGraph:=TheGraph;
   FCaption:=TheCaption;
   FInEdges:=TFPList.Create;
   FOutEdges:=TFPList.Create;
+  Level:=TheLevel;
 end;
 
 destructor TLvlGraphNode.Destroy;
 begin
   Clear;
+  UnbindLevel;
   inherited Destroy;
 end;
 
