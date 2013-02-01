@@ -48,6 +48,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure PaintBox1Paint(Sender: TObject);
     procedure rgAnimationClick(Sender: TObject);
+    procedure rgStyleClick(Sender: TObject);
   private
     FAnimatedSource: TCustomAnimatedChartSource;
     FSliceScaling: TBGRASliceScaling;
@@ -87,6 +88,87 @@ begin
       ARoundedCorners, AOptions);
   finally
     phong.Free;
+  end;
+end;
+
+procedure DrawPhong3DBar(ASeries: TBarSeries; ACanvas: TCanvas; ARect: TRect);
+
+  function CreatePhong3DBar(
+    ALightPos: TPoint; ARect: TRect; ADepth: Integer;
+    AColor: TBGRAPixel): TBGRABitmap;
+  var
+    phong: TPhongShading;
+    i: Integer;
+    map: TBGRABitmap;
+    h: TBGRAPixel;
+    t: TPoint;
+  begin
+    t := MaxPoint(ARect.BottomRight - ARect.TopLeft, Point(0, 0));
+    map := TBGRABitmap.Create(t.X + ADepth,t.Y + ADepth);
+    try
+      map.FillRect(0, ADepth, t.X, t.Y + ADepth, BGRAWhite, dmSet);
+      for i := 1 to ADepth do begin
+        h := MapHeightToBGRA((ADepth - i) / ADepth, 255);
+        map.SetHorizLine(i, ADepth - i, t.X - 1 + i - 1, h);
+        map.SetVertLine(t.X - 1 + i, ADepth - i, t.Y + ADepth - 1 - i, h);
+      end;
+      Result := TBGRABitmap.Create(t.X + ADepth, t.Y + ADepth);
+      if (Result.width = 0) or (Result.Height = 0) then exit;
+      phong := TPhongShading.Create;
+      try
+        phong.AmbientFactor := 0.5;
+        phong.LightPosition := ALightPos - ARect.TopLeft;
+        phong.Draw(Result, map, ADepth, 0, 0, AColor);
+      finally
+        phong.Free;
+      end;
+    finally
+      map.Free;
+    end;
+  end;
+
+  function DrawContour(ABar: TBGRABitmap): TPoint;
+  var
+    size: TPoint;
+    temp: TBGRABitmap;
+    margin, depth: integer;
+  begin
+    Result := point(0, 0);
+    if ASeries.BarPen.Style = psClear then exit;
+    size := ARect.BottomRight - ARect.TopLeft;
+    if ASeries.BarPen.Width > 1 then begin
+      margin := (ASeries.BarPen.Width + 1) div 2;
+      Result := Point(margin, margin);
+      temp := TBGRABitmap.Create(ABar.Width + 2 * margin, ABar.Height + 2 * margin);
+      temp.PutImage(Result.X, Result.Y, ABar, dmSet);
+      BGRAReplace(ABar, temp);
+    end;
+    depth := ASeries.Depth;
+    with ABar.CanvasBGRA do begin
+      Pen.Assign(ASeries.BarPen);
+      Brush.Style := bsClear;
+      Polygon([
+         Point(Result.x + 0, Result.y + depth),
+         Point(Result.x + depth, Result.y + 0),
+         Point(Result.x + size.x - 1 + depth, Result.y + 0),
+         Point(Result.x + size.x - 1 + depth, Result.y + size.y - 1),
+         Point(Result.x + size.x - 1, Result.y + size.y - 1 + depth),
+         Point(Result.x + 0, Result.y + size.y - 1 + depth)
+      ]);
+    end;
+  end;
+
+var
+  bar: TBGRABitmap;
+begin
+  bar := CreatePhong3DBar(
+    Point(ASeries.ParentChart.ClientWidth div 2, 0),
+    ARect, ASeries.Depth, ColorToBGRA(ASeries.BarBrush.Color));
+  try
+    with (ARect.TopLeft - DrawContour(bar)) do
+      bar.Draw(ACanvas, X, Y - ASeries.Depth, false);
+  finally
+    bar.Free;
   end;
 end;
 
@@ -158,6 +240,8 @@ begin
           Free;
         end;
     end;
+    2:
+      DrawPhong3DBar(ASender, ACanvas, ARect);
   end;
 end;
 
@@ -226,6 +310,17 @@ end;
 
 procedure TForm1.rgAnimationClick(Sender: TObject);
 begin
+  FAnimatedSource.Start;
+end;
+
+procedure TForm1.rgStyleClick(Sender: TObject);
+var
+  d: Integer;
+begin
+  d := IfThen(rgStyle.ItemIndex = 2, 10, 0);
+  chBarEffects.Depth := d;
+  chBarEffectsBarSeries1.Depth := d;
+  chBarEffectsBarSeries1.ZPosition := d;
   FAnimatedSource.Start;
 end;
 
