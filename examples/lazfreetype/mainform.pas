@@ -19,11 +19,13 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    CheckBox_Rect: TCheckBox;
     Label1: TLabel;
     LFontSize: TLabel;
     Panel_Option: TPanel;
     SpinEdit_Zoom: TSpinEdit;
     TrackBar_Size: TTrackBar;
+    procedure CheckBox_RectChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -87,6 +89,11 @@ begin
   UpdateSizeLabel;
 end;
 
+procedure TForm1.CheckBox_RectChange(Sender: TObject);
+begin
+  invalidate;
+end;
+
 procedure TForm1.FormDestroy(Sender: TObject);
 begin
   ftFont1.Free;
@@ -113,7 +120,7 @@ begin
 end;
 
 procedure TForm1.FormPaint(Sender: TObject);
-const testtext = 'Enjoy'+LineEnding+'and play!';
+const testtext = 'The quick brown fox jumps over the lazy dog';
 var bmp: TBitmap;
     tx,ty: integer;
     p: array of TCharPosition;
@@ -142,23 +149,35 @@ begin
   ftFont1.ClearType := true;
   ftFont1.Quality := grqHighQuality;
   ftFont1.SmallLinePadding := false;
-  drawer.DrawText(ftFont1.Information[ftiFullName], ftFont1, x, y, colBlack, [ftaRight, ftaBottom]);
+  if CheckBox_Rect.Checked then
+    drawer.DrawTextRect(testtext, ftFont1, 0,0, tx/3,ty, colBlack, [ftaLeft, ftaBottom])
+  else
+    drawer.DrawText(ftFont1.Information[ftiFullName], ftFont1, x, y, colBlack, [ftaRight, ftaBottom]);
 
   ftFont2.Hinted := false;
   ftFont2.ClearType := false;
   ftFont2.Quality := grqHighQuality;
-  drawer.DrawText(ftFont2.Information[ftiFullName], ftFont2, x, y, colRed, 192, [ftaCenter, ftaBaseline]);
+  if CheckBox_Rect.Checked then
+    drawer.DrawTextRect(testtext, ftFont2, tx/3,0, 2*tx/3,ty, colRed, [ftaCenter, ftaVerticalCenter])
+  else
+    drawer.DrawText(ftFont2.Information[ftiFullName], ftFont2, x, y, colRed, 192, [ftaCenter, ftaBaseline]);
 
   ftFont3.Hinted := false;
   ftFont3.ClearType := false;
   ftFont3.Quality := grqMonochrome;
-  drawer.DrawText(ftFont3.Information[ftiFullName]+' '+ftFont3.VersionNumber, ftFont3, x, y, colBlack, 128, [ftaLeft, ftaTop]);
+  if CheckBox_Rect.Checked then
+    drawer.DrawTextRect(testtext, ftFont3, 2*tx/3,0, tx,ty, colBlue, [ftaRight, ftaTop])
+  else
+    drawer.DrawText(ftFont3.Information[ftiFullName]+' '+ftFont3.VersionNumber, ftFont3, x, y, colBlack, 128, [ftaLeft, ftaTop]);
 
-  p := ftFont1.CharsPosition(ftFont1.Information[ftiFullName],[ftaRight, ftaBottom]);
-  for i := 0 to high(p) do
+  if not CheckBox_Rect.Checked then
   begin
-    drawer.DrawVertLine(round(x+p[i].x),round(y+p[i].yTop),round(y+p[i].yBottom), TColorToFPColor(clBlue));
-    drawer.DrawHorizLine(round(x+p[i].x),round(y+p[i].yBase),round(x+p[i].x+p[i].width), TColorToFPColor(clBlue));
+    p := ftFont1.CharsPosition(ftFont1.Information[ftiFullName],[ftaRight, ftaBottom]);
+    for i := 0 to high(p) do
+    begin
+      drawer.DrawVertLine(round(x+p[i].x),round(y+p[i].yTop),round(y+p[i].yBottom), TColorToFPColor(clBlue));
+      drawer.DrawHorizLine(round(x+p[i].x),round(y+p[i].yBase),round(x+p[i].x+p[i].width), TColorToFPColor(clBlue));
+    end;
   end;
 
   EndTime := Now;
