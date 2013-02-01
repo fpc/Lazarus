@@ -562,7 +562,7 @@ begin
             if (length(Stack) mod 16) <> 0 then begin
               Stack := Stack + StringOfChar(ansichar(#32), 16 - (Length(Stack) mod 16)) ;
             end;
-            {$ENDIF}
+            {$ENDIF} 			
             case res^.aType.BaseType of
               btSet:
                 begin
@@ -618,9 +618,9 @@ begin
             if (length(Stack) mod 16) <> 0 then begin
               Stack := Stack + StringOfChar(ansichar(#32), 16 - (Length(Stack) mod 16)) ;
             end;
-            {$ENDIF}
+            {$ENDIF} 		  
             RealCall_Register(Address, EAX, EDX, ECX, @Stack[Length(Stack)-3], Length(Stack) div 4, 0, nil);
-          end;
+		  end;
           Result := True;
         end;
       cdPascal: begin

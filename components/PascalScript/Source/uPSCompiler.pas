@@ -7072,7 +7072,8 @@ function TPSPascalCompiler.ProcessSub(BlockInfo: TPSBlockInfo): Boolean;
 {$IFNDEF PS_NOIDISPATCH}
     procedure CheckIntf(var P: TPSValue; const VarType: TPSVariableType; VarNo: Cardinal; ImplicitPeriod: Boolean);
     var
-      Procno, Idx: Cardinal;
+      Procno: Cardinal;
+      Idx: TPSInterfaceMethod;
       FType: TPSType;
       s: tbtString;
 
@@ -12962,6 +12963,11 @@ procedure TPSPascalCompiler.DefineStandardProcedures;
 var
   p: TPSRegProc;
 begin
+  { The following needs to be in synch in these 3 functions:
+    -UPSCompiler.TPSPascalCompiler.DefineStandardProcedures
+    -UPSRuntime.DefProc
+    -UPSRuntime.TPSExec.RegisterStandardProcs
+  }
   {$IFNDEF PS_NOINT64}
   AddFunction('function IntToStr(i: Int64): String;');
   {$ELSE}
@@ -13107,6 +13113,7 @@ begin
   {$IFNDEF PS_NOINT64}
   AddFunction('function StrToInt64(s: String): int64;');
   AddFunction('function Int64ToStr(i: Int64): String;');
+  AddFunction('function StrToInt64Def(s: String; def: int64): int64;');
   {$ENDIF}
 
   with AddFunction('function SizeOf: Longint;').Decl.AddParam do
