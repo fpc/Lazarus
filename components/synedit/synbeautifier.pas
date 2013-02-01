@@ -99,6 +99,8 @@ type
     procedure DoAfterCommand(const ACaret: TSynEditCaret;
                              var Command: TSynEditorCommand;
                              StartLinePos, EndLinePos: Integer); virtual; abstract;
+    property CurrentEditor: TSynEditBase read FCurrentEditor;
+    property CurrentLines: TSynEditStrings read FCurrentLines;
   public
     procedure Assign(Src: TPersistent); override;
     function  GetCopy: TSynCustomBeautifier;
