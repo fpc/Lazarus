@@ -304,7 +304,7 @@ type
   public
     constructor Create(TheGraph: TLvlGraph; TheIndex: integer);
     destructor Destroy; override;
-    property Nodes[Index: integer]: TLvlGraphNode read GetNodes;
+    property Nodes[Index: integer]: TLvlGraphNode read GetNodes; default;
     function Count: integer;
     property Index: integer read FIndex;
     property Graph: TLvlGraph read FGraph;
@@ -339,6 +339,8 @@ type
     property Levels[Index: integer]: TLvlGraphLevel read GetLevels;
     property LevelCount: integer read GetLevelCount write SetLevelCount;
     procedure CreateTopologicalLevels; // create levels from edges
+    procedure WriteDebugReport(Msg: string);
+    procedure ConsistencyCheck;
   end;
 
   { TCustomLvlGraphControl }
@@ -737,6 +739,10 @@ var
   BestNode: TLvlGraphNode;
   MaxLevel: Integer;
 begin
+  WriteDebugReport('TLvlGraph.CreateTopologicalLevels START');
+  {$IFDEF LvlGraphConsistencyCheck}
+  ConsistencyCheck;
+  {$ENDIF}
   ExtNodes:=TAvgLvlTree.Create(@CompareGraphLevelerNodes);
   InNodes:=TAvgLvlTree.Create; // nodes with remaining InEdgeCount=0, not yet visited
   try
@@ -819,6 +825,83 @@ begin
     ExtNodes.FreeAndClear;
     ExtNodes.Free;
     InNodes.Free;
+  end;
+  WriteDebugReport('TLvlGraph.CreateTopologicalLevels END');
+  {$IFDEF LvlGraphConsistencyCheck}
+  ConsistencyCheck;
+  {$ENDIF}
+end;
+
+procedure TLvlGraph.WriteDebugReport(Msg: string);
+var
+  l: Integer;
+  Level: TLvlGraphLevel;
+  i: Integer;
+  Node: TLvlGraphNode;
+  Edge: TLvlGraphEdge;
+  j: Integer;
+begin
+  debugln([Msg,' NodeCount=',NodeCount,' LevelCount=',LevelCount]);
+  debugln(['  Nodes:']);
+  for i:=0 to NodeCount-1 do begin
+    Node:=Nodes[i];
+    dbgout(['   ',i,'/',NodeCount,': "',Node.Caption,'" OutEdges:']);
+    for j:=0 to Node.OutEdgeCount-1 do begin
+      Edge:=Node.OutEdges[j];
+      dbgout('"',Edge.Target.Caption,'",');
+    end;
+    debugln;
+  end;
+  debugln(['  Levels:']);
+  for l:=0 to LevelCount-1 do begin
+    dbgout(['   Level: ',l,'/',LevelCount]);
+    Level:=Levels[l];
+    if l<>Level.Index then
+      debugln(['ERROR: l<>Level.Index=',Level.Index]);
+    dbgout('  ');
+    for i:=0 to Level.Count-1 do begin
+      dbgout('"',Level.Nodes[i].Caption,'",');
+    end;
+    debugln;
+  end;
+end;
+
+procedure TLvlGraph.ConsistencyCheck;
+var
+  i: Integer;
+  Node: TLvlGraphNode;
+  j: Integer;
+  Edge: TLvlGraphEdge;
+  Level: TLvlGraphLevel;
+begin
+  for i:=0 to LevelCount-1 do begin
+    Level:=Levels[i];
+    if Level.Index<>i then
+      raise Exception.Create('');
+    for j:=0 to Level.Count-1 do begin
+      Node:=Level.Nodes[j];
+      if Node.Level<>Level then
+        raise Exception.Create('');
+    end;
+  end;
+  for i:=0 to NodeCount-1 do begin
+    Node:=Nodes[i];
+    for j:=0 to Node.OutEdgeCount-1 do begin
+      Edge:=Node.OutEdges[j];
+      if Edge.Source<>Node then
+        raise Exception.Create('');
+      if Edge.Target.FInEdges.IndexOf(Edge)<0 then
+        raise Exception.Create('');
+    end;
+    for j:=0 to Node.InEdgeCount-1 do begin
+      Edge:=Node.InEdges[j];
+      if Edge.Target<>Node then
+        raise Exception.Create('');
+      if Edge.Source.FOutEdges.IndexOf(Edge)<0 then
+        raise Exception.Create('');
+    end;
+    if Node.Level.fNodes.IndexOf(Node)<0 then
+      raise Exception.Create('');
   end;
 end;
 
