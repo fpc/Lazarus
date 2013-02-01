@@ -1235,7 +1235,7 @@ begin
   CalculateTransformationCoeffs(ZeroRect);
   cr := FClipRect;
   for tries := 1 to 10 do begin
-    axisMargin := AxisList.Measure(CurrentExtent);
+    axisMargin := AxisList.Measure(CurrentExtent, Depth);
     axisMargin[calLeft] := Max(axisMargin[calLeft], Depth);
     axisMargin[calBottom] := Max(axisMargin[calBottom], Depth);
     FClipRect := cr;
