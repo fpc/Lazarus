@@ -271,8 +271,8 @@ type
     property Position: integer read FPosition write FPosition; // position in a level
     function Center: integer;
     function PositionEnd: integer;// = Position+Max(InSize,OutSize)
-    property InSize: integer read FInSize;
-    property OutSize: integer read FOutSize;
+    property InSize: integer read FInSize default 1;
+    property OutSize: integer read FOutSize default 1;
     property Level: TLvlGraphLevel read FLevel write SetLevel;
   end;
 
@@ -1101,6 +1101,8 @@ begin
   FCaption:=TheCaption;
   FInEdges:=TFPList.Create;
   FOutEdges:=TFPList.Create;
+  FInSize:=1;
+  FOutSize:=1;
   Level:=TheLevel;
 end;
 
