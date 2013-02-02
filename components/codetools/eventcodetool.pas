@@ -116,9 +116,12 @@ type
         const PropName: string; out TypeContext: TFindContext;
         ExceptionOnNotFound: boolean): boolean;
     function CreateExprListFromInstanceProperty(Instance: TPersistent;
-        const PropName: string): TExprTypeList;
+        const PropName: string; UseRTTI: boolean = false): TExprTypeList;
 
     function CreateExprListFromMethodTypeData(TypeData: PTypeData;
+        Params: TFindDeclarationParams; out List: TExprTypeList): boolean;
+    function CreateExprListFromMethodTypeData(Instance: TPersistent;
+        const PropName: string;
         Params: TFindDeclarationParams; out List: TExprTypeList): boolean;
     function FindPublishedMethodNodeInClass(ClassNode: TCodeTreeNode;
         const AMethodName: string;
@@ -1147,20 +1150,27 @@ begin
 end;
 
 function TEventsCodeTool.CreateExprListFromInstanceProperty(
-  Instance: TPersistent; const PropName: string): TExprTypeList;
+  Instance: TPersistent; const PropName: string; UseRTTI: boolean
+  ): TExprTypeList;
 var
   Params: TFindDeclarationParams;
   TypeContext: TFindContext;
 begin
   Result:=nil;
-  if not FindTypeOfInstanceProperty(Instance,PropName,TypeContext,true) then exit;
-  if TypeContext.Node.Desc<>ctnProcedureType then begin
-    debugln(['TEventsCodeTool.CreateExprListFromPropertyInfo property '+DbgSName(Instance)+'.'+PropName+' is not method: ',TypeContext.Node.DescAsString]);
-    exit;
-  end;
   Params:=TFindDeclarationParams.Create;
   try
-    Result:=TypeContext.Tool.CreateParamExprListFromProcNode(TypeContext.Node,Params);
+    if UseRTTI then begin
+      if not CreateExprListFromMethodTypeData(Instance,PropName,Params,Result)
+      then
+        exit;
+    end else begin
+      if not FindTypeOfInstanceProperty(Instance,PropName,TypeContext,true) then exit;
+      if TypeContext.Node.Desc<>ctnProcedureType then begin
+        debugln(['TEventsCodeTool.CreateExprListFromPropertyInfo property '+DbgSName(Instance)+'.'+PropName+' is not method: ',TypeContext.Node.DescAsString]);
+        exit;
+      end;
+      Result:=TypeContext.Tool.CreateParamExprListFromProcNode(TypeContext.Node,Params);
+    end;
   finally
     Params.Free;
   end;
@@ -1250,6 +1260,27 @@ begin
   DebugLn('[TEventsCodeTool.CreateExprListFromMethodTypeData] END');
   {$ENDIF}
   Result:=true;
+end;
+
+function TEventsCodeTool.CreateExprListFromMethodTypeData(
+  Instance: TPersistent; const PropName: string;
+  Params: TFindDeclarationParams; out List: TExprTypeList): boolean;
+var
+  PropInfo: PPropInfo;
+  TypeData: PTypeData;
+begin
+  Result:=false;
+  PropInfo:=GetPropInfo(Instance,PropName);
+  if PropInfo=nil then begin
+    debugln(['TEventsCodeTool.CreateExprListFromMethodTypeData property not found: ',DbgSName(Instance),' property=',PropName]);
+    exit;
+  end;
+  if PropInfo^.PropType^.Kind<>tkMethod then begin
+    debugln(['TEventsCodeTool.CreateExprListFromMethodTypeData property is not a method: ',DbgSName(Instance),' property=',PropName]);
+    exit;
+  end;
+  TypeData:=GetTypeData(PropInfo^.PropType);
+  Result:=CreateExprListFromMethodTypeData(TypeData,Params,List);
 end;
 
 function TEventsCodeTool.CollectPublishedMethods(
