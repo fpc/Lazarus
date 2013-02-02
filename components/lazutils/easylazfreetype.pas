@@ -151,6 +151,8 @@ type
     function GetDescent: single; virtual; abstract;
     function GetLineSpacing: single; virtual; abstract;
     procedure DefaultWordBreakHandler(var ABefore, AAfter: string);
+    function GetHinted: boolean; virtual; abstract;
+    procedure SetHinted(const AValue: boolean); virtual; abstract;
   public
     function TextWidth(AText: string): single; virtual; abstract;
     function TextHeight(AText: string): single; virtual; abstract;
@@ -163,6 +165,7 @@ type
     property Descent: single read GetDescent;
     property LineSpacing: single read GetLineSpacing;
     property LineFullHeight: single read GetLineFullHeight;
+    property Hinted: boolean read GetHinted write SetHinted;
     property OnWordBreak: TFreeTypeWordBreakHandler read FWordBreakHandler write FWordBreakHandler;
   end;
 
@@ -206,7 +209,6 @@ type
     function GetVersionNumber: string;
     procedure SetDPI(const AValue: integer);
     procedure SetFreeTypeStyles(AValue: TFreeTypeStyles);
-    procedure SetHinted(const AValue: boolean);
     procedure SetLineFullHeight(AValue: single);
     procedure SetStyleAsString(AValue: string);
     procedure UpdateFace(const AName: String);
@@ -238,6 +240,8 @@ type
     function GetAscent: single; override;
     function GetDescent: single; override;
     function GetLineSpacing: single; override;
+    procedure SetHinted(const AValue: boolean); override;
+    function GetHinted: boolean; override;
     procedure OnDestroyFontItem;
     procedure FetchNames;
     function GetCollection: TCustomFreeTypeFontCollection;
@@ -518,6 +522,7 @@ end;
 procedure TFreeTypeDrawer.DrawText(AText: string;
   AFont: TFreeTypeRenderableFont; x, y: single; AColor: TFPColor; AAlign: TFreeTypeAlignments);
 var idx : integer;
+  delta: single;
 begin
   if not (ftaBaseline in AAlign) then
   begin
@@ -541,10 +546,13 @@ begin
 
   if not (ftaLeft in AAlign) then
   begin
+    delta := 0;
     if ftaCenter in AAlign then
-      x -= AFont.TextWidth(AText)/2 else
+      delta := -AFont.TextWidth(AText)/2 else
     if ftaRight in AAlign then
-      x -= AFont.TextWidth(AText);
+      delta := -AFont.TextWidth(AText);
+    if AFont.Hinted then delta := round(delta);
+    x += delta;
   end;
   DrawText(AText, AFont, x,y, AColor);
 end;
@@ -959,6 +967,11 @@ begin
   if FHinted=AValue then exit;
   FHinted:=AValue;
   FGlyphTable.FreeAndClear;
+end;
+
+function TFreeTypeFont.GetHinted: boolean;
+begin
+  result := FHinted;
 end;
 
 procedure TFreeTypeFont.SetLineFullHeight(AValue: single);
