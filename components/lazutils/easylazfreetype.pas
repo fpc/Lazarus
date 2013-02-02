@@ -179,6 +179,8 @@ type
 
 {********************************* Font implementation **********************************}
 
+  TOnRenderTextHandler = procedure(AText: string; x,y: single) of object;
+
   { TFreeTypeFont }
 
   TFreeTypeFont = class(TFreeTypeRenderableFont)
@@ -191,6 +193,7 @@ type
     FClearType: boolean;
     FNamesArray: array of string;
     FCollection: TCustomFreeTypeFontCollection;
+    FOnRenderText: TOnRenderTextHandler;
     function FindGlyphNode(Index: Integer): TAvgLvlTreeNode;
     function GetCharIndex(AChar: integer): integer;
     function GetDPI: integer;
@@ -268,6 +271,7 @@ type
     property Collection: TCustomFreeTypeFontCollection read GetCollection write FCollection;
     property StyleAsString: string read FStyleStr write SetStyleAsString;
     property Style: TFreeTypeStyles read GetFreeTypeStyles write SetFreeTypeStyles;
+    property OnRenderText: TOnRenderTextHandler read FOnRenderText write FOnRenderText;
   end;
 
   { TFreeTypeGlyph }
@@ -1226,6 +1230,8 @@ begin
     y += LineFullHeight;
     idx := pos(LineEnding,AText);
   end;
+  If Assigned(FOnRenderText) then
+    FOnRenderText(AText,x,y);
   pstr := @AText[1];
   left := length(AText);
   while left > 0 do
