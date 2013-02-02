@@ -269,6 +269,8 @@ type
     function OutEdgeCount: integer;
     property OutEdges[Index: integer]: TLvlGraphEdge read GetOutEdges;
     property Position: integer read FPosition write FPosition; // position in a level
+    function Center: integer;
+    function PositionEnd: integer;// = Position+Max(InSize,OutSize)
     property InSize: integer read FInSize;
     property OutSize: integer read FOutSize;
     property Level: TLvlGraphLevel read FLevel write SetLevel;
@@ -343,6 +345,7 @@ type
     procedure CreateTopologicalLevels; // create levels from edges
     procedure MarkBackEdges;
     procedure MinimizeCrossings; // set all Node.Position to minimize crossings
+    procedure MinimizeOverlappings(Gap: integer = 1; aLevel: integer = -1); // set all Node.Position to minimize overlappings
     procedure WriteDebugReport(Msg: string);
     procedure ConsistencyCheck(WithBackEdge: boolean);
   end;
@@ -416,6 +419,8 @@ procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2: integer;
 procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2,
   InnerSize, StartAngle, EndAngle: single); overload;
 
+function CompareLGNodesByCenterPos(Node1, Node2: Pointer): integer;
+
 implementation
 
 procedure FreeTVNodeData(TV: TCustomTreeView);
@@ -479,6 +484,23 @@ begin
   end;
   Canvas.Polygon(Points);
   SetLength(Points,0);
+end;
+
+function CompareLGNodesByCenterPos(Node1, Node2: Pointer): integer;
+var
+  LNode1: TLvlGraphNode absolute Node1;
+  LNode2: TLvlGraphNode absolute Node2;
+  p1: Integer;
+  p2: Integer;
+begin
+  p1:=LNode1.Center;
+  p2:=LNode2.Center;
+  if p1<p2 then
+    Result:=1
+  else if p1>p2 then
+    Result:=-1
+  else
+    Result:=0;
 end;
 
 { TLvlGraphLevel }
@@ -861,8 +883,45 @@ begin
 end;
 
 procedure TLvlGraph.MinimizeCrossings;
+var
+  i: Integer;
 begin
+  for i:=0 to LevelCount-1 do begin
 
+  end;
+end;
+
+procedure TLvlGraph.MinimizeOverlappings(Gap: integer; aLevel: integer);
+var
+  i: Integer;
+  Tree: TAvgLvlTree;
+  Level: TLvlGraphLevel;
+  AVLNode: TAvgLvlTreeNode;
+  Node: TLvlGraphNode;
+  Last: TLvlGraphNode;
+begin
+  if aLevel<0 then begin
+    for i:=0 to LevelCount-1 do
+      MinimizeOverlappings(i);
+  end else begin
+    Level:=Levels[aLevel];
+    Tree:=TAvgLvlTree.Create(@CompareLGNodesByCenterPos);
+    try
+      for i:=0 to Level.Count-1 do
+        Tree.Add(Level[i]);
+      Last:=nil;
+      AVLNode:=Tree.FindLowest;
+      while AVLNode<>nil do begin
+        Node:=TLvlGraphNode(AVLNode.Data);
+        Last:=Node;
+        if (Last<>nil) then
+          Node.Position:=Max(Node.Position,Last.PositionEnd+Gap);
+        AVLNode:=Tree.FindSuccessor(AVLNode);
+      end;
+    finally
+      Tree.Free;
+    end;
+  end;
 end;
 
 procedure TLvlGraph.WriteDebugReport(Msg: string);
@@ -1104,6 +1163,16 @@ end;
 function TLvlGraphNode.OutEdgeCount: integer;
 begin
   Result:=FOutEdges.Count;
+end;
+
+function TLvlGraphNode.Center: integer;
+begin
+  Result:=Position+(Max(InSize,OutSize) div 2);
+end;
+
+function TLvlGraphNode.PositionEnd: integer;
+begin
+  Result:=Position+Max(InSize,OutSize);
 end;
 
 { TCodyTreeView }
