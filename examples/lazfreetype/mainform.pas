@@ -120,7 +120,7 @@ begin
 end;
 
 procedure TForm1.FormPaint(Sender: TObject);
-const testtext = 'The quick brown fox jumps over the lazy dog';
+const testtext = 'The'#13#10'quick brown fox jumps over the lazy dog';
 var bmp: TBitmap;
     tx,ty: integer;
     p: array of TCharPosition;
