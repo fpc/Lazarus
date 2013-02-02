@@ -290,6 +290,7 @@ type
     property Source: TLvlGraphNode read FSource;
     property Target: TLvlGraphNode read FTarget;
     property Weight: single read FWeight write SetWeight;
+    function IsBackEdge: boolean;
     property BackEdge: boolean read FBackEdge; // edge was disabled to break a cycle
   end;
 
@@ -305,6 +306,7 @@ type
     constructor Create(TheGraph: TLvlGraph; TheIndex: integer);
     destructor Destroy; override;
     property Nodes[Index: integer]: TLvlGraphNode read GetNodes; default;
+    function IndexOf(Node: TLvlGraphNode): integer;
     function Count: integer;
     property Index: integer read FIndex;
     property Graph: TLvlGraph read FGraph;
@@ -339,8 +341,10 @@ type
     property Levels[Index: integer]: TLvlGraphLevel read GetLevels;
     property LevelCount: integer read GetLevelCount write SetLevelCount;
     procedure CreateTopologicalLevels; // create levels from edges
+    procedure MarkBackEdges;
+    procedure MinimizeCrossings; // set all Node.Position to minimize crossings
     procedure WriteDebugReport(Msg: string);
-    procedure ConsistencyCheck;
+    procedure ConsistencyCheck(WithBackEdge: boolean);
   end;
 
   { TCustomLvlGraphControl }
@@ -501,6 +505,13 @@ begin
   Graph.InternalRemoveLevel(Self);
   FreeAndNil(fNodes);
   inherited Destroy;
+end;
+
+function TLvlGraphLevel.IndexOf(Node: TLvlGraphNode): integer;
+begin
+  for Result:=0 to Count-1 do
+    if Nodes[Result]=Node then exit;
+  Result:=-1;
 end;
 
 function TLvlGraphLevel.Count: integer;
@@ -741,7 +752,7 @@ var
 begin
   WriteDebugReport('TLvlGraph.CreateTopologicalLevels START');
   {$IFDEF LvlGraphConsistencyCheck}
-  ConsistencyCheck;
+  ConsistencyCheck(false);
   {$ENDIF}
   ExtNodes:=TAvgLvlTree.Create(@CompareGraphLevelerNodes);
   InNodes:=TAvgLvlTree.Create; // nodes with remaining InEdgeCount=0, not yet visited
@@ -772,6 +783,7 @@ begin
       if InNodes.Count=0 then begin
         // all nodes have InEdges => all nodes in cycles
         // find a not visited node with the smallest number of active InEdges
+        // ToDo: consider Edge.Size
         BestNode:=nil;
         for j:=0 to NodeCount-1 do begin
           Node:=Nodes[j];
@@ -828,8 +840,29 @@ begin
   end;
   WriteDebugReport('TLvlGraph.CreateTopologicalLevels END');
   {$IFDEF LvlGraphConsistencyCheck}
-  ConsistencyCheck;
+  ConsistencyCheck(true);
   {$ENDIF}
+end;
+
+procedure TLvlGraph.MarkBackEdges;
+var
+  i: Integer;
+  Node: TLvlGraphNode;
+  j: Integer;
+  Edge: TLvlGraphEdge;
+begin
+  for i:=0 to NodeCount-1 do begin
+    Node:=Nodes[i];
+    for j:=0 to Node.OutEdgeCount-1 do begin
+      Edge:=Node.OutEdges[j];
+      Edge.fBackEdge:=Edge.IsBackEdge;
+    end;
+  end;
+end;
+
+procedure TLvlGraph.MinimizeCrossings;
+begin
+
 end;
 
 procedure TLvlGraph.WriteDebugReport(Msg: string);
@@ -866,7 +899,7 @@ begin
   end;
 end;
 
-procedure TLvlGraph.ConsistencyCheck;
+procedure TLvlGraph.ConsistencyCheck(WithBackEdge: boolean);
 var
   i: Integer;
   Node: TLvlGraphNode;
@@ -882,6 +915,8 @@ begin
       Node:=Level.Nodes[j];
       if Node.Level<>Level then
         raise Exception.Create('');
+      if Level.IndexOf(Node)<j then
+        raise Exception.Create('');
     end;
   end;
   for i:=0 to NodeCount-1 do begin
@@ -891,6 +926,8 @@ begin
       if Edge.Source<>Node then
         raise Exception.Create('');
       if Edge.Target.FInEdges.IndexOf(Edge)<0 then
+        raise Exception.Create('');
+      if WithBackEdge and (Edge.BackEdge<>Edge.IsBackEdge) then
         raise Exception.Create('');
     end;
     for j:=0 to Node.InEdgeCount-1 do begin
@@ -930,6 +967,11 @@ begin
   FSource:=nil;
   FTarget:=nil;
   inherited Destroy;
+end;
+
+function TLvlGraphEdge.IsBackEdge: boolean;
+begin
+  Result:=Source.Level.Index>Target.Level.Index;
 end;
 
 { TLvlGraphNode }
