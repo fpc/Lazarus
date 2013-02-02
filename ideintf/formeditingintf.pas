@@ -48,7 +48,7 @@ type
     FLCLForm: TForm;
     FRoot: TComponent;
   protected
-    FCollectedChilds: TFPList;
+    FCollectedChildren: TFPList;
     procedure SetDesigner(const AValue: TComponentEditorDesigner); virtual;
     procedure SetLCLForm(const AValue: TForm); virtual;
     procedure SetRoot(const AValue: TComponent); virtual;
@@ -73,7 +73,7 @@ type
     function ComponentIsSelectable(AComponent: TComponent): Boolean; virtual;
     function ComponentAtPos(p: TPoint; MinClass: TComponentClass;
                             Flags: TDMCompAtPosFlags): TComponent; virtual;
-    procedure GetChilds(Parent: TComponent; ChildComponents: TFPList); virtual;
+    procedure GetChildComponents(Parent: TComponent; ChildComponents: TFPList); virtual;
     function UseRTTIForMethods(aComponent: TComponent): boolean; virtual; // false = use sources
 
     // events
@@ -276,7 +276,7 @@ end;
 
 procedure TDesignerMediator.CollectChildren(Child: TComponent);
 begin
-  FCollectedChilds.Add(Child);
+  FCollectedChildren.Add(Child);
 end;
 
 procedure TDesignerMediator.Notification(AComponent: TComponent;
@@ -438,7 +438,7 @@ begin
     OffsetRect(ClientArea,Offset.X,Offset.Y);
     Children:=TFPList.Create;
     try
-      GetChilds(Result,Children);
+      GetChildComponents(Result,Children);
       //DebugLn(['TDesignerMediator.ComponentAtPos Result=',DbgSName(Result),' ChildCount=',children.Count,' ClientArea=',dbgs(ClientArea)]);
       Found:=false;
       // iterate backwards (z-order)
@@ -469,14 +469,14 @@ begin
   end;
 end;
 
-procedure TDesignerMediator.GetChilds(Parent: TComponent;
+procedure TDesignerMediator.GetChildComponents(Parent: TComponent;
   ChildComponents: TFPList);
 begin
-  FCollectedChilds:=ChildComponents;
+  FCollectedChildren:=ChildComponents;
   try
     TDesignerMediator(Parent).GetChildren(@CollectChildren,Root);
   finally
-    FCollectedChilds:=nil;
+    FCollectedChildren:=nil;
   end;
 end;
 

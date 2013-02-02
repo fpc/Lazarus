@@ -18,7 +18,7 @@
 No override needed.</descr>
       </element>
       <element name="TDesignerMediator.CollectChildren">
-        <short>Used by GetChilds to add collected children to add to FCollectedChilds.</short>
+        <short>Used by GetChildComponents to add collected children to add to FCollectedChildren.</short>
         <descr>
           <printshort id="TDesignerMediator.CollectChildren"/>
 No override needed.</descr>
@@ -139,10 +139,10 @@ The position p is relative to the 0,0 of the client area of the Root component.
 MinClass can be nil. If MinClass is given the returned component must inherit from MinClass.
 </descr>
       </element>
-      <element name="TDesignerMediator.GetChilds">
+      <element name="TDesignerMediator.GetChildComponents">
         <short>Return a list of child components.</short>
         <descr>
-          <printshort id="TDesignerMediator.GetChilds"/>
+          <printshort id="TDesignerMediator.GetChildComponents"/>
 No need to override.
 Child components are those with GetParentComponent=Parent.
 Normally all components on a form have the same Owner but can have different parents.</descr>

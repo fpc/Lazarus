@@ -77,11 +77,9 @@ type
     procedure SetVisible(const AValue: boolean);
     procedure SetWidth(const AValue: integer);
   protected
-    procedure InternalInvalidateRect(ARect: TRect; Erase: boolean); virtual;
+    procedure InternalInvalidateRect({%H-}ARect: TRect; {%H-}Erase: boolean); virtual;
     procedure SetName(const NewName: TComponentName); override;
     procedure SetParentComponent(Value: TComponent); override;
-    function HasParent: Boolean; override;
-    function GetParentComponent: TComponent; override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -89,6 +87,8 @@ type
     property Parent: TMyWidget read FParent write SetParent;
     function ChildCount: integer;
     property Children[Index: integer]: TMyWidget read GetChilds;
+    function HasParent: Boolean; override;
+    function GetParentComponent: TComponent; override;
     procedure SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer); virtual;
     procedure InvalidateRect(ARect: TRect; Erase: boolean);
     procedure Invalidate;
