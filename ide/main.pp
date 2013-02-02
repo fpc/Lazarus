@@ -13196,6 +13196,7 @@ var
   r: boolean;
   OldChange: Boolean;
   InheritedMethodPath: String;
+  UseRTTIForMethods: Boolean;
 begin
   Result.Code:=nil;
   Result.Data:=nil;
@@ -13215,6 +13216,7 @@ begin
   InheritedMethodPath:=GetInheritedMethodPath;
   OldChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
+  UseRTTIForMethods:=FormEditor1.ComponentUsesRTTIForMethods(ActiveUnitInfo.Component);
   try
     // create published method
     {$IFDEF VerboseOnPropHookCreateMethod}
@@ -13222,7 +13224,7 @@ begin
     {$ENDIF}
     r:=CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
         ActiveUnitInfo.Component.ClassName,AMethodName,
-        ATypeInfo,false,GetClassUnitName(APersistent.ClassType),APropertyPath,
+        ATypeInfo,UseRTTIForMethods,GetClassUnitName(APersistent.ClassType),APropertyPath,
         InheritedMethodPath);
     {$IFDEF VerboseOnPropHookCreateMethod}
     debugln(['[TMainIDE.OnPropHookCreateMethod] ************ ',dbgs(r),' AMethodName="',AMethodName,'"']);
