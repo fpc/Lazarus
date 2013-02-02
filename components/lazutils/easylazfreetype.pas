@@ -454,41 +454,55 @@ var
   firstChar: boolean;
   glyphWidth: single;
   glyphCode: cardinal;
+
+  procedure WordBreak(ADropCount: Integer = 0);
+  begin
+    ARemains:= copy(AText, length(AText) - left + 1 + ADropCount, left);
+    AText := copy(AText, 1, length(AText) - left);
+    if Assigned(FWordBreakHandler) then
+      FWordBreakHandler(AText,ARemains)
+    else
+      DefaultWordBreakHandler(AText,ARemains);
+  end;
+
 begin
-  totalWidth := 0;
   if AText = '' then
   begin
     ARemains := '';
     exit;
-  end else
+  end;
+  totalWidth := 0;
+  pstr := @AText[1];
+  left := length(AText);
+  firstChar := true;
+  while left > 0 do
   begin
-    pstr := @AText[1];
-    left := length(AText);
-    firstChar := true;
-    while left > 0 do
+    if pstr[0] in [#13, #10] then
     begin
-      charlen := UTF8CharacterLength(pstr);
-      glyphCode := UTF8CharacterToUnicode(pstr, charlen);
-      inc(pstr,charlen);
-
-      glyphWidth := CharWidthFromUnicode(glyphCode);
-      if glyphWidth <> 0 then
-      begin
-        totalWidth += glyphWidth;
-        if (totalWidth > AMaxWidth) and not firstChar then
-        begin
-          ARemains:= copy(AText,length(AText)-left+1,left);
-          AText := copy(AText, 1, length(AText)-left);
-          if Assigned(FWordBreakHandler) then
-            FWordBreakHandler(AText,ARemains) else
-              DefaultWordBreakHandler(AText,ARemains);
-          exit;
-        end;
-      end;
-
-      dec(left,charlen);
-      firstChar := false;
+      if (left > 1)  and ([pstr[0], pstr[1]] = [#13, #10]) then
+        WordBreak(2)
+      else
+        WordBreak(1);
+      exit;
     end;
+
+    charlen := UTF8CharacterLength(pstr);
+    glyphCode := UTF8CharacterToUnicode(pstr, charlen);
+    inc(pstr,charlen);
+
+    glyphWidth := CharWidthFromUnicode(glyphCode);
+    if glyphWidth <> 0 then
+    begin
+      totalWidth += glyphWidth;
+      if (totalWidth > AMaxWidth) and not firstChar then
+      begin
+        WordBreak;
+        exit;
+      end;
+    end;
+
+    dec(left,charlen);
+    firstChar := false;
   end;
   ARemains := ''; //no split
 end;
