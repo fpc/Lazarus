@@ -449,14 +449,14 @@ begin
   Obj_Inspector.Selection := FSelection;
 end;
 
-Function TCustomFormEditor.AddSelected(Value : TComponent) : Integer;
+function TCustomFormEditor.AddSelected(Value: TComponent): Integer;
 Begin
   Result := FSelection.Add(Value) + 1;
   if Obj_Inspector<>nil then
     Obj_Inspector.Selection := FSelection;
 end;
 
-Procedure TCustomFormEditor.DeleteComponent(AComponent: TComponent;
+procedure TCustomFormEditor.DeleteComponent(AComponent: TComponent;
   FreeComponent: boolean);
 var
   AForm: TCustomForm;
@@ -534,7 +534,7 @@ Begin
   end;
 end;
 
-Function TCustomFormEditor.FindComponentByName(const Name: ShortString
+function TCustomFormEditor.FindComponentByName(const Name: ShortString
   ): TComponent;
 var
   i: longint;
@@ -556,7 +556,7 @@ Begin
   Result:=nil;
 end;
 
-function TCustomFormEditor.SaveSelectionToStream(s: TStream): boolean;
+function TCustomFormEditor.SaveSelectionToStream(s: TStream): Boolean;
 var
   ADesigner: TIDesigner;
 begin

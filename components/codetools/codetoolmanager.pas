@@ -3548,7 +3548,7 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.GetCompatiblePublishedMethods(AClassName,
-                                                    PropInstance,PropName,Proc);
+                                            PropInstance,PropName,Proc);
   except
     on e: Exception do Result:=HandleException(e);
   end;

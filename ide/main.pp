@@ -1755,6 +1755,7 @@ procedure TMainIDE.OnPropHookGetCompatibleMethods(InstProp: PInstProp;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
+  CTResult: Boolean;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
@@ -1762,12 +1763,17 @@ begin
   DebugLn('');
   DebugLn('[TMainIDE.OnPropHookGetCompatibleMethods] ************');
   {$ENDIF}
-  if not CodeToolBoss.GetCompatiblePublishedMethods(ActiveUnitInfo.Source,
-    ActiveUnitInfo.Component.ClassName,
-    InstProp^.Instance,InstProp^.PropInfo^.Name,Proc) then
-  begin
-    DoJumpToCodeToolBossError;
+  if FormEditor1.ComponentUsesRTTIForMethods(ActiveUnitInfo.Component) then begin
+    CTResult:=CodeToolBoss.GetCompatiblePublishedMethods(ActiveUnitInfo.Source,
+      ActiveUnitInfo.Component.ClassName,
+      GetTypeData(InstProp^.PropInfo^.PropType),Proc);
+  end else begin
+    CTResult:=CodeToolBoss.GetCompatiblePublishedMethods(ActiveUnitInfo.Source,
+      ActiveUnitInfo.Component.ClassName,
+      InstProp^.Instance,InstProp^.PropInfo^.Name,Proc);
   end;
+  if not CTResult then
+    DoJumpToCodeToolBossError;
 end;
 
 function TMainIDE.OnPropHookCompatibleMethodExists(const AMethodName: String;
@@ -1783,10 +1789,17 @@ begin
   WriteLn('');
   WriteLn('[TMainIDE.OnPropHookCompatibleMethodExists] ************ ',AMethodName);
   {$ENDIF}
-  Result := CodeToolBoss.PublishedMethodExists(ActiveUnitInfo.Source,
-                        ActiveUnitInfo.Component.ClassName, AMethodName,
-                        InstProp^.Instance, InstProp^.PropInfo^.Name,
-                        MethodIsCompatible, MethodIsPublished, IdentIsMethod);
+  if FormEditor1.ComponentUsesRTTIForMethods(ActiveUnitInfo.Component) then begin
+    Result := CodeToolBoss.PublishedMethodExists(ActiveUnitInfo.Source,
+                          ActiveUnitInfo.Component.ClassName, AMethodName,
+                          GetTypeData(InstProp^.PropInfo^.PropType),
+                          MethodIsCompatible, MethodIsPublished, IdentIsMethod);
+  end else begin
+    Result := CodeToolBoss.PublishedMethodExists(ActiveUnitInfo.Source,
+                          ActiveUnitInfo.Component.ClassName, AMethodName,
+                          InstProp^.Instance, InstProp^.PropInfo^.Name,
+                          MethodIsCompatible, MethodIsPublished, IdentIsMethod);
+  end;
   if CodeToolBoss.ErrorMessage <> '' then
   begin
     DoJumpToCodeToolBossError;

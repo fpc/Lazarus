@@ -49,6 +49,8 @@ type
     procedure CheckDesignerPositions;
     function GetDesignerMediatorByComponent(AComponent: TComponent
             ): TDesignerMediator; override;
+
+    function ComponentUsesRTTIForMethods(Component: TComponent): boolean;
   end;
 
 var
@@ -131,6 +133,14 @@ begin
     Result:=TDesigner(ADesigner).Mediator
   else
     Result:=nil;
+end;
+
+function TFormEditor.ComponentUsesRTTIForMethods(Component: TComponent): boolean;
+var
+  Mediator: TDesignerMediator;
+begin
+  Mediator:=GetDesignerMediatorByComponent(Component);
+  Result:=(Mediator<>nil) and (Mediator.UseRTTIForMethods(Component));
 end;
 
 initialization

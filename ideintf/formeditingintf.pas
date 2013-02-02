@@ -74,6 +74,7 @@ type
     function ComponentAtPos(p: TPoint; MinClass: TComponentClass;
                             Flags: TDMCompAtPosFlags): TComponent; virtual;
     procedure GetChilds(Parent: TComponent; ChildComponents: TFPList); virtual;
+    function UseRTTIForMethods(aComponent: TComponent): boolean; virtual; // false = use sources
 
     // events
     procedure InitComponent(AComponent, NewParent: TComponent; NewBounds: TRect); virtual;
@@ -477,6 +478,11 @@ begin
   finally
     FCollectedChilds:=nil;
   end;
+end;
+
+function TDesignerMediator.UseRTTIForMethods(aComponent: TComponent): boolean;
+begin
+  Result:=false;
 end;
 
 procedure TDesignerMediator.InitComponent(AComponent, NewParent: TComponent;
