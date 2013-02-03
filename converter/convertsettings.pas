@@ -503,8 +503,6 @@ begin
   TheMap:=fReplaceTypes;
   MapReplacement('TFlowPanel',        'TPanel');
   MapReplacement('TGridPanel',        'TPanel');
-  MapReplacement('TControlBar',       'TToolBar');
-  MapReplacement('TCoolBar',          'TToolBar');
   MapReplacement('TComboBoxEx',       'TComboBox');
   MapReplacement('TRichEdit',         'TMemo'); // or TRichMemo from CRC.
   MapReplacement('TDBRichEdit',       'TDBMemo');
