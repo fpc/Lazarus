@@ -891,7 +891,7 @@ type
     // useful frontend methods
     procedure UpdateCaption; override;
     procedure HideIDE; override;
-    procedure HideUnmodifiedDesigners;
+    procedure CloseUnmodifiedDesigners;
     procedure UnhideIDE; override;
     procedure SaveIncludeLinks; override;
 
@@ -8758,7 +8758,7 @@ begin
   SourceEditorManager.HideHint;
 
   // hide designer forms
-  HideUnmodifiedDesigners;
+  CloseUnmodifiedDesigners;
 
   // collect all windows except the main bar
   for i:=0 to Screen.CustomFormCount-1 do begin
@@ -8784,7 +8784,7 @@ begin
   MainIDEBar.HideIDE;
 end;
 
-procedure TMainIDE.HideUnmodifiedDesigners;
+procedure TMainIDE.CloseUnmodifiedDesigners;
 var
   AnUnitInfo: TUnitInfo;
   NextUnitInfo: TUnitInfo;
