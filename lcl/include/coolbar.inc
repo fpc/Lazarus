@@ -495,28 +495,53 @@ begin
   inherited AlignControls(aControl, aRect);
 end;
 
+procedure TCustomCoolBar.OnIdle(Sender: TObject; var Done: Boolean);
+begin
+  Assert(Assigned(FNewBand) and Assigned(FNewControl),
+        'TCoolBar.OnIdle: FNewBand or FNewControl not assigned');
+  FNewBand.Control := FNewControl;
+  Application.RemoveOnIdleHandler(@OnIdle);
+  FNewBand := Nil;
+  FNewControl := Nil;
+end;
+
 procedure TCustomCoolBar.Notification(AComponent: TComponent; Operation: TOperation);
 var
   Band: TCoolBand;
+  s: String;
 begin
   inherited Notification(AComponent, Operation);
+  if csDestroying in ComponentState then Exit;
   case Operation of
     opInsert: begin
-      DebugLn('TCoolBar.Notification: Operation = opInsert');
+      if AComponent is TWinControl then
+      begin
+        s := ', Comp=' + AComponent.Name + ', class=' + AComponent.ClassName;
+        if csLoading in ComponentState then
+          DebugLn('TCoolBar.Notification: Operation = opInsert, Loading' + s)
+        else begin
+          DebugLn('TCoolBar.Notification: Operation = opInsert, not Loading' + s);
+          if AComponent <> Self then
+          begin
+            // Delay setting the new control's properties by using OnIdle handler.
+            // Setting them directly in this Notification procedure leads to a crash.
+            FNewBand := FBands.Add;
+            FNewControl := TControl(AComponent);
+            Application.AddOnIdleHandler(@OnIdle);
+          end;
+        end;
+      end;
     end;
     opRemove: begin
       DebugLn('TCoolBar.Notification: Operation = opRemove');
-      if not (csDestroying in ComponentState) then
+      if AComponent is TWinControl then
       begin
-        if AComponent is TWinControl then
-        begin
-          Band := Bands.FindBand(TControl(AComponent));
-          if Band <> nil then
-            Band.FControl := nil;
-        end
-        else if AComponent = FImages then
-          Images := nil;
-      end;
+        Band := Bands.FindBand(TControl(AComponent));
+        if Assigned(Band) then
+          Band.FControl := nil;
+      end
+      else if AComponent = FImages then
+        Images := nil;
     end;
   end;
 end;

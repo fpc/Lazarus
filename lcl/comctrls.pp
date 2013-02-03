@@ -2261,6 +2261,8 @@ type
     FImageChangeLink: TChangeLink;
     FShowText: Boolean;
     FVertical: Boolean;
+    FNewBand: TCoolBand;
+    FNewControl: TControl;
     FOnChange: TNotifyEvent;
     function GetAlign: TAlign;
     procedure SetAlign(aValue: TAlign); reintroduce;
@@ -2270,6 +2272,7 @@ type
     procedure SetShowText(aValue: Boolean);
     procedure SetVertical(aValue: Boolean);
     procedure ImageListChange(Sender: TObject);
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
   protected
     procedure AlignControls(aControl: TControl; var aRect: TRect); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
