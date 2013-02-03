@@ -275,15 +275,16 @@ begin
     then begin
       if not HeaderWritten then begin
         sl.Add('Project units:');
-        s:=aFile.GetShortFilename(true);
-        if aFile.Modified then
-          s:=s+' Modified';
-        if aFile.SessionModified then
-          s:=s+' SessionModified';
-        if (aFile.Source<>nil) and (aFile.Source.Modified) then
-          s:=s+' Source.Modified';
-        sl.Add(s);
+        HeaderWritten:=true;
       end;
+      s:=aFile.GetShortFilename(true);
+      if aFile.Modified then
+        s:=s+' Modified';
+      if aFile.SessionModified then
+        s:=s+' SessionModified';
+      if (aFile.Source<>nil) and (aFile.Source.Modified) then
+        s:=s+' Source.Modified';
+      sl.Add(s);
     end;
     aFile:=aFile.NextPartOfProject;
   end;
