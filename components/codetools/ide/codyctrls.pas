@@ -634,6 +634,8 @@ begin
   Canvas.Brush.Style:=bsSolid;
   Canvas.Brush.Color:=Color;
   Canvas.FillRect(ClientRect);
+
+
 end;
 
 constructor TCustomLvlGraphControl.Create(AOwner: TComponent);
@@ -669,7 +671,7 @@ var
 begin
   BeginUpdate;
   try
-    HeaderHeight:=round(1.5*Canvas.TextHeight(Caption));
+    HeaderHeight:=round(1.5*abs(Font.Height));
 
     // distribute the nodes on levels and marking back edges
     Graph.CreateTopologicalLevels;
@@ -1055,7 +1057,7 @@ var
 begin
   if aLevel<0 then begin
     for i:=0 to LevelCount-1 do
-      MinimizeOverlappings(i);
+      MinimizeOverlappings(Gap,i);
   end else begin
     Level:=Levels[aLevel];
     Tree:=TAvgLvlTree.Create(@CompareLGNodesByCenterPos);
