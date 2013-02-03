@@ -403,7 +403,7 @@ type
     function OnlyNonVisualPersistentsSelected: boolean;
     function OnlyVisualComponentsSelected: boolean;
     function OnlyInvisiblePersistentsSelected: boolean;
-    function OnlyBoundLessComponentsSelected: boolean;
+    function OnlyBoundlessComponentsSelected: boolean;
     function LookupRootSelected: boolean;
 
     // resizing, moving, aligning, mirroring, ...
@@ -1185,66 +1185,78 @@ var
   i: integer;
   OldLeftTop: TPoint;
   NewLeft, NewTop, NewRight, NewBottom, NewWidth, NewHeight: integer;
+  Item: TSelectedControl;
 begin
   BeginUpdate;
-  if Count=1 then begin
-    // single selection
-    NewLeft:=FLeft;
-    NewTop:=FTop;
-    NewRight:=FLeft+FWidth;
-    NewBottom:=FTop+FHeight;
-    {$IFDEF VerboseDesigner}
-    DebugLn('[TControlSelection.DoApplyUserBounds] S Old=',
-      DbgS(FOldLeft,FOldTop,FOldWidth,FOldHeight),
-      ' User=',Dbgs(FLeft,FTop,FWidth,FHeight));
-    {$ENDIF}
-    //DebugLn(['TControlSelection.DoApplyUserBounds BEFORE ',Items[0].Left,' ',Items[0].Top]);
-    Items[0].SetFormRelativeBounds(
-      Min(NewLeft,NewRight),
-      Min(NewTop,NewBottom),
-      Abs(FWidth),
-      Abs(FHeight)
-    );
-    //DebugLn(['TControlSelection.DoApplyUserBounds AFTER ',Items[0].Left,' ',Items[0].Top]);
-    InvalidateGuideLinesCache;
-  end else if Count>1 then begin
-    // multi selection
-    {$IFDEF VerboseDesigner}
-    DebugLn('[TControlSelection.DoApplyUserBounds] M Old=',
-      DbgS(FOldLeft,FOldTop,FOldWidth,FOldHeight),
-      ' User=',DbgS(FLeft,FTop,FWidth,FHeight));
-    {$ENDIF}
-
-    // ToDo: sort selection with parent level and size/move parents first
-
-    if (FOldWidth<>0) and (FOldHeight<>0) then begin
-      for i:=0 to Count-1 do begin
-        OldLeftTop:=Items[i].OldFormRelativeLeftTop;
-        NewLeft:=FLeft + (((OldLeftTop.X-FOldLeft) * FWidth) div FOldWidth);
-        NewTop:=FTop + (((OldLeftTop.Y-FOldTop) * FHeight) div FOldHeight);
-        NewWidth:=(Items[i].OldWidth*FWidth) div FOldWidth;
-        NewHeight:=(Items[i].OldHeight*FHeight) div FOldHeight;
-        if NewWidth<0 then begin
-          NewWidth:=-NewWidth;
-          dec(NewLeft,NewWidth);
-        end;
-        if NewWidth<1 then NewWidth:=1;
-        if NewHeight<0 then begin
-          NewHeight:=-NewHeight;
-          dec(NewTop,NewHeight);
-        end;
-        if NewHeight<1 then NewHeight:=1;
-        Items[i].SetFormRelativeBounds(NewLeft,NewTop,NewWidth,NewHeight);
-        {$IFDEF VerboseDesigner}
-        DebugLn('  i=',Dbgs(i),' ',DbgSName(Items[i].Persistent),
-        ' ',DbgS(Items[i].Left,Items[i].Top,Items[i].Width,Items[i].Height));
-        {$ENDIF}
-      end;
+  try
+    if Count=1 then begin
+      // single selection
+      NewLeft:=FLeft;
+      NewTop:=FTop;
+      NewRight:=FLeft+FWidth;
+      NewBottom:=FTop+FHeight;
+      {$IFDEF VerboseDesigner}
+      DebugLn('[TControlSelection.DoApplyUserBounds] S Old=',
+        DbgS(FOldLeft,FOldTop,FOldWidth,FOldHeight),
+        ' User=',Dbgs(FLeft,FTop,FWidth,FHeight));
+      {$ENDIF}
+      Item:=Items[0];
+      //DebugLn(['TControlSelection.DoApplyUserBounds BEFORE ',Items.Left,' ',Items[0].Top]);
+      if Item.IsTComponent
+      and (not ComponentBoundsDesignable(TComponent(Item.Persistent))) then
+        exit;
+      Item.SetFormRelativeBounds(
+        Min(NewLeft,NewRight),
+        Min(NewTop,NewBottom),
+        Abs(FWidth),
+        Abs(FHeight)
+      );
+      //DebugLn(['TControlSelection.DoApplyUserBounds AFTER ',Items.Left,' ',Items[0].Top]);
       InvalidateGuideLinesCache;
+    end else if Count>1 then begin
+      // multi selection
+      {$IFDEF VerboseDesigner}
+      DebugLn('[TControlSelection.DoApplyUserBounds] M Old=',
+        DbgS(FOldLeft,FOldTop,FOldWidth,FOldHeight),
+        ' User=',DbgS(FLeft,FTop,FWidth,FHeight));
+      {$ENDIF}
+
+      // ToDo: sort selection with parent level and size/move parents first
+
+      if (FOldWidth<>0) and (FOldHeight<>0) then begin
+        for i:=0 to Count-1 do begin
+          Item:=Items[i];
+          if Item.IsTComponent
+          and (not ComponentBoundsDesignable(TComponent(Item.Persistent))) then
+            continue;
+          OldLeftTop:=Items[i].OldFormRelativeLeftTop;
+          NewLeft:=FLeft + (((OldLeftTop.X-FOldLeft) * FWidth) div FOldWidth);
+          NewTop:=FTop + (((OldLeftTop.Y-FOldTop) * FHeight) div FOldHeight);
+          NewWidth:=(Item.OldWidth*FWidth) div FOldWidth;
+          NewHeight:=(Item.OldHeight*FHeight) div FOldHeight;
+          if NewWidth<0 then begin
+            NewWidth:=-NewWidth;
+            dec(NewLeft,NewWidth);
+          end;
+          if NewWidth<1 then NewWidth:=1;
+          if NewHeight<0 then begin
+            NewHeight:=-NewHeight;
+            dec(NewTop,NewHeight);
+          end;
+          if NewHeight<1 then NewHeight:=1;
+          Item.SetFormRelativeBounds(NewLeft,NewTop,NewWidth,NewHeight);
+          {$IFDEF VerboseDesigner}
+          DebugLn('  i=',Dbgs(i),' ',DbgSName(Item.Persistent),
+          ' ',DbgS(Item.Left,Item.Top,Item.Width,Item.Height));
+          {$ENDIF}
+        end;
+        InvalidateGuideLinesCache;
+      end;
     end;
+  finally
+    UpdateBounds;
+    EndUpdate;
   end;
-  UpdateBounds;
-  EndUpdate;
 end;
 
 procedure TControlSelection.UpdateRealBounds;
@@ -2722,7 +2734,7 @@ begin
     Result:=cssOnlyInvisibleSelected in FStates;
 end;
 
-function TControlSelection.OnlyBoundLessComponentsSelected: boolean;
+function TControlSelection.OnlyBoundlessComponentsSelected: boolean;
 var
   i: Integer;
 begin
