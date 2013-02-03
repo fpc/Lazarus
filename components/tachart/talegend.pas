@@ -176,6 +176,7 @@ type
     FSpacing: TChartDistance;
     FSymbolFrame: TChartPen;
     FSymbolWidth: TChartDistance;
+    FTransparency: TChartTransparency;
     FUseSidebar: Boolean;
 
     // Not includes the margins around item.
@@ -198,6 +199,7 @@ type
     procedure SetSpacing(AValue: TChartDistance);
     procedure SetSymbolFrame(AValue: TChartPen);
     procedure SetSymbolWidth(AValue: TChartDistance);
+    procedure SetTransparency(AValue: TChartTransparency);
     procedure SetUseSidebar(AValue: Boolean);
   public
     constructor Create(AOwner: TCustomChart);
@@ -239,6 +241,8 @@ type
     property SymbolFrame: TChartPen read FSymbolFrame write SetSymbolFrame;
     property SymbolWidth: TChartDistance
       read FSymbolWidth write SetSymbolWidth default DEF_LEGEND_SYMBOL_WIDTH;
+    property Transparency: TChartTransparency
+      read FTransparency write SetTransparency default 0;
     property UseSidebar: Boolean read FUseSidebar write SetUseSidebar default true;
     property Visible default false;
   end;
@@ -540,64 +544,78 @@ end;
 
 procedure TChartLegend.Draw(var AData: TChartLegendDrawingData);
 var
-  i, x, y: Integer;
-  r: TRect;
-  prevFont: TFont = nil;
   drawer: IChartDrawer;
+
+  procedure DrawItems;
+  var
+    i, x, y: Integer;
+    prevFont: TFont = nil;
+    r: TRect;
+  begin
+    with AData do begin
+      for i := 0 to FItems.Count - 1 do begin
+        FItems[i].UpdateFont(drawer, prevFont);
+        drawer.Brush := BackgroundBrush;
+        if SymbolFrame.Visible then
+          drawer.Pen := SymbolFrame
+        else
+          drawer.SetPenParams(psClear, clTAColor);
+        x := 0;
+        y := 0;
+        case ItemFillOrder of
+          lfoColRow: DivMod(i, FRowCount, x, y);
+          lfoRowCol: DivMod(i, FColCount, y, x);
+        end;
+        r := Bounds(
+          FBounds.Left + Spacing + x * (FItemSize.X + Spacing),
+          FBounds.Top + Spacing + y * (FItemSize.Y + Spacing),
+          SymbolWidth, FItemSize.Y);
+        FItems[i].Draw(drawer, r);
+        OffsetRect(r, 0, FItemSize.Y + Spacing);
+      end;
+      if GridHorizontal.Visible and (GridHorizontal.Style <> psClear) then begin
+        drawer.Pen := GridHorizontal;
+        drawer.SetBrushParams(bsClear, clTAColor);
+        for i := 1 to FRowCount - 1 do begin
+          y := FBounds.Top + Spacing div 2 + i * (FItemSize.Y + Spacing);
+          drawer.Line(FBounds.Left, y, FBounds.Right, y);
+        end;
+      end;
+      if GridVertical.Visible and (GridVertical.Style <> psClear) then begin
+        drawer.Pen := GridVertical;
+        drawer.SetBrushParams(bsClear, clTAColor);
+        for i := 1 to FColCount - 1 do begin
+          x := FBounds.Left + Spacing div 2 + i * (FItemSize.X + Spacing);
+          drawer.Line(x, FBounds.Top, x, FBounds.Bottom);
+        end;
+      end;
+    end;
+  end;
+
+var
+  r: TRect;
 begin
   drawer := AData.FDrawer;
-  // Draw the background and the border.
-  drawer.Brush := BackgroundBrush;
-  if Frame.Visible then
-    drawer.Pen := Frame
-  else
-    drawer.SetPenParams(psClear, clTAColor);
-  r := AData.FBounds;
-  drawer.Rectangle(r);
-  if AData.FItems.Count = 0 then exit;
+  drawer.SetTransparency(Transparency);
+  try
+    drawer.Brush := BackgroundBrush;
+    if Frame.Visible then
+      drawer.Pen := Frame
+    else
+      drawer.SetPenParams(psClear, clTAColor);
+    r := AData.FBounds;
+    drawer.Rectangle(r);
+    if AData.FItems.Count = 0 then exit;
 
-  r.Right -= 1;
-  drawer.ClippingStart(r);
-
-  with AData do try
-    for i := 0 to FItems.Count - 1 do begin
-      FItems[i].UpdateFont(drawer, prevFont);
-      drawer.Brush := BackgroundBrush;
-      if SymbolFrame.Visible then
-        drawer.Pen := SymbolFrame
-      else
-        drawer.SetPenParams(psClear, clTAColor);
-      x := 0;
-      y := 0;
-      case ItemFillOrder of
-        lfoColRow: DivMod(i, FRowCount, x, y);
-        lfoRowCol: DivMod(i, FColCount, y, x);
-      end;
-      r := Bounds(
-        FBounds.Left + Spacing + x * (FItemSize.X + Spacing),
-        FBounds.Top + Spacing + y * (FItemSize.Y + Spacing),
-        SymbolWidth, FItemSize.Y);
-      FItems[i].Draw(drawer, r);
-      OffsetRect(r, 0, FItemSize.Y + Spacing);
-    end;
-    if GridHorizontal.Visible and (GridHorizontal.Style <> psClear) then begin
-      drawer.Pen := GridHorizontal;
-      drawer.SetBrushParams(bsClear, clTAColor);
-      for i := 1 to FRowCount - 1 do begin
-        y := FBounds.Top + Spacing div 2 + i * (FItemSize.Y + Spacing);
-        drawer.Line(FBounds.Left, y, FBounds.Right, y);
-      end;
-    end;
-    if GridVertical.Visible and (GridVertical.Style <> psClear) then begin
-      drawer.Pen := GridVertical;
-      drawer.SetBrushParams(bsClear, clTAColor);
-      for i := 1 to FColCount - 1 do begin
-        x := FBounds.Left + Spacing div 2 + i * (FItemSize.X + Spacing);
-        drawer.Line(x, FBounds.Top, x, FBounds.Bottom);
-      end;
+    r.Right -= 1;
+    drawer.ClippingStart(r);
+    try
+      DrawItems;
+    finally
+      drawer.ClippingStop;
     end;
   finally
-    drawer.ClippingStop;
+    drawer.SetTransparency(0);
   end;
 end;
 
@@ -788,6 +806,13 @@ procedure TChartLegend.SetSymbolWidth(AValue: TChartDistance);
 begin
   if FSymbolWidth = AValue then exit;
   FSymbolWidth := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartLegend.SetTransparency(AValue: TChartTransparency);
+begin
+  if FTransparency = AValue then exit;
+  FTransparency := AValue;
   StyleChanged(Self);
 end;
 
