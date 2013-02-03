@@ -132,6 +132,7 @@ components/synunihighlighter/languages/units
 components/synunihighlighter/lib/*.bak
 components/synunihighlighter/lib/units
 components/synunihighlighter/units
+components/tachart/aggpas/lib
 components/tachart/demo/3d/*.exe
 components/tachart/demo/3d/*.lps
 components/tachart/demo/3d/lib
