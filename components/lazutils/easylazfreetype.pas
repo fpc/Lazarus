@@ -459,10 +459,6 @@ var
   begin
     ARemains:= copy(AText, length(AText) - left + 1 + ADropCount, left);
     AText := copy(AText, 1, length(AText) - left);
-    if Assigned(FWordBreakHandler) then
-      FWordBreakHandler(AText,ARemains)
-    else
-      DefaultWordBreakHandler(AText,ARemains);
   end;
 
 begin
@@ -497,6 +493,10 @@ begin
       if (totalWidth > AMaxWidth) and not firstChar then
       begin
         WordBreak;
+        if Assigned(FWordBreakHandler) then
+          FWordBreakHandler(AText,ARemains)
+        else
+          DefaultWordBreakHandler(AText,ARemains);
         exit;
       end;
     end;
