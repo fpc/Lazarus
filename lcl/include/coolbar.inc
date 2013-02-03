@@ -19,7 +19,9 @@
 
 }
 const
-  ControlPosLeft = 5;
+  GrabLeft = 2;
+  GrabWidth = 9;
+  ControlLeft = GrabLeft + GrabWidth + 6;
 
 { TCoolBand }
 
@@ -86,7 +88,7 @@ procedure TCoolBand.ResetControlProps;
 begin
   FControl.AnchorSide[akLeft].Control := Nil;
   FControl.BorderSpacing.Left := 0;
-  FControl.Left := ControlPosLeft;
+  FControl.Left := ControlLeft;
 end;
 
 procedure TCoolBand.SetBorderStyle(aValue: TBorderStyle);
@@ -162,7 +164,8 @@ end;
 
 procedure TCoolBand.SetControlWidth;
 begin
-  FControl.Width := FCoolBar.Width - FControl.Left - 6;
+  if not (FControl is TCustomCheckBox) then
+    FControl.Width := FCoolBar.Width - FControl.Left - 6;
 end;
 
 procedure TCoolBand.UpdControl;
@@ -171,10 +174,10 @@ begin
   if Assigned(FTextLabel) then
   begin
     if Assigned(FControl) then
-      FTextLabel.Top := FTop+3 // Adjust text position for the control (which is higher).
+      FTextLabel.Top := FTop+4 // Adjust text position for the control (which is higher).
     else
       FTextLabel.Top := FTop+1;
-    FTextLabel.Left := ControlPosLeft;
+    FTextLabel.Left := ControlLeft;
     FTextLabel.Visible := FCoolBar.ShowText;
   end;
   if Assigned(FControl) then
@@ -499,6 +502,7 @@ procedure TCustomCoolBar.OnIdle(Sender: TObject; var Done: Boolean);
 begin
   Assert(Assigned(FNewBand) and Assigned(FNewControl),
         'TCoolBar.OnIdle: FNewBand or FNewControl not assigned');
+  DebugLn('TCoolBar.OnIdle');
   FNewBand.Control := FNewControl;
   Application.RemoveOnIdleHandler(@OnIdle);
   FNewBand := Nil;
@@ -554,15 +558,35 @@ begin
 end;
 
 procedure TCustomCoolBar.Paint;
+
+  procedure PaintGrabber(aRect: TRect);
+  begin
+    Canvas.Pen.Color := clBtnHighlight;
+    Canvas.MoveTo(aRect.Left+2, aRect.Top);
+    Canvas.LineTo(aRect.Left, aRect.Top);
+    Canvas.LineTo(aRect.Left, aRect.Bottom+1);
+    Canvas.Pen.Color := clBtnShadow;
+    Canvas.MoveTo(aRect.Right, aRect.Top);
+    Canvas.LineTo(aRect.Right, aRect.Bottom);
+    Canvas.LineTo(aRect.Left, aRect.Bottom);
+  end;
+
 var
   i, BottomY: Integer;
 begin
   inherited Paint;
   for i := 0 to FBands.Count-1 do
   begin
-    BottomY := FBands[i].FTop + FBands[i].Height + 1;
-    if FBandBorderStyle = bsSingle then     // ToDo: paint the border properly
+    BottomY := FBands[i].FTop+FBands[i].Height+2;
+    // Paint a grabber
+    PaintGrabber(Rect(GrabLeft, FBands[i].FTop, GrabLeft+GrabWidth, BottomY-1));
+    // Paint a separator border below the band.
+    if FBandBorderStyle = bsSingle then
+    begin
       Canvas.Line(3, BottomY, Width-3, BottomY);
+      Canvas.Pen.Color := clBtnHighlight;
+      Canvas.Line(3, BottomY+1, Width-3, BottomY+1);
+    end;
   end;
 end;
 
