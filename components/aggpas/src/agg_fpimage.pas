@@ -741,8 +741,11 @@ function AggUTF8CharToUnicode(p: PChar; out CharLen: int): int32u;
 
 implementation
 
+const
+  PixelSize: array [TAggFPImgPixelFormat] of Integer = (3, 4);
+
 var
- g_approxScale : double = 2.0;
+  g_approxScale : double = 2.0;
 
 type
   //PAggSpanConvImageBlend = ^TAggSpanConvImageBlend;
@@ -920,7 +923,7 @@ var
   p: PByte;
 begin
   if (x>=0) and (y>=0) and (x<Width) and (y<Height) then begin
-    p:=@FData[y*Width+x];
+    p:=@FData[(y*Width+x) * PixelSize[PixelFormat]];
     case PixelFormat of
     afpimRGB24:
       begin
@@ -944,7 +947,7 @@ var
   p: PByte;
 begin
   if (x>=0) and (y>=0) and (x<Width) and (y<Height) then begin
-    p:=@FData[y*Width+x];
+   p:=@FData[(y*Width+x) * PixelSize[PixelFormat]];
     case PixelFormat of
     afpimRGB24:
       begin
@@ -975,7 +978,7 @@ function TAggFPImage.GetInternalPixel(x, y: integer): integer;
 var
   p: PByte;
 begin
-  p:=@FData[y*Width+x];
+ p:=@FData[(y*Width+x) * PixelSize[PixelFormat]];
   case PixelFormat of
   afpimRGB24:
     begin
@@ -994,7 +997,7 @@ procedure TAggFPImage.SetInternalPixel(x, y: integer; Value: integer);
 var
   p: PByte;
 begin
-  p:=@FData[y*Width+x];
+ p:=@FData[(y*Width+x) * PixelSize[PixelFormat]];
   case PixelFormat of
   afpimRGB24:
     begin
@@ -1070,20 +1073,12 @@ end;
 
 function TAggFPImage.DataSize: PtrUInt;
 begin
-  Result:=Width*Height;
-  case PixelFormat of
-  afpimRGB24: Result:=Result*3;
-  afpimRGBA32: Result:=Result*4;
-  end;
+  Result:=Width*Height*PixelSize[PixelFormat];
 end;
 
 function TAggFPImage.LineSize: PtrUInt;
 begin
-  Result:=Width;
-  case PixelFormat of
-  afpimRGB24:  Result:=Result*3;
-  afpimRGBA32: Result:=Result*4;
-  end;
+  Result:=Width*PixelSize[PixelFormat];
 end;
 
 { TAggFPCanvas }
