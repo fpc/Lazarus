@@ -2186,6 +2186,7 @@ type
     procedure SetFixedBackground(aValue: Boolean);
     procedure SetColor(aValue: TColor);
     procedure SetControlWidth;
+    procedure ResetControlProps;
     procedure UpdControl;
     procedure SetControl(aValue: TControl);
     procedure SetParentColor(aValue: Boolean);
@@ -2228,7 +2229,7 @@ type
     FVisibleCount: Longword;
     function GetItem(Index: Integer): TCoolBand;
     procedure SetItem(Index: Integer; aValue: TCoolBand);
-    procedure CalcTops;
+    procedure UpdControls;
   protected
     function GetOwner: TPersistent; override;
     procedure Update(aItem: TCollectionItem); override;
@@ -2270,6 +2271,7 @@ type
     procedure SetVertical(aValue: Boolean);
     procedure ImageListChange(Sender: TObject);
   protected
+    procedure AlignControls(aControl: TControl; var aRect: TRect); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Loaded; override;
     procedure Paint; override;

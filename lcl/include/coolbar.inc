@@ -82,6 +82,13 @@ begin
   Result := FVisible and not (FCoolBar.Vertical and FHorizontalOnly);
 end;
 
+procedure TCoolBand.ResetControlProps;
+begin
+  FControl.AnchorSide[akLeft].Control := Nil;
+  FControl.BorderSpacing.Left := 0;
+  FControl.Left := ControlPosLeft;
+end;
+
 procedure TCoolBand.SetBorderStyle(aValue: TBorderStyle);
 begin
   if FBorderStyle = aValue then Exit;
@@ -172,9 +179,9 @@ begin
   end;
   if Assigned(FControl) then
   begin
-    DebugLn('TCoolBand.UpdControl');
+    //DebugLn('TCoolBand.UpdControl');
     // Calculate left positions and anchoring for text label and control
-    FControl.Align:=alNone;
+    FControl.Align := alNone;
     FControl.Parent := FCoolBar;
     FControl.FreeNotification(FCoolBar);
     FControl.Top := FTop;
@@ -184,11 +191,8 @@ begin
       FControl.AnchorSide[akLeft].Side := asrRight;
       FControl.BorderSpacing.Left := 7;
     end
-    else begin
-      FControl.AnchorSide[akLeft].Control := Nil;
-      FControl.BorderSpacing.Left := 0;
-      FControl.Left := ControlPosLeft;
-    end;
+    else
+      ResetControlProps;
     // Make sure other Anchors a Nil
     FControl.AnchorSide[akRight].Control := Nil;
     FControl.AnchorSide[akBottom].Control := Nil;
@@ -202,11 +206,15 @@ var
   Band: TCoolBand;
 begin
   if FControl = aValue then Exit;
-  DebugLn('TCoolBand.SetControl');
   if Assigned(aValue) then begin
     Band := TCoolBands(Collection).FindBand(aValue);
-    if Assigned(Band) and (Band <> Self) then
-      Band.SetControl(nil);
+    if Assigned(Band) and (Band <> Self) then begin
+      DebugLn(['TCoolBand.SetControl, removing old, FTop=', Band.FTop,
+        ', FControl.Name=', Band.FControl.Name, ', FControl.ClassName=', Band.FControl.ClassName]);
+      Band.ResetControlProps;
+      Band.SetControl(nil);        // Remove old association
+    end;
+    DebugLn(['TCoolBand.SetControl, adding new, aValue.Name=', aValue.Name, ', aValue.ClassName=', aValue.ClassName]);
   end;
   FControl := aValue;
   Changed(True);
@@ -249,7 +257,7 @@ begin
   end
   else begin
     if Assigned(FTextLabel) then
-      FTextLabel.Free;
+      FreeAndNil(FTextLabel);
   end;
   Changed(True);
 end;
@@ -332,17 +340,7 @@ begin
   inherited Update(aItem);
   if FCoolBar = Nil then Exit;
   if csDestroying in FCoolBar.ComponentState then Exit;
-  // Calculate left positions and anchoring for text and control
-  if Assigned(aItem) then begin          // For defined item only
-    DebugLn(['TCoolBands.Update, Item Index', TCoolBand(aItem).Index]);
-    TCoolBand(aItem).UpdControl;
-  end
-  else begin                             // For all items
-    DebugLn('TCoolBands.Update, Item=Nil');
-    for i := 0 to Count-1 do
-      Items[i].UpdControl;
-  end;
-  CalcTops;
+  UpdControls;    // Calculate control positions
 end;
 
 procedure TCoolBands.Notify(aItem: TCollectionItem; aAction: TCollectionNotification);
@@ -374,27 +372,31 @@ begin
   Result := nil;
   for i := 0 to Count-1 do
   begin
-    if GetItem(i).FControl = AControl then begin
+    if GetItem(i).FControl = AControl then
+    begin
       Result := GetItem(i);
       Exit;
     end;
   end;
 end;
 
-procedure TCoolBands.CalcTops;
-// Calculate Top positions for controls. The value is cumulative and a loop must be used.
+procedure TCoolBands.UpdControls;
 var
   i, hh, yy: Integer;
+  Band: TCoolBand;
 begin
   yy := 3;
   for i := 0 to Count-1 do
   begin
-    hh := Items[i].Height;
-    Assert(Assigned(FCoolBar), 'TCoolBands.CalcTops: FCoolBar is not assigned');
+    Band := Items[i];
+    hh := Band.Height;
     if FCoolBar.BandBorderStyle = bsSingle then
       Inc(hh, 2);
-    Items[i].FTop := yy;
-    //DebugLn(['TCoolBands.CalcTops, FTop=', Items[i].FTop]);
+    Band.FTop := yy;
+    Band.UpdControl;   // Set control's location
+    //if Assigned(Band.FControl) then
+    //  DebugLn(['TCoolBands.UpdControls, FTop=', Band.FTop,
+    //    ', FControl.Name=', Band.FControl.Name, ', FControl.ClassName=', Band.FControl.ClassName]);
     Inc(yy, hh+3);
   end;
 end;
@@ -487,6 +489,12 @@ begin
   Invalidate;
 end;
 
+procedure TCustomCoolBar.AlignControls(aControl: TControl; var aRect: TRect);
+begin
+  FBands.UpdControls;
+  inherited AlignControls(aControl, aRect);
+end;
+
 procedure TCustomCoolBar.Notification(AComponent: TComponent; Operation: TOperation);
 var
   Band: TCoolBand;
@@ -516,6 +524,7 @@ end;
 procedure TCustomCoolBar.Loaded;
 begin
   inherited Loaded;
+  DebugLn('TCoolBar.Loaded');
   FBands.Update(Nil);
 end;
 
@@ -524,7 +533,6 @@ var
   i, BottomY: Integer;
 begin
   inherited Paint;
-  FBands.CalcTops;
   for i := 0 to FBands.Count-1 do
   begin
     BottomY := FBands[i].FTop + FBands[i].Height + 1;

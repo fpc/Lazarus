@@ -70,8 +70,7 @@ begin
     Result.Bottom := FVertScrollBar.Range;
 end;
 
-procedure TScrollingWinControl.AlignControls(AControl: TControl;
-  var ARect: TRect);
+procedure TScrollingWinControl.AlignControls(AControl: TControl; var ARect: TRect);
 begin
   if AutoScroll then
   begin
