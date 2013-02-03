@@ -31,7 +31,7 @@ interface
 
 uses
   types, math, contnrs, Classes, SysUtils, FPCanvas, FPimage,
-  LazLogger, AvgLvlTree, ComCtrls, Controls, Graphics, LCLType;
+  LazLogger, AvgLvlTree, ComCtrls, Controls, Graphics, LCLType, Forms;
 
 type
   TCodyCtrlPalette = array of TFPColor;
@@ -335,8 +335,7 @@ type
     property Nodes[Index: integer]: TLvlGraphNode read GetNodes; default;
     function IndexOf(Node: TLvlGraphNode): integer;
     function Count: integer;
-    function GetTotalInWeight: single;
-    function GetTotalOutWeight: single;
+    function GetTotalInOutWeights: single; // sum of all nodes Max(InWeight,OutWeight)
     property Index: integer read FIndex;
     property Graph: TLvlGraph read FGraph;
     property DrawPosition: integer read FDrawPosition write SetDrawPosition;
@@ -391,7 +390,8 @@ type
     property LevelClass: TLvlGraphLevelClass read FLevelClass;
 
     procedure CreateTopologicalLevels; // create levels from edges
-    procedure SetAllNodeDrawSizes(PixelPerWeight: single = 1.0);
+    procedure ScaleNodeDrawSizes(NodeGap, HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer);
+    procedure SetAllNodeDrawSizes(PixelPerWeight: single = 1.0; MinWeight: single = 0.0);
     procedure MarkBackEdges;
     procedure MinimizeCrossings; // set all Node.Position to minimize crossings
     procedure MinimizeOverlappings(Gap: integer = 1; aLevel: integer = -1); // set all Node.Position to minimize overlappings
@@ -430,8 +430,7 @@ type
     destructor Destroy; override;
     procedure EraseBackground({%H-}DC: HDC); override;
     property Graph: TLvlGraph read FGraph;
-    procedure AutoLayout(RndColors: boolean = true; MinPixelPerWeight: single = 1.0;
-      MaxPixelPerWeight: single = 30.0; NodeGap: integer = 1); virtual;
+    procedure AutoLayout(RndColors: boolean = true; NodeGap: integer = 1); virtual;
     procedure Invalidate; override;
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -692,22 +691,16 @@ begin
   Result:=fNodes.Count;
 end;
 
-function TLvlGraphLevel.GetTotalInWeight: single;
+function TLvlGraphLevel.GetTotalInOutWeights: single;
 var
   i: Integer;
+  Node: TLvlGraphNode;
 begin
   Result:=0;
-  for i:=0 to Count-1 do
-    Result+=Nodes[i].InWeight;
-end;
-
-function TLvlGraphLevel.GetTotalOutWeight: single;
-var
-  i: Integer;
-begin
-  Result:=0;
-  for i:=0 to Count-1 do
-    Result+=Nodes[i].OutWeight;
+  for i:=0 to Count-1 do begin
+    Node:=Nodes[i];
+    Result+=Max(Node.InWeight,Node.OutWeight);
+  end;
 end;
 
 { TCustomLvlGraphControl }
@@ -787,7 +780,7 @@ begin
     Level:=Graph.Levels[i];
     for j:=0 to Level.Count-1 do begin
       Node:=Level.Nodes[j];
-      debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' ',dbgs(FPColorToTColor(Node.Color)),' Level.DrawPosition=',Level.DrawPosition,' Node.DrawPosition=',Node.DrawPosition]);
+      debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' ',dbgs(FPColorToTColor(Node.Color)),' Level.DrawPosition=',Level.DrawPosition,' Node.DrawPosition=',Node.DrawPosition,' ',Node.DrawPositionEnd]);
       Canvas.Brush.Color:=FPColorToTColor(Node.Color);
       Canvas.Rectangle(Level.DrawPosition,Node.DrawPosition,
         Level.DrawPosition+NodeWidth,Node.DrawPositionEnd);
@@ -816,26 +809,28 @@ begin
   // Paint paints all, no need to erase background
 end;
 
-procedure TCustomLvlGraphControl.AutoLayout(RndColors: boolean;
-  MinPixelPerWeight: single; MaxPixelPerWeight: single; NodeGap: integer);
+procedure TCustomLvlGraphControl.AutoLayout(RndColors: boolean; NodeGap: integer
+  );
 { Min/MaxPixelPerWeight: used to scale Node.DrawSize depending on weight of
                          incoming and outgoing edges
   NodeGap: space between nodes
 }
 var
   i: Integer;
-  Level: TLvlGraphLevel;
-  LvlWeight: Single;
   HeaderHeight: integer;
-  DrawHeight: Integer;
   Palette: TCodyCtrlPalette;
+  TxtH: LongInt;
 begin
   debugln(['TCustomLvlGraphControl.AutoLayout ',DbgSName(Self),' ClientRect=',dbgs(ClientRect)]);
   Exclude(FFlags,lgcNeedAutoLayout);
   BeginUpdate;
   try
+    if HandleAllocated then
+      TxtH:=Canvas.TextHeight('M')
+    else
+      TxtH:=Max(10,abs(Font.Height));
     if Caption<>'' then begin
-      HeaderHeight:=round(1.5*abs(Font.Height));
+      HeaderHeight:=round(1.5*TxtH);
     end else
       HeaderHeight:=0;
 
@@ -843,27 +838,15 @@ begin
     Graph.CreateTopologicalLevels;
 
     // Level DrawPosition
-    for i:=0 to Graph.LevelCount-1 do begin
-      Level:=Graph.Levels[i];
-      Level.DrawPosition:=i*(ClientWidth div Graph.LevelCount)+NodeGap;
-      debugln(['TCustomLvlGraphControl.AutoLayout ',i,' ',ClientWidth div Graph.LevelCount]);
-    end;
+    for i:=0 to Graph.LevelCount-1 do
+      Graph.Levels[i].DrawPosition:=i*(ClientWidth div Graph.LevelCount)+NodeGap;
 
-    // set Nodes.DrawSize
-    // Use for each Node the maximum of InSize and OutSize, which is the weight
-    // of incoming and outgoing edges.
-    // Consider NodeGap
-    DrawHeight:=ClientHeight-HeaderHeight;
-    for i:=0 to Graph.LevelCount-1 do begin
-      Level:=Graph.Levels[i];
-      LvlWeight:=Max(Level.GetTotalInWeight,Level.GetTotalOutWeight);
-      if LvlWeight<0.001 then LvlWeight:=0.001;
-      MaxPixelPerWeight:=Min(MaxPixelPerWeight,
-                          single(DrawHeight-(Level.Count-1)*NodeGap)/LvlWeight);
-      MaxPixelPerWeight:=Max(MinPixelPerWeight,MaxPixelPerWeight);
-    end;
-    Graph.SetAllNodeDrawSizes(MaxPixelPerWeight);
+    // scale Nodes.DrawSize
+    // Preferably the smallest node should be the size of the text
+    // Preferably the largest level should fit without needing a scrollbar
+    Graph.ScaleNodeDrawSizes(NodeGap,Screen.Height*2,1,ClientHeight-HeaderHeight,TxtH);
 
+    // sort nodes within levels to avoid crossings
     Graph.MinimizeCrossings;
 
     // position nodes without overlapping
@@ -1206,14 +1189,99 @@ begin
   {$ENDIF}
 end;
 
-procedure TLvlGraph.SetAllNodeDrawSizes(PixelPerWeight: single);
+procedure TLvlGraph.ScaleNodeDrawSizes(NodeGap, HardMaxTotal, HardMinOneNode,
+  SoftMaxTotal, SoftMinOneNode: integer);
+{ NodeGap: minimum space between nodes
+  HardMaxTotal: maximum size of largest level
+  HardMinOneNode: minimum size of a node
+  SoftMaxTotal: preferred maximum size of the largest level, total can be bigger
+                to achieve HardMinOneNode
+  SoftMinOneNode: preferred minimum size of a node, can be smaller to achieve
+                  SoftMaxTotal
+  Order of precedence: HardMinOneNode, SoftMaxTotal, SoftMinOneNode
+}
+var
+  SmallestWeight: Single;
+  i: Integer;
+  Node: TLvlGraphNode;
+  j: Integer;
+  Edge: TLvlGraphEdge;
+  Level: TLvlGraphLevel;
+  LvlWeight: Single;
+  MinPixelPerWeight, PrefMinPixelPerWeight: single;
+  DrawHeight: integer;
+  PixelPerWeight, MaxPixelPerWeight, PrefMaxPixelPerWeight: single;
+begin
+  debugln(['TLvlGraph.ScaleNodeDrawSizes NodeGap=',NodeGap,
+    ' HardMaxTotal=',HardMaxTotal,' HardMinOneNode=',HardMinOneNode,
+    ' SoftMaxTotal=',SoftMaxTotal,' SoftMinOneNode=',SoftMinOneNode]);
+  // sanitize input
+  HardMinOneNode:=Max(0,HardMinOneNode);
+  SoftMinOneNode:=Max(SoftMinOneNode,HardMinOneNode);
+  HardMaxTotal:=Max(1,HardMaxTotal);
+  SoftMaxTotal:=Min(Max(1,SoftMaxTotal),HardMaxTotal);
+
+  SmallestWeight:=-1.0;
+  for i:=0 to NodeCount-1 do begin
+    Node:=Nodes[i];
+    for j:=0 to Node.OutEdgeCount-1 do begin
+      Edge:=Node.OutEdges[j];
+      if Edge.Weight<=0.0 then continue;
+      if (SmallestWeight<0) or (SmallestWeight>Edge.Weight) then
+        SmallestWeight:=Edge.Weight;
+    end;
+  end;
+  if SmallestWeight<0 then SmallestWeight:=1.0;
+  if SmallestWeight>0 then begin
+    MinPixelPerWeight:=single(HardMinOneNode)/SmallestWeight;
+    PrefMinPixelPerWeight:=single(SoftMinOneNode)/SmallestWeight;
+  end else begin
+    MinPixelPerWeight:=single(HardMinOneNode);
+    PrefMinPixelPerWeight:=single(SoftMinOneNode);
+  end;
+  debugln(['TLvlGraph.ScaleNodeDrawSizes SmallestWeight=',SmallestWeight,
+    ' MinPixelPerWeight=',MinPixelPerWeight,
+    ' PrefMinPixelPerWeight=',PrefMinPixelPerWeight]);
+
+  MaxPixelPerWeight:=0.0;
+  PrefMaxPixelPerWeight:=0.0;
+  for i:=0 to LevelCount-1 do begin
+    Level:=Levels[i];
+    // LvlWeight = how much weight to draw
+    LvlWeight:=Level.GetTotalInOutWeights;
+    if LvlWeight=0.0 then continue;
+    // DrawHeight - how much pixel left to draw the weight
+    DrawHeight:=Max(1,HardMaxTotal-(Level.Count-1)*NodeGap);
+    PixelPerWeight:=single(DrawHeight)/LvlWeight;
+    if (MaxPixelPerWeight=0.0) or (MaxPixelPerWeight>PixelPerWeight) then
+      MaxPixelPerWeight:=PixelPerWeight;
+    DrawHeight:=Max(1,SoftMaxTotal-(Level.Count-1)*NodeGap);
+    PixelPerWeight:=single(DrawHeight)/LvlWeight;
+    if (PrefMaxPixelPerWeight=0.0) or (PrefMaxPixelPerWeight>PixelPerWeight) then
+      PrefMaxPixelPerWeight:=PixelPerWeight;
+  end;
+  debugln(['TLvlGraph.ScaleNodeDrawSizes MaxPixelPerWeight=',MaxPixelPerWeight,' PrefMaxPixelPerWeight=',PrefMaxPixelPerWeight]);
+
+  PixelPerWeight:=PrefMinPixelPerWeight;
+  if PrefMaxPixelPerWeight>0.0 then
+    PixelPerWeight:=Min(PixelPerWeight,PrefMaxPixelPerWeight);
+  PixelPerWeight:=Max(PixelPerWeight,MinPixelPerWeight);
+  if MaxPixelPerWeight>0.0 then
+    PixelPerWeight:=Min(PixelPerWeight,MaxPixelPerWeight);
+
+  debugln(['TLvlGraph.ScaleNodeDrawSizes PixelPerWeight=',PixelPerWeight]);
+  SetAllNodeDrawSizes(PixelPerWeight,SmallestWeight);
+end;
+
+procedure TLvlGraph.SetAllNodeDrawSizes(PixelPerWeight: single;
+  MinWeight: single);
 var
   i: Integer;
   Node: TLvlGraphNode;
 begin
   for i:=0 to NodeCount-1 do begin
     Node:=Nodes[i];
-    Node.DrawSize:=round(Max(Node.InWeight,Node.OutWeight)*PixelPerWeight+0.5);
+    Node.DrawSize:=round(Max(MinWeight,Max(Node.InWeight,Node.OutWeight))*PixelPerWeight+0.5);
   end;
 end;
 
