@@ -239,11 +239,12 @@ type
     FColor: TFPColor;
     FGraph: TLvlGraph;
     FInEdges: TFPList; // list of TLvlGraphEdge
-    FInSize: integer;
+    FDrawSize: integer;
+    FInSize: single;
     FLevel: TLvlGraphLevel;
     FOutEdges: TFPList; // list of TLvlGraphEdge
-    FOutSize: integer;
-    FPosition: integer;
+    FDrawPosition: integer;
+    FOutSize: single;
     function GetInEdges(Index: integer): TLvlGraphEdge;
     function GetOutEdges(Index: integer): TLvlGraphEdge;
     procedure SetCaption(AValue: string);
@@ -268,12 +269,13 @@ type
     function FindOutEdge(Target: TLvlGraphNode): TLvlGraphEdge;
     function OutEdgeCount: integer;
     property OutEdges[Index: integer]: TLvlGraphEdge read GetOutEdges;
-    property Position: integer read FPosition write FPosition; // position in a level
-    function Center: integer;
-    function PositionEnd: integer;// = Position+Max(InSize,OutSize)
-    property InSize: integer read FInSize default 1;
-    property OutSize: integer read FOutSize default 1;
+    property DrawPosition: integer read FDrawPosition write FDrawPosition; // position in a level
+    function DrawCenter: integer;
+    function DrawPositionEnd: integer;// = DrawPosition+Max(InSize,OutSize)
+    property DrawSize: integer read FDrawSize default 1;
     property Level: TLvlGraphLevel read FLevel write SetLevel;
+    property InSize: single read FInSize; // total weight of InEdges
+    property OutSize: single read FOutSize; // total weight of OutEdges
   end;
 
   { TLvlGraphEdge }
@@ -303,15 +305,19 @@ type
     FGraph: TLvlGraph;
     FIndex: integer;
     fNodes: TFPList;
+    FDrawPosition: integer;
     function GetNodes(Index: integer): TLvlGraphNode;
+    procedure SetDrawPosition(AValue: integer);
   public
     constructor Create(TheGraph: TLvlGraph; TheIndex: integer);
     destructor Destroy; override;
+    procedure Invalidate;
     property Nodes[Index: integer]: TLvlGraphNode read GetNodes; default;
     function IndexOf(Node: TLvlGraphNode): integer;
     function Count: integer;
     property Index: integer read FIndex;
     property Graph: TLvlGraph read FGraph;
+    property DrawPosition: integer read FDrawPosition write SetDrawPosition;
   end;
 
   { TLvlGraph }
@@ -493,8 +499,8 @@ var
   p1: Integer;
   p2: Integer;
 begin
-  p1:=LNode1.Center;
-  p2:=LNode2.Center;
+  p1:=LNode1.DrawCenter;
+  p2:=LNode2.DrawCenter;
   if p1<p2 then
     Result:=1
   else if p1>p2 then
@@ -508,6 +514,13 @@ end;
 function TLvlGraphLevel.GetNodes(Index: integer): TLvlGraphNode;
 begin
   Result:=TLvlGraphNode(fNodes[Index]);
+end;
+
+procedure TLvlGraphLevel.SetDrawPosition(AValue: integer);
+begin
+  if FDrawPosition=AValue then Exit;
+  FDrawPosition:=AValue;
+  Invalidate;
 end;
 
 constructor TLvlGraphLevel.Create(TheGraph: TLvlGraph; TheIndex: integer);
@@ -527,6 +540,12 @@ begin
   Graph.InternalRemoveLevel(Self);
   FreeAndNil(fNodes);
   inherited Destroy;
+end;
+
+procedure TLvlGraphLevel.Invalidate;
+begin
+  if Graph<>nil then
+    Graph.Invalidate;
 end;
 
 function TLvlGraphLevel.IndexOf(Node: TLvlGraphNode): integer;
@@ -915,7 +934,7 @@ begin
         Node:=TLvlGraphNode(AVLNode.Data);
         Last:=Node;
         if (Last<>nil) then
-          Node.Position:=Max(Node.Position,Last.PositionEnd+Gap);
+          Node.DrawPosition:=Max(Node.DrawPosition,Last.DrawPositionEnd+Gap);
         AVLNode:=Tree.FindSuccessor(AVLNode);
       end;
     finally
@@ -1004,8 +1023,13 @@ end;
 { TLvlGraphEdge }
 
 procedure TLvlGraphEdge.SetWeight(AValue: single);
+var
+  Diff: single;
 begin
   if FWeight=AValue then Exit;
+  Diff:=AValue-FWeight;
+  Source.FOutSize+=Diff;
+  Target.FInSize+=Diff;
   FWeight:=AValue;
   Source.Invalidate;
 end;
@@ -1101,8 +1125,7 @@ begin
   FCaption:=TheCaption;
   FInEdges:=TFPList.Create;
   FOutEdges:=TFPList.Create;
-  FInSize:=1;
-  FOutSize:=1;
+  FDrawSize:=1;
   Level:=TheLevel;
 end;
 
@@ -1167,14 +1190,14 @@ begin
   Result:=FOutEdges.Count;
 end;
 
-function TLvlGraphNode.Center: integer;
+function TLvlGraphNode.DrawCenter: integer;
 begin
-  Result:=Position+(Max(InSize,OutSize) div 2);
+  Result:=DrawPosition+(DrawSize div 2);
 end;
 
-function TLvlGraphNode.PositionEnd: integer;
+function TLvlGraphNode.DrawPositionEnd: integer;
 begin
-  Result:=Position+Max(InSize,OutSize);
+  Result:=DrawPosition+DrawSize;
 end;
 
 { TCodyTreeView }
