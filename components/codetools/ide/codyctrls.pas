@@ -34,6 +34,9 @@ uses
   LazLogger, AvgLvlTree, ComCtrls, Controls, Graphics, LCLType;
 
 type
+  TCodyCtrlPalette = array of TFPColor;
+
+type
 
   { TCodyTreeView }
 
@@ -227,6 +230,10 @@ type
     property OnUTF8KeyPress;
   end;
 
+const
+  DefaultLvlGraphNodeWith = 10;
+
+type
   TLvlGraph = class;
   TLvlGraphEdge = class;
   TLvlGraphLevel = class;
@@ -374,6 +381,7 @@ type
     procedure MarkBackEdges;
     procedure MinimizeCrossings; // set all Node.Position to minimize crossings
     procedure MinimizeOverlappings(Gap: integer = 1; aLevel: integer = -1); // set all Node.Position to minimize overlappings
+    procedure SetColors(Palette: TCodyCtrlPalette);
 
     // debugging
     procedure WriteDebugReport(Msg: string);
@@ -391,8 +399,10 @@ type
     procedure FGraphInvalidate(Sender: TObject);
   private
     FGraph: TLvlGraph;
+    FNodeWidth: integer;
     fUpdateLock: integer;
     FFlags: TLvlGraphControlFlags;
+    procedure SetNodeWidth(AValue: integer);
   protected
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure Paint; override;
@@ -401,11 +411,12 @@ type
     destructor Destroy; override;
     procedure EraseBackground({%H-}DC: HDC); override;
     property Graph: TLvlGraph read FGraph;
-    procedure AutoLayout(MinPixelPerWeight: single = 1.0;
+    procedure AutoLayout(RndColors: boolean = true; MinPixelPerWeight: single = 1.0;
       MaxPixelPerWeight: single = 30.0; NodeGap: integer = 1); virtual;
     procedure Invalidate; override;
     procedure BeginUpdate;
     procedure EndUpdate;
+    property NodeWidth: integer read FNodeWidth write SetNodeWidth default DefaultLvlGraphNodeWith;
   end;
 
   { TLvlGraphControl }
@@ -460,6 +471,9 @@ procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2: integer;
   InnerSize: single; StartAngle16, EndAngle16: integer); overload;
 procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2,
   InnerSize, StartAngle, EndAngle: single); overload;
+
+function GetCCPaletteRGB(Cnt: integer; Shuffled: boolean): TCodyCtrlPalette;
+procedure ShuffleCCPalette(Palette: TCodyCtrlPalette);
 
 function CompareLGNodesByCenterPos(Node1, Node2: Pointer): integer;
 
@@ -526,6 +540,64 @@ begin
   end;
   Canvas.Polygon(Points);
   SetLength(Points,0);
+end;
+
+function GetCCPaletteRGB(Cnt: integer; Shuffled: boolean): TCodyCtrlPalette;
+type
+  TChannel = (cRed, cGreen, cBlue);
+const
+  ChannelMax = alphaOpaque;
+var
+  Steps, Step, Start, Value: array[TChannel] of integer;
+
+  function EnoughColors: boolean;
+  var
+    PotCnt: Integer;
+    ch: TChannel;
+  begin
+    PotCnt:=1;
+    for ch:=Low(TChannel) to High(TChannel) do
+      PotCnt*=Steps[ch];
+    Result:=PotCnt>=Cnt;
+  end;
+
+var
+  ch: TChannel;
+  i: Integer;
+begin
+  SetLength(Result,Cnt);
+  if Cnt=0 then exit;
+  for ch:=Low(TChannel) to High(TChannel) do
+    Steps[ch]:=1;
+  while not EnoughColors do
+    for ch:=Low(TChannel) to High(TChannel) do begin
+      if EnoughColors then break;
+      inc(Steps[ch]);
+    end;
+  for ch:=Low(TChannel) to High(TChannel) do begin
+    Step[ch]:=ChannelMax div Steps[ch];
+    Start[ch]:=ChannelMax-1-Step[ch]*(Steps[ch]-1);
+    Value[ch]:=Start[ch];
+  end;
+  for i:=0 to Cnt-1 do begin
+    Result[i].red:=Value[cRed];
+    Result[i].green:=Value[cGreen];
+    Result[i].blue:=Value[cBlue];
+    ch:=Low(TChannel);
+    repeat
+      Value[ch]+=Step[ch];
+      if Value[ch]<ChannelMax then break;
+      Value[ch]:=Start[ch];
+      inc(ch);
+    until false;
+  end;
+  if Shuffled then
+    ShuffleCCPalette(Result);
+end;
+
+procedure ShuffleCCPalette(Palette: TCodyCtrlPalette);
+begin
+
 end;
 
 function CompareLGNodesByCenterPos(Node1, Node2: Pointer): integer;
@@ -621,6 +693,13 @@ begin
   Invalidate;
 end;
 
+procedure TCustomLvlGraphControl.SetNodeWidth(AValue: integer);
+begin
+  if FNodeWidth=AValue then Exit;
+  FNodeWidth:=AValue;
+  Invalidate;
+end;
+
 procedure TCustomLvlGraphControl.DoSetBounds(ALeft, ATop, AWidth,
   AHeight: integer);
 begin
@@ -628,6 +707,13 @@ begin
 end;
 
 procedure TCustomLvlGraphControl.Paint;
+var
+  w: Integer;
+  TxtH: integer;
+  i: Integer;
+  Level: TLvlGraphLevel;
+  j: Integer;
+  Node: TLvlGraphNode;
 begin
   inherited Paint;
   // background
@@ -635,7 +721,24 @@ begin
   Canvas.Brush.Color:=Color;
   Canvas.FillRect(ClientRect);
 
+  TxtH:=Abs(Canvas.Font.Height);
 
+  // header
+  if Caption<>'' then begin
+    w:=Canvas.TextWidth(Caption);
+    Canvas.TextOut((ClientWidth-w) div 2,round(0.25*TxtH),Caption);
+  end;
+
+  for i:=0 to Graph.LevelCount-1 do begin
+    Level:=Graph.Levels[i];
+    for j:=0 to Level.Count-1 do begin
+      Node:=Level.Nodes[j];
+      debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' ',dbgs(FPColorToTColor(Node.Color)),' Level.DrawPosition=',Level.DrawPosition,' Node.DrawPosition=',Node.DrawPosition]);
+      Canvas.Brush.Color:=FPColorToTColor(Node.Color);
+      Canvas.Rectangle(Level.DrawPosition,Node.DrawPosition,
+        Level.DrawPosition+NodeWidth,Node.DrawPositionEnd);
+    end;
+  end;
 end;
 
 constructor TCustomLvlGraphControl.Create(AOwner: TComponent);
@@ -643,6 +746,7 @@ begin
   inherited Create(AOwner);
   FGraph:=TLvlGraph.Create;
   FGraph.OnInvalidate:=@FGraphInvalidate;
+  FNodeWidth:=DefaultLvlGraphNodeWith;
 end;
 
 destructor TCustomLvlGraphControl.Destroy;
@@ -656,8 +760,8 @@ begin
   // Paint paints all, no need to erase background
 end;
 
-procedure TCustomLvlGraphControl.AutoLayout(MinPixelPerWeight: single;
-  MaxPixelPerWeight: single; NodeGap: integer);
+procedure TCustomLvlGraphControl.AutoLayout(RndColors: boolean;
+  MinPixelPerWeight: single; MaxPixelPerWeight: single; NodeGap: integer);
 { Min/MaxPixelPerWeight: used to scale Node.DrawSize depending on weight of
                          incoming and outgoing edges
   NodeGap: space between nodes
@@ -668,13 +772,24 @@ var
   LvlWeight: Single;
   HeaderHeight: integer;
   DrawHeight: Integer;
+  Palette: TCodyCtrlPalette;
 begin
   BeginUpdate;
   try
-    HeaderHeight:=round(1.5*abs(Font.Height));
+    if Caption<>'' then begin
+      HeaderHeight:=round(1.5*abs(Font.Height));
+    end else
+      HeaderHeight:=0;
 
     // distribute the nodes on levels and marking back edges
     Graph.CreateTopologicalLevels;
+
+    // Level DrawPosition
+    for i:=0 to Graph.LevelCount-1 do begin
+      Level:=Graph.Levels[i];
+      Level.DrawPosition:=i*(ClientWidth div Graph.LevelCount)+NodeGap;
+      debugln(['TCustomLvlGraphControl.AutoLayout ',i,' ',ClientWidth div Graph.LevelCount]);
+    end;
 
     // set Nodes.DrawSize
     // Use for each Node the maximum of InSize and OutSize, which is the weight
@@ -695,6 +810,12 @@ begin
 
     // position nodes without overlapping
     Graph.MinimizeOverlappings(NodeGap);
+
+    if RndColors then begin
+      Palette:=GetCCPaletteRGB(Graph.NodeCount,true);
+      Graph.SetColors(Palette);
+      SetLength(Palette,0);
+    end;
   finally
     EndUpdate;
   end;
@@ -1079,6 +1200,14 @@ begin
       Tree.Free;
     end;
   end;
+end;
+
+procedure TLvlGraph.SetColors(Palette: TCodyCtrlPalette);
+var
+  i: Integer;
+begin
+  for i:=0 to NodeCount-1 do
+    Nodes[i].Color:=Palette[i];
 end;
 
 procedure TLvlGraph.WriteDebugReport(Msg: string);
