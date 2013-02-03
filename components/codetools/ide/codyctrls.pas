@@ -234,6 +234,15 @@ const
   DefaultLvlGraphNodeWith = 10;
 
 type
+  TLvlGraphCtrlOption = (
+    lgoAutoLayout
+    );
+  TLvlGraphCtrlOptions = set of TLvlGraphCtrlOption;
+  TOnLvlGraphStructureChanged = procedure(Sender, Element: TObject; Operation: TOperation) of object;
+
+const
+  DefaultLvlGraphCtrlOptions = [lgoAutoLayout];
+type
   TLvlGraph = class;
   TLvlGraphEdge = class;
   TLvlGraphLevel = class;
@@ -319,6 +328,7 @@ type
     function GetNodes(Index: integer): TLvlGraphNode;
     procedure SetDrawPosition(AValue: integer);
   public
+    Data: Pointer; // free for user data
     constructor Create(TheGraph: TLvlGraph; TheIndex: integer);
     destructor Destroy; override;
     procedure Invalidate;
@@ -343,10 +353,12 @@ type
     FOnInvalidate: TNotifyEvent;
     FNodes: TFPList; // list of TLvlGraphNode
     fLevels: TFPList;
+    FOnStructureChanged: TOnLvlGraphStructureChanged;
     function GetLevelCount: integer;
     function GetLevels(Index: integer): TLvlGraphLevel;
     function GetNodes(Index: integer): TLvlGraphNode;
     procedure SetLevelCount(AValue: integer);
+    procedure InternalRemoveNode(Node: TLvlGraphNode);
     procedure InternalRemoveLevel(Lvl: TLvlGraphLevel);
   protected
   public
@@ -356,7 +368,9 @@ type
     procedure Clear;
 
     procedure Invalidate;
+    procedure StructureChanged(Element: TObject; Operation: TOperation);
     property OnInvalidate: TNotifyEvent read FOnInvalidate write FOnInvalidate;
+    property OnStructureChanged: TOnLvlGraphStructureChanged read FOnStructureChanged write FOnStructureChanged;// node, edge, level was added/deleted
 
     // nodes
     function NodeCount: integer;
@@ -389,21 +403,26 @@ type
   end;
 
   TLvlGraphControlFlag =  (
-    lgcNeedInvalidate
+    lgcNeedInvalidate,
+    lgcNeedAutoLayout,
+    lgcIgnoreGraphInvalidate
     );
   TLvlGraphControlFlags = set of TLvlGraphControlFlag;
 
   { TCustomLvlGraphControl }
 
   TCustomLvlGraphControl = class(TCustomControl)
-    procedure FGraphInvalidate(Sender: TObject);
   private
     FGraph: TLvlGraph;
     FNodeWidth: integer;
+    FOptions: TLvlGraphCtrlOptions;
     fUpdateLock: integer;
     FFlags: TLvlGraphControlFlags;
     procedure SetNodeWidth(AValue: integer);
+    procedure SetOptions(AValue: TLvlGraphCtrlOptions);
   protected
+    procedure GraphInvalidate(Sender: TObject); virtual;
+    procedure GraphStructureChanged(Sender, Element: TObject; {%H-}Operation: TOperation); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure Paint; override;
   public
@@ -417,6 +436,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     property NodeWidth: integer read FNodeWidth write SetNodeWidth default DefaultLvlGraphNodeWith;
+    property Options: TLvlGraphCtrlOptions read FOptions write SetOptions default DefaultLvlGraphCtrlOptions;
   end;
 
   { TLvlGraphControl }
@@ -637,6 +657,8 @@ begin
   FGraph.fLevels.Add(Self);
   FIndex:=TheIndex;
   fNodes:=TFPList.Create;
+  if Graph<>nil then
+    Graph.StructureChanged(Self,opInsert);
 end;
 
 destructor TLvlGraphLevel.Destroy;
@@ -645,8 +667,10 @@ var
 begin
   for i:=0 to Count-1 do
     Nodes[i].OnLevelDestroy;
-  Graph.InternalRemoveLevel(Self);
+  if Count>0 then
+    raise Exception.Create('');
   FreeAndNil(fNodes);
+  Graph.InternalRemoveLevel(Self);
   inherited Destroy;
 end;
 
@@ -688,9 +712,21 @@ end;
 
 { TCustomLvlGraphControl }
 
-procedure TCustomLvlGraphControl.FGraphInvalidate(Sender: TObject);
+procedure TCustomLvlGraphControl.GraphInvalidate(Sender: TObject);
 begin
+  if lgcIgnoreGraphInvalidate in FFlags then exit;
   Invalidate;
+end;
+
+procedure TCustomLvlGraphControl.GraphStructureChanged(Sender,
+  Element: TObject; Operation: TOperation);
+begin
+  if ((Element is TLvlGraphNode)
+  or (Element is TLvlGraphEdge)) then begin
+    debugln(['TCustomLvlGraphControl.GraphStructureChanged ']);
+    if lgoAutoLayout in FOptions then
+      Include(FFlags,lgcNeedAutoLayout);
+  end;
 end;
 
 procedure TCustomLvlGraphControl.SetNodeWidth(AValue: integer);
@@ -698,6 +734,12 @@ begin
   if FNodeWidth=AValue then Exit;
   FNodeWidth:=AValue;
   Invalidate;
+end;
+
+procedure TCustomLvlGraphControl.SetOptions(AValue: TLvlGraphCtrlOptions);
+begin
+  if FOptions=AValue then Exit;
+  FOptions:=AValue;
 end;
 
 procedure TCustomLvlGraphControl.DoSetBounds(ALeft, ATop, AWidth,
@@ -715,7 +757,19 @@ var
   j: Integer;
   Node: TLvlGraphNode;
 begin
+  debugln(['TCustomLvlGraphControl.Paint ']);
   inherited Paint;
+
+  if (lgoAutoLayout in FOptions)
+  and (lgcNeedAutoLayout in FFlags) then begin
+    Include(FFlags,lgcIgnoreGraphInvalidate);
+    try
+      AutoLayout;
+    finally
+      Exclude(FFlags,lgcIgnoreGraphInvalidate);
+    end;
+  end;
+
   // background
   Canvas.Brush.Style:=bsSolid;
   Canvas.Brush.Color:=Color;
@@ -744,8 +798,10 @@ end;
 constructor TCustomLvlGraphControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FOptions:=DefaultLvlGraphCtrlOptions;
   FGraph:=TLvlGraph.Create;
-  FGraph.OnInvalidate:=@FGraphInvalidate;
+  FGraph.OnInvalidate:=@GraphInvalidate;
+  FGraph.OnStructureChanged:=@GraphStructureChanged;
   FNodeWidth:=DefaultLvlGraphNodeWith;
 end;
 
@@ -774,6 +830,8 @@ var
   DrawHeight: Integer;
   Palette: TCodyCtrlPalette;
 begin
+  debugln(['TCustomLvlGraphControl.AutoLayout ',DbgSName(Self),' ClientRect=',dbgs(ClientRect)]);
+  Exclude(FFlags,lgcNeedAutoLayout);
   BeginUpdate;
   try
     if Caption<>'' then begin
@@ -888,6 +946,13 @@ begin
     Levels[LevelCount-1].Free;
 end;
 
+procedure TLvlGraph.InternalRemoveNode(Node: TLvlGraphNode);
+begin
+  FNodes.Remove(Node);
+  Node.FGraph:=nil;
+  StructureChanged(Node,opRemove);
+end;
+
 function TLvlGraph.GetLevels(Index: integer): TLvlGraphLevel;
 begin
   Result:=TLvlGraphLevel(fLevels[Index]);
@@ -931,6 +996,12 @@ begin
     OnInvalidate(Self);
 end;
 
+procedure TLvlGraph.StructureChanged(Element: TObject; Operation: TOperation);
+begin
+  if Assigned(OnStructureChanged) then
+    OnStructureChanged(Self,Element,Operation);
+end;
+
 function TLvlGraph.NodeCount: integer;
 begin
   Result:=FNodes.Count;
@@ -950,6 +1021,7 @@ begin
       LevelCount:=1;
     Result:=FNodeClass.Create(Self,aCaption,Levels[0]);
     FNodes.Add(Result);
+    StructureChanged(Result,opInsert);
   end else
     Result:=nil;
 end;
@@ -972,8 +1044,10 @@ function TLvlGraph.GetEdge(Source, Target: TLvlGraphNode;
 begin
   Result:=Source.FindOutEdge(Target);
   if Result<>nil then exit;
-  if CreateIfNotExists then
+  if CreateIfNotExists then begin
     Result:=FEdgeClass.Create(Source,Target);
+    StructureChanged(Result,opInsert);
+  end;
 end;
 
 procedure TLvlGraph.InternalRemoveLevel(Lvl: TLvlGraphLevel);
@@ -986,6 +1060,7 @@ begin
   // update level Index
   for i:=Lvl.Index to LevelCount-1 do
     Levels[i].FIndex:=i;
+  StructureChanged(Lvl,opRemove);
 end;
 
 procedure TLvlGraph.CreateTopologicalLevels;
@@ -1312,11 +1387,16 @@ begin
 end;
 
 destructor TLvlGraphEdge.Destroy;
+var
+  OldGraph: TLvlGraph;
 begin
+  OldGraph:=Source.Graph;
   Source.FOutEdges.Remove(Self);
   Target.FInEdges.Remove(Self);
   FSource:=nil;
   FTarget:=nil;
+  if OldGraph<>nil then
+    OldGraph.StructureChanged(Self,opRemove);
   inherited Destroy;
 end;
 
@@ -1408,6 +1488,8 @@ destructor TLvlGraphNode.Destroy;
 begin
   Clear;
   UnbindLevel;
+  if Graph<>nil then
+    Graph.InternalRemoveNode(Self);
   inherited Destroy;
 end;
 
