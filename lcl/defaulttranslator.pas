@@ -330,7 +330,9 @@ begin
     for i := 0 to TComponent(AnInstance).ComponentCount-1 do
       begin
       StoreStackPath:=FStackPath;
-      FStackPath:=FStackPath+'.'+TComponent(AnInstance).Components[i].Name;
+      if TComponent(AnInstance).Components[i] is TCustomFrame then
+        UpdateTranslation(TComponent(AnInstance).Components[i]);
+      FStackPath:=StoreStackPath+'.'+TComponent(AnInstance).Components[i].Name;
       IntUpdateTranslation(TComponent(AnInstance).Components[i]);
       FStackPath:=StoreStackPath;
       end;
