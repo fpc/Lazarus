@@ -82,6 +82,55 @@ type
       read FStep write SetStep default DEF_FUNC_STEP;
   end;
 
+  TParametricCurveCalculateEvent = procedure (
+    const AT: Double; out AX, AY: Double) of object;
+
+  TParametricCurveSeries = class(TBasicFuncSeries)
+  strict private
+    FOnCalculate: TParametricCurveCalculateEvent;
+    FParamMax: Double;
+    FParamMaxStep: Double;
+    FParamMin: Double;
+    FPen: TChartPen;
+    FStep: TFuncSeriesStep;
+
+    function DoCalcIdentity(AT: Double): TDoublePoint;
+    function DoCalculate(AT: Double): TDoublePoint;
+    function ParamMaxIsStored: Boolean;
+    function ParamMaxStepIsStored: Boolean;
+    function ParamMinIsStored: Boolean;
+    procedure SetOnCalculate(AValue: TParametricCurveCalculateEvent);
+    procedure SetParamMax(AValue: Double);
+    procedure SetParamMaxStep(AValue: Double);
+    procedure SetParamMin(AValue: Double);
+    procedure SetPen(AValue: TChartPen);
+    procedure SetStep(AValue: TFuncSeriesStep);
+  protected
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
+
+  public
+    procedure Assign(ASource: TPersistent); override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure Draw(ADrawer: IChartDrawer); override;
+    function IsEmpty: Boolean; override;
+  published
+    property AxisIndexX;
+    property AxisIndexY;
+    property OnCalculate: TParametricCurveCalculateEvent
+      read FOnCalculate write SetOnCalculate;
+    property ParamMax: Double read FParamMax write SetParamMax
+      stored ParamMaxIsStored;
+    property ParamMaxStep: Double
+      read FParamMaxStep write SetParamMaxStep stored ParamMaxStepIsStored;
+    property ParamMin: Double
+      read FParamMin write SetParamMin stored ParamMinIsStored;
+    property Pen: TChartPen read FPen write SetPen;
+    property Step: TFuncSeriesStep
+      read FStep write SetStep default DEF_FUNC_STEP;
+  end;
+
   TSplineDegree = 1..100;
 
   { TBSplineSeries }
@@ -312,6 +361,10 @@ uses
   ipf, GraphType, IntfGraphics, Math, StrUtils, SysUtils,
   TAGeometry, TAGraph, TAMath;
 
+const
+  DEF_PARAM_MIN = 0.0;
+  DEF_PARAM_MAX = 1.0;
+
 type
   TFitSeriesRange = class(TChartRange)
   strict private
@@ -331,6 +384,8 @@ type
       AColor1, AColor2: TColor; AFramePen: TChartPen; const AText: String);
     procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
   end;
+
+  TParametricFunc = function (A: Double): TDoublePoint of object;
 
 function ParamsToEquation(
   AEquation: TFitEquation; const AParams: array of Double;
@@ -520,6 +575,154 @@ begin
 end;
 
 procedure TFuncSeries.SetStep(AValue: TFuncSeriesStep);
+begin
+  if FStep = AValue then exit;
+  FStep := AValue;
+  UpdateParentChart;
+end;
+
+{ TParametricCurveSeries }
+
+procedure TParametricCurveSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TFuncSeries then
+    with TFuncSeries(ASource) do begin
+      Self.FOnCalculate := FOnCalculate;
+      Self.FParamMax := FParamMax;
+      Self.FParamMin := FParamMin;
+      Self.Pen := FPen;
+      Self.FStep := FStep;
+    end;
+  inherited Assign(ASource);
+end;
+
+constructor TParametricCurveSeries.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FParamMin := DEF_PARAM_MIN;
+  FParamMax := DEF_PARAM_MAX;
+  FPen := TChartPen.Create;
+  FPen.OnChange := @StyleChanged;
+  FStep := DEF_FUNC_STEP;
+end;
+
+destructor TParametricCurveSeries.Destroy;
+begin
+  FreeAndNil(FPen);
+  inherited;
+end;
+
+function TParametricCurveSeries.DoCalcIdentity(AT: Double): TDoublePoint;
+begin
+  Result := DoublePoint(AT, AT);
+end;
+
+function TParametricCurveSeries.DoCalculate(AT: Double): TDoublePoint;
+begin
+  OnCalculate(AT, Result.X, Result.Y);
+end;
+
+procedure TParametricCurveSeries.Draw(ADrawer: IChartDrawer);
+var
+  calc: TParametricFunc;
+
+  function PointAt(AT: Double): TPoint;
+  begin
+    Result := ParentChart.GraphToImage(AxisToGraph(calc(AT)))
+  end;
+
+var
+  t, ts, ms: Double;
+  p, pp: TPoint;
+begin
+  if Assigned(OnCalculate) then
+    calc := @DoCalculate
+  else if csDesigning in ComponentState then
+    calc := @DoCalcIdentity
+  else
+    exit;
+  ADrawer.Pen := Pen;
+
+  t := ParamMin;
+  pp := PointAt(ParamMin);
+  ADrawer.MoveTo(pp);
+  ms := IfThen(ParamMaxStep > 0, ParamMaxStep, (ParamMax - ParamMin) / 4);
+  ts := ms;
+  while t < ParamMax do begin
+    p := PointAt(t + ts);
+    if PointDist(p, pp) > Sqr(Step) then
+      ts /= 2
+    else begin
+      ADrawer.LineTo(p);
+      pp := p;
+      t += ts;
+      ts := MinValue([ts * 2, ms, ParamMax - t]);
+    end;
+  end;
+end;
+
+procedure TParametricCurveSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  AItems.Add(TLegendItemLine.Create(Pen, LegendTextSingle));
+end;
+
+function TParametricCurveSeries.IsEmpty: Boolean;
+begin
+  Result := not Assigned(OnCalculate);
+end;
+
+function TParametricCurveSeries.ParamMaxIsStored: Boolean;
+begin
+  Result := ParamMax <> DEF_PARAM_MAX;
+end;
+
+function TParametricCurveSeries.ParamMaxStepIsStored: Boolean;
+begin
+  Result := ParamMaxStep > 0;
+end;
+
+function TParametricCurveSeries.ParamMinIsStored: Boolean;
+begin
+  Result := ParamMin <> DEF_PARAM_MIN;
+end;
+
+procedure TParametricCurveSeries.SetOnCalculate(
+  AValue: TParametricCurveCalculateEvent);
+begin
+  if TMethod(FOnCalculate) = TMethod(AValue) then exit;
+  FOnCalculate := AValue;
+  UpdateParentChart;
+end;
+
+procedure TParametricCurveSeries.SetParamMax(AValue: Double);
+begin
+  if FParamMax = AValue then exit;
+  FParamMax := AValue;
+  UpdateParentChart;
+end;
+
+procedure TParametricCurveSeries.SetParamMaxStep(AValue: Double);
+begin
+  if FParamMaxStep = AValue then exit;
+  FParamMaxStep := AValue;
+  UpdateParentChart;
+end;
+
+procedure TParametricCurveSeries.SetParamMin(AValue: Double);
+begin
+  if FParamMin = AValue then exit;
+  FParamMin := AValue;
+  UpdateParentChart;
+end;
+
+procedure TParametricCurveSeries.SetPen(AValue: TChartPen);
+begin
+  if FPen = AValue then exit;
+  FPen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TParametricCurveSeries.SetStep(AValue: TFuncSeriesStep);
 begin
   if FStep = AValue then exit;
   FStep := AValue;
@@ -1467,6 +1670,7 @@ end;
 
 initialization
   RegisterSeriesClass(TFuncSeries, 'Function series');
+  RegisterSeriesClass(TParametricCurveSeries, 'Parametric curve series');
   RegisterSeriesClass(TBSplineSeries, 'B-Spline series');
   RegisterSeriesClass(TCubicSplineSeries, 'Cubic spline series');
   RegisterSeriesClass(TFitSeries, 'Least-squares fit series');
