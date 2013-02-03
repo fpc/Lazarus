@@ -25,7 +25,6 @@ type
     FWidth, FHeight: integer;
     procedure SetDestination(AValue: TLazIntfImage);
   protected
-    FRenderedFont: TFreeTypeRenderableFont;
     procedure RenderDirectly(x, y, tx: integer; data: pointer);
     procedure RenderDirectlyClearType(x, y, tx: integer; data: pointer);
     procedure InternalMergeColorOver(var merge: TFPColor; const c: TFPColor; calpha: word); inline;
@@ -36,10 +35,8 @@ type
     procedure ClearTypePixelAt(p: pointer; Cr,Cg,Cb: byte; const Color: TFPColor);
     function UnclippedGetPixelAddress(x, y: integer): pointer; inline;
     function ClippedGetPixelAddress(x, y: integer): pointer; inline;
-    procedure OnRenderTextHandler(s: string; x,y: single);
   public
     ClearTypeRGBOrder: boolean;
-    UnderlineDecoration, StrikeOutDecoration: boolean;
     constructor Create(ADestination: TLazIntfImage);
     procedure ClippedDrawPixel(x,y: integer; const c: TFPColor);
     procedure UnclippedDrawPixel(x,y: integer; const c: TFPColor);
@@ -57,7 +54,7 @@ type
 
 implementation
 
-uses LCLType, Math, GraphType;
+uses LCLType, GraphType;
 
 type
   PFPColorBytes = ^TFPColorBytes;
@@ -84,26 +81,6 @@ begin
     raise FPImageException.CreateFmt(ErrorText[StrInvalidIndex],[ErrorText[StrImageY],y]);
 
   result := pbyte(Destination.GetDataLineStart(y))+(x*FPixelSizeInBytes);
-end;
-
-procedure TIntfFreeTypeDrawer.OnRenderTextHandler(s: string; x, y: single);
-
-  procedure HorizLine(AYCoeff, AHeightCoeff: single);
-  var
-    ly, height: single;
-  begin
-    ly := y + FRenderedFont.Ascent * AYCoeff;
-    height := Max(FRenderedFont.Ascent * AHeightCoeff, 1);
-    FillRect(
-      round(x),round(ly),
-      round(x+FRenderedFont.TextWidth(s)),round(ly+height),FColor,False);
-  end;
-
-begin
-  if UnderlineDecoration then
-    HorizLine(+1.5*0.08, 0.08);
-  if StrikeoutDecoration then
-    HorizLine(-0.3, 0.06);
 end;
 
 procedure InternalGetPixelAtWithoutAlphaRGB(p: pointer; out Color: TFPColor);
@@ -739,20 +716,12 @@ end;
 
 procedure TIntfFreeTypeDrawer.DrawText(AText: string; AFont: TFreeTypeRenderableFont; x, y: single;
   AColor: TFPColor);
-var OldRenderTextHandler: TOnRenderTextHandler;
 begin
   FColor := AColor;
-  OldRenderTextHandler := AFont.OnRenderText;
-  FRenderedFont:= AFont;
-  try
-    AFont.OnRenderText := @OnRenderTextHandler;
-    if AFont.ClearType then
-      AFont.RenderText(AText, x, y, rect(0,0,Destination.Width,Destination.Height), @RenderDirectlyClearType)
-    else
-      AFont.RenderText(AText, x, y, rect(0,0,Destination.Width,Destination.Height), @RenderDirectly);
-  finally
-    AFont.OnRenderText := OldRenderTextHandler;
-  end;
+  if AFont.ClearType then
+    AFont.RenderText(AText, x, y, rect(0,0,Destination.Width,Destination.Height), @RenderDirectlyClearType)
+  else
+    AFont.RenderText(AText, x, y, rect(0,0,Destination.Width,Destination.Height), @RenderDirectly);
 end;
 
 destructor TIntfFreeTypeDrawer.Destroy;

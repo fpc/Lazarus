@@ -157,6 +157,7 @@ type
     function GetHinted: boolean; virtual; abstract;
     procedure SetHinted(const AValue: boolean); virtual; abstract;
   public
+    UnderlineDecoration,StrikeOutDecoration: boolean;
     function TextWidth(AText: string): single; virtual; abstract;
     function TextHeight(AText: string): single; virtual; abstract;
     function CharWidthFromUnicode(AUnicode: integer): single; virtual; abstract;
@@ -225,6 +226,8 @@ type
     procedure UpdateSizeInPoints;
     procedure UpdateMetrics;
     procedure UpdateCharmap;
+    procedure RenderTextDecoration(AText: string; x,y: single; ARect: TRect; OnRender : TDirectRenderingFunction);
+    procedure FillRect(ARect: TRect; OnRender : TDirectRenderingFunction);
   protected
     FFace: TT_Face;
     FFaceItem: TCustomFontCollectionItem;
@@ -373,6 +376,8 @@ type
 function StylesToArray(AStyles: string): ArrayOfString;
 
 implementation
+
+uses Math;
 
 function StylesToArray(AStyles: string): ArrayOfString;
 var
@@ -1212,6 +1217,64 @@ begin
   FCharmapOk := false;
 end;
 
+procedure TFreeTypeFont.RenderTextDecoration(AText: string; x, y: single;
+  ARect: TRect; OnRender: TDirectRenderingFunction);
+  procedure HorizLine(AYCoeff, AHeightCoeff: single);
+  var
+    ly, height: single;
+    clippedRect,unclippedRect: TRect;
+  begin
+    ly := y + self.Ascent * AYCoeff;
+    height := Max(self.Ascent * AHeightCoeff, 1);
+    unclippedRect := Types.Rect(round(x),round(ly),
+      round(x+self.TextWidth(AText)),round(ly+height));
+    clippedRect := rect(0,0,0,0);
+    if IntersectRect(clippedRect,unclippedRect,ARect) then
+      FillRect(clippedRect,OnRender);
+  end;
+begin
+  if UnderlineDecoration then
+    HorizLine(+1.5*0.08, 0.08);
+  if StrikeoutDecoration then
+    HorizLine(-0.3, 0.06);
+end;
+
+procedure TFreeTypeFont.FillRect(ARect: TRect; OnRender: TDirectRenderingFunction);
+var
+  yb,temp,tx: integer;
+  data: pbyte;
+begin
+  if ARect.Top > ARect.Bottom then
+  begin
+    temp := ARect.Top;
+    ARect.Top := ARect.Bottom;
+    ARect.Bottom := temp;
+  end;
+  if ARect.Left > ARect.Right then
+  begin
+    temp := ARect.Left;
+    ARect.Left := ARect.Right;
+    ARect.Right:= temp;
+  end;
+  if ClearType then
+  begin
+    ARect.Left *= 3;
+    ARect.Right *= 3;
+  end;
+  tx := ARect.Right-ARect.Left;
+  if tx > 0 then
+  begin
+    getmem(data,tx);
+    try
+      fillchar(data^, tx, 255);
+      for yb := ARect.Top to ARect.Bottom-1 do
+        OnRender(ARect.Left,yb,tx,data);
+    finally
+      freemem(data);
+    end;
+  end;
+end;
+
 constructor TFreeTypeFont.Create;
 begin
   EnsureFreeTypeInitialized;
@@ -1259,6 +1322,7 @@ begin
   end;
   If Assigned(FOnRenderText) then
     FOnRenderText(AText,x,y);
+  RenderTextDecoration(AText,x,y,ARect,OnRender);
   pstr := @AText[1];
   left := length(AText);
   while left > 0 do
