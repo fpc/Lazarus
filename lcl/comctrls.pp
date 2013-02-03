@@ -2261,7 +2261,6 @@ type
     FImageChangeLink: TChangeLink;
     FShowText: Boolean;
     FVertical: Boolean;
-    FNewBand: TCoolBand;
     FNewControl: TControl;
     FOnChange: TNotifyEvent;
     function GetAlign: TAlign;

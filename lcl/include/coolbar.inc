@@ -218,6 +218,7 @@ begin
       Band.SetControl(nil);        // Remove old association
     end;
     DebugLn(['TCoolBand.SetControl, adding new, aValue.Name=', aValue.Name, ', aValue.ClassName=', aValue.ClassName]);
+    aValue.Parent := Nil;
   end;
   FControl := aValue;
   Changed(True);
@@ -494,19 +495,26 @@ end;
 
 procedure TCustomCoolBar.AlignControls(aControl: TControl; var aRect: TRect);
 begin
+  //DebugLn('TCoolBar.AlignControls');
   FBands.UpdControls;
   inherited AlignControls(aControl, aRect);
 end;
 
 procedure TCustomCoolBar.OnIdle(Sender: TObject; var Done: Boolean);
+var
+  Band: TCoolBand;
 begin
-  Assert(Assigned(FNewBand) and Assigned(FNewControl),
-        'TCoolBar.OnIdle: FNewBand or FNewControl not assigned');
-  DebugLn('TCoolBar.OnIdle');
-  FNewBand.Control := FNewControl;
+  Assert(Assigned(FNewControl) and Assigned(FNewControl.Parent),
+        'TCoolBar.OnIdle: FNewControl or FNewControl.Parent not assigned');
+  DebugLn(['TCoolBar.OnIdle, Control.Name=', FNewControl.Name]);
+  if FNewControl.Parent = Self then
+  begin
+    Band := FBands.Add;
+    Band.Control := FNewControl;
+    Band := Nil;
+    FNewControl := Nil;
+  end;
   Application.RemoveOnIdleHandler(@OnIdle);
-  FNewBand := Nil;
-  FNewControl := Nil;
 end;
 
 procedure TCustomCoolBar.Notification(AComponent: TComponent; Operation: TOperation);
@@ -524,12 +532,11 @@ begin
         if csLoading in ComponentState then
           DebugLn('TCoolBar.Notification: Operation = opInsert, Loading' + s)
         else begin
-          DebugLn('TCoolBar.Notification: Operation = opInsert, not Loading' + s);
           if AComponent <> Self then
           begin
-            // Delay setting the new control's properties by using OnIdle handler.
+            DebugLn('TCoolBar.Notification: Operation = opInsert, not Loading, adding OnIdle' + s);
+            // Delay adding band and setting new control's properties by using OnIdle handler.
             // Setting them directly in this Notification procedure leads to a crash.
-            FNewBand := FBands.Add;
             FNewControl := TControl(AComponent);
             Application.AddOnIdleHandler(@OnIdle);
           end;
@@ -575,6 +582,7 @@ var
   i, BottomY: Integer;
 begin
   inherited Paint;
+  //DebugLn('TCoolBar.Paint');
   for i := 0 to FBands.Count-1 do
   begin
     BottomY := FBands[i].FTop+FBands[i].Height+2;
