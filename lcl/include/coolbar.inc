@@ -511,7 +511,6 @@ begin
   begin
     Band := FBands.Add;
     Band.Control := FNewControl;
-    Band := Nil;
     FNewControl := Nil;
   end;
   Application.RemoveOnIdleHandler(@OnIdle);
