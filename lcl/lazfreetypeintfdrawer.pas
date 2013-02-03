@@ -10,6 +10,7 @@ uses
 type
   TLazIntfImageGetPixelAtProc = procedure(p: pointer; out Color: TFPColor);
   TLazIntfImageSetPixelAtProc = procedure(p: pointer; const Color: TFPColor);
+  TLazIntfHorizLineProc = procedure(x1,y,x2: integer; const Color: TFPColor) of object;
 
   { TIntfFreeTypeDrawer }
 
@@ -24,6 +25,7 @@ type
     FWidth, FHeight: integer;
     procedure SetDestination(AValue: TLazIntfImage);
   protected
+    FRenderedFont: TFreeTypeRenderableFont;
     procedure RenderDirectly(x, y, tx: integer; data: pointer);
     procedure RenderDirectlyClearType(x, y, tx: integer; data: pointer);
     procedure InternalMergeColorOver(var merge: TFPColor; const c: TFPColor; calpha: word); inline;
@@ -34,8 +36,10 @@ type
     procedure ClearTypePixelAt(p: pointer; Cr,Cg,Cb: byte; const Color: TFPColor);
     function UnclippedGetPixelAddress(x, y: integer): pointer; inline;
     function ClippedGetPixelAddress(x, y: integer): pointer; inline;
+    procedure OnRenderTextHandler(s: string; x,y: single);
   public
     ClearTypeRGBOrder: boolean;
+    UnderlineDecoration, StrikeOutDecoration: boolean;
     constructor Create(ADestination: TLazIntfImage);
     procedure ClippedDrawPixel(x,y: integer; const c: TFPColor);
     procedure UnclippedDrawPixel(x,y: integer; const c: TFPColor);
@@ -44,7 +48,8 @@ type
     procedure DrawVertLine(x,y1,y2: integer; const c: TFPColor);
     procedure SetHorizLine(x1,y,x2: integer; const c: TFPColor);
     procedure DrawHorizLine(x1,y,x2: integer; const c: TFPColor);
-    procedure FillPixels(const c: TFPColor);
+    procedure FillRect(x,y,x2,y2: integer; const c: TFPColor; ASetPixels: boolean = True);
+    procedure FillPixels(const c: TFPColor; ASetPixels: boolean = True);
     procedure DrawText(AText: string; AFont: TFreeTypeRenderableFont; x,y: single; AColor: TFPColor); override;
     property Destination: TLazIntfImage read FDestination write SetDestination;
     destructor Destroy; override;
@@ -52,7 +57,7 @@ type
 
 implementation
 
-uses LCLType, GraphType;
+uses LCLType, Math, GraphType;
 
 type
   PFPColorBytes = ^TFPColorBytes;
@@ -79,6 +84,26 @@ begin
     raise FPImageException.CreateFmt(ErrorText[StrInvalidIndex],[ErrorText[StrImageY],y]);
 
   result := pbyte(Destination.GetDataLineStart(y))+(x*FPixelSizeInBytes);
+end;
+
+procedure TIntfFreeTypeDrawer.OnRenderTextHandler(s: string; x, y: single);
+
+  procedure HorizLine(AYCoeff, AHeightCoeff: single);
+  var
+    ly, height: single;
+  begin
+    ly := y + FRenderedFont.Ascent * AYCoeff;
+    height := Max(FRenderedFont.Ascent * AHeightCoeff, 1);
+    FillRect(
+      round(x),round(ly),
+      round(x+FRenderedFont.TextWidth(s)),round(ly+height),FColor,False);
+  end;
+
+begin
+  if UnderlineDecoration then
+    HorizLine(+1.5*0.08, 0.08);
+  if StrikeoutDecoration then
+    HorizLine(-0.3, 0.06);
 end;
 
 procedure InternalGetPixelAtWithoutAlphaRGB(p: pointer; out Color: TFPColor);
@@ -360,11 +385,40 @@ begin
       UnclippedDrawPixel(i,y,c);
 end;
 
-procedure TIntfFreeTypeDrawer.FillPixels(const c: TFPColor);
-var yb: integer;
+procedure TIntfFreeTypeDrawer.FillRect(x, y, x2, y2: integer;
+  const c: TFPColor; ASetPixels: boolean);
+var yb,xb: integer;
+  HorizLineProc: TLazIntfHorizLineProc;
 begin
+  if x2 < x then
+  begin
+    xb:= x;
+    x := x2;
+    x2 := xb;
+  end;
+  if x < 0 then x := 0;
+  if x2 > Destination.Width then x2 := Destination.Width;
+  if (x >= Destination.Width) or (x2 <= 0) then exit;
+  if y2 < y then
+  begin
+    yb := y;
+    y := y2;
+    y2 := yb;
+  end;
+  if y < 0 then y := 0;
+  if y2 > Destination.Height then y2 := Destination.Height;
+  if ASetPixels then HorizLineProc := @SetHorizLine else HorizLineProc := @DrawHorizLine;
+  for yb := y to y2-1 do
+    HorizLineProc(x,yb,x2-1,c);
+end;
+
+procedure TIntfFreeTypeDrawer.FillPixels(const c: TFPColor; ASetPixels: boolean = True);
+var yb: integer;
+  HorizLineProc: TLazIntfHorizLineProc;
+begin
+  if ASetPixels then HorizLineProc := @SetHorizLine else HorizLineProc := @DrawHorizLine;
   for yb := 0 to Destination.Height-1 do
-    SetHorizLine(0,yb,Destination.Width-1,c);
+    HorizLineProc(0,yb,Destination.Width-1,c);
 end;
 
 procedure TIntfFreeTypeDrawer.UnclippedClearTypePixel(x, y: integer; Cr, Cg, Cb: byte; const Color: TFPColor);
@@ -685,12 +739,20 @@ end;
 
 procedure TIntfFreeTypeDrawer.DrawText(AText: string; AFont: TFreeTypeRenderableFont; x, y: single;
   AColor: TFPColor);
+var OldRenderTextHandler: TOnRenderTextHandler;
 begin
   FColor := AColor;
-  if AFont.ClearType then
-    AFont.RenderText(AText, x, y, rect(0,0,Destination.Width,Destination.Height), @RenderDirectlyClearType)
-  else
-    AFont.RenderText(AText, x, y, rect(0,0,Destination.Width,Destination.Height), @RenderDirectly);
+  OldRenderTextHandler := AFont.OnRenderText;
+  FRenderedFont:= AFont;
+  try
+    AFont.OnRenderText := @OnRenderTextHandler;
+    if AFont.ClearType then
+      AFont.RenderText(AText, x, y, rect(0,0,Destination.Width,Destination.Height), @RenderDirectlyClearType)
+    else
+      AFont.RenderText(AText, x, y, rect(0,0,Destination.Width,Destination.Height), @RenderDirectly);
+  finally
+    AFont.OnRenderText := OldRenderTextHandler;
+  end;
 end;
 
 destructor TIntfFreeTypeDrawer.Destroy;
