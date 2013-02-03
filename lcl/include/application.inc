@@ -254,7 +254,7 @@ end;
 {------------------------------------------------------------------------------
        TApplication GetExename
 ------------------------------------------------------------------------------}
-function TApplication.GetExeName: String;
+function TApplication.GetExename: String;
 Begin
   Result := ParamStrUTF8(0);
 end;
@@ -387,7 +387,7 @@ end;
 
   Invoked when the application enters the idle state
  ------------------------------------------------------------------------------}
-procedure TApplication.Idle(Wait: boolean);
+procedure TApplication.Idle(Wait: Boolean);
 var
   Done: Boolean;
 begin
@@ -2012,6 +2012,11 @@ begin
       if ShowMenuGlyphs = sbgSystem then
         NotifyCustomForms(CM_APPSHOWMENUGLYPHCHANGED);
   end;
+end;
+
+function TApplication.IsRightToLeft: Boolean;
+begin
+  Result := (BiDiMode <> bdLeftToRight);
 end;
 
 procedure TApplication.DoArrowKey(AControl: TWinControl; var Key: Word;

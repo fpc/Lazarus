@@ -1457,6 +1457,7 @@ type
     procedure IntfSettingsChange;
     procedure IntfThemeOptionChange(AThemeServices: TThemeServices; AOption: TThemeOption);
 
+    function IsRightToLeft: Boolean;
     function IsRTLLang(ALang: String): Boolean;
     function Direction(ALang: String): TBiDiMode;
   public
