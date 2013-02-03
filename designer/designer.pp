@@ -2276,9 +2276,13 @@ begin
             Include(FFlags, dfHasSized);
           end;
           //debugln('TDesigner.MouseMoveOnControl Move MouseDownComponent=',dbgsName(MouseDownComponent),' OldMouseMovePos=',dbgs(OldMouseMovePos),' MouseMovePos',dbgs(LastMouseMovePos),' MouseDownPos=',dbgs(MouseDownPos));
-          if ((ssAlt in Shift) and ControlSelection.MoveSelection(LastMouseMovePos.X - MouseDownPos.X, LastMouseMovePos.Y - MouseDownPos.Y, True)) or
-             ControlSelection.MoveSelectionWithSnapping(LastMouseMovePos.X - MouseDownPos.X, LastMouseMovePos.Y - MouseDownPos.Y) then
-            DoModified;
+          if (ssAlt in Shift) then begin
+            if ControlSelection.MoveSelection(LastMouseMovePos.X - MouseDownPos.X, LastMouseMovePos.Y - MouseDownPos.Y, True) then
+              DoModified;
+          end else begin
+            if ControlSelection.MoveSelectionWithSnapping(LastMouseMovePos.X - MouseDownPos.X, LastMouseMovePos.Y - MouseDownPos.Y) then
+              DoModified;
+          end;
         end
         else
         begin
