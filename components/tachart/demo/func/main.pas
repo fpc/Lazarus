@@ -5,7 +5,7 @@ unit main;
 interface
 
 uses
-  Classes, ComCtrls, ExtCtrls, RTTICtrls, StdCtrls, Forms, Graphics,
+  Classes, ComCtrls, ExtCtrls, RTTICtrls, Spin, StdCtrls, Forms, Graphics,
   TAFuncSeries, TAGraph, TALegendPanel, TASeries, TACustomSource, TASources,
   TATools, TATransformations;
 
@@ -28,6 +28,8 @@ type
     Chart1YAxis: TConstantLine;
     catSpline: TChartAxisTransformations;
     catSplineLogarithmAxisTransform: TLogarithmAxisTransform;
+    chParametric: TChart;
+    chParametricParametricCurveSeries1: TParametricCurveSeries;
     chAutoExtentY: TChart;
     ChartSpline: TChart;
     ChartColorMap: TChart;
@@ -41,16 +43,31 @@ type
     chtsColorMap: TChartToolset;
     chtsColorMapPanDragTool1: TPanDragTool;
     chtsColorMapZoomDragTool1: TZoomDragTool;
+    lblA: TLabel;
+    lblB: TLabel;
+    lblD: TLabel;
+    lblC: TLabel;
+    lblK: TLabel;
+    lblJ: TLabel;
     lblSplineDegree: TLabel;
     ListChartSource1: TListChartSource;
     PageControl1: TPageControl;
     Panel1: TPanel;
+    pnlParametric: TPanel;
     pnlAutoExtentY: TPanel;
     pnSpline: TPanel;
     RandomChartSource1: TRandomChartSource;
     iseSplineDegree: TTISpinEdit;
     icbSplineRandomX: TTICheckBox;
     cbCubic: TTICheckBox;
+    seJ: TSpinEdit;
+    seK: TSpinEdit;
+    stEq: TStaticText;
+    tbA: TTrackBar;
+    tbB: TTrackBar;
+    tbC: TTrackBar;
+    tbD: TTrackBar;
+    tsParametric: TTabSheet;
     Timer1: TTimer;
     tsAutoExtentY: TTabSheet;
     tsSpline: TTabSheet;
@@ -69,8 +86,11 @@ type
       AZ: Double);
     procedure chAutoExtentYFuncSeries1Calculate(const AX: Double; out
       AY: Double);
+    procedure chParametricParametricCurveSeries1Calculate(const AT: Double; out
+      AX, AY: Double);
     procedure iseSplineDegreeChange(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
+    procedure ParamChange(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure UserDefinedChartSource1GetChartDataItem(
       ASource: TUserDefinedChartSource; AIndex: Integer;
@@ -83,6 +103,7 @@ var
 implementation
 
 uses
+  Math,
   TAChartUtils, TALegend;
 
 {$R *.lfm}
@@ -168,6 +189,19 @@ begin
   AY := Sin(AX * 2) + 3 * Cos(AX * 3) + 2 * Cos(AX * AX * 5);
 end;
 
+procedure TForm1.chParametricParametricCurveSeries1Calculate(
+  const AT: Double; out AX, AY: Double);
+var
+  a, b, c, d: Double;
+begin
+  a := tbA.Position / tbA.Frequency;
+  b := tbB.Position / tbB.Frequency;
+  c := tbC.Position / tbC.Frequency;
+  d := tbD.Position / tbD.Frequency;
+  AX := Cos(a * AT) - IntPower(Cos(b * AT), seJ.Value);
+  AY := Sin(c * AT) - IntPower(Sin(d * AT), seK.Value);
+end;
+
 procedure TForm1.iseSplineDegreeChange(Sender: TObject);
 begin
   (Sender as TTISpinEdit).EditingDone;
@@ -176,6 +210,11 @@ end;
 procedure TForm1.PageControl1Change(Sender: TObject);
 begin
   Timer1.Enabled := PageControl1.ActivePage = tsAutoExtentY;
+end;
+
+procedure TForm1.ParamChange(Sender: TObject);
+begin
+  chParametric.Invalidate;
 end;
 
 procedure TForm1.Timer1Timer(Sender: TObject);
