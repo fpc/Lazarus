@@ -240,16 +240,17 @@ type
     FGraph: TLvlGraph;
     FInEdges: TFPList; // list of TLvlGraphEdge
     FDrawSize: integer;
-    FInSize: single;
+    FInWeight: single;
     FLevel: TLvlGraphLevel;
     FOutEdges: TFPList; // list of TLvlGraphEdge
     FDrawPosition: integer;
-    FOutSize: single;
+    FOutWeight: single;
     function GetInEdges(Index: integer): TLvlGraphEdge;
     function GetOutEdges(Index: integer): TLvlGraphEdge;
     procedure SetCaption(AValue: string);
     procedure SetColor(AValue: TFPColor);
     procedure OnLevelDestroy;
+    procedure SetDrawSize(AValue: integer);
     procedure SetLevel(AValue: TLvlGraphLevel);
     procedure UnbindLevel;
   public
@@ -272,11 +273,12 @@ type
     property DrawPosition: integer read FDrawPosition write FDrawPosition; // position in a level
     function DrawCenter: integer;
     function DrawPositionEnd: integer;// = DrawPosition+Max(InSize,OutSize)
-    property DrawSize: integer read FDrawSize default 1;
+    property DrawSize: integer read FDrawSize write SetDrawSize default 1;
     property Level: TLvlGraphLevel read FLevel write SetLevel;
-    property InSize: single read FInSize; // total weight of InEdges
-    property OutSize: single read FOutSize; // total weight of OutEdges
+    property InWeight: single read FInWeight; // total weight of InEdges
+    property OutWeight: single read FOutWeight; // total weight of OutEdges
   end;
+  TLvlGraphNodeClass = class of TLvlGraphNode;
 
   { TLvlGraphEdge }
 
@@ -293,10 +295,11 @@ type
     destructor Destroy; override;
     property Source: TLvlGraphNode read FSource;
     property Target: TLvlGraphNode read FTarget;
-    property Weight: single read FWeight write SetWeight;
+    property Weight: single read FWeight write SetWeight; // >=0
     function IsBackEdge: boolean;
     property BackEdge: boolean read FBackEdge; // edge was disabled to break a cycle
   end;
+  TLvlGraphEdgeClass = class of TLvlGraphEdge;
 
   { TLvlGraphLevel }
 
@@ -315,15 +318,21 @@ type
     property Nodes[Index: integer]: TLvlGraphNode read GetNodes; default;
     function IndexOf(Node: TLvlGraphNode): integer;
     function Count: integer;
+    function GetTotalInWeight: single;
+    function GetTotalOutWeight: single;
     property Index: integer read FIndex;
     property Graph: TLvlGraph read FGraph;
     property DrawPosition: integer read FDrawPosition write SetDrawPosition;
   end;
+  TLvlGraphLevelClass = class of TLvlGraphLevel;
 
   { TLvlGraph }
 
   TLvlGraph = class(TPersistent)
   private
+    FEdgeClass: TLvlGraphEdgeClass;
+    FLevelClass: TLvlGraphLevelClass;
+    FNodeClass: TLvlGraphNodeClass;
     FOnInvalidate: TNotifyEvent;
     FNodes: TFPList; // list of TLvlGraphNode
     fLevels: TFPList;
@@ -332,29 +341,49 @@ type
     function GetNodes(Index: integer): TLvlGraphNode;
     procedure SetLevelCount(AValue: integer);
     procedure InternalRemoveLevel(Lvl: TLvlGraphLevel);
+  protected
   public
     Data: Pointer; // free for user data
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+
     procedure Invalidate;
     property OnInvalidate: TNotifyEvent read FOnInvalidate write FOnInvalidate;
+
+    // nodes
     function NodeCount: integer;
     property Nodes[Index: integer]: TLvlGraphNode read GetNodes;
     function GetNode(aCaption: string; CreateIfNotExists: boolean): TLvlGraphNode;
+    property NodeClass: TLvlGraphNodeClass read FNodeClass;
+
+    // edges
     function GetEdge(SourceCaption, TargetCaption: string;
       CreateIfNotExists: boolean): TLvlGraphEdge;
     function GetEdge(Source, Target: TLvlGraphNode;
       CreateIfNotExists: boolean): TLvlGraphEdge;
+    property EdgeClass: TLvlGraphEdgeClass read FEdgeClass;
+
+    // levels
     property Levels[Index: integer]: TLvlGraphLevel read GetLevels;
     property LevelCount: integer read GetLevelCount write SetLevelCount;
+    property LevelClass: TLvlGraphLevelClass read FLevelClass;
+
     procedure CreateTopologicalLevels; // create levels from edges
+    procedure SetAllNodeDrawSizes(PixelPerWeight: single = 1.0);
     procedure MarkBackEdges;
     procedure MinimizeCrossings; // set all Node.Position to minimize crossings
     procedure MinimizeOverlappings(Gap: integer = 1; aLevel: integer = -1); // set all Node.Position to minimize overlappings
+
+    // debugging
     procedure WriteDebugReport(Msg: string);
     procedure ConsistencyCheck(WithBackEdge: boolean);
   end;
+
+  TLvlGraphControlFlag =  (
+    lgcNeedInvalidate
+    );
+  TLvlGraphControlFlags = set of TLvlGraphControlFlag;
 
   { TCustomLvlGraphControl }
 
@@ -362,6 +391,8 @@ type
     procedure FGraphInvalidate(Sender: TObject);
   private
     FGraph: TLvlGraph;
+    fUpdateLock: integer;
+    FFlags: TLvlGraphControlFlags;
   protected
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure Paint; override;
@@ -370,6 +401,11 @@ type
     destructor Destroy; override;
     procedure EraseBackground({%H-}DC: HDC); override;
     property Graph: TLvlGraph read FGraph;
+    procedure AutoLayout(MinPixelPerWeight: single = 1.0;
+      MaxPixelPerWeight: single = 30.0; NodeGap: integer = 1); virtual;
+    procedure Invalidate; override;
+    procedure BeginUpdate;
+    procedure EndUpdate;
   end;
 
   { TLvlGraphControl }
@@ -560,6 +596,24 @@ begin
   Result:=fNodes.Count;
 end;
 
+function TLvlGraphLevel.GetTotalInWeight: single;
+var
+  i: Integer;
+begin
+  Result:=0;
+  for i:=0 to Count-1 do
+    Result+=Nodes[i].InWeight;
+end;
+
+function TLvlGraphLevel.GetTotalOutWeight: single;
+var
+  i: Integer;
+begin
+  Result:=0;
+  for i:=0 to Count-1 do
+    Result+=Nodes[i].OutWeight;
+end;
+
 { TCustomLvlGraphControl }
 
 procedure TCustomLvlGraphControl.FGraphInvalidate(Sender: TObject);
@@ -598,6 +652,72 @@ end;
 procedure TCustomLvlGraphControl.EraseBackground(DC: HDC);
 begin
   // Paint paints all, no need to erase background
+end;
+
+procedure TCustomLvlGraphControl.AutoLayout(MinPixelPerWeight: single;
+  MaxPixelPerWeight: single; NodeGap: integer);
+{ Min/MaxPixelPerWeight: used to scale Node.DrawSize depending on weight of
+                         incoming and outgoing edges
+  NodeGap: space between nodes
+}
+var
+  i: Integer;
+  Level: TLvlGraphLevel;
+  LvlWeight: Single;
+  HeaderHeight: integer;
+  DrawHeight: Integer;
+begin
+  BeginUpdate;
+  try
+    HeaderHeight:=round(1.5*Canvas.TextHeight(Caption));
+
+    // distribute the nodes on levels and marking back edges
+    Graph.CreateTopologicalLevels;
+
+    // set Nodes.DrawSize
+    // Use for each Node the maximum of InSize and OutSize, which is the weight
+    // of incoming and outgoing edges.
+    // Consider NodeGap
+    DrawHeight:=ClientHeight-HeaderHeight;
+    for i:=0 to Graph.LevelCount-1 do begin
+      Level:=Graph.Levels[i];
+      LvlWeight:=Max(Level.GetTotalInWeight,Level.GetTotalOutWeight);
+      if LvlWeight<0.001 then LvlWeight:=0.001;
+      MaxPixelPerWeight:=Min(MaxPixelPerWeight,
+                          single(DrawHeight-(Level.Count-1)*NodeGap)/LvlWeight);
+      MaxPixelPerWeight:=Max(MinPixelPerWeight,MaxPixelPerWeight);
+    end;
+    Graph.SetAllNodeDrawSizes(MaxPixelPerWeight);
+
+    Graph.MinimizeCrossings;
+
+    // position nodes without overlapping
+    Graph.MinimizeOverlappings(NodeGap);
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TCustomLvlGraphControl.Invalidate;
+begin
+  Exclude(FFlags,lgcNeedInvalidate);
+  inherited Invalidate;
+end;
+
+procedure TCustomLvlGraphControl.BeginUpdate;
+begin
+  inc(fUpdateLock);
+end;
+
+procedure TCustomLvlGraphControl.EndUpdate;
+begin
+  if fUpdateLock=0 then
+    raise Exception.Create('');
+  dec(fUpdateLock);
+  if fUpdateLock=0 then begin
+    if lgcNeedInvalidate in FFLags then
+      Invalidate;
+  end;
 end;
 
 type
@@ -640,7 +760,7 @@ begin
     raise Exception.Create('at least one level');
   if LevelCount=AValue then Exit;
   while LevelCount<AValue do
-    TLvlGraphLevel.Create(Self,LevelCount);
+    FLevelClass.Create(Self,LevelCount);
   while LevelCount>AValue do
     Levels[LevelCount-1].Free;
 end;
@@ -657,6 +777,9 @@ end;
 
 constructor TLvlGraph.Create;
 begin
+  FNodeClass:=TLvlGraphNode;
+  FEdgeClass:=TLvlGraphEdge;
+  FLevelClass:=TLvlGraphLevel;
   FNodes:=TFPList.Create;
   fLevels:=TFPList.Create;
 end;
@@ -702,7 +825,7 @@ begin
   end else if CreateIfNotExists then begin
     if LevelCount=0 then
       LevelCount:=1;
-    Result:=TLvlGraphNode.Create(Self,aCaption,Levels[0]);
+    Result:=FNodeClass.Create(Self,aCaption,Levels[0]);
     FNodes.Add(Result);
   end else
     Result:=nil;
@@ -727,7 +850,7 @@ begin
   Result:=Source.FindOutEdge(Target);
   if Result<>nil then exit;
   if CreateIfNotExists then
-    Result:=TLvlGraphEdge.Create(Source,Target);
+    Result:=FEdgeClass.Create(Source,Target);
 end;
 
 procedure TLvlGraph.InternalRemoveLevel(Lvl: TLvlGraphLevel);
@@ -885,6 +1008,17 @@ begin
   {$ENDIF}
 end;
 
+procedure TLvlGraph.SetAllNodeDrawSizes(PixelPerWeight: single);
+var
+  i: Integer;
+  Node: TLvlGraphNode;
+begin
+  for i:=0 to NodeCount-1 do begin
+    Node:=Nodes[i];
+    Node.DrawSize:=round(Max(Node.InWeight,Node.OutWeight)*PixelPerWeight+0.5);
+  end;
+end;
+
 procedure TLvlGraph.MarkBackEdges;
 var
   i: Integer;
@@ -933,7 +1067,9 @@ begin
       while AVLNode<>nil do begin
         Node:=TLvlGraphNode(AVLNode.Data);
         Last:=Node;
-        if (Last<>nil) then
+        if Last=nil then
+          Node.DrawPosition:=0
+        else
           Node.DrawPosition:=Max(Node.DrawPosition,Last.DrawPositionEnd+Gap);
         AVLNode:=Tree.FindSuccessor(AVLNode);
       end;
@@ -1026,10 +1162,11 @@ procedure TLvlGraphEdge.SetWeight(AValue: single);
 var
   Diff: single;
 begin
+  if AValue<0.0 then AValue:=0.0;
   if FWeight=AValue then Exit;
   Diff:=AValue-FWeight;
-  Source.FOutSize+=Diff;
-  Target.FInSize+=Diff;
+  Source.FOutWeight+=Diff;
+  Target.FInWeight+=Diff;
   FWeight:=AValue;
   Source.Invalidate;
 end;
@@ -1091,6 +1228,13 @@ begin
     Level:=Graph.Levels[1]
   else
     fLevel:=nil;
+end;
+
+procedure TLvlGraphNode.SetDrawSize(AValue: integer);
+begin
+  if FDrawSize=AValue then Exit;
+  FDrawSize:=AValue;
+  Invalidate;
 end;
 
 procedure TLvlGraphNode.SetLevel(AValue: TLvlGraphLevel);
