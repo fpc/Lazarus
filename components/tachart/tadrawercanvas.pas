@@ -109,18 +109,21 @@ end;
 
 procedure TCanvasDrawer.ClippingStart(const AClipRect: TRect);
 begin
-  GetCanvas.ClipRect := AClipRect;
-  GetCanvas.Clipping := true;
+  FCanvas.ClipRect := AClipRect;
+  FBuffer.Canvas.ClipRect := AClipRect;
+  ClippingStart;
 end;
 
 procedure TCanvasDrawer.ClippingStart;
 begin
-  GetCanvas.Clipping := true;
+  FCanvas.Clipping := true;
+  FBuffer.Canvas.Clipping := true;
 end;
 
 procedure TCanvasDrawer.ClippingStop;
 begin
-  GetCanvas.Clipping := false;
+  FCanvas.Clipping := false;
+  FBuffer.Canvas.Clipping := false;
 end;
 
 constructor TCanvasDrawer.Create(ACanvas: TCanvas);
