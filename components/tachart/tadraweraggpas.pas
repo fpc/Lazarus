@@ -196,13 +196,14 @@ begin
     Style := ABrush.Style;
     Image := ABrush.Image;
     Pattern := ABrush.Pattern;
-    FPColor := ApplyTransparency(ABrush.FPColor);
+    FPColor := ApplyTransparency(FPColorOrMono(ABrush.FPColor));
   end;
 end;
 
 procedure TAggPasDrawer.SetBrushColor(AColor: TChartColor);
 begin
-  FCanvas.Brush.FPColor := ApplyTransparency(ChartColorToFPColor(AColor));
+  FCanvas.Brush.FPColor :=
+    ApplyTransparency(ChartColorToFPColor(ColorOrMono(AColor)));
 end;
 
 procedure TAggPasDrawer.SetBrushParams(
@@ -224,7 +225,7 @@ begin
   // This should be: FCanvas.Font.DoCopyProps(AFont);
   f.LoadFromFile(
     AFont.Name, f.SizeToAggHeight(fontSize), AFont.Bold, AFont.Italic);
-  f.FPColor := ApplyTransparency(AFont.FPColor);
+  f.FPColor := ApplyTransparency(FPColorOrMono(AFont.FPColor));
   f.AggAngle := OrientToRad(-FGetFontOrientationFunc(AFont));
 end;
 
@@ -234,13 +235,14 @@ type
 procedure TAggPasDrawer.SetPen(APen: TFPCustomPen);
 begin
   TAggLCLPenCrack(FCanvas.Pen).DoCopyProps(APen);
-  FCanvas.Pen.FPColor := ApplyTransparency(APen.FPColor);
+  FCanvas.Pen.FPColor := ApplyTransparency(FPColorOrMono(APen.FPColor));
 end;
 
 procedure TAggPasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
 begin
   FCanvas.Pen.Style := AStyle;
-  FCanvas.Pen.FPColor := ApplyTransparency(ChartColorToFPColor(AColor));
+  FCanvas.Pen.FPColor :=
+    ApplyTransparency(ChartColorToFPColor(ColorOrMono(AColor)));
 end;
 
 function TAggPasDrawer.SimpleTextExtent(const AText: String): TPoint;
