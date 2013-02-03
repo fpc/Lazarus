@@ -187,16 +187,16 @@ var
 begin
   if FAntialiasingMode <> amDontCare then
     WriteStr('</g>');
-  if FPatterns.Count > 0 then
+  if FPatterns.Count > 0 then begin
     WriteStr('<defs>');
-  for i := 0 to FPatterns.Count - 1 do begin
-    WriteFmt(
-      '<pattern id="bs%d" width="8" height="8" patternUnits="userSpaceOnUse">' +
-      '%s</pattern>',
-      [i, FPatterns[i]]);
-  end;
-  if FPatterns.Count > 0 then
+    for i := 0 to FPatterns.Count - 1 do
+      WriteFmt(
+        '<pattern id="bs%d" width="8" height="8" patternUnits="userSpaceOnUse">' +
+        '%s</pattern>',
+        [i, FPatterns[i]]);
     WriteStr('</defs>');
+    FPatterns.Clear;
+  end;
   WriteStr('</svg>');
 end;
 
