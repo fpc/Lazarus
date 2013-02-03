@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-01-06 15:33+0100\n"
+"PO-Revision-Date: 2013-02-03 21:26+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -2241,7 +2241,7 @@ msgstr "Wort unter Cursor hervorheben"
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
 msgid "User defined markup"
-msgstr ""
+msgstr "Benutzerdefinierte Hervorhebung"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddelcaption
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefineddelcaption"
@@ -2250,35 +2250,35 @@ msgstr "Löschen"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddelprompt
 msgid "Delete list \"%s\"?"
-msgstr ""
+msgstr "Liste \"%s\" löschen?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
 msgid "Add Word or Term"
-msgstr ""
+msgstr "Wort oder Ausdruck hinzufügen"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
 msgid "Remove Word or Term"
-msgstr ""
+msgstr "Wort oder Ausdruck entfernen"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
 msgid "Toggle Word or Term"
-msgstr ""
+msgstr "Wort oder Ausdruck umschalten"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
 msgid "Duplicate Term"
-msgstr ""
+msgstr "Doppelter Ausdruck"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicatemsg
 msgid "The term %s already exists. Duplicates will be removed when the list is saved."
-msgstr ""
+msgstr "Der Ausdruck %s existiert bereits. Duplikate werden beim Speichern der Liste entfernt."
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedgloballist
 msgid "Add/Remove in all editors"
-msgstr ""
+msgstr "In allen Editorfenstern hinzufügen/löschen"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedlistdel
 msgid "Delete list"
-msgstr ""
+msgstr "Liste löschen"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedlistname
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefinedlistname"
@@ -2287,35 +2287,35 @@ msgstr "Name"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedlistnew
 msgid "Add list"
-msgstr ""
+msgstr "Liste hinzuf."
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedmatchcase
 msgid "Case sensitive"
-msgstr ""
+msgstr "Beachtung Groß- und Kleinschreibung"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedmatchendbound
 msgid "Set bound at term end"
-msgstr ""
+msgstr "Begrenzung am Ausdruckende setzen"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedmatchstartbound
 msgid "Set bound at term start"
-msgstr ""
+msgstr "Begrenzung am Ausdruckanfang setzen"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylen
 msgid "Ignore bounds for terms longer than"
-msgstr ""
+msgstr "Begrenzung ignorieren für Ausdrücke länger als"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylenselect
 msgid "selection"
-msgstr ""
+msgstr "Auswahl"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylenword
 msgid "current word"
-msgstr ""
+msgstr "aktuelles Wort"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeyopts
 msgid "Settings for terms added by key"
-msgstr ""
+msgstr "Einst. für durch eine Taste hinzugef. Ausdruck"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeysmartselect
 msgid "Smart match selection bounds"
@@ -2323,11 +2323,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewname
 msgid "New list"
-msgstr ""
+msgstr "Neue Liste"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednolists
 msgid "No lists"
-msgstr ""
+msgstr "Keine Listen"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednolistssel
 msgid "Select ..."
@@ -2335,11 +2335,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
 msgid "Key Settings"
-msgstr ""
+msgstr "Tasteneinstellungen"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain
 msgid "Main settings"
-msgstr ""
+msgstr "Haupteinstellungen"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 #, fuzzy
@@ -6529,7 +6529,7 @@ msgstr "Koordinaten-Offsets"
 
 #: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
 msgid "Added Package %s as a dependency."
-msgstr ""
+msgstr "Package %s als Abhängigkeit hinzugefügt."
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -16809,7 +16809,7 @@ msgstr "Verwende Package in Projekt"
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeyadd
 msgid "Add to list \"%s\""
-msgstr ""
+msgstr "Zur Liste \"%s\" hinzufügen"
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeygroup
 msgctxt "lazarusidestrconsts.lisuserdefinedmarkupkeygroup"
@@ -16818,11 +16818,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeyremove
 msgid "Remove from list \"%s\""
-msgstr ""
+msgstr "Von Liste \"%s\" entfernen"
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeytoggle
 msgid "Toggle on list \"%s\""
-msgstr ""
+msgstr "Liste \"%s\" umschalten"
 
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
@@ -17131,31 +17131,31 @@ msgstr "Quelltexteditor"
 
 #: lazarusidestrconsts.lrsplddeleteselected
 msgid "Delete selected"
-msgstr ""
+msgstr "Ausgewählte löschen"
 
 #: lazarusidestrconsts.lrspldinvalid
 msgid "invalid"
-msgstr ""
+msgstr "ungültig"
 
 #: lazarusidestrconsts.lrspldlpkfileinvalid
 msgid "lpk file invalid (%s)"
-msgstr ""
+msgstr "ungültige lpk-Dateien (%s)"
 
 #: lazarusidestrconsts.lrspldlpkfilevalid
 msgid "lpk file valid (%s)"
-msgstr ""
+msgstr "gültige lpk-Dateien (%s)"
 
 #: lazarusidestrconsts.lrspldunabletodeletefile
 msgid "Unable to delete file \"%s\""
-msgstr ""
+msgstr "Kann Datei \"%s\" nicht löschen"
 
 #: lazarusidestrconsts.lrspldvalid
 msgid "valid"
-msgstr ""
+msgstr "gültig"
 
 #: lazarusidestrconsts.lrsrescanlplfiles
 msgid "Rescan lpl files"
-msgstr ""
+msgstr "lpl-Dateien erneut scannen"
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
