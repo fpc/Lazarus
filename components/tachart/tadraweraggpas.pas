@@ -56,6 +56,7 @@ type
     procedure Polyline(
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
+    procedure PutImage(AX, AY: Integer; AImage: TFPCustomImage); override;
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
       AStartAngle16Deg, AAngleLength16Deg: Integer);
@@ -165,11 +166,22 @@ end;
 procedure TAggPasDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
   with FCanvas.Pen do begin
-    FPColor := ApplyTransparency(ChartColorToFPColor(AColor));
+    FPColor := ApplyTransparency(ChartColorToFPColor(ColorOrMono(AColor)));
     Style := psSolid;
     Mode := pmCopy;
     Width := 1;
   end;
+end;
+
+procedure TAggPasDrawer.PutImage(AX, AY: Integer; AImage: TFPCustomImage);
+var
+  x, y: Integer;
+begin
+  // FCanvas.Draw ignores alpha values.
+  for y := 0 to AImage.Height - 1 do
+    for x := 0 to AImage.Width - 1 do
+      if AImage[x, y].alpha > 0 then
+        FCanvas.Colors[AX + x, AY + y] := AImage[x, y];
 end;
 
 procedure TAggPasDrawer.RadialPie(
