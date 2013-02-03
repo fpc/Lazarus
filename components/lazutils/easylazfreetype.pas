@@ -139,11 +139,14 @@ type
 
 {***************************** Rendering classes *********************************}
 
+  TOnRenderTextHandler = procedure(AText: string; x,y: single) of object;
+
   { TFreeTypeRenderableFont }
 
   TFreeTypeRenderableFont = class
   protected
     FWordBreakHandler: TFreeTypeWordBreakHandler;
+    FOnRenderText: TOnRenderTextHandler;
     function GetClearType: boolean; virtual; abstract;
     procedure SetClearType(const AValue: boolean); virtual; abstract;
     function GetLineFullHeight: single; virtual; abstract;
@@ -167,6 +170,7 @@ type
     property LineFullHeight: single read GetLineFullHeight;
     property Hinted: boolean read GetHinted write SetHinted;
     property OnWordBreak: TFreeTypeWordBreakHandler read FWordBreakHandler write FWordBreakHandler;
+    property OnRenderText: TOnRenderTextHandler read FOnRenderText write FOnRenderText;
   end;
 
   { TFreeTypeDrawer }
@@ -182,8 +186,6 @@ type
 
 {********************************* Font implementation **********************************}
 
-  TOnRenderTextHandler = procedure(AText: string; x,y: single) of object;
-
   { TFreeTypeFont }
 
   TFreeTypeFont = class(TFreeTypeRenderableFont)
@@ -196,7 +198,6 @@ type
     FClearType: boolean;
     FNamesArray: array of string;
     FCollection: TCustomFreeTypeFontCollection;
-    FOnRenderText: TOnRenderTextHandler;
     function FindGlyphNode(Index: Integer): TAvgLvlTreeNode;
     function GetCharIndex(AChar: integer): integer;
     function GetDPI: integer;
@@ -275,7 +276,6 @@ type
     property Collection: TCustomFreeTypeFontCollection read GetCollection write FCollection;
     property StyleAsString: string read FStyleStr write SetStyleAsString;
     property Style: TFreeTypeStyles read GetFreeTypeStyles write SetFreeTypeStyles;
-    property OnRenderText: TOnRenderTextHandler read FOnRenderText write FOnRenderText;
   end;
 
   { TFreeTypeGlyph }
