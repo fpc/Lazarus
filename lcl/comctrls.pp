@@ -2271,10 +2271,11 @@ type
     procedure SetShowText(aValue: Boolean);
     procedure SetVertical(aValue: Boolean);
     procedure ImageListChange(Sender: TObject);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
   protected
     procedure AlignControls(aControl: TControl; var aRect: TRect); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure InsertControl(AControl: TControl; Index: integer); override;
+    procedure RemoveControl(AControl: TControl); override;
     procedure Loaded; override;
     procedure Paint; override;
     procedure Resize; override;

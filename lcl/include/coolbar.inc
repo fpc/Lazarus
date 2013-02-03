@@ -209,6 +209,7 @@ var
   Band: TCoolBand;
 begin
   if FControl = aValue then Exit;
+  FCoolBar.BeginUpdate;
   if Assigned(aValue) then begin
     Band := TCoolBands(Collection).FindBand(aValue);
     if Assigned(Band) and (Band <> Self) then begin
@@ -221,6 +222,7 @@ begin
     aValue.Parent := Nil;
   end;
   FControl := aValue;
+  FCoolBar.EndUpdate;
   Changed(True);
 end;
 
@@ -344,7 +346,8 @@ begin
   inherited Update(aItem);
   if FCoolBar = Nil then Exit;
   if csDestroying in FCoolBar.ComponentState then Exit;
-  UpdControls;    // Calculate control positions
+  if FCoolBar.FUpdateCount = 0 then
+    UpdControls;    // Calculate control positions
 end;
 
 procedure TCoolBands.Notify(aItem: TCollectionItem; aAction: TCollectionNotification);
@@ -398,9 +401,6 @@ begin
       Inc(hh, 2);
     Band.FTop := yy;
     Band.UpdControl;   // Set control's location
-    //if Assigned(Band.FControl) then
-    //  DebugLn(['TCoolBands.UpdControls, FTop=', Band.FTop,
-    //    ', FControl.Name=', Band.FControl.Name, ', FControl.ClassName=', Band.FControl.ClassName]);
     Inc(yy, hh+3);
   end;
 end;
@@ -496,64 +496,50 @@ end;
 procedure TCustomCoolBar.AlignControls(aControl: TControl; var aRect: TRect);
 begin
   //DebugLn('TCoolBar.AlignControls');
-  FBands.UpdControls;
-  inherited AlignControls(aControl, aRect);
-end;
-
-procedure TCustomCoolBar.OnIdle(Sender: TObject; var Done: Boolean);
-var
-  Band: TCoolBand;
-begin
-  Assert(Assigned(FNewControl) and Assigned(FNewControl.Parent),
-        'TCoolBar.OnIdle: FNewControl or FNewControl.Parent not assigned');
-  DebugLn(['TCoolBar.OnIdle, Control.Name=', FNewControl.Name]);
-  if FNewControl.Parent = Self then
+  if FUpdateCount = 0 then
   begin
-    Band := FBands.Add;
-    Band.Control := FNewControl;
-    FNewControl := Nil;
+    FBands.UpdControls;
+    inherited AlignControls(aControl, aRect);
   end;
-  Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
 procedure TCustomCoolBar.Notification(AComponent: TComponent; Operation: TOperation);
-var
-  Band: TCoolBand;
-  s: String;
 begin
   inherited Notification(AComponent, Operation);
   if csDestroying in ComponentState then Exit;
-  case Operation of
-    opInsert: begin
-      if AComponent is TWinControl then
-      begin
-        s := ', Comp=' + AComponent.Name + ', class=' + AComponent.ClassName;
-        if csLoading in ComponentState then
-          DebugLn('TCoolBar.Notification: Operation = opInsert, Loading' + s)
-        else begin
-          if AComponent <> Self then
-          begin
-            DebugLn('TCoolBar.Notification: Operation = opInsert, not Loading, adding OnIdle' + s);
-            // Delay adding band and setting new control's properties by using OnIdle handler.
-            // Setting them directly in this Notification procedure leads to a crash.
-            FNewControl := TControl(AComponent);
-            Application.AddOnIdleHandler(@OnIdle);
-          end;
-        end;
-      end;
-    end;
-    opRemove: begin
-      DebugLn('TCoolBar.Notification: Operation = opRemove');
-      if AComponent is TWinControl then
-      begin
-        Band := Bands.FindBand(TControl(AComponent));
-        if Assigned(Band) then
-          Band.FControl := nil;
-      end
-      else if AComponent = FImages then
-        Images := nil;
+  if Operation = opRemove then
+  begin
+    DebugLn('TCoolBar.Notification: Operation = opRemove');
+    if AComponent = FImages then
+      Images := nil;
+  end;
+end;
+
+procedure TCustomCoolBar.InsertControl(AControl: TControl; Index: integer);
+var
+  Band: TCoolBand;
+begin
+  inherited InsertControl(AControl, Index);
+  if (AControl is TWinControl) and not (csLoading in ComponentState) then
+  begin
+    Band := Bands.FindBand(AControl);
+    if Band = Nil then
+    begin
+      DebugLn('TCoolBar.InsertControl: Adding band for Comp=' + AControl.Name + ', class=' + AControl.ClassName);
+      Band := FBands.Add;
+      Band.Control := AControl;
     end;
   end;
+end;
+
+procedure TCustomCoolBar.RemoveControl(AControl: TControl);
+var
+  Band: TCoolBand;
+begin
+  Band := Bands.FindBand(AControl);
+  if Assigned(Band) then
+    Band.FControl := nil;
+  inherited RemoveControl(AControl);
 end;
 
 procedure TCustomCoolBar.Loaded;
