@@ -74,7 +74,7 @@ type
 implementation
 
 uses
-  Graphics, TAGeometry;
+  BGRAText, Graphics, TAGeometry;
 
 { TBGRABitmapDrawer }
 
@@ -243,7 +243,8 @@ end;
 procedure TBGRABitmapDrawer.SetFont(AFont: TFPCustomFont);
 begin
   Canvas.Font.Name := AFont.Name;
-  Canvas.Font.Height := AFont.Size * 96 div 72;
+  Canvas.Font.Height :=
+    FontEmHeightSign * AFont.Size * ScreenInfo.PixelsPerInchY div 72;
   Canvas.Font.Orientation := FGetFontOrientationFunc(AFont);
   Canvas.Font.BGRAColor := BGRAColorOrMono(AFont.FPColor);
   if AFont is TFont then
