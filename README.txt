@@ -22,11 +22,15 @@ You don't need ./configure, just do
 
   []$ make clean bigide
 
+(BSD users: gmake clean bigide)
+
 This will create the lazarus executable with a lot of packages.
 Start it and enjoy.
 
 If the above gives an error you can try to build a minimal IDE with
   []$ make clean all
+
+(BSD users: gmake clean all)
 
 --------------------------------------------------------------------------------
 Installation and Requirements:
