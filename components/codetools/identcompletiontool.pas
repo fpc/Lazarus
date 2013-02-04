@@ -1784,11 +1784,15 @@ begin
     if CursorPos.Y<=CursorPos.Code.LineCount then
       debugln(['  Line=',dbgstr(CursorPos.Code.GetLine(CursorPos.Y-1),1,CursorPos.X-1),'|',dbgstr(CursorPos.Code.GetLine(CursorPos.Y-1),CursorPos.X,100)]);
     CursorNode:=Tree.Root;
-    while CursorNode.NextBrother<>nil do
-      CursorNode:=CursorNode.NextBrother;
-    while CursorNode<>nil do begin
-      debugln(['  Node=',CursorNode.DescAsString,',Start=',CursorNode.StartPos,',End=',CursorNode.EndPos,',Src="...',dbgstr(RightStr(ExtractNode(CursorNode,[]),100)),'"']);
-      CursorNode:=CursorNode.LastChild;
+    if CursorNode=nil then begin
+      debugln(['  no nodes']);
+    end else begin
+      while CursorNode.NextBrother<>nil do
+        CursorNode:=CursorNode.NextBrother;
+      while CursorNode<>nil do begin
+        debugln(['  Node=',CursorNode.DescAsString,',Start=',CursorNode.StartPos,',End=',CursorNode.EndPos,',Src="...',dbgstr(RightStr(ExtractNode(CursorNode,[]),100)),'"']);
+        CursorNode:=CursorNode.LastChild;
+      end;
     end;
   end;
 

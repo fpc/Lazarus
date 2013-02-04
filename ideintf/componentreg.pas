@@ -231,7 +231,7 @@ type
   
 
 var
-  IDEComponentPalette: TBaseComponentPalette;
+  IDEComponentPalette: TBaseComponentPalette = nil;
 
 function ComponentPriority(Category: TComponentPriorityCategory; Level: integer): TComponentPriority;
 function ComparePriority(const p1,p2: TComponentPriority): integer;
@@ -826,9 +826,5 @@ begin
   RemoveHandler(cphtUpdateVisible,TMethod(OnUpdateCompVisibleEvent));
 end;
 
-
-initialization
-  IDEComponentPalette:=nil;
-  
 end.
 
