@@ -2,19 +2,20 @@
   This source is only used to compile and install the package.
  }
 
-unit TAChartBgra; 
+unit TAChartBgra;
 
 interface
 
 uses
-  TADrawerBGRA, LazarusPackageIntf;
+  TADrawerBGRA, TABGRAUtils, TAGUIConnectorBGRA, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-end; 
+  RegisterUnit('TAGUIConnectorBGRA', @TAGUIConnectorBGRA.Register);
+end;
 
 initialization
-  RegisterPackage('TAChartBgra', @Register); 
+  RegisterPackage('TAChartBgra', @Register);
 end.

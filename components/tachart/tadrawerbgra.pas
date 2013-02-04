@@ -27,8 +27,6 @@ type
 
   TBGRABitmapDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
-    FBitmap: TBGRABitmap;
-
     function BGRAColorOrMono(AColor: TFPColor): TBGRAPixel; inline;
     function Canvas: TBGRACanvas; inline;
     function Opacity: Byte; inline;
@@ -36,6 +34,8 @@ type
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
   strict protected
+    FBitmap: TBGRABitmap;
+
     function GetFontAngle: Double; override;
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     function SimpleTextExtent(const AText: String): TPoint; override;

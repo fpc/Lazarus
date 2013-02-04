@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="TAChartBgra"/>
+    <AddToProjectUsesSection Value="True"/>
     <Author Value="Alexander Klenin"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
@@ -19,11 +20,20 @@
     </CompilerOptions>
     <Description Value="BGRABitmap drawing back-end for TAChart"/>
     <Version Major="1"/>
-    <Files Count="1">
+    <Files Count="3">
       <Item1>
         <Filename Value="tadrawerbgra.pas"/>
         <UnitName Value="TADrawerBGRA"/>
       </Item1>
+      <Item2>
+        <Filename Value="tabgrautils.pas"/>
+        <UnitName Value="TABGRAUtils"/>
+      </Item2>
+      <Item3>
+        <Filename Value="taguiconnectorbgra.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="TAGUIConnectorBGRA"/>
+      </Item3>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
