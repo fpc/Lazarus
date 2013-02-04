@@ -2935,6 +2935,7 @@ components/tachart/README.txt svneol=native#text/plain
 components/tachart/aggpas/tachartaggpas.lpk svneol=native#text/pascal
 components/tachart/aggpas/tachartaggpas.pas svneol=native#text/pascal
 components/tachart/aggpas/tadraweraggpas.pas svneol=native#text/pascal
+components/tachart/aggpas/taguiconnectoraggpas.pas svneol=native#text/pascal
 components/tachart/demo/3d/main.lfm svneol=native#text/plain
 components/tachart/demo/3d/main.pas svneol=native#text/plain
 components/tachart/demo/3d/zdemo.lpi svneol=native#text/plain

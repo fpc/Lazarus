@@ -28,12 +28,12 @@ type
 
   TAggPasDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
-    FCanvas: TAggLCLCanvas;
     function ApplyTransparency(AColor: TFPColor): TFPColor;
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
   strict protected
+    FCanvas: TAggLCLCanvas;
     function GetFontAngle: Double; override;
     function SimpleTextExtent(const AText: String): TPoint; override;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;

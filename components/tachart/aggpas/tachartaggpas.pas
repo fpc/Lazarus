@@ -2,19 +2,20 @@
   This source is only used to compile and install the package.
  }
 
-unit TAChartAggPas; 
+unit TAChartAggPas;
 
 interface
 
 uses
-  TADrawerAggPas, LazarusPackageIntf;
+  TADrawerAggPas, TAGUIConnectorAggPas, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-end; 
+  RegisterUnit('TAGUIConnectorAggPas', @TAGUIConnectorAggPas.Register);
+end;
 
 initialization
-  RegisterPackage('TAChartAggPas', @Register); 
+  RegisterPackage('TAChartAggPas', @Register);
 end.

@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="TAChartAggPas"/>
+    <AddToProjectUsesSection Value="True"/>
     <Author Value="Alexander Klenin"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
@@ -19,11 +20,16 @@
     </CompilerOptions>
     <Description Value="AggPas drawing back-end for TAChart"/>
     <Version Major="1"/>
-    <Files Count="1">
+    <Files Count="2">
       <Item1>
         <Filename Value="tadraweraggpas.pas"/>
         <UnitName Value="TADrawerAggPas"/>
       </Item1>
+      <Item2>
+        <Filename Value="taguiconnectoraggpas.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="TAGUIConnectorAggPas"/>
+      </Item2>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
