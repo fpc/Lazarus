@@ -520,6 +520,10 @@ begin
   Widget.EndUpdate;
 
   {$IFDEF HASX11}
+
+  if Application.TaskBarBehavior = tbSingleButton then
+    SetShowInTaskbar(TForm(AWinControl), TForm(AWinControl).ShowInTaskBar);
+
   if AWinControl.HandleObjectShouldBeVisible and
     not (csDesigning in TForm(AWinControl).ComponentState) and
         (TForm(AWinControl).FormStyle <> fsMDIChild) then
