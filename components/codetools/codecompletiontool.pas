@@ -7642,6 +7642,7 @@ begin
         OldProcCode:=ExtractProcHead(BodyNodeExt.Node,ProcAttrCopyDefToBody);
         if CompareTextIgnoringSpace(NewProcCode,OldProcCode,true)<>0 then begin
           // update body
+          debugln(['TCodeCompletionCodeTool.UpdateProcBodySignatures Old="',dbgstr(OldProcCode),'" New="',dbgstr(NewProcCode),'"']);
           BodyProcHeadNode:=BodyNodeExt.Node.FirstChild;
           InsertPos:=BodyNodeExt.Node.StartPos;
           InsertEndPos:=BodyProcHeadNode.EndPos;
