@@ -254,11 +254,17 @@ end;
 
 procedure TBGRABitmapDrawer.SetPen(APen: TFPCustomPen);
 begin
-  Canvas.Pen.Style := APen.Style;
-  Canvas.Pen.Width := APen.Width;
-  // TODO: JoinStyle
-  Canvas.Pen.BGRAColor := BGRAColorOrMono(APen.FPColor);
-  Canvas.Pen.Opacity := Opacity;
+  with Canvas.Pen do begin
+    Style := APen.Style;
+    Width := APen.Width;
+    // TODO: Update for FPC 2.8
+    if APen is TPen then begin
+      JoinStyle := (APen as TPen).JoinStyle;
+      EndCap := (APen as TPen).EndCap;
+    end;
+    BGRAColor := BGRAColorOrMono(APen.FPColor);
+    Opacity := Self.Opacity;
+  end;
 end;
 
 procedure TBGRABitmapDrawer.SetPenParams(
