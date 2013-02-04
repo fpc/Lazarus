@@ -3121,6 +3121,7 @@ components/tachart/numlib_fix/sle.pas svneol=native#text/pascal
 components/tachart/numlib_fix/spe.pas svneol=native#text/pascal
 components/tachart/taanimatedsource.pas svneol=native#text/pascal
 components/tachart/taaxissource.pas svneol=native#text/pascal
+components/tachart/tabgrautils.pas svneol=native#text/pascal
 components/tachart/tachartaxis.pas svneol=native#text/pascal
 components/tachart/tachartaxisutils.pas svneol=native#text/pascal
 components/tachart/tachartbgra.lpk svneol=native#text/pascal
