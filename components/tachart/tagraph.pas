@@ -29,8 +29,8 @@ interface
 
 uses
   Graphics, Classes, Controls, LCLType, SysUtils,
-  TAChartAxis, TAChartAxisUtils, TAChartUtils, TADrawUtils, TALegend,
-  TATextElements, TATypes;
+  TAChartAxis, TAChartAxisUtils, TAChartUtils, TADrawUtils, TAGUIConnector,
+  TALegend, TATextElements, TATypes;
 
 type
   TChart = class;
@@ -174,12 +174,15 @@ type
     FAxisList: TChartAxisList;
     FAxisVisible: Boolean;
     FBackColor: TColor;
+    FConnectorData: TChartGUIConnectorData;
     FDepth: TChartDistance;
+    FDefaultGUIConnector: TChartGUIConnector;
     FExpandPercentage: Integer;
     FExtent: TChartExtent;
     FExtentSizeLimit: TChartExtent;
     FFoot: TChartTitle;
     FFrame: TChartPen;
+    FGUIConnector: TChartGUIConnector;
     FLegend: TChartLegend;
     FLogicalExtent: TDoubleRect;
     FMargins: TChartMargins;
@@ -197,6 +200,7 @@ type
     FToolset: TBasicChartToolset;
 
     function ClipRectWithoutFrame(AZPosition: TChartDistance): TRect;
+    function EffectiveGUIConnector: TChartGUIConnector; inline;
   private
     FActiveToolIndex: Integer;
     FAutoFocus: Boolean;
@@ -205,7 +209,6 @@ type
     FClipRect: TRect;
     FCurrentExtent: TDoubleRect;
     FDisableRedrawingCounter: Integer;
-    FDrawer: IChartDrawer;
     FExtentBroadcaster: TBroadcaster;
     FIsZoomed: Boolean;
     FOffset: TDoublePoint;   // Coordinates transformation
@@ -239,6 +242,7 @@ type
     procedure SetExtentSizeLimit(AValue: TChartExtent);
     procedure SetFoot(Value: TChartTitle);
     procedure SetFrame(Value: TChartPen);
+    procedure SetGUIConnector(AValue: TChartGUIConnector);
     procedure SetLegend(Value: TChartLegend);
     procedure SetLogicalExtent(const AValue: TDoubleRect);
     procedure SetMargins(AValue: TChartMargins);
@@ -320,7 +324,7 @@ type
     function SaveToImage(AClass: TRasterImageClass): TRasterImage;
     procedure StyleChanged(Sender: TObject); override;
     procedure ZoomFull(AImmediateRecalc: Boolean = false); override;
-    property Drawer: IChartDrawer read FDrawer;
+    property Drawer: IChartDrawer read FConnectorData.FDrawer;
 
   public // Coordinate conversion
     function GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
@@ -368,6 +372,8 @@ type
     property ExtentSizeLimit: TChartExtent read FExtentSizeLimit write SetExtentSizeLimit;
     property Foot: TChartTitle read FFoot write SetFoot;
     property Frame: TChartPen read FFrame write SetFrame;
+    property GUIConnector: TChartGUIConnector
+      read FGUIConnector write SetGUIConnector;
     property LeftAxis: TChartAxis index calLeft read GetAxisByAlign write SetAxisByAlign stored false;
     property Legend: TChartLegend read FLegend write SetLegend;
     property Margins: TChartMargins read FMargins write SetMargins;
@@ -598,7 +604,9 @@ begin
   FAllowZoom := true;
   FAntialiasingMode := amDontCare;
   FAxisVisible := true;
-  FDrawer := TCanvasDrawer.Create(Canvas);
+  FConnectorData.FCanvas := Canvas;
+  FDefaultGUIConnector := TChartGUIConnectorCanvas.Create(Self);
+  FDefaultGUIConnector.CreateDrawer(FConnectorData);
   FScale := DoublePoint(1, 1);
 
   Width := DEFAULT_CHART_WIDTH;
@@ -671,6 +679,7 @@ begin
   FreeAndNil(FBuiltinToolset);
   FreeAndNil(FBroadcaster);
   FreeAndNil(FExtentBroadcaster);
+  FreeAndNil(FDefaultGUIConnector);
 
   DrawData.DeleteByChart(Self);
   inherited;
@@ -901,6 +910,12 @@ begin
   if ReticuleMode in [rmHorizontal, rmCross] then
     DrawLineHoriz(ADrawer, FReticulePos.Y);
   ADrawer.SetXor(false);
+end;
+
+function TChart.EffectiveGUIConnector: TChartGUIConnector;
+begin
+  Result := TChartGUIConnector(
+    IfThen(FGUIConnector = nil, FDefaultGUIConnector, FGUIConnector));
 end;
 
 procedure TChart.EnableRedrawing;
@@ -1180,12 +1195,17 @@ procedure TChart.Paint;
 var
   defaultDrawing: Boolean = true;
 begin
+  FConnectorData.FBounds := GetClientRect;
   {$WARNINGS OFF}
   if Assigned(OnChartPaint) then
-    OnChartPaint(Self, GetClientRect, defaultDrawing);
+    OnChartPaint(Self, FConnectorData.FBounds, defaultDrawing);
   {$WARNINGS ON}
   if defaultDrawing then
-    Draw(FDrawer, GetClientRect);
+    with EffectiveGUIConnector do begin
+      SetBounds(FConnectorData);
+      Draw(Drawer, FConnectorData.FDrawerBounds);
+      EffectiveGUIConnector.Display(FConnectorData);
+  end;
   if Assigned(OnAfterPaint) then
     OnAfterPaint(Self);
 end;
@@ -1394,6 +1414,14 @@ begin
   StyleChanged(Self);
 end;
 
+procedure TChart.SetGUIConnector(AValue: TChartGUIConnector);
+begin
+  if FGUIConnector = AValue then exit;
+  FGUIConnector := AValue;
+  EffectiveGUIConnector.CreateDrawer(FConnectorData);
+  StyleChanged(Self);
+end;
+
 procedure TChart.SetLegend(Value: TChartLegend);
 begin
   FLegend.Assign(Value);
@@ -1519,9 +1547,9 @@ end;
 procedure TChart.SetReticulePos(const AValue: TPoint);
 begin
   if FReticulePos = AValue then exit;
-  DrawReticule(FDrawer);
+  DrawReticule(Drawer);
   FReticulePos := AValue;
-  DrawReticule(FDrawer);
+  DrawReticule(Drawer);
 end;
 
 procedure TChart.SetTitle(Value: TChartTitle);

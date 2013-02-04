@@ -3158,6 +3158,7 @@ components/tachart/tafuncseries.pas svneol=native#text/pascal
 components/tachart/tageometry.pas svneol=native#text/pascal
 components/tachart/tagraph.lrs svneol=native#text/pascal
 components/tachart/tagraph.pas svneol=native#text/plain
+components/tachart/taguiconnector.pas svneol=native#text/pascal
 components/tachart/taintervalsources.pas svneol=native#text/pascal
 components/tachart/talegend.pas svneol=native#text/plain
 components/tachart/talegendpanel.pas svneol=native#text/pascal

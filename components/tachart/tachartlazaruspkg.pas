@@ -15,7 +15,7 @@ uses
   TAChartListbox, TAEnumerators, TADataPointsEditor, TAChartExtentLink, 
   TAToolEditors, TAMath, TAChartImageList, TADataTools, TAAnimatedSource, 
   TATextElements, TAAxisSource, TASeriesPropEditors, TACustomFuncSeries, 
-  TAFitUtils, LazarusPackageIntf;
+  TAFitUtils, TAGUIConnector, LazarusPackageIntf;
 
 implementation
 
