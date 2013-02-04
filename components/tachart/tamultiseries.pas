@@ -146,6 +146,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    function AddXOHLC(
+      AX, AOpen, AHigh, ALow, AClose: Double;
+      ALabel: String = ''; AColor: TColor = clTAColor): Integer; inline;
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
   published
@@ -577,6 +580,19 @@ end;
 
 { TOpenHighLowCloseSeries }
 
+function TOpenHighLowCloseSeries.AddXOHLC(
+  AX, AOpen, AHigh, ALow, AClose: Double;
+  ALabel: String; AColor: TColor): Integer;
+begin
+  Result := ListSource.Add(AX, 0, ALabel, AColor);
+  with ListSource.Item[Result]^ do begin
+    SetY(YIndexOpen, AOpen);
+    SetY(YIndexHigh, AHigh);
+    SetY(YIndexLow, ALow);
+    SetY(YIndexClose, AClose);
+  end;
+end;
+
 procedure TOpenHighLowCloseSeries.Assign(ASource: TPersistent);
 begin
   if ASource is TOpenHighLowCloseSeries then
@@ -601,10 +617,10 @@ begin
   FLinePen := TPen.Create;
   FLinePen.OnChange := @StyleChanged;
   FTickWidth := DEF_OHLC_TICK_WIDTH;
-  FYIndexOpen := DEF_YINDEX_OPEN;
-  FYIndexLow := DEF_YINDEX_LOW;
-  FYIndexHigh := DEF_YINDEX_HIGH;
   FYIndexClose := DEF_YINDEX_CLOSE;
+  FYIndexHigh := DEF_YINDEX_HIGH;
+  FYIndexLow := DEF_YINDEX_LOW;
+  FYIndexOpen := DEF_YINDEX_OPEN;
 end;
 
 destructor TOpenHighLowCloseSeries.Destroy;
