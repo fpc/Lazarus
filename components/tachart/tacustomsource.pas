@@ -94,6 +94,7 @@ type
     Text: String;
     YList: TDoubleDynArray;
     function GetY(AIndex: Integer): Double;
+    procedure SetY(AIndex: Integer; AValue: Double);
     procedure SetY(AValue: Double);
     procedure MultiplyY(ACoeff: Double);
     function Point: TDoublePoint; inline;
@@ -428,6 +429,14 @@ begin
   Y := AValue;
   for i := 0 to High(YList) do
     YList[i] := AValue;
+end;
+
+procedure TChartDataItem.SetY(AIndex: Integer; AValue: Double);
+begin
+  if AIndex = 0 then
+    Y := AValue
+  else
+    YList[AIndex - 1] := AValue;
 end;
 
 { TChartSourceBuffer }
