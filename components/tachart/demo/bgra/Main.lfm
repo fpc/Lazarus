@@ -50,11 +50,20 @@ object Form1: TForm1
         object cbPie: TCheckBox
           Left = 104
           Height = 17
-          Top = 7
+          Top = 8
           Width = 34
           Caption = 'Pie'
           OnChange = cbPieChange
           TabOrder = 1
+        end
+        object cbUseConnector: TCheckBox
+          Left = 164
+          Height = 17
+          Top = 8
+          Width = 172
+          Caption = 'Use BGRA for standard drawing'
+          OnChange = cbUseConnectorChange
+          TabOrder = 2
         end
       end
       object chSimple: TChart
@@ -89,6 +98,7 @@ object Form1: TForm1
         OnAfterPaint = chSimpleAfterPaint
         Align = alLeft
         Color = clGreen
+        DoubleBuffered = True
         ParentColor = False
         object chSimpleLineSeries1: TLineSeries
           ZPosition = 10
@@ -373,5 +383,9 @@ object Form1: TForm1
     )
     left = 192
     top = 320
+  end
+  object ChartGUIConnectorBGRA1: TChartGUIConnectorBGRA
+    left = 440
+    top = 184
   end
 end

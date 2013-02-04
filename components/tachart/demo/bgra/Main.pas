@@ -5,10 +5,9 @@ unit Main;
 interface
 
 uses
-  Classes, ComCtrls, ExtCtrls, StdCtrls, SysUtils, FileUtil, Forms,
-  Controls, Graphics, Dialogs,
-  TAGraph, TASeries, TASources, TAAnimatedSource, TACustomSource,
-  BGRASliceScaling;
+  Classes, ComCtrls, ExtCtrls, StdCtrls, SysUtils, FileUtil, Forms, Controls,
+  Graphics, Dialogs, TAGraph, TAGUIConnectorBGRA, TASeries, TASources,
+  TAAnimatedSource, TACustomSource, BGRASliceScaling;
 
 type
 
@@ -18,6 +17,8 @@ type
     btnStartStop: TButton;
     cbAntialiasing: TCheckBox;
     cbPie: TCheckBox;
+    ChartGUIConnectorBGRA1: TChartGUIConnectorBGRA;
+    cbUseConnector: TCheckBox;
     chSimple: TChart;
     chSimpleAreaSeries1: TAreaSeries;
     chSimpleBarSeries1: TBarSeries;
@@ -40,6 +41,7 @@ type
     procedure btnStartStopClick(Sender: TObject);
     procedure cbAntialiasingChange(Sender: TObject);
     procedure cbPieChange(Sender: TObject);
+    procedure cbUseConnectorChange(Sender: TObject);
     procedure chSimpleAfterPaint(ASender: TChart);
     procedure chBarEffectsBarSeries1BeforeDrawBar(ASender: TBarSeries;
       ACanvas: TCanvas; const ARect: TRect; APointIndex, AStackIndex: Integer;
@@ -90,6 +92,14 @@ end;
 procedure TForm1.cbPieChange(Sender: TObject);
 begin
   chSimplePieSeries1.Active := cbPie.Checked;
+end;
+
+procedure TForm1.cbUseConnectorChange(Sender: TObject);
+begin
+  if cbUseConnector.Checked then
+    chSimple.GUIConnector := ChartGUIConnectorBGRA1
+  else
+    chSimple.GUIConnector := nil;
 end;
 
 procedure TForm1.chSimpleAfterPaint(ASender: TChart);
