@@ -160,6 +160,8 @@ begin
   t(' a','a',0);
   t(' a','a ',0);
   t(' a: b','a:b',0);
+  t('procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings; AIndex,'#13#10'  ACount: Integer); ',
+    'procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);',0);
 end;
 
 initialization
