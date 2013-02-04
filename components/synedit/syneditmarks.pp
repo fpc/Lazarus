@@ -201,6 +201,7 @@ type
   protected
     // will be reset by TSynEditMarkLine.ChangeSize;
     FLastIteratorIndex: Integer;
+    function CreateNode(APosition: Integer): TSynSizedDifferentialAVLNode; override;
   public
     constructor Create(AOwner: TSynEditMarkList);
     destructor Destroy; override;
@@ -717,26 +718,11 @@ begin
 end;
 
 function TSynEditMarkLineList.GetMarkLineByMarkIndex(var AMarkIndex: Integer): TSynEditMarkLine;
+var
+  d1, d2: Integer;
 begin
-  Result := TSynEditMarkLine(FRoot);
-  while Result <> nil do begin
-
-    if AMarkIndex < Result.LeftSizeSum then begin
-      Result := Result.Left;
-      continue;
-    end;
-
-    AMarkIndex := AMarkIndex - Result.LeftSizeSum;
-    if AMarkIndex < Result.Size then begin
-      break;
-    end
-    else begin
-      AMarkIndex := AMarkIndex - Result.Size;
-      Result := Result.Right;
-      continue;
-    end;
-
-  end;
+  Result := TSynEditMarkLine(FindNodeAtLeftSize(AMarkIndex, d1, d2));
+  AMarkIndex := AMarkIndex - d2;
 end;
 
 function TSynEditMarkLineList.GetMarkLine(LineNum: Integer): TSynEditMarkLine;
@@ -749,50 +735,15 @@ function TSynEditMarkLineList.GetOrAddMarkLine(LineNum: Integer;
 var
   rStartPosition: Integer;
   p: TSynEditMarkLine;
+  d1, d2: Integer;
 begin
-  Result := TSynEditMarkLine(FRoot);
-  if (Result = nil) and AddIfNotExist then begin
-    Result := TSynEditMarkLine.Create(LineNum, Self);
-    SetRoot(Result);
-    exit;
-  end;
-
-  rStartPosition := fRootOffset;
-  p := nil;
-
-  while (Result <> nil) do begin
-    rStartPosition := rStartPosition + Result.FPositionOffset;
-
-    if rStartPosition > LineNum then begin
-      if (Result.Left = nil) and AddIfNotExist then begin
-        p := Result;
-        Result := TSynEditMarkLine.Create(LineNum, Self);
-        p.SetLeftChild(Result, -rStartPosition);
-        BalanceAfterInsert(Result);
-        break;
-      end;
-      // Store current in p, as posible UseNext
-      p := Result;
-      Result := Result.Left;
-    end
-
-    else if LineNum = rStartPosition then begin
-      break;
-    end
-
-    else if rStartPosition < LineNum then begin
-      if (Result.Right = nil) and AddIfNotExist then begin
-        p := Result;
-        Result := TSynEditMarkLine.Create(LineNum, Self);
-        p.SetRightChild(Result, -rStartPosition);
-        BalanceAfterInsert(Result);
-        break;
-      end;
-      Result := Result.Right;
-    end;
-  end; // while
-  if UseNext and (Result = nil) then
-    Result := p;
+  if AddIfNotExist then
+    Result := TSynEditMarkLine(FindNodeAtPosition(LineNum, afmCreate, d1, d2))
+  else
+  if UseNext then
+    Result := TSynEditMarkLine(FindNodeAtPosition(LineNum, afmNext, d1, d2))
+  else
+    Result := TSynEditMarkLine(FindNodeAtPosition(LineNum, afmNil, d1, d2));
 end;
 
 procedure TSynEditMarkLineList.AdjustForLinesInserted(AStartLine, ALineCount: Integer);
@@ -854,6 +805,11 @@ begin
       Current := Current.Right;
     end;
   end;
+end;
+
+function TSynEditMarkLineList.CreateNode(APosition: Integer): TSynSizedDifferentialAVLNode;
+begin
+  Result := TSynEditMarkLine.Create(APosition, Self);
 end;
 
 constructor TSynEditMarkLineList.Create(AOwner: TSynEditMarkList);
