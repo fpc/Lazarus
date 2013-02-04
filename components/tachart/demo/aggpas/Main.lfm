@@ -116,4 +116,8 @@ object Form1: TForm1
     left = 90
     top = 210
   end
+  object ChartGUIConnectorAggPas1: TChartGUIConnectorAggPas
+    left = 380
+    top = 136
+  end
 end

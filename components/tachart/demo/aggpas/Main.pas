@@ -5,8 +5,9 @@ unit Main;
 interface
 
 uses
-  Classes, ExtCtrls, StdCtrls, SysUtils, FileUtil, Forms, Controls, Graphics,
-  FPCanvas, Dialogs, Agg_LCL, TAGraph, TASeries, TASources, TADrawerAggPas;
+  Classes, ExtCtrls, StdCtrls, SysUtils, FileUtil, Forms, Controls,
+  Graphics, FPCanvas, Dialogs, Agg_LCL, TAGraph, TAGUIConnectorAggPas, TASeries,
+  TASources, TADrawerAggPas, TADrawUtils;
 
 type
 
@@ -20,13 +21,12 @@ type
     Chart1LineSeries1: TLineSeries;
     Chart1PieSeries1: TPieSeries;
     cbAggPas: TCheckBox;
+    ChartGUIConnectorAggPas1: TChartGUIConnectorAggPas;
     PaintBox1: TPaintBox;
     Panel1: TPanel;
     RandomChartSource1: TRandomChartSource;
     procedure cbAggPasClick(Sender: TObject);
     procedure Chart1AfterPaint(ASender: TChart);
-    procedure ChartPaint(
-      ASender: TChart; const ARect: TRect; var ADoDefaultDrawing: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure PaintBox1Paint(Sender: TObject);
@@ -43,32 +43,22 @@ implementation
 {$R *.lfm}
 
 uses
-  TADrawerCanvas, TADrawUtils;
+  TAChartUtils, TADrawerCanvas;
 
 { TForm1 }
 
 procedure TForm1.cbAggPasClick(Sender: TObject);
 begin
   if cbAggPas.Checked then
-    Chart1.OnChartPaint := @ChartPaint
+    Chart1.GUIConnector := ChartGUIConnectorAggPas1
   else
-    Chart1.OnChartPaint := nil;
+    Chart1.GUIConnector := nil;
 end;
 
 procedure TForm1.Chart1AfterPaint(ASender: TChart);
 begin
+  Unused(ASender);
   PaintBox1.Invalidate;
-end;
-
-procedure TForm1.ChartPaint(ASender: TChart; const ARect: TRect;
-  var ADoDefaultDrawing: Boolean);
-begin
-  FAggCanvas.Width := ARect.Right - ARect.Left;
-  FAggCanvas.Height := ARect.Bottom - ARect.Top;
-  ASender.Draw(TAggPasDrawer.Create(FAggCanvas), ARect);
-  FBmp.LoadFromIntfImage(FAggCanvas.Image.IntfImg);
-  ASender.Canvas.Draw(0, 0, FBmp);
-  ADoDefaultDrawing := false;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
