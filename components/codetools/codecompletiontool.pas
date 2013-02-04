@@ -7639,17 +7639,16 @@ begin
         // this body has a definition
         // compare body and definition
         NewProcCode:=ExtractProcHead(DefNodeExt.Node,ProcAttrCopyDefToBody);
+        BodyProcHeadNode:=BodyNodeExt.Node.FirstChild;
+        InsertPos:=BodyNodeExt.Node.StartPos;
+        InsertEndPos:=BodyProcHeadNode.EndPos;
+        Indent:=GetLineIndent(Src,InsertPos);
+        NewProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
+                     NewProcCode,Indent,false);
         OldProcCode:=ExtractProcHead(BodyNodeExt.Node,ProcAttrCopyDefToBody);
         if CompareTextIgnoringSpace(NewProcCode,OldProcCode,true)<>0 then begin
           // update body
-          debugln(['TCodeCompletionCodeTool.UpdateProcBodySignatures Old="',dbgstr(OldProcCode),'" New="',dbgstr(NewProcCode),'"']);
-          BodyProcHeadNode:=BodyNodeExt.Node.FirstChild;
-          InsertPos:=BodyNodeExt.Node.StartPos;
-          InsertEndPos:=BodyProcHeadNode.EndPos;
-          Indent:=GetLineIndent(Src,InsertPos);
-          NewProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
-                       NewProcCode,Indent,false);
-          //debugln(['UpdateProcBodySignatures OLD=',copy(Src,InsertPos,InsertEndPos-InsertPos),' New=',NewProcCode]);
+          //debugln(['TCodeCompletionCodeTool.UpdateProcBodySignatures Old="',dbgstr(OldProcCode),'" New="',dbgstr(NewProcCode),'"']);
           ProcsCopied:=true;
           if not ASourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertEndPos,NewProcCode) then
             exit(false);
