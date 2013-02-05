@@ -427,8 +427,7 @@ procedure TCustomUpDown.Notification(AComponent: TComponent;
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FAssociate) then
-    if HandleAllocated then
-      SetAssociate(nil);
+    SetAssociate(nil);
 end;
 
 function TCustomUpDown.GetPosition: SmallInt;
