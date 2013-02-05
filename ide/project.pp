@@ -767,7 +767,7 @@ type
     FDefineTemplates: TProjectDefineTemplates;
     fDestroying: boolean;
     FEnableI18N: boolean;
-    fFirst: array[TUnitInfoList] of TUnitInfo;
+    fFirst, fLast: array[TUnitInfoList] of TUnitInfo;
     FFirstRemovedDependency: TPkgDependency;
     FFirstRequiredDependency: TPkgDependency;
     FJumpHistory: TProjectJumpHistory;
@@ -5712,11 +5712,13 @@ begin
   if (fFirst[ListType]<>AnUnitInfo)
   and (AnUnitInfo.fNext[ListType]=nil)
   and (AnUnitInfo.fPrev[ListType]=nil) then begin
-    AnUnitInfo.fNext[ListType]:=fFirst[ListType];
-    AnUnitInfo.fPrev[ListType]:=nil;
-    fFirst[ListType]:=AnUnitInfo;
-    if AnUnitInfo.fNext[ListType]<>nil then
-      AnUnitInfo.fNext[ListType].fPrev[ListType]:=AnUnitInfo;
+    AnUnitInfo.fPrev[ListType]:=fLast[ListType];
+    AnUnitInfo.fNext[ListType]:=nil;
+    if fFirst[ListType]=nil then
+      fFirst[ListType]:=AnUnitInfo
+    else
+      fLast[ListType].fNext[ListType]:=AnUnitInfo;
+    fLast[ListType]:=AnUnitInfo;
   end;
 end;
 
@@ -5725,6 +5727,8 @@ begin
   // remove from list if AnUnitInfo is in list
   if fFirst[ListType]=AnUnitInfo then
     fFirst[ListType]:=AnUnitInfo.fNext[ListType];
+  if fLast[ListType]=AnUnitInfo then
+    fLast[ListType]:=AnUnitInfo.fPrev[ListType];
   if AnUnitInfo.fNext[ListType]<>nil then
     AnUnitInfo.fNext[ListType].fPrev[ListType]:=AnUnitInfo.fPrev[ListType];
   if AnUnitInfo.fPrev[ListType]<>nil then
