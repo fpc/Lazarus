@@ -271,12 +271,12 @@ begin
   If FOrientation = udHorizontal then begin
     d:=ClientWidth div 2;
     MinBtn.SetBounds(0,0,d,ClientHeight);
-    MaxBtn.SetBounds(d,0,ClientWidth-d,ClientHeight);
+    MaxBtn.SetBounds(ClientHeight-d,0,d,ClientHeight);
   end
   else begin
     d:=ClientHeight div 2;
     MaxBtn.SetBounds(0,0,ClientWidth,d);
-    MinBtn.SetBounds(0,d,ClientWidth,ClientHeight-d);
+    MinBtn.SetBounds(0,ClientWidth-d,ClientWidth,d);
   end;
 end;
 
@@ -528,5 +528,4 @@ begin
 end;
 
 // included by comctrls.pp
-
 
