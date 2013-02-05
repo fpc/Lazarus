@@ -1085,7 +1085,8 @@ begin
   WriteLRSInteger(AStream,Height);
 
   //images
-  AStream.Write(FData[0], FWidth * FHeight * FCount * SizeOf(FData[0]));
+  if Count > 0 then
+    AStream.Write(FData[0], FWidth * FHeight * FCount * SizeOf(FData[0]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1161,7 +1162,8 @@ var
     FHeight := ReadLRSCardinal(AStream);
     
     AllocData(FCount);
-    AStream.ReadBuffer(FData[0], FWidth * FHeight * FCount *  SizeOf(FData[0])) ;
+    if FCount > 0 then
+      AStream.ReadBuffer(FData[0], FWidth * FHeight * FCount *  SizeOf(FData[0])) ;
 
     FChanged := true;
     Change;
