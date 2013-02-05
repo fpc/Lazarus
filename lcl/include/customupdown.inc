@@ -81,38 +81,38 @@ procedure TUpDownButton.Click;
 begin
   with FUpDown do
   begin
-    FCanChange.Pos := Position;
-    FCanChange.Dir := updNone;
+    FCanChangePos := Position;
+    FCanChangeDir := updNone;
 
     case FButtonType of
       btPrev :
         begin
-          FCanChange.Dir := updDown;
+          FCanChangeDir := updDown;
 
           if Position - Increment >= Min then
-            FCanChange.Pos := Position - Increment
+            FCanChangePos := Position - Increment
           else
             if Wrap then
-              FCanChange.Pos := Max + (Position - Increment - Min) + 1
+              FCanChangePos := Max + (Position - Increment - Min) + 1
           else
-            FCanChange.Pos := Min;
+            FCanChangePos := Min;
         end;
       btNext :
         begin
-          FCanChange.Dir := updUp;
+          FCanChangeDir := updUp;
 
           if Position + Increment <= Max then
-            FCanChange.Pos := Position + Increment
+            FCanChangePos := Position + Increment
           else
             If Wrap then
-              FCanChange.Pos := Min + (Position + Increment - Max) - 1
+              FCanChangePos := Min + (Position + Increment - Max) - 1
           else
-            FCanChange.Pos := Max;
+            FCanChangePos := Max;
         end;
         
     end;
     if not CanChange then Exit;
-    Position := FCanChange.Pos;
+    Position := FCanChangePos;
 
     Click(FButtonType);
   end;
@@ -265,14 +265,18 @@ begin
 end;
 
 procedure TCustomUpDown.UpdateOrientation;
+var
+  d: Integer;
 begin
   If FOrientation = udHorizontal then begin
-    MinBtn.SetBounds(0,0,ClientWidth div 2,ClientHeight);
-    MaxBtn.SetBounds(ClientWidth div 2,0,ClientWidth div 2,ClientHeight);
+    d:=ClientWidth div 2;
+    MinBtn.SetBounds(0,0,d,ClientHeight);
+    MaxBtn.SetBounds(d,0,ClientWidth-d,ClientHeight);
   end
   else begin
-    MaxBtn.SetBounds(0,0,ClientWidth,ClientHeight div 2);
-    MinBtn.SetBounds(0,ClientHeight div 2,ClientWidth,ClientHeight div 2);
+    d:=ClientHeight div 2;
+    MaxBtn.SetBounds(0,0,ClientWidth,d);
+    MinBtn.SetBounds(0,d,ClientWidth,ClientHeight-d);
   end;
 end;
 
@@ -305,24 +309,6 @@ begin
   end;
 end;
 
-{procedure TCustomUpDown.ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer);
-var
-  ARect : TRect;
-begin
-  If InheritedChangeBounds or (csLoading in ComponentState) then
-    Inherited ChangeBounds(ALeft, ATop, AWidth, AHeight)
-  else begin
-    InheritedChangeBounds := True;
-    ARect := ClientRect;
-    InvalidateRect(Handle, @ARect, False);
-    SetAlignButton(FAlignButton);
-    SetOrientation(FOrientation);
-    SetPosition(FPosition);
-    InheritedChangeBounds := False;
-    Inherited ChangeBounds(ALeft, ATop, AWidth, AHeight);
-  end;
-end;}
-
 function TCustomUpDown.CanChange: Boolean;
 begin
   Result := True;
@@ -331,8 +317,7 @@ begin
     FOnChanging(Self, Result);
 
   if Assigned(FOnChangingEx) then
-    FOnChangingEx(Self, Result, FCanChange.Pos, FCanChange.Dir);
-
+    FOnChangingEx(Self, Result, FCanChangePos, FCanChangeDir);
 end;
 
 procedure TCustomUpDown.Click(Button: TUDBtnType);

@@ -1732,13 +1732,8 @@ type
     FOnClick: TUDClickEvent;
     FAlignButton: TUDAlignButton;
     FOrientation: TUDOrientation;
-    FCanChange: record
-      // some temp info needed for can changeex
-      // it would have been better to pass this to the CanChange() function,
-      // but that would break compatebility, so we do it the vcl way
-      Pos: SmallInt;
-      Dir: TUpDownDirection;
-    end;
+    FCanChangePos: SmallInt;
+    FCanChangeDir: TUpDownDirection;
     function GetPosition: SmallInt;
     procedure BTimerExec(Sender : TObject);
     procedure SetAlignButton(Value: TUDAlignButton);
