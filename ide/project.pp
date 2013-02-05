@@ -3329,11 +3329,13 @@ var
     if BestUnitInfo=nil then begin
       AnUnitInfo:=FirstPartOfProject;
       while AnUnitInfo<>nil do begin
-        if (BestUnitInfo=nil)
-        or (FilenameIsPascalUnit(AnUnitInfo.Filename)
-             and (not FilenameIsPascalUnit(BestUnitInfo.Filename)))
-        then begin
-          BestUnitInfo:=AnUnitInfo;
+        if FileExistsCached(AnUnitInfo.Filename) then begin
+          if (BestUnitInfo=nil)
+          or (FilenameIsPascalUnit(AnUnitInfo.Filename)
+               and (not FilenameIsPascalUnit(BestUnitInfo.Filename)))
+          then begin
+            BestUnitInfo:=AnUnitInfo;
+          end;
         end;
         AnUnitInfo:=AnUnitInfo.NextPartOfProject;
       end;

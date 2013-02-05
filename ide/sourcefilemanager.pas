@@ -1799,7 +1799,7 @@ begin
       end
       else begin
         // reopen file
-        // This will adjust Page/WindowIndex if they are not continious
+        // This will adjust Page/WindowIndex if they are not continous
         Result:=OpenEditorFile(AnUnitInfo.Filename, -1, AnEditorInfo.WindowID,
                       AnEditorInfo, [ofProjectLoading,ofMultiOpen,ofOnlyIfExists], True);
         if Result=mrAbort then
