@@ -490,6 +490,7 @@ begin
   begin
     if Assigned(FItemProps[i]) then FItemProps[i].Free;
   end;
+  SetLength(FItemProps, 0);
 end;
 
 { TValueListEditor }
