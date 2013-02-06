@@ -28,8 +28,7 @@ implementation
 
 procedure TCustomClass.TCustomSubClass.DoSomething;
 begin
-  //put the cursor here and hit Ctrl+Space
-
+  if TBaseSubClass{declaration:fdt_nestedclasses.TBaseClass.TBaseSubClass}.ClassName<>'' then ;
 end;
 
 { TBaseClass.TBaseSubClass }
