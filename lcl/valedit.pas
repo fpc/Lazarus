@@ -686,7 +686,7 @@ var
 begin
   Result := '';
   I := Strings.IndexOfName(Key);
-  if Row > -1 then begin
+  if I > -1 then begin
     Inc(I, FixedRows);
     Result:=Cells[1,I];
   end;
@@ -697,7 +697,7 @@ var
   I: Integer;
 begin
   I := Strings.IndexOfName(Key);
-  if Row > -1 then begin
+  if I > -1 then begin
     Inc(I, FixedRows);
     Cells[1,I]:=AValue;
   end
