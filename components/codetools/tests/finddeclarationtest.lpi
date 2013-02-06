@@ -41,7 +41,7 @@
         <PackageName Value="fpcunitconsolerunner"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="finddeclarationtest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -57,6 +57,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="fdt_classhelper"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="fdt_nestedclasses.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="fdt_nestedclasses"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

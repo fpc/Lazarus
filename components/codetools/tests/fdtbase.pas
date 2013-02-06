@@ -1,8 +1,9 @@
 {
  Test with:
      ./finddeclarationtest --format=plain --suite=TTestFindDeclarationClassHelper
-     ./finddeclarationtest --format=plain --suite=TestFindDeclaration_base
-     ./finddeclarationtest --format=plain --suite=TestFindDeclaration_classhelper
+     ./finddeclarationtest --format=plain --suite=TestFindDeclaration_Base
+     ./finddeclarationtest --format=plain --suite=TestFindDeclaration_NestedClasses
+     ./finddeclarationtest --format=plain --suite=TestFindDeclaration_ClassHelper
 }
 unit fdtbase;
 
@@ -17,14 +18,15 @@ uses
 
 type
 
-  { TTestFindDeclarationClassHelper }
+  { TTestFindDeclaration }
 
-  TTestFindDeclarationClassHelper = class(TTestCase)
+  TTestFindDeclaration = class(TTestCase)
   private
     procedure FindDeclarations(Filename, Marker: string);
   published
-    procedure TestFindDeclaration_base;
-    procedure TestFindDeclaration_classhelper;
+    procedure TestFindDeclaration_Base;
+    procedure TestFindDeclaration_NestedClasses;
+    procedure TestFindDeclaration_ClassHelper;
   end;
 
 var
@@ -46,9 +48,9 @@ begin
   FindDeclarationTestSuite.AddTestSuiteFromClass(ATestClass);
 end;
 
-{ TTestFindDeclarationClassHelper }
+{ TTestFindDeclaration }
 
-procedure TTestFindDeclarationClassHelper.FindDeclarations(Filename,
+procedure TTestFindDeclaration.FindDeclarations(Filename,
   Marker: string);
 
   procedure PrependPath(Prefix: string; var Path: string);
@@ -64,12 +66,12 @@ var
   StartPos: Integer;
   ExpectedPath: String;
   PathPos: Integer;
-  CursorPos, TargetCursorPos: TCodeXYPosition;
-  TargetTopLine: integer;
-  TargetTool: TFindDeclarationTool;
-  TargetCleanPos: Integer;
-  TargetNode: TCodeTreeNode;
-  TargetPath: String;
+  CursorPos, FoundCursorPos: TCodeXYPosition;
+  FoundTopLine: integer;
+  FoundTool: TFindDeclarationTool;
+  FoundCleanPos: Integer;
+  FoundNode: TCodeTreeNode;
+  FoundPath: String;
 begin
   Filename:=TrimAndExpandFilename(Filename);
   Code:=CodeToolBoss.LoadFile(Filename,true,false);
@@ -87,41 +89,48 @@ begin
     p:=FindCommentEnd(Tool.Src,p,Tool.Scanner.NestedComments);
     if Tool.Src[StartPos]<>'{' then continue;
     PathPos:=StartPos+1;
+    //debugln(['TTestFindDeclaration.FindDeclarations Comment: ',dbgstr(Tool.Src,StartPos,p-StartPos)]);
     if copy(Tool.Src,PathPos,length(Marker))<>Marker then continue;
     PathPos+=length(Marker);
     ExpectedPath:=copy(Tool.Src,PathPos,p-1-PathPos);
-    //debugln(['TTestFindDeclarationClassHelper.FindDeclarations ',ExpectedPath]);
+    //debugln(['TTestFindDeclaration.FindDeclarations ExpectedPath=',ExpectedPath]);
     Tool.CleanPosToCaret(StartPos-1,CursorPos);
     if not CodeToolBoss.FindDeclaration(CursorPos.Code,CursorPos.X,CursorPos.Y,
-      TargetCursorPos.Code,TargetCursorPos.X,TargetCursorPos.Y,TargetTopLine)
+      FoundCursorPos.Code,FoundCursorPos.X,FoundCursorPos.Y,FoundTopLine)
     then begin
       AssertEquals('find declaration failed at '+Tool.CleanPosToStr(StartPos-1)+': '+CodeToolBoss.ErrorMessage,false,true);
       continue;
     end else begin
-      TargetTool:=CodeToolBoss.GetCodeToolForSource(TargetCursorPos.Code,true,true) as TFindDeclarationTool;
-      TargetTool.CaretToCleanPos(TargetCursorPos,TargetCleanPos);
-      TargetNode:=TargetTool.FindDeepestNodeAtPos(TargetCleanPos,true);
-      TargetPath:='';
-      while TargetNode<>nil do begin
-        case TargetNode.Desc of
+      FoundTool:=CodeToolBoss.GetCodeToolForSource(FoundCursorPos.Code,true,true) as TFindDeclarationTool;
+      FoundTool.CaretToCleanPos(FoundCursorPos,FoundCleanPos);
+      FoundNode:=FoundTool.FindDeepestNodeAtPos(FoundCleanPos,true);
+      FoundPath:='';
+      while FoundNode<>nil do begin
+        case FoundNode.Desc of
         ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition:
-          PrependPath(GetIdentifier(@TargetTool.Src[TargetNode.StartPos]),TargetPath);
+          PrependPath(GetIdentifier(@FoundTool.Src[FoundNode.StartPos]),FoundPath);
         ctnInterface,ctnUnit:
-          PrependPath(TargetTool.GetSourceName(false),TargetPath);
+          PrependPath(FoundTool.GetSourceName(false),FoundPath);
         end;
-        TargetNode:=TargetNode.Parent;
+        FoundNode:=FoundNode.Parent;
       end;
-      AssertEquals('find declaration wrong at '+Tool.CleanPosToStr(StartPos-1),LowerCase(ExpectedPath),LowerCase(TargetPath));
+      //debugln(['TTestFindDeclaration.FindDeclarations FoundPath=',FoundPath]);
+      AssertEquals('find declaration wrong at '+Tool.CleanPosToStr(StartPos-1),LowerCase(ExpectedPath),LowerCase(FoundPath));
     end;
   end;
 end;
 
-procedure TTestFindDeclarationClassHelper.TestFindDeclaration_base;
+procedure TTestFindDeclaration.TestFindDeclaration_Base;
 begin
   FindDeclarations('fdt_classhelper.pas','declaration:');
 end;
 
-procedure TTestFindDeclarationClassHelper.TestFindDeclaration_classhelper;
+procedure TTestFindDeclaration.TestFindDeclaration_NestedClasses;
+begin
+  FindDeclarations('fdt_nestedclasses.pas','declaration:');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_ClassHelper;
 begin
   FindDeclarations('fdt_classhelper.pas','declaration-classhelper:');
 end;
@@ -133,6 +142,6 @@ initialization
   FindDeclarationTestSuite := TTestSuite.Create('Parser');
   GetTestRegistry.AddTest(FindDeclarationTestSuite);
 
-  AddToFindDeclarationTestSuite(TTestFindDeclarationClassHelper);
+  AddToFindDeclarationTestSuite(TTestFindDeclaration);
 end.
 

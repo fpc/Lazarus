@@ -851,6 +851,7 @@ components/codetools/sourcechanger.pas svneol=native#text/pascal
 components/codetools/sourcelog.pas svneol=native#text/pascal
 components/codetools/stdcodetools.pas svneol=native#text/pascal
 components/codetools/tests/fdt_classhelper.pas svneol=native#text/plain
+components/codetools/tests/fdt_nestedclasses.pas svneol=native#text/plain
 components/codetools/tests/fdtbase.pas svneol=native#text/plain
 components/codetools/tests/finddeclarationtest.lpi svneol=native#text/plain
 components/codetools/tests/finddeclarationtest.lpr svneol=native#text/plain

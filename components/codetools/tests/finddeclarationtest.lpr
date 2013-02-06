@@ -20,8 +20,8 @@ program finddeclarationtest;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, sysutils, consoletestrunner, dom, fpcunit,
-  CodeToolManager, CodeToolsConfig, fdtbase, fdt_classhelper;
+  Classes, sysutils, consoletestrunner, dom, fpcunit, CodeToolManager,
+  CodeToolsConfig, LazLogger, fdtbase, fdt_classhelper, fdt_nestedclasses;
 
 const
   ConfigFilename = 'codetools.config';
@@ -64,6 +64,7 @@ begin
     // To not parse the FPC sources every time, the options are saved to a file.
     Options.LoadFromFile(ConfigFilename);
   end;
+  DebugLn(['EnvironmentVariables: PP, FPCDIR, LAZARUSDIR, FPCTARGET, FPCTARGETCPU']);
   Options.InitWithEnvironmentVariables;
 
   if HasOption('submitter') then
