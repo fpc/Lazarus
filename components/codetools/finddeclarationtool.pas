@@ -3313,7 +3313,7 @@ begin
   DebugLn('[TFindDeclarationTool.FindIdentifierInContext] Start Ident=',
   '"'+GetIdentifier(Params.Identifier)+'"',
   ' Context="'+ContextNode.DescAsString+'" "'+StringToPascalConst(copy(Src,ContextNode.StartPos,20)),'"',
-  ' File="'+ExtractFilename(MainFilename)+'"',
+  ' at '+CleanPosToStr(ContextNode.StartPos,true),
   ' Flags=['+dbgs(Params.Flags)+']'
   );
   {$ELSE}
@@ -3322,7 +3322,7 @@ begin
       DebugLn(['[TFindDeclarationTool.FindIdentifierInContext] COLLECT Start Ident=',
       '"',GetIdentifier(Params.Identifier),'"',
       ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
-      ' File="',ExtractFilename(MainFilename)+'"',
+      ' at '+CleanPosToStr(ContextNode.StartPos,true),
       ' Flags=[',dbgs(Params.Flags),']'
       ]);
     end;
@@ -5378,20 +5378,26 @@ begin
       // -> proceed the search normally ...
     end else begin
       // search the identifier in the class first
-      // 1. search the class in the same unit
+      // search the class in the same unit
       CurClassNode:=FindClassOfMethod(ProcContextNode,true,true);
-      // 2. -> search identifier in class
-      Params.Save(OldInput);
-      Params.Flags:=[fdfSearchInAncestors]
-                    +(fdfGlobalsSameIdent*Params.Flags)
-                    -[fdfExceptionOnNotFound];
-      Params.ContextNode:=CurClassNode;
-      {$IFDEF ShowTriedContexts}
-      DebugLn('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  searching identifier in class of method Identifier=',GetIdentifier(Params.Identifier));
-      {$ENDIF}
-      Result:=FindIdentifierInContext(Params);
-      Params.Load(OldInput,true);
-      if Result and Params.IsFoundProcFinal then exit;
+      repeat
+        // search identifier in class
+        Params.Save(OldInput);
+        Params.Flags:=[fdfSearchInAncestors]
+                      +(fdfGlobalsSameIdent*Params.Flags)
+                      -[fdfExceptionOnNotFound];
+        Params.ContextNode:=CurClassNode;
+        {$IFDEF ShowTriedContexts}
+        DebugLn('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  searching identifier in class of method Identifier=',GetIdentifier(Params.Identifier));
+        {$ENDIF}
+        Result:=FindIdentifierInContext(Params);
+        Params.Load(OldInput,true);
+        if Result and Params.IsFoundProcFinal then exit;
+        // in a nested class, continue search in enclosing class
+        repeat
+          CurClassNode:=CurClassNode.Parent;
+        until (CurClassNode=nil) or (CurClassNode.Desc in AllClassObjects);
+      until CurClassNode=nil;
     end;
   end else begin
     // proc is not a method
@@ -5685,7 +5691,7 @@ begin
   // search ancestor
   Params.Save(OldInput);
   Params.Flags:=[fdfSearchInParentNodes,fdfIgnoreCurContextNode,
-                 fdfExceptionOnNotFound]
+                 fdfExceptionOnNotFound,fdfSearchInAncestors]
                 +(fdfGlobals*Params.Flags)
                 -[fdfTopLvlResolving];
   Params.SetIdentifier(Self,@Src[AncestorStartPos],nil);
