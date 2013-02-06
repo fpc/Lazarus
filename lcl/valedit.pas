@@ -431,10 +431,18 @@ begin
 end;
 
 procedure TValueListStrings.Delete(Index: Integer);
+var
+  i: Integer;
 begin
   Changing;
   inherited Delete(Index);
-  // ToDo: Delete also ItemProps
+  // Delete also ItemProps
+  if Index<=Count then begin
+    FItemProps[Index].Free;
+    for i := Index to Length(FItemProps)-1 do
+      FItemProps[i] := FItemProps[i+1];
+    SetLength(FItemProps, Count);
+  end;
   Changed;
 end;
 
