@@ -5,7 +5,7 @@ unit ValEdit;
 interface
 
 uses
-  Classes, Controls, StdCtrls, SysUtils, Grids, LResources, Dialogs, LazUtf8, variants;
+  Classes, Controls, StdCtrls, SysUtils, Grids, LResources, Dialogs, LazUtf8, variants, LCLProc;
 
 type
 
@@ -56,6 +56,7 @@ type
     FOwner: TValueListEditor;
     FItemProps: TItemProps;
     function GetItemProp(const AKeyOrIndex: Variant): TItemProp;
+    procedure FreeItemProps;
   protected
     procedure SetTextStr(const Value: string); override;
     procedure InsertItem(Index: Integer; const S: string; AObject: TObject); override;
@@ -394,6 +395,7 @@ end;
 
 destructor TValueListStrings.Destroy;
 begin
+  FreeItemProps;
   inherited Destroy;
 end;
 
@@ -467,6 +469,18 @@ begin
       Result := TItemProp.Create(FOwner);
       FItemProps[i] := Result;
     end;
+  end;
+end;
+
+procedure TValueListStrings.FreeItemProps;
+var
+  i: Integer;
+begin
+  //{$R+}
+  //debugln('TValueListStrings.Destroy: Length(FItemProps) = ',dbgs(Length(FItemProps)));
+  for i := 0 to Length(FItemProps) - 1 do
+  begin
+    if Assigned(FItemProps[i]) then FItemProps[i].Free;
   end;
 end;
 
