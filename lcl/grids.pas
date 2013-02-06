@@ -7359,7 +7359,8 @@ var
   CurValue,NewValue: string;
 begin
   result := true;
-  if not (csDesigning in ComponentState) and (Editor<>nil) and Editor.Visible then begin
+  if (([csDesigning, csDestroying] * ComponentState) = [])
+  and (Editor<>nil) and Editor.Visible then begin
 
     if validate then begin
       CurValue := GetCells(FCol,FRow);
