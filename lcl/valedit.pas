@@ -60,6 +60,7 @@ type
   protected
     procedure SetTextStr(const Value: string); override;
     procedure InsertItem(Index: Integer; const S: string; AObject: TObject); override;
+    procedure InsertItem(Index: Integer; const S: string); override;
     procedure Put(Index: Integer; const S: String); override;
   public
     constructor Create(AOwner: TValueListEditor);
@@ -354,26 +355,23 @@ end;
 { TValueListStrings }
 
 procedure TValueListStrings.SetTextStr(const Value: string);
-var
-  IsShowingEditor: Boolean;
 begin
-  with FOwner do begin
-    // Don't show editor while changing values. Edited cell would not be changed.
-    IsShowingEditor := goAlwaysShowEditor in Options;
-    Options := Options - [goAlwaysShowEditor];
-    inherited SetTextStr(Value);
-    if IsShowingEditor then
-      Options := Options + [goAlwaysShowEditor];
-  end;
+  // ToDo: Assign also ItemProps ???
+  inherited SetTextStr(Value);
 end;
 
 procedure TValueListStrings.InsertItem(Index: Integer; const S: string; AObject: TObject);
 var
   i: Integer;
+  IsShowingEditor: Boolean;
 begin
   // ToDo: Check validity of key
+  //debugln('TValueListStrings.InsertItem: Index=',dbgs(index),' S=',S,' AObject=',dbgs(aobject));
   Changing;
+  IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
+  if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
   inherited InsertItem(Index, S, AObject);
+  if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
   SetLength(FItemProps, Count);
   for i := Count-2 downto Index do
     FItemProps[i+1] := FItemProps[i];
@@ -381,10 +379,27 @@ begin
   Changed;
 end;
 
-procedure TValueListStrings.Put(Index: Integer; const S: String);
+procedure TValueListStrings.InsertItem(Index: Integer; const S: string);
+var
+  IsShowingEditor: Boolean;
 begin
   // ToDo: Check validity of key
+  //debugln('TValueListStrings.InsertItem: Index=',dbgs(index),' S=',S);
+  IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
+  if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
+  inherited InsertItem(Index, S);
+  if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
+end;
+
+procedure TValueListStrings.Put(Index: Integer; const S: String);
+var
+  IsShowingEditor: Boolean;
+begin
+  // ToDo: Check validity of key
+  IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
+  if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
   inherited Put(Index, S);
+  if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
 end;
 
 constructor TValueListStrings.Create(AOwner: TValueListEditor);
@@ -400,28 +415,20 @@ begin
 end;
 
 procedure TValueListStrings.Assign(Source: TPersistent);
-var
-  IsShowingEditor: Boolean;
 begin
-  with FOwner do begin
-    // Don't show editor while changing values. Edited cell would not be changed.
-    IsShowingEditor := goAlwaysShowEditor in Options;
-    Options := Options - [goAlwaysShowEditor];
-    // ToDo: Assign also ItemProps if Source is TValueListStrings
-    inherited Assign(Source);
-    if IsShowingEditor then
-      Options := Options + [goAlwaysShowEditor];
-  end;
+  // ToDo: Assign also ItemProps if Source is TValueListStrings
+  inherited Assign(Source);
 end;
 
 procedure TValueListStrings.Clear;
 var
-  i: Integer;
+  IsShowingEditor: Boolean;
 begin
+  IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
+  if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
   inherited Clear;
-  for i := 0 to Length(FItemProps)-1 do
-    FItemProps[i].Free;
-  SetLength(FItemProps, 0);
+  if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
+  FreeItemProps;
 end;
 
 procedure TValueListStrings.CustomSort(Compare: TStringListSortCompare);
@@ -433,9 +440,13 @@ end;
 procedure TValueListStrings.Delete(Index: Integer);
 var
   i: Integer;
+  IsShowingEditor: Boolean;
 begin
   Changing;
+  IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
+  if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
   inherited Delete(Index);
+  if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
   // Delete also ItemProps
   if Index<=Count then begin
     FItemProps[Index].Free;
