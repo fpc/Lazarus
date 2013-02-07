@@ -4560,7 +4560,7 @@ end;
 procedure TLazPackageGraph.SortDependencyListTopologically(
   var FirstDependency: TPkgDependency; TopLevelFirst: boolean);
 // Sort dependency list topologically.
-// If TopLevelFirst is true then packages that needs others come first
+// If TopLevelFirst is true then packages that need others come first
 var
   Dependency: TPkgDependency;
   BucketStarts: PInteger;
