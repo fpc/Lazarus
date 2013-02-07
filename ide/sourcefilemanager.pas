@@ -4011,7 +4011,9 @@ begin
         exit;
       end;
     end;
-    //debugln('TLazSourceFileManager.LoadLFM LFM file loaded, parsing "',LFMBuf.Filename,'" ...');
+    {$IFDEF VerboseLFMSearch}
+    debugln('TLazSourceFileManager.LoadLFM LFM file loaded, parsing "',LFMBuf.Filename,'" ...');
+    {$ENDIF}
 
     // someone created a .lfm file -> Update HasResources
     AnUnitInfo.HasResources:=true;
@@ -4020,7 +4022,9 @@ begin
     QuickCheckLFMBuffer(AnUnitInfo.Source,LFMBuf,LFMType,LFMComponentName,
                         NewClassName,LCLVersion,MissingClasses);
 
-    //debugln('TLazSourceFileManager.LoadLFM LFM="',LFMBuf.Source,'"');
+    {$IFDEF VerboseLFMSearch}
+    debugln('TLazSourceFileManager.LoadLFM LFM="',LFMBuf.Source,'"');
+    {$ENDIF}
     if AnUnitInfo.Component=nil then begin
       // load/create new instance
 
@@ -4041,10 +4045,14 @@ begin
       end;
 
       if MissingClasses<>nil then begin
-        //DebugLn(['TLazSourceFileManager.LoadLFM has nested: ',AnUnitInfo.Filename]);
+        {$IFDEF VerboseLFMSearch}
+        DebugLn(['TLazSourceFileManager.LoadLFM has nested: ',AnUnitInfo.Filename]);
+        {$ENDIF}
         for i:=MissingClasses.Count-1 downto 0 do begin
           NestedClassName:=MissingClasses[i];
-          //DebugLn(['TLazSourceFileManager.LoadLFM nested ',i,' ',MissingClasses.Count,': ',NestedClassName]);
+          {$IFDEF VerboseLFMSearch}
+          DebugLn(['TLazSourceFileManager.LoadLFM nested ',i,' ',MissingClasses.Count,': ',NestedClassName]);
+          {$ENDIF}
           if SysUtils.CompareText(NestedClassName,AncestorType.ClassName)=0 then
           begin
             MissingClasses.Delete(i);
@@ -4454,6 +4462,9 @@ var
 
   procedure StoreCodetoolsError;
   begin
+    {$IFDEF VerboseLFMSearch}
+    debugln(['  StoreCodetoolsError: ',CodeToolBoss.ErrorMessage]);
+    {$ENDIF}
     if CTErrorMsg<>'' then exit;
     if CodeToolBoss.ErrorMessage<>'' then begin
       CTErrorMsg:=CodeToolBoss.ErrorMessage;
@@ -4470,6 +4481,9 @@ var
   var
     CurUnitInfo: TUnitInfo;
   begin
+    {$IFDEF VerboseLFMSearch}
+    debugln(['  TryUnitComponent UnitFilename="',UnitFilename,'"']);
+    {$ENDIF}
     Result:=false;
     TheModalResult:=mrCancel;
     if not FilenameIsPascalUnit(UnitFilename) then exit;
@@ -4493,6 +4507,9 @@ var
   var
     RegComp: TRegisteredComponent;
   begin
+    {$IFDEF VerboseLFMSearch}
+    debugln(['  TryRegisteredClasses aClassName="',aClassName,'"']);
+    {$ENDIF}
     Result:=false;
     TheModalResult:=mrCancel;
     RegComp:=IDEComponentPalette.FindComponent(aClassName);
@@ -4515,23 +4532,50 @@ var
     LFMClassName: String;
     LFMType: String;
   begin
+    {$IFDEF VerboseLFMSearch}
+    debugln(['  TryLFM UnitFilename="',UnitFilename,'" AClassName=',AClassName]);
+    {$ENDIF}
     Result:=false;
     TheModalResult:=mrCancel;
-    if not FilenameIsPascalSource(UnitFilename) then exit;
+    if not FilenameIsPascalSource(UnitFilename) then
+    begin
+      {$IFDEF VerboseLFMSearch}
+      debugln(['  TryLFM UnitFilename="',UnitFilename,'" is not a unit']);
+      {$ENDIF}
+      exit;
+    end;
     CurLFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
-    if not FileExistsUTF8(CurLFMFilename) then
+    if not FileExistsCached(CurLFMFilename) then
+    begin
+      {$IFDEF VerboseLFMSearch}
+      debugln(['  TryLFM CurLFMFilename="',CurLFMFilename,'" does not exist']);
+      {$ENDIF}
       CurLFMFilename:=ChangeFileExt(UnitFilename,'.dfm');
-    if not FileExistsUTF8(CurLFMFilename) then exit;
+      if not FileExistsCached(CurLFMFilename) then
+      begin
+        {$IFDEF VerboseLFMSearch}
+        debugln(['  TryLFM CurLFMFilename="',CurLFMFilename,'" does not exist']);
+        {$ENDIF}
+        exit;
+      end;
+    end;
     // load the lfm file
     TheModalResult:=LoadCodeBuffer(LFMCode,CurLFMFilename,[lbfCheckIfText],true);
-    if TheModalResult<>mrOk then begin
+    if TheModalResult<>mrOk then
+    begin
       debugln('TLazSourceFileManager.FindComponentClass Failed loading ',CurLFMFilename);
       exit;
     end;
     // read the LFM classname
     ReadLFMHeader(LFMCode.Source,LFMClassName,LFMType);
     if LFMType='' then ;
-    if SysUtils.CompareText(LFMClassName,AClassName)<>0 then exit;
+    if SysUtils.CompareText(LFMClassName,AClassName)<>0 then
+    begin
+      {$IFDEF VerboseLFMSearch}
+      debugln(['  TryLFM CurLFMFilename="',CurLFMFilename,'" LFMClassName="',LFMClassName,'" does not match']);
+      {$ENDIF}
+      exit;
+    end;
 
     // .lfm found
     LFMFilename:=CurLFMFilename;
@@ -4592,6 +4636,9 @@ var
       exit;
     end;
     if not CodeToolBoss.Explore(Code,Tool,false,true) then begin
+      {$IFDEF VerboseLFMSearch}
+      debugln(['  CodeToolBoss.Explore failed: ',Code.Filename]);
+      {$ENDIF}
       StoreCodetoolsError;
       exit;
     end;
@@ -4632,6 +4679,9 @@ var
           CodeToolBoss.HandleException(E);
       end;
       if not ok then begin
+        {$IFDEF VerboseLFMSearch}
+        debugln(['  find declaration failed.']);
+        {$ENDIF}
         StoreCodetoolsError;
         exit;
       end;
@@ -4667,6 +4717,9 @@ var
       if TryRegisteredClasses(AncestorClassName,AncestorClass,TheModalResult) then
         exit(true);
 
+      {$IFDEF VerboseLFMSearch}
+      debugln(['TryFindDeclaration declaration of ',AComponentClassName,' found at ',NewTool.CleanPosToStr(NewNode.StartPos),' Ancestor="',AncestorClassName,'", but no lfm and no registered class found']);
+      {$ENDIF}
     finally
       Params.Free;
     end;
@@ -4678,9 +4731,18 @@ var
     Code: TCodeBuffer;
     AncestorClassName: string;
   begin
+    {$IFDEF VerboseLFMSearch}
+    debugln(['  TryUsedUnitInterface UnitFilename="',UnitFilename,'"']);
+    {$ENDIF}
     Result:=false;
     TheModalResult:=mrCancel;
-    if not FilenameIsPascalSource(UnitFilename) then exit;
+    if not FilenameIsPascalSource(UnitFilename) then
+    begin
+      {$IFDEF VerboseLFMSearch}
+      debugln(['  TryUsedUnitInterface UnitFilename="',UnitFilename,'" is not a unit']);
+      {$ENDIF}
+      exit;
+    end;
     AncestorClassName:='';
     Code:=CodeToolBoss.LoadFile(UnitFilename,true,false);
     if Code=nil then begin
@@ -4690,10 +4752,18 @@ var
     if not CodeToolBoss.FindFormAncestor(Code,AComponentClassName,
       AncestorClassName,true) then
     begin
+      {$IFDEF VerboseLFMSearch}
+      debugln(['  TryUsedUnitInterface FindFormAncestor failed for "',AComponentClassName,'"']);
+      {$ENDIF}
       StoreCodetoolsError;
       exit;
     end;
-    if AncestorClassName='' then exit;
+    if AncestorClassName='' then begin
+      {$IFDEF VerboseLFMSearch}
+      debugln(['  TryUsedUnitInterface FindFormAncestor failed silently for "',AComponentClassName,'"']);
+      {$ENDIF}
+      exit;
+    end;
     if TryRegisteredClasses(AncestorClassName,AncestorClass,TheModalResult) then
       exit(true);
   end;
@@ -4739,6 +4809,11 @@ begin
       Result:=mrCancel;
       exit;
     end;
+
+    {$IFDEF VerboseLFMSearch}
+    if (UsedUnitFilenames=nil) or (UsedUnitFilenames.Count=0) then
+      debugln(['TLazSourceFileManager.FindComponentClass unit has no main uses']);
+    {$ENDIF}
 
     if (UsedUnitFilenames<>nil) then begin
       // search for every used unit the .lfm file
@@ -4805,7 +4880,12 @@ function TLazSourceFileManager.LoadComponentDependencyHidden(
     TheModalResult:=mrCancel;
     // load lfm
     TheModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],true);
-    if TheModalResult<>mrOk then exit(TheModalResult=mrAbort);
+    if TheModalResult<>mrOk then begin
+      {$IFDEF VerboseLFMSearch}
+      debugln(['  TryLFM LoadCodeBuffer failed ',LFMFilename]);
+      {$ENDIF}
+      exit(TheModalResult=mrAbort);
+    end;
     // check if the unit component is already loaded
     UnitFilename:=ChangeFileExt(LFMFilename,'.pas');
     CurUnitInfo:=Project1.UnitInfoWithFilename(UnitFilename);
@@ -4819,9 +4899,13 @@ function TLazSourceFileManager.LoadComponentDependencyHidden(
         // component already loaded
         if SysUtils.CompareText(CurUnitInfo.Component.ClassName,LFMClassName)<>0
         then begin
+          {$IFDEF VerboseLFMSearch}
+          debugln(['  TryLFM ERROR lfmclass=',LFMClassName,' unit.component=',DbgSName(CurUnitInfo.Component)]);
+          {$ENDIF}
           IDEMessageDialog('Error','Unable to load "'+LFMFilename+'".'
             +' The component '+DbgSName(CurUnitInfo.Component)
-            +' is already loaded for unit "'+CurUnitInfo.Filename+'"',
+            +' is already loaded for unit "'+CurUnitInfo.Filename+'"'#13
+            +'LFM contains a different class name "'+LFMClassName+'".',
             mtError,[mbCancel]);
           TheModalResult:=mrAbort;
           exit(true);
@@ -4834,7 +4918,7 @@ function TLazSourceFileManager.LoadComponentDependencyHidden(
     end else begin
       // load unit source
       UnitFilename:=ChangeFileExt(LFMFilename,'.pas');
-      if not FileExistsUTF8(UnitFilename) then
+      if not FileExistsCached(UnitFilename) then
         UnitFilename:=ChangeFileExt(LFMFilename,'.pp');
       TheModalResult:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText],true);
       if TheModalResult<>mrOk then exit(TheModalResult=mrAbort);
@@ -4850,7 +4934,7 @@ function TLazSourceFileManager.LoadComponentDependencyHidden(
     if (TheModalResult=mrOk) then begin
       ComponentUnitInfo:=CurUnitInfo;
       AComponentClass:=TComponentClass(ComponentUnitInfo.Component.ClassType);
-      {$ifdef VerboseFormEditor}
+      {$if defined(VerboseFormEditor) or defined(VerboseLFMSearch)}
       debugln('TLazSourceFileManager.LoadComponentDependencyHidden Wanted=',AComponentClassName,' Class=',AComponentClass.ClassName);
       {$endif}
       TheModalResult:=mrOk;
@@ -4888,25 +4972,14 @@ begin
   AnUnitInfo.LoadingComponent:=true;
   try
     // search component lfm
-    {$ifdef VerboseFormEditor}
+    {$if defined(VerboseFormEditor) or defined(VerboseLFMSearch)}
     debugln('TLazSourceFileManager.LoadComponentDependencyHidden ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName,' AComponentClass=',dbgsName(AComponentClass));
     {$endif}
     Result:=FindComponentClass(AnUnitInfo,AComponentClassName,Quiet,
       ComponentUnitInfo,AComponentClass,LFMFilename,AncestorClass);
-    if MustHaveLFM and (AComponentClass=nil) then
-      Result:=mrCancel;
-    {$ifdef VerboseFormEditor}
+    {$if defined(VerboseFormEditor) or defined(VerboseLFMSearch)}
     debugln('TLazSourceFileManager.LoadComponentDependencyHidden ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName,' AComponentClass=',dbgsName(AComponentClass),' AncestorClass=',DbgSName(AncestorClass),' LFMFilename=',LFMFilename);
     {$endif}
-    if Result=mrAbort then exit;
-    if Result<>mrOk then begin
-      Result:=IDEQuestionDialog(lisCodeTemplError,
-        Format(lisUnableToFindTheComponentClassItIsNotRegisteredViaR, [
-          AComponentClassName, LineEnding, LineEnding, LineEnding, AnUnitInfo.Filename]),
-        mtError, [mrCancel, lisCancelLoadingThisComponent,
-                 mrAbort, lisAbortWholeLoading,
-                 mrIgnore, lisIgnoreUseTFormAsAncestor]);
-    end;
 
     //- AComponentClass<>nil and ComponentUnitInfo<>nil
     //   designer component
@@ -4917,8 +4990,21 @@ begin
     //- AncestorClass<>nil
     //   componentclass does not exist, but the ancestor is a registered class
 
-    if LFMFilename<>'' then begin
-      if TryLFM(LFMFilename,Result) then exit;
+    if (Result=mrOk) and (AComponentClass=nil) and (LFMFilename<>'') then begin
+      TryLFM(LFMFilename,Result);
+      exit;
+    end;
+
+    if MustHaveLFM and (AComponentClass=nil) then
+      Result:=mrCancel;
+    if Result=mrAbort then exit;
+    if Result<>mrOk then begin
+      Result:=IDEQuestionDialog(lisCodeTemplError,
+        Format(lisUnableToFindTheComponentClassItIsNotRegisteredViaR, [
+          AComponentClassName, LineEnding, LineEnding, LineEnding, AnUnitInfo.Filename]),
+        mtError, [mrCancel, lisCancelLoadingThisComponent,
+                 mrAbort, lisAbortWholeLoading,
+                 mrIgnore, lisIgnoreUseTFormAsAncestor]);
     end;
   finally
     AnUnitInfo.LoadingComponent:=false;
