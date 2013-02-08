@@ -1186,7 +1186,7 @@ begin
     end;
   end;
   {$ENDIF}
-  FBufSize := 6;             //  possible BOM and '<?xml'
+  FBufSize := 8;             //  possible BOM and '<?xml'
   Reload;
   {$IFDEF UseWideString}
   if FBuf^ = #$FEFF then
