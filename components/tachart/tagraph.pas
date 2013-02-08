@@ -1187,7 +1187,9 @@ end;
 procedure TChart.Notification(AComponent: TComponent; AOperation: TOperation);
 begin
   if (AOperation = opRemove) and (AComponent = Toolset) then
-    FToolset := nil;
+    FToolset := nil
+  else if (AOperation = opRemove) and (AComponent = GUIConnector) then
+    GUIConnector := nil;
   inherited Notification(AComponent, AOperation);
 end;
 
@@ -1417,7 +1419,11 @@ end;
 procedure TChart.SetGUIConnector(AValue: TChartGUIConnector);
 begin
   if FGUIConnector = AValue then exit;
+  if FGUIConnector <> nil then
+    RemoveFreeNotification(FGUIConnector);
   FGUIConnector := AValue;
+  if FGUIConnector <> nil then
+    FreeNotification(FGUIConnector);
   EffectiveGUIConnector.CreateDrawer(FConnectorData);
   StyleChanged(Self);
 end;
