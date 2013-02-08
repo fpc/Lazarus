@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-10-02 20:21+0100\n"
+"PO-Revision-Date: 2013-3-07 20:21+0100\n"
 "Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -91,7 +91,7 @@ msgstr "Pegar"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselcontinue
 msgid "Continue %0:s (Bound to: %1:s)"
-msgstr "Continuar %0:s (Ligado a: %1:s)"
+msgstr "Continuar %0:s (Limitado a: %1:s)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselcontinueplain
 msgid "Continue %0:s"
@@ -2275,7 +2275,7 @@ msgstr "Resaltado de la palabra bajo el Cursor de Texto"
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
 msgid "User defined markup"
-msgstr ""
+msgstr "Marcado definido por el usuario"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddelcaption
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefineddelcaption"
@@ -2284,35 +2284,35 @@ msgstr "Borrar"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddelprompt
 msgid "Delete list \"%s\"?"
-msgstr ""
+msgstr "¿Borrar lista \"%s\"?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
 msgid "Add Word or Term"
-msgstr ""
+msgstr "Añadir palabra o término"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
 msgid "Remove Word or Term"
-msgstr ""
+msgstr "Eliminar palabra o término"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
 msgid "Toggle Word or Term"
-msgstr ""
+msgstr "Cambiar palabra o término"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
 msgid "Duplicate Term"
-msgstr ""
+msgstr "Término duplicado"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicatemsg
 msgid "The term %s already exists. Duplicates will be removed when the list is saved."
-msgstr ""
+msgstr "El término %s ya existe. Los duplicados se quitarán cuando se guarda la lista."
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedgloballist
 msgid "Add/Remove in all editors"
-msgstr ""
+msgstr "Añadir/Quitar en todos los editores"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedlistdel
 msgid "Delete list"
-msgstr ""
+msgstr "Borrar lista"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedlistname
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefinedlistname"
@@ -2321,59 +2321,59 @@ msgstr "Nombre"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedlistnew
 msgid "Add list"
-msgstr ""
+msgstr "Añadir lista"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedmatchcase
 msgid "Case sensitive"
-msgstr ""
+msgstr "Sensible a mayúsculas y minúsculas"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedmatchendbound
 msgid "Set bound at term end"
-msgstr ""
+msgstr "Establecer limite al finalizar el término"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedmatchstartbound
 msgid "Set bound at term start"
-msgstr ""
+msgstr "Establecer limite al comenzar el término"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylen
 msgid "Ignore bounds for terms longer than"
-msgstr ""
+msgstr "Ignorar los limites de terminos más largos"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylenselect
 msgid "selection"
-msgstr ""
+msgstr "selección"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylenword
 msgid "current word"
-msgstr ""
+msgstr "palabra actual"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeyopts
 msgid "Settings for terms added by key"
-msgstr ""
+msgstr "Configuración de términos añadidas por clave"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeysmartselect
 msgid "Smart match selection bounds"
-msgstr ""
+msgstr "Selecion inteligente de coincidencias para establecer límites"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewname
 msgid "New list"
-msgstr ""
+msgstr "Nueva lista"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednolists
 msgid "No lists"
-msgstr ""
+msgstr "No hay listas"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednolistssel
 msgid "Select ..."
-msgstr ""
+msgstr "Seleccione ..."
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
 msgid "Key Settings"
-msgstr ""
+msgstr "Configuración de teclas"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain
 msgid "Main settings"
-msgstr ""
+msgstr "Configuración principal"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match word boundaries for words up to this length:"
@@ -6629,7 +6629,7 @@ msgstr "Coordinar desplazamientos"
 
 #: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
 msgid "Added Package %s as a dependency."
-msgstr ""
+msgstr "Añadido paquete %s como una dependencia."
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -6738,7 +6738,7 @@ msgstr "El nombre del paquete existe"
 
 #: lazarusidestrconsts.lisconvdelphipackagerequired
 msgid "Package %s is required but not installed in Lazarus! Install it later."
-msgstr ""
+msgstr "Paquete %s es necesario pero no esta instalado en Lazarus! Instalarlo más tarde."
 
 #: lazarusidestrconsts.lisconvdelphiprojomittedunit
 msgid "Omitted unit %s from project"
@@ -9090,7 +9090,7 @@ msgstr "Ir a la línea de código seleccionada"
 
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta código es software libre; usted puede redistribuirlo y/o modificarlo bajo los términos de la GNU General Public License publicada por la Free Software Foundation; sea versión 2 de la licencia, o (a su opción) cualquier posterior versión. %sEste código se distribuye con la esperanza de que sea útil, pero SIN NINGUNA GARANTÍA, ni siquiera la garantía implícita de COMERCIABILIDAD o IDONEIDAD PARA UN DETERMINADO FIN.  Consulte la GNU General Public License para obtener más detalles. %sUna copia de la Licencia Pública General de GNU está disponible en la World Wide Web en <http://www.gnu.org/copyleft/gpl.html>. También puede obtenerlo por escrito a la Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
@@ -10769,7 +10769,7 @@ msgstr "LFM esta bien"
 
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca es software libre; usted puede redistribuirlo y/o modificarlo bajo los términos de la GNU Library General Public License publicada por la Free Software Foundation; sea versión 2 de la licencia, o (a su opción) cualquier posterior versión. %sEste programa se distribuye con la esperanza de que sea útil, pero SIN NINGUNA GARANTÍA, ni siquiera la garantía implícita de COMERCIABILIDAD o IDONEIDAD PARA UN DETERMINADO FIN. Consulte la GNU Library General Public License para obtener más detalles. %sUsted debería haber recibido una copia de la GNU Library General Public License junto con esta biblioteca; Si no, escriba a la Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
@@ -12209,11 +12209,11 @@ msgstr "Omitir esta Unidad"
 
 #: lazarusidestrconsts.lismitnotice
 msgid "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
-msgstr "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+msgstr "<description>%sCopyright (c) <year> <copyright holders>%sPermiso se concede por el presente, gratuitamente, a cualquier persona a obtener una copia de este software y archivos asociados de documentación (el \"Software\"), para tratar en el Software sin restricción, incluyendo sin limitación los derechos para utilizar, copia, modificar, combina, publica, distribuir, otorgar una sublicencia, y/o vender copias del Software y para permitir a las personas a quienes el Software se suministra para hacerlo, sujeto a la siguiente condiciones:%sEl sobre aviso de copyright y este aviso de permiso se incluirán en todas las copias o partes sustanciales de la Software.%sEL SOFTWARE ES PROPORCIONADO \"COMO ES\", SIN GARANTÍA DE CUALQUIER TIPO, EXPRESS O IMPLÍCITAS, INCLUYENDO PERO NO LIMITADO A LAS GARANTÍAS DE COMERCIABILIDAD, APTITUD PARA UN PARTICULAR PROPÓSITO Y NO INFRACCIÓN. EN NINGÚN CASO LOS AUTORES O LOS TITULARES DEL COPYRIGHT SERÁ RESPONSABLE DE CUALQUIER RECLAMACIÓN, DAÑOS U OTRA RESPONSABILIDAD, YA SEA EN UNA ACCIÓN DE RESPONSABILIDAD CONTRACTUAL, EXTRACONTRACTUAL O DE OTRO TIPO, QUE SE PRESENTA, DE O EN RELACIÓN CON EL SOFTWARE O EL USO U OTRAS OPERACIONES EN EL SOFTWARE."
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca es software libre; usted puede redistribuirlo y/o modificarlo bajo los términos de la GNU Library General Public License publicada por la Free Software Foundation; sea versión 2 de la licencia, o (a su opción) cualquier versión posterior con la siguiente modificación:%sComo una excepción especial, los titulares de derechos de autor de esta biblioteca darle permiso para vincular esta biblioteca con módulos independientes para producir un ejecutable, independientemente de los términos de la licencia de estos módulos independientes y a copiar y distribuir el archivo ejecutable resultante en términos de su elección, siempre y cuando cumplan también, para cada uno módulo independiente linkado, los términos y condiciones de la licencia de dicho módulo. Un módulo independiente es un módulo que no sea derivado o basado en esta biblioteca. Si se modifica esta biblioteca, usted puede extender esta excepción a su versión de la biblioteca, pero no está obligado a hacerlo. Si usted no desea hacerlo, elimine esta declaración de excepción de su versión del programa.%sEsto se distribuye con la esperanza que sea útil, pero sin ninguna garantía; ni siquiera la garantía implícita de comerciabilidad o idoneidad para un fin determinado. Consulte la GNU Library General Public License para obtener más detalles. %sUsted debería haber recibido una copia de la GNU Library General Public License junto con esta biblioteca; Si no, escriba a la Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lismodify
 msgid "&Modify"
@@ -17091,20 +17091,20 @@ msgstr "Usar paquete en proyecto"
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeyadd
 msgid "Add to list \"%s\""
-msgstr ""
+msgstr "Añadir a la lista \"%s\""
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeygroup
 msgctxt "lazarusidestrconsts.lisuserdefinedmarkupkeygroup"
 msgid "User defined text markup"
-msgstr ""
+msgstr "Marcado de texto definidos por el usuario"
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeyremove
 msgid "Remove from list \"%s\""
-msgstr ""
+msgstr "Quitar de la lista \"%s\""
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeytoggle
 msgid "Toggle on list \"%s\""
-msgstr ""
+msgstr "Cambiar en la lista \"%s\""
 
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
@@ -17418,31 +17418,31 @@ msgstr "Editor de código fuente"
 
 #: lazarusidestrconsts.lrsplddeleteselected
 msgid "Delete selected"
-msgstr ""
+msgstr "Eliminar seleccionado"
 
 #: lazarusidestrconsts.lrspldinvalid
 msgid "invalid"
-msgstr ""
+msgstr "No válido"
 
 #: lazarusidestrconsts.lrspldlpkfileinvalid
 msgid "lpk file invalid (%s)"
-msgstr ""
+msgstr "archivo lpk (%s) inválido"
 
 #: lazarusidestrconsts.lrspldlpkfilevalid
 msgid "lpk file valid (%s)"
-msgstr ""
+msgstr "archivo lpk (%s) válido "
 
 #: lazarusidestrconsts.lrspldunabletodeletefile
 msgid "Unable to delete file \"%s\""
-msgstr ""
+msgstr "No se puede eliminar el archivo \"%s\""
 
 #: lazarusidestrconsts.lrspldvalid
 msgid "valid"
-msgstr ""
+msgstr "válido"
 
 #: lazarusidestrconsts.lrsrescanlplfiles
 msgid "Rescan lpl files"
-msgstr ""
+msgstr "Reexaminar archivos de lpl"
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
