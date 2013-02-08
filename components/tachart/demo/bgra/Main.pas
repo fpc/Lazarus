@@ -136,19 +136,8 @@ begin
         stretched.Free;
       end;
     end;
-    1: begin
-      lightPos := Point(chBarEffects.ClientWidth div 2, 0);
-      with CreateChocolateBar(
-        lightPos, ARect, BGRAPixelTransparent, false, [rmoNoBottomBorder])
-      do
-        try
-          Draw(ACanvas, ARect.Left, ARect.Top, false);
-        finally
-          Free;
-        end;
-    end;
-    2:
-      DrawPhong3DBar(ASender, ACanvas, ARect);
+    1: DrawChocolateBar(ASender, ACanvas, ARect, APointIndex, false);
+    2: DrawPhong3DBar(ASender, ACanvas, ARect, APointIndex);
   end;
 end;
 
