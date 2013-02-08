@@ -1152,7 +1152,10 @@ begin
   else
   if (smcrLine in Changes) then begin
     i := IndexOfSynMark(Sender);
-    if i >= 0 then FMarkList[i].FLine := Sender.Line;
+    if i >= 0 then begin
+      FMarkList[i].FLine := Sender.Line;
+      FMarkList[i].DoChange;
+    end;
     FMarkList.ReSort;
     InvalidateTextLines(0, TextBuffer.Count); // Todo
   end
