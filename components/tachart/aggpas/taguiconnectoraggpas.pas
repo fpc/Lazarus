@@ -21,15 +21,22 @@ unit TAGUIConnectorAggPas;
 interface
 
 uses
+  Agg_FPImage,
   Classes,
   TAGUIConnector;
 
 type
   TChartGUIConnectorAggPas = class(TChartGUIConnector)
+  private
+    FPixelFormat: TAggFPImgPixelFormat;
+    procedure SetPixelFormat(AValue: TAggFPImgPixelFormat);
   public
     procedure CreateDrawer(var AData: TChartGUIConnectorData); override;
     procedure SetBounds(var AData: TChartGUIConnectorData); override;
     procedure Display(var AData: TChartGUIConnectorData); override;
+  published
+    property PixelFormat: TAggFPImgPixelFormat
+      read FPixelFormat write SetPixelFormat default afpimRGB24;
   end;
 
 procedure Register;
@@ -49,6 +56,7 @@ type
     destructor Destroy; override;
     procedure SetSize(ASize: TPoint);
     procedure PaintOnCanvas(ACanvas: TCanvas; const ARect: TRect);
+    property Canvas: TAggLCLCanvas read FCanvas;
   end;
 
 procedure Register;
@@ -76,8 +84,17 @@ begin
   AData.FDrawerBounds.TopLeft := Point(0, 0);
   AData.FDrawerBounds.BottomRight :=
     AData.FBounds.BottomRight - AData.FBounds.TopLeft;
-  (AData.FDrawer as TAggPasOwnerDrawer).SetSize(
-    AData.FDrawerBounds.BottomRight);
+  with AData.FDrawer as TAggPasOwnerDrawer do begin
+    SetSize(AData.FDrawerBounds.BottomRight);
+    Canvas.Image.PixelFormat := PixelFormat;
+  end;
+end;
+
+procedure TChartGUIConnectorAggPas.SetPixelFormat(AValue: TAggFPImgPixelFormat);
+begin
+  if FPixelFormat = AValue then exit;
+  FPixelFormat := AValue;
+  Broadcaster.Broadcast(Self);
 end;
 
 { TAggPasOwnerDrawer }
