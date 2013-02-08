@@ -802,7 +802,7 @@ end;
    result := SeekFile(Position+ADist);
  end;
 
- function TFreeTypeStream.ReadFile(var ABuff; A Count: Int): TError;
+ function TFreeTypeStream.ReadFile(var ABuff; ACount: Int): TError;
  begin
    result := Failure;
    if FStream = nil then
