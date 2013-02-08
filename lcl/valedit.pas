@@ -273,6 +273,7 @@ implementation
 
 { TItemProp }
 
+
 constructor TItemProp.Create(AOwner: TValueListEditor);
 begin
   inherited Create;
@@ -367,28 +368,23 @@ var
 begin
   // ToDo: Check validity of key
   //debugln('TValueListStrings.InsertItem: Index=',dbgs(index),' S=',S,' AObject=',dbgs(aobject));
-  Changing;
+  //Changing;
   IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
   if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
   inherited InsertItem(Index, S, AObject);
-  if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
+
   SetLength(FItemProps, Count);
   for i := Count-2 downto Index do
     FItemProps[i+1] := FItemProps[i];
   FItemProps[Index] := nil;
-  Changed;
+  //only restore this _after_ FItemProps is updated!
+  if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
+  //Changed;
 end;
 
 procedure TValueListStrings.InsertItem(Index: Integer; const S: string);
-var
-  IsShowingEditor: Boolean;
 begin
-  // ToDo: Check validity of key
-  //debugln('TValueListStrings.InsertItem: Index=',dbgs(index),' S=',S);
-  IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
-  if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
-  inherited InsertItem(Index, S);
-  if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
+  InsertItem(Index, S, nil);
 end;
 
 procedure TValueListStrings.Put(Index: Integer; const S: String);
@@ -446,14 +442,17 @@ begin
   IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
   if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
   inherited Delete(Index);
-  if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
   // Delete also ItemProps
   if Index<=Count then begin
-    FItemProps[Index].Free;
-    for i := Index to Length(FItemProps)-1 do
+    if Assigned(FItemProps[Index]) then FItemProps[Index].Free;
+    for i := Index to Length(FItemProps)-2 do
+    begin
       FItemProps[i] := FItemProps[i+1];
+    end;
     SetLength(FItemProps, Count);
   end;
+  //only restore this _after_ FItemProps is updated!
+  if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
   Changed;
 end;
 
@@ -469,6 +468,7 @@ function TValueListStrings.GetItemProp(const AKeyOrIndex: Variant): TItemProp;
 var
   i: Integer;
   s: string;
+
 begin
   Result := Nil;
   if Count > 0 then
@@ -595,6 +595,8 @@ var
   ItemProp: TItemProp;
 begin
   if aCol <> 1 then Exit;     // Only for the Value column
+  ItemProp := nil;
+  //debugln('**** A ACol=',dbgs(acol),' ARow=',dbgs(arow),' (',dbgs(itemprop),')');
   ItemProp := Strings.GetItemProp(aRow-FixedRows);
   if Assigned(ItemProp) then
     case ItemProp.EditStyle of
@@ -842,6 +844,8 @@ begin
       Line:=AValue+'='+Cells[1,ARow]
     else
       Line:=Cells[0,ARow]+'='+AValue;
+    // Empty grid: don't add a the line '=' to Strings!
+    if (Strings.Count = 0) and (Line = '=') and (AValue = '') then Exit;
     if I>=Strings.Count then
       Strings.Insert(I,Line)
     else
