@@ -1,6 +1,6 @@
 (*******************************************************************
  *
- *  TTFile.Pas                                                1.2
+ *  TTFile.Pas                                                1.3
  *
  *    File I/O Component (specification)
  *
@@ -14,6 +14,9 @@
  *
  *  NOTES :
  *
+ *  Changes from 1.2 to 1.3 :
+ *
+ *  - Moved stream into TFreeTypeStream object
  *
  *  Changes from 1.1 to 1.2 :
  *
@@ -50,7 +53,78 @@ interface
 {$R-}
 
 uses TTTypes,
-     TTError;
+     TTError,
+     Classes;
+
+type
+  { TFreeTypeStream }
+
+  TFreeTypeStream = class
+  private
+    function GetSize: longint;
+  private
+    FCurrentFrame : PByte;
+    FFrameCursor  : Longint;
+    FFrameSize    : LongInt;
+    FFrameCache : PByte;
+
+    FOpen: boolean;
+    FName: string;
+    FStream: TStream;
+    FOwnedStream: boolean;
+    FBase,FStoredSize,FPosit: Longint;
+    FUsed: boolean;
+    function GetFilePos: longint;
+    function GetFileSize: longint;
+    function GetPosition: longint;
+    property Size: longint read GetSize;
+    procedure Init;
+  public
+    constructor Create(APathName: string);
+    constructor Create(AStream: TStream; AStreamOwner: boolean);
+    destructor Destroy; override;
+    function Activate: TError;
+    function Deactivate: TError;
+    function SeekFile(APos: Longint): TError;
+    function SkipFile(ADist: Longint): TError;
+    function ReadFile( var ABuff; ACount : Int ) : TError;
+    function ReadAtFile( APos : Long; var ABuff; ACount : Int ) : TError;
+
+   (*********************************************************************)
+   (*                                                                   *)
+   (*  Frame Functions                                                  *)
+   (*                                                                   *)
+   (*********************************************************************)
+
+   (* Access the next aSize bytes *)
+   function AccessFrame( aSize : Int ) : TError;
+
+   (* Access the next min(aSize,file_size-file_pos) bytes *)
+   function CheckAndAccessFrame( aSize : Int ) : TError;
+
+   (* Forget the previously cached frame *)
+   function ForgetFrame :  TError;
+
+   (* The following functions should only be used after a      *)
+   (* AccessFrame and before a ForgetFrame                     *)
+
+   (* They do not provide error handling, intentionnaly, and are much faster *)
+   (* moreover, they could be converted to MACROS in the C version           *)
+
+   function GET_Byte   : Byte;
+   function GET_Char   : ShortInt;
+   function GET_Short  : Short;
+   function GET_UShort : UShort;
+   function GET_Long   : Long;
+   function GET_ULong  : ULong;
+   function GET_Tag4   : ULong;
+
+    property Open: boolean read FOpen;
+    property Name: string read FName;
+    property Base: longint read FBase;
+    property Position: longint read GetPosition;
+    property Used: boolean read FUsed;
+  end;
 
   function  TTFile_Init : TError;
   procedure TTFile_Done;
@@ -65,13 +139,15 @@ uses TTTypes,
                            var stream : TT_Stream ) : TError;
  (* Open a file and return a stream handle for it               *)
  (* should only be used for a new typeface object's main stream *)
+ function  TT_Open_Stream( AStream: TStream; AStreamOwner: boolean;
+                           var stream : TT_Stream ) : TError;
 
  procedure TT_Close_Stream( var stream : TT_Stream );
  (* closes, then discards a stream, when it becomes unuseful *)
  (* should only be used for a typeface object's main stream  *)
 
  function  TT_Use_Stream( org_stream : TT_Stream;
-                          out stream : TT_Stream ) : TError;
+                          out ftstream: TFreeTypeStream ) : TError;
  (* notices the component that we're going to use the file   *)
  (* opened in 'org_stream', and report errors to the 'error' *)
  (* variable. the 'stream' variable is untouched, except in  *)
@@ -92,73 +168,12 @@ uses TTTypes,
  (*                                                            *)
  (* in re-entrant builds, should also discard the stream       *)
 
- (*********************************************************************)
- (*                                                                   *)
- (*  File Functions                                                   *)
- (*                                                                   *)
- (*    the following functions perform file operations on the         *)
- (*    currently 'used' stream. In thread-safe builds, only one       *)
- (*    stream can be used at a time. Synchronisation is performed     *)
- (*    through the Use_Stream/Done_Stream functions                   *)
- (*                                                                   *)
- (*  Note:                                                            *)
- (*    re-entrant versions of these functions are only available      *)
- (*    in the C source tree. There, a macro is used to add a 'stream' *)
- (*    parameter to each of these routines..                          *)
- (*                                                                   *)
- (*********************************************************************)
-
- function TT_Read_File( var ABuff; ACount : Int ) : TError;
- (* Read a chunk of bytes directly from the file *)
-
- function TT_Seek_File( APos : LongInt ) : TError;
- (* Seek a new file position *)
-
- function TT_Skip_File( ADist : LongInt ) : TError;
- (* Skip to a new file position *)
-
- function TT_Read_At_File( APos : Long; var ABuff; ACount : Int ) : TError;
- (* Seek and read a chunk of bytes *)
-
- function TT_File_Size : Longint;
-
- function TT_File_Pos  : Longint;
-
  function TT_Stream_Size( stream : TT_Stream ) : longint;
-
- (*********************************************************************)
- (*                                                                   *)
- (*  Frame Functions                                                  *)
- (*                                                                   *)
- (*********************************************************************)
-
- function TT_Access_Frame( aSize : Int ) : TError;
- (* Access the next aSize bytes *)
-
- function TT_Check_And_Access_Frame( aSize : Int ) : TError;
- (* Access the next min(aSize,file_size-file_pos) bytes *)
-
- function TT_Forget_Frame :  TError;
- (* Forget the previously cached frame *)
-
- (* The four following functions should only be used after a *)
- (* TT_Access_Frame and before a TT_Forget_Frame             *)
-
- (* They do not provide error handling, intentionnaly, and are much faster *)
- (* moreover, they could be converted to MACROS in the C version           *)
-
- function GET_Byte   : Byte;
- function GET_Char   : ShortInt;
- function GET_Short  : Short;
- function GET_UShort : UShort;
- function GET_Long   : Long;
- function GET_ULong  : ULong;
- function GET_Tag4   : ULong;
 
 implementation
 
 uses
-  TTMemory;
+  TTMemory, SysUtils;
 
   (* THREADS: TTMutex, *)
 
@@ -169,51 +184,15 @@ const
   (* frames that are bigger than this constant are effectively      *)
   (* allocated in the heap..                                        *)
 
-type
-  PString = ^string;
-  PFile   = ^FILE;
-
-  PStream_Rec = ^TStream_Rec;
-  TStream_Rec = record
-                  name  : PString;  (* file pathname                     *)
-                  open  : Boolean;  (* is the stream currently opened    *)
-                  font  : PFILE;    (* file handle for opened stream     *)
-                  base  : Longint;  (* base offset for embedding         *)
-                  size  : Longint;  (* size of font in resource          *)
-                  posit : Longint;  (* current offset for closed streams *)
-                end;
-
-var
-  (* THREADS: File_Mutex : TMutex *)
-
-  font_file  : PFile;
-  cur_stream : PStream_Rec;
-
-  current_frame : PByte;
-  frame_cursor  : Longint;
-  frame_size    : LongInt;
-
-  frame_cache : PByte;
-
-  function  TT_File_Size : Longint;
-  begin
-    TT_File_Size := FileSize( font_file^ );
-  end;
-
-  function TT_File_Pos : Longint;
-  begin
-    TT_File_Pos := FilePos( font_file^ );
-  end;
-
   function TT_Stream_Size( stream : TT_Stream ) : longint;
   var
-    rec : PStream_Rec;
+    rec : TFreeTypeStream;
   begin
-    rec := PStream_Rec(stream);
+    rec := TFreeTypeStream(stream.z);
     if rec = nil then
       TT_Stream_Size := 0
     else
-      TT_Stream_Size := rec^.size;
+      TT_Stream_Size := rec.Size;
   end;
 
 (*******************************************************************
@@ -222,24 +201,10 @@ var
  *
  *  Description :  Init the file component
  *
- *                 - create a file mutex for thread-safe builds
- *
  ******************************************************************)
 
  function TTFile_Init : TError;
  begin
-   (* empty current file *)
-   font_file  := nil;
-   cur_stream := nil;
-
-   (* empty frame *)
-   current_frame := nil;
-   frame_cursor  := 0;
-   frame_size    := 0;
-
-   (* create frame cache *)
-   GetMem( frame_cache, frame_cache_size );
-
    TTFile_Init := Success;
  end;
 
@@ -249,176 +214,11 @@ var
  *
  *  Description :  Finalize the file component
  *
- *                 - destroys the file mutex for thread-safe builds
- *
  ******************************************************************)
 
  procedure TTFile_Done;
  begin
-   (* empty current file *)
-   font_file  := nil;
-   cur_stream := nil;
-
-   (* empty frame *)
-   current_frame := nil;
-   frame_cursor  := 0;
-   frame_size    := 0;
-
-   if frame_cache <> nil then
-     FreeMem( frame_cache, frame_cache_size );
-   frame_cache := nil;
- end;
-
-(*******************************************************************
- *
- *  Function    :  Stream_New
- *
- *  Description :  allocates a new stream record
- *
- *  Input  :  stream  : the target stream variable
- *
- *  Output :  True on sucess.
- *
- ******************************************************************)
-
- function Stream_New( pathname   : string;
-                      var stream : PStream_Rec ) : TError;
- var
-   font : PFile;
-   name : PString;
-   len  : Integer;
- label
-   Fail_Memory;
- begin
-   name   := nil;
-   font   := nil;
-   stream := nil;
-   len    := length(pathname)+1;
-
-   (* allocate a new stream_rec in the heap *)
-   if Alloc( pointer(stream), sizeof(TStream_Rec) ) or
-      Alloc( pointer(font),   sizeof(FILE)        ) or
-      Alloc( pointer(name),   len                 ) then
-     goto Fail_Memory;
-
-   move( pathname, name^, len );
-
-   stream^.font  := font;
-   stream^.name  := name;
-   stream^.open  := false;
-   stream^.base  := 0;
-   stream^.size  := 0;
-   stream^.posit := 0;
-
-   Stream_New := Success;
-   exit;
-
- Fail_Memory:
-   Free( pointer(name)   );
-   Free( pointer(font)   );
-   Free( pointer(stream) );
-   Stream_New := Failure;
- end;
-
-(*******************************************************************
- *
- *  Function    :  Stream_Activate
- *
- *  Description :  activates a stream, if it needs it
- *
- *  Input  :  stream  : the target stream variable
- *
- *  Output :  Error condition
- *
- ******************************************************************)
-
- function Stream_Activate( stream : PStream_Rec ) : TError;
- var
-   old_filemode : Long;
- begin
-   Stream_Activate := Failure;
-   if stream = nil then exit;
-
-   with stream^ do
-   begin
-     Stream_Activate := Success;
-     if open then exit;
-
-     old_filemode    := System.FileMode;
-     System.FileMode := 0;
-     (* read-only mode *)
-
-     Assign( font^, name^ );
-     {$I-}
-     Reset( font^, 1 );
-     {$I+}
-
-     System.FileMode := old_filemode;
-
-     if IOResult <> 0 then
-     begin
-       error := TT_Err_Could_Not_Open_File;
-       Stream_Activate := Failure;
-       exit;
-     end;
-
-     open := true;
-     base := 0;
-     if size = -1 then size := FileSize(font^);
-
-     if posit <> 0 then
-       Seek( font^, posit );
-   end;
- end;
-
-(*******************************************************************
- *
- *  Function    :  Stream_Deactivate
- *
- *  Description :  closes an active stream
- *
- *  Input  :  stream  : the target stream variable
- *
- *  Output :  Error condition
- *
- ******************************************************************)
-
- function Stream_Deactivate( stream : PStream_Rec ) : TError;
- begin
-   Stream_Deactivate := Failure;
-   if stream = nil then exit;
-
-   Stream_Deactivate := Success;
-   if not stream^.open then exit;
-
-   stream^.posit := FilePos( stream^.font^ );
-   close( stream^.font^ );
-   stream^.open := false;
- end;
-
-(*******************************************************************
- *
- *  Function    :  Stream_Done
- *
- *  Description :  frees an active stream_rec
- *
- *  Input  :  stream  : the target stream variable
- *
- *  Output :  True on sucess.
- *
- *  Notes  : 'stream' is set to nil on exit..
- *
- ******************************************************************)
-
- function Stream_Done( var stream : PStream_Rec ) : TError;
- begin
-   Stream_Deactivate( stream );
-
-   Free( pointer(stream^.name) );
-   Free( pointer(stream^.font) );
-   Free( pointer(stream) );
-
-   Stream_Done := Success;
+   //nothing
  end;
 
 (*******************************************************************
@@ -439,24 +239,52 @@ var
  function TT_Open_Stream( name       : String;
                           var stream : TT_Stream ) : TError;
  var
-   rec  : PStream_Rec;
+   ftstream : TFreeTypeStream;
 
  begin
    TT_Open_Stream := Failure;
+   stream.z := nil;
+   ftstream := nil;
 
-   if Stream_New( name, rec {%H-}) then exit;
-
-   if Stream_Activate( rec )  then
-   begin
-     Stream_Done(rec);
-     stream.z := nil;
-     exit;
+   try
+     ftstream := TFreeTypeStream.Create(name);
+     if ftstream.Activate then
+       raise exception.Create('Cannot activate');
+   except
+     on ex: Exception do
+     begin
+       ftstream.free;
+       exit;
+     end;
    end;
 
-   cur_stream := rec;
-   font_file  := rec^.font;
-   stream     := TT_Stream(rec);
+   stream.z:= ftstream;
+   TT_Open_Stream := Success;
+ end;
 
+ function TT_Open_Stream(AStream: TStream; AStreamOwner: boolean;
+   var stream: TT_Stream): TError;
+ var
+   ftstream : TFreeTypeStream;
+
+ begin
+   TT_Open_Stream := Failure;
+   stream.z := nil;
+   ftstream := nil;
+
+   try
+     ftstream := TFreeTypeStream.Create(AStream,AStreamOwner);
+     if ftstream.Activate then
+       raise exception.Create('Cannot activate');
+   except
+     on ex: Exception do
+     begin
+       ftstream.free;
+       exit;
+     end;
+   end;
+
+   stream.z:= ftstream;
    TT_Open_Stream := Success;
  end;
 
@@ -475,10 +303,7 @@ var
  procedure TT_Close_Stream( var stream : TT_Stream );
  begin
    if stream.z = nil then exit;
-
-   Stream_Done( PStream_Rec(stream) );
-   font_file  := nil;
-   cur_stream := nil;
+   TFreeTypeStream(stream.z).Free;
    stream.z   := nil;
  end;
 
@@ -498,21 +323,23 @@ var
  ******************************************************************)
 
  function  TT_Use_Stream( org_stream : TT_Stream;
-                          out stream : TT_Stream ) : TError;
+                          out ftstream: TFreeTypeStream) : TError;
  var
-   rec : PStream_Rec;
+   rec : TFreeTypeStream;
  begin
    TT_Use_Stream := Failure;
 
-   stream := org_stream;
-   if org_stream.z = nil then exit;
+   ftstream:= TFreeTypeStream(org_stream.z);
+   if ftstream= nil then exit;
+   if ftstream.FUsed then
+   begin
+     error := TT_Err_File_Error;
+     ftstream := nil;
+     exit;
+   end;
+   ftstream.FUsed := true;
 
-   rec := PStream_Rec(stream);
-   Stream_Activate(rec);
-   cur_stream := rec;
-   font_file  := rec^.font;
-
-   TT_Use_Stream := Success;
+   result := ftstream.Activate;
  end;
 
 (*******************************************************************
@@ -529,8 +356,8 @@ var
 
  procedure TT_Flush_Stream( stream : TT_Stream );
  begin
-   if stream.Z <> nil then
-     Stream_Deactivate( PStream_Rec(stream.z) );
+   if stream.z <> nil then
+     TFreeTypeStream(stream.z).Deactivate;
  end;
 
 (*******************************************************************
@@ -541,124 +368,19 @@ var
  *
  *  Input  :  stream : the stream
  *
- *  Output :  True on success. False on failure
+ *  Output :  Nothing.
  *
  ******************************************************************)
 
  procedure TT_Done_Stream( stream : TT_Stream );
  begin
-   if stream.z <> cur_stream then exit;
-   cur_stream := nil;
-   font_file  := nil;
+   if stream.z = nil then exit;
+   TFreeTypeStream(stream.z).FUsed := false;
  end;
 
 (*******************************************************************
  *
- *  Function    : TT_Seek_File
- *
- *  Description : Seek the file cursor to a different position
- *
- *  Input  :  APos     new position on file
- *
- *  Output :  True on success. False if out of range
- *
- *  Notes  :  Does not set the error variable
- *
- ******************************************************************)
-
-function TT_Seek_File( APos : LongInt ) : TError;
-begin
-  {$I-}
-  Seek( Font_File^, APos );
-  {$I+}
-  if IOResult <> 0 then
-    begin
-      error        := TT_Err_Invalid_File_Offset;
-      TT_Seek_File := Failure;
-      exit;
-    end;
-
-  TT_Seek_File := Success;
-end;
-
-(*******************************************************************
- *
- *  Function    : TT_Skip_File
- *
- *  Description : Skip forward the file cursor
- *
- *  Input  :  ADist    number of bytes to skip
- *
- *  Output :  see Seek_Font_File
- *
- ******************************************************************)
-
-function TT_Skip_File( ADist : LongInt ) : TError;
-begin
-  TT_Skip_File := TT_Seek_File( FilePos(Font_File^)+ADist );
-end;
-
-(*******************************************************************
- *
- *  Function    : TT_Read_File
- *
- *  Description : Reads a chunk of the file and copy it to memory
- *
- *  Input  :  ABuff     target buffer
- *            ACount    length in bytes to read
- *
- *  Output :  True if success. False if out of range
- *
- *  Notes  :  Current version prints an error message even if the
- *            debug state isn't on.
- *
- ******************************************************************)
-
-function TT_Read_File( var ABuff; ACount : Int ) : TError;
-begin
-  TT_Read_File := Failure;
-  {$I-}
-  BlockRead( Font_File^, ABuff, ACount );
-  {$I+}
-
-  if IOResult <> 0 then
-    begin
-      error := TT_Err_Invalid_File_Read;
-      exit;
-    end;
-
-  TT_Read_File := Success;
-end;
-
-(*******************************************************************
- *
- *  Function    : TT_Read_At_File
- *
- *  Description : Read file at a specified position
- *
- *  Input  :  APos     position to seek to before read
- *            ABuff    target buffer
- *            ACount   number of bytes to read
- *
- *  Output :  True on success. False if error.
- *
- *  Notes  :  prints an error message if seek failed.
- *
- ******************************************************************)
-
-function TT_Read_At_File( APos : Long; var ABuff; ACount : Int ) : TError;
-begin
-  TT_Read_At_File := Failure;
-
-  if TT_Seek_File( APos ) or
-     TT_Read_File( ABuff, ACount ) then exit;
-
-  TT_Read_At_File := Success;
-end;
-
-(*******************************************************************
- *
- *  Function    :  TT_Access_Frame
+ *  Function    :  AccessFrame
  *
  *  Description :  Notifies the component that we're going to read
  *                 aSize bytes from the current file position.
@@ -676,16 +398,16 @@ end;
  *            too big in both cases ).
  *
  *            It will also fail if you make two consecutive calls
- *            to TT_Access_Frame, without a TT_Forget_Frame between
+ *            to AccessFrame, without a ForgetFrame between
  *            them.
  *
  ******************************************************************)
 
- function TT_Access_Frame( aSize : Int ) : TError;
+ function TFreeTypeStream.AccessFrame( aSize : Int ) : TError;
  begin
-   TT_Access_Frame := Failure;
+   result := Failure;
 
-   if current_frame <> nil then
+   if FCurrentFrame <> nil then
    begin
      error := TT_Err_Nested_Frame_Access;
      exit;
@@ -693,28 +415,28 @@ end;
    (* We already are accessing one frame *)
 
    if aSize > frame_cache_size then
-     GetMem( current_frame, aSize )
+     GetMem( FCurrentFrame, aSize )
    else
-     current_frame := frame_cache;
+     FCurrentFrame := FFrameCache;
 
-   if TT_Read_File( current_frame^, aSize ) then
+   if ReadFile( FCurrentFrame^, aSize ) then
    begin
      if aSize > frame_cache_size then
-       FreeMem( current_frame, aSize );
+       FreeMem( FCurrentFrame, aSize );
 
-     current_frame := nil;
+     FCurrentFrame := nil;
      exit;
    end;
 
-   frame_size   := aSize;
-   frame_cursor := 0;
+   FFrameSize   := aSize;
+   FFrameCursor := 0;
 
-   TT_Access_Frame := Success;
+   result := Success;
  end;
 
 (*******************************************************************
  *
- *  Function    :  TT_Check_And_Access_Frame
+ *  Function    :  CheckAndAccess_Frame
  *
  *  Description :  Notifies the component that we're going to read
  *                 aSize bytes from the current file position.
@@ -732,53 +454,28 @@ end;
  *            too big in both cases ).
  *
  *            It will also fail if you make two consecutive calls
- *            to TT_Access_Frame, without a TT_Forget_Frame between
+ *            to AccessFrame, without a ForgetFrame between
  *            them.
  *
  *
- * NOTE :  The only difference with TT_Access_Frame is that we check
+ * NOTE :  The only difference with AccessFrame is that we check
  *         that the frame is within the current file.  We otherwise
  *         truncate it..
  *
  ******************************************************************)
 
- function TT_Check_And_Access_Frame( aSize : Int ) : TError;
+ function TFreeTypeStream.CheckAndAccessFrame( aSize : Int ) : TError;
  var
    readBytes : Longint;
  begin
-   TT_Check_And_Access_Frame := Failure;
-
-   if current_frame <> nil then
-   begin
-     error := TT_Err_Nested_Frame_Access;
-     exit;
-   end;
-   (* We already are accessing one frame *)
-
-   readBytes := TT_File_Size - TT_File_Pos;
+   readBytes := Size - Position;
    if aSize > readBytes then aSize := readBytes;
-
-   if aSize > frame_cache_size then
-     GetMem( current_frame, aSize )
-   else
-     current_frame := frame_cache;
-
-   if TT_Read_File( current_frame^, aSize ) then
-   begin
-     if aSize > frame_cache_size then
-       FreeMem( current_frame, aSize );
-     exit;
-   end;
-
-   frame_size   := aSize;
-   frame_cursor := 0;
-
-   TT_Check_And_Access_Frame := Success;
+   result := AccessFrame( aSize);
  end;
 
 (*******************************************************************
  *
- *  Function    :  TT_Forget_Frame
+ *  Function    :  ForgetFrame
  *
  *  Description :  Releases a cached frame after reading
  *
@@ -788,18 +485,18 @@ end;
  *
  ******************************************************************)
 
- function TT_Forget_Frame : TError;
+ function TFreeTypeStream.ForgetFrame : TError;
  begin
-   TT_Forget_Frame := Failure;
+   result := Failure;
 
-   if current_frame = nil then exit;
+   if FCurrentFrame = nil then exit;
 
-   if frame_size > frame_cache_size then
-     FreeMem( current_frame, frame_size );
+   if FFrameSize > frame_cache_size then
+     FreeMem( FCurrentFrame, FFrameSize );
 
-   frame_size    := 0;
-   current_frame := nil;
-   frame_cursor  := 0;
+   FFrameSize    := 0;
+   FCurrentFrame := nil;
+   FFrameCursor  := 0;
  end;
 
 (*******************************************************************
@@ -819,10 +516,10 @@ end;
  *
  ******************************************************************)
 
- function GET_Byte : Byte;
+ function TFreeTypeStream.GET_Byte : Byte;
  begin
-   GET_Byte := current_frame^[frame_cursor];
-   inc( frame_cursor );
+   GET_Byte := FCurrentFrame^[FFrameCursor];
+   inc( FFrameCursor );
  end;
 
 (*******************************************************************
@@ -842,10 +539,10 @@ end;
  *
  ******************************************************************)
 
- function GET_Char : ShortInt;
+ function TFreeTypeStream.GET_Char : ShortInt;
  begin
-   GET_Char := ShortInt( current_frame^[frame_cursor] );
-   inc( frame_cursor );
+   GET_Char := ShortInt( FCurrentFrame^[FFrameCursor] );
+   inc( FFrameCursor );
  end;
 
 (*******************************************************************
@@ -865,11 +562,11 @@ end;
  *
  ******************************************************************)
 
- function GET_Short : Short;
+ function TFreeTypeStream.GET_Short : Short;
  begin
-   GET_Short := (Short(current_frame^[ frame_cursor ]) shl 8) or
-                 Short(current_frame^[frame_cursor+1]);
-   inc( frame_cursor, 2 );
+   GET_Short := (Short(FCurrentFrame^[ FFrameCursor ]) shl 8) or
+                 Short(FCurrentFrame^[FFrameCursor+1]);
+   inc( FFrameCursor, 2 );
  end;
 
 (*******************************************************************
@@ -889,11 +586,11 @@ end;
  *
  ******************************************************************)
 
- function GET_UShort : UShort;
+ function TFreeTypeStream.GET_UShort : UShort;
  begin
-   GET_UShort := (UShort(current_frame^[ frame_cursor ]) shl 8) or
-                  UShort(current_frame^[frame_cursor+1]);
-   inc( frame_cursor, 2 );
+   GET_UShort := (UShort(FCurrentFrame^[ FFrameCursor ]) shl 8) or
+                  UShort(FCurrentFrame^[FFrameCursor+1]);
+   inc( FFrameCursor, 2 );
  end;
 
 (*******************************************************************
@@ -913,13 +610,13 @@ end;
  *
  ******************************************************************)
 
- function GET_Long : Long;
+ function TFreeTypeStream.GET_Long : Long;
  begin
-   GET_Long := (Long(current_frame^[ frame_cursor ]) shl 24) or
-               (Long(current_frame^[frame_cursor+1]) shl 16) or
-               (Long(current_frame^[frame_cursor+2]) shl 8 ) or
-               (Long(current_frame^[frame_cursor+3])       );
-   inc( frame_cursor, 4 );
+   GET_Long := (Long(FCurrentFrame^[ FFrameCursor ]) shl 24) or
+               (Long(FCurrentFrame^[FFrameCursor+1]) shl 16) or
+               (Long(FCurrentFrame^[FFrameCursor+2]) shl 8 ) or
+               (Long(FCurrentFrame^[FFrameCursor+3])       );
+   inc( FFrameCursor, 4 );
  end;
 
 (*******************************************************************
@@ -939,13 +636,13 @@ end;
  *
  ******************************************************************)
 
- function GET_ULong : ULong;
+ function TFreeTypeStream.GET_ULong : ULong;
  begin
-   GET_ULong := (ULong(current_frame^[ frame_cursor ]) shl 24) or
-                (ULong(current_frame^[frame_cursor+1]) shl 16) or
-                (ULong(current_frame^[frame_cursor+2]) shl 8 ) or
-                (ULong(current_frame^[frame_cursor+3])       );
-   inc( frame_cursor, 4 );
+   GET_ULong := (ULong(FCurrentFrame^[ FFrameCursor ]) shl 24) or
+                (ULong(FCurrentFrame^[FFrameCursor+1]) shl 16) or
+                (ULong(FCurrentFrame^[FFrameCursor+2]) shl 8 ) or
+                (ULong(FCurrentFrame^[FFrameCursor+3])       );
+   inc( FFrameCursor, 4 );
  end;
 
 (*******************************************************************
@@ -965,18 +662,194 @@ end;
  *
  ******************************************************************)
 
- function GET_Tag4 : ULong;
+ function TFreeTypeStream.GET_Tag4 : ULong;
  var
    C : array[0..3] of Byte;
  begin
-   move ( current_frame^[frame_cursor], c{%H-}, 4 );
-   inc( frame_cursor, 4 );
+   move ( FCurrentFrame^[FFrameCursor], c{%H-}, 4 );
+   inc( FFrameCursor, 4 );
 
    GET_Tag4 := ULong(C);
 end;
 
- initialization
+ { TFreeTypeStream }
 
-   frame_cache := nil;
+ function TFreeTypeStream.GetFileSize: longint;
+ begin
+   if FStream = nil then
+     result := 0
+   else
+     result := FStream.Size;
+ end;
+
+function TFreeTypeStream.GetPosition: longint;
+begin
+  if Open then result := GetFilePos else result := FPosit;
+end;
+
+procedure TFreeTypeStream.Init;
+begin
+  FOpen:= false;
+  FStream := nil;
+  FBase:= 0;
+  FStoredSize:= -1;
+  FPosit:= 0;
+
+  (* empty frame *)
+  FCurrentFrame := nil;
+  FFrameCursor  := 0;
+  FFrameSize    := 0;
+
+  (* create frame cache *)
+  GetMem( FFrameCache, frame_cache_size );
+end;
+
+ constructor TFreeTypeStream.Create(APathName: string);
+ begin
+   if APathName = '' then
+     raise exception.Create('Empty path name');
+   Init;
+   FName:= APathName;
+ end;
+
+ constructor TFreeTypeStream.Create(AStream: TStream; AStreamOwner: boolean);
+ begin
+   Init;
+   FStream:= AStream;
+   FOwnedStream := AStreamOwner;
+ end;
+
+ destructor TFreeTypeStream.Destroy;
+begin
+  Deactivate;
+  if FOwnedStream then FreeAndNil(FStream);
+
+  if FCurrentFrame <> nil then ForgetFrame;
+  if FFrameCache <> nil then
+    FreeMem( FFrameCache, frame_cache_size );
+  FFrameCache := nil;
+
+  inherited Destroy;
+end;
+
+ function TFreeTypeStream.Activate: TError;
+ begin
+   result := Success;
+   if Open then exit;
+
+   //in case stream provided by user
+   if (FName = '') and (FStream <> nil) then
+   begin
+     FOpen := True;
+     exit;
+   end;
+
+   try
+     FStream := TFileStream.Create(FName, fmOpenRead);
+     FOpen := True;
+     FBase := 0;
+     if FStoredSize = -1 then FStoredSize := FStream.Size;
+     if FPosit <> 0 then FStream.Position:= FPosit;
+   except
+     on ex:exception do
+     begin
+       error := TT_Err_Could_Not_Open_File;
+       result := Failure;
+       exit;
+     end;
+   end;
+ end;
+
+ function TFreeTypeStream.Deactivate: TError;
+ begin
+   result := Success;
+   if not Open then exit;
+
+   if FName = '' then //in case stream provided by user
+   begin
+     FOpen := false;
+     exit;
+   end;
+
+   FPosit := FStream.Position;
+   FreeAndNil(FStream);
+   FOpen := false;
+ end;
+
+ function TFreeTypeStream.SeekFile(APos: Longint): TError;
+ begin
+   if FStream = nil then
+   begin
+     error := TT_Err_File_Error;
+     result := Failure;
+     exit;
+   end;
+   try
+     FStream.Position := APos;
+   except
+     on ex: exception do
+     begin
+       error        := TT_Err_Invalid_File_Offset;
+       result := Failure;
+       exit;
+     end;
+   end;
+   result := Success;
+ end;
+
+ function TFreeTypeStream.SkipFile(ADist: Longint): TError;
+ begin
+   result := SeekFile(Position+ADist);
+ end;
+
+ function TFreeTypeStream.ReadFile(var ABuff; A Count: Int): TError;
+ begin
+   result := Failure;
+   if FStream = nil then
+   begin
+     error := TT_Err_Invalid_File_Read;
+     exit;
+   end;
+   try
+     if FStream.Read(ABuff,ACount) <> ACount then
+     begin
+       error := TT_Err_Invalid_File_Read;
+       exit;
+     end;
+     result := success;
+   except
+     on ex: Exception do
+     begin
+       error := TT_Err_Invalid_File_Read;
+       exit;
+     end;
+   end;
+ end;
+
+ function TFreeTypeStream.ReadAtFile(APos: Long; var ABuff; ACount: Int): TError;
+ begin
+   result := Failure;
+
+   if SeekFile( APos ) or
+      ReadFile( ABuff, ACount ) then exit;
+
+   result := Success;
+ end;
+
+function TFreeTypeStream.GetSize: longint;
+begin
+  if Open then
+    result := GetFileSize
+  else
+    result := FStoredSize;
+end;
+
+function TFreeTypeStream.GetFilePos: longint;
+begin
+  if FStream= nil then
+    result := 0
+  else
+    result := FStream.Position;
+end;
 
 end.

@@ -26,27 +26,27 @@ Unit TTLoad;
 interface
 
 {$R-}
-uses TTTypes, TTTables, TTCMap, TTObjs;
+uses TTTypes, TTTables, TTCMap, TTObjs, TTFile;
 
  function LookUp_TrueType_Table( face : PFace;
                                  aTag : string ) : int;
 
- function Load_TrueType_Directory( face      : PFace;
+ function Load_TrueType_Directory( AStream: TFreeTypeStream;  face      : PFace;
                                    faceIndex : Int ) : TError;
 
- function Load_TrueType_MaxProfile( face : PFace ) : TError;
- function Load_TrueType_Header    ( face : PFace ) : TError;
- function Load_TrueType_Locations ( face : PFace ) : TError;
- function Load_TrueType_CVT       ( face : PFace ) : TError;
- function Load_TrueType_CMap      ( face : PFace ) : TError;
- function Load_TrueType_Gasp      ( face : PFace ) : TError;
- function Load_TrueType_Names     ( face : PFace ) : TError;
- function Load_TrueType_Programs  ( face : PFace ) : TError;
- function Load_trueType_Postscript( face : PFace ) : TError;
- function Load_TrueType_OS2       ( face : PFace ) : TError;
- function Load_TrueType_HDMX      ( face : PFace ) : TError;
+ function Load_TrueType_MaxProfile( AStream: TFreeTypeStream;  face : PFace ) : TError;
+ function Load_TrueType_Header    ( AStream: TFreeTypeStream;  face : PFace ) : TError;
+ function Load_TrueType_Locations ( AStream: TFreeTypeStream;  face : PFace ) : TError;
+ function Load_TrueType_CVT       ( AStream: TFreeTypeStream;  face : PFace ) : TError;
+ function Load_TrueType_CMap      ( AStream: TFreeTypeStream;  face : PFace ) : TError;
+ function Load_TrueType_Gasp      ( AStream: TFreeTypeStream;  face : PFace ) : TError;
+ function Load_TrueType_Names     ( AStream: TFreeTypeStream;  face : PFace ) : TError;
+ function Load_TrueType_Programs  ( AStream: TFreeTypeStream;  face : PFace ) : TError;
+ function Load_trueType_Postscript( AStream: TFreeTypeStream;  face : PFace ) : TError;
+ function Load_TrueType_OS2       ( AStream: TFreeTypeStream;  face : PFace ) : TError;
+ function Load_TrueType_HDMX      ( AStream: TFreeTypeStream;  face : PFace ) : TError;
 
- function Load_TrueType_Metrics_Header( face     : PFace;
+ function Load_TrueType_Metrics_Header( AStream: TFreeTypeStream;  face     : PFace;
                                         vertical : Boolean ) : TError;
 
  function Load_TrueType_Any( face        : PFace;
@@ -57,7 +57,7 @@ uses TTTypes, TTTables, TTCMap, TTObjs;
 
 implementation
 
-uses TTError, TTMemory, TTFile;
+uses TTError, TTMemory;
 
   (* Composite glyph decoding flags *)
 
@@ -125,7 +125,7 @@ uses TTError, TTMemory, TTFile;
  *
  ******************************************************************)
 
- function Load_TrueType_Collection( face : PFace ) : TError;
+ function Load_TrueType_Collection( AStream: TFreeTypeStream; face : PFace ) : TError;
  var
    n : Int;
  const
@@ -139,14 +139,14 @@ uses TTError, TTMemory, TTFile;
    with face^.ttcHeader do
    begin
 
-     if TT_Seek_File( 0 )     or
-        TT_Access_Frame( 12 ) then exit;
+     if AStream.SeekFile( 0 )     or
+        AStream.AccessFrame(12 ) then exit;
 
-     Tag      := Get_ULong;
-     version  := Get_Long;
-     dirCount := Get_Long;
+     Tag      := AStream.Get_ULong;
+     version  := AStream.Get_Long;
+     dirCount := AStream.Get_Long;
 
-     TT_Forget_Frame;
+     AStream.ForgetFrame;
 
      if Tag <> TTC_Tag then
      begin
@@ -160,12 +160,12 @@ uses TTError, TTMemory, TTFile;
      end;
 
      if Alloc( tableDirectory, dirCount * sizeof(ULong) ) or
-        TT_Access_Frame( dirCount*4 ) then exit;
+        AStream.AccessFrame( dirCount*4 ) then exit;
 
      for n := 0 to dirCount-1 do
-       tableDirectory^[n] := Get_ULong;
+       tableDirectory^[n] := AStream.Get_ULong;
 
-     TT_Forget_Frame;
+     AStream.ForgetFrame;
    end;
 
    Load_TrueType_Collection := Success;
@@ -186,7 +186,7 @@ uses TTError, TTMemory, TTFile;
  *
  ******************************************************************)
 
- function Load_TrueType_Directory( face      : PFace;
+ function Load_TrueType_Directory( AStream: TFreeTypeStream;  face      : PFace;
                                    faceIndex : Int ) : TError;
  var
    n        : Int;
@@ -196,7 +196,7 @@ uses TTError, TTMemory, TTFile;
 
     {$IFDEF FREETYPE_DEBUG} Write('Directory '); {$ENDIF}
 
-    if Load_TrueType_Collection(face) then
+    if Load_TrueType_Collection(AStream, face) then
       begin
         if error <> TT_Err_File_Is_Not_Collection then
           exit;
@@ -208,7 +208,7 @@ uses TTError, TTMemory, TTFile;
         error := TT_Err_Ok;
 
         (* Now skip to the beginning of the file *)
-        if TT_Seek_File(0) then
+        if AStream.SeekFile(0) then
           exit;
       end
     else
@@ -222,23 +222,23 @@ uses TTError, TTMemory, TTFile;
           end;
 
         (* select a TT Font within the ttc file *)
-        if TT_Seek_File( face^.ttcHeader.tableDirectory^[faceIndex] ) then
+        if AStream.SeekFile( face^.ttcHeader.tableDirectory^[faceIndex] ) then
           exit;
       end;
 
-    if TT_Access_Frame( 12 ) then
+    if AStream.AccessFrame( 12 ) then
       exit;
 
-    tableDir.version   := GET_Long;
-    tableDir.numTables := GET_UShort;
+    tableDir.version   := AStream.GET_Long;
+    tableDir.numTables := AStream.GET_UShort;
 
-    tableDir.searchRange   := GET_UShort;
-    tableDir.entrySelector := GET_UShort;
-    tableDir.rangeShift    := GET_UShort;
+    tableDir.searchRange   := AStream.GET_UShort;
+    tableDir.entrySelector := AStream.GET_UShort;
+    tableDir.rangeShift    := AStream.GET_UShort;
 
     {$IFDEF FREETYPE_DEBUG} Writeln('Tables number : ', tableDir.numTables ); {$ENDIF}
 
-    TT_Forget_Frame();
+    AStream.ForgetFrame;
 
     (* Check that we have a 'sfnt' format there *)
     if (tableDir.version <> $10000   ) and     (* MS fonts  *)
@@ -249,20 +249,25 @@ uses TTError, TTMemory, TTFile;
       exit;
     end;
 
-    face^.numTables := tableDir.numTables;
-
-    if Alloc( face^.dirTables, face^.numTables * sizeof( TTableDirEntry ) ) or
-       TT_Access_Frame( 16 * face^.numTables ) then exit;
-
-    for n := 0 to face^.numTables-1 do
+    with face^ do
     begin
-      face^.dirTables^[n].Tag      := GET_ULong;
-      face^.dirTables^[n].Checksum := GET_ULong;
-      face^.dirTables^[n].Offset   := GET_Long;
-      face^.dirTables^[n].Length   := Get_Long;
-    end;
 
-   TT_Forget_Frame();
+      numTables := tableDir.numTables;
+
+      if Alloc( dirTables, numTables * sizeof( TTableDirEntry ) ) or
+         AStream.AccessFrame( 16 * numTables ) then exit;
+
+      for n := 0 to numTables-1 do with dirTables^[n] do
+      begin
+        Tag        := AStream.GET_ULong;
+        Checksum   := AStream.GET_ULong;
+        Offset     := AStream.GET_Long;
+        Length     := AStream.Get_Long;
+      end;
+
+      AStream.ForgetFrame;
+
+   end;
 
    {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}
 
@@ -284,7 +289,7 @@ uses TTError, TTMemory, TTFile;
  *
  ******************************************************************)
 
- function Load_TrueType_MaxProfile( face : PFace ) : TError;
+ function Load_TrueType_MaxProfile( AStream: TFreeTypeStream; face : PFace ) : TError;
  var
    table : int;
  begin
@@ -299,10 +304,10 @@ uses TTError, TTMemory, TTFile;
    with face^ do
    begin
 
-     if TT_Seek_File( dirTables^[table].Offset ) or
-        TT_Access_Frame( 32 ) then exit;
+     if astream.SeekFile( dirTables^[table].Offset ) or
+        AStream.AccessFrame( 32 ) then exit;
 
-     with MaxProfile do
+     with AStream, MaxProfile do
       begin
 
         ULong(Version) := GET_ULong;
@@ -325,7 +330,7 @@ uses TTError, TTMemory, TTFile;
         maxComponentDepth     := GET_UShort;
       end;
 
-     TT_Forget_Frame;
+     AStream.ForgetFrame;
 
     (* XXX : an adjustement that is necessary to load certain */
     /*       broken fonts like "Keystrokes MT" :-(            */
@@ -381,7 +386,7 @@ uses TTError, TTMemory, TTFile;
  *
  ******************************************************************)
 
- function Load_TrueType_Gasp( face : PFace ) : TError;
+ function Load_TrueType_Gasp( AStream: TFreeTypeStream; face : PFace ) : TError;
  var
    gRanges  : PGaspRanges;
    table, i : Int;
@@ -404,33 +409,33 @@ uses TTError, TTMemory, TTFile;
      exit;
    end;
 
-   if TT_Seek_File( face^.dirTables^[table].Offset ) or
-      TT_Access_Frame( 4 ) then exit;
+   if astream.SeekFile( face^.dirTables^[table].Offset ) or
+      AStream.AccessFrame( 4 ) then exit;
 
-   with face^.gasp do
+   with AStream, face^.gasp do
    begin
      version    := Get_UShort;
      numRanges  := Get_UShort;
      gaspRanges := nil;
    end;
 
-   TT_Forget_Frame;
+   AStream.ForgetFrame;
 
    gRanges:=nil;
    if Alloc( gRanges, face^.gasp.numRanges * sizeof(TGaspRange) ) or
-      TT_Access_Frame( face^.gasp.numRanges * 4 ) then
+      AStream.AccessFrame( face^.gasp.numRanges * 4 ) then
      goto Fail;
 
    face^.gasp.gaspRanges := gRanges;
 
    for i := 0 to face^.gasp.numRanges-1 do
-     with gRanges^[i] do
+     with AStream, gRanges^[i] do
      begin
        maxPPEM  := Get_UShort;
        gaspFlag := Get_UShort;
      end;
 
-   TT_Forget_Frame;
+   AStream.ForgetFrame;
 
    Load_TrueType_Gasp := Success;
    exit;
@@ -457,7 +462,7 @@ uses TTError, TTMemory, TTFile;
  *
  ******************************************************************)
 
- function  Load_TrueType_Header( face : PFace ) : TError;
+ function  Load_TrueType_Header( AStream: TFreeTypeStream; face : PFace ) : TError;
  var
    i : int;
  begin
@@ -471,10 +476,10 @@ uses TTError, TTMemory, TTFile;
    with face^ do
    begin
 
-     if TT_Seek_File( dirTables^[i].offset ) or
-        TT_Access_Frame( 54 ) then exit;
+     if AStream.SeekFile( dirTables^[i].offset ) or
+        AStream.AccessFrame(54 ) then exit;
 
-     with FontHeader do
+     with AStream, FontHeader do
      begin
 
        ULong(Table_Version) := GET_ULong;
@@ -505,7 +510,7 @@ uses TTError, TTMemory, TTFile;
 
      end;
 
-     TT_Forget_Frame;
+     AStream.ForgetFrame;
 
    end;
 
@@ -529,7 +534,7 @@ uses TTError, TTMemory, TTFile;
  *
  ******************************************************************)
 
- function Load_TrueType_Metrics( face     : PFace;
+ function Load_TrueType_Metrics( AStream: TFreeTypeStream; face     : PFace;
                                  vertical : Boolean ) : TError;
  var
    table, n           : int;
@@ -599,20 +604,20 @@ uses TTError, TTMemory, TTFile;
    if Alloc( longs^,  sizeof(TLongMetrics) * num_longs )   or
       Alloc( shorts^, sizeof(TShortMetrics)* num_shorts )  or
 
-      TT_Seek_File( face^.dirTables^[table].Offset )       or
-      TT_Access_Frame( face^.dirTables^[table].Length )    then exit;
+      AStream.SeekFile( face^.dirTables^[table].Offset )       or
+      AStream.AccessFrame( face^.dirTables^[table].Length )    then exit;
 
    for n := 0 to num_longs-1 do with longs^^[n] do
    begin
-     advance := GET_UShort;
-     bearing := GET_Short;
+     advance := AStream.GET_UShort;
+     bearing := AStream.GET_Short;
    end;
 
    (* do we have an inconsistent number of metric values ? *)
    if num_shorts > num_shorts_checked then
      begin
        for n := 0 to num_shorts_checked-1 do
-         shorts^^[n] := GET_Short;
+         shorts^^[n] := AStream.GET_Short;
 
         (* we fill up the missing left side bearings with the    *)
         (* last valid value. Since this will occur for buggy CJK *)
@@ -625,9 +630,9 @@ uses TTError, TTMemory, TTFile;
      end
    else
      for n := 0 to num_shorts-1 do
-       shorts^^[n] := GET_Short;
+       shorts^^[n] := AStream.GET_Short;
 
-   TT_Forget_Frame;
+   AStream.ForgetFrame;
 
    {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}
 
@@ -649,7 +654,7 @@ uses TTError, TTMemory, TTFile;
  *
  ******************************************************************)
 
- function Load_TrueType_Metrics_Header( face     : PFace;
+ function Load_TrueType_Metrics_Header( AStream: TFreeTypeStream; face     : PFace;
                                         vertical : Boolean ) : TError;
  var
    table  : int;
@@ -691,11 +696,11 @@ uses TTError, TTMemory, TTFile;
    with face^ do
    begin
 
-     if TT_Seek_File( dirTables^[table].Offset ) or
-        TT_Access_Frame( 36 ) then
+     if AStream.SeekFile( dirTables^[table].Offset ) or
+        AStream.AccessFrame( 36 ) then
         exit;
 
-     with header^ do
+     with AStream, header^ do
      begin
 
        Long(Version) := GET_ULong;
@@ -726,13 +731,13 @@ uses TTError, TTMemory, TTFile;
 
      end;
 
-     TT_Forget_Frame;
+     AStream.ForgetFrame;
 
    end;
 
    {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}
 
-   Load_TrueType_Metrics_Header := Load_TrueType_Metrics( face, vertical );
+   Load_TrueType_Metrics_Header := Load_TrueType_Metrics( AStream, face, vertical );
  end;
 
 (*******************************************************************
@@ -754,7 +759,7 @@ uses TTError, TTMemory, TTFile;
  *
  ******************************************************************)
 
- function Load_TrueType_Locations( face : PFace ): TError;
+ function Load_TrueType_Locations( AStream: TFreeTypeStream; face : PFace ): TError;
  var
    t, n        : int;
    LongOffsets : int;
@@ -772,7 +777,7 @@ uses TTError, TTMemory, TTFile;
      t := LookUp_Mandatory_Table( face, 'loca' );
      if t < 0 then exit;
 
-     if TT_Seek_File( dirTables^[T].Offset ) then exit;
+     if AStream.SeekFile( dirTables^[T].Offset ) then exit;
 
      if LongOffsets <> 0 then
        begin
@@ -784,12 +789,12 @@ uses TTError, TTMemory, TTFile;
          {$ENDIF}
 
          if Alloc( glyphLocations, sizeof(Long)*numLocations ) or
-            TT_Access_Frame( numLocations*4 ) then exit;
+            AStream.AccessFrame( numLocations*4 ) then exit;
 
          for n := 0 to numLocations-1 do
-           glyphLocations^[n] := GET_Long;
+           glyphLocations^[n] := AStream.GET_Long;
 
-         TT_Forget_Frame;
+         AStream.ForgetFrame;
 
        end
      else
@@ -801,12 +806,12 @@ uses TTError, TTMemory, TTFile;
          {$ENDIF}
 
          if Alloc( glyphLocations, sizeof(Long)*numLocations ) or
-            TT_Access_Frame( numLocations*2 ) then exit;
+            AStream.AccessFrame( numLocations*2 ) then exit;
 
          for n := 0 to numLocations-1 do
-           glyphLocations^[n] := Long(GET_UShort) * 2;
+           glyphLocations^[n] := Long(AStream.GET_UShort) * 2;
 
-         TT_Forget_Frame;
+         AStream.ForgetFrame;
        end;
 
    end;
@@ -832,7 +837,7 @@ uses TTError, TTMemory, TTFile;
  *
  ******************************************************************)
 
-  function Load_TrueType_Names( face : PFace ) : TError;
+  function Load_TrueType_Names( AStream: TFreeTypeStream; face : PFace ) : TError;
   var
     table, i : Int;
     bytes    : Long;
@@ -845,17 +850,17 @@ uses TTError, TTMemory, TTFile;
     with face^.nameTable do
     begin
       (* Seek to the beginning of the table and check the frame access. *)
-      if TT_Seek_File( face^.dirTables^[table].Offset ) or
-         TT_Access_Frame( 6 ) then exit;
+      if AStream.SeekFile( face^.dirTables^[table].Offset ) or
+         AStream.AccessFrame(6 ) then exit;
 
-      format         := GET_UShort;
-      numNameRecords := GET_UShort;
-      storageOffset  := GET_UShort;
+      format         := AStream.GET_UShort;
+      numNameRecords := AStream.GET_UShort;
+      storageOffset  := AStream.GET_UShort;
 
-      TT_Forget_Frame;
+      AStream.ForgetFrame;
 
       if Alloc( names, numNameRecords*sizeof(TName_Record) ) or
-         TT_Access_Frame( numNameRecords*12 ) then
+         AStream.AccessFrame( numNameRecords*12 ) then
       begin
         numNameRecords := 0;
         exit;
@@ -865,7 +870,7 @@ uses TTError, TTMemory, TTFile;
       (* to hold the strings themselves                                 *)
 
       bytes := 0;
-      for i := 0 to numNameRecords-1 do with names^[i] do
+      for i := 0 to numNameRecords-1 do with AStream, names^[i] do
       begin
         platformID := GET_UShort;
         encodingID := GET_UShort;
@@ -880,14 +885,14 @@ uses TTError, TTMemory, TTFile;
           bytes := Offset + Length;
       end;
 
-      TT_Forget_Frame;
+      AStream.ForgetFrame;
 
       storage := nil;
       if bytes > 0 then
       begin
         if Alloc( storage, bytes ) then exit;
 
-        if TT_Read_At_File( face^.dirTables^[table].Offset + storageOffset,
+        if AStream.ReadAtFile( face^.dirTables^[table].Offset + storageOffset,
                             storage^, bytes ) then
         begin
           Free(storage);
@@ -916,7 +921,7 @@ uses TTError, TTMemory, TTFile;
  *
  ******************************************************************)
 
- function Load_TrueType_CVT( face : PFace ): TError;
+ function Load_TrueType_CVT( AStream: TFreeTypeStream; face : PFace ): TError;
  var
    t, n : Int;
  begin
@@ -943,14 +948,14 @@ uses TTError, TTMemory, TTFile;
 
      if Alloc( cvt, sizeof(Short)*cvtSize )  or
 
-        TT_Seek_File( dirTables^[t].Offset ) or
+        AStream.SeekFile( dirTables^[t].Offset ) or
 
-        TT_Access_Frame( 2*cvtSize )         then exit;
+        AStream.AccessFrame(2*cvtSize )         then exit;
 
      for n := 0 to cvtSize-1 do
-       cvt^[n] := GET_Short;
+       cvt^[n] := AStream.GET_Short;
 
-     TT_Forget_Frame;
+     AStream.ForgetFrame;
    end;
 
    {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}
@@ -974,7 +979,7 @@ uses TTError, TTMemory, TTFile;
  *
  ******************************************************************)
 
- function Load_TrueType_CMap( face : PFace ) : TError;
+ function Load_TrueType_CMap( AStream: TFreeTypeStream; face : PFace ) : TError;
  var
    off, table_start : Longint;
    n, t      : Int;
@@ -998,15 +1003,15 @@ uses TTError, TTMemory, TTFile;
 
      table_start := dirTables^[t].offset;
 
-     if TT_Seek_File( dirTables^[t].Offset ) or
-        TT_Access_Frame( 4 )  then exit;
+     if AStream.SeekFile( dirTables^[t].Offset ) or
+        AStream.AccessFrame( 4 )  then exit;
 
-     cmap_dir.tableVersionNumber := GET_UShort;
-     cmap_dir.numCMaps           := GET_UShort;
+     cmap_dir.tableVersionNumber := AStream.GET_UShort;
+     cmap_dir.numCMaps           := AStream.GET_UShort;
 
-     TT_Forget_Frame;
+     AStream.ForgetFrame;
 
-     off := TT_File_Pos;
+     off := AStream.Position;
 
      (* save space in face data for cmap tables *)
      numCMaps := cmap_dir.numCMaps;
@@ -1015,34 +1020,34 @@ uses TTError, TTMemory, TTFile;
      for n := 0 to numCMaps-1 do
      begin
 
-       if TT_Seek_File   ( off ) or
-          TT_Access_Frame( 8 )   then exit;
+       if AStream.SeekFile   ( off ) or
+          AStream.AccessFrame( 8 )   then exit;
 
        cmap := @cMaps^[n];
 
-       entry.platformID         := GET_UShort;
-       entry.platformEncodingID := GET_UShort;
-       entry.offset             := GET_Long;
+       entry.platformID         := AStream.GET_UShort;
+       entry.platformEncodingID := AStream.GET_UShort;
+       entry.offset             := AStream.GET_Long;
 
        cmap^.loaded             := False;
        cmap^.platformID         := entry.platformID;
        cmap^.platformEncodingID := entry.platformEncodingID;
 
-       TT_Forget_Frame;
+       AStream.ForgetFrame;
 
-       off := TT_File_Pos;
+       off := AStream.Position;
 
-       if TT_Seek_File   ( table_start + entry.offset ) or
-          TT_Access_Frame( 6 ) then exit;
+       if AStream.SeekFile   ( table_start + entry.offset ) or
+          AStream.AccessFrame( 6 ) then exit;
 
-       cmap^.format  := Get_UShort;
-       cmap^.length  := Get_UShort;
-       cmap^.version := Get_UShort;
+       cmap^.format  := AStream.Get_UShort;
+       cmap^.length  := AStream.Get_UShort;
+       cmap^.version := AStream.Get_UShort;
 
-       TT_Forget_Frame;
+       AStream.ForgetFrame;
 
        cmap^.StreamPtr := @face^.stream;
-       cmap^.offset := TT_File_Pos;
+       cmap^.offset := AStream.Position;
 
      end;  (* for n *)
 
@@ -1108,7 +1113,7 @@ uses TTError, TTMemory, TTFile;
  *
  ******************************************************************)
 
- function Load_TrueType_Programs( face : PFace ) : TError;
+ function Load_TrueType_Programs( AStream: TFreeTypeStream; face : PFace ) : TError;
  var
    t : Int;
  begin
@@ -1139,7 +1144,7 @@ uses TTError, TTMemory, TTFile;
        fontPgmSize := dirTables^[t].Length;
 
        if Alloc( fontProgram, fontPgmSize ) or
-          TT_Read_At_File( dirTables^[t].offset,
+          AStream.ReadAtFile( dirTables^[t].offset,
                            fontProgram^,
                            fontPgmSize ) then exit;
 
@@ -1170,7 +1175,7 @@ uses TTError, TTMemory, TTFile;
        cvtPgmSize := dirTables^[t].Length;
 
        if Alloc( cvtProgram, cvtPgmSize ) or
-          TT_Read_At_File( dirTables^[t].offset,
+          AStream.ReadAtFile( dirTables^[t].offset,
                            cvtProgram^,
                            cvtPgmSize ) then exit;
 
@@ -1192,7 +1197,7 @@ uses TTError, TTMemory, TTFile;
  *
  ******************************************************************)
 
- function Load_TrueType_OS2( face : PFace ) : TError;
+ function Load_TrueType_OS2( AStream: TFreeTypeStream; face : PFace ) : TError;
  var
    table : Int;
    i     : Int;
@@ -1210,10 +1215,10 @@ uses TTError, TTMemory, TTFile;
      exit;
    end;
 
-   if TT_Seek_File( face^.dirTables^[table].offset ) or
-      TT_Access_Frame( 78 ) then exit;
+   if AStream.SeekFile( face^.dirTables^[table].offset ) or
+      AStream.AccessFrame( 78 ) then exit;
 
-   with face^.os2 do
+   with AStream, face^.os2 do
    begin
      version             := Get_UShort;
      xAvgCharWidth       := Get_Short;
@@ -1250,16 +1255,16 @@ uses TTError, TTMemory, TTFile;
      usWinAscent      := Get_UShort;
      usWinDescent     := Get_UShort;
 
-     TT_Forget_Frame;
+     AStream.ForgetFrame;
 
      if version >= $0001 then
        begin
-         if TT_Access_Frame(8) then exit;
+         if AStream.AccessFrame(8) then exit;
 
-         ulCodePageRange1 := Get_ULong;
-         ulCodePageRange2 := Get_ULong;
+         ulCodePageRange1 := AStream.Get_ULong;
+         ulCodePageRange2 := AStream.Get_ULong;
 
-         TT_Forget_Frame;
+         AStream.ForgetFrame;
        end
      else
        begin
@@ -1286,7 +1291,7 @@ uses TTError, TTMemory, TTFile;
  *
  ******************************************************************)
 
- function Load_TrueType_Postscript( face : PFace ) : TError;
+ function Load_TrueType_Postscript( AStream: TFreeTypeStream; face : PFace ) : TError;
  var
    table : Int;
  begin
@@ -1297,10 +1302,10 @@ uses TTError, TTMemory, TTFile;
    table := LookUp_TrueType_Table( face, 'post' );
    if table < 0 then exit;
 
-   if TT_Seek_File( face^.dirTables^[table].offset ) or
-      TT_Access_Frame(32) then exit;
+   if AStream.SeekFile( face^.dirTables^[table].offset ) or
+      AStream.AccessFrame(32) then exit;
 
-   with face^.postscript do
+   with AStream, face^.postscript do
    begin
      formatType         := Get_ULong;
      italicAngle        := Get_ULong;
@@ -1313,7 +1318,7 @@ uses TTError, TTMemory, TTFile;
      maxMemType1        := Get_ULong;
    end;
 
-   TT_Forget_Frame;
+   AStream.ForgetFrame;
 
    {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}
 
@@ -1332,7 +1337,7 @@ uses TTError, TTMemory, TTFile;
  *
  ******************************************************************)
 
- function Load_TrueType_Hdmx( face : PFace ) : TError;
+ function Load_TrueType_Hdmx( AStream: TFreeTypeStream; face : PFace ) : TError;
  var
    table, n   : Int;
    num_glyphs : Int;
@@ -1362,14 +1367,14 @@ uses TTError, TTMemory, TTFile;
      exit;
    end;
 
-   if TT_Seek_File( face^.dirTables^[table].offset ) or
-      TT_Access_Frame( 8 ) then exit;
+   if AStream.SeekFile( face^.dirTables^[table].offset ) or
+      AStream.AccessFrame(8 ) then exit;
 
-   version  := Get_UShort;
-   num_rec  := Get_Short;
-   rec_size := Get_Long;
+   version  := AStream.Get_UShort;
+   num_rec  := AStream.Get_Short;
+   rec_size := AStream.Get_Long;
 
-   TT_Forget_Frame;
+   AStream.ForgetFrame;
 
    (* right now, we only recognize format 0 *)
 
@@ -1390,22 +1395,22 @@ uses TTError, TTMemory, TTFile;
 
      (* read record *)
 
-     if TT_Access_Frame(2) then
+     if AStream.AccessFrame(2) then
        goto Fail;
 
-     rec^.ppem      := Get_Byte;
-     rec^.max_width := Get_Byte;
+     rec^.ppem      := AStream.Get_Byte;
+     rec^.max_width := AStream.Get_Byte;
 
-     TT_Forget_Frame;
+     AStream.ForgetFrame;
 
      if Alloc( rec^.widths, num_glyphs ) or
-        TT_Read_File( rec^.widths^, num_glyphs ) then
+        AStream.ReadFile( rec^.widths^, num_glyphs ) then
        goto Fail;
 
      (* skip padding bytes *)
 
      if rec_size > 0 then
-       if TT_Skip_File( rec_size ) then
+       if AStream.SkipFile( rec_size ) then
          goto Fail;
    end;
 
@@ -1440,7 +1445,7 @@ uses TTError, TTMemory, TTFile;
                              var buffer;
                              var length  : longint ) : TError;
  var
-   stream   : TT_Stream;
+   ftstream   : TFreeTypeStream;
    found, i : integer;
  begin
    if tag <> 0 then
@@ -1483,8 +1488,8 @@ uses TTError, TTMemory, TTFile;
          exit;
        end;
 
-   TT_Use_Stream( face^.stream, stream {%H-});
-   Load_TrueType_Any := TT_Read_At_File( offset, buffer, length );
+   TT_Use_Stream( face^.stream, ftstream {%H-});
+   Load_TrueType_Any := ftstream.ReadAtFile( offset, buffer, length );
    TT_Done_Stream( face^.stream );
  end;
 

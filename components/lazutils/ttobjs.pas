@@ -682,7 +682,7 @@ type
 
   PFont_Input = ^TFont_Input;
   TFont_Input = record
-                  stream    : TT_Stream;  (* inpute stream               *)
+                  stream    : TT_Stream;  (* input stream               *)
                   fontIndex : Int;        (* index of font in collection *)
                 end;
 
@@ -1834,8 +1834,8 @@ const
   var
     input : PFont_Input;
     face  : PFace;
-  label
-    Fail;
+    ftstream: TFreeTypeStream;
+  label Fail;
   begin
     Face_Create := Failure;
 
@@ -1843,34 +1843,38 @@ const
     input := PFont_Input(_input);
 
     face^.stream := input^.stream;
+    if TT_Use_Stream(face^.stream, ftstream) then exit;
 
     if Cache_Create( objs_instance_class, face^.instances ) or
-       Cache_Create( objs_glyph_class,    face^.glyphs    ) then exit;
+       Cache_Create( objs_glyph_class,    face^.glyphs    ) then goto Fail;
 
     (* Load collection directory if present *)
-    if Load_TrueType_Directory( face, input^.fontIndex ) then
-      exit;
+    if Load_TrueType_Directory( ftstream, face, input^.fontIndex ) then
+      goto Fail;
 
-    if Load_TrueType_Header                      ( face ) or
-       Load_TrueType_MaxProfile                  ( face ) or
-       Load_TrueType_Locations                   ( face ) or
-       Load_TrueType_CMap                        ( face ) or
-       Load_TrueType_CVT                         ( face ) or
-       Load_TrueType_Metrics_Header       ( face, false ) or
-       Load_TrueType_Programs                    ( face ) or
-       Load_TrueType_Gasp                        ( face ) or
-       Load_TrueType_Names                       ( face ) or
-       Load_TrueType_OS2                         ( face ) or
-       Load_TrueType_Hdmx                        ( face ) or
-       Load_TrueType_Postscript                  ( face ) or
-       Load_TrueType_Metrics_Header       ( face, true  ) then
+    if Load_TrueType_Header                      ( ftstream, face ) or
+       Load_TrueType_MaxProfile                  ( ftstream, face ) or
+       Load_TrueType_Locations                   ( ftstream, face ) or
+       Load_TrueType_CMap                        ( ftstream, face ) or
+       Load_TrueType_CVT                         ( ftstream, face ) or
+       Load_TrueType_Metrics_Header              ( ftstream, face, false ) or
+       Load_TrueType_Programs                    ( ftstream, face ) or
+       Load_TrueType_Gasp                        ( ftstream, face ) or
+       Load_TrueType_Names                       ( ftstream, face ) or
+       Load_TrueType_OS2                         ( ftstream, face ) or
+       Load_TrueType_Hdmx                        ( ftstream, face ) or
+       Load_TrueType_Postscript                  ( ftstream, face ) or
+       Load_TrueType_Metrics_Header              ( ftstream, face, true  ) then
       goto Fail;
 
     Face_Create := Success;
+    TT_Done_Stream(face^.stream);
     exit;
 
   Fail:
+    TT_Done_Stream(face^.stream);
     Face_Destroy( face );
+    exit;
   end;
 
 

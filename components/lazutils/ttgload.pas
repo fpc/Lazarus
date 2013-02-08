@@ -222,8 +222,8 @@ const
  ******************************************************************)
 
 
- function Load_Simple_Glyph( exec          : PExec_Context;
-                             {%H-}stream        : TT_Stream;
+ function Load_Simple_Glyph( AStream       : TFreeTypeStream;
+                             exec          : PExec_Context;
                              n_contours    : Int;
                              left_contours : Int;
                              left_points   : Int;
@@ -264,7 +264,7 @@ const
 
    (* Reading the contours endpoints *)
 
-   if TT_Access_Frame( (n_contours+1)*2 ) then
+   if AStream.AccessFrame( (n_contours+1)*2 ) then
      goto Fail_File;
 
    n_points := 0;
@@ -272,7 +272,7 @@ const
    for k := 0 to n_contours-1 do
      begin
        {$IFDEF FREETYPE_DEBUG} Write( n_points,' '); {$ENDIF}
-       n_points              := GET_Short;
+       n_points              := AStream.GET_Short;
        exec^.pts.conEnds^[k] := n_points;
        inc( n_points );
      end;
@@ -286,9 +286,9 @@ const
 
    (* Loading instructions *)
 
-   n_ins := GET_Short;
+   n_ins := AStream.GET_Short;
 
-   TT_Forget_Frame;
+   AStream.ForgetFrame;
 
 {
    if not subg^.is_hinted then
@@ -312,7 +312,7 @@ const
 
        with exec^ do
        begin
-         if TT_Read_File( glyphIns^, n_ins ) then
+         if AStream.ReadFile( glyphIns^, n_ins ) then
            goto Fail_File;
 
          glyphSize := n_ins;
@@ -327,7 +327,7 @@ const
 
    (* read the flags *)
 
-   if TT_Check_And_Access_Frame( n_points*5 )
+   if AStream.CheckAndAccessFrame( n_points*5 )
      then goto Fail;
 
    k    := 0;
@@ -335,13 +335,13 @@ const
 
    while ( k < n_points ) do
     begin
-     c        := GET_Byte;
+     c        := AStream.GET_Byte;
      flag^[k] := c;
      inc(k);
 
      if c and 8 <> 0 then
        begin
-         cnt := GET_Byte;
+         cnt := AStream.GET_Byte;
 
          while ( cnt > 0 ) do
            begin
@@ -361,10 +361,10 @@ const
    begin
      if flag^[k] and 2 <> 0 then
 
-        if flag^[k] and 16 <> 0 then inc( x,  GET_Byte )
-                                else inc( x, -GET_Byte )
+        if flag^[k] and 16 <> 0 then inc( x,  AStream.GET_Byte )
+                                else inc( x, -AStream.GET_Byte )
      else
-        if flag^[k] and 16 = 0  then inc( x, GET_Short );
+        if flag^[k] and 16 = 0  then inc( x, AStream.GET_Short );
 
      coords^[k].x := x;
    end;
@@ -377,15 +377,15 @@ const
    begin
      if flag^[k] and 4 <> 0 then
 
-       if flag^[k] and 32 <> 0 then inc( y,  GET_Byte )
-                               else inc( y, -GET_Byte )
+       if flag^[k] and 32 <> 0 then inc( y,  AStream.GET_Byte )
+                               else inc( y, -AStream.GET_Byte )
      else
-       if flag^[k] and 32 = 0  then inc( y, GET_Short );
+       if flag^[k] and 32 = 0  then inc( y, AStream.GET_Short );
 
      coords^[k].y := y;
    end;
 
-   TT_Forget_Frame;
+   AStream.ForgetFrame;
 
    (* Now adds the two shadow points at n and n+1     *)
    (* We need the left side bearing and advance width *)
@@ -490,7 +490,8 @@ const
  *
  ******************************************************************)
 
- function  Load_Composite_End( n_points   : Int;
+ function  Load_Composite_End( AStream: TFreeTypeStream;
+                               n_points   : Int;
                                {%H-}n_contours : Int;
                                exec       : PExec_Context;
                                subg       : PSubglyph_Record;
@@ -509,9 +510,9 @@ const
    if subg^.is_hinted and
       (subg^.element_flag and WE_HAVE_INSTR <> 0) then
    begin
-     if TT_Access_Frame(2) then goto Fail_File;
-     n_ins := Get_UShort;
-     TT_Forget_Frame;
+     if AStream.AccessFrame(2) then goto Fail_File;
+     n_ins := AStream.Get_UShort;
+     AStream.ForgetFrame;
 
      (* load the instructions *)
      {$IFDEF FREETYPE_DEBUG} Writeln('Instructions size : ', n_ins); {$ENDIF}
@@ -528,7 +529,7 @@ const
 
    if n_ins > 0 then with exec^ do
    begin
-     if TT_Read_File( glyphIns^, n_ins ) then
+     if AStream.ReadFile( glyphIns^, n_ins ) then
        goto Fail_File;
 
      glyphSize := n_ins;
@@ -680,7 +681,7 @@ const
    xx, xy, yx, yy : TT_Fixed;
 
    exec   : PExec_Context;
-   stream : TT_Stream;
+   ftstream : TFreeTypeStream;
 
    subglyph, subglyph2 : PSubGlyph_Record;
 
@@ -779,7 +780,7 @@ const
 
    (* now access stream *)
 
-   if TT_Use_Stream( face^.stream, stream {%H-}) then
+   if TT_Use_Stream( face^.stream, ftstream {%H-}) then
      goto Fin;
 
    (* Main Loading Loop *)
@@ -848,17 +849,17 @@ const
 
                (* read first glyph header *)
 
-               if TT_Seek_File( offset ) or
-                  TT_Access_Frame( 5*sizeof(Short) ) then
+               if ftstream.SeekFile( offset ) or
+                  ftstream.AccessFrame( 5*sizeof(Short) ) then
                  goto Fail_File;
 
-               num_contours        := GET_Short;
-               subglyph^.bbox.xMin := GET_Short;
-               subglyph^.bbox.yMin := GET_Short;
-               subglyph^.bbox.xMax := GET_Short;
-               subglyph^.bbox.yMax := GET_Short;
+               num_contours        := ftstream.GET_Short;
+               subglyph^.bbox.xMin := ftstream.GET_Short;
+               subglyph^.bbox.yMin := ftstream.GET_Short;
+               subglyph^.bbox.xMax := ftstream.GET_Short;
+               subglyph^.bbox.yMax := ftstream.GET_Short;
 
-               TT_Forget_Frame;
+               ftstream.ForgetFrame;
 
                {$IFDEF FREETYPE_DEBUG}
                Writeln('Glyph ', i );
@@ -925,8 +926,8 @@ const
                new_flags := new_flags and not TT_Load_Debug;
 
            if Load_Simple_Glyph(
+                       ftstream,
                        exec,
-                       stream,
                        num_contours,
                        left_contours,
                        left_points,
@@ -973,15 +974,15 @@ const
 
            (* now read composite header *)
 
-           if TT_Access_Frame( 4 ) then
+           if ftstream.AccessFrame( 4 ) then
              goto Fail_File;
 
-           new_flags := Get_UShort;
+           new_flags := ftstream.Get_UShort;
 
            subglyph^.element_flag := new_flags;
-           subglyph2^.index       := Get_UShort;
+           subglyph2^.index       := ftstream.Get_UShort;
 
-           TT_Forget_Frame;
+           ftstream.ForgetFrame;
 
            k := 2;
 
@@ -997,18 +998,18 @@ const
            if new_flags and WE_HAVE_A_2X2 <> 0 then
              inc( k, 8 );
 
-           if TT_Access_Frame( k ) then
+           if ftstream.AccessFrame( k ) then
              goto Fail_File;
 
            if new_flags and ARGS_ARE_WORDS <> 0 then
              begin
-               k := Get_Short;
-               l := Get_Short;
+               k := ftstream.Get_Short;
+               l := ftstream.Get_Short;
              end
            else
              begin
-               k := Get_Byte;
-               l := Get_Byte;
+               k := ftstream.Get_Byte;
+               l := ftstream.Get_Byte;
              end;
 
            subglyph^.arg1 := k;
@@ -1027,24 +1028,24 @@ const
 
            if new_flags and WE_HAVE_A_SCALE <> 0 then
              begin
-               xx := Long(Get_Short) shl 2;
+               xx := Long(ftstream.Get_Short) shl 2;
                yy := xx;
 
                subglyph2^.is_scaled := true;
              end
            else if new_flags and WE_HAVE_AN_XY_SCALE <> 0 then
              begin
-               xx := Long(Get_Short) shl 2;
-               yy := Long(Get_Short) shl 2;
+               xx := Long(ftstream.Get_Short) shl 2;
+               yy := Long(ftstream.Get_Short) shl 2;
 
                subglyph2^.is_scaled := true;
              end
            else if new_flags and WE_HAVE_A_2X2 <> 0 then
              begin
-               xx := Long(Get_Short) shl 2;
-               xy := Long(Get_Short) shl 2;
-               yx := Long(Get_Short) shl 2;
-               yy := Long(Get_Short) shl 2;
+               xx := Long(ftstream.Get_Short) shl 2;
+               xy := Long(ftstream.Get_Short) shl 2;
+               yx := Long(ftstream.Get_Short) shl 2;
+               yy := Long(ftstream.Get_Short) shl 2;
 
                subglyph2^.is_scaled := true;
              end;
@@ -1060,9 +1061,9 @@ const
            if abs(delta) <> 1 shl 16 then
              subglyph2^.is_hinted := false;
 
-           TT_Forget_Frame;
+           ftstream.ForgetFrame;
 
-           subglyph^.file_offset := TT_File_Pos;
+           subglyph^.file_offset := ftstream.Position;
 
            phase := Load_Glyph;
          end;
@@ -1186,7 +1187,7 @@ const
 
              (* check for last component *)
 
-             if TT_Seek_File( subglyph^.file_offset ) then
+             if ftstream.SeekFile( subglyph^.file_offset ) then
                goto Fail_File;
 
              if subglyph^.element_flag and MORE_COMPONENTS <> 0 then
@@ -1196,7 +1197,8 @@ const
                  debug := ( load_top = 0 ) and
                           ( load_flags and TT_Load_Debug <> 0 );
 
-                 if Load_Composite_End( num_points,
+                 if Load_Composite_End( ftstream,
+                                        num_points,
                                         num_contours,
                                         exec,
                                         subglyph,
@@ -1344,7 +1346,7 @@ const
    Load_TrueType_Glyph := Success;
 
  Fail:
-   TT_Done_Stream( stream );
+   TT_Done_Stream( face^.stream );
 
  Fin:
 

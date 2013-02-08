@@ -192,6 +192,8 @@ type
   TFreeTypeFont = class(TFreeTypeRenderableFont)
   private
     FName: String;
+    FStream: TStream;
+    FOwnedStream: boolean;
     FPointSize: single;
     FHinted: boolean;
     FStyleStr: string;
@@ -217,6 +219,7 @@ type
     procedure SetName(const AValue: String);
     procedure DiscardFace;
     procedure DiscardInstance;
+    procedure DiscardStream;
     procedure SetPixelSize(const AValue: single);
     procedure SetPointSize(const AValue: single);
     function LoadGlyphInto(_glyph      : TT_Glyph;
@@ -254,6 +257,7 @@ type
     SmallLinePadding: boolean;
     constructor Create;
     destructor Destroy; override;
+    procedure AccessFromStream(AStream: TStream; AStreamOwner: boolean);
     procedure RenderText(AText: string; x,y: single; ARect: TRect; OnRender : TDirectRenderingFunction); override;
     procedure SetNameAndStyle(AName: string; AStyle: string); overload;
     procedure SetNameAndStyle(AName: string; AStyle: TFreeTypeStyles); overload;
@@ -772,6 +776,12 @@ begin
   PrevDPI := DPI;
   DiscardFace;
 
+  if FStream <> nil then
+  begin
+    errorNum := TT_Open_Face(FStream,False,FFace);
+    if errorNum <> TT_Err_Ok then
+      raise exception.Create('Cannot open font (TT_Error ' + intToStr(errorNum)+') <Stream>');
+  end else
   if (Pos(PathDelim, AName) <> 0) or (Collection = nil) or (Collection.FontFileCount = 0) then
   begin
     if AName = '' then exit;
@@ -799,6 +809,7 @@ end;
 
 procedure TFreeTypeFont.SetName(const AValue: String);
 begin
+  DiscardStream;
   if FName=AValue then exit;
   UpdateFace(AValue);
 end;
@@ -1040,6 +1051,17 @@ begin
     TT_Done_Instance(FInstance);
     FInstanceCreated := false;
     FGlyphTable.FreeAndClear;
+  end;
+end;
+
+procedure TFreeTypeFont.DiscardStream;
+begin
+  if FStream <> nil then
+  begin
+    DiscardFace;
+    if FOwnedStream then FStream.Free;
+    FStream := nil;
+    FOwnedStream:= false;
   end;
 end;
 
@@ -1298,8 +1320,17 @@ destructor TFreeTypeFont.Destroy;
 begin
   DiscardInstance;
   DiscardFace;
+  DiscardStream;
   FGlyphTable.Free;
   inherited Destroy;
+end;
+
+procedure TFreeTypeFont.AccessFromStream(AStream: TStream; AStreamOwner: boolean);
+begin
+  DiscardStream;
+  FStream := AStream;
+  FOwnedStream:= AStreamOwner;
+  UpdateFace('');
 end;
 
 procedure TFreeTypeFont.RenderText(AText: string; x, y: single; ARect: TRect;

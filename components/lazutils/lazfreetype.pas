@@ -37,7 +37,7 @@ unit LazFreeType;
 interface
 
 {$R-}
-uses TTTypes;
+uses TTTypes, Classes;
 
   (***********************************************************************)
   (*                                                                     *)
@@ -81,6 +81,9 @@ uses TTTypes;
   (*  first embedded font will be loaded.                          *)
   (*                                                               *)
   function TT_Open_Face( fontname  : string;
+                         var _face : TT_Face ) : TT_Error;
+
+  function TT_Open_Face( AStream : TStream; AStreamOwner: boolean;
                          var _face : TT_Face ) : TT_Error;
 
   (*****************************************************************)
@@ -527,6 +530,23 @@ uses
     TT_Open_Face := error;
   end;
 
+  function TT_Open_Face(AStream: TStream; AStreamOwner: boolean;
+    var _face: TT_Face): TT_Error;
+  var
+    input        : TFont_Input;
+  begin
+    input.fontIndex := 0;
+
+    if TT_Open_Stream( AStream, AStreamOwner, input.stream ) then
+    begin
+      TT_Open_Face    := error;
+      exit;
+    end;
+
+    Cache_New( face_cache, Pointer(_face), @input );
+
+    TT_Open_Face := error;
+  end;
 
   (*****************************************************************)
   (*                                                               *)

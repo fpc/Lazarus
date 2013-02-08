@@ -138,7 +138,7 @@ uses
    num_SH, u  : UShort;
    i          : Int;
    num_segs   : Int;
-   stream: TT_Stream;
+   ftstream: TFreeTypeStream;
  label
    Fail, SimpleExit;
  begin
@@ -150,124 +150,124 @@ uses
      exit;
    end;
 
-   TT_Use_Stream(cmap.StreamPtr^, stream);
+   if TT_Use_Stream(cmap.StreamPtr^, ftstream) then exit;
 
-   if TT_Seek_File( cmap.offset ) then goto SimpleExit;
+   if ftstream.SeekFile( cmap.offset ) then goto SimpleExit;
 
    case cmap.format of
 
      0: with cmap.cmap0 do
           if Alloc( glyphIdArray, 256 ) or
-             TT_Read_File( glyphIdArray^, 256 ) then goto Fail;
+             ftstream.ReadFile( glyphIdArray^, 256 ) then goto Fail;
 
      2: begin
           num_SH := 0;
           with cmap.cmap2 do
             begin
               if Alloc( subHeaderKeys, 256*sizeof(UShort) ) or
-                 TT_Access_Frame( 512 ) then goto Fail;
+                 ftstream.AccessFrame( 512 ) then goto Fail;
 
               for i := 0 to 255 do
               begin
-                u := GET_UShort shr 3;
+                u := ftstream.GET_UShort shr 3;
                 subHeaderKeys^[i] := u;
 
                 if num_SH < u then num_SH := u;
               end;
 
-              TT_Forget_Frame;
+              ftstream.ForgetFrame;
 
               (* now load sub headers *)
               numGlyphId := ((cmap.length - 2*(256+3) - num_SH*8) and $FFFF) 
                              div 2;
 
               if Alloc( subHeaders, (num_SH+1)*sizeof(TCMap2SubHeader) ) or
-                 TT_Access_Frame( (num_SH+1)*8 ) then goto Fail;
+                 ftstream.AccessFrame( (num_SH+1)*8 ) then goto Fail;
 
               for i := 0 to num_SH do with subHeaders^[i] do
               begin
-                firstCode  := GET_UShort;
-                entryCount := GET_UShort;
-                idDelta    := GET_UShort;
+                firstCode  := ftstream.GET_UShort;
+                entryCount := ftstream.GET_UShort;
+                idDelta    := ftstream.GET_UShort;
                 (* we apply the location offset immediately *)
-                idRangeOffset := GET_UShort - (num_SH-i)*8 - 2;
+                idRangeOffset := ftstream.GET_UShort - (num_SH-i)*8 - 2;
               end;
 
-              TT_Forget_Frame;
+              ftstream.ForgetFrame;
 
               (* load glyph ids *)
               if Alloc( glyphIdArray, numGlyphId*sizeof(UShort) ) or
-                 TT_Access_Frame( numGlyphId*2 ) then goto Fail;
+                 ftstream.AccessFrame( numGlyphId*2 ) then goto Fail;
 
               for i := 0 to numGlyphId-1 do
-                glyphIdArray^[i] := GET_UShort;
+                glyphIdArray^[i] := ftstream.GET_UShort;
 
-              TT_Forget_Frame;
+              ftstream.ForgetFrame;
             end;
         end;
 
      4: with cmap.cmap4 do
         begin
-          if TT_Access_Frame(8) then goto Fail;
+          if ftstream.AccessFrame(8) then goto Fail;
 
-          segCountX2    := Get_UShort;
-          searchRange   := Get_UShort;
-          entrySelector := Get_UShort;
-          rangeShift    := Get_UShort;
+          segCountX2    := ftstream.Get_UShort;
+          searchRange   := ftstream.Get_UShort;
+          entrySelector := ftstream.Get_UShort;
+          rangeShift    := ftstream.Get_UShort;
 
           num_segs := segCountX2 shr 1;
 
-          TT_Forget_Frame;
+          ftstream.ForgetFrame;
 
           (* load segments *)
           if Alloc( segments, num_segs*sizeof(TCMap4Segment) ) or
-             TT_Access_Frame( (num_segs*4+1)*2 ) then goto Fail;
+             ftstream.AccessFrame( (num_segs*4+1)*2 ) then goto Fail;
 
           for i := 0 to num_segs-1 do
-            segments^[i].endCount := Get_UShort;
+            segments^[i].endCount := ftstream.Get_UShort;
 
-           Get_UShort;
-
-          for i := 0 to num_segs-1 do
-            segments^[i].startCount := Get_UShort;
+           ftstream.Get_UShort;
 
           for i := 0 to num_segs-1 do
-            segments^[i].idDelta := GET_Short;
+            segments^[i].startCount := ftstream.Get_UShort;
 
           for i := 0 to num_segs-1 do
-            segments^[i].idRangeOffset := GET_UShort;
+            segments^[i].idDelta := ftstream.GET_Short;
 
-          TT_Forget_Frame;
+          for i := 0 to num_segs-1 do
+            segments^[i].idRangeOffset := ftstream.GET_UShort;
+
+          ftstream.ForgetFrame;
 
           numGlyphId := (( cmap.length - (16+8*num_segs) ) and $FFFF)
                           div 2;
 
           (* load glyph ids *)
           if Alloc( glyphIdArray, numGlyphId*sizeof(UShort) ) or
-             TT_Access_Frame( numGlyphId*2 ) then goto Fail;
+             ftstream.AccessFrame( numGlyphId*2 ) then goto Fail;
 
           for i := 0 to numGlyphId-1 do
-            glyphIdArray^[i] := Get_UShort;
+            glyphIdArray^[i] := ftstream.Get_UShort;
 
-          TT_Forget_Frame;
+          ftstream.ForgetFrame;
         end;
 
      6: with cmap.cmap6 do
         begin
-          if TT_Access_Frame(4) then goto Fail;
+          if ftstream.AccessFrame(4) then goto Fail;
 
-          firstCode  := GET_UShort;
-          entryCount := GET_UShort;
+          firstCode  := ftstream.GET_UShort;
+          entryCount := ftstream.GET_UShort;
 
-          TT_Forget_Frame;
+          ftstream.ForgetFrame;
 
           if Alloc( glyphIdArray, entryCount*sizeof(Short) ) or
-             TT_Access_Frame( entryCount*2 ) then goto Fail;
+             ftstream.AccessFrame( entryCount*2 ) then goto Fail;
 
           for i := 0 to entryCount-1 do
-            glyphIdArray^[i] := GET_UShort;
+            glyphIdArray^[i] := ftstream.GET_UShort;
 
-          TT_Forget_Frame;
+          ftstream.ForgetFrame;
         end;
 
      else
