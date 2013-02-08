@@ -22,7 +22,7 @@ interface
 
 uses
   Classes, Graphics,
-  TADrawUtils, TADrawerCanvas;
+  TAChartUtils, TADrawUtils, TADrawerCanvas;
 
 type
   TChartGUIConnectorData = record
@@ -33,10 +33,17 @@ type
   end;
 
   TChartGUIConnector = class(TComponent)
+  strict private
+    FBroadcaster: TBroadcaster;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
     procedure CreateDrawer(var AData: TChartGUIConnectorData); virtual; abstract;
     procedure SetBounds(var AData: TChartGUIConnectorData); virtual; abstract;
     procedure Display(var AData: TChartGUIConnectorData); virtual; abstract;
+
+    property Broadcaster: TBroadcaster read FBroadcaster;
   end;
 
   TChartGUIConnectorCanvas = class(TChartGUIConnector)
@@ -49,7 +56,21 @@ type
 implementation
 
 uses
-  TAChartUtils;
+  SysUtils;
+
+{ TChartGUIConnector }
+
+constructor TChartGUIConnector.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FBroadcaster := TBroadcaster.Create;
+end;
+
+destructor TChartGUIConnector.Destroy;
+begin
+  FreeAndNil(FBroadcaster);
+  inherited;
+end;
 
 { TChartGUIConnectorCanvas }
 

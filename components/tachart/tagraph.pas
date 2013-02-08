@@ -183,6 +183,7 @@ type
     FFoot: TChartTitle;
     FFrame: TChartPen;
     FGUIConnector: TChartGUIConnector;
+    FGUIConnectorListener: TListener;
     FLegend: TChartLegend;
     FLogicalExtent: TDoubleRect;
     FMargins: TChartMargins;
@@ -607,6 +608,8 @@ begin
   FConnectorData.FCanvas := Canvas;
   FDefaultGUIConnector := TChartGUIConnectorCanvas.Create(Self);
   FDefaultGUIConnector.CreateDrawer(FConnectorData);
+  FGUIConnectorListener := TListener.Create(@FGUIConnector, @StyleChanged);
+
   FScale := DoublePoint(1, 1);
 
   Width := DEFAULT_CHART_WIDTH;
@@ -672,6 +675,7 @@ begin
   FreeAndNil(FFoot);
   FreeAndNil(FAxisList);
   FreeAndNil(FFrame);
+  FreeAndNil(FGUIConnectorListener);
   FreeAndNil(FExtent);
   FreeAndNil(FExtentSizeLimit);
   FreeAndNil(FMargins);
@@ -1421,9 +1425,13 @@ begin
   if FGUIConnector = AValue then exit;
   if FGUIConnector <> nil then
     RemoveFreeNotification(FGUIConnector);
+  if FGUIConnectorListener.IsListening then
+    FGUIConnector.Broadcaster.Unsubscribe(FGUIConnectorListener);
   FGUIConnector := AValue;
-  if FGUIConnector <> nil then
+  if FGUIConnector <> nil then begin
+    FGUIConnector.Broadcaster.Subscribe(FGUIConnectorListener);
     FreeNotification(FGUIConnector);
+  end;
   EffectiveGUIConnector.CreateDrawer(FConnectorData);
   StyleChanged(Self);
 end;
