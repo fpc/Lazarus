@@ -4908,7 +4908,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
 
       if (Result.SrcLine = -1) or (Result.SrcFile = '') then begin
         Str(Result.Address, S);
-        if ExecuteCommand('info line * POINTER(%s)', [S], R)
+        if ExecuteCommand('info line *%s', [S], R)
         then begin
             Result.SrcLine := StrToIntDef(GetPart('Line ', ' of', R.Values), -1);
             Result.SrcFile := ConvertGdbPathAndFile(GetPart('\"', '\"', R.Values));
