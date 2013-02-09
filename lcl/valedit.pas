@@ -686,8 +686,10 @@ end;
 
 procedure TValueListEditor.SetOptions(const AValue: TGridOptions);
 begin
-  if not (goColMoving in Options) then
-    inherited Options := AValue;
+  if not (goColMoving in AValue) then
+    inherited Options := AValue
+  else
+    inherited Options := AValue - [goColMoving];
 end;
 
 procedure TValueListEditor.SetStrings(const AValue: TValueListStrings);
