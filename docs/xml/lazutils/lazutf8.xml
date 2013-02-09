@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
   <package name="lazutils">
     <!--
@@ -729,6 +729,8 @@ Control characters are the unicode sets C0 and C1 and the left-to-right and righ
       </element>
     <element name="UTF8PosP"><short>Returns the position where SearchInText starts in SearchForText</short><descr>If not found it returns nil.
 Null characters #0 are treated as normal characters.</descr>
+      </element>
+    <element name="UTF8CompareStrCollated"><short>Compare two strings using language specific sorting</short>
       </element>
     </module>
     <!-- LazUTF8 -->

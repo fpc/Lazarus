@@ -91,6 +91,7 @@ function UTF8CompareStr(const S1, S2: string): Integer; inline;
 function UTF8CompareStrP(S1, S2: PChar): Integer;
 function UTF8CompareStr(S1: PChar; Count1: SizeInt; S2: PChar; Count2: SizeInt): Integer;
 function UTF8CompareText(const S1, S2: string): Integer;
+function UTF8CompareStrCollated(const S1, S2: string): Integer;
 function CompareStrListUTF8LowerCase(List: TStringList; Index1, Index2: Integer): Integer;
 
 type
@@ -2577,6 +2578,15 @@ begin
   S1Lower := UTF8LowerCase(S1);
   S2Lower := UTF8LowerCase(S2);
   Result := UTF8CompareStr(S1Lower, S2Lower);
+end;
+
+function UTF8CompareStrCollated(const S1, S2: string): Integer;
+begin
+  {$IFDEF MSWINDOWS}
+    Result := AnsiCompareStr(UTF8ToSys(S1), UTF8ToSys(S2));
+  {$ELSE}
+    Result := WideCompareStr(S1, S2);
+  {$ENDIF}
 end;
 
 function CompareStrListUTF8LowerCase(List: TStringList; Index1, Index2: Integer
