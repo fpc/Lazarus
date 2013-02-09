@@ -149,7 +149,8 @@ function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
              WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
              DoubleBuffered, RGBA: boolean;
-             const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
+             const RedBits, GreenBits, BlueBits,
+             MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
              const AParams: TCreateParams): HWND;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 
@@ -157,8 +158,9 @@ procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
   Note that if MultiSampling is > 1, it is expected that caller 
   already checked that GLX_ARB_multisample is available. }
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
-  RGBA: boolean; 
-  const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal): PInteger;
+  RGBA: boolean;
+  const RedBits, GreenBits, BlueBits,
+  MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal): PInteger;
 
 implementation
 
@@ -830,7 +832,8 @@ end;
 function LOpenGLCreateContextCore(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
   DoubleBuffered, RGBA: boolean;
-  const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
+  const RedBits, GreenBits, BlueBits,
+  MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
   const AParams: TCreateParams): HWND;
 var
   NewWidget: PGtkWidget;
@@ -838,8 +841,8 @@ var
   AttrList: PInteger;
 begin
   if WSPrivate=nil then ;
-  AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA,MultiSampling,
-    AlphaBits,DepthBits,StencilBits,AUXBuffers);
+  AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA,RedBits,GreenBits,
+    BlueBits,MultiSampling,AlphaBits,DepthBits,StencilBits,AUXBuffers);
   try
     if SharedControl<>nil then begin
       SharedArea:={%H-}PGtkGLArea(PtrUInt(SharedControl.Handle));
@@ -866,7 +869,8 @@ end;
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
   DoubleBuffered, RGBA: boolean;
-  const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
+  const RedBits, GreenBits, BlueBits,
+  MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
   const AParams: TCreateParams): HWND;
 begin
   if (MultiSampling > 1) and
@@ -879,16 +883,19 @@ begin
      {$ENDIF} then
   try
     Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl, 
-      DoubleBuffered, RGBA, MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers, AParams);
+      DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, MultiSampling,
+      AlphaBits, DepthBits, StencilBits, AUXBuffers, AParams);
   except
     { retry without MultiSampling }
     Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl, 
-      DoubleBuffered, RGBA, 1, AlphaBits, DepthBits, StencilBits, AUXBuffers, AParams);
+      DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, 1, AlphaBits,
+      DepthBits, StencilBits, AUXBuffers, AParams);
   end else
     { no multi-sampling requested (or GLX_ARB_multisample not available),
       just pass to LOpenGLCreateContextCore }
     Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl, 
-      DoubleBuffered, RGBA, MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers, AParams);
+      DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, MultiSampling,
+      AlphaBits, DepthBits, StencilBits, AUXBuffers, AParams);
 end;
 
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
@@ -898,7 +905,8 @@ begin
 end;
 
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean;
-  const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal): PInteger;
+  const RedBits, GreenBits, BlueBits, MultiSampling, AlphaBits, DepthBits,
+  StencilBits, AUXBuffers: Cardinal): PInteger;
 var
   p: integer;
   UseFBConfig: boolean;
@@ -924,9 +932,9 @@ var
       if not UseFBConfig then Add(GLX_RGBA);
       { For UseFBConfig, glXChooseFBConfig already defaults to RGBA }
     end;
-    Add(GLX_RED_SIZE);  Add(1);
-    Add(GLX_GREEN_SIZE);  Add(1);
-    Add(GLX_BLUE_SIZE);  Add(1);
+    Add(GLX_RED_SIZE);  Add(RedBits);
+    Add(GLX_GREEN_SIZE);  Add(GreenBits);
+    Add(GLX_BLUE_SIZE);  Add(BlueBits);
     if AlphaBits>0 then
     begin
       Add(GLX_ALPHA_SIZE);  Add(AlphaBits);

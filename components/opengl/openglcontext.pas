@@ -65,9 +65,11 @@ uses
   Graphics, LMessages, WSLCLClasses, WSControls,
 {$IFDEF UseGtkGLX}
   GLGtkGlxContext;
+  {$DEFINE HasRGBBits}
 {$ENDIF}
 {$IFDEF UseGtk2GLX}
   GLGtkGlxContext;
+  {$DEFINE HasRGBBits}
 {$ENDIF}
 {$IFDEF UseCarbonAGL}
   GLCarbonAGLContext;
@@ -79,6 +81,8 @@ uses
   GLQTContext;
 {$ENDIF}
 
+const
+  DefaultDepthBits = 16;
 
 type
   TOpenGlCtrlMakeCurrentEvent = procedure(Sender: TObject;
@@ -109,6 +113,9 @@ type
     FCurrentFrameTime: integer; // in msec
     FLastFrameTime: integer; // in msec
     FRGBA: boolean;
+    {$IFDEF HasRGBBits}
+    FRedBits, FGreenBits, FBlueBits,
+    {$ENDIF}
     FMultiSampling, FAlphaBits, FDepthBits, FStencilBits, FAUXBuffers: Cardinal;
     FSharedOpenGLControl: TCustomOpenGLControl;
     FSharingOpenGlControls: TList;
@@ -116,6 +123,11 @@ type
     procedure SetAutoResizeViewport(const AValue: boolean);
     procedure SetDoubleBuffered(const AValue: boolean);
     procedure SetRGBA(const AValue: boolean);
+    {$IFDEF HasRGBBits}
+    procedure SetRedBits(const AValue: Cardinal);
+    procedure SetGreenBits(const AValue: Cardinal);
+    procedure SetBlueBits(const AValue: Cardinal);
+    {$ENDIF}
     procedure SetMultiSampling(const AMultiSampling: Cardinal);
     procedure SetAlphaBits(const AValue: Cardinal);
     procedure SetDepthBits(const AValue: Cardinal);
@@ -151,7 +163,11 @@ type
                                          write SetAutoResizeViewport default false;
     property DoubleBuffered: boolean read FDoubleBuffered write SetDoubleBuffered default true;
     property RGBA: boolean read FRGBA write SetRGBA default true;
-
+    {$IFDEF HasRGBBits}
+    property RedBits: Cardinal read FRedBits write SetRedBits default 8;
+    property GreenBits: Cardinal read FGreenBits write SetGreenBits default 8;
+    property BlueBits: Cardinal read FBlueBits write SetBlueBits default 8;
+    {$ENDIF}
     { Number of samples per pixel, for OpenGL multi-sampling (anti-aliasing).
 
       Value <= 1 means that we use 1 sample per pixel, which means no anti-aliasing.
@@ -166,7 +182,7 @@ type
     property MultiSampling: Cardinal read FMultiSampling write SetMultiSampling default 1;
 
     property AlphaBits: Cardinal read FAlphaBits write SetAlphaBits default 0;
-    property DepthBits: Cardinal read FDepthBits write SetDepthBits default 16;
+    property DepthBits: Cardinal read FDepthBits write SetDepthBits default DefaultDepthBits;
     property StencilBits: Cardinal read FStencilBits write SetStencilBits default 0;
     property AUXBuffers: Cardinal read FAUXBuffers write SetAUXBuffers default 0;
   end;
@@ -180,6 +196,11 @@ type
     property AutoResizeViewport;
     property BorderSpacing;
     property Enabled;
+    {$IFDEF HasRGBBits}
+    property RedBits;
+    property GreenBits;
+    property BlueBits;
+    {$ENDIF}
     property MultiSampling;
     property AlphaBits;
     property DepthBits;
@@ -270,6 +291,29 @@ begin
   OpenGLAttributesChanged;
 end;
 
+{$IFDEF HasRGBBits}
+procedure TCustomOpenGLControl.SetRedBits(const AValue: Cardinal);
+begin
+  if FRedBits=AValue then exit;
+  FRedBits:=AValue;
+  OpenGLAttributesChanged;
+end;
+
+procedure TCustomOpenGLControl.SetGreenBits(const AValue: Cardinal);
+begin
+  if FGreenBits=AValue then exit;
+  FGreenBits:=AValue;
+  OpenGLAttributesChanged;
+end;
+
+procedure TCustomOpenGLControl.SetBlueBits(const AValue: Cardinal);
+begin
+  if FBlueBits=AValue then exit;
+  FBlueBits:=AValue;
+  OpenGLAttributesChanged;
+end;
+{$ENDIF}
+
 procedure TCustomOpenGLControl.SetMultiSampling(const AMultiSampling: Cardinal);
 begin
   if FMultiSampling=AMultiSampling then exit;
@@ -297,12 +341,14 @@ begin
   FStencilBits:=AValue;
   OpenGLAttributesChanged;
 end;
+
 procedure TCustomOpenGLControl.SetAUXBuffers(const AValue: Cardinal);
 begin
   if FAUXBuffers=AValue then exit;
   FAUXBuffers:=AValue;
   OpenGLAttributesChanged;
 end;
+
 procedure TCustomOpenGLControl.SetSharedControl(
   const AValue: TCustomOpenGLControl);
 begin
@@ -391,8 +437,13 @@ begin
   inherited Create(TheOwner);
   FDoubleBuffered:=true;
   FRGBA:=true;
+  {$IFDEF HasRGBBits}
+  FRedBits:=8;
+  FGreenBits:=8;
+  FBlueBits:=8;
+  {$ENDIF}
   FMultiSampling:=1;
-  FDepthBits:=16;
+  FDepthBits:=DefaultDepthBits;
   ControlStyle:=ControlStyle-[csSetCaption];
   if (csDesigning in ComponentState) then begin
     FCanvas := TControlCanvas.Create;
@@ -534,6 +585,11 @@ begin
     Result:=LOpenGLCreateContext(OpenGlControl,WSPrivate,
                                  OpenGlControl.SharedControl,
                                  AttrControl.DoubleBuffered,AttrControl.RGBA,
+                                 {$IFDEF HasRGBBits}
+                                 AttrControl.RedBits,
+                                 AttrControl.GreenBits,
+                                 AttrControl.BlueBits,
+                                 {$ENDIF}
                                  AttrControl.MultiSampling,
                                  AttrControl.AlphaBits,
                                  AttrControl.DepthBits,
