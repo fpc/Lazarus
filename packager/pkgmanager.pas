@@ -232,8 +232,8 @@ type
                         InObject: TObject): TPkgFile; override;
     function AddDependencyToUnitOwners(const OwnedFilename,
                               RequiredUnitname: string): TModalResult; override;
-    procedure GetPackagesChangedOnDisk(var ListOfPackages: TFPList); override;
-    function RevertPackages(APackageList: TFPList): TModalResult; override;
+    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList); override;
+    function RevertPackages(APackageList: TStringList): TModalResult; override;
 
     // package graph
     function AddPackageToGraph(APackage: TLazPackage; Replace: boolean): TModalResult;
@@ -623,7 +623,7 @@ begin
   Result:=DoCreatePackageMakefile(APackage,false);
 end;
 
-function TPkgManager.OnPackageEditorCreateFpmakefile(Sender: TObject;
+function TPkgManager.OnPackageEditorCreateFpmakeFile(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoCreatePackageFpmakefile(APackage,false);
@@ -3415,20 +3415,24 @@ begin
   end;
 end;
 
-procedure TPkgManager.GetPackagesChangedOnDisk(var ListOfPackages: TFPList);
+procedure TPkgManager.GetPackagesChangedOnDisk(out ListOfPackages: TStringList);
 begin
   if PackageGraph=nil then exit;
   PackageGraph.GetPackagesChangedOnDisk(ListOfPackages);
 end;
 
-function TPkgManager.RevertPackages(APackageList: TFPList): TModalResult;
+function TPkgManager.RevertPackages(APackageList: TStringList): TModalResult;
 var
   i: Integer;
   APackage: TLazPackage;
+  Filename: String;
 begin
   if APackageList=nil then exit(mrOk);
   for i:=0 to APackageList.Count-1 do begin
-    APackage:=TLazPackage(APackageList[i]);
+    APackage:=TLazPackage(APackageList.Objects[i]);
+    Filename:=APackageList[i];
+    if Filename='' then
+      Filename:=APackage.Filename;
     if FileExistsCached(APackage.Filename) then
       Result:=DoOpenPackageFile(APackage.Filename,[pofRevert],true)
     else

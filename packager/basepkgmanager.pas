@@ -81,8 +81,9 @@ type
                                 InObject: TObject): TPkgFile; virtual; abstract;
     function AddDependencyToUnitOwners(const OwnedFilename,
                      RequiredUnitname: string): TModalResult; virtual; abstract;
-    procedure GetPackagesChangedOnDisk(var ListOfPackages: TFPList); virtual; abstract;
-    function RevertPackages(APackageList: TFPList): TModalResult; virtual; abstract;
+    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList); virtual; abstract;
+    function RevertPackages(APackageList: TStringList // list of TLazPackage and alternative lpk file name
+        ): TModalResult; virtual; abstract;
 
     // project
     function OpenProjectDependencies(AProject: TProject;

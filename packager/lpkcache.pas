@@ -67,7 +67,7 @@ type
 
   TLPKInfo = class
   public
-    ID: TLazPackageID;
+    ID: TLazPackageID; // name and version
     LPKFilename: string;
     InLazSrc: boolean; // lpk is in lazarus source directory
     Installed: TPackageInstallType;

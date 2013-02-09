@@ -8470,7 +8470,7 @@ end;
 function TMainIDE.DoCheckFilesOnDisk(Instantaneous: boolean): TModalResult;
 var
   AnUnitList: TFPList; // list of TUnitInfo
-  APackageList: TFPList; // list of TLazPackage
+  APackageList: TStringList; // list of alternative lpkfilename and TLazPackage
   i: integer;
   CurUnit: TUnitInfo;
 begin

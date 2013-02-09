@@ -250,7 +250,7 @@ type
                                      Policy: TPackageUpdatePolicy): TFPList;
     function GetBrokenDependenciesWhenChangingPkgID(APackage: TLazPackage;
                          const NewName: string; NewVersion: TPkgVersion): TFPList;
-    procedure GetPackagesChangedOnDisk(var ListOfPackages: TFPList);
+    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList); // returns list of new filename and TLazPackage
     procedure CalculateTopologicalLevels;
     procedure SortDependencyListTopologically(
                    var FirstDependency: TPkgDependency; TopLevelFirst: boolean);
@@ -343,6 +343,7 @@ type
     procedure ChangeDependency(Dependency, NewDependency: TPkgDependency);
     function OpenDependency(Dependency: TPkgDependency;
                             ShowAbort: boolean): TLoadPackageResult;
+    function FindAlternativeLPK(APackage: TLazPackage): string;
     procedure OpenInstalledDependency(Dependency: TPkgDependency;
                           InstallType: TPackageInstallType; var Quiet: boolean);
     procedure OpenRequiredDependencyList(FirstDependency: TPkgDependency);
@@ -4492,26 +4493,34 @@ begin
   end;
 end;
 
-procedure TLazPackageGraph.GetPackagesChangedOnDisk(
-  var ListOfPackages: TFPList);
+procedure TLazPackageGraph.GetPackagesChangedOnDisk(out
+  ListOfPackages: TStringList);
 // if package source is changed in IDE (codetools)
 // then changes on disk are ignored
 var
   APackage: TLazPackage;
   i: Integer;
+  NewFilename: String;
 begin
+  ListOfPackages:=nil;
   MarkNeededPackages;
   for i:=FItems.Count-1 downto 0 do begin
     APackage:=TLazPackage(FItems[i]);
     if (not (lpfNeeded in APackage.Flags))
-    or APackage.ReadOnly or APackage.Modified
-    or (APackage.LPKSource=nil) then
+    or APackage.Modified
+    or APackage.IsVirtual then
       continue;
-    if (not APackage.LPKSource.FileNeedsUpdate) then
-      continue;
+    NewFilename:=APackage.Filename;
+    if FileExistsCached(APackage.Filename) then begin
+      if (not APackage.LPKSource.FileNeedsUpdate) then
+        continue;
+    end else begin
+      // lpk has vanished -> search alternative
+
+    end;
     if ListOfPackages=nil then
-      ListOfPackages:=TFPList.Create;
-    ListOfPackages.Add(APackage);
+      ListOfPackages:=TStringList.Create;
+    ListOfPackages.AddObject(NewFilename,APackage);
   end;
 end;
 
@@ -4963,6 +4972,23 @@ begin
     EndUpdate;
   end;
   Result:=Dependency.LoadPackageResult;
+end;
+
+function TLazPackageGraph.FindAlternativeLPK(APackage: TLazPackage): string;
+var
+  Dependency: TPkgDependency;
+begin
+  Result:='';
+  // first check for preferred dependencies
+  Dependency:=APackage.FirstUsedByDependency;
+  while Dependency<>nil do begin
+    if (Dependency.DefaultFilename<>'') and Dependency.PreferDefaultFilename
+    then begin
+      //PreferredFilename:=Dependency.FindDefaultFilename;
+
+    end;
+    Dependency:=Dependency.NextUsedByDependency;
+  end;
 end;
 
 procedure TLazPackageGraph.OpenInstalledDependency(Dependency: TPkgDependency;
