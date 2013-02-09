@@ -431,6 +431,7 @@ begin
   License:='';
   Description:='';
   PkgType:=lptRunAndDesignTime;
+  Version.Clear;
   if FilenameIsAbsolute(LPKFilename) and FileExistsUTF8(LPKFilename) then begin
     // load the package file
     try

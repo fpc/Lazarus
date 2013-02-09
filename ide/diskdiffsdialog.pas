@@ -291,8 +291,14 @@ begin
     end else if FileOwner is TLazPackage then begin
       // compare disk and package
       APackage:=TLazPackage(FileOwner);
-      if AltFilename<>'' then
-        Filename:=AltFilename
+      if AltFilename<>'' then begin
+        if CompareFilenames(AltFilename,APackage.Filename)<>0 then
+          Result^.Diff+=Format(lisLpkHasVanishedOnDiskUsingAsAlternative, [
+            LineEnding
+            +AltFilename+LineEnding
+            +LineEnding]);
+        Filename:=AltFilename;
+      end
       else if APackage.LPKSource<>nil then
         Filename:=APackage.LPKSource.Filename
       else
@@ -310,13 +316,13 @@ begin
 
     DiffOutput:=TDiffOutput.Create(Source,Result^.TxtOnDisk, [], nil);
     try
-      Result^.Diff:=DiffOutput.CreateTextDiff;
+      Result^.Diff+=DiffOutput.CreateTextDiff;
     finally
       DiffOutput.Free;
     end;
   except
     On E: Exception do
-      Result^.Diff:='\ '+Format(lisDiskDiffErrorReadingFile, [E.Message]);
+      Result^.Diff+='\ '+Format(lisDiskDiffErrorReadingFile, [E.Message]);
   end;
   FCachedDiffs.Add(Result);
 end;

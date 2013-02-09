@@ -138,7 +138,7 @@ type
     function FindLeftMostNode(LinkTree: TAvgLvlTree;
       const PkgName: string): TAvgLvlTreeNode;
     function FindLinkWithPkgNameInTree(LinkTree: TAvgLvlTree;
-      const PkgName: string): TPackageLink;
+      const PkgName: string; IgnoreFiles: TFilenameToStringTree): TPackageLink;
     function FindLinkWithDependencyInTree(LinkTree: TAvgLvlTree;
       Dependency: TPkgDependency; IgnoreFiles: TFilenameToStringTree): TPackageLink;
     function FindLinkWithPackageIDInTree(LinkTree: TAvgLvlTree;
@@ -166,9 +166,12 @@ type
     procedure SaveUserLinks;
     function NeedSaveUserLinks(const ConfigFilename: string): boolean;
     procedure WriteLinkTree(LinkTree: TAvgLvlTree);
-    function FindLinkWithPkgName(const PkgName: string): TPackageLink;
+    function FindLinkWithPkgName(const PkgName: string;
+                                 IgnoreFiles: TFilenameToStringTree = nil;
+                                 FirstUserLinks: boolean = true): TPackageLink;
     function FindLinkWithDependency(Dependency: TPkgDependency;
-                        IgnoreFiles: TFilenameToStringTree = nil): TPackageLink;
+                                  IgnoreFiles: TFilenameToStringTree = nil;
+                                  FirstUserLinks: boolean = true): TPackageLink;
     function FindLinkWithPackageID(APackageID: TLazPackageID): TPackageLink;
     procedure IteratePackages(MustExist: boolean; Event: TIteratePackagesEvent;
                               Origins: TPkgLinkOrigins = AllPkgLinkOrigins);
@@ -765,16 +768,36 @@ begin
 end;
 
 function TPackageLinks.FindLinkWithPkgNameInTree(LinkTree: TAvgLvlTree;
-  const PkgName: string): TPackageLink;
+  const PkgName: string; IgnoreFiles: TFilenameToStringTree): TPackageLink;
 // find left most link with PkgName
 var
   CurNode: TAvgLvlTreeNode;
+  Link: TPackageLink;
 begin
   Result:=nil;
   if PkgName='' then exit;
   CurNode:=FindLeftMostNode(LinkTree,PkgName);
-  if CurNode=nil then exit;
-  Result:=TPackageLink(CurNode.Data);
+  while CurNode<>nil do begin
+    Link:=TPackageLink(CurNode.Data);
+    if (CompareText(PkgName,Link.Name)=0)
+    and ((IgnoreFiles=nil) or (not IgnoreFiles.Contains(Link.GetEffectiveFilename)))
+    then begin
+      if Result=nil then
+        Result:=Link
+      else begin
+        // there are two packages fitting
+        if ((Link.LastUsed>Result.LastUsed)
+            or (Link.Version.Compare(Result.Version)>0))
+        and FileExistsCached(Link.GetEffectiveFilename) then
+          Result:=Link; // this one is better
+      end;
+    end;
+    CurNode:=LinkTree.FindSuccessor(CurNode);
+    if CurNode=nil then break;
+    if CompareText(TPackageLink(CurNode.Data).Name,PkgName)<>0
+    then
+      break;
+  end;
 end;
 
 function TPackageLinks.FindLinkWithDependencyInTree(LinkTree: TAvgLvlTree;
@@ -809,10 +832,8 @@ begin
     CurNode:=LinkTree.FindSuccessor(CurNode);
     if CurNode=nil then break;
     if CompareText(TPackageLink(CurNode.Data).Name,Dependency.PackageName)<>0
-    then begin
-      CurNode:=nil;
+    then
       break;
-    end;
   end;
 end;
 
@@ -860,19 +881,28 @@ begin
     IncreaseChangeStamp;
 end;
 
-function TPackageLinks.FindLinkWithPkgName(const PkgName: string): TPackageLink;
+function TPackageLinks.FindLinkWithPkgName(const PkgName: string;
+  IgnoreFiles: TFilenameToStringTree; FirstUserLinks: boolean): TPackageLink;
 begin
-  Result:=FindLinkWithPkgNameInTree(FUserLinksSortID,PkgName);
+  Result:=nil;
+  if FirstUserLinks then
+    Result:=FindLinkWithPkgNameInTree(FUserLinksSortID,PkgName,IgnoreFiles);
   if Result=nil then
-    Result:=FindLinkWithPkgNameInTree(FGlobalLinks,PkgName);
+    Result:=FindLinkWithPkgNameInTree(FGlobalLinks,PkgName,IgnoreFiles);
+  if (Result=nil) and (not FirstUserLinks) then
+    Result:=FindLinkWithPkgNameInTree(FUserLinksSortID,PkgName,IgnoreFiles);
 end;
 
 function TPackageLinks.FindLinkWithDependency(Dependency: TPkgDependency;
-  IgnoreFiles: TFilenameToStringTree): TPackageLink;
+  IgnoreFiles: TFilenameToStringTree; FirstUserLinks: boolean): TPackageLink;
 begin
-  Result:=FindLinkWithDependencyInTree(FUserLinksSortID,Dependency,IgnoreFiles);
+  Result:=nil;
+  if FirstUserLinks then
+    Result:=FindLinkWithDependencyInTree(FUserLinksSortID,Dependency,IgnoreFiles);
   if Result=nil then
     Result:=FindLinkWithDependencyInTree(FGlobalLinks,Dependency,IgnoreFiles);
+  if (Result=nil) and (not FirstUserLinks) then
+    Result:=FindLinkWithDependencyInTree(FUserLinksSortID,Dependency,IgnoreFiles);
   //if Result=nil then begin
     //debugln('TPackageLinks.FindLinkWithDependency A ',Dependency.AsString);
     // WriteLinkTree(FGlobalLinks);

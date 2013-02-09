@@ -3677,6 +3677,8 @@ resourcestring
 
   // disk diff dialog
   lisDiskDiffErrorReadingFile = 'Error reading file: %s';
+  lisLpkHasVanishedOnDiskUsingAsAlternative = 'lpk has vanished on disk. Using'
+    +' as alternative%s';
   lisDiskDiffSomeFilesHaveChangedOnDisk = 'Some files have changed on disk:';
   lisDiskDiffChangedFiles = 'Changed files:';
   lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff = 'Click on one of the '

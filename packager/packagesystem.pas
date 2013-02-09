@@ -4516,7 +4516,7 @@ begin
         continue;
     end else begin
       // lpk has vanished -> search alternative
-
+      NewFilename:=PackageGraph.FindAlternativeLPK(APackage);
     end;
     if ListOfPackages=nil then
       ListOfPackages:=TStringList.Create;
@@ -4976,19 +4976,115 @@ end;
 
 function TLazPackageGraph.FindAlternativeLPK(APackage: TLazPackage): string;
 var
-  Dependency: TPkgDependency;
-begin
-  Result:='';
-  // first check for preferred dependencies
-  Dependency:=APackage.FirstUsedByDependency;
-  while Dependency<>nil do begin
-    if (Dependency.DefaultFilename<>'') and Dependency.PreferDefaultFilename
-    then begin
-      //PreferredFilename:=Dependency.FindDefaultFilename;
+  IgnoreFiles: TFilenameToStringTree;
 
-    end;
-    Dependency:=Dependency.NextUsedByDependency;
+  procedure IgnoreLPK(LPKFilename: string);
+  begin
+    IgnoreFiles[LPKFilename]:='1';
   end;
+
+  function ParseLPK(var LPKFilename: string; Version: TPkgVersion): boolean;
+  var
+    Code: TCodeBuffer;
+    XMLConfig: TXMLConfig;
+    Path: String;
+    FileVersion: Integer;
+  begin
+    Result:=false;
+    LPKFilename:=TrimFilename(LPKFilename);
+    if IgnoreFiles[LPKFilename]='1' then exit;
+    IgnoreLPK(LPKFilename);
+    if not FilenameIsAbsolute(LPKFilename) then exit;
+    Code:=CodeToolBoss.LoadFile(LPKFilename,true,false);
+    if Code=nil then exit;
+    try
+      XMLConfig:=TXMLConfig.CreateWithSource(LPKFilename,Code.Source);
+      try
+        Path:='Package/';
+        FileVersion:=XMLConfig.GetValue(Path+'Version',0);
+        PkgVersionLoadFromXMLConfig(Version,XMLConfig,Path+'Version/',FileVersion);
+        Result:=true;
+      finally
+        XMLConfig.Free;
+      end;
+    except
+      on E: Exception do begin
+        debugln(['ParseLPK "'+LPKFilename+'": '+E.Message]);
+      end;
+    end;
+  end;
+
+var
+  Dependency: TPkgDependency;
+  Version: TPkgVersion;
+  PkgLink: TPackageLink;
+  Filename: String;
+  BaseDir: String;
+begin
+  Version:=TPkgVersion.Create;
+  IgnoreFiles:=TFilenameToStringTree.Create(false);
+  try
+    // first check for preferred filenames in dependencies
+    Dependency:=APackage.FirstUsedByDependency;
+    while Dependency<>nil do begin
+      if (Dependency.DefaultFilename<>'') and Dependency.PreferDefaultFilename
+      then begin
+        Result:=Dependency.FindDefaultFilename;
+        if ParseLPK(Result,Version) then
+          exit;
+      end;
+      Dependency:=Dependency.NextUsedByDependency;
+    end;
+
+    // find nearest package link to old lpk
+    // for example
+    //   if old was /path/to/lazarus/comp/bla.lpk
+    //   then a /path/to/lazarus/comp/design/bla.lpk
+    //   is better than a /path/to/other/lazarus/comp/bla.lpk
+    Dependency:=APackage.FirstUsedByDependency;
+    if Dependency<>nil then begin
+      Result:='';
+      BaseDir:=TrimFilename(APackage.Directory);
+      repeat
+        PkgLink:=PkgLinks.FindLinkWithDependency(Dependency,IgnoreFiles);
+        if PkgLink=nil then break;
+        Filename:=PkgLink.GetEffectiveFilename;
+        if ParseLPK(Filename,Version) then begin
+          // candidate found
+          if (Result='')
+          or (length(CreateRelativePath(Filename,BaseDir))<length(CreateRelativePath(Result,BaseDir)))
+          then
+            Result:=Filename;
+        end;
+      until false;
+      if Result<>'' then exit;
+    end;
+
+    // last check for default filenames in dependencies
+    Dependency:=APackage.FirstUsedByDependency;
+    while Dependency<>nil do begin
+      if (Dependency.DefaultFilename<>'')
+      and (not Dependency.PreferDefaultFilename) then
+      begin
+        Result:=Dependency.FindDefaultFilename;
+        if ParseLPK(Result,Version) then
+          exit;
+      end;
+      Dependency:=Dependency.NextUsedByDependency;
+    end;
+
+    // nothing found via dependencies
+    // search in links
+    PkgLink:=PkgLinks.FindLinkWithPkgName(APackage.Name,IgnoreFiles,true);
+    if PkgLink<>nil then begin
+      Result:=PkgLink.GetEffectiveFilename;
+      exit;
+    end;
+  finally
+    IgnoreFiles.Free;
+    Version.Free;
+  end;
+  Result:='';
 end;
 
 procedure TLazPackageGraph.OpenInstalledDependency(Dependency: TPkgDependency;
