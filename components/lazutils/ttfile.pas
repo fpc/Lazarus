@@ -173,7 +173,7 @@ type
 implementation
 
 uses
-  TTMemory, SysUtils;
+  SysUtils;
 
   (* THREADS: TTMutex, *)
 
@@ -324,8 +324,6 @@ const
 
  function  TT_Use_Stream( org_stream : TT_Stream;
                           out ftstream: TFreeTypeStream) : TError;
- var
-   rec : TFreeTypeStream;
  begin
    TT_Use_Stream := Failure;
 
