@@ -2371,8 +2371,8 @@ begin
       APackage.LPKSource:=Code;
       PkgLink:=PkgLinks.AddUserLink(APackage);
       if PkgLink<>nil then begin
-        PkgLink.FileDate:=FileDateToDateTimeDef(FileAgeUTF8(APackage.Filename));
-        PkgLink.FileDateValid:=true;
+        PkgLink.LPKFileDate:=FileDateToDateTimeDef(FileAgeUTF8(APackage.Filename));
+        PkgLink.LPKFileDateValid:=true;
         PkgLinks.SaveUserLinks;
       end;
     finally

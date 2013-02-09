@@ -503,8 +503,8 @@ begin
       NotFoundCount:=Link.NotFoundCount;
       LastCheckValid:=Link.LastCheckValid;
       LastCheck:=Link.LastCheck;
-      FileDateValid:=Link.FileDateValid;
-      FileDate:=Link.FileDate;
+      LPKFileDateValid:=Link.LPKFileDateValid;
+      LPKFileDate:=Link.LPKFileDate;
     end;
   end else
     inherited Assign(Source);

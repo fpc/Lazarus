@@ -581,12 +581,12 @@ begin
     //debugln(['TLazPackageGraph.OpenDependencyWithPackageLink AFilename=',AFilename,' ',PkgLink.Origin=ploGlobal]);
     if not FileExistsUTF8(AFilename) then begin
       DebugLn('invalid Package Link: file "'+AFilename+'" does not exist.');
-      PkgLink.FileDateValid:=false;
+      PkgLink.LPKFileDateValid:=false;
       exit(mrCancel);
     end;
     try
-      PkgLink.FileDate:=FileDateToDateTimeDef(FileAgeUTF8(AFilename));
-      PkgLink.FileDateValid:=true;
+      PkgLink.LPKFileDate:=FileDateToDateTimeDef(FileAgeUTF8(AFilename));
+      PkgLink.LPKFileDateValid:=true;
       XMLConfig:=TXMLConfig.Create(nil);
       NewPackage:=TLazPackage.Create;
       NewPackage.Filename:=AFilename;
@@ -4501,9 +4501,11 @@ var
   APackage: TLazPackage;
   i: Integer;
   NewFilename: String;
+  HaveUpdatedGlobalPkgLinks: Boolean;
 begin
   ListOfPackages:=nil;
   MarkNeededPackages;
+  HaveUpdatedGlobalPkgLinks:=false;
   for i:=FItems.Count-1 downto 0 do begin
     APackage:=TLazPackage(FItems[i]);
     if (not (lpfNeeded in APackage.Flags))
@@ -4516,6 +4518,11 @@ begin
         continue;
     end else begin
       // lpk has vanished -> search alternative
+      if not HaveUpdatedGlobalPkgLinks then
+      begin
+        PkgLinks.UpdateGlobalLinks;
+        HaveUpdatedGlobalPkgLinks:=true;
+      end;
       NewFilename:=PackageGraph.FindAlternativeLPK(APackage);
     end;
     if ListOfPackages=nil then

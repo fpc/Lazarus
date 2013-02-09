@@ -85,6 +85,7 @@ type
     FLastCheck: TDateTime;
     FLastCheckValid: boolean;
     FLastUsed: TDateTime;
+    FLPLFileDate: TDateTime;
     FLPLFilename: string;
     FNotFoundCount: integer;
     FOrigin: TPkgLinkOrigin;
@@ -102,12 +103,13 @@ type
     property Origin: TPkgLinkOrigin read FOrigin write SetOrigin;
     property LPKFilename: string read FFilename write SetFilename; // if relative it is relative to the LazarusDir
     property LPLFilename: string read FLPLFilename write FLPLFilename;
+    property LPLFileDate: TDateTime read FLPLFileDate write FLPLFileDate;
     property AutoCheckExists: boolean read FAutoCheckExists write FAutoCheckExists;
     property NotFoundCount: integer read FNotFoundCount write FNotFoundCount;
     property LastCheckValid: boolean read FLastCheckValid write FLastCheckValid;
     property LastCheck: TDateTime read FLastCheck write FLastCheck;
-    property FileDateValid: boolean read FFileDateValid write FFileDateValid;
-    property FileDate: TDateTime read FFileDate write FFileDate;
+    property LPKFileDateValid: boolean read FFileDateValid write FFileDateValid;
+    property LPKFileDate: TDateTime read FFileDate write FFileDate;
     property LastUsed: TDateTime read FLastUsed write FLastUsed;
   end;
 
@@ -246,17 +248,17 @@ begin
   Result:=CompareFilenames(Link1.LPKFilename,Link2.LPKFilename);
   if Result<>0 then exit;
   // then compare file date
-  if Link1.FileDateValid then begin
-    if Link2.FileDateValid then begin
-      if Link1.FileDate>Link2.FileDate then
+  if Link1.LPKFileDateValid then begin
+    if Link2.LPKFileDateValid then begin
+      if Link1.LPKFileDate>Link2.LPKFileDate then
         Result:=1
-      else if Link1.FileDate<Link2.FileDate then
+      else if Link1.LPKFileDate<Link2.LPKFileDate then
         Result:=-1;
     end else begin
       Result:=1;
     end;
   end else begin
-    if Link2.FileDateValid then begin
+    if Link2.LPKFileDateValid then begin
       Result:=-1;
     end;
   end;
@@ -457,7 +459,8 @@ begin
     NextNode:=Node.Successor;
     CurPkgLink:=TPackageLink(Node.Data);
     if (not FileIsInDirectory(CurPkgLink.LPLFilename,GlobalLinksDir))
-    or (not FileExistsCached(CurPkgLink.LPLFilename)) then begin
+    or (not FileExistsCached(CurPkgLink.LPLFilename))
+    or (FileAgeCached(CurPkgLink.LPLFilename)<>CurPkgLink.LPLFileDate) then begin
       {$IFDEF VerboseGlobalPkgLinks}
       debugln(['TPackageLinks.UpdateGlobalLinks Delete ',CurPkgLink.LPLFilename]);
       {$ENDIF}
@@ -501,6 +504,7 @@ begin
       CurPkgLink.Reference;
       CurPkgLink.Origin:=ploGlobal;
       CurPkgLink.LPLFilename:=LPLFilename;
+      CurPkgLink.LPLFileDate:=FileAgeCached(LPLFilename);
       CurPkgLink.Name:=NewPkgName;
       CurPkgLink.Version.Assign(PkgVersion);
       IDEMacros.SubstituteMacros(LPKFilename);
@@ -582,10 +586,10 @@ begin
                               NewPkgLink.FLastCheck);
       end;
       
-      NewPkgLink.FileDateValid:=
+      NewPkgLink.LPKFileDateValid:=
                        XMLConfig.GetValue(ItemPath+'FileDateValid/Value',false);
-      if NewPkgLink.FileDateValid then begin
-        NewPkgLink.FileDateValid:=
+      if NewPkgLink.LPKFileDateValid then begin
+        NewPkgLink.LPKFileDateValid:=
                   CfgStrToDate(XMLConfig.GetValue(ItemPath+'FileDate/Value',''),
                                NewPkgLink.FFileDate);
       end;
