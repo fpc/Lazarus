@@ -82,7 +82,7 @@ uses
 {$ENDIF}
 
 const
-  DefaultDepthBits = 16;
+  DefaultDepthBits = 24;
 
 type
   TOpenGlCtrlMakeCurrentEvent = procedure(Sender: TObject;
