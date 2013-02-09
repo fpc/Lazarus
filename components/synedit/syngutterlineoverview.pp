@@ -1130,6 +1130,8 @@ procedure TSynGutterLOvProviderBookmarks.DoMarkChange(Sender: TSynEditMark;
   Changes: TSynEditMarkChangeReasons);
 var
   i: Integer;
+  c: TColor;
+  p: Integer;
 begin
   if (smcrAdded in Changes) or
      ( (smcrVisible in Changes) and Sender.Visible )
@@ -1161,7 +1163,16 @@ begin
   end
   else
   begin
-    //i := IndexOfSynMark(Sender);
+    i := IndexOfSynMark(Sender);
+    if i >= 0 then begin
+      c := Color;
+      p := Priority;
+      AdjustColorForMark(Sender, c, p);
+      FMarkList[i].FPriority := p;
+      FMarkList[i].FColor    := c;
+      FMarkList[i].DoChange;
+    end;
+    InvalidateTextLines(0, TextBuffer.Count); // Todo
   end
 end;
 

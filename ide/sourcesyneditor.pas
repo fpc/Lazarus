@@ -47,13 +47,12 @@ uses
   LazSynIMM,
   {$ENDIF}
   Classes, SysUtils, Controls, LCLProc, LCLType, Graphics, Menus, math, LazarusIDEStrConsts,
-  SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks, SynEditTypes,
-  SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
+  SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
+  SynEditTypes, SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
   SynGutterLineOverview, SynEditMarkup, SynEditMarkupGutterMark, SynEditMarkupSpecialLine,
   SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase, LazSynEditText,
   SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea, SynEditHighlighter,
-  SynEditHighlighterFoldBase, SynHighlighterPas, SynEditMouseCmds, SynEditMarkupHighAll,
-  SynEditKeyCmds;
+  SynEditHighlighterFoldBase, SynHighlighterPas, SynEditMarkupHighAll, SynEditKeyCmds;
 
 type
 
@@ -321,14 +320,22 @@ type
   // Bookmarsk and breakpoints
   private
     FBreakColor: TColor;
+    FBreakDisabledColor: TColor;
+    FExecLineColor: TColor;
     FRGBBreakColor: TColorRef;
+    FRGBBreakDisabledColor: TColor;
+    FRGBExecLineColor: TColor;
     procedure SetBreakColor(const AValue: TColor);
+    procedure SetBreakDisabledColor(AValue: TColor);
+    procedure SetExecLineColor(AValue: TColor);
   protected
     procedure AdjustColorForMark(AMark: TSynEditMark; var AColor: TColor; var APriority: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property BreakColor: TColor read FBreakColor write SetBreakColor;
+    property BreakDisabledColor: TColor read FBreakDisabledColor write SetBreakDisabledColor;
+    property ExecLineColor: TColor read FExecLineColor write SetExecLineColor;
   end;
 
   { TIDESynGutter }
@@ -416,6 +423,8 @@ type
   {$ENDIF}
 
 implementation
+
+uses SourceMarks;
 
 { TSourceSynSearchTermDict }
 
@@ -1886,20 +1895,65 @@ begin
   DoChange(Self);
 end;
 
+procedure TIDESynGutterLOvProviderIDEMarks.SetBreakDisabledColor(AValue: TColor);
+begin
+  if FBreakDisabledColor = AValue then Exit;
+  FBreakDisabledColor := AValue;
+  FRGBBreakDisabledColor := ColorToRGB(AValue);
+  DoChange(Self);
+end;
+
+procedure TIDESynGutterLOvProviderIDEMarks.SetExecLineColor(AValue: TColor);
+begin
+  if FExecLineColor = AValue then Exit;
+  FExecLineColor := AValue;
+  FRGBExecLineColor := ColorToRGB(AValue);
+  DoChange(Self);
+end;
+
 procedure TIDESynGutterLOvProviderIDEMarks.AdjustColorForMark(AMark: TSynEditMark;
   var AColor: TColor; var APriority: Integer);
+var
+  i: Integer;
 begin
+  inc(APriority, 1);
   if not AMark.IsBookmark then begin
-    AColor := TColor(FRGBBreakColor);
-    inc(APriority);
-  end;
+    //if (AMark.ImageList = SourceEditorMarks.ImgList) then begin
+      i := AMark.ImageIndex;
+      if (i = SourceEditorMarks.CurrentLineImg) or
+         (i = SourceEditorMarks.CurrentLineBreakPointImg) or
+         (i = SourceEditorMarks.CurrentLineDisabledBreakPointImg)
+      then begin
+        dec(APriority, 1);
+        AColor := TColor(FRGBExecLineColor);
+      end
+      else
+      if (i = SourceEditorMarks.InactiveBreakPointImg) or
+         (i = SourceEditorMarks.InvalidDisabledBreakPointImg) or
+         (i = SourceEditorMarks.UnknownDisabledBreakPointImg)
+      then begin
+        inc(APriority, 2);
+        AColor := TColor(FRGBBreakDisabledColor);
+      end
+      else begin
+        AColor := TColor(FRGBBreakColor);
+        inc(APriority, 1);
+      end;
+    end;
+  //  else begin
+  //    AColor := TColor(FRGBBreakColor);
+  //    inc(APriority);
+  //  end;
+  //end;
   inherited AdjustColorForMark(AMark, AColor, APriority);
 end;
 
 constructor TIDESynGutterLOvProviderIDEMarks.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  BreakColor := $0080C8;
+  BreakColor         := $0080C8;
+  BreakDisabledColor := $00D000;
+  ExecLineColor      := $F000D0;
 end;
 
 { TIDESynGutter }
