@@ -10720,6 +10720,10 @@ msgstr "Zeichenkette in Kleinbuchstaben"
 msgid "Lowercase string given as parameter"
 msgstr "Kleinbuchstabige Zeichenkette als Parameter gegeben"
 
+#: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
+msgid "lpk has vanished on disk. Using as alternative%s"
+msgstr ""
+
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "lrs include files"
 msgstr "lrs Include-Dateien"

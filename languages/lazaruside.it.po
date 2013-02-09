@@ -10879,6 +10879,10 @@ msgstr "stringa in minuscolo"
 msgid "Lowercase string given as parameter"
 msgstr "Stringa in minuscolo data come parametro"
 
+#: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
+msgid "lpk has vanished on disk. Using as alternative%s"
+msgstr ""
+
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "lrs include files"
 msgstr "file include lrs"

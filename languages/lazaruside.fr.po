@@ -10760,6 +10760,10 @@ msgstr "chaîne en minuscules"
 msgid "Lowercase string given as parameter"
 msgstr "chaîne de caractère en minuscules donnée en paramètre"
 
+#: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
+msgid "lpk has vanished on disk. Using as alternative%s"
+msgstr ""
+
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "lrs include files"
 msgstr "montre le point d'exécution"

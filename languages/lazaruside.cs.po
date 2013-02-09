@@ -10441,6 +10441,10 @@ msgstr "řetězec malými písmeny"
 msgid "Lowercase string given as parameter"
 msgstr "Řetězec malými písmeny daný jako parametr"
 
+#: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
+msgid "lpk has vanished on disk. Using as alternative%s"
+msgstr ""
+
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "lrs include files"
 msgstr "zahrnuté soubory lrs"

@@ -10615,6 +10615,10 @@ msgstr "рядок в нижньому регістрі"
 msgid "Lowercase string given as parameter"
 msgstr "МАЛИЙ рядок поданий як параметр"
 
+#: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
+msgid "lpk has vanished on disk. Using as alternative%s"
+msgstr ""
+
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "lrs include files"
 msgstr "Заголовочні файли lrs"

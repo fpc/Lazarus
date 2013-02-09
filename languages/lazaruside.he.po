@@ -10864,6 +10864,10 @@ msgstr "מחרוזת של אותיות קטנות"
 msgid "Lowercase string given as parameter"
 msgstr "מחרוזת של אותיות קטנות נתונה כפרמטר"
 
+#: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
+msgid "lpk has vanished on disk. Using as alternative%s"
+msgstr ""
+
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "lrs include files"
 msgstr "קובץ \"כלול\" מסוג lrs"

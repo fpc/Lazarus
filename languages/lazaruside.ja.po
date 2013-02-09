@@ -10897,6 +10897,10 @@ msgstr "小文字文字列"
 msgid "Lowercase string given as parameter"
 msgstr "引数として与えられた小文字文字列"
 
+#: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
+msgid "lpk has vanished on disk. Using as alternative%s"
+msgstr ""
+
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "lrs include files"
 msgstr "lrs インクルードファイル"

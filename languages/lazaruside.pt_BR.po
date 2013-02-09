@@ -10693,6 +10693,10 @@ msgstr "Seq.caracteres minúsculas"
 msgid "Lowercase string given as parameter"
 msgstr "Seq.caracteres minúsculas dada como parâmetro"
 
+#: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
+msgid "lpk has vanished on disk. Using as alternative%s"
+msgstr ""
+
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "lrs include files"
 msgstr "Arquivos inclusão lrs"
