@@ -73,6 +73,7 @@ uses
 {$ENDIF}
 {$IFDEF UseCarbonAGL}
   GLCarbonAGLContext;
+  {$DEFINE HasRGBBits}
 {$ENDIF}
 {$IFDEF UseWin32WGL}
   GLWin32WGLContext;

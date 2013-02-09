@@ -34,11 +34,13 @@ procedure LOpenGLClip(Handle: HWND);
 function LOpenGLCreateContext(AWinControl: TWinControl;
               {%H-}WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
               DoubleBuffered, RGBA: boolean;
+              const RedBits, GreenBits, BlueBits: Cardinal;
               const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
               const {%H-}AParams: TCreateParams): HWND;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean;
-              MultiSampling, AlphaBits, DepthBits, StencilBits: cardinal): PInteger;
+              RedBits, GreenBits, BlueBits, MultiSampling, AlphaBits, DepthBits,
+              StencilBits: cardinal): PInteger;
 
 
 type
@@ -69,7 +71,7 @@ procedure LOpenGLSwapBuffers(Handle: HWND);
 var
   AGLContext: TAGLContext;
 begin
-  AGLContext:=GetAGLContext(ControlRef(Handle));
+  AGLContext:=GetAGLContext({%H-}ControlRef(Handle));
   aglSwapBuffers(AGLContext);
 end;
 
@@ -112,8 +114,8 @@ begin
   //GetWindowPortBounds(Win,b);
   clipRgn:=NewRgn;
   SetRectRgn(clipRgn,10,10,100,100);
-  aglSetInteger(TAGLContext(GetWRefCon(Win)),AGL_CLIP_REGION,clipRgn);
-  aglEnable(TAGLContext(GetWRefCon(Win)),AGL_CLIP_REGION);
+  aglSetInteger({%H-}TAGLContext(GetWRefCon(Win)),AGL_CLIP_REGION,clipRgn);
+  aglEnable({%H-}TAGLContext(GetWRefCon(Win)),AGL_CLIP_REGION);
   DisposeRgn(clipRgn);
 end;
 
@@ -129,8 +131,8 @@ begin
   if not Assigned(info) then Exit;
   win:=HIViewGetWindow(AWidget.Widget);
   if not Assigned(win) then Exit;
-  GetWindowBounds(win, kWindowStructureRgn, str);
-  HIViewGetBounds(AWidget.Widget, bnd);
+  GetWindowBounds(win, kWindowStructureRgn, str{%H-});
+  HIViewGetBounds(AWidget.Widget, bnd{%H-});
   HIViewConvertPoint(bnd.origin, AWidget.Widget, nil);
 
   r[0]:=Round(bnd.origin.x);
@@ -165,6 +167,7 @@ end;
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
   DoubleBuffered, RGBA: boolean;
+  const RedBits, GreenBits, BlueBits: Cardinal;
   const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
   const AParams: TCreateParams): HWND;
 var
@@ -192,6 +195,7 @@ begin
   // create the AGL context
   disp := GetMainDevice ();
   AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA,
+    RedBits,GreenBits,BlueBits,
     MultiSampling,AlphaBits,DepthBits,StencilBits);
   aglPixFmt := aglChoosePixelFormat (@disp, 1, AttrList);
   System.FreeMem(AttrList);
@@ -235,7 +239,8 @@ begin
 end;
 
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean;
-  MultiSampling, AlphaBits, DepthBits, StencilBits: cardinal): PInteger;
+  RedBits, GreenBits, BlueBits, MultiSampling, AlphaBits, DepthBits,
+  StencilBits: cardinal): PInteger;
 var
   p: integer;
 
@@ -256,9 +261,9 @@ var
     Add(AGL_NO_RECOVERY);
     Add(AGL_MAXIMUM_POLICY);
     Add(AGL_SINGLE_RENDERER);
-    Add(AGL_RED_SIZE); Add(1);
-    Add(AGL_GREEN_SIZE); Add(1);
-    Add(AGL_BLUE_SIZE); Add(1);
+    Add(AGL_RED_SIZE); Add(RedBits);
+    Add(AGL_GREEN_SIZE); Add(GreenBits);
+    Add(AGL_BLUE_SIZE); Add(BlueBits);
     Add(AGL_ALPHA_SIZE); Add(AlphaBits);
     Add(AGL_DEPTH_SIZE); Add(DepthBits);
     Add(AGL_STENCIL_SIZE); Add(StencilBits);
