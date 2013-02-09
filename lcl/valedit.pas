@@ -368,7 +368,6 @@ var
 begin
   // ToDo: Check validity of key
   //debugln('TValueListStrings.InsertItem: Index=',dbgs(index),' S=',S,' AObject=',dbgs(aobject));
-  //Changing;
   IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
   if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
   inherited InsertItem(Index, S, AObject);
@@ -379,7 +378,6 @@ begin
   FItemProps[Index] := nil;
   //only restore this _after_ FItemProps is updated!
   if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
-  //Changed;
 end;
 
 procedure TValueListStrings.InsertItem(Index: Integer; const S: string);
@@ -438,7 +436,6 @@ var
   i: Integer;
   IsShowingEditor: Boolean;
 begin
-  Changing;
   IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
   if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
   inherited Delete(Index);
@@ -453,15 +450,12 @@ begin
   end;
   //only restore this _after_ FItemProps is updated!
   if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
-  Changed;
 end;
 
 procedure TValueListStrings.Exchange(Index1, Index2: Integer);
 begin
-  Changing;
   inherited Exchange(Index1, Index2);
   // ToDo: Exchange also ItemProps
-  Changed;
 end;
 
 function TValueListStrings.GetItemProp(const AKeyOrIndex: Variant): TItemProp;
