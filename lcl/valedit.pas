@@ -105,7 +105,6 @@ type
     procedure SetItemProp(const AKeyOrIndex: Variant; AValue: TItemProp);
     procedure StringsChange(Sender: TObject);
     procedure StringsChanging(Sender: TObject);
-    procedure SelectValueEditor(Sender: TObject; aCol, aRow: Integer; var aEditor: TWinControl);
 //    procedure EditButtonClick(Sender: TObject);
     function GetOptions: TGridOptions;
     function GetKey(Index: Integer): string;
@@ -130,6 +129,7 @@ type
     procedure DefineCellsProperty(Filer: TFiler); override;
     function GetEditText(ACol, ARow: Integer): string; override;
     function GetCells(ACol, ARow: Integer): string; override;
+    procedure SelectEditor; override;
     procedure SetCells(ACol, ARow: Integer; const AValue: string); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure TitlesChanged(Sender: TObject);
@@ -502,13 +502,13 @@ end;
 
 constructor TValueListEditor.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  //need FStrings before inherited Create, because they are needed in overridden SelectEditor
   FStrings := TValueListStrings.Create(Self);
+  FTitleCaptions := TStringList.Create;
+  inherited Create(AOwner);
   FStrings.OnChange := @StringsChange;
   FStrings.OnChanging := @StringsChanging;
-  FTitleCaptions := TStringList.Create;
   TStringList(FTitleCaptions).OnChange := @TitlesChanged;
-  OnSelectEditor := @SelectValueEditor;
 //  OnEditButtonClick := @EditButtonClick;
 
   //Don't use Columns.Add, it interferes with setting FixedCols := 1 (it will then insert an extra column)
@@ -582,27 +582,6 @@ begin
     OnStringsChanging(Self);
 end;
 
-procedure TValueListEditor.SelectValueEditor(Sender: TObject; aCol, aRow: Integer;
-  var aEditor: TWinControl);
-// Choose the cell editor based on ItemProp.EditStyle
-var
-  ItemProp: TItemProp;
-begin
-  if aCol <> 1 then Exit;     // Only for the Value column
-  ItemProp := nil;
-  //debugln('**** A ACol=',dbgs(acol),' ARow=',dbgs(arow),' (',dbgs(itemprop),')');
-  ItemProp := Strings.GetItemProp(aRow-FixedRows);
-  if Assigned(ItemProp) then
-    case ItemProp.EditStyle of
-      esSimple: aEditor := EditorByStyle(cbsAuto);
-      esEllipsis: aEditor := EditorByStyle(cbsEllipsis);
-      esPickList: begin
-        aEditor := EditorByStyle(cbsPickList);
-        (aEditor as TCustomComboBox).Items.Assign(ItemProp.PickList);
-        //Style := csDropDown, default = csDropDownList;
-      end;
-    end;
-end;
 
 // Triggering Action ...
 //procedure TValueListEditor.EditButtonClick(Sender: TObject);
@@ -822,6 +801,27 @@ begin
     else if ACol=1 then
       Result:=Strings.ValueFromIndex[I];
   end;
+end;
+
+procedure TValueListEditor.SelectEditor;
+var
+  ItemProp: TItemProp;
+begin
+  inherited SelectEditor;
+  if Col <> 1 then Exit;     // Only for the Value column
+  ItemProp := nil;
+  //debugln('**** A Col=',dbgs(col),' Row=',dbgs(row),' (',dbgs(itemprop),')');
+  ItemProp := Strings.GetItemProp(Row-FixedRows);
+  if Assigned(ItemProp) then
+    case ItemProp.EditStyle of
+      esSimple: Editor := EditorByStyle(cbsAuto);
+      esEllipsis: Editor := EditorByStyle(cbsEllipsis);
+      esPickList: begin
+        Editor := EditorByStyle(cbsPickList);
+        (Editor as TCustomComboBox).Items.Assign(ItemProp.PickList);
+        //Style := csDropDown, default = csDropDownList;
+      end;
+    end;
 end;
 
 procedure TValueListEditor.SetCells(ACol, ARow: Integer; const AValue: string);
