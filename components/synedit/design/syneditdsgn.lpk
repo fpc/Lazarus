@@ -63,7 +63,7 @@ If you wish to allow use of your version of these files only under the terms of 
     <LazDoc Paths="docs/xml"/>
     <i18n>
       <EnableI18N Value="True"/>
-      <OutDir Value="languages"/>
+      <OutDir Value="../languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
