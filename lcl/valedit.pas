@@ -95,7 +95,6 @@ type
     FDisplayOptions: TDisplayOptions;
     FDropDownRows: Integer;
     FOnGetPickList: TGetPickListEvent;
-    FOnEditButtonClick: TNotifyEvent;
     FOnStringsChange: TNotifyEvent;
     FOnStringsChanging: TNotifyEvent;
     FOnValidate: TOnValidateEvent;
@@ -105,7 +104,6 @@ type
     procedure SetItemProp(const AKeyOrIndex: Variant; AValue: TItemProp);
     procedure StringsChange(Sender: TObject);
     procedure StringsChanging(Sender: TObject);
-//    procedure EditButtonClick(Sender: TObject);
     function GetOptions: TGridOptions;
     function GetKey(Index: Integer): string;
     function GetValue(const Key: string): string;
@@ -114,7 +112,6 @@ type
     procedure SetKeyOptions({const} AValue: TKeyOptions);
     procedure SetKey(Index: Integer; const Value: string);
     procedure SetValue(const Key: string; AValue: string);
-    procedure SetOnEditButtonClick(const AValue: TNotifyEvent);
     procedure SetOptions(const AValue: TGridOptions);
     procedure SetStrings(const AValue: TValueListStrings);
     procedure SetTitleCaptions(const AValue: TStrings);
@@ -250,7 +247,6 @@ type
     property Strings: TValueListStrings read FStrings write SetStrings;
     property TitleCaptions: TStrings read FTitleCaptions write SetTitleCaptions;
 
-    property OnEditButtonClick: TNotifyEvent read FOnEditButtonClick write SetOnEditButtonClick;
     property OnGetPickList: TGetPickListEvent read FOnGetPickList write FOnGetPickList;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -509,7 +505,6 @@ begin
   FStrings.OnChange := @StringsChange;
   FStrings.OnChanging := @StringsChanging;
   TStringList(FTitleCaptions).OnChange := @TitlesChanged;
-//  OnEditButtonClick := @EditButtonClick;
 
   //Don't use Columns.Add, it interferes with setting FixedCols := 1 (it will then insert an extra column)
   {
@@ -583,11 +578,6 @@ begin
 end;
 
 
-// Triggering Action ...
-//procedure TValueListEditor.EditButtonClick(Sender: TObject);
-//begin
-  // ToDo: support button clicks
-//end;
 
 function TValueListEditor.GetFixedRows: Integer;
 begin
@@ -657,11 +647,6 @@ begin
   FKeyOptions := AValue;
 end;
 
-procedure TValueListEditor.SetOnEditButtonClick(const AValue: TNotifyEvent);
-begin
-  FOnEditButtonClick := AValue;
-  // If edit list for inplace editing is implemented, set its handler, too.
-end;
 
 procedure TValueListEditor.SetOptions(const AValue: TGridOptions);
 begin
