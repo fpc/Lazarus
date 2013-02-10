@@ -77,6 +77,7 @@ uses
 {$ENDIF}
 {$IFDEF UseWin32WGL}
   GLWin32WGLContext;
+  {$DEFINE HasRGBBits}
 {$ENDIF}
 {$IFDEF UseQTGLX}
   GLQTContext;
