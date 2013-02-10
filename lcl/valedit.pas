@@ -389,9 +389,9 @@ var
 begin
   // ToDo: Check validity of key
   IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
-  if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
+  //if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
   inherited Put(Index, S);
-  if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
+  //if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
 end;
 
 constructor TValueListStrings.Create(AOwner: TValueListEditor);
