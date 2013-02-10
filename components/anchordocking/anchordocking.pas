@@ -5092,7 +5092,7 @@ var
   p: LongInt;
   c: String;
 begin
-  s:=adrsDragAndDockC;
+  s:=DockMaster.HeaderHint;
   p:=Pos('%s',s);
   if p>0 then begin
     if Parent<>nil then
