@@ -214,12 +214,16 @@ constructor TPen.Create;
 begin
   inherited Create;
   DelayAllocate := True;
-  FJoinStyle := pjsRound;
   FCosmetic := True;
   {$IFDEF HasFPEndCap}
   inherited SetEndCap(pecRound);
   {$ELSE}
   FEndCap := pecRound;
+  {$ENDIF}
+  {$IFDEF HasFPJoinStyle}
+  inherited SetJoinStyle(pjsRound);
+  {$ELSE}
+  FJoinStyle := pjsRound;
   {$ENDIF}
   inherited SetWidth(1);
   inherited SetStyle(psSolid);
@@ -516,7 +520,7 @@ begin
     inherited DoCopyProps(From);
     FCosmetic := APen.Cosmetic;
     EndCap := APen.EndCap;
-    FJoinStyle := APen.JoinStyle;
+    JoinStyle := APen.JoinStyle;
     //TODO: query new parameters
     Changed;
   end else
