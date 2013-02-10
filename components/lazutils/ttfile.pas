@@ -68,11 +68,11 @@ type
     FFrameSize    : LongInt;
     FFrameCache : PByte;
 
-    FOpen: boolean;
     FName: string;
     FStream: TStream;
-    FOwnedStream: boolean;
     FBase,FStoredSize,FPosit: Longint;
+    FOwnedStream: boolean;
+    FOpen: boolean;
     FUsed: boolean;
     function GetFilePos: longint;
     function GetFileSize: longint;
@@ -364,9 +364,13 @@ const
  *
  ******************************************************************)
  procedure TT_Done_Stream( stream : TT_Stream );
+ var
+   p: Pointer;
  begin
    if stream.z = nil then exit;
-   TFreeTypeStream(stream.z).FUsed := false;
+   {$HINT workaround for bug 23868 when compiling with -O2}
+   p:=stream.z;
+   TFreeTypeStream(p).FOpen := false;
  end;
 
 (*******************************************************************
