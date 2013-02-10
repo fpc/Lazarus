@@ -646,7 +646,7 @@ type
     FEndCap: TPenEndCap;
     {$ENDIF}
     FCosmetic: Boolean;
-    {$IFDEF HasFPJoinStyle}
+    {$IFNDEF HasFPJoinStyle}
     FJoinStyle: TPenJoinStyle;
     {$ENDIF}
     FPattern: TPenPattern;
