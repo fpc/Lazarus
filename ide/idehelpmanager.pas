@@ -178,13 +178,15 @@ type
     // messages
     procedure mnuEditMessageHelpClick(Sender: TObject);
   private
+    FFCLHelpDB: THelpDatabase;
     FFCLHelpDBPath: THelpBaseURLObject;
+    FHTMLProviders: TLIHProviders;
+    FLCLHelpDB: THelpDatabase;
+    FLCLHelpDBPath: THelpBaseURLObject;
     FMainHelpDB: THelpDatabase;
     FMainHelpDBPath: THelpBasePathObject;
     FRTLHelpDB: THelpDatabase;
-    FFCLHelpDB: THelpDatabase;
     FRTLHelpDBPath: THelpBaseURLObject;
-    FHTMLProviders: TLIHProviders;
     procedure RegisterIDEHelpDatabases;
     procedure RegisterDefaultIDEHelpViewers;
     procedure FindDefaultBrowser(var DefaultBrowser, Params: string);
@@ -226,6 +228,8 @@ type
     property FCLHelpDBPath: THelpBaseURLObject read FFCLHelpDBPath;
     property MainHelpDB: THelpDatabase read FMainHelpDB;
     property MainHelpDBPath: THelpBasePathObject read FMainHelpDBPath;
+    property LCLHelpDB: THelpDatabase read FLCLHelpDB;
+    property LCLHelpDBPath: THelpBaseURLObject read FLCLHelpDBPath;
     property RTLHelpDB: THelpDatabase read FRTLHelpDB;
     property RTLHelpDBPath: THelpBaseURLObject read FRTLHelpDBPath;
   end;
@@ -1217,6 +1221,29 @@ procedure TIDEHelpManager.RegisterIDEHelpDatabases;
     HTMLHelp.RegisterItem(DirItem);
   end;
 
+  procedure CreateLCLHelpDB;
+  var
+    HTMLHelp: TFPDocHTMLHelpDatabase;
+    FPDocNode: THelpNode;
+    DirItem: THelpDBISourceDirectory;
+  begin
+    FLCLHelpDB:=HelpDatabases.CreateHelpDatabase(lihcLCLUnits,
+                                                 TFPDocHTMLHelpDatabase,true);
+    HTMLHelp:=FRTLHelpDB as TFPDocHTMLHelpDatabase;
+    HTMLHelp.DefaultBaseURL:=lihLCLURL;
+    FLCLHelpDBPath:=THelpBaseURLObject.Create;
+    HTMLHelp.BasePathObject:=FLCLHelpDBPath;
+
+    // FPDoc nodes for units in the RTL
+    FPDocNode:=THelpNode.CreateURL(HTMLHelp,
+                   'LCL - Lazarus Component Library Units',
+                   'file://index.html');
+    HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);// once as TOC
+    DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(LazarusDir)/lcl',
+                                   '*.pp;*.pas',true);// and once as normal page
+    HTMLHelp.RegisterItem(DirItem);
+  end;
+
   procedure CreateFPCKeywordsHelpDB;
   begin
     {$IFDEF EnableSimpleFPCKeyWordHelpDB}
@@ -1229,6 +1256,7 @@ begin
   CreateMainIDEHelpDB;
   CreateRTLHelpDB;
   CreateFCLHelpDB;
+  CreateLCLHelpDB;
   CreateFPCMessagesHelpDB;
   CreateFPCKeywordsHelpDB;
 end;
@@ -1284,6 +1312,7 @@ begin
   FreeThenNil(FMainHelpDBPath);
   FreeThenNil(FRTLHelpDBPath);
   FreeThenNil(FFCLHelpDBPath);
+  FreeThenNil(FLCLHelpDBPath);
   HelpBoss:=nil;
   LazarusHelp:=nil;
   inherited Destroy;
