@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-02-10 03:30+0400\n"
+"PO-Revision-Date: 2013-02-10 20:54+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -7240,7 +7240,7 @@ msgstr "Ошибка отладчика"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
-msgstr "Ошибка отладчика%sОп, отладчик находится в нерабочем состоянии%sСохраните работу!%sНажмите Стоп и надейтесь на лучшее!"
+msgstr "Ошибка отладчика%sОй, отладчик попал в состояние ошибки%sСохраните работу прямо сейчас!%sНажмите Стоп и надейтесь на лучшее."
 
 #: lazarusidestrconsts.lisdebuggerfeedbackerror
 msgid "Debugger Error"
@@ -7732,7 +7732,7 @@ msgstr "Игнорировать изменения на диске"
 
 #: lazarusidestrconsts.lisdiskdiffrevertall
 msgid "Reload from disk"
-msgstr "Перегрузить с диска"
+msgstr "Перечитать с диска"
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
