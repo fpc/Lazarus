@@ -1229,7 +1229,7 @@ procedure TIDEHelpManager.RegisterIDEHelpDatabases;
   begin
     FLCLHelpDB:=HelpDatabases.CreateHelpDatabase(lihcLCLUnits,
                                                  TFPDocHTMLHelpDatabase,true);
-    HTMLHelp:=FRTLHelpDB as TFPDocHTMLHelpDatabase;
+    HTMLHelp:=FLCLHelpDB as TFPDocHTMLHelpDatabase;
     HTMLHelp.DefaultBaseURL:=lihLCLURL;
     FLCLHelpDBPath:=THelpBaseURLObject.Create;
     HTMLHelp.BasePathObject:=FLCLHelpDBPath;
