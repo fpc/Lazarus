@@ -2585,7 +2585,7 @@ begin
   {$IFDEF MSWINDOWS}
     Result := AnsiCompareStr(UTF8ToSys(S1), UTF8ToSys(S2));
   {$ELSE}
-    Result := WideCompareStr(S1, S2);
+    Result := WideCompareStr(WideString(S1),WideString(S2));
   {$ENDIF}
 end;
 
