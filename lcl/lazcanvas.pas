@@ -684,7 +684,11 @@ begin
   Font.Bold := AFont.Bold;
   Font.Italic := AFont.Italic;
   Font.Underline := AFont.Underline;
-  Font.StrikeTrough := AFont.StrikeTrough;
+  {$IF (FPC_FULLVERSION=20601) or (FPC_FULLVERSION>=20701)} //changed in 2.6.1 and 2.7; remove when FPC 2.6.2+ only is supported
+  Font.StrikeThrough := AFont.StrikeThrough;
+  {$ELSE}
+  Font.StrikeTrough := AFont.StrikeTrough; //old version with typo
+  {$ENDIF}
 end;
 
 { TFPWindowsSharpInterpolation }
