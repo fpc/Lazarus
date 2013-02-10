@@ -62,7 +62,7 @@ msgid "Docking options"
 msgstr ""
 
 #: anchordockstr.adrsdraganddockc
-msgid "Use the mouse to drag and dock window \"%c\""
+msgid "Use the mouse to drag and dock window \"%s\""
 msgstr ""
 
 #: anchordockstr.adrsdragthreshold

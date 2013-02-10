@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-23 10:05+0300\n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"PO-Revision-Date: 2013-02-11 00:50+0400\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -73,8 +73,9 @@ msgid "Docking options"
 msgstr "Параметри стикування"
 
 #: anchordockstr.adrsdraganddockc
-msgid "Use the mouse to drag and dock window \"%c\""
-msgstr "Викор. мишку для перетягування і стикування вікна \"%c\""
+#| msgid "Use the mouse to drag and dock window \"%c\""
+msgid "Use the mouse to drag and dock window \"%s\""
+msgstr "Викор. мишку для перетягування і стикування вікна \"%s\""
 
 #: anchordockstr.adrsdragthreshold
 msgid "Drag threshold"

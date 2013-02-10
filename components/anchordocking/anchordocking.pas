@@ -5092,14 +5092,14 @@ var
   p: LongInt;
   c: String;
 begin
-  s:=DockMaster.HeaderHint;
-  p:=Pos('%c',s);
+  s:=adrsDragAndDockC;
+  p:=Pos('%s',s);
   if p>0 then begin
     if Parent<>nil then
       c:=Parent.Caption
     else
       c:='';
-    s:=copy(s,1,p-1)+c+copy(s,p+2,length(s));
+    s:=Format(s,[c]);
   end;
   //debugln(['TAnchorDockHeader.DoOnShowHint "',s,'" "',DockMaster.HeaderHint,'"']);
   HintInfo^.HintStr:=s;

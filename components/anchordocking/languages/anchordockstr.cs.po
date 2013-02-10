@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Chronos <robie@centrum.cz>\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -70,8 +70,9 @@ msgid "Docking options"
 msgstr "Volby ukotvení"
 
 #: anchordockstr.adrsdraganddockc
-msgid "Use the mouse to drag and dock window \"%c\""
-msgstr "Použijte myš k uchopení a ukotvení okna \"%c\""
+#| msgid "Use the mouse to drag and dock window \"%c\""
+msgid "Use the mouse to drag and dock window \"%s\""
+msgstr "Použijte myš k uchopení a ukotvení okna \"%s\""
 
 #: anchordockstr.adrsdragthreshold
 msgid "Drag threshold"

@@ -70,8 +70,9 @@ msgid "Docking options"
 msgstr "Параметры стыковки"
 
 #: anchordockstr.adrsdraganddockc
-msgid "Use the mouse to drag and dock window \"%c\""
-msgstr "Используйте мышь для перетаскивания и стыковки окна \"%c\""
+#| msgid "Use the mouse to drag and dock window \"%c\""
+msgid "Use the mouse to drag and dock window \"%s\""
+msgstr "Используйте мышь для перетаскивания и стыковки окна \"%s\""
 
 #: anchordockstr.adrsdragthreshold
 msgid "Drag threshold"

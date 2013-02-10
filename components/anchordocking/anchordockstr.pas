@@ -54,7 +54,7 @@ resourcestring
   adrsMovePageLeft = 'Move page left';
   adrsMovePageLeftmost = 'Move page leftmost';
   adrsRequestedButCreated = '%s requested, but %s created';
-  adrsDragAndDockC = 'Use the mouse to drag and dock window "%c"';
+  adrsDragAndDockC = 'Use the mouse to drag and dock window "%s"';
   adrsMissingControlName = 'missing control name';
   adrsModalFormsCanNotBeMadeDockable = 'modal forms can not be made dockable';
   adrsControlIsAlreadyADocksite = 'control is already a docksite';
