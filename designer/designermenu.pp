@@ -960,9 +960,12 @@ begin
     Item := FindDesignerMenuItem(MenuItem);
     if Item <> nil then
     begin
-      DeleteItem(Item);
-      SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
-      RealignDesigner;
+      if DeleteItem(Item) = 2 then
+        (Owner as TForm).Close
+      else begin
+        SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
+        RealignDesigner;
+      end;
     end;
   end;
   inherited;
