@@ -202,7 +202,6 @@ const
  *  Description :  Init the file component
  *
  ******************************************************************)
-
  function TTFile_Init : TError;
  begin
    TTFile_Init := Success;
@@ -215,7 +214,6 @@ const
  *  Description :  Finalize the file component
  *
  ******************************************************************)
-
  procedure TTFile_Done;
  begin
    //nothing
@@ -235,7 +233,6 @@ const
  *  Output :  True on sucess.
  *
  ******************************************************************)
-
  function TT_Open_Stream( name       : String;
                           var stream : TT_Stream ) : TError;
  var
@@ -299,7 +296,6 @@ const
  *  Output :  True ( always )
  *
  ******************************************************************)
-
  procedure TT_Close_Stream( var stream : TT_Stream );
  begin
    if stream.z = nil then exit;
@@ -321,7 +317,6 @@ const
  *  Output :  True on success. False on failure
  *
  ******************************************************************)
-
  function  TT_Use_Stream( org_stream : TT_Stream;
                           out ftstream: TFreeTypeStream) : TError;
  begin
@@ -351,11 +346,10 @@ const
  *  Output :  True on success. False on failure
  *
  ******************************************************************)
-
  procedure TT_Flush_Stream( stream : TT_Stream );
  begin
-   if stream.z <> nil then
-     TFreeTypeStream(stream.z).Deactivate;
+   if stream.z = nil then exit;
+   TFreeTypeStream(stream.z).Deactivate;
  end;
 
 (*******************************************************************
@@ -369,7 +363,6 @@ const
  *  Output :  Nothing.
  *
  ******************************************************************)
-
  procedure TT_Done_Stream( stream : TT_Stream );
  begin
    if stream.z = nil then exit;
@@ -400,7 +393,6 @@ const
  *            them.
  *
  ******************************************************************)
-
  function TFreeTypeStream.AccessFrame( aSize : Int ) : TError;
  begin
    result := Failure;
@@ -461,7 +453,6 @@ const
  *         truncate it..
  *
  ******************************************************************)
-
  function TFreeTypeStream.CheckAndAccessFrame( aSize : Int ) : TError;
  var
    readBytes : Longint;
@@ -482,7 +473,6 @@ const
  *  Output :  True on success. False on failure
  *
  ******************************************************************)
-
  function TFreeTypeStream.ForgetFrame : TError;
  begin
    result := Failure;
@@ -513,7 +503,6 @@ const
  *          could easily page fault using this call).
  *
  ******************************************************************)
-
  function TFreeTypeStream.GET_Byte : Byte;
  begin
    GET_Byte := FCurrentFrame^[FFrameCursor];
@@ -536,7 +525,6 @@ const
  *          could easily page fault using this call).
  *
  ******************************************************************)
-
  function TFreeTypeStream.GET_Char : ShortInt;
  begin
    GET_Char := ShortInt( FCurrentFrame^[FFrameCursor] );
@@ -559,7 +547,6 @@ const
  *          could easily page fault using this call).
  *
  ******************************************************************)
-
  function TFreeTypeStream.GET_Short : Short;
  begin
    GET_Short := (Short(FCurrentFrame^[ FFrameCursor ]) shl 8) or
@@ -583,7 +570,6 @@ const
  *          could easily page fault using this call).
  *
  ******************************************************************)
-
  function TFreeTypeStream.GET_UShort : UShort;
  begin
    GET_UShort := (UShort(FCurrentFrame^[ FFrameCursor ]) shl 8) or
@@ -607,7 +593,6 @@ const
  *          could easily page fault using this call).
  *
  ******************************************************************)
-
  function TFreeTypeStream.GET_Long : Long;
  begin
    GET_Long := (Long(FCurrentFrame^[ FFrameCursor ]) shl 24) or
@@ -633,7 +618,6 @@ const
  *          could easily page fault using this call).
  *
  ******************************************************************)
-
  function TFreeTypeStream.GET_ULong : ULong;
  begin
    GET_ULong := (ULong(FCurrentFrame^[ FFrameCursor ]) shl 24) or
@@ -659,7 +643,6 @@ const
  *          could easily page fault using this call).
  *
  ******************************************************************)
-
  function TFreeTypeStream.GET_Tag4 : ULong;
  var
    C : array[0..3] of Byte;
@@ -668,17 +651,17 @@ const
    inc( FFrameCursor, 4 );
 
    GET_Tag4 := ULong(C);
-end;
-
- { TFreeTypeStream }
-
- function TFreeTypeStream.GetFileSize: longint;
- begin
-   if FStream = nil then
-     result := 0
-   else
-     result := FStream.Size;
  end;
+
+{ TFreeTypeStream }
+
+function TFreeTypeStream.GetFileSize: longint;
+begin
+ if FStream = nil then
+    result := 0
+  else
+    result := FStream.Size;
+end;
 
 function TFreeTypeStream.GetPosition: longint;
 begin
@@ -702,22 +685,22 @@ begin
   GetMem( FFrameCache, frame_cache_size );
 end;
 
- constructor TFreeTypeStream.Create(APathName: string);
- begin
-   if APathName = '' then
-     raise exception.Create('Empty path name');
-   Init;
-   FName:= APathName;
- end;
+constructor TFreeTypeStream.Create(APathName: string);
+begin
+  if APathName = '' then
+    raise exception.Create('Empty path name');
+  Init;
+  FName:= APathName;
+end;
 
- constructor TFreeTypeStream.Create(AStream: TStream; AStreamOwner: boolean);
- begin
-   Init;
-   FStream:= AStream;
-   FOwnedStream := AStreamOwner;
- end;
+constructor TFreeTypeStream.Create(AStream: TStream; AStreamOwner: boolean);
+begin
+  Init;
+  FStream:= AStream;
+  FOwnedStream := AStreamOwner;
+end;
 
- destructor TFreeTypeStream.Destroy;
+destructor TFreeTypeStream.Destroy;
 begin
   Deactivate;
   if FOwnedStream then FreeAndNil(FStream);
@@ -824,15 +807,15 @@ end;
    end;
  end;
 
- function TFreeTypeStream.ReadAtFile(APos: Long; var ABuff; ACount: Int): TError;
- begin
-   result := Failure;
+function TFreeTypeStream.ReadAtFile(APos: Long; var ABuff; ACount: Int): TError;
+begin
+  result := Failure;
 
-   if SeekFile( APos ) or
-      ReadFile( ABuff, ACount ) then exit;
+  if SeekFile( APos ) or
+     ReadFile( ABuff, ACount ) then exit;
 
-   result := Success;
- end;
+  result := Success;
+end;
 
 function TFreeTypeStream.GetSize: longint;
 begin
