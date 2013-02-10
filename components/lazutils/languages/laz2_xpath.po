@@ -1,0 +1,83 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: laz2_xpath.sboolean
+msgid "boolean"
+msgstr ""
+
+#: laz2_xpath.sevalinvalidargcount
+msgid "Invalid number of function arguments"
+msgstr ""
+
+#: laz2_xpath.sevalunknownfunction
+msgid "Unknown function: \"%s\""
+msgstr ""
+
+#: laz2_xpath.sevalunknownvariable
+msgid "Unknown variable: \"%s\""
+msgstr ""
+
+#: laz2_xpath.snodeset
+msgid "node set"
+msgstr ""
+
+#: laz2_xpath.snumber
+msgid "number"
+msgstr ""
+
+#: laz2_xpath.sparserbadaxisname
+msgid "Invalid axis name"
+msgstr ""
+
+#: laz2_xpath.sparserbadnodetype
+msgid "Invalid node type"
+msgstr ""
+
+#: laz2_xpath.sparserexpectedleftbracket
+msgid "Expected \"(\""
+msgstr ""
+
+#: laz2_xpath.sparserexpectedrightbracket
+msgid "Expected \")\""
+msgstr ""
+
+#: laz2_xpath.sparserexpectedrightsquarebracket
+msgid "Expected \"]\" after predicate"
+msgstr ""
+
+#: laz2_xpath.sparsergarbageafterexpression
+msgid "Unrecognized input after expression"
+msgstr ""
+
+#: laz2_xpath.sparserinvalidnodetest
+msgid "Invalid node test (syntax error)"
+msgstr ""
+
+#: laz2_xpath.sparserinvalidprimexpr
+msgid "Invalid primary expression"
+msgstr ""
+
+#: laz2_xpath.sscannerexpectedvarname
+msgid "Expected variable name after \"$\""
+msgstr ""
+
+#: laz2_xpath.sscannerinvalidchar
+msgid "Invalid character"
+msgstr ""
+
+#: laz2_xpath.sscannermalformedqname
+msgid "Expected \"*\" or local part after colon"
+msgstr ""
+
+#: laz2_xpath.sscannerunclosedstring
+msgid "String literal was not closed"
+msgstr ""
+
+#: laz2_xpath.sstring
+msgid "string"
+msgstr ""
+
+#: laz2_xpath.svarnoconversion
+msgid "Conversion from %s to %s not possible"
+msgstr ""
+
