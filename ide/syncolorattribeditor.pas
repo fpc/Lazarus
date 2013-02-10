@@ -11,7 +11,7 @@ uses
   SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynTextDrawer,
   DividerBevel, Laz2_XMLCfg, EditorOptions, IDEOptionsIntf,
   editor_general_options, IDEImagesIntf, LazarusIDEStrConsts, IDEProcs, typinfo,
-  LazConf, types, math;
+  LazConf, types, math, FPCanvas;
 
 type
 

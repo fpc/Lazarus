@@ -36,7 +36,7 @@ uses
   // IMPORTANT: the object inspector is a tool and can be used in other programs
   //            too. Don't put Lazarus IDE specific things here.
   // FCL
-  SysUtils, Types, Classes, TypInfo, contnrs,
+  SysUtils, Types, Classes, TypInfo, contnrs, FPCanvas,
   // LCL
   InterfaceBase, Forms, Buttons, Graphics, GraphType, LCLProc, StdCtrls,
   LCLType, LCLIntf, Controls, ComCtrls, ExtCtrls, LMessages, LResources,

@@ -36,6 +36,11 @@ interface
 {$DEFINE HasFPCanvas1}
 {$ENDIF}
 
+{$IF FPC_FULLVERSION>=20701}
+{$DEFINE HasFPEndCap}
+{$ENDIF}
+
+
 uses
   SysUtils, Math, Types, Classes, Contnrs, FPCAdds, LCLversion,
   FileUtil,
@@ -167,6 +172,10 @@ const
   bsBDiagonal = FPCanvas.bsBDiagonal;
   bsCross = FPCanvas.bsCross;
   bsDiagCross = FPCanvas.bsDiagCross;
+
+  pecRound = FPCanvas.pecRound;
+  pecSquare = FPCanvas.pecSquare;
+  pecFlat = FPCanvas.pecFlat;
 
 type
   TFillStyle = TGraphicsFillStyle;
@@ -573,11 +582,15 @@ type
   TPenMode = TFPPenMode;
 
   // pen end caps. valid only for geometric pens
+  {$IFDEF HasFPEndCap}
+  TPenEndCap = TFPPenEndCap;
+  {$ELSE}
   TPenEndCap = (
     pecRound,
     pecSquare,
     pecFlat
   );
+  {$ENDIF}
 
   // join style. valid only for geometric pens
   TPenJoinStyle = (
@@ -614,7 +627,9 @@ type
   TPen = class(TFPCustomPen)
   private
     FColor: TColor;
+    {$IFNDEF HasFPEndCap}
     FEndCap: TPenEndCap;
+    {$ENDIF}
     FCosmetic: Boolean;
     FJoinStyle: TPenJoinStyle;
     FPattern: TPenPattern;
@@ -633,7 +648,7 @@ type
     procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
     procedure SetFPColor(const AValue: TFPColor); override;
     procedure SetColor(Value: TColor);
-    procedure SetEndCap(const AValue: TPenEndCap);
+    procedure SetEndCap(AValue: TPenEndCap); {$IFDEF HasFPEndCap}override;{$ENDIF}
     procedure SetJoinStyle(const AValue: TPenJoinStyle);
     procedure SetMode(Value: TPenMode); override;
     procedure SetStyle(Value: TPenStyle); override;
@@ -650,7 +665,11 @@ type
   published
     property Color: TColor read FColor write SetColor default clBlack;
     property Cosmetic: Boolean read FCosmetic write SetCosmetic default True;
+    {$IFDEF HasFPEndCap}
+    property EndCap default pecRound;
+    {$ELSE}
     property EndCap: TPenEndCap read FEndCap write SetEndCap default pecRound;
+    {$ENDIF}
     property JoinStyle: TPenJoinStyle read FJoinStyle write SetJoinStyle default pjsRound;
     property Mode default pmCopy;
     property Style default psSolid;

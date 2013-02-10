@@ -214,10 +214,13 @@ constructor TPen.Create;
 begin
   inherited Create;
   DelayAllocate := True;
-  FEndCap := pecRound;
   FJoinStyle := pjsRound;
   FCosmetic := True;
-  FPattern := nil;
+  {$IFDEF HasFPEndCap}
+  inherited SetEndCap(pecRound);
+  {$ELSE}
+  FEndCap := pecRound;
+  {$ENDIF}
   inherited SetWidth(1);
   inherited SetStyle(psSolid);
   inherited SetMode(pmCopy);
@@ -446,12 +449,16 @@ begin
   end;
 end;
 
-procedure TPen.SetEndCap(const AValue: TPenEndCap);
+procedure TPen.SetEndCap(AValue: TPenEndCap);
 begin
   if EndCap <> AValue then
   begin
     FreeReference;
+    {$IFDEF HasFPEndCap}
+    inherited SetEndCap(AValue);
+    {$ELSE}
     FEndCap := AValue;
+    {$ENDIF}
     Changed;
   end;
 end;
@@ -504,7 +511,7 @@ begin
     FreeReference;
     inherited DoCopyProps(From);
     FCosmetic := APen.Cosmetic;
-    FEndCap := APen.EndCap;
+    EndCap := APen.EndCap;
     FJoinStyle := APen.JoinStyle;
     //TODO: query new parameters
     Changed;

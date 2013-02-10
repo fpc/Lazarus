@@ -5,7 +5,7 @@ unit SynGutterChanges;
 interface
 
 uses
-  Classes, Graphics, LCLType, LCLIntf, SynGutterBase;
+  Classes, FPCanvas, Graphics, LCLType, LCLIntf, SynGutterBase;
 
 type
   { TSynGutterChanges }
