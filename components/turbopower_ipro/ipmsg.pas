@@ -997,7 +997,7 @@ begin
   Randomize;
   Result := '_NextPart_' + IntToHex(Trunc(Temp), 8) + '-' +
     IntToHex(Trunc(Frac(Temp) * 10000), 8) + '-' +
-    IntToHex(GetTickCount, 8) + '-' + IntToHex(Random($FFFF), 4);
+    IntToHex(GetTickCount64, 8) + '-' + IntToHex(Random($FFFF), 4);
 end;
 
 { 16-bit CRC of stream between starting and ending offset }
