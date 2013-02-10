@@ -781,7 +781,7 @@ type
 
   protected
     procedure SetHighlighter(const Value: TSynCustomHighlighter); virtual;
-    procedure SetVisible(Value: Boolean); override;
+    procedure UpdateShowing; override;
     procedure SetColor(Value: TColor); override;
     procedure DragOver(Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean); override;
@@ -3158,11 +3158,11 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.SetVisible(Value: Boolean);
+procedure TCustomSynEdit.UpdateShowing;
 begin
-  inherited SetVisible(Value);
+  inherited UpdateShowing;
   if fMarkupManager <> nil then
-    fMarkupManager.DoVisibleChanged(Value);
+    fMarkupManager.DoVisibleChanged(IsVisible);
 end;
 
 procedure TCustomSynEdit.SetColor(Value: TColor);
