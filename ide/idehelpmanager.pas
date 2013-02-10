@@ -1301,8 +1301,6 @@ begin
     {$IFDEF EnableFPDocSearch}
     itmSearchInFPDocFiles.OnClick:=@mnuSearchInFPDocFilesClick;
     {$ENDIF}
-
-
   end;
 end;
 
@@ -1380,11 +1378,11 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
         ListOfPCodeXYPosition,[fdlfWithoutEmptyProperties,fdlfWithoutForwards])
       then begin
         if ListOfPCodeXYPosition=nil then exit;
-        debugln('TIDEHelpManager.ShowHelpForSourcePosition B Success ',dbgs(ListOfPCodeXYPosition.Count));
+        debugln('TIDEHelpManager.ShowHelpForSourcePosition Success, number of declarations: ',dbgs(ListOfPCodeXYPosition.Count));
         // convert the source positions in pascal help context list
         for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
           CurCodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
-          debugln('TIDEHelpManager.ShowHelpForSourcePosition C ',CurCodePos^.Code.Filename,' X=',dbgs(CurCodePos^.X),' Y=',dbgs(CurCodePos^.Y));
+          debugln('TIDEHelpManager.ShowHelpForSourcePosition Declaration at ',dbgs(CurCodePos));
           NewList:=ConvertCodePosToPascalHelpContext(CurCodePos);
           if NewList<>nil then begin
             if PascalHelpContextLists=nil then
@@ -1396,7 +1394,7 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
 
         // invoke help system
         Complete:=true;
-        debugln('TIDEHelpManager.ShowHelpForSourcePosition D PascalHelpContextLists.Count=',dbgs(PascalHelpContextLists.Count));
+        debugln(['TIDEHelpManager.ShowHelpForSourcePosition PascalHelpContextLists.Count=',PascalHelpContextLists.Count,' calling ShowHelpForPascalContexts ...']);
         Result:=ShowHelpForPascalContexts(Filename,CodePos,PascalHelpContextLists,ErrMsg);
       end else if CodeToolBoss.ErrorCode<>nil then begin
         MainIDEInterface.DoJumpToCodeToolBossError;
