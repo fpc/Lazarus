@@ -364,13 +364,19 @@ const
  *
  ******************************************************************)
  procedure TT_Done_Stream( stream : TT_Stream );
+ {$IF FPC_FULLVERSION>=20701}
  var
    p: Pointer;
+ {$ENDIF}
  begin
    if stream.z = nil then exit;
+   {$IF FPC_FULLVERSION>=20701}
    {$HINT workaround for bug 23868 when compiling with -O2}
    p:=stream.z;
    TFreeTypeStream(p).FOpen := false;
+   {$ELSE}
+   TFreeTypeStream(stream.z).FOpen := false;
+   {$ENDIF}
  end;
 
 (*******************************************************************
