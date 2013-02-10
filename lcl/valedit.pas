@@ -188,6 +188,7 @@ type
     property VisibleRowCount;
 
     property OnBeforeSelection;
+    property OnButtonClick;
     property OnChangeBounds;
     property OnCheckboxToggled;
     property OnClick;
@@ -201,6 +202,7 @@ type
     property OnDragOver;
     property OnDblClick;
     property OnDrawCell;
+    property OnEditButtonClick; deprecated;
     property OnEditingDone;
     property OnEndDock;
     property OnEndDrag;
