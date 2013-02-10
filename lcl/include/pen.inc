@@ -309,12 +309,16 @@ begin
   Changed;
 end;
 
-procedure TPen.SetJoinStyle(const AValue: TPenJoinStyle);
+procedure TPen.SetJoinStyle(AValue: TPenJoinStyle);
 begin
   if JoinStyle <> AValue then
   begin
     FreeReference;
+    {$IFDEF HasFPJoinStyle}
+    inherited SetJoinStyle(AValue);
+    {$ELSE}
     FJoinStyle := AValue;
+    {$ENDIF}
     Changed;
   end;
 end;

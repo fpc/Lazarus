@@ -1,4 +1,3 @@
-{  $Id$  }
 {
  /***************************************************************************
                                 graphics.pp
@@ -38,6 +37,10 @@ interface
 
 {$IF FPC_FULLVERSION>=20701}
 {$DEFINE HasFPEndCap}
+{$ENDIF}
+
+{$IF FPC_FULLVERSION>=20701}
+{$DEFINE HasFPJoinStyle}
 {$ENDIF}
 
 
@@ -173,9 +176,17 @@ const
   bsCross = FPCanvas.bsCross;
   bsDiagCross = FPCanvas.bsDiagCross;
 
+  {$IFDEF HasFPEndCap}
   pecRound = FPCanvas.pecRound;
   pecSquare = FPCanvas.pecSquare;
   pecFlat = FPCanvas.pecFlat;
+  {$ENDIF}
+
+  {$IFDEF HasFPJoinStyle}
+  pjsRound = FPCanvas.pjsRound;
+  pjsBevel = FPCanvas.pjsBevel;
+  pjsMiter =FPCanvas.pjsMiter;
+  {$ENDIF}
 
 type
   TFillStyle = TGraphicsFillStyle;
@@ -593,11 +604,15 @@ type
   {$ENDIF}
 
   // join style. valid only for geometric pens
+  {$IFDEF HasFPJoinStyle}
+  TPenJoinStyle = FPCanvas.TFPPenJoinStyle;
+  {$ELSE}
   TPenJoinStyle = (
     pjsRound,
     pjsBevel,
     pjsMiter
   );
+  {$ENDIF}
 
   TPenPattern = array of LongWord;
 
@@ -631,7 +646,9 @@ type
     FEndCap: TPenEndCap;
     {$ENDIF}
     FCosmetic: Boolean;
+    {$IFDEF HasFPJoinStyle}
     FJoinStyle: TPenJoinStyle;
+    {$ENDIF}
     FPattern: TPenPattern;
     FPenHandleCached: boolean;
     FReference: TWSPenReference;
@@ -649,7 +666,7 @@ type
     procedure SetFPColor(const AValue: TFPColor); override;
     procedure SetColor(Value: TColor);
     procedure SetEndCap(AValue: TPenEndCap); {$IFDEF HasFPEndCap}override;{$ENDIF}
-    procedure SetJoinStyle(const AValue: TPenJoinStyle);
+    procedure SetJoinStyle(AValue: TPenJoinStyle); {$IFDEF HasFPJoinStyle}override;{$ENDIF}
     procedure SetMode(Value: TPenMode); override;
     procedure SetStyle(Value: TPenStyle); override;
     procedure SetWidth(value: Integer); override;
@@ -670,7 +687,11 @@ type
     {$ELSE}
     property EndCap: TPenEndCap read FEndCap write SetEndCap default pecRound;
     {$ENDIF}
+    {$IFDEF HasFPJoinStyle}
+    property JoinStyle default pjsRound;
+    {$ELSE}
     property JoinStyle: TPenJoinStyle read FJoinStyle write SetJoinStyle default pjsRound;
+    {$ENDIF}
     property Mode default pmCopy;
     property Style default psSolid;
     property Width default 1;
