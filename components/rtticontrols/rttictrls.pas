@@ -1928,7 +1928,7 @@ begin
     if IfNoValuesAvailableAddAllAlias and (AliasStrings<>nil) then begin
       MappedValues:=TStringList.Create;
       for i:=0 to AliasStrings.Count-1 do
-        MappedValues.Add(AliasStrings.Names[i]);
+        MappedValues.Add(AliasStrings.Values[AliasStrings.Names[i]]);
     end else begin
       MappedValues:=nil;
     end;
