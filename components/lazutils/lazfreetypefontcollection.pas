@@ -13,6 +13,8 @@ type
   TFontCollectionItem = class(TCustomFontCollectionItem)
   private
     FFilename: string;
+    FSourceStream: TStream;
+    FSourceStreamOwned: boolean;
     FInformation: array[TFreeTypeInformation] of string;
     FVersionNumber: string;
     FStyleList: array of string;
@@ -33,8 +35,10 @@ type
     function GetStyle(AIndex: integer): string; override;
     function GetVersionNumber: string; override;
     procedure NotifyDestroy; override;
+    procedure Init;
   public
     constructor Create(AFilename: string);
+    constructor Create(AStream: TStream; AOwner: Boolean);
     destructor Destroy; override;
     function HasStyle(AStyle: string): boolean; override;
     property Information[AIndex: TFreeTypeInformation]: string read GetInformation write SetInformation;
@@ -104,6 +108,7 @@ type
     procedure BeginUpdate; override;
     procedure AddFolder(AFolder: string); override;
     function AddFile(AFilename: string): boolean; override;
+    function AddStream(AStream: TStream; AOwned: boolean): boolean; override;
     procedure EndUpdate; override;
     destructor Destroy; override;
     function FontFileEnumerator: IFreeTypeFontEnumerator; override;
@@ -251,11 +256,15 @@ end;
 
 constructor TFontCollectionItem.Create(AFilename: string);
 begin
+  Init;
   FFilename:= AFilename;
-  FStyleList := nil;
-  FFaceUsage := 0;
-  FUsePostscriptStyle:= false;
-  FDestroyListeners := nil;
+end;
+
+constructor TFontCollectionItem.Create(AStream: TStream; AOwner: Boolean);
+begin
+  Init;
+  FSourceStream := AStream;
+  FSourceStreamOwned:= AOwner;
 end;
 
 procedure TFontCollectionItem.NotifyDestroy;
@@ -266,9 +275,19 @@ begin
   FDestroyListeners := nil;
 end;
 
+procedure TFontCollectionItem.Init;
+begin
+  FStyleList := nil;
+  FFaceUsage := 0;
+  FUsePostscriptStyle:= false;
+  FDestroyListeners := nil;
+  FFilename := '';
+end;
+
 destructor TFontCollectionItem.Destroy;
 begin
   NotifyDestroy;
+  if FSourceStreamOwned then FSourceStream.Free;
   if FFaceUsage <> 0 then
   begin
     TT_Close_Face(FFace);
@@ -297,7 +316,10 @@ end;
 function TFontCollectionItem.CreateFont: TFreeTypeFont;
 begin
   result := TFreeTypeFont.Create;
-  result.Name := Filename;
+  if FSourceStream <> nil then
+    result.AccessFromStream(FSourceStream,False)
+  else
+    result.Name := Filename;
 end;
 
 function TFontCollectionItem.QueryFace(AListener: TFontCollectionItemDestroyListener): TT_Face;
@@ -305,7 +327,10 @@ var errorNum: TT_Error;
 begin
   if FFaceUsage = 0 then
   begin
-    errorNum := TT_Open_Face(Filename,FFace);
+    if FSourceStream <> nil then
+      errorNum := TT_Open_Face(FSourceStream,false,FFace)
+    else
+      errorNum := TT_Open_Face(Filename,FFace);
     if errorNum <> TT_Err_Ok then
       raise exception.Create('Cannot open font (TT_Error ' + intToStr(errorNum)+')');
   end;
@@ -802,6 +827,37 @@ begin
       result := true;
     end;
   finally
+    EndUpdate;
+  end;
+end;
+
+function TFreeTypeFontCollection.AddStream(AStream: TStream; AOwned: boolean): boolean;
+var info: TFreeTypeInformation;
+    fName: string;
+    item: TFontCollectionItem;
+    f: TFamilyCollectionItem;
+begin
+  result := false;
+  BeginUpdate;
+  try
+    FTempFont.AccessFromStream(AStream,False);
+    fName := FTempFont.Family;
+    if fName <> '' then
+    begin
+      f := AddFamily(fName);
+      item := TFontCollectionItem.Create(AStream,AOwned);
+      FFontList.Add(item);
+      with item do
+      begin
+        VersionNumber:= FTempFont.VersionNumber;
+        for info := low(TFreeTypeInformation) to high(TFreeTypeInformation) do
+          Information[info] := FTempFont.Information[info];
+      end;
+      f.AddFont(item);
+      result := true;
+    end;
+  finally
+    FTempFont.Name := '';
     EndUpdate;
   end;
 end;

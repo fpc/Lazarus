@@ -128,6 +128,7 @@ type
     procedure BeginUpdate; virtual; abstract;
     procedure AddFolder(AFolder: string); virtual; abstract;
     function AddFile(AFilename: string): boolean; virtual; abstract;
+    function AddStream(AStream: TStream; AOwned: boolean): boolean; virtual; abstract;
     procedure EndUpdate; virtual; abstract;
     function FontFileEnumerator: IFreeTypeFontEnumerator; virtual; abstract;
     function FamilyEnumerator: IFreeTypeFamilyEnumerator; virtual; abstract;
