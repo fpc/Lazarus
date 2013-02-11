@@ -364,7 +364,7 @@ const
  *
  ******************************************************************)
  procedure TT_Done_Stream( stream : TT_Stream );
- {$IF FPC_FULLVERSION>=20701}
+ {$IF FPC_FULLVERSION<20701}
  var
    p: Pointer;
  {$ENDIF}
