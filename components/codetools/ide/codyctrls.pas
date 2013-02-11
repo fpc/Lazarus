@@ -880,11 +880,16 @@ var
   HeaderHeight: integer;
   Palette: TCodyCtrlPalette;
   TxtH: LongInt;
+  p: Integer;
+  Level: TLvlGraphLevel;
+  j: Integer;
 begin
   debugln(['TCustomLvlGraphControl.AutoLayout ',DbgSName(Self),' ClientRect=',dbgs(ClientRect)]);
   Exclude(FFlags,lgcNeedAutoLayout);
   BeginUpdate;
   try
+    Canvas.Font.Assign(Font);
+
     if HandleAllocated then
       TxtH:=Canvas.TextHeight('M')
     else
@@ -898,8 +903,19 @@ begin
     Graph.CreateTopologicalLevels;
 
     // Level DrawPosition
-    for i:=0 to Graph.LevelCount-1 do
-      Graph.Levels[i].DrawPosition:=i*(ClientWidth div Graph.LevelCount)+NodeGap;
+    Canvas.Font.Height:=round(single(TxtH)*NodeCaptionScale+0.5);
+    for i:=0 to Graph.LevelCount-1 do begin
+      if i=0 then
+        p:=NodeGap
+      else begin
+        p:=Canvas.TextWidth('NodeX');
+        Level:=Graph.Levels[i-1];
+        for j:=0 to Level.Count-1 do
+          p:=Max(p,Canvas.TextWidth(Level[j].Caption));
+        p:=Graph.Levels[i-1].DrawPosition+NodeWidth+NodeGap+p+NodeGap+NodeWidth;
+      end;
+      Graph.Levels[i].DrawPosition:=p;
+    end;
 
     // scale Nodes.DrawSize
     // Preferably the smallest node should be the size of the text
