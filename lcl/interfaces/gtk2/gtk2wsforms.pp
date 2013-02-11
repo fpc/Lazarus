@@ -692,6 +692,10 @@ begin
     begin
       gtk_window_set_transient_for(GtkWindow, nil);
       gtk_window_set_modal(GtkWindow, True);
+    end else begin
+      // see bug 23876
+      gtk_window_set_transient_for(GtkWindow, nil); //untransient
+      gtk_window_set_modal(GtkWindow, False);
     end;
     Gtk2WidgetSet.SetVisible(AWinControl, AForm.HandleObjectShouldBeVisible);
   end;
