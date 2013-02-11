@@ -232,6 +232,7 @@ type
 
 const
   DefaultLvlGraphNodeWith = 10;
+  DefaultLvlGraphNodeCaptionScale = 0.7;
 
 type
   TLvlGraphCtrlOption = (
@@ -414,6 +415,7 @@ type
   TCustomLvlGraphControl = class(TCustomControl)
   private
     FGraph: TLvlGraph;
+    FNodeCaptionScale: single;
     FNodeWidth: integer;
     FOptions: TLvlGraphCtrlOptions;
     fUpdateLock: integer;
@@ -436,6 +438,7 @@ type
     procedure EndUpdate;
     property NodeWidth: integer read FNodeWidth write SetNodeWidth default DefaultLvlGraphNodeWith;
     property Options: TLvlGraphCtrlOptions read FOptions write SetOptions default DefaultLvlGraphCtrlOptions;
+    property NodeCaptionScale: single read FNodeCaptionScale write FNodeCaptionScale default DefaultLvlGraphNodeCaptionScale;
   end;
 
   { TLvlGraphControl }
@@ -769,6 +772,8 @@ begin
   debugln(['TCustomLvlGraphControl.Paint ']);
   inherited Paint;
 
+  Canvas.Font.Assign(Font);
+
   if (lgoAutoLayout in FOptions)
   and (lgcNeedAutoLayout in FFlags) then begin
     Include(FFlags,lgcIgnoreGraphInvalidate);
@@ -830,6 +835,7 @@ begin
 
   // draw captions
   Canvas.Brush.Style:=bsClear;
+  Canvas.Font.Height:=round(single(TxtH)*NodeCaptionScale+0.5);
   for i:=0 to Graph.LevelCount-1 do begin
     Level:=Graph.Levels[i];
     for j:=0 to Level.Count-1 do begin
@@ -849,6 +855,7 @@ begin
   FGraph.OnInvalidate:=@GraphInvalidate;
   FGraph.OnStructureChanged:=@GraphStructureChanged;
   FNodeWidth:=DefaultLvlGraphNodeWith;
+  FNodeCaptionScale:=DefaultLvlGraphNodeCaptionScale;
 end;
 
 destructor TCustomLvlGraphControl.Destroy;
@@ -897,7 +904,8 @@ begin
     // scale Nodes.DrawSize
     // Preferably the smallest node should be the size of the text
     // Preferably the largest level should fit without needing a scrollbar
-    Graph.ScaleNodeDrawSizes(NodeGap,Screen.Height*2,1,ClientHeight-HeaderHeight,TxtH);
+    Graph.ScaleNodeDrawSizes(NodeGap,Screen.Height*2,1,
+      ClientHeight-HeaderHeight,round(single(TxtH)*NodeCaptionScale+0.5));
 
     // sort nodes within levels to avoid crossings
     Graph.MinimizeCrossings;
