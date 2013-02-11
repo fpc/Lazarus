@@ -91,7 +91,8 @@ type
     property ReferenceAllocated: Boolean read GetReferenceAllocated;
   end;
 
-implementation                    
+implementation
+
 uses
   InterfaceBase;
 

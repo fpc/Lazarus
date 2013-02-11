@@ -27,6 +27,9 @@ unit WSLCLClasses;
 {off$DEFINE VerboseWSRegistration}
 {off$DEFINE VerboseWSRegistration_methods}
 {off$DEFINE VerboseWSRegistration_treedump}
+{$IFDEF VerboseWSRegistration_methods}
+{$DEFINE VerboseWSRegistration}
+{$ENDIF}
 
 interface
 ////////////////////////////////////////////////////
@@ -44,7 +47,7 @@ interface
 //    the uses clause of the XXXintf.pp
 ////////////////////////////////////////////////////
 uses
-  Classes, LCLProc; //, LCLType; //, InterfaceBase;
+  Classes, SysUtils, LCLProc;
 
 type
   { TWSPrivate }
@@ -95,7 +98,7 @@ procedure RegisterWSLazDeviceAPIs(const AWSObject: TWSObjectClass);
 implementation
 
 uses
-  SysUtils, LCLClasses;
+  LCLClasses;
 
 procedure DoInitialization; forward;
 
