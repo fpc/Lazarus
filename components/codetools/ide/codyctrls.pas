@@ -768,7 +768,7 @@ begin
   Canvas.Brush.Color:=Color;
   Canvas.FillRect(ClientRect);
 
-  TxtH:=Abs(Canvas.Font.Height);
+  TxtH:=Canvas.TextHeight('ABCTM');
 
   // header
   if Caption<>'' then begin
@@ -776,14 +776,30 @@ begin
     Canvas.TextOut((ClientWidth-w) div 2,round(0.25*TxtH),Caption);
   end;
 
+  // draw edges
+
+  // draw nodes
+  Canvas.Brush.Style:=bsSolid;
   for i:=0 to Graph.LevelCount-1 do begin
     Level:=Graph.Levels[i];
     for j:=0 to Level.Count-1 do begin
       Node:=Level.Nodes[j];
-      debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' ',dbgs(FPColorToTColor(Node.Color)),' Level.DrawPosition=',Level.DrawPosition,' Node.DrawPosition=',Node.DrawPosition,' ',Node.DrawPositionEnd]);
+      //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' ',dbgs(FPColorToTColor(Node.Color)),' Level.DrawPosition=',Level.DrawPosition,' Node.DrawPosition=',Node.DrawPosition,' ',Node.DrawPositionEnd]);
       Canvas.Brush.Color:=FPColorToTColor(Node.Color);
       Canvas.Rectangle(Level.DrawPosition,Node.DrawPosition,
         Level.DrawPosition+NodeWidth,Node.DrawPositionEnd);
+    end;
+  end;
+
+  // draw captions
+  Canvas.Brush.Style:=bsClear;
+  for i:=0 to Graph.LevelCount-1 do begin
+    Level:=Graph.Levels[i];
+    for j:=0 to Level.Count-1 do begin
+      Node:=Level.Nodes[j];
+      //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' DrawPosition=',Node.DrawPosition,' DrawSize=',Node.DrawSize,' TxtH=',TxtH]);
+      Canvas.TextOut(Level.DrawPosition+NodeWidth+2,
+        Node.DrawCenter-(TxtH div 2),Node.Caption);
     end;
   end;
 end;
