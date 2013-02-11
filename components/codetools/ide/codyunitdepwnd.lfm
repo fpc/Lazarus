@@ -46,55 +46,73 @@ object UnitDependenciesDialog: TUnitDependenciesDialog
     Align = alBottom
     TabOrder = 1
   end
-  object CurUnitPanel: TPanel
+  object MainPageControl: TPageControl
     Left = 0
     Height = 416
     Top = 0
-    Width = 155
-    Align = alLeft
-    Caption = 'CurUnitPanel'
-    ClientHeight = 416
-    ClientWidth = 155
+    Width = 669
+    ActivePage = UnitsTabSheet
+    Align = alClient
+    TabIndex = 0
     TabOrder = 2
-    object CurUnitTreeView: TTreeView
-      AnchorSideLeft.Control = CurUnitTreeFilterEdit
-      AnchorSideTop.Control = CurUnitTreeFilterEdit
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = CurUnitPanel
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = CurUnitPanel
-      AnchorSideBottom.Side = asrBottom
-      Left = 1
-      Height = 389
-      Top = 26
-      Width = 153
-      Anchors = [akTop, akLeft, akRight, akBottom]
-      DefaultItemHeight = 18
-      ReadOnly = True
-      TabOrder = 0
-      OnSelectionChanged = CurUnitTreeViewSelectionChanged
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    object UnitsTabSheet: TTabSheet
+      Caption = 'UnitsTabSheet'
+      ClientHeight = 387
+      ClientWidth = 665
+      object CurUnitPanel: TPanel
+        Left = 0
+        Height = 387
+        Top = 0
+        Width = 155
+        Align = alLeft
+        Caption = 'CurUnitPanel'
+        ClientHeight = 387
+        ClientWidth = 155
+        TabOrder = 0
+        object CurUnitTreeFilterEdit: TTreeFilterEdit
+          AnchorSideLeft.Control = CurUnitPanel
+          AnchorSideTop.Control = CurUnitPanel
+          AnchorSideRight.Side = asrBottom
+          Left = 1
+          Height = 25
+          Top = 1
+          Width = 109
+          ButtonWidth = 23
+          NumGlyphs = 1
+          MaxLength = 0
+          TabOrder = 0
+          FilteredTreeview = CurUnitTreeView
+        end
+        object CurUnitTreeView: TTreeView
+          AnchorSideLeft.Control = CurUnitTreeFilterEdit
+          AnchorSideTop.Control = CurUnitTreeFilterEdit
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = CurUnitPanel
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = CurUnitPanel
+          AnchorSideBottom.Side = asrBottom
+          Left = 1
+          Height = 360
+          Top = 26
+          Width = 153
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          DefaultItemHeight = 18
+          ReadOnly = True
+          TabOrder = 1
+          OnSelectionChanged = CurUnitTreeViewSelectionChanged
+          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+        end
+      end
+      object CurUnitSplitter: TSplitter
+        Left = 155
+        Height = 387
+        Top = 0
+        Width = 5
+      end
     end
-    object CurUnitTreeFilterEdit: TTreeFilterEdit
-      AnchorSideLeft.Control = CurUnitPanel
-      AnchorSideTop.Control = CurUnitPanel
-      AnchorSideRight.Side = asrBottom
-      Left = 1
-      Height = 25
-      Top = 1
-      Width = 109
-      ButtonWidth = 23
-      NumGlyphs = 1
-      MaxLength = 0
-      TabOrder = 1
-      FilteredTreeview = CurUnitTreeView
+    object GroupsTabSheet: TTabSheet
+      Caption = 'GroupsTabSheet'
     end
-  end
-  object CurUnitSplitter: TSplitter
-    Left = 155
-    Height = 416
-    Top = 0
-    Width = 5
   end
   object Timer1: TTimer
     OnTimer = Timer1Timer

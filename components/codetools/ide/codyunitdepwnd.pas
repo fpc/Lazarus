@@ -37,7 +37,10 @@ type
     CurUnitPanel: TPanel;
     CurUnitSplitter: TSplitter;
     CurUnitTreeView: TTreeView;
+    MainPageControl: TPageControl;
     ProgressBar1: TProgressBar;
+    GroupsTabSheet: TTabSheet;
+    UnitsTabSheet: TTabSheet;
     Timer1: TTimer;
     CurUnitTreeFilterEdit: TTreeFilterEdit;
     procedure CloseBitBtnClick(Sender: TObject);
@@ -64,11 +67,13 @@ type
     procedure UpdateAll;
     procedure UpdateCurUnitDiagram;
     procedure UpdateCurUnitTreeView;
+    procedure UpdateGroupsLvlGraph;
     function NodeTextToUnit(NodeText: string): TUGUnit;
     function UGUnitToNodeText(UGUnit: TUGUnit): string;
     function GetFPCSrcDir: string;
   public
     CurUnitDiagram: TCircleDiagramControl;
+    GroupsLvlGraph: TLvlGraphControl;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
     property UsesGraph: TUsesGraph read FUsesGraph;
     property Groups: TUGGroups read FGroups;
@@ -137,6 +142,9 @@ begin
 
   IDEDialogLayoutList.ApplyLayout(Self,600,400);
 
+  UnitsTabSheet.Caption:='Units';
+  GroupsTabSheet.Caption:='Projects and packages';
+
   CurUnitDiagram:=TCircleDiagramControl.Create(Self);
   with CurUnitDiagram do begin
     Name:='CurUnitDiagram';
@@ -151,7 +159,16 @@ begin
     fCircleCategories[uddutInterfaceUses]:=AddCategory('Interface');
     fCircleCategories[uddutInterfaceUses].Color:=clGreen;
     CenterCaption:=rsSelectAUnit;
-    Parent:=Self;
+    Parent:=UnitsTabSheet;
+  end;
+
+  GroupsLvlGraph:=TLvlGraphControl.Create(Self);
+  with GroupsLvlGraph do
+  begin
+    Name:='GroupsLvlGraph';
+    Caption:='';
+    Align:=alClient;
+    Parent:=GroupsTabSheet;
   end;
 
   IdleConnected:=true;
@@ -338,6 +355,7 @@ end;
 procedure TUnitDependenciesDialog.UpdateAll;
 begin
   UpdateCurUnitTreeView;
+  UpdateGroupsLvlGraph;
 end;
 
 procedure TUnitDependenciesDialog.UpdateCurUnitDiagram;
@@ -421,6 +439,24 @@ begin
     sl.Free;
     CurUnitTreeView.EndUpdate;
   end;
+end;
+
+procedure TUnitDependenciesDialog.UpdateGroupsLvlGraph;
+var
+  AVLNode: TAVLTreeNode;
+  Group: TUGGroup;
+  Graph: TLvlGraph;
+begin
+  GroupsLvlGraph.BeginUpdate;
+  Graph:=GroupsLvlGraph.Graph;
+  Graph.Clear;
+  AVLNode:=Groups.Groups.FindLowest;
+  while AVLNode<>nil do begin
+    Group:=TUGGroup(AVLNode.Data);
+    Graph.GetNode(Group.Name,true);
+    AVLNode:=Groups.Groups.FindSuccessor(AVLNode);
+  end;
+  GroupsLvlGraph.EndUpdate;
 end;
 
 function TUnitDependenciesDialog.NodeTextToUnit(NodeText: string): TUGUnit;
