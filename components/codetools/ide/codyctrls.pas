@@ -394,7 +394,7 @@ type
     procedure SetAllNodeDrawSizes(PixelPerWeight: single = 1.0; MinWeight: single = 0.0);
     procedure MarkBackEdges;
     procedure MinimizeCrossings; // set all Node.Position to minimize crossings
-    procedure MinimizeOverlappings(Gap: integer = 1; aLevel: integer = -1); // set all Node.Position to minimize overlappings
+    procedure MinimizeOverlappings(MinPos: integer = 0; Gap: integer = 1; aLevel: integer = -1); // set all Node.Position to minimize overlappings
     procedure SetColors(Palette: TCodyCtrlPalette);
 
     // debugging
@@ -850,7 +850,7 @@ begin
     Graph.MinimizeCrossings;
 
     // position nodes without overlapping
-    Graph.MinimizeOverlappings(NodeGap);
+    Graph.MinimizeOverlappings(HeaderHeight,NodeGap);
 
     if RndColors then begin
       Palette:=GetCCPaletteRGB(Graph.NodeCount,true);
@@ -1310,7 +1310,8 @@ begin
   end;
 end;
 
-procedure TLvlGraph.MinimizeOverlappings(Gap: integer; aLevel: integer);
+procedure TLvlGraph.MinimizeOverlappings(MinPos: integer; Gap: integer;
+  aLevel: integer);
 var
   i: Integer;
   Tree: TAvgLvlTree;
@@ -1321,7 +1322,7 @@ var
 begin
   if aLevel<0 then begin
     for i:=0 to LevelCount-1 do
-      MinimizeOverlappings(Gap,i);
+      MinimizeOverlappings(MinPos,Gap,i);
   end else begin
     Level:=Levels[aLevel];
     Tree:=TAvgLvlTree.Create(@CompareLGNodesByCenterPos);
@@ -1332,11 +1333,11 @@ begin
       AVLNode:=Tree.FindLowest;
       while AVLNode<>nil do begin
         Node:=TLvlGraphNode(AVLNode.Data);
-        Last:=Node;
         if Last=nil then
-          Node.DrawPosition:=0
+          Node.DrawPosition:=MinPos
         else
           Node.DrawPosition:=Max(Node.DrawPosition,Last.DrawPositionEnd+Gap);
+        Last:=Node;
         AVLNode:=Tree.FindSuccessor(AVLNode);
       end;
     finally
