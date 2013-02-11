@@ -605,7 +605,7 @@ begin
     ch:=Low(TChannel);
     repeat
       Value[ch]+=Step[ch];
-      if Value[ch]<ChannelMax then break;
+      if (Value[ch]<ChannelMax) or (ch=High(TChannel)) then break;
       Value[ch]:=Start[ch];
       inc(ch);
     until false;
@@ -1558,6 +1558,8 @@ begin
   UnbindLevel;
   if Graph<>nil then
     Graph.InternalRemoveNode(Self);
+  FreeAndNil(FInEdges);
+  FreeAndNil(FOutEdges);
   inherited Destroy;
 end;
 
