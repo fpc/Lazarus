@@ -267,7 +267,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
       // keep original WSPrivate (only when different than default class)
       OrgPrivate := PClass(ANode^.VClass + vmtWSPrivate)^;
       
-      if  (OrgPrivate <> nil) and (OrgPrivate <> AOldPrivate) and OrgPrivate.InheritsFrom(WSPrivate)
+      if (OrgPrivate <> nil) and (OrgPrivate <> AOldPrivate) and OrgPrivate.InheritsFrom(WSPrivate)
       then begin
         {$IFDEF VerboseWSRegistration}
         DebugLn('Keep org private: ', WSPrivate.ClassName, ' -> ', OrgPrivate.Classname);
@@ -307,7 +307,6 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
     DebugLn('Virtual parent: ', ParentWSNode^.WSClass.ClassName, ', WSPrivate: ', PClass(ANode^.VClass + vmtWSPrivate)^.ClassName);
     {$ENDIF}
 
-
     // Try to find the common ancestor
     CommonClass := FindCommonAncestor(ANode^.WSClass, ParentWSNode^.WSClass);
     {$IFDEF VerboseWSRegistration}
@@ -330,9 +329,9 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
         {$ENDIF}
 
         Cvmt := Pointer(CommonClass) + vmtMethodStart;
-        Assert(Cmnt^.Count < VIRTUAL_VMT_COUNT, 'MethodTable count is larger that assumed VIRTUAL_VMT_COUNT');
+        Assert(Cmnt^.Count < VIRTUAL_VMT_COUNT, 'MethodTable count is larger than assumed VIRTUAL_VMT_COUNT');
 
-        // Loop though the VMT to see what is overridden
+        // Loop through the VMT to see what is overridden
         for n := 0 to Cmnt^.Count - 1 do
         begin
           SearchAddr := Cmnt^.Entries[n].Addr;
@@ -351,7 +350,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
               if Processed[idx]
               then begin
                 {$IFDEF VerboseWSRegistration_methods}
-                DebugLn(Indent, 'Procesed -> skipping');
+                DebugLn(Indent, 'Processed -> skipping');
                 {$ENDIF}
                 Break;
               end;
