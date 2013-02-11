@@ -676,7 +676,7 @@ const
     #194#187,           // #187
     #197#146,           // #188
     #197#147,           // #189
-    #197#187,           // #190
+    #197#184,           // #190
     #194#191,           // #191
     #195#128,           // #192
     #195#129,           // #193
@@ -6150,6 +6150,14 @@ function UnicodeToISO_8859_15(Unicode: cardinal): integer;
 begin
   case Unicode of
   0..255: Result:=Unicode;
+  8364: Result:=164;
+  352: Result:=166;
+  353: Result:=168;
+  381: Result:=180;
+  382: Result:=184;
+  338: Result:=188;
+  339: Result:=189;
+  376: Result:=190;
   else Result:=-1;
   end;
 end;
