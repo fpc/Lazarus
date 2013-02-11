@@ -493,6 +493,7 @@ procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2,
 
 function GetCCPaletteRGB(Cnt: integer; Shuffled: boolean): TCodyCtrlPalette;
 procedure ShuffleCCPalette(Palette: TCodyCtrlPalette);
+function Darker(const c: TColor): TColor; overload;
 
 function CompareLGNodesByCenterPos(Node1, Node2: Pointer): integer;
 
@@ -617,6 +618,19 @@ end;
 procedure ShuffleCCPalette(Palette: TCodyCtrlPalette);
 begin
 
+end;
+
+function Darker(const c: TColor): TColor;
+var
+  r: Byte;
+  g: Byte;
+  b: Byte;
+begin
+  RedGreenBlue(c,r,g,b);
+  r:=r div 2;
+  g:=g div 2;
+  b:=b div 2;
+  Result:=RGBToColor(r,g,b);
 end;
 
 function CompareLGNodesByCenterPos(Node1, Node2: Pointer): integer;
@@ -749,6 +763,8 @@ var
   Level: TLvlGraphLevel;
   j: Integer;
   Node: TLvlGraphNode;
+  k: Integer;
+  Edge: TLvlGraphEdge;
 begin
   debugln(['TCustomLvlGraphControl.Paint ']);
   inherited Paint;
@@ -765,7 +781,7 @@ begin
 
   // background
   Canvas.Brush.Style:=bsSolid;
-  Canvas.Brush.Color:=Color;
+  Canvas.Brush.Color:=clWhite;
   Canvas.FillRect(ClientRect);
 
   TxtH:=Canvas.TextHeight('ABCTM');
@@ -777,6 +793,26 @@ begin
   end;
 
   // draw edges
+  for i:=0 to Graph.LevelCount-1 do begin
+    Level:=Graph.Levels[i];
+    for j:=0 to Level.Count-1 do begin
+      Node:=Level.Nodes[j];
+      for k:=0 to Node.OutEdgeCount-1 do begin
+        Edge:=Node.OutEdges[k];
+        if Edge.Target.Level.Index>Level.Index then begin
+          // normal dependency
+          Canvas.Pen.Color:=clSilver;
+          Canvas.Line(Level.DrawPosition+NodeWidth,Node.DrawCenter,
+                      Edge.Target.Level.DrawPosition,Edge.Target.DrawCenter);
+        end else begin
+          // cycle dependency
+          Canvas.Pen.Color:=clRed;
+          Canvas.Line(Level.DrawPosition,Node.DrawCenter,
+               Edge.Target.Level.DrawPosition+NodeWidth,Edge.Target.DrawCenter);
+        end;
+      end;
+    end;
+  end;
 
   // draw nodes
   Canvas.Brush.Style:=bsSolid;
@@ -786,6 +822,7 @@ begin
       Node:=Level.Nodes[j];
       //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' ',dbgs(FPColorToTColor(Node.Color)),' Level.DrawPosition=',Level.DrawPosition,' Node.DrawPosition=',Node.DrawPosition,' ',Node.DrawPositionEnd]);
       Canvas.Brush.Color:=FPColorToTColor(Node.Color);
+      Canvas.Pen.Color:=Darker(Canvas.Brush.Color);
       Canvas.Rectangle(Level.DrawPosition,Node.DrawPosition,
         Level.DrawPosition+NodeWidth,Node.DrawPositionEnd);
     end;
