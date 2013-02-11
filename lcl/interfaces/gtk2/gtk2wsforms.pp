@@ -685,11 +685,12 @@ begin
   begin
     if ShowNonModalOverModal then
     // issue #21459
-    else
-    if (AForm.FormStyle <> fsMDIChild) and AForm.HandleObjectShouldBeVisible and
-      (ModalWindows <> nil) and (ModalWindows.Count > 0) and
-      (AForm.PopupParent = nil) and (AForm.BorderStyle = bsNone) then
-    begin
+    else if not GTK_IS_WINDOW(GtkWindow) then begin
+    end
+    else if (AForm.FormStyle <> fsMDIChild) and AForm.HandleObjectShouldBeVisible
+      and (ModalWindows <> nil) and (ModalWindows.Count > 0)
+      and (AForm.PopupParent = nil) and (AForm.BorderStyle = bsNone)
+    then begin
       gtk_window_set_transient_for(GtkWindow, nil);
       gtk_window_set_modal(GtkWindow, True);
     end else begin
