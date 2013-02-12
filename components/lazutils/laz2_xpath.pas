@@ -21,40 +21,41 @@ unit laz2_xpath;
 
 interface
 
-uses Math, SysUtils, Classes, laz2_DOM, laz2_xmlutils;
+uses
+  Math, SysUtils, Classes, LazUtilsStrConsts,
+  laz2_DOM, laz2_xmlutils;
 
-// ToDo: move to shared unit
 resourcestring
   { XPath variables type names }
-  SNodeSet = 'node set';
-  SBoolean = 'boolean';
-  SNumber = 'number';
-  SString = 'string';
+  lrsNodeSet = 'node set';
+  lrsBoolean = 'boolean';
+  lrsNumber = 'number';
+  lrsString = 'string';
 
   { Variable errors }
-  SVarNoConversion = 'Conversion from %s to %s not possible';
+  lrsVarNoConversion = 'Conversion from %s to %s not possible';
 
   { Scanner errors }
-  SScannerUnclosedString = 'String literal was not closed';
-  SScannerInvalidChar = 'Invalid character';
-  SScannerMalformedQName = 'Expected "*" or local part after colon';
-  SScannerExpectedVarName = 'Expected variable name after "$"';
+  lrsScannerUnclosedString = 'String literal was not closed';
+  lrsScannerInvalidChar = 'Invalid character';
+  lrsScannerMalformedQName = 'Expected "*" or local part after colon';
+  lrsScannerExpectedVarName = 'Expected variable name after "$"';
 
   { Parser errors }
-  SParserExpectedLeftBracket = 'Expected "("';
-  SParserExpectedRightBracket = 'Expected ")"';
-  SParserBadAxisName = 'Invalid axis name';
-  SParserBadNodeType = 'Invalid node type';
-  SParserExpectedRightSquareBracket = 'Expected "]" after predicate';
-  SParserInvalidPrimExpr = 'Invalid primary expression';
-  SParserGarbageAfterExpression = 'Unrecognized input after expression';
-  SParserInvalidNodeTest = 'Invalid node test (syntax error)';
+  lrsParserExpectedLeftBracket = 'Expected "("';
+  lrsParserExpectedRightBracket = 'Expected ")"';
+  lrsParserBadAxisName = 'Invalid axis name';
+  lrsParserBadNodeType = 'Invalid node type';
+  lrsParserExpectedRightSquareBracket = 'Expected "]" after predicate';
+  lrsParserInvalidPrimExpr = 'Invalid primary expression';
+  lrsParserGarbageAfterExpression = 'Unrecognized input after expression';
+  lrsParserInvalidNodeTest = 'Invalid node test (syntax error)';
 
 
   { Evaluation errors }
-  SEvalUnknownFunction = 'Unknown function: "%s"';
-  SEvalUnknownVariable = 'Unknown variable: "%s"';
-  SEvalInvalidArgCount = 'Invalid number of function arguments';
+  lrsEvalUnknownFunction = 'Unknown function: "%s"';
+  lrsEvalUnknownVariable = 'Unknown variable: "%s"';
+  lrsEvalInvalidArgCount = 'Invalid number of function arguments';
 
 type
   TXPathContext = class;
@@ -787,7 +788,7 @@ function TXPathVariableNode.Evaluate(AContext: TXPathContext;
 begin
   Result := AEnvironment.VariablesByName[FName];
   if not Assigned(Result) then
-    EvaluationError(SEvalUnknownVariable, [FName]);
+    EvaluationError(lrsEvalUnknownVariable, [FName]);
 end;
 
 
@@ -816,7 +817,7 @@ var
 begin
   Fn := AEnvironment.FunctionsByName[FName];
   if not Assigned(Fn) then
-    EvaluationError(SEvalUnknownFunction, [FName]);
+    EvaluationError(lrsEvalUnknownFunction, [FName]);
 
   Args := TXPathVarList.Create;
   try
@@ -1465,7 +1466,7 @@ end;
 
 function TXPathVariable.AsNodeSet: TNodeSet;
 begin
-  Error(SVarNoConversion, [TypeName, TXPathNodeSetVariable.TypeName]);
+  Error(lrsVarNoConversion, [TypeName, TXPathNodeSetVariable.TypeName]);
   Result := nil;
 end;
 
@@ -1489,7 +1490,7 @@ end;
 
 class function TXPathNodeSetVariable.TypeName: String;
 begin
-  Result := SNodeSet;
+  Result := lrsNodeSet;
 end;
 
 function TXPathNodeSetVariable.AsNodeSet: TNodeSet;
@@ -1523,7 +1524,7 @@ end;
 
 class function TXPathBooleanVariable.TypeName: String;
 begin
-  Result := SBoolean;
+  Result := lrsBoolean;
 end;
 
 function TXPathBooleanVariable.AsBoolean: Boolean;
@@ -1556,7 +1557,7 @@ end;
 
 class function TXPathNumberVariable.TypeName: String;
 begin
-  Result := SNumber;
+  Result := lrsNumber;
 end;
 
 function TXPathNumberVariable.AsBoolean: Boolean;
@@ -1652,7 +1653,7 @@ end;
 
 class function TXPathStringVariable.TypeName: String;
 begin
-  Result := SString;
+  Result := lrsString;
 end;
 
 function TXPathStringVariable.AsBoolean: Boolean;
@@ -1784,7 +1785,7 @@ begin
         while FCurData[0] <> Delim do
         begin
           if FCurData[0] = #0 then
-            Error(SScannerUnclosedString);
+            Error(lrsScannerUnclosedString);
           Inc(FCurData);
         end;
         FTokenLength := FCurData-FTokenStart;
@@ -1797,7 +1798,7 @@ begin
         if ScanQName then
           Result := tkVariable
         else
-          Error(SScannerExpectedVarName);
+          Error(lrsScannerExpectedVarName);
         Exit;
       end;
     '(':
@@ -1876,12 +1877,12 @@ begin
         Exit;
       end
       else
-        Error(SScannerMalformedQName);
+        Error(lrsScannerMalformedQName);
     end;
   end;
 
   if Result = tkInvalid then
-    Error(SScannerInvalidChar);
+    Error(lrsScannerInvalidChar);
   // We have processed at least one character now; eat it:
   if Result > tkEndOfStream then
     Inc(FCurData);
@@ -1907,7 +1908,7 @@ begin
     if I > High(Buffer) then
       AddNodes(Dest, Buffer, I);  // will reset I to zero
     if not SkipToken(tkRightSquareBracket) then
-      Error(SParserExpectedRightSquareBracket);
+      Error(lrsParserExpectedRightSquareBracket);
   end;
   AddNodes(Dest, Buffer, I);
 end;
@@ -1938,7 +1939,7 @@ begin
       if FTokenId in AxisNameKeywords then
         Axis := AxisNameMap[FTokenId]
       else
-        Error(SParserBadAxisName);
+        Error(lrsParserBadAxisName);
       NextToken;  // skip identifier and the '::'
       NextToken;
     end
@@ -1996,11 +1997,11 @@ begin
           NextToken;
         end;
         if CurToken <> tkRightBracket then
-          Error(SParserExpectedRightBracket);
+          Error(lrsParserExpectedRightBracket);
         NextToken;
       end
       else
-        Error(SParserBadNodeType);
+        Error(lrsParserBadNodeType);
     end
     else  // [37] NameTest, third case
     begin
@@ -2019,7 +2020,7 @@ begin
     end;
   end
   else
-    Error(SParserInvalidNodeTest);
+    Error(lrsParserInvalidNodeTest);
 
   Result := TStep.Create(Axis, nodeType);
   Result.NodeTestString := nodeName;
@@ -2036,7 +2037,7 @@ begin
         NextToken;
         Result := ParseOrExpr;
         if CurToken <> tkRightBracket then
-          Error(SParserExpectedRightBracket);
+          Error(lrsParserExpectedRightBracket);
       end;
     tkString:         // [29] Literal
       Result := TXPathConstantNode.Create(
@@ -2047,7 +2048,7 @@ begin
     tkIdentifier:     // [16] Function call
       Result := ParseFunctionCall;
   else
-    Error(SParserInvalidPrimExpr);
+    Error(lrsParserInvalidPrimExpr);
     Result := nil; // satisfy compiler
   end;
   NextToken;
@@ -2063,7 +2064,7 @@ begin
   Name := CurTokenString;
   I := 0;
   if NextToken <> tkLeftBracket then
-    Error(SParserExpectedLeftBracket);
+    Error(lrsParserExpectedLeftBracket);
   NextToken;
   // Parse argument list
   Args:=nil;
@@ -2075,7 +2076,7 @@ begin
       AddNodes(Args, Buffer, I);
   until not SkipToken(tkComma);
   if CurToken <> tkRightBracket then
-    Error(SParserExpectedRightBracket);
+    Error(lrsParserExpectedRightBracket);
 
   AddNodes(Args, Buffer, I);
   Result := TXPathFunctionNode.Create(Name, Args);
@@ -2484,21 +2485,21 @@ end;
 function TXPathEnvironment.xpLast(Context: TXPathContext; Args: TXPathVarList): TXPathVariable;
 begin
   if Args.Count <> 0 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   Result := TXPathNumberVariable.Create(Context.ContextSize);
 end;
 
 function TXPathEnvironment.xpPosition(Context: TXPathContext; Args: TXPathVarList): TXPathVariable;
 begin
   if Args.Count <> 0 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   Result := TXPathNumberVariable.Create(Context.ContextPosition);
 end;
 
 function TXPathEnvironment.xpCount(Context: TXPathContext; Args: TXPathVarList): TXPathVariable;
 begin
   if Args.Count <> 1 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   Result := TXPathNumberVariable.Create(TXPathVariable(Args[0]).AsNodeSet.Count);
 end;
 
@@ -2537,7 +2538,7 @@ var
 
 begin
   if Args.Count <> 1 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   // TODO: probably have doc as member of Context
   if Context.ContextNode.NodeType = DOCUMENT_NODE then
     doc := TDOMDocument(Context.ContextNode)
@@ -2564,7 +2565,7 @@ var
   s: DOMString;
 begin
   if Args.Count > 1 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   n := nil;
   if Args.Count = 0 then
     n := Context.ContextNode
@@ -2596,7 +2597,7 @@ var
   s: DOMString;
 begin
   if Args.Count > 1 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   n := nil;
   if Args.Count = 0 then
     n := Context.ContextNode
@@ -2620,7 +2621,7 @@ var
   s: DOMString;
 begin
   if Args.Count > 1 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   n := nil;
   if Args.Count = 0 then
     n := Context.ContextNode
@@ -2649,7 +2650,7 @@ var
   s: DOMString;
 begin
   if Args.Count > 1 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   if Args.Count = 0 then
     s := NodeToText(Context.ContextNode)
   else
@@ -2663,7 +2664,7 @@ var
   s: DOMString;
 begin
   if Args.Count < 2 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   SetLength(s, 0);
   for i := 0 to Args.Count - 1 do
     s := s + TXPathVariable(Args[i]).AsText;
@@ -2676,7 +2677,7 @@ var
   res: Boolean;
 begin
   if Args.Count <> 2 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   s1 := TXPathVariable(Args[0]).AsText;
   s2 := TXPathVariable(Args[1]).AsText;
   if s2 = '' then
@@ -2692,7 +2693,7 @@ var
   res: Boolean;
 begin
   if Args.Count <> 2 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   s1 := TXPathVariable(Args[0]).AsText;
   s2 := TXPathVariable(Args[1]).AsText;
   if s2 = '' then
@@ -2707,7 +2708,7 @@ var
   s, substr: DOMString;
 begin
   if Args.Count <> 2 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   s := TXPathVariable(Args[0]).AsText;
   substr := TXPathVariable(Args[1]).AsText;
   Result := TXPathStringVariable.Create(Copy(s, 1, Pos(substr, s)-1));
@@ -2719,7 +2720,7 @@ var
   i: Integer;
 begin
   if Args.Count <> 2 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   s := TXPathVariable(Args[0]).AsText;
   substr := TXPathVariable(Args[1]).AsText;
   i := Pos(substr, s);
@@ -2737,7 +2738,7 @@ var
   empty: Boolean;
 begin
   if (Args.Count < 2) or (Args.Count > 3) then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   s := TXPathVariable(Args[0]).AsText;
   e1 := TXPathVariable(Args[1]).AsNumber;
   n1 := 1;  // satisfy compiler
@@ -2766,7 +2767,7 @@ var
   s: DOMString;
 begin
   if Args.Count > 1 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   if Args.Count = 0 then
     s := NodeToText(Context.ContextNode)
   else
@@ -2781,7 +2782,7 @@ var
   i: Integer;
 begin
   if Args.Count > 1 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   if Args.Count = 0 then
     s := NodeToText(Context.ContextNode)
   else
@@ -2803,7 +2804,7 @@ var
   S: DOMString;
 begin
   if Args.Count <> 3 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   S := TXPathVariable(Args[0]).AsText;
   TranslateUTF8Chars(S, TXPathVariable(Args[1]).AsText, TXPathVariable(Args[2]).AsText);
   Result := TXPathStringVariable.Create(S);
@@ -2812,28 +2813,28 @@ end;
 function TXPathEnvironment.xpBoolean(Context: TXPathContext; Args: TXPathVarList): TXPathVariable;
 begin
   if Args.Count <> 1 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   Result := TXPathBooleanVariable.Create(TXPathVariable(Args[0]).AsBoolean);
 end;
 
 function TXPathEnvironment.xpNot(Context: TXPathContext; Args: TXPathVarList): TXPathVariable;
 begin
   if Args.Count <> 1 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   Result := TXPathBooleanVariable.Create(not TXPathVariable(Args[0]).AsBoolean);
 end;
 
 function TXPathEnvironment.xpTrue(Context: TXPathContext; Args: TXPathVarList): TXPathVariable;
 begin
   if Args.Count <> 0 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   Result := TXPathBooleanVariable.Create(True);
 end;
 
 function TXPathEnvironment.xpFalse(Context: TXPathContext; Args: TXPathVarList): TXPathVariable;
 begin
   if Args.Count <> 0 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   Result := TXPathBooleanVariable.Create(False);
 end;
 
@@ -2844,7 +2845,7 @@ var
   res: Boolean;
 begin
   if Args.Count <> 1 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   TheArg := TXPathVariable(Args[0]).AsText;
   NodeLang := GetNodeLanguage(Context.ContextNode);
 
@@ -2859,7 +2860,7 @@ end;
 function TXPathEnvironment.xpNumber(Context: TXPathContext; Args: TXPathVarList): TXPathVariable;
 begin
   if Args.Count > 1 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   if Args.Count = 0 then
     Result := TXPathNumberVariable.Create(StrToNumber(NodeToText(Context.ContextNode)))
   else
@@ -2873,7 +2874,7 @@ var
   sum: Extended;
 begin
   if Args.Count <> 1 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   ns := TXPathVariable(Args[0]).AsNodeSet;
   sum := 0.0;
   for i := 0 to ns.Count-1 do
@@ -2886,7 +2887,7 @@ var
   n: Extended;
 begin
   if Args.Count <> 1 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   n := TXPathVariable(Args[0]).AsNumber;
   if not IsNan(n) then
     n := floor(n);
@@ -2898,7 +2899,7 @@ var
   n: Extended;
 begin
   if Args.Count <> 1 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   n := TXPathVariable(Args[0]).AsNumber;
   if not IsNan(n) then
     n := ceil(n);
@@ -2910,7 +2911,7 @@ var
   num: Extended;
 begin
   if Args.Count <> 1 then
-    EvaluationError(SEvalInvalidArgCount);
+    EvaluationError(lrsEvalInvalidArgCount);
   num := TXPathVariable(Args[0]).AsNumber;
   if not (IsNan(num) or IsInfinite(num)) then
     num := floor(0.5 + num);
@@ -2928,7 +2929,7 @@ begin
   AScanner.FResolver := AResolver;
   FRootNode := AScanner.ParseOrExpr;
   if CompleteExpression and (AScanner.CurToken <> tkEndOfStream) then
-    EvaluationError(SParserGarbageAfterExpression);
+    EvaluationError(lrsParserGarbageAfterExpression);
 end;
 
 function TXPathExpression.Evaluate(AContextNode: TDOMNode): TXPathVariable;
