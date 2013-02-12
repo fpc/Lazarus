@@ -385,13 +385,20 @@ end;
 
 procedure TValueListStrings.Put(Index: Integer; const S: String);
 var
-  IsShowingEditor: Boolean;
+  IndexToRow: Integer;
+  MustHideShowingEditor: Boolean;
 begin
   // ToDo: Check validity of key
-  IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
-  //if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
+  IndexToRow := Index + FOwner.FixedRows;
+  MustHideShowingEditor := (goAlwaysShowEditor in FOwner.Options) and
+                           FOwner.Editor.Visible and
+                           (IndexToRow = FOwner.Row) and
+                           //if editor is Focussed, we are editing a cell, so we cannot hide!
+                           (not FOwner.Editor.Focused);
+  //debugln('TValueListStrings.Put: MustHideShowingEditor=',DbgS(MustHideShowingEditor));
+  if MustHideShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
   inherited Put(Index, S);
-  //if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
+  if MustHideShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
 end;
 
 constructor TValueListStrings.Create(AOwner: TValueListEditor);
@@ -832,7 +839,7 @@ begin
     if I>=Strings.Count then
       Strings.Insert(I,Line)
     else
-      Strings[I]:=Line;
+      if (Line <> Strings[I]) then Strings[I]:=Line;
   end;
 end;
 
