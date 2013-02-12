@@ -392,8 +392,12 @@ begin
     Link:=Links[i];
     Pkg:=Packages.FindByName(Link.PkgName);
     if (Pkg=nil) then begin
-      if not (Quiet and WriteCommands) then
-        writeln('Dead link ',ExtractFileNameOnly(Link.LPLFilename),' to missing '+CreateRelativePath(Link.PkgFilename,PkgDir));
+      if not (Quiet and WriteCommands) then begin
+        if CompareText(Link.PkgName,ExtractFileNameOnly(Link.ExpFilename))=0 then
+          writeln('Dead link ',ExtractFileNameOnly(Link.LPLFilename),' to missing '+CreateRelativePath(Link.PkgFilename,PkgDir))
+        else
+          writeln('Wrong link ',ExtractFileNameOnly(Link.LPLFilename),' to '+CreateRelativePath(Link.PkgFilename,PkgDir));
+      end;
       if WriteCommands then begin
         writeln('svn rm ',CreateRelativePath(Link.LPLFilename,LazarusDir));
       end;
