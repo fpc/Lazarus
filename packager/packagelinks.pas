@@ -497,7 +497,10 @@ begin
         end;
       end;
       sl.Free;
-      if LPKFilename='' then continue;
+      if LPKFilename='' then begin
+        debugln(['TPackageLinks.UpdateGlobalLinks lpl file has empty first line: ',LPLFilename]);
+        continue;
+      end;
       //debugln(['TPackageLinks.UpdateGlobalLinks NewFilename="',LPKFilename,'"']);
 
       CurPkgLink:=TPackageLink.Create;
@@ -519,8 +522,14 @@ begin
       //  ' MakeSense=',dbgs(CurPkgLink.MakeSense));
       if CurPkgLink.MakeSense then
         FGlobalLinks.Add(CurPkgLink)
-      else
+      else begin
+        debugln('TPackageLinks.UpdateGlobalLinks Invalid lpl "',LPLFilename,'"'
+          ,' PkgName="',CurPkgLink.Name,'" '
+          ,' PkgVersion=',CurPkgLink.Version.AsString
+          ,' Filename="',CurPkgLink.LPKFilename,'"'
+          ,' MakeSense=',dbgs(CurPkgLink.MakeSense));
         CurPkgLink.Release;
+      end;
     end;
     //WriteLinkTree(FGlobalLinks);
   finally
