@@ -245,18 +245,12 @@ type
     function GetBrokenDependenciesWhenChangingPkgID(APackage: TLazPackage;
                          const NewName: string; NewVersion: TPkgVersion): TFPList;
     procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList); // returns list of new filename and TLazPackage
-
     procedure GetAllRequiredPackages(APackage: TLazPackage; // if not nil then ignore FirstDependency and do not add APackage to Result
                                      FirstDependency: TPkgDependency;
                                      out List: TFPList;
                                      Flags: TPkgIntfRequiredFlags = [];
                                      MinPolicy: TPackageUpdatePolicy = low(TPackageUpdatePolicy)
                                      ); // for single search use FindDependencyRecursively
-    function GetAutoCompilationOrder(APackage: TLazPackage;
-                                     FirstDependency: TPkgDependency;
-                                     SkipDesignTimePackages: boolean;
-                                     Policy: TPackageUpdatePolicy): TFPList;
-
     procedure CalculateTopologicalLevels;
     procedure SortDependencyListTopologically(
                    var FirstDependency: TPkgDependency; TopLevelFirst: boolean);
@@ -2469,48 +2463,6 @@ begin
     Result:=CheckDependencyList(FirstDependency);
 end;
 
-function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage;
-  FirstDependency: TPkgDependency; SkipDesignTimePackages: boolean;
-  Policy: TPackageUpdatePolicy): TFPList;
-// Returns all required auto update packages, including indirect requirements.
-// The packages will be in topological order, with the package that should be
-// compiled first at 0.
-
-  procedure GetTopologicalOrder(Dependency: TPkgDependency);
-  var
-    RequiredPackage: TLazPackage;
-  begin
-    while Dependency<>nil do begin
-      if Dependency.LoadPackageResult=lprSuccess then begin
-        RequiredPackage:=Dependency.RequiredPackage;
-        if not (lpfVisited in RequiredPackage.Flags) then begin
-          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
-          if ord(RequiredPackage.AutoUpdate)>=ord(Policy) then begin
-            if (not SkipDesignTimePackages)
-            or (RequiredPackage.PackageType<>lptDesignTime) then begin
-              // add first all needed packages
-              GetTopologicalOrder(RequiredPackage.FirstRequiredDependency);
-              // then add this package
-              if Result=nil then Result:=TFPList.Create;
-              Result.Add(RequiredPackage);
-            end;
-          end;
-        end;
-      end;
-      Dependency:=Dependency.NextRequiresDependency;
-    end;
-  end;
-  
-begin
-  Result:=nil;
-  MarkAllPackagesAsNotVisited;
-  if APackage<>nil then begin
-    APackage.Flags:=APackage.Flags+[lpfVisited];
-    FirstDependency:=APackage.FirstRequiredDependency;
-  end;
-  GetTopologicalOrder(FirstDependency);
-end;
-
 procedure TLazPackageGraph.MarkAllPackagesAsNotVisited;
 var
   i: Integer;
@@ -3284,12 +3236,16 @@ var
   AutoPackages: TFPList;
   i: Integer;
   Flags: TPkgCompileFlags;
+  ReqFlags: TPkgIntfRequiredFlags;
 begin
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CompileRequiredPackages A ',dbgs(Policy));
   {$ENDIF}
-  AutoPackages:=PackageGraph.GetAutoCompilationOrder(APackage,
-                               FirstDependency,SkipDesignTimePackages,Policy);
+  ReqFlags:=[];
+  if SkipDesignTimePackages then
+    Include(ReqFlags,pirSkipDesignTimeOnly);
+  PackageGraph.GetAllRequiredPackages(APackage,
+                               FirstDependency,AutoPackages,ReqFlags,Policy);
   if AutoPackages<>nil then begin
     //DebugLn('TLazPackageGraph.CompileRequiredPackages B Count=',IntToStr(AutoPackages.Count));
     try
