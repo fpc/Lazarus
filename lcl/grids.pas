@@ -109,7 +109,8 @@ type
     goCellHints,          // show individual cell hints
     goTruncCellHints,     // show cell hints if cell text is too long
     goCellEllipsis,       // show "..." if cell text is too long
-    goAutoAddRowsSkipContentCheck//BB Also add a row (if AutoAddRows in Options) if last row is empty
+    goAutoAddRowsSkipContentCheck,//BB Also add a row (if AutoAddRows in Options) if last row is empty
+    goRowHighlight        // Highlight the current Row
   );
   TGridOptions = set of TGridOption;
 
@@ -121,7 +122,7 @@ type
   );
   TSaveOptions = set of TGridSaveOptions;
 
-  TGridDrawState = set of (gdSelected, gdFocused, gdFixed, gdHot, gdPushed);
+  TGridDrawState = set of (gdSelected, gdFocused, gdFixed, gdHot, gdPushed, gdRowHighlight);
   TGridState =(gsNormal, gsSelecting, gsRowSizing, gsColSizing, gsRowMoving,
     gsColMoving, gsHeaderClicking, gsButtonColumnClicking);
 
@@ -2218,6 +2219,8 @@ procedure TCustomGrid.InvalidateMovement(DCol, DRow: Integer; OldRange: TRect);
   end;
 
 begin
+  if (goRowHighlight in Options) then
+    OldRange := Rect(FFixedCols, OldRange.Top, Colcount-1, OldRange.Bottom);
   if SelectActive then begin
 
     if DCol>FCol then begin
@@ -2246,7 +2249,7 @@ begin
       // shrunk rows
       doInvalidateRange(OldRange.Left, DRow, OldRange.Right, FRow);
 
-    if not (goRowSelect in Options) then begin
+    if not ((goRowSelect in Options) or (goRowHighlight in Options)) then begin
 
       // Above rules do work only if either rows or cols remain
       // constant, if both rows and cols change there may be gaps
@@ -2283,7 +2286,7 @@ begin
       InvalidateCell(FCol, FRow);
 
     // and invalidate current selecion, cell or full row
-    if goRowSelect in Options then
+    if ((goRowSelect in Options) or (goRowHighlight in Options)) then
       InvalidateRow(Drow)
     else
       InvalidateCell(DCol, DRow);
@@ -3474,7 +3477,9 @@ begin
               AColor := FAlternateColor;
         end;
       end;
-      Canvas.Brush.Color := AColor;
+      if (gdRowHighlight in aState) and not (gdFixed in AState) then
+        Canvas.Brush.Color := ColorToRGB(AColor) xor $1F1F1F
+      else Canvas.Brush.Color := AColor;
       SetCanvasFont(GetColumnFont(aCol, ((gdFixed in aState) and (aRow < FFixedRows))));
     end;
     CurrentTextStyle := DefaultTextStyle;
@@ -6839,7 +6844,7 @@ procedure TCustomGrid.InvalidateFocused;
 begin
   if FGCache.ValidGrid then begin
     {$ifdef dbgGrid}DebugLn('InvalidateFocused');{$Endif}
-    if goRowSelect in Options then
+    if ((goRowSelect in Options) or (goRowHighlight in Options)) then
       InvalidateRow(Row)
     else
       InvalidateCell(Col,Row);
@@ -8150,6 +8155,8 @@ begin
     if IsCellSelected[aCol, aRow] then
       include(Result, gdSelected);
   end;
+  if (aRow=FRow) and (goRowHighlight in FOptions) and not (gdFixed in Result) then
+     Result := Result + [gdRowHighlight];
   with FGCache do begin
     if (ACol = HotCell.x) and (ARow = HotCell.y) and not IsPushCellActive()
       then Include(Result, gdHot);
@@ -8360,6 +8367,7 @@ begin
     cfg.SetValue(Path+'goDblClickAutoSize/value', goDblClickAutoSize in options);
     Cfg.SetValue(Path+'goSmoothScroll/value', goSmoothScroll in Options);
     Cfg.SetValue(Path+'goAutoAddRowsSkipContentCheck/value', goAutoAddRowsSkipContentCheck in Options);
+    Cfg.SetValue(Path+'goRowHighlight/value', goRowHighlight in Options);
   end;
 
   Cfg.SetValue('grid/saveoptions/position', soPosition in SaveOptions);
@@ -8504,6 +8512,7 @@ begin
       GetValue('goRelaxedRowSelect',goRelaxedRowSelect);
       GetValue('goDblClickAutoSize',goDblClickAutoSize);
       GetValue('goAutoAddRowsSkipContentCheck',goAutoAddRowsSkipContentCheck);
+      GetValue('goRowHighlight',goRowHighlight);
       if Version>=2 then begin
         GetValue('goSmoothScroll',goSmoothScroll);
       end;

@@ -76,7 +76,8 @@ type
     dgDisableInsert,                    // disable inserting (or append) records
     dgCellHints,                        // show individual cell hints
     dgTruncCellHints,                   // show cell hints if cell text is too long
-    dgCellEllipsis                      // show ... if cell text is truncated
+    dgCellEllipsis,                     // show ... if cell text is truncated
+    dgRowHighlight                      // Highlight current row
   );
   TDbGridOptions = set of TDbGridOption;
 
@@ -1008,7 +1009,7 @@ begin
     OldOptions := inherited Options;
 
    if dgRowSelect in FOptions then
-    FOptions := FOptions - [dgEditing, dgAlwaysShowEditor];
+    FOptions := FOptions - [dgEditing, dgAlwaysShowEditor, dgRowHighlight];
 
     BeginLayout;
 
@@ -1076,6 +1077,11 @@ begin
       Include(OldOptions, goCellEllipsis)
     else
       Exclude(OldOptions, goCellEllipsis);
+
+    if dgRowHighlight in FOptions then
+      Include(OldOptions, goRowHighlight)
+    else
+      Exclude(OldOptions, goRowHighlight);
 
     if (dgIndicator in ChangedOptions) then begin
       if (dgIndicator in FOptions) then
