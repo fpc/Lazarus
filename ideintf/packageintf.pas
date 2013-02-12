@@ -211,6 +211,12 @@ type
            before the package is initialized and the dependencies are resolved }
     );
 
+  TPkgIntfRequiredFlag = (
+    pirNotRecursive,
+    pirSkipDesignTimeOnly
+    );
+  TPkgIntfRequiredFlags = set of TPkgIntfRequiredFlag;
+
   { TPackageEditingInterface }
 
   TPackageEditingInterface = class(TComponent)
@@ -231,13 +237,6 @@ type
                          ): TModalResult; virtual; abstract;
     function DoSaveAllPackages(Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
 
-    function IsOwnerDependingOnPkg(AnOwner: TObject; const PkgName: string;
-                                   out DependencyOwner: TObject): boolean; virtual; abstract;
-    function AddDependencyToOwners(OwnerList: TFPList; APackage: TIDEPackage;
-                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract; // mrOk or mrIgnore for already connected
-    function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
-                         ComponentClassnames: TStrings;
-                         Quiet: boolean = false): TModalResult; virtual; abstract;
     function GetOwnersOfUnit(const UnitFilename: string): TFPList; virtual; abstract;
     procedure ExtendOwnerListWithUsedByOwners(OwnerList: TFPList); virtual; abstract;
     function GetSourceFilesOfOwners(OwnerList: TFPList): TStrings; virtual; abstract;
@@ -248,6 +247,17 @@ type
     function GetPackageCount: integer; virtual; abstract;
     function GetPackages(Index: integer): TIDEPackage; virtual; abstract;
     function FindPackageWithName(const PkgName: string; IgnorePackage: TIDEPackage = nil): TIDEPackage; virtual; abstract;
+
+    // dependencies
+    function IsOwnerDependingOnPkg(AnOwner: TObject; const PkgName: string;
+                                   out DependencyOwner: TObject): boolean; virtual; abstract;
+    procedure GetRequiredPackages(AnOwner: TObject; PkgList: TFPList;
+      Flags: TPkgIntfRequiredFlags = []) virtual; abstract;
+    function AddDependencyToOwners(OwnerList: TFPList; APackage: TIDEPackage;
+                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract; // mrOk or mrIgnore for already connected
+    function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
+                         ComponentClassnames: TStrings;
+                         Quiet: boolean = false): TModalResult; virtual; abstract;
     function RedirectPackageDependency(APackage: TIDEPackage): TIDEPackage; virtual; abstract;
 
     // package editors

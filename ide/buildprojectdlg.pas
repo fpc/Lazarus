@@ -33,7 +33,7 @@ uses
   // codetools
   CodeToolManager, DirectoryCacher, CodeToolsStructs,
   // IDEIntf
-  IDEDialogs, IDEImagesIntf,
+  IDEDialogs, IDEImagesIntf, PackageIntf,
   // IDE
   PackageDefs, PackageSystem, InputHistory, LazarusIDEStrConsts, Project,
   DialogProcs, IDEProcs;
@@ -343,7 +343,8 @@ var
 begin
   List:=nil;
   try
-    PackageGraph.GetAllRequiredPackages(FProject.FirstRequiredDependency,List);
+    PackageGraph.GetAllRequiredPackages(nil,FProject.FirstRequiredDependency,
+      List,[pirSkipDesignTimeOnly]);
     if List=nil then exit;
     for i:=0 to List.Count-1 do begin
       Pkg:=TLazPackage(List[i]);
@@ -363,7 +364,8 @@ var
 begin
   List:=nil;
   try
-    PackageGraph.GetAllRequiredPackages(FProject.FirstRequiredDependency,List);
+    PackageGraph.GetAllRequiredPackages(nil,FProject.FirstRequiredDependency,
+      List);
     if List=nil then exit;
     for i:=0 to List.Count-1 do begin
       Pkg:=TLazPackage(List[i]);

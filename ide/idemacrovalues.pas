@@ -222,7 +222,7 @@ begin
   Add(AProject.CompilerOptions);
   PkgList:=nil;
   try
-    PackageGraph.GetAllRequiredPackages(AProject.FirstRequiredDependency,PkgList);
+    PackageGraph.GetAllRequiredPackages(nil,AProject.FirstRequiredDependency,PkgList);
     if PkgList<>nil then begin
       for i:=0 to PkgList.Count-1 do begin
         if TObject(PkgList[i]) is TLazPackage then begin

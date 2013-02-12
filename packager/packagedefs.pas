@@ -59,10 +59,21 @@ type
   TBasePackageEditor = class;
   TPkgDependency = class;
 
+  TPackageUpdatePolicy = (
+    pupManually,
+    pupOnRebuildingAll,
+    pupAsNeeded
+    );
+  TPackageUpdatePolicies = set of TPackageUpdatePolicy;
+
   TIteratePackagesEvent =
     procedure(APackage: TLazPackageID) of object;
   TGetAllRequiredPackagesEvent =
-    procedure(FirstDependency: TPkgDependency; out List: TFPList) of object;
+    procedure(APackage: TLazPackage; // if not nil then ignore FirstDependency and do not add APackage to Result
+              FirstDependency: TPkgDependency;
+              out List: TFPList;
+              Flags: TPkgIntfRequiredFlags = [];
+              MinPolicy: TPackageUpdatePolicy = low(TPackageUpdatePolicy)) of object;
   TGetDependencyOwnerDescription =
     procedure(Dependency: TPkgDependency; out Description: string) of object;
   TGetDependencyOwnerDirectory =
@@ -512,13 +523,6 @@ type
     );
   TLazPackageFlags = set of TLazPackageFlag;
   
-  TPackageUpdatePolicy = (
-    pupManually,
-    pupOnRebuildingAll,
-    pupAsNeeded
-    );
-  TPackageUpdatePolicies = set of TPackageUpdatePolicy;
-
 const
   pupAllAuto = [pupAsNeeded,pupOnRebuildingAll];
   
@@ -746,7 +750,9 @@ type
     function CreateDependencyWithOwner(NewOwner: TObject;
                                WithMinVersion: boolean = false): TPkgDependency;
     function Requires(APackage: TLazPackage): boolean;
-    procedure GetAllRequiredPackages(var List: TFPList; WithSelf: boolean);
+    procedure GetAllRequiredPackages(var List: TFPList; WithSelf: boolean;
+      Flags: TPkgIntfRequiredFlags = [];
+      MinPolicy: TPackageUpdatePolicy = low(TPackageUpdatePolicy));
     // components
     function IndexOfPkgComponent(PkgComponent: TPkgComponent): integer;
     function AddComponent(PkgFile: TPkgFile; const Page: string;
@@ -3582,13 +3588,14 @@ begin
 end;
 
 procedure TLazPackage.GetAllRequiredPackages(var List: TFPList;
-  WithSelf: boolean);
+  WithSelf: boolean; Flags: TPkgIntfRequiredFlags;
+  MinPolicy: TPackageUpdatePolicy);
 begin
   if Assigned(OnGetAllRequiredPackages) then
-    OnGetAllRequiredPackages(FirstRequiredDependency,List);
+    OnGetAllRequiredPackages(Self,FirstRequiredDependency,List,Flags,MinPolicy);
   if WithSelf then begin
     if List=nil then List:=TFPList.Create;
-    if List.IndexOf(Self)<0 then;
+    if List.IndexOf(Self)<0 then
       List.Insert(0,Self);
   end else if List<>nil then begin
     List.Remove(Self);
@@ -4549,9 +4556,9 @@ begin
   ANode:=Root;
   while (ANode<>nil) do begin
     Result:=TPkgPair(ANode.Data);
-    Comp:=-Result.ComparePair(Pkg1,Pkg2);
+    Comp:=Result.ComparePair(Pkg1,Pkg2);
     if Comp=0 then exit;
-    if Comp<0 then begin
+    if Comp>0 then begin
       ANode:=ANode.Left
     end else begin
       ANode:=ANode.Right

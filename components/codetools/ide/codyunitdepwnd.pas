@@ -454,6 +454,12 @@ begin
   while AVLNode<>nil do begin
     Group:=TUGGroup(AVLNode.Data);
     Graph.GetNode(Group.Name,true);
+    if Group.Name=GroupPrefixProject then begin
+      // project
+
+    end else begin
+
+    end;
     AVLNode:=Groups.Groups.FindSuccessor(AVLNode);
   end;
   GroupsLvlGraph.EndUpdate;

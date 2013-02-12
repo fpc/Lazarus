@@ -5793,7 +5793,7 @@ begin
       AddPackage(APackage);
     end;
     // add all units of all used packages
-    PackageGraph.GetAllRequiredPackages(FirstDependency,PkgList);
+    PackageGraph.GetAllRequiredPackages(nil,FirstDependency,PkgList);
     if PkgList<>nil then
       for i:=0 to PkgList.Count-1 do
         AddPackage(TLazPackage(PkgList[i]));

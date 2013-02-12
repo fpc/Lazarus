@@ -60,7 +60,7 @@ uses
   LazarusIDEStrConsts, CompilerOptions,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
   FileReferenceList, EditDefineTree, PackageDefs, PackageSystem, IDEOptionsIntf,
-  SrcEditorIntf, IDEDialogs, SynEdit;
+  SrcEditorIntf, IDEDialogs, PackageIntf, SynEdit;
 
 type
   TUnitInfo = class;
@@ -994,7 +994,9 @@ type
     procedure MoveRequiredDependencyUp(Dependency: TPkgDependency);
     procedure MoveRequiredDependencyDown(Dependency: TPkgDependency);
     function Requires(APackage: TLazPackage; SearchRecursively: boolean): boolean;
-    procedure GetAllRequiredPackages(var List: TFPList);
+    procedure GetAllRequiredPackages(var List: TFPList;
+               ReqFlags: TPkgIntfRequiredFlags = [];
+               MinPolicy: TPackageUpdatePolicy = low(TPackageUpdatePolicy));
     procedure AddPackageDependency(const PackageName: string); override;
     
     // unit dependencies
@@ -4595,10 +4597,11 @@ begin
                                            APackage)<>nil;
 end;
 
-procedure TProject.GetAllRequiredPackages(var List: TFPList);
+procedure TProject.GetAllRequiredPackages(var List: TFPList;
+  ReqFlags: TPkgIntfRequiredFlags; MinPolicy: TPackageUpdatePolicy);
 begin
   if Assigned(OnGetAllRequiredPackages) then
-    OnGetAllRequiredPackages(FirstRequiredDependency,List);
+    OnGetAllRequiredPackages(nil,FirstRequiredDependency,List,ReqFlags,MinPolicy);
 end;
 
 procedure TProject.AddPackageDependency(const PackageName: string);

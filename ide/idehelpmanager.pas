@@ -751,7 +751,8 @@ begin
     // search in all sub packages
     PkgList:=nil;
     try
-      PackageGraph.GetAllRequiredPackages(Pkg.FirstRequiredDependency,PkgList);
+      PackageGraph.GetAllRequiredPackages(nil,Pkg.FirstRequiredDependency,
+        PkgList);
       if PkgList<>nil then begin
         for i:=0 to PkgList.Count-1 do begin
           SubPkg:=TLazPackage(PkgList[i]);

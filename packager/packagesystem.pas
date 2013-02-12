@@ -240,17 +240,23 @@ type
     function PackageIsNeeded(APackage: TLazPackage): boolean;
     function PackageNameExists(const PkgName: string;
                                IgnorePackage: TLazPackage): boolean;
-    procedure GetAllRequiredPackages(FirstDependency: TPkgDependency;
-                                     out List: TFPList); // for single search use FindDependencyRecursively
     procedure GetConnectionsTree(FirstDependency: TPkgDependency;
                                  var PkgList: TFPList; var Tree: TPkgPairTree);
+    function GetBrokenDependenciesWhenChangingPkgID(APackage: TLazPackage;
+                         const NewName: string; NewVersion: TPkgVersion): TFPList;
+    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList); // returns list of new filename and TLazPackage
+
+    procedure GetAllRequiredPackages(APackage: TLazPackage; // if not nil then ignore FirstDependency and do not add APackage to Result
+                                     FirstDependency: TPkgDependency;
+                                     out List: TFPList;
+                                     Flags: TPkgIntfRequiredFlags = [];
+                                     MinPolicy: TPackageUpdatePolicy = low(TPackageUpdatePolicy)
+                                     ); // for single search use FindDependencyRecursively
     function GetAutoCompilationOrder(APackage: TLazPackage;
                                      FirstDependency: TPkgDependency;
                                      SkipDesignTimePackages: boolean;
                                      Policy: TPackageUpdatePolicy): TFPList;
-    function GetBrokenDependenciesWhenChangingPkgID(APackage: TLazPackage;
-                         const NewName: string; NewVersion: TPkgVersion): TFPList;
-    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList); // returns list of new filename and TLazPackage
+
     procedure CalculateTopologicalLevels;
     procedure SortDependencyListTopologically(
                    var FirstDependency: TPkgDependency; TopLevelFirst: boolean);
@@ -1749,7 +1755,7 @@ begin
   Result:='';
   // get all required packages
   PkgList:=nil;
-  GetAllRequiredPackages(FirstDependency,PkgList);
+  GetAllRequiredPackages(nil,FirstDependency,PkgList);
   if PkgList=nil then exit;
   // get all usage options
   AddOptionsList:=GetUsageOptionsList(PkgList);
@@ -1785,7 +1791,7 @@ begin
   // create auto install package list for the Lazarus uses section
   PkgList:=nil;
   try
-    GetAllRequiredPackages(FirstAutoInstallDependency,PkgList);
+    GetAllRequiredPackages(nil,FirstAutoInstallDependency,PkgList);
     StaticPackagesInc:='';
     if PkgList<>nil then begin
       for i:=0 to PkgList.Count-1 do begin
@@ -5265,28 +5271,36 @@ begin
   end;
 end;
 
-procedure TLazPackageGraph.GetAllRequiredPackages(
-  FirstDependency: TPkgDependency; out List: TFPList);
+procedure TLazPackageGraph.GetAllRequiredPackages(APackage: TLazPackage;
+  FirstDependency: TPkgDependency; out List: TFPList;
+  Flags: TPkgIntfRequiredFlags; MinPolicy: TPackageUpdatePolicy);
 // returns packages in topological order, beginning with the top level package
 
   procedure GetTopologicalOrder(CurDependency: TPkgDependency);
   var
     RequiredPackage: TLazPackage;
+    Dependency: TPkgDependency;
   begin
     while CurDependency<>nil do begin
-      //debugln('TLazPackageGraph.GetAllRequiredPackages A ',CurDependency.AsString,' ',dbgs(ord(CurDependency.LoadPackageResult)),' ',dbgs(ord(lprSuccess)));
-      if CurDependency.LoadPackageResult=lprSuccess then begin
-        //debugln('TLazPackageGraph.GetAllRequiredPackages B ',CurDependency.AsString);
-        RequiredPackage:=CurDependency.RequiredPackage;
-        if (not (lpfVisited in RequiredPackage.Flags)) then begin
-          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
-          GetTopologicalOrder(RequiredPackage.FirstRequiredDependency);
-          // add package to list
-          if List=nil then List:=TFPList.Create;
-          List.Add(RequiredPackage);
-        end;
-      end;
+      Dependency:=CurDependency;
       CurDependency:=CurDependency.NextRequiresDependency;
+      //debugln('TLazPackageGraph.GetAllRequiredPackages A ',Dependency.AsString,' ',dbgs(ord(Dependency.LoadPackageResult)),' ',dbgs(ord(lprSuccess)));
+      if Dependency.LoadPackageResult<>lprSuccess then continue;
+      //debugln('TLazPackageGraph.GetAllRequiredPackages B ',Dependency.AsString);
+      RequiredPackage:=Dependency.RequiredPackage;
+      if (lpfVisited in RequiredPackage.Flags) then
+        continue; // already visited
+      RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+      if ord(RequiredPackage.AutoUpdate)<ord(MinPolicy) then
+        continue; // skip manually updated packages
+      if (pirSkipDesignTimeOnly in Flags)
+      and (RequiredPackage.PackageType=lptDesignTime) then
+        continue; // skip designtime (only) packages
+      if not (pirNotRecursive in Flags) then
+        GetTopologicalOrder(RequiredPackage.FirstRequiredDependency);
+      // add package to list
+      if List=nil then List:=TFPList.Create;
+      List.Add(RequiredPackage);
     end;
   end;
 
@@ -5361,7 +5375,7 @@ var
   Pkg: TLazPackage;
 begin
   if Tree<>nil then Tree.FreeAndClear;
-  GetAllRequiredPackages(FirstDependency,PkgList);
+  GetAllRequiredPackages(nil,FirstDependency,PkgList);
   if PkgList=nil then exit;
   AddConnections(FirstDependency);
   for i:=0 to PkgList.Count-1 do begin

@@ -219,10 +219,6 @@ type
                                      Flags: TPkgIntfOwnerSearchFlags): TFPList; override;
     function GetPackageOfCurrentSourceEditor(out APackage: TIDEPackage): TPkgFile;
     function GetPackageOfSourceEditor(out APackage: TIDEPackage; ASrcEdit: TObject): TLazPackageFile; override;
-    function IsOwnerDependingOnPkg(AnOwner: TObject; const PkgName: string;
-                                   out DependencyOwner: TObject): boolean; override;
-    function AddDependencyToOwners(OwnerList: TFPList; APackage: TIDEPackage;
-                   OnlyTestIfPossible: boolean = false): TModalResult; override;
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
     function FindVirtualUnitSource(PkgFile: TPkgFile): string;
     function SearchFile(const AFilename: string;
@@ -230,8 +226,6 @@ type
                         InObject: TObject): TPkgFile; override;
     function SearchUnitInDesigntimePackages(const AnUnitName: string;
                         InObject: TObject): TPkgFile; override;
-    function AddDependencyToUnitOwners(const OwnedFilename,
-                              RequiredUnitname: string): TModalResult; override;
     procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList); override;
     function RevertPackages(APackageList: TStringList): TModalResult; override;
 
@@ -245,6 +239,14 @@ type
     function GetPackageCount: integer; override;
     function GetPackages(Index: integer): TIDEPackage; override;
     function FindPackageWithName(const PkgName: string; IgnorePackage: TIDEPackage = nil): TIDEPackage; override;
+    function IsOwnerDependingOnPkg(AnOwner: TObject; const PkgName: string;
+                                   out DependencyOwner: TObject): boolean; override;
+    procedure GetRequiredPackages(AnOwner: TObject; PkgList: TFPList;
+                                  Flags: TPkgIntfRequiredFlags = []) override;
+    function AddDependencyToOwners(OwnerList: TFPList; APackage: TIDEPackage;
+                   OnlyTestIfPossible: boolean = false): TModalResult; override;
+    function AddDependencyToUnitOwners(const OwnedFilename,
+                              RequiredUnitname: string): TModalResult; override;
     function RedirectPackageDependency(APackage: TIDEPackage): TIDEPackage; override;
 
     // project
@@ -1740,7 +1742,8 @@ var
   i: Integer;
 begin
   PkgList:=nil;
-  PackageGraph.GetAllRequiredPackages(PackageGraph.FirstAutoInstallDependency,PkgList);
+  PackageGraph.GetAllRequiredPackages(nil,
+    PackageGraph.FirstAutoInstallDependency,PkgList);
   if PkgList=nil then exit;
   for i:=0 to PkgList.Count-1 do
     if TObject(PkgList[i]) is TLazPackage then
@@ -2716,7 +2719,8 @@ begin
     exit;
   end;
   PkgList:=nil;
-  PackageGraph.GetAllRequiredPackages(Project1.FirstRequiredDependency,PkgList);
+  PackageGraph.GetAllRequiredPackages(nil,Project1.FirstRequiredDependency,
+    PkgList);
   if PkgList=nil then exit;
   try
     for i:=0 to PkgList.Count-1 do begin
@@ -3263,6 +3267,22 @@ begin
   if Dep=nil then exit;
   DependencyOwner:=Dep.Owner;
   Result:=true;
+end;
+
+procedure TPkgManager.GetRequiredPackages(AnOwner: TObject; PkgList: TFPList;
+  Flags: TPkgIntfRequiredFlags);
+var
+  Dependency: TPkgDependency;
+begin
+  Dependency:=nil;
+  if AnOwner is TProject then
+    Dependency:=TProject(AnOwner).FirstRequiredDependency
+  else if AnOwner is TLazPackage then
+    Dependency:=TLazPackage(AnOwner).FirstRequiredDependency
+  else if AnOwner=PkgBoss then
+    Dependency:=PackageGraph.FirstAutoInstallDependency;
+  if Dependency=nil then exit;
+  PackageGraph.GetAllRequiredPackages(nil,Dependency,PkgList,Flags);
 end;
 
 function TPkgManager.AddDependencyToOwners(OwnerList: TFPList;
@@ -3995,7 +4015,7 @@ begin
       ADependency:=NextDependency;
     end;
 
-    PackageGraph.GetAllRequiredPackages(NewFirstAutoInstallDependency,PkgList);
+    PackageGraph.GetAllRequiredPackages(nil,NewFirstAutoInstallDependency,PkgList);
 
     // try save all modified packages
     for i:=0 to PkgList.Count-1 do begin
@@ -4134,7 +4154,7 @@ begin
       // get all required packages
       //debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick GetAllRequiredPackages for ',DependencyListAsString(NewFirstAutoInstallDependency,pdlRequires));
       if LoadDependencyList(NewFirstAutoInstallDependency,false)<>mrOk then exit(mrCancel);
-      PackageGraph.GetAllRequiredPackages(NewFirstAutoInstallDependency,PkgList);
+      PackageGraph.GetAllRequiredPackages(nil,NewFirstAutoInstallDependency,PkgList);
 
       // mark packages for installation
       //debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick mark packages for installation');

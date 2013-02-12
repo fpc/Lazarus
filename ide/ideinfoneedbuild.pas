@@ -344,7 +344,7 @@ function TIDEInfoNeedBuildDlg.GetTargets(Target: string): TFPList;
   begin
     Result:=nil;
     if Main=nil then exit;
-    PackageGraph.GetAllRequiredPackages(FirstDependency,Result);
+    PackageGraph.GetAllRequiredPackages(nil,FirstDependency,Result);
     if Result<>nil then begin
       // PackageGraph.GetAllRequiredPackages starts with the inner nodes
       // => reverse order

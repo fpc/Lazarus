@@ -50,6 +50,7 @@ uses
   ComCtrls, DividerBevel, DefineTemplates,
   // IDEIntf
   LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
+  PackageIntf,
   // IDE
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs, MainBar,
   InputHistory, ExtToolDialog, ExtToolEditDlg, EnvironmentOpts,
@@ -1094,7 +1095,8 @@ begin
   InhTreeView.BeginUpdate;
   LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
   try
-    PackageGraph.GetAllRequiredPackages(PackageGraph.FirstAutoInstallDependency,PkgList);
+    PackageGraph.GetAllRequiredPackages(nil,
+      PackageGraph.FirstAutoInstallDependency,PkgList,[pirSkipDesignTimeOnly]);
 
     // add detail nodes
     if PkgList<>nil then

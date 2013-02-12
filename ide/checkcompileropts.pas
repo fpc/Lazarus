@@ -38,6 +38,7 @@ uses
   CodeToolsStructs,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, LazIDEIntf, IDEDialogs,
+  PackageIntf,
   // IDE
   Project, PackageSystem, ExtToolEditDlg, IDEProcs, EnvironmentOpts,
   LazarusIDEStrConsts, PackageDefs, CompilerOptions, TransferMacros, LazConf;
@@ -382,7 +383,7 @@ begin
   if FirstDependency=nil then exit(mrOK);
   try
     // get used packages
-    PackageGraph.GetAllRequiredPackages(FirstDependency,PkgList);
+    PackageGraph.GetAllRequiredPackages(nil,FirstDependency,PkgList,[pirSkipDesignTimeOnly]);
     if PkgList=nil then exit(mrOk);
 
     // get search path

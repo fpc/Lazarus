@@ -2101,7 +2101,7 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
     if FirstDependency=nil then exit;
     List:=nil;
     try
-      PackageGraph.GetAllRequiredPackages(FirstDependency,List);
+      PackageGraph.GetAllRequiredPackages(nil,FirstDependency,List);
       if List=nil then exit;
       for i:=0 to List.Count-1 do begin
         // add values of build macros of used package
