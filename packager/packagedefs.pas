@@ -3608,7 +3608,7 @@ var
   PkgList: TFPList; // list of TLazPackage
 begin
   PkgList:=nil;
-  GetAllRequiredPackages(PkgList,false);
+  GetAllRequiredPackages(PkgList,false,[pirCompileOrder]);
   OptionsList:=GetUsageOptionsList(PkgList);
   PkgList.Free;
 end;

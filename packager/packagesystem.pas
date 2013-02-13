@@ -1749,7 +1749,7 @@ begin
   Result:='';
   // get all required packages
   PkgList:=nil;
-  GetAllRequiredPackages(nil,FirstDependency,PkgList);
+  GetAllRequiredPackages(nil,FirstDependency,PkgList,[pirCompileOrder]);
   if PkgList=nil then exit;
   // get all usage options
   AddOptionsList:=GetUsageOptionsList(PkgList);
@@ -1785,7 +1785,7 @@ begin
   // create auto install package list for the Lazarus uses section
   PkgList:=nil;
   try
-    GetAllRequiredPackages(nil,FirstAutoInstallDependency,PkgList);
+    GetAllRequiredPackages(nil,FirstAutoInstallDependency,PkgList,[pirCompileOrder]);
     StaticPackagesInc:='';
     if PkgList<>nil then begin
       for i:=0 to PkgList.Count-1 do begin
@@ -3241,19 +3241,20 @@ begin
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CompileRequiredPackages A ',dbgs(Policy));
   {$ENDIF}
-  ReqFlags:=[];
+  ReqFlags:=[pirCompileOrder];
   if SkipDesignTimePackages then
     Include(ReqFlags,pirSkipDesignTimeOnly);
-  PackageGraph.GetAllRequiredPackages(APackage,
-                               FirstDependency,AutoPackages,ReqFlags,Policy);
+  GetAllRequiredPackages(APackage,FirstDependency,AutoPackages,ReqFlags,Policy);
   if AutoPackages<>nil then begin
     //DebugLn('TLazPackageGraph.CompileRequiredPackages B Count=',IntToStr(AutoPackages.Count));
     try
       Flags:=[pcfDoNotCompileDependencies,pcfDoNotSaveEditorFiles];
       if Policy=pupAsNeeded then
-        Flags:=Flags+[pcfOnlyIfNeeded]
+        Include(Flags,pcfOnlyIfNeeded)
       else
-        Flags:=Flags+[pcfCleanCompile];
+        Include(Flags,pcfCleanCompile);
+      if SkipDesignTimePackages then
+        Include(Flags,pcfSkipDesignTimePackages);
       i:=0;
       while i<AutoPackages.Count do begin
         Result:=CompilePackage(TLazPackage(AutoPackages[i]),Flags,false);
@@ -5254,7 +5255,7 @@ procedure TLazPackageGraph.GetAllRequiredPackages(APackage: TLazPackage;
         continue; // skip designtime (only) packages
       if not (pirNotRecursive in Flags) then
         GetTopologicalOrder(RequiredPackage.FirstRequiredDependency);
-      // add package to list
+      // add package behind its requirements
       if List=nil then List:=TFPList.Create;
       List.Add(RequiredPackage);
     end;
@@ -5268,14 +5269,16 @@ begin
   MarkAllPackagesAsNotVisited;
   // create topological list, beginning with the leaves
   GetTopologicalOrder(FirstDependency);
-  // reverse list order
-  if List<>nil then begin
-    i:=0;
-    j:=List.Count-1;
-    while i<j do begin
-      List.Exchange(i,j);
-      inc(i);
-      dec(j);
+  if not (pirCompileOrder in Flags) then begin
+    // reverse list order
+    if List<>nil then begin
+      i:=0;
+      j:=List.Count-1;
+      while i<j do begin
+        List.Exchange(i,j);
+        inc(i);
+        dec(j);
+      end;
     end;
   end;
 end;

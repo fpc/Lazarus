@@ -1417,23 +1417,9 @@ var
   IgnoreUnitPaths, IgnoreIncPaths: TFilenameToStringTree;
 
   function PkgDependsOn(PkgName: string): boolean;
-  var
-    List: TFPList;
-    i: Integer;
   begin
-    if PkgName='' then exit;
-    List:=nil;
-    try
-      LazPackage.GetAllRequiredPackages(List,true);
-      if (List<>nil) then begin
-        for i:=0 to List.Count-1 do
-          if SysUtils.CompareText(TLazPackage(List[i]).Name,PkgName)=0 then
-            exit(true);
-      end;
-    finally
-      List.Free;
-    end;
-    Result:=false;
+    if PkgName='' then exit(false);
+    Result:=PackageGraph.FindDependencyRecursively(LazPackage.FirstRequiredDependency,PkgName)<>nil;
   end;
 
   procedure AddUnit(AddParams: TAddToPkgResult);

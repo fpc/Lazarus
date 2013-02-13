@@ -213,7 +213,8 @@ type
 
   TPkgIntfRequiredFlag = (
     pirNotRecursive,
-    pirSkipDesignTimeOnly
+    pirSkipDesignTimeOnly,
+    pirCompileOrder // start with packages that do not depend on other packages
     );
   TPkgIntfRequiredFlags = set of TPkgIntfRequiredFlag;
 

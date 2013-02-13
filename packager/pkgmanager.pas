@@ -2720,7 +2720,7 @@ begin
   end;
   PkgList:=nil;
   PackageGraph.GetAllRequiredPackages(nil,Project1.FirstRequiredDependency,
-    PkgList);
+    PkgList,[pirCompileOrder]);
   if PkgList=nil then exit;
   try
     for i:=0 to PkgList.Count-1 do begin
