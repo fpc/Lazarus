@@ -241,13 +241,13 @@ var
   NeedBuildAll: boolean;
   NeedBuild: TModalResult;
 begin
+  SkipDesignTimePackages:=false;
   NewTargets:=GetTargets(TargetComboBox.Text);
   try
     if not HaveSameTargets(FTargets,NewTargets) then begin
       // targets have changed
       ClearTargets;
       if NewTargets=nil then exit(true);
-      SkipDesignTimePackages:=false;
       for i:=0 to NewTargets.Count-1 do begin
         Item:=TInfoNeedBuildItem.Create;
         Item.Target:=TObject(NewTargets[i]);
