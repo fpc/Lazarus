@@ -166,7 +166,7 @@ var
   screenshotImage: CGImageRef;
   lRect: CGRect;
   lScreenRawImage: TRawImage;
-  lDataLength: Integer;
+  lDataLength: SizeInt;
 begin
   Result := True;
 
@@ -183,7 +183,7 @@ begin
   // Now copy the data
   ScreenImage.GetRawImage(lScreenRawImage, False);
   ARawImage.CreateData(False);
-  lDataLength := Min(lScreenRawImage.DataSize, ARawImage.DataSize);
+  lDataLength := Min(Int64(lScreenRawImage.DataSize), Int64(ARawImage.DataSize));
   System.Move(lScreenRawImage.Data^, ARawImage.Data^, lDataLength);
 end;
 

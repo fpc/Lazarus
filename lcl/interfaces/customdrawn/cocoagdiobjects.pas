@@ -569,7 +569,7 @@ end;
 var
   ATSUDirectUPP : ATSUDirectLayoutOperationOverrideUPP = nil; //NewATSUDirectLayoutOperationOverrideUPP(@ATSUCallback)
 
-function ATSUCallback(iCurrentOperation: ATSULayoutOperationSelector; iLineRef: ATSULineRef; iRefCon: UInt32; iOperationCallbackParameterPtr: UnivPtr;
+function ATSUCallback(iCurrentOperation: ATSULayoutOperationSelector; iLineRef: ATSULineRef; iRefCon: URefCon; iOperationCallbackParameterPtr: UnivPtr;
   var oCallbackStatus: ATSULayoutOperationCallbackStatus ): OSStatus; {$ifdef DARWIN}mwpascal;{$endif}
 var
   Buffer  : TASTUITextLayout;
