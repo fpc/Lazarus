@@ -997,7 +997,7 @@ begin
     Index := ARow - FixedRows;
     for i := 0 to FStrings.Count - 1 do
     begin
-      if (Index <> i) then
+      if (Index <> i) and (FStrings.Names[i] <> '') then
       begin
         if (Utf8CompareText(FStrings.Names[i], NewValue) = 0) then
         begin
