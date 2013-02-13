@@ -132,7 +132,7 @@ type
     function accessibilityAttributeNames: NSArray; override;
     function accessibilityAttributeValue(attribute: NSString): id; override;
     function accessibilityIsAttributeSettable(attribute: NSString): Boolean; override;
-    procedure accessibilitySetValue_forAttribute(value: id; attribute: NSString); override;
+    procedure accessibilitySetValue_forAttribute(_value: id; attribute: NSString); override;
     function accessibilityParameterizedAttributeNames: NSArray; override;
     function accessibilityAttributeValue_forParameter(attribute: NSString; parameter: id): id; override;
     function accessibilityActionNames: NSArray; override;
@@ -1542,7 +1542,7 @@ begin
   end;
 end;
 
-procedure TCocoaAccessibleObject.accessibilitySetValue_forAttribute(value: id;
+procedure TCocoaAccessibleObject.accessibilitySetValue_forAttribute(_value: id;
   attribute: NSString);
 begin
   {$ifdef VerboseCDAccessibility}
