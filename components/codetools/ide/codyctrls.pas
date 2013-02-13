@@ -230,19 +230,6 @@ type
     property OnUTF8KeyPress;
   end;
 
-const
-  DefaultLvlGraphNodeWith = 10;
-  DefaultLvlGraphNodeCaptionScale = 0.7;
-
-type
-  TLvlGraphCtrlOption = (
-    lgoAutoLayout
-    );
-  TLvlGraphCtrlOptions = set of TLvlGraphCtrlOption;
-  TOnLvlGraphStructureChanged = procedure(Sender, Element: TObject; Operation: TOperation) of object;
-
-const
-  DefaultLvlGraphCtrlOptions = [lgoAutoLayout];
 type
   TLvlGraph = class;
   TLvlGraphEdge = class;
@@ -343,6 +330,9 @@ type
   end;
   TLvlGraphLevelClass = class of TLvlGraphLevel;
 
+  TOnLvlGraphStructureChanged = procedure(Sender, Element: TObject;
+                                               Operation: TOperation) of object;
+
   { TLvlGraph }
 
   TLvlGraph = class(TPersistent)
@@ -403,6 +393,21 @@ type
     procedure ConsistencyCheck(WithBackEdge: boolean);
   end;
 
+const
+  DefaultLvlGraphNodeWith = 10;
+  DefaultLvlGraphNodeCaptionScale = 0.7;
+
+type
+  TLvlGraphCtrlOption = (
+    lgoAutoLayout, // automatic graph layout after graph was changed
+    lgoHighlightNodeOnMouse // when mouse over node highlight node and its edges
+    );
+  TLvlGraphCtrlOptions = set of TLvlGraphCtrlOption;
+
+const
+  DefaultLvlGraphCtrlOptions = [lgoAutoLayout,lgoHighlightNodeOnMouse];
+
+type
   TLvlGraphControlFlag =  (
     lgcNeedInvalidate,
     lgcNeedAutoLayout,
@@ -415,11 +420,15 @@ type
   TCustomLvlGraphControl = class(TCustomControl)
   private
     FGraph: TLvlGraph;
+    FMouseOverNode: TLvlGraphNode;
     FNodeCaptionScale: single;
     FNodeWidth: integer;
     FOptions: TLvlGraphCtrlOptions;
     fUpdateLock: integer;
     FFlags: TLvlGraphControlFlags;
+    procedure DrawEdges(Highlighted: boolean);
+    procedure DrawNodes;
+    procedure SetMouseOverNode(AValue: TLvlGraphNode);
     procedure SetNodeWidth(AValue: integer);
     procedure SetOptions(AValue: TLvlGraphCtrlOptions);
   protected
@@ -427,6 +436,7 @@ type
     procedure GraphStructureChanged(Sender, Element: TObject; {%H-}Operation: TOperation); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure Paint; override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -436,7 +446,9 @@ type
     procedure Invalidate; override;
     procedure BeginUpdate;
     procedure EndUpdate;
+    function GetNodeAt(X,Y: integer): TLvlGraphNode;
     property NodeWidth: integer read FNodeWidth write SetNodeWidth default DefaultLvlGraphNodeWith;
+    property MouseOverNode: TLvlGraphNode read FMouseOverNode write SetMouseOverNode;
     property Options: TLvlGraphCtrlOptions read FOptions write SetOptions default DefaultLvlGraphCtrlOptions;
     property NodeCaptionScale: single read FNodeCaptionScale write FNodeCaptionScale default DefaultLvlGraphNodeCaptionScale;
   end;
@@ -733,6 +745,8 @@ procedure TCustomLvlGraphControl.GraphStructureChanged(Sender,
 begin
   if ((Element is TLvlGraphNode)
   or (Element is TLvlGraphEdge)) then begin
+    if FMouseOverNode=Element then
+      FMouseOverNode:=nil;
     debugln(['TCustomLvlGraphControl.GraphStructureChanged ']);
     if lgoAutoLayout in FOptions then
       Include(FFlags,lgcNeedAutoLayout);
@@ -744,6 +758,73 @@ begin
   if FNodeWidth=AValue then Exit;
   FNodeWidth:=AValue;
   Invalidate;
+end;
+
+procedure TCustomLvlGraphControl.SetMouseOverNode(AValue: TLvlGraphNode);
+begin
+  if FMouseOverNode=AValue then Exit;
+  FMouseOverNode:=AValue;
+  Invalidate;
+end;
+
+procedure TCustomLvlGraphControl.DrawEdges(Highlighted: boolean);
+var
+  i: Integer;
+  Level: TLvlGraphLevel;
+  j: Integer;
+  Node: TLvlGraphNode;
+  k: Integer;
+  Edge: TLvlGraphEdge;
+  TargetNode: TLvlGraphNode;
+  NodeHighlighted: Boolean;
+begin
+  for i:=0 to Graph.LevelCount-1 do begin
+    Level:=Graph.Levels[i];
+    for j:=0 to Level.Count-1 do begin
+      Node:=Level.Nodes[j];
+      for k:=0 to Node.OutEdgeCount-1 do begin
+        Edge:=Node.OutEdges[k];
+        TargetNode:=Edge.Target;
+        NodeHighlighted:=(Node=MouseOverNode) or (TargetNode=MouseOverNode);
+        if NodeHighlighted<>Highlighted then continue;
+        if TargetNode.Level.Index>Level.Index then begin
+          // normal dependency
+          if NodeHighlighted then
+            Canvas.Pen.Color:=clGray
+          else
+            Canvas.Pen.Color:=clSilver;
+          Canvas.Line(Level.DrawPosition+NodeWidth, Node.DrawCenter,
+                      TargetNode.Level.DrawPosition, TargetNode.DrawCenter);
+        end else begin
+          // cycle dependency
+          Canvas.Pen.Color:=clRed;
+          Canvas.Line(Level.DrawPosition, Node.DrawCenter,
+               TargetNode.Level.DrawPosition+NodeWidth, TargetNode.DrawCenter);
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TCustomLvlGraphControl.DrawNodes;
+var
+  i: Integer;
+  Level: TLvlGraphLevel;
+  j: Integer;
+  Node: TLvlGraphNode;
+begin
+  Canvas.Brush.Style:=bsSolid;
+  for i:=0 to Graph.LevelCount-1 do begin
+    Level:=Graph.Levels[i];
+    for j:=0 to Level.Count-1 do begin
+      Node:=Level.Nodes[j];
+      //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' ',dbgs(FPColorToTColor(Node.Color)),' Level.DrawPosition=',Level.DrawPosition,' Node.DrawPosition=',Node.DrawPosition,' ',Node.DrawPositionEnd]);
+      Canvas.Brush.Color:=FPColorToTColor(Node.Color);
+      Canvas.Pen.Color:=Darker(Canvas.Brush.Color);
+      Canvas.Rectangle(Level.DrawPosition, Node.DrawPosition,
+        Level.DrawPosition+NodeWidth, Node.DrawPositionEnd);
+    end;
+  end;
 end;
 
 procedure TCustomLvlGraphControl.SetOptions(AValue: TLvlGraphCtrlOptions);
@@ -766,10 +847,7 @@ var
   Level: TLvlGraphLevel;
   j: Integer;
   Node: TLvlGraphNode;
-  k: Integer;
-  Edge: TLvlGraphEdge;
 begin
-  debugln(['TCustomLvlGraphControl.Paint ']);
   inherited Paint;
 
   Canvas.Font.Assign(Font);
@@ -797,41 +875,10 @@ begin
     Canvas.TextOut((ClientWidth-w) div 2,round(0.25*TxtH),Caption);
   end;
 
-  // draw edges
-  for i:=0 to Graph.LevelCount-1 do begin
-    Level:=Graph.Levels[i];
-    for j:=0 to Level.Count-1 do begin
-      Node:=Level.Nodes[j];
-      for k:=0 to Node.OutEdgeCount-1 do begin
-        Edge:=Node.OutEdges[k];
-        if Edge.Target.Level.Index>Level.Index then begin
-          // normal dependency
-          Canvas.Pen.Color:=clSilver;
-          Canvas.Line(Level.DrawPosition+NodeWidth,Node.DrawCenter,
-                      Edge.Target.Level.DrawPosition,Edge.Target.DrawCenter);
-        end else begin
-          // cycle dependency
-          Canvas.Pen.Color:=clRed;
-          Canvas.Line(Level.DrawPosition,Node.DrawCenter,
-               Edge.Target.Level.DrawPosition+NodeWidth,Edge.Target.DrawCenter);
-        end;
-      end;
-    end;
-  end;
-
-  // draw nodes
-  Canvas.Brush.Style:=bsSolid;
-  for i:=0 to Graph.LevelCount-1 do begin
-    Level:=Graph.Levels[i];
-    for j:=0 to Level.Count-1 do begin
-      Node:=Level.Nodes[j];
-      //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' ',dbgs(FPColorToTColor(Node.Color)),' Level.DrawPosition=',Level.DrawPosition,' Node.DrawPosition=',Node.DrawPosition,' ',Node.DrawPositionEnd]);
-      Canvas.Brush.Color:=FPColorToTColor(Node.Color);
-      Canvas.Pen.Color:=Darker(Canvas.Brush.Color);
-      Canvas.Rectangle(Level.DrawPosition,Node.DrawPosition,
-        Level.DrawPosition+NodeWidth,Node.DrawPositionEnd);
-    end;
-  end;
+  // draw edges and nodes
+  DrawEdges(false); // draw normal edges
+  DrawEdges(true); // draw highlighted edges
+  DrawNodes;
 
   // draw captions
   Canvas.Brush.Style:=bsClear;
@@ -845,6 +892,12 @@ begin
         Node.DrawCenter-(TxtH div 2),Node.Caption);
     end;
   end;
+end;
+
+procedure TCustomLvlGraphControl.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseMove(Shift, X, Y);
+  MouseOverNode:=GetNodeAt(X,Y);
 end;
 
 constructor TCustomLvlGraphControl.Create(AOwner: TComponent);
@@ -958,6 +1011,26 @@ begin
   if fUpdateLock=0 then begin
     if lgcNeedInvalidate in FFLags then
       Invalidate;
+  end;
+end;
+
+function TCustomLvlGraphControl.GetNodeAt(X, Y: integer): TLvlGraphNode;
+var
+  l: Integer;
+  Level: TLvlGraphLevel;
+  n: Integer;
+  Node: TLvlGraphNode;
+begin
+  Result:=nil;
+  // check in reverse painting order
+  for l:=Graph.LevelCount-1 downto 0 do begin
+    Level:=Graph.Levels[l];
+    if (x<Level.DrawPosition) or (x>=Level.DrawPosition+NodeWidth) then continue;
+    for n:=Level.Count-1 downto 0 do begin
+      Node:=Level.Nodes[n];
+      if (y<Node.DrawPosition) or (y>=Node.DrawPositionEnd) then continue;
+      exit(Node);
+    end;
   end;
 end;
 
