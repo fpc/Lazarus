@@ -400,12 +400,12 @@ const
 type
   TLvlGraphCtrlOption = (
     lgoAutoLayout, // automatic graph layout after graph was changed
-    lgoHighlightNodeOnMouse // when mouse over node highlight node and its edges
+    lgoHighlightNodeUnderMouse // when mouse over node highlight node and its edges
     );
   TLvlGraphCtrlOptions = set of TLvlGraphCtrlOption;
 
 const
-  DefaultLvlGraphCtrlOptions = [lgoAutoLayout,lgoHighlightNodeOnMouse];
+  DefaultLvlGraphCtrlOptions = [lgoAutoLayout,lgoHighlightNodeUnderMouse];
 
 type
   TLvlGraphControlFlag =  (
@@ -420,7 +420,7 @@ type
   TCustomLvlGraphControl = class(TCustomControl)
   private
     FGraph: TLvlGraph;
-    FMouseOverNode: TLvlGraphNode;
+    FNodeUnderMouse: TLvlGraphNode;
     FNodeCaptionScale: single;
     FNodeWidth: integer;
     FOptions: TLvlGraphCtrlOptions;
@@ -428,7 +428,7 @@ type
     FFlags: TLvlGraphControlFlags;
     procedure DrawEdges(Highlighted: boolean);
     procedure DrawNodes;
-    procedure SetMouseOverNode(AValue: TLvlGraphNode);
+    procedure SetNodeUnderMouse(AValue: TLvlGraphNode);
     procedure SetNodeWidth(AValue: integer);
     procedure SetOptions(AValue: TLvlGraphCtrlOptions);
   protected
@@ -448,7 +448,7 @@ type
     procedure EndUpdate;
     function GetNodeAt(X,Y: integer): TLvlGraphNode;
     property NodeWidth: integer read FNodeWidth write SetNodeWidth default DefaultLvlGraphNodeWith;
-    property MouseOverNode: TLvlGraphNode read FMouseOverNode write SetMouseOverNode;
+    property NodeUnderMouse: TLvlGraphNode read FNodeUnderMouse write SetNodeUnderMouse;
     property Options: TLvlGraphCtrlOptions read FOptions write SetOptions default DefaultLvlGraphCtrlOptions;
     property NodeCaptionScale: single read FNodeCaptionScale write FNodeCaptionScale default DefaultLvlGraphNodeCaptionScale;
   end;
@@ -745,8 +745,8 @@ procedure TCustomLvlGraphControl.GraphStructureChanged(Sender,
 begin
   if ((Element is TLvlGraphNode)
   or (Element is TLvlGraphEdge)) then begin
-    if FMouseOverNode=Element then
-      FMouseOverNode:=nil;
+    if FNodeUnderMouse=Element then
+      FNodeUnderMouse:=nil;
     debugln(['TCustomLvlGraphControl.GraphStructureChanged ']);
     if lgoAutoLayout in FOptions then
       Include(FFlags,lgcNeedAutoLayout);
@@ -760,10 +760,10 @@ begin
   Invalidate;
 end;
 
-procedure TCustomLvlGraphControl.SetMouseOverNode(AValue: TLvlGraphNode);
+procedure TCustomLvlGraphControl.SetNodeUnderMouse(AValue: TLvlGraphNode);
 begin
-  if FMouseOverNode=AValue then Exit;
-  FMouseOverNode:=AValue;
+  if FNodeUnderMouse=AValue then Exit;
+  FNodeUnderMouse:=AValue;
   Invalidate;
 end;
 
@@ -785,7 +785,7 @@ begin
       for k:=0 to Node.OutEdgeCount-1 do begin
         Edge:=Node.OutEdges[k];
         TargetNode:=Edge.Target;
-        NodeHighlighted:=(Node=MouseOverNode) or (TargetNode=MouseOverNode);
+        NodeHighlighted:=(Node=NodeUnderMouse) or (TargetNode=NodeUnderMouse);
         if NodeHighlighted<>Highlighted then continue;
         if TargetNode.Level.Index>Level.Index then begin
           // normal dependency
@@ -897,7 +897,7 @@ end;
 procedure TCustomLvlGraphControl.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
-  MouseOverNode:=GetNodeAt(X,Y);
+  NodeUnderMouse:=GetNodeAt(X,Y);
 end;
 
 constructor TCustomLvlGraphControl.Create(AOwner: TComponent);
