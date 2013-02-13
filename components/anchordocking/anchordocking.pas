@@ -502,6 +502,7 @@ type
     fTreeNameToDocker: TADNameToControl;
     fPopupMenu: TPopupMenu;
     function GetControls(Index: integer): TControl;
+    function GetLocalizedHeaderHint: string;
     function CloseUnneededControls(Tree: TAnchorDockLayoutTree): boolean;
     function CreateNeededControls(Tree: TAnchorDockLayoutTree;
                 DisableAutoSizing: boolean; ControlNames: TStrings): boolean;
@@ -631,7 +632,7 @@ type
     property HeaderAlignTop: integer read FHeaderAlignTop write SetHeaderAlignTop default 80; // move header to top, when (width/height)*100<=HeaderAlignTop
     property HeaderAlignLeft: integer read FHeaderAlignLeft write SetHeaderAlignLeft default 120; // move header to left, when (width/height)*100>=HeaderAlignLeft
     property HeaderButtonSize: integer read FHeaderButtonSize write SetHeaderButtonSize default 10;
-    property HeaderHint: string read FHeaderHint write SetHeaderHint;
+    property HeaderHint: string read FHeaderHint write SetHeaderHint; // if empty it uses resourcestring adrsDragAndDockC
     property HeaderStyle: TADHeaderStyle read FHeaderStyle write SetHeaderStyle default adhsDefault;
     property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
     property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize default true; // scale children when resizing a site
@@ -1307,6 +1308,14 @@ end;
 function TAnchorDockMaster.GetControls(Index: integer): TControl;
 begin
   Result:=TControl(FControls[Index]);
+end;
+
+function TAnchorDockMaster.GetLocalizedHeaderHint: string;
+begin
+  if HeaderHint<>'' then
+    Result:=HeaderHint
+  else
+    Result:=adrsDragAndDockC;
 end;
 
 procedure TAnchorDockMaster.SetHeaderAlignLeft(const AValue: integer);
@@ -2206,7 +2215,7 @@ begin
   FPageAreaInPercent:=40;
   FHeaderAlignTop:=80;
   HeaderAlignLeft:=120;
-  FHeaderHint:=adrsDragAndDockC;
+  FHeaderHint:='';
   FShowHeader:=true;
   FShowHeaderCaption:=true;
   FHideHeaderCaptionFloatingControl:=true;
@@ -5092,7 +5101,7 @@ var
   p: LongInt;
   c: String;
 begin
-  s:=DockMaster.HeaderHint;
+  s:=DockMaster.GetLocalizedHeaderHint;
   p:=Pos('%s',s);
   if p>0 then begin
     if Parent<>nil then
