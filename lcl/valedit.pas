@@ -932,7 +932,7 @@ end;
 procedure TValueListEditor.SetCells(ACol, ARow: Integer; const AValue: string);
 var
   I: Integer;
-  Line: string;
+  Key, KeyValue, Line: string;
 begin
   if (ARow = 0) and (doColumnTitles in DisplayOptions) then
   begin
@@ -942,11 +942,22 @@ begin
   begin
     I:=ARow-FixedRows;
     if ACol=0 then
-      Line:=AValue+'='+Cells[1,ARow]
+    begin
+      Key := AValue;
+      KeyValue := Cells[1,ARow]
+    end
     else
-      Line:=Cells[0,ARow]+'='+AValue;
-    // Empty grid: don't add a the line '=' to Strings!
-    if (Strings.Count = 0) and (Line = '=') and (AValue = '') then Exit;
+    begin
+      KeyValue := AValue;
+      Key := Cells[0,ARow];
+    end;
+    //If cells are empty don't store '=' in Strings
+    if (Key = '') and (KeyValue = '') then
+      Line := ''
+    else
+      Line := Key + '=' + KeyValue;
+    // Empty grid: don't add a the line '' to Strings!
+    if (Strings.Count = 0) and (Line = '') then Exit;
     if I>=Strings.Count then
       Strings.Insert(I,Line)
     else
