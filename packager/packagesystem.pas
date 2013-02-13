@@ -251,8 +251,7 @@ type
                                      Flags: TPkgIntfRequiredFlags = [];
                                      MinPolicy: TPackageUpdatePolicy = low(TPackageUpdatePolicy)
                                      ); // for single search use FindDependencyRecursively
-    procedure CalculateTopologicalLevels;
-    procedure SortDependencyListTopologically(
+    procedure SortDependencyListTopologicallyOld(
                    var FirstDependency: TPkgDependency; TopLevelFirst: boolean);
     procedure IterateAllComponentClasses(Event: TIterateComponentClassesEvent);
     procedure IterateComponentClasses(APackage: TLazPackage;
@@ -1724,7 +1723,7 @@ end;
 procedure TLazPackageGraph.SortAutoInstallDependencies;
 begin
   // sort install dependencies, so that lower packages come first
-  SortDependencyListTopologically(PackageGraph.FirstAutoInstallDependency,
+  SortDependencyListTopologicallyOld(PackageGraph.FirstAutoInstallDependency,
                                                false);
 end;
 
@@ -4494,49 +4493,7 @@ begin
   end;
 end;
 
-procedure TLazPackageGraph.CalculateTopologicalLevels;
-
-  procedure GetTopologicalOrder(CurDependency: TPkgDependency;
-    out MaxChildLevel: integer);
-  var
-    RequiredPackage: TLazPackage;
-    CurMaxChildLevel: integer;
-  begin
-    MaxChildLevel:=0;
-    while CurDependency<>nil do begin
-      if CurDependency.LoadPackageResult=lprSuccess then begin
-        RequiredPackage:=CurDependency.RequiredPackage;
-        if (not (lpfVisited in RequiredPackage.Flags)) then begin
-          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
-          GetTopologicalOrder(RequiredPackage.FirstRequiredDependency,
-                              CurMaxChildLevel);
-          RequiredPackage.TopologicalLevel:=CurMaxChildLevel+1;
-        end;
-        if RequiredPackage.TopologicalLevel>MaxChildLevel then
-          MaxChildLevel:=RequiredPackage.TopologicalLevel;
-      end;
-      CurDependency:=CurDependency.NextRequiresDependency;
-    end;
-  end;
-
-var
-  i: Integer;
-  Pkg: TLazPackage;
-  CurMaxChildLevel: integer;
-begin
-  for i:=FItems.Count-1 downto 0 do begin
-    Pkg:=TLazPackage(FItems[i]);
-    Pkg.Flags:=Pkg.Flags-[lpfVisited];
-    Pkg.TopologicalLevel:=0;
-  end;
-  for i:=FItems.Count-1 downto 0 do begin
-    Pkg:=TLazPackage(FItems[i]);
-    GetTopologicalOrder(Pkg.FirstRequiredDependency,CurMaxChildLevel);
-    Pkg.TopologicalLevel:=CurMaxChildLevel+1;
-  end;
-end;
-
-procedure TLazPackageGraph.SortDependencyListTopologically(
+procedure TLazPackageGraph.SortDependencyListTopologicallyOld(
   var FirstDependency: TPkgDependency; TopLevelFirst: boolean);
 // Sort dependency list topologically.
 // If TopLevelFirst is true then packages that need others come first
@@ -4550,8 +4507,10 @@ var
   i: Integer;
   j: Integer;
   CurLvl: LongInt;
+  List: TFPList;
 begin
-  CalculateTopologicalLevels;
+  GetAllRequiredPackages(nil,FirstDependency,List);
+  List.Free;
   
   // Bucket sort dependencies
   MaxLvl:=0;
@@ -5233,11 +5192,14 @@ procedure TLazPackageGraph.GetAllRequiredPackages(APackage: TLazPackage;
   Flags: TPkgIntfRequiredFlags; MinPolicy: TPackageUpdatePolicy);
 // returns packages in topological order, beginning with the top level package
 
-  procedure GetTopologicalOrder(CurDependency: TPkgDependency);
+  procedure GetTopologicalOrder(CurDependency: TPkgDependency;
+    out HighestLevel: integer);
   var
     RequiredPackage: TLazPackage;
     Dependency: TPkgDependency;
+    DepLevel: integer;
   begin
+    HighestLevel:=0;
     while CurDependency<>nil do begin
       Dependency:=CurDependency;
       CurDependency:=CurDependency.NextRequiresDependency;
@@ -5253,8 +5215,12 @@ procedure TLazPackageGraph.GetAllRequiredPackages(APackage: TLazPackage;
       if (pirSkipDesignTimeOnly in Flags)
       and (RequiredPackage.PackageType=lptDesignTime) then
         continue; // skip designtime (only) packages
-      if not (pirNotRecursive in Flags) then
-        GetTopologicalOrder(RequiredPackage.FirstRequiredDependency);
+      if not (pirNotRecursive in Flags) then begin
+        GetTopologicalOrder(RequiredPackage.FirstRequiredDependency,DepLevel);
+        RequiredPackage.TopologicalLevel:=DepLevel+1;
+        if HighestLevel<RequiredPackage.TopologicalLevel then
+          HighestLevel:=RequiredPackage.TopologicalLevel;
+      end;
       // add package behind its requirements
       if List=nil then List:=TFPList.Create;
       List.Add(RequiredPackage);
@@ -5264,11 +5230,12 @@ procedure TLazPackageGraph.GetAllRequiredPackages(APackage: TLazPackage;
 var
   i: Integer;
   j: Integer;
+  DepLevel: integer;
 begin
   List:=nil;
   MarkAllPackagesAsNotVisited;
   // create topological list, beginning with the leaves
-  GetTopologicalOrder(FirstDependency);
+  GetTopologicalOrder(FirstDependency,DepLevel);
   if not (pirCompileOrder in Flags) then begin
     // reverse list order
     if List<>nil then begin

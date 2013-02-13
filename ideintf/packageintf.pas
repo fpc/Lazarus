@@ -212,7 +212,7 @@ type
     );
 
   TPkgIntfRequiredFlag = (
-    pirNotRecursive,
+    pirNotRecursive, // return the list of direct dependencies, not sorted topologically
     pirSkipDesignTimeOnly,
     pirCompileOrder // start with packages that do not depend on other packages
     );

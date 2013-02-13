@@ -4130,7 +4130,7 @@ begin
     ListPkgIDToDependencyList(PkgIDList,NewFirstAutoInstallDependency,
       pdlRequires,Self,true);
 
-    PackageGraph.SortDependencyListTopologically(NewFirstAutoInstallDependency,
+    PackageGraph.SortDependencyListTopologicallyOld(NewFirstAutoInstallDependency,
                                                  false);
 
     if not (piiifQuiet in Flags) then
