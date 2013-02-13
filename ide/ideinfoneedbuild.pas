@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, AvgLvlTree, FileProcs, Forms, Controls, Graphics,
   Dialogs, StdCtrls, Buttons, ButtonPanel, LCLType,
-  IDEWindowIntf, LazIDEIntf, ProjectIntf,
+  IDEWindowIntf, LazIDEIntf, ProjectIntf, PackageIntf,
   LazarusIDEStrConsts, PackageDefs, PackageSystem, Project, InputHistory,
   EnvironmentOpts, IDEProcs, BuildManager;
 
@@ -340,11 +340,12 @@ end;
 
 function TIDEInfoNeedBuildDlg.GetTargets(Target: string): TFPList;
 
-  function GetList(Main: TObject; FirstDependency: TPkgDependency): TFPList;
+  function GetList(Main: TObject; FirstDependency: TPkgDependency;
+    ReqFlags: TPkgIntfRequiredFlags): TFPList;
   begin
     Result:=nil;
     if Main=nil then exit;
-    PackageGraph.GetAllRequiredPackages(nil,FirstDependency,Result);
+    PackageGraph.GetAllRequiredPackages(nil,FirstDependency,Result,ReqFlags);
     if Result<>nil then begin
       // PackageGraph.GetAllRequiredPackages starts with the inner nodes
       // => reverse order
@@ -357,14 +358,18 @@ function TIDEInfoNeedBuildDlg.GetTargets(Target: string): TFPList;
 
 var
   Pkg: TLazPackage;
+  ReqFlags: TPkgIntfRequiredFlags;
 begin
+  ReqFlags:=[];
   if Target=IDEAsTarget then begin
-    Result:=GetList(LazarusIDE,PackageGraph.FirstAutoInstallDependency);
+    Result:=GetList(LazarusIDE,PackageGraph.FirstAutoInstallDependency,ReqFlags);
   end else if Target=ProjectAsTarget(Project1) then begin
-    Result:=GetList(Project1,Project1.FirstRequiredDependency);
+    if not (pfUseDesignTimePackages in Project1.Flags) then
+      Include(ReqFlags,pirSkipDesignTimeOnly);
+    Result:=GetList(Project1,Project1.FirstRequiredDependency,ReqFlags);
   end else begin
     Pkg:=PackageGraph.FindPackageWithName(Target,nil);
-    Result:=GetList(Pkg,Pkg.FirstRequiredDependency);
+    Result:=GetList(Pkg,Pkg.FirstRequiredDependency,ReqFlags);
   end;
 end;
 
