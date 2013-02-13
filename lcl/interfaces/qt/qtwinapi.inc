@@ -6273,6 +6273,13 @@ begin
       SW_SHOWFULLSCREEN: Widget.ShowFullScreen;
       SW_HIDE: Widget.setVisible(False);
     end;
+    {$IFDEF HASX11}
+    if (nCmdShow <> SW_HIDE) and (Widget is TQtMainWindow)
+      and not TQtMainWindow(Widget).IsMdiChild
+      and not TQtMainWindow(Widget).IsMainForm
+      and not TQtMainWindow(Widget).ShowOnTaskBar then
+        SetSkipX11Taskbar(Widget.Widget, True);
+    {$ENDIF}
     Result := True;
   end;
 end;

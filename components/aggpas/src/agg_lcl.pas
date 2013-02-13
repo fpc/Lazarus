@@ -175,16 +175,17 @@ begin
   FillByte(Desc, SizeOf(Desc), 0);
   with Desc do begin
     Format := ricfRGBA;
-    if APixelFormat=afpimRGB24 then
-      Depth := 24 // used bits per pixel
-    else
-      Depth := 32; // used bits per pixel
+    Depth := 24; // used bits per pixel
     Width := AWidth;
     Height := AHeight;
     BitOrder := riboBitsInOrder;
     ByteOrder := riboLSBFirst;
     LineOrder := riloTopToBottom;
-    BitsPerPixel := Depth; // bits per pixel. can be greater than Depth.
+    // bits per pixel. can be greater than Depth.
+    if APixelFormat=afpimRGB24 then
+      BitsPerPixel := 24
+    else
+      BitsPerPixel := 32;
     LineEnd := rileByteBoundary;
     RedPrec := 8; // red precision. bits for red
     RedShift := 0;

@@ -86,6 +86,7 @@ type
     property LineWidth: Integer read FLineWidth write SetLineWidth default 1;
     property LineOffset: Integer read FLineOffset write SetLineOffset default 0;
     property LineOnRight: Boolean read FLineOnRight write SetLineOnRight default True;
+    property MarkupInfo;
   end;
 
   { TSynEditMouseActionsGutter }
@@ -420,20 +421,23 @@ end;
 
 procedure TSynGutterSeparator.Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
 begin
-  with Canvas do
-  begin
-    Brush.Color := MarkupInfo.Background;
-    Brush.Style := bsSolid;
-    FillRect(AClip);
-    if FLineOnRight then begin
-      dec(AClip.Right, FLineOffset);
-      AClip.Left := AClip.Right - FLineWidth;
-    end else begin
-      inc(AClip.Left, FLineOffset);
-      AClip.Right := AClip.Left + FLineWidth;
-    end;
-    Brush.Color := MarkupInfo.Foreground;
-    FillRect(AClip);
+  if MarkupInfo.Background <> clNone then
+    Canvas.Brush.Color := MarkupInfo.Background
+  else
+    Canvas.Brush.Color := Gutter.Color;
+  Canvas.Brush.Style := bsSolid;
+  Canvas.FillRect(AClip);
+
+  if FLineOnRight then begin
+    AClip.Right := Min(AClip.Right, Left + Width - FLineOffset);
+    AClip.Left  := Max(AClip.Left,  Left + Width - FLineOffset  - FLineWidth);
+  end else begin
+    AClip.Left  := Max(AClip.Left,  Left + FLineOffset);
+    AClip.Right := Min(AClip.Right, Left + FLineOffset  + FLineWidth);
+  end;
+  if AClip.Right > AClip.Left then begin
+    Canvas.Brush.Color := MarkupInfo.Foreground;
+    Canvas.FillRect(AClip);
   end;
 end;
 
