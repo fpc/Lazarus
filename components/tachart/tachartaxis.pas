@@ -209,7 +209,8 @@ type
     procedure Draw(ACurrentZ: Integer; var AIndex: Integer);
     function GetAxis(AIndex: Integer): TChartAxis;
     function GetEnumerator: TChartAxisEnumerator;
-    function Measure(const AExtent: TDoubleRect): TChartAxisMargins;
+    function Measure(
+      const AExtent: TDoubleRect; ADepth: Integer): TChartAxisMargins;
     procedure Prepare(ARect: TRect);
     procedure PrepareGroups;
     procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
@@ -921,7 +922,8 @@ begin
   AList.Sort(ACompare);
 end;
 
-function TChartAxisList.Measure(const AExtent: TDoubleRect): TChartAxisMargins;
+function TChartAxisList.Measure(
+  const AExtent: TDoubleRect; ADepth: Integer): TChartAxisMargins;
 var
   g: ^TChartAxisGroup;
 
@@ -931,6 +933,8 @@ var
     Result[ALast] := Max(Result[ALast], g^.FLastMark);
   end;
 
+const
+  ALIGN_TO_ZDIR: array [TChartAxisAlignment] of Integer = (1, -1, -1, 1);
 var
   i, j, ai: Integer;
   axis: TChartAxis;
@@ -955,7 +959,9 @@ begin
       ai += 1;
     end;
     // Axises of the same group should have the same Alignment and ZPosition.
-    Result[axis.Alignment] += g^.FSize + g^.FTitleSize + g^.FMargin;
+      Result[axis.Alignment] += Max(0,
+        g^.FSize + g^.FTitleSize + g^.FMargin +
+        ALIGN_TO_ZDIR[axis.Alignment] * Min(axis.ZPosition, ADepth));
   end;
   ai := 0;
   for i := 0 to High(FGroups) do begin
