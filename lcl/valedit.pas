@@ -76,6 +76,7 @@ type
     FOwner: TValueListEditor;
     FItemProps: TItemPropList;
     function GetItemProp(const AKeyOrIndex: Variant): TItemProp;
+    procedure QuickSortStringsAndItemProps(L, R: Integer; CompareFn: TStringListSortCompare);
   protected
     procedure SetTextStr(const Value: string); override;
     procedure InsertItem(Index: Integer; const S: string; AObject: TObject); override;
@@ -502,10 +503,68 @@ begin
   if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
 end;
 
-procedure TValueListStrings.CustomSort(Compare: TStringListSortCompare);
+
+{
+ Duplicates the functionality of TStringList.QuickSort, but also
+ sorts the ItemProps.
+}
+procedure TValueListStrings.QuickSortStringsAndItemProps(L, R: Integer;
+  CompareFn: TStringListSortCompare);
+var
+  Pivot, vL, vR: Integer;
 begin
-  inherited CustomSort(Compare);
-  // ToDo: Sort also ItemProps using a copy of the orignal order
+  if R - L <= 1 then
+  begin // a little bit of time saver
+    if L < R then
+      if CompareFn(Self, L, R) > 0 then
+        //Exchange also exchanges FItemProps
+        Exchange(L, R);
+    Exit;
+  end;
+
+  vL := L;
+  vR := R;
+
+  Pivot := L + Random(R - L); // they say random is best
+
+  while vL < vR do
+  begin
+    while (vL < Pivot) and (CompareFn(Self, vL, Pivot) <= 0) do
+      Inc(vL);
+
+    while (vR > Pivot) and (CompareFn(Self, vR, Pivot) > 0) do
+      Dec(vR);
+    //Exchange also exchanges FItemProps
+    Exchange(vL, vR);
+
+    if Pivot = vL then // swap pivot if we just hit it from one side
+      Pivot := vR
+    else if Pivot = vR then
+      Pivot := vL;
+  end;
+
+  if Pivot - 1 >= L then
+    QuickSortStringsAndItemProps(L, Pivot - 1, CompareFn);
+  if Pivot + 1 <= R then
+    QuickSortStringsAndItemProps(Pivot + 1, R, CompareFn);
+end;
+
+procedure TValueListStrings.CustomSort(Compare: TStringListSortCompare);
+{
+ Re-implement it, because we need it to call our own QuickSortStringsAndItemProps
+ and so we cannot use inherited CustomSort
+ Use BeginUpdate/EndUpdate to avoid numerous Changing/Changed calls
+}
+begin
+  If not Sorted and (Count>1) then
+  begin
+    try
+      BeginUpdate;
+      QuickSortStringsAndItemProps(0,Count-1, Compare);
+    finally
+      EndUpdate;
+    end;
+  end;
 end;
 
 procedure TValueListStrings.Delete(Index: Integer);
@@ -550,6 +609,7 @@ begin
       Raise Exception.Create(Format('TValueListStrings.GetItemProp: Index=%d Result=Nil',[i]));
   end;
 end;
+
 
 
 { TValueListEditor }
