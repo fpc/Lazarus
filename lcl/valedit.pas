@@ -5,7 +5,8 @@ unit ValEdit;
 interface
 
 uses
-  Classes, Controls, StdCtrls, SysUtils, Grids, LResources, Dialogs, LazUtf8, variants, LCLProc;
+  Classes, Controls, StdCtrls, SysUtils, Grids, LResources, Dialogs, LazUtf8, variants, LCLProc,
+  ContNrs;
 
 type
 
@@ -47,16 +48,34 @@ type
     property ReadOnly: Boolean read FReadOnly write SetReadOnly;
   end;
 
-  TItemProps = array of TItemProp;
+  TItemPropList = class
+  private
+    FList: TFPObjectList;
+    function GetCount: Integer;
+    function GetItem(Index: Integer): TItemProp;
+    procedure SetItem(Index: Integer; AValue: TItemProp);
+  protected
+  public
+    procedure Add(AValue: TItemProp);
+    procedure Clear;
+    procedure Delete(Index: Integer);
+    procedure Exchange(Index1, Index2: Integer);
+    procedure Insert(Index: Integer; AValue: TItemProp);
+  public
+    constructor Create;
+    destructor Destroy; override;
+  public
+    property Count: Integer read GetCount;
+    property Items[Index: Integer]: TItemProp read GetItem write SetItem; default;
+  end;
 
   { TValueListStrings }
 
   TValueListStrings = class(TStringList)
   private
     FOwner: TValueListEditor;
-    FItemProps: TItemProps;
+    FItemProps: TItemPropList;
     function GetItemProp(const AKeyOrIndex: Variant): TItemProp;
-    procedure FreeItemProps;
   protected
     procedure SetTextStr(const Value: string); override;
     procedure InsertItem(Index: Integer; const S: string; AObject: TObject); override;
@@ -351,6 +370,62 @@ begin
   FKeyDesc := AValue;
 end;
 
+
+{ TItemPropList }
+
+function TItemPropList.GetItem(Index: Integer): TItemProp;
+begin
+  Result := TItemProp(FList.Items[Index]);
+end;
+
+function TItemPropList.GetCount: Integer;
+begin
+  Result := FList.Count;
+end;
+
+procedure TItemPropList.SetItem(Index: Integer; AValue: TItemProp);
+begin
+  FList.Items[Index] := AValue;
+end;
+
+procedure TItemPropList.Insert(Index: Integer; AValue: TItemProp);
+begin
+  FList.Insert(Index, AValue);
+end;
+
+procedure TItemPropList.Add(AValue: TItemProp);
+begin
+  FList.Add(AValue);
+end;
+
+procedure TItemPropList.Delete(Index: Integer);
+begin
+  FList.Delete(Index);
+end;
+
+procedure TItemPropList.Exchange(Index1, Index2: Integer);
+begin
+  FList.Exchange(Index1, index2);
+end;
+
+procedure TItemPropList.Clear;
+begin
+  FList.Clear;
+end;
+
+constructor TItemPropList.Create;
+begin
+  FList := TFPObjectList.Create(True);
+end;
+
+destructor TItemPropList.Destroy;
+begin
+  FList.Free;
+  inherited Destroy;
+end;
+
+
+
 { TValueListStrings }
 
 procedure TValueListStrings.SetTextStr(const Value: string);
@@ -369,11 +444,7 @@ begin
   IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
   if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
   inherited InsertItem(Index, S, AObject);
-
-  SetLength(FItemProps, Count);
-  for i := Count-2 downto Index do
-    FItemProps[i+1] := FItemProps[i];
-  FItemProps[Index] := nil;
+  FItemProps.Insert(Index, TItemProp.Create(FOwner));
   //only restore this _after_ FItemProps is updated!
   if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
 end;
@@ -405,11 +476,12 @@ constructor TValueListStrings.Create(AOwner: TValueListEditor);
 begin
   inherited Create;
   FOwner := AOwner;
+  FItemProps := TItemPropList.Create;
 end;
 
 destructor TValueListStrings.Destroy;
 begin
-  FreeItemProps;
+  FItemProps.Free;
   inherited Destroy;
 end;
 
@@ -426,8 +498,8 @@ begin
   IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
   if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
   inherited Clear;
+  FItemProps.Clear;
   if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
-  FreeItemProps;
 end;
 
 procedure TValueListStrings.CustomSort(Compare: TStringListSortCompare);
@@ -445,14 +517,7 @@ begin
   if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
   inherited Delete(Index);
   // Delete also ItemProps
-  if Index<=Count then begin
-    if Assigned(FItemProps[Index]) then FItemProps[Index].Free;
-    for i := Index to Length(FItemProps)-2 do
-    begin
-      FItemProps[i] := FItemProps[i+1];
-    end;
-    SetLength(FItemProps, Count);
-  end;
+  FItemProps.Delete(Index);
   //only restore this _after_ FItemProps is updated!
   if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
 end;
@@ -460,7 +525,7 @@ end;
 procedure TValueListStrings.Exchange(Index1, Index2: Integer);
 begin
   inherited Exchange(Index1, Index2);
-  // ToDo: Exchange also ItemProps
+  FItemProps.Exchange(Index1, Index2);
 end;
 
 function TValueListStrings.GetItemProp(const AKeyOrIndex: Variant): TItemProp;
@@ -480,28 +545,12 @@ begin
       if i = -1 then
         raise Exception.Create('TValueListStrings.GetItemProp: Key not found: '+s);
     end;
-    if i >= Length(FItemProps) then
-      SetLength(FItemProps, i+1);
-    Result := FItemProps[i];
-    if not Assigned(Result) then begin
-      Result := TItemProp.Create(FOwner);
-      FItemProps[i] := Result;
-    end;
+    Result := FItemProps.Items[i];
+    if not Assigned(Result) then
+      Raise Exception.Create(Format('TValueListStrings.GetItemProp: Index=%d Result=Nil',[i]));
   end;
 end;
 
-procedure TValueListStrings.FreeItemProps;
-var
-  i: Integer;
-begin
-  //{$R+}
-  //debugln('TValueListStrings.Destroy: Length(FItemProps) = ',dbgs(Length(FItemProps)));
-  for i := 0 to Length(FItemProps) - 1 do
-  begin
-    if Assigned(FItemProps[i]) then FItemProps[i].Free;
-  end;
-  SetLength(FItemProps, 0);
-end;
 
 { TValueListEditor }
 
