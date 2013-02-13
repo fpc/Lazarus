@@ -12101,6 +12101,7 @@ var
   TargetExeDirectory: String;
   FPCVersion, FPCRelease, FPCPatch: integer;
   Note: String;
+  OldToolStatus: TIDEToolStatus;
 begin
   if Project1.MainUnitInfo=nil then begin
     // this project has no source to compile
@@ -12273,6 +12274,7 @@ begin
     and (not (pbfDoNotCompileProject in Flags)) then begin
       try
         // change tool status
+        OldToolStatus := ToolStatus;  // It can still be itDebugger, if the debugger is still stopping. Prevent any "Run" command after building, until the debugger is clear
         ToolStatus:=itBuilder;
 
         ConnectOutputFilter;
@@ -12322,7 +12324,13 @@ begin
         end;
 
       finally
-        ToolStatus:=itNone;
+        if OldToolStatus = itDebugger then begin
+          ToolStatus := OldToolStatus;
+          if DebugBoss <> nil then
+            DebugBoss.UpdateToolStatus;  // Maybe "Reset Debugger was called and changed the state?
+        end
+        else
+          ToolStatus:=itNone;
       end;
     end;
 

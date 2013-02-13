@@ -132,6 +132,7 @@ type
     procedure SetupMainBarShortCuts; virtual; abstract;
     procedure SetupSourceMenuShortCuts; virtual; abstract;
     procedure UpdateButtonsAndMenuItems; virtual; abstract;
+    procedure UpdateToolStatus; virtual; abstract;
 
     procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig;
                                       Merge: boolean); virtual; abstract;

@@ -24,6 +24,7 @@ rem %MAKEEXE% lazbuild OPT="-Xs -XX" PP=%COMPILER% >> %LOGFILE%
 %FPCBINDIR%\strip.exe tools\updatepofiles.exe
 %FPCBINDIR%\strip.exe tools\lrstolfm.exe
 %FPCBINDIR%\strip.exe tools\svn2revisioninc.exe
+%FPCBINDIR%\strip.exe components\chmhelp\lhelp\lhelp.exe
 
 %OLDCURDRIVE%
 cd %OLDCURDIR%

@@ -166,6 +166,7 @@ type
     procedure SetupMainBarShortCuts; override;
     procedure SetupSourceMenuShortCuts; override;
     procedure UpdateButtonsAndMenuItems; override;
+    procedure UpdateToolStatus; override;
 
     procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig;
                                       Merge: boolean); override;
@@ -1025,12 +1026,8 @@ procedure TDebugManager.DebuggerChangeState(ADebugger: TDebugger;
         FDialogs[DialogType].EndUpdate;
   end;
 
-const
+//const
   // dsNone, dsIdle, dsStop, dsPause, dsInit, dsRun, dsError
-  TOOLSTATEMAP: array[TDBGState] of TIDEToolStatus = (
-  //dsNone, dsIdle, dsStop,     dsPause,    dsInternalPause, dsInit,     dsRun,      dsError,    dsDestroying
-    itNone, itNone, itDebugger, itDebugger, itDebugger,      itDebugger, itDebugger, itNone, itNone
-  );
   //STATENAME: array[TDBGState] of string = (
   //  'dsNone', 'dsIdle', 'dsStop', 'dsPause', 'dsInit', 'dsRun', 'dsError'
   //);
@@ -1086,8 +1083,7 @@ begin
 
   UpdateButtonsAndMenuItems;
   // Next may call ResetDebugger, then FDebugger is gone
-  if MainIDE.ToolStatus in [itNone,itDebugger]
-  then MainIDE.ToolStatus := TOOLSTATEMAP[FDebugger.State];
+  UpdateToolStatus;
 
   FAutoContinueTimer.Enabled := false;
 
@@ -1180,7 +1176,7 @@ begin
         if EnvironmentOptions.DebuggerResetAfterRun then
           ResetDebugger
         else
-          FDebugger.FileName := '';
+          FDebugger.FileName := '';  // SetState(dsIdle) via ResetStateToIdle
 
         if FDialogs[ddtAssembler] <> nil
         then TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(nil, 0);
@@ -1840,6 +1836,23 @@ begin
     // menu view
     //itmViewRegisters.Enabled := DebuggerIsValid;
     //itmViewAssembler.Enabled := DebuggerIsValid;
+  end;
+end;
+
+procedure TDebugManager.UpdateToolStatus;
+const
+  TOOLSTATEMAP: array[TDBGState] of TIDEToolStatus = (
+  //dsNone, dsIdle, dsStop,     dsPause,    dsInternalPause, dsInit,     dsRun,      dsError,    dsDestroying
+    itNone, itNone, itDebugger, itDebugger, itDebugger,      itDebugger, itDebugger, itNone, itNone
+  );
+begin
+  // Next may call ResetDebugger, then FDebugger is gone
+  if MainIDE.ToolStatus in [itNone,itDebugger]
+  then begin
+    if FDebugger = nil then
+      MainIDE.ToolStatus := itNone
+    else
+      MainIDE.ToolStatus := TOOLSTATEMAP[FDebugger.State];
   end;
 end;
 
