@@ -683,6 +683,8 @@ end;
 
 procedure TValueListEditor.StringsChange(Sender: TObject);
 begin
+  //Since we never call inherited SetCell, this seems the logical place to do it
+  Modified := True;
   AdjustRowCount;
   Invalidate;
   if Assigned(OnStringsChange) then
