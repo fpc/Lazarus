@@ -5207,8 +5207,12 @@ procedure TLazPackageGraph.GetAllRequiredPackages(APackage: TLazPackage;
       if Dependency.LoadPackageResult<>lprSuccess then continue;
       //debugln('TLazPackageGraph.GetAllRequiredPackages B ',Dependency.AsString);
       RequiredPackage:=Dependency.RequiredPackage;
-      if (lpfVisited in RequiredPackage.Flags) then
-        continue; // already visited
+      if (lpfVisited in RequiredPackage.Flags) then begin
+        // already visited
+        if HighestLevel<RequiredPackage.TopologicalLevel then
+          HighestLevel:=RequiredPackage.TopologicalLevel;
+        continue;
+      end;
       RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
       if ord(RequiredPackage.AutoUpdate)<ord(MinPolicy) then
         continue; // skip manually updated packages
@@ -5240,18 +5244,20 @@ begin
   end;
   // create topological list, beginning with the leaves
   GetTopologicalOrder(FirstDependency,DepLevel);
+  if List=nil then exit;
+  MergeSort(List,@CompareLazPackageTopologicallyAndName);
   if not (pirCompileOrder in Flags) then begin
     // reverse list order
-    if List<>nil then begin
-      i:=0;
-      j:=List.Count-1;
-      while i<j do begin
-        List.Exchange(i,j);
-        inc(i);
-        dec(j);
-      end;
+    i:=0;
+    j:=List.Count-1;
+    while i<j do begin
+      List.Exchange(i,j);
+      inc(i);
+      dec(j);
     end;
   end;
+  //for i:=0 to List.Count-1 do
+  //  debugln(['TLazPackageGraph.GetAllRequiredPackages ',i,'/',List.Count-1,' ',TLazPackage(List[i]).Name,' ',TLazPackage(List[i]).TopologicalLevel]);
 end;
 
 procedure TLazPackageGraph.GetConnectionsTree(FirstDependency: TPkgDependency;

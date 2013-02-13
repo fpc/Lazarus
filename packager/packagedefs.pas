@@ -874,6 +874,7 @@ function CompareLazPackageID(Data1, Data2: Pointer): integer;
 function CompareNameWithPackageID(Key, Data: Pointer): integer;
 function ComparePkgIDMaskWithPackageID(Key, Data: Pointer): integer;
 function CompareLazPackageIDNames(Data1, Data2: Pointer): integer;
+function CompareLazPackageTopologicallyAndName(Data1, Data2: Pointer): integer;
 function CompareNameWithPkgDependency(Key, Data: Pointer): integer;
 function ComparePkgDependencyNames(Data1, Data2: Pointer): integer;
 function CompareUnitsTree(UnitTree1, UnitTree2: TPkgUnitsTree): integer;
@@ -1174,11 +1175,9 @@ end;
 
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
 var
-  Pkg1: TLazPackageID;
-  Pkg2: TLazPackageID;
+  Pkg1: TLazPackageID absolute Data1;
+  Pkg2: TLazPackageID absolute Data2;
 begin
-  Pkg1:=TLazPackageID(Data1);
-  Pkg2:=TLazPackageID(Data2);
   Result:=Pkg1.Compare(Pkg2);
 end;
 
@@ -1197,41 +1196,44 @@ end;
 
 function ComparePkgIDMaskWithPackageID(Key, Data: Pointer): integer;
 var
-  Pkg1: TLazPackageID;
-  Pkg2: TLazPackageID;
+  Pkg1: TLazPackageID absolute Key;
+  Pkg2: TLazPackageID absolute Data;
 begin
-  Pkg1:=TLazPackageID(Key);
-  Pkg2:=TLazPackageID(Data);
   Result:=Pkg1.CompareMask(Pkg2);
 end;
 
 function CompareLazPackageIDNames(Data1, Data2: Pointer): integer;
 var
-  Pkg1: TLazPackageID;
-  Pkg2: TLazPackageID;
+  Pkg1: TLazPackageID absolute Data1;
+  Pkg2: TLazPackageID absolute Data2;
 begin
-  Pkg1:=TLazPackageID(Data1);
-  Pkg2:=TLazPackageID(Data2);
+  Result:=SysUtils.CompareText(Pkg1.Name,Pkg2.Name);
+end;
+
+function CompareLazPackageTopologicallyAndName(Data1, Data2: Pointer): integer;
+var
+  Pkg1: TLazPackage absolute Data1;
+  Pkg2: TLazPackage absolute Data2;
+begin
+  Result:=Pkg1.TopologicalLevel-Pkg2.TopologicalLevel;
+  if Result<>0 then exit;
   Result:=SysUtils.CompareText(Pkg1.Name,Pkg2.Name);
 end;
 
 function CompareNameWithPkgDependency(Key, Data: Pointer): integer;
 var
   PkgName: String;
-  Dependency: TPkgDependency;
+  Dependency: TPkgDependency absolute Data;
 begin
   PkgName:=String(Key);
-  Dependency:=TPkgDependency(Data);
   Result:=SysUtils.CompareText(PkgName,Dependency.PackageName);
 end;
 
 function ComparePkgDependencyNames(Data1, Data2: Pointer): integer;
 var
-  Dependency1: TPkgDependency;
-  Dependency2: TPkgDependency;
+  Dependency1: TPkgDependency absolute Data1;
+  Dependency2: TPkgDependency absolute Data2;
 begin
-  Dependency1:=TPkgDependency(Data1);
-  Dependency2:=TPkgDependency(Data2);
   Result:=SysUtils.CompareText(Dependency1.PackageName,Dependency2.PackageName);
 end;
 
