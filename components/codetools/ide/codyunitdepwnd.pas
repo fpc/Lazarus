@@ -171,6 +171,8 @@ begin
     Parent:=GroupsTabSheet;
   end;
 
+  MainPageControl.ActivePage:=GroupsTabSheet;
+
   IdleConnected:=true;
 end;
 
@@ -231,6 +233,7 @@ var
 begin
   if AProject=nil then exit;
   Result:=Groups.GetGroup(GroupPrefixProject,true);
+  //debugln(['TUnitDependenciesDialog.CreateProjectGroup ',Result.Name]);
   for i:=0 to AProject.FileCount-1 do begin
     Filename:=AProject.Files[i].Filename;
     CurUnit:=UsesGraph.GetUnit(Filename,false);
@@ -250,6 +253,7 @@ var
 begin
   if APackage=nil then exit;
   Result:=Groups.GetGroup(APackage.Name,true);
+  //debugln(['TUnitDependenciesDialog.CreatePackageGroup ',Result.Name]);
   for i:=0 to APackage.FileCount-1 do begin
     Filename:=APackage.Files[i].GetFullFilename;
     CurUnit:=UsesGraph.GetUnit(Filename,false);
@@ -280,6 +284,7 @@ begin
       Directory:=ExtractFilePath(CurUnit.Filename);
       Directory:=copy(Directory,length(FPCSrcDir)+1,length(Directory));
       Grp:=Groups.GetGroup(GroupPrefixFPCSrc+Directory,true);
+      debugln(['TUnitDependenciesDialog.CreateFPCSrcGroups ',Grp.Name]);
       Grp.AddUnit(TUGGroupUnit(CurUnit));
     end;
     Node:=UsesGraph.FilesTree.FindSuccessor(Node);
@@ -304,6 +309,7 @@ begin
     CurUnit:=TUGGroupUnit(Node.Data);
     if TUGGroupUnit(CurUnit).Group=nil then begin
       Filename:=CurUnit.Filename;
+      debugln(['TUnitDependenciesDialog.GuessGroupOfUnits no group for ',Filename]);
       CurDirectory:=ExtractFilePath(Filename);
       if CompareFilenames(CurDirectory,LastDirectory)<>0 then begin
         FreeAndNil(Owners);
@@ -314,15 +320,19 @@ begin
         for i:=0 to Owners.Count-1 do begin
           if TObject(Owners[i]) is TLazProject then begin
             Group:=Groups.GetGroup(GroupPrefixProject,true);
+            debugln(['TUnitDependenciesDialog.GuessGroupOfUnits ',Group.Name]);
             break;
           end else if TObject(Owners[i]) is TIDEPackage then begin
             Group:=Groups.GetGroup(TIDEPackage(Owners[i]).Name,true);
+            debugln(['TUnitDependenciesDialog.GuessGroupOfUnits ',Group.Name]);
             break;
           end;
         end;
       end;
-      if Group=nil then
+      if Group=nil then begin
         Group:=Groups.GetGroup(GroupNone,true);
+        debugln(['TUnitDependenciesDialog.GuessGroupOfUnits ',Group.Name]);
+      end;
       Group.AddUnit(TUGGroupUnit(CurUnit));
     end;
     Node:=UsesGraph.FilesTree.FindSuccessor(Node);
@@ -446,6 +456,10 @@ var
   AVLNode: TAVLTreeNode;
   Group: TUGGroup;
   Graph: TLvlGraph;
+  PkgList: TFPList;
+  i: Integer;
+  RequiredPkg: TIDEPackage;
+  GroupObj: TObject;
 begin
   GroupsLvlGraph.BeginUpdate;
   Graph:=GroupsLvlGraph.Graph;
@@ -454,11 +468,26 @@ begin
   while AVLNode<>nil do begin
     Group:=TUGGroup(AVLNode.Data);
     Graph.GetNode(Group.Name,true);
+    GroupObj:=nil;
     if Group.Name=GroupPrefixProject then begin
       // project
-
+      GroupObj:=LazarusIDE.ActiveProject;
     end else begin
-
+      // package
+      GroupObj:=PackageEditingInterface.FindPackageWithName(Group.Name);
+    end;
+    PkgList:=nil;
+    try
+      PackageEditingInterface.GetRequiredPackages(GroupObj,PkgList,[pirNotRecursive]);
+      if (PkgList<>nil) then begin
+        // add for each dependency an edge in the Graph
+        for i:=0 to PkgList.Count-1 do begin
+          RequiredPkg:=TIDEPackage(PkgList[i]);
+          Graph.GetEdge(Group.Name,RequiredPkg.Name,true);
+        end;
+      end;
+    finally
+      PkgList.Free;
     end;
     AVLNode:=Groups.Groups.FindSuccessor(AVLNode);
   end;

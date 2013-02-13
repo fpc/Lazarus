@@ -251,7 +251,8 @@ type
     // dependencies
     function IsOwnerDependingOnPkg(AnOwner: TObject; const PkgName: string;
                                    out DependencyOwner: TObject): boolean; virtual; abstract;
-    procedure GetRequiredPackages(AnOwner: TObject; PkgList: TFPList;
+    procedure GetRequiredPackages(AnOwner: TObject; // a TLazProject or TIDEPackage
+      out PkgList: TFPList; // list of TIDEPackage
       Flags: TPkgIntfRequiredFlags = []) virtual; abstract;
     function AddDependencyToOwners(OwnerList: TFPList; APackage: TIDEPackage;
                    OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract; // mrOk or mrIgnore for already connected

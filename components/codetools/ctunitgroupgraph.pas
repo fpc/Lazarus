@@ -154,6 +154,7 @@ end;
 
 constructor TUGGroup.Create(aName: string; TheGroups: TUGGroups);
 begin
+  FName:=aName;
   FGroups:=TheGroups;
   FUnits:=TAVLTree.Create(@CompareUGUnitFilenames);
 end;

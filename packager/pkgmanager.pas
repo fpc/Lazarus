@@ -241,7 +241,7 @@ type
     function FindPackageWithName(const PkgName: string; IgnorePackage: TIDEPackage = nil): TIDEPackage; override;
     function IsOwnerDependingOnPkg(AnOwner: TObject; const PkgName: string;
                                    out DependencyOwner: TObject): boolean; override;
-    procedure GetRequiredPackages(AnOwner: TObject; PkgList: TFPList;
+    procedure GetRequiredPackages(AnOwner: TObject; out PkgList: TFPList;
                                   Flags: TPkgIntfRequiredFlags = []) override;
     function AddDependencyToOwners(OwnerList: TFPList; APackage: TIDEPackage;
                    OnlyTestIfPossible: boolean = false): TModalResult; override;
@@ -3269,11 +3269,12 @@ begin
   Result:=true;
 end;
 
-procedure TPkgManager.GetRequiredPackages(AnOwner: TObject; PkgList: TFPList;
+procedure TPkgManager.GetRequiredPackages(AnOwner: TObject; out PkgList: TFPList;
   Flags: TPkgIntfRequiredFlags);
 var
   Dependency: TPkgDependency;
 begin
+  PkgList:=nil;
   Dependency:=nil;
   if AnOwner is TProject then
     Dependency:=TProject(AnOwner).FirstRequiredDependency
