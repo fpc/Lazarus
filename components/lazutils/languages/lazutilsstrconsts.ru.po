@@ -31,7 +31,7 @@ msgstr "составная часть %s не является каталого�
 
 #: lazutilsstrconsts.lrsboolean
 msgid "boolean"
-msgstr ""
+msgstr "логический тип"
 
 #: lazutilsstrconsts.lrscannotexecute
 msgid "can not execute %s"
@@ -39,15 +39,15 @@ msgstr "невозможно выполнить %s"
 
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"
-msgstr ""
+msgstr "Неверное количество аргументов функции"
 
 #: lazutilsstrconsts.lrsevalunknownfunction
 msgid "Unknown function: \"%s\""
-msgstr ""
+msgstr "Неизвестная функция: \"%s\""
 
 #: lazutilsstrconsts.lrsevalunknownvariable
 msgid "Unknown variable: \"%s\""
-msgstr ""
+msgstr "Неизвестная переменная: \"%s\""
 
 #: lazutilsstrconsts.lrsfiledoesnotexist
 msgid "file \"%s\" does not exist"
@@ -85,43 +85,43 @@ msgstr "  изменён "
 
 #: lazutilsstrconsts.lrsnodeset
 msgid "node set"
-msgstr ""
+msgstr "набор элементов"
 
 #: lazutilsstrconsts.lrsnumber
 msgid "number"
-msgstr ""
+msgstr "числовой тип"
 
 #: lazutilsstrconsts.lrsparserbadaxisname
 msgid "Invalid axis name"
-msgstr ""
+msgstr "Некорректное имя оси"
 
 #: lazutilsstrconsts.lrsparserbadnodetype
 msgid "Invalid node type"
-msgstr ""
+msgstr "Некорректный тип элемента"
 
 #: lazutilsstrconsts.lrsparserexpectedleftbracket
 msgid "Expected \"(\""
-msgstr ""
+msgstr "Ожидается \"(\""
 
 #: lazutilsstrconsts.lrsparserexpectedrightbracket
 msgid "Expected \")\""
-msgstr ""
+msgstr "Ожидается \")\""
 
 #: lazutilsstrconsts.lrsparserexpectedrightsquarebracket
 msgid "Expected \"]\" after predicate"
-msgstr ""
+msgstr "После предиката ожидается \"]\""
 
 #: lazutilsstrconsts.lrsparsergarbageafterexpression
 msgid "Unrecognized input after expression"
-msgstr ""
+msgstr "Неопознанное содержимое после выражения"
 
 #: lazutilsstrconsts.lrsparserinvalidnodetest
 msgid "Invalid node test (syntax error)"
-msgstr ""
+msgstr "Проверка элемента не удалась (синтаксическая ошибка)"
 
 #: lazutilsstrconsts.lrsparserinvalidprimexpr
 msgid "Invalid primary expression"
-msgstr ""
+msgstr "Некорректное первичное выражение"
 
 #: lazutilsstrconsts.lrsprogramfilenotfound
 msgid "program file not found %s"
@@ -133,19 +133,19 @@ msgstr "доступ для чтения %s запрещён"
 
 #: lazutilsstrconsts.lrsscannerexpectedvarname
 msgid "Expected variable name after \"$\""
-msgstr ""
+msgstr "После \"$\" ожидается имя переменной"
 
 #: lazutilsstrconsts.lrsscannerinvalidchar
 msgid "Invalid character"
-msgstr ""
+msgstr "Некорректный символ"
 
 #: lazutilsstrconsts.lrsscannermalformedqname
 msgid "Expected \"*\" or local part after colon"
-msgstr ""
+msgstr "После двоеточия ожидается \"*\" либо локальная часть имени"
 
 #: lazutilsstrconsts.lrsscannerunclosedstring
 msgid "String literal was not closed"
-msgstr ""
+msgstr "Строковый литерал не имеет закрывающего символа"
 
 #: lazutilsstrconsts.lrssize
 msgctxt "lazutilsstrconsts.lrssize"
@@ -154,7 +154,7 @@ msgstr "  размер "
 
 #: lazutilsstrconsts.lrsstring
 msgid "string"
-msgstr ""
+msgstr "строковый тип"
 
 #: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
 msgid "Unable to create config directory \"%s\""
@@ -162,5 +162,5 @@ msgstr "Невозможно создать каталог настройки \"
 
 #: lazutilsstrconsts.lrsvarnoconversion
 msgid "Conversion from %s to %s not possible"
-msgstr ""
+msgstr "Невозможно преобразовать %s в %s"
 
