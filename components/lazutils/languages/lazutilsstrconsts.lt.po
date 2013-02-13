@@ -1,4 +1,3 @@
- Valdas Jankunas <zmuogs@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -32,8 +31,24 @@ msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
 msgid "a directory component in %s is not a directory"
 msgstr "%s esantis aplanko komponentas nėra aplankas"
 
+#: lazutilsstrconsts.lrsboolean
+msgid "boolean"
+msgstr ""
+
 #: lazutilsstrconsts.lrscannotexecute
 msgid "can not execute %s"
+msgstr ""
+
+#: lazutilsstrconsts.lrsevalinvalidargcount
+msgid "Invalid number of function arguments"
+msgstr ""
+
+#: lazutilsstrconsts.lrsevalunknownfunction
+msgid "Unknown function: \"%s\""
+msgstr ""
+
+#: lazutilsstrconsts.lrsevalunknownvariable
+msgid "Unknown variable: \"%s\""
 msgstr ""
 
 #: lazutilsstrconsts.lrsfiledoesnotexist
@@ -70,6 +85,46 @@ msgctxt "lazutilsstrconsts.lrsmodified"
 msgid "  modified "
 msgstr "  pakeista "
 
+#: lazutilsstrconsts.lrsnodeset
+msgid "node set"
+msgstr ""
+
+#: lazutilsstrconsts.lrsnumber
+msgid "number"
+msgstr ""
+
+#: lazutilsstrconsts.lrsparserbadaxisname
+msgid "Invalid axis name"
+msgstr ""
+
+#: lazutilsstrconsts.lrsparserbadnodetype
+msgid "Invalid node type"
+msgstr ""
+
+#: lazutilsstrconsts.lrsparserexpectedleftbracket
+msgid "Expected \"(\""
+msgstr ""
+
+#: lazutilsstrconsts.lrsparserexpectedrightbracket
+msgid "Expected \")\""
+msgstr ""
+
+#: lazutilsstrconsts.lrsparserexpectedrightsquarebracket
+msgid "Expected \"]\" after predicate"
+msgstr ""
+
+#: lazutilsstrconsts.lrsparsergarbageafterexpression
+msgid "Unrecognized input after expression"
+msgstr ""
+
+#: lazutilsstrconsts.lrsparserinvalidnodetest
+msgid "Invalid node test (syntax error)"
+msgstr ""
+
+#: lazutilsstrconsts.lrsparserinvalidprimexpr
+msgid "Invalid primary expression"
+msgstr ""
+
 #: lazutilsstrconsts.lrsprogramfilenotfound
 msgid "program file not found %s"
 msgstr ""
@@ -78,12 +133,36 @@ msgstr ""
 msgid "read access denied for %s"
 msgstr "iš %s skaityti draudžiama"
 
+#: lazutilsstrconsts.lrsscannerexpectedvarname
+msgid "Expected variable name after \"$\""
+msgstr ""
+
+#: lazutilsstrconsts.lrsscannerinvalidchar
+msgid "Invalid character"
+msgstr ""
+
+#: lazutilsstrconsts.lrsscannermalformedqname
+msgid "Expected \"*\" or local part after colon"
+msgstr ""
+
+#: lazutilsstrconsts.lrsscannerunclosedstring
+msgid "String literal was not closed"
+msgstr ""
+
 #: lazutilsstrconsts.lrssize
 msgctxt "lazutilsstrconsts.lrssize"
 msgid "  size "
 msgstr "  dydis "
 
+#: lazutilsstrconsts.lrsstring
+msgid "string"
+msgstr ""
+
 #: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
 msgid "Unable to create config directory \"%s\""
 msgstr "Nepavyko sukurti aplanko „%s“ konfigūracijai"
+
+#: lazutilsstrconsts.lrsvarnoconversion
+msgid "Conversion from %s to %s not possible"
+msgstr ""
 

@@ -25,38 +25,6 @@ uses
   Math, SysUtils, Classes, LazUtilsStrConsts,
   laz2_DOM, laz2_xmlutils;
 
-resourcestring
-  { XPath variables type names }
-  lrsNodeSet = 'node set';
-  lrsBoolean = 'boolean';
-  lrsNumber = 'number';
-  lrsString = 'string';
-
-  { Variable errors }
-  lrsVarNoConversion = 'Conversion from %s to %s not possible';
-
-  { Scanner errors }
-  lrsScannerUnclosedString = 'String literal was not closed';
-  lrsScannerInvalidChar = 'Invalid character';
-  lrsScannerMalformedQName = 'Expected "*" or local part after colon';
-  lrsScannerExpectedVarName = 'Expected variable name after "$"';
-
-  { Parser errors }
-  lrsParserExpectedLeftBracket = 'Expected "("';
-  lrsParserExpectedRightBracket = 'Expected ")"';
-  lrsParserBadAxisName = 'Invalid axis name';
-  lrsParserBadNodeType = 'Invalid node type';
-  lrsParserExpectedRightSquareBracket = 'Expected "]" after predicate';
-  lrsParserInvalidPrimExpr = 'Invalid primary expression';
-  lrsParserGarbageAfterExpression = 'Unrecognized input after expression';
-  lrsParserInvalidNodeTest = 'Invalid node test (syntax error)';
-
-
-  { Evaluation errors }
-  lrsEvalUnknownFunction = 'Unknown function: "%s"';
-  lrsEvalUnknownVariable = 'Unknown variable: "%s"';
-  lrsEvalInvalidArgCount = 'Invalid number of function arguments';
-
 type
   TXPathContext = class;
   TXPathEnvironment = class;
