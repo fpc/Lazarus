@@ -136,6 +136,7 @@ end;
 
 constructor TSVGDrawer.Create(AStream: TStream; AWriteDocType: Boolean);
 begin
+  inherited Create;
   FStream := AStream;
   FPen := TFPCustomPen.Create;
   if AWriteDocType then begin
