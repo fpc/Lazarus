@@ -53,8 +53,6 @@ begin
   then
     FEditLabel.Caption := Value;
   inherited SetName(Value);
-  if csDesigning in ComponentState then
-    Text := '';
 end;
 
 procedure TCustomLabeledEdit.Loaded;
