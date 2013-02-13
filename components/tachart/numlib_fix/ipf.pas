@@ -430,12 +430,17 @@ begin
   freemem(pd, n1s);
 end; {ipffsn}
 
+// Workaround for issue #23816.
+type
+  arfloat1big = array[1..100*highestelement] of ArbFloat;
+  arfloat0big = array[0..100*highestelement] of ArbFloat;
+
 procedure ortpol(m, n: ArbInt; var x, alfa, beta: ArbFloat);
 // this function used to use mark/release.
 var
                              i, j, ms : ArbInt;
     xppn1, ppn1, ppn, p, alfaj, betaj : ArbFloat;
-               px, pal, pbe, pn, pn1 : ^arfloat1;
+               px, pal, pbe, pn, pn1 : ^arfloat1big;
 begin
   px:=@x; pal:=@alfa; pbe:=@beta; ms:=m*sizeof(ArbFloat);
   getmem(pn, ms); getmem(pn1, ms);
@@ -464,7 +469,7 @@ procedure ortcoe(m, n: ArbInt; var x, y, alfa, beta, a: ArbFloat);
 // this function used to use mark/release.
 var                        i, j, mr : ArbInt;
          fpn, ppn, p, alphaj, betaj : ArbFloat;
-    px, py, pal, pbe, pa, pn, pn1 : ^arfloat1;
+    px, py, pal, pbe, pa, pn, pn1 : ^arfloat1big;
 
 begin
   mr:=m*sizeof(ArbFloat);
@@ -493,8 +498,8 @@ end; {ortcoe}
 procedure polcoe(n:ArbInt; var alfa, beta, a, b: ArbFloat);
 
 var            k, j : ArbInt;
-           pal, pbe : ^arfloat1;
-            pa, pb  : ^arfloat0;
+           pal, pbe : ^arfloat1big;
+            pa, pb  : ^arfloat0big;
 
 begin
   pal:=@alfa; pbe:=@beta; pa:=@a; pb:=@b;

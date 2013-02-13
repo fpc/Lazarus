@@ -258,7 +258,7 @@ begin
     for ps in FSlices do begin
       if not ps.FVisible then continue;
       ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
-      numSteps := Round(2 * Pi * ps.Angle * FRadius / STEP);
+      numSteps := Max(Round(2 * Pi * ps.Angle * FRadius / STEP), 2);
       SetLength(p, 2 * numSteps);
       for i := 0 to numSteps - 1 do begin
         a := WeightedAverage(ps.FPrevAngle, ps.FNextAngle, i / (numSteps - 1));
