@@ -78,7 +78,6 @@ type
     function GetItemProp(const AKeyOrIndex: Variant): TItemProp;
     procedure QuickSortStringsAndItemProps(L, R: Integer; CompareFn: TStringListSortCompare);
   protected
-    procedure SetTextStr(const Value: string); override;
     procedure InsertItem(Index: Integer; const S: string; AObject: TObject); override;
     procedure InsertItem(Index: Integer; const S: string); override;
     procedure Put(Index: Integer; const S: String); override;
@@ -429,11 +428,6 @@ end;
 
 { TValueListStrings }
 
-procedure TValueListStrings.SetTextStr(const Value: string);
-begin
-  // ToDo: Assign also ItemProps ???
-  inherited SetTextStr(Value);
-end;
 
 procedure TValueListStrings.InsertItem(Index: Integer; const S: string; AObject: TObject);
 var
