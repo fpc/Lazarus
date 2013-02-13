@@ -5234,6 +5234,10 @@ var
 begin
   List:=nil;
   MarkAllPackagesAsNotVisited;
+  if APackage<>nil then begin
+    FirstDependency:=APackage.FirstRequiredDependency;
+    APackage.Flags:=APackage.Flags+[lpfVisited];
+  end;
   // create topological list, beginning with the leaves
   GetTopologicalOrder(FirstDependency,DepLevel);
   if not (pirCompileOrder in Flags) then begin
