@@ -99,8 +99,9 @@ function CompareAddrWithLineInfoCacheItem(Addr, Item: Pointer): integer;
 type
   TStringsSortCompare = function(const Item1, Item2: string): Integer;
 
-procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare); // sort so that for each i is OnCompare(List[i],List[i+1])<=0
-procedure MergeSort(List: TStrings; const OnCompare: TStringsSortCompare); // sort so that for each i is OnCompare(List[i],List[i+1])<=0
+procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare); overload;// sort so that for each i is OnCompare(List[i],List[i+1])<=0
+procedure MergeSort(List: TFPList; StartIndex, EndIndex: integer; const OnCompare: TListSortCompare); overload;// sort so that for each i is OnCompare(List[i],List[i+1])<=0
+procedure MergeSort(List: TStrings; const OnCompare: TStringsSortCompare); overload;// sort so that for each i is OnCompare(List[i],List[i+1])<=0
 
 function GetEnumValueDef(TypeInfo: PTypeInfo; const Name: string;
                          const DefaultValue: Integer): Integer;
@@ -1234,6 +1235,13 @@ begin
 end;
 
 procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare);
+begin
+  if List=nil then exit;
+  MergeSort(List,0,List.Count-1,OnCompare);
+end;
+
+procedure MergeSort(List: TFPList; StartIndex, EndIndex: integer;
+  const OnCompare: TListSortCompare);
 // sort so that for each i is OnCompare(List[i],List[i+1])<=0
 var
   MergeList: PPointer;
@@ -1305,10 +1313,16 @@ var
     end;
   end;
 
+var
+  Cnt: Integer;
 begin
-  if (List=nil) or (List.Count<=1) then exit;
+  if (List=nil) then exit;
+  Cnt:=List.Count;
+  if StartIndex<0 then StartIndex:=0;
+  if EndIndex>=Cnt then EndIndex:=Cnt-1;
+  if StartIndex>=EndIndex then exit;
   MergeList:=GetMem(List.Count*SizeOf(Pointer));
-  Sort(0,List.Count-1);
+  Sort(StartIndex,EndIndex);
   Freemem(MergeList);
 end;
 
