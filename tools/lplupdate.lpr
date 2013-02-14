@@ -370,7 +370,6 @@ begin
     if Pkg=nil then continue;
     if (CompareText(ExtractFileNameOnly(Link.ExpFilename),Pkg.Name)<>0)
     or (not FileExistsUTF8(Link.ExpFilename)) then begin
-      debugln(['TLPLUpdate.WriteLinksWithWrongExpFilename AAA1 ',Link.PkgName,' ',Pkg.Name]);
       LinkFilename:='$(LazarusDir)/'+StringReplace(CreateRelativePath(Pkg.Filename,PkgDir),'\','/',[rfReplaceAll]);
       if not (Quiet and WriteCommands) then
         writeln('Wrong filename in link ',ExtractFileNameOnly(Link.LPLFilename),' should be '+LinkFilename);
