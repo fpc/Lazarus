@@ -11,6 +11,7 @@ uses
 type
 
   TValueListEditor = class;    // Forward declaration
+  TValueListStrings = class;
 
   TEditStyle = (esSimple, esEllipsis, esPickList);
 
@@ -34,7 +35,7 @@ type
     procedure SetPickList(const AValue: TStrings);
     procedure SetKeyDesc(const AValue: string);
   protected
-//    procedure AssignTo(Dest: TPersistent); override;
+    procedure AssignTo(Dest: TPersistent); override;
   public
     constructor Create(AOwner: TValueListEditor);
     destructor Destroy; override;
@@ -48,21 +49,25 @@ type
     property ReadOnly: Boolean read FReadOnly write SetReadOnly;
   end;
 
+  { TItemPropList }
+
   TItemPropList = class
   private
     FList: TFPObjectList;
+    FOwner: TValueListStrings;
     function GetCount: Integer;
     function GetItem(Index: Integer): TItemProp;
     procedure SetItem(Index: Integer; AValue: TItemProp);
   protected
   public
     procedure Add(AValue: TItemProp);
+    procedure Assign(Source: TItemPropList);
     procedure Clear;
     procedure Delete(Index: Integer);
     procedure Exchange(Index1, Index2: Integer);
     procedure Insert(Index: Integer; AValue: TItemProp);
   public
-    constructor Create;
+    constructor Create(AOwner: TValueListStrings);
     destructor Destroy; override;
   public
     property Count: Integer read GetCount;
@@ -370,6 +375,22 @@ begin
   FKeyDesc := AValue;
 end;
 
+procedure TItemProp.AssignTo(Dest: TPersistent);
+begin
+  if not (Dest is TItemProp) then
+    inherited AssignTo(Dest)
+  else
+  begin
+    TItemProp(Dest).EditMask := Self.EditMask;
+    TItemProp(Dest).EditStyle := Self.EditStyle;
+    TItemProp(Dest).EditStyle := Self.EditStyle;
+    TItemProp(Dest).KeyDesc := Self.KeyDesc;
+    TItemProp(Dest).PickList.Assign(Self.PickList);
+    TItemProp(Dest).MaxLength := Self.MaxLength;
+    TItemProp(Dest).ReadOnly := Self.ReadOnly;
+  end;
+end;
+
 
 { TItemPropList }
 
@@ -398,6 +419,21 @@ begin
   FList.Add(AValue);
 end;
 
+procedure TItemPropList.Assign(Source: TItemPropList);
+var
+  Index: Integer;
+  Prop: TItemProp;
+begin
+  Clear;
+  if not Assigned(Source) then Exit;
+  for Index := 0 to Source.Count - 1 do
+  begin
+    Prop := TItemProp.Create(FOwner.FOwner);
+    Prop.Assign(Source.Items[Index]);
+    Add(Prop);
+  end;
+end;
+
 procedure TItemPropList.Delete(Index: Integer);
 begin
   FList.Delete(Index);
@@ -413,8 +449,9 @@ begin
   FList.Clear;
 end;
 
-constructor TItemPropList.Create;
+constructor TItemPropList.Create(AOwner: TValueListStrings);
 begin
+  FOwner := AOwner;
   FList := TFPObjectList.Create(True);
 end;
 
@@ -471,7 +508,7 @@ constructor TValueListStrings.Create(AOwner: TValueListEditor);
 begin
   inherited Create;
   FOwner := AOwner;
-  FItemProps := TItemPropList.Create;
+  FItemProps := TItemPropList.Create(Self);
 end;
 
 destructor TValueListStrings.Destroy;
@@ -482,8 +519,9 @@ end;
 
 procedure TValueListStrings.Assign(Source: TPersistent);
 begin
-  // ToDo: Assign also ItemProps if Source is TValueListStrings
   inherited Assign(Source);
+  if (Source is TValueListStrings) then
+    FItemProps.Assign(TValueListStrings(Source).FItemProps);
 end;
 
 procedure TValueListStrings.Clear;
