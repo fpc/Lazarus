@@ -30,7 +30,7 @@ unit CodyCtrls;
 interface
 
 uses
-  types, math, contnrs, Classes, SysUtils, FPCanvas, FPimage,
+  types, math, typinfo, contnrs, Classes, SysUtils, FPCanvas, FPimage,
   LazLogger, AvgLvlTree, ComCtrls, Controls, Graphics, LCLType, Forms;
 
 type
@@ -381,21 +381,19 @@ type
     property LevelClass: TLvlGraphLevelClass read FLevelClass;
 
     procedure CreateTopologicalLevels; // create levels from edges
-    procedure ScaleNodeDrawSizes(NodeGap, HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer);
+    procedure ScaleNodeDrawSizes(NodeGapAbove, NodeGapBelow, HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer);
     procedure SetAllNodeDrawSizes(PixelPerWeight: single = 1.0; MinWeight: single = 0.0);
     procedure MarkBackEdges;
     procedure MinimizeCrossings; // set all Node.Position to minimize crossings
-    procedure MinimizeOverlappings(MinPos: integer = 0; Gap: integer = 1; aLevel: integer = -1); // set all Node.Position to minimize overlappings
+    procedure MinimizeOverlappings(MinPos: integer = 0;
+      NodeGapAbove: integer = 1; NodeGapBelow: integer = 1;
+      aLevel: integer = -1); // set all Node.Position to minimize overlappings
     procedure SetColors(Palette: TCodyCtrlPalette);
 
     // debugging
     procedure WriteDebugReport(Msg: string);
     procedure ConsistencyCheck(WithBackEdge: boolean);
   end;
-
-const
-  DefaultLvlGraphNodeWith = 10;
-  DefaultLvlGraphNodeCaptionScale = 0.7;
 
 type
   TLvlGraphCtrlOption = (
@@ -404,8 +402,18 @@ type
     );
   TLvlGraphCtrlOptions = set of TLvlGraphCtrlOption;
 
+  TLvlGraphNodeCaptionPosition = (
+    lgncLeft,
+    lgncTop,
+    lgncRight,
+    lgncBottom);
+
 const
   DefaultLvlGraphCtrlOptions = [lgoAutoLayout,lgoHighlightNodeUnderMouse];
+  DefaultLvlGraphNodeWith = 10;
+  DefaultLvlGraphNodeCaptionScale = 0.7;
+  DefaultLvlGraphNodeGap: TRect = (Left: 2; Top: 1; Right: 2; Bottom: 1);
+  DefaultLvlGraphNodeCaptionPosition = lgncTop;
 
 type
   TLvlGraphControlFlag =  (
@@ -420,20 +428,26 @@ type
   TCustomLvlGraphControl = class(TCustomControl)
   private
     FGraph: TLvlGraph;
+    FNodeCaptionPosition: TLvlGraphNodeCaptionPosition;
+    FNodeGap: TRect;
     FNodeUnderMouse: TLvlGraphNode;
     FNodeCaptionScale: single;
     FNodeWidth: integer;
     FOptions: TLvlGraphCtrlOptions;
     fUpdateLock: integer;
     FFlags: TLvlGraphControlFlags;
+    procedure DrawCaptions(const TxtH: integer);
     procedure DrawEdges(Highlighted: boolean);
     procedure DrawNodes;
+    procedure SetNodeCaptionPosition(AValue: TLvlGraphNodeCaptionPosition);
+    procedure SetNodeCaptionScale(AValue: single);
     procedure SetNodeUnderMouse(AValue: TLvlGraphNode);
     procedure SetNodeWidth(AValue: integer);
     procedure SetOptions(AValue: TLvlGraphCtrlOptions);
   protected
+    procedure AutoLayoutLevels(TxtH: LongInt);
     procedure GraphInvalidate(Sender: TObject); virtual;
-    procedure GraphStructureChanged(Sender, Element: TObject; {%H-}Operation: TOperation); virtual;
+    procedure GraphStructureChanged(Sender, Element: TObject; Operation: TOperation); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure Paint; override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -442,15 +456,19 @@ type
     destructor Destroy; override;
     procedure EraseBackground({%H-}DC: HDC); override;
     property Graph: TLvlGraph read FGraph;
-    procedure AutoLayout(RndColors: boolean = true; NodeGap: integer = 1); virtual;
+    procedure AutoLayout(RndColors: boolean = true); virtual;
     procedure Invalidate; override;
+    procedure InvalidateAutoLayout;
     procedure BeginUpdate;
     procedure EndUpdate;
     function GetNodeAt(X,Y: integer): TLvlGraphNode;
     property NodeWidth: integer read FNodeWidth write SetNodeWidth default DefaultLvlGraphNodeWith;
+    property NodeGap: TRect read FNodeGap write FNodeGap; // used by AutoLayout
     property NodeUnderMouse: TLvlGraphNode read FNodeUnderMouse write SetNodeUnderMouse;
     property Options: TLvlGraphCtrlOptions read FOptions write SetOptions default DefaultLvlGraphCtrlOptions;
-    property NodeCaptionScale: single read FNodeCaptionScale write FNodeCaptionScale default DefaultLvlGraphNodeCaptionScale;
+    property NodeCaptionScale: single read FNodeCaptionScale write SetNodeCaptionScale default DefaultLvlGraphNodeCaptionScale;
+    property NodeCaptionPosition: TLvlGraphNodeCaptionPosition
+       read FNodeCaptionPosition write SetNodeCaptionPosition default DefaultLvlGraphNodeCaptionPosition;
   end;
 
   { TLvlGraphControl }
@@ -462,6 +480,7 @@ type
     property BorderSpacing;
     property BorderStyle;
     property BorderWidth;
+    property Options;
     property Color;
     property Constraints;
     property DragKind;
@@ -511,6 +530,10 @@ procedure ShuffleCCPalette(Palette: TCodyCtrlPalette);
 function Darker(const c: TColor): TColor; overload;
 
 function CompareLGNodesByCenterPos(Node1, Node2: Pointer): integer;
+
+function dbgs(p: TLvlGraphNodeCaptionPosition): string; overload;
+function dbgs(o: TLvlGraphCtrlOption): string; overload;
+function dbgs(Options: TLvlGraphCtrlOptions): string; overload;
 
 implementation
 
@@ -665,6 +688,29 @@ begin
     Result:=0;
 end;
 
+function dbgs(p: TLvlGraphNodeCaptionPosition): string;
+begin
+  Result:=GetEnumName(typeinfo(p),ord(p));
+end;
+
+function dbgs(o: TLvlGraphCtrlOption): string;
+begin
+  Result:=GetEnumName(typeinfo(o),ord(o));
+end;
+
+function dbgs(Options: TLvlGraphCtrlOptions): string;
+var
+  o: TLvlGraphCtrlOption;
+begin
+  Result:='';
+  for o:=Low(TLvlGraphCtrlOption) to high(TLvlGraphCtrlOption) do
+    if o in Options then begin
+      if Result<>'' then Result+=',';
+      Result+=dbgs(o);
+    end;
+  Result:='['+Result+']';
+end;
+
 { TLvlGraphLevel }
 
 function TLvlGraphLevel.GetNodes(Index: integer): TLvlGraphNode;
@@ -745,8 +791,10 @@ procedure TCustomLvlGraphControl.GraphStructureChanged(Sender,
 begin
   if ((Element is TLvlGraphNode)
   or (Element is TLvlGraphEdge)) then begin
-    if FNodeUnderMouse=Element then
-      FNodeUnderMouse:=nil;
+    if Operation=opRemove then begin
+      if FNodeUnderMouse=Element then
+        FNodeUnderMouse:=nil;
+    end;
     debugln(['TCustomLvlGraphControl.GraphStructureChanged ']);
     if lgoAutoLayout in FOptions then
       Include(FFlags,lgcNeedAutoLayout);
@@ -757,7 +805,7 @@ procedure TCustomLvlGraphControl.SetNodeWidth(AValue: integer);
 begin
   if FNodeWidth=AValue then Exit;
   FNodeWidth:=AValue;
-  Invalidate;
+  InvalidateAutoLayout;
 end;
 
 procedure TCustomLvlGraphControl.SetNodeUnderMouse(AValue: TLvlGraphNode);
@@ -806,6 +854,39 @@ begin
   end;
 end;
 
+procedure TCustomLvlGraphControl.DrawCaptions(const TxtH: integer);
+var
+  Node: TLvlGraphNode;
+  j: Integer;
+  Level: TLvlGraphLevel;
+  i: Integer;
+  TxtW: Integer;
+  p: TPoint;
+begin
+  Canvas.Brush.Style:=bsClear;
+  Canvas.Font.Height:=round(single(TxtH)*NodeCaptionScale+0.5);
+  for i:=0 to Graph.LevelCount-1 do begin
+    Level:=Graph.Levels[i];
+    for j:=0 to Level.Count-1 do begin
+      Node:=Level.Nodes[j];
+      if Node.Caption='' then continue;
+      TxtW:=Canvas.TextWidth(Node.Caption);
+      case NodeCaptionPosition of
+      lgncLeft,lgncRight: p.y:=Node.DrawCenter-(TxtH div 2);
+      lgncTop: p.y:=Node.DrawPosition-NodeGap.Top-TxtH;
+      lgncBottom: p.y:=Node.DrawPositionEnd+NodeGap.Bottom;
+      end;
+      case NodeCaptionPosition of
+      lgncLeft: p.x:=Level.DrawPosition-NodeGap.Left-TxtW;
+      lgncRight: p.x:=Level.DrawPosition+NodeWidth+NodeGap.Right;
+      lgncTop,lgncBottom: p.x:=Level.DrawPosition+((NodeWidth-TxtW) div 2);
+      end;
+      //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' DrawPosition=',Node.DrawPosition,' DrawSize=',Node.DrawSize,' TxtH=',TxtH,' TxtW=',TxtW,' p=',dbgs(p)]);
+      Canvas.TextOut(p.x,p.y,Node.Caption);
+    end;
+  end;
+end;
+
 procedure TCustomLvlGraphControl.DrawNodes;
 var
   i: Integer;
@@ -827,10 +908,66 @@ begin
   end;
 end;
 
+procedure TCustomLvlGraphControl.SetNodeCaptionPosition(
+  AValue: TLvlGraphNodeCaptionPosition);
+begin
+  if FNodeCaptionPosition=AValue then Exit;
+  FNodeCaptionPosition:=AValue;
+  InvalidateAutoLayout;
+end;
+
+procedure TCustomLvlGraphControl.SetNodeCaptionScale(AValue: single);
+begin
+  if FNodeCaptionScale=AValue then Exit;
+  FNodeCaptionScale:=AValue;
+  InvalidateAutoLayout;
+end;
+
 procedure TCustomLvlGraphControl.SetOptions(AValue: TLvlGraphCtrlOptions);
 begin
   if FOptions=AValue then Exit;
   FOptions:=AValue;
+  InvalidateAutoLayout;
+end;
+
+procedure TCustomLvlGraphControl.AutoLayoutLevels(TxtH: LongInt);
+var
+  j: Integer;
+  p: Integer;
+  i: Integer;
+  LevelTxtWidths: array of integer;
+  Level: TLvlGraphLevel;
+begin
+  Canvas.Font.Height:=round(single(TxtH)*NodeCaptionScale+0.5);
+  if Graph.LevelCount=0 then exit;
+  SetLength(LevelTxtWidths,Graph.LevelCount);
+  for i:=0 to Graph.LevelCount-1 do begin
+    // compute needed width of the level
+    LevelTxtWidths[i]:=Max(NodeWidth,Canvas.TextWidth('NodeX'));
+    Level:=Graph.Levels[i];
+    for j:=0 to Level.Count-1 do
+      LevelTxtWidths[i]:=Max(LevelTxtWidths[i], Canvas.TextWidth(Level[j].Caption));
+
+    if i=0 then begin
+      // first level
+      case NodeCaptionPosition of
+      lgncLeft: p:=NodeGap.Right+LevelTxtWidths[0]+NodeGap.Left;
+      lgncRight: p:=NodeGap.Left;
+      lgncTop,lgncBottom: p:=NodeGap.Left+((LevelTxtWidths[0]-NodeWidth) div 2);
+      end;
+    end else begin
+      // following level
+      p:=Graph.Levels[i-1].DrawPosition;
+      case NodeCaptionPosition of
+      lgncLeft: p+=NodeWidth+NodeGap.Right+LevelTxtWidths[i]+NodeGap.Left;
+      lgncRight: p+=NodeWidth+NodeGap.Right+LevelTxtWidths[i-1]+NodeGap.Left;
+      lgncTop,lgncBottom:
+        p+=((LevelTxtWidths[i-1]+LevelTxtWidths[i]) div 2)+NodeGap.Right+NodeGap.Left;
+      end;
+    end;
+    Graph.Levels[i].DrawPosition:=p;
+  end;
+  SetLength(LevelTxtWidths,0);
 end;
 
 procedure TCustomLvlGraphControl.DoSetBounds(ALeft, ATop, AWidth,
@@ -843,10 +980,6 @@ procedure TCustomLvlGraphControl.Paint;
 var
   w: Integer;
   TxtH: integer;
-  i: Integer;
-  Level: TLvlGraphLevel;
-  j: Integer;
-  Node: TLvlGraphNode;
 begin
   inherited Paint;
 
@@ -875,23 +1008,11 @@ begin
     Canvas.TextOut((ClientWidth-w) div 2,round(0.25*TxtH),Caption);
   end;
 
-  // draw edges and nodes
+  // draw
   DrawEdges(false); // draw normal edges
   DrawEdges(true); // draw highlighted edges
   DrawNodes;
-
-  // draw captions
-  Canvas.Brush.Style:=bsClear;
-  Canvas.Font.Height:=round(single(TxtH)*NodeCaptionScale+0.5);
-  for i:=0 to Graph.LevelCount-1 do begin
-    Level:=Graph.Levels[i];
-    for j:=0 to Level.Count-1 do begin
-      Node:=Level.Nodes[j];
-      //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' DrawPosition=',Node.DrawPosition,' DrawSize=',Node.DrawSize,' TxtH=',TxtH]);
-      Canvas.TextOut(Level.DrawPosition+NodeWidth+2,
-        Node.DrawCenter-(TxtH div 2),Node.Caption);
-    end;
-  end;
+  DrawCaptions(TxtH);
 end;
 
 procedure TCustomLvlGraphControl.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -909,6 +1030,8 @@ begin
   FGraph.OnStructureChanged:=@GraphStructureChanged;
   FNodeWidth:=DefaultLvlGraphNodeWith;
   FNodeCaptionScale:=DefaultLvlGraphNodeCaptionScale;
+  FNodeGap:=DefaultLvlGraphNodeGap;
+  FNodeCaptionPosition:=DefaultLvlGraphNodeCaptionPosition;
 end;
 
 destructor TCustomLvlGraphControl.Destroy;
@@ -922,20 +1045,16 @@ begin
   // Paint paints all, no need to erase background
 end;
 
-procedure TCustomLvlGraphControl.AutoLayout(RndColors: boolean; NodeGap: integer
-  );
+procedure TCustomLvlGraphControl.AutoLayout(RndColors: boolean);
 { Min/MaxPixelPerWeight: used to scale Node.DrawSize depending on weight of
                          incoming and outgoing edges
   NodeGap: space between nodes
 }
 var
-  i: Integer;
   HeaderHeight: integer;
   Palette: TCodyCtrlPalette;
   TxtH: LongInt;
-  p: Integer;
-  Level: TLvlGraphLevel;
-  j: Integer;
+  Gap: TRect;
 begin
   debugln(['TCustomLvlGraphControl.AutoLayout ',DbgSName(Self),' ClientRect=',dbgs(ClientRect)]);
   Exclude(FFlags,lgcNeedAutoLayout);
@@ -956,31 +1075,25 @@ begin
     Graph.CreateTopologicalLevels;
 
     // Level DrawPosition
-    Canvas.Font.Height:=round(single(TxtH)*NodeCaptionScale+0.5);
-    for i:=0 to Graph.LevelCount-1 do begin
-      if i=0 then
-        p:=NodeGap
-      else begin
-        p:=Canvas.TextWidth('NodeX');
-        Level:=Graph.Levels[i-1];
-        for j:=0 to Level.Count-1 do
-          p:=Max(p,Canvas.TextWidth(Level[j].Caption));
-        p:=Graph.Levels[i-1].DrawPosition+NodeWidth+NodeGap+p+NodeGap+NodeWidth;
-      end;
-      Graph.Levels[i].DrawPosition:=p;
+    AutoLayoutLevels(TxtH);
+
+    Gap:=NodeGap;
+    case NodeCaptionPosition of
+    lgncTop: Gap.Top+=TxtH;
+    lgncBottom: Gap.Bottom+=TxtH;
     end;
 
     // scale Nodes.DrawSize
     // Preferably the smallest node should be the size of the text
     // Preferably the largest level should fit without needing a scrollbar
-    Graph.ScaleNodeDrawSizes(NodeGap,Screen.Height*2,1,
+    Graph.ScaleNodeDrawSizes(Gap.Top,Gap.Bottom,Screen.Height*2,1,
       ClientHeight-HeaderHeight,round(single(TxtH)*NodeCaptionScale+0.5));
 
     // sort nodes within levels to avoid crossings
     Graph.MinimizeCrossings;
 
     // position nodes without overlapping
-    Graph.MinimizeOverlappings(HeaderHeight,NodeGap);
+    Graph.MinimizeOverlappings(HeaderHeight,Gap.Top,Gap.Bottom);
 
     if RndColors then begin
       Palette:=GetCCPaletteRGB(Graph.NodeCount,true);
@@ -996,6 +1109,13 @@ procedure TCustomLvlGraphControl.Invalidate;
 begin
   Exclude(FFlags,lgcNeedInvalidate);
   inherited Invalidate;
+end;
+
+procedure TCustomLvlGraphControl.InvalidateAutoLayout;
+begin
+  if lgoAutoLayout in Options then
+    Include(FFlags,lgcNeedAutoLayout);
+  Invalidate;
 end;
 
 procedure TCustomLvlGraphControl.BeginUpdate;
@@ -1339,8 +1459,8 @@ begin
   {$ENDIF}
 end;
 
-procedure TLvlGraph.ScaleNodeDrawSizes(NodeGap, HardMaxTotal, HardMinOneNode,
-  SoftMaxTotal, SoftMinOneNode: integer);
+procedure TLvlGraph.ScaleNodeDrawSizes(NodeGapAbove, NodeGapBelow,
+  HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer);
 { NodeGap: minimum space between nodes
   HardMaxTotal: maximum size of largest level
   HardMinOneNode: minimum size of a node
@@ -1362,9 +1482,11 @@ var
   DrawHeight: integer;
   PixelPerWeight, MaxPixelPerWeight, PrefMaxPixelPerWeight: single;
 begin
-  debugln(['TLvlGraph.ScaleNodeDrawSizes NodeGap=',NodeGap,
-    ' HardMaxTotal=',HardMaxTotal,' HardMinOneNode=',HardMinOneNode,
-    ' SoftMaxTotal=',SoftMaxTotal,' SoftMinOneNode=',SoftMinOneNode]);
+  //debugln(['TLvlGraph.ScaleNodeDrawSizes',
+  //  ' NodeGapAbove=',NodeGapAbove,' NodeGapBelow=',NodeGapBelow,
+  //  ' HardMaxTotal=',HardMaxTotal,' HardMinOneNode=',HardMinOneNode,
+  //  ' SoftMaxTotal=',SoftMaxTotal,' SoftMinOneNode=',SoftMinOneNode]);
+
   // sanitize input
   HardMinOneNode:=Max(0,HardMinOneNode);
   SoftMinOneNode:=Max(SoftMinOneNode,HardMinOneNode);
@@ -1389,9 +1511,9 @@ begin
     MinPixelPerWeight:=single(HardMinOneNode);
     PrefMinPixelPerWeight:=single(SoftMinOneNode);
   end;
-  debugln(['TLvlGraph.ScaleNodeDrawSizes SmallestWeight=',SmallestWeight,
-    ' MinPixelPerWeight=',MinPixelPerWeight,
-    ' PrefMinPixelPerWeight=',PrefMinPixelPerWeight]);
+  //debugln(['TLvlGraph.ScaleNodeDrawSizes SmallestWeight=',SmallestWeight,
+  //  ' MinPixelPerWeight=',MinPixelPerWeight,
+  //  ' PrefMinPixelPerWeight=',PrefMinPixelPerWeight]);
 
   MaxPixelPerWeight:=0.0;
   PrefMaxPixelPerWeight:=0.0;
@@ -1401,16 +1523,16 @@ begin
     LvlWeight:=Level.GetTotalInOutWeights;
     if LvlWeight=0.0 then continue;
     // DrawHeight - how much pixel left to draw the weight
-    DrawHeight:=Max(1,HardMaxTotal-(Level.Count-1)*NodeGap);
+    DrawHeight:=Max(1,HardMaxTotal-(Level.Count*(NodeGapAbove+NodeGapBelow)));
     PixelPerWeight:=single(DrawHeight)/LvlWeight;
     if (MaxPixelPerWeight=0.0) or (MaxPixelPerWeight>PixelPerWeight) then
       MaxPixelPerWeight:=PixelPerWeight;
-    DrawHeight:=Max(1,SoftMaxTotal-(Level.Count-1)*NodeGap);
+    DrawHeight:=Max(1,SoftMaxTotal-(Level.Count*(NodeGapAbove+NodeGapBelow)));
     PixelPerWeight:=single(DrawHeight)/LvlWeight;
     if (PrefMaxPixelPerWeight=0.0) or (PrefMaxPixelPerWeight>PixelPerWeight) then
       PrefMaxPixelPerWeight:=PixelPerWeight;
   end;
-  debugln(['TLvlGraph.ScaleNodeDrawSizes MaxPixelPerWeight=',MaxPixelPerWeight,' PrefMaxPixelPerWeight=',PrefMaxPixelPerWeight]);
+  //debugln(['TLvlGraph.ScaleNodeDrawSizes MaxPixelPerWeight=',MaxPixelPerWeight,' PrefMaxPixelPerWeight=',PrefMaxPixelPerWeight]);
 
   PixelPerWeight:=PrefMinPixelPerWeight;
   if PrefMaxPixelPerWeight>0.0 then
@@ -1419,7 +1541,7 @@ begin
   if MaxPixelPerWeight>0.0 then
     PixelPerWeight:=Min(PixelPerWeight,MaxPixelPerWeight);
 
-  debugln(['TLvlGraph.ScaleNodeDrawSizes PixelPerWeight=',PixelPerWeight]);
+  //debugln(['TLvlGraph.ScaleNodeDrawSizes PixelPerWeight=',PixelPerWeight]);
   SetAllNodeDrawSizes(PixelPerWeight,SmallestWeight);
 end;
 
@@ -1460,8 +1582,8 @@ begin
   end;
 end;
 
-procedure TLvlGraph.MinimizeOverlappings(MinPos: integer; Gap: integer;
-  aLevel: integer);
+procedure TLvlGraph.MinimizeOverlappings(MinPos: integer;
+  NodeGapAbove: integer; NodeGapBelow: integer; aLevel: integer);
 var
   i: Integer;
   Tree: TAvgLvlTree;
@@ -1472,7 +1594,7 @@ var
 begin
   if aLevel<0 then begin
     for i:=0 to LevelCount-1 do
-      MinimizeOverlappings(MinPos,Gap,i);
+      MinimizeOverlappings(MinPos,NodeGapAbove,NodeGapBelow,i);
   end else begin
     Level:=Levels[aLevel];
     Tree:=TAvgLvlTree.Create(@CompareLGNodesByCenterPos);
@@ -1484,9 +1606,9 @@ begin
       while AVLNode<>nil do begin
         Node:=TLvlGraphNode(AVLNode.Data);
         if Last=nil then
-          Node.DrawPosition:=MinPos
+          Node.DrawPosition:=MinPos+NodeGapAbove
         else
-          Node.DrawPosition:=Max(Node.DrawPosition,Last.DrawPositionEnd+Gap);
+          Node.DrawPosition:=Max(Node.DrawPosition,Last.DrawPositionEnd+NodeGapBelow+NodeGapAbove);
         Last:=Node;
         AVLNode:=Tree.FindSuccessor(AVLNode);
       end;
