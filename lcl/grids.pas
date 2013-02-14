@@ -8318,6 +8318,7 @@ begin
     Cfg.SetValue('grid/design/defaultcolwidth', DefaultColWidth);
     Cfg.SetValue('grid/design/isdefaultrowheight', ord(IsDefRowHeightStored));
     Cfg.SetValue('grid/design/defaultrowheight',DefaultRowHeight);
+    Cfg.Setvalue('grid/design/color',ColorToString(Color));
 
     if Columns.Enabled then
       saveColumns(cfg, GRIDFILEVERSION)
@@ -8469,6 +8470,10 @@ begin
       if k<>0 then
         DefaultRowheight:=Cfg.GetValue('grid/design/defaultrowheight', DEFROWHEIGHT);
       DefaultColWidth:=Cfg.getValue('grid/design/defaultcolwidth', DEFCOLWIDTH);
+      try
+        Color := StringToColor(cfg.GetValue('grid/design/color', 'clWindow'));
+      except
+      end;
 
       if not Columns.Enabled then begin
         Path:='grid/design/columns/';
