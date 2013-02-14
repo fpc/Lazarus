@@ -261,6 +261,7 @@ type
     procedure SetLevel(AValue: TLvlGraphLevel);
     procedure SetSelected(AValue: boolean);
     procedure UnbindLevel;
+    procedure SelectionChanged;
   public
     Data: Pointer; // free for user data
     constructor Create(TheGraph: TLvlGraph; TheCaption: string; TheLevel: TLvlGraphLevel);
@@ -352,6 +353,7 @@ type
     FOnInvalidate: TNotifyEvent;
     FNodes: TFPList; // list of TLvlGraphNode
     fLevels: TFPList;
+    FOnSelectionChanged: TNotifyEvent;
     FOnStructureChanged: TOnLvlGraphStructureChanged;
     function GetLevelCount: integer;
     function GetLevels(Index: integer): TLvlGraphLevel;
@@ -360,6 +362,7 @@ type
     procedure InternalRemoveNode(Node: TLvlGraphNode);
     procedure InternalRemoveLevel(Lvl: TLvlGraphLevel);
   protected
+    procedure SelectionChanged;
   public
     Data: Pointer; // free for user data
     constructor Create;
@@ -369,6 +372,7 @@ type
     procedure Invalidate;
     procedure StructureChanged(Element: TObject; Operation: TOperation);
     property OnInvalidate: TNotifyEvent read FOnInvalidate write FOnInvalidate;
+    property OnSelectionChanged: TNotifyEvent read FOnSelectionChanged write FOnSelectionChanged;
     property OnStructureChanged: TOnLvlGraphStructureChanged read FOnStructureChanged write FOnStructureChanged;// node, edge, level was added/deleted
 
     // nodes
@@ -379,6 +383,8 @@ type
     property FirstSelected: TLvlGraphNode read FFirstSelected;
     property LastSelected: TLvlGraphNode read FLastSelected;
     procedure ClearSelection;
+    procedure SingleSelect(Node: TLvlGraphNode);
+    function IsMultiSelection: boolean;
 
     // edges
     function GetEdge(SourceCaption, TargetCaption: string;
@@ -484,6 +490,7 @@ type
     FGraph: TLvlGraph;
     FNodeStyle: TLvlGraphNodeStyle;
     FNodeUnderMouse: TLvlGraphNode;
+    FOnSelectionChanged: TNotifyEvent;
     FOptions: TLvlGraphCtrlOptions;
     fUpdateLock: integer;
     FFlags: TLvlGraphControlFlags;
@@ -494,8 +501,9 @@ type
     procedure SetNodeUnderMouse(AValue: TLvlGraphNode);
     procedure SetOptions(AValue: TLvlGraphCtrlOptions);
   protected
-    procedure AutoLayoutLevels(TxtH: LongInt);
+    procedure AutoLayoutLevels(TxtH: LongInt); virtual;
     procedure GraphInvalidate(Sender: TObject); virtual;
+    procedure GraphSelectionChanged(Sender: TObject); virtual;
     procedure GraphStructureChanged(Sender, Element: TObject; Operation: TOperation); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure Paint; override;
@@ -517,6 +525,7 @@ type
     property NodeStyle: TLvlGraphNodeStyle read FNodeStyle write SetNodeStyle;
     property NodeUnderMouse: TLvlGraphNode read FNodeUnderMouse write SetNodeUnderMouse;
     property Options: TLvlGraphCtrlOptions read FOptions write SetOptions default DefaultLvlGraphCtrlOptions;
+    property OnSelectionChanged: TNotifyEvent read FOnSelectionChanged write FOnSelectionChanged;
   end;
 
   { TLvlGraphControl }
@@ -552,6 +561,7 @@ type
     property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
+    property OnSelectionChanged;
     property OnShowHint;
     property OnStartDrag;
     property OnUTF8KeyPress;
@@ -1001,6 +1011,12 @@ begin
   end;
 end;
 
+procedure TCustomLvlGraphControl.GraphSelectionChanged(Sender: TObject);
+begin
+  if OnSelectionChanged<>nil then
+    OnSelectionChanged(Self);
+end;
+
 procedure TCustomLvlGraphControl.DrawCaptions(const TxtH: integer);
 var
   Node: TLvlGraphNode;
@@ -1199,6 +1215,7 @@ begin
   FOptions:=DefaultLvlGraphCtrlOptions;
   FGraph:=TLvlGraph.Create;
   FGraph.OnInvalidate:=@GraphInvalidate;
+  FGraph.OnSelectionChanged:=@GraphSelectionChanged;
   FGraph.OnStructureChanged:=@GraphStructureChanged;
   FNodeStyle:=TLvlGraphNodeStyle.Create(Self);
 end;
@@ -1457,6 +1474,19 @@ begin
     FirstSelected.Selected:=false;
 end;
 
+procedure TLvlGraph.SingleSelect(Node: TLvlGraphNode);
+begin
+  if (Node=FirstSelected) and (Node.NextSelected=nil) then exit;
+  Node.Selected:=true;
+  while FirstSelected<>Node do
+    FirstSelected.Selected:=false;
+end;
+
+function TLvlGraph.IsMultiSelection: boolean;
+begin
+  Result:=(FirstSelected<>nil) and (FirstSelected.NextSelected<>nil);
+end;
+
 function TLvlGraph.GetEdge(SourceCaption, TargetCaption: string;
   CreateIfNotExists: boolean): TLvlGraphEdge;
 var
@@ -1492,6 +1522,12 @@ begin
   for i:=Lvl.Index to LevelCount-1 do
     Levels[i].FIndex:=i;
   StructureChanged(Lvl,opRemove);
+end;
+
+procedure TLvlGraph.SelectionChanged;
+begin
+  if OnSelectionChanged<>nil then
+    OnSelectionChanged(Self);
 end;
 
 procedure TLvlGraph.CreateTopologicalLevels;
@@ -1981,37 +2017,63 @@ begin
 end;
 
 procedure TLvlGraphNode.SetSelected(AValue: boolean);
+
+  procedure Unselect;
+  begin
+    if FPrevSelected<>nil then
+      FPrevSelected.FNextSelected:=FNextSelected
+    else
+      Graph.FFirstSelected:=FNextSelected;
+    if FNextSelected<>nil then
+      FNextSelected.FPrevSelected:=FPrevSelected
+    else
+      Graph.FLastSelected:=FPrevSelected;
+    FNextSelected:=nil;
+    FPrevSelected:=nil;
+  end;
+
+  procedure Select;
+  begin
+    FPrevSelected:=Graph.LastSelected;
+    if FPrevSelected<>nil then
+      FPrevSelected.FNextSelected:=Self
+    else
+      Graph.FFirstSelected:=Self;
+    Graph.FLastSelected:=Self;
+  end;
+
 begin
-  if FSelected=AValue then Exit;
+  if FSelected=AValue then begin
+    if Graph=nil then exit;
+    if Graph.LastSelected=Self then exit;
+    // make this node the last selected
+    Unselect;
+    Select;
+    SelectionChanged;
+    exit;
+  end;
+  // change Selected
   FSelected:=AValue;
   if Graph<>nil then begin
     if Selected then begin
-      FPrevSelected:=Graph.LastSelected;
-      if FPrevSelected<>nil then
-        FPrevSelected.FNextSelected:=Self
-      else
-        Graph.FFirstSelected:=Self;
-      Graph.FLastSelected:=Self;
+      Select;
     end else begin
-      if FPrevSelected<>nil then
-        FPrevSelected.FNextSelected:=FNextSelected
-      else
-        Graph.FFirstSelected:=FNextSelected;
-      if FNextSelected<>nil then
-        FNextSelected.FPrevSelected:=FPrevSelected
-      else
-        Graph.FLastSelected:=FPrevSelected;
-      FNextSelected:=nil;
-      FPrevSelected:=nil;
+      Unselect;
     end;
   end;
-  Invalidate;
+  SelectionChanged;
 end;
 
 procedure TLvlGraphNode.UnbindLevel;
 begin
   if FLevel<>nil then
     FLevel.fNodes.Remove(Self);
+end;
+
+procedure TLvlGraphNode.SelectionChanged;
+begin
+  if Graph<>nil then
+    Graph.SelectionChanged;
 end;
 
 procedure TLvlGraphNode.Invalidate;
