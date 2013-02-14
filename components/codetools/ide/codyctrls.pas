@@ -454,14 +454,14 @@ type
     procedure Assign(Source: TPersistent); override;
     function Equals(Obj: TObject): boolean; override;
     property Control: TCustomLvlGraphControl read FControl;
-    property Width: integer read FWidth write SetWidth default DefaultLvlGraphNodeWith;
+    property CaptionPosition: TLvlGraphNodeCaptionPosition
+      read FCaptionPosition write SetCaptionPosition default DefaultLvlGraphNodeCaptionPosition;
+    property CaptionScale: single read FCaptionScale write SetCaptionScale default DefaultLvlGraphNodeCaptionScale;
     property GapLeft: integer read FGapLeft write SetGapLeft default DefaultLvlGraphNodeGapLeft; // used by AutoLayout
     property GapTop: integer read FGapTop write SetGapTop default DefaultLvlGraphNodeGapTop; // used by AutoLayout
     property GapRight: integer read FGapRight write SetGapRight default DefaultLvlGraphNodeGapRight; // used by AutoLayout
     property GapBottom: integer read FGapBottom write SetGapBottom default DefaultLvlGraphNodeGapBottom; // used by AutoLayout
-    property CaptionScale: single read FCaptionScale write SetCaptionScale default DefaultLvlGraphNodeCaptionScale;
-    property CaptionPosition: TLvlGraphNodeCaptionPosition
-       read FCaptionPosition write SetCaptionPosition default DefaultLvlGraphNodeCaptionPosition;
+    property Width: integer read FWidth write SetWidth default DefaultLvlGraphNodeWith;
   end;
 
   { TCustomLvlGraphControl }
@@ -498,9 +498,10 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     function GetNodeAt(X,Y: integer): TLvlGraphNode;
+  public
+    property NodeStyle: TLvlGraphNodeStyle read FNodeStyle write SetNodeStyle;
     property NodeUnderMouse: TLvlGraphNode read FNodeUnderMouse write SetNodeUnderMouse;
     property Options: TLvlGraphCtrlOptions read FOptions write SetOptions default DefaultLvlGraphCtrlOptions;
-    property NodeStyle: TLvlGraphNodeStyle read FNodeStyle write SetNodeStyle;
   end;
 
   { TLvlGraphControl }
@@ -512,23 +513,14 @@ type
     property BorderSpacing;
     property BorderStyle;
     property BorderWidth;
-    property Options;
     property Color;
     property Constraints;
-    property DragKind;
     property DragCursor;
+    property DragKind;
     property DragMode;
     property Enabled;
     property Font;
-    property ParentColor default False;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop default True;
-    property Tag;
-    property Visible;
+    property NodeStyle;
     property OnClick;
     property OnContextPopup;
     property OnDblClick;
@@ -548,6 +540,16 @@ type
     property OnShowHint;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property Options;
+    property ParentColor default False;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop default True;
+    property Tag;
+    property Visible;
   end;
 
 procedure FreeTVNodeData(TV: TCustomTreeView);
