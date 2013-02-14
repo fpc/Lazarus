@@ -246,9 +246,12 @@ type
     FDrawSize: integer;
     FInWeight: single;
     FLevel: TLvlGraphLevel;
+    FNextSelected: TLvlGraphNode;
     FOutEdges: TFPList; // list of TLvlGraphEdge
     FDrawPosition: integer;
     FOutWeight: single;
+    FPrevSelected: TLvlGraphNode;
+    FSelected: boolean;
     function GetInEdges(Index: integer): TLvlGraphEdge;
     function GetOutEdges(Index: integer): TLvlGraphEdge;
     procedure SetCaption(AValue: string);
@@ -256,6 +259,7 @@ type
     procedure OnLevelDestroy;
     procedure SetDrawSize(AValue: integer);
     procedure SetLevel(AValue: TLvlGraphLevel);
+    procedure SetSelected(AValue: boolean);
     procedure UnbindLevel;
   public
     Data: Pointer; // free for user data
@@ -274,11 +278,14 @@ type
     function FindOutEdge(Target: TLvlGraphNode): TLvlGraphEdge;
     function OutEdgeCount: integer;
     property OutEdges[Index: integer]: TLvlGraphEdge read GetOutEdges;
+    property Level: TLvlGraphLevel read FLevel write SetLevel;
+    property Selected: boolean read FSelected write SetSelected;
+    property NextSelected: TLvlGraphNode read FNextSelected;
+    property PrevSelected: TLvlGraphNode read FPrevSelected;
     property DrawPosition: integer read FDrawPosition write FDrawPosition; // position in a level
+    property DrawSize: integer read FDrawSize write SetDrawSize default 1;
     function DrawCenter: integer;
     function DrawPositionEnd: integer;// = DrawPosition+Max(InSize,OutSize)
-    property DrawSize: integer read FDrawSize write SetDrawSize default 1;
-    property Level: TLvlGraphLevel read FLevel write SetLevel;
     property InWeight: single read FInWeight; // total weight of InEdges
     property OutWeight: single read FOutWeight; // total weight of OutEdges
   end;
@@ -338,6 +345,8 @@ type
   TLvlGraph = class(TPersistent)
   private
     FEdgeClass: TLvlGraphEdgeClass;
+    FFirstSelected: TLvlGraphNode;
+    FLastSelected: TLvlGraphNode;
     FLevelClass: TLvlGraphLevelClass;
     FNodeClass: TLvlGraphNodeClass;
     FOnInvalidate: TNotifyEvent;
@@ -367,6 +376,9 @@ type
     property Nodes[Index: integer]: TLvlGraphNode read GetNodes;
     function GetNode(aCaption: string; CreateIfNotExists: boolean): TLvlGraphNode;
     property NodeClass: TLvlGraphNodeClass read FNodeClass;
+    property FirstSelected: TLvlGraphNode read FFirstSelected;
+    property LastSelected: TLvlGraphNode read FLastSelected;
+    procedure ClearSelection;
 
     // edges
     function GetEdge(SourceCaption, TargetCaption: string;
@@ -398,7 +410,8 @@ type
 type
   TLvlGraphCtrlOption = (
     lgoAutoLayout, // automatic graph layout after graph was changed
-    lgoHighlightNodeUnderMouse // when mouse over node highlight node and its edges
+    lgoHighlightNodeUnderMouse, // when mouse over node highlight node and its edges
+    lgoMouseSelects
     );
   TLvlGraphCtrlOptions = set of TLvlGraphCtrlOption;
 
@@ -409,7 +422,7 @@ type
     lgncBottom);
 
 const
-  DefaultLvlGraphCtrlOptions = [lgoAutoLayout,lgoHighlightNodeUnderMouse];
+  DefaultLvlGraphCtrlOptions = [lgoAutoLayout,lgoHighlightNodeUnderMouse,lgoMouseSelects];
   DefaultLvlGraphNodeWith = 10;
   DefaultLvlGraphNodeCaptionScale = 0.7;
   DefaultLvlGraphNodeCaptionPosition = lgncTop;
@@ -487,6 +500,8 @@ type
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure Paint; override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer
+      ); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -995,7 +1010,6 @@ var
   TxtW: Integer;
   p: TPoint;
 begin
-  Canvas.Brush.Style:=bsClear;
   Canvas.Font.Height:=round(single(TxtH)*NodeStyle.CaptionScale+0.5);
   for i:=0 to Graph.LevelCount-1 do begin
     Level:=Graph.Levels[i];
@@ -1013,7 +1027,14 @@ begin
       lgncRight: p.x:=Level.DrawPosition+NodeStyle.Width+NodeStyle.GapRight;
       lgncTop,lgncBottom: p.x:=Level.DrawPosition+((NodeStyle.Width-TxtW) div 2);
       end;
-      //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' DrawPosition=',Node.DrawPosition,' DrawSize=',Node.DrawSize,' TxtH=',TxtH,' TxtW=',TxtW,' p=',dbgs(p)]);
+      //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' DrawPosition=',Node.DrawPosition,' DrawSize=',Node.DrawSize,' TxtH=',TxtH,' TxtW=',TxtW,' p=',dbgs(p),' Selected=',Node.Selected]);
+      if Node.Selected then begin
+        Canvas.Brush.Style:=bsSolid;
+        Canvas.Brush.Color:=clHighlight;
+      end else begin
+        Canvas.Brush.Style:=bsClear;
+        Canvas.Brush.Color:=clNone;
+      end;
       Canvas.TextOut(p.x,p.y,Node.Caption);
     end;
   end;
@@ -1142,6 +1163,34 @@ procedure TCustomLvlGraphControl.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
   NodeUnderMouse:=GetNodeAt(X,Y);
+end;
+
+procedure TCustomLvlGraphControl.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  Node: TLvlGraphNode;
+begin
+  BeginUpdate;
+  try
+    inherited MouseDown(Button, Shift, X, Y);
+    Node:=GetNodeAt(X,Y);
+    if Node<>nil then begin
+      if Button=mbLeft then begin
+        if lgoMouseSelects in Options then begin
+          if ssCtrl in Shift then begin
+            // toggle selection
+            Node.Selected:=not Node.Selected;
+          end else begin
+            // single selection
+            Graph.ClearSelection;
+            Node.Selected:=true;
+          end;
+        end;
+      end;
+    end;
+  finally
+    EndUpdate;
+  end;
 end;
 
 constructor TCustomLvlGraphControl.Create(AOwner: TComponent);
@@ -1400,6 +1449,12 @@ begin
     StructureChanged(Result,opInsert);
   end else
     Result:=nil;
+end;
+
+procedure TLvlGraph.ClearSelection;
+begin
+  while FirstSelected<>nil do
+    FirstSelected.Selected:=false;
 end;
 
 function TLvlGraph.GetEdge(SourceCaption, TargetCaption: string;
@@ -1925,6 +1980,34 @@ begin
   FLevel.fNodes.Add(Self);
 end;
 
+procedure TLvlGraphNode.SetSelected(AValue: boolean);
+begin
+  if FSelected=AValue then Exit;
+  FSelected:=AValue;
+  if Graph<>nil then begin
+    if Selected then begin
+      FPrevSelected:=Graph.LastSelected;
+      if FPrevSelected<>nil then
+        FPrevSelected.FNextSelected:=Self
+      else
+        Graph.FFirstSelected:=Self;
+      Graph.FLastSelected:=Self;
+    end else begin
+      if FPrevSelected<>nil then
+        FPrevSelected.FNextSelected:=FNextSelected
+      else
+        Graph.FFirstSelected:=FNextSelected;
+      if FNextSelected<>nil then
+        FNextSelected.FPrevSelected:=FPrevSelected
+      else
+        Graph.FLastSelected:=FPrevSelected;
+      FNextSelected:=nil;
+      FPrevSelected:=nil;
+    end;
+  end;
+  Invalidate;
+end;
+
 procedure TLvlGraphNode.UnbindLevel;
 begin
   if FLevel<>nil then
@@ -1950,6 +2033,7 @@ end;
 
 destructor TLvlGraphNode.Destroy;
 begin
+  Selected:=false;
   Clear;
   UnbindLevel;
   if Graph<>nil then
