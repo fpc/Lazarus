@@ -23,6 +23,7 @@
 unit WSStdCtrls;
 
 {$mode objfpc}{$H+}
+{$I lcl_defines.inc}
 
 interface
 ////////////////////////////////////////////////////

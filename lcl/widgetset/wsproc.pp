@@ -25,6 +25,7 @@
 unit WSProc;
 
 {$mode objfpc}{$H+}
+{$I lcl_defines.inc}
 
 interface
 

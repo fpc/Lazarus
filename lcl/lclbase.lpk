@@ -30,7 +30,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="290">
+    <Files Count="291">
       <Item1>
         <Filename Value="barchart.pp"/>
         <UnitName Value="BarChart"/>
@@ -1196,6 +1196,10 @@
         <Filename Value="include/sysenvapis_unix.inc"/>
         <Type Value="Include"/>
       </Item290>
+      <Item291>
+        <Filename Value="include/lcl_defines.inc"/>
+        <Type Value="Include"/>
+      </Item291>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>

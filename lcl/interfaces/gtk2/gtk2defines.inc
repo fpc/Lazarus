@@ -94,3 +94,7 @@
 // See http://bugs.freepascal.org/view.php?id=18966
 {$define Gtk2CallMouseDownBeforeContext}
 
+{$IF FPC_FULLVERSION>=20701}
+  {$OPTIMIZATION NOREMOVEEMPTYPROCS}
+{$ENDIF}
+

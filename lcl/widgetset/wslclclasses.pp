@@ -23,6 +23,7 @@
 unit WSLCLClasses;
 
 {$mode objfpc}{$H+}
+{$I lcl_defines.inc}
 
 {off$DEFINE VerboseWSRegistration}
 {off$DEFINE VerboseWSRegistration_methods}

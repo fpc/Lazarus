@@ -23,6 +23,7 @@
 unit WSReferences;
 
 {$mode objfpc}{$H+}
+{$I lcl_defines.inc}
 
 interface
 

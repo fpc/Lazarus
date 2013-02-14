@@ -3238,7 +3238,7 @@ var
   ReqFlags: TPkgIntfRequiredFlags;
 begin
   {$IFDEF VerbosePkgCompile}
-  debugln('TLazPackageGraph.CompileRequiredPackages A ',dbgs(Policy));
+  debugln('TLazPackageGraph.CompileRequiredPackages A MinPolicy=',dbgs(Policy),' SkipDesignTimePackages=',SkipDesignTimePackages);
   {$ENDIF}
   ReqFlags:=[pirCompileOrder];
   if SkipDesignTimePackages then
@@ -3394,7 +3394,7 @@ begin
       end;
 
       // create external tool to run the compiler
-      //DebugLn('TPkgManager.DoCompilePackage WorkingDir="',APackage.Directory,'"');
+      //DebugLn('TLazPackageGraph.CompilePackage WorkingDir="',APackage.Directory,'"');
 
       if (not APackage.CompilerOptions.SkipCompiler)
       and (not (pcfDoNotCompilePackage in Flags)) then begin

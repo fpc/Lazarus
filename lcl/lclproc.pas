@@ -24,9 +24,8 @@
 }
 unit LCLProc;
 
-{$mode objfpc}{$H+}
+{$I lcl_defines.inc}
 {$inline on}
-{$include include/lcl_defines.inc}
 
 interface
 

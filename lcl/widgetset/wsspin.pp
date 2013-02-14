@@ -23,6 +23,7 @@
 unit WSSpin;
 
 {$mode objfpc}{$H+}
+{$I lcl_defines.inc}
 
 interface
 ////////////////////////////////////////////////////
