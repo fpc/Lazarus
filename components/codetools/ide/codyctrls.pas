@@ -412,8 +412,11 @@ const
   DefaultLvlGraphCtrlOptions = [lgoAutoLayout,lgoHighlightNodeUnderMouse];
   DefaultLvlGraphNodeWith = 10;
   DefaultLvlGraphNodeCaptionScale = 0.7;
-  DefaultLvlGraphNodeGap: TRect = (Left: 2; Top: 1; Right: 2; Bottom: 1);
   DefaultLvlGraphNodeCaptionPosition = lgncTop;
+  DefaultLvlGraphNodeGapLeft   = 2;
+  DefaultLvlGraphNodeGapRight  = 2;
+  DefaultLvlGraphNodeGapTop    = 1;
+  DefaultLvlGraphNodeGapBottom = 1;
 
 type
   TLvlGraphControlFlag =  (
@@ -423,26 +426,59 @@ type
     );
   TLvlGraphControlFlags = set of TLvlGraphControlFlag;
 
+  TCustomLvlGraphControl = class;
+
+  { TLvlGraphNodeStyle }
+
+  TLvlGraphNodeStyle = class(TPersistent)
+  private
+    FCaptionPosition: TLvlGraphNodeCaptionPosition;
+    FCaptionScale: single;
+    FControl: TCustomLvlGraphControl;
+    FGapBottom: integer;
+    FGapLeft: integer;
+    FGapRight: integer;
+    FGapTop: integer;
+    FWidth: integer;
+    procedure SetCaptionPosition(AValue: TLvlGraphNodeCaptionPosition);
+    procedure SetCaptionScale(AValue: single);
+    procedure SetGapBottom(AValue: integer);
+    procedure SetGapLeft(AValue: integer);
+    procedure SetGapRight(AValue: integer);
+    procedure SetGapTop(AValue: integer);
+    procedure SetWidth(AValue: integer);
+  public
+    constructor Create(AControl: TCustomLvlGraphControl);
+    destructor Destroy; override;
+  published
+    procedure Assign(Source: TPersistent); override;
+    function Equals(Obj: TObject): boolean; override;
+    property Control: TCustomLvlGraphControl read FControl;
+    property Width: integer read FWidth write SetWidth default DefaultLvlGraphNodeWith;
+    property GapLeft: integer read FGapLeft write SetGapLeft default DefaultLvlGraphNodeGapLeft; // used by AutoLayout
+    property GapTop: integer read FGapTop write SetGapTop default DefaultLvlGraphNodeGapTop; // used by AutoLayout
+    property GapRight: integer read FGapRight write SetGapRight default DefaultLvlGraphNodeGapRight; // used by AutoLayout
+    property GapBottom: integer read FGapBottom write SetGapBottom default DefaultLvlGraphNodeGapBottom; // used by AutoLayout
+    property CaptionScale: single read FCaptionScale write SetCaptionScale default DefaultLvlGraphNodeCaptionScale;
+    property CaptionPosition: TLvlGraphNodeCaptionPosition
+       read FCaptionPosition write SetCaptionPosition default DefaultLvlGraphNodeCaptionPosition;
+  end;
+
   { TCustomLvlGraphControl }
 
   TCustomLvlGraphControl = class(TCustomControl)
   private
     FGraph: TLvlGraph;
-    FNodeCaptionPosition: TLvlGraphNodeCaptionPosition;
-    FNodeGap: TRect;
+    FNodeStyle: TLvlGraphNodeStyle;
     FNodeUnderMouse: TLvlGraphNode;
-    FNodeCaptionScale: single;
-    FNodeWidth: integer;
     FOptions: TLvlGraphCtrlOptions;
     fUpdateLock: integer;
     FFlags: TLvlGraphControlFlags;
     procedure DrawCaptions(const TxtH: integer);
     procedure DrawEdges(Highlighted: boolean);
     procedure DrawNodes;
-    procedure SetNodeCaptionPosition(AValue: TLvlGraphNodeCaptionPosition);
-    procedure SetNodeCaptionScale(AValue: single);
+    procedure SetNodeStyle(AValue: TLvlGraphNodeStyle);
     procedure SetNodeUnderMouse(AValue: TLvlGraphNode);
-    procedure SetNodeWidth(AValue: integer);
     procedure SetOptions(AValue: TLvlGraphCtrlOptions);
   protected
     procedure AutoLayoutLevels(TxtH: LongInt);
@@ -462,13 +498,9 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     function GetNodeAt(X,Y: integer): TLvlGraphNode;
-    property NodeWidth: integer read FNodeWidth write SetNodeWidth default DefaultLvlGraphNodeWith;
-    property NodeGap: TRect read FNodeGap write FNodeGap; // used by AutoLayout
     property NodeUnderMouse: TLvlGraphNode read FNodeUnderMouse write SetNodeUnderMouse;
     property Options: TLvlGraphCtrlOptions read FOptions write SetOptions default DefaultLvlGraphCtrlOptions;
-    property NodeCaptionScale: single read FNodeCaptionScale write SetNodeCaptionScale default DefaultLvlGraphNodeCaptionScale;
-    property NodeCaptionPosition: TLvlGraphNodeCaptionPosition
-       read FNodeCaptionPosition write SetNodeCaptionPosition default DefaultLvlGraphNodeCaptionPosition;
+    property NodeStyle: TLvlGraphNodeStyle read FNodeStyle write SetNodeStyle;
   end;
 
   { TLvlGraphControl }
@@ -711,6 +743,111 @@ begin
   Result:='['+Result+']';
 end;
 
+{ TLvlGraphNodeStyle }
+
+procedure TLvlGraphNodeStyle.SetCaptionPosition(
+  AValue: TLvlGraphNodeCaptionPosition);
+begin
+  if FCaptionPosition=AValue then Exit;
+  FCaptionPosition:=AValue;
+  Control.InvalidateAutoLayout;
+end;
+
+procedure TLvlGraphNodeStyle.SetCaptionScale(AValue: single);
+begin
+  if FCaptionScale=AValue then Exit;
+  FCaptionScale:=AValue;
+  Control.InvalidateAutoLayout;
+end;
+
+procedure TLvlGraphNodeStyle.SetGapBottom(AValue: integer);
+begin
+  if FGapBottom=AValue then Exit;
+  FGapBottom:=AValue;
+  Control.InvalidateAutoLayout;
+end;
+
+procedure TLvlGraphNodeStyle.SetGapLeft(AValue: integer);
+begin
+  if FGapLeft=AValue then Exit;
+  FGapLeft:=AValue;
+  Control.InvalidateAutoLayout;
+end;
+
+procedure TLvlGraphNodeStyle.SetGapRight(AValue: integer);
+begin
+  if FGapRight=AValue then Exit;
+  FGapRight:=AValue;
+  Control.InvalidateAutoLayout;
+end;
+
+procedure TLvlGraphNodeStyle.SetGapTop(AValue: integer);
+begin
+  if FGapTop=AValue then Exit;
+  FGapTop:=AValue;
+  Control.InvalidateAutoLayout;
+end;
+
+procedure TLvlGraphNodeStyle.SetWidth(AValue: integer);
+begin
+  if FWidth=AValue then Exit;
+  FWidth:=AValue;
+  Control.InvalidateAutoLayout;
+end;
+
+constructor TLvlGraphNodeStyle.Create(AControl: TCustomLvlGraphControl);
+begin
+  FControl:=AControl;
+  FWidth:=DefaultLvlGraphNodeWith;
+  FGapLeft:=DefaultLvlGraphNodeGapLeft;
+  FGapTop:=DefaultLvlGraphNodeGapTop;
+  FGapRight:=DefaultLvlGraphNodeGapRight;
+  FGapBottom:=DefaultLvlGraphNodeGapBottom;
+  FCaptionScale:=DefaultLvlGraphNodeCaptionScale;
+  FCaptionPosition:=DefaultLvlGraphNodeCaptionPosition;
+end;
+
+destructor TLvlGraphNodeStyle.Destroy;
+begin
+  FControl.FNodeStyle:=nil;
+  inherited Destroy;
+end;
+
+procedure TLvlGraphNodeStyle.Assign(Source: TPersistent);
+var
+  Src: TLvlGraphNodeStyle;
+begin
+  if Source is TLvlGraphNodeStyle then begin
+    Src:=TLvlGraphNodeStyle(Source);
+    Width:=Src.Width;
+    GapLeft:=Src.GapLeft;
+    GapRight:=Src.GapRight;
+    GapTop:=Src.GapTop;
+    GapBottom:=Src.GapBottom;
+    CaptionScale:=Src.CaptionScale;
+    CaptionPosition:=Src.CaptionPosition;
+  end else
+    inherited Assign(Source);
+end;
+
+function TLvlGraphNodeStyle.Equals(Obj: TObject): boolean;
+var
+  Src: TLvlGraphNodeStyle;
+begin
+  Result:=inherited Equals(Obj);
+  if not Result then exit;
+  if Obj is TLvlGraphNodeStyle then begin
+    Src:=TLvlGraphNodeStyle(Obj);
+    Result:=(Width=Src.Width)
+        and (GapLeft=Src.GapLeft)
+        and (GapRight=Src.GapRight)
+        and (GapTop=Src.GapTop)
+        and (GapBottom=Src.GapBottom)
+        and (CaptionScale=Src.CaptionScale)
+        and (CaptionPosition=Src.CaptionPosition);
+  end;
+end;
+
 { TLvlGraphLevel }
 
 function TLvlGraphLevel.GetNodes(Index: integer): TLvlGraphNode;
@@ -795,17 +932,10 @@ begin
       if FNodeUnderMouse=Element then
         FNodeUnderMouse:=nil;
     end;
-    debugln(['TCustomLvlGraphControl.GraphStructureChanged ']);
+    //debugln(['TCustomLvlGraphControl.GraphStructureChanged ']);
     if lgoAutoLayout in FOptions then
       Include(FFlags,lgcNeedAutoLayout);
   end;
-end;
-
-procedure TCustomLvlGraphControl.SetNodeWidth(AValue: integer);
-begin
-  if FNodeWidth=AValue then Exit;
-  FNodeWidth:=AValue;
-  InvalidateAutoLayout;
 end;
 
 procedure TCustomLvlGraphControl.SetNodeUnderMouse(AValue: TLvlGraphNode);
@@ -841,13 +971,13 @@ begin
             Canvas.Pen.Color:=clGray
           else
             Canvas.Pen.Color:=clSilver;
-          Canvas.Line(Level.DrawPosition+NodeWidth, Node.DrawCenter,
+          Canvas.Line(Level.DrawPosition+NodeStyle.Width, Node.DrawCenter,
                       TargetNode.Level.DrawPosition, TargetNode.DrawCenter);
         end else begin
           // cycle dependency
           Canvas.Pen.Color:=clRed;
           Canvas.Line(Level.DrawPosition, Node.DrawCenter,
-               TargetNode.Level.DrawPosition+NodeWidth, TargetNode.DrawCenter);
+               TargetNode.Level.DrawPosition+NodeStyle.Width, TargetNode.DrawCenter);
         end;
       end;
     end;
@@ -864,22 +994,22 @@ var
   p: TPoint;
 begin
   Canvas.Brush.Style:=bsClear;
-  Canvas.Font.Height:=round(single(TxtH)*NodeCaptionScale+0.5);
+  Canvas.Font.Height:=round(single(TxtH)*NodeStyle.CaptionScale+0.5);
   for i:=0 to Graph.LevelCount-1 do begin
     Level:=Graph.Levels[i];
     for j:=0 to Level.Count-1 do begin
       Node:=Level.Nodes[j];
       if Node.Caption='' then continue;
       TxtW:=Canvas.TextWidth(Node.Caption);
-      case NodeCaptionPosition of
+      case NodeStyle.CaptionPosition of
       lgncLeft,lgncRight: p.y:=Node.DrawCenter-(TxtH div 2);
-      lgncTop: p.y:=Node.DrawPosition-NodeGap.Top-TxtH;
-      lgncBottom: p.y:=Node.DrawPositionEnd+NodeGap.Bottom;
+      lgncTop: p.y:=Node.DrawPosition-NodeStyle.GapTop-TxtH;
+      lgncBottom: p.y:=Node.DrawPositionEnd+NodeStyle.GapBottom;
       end;
-      case NodeCaptionPosition of
-      lgncLeft: p.x:=Level.DrawPosition-NodeGap.Left-TxtW;
-      lgncRight: p.x:=Level.DrawPosition+NodeWidth+NodeGap.Right;
-      lgncTop,lgncBottom: p.x:=Level.DrawPosition+((NodeWidth-TxtW) div 2);
+      case NodeStyle.CaptionPosition of
+      lgncLeft: p.x:=Level.DrawPosition-NodeStyle.GapLeft-TxtW;
+      lgncRight: p.x:=Level.DrawPosition+NodeStyle.Width+NodeStyle.GapRight;
+      lgncTop,lgncBottom: p.x:=Level.DrawPosition+((NodeStyle.Width-TxtW) div 2);
       end;
       //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' DrawPosition=',Node.DrawPosition,' DrawSize=',Node.DrawSize,' TxtH=',TxtH,' TxtW=',TxtW,' p=',dbgs(p)]);
       Canvas.TextOut(p.x,p.y,Node.Caption);
@@ -903,24 +1033,15 @@ begin
       Canvas.Brush.Color:=FPColorToTColor(Node.Color);
       Canvas.Pen.Color:=Darker(Canvas.Brush.Color);
       Canvas.Rectangle(Level.DrawPosition, Node.DrawPosition,
-        Level.DrawPosition+NodeWidth, Node.DrawPositionEnd);
+        Level.DrawPosition+NodeStyle.Width, Node.DrawPositionEnd);
     end;
   end;
 end;
 
-procedure TCustomLvlGraphControl.SetNodeCaptionPosition(
-  AValue: TLvlGraphNodeCaptionPosition);
+procedure TCustomLvlGraphControl.SetNodeStyle(AValue: TLvlGraphNodeStyle);
 begin
-  if FNodeCaptionPosition=AValue then Exit;
-  FNodeCaptionPosition:=AValue;
-  InvalidateAutoLayout;
-end;
-
-procedure TCustomLvlGraphControl.SetNodeCaptionScale(AValue: single);
-begin
-  if FNodeCaptionScale=AValue then Exit;
-  FNodeCaptionScale:=AValue;
-  InvalidateAutoLayout;
+  if FNodeStyle=AValue then Exit;
+  FNodeStyle.Assign(AValue);
 end;
 
 procedure TCustomLvlGraphControl.SetOptions(AValue: TLvlGraphCtrlOptions);
@@ -938,31 +1059,31 @@ var
   LevelTxtWidths: array of integer;
   Level: TLvlGraphLevel;
 begin
-  Canvas.Font.Height:=round(single(TxtH)*NodeCaptionScale+0.5);
+  Canvas.Font.Height:=round(single(TxtH)*NodeStyle.CaptionScale+0.5);
   if Graph.LevelCount=0 then exit;
   SetLength(LevelTxtWidths,Graph.LevelCount);
   for i:=0 to Graph.LevelCount-1 do begin
     // compute needed width of the level
-    LevelTxtWidths[i]:=Max(NodeWidth,Canvas.TextWidth('NodeX'));
+    LevelTxtWidths[i]:=Max(NodeStyle.Width,Canvas.TextWidth('NodeX'));
     Level:=Graph.Levels[i];
     for j:=0 to Level.Count-1 do
       LevelTxtWidths[i]:=Max(LevelTxtWidths[i], Canvas.TextWidth(Level[j].Caption));
 
     if i=0 then begin
       // first level
-      case NodeCaptionPosition of
-      lgncLeft: p:=NodeGap.Right+LevelTxtWidths[0]+NodeGap.Left;
-      lgncRight: p:=NodeGap.Left;
-      lgncTop,lgncBottom: p:=NodeGap.Left+((LevelTxtWidths[0]-NodeWidth) div 2);
+      case NodeStyle.CaptionPosition of
+      lgncLeft: p:=NodeStyle.GapRight+LevelTxtWidths[0]+NodeStyle.GapLeft;
+      lgncRight: p:=NodeStyle.GapLeft;
+      lgncTop,lgncBottom: p:=NodeStyle.GapLeft+((LevelTxtWidths[0]-NodeStyle.Width) div 2);
       end;
     end else begin
       // following level
       p:=Graph.Levels[i-1].DrawPosition;
-      case NodeCaptionPosition of
-      lgncLeft: p+=NodeWidth+NodeGap.Right+LevelTxtWidths[i]+NodeGap.Left;
-      lgncRight: p+=NodeWidth+NodeGap.Right+LevelTxtWidths[i-1]+NodeGap.Left;
+      case NodeStyle.CaptionPosition of
+      lgncLeft: p+=NodeStyle.Width+NodeStyle.GapRight+LevelTxtWidths[i]+NodeStyle.GapLeft;
+      lgncRight: p+=NodeStyle.Width+NodeStyle.GapRight+LevelTxtWidths[i-1]+NodeStyle.GapLeft;
       lgncTop,lgncBottom:
-        p+=((LevelTxtWidths[i-1]+LevelTxtWidths[i]) div 2)+NodeGap.Right+NodeGap.Left;
+        p+=((LevelTxtWidths[i-1]+LevelTxtWidths[i]) div 2)+NodeStyle.GapRight+NodeStyle.GapLeft;
       end;
     end;
     Graph.Levels[i].DrawPosition:=p;
@@ -1028,15 +1149,13 @@ begin
   FGraph:=TLvlGraph.Create;
   FGraph.OnInvalidate:=@GraphInvalidate;
   FGraph.OnStructureChanged:=@GraphStructureChanged;
-  FNodeWidth:=DefaultLvlGraphNodeWith;
-  FNodeCaptionScale:=DefaultLvlGraphNodeCaptionScale;
-  FNodeGap:=DefaultLvlGraphNodeGap;
-  FNodeCaptionPosition:=DefaultLvlGraphNodeCaptionPosition;
+  FNodeStyle:=TLvlGraphNodeStyle.Create(Self);
 end;
 
 destructor TCustomLvlGraphControl.Destroy;
 begin
   FreeAndNil(FGraph);
+  FreeAndNil(FNodeStyle);
   inherited Destroy;
 end;
 
@@ -1054,7 +1173,8 @@ var
   HeaderHeight: integer;
   Palette: TCodyCtrlPalette;
   TxtH: LongInt;
-  Gap: TRect;
+  GapTop: Integer;
+  GapBottom: Integer;
 begin
   debugln(['TCustomLvlGraphControl.AutoLayout ',DbgSName(Self),' ClientRect=',dbgs(ClientRect)]);
   Exclude(FFlags,lgcNeedAutoLayout);
@@ -1077,23 +1197,24 @@ begin
     // Level DrawPosition
     AutoLayoutLevels(TxtH);
 
-    Gap:=NodeGap;
-    case NodeCaptionPosition of
-    lgncTop: Gap.Top+=TxtH;
-    lgncBottom: Gap.Bottom+=TxtH;
+    GapTop:=NodeStyle.GapTop;
+    GapBottom:=NodeStyle.GapBottom;
+    case NodeStyle.CaptionPosition of
+    lgncTop: GapTop+=TxtH;
+    lgncBottom: GapBottom+=TxtH;
     end;
 
     // scale Nodes.DrawSize
     // Preferably the smallest node should be the size of the text
     // Preferably the largest level should fit without needing a scrollbar
-    Graph.ScaleNodeDrawSizes(Gap.Top,Gap.Bottom,Screen.Height*2,1,
-      ClientHeight-HeaderHeight,round(single(TxtH)*NodeCaptionScale+0.5));
+    Graph.ScaleNodeDrawSizes(GapTop,GapBottom,Screen.Height*2,1,
+      ClientHeight-HeaderHeight,round(single(TxtH)*NodeStyle.CaptionScale+0.5));
 
     // sort nodes within levels to avoid crossings
     Graph.MinimizeCrossings;
 
     // position nodes without overlapping
-    Graph.MinimizeOverlappings(HeaderHeight,Gap.Top,Gap.Bottom);
+    Graph.MinimizeOverlappings(HeaderHeight,GapTop,GapBottom);
 
     if RndColors then begin
       Palette:=GetCCPaletteRGB(Graph.NodeCount,true);
@@ -1145,7 +1266,7 @@ begin
   // check in reverse painting order
   for l:=Graph.LevelCount-1 downto 0 do begin
     Level:=Graph.Levels[l];
-    if (x<Level.DrawPosition) or (x>=Level.DrawPosition+NodeWidth) then continue;
+    if (x<Level.DrawPosition) or (x>=Level.DrawPosition+NodeStyle.Width) then continue;
     for n:=Level.Count-1 downto 0 do begin
       Node:=Level.Nodes[n];
       if (y<Node.DrawPosition) or (y>=Node.DrawPositionEnd) then continue;
