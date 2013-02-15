@@ -2120,7 +2120,7 @@ begin
     VK_TAB:
       begin
         doOnKeyDown;
-        if Key<>0 then begin
+        if (Key<>0) and ValidDataset then begin
           if dgTabs in Options then begin
 
             if ((ssShift in shift) and
@@ -2147,7 +2147,7 @@ begin
     VK_RETURN:
       begin
         doOnKeyDown;
-        if Key<>0 then begin
+        if (Key<>0) and ValidDataset then begin
           key:=0;
           if (dgEditing in Options) and not EditorMode then
             EditorMode:=true
@@ -2176,27 +2176,27 @@ begin
       end;
 
     VK_DOWN:
-      if ValidDataSet then begin
+      begin
         DoOnKeyDown;
-        if Key<>0 then begin
+        if (Key<>0) and ValidDataset then begin
           doVKDown;
           Key := 0;
         end;
       end;
 
     VK_UP:
-      if ValidDataSet then begin
+      begin
         doOnKeyDown;
-        if Key<>0 then begin
+        if (Key<>0) and ValidDataset then begin
           doVKUp;
           key := 0;
          end;
       end;
 
     VK_NEXT:
-      if ValidDataSet then begin
+      begin
         doOnKeyDown;
-        if Key<>0 then begin
+        if (Key<>0) and ValidDataset then begin
           doOperation(opMoveBy, VisibleRowCount);
           ClearSelection(true);
           Key := 0;
@@ -2204,9 +2204,9 @@ begin
       end;
 
     VK_PRIOR:
-      if ValidDataSet then begin
+      begin
         doOnKeyDown;
-        if Key<>0 then begin
+        if (Key<>0) and ValidDataset then begin
           doOperation(opMoveBy, -VisibleRowCount);
           ClearSelection(true);
           key := 0;
@@ -2216,7 +2216,7 @@ begin
     VK_ESCAPE:
       begin
         doOnKeyDown;
-        if Key<>0 then begin
+        if (Key<>0) and ValidDataset then begin
           if EditorMode then begin
             EditorCancelEditing;
             if FDatalink.Active and not FDatalink.Dataset.Modified then
@@ -2278,7 +2278,7 @@ begin
     VK_SPACE:
       begin
         doOnKeyDown;
-        if Key<>0 then begin
+        if (Key<>0) and ValidDataset then begin
           if ColumnEditorStyle(Col, SelectedField) = cbsCheckboxColumn then begin
         		SwapCheckBox;
             Key:=0;
@@ -2288,7 +2288,8 @@ begin
 
     VK_MULTIPLY:
       begin
-        if ssCtrl in Shift then
+        doOnKeyDown;
+        if (Key<>0) and ValidDataset and (ssCtrl in Shift) then
           ToggleSelectedRow;
       end;
 
