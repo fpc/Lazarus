@@ -24,6 +24,7 @@
 }
 unit LCLProc;
 
+{$MODE ObjFPC}{$H+}
 {$I lcl_defines.inc}
 {$inline on}
 
