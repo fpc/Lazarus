@@ -2417,10 +2417,7 @@ procedure TSynEditMarkupHighlightAllCaret.DoTextChanged(StartLine, EndLine,
   ACountDiff: Integer);
 begin
   FStateChanged := True; // Something changed, paint will be called
-  if ( (not HideSingleMatch) and (MatchCount > 0) ) or
-     ( (HideSingleMatch) and (MatchCount > 1) )
-  then
-    inherited;
+  inherited;
 end;
 
 procedure TSynEditMarkupHighlightAllCaret.DoMarkupChanged(AMarkup: TSynSelectedColor);
