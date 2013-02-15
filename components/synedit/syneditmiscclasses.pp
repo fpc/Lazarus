@@ -2577,12 +2577,13 @@ begin
     end;
 
     ALeftSum := ALeftSum - Result.FLeftSizeSum;
+    aSizesBeforeSum := aSizesBeforeSum + Result.FLeftSizeSum;
     if ALeftSum < Result.FSize then begin
       break;
     end
     else begin
       ALeftSum := ALeftSum - Result.FSize;
-      aSizesBeforeSum := aSizesBeforeSum + Result.FLeftSizeSum + Result.FSize;
+      aSizesBeforeSum := aSizesBeforeSum + Result.FSize;
       Result := Result.FRight;
       aStartPosition := aStartPosition + Result.FPositionOffset;
       continue;
