@@ -614,9 +614,19 @@ begin
 end;
 
 procedure TValueListStrings.Exchange(Index1, Index2: Integer);
+var
+  IndexToRow1, IndexToRow2: Integer;
+  MustHideShowingEditor: Boolean;
 begin
+  IndexToRow1 := Index1 + FOwner.FixedRows;
+  IndexToRow2 := Index2 + FOwner.FixedRows;
+  MustHideShowingEditor := (goAlwaysShowEditor in FOwner.Options) and
+                           FOwner.Editor.Visible and
+                           ((IndexToRow1 = FOwner.Row) or (IndexToRow2 = FOwner.Row));
+  if MustHideShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
   inherited Exchange(Index1, Index2);
   FItemProps.Exchange(Index1, Index2);
+  if MustHideShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
 end;
 
 function TValueListStrings.GetItemProp(const AKeyOrIndex: Variant): TItemProp;
