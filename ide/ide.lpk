@@ -20,7 +20,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="421">
+    <Files Count="422">
       <Item1>
         <Filename Value="aboutfrm.lfm"/>
         <Type Value="LFM"/>
@@ -1895,6 +1895,10 @@
         <Filename Value="..\debugger\watchpropertydlg.pp"/>
         <UnitName Value="WatchPropertyDlg"/>
       </Item421>
+      <Item422>
+        <Filename Value="lfmunitresource.pas"/>
+        <UnitName Value="lfmUnitResource"/>
+      </Item422>
     </Files>
     <Type Value="RunTimeOnly"/>
     <RequiredPkgs Count="6">

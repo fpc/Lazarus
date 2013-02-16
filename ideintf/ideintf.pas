@@ -18,7 +18,8 @@ uses
   newfield, NewItemIntf, ObjectInspector, ObjInspStrConsts, PackageIntf, 
   ProjectIntf, ProjectResourcesIntf, PropEdits, PropEditUtils, SrcEditorIntf, 
   StatusBarPropEdit, StringsPropEditDlg, TextTools, TreeViewPropEdit, 
-  CompOptsIntf, OIFavoriteProperties, MacroDefIntf, LazarusPackageIntf;
+  CompOptsIntf, OIFavoriteProperties, UnitResources, MacroDefIntf, 
+  LazarusPackageIntf;
 
 implementation
 

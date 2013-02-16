@@ -43,7 +43,8 @@ uses
   ControlSelection, TransferMacros, EnvironmentOpts, BuildManager, Designer,
   EditorMacroListViewer, KeywordFuncLists, FindRenameIdentifier, MsgView,
   InputHistory, CheckLFMDlg, LCLMemManager, CodeToolManager, CodeToolsStructs,
-  ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool, BasicCodeTools;
+  ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool, BasicCodeTools,
+  UnitResources;
 
 
 type
@@ -2851,7 +2852,7 @@ begin
       repeat
         try
           BinCompStream.Position:=0;
-          Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
+          Writer:=AnUnitInfo.UnitResourceFileformat.CreateWriter(BinCompStream,DestroyDriver);
           // used to save lrt files
           HasI18N:=IsI18NEnabled(UnitOwners);
           if HasI18N then
@@ -2956,7 +2957,7 @@ begin
         if (not AnUnitInfo.IsVirtual) or (sfSaveToTestDir in Flags) then
         begin
           // save lfm file
-          LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
+          LFMFilename:=AnUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(AnUnitInfo.Filename);
           if AnUnitInfo.IsVirtual then
             LFMFilename:=AppendPathDelim(MainBuildBoss.GetTestBuildDirectory)+LFMFilename;
           if LFMCode=nil then begin
@@ -2991,7 +2992,7 @@ begin
                                           +LRSStreamChunkSize;
                 try
                   BinCompStream.Position:=0;
-                  LRSObjectBinaryToText(BinCompStream,TxtCompStream);
+                  AnUnitInfo.UnitResourceFileformat.BinStreamToTextStream(BinCompStream,TxtCompStream);
                   AnUnitInfo.ComponentLastLFMStreamSize:=TxtCompStream.Size;
                   // stream text to file
                   TxtCompStream.Position:=0;
@@ -3860,26 +3861,28 @@ end;
 function TLazSourceFileManager.LoadResourceFile(AnUnitInfo: TUnitInfo;
   var LFMCode, LRSCode: TCodeBuffer;
   IgnoreSourceErrors, AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
-const
-  LfmSuffices: array[0..1] of string = ('.lfm', '.dfm');
 var
   LFMFilename: string;
   LRSFilename: String;
   ResType: TResourceType;
-  i: Integer;
 begin
   LFMCode:=nil;
   LRSCode:=nil;
   //DebugLn(['TLazSourceFileManager.LoadResourceFile ',AnUnitInfo.Filename,' HasResources=',AnUnitInfo.HasResources,' IgnoreSourceErrors=',IgnoreSourceErrors,' AutoCreateResourceCode=',AutoCreateResourceCode]);
   // Load the lfm file (without parsing)
   if not AnUnitInfo.IsVirtual then begin  // and (AnUnitInfo.Component<>nil)
-    for i := Low(LfmSuffices) to High(LfmSuffices) do begin
-      LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,LfmSuffices[i]);
+    LFMFilename:=AnUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(AnUnitInfo.Filename);
+    if (FileExistsUTF8(LFMFilename)) then begin
+      Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],ShowAbort);
+      if not (Result in [mrOk,mrIgnore]) then
+        exit;
+    end else begin
+      // Is this still being used?!?
+      LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.dfm');
       if (FileExistsUTF8(LFMFilename)) then begin
         Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],ShowAbort);
         if not (Result in [mrOk,mrIgnore]) then
           exit;
-        Break;
       end;
     end;
   end;
@@ -3914,18 +3917,20 @@ function TLazSourceFileManager.LoadLFM(AnUnitInfo: TUnitInfo;
   OpenFlags: TOpenFlags; CloseFlags: TCloseFlags): TModalResult;
 // if there is a .lfm file, open the resource
 var
-  LFMFilename: string;
+  UnitResourceFilename: string;
+  UnitResourceFileformat: TUnitResourcefileFormatClass;
   LFMBuf: TCodeBuffer;
   CanAbort: boolean;
 begin
   CanAbort:=[ofProjectLoading,ofMultiOpen]*OpenFlags<>[];
 
+  UnitResourceFileformat:=AnUnitInfo.UnitResourceFileformat;
   // Note: think about virtual and normal .lfm files.
-  LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
-  if not FileExistsInIDE(LFMFilename,[pfsfOnlyEditorFiles]) then
-    LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.dfm');
+  UnitResourceFilename:=UnitResourceFileformat.GetUnitResourceFilename(AnUnitInfo.Filename);
+  if not FileExistsInIDE(UnitResourceFilename,[pfsfOnlyEditorFiles]) then
+    UnitResourceFilename:=ChangeFileExt(AnUnitInfo.Filename,'.dfm');
   LFMBuf:=nil;
-  if not FileExistsInIDE(LFMFilename,[pfsfOnlyEditorFiles]) then begin
+  if not FileExistsInIDE(UnitResourceFilename,[pfsfOnlyEditorFiles]) then begin
     // there is no LFM file -> ok
     {$IFDEF IDE_DEBUG}
     debugln('TLazSourceFileManager.LoadLFM there is no LFM file for "',AnUnitInfo.Filename,'"');
@@ -3935,7 +3940,7 @@ begin
   end;
 
   // there is a lazarus form text file -> load it
-  Result:=LoadIDECodeBuffer(LFMBuf,LFMFilename,[lbfUpdateFromDisk],CanAbort);
+  Result:=LoadIDECodeBuffer(LFMBuf,UnitResourceFilename,[lbfUpdateFromDisk],CanAbort);
   if Result<>mrOk then begin
     DebugLn(['TLazSourceFileManager.LoadLFM LoadIDECodeBuffer failed']);
     exit;
@@ -4019,7 +4024,7 @@ begin
     AnUnitInfo.HasResources:=true;
 
     // find the classname of the LFM, and check for inherited form
-    QuickCheckLFMBuffer(AnUnitInfo.Source,LFMBuf,LFMType,LFMComponentName,
+    AnUnitInfo.UnitResourceFileformat.QuickCheckResourceBuffer(AnUnitInfo.Source,LFMBuf,LFMType,LFMComponentName,
                         NewClassName,LCLVersion,MissingClasses);
 
     {$IFDEF VerboseLFMSearch}
@@ -4105,7 +4110,7 @@ begin
           try
             if AnUnitInfo.ComponentLastBinStreamSize>0 then
               BinStream.Capacity:=AnUnitInfo.ComponentLastBinStreamSize+BufSize;
-            LRSObjectTextToBinary(TxtLFMStream,BinStream);
+            AnUnitInfo.UnitResourceFileformat.TextStreamToBinStream(TxtLFMStream, BinStream);
             AnUnitInfo.ComponentLastBinStreamSize:=BinStream.Size;
             BinStream.Position:=0;
 
@@ -4140,7 +4145,7 @@ begin
           NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
         // ToDo: create AncestorBinStream(s) via hook, not via parameters
         DisableAutoSize:=true;
-        NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream,
+        NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream, AnUnitInfo.UnitResourceFileformat,
                    AncestorType,copy(NewUnitName,1,255),true,true,DisableAutoSize,AnUnitInfo);
         if (NewComponent is TControl) then begin
           NewControl:=TControl(NewComponent);

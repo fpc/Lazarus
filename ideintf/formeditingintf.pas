@@ -23,7 +23,7 @@ interface
 
 uses
   Math, Classes, SysUtils, LCLProc, TypInfo, types, Forms, Controls,
-  LCLClasses, ProjectIntf, ComponentEditors, ObjectInspector;
+  LCLClasses, ProjectIntf, ComponentEditors, ObjectInspector, UnitResources;
   
 const
   ComponentPaletteImageWidth = 24;
@@ -118,6 +118,7 @@ type
                              X,Y,W,H: Integer;
                              DisableAutoSize: boolean): TComponent; virtual; abstract;
     function CreateComponentFromStream(BinStream: TStream;
+                      UnitResourcefileFormat: TUnitResourcefileFormatClass;
                       AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
                       Interactive: boolean;

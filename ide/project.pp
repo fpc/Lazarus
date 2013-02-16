@@ -54,13 +54,16 @@ uses
   CodeToolsConfig, ExprEval, FileProcs, DefineTemplates,
   BasicCodeTools, CodeToolsCfgScript, CodeToolManager, CodeCache,
   // IDEIntf
-  PropEdits, CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, LazIDEIntf,
+  PropEdits, CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, UnitResources,
+  LazIDEIntf, PackageIntf, SrcEditorIntf, IDEOptionsIntf,
+  // synedit
+  SynEdit,
   // IDE
   CompOptsModes, ProjectResources, LazConf, W32Manifest, ProjectIcon,
-  LazarusIDEStrConsts, CompilerOptions,
+  LazarusIDEStrConsts, CompilerOptions, lfmUnitResource,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
-  FileReferenceList, EditDefineTree, PackageDefs, PackageSystem, IDEOptionsIntf,
-  SrcEditorIntf, IDEDialogs, PackageIntf, SynEdit;
+  FileReferenceList, EditDefineTree, PackageDefs, PackageSystem,
+  IDEDialogs;
 
 type
   TUnitInfo = class;
@@ -294,6 +297,7 @@ type
     FSourceDirNeedReference: boolean;
     fLastDirectoryReferenced: string;
     FSetBookmarLock: Integer;
+    FUnitResourceFileformat: TUnitResourcefileFormatClass;
 
     function GetEditorInfo(Index: Integer): TUnitEditorInfo;
     function GetHasResources:boolean;
@@ -309,6 +313,7 @@ type
     function GetPrevPartOfProject: TUnitInfo;
     function GetPrevUnitWithComponent: TUnitInfo;
     function GetPrevUnitWithEditorIndex: TUnitInfo;
+    function GetUnitResourceFileformat: TUnitResourcefileFormatClass;
     procedure SetAutoReferenceSourceDir(const AValue: boolean);
     procedure SetBuildFileIfActive(const AValue: boolean);
     procedure SetDefaultSyntaxHighlighter(const AValue: TLazSyntaxHighlighter);
@@ -407,6 +412,8 @@ type
     procedure UpdateDefaultHighlighter(aDefaultHighlighter: TLazSyntaxHighlighter);
   public
     { Properties }
+    property UnitResourceFileformat: TUnitResourcefileFormatClass read GetUnitResourceFileformat;
+
     // Unit lists
     property NextUnitWithEditorIndex: TUnitInfo read GetNextUnitWithEditorIndex;
     property PrevUnitWithEditorIndex: TUnitInfo read GetPrevUnitWithEditorIndex;
@@ -2393,6 +2400,28 @@ end;
 function TUnitInfo.GetPrevUnitWithEditorIndex: TUnitInfo;
 begin
   Result:=fPrev[uilWithEditorIndex];
+end;
+
+function TUnitInfo.GetUnitResourceFileformat: TUnitResourcefileFormatClass;
+var
+  ResourceFormats : TUnitResourcefileFormatArr;
+  i: integer;
+begin
+  if not assigned(FUnitResourceFileformat) then
+    begin
+    ResourceFormats := GetUnitResourcefileFormats;
+    for i := 0 to high(ResourceFormats) do
+      begin
+        if ResourceFormats[i].FindResourceDirective(Source) then
+          begin
+          FUnitResourceFileformat:=ResourceFormats[i];
+          result := FUnitResourceFileformat;
+          Exit;
+          end;
+      end;
+    FUnitResourceFileformat := TLFMUnitResourcefileFormat;
+    end;
+  result := FUnitResourceFileformat;
 end;
 
 procedure TUnitInfo.SetAutoReferenceSourceDir(const AValue: boolean);

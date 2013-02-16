@@ -44,7 +44,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, AvgLvlTree, BasicCodeTools, TypInfo, LCLProc, LResources,
   Forms, Controls, LCLMemManager, LCLIntf, Dialogs, PropEditUtils, PropEdits,
-  IDEProcs, PackageDefs, BasePkgManager;
+  IDEProcs, PackageDefs, BasePkgManager, UnitResources, lfmUnitResource;
 
 type
   //----------------------------------------------------------------------------
@@ -146,7 +146,9 @@ type
     function GetItem(Index:integer):TComponent;
     function OnFindGlobalComponent(const AName:AnsiString):TComponent;
     procedure InitReading;
-    procedure CreateReader(BinStream: TStream; var Reader: TReader;
+    procedure CreateReader(BinStream: TStream;
+                           UnitResourcefileFormat: TUnitResourcefileFormatClass;
+                           var Reader: TReader;
                            DestroyDriver: Boolean); virtual;
     function DoCreateJITComponent(const NewComponentName, NewClassName,
                          NewUnitName: shortstring; AncestorClass: TClass;
@@ -165,6 +167,7 @@ type
                                 AncestorClass: TClass;
                                 DisableAutoSize: boolean): integer;
     function AddJITComponentFromStream(BinStream: TStream;
+                                UnitResourcefileFormat: TUnitResourcefileFormatClass;
                                 AncestorClass: TClass;
                                 const NewUnitName: ShortString;
                                 Interactive, Visible, DisableAutoSize: Boolean;
@@ -830,6 +833,7 @@ begin
 end;
 
 function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
+  UnitResourcefileFormat: TUnitResourcefileFormatClass;
   AncestorClass: TClass;
   const NewUnitName: ShortString;
   Interactive, Visible, DisableAutoSize: Boolean;
@@ -849,7 +853,7 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
     FCurReadStreamClass:=StreamClass;
     DestroyDriver:=false;
     InitReading;
-    CreateReader(AStream,Reader,DestroyDriver);
+    CreateReader(AStream,UnitResourcefileFormat,Reader,DestroyDriver);
     {$IFDEF VerboseJITForms}
     DebugLn(['TJITComponentList.AddJITComponentFromStream.ReadStream Reading: FCurReadJITComponent=',DbgSName(FCurReadJITComponent),' StreamClass=',DbgSName(StreamClass)]);
     {$ENDIF}
@@ -908,7 +912,7 @@ var
 begin
   Result:=-1;
   FContextObject:=ContextObj;
-  NewClassName:=GetClassNameFromLRSStream(BinStream, IsInherited);
+  NewClassName:=UnitResourcefileFormat.GetClassNameFromStream(BinStream,IsInherited);
   if IsInherited then ;
   if NewClassName='' then begin
     MessageDlg('No classname in stream found.',mtError,[mbOK],0);
@@ -982,13 +986,14 @@ begin
 end;
 
 procedure TJITComponentList.CreateReader(BinStream: TStream;
+  UnitResourcefileFormat: TUnitResourcefileFormatClass;
   var Reader: TReader; DestroyDriver: Boolean);
 begin
   {$IFDEF VerboseJITForms}
   debugln('[TJITComponentList.InitReading] A');
   {$ENDIF}
   DestroyDriver:=false;
-  Reader:=CreateLRSReader(BinStream,DestroyDriver);
+  Reader:=UnitResourcefileFormat.CreateReader(BinStream,DestroyDriver);
   // connect TReader events
   Reader.OnError:=@ReaderError;
   Reader.OnPropertyNotFound:=@ReaderPropertyNotFound;
@@ -1142,7 +1147,7 @@ begin
           SubReader:=nil;
           DestroyDriver:=false;
           try
-            CreateReader(BinStream,SubReader,DestroyDriver);
+            CreateReader(BinStream,TLFMUnitResourcefileFormat,SubReader,DestroyDriver);
             // The stream contains only the diff to the Ancestor instance,
             // => give it the Ancestor instance
             SubReader.Ancestor:=Ancestor;
@@ -1303,7 +1308,7 @@ begin
   try
     DestroyDriver:=false;
     InitReading;
-    CreateReader(BinStream,Reader,DestroyDriver);
+    CreateReader(BinStream,TLFMUnitResourcefileFormat, Reader,DestroyDriver);
     {$IFDEF VerboseJITForms}
     debugln('[TJITComponentList.AddJITChildComponentFromStream] B');
     {$ENDIF}

@@ -44,6 +44,7 @@ uses
   LCLProc, Graphics, Controls, Forms, Menus, Dialogs,
   // IDEIntf
   PropEdits, PropEditUtils, ObjectInspector, IDECommands, FormEditingIntf,
+  UnitResources,
   // IDE
   LazarusIDEStrConsts, ControlSelection, Project, JITForms, MainIntf,
   CustomNonFormDesigner, NonControlDesigner, FrameDesigner, ComponentReg,
@@ -200,6 +201,7 @@ type
                              NewLeft,NewTop,NewWidth,NewHeight: Integer;
                              DisableAutoSize: boolean): TComponent; override;
     function CreateComponentFromStream(BinStream: TStream;
+                      UnitResourcefileFormat: TUnitResourcefileFormatClass;
                       AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
                       Interactive: boolean;
@@ -207,6 +209,7 @@ type
                       DisableAutoSize: boolean = false;
                       ContextObj: TObject = nil): TComponent; override;
     function CreateRawComponentFromStream(BinStream: TStream;
+                      UnitResourcefileFormat: TUnitResourcefileFormatClass;
                       AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
                       Interactive: boolean;
@@ -1402,16 +1405,18 @@ end;
 
 function TCustomFormEditor.CreateComponentFromStream(
   BinStream: TStream;
+  UnitResourcefileFormat: TUnitResourcefileFormatClass;
   AncestorType: TComponentClass;
   const NewUnitName: ShortString;
   Interactive: boolean; Visible: boolean; DisableAutoSize: boolean;
   ContextObj: TObject): TComponent;
 begin
-  Result:=CreateRawComponentFromStream(BinStream,
+  Result:=CreateRawComponentFromStream(BinStream, UnitResourcefileFormat,
        AncestorType,NewUnitName,Interactive,Visible,DisableAutoSize,ContextObj);
 end;
 
 function TCustomFormEditor.CreateRawComponentFromStream(BinStream: TStream;
+  UnitResourcefileFormat: TUnitResourcefileFormatClass;
   AncestorType: TComponentClass;
   const NewUnitName: ShortString;
   Interactive: boolean; Visible: boolean; DisableAutoSize: boolean;
@@ -1425,7 +1430,7 @@ begin
   if JITList=nil then
     RaiseException('TCustomFormEditor.CreateComponentFromStream ClassName='+
                    AncestorType.ClassName);
-  NewJITIndex := JITList.AddJITComponentFromStream(BinStream,
+  NewJITIndex := JITList.AddJITComponentFromStream(BinStream, UnitResourcefileFormat,
               AncestorType,NewUnitName,Interactive,Visible,DisableAutoSize,
               ContextObj);
   if NewJITIndex < 0 then begin
