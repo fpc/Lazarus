@@ -626,7 +626,7 @@ var
 
 begin
   Result := Nil;
-  if Count > 0 then
+  if (Count > 0) and (UpdateCount = 0) then
   begin
     if VarIsOrdinal(AKeyOrIndex) then
       i := AKeyOrIndex
