@@ -971,16 +971,18 @@ end;
 procedure TOICustomPropertyGrid.UpdateScrollBar;
 var
   ScrollInfo: TScrollInfo;
+  ATopMax: Integer;
 begin
   if HandleAllocated then begin
+    ATopMax := TopMax;
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
     ScrollInfo.nMin := 0;
     ScrollInfo.nTrackPos := 0;
-    ScrollInfo.nMax := TopMax+ClientHeight-1;
+    ScrollInfo.nMax := ATopMax+ClientHeight-1;
     ScrollInfo.nPage := ClientHeight;
     if ScrollInfo.nPage<1 then ScrollInfo.nPage:=1;
-    if TopY > ScrollInfo.nMax then TopY:=ScrollInfo.nMax;
+    if TopY > ATopMax then TopY:=ATopMax;
     ScrollInfo.nPos := TopY;
     ShowScrollBar(Handle, SB_VERT, True);
     SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
