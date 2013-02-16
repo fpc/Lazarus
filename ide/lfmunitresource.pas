@@ -1,3 +1,28 @@
+{
+ ***************************************************************************
+ *                                                                         *
+ *   This source is free software; you can redistribute it and/or modify   *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This code is distributed in the hope that it will be useful, but      *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   General Public License for more details.                              *
+ *                                                                         *
+ *   A copy of the GNU General Public License is available on the World    *
+ *   Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also      *
+ *   obtain it by writing to the Free Software Foundation,                 *
+ *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
+ *                                                                         *
+ ***************************************************************************
+
+ Author: Joost van der Sluis
+
+ Abstract:
+   Registers the lfm resource format of forms.
+}
 unit lfmUnitResource;
 
 {$mode objfpc}{$H+}
@@ -8,7 +33,7 @@ uses
   Classes, SysUtils,
   LCLMemManager,
   Forms,
-  UnitResources;
+  UnitResources, SrcEditorIntf, LazFileCache;
 
 type
 
@@ -18,7 +43,7 @@ type
   public
     class function FindResourceDirective(Source: TObject): boolean; override;
     class function ResourceDirectiveFilename: string; override;
-    class function GetUnitResourceFilename(AUnitFilenae: string): string; override;
+    class function GetUnitResourceFilename(AUnitFilename: string; Loading: boolean): string; override;
     class procedure TextStreamToBinStream(ATxtStream, ABinStream: TExtMemoryStream); override;
     class procedure BinStreamToTextStream(ABinStream, ATextStream: TExtMemoryStream); override;
     class function GetClassNameFromStream(s: TStream; out IsInherited: Boolean): shortstring; override;
@@ -53,9 +78,18 @@ begin
 end;
 
 class function TLFMUnitResourcefileFormat.GetUnitResourceFilename(
-  AUnitFilenae: string): string;
+  AUnitFilename: string; Loading: boolean): string;
+var
+  DFMFilename: String;
 begin
-  result := ChangeFileExt(AUnitFilenae,'.lfm');
+  Result := ChangeFileExt(AUnitFilename,'.lfm');
+  if not FileExistsCached(AUnitFilename)
+  // ToDo: search in source editor
+  then begin
+    DFMFilename:=ChangeFileExt(AUnitFilename,'.dfm');
+    if FileExistsCached(DFMFilename) then
+      Result:=DFMFilename;
+  end;
 end;
 
 class procedure TLFMUnitResourcefileFormat.TextStreamToBinStream(ATxtStream,

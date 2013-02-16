@@ -2957,7 +2957,7 @@ begin
         if (not AnUnitInfo.IsVirtual) or (sfSaveToTestDir in Flags) then
         begin
           // save lfm file
-          LFMFilename:=AnUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(AnUnitInfo.Filename);
+          LFMFilename:=AnUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(AnUnitInfo.Filename,false);
           if AnUnitInfo.IsVirtual then
             LFMFilename:=AppendPathDelim(MainBuildBoss.GetTestBuildDirectory)+LFMFilename;
           if LFMCode=nil then begin
@@ -3154,6 +3154,7 @@ begin
     OldFilename:=AnUnitInfo.Filename;
     OldFilePath:=ExtractFilePath(OldFilename);
     OldLFMFilename:='';
+    // ToDo: use UnitResources
     if FilenameIsPascalUnit(OldFilename) then begin
       OldLFMFilename:=ChangeFileExt(OldFilename,'.lfm');
       if not FileExistsUTF8(OldLFMFilename) then
@@ -3871,19 +3872,11 @@ begin
   //DebugLn(['TLazSourceFileManager.LoadResourceFile ',AnUnitInfo.Filename,' HasResources=',AnUnitInfo.HasResources,' IgnoreSourceErrors=',IgnoreSourceErrors,' AutoCreateResourceCode=',AutoCreateResourceCode]);
   // Load the lfm file (without parsing)
   if not AnUnitInfo.IsVirtual then begin  // and (AnUnitInfo.Component<>nil)
-    LFMFilename:=AnUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(AnUnitInfo.Filename);
-    if (FileExistsUTF8(LFMFilename)) then begin
+    LFMFilename:=AnUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(AnUnitInfo.Filename,true);
+    if (FileExistsCached(LFMFilename)) then begin
       Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],ShowAbort);
       if not (Result in [mrOk,mrIgnore]) then
         exit;
-    end else begin
-      // Is this still being used?!?
-      LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.dfm');
-      if (FileExistsUTF8(LFMFilename)) then begin
-        Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],ShowAbort);
-        if not (Result in [mrOk,mrIgnore]) then
-          exit;
-      end;
     end;
   end;
   if AnUnitInfo.HasResources then begin
@@ -3926,9 +3919,7 @@ begin
 
   UnitResourceFileformat:=AnUnitInfo.UnitResourceFileformat;
   // Note: think about virtual and normal .lfm files.
-  UnitResourceFilename:=UnitResourceFileformat.GetUnitResourceFilename(AnUnitInfo.Filename);
-  if not FileExistsInIDE(UnitResourceFilename,[pfsfOnlyEditorFiles]) then
-    UnitResourceFilename:=ChangeFileExt(AnUnitInfo.Filename,'.dfm');
+  UnitResourceFilename:=UnitResourceFileformat.GetUnitResourceFilename(AnUnitInfo.Filename,true);
   LFMBuf:=nil;
   if not FileExistsInIDE(UnitResourceFilename,[pfsfOnlyEditorFiles]) then begin
     // there is no LFM file -> ok
@@ -4295,6 +4286,7 @@ begin
     exit;
   end;
 
+  // ToDo: use UnitResources
   LFMFilename:=ChangeFileExt(AFilename,'.lfm');
   if not FileExistsInIDE(LFMFilename,[]) then
     LFMFilename:=ChangeFileExt(AFilename,'.dfm');
@@ -4549,6 +4541,7 @@ var
       {$ENDIF}
       exit;
     end;
+    // ToDo: use UnitResources
     CurLFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
     if not FileExistsCached(CurLFMFilename) then
     begin

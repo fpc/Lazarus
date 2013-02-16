@@ -5089,6 +5089,7 @@ var
     // parse once all available component names in all .lfm files
     for i:=0 to UnitFilenames.Count-1 do begin
       UnitFilename:=UnitFilenames[i];
+      // ToDo: use UnitResources
       LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
       if not FileExistsCached(LFMFilename) then
         LFMFilename:=ChangeFileExt(UnitFilename,'.dfm');
@@ -5154,6 +5155,7 @@ var
       DebugLn(['TMainIDE.DoFixupComponentReferences.LoadDependencyHidden failed to find lfm for "',RefRootName,'"']);
       exit(mrCancel);
     end;
+    // ToDo: use UnitResources
     LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
     if not FileExistsUTF8(LFMFilename) then
       LFMFilename:=ChangeFileExt(UnitFilename,'.dfm');
@@ -12123,6 +12125,7 @@ begin
     EditorInfo := AnUnitInfo.OpenEditorInfo[0]
   else
     EditorInfo := AnUnitInfo.EditorInfo[0];
+  // ToDo: use UnitResources
   LFMFilename:=ChangeFileExt(AnUnitInfo.Filename, '.lfm');
   if not FileExistsUTF8(LFMFilename) then
     LFMFilename:=ChangeFileExt(AnUnitInfo.Filename, '.dfm');
