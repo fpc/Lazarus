@@ -35,7 +35,7 @@ unit activexcontainer;
 interface
 
 uses
-  Classes, SysUtils,Controls,windows, ActiveX, ComObj,forms,graphics;
+  Classes, SysUtils, Controls, Windows, ActiveX, ComObj, Forms, Graphics;
 
 type
   //from OCIDL.h
@@ -248,13 +248,13 @@ begin
       AXC.Width:=LOWORD(lparam);
       AXC.Height:=LOWORD(lparam);
       olecheck((AXC.ComServer as IOleObject).SetExtent(DVASPECT_CONTENT,size));
-      bounds:=AXC.BoundsRect;
+      bounds:=AXC.ClientRect;
       olecheck((AXC.ComServer as IOleInPlaceObject).SetObjectRects(@bounds,@bounds));
       end;
     WM_PAINT:
        begin
        DC:=GetDC(AXC.handle);
-       bounds:=AXC.BoundsRect;
+       bounds:=AXC.ClientRect;
        olecheck((AXC.ComServer as IViewObject).Draw(DVASPECT_CONTENT,0,nil,nil,0,DC,@bounds,@bounds,nil,0));
        ReleaseDC(AXC.handle,DC);
       end;
@@ -611,7 +611,7 @@ begin
   size.x:=(Width*2540) div Screen.PixelsPerInch;
   size.y:=(Height*2540) div Screen.PixelsPerInch;
   olecheck((FOleObject as IOleObject).SetExtent(DVASPECT_CONTENT,size));
-  olecheck((FOleObject as IOleObject).DoVerb(OLEIVERB_INPLACEACTIVATE,nil,Self as IOleClientSite,0,Handle,BoundsRect));
+  olecheck((FOleObject as IOleObject).DoVerb(OLEIVERB_INPLACEACTIVATE,nil,Self as IOleClientSite,0,Handle,ClientRect));
 end;
 
 procedure TActiveXContainer.Detach;
