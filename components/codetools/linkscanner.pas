@@ -1073,7 +1073,7 @@ var
   MacroID: LongInt;
   p: PChar;
 begin
-  //DebugLn([' TLinkScanner.ReadNextToken SrcPos=',SrcPos,' SrcLen=',SrcLen,' "',copy(Src,SrcPos,5),'"']);
+  //DebugLn([' TLinkScanner.ReadNextToken SrcPos=',SrcPos,' SrcLen=',SrcLen,' "',dbgstr(Src,SrcPos,5),'"']);
   {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
   {$R-}
   if (SrcPos>SrcLen) and ReturnFromIncludeFileAndIsEnd then exit;
@@ -1088,7 +1088,8 @@ begin
         if (SrcPos>SrcLen) then begin
           if ReturnFromIncludeFileAndIsEnd then exit;
           if (SrcPos>SrcLen) then break;
-        end;
+        end else
+          inc(SrcPos);
         p:=@Src[SrcPos];
       end;
     '{' :
@@ -1368,6 +1369,7 @@ begin
           LastProgressPos:=CopiedSrcPos;
           DoCheckAbort;
         end;
+        //debugln(['TLinkScanner.Scan Token ',dbgstr(Src,TokenStart,SrcPos-TokenStart)]);
         ReadNextToken;
         if TokenType=lsttWord then
           ParseKeyWord(TokenStart,SrcPos-TokenStart,LastTokenType);
