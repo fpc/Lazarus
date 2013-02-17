@@ -70,6 +70,8 @@ var
   nx,ny,nt: integer;
 begin
   result := CodeToolBoss.FindResourceDirective(Source as TCodeBuffer,1,1,cb,nx,ny,nt, ResourceDirectiveFilename,false);
+  if not result then
+    result := CodeToolBoss.FindResourceDirective(Source as TCodeBuffer,1,1,cb,nx,ny,nt, '*.dfm',false);
 end;
 
 class function TLFMUnitResourcefileFormat.ResourceDirectiveFilename: string;
@@ -83,7 +85,7 @@ var
   DFMFilename: String;
 begin
   Result := ChangeFileExt(AUnitFilename,'.lfm');
-  if not FileExistsCached(AUnitFilename)
+  if not FileExistsCached(Result)
   // ToDo: search in source editor
   then begin
     DFMFilename:=ChangeFileExt(AUnitFilename,'.dfm');
