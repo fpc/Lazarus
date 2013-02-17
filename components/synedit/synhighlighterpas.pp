@@ -3156,12 +3156,18 @@ begin
 
   if AFilter.FoldGroup  in [0, FOLDGROUP_REGION] then begin
     // All or REGION
-    Result := Result + inf.EndLevelRegion;
+    if FFoldConfig[ord(cfbtRegion)].Enabled or
+       (sfbIncludeDisabled in AFilter.Flags)
+    then
+      Result := Result + inf.EndLevelRegion;
   end;
 
   if AFilter.FoldGroup  in [0, FOLDGROUP_IFDEF] then begin
     // All or IFDEF
-    Result := Result + inf.EndLevelIfDef;
+    if FFoldConfig[ord(cfbtIfDef)].Enabled or
+       (sfbIncludeDisabled in AFilter.Flags)
+    then
+      Result := Result + inf.EndLevelIfDef;
   end;
 end;
 
@@ -3417,14 +3423,20 @@ begin
     cfbtRegion:
       begin
         node.FoldGroup := FOLDGROUP_REGION;
-        Node.FoldLvlStart := FSynPasRangeInfo.EndLevelRegion;
+        if AIsFold then
+          Node.FoldLvlStart := FSynPasRangeInfo.EndLevelRegion
+        else
+          Node.FoldLvlStart := 0;
         Node.NestLvlStart := FSynPasRangeInfo.EndLevelRegion;
         OneLine := (EndOffs < 0) and (Node.FoldLvlStart > FSynPasRangeInfo.MinLevelRegion);
       end;
     cfbtIfDef:
       begin
         node.FoldGroup := FOLDGROUP_IFDEF;
-        Node.FoldLvlStart := FSynPasRangeInfo.EndLevelIfDef;
+        if AIsFold then
+          Node.FoldLvlStart := FSynPasRangeInfo.EndLevelIfDef
+        else
+          Node.FoldLvlStart := 0;
         Node.NestLvlStart := FSynPasRangeInfo.EndLevelIfDef;
         OneLine := (EndOffs < 0) and (Node.FoldLvlStart > FSynPasRangeInfo.MinLevelIfDef);
       end;
@@ -3436,7 +3448,7 @@ begin
           Node.NestLvlStart := PasCodeFoldRange.CodeFoldStackSize;
           OneLine := (EndOffs < 0) and (Node.FoldLvlStart > PasCodeFoldRange.PasFoldMinLevel); // MinimumCodeFoldBlockLevel);
         end else begin
-          Node.FoldLvlStart := PasCodeFoldRange.CodeFoldStackSize;
+          Node.FoldLvlStart := PasCodeFoldRange.CodeFoldStackSize; // Todo: zero?
           Node.NestLvlStart := PasCodeFoldRange.CodeFoldStackSize;
           OneLine := (EndOffs < 0) and (Node.FoldLvlStart > PasCodeFoldRange.MinimumCodeFoldBlockLevel);
         end;
@@ -3482,13 +3494,17 @@ procedure TSynPasSyn.StartCustomCodeFoldBlock(ABlockType: TPascalCodeFoldBlockTy
 var
   act: TSynFoldActions;
   nd: TSynFoldNodeInfo;
+  FoldBlock: Boolean;
 begin
-  if not FFoldConfig[ord(ABlockType)].Enabled then exit;
+  FoldBlock := FFoldConfig[ord(ABlockType)].Enabled;
+  //if not FFoldConfig[ord(ABlockType)].Enabled then exit;
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
-    act := FFoldConfig[ord(ABlockType)].FoldActions;
+    act := [sfaOpen, sfaOpenFold];
+    if FoldBlock then
+      act := act + FFoldConfig[ord(ABlockType)].FoldActions;
     if not FAtLineStart then
       act := act - [sfaFoldHide];
-    InitNode(nd, +1, ABlockType, [sfaOpen, sfaOpenFold] + act, True);
+    InitNode(nd, +1, ABlockType, act, FoldBlock);
     FCatchNodeInfoList.Add(nd);
   end;
   case ABlockType of
@@ -3501,12 +3517,17 @@ end;
 
 procedure TSynPasSyn.EndCustomCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType);
 var
+  act: TSynFoldActions;
   nd: TSynFoldNodeInfo;
+  FoldBlock: Boolean;
 begin
-  if not FFoldConfig[ord(ABlockType)].Enabled then exit;
+  FoldBlock := FFoldConfig[ord(ABlockType)].Enabled;
+  //if not FFoldConfig[ord(ABlockType)].Enabled then exit;
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
-    InitNode(nd, -1, ABlockType,
-             [sfaClose, sfaCloseFold, sfaFold], True); // + FFoldConfig[ord(ABlockType)].FoldActions);
+    act := [sfaClose, sfaCloseFold];
+    if FoldBlock then
+      act := act + FFoldConfig[ord(ABlockType)].FoldActions;
+    InitNode(nd, -1, ABlockType, act, FoldBlock); // + FFoldConfig[ord(ABlockType)].FoldActions);
     FCatchNodeInfoList.Add(nd);
   end;
   case ABlockType of

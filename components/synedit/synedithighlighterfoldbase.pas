@@ -69,8 +69,8 @@ type
                      sfaClose,        // Any Closing node
 
                      sfaFold,         // Part of a fold- or hide-able block (FoldConf.Enabled = True)           - excludes one=liners for FoldFold, as they can not fold
-                     sfaFoldFold,     // Part of a fold-able block (FoldConf.Enabled = True / smFold in Modes)  - excludes one=liners / only opening node (todo: maybe both?)
-                     sfaFoldHide,     // Part of a hide-able block (FoldConf.Enabled = True / smHide in Modes)  - includes one=liners / only opening node (todo: maybe both?)
+                     sfaFoldFold,     // Part of a fold-able block (FoldConf.Enabled = True / smFold in Modes)  - excludes one=liners / only opening node, except ifdef/region (todo: maybe both?)
+                     sfaFoldHide,     // Part of a hide-able block (FoldConf.Enabled = True / smHide in Modes)  - includes one=liners / only opening node, except ifdef/region (todo: maybe both?)
 
                      sfaMultiLine,    // The closing node is on an other line
                      sfaSingleLine,   // The closing node is on the same line (though the keyword may be on the next)
