@@ -19,7 +19,7 @@ type
 
   TItemProp = class(TPersistent)
   private
-    FOwner: TValueListEditor;
+    FGrid: TValueListEditor;
     FEditMask: string;
     FEditStyle: TEditStyle;
     FPickList: TStrings;
@@ -54,7 +54,7 @@ type
   TItemPropList = class
   private
     FList: TFPObjectList;
-    FOwner: TValueListStrings;
+    FStrings: TValueListStrings;
     function GetCount: Integer;
     function GetItem(Index: Integer): TItemProp;
     procedure SetItem(Index: Integer; AValue: TItemProp);
@@ -78,7 +78,7 @@ type
 
   TValueListStrings = class(TStringList)
   private
-    FOwner: TValueListEditor;
+    FGrid: TValueListEditor;
     FItemProps: TItemPropList;
     function GetItemProp(const AKeyOrIndex: Variant): TItemProp;
     procedure QuickSortStringsAndItemProps(L, R: Integer; CompareFn: TStringListSortCompare);
@@ -299,7 +299,7 @@ implementation
 constructor TItemProp.Create(AOwner: TValueListEditor);
 begin
   inherited Create;
-  FOwner := AOwner;
+  FGrid := AOwner;
 end;
 
 destructor TItemProp.Destroy;
@@ -333,7 +333,7 @@ end;
 procedure TItemProp.SetEditMask(const AValue: string);
 begin
   FEditMask := AValue;
-  with FOwner do
+  with FGrid do
     if EditorMode and (FStrings.UpdateCount = 0) then
       InvalidateCell(Col, Row);
 end;
@@ -341,7 +341,7 @@ end;
 procedure TItemProp.SetMaxLength(const AValue: Integer);
 begin
   FMaxLength := AValue;
-  with FOwner do
+  with FGrid do
     if EditorMode and (FStrings.UpdateCount = 0) then
       InvalidateCell(Col, Row);
 end;
@@ -349,7 +349,7 @@ end;
 procedure TItemProp.SetReadOnly(const AValue: Boolean);
 begin
   FReadOnly := AValue;
-  with FOwner do
+  with FGrid do
     if EditorMode and (FStrings.UpdateCount = 0) then
       InvalidateCell(Col, Row);
 end;
@@ -357,7 +357,7 @@ end;
 procedure TItemProp.SetEditStyle(const AValue: TEditStyle);
 begin
   FEditStyle := AValue;
-  with FOwner do
+  with FGrid do
     if EditorMode and (FStrings.UpdateCount = 0) then
       InvalidateCell(Col, Row);
 end;
@@ -365,7 +365,7 @@ end;
 procedure TItemProp.SetPickList(const AValue: TStrings);
 begin
   GetPickList.Assign(AValue);
-  with FOwner do
+  with FGrid do
     if EditorMode and (FStrings.UpdateCount = 0) then
       InvalidateCell(Col, Row);
 end;
@@ -428,7 +428,7 @@ begin
   if not Assigned(Source) then Exit;
   for Index := 0 to Source.Count - 1 do
   begin
-    Prop := TItemProp.Create(FOwner.FOwner);
+    Prop := TItemProp.Create(FStrings.FGrid);
     Prop.Assign(Source.Items[Index]);
     Add(Prop);
   end;
@@ -451,7 +451,7 @@ end;
 
 constructor TItemPropList.Create(AOwner: TValueListStrings);
 begin
-  FOwner := AOwner;
+  FStrings := AOwner;
   FList := TFPObjectList.Create(True);
 end;
 
@@ -473,12 +473,12 @@ var
 begin
   // ToDo: Check validity of key
   //debugln('TValueListStrings.InsertItem: Index=',dbgs(index),' S=',S,' AObject=',dbgs(aobject));
-  IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
-  if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
+  IsShowingEditor := goAlwaysShowEditor in FGrid.Options;
+  if IsShowingEditor then FGrid.Options := FGrid.Options - [goAlwaysShowEditor];
   inherited InsertItem(Index, S, AObject);
-  FItemProps.Insert(Index, TItemProp.Create(FOwner));
+  FItemProps.Insert(Index, TItemProp.Create(FGrid));
   //only restore this _after_ FItemProps is updated!
-  if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
+  if IsShowingEditor then FGrid.Options := FGrid.Options + [goAlwaysShowEditor];
 end;
 
 procedure TValueListStrings.InsertItem(Index: Integer; const S: string);
@@ -492,22 +492,22 @@ var
   MustHideShowingEditor: Boolean;
 begin
   // ToDo: Check validity of key
-  IndexToRow := Index + FOwner.FixedRows;
-  MustHideShowingEditor := (goAlwaysShowEditor in FOwner.Options) and
-                           FOwner.Editor.Visible and
-                           (IndexToRow = FOwner.Row) and
+  IndexToRow := Index + FGrid.FixedRows;
+  MustHideShowingEditor := (goAlwaysShowEditor in FGrid.Options) and
+                           FGrid.Editor.Visible and
+                           (IndexToRow = FGrid.Row) and
                            //if editor is Focussed, we are editing a cell, so we cannot hide!
-                           (not FOwner.Editor.Focused);
+                           (not FGrid.Editor.Focused);
   //debugln('TValueListStrings.Put: MustHideShowingEditor=',DbgS(MustHideShowingEditor));
-  if MustHideShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
+  if MustHideShowingEditor then FGrid.Options := FGrid.Options - [goAlwaysShowEditor];
   inherited Put(Index, S);
-  if MustHideShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
+  if MustHideShowingEditor then FGrid.Options := FGrid.Options + [goAlwaysShowEditor];
 end;
 
 constructor TValueListStrings.Create(AOwner: TValueListEditor);
 begin
   inherited Create;
-  FOwner := AOwner;
+  FGrid := AOwner;
   FItemProps := TItemPropList.Create(Self);
 end;
 
@@ -528,11 +528,11 @@ procedure TValueListStrings.Clear;
 var
   IsShowingEditor: Boolean;
 begin
-  IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
-  if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
+  IsShowingEditor := goAlwaysShowEditor in FGrid.Options;
+  if IsShowingEditor then FGrid.Options := FGrid.Options - [goAlwaysShowEditor];
   inherited Clear;
   FItemProps.Clear;
-  if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
+  if IsShowingEditor then FGrid.Options := FGrid.Options + [goAlwaysShowEditor];
 end;
 
 
@@ -604,13 +604,13 @@ var
   i: Integer;
   IsShowingEditor: Boolean;
 begin
-  IsShowingEditor := goAlwaysShowEditor in FOwner.Options;
-  if IsShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
+  IsShowingEditor := goAlwaysShowEditor in FGrid.Options;
+  if IsShowingEditor then FGrid.Options := FGrid.Options - [goAlwaysShowEditor];
   inherited Delete(Index);
   // Delete also ItemProps
   FItemProps.Delete(Index);
   //only restore this _after_ FItemProps is updated!
-  if IsShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
+  if IsShowingEditor then FGrid.Options := FGrid.Options + [goAlwaysShowEditor];
 end;
 
 procedure TValueListStrings.Exchange(Index1, Index2: Integer);
@@ -618,15 +618,15 @@ var
   IndexToRow1, IndexToRow2: Integer;
   MustHideShowingEditor: Boolean;
 begin
-  IndexToRow1 := Index1 + FOwner.FixedRows;
-  IndexToRow2 := Index2 + FOwner.FixedRows;
-  MustHideShowingEditor := (goAlwaysShowEditor in FOwner.Options) and
-                           FOwner.Editor.Visible and
-                           ((IndexToRow1 = FOwner.Row) or (IndexToRow2 = FOwner.Row));
-  if MustHideShowingEditor then FOwner.Options := FOwner.Options - [goAlwaysShowEditor];
+  IndexToRow1 := Index1 + FGrid.FixedRows;
+  IndexToRow2 := Index2 + FGrid.FixedRows;
+  MustHideShowingEditor := (goAlwaysShowEditor in FGrid.Options) and
+                           FGrid.Editor.Visible and
+                           ((IndexToRow1 = FGrid.Row) or (IndexToRow2 = FGrid.Row));
+  if MustHideShowingEditor then FGrid.Options := FGrid.Options - [goAlwaysShowEditor];
   inherited Exchange(Index1, Index2);
   FItemProps.Exchange(Index1, Index2);
-  if MustHideShowingEditor then FOwner.Options := FOwner.Options + [goAlwaysShowEditor];
+  if MustHideShowingEditor then FGrid.Options := FGrid.Options + [goAlwaysShowEditor];
 end;
 
 function TValueListStrings.GetItemProp(const AKeyOrIndex: Variant): TItemProp;
