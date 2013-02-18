@@ -541,7 +541,7 @@ type
     procedure SetRoot(ANode : TSynSizedDifferentialAVLNode); virtual; overload;
     procedure SetRoot(ANode : TSynSizedDifferentialAVLNode; anAdjustChildPosOffset : Integer); virtual; overload;
 
-    procedure DisposeNode(var ANode: TSynSizedDifferentialAVLNode); inline;
+    procedure DisposeNode(var ANode: TSynSizedDifferentialAVLNode); virtual;
 
     function  InsertNode(ANode : TSynSizedDifferentialAVLNode) : Integer; // returns FoldedBefore // ANode may not have children
     procedure RemoveNode(ANode: TSynSizedDifferentialAVLNode);
@@ -2594,34 +2594,57 @@ end;
 function TSynSizedDifferentialAVLTree.FindNodeAtPosition(APosition: INteger;
   AMode: TSynSizedDiffAVLFindMode; out aStartPosition,
   aSizesBeforeSum: Integer): TSynSizedDifferentialAVLNode;
+var
+  NxtPrv: Array [0..1] of TSynSizedDifferentialAVLNode;
+  NxtPrvBefore, NxtPrvPos: Array [0..1] of Integer;
 
-  function CreateRoot: TSynSizedDifferentialAVLNode;
+  procedure Store(i: integer; N: TSynSizedDifferentialAVLNode); inline;
+  begin
+    NxtPrv[i] := N;
+    NxtPrvBefore[i] := aSizesBeforeSum;
+    NxtPrvPos[i]    := aStartPosition;
+  end;
+
+  function Restore(i: integer): TSynSizedDifferentialAVLNode; inline;
+  begin
+    Result := NxtPrv[i];
+    aSizesBeforeSum := NxtPrvBefore[i];
+    aStartPosition  := NxtPrvPos[i];
+  end;
+
+  function CreateRoot: TSynSizedDifferentialAVLNode; inline;
   begin
     Result := CreateNode(APosition);
     Result.FPositionOffset := APosition;
     SetRoot(Result);
   end;
 
-  function CreateLeft(N: TSynSizedDifferentialAVLNode; ACurOffs: Integer): TSynSizedDifferentialAVLNode;
+  function CreateLeft(N: TSynSizedDifferentialAVLNode; ACurOffs: Integer): TSynSizedDifferentialAVLNode; inline;
   begin
     Result := CreateNode(APosition);
     Result.FPositionOffset := APosition;
     N.SetLeftChild(Result, -ACurOffs);
     BalanceAfterInsert(Result);
+    aStartPosition := APosition;
+    aSizesBeforeSum := Result.GetSizesBeforeSum;
   end;
 
-  function CreateRight(N: TSynSizedDifferentialAVLNode; ACurOffs: Integer): TSynSizedDifferentialAVLNode;
+  function CreateRight(N: TSynSizedDifferentialAVLNode; ACurOffs: Integer): TSynSizedDifferentialAVLNode; inline;
   begin
     Result := CreateNode(APosition);
     Result.FPositionOffset := APosition;
     N.SetRightChild(Result, -ACurOffs);
     BalanceAfterInsert(Result);
+    aStartPosition := APosition;
+    aSizesBeforeSum := Result.GetSizesBeforeSum;
   end;
 
 begin
   aSizesBeforeSum := 0;
+  aStartPosition := 0;
+  Store(0, nil);
+  Store(1, nil);
   aStartPosition := fRootOffset;
-
   Result := FRoot;
   if (Result = nil) then begin
     if (AMode = afmCreate) then begin
@@ -2639,11 +2662,12 @@ begin
         case AMode of
           afmCreate: Result := CreateLeft(Result, aStartPosition);
           afmNil:    Result := nil;
-          afmPrev:   Result := Result.Precessor(aStartPosition, aStartPosition);
-          // afmNext:      Result already contains next node
+          afmPrev:   Result := Restore(0); // Precessor
+          //afmNext:   Result := ; //already contains next node
         end;
         break;
       end;
+      Store(1, Result); // Successor
       Result := Result.FLeft;
     end
 
@@ -2658,11 +2682,12 @@ begin
         case AMode of
           afmCreate: Result := CreateRight(Result, aStartPosition);
           afmNil:    Result := nil;
-          afmNext:   Result := Result.Successor(aStartPosition, aStartPosition);
-          // afmPrev :      Result already contains prev node
+          afmNext:   Result := Restore(1); // Successor
+          //afmPrev :  Result := ; //already contains prev node
         end;
         break;
       end;
+      Store(0, Result); // Precessor
       aSizesBeforeSum := aSizesBeforeSum + Result.FLeftSizeSum + Result.FSize;
       Result := Result.FRight;
     end;
