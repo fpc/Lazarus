@@ -123,6 +123,7 @@ type
     procedure Remove(const Name: string); virtual;
     property CaseSensitive: boolean read FCaseSensitive;
     property Tree: TAVLTree read FTree; // tree of PStringMapItem
+    function GetNodeData(AVLNode: TAVLTreeNode): PStringMapItem; inline;
     function Count: integer;
     function FindNode(const s: string): TAVLTreeNode;
     function Equals(OtherTree: TStringMap): boolean; reintroduce;
@@ -166,6 +167,7 @@ type
     function GetString(const Name: string; out Value: string): boolean;
     procedure Add(const Name, Value: string); virtual;
     property Strings[const s: string]: string read GetStrings write SetStrings; default;
+    function GetNodeData(AVLNode: TAVLTreeNode): PStringToStringTreeItem; inline;
     function AsText: string;
     procedure WriteDebugReport; override;
     function CalcMemSize: PtrUint; override;
@@ -189,7 +191,7 @@ type
     property Current: PStringToPointerTreeItem read GetCurrent;
   end;
 
-  { TStringToPointerTree }
+  { TStringToPointerTree - Tree contains PStringToPointerTreeItem }
 
   TStringToPointerTree = class(TStringMap)
   private
@@ -204,6 +206,7 @@ type
     function GetItem(const Name: string; out Value: Pointer): boolean;
     procedure Add(const Name: string; const Value: Pointer); virtual;
     property Items[const s: string]: Pointer read GetItems write SetItems; default;
+    function GetNodeData(AVLNode: TAVLTreeNode): PStringToPointerTreeItem; inline;
     procedure Assign(Source: TStringMap); override;
     function GetEnumerator: TStringToPointerTreeEnumerator;
     property FreeValues: boolean read FFreeValues write FFreeValues;
@@ -560,6 +563,12 @@ begin
   Items[Name]:=Value;
 end;
 
+function TStringToPointerTree.GetNodeData(AVLNode: TAVLTreeNode
+  ): PStringToPointerTreeItem;
+begin
+  Result:=PStringToPointerTreeItem(AVLNode.Data);
+end;
+
 procedure TStringToPointerTree.Assign(Source: TStringMap);
 var
   Node: TAVLTreeNode;
@@ -709,6 +718,11 @@ begin
     FTree.Delete(Node);
     Dispose(Item);
   end;
+end;
+
+function TStringMap.GetNodeData(AVLNode: TAVLTreeNode): PStringMapItem;
+begin
+  Result:=PStringMapItem(AVLNode.Data);
 end;
 
 function TStringMap.Count: integer;
@@ -895,6 +909,12 @@ end;
 procedure TStringToStringTree.Add(const Name, Value: string);
 begin
   Strings[Name]:=Value;
+end;
+
+function TStringToStringTree.GetNodeData(AVLNode: TAVLTreeNode
+  ): PStringToStringTreeItem;
+begin
+  Result:=PStringToStringTreeItem(AVLNode.Data);
 end;
 
 function TStringToStringTree.AsText: string;
