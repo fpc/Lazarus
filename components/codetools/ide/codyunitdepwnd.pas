@@ -600,13 +600,15 @@ begin
     AVLNode:=NewUnits.Tree.FindLowest;
     while AVLNode<>nil do begin
       GroupUnit:=TUGGroupUnit(NewUnits.GetNodeData(AVLNode)^.Value);
-      if (Graph.NodeCount<=i) or (Graph.Nodes[i].Data<>Pointer(GroupUnit)) then begin
+      if (Graph.NodeCount<=i) or (Graph.Nodes[i].Data<>Pointer(GroupUnit)) then
+      begin
         HasChanged:=true;
         break;
       end;
       i+=1;
       AVLNode:=NewUnits.Tree.FindSuccessor(AVLNode);
     end;
+    if i<Graph.NodeCount then HasChanged:=true;
     if not HasChanged then exit;
 
     // units changed -> update level graph of units

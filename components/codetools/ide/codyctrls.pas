@@ -1548,6 +1548,7 @@ end;
 
 procedure TLvlGraph.SelectionChanged;
 begin
+  Invalidate;
   if OnSelectionChanged<>nil then
     OnSelectionChanged(Self);
 end;
