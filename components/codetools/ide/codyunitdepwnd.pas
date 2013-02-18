@@ -571,7 +571,10 @@ var
   CurUses: TUGUses;
   SourceGraphNode: TLvlGraphNode;
   TargetGraphNode: TLvlGraphNode;
+  NewGroups: TStringToPointerTree;
+  UsedUnit: TUGGroupUnit;
 begin
+  NewGroups:=TStringToPointerTree.Create(false);
   NewUnits:=TFilenameToPointerTree.Create(false);
   try
     // fetch new list of units
@@ -579,6 +582,7 @@ begin
     while GraphGroup<>nil do begin
       UnitGroup:=TUGGroup(GraphGroup.Data);
       if UnitGroup<>nil then begin
+        NewGroups[UnitGroup.Name]:=UnitGroup;
         AVLNode:=UnitGroup.Units.FindLowest;
         while AVLNode<>nil do begin
           GroupUnit:=TUGGroupUnit(AVLNode.Data);
@@ -615,7 +619,10 @@ begin
       if GroupUnit.UsesUnits<>nil then begin
         for i:=0 to GroupUnit.UsesUnits.Count-1 do begin
           CurUses:=TUGUses(GroupUnit.UsesUnits[i]);
-          TargetGraphNode:=Graph.GetNode(UnitToCaption(CurUses.UsesUnit),true);
+          UsedUnit:=TUGGroupUnit(CurUses.UsesUnit);
+          if UsedUnit.Group=nil then continue;
+          if not NewGroups.Contains(UsedUnit.Group.Name) then continue;
+          TargetGraphNode:=Graph.GetNode(UnitToCaption(UsedUnit),true);
           Graph.GetEdge(SourceGraphNode,TargetGraphNode,true);
         end;
       end;
@@ -624,6 +631,7 @@ begin
 
     UnitsLvlGraph.EndUpdate;
   finally
+    NewGroups.Free;
     NewUnits.Free;
   end;
 end;
