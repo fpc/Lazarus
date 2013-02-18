@@ -79,7 +79,7 @@ type
     FCurrentUnit: TUGUnit;
     FIdleConnected: boolean;
     FUsesGraph: TUsesGraph;
-    FGroups: TUGGroups; // referenced by Nodes.Data of GroupsLvlGraph and UnitsLvlGraph
+    FGroups: TUGGroups; // referenced by Nodes.Data of GroupsLvlGraph
     fCircleCategories: array[TUDDUsesType] of TCircleDiagramCategory;
     procedure SetCurrentUnit(AValue: TUGUnit);
     procedure SetIdleConnected(AValue: boolean);
@@ -99,7 +99,7 @@ type
     function GetFPCSrcDir: string;
   public
     CurUnitDiagram: TCircleDiagramControl;
-    GroupsLvlGraph: TLvlGraphControl; // Nodes.Data are Groups in Groups
+    GroupsLvlGraph: TLvlGraphControl; // Nodes.Data are TUGGroup of Groups
     UnitsLvlGraph: TLvlGraphControl; // Nodes.Data are Units in Groups
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
     property UsesGraph: TUsesGraph read FUsesGraph;
@@ -278,17 +278,23 @@ var
   i: Integer;
   Filename: String;
   CurUnit: TUGUnit;
+  ProjFile: TLazProjectFile;
 begin
   if AProject=nil then exit;
   Result:=Groups.GetGroup(GroupPrefixProject,true);
-  //debugln(['TUnitDependenciesDialog.CreateProjectGroup ',Result.Name]);
+  //debugln(['TUnitDependenciesDialog.CreateProjectGroup ',Result.Name,' FileCount=',AProject.FileCount]);
   for i:=0 to AProject.FileCount-1 do begin
+    ProjFile:=AProject.Files[i];
+    if not ProjFile.IsPartOfProject then continue;
     Filename:=AProject.Files[i].Filename;
     CurUnit:=UsesGraph.GetUnit(Filename,false);
-    if CurUnit is TUGGroupUnit then begin
-      if TUGGroupUnit(CurUnit).Group<>nil then continue;
-      Result.AddUnit(TUGGroupUnit(CurUnit));
+    if CurUnit=nil then continue;
+    if not (CurUnit is TUGGroupUnit) then begin
+      debugln(['TUnitDependenciesDialog.CreateProjectGroup WARNING: ',CurUnit.Filename,' ',CurUnit.Classname,' should be TUGGroupUnit']);
+      continue;
     end;
+    if TUGGroupUnit(CurUnit).Group<>nil then continue;
+    Result.AddUnit(TUGGroupUnit(CurUnit));
   end;
 end;
 
@@ -414,6 +420,7 @@ procedure TUnitDependenciesDialog.UpdateAll;
 begin
   UpdateCurUnitTreeView;
   UpdateGroupsLvlGraph;
+  UpdateUnitsLvlGraph;
 end;
 
 procedure TUnitDependenciesDialog.UpdateCurUnitDiagram;
@@ -522,6 +529,7 @@ begin
     if Group.Name=GroupPrefixProject then begin
       // project
       GroupObj:=LazarusIDE.ActiveProject;
+      GraphGroup.Selected:=true;
     end else begin
       // package
       GroupObj:=PackageEditingInterface.FindPackageWithName(Group.Name);
@@ -569,7 +577,7 @@ begin
     // fetch new list of units
     GraphGroup:=GroupsLvlGraph.Graph.FirstSelected;
     while GraphGroup<>nil do begin
-      UnitGroup:=FGroups.GetGroup(GraphGroup.Caption,false);
+      UnitGroup:=TUGGroup(GraphGroup.Data);
       if UnitGroup<>nil then begin
         AVLNode:=UnitGroup.Units.FindLowest;
         while AVLNode<>nil do begin

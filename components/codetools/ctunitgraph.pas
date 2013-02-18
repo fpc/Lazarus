@@ -294,7 +294,7 @@ begin
   if AVLNode<>nil then begin
     Result:=TUGUnit(AVLNode.Data);
   end else if CreateIfNotExists then begin
-    Result:=TUGUnit.Create(ExpFilename);
+    Result:=UnitClass.Create(ExpFilename);
     FFiles.Add(Result);
   end else
     Result:=nil;
@@ -350,7 +350,7 @@ function TUsesGraph.Parse(IgnoreErrors: boolean; out Completed: boolean;
       NewUnit:=GetUnit(Filename,true);
       if CurUnit.UsesUnits=nil then
         CurUnit.UsesUnits:=TFPList.Create;
-      NewUses:=TUGUses.Create(CurUnit,NewUnit);
+      NewUses:=UsesClass.Create(CurUnit,NewUnit);
       NewUses.InImplementation:=InImplementation;
       CurUnit.UsesUnits.Add(NewUses);
       if NewUnit.UsedByUnits=nil then

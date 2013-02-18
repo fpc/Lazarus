@@ -1601,7 +1601,7 @@ var
   BestNode: TLvlGraphNode;
   MaxLevel: Integer;
 begin
-  WriteDebugReport('TLvlGraph.CreateTopologicalLevels START');
+  //WriteDebugReport('TLvlGraph.CreateTopologicalLevels START');
   {$IFDEF LvlGraphConsistencyCheck}
   ConsistencyCheck(false);
   {$ENDIF}
@@ -1689,7 +1689,7 @@ begin
     ExtNodes.Free;
     InNodes.Free;
   end;
-  WriteDebugReport('TLvlGraph.CreateTopologicalLevels END');
+  //WriteDebugReport('TLvlGraph.CreateTopologicalLevels END');
   {$IFDEF LvlGraphConsistencyCheck}
   ConsistencyCheck(true);
   {$ENDIF}
