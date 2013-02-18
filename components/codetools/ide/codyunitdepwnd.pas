@@ -30,13 +30,11 @@ unit CodyUnitDepWnd;
 interface
 
 uses
-  Classes, SysUtils, typinfo, AVL_Tree, FPCanvas,
-  FileUtil, lazutf8classes, LazLogger,
-  TreeFilterEdit, Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons,
-  ComCtrls, LCLType,
-  LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf,
-  CTUnitGraph, CodeToolManager, DefineTemplates, CTUnitGroupGraph,
-  CodyCtrls;
+  Classes, SysUtils, typinfo, AVL_Tree, FPCanvas, FileUtil, lazutf8classes,
+  LazLogger, TreeFilterEdit, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  Buttons, ComCtrls, LCLType, LazIDEIntf, ProjectIntf, IDEWindowIntf,
+  PackageIntf, CTUnitGraph, CodeToolManager, DefineTemplates, CTUnitGroupGraph,
+  CodeToolsStructs, CodyCtrls;
 
 const  // ToDo: make resourcestring
   lisSelectAUnit = 'Select an unit';
@@ -65,6 +63,7 @@ type
     MainPageControl: TPageControl;
     ProgressBar1: TProgressBar;
     GroupsTabSheet: TTabSheet;
+    GroupsSplitter: TSplitter;
     UnitsTabSheet: TTabSheet;
     Timer1: TTimer;
     CurUnitTreeFilterEdit: TTreeFilterEdit;
@@ -73,13 +72,14 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure GroupsLvlGraphSelectionChanged(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure Timer1Timer(Sender: TObject);
   private
     FCurrentUnit: TUGUnit;
     FIdleConnected: boolean;
     FUsesGraph: TUsesGraph;
-    FGroups: TUGGroups;
+    FGroups: TUGGroups; // referenced by Nodes.Data of GroupsLvlGraph and UnitsLvlGraph
     fCircleCategories: array[TUDDUsesType] of TCircleDiagramCategory;
     procedure SetCurrentUnit(AValue: TUGUnit);
     procedure SetIdleConnected(AValue: boolean);
@@ -93,12 +93,14 @@ type
     procedure UpdateCurUnitDiagram;
     procedure UpdateCurUnitTreeView;
     procedure UpdateGroupsLvlGraph;
+    procedure UpdateUnitsLvlGraph;
     function NodeTextToUnit(NodeText: string): TUGUnit;
     function UGUnitToNodeText(UGUnit: TUGUnit): string;
     function GetFPCSrcDir: string;
   public
     CurUnitDiagram: TCircleDiagramControl;
-    GroupsLvlGraph: TLvlGraphControl;
+    GroupsLvlGraph: TLvlGraphControl; // Nodes.Data are Groups in Groups
+    UnitsLvlGraph: TLvlGraphControl; // Nodes.Data are Units in Groups
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
     property UsesGraph: TUsesGraph read FUsesGraph;
     property Groups: TUGGroups read FGroups;
@@ -192,6 +194,19 @@ begin
   begin
     Name:='GroupsLvlGraph';
     Caption:='';
+    Align:=alTop;
+    Height:=200;
+    Parent:=GroupsTabSheet;
+    OnSelectionChanged:=@GroupsLvlGraphSelectionChanged;
+  end;
+
+  GroupsSplitter.Top:=GroupsLvlGraph.Height;
+
+  UnitsLvlGraph:=TLvlGraphControl.Create(Self);
+  with UnitsLvlGraph do
+  begin
+    Name:='UnitsLvlGraph';
+    Caption:='';
     Align:=alClient;
     Parent:=GroupsTabSheet;
   end;
@@ -204,8 +219,16 @@ end;
 procedure TUnitDependenciesDialog.FormDestroy(Sender: TObject);
 begin
   IdleConnected:=false;
+  GroupsLvlGraph.Clear;
+  UnitsLvlGraph.Clear;
   FreeAndNil(FGroups);
   FreeAndNil(FUsesGraph);
+end;
+
+procedure TUnitDependenciesDialog.GroupsLvlGraphSelectionChanged(Sender: TObject
+  );
+begin
+  UpdateUnitsLvlGraph;
 end;
 
 procedure TUnitDependenciesDialog.OnIdle(Sender: TObject; var Done: Boolean);
@@ -485,6 +508,7 @@ var
   i: Integer;
   RequiredPkg: TIDEPackage;
   GroupObj: TObject;
+  GraphGroup: TLvlGraphNode;
 begin
   GroupsLvlGraph.BeginUpdate;
   Graph:=GroupsLvlGraph.Graph;
@@ -492,7 +516,8 @@ begin
   AVLNode:=Groups.Groups.FindLowest;
   while AVLNode<>nil do begin
     Group:=TUGGroup(AVLNode.Data);
-    Graph.GetNode(Group.Name,true);
+    GraphGroup:=Graph.GetNode(Group.Name,true);
+    GraphGroup.Data:=Group;
     GroupObj:=nil;
     if Group.Name=GroupPrefixProject then begin
       // project
@@ -517,6 +542,82 @@ begin
     AVLNode:=Groups.Groups.FindSuccessor(AVLNode);
   end;
   GroupsLvlGraph.EndUpdate;
+end;
+
+procedure TUnitDependenciesDialog.UpdateUnitsLvlGraph;
+
+  function UnitToCaption(AnUnit: TUGUnit): string;
+  begin
+    Result:=ExtractFileNameOnly(AnUnit.Filename);
+  end;
+
+var
+  GraphGroup: TLvlGraphNode;
+  NewUnits: TFilenameToPointerTree;
+  UnitGroup: TUGGroup;
+  AVLNode: TAVLTreeNode;
+  GroupUnit: TUGGroupUnit;
+  i: Integer;
+  HasChanged: Boolean;
+  Graph: TLvlGraph;
+  CurUses: TUGUses;
+  SourceGraphNode: TLvlGraphNode;
+  TargetGraphNode: TLvlGraphNode;
+begin
+  NewUnits:=TFilenameToPointerTree.Create(false);
+  try
+    // fetch new list of units
+    GraphGroup:=GroupsLvlGraph.Graph.FirstSelected;
+    while GraphGroup<>nil do begin
+      UnitGroup:=FGroups.GetGroup(GraphGroup.Caption,false);
+      if UnitGroup<>nil then begin
+        AVLNode:=UnitGroup.Units.FindLowest;
+        while AVLNode<>nil do begin
+          GroupUnit:=TUGGroupUnit(AVLNode.Data);
+          NewUnits[GroupUnit.Filename]:=GroupUnit;
+          AVLNode:=UnitGroup.Units.FindSuccessor(AVLNode);
+        end;
+      end;
+      GraphGroup:=GraphGroup.NextSelected;
+    end;
+
+    // check if something changed
+    Graph:=UnitsLvlGraph.Graph;
+    HasChanged:=false;
+    i:=0;
+    AVLNode:=NewUnits.Tree.FindLowest;
+    while AVLNode<>nil do begin
+      GroupUnit:=TUGGroupUnit(NewUnits.GetNodeData(AVLNode)^.Value);
+      if (Graph.NodeCount<=i) or (Graph.Nodes[i].Data<>Pointer(GroupUnit)) then begin
+        HasChanged:=true;
+        break;
+      end;
+      i+=1;
+      AVLNode:=NewUnits.Tree.FindSuccessor(AVLNode);
+    end;
+    if not HasChanged then exit;
+
+    // units changed -> update level graph of units
+    UnitsLvlGraph.BeginUpdate;
+    Graph.Clear;
+    AVLNode:=NewUnits.Tree.FindLowest;
+    while AVLNode<>nil do begin
+      GroupUnit:=TUGGroupUnit(NewUnits.GetNodeData(AVLNode)^.Value);
+      SourceGraphNode:=Graph.GetNode(UnitToCaption(GroupUnit),true);
+      if GroupUnit.UsesUnits<>nil then begin
+        for i:=0 to GroupUnit.UsesUnits.Count-1 do begin
+          CurUses:=TUGUses(GroupUnit.UsesUnits[i]);
+          TargetGraphNode:=Graph.GetNode(UnitToCaption(CurUses.UsesUnit),true);
+          Graph.GetEdge(SourceGraphNode,TargetGraphNode,true);
+        end;
+      end;
+      AVLNode:=NewUnits.Tree.FindSuccessor(AVLNode);
+    end;
+
+    UnitsLvlGraph.EndUpdate;
+  finally
+    NewUnits.Free;
+  end;
 end;
 
 function TUnitDependenciesDialog.NodeTextToUnit(NodeText: string): TUGUnit;

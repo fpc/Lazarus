@@ -515,12 +515,14 @@ type
     destructor Destroy; override;
     procedure EraseBackground({%H-}DC: HDC); override;
     property Graph: TLvlGraph read FGraph;
+    procedure Clear;
     procedure AutoLayout(RndColors: boolean = true); virtual;
     procedure Invalidate; override;
     procedure InvalidateAutoLayout;
     procedure BeginUpdate;
     procedure EndUpdate;
     function GetNodeAt(X,Y: integer): TLvlGraphNode;
+    class function GetControlClassDefaultSize: TSize; override;
   public
     property NodeStyle: TLvlGraphNodeStyle read FNodeStyle write SetNodeStyle;
     property NodeUnderMouse: TLvlGraphNode read FNodeUnderMouse write SetNodeUnderMouse;
@@ -1232,6 +1234,16 @@ begin
   // Paint paints all, no need to erase background
 end;
 
+procedure TCustomLvlGraphControl.Clear;
+begin
+  BeginUpdate;
+  try
+    Graph.Clear;
+  finally
+    EndUpdate;
+  end;
+end;
+
 procedure TCustomLvlGraphControl.AutoLayout(RndColors: boolean);
 { Min/MaxPixelPerWeight: used to scale Node.DrawSize depending on weight of
                          incoming and outgoing edges
@@ -1341,6 +1353,12 @@ begin
       exit(Node);
     end;
   end;
+end;
+
+class function TCustomLvlGraphControl.GetControlClassDefaultSize: TSize;
+begin
+  Result.cx:=200;
+  Result.cy:=200;
 end;
 
 type

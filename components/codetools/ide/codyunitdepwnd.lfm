@@ -51,9 +51,9 @@ object UnitDependenciesDialog: TUnitDependenciesDialog
     Height = 416
     Top = 0
     Width = 669
-    ActivePage = UnitsTabSheet
+    ActivePage = GroupsTabSheet
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 2
     object UnitsTabSheet: TTabSheet
       Caption = 'UnitsTabSheet'
@@ -112,6 +112,17 @@ object UnitDependenciesDialog: TUnitDependenciesDialog
     end
     object GroupsTabSheet: TTabSheet
       Caption = 'GroupsTabSheet'
+      ClientHeight = 387
+      ClientWidth = 665
+      object GroupsSplitter: TSplitter
+        Cursor = crVSplit
+        Left = 0
+        Height = 5
+        Top = 0
+        Width = 665
+        Align = alTop
+        ResizeAnchor = akTop
+      end
     end
   end
   object Timer1: TTimer
