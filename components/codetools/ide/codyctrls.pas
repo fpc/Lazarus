@@ -963,7 +963,7 @@ begin
     end;
     //debugln(['TCustomLvlGraphControl.GraphStructureChanged ']);
     if lgoAutoLayout in FOptions then
-      Include(FFlags,lgcNeedAutoLayout);
+      FFlags:=FFlags+[lgcNeedAutoLayout,lgcNeedInvalidate];
   end;
 end;
 
@@ -1308,6 +1308,10 @@ end;
 
 procedure TCustomLvlGraphControl.Invalidate;
 begin
+  if fUpdateLock>0 then begin
+    Include(FFlags,lgcNeedInvalidate);
+    exit;
+  end;
   Exclude(FFlags,lgcNeedInvalidate);
   inherited Invalidate;
 end;
@@ -1330,7 +1334,7 @@ begin
     raise Exception.Create('');
   dec(fUpdateLock);
   if fUpdateLock=0 then begin
-    if lgcNeedInvalidate in FFLags then
+    if [lgcNeedAutoLayout,lgcNeedInvalidate]*FFlags<>[] then
       Invalidate;
   end;
 end;
