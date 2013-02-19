@@ -79,10 +79,23 @@ function CreateTabsAndSpaces(StartPos, SpaceLen, TabWidth: integer;
 procedure SynAssert(Condition: Boolean; Msg: String);
 procedure SynAssert(Condition: Boolean; Msg: String; Args: Array of Const);
 
+function ToIdx(APos: Integer): Integer; inline;
+function ToPos(AIdx: Integer): Integer; inline;
+
 implementation
 
 uses
   SysUtils;
+
+function ToIdx(APos: Integer): Integer; inline;
+begin
+  Result := APos - 1;
+end;
+
+function ToPos(AIdx: Integer): Integer; inline;
+begin
+  Result := AIdx + 1;
+end;
 
 {* fontstyle utilities *}
 

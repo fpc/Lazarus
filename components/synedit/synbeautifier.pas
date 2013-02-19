@@ -40,7 +40,7 @@ unit SynBeautifier;
 interface
 
 uses
-  Classes, SysUtils, math, LCLProc, SynEditMiscClasses, LazSynEditText, SynEditPointClasses,
+  Classes, SysUtils, math, LCLProc, SynEditMiscClasses, SynEditMiscProcs, LazSynEditText, SynEditPointClasses,
   SynEditKeyCmds, SynHighlighterPas, SynEditHighlighterFoldBase, SynRegExpr;
 
 type
@@ -261,6 +261,9 @@ type
     FPasHighlighter: TSynPasSyn;
 
     FCaretAtEOL: Boolean;
+    FStringBreakAppend: String;
+    FStringBreakEnabled: Boolean;
+    FStringBreakPrefix: String;
     FWorkLine: Integer; // 1 based
     FWorkFoldType: TSynCommentType;
     FGetLineAfterComment: Boolean;
@@ -273,6 +276,8 @@ type
     FCacheFirstLineForIdx,       FCacheFirstLine: Integer;
     FCacheSlashColumnForIdx,     FCacheSlashColumn: Integer;
     FCacheCommentStartColForIdx, FCacheCommentStartCol: Integer;
+    FCacheLastHlTokenForIdx,     FCacheLastHlTokenCol: Integer;
+    FCacheLastHlTokenKind:       TtkTokenKind;
 
     FCacheWorkFoldEndLvl: Integer;
     FCacheWorkCommentLvl: Integer;
@@ -291,6 +296,7 @@ type
     function  GetFoldTypeAtEndOfLineForIdx(AIndex: Integer): TPascalCodeFoldBlockType;
     function  GetFirstCommentLineForIdx(AIndex: Integer): Integer; // Result is 1 based
     function  GetSlashStartColumnForIdx(AIndex: Integer): Integer;
+    function  GetLastHlTokenForIdx(AIndex: Integer; out APos: Integer): TtkTokenKind;
     function  GetCommentStartColForIdx(AIndex: Integer): Integer; // Returns Column (logic) for GetFirstCommentLineForIdx(AIndex)
     // Values based on FWorkLine
     function  GetFoldEndLevel: Integer;
@@ -311,6 +317,10 @@ type
     procedure DoAfterCommand(const ACaret: TSynEditCaret;
                              var Command: TSynEditorCommand;
                              StartLinePos, EndLinePos: Integer); override;
+    procedure DoNewLineInString(AStringStartY, AStringStartX: Integer;
+                                const ACaret: TSynEditCaret;
+                                var Command: TSynEditorCommand;
+                                StartLinePos, EndLinePos: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -431,6 +441,10 @@ type
                                                   write FEolMatch[sctSlash];
     property SlashEolSkipLongerLine: Boolean      read FEolSkipLongerLine[sctSlash]
                                                   write FEolSkipLongerLine[sctSlash];
+    // String
+    property StringBreakEnabled: Boolean read FStringBreakEnabled write FStringBreakEnabled;
+    property StringBreakAppend: String read FStringBreakAppend write FStringBreakAppend;
+    property StringBreakPrefix: String read FStringBreakPrefix write FStringBreakPrefix;
   end;
 
 function dbgs(ACommentType: TSynCommentType): String; overload;
@@ -443,16 +457,6 @@ function dbgs(AExtendMode: TSynCommentExtendMode): String; overload;
 
 implementation
 uses SynEdit;
-
-function ToIdx(APos: Integer): Integer; inline;
-begin
-  Result := APos - 1;
-end;
-
-function ToPos(AIdx: Integer): Integer; inline;
-begin
-  Result := AIdx + 1;
-end;
 
 function dbgs(ACommentType: TSynCommentType): String;
 begin
@@ -652,30 +656,40 @@ end;
 
 function TSynBeautifierPascal.GetSlashStartColumnForIdx(AIndex: Integer): Integer;
 var
-  Tk, LastTk: TtkTokenKind;
+  Tk: TtkTokenKind;
 begin
   Result := FCacheSlashColumn;
   if AIndex = FCacheSlashColumnForIdx then
     exit;
 
   FCacheSlashColumnForIdx := AIndex;
-  FCacheSlashColumn := -1;
+  Tk := GetLastHlTokenForIdx(AIndex, FCacheSlashColumn);
+  if Tk <> SynHighlighterPas.tkComment then
+    FCacheSlashColumn := -1;
+  Result := FCacheSlashColumn;
+end;
+
+function TSynBeautifierPascal.GetLastHlTokenForIdx(AIndex: Integer; out
+  APos: Integer): TtkTokenKind;
+begin
+  Result := FCacheLastHlTokenKind;
+  APos   := FCacheLastHlTokenCol;
+  if AIndex = FCacheLastHlTokenForIdx then
+    exit;
+
+  FCacheSlashColumnForIdx := AIndex;
+  FCacheLastHlTokenKind   := SynHighlighterPas.tkUnknown;
+  FCacheLastHlTokenCol    := -1;
   if (FCurrentLines[AIndex] <> '') then begin
     FPasHighlighter.StartAtLineIndex(AIndex);
-    Tk := SynHighlighterPas.tkUnknown;
     while not FPasHighlighter.GetEol do begin
-      LastTk := Tk;
-      Tk := TtkTokenKind(FPasHighlighter.GetTokenKind);
-      if (Tk = SynHighlighterPas.tkComment) and (LastTk <> SynHighlighterPas.tkComment) and
-         (copy(FPasHighlighter.GetToken,1,2) = '//')
-      then begin
-        FCacheSlashColumn := FPasHighlighter.GetTokenPos + 1;
-        exit;
-      end;
+      FCacheLastHlTokenKind := TtkTokenKind(FPasHighlighter.GetTokenKind);
+      FCacheLastHlTokenCol := FPasHighlighter.GetTokenPos + 1;
       FPasHighlighter.Next;
     end;
   end;
-  Result := FCacheSlashColumn;
+  Result := FCacheLastHlTokenKind;
+  APos   := FCacheLastHlTokenCol;
 end;
 
 function TSynBeautifierPascal.GetCommentStartColForIdx(AIndex: Integer): Integer;
@@ -991,7 +1005,7 @@ begin
   AnyEnabled := False;
   for FoldTyp := low(TSynCommentType) to high(TSynCommentType) do
     AnyEnabled := AnyEnabled or IsFoldTypeEnabled(FoldTyp);
-  if not AnyEnabled then begin
+  if (not AnyEnabled) and (not FStringBreakEnabled) then begin
     inherited DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
     exit;
   end;
@@ -1026,7 +1040,12 @@ begin
             FoldTyp := sctSlash;
         end;
         if PrevLineShlasCol < 0 then begin
-          inherited DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
+          if (FCurrentLines[ToIdx(WorkLine)-1] <> '') and
+             (GetLastHlTokenForIdx(ToIdx(WorkLine)-1, dummy) = SynHighlighterPas.tkString)
+          then
+            DoNewLineInString(WorkLine - 1, dummy, ACaret, Command, StartLinePos, EndLinePos)
+          else
+            inherited DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
           exit;
         end;
       end;
@@ -1202,6 +1221,45 @@ begin
 
 end;
 
+procedure TSynBeautifierPascal.DoNewLineInString(AStringStartY, AStringStartX: Integer;
+  const ACaret: TSynEditCaret; var Command: TSynEditorCommand; StartLinePos,
+  EndLinePos: Integer);
+var
+  s: String;
+  WorkLine: Integer;
+  f: Boolean;
+begin
+  inherited DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
+  if not FStringBreakEnabled then
+    exit;
+
+  if (Command = ecLineBreak)
+  then WorkLine := ACaret.LinePos - 1
+  else WorkLine := ACaret.LinePos;
+
+  s := FCurrentLines[ToIdx(WorkLine)];
+  if (AStringStartX < 1) or (AStringStartX > Length(s)) or (s[AStringStartX] <> '''') then
+    exit;
+  f := False;
+  while AStringStartX <= length(s) do begin
+    if (s[AStringStartX] = '''') then f := not f;
+    inc(AStringStartX);
+  end;
+  if not f then exit;
+
+  ACaret.IncForcePastEOL;
+
+  FCurrentLines.EditInsert(1 + length(s), WorkLine, '''' + FStringBreakAppend);
+  //if Command = ecInsertLine then
+  //  ACaret.BytePos := ACaret.BytePos + Length(FStringBreakAppend) + 1;
+
+  FCurrentLines.EditInsert(1 + FLogicalIndentLen, WorkLine + 1, FStringBreakPrefix + '''');
+  if (Command = ecLineBreak) then
+    ACaret.BytePos := ACaret.BytePos + Length(FStringBreakPrefix) + 1;
+
+  ACaret.DecForcePastEOL;
+end;
+
 constructor TSynBeautifierPascal.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1257,6 +1315,9 @@ begin
   FEolPostfix[sctSlash]           := '';
   FEolSkipLongerLine[sctSlash]    := False;
 
+  FStringBreakEnabled := False;
+  FStringBreakAppend := ' +';
+  FStringBreakPrefix := '';
 end;
 
 destructor TSynBeautifierPascal.Destroy;
@@ -1290,6 +1351,11 @@ begin
     FEolPostfix[i]           := TSynBeautifierPascal(Src).FEolPostfix[i];
     FEolSkipLongerLine[i]    := TSynBeautifierPascal(Src).FEolSkipLongerLine[i];
   end;
+
+  FStringBreakAppend         := TSynBeautifierPascal(Src).FStringBreakAppend;
+  FStringBreakEnabled        := TSynBeautifierPascal(Src).FStringBreakEnabled;
+  FStringBreakPrefix         := TSynBeautifierPascal(Src).FStringBreakPrefix;
+
 end;
 
 { TSynCustomBeautifier }
