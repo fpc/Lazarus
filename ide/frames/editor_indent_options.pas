@@ -45,7 +45,12 @@ type
     AutoIndentTypeLabel: TLabel;
     cbSlashExtend: TComboBox;
     CenterLabel1: TLabel;
+    cbStringEnableAutoContinue: TCheckBox;
     CommentsGroupDivider: TDividerBevel;
+    edStringAutoAppend: TEdit;
+    edStringAutoPrefix: TEdit;
+    lbStringAutoAppend: TLabel;
+    lbStringAutoPrefix: TLabel;
     lblBlockIndentShortcut: TLabel;
 
     cbAnsiEnableAutoContinue: TCheckBox;
@@ -82,6 +87,7 @@ type
     Notebook1: TNotebook;
     AnsiPage: TPage;
     CurlyPage: TPage;
+    StringPage: TPage;
     SlashPage: TPage;
     TabsGroupDivider: TDividerBevel;
     AutoIndentLink: TLabel;
@@ -97,6 +103,7 @@ type
     tbAnsi: TToolButton;
     tbCurly: TToolButton;
     tbShlash: TToolButton;
+    tbString: TToolButton;
     procedure AutoIndentCheckBoxChange(Sender: TObject);
     procedure AutoIndentLinkClick(Sender: TObject);
     procedure AutoIndentLinkMouseEnter(Sender: TObject);
@@ -108,6 +115,7 @@ type
     procedure cbCurlyIndentModeChange(Sender: TObject);
     procedure cbSlashEnableAutoContinueChange(Sender: TObject);
     procedure cbSlashIndentModeChange(Sender: TObject);
+    procedure cbStringEnableAutoContinueChange(Sender: TObject);
     procedure ComboboxOnChange(Sender: TObject);
     procedure ComboboxOnKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -187,6 +195,7 @@ begin
   tbAnsi.Caption := dlgAnsiCommentTab;
   tbCurly.Caption := dlgCurlyCommentTab;
   tbShlash.Caption := dlgSlashCommentTab;
+  tbString.Caption := dlgStringBreakIndentTab;
 
   Notebook1.AutoSize := True;
 
@@ -243,6 +252,10 @@ begin
   cbSlashExtend.Items.Add(dlgCommentShlashExtendMatchSplit);
   cbSlashExtend.Items.Add(dlgCommentShlashExtendAlways);
   cbSlashExtend.Items.Add(dlgCommentShlashExtendAlwaysSplit);
+
+  cbStringEnableAutoContinue.Caption := dlgStringEnableAutoContinue;
+  lbStringAutoAppend.Caption := dlgStringAutoAppend;
+  lbStringAutoPrefix.Caption := dlgStringAutoPrefix;
 
 end;
 
@@ -319,6 +332,10 @@ begin
     cbSlashEnableAutoContinueChange(nil);
     cbSlashIndentModeChange(nil);
 
+    cbStringEnableAutoContinue.Checked := StringBreakEnabled;
+    edStringAutoAppend.Text := StringBreakAppend;
+    edStringAutoPrefix.Text := StringBreakPrefix;
+    cbStringEnableAutoContinueChange(nil);
 
   end;
 end;
@@ -425,6 +442,9 @@ begin
 
     SlashCommentExtend := IdxToExtendMode[cbSlashExtend.ItemIndex];
 
+    StringBreakEnabled := cbStringEnableAutoContinue.Checked;
+    StringBreakAppend := edStringAutoAppend.Text;
+    StringBreakPrefix := edStringAutoPrefix.Text;
 
   end;
 end;
@@ -522,6 +542,7 @@ begin
   edAnsiPrefix.Enabled := cbAnsiEnableAutoContinue.Checked;
   cbAnsiMatchMode.Enabled := cbAnsiEnableAutoContinue.Checked;
   cbAnsiIndentMode.Enabled := cbAnsiEnableAutoContinue.Checked;
+  edAnsiAlignMax.Enabled := cbAnsiEnableAutoContinue.Checked;
 end;
 
 procedure TEditorIndentOptionsFrame.cbAnsiIndentModeChange(Sender: TObject);
@@ -538,6 +559,7 @@ begin
   edCurlyPrefix.Enabled := cbCurlyEnableAutoContinue.Checked;
   cbCurlyMatchMode.Enabled := cbCurlyEnableAutoContinue.Checked;
   cbCurlyIndentMode.Enabled := cbCurlyEnableAutoContinue.Checked;
+  edCurlyAlignMax.Enabled := cbCurlyEnableAutoContinue.Checked;
 end;
 
 procedure TEditorIndentOptionsFrame.cbCurlyIndentModeChange(Sender: TObject);
@@ -555,6 +577,7 @@ begin
   cbSlashMatchMode.Enabled := cbSlashEnableAutoContinue.Checked;
   cbSlashIndentMode.Enabled := cbSlashEnableAutoContinue.Checked;
   cbSlashExtend.Enabled := cbSlashEnableAutoContinue.Checked;
+  edSlashAlignMax.Enabled := cbSlashEnableAutoContinue.Checked;
 end;
 
 procedure TEditorIndentOptionsFrame.cbSlashIndentModeChange(Sender: TObject);
@@ -563,6 +586,12 @@ begin
     1:   lbSlashAlignMax.Caption := dlgCommentAlignMaxToken;
     else lbSlashAlignMax.Caption := dlgCommentAlignMaxDefault;
   end;
+end;
+
+procedure TEditorIndentOptionsFrame.cbStringEnableAutoContinueChange(Sender: TObject);
+begin
+  edStringAutoAppend.Enabled := cbStringEnableAutoContinue.Checked;
+  edStringAutoPrefix.Enabled := cbStringEnableAutoContinue.Checked;
 end;
 
 procedure TEditorIndentOptionsFrame.ComboboxOnKeyDown(

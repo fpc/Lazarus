@@ -1367,6 +1367,10 @@ type
     FSlashCommentExtend: TSynCommentExtendMode;
     FSlashIndentAlignMax: integer;
 
+    FStringBreakAppend: String;
+    FStringBreakEnabled: Boolean;
+    FStringBreakPrefix: String;
+
     FDefaultValues: TEditorOptions;
 
   public
@@ -1605,6 +1609,10 @@ type
       read FSlashCommentExtend write FSlashCommentExtend;
     property SlashIndentAlignMax: integer
       read FSlashIndentAlignMax write FSlashIndentAlignMax;
+
+    property StringBreakEnabled: Boolean read FStringBreakEnabled write FStringBreakEnabled;
+    property StringBreakAppend: String read FStringBreakAppend write FStringBreakAppend;
+    property StringBreakPrefix: String read FStringBreakPrefix write FStringBreakPrefix;
   end;
 
 const
@@ -4385,6 +4393,9 @@ begin
   FSlashCommentExtend := sceMatching;
   FSlashIndentAlignMax := 40;
 
+  FStringBreakEnabled := False;
+  FStringBreakAppend  := ' +';
+  FStringBreakPrefix  := '';
 
 end;
 
@@ -5367,6 +5378,9 @@ begin
         b.SlashIndentMode := [];
       end;
 
+      b.StringBreakEnabled := FStringBreakEnabled;
+      b.StringBreakAppend  := FStringBreakAppend;
+      b.StringBreakPrefix  := FStringBreakPrefix;
 
     end;
 

@@ -1387,6 +1387,7 @@ resourcestring
   dlgAnsiCommentTab = 'Ansi (* *)';
   dlgCurlyCommentTab = 'Curly { }';
   dlgSlashCommentTab = 'Slash //';
+  dlgStringBreakIndentTab = 'String ''''';
 
   dlgCommentContinue = 'Prefix comments on linebreak';
   dlgCommentContinueMatch  = 'Match current line';
@@ -1404,6 +1405,9 @@ resourcestring
   dlgCommentShlashExtendMatchSplit = 'Extend, if matched and caret in the middle of text (not at EOL)';
   dlgCommentShlashExtendAlways = 'Extend, if matched or not matched';
   dlgCommentShlashExtendAlwaysSplit = 'Extend, if matched or not matched (not at EOL)';
+  dlgStringEnableAutoContinue = 'Extend strings on linebreak';
+  dlgStringAutoAppend = 'Append text to close string';
+  dlgStringAutoPrefix = 'Prefix string on new line';
 
   dlgUndoAfterSave = 'Undo after save';
   dlgFindTextatCursor = 'Find text at cursor';
