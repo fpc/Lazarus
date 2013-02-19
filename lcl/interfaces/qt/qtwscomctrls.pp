@@ -1480,6 +1480,7 @@ begin
 
   if IsIconView(ALV) then
   begin
+    if ASubIndex >0 Then exit;
     QtListWidget := TQtListWidget(ALV.Handle);
     AAlignment := QtAlignLeft;
     if (TListView(ALV).Columns.Count > 0) and (ASubIndex < TListView(ALV).Columns.Count)  then
