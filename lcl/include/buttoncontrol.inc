@@ -44,7 +44,6 @@ end;
 
 procedure TButtonControl.DoOnChange;
 begin
-
   if [csLoading, csDestroying, csDesigning] * ComponentState <> [] then Exit;
   EditingDone;
   if Assigned(OnChange) then OnChange(Self);
