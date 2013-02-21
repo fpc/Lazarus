@@ -334,7 +334,8 @@ function TMainIDEBase.BeginCodeTool(ADesigner: TDesigner;
   Flags: TCodeToolsFlags): boolean;
 begin
   Result:=false;
-  if (ctfUseGivenSourceEditor in Flags) and (Project1<>nil) then begin
+  if (ctfUseGivenSourceEditor in Flags) and (Project1<>nil)
+  and (ActiveSrcEdit<>nil) then begin
     ActiveUnitInfo := Project1.EditorInfoWithEditorComponent(ActiveSrcEdit).UnitInfo;
   end
   else begin
