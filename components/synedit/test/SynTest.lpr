@@ -7,8 +7,8 @@ uses
   TestBasicSynEdit, TestNavigation, TestSynSelection, TestBlockIndent, TestBookMarks,
   TestSearch, TestSynBeautifier, TestTrimSpace, TestSyncroEdit, TestSynTextArea,
   TestHighlightPas, TestHighlightXml, TestHighlightMulti,
-  TestMarkupwordGroup, TestFoldedView, TestSynSharedEdits, TestHighlighterLfm,
-  TestHighlightFoldBase;
+  TestMarkupwordGroup, TestMarkupHighAll, TestFoldedView, TestSynSharedEdits,
+  TestHighlighterLfm, TestHighlightFoldBase, TestMarkupIfDef;
 
 {$IFDEF WINDOWS}{  $R SynTest.rc}{$ENDIF}
 

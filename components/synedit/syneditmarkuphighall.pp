@@ -212,7 +212,8 @@ type
     function  Count: Integer;
     property  Terms[AIndex: Integer]: String read GetTerms write SetTerms;
 
-    procedure Search(AText: PChar; ATextLen: Integer; AFoundEvent: TSynSearchDictFoundEvent);
+    function Search(AText: PChar; ATextLen: Integer; AFoundEvent: TSynSearchDictFoundEvent): PChar;
+    function GetMatchAtChar(AText: PChar; ATextLen: Integer): Integer;
 
     property BuildLowerCaseDict: Boolean read FBuildLowerCaseDict write FBuildLowerCaseDict;
   end;
@@ -866,14 +867,15 @@ begin
   Result := FList.Count;
 end;
 
-procedure TSynSearchDictionary.Search(AText: PChar; ATextLen: Integer;
-  AFoundEvent: TSynSearchDictFoundEvent);
+function TSynSearchDictionary.Search(AText: PChar; ATextLen: Integer;
+  AFoundEvent: TSynSearchDictFoundEvent): PChar;
 var
   CurrentNode: PSynSearchDictionaryNode;
   b, m: Integer;
   IsMatch, DoWork: Boolean;
   TextEnd: PChar;
 begin
+  Result := nil;
   if FList.Count = 0 then
     exit;
   if FRootNode = nil then
@@ -890,7 +892,11 @@ begin
     // b is for AText^
     if CurrentNode^.ItemIdx >= 0 then begin
       IsMatch := True;
-      AFoundEvent(AText, CurrentNode^.ItemIdx, IsMatch, DoWork);
+      Result := AText;
+      if Assigned(AFoundEvent) then
+        AFoundEvent(AText, CurrentNode^.ItemIdx, IsMatch, DoWork)
+      else
+        exit;
       if not DoWork then
         exit;
       if IsMatch then
@@ -919,6 +925,48 @@ begin
       b := ord(AText^);
       if b > 128 then b := 383 - b;
     end;
+  end;
+end;
+
+function TSynSearchDictionary.GetMatchAtChar(AText: PChar; ATextLen: Integer): Integer;
+var
+  CurrentNode: PSynSearchDictionaryNode;
+  b, m: Integer;
+  TextEnd: PChar;
+begin
+  Result := -1;
+  if FList.Count = 0 then
+    exit;
+  if FRootNode = nil then
+    BuildDictionary;
+
+  CurrentNode := FRootNode;
+  TextEnd := AText + ATextLen;
+  b := ord(AText^);
+  if b > 128 then b := 383 - b;
+
+  while true do begin
+    // CurrentNode is for (AText-1)^
+    // b is for AText^
+    if CurrentNode^.ItemIdx >= 0 then begin
+      Result := CurrentNode^.ItemIdx;
+      exit;
+    end;
+
+    m := CurrentNode^.NextCharMin;
+    if (b >= m) and (b <= CurrentNode^.NextCharMax) and
+       (CurrentNode^.NextEntry[b-m] <> nil)
+    then begin
+      CurrentNode := CurrentNode^.NextEntry[b-m];
+      inc(AText);
+      if AText > TextEnd then
+        exit;
+      b := ord(AText^);
+      if b > 128 then b := 383 - b;
+      continue;
+    end;
+
+    exit;
   end;
 end;
 

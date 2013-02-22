@@ -131,7 +131,7 @@ type
     LineIndex: Integer;
     NodeIndex: Integer;          // Indicates the position within the list of info nodes (depends on search-Filter)
     AllNodeIndex: Integer;       // Indicates the position within the unfiltered list of info nodes
-    LogXStart, LogXEnd: Integer; // -1 previous line
+    LogXStart, LogXEnd: Integer; // -1 previous line ( 0-based)
     FoldLvlStart, FoldLvlEnd: Integer; // FoldLvl within each FoldGroup
     NestLvlStart, NestLvlEnd: Integer; // include disabled nodes, e.g markup (within each FoldGroup)
     FoldAction: TSynFoldActions;

@@ -45,7 +45,7 @@
         <PackageName Value="FCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="18">
+    <Units Count="20">
       <Unit0>
         <Filename Value="SynTest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -136,6 +136,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestSynTextArea"/>
       </Unit17>
+      <Unit18>
+        <Filename Value="testnavigation.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestNavigation"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="testmarkupifdef.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestMarkupIfDef"/>
+      </Unit19>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -145,6 +155,11 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <CPPInline Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <CodeGeneration>
       <Checks>
         <RangeChecks Value="True"/>
@@ -162,7 +177,8 @@
       </Debugging>
     </Linking>
     <Other>
-      <CustomOptions Value="-gt"/>
+      <CustomOptions Value="-gt
+-dWithSynBiDi"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
