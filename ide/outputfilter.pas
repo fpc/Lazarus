@@ -1630,60 +1630,61 @@ var
   MakeMsg: String;
 begin
   Result:=false;
-  MakeBeginPattern:= 'make' + GetExecutableExt + '[';
+  MakeBeginPattern:= 'make[';
   i:=length(MakeBeginPattern);
-  if copy(s,1,i)=MakeBeginPattern then begin
-    Result:=true;
-    CurrentMessageParts.Values['Stage']:='make';
+  if copy(s,1,i)<>MakeBeginPattern then begin
+    MakeBeginPattern:= 'make' + GetExecutableExt + '[';
+    i:=length(MakeBeginPattern);
+    if copy(s,1,i)<>MakeBeginPattern then begin
+      exit;
+    end;
+  end;
+  Result:=true;
+  CurrentMessageParts.Values['Stage']:='make';
 
-    inc(i);
-    if (i>length(s)) or (not (s[i] in ['0'..'9'])) then exit;
-    while (i<=length(s)) and (s[i] in ['0'..'9']) do inc(i);
-    if (i>length(s)) or (s[i]<>']') then exit;
-    // check for enter directory
-    if copy(s,i,length(EnterDirPattern))=EnterDirPattern then
-    begin
-      CurrentMessageParts.Values['Type']:='entering directory';
-      inc(i,length(EnterDirPattern));
-      if (fCurrentDirectory<>'') then begin
-        if (fMakeDirHistory=nil) then fMakeDirHistory:=TStringList.Create;
-        fMakeDirHistory.Add(fCurrentDirectory);
-      end;
-      // the make tool uses unix paths under windows
-      InternalSetCurrentDirectory(SetDirSeparators(copy(s,i,length(s)-i)));
+  inc(i);
+  if (i>length(s)) or (not (s[i] in ['0'..'9'])) then exit;
+  while (i<=length(s)) and (s[i] in ['0'..'9']) do inc(i);
+  if (i>length(s)) or (s[i]<>']') then exit;
+  // check for enter directory
+  if copy(s,i,length(EnterDirPattern))=EnterDirPattern then
+  begin
+    CurrentMessageParts.Values['Type']:='entering directory';
+    inc(i,length(EnterDirPattern));
+    if (fCurrentDirectory<>'') then begin
+      if (fMakeDirHistory=nil) then fMakeDirHistory:=TStringList.Create;
+      fMakeDirHistory.Add(fCurrentDirectory);
+    end;
+    // the make tool uses unix paths under windows
+    InternalSetCurrentDirectory(SetDirSeparators(copy(s,i,length(s)-i)));
+    exit;
+  end;
+  // check for leaving directory
+  if copy(s,i,length(LeavingDirPattern))=LeavingDirPattern then
+  begin
+    CurrentMessageParts.Values['Type']:='leaving directory';
+    if (fMakeDirHistory<>nil) and (fMakeDirHistory.Count>0) then begin
+      InternalSetCurrentDirectory(fMakeDirHistory[fMakeDirHistory.Count-1]);
+      fMakeDirHistory.Delete(fMakeDirHistory.Count-1);
       exit;
+    end else begin
+      // leaving which directory???
+      InternalSetCurrentDirectory('');
     end;
-    // check for leaving directory
-    if copy(s,i,length(LeavingDirPattern))=LeavingDirPattern then
-    begin
-      CurrentMessageParts.Values['Type']:='leaving directory';
-      if (fMakeDirHistory<>nil) and (fMakeDirHistory.Count>0) then begin
-        InternalSetCurrentDirectory(fMakeDirHistory[fMakeDirHistory.Count-1]);
-        fMakeDirHistory.Delete(fMakeDirHistory.Count-1);
-        exit;
-      end else begin
-        // leaving which directory???
-        InternalSetCurrentDirectory('');
-      end;
-    end;
-    // check for make message
-    if copy(s,i,length(MakeMsgPattern))=MakeMsgPattern then
-    begin
-      BracketEnd:=i+length(MakeMsgPattern);
-      while (BracketEnd<=length(s)) and (s[BracketEnd]<>']') do inc(BracketEnd);
-      MsgStartPos:=BracketEnd+1;
-      while (MsgStartPos<=length(s)) and (s[MsgStartPos]=' ') do inc(MsgStartPos);
-      MakeMsg:=copy(s,MsgStartPos,length(s)-MsgStartPos+1);
-      DoAddFilteredLine(SetDirSeparators(s));
-      if CompareText(copy(MakeMsg,1,5),'Error')=0 then
-        if (ofoExceptionOnError in Options) then
-          RaiseOutputFilterError(s);
-      exit;
-    end;
-  end
-  else begin
-    // TODO: under MacOS X and probably BSD too the make does not write
-    // entering and leaving directory without the -w option
+  end;
+  // check for make message
+  if copy(s,i,length(MakeMsgPattern))=MakeMsgPattern then
+  begin
+    BracketEnd:=i+length(MakeMsgPattern);
+    while (BracketEnd<=length(s)) and (s[BracketEnd]<>']') do inc(BracketEnd);
+    MsgStartPos:=BracketEnd+1;
+    while (MsgStartPos<=length(s)) and (s[MsgStartPos]=' ') do inc(MsgStartPos);
+    MakeMsg:=copy(s,MsgStartPos,length(s)-MsgStartPos+1);
+    DoAddFilteredLine(SetDirSeparators(s));
+    if CompareText(copy(MakeMsg,1,5),'Error')=0 then
+      if (ofoExceptionOnError in Options) then
+        RaiseOutputFilterError(s);
+    exit;
   end;
 end;
 
