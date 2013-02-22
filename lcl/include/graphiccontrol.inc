@@ -111,21 +111,5 @@ begin
     TControlCanvas(Canvas).FreeHandle;
 end;
 
-procedure TGraphicControl.Update;
-var
-  R: TRect;
-  Pt: TPoint;
-begin
-  if Assigned(Parent) and Parent.HandleAllocated and Parent.Visible then
-  begin
-    R := ClientRect;
-    Pt := Parent.GetClientScrollOffset;
-    OffsetRect(R, Left - Pt.X, Top - Pt.Y);
-    R.Right := R.Right + Pt.X;
-    R.Bottom := R.Bottom + Pt.Y;
-    LCLIntf.InvalidateRect(Parent.Handle, @R, True);
-  end;
-end;
-
 // included by controls.pp
 

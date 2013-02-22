@@ -2218,8 +2218,6 @@ type
     procedure DoOnParentHandleDestruction; override;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
   public
-    procedure Update; override;
-  public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas: TCanvas read FCanvas;
