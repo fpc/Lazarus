@@ -235,7 +235,7 @@ type
                                  AncestorClassName, Identifier: string;
                                  var IsDefined: boolean);
     procedure RegisterDefineProperty(const APersistentClassName,
-                                     Identifier: string);
+                                     Identifier: string); override;
     procedure RegisterStandardDefineProperties;
 
     // keys

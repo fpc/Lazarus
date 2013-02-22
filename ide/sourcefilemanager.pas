@@ -4134,7 +4134,6 @@ begin
         NewUnitName:=AnUnitInfo.Unit_Name;
         if NewUnitName='' then
           NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
-        // ToDo: create AncestorBinStream(s) via hook, not via parameters
         DisableAutoSize:=true;
         NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream, AnUnitInfo.UnitResourceFileformat,
                    AncestorType,copy(NewUnitName,1,255),true,true,DisableAutoSize,AnUnitInfo);
