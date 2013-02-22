@@ -100,6 +100,10 @@ type
     function GetDesigner(Index: integer): TIDesigner; virtual; abstract;
     function GetDesignerMediators(Index: integer): TDesignerMediatorClass; virtual; abstract;
   public
+    // persistent
+    procedure RegisterDefineProperty(const APersistentClassName,
+                                     Identifier: string); virtual; abstract;
+
     // components
     function FindComponentByName(const Name: ShortString
                                  ): TComponent; virtual; abstract;
