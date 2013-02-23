@@ -295,6 +295,7 @@ type
     procedure VisibleChanging; override;
     function  SendChar(AChar: TUTF8Char): Integer;
     procedure WndProc(var TheMessage : TLMessage); override;
+    function GetActiveEditor: TWinControl;
   public
     destructor Destroy; override;
     procedure AddEditor(aEditor: TWinControl; aAlign: TAlign; ActiveCtrl:boolean);
@@ -12009,6 +12010,21 @@ begin
       exit;
   end;
   inherited WndProc(TheMessage);
+end;
+
+function TCompositeCellEditor.GetActiveEditor: TWinControl;
+var
+  i: Integer;
+begin
+  Result := nil;
+  for i := 0 to Length(FEditors) - 1 do
+  begin
+    if FEditors[i].ActiveControl then
+    begin
+      Result := FEditors[i].Editor;
+      Exit;
+    end;
+  end;
 end;
 
 function TCompositeCellEditor.DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean;

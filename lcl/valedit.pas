@@ -950,7 +950,22 @@ begin
   end;
 end;
 
+type
+  TCompositeCellEditorAccess = class(TCompositeCellEditor);
+
 function TValueListEditor.GetDefaultEditor(Column: Integer): TWinControl;
+  procedure SetGridEditorReadOnly(Ed: TwinControl; RO: Boolean);
+  begin
+    //debugln('SetEditorReadOnly: Ed is ',DbgSName(Ed),' ReadOnly=',DbgS(RO));
+    if (Ed is TCustomEdit) then TCustomEdit(Ed).ReadOnly := RO
+    else if (Ed is TCustomComboBox) then
+    begin
+      if RO then
+        TCustomComboBox(Ed).Style := csDropDownList
+      else
+        TCustomComboBox(Ed).Style := csDropDown;
+    end
+  end;
 var
   ItemProp: TItemProp;
 begin
@@ -961,19 +976,30 @@ begin
     //debugln('**** A Col=',dbgs(col),' Row=',dbgs(row),' (',dbgs(itemprop),')');
     ItemProp := Strings.GetItemProp(Row-FixedRows);
     if Assigned(ItemProp) then
+    begin
       case ItemProp.EditStyle of
-        esSimple: result := EditorByStyle(cbsAuto);
-        esEllipsis: result := EditorByStyle(cbsEllipsis);
+        esSimple: begin
+          result := EditorByStyle(cbsAuto);
+          SetGridEditorReadOnly(result, ItemProp.ReadOnly);
+        end;
+        esEllipsis: begin
+          result := EditorByStyle(cbsEllipsis);
+          SetGridEditorReadOnly(TCompositeCellEditorAccess(result).GetActiveEditor, ItemProp.ReadOnly);
+        end;
         esPickList: begin
           result := EditorByStyle(cbsPickList);
           (result as TCustomComboBox).Items.Assign(ItemProp.PickList);
           (result as TCustomComboBox).DropDownCount := DropDownRows;
+          SetGridEditorReadOnly(result, ItemProp.ReadOnly);
           if Assigned(FOnGetPickList) then
             FOnGetPickList(Self, Strings.Names[Row - FixedRows], (result as TCustomComboBox).Items);
           //Style := csDropDown, default = csDropDownList;
         end;
-      end;
-  end;
+      end; //case
+    end
+    else SetGridEditorReadOnly(result, False);
+  end
+  else SetGridEditorReadOnly(result, False);
 end;
 
 procedure TValueListEditor.SetCells(ACol, ARow: Integer; const AValue: string);
