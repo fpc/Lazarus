@@ -131,6 +131,7 @@ type
     {$ENDIF}
     FGDBOptions: String;
     FInternalStartBreak: TGDBMIDebuggerStartBreak;
+    FMaxDisplayLengthForString: Integer;
     FTimeoutForEval: Integer;
     FWarnOnTimeOut: Boolean;
     procedure SetTimeoutForEval(const AValue: Integer);
@@ -143,6 +144,7 @@ type
     {$IFDEF UNIX}
     property ConsoleTty: String read FConsoleTty write FConsoleTty;
     {$ENDIF}
+    property MaxDisplayLengthForString: Integer read FMaxDisplayLengthForString write FMaxDisplayLengthForString;
     property TimeoutForEval: Integer read FTimeoutForEval write SetTimeoutForEval;
     property WarnOnTimeOut: Boolean  read FWarnOnTimeOut write SetWarnOnTimeOut;
     property EncodeCurrentDirPath: TGDBMIDebuggerFilenameEncoding
@@ -377,6 +379,7 @@ type
     procedure RetrieveRegcall;
     procedure CheckAvailableTypes;
     procedure DetectForceableBreaks;
+    procedure CommonInit;
   end;
 
   { TGDBMIDebuggerCommandStartDebugging }
@@ -1850,6 +1853,13 @@ begin
     else Exclude(FTheDebugger.FDebuggerFlags, dfForceBreak);
     Include(FTheDebugger.FDebuggerFlags, dfForceBreakDetected);
   end;
+end;
+
+procedure TGDBMIDebuggerCommandStartBase.CommonInit;
+begin
+  ExecuteCommand('set print elements %d',
+                 [TGDBMIDebuggerProperties(FTheDebugger.GetProperties).MaxDisplayLengthForString],
+                 []);
 end;
 
 { TGDBMIDebuggerCommandExecuteBase }
@@ -4552,6 +4562,7 @@ begin
     ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
 
     CheckAvailableTypes;
+    CommonInit;
 
     TargetInfo^.TargetCPU := '';
     TargetInfo^.TargetOS := FTheDebugger.FGDBOS; // try to detect ??
@@ -4785,6 +4796,7 @@ begin
   //   then the rtl is compiled with regcalls
   RetrieveRegCall;
   CheckAvailableTypes;
+  CommonInit;
   DetectForceableBreaks;
 
   FileType := '';
@@ -6427,6 +6439,7 @@ begin
   {$IFDEF UNIX}
   FConsoleTty := '';
   {$ENDIF}
+  FMaxDisplayLengthForString := 2500;
   {$IFDEF darwin}
   FTimeoutForEval := 250;
   {$ELSE darwin}
@@ -6446,6 +6459,7 @@ begin
   {$IFDEF UNIX}
   FConsoleTty := TGDBMIDebuggerProperties(Source).FConsoleTty;
   {$ENDIF}
+  FMaxDisplayLengthForString := TGDBMIDebuggerProperties(Source).FMaxDisplayLengthForString;
   FTimeoutForEval := TGDBMIDebuggerProperties(Source).FTimeoutForEval;
   FWarnOnTimeOut  := TGDBMIDebuggerProperties(Source).FWarnOnTimeOut;
   FEncodeCurrentDirPath := TGDBMIDebuggerProperties(Source).FEncodeCurrentDirPath;
