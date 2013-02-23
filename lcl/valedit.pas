@@ -967,6 +967,7 @@ begin
         esPickList: begin
           result := EditorByStyle(cbsPickList);
           (result as TCustomComboBox).Items.Assign(ItemProp.PickList);
+          (result as TCustomComboBox).DropDownCount := DropDownRows;
           //Style := csDropDown, default = csDropDownList;
         end;
       end;
