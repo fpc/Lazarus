@@ -293,6 +293,9 @@ procedure Register;
 
 implementation
 
+type
+  TCompositeCellEditorAccess = class(TCompositeCellEditor);
+
 { TItemProp }
 
 
@@ -489,15 +492,27 @@ end;
 procedure TValueListStrings.Put(Index: Integer; const S: String);
 var
   IndexToRow: Integer;
-  MustHideShowingEditor: Boolean;
+  MustHideShowingEditor, EditorHasFocus: Boolean;
+  WC: TwinControl;
 begin
   // ToDo: Check validity of key
   IndexToRow := Index + FGrid.FixedRows;
+  if (FGrid.Editor is TCompositeCellEditor) then
+  begin
+    WC := TCompositeCellEditorAccess(FGrid.Editor).GetActiveEditor;
+    if (WC is TCustomEdit) then
+      EditorHasFocus := TCustomEdit(WC).Focused
+    else
+      EditorHasFocus := False;
+  end
+  else
+    EditorHasFocus := FGrid.Editor.Focused;
   MustHideShowingEditor := (goAlwaysShowEditor in FGrid.Options) and
                            FGrid.Editor.Visible and
                            (IndexToRow = FGrid.Row) and
                            //if editor is Focussed, we are editing a cell, so we cannot hide!
-                           (not FGrid.Editor.Focused);
+                           (not EditorHasFocus);
+
   //debugln('TValueListStrings.Put: MustHideShowingEditor=',DbgS(MustHideShowingEditor));
   if MustHideShowingEditor then FGrid.Options := FGrid.Options - [goAlwaysShowEditor];
   inherited Put(Index, S);
@@ -950,8 +965,6 @@ begin
   end;
 end;
 
-type
-  TCompositeCellEditorAccess = class(TCompositeCellEditor);
 
 function TValueListEditor.GetDefaultEditor(Column: Integer): TWinControl;
   procedure SetGridEditorReadOnly(Ed: TwinControl; RO: Boolean);
