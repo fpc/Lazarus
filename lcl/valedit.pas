@@ -968,6 +968,8 @@ begin
           result := EditorByStyle(cbsPickList);
           (result as TCustomComboBox).Items.Assign(ItemProp.PickList);
           (result as TCustomComboBox).DropDownCount := DropDownRows;
+          if Assigned(FOnGetPickList) then
+            FOnGetPickList(Self, Strings.Names[Row - FixedRows], (result as TCustomComboBox).Items);
           //Style := csDropDown, default = csDropDownList;
         end;
       end;
