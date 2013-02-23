@@ -59,7 +59,7 @@ type
 
   { TSSHGDBMIDebuggerProperties }
 
-  TSSHGDBMIDebuggerProperties = class(TGDBMIDebuggerProperties)
+  TSSHGDBMIDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
   private
     FAppendGDBtoSSHopt: Boolean;
     FNote: String; //dummy
@@ -73,6 +73,17 @@ type
     property SSH_Startup_Options: String read FSSHStartupOptions write FSSHStartupOptions;
     property Remote_GDB_Exe: String read FRemoteGDBExe write FRemoteGDBExe;
     property Append_GDB_to_SSH_opt: Boolean read FAppendGDBtoSSHopt write FAppendGDBtoSSHopt;
+  published
+    property Debugger_Startup_Options;
+    {$IFDEF UNIX}
+    property ConsoleTty;
+    {$ENDIF}
+    property MaxDisplayLengthForString;
+    property TimeoutForEval;
+    property WarnOnTimeOut;
+    property EncodeCurrentDirPath;
+    property EncodeExeFileName;
+    property InternalStartBreak;
   end;
 
 implementation

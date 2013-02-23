@@ -120,9 +120,9 @@ type
     gdsbDefault, gdsbEntry, gdsbMainAddr, gdsbMain, gdsbAddZero
   );
 
-  { TGDBMIDebuggerProperties }
+  { TGDBMIDebuggerPropertiesBase }
 
-  TGDBMIDebuggerProperties = class(TDebuggerProperties)
+  TGDBMIDebuggerPropertiesBase = class(TDebuggerProperties)
   private
     FEncodeCurrentDirPath: TGDBMIDebuggerFilenameEncoding;
     FEncodeExeFileName: TGDBMIDebuggerFilenameEncoding;
@@ -140,7 +140,7 @@ type
   public
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
-  published
+  public
     property Debugger_Startup_Options: String read FGDBOptions write FGDBOptions;
     {$IFDEF UNIX}
     property ConsoleTty: String read FConsoleTty write FConsoleTty;
@@ -154,6 +154,20 @@ type
              read FEncodeExeFileName write FEncodeExeFileName default gdfeDefault;
     property InternalStartBreak: TGDBMIDebuggerStartBreak
              read FInternalStartBreak write FInternalStartBreak default gdsbDefault;
+  end;
+
+  TGDBMIDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
+  published
+    property Debugger_Startup_Options;
+    {$IFDEF UNIX}
+    property ConsoleTty;
+    {$ENDIF}
+    property MaxDisplayLengthForString;
+    property TimeoutForEval;
+    property WarnOnTimeOut;
+    property EncodeCurrentDirPath;
+    property EncodeExeFileName;
+    property InternalStartBreak;
   end;
 
   TGDBMIDebugger = class;
@@ -207,7 +221,7 @@ type
     FLastExecCommand: String;
     FLastExecResult: TGDBMIExecResult;
     FLogWarnings, FFullCmdReply: String;
-    function GetDebuggerProperties: TGDBMIDebuggerProperties;
+    function GetDebuggerProperties: TGDBMIDebuggerPropertiesBase;
     function GetDebuggerState: TDBGState;
     function GetTargetInfo: PGDBMITargetInfo;
   protected
@@ -216,7 +230,7 @@ type
     function  ErrorStateMessage: String; virtual;
     function  ErrorStateInfo: String; virtual;
     property  DebuggerState: TDBGState read GetDebuggerState;
-    property  DebuggerProperties: TGDBMIDebuggerProperties read GetDebuggerProperties;
+    property  DebuggerProperties: TGDBMIDebuggerPropertiesBase read GetDebuggerProperties;
     property  TargetInfo: PGDBMITargetInfo read GetTargetInfo;
   protected
     procedure SetCommandState(NewState: TGDBMIDebuggerCommandState);
@@ -1859,7 +1873,7 @@ end;
 procedure TGDBMIDebuggerCommandStartBase.CommonInit;
 begin
   ExecuteCommand('set print elements %d',
-                 [TGDBMIDebuggerProperties(FTheDebugger.GetProperties).MaxDisplayLengthForString],
+                 [TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).MaxDisplayLengthForString],
                  []);
 end;
 
@@ -2135,7 +2149,7 @@ begin
     cgptNone: esc := gdfeNone;
     cgptCurDir:
       begin
-        esc := TGDBMIDebuggerProperties(GetProperties).FEncodeCurrentDirPath;
+        esc := TGDBMIDebuggerPropertiesBase(GetProperties).FEncodeCurrentDirPath;
         //TODO: check FGDBOS
         //Unix/Windows can use gdfeEscSpace, but work without too;
         if esc = gdfeDefault
@@ -2146,7 +2160,7 @@ begin
       end;
     cgptExeName:
       begin
-        esc := TGDBMIDebuggerProperties(GetProperties).FEncodeExeFileName;
+        esc := TGDBMIDebuggerPropertiesBase(GetProperties).FEncodeExeFileName;
         if esc = gdfeDefault
         then esc :=
         //Unix/Windows can use gdfeEscSpace, but work without too;
@@ -6418,10 +6432,10 @@ end;
 
 
 { =========================================================================== }
-{ TGDBMIDebuggerProperties }
+{ TGDBMIDebuggerPropertiesBase }
 { =========================================================================== }
 
-procedure TGDBMIDebuggerProperties.SetTimeoutForEval(const AValue: Integer);
+procedure TGDBMIDebuggerPropertiesBase.SetTimeoutForEval(const AValue: Integer);
 begin
   if FTimeoutForEval = AValue then exit;
   FTimeoutForEval := AValue;
@@ -6429,7 +6443,7 @@ begin
   then FTimeoutForEval := -1;
 end;
 
-procedure TGDBMIDebuggerProperties.SetMaxDisplayLengthForString(AValue: Integer);
+procedure TGDBMIDebuggerPropertiesBase.SetMaxDisplayLengthForString(AValue: Integer);
 begin
   if FMaxDisplayLengthForString = AValue then Exit;
   if AValue < 0 then
@@ -6437,13 +6451,13 @@ begin
   FMaxDisplayLengthForString := AValue;
 end;
 
-procedure TGDBMIDebuggerProperties.SetWarnOnTimeOut(const AValue: Boolean);
+procedure TGDBMIDebuggerPropertiesBase.SetWarnOnTimeOut(const AValue: Boolean);
 begin
   if FWarnOnTimeOut = AValue then exit;
   FWarnOnTimeOut := AValue;
 end;
 
-constructor TGDBMIDebuggerProperties.Create;
+constructor TGDBMIDebuggerPropertiesBase.Create;
 begin
   {$IFDEF UNIX}
   FConsoleTty := '';
@@ -6461,19 +6475,19 @@ begin
   inherited;
 end;
 
-procedure TGDBMIDebuggerProperties.Assign(Source: TPersistent);
+procedure TGDBMIDebuggerPropertiesBase.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  FGDBOptions := TGDBMIDebuggerProperties(Source).FGDBOptions;
+  FGDBOptions := TGDBMIDebuggerPropertiesBase(Source).FGDBOptions;
   {$IFDEF UNIX}
-  FConsoleTty := TGDBMIDebuggerProperties(Source).FConsoleTty;
+  FConsoleTty := TGDBMIDebuggerPropertiesBase(Source).FConsoleTty;
   {$ENDIF}
-  FMaxDisplayLengthForString := TGDBMIDebuggerProperties(Source).FMaxDisplayLengthForString;
-  FTimeoutForEval := TGDBMIDebuggerProperties(Source).FTimeoutForEval;
-  FWarnOnTimeOut  := TGDBMIDebuggerProperties(Source).FWarnOnTimeOut;
-  FEncodeCurrentDirPath := TGDBMIDebuggerProperties(Source).FEncodeCurrentDirPath;
-  FEncodeExeFileName := TGDBMIDebuggerProperties(Source).FEncodeExeFileName;
-  FInternalStartBreak := TGDBMIDebuggerProperties(Source).FInternalStartBreak;
+  FMaxDisplayLengthForString := TGDBMIDebuggerPropertiesBase(Source).FMaxDisplayLengthForString;
+  FTimeoutForEval := TGDBMIDebuggerPropertiesBase(Source).FTimeoutForEval;
+  FWarnOnTimeOut  := TGDBMIDebuggerPropertiesBase(Source).FWarnOnTimeOut;
+  FEncodeCurrentDirPath := TGDBMIDebuggerPropertiesBase(Source).FEncodeCurrentDirPath;
+  FEncodeExeFileName := TGDBMIDebuggerPropertiesBase(Source).FEncodeExeFileName;
+  FInternalStartBreak := TGDBMIDebuggerPropertiesBase(Source).FInternalStartBreak;
 end;
 
 
@@ -7678,8 +7692,8 @@ begin
     FNeedStateToIdle := False;
     Options := '-silent -i mi -nx';
 
-    if Length(TGDBMIDebuggerProperties(GetProperties).Debugger_Startup_Options) > 0
-    then Options := Options + ' ' + TGDBMIDebuggerProperties(GetProperties).Debugger_Startup_Options;
+    if Length(TGDBMIDebuggerPropertiesBase(GetProperties).Debugger_Startup_Options) > 0
+    then Options := Options + ' ' + TGDBMIDebuggerPropertiesBase(GetProperties).Debugger_Startup_Options;
 
     if CreateDebugProcess(Options)
     then begin
@@ -10225,9 +10239,9 @@ begin
   Result := FTheDebugger.State;
 end;
 
-function TGDBMIDebuggerCommand.GetDebuggerProperties: TGDBMIDebuggerProperties;
+function TGDBMIDebuggerCommand.GetDebuggerProperties: TGDBMIDebuggerPropertiesBase;
 begin
-  Result := TGDBMIDebuggerProperties(FTheDebugger.GetProperties);
+  Result := TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties);
 end;
 
 function TGDBMIDebuggerCommand.GetTargetInfo: PGDBMITargetInfo;

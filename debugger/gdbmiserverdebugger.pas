@@ -51,7 +51,7 @@ type
 
   { TGDBMIServerDebuggerProperties }
 
-  TGDBMIServerDebuggerProperties = class(TGDBMIDebuggerProperties)
+  TGDBMIServerDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
   private
     FDebugger_Remote_Hostname: string;
     FDebugger_Remote_Port: string;
@@ -61,6 +61,17 @@ type
   published
     property Debugger_Remote_Hostname: String read FDebugger_Remote_Hostname write FDebugger_Remote_Hostname;
     property Debugger_Remote_Port: String read FDebugger_Remote_Port write FDebugger_Remote_Port;
+  published
+    property Debugger_Startup_Options;
+    {$IFDEF UNIX}
+    property ConsoleTty;
+    {$ENDIF}
+    property MaxDisplayLengthForString;
+    property TimeoutForEval;
+    property WarnOnTimeOut;
+    property EncodeCurrentDirPath;
+    property EncodeExeFileName;
+    property InternalStartBreak;
   end;
 
 implementation
