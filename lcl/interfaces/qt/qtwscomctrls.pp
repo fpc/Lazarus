@@ -1268,6 +1268,8 @@ begin
   LWI := nil;
   if IsIconView(ALV) then
   begin
+    if ASubIndex > 0 then
+      exit;
     QtListWidget := TQtListWidget(ALV.Handle);
     LWI := QtListWidget.getItem(AIndex);
   end else
