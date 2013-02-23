@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-02-10 20:54+0400\n"
+"PO-Revision-Date: 2013-02-23 21:19+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3366,6 +3366,22 @@ msgstr "Ключевое слово Static в объектах"
 #: lazarusidestrconsts.dlgstopafternrerr
 msgid "Stop after number of errors:"
 msgstr "Останов после числа ошибок"
+
+#: lazarusidestrconsts.dlgstringautoappend
+msgid "Append text to close string"
+msgstr "Закрывающий текст строки"
+
+#: lazarusidestrconsts.dlgstringautoprefix
+msgid "Prefix string on new line"
+msgstr "Префикс новой строки"
+
+#: lazarusidestrconsts.dlgstringbreakindenttab
+msgid "String ''"
+msgstr "Строка ''"
+
+#: lazarusidestrconsts.dlgstringenableautocontinue
+msgid "Extend strings on linebreak"
+msgstr "Добавлять новую строку при разрыве текущей"
 
 #: lazarusidestrconsts.dlgsubpropcolor
 msgid "SubProperties"

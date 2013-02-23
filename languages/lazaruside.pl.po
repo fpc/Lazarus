@@ -3440,6 +3440,22 @@ msgstr "Słowo kluczowe static w obiektach"
 msgid "Stop after number of errors:"
 msgstr "Zatrzymuj po liczbie błędów:"
 
+#: lazarusidestrconsts.dlgstringautoappend
+msgid "Append text to close string"
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringautoprefix
+msgid "Prefix string on new line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringbreakindenttab
+msgid "String ''"
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringenableautocontinue
+msgid "Extend strings on linebreak"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsubpropcolor
 msgid "SubProperties"
 msgstr ""

@@ -3234,6 +3234,22 @@ msgstr "الكلمات المفتاحية الساكنة في الكائنات"
 msgid "Stop after number of errors:"
 msgstr "التوقف بعد عدد من الأخطاء:"
 
+#: lazarusidestrconsts.dlgstringautoappend
+msgid "Append text to close string"
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringautoprefix
+msgid "Prefix string on new line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringbreakindenttab
+msgid "String ''"
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringenableautocontinue
+msgid "Extend strings on linebreak"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsubpropcolor
 msgid "SubProperties"
 msgstr "الخصائص الفرعية"
