@@ -134,6 +134,7 @@ type
     FMaxDisplayLengthForString: Integer;
     FTimeoutForEval: Integer;
     FWarnOnTimeOut: Boolean;
+    procedure SetMaxDisplayLengthForString(AValue: Integer);
     procedure SetTimeoutForEval(const AValue: Integer);
     procedure SetWarnOnTimeOut(const AValue: Boolean);
   public
@@ -144,7 +145,7 @@ type
     {$IFDEF UNIX}
     property ConsoleTty: String read FConsoleTty write FConsoleTty;
     {$ENDIF}
-    property MaxDisplayLengthForString: Integer read FMaxDisplayLengthForString write FMaxDisplayLengthForString;
+    property MaxDisplayLengthForString: Integer read FMaxDisplayLengthForString write SetMaxDisplayLengthForString;
     property TimeoutForEval: Integer read FTimeoutForEval write SetTimeoutForEval;
     property WarnOnTimeOut: Boolean  read FWarnOnTimeOut write SetWarnOnTimeOut;
     property EncodeCurrentDirPath: TGDBMIDebuggerFilenameEncoding
@@ -6426,6 +6427,14 @@ begin
   FTimeoutForEval := AValue;
   if (FTimeoutForEval <> -1) and (FTimeoutForEval < 50)
   then FTimeoutForEval := -1;
+end;
+
+procedure TGDBMIDebuggerProperties.SetMaxDisplayLengthForString(AValue: Integer);
+begin
+  if FMaxDisplayLengthForString = AValue then Exit;
+  if AValue < 0 then
+    AValue := 0;
+  FMaxDisplayLengthForString := AValue;
 end;
 
 procedure TGDBMIDebuggerProperties.SetWarnOnTimeOut(const AValue: Boolean);
