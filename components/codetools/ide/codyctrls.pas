@@ -31,7 +31,8 @@ interface
 
 uses
   types, math, typinfo, contnrs, Classes, SysUtils, FPCanvas, FPimage,
-  LazLogger, AvgLvlTree, ComCtrls, Controls, Graphics, LCLType, Forms;
+  LazLogger, AvgLvlTree, ComCtrls, Controls, Graphics, LCLType, Forms, LCLIntf,
+  LMessages;
 
 type
   TCodyCtrlPalette = array of TFPColor;
@@ -441,7 +442,8 @@ type
   TLvlGraphControlFlag =  (
     lgcNeedInvalidate,
     lgcNeedAutoLayout,
-    lgcIgnoreGraphInvalidate
+    lgcIgnoreGraphInvalidate,
+    lgcUpdatingScrollBars
     );
   TLvlGraphControlFlags = set of TLvlGraphControlFlag;
 
@@ -492,6 +494,10 @@ type
     FNodeUnderMouse: TLvlGraphNode;
     FOnSelectionChanged: TNotifyEvent;
     FOptions: TLvlGraphCtrlOptions;
+    FScrollLeft: integer;
+    FScrollLeftMax: integer;
+    FScrollTopMax: integer;
+    FScrollTop: integer;
     fUpdateLock: integer;
     FFlags: TLvlGraphControlFlags;
     procedure DrawCaptions(const TxtH: integer);
@@ -500,6 +506,12 @@ type
     procedure SetNodeStyle(AValue: TLvlGraphNodeStyle);
     procedure SetNodeUnderMouse(AValue: TLvlGraphNode);
     procedure SetOptions(AValue: TLvlGraphCtrlOptions);
+    procedure SetScrollLeft(AValue: integer);
+    procedure SetScrollTop(AValue: integer);
+    procedure UpdateScrollBars;
+    procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
+    procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
+    procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
   protected
     procedure AutoLayoutLevels(TxtH: LongInt); virtual;
     procedure GraphInvalidate(Sender: TObject); virtual;
@@ -510,6 +522,7 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer
       ); override;
+    procedure CreateWnd; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -523,11 +536,16 @@ type
     procedure EndUpdate;
     function GetNodeAt(X,Y: integer): TLvlGraphNode;
     class function GetControlClassDefaultSize: TSize; override;
+    function GetDrawSize: TPoint;
   public
     property NodeStyle: TLvlGraphNodeStyle read FNodeStyle write SetNodeStyle;
     property NodeUnderMouse: TLvlGraphNode read FNodeUnderMouse write SetNodeUnderMouse;
     property Options: TLvlGraphCtrlOptions read FOptions write SetOptions default DefaultLvlGraphCtrlOptions;
     property OnSelectionChanged: TNotifyEvent read FOnSelectionChanged write FOnSelectionChanged;
+    property ScrollTop: integer read FScrollTop write SetScrollTop;
+    property ScrollTopMax: integer read FScrollTopMax;
+    property ScrollLeft: integer read FScrollLeft write SetScrollLeft;
+    property ScrollLeftMax: integer read FScrollLeftMax;
   end;
 
   { TLvlGraphControl }
@@ -948,7 +966,6 @@ end;
 
 procedure TCustomLvlGraphControl.GraphInvalidate(Sender: TObject);
 begin
-  if lgcIgnoreGraphInvalidate in FFlags then exit;
   Invalidate;
 end;
 
@@ -963,7 +980,7 @@ begin
     end;
     //debugln(['TCustomLvlGraphControl.GraphStructureChanged ']);
     if lgoAutoLayout in FOptions then
-      FFlags:=FFlags+[lgcNeedAutoLayout,lgcNeedInvalidate];
+      InvalidateAutoLayout;
   end;
 end;
 
@@ -1000,13 +1017,17 @@ begin
             Canvas.Pen.Color:=clGray
           else
             Canvas.Pen.Color:=clSilver;
-          Canvas.Line(Level.DrawPosition+NodeStyle.Width, Node.DrawCenter,
-                      TargetNode.Level.DrawPosition, TargetNode.DrawCenter);
+          Canvas.Line(Level.DrawPosition+NodeStyle.Width-ScrollLeft,
+                      Node.DrawCenter-ScrollTop,
+                      TargetNode.Level.DrawPosition-ScrollLeft,
+                      TargetNode.DrawCenter-ScrollTop);
         end else begin
           // cycle dependency
           Canvas.Pen.Color:=clRed;
-          Canvas.Line(Level.DrawPosition, Node.DrawCenter,
-               TargetNode.Level.DrawPosition+NodeStyle.Width, TargetNode.DrawCenter);
+          Canvas.Line(Level.DrawPosition-ScrollLeft,
+                      Node.DrawCenter-ScrollTop,
+                      TargetNode.Level.DrawPosition+NodeStyle.Width-ScrollLeft,
+                      TargetNode.DrawCenter-ScrollTop);
         end;
       end;
     end;
@@ -1053,7 +1074,7 @@ begin
         Canvas.Brush.Style:=bsClear;
         Canvas.Brush.Color:=clNone;
       end;
-      Canvas.TextOut(p.x,p.y,Node.Caption);
+      Canvas.TextOut(p.x-ScrollLeft,p.y-ScrollTop,Node.Caption);
     end;
   end;
 end;
@@ -1073,8 +1094,8 @@ begin
       //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' ',dbgs(FPColorToTColor(Node.Color)),' Level.DrawPosition=',Level.DrawPosition,' Node.DrawPosition=',Node.DrawPosition,' ',Node.DrawPositionEnd]);
       Canvas.Brush.Color:=FPColorToTColor(Node.Color);
       Canvas.Pen.Color:=Darker(Canvas.Brush.Color);
-      Canvas.Rectangle(Level.DrawPosition, Node.DrawPosition,
-        Level.DrawPosition+NodeStyle.Width, Node.DrawPositionEnd);
+      Canvas.Rectangle(Level.DrawPosition-ScrollLeft, Node.DrawPosition-ScrollTop,
+        Level.DrawPosition+NodeStyle.Width-ScrollLeft, Node.DrawPositionEnd-ScrollTop);
     end;
   end;
 end;
@@ -1090,6 +1111,110 @@ begin
   if FOptions=AValue then Exit;
   FOptions:=AValue;
   InvalidateAutoLayout;
+end;
+
+procedure TCustomLvlGraphControl.SetScrollLeft(AValue: integer);
+begin
+  AValue:=Max(0,Min(AValue,ScrollLeftMax));
+  if FScrollLeft=AValue then Exit;
+  FScrollLeft:=AValue;
+  UpdateScrollBars;
+  Invalidate;
+end;
+
+procedure TCustomLvlGraphControl.SetScrollTop(AValue: integer);
+begin
+  AValue:=Max(0,Min(AValue,ScrollTopMax));
+  if FScrollTop=AValue then Exit;
+  FScrollTop:=AValue;
+  UpdateScrollBars;
+  Invalidate;
+end;
+
+procedure TCustomLvlGraphControl.UpdateScrollBars;
+var
+  ScrollInfo: TScrollInfo;
+  DrawSize: TPoint;
+begin
+  if HandleAllocated and (not (lgcUpdatingScrollBars in FFlags)) then begin
+    Include(FFlags,lgcUpdatingScrollBars);
+    DrawSize:=GetDrawSize;
+    FScrollTopMax:=DrawSize.Y-ClientHeight+2*BorderWidth;
+    FScrollTop:=Max(0,Min(FScrollTop,ScrollTopMax));
+    FScrollLeftMax:=DrawSize.X-ClientWidth+2*BorderWidth;
+    FScrollLeft:=Max(0,Min(FScrollLeft,ScrollLeftMax));
+    //debugln(['TCustomLvlGraphControl.UpdateScrollBars ',dbgs(DrawSize),' ClientRect=',dbgs(ClientRect),' ScrollLeft=',ScrollLeft,'/',ScrollLeftMax,' ScrollTop=',ScrollTop,'/',ScrollTopMax,' ']);
+
+    // vertical scrollbar
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
+    ScrollInfo.nMin := 0;
+    ScrollInfo.nTrackPos := 0;
+    ScrollInfo.nMax := DrawSize.Y;
+    ScrollInfo.nPage := Max(1,ClientHeight-1);
+    ScrollInfo.nPos := ScrollTop;
+    ShowScrollBar(Handle, SB_VERT, True);
+    SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
+
+    // horizontal scrollbar
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
+    ScrollInfo.nMin := 0;
+    ScrollInfo.nTrackPos := 0;
+    ScrollInfo.nMax := DrawSize.X;
+    ScrollInfo.nPage := Max(1,ClientWidth-1);
+    ScrollInfo.nPos := ScrollLeft;
+    ShowScrollBar(Handle, SB_Horz, True);
+    SetScrollInfo(Handle, SB_Horz, ScrollInfo, True);
+
+    Exclude(FFlags,lgcUpdatingScrollBars);
+  end;
+end;
+
+procedure TCustomLvlGraphControl.WMHScroll(var Msg: TLMScroll);
+begin
+  case Msg.ScrollCode of
+    SB_TOP:        ScrollLeft := 0;
+    SB_BOTTOM:     ScrollLeft := ScrollLeftMax;
+    SB_LINEDOWN:   ScrollLeft := ScrollLeft + NodeStyle.Width div 2;
+    SB_LINEUP:     ScrollLeft := ScrollLeft - NodeStyle.Width div 2;
+    SB_PAGEDOWN:   ScrollLeft := ScrollLeft + ClientWidth - NodeStyle.Width;
+    SB_PAGEUP:     ScrollLeft := ScrollLeft - ClientWidth + NodeStyle.Width;
+    SB_THUMBPOSITION,
+    SB_THUMBTRACK: ScrollLeft := Msg.Pos;
+    SB_ENDSCROLL:  SetCaptureControl(nil); // release scrollbar capture
+  end;
+end;
+
+procedure TCustomLvlGraphControl.WMVScroll(var Msg: TLMScroll);
+begin
+  case Msg.ScrollCode of
+    SB_TOP:        ScrollTop := 0;
+    SB_BOTTOM:     ScrollTop := ScrollTopMax;
+    SB_LINEDOWN:   ScrollTop := ScrollTop + NodeStyle.Width div 2;
+    SB_LINEUP:     ScrollTop := ScrollTop - NodeStyle.Width div 2;
+    SB_PAGEDOWN:   ScrollTop := ScrollTop + ClientHeight - NodeStyle.Width;
+    SB_PAGEUP:     ScrollTop := ScrollTop - ClientHeight + NodeStyle.Width;
+    SB_THUMBPOSITION,
+    SB_THUMBTRACK: ScrollTop := Msg.Pos;
+    SB_ENDSCROLL:  SetCaptureControl(nil); // release scrollbar capture
+  end;
+end;
+
+procedure TCustomLvlGraphControl.WMMouseWheel(var Message: TLMMouseEvent);
+begin
+  if Mouse.WheelScrollLines=-1 then
+  begin
+    // -1 : scroll by page
+    ScrollTop := ScrollTop -
+              (Message.WheelDelta * (ClientHeight - NodeStyle.Width)) div 120;
+  end else begin
+    // scrolling one line -> scroll half an item, see SB_LINEDOWN and SB_LINEUP
+    // handler in WMVScroll
+    ScrollTop := ScrollTop -
+        (Message.WheelDelta * Mouse.WheelScrollLines*NodeStyle.Width) div 240;
+  end;
+  Message.Result := 1;
 end;
 
 procedure TCustomLvlGraphControl.AutoLayoutLevels(TxtH: LongInt);
@@ -1136,6 +1261,7 @@ procedure TCustomLvlGraphControl.DoSetBounds(ALeft, ATop, AWidth,
   AHeight: integer);
 begin
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+  UpdateScrollBars;
 end;
 
 procedure TCustomLvlGraphControl.Paint;
@@ -1167,7 +1293,7 @@ begin
   // header
   if Caption<>'' then begin
     w:=Canvas.TextWidth(Caption);
-    Canvas.TextOut((ClientWidth-w) div 2,round(0.25*TxtH),Caption);
+    Canvas.TextOut((ClientWidth-w) div 2-ScrollLeft,round(0.25*TxtH)-ScrollTop,Caption);
   end;
 
   // draw
@@ -1209,6 +1335,12 @@ begin
   finally
     EndUpdate;
   end;
+end;
+
+procedure TCustomLvlGraphControl.CreateWnd;
+begin
+  inherited CreateWnd;
+  UpdateScrollBars;
 end;
 
 constructor TCustomLvlGraphControl.Create(AOwner: TComponent);
@@ -1296,6 +1428,9 @@ begin
     // position nodes without overlapping
     Graph.MinimizeOverlappings(HeaderHeight,GapTop,GapBottom);
 
+    UpdateScrollBars;
+
+    // node colors
     if RndColors then begin
       Palette:=GetCCPaletteRGB(Graph.NodeCount,true);
       Graph.SetColors(Palette);
@@ -1308,6 +1443,8 @@ end;
 
 procedure TCustomLvlGraphControl.Invalidate;
 begin
+  if lgcIgnoreGraphInvalidate in FFlags then
+    exit;
   if fUpdateLock>0 then begin
     Include(FFlags,lgcNeedInvalidate);
     exit;
@@ -1363,6 +1500,29 @@ class function TCustomLvlGraphControl.GetControlClassDefaultSize: TSize;
 begin
   Result.cx:=200;
   Result.cy:=200;
+end;
+
+function TCustomLvlGraphControl.GetDrawSize: TPoint;
+var
+  l: Integer;
+  Level: TLvlGraphLevel;
+  n: Integer;
+  Node: TLvlGraphNode;
+  x: LongInt;
+begin
+  Result:=Point(0,0);
+  for l:=0 to Graph.LevelCount-1 do begin
+    Level:=Graph.Levels[l];
+    for n:=0 to Level.Count-1 do begin
+      Node:=Level[n];
+      Result.Y:=Max(Result.Y,Node.DrawPositionEnd+NodeStyle.GapBottom);
+      x:=NodeStyle.GapRight;
+      if Node.OutEdgeCount>0 then
+        x:=Max(x,NodeStyle.Width);
+      x+=Level.DrawPosition+NodeStyle.Width;
+      Result.X:=Max(Result.X,x);
+    end;
+  end;
 end;
 
 type
