@@ -607,24 +607,83 @@ type
     property Visible;
   end;
 
+// misc
 procedure FreeTVNodeData(TV: TCustomTreeView);
-
-procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2: integer;
-  InnerSize: single; StartAngle16, EndAngle16: integer); overload;
-procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2,
-  InnerSize, StartAngle, EndAngle: single); overload;
 
 function GetCCPaletteRGB(Cnt: integer; Shuffled: boolean): TCodyCtrlPalette;
 procedure ShuffleCCPalette(Palette: TCodyCtrlPalette);
 function Darker(const c: TColor): TColor; overload;
 
+// diagram
+procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2: integer;
+  InnerSize: single; StartAngle16, EndAngle16: integer); overload;
+procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2,
+  InnerSize, StartAngle, EndAngle: single); overload;
+
+// level graph
 function CompareLGNodesByCenterPos(Node1, Node2: Pointer): integer;
 
 function dbgs(p: TLvlGraphNodeCaptionPosition): string; overload;
 function dbgs(o: TLvlGraphCtrlOption): string; overload;
 function dbgs(Options: TLvlGraphCtrlOptions): string; overload;
 
+procedure LvlGraphMinimizeCrossings(Graph: TLvlGraph); overload;
+
 implementation
+
+type
+  TMinXGraph = class;
+  TMinXLevel = class;
+
+  { TMinXNode }
+
+  TMinXNode = class
+  public
+    GraphNode: TLvlGraphNode;
+    PrevNodes, NextNodes: array of TMinXNode;
+    Level: TMinXLevel;
+    IndexInLevel: integer;
+    constructor Create(aNode: TLvlGraphNode);
+    destructor Destroy; override;
+  end;
+
+  { TMinXLevel }
+
+  TMinXLevel = class
+  public
+    Index: integer;
+    Graph: TMinXGraph;
+    GraphLevel: TLvlGraphLevel;
+    Nodes: array of TMinXNode;
+    constructor Create(aGraph: TMinXGraph; aIndex: integer);
+    destructor Destroy; override;
+  end;
+
+  { TMinXGraph }
+
+  TMinXGraph = class
+  private
+    FGraphNodeToNode: TPointerToPointerTree; // TLvlGraphNode to TMinXNode
+  public
+    Graph: TLvlGraph;
+    Levels: array of TMinXLevel;
+    constructor Create(aGraph: TLvlGraph);
+    destructor Destroy; override;
+    function GraphNodeToNode(GraphNode: TLvlGraphNode): TMinXNode; inline;
+  end;
+
+procedure LvlGraphMinimizeCrossings(Graph: TLvlGraph);
+var
+  g: TMinXGraph;
+begin
+  if (Graph.LevelCount<2) or (Graph.NodeCount<3) then exit;
+  g:=TMinXGraph.Create(Graph);
+  try
+
+  finally
+    g.Free;
+  end;
+end;
 
 procedure FreeTVNodeData(TV: TCustomTreeView);
 var
@@ -798,6 +857,129 @@ begin
       Result+=dbgs(o);
     end;
   Result:='['+Result+']';
+end;
+
+{ TMinXGraph }
+
+constructor TMinXGraph.Create(aGraph: TLvlGraph);
+var
+  GraphNode: TLvlGraphNode;
+  i: Integer;
+  Level: TMinXLevel;
+  n: Integer;
+  e: Integer;
+  Node: TMinXNode;
+  Cnt: Integer;
+  OtherNode: TMinXNode;
+begin
+  Graph:=aGraph;
+  // create nodes
+  FGraphNodeToNode:=TPointerToPointerTree.Create;
+  for i:=0 to Graph.NodeCount-1 do begin
+    GraphNode:=Graph.Nodes[i];
+    Node:=TMinXNode.Create(GraphNode);
+    FGraphNodeToNode[GraphNode]:=Node;
+    SetLength(Node.PrevNodes,GraphNode.InEdgeCount);
+  end;
+  // create levels
+  SetLength(Levels,aGraph.LevelCount);
+  for i:=0 to length(Levels)-1 do
+    Levels[i]:=TMinXLevel.Create(Self,i);
+  // create NextNodes arrays
+  for i:=0 to length(Levels)-2 do begin
+    Level:=Levels[i];
+    for n:=0 to length(Level.Nodes)-1 do begin
+      Node:=Level.Nodes[n];
+      GraphNode:=Node.GraphNode;
+      SetLength(Node.NextNodes,GraphNode.OutEdgeCount);
+      Cnt:=0;
+      for e:=0 to GraphNode.OutEdgeCount-1 do begin
+        OtherNode:=GraphNodeToNode(GraphNode.OutEdges[e].Target);
+        if Node.Level.Index+1<>OtherNode.Level.Index then continue;
+        Node.NextNodes[Cnt]:=OtherNode;
+        Cnt+=1;
+      end;
+      SetLength(Node.NextNodes,Cnt);
+    end;
+  end;
+  // create PrevNodes arrays
+  for i:=1 to length(Levels)-1 do begin
+    Level:=Levels[i];
+    for n:=0 to length(Level.Nodes)-1 do begin
+      Node:=Level.Nodes[n];
+      GraphNode:=Node.GraphNode;
+      SetLength(Node.PrevNodes,GraphNode.InEdgeCount);
+      Cnt:=0;
+      for e:=0 to GraphNode.InEdgeCount-1 do begin
+        OtherNode:=GraphNodeToNode(GraphNode.InEdges[e].Source);
+        if Node.Level.Index-1<>OtherNode.Level.Index then continue;
+        Node.PrevNodes[Cnt]:=OtherNode;
+        Cnt+=1;
+      end;
+      SetLength(Node.PrevNodes,Cnt);
+    end;
+  end;
+end;
+
+destructor TMinXGraph.Destroy;
+var
+  i: Integer;
+begin
+  for i:=0 to length(Levels)-1 do
+    Levels[i].Free;
+  SetLength(Levels,0);
+  FreeAndNil(FGraphNodeToNode);
+  inherited Destroy;
+end;
+
+function TMinXGraph.GraphNodeToNode(GraphNode: TLvlGraphNode): TMinXNode;
+begin
+  Result:=TMinXNode(FGraphNodeToNode[GraphNode]);
+end;
+
+{ TMinXLevel }
+
+constructor TMinXLevel.Create(aGraph: TMinXGraph; aIndex: integer);
+var
+  i: Integer;
+  GraphNode: TLvlGraphNode;
+  Node: TMinXNode;
+begin
+  Index:=aIndex;
+  Graph:=aGraph;
+  GraphLevel:=Graph.Graph.Levels[Index];
+  SetLength(Nodes,GraphLevel.Count);
+  for i:=0 to length(Nodes)-1 do begin
+    GraphNode:=GraphLevel[i];
+    Node:=Graph.GraphNodeToNode(GraphNode);
+    Node.Level:=Self;
+    Node.IndexInLevel:=i;
+    Nodes[i]:=Node;
+  end;
+end;
+
+destructor TMinXLevel.Destroy;
+var
+  i: Integer;
+begin
+  for i:=0 to length(Nodes)-1 do
+    Nodes[i].Free;
+  SetLength(Nodes,0);
+  inherited Destroy;
+end;
+
+{ TMinXNode }
+
+constructor TMinXNode.Create(aNode: TLvlGraphNode);
+begin
+  GraphNode:=aNode;
+end;
+
+destructor TMinXNode.Destroy;
+begin
+  SetLength(PrevNodes,0);
+  SetLength(NextNodes,0);
+  inherited Destroy;
 end;
 
 { TLvlGraphNodeStyle }
@@ -2089,12 +2271,8 @@ begin
 end;
 
 procedure TLvlGraph.MinimizeCrossings;
-var
-  i: Integer;
 begin
-  for i:=0 to LevelCount-1 do begin
-
-  end;
+  LvlGraphMinimizeCrossings(Self);
 end;
 
 procedure TLvlGraph.MinimizeOverlappings(MinPos: integer;
