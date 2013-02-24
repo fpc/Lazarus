@@ -997,6 +997,28 @@ begin
 end;
 
 procedure TCustomLvlGraphControl.DrawEdges(Highlighted: boolean);
+
+  procedure HighlightNode(Node: TLvlGraphNode; HighlightedElements: TAvgLvlTree);
+  var
+    i: Integer;
+    Edge: TLvlGraphEdge;
+  begin
+    if HighlightedElements.Find(Node)<>nil then exit;
+    HighlightedElements.Add(Node);
+    for i:=0 to Node.InEdgeCount-1 do begin
+      Edge:=Node.InEdges[i];
+      HighlightedElements.Add(Edge);
+      if not Edge.Source.Visible then
+        HighlightNode(Edge.Source,HighlightedElements);
+    end;
+    for i:=0 to Node.OutEdgeCount-1 do begin
+      Edge:=Node.OutEdges[i];
+      HighlightedElements.Add(Edge);
+      if not Edge.Target.Visible then
+        HighlightNode(Edge.Target,HighlightedElements);
+    end;
+  end;
+
 var
   i: Integer;
   Level: TLvlGraphLevel;
@@ -1005,50 +1027,58 @@ var
   k: Integer;
   Edge: TLvlGraphEdge;
   TargetNode: TLvlGraphNode;
-  NodeHighlighted: Boolean;
   x1, y1, x2, y2: Integer;
+  HighlightedElements: TAvgLvlTree;
+  EdgeHighlighted: Boolean;
 begin
-  for i:=0 to Graph.LevelCount-1 do begin
-    Level:=Graph.Levels[i];
-    for j:=0 to Level.Count-1 do begin
-      Node:=Level.Nodes[j];
-      for k:=0 to Node.OutEdgeCount-1 do begin
-        Edge:=Node.OutEdges[k];
-        TargetNode:=Edge.Target;
-        NodeHighlighted:=(Node=NodeUnderMouse) or (TargetNode=NodeUnderMouse);
-        if NodeHighlighted<>Highlighted then continue;
-        x1:=Level.DrawPosition+ScrollLeft;
-        y1:=Node.DrawCenter-ScrollTop;
-        x2:=TargetNode.Level.DrawPosition-ScrollLeft;
-        y2:=TargetNode.DrawCenter-ScrollTop;
-        if TargetNode.Level.Index>Level.Index then begin
-          // normal dependency
-          // => draw line from right of Node to left of TargetNode
-          if Node.Visible then
-            x1+=NodeStyle.Width
-          else
-            x1+=NodeStyle.Width div 2;
-          if not TargetNode.Visible then
-            x2+=NodeStyle.Width div 2;
-          if NodeHighlighted then
-            Canvas.Pen.Color:=clGray
-          else
-            Canvas.Pen.Color:=clSilver;
-          Canvas.Line(x1,y1,x2,y2);
-        end else begin
-          // cycle dependency
-          // => draw line from left of Node to right of TargetNode
-          if not Node.Visible then
-            x1+=NodeStyle.Width div 2;
-          if TargetNode.Visible then
-            x2+=NodeStyle.Width div 2
-          else
-            x2+=NodeStyle.Width div 2;
-          Canvas.Pen.Color:=clRed;
-          Canvas.Line(x1,y1,x2+NodeStyle.Width,y2);
+  HighlightedElements:=TAvgLvlTree.Create;
+  try
+    if NodeUnderMouse<>nil then
+      HighlightNode(NodeUnderMouse,HighlightedElements);
+    for i:=0 to Graph.LevelCount-1 do begin
+      Level:=Graph.Levels[i];
+      for j:=0 to Level.Count-1 do begin
+        Node:=Level.Nodes[j];
+        for k:=0 to Node.OutEdgeCount-1 do begin
+          Edge:=Node.OutEdges[k];
+          TargetNode:=Edge.Target;
+          EdgeHighlighted:=HighlightedElements.Find(Edge)<>nil;
+          if EdgeHighlighted<>Highlighted then continue;
+          x1:=Level.DrawPosition+ScrollLeft;
+          y1:=Node.DrawCenter-ScrollTop;
+          x2:=TargetNode.Level.DrawPosition-ScrollLeft;
+          y2:=TargetNode.DrawCenter-ScrollTop;
+          if TargetNode.Level.Index>Level.Index then begin
+            // normal dependency
+            // => draw line from right of Node to left of TargetNode
+            if Node.Visible then
+              x1+=NodeStyle.Width
+            else
+              x1+=NodeStyle.Width div 2;
+            if not TargetNode.Visible then
+              x2+=NodeStyle.Width div 2;
+            if EdgeHighlighted then
+              Canvas.Pen.Color:=clGray
+            else
+              Canvas.Pen.Color:=clSilver;
+            Canvas.Line(x1,y1,x2,y2);
+          end else begin
+            // cycle dependency
+            // => draw line from left of Node to right of TargetNode
+            if not Node.Visible then
+              x1+=NodeStyle.Width div 2;
+            if TargetNode.Visible then
+              x2+=NodeStyle.Width div 2
+            else
+              x2+=NodeStyle.Width div 2;
+            Canvas.Pen.Color:=clRed;
+            Canvas.Line(x1,y1,x2+NodeStyle.Width,y2);
+          end;
         end;
       end;
     end;
+  finally
+    HighlightedElements.Free;
   end;
 end;
 
