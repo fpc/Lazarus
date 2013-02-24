@@ -839,6 +839,8 @@ begin
   //cannot allow goColMoving
   if (goColMoving in AValue) then AValue := AValue - [goColMoving];
   if (goAutoAddRows in AValue) and not (KeyAdd in KeyOptions) then AValue := AValue - [goAutoAddRows];
+  //temporarily disable this, it causes crashes
+  if (goAutoAddRowsSkipContentCheck in AValue) then AValue := AValue - [goAutoAddRowsSkipContentCheck];
   inherited Options := AValue;
 end;
 
