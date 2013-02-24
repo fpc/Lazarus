@@ -254,6 +254,7 @@ type
     FPrevSelected: TLvlGraphNode;
     FSelected: boolean;
     FVisible: boolean;
+    function GetIndexInLevel: integer;
     function GetInEdges(Index: integer): TLvlGraphEdge;
     function GetOutEdges(Index: integer): TLvlGraphEdge;
     procedure SetCaption(AValue: string);
@@ -283,6 +284,7 @@ type
     function FindOutEdge(Target: TLvlGraphNode): TLvlGraphEdge;
     function OutEdgeCount: integer;
     property OutEdges[Index: integer]: TLvlGraphEdge read GetOutEdges;
+    property IndexInLevel: integer read GetIndexInLevel;
     property Level: TLvlGraphLevel read FLevel write SetLevel;
     property Selected: boolean read FSelected write SetSelected;
     property NextSelected: TLvlGraphNode read FNextSelected;
@@ -383,6 +385,7 @@ type
     function NodeCount: integer;
     property Nodes[Index: integer]: TLvlGraphNode read GetNodes;
     function GetNode(aCaption: string; CreateIfNotExists: boolean): TLvlGraphNode;
+    function CreateHiddenNode(Level: integer = 0): TLvlGraphNode;
     property NodeClass: TLvlGraphNodeClass read FNodeClass;
     property FirstSelected: TLvlGraphNode read FFirstSelected;
     property LastSelected: TLvlGraphNode read FLastSelected;
@@ -403,6 +406,7 @@ type
     property LevelClass: TLvlGraphLevelClass read FLevelClass;
 
     procedure CreateTopologicalLevels; // create levels from edges
+    procedure SplitLongEdges; // split long edges by adding hidden nodes
     procedure ScaleNodeDrawSizes(NodeGapAbove, NodeGapBelow,
       HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer);
     procedure SetAllNodeDrawSizes(PixelPerWeight: single = 1.0; MinWeight: single = 0.0);
@@ -434,7 +438,8 @@ type
     lgncBottom);
 
 const
-  DefaultLvlGraphCtrlOptions = [lgoAutoLayout,lgoHighlightNodeUnderMouse,lgoMouseSelects];
+  DefaultLvlGraphCtrlOptions = [lgoAutoLayout,lgoAutoSplitLongEdges,
+                                lgoHighlightNodeUnderMouse,lgoMouseSelects];
   DefaultLvlGraphNodeWith = 10;
   DefaultLvlGraphNodeCaptionScale = 0.7;
   DefaultLvlGraphNodeCaptionPosition = lgncTop;
@@ -765,11 +770,11 @@ begin
   p1:=LNode1.DrawCenter;
   p2:=LNode2.DrawCenter;
   if p1<p2 then
-    Result:=1
+    exit(-1)
   else if p1>p2 then
-    Result:=-1
-  else
-    Result:=0;
+    exit(1);
+  // default compare by position in level
+  Result:=LNode1.IndexInLevel-LNode2.IndexInLevel;
 end;
 
 function dbgs(p: TLvlGraphNodeCaptionPosition): string;
@@ -1440,7 +1445,6 @@ var
   GapBottom: Integer;
 begin
   debugln(['TCustomLvlGraphControl.AutoLayout ',DbgSName(Self),' ClientRect=',dbgs(ClientRect)]);
-  Exclude(FFlags,lgcNeedAutoLayout);
   BeginUpdate;
   try
     Canvas.Font.Assign(Font);
@@ -1454,8 +1458,11 @@ begin
     end else
       HeaderHeight:=0;
 
-    // distribute the nodes on levels and marking back edges
+    // distribute the nodes on levels and mark back edges
     Graph.CreateTopologicalLevels;
+
+    if lgoAutoSplitLongEdges in Options then
+      Graph.SplitLongEdges;
 
     // Level DrawPosition
     AutoLayoutLevels(TxtH);
@@ -1487,6 +1494,8 @@ begin
       Graph.SetColors(Palette);
       SetLength(Palette,0);
     end;
+
+    Exclude(FFlags,lgcNeedAutoLayout);
   finally
     EndUpdate;
   end;
@@ -1704,6 +1713,14 @@ begin
     Result:=nil;
 end;
 
+function TLvlGraph.CreateHiddenNode(Level: integer): TLvlGraphNode;
+begin
+  Result:=FNodeClass.Create(Self,'',Levels[Level]);
+  Result.Visible:=false;
+  FNodes.Add(Result);
+  StructureChanged(Result,opInsert);
+end;
+
 procedure TLvlGraph.ClearSelection;
 begin
   while FirstSelected<>nil do
@@ -1910,6 +1927,42 @@ begin
   {$ENDIF}
 end;
 
+procedure TLvlGraph.SplitLongEdges;
+// replace edges over several levels into several short edges by adding
+// hidden nodes
+var
+  n: Integer;
+  SourceNode: TLvlGraphNode;
+  e: Integer;
+  Edge: TLvlGraphEdge;
+  TargetNode: TLvlGraphNode;
+  l: Integer;
+  LastNode: TLvlGraphNode;
+  NextNode: TLvlGraphNode;
+begin
+  for n:=0 to NodeCount-1 do begin
+    SourceNode:=Nodes[n];
+    for e:=SourceNode.OutEdgeCount-1 downto 0 do begin
+      Edge:=SourceNode.OutEdges[e];
+      TargetNode:=Edge.Target;
+      if TargetNode.Level.Index-SourceNode.Level.Index<=1 then continue;
+      //debugln(['TLvlGraph.SplitLongEdges long edge: ',SourceNode.Caption,' ',TargetNode.Caption]);
+      // remove long edge
+      Edge.Free;
+      LastNode:=SourceNode;
+      for l:=SourceNode.Level.Index+1 to TargetNode.Level.Index do begin
+        //debugln(['TLvlGraph.SplitLongEdges long edge: ',SourceNode.Caption,' ',TargetNode.Caption,' create edge l=',l]);
+        if l<TargetNode.Level.Index then
+          NextNode:=CreateHiddenNode(l)
+        else
+          NextNode:=TargetNode;
+        GetEdge(LastNode,NextNode,true);
+        LastNode:=NextNode;
+      end;
+    end;
+  end;
+end;
+
 procedure TLvlGraph.ScaleNodeDrawSizes(NodeGapAbove, NodeGapBelow,
   HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer);
 { NodeGapAbove: minimum space above each node
@@ -2073,6 +2126,7 @@ begin
           Node.DrawPosition:=Max(Node.DrawPosition,Last.DrawPositionEnd+NodeGapBelow+NodeGapAbove)
         else
           Node.DrawPosition:=Max(Node.DrawPosition,Last.DrawPositionEnd+1);
+        //debugln(['TLvlGraph.MinimizeOverlappings Level=',aLevel,' Node=',Node.Caption,' Size=',Node.DrawSize,' Position=',Node.DrawPosition]);
         Last:=Node;
         AVLNode:=Tree.FindSuccessor(AVLNode);
       end;
@@ -2215,6 +2269,12 @@ end;
 function TLvlGraphNode.GetInEdges(Index: integer): TLvlGraphEdge;
 begin
   Result:=TLvlGraphEdge(FInEdges[Index]);
+end;
+
+function TLvlGraphNode.GetIndexInLevel: integer;
+begin
+  if Level=nil then exit(-1);
+  Result:=Level.IndexOf(Self);
 end;
 
 function TLvlGraphNode.GetOutEdges(Index: integer): TLvlGraphEdge;
