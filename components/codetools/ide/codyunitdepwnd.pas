@@ -319,6 +319,25 @@ begin
 end;
 
 procedure TUnitDependenciesDialog.CreateFPCSrcGroups;
+
+  function ExtractFilePathStart(Filename: string; DirCount: integer): string;
+  var
+    p: Integer;
+  begin
+    p:=1;
+    while p<=length(Filename) do begin
+      if Filename[p]=PathDelim then begin
+        DirCount-=1;
+        if DirCount=0 then begin
+          Result:=LeftStr(Filename,p-1);
+          exit;
+        end;
+      end;
+      inc(p);
+    end;
+    Result:=Filename;
+  end;
+
 var
   FPCSrcDir: String;
   Node: TAVLTreeNode;
@@ -328,6 +347,7 @@ var
 begin
   FPCSrcDir:=AppendPathDelim(GetFPCSrcDir);
 
+  // for each unit in the fpc source directory, create a group for each directory
   Node:=UsesGraph.FilesTree.FindLowest;
   while Node<>nil do begin
     CurUnit:=TUGGroupUnit(Node.Data);
@@ -337,12 +357,19 @@ begin
       // a unit in the FPC sources
       Directory:=ExtractFilePath(CurUnit.Filename);
       Directory:=copy(Directory,length(FPCSrcDir)+1,length(Directory));
+      Directory:=ExtractFilePathStart(Directory,2);
+      if LeftStr(Directory,length('rtl'))='rtl' then
+        Directory:='RTL'
+      else if LeftStr(Directory,length('packages'))='packages' then
+        System.Delete(Directory,1,length('packages'+PathDelim));
       Grp:=Groups.GetGroup(GroupPrefixFPCSrc+Directory,true);
       debugln(['TUnitDependenciesDialog.CreateFPCSrcGroups ',Grp.Name]);
       Grp.AddUnit(TUGGroupUnit(CurUnit));
     end;
     Node:=UsesGraph.FilesTree.FindSuccessor(Node);
   end;
+
+
 end;
 
 procedure TUnitDependenciesDialog.GuessGroupOfUnits;
