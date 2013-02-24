@@ -2603,7 +2603,7 @@ begin
         and (MainIDE.ToolStatus = itDebugger)
         and (FDebugger <> nil)
         and (dcEvaluate in FDebugger.Commands)
-        and FDebugger.Evaluate(AExpression, AResult, ATypeInfo, EvalFlags)
+        and FDebugger.Evaluate(AExpression, AResult, ATypeInfo, EvalFlags);
 end;
 
 function TDebugManager.Modify(const AExpression, ANewValue: String): Boolean;
@@ -2612,7 +2612,7 @@ begin
         and (MainIDE.ToolStatus = itDebugger)
         and (FDebugger <> nil)
         and (dcModify in FDebugger.Commands)
-        and FDebugger.Modify(AExpression, ANewValue)
+        and FDebugger.Modify(AExpression, ANewValue);
 end;
 
 procedure TDebugManager.EvaluateModify(const AExpression: String);
@@ -2659,7 +2659,7 @@ begin
   end;
 
   ABrkPoint := FBreakPoints.Add(AFilename, ALine);
-  Result := mrOK
+  Result := mrOK;
 end;
 
 function TDebugManager.DoCreateBreakPoint(const AnAddr: TDBGPtr; WarnIfNoDebugger: boolean;
@@ -2679,7 +2679,7 @@ begin
   end;
 
   ABrkPoint := FBreakPoints.Add(AnAddr);
-  Result := mrOK
+  Result := mrOK;
 end;
 
 function TDebugManager.DoDeleteBreakPoint(const AFilename: string;
@@ -2691,7 +2691,7 @@ begin
   if OldBreakPoint=nil then exit(mrOk);
   ReleaseRefAndNil(OldBreakPoint);
   Project1.Modified:=true;
-  Result := mrOK
+  Result := mrOK;
 end;
 
 function TDebugManager.DoDeleteBreakPointAtMark(const ASourceMark: TSourceMark
@@ -2715,7 +2715,7 @@ begin
 {$endif}
   ReleaseRefAndNil(OldBreakPoint);
   Project1.Modified:=true;
-  Result := mrOK
+  Result := mrOK;
 end;
 
 function TDebugManager.DoRunToCursor: TModalResult;
