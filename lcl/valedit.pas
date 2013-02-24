@@ -717,27 +717,35 @@ end;
 
 function TValueListEditor.InsertRow(const KeyName, Value: string; Append: Boolean): Integer;
 var
-  NewInd: Integer;
+  NewInd, NewCol: Integer;
+  Line: String;
 begin
-  Result := Row;
+  if (KeyName <> '') and (Value <> '') then
+    Line := KeyName + '=' + Value
+  else
+    Line := '';
   if (Row > Strings.Count) or ((Row - FixedRows) >= Strings.Count)
   or (Cells[0, Row] <> '') or (Cells[1, Row] <> '') then
   begin                                    // Add a new Key=Value pair
     Strings.BeginUpdate;
     try
       if Append then
-        NewInd := Strings.Count
+        NewInd := Row - FixedRows + 1 //append after current row
       else
-        NewInd := Result - FixedRows;
-      Strings.InsertItem(NewInd, KeyName+'='+Value, Nil);
+        NewInd := Row - FixedRows; //insert it at current row
+      Strings.InsertItem(NewInd, Line, Nil);
     finally
       Strings.EndUpdate;
     end;
   end
   else begin   // Use an existing row, just update the Key and Value.
-    Cells[0, Result] := KeyName;
-    Cells[1, Result] := Value;
+    Cells[0, Row] := KeyName;
+    Cells[1, Row] := Value;
+    NewInd := Row - FixedRows;
   end;
+  Result := NewInd;
+  NewCol := NewInd + FixedRows;
+  if (NewCol <> Col) then Col := NewCol;
 end;
 
 procedure TValueListEditor.StringsChange(Sender: TObject);
