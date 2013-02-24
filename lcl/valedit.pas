@@ -136,7 +136,7 @@ type
     procedure SetKeyOptions({const} AValue: TKeyOptions);
     procedure SetKey(Index: Integer; const Value: string);
     procedure SetValue(const Key: string; AValue: string);
-    procedure SetOptions(const AValue: TGridOptions);
+    procedure SetOptions({const} AValue: TGridOptions);
     procedure SetStrings(const AValue: TValueListStrings);
     procedure SetTitleCaptions(const AValue: TStrings);
   protected
@@ -821,16 +821,23 @@ begin
   // ToDo: Disable Add or enable Edit based on current value.
   // Enable Edit when Adding, disable Add when Editing.
   // Change Col if needed when editing keys is disabled.
+  // KeyAdd and KeyDelete (not quite sure about the latter) require KeyEdit
+  if (KeyAdd in AValue) and not (KeyEdit in AValue) then AValue := AValue - [KeyAdd];
+  if (KeyDelete in AValue) and not (KeyEdit in AValue) then AValue := AValue - [KeyDelete];
   FKeyOptions := AValue;
+  if (KeyAdd in FKeyOptions) then
+    Options := Options + [goAutoAddRows]
+  else
+    Options := Options - [goAutoAddRows];
 end;
 
 
-procedure TValueListEditor.SetOptions(const AValue: TGridOptions);
+procedure TValueListEditor.SetOptions({const} AValue: TGridOptions);
 begin
-  if not (goColMoving in AValue) then
-    inherited Options := AValue
-  else
-    inherited Options := AValue - [goColMoving];
+  //cannot allow goColMoving
+  if (goColMoving in AValue) then AValue := AValue - [goColMoving];
+  if (goAutoAddRows in AValue) and not (KeyAdd in KeyOptions) then AValue := AValue - [goAutoAddRows];
+  inherited Options := AValue;
 end;
 
 procedure TValueListEditor.SetStrings(const AValue: TValueListStrings);
@@ -1012,7 +1019,9 @@ begin
     end
     else SetGridEditorReadOnly(result, False);
   end
-  else SetGridEditorReadOnly(result, False);
+  else
+    //First column is only editable if KeyEdit is in KeyOptions
+    SetGridEditorReadOnly(result, not (KeyEdit in KeyOptions));
 end;
 
 procedure TValueListEditor.SetCells(ACol, ARow: Integer; const AValue: string);
@@ -1078,8 +1087,9 @@ var
   Index, i: Integer;
 begin
   Result := inherited ValidateEntry(ACol, ARow, OldValue, NewValue);
-  if ((ACol - FixedCols) = 0) then
-  begin//Check for duplicate key names (only in "Key" column)
+  //Check for duplicate key names (only in "Key" column), if KeyUnique is set
+  if ((ACol - FixedCols) = 0) and (KeyUnique in KeyOptions) then
+  begin
     Index := ARow - FixedRows;
     for i := 0 to FStrings.Count - 1 do
     begin
