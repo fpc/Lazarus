@@ -242,6 +242,12 @@ begin
   //debugln(['TGtk2WSCustomPanel.CreateHandle Frame^.allocation=',dbgs(Frame^.allocation),' WidgetClient^.allocation=',dbgs(WidgetClient^.allocation)]);
 
   Set_RC_Name(AWinControl, Frame);
+
+  // issue #23940. Hide panel if we are not visible, but before setting callbacks.
+  // so it won't trigger unnecessary events to LCL.
+  if not AWinControl.Visible and not (csDesigning in AWinControl.ComponentState) then
+    gtk_widget_hide(Frame);
+
   SetCallbacks(Frame, WidgetInfo);
 
   Result := TLCLIntfHandle({%H-}PtrUInt(Frame));
