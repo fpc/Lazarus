@@ -97,6 +97,7 @@ type
     function NodeTextToUnit(NodeText: string): TUGUnit;
     function UGUnitToNodeText(UGUnit: TUGUnit): string;
     function GetFPCSrcDir: string;
+    function IsFPCSrcGroup(Group: TUGGroup): boolean;
   public
     CurUnitDiagram: TCircleDiagramControl;
     GroupsLvlGraph: TLvlGraphControl; // Nodes.Data are TUGGroup of Groups
@@ -347,29 +348,29 @@ var
 begin
   FPCSrcDir:=AppendPathDelim(GetFPCSrcDir);
 
-  // for each unit in the fpc source directory, create a group for each directory
+  // for each unit in the fpc source directory:
+  // if in rtl/ put into group GroupPrefixFPCSrc+RTL
+  // if in packages/<name>, put in group GroupPrefixFPCSrc+<name>
   Node:=UsesGraph.FilesTree.FindLowest;
   while Node<>nil do begin
     CurUnit:=TUGGroupUnit(Node.Data);
-    if (TUGGroupUnit(CurUnit).Group=nil)
-    and (CompareFilenames(FPCSrcDir,LeftStr(CurUnit.Filename,length(FPCSrcDir)))=0)
-    then begin
-      // a unit in the FPC sources
-      Directory:=ExtractFilePath(CurUnit.Filename);
-      Directory:=copy(Directory,length(FPCSrcDir)+1,length(Directory));
-      Directory:=ExtractFilePathStart(Directory,2);
-      if LeftStr(Directory,length('rtl'))='rtl' then
-        Directory:='RTL'
-      else if LeftStr(Directory,length('packages'))='packages' then
-        System.Delete(Directory,1,length('packages'+PathDelim));
-      Grp:=Groups.GetGroup(GroupPrefixFPCSrc+Directory,true);
-      debugln(['TUnitDependenciesDialog.CreateFPCSrcGroups ',Grp.Name]);
-      Grp.AddUnit(TUGGroupUnit(CurUnit));
-    end;
     Node:=UsesGraph.FilesTree.FindSuccessor(Node);
+    if TUGGroupUnit(CurUnit).Group<>nil then continue;
+    if CompareFilenames(FPCSrcDir,LeftStr(CurUnit.Filename,length(FPCSrcDir)))<>0
+    then
+      continue;
+    // a unit in the FPC sources
+    Directory:=ExtractFilePath(CurUnit.Filename);
+    Directory:=copy(Directory,length(FPCSrcDir)+1,length(Directory));
+    Directory:=ExtractFilePathStart(Directory,2);
+    if LeftStr(Directory,length('rtl'))='rtl' then
+      Directory:='RTL'
+    else if LeftStr(Directory,length('packages'))='packages' then
+      System.Delete(Directory,1,length('packages'+PathDelim));
+    Grp:=Groups.GetGroup(GroupPrefixFPCSrc+Directory,true);
+    //debugln(['TUnitDependenciesDialog.CreateFPCSrcGroups ',Grp.Name]);
+    Grp.AddUnit(TUGGroupUnit(CurUnit));
   end;
-
-
 end;
 
 procedure TUnitDependenciesDialog.GuessGroupOfUnits;
@@ -543,6 +544,9 @@ var
   RequiredPkg: TIDEPackage;
   GroupObj: TObject;
   GraphGroup: TLvlGraphNode;
+  UnitNode: TAVLTreeNode;
+  GrpUnit: TUGGroupUnit;
+  UsedUnit: TUGGroupUnit;
 begin
   GroupsLvlGraph.BeginUpdate;
   Graph:=GroupsLvlGraph.Graph;
@@ -550,6 +554,8 @@ begin
   AVLNode:=Groups.Groups.FindLowest;
   while AVLNode<>nil do begin
     Group:=TUGGroup(AVLNode.Data);
+    AVLNode:=Groups.Groups.FindSuccessor(AVLNode);
+    // ToDo: IsFPCSrcGroup
     GraphGroup:=Graph.GetNode(Group.Name,true);
     GraphGroup.Data:=Group;
     GroupObj:=nil;
@@ -561,20 +567,35 @@ begin
       // package
       GroupObj:=PackageEditingInterface.FindPackageWithName(Group.Name);
     end;
-    PkgList:=nil;
-    try
-      PackageEditingInterface.GetRequiredPackages(GroupObj,PkgList,[pirNotRecursive]);
-      if (PkgList<>nil) then begin
-        // add for each dependency an edge in the Graph
-        for i:=0 to PkgList.Count-1 do begin
-          RequiredPkg:=TIDEPackage(PkgList[i]);
-          Graph.GetEdge(Group.Name,RequiredPkg.Name,true);
+    if GroupObj<>nil then begin
+      // add lpk dependencies
+      PkgList:=nil;
+      try
+        PackageEditingInterface.GetRequiredPackages(GroupObj,PkgList,[pirNotRecursive]);
+        if (PkgList<>nil) then begin
+          // add for each dependency an edge in the Graph
+          for i:=0 to PkgList.Count-1 do begin
+            RequiredPkg:=TIDEPackage(PkgList[i]);
+            Graph.GetEdge(GraphGroup,Graph.GetNode(RequiredPkg.Name,true),true);
+          end;
+        end;
+      finally
+        PkgList.Free;
+      end;
+    end else if IsFPCSrcGroup(Group) then begin
+      // add FPC source dependencies
+      UnitNode:=Group.Units.FindLowest;
+      while UnitNode<>nil do begin
+        GrpUnit:=TUGGroupUnit(UnitNode.Data);
+        UnitNode:=Group.Units.FindSuccessor(UnitNode);
+        if GrpUnit.UsesUnits=nil then continue;
+        for i:=0 to GrpUnit.UsesUnits.Count-1 do begin
+          UsedUnit:=TUGGroupUnit(TUGUses(GrpUnit.UsesUnits[i]).UsesUnit);
+          if (UsedUnit.Group=nil) or (UsedUnit.Group=Group) then continue;
+          Graph.GetEdge(GraphGroup,Graph.GetNode(UsedUnit.Group.Name,true),true);
         end;
       end;
-    finally
-      PkgList.Free;
     end;
-    AVLNode:=Groups.Groups.FindSuccessor(AVLNode);
   end;
   GroupsLvlGraph.EndUpdate;
 end;
@@ -689,6 +710,11 @@ var
 begin
   UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
   Result:=UnitSet.FPCSourceDirectory;
+end;
+
+function TUnitDependenciesDialog.IsFPCSrcGroup(Group: TUGGroup): boolean;
+begin
+  Result:=(Group<>nil) and (LeftStr(Group.Name,length(GroupPrefixFPCSrc))=GroupPrefixFPCSrc);
 end;
 
 {$R *.lfm}
