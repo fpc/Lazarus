@@ -253,6 +253,7 @@ type
     FOutWeight: single;
     FPrevSelected: TLvlGraphNode;
     FSelected: boolean;
+    FVisible: boolean;
     function GetInEdges(Index: integer): TLvlGraphEdge;
     function GetOutEdges(Index: integer): TLvlGraphEdge;
     procedure SetCaption(AValue: string);
@@ -261,6 +262,7 @@ type
     procedure SetDrawSize(AValue: integer);
     procedure SetLevel(AValue: TLvlGraphLevel);
     procedure SetSelected(AValue: boolean);
+    procedure SetVisible(AValue: boolean);
     procedure UnbindLevel;
     procedure SelectionChanged;
   public
@@ -271,6 +273,7 @@ type
     procedure Invalidate;
     property Color: TFPColor read FColor write SetColor;
     property Caption: string read FCaption write SetCaption;
+    property Visible: boolean read FVisible write SetVisible;
     property Graph: TLvlGraph read FGraph;
     function IndexOfInEdge(Source: TLvlGraphNode): integer;
     function FindInEdge(Source: TLvlGraphNode): TLvlGraphEdge;
@@ -400,7 +403,8 @@ type
     property LevelClass: TLvlGraphLevelClass read FLevelClass;
 
     procedure CreateTopologicalLevels; // create levels from edges
-    procedure ScaleNodeDrawSizes(NodeGapAbove, NodeGapBelow, HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer);
+    procedure ScaleNodeDrawSizes(NodeGapAbove, NodeGapBelow,
+      HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer);
     procedure SetAllNodeDrawSizes(PixelPerWeight: single = 1.0; MinWeight: single = 0.0);
     procedure MarkBackEdges;
     procedure MinimizeCrossings; // set all Node.Position to minimize crossings
@@ -417,6 +421,7 @@ type
 type
   TLvlGraphCtrlOption = (
     lgoAutoLayout, // automatic graph layout after graph was changed
+    lgoAutoSplitLongEdges, // split long edges over multiple levels
     lgoHighlightNodeUnderMouse, // when mouse over node highlight node and its edges
     lgoMouseSelects
     );
@@ -1001,6 +1006,7 @@ var
   Edge: TLvlGraphEdge;
   TargetNode: TLvlGraphNode;
   NodeHighlighted: Boolean;
+  x1, y1, x2, y2: Integer;
 begin
   for i:=0 to Graph.LevelCount-1 do begin
     Level:=Graph.Levels[i];
@@ -1011,23 +1017,35 @@ begin
         TargetNode:=Edge.Target;
         NodeHighlighted:=(Node=NodeUnderMouse) or (TargetNode=NodeUnderMouse);
         if NodeHighlighted<>Highlighted then continue;
+        x1:=Level.DrawPosition+ScrollLeft;
+        y1:=Node.DrawCenter-ScrollTop;
+        x2:=TargetNode.Level.DrawPosition-ScrollLeft;
+        y2:=TargetNode.DrawCenter-ScrollTop;
         if TargetNode.Level.Index>Level.Index then begin
           // normal dependency
+          // => draw line from right of Node to left of TargetNode
+          if Node.Visible then
+            x1+=NodeStyle.Width
+          else
+            x1+=NodeStyle.Width div 2;
+          if not TargetNode.Visible then
+            x2+=NodeStyle.Width div 2;
           if NodeHighlighted then
             Canvas.Pen.Color:=clGray
           else
             Canvas.Pen.Color:=clSilver;
-          Canvas.Line(Level.DrawPosition+NodeStyle.Width-ScrollLeft,
-                      Node.DrawCenter-ScrollTop,
-                      TargetNode.Level.DrawPosition-ScrollLeft,
-                      TargetNode.DrawCenter-ScrollTop);
+          Canvas.Line(x1,y1,x2,y2);
         end else begin
           // cycle dependency
+          // => draw line from left of Node to right of TargetNode
+          if not Node.Visible then
+            x1+=NodeStyle.Width div 2;
+          if TargetNode.Visible then
+            x2+=NodeStyle.Width div 2
+          else
+            x2+=NodeStyle.Width div 2;
           Canvas.Pen.Color:=clRed;
-          Canvas.Line(Level.DrawPosition-ScrollLeft,
-                      Node.DrawCenter-ScrollTop,
-                      TargetNode.Level.DrawPosition+NodeStyle.Width-ScrollLeft,
-                      TargetNode.DrawCenter-ScrollTop);
+          Canvas.Line(x1,y1,x2+NodeStyle.Width,y2);
         end;
       end;
     end;
@@ -1054,7 +1072,7 @@ begin
     Level:=Graph.Levels[i];
     for j:=0 to Level.Count-1 do begin
       Node:=Level.Nodes[j];
-      if Node.Caption='' then continue;
+      if (Node.Caption='') or (not Node.Visible) then continue;
       TxtW:=Canvas.TextWidth(Node.Caption);
       case NodeStyle.CaptionPosition of
       lgncLeft,lgncRight: p.y:=Node.DrawCenter-(TxtH div 2);
@@ -1091,6 +1109,7 @@ begin
     Level:=Graph.Levels[i];
     for j:=0 to Level.Count-1 do begin
       Node:=Level.Nodes[j];
+      if not Node.Visible then continue;
       //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' ',dbgs(FPColorToTColor(Node.Color)),' Level.DrawPosition=',Level.DrawPosition,' Node.DrawPosition=',Node.DrawPosition,' ',Node.DrawPositionEnd]);
       Canvas.Brush.Color:=FPColorToTColor(Node.Color);
       Canvas.Pen.Color:=Darker(Canvas.Brush.Color);
@@ -1218,6 +1237,7 @@ begin
 end;
 
 procedure TCustomLvlGraphControl.AutoLayoutLevels(TxtH: LongInt);
+// compute all Levels.DrawPosition
 var
   j: Integer;
   p: Integer;
@@ -1233,7 +1253,8 @@ begin
     LevelTxtWidths[i]:=Max(NodeStyle.Width,Canvas.TextWidth('NodeX'));
     Level:=Graph.Levels[i];
     for j:=0 to Level.Count-1 do
-      LevelTxtWidths[i]:=Max(LevelTxtWidths[i], Canvas.TextWidth(Level[j].Caption));
+      if Level[j].Visible then
+        LevelTxtWidths[i]:=Max(LevelTxtWidths[i], Canvas.TextWidth(Level[j].Caption));
 
     if i=0 then begin
       // first level
@@ -1492,6 +1513,7 @@ begin
     if (X<Level.DrawPosition) or (X>=Level.DrawPosition+NodeStyle.Width) then continue;
     for n:=Level.Count-1 downto 0 do begin
       Node:=Level.Nodes[n];
+      if not Node.Visible then continue;
       if (Y<Node.DrawPosition) or (Y>=Node.DrawPositionEnd) then continue;
       exit(Node);
     end;
@@ -1860,7 +1882,8 @@ end;
 
 procedure TLvlGraph.ScaleNodeDrawSizes(NodeGapAbove, NodeGapBelow,
   HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer);
-{ NodeGap: minimum space between nodes
+{ NodeGapAbove: minimum space above each node
+  NodeGapBelow: minimum space below each node
   HardMaxTotal: maximum size of largest level
   HardMinOneNode: minimum size of a node
   SoftMaxTotal: preferred maximum size of the largest level, total can be bigger
@@ -1880,6 +1903,7 @@ var
   MinPixelPerWeight, PrefMinPixelPerWeight: single;
   DrawHeight: integer;
   PixelPerWeight, MaxPixelPerWeight, PrefMaxPixelPerWeight: single;
+  Gap: Integer;
 begin
   //debugln(['TLvlGraph.ScaleNodeDrawSizes',
   //  ' NodeGapAbove=',NodeGapAbove,' NodeGapBelow=',NodeGapBelow,
@@ -1919,14 +1943,23 @@ begin
   for i:=0 to LevelCount-1 do begin
     Level:=Levels[i];
     // LvlWeight = how much weight to draw
-    LvlWeight:=Level.GetTotalInOutWeights;
-    if LvlWeight=0.0 then continue;
     // DrawHeight - how much pixel left to draw the weight
-    DrawHeight:=Max(1,HardMaxTotal-(Level.Count*(NodeGapAbove+NodeGapBelow)));
+    LvlWeight:=0.0;
+    Gap:=0;
+    DrawHeight:=HardMaxTotal;
+    for j:=0 to Level.Count-1 do begin
+      LvlWeight+=Max(Node.InWeight,Node.OutWeight);
+      if Node.Visible then
+        Gap+=NodeGapAbove+NodeGapBelow
+      else
+        Gap+=1;
+    end;
+    if LvlWeight=0.0 then continue;
+    DrawHeight:=Max(1,HardMaxTotal-Gap);
     PixelPerWeight:=single(DrawHeight)/LvlWeight;
     if (MaxPixelPerWeight=0.0) or (MaxPixelPerWeight>PixelPerWeight) then
       MaxPixelPerWeight:=PixelPerWeight;
-    DrawHeight:=Max(1,SoftMaxTotal-(Level.Count*(NodeGapAbove+NodeGapBelow)));
+    DrawHeight:=Max(1,SoftMaxTotal-Gap);
     PixelPerWeight:=single(DrawHeight)/LvlWeight;
     if (PrefMaxPixelPerWeight=0.0) or (PrefMaxPixelPerWeight>PixelPerWeight) then
       PrefMaxPixelPerWeight:=PixelPerWeight;
@@ -2006,8 +2039,10 @@ begin
         Node:=TLvlGraphNode(AVLNode.Data);
         if Last=nil then
           Node.DrawPosition:=MinPos+NodeGapAbove
+        else if Node.Visible then
+          Node.DrawPosition:=Max(Node.DrawPosition,Last.DrawPositionEnd+NodeGapBelow+NodeGapAbove)
         else
-          Node.DrawPosition:=Max(Node.DrawPosition,Last.DrawPositionEnd+NodeGapBelow+NodeGapAbove);
+          Node.DrawPosition:=Max(Node.DrawPosition,Last.DrawPositionEnd+1);
         Last:=Node;
         AVLNode:=Tree.FindSuccessor(AVLNode);
       end;
@@ -2249,6 +2284,13 @@ begin
   SelectionChanged;
 end;
 
+procedure TLvlGraphNode.SetVisible(AValue: boolean);
+begin
+  if FVisible=AValue then Exit;
+  FVisible:=AValue;
+  Invalidate;
+end;
+
 procedure TLvlGraphNode.UnbindLevel;
 begin
   if FLevel<>nil then
@@ -2275,6 +2317,7 @@ begin
   FInEdges:=TFPList.Create;
   FOutEdges:=TFPList.Create;
   FDrawSize:=1;
+  FVisible:=true;
   Level:=TheLevel;
 end;
 
