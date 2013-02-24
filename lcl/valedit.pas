@@ -150,7 +150,7 @@ type
     procedure DefineCellsProperty(Filer: TFiler); override;
     function GetEditText(ACol, ARow: Integer): string; override;
     function GetCells(ACol, ARow: Integer): string; override;
-    procedure SelectEditor; override;
+    function GetDefaultEditor(Column: Integer): TWinControl; override;
     procedure SetCells(ACol, ARow: Integer; const AValue: string); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure TitlesChanged(Sender: TObject);
@@ -212,6 +212,7 @@ type
     property VisibleRowCount;
 
     property OnBeforeSelection;
+    property OnButtonClick;
     property OnChangeBounds;
     property OnCheckboxToggled;
     property OnClick;
@@ -225,6 +226,7 @@ type
     property OnDragOver;
     property OnDblClick;
     property OnDrawCell;
+    property OnEditButtonClick; deprecated;
     property OnEditingDone;
     property OnEndDock;
     property OnEndDrag;
@@ -948,25 +950,27 @@ begin
   end;
 end;
 
-procedure TValueListEditor.SelectEditor;
+function TValueListEditor.GetDefaultEditor(Column: Integer): TWinControl;
 var
   ItemProp: TItemProp;
 begin
-  inherited SelectEditor;
-  if Col <> 1 then Exit;     // Only for the Value column
-  ItemProp := nil;
-  //debugln('**** A Col=',dbgs(col),' Row=',dbgs(row),' (',dbgs(itemprop),')');
-  ItemProp := Strings.GetItemProp(Row-FixedRows);
-  if Assigned(ItemProp) then
-    case ItemProp.EditStyle of
-      esSimple: Editor := EditorByStyle(cbsAuto);
-      esEllipsis: Editor := EditorByStyle(cbsEllipsis);
-      esPickList: begin
-        Editor := EditorByStyle(cbsPickList);
-        (Editor as TCustomComboBox).Items.Assign(ItemProp.PickList);
-        //Style := csDropDown, default = csDropDownList;
+  Result:=inherited GetDefaultEditor(Column);
+  if Column=1 then
+  begin
+    ItemProp := nil;
+    //debugln('**** A Col=',dbgs(col),' Row=',dbgs(row),' (',dbgs(itemprop),')');
+    ItemProp := Strings.GetItemProp(Row-FixedRows);
+    if Assigned(ItemProp) then
+      case ItemProp.EditStyle of
+        esSimple: result := EditorByStyle(cbsAuto);
+        esEllipsis: result := EditorByStyle(cbsEllipsis);
+        esPickList: begin
+          result := EditorByStyle(cbsPickList);
+          (result as TCustomComboBox).Items.Assign(ItemProp.PickList);
+          //Style := csDropDown, default = csDropDownList;
+        end;
       end;
-    end;
+  end;
 end;
 
 procedure TValueListEditor.SetCells(ACol, ARow: Integer; const AValue: string);
