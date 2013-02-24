@@ -151,8 +151,10 @@ type
     function GetEditText(ACol, ARow: Integer): string; override;
     function GetCells(ACol, ARow: Integer): string; override;
     function GetDefaultEditor(Column: Integer): TWinControl; override;
+    function GetRowCount: Integer;
     procedure SetCells(ACol, ARow: Integer; const AValue: string); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
+    procedure SetRowCount(AValue: Integer);
     procedure TitlesChanged(Sender: TObject);
     function ValidateEntry(const ACol,ARow:Integer; const OldValue:string; var NewValue:string): boolean; override;
   public
@@ -198,7 +200,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    property RowCount;
+    property RowCount: Integer read GetRowCount write SetRowCount;
     property ScrollBars;
     property ShowHint;
     property TabOrder;
@@ -692,7 +694,7 @@ begin
   }
 
   ColCount:=2;
-  inherited RowCount := 2;
+  {inherited} RowCount := 2;
   FixedCols := 0;
 //  DefaultColWidth := 150;
 //  DefaultRowHeight := 18;
@@ -799,7 +801,7 @@ begin
   if (doColumnTitles in DisplayOptions) <> (doColumnTitles in AValue) then
     if doColumnTitles in AValue then begin
       if RowCount < 2 then
-        inherited RowCount := 2;
+        {inherited} RowCount := 2;
       inherited FixedRows := 1;
     end else
       inherited FixedRows := 0;
@@ -1024,6 +1026,11 @@ begin
     SetGridEditorReadOnly(result, not (KeyEdit in KeyOptions));
 end;
 
+function TValueListEditor.GetRowCount: Integer;
+begin
+  Result := inherited RowCount;
+end;
+
 procedure TValueListEditor.SetCells(ACol, ARow: Integer; const AValue: string);
 var
   I: Integer;
@@ -1071,6 +1078,28 @@ procedure TValueListEditor.SetEditText(ACol, ARow: Longint; const Value: string)
 begin
   inherited SetEditText(ACol, ARow, Value);
   Cells[ACol, ARow] := Value;
+end;
+
+procedure TValueListEditor.SetRowCount(AValue: Integer);
+var
+  OldValue, NewCount: Integer;
+begin
+  //debugln('TValueListEditor.SetRowCount: AValue=',DbgS(AValue));
+  OldValue := inherited RowCount;
+  if OldValue = AValue then Exit;
+  NewCount := AValue - FixedRows;
+  if (NewCount > Strings.Count) then
+  begin
+    Strings.BeginUpdate;
+    while (Strings.Count < NewCount) do Strings.Add('');
+    Strings.EndUpdate;
+  end
+  else if (NewCount < Strings.Count) then
+  begin
+    Strings.BeginUpdate;
+    while (NewCount < Strings.Count) do Strings.Delete(Strings.Count - 1);
+    Strings.EndUpdate;
+  end;
 end;
 
 procedure TValueListEditor.TitlesChanged(Sender: TObject);
