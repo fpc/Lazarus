@@ -1484,13 +1484,15 @@ var
   Node: TLvlGraphNode;
 begin
   Result:=nil;
+  X+=ScrollLeft;
+  Y+=ScrollTop;
   // check in reverse painting order
   for l:=Graph.LevelCount-1 downto 0 do begin
     Level:=Graph.Levels[l];
-    if (x<Level.DrawPosition) or (x>=Level.DrawPosition+NodeStyle.Width) then continue;
+    if (X<Level.DrawPosition) or (X>=Level.DrawPosition+NodeStyle.Width) then continue;
     for n:=Level.Count-1 downto 0 do begin
       Node:=Level.Nodes[n];
-      if (y<Node.DrawPosition) or (y>=Node.DrawPositionEnd) then continue;
+      if (Y<Node.DrawPosition) or (Y>=Node.DrawPositionEnd) then continue;
       exit(Node);
     end;
   end;
