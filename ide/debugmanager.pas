@@ -1115,8 +1115,9 @@ begin
         FPrevShownWindow := GetForegroundWindow;
         if EnvironmentOptions.HideIDEOnRun then
           MainIDE.UnhideIDE;
-        if not EnvironmentOptions.SingleTaskBarButton then
-          Application.BringToFront;
+        if not EnvironmentOptions.SingleTaskBarButton and
+          not EnvironmentOptions.HideIDEOnRun then
+            Application.BringToFront;
       end;
     end;
   end;

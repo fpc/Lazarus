@@ -13886,20 +13886,25 @@ var
   i: Integer;
   AForm: TCustomForm;
 begin
+  {$IFDEF DEBUGHIDEIDEWINDOWSONRUN}
+  DebugLn('TMainIDE.HideIDE ENTERED HiddenWindowsOnRun.Count=',dbgs(HiddenWindowsOnRun.Count),
+  ' LastFormActivated ',dbgsName(LastFormActivated),
+  ' WindowMenuActive ',dbgsName(WindowMenuActiveForm));
+  {$ENDIF}
+
   // hide hints
   Application.HideHint;
   SourceEditorManager.HideHint;
 
   // hide designer forms
-  HideUnmodifiedDesigners;
+  // HideUnmodifiedDesigners;
 
   // collect all windows except the main bar
-  for i:=0 to Screen.CustomFormCount-1 do begin
+  for i:=0 to Screen.CustomFormCount-1 do
+  begin
     AForm:=Screen.CustomForms[i];
     if (AForm.Parent=nil)                     // ignore nested forms
     and (AForm<>MainIDEBar)                   // ignore the main bar
-    and (AForm.Designer=nil)                  // ignore designer forms
-    and (not (csDesigning in AForm.ComponentState))
     and (AForm.IsVisible)                     // ignore hidden forms
     and (not (fsModal in AForm.FormState))    // ignore modal forms
     and (HiddenWindowsOnRun.IndexOf(AForm)<0) // ignore already collected forms
@@ -13908,13 +13913,30 @@ begin
   end;
 
   // hide all collected windows
-  for i:=0 to HiddenWindowsOnRun.Count-1 do begin
+  for i:=0 to HiddenWindowsOnRun.Count-1 do
+  begin
     AForm:=TCustomForm(HiddenWindowsOnRun[i]);
-    AForm.Hide;
+    if (AForm.Designer <> nil) or (csDesigning in AForm.ComponentState) then
+    begin
+      {$IFDEF DEBUGHIDEIDEWINDOWSONRUN}
+      DebugLn('TMainIDE.HideIDE: HIDING VIA LCLINTF ',dbgsName(AForm),' WindowState ',dbgs(AForm.WindowState),
+      ' IsIconic ',dbgs(LCLIntf.IsIconic(AForm.Handle)));
+      {$ENDIF}
+      LCLIntf.ShowWindow(AForm.Handle, SW_HIDE);
+    end else
+    begin
+      {$IFDEF DEBUGHIDEIDEWINDOWSONRUN}
+      DebugLn('TMainIDE.HideIDE: HIDING NON DESIGNED FORM ',dbgsName(AForm));
+      {$ENDIF}
+      AForm.Hide;
+    end;
   end;
 
   // minimize IDE
   MainIDEBar.HideIDE;
+  {$IFDEF DEBUGHIDEIDEWINDOWSONRUN}
+  DebugLn('TMainIDE.HideIDE EXITED ');
+  {$ENDIF}
 end;
 
 procedure TMainIDE.HideUnmodifiedDesigners;
@@ -13934,19 +13956,49 @@ end;
 procedure TMainIDE.UnhideIDE;
 var
   AForm: TCustomForm;
+  i: Integer;
+  AActiveForm: TCustomForm;
 begin
+  {$IFDEF DEBUGHIDEIDEWINDOWSONRUN}
+  DebugLn('TMainIDE.UnhideIDE  Active=',dbgsName(WindowMenuActiveForm));
+  {$ENDIF}
+  AActiveForm := WindowMenuActiveForm;
   // unminimize IDE
   MainIDEBar.UnhideIDE;
 
-  // show other windows
-  while HiddenWindowsOnRun.Count>0 do begin
-    AForm:=TCustomForm(HiddenWindowsOnRun[0]);
-    if (csDesigning in ComponentState) then
-      ShowDesignerForm(AForm)
-    else
+  // show other windows but keep order as it was before hiding.
+  for i := HiddenWindowsOnRun.Count - 1 downto 0 do
+  begin
+    AForm:=TCustomForm(HiddenWindowsOnRun[i]);
+    if (csDesigning in AForm.ComponentState) or (AForm.Designer <> nil) then
+    begin
+      {$IFDEF DEBUGHIDEIDEWINDOWSONRUN}
+      DebugLn('TMainIDE.UnhideIDE: Showing LCLIntf AForm ',dbgsName(AForm),
+      ' WindowState ',dbgs(AForm.WindowState),' LCLIntf.IsIconic ',
+        dbgs(LCLIntf.IsIconic(AForm.Handle)));
+      {$ENDIF}
+      if LCLIntf.IsIconic(AForm.Handle) then
+        LCLIntf.ShowWindow(AForm.Handle, SW_SHOWMINIMIZED)
+      else
+        LCLIntf.ShowWindow(AForm.Handle, SW_SHOWNORMAL);
+      // ShowDesignerForm(AForm)
+    end else
+    begin
+      {$IFDEF DEBUGHIDEIDEWINDOWSONRUN}
+      DebugLn('TMainIDE.UnhideIDE: Showing AForm ',dbgsName(AForm));
+      {$ENDIF}
       AForm.Show;
-    HiddenWindowsOnRun.Delete(0);
+    end;
   end;
+  HiddenWindowsOnRun.Clear;
+  {$IFDEF DEBUGHIDEIDEWINDOWSONRUN}
+  DebugLn('TMainIDE.UnhideIDE: activating form ',dbgsName(AActiveForm));
+  {$ENDIF}
+  {activate form or app, must be so because of debugmanager !}
+  if Assigned(AActiveForm) then
+    AActiveForm.BringToFront
+  else
+    Application.BringToFront;
 end;
 
 procedure TMainIDE.DoBringToFrontFormOrUnit;
