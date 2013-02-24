@@ -1579,7 +1579,7 @@ procedure TCustomMaskEdit.Reset;
 begin
   if IsMasked and (not ReadOnly) then
   begin
-    SetinheritedText(FTextOnEnter);
+    SetInheritedText(FTextOnEnter);
   end;
 end;
 
@@ -1659,9 +1659,12 @@ begin
   //Escape Key
   if (Key = VK_ESCAPE) and (Shift = []) then
   begin
-    Reset;
-    Key := 0;
-    Exit;
+    if ((inherited Text) <> FTextOnEnter) then
+    begin
+      Reset;
+      Key := 0;
+      Exit;
+    end;
   end;
   //Handle clipboard and delete/backspace keys
   if (Key = VK_DELETE) then
