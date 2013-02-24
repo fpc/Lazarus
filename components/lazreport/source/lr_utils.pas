@@ -22,6 +22,17 @@ uses
   {$ENDIF}
   LCLType,LCLIntf,LCLProc,LConvEncoding;
 
+type
+  TUTF8Item=packed record
+    Index: Integer;
+    UTF8Index: Integer;
+    Count: byte;
+    UTF8Count: byte;
+    Space: boolean;
+  end;
+  TArrUTF8Item=array of TUTF8Item;
+
+
 
 procedure frReadMemo(Stream: TStream; l: TStrings);
 procedure frReadMemo22(Stream: TStream; l: TStrings);
@@ -64,6 +75,7 @@ function UTF8Index(index:integer; desc:string): Integer;
 function UTF8CharIn(ch:TUTF8Char; const arrstr:array of string): boolean;
 function UTF8QuotedStr(s:string; Quote: TUTF8Char; desc:string=''): string;
 function PosLast(SubChr:char; const Source:string):integer;
+function UTF8CountWords(const str:string; out WordCount,SpcCount,SpcSize:Integer): TArrUTF8Item;
 
 implementation
 
@@ -812,6 +824,45 @@ begin
       exit;
     end;
   Result:=-1;
+end;
+
+function UTF8CountWords(const str:string; out WordCount,SpcCount,SpcSize:Integer): TArrUTF8Item;
+var
+  b,i,j,n,len: Integer;
+  spc: boolean;
+begin
+  i := 1;
+  len := 0;
+  SetLength(result, 0);
+  WordCount := 0;
+  SpcCount := 0;
+  SpcSize := 0;
+  while i<=Length(str) do
+  begin
+    b := UTF8CharacterStrictLength(@Str[i]);
+    spc := (b=1) and (str[i]=' ');
+    inc(len);
+    j := Length(result)-1;
+    if (j<0) or (result[j].Space<>Spc) then
+    begin
+      inc(j);
+      SetLength(result, j+1);
+      result[j].Count:=0;
+      result[j].UTF8Count:=0;
+      result[j].Index:=i;
+      result[j].UTF8Index:=len;
+      if not spc then
+        Inc(WordCount)
+      else
+        Inc(SpcCount);
+    end;
+    result[j].Space := Spc;
+    result[j].UTF8Count := result[j].UTF8Count + 1;
+    result[j].Count := result[j].Count + b;
+    inc(i,b);
+    if Spc then
+      Inc(SpcSize);
+  end;
 end;
 
 end.

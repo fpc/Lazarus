@@ -373,6 +373,7 @@ type
     function GetHideDuplicates: Boolean;
     function GetHideZeroValues: Boolean;
     function GetIsLastValueSet: boolean;
+    function GetJustify: boolean;
     function GetLayout: TTextLayout;
     function GetWordBreak: Boolean;
     function GetWordWrap: Boolean;
@@ -389,6 +390,7 @@ type
     procedure SetHideDuplicates(const AValue: Boolean);
     procedure SetHideZeroValues(AValue: Boolean);
     procedure SetIsLastValueSet(const AValue: boolean);
+    procedure SetJustify(AValue: boolean);
     procedure SetLayout(const AValue: TTextLayout);
     procedure SetWordBreak(AValue: Boolean);
     procedure SetWordWrap(const AValue: Boolean);
@@ -431,6 +433,7 @@ type
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
 
     procedure MonitorFontChanges;
+    property Justify: boolean read GetJustify write SetJustify;
     
   published
     property Font      : TFont read fFont write SetFont;
@@ -1749,6 +1752,88 @@ begin
   result := copy(result, 3, Length(result));
 end;
 
+procedure CanvasTextRectJustify(const Canvas:TCanvas;
+  const ARect: TRect; X1, X2, Y: integer; const Text: string;
+  Trimmed: boolean);
+var
+  WordCount,SpcCount,SpcSize:Integer;
+  Arr: TArrUTF8Item;
+  PxSpc,RxSpc,Extra: Integer;
+  i: Integer;
+  Cini,Cend: Integer;
+  SpaceWidth, AvailWidth: Integer;
+  s:string;
+begin
+
+  AvailWidth := (X2-X1);
+  // count words
+  Arr := UTF8CountWords(Text, WordCount, SpcCount, SpcSize);
+
+  // handle trimmed text
+  s := Text;
+  if (SpcCount>0) then
+  begin
+    Cini := 0;
+    CEnd := Length(Arr)-1;
+    if Trimmed then
+    begin
+      s := Trim(Text);
+      if Arr[Cini].Space then
+      begin
+        Inc(Cini);
+        Dec(SpcCount);
+      end;
+      if Arr[CEnd].Space then
+      begin
+        Dec(CEnd);
+        Dec(SpcCount);
+      end;
+    end;
+    AvailWidth := AvailWidth - Canvas.TextWidth(s);
+  end;
+
+  // check if long way is needed
+  if (SpcCount>0) and (AvailWidth>0) then
+  begin
+
+    SpaceWidth := Canvas.TextWidth(' ');
+    PxSpc := AvailWidth div SpcCount;
+    RxSpc := AvailWidth mod SpcCount;
+    if PxSPC=0 then
+    begin
+      PxSPC := 1;
+      RxSpc := 0;
+    end;
+
+    for i:=CIni to CEnd do
+      if Arr[i].Space then
+      begin
+        X1 := X1 + Arr[i].Count * SpaceWidth;
+        if AvailWidth>0 then
+        begin
+          Extra := PxSpc;
+          if RxSpc>0 then
+          begin
+            Inc(Extra);
+            Dec(RxSpc);
+          end;
+          X1 := X1 + Extra;
+          Dec(AvailWidth, Extra);
+        end;
+      end
+      else
+      begin
+        s := Copy(Text, Arr[i].Index, Arr[i].Count);
+        Canvas.TextRect(ARect, X1, Y, s);
+        X1 := X1 + Canvas.TextWidth(s);
+      end;
+
+  end else
+    Canvas.TextRect(ARect, X1, Y, s);
+
+  SetLength(Arr, 0);
+end;
+
 { TfrReportDesigner }
 
 procedure TfrReportDesigner.SetModified(AValue: Boolean);
@@ -2697,6 +2782,14 @@ begin
   end;
 end;
 
+procedure TfrMemoView.SetJustify(AValue: boolean);
+begin
+  // only if AValue=true change Adjust to reflect justify
+  // otherwise let it alone, so previous value of alignment is respected
+  if Avalue then
+    Adjust := Adjust or %11;
+end;
+
 procedure TfrMemoView.SetLayout(const AValue: TTextLayout);
 begin
   if Layout<>AValue then
@@ -3073,6 +3166,7 @@ var
       n, {nw, w, }curx, lasty: Integer;
       lastyf: Double;
       Ts: TTextStyle;
+      ParaEnd: boolean;
     begin
       lastyf := curyf + thf - LineSpc - 1;
       lastY := Round(lastyf);
@@ -3085,11 +3179,14 @@ var
       begin
         n := Length(St);
         //w := Ord(St[n - 1]) * 256 + Ord(St[n]);
+        ParaEnd := true;
         SetLength(St, n - 2);
         if Length(St) > 0 then
         begin
           if St[Length(St)] = #1 then
-            SetLength(St, Length(St) - 1);
+            SetLength(St, Length(St) - 1)
+          else
+            ParaEnd := false;
         end;
 
         // handle any alignment with same code
@@ -3128,7 +3225,12 @@ var
         end;
 
         if not Exporting then
-          Canvas.TextRect(DR, CurX, round(curYf), St)
+        begin
+          if Justify and not ParaEnd then
+            CanvasTextRectJustify(Canvas, DR, x+gapx, x+dx-1-gapx, round(CurYf), St, true)
+          else
+            Canvas.TextRect(DR, CurX, round(curYf), St);
+        end
         else
           CurReport.InternalOnExportText(X, round(curYf), St, Self);
 
@@ -3575,8 +3677,7 @@ procedure TfrMemoView.LoadFromStream(Stream: TStream);
 var
   w: Word;
   i: Integer;
-  TmpAlign: TAlignment;
-  TmpLayout: TTextLayout;
+  tmpLayout: TTextLayout;
   tmpAngle: Byte;
 begin
   {$IFDEF DebugLR}
@@ -3606,13 +3707,13 @@ begin
     end;
     if frVersion>23 then
     begin
-      Read(TmpAlign{%H-},SizeOf(TmpAlign));
+      Read(tmpAngle, SizeOf(tmpAngle));
+      Adjust := (Adjust and not 3) or (tmpAngle and %11);
       Read(TmpLayout{%H-},SizeOf(TmpLayout));
       tmpAngle := 0;
       Read(tmpAngle,SizeOf(tmpAngle));
 
       BeginUpdate;
-      Alignment := tmpAlign;
       Layout := tmpLayout;
       Angle := tmpAngle;
       EndUpdate;
@@ -3643,15 +3744,16 @@ begin
   RestoreProperty('Alignment',XML.GetValue(Path+'Alignment/Value',''));
   RestoreProperty('Layout',XML.GetValue(Path+'Layout/Value',''));
   Angle := XML.GetValue(Path+'Angle/Value'{%H-}, 0);
+  Justify := XML.GetValue(Path+'Justify/Value', false);
 end;
 
 procedure TfrMemoView.SaveToStream(Stream: TStream);
 var
   i: Integer;
   w: Word;
-  tmpAlign: TAlignment;
   tmpLayout: TTextLayout;
   tmpAngle: Byte;
+  tmpByteAlign: Byte;
 begin
   inherited SaveToStream(Stream);
   frWriteString(Stream, Font.Name);
@@ -3670,14 +3772,11 @@ begin
       Write(Highlight, 10);
       frWriteString(Stream, HighlightStr);
     end;
-    
-    if (Adjust and %11 = %11) then
-      tmpAlign := taLeftJustify
-    else
-      tmpAlign := Alignment;
+
+    tmpByteAlign := Adjust and %11;
     tmpLayout := Layout;
     tmpAngle := Angle;
-    Write(tmpAlign,SizeOf(tmpAlign));
+    Write(tmpByteAlign, SizeOf(tmpByteAlign));
     Write(tmpLayout,SizeOf(tmpLayout));
     Write(tmpAngle,SizeOf(tmpAngle));
   end;
@@ -3702,6 +3801,7 @@ begin
   XML.SetValue(Path+'Alignment/Value',GetSaveProperty('Alignment'));
   XML.SetValue(Path+'Layout/Value', GetSaveProperty('Layout'));
   XML.SetValue(Path+'Angle/Value'{%H-}, Angle);
+  XML.SetValue(Path+'Justify/Value', Justify);
 end;
 
 procedure TfrMemoView.GetBlob(b: TfrTField);
@@ -3832,6 +3932,11 @@ begin
   result := FLastValue<>nil;
 end;
 
+function TfrMemoView.GetJustify: boolean;
+begin
+  result := (Adjust and %11) = %11;
+end;
+
 function TfrMemoView.GetLayout: TTextLayout;
 begin
   result := TTextLayout((adjust shr 3) and %11);
@@ -3844,7 +3949,10 @@ end;
 
 function TfrMemoView.GetAlignment: TAlignment;
 begin
-  Result:=Classes.TAlignment(Adjust and %11);
+  if (Adjust and %11) = %11 then
+    result := taLeftJustify
+  else
+    Result:=Classes.TAlignment(Adjust and %11);
 end;
 
 function TfrMemoView.GetAngle: Byte;
@@ -3915,11 +4023,16 @@ begin
 end;
 
 procedure TfrMemoView.SetAlignment(const AValue: TAlignment);
+var
+  b: byte;
 begin
   if Alignment<>AValue then
   begin
     BeforeChange;
-    Adjust := (Adjust and not 3) or ord(AValue);
+    // just in case, check for crazy value stored by alignment=justify
+    // in previous versions.
+    b := byte(AValue) and %11;
+    Adjust := (Adjust and not 3) or b;
     AfterChange;
   end;
 end;
