@@ -98,6 +98,7 @@ type
     function UGUnitToNodeText(UGUnit: TUGUnit): string;
     function GetFPCSrcDir: string;
     function IsFPCSrcGroup(Group: TUGGroup): boolean;
+    function IsProjectGroup(Group: TUGGroup): boolean;
   public
     CurUnitDiagram: TCircleDiagramControl;
     GroupsLvlGraph: TLvlGraphControl; // Nodes.Data are TUGGroup of Groups
@@ -197,6 +198,7 @@ begin
     Caption:='';
     Align:=alTop;
     Height:=200;
+    NodeStyle.GapBottom:=5;
     Parent:=GroupsTabSheet;
     OnSelectionChanged:=@GroupsLvlGraphSelectionChanged;
   end;
@@ -209,6 +211,7 @@ begin
     Name:='UnitsLvlGraph';
     Caption:='';
     Align:=alClient;
+    NodeStyle.GapBottom:=5;
     Parent:=GroupsTabSheet;
   end;
 
@@ -559,7 +562,7 @@ begin
     GraphGroup:=Graph.GetNode(Group.Name,true);
     GraphGroup.Data:=Group;
     GroupObj:=nil;
-    if Group.Name=GroupPrefixProject then begin
+    if IsProjectGroup(Group) then begin
       // project
       GroupObj:=LazarusIDE.ActiveProject;
       GraphGroup.Selected:=true;
@@ -715,6 +718,11 @@ end;
 function TUnitDependenciesDialog.IsFPCSrcGroup(Group: TUGGroup): boolean;
 begin
   Result:=(Group<>nil) and (LeftStr(Group.Name,length(GroupPrefixFPCSrc))=GroupPrefixFPCSrc);
+end;
+
+function TUnitDependenciesDialog.IsProjectGroup(Group: TUGGroup): boolean;
+begin
+  Result:=(Group<>nil) and (Group.Name=GroupPrefixProject);
 end;
 
 {$R *.lfm}
