@@ -160,6 +160,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DeleteRow(Index: Integer); override;
     function InsertRow(const KeyName, Value: string; Append: Boolean): Integer;
     property FixedRows: Integer read GetFixedRows write SetFixedRows default 1;
     property Modified;
@@ -713,6 +714,13 @@ begin
   FTitleCaptions.Free;
   FStrings.Free;
   inherited Destroy;
+end;
+
+procedure TValueListEditor.DeleteRow(Index: Integer);
+begin
+  Index := Index - FixedRows;
+  //If we have only one row, it may be empty and we cannot remove
+  if not ((Index = 0) and (Strings.Count = 0)) then Strings.Delete(Index);
 end;
 
 function TValueListEditor.InsertRow(const KeyName, Value: string; Append: Boolean): Integer;
