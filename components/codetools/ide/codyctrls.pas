@@ -1536,9 +1536,9 @@ begin
 
   // draw
   DrawEdges(false); // draw normal edges
+  DrawCaptions(TxtH);
   DrawEdges(true); // draw highlighted edges
   DrawNodes;
-  DrawCaptions(TxtH);
 end;
 
 procedure TCustomLvlGraphControl.MouseMove(Shift: TShiftState; X, Y: Integer);
