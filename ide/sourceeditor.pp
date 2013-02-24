@@ -5443,9 +5443,6 @@ begin
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.Destroy'){$ENDIF};
   FProcessingCommand:=false;
 
-  // aWordCompletion is released in InternalFinal
-  aWordCompletion.OnGetSource := nil;
-
   for i:=FSourceEditorList.Count-1 downto 0 do
     Editors[i].Free;
   FSourceEditorList.Free;
@@ -9945,6 +9942,9 @@ begin
   SourceEditorMarks.OnGetFilename := nil;
   SourceEditorMarks.OnAction := nil;
   Application.RemoveAllHandlersOfObject(Self);
+  // aWordCompletion is released in InternalFinal
+  aWordCompletion.OnGetSource := nil;
+
   inherited Destroy;
 end;
 
