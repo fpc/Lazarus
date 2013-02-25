@@ -5,8 +5,8 @@ unit imguimain;
 interface
 
 uses
-  Classes, Forms, Controls, Graphics, ExtCtrls, OpenGLContext,
-  GL, LCLType, fpImage, SysUtils;
+  Classes, Forms, Controls, Graphics, ExtCtrls, OpenGLContext, LazLogger,
+  GL, GLExt, LCLType, fpImage, SysUtils;
 
 type
   TGLColor = record
@@ -31,6 +31,7 @@ type
     procedure Timer1Timer(Sender: TObject);
   private
     { private declarations }
+    first: Boolean;
   public
     { public declarations }
   end;
@@ -466,7 +467,16 @@ end;
 { TForm1 }
 
 procedure TForm1.OpenGLControl1Paint(Sender: TObject);
+var
+  samples, samplebuffers: integer;
 begin
+  if first then begin
+    glGetIntegerv(GL_SAMPLE_BUFFERS,@samplebuffers);
+    glGetIntegerv(GL_SAMPLES,@samples);
+    DebugLn(['SampleBuffers: ',samplebuffers]);
+    debugln(['Samples: ',samples]);
+    first:=false;
+  end;
   //setup 2D projection
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity;
@@ -522,6 +532,7 @@ procedure TForm1.FormCreate(Sender: TObject);
 begin
   bgcolor := $77;
   sometext := 'Some text';
+  first:=true;
 end;
 
 procedure TForm1.OpenGLControl1MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);

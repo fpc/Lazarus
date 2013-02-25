@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 240
+  Left = 2223
   Height = 480
-  Top = 157
+  Top = 247
   Width = 640
   Caption = 'IMGUI demo'
   ClientHeight = 480
@@ -9,13 +9,14 @@ object Form1: TForm1
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnKeyPress = FormKeyPress
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object OpenGLControl1: TOpenGLControl
     Left = 0
     Height = 480
     Top = 0
     Width = 640
     Align = alClient
+    MultiSampling = 4
     OnMouseDown = OpenGLControl1MouseDown
     OnMouseMove = OpenGLControl1MouseMove
     OnMouseUp = OpenGLControl1MouseUp

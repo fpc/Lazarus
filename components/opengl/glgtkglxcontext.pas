@@ -78,6 +78,10 @@ const
   GLX_ACCUM_BLUE_SIZE                   = 16;
   GLX_ACCUM_ALPHA_SIZE                  = 17;
 
+  // For non conformant FBConfigs
+  GLX_CONFIG_CAVEAT                     = 32;
+  GLX_NON_CONFORMANT_CONFIG             = 32781;
+
   // GLX_ARB_multisample
   GLX_SAMPLE_BUFFERS_ARB             = 100000;
   GLX_SAMPLES_ARB                    = 100001;
@@ -431,6 +435,10 @@ var
   FBConfigs: PGLXFBConfig;
   FBConfigsCount: Integer;
 {$ENDIF}
+{$IFDEF VerboseMultiSampling}
+  value: longint;
+  ctxValue: longint;
+{$ENDIF}
 
 begin
   Result:=nil;
@@ -445,6 +453,9 @@ begin
         { use approach recommended since glX 1.3 }
         FBConfigsCount:=0;
         FBConfigs:=glXChooseFBConfig(dpy, DefaultScreen(dpy), @attrList[0], FBConfigsCount);
+        {$IFDEF VerboseMultiSampling}
+        debugln(['GLX config counts: ',FBConfigsCount]);
+        {$ENDIF}
         if FBConfigsCount = 0 then
           raise Exception.Create('Could not find FB config');
 
@@ -469,12 +480,23 @@ begin
 
   {$IFDEF UseFPGLX}
     if GLX_version_1_3(dpy) then begin
-      //DebugLn('GLX Version 1.3 context creation');
+      {$IFDEF VerboseMultiSampling}
+      DebugLn('GLX Version 1.3 context creation');
+      {$ENDIF}
       if (sharelist<>nil) then
         glxcontext := glXCreateNewContext(dpy, FBConfig, GLX_RGBA_TYPE,
                                           PrivateShareList^.glxcontext, true)
-      else
+      else begin
+        {$IFDEF VerboseMultiSampling}
+        value:=0;
+        debugln(['AttribValue: ',glXGetFBConfigAttrib(dpy, FBConfig, GLX_SAMPLES_ARB, value),'-',value]);
+        {$ENDIF}
         glxcontext := glXCreateNewContext(dpy, FBConfig, GLX_RGBA_TYPE, nil, true);
+        {$IFDEF VerboseMultiSampling}
+        ctxValue:=0;
+        debugln(['ContextAttrib: ',glXQueryContext(dpy, glxcontext, GLX_FBCONFIG_ID, ctxValue),'-',ctxValue]);
+        {$ENDIF}
+      end;
       if FBConfigs<>nil then
         XFree(FBConfigs);
     end else begin
@@ -841,6 +863,9 @@ var
   AttrList: PInteger;
 begin
   if WSPrivate=nil then ;
+  {$IFDEF VerboseMultiSampling}
+  debugln(['LOpenGLCreateContextCore MultiSampling=',MultiSampling]);
+  {$ENDIF}
   AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA,RedBits,GreenBits,
     BlueBits,MultiSampling,AlphaBits,DepthBits,StencilBits,AUXBuffers);
   try
@@ -873,6 +898,9 @@ function LOpenGLCreateContext(AWinControl: TWinControl;
   MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
   const AParams: TCreateParams): HWND;
 begin
+  {$IFDEF VerboseMultiSampling}
+  debugln(['LOpenGLCreateContext MultiSampling=',MultiSampling]);
+  {$ENDIF}
   if (MultiSampling > 1) and
      {$IFDEF UseFPGLX}
      GLX_ARB_multisample(GetDefaultXDisplay, DefaultScreen(GetDefaultXDisplay))
@@ -880,22 +908,31 @@ begin
      false { no GLX_ARB_multisample support when UseFPGLX undefined,
              it would be too convoluted to replicate GLX unit extension querying
              functionality here }
-     {$ENDIF} then
-  try
-    Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl, 
-      DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, MultiSampling,
-      AlphaBits, DepthBits, StencilBits, AUXBuffers, AParams);
-  except
-    { retry without MultiSampling }
-    Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl, 
-      DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, 1, AlphaBits,
-      DepthBits, StencilBits, AUXBuffers, AParams);
-  end else
+     {$ENDIF}
+  then begin
+    {$IFDEF VerboseMultiSampling}
+    debugln(['LOpenGLCreateContext GLX_ARB_multisample succeeded']);
+    {$ENDIF}
+    try
+      Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl,
+        DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, MultiSampling,
+        AlphaBits, DepthBits, StencilBits, AUXBuffers, AParams);
+    except
+      {$IFDEF VerboseMultiSampling}
+      debugln(['LOpenGLCreateContext LOpenGLCreateContextCore failed, trying without multisampling']);
+      {$ENDIF}
+      { retry without MultiSampling }
+      Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl,
+        DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, 1, AlphaBits,
+        DepthBits, StencilBits, AUXBuffers, AParams);
+    end;
+  end else begin
     { no multi-sampling requested (or GLX_ARB_multisample not available),
       just pass to LOpenGLCreateContextCore }
     Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl, 
       DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, MultiSampling,
       AlphaBits, DepthBits, StencilBits, AUXBuffers, AParams);
+  end;
 end;
 
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
@@ -920,6 +957,7 @@ var
   
   procedure CreateList;
   begin
+    p:=0;
     if UseFBConfig then begin Add(GLX_X_RENDERABLE); Add(1); end;
     if DoubleBuffered then
     begin
@@ -953,6 +991,8 @@ var
     end;
     if MultiSampling > 1 then
     begin
+      // multisampling contexts are non-conformant so only ask for those
+      Add(GLX_CONFIG_CAVEAT); Add(GLX_NON_CONFORMANT_CONFIG);
       Add(GLX_SAMPLE_BUFFERS_ARB); Add(1);
       Add(GLX_SAMPLES_ARB); Add(MultiSampling);
     end;
@@ -961,12 +1001,13 @@ var
   end;
   
 begin
+  {$IFDEF VerboseMultiSampling}
+  debugln(['CreateOpenGLContextAttrList MultiSampling=',MultiSampling]);
+  {$ENDIF}
   UseFBConfig := {$IFDEF UseFPGLX} GLX_version_1_3(GetDefaultXDisplay) {$else} false {$endif};
   Result:=nil;
-  p:=0;
   CreateList;
   GetMem(Result,SizeOf(integer)*p);
-  p:=0;
   CreateList;
 end;
 
