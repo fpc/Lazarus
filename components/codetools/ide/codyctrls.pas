@@ -710,14 +710,16 @@ procedure LvlGraphMinimizeCrossings(Graph: TLvlGraph);
 var
   g: TMinXGraph;
   Pair: TMinXPair;
+  i: Integer;
 begin
   if (Graph.LevelCount<2) or (Graph.NodeCount<3) then exit;
   g:=TMinXGraph.Create(Graph);
   try
     g.CreatePairs;
-    Pair:=g.FindBestPair;
-    if Pair<>nil then begin
-      debugln(['LvlGraphMinimizeCrossings ',Pair.AsString]);
+    for i:=1 to 100 do begin
+      Pair:=g.FindBestPair;
+      if Pair=nil then break;
+      //debugln(['LvlGraphMinimizeCrossings ',Pair.AsString]);
       g.SwitchPair(Pair);
     end;
     g.Apply;
@@ -1122,7 +1124,7 @@ var
   NeighbourPair: TMinXPair;
   Level: TMinXLevel;
 begin
-  debugln(['TMinXGraph.SwitchPair ',Pair.AsString]);
+  //debugln(['TMinXGraph.SwitchPair ',Pair.AsString]);
   ConsistencyCheck;
 
   Level:=Pair.Level;
@@ -1139,7 +1141,7 @@ begin
 
   // reverse Pair.SwitchDiff
   Pair.SwitchDiff:=-Pair.SwitchDiff;
-  debugln(['TMinXGraph.SwitchPair Pair.SwitchDiff should be equal: ',Pair.SwitchDiff,' = ',Pair.ComputeSwitchDiff]);
+  //debugln(['TMinXGraph.SwitchPair Pair.SwitchDiff should be equal: ',Pair.SwitchDiff,' = ',Pair.ComputeSwitchDiff]);
 
   // compute SwitchDiff of new neighbour pairs
   if Pair.Index>0 then begin
