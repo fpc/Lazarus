@@ -640,7 +640,7 @@ type
   TMinXNode = class
   public
     GraphNode: TLvlGraphNode;
-    PrevNodes, NextNodes: array of TMinXNode;
+    InEdges, OutEdges: array of TMinXNode;
     Level: TMinXLevel;
     IndexInLevel: integer;
     constructor Create(aNode: TLvlGraphNode);
@@ -657,6 +657,8 @@ type
     Nodes: array of TMinXNode;
     constructor Create(aGraph: TMinXGraph; aIndex: integer);
     destructor Destroy; override;
+    function GetOutEdgesCrossingCount: integer;
+    function GetOutEdgesCrossingCount(Node1, Node2: TMinXNode): integer;
   end;
 
   { TMinXPair }
@@ -680,6 +682,7 @@ type
     Pairs: array of TMinXPair;
     constructor Create(aGraph: TLvlGraph);
     destructor Destroy; override;
+    procedure CreatePairs;
     function GraphNodeToNode(GraphNode: TLvlGraphNode): TMinXNode; inline;
   end;
 
@@ -690,6 +693,7 @@ begin
   if (Graph.LevelCount<2) or (Graph.NodeCount<3) then exit;
   g:=TMinXGraph.Create(Graph);
   try
+    g.CreatePairs;
 
   finally
     g.Free;
@@ -904,7 +908,7 @@ begin
     GraphNode:=Graph.Nodes[i];
     Node:=TMinXNode.Create(GraphNode);
     FGraphNodeToNode[GraphNode]:=Node;
-    SetLength(Node.PrevNodes,GraphNode.InEdgeCount);
+    SetLength(Node.InEdges,GraphNode.InEdgeCount);
   end;
 
   // create levels
@@ -912,53 +916,39 @@ begin
   for i:=0 to length(Levels)-1 do
     Levels[i]:=TMinXLevel.Create(Self,i);
 
-  // create NextNodes arrays
+  // create OutEdges arrays
   for i:=0 to length(Levels)-2 do begin
     Level:=Levels[i];
     for n:=0 to length(Level.Nodes)-1 do begin
       Node:=Level.Nodes[n];
       GraphNode:=Node.GraphNode;
-      SetLength(Node.NextNodes,GraphNode.OutEdgeCount);
+      SetLength(Node.OutEdges,GraphNode.OutEdgeCount);
       Cnt:=0;
       for e:=0 to GraphNode.OutEdgeCount-1 do begin
         OtherNode:=GraphNodeToNode(GraphNode.OutEdges[e].Target);
         if Node.Level.Index+1<>OtherNode.Level.Index then continue;
-        Node.NextNodes[Cnt]:=OtherNode;
+        Node.OutEdges[Cnt]:=OtherNode;
         Cnt+=1;
       end;
-      SetLength(Node.NextNodes,Cnt);
+      SetLength(Node.OutEdges,Cnt);
     end;
   end;
 
-  // create PrevNodes arrays
+  // create InEdges arrays
   for i:=1 to length(Levels)-1 do begin
     Level:=Levels[i];
     for n:=0 to length(Level.Nodes)-1 do begin
       Node:=Level.Nodes[n];
       GraphNode:=Node.GraphNode;
-      SetLength(Node.PrevNodes,GraphNode.InEdgeCount);
+      SetLength(Node.InEdges,GraphNode.InEdgeCount);
       Cnt:=0;
       for e:=0 to GraphNode.InEdgeCount-1 do begin
         OtherNode:=GraphNodeToNode(GraphNode.InEdges[e].Source);
         if Node.Level.Index-1<>OtherNode.Level.Index then continue;
-        Node.PrevNodes[Cnt]:=OtherNode;
+        Node.InEdges[Cnt]:=OtherNode;
         Cnt+=1;
       end;
-      SetLength(Node.PrevNodes,Cnt);
-    end;
-  end;
-
-  // create pairs
-  Cnt:=0;
-  for i:=0 to length(Levels)-1 do
-    Cnt+=Max(0,length(Levels[i].Nodes)-1);
-  SetLength(Pairs,Cnt);
-  Cnt:=0;
-  for i:=0 to length(Levels)-1 do begin
-    Level:=Levels[i];
-    for n:=0 to length(Level.Nodes)-2 do begin
-      Pairs[Cnt]:=TMinXPair.Create(Level,n);
-      Cnt+=1;
+      SetLength(Node.InEdges,Cnt);
     end;
   end;
 end;
@@ -972,6 +962,28 @@ begin
   SetLength(Levels,0);
   FreeAndNil(FGraphNodeToNode);
   inherited Destroy;
+end;
+
+procedure TMinXGraph.CreatePairs;
+var
+  Cnt: Integer;
+  i: Integer;
+  Level: TMinXLevel;
+  n: Integer;
+begin
+  Cnt:=0;
+  for i:=0 to length(Levels)-1 do
+    Cnt+=Max(0,length(Levels[i].Nodes)-1);
+  SetLength(Pairs,Cnt);
+  Cnt:=0;
+  for i:=0 to length(Levels)-1 do begin
+    Level:=Levels[i];
+    for n:=0 to length(Level.Nodes)-2 do begin
+      Pairs[Cnt]:=TMinXPair.Create(Level,n);
+      Cnt+=1;
+    end;
+    debugln(['TMinXGraph.CreatePairs level=',i,' crossing=',Level.GetOutEdgesCrossingCount]);
+  end;
 end;
 
 function TMinXGraph.GraphNodeToNode(GraphNode: TLvlGraphNode): TMinXNode;
@@ -1010,6 +1022,40 @@ begin
   inherited Destroy;
 end;
 
+function TMinXLevel.GetOutEdgesCrossingCount: integer;
+var
+  i: Integer;
+  Node1: TMinXNode;
+  j: Integer;
+  Node2: TMinXNode;
+begin
+  Result:=0;
+  for i:=0 to length(Nodes)-2 do begin
+    Node1:=Nodes[i];
+    for j:=i+1 to length(Nodes)-1 do begin
+      Node2:=Nodes[j];
+      Result+=GetOutEdgesCrossingCount(Node1,Node2);
+    end;
+  end;
+end;
+
+function TMinXLevel.GetOutEdgesCrossingCount(Node1, Node2: TMinXNode): integer;
+var
+  i: Integer;
+  j: Integer;
+begin
+  Result:=0;
+  for i:=0 to length(Node1.OutEdges)-1 do begin
+    for j:=0 to length(Node2.OutEdges)-1 do begin
+      if Node1.OutEdges[i]=Node2.OutEdges[j] then continue;
+      if (Node1.IndexInLevel<Node2.IndexInLevel)
+        <>(Node1.OutEdges[i].IndexInLevel<Node2.OutEdges[j].IndexInLevel)
+      then
+        Result+=1;
+    end;
+  end;
+end;
+
 { TMinXNode }
 
 constructor TMinXNode.Create(aNode: TLvlGraphNode);
@@ -1019,8 +1065,8 @@ end;
 
 destructor TMinXNode.Destroy;
 begin
-  SetLength(PrevNodes,0);
-  SetLength(NextNodes,0);
+  SetLength(InEdges,0);
+  SetLength(OutEdges,0);
   inherited Destroy;
 end;
 
