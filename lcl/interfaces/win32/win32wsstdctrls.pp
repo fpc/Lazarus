@@ -1160,7 +1160,8 @@ begin
   if MeasureText(AWinControl, 'Fj', PreferredWidth, PreferredHeight) then
   begin
     PreferredWidth := 0;
-    Inc(PreferredHeight, 8);
+    if TCustomEdit(AWinControl).BorderStyle <> bsNone then
+      Inc(PreferredHeight, 8);
   end;
 end;
 
