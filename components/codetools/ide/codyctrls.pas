@@ -659,6 +659,16 @@ type
     destructor Destroy; override;
   end;
 
+  { TMinXPair }
+
+  TMinXPair = class
+  public
+    Level: TMinXLevel;
+    Index: integer;
+    constructor Create(aLevel: TMinXLevel; aIndex: integer);
+    destructor Destroy; override;
+  end;
+
   { TMinXGraph }
 
   TMinXGraph = class
@@ -667,6 +677,7 @@ type
   public
     Graph: TLvlGraph;
     Levels: array of TMinXLevel;
+    Pairs: array of TMinXPair;
     constructor Create(aGraph: TLvlGraph);
     destructor Destroy; override;
     function GraphNodeToNode(GraphNode: TLvlGraphNode): TMinXNode; inline;
@@ -859,6 +870,19 @@ begin
   Result:='['+Result+']';
 end;
 
+{ TMinXPair }
+
+constructor TMinXPair.Create(aLevel: TMinXLevel; aIndex: integer);
+begin
+  Level:=aLevel;
+  Index:=aIndex;
+end;
+
+destructor TMinXPair.Destroy;
+begin
+  inherited Destroy;
+end;
+
 { TMinXGraph }
 
 constructor TMinXGraph.Create(aGraph: TLvlGraph);
@@ -873,6 +897,7 @@ var
   OtherNode: TMinXNode;
 begin
   Graph:=aGraph;
+
   // create nodes
   FGraphNodeToNode:=TPointerToPointerTree.Create;
   for i:=0 to Graph.NodeCount-1 do begin
@@ -881,10 +906,12 @@ begin
     FGraphNodeToNode[GraphNode]:=Node;
     SetLength(Node.PrevNodes,GraphNode.InEdgeCount);
   end;
+
   // create levels
   SetLength(Levels,aGraph.LevelCount);
   for i:=0 to length(Levels)-1 do
     Levels[i]:=TMinXLevel.Create(Self,i);
+
   // create NextNodes arrays
   for i:=0 to length(Levels)-2 do begin
     Level:=Levels[i];
@@ -902,6 +929,7 @@ begin
       SetLength(Node.NextNodes,Cnt);
     end;
   end;
+
   // create PrevNodes arrays
   for i:=1 to length(Levels)-1 do begin
     Level:=Levels[i];
@@ -917,6 +945,20 @@ begin
         Cnt+=1;
       end;
       SetLength(Node.PrevNodes,Cnt);
+    end;
+  end;
+
+  // create pairs
+  Cnt:=0;
+  for i:=0 to length(Levels)-1 do
+    Cnt+=Max(0,length(Levels[i].Nodes)-1);
+  SetLength(Pairs,Cnt);
+  Cnt:=0;
+  for i:=0 to length(Levels)-1 do begin
+    Level:=Levels[i];
+    for n:=0 to length(Level.Nodes)-2 do begin
+      Pairs[Cnt]:=TMinXPair.Create(Level,n);
+      Cnt+=1;
     end;
   end;
 end;
