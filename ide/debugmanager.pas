@@ -2160,7 +2160,7 @@ begin
 
     // check if debugger is already created with the right type
     if (FDebugger <> nil)
-    and (not (FDebugger is NewDebuggerClass)
+    and (not (FDebugger.ClassType = NewDebuggerClass) // exact class match
           or (FDebugger.ExternalDebugger <> EnvironmentOptions.GetParsedDebuggerFilename)
         )
     then begin
