@@ -113,14 +113,18 @@ begin
   FRemoteGDBExe := 'gdb';
   FSSHStartupOptions := '';
   FAppendGDBtoSSHopt := False;
+  UseAsyncCommandMode := True;
 end;
 
 procedure TSSHGDBMIDebuggerProperties.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  FRemoteGDBExe := TSSHGDBMIDebuggerProperties(Source).FRemoteGDBExe;
-  FSSHStartupOptions := TSSHGDBMIDebuggerProperties(Source).FSSHStartupOptions;
-  FAppendGDBtoSSHopt := TSSHGDBMIDebuggerProperties(Source).FAppendGDBtoSSHopt;
+  if Source is TSSHGDBMIDebuggerProperties then begin
+    FRemoteGDBExe := TSSHGDBMIDebuggerProperties(Source).FRemoteGDBExe;
+    FSSHStartupOptions := TSSHGDBMIDebuggerProperties(Source).FSSHStartupOptions;
+    FAppendGDBtoSSHopt := TSSHGDBMIDebuggerProperties(Source).FAppendGDBtoSSHopt;
+    UseAsyncCommandMode := True;
+  end;
 end;
 
 { TSSHGDBMINotePropertyEditor }

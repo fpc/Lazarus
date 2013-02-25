@@ -105,16 +105,15 @@ function TGDBMIServerDebuggerCommandInitDebugger.DoExecute: Boolean;
 var
   R: TGDBMIExecResult;
 begin
-  Result := True;
+  Result := inherited DoExecute;
+  if (not FSuccess) then exit;
 
+  // TODO: Maybe should be done in CommandStart, But Filename, and Environment will be done beforle Start
   FSuccess := ExecuteCommand(Format('target remote %s:%s',
                              [TGDBMIServerDebuggerProperties(DebuggerProperties).FDebugger_Remote_Hostname,
                               TGDBMIServerDebuggerProperties(DebuggerProperties).Debugger_Remote_Port ]),
                              R);
   FSuccess := FSuccess and (r.State <> dsError);
-  if (not FSuccess) then exit;
-
-  Result := inherited DoExecute;
 end;
 
 
@@ -125,13 +124,17 @@ begin
   inherited Create;
   FDebugger_Remote_Hostname:= '';
   FDebugger_Remote_Port:= '2345';
+  UseAsyncCommandMode := True;
 end;
 
 procedure TGDBMIServerDebuggerProperties.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
-  FDebugger_Remote_Hostname := TGDBMIServerDebuggerProperties(Source).FDebugger_Remote_Hostname;
-  FDebugger_Remote_Port := TGDBMIServerDebuggerProperties(Source).FDebugger_Remote_Port;
+  if Source is TGDBMIServerDebuggerProperties then begin
+    FDebugger_Remote_Hostname := TGDBMIServerDebuggerProperties(Source).FDebugger_Remote_Hostname;
+    FDebugger_Remote_Port := TGDBMIServerDebuggerProperties(Source).FDebugger_Remote_Port;
+    UseAsyncCommandMode := True;
+  end;
 end;
 
 

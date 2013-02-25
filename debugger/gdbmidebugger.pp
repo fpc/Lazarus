@@ -133,6 +133,7 @@ type
     FInternalStartBreak: TGDBMIDebuggerStartBreak;
     FMaxDisplayLengthForString: Integer;
     FTimeoutForEval: Integer;
+    FUseAsyncCommandMode: Boolean;
     FWarnOnTimeOut: Boolean;
     procedure SetMaxDisplayLengthForString(AValue: Integer);
     procedure SetTimeoutForEval(const AValue: Integer);
@@ -154,6 +155,7 @@ type
              read FEncodeExeFileName write FEncodeExeFileName default gdfeDefault;
     property InternalStartBreak: TGDBMIDebuggerStartBreak
              read FInternalStartBreak write FInternalStartBreak default gdsbDefault;
+    property UseAsyncCommandMode: Boolean read FUseAsyncCommandMode write FUseAsyncCommandMode;
   end;
 
   TGDBMIDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
@@ -168,6 +170,7 @@ type
     property EncodeCurrentDirPath;
     property EncodeExeFileName;
     property InternalStartBreak;
+    //property UseAsyncCommandMode;
   end;
 
   TGDBMIDebugger = class;
@@ -190,7 +193,8 @@ type
   TGDBMIDebuggerCommandProperts = set of TGDBMIDebuggerCommandProperty;
 
   TGDBMIExecCommandType =
-    ( ectContinue,         // -exec-continue
+    ( ectNone,
+      ectContinue,         // -exec-continue
       ectRun,              // -exec-run
       ectRunTo,            // -exec-until [Source, Line]
       ectStepOver,         // -exec-next
@@ -394,7 +398,7 @@ type
     procedure RetrieveRegcall;
     procedure CheckAvailableTypes;
     procedure DetectForceableBreaks;
-    procedure CommonInit;
+    procedure CommonInit;  // Before any run/exec
   end;
 
   { TGDBMIDebuggerCommandStartDebugging }
@@ -442,7 +446,8 @@ type
     FNextExecQueued: Boolean;
     FResult: TGDBMIExecResult;
     FExecType: TGDBMIExecCommandType;
-    FCommand: String;
+    FCurrentExecCmd:  TGDBMIExecCommandType;
+    FCurrentExecArg: String;
     FCanKillNow, FDidKillNow: Boolean;
     FRunToSrc: String;
     FRunToLine: Integer;
@@ -540,6 +545,9 @@ type
     FSourceNames: TStringList; // Objects[] -> TMap[Integer|Integer] -> TDbgPtr
     FReleaseLock: Integer;
     FInProcessStopped: Boolean; // paused, but maybe state run
+    FCommandAsyncState: Array [TGDBMIExecCommandType] of Boolean;
+    FCurrentCmdIsAsync: Boolean;
+    FAsyncModeEnabled: Boolean;
 
     // Internal Current values
     FCurrentStackFrame, FCurrentThreadId: Integer; // User set values
@@ -742,6 +750,19 @@ var
 const
   GDBMIBreakPointReasonNames: Array[TGDBMIBreakpointReason] of string =
     ('Breakpoint', 'Watchpoint', 'Watchpoint (scope)');
+
+  GDBMIExecCommandMap: array [TGDBMIExecCommandType] of string =
+    ( '',                        // ectNone
+      '-exec-continue',           // ectContinue,
+      '-exec-run',                // ectRun,
+      '-exec-until',              // ectRunTo,  // [Source, Line]
+      '-exec-next',               // ectStepOver,
+      '-exec-finish',             // ectStepOut,
+      '-exec-step',               // ectStepInto,
+      '-exec-next-instruction',   // ectStepOverInstruction,
+      '-exec-step-instruction',   // ectStepIntoInstruction,
+      '-exec-return'              // ectReturn      // (step out immediately, skip execution)
+    );
 
 type
   THackDBGType = class(TGDBType) end;
@@ -1871,7 +1892,12 @@ begin
 end;
 
 procedure TGDBMIDebuggerCommandStartBase.CommonInit;
+var
+  i: TGDBMIExecCommandType;
 begin
+  for i := low(TGDBMIExecCommandType) to high(TGDBMIExecCommandType) do
+    FTheDebugger.FCommandAsyncState[i] := True;
+  FTheDebugger.FCurrentCmdIsAsync := False;
   ExecuteCommand('set print elements %d',
                  [TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).MaxDisplayLengthForString],
                  []);
@@ -1882,7 +1908,7 @@ end;
 function TGDBMIDebuggerCommandExecuteBase.ProcessRunning(var AStoppedParams: String; out
   AResult: TGDBMIExecResult): Boolean;
 var
-  InLogWarning: Boolean;
+  InLogWarning, GotStopped: Boolean;
 
   function DoExecAsync(var Line: String): Boolean;
   var
@@ -1896,8 +1922,10 @@ var
     case StringCase(S, ['stopped', 'started', 'disappeared', 'running']) of
       0: begin // stopped
           AStoppedParams := Line;
+          GotStopped := True;
         end;
-      1, 2:; // Known, but undocumented classes
+      1: ; // Known, but undocumented classes
+      2: GotStopped := True;
       3: begin // running,thread-id="1"  // running,thread-id="all"
           if (FTheDebugger.Threads.Monitor <> nil) and
              (FTheDebugger.Threads.Monitor.CurrentThreads <> nil)
@@ -2067,6 +2095,7 @@ begin
   Result := True;
   AResult.State := dsNone;
   InLogWarning := False;
+  GotStopped := False;
   FLogWarnings := '';
   while FTheDebugger.DebugProcessRunning do
   begin
@@ -2091,6 +2120,7 @@ begin
         then begin
           DebugLn(DBG_VERBOSE, '[DBGTGT] ', Copy(S, 1, idx - 1));
           Delete(S, 1, idx - 1);
+          GotStopped := True;
           Continue;
         end
         else begin
@@ -2100,6 +2130,10 @@ begin
       end;
       Break;
     end;
+
+    if FTheDebugger.FAsyncModeEnabled and GotStopped then
+      break;
+
   end;
 end;
 
@@ -2295,6 +2329,17 @@ begin
   // set the output width to a great value to avoid unexpected
   // new lines like in large functions or procedures
   ExecuteCommand('set width 50000', []);
+
+  FTheDebugger.FAsyncModeEnabled := False;
+  if TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).UseAsyncCommandMode then begin
+    if ExecuteCommand('set target-async on', R, []) and (R.State <> dsError) then begin
+      ExecuteCommand('show target-async', R, []);
+      FTheDebugger.FAsyncModeEnabled := (R.State <> dsError) and
+        (pos('mode is on', LowerCase(R.Values)) > 0);
+    end;
+  end;
+  if not FTheDebugger.FAsyncModeEnabled then
+    ExecuteCommand('set target-async off', R, []);
 
   ParseGDBVersionMI;
 end;
@@ -4347,6 +4392,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       else assert(false, 'RunToMain missing init');
     end;
 
+    // TODO: async
     Cmd := GdbRunCommand;// '-exec-run';
     rval := '';
     R.State := dsError;
@@ -5096,6 +5142,8 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     F := AList.Values['frame'];
     {$IFdef MSWindows}
     SigInt := S = 'SIGTRAP';
+    if FTheDebugger.FAsyncModeEnabled then
+      SigInt := SigInt or (S = 'SIGINT');
     {$ELSE}
     SigInt := S = 'SIGINT';
     {$ENDIF}
@@ -5161,7 +5209,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     then begin
       try
         (* - Breakpoint may not be destroyed, while in use
-           - And it may not be destroyed, before state is set (otherwhise an InterupTarget is triggered)
+           - And it may not be destroyed, before state is set (otherwhise an InterruptTarget is triggered)
         *)
         BreakPoint.AddReference;
         BrkSlave := BreakPoint.Slave;
@@ -5619,7 +5667,8 @@ var
     procedure DoEndStepping;
     begin
       Result := True;
-      FCommand := '';
+      FCurrentExecCmd := ectNone;
+      FCurrentExecArg := '';
       SetDebuggerState(dsPause);
       FTheDebugger.DoCurrent(FTheDebugger.FCurrentLocation);
     end;
@@ -5636,7 +5685,8 @@ var
     case FExecType of
       ectContinue, ectRun:
         begin
-          FCommand := '-exec-continue';
+          FCurrentExecCmd := ectContinue;
+          FCurrentExecArg := '';
           Result := True;
         end;
       ectRunTo:  // check if we are at correct location
@@ -5685,7 +5735,8 @@ var
 
             if i > 0 then begin
               Result := True;
-              FCommand := '-exec-continue';
+              FCurrentExecCmd := ectContinue;
+              FCurrentExecArg := '';
             end;
           end;
           if i < 0
@@ -5715,6 +5766,7 @@ var
   ContinueExecution, ContinueStep: Boolean;
   NextExecCmdObj: TGDBMIDebuggerCommandExecute;
   R: TGDBMIExecResult;
+  s: String;
 begin
   Result := True;
   FCanKillNow := False;
@@ -5733,8 +5785,26 @@ begin
            (FExecType in [ectStepOver, ectStepInto, ectStepOut, ectStepOverInstruction, ectStepIntoInstruction])
         then FP := GetPtrValue('$fp', []);
 
-        if not ExecuteCommand(FCommand, FResult)
-        then exit;
+        FTheDebugger.FCurrentCmdIsAsync := False;
+        s := GDBMIExecCommandMap[FCurrentExecCmd] + FCurrentExecArg;
+        if TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).UseAsyncCommandMode and
+           FTheDebugger.FCommandAsyncState[FCurrentExecCmd]
+        then begin
+          if not ExecuteCommand(s + ' &', FResult) then
+            exit;
+          if (FResult.State = dsError) then //and (pos('async', lowercase(FResult.Values)) > 0) then
+          begin
+            FTheDebugger.FCommandAsyncState[FCurrentExecCmd] := False;
+            if not ExecuteCommand(s, FResult) then
+              exit;
+          end
+          else
+            FTheDebugger.FCurrentCmdIsAsync := True;
+        end
+        else begin
+          if not ExecuteCommand(s, FResult) then
+            exit;
+        end;
         if CheckResultForError(FResult)
         then exit;
         RunWarnings := FLogWarnings;
@@ -5771,7 +5841,7 @@ begin
       then begin
         ContinueStep := DoContinueStepping; // will set dsPause, if step has finished
 
-        if (not ContinueStep) and (FCommand <> '') then begin
+        if (not ContinueStep) and (FCurrentExecCmd <> ectNone) then begin
           // - Fall back to "old" behaviour and queue a new exec-continue
           // - Queue is unlocked, so nothing should be empty
           //   But make info available, if anything wants to queue
@@ -5785,7 +5855,7 @@ begin
         end;
       end;
 
-    until (not ContinueStep) or (FCommand = '');
+    until (not ContinueStep) or (FCurrentExecCmd = ectNone);
 
   finally
     if FStepBreakPoint > 0
@@ -5819,27 +5889,18 @@ begin
   FDidKillNow := False;;
   FNextExecQueued := False;
   FExecType := ExecType;
-  case FExecType of
-    ectContinue: FCommand := '-exec-continue';
-    ectRun:      FCommand := '-exec-run';
-    ectRunTo:
-      begin
-                 FCommand := Format('-exec-until %s:%d', Args);
-                 FRunToSrc := AnsiString(Args[0].VAnsiString);
-                 FRunToLine := Args[1].VInteger;
-      end;
-    ectStepOver: FCommand := '-exec-next';
-    ectStepOut:  FCommand := '-exec-finish';
-    ectStepInto: FCommand := '-exec-step';
-    ectStepOverInstruction: FCommand := '-exec-next-instruction';
-    ectStepIntoInstruction: FCommand := '-exec-step-instruction';
-    ectReturn:   FCommand := '-exec-return';
+  FCurrentExecCmd := ExecType;
+  FCurrentExecArg := '';
+  if FCurrentExecCmd = ectRunTo then begin
+    FRunToSrc := AnsiString(Args[0].VAnsiString);
+    FRunToLine := Args[1].VInteger;
+    FCurrentExecArg := Format(' %s:%d', [FRunToSrc, FRunToLine]);
   end;
 end;
 
 function TGDBMIDebuggerCommandExecute.DebugText: String;
 begin
-  Result := Format('%s: %s', [ClassName, FCommand]);
+  Result := Format('%s: %s', [ClassName, GDBMIExecCommandMap[FCurrentExecCmd]]);
 end;
 
 function TGDBMIDebuggerCommandExecute.KillNow: Boolean;
@@ -6472,6 +6533,7 @@ begin
   FEncodeCurrentDirPath := gdfeDefault;
   FEncodeExeFileName := gdfeDefault;
   FInternalStartBreak := gdsbDefault;
+  FUseAsyncCommandMode := False;
   inherited;
 end;
 
@@ -6488,6 +6550,7 @@ begin
   FEncodeCurrentDirPath := TGDBMIDebuggerPropertiesBase(Source).FEncodeCurrentDirPath;
   FEncodeExeFileName := TGDBMIDebuggerPropertiesBase(Source).FEncodeExeFileName;
   FInternalStartBreak := TGDBMIDebuggerPropertiesBase(Source).FInternalStartBreak;
+  FUseAsyncCommandMode := TGDBMIDebuggerPropertiesBase(Source).FUseAsyncCommandMode;
 end;
 
 
@@ -7765,6 +7828,13 @@ procedure TGDBMIDebugger.InterruptTarget;
 {$ENDIF}
 begin
   debugln(DBGMI_QUEUE_DEBUG, ['TGDBMIDebugger.InterruptTarget: TargetPID=', TargetPID]);
+
+  if FAsyncModeEnabled then begin
+  //if FCurrentCmdIsAsync and (FCurrentCommand <> nil) then begin
+    FCurrentCommand.ExecuteCommand('interrupt', []);
+    exit;
+  end;
+
   if TargetPID = 0 then Exit;
 {$IFDEF UNIX}
   FpKill(TargetPID, SIGINT);
