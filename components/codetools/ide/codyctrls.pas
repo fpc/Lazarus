@@ -659,16 +659,28 @@ type
     destructor Destroy; override;
     function GetOutEdgesCrossingCount: integer;
     function GetOutEdgesCrossingCount(Node1, Node2: TMinXNode): integer;
+    procedure GetOutEdgesCrossingCount(Node1, Node2: TMinXNode; out Crossing, SwitchCrossing: integer);
   end;
 
   { TMinXPair }
 
   TMinXPair = class
+  private
+    FSwitchDiff: integer; // change of crossings when the two nodes would switch
+    procedure SetSwitchDiff(AValue: integer);
   public
     Level: TMinXLevel;
+    Graph: TMinXGraph;
     Index: integer;
+    PrevSameSwitchPair, NextSameSwitchPair: TMinXPair;
     constructor Create(aLevel: TMinXLevel; aIndex: integer);
     destructor Destroy; override;
+    procedure UnbindFromSwitchList;
+    procedure BindToSwitchList;
+    function ComputeOutEdgesCrossingCount: integer;
+    procedure ComputeOutEdgesCrossingCount(out Crossing, SwitchCrossing: integer);
+    property SwitchDiff: integer read FSwitchDiff write SetSwitchDiff;
+    function AsString: string;
   end;
 
   { TMinXGraph }
@@ -680,21 +692,27 @@ type
     Graph: TLvlGraph;
     Levels: array of TMinXLevel;
     Pairs: array of TMinXPair;
+    SwitchedPairs: array of TMinXPair; //
+    SwitchedPair0: integer;
     constructor Create(aGraph: TLvlGraph);
     destructor Destroy; override;
     procedure CreatePairs;
+    function FindBestPair: TMinXPair;
     function GraphNodeToNode(GraphNode: TLvlGraphNode): TMinXNode; inline;
   end;
 
 procedure LvlGraphMinimizeCrossings(Graph: TLvlGraph);
 var
   g: TMinXGraph;
+  Pair: TMinXPair;
 begin
   if (Graph.LevelCount<2) or (Graph.NodeCount<3) then exit;
   g:=TMinXGraph.Create(Graph);
   try
     g.CreatePairs;
-
+    Pair:=g.FindBestPair;
+    if Pair<>nil then
+      debugln(['LvlGraphMinimizeCrossings ',Pair.AsString]);
   finally
     g.Free;
   end;
@@ -876,15 +894,66 @@ end;
 
 { TMinXPair }
 
+procedure TMinXPair.SetSwitchDiff(AValue: integer);
+begin
+  if FSwitchDiff=AValue then Exit;
+  UnbindFromSwitchList;
+  FSwitchDiff:=AValue;
+  BindToSwitchList;
+end;
+
 constructor TMinXPair.Create(aLevel: TMinXLevel; aIndex: integer);
 begin
   Level:=aLevel;
+  Graph:=Level.Graph;
   Index:=aIndex;
 end;
 
 destructor TMinXPair.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TMinXPair.UnbindFromSwitchList;
+begin
+  if PrevSameSwitchPair<>nil then
+    PrevSameSwitchPair.NextSameSwitchPair:=NextSameSwitchPair
+  else if Assigned(Graph.SwitchedPairs)
+  and (Graph.SwitchedPairs[Graph.SwitchedPair0+SwitchDiff]=Self) then
+    Graph.SwitchedPairs[Graph.SwitchedPair0+SwitchDiff]:=NextSameSwitchPair;
+  if NextSameSwitchPair<>nil then
+    NextSameSwitchPair.PrevSameSwitchPair:=PrevSameSwitchPair;
+  PrevSameSwitchPair:=nil;
+  NextSameSwitchPair:=nil;
+end;
+
+procedure TMinXPair.BindToSwitchList;
+begin
+  NextSameSwitchPair:=Graph.SwitchedPairs[Graph.SwitchedPair0+SwitchDiff];
+  Graph.SwitchedPairs[Graph.SwitchedPair0+SwitchDiff]:=Self;
+  if NextSameSwitchPair<>nil then
+    NextSameSwitchPair.PrevSameSwitchPair:=Self;
+end;
+
+function TMinXPair.ComputeOutEdgesCrossingCount: integer;
+begin
+  Result:=Level.GetOutEdgesCrossingCount(Level.Nodes[Index],Level.Nodes[Index+1]);
+end;
+
+procedure TMinXPair.ComputeOutEdgesCrossingCount(out Crossing,
+  SwitchCrossing: integer);
+begin
+  Level.GetOutEdgesCrossingCount(Level.Nodes[Index],Level.Nodes[Index+1],
+    Crossing,SwitchCrossing);
+end;
+
+function TMinXPair.AsString: string;
+begin
+  Result:='[lvl='+dbgs(Level.Index)
+    +',A='+dbgs(Index)+':'+Level.Nodes[Index].GraphNode.Caption
+    +',B='+dbgs(Index+1)+':'+Level.Nodes[Index+1].GraphNode.Caption
+    +',Switch='+dbgs(SwitchDiff)
+    +']';
 end;
 
 { TMinXGraph }
@@ -960,6 +1029,10 @@ begin
   for i:=0 to length(Levels)-1 do
     Levels[i].Free;
   SetLength(Levels,0);
+  for i:=0 to length(Pairs)-1 do
+    Pairs[i].Free;
+  SetLength(Pairs,0);
+  SetLength(SwitchedPairs,0);
   FreeAndNil(FGraphNodeToNode);
   inherited Destroy;
 end;
@@ -970,20 +1043,41 @@ var
   i: Integer;
   Level: TMinXLevel;
   n: Integer;
+  Pair: TMinXPair;
+  Crossing, SwitchedCrossing: integer;
 begin
   Cnt:=0;
   for i:=0 to length(Levels)-1 do
     Cnt+=Max(0,length(Levels[i].Nodes)-1);
   SetLength(Pairs,Cnt);
   Cnt:=0;
+  SwitchedPair0:=0;
   for i:=0 to length(Levels)-1 do begin
     Level:=Levels[i];
     for n:=0 to length(Level.Nodes)-2 do begin
-      Pairs[Cnt]:=TMinXPair.Create(Level,n);
+      Pair:=TMinXPair.Create(Level,n);
+      Pairs[Cnt]:=Pair;
+      Pair.ComputeOutEdgesCrossingCount(Crossing,SwitchedCrossing);
+      Pair.FSwitchDiff:=SwitchedCrossing-Crossing;
+      SwitchedPair0:=Max(SwitchedPair0,Crossing+SwitchedCrossing);
       Cnt+=1;
     end;
-    debugln(['TMinXGraph.CreatePairs level=',i,' crossing=',Level.GetOutEdgesCrossingCount]);
   end;
+  SetLength(SwitchedPairs,2*SwitchedPair0+1);
+  for i:=0 to length(Pairs)-1 do
+    Pairs[i].BindToSwitchList;
+end;
+
+function TMinXGraph.FindBestPair: TMinXPair;
+var
+  i: Integer;
+begin
+  for i:=0 to length(SwitchedPairs)-1 do begin
+    Result:=SwitchedPairs[i];
+    if Result<>nil then
+      exit;
+  end;
+  Result:=nil;
 end;
 
 function TMinXGraph.GraphNodeToNode(GraphNode: TLvlGraphNode): TMinXNode;
@@ -1052,6 +1146,28 @@ begin
         <>(Node1.OutEdges[i].IndexInLevel<Node2.OutEdges[j].IndexInLevel)
       then
         Result+=1;
+    end;
+  end;
+end;
+
+procedure TMinXLevel.GetOutEdgesCrossingCount(Node1, Node2: TMinXNode; out
+  Crossing, SwitchCrossing: integer);
+var
+  i: Integer;
+  j: Integer;
+begin
+  Crossing:=0;
+  SwitchCrossing:=0;
+  for i:=0 to length(Node1.OutEdges)-1 do begin
+    for j:=0 to length(Node2.OutEdges)-1 do begin
+      if Node1.OutEdges[i]=Node2.OutEdges[j] then continue;
+      // these two edges can cross
+      if (Node1.IndexInLevel<Node2.IndexInLevel)
+        <>(Node1.OutEdges[i].IndexInLevel<Node2.OutEdges[j].IndexInLevel)
+      then
+        Crossing+=1
+      else
+        SwitchCrossing+=1;
     end;
   end;
 end;
