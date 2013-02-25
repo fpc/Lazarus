@@ -1213,10 +1213,10 @@ begin
   ADest.Font.Bold := Font.Bold;
   ADest.Font.Italic := Font.Italic;
   ADest.Font.Underline := Font.Underline;
-  {$IF (FPC_FULLVERSION=20601) or (FPC_FULLVERSION>=20701)} //changed in 2.6.1 and 2.7; remove when FPC 2.6.2+ only is supported
-  ADest.Font.StrikeThrough := Font.StrikeThrough;
-  {$ELSE}
+  {$IF (FPC_FULLVERSION<=20600) or (FPC_FULLVERSION=20602)}
   ADest.Font.StrikeTrough := Font.StrikeThrough; //old version with typo
+  {$ELSE}
+  ADest.Font.StrikeThrough := Font.StrikeThrough;
   {$ENDIF}
 
   {$ifdef USE_LCL_CANVAS}
