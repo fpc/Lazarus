@@ -1,4 +1,4 @@
-# Valdas Jankūnas <zmuogs@gmail.com>, 2009, 2010, 2012.
+ Valdas Jankūnas <zmuogs@gmail.com>, 2009, 2010, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: calleditorwithpkg\n"
@@ -10,8 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 1.5\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Language: lt\n"
 
 #: maincalleditor.ceractivereport
@@ -191,8 +190,8 @@ msgstr "Miniatiūros"
 msgid "Master-Detail Test"
 msgstr "Testas pagrindinis-detalės"
 
-#: tfrmmain.frmmain.caption
-msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
+#: tfrmmain.caption
+msgctxt "tfrmmain.caption"
 msgid "LazReport Test Suite"
 msgstr "LazReport testavimo paketas"
 
@@ -216,5 +215,4 @@ msgstr "Testai"
 #: tfrmmain.menuitem9.caption
 msgid "Export"
 msgstr "Eksportas"
-
 

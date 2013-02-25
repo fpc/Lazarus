@@ -1,7 +1,7 @@
-# Arabic translation of Free Pascal Lazarus Project.
-# Copyright (C) 2012 Lazarus Project
-# This file is distributed under the same license as the Lazarus package.
-# Khaled Shagrouni <shagrouni@gmail.com>, 2012.
+ Arabic translation of Free Pascal Lazarus Project.
+ Copyright (C) 2012 Lazarus Project
+ This file is distributed under the same license as the Lazarus package.
+ Khaled Shagrouni <shagrouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
@@ -21,12 +21,12 @@ msgstr ""
 msgid "Active report: %s"
 msgstr "التقرير النشط %s"
 
+ مركّب/ تركيب
 #: maincalleditor.cerappcaption
 msgctxt "maincalleditor.cerappcaption"
 msgid "LazReport Test Suite"
 msgstr "مجموعة اختبار LazReport"
 
-# مركّب/ تركيب
 #: maincalleditor.cercomposite
 msgctxt "maincalleditor.cercomposite"
 msgid "Composite"
@@ -123,100 +123,101 @@ msgctxt "maincalleditor.certhumbnails"
 msgid "Thumbnails"
 msgstr "مصغرات"
 
-#: TFRMCUSTOMPREVIEW.FRMCUSTOMPREVIEW.CAPTION
+#: tfrmcustompreview.frmcustompreview.caption
 msgid "frmCustomPreview"
 msgstr "frmCustomPreview"
 
-#: TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION
+#: tfrmcustompreview.frpreview1.caption
 msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
 msgid "frPreview1"
 msgstr "frPreview1"
 
-#: TFRMMAIN.ACCCLOSE.CAPTION
+#: tfrmmain.accclose.caption
 msgid "Close"
 msgstr "غلق"
 
-#: TFRMMAIN.ACCCOMPOSITE.CAPTION
+#: tfrmmain.acccomposite.caption
 msgctxt "TFRMMAIN.ACCCOMPOSITE.CAPTION"
 msgid "Composite"
 msgstr "مركّب"
 
-#: TFRMMAIN.ACCCUSTOMPREVIEW.CAPTION
+#: tfrmmain.acccustompreview.caption
 msgid "Custom Preview"
 msgstr "معاينة مخصّصة"
 
-#: TFRMMAIN.ACCEDITREPORT.CAPTION
+#: tfrmmain.acceditreport.caption
 msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
 msgid "Edit Report"
 msgstr "تحرير التقرير"
 
-#: TFRMMAIN.ACCEXPORTTOCSV.CAPTION
+#: tfrmmain.accexporttocsv.caption
 msgid "Export to CSV"
 msgstr "تصدير إلى CSV"
 
-#: TFRMMAIN.ACCEXPORTTODBG.CAPTION
+#: tfrmmain.accexporttodbg.caption
 msgid "Export Debug"
 msgstr "تنقيح التصدير "
 
-#: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
+#: tfrmmain.accexporttohtml.caption
 msgid "Export to html"
 msgstr "تصدير إلى html"
 
-#: TFRMMAIN.ACCEXPORTTOTEXT.CAPTION
+#: tfrmmain.accexporttotext.caption
 msgid "Export to text"
 msgstr "تصدير إلى نصّ"
 
-#: TFRMMAIN.ACCNEWREPORT.CAPTION
+#: tfrmmain.accnewreport.caption
 msgid "New Report"
 msgstr "تقرير جديد"
 
-#: TFRMMAIN.ACCOPENREPORT.CAPTION
+#: tfrmmain.accopenreport.caption
 msgid "Open Report"
 msgstr "فتح التقرير"
 
-#: TFRMMAIN.ACCPREVIEWREPORT.CAPTION
+#: tfrmmain.accpreviewreport.caption
 msgid "Preview Report"
 msgstr "معاينة التقرير"
 
-#: TFRMMAIN.ACCPRINTGRID.CAPTION
+#: tfrmmain.accprintgrid.caption
 msgid "Print Grid"
 msgstr "طباعة الشبكة"
 
-#: TFRMMAIN.ACCPRINTREPORT.CAPTION
+#: tfrmmain.accprintreport.caption
 msgid "Print Report"
 msgstr "طباعة التقرير"
 
-#: TFRMMAIN.ACCTHUMBNAILS.CAPTION
+#: tfrmmain.accthumbnails.caption
 msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
 msgid "Thumbnails"
 msgstr "مصغرات"
 
-#: TFRMMAIN.BTNMASTERDETAIL.CAPTION
+#: tfrmmain.btnmasterdetail.caption
 msgid "Master-Detail Test"
 msgstr "اختبار رئيسي-تفصيل"
 
-#: TFRMMAIN.FRMMAIN.CAPTION
-msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
+#: tfrmmain.caption
+msgctxt "tfrmmain.caption"
 msgid "LazReport Test Suite"
 msgstr "مجموعة اختبار LazReport"
 
-#: TFRMMAIN.LBLEXPR.CAPTION
+#: tfrmmain.lblexpr.caption
 msgid "Expression"
 msgstr "التعبير"
 
-#: TFRMMAIN.LBLINDEX.CAPTION
+#: tfrmmain.lblindex.caption
 msgctxt "TFRMMAIN.LBLINDEX.CAPTION"
 msgid "Index"
 msgstr "الفهرس"
 
-#: TFRMMAIN.MENUITEM1.CAPTION
+#: tfrmmain.menuitem1.caption
 msgid "Files"
 msgstr "الملفات"
 
-#: TFRMMAIN.MENUITEM3.CAPTION
+#: tfrmmain.menuitem3.caption
 msgid "Tests"
 msgstr "اختبارات"
 
-#: TFRMMAIN.MENUITEM9.CAPTION
+#: tfrmmain.menuitem9.caption
 msgid "Export"
 msgstr "تصدير"
+

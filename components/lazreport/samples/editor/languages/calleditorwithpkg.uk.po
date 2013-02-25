@@ -186,8 +186,8 @@ msgstr "Ескізи"
 msgid "Master-Detail Test"
 msgstr "Тест 'Основний-Детальний'"
 
-#: tfrmmain.frmmain.caption
-msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
+#: tfrmmain.caption
+msgctxt "tfrmmain.caption"
 msgid "LazReport Test Suite"
 msgstr "Тестова програма для LazReport"
 

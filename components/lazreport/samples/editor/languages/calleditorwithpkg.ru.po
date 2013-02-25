@@ -186,8 +186,8 @@ msgstr "Эскизы"
 msgid "Master-Detail Test"
 msgstr "Режим 'главный-подчинённый'"
 
-#: tfrmmain.frmmain.caption
-msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
+#: tfrmmain.caption
+msgctxt "tfrmmain.caption"
 msgid "LazReport Test Suite"
 msgstr "Тестовая программа для LazReport"
 

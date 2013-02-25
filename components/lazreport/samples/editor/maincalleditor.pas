@@ -437,6 +437,8 @@ begin
     Composite.Reports.Add(r);
   end;
   Composite.DoublePass:=true;
+
+  frSelectHyphenDictionary('hyph_es_ANY.dic');
 end;
 
 procedure TfrmMain.TheReportBeginDoc;

@@ -186,8 +186,8 @@ msgstr "Imágenes"
 msgid "Master-Detail Test"
 msgstr ""
 
-#: tfrmmain.frmmain.caption
-msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
+#: tfrmmain.caption
+msgctxt "tfrmmain.caption"
 msgid "LazReport Test Suite"
 msgstr "Banco de pruebas de LazReport"
 

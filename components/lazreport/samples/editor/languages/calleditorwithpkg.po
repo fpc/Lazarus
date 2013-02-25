@@ -181,8 +181,8 @@ msgstr ""
 msgid "Master-Detail Test"
 msgstr ""
 
-#: tfrmmain.frmmain.caption
-msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
+#: tfrmmain.caption
+msgctxt "TFRMMAIN.CAPTION"
 msgid "LazReport Test Suite"
 msgstr ""
 

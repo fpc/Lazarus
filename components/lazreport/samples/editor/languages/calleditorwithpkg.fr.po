@@ -190,8 +190,8 @@ msgstr "Vignettes"
 msgid "Master-Detail Test"
 msgstr ""
 
-#: tfrmmain.frmmain.caption
-msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
+#: tfrmmain.caption
+msgctxt "tfrmmain.caption"
 msgid "LazReport Test Suite"
 msgstr "Suite de tests LazReport "
 

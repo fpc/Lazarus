@@ -186,8 +186,8 @@ msgstr "Miniaturas"
 msgid "Master-Detail Test"
 msgstr "Teste Mestre-Detalhe"
 
-#: tfrmmain.frmmain.caption
-msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
+#: tfrmmain.caption
+msgctxt "tfrmmain.caption"
 msgid "LazReport Test Suite"
 msgstr "Acompanhamento Teste LazReport"
 
