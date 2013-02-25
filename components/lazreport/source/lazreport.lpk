@@ -29,8 +29,8 @@ Lazarus Port: Olivier Guilbaud, Jesus Reyes A.
     <License Value="Modified LGPL
 See license.txt and license-lazreport.txt for details.
 "/>
-    <Version Minor="9" Release="8"/>
-    <Files Count="62">
+    <Version Minor="9" Release="9"/>
+    <Files Count="63">
       <Item1>
         <Filename Value="lr_about.pas"/>
         <UnitName Value="LR_About"/>
@@ -280,6 +280,10 @@ See license.txt and license-lazreport.txt for details.
         <Filename Value="lr_dbcomponent.pas"/>
         <UnitName Value="lr_dbcomponent"/>
       </Item62>
+      <Item63>
+        <Filename Value="lr_hyphen.pas"/>
+        <UnitName Value="lr_hyphen"/>
+      </Item63>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

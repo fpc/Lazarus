@@ -2006,6 +2006,7 @@ components/lazreport/source/lr_grped.lfm svneol=native#text/plain
 components/lazreport/source/lr_grped.pas svneol=native#text/pascal
 components/lazreport/source/lr_hilit.lfm svneol=native#text/plain
 components/lazreport/source/lr_hilit.pas svneol=native#text/pascal
+components/lazreport/source/lr_hyphen.pas svneol=native#text/pascal
 components/lazreport/source/lr_iflds.lfm svneol=native#text/plain
 components/lazreport/source/lr_iflds.pas svneol=native#text/pascal
 components/lazreport/source/lr_insp.lfm svneol=native#text/plain

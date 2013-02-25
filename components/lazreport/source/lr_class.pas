@@ -1232,6 +1232,7 @@ procedure frRegisterTool(const MenuCaption: String; ButtonBmp: TBitmap; OnClick:
 function GetDefaultDataSet: TfrTDataSet;
 procedure SetBit(var w: Word; e: Boolean; m: Integer);
 function frGetBandName(BandType: TfrBandType): string;
+procedure frSelectHyphenDictionary(ADict: string);
 
 const
   lrTemplatePath = 'LazReportTemplate/';
@@ -1334,7 +1335,7 @@ implementation
 
 uses
   strutils, LR_Fmted, LR_Prntr, LR_Progr, LR_Utils, DateUtils
-  {$IFDEF JPEG}, JPEG {$ENDIF};
+  {$IFDEF JPEG}, JPEG {$ENDIF}, lr_hyphen;
 
 type
 
@@ -1379,6 +1380,7 @@ var
   Append, WasPF: Boolean;
   CompositeMode: Boolean;
   MaxTitleSize: Integer = 0;
+  FHyp: THyphen = nil;
   
 {$IFDEF DebugLR}
 function Bandtyp2str(typ: TfrBandType): string;
@@ -1750,6 +1752,19 @@ function frGetBandName(BandType: TfrBandType): string;
 begin
   result := GetEnumName(TypeInfo(TFrBandType), ord(BandType));
   result := copy(result, 3, Length(result));
+end;
+
+procedure frSelectHyphenDictionary(ADict: string);
+begin
+  if FHyp = nil then
+    FHyp := THyphen.create;
+  FHyp.Dictionary:=ADict;
+  try
+    FHyp.BreakWord('lazreport');
+  except
+    on E:Exception do
+      DebugLn('Error: ', e.message,'. Hyphenation support will be disabled');
+  end;
 end;
 
 procedure CanvasTextRectJustify(const Canvas:TCanvas;
@@ -2936,7 +2951,7 @@ var
   size, size1, maxwidth: Integer;
   b: TWordBreaks;
   WCanvas: TCanvas;
-  desc: string;
+  desc, aword: string;
 
   procedure OutLine(const str: String);
   var
@@ -3026,7 +3041,16 @@ var
             // find word's break points using some simple hyphenator algorithm
             // TODO: implement interface so users can use their own hyphenator
             //       algorithm
-            b := BreakWord(UTF8Range(s, last, i - last, Desc));
+            aWord := UTF8Range(s, last, i - last, Desc);
+            if (FHyp<>nil) and (FHyp.Loaded) then
+            begin
+              try
+                b := FHyp.BreakWord(UTF8Lowercase(aWord));
+              except
+                b := '';
+              end;
+            end else
+              b := BreakWord(aWord);
 
             // if word can be broken in many segments, find the last segment that
             // fits within maxwidth
@@ -3042,8 +3066,12 @@ var
               end;
             end;
 
-            // last now points to nex char to be processed
-            last := cur;
+            if (not WasBreak) and (FHyp<>nil) and FHyp.Loaded then
+              // if hyphenator was specified and is valid don't break
+              // words which hyphenator didn't break
+            else
+              // last now points to nex char to be processed
+              last := cur;
           end
           else
           begin
