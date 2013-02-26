@@ -232,7 +232,7 @@ type
   end;
 
 
-{$DEFINE CheckMinXGraph}
+{off $DEFINE CheckMinXGraph}
 type
   TLvlGraph = class;
   TLvlGraphEdge = class;
@@ -693,8 +693,10 @@ type
   TMinXGraph = class
   private
     FGraphNodeToNode: TPointerToPointerTree; // TLvlGraphNode to TMinXNode
-    procedure CreatePairs;
+    procedure UnbindPairs;
+    procedure BindPairs;
     function ComputeCrossCount: integer;
+    procedure StoreAsBest;
   public
     Graph: TLvlGraph;
     Levels: array of TMinXLevel;
@@ -706,8 +708,10 @@ type
     constructor Create(aGraph: TLvlGraph);
     destructor Destroy; override;
     procedure InitSearch;
-    procedure StoreAsBest;
     function FindBestPair: TMinXPair;
+    procedure SwitchCrossingPairs(MaxRun: int64; var Run: int64);
+    procedure Shuffle;
+    procedure SwitchAndShuffle(MaxSingleRun, MaxTotalRun: int64);
     procedure SwitchPair(Pair: TMinXPair);
     procedure Apply; // reorder Graph nodes
     function GraphNodeToNode(GraphNode: TLvlGraphNode): TMinXNode; inline;
@@ -717,19 +721,15 @@ type
 procedure LvlGraphMinimizeCrossings(Graph: TLvlGraph);
 var
   g: TMinXGraph;
-  Pair: TMinXPair;
-  i: Integer;
+  {%H-}Run: int64;
 begin
   if (Graph.LevelCount<2) or (Graph.NodeCount<3) then exit;
   g:=TMinXGraph.Create(Graph);
   try
     g.InitSearch;
-    for i:=1 to 100 do begin
-      Pair:=g.FindBestPair;
-      if Pair=nil then break;
-      //debugln(['LvlGraphMinimizeCrossings ',Pair.AsString]);
-      g.SwitchPair(Pair);
-    end;
+    Run:=0;
+    g.SwitchAndShuffle(Graph.NodeCount*Graph.NodeCount div 3,
+                       Max(1000,Graph.NodeCount*Graph.NodeCount));
     g.Apply;
   finally
     g.Free;
@@ -1043,9 +1043,7 @@ begin
     end;
   end;
 
-  CreatePairs;
-
-  CrossCount:=ComputeCrossCount;
+  BindPairs;
 
   {$IFDEF CheckMinXGraph}
   ConsistencyCheck;
@@ -1067,37 +1065,52 @@ begin
   inherited Destroy;
 end;
 
-procedure TMinXGraph.CreatePairs;
+procedure TMinXGraph.UnbindPairs;
+var
+  i: Integer;
+begin
+  for i:=0 to length(Pairs)-1 do
+    Pairs[i].UnbindFromSwitchList;
+end;
+
+procedure TMinXGraph.BindPairs;
 var
   Cnt: Integer;
   i: Integer;
   Level: TMinXLevel;
   n: Integer;
   Pair: TMinXPair;
-  Crossing, SwitchedCrossing: integer;
+  First: Boolean;
 begin
+  First:=length(Pairs)=0;
+  if First then begin
+    Cnt:=0;
+    for i:=0 to length(Levels)-1 do
+      Cnt+=Max(0,length(Levels[i].Nodes)-1);
+    SetLength(Pairs,Cnt);
+  end;
   Cnt:=0;
-  for i:=0 to length(Levels)-1 do
-    Cnt+=Max(0,length(Levels[i].Nodes)-1);
-  SetLength(Pairs,Cnt);
-  Cnt:=0;
-  SameSwitchDiffPair0:=0;
   for i:=0 to length(Levels)-1 do begin
     Level:=Levels[i];
     SetLength(Level.Pairs,length(Level.Nodes)-1);
     for n:=0 to length(Level.Pairs)-1 do begin
-      Pair:=TMinXPair.Create(Level,n);
-      Pairs[Cnt]:=Pair;
-      Level.Pairs[n]:=Pair;
-      Pair.ComputeCrossingCount(Crossing,SwitchedCrossing);
-      Pair.FSwitchDiff:=SwitchedCrossing-Crossing;
-      SameSwitchDiffPair0:=Max(SameSwitchDiffPair0,Crossing+SwitchedCrossing);
+      if First then begin
+        Pair:=TMinXPair.Create(Level,n);
+        Pairs[Cnt]:=Pair;
+        Level.Pairs[n]:=Pair;
+      end else
+        Pair:=Pairs[Cnt];
+      Pair.FSwitchDiff:=Pair.ComputeSwitchDiff;
       Cnt+=1;
     end;
   end;
-  SetLength(SameSwitchDiffPairs,2*SameSwitchDiffPair0+1);
+  if First then begin
+    SameSwitchDiffPair0:=Graph.NodeCount;
+    SetLength(SameSwitchDiffPairs,2*SameSwitchDiffPair0+1);
+  end;
   for i:=0 to length(Pairs)-1 do
     Pairs[i].BindToSwitchList;
+  CrossCount:=ComputeCrossCount;
 end;
 
 function TMinXGraph.ComputeCrossCount: integer;
@@ -1135,8 +1148,7 @@ end;
 
 procedure TMinXGraph.InitSearch;
 begin
-  BestCrossCount:=-1;
-
+  StoreAsBest;
 end;
 
 procedure TMinXGraph.StoreAsBest;
@@ -1163,6 +1175,61 @@ begin
       exit;
   end;
   Result:=nil;
+end;
+
+procedure TMinXGraph.SwitchCrossingPairs(MaxRun: int64; var Run: int64);
+var
+  i: int64;
+  Pair: TMinXPair;
+begin
+  for i:=1 to MaxRun do begin
+    Pair:=FindBestPair;
+    Run+=1;
+    if (Pair=nil) or (Pair.SwitchDiff=0) then exit;
+    SwitchPair(Pair);
+  end;
+end;
+
+procedure TMinXGraph.Shuffle;
+var
+  l: Integer;
+  Level: TMinXLevel;
+  n1: Integer;
+  n2: Integer;
+  Node: TMinXNode;
+begin
+  {$IFDEF CheckMinXGraph}
+  ConsistencyCheck;
+  {$ENDIF}
+  UnbindPairs;
+  for l:=0 to length(Levels)-1 do begin
+    Level:=Levels[l];
+    for n1:=0 to length(Level.Nodes)-1 do begin
+      n2:=Random(length(Level.Nodes));
+      if n1=n2 then continue;
+      Node:=Level.Nodes[n1];
+      Level.Nodes[n1]:=Level.Nodes[n2];
+      Level.Nodes[n2]:=Node;
+      Level.Nodes[n1].IndexInLevel:=n1;
+      Level.Nodes[n2].IndexInLevel:=n2;
+    end;
+  end;
+  BindPairs;
+  {$IFDEF CheckMinXGraph}
+  ConsistencyCheck;
+  {$ENDIF}
+end;
+
+procedure TMinXGraph.SwitchAndShuffle(MaxSingleRun, MaxTotalRun: int64);
+var
+  Run: int64;
+begin
+  Run:=1;
+  repeat
+    SwitchCrossingPairs(MaxSingleRun,Run);
+    if Run>MaxTotalRun then exit;
+    Shuffle;
+  until false;
 end;
 
 procedure TMinXGraph.SwitchPair(Pair: TMinXPair);
@@ -1229,6 +1296,9 @@ begin
     for j:=0 to length(Node2.InEdges)-1 do
       UpdateSwitchDiff(Node1.InEdges[i],Node2.InEdges[j]);
 
+  if (BestCrossCount<0) or (BestCrossCount>CrossCount) then
+    StoreAsBest;
+
   {$IFDEF CheckMinXGraph}
   ConsistencyCheck;
   {$ENDIF}
@@ -1239,14 +1309,11 @@ var
   i: Integer;
   Level: TMinXLevel;
   j: Integer;
-  Node: TMinXNode;
 begin
   for i:=0 to length(Levels)-1 do begin
     Level:=Levels[i];
-    for j:=0 to length(Level.Nodes)-1 do begin
-      Node:=Level.Nodes[j];
-      Node.GraphNode.IndexInLevel:=Node.IndexInLevel;
-    end;
+    for j:=0 to length(Level.BestNodes)-1 do
+      Level.BestNodes[j].IndexInLevel:=j;
   end;
 end;
 
