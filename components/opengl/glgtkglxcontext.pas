@@ -708,6 +708,18 @@ begin
   FreeMem(CopyAttrList);
 end;
 
+{$IFDEF VerboseMultiSampling}
+procedure WriteFBConfigID(const Prefix: string; PrivateContext: PGdkGLContextPrivate);
+var
+  ctxValue: longint;
+begin
+  ctxValue:=0;
+  debugln([Prefix,' ContextAttrib: ',
+    glXQueryContext(PrivateContext^.xdisplay, PrivateContext^.glxcontext, GLX_FBCONFIG_ID, ctxValue),
+    '-',ctxValue]);
+end;
+{$ENDIF}
+
 function gtk_gl_area_share_new(attrList: Plongint; share: PGtkGLArea
   ): PGtkWidget;
 var
@@ -752,6 +764,11 @@ begin
     gtk_widget_pop_colormap;
   end;
   {$ENDIF non MSWindows}
+
+  {$IFDEF VerboseMultiSampling}
+  WriteFBConfigID('gtk_gl_area_share_new',PGdkGLContextPrivate(gl_area^.glcontext));
+  {$ENDIF}
+
   Result:=PGtkWidget(gl_area);
 end;
 
@@ -765,6 +782,9 @@ begin
   //DebugLn(['gtk_gl_area_make_current START']);
   Result:=gdk_gl_make_current(PGtkWidget(glarea)^.window, glarea^.glcontext);
   //DebugLn(['gtk_gl_area_make_current END']);
+  {$IFDEF VerboseMultiSampling}
+  //WriteFBConfigID('gtk_gl_area_make_current',PGdkGLContextPrivate(glarea^.glcontext));
+  {$ENDIF}
 end;
 
 function gtk_gl_area_begingl(glarea: PGtkGLArea): boolean;
@@ -947,7 +967,7 @@ function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean;
 var
   p: integer;
   UseFBConfig: boolean;
-  
+
   procedure Add(i: integer);
   begin
     if Result<>nil then
