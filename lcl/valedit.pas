@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Controls, StdCtrls, SysUtils, Grids, LResources, Dialogs, LazUtf8, variants, LCLProc,
-  ContNrs;
+  LCLType, ContNrs;
 
 type
 
@@ -152,6 +152,7 @@ type
     function GetCells(ACol, ARow: Integer): string; override;
     function GetDefaultEditor(Column: Integer): TWinControl; override;
     function GetRowCount: Integer;
+    procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure SetCells(ACol, ARow: Integer; const AValue: string); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure SetRowCount(AValue: Integer);
@@ -1047,6 +1048,24 @@ end;
 function TValueListEditor.GetRowCount: Integer;
 begin
   Result := inherited RowCount;
+end;
+
+procedure TValueListEditor.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+  if (KeyAdd in KeyOptions) then
+  begin
+    if (Key = VK_INSERT) and (Shift = []) then
+    begin
+      //Insert a row in the current position
+      InsertRow('', '', False);
+      Key := 0;
+    end;
+  end;
+  if (KeyDelete in KeyOptions) then
+  begin
+    //ToDo: delete a row if user presses Delete, need to find out (blackbox Delphi) when this should happen
+  end;
 end;
 
 procedure TValueListEditor.SetCells(ACol, ARow: Integer; const AValue: string);
