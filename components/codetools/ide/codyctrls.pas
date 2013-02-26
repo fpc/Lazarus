@@ -1181,14 +1181,14 @@ end;
 
 procedure TMinXGraph.SwitchCrossingPairs(MaxRun: int64; var Run: int64);
 var
-  i: int64;
   Pair: TMinXPair;
 begin
-  for i:=1 to MaxRun do begin
+  while MaxRun>0 do begin
     Pair:=FindBestPair;
     Run+=1;
     if (Pair=nil) or (Pair.SwitchDiff=0) then exit;
     SwitchPair(Pair);
+    MaxRun-=1;
   end;
 end;
 
