@@ -696,7 +696,7 @@ type
     procedure UnbindPairs;
     procedure BindPairs;
     function ComputeCrossCount: integer;
-    procedure StoreAsBest;
+    procedure StoreAsBest(CheckIfBetter: boolean);
   public
     Graph: TLvlGraph;
     Levels: array of TMinXLevel;
@@ -729,7 +729,7 @@ begin
     g.InitSearch;
     Run:=0;
     g.SwitchAndShuffle(Graph.NodeCount*Graph.NodeCount div 3,
-                       Max(1000,Graph.NodeCount*Graph.NodeCount));
+                       Max(10000,Graph.NodeCount*Graph.NodeCount));
     g.Apply;
   finally
     g.Free;
@@ -1148,15 +1148,17 @@ end;
 
 procedure TMinXGraph.InitSearch;
 begin
-  StoreAsBest;
+  StoreAsBest(false);
 end;
 
-procedure TMinXGraph.StoreAsBest;
+procedure TMinXGraph.StoreAsBest(CheckIfBetter: boolean);
 var
   l: Integer;
   Level: TMinXLevel;
   n: Integer;
 begin
+  if CheckIfBetter and (BestCrossCount>=0) and (BestCrossCount<CrossCount) then
+    exit;
   BestCrossCount:=CrossCount;
   for l:=0 to length(Levels)-1 do begin
     Level:=Levels[l];
@@ -1215,6 +1217,7 @@ begin
     end;
   end;
   BindPairs;
+  StoreAsBest(true);
   {$IFDEF CheckMinXGraph}
   ConsistencyCheck;
   {$ENDIF}
@@ -1296,8 +1299,7 @@ begin
     for j:=0 to length(Node2.InEdges)-1 do
       UpdateSwitchDiff(Node1.InEdges[i],Node2.InEdges[j]);
 
-  if (BestCrossCount<0) or (BestCrossCount>CrossCount) then
-    StoreAsBest;
+  StoreAsBest(true);
 
   {$IFDEF CheckMinXGraph}
   ConsistencyCheck;
