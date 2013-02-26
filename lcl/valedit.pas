@@ -1041,7 +1041,7 @@ begin
   end
   else
     //First column is only editable if KeyEdit is in KeyOptions
-    SetGridEditorReadOnly(result, not (KeyEdit in KeyOptions));
+    if not (KeyEdit in KeyOptions) then Result := nil;
 end;
 
 function TValueListEditor.GetRowCount: Integer;
