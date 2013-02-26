@@ -454,7 +454,7 @@ begin
         FBConfigsCount:=0;
         FBConfigs:=glXChooseFBConfig(dpy, DefaultScreen(dpy), @attrList[0], FBConfigsCount);
         {$IFDEF VerboseMultiSampling}
-        debugln(['GLX config counts: ',FBConfigsCount]);
+        debugln(['gdk_gl_context_share_new GLX config counts: ',FBConfigsCount]);
         {$ENDIF}
         if FBConfigsCount = 0 then
           raise Exception.Create('Could not find FB config');
@@ -481,7 +481,7 @@ begin
   {$IFDEF UseFPGLX}
     if GLX_version_1_3(dpy) then begin
       {$IFDEF VerboseMultiSampling}
-      DebugLn('GLX Version 1.3 context creation');
+      DebugLn('gdk_gl_context_share_new GLX Version 1.3 context creation');
       {$ENDIF}
       if (sharelist<>nil) then
         glxcontext := glXCreateNewContext(dpy, FBConfig, GLX_RGBA_TYPE,
@@ -489,12 +489,12 @@ begin
       else begin
         {$IFDEF VerboseMultiSampling}
         value:=0;
-        debugln(['AttribValue: ',glXGetFBConfigAttrib(dpy, FBConfig, GLX_SAMPLES_ARB, value),'-',value]);
+        debugln(['gdk_gl_context_share_new AttribValue: ',glXGetFBConfigAttrib(dpy, FBConfig, GLX_SAMPLES_ARB, value),'-',value]);
         {$ENDIF}
         glxcontext := glXCreateNewContext(dpy, FBConfig, GLX_RGBA_TYPE, nil, true);
         {$IFDEF VerboseMultiSampling}
         ctxValue:=0;
-        debugln(['ContextAttrib: ',glXQueryContext(dpy, glxcontext, GLX_FBCONFIG_ID, ctxValue),'-',ctxValue]);
+        debugln(['gdk_gl_context_share_new ContextAttrib: ',glXQueryContext(dpy, glxcontext, GLX_FBCONFIG_ID, ctxValue),'-',ctxValue]);
         {$ENDIF}
       end;
       if FBConfigs<>nil then
