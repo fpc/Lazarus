@@ -231,6 +231,8 @@ type
     property OnUTF8KeyPress;
   end;
 
+
+{$DEFINE CheckMinXGraph}
 type
   TLvlGraph = class;
   TLvlGraphEdge = class;
@@ -659,6 +661,7 @@ type
     GraphLevel: TLvlGraphLevel;
     Nodes: array of TMinXNode;
     Pairs: array of TMinXPair;
+    BestNodes: array of TLvlGraphNode;
     constructor Create(aGraph: TMinXGraph; aIndex: integer);
     destructor Destroy; override;
     procedure GetCrossingCount(Node1, Node2: TMinXNode; out Crossing, SwitchCrossing: integer);
@@ -690,15 +693,20 @@ type
   TMinXGraph = class
   private
     FGraphNodeToNode: TPointerToPointerTree; // TLvlGraphNode to TMinXNode
+    procedure CreatePairs;
+    function ComputeCrossCount: integer;
   public
     Graph: TLvlGraph;
     Levels: array of TMinXLevel;
     Pairs: array of TMinXPair;
     SameSwitchDiffPairs: array of TMinXPair; //
     SameSwitchDiffPair0: integer;
+    CrossCount: integer;
+    BestCrossCount: integer;
     constructor Create(aGraph: TLvlGraph);
     destructor Destroy; override;
-    procedure CreatePairs;
+    procedure InitSearch;
+    procedure StoreAsBest;
     function FindBestPair: TMinXPair;
     procedure SwitchPair(Pair: TMinXPair);
     procedure Apply; // reorder Graph nodes
@@ -715,7 +723,7 @@ begin
   if (Graph.LevelCount<2) or (Graph.NodeCount<3) then exit;
   g:=TMinXGraph.Create(Graph);
   try
-    g.CreatePairs;
+    g.InitSearch;
     for i:=1 to 100 do begin
       Pair:=g.FindBestPair;
       if Pair=nil then break;
@@ -1035,7 +1043,13 @@ begin
     end;
   end;
 
+  CreatePairs;
+
+  CrossCount:=ComputeCrossCount;
+
+  {$IFDEF CheckMinXGraph}
   ConsistencyCheck;
+  {$ENDIF}
 end;
 
 destructor TMinXGraph.Destroy;
@@ -1084,8 +1098,59 @@ begin
   SetLength(SameSwitchDiffPairs,2*SameSwitchDiffPair0+1);
   for i:=0 to length(Pairs)-1 do
     Pairs[i].BindToSwitchList;
+end;
 
-  ConsistencyCheck;
+function TMinXGraph.ComputeCrossCount: integer;
+var
+  l: Integer;
+  Level: TMinXLevel;
+  i: Integer;
+  Node1: TMinXNode;
+  j: Integer;
+  Node2: TMinXNode;
+  e1: Integer;
+  Target1: TMinXNode;
+  e2: Integer;
+  Target2: TMinXNode;
+begin
+  Result:=0;
+  for l:=0 to length(Levels)-2 do begin
+    Level:=Levels[l];
+    for i:=0 to length(Level.Nodes)-2 do begin
+      Node1:=Level.Nodes[i];
+      for j:=i+1 to length(Level.Nodes)-1 do begin
+        Node2:=Level.Nodes[j];
+        for e1:=0 to length(Node1.OutEdges)-1 do begin
+          Target1:=Node1.OutEdges[e1];
+          for e2:=0 to length(Node2.OutEdges)-1 do begin
+            Target2:=Node2.OutEdges[e2];
+            if Target1.IndexInLevel>Target2.IndexInLevel then
+              Result+=1;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TMinXGraph.InitSearch;
+begin
+  BestCrossCount:=-1;
+
+end;
+
+procedure TMinXGraph.StoreAsBest;
+var
+  l: Integer;
+  Level: TMinXLevel;
+  n: Integer;
+begin
+  BestCrossCount:=CrossCount;
+  for l:=0 to length(Levels)-1 do begin
+    Level:=Levels[l];
+    for n:=0 to length(Level.Nodes)-1 do
+      Level.BestNodes[n]:=Level.Nodes[n].GraphNode;
+  end;
 end;
 
 function TMinXGraph.FindBestPair: TMinXPair;
@@ -1125,7 +1190,9 @@ var
   Level: TMinXLevel;
 begin
   //debugln(['TMinXGraph.SwitchPair ',Pair.AsString]);
+  {$IFDEF CheckMinXGraph}
   ConsistencyCheck;
+  {$ENDIF}
 
   Level:=Pair.Level;
 
@@ -1140,6 +1207,7 @@ begin
   Node2.IndexInLevel:=Pair.Index+1;
 
   // reverse Pair.SwitchDiff
+  CrossCount+=Pair.SwitchDiff;
   Pair.SwitchDiff:=-Pair.SwitchDiff;
   //debugln(['TMinXGraph.SwitchPair Pair.SwitchDiff should be equal: ',Pair.SwitchDiff,' = ',Pair.ComputeSwitchDiff]);
 
@@ -1161,7 +1229,9 @@ begin
     for j:=0 to length(Node2.InEdges)-1 do
       UpdateSwitchDiff(Node1.InEdges[i],Node2.InEdges[j]);
 
+  {$IFDEF CheckMinXGraph}
   ConsistencyCheck;
+  {$ENDIF}
 end;
 
 procedure TMinXGraph.Apply;
@@ -1246,6 +1316,9 @@ begin
       Pair:=Pair.NextSameSwitchPair;
     end;
   end;
+
+  if CrossCount<>ComputeCrossCount then
+    Err;
 end;
 
 { TMinXLevel }
@@ -1260,12 +1333,14 @@ begin
   Graph:=aGraph;
   GraphLevel:=Graph.Graph.Levels[Index];
   SetLength(Nodes,GraphLevel.Count);
+  SetLength(BestNodes,length(Nodes));
   for i:=0 to length(Nodes)-1 do begin
     GraphNode:=GraphLevel[i];
     Node:=Graph.GraphNodeToNode(GraphNode);
     Node.Level:=Self;
     Node.IndexInLevel:=i;
     Nodes[i]:=Node;
+    BestNodes[i]:=GraphNode;
   end;
 end;
 
@@ -1277,6 +1352,7 @@ begin
   for i:=0 to length(Nodes)-1 do
     Nodes[i].Free;
   SetLength(Nodes,0);
+  SetLength(BestNodes,0);
   inherited Destroy;
 end;
 
