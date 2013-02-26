@@ -502,7 +502,7 @@ begin
   IndexToRow := Index + FGrid.FixedRows;
   if (FGrid.Editor is TCompositeCellEditor) then
   begin
-    WC := TCompositeCellEditorAccess(FGrid.Editor).GetActiveEditor;
+    WC := TCompositeCellEditorAccess(FGrid.Editor).GetActiveControl;
     if (WC is TCustomEdit) then
       EditorHasFocus := TCustomEdit(WC).Focused
     else
@@ -1024,7 +1024,7 @@ begin
         end;
         esEllipsis: begin
           result := EditorByStyle(cbsEllipsis);
-          SetGridEditorReadOnly(TCompositeCellEditorAccess(result).GetActiveEditor, ItemProp.ReadOnly);
+          SetGridEditorReadOnly(TCompositeCellEditorAccess(result).GetActiveControl, ItemProp.ReadOnly);
         end;
         esPickList: begin
           result := EditorByStyle(cbsPickList);

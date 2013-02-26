@@ -278,7 +278,6 @@ type
     FCol,FRow: Integer;
     FEditors: array of TEditorItem;
     procedure DispatchMsg(msg: TGridMessage);
-    function GetActiveControl: TWinControl;
     function GetMaxLength: Integer;
     procedure SetMaxLength(AValue: Integer);
   protected
@@ -292,10 +291,10 @@ type
     procedure CMControlChange(var Message: TLMEssage); message CM_CONTROLCHANGE;
     procedure msg_SetPos(var Msg: TGridMessage); message GM_SETPOS;
     procedure msg_GetGrid(var Msg: TGridMessage); message GM_GETGRID;
+    function GetActiveControl: TWinControl;
     procedure VisibleChanging; override;
     function  SendChar(AChar: TUTF8Char): Integer;
     procedure WndProc(var TheMessage : TLMessage); override;
-    function GetActiveEditor: TWinControl;
   public
     destructor Destroy; override;
     procedure AddEditor(aEditor: TWinControl; aAlign: TAlign; ActiveCtrl:boolean);
@@ -12012,20 +12011,6 @@ begin
   inherited WndProc(TheMessage);
 end;
 
-function TCompositeCellEditor.GetActiveEditor: TWinControl;
-var
-  i: Integer;
-begin
-  Result := nil;
-  for i := 0 to Length(FEditors) - 1 do
-  begin
-    if FEditors[i].ActiveControl then
-    begin
-      Result := FEditors[i].Editor;
-      Exit;
-    end;
-  end;
-end;
 
 function TCompositeCellEditor.DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean;
 begin
