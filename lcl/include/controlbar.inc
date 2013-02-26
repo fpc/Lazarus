@@ -48,13 +48,13 @@ end;
 procedure TCustomControlBar.AlignControls(aControl: TControl; var aRect: TRect);
 begin
   // ToDo: The layout algorithm must be implemented here.
-  DebugLn('TCustomControlBar.AlignControls');
+//  DebugLn('TCustomControlBar.AlignControls');
 end;
 
 function TCustomControlBar.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
 begin
   Result := inherited CanAutoSize(NewWidth, NewHeight);
-  DebugLn('TCustomControlBar.CanAutoSize');
+//  DebugLn('TCustomControlBar.CanAutoSize');
 end;
 
 procedure TCustomControlBar.SetPicture(aValue: TPicture);
@@ -69,7 +69,7 @@ end;
 
 procedure TCustomControlBar.DoBandMove(aControl: TControl; var aRect: TRect);
 begin
-  DebugLn('TCustomControlBar.DoBandMove');
+//  DebugLn('TCustomControlBar.DoBandMove');
   if Assigned(FOnBandMove) then
     FOnBandMove(Self, aControl, aRect);
 end;
@@ -85,13 +85,13 @@ procedure TCustomControlBar.DockOver(aSource: TDragDockObject; X, Y: Integer;
   aState: TDragState; var Accept: Boolean);
 begin
   inherited DockOver(aSource, X, Y, aState, Accept);
-  DebugLn('TCustomControlBar.DockOver');
+//  DebugLn('TCustomControlBar.DockOver');
 end;
 
 function TCustomControlBar.DragControl(aControl: TControl; X, Y: Integer;
   KeepCapture: Boolean): Boolean;
 begin
-  DebugLn('TCustomControlBar.DragControl');
+//  DebugLn('TCustomControlBar.DragControl');
   Result := True;
   if Assigned(aControl) and Assigned(FOnBandDrag) then
     FOnBandDrag(Self, aControl, Result);
@@ -119,20 +119,20 @@ end;
 function TCustomControlBar.DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint;
   ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean): LRESULT;
 begin
-  DebugLn('TCustomControlBar.DoDragMsg');
+//  DebugLn('TCustomControlBar.DoDragMsg');
   Result:=inherited DoDragMsg(ADragMessage, APosition, ADragObject, ATarget, ADocking);
 end;
 
 procedure TCustomControlBar.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  DebugLn('TCustomControlBar.MouseDown_1');
+//  DebugLn('TCustomControlBar.MouseDown_1');
   inherited MouseDown(Button, Shift, X, Y);
   // ToDo
 end;
 
 procedure TCustomControlBar.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  DebugLn('TCustomControlBar.MouseMove_1');
+//  DebugLn('TCustomControlBar.MouseMove_1');
   inherited MouseMove(Shift, X, Y);
   // ToDo
 end;
@@ -141,7 +141,7 @@ procedure TCustomControlBar.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
 var
   Cntrl: TControl;
 begin
-  DebugLn('TCustomControlBar.MouseUp');
+//  DebugLn('TCustomControlBar.MouseUp');
   // ToDo
   if Assigned(FDragControl) then
   begin
