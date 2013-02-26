@@ -221,6 +221,7 @@ type
     fStreamMode: TfrStreamMode;
     fFormat    : Integer;
     fFormatStr : string;
+    fFrameTyp  : word;
     function GetHeight: Double;
     function GetLeft: Double;
     function GetStretched: Boolean;
@@ -2241,6 +2242,7 @@ begin
     begin
       wb := 0;
       Read(wb, 2); // frametyp
+      fFrameTyp := wb;
       fFrames := [];
       if (wb and $1) <> 0 then include(fFrames, frbRight);
       if (wb and $2) <> 0 then include(fFrames, frbBottom);
@@ -4114,6 +4116,13 @@ begin
     Read(fBandType,SizeOf(BandType));
     fCondition :=ReadString(Stream);
     fDataSetStr:=ReadString(Stream);
+  end else
+  begin
+    if StreamMode=smDesigning then begin
+      fBandType := TfrBandType(fFrameTyp);
+      fCondition := FormatStr;
+      fDatasetStr := FormatStr;
+    end;
   end;
 end;
 
