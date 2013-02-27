@@ -474,7 +474,7 @@ begin
     glGetIntegerv(GL_SAMPLE_BUFFERS,@samplebuffers);
     glGetIntegerv(GL_SAMPLES,@samples);
     DebugLn(['SampleBuffers: ',samplebuffers]);
-    debugln(['Samples: ',samples]);
+    Debugln(['Samples: ',samples]);
     first:=false;
   end;
   //setup 2D projection

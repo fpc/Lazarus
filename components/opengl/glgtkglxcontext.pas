@@ -147,6 +147,10 @@ function gtk_gl_area_make_current(glarea: PGtkGLArea): boolean;
 function gtk_gl_area_begingl(glarea: PGtkGLArea): boolean;
 procedure gtk_gl_area_swap_buffers(gl_area: PGtkGLArea);
 
+{$IFDEF lclgtk}
+function gdk_x11_get_default_xdisplay:PDisplay;cdecl;external;
+function gdk_x11_get_default_screen:gint;cdecl;external;
+{$ENDIF}
 
 procedure LOpenGLViewport(Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
@@ -775,9 +779,14 @@ begin
 
   ColorMap:=gdk_colormap_get_system;
   Visual:=gdk_colormap_get_visual(ColorMap);
-  if GDK_VISUAL_XVISUAL(Visual)^.visualid<>XVInfo^.visualid then begin
+  if XVisualIDFromVisual(
+    GDK_VISUAL_XVISUAL({$IFDEF LCLGTK}PGdkVisualPrivate(visual)
+                       {$ELSE}visual
+                       {$ENDIF}))
+    <>XVInfo^.visualid
+  then begin
     Visual:=gdkx_visual_get(XVInfo^.visualid);
-    ColorMap:=gdk_colormap_new(Visual, gFALSE);
+    ColorMap:=gdk_colormap_new(Visual, {$IFDEF LCLGTK2}gFALSE{$ELSE}0{$ENDIF});
   end;
 
   GLArea:=gtk_type_new(gtk_gl_area_get_type);
