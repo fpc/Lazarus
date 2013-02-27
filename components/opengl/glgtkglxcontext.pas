@@ -142,6 +142,7 @@ function GTK_IS_GL_AREA_CLASS(klass: Pointer): Boolean;
 function gtk_gl_area_get_type: TGtkType;
 function gtk_gl_area_new(attrList: Plongint): PGtkWidget;
 function gtk_gl_area_share_new(attrList: Plongint; share: PGtkGLArea): PGtkWidget;
+function gtk_gl_area_share_new_usefpglx(attrList: Plongint; share: PGtkGLArea): PGtkGLArea;
 function gtk_gl_area_make_current(glarea: PGtkGLArea): boolean;
 function gtk_gl_area_begingl(glarea: PGtkGLArea): boolean;
 procedure gtk_gl_area_swap_buffers(gl_area: PGtkGLArea);
@@ -419,7 +420,7 @@ end;
 
 function gdk_gl_context_new(visual: PGdkVisual; attrlist: PlongInt): PGdkGLContext;
 begin
-  Result := gdk_gl_context_share_new(visual, nil, GLXFalse, attrlist);
+  Result := gdk_gl_context_share_new(visual, nil, GLXTrue, attrlist);
 end;
 
 function gdk_gl_context_share_new(visual: PGdkVisual; sharelist: PGdkGLContext;
@@ -430,45 +431,14 @@ var
   PrivateShareList: PGdkGLContextPrivate;
   PrivateContext: PGdkGLContextPrivate;
   glxcontext: TGLXContext;
-{$IFDEF UseFPGLX}
-  FBConfig: TGLXFBConfig;
-  FBConfigs: PGLXFBConfig;
-  FBConfigsCount: Integer;
-{$ENDIF}
-{$IFDEF VerboseMultiSampling}
-  value: longint;
-  ctxValue: longint;
-{$ENDIF}
 
 begin
   Result:=nil;
-
   dpy := GetDefaultXDisplay;
 
   {$IFDEF lclgtk2}
     if visual=nil then ;
-    {$IFDEF UseFPGLX}
-      FBConfigs:=nil;
-      if GLX_version_1_3(dpy) then begin
-        { use approach recommended since glX 1.3 }
-        FBConfigsCount:=0;
-        FBConfigs:=glXChooseFBConfig(dpy, DefaultScreen(dpy), @attrList[0], FBConfigsCount);
-        {$IFDEF VerboseMultiSampling}
-        debugln(['gdk_gl_context_share_new GLX config counts: ',FBConfigsCount]);
-        {$ENDIF}
-        if FBConfigsCount = 0 then
-          raise Exception.Create('Could not find FB config');
-
-        { just choose the first FB config from the FBConfigs list.
-          More involved selection possible. }
-        FBConfig := FBConfigs^;
-        vi:=glXGetVisualFromFBConfig(dpy, FBConfig);
-      end else begin
-        vi:=glXChooseVisual(dpy, DefaultScreen(dpy), @attrList[0]);
-      end;
-    {$ELSE}
-      vi:=glXChooseVisual(dpy, DefaultScreen(dpy), @attrList[0]);
-    {$ENDIF}
+    vi:=glXChooseVisual(dpy, DefaultScreen(dpy), @attrList[0]);
   {$ELSE}
     if visual=nil then exit;
     vi := get_xvisualinfo(visual);
@@ -478,41 +448,11 @@ begin
 
   PrivateShareList:=PGdkGLContextPrivate(sharelist);
 
-  {$IFDEF UseFPGLX}
-    if GLX_version_1_3(dpy) then begin
-      {$IFDEF VerboseMultiSampling}
-      DebugLn('gdk_gl_context_share_new GLX Version 1.3 context creation');
-      {$ENDIF}
-      if (sharelist<>nil) then
-        glxcontext := glXCreateNewContext(dpy, FBConfig, GLX_RGBA_TYPE,
-                                          PrivateShareList^.glxcontext, true)
-      else begin
-        {$IFDEF VerboseMultiSampling}
-        value:=0;
-        debugln(['gdk_gl_context_share_new AttribValue: ',glXGetFBConfigAttrib(dpy, FBConfig, GLX_SAMPLES_ARB, value),'-',value]);
-        {$ENDIF}
-        glxcontext := glXCreateNewContext(dpy, FBConfig, GLX_RGBA_TYPE, nil, true);
-        {$IFDEF VerboseMultiSampling}
-        ctxValue:=0;
-        debugln(['gdk_gl_context_share_new ContextAttrib: ',glXQueryContext(dpy, glxcontext, GLX_FBCONFIG_ID, ctxValue),'-',ctxValue]);
-        {$ENDIF}
-      end;
-      if FBConfigs<>nil then
-        XFree(FBConfigs);
-    end else begin
-      if (sharelist<>nil) then
-        glxcontext := glXCreateContext(dpy, vi, PrivateShareList^.glxcontext,
-                                       direct)
-      else
-        glxcontext := glXCreateContext(dpy, vi, nil, direct);
-    end;
-  {$ELSE}
-    if (sharelist<>nil) then
-      glxcontext := glXCreateContext(dpy, vi, PrivateShareList^.glxcontext,
-                                     direct)
-    else
-      glxcontext := glXCreateContext(dpy, vi, nil, direct);
-  {$ENDIF}
+  if (sharelist<>nil) then
+    glxcontext := glXCreateContext(dpy, vi, PrivateShareList^.glxcontext,
+                                   direct)
+  else
+    glxcontext := glXCreateContext(dpy, vi, nil, direct);
 
   XFree(vi);
   if (glxcontext = nil) then exit;
@@ -727,11 +667,15 @@ var
   sharelist: PGdkGLContext;
   glcontext: PGdkGLContext;
   gl_area: PGtkGLArea;
+
 begin
   Result := nil;
   //DebugLn(['gtk_gl_area_share_new START']);
   if (share <> nil) and (not GTK_IS_GL_AREA(share)) then
     exit;
+  {$IFDEF UseFPGLX}
+  gl_area:=gtk_gl_area_share_new_usefpglx(attrList, share);
+  {$ELSE}
   {$IFNDEF MSWindows}
   {$IFDEF lclgtk2}
   visual := nil;
@@ -764,12 +708,87 @@ begin
     gtk_widget_pop_colormap;
   end;
   {$ENDIF non MSWindows}
-
-  {$IFDEF VerboseMultiSampling}
-  WriteFBConfigID('gtk_gl_area_share_new',PGdkGLContextPrivate(gl_area^.glcontext));
-  {$ENDIF}
-
+  {$ENDIF UseFPGLX}
   Result:=PGtkWidget(gl_area);
+end;
+
+function gtk_gl_area_share_new_usefpglx(attrList: Plongint; share: PGtkGLArea): PGtkGLArea;
+var
+  GLArea: PGtkGLArea;
+  ShareList: PGdkGLContext;
+  PrivateShareList: PGdkGLContextPrivate;
+  ColorMap: PGdkColormap;
+  Visual: PGdkVisual;
+  PrivateContext: PGdkGLContextPrivate;
+  XDisplay: PDisplay;
+  XVInfo: PXVisualInfo;
+  ScreenNum: gint;
+  FBConfig: TGLXFBConfig;
+  FBConfigs: PGLXFBConfig;
+  FBConfigsCount: Integer;
+  GLXContext: TGLXContext;
+
+begin
+  Result:=nil;
+  ShareList:=nil;
+  if share<>nil then ShareList:=share^.glcontext;
+  PrivateShareList:=PGdkGLContextPrivate(ShareList);
+  XDisplay:=gdk_x11_get_default_xdisplay;
+  ScreenNum:=gdk_x11_get_default_screen;
+  if GLX_version_1_3(XDisplay) then begin
+    { use approach recommended since glX 1.3 }
+    FBConfigsCount:=0;
+    FBConfigs:=glXChooseFBConfig(XDisplay, ScreenNum, @attrList[0], FBConfigsCount);
+    if FBConfigsCount = 0 then
+      raise Exception.Create('Could not find FB config');
+
+    { just choose the first FB config from the FBConfigs list.
+      More involved selection possible. }
+    FBConfig := FBConfigs^;
+    XVInfo:=glXGetVisualFromFBConfig(XDisplay, FBConfig);
+  end else begin
+    XVInfo:=glXChooseVisual(XDisplay, ScreenNum, @attrList[0]);
+  end;
+
+  if XVInfo=nil then
+    raise Exception.Create('gdk_gl_context_share_new_usefpglx no visual found');
+
+  if GLX_version_1_3(XDisplay) then begin
+    if (ShareList<>nil) then
+      GLXContext:=glXCreateNewContext(XDisplay, FBConfig, GLX_RGBA_TYPE,
+                                      PrivateShareList^.glxcontext, True)
+    else
+      GLXContext:=glXCreateNewContext(XDisplay, FBConfig, GLX_RGBA_TYPE, Nil, True);
+    if FBConfigs<>nil then
+      XFree(FBConfigs);
+  end else begin
+    if (ShareList<>nil) then
+      GLXContext:=glXCreateContext(XDisplay, XVInfo, PrivateShareList^.glxcontext,
+                                   GLXTrue)
+    else
+      GLXContext:=glXCreateContext(XDisplay, XVInfo, Nil, GLXTrue);
+  end;
+
+  if GLXContext=nil then
+    raise Exception.Create('gdk_gl_context_share_new_usefpglx context creation failed');
+
+  ColorMap:=gdk_colormap_get_system;
+  Visual:=gdk_colormap_get_visual(ColorMap);
+  if GDK_VISUAL_XVISUAL(Visual)^.visualid<>XVInfo^.visualid then begin
+    Visual:=gdkx_visual_get(XVInfo^.visualid);
+    ColorMap:=gdk_colormap_new(Visual, gFALSE);
+  end;
+
+  GLArea:=gtk_type_new(gtk_gl_area_get_type);
+  gtk_widget_set_colormap(PGtkWidget(@GLArea^.darea), ColorMap);
+
+  PrivateContext:=g_new(SizeOf(TGdkGLContextPrivate), 1);
+  PrivateContext^.xdisplay:=XDisplay;
+  PrivateContext^.glxcontext:=GLXContext;
+  PrivateContext^.ref_count:=1;
+
+  GLArea^.glcontext:=PGdkGLContext(PrivateContext);
+  Result:=GLArea;
 end;
 
 function gtk_gl_area_make_current(glarea: PGtkGLArea): boolean;
