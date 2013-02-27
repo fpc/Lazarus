@@ -6461,7 +6461,6 @@ begin
       x := bt.x; dx := bt.dx;
       InitDataSet(TfrBandView(bt).DataSet);
       View := bt;
-      Name:= bt.Name; // Get Band Name from BandView Name (G. Colla)
       Flags := bt.Flags;
       Visible := bt.Visible;
       bt.Parent := Bands[TfrBandView(bt).BandType];
@@ -6482,7 +6481,6 @@ begin
            t.x := t.x - Bnd.x;
            t.Parent := Bnd;
            Bnd.Objects.Add(t);
-           Bnd.Name:= t.Name;  // Get Band Name from BandView Name (G. Colla)
          end;
       end;
     end;
@@ -6511,7 +6509,6 @@ begin
         Bnd.y := bt.y;
         Bnd.dy := bt.dy;
         Bnd.View := bt;
-        Bnd.Name:= bt.Name;  // Get Band Name from BandView Name (G. Colla)
         Bnd.Flags := bt.Flags;
         Bnd.Visible := bt.Visible;
         bt.Parent := Bnd;
