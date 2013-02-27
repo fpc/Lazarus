@@ -319,6 +319,7 @@ type
     property Weight: single read FWeight write SetWeight; // >=0
     function IsBackEdge: boolean;
     property BackEdge: boolean read FBackEdge; // edge was disabled to break a cycle
+    function AsString: string;
   end;
   TLvlGraphEdgeClass = class of TLvlGraphEdge;
 
@@ -1340,6 +1341,9 @@ var
   Level: TMinXLevel;
   j: Integer;
   Node: TMinXNode;
+  e: Integer;
+  OtherNode: TMinXNode;
+  k: Integer;
 begin
   if length(Levels)<>Graph.LevelCount then
     Err;
@@ -1358,6 +1362,24 @@ begin
         Err;
       if Node.GraphNode=nil then
         Err;
+      for e:=0 to length(Node.InEdges)-1 do begin
+        OtherNode:=Node.InEdges[e];
+        if Node.Level.Index-1<>OtherNode.Level.Index then
+          Err('node="'+Node.GraphNode.Caption+'" othernode="'+OtherNode.GraphNode.Caption+'"');
+        k:=length(OtherNode.OutEdges)-1;
+        while (k>=0) and (OtherNode.OutEdges[k]<>Node) do dec(k);
+        if k<0 then
+          Err('node="'+Node.GraphNode.Caption+'" othernode="'+OtherNode.GraphNode.Caption+'"');
+      end;
+      for e:=0 to length(Node.OutEdges)-1 do begin
+        OtherNode:=Node.OutEdges[e];
+        if Node.Level.Index+1<>OtherNode.Level.Index then
+          Err('node="'+Node.GraphNode.Caption+'" othernode="'+OtherNode.GraphNode.Caption+'"');
+        k:=length(OtherNode.InEdges)-1;
+        while (k>=0) and (OtherNode.InEdges[k]<>Node) do dec(k);
+        if k<0 then
+          Err('node="'+Node.GraphNode.Caption+'" othernode="'+OtherNode.GraphNode.Caption+'"');
+      end;
     end;
   end;
   for i:=0 to length(Pairs)-1 do begin
@@ -2476,8 +2498,8 @@ end;
 procedure TLvlGraph.CreateTopologicalLevels;
 {$DEFINE LvlGraphConsistencyCheck}
 var
-  InNodes: TAvgLvlTree;
-  ExtNodes: TAvgLvlTree;
+  RootNodes: TAvgLvlTree; // tree of TLvlGraphNode, all nodes with no active InEdges = root nodes
+  ExtNodes: TAvgLvlTree; // tree of TGraphLevelerNode sorted by Node
 
   function GetExtNode(Node: TLvlGraphNode): TGraphLevelerNode;
   begin
@@ -2504,13 +2526,37 @@ var
     {$ENDIF}
     GetExtNode(Node).InEdgeCount:=i;
     if i=0 then
-      InNodes.Add(Node);
+      RootNodes.Add(Node);
   end;
 
   function HasVisited(Node: TLvlGraphNode): boolean;
   begin
     Result:=GetExtNode(Node).Visited;
   end;
+
+  {$IFDEF LvlGraphConsistencyCheck}
+  procedure CheckRemainingEdgeCounts;
+  var
+    i: Integer;
+    Node: TLvlGraphNode;
+    Cnt: Integer;
+    e: Integer;
+    Edge: TLvlGraphEdge;
+  begin
+    for i:=0 to NodeCount-1 do begin
+      Node:=Nodes[i];
+      Cnt:=0;
+      for e:=0 to Node.InEdgeCount-1 do begin
+        Edge:=Node.InEdges[e];
+        if Edge.FBackEdge then continue;
+        if HasVisited(Edge.Source) then continue;
+        Cnt+=1;
+      end;
+      if Cnt<>GetRemainingInEdgeCounts(Node) then
+        raise Exception.Create('TLvlGraph.CreateTopologicalLevels inconsistency: '+Node.Caption+' GetRemainingInEdgeCounts='+dbgs(GetRemainingInEdgeCounts(Node))+' really='+dbgs(Cnt));
+    end;
+  end;
+  {$ENDIF}
 
 var
   i: Integer;
@@ -2527,7 +2573,7 @@ begin
   ConsistencyCheck(false);
   {$ENDIF}
   ExtNodes:=TAvgLvlTree.Create(@CompareGraphLevelerNodes);
-  InNodes:=TAvgLvlTree.Create; // nodes with remaining InEdgeCount=0, not yet visited
+  RootNodes:=TAvgLvlTree.Create; // nodes with remaining InEdgeCount=0, not yet visited
   try
     // find start nodes with InEdgeCount=0
     // clear BackEdge flags
@@ -2539,7 +2585,7 @@ begin
       ExtNodes.Add(ExtNode);
       ExtNode.InEdgeCount:=Node.InEdgeCount;
       if Node.InEdgeCount=0 then
-        InNodes.Add(Node);
+        RootNodes.Add(Node);
       for j:=0 to Node.InEdgeCount-1 do begin
         Edge:=Node.InEdges[j];
         Edge.fBackEdge:=false;
@@ -2550,10 +2596,13 @@ begin
         end;
       end;
     end;
+    {$IFDEF LvlGraphConsistencyCheck}
+    CheckRemainingEdgeCounts;
+    {$ENDIF}
     MaxLevel:=0;
     for i:=1 to NodeCount do begin
-      if InNodes.Count=0 then begin
-        // all nodes have InEdges => all nodes in cycles
+      if RootNodes.Count=0 then begin
+        // all nodes have active InEdges => all nodes in cycles
         // find a not visited node with the smallest number of active InEdges
         // ToDo: consider Edge.Size
         BestNode:=nil;
@@ -2565,24 +2614,29 @@ begin
           then
             BestNode:=Node;
         end;
+        debugln(['TLvlGraph.CreateTopologicalLevels cycle node: ',BestNode.Caption]);
         // disable all InEdges to get a cycle free node
         for j:=0 to BestNode.InEdgeCount-1 do begin
           Edge:=BestNode.InEdges[j];
-          if Edge.BackEdge then continue;
+          if Edge.FBackEdge then continue;
           if HasVisited(Edge.Source) then continue;
+          debugln(['TLvlGraph.CreateTopologicalLevels disable edge ',Edge.AsString]);
           Edge.fBackEdge:=true;
-          DecRemainingInEdgeCount(BestNode); // this adds BestNode to InNodes
+          DecRemainingInEdgeCount(BestNode); // this adds BestNode to RootNodes
         end;
-        // now InNodes contains BestNode
+        // now RootNodes contains BestNode
         {$IFDEF LvlGraphConsistencyCheck}
-        if InNodes.Count=0 then
+        if RootNodes.Count=0 then
           raise Exception.Create('BestNode='+BestNode.Caption+' missing in InNodes. InEdgeCount='+dbgs(GetExtNode(BestNode).InEdgeCount)+' should be 0');
         {$ENDIF}
       end;
+      {$IFDEF LvlGraphConsistencyCheck}
+      CheckRemainingEdgeCounts;
+      {$ENDIF}
       // get next node with no active InEdges
-      AVLNode:=InNodes.FindLowest;
+      AVLNode:=RootNodes.FindLowest;
       Node:=TLvlGraphNode(AVLNode.Data);
-      InNodes.Delete(AVLNode);
+      RootNodes.Delete(AVLNode);
       ExtNode:=GetExtNode(Node);
       // mark Node as visited
       ExtNode.Visited:=true;
@@ -2590,25 +2644,28 @@ begin
       ExtNode.Level:=0;
       for j:=0 to Node.InEdgeCount-1 do begin
         Edge:=Node.InEdges[j];
-        if Edge.BackEdge then continue;
+        if not HasVisited(Edge.Source) then continue;
         ExtNode.Level:=Max(ExtNode.Level,GetExtNode(Edge.Source).Level+1);
         MaxLevel:=Max(ExtNode.Level,MaxLevel);
         LevelCount:=Max(LevelCount,MaxLevel+1);
-        ExtNode.Node.Level:=Levels[ExtNode.Level];
       end;
+      Node.Level:=Levels[ExtNode.Level];
       // forget all out edges
       for j:=0 to Node.OutEdgeCount-1 do begin
         Edge:=Node.OutEdges[j];
-        if Edge.BackEdge then continue;
+        if Edge.FBackEdge then continue;
         DecRemainingInEdgeCount(Edge.Target);
       end;
+      {$IFDEF LvlGraphConsistencyCheck}
+      CheckRemainingEdgeCounts;
+      {$ENDIF}
     end;
     // delete unneeded levels
     LevelCount:=MaxLevel+1;
   finally
     ExtNodes.FreeAndClear;
     ExtNodes.Free;
-    InNodes.Free;
+    RootNodes.Free;
   end;
   //WriteDebugReport('TLvlGraph.CreateTopologicalLevels END');
   {$IFDEF LvlGraphConsistencyCheck}
@@ -2881,7 +2938,7 @@ begin
       if Edge.Target.FInEdges.IndexOf(Edge)<0 then
         raise Exception.Create('');
       if WithBackEdge and (Edge.BackEdge<>Edge.IsBackEdge) then
-        raise Exception.Create('');
+        raise Exception.Create('Edge.BackEdge '+Edge.AsString);
     end;
     for j:=0 to Node.InEdgeCount-1 do begin
       Edge:=Node.InEdges[j];
@@ -2935,7 +2992,12 @@ end;
 
 function TLvlGraphEdge.IsBackEdge: boolean;
 begin
-  Result:=Source.Level.Index>Target.Level.Index;
+  Result:=Source.Level.Index>=Target.Level.Index;
+end;
+
+function TLvlGraphEdge.AsString: string;
+begin
+  Result:='('+Source.Caption+'->'+Target.Caption+')';
 end;
 
 { TLvlGraphNode }
