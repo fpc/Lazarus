@@ -9,6 +9,9 @@ uses
   GL, GLExt, LCLType, fpImage, SysUtils;
 
 type
+
+  { TGLColor }
+
   TGLColor = record
     alpha: GLushort;
     blue: GLushort;
