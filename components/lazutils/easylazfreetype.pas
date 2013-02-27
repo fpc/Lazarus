@@ -222,7 +222,7 @@ type
     procedure DiscardInstance;
     procedure DiscardStream;
     procedure SetPixelSize(const AValue: single);
-    procedure SetPointSize(const AValue: single);
+    procedure SetPointSize(AValue: single);
     function LoadGlyphInto(_glyph      : TT_Glyph;
                             glyph_index : Word): boolean;
     procedure SetWidthFactor(const AValue: single);
@@ -379,6 +379,8 @@ type
   ArrayOfString = array of string;
 
 function StylesToArray(AStyles: string): ArrayOfString;
+
+const FreeTypeMinPointSize = 1;
 
 implementation
 
@@ -1072,8 +1074,9 @@ begin
     SizeInPoints := AValue*72/DPI;
 end;
 
-procedure TFreeTypeFont.SetPointSize(const AValue: single);
+procedure TFreeTypeFont.SetPointSize(AValue: single);
 begin
+  if AValue < FreeTypeMinPointSize then AValue := FreeTypeMinPointSize;
   if FPointSize=AValue then exit;
   FPointSize:=AValue;
   if FInstanceCreated then
