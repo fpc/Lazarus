@@ -415,7 +415,7 @@ type
       HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer);
     procedure SetAllNodeDrawSizes(PixelPerWeight: single = 1.0; MinWeight: single = 0.0);
     procedure MarkBackEdges;
-    procedure MinimizeCrossings; // set all Node.Position to minimize crossings
+    procedure MinimizeCrossings; // permutate nodes to minimize crossings
     procedure MinimizeOverlappings(MinPos: integer = 0;
       NodeGapAbove: integer = 1; NodeGapBelow: integer = 1;
       aLevel: integer = -1); // set all Node.Position to minimize overlappings
@@ -506,6 +506,7 @@ type
     FGraph: TLvlGraph;
     FNodeStyle: TLvlGraphNodeStyle;
     FNodeUnderMouse: TLvlGraphNode;
+    FOnMinimizeCrossings: TNotifyEvent;
     FOnSelectionChanged: TNotifyEvent;
     FOptions: TLvlGraphCtrlOptions;
     FScrollLeft: integer;
@@ -560,6 +561,7 @@ type
     property ScrollTopMax: integer read FScrollTopMax;
     property ScrollLeft: integer read FScrollLeft write SetScrollLeft;
     property ScrollLeftMax: integer read FScrollLeftMax;
+    property OnMinimizeCrossings: TNotifyEvent read FOnMinimizeCrossings write FOnMinimizeCrossings;// provide an alternative minimize crossing algorithm
   end;
 
   { TLvlGraphControl }
@@ -590,6 +592,7 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
+    property OnMinimizeCrossings;
     property OnMouseDown;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -2164,7 +2167,10 @@ begin
       ClientHeight-HeaderHeight,round(single(TxtH)*NodeStyle.CaptionScale+0.5));
 
     // sort nodes within levels to avoid crossings
-    Graph.MinimizeCrossings;
+    if OnMinimizeCrossings<>nil then
+      OnMinimizeCrossings(Self)
+    else
+      Graph.MinimizeCrossings;
 
     // position nodes without overlapping
     Graph.MinimizeOverlappings(HeaderHeight,GapTop,GapBottom);
