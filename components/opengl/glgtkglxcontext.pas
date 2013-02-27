@@ -663,51 +663,52 @@ end;
 function gtk_gl_area_share_new(attrList: Plongint; share: PGtkGLArea
   ): PGtkWidget;
 var
+  gl_area: PGtkGLArea;
+  {$IFNDEF UseFPGLX}
   visual: PGdkVisual;
   sharelist: PGdkGLContext;
   glcontext: PGdkGLContext;
-  gl_area: PGtkGLArea;
-
+  {$ENDIF}
 begin
   Result := nil;
   //DebugLn(['gtk_gl_area_share_new START']);
   if (share <> nil) and (not GTK_IS_GL_AREA(share)) then
     exit;
   {$IFDEF UseFPGLX}
-  gl_area:=gtk_gl_area_share_new_usefpglx(attrList, share);
+    gl_area:=gtk_gl_area_share_new_usefpglx(attrList, share);
   {$ELSE}
-  {$IFNDEF MSWindows}
-  {$IFDEF lclgtk2}
-  visual := nil;
-  {$ELSE}
-  visual := gdk_gl_choose_visual(attrlist);
-  if (visual = nil) then exit;
-  {$ENDIF}
-  {$ENDIF non MSWindows}
+    {$IFNDEF MSWindows}
+      {$IFDEF lclgtk2}
+        visual := nil;
+      {$ELSE}
+        visual := gdk_gl_choose_visual(attrlist);
+        if (visual = nil) then exit;
+      {$ENDIF}
+    {$ENDIF non MSWindows}
 
-  sharelist := nil;
-  if share <> nil then sharelist := share^.glcontext;
-  glcontext := gdk_gl_context_share_new(visual, sharelist, GLXTrue, attrlist);
-  if (glcontext = nil) then exit;
+    sharelist := nil;
+    if share <> nil then sharelist := share^.glcontext;
+    glcontext := gdk_gl_context_share_new(visual, sharelist, GLXTrue, attrlist);
+    if (glcontext = nil) then exit;
 
-  {$IFNDEF MSWindows}
-  if visual <> nil then begin
-    // use colormap and visual suitable for OpenGL rendering
-    gtk_widget_push_colormap(gdk_colormap_new(visual, gtk_TRUE));
-    gtk_widget_push_visual(visual);
-  end;
-  {$ENDIF non MSWindows}
+    {$IFNDEF MSWindows}
+      if visual <> nil then begin
+        // use colormap and visual suitable for OpenGL rendering
+        gtk_widget_push_colormap(gdk_colormap_new(visual, gtk_TRUE));
+        gtk_widget_push_visual(visual);
+      end;
+    {$ENDIF non MSWindows}
 
-  gl_area := gtk_type_new (gtk_gl_area_get_type);
-  gl_area^.glcontext := glcontext;
+    gl_area := gtk_type_new (gtk_gl_area_get_type);
+    gl_area^.glcontext := glcontext;
 
-  {$IFNDEF MSWindows}
-  if visual<>nil then begin
-    // pop back defaults
-    gtk_widget_pop_visual;
-    gtk_widget_pop_colormap;
-  end;
-  {$ENDIF non MSWindows}
+    {$IFNDEF MSWindows}
+      if visual<>nil then begin
+        // pop back defaults
+        gtk_widget_pop_visual;
+        gtk_widget_pop_colormap;
+      end;
+    {$ENDIF non MSWindows}
   {$ENDIF UseFPGLX}
   Result:=PGtkWidget(gl_area);
 end;
