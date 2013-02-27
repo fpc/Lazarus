@@ -562,6 +562,7 @@ type
     property FrameWidth;
     property Stretched;
     property SharedName: string read FSharedName write FSharedName;
+    property FillColor : TColor read fFillColor write SetFillColor;
   end;
 
   { TfrLineView }
