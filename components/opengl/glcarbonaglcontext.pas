@@ -40,7 +40,7 @@ function LOpenGLCreateContext(AWinControl: TWinControl;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean;
               RedBits, GreenBits, BlueBits, MultiSampling, AlphaBits, DepthBits,
-              StencilBits: cardinal): PInteger;
+              StencilBits, AUXBuffers: cardinal): PInteger;
 
 
 type
@@ -196,7 +196,7 @@ begin
   disp := GetMainDevice ();
   AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA,
     RedBits,GreenBits,BlueBits,
-    MultiSampling,AlphaBits,DepthBits,StencilBits);
+    MultiSampling,AlphaBits,DepthBits,StencilBits,AUXBuffers);
   aglPixFmt := aglChoosePixelFormat (@disp, 1, AttrList);
   System.FreeMem(AttrList);
   aglContext := aglCreateContext (aglPixFmt, NIL);
@@ -240,7 +240,7 @@ end;
 
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean;
   RedBits, GreenBits, BlueBits, MultiSampling, AlphaBits, DepthBits,
-  StencilBits: cardinal): PInteger;
+  StencilBits, AUXBuffers: cardinal): PInteger;
 var
   p: integer;
 
@@ -264,9 +264,28 @@ var
     Add(AGL_RED_SIZE); Add(RedBits);
     Add(AGL_GREEN_SIZE); Add(GreenBits);
     Add(AGL_BLUE_SIZE); Add(BlueBits);
-    Add(AGL_ALPHA_SIZE); Add(AlphaBits);
-    Add(AGL_DEPTH_SIZE); Add(DepthBits);
-    Add(AGL_STENCIL_SIZE); Add(StencilBits);
+    if AlphaBits>0 then
+    begin
+      Add(AGL_ALPHA_SIZE);  Add(AlphaBits);
+    end;
+    if DepthBits>0 then
+    begin
+      Add(AGL_DEPTH_SIZE);  Add(DepthBits);
+    end;
+    if StencilBits>0 then
+    begin
+      Add(AGL_STENCIL_SIZE);  Add(StencilBits);
+    end;
+    if AUXBuffers>0 then
+    begin
+      Add(AGL_AUX_BUFFERS);  Add(AUXBuffers);
+    end;
+    if MultiSampling > 1 then
+    begin
+      Add(AGL_SAMPLE_BUFFERS_ARB); Add(1);
+      Add(AGL_SAMPLES_ARB); Add(MultiSampling);
+    end;
+
     Add(AGL_NONE);
   end;
 
