@@ -373,9 +373,9 @@ const
    {$IF FPC_FULLVERSION<20701}
    {$HINT workaround for bug 23868 when compiling with -O2}
    p:=stream.z;
-   TFreeTypeStream(p).FOpen := false;
+   TFreeTypeStream(p).FUsed := false;
    {$ELSE}
-   TFreeTypeStream(stream.z).FOpen := false;
+   TFreeTypeStream(stream.z).FUsed := false;
    {$ENDIF}
  end;
 
@@ -739,8 +739,19 @@ end;
      FStream := TFileStream.Create(FName, fmOpenRead);
      FOpen := True;
      FBase := 0;
-     if FStoredSize = -1 then FStoredSize := FStream.Size;
-     if FPosit <> 0 then FStream.Position:= FPosit;
+     try
+       if FStoredSize = -1 then FStoredSize := FStream.Size;
+       if FPosit <> 0 then FStream.Position:= FPosit;
+     except
+       on ex:exception do
+       begin
+         FreeAndNil(FStream);
+         FOpen := False;
+         error := TT_Err_File_Error;
+         result := Failure;
+         exit;
+       end;
+     end;
    except
      on ex:exception do
      begin
