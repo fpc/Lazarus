@@ -232,7 +232,7 @@ type
   end;
 
 
-{off $DEFINE CheckMinXGraph}
+{$DEFINE CheckMinXGraph}
 type
   TLvlGraph = class;
   TLvlGraphEdge = class;
@@ -1003,7 +1003,6 @@ begin
     GraphNode:=Graph.Nodes[i];
     Node:=TMinXNode.Create(GraphNode);
     FGraphNodeToNode[GraphNode]:=Node;
-    SetLength(Node.InEdges,GraphNode.InEdgeCount);
   end;
 
   // create levels
@@ -1344,7 +1343,23 @@ var
   e: Integer;
   OtherNode: TMinXNode;
   k: Integer;
+  AVLNode: TAvgLvlTreeNode;
+  P2PItem: PPointerToPointerItem;
 begin
+  AVLNode:=FGraphNodeToNode.Tree.FindLowest;
+  while AVLNode<>nil do begin
+    P2PItem:=PPointerToPointerItem(AVLNode.Data);
+    if not (TObject(P2PItem^.Key) is TLvlGraphNode) then
+      Err(DbgSName(TObject(P2PItem^.Key)));
+    if not (TObject(P2PItem^.Value) is TMinXNode) then
+      Err(DbgSName(TObject(P2PItem^.Value)));
+    if TMinXNode(P2PItem^.Value).GraphNode=nil then
+      Err(dbgs(TMinXNode(P2PItem^.Value).IndexInLevel));
+    if TLvlGraphNode(P2PItem^.Key)<>TMinXNode(P2PItem^.Value).GraphNode then
+      Err;
+    AVLNode:=FGraphNodeToNode.Tree.FindSuccessor(AVLNode);
+  end;
+
   if length(Levels)<>Graph.LevelCount then
     Err;
   for i:=0 to length(Levels)-1 do begin
@@ -1364,6 +1379,8 @@ begin
         Err;
       for e:=0 to length(Node.InEdges)-1 do begin
         OtherNode:=Node.InEdges[e];
+        if OtherNode=nil then
+          Err('node="'+Node.GraphNode.Caption+'" e='+dbgs(e));
         if Node.Level.Index-1<>OtherNode.Level.Index then
           Err('node="'+Node.GraphNode.Caption+'" othernode="'+OtherNode.GraphNode.Caption+'"');
         k:=length(OtherNode.OutEdges)-1;
@@ -1373,6 +1390,8 @@ begin
       end;
       for e:=0 to length(Node.OutEdges)-1 do begin
         OtherNode:=Node.OutEdges[e];
+        if OtherNode=nil then
+          Err('node="'+Node.GraphNode.Caption+'" e='+dbgs(e));
         if Node.Level.Index+1<>OtherNode.Level.Index then
           Err('node="'+Node.GraphNode.Caption+'" othernode="'+OtherNode.GraphNode.Caption+'"');
         k:=length(OtherNode.InEdges)-1;
