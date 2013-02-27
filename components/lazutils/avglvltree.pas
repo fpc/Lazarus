@@ -212,7 +212,7 @@ type
     function GetPrev(const Key: Pointer; out PrevKey, PrevValue: Pointer): Boolean;
     property Count: SizeInt read GetCount;
     property Values[const Key: Pointer]: Pointer read GetValues write SetValues; default;
-    property Tree: TAvgLvlTree read FItems;
+    property Tree: TAvgLvlTree read FItems; // tree of PPointerToPointerItem
   end;
 
 
