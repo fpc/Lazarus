@@ -2610,6 +2610,7 @@ begin
         Edge.fBackEdge:=false;
         if Edge.Source=Node then begin
           // edge Source=Target
+          //debugln(['TLvlGraph.CreateTopologicalLevels disable edge ',Edge.AsString]);
           Edge.fBackEdge:=true;
           DecRemainingInEdgeCount(Node);
         end;
@@ -2622,6 +2623,8 @@ begin
     for i:=1 to NodeCount do begin
       if RootNodes.Count=0 then begin
         // all nodes have active InEdges => all nodes in cycles
+        // ToDo: deactivate edges in cycles until RootNodes.Count>0
+
         // find a not visited node with the smallest number of active InEdges
         // ToDo: consider Edge.Size
         BestNode:=nil;
@@ -2957,7 +2960,7 @@ begin
       if Edge.Target.FInEdges.IndexOf(Edge)<0 then
         raise Exception.Create('');
       if WithBackEdge and (Edge.BackEdge<>Edge.IsBackEdge) then
-        raise Exception.Create('Edge.BackEdge '+Edge.AsString);
+        raise Exception.Create('Edge.BackEdge '+Edge.AsString+' Edge.BackEdge='+dbgs(Edge.BackEdge)+' Edge.IsBackEdge='+dbgs(Edge.IsBackEdge)+' Source.Index='+dbgs(Edge.Source.Level.Index)+' Target.Index='+dbgs(Edge.Target.Level.Index));
     end;
     for j:=0 to Node.InEdgeCount-1 do begin
       Edge:=Node.InEdges[j];
