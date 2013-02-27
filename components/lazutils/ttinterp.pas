@@ -1,6 +1,6 @@
 (*******************************************************************
  *
- *  TTInterp.pas                                              2.0
+ *  TTInterp.pas                                              2.1
  *
  *  TrueType bytecode intepreter.
  *
@@ -12,6 +12,12 @@
  *  this file you indicate that you have read the license and
  *  understand and accept it fully.
  *
+ *  Changes between 2.1 and 2.0 :
+ *
+ *  - Moved into TInterpreter class
+ *  - Multithreading should be possible
+ *  - Error log
+ *  - Dynamic stack size
  *
  *  Changes between 2.0 and 1.2 :
  *
@@ -31,12 +37,15 @@ interface
 uses TTTypes,
      TTObjs;
 
-  function Run_Ins( exec : PExec_Context ) : Boolean;
+  function Run_Ins( exec : PExec_Context ; AErrorLog: boolean = false) : TError;
   (* Run the interpreter with the current code range and IP *)
 
 implementation
 uses
-  TTCalc;
+  TTCalc, SysUtils, Classes, TTMemory;
+
+const
+  maxStackSizeAllowed = 16000;
 
 const
   TT_Round_Off            = 5;
@@ -54,13 +63,213 @@ const
   TT_Flag_Touched_Both = TT_Flag_Touched_X or TT_FLag_Touched_Y;
 
 type
-  TInstruction_Function = procedure( args : PStorage );
+  TInstruction_Function = procedure( args : PStorage ) of object;
 
 const
   Null_Vector : TT_Vector = (x:0;y:0);
 
-var
-  exc : TExec_Context;  (* static variable *)
+type
+
+  { TInterpreter }
+
+  TInterpreter = class
+  private
+    pEC       : PExec_Context;
+    opcode    : Byte; (* current opcode              *)
+    oplength  : Int;  (* length of current opcode    *)
+    opargs    : Int;  (* number of arguments in opcode *)
+
+    top       : Int;  (* top of instance stack  *)
+    new_top   : Int;  (* new stack top after opc. exec *)
+    callTop   : Int;  (* top of call stack  *)
+
+    enableLog: boolean;
+    instructionLog: TStringList;
+
+    Instruct_Dispatch : array[0..255] of record
+      name: string;
+      func: TInstruction_Function;
+    end;
+    function GetLastInstruction: string;
+  public
+    constructor Create(AContext: PExec_Context; AEnableLog: boolean);
+    destructor Destroy; override;
+    function Run: TError;
+    property Context: PExec_Context read pEC;
+    property LastInstruction: string read GetLastInstruction;
+
+  private
+    function NeedStackSize(AValue: integer): TError; overload;
+    function NeedStackSize(AValue: integer; var APointerInStack : PStorage): TError; overload;
+    function Calc_Length: boolean;
+    procedure Compute_Funcs;
+    function Compute_Point_Displacement(out x: TT_F26dot6; out y: TT_F26dot6;
+      out zone: PGlyph_Zone; out refp: Int): TError;
+    procedure Compute_Round(round_mode: Byte);
+    procedure Direct_Move(zone: PGlyph_Zone; point: Int; distance: TT_F26dot6);
+    procedure Direct_Move_X(zone: PGlyph_Zone; point: Int; distance: TT_F26dot6
+      );
+    procedure Direct_Move_Y(zone: PGlyph_Zone; point: Int; distance: TT_F26dot6
+      );
+    function Dual_Project(var P1, P2: TT_Vector): TT_F26dot6;
+    function Free_Project(var P1, P2: TT_Vector): TT_F26dot6;
+    function GetShort: Short;
+    function Get_Current_Ratio: Long;
+    function Get_Ppem: Long;
+    function Goto_CodeRange(aRange, aIP: Int): boolean;
+    procedure Ins_AA({%H-}args: PStorage);
+    procedure Ins_ABS(args: PStorage);
+    procedure Ins_ADD(args: PStorage);
+    procedure Ins_ALIGNPTS(args: PStorage);
+    procedure Ins_ALIGNRP({%H-}args: PStorage);
+    procedure Ins_AND(args: PStorage);
+    procedure Ins_CALL(args: PStorage);
+    procedure Ins_CEILING(args: PStorage);
+    procedure Ins_CINDEX(args: PStorage);
+    procedure Ins_CLEAR({%H-}args: PStorage);
+    procedure Ins_DEBUG({%H-}args: PStorage);
+    procedure Ins_DELTAC(args: PStorage);
+    procedure Ins_DELTAP(args: PStorage);
+    procedure Ins_DEPTH(args: PStorage);
+    procedure Ins_DIV(args: PStorage);
+    procedure Ins_DUP(args: PStorage);
+    procedure Ins_EIF({%H-}args: PStorage);
+    procedure Ins_ELSE({%H-}args: PStorage);
+    procedure Ins_ENDF({%H-}args: PStorage);
+    procedure Ins_EQ(args: PStorage);
+    procedure Ins_EVEN(args: PStorage);
+    procedure Ins_FDEF(args: PStorage);
+    procedure Ins_FLIPOFF({%H-}args: PStorage);
+    procedure Ins_FLIPON({%H-}args: PStorage);
+    procedure Ins_FLIPPT({%H-}args: PStorage);
+    procedure Ins_FLIPRGOFF(args: PStorage);
+    procedure Ins_FLIPRGON(args: PStorage);
+    procedure Ins_FLOOR(args: PStorage);
+    procedure Ins_GC(args: PStorage);
+    procedure Ins_GETINFO(args: PStorage);
+    procedure Ins_GFV(args: PStorage);
+    procedure Ins_GPV(args: PStorage);
+    procedure Ins_GT(args: PStorage);
+    procedure Ins_GTEQ(args: PStorage);
+    procedure Ins_IDEF(args: PStorage);
+    procedure Ins_IF(args: PStorage);
+    procedure Ins_INSTCTRL(args: PStorage);
+    procedure Ins_IP({%H-}args: PStorage);
+    procedure Ins_ISECT(args: PStorage);
+    procedure Ins_IUP({%H-}args: PStorage);
+    procedure Ins_JMPR(args: PStorage);
+    procedure Ins_JROF(args: PStorage);
+    procedure Ins_JROT(args: PStorage);
+    procedure Ins_LOOPCALL(args: PStorage);
+    procedure Ins_LT(args: PStorage);
+    procedure Ins_LTEQ(args: PStorage);
+    procedure Ins_MAX(args: PStorage);
+    procedure Ins_MD(args: PStorage);
+    procedure Ins_MDAP(args: PStorage);
+    procedure Ins_MDRP(args: PStorage);
+    procedure Ins_MIAP(args: PStorage);
+    procedure Ins_MIN(args: PStorage);
+    procedure Ins_MINDEX(args: PStorage);
+    procedure Ins_MIRP(args: PStorage);
+    procedure Ins_MPPEM(args: PStorage);
+    procedure Ins_MPS(args: PStorage);
+    procedure Ins_MSIRP(args: PStorage);
+    procedure Ins_MUL(args: PStorage);
+    procedure Ins_NEG(args: PStorage);
+    procedure Ins_NEQ(args: PStorage);
+    procedure Ins_NOT(args: PStorage);
+    procedure Ins_NPUSHB(args: PStorage);
+    procedure Ins_NPUSHW(args: PStorage);
+    procedure Ins_NROUND(args: PStorage);
+    procedure Ins_ODD(args: PStorage);
+    procedure Ins_OR(args: PStorage);
+    procedure Ins_POP({%H-}args: PStorage);
+    procedure Ins_PUSHB(args: PStorage);
+    procedure Ins_PUSHW(args: PStorage);
+    procedure Ins_RCVT(args: PStorage);
+    procedure Ins_RDTG({%H-}args: PStorage);
+    procedure Ins_ROFF({%H-}args: PStorage);
+    procedure Ins_ROLL(args: PStorage);
+    procedure Ins_ROUND(args: PStorage);
+    procedure Ins_RS(args: PStorage);
+    procedure Ins_RTDG({%H-}args: PStorage);
+    procedure Ins_RTG({%H-}args: PStorage);
+    procedure Ins_RTHG({%H-}args: PStorage);
+    procedure Ins_RUTG({%H-}args: PStorage);
+    procedure Ins_S45ROUND(args: PStorage);
+    procedure Ins_SANGW({%H-}args: PStorage);
+    procedure Ins_SCANCTRL(args: PStorage);
+    procedure Ins_SCANTYPE(args: PStorage);
+    procedure Ins_SCFS(args: PStorage);
+    procedure Ins_SCVTCI(args: PStorage);
+    procedure Ins_SDB(args: PStorage);
+    procedure Ins_SDPVTL(args: PStorage);
+    procedure Ins_SDS(args: PStorage);
+    procedure Ins_SFVFS(args: PStorage);
+    procedure Ins_SFVTCA({%H-}args: PStorage);
+    procedure Ins_SFVTL(args: PStorage);
+    procedure Ins_SFVTPV({%H-}args: PStorage);
+    procedure Ins_SHC(args: PStorage);
+    procedure Ins_SHP({%H-}args: PStorage);
+    procedure Ins_SHPIX(args: PStorage);
+    procedure Ins_SHZ(args: PStorage);
+    procedure Ins_SLOOP(args: PStorage);
+    procedure Ins_SMD(args: PStorage);
+    procedure Ins_SPVFS(args: PStorage);
+    procedure Ins_SPVTCA({%H-}args: PStorage);
+    procedure Ins_SPVTL(args: PStorage);
+    procedure Ins_SROUND(args: PStorage);
+    procedure Ins_SRP0(args: PStorage);
+    procedure Ins_SRP1(args: PStorage);
+    procedure Ins_SRP2(args: PStorage);
+    procedure Ins_SSW(args: PStorage);
+    procedure Ins_SSWCI(args: PStorage);
+    procedure Ins_SUB(args: PStorage);
+    procedure Ins_SVTCA({%H-}args: PStorage);
+    procedure Ins_SWAP(args: PStorage);
+    function Ins_SxVTL(aIdx1: Int; aIdx2: Int; aOpc: Int; var Vec: TT_UnitVector
+      ): boolean;
+    procedure Ins_SZP0(args: PStorage);
+    procedure Ins_SZP1(args: PStorage);
+    procedure Ins_SZP2(args: PStorage);
+    procedure Ins_SZPS(args: PStorage);
+    procedure Ins_UNKNOWN({%H-}args: PStorage);
+    procedure Ins_UTP(args: PStorage);
+    procedure Ins_WCVTF(args: PStorage);
+    procedure Ins_WCVTP(args: PStorage);
+    procedure Ins_WS(args: PStorage);
+    procedure Move_CVT(index: Int; value: TT_F26Dot6);
+    procedure Move_CVT_Stretched(index: Int; value: TT_F26dot6);
+    procedure Move_Zp2_Point(point: Int; dx: TT_F26dot6; dy: TT_F26dot6);
+    function Norm(X, Y: TT_F26dot6): TT_F26dot6;
+    function Normalize(U, V: TT_F26dot6; var R: TT_UnitVector): boolean;
+    function Project(var P1, P2: TT_Vector): TT_F26dot6;
+    function Project_x(var P1, P2: TT_Vector): TT_F26dot6;
+    function Project_y(var P1, P2: TT_Vector): TT_F26dot6;
+    function Read_CVT(index: Int): TT_F26Dot6;
+    function Read_CVT_Stretched(index: Int): TT_F26Dot6;
+    function Round_Down_To_Grid(distance: TT_F26dot6; compensation: TT_F26dot6
+      ): TT_F26dot6;
+    function Round_None(distance: TT_F26dot6; compensation: TT_F26dot6
+      ): TT_F26dot6;
+    function Round_Super(distance: TT_F26dot6; compensation: TT_F26dot6
+      ): TT_F26dot6;
+    function Round_Super_45(distance: TT_F26dot6; compensation: TT_F26dot6
+      ): TT_F26dot6;
+    function Round_To_Double_Grid(distance: TT_F26dot6; compensation: TT_F26dot6
+      ): TT_F26dot6;
+    function Round_To_Grid(distance: TT_F26dot6; compensation: TT_F26dot6
+      ): TT_F26dot6;
+    function Round_To_Half_Grid(distance: TT_F26dot6; compensation: TT_F26dot6
+      ): TT_F26dot6;
+    function Round_Up_To_Grid(distance: TT_F26dot6; compensation: TT_F26dot6
+      ): TT_F26dot6;
+    function Scale_Pixels(value: long): TT_F26Dot6;
+    procedure SetSuperRound(GridPeriod: TT_F26dot6; selector: Long);
+    function SkipCode: boolean;
+    procedure Write_CVT(index: Int; value: TT_F26Dot6);
+    procedure Write_CVT_Stretched(index: Int; value: TT_F26Dot6);
+  end;
 
 const
 
@@ -357,7 +566,6 @@ const
                      (* MIRP[31] *)  2, 0
                    );
 
-
 (*******************************************************************
  *
  *  Function    :  Norm
@@ -370,7 +578,7 @@ const
  *
  *****************************************************************)
 
- function Norm( X, Y : TT_F26dot6 ): TT_F26dot6;
+ function TInterpreter.Norm( X, Y : TT_F26dot6 ): TT_F26dot6;
  begin
    result := sqrt64(int64(X)*int64(X)+int64(Y)*int64(Y));
  end;
@@ -384,86 +592,86 @@ const
  *
  *****************************************************************)
 
-  function Scale_Pixels( value : long ) : TT_F26Dot6;
+  function TInterpreter.Scale_Pixels( value : long ) : TT_F26Dot6;
   {$IFDEF INLINE} inline; {$ENDIF}
   begin
     Scale_Pixels := MulDiv_Round( value,
-                                  exc.metrics.scale1,
-                                  exc.metrics.scale2 );
+                                  pEC^.metrics.scale1,
+                                  pEC^.metrics.scale2 );
   end;
 
-  function Get_Current_Ratio : Long;
+  function TInterpreter.Get_Current_Ratio : Long;
   var
     x, y : Long;
   begin
-    if exc.metrics.ratio <> 0 then
-      Get_Current_Ratio := exc.metrics.ratio
+    if pEC^.metrics.ratio <> 0 then
+      Get_Current_Ratio := pEC^.metrics.ratio
     else
     begin
-      if exc.GS.projVector.y = 0 then
-        exc.metrics.ratio := exc.metrics.x_ratio
+      if pEC^.GS.projVector.y = 0 then
+        pEC^.metrics.ratio := pEC^.metrics.x_ratio
 
-      else if exc.GS.projVector.x = 0 then
-        exc.metrics.ratio := exc.metrics.y_ratio
+      else if pEC^.GS.projVector.x = 0 then
+        pEC^.metrics.ratio := pEC^.metrics.y_ratio
 
       else
         begin
-          x := MulDiv_Round( exc.GS.projVector.x,
-                             exc.metrics.x_ratio,
+          x := MulDiv_Round( pEC^.GS.projVector.x,
+                             pEC^.metrics.x_ratio,
                              $4000 );
 
-          y := MulDiv_Round( exc.GS.projVector.y,
-                             exc.metrics.y_ratio,
+          y := MulDiv_Round( pEC^.GS.projVector.y,
+                             pEC^.metrics.y_ratio,
                              $4000 );
 
-          exc.metrics.ratio := Norm( x, y );
+          pEC^.metrics.ratio := Norm( x, y );
         end;
 
-      Get_Current_Ratio := exc.metrics.ratio;
+      Get_Current_Ratio := pEC^.metrics.ratio;
     end
   end;
 
-  function Get_Ppem : Long;
+  function TInterpreter.Get_Ppem : Long;
   {$IFDEF INLINE} inline; {$ENDIF}
   begin
-    Get_Ppem := MulDiv_Round( exc.metrics.ppem, Get_Current_Ratio, $10000 );
+    Get_Ppem := MulDiv_Round( pEC^.metrics.ppem, Get_Current_Ratio, $10000 );
   end;
 
 
-  function Read_CVT( index : Int ) : TT_F26Dot6;
+  function TInterpreter.Read_CVT( index : Int ) : TT_F26Dot6;
   begin
-    Read_CVT := exc.cvt^[index];
+    Read_CVT := pEC^.cvt^[index];
   end;
 
-  function Read_CVT_Stretched( index : Int ) : TT_F26Dot6;
+  function TInterpreter.Read_CVT_Stretched( index : Int ) : TT_F26Dot6;
   begin
-    Read_CVT_Stretched := MulDiv_Round( exc.cvt^[index],
+    Read_CVT_Stretched := MulDiv_Round( pEC^.cvt^[index],
                                         Get_Current_Ratio,
                                         $10000 );
   end;
 
 
-  procedure Write_CVT( index : Int; value : TT_F26Dot6 );
+  procedure TInterpreter.Write_CVT( index : Int; value : TT_F26Dot6 );
   begin
-    exc.cvt^[index] := value;
+    pEC^.cvt^[index] := value;
   end;
 
-  procedure Write_CVT_Stretched( index : Int; value : TT_F26Dot6 );
+  procedure TInterpreter.Write_CVT_Stretched( index : Int; value : TT_F26Dot6 );
   begin
-    exc.cvt^[index] := MulDiv_Round( value,
+    pEC^.cvt^[index] := MulDiv_Round( value,
                                      $10000,
                                      Get_Current_Ratio );
   end;
 
 
-  procedure Move_CVT( index : Int; value : TT_F26Dot6 );
+  procedure TInterpreter.Move_CVT( index : Int; value : TT_F26Dot6 );
   begin
-    inc( exc.cvt^[index], value );
+    inc( pEC^.cvt^[index], value );
   end;
 
-  procedure Move_CVT_Stretched( index : Int; value : TT_F26dot6 );
+  procedure TInterpreter.Move_CVT_Stretched( index : Int; value : TT_F26dot6 );
   begin
-    inc( exc.cvt^[index], MulDiv_Round( value,
+    inc( pEC^.cvt^[index], MulDiv_Round( value,
                                         $10000,
                                         Get_Current_Ratio ));
   end;
@@ -476,31 +684,31 @@ const
  *
  *****************************************************************)
 
- function Calc_Length : boolean;
+ function TInterpreter.Calc_Length : boolean;
  begin
    Calc_Length := false;
 
-   exc.opcode := exc.Code^[exc.IP];
+   opcode := pEC^.Code^[pEC^.IP];
 
-   case exc.opcode of
+   case opcode of
 
-     $40 : if exc.IP+1 >= exc.codeSize
+     $40 : if pEC^.IP+1 >= pEC^.codeSize
              then exit
            else
-             exc.length := exc.code^[exc.IP+1]   + 2;
+             oplength := pEC^.code^[pEC^.IP+1]   + 2;
 
-     $41 : if exc.IP+1 >= exc.codeSize
+     $41 : if pEC^.IP+1 >= pEC^.codeSize
              then exit
            else
-             exc.length := exc.code^[exc.IP+1]*2 + 2;
+             oplength := pEC^.code^[pEC^.IP+1]*2 + 2;
 
-     $B0..$B7 : exc.length :=  exc.opcode-$B0    + 2;
-     $B8..$BF : exc.length := (exc.opcode-$B8)*2 + 3;
+     $B0..$B7 : oplength :=  opcode-$B0    + 2;
+     $B8..$BF : oplength := (opcode-$B8)*2 + 3;
    else
-     exc.length := 1;
+     oplength := 1;
    end;
 
-   Calc_Length := exc.IP+exc.length <= exc.codeSize;
+   Calc_Length := pEC^.IP+oplength <= pEC^.codeSize;
  end;
 
 (*******************************************************************
@@ -518,30 +726,30 @@ const
  *
  *****************************************************************)
 
- function GetShort : Short;
+ function TInterpreter.GetShort : Short;
  var
-   L        : Array[0..1] of Byte;
-   resultat : Short absolute L;  (* XXX : un-portable *)
+   L1,L0        : Byte;
  begin
-   (* This is little-endian code *)
-
-   L[1]     := exc.code^[exc.IP]; inc(exc.IP);
-   L[0]     := exc.code^[exc.IP]; inc(exc.IP);
-   GetShort := resultat;
+   L1     := pEC^.code^[pEC^.IP]; inc(pEC^.IP);
+   L0     := pEC^.code^[pEC^.IP]; inc(pEC^.IP);
+   if L1 >= 128 then
+     result := -32768 + ((L1 and 127) shl 8) + L0
+   else
+     result := (L1 shl 8) + L0;
  end;
 
 
- function Goto_CodeRange( aRange,
+ function TInterpreter.Goto_CodeRange( aRange,
                           aIP     : Int ): boolean;
  begin
 
    Goto_CodeRange := False;
 
-   with exc do
+   with pEC^ do
    begin
      if (aRange<1) or (aRange>3) then
        begin
-         exc.error := TT_Err_Bad_Argument;
+         pEC^.error := TT_Err_Bad_Argument;
          exit;
        end;
 
@@ -592,28 +800,28 @@ const
  *
  *****************************************************************)
 
- procedure Direct_Move( zone     : PGlyph_Zone;
+ procedure TInterpreter.Direct_Move( zone     : PGlyph_Zone;
                         point    : Int;
                         distance : TT_F26dot6 );
  var
    v : TT_F26dot6;
  begin
-   v := exc.GS.freeVector.x;
+   v := pEC^.GS.freeVector.x;
    if v <> 0 then
    begin
      inc( zone^.cur^[point].x, MulDiv_Round( distance,
                                              Long(v)*$10000,
-                                             exc.F_dot_P ));
+                                             pEC^.F_dot_P ));
 
      zone^.flags^[point] := zone^.flags^[point] or TT_Flag_Touched_X;
    end;
 
-   v := exc.GS.freeVector.y;
+   v := pEC^.GS.freeVector.y;
    if v <> 0 then
    begin
      inc( zone^.cur^[point].y, MulDiv_Round( distance,
                                              Long(v)*$10000,
-                                             exc.F_dot_P ));
+                                             pEC^.F_dot_P ));
 
      zone^.flags^[point] := zone^.flags^[point] or TT_Flag_Touched_Y;
    end;
@@ -622,7 +830,7 @@ const
  (* The following versions are used whenever both vectors are both *)
  (* along one of the coordinate unit vectors, i.e. in 90% cases    *)
 
- procedure Direct_Move_X( zone     : PGlyph_Zone;
+ procedure TInterpreter.Direct_Move_X( zone     : PGlyph_Zone;
                           point    : Int;
                           distance : TT_F26dot6 );
  begin
@@ -630,7 +838,7 @@ const
    zone^.flags^[point] := zone^.flags^[point] or TT_Flag_Touched_X;
  end;
 
- procedure Direct_Move_Y( zone     : PGlyph_Zone;
+ procedure TInterpreter.Direct_Move_Y( zone     : PGlyph_Zone;
                           point    : Int;
                           distance : TT_F26dot6 );
  begin
@@ -656,7 +864,7 @@ const
  *
  *****************************************************************)
 
- function Round_None( distance     : TT_F26dot6;
+ function TInterpreter.Round_None( distance     : TT_F26dot6;
                       compensation : TT_F26dot6 ) : TT_F26dot6;
  var
    val : TT_F26dot6;
@@ -689,7 +897,7 @@ const
  *
  *****************************************************************)
 
- function Round_To_Grid( distance     : TT_F26dot6;
+ function TInterpreter.Round_To_Grid( distance     : TT_F26dot6;
                          compensation : TT_F26dot6 ) : TT_F26dot6;
  var
    val : TT_F26dot6;
@@ -722,7 +930,7 @@ const
  *
  *****************************************************************)
 
- function Round_To_Half_Grid( distance     : TT_F26dot6;
+ function TInterpreter.Round_To_Half_Grid( distance     : TT_F26dot6;
                          compensation : TT_F26dot6 ) : TT_F26dot6;
  var
    val : TT_F26dot6;
@@ -756,7 +964,7 @@ const
  *
  *****************************************************************)
 
- function Round_Down_To_Grid( distance     : TT_F26dot6;
+ function TInterpreter.Round_Down_To_Grid( distance     : TT_F26dot6;
                               compensation : TT_F26dot6 ) : TT_F26dot6;
  var
    val : TT_F26dot6;
@@ -789,7 +997,7 @@ const
  *
  *****************************************************************)
 
- function Round_Up_To_Grid( distance     : TT_F26dot6;
+ function TInterpreter.Round_Up_To_Grid( distance     : TT_F26dot6;
                             compensation : TT_F26dot6 ) : TT_F26dot6;
  var
    val : TT_F26dot6;
@@ -822,7 +1030,7 @@ const
  *
  *****************************************************************)
 
- function Round_To_Double_Grid( distance     : TT_F26dot6;
+ function TInterpreter.Round_To_Double_Grid( distance     : TT_F26dot6;
                                 compensation : TT_F26dot6 ) : TT_F26dot6;
  var
    val : TT_F26dot6;
@@ -860,12 +1068,12 @@ const
  *
  *****************************************************************)
 
- function Round_Super( distance     : TT_F26dot6;
+ function TInterpreter.Round_Super( distance     : TT_F26dot6;
                        compensation : TT_F26dot6 ) : TT_F26dot6;
  var
    val : TT_F26dot6;
  begin
-   with exc do
+   with pEC^ do
 
      if distance >= 0 then
        begin
@@ -900,12 +1108,12 @@ const
  *
  *****************************************************************)
 
- function Round_Super_45( distance     : TT_F26dot6;
+ function TInterpreter.Round_Super_45( distance     : TT_F26dot6;
                           compensation : TT_F26dot6 ) : TT_F26dot6;
  var
    val : TT_F26dot6;
  begin
-   with exc do
+   with pEC^ do
 
      if distance >= 0 then
        begin
@@ -925,29 +1133,18 @@ const
    Round_Super_45 := val;
  end;
 
- procedure Compute_Round( round_mode : Byte );
+ procedure TInterpreter.Compute_Round( round_mode : Byte );
  begin
    case Round_Mode of
 
-{$IFDEF FPC}
-     TT_Round_Off            : exc.func_round := @Round_None;
-     TT_Round_To_Grid        : exc.func_round := @Round_To_Grid;
-     TT_Round_Up_To_Grid     : exc.func_round := @Round_Up_To_Grid;
-     TT_Round_Down_To_Grid   : exc.func_round := @Round_Down_To_Grid;
-     TT_Round_To_Half_Grid   : exc.func_round := @Round_To_Half_Grid;
-     TT_Round_To_Double_Grid : exc.func_round := @Round_To_Double_Grid;
-     TT_Round_Super          : exc.func_round := @Round_Super;
-     TT_Round_Super_45       : exc.func_round := @Round_Super_45;
-{$ELSE}
-     TT_Round_Off            : exc.func_round := Round_None;
-     TT_Round_To_Grid        : exc.func_round := Round_To_Grid;
-     TT_Round_Up_To_Grid     : exc.func_round := Round_Up_To_Grid;
-     TT_Round_Down_To_Grid   : exc.func_round := Round_Down_To_Grid;
-     TT_Round_To_Half_Grid   : exc.func_round := Round_To_Half_Grid;
-     TT_Round_To_Double_Grid : exc.func_round := Round_To_Double_Grid;
-     TT_Round_Super          : exc.func_round := Round_Super;
-     TT_Round_Super_45       : exc.func_round := Round_Super_45;
-{$ENDIF}
+     TT_Round_Off            : pEC^.func_round := Round_None;
+     TT_Round_To_Grid        : pEC^.func_round := Round_To_Grid;
+     TT_Round_Up_To_Grid     : pEC^.func_round := Round_Up_To_Grid;
+     TT_Round_Down_To_Grid   : pEC^.func_round := Round_Down_To_Grid;
+     TT_Round_To_Half_Grid   : pEC^.func_round := Round_To_Half_Grid;
+     TT_Round_To_Double_Grid : pEC^.func_round := Round_To_Double_Grid;
+     TT_Round_Super          : pEC^.func_round := Round_Super;
+     TT_Round_Super_45       : pEC^.func_round := Round_Super_45;
    end;
  end;
 
@@ -967,10 +1164,10 @@ const
  *
  *****************************************************************)
 
- procedure SetSuperRound( GridPeriod : TT_F26dot6; selector : Long );
+ procedure TInterpreter.SetSuperRound( GridPeriod : TT_F26dot6; selector : Long );
 
  begin
-   with exc do
+   with pEC^ do
    begin
 
      Case selector and $C0 of
@@ -1018,11 +1215,11 @@ const
  *
  *****************************************************************)
 
- function Project( var P1, P2 : TT_Vector ) : TT_F26dot6;
+ function TInterpreter.Project( var P1, P2 : TT_Vector ) : TT_F26dot6;
  var
    T1, T2 : Int64;
  begin
-   with exc.GS.projVector do
+   with pEC^.GS.projVector do
    begin
      MulTo64( P1.x - P2.x, x, T1 );
      MulTo64( P1.y - P2.y, y, T2 );
@@ -1032,11 +1229,11 @@ const
  end;
 
 
- function Dual_Project( var P1, P2 : TT_Vector ) : TT_F26dot6;
+ function TInterpreter.Dual_Project( var P1, P2 : TT_Vector ) : TT_F26dot6;
  var
    T1, T2 : Int64;
  begin
-   with exc.GS.dualVector do
+   with pEC^.GS.dualVector do
    begin
      MulTo64( P1.x - P2.x, x, T1 );
      MulTo64( P1.y - P2.y, y, T2 );
@@ -1046,11 +1243,11 @@ const
  end;
 
 
- function Free_Project( var P1, P2 : TT_Vector ) : TT_F26dot6;
+ function TInterpreter.Free_Project( var P1, P2 : TT_Vector ) : TT_F26dot6;
  var
    T1, T2 : Int64;
  begin
-   with exc.GS.freeVector do
+   with pEC^.GS.freeVector do
    begin
      MulTo64( P1.x - P2.x, x, T1 );
      MulTo64( P1.y - P2.y, y, T2 );
@@ -1060,12 +1257,12 @@ const
  end;
 
 
- function Project_x( var P1, P2 : TT_Vector ) : TT_F26dot6;
+ function TInterpreter.Project_x( var P1, P2 : TT_Vector ) : TT_F26dot6;
  begin
    Project_x := P1.x - P2.x;
  end;
 
- function Project_y( var P1, P2 : TT_Vector ) : TT_F26dot6;
+ function TInterpreter.Project_y( var P1, P2 : TT_Vector ) : TT_F26dot6;
  begin
    Project_y := P1.y - P2.y;
  end;
@@ -1081,64 +1278,30 @@ const
  *
  *****************************************************************)
 
- procedure Compute_Funcs;
+ procedure TInterpreter.Compute_Funcs;
  begin
-   with exc, GS do
+   with pEC^, GS do
    begin
 
      if (freeVector.x = $4000) then
        begin
-{$IFDEF FPC}
-         func_freeProj := @Project_x;
-{$ELSE}
          func_freeProj := Project_x;
-{$ENDIF}
          F_dot_P       := Long(projVector.x) * $10000;
        end
      else
      if (freeVector.y = $4000) then
        begin
-{$IFDEF FPC}
-         func_freeProj := @Project_y;
-{$ELSE}
          func_freeProj := Project_y;
-{$ENDIF}
          F_dot_P       := Long(projVector.y) * $10000;
        end
      else
        begin
-{$IFDEF FPC}
-         func_move     := @Direct_Move;
-         func_freeProj := @Free_Project;
-{$ELSE}
          func_move     := Direct_Move;
          func_freeProj := Free_Project;
-{$ENDIF}
          F_dot_P       := Long(projVector.x) * freeVector.x * 4 +
                           Long(projVector.y) * freeVector.y * 4;
        end;
 
-{$IFDEF FPC}
-     if (projVector.x = $4000) then func_Project := @Project_x
-     else
-     if (projVector.y = $4000) then func_Project := @Project_y
-     else
-                                    func_Project := @Project;
-
-     if (dualVector.x = $4000) then func_dualproj := @Project_x
-     else
-     if (dualVector.y = $4000) then func_dualproj := @Project_y
-     else
-                                    func_dualproj := @Dual_Project;
-
-     func_move := @Direct_Move;
-
-     if F_dot_P = $40000000 then
-
-       if freeVector.x = $4000 then func_move := @Direct_Move_x
-       else
-       if freeVector.y = $4000 then func_move := @Direct_Move_y;
-{$ELSE}
      if (projVector.x = $4000) then func_Project := Project_x
      else
      if (projVector.y = $4000) then func_Project := Project_y
@@ -1158,7 +1321,6 @@ const
        if freeVector.x = $4000 then func_move := Direct_Move_x
        else
        if freeVector.y = $4000 then func_move := Direct_Move_y;
-{$ENDIF}
 
      (* at small sizes, F_dot_P can become too small, resulting *)
      (* in overflows and 'spikes' in a number of glyfs like 'w' *)
@@ -1179,7 +1341,7 @@ const
 (*                                                *)
 (**************************************************)
 
-function Normalize( U, V : TT_F26dot6; var R : TT_UnitVector ): boolean;
+function TInterpreter.Normalize( U, V : TT_F26dot6; var R : TT_UnitVector ): boolean;
 var
   W       : TT_F26dot6;
   S1, S2  : Boolean;
@@ -1251,7 +1413,7 @@ begin
      else
       begin
        Normalize := False;
-       exc.error := TT_Err_Divide_By_Zero;
+       pEC^.error := TT_Err_Divide_By_Zero;
       end;
   end;
 
@@ -1271,7 +1433,7 @@ end;
 (* DUP[]     : Duplicate top stack element *)
 (* CodeRange : $20                         *)
 
-   procedure Ins_DUP( args : PStorage );
+   procedure TInterpreter.Ins_DUP( args : PStorage );
    begin
      args^[1] := args^[0];
    end;
@@ -1280,7 +1442,7 @@ end;
 (* POP[]     : POPs the stack's top elt.   *)
 (* CodeRange : $21                         *)
 
-   procedure Ins_POP( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_POP( args : PStorage );
    begin
      (* nothing to do *)
    end;
@@ -1289,16 +1451,16 @@ end;
 (* CLEAR[]   : Clear the entire stack      *)
 (* CodeRange : $22                         *)
 
-   procedure Ins_CLEAR( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_CLEAR( args : PStorage );
    begin
-     exc.new_top := 0;
+     new_top := 0;
    end;
 
 (*******************************************)
 (* SWAP[]    : Swap the top two elements   *)
 (* CodeRange : $23                         *)
 
-   procedure Ins_SWAP( args : PStorage );
+   procedure TInterpreter.Ins_SWAP( args : PStorage );
    var L : Long;
    begin
      L        := args^[0];
@@ -1310,46 +1472,46 @@ end;
 (* DEPTH[]   : return the stack depth      *)
 (* CodeRange : $24                         *)
 
-   procedure Ins_DEPTH( args : PStorage );
+   procedure TInterpreter.Ins_DEPTH( args : PStorage );
    begin
-     args^[0] := exc.top;
+     args^[0] := top;
    end;
 
 (*******************************************)
 (* CINDEX[]  : copy indexed element        *)
 (* CodeRange : $25                         *)
 
-   procedure Ins_CINDEX( args : PStorage );
+   procedure TInterpreter.Ins_CINDEX( args : PStorage );
    var
      L : Long;
    begin
      L := args^[0];
-     if (L <= 0) or (L > exc.args) then
-       exc.error := TT_Err_Invalid_Reference
+     if (L <= 0) or (L > opargs) then
+       pEC^.error := TT_Err_Invalid_Reference
      else
-       args^[0] := exc.stack^[exc.args-l];
+       args^[0] := pEC^.stack^[opargs-l];
    end;
 
 (*******************************************)
 (* MINDEX[]  : move indexed element        *)
 (* CodeRange : $26                         *)
 
-   procedure Ins_MINDEX( args : PStorage );
+   procedure TInterpreter.Ins_MINDEX( args : PStorage );
    var
      L, K : Long;
    begin
      L := args^[0];
-     if (L <= 0) or (L > exc.args) then
-       exc.Error := TT_Err_Invalid_Reference
+     if (L <= 0) or (L > opargs) then
+       pEC^.Error := TT_Err_Invalid_Reference
      else
        begin
-         K := exc.stack^[exc.args-L];
+         K := pEC^.stack^[opargs-L];
 
-         move( exc.stack^[exc.args-L+1],
-               exc.stack^[exc.args-L],
+         move( pEC^.stack^[opargs-L+1],
+               pEC^.stack^[opargs-L],
                (L-1)*sizeof(Long) );
 
-         exc.stack^[exc.args-1] := K;
+         pEC^.stack^[opargs-1] := K;
        end;
    end;
 
@@ -1357,7 +1519,7 @@ end;
 (* ROLL[]    : roll top three elements     *)
 (* CodeRange : $8A                         *)
 
-   procedure Ins_ROLL( args : PStorage );
+   procedure TInterpreter.Ins_ROLL( args : PStorage );
    var
      A, B, C : Long;
    begin
@@ -1378,20 +1540,20 @@ end;
 (*                                                              *)
 (****************************************************************)
 
-   function SkipCode : boolean;
+   function TInterpreter.SkipCode : boolean;
    var
      b : Boolean;
    begin
      b := False;
 
-     inc( exc.IP, exc.length );
+     inc( pEC^.IP, oplength );
 
-     b := exc.IP < exc.codeSize;
+     b := pEC^.IP < pEC^.codeSize;
 
      if b then b := Calc_Length;
 
      if not b then
-       exc.error := TT_Err_Code_Overflow;
+       pEC^.error := TT_Err_Code_Overflow;
 
      SkipCode := b;
    end;
@@ -1401,7 +1563,7 @@ end;
 (* IF[]      : IF test                     *)
 (* CodeRange : $58                         *)
 
-   procedure Ins_IF( args : PStorage );
+   procedure TInterpreter.Ins_IF( args : PStorage );
    var
      nIfs : Int;
      Out  : Boolean;
@@ -1415,7 +1577,7 @@ end;
 
       if not SkipCode then exit;
 
-      Case exc.opcode of
+      Case opcode of
 
       (* IF *)
        $58 : inc( nIfs );
@@ -1438,7 +1600,7 @@ end;
 (* ELSE[]    : ELSE                        *)
 (* CodeRange : $1B                         *)
 
-   procedure Ins_ELSE( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_ELSE( args : PStorage );
    var
      nIfs : Int;
    begin
@@ -1448,7 +1610,7 @@ end;
 
       if not SkipCode then exit;
 
-      case exc.opcode of
+      case opcode of
 
       (* IF *)
        $58 : inc( nIfs );
@@ -1464,7 +1626,7 @@ end;
 (* EIF[]     : End IF                      *)
 (* CodeRange : $59                         *)
 
-   procedure Ins_EIF( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_EIF( args : PStorage );
    begin
      (* nothing to do *)
    end;
@@ -1473,12 +1635,12 @@ end;
 (* JROT[]    : Jump Relative On True       *)
 (* CodeRange : $78                         *)
 
-   procedure Ins_JROT( args : PStorage );
+   procedure TInterpreter.Ins_JROT( args : PStorage );
    begin
      if args^[1] <> 0 then
      begin
-       inc( exc.IP, args^[0] );
-       exc.step_ins := false;
+       inc( pEC^.IP, args^[0] );
+       pEC^.step_ins := false;
      end;
    end;
 
@@ -1486,22 +1648,22 @@ end;
 (* JMPR[]    : JuMP Relative               *)
 (* CodeRange : $1C                         *)
 
-   procedure Ins_JMPR( args : PStorage );
+   procedure TInterpreter.Ins_JMPR( args : PStorage );
    begin
-     inc( exc.IP, args^[0] );
-     exc.step_ins := false;
+     inc( pEC^.IP, args^[0] );
+     pEC^.step_ins := false;
    end;
 
 (*******************************************)
 (* JROF[]    : Jump Relative On False      *)
 (* CodeRange : $79                         *)
 
-   procedure Ins_JROF( args : PStorage );
+   procedure TInterpreter.Ins_JROF( args : PStorage );
    begin
      if args^[1] = 0 then
      begin
-       inc( exc.IP, args^[0] );
-       exc.step_ins := false;
+       inc( pEC^.IP, args^[0] );
+       pEC^.step_ins := false;
      end;
    end;
 
@@ -1517,7 +1679,7 @@ end;
 (* LT[]      : Less Than                   *)
 (* CodeRange : $50                         *)
 
-   procedure Ins_LT( args : PStorage );
+   procedure TInterpreter.Ins_LT( args : PStorage );
    begin
      if args^[0] < args^[1] then args^[0] := 1
                             else args^[0] := 0;
@@ -1527,7 +1689,7 @@ end;
 (* LTEQ[]    : Less Than or EQual          *)
 (* CodeRange : $51                         *)
 
-   procedure Ins_LTEQ( args : PStorage );
+   procedure TInterpreter.Ins_LTEQ( args : PStorage );
    begin
      if args^[0] <= args^[1] then args^[0] := 1
                              else args^[0] := 0;
@@ -1537,7 +1699,7 @@ end;
 (* GT[]      : Greater Than                *)
 (* CodeRange : $52                         *)
 
-   procedure Ins_GT( args : PStorage );
+   procedure TInterpreter.Ins_GT( args : PStorage );
    begin
      if args^[0] > args^[1] then args^[0] := 1
                             else args^[0] := 0;
@@ -1547,7 +1709,7 @@ end;
 (* GTEQ[]    : Greater Than or EQual       *)
 (* CodeRange : $53                         *)
 
-   procedure Ins_GTEQ( args : PStorage );
+   procedure TInterpreter.Ins_GTEQ( args : PStorage );
    begin
      if args^[0] >= args^[1] then args^[0] := 1
                              else args^[0] := 0;
@@ -1557,7 +1719,7 @@ end;
 (* EQ[]      : EQual                       *)
 (* CodeRange : $54                         *)
 
-   procedure Ins_EQ( args : PStorage );
+   procedure TInterpreter.Ins_EQ( args : PStorage );
    begin
      if args^[0] = args^[1] then args^[0] := 1
                             else args^[0] := 0;
@@ -1567,7 +1729,7 @@ end;
 (* NEQ[]     : Not EQual                   *)
 (* CodeRange : $55                         *)
 
-   procedure Ins_NEQ( args : PStorage );
+   procedure TInterpreter.Ins_NEQ( args : PStorage );
    begin
      if args^[0] <> args^[1] then args^[0] := 1
                              else args^[0] := 0;
@@ -1577,9 +1739,9 @@ end;
 (* ODD[]     : Odd                         *)
 (* CodeRange : $56                         *)
 
-   procedure Ins_ODD( args : PStorage );
+   procedure TInterpreter.Ins_ODD( args : PStorage );
    begin
-     if exc.func_round( args^[0], 0 ) and 127 = 64 then args^[0] := 1
+     if pEC^.func_round( args^[0], 0 ) and 127 = 64 then args^[0] := 1
                                                    else args^[0] := 0;
    end;
 
@@ -1587,9 +1749,9 @@ end;
 (* EVEN[]    : Even                        *)
 (* CodeRange : $57                         *)
 
-   procedure Ins_EVEN( args : PStorage );
+   procedure TInterpreter.Ins_EVEN( args : PStorage );
    begin
-     if exc.func_round( args^[0], 0 ) and 127 = 0 then args^[0] := 1
+     if pEC^.func_round( args^[0], 0 ) and 127 = 0 then args^[0] := 1
                                                   else args^[0] := 0;
    end;
 
@@ -1597,7 +1759,7 @@ end;
 (* AND[]     : logical AND                 *)
 (* CodeRange : $5A                         *)
 
-   procedure Ins_AND( args : PStorage );
+   procedure TInterpreter.Ins_AND( args : PStorage );
    begin
      if ( args^[0] <> 0 ) and
         ( args^[1] <> 0 ) then args^[0] := 1
@@ -1608,7 +1770,7 @@ end;
 (* OR[]      : logical OR                  *)
 (* CodeRange : $5B                         *)
 
-   procedure Ins_OR( args : PStorage );
+   procedure TInterpreter.Ins_OR( args : PStorage );
    begin
      if ( args^[0] <> 0 ) or
         ( args^[1] <> 0 ) then args^[0] := 1
@@ -1619,7 +1781,7 @@ end;
 (* NOT[]     : logical NOT                 *)
 (* CodeRange : $5C                         *)
 
-   procedure Ins_NOT( args : PStorage );
+   procedure TInterpreter.Ins_NOT( args : PStorage );
    begin
      if args^[0] <> 0 then args^[0] := 0
                       else args^[0] := 1;
@@ -1637,7 +1799,7 @@ end;
 (* ADD[]     : ADD                         *)
 (* CodeRange : $60                         *)
 
-   procedure Ins_ADD( args : PStorage );
+   procedure TInterpreter.Ins_ADD( args : PStorage );
    begin
      inc( args^[0], args^[1] );
    end;
@@ -1646,7 +1808,7 @@ end;
 (* SUB[]     : SUBstract                   *)
 (* CodeRange : $61                         *)
 
-   procedure Ins_SUB( args : PStorage );
+   procedure TInterpreter.Ins_SUB( args : PStorage );
    begin
      dec( args^[0], args^[1] );
    end;
@@ -1655,11 +1817,11 @@ end;
 (* DIV[]     : DIVide                      *)
 (* CodeRange : $62                         *)
 
-   procedure Ins_DIV( args : PStorage );
+   procedure TInterpreter.Ins_DIV( args : PStorage );
    begin
     if args^[1] = 0 then
     begin
-      exc.error := TT_Err_Divide_By_Zero;
+      pEC^.error := TT_Err_Divide_By_Zero;
       exit;
     end;
 
@@ -1670,7 +1832,7 @@ end;
 (* MUL[]     : MULtiply                    *)
 (* CodeRange : $63                         *)
 
-   procedure Ins_MUL( args : PStorage );
+   procedure TInterpreter.Ins_MUL( args : PStorage );
    begin
      args^[0] := MulDiv_Round( args^[0], args^[1], 64 );
    end;
@@ -1679,7 +1841,7 @@ end;
 (* ABS[]     : ABSolute value              *)
 (* CodeRange : $64                         *)
 
-   procedure Ins_ABS( args : PStorage );
+   procedure TInterpreter.Ins_ABS( args : PStorage );
    begin
      args^[0] := abs( args^[0] );
    end;
@@ -1688,7 +1850,7 @@ end;
 (* NEG[]     : NEGate                      *)
 (* CodeRange : $65                         *)
 
-   procedure Ins_NEG( args : PStorage );
+   procedure TInterpreter.Ins_NEG( args : PStorage );
    begin
      args^[0] := -args^[0];
    end;
@@ -1697,7 +1859,7 @@ end;
 (* FLOOR[]   : FLOOR                       *)
 (* CodeRange : $66                         *)
 
-   procedure Ins_FLOOR( args : PStorage );
+   procedure TInterpreter.Ins_FLOOR( args : PStorage );
    begin
      args^[0] := args^[0] and -64;
    end;
@@ -1706,7 +1868,7 @@ end;
 (* CEILING[] : CEILING                     *)
 (* CodeRange : $67                         *)
 
-   procedure Ins_CEILING( args : PStorage );
+   procedure TInterpreter.Ins_CEILING( args : PStorage );
    begin
      args^[0] := ( args^[0]+63 ) and -64;
    end;
@@ -1715,7 +1877,7 @@ end;
 (* MAX[]     : MAXimum                     *)
 (* CodeRange : $68                         *)
 
-   procedure Ins_MAX( args : PStorage );
+   procedure TInterpreter.Ins_MAX( args : PStorage );
    begin
      if args^[1] > args^[0] then args^[0] := args^[1];
    end;
@@ -1724,7 +1886,7 @@ end;
 (* MIN[]     : MINimum                     *)
 (* CodeRange : $69                         *)
 
-   procedure Ins_MIN( args : PStorage );
+   procedure TInterpreter.Ins_MIN( args : PStorage );
    begin
      if args^[1] < args^[0] then args^[0] := args^[1];
    end;
@@ -1741,20 +1903,20 @@ end;
 (* ROUND[ab] : ROUND value                 *)
 (* CodeRange : $68-$6B                     *)
 
-   procedure Ins_ROUND( args : PStorage );
+   procedure TInterpreter.Ins_ROUND( args : PStorage );
    begin
-     args^[0] := exc.func_round( args^[0],
-                                 exc.metrics.compensations[ exc.opcode-$68 ] );
+     args^[0] := pEC^.func_round( args^[0],
+                                 pEC^.metrics.compensations[ opcode-$68 ] );
    end;
 
 (*******************************************)
 (* NROUND[ab]: No ROUNDing of value        *)
 (* CodeRange : $6C-$6F                     *)
 
-   procedure Ins_NROUND( args : PStorage );
+   procedure TInterpreter.Ins_NROUND( args : PStorage );
    begin
      args^[0] := Round_None( args^[0],
-                             exc.metrics.compensations[ exc.opcode-$6C ] );
+                             pEC^.metrics.compensations[ opcode-$6C ] );
    end;
 
 (****************************************************************)
@@ -1769,42 +1931,42 @@ end;
 (* FDEF[]    : Function DEFinition         *)
 (* CodeRange : $2C                         *)
 
-   procedure Ins_FDEF( args : PStorage );
+   procedure TInterpreter.Ins_FDEF( args : PStorage );
    var
      func : int;
    begin
 
      (* check space *)
-     if exc.numFDefs >= exc.maxFDefs then begin
-       exc.error := TT_Err_Too_Many_FuncDefs;
+     if pEC^.numFDefs >= pEC^.maxFDefs then begin
+       pEC^.error := TT_Err_Too_Many_FuncDefs;
        exit;
      end;
 
      func := Int(args^[0]);
-     with exc.FDefs^[exc.numFDefs] do
+     with pEC^.FDefs^[pEC^.numFDefs] do
        begin
-         Range  := exc.curRange;
+         Range  := pEC^.curRange;
          Opc    := func;
-         Start  := exc.IP+1;
+         Start  := pEC^.IP+1;
          Active := True;
        end;
 
-     if func > exc.maxFunc then
-       exc.maxFunc := func;
+     if func > pEC^.maxFunc then
+       pEC^.maxFunc := func;
 
-     inc(exc.numFDefs);
+     inc(pEC^.numFDefs);
 
      (* now skip the whole function definition *)
      (* we don't allow nested IDEFS & FDEFs    *)
 
      while SkipCode do
 
-       case exc.opcode of
+       case opcode of
 
          $89,  (* IDEF *)
          $2C : (* FDEF *)
                begin
-                 exc.error := TT_Err_Nested_Defs;
+                 pEC^.error := TT_Err_Nested_Defs;
                  exit;
                end;
 
@@ -1817,29 +1979,29 @@ end;
 (* ENDF[]    : END Function definition     *)
 (* CodeRange : $2D                         *)
 
-   procedure Ins_ENDF( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_ENDF( args : PStorage );
    begin
 
-     if exc.callTop <= 0 then   (* We encountered an ENDF without a call *)
+     if callTop <= 0 then   (* We encountered an ENDF without a call *)
      begin
-       exc.error := TT_Err_ENDF_in_Exec_Stream;
+       pEC^.error := TT_Err_ENDF_in_Exec_Stream;
        exit;
      end;
 
-     dec( exc.CallTop );
+     dec( callTop );
 
-     with exc.Callstack^[exc.CallTop] do
+     with pEC^.Callstack^[callTop] do
       begin
        dec( Cur_Count );
 
-       exc.step_ins := false;
+       pEC^.step_ins := false;
 
        if Cur_Count > 0 then
 
          begin
            (* Loop the current function *)
-           inc( exc.callTop );
-           exc.IP := Cur_Restart;
+           inc( callTop );
+           pEC^.IP := Cur_Restart;
          end
 
        else
@@ -1859,7 +2021,7 @@ end;
 (* CALL[]    : CALL function               *)
 (* CodeRange : $2B                         *)
 
-   procedure Ins_CALL( args : PStorage );
+   procedure TInterpreter.Ins_CALL( args : PStorage );
    var
      ii, nn : Int;
      def    : PDefRecord;
@@ -1868,7 +2030,7 @@ end;
    begin
 
      (* First of all, check index *)
-     if (args^[0] < 0) or (args^[0] > exc.maxFunc) then
+     if (args^[0] < 0) or (args^[0] > pEC^.maxFunc) then
        goto Fail;
 
      (* Except for some old Apple fonts, all functions in a TrueType *)
@@ -1876,24 +2038,24 @@ end;
      (*                                                              *)
      (* This mean that, normally, we have :                          *)
      (*                                                              *)
-     (*    exc.maxFunc+1 = exc.numFDefs                              *)
-     (*    exc.FDefs[n].opc = n for n in 0..exc.maxFunc              *)
+     (*    pEC^.maxFunc+1 = pEC^.numFDefs                              *)
+     (*    pEC^.FDefs[n].opc = n for n in 0..pEC^.maxFunc              *)
      (*                                                              *)
 
      nn  := Int(args^[0]);
-     def := @exc.FDefs^[nn];
+     def := @pEC^.FDefs^[nn];
 
-     if ( exc.maxFunc+1 <> exc.numFDefs ) or ( def^.opc <> nn ) then begin
+     if ( pEC^.maxFunc+1 <> pEC^.numFDefs ) or ( def^.opc <> nn ) then begin
        (* lookup the FDefs table *)
        ii  := 0;
-       def := @exc.FDefs^[0];
-       while (ii < exc.numFDefs) and (def^.opc <> nn) do begin
+       def := @pEC^.FDefs^[0];
+       while (ii < pEC^.numFDefs) and (def^.opc <> nn) do begin
          inc(ii);
          inc(def);
        end;
 
        (* Fail if the function isn't listed *)
-       if ii >= exc.numFDefs then
+       if ii >= pEC^.numFDefs then
          goto Fail;
      end;
 
@@ -1902,29 +2064,29 @@ end;
        goto Fail;
 
      (* check call stack *)
-     if exc.callTop >= exc.callSize then
+     if callTop >= pEC^.callSize then
        begin
-         exc.error := TT_Err_Stack_Overflow;
+         pEC^.error := TT_Err_Stack_Overflow;
          exit;
        end;
 
-     with exc.callstack^[exc.callTop] do
+     with pEC^.callstack^[callTop] do
        begin
-         Caller_Range := exc.curRange;
-         Caller_IP    := exc.IP+1;
+         Caller_Range := pEC^.curRange;
+         Caller_IP    := pEC^.IP+1;
          Cur_Count    := 1;
          Cur_Restart  := def^.Start;
        end;
 
-     inc( exc.CallTop );
+     inc( callTop );
 
      with def^ do Goto_CodeRange( Range, Start );
 
-     exc.step_ins := false;
+     pEC^.step_ins := false;
      exit;
 
     Fail:
-      exc.error := TT_Err_Invalid_Reference;
+      pEC^.error := TT_Err_Invalid_Reference;
       exit;
     end;
 
@@ -1932,37 +2094,37 @@ end;
 (* LOOPCALL[]: LOOP and CALL function      *)
 (* CodeRange : $2A                         *)
 
-   procedure Ins_LOOPCALL( args : PStorage );
+   procedure TInterpreter.Ins_LOOPCALL( args : PStorage );
    begin
 
-     if ( args^[1] < 0 ) or ( args^[1] >= exc.numFDefs ) or
-        ( not exc.FDefs^[args^[1]].Active ) then
+     if ( args^[1] < 0 ) or ( args^[1] >= pEC^.numFDefs ) or
+        ( not pEC^.FDefs^[args^[1]].Active ) then
        begin
-         exc.error := TT_Err_Invalid_Reference;
+         pEC^.error := TT_Err_Invalid_Reference;
          exit;
        end;
 
-     if exc.callTop >= exc.callSize then
+     if callTop >= pEC^.callSize then
        begin
-         exc.error := TT_Err_Stack_Overflow;
+         pEC^.error := TT_Err_Stack_Overflow;
          exit;
        end;
 
      if args^[0] > 0 then
        begin
-         with exc.callstack^[exc.callTop] do
+         with pEC^.callstack^[callTop] do
            begin
-             Caller_Range := exc.curRange;
-             Caller_IP    := exc.IP+1;
+             Caller_Range := pEC^.curRange;
+             Caller_IP    := pEC^.IP+1;
              Cur_Count    := args^[0];
-             Cur_Restart  := exc.FDefs^[args^[1]].Start;
+             Cur_Restart  := pEC^.FDefs^[args^[1]].Start;
            end;
 
-         inc( exc.CallTop );
+         inc( callTop );
 
-         with exc.FDefs^[args^[1]] do Goto_CodeRange( Range, Start );
+         with pEC^.FDefs^[args^[1]] do Goto_CodeRange( Range, Start );
 
-         exc.step_ins := false;
+         pEC^.step_ins := false;
        end;
 
    end;
@@ -1971,36 +2133,36 @@ end;
 (* IDEF[]    : Instruction DEFinition      *)
 (* CodeRange : $89                         *)
 
-   procedure Ins_IDEF( args : PStorage );
+   procedure TInterpreter.Ins_IDEF( args : PStorage );
    var
      A : Int;
    begin
 
      A := 0;
 
-     while ( A < exc.numIDefs ) do
-       with exc.IDefs^[A] do
+     while ( A < pEC^.numIDefs ) do
+       with pEC^.IDefs^[A] do
          begin
 
            if not Active then
              begin
                Opc    := args^[0];
-               Start  := exc.IP+1;
-               Range  := exc.curRange;
+               Start  := pEC^.IP+1;
+               Range  := pEC^.curRange;
                Active := True;
 
-               A := exc.numIDefs;
+               A := pEC^.numIDefs;
 
                 (* now skip the whole function definition *)
                 (* we don't allow nested IDEFS & FDEFs    *)
 
                while SkipCode do
-                 case exc.opcode of
+                 case opcode of
 
                    $89,  (* IDEF *)
                    $2C : (* FDEF *)
                          begin
-                           exc.error := TT_Err_Nested_Defs;
+                           pEC^.error := TT_Err_Nested_Defs;
                            exit;
                          end;
 
@@ -2025,68 +2187,56 @@ end;
 (* NPUSHB[]  : PUSH N Bytes                *)
 (* CodeRange : $40                         *)
 
-   procedure Ins_NPUSHB( args : PStorage );
+   procedure TInterpreter.Ins_NPUSHB( args : PStorage );
    var
     L, K : Long;
    begin
-     L := exc.code^[exc.IP+1];
+     L := pEC^.code^[pEC^.IP+1];
 
-     if exc.top + L > exc.stackSize then
-     begin
-       exc.error := TT_Err_Stack_Overflow;
-       exit;
-     end;
+     if NeedStackSize(top + L, args) then exit;
 
      for K := 1 to L do
-       args^[k-1] := exc.code^[exc.IP+1+k];
+       args^[k-1] := pEC^.code^[pEC^.IP+1+k];
 
-     inc( exc.new_top, L );
+     inc( new_top, L );
    end;
 
 (*******************************************)
 (* NPUSHW[]  : PUSH N Words                *)
 (* CodeRange : $41                         *)
 
-   procedure Ins_NPUSHW( args : PStorage );
+   procedure TInterpreter.Ins_NPUSHW( args : PStorage );
    var
     L, K : Long;
    begin
-     L := exc.code^[exc.IP+1];
+     L := pEC^.code^[pEC^.IP+1];
 
-     if exc.top + L > exc.stackSize then
-     begin
-       exc.error := TT_Err_Stack_Overflow;
-       exit;
-     end;
+     if NeedStackSize(top + L, args) then exit;
 
-     inc( exc.IP, 2 );
+     inc( pEC^.IP, 2 );
 
      for K := 1 to L do
        args^[k-1] := GetShort;
 
-     exc.step_ins := false;
+     pEC^.step_ins := false;
 
-     inc( exc.new_top, L );
+     inc( new_top, L );
    end;
 
 (*******************************************)
 (* PUSHB[abc]: PUSH Bytes                  *)
 (* CodeRange : $B0-$B7                     *)
 
-   procedure Ins_PUSHB( args : PStorage );
+   procedure TInterpreter.Ins_PUSHB( args : PStorage );
    var
     L, K : Long;
    begin
-     L := exc.opcode - $B0+1;
+     L := opcode - $B0+1;
 
-     if exc.top + L >= exc.stackSize then
-     begin
-       exc.error := TT_Err_Stack_Overflow;
-       exit;
-     end;
+     if NeedStackSize(top + L + 1, args) then exit;
 
      for k := 1 to L do
-       args^[k-1] := exc.code^[exc.ip+k];
+       args^[k-1] := pEC^.code^[pEC^.ip+k];
 
    end;
 
@@ -2094,24 +2244,20 @@ end;
 (* PUSHW[abc]: PUSH Words                  *)
 (* CodeRange : $B8-$BF                     *)
 
-   procedure Ins_PUSHW( args : PStorage );
+   procedure TInterpreter.Ins_PUSHW( args : PStorage );
    var
      L, K : Long;
    begin
-     L := exc.opcode - $B8+1;
+     L := opcode - $B8+1;
 
-     if exc.top + L >= exc.stackSize then
-     begin
-       exc.error := TT_Err_Stack_Overflow;
-       exit;
-     end;
+     if NeedStackSize(top + L + 1, args) then exit;
 
-     inc( exc.IP );
+     inc( pEC^.IP );
 
      for k := 1 to L do
        args^[k-1] := GetShort;
 
-     exc.step_ins := false;
+     pEC^.step_ins := false;
 
    end;
 
@@ -2127,75 +2273,75 @@ end;
 (* RS[]      : Read Store                  *)
 (* CodeRange : $43                         *)
 
-   procedure Ins_RS( args : PStorage );
+   procedure TInterpreter.Ins_RS( args : PStorage );
    begin
-     if (args^[0] < 0) or (args^[0] >= exc.storeSize) then
+     if (args^[0] < 0) or (args^[0] >= pEC^.storeSize) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
-     args^[0] := exc.storage^[args^[0]];
+     args^[0] := pEC^.storage^[args^[0]];
    end;
 
 (*******************************************)
 (* WS[]      : Write Store                 *)
 (* CodeRange : $42                         *)
 
-   procedure Ins_WS( args : PStorage );
+   procedure TInterpreter.Ins_WS( args : PStorage );
    begin
-     if (args^[0] < 0) or (args^[0] >= exc.storeSize) then
+     if (args^[0] < 0) or (args^[0] >= pEC^.storeSize) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
-     exc.storage^[args^[0]] := args^[1];
+     pEC^.storage^[args^[0]] := args^[1];
    end;
 
 (*******************************************)
 (* WCVTP[]   : Write CVT in Pixel units    *)
 (* CodeRange : $44                         *)
 
-   procedure Ins_WCVTP( args : PStorage );
+   procedure TInterpreter.Ins_WCVTP( args : PStorage );
    begin
-     if (args^[0] < 0) or (args^[0] >= exc.cvtSize) then
+     if (args^[0] < 0) or (args^[0] >= pEC^.cvtSize) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
-     exc.func_write_cvt( args^[0], args^[1] );
+     pEC^.func_write_cvt( args^[0], args^[1] );
    end;
 
 (*******************************************)
 (* WCVTF[]   : Write CVT in FUnits         *)
 (* CodeRange : $70                         *)
 
-   procedure Ins_WCVTF( args : PStorage );
+   procedure TInterpreter.Ins_WCVTF( args : PStorage );
    begin
-     if (args^[0] < 0) or (args^[0] >= exc.cvtSize) then
+     if (args^[0] < 0) or (args^[0] >= pEC^.cvtSize) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
-     exc.cvt^[args^[0]] := Scale_Pixels(args^[1]);
+     pEC^.cvt^[args^[0]] := Scale_Pixels(args^[1]);
    end;
 
 (*******************************************)
 (* RCVT[]    : Read CVT                    *)
 (* CodeRange : $45                         *)
 
-   procedure Ins_RCVT( args : PStorage );
+   procedure TInterpreter.Ins_RCVT( args : PStorage );
    begin
-     if (args^[0] < 0) or (args^[0] >= exc.cvtSize) then
+     if (args^[0] < 0) or (args^[0] >= pEC^.cvtSize) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
-     args^[0] := exc.func_read_cvt(args^[0]);
+     args^[0] := pEC^.func_read_cvt(args^[0]);
    end;
 
 (****************************************************************)
@@ -2210,22 +2356,22 @@ end;
 (* SVTCA[a]  : Set F and P vectors to axis *)
 (* CodeRange : $00-$01                     *)
 
-   procedure Ins_SVTCA( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_SVTCA( args : PStorage );
    var A, B : Short;
    begin
-     case (exc.opcode and 1) of
+     case (opcode and 1) of
        0 : A := $0000;
        1 : A := $4000;
      end;
      B := A xor $4000;
 
-     exc.GS.freeVector.x := A;
-     exc.GS.projVector.x := A;
-     exc.GS.dualVector.x := A;
+     pEC^.GS.freeVector.x := A;
+     pEC^.GS.projVector.x := A;
+     pEC^.GS.dualVector.x := A;
 
-     exc.GS.freeVector.y := B;
-     exc.GS.projVector.y := B;
-     exc.GS.dualVector.y := B;
+     pEC^.GS.freeVector.y := B;
+     pEC^.GS.projVector.y := B;
+     pEC^.GS.dualVector.y := B;
 
      Compute_Funcs;
    end;
@@ -2234,20 +2380,20 @@ end;
 (* SPVTCA[a] : Set PVector to Axis         *)
 (* CodeRange : $02-$03                     *)
 
-   procedure Ins_SPVTCA( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_SPVTCA( args : PStorage );
    var A, B : Short;
    begin
-     case (exc.opcode and 1) of
+     case (opcode and 1) of
        0 : A := $0000;
        1 : A := $4000;
      end;
      B := A xor $4000;
 
-     exc.GS.projVector.x := A;
-     exc.GS.dualVector.x := A;
+     pEC^.GS.projVector.x := A;
+     pEC^.GS.dualVector.x := A;
 
-     exc.GS.projVector.y := B;
-     exc.GS.dualVector.y := B;
+     pEC^.GS.projVector.y := B;
+     pEC^.GS.dualVector.y := B;
 
      Compute_Funcs;
    end;
@@ -2256,24 +2402,24 @@ end;
 (* SFVTCA[a] : Set FVector to Axis         *)
 (* CodeRange : $04-$05                     *)
 
-   procedure Ins_SFVTCA( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_SFVTCA( args : PStorage );
    var A, B : Short;
    begin
-     case (exc.opcode and 1) of
+     case (opcode and 1) of
        0 : A := $0000;
        1 : A := $4000;
      end;
      B := A xor $4000;
 
-     exc.GS.freeVector.x := A;
-     exc.GS.freeVector.y := B;
+     pEC^.GS.freeVector.x := A;
+     pEC^.GS.freeVector.y := B;
 
      Compute_Funcs;
    end;
 
 
 
-   function Ins_SxVTL( aIdx1     : Int;
+   function TInterpreter.Ins_SxVTL( aIdx1     : Int;
                        aIdx2     : Int;
                        aOpc      : Int;
                        var Vec   : TT_UnitVector ) : boolean;
@@ -2282,7 +2428,7 @@ end;
    begin
      Ins_SxVTL := False;
 
-     with exc do
+     with pEC^ do
      begin
 
        if (aIdx2 >= zp1.n_points) or (aIdx1 >= zp2.n_points) then
@@ -2312,7 +2458,7 @@ end;
 
        if not Normalize( A, B, Vec ) then
        begin
-         exc.error := TT_Err_Ok;
+         pEC^.error := TT_Err_Ok;
          Vec.x     := $4000;
          Vec.y     := $0000;
        end;
@@ -2326,14 +2472,14 @@ end;
 (* SPVTL[a]  : Set PVector to Line         *)
 (* CodeRange : $06-$07                     *)
 
-   procedure Ins_SPVTL( args : PStorage );
+   procedure TInterpreter.Ins_SPVTL( args : PStorage );
    begin
      if not INS_SxVTL( args^[1],
                        args^[0],
-                       exc.opcode,
-                       exc.GS.projVector ) then exit;
+                       opcode,
+                       pEC^.GS.projVector ) then exit;
 
-     exc.GS.dualVector := exc.GS.projVector;
+     pEC^.GS.dualVector := pEC^.GS.projVector;
      Compute_Funcs;
    end;
 
@@ -2341,12 +2487,12 @@ end;
 (* SFVTL[a]  : Set FVector to Line         *)
 (* CodeRange : $08-$09                     *)
 
-   procedure Ins_SFVTL( args : PStorage );
+   procedure TInterpreter.Ins_SFVTL( args : PStorage );
    begin
      if not INS_SxVTL( args^[1],
                        args^[0],
-                       exc.opcode,
-                       exc.GS.freeVector ) then exit;
+                       opcode,
+                       pEC^.GS.freeVector ) then exit;
 
      Compute_Funcs;
    end;
@@ -2355,9 +2501,9 @@ end;
 (* SFVTPV[]  : Set FVector to PVector      *)
 (* CodeRange : $0E                         *)
 
-   procedure Ins_SFVTPV( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_SFVTPV( args : PStorage );
    begin
-     exc.GS.freeVector := exc.GS.projVector;
+     pEC^.GS.freeVector := pEC^.GS.projVector;
      Compute_Funcs;
    end;
 
@@ -2365,7 +2511,7 @@ end;
 (* SDPVTL[a] : Set Dual PVector to Line    *)
 (* CodeRange : $86-$87                     *)
 
-   procedure Ins_SDPVTL( args : PStorage );
+   procedure TInterpreter.Ins_SDPVTL( args : PStorage );
    var
      A, B, C : Long;
      p1, p2  : Int;
@@ -2374,46 +2520,46 @@ end;
      p1 := args^[1];
      p2 := args^[0];
 
-     if (args^[0] < 0) or (args^[0] >= exc.zp1.n_points) or
-        (args^[1] < 0) or (args^[1] >= exc.zp2.n_points) then
+     if (args^[0] < 0) or (args^[0] >= pEC^.zp1.n_points) or
+        (args^[1] < 0) or (args^[1] >= pEC^.zp2.n_points) then
        begin
-         exc.error := TT_Err_Invalid_Reference;
+         pEC^.error := TT_Err_Invalid_Reference;
          exit;
        end;
 
-     A := exc.zp1.org^[p2].x - exc.zp2.org^[p1].x;
-     B := exc.zp1.org^[p2].y - exc.zp2.org^[p1].y;
+     A := pEC^.zp1.org^[p2].x - pEC^.zp2.org^[p1].x;
+     B := pEC^.zp1.org^[p2].y - pEC^.zp2.org^[p1].y;
 
-     if exc.opcode and 1 <> 0 then
+     if opcode and 1 <> 0 then
       begin
        C :=  B;  (* CounterClockwise rotation *)
        B :=  A;
        A := -C;
       end;
 
-     Normalize( A, B, exc.GS.dualVector );
+     Normalize( A, B, pEC^.GS.dualVector );
 
-     A := exc.zp1.cur^[p2].x - exc.zp2.cur^[p1].x;
-     B := exc.zp1.cur^[p2].y - exc.zp2.cur^[p1].y;
+     A := pEC^.zp1.cur^[p2].x - pEC^.zp2.cur^[p1].x;
+     B := pEC^.zp1.cur^[p2].y - pEC^.zp2.cur^[p1].y;
 
-     if exc.opcode and 1 <> 0 then
+     if opcode and 1 <> 0 then
       begin
        C :=  B;  (* CounterClockwise rotation *)
        B :=  A;
        A := -C;
       end;
 
-     Normalize( A, B, exc.GS.projVector );
+     Normalize( A, B, pEC^.GS.projVector );
 
      Compute_Funcs;
-     exc.error := TT_Err_Ok;
+     pEC^.error := TT_Err_Ok;
    end;
 
 (*******************************************)
 (* SPVFS[]   : Set PVector From Stack      *)
 (* CodeRange : $0A                         *)
 
-   procedure Ins_SPVFS( args : PStorage );
+   procedure TInterpreter.Ins_SPVFS( args : PStorage );
    var
      S    : Short;
      X, Y : Long;
@@ -2421,9 +2567,9 @@ end;
      S := args^[1]; Y := S;  (* type conversion; extends sign *)
      S := args^[0]; X := S;  (* type conversion; extends sign *)
 
-     if not Normalize( X, Y, exc.GS.projVector ) then exit;
+     if not Normalize( X, Y, pEC^.GS.projVector ) then exit;
 
-     exc.GS.dualVector := exc.GS.projVector;
+     pEC^.GS.dualVector := pEC^.GS.projVector;
 
      Compute_Funcs;
    end;
@@ -2432,7 +2578,7 @@ end;
 (* SFVFS[]   : Set FVector From Stack      *)
 (* CodeRange : $0B                         *)
 
-   procedure Ins_SFVFS( args : PStorage );
+   procedure TInterpreter.Ins_SFVFS( args : PStorage );
    var
      S    : Short;
      X, Y : Long;
@@ -2440,7 +2586,7 @@ end;
      S := args^[1]; Y := S;  (* type conversion; extends sign *)
      S := args^[0]; X := S;  (* type conversion; extends sign *)
 
-     if not Normalize( X, Y, exc.GS.freeVector ) then exit;
+     if not Normalize( X, Y, pEC^.GS.freeVector ) then exit;
 
      Compute_Funcs;
    end;
@@ -2449,246 +2595,206 @@ end;
 (* GPV[]     : Get Projection Vector       *)
 (* CodeRange : $0C                         *)
 
-   procedure Ins_GPV( args : PStorage );
+   procedure TInterpreter.Ins_GPV( args : PStorage );
    begin
-     args^[0] := exc.GS.projVector.x;
-     args^[1] := exc.GS.projVector.y;
+     args^[0] := pEC^.GS.projVector.x;
+     args^[1] := pEC^.GS.projVector.y;
    end;
 
 (*******************************************)
 (* GFV[]     : Get Freedom Vector          *)
 (* CodeRange : $0D                         *)
 
-   procedure Ins_GFV( args : PStorage );
+   procedure TInterpreter.Ins_GFV( args : PStorage );
    begin
-     args^[0] := exc.GS.freeVector.x;
-     args^[1] := exc.GS.freeVector.y;
+     args^[0] := pEC^.GS.freeVector.x;
+     args^[1] := pEC^.GS.freeVector.y;
    end;
 
 (*******************************************)
 (* SRP0[]    : Set Reference Point 0       *)
 (* CodeRange : $10                         *)
 
-   procedure Ins_SRP0( args : PStorage );
+   procedure TInterpreter.Ins_SRP0( args : PStorage );
    begin
-     exc.GS.rp0 := args^[0];
+     pEC^.GS.rp0 := args^[0];
    end;
 
 (*******************************************)
 (* SRP1[]    : Set Reference Point 1       *)
 (* CodeRange : $11                         *)
 
-   procedure Ins_SRP1( args : PStorage );
+   procedure TInterpreter.Ins_SRP1( args : PStorage );
    begin
-     exc.GS.rp1 := args^[0];
+     pEC^.GS.rp1 := args^[0];
    end;
 
 (*******************************************)
 (* SRP2[]    : Set Reference Point 2       *)
 (* CodeRange : $12                         *)
 
-   procedure Ins_SRP2( args : PStorage );
+   procedure TInterpreter.Ins_SRP2( args : PStorage );
    begin
-     exc.GS.rp2 := args^[0];
+     pEC^.GS.rp2 := args^[0];
    end;
 
 (*******************************************)
 (* SZP0[]    : Set Zone Pointer 0          *)
 (* CodeRange : $13                         *)
 
-   procedure Ins_SZP0( args : PStorage );
+   procedure TInterpreter.Ins_SZP0( args : PStorage );
    begin
      case args^[0] of
 
-       0 : exc.zp0 := exc.Twilight;
-       1 : exc.zp0 := exc.Pts;
+       0 : pEC^.zp0 := pEC^.Twilight;
+       1 : pEC^.zp0 := pEC^.Pts;
      else
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
-     exc.GS.gep0 := args^[0];
+     pEC^.GS.gep0 := args^[0];
    end;
 
 (*******************************************)
 (* SZP1[]    : Set Zone Pointer 1          *)
 (* CodeRange : $14                         *)
 
-   procedure Ins_SZP1( args : PStorage );
+   procedure TInterpreter.Ins_SZP1( args : PStorage );
    begin
      case args^[0] of
 
-       0 : exc.zp1 := exc.Twilight;
-       1 : exc.zp1 := exc.Pts;
+       0 : pEC^.zp1 := pEC^.Twilight;
+       1 : pEC^.zp1 := pEC^.Pts;
      else
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
-     exc.GS.gep1 := args^[0];
+     pEC^.GS.gep1 := args^[0];
    end;
 
 (*******************************************)
 (* SZP2[]    : Set Zone Pointer 2          *)
 (* CodeRange : $15                         *)
 
-   procedure Ins_SZP2( args : PStorage );
+   procedure TInterpreter.Ins_SZP2( args : PStorage );
    begin
      case args^[0] of
 
-       0 : exc.zp2 := exc.Twilight;
-       1 : exc.zp2 := exc.Pts;
+       0 : pEC^.zp2 := pEC^.Twilight;
+       1 : pEC^.zp2 := pEC^.Pts;
      else
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
-     exc.GS.gep2 := args^[0];
+     pEC^.GS.gep2 := args^[0];
    end;
 
 (*******************************************)
 (* SZPS[]    : Set Zone Pointers           *)
 (* CodeRange : $16                         *)
 
-   procedure Ins_SZPS( args : PStorage );
+   procedure TInterpreter.Ins_SZPS( args : PStorage );
    begin
      case args^[0] of
 
-       0 : exc.zp0 := exc.Twilight;
-       1 : exc.zp0 := exc.Pts;
+       0 : pEC^.zp0 := pEC^.Twilight;
+       1 : pEC^.zp0 := pEC^.Pts;
      else
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
-     exc.zp1 := exc.zp0;
-     exc.zp2 := exc.zp0;
+     pEC^.zp1 := pEC^.zp0;
+     pEC^.zp2 := pEC^.zp0;
 
-     exc.GS.gep0 := args^[0];
-     exc.GS.gep1 := args^[0];
-     exc.GS.gep2 := args^[0];
+     pEC^.GS.gep0 := args^[0];
+     pEC^.GS.gep1 := args^[0];
+     pEC^.GS.gep2 := args^[0];
    end;
 
 (*******************************************)
 (* RTHG[]    : Round To Half Grid          *)
 (* CodeRange : $19                         *)
 
-   procedure Ins_RTHG( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_RTHG( args : PStorage );
    begin
-     exc.GS.round_state := TT_Round_To_Half_Grid;
-
-{$IFDEF FPC}
-     exc.func_round := @Round_To_Half_Grid;
-{$ELSE}
-     exc.func_round := Round_To_Half_Grid;
-{$ENDIF}
+     pEC^.GS.round_state := TT_Round_To_Half_Grid;
+     pEC^.func_round := Round_To_Half_Grid;
    end;
 
 (*******************************************)
 (* RTG[]     : Round To Grid               *)
 (* CodeRange : $18                         *)
 
-   procedure Ins_RTG( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_RTG( args : PStorage );
    begin
-     exc.GS.round_state := TT_Round_To_Grid;
-
-{$IFDEF FPC}
-     exc.func_round := @Round_To_Grid;
-{$ELSE}
-     exc.func_round := Round_To_Grid;
-{$ENDIF}
+     pEC^.GS.round_state := TT_Round_To_Grid;
+     pEC^.func_round := Round_To_Grid;
    end;
 
 (*******************************************)
 (* RTDG[]    : Round To Double Grid        *)
 (* CodeRange : $3D                         *)
 
-   procedure Ins_RTDG( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_RTDG( args : PStorage );
    begin
-     exc.GS.round_state := TT_Round_To_Double_Grid;
-
-{$IFDEF FPC}
-     exc.func_round := @Round_To_Double_Grid;
-{$ELSE}
-     exc.func_round := Round_To_Double_Grid;
-{$ENDIF}
+     pEC^.GS.round_state := TT_Round_To_Double_Grid;
+     pEC^.func_round := Round_To_Double_Grid;
    end;
 
 (*******************************************)
 (* RUTG[]    : Round Up To Grid            *)
 (* CodeRange : $7C                         *)
 
-   procedure Ins_RUTG( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_RUTG( args : PStorage );
    begin
-     exc.GS.round_state := TT_Round_Up_To_Grid;
-
-{$IFDEF FPC}
-     exc.func_round := @Round_Up_To_Grid;
-{$ELSE}
-     exc.func_round := Round_Up_To_Grid;
-{$ENDIF}
+     pEC^.GS.round_state := TT_Round_Up_To_Grid;
+     pEC^.func_round := Round_Up_To_Grid;
    end;
 
 (*******************************************)
 (* RDTG[]    : Round Down To Grid          *)
 (* CodeRange : $7D                         *)
 
-   procedure Ins_RDTG( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_RDTG( args : PStorage );
    begin
-     exc.GS.round_state := TT_Round_Down_To_Grid;
-
-{$IFDEF FPC}
-     exc.func_round := @Round_Down_To_Grid;
-{$ELSE}
-     exc.func_round := Round_Down_To_Grid;
-{$ENDIF}
+     pEC^.GS.round_state := TT_Round_Down_To_Grid;
+     pEC^.func_round := Round_Down_To_Grid;
    end;
 
 (*******************************************)
 (* ROFF[]    : Round OFF                   *)
 (* CodeRange : $7A                         *)
 
-   procedure Ins_ROFF( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_ROFF( args : PStorage );
    begin
-     exc.GS.round_state := TT_Round_Off;
-
-{$IFDEF FPC}
-     exc.func_round := @Round_None;
-{$ELSE}
-     exc.func_round := Round_None;
-{$ENDIF}
+     pEC^.GS.round_state := TT_Round_Off;
+     pEC^.func_round := Round_None;
    end;
 
 (*******************************************)
 (* SROUND[]  : Super ROUND                 *)
 (* CodeRange : $76                         *)
 
-   procedure Ins_SROUND( args : PStorage );
+   procedure TInterpreter.Ins_SROUND( args : PStorage );
    begin
      SetSuperRound( $4000, args^[0] );
-     exc.GS.round_state := TT_Round_Super;
-
-{$IFDEF FPC}
-     exc.func_round := @Round_Super;
-{$ELSE}
-     exc.func_round := Round_Super;
-{$ENDIF}
+     pEC^.GS.round_state := TT_Round_Super;
+     pEC^.func_round := Round_Super;
    end;
 
 (*******************************************)
 (* S45ROUND[]: Super ROUND 45 degrees      *)
 (* CodeRange : $77                         *)
 
-   procedure Ins_S45ROUND( args : PStorage );
+   procedure TInterpreter.Ins_S45ROUND( args : PStorage );
    begin
      SetSuperRound( $2D41, args^[0] );
-     exc.GS.round_state := TT_Round_Super_45;
-
-{$IFDEF FPC}
-     exc.func_round := @Round_Super_45;
-{$ELSE}
-     exc.func_round := Round_Super_45;
-{$ENDIF}
+     pEC^.GS.round_state := TT_Round_Super_45;
+     pEC^.func_round := Round_Super_45;
    end;
 
 
@@ -2696,25 +2802,25 @@ end;
 (* SLOOP[]   : Set LOOP variable           *)
 (* CodeRange : $17                         *)
 
-   procedure Ins_SLOOP( args : PStorage );
+   procedure TInterpreter.Ins_SLOOP( args : PStorage );
    begin
-     exc.GS.Loop := args^[0];
+     pEC^.GS.Loop := args^[0];
    end;
 
 (*******************************************)
 (* SMD[]     : Set Minimum Distance        *)
 (* CodeRange : $1A                         *)
 
-   procedure Ins_SMD( args : PStorage );
+   procedure TInterpreter.Ins_SMD( args : PStorage );
    begin
-     exc.GS.minimum_distance := args^[0];
+     pEC^.GS.minimum_distance := args^[0];
    end;
 
 (*******************************************)
 (* INSTCTRL[]: INSTruction ConTRol         *)
 (* CodeRange : $8e                         *)
 
-   procedure Ins_INSTCTRL( args : PStorage );
+   procedure TInterpreter.Ins_INSTCTRL( args : PStorage );
    var
      K, L : Int;
    begin
@@ -2723,20 +2829,20 @@ end;
 
      if ( K < 1 ) or ( K > 2 ) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
      if L <> 0 then L := K;
 
-     exc.GS.instruct_control := ( exc.GS.instruct_control and not K ) or L;
+     pEC^.GS.instruct_control := ( pEC^.GS.instruct_control and not K ) or L;
    end;
 
 (*******************************************)
 (* SCANCTRL[]: SCAN ConTRol                *)
 (* CodeRange : $85                         *)
 
-   procedure Ins_SCANCTRL( args : PStorage );
+   procedure TInterpreter.Ins_SCANCTRL( args : PStorage );
    var
      A : Int;
    begin
@@ -2745,10 +2851,10 @@ end;
      A := args^[0] and $FF;
 
      if A = $FF then
-       exc.GS.scan_Control := True
+       pEC^.GS.scan_Control := True
      else
        if A = 0 then
-         exc.GS.scan_Control := False
+         pEC^.GS.scan_Control := False
      else
        begin
 
@@ -2757,22 +2863,22 @@ end;
          (* XXX TODO : Add rotation and stretch cases *)
 
          if ( args^[0] and $100 <> 0 ) and
-            ( exc.metrics.pointSize <= A ) then exc.GS.scan_Control := True;
+            ( pEC^.metrics.pointSize <= A ) then pEC^.GS.scan_Control := True;
 
          if ( args^[0] and $200 <> 0 ) and
-            ( false ) then exc.GS.scan_Control := True;
+            ( false ) then pEC^.GS.scan_Control := True;
 
          if ( args^[0] and $400 <> 0 ) and
-            ( false ) then exc.GS.scan_Control := True;
+            ( false ) then pEC^.GS.scan_Control := True;
 
          if ( args^[0] and $800 <> 0 ) and
-            ( exc.metrics.pointSize > A ) then exc.GS.scan_Control := False;
+            ( pEC^.metrics.pointSize > A ) then pEC^.GS.scan_Control := False;
 
          if ( args^[0] and $1000 <> 0 ) and
-            ( not False ) then exc.GS.scan_Control := False;
+            ( not False ) then pEC^.GS.scan_Control := False;
 
          if ( args^[0] and $2000 <> 0 ) and
-            ( not False ) then exc.GS.scan_Control := False;
+            ( not False ) then pEC^.GS.scan_Control := False;
        end;
    end;
 
@@ -2780,7 +2886,7 @@ end;
 (* SCANTYPE[]: SCAN TYPE                   *)
 (* CodeRange : $8D                         *)
 
-   procedure Ins_SCANTYPE( args : PStorage );
+   procedure TInterpreter.Ins_SCANTYPE( args : PStorage );
    begin
      (* For compatibility with future enhancements, *)
      (* we must ignore new modes                    *)
@@ -2789,7 +2895,7 @@ end;
      begin
        if args^[0] = 3 then args^[0] := 2;
 
-       exc.GS.scan_type := args^[0];
+       pEC^.GS.scan_type := args^[0];
      end;
    end;
 
@@ -2797,52 +2903,52 @@ end;
 (* SCVTCI[]  : Set Control Value Table Cut In *)
 (* CodeRange : $1D                            *)
 
-   procedure Ins_SCVTCI( args : PStorage );
+   procedure TInterpreter.Ins_SCVTCI( args : PStorage );
    begin
-     exc.GS.control_value_cutin := args^[0];
+     pEC^.GS.control_value_cutin := args^[0];
    end;
 
 (**********************************************)
 (* SSWCI[]   : Set Single Width Cut In        *)
 (* CodeRange : $1E                            *)
 
-   procedure Ins_SSWCI( args : PStorage );
+   procedure TInterpreter.Ins_SSWCI( args : PStorage );
    begin
-     exc.GS.single_width_cutin := args^[0];
+     pEC^.GS.single_width_cutin := args^[0];
    end;
 
 (**********************************************)
 (* SSW[]     : Set Single Width               *)
 (* CodeRange : $1F                            *)
 
-   procedure Ins_SSW( args : PStorage );
+   procedure TInterpreter.Ins_SSW( args : PStorage );
    begin
-     exc.GS.single_width_value := args^[0] div $400;
+     pEC^.GS.single_width_value := args^[0] div $400;
    end;
 
 (**********************************************)
 (* FLIPON[]  : Set Auto_flip to On            *)
 (* CodeRange : $4D                            *)
 
-   procedure Ins_FLIPON( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_FLIPON( args : PStorage );
    begin
-     exc.GS.auto_flip := True;
+     pEC^.GS.auto_flip := True;
    end;
 
 (**********************************************)
 (* FLIPOFF[] : Set Auto_flip to Off           *)
 (* CodeRange : $4E                            *)
 
-   procedure Ins_FLIPOFF( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_FLIPOFF( args : PStorage );
    begin
-     exc.GS.auto_flip := False;
+     pEC^.GS.auto_flip := False;
    end;
 
 (**********************************************)
 (* SANGW[]   : Set Angle Weigth               *)
 (* CodeRange : $7E                            *)
 
-   procedure Ins_SANGW( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_SANGW( args : PStorage );
    begin
      (* instruction not supported anymore *)
    end;
@@ -2851,18 +2957,18 @@ end;
 (* SDB[]     : Set Delta Base                 *)
 (* CodeRange : $5E                            *)
 
-   procedure Ins_SDB( args : PStorage );
+   procedure TInterpreter.Ins_SDB( args : PStorage );
    begin
-     exc.GS.delta_base := args^[0]
+     pEC^.GS.delta_base := args^[0]
    end;
 
 (**********************************************)
 (* SDS[]     : Set Delta Shift                *)
 (* CodeRange : $5F                            *)
 
-   procedure Ins_SDS( args : PStorage );
+   procedure TInterpreter.Ins_SDS( args : PStorage );
    begin
-     exc.GS.delta_shift := args^[0]
+     pEC^.GS.delta_shift := args^[0]
    end;
 
 (**********************************************)
@@ -2872,22 +2978,22 @@ end;
 (* BULLSHIT : Measures from the original glyph must to be taken *)
 (*            along the dual projection vector !!               *)
 
-   procedure Ins_GC( args : PStorage );
+   procedure TInterpreter.Ins_GC( args : PStorage );
    var
      L : Int;
    begin
      L := args^[0];
 
-     if (L < 0) or (L >= exc.zp2.n_points) then
+     if (L < 0) or (L >= pEC^.zp2.n_points) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
-     case exc.opcode and 1 of
+     case opcode and 1 of
 
-        0 : L := exc.func_project ( exc.zp2.cur^[L], Null_Vector );
-        1 : L := exc.func_dualProj( exc.zp2.org^[L], Null_Vector );
+        0 : L := pEC^.func_project ( pEC^.zp2.cur^[L], Null_Vector );
+        1 : L := pEC^.func_dualProj( pEC^.zp2.org^[L], Null_Vector );
        end;
 
      args^[0] := L;
@@ -2902,26 +3008,26 @@ end;
 (*   OA := OA + ( value - OA.p )/( f.p ) x f  *)
 (*                                            *)
 
-   procedure Ins_SCFS( args : PStorage );
+   procedure TInterpreter.Ins_SCFS( args : PStorage );
    var
      K, L : Int;
    begin
      L := args^[0];
 
-     if (args^[0] < 0) or (args^[0] >= exc.zp2.n_points) then
+     if (args^[0] < 0) or (args^[0] >= pEC^.zp2.n_points) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
-     K := exc.func_project( exc.zp2.cur^[L], Null_Vector );
+     K := pEC^.func_project( pEC^.zp2.cur^[L], Null_Vector );
 
-     exc.func_move( @exc.zp2, L, args^[1] - K );
+     pEC^.func_move( @pEC^.zp2, L, args^[1] - K );
 
      (* not part of the specs, but here for safety *)
 
-     if exc.GS.gep2 = 0 then
-       exc.zp2.org^[L] := exc.zp2.cur^[L];
+     if pEC^.GS.gep2 = 0 then
+       pEC^.zp2.org^[L] := pEC^.zp2.cur^[L];
 
    end;
 
@@ -2936,7 +3042,7 @@ end;
 (*                   0 => measure distance in original outline    *)
 (*                   1 => measure distance in grid-fitted outline *)
 
-   procedure Ins_MD( args : PStorage );
+   procedure TInterpreter.Ins_MD( args : PStorage );
    var
      K, L : Int;
      D    : TT_F26dot6;
@@ -2944,17 +3050,17 @@ end;
      K := args^[1];
      L := args^[0];
 
-     if (args^[0] < 0) or (args^[0] >= exc.zp0.n_points) or
-        (args^[1] < 0) or (args^[1] >= exc.zp1.n_points) then
+     if (args^[0] < 0) or (args^[0] >= pEC^.zp0.n_points) or
+        (args^[1] < 0) or (args^[1] >= pEC^.zp1.n_points) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
-     case exc.opcode and 1 of
+     case opcode and 1 of
 
-       0 : D := exc.func_dualProj( exc.zp0.org^[L], exc.zp1.org^[K] );
-       1 : D := exc.func_project ( exc.zp0.cur^[L], exc.zp1.cur^[K] );
+       0 : D := pEC^.func_dualProj( pEC^.zp0.org^[L], pEC^.zp1.org^[K] );
+       1 : D := pEC^.func_project ( pEC^.zp0.cur^[L], pEC^.zp1.cur^[K] );
      end;
 
      args^[0] := D;
@@ -2964,7 +3070,7 @@ end;
 (* MPPEM[]   : Measure Pixel Per EM           *)
 (* CodeRange : $4B                            *)
 
-  procedure Ins_MPPEM( args : PStorage );
+  procedure TInterpreter.Ins_MPPEM( args : PStorage );
   begin
     args^[0] := Get_Ppem;
   end;
@@ -2973,9 +3079,9 @@ end;
 (* MPS[]     : Measure PointSize              *)
 (* CodeRange : $4C                            *)
 
-   procedure Ins_MPS( args : PStorage );
+   procedure TInterpreter.Ins_MPS( args : PStorage );
    begin
-     args^[0] := exc.metrics.pointSize;
+     args^[0] := pEC^.metrics.pointSize;
    end;
 
 (****************************************************************)
@@ -2991,84 +3097,84 @@ end;
 (* FLIPPT[]  : FLIP PoinT                     *)
 (* CodeRange : $80                            *)
 
-   procedure Ins_FLIPPT( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_FLIPPT( args : PStorage );
    var
      point : Int;
    begin
-     if exc.top < exc.GS.loop then
+     if top < pEC^.GS.loop then
      begin
-       exc.error := TT_Err_Too_Few_Arguments;
+       pEC^.error := TT_Err_Too_Few_Arguments;
        exit;
      end;
 
-     while exc.GS.loop > 0 do
+     while pEC^.GS.loop > 0 do
      begin
-       dec( exc.args );
+       dec( opargs );
 
-       point := exc.stack^[ exc.args ];
+       point := pEC^.stack^[ opargs ];
 
-       if (point < 0) or (point >= exc.pts.n_points) then
+       if (point < 0) or (point >= pEC^.pts.n_points) then
        begin
-         exc.error := TT_Err_Invalid_Reference;
+         pEC^.error := TT_Err_Invalid_Reference;
          exit;
        end;
 
-       exc.pts.flags^[point] := exc.pts.flags^[point] xor TT_Flag_On_Curve;
+       pEC^.pts.flags^[point] := pEC^.pts.flags^[point] xor TT_Flag_On_Curve;
 
-       dec( exc.GS.loop );
+       dec( pEC^.GS.loop );
      end;
 
-     exc.GS.loop := 1;
-     exc.new_top := exc.args;
+     pEC^.GS.loop := 1;
+     new_top := opargs;
    end;
 
 (**********************************************)
 (* FLIPRGON[]: FLIP RanGe ON                  *)
 (* CodeRange : $81                            *)
 
-   procedure Ins_FLIPRGON( args : PStorage );
+   procedure TInterpreter.Ins_FLIPRGON( args : PStorage );
    var
      I, K, L : Int;
    begin
      K := args^[1];
      L := args^[0];
 
-     if (K < 0) or (K >= exc.pts.n_points) or
-        (L < 0) or (L >= exc.pts.n_points) then
+     if (K < 0) or (K >= pEC^.pts.n_points) or
+        (L < 0) or (L >= pEC^.pts.n_points) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
      for I := L to K do
-       exc.pts.flags^[I] := exc.pts.flags^[I] or TT_Flag_On_Curve;
+       pEC^.pts.flags^[I] := pEC^.pts.flags^[I] or TT_Flag_On_Curve;
    end;
 
 (**********************************************)
 (* FLIPRGOFF : FLIP RanGe OFF                 *)
 (* CodeRange : $82                            *)
 
-   procedure Ins_FLIPRGOFF( args : PStorage );
+   procedure TInterpreter.Ins_FLIPRGOFF( args : PStorage );
    var
      I, K, L : Int;
    begin
      K := args^[1];
      L := args^[0];
 
-     if (K < 0) or (K >= exc.pts.n_points) or
-        (L < 0) or (L >= exc.pts.n_points) then
+     if (K < 0) or (K >= pEC^.pts.n_points) or
+        (L < 0) or (L >= pEC^.pts.n_points) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
      for I := L to K do
-       exc.pts.flags^[I] := exc.pts.flags^[I] and not TT_Flag_On_Curve;
+       pEC^.pts.flags^[I] := pEC^.pts.flags^[I] and not TT_Flag_On_Curve;
    end;
 
 
 
-  function Compute_Point_Displacement( out x    : TT_F26dot6;
+  function TInterpreter.Compute_Point_Displacement( out x    : TT_F26dot6;
                                        out y    : TT_F26dot6;
                                        out zone : PGlyph_Zone;
                                        out refp : Int ) : TError;
@@ -3080,14 +3186,14 @@ end;
 
     Compute_Point_Displacement := Success;
 
-    case exc.opcode and 1 of
-      0 : begin zp := @exc.zp1; p := exc.GS.rp2; end;
-      1 : begin zp := @exc.zp0; p := exc.GS.rp1; end;
+    case opcode and 1 of
+      0 : begin zp := @pEC^.zp1; p := pEC^.GS.rp2; end;
+      1 : begin zp := @pEC^.zp0; p := pEC^.GS.rp1; end;
     end;
 
     if (p < 0) or (p >= zp^.n_points) then
     begin
-      exc.error := TT_Err_Invalid_Displacement;
+      pEC^.error := TT_Err_Invalid_Displacement;
       Compute_Point_Displacement := Failure;
       exit;
     end;
@@ -3095,28 +3201,28 @@ end;
     zone := zp;
     refp := p;
 
-    d := exc.func_project( zp^.cur^[p], zp^.org^[p] );
+    d := pEC^.func_project( zp^.cur^[p], zp^.org^[p] );
 
-    x := MulDiv_Round( d, Long(exc.GS.freeVector.x)*$10000, exc.F_dot_P );
-    y := MulDiv_Round( d, Long(exc.GS.freeVector.y)*$10000, exc.F_dot_P );
+    x := MulDiv_Round( d, Long(pEC^.GS.freeVector.x)*$10000, pEC^.F_dot_P );
+    y := MulDiv_Round( d, Long(pEC^.GS.freeVector.y)*$10000, pEC^.F_dot_P );
 
   end;
 
 
-  procedure Move_Zp2_Point( point : Int;
+  procedure TInterpreter.Move_Zp2_Point( point : Int;
                             dx    : TT_F26dot6;
                             dy    : TT_F26dot6 );
   begin
-    if exc.GS.freeVector.x <> 0 then
+    if pEC^.GS.freeVector.x <> 0 then
     begin
-      inc( exc.zp2.cur^[point].x, dx );
-      exc.zp2.flags^[point] := exc.zp2.flags^[point] or TT_Flag_Touched_X;
+      inc( pEC^.zp2.cur^[point].x, dx );
+      pEC^.zp2.flags^[point] := pEC^.zp2.flags^[point] or TT_Flag_Touched_X;
     end;
 
-    if exc.GS.freeVector.y <> 0 then
+    if pEC^.GS.freeVector.y <> 0 then
     begin
-      inc( exc.zp2.cur^[point].y, dy );
-      exc.zp2.flags^[point] := exc.zp2.flags^[point] or TT_Flag_Touched_Y;
+      inc( pEC^.zp2.cur^[point].y, dy );
+      pEC^.zp2.flags^[point] := pEC^.zp2.flags^[point] or TT_Flag_Touched_Y;
     end;
   end;
 
@@ -3124,7 +3230,7 @@ end;
 (* SHP[a]    : SHift Point by the last point  *)
 (* CodeRange : $32-33                         *)
 
-   procedure Ins_SHP( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_SHP( args : PStorage );
    var
      zp   : PGlyph_Zone;
      refp : Int;
@@ -3137,40 +3243,40 @@ end;
      if Compute_Point_Displacement( dx, dy, zp, refp ) then
        exit;
 
-     if exc.top < exc.GS.loop then
+     if top < pEC^.GS.loop then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
-     while exc.GS.loop > 0 do
+     while pEC^.GS.loop > 0 do
      begin
 
-       dec( exc.args );
+       dec( opargs );
 
-       point := exc.stack^[ exc.args ];
+       point := pEC^.stack^[ opargs ];
 
-       if (point < 0) or (point >= exc.zp2.n_points) then
+       if (point < 0) or (point >= pEC^.zp2.n_points) then
        begin
-         exc.error := TT_Err_Invalid_Reference;
+         pEC^.error := TT_Err_Invalid_Reference;
          exit;
        end;
 
        Move_Zp2_Point( point, dx, dy );
 
-       dec( exc.GS.loop );
+       dec( pEC^.GS.loop );
 
      end;
 
-     exc.GS.loop := 1;
-     exc.new_top := exc.args;
+     pEC^.GS.loop := 1;
+     new_top := opargs;
    end;
 
 (**********************************************)
 (* SHC[a]    : SHift Contour                  *)
 (* CodeRange : $34-35                         *)
 
-   procedure Ins_SHC( args : PStorage );
+   procedure TInterpreter.Ins_SHC( args : PStorage );
    var
      zp   : PGlyph_Zone;
      refp : Int;
@@ -3184,9 +3290,9 @@ end;
 
      contour := args^[0];
 
-     if (args^[0] < 0) or (args^[0] >= exc.pts.n_contours ) then
+     if (args^[0] < 0) or (args^[0] >= pEC^.pts.n_contours ) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
@@ -3194,13 +3300,13 @@ end;
        exit;
 
      if contour = 0 then first_point := 0 else
-                         first_point := exc.pts.conEnds^[contour-1]+1;
+                         first_point := pEC^.pts.conEnds^[contour-1]+1;
 
-     last_point := exc.pts.conEnds^[contour];
+     last_point := pEC^.pts.conEnds^[contour];
 
      for i := first_point to last_point do
      begin
-       if (zp^.cur <> exc.zp2.cur) or
+       if (zp^.cur <> pEC^.zp2.cur) or
           (refp <> i ) then
 
          Move_Zp2_Point( i, dx, dy );
@@ -3212,7 +3318,7 @@ end;
 (* SHZ[a]    : SHift Zone                     *)
 (* CodeRange : $36-37                         *)
 
-   procedure Ins_SHZ( args : PStorage );
+   procedure TInterpreter.Ins_SHZ( args : PStorage );
    var
      zp   : PGlyph_Zone;
      refp : Int;
@@ -3228,7 +3334,7 @@ end;
 
      if (args^[0] < 0) or (args^[0] > 1) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
@@ -3239,7 +3345,7 @@ end;
 
      for i := 0 to last_point do
      begin
-       if (zp^.cur <> exc.zp2.cur) or
+       if (zp^.cur <> pEC^.zp2.cur) or
           (refp <> i ) then
 
          Move_Zp2_Point( i, dx, dy );
@@ -3251,55 +3357,55 @@ end;
 (* SHPIX[]   : SHift points by a PIXel amount *)
 (* CodeRange : $38                            *)
 
-   procedure Ins_SHPIX( args : PStorage );
+   procedure TInterpreter.Ins_SHPIX( args : PStorage );
    var
      dx   : TT_F26dot6;
      dy   : TT_F26dot6;
      point: Int;
    begin
 
-     if exc.top < exc.GS.loop then
+     if top < pEC^.GS.loop then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
      dx := MulDiv_Round( args^[0],
-                         exc.GS.freeVector.x,
+                         pEC^.GS.freeVector.x,
                          $4000 );
 
      dy := MulDiv_Round( args^[0],
-                         exc.GS.freeVector.y,
+                         pEC^.GS.freeVector.y,
                          $4000 );
 
-     while exc.GS.loop > 0 do
+     while pEC^.GS.loop > 0 do
      begin
 
-       dec( exc.args );
+       dec( opargs );
 
-       point := exc.stack^[ exc.args ];
+       point := pEC^.stack^[ opargs ];
 
-       if (point < 0) or (point >= exc.zp2.n_points) then
+       if (point < 0) or (point >= pEC^.zp2.n_points) then
        begin
-         exc.error := TT_Err_Invalid_Reference;
+         pEC^.error := TT_Err_Invalid_Reference;
          exit;
        end;
 
        Move_Zp2_Point( point, dx, dy );
 
-       dec( exc.GS.loop );
+       dec( pEC^.GS.loop );
 
      end;
 
-     exc.GS.loop := 1;
-     exc.new_top := exc.args;
+     pEC^.GS.loop := 1;
+     new_top := opargs;
    end;
 
 (**********************************************)
 (* MSIRP[a]  : Move Stack Indirect Relative   *)
 (* CodeRange : $3A-$3B                        *)
 
-   procedure Ins_MSIRP( args : PStorage );
+   procedure TInterpreter.Ins_MSIRP( args : PStorage );
    var
      point    : Int;
      distance : TT_F26dot6;
@@ -3307,9 +3413,9 @@ end;
 
      point := args^[0];
 
-     if (args^[0] < 0) or (args^[0] >= exc.zp1.n_points) then
+     if (args^[0] < 0) or (args^[0] >= pEC^.zp1.n_points) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
@@ -3320,28 +3426,28 @@ end;
      (* they wrote the spec ? There _must_ be another       *)
      (* specification than the published one !! #@%$& !!    *)
 
-     if exc.GS.gep0 = 0 then   (* if in twilight zone *)
+     if pEC^.GS.gep0 = 0 then   (* if in twilight zone *)
      begin
-       exc.zp1.org^[point] := exc.zp0.org^[exc.GS.rp0];
-       exc.zp1.cur^[point] := exc.zp1.org^[point];
+       pEC^.zp1.org^[point] := pEC^.zp0.org^[pEC^.GS.rp0];
+       pEC^.zp1.cur^[point] := pEC^.zp1.org^[point];
      end;
 
-     distance := exc.func_project( exc.zp1.cur^[point],
-                                   exc.zp0.cur^[exc.GS.rp0] );
+     distance := pEC^.func_project( pEC^.zp1.cur^[point],
+                                   pEC^.zp0.cur^[pEC^.GS.rp0] );
 
-     exc.func_move( @exc.zp1, point, args^[1] - distance );
+     pEC^.func_move( @pEC^.zp1, point, args^[1] - distance );
 
-     exc.GS.rp1 := exc.GS.rp0;
-     exc.GS.rp2 := point;
+     pEC^.GS.rp1 := pEC^.GS.rp0;
+     pEC^.GS.rp2 := point;
 
-     if exc.opcode and 1 <> 0 then exc.GS.rp0 := point;
+     if opcode and 1 <> 0 then pEC^.GS.rp0 := point;
    end;
 
 (**********************************************)
 (* MDAP[a]   : Move Direct Absolute Point     *)
 (* CodeRange : $2E-$2F                        *)
 
-   procedure Ins_MDAP( args : PStorage );
+   procedure TInterpreter.Ins_MDAP( args : PStorage );
    var
      point    : Int;
      cur_dist : TT_F26dot6;
@@ -3349,38 +3455,38 @@ end;
    begin
      point := args^[0];
 
-     if (args^[0] < 0) or (args^[0] >= exc.zp0.n_points) then
+     if (args^[0] < 0) or (args^[0] >= pEC^.zp0.n_points) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
      (* XXXX Is there some undocumented feature while in the *)
      (*      twilight zone ??                                *)
 
-     if exc.opcode and 1 <> 0 then
+     if opcode and 1 <> 0 then
        begin
 
-         cur_dist := exc.func_project( exc.zp0.cur^[point], Null_Vector );
+         cur_dist := pEC^.func_project( pEC^.zp0.cur^[point], Null_Vector );
 
-         distance := exc.func_round( cur_dist,
-                                     exc.metrics.compensations[0] ) -
+         distance := pEC^.func_round( cur_dist,
+                                     pEC^.metrics.compensations[0] ) -
                      cur_dist;
        end
      else
        distance := 0;
 
-     exc.func_move( @exc.zp0, point, distance );
+     pEC^.func_move( @pEC^.zp0, point, distance );
 
-     exc.GS.rp0 := point;
-     exc.GS.rp1 := point;
+     pEC^.GS.rp0 := point;
+     pEC^.GS.rp1 := point;
    end;
 
 (**********************************************)
 (* MIAP[a]   : Move Indirect Absolute Point   *)
 (* CodeRange : $3E-$3F                        *)
 
-   procedure Ins_MIAP( args : PStorage );
+   procedure TInterpreter.Ins_MIAP( args : PStorage );
    var
      cvtEntry : Int;
      point    : Int;
@@ -3390,10 +3496,10 @@ end;
      cvtEntry := args^[1];
      point    := args^[0];
 
-     if (args^[0] < 0) or (args^[0] >= exc.zp0.n_points  ) or
-        (args^[1] < 0) or (args^[1] >= exc.cvtSize) then
+     if (args^[0] < 0) or (args^[0] >= pEC^.zp0.n_points  ) or
+        (args^[1] < 0) or (args^[1] >= pEC^.cvtSize) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
@@ -3419,37 +3525,37 @@ end;
      (* to work..                                         *)
      (*                                         - David   *)
 
-     distance := exc.func_read_cvt(cvtEntry);
+     distance := pEC^.func_read_cvt(cvtEntry);
 
-     if exc.GS.gep0 = 0 then  (* If in twilight zone *)
+     if pEC^.GS.gep0 = 0 then  (* If in twilight zone *)
      begin
-       exc.zp0.org^[point].y := MulDiv_Round( exc.GS.freeVector.x,
+       pEC^.zp0.org^[point].y := MulDiv_Round( pEC^.GS.freeVector.x,
                                               distance,
                                               $4000 );
 
-       exc.zp0.org^[point].y := MulDiv_Round( exc.GS.freeVector.y,
+       pEC^.zp0.org^[point].y := MulDiv_Round( pEC^.GS.freeVector.y,
                                               distance,
                                               $4000 );
 
-       exc.zp0.cur^[point] := exc.zp0.org^[point];
+       pEC^.zp0.cur^[point] := pEC^.zp0.org^[point];
      end;
 
-     org_dist := exc.func_project( exc.zp0.cur^[point], Null_Vector );
+     org_dist := pEC^.func_project( pEC^.zp0.cur^[point], Null_Vector );
 
-     if exc.opcode and 1 <> 0 then  (* rounding and control cutin flag *)
+     if opcode and 1 <> 0 then  (* rounding and control cutin flag *)
      begin
 
-       if abs( distance-org_dist ) > exc.GS.control_value_cutin then
+       if abs( distance-org_dist ) > pEC^.GS.control_value_cutin then
          distance := org_dist;
 
-       distance := exc.func_round( distance,
-                                   exc.metrics.compensations[0] );
+       distance := pEC^.func_round( distance,
+                                   pEC^.metrics.compensations[0] );
      end;
 
-     exc.func_move( @exc.zp0, point, distance - org_dist );
+     pEC^.func_move( @pEC^.zp0, point, distance - org_dist );
 
-     exc.GS.rp0 := point;
-     exc.GS.rp1 := point;
+     pEC^.GS.rp0 := point;
+     pEC^.GS.rp1 := point;
 
    end;
 
@@ -3457,7 +3563,7 @@ end;
 (* MDRP[abcde] : Move Direct Relative Point   *)
 (* CodeRange   : $C0-$DF                      *)
 
-   procedure Ins_MDRP( args : PStorage );
+   procedure TInterpreter.Ins_MDRP( args : PStorage );
    var
      point      : Int;
      distance   : TT_F26dot6;
@@ -3465,67 +3571,67 @@ end;
    begin
      point := args^[0];
 
-     if (args^[0] < 0) or (args^[0] >= exc.zp1.n_points) then
+     if (args^[0] < 0) or (args^[0] >= pEC^.zp1.n_points) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
      (* XXXX Is there some undocumented feature while in the *)
      (*      twilight zone ??                                *)
 
-     org_dist := exc.func_dualProj( exc.zp1.org^[point],
-                                    exc.zp0.org^[exc.GS.rp0] );
+     org_dist := pEC^.func_dualProj( pEC^.zp1.org^[point],
+                                    pEC^.zp0.org^[pEC^.GS.rp0] );
      (* single width cutin test *)
 
-     if abs(org_dist) < exc.GS.single_width_cutin then
+     if abs(org_dist) < pEC^.GS.single_width_cutin then
 
-       if org_dist >= 0 then org_dist :=  exc.GS.single_width_value
-                        else org_dist := -exc.GS.single_width_value;
+       if org_dist >= 0 then org_dist :=  pEC^.GS.single_width_value
+                        else org_dist := -pEC^.GS.single_width_value;
 
      (* round flag *)
 
-     if exc.opcode and 4 <> 0 then
+     if opcode and 4 <> 0 then
 
-       distance := exc.func_round( org_dist,
-                                   exc.metrics.compensations[ exc.opcode and 3 ] )
+       distance := pEC^.func_round( org_dist,
+                                   pEC^.metrics.compensations[ opcode and 3 ] )
      else
        distance := Round_None( org_dist,
-                               exc.metrics.compensations[ exc.opcode and 3 ] );
+                               pEC^.metrics.compensations[ opcode and 3 ] );
 
      (* minimum distance flag *)
 
-     if exc.opcode and 8 <> 0 then
+     if opcode and 8 <> 0 then
      begin
 
        if org_dist >= 0 then
 
-         if distance < exc.GS.minimum_distance then
-           distance := exc.GS.minimum_distance
+         if distance < pEC^.GS.minimum_distance then
+           distance := pEC^.GS.minimum_distance
          else
        else
-         if distance > -exc.GS.minimum_distance then
-           distance := -exc.GS.minimum_distance;
+         if distance > -pEC^.GS.minimum_distance then
+           distance := -pEC^.GS.minimum_distance;
      end;
 
      (* now move the point *)
 
-     org_dist := exc.func_project( exc.zp1.cur^[point],
-                                   exc.zp0.cur^[exc.GS.rp0] );
+     org_dist := pEC^.func_project( pEC^.zp1.cur^[point],
+                                   pEC^.zp0.cur^[pEC^.GS.rp0] );
 
-     exc.func_move( @exc.zp1, point, distance - org_dist );
+     pEC^.func_move( @pEC^.zp1, point, distance - org_dist );
 
-     exc.GS.rp1 := exc.GS.rp0;
-     exc.GS.rp2 := point;
+     pEC^.GS.rp1 := pEC^.GS.rp0;
+     pEC^.GS.rp2 := point;
 
-     if exc.opcode and 16 <> 0 then exc.GS.rp0 := point;
+     if opcode and 16 <> 0 then pEC^.GS.rp0 := point;
    end;
 
 (**********************************************)
 (* MIRP[abcde] : Move Indirect Relative Point *)
 (* CodeRange   : $E0-$FF                      *)
 
-   procedure Ins_MIRP( args : PStorage );
+   procedure TInterpreter.Ins_MIRP( args : PStorage );
    var
      point    : Int;
      cvtEntry : Int;
@@ -3540,143 +3646,143 @@ end;
 
      (* XXX : UNDOCUMENTED => cvt[-1] = 0 ???? *)
 
-     if (args^[0] < 0 ) or (args^[0] >= exc.zp1.n_points) or
-        (args^[1] < -1) or (args^[1] >= exc.cvtSize) then
+     if (args^[0] < 0 ) or (args^[0] >= pEC^.zp1.n_points) or
+        (args^[1] < -1) or (args^[1] >= pEC^.cvtSize) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
      if cvtEntry < 0 then
        cvt_dist := 0
      else
-       cvt_dist := exc.func_read_cvt(cvtEntry);
+       cvt_dist := pEC^.func_read_cvt(cvtEntry);
 
      (* single width test *)
 
-     if abs(cvt_dist) < exc.GS.single_width_cutin then
+     if abs(cvt_dist) < pEC^.GS.single_width_cutin then
 
-       if cvt_dist >= 0 then cvt_dist :=  exc.GS.single_width_value
-                        else cvt_dist := -exc.GS.single_width_value;
+       if cvt_dist >= 0 then cvt_dist :=  pEC^.GS.single_width_value
+                        else cvt_dist := -pEC^.GS.single_width_value;
 
      (* XXX : Undocumented - twilight zone *)
 
-     if exc.GS.gep1 = 0 then   (* if in twilight zone *)
+     if pEC^.GS.gep1 = 0 then   (* if in twilight zone *)
      begin
-       exc.zp1.org^[point].x := exc.zp0.org^[exc.GS.rp0].x +
+       pEC^.zp1.org^[point].x := pEC^.zp0.org^[pEC^.GS.rp0].x +
                                 MulDiv_Round( cvt_dist,
-                                              exc.GS.freeVector.x,
+                                              pEC^.GS.freeVector.x,
                                               $4000 );
 
-       exc.zp1.org^[point].x := exc.zp0.org^[exc.GS.rp0].y +
+       pEC^.zp1.org^[point].x := pEC^.zp0.org^[pEC^.GS.rp0].y +
                                 MulDiv_Round( cvt_dist,
-                                              exc.GS.freeVector.y,
+                                              pEC^.GS.freeVector.y,
                                               $4000 );
 
-       exc.zp1.cur^[point] := exc.zp1.org^[point];
+       pEC^.zp1.cur^[point] := pEC^.zp1.org^[point];
      end;
 
 
-     org_dist := exc.func_dualProj( exc.zp1.org^[point],
-                                    exc.zp0.org^[exc.GS.rp0] );
+     org_dist := pEC^.func_dualProj( pEC^.zp1.org^[point],
+                                    pEC^.zp0.org^[pEC^.GS.rp0] );
 
-     cur_dist := exc.func_Project( exc.zp1.cur^[point],
-                                   exc.zp0.cur^[exc.GS.rp0] );
+     cur_dist := pEC^.func_Project( pEC^.zp1.cur^[point],
+                                   pEC^.zp0.cur^[pEC^.GS.rp0] );
 
      (* auto-flip test *)
 
-     if exc.GS.auto_flip then
+     if pEC^.GS.auto_flip then
        if (org_dist xor cvt_dist < 0) then
          cvt_dist := -cvt_dist;
 
      (* control value cutin and round *)
 
-     if exc.opcode and 4 <> 0 then
+     if opcode and 4 <> 0 then
        begin
          (* XXX : UNDOCUMENTED : only perform cut-in test when both *)
          (*       zone pointers refer to the points zone            *)
 
-         if exc.GS.gep0 = exc.GS.gep1 then
-           if abs( cvt_dist - org_dist ) >= exc.GS.control_value_cutin then
+         if pEC^.GS.gep0 = pEC^.GS.gep1 then
+           if abs( cvt_dist - org_dist ) >= pEC^.GS.control_value_cutin then
              cvt_dist := org_dist;
 
-         distance := exc.func_round( cvt_dist,
-                                     exc.metrics.compensations[ exc.opcode and 3 ] );
+         distance := pEC^.func_round( cvt_dist,
+                                     pEC^.metrics.compensations[ opcode and 3 ] );
        end
      else
        distance := Round_None( cvt_dist,
-                               exc.metrics.compensations[ exc.opcode and 3 ] );
+                               pEC^.metrics.compensations[ opcode and 3 ] );
 
      (* minimum distance test *)
 
-     if exc.opcode and 8 <> 0 then
+     if opcode and 8 <> 0 then
      begin
        if org_dist >= 0 then
 
-         if distance < exc.GS.minimum_distance then
-           distance := exc.GS.minimum_distance
+         if distance < pEC^.GS.minimum_distance then
+           distance := pEC^.GS.minimum_distance
          else
        else
-         if distance > -exc.GS.minimum_distance then
-           distance := -exc.GS.minimum_distance;
+         if distance > -pEC^.GS.minimum_distance then
+           distance := -pEC^.GS.minimum_distance;
      end;
 
-     exc.func_move( @exc.zp1, point, distance - cur_dist );
+     pEC^.func_move( @pEC^.zp1, point, distance - cur_dist );
 
-     exc.GS.rp1 := exc.GS.rp0;
+     pEC^.GS.rp1 := pEC^.GS.rp0;
 
-     if exc.opcode and 16 <> 0 then exc.GS.rp0 := point;
+     if opcode and 16 <> 0 then pEC^.GS.rp0 := point;
 
     (* UNDOCUMENTED !! *)
 
-     exc.GS.rp2 := point;
+     pEC^.GS.rp2 := point;
    end;
 
 (**********************************************)
 (* ALIGNRP[]   : ALIGN Relative Point         *)
 (* CodeRange   : $3C                          *)
 
-   procedure Ins_ALIGNRP( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_ALIGNRP(args : PStorage );
    var
      point    : Int;
      distance : TT_F26dot6;
    begin
-     if exc.top < exc.GS.loop then
+     if top < pEC^.GS.loop then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
-     while exc.GS.loop > 0 do
+     while pEC^.GS.loop > 0 do
      begin
 
-       dec( exc.args );
+       dec( opargs );
 
-       point := exc.stack^[ exc.args ];
+       point := pEC^.stack^[ opargs ];
 
-       if (point < 0) or (point >= exc.zp1.n_points) then
+       if (point < 0) or (point >= pEC^.zp1.n_points) then
        begin
-         exc.error := TT_Err_Invalid_Reference;
+         pEC^.error := TT_Err_Invalid_Reference;
          exit;
        end;
 
-       distance := exc.func_project( exc.zp1.cur^[point],
-                                     exc.zp0.cur^[exc.GS.rp0] );
+       distance := pEC^.func_project( pEC^.zp1.cur^[point],
+                                     pEC^.zp0.cur^[pEC^.GS.rp0] );
 
-       exc.func_move( @exc.zp1, point, -distance );
+       pEC^.func_move( @pEC^.zp1, point, -distance );
 
-       dec( exc.GS.loop );
+       dec( pEC^.GS.loop );
      end;
 
-     exc.GS.loop := 1;
-     exc.new_top := exc.args;
+     pEC^.GS.loop := 1;
+     new_top := opargs;
    end;
 
 (**********************************************)
 (* AA[]        : Adjust Angle                 *)
 (* CodeRange   : $7F                          *)
 
-   procedure Ins_AA( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_AA( args : PStorage );
    begin
      (* Intentional - no longer supported *)
    end;
@@ -3685,7 +3791,7 @@ end;
 (* ISECT[]     : moves point to InterSECTion  *)
 (* CodeRange   : $0F                          *)
 
-   procedure Ins_ISECT( args : PStorage );
+   procedure TInterpreter.Ins_ISECT( args : PStorage );
    var
      point  : Int;
      a0, a1 : Int;
@@ -3708,31 +3814,31 @@ end;
      b0    := args^[3];
      b1    := args^[4];
 
-     if (b0 >= exc.zp0.n_points) or (b1 >= exc.zp0.n_points) or
-        (a0 >= exc.zp1.n_points) or (a1 >= exc.zp1.n_points) or
-        (point >= exc.zp0.n_points) then
+     if (b0 >= pEC^.zp0.n_points) or (b1 >= pEC^.zp0.n_points) or
+        (a0 >= pEC^.zp1.n_points) or (a1 >= pEC^.zp1.n_points) or
+        (point >= pEC^.zp0.n_points) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 (*
-     if   Normalize( exc.zp1.cur_x^[a1] - exc.zp1.cur_x^[a0],
-                     exc.zp1.cur_y^[a1] - exc.zp1.cur_y^[a0],
+     if   Normalize( pEC^.zp1.cur_x^[a1] - pEC^.zp1.cur_x^[a0],
+                     pEC^.zp1.cur_y^[a1] - pEC^.zp1.cur_y^[a0],
                      U )
         and
-          Normalize( - exc.zp0.cur_x^[b1] - exc.zp0.cur_x^[b0],
-                       exc.zp0.cur_y^[b1] - exc.zp0.cur_y^[b0],
+          Normalize( - pEC^.zp0.cur_x^[b1] - pEC^.zp0.cur_x^[b0],
+                       pEC^.zp0.cur_y^[b1] - pEC^.zp0.cur_y^[b0],
                        V )
        then
          begin
 
-           dx := MulDiv_Round( exc.zp0.cur_x^[b0] -
-                               exc.zp1.cur_x^[a0],
+           dx := MulDiv_Round( pEC^.zp0.cur_x^[b0] -
+                               pEC^.zp1.cur_x^[a0],
                                V.x,
                                $4000 ) +
 
-                 MulDiv_Round( exc.zp0.cur_y^[b0] -
-                               exc.zp1.cur_y^[a0],
+                 MulDiv_Round( pEC^.zp0.cur_y^[b0] -
+                               pEC^.zp1.cur_y^[a0],
                                V.y,
                                $4000 );
 
@@ -3743,14 +3849,14 @@ end;
            begin
              dx := MulDiv_Round( dx, $4000, dy );
 
-             exc.zp2.flags^[point] := exc.zp2.flags^[point] or
+             pEC^.zp2.flags^[point] := pEC^.zp2.flags^[point] or
                                       TT_Flag_Touched_Both;
 
-             exc.zp2.cur_x^[point] := exc.zp1.cur_x^[a0] +
+             pEC^.zp2.cur_x^[point] := pEC^.zp1.cur_x^[a0] +
 
                       MulDiv_Round( dx, U.x, $4000 );
 
-             exc.zp2.cur_y^[point] := exc.zp1.cur_y^[a0] +
+             pEC^.zp2.cur_y^[point] := pEC^.zp1.cur_y^[a0] +
 
                       MulDiv_Round( dx, U.y, $4000 );
 
@@ -3758,16 +3864,16 @@ end;
            end;
         end;
  *)
-     dbx := exc.zp0.cur^[b1].x - exc.zp0.cur^[b0].x;
-     dby := exc.zp0.cur^[b1].y - exc.zp0.cur^[b0].y;
+     dbx := pEC^.zp0.cur^[b1].x - pEC^.zp0.cur^[b0].x;
+     dby := pEC^.zp0.cur^[b1].y - pEC^.zp0.cur^[b0].y;
 
-     dax := exc.zp1.cur^[a1].x - exc.zp1.cur^[a0].x;
-     day := exc.zp1.cur^[a1].y - exc.zp1.cur^[a0].y;
+     dax := pEC^.zp1.cur^[a1].x - pEC^.zp1.cur^[a0].x;
+     day := pEC^.zp1.cur^[a1].y - pEC^.zp1.cur^[a0].y;
 
-     dx := exc.zp0.cur^[b0].x - exc.zp1.cur^[a0].x;
-     dy := exc.zp0.cur^[b0].y - exc.zp1.cur^[a0].y;
+     dx := pEC^.zp0.cur^[b0].x - pEC^.zp1.cur^[a0].x;
+     dy := pEC^.zp0.cur^[b0].y - pEC^.zp1.cur^[a0].y;
 
-     exc.zp2.flags^[point] := exc.zp2.flags^[point] or
+     pEC^.zp2.flags^[point] := pEC^.zp2.flags^[point] or
                               TT_Flag_Touched_Both;
 
      discriminant := MulDiv( dax, -dby, $40 ) +
@@ -3782,23 +3888,23 @@ end;
          R.x := MulDiv( val, dax, discriminant );
          R.y := MulDiv( val, day, discriminant );
 
-         exc.zp2.cur^[point].x := exc.zp1.cur^[a0].x + R.x;
-         exc.zp2.cur^[point].y := exc.zp1.cur^[a0].y + R.y;
+         pEC^.zp2.cur^[point].x := pEC^.zp1.cur^[a0].x + R.x;
+         pEC^.zp2.cur^[point].y := pEC^.zp1.cur^[a0].y + R.y;
        end
      else
        begin
 
          (* else, take the middle of the middles of A and B *)
 
-         exc.zp2.cur^[point].x := ( exc.zp1.cur^[a0].x +
-                                    exc.zp1.cur^[a1].x +
-                                    exc.zp0.cur^[b0].x +
-                                    exc.zp0.cur^[b1].x ) div 4;
+         pEC^.zp2.cur^[point].x := ( pEC^.zp1.cur^[a0].x +
+                                    pEC^.zp1.cur^[a1].x +
+                                    pEC^.zp0.cur^[b0].x +
+                                    pEC^.zp0.cur^[b1].x ) div 4;
 
-         exc.zp2.cur^[point].y := ( exc.zp1.cur^[a0].y +
-                                    exc.zp1.cur^[a1].y +
-                                    exc.zp0.cur^[b0].y +
-                                    exc.zp0.cur^[b1].y ) div 4;
+         pEC^.zp2.cur^[point].y := ( pEC^.zp1.cur^[a0].y +
+                                    pEC^.zp1.cur^[a1].y +
+                                    pEC^.zp0.cur^[b0].y +
+                                    pEC^.zp0.cur^[b1].y ) div 4;
        end;
    end;
 
@@ -3806,7 +3912,7 @@ end;
 (* ALIGNPTS[]  : ALIGN PoinTS                 *)
 (* CodeRange   : $27                          *)
 
-   procedure Ins_ALIGNPTS( args : PStorage );
+   procedure TInterpreter.Ins_ALIGNPTS( args : PStorage );
    var
      p1, p2   : Int;
      distance : TT_F26dot6;
@@ -3814,25 +3920,25 @@ end;
      p1 := args^[0];
      p2 := args^[1];
 
-     if (args^[0] < 0) or (args^[0] >= exc.zp1.n_points) or
-        (args^[1] < 0) or (args^[1] >= exc.zp0.n_points) then
+     if (args^[0] < 0) or (args^[0] >= pEC^.zp1.n_points) or
+        (args^[1] < 0) or (args^[1] >= pEC^.zp0.n_points) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
-     distance := exc.func_project( exc.zp0.cur^[p2],
-                                   exc.zp1.cur^[p1] ) div 2;
+     distance := pEC^.func_project( pEC^.zp0.cur^[p2],
+                                   pEC^.zp1.cur^[p1] ) div 2;
 
-     exc.func_move( @exc.zp1, p1, distance );
-     exc.func_move( @exc.zp0, p2, -distance );
+     pEC^.func_move( @pEC^.zp1, p1, distance );
+     pEC^.func_move( @pEC^.zp0, p2, -distance );
    end;
 
 (**********************************************)
 (* IP[]        : Interpolate Point            *)
 (* CodeRange   : $39                          *)
 
-   procedure Ins_IP( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_IP( args : PStorage );
    var
      org_a : TT_F26dot6;
      org_b : TT_F26dot6;
@@ -3846,30 +3952,30 @@ end;
      point     : Int;
    begin
 
-     if exc.top < exc.GS.loop then
+     if top < pEC^.GS.loop then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
-     org_a := exc.func_dualProj( exc.zp0.org^[exc.GS.rp1], Null_Vector );
+     org_a := pEC^.func_dualProj( pEC^.zp0.org^[pEC^.GS.rp1], Null_Vector );
 
-     org_b := exc.func_dualProj( exc.zp1.org^[exc.GS.rp2], Null_Vector );
+     org_b := pEC^.func_dualProj( pEC^.zp1.org^[pEC^.GS.rp2], Null_Vector );
 
-     cur_a := exc.func_project( exc.zp0.cur^[exc.GS.rp1], Null_Vector );
+     cur_a := pEC^.func_project( pEC^.zp0.cur^[pEC^.GS.rp1], Null_Vector );
 
-     cur_b := exc.func_project( exc.zp1.cur^[exc.GS.rp2], Null_Vector );
+     cur_b := pEC^.func_project( pEC^.zp1.cur^[pEC^.GS.rp2], Null_Vector );
 
-     while exc.GS.loop > 0 do
+     while pEC^.GS.loop > 0 do
      begin
 
-       dec( exc.args );
+       dec( opargs );
 
-       point := exc.stack^[ exc.args ];
+       point := pEC^.stack^[ opargs ];
 
-       org_x := exc.func_dualProj( exc.zp2.org^[point], Null_Vector );
+       org_x := pEC^.func_dualProj( pEC^.zp2.org^[point], Null_Vector );
 
-       cur_x := exc.func_project( exc.zp2.cur^[point], Null_Vector );
+       cur_x := pEC^.func_project( pEC^.zp2.cur^[point], Null_Vector );
 
        if (( org_a <= org_b ) and ( org_x <= org_a )) or
           (( org_a >  org_b ) and ( org_x >= org_a )) then
@@ -3892,42 +3998,42 @@ end;
                                org_b - org_a ) + ( cur_a - cur_x );
          end;
 
-       exc.func_move( @exc.zp2, point, distance );
+       pEC^.func_move( @pEC^.zp2, point, distance );
 
-       dec( exc.GS.loop );
+       dec( pEC^.GS.loop );
      end;
 
-     exc.GS.loop := 1;
-     exc.new_top := exc.args;
+     pEC^.GS.loop := 1;
+     new_top := opargs;
    end;
 
 (**********************************************)
 (* UTP[a]      : UnTouch Point                *)
 (* CodeRange   : $29                          *)
 
-   procedure Ins_UTP( args : PStorage );
+   procedure TInterpreter.Ins_UTP( args : PStorage );
    var
      mask : Byte;
    begin
-     if (args^[0] < 0) or (args^[0] >= exc.zp0.n_points) then
+     if (args^[0] < 0) or (args^[0] >= pEC^.zp0.n_points) then
      begin
-       exc.error := TT_Err_Invalid_Reference;
+       pEC^.error := TT_Err_Invalid_Reference;
        exit;
      end;
 
      mask := $FF;
 
-     if exc.GS.freeVector.x <> 0 then mask := mask and not TT_Flag_Touched_X;
-     if exc.GS.freeVector.y <> 0 then mask := mask and not TT_Flag_Touched_Y;
+     if pEC^.GS.freeVector.x <> 0 then mask := mask and not TT_Flag_Touched_X;
+     if pEC^.GS.freeVector.y <> 0 then mask := mask and not TT_Flag_Touched_Y;
 
-     exc.zp0.flags^[args^[0]] := exc.zp0.flags^[args^[0]] and mask;
+     pEC^.zp0.flags^[args^[0]] := pEC^.zp0.flags^[args^[0]] and mask;
    end;
 
 (**********************************************)
 (* IUP[a]      : Interpolate Untouched Points *)
 (* CodeRange   : $30-$31                      *)
 
-   procedure Ins_IUP( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_IUP( args : PStorage );
    var
      mask : byte;
 
@@ -4079,15 +4185,15 @@ end;
      end;
 
    begin
-     orgs := exc.pts.org;
-     curs := exc.pts.cur;
+     orgs := pEC^.pts.org;
+     curs := pEC^.pts.cur;
 
-     case exc.opcode and 1 of
+     case opcode and 1 of
        0 : mask := TT_Flag_Touched_Y;
        1 : mask := TT_Flag_Touched_X;
      end;
 
-     with exc do
+     with pEC^ do
      begin
 
        contour := 0;
@@ -4157,7 +4263,7 @@ end;
 (* DELTAPn[]   : DELTA Exceptions P1, P2, P3  *)
 (* CodeRange   : $5D,$71,$72                  *)
 
-   procedure Ins_DELTAP( args : PStorage );
+   procedure TInterpreter.Ins_DELTAP( args : PStorage );
    var
      nump    : Int;
      k       : Int;
@@ -4168,16 +4274,16 @@ end;
 
      for K := 1 to nump do
        begin
-         if exc.args < 2 then
+         if opargs < 2 then
          begin
-           exc.error := TT_Err_Too_Few_Arguments;
+           pEC^.error := TT_Err_Too_Few_Arguments;
            exit;
          end;
 
-         dec( exc.args, 2 );
+         dec( opargs, 2 );
 
-         A := exc.stack^[exc.args+1];
-         B := exc.stack^[ exc.args ];
+         A := pEC^.stack^[opargs+1];
+         B := pEC^.stack^[ opargs ];
 
          (* XXX :                                              *)
          (* some commonly fonts have broke programs where the  *)
@@ -4186,31 +4292,31 @@ end;
          (* a glyph shape dramatically..                       *)
          (*                                                    *)
 
-         if A < exc.zp0.n_points then
+         if A < pEC^.zp0.n_points then
          begin
            C := ( B and $F0 ) shr 4;
 
-           Case exc.opcode of
+           Case opcode of
              $5D : ;
              $71 : C := C+16;
              $72 : C := C+32;
             end;
 
-           C := C + exc.GS.delta_Base;
+           C := C + pEC^.GS.delta_Base;
 
            if GET_Ppem = C then
              begin
                B := (B and $F) - 8;
                if B >= 0 then B := B+1;
-               B := ( B*64 ) div ( 1 shl exc.GS.delta_Shift );
+               B := ( B*64 ) div ( 1 shl pEC^.GS.delta_Shift );
 
-               exc.func_move( @exc.zp0, A, B );
+               pEC^.func_move( @pEC^.zp0, A, B );
              end;
          end;
 
        end;
 
-     exc.new_top := exc.args;
+     new_top := opargs;
    end;
 
 
@@ -4218,7 +4324,7 @@ end;
 (* DELTACn[]   : DELTA Exceptions C1, C2, C3  *)
 (* CodeRange   : $73,$74,$75                  *)
 
-   procedure Ins_DELTAC( args : PStorage );
+   procedure TInterpreter.Ins_DELTAC( args : PStorage );
    var
      nump    : Int;
      k       : Int;
@@ -4229,44 +4335,44 @@ end;
 
      for K := 1 to nump do
        begin
-         if exc.args < 2 then
+         if opargs < 2 then
          begin
-           exc.error := TT_Err_Too_Few_Arguments;
+           pEC^.error := TT_Err_Too_Few_Arguments;
            exit;
          end;
 
-         dec( exc.args, 2 );
+         dec( opargs, 2 );
 
-         A := exc.stack^[exc.args+1];
-         B := exc.stack^[ exc.args ];
+         A := pEC^.stack^[opargs+1];
+         B := pEC^.stack^[ opargs ];
 
-         if A >= exc.cvtSize then
+         if A >= pEC^.cvtSize then
          begin
-           exc.error := TT_Err_Invalid_Reference;
+           pEC^.error := TT_Err_Invalid_Reference;
            exit;
          end;
 
          C := ( B and $F0 ) shr 4;
 
-         Case exc.opcode of
+         Case opcode of
            $73 : ;
            $74 : C := C+16;
            $75 : C := C+32;
           end;
 
-         C := C + exc.GS.delta_Base;
+         C := C + pEC^.GS.delta_Base;
 
          if GET_Ppem = C then
            begin
              B := (B and $F) - 8;
              if B >= 0 then B := B+1;
-             B := ( B*64 ) div ( 1 shl exc.GS.delta_Shift );
+             B := ( B*64 ) div ( 1 shl pEC^.GS.delta_Shift );
 
-             exc.func_move_cvt( A, B );
+             pEC^.func_move_cvt( A, B );
            end;
        end;
 
-     exc.new_top := exc.args;
+     new_top := opargs;
    end;
 
 (****************************************************************)
@@ -4281,16 +4387,16 @@ end;
 
 (* NOTE : The original instruction pops a value from the stack *)
 
-   procedure Ins_DEBUG( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_DEBUG( args : PStorage );
    begin
-     exc.error := TT_Err_Debug_Opcode;
+     pEC^.error := TT_Err_Debug_Opcode;
    end;
 
 (**********************************************)
 (* GETINFO[]   : GET INFOrmation              *)
 (* CodeRange   : $88                          *)
 
-   procedure Ins_GETINFO( args : PStorage );
+   procedure TInterpreter.Ins_GETINFO( args : PStorage );
    var
      K : Int;
    begin
@@ -4312,416 +4418,402 @@ end;
    end;
 
 
-   procedure Ins_UNKNOWN( {%H-}args : PStorage );
+   procedure TInterpreter.Ins_UNKNOWN( args : PStorage );
    begin
-     exc.error := TT_Err_Invalid_Opcode;
+     pEC^.error := TT_Err_Invalid_Opcode;
    end;
 
-const
-  Instruct_Dispatch : array[0..255] of TInstruction_Function
-         = (
-             (* SVTCA  y *)  Ins_SVTCA,
-             (* SVTCA  x *)  Ins_SVTCA,
-             (* SPvTCA y *)  Ins_SPVTCA,
-             (* SPvTCA x *)  Ins_SPVTCA,
-             (* SFvTCA y *)  Ins_SFVTCA,
-             (* SFvTCA x *)  Ins_SFVTCA,
-             (* SPvTL // *)  Ins_SPVTL,
-             (* SPvTL +  *)  Ins_SPVTL,
-             (* SFvTL // *)  Ins_SFVTL,
-             (* SFvTL +  *)  Ins_SFVTL,
-             (* SPvFS    *)  Ins_SPVFS,
-             (* SFvFS    *)  Ins_SFVFS,
-             (* GPV      *)  Ins_GPV,
-             (* GFV      *)  Ins_GFV,
-             (* SFvTPv   *)  Ins_SFVTPV,
-             (* ISECT    *)  Ins_ISECT,
+function TInterpreter.GetLastInstruction: string;
+begin
+  result := Instruct_Dispatch[opcode].name;
+end;
 
-             (* SRP0     *)  Ins_SRP0,
-             (* SRP1     *)  Ins_SRP1,
-             (* SRP2     *)  Ins_SRP2,
-             (* SZP0     *)  Ins_SZP0,
-             (* SZP1     *)  Ins_SZP1,
-             (* SZP2     *)  Ins_SZP2,
-             (* SZPS     *)  Ins_SZPS,
-             (* SLOOP    *)  Ins_SLOOP,
-             (* RTG      *)  Ins_RTG,
-             (* RTHG     *)  Ins_RTHG,
-             (* SMD      *)  Ins_SMD,
-             (* ELSE     *)  Ins_ELSE,
-             (* JMPR     *)  Ins_JMPR,
-             (* SCvTCi   *)  Ins_SCVTCI,
-             (* SSwCi    *)  Ins_SSWCI,
-             (* SSW      *)  Ins_SSW,
+  constructor TInterpreter.Create(AContext: PExec_Context; AEnableLog: boolean);
+  var numIns: integer;
+    procedure addIns(AName: string; AFunc: TInstruction_Function);
+    begin
+      if numIns < high(Instruct_Dispatch)+1 then
+      begin
+        with Instruct_Dispatch[numIns] do
+        begin
+          name := AName;
+          func := AFunc;
+        end;
+        inc(numIns);
+      end else
+        raise exception.Create('Too much instructions');
+    end;
 
-             (* DUP      *)  Ins_DUP,
-             (* POP      *)  Ins_POP,
-             (* CLEAR    *)  Ins_CLEAR,
-             (* SWAP     *)  Ins_SWAP,
-             (* DEPTH    *)  Ins_DEPTH,
-             (* CINDEX   *)  Ins_CINDEX,
-             (* MINDEX   *)  Ins_MINDEX,
-             (* AlignPTS *)  Ins_ALIGNPTS,
-             (* INS_$28  *)  Ins_UNKNOWN,
-             (* UTP      *)  Ins_UTP,
-             (* LOOPCALL *)  Ins_LOOPCALL,
-             (* CALL     *)  Ins_CALL,
-             (* FDEF     *)  Ins_FDEF,
-             (* ENDF     *)  Ins_ENDF,
-             (* MDAP[0]  *)  Ins_MDAP,
-             (* MDAP[1]  *)  Ins_MDAP,
+  begin
+    pEC := AContext;
 
-             (* IUP[0]   *)  Ins_IUP,
-             (* IUP[1]   *)  Ins_IUP,
-             (* SHP[0]   *)  Ins_SHP,
-             (* SHP[1]   *)  Ins_SHP,
-             (* SHC[0]   *)  Ins_SHC,
-             (* SHC[1]   *)  Ins_SHC,
-             (* SHZ[0]   *)  Ins_SHZ,
-             (* SHZ[1]   *)  Ins_SHZ,
-             (* SHPIX    *)  Ins_SHPIX,
-             (* IP       *)  Ins_IP,
-             (* MSIRP[0] *)  Ins_MSIRP,
-             (* MSIRP[1] *)  Ins_MSIRP,
-             (* AlignRP  *)  Ins_ALIGNRP,
-             (* RTDG     *)  Ins_RTDG,
-             (* MIAP[0]  *)  Ins_MIAP,
-             (* MIAP[1]  *)  Ins_MIAP,
+    enableLog:= AEnableLog;
+    if enableLog then instructionLog := TStringList.Create;
 
-             (* NPushB   *)  Ins_NPUSHB,
-             (* NPushW   *)  Ins_NPUSHW,
-             (* WS       *)  Ins_WS,
-             (* RS       *)  Ins_RS,
-             (* WCvtP    *)  Ins_WCVTP,
-             (* RCvt     *)  Ins_RCVT,
-             (* GC[0]    *)  Ins_GC,
-             (* GC[1]    *)  Ins_GC,
-             (* SCFS     *)  Ins_SCFS,
-             (* MD[0]    *)  Ins_MD,
-             (* MD[1]    *)  Ins_MD,
-             (* MPPEM    *)  Ins_MPPEM,
-             (* MPS      *)  Ins_MPS,
-             (* FlipON   *)  Ins_FLIPON,
-             (* FlipOFF  *)  Ins_FLIPOFF,
-             (* DEBUG    *)  Ins_DEBUG,
+    numIns := low(Instruct_Dispatch);
+    addIns('SVTCA  y', Ins_SVTCA);
+    addIns('SVTCA  x', Ins_SVTCA);
+    addIns('SPvTCA y', Ins_SPVTCA);
+    addIns('SPvTCA x', Ins_SPVTCA);
+    addIns('SFvTCA y', Ins_SFVTCA);
+    addIns('SFvTCA x', Ins_SFVTCA);
+    addIns('SPvTL //', Ins_SPVTL);
+    addIns('SPvTL +', Ins_SPVTL);
+    addIns('SFvTL //', Ins_SFVTL);
+    addIns('SFvTL +', Ins_SFVTL);
+    addIns('SPvFS', Ins_SPVFS);
+    addIns('SFvFS', Ins_SFVFS);
+    addIns('GPV', Ins_GPV);
+    addIns('GFV', Ins_GFV);
+    addIns('SFvTPv', Ins_SFVTPV);
+    addIns('ISECT', Ins_ISECT);
 
-             (* LT       *)  Ins_LT,
-             (* LTEQ     *)  Ins_LTEQ,
-             (* GT       *)  Ins_GT,
-             (* GTEQ     *)  Ins_GTEQ,
-             (* EQ       *)  Ins_EQ,
-             (* NEQ      *)  Ins_NEQ,
-             (* ODD      *)  Ins_ODD,
-             (* EVEN     *)  Ins_EVEN,
-             (* IF       *)  Ins_IF,
-             (* EIF      *)  Ins_EIF,
-             (* AND      *)  Ins_AND,
-             (* OR       *)  Ins_OR,
-             (* NOT      *)  Ins_NOT,
-             (* DeltaP1  *)  Ins_DELTAP,
-             (* SDB      *)  Ins_SDB,
-             (* SDS      *)  Ins_SDS,
+    addIns('SRP0', Ins_SRP0);
+    addIns('SRP1', Ins_SRP1);
+    addIns('SRP2', Ins_SRP2);
+    addIns('SZP0', Ins_SZP0);
+    addIns('SZP1', Ins_SZP1);
+    addIns('SZP2', Ins_SZP2);
+    addIns('SZPS', Ins_SZPS);
+    addIns('SLOOP', Ins_SLOOP);
+    addIns('RTG', Ins_RTG);
+    addIns('RTHG', Ins_RTHG);
+    addIns('SMD', Ins_SMD);
+    addIns('ELSE', Ins_ELSE);
+    addIns('JMPR', Ins_JMPR);
+    addIns('SCvTCi', Ins_SCVTCI);
+    addIns('SSwCi', Ins_SSWCI);
+    addIns('SSW', Ins_SSW);
 
-             (* ADD      *)  Ins_ADD,
-             (* SUB      *)  Ins_SUB,
-             (* DIV      *)  Ins_DIV,
-             (* MUL      *)  Ins_MUL,
-             (* ABS      *)  Ins_ABS,
-             (* NEG      *)  Ins_NEG,
-             (* FLOOR    *)  Ins_FLOOR,
-             (* CEILING  *)  Ins_CEILING,
-             (* ROUND[0] *)  Ins_ROUND,
-             (* ROUND[1] *)  Ins_ROUND,
-             (* ROUND[2] *)  Ins_ROUND,
-             (* ROUND[3] *)  Ins_ROUND,
-             (* NROUND[0]*)  Ins_ROUND,
-             (* NROUND[1]*)  Ins_ROUND,
-             (* NROUND[2]*)  Ins_ROUND,
-             (* NROUND[3]*)  Ins_ROUND,
+    addIns('DUP', Ins_DUP);
+    addIns('POP', Ins_POP);
+    addIns('CLEAR', Ins_CLEAR);
+    addIns('SWAP', Ins_SWAP);
+    addIns('DEPTH', Ins_DEPTH);
+    addIns('CINDEX', Ins_CINDEX);
+    addIns('MINDEX', Ins_MINDEX);
+    addIns('AlignPTS', Ins_ALIGNPTS);
+    addIns('INS_$28', Ins_UNKNOWN);
+    addIns('UTP', Ins_UTP);
+    addIns('LOOPCALL', Ins_LOOPCALL);
+    addIns('CALL', Ins_CALL);
+    addIns('FDEF', Ins_FDEF);
+    addIns('ENDF', Ins_ENDF);
+    addIns('MDAP[0]', Ins_MDAP);
+    addIns('MDAP[1]', Ins_MDAP);
 
-             (* WCvtF    *)  Ins_WCVTF,
-             (* DeltaP2  *)  Ins_DELTAP,
-             (* DeltaP3  *)  Ins_DELTAP,
-             (* DeltaCn[0]*) Ins_DELTAC,
-             (* DeltaCn[1]*) Ins_DELTAC,
-             (* DeltaCn[2]*) Ins_DELTAC,
-             (* SROUND   *)  Ins_SROUND,
-             (* S45Round *)  Ins_S45ROUND,
-             (* JROT     *)  Ins_JROT,
-             (* JROF     *)  Ins_JROF,
-             (* ROFF     *)  Ins_ROFF,
-             (* INS_$7B  *)  Ins_UNKNOWN,
-             (* RUTG     *)  Ins_RUTG,
-             (* RDTG     *)  Ins_RDTG,
-             (* SANGW    *)  Ins_SANGW,
-             (* AA       *)  Ins_AA,
+    addIns('IUP[0]', Ins_IUP);
+    addIns('IUP[1]', Ins_IUP);
+    addIns('SHP[0]', Ins_SHP);
+    addIns('SHP[1]', Ins_SHP);
+    addIns('SHC[0]', Ins_SHC);
+    addIns('SHC[1]', Ins_SHC);
+    addIns('SHZ[0]', Ins_SHZ);
+    addIns('SHZ[1]', Ins_SHZ);
+    addIns('SHPIX', Ins_SHPIX);
+    addIns('IP', Ins_IP);
+    addIns('MSIRP[0]', Ins_MSIRP);
+    addIns('MSIRP[1]', Ins_MSIRP);
+    addIns('AlignRP', Ins_ALIGNRP);
+    addIns('RTDG', Ins_RTDG);
+    addIns('MIAP[0]', Ins_MIAP);
+    addIns('MIAP[1]', Ins_MIAP);
 
-             (* FlipPT   *)  Ins_FLIPPT,
-             (* FlipRgON *)  Ins_FLIPRGON,
-             (* FlipRgOFF*)  Ins_FLIPRGOFF,
-             (* INS_$83  *)  Ins_UNKNOWN,
-             (* INS_$84  *)  Ins_UNKNOWN,
-             (* ScanCTRL *)  Ins_SCANCTRL,
-             (* SDPVTL[0]*)  Ins_SDPVTL,
-             (* SDPVTL[1]*)  Ins_SDPVTL,
-             (* GetINFO  *)  Ins_GETINFO,
-             (* IDEF     *)  Ins_IDEF,
-             (* ROLL     *)  Ins_ROLL,
-             (* MAX      *)  Ins_MAX,
-             (* MIN      *)  Ins_MIN,
-             (* ScanTYPE *)  Ins_SCANTYPE,
-             (* InstCTRL *)  Ins_INSTCTRL,
-             (* INS_$8F  *)  Ins_UNKNOWN,
+    addIns('NPushB', Ins_NPUSHB);
+    addIns('NPushW', Ins_NPUSHW);
+    addIns('WS', Ins_WS);
+    addIns('RS', Ins_RS);
+    addIns('WCvtP', Ins_WCVTP);
+    addIns('RCvt', Ins_RCVT);
+    addIns('GC[0]', Ins_GC);
+    addIns('GC[1]', Ins_GC);
+    addIns('SCFS', Ins_SCFS);
+    addIns('MD[0]', Ins_MD);
+    addIns('MD[1]', Ins_MD);
+    addIns('MPPEM', Ins_MPPEM);
+    addIns('MPS', Ins_MPS);
+    addIns('FlipON', Ins_FLIPON);
+    addIns('FlipOFF', Ins_FLIPOFF);
+    addIns('DEBUG', Ins_DEBUG);
 
-             (* INS_$90 *)   Ins_UNKNOWN,
-             (* INS_$91 *)   Ins_UNKNOWN,
-             (* INS_$92 *)   Ins_UNKNOWN,
-             (* INS_$93 *)   Ins_UNKNOWN,
-             (* INS_$94 *)   Ins_UNKNOWN,
-             (* INS_$95 *)   Ins_UNKNOWN,
-             (* INS_$96 *)   Ins_UNKNOWN,
-             (* INS_$97 *)   Ins_UNKNOWN,
-             (* INS_$98 *)   Ins_UNKNOWN,
-             (* INS_$99 *)   Ins_UNKNOWN,
-             (* INS_$9A *)   Ins_UNKNOWN,
-             (* INS_$9B *)   Ins_UNKNOWN,
-             (* INS_$9C *)   Ins_UNKNOWN,
-             (* INS_$9D *)   Ins_UNKNOWN,
-             (* INS_$9E *)   Ins_UNKNOWN,
-             (* INS_$9F *)   Ins_UNKNOWN,
+    addIns('LT', Ins_LT);
+    addIns('LTEQ', Ins_LTEQ);
+    addIns('GT', Ins_GT);
+    addIns('GTEQ', Ins_GTEQ);
+    addIns('EQ', Ins_EQ);
+    addIns('NEQ', Ins_NEQ);
+    addIns('ODD', Ins_ODD);
+    addIns('EVEN', Ins_EVEN);
+    addIns('IF', Ins_IF);
+    addIns('EIF', Ins_EIF);
+    addIns('AND', Ins_AND);
+    addIns('OR', Ins_OR);
+    addIns('NOT', Ins_NOT);
+    addIns('DeltaP1', Ins_DELTAP);
+    addIns('SDB', Ins_SDB);
+    addIns('SDS', Ins_SDS);
 
-             (* INS_$A0 *)   Ins_UNKNOWN,
-             (* INS_$A1 *)   Ins_UNKNOWN,
-             (* INS_$A2 *)   Ins_UNKNOWN,
-             (* INS_$A3 *)   Ins_UNKNOWN,
-             (* INS_$A4 *)   Ins_UNKNOWN,
-             (* INS_$A5 *)   Ins_UNKNOWN,
-             (* INS_$A6 *)   Ins_UNKNOWN,
-             (* INS_$A7 *)   Ins_UNKNOWN,
-             (* INS_$A8 *)   Ins_UNKNOWN,
-             (* INS_$A9 *)   Ins_UNKNOWN,
-             (* INS_$AA *)   Ins_UNKNOWN,
-             (* INS_$AB *)   Ins_UNKNOWN,
-             (* INS_$AC *)   Ins_UNKNOWN,
-             (* INS_$AD *)   Ins_UNKNOWN,
-             (* INS_$AE *)   Ins_UNKNOWN,
-             (* INS_$AF *)   Ins_UNKNOWN,
+    addIns('ADD', Ins_ADD);
+    addIns('SUB', Ins_SUB);
+    addIns('DIV', Ins_DIV);
+    addIns('MUL', Ins_MUL);
+    addIns('ABS', Ins_ABS);
+    addIns('NEG', Ins_NEG);
+    addIns('FLOOR', Ins_FLOOR);
+    addIns('CEILING', Ins_CEILING);
+    addIns('ROUND[0]', Ins_ROUND);
+    addIns('ROUND[1]', Ins_ROUND);
+    addIns('ROUND[2]', Ins_ROUND);
+    addIns('ROUND[3]', Ins_ROUND);
+    addIns('NROUND[0]', Ins_ROUND);
+    addIns('NROUND[1]', Ins_ROUND);
+    addIns('NROUND[2]', Ins_ROUND);
+    addIns('NROUND[3]', Ins_ROUND);
 
-             (* PushB[0] *)  Ins_PUSHB,
-             (* PushB[1] *)  Ins_PUSHB,
-             (* PushB[2] *)  Ins_PUSHB,
-             (* PushB[3] *)  Ins_PUSHB,
-             (* PushB[4] *)  Ins_PUSHB,
-             (* PushB[5] *)  Ins_PUSHB,
-             (* PushB[6] *)  Ins_PUSHB,
-             (* PushB[7] *)  Ins_PUSHB,
-             (* PushW[0] *)  Ins_PUSHW,
-             (* PushW[1] *)  Ins_PUSHW,
-             (* PushW[2] *)  Ins_PUSHW,
-             (* PushW[3] *)  Ins_PUSHW,
-             (* PushW[4] *)  Ins_PUSHW,
-             (* PushW[5] *)  Ins_PUSHW,
-             (* PushW[6] *)  Ins_PUSHW,
-             (* PushW[7] *)  Ins_PUSHW,
+    addIns('WCvtF', Ins_WCVTF);
+    addIns('DeltaP2', Ins_DELTAP);
+    addIns('DeltaP3', Ins_DELTAP);
+    addIns('DeltaCn[0]', Ins_DELTAC);
+    addIns('DeltaCn[1]', Ins_DELTAC);
+    addIns('DeltaCn[2]', Ins_DELTAC);
+    addIns('SROUND', Ins_SROUND);
+    addIns('S45Round', Ins_S45ROUND);
+    addIns('JROT', Ins_JROT);
+    addIns('JROF', Ins_JROF);
+    addIns('ROFF', Ins_ROFF);
+    addIns('INS_$7B', Ins_UNKNOWN);
+    addIns('RUTG', Ins_RUTG);
+    addIns('RDTG', Ins_RDTG);
+    addIns('SANGW', Ins_SANGW);
+    addIns('AA', Ins_AA);
 
-             (* MDRP[00] *)  Ins_MDRP,
-             (* MDRP[01] *)  Ins_MDRP,
-             (* MDRP[02] *)  Ins_MDRP,
-             (* MDRP[03] *)  Ins_MDRP,
-             (* MDRP[04] *)  Ins_MDRP,
-             (* MDRP[05] *)  Ins_MDRP,
-             (* MDRP[06] *)  Ins_MDRP,
-             (* MDRP[07] *)  Ins_MDRP,
-             (* MDRP[08] *)  Ins_MDRP,
-             (* MDRP[09] *)  Ins_MDRP,
-             (* MDRP[10] *)  Ins_MDRP,
-             (* MDRP[11] *)  Ins_MDRP,
-             (* MDRP[12] *)  Ins_MDRP,
-             (* MDRP[13] *)  Ins_MDRP,
-             (* MDRP[14] *)  Ins_MDRP,
-             (* MDRP[15] *)  Ins_MDRP,
-             (* MDRP[16] *)  Ins_MDRP,
-             (* MDRP[17] *)  Ins_MDRP,
+    addIns('FlipPT', Ins_FLIPPT);
+    addIns('FlipRgON', Ins_FLIPRGON);
+    addIns('FlipRgOFF', Ins_FLIPRGOFF);
+    addIns('INS_$83', Ins_UNKNOWN);
+    addIns('INS_$84', Ins_UNKNOWN);
+    addIns('ScanCTRL', Ins_SCANCTRL);
+    addIns('SDPVTL[0]', Ins_SDPVTL);
+    addIns('SDPVTL[1]', Ins_SDPVTL);
+    addIns('GetINFO', Ins_GETINFO);
+    addIns('IDEF', Ins_IDEF);
+    addIns('ROLL', Ins_ROLL);
+    addIns('MAX', Ins_MAX);
+    addIns('MIN', Ins_MIN);
+    addIns('ScanTYPE', Ins_SCANTYPE);
+    addIns('InstCTRL', Ins_INSTCTRL);
+    addIns('INS_$8F', Ins_UNKNOWN);
 
-             (* MDRP[18] *)  Ins_MDRP,
-             (* MDRP[19] *)  Ins_MDRP,
-             (* MDRP[20] *)  Ins_MDRP,
-             (* MDRP[21] *)  Ins_MDRP,
-             (* MDRP[22] *)  Ins_MDRP,
-             (* MDRP[23] *)  Ins_MDRP,
-             (* MDRP[24] *)  Ins_MDRP,
-             (* MDRP[25] *)  Ins_MDRP,
-             (* MDRP[26] *)  Ins_MDRP,
-             (* MDRP[27] *)  Ins_MDRP,
-             (* MDRP[28] *)  Ins_MDRP,
-             (* MDRP[29] *)  Ins_MDRP,
-             (* MDRP[30] *)  Ins_MDRP,
-             (* MDRP[31] *)  Ins_MDRP,
+    addIns('INS_$90', Ins_UNKNOWN);
+    addIns('INS_$91', Ins_UNKNOWN);
+    addIns('INS_$92', Ins_UNKNOWN);
+    addIns('INS_$93', Ins_UNKNOWN);
+    addIns('INS_$94', Ins_UNKNOWN);
+    addIns('INS_$95', Ins_UNKNOWN);
+    addIns('INS_$96', Ins_UNKNOWN);
+    addIns('INS_$97', Ins_UNKNOWN);
+    addIns('INS_$98', Ins_UNKNOWN);
+    addIns('INS_$99', Ins_UNKNOWN);
+    addIns('INS_$9A', Ins_UNKNOWN);
+    addIns('INS_$9B', Ins_UNKNOWN);
+    addIns('INS_$9C', Ins_UNKNOWN);
+    addIns('INS_$9D', Ins_UNKNOWN);
+    addIns('INS_$9E', Ins_UNKNOWN);
+    addIns('INS_$9F', Ins_UNKNOWN);
 
-             (* MIRP[00] *)  Ins_MIRP,
-             (* MIRP[01] *)  Ins_MIRP,
-             (* MIRP[02] *)  Ins_MIRP,
-             (* MIRP[03] *)  Ins_MIRP,
-             (* MIRP[04] *)  Ins_MIRP,
-             (* MIRP[05] *)  Ins_MIRP,
-             (* MIRP[06] *)  Ins_MIRP,
-             (* MIRP[07] *)  Ins_MIRP,
-             (* MIRP[08] *)  Ins_MIRP,
-             (* MIRP[09] *)  Ins_MIRP,
-             (* MIRP[10] *)  Ins_MIRP,
-             (* MIRP[11] *)  Ins_MIRP,
-             (* MIRP[12] *)  Ins_MIRP,
-             (* MIRP[13] *)  Ins_MIRP,
-             (* MIRP[14] *)  Ins_MIRP,
-             (* MIRP[15] *)  Ins_MIRP,
+    addIns('INS_$A0', Ins_UNKNOWN);
+    addIns('INS_$A1', Ins_UNKNOWN);
+    addIns('INS_$A2', Ins_UNKNOWN);
+    addIns('INS_$A3', Ins_UNKNOWN);
+    addIns('INS_$A4', Ins_UNKNOWN);
+    addIns('INS_$A5', Ins_UNKNOWN);
+    addIns('INS_$A6', Ins_UNKNOWN);
+    addIns('INS_$A7', Ins_UNKNOWN);
+    addIns('INS_$A8', Ins_UNKNOWN);
+    addIns('INS_$A9', Ins_UNKNOWN);
+    addIns('INS_$AA', Ins_UNKNOWN);
+    addIns('INS_$AB', Ins_UNKNOWN);
+    addIns('INS_$AC', Ins_UNKNOWN);
+    addIns('INS_$AD', Ins_UNKNOWN);
+    addIns('INS_$AE', Ins_UNKNOWN);
+    addIns('INS_$AF', Ins_UNKNOWN);
 
-             (* MIRP[16] *)  Ins_MIRP,
-             (* MIRP[17] *)  Ins_MIRP,
-             (* MIRP[18] *)  Ins_MIRP,
-             (* MIRP[19] *)  Ins_MIRP,
-             (* MIRP[20] *)  Ins_MIRP,
-             (* MIRP[21] *)  Ins_MIRP,
-             (* MIRP[22] *)  Ins_MIRP,
-             (* MIRP[23] *)  Ins_MIRP,
-             (* MIRP[24] *)  Ins_MIRP,
-             (* MIRP[25] *)  Ins_MIRP,
-             (* MIRP[26] *)  Ins_MIRP,
-             (* MIRP[27] *)  Ins_MIRP,
-             (* MIRP[28] *)  Ins_MIRP,
-             (* MIRP[29] *)  Ins_MIRP,
-             (* MIRP[30] *)  Ins_MIRP,
-             (* MIRP[31] *)  Ins_MIRP
+    addIns('PushB[0]', Ins_PUSHB);
+    addIns('PushB[1]', Ins_PUSHB);
+    addIns('PushB[2]', Ins_PUSHB);
+    addIns('PushB[3]', Ins_PUSHB);
+    addIns('PushB[4]', Ins_PUSHB);
+    addIns('PushB[5]', Ins_PUSHB);
+    addIns('PushB[6]', Ins_PUSHB);
+    addIns('PushB[7]', Ins_PUSHB);
+    addIns('PushW[0]', Ins_PUSHW);
+    addIns('PushW[1]', Ins_PUSHW);
+    addIns('PushW[2]', Ins_PUSHW);
+    addIns('PushW[3]', Ins_PUSHW);
+    addIns('PushW[4]', Ins_PUSHW);
+    addIns('PushW[5]', Ins_PUSHW);
+    addIns('PushW[6]', Ins_PUSHW);
+    addIns('PushW[7]', Ins_PUSHW);
 
-           );
+    addIns('MDRP[00]', Ins_MDRP);
+    addIns('MDRP[01]', Ins_MDRP);
+    addIns('MDRP[02]', Ins_MDRP);
+    addIns('MDRP[03]', Ins_MDRP);
+    addIns('MDRP[04]', Ins_MDRP);
+    addIns('MDRP[05]', Ins_MDRP);
+    addIns('MDRP[06]', Ins_MDRP);
+    addIns('MDRP[07]', Ins_MDRP);
+    addIns('MDRP[08]', Ins_MDRP);
+    addIns('MDRP[09]', Ins_MDRP);
+    addIns('MDRP[10]', Ins_MDRP);
+    addIns('MDRP[11]', Ins_MDRP);
+    addIns('MDRP[12]', Ins_MDRP);
+    addIns('MDRP[13]', Ins_MDRP);
+    addIns('MDRP[14]', Ins_MDRP);
+    addIns('MDRP[15]', Ins_MDRP);
+    addIns('MDRP[16]', Ins_MDRP);
+    addIns('MDRP[17]', Ins_MDRP);
 
-(****************************************************************)
-(*                                                              *)
-(*                    RUN                                       *)
-(*                                                              *)
-(*  This function executes a run of opcodes. It will exit       *)
-(*  in the following cases :                                    *)
-(*                                                              *)
-(*   - Errors ( in which case it returns FALSE )                *)
-(*                                                              *)
-(*   - Reaching the end of the main code range  (returns TRUE)  *)
-(*      reaching the end of a code range within a function      *)
-(*      call is an error.                                       *)
-(*                                                              *)
-(*   - After executing one single opcode, if the flag           *)
-(*     'Instruction_Trap' is set to TRUE. (returns TRUE)        *)
-(*                                                              *)
-(*  On exit whith TRUE, test IP < CodeSize to know wether it    *)
-(*  comes from a instruction trap or a normal termination       *)
-(*                                                              *)
-(*                                                              *)
-(*     Note : The documented DEBUG opcode pops a value from     *)
-(*            the stack. This behaviour is unsupported, here    *)
-(*            a DEBUG opcode is always an error.                *)
-(*                                                              *)
-(*                                                              *)
-(* THIS IS THE INTERPRETER'S MAIN LOOP                          *)
-(*                                                              *)
-(*  Instructions appear in the specs' order                     *)
-(*                                                              *)
-(****************************************************************)
+    addIns('MDRP[18]', Ins_MDRP);
+    addIns('MDRP[19]', Ins_MDRP);
+    addIns('MDRP[20]', Ins_MDRP);
+    addIns('MDRP[21]', Ins_MDRP);
+    addIns('MDRP[22]', Ins_MDRP);
+    addIns('MDRP[23]', Ins_MDRP);
+    addIns('MDRP[24]', Ins_MDRP);
+    addIns('MDRP[25]', Ins_MDRP);
+    addIns('MDRP[26]', Ins_MDRP);
+    addIns('MDRP[27]', Ins_MDRP);
+    addIns('MDRP[28]', Ins_MDRP);
+    addIns('MDRP[29]', Ins_MDRP);
+    addIns('MDRP[30]', Ins_MDRP);
+    addIns('MDRP[31]', Ins_MDRP);
 
-  function Run_Ins( exec : PExec_Context ) : Boolean;
+    addIns('MIRP[00]', Ins_MIRP);
+    addIns('MIRP[01]', Ins_MIRP);
+    addIns('MIRP[02]', Ins_MIRP);
+    addIns('MIRP[03]', Ins_MIRP);
+    addIns('MIRP[04]', Ins_MIRP);
+    addIns('MIRP[05]', Ins_MIRP);
+    addIns('MIRP[06]', Ins_MIRP);
+    addIns('MIRP[07]', Ins_MIRP);
+    addIns('MIRP[08]', Ins_MIRP);
+    addIns('MIRP[09]', Ins_MIRP);
+    addIns('MIRP[10]', Ins_MIRP);
+    addIns('MIRP[11]', Ins_MIRP);
+    addIns('MIRP[12]', Ins_MIRP);
+    addIns('MIRP[13]', Ins_MIRP);
+    addIns('MIRP[14]', Ins_MIRP);
+    addIns('MIRP[15]', Ins_MIRP);
+
+    addIns('MIRP[16]', Ins_MIRP);
+    addIns('MIRP[17]', Ins_MIRP);
+    addIns('MIRP[18]', Ins_MIRP);
+    addIns('MIRP[19]', Ins_MIRP);
+    addIns('MIRP[20]', Ins_MIRP);
+    addIns('MIRP[21]', Ins_MIRP);
+    addIns('MIRP[22]', Ins_MIRP);
+    addIns('MIRP[23]', Ins_MIRP);
+    addIns('MIRP[24]', Ins_MIRP);
+    addIns('MIRP[25]', Ins_MIRP);
+    addIns('MIRP[26]', Ins_MIRP);
+    addIns('MIRP[27]', Ins_MIRP);
+    addIns('MIRP[28]', Ins_MIRP);
+    addIns('MIRP[29]', Ins_MIRP);
+    addIns('MIRP[30]', Ins_MIRP);
+    addIns('MIRP[31]', Ins_MIRP);
+
+    if numIns <> high(Instruct_Dispatch)+1 then
+      raise exception.Create('Missing instruction');
+  end;
+
+  destructor TInterpreter.Destroy;
+begin
+  instructionLog.Free;
+  inherited Destroy;
+end;
+
+  function TInterpreter.Run: TError;
   label
     SuiteLabel, ErrorLabel, No_Error;
   var
     A : Int;
   begin
-
-    exc := exec^;
+    top     := 0;
+    callTop := 0;
+    if enableLog then instructionLog.Clear;
 
     (* set cvt functions *)
 
-    exc.metrics.ratio := 0;
-    if exc.instance^.metrics.x_ppem <> exc.instance^.metrics.y_ppem then
-{$IFDEF FPC}
+    pEC^.metrics.ratio := 0;
+    if pEC^.instance^.metrics.x_ppem <> pEC^.instance^.metrics.y_ppem then
       begin
-        exc.func_read_cvt  := @Read_CVT_Stretched;
-        exc.func_write_cvt := @Write_CVT_Stretched;
-        exc.func_move_cvt  := @Move_CVT_Stretched;
+        pEC^.func_read_cvt  := Read_CVT_Stretched;
+        pEC^.func_write_cvt := Write_CVT_Stretched;
+        pEC^.func_move_cvt  := Move_CVT_Stretched;
       end
     else
       begin
-        exc.func_read_cvt  := @Read_CVT;
-        exc.func_write_cvt := @Write_CVT;
-        exc.func_move_cvt  := @Move_CVT;
+        pEC^.func_read_cvt  := Read_CVT;
+        pEC^.func_write_cvt := Write_CVT;
+        pEC^.func_move_cvt  := Move_CVT;
       end;
-{$ELSE}
-      begin
-        exc.func_read_cvt  := Read_CVT_Stretched;
-        exc.func_write_cvt := Write_CVT_Stretched;
-        exc.func_move_cvt  := Move_CVT_Stretched;
-      end
-    else
-      begin
-        exc.func_read_cvt  := Read_CVT;
-        exc.func_write_cvt := Write_CVT;
-        exc.func_move_cvt  := Move_CVT;
-      end;
-{$ENDIF}
     Compute_Funcs;
-    Compute_Round( exc.GS.round_state );
+    Compute_Round( pEC^.GS.round_state );
 
     repeat
       Calc_Length;
 
      (* First, let's check for empty stack and overflow *)
 
-      exc.args := exc.top - Pop_Push_Count[ exc.opcode*2 ];
+      opargs := top - Pop_Push_Count[ opcode*2 ];
 
      (* args is the top of the stack once arguments have been popped *)
      (* one can also see it as the index of the last argument        *)
 
-      if exc.args < 0 then
+      if opargs < 0 then
       begin
-        exc.error := TT_Err_Too_Few_Arguments;
+        pEC^.error := TT_Err_Too_Few_Arguments;
         goto ErrorLabel;
       end;
 
-      exc.new_top := exc.args + Pop_Push_Count[ exc.opcode*2+1 ];
+      new_top := opargs + Pop_Push_Count[ opcode*2+1 ];
 
      (* new_top  is the new top of the stack, after the instruction's *)
      (* execution. top will be set to new_top after the 'case'        *)
 
-      if exc.new_top > exc.stackSize then
-        begin
-          exc.error := TT_Err_Stack_Overflow;
-          goto ErrorLabel;
-        end;
+      if NeedStackSize(new_top) then goto ErrorLabel;
 
-      exc.step_ins := true;
-      exc.error    := TT_Err_Ok;
+      pEC^.step_ins := true;
+      pEC^.error    := TT_Err_Ok;
 
-      Instruct_Dispatch[ exc.opcode ]( PStorage(@exc.stack^[exc.args]) );
+      if enableLog then instructionLog.Add('0x'+IntToHex(pEC^.IP,4)+': '+Instruct_Dispatch[ opcode ].name + ' (SP=' + IntToStr(top)+')');
+      Instruct_Dispatch[ opcode ].func( PStorage(@pEC^.stack^[opargs]) );
 
-      if exc.error <> TT_Err_Ok then
+      if pEC^.error <> TT_Err_Ok then
       begin
 
-        case exc.error of
+        case pEC^.error of
 
           TT_Err_Invalid_Opcode:  (* looking for redefined instructions *)
 
             begin
               A := 0;
-              while ( A < exc.numIDefs ) do
-                with exc.IDefs^[A] do
+              while ( A < pEC^.numIDefs ) do
+                with pEC^.IDefs^[A] do
 
-                  if Active and ( exc.opcode = Opc ) then
+                  if Active and ( opcode = Opc ) then
                     begin
-                      if exc.callTop >= exc.callSize then
+                      if callTop >= pEC^.callSize then
                         begin
-                          exc.error := TT_Err_Invalid_Reference;
+                          pEC^.error := TT_Err_Invalid_Reference;
                           goto ErrorLabel;
                         end;
 
-                      with exc.callstack^[exc.callTop] do
+                      with pEC^.callstack^[callTop] do
                         begin
-                          Caller_Range := exc.curRange;
-                          Caller_IP    := exc.IP+1;
+                          Caller_Range := pEC^.curRange;
+                          Caller_IP    := pEC^.IP+1;
                           Cur_Count    := 1;
                           Cur_Restart  := Start;
                         end;
@@ -4734,44 +4826,146 @@ const
                   else
                     inc(A);
 
-                exc.error := TT_Err_Invalid_Opcode;
+                pEC^.error := TT_Err_Invalid_Opcode;
                 goto ErrorLabel;
 
             end;
         else
-          exc.error := exc.error;
+          pEC^.error := pEC^.error;
           goto ErrorLabel;
         end;
 
       end;
 
-      exc.top := exc.new_top;
+      top := new_top;
 
-      if exc.step_ins then inc( exc.IP, exc.length );
+      if pEC^.step_ins then inc( pEC^.IP, oplength );
 
   SuiteLabel:
 
-      if (exc.IP >= exc.codeSize) then
+      if (pEC^.IP >= pEC^.codeSize) then
 
-       if exc.callTop > 0 then
+       if callTop > 0 then
          begin
-           exc.error := TT_Err_Code_Overflow;
+           pEC^.error := TT_Err_Code_Overflow;
            goto ErrorLabel;
          end
        else
          goto No_Error;
 
-    until exc.instruction_trap;
+    until pEC^.instruction_trap;
 
   No_Error:
-    Run_Ins := Success;
-    exec^   := exc;
+    result  := Success;
     exit;
 
   ErrorLabel:
-    Run_Ins := Failure;
-    exec^   := exc;
+    result  := Failure;
 
+  end;
+
+  function TInterpreter.NeedStackSize(AValue: integer): TError;
+  var newSize: integer;
+    newStack: PStorage;
+  begin
+    if AValue > pEC^.stackSize then
+    begin
+      if pEC^.stackSize < maxStackSizeAllowed then
+      begin
+        newSize := pEC^.stackSize*2+1;
+        if newSize > maxStackSizeAllowed then newSize := maxStackSizeAllowed;
+        newStack := nil;
+        if Alloc( newStack, newSize*sizeof(Long) ) then
+        begin //cannot allocate
+          pEC^.error := TT_Err_Stack_Overflow;
+          result := Failure;
+        end;
+        move(pEC^.stack^[0], newStack^[0], pEC^.stackSize*sizeof(Long) );
+        TTMemory.Free( pEC^.stack );
+        pEC^.stack := newStack;
+        pEC^.stackSize := newSize;
+        result := Success; //stack expanded
+      end else
+      begin
+        //maximum allowed reached
+        pEC^.error := TT_Err_Stack_Overflow;
+        result := Failure;
+      end;
+    end else
+      result := Success;
+  end;
+
+  function TInterpreter.NeedStackSize(AValue: integer;
+    var APointerInStack: PStorage): TError;
+  var APosInStack: integer;
+  begin
+    if (APointerInStack <> nil) then
+    begin
+      APosInStack:= System.PByte(APointerInStack) - System.PByte(pEC^.stack);
+      result := NeedStackSize(AValue);
+      APointerInStack := PStorage(System.PByte(pEC^.stack) + APosInStack);
+    end else
+      result := NeedStackSize(AValue);
+  end;
+
+  (****************************************************************)
+  (*                                                              *)
+  (*                    RUN                                       *)
+  (*                                                              *)
+  (*  This function executes a run of opcodes. It will exit       *)
+  (*  in the following cases :                                    *)
+  (*                                                              *)
+  (*   - Errors ( in which case it returns FALSE )                *)
+  (*                                                              *)
+  (*   - Reaching the end of the main code range  (returns TRUE)  *)
+  (*      reaching the end of a code range within a function      *)
+  (*      call is an error.                                       *)
+  (*                                                              *)
+  (*   - After executing one single opcode, if the flag           *)
+  (*     'Instruction_Trap' is set to TRUE. (returns TRUE)        *)
+  (*                                                              *)
+  (*  On exit whith TRUE, test IP < CodeSize to know wether it    *)
+  (*  comes from a instruction trap or a normal termination       *)
+  (*                                                              *)
+  (*                                                              *)
+  (*     Note : The documented DEBUG opcode pops a value from     *)
+  (*            the stack. This behaviour is unsupported, here    *)
+  (*            a DEBUG opcode is always an error.                *)
+  (*                                                              *)
+  (*                                                              *)
+  (* THIS IS THE INTERPRETER'S MAIN LOOP                          *)
+  (*                                                              *)
+  (*  Instructions appear in the specs' order                     *)
+  (*                                                              *)
+  (****************************************************************)
+
+  function Run_Ins( exec : PExec_Context; AErrorLog: boolean ) : TError;
+  var interpreter: TInterpreter;
+    logfile: TFileStream;
+    procedure writelnLog(s: string);
+    begin
+      s+= LineEnding;
+      logfile.WriteBuffer(s[1],length(s));
+    end;
+
+  begin
+    if exec.interpreter = nil then
+    begin
+      interpreter := TInterpreter.Create(exec,AErrorLog);
+      exec.interpreter := interpreter;
+    end else
+      interpreter := TInterpreter(exec.interpreter);
+    result := interpreter.Run;
+    if AErrorLog and result then
+    begin
+      logfile := TFileStream.Create('ttinterp.log',fmOpenWrite or fmCreate);
+      writelnLog('----------------------- '+DateTimeToStr(Now));
+      writelnLog('Error ' + IntToHex(exec.error,4) + ' on ' + interpreter.LastInstruction);
+      writelnLog('Program:');
+      interpreter.instructionLog.SaveToStream(logfile);
+      writelnLog('-----------------------');
+      logfile.Free;
+    end;
   end;
 
 end.

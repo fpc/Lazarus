@@ -233,24 +233,24 @@ type
                 end;
 
   TRound_Function = function( distance, compensation : TT_F26dot6 )
-                     : TT_F26dot6;
+                     : TT_F26dot6 of object;
   (* Rounding function, as used by the interpreter *)
 
   TMove_Function = procedure( zone     : PGlyph_Zone;
                               point    : Int;
-                              distance : TT_F26dot6 );
+                              distance : TT_F26dot6 ) of object;
   (* Point displacement along the freedom vector routine, as *)
   (* used by the interpreter                                 *)
 
-  TProject_Function = function( var P1, P2 : TT_Vector ) : TT_F26dot6;
+  TProject_Function = function( var P1, P2 : TT_Vector ) : TT_F26dot6 of object;
   (* Distance projection along one of the proj. vectors, as used *)
   (* by the interpreter                                          *)
 
-  TFunc_Get_CVT = function ( index : Int ) : TT_F26Dot6;
+  TFunc_Get_CVT = function ( index : Int ) : TT_F26Dot6 of object;
   (* Reading a cvt value. Take care of non-square pixels when *)
   (* needed                                                   *)
 
-  TFunc_Set_CVT = procedure( index : Int; value : TT_F26Dot6 );
+  TFunc_Set_CVT = procedure( index : Int; value : TT_F26Dot6 ) of object;
   (* Setting or Moving a cvt value. Take care of non-square   *)
   (* pixels when needed                                       *)
 
@@ -552,13 +552,10 @@ type
                     face      : PFace;
                     instance  : PInstance;
                     error     : Int;
+                    interpreter: TObject;
 
                     stackSize : Int;      (* size of instance stack *)
-                    top       : Int;      (* top of instance stack  *)
                     stack     : PStorage; (* current instance stack *)
-
-                    args      : Int; (* number of arguments in opcode *)
-                    new_top   : Int; (* new stack top after opc. exec *)
 
                     zp0,
                     zp1,
@@ -573,9 +570,6 @@ type
                     IP        : Int;   (* current instruction pointer *)
                     codeSize  : Int;   (* size of current range       *)
 
-                    opcode    : Byte;  (* current opcode              *)
-                    length    : Int;   (* length of current opcode    *)
-
                     step_ins  : boolean; (* used by the interpreter *)
                                          (* if true, go to the next *)
                                          (* instruction..           *)
@@ -587,7 +581,6 @@ type
                     glyphIns  : PByte; (* glyph instructions *)
                     glyphSize : Int;   (* glyph ins. size    *)
 
-                    callTop   : Int;
                     callSize  : Int;
                     callStack : PCallStack; (* interpreter call stack *)
 
@@ -1092,6 +1085,9 @@ const
 
    with PExec_Context(exec)^ do
    begin
+     interpreter.Free;
+     interpreter := nil;
+
      (* Free contours array *)
      Free( pts.conEnds );
      pts.n_contours := 0;
@@ -1109,7 +1105,6 @@ const
      (* Free call stack *)
      Free( callStack );
      callSize := 0;
-     callTop  := 0;
 
      (* Free composite load stack *)
      Free( loadStack );
@@ -1149,6 +1144,8 @@ const
 
    with exec^ do
    begin
+
+     interpreter := nil;
 
      callSize   := 32;
      loadSize   := face^.maxComponents + 1;
@@ -1216,8 +1213,6 @@ const
 
    with exec^ do
    begin
-     top     := 0;
-     callTop := 0;
      zp0     := pts;
      zp1     := pts;
      zp2     := pts;
@@ -1557,8 +1552,6 @@ const
 
    with exec^ do
    begin
-     callTop   := 0;
-     top       := 0;
      period    := 64;
      phase     := 0;
      threshold := 0;
@@ -1713,9 +1706,6 @@ const
        storage^[i] := 0;
 
      instruction_trap := False;
-
-     top     := 0;
-     callTop := 0;
 
      (* all twilight points are originally zero *)
      for i := 0 to twilight.n_points-1 do
