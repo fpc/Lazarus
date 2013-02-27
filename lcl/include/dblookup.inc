@@ -225,6 +225,9 @@ begin
   ListLinkDataSet := FListLink.DataSet;
   if not (Assigned(ListLinkDataSet) and Assigned(FListField)) then
     Exit;
+  // Prevent SIGSEGV if ListLinkDataset is closed
+  if not ListLinkDataset.Active then
+    Exit;
   LinkGetBookMark;
   try
     //needed to handle sqldb.TSQLQuery that does not has a reliable recordcount after Open
