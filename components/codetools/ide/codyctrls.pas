@@ -1812,7 +1812,7 @@ begin
           TargetNode:=Edge.Target;
           EdgeHighlighted:=HighlightedElements.Find(Edge)<>nil;
           if EdgeHighlighted<>Highlighted then continue;
-          x1:=Level.DrawPosition+ScrollLeft;
+          x1:=Level.DrawPosition-ScrollLeft;
           y1:=Node.DrawCenter-ScrollTop;
           x2:=TargetNode.Level.DrawPosition-ScrollLeft;
           y2:=TargetNode.DrawCenter-ScrollTop;
