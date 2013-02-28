@@ -2678,7 +2678,7 @@ begin
   case SplitMode of
   lgesNone: ;
 
-  lgesSeparate,lgesMergeSource,lgesMergeTarget:
+  lgesSeparate,lgesMergeSource:
     begin
       // lgesSeparate: each long edge gets its own hidden nodes, this creates a lot of hidden nodes
       // lgesMergeSource: each node has a list of hidden nodes, long edges share this list from source to target
@@ -2708,6 +2708,40 @@ begin
             end else
               NextNode:=TargetNode;
             Edge:=GetEdge(LastNode,NextNode,true);
+            Edge.Weight:=Edge.Weight+Weight;
+            LastNode:=NextNode;
+          end;
+        end;
+      end;
+    end;
+
+  lgesMergeTarget:
+    begin
+      // lgesMergeTarget: each node has a list of hidden nodes, long edges share this list from target to source
+      SetLength(HiddenNodes,LevelCount-1);
+      for n:=0 to NodeCount-1 do begin
+        TargetNode:=Nodes[n];
+        for e:=1 to TargetNode.Level.Index-1 do
+          HiddenNodes[e]:=nil;
+        for e:=TargetNode.InEdgeCount-1 downto 0 do begin
+          Edge:=TargetNode.InEdges[e];
+          SourceNode:=Edge.Source;
+          if TargetNode.Level.Index-SourceNode.Level.Index<=1 then continue;
+          debugln(['TLvlGraph.SplitLongEdges long edge: ',SourceNode.Caption,' ',TargetNode.Caption]);
+          Weight:=Edge.Weight;
+          // remove long edge
+          Edge.Free;
+          LastNode:=TargetNode;
+          for l:=TargetNode.Level.Index-1 downto SourceNode.Level.Index do begin
+            if l>SourceNode.Level.Index then begin
+              NextNode:=HiddenNodes[l];
+              if NextNode=nil then begin
+                NextNode:=CreateHiddenNode(l);
+                HiddenNodes[l]:=NextNode;
+              end;
+            end else
+              NextNode:=SourceNode;
+            Edge:=GetEdge(NextNode,LastNode,true);
             Edge.Weight:=Edge.Weight+Weight;
             LastNode:=NextNode;
           end;
