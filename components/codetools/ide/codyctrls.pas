@@ -738,17 +738,20 @@ type
 procedure LvlGraphMinimizeCrossings(Graph: TLvlGraph);
 var
   g: TMinXGraph;
-  {%H-}Run: int64;
 begin
   if (Graph.LevelCount<2) or (Graph.NodeCount<3) then exit;
   g:=TMinXGraph.Create(Graph);
   try
     if length(g.Pairs)=0 then exit;
     g.InitSearch;
-    Run:=0;
     debugln(['LvlGraphMinimizeCrossings Graph.NodeCount=',Graph.NodeCount]);
+    {$IFDEF CheckMinXGraph}
     g.SwitchAndShuffle(100*Graph.NodeCount,
                        Min(10000,Graph.NodeCount*Graph.NodeCount));
+    {$ELSE}
+    g.SwitchAndShuffle(100*Graph.NodeCount,
+                       Min(100000,Graph.NodeCount*Graph.NodeCount));
+    {$ENDIF}
     g.Apply;
   finally
     g.Free;
@@ -1849,11 +1852,11 @@ begin
             if not Node.Visible then
               x1+=NodeStyle.Width div 2;
             if TargetNode.Visible then
-              x2+=NodeStyle.Width div 2
+              x2+=NodeStyle.Width
             else
               x2+=NodeStyle.Width div 2;
             Canvas.Pen.Color:=clRed;
-            Canvas.Line(x1,y1,x2+NodeStyle.Width,y2);
+            Canvas.Line(x1,y1,x2,y2);
           end;
         end;
       end;
@@ -2061,8 +2064,8 @@ begin
   SetLength(LevelTxtWidths,Graph.LevelCount);
   for i:=0 to Graph.LevelCount-1 do begin
     // compute needed width of the level
-    LevelTxtWidths[i]:=Max(NodeStyle.Width,Canvas.TextWidth('NodeX'));
     Level:=Graph.Levels[i];
+    LevelTxtWidths[i]:=Max(NodeStyle.Width,Canvas.TextWidth('NodeX'+StringOfChar('j',Min(20,Level.Count))));
     for j:=0 to Level.Count-1 do
       if Level[j].Visible then
         LevelTxtWidths[i]:=Max(LevelTxtWidths[i], Canvas.TextWidth(Level[j].Caption));
@@ -2695,7 +2698,7 @@ begin
           Edge:=SourceNode.OutEdges[e];
           TargetNode:=Edge.Target;
           if TargetNode.Level.Index-SourceNode.Level.Index<=1 then continue;
-          debugln(['TLvlGraph.SplitLongEdges long edge: ',SourceNode.Caption,' ',TargetNode.Caption]);
+          //debugln(['TLvlGraph.SplitLongEdges long edge: ',SourceNode.Caption,' ',TargetNode.Caption]);
           Weight:=Edge.Weight;
           // remove long edge
           Edge.Free;
@@ -2730,7 +2733,7 @@ begin
           Edge:=TargetNode.InEdges[e];
           SourceNode:=Edge.Source;
           if TargetNode.Level.Index-SourceNode.Level.Index<=1 then continue;
-          debugln(['TLvlGraph.SplitLongEdges long edge: ',SourceNode.Caption,' ',TargetNode.Caption]);
+          //debugln(['TLvlGraph.SplitLongEdges long edge: ',SourceNode.Caption,' ',TargetNode.Caption]);
           Weight:=Edge.Weight;
           // remove long edge
           Edge.Free;
