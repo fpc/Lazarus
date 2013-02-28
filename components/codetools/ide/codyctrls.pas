@@ -1776,25 +1776,28 @@ end;
 
 procedure TCustomLvlGraphControl.DrawEdges(Highlighted: boolean);
 
-  procedure HighlightNode(Node: TLvlGraphNode; HighlightedElements: TAvgLvlTree);
+  procedure HighlightNode(Node: TLvlGraphNode; HighlightedElements: TAvgLvlTree;
+    FollowIn, FollowOut: boolean);
   var
     i: Integer;
     Edge: TLvlGraphEdge;
   begin
     if HighlightedElements.Find(Node)<>nil then exit;
     HighlightedElements.Add(Node);
-    for i:=0 to Node.InEdgeCount-1 do begin
-      Edge:=Node.InEdges[i];
-      HighlightedElements.Add(Edge);
-      if not Edge.Source.Visible then
-        HighlightNode(Edge.Source,HighlightedElements);
-    end;
-    for i:=0 to Node.OutEdgeCount-1 do begin
-      Edge:=Node.OutEdges[i];
-      HighlightedElements.Add(Edge);
-      if not Edge.Target.Visible then
-        HighlightNode(Edge.Target,HighlightedElements);
-    end;
+    if FollowIn then
+      for i:=0 to Node.InEdgeCount-1 do begin
+        Edge:=Node.InEdges[i];
+        HighlightedElements.Add(Edge);
+        if not Edge.Source.Visible then
+          HighlightNode(Edge.Source,HighlightedElements,true,false);
+      end;
+    if FollowOut then
+      for i:=0 to Node.OutEdgeCount-1 do begin
+        Edge:=Node.OutEdges[i];
+        HighlightedElements.Add(Edge);
+        if not Edge.Target.Visible then
+          HighlightNode(Edge.Target,HighlightedElements,false,true);
+      end;
   end;
 
 var
@@ -1812,7 +1815,7 @@ begin
   HighlightedElements:=TAvgLvlTree.Create;
   try
     if NodeUnderMouse<>nil then
-      HighlightNode(NodeUnderMouse,HighlightedElements);
+      HighlightNode(NodeUnderMouse,HighlightedElements,true,true);
     for i:=0 to Graph.LevelCount-1 do begin
       Level:=Graph.Levels[i];
       for j:=0 to Level.Count-1 do begin
