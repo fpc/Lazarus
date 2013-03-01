@@ -2300,6 +2300,7 @@ type
     property BandBorderStyle;
     property BandMaximize;
     property Bands;
+    property BiDiMode;
     property BorderWidth;
     property Color;
     property Constraints;

@@ -1225,6 +1225,7 @@ type
     property BevelInner;
     property BevelOuter;
     property BevelWidth;
+    property BiDiMode;
     property BorderWidth;
     property Color nodefault;
     property Constraints;
