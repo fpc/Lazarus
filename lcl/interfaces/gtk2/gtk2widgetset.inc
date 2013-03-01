@@ -951,6 +951,27 @@ begin
 end;
 
 constructor TGtk2WidgetSet.Create;
+{$IFDEF HASX}
+const
+  WMNoTransient: array[0..1] of String = (
+    'kwin',
+    'awesome'
+  );
+
+  function IsNoTransientWM: Boolean;
+  var
+    wmname: String;
+    i: Integer;
+  begin
+    wmname := GetWindowManager;
+    //DebugLn('Window Manager identifier: ', wmname);
+    Result := False;
+    for i := Low(WMNoTransient) to High(WMNoTransient) do
+      if wmname = WMNoTransient[i] then
+        Exit(True);
+  end;
+
+{$ENDIF}
 begin
   inherited Create;
   FCachedTitleBarHeight := -1;
@@ -970,9 +991,9 @@ begin
   g_signal_connect (G_OBJECT (im_context), 'commit',
     G_CALLBACK (@gtk_commit_cb), nil);
   {$IFDEF HASX}
-  if GetWindowManager = 'kwin' then
+  if IsNoTransientWM then
   begin
-    //kwin does it's own transient settings
+    //some window managers do their own transient settings
     UseTransientForModalWindows := False;
     FDesktopWidget := gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_widget_set_parent_window(FDesktopWidget, gdk_get_default_root_window);
