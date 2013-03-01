@@ -135,10 +135,10 @@ const
   ctnSpecializeType     = 89;
   ctnSpecializeParams   = 90;
   ctnGenericType        = 91;// 1. child = ctnGenericName, 2. child = ctnGenericParams, 3. child = type
-  ctnGenericName        = 92;
-  ctnGenericParams      = 93;
-  ctnGenericParameter   = 94;
-  ctnGenericConstraint  = 95;
+  ctnGenericName        = 92; // parent = ctnGenericType
+  ctnGenericParams      = 93; // parent = ctnGenericType, children = ctnGenericParameter
+  ctnGenericParameter   = 94; // can has a child ctnGenericConstraint
+  ctnGenericConstraint  = 95; // parent = ctnGenericParameter
   ctnConstant           = 96;
   ctnHintModifier       = 97; // deprecated, platform, unimplemented, library, experimental
 

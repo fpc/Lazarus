@@ -8181,7 +8181,7 @@ begin
     while AnAVLNode<>nil do begin
       DebugLn(' Gathered ProcBody ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
       AnAVLNode:=ProcBodyNodes.FindSuccessor(AnAVLNode);
-    end; }
+    end;}
 
     // find topmost and bottommost proc body
     FindTopMostAndBottomMostProcBodies;
@@ -8420,8 +8420,10 @@ begin
     if CodeCompleteClassNode=nil then
       RaiseException('oops, I lost your class');
     ProcNode:=FindProcNode(CursorNode,FJumpToProcName,[phpInUpperCase,phpIgnoreForwards]);
-    if ProcNode=nil then
+    if ProcNode=nil then begin
+      debugln(['TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc Proc="',FJumpToProcName,'"']);
       RaiseException(ctsNewProcBodyNotFound);
+    end;
     Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine);
   end else begin
     {$IFDEF CTDEBUG}

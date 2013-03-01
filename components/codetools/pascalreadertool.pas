@@ -523,12 +523,13 @@ begin
       repeat
         ExtractNextAtom(true,Attr);
         if Scanner.CompilerMode = cmDELPHI then
-        begin { delphi generics }
+        begin
+          // delphi generics
           if AtomIsChar('<') then
           begin
             while not AtomIsChar('>') and (CurPos.EndPos < SrcLen) do
-              ExtractNextAtom(true,Attr);
-            ExtractNextAtom(true,Attr);
+              ExtractNextAtom(not (phpWithoutGenericParams in Attr),Attr);
+            ExtractNextAtom(not (phpWithoutGenericParams in Attr),Attr);
           end;
         end;
         if CurPos.Flag<>cafPoint then break;
@@ -636,6 +637,10 @@ end;
 
 function TPascalReaderTool.ExtractClassName(Node: TCodeTreeNode;
   InUpperCase: boolean; WithParents: boolean): string;
+var
+  ParamsNode: TCodeTreeNode;
+  ParamNode: TCodeTreeNode;
+  First: Boolean;
 begin
   Result:='';
   while Node<>nil do begin
@@ -647,8 +652,30 @@ begin
           Result:=GetIdentifier(@Src[Node.StartPos])+Result
         else if Node.FirstChild<>nil then
         begin
-          if (Scanner.CompilerMode = cmDELPHI) and (Node.Desc = ctnGenericType) then
-            Result := Result + ExtractNode(Node.FirstChild.NextBrother, []);
+          if (Scanner.CompilerMode = cmDELPHI) and (Node.Desc = ctnGenericType)
+          then begin
+            // extract generic type param names
+            ParamsNode:=Node.FirstChild.NextBrother;
+            First:=true;
+            while ParamsNode<>nil do begin
+              if ParamsNode.Desc=ctnGenericParams then begin
+                Result:='>'+Result;
+                ParamNode:=ParamsNode.FirstChild;
+                while ParamNode<>nil do begin
+                  if ParamNode.Desc=ctnGenericParameter then begin
+                    if First then
+                      First:=false
+                    else
+                      Result:=','+Result;
+                    Result:=GetIdentifier(@Src[ParamNode.StartPos])+Result;
+                  end;
+                  ParamNode:=ParamNode.NextBrother;
+                end;
+                Result:='<'+Result;
+              end;
+              ParamsNode:=ParamsNode.NextBrother;
+            end;
+          end;
           Result:=GetIdentifier(@Src[Node.FirstChild.StartPos])+Result;
         end;
         if not WithParents then break;

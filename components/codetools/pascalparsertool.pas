@@ -54,6 +54,7 @@ type
     phpAddClassName,       // extract/add 'ClassName.'
     phpWithoutClassName,   // skip classname
     phpWithoutName,        // skip function name
+    phpWithoutGenericParams,// skip <> after proc name
     phpWithoutParamList,   // skip param list
     phpWithVarModifiers,   // extract 'var', 'out', 'const'
     phpWithParameterNames, // extract parameter names
