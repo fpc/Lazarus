@@ -399,27 +399,34 @@ const
 var
   i: integer;
   r: TfrReport;
+  dataPath: string;
 begin
 
   UpdateAppTranslation;
 
+  dataPath := ExtractFilePath(ParamStr(0));
+  {$ifdef Darwin}
+  dataPath := IncludeTrailingPathDelimiter(ExpandFileName(dataPath + '../../..'));
+  {$endif}
+
   LookCountries.Close;
-  LookCountries.FilePath := 'db/';
+  LookCountries.FilePath := datapath + 'db/';
   LookCountries.TableName := 'countries.dbf';
   LookCountries.open;
 
   LookCompanies.Close;
-  LookCompanies.FilePath := 'db/';
+  LookCompanies.FilePath := datapath + 'db/';
   LookCompanies.TableName := 'companies.dbf';
   LookCompanies.Open;
 
   Detail.close;
-  Detail.FilePath := 'db/';
+  Detail.FilePath := datapath + 'db/';
   Detail.TableName := 'disco.dbf';
   Detail.open;
 
   Master.Close;
-  Master.TableName := 'db/countries.dbf';
+  Master.FilePath := datapath + 'db/';
+  Master.TableName := 'countries.dbf';
   
   comboIndex.Clear;
   comboIndex.Items.Add(cerNone);
@@ -428,8 +435,8 @@ begin
   FCountryIndex := ComboIndex.Items.IndexOf('BYCOUNTRY');
   SetIndex('');
   
-  if FileExistsUTF8(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf') then
-    OpenReport(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf');
+  if FileExistsUTF8(datapath + 'salida.lrf') then
+    OpenReport(datapath + 'salida.lrf');
 
   for i:=Low(rptArr) to High(rptArr) do begin
     r := TfrReport.Create(self);
@@ -438,7 +445,7 @@ begin
   end;
   Composite.DoublePass:=true;
 
-  frSelectHyphenDictionary('hyph_es_ANY.dic');
+  frSelectHyphenDictionary(dataPath + 'hyph_es_ANY.dic');
 end;
 
 procedure TfrmMain.TheReportBeginDoc;
