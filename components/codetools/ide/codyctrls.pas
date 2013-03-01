@@ -300,6 +300,8 @@ type
     property OutWeight: single read FOutWeight; // total weight of OutEdges
   end;
   TLvlGraphNodeClass = class of TLvlGraphNode;
+  TLvlGraphNodeArray = array of TLvlGraphNode;
+  PLvlGraphNode = ^TLvlGraphNode;
 
   { TLvlGraphEdge }
 
@@ -355,8 +357,9 @@ type
   TLvlGraphEdgeSplitMode = (
     lgesNone,
     lgesSeparate, // create for each edge separate hidden nodes, this creates a lot of hidden nodes
-    lgesMergeSource, // combine hidden nodes at source
-    lgesMergeTarget // combine hidden nodes at target
+    lgesMergeSource, // combine hidden nodes at source (outgoing edge)
+    lgesMergeTarget, // combine hidden nodes at target (incoming edge)
+    lgesMergeHighest // combine hidden nodes at source or target, whichever has more edges
     );
 
   { TLvlGraph }
@@ -452,7 +455,7 @@ type
 const
   DefaultLvlGraphCtrlOptions = [lgoAutoLayout,
                                 lgoHighlightNodeUnderMouse,lgoMouseSelects];
-  DefaultLvlGraphEdgeSplitMode = lgesMergeSource;
+  DefaultLvlGraphEdgeSplitMode = lgesMergeHighest;
   DefaultLvlGraphNodeWith = 10;
   DefaultLvlGraphNodeCaptionScale = 0.7;
   DefaultLvlGraphNodeCaptionPosition = lgncTop;
@@ -676,7 +679,7 @@ type
     GraphLevel: TLvlGraphLevel;
     Nodes: array of TMinXNode;
     Pairs: array of TMinXPair;
-    BestNodes: array of TLvlGraphNode;
+    BestNodes: TLvlGraphNodeArray;
     constructor Create(aGraph: TMinXGraph; aIndex: integer);
     destructor Destroy; override;
     procedure GetCrossingCount(Node1, Node2: TMinXNode; out Crossing, SwitchCrossing: integer);
@@ -2666,95 +2669,117 @@ begin
 end;
 
 procedure TLvlGraph.SplitLongEdges(SplitMode: TLvlGraphEdgeSplitMode);
-// replace edges over several levels into several short edges by adding
-// hidden nodes
+// replace edges over several levels into several short edges by adding hidden nodes
+type
+  TNodeInfo = record
+    HiddenNodes: TLvlGraphNodeArray;
+    LongInEdges, LongOutEdges: integer;
+  end;
+  PNodeInfo = ^TNodeInfo;
+
 var
+  NodeToInfo: TPointerToPointerTree; // node to TNodeInfo
   n: Integer;
   SourceNode: TLvlGraphNode;
   e: Integer;
   Edge: TLvlGraphEdge;
   TargetNode: TLvlGraphNode;
+  EdgeWeight: Single;
+  EdgeData: Pointer;
+  HiddenNodes: TLvlGraphNodeArray;
   l: Integer;
   LastNode: TLvlGraphNode;
   NextNode: TLvlGraphNode;
-  HiddenNodes: array of TLvlGraphNode;
-  Weight: Single;
+  AVLNode: TAvgLvlTreeNode;
+  P2PItem: PPointerToPointerItem;
+  MergeAtSourceNode: Boolean;
+  SourceInfo: PNodeInfo;
+  TargetInfo: PNodeInfo;
 begin
   if SplitMode=lgesNone then exit;
-  case SplitMode of
-  lgesNone: ;
 
-  lgesSeparate,lgesMergeSource:
-    begin
-      // lgesSeparate: each long edge gets its own hidden nodes, this creates a lot of hidden nodes
-      // lgesMergeSource: each node has a list of hidden nodes, long edges share this list from source to target
-      // lgesMergeTarget: ToDo: each node has a list of hidden nodes, long edges share this list from target to source
-      SetLength(HiddenNodes,LevelCount-1);
-      for n:=0 to NodeCount-1 do begin
-        SourceNode:=Nodes[n];
-        for e:=SourceNode.Level.Index+1 to LevelCount-2 do
-          HiddenNodes[e]:=nil;
-        for e:=SourceNode.OutEdgeCount-1 downto 0 do begin
-          Edge:=SourceNode.OutEdges[e];
-          TargetNode:=Edge.Target;
-          if TargetNode.Level.Index-SourceNode.Level.Index<=1 then continue;
-          //debugln(['TLvlGraph.SplitLongEdges long edge: ',SourceNode.Caption,' ',TargetNode.Caption]);
-          Weight:=Edge.Weight;
-          // remove long edge
-          Edge.Free;
-          LastNode:=SourceNode;
-          for l:=SourceNode.Level.Index+1 to TargetNode.Level.Index do begin
-            if l<TargetNode.Level.Index then begin
-              NextNode:=HiddenNodes[l];
-              if NextNode=nil then begin
-                NextNode:=CreateHiddenNode(l);
-                if SplitMode=lgesMergeSource then
-                  HiddenNodes[l]:=NextNode;
-              end;
-            end else
-              NextNode:=TargetNode;
-            Edge:=GetEdge(LastNode,NextNode,true);
-            Edge.Weight:=Edge.Weight+Weight;
-            LastNode:=NextNode;
+  NodeToInfo:=TPointerToPointerTree.Create;
+  try
+    // create node infos
+    for n:=0 to NodeCount-1 do begin
+      SourceNode:=Nodes[n];
+      New(SourceInfo);
+      FillByte(SourceInfo^,SizeOf(TNodeInfo),0);
+      SetLength(SourceInfo^.HiddenNodes,LevelCount);
+      for e:=0 to SourceNode.OutEdgeCount-1 do begin
+        Edge:=SourceNode.OutEdges[e];
+        if Edge.Target.Level.Index-SourceNode.Level.Index<=1 then continue;
+        SourceInfo^.LongOutEdges+=1;
+      end;
+      for e:=0 to SourceNode.InEdgeCount-1 do begin
+        Edge:=SourceNode.InEdges[e];
+        if SourceNode.Level.Index-Edge.Source.Level.Index<=1 then continue;
+        SourceInfo^.LongInEdges+=1;
+      end;
+      //debugln(['TLvlGraph.SplitLongEdges ',SourceNode.Caption,' LongOutEdges=',SourceInfo^.LongOutEdges,' LongInEdges=',SourceInfo^.LongInEdges]);
+      NodeToInfo[SourceNode]:=SourceInfo;
+    end;
+
+    // split long edges
+    for n:=0 to NodeCount-1 do begin
+      SourceNode:=Nodes[n];
+      for e:=SourceNode.OutEdgeCount-1 downto 0 do begin // Note: run downwards, because edges will be deleted
+        Edge:=SourceNode.OutEdges[e];
+        TargetNode:=Edge.Target;
+        if TargetNode.Level.Index-SourceNode.Level.Index<=1 then continue;
+        //debugln(['TLvlGraph.SplitLongEdges long edge: ',SourceNode.Caption,'(',SourceNode.Level.Index,') ',TargetNode.Caption,'(',TargetNode.Level.Index,')']);
+        EdgeWeight:=Edge.Weight;
+        EdgeData:=Edge.Data;
+        // remove long edge
+        Edge.Free;
+        // create merged hidden nodes
+        if SplitMode in [lgesMergeSource,lgesMergeTarget,lgesMergeHighest] then
+        begin
+          SourceInfo:=PNodeInfo(NodeToInfo[SourceNode]);
+          TargetInfo:=PNodeInfo(NodeToInfo[TargetNode]);
+          MergeAtSourceNode:=true;
+          case SplitMode of
+          lgesMergeTarget: MergeAtSourceNode:=false;
+          lgesMergeHighest: MergeAtSourceNode:=SourceInfo^.LongOutEdges>=TargetInfo^.LongInEdges;
           end;
+          //debugln(['TLvlGraph.SplitLongEdges ',SourceNode.Caption,'=',SourceInfo^.LongOutEdges,' ',TargetNode.Caption,'=',TargetInfo^.LongInEdges,' MergeAtSourceNode=',MergeAtSourceNode]);
+          if MergeAtSourceNode then
+            HiddenNodes:=SourceInfo^.HiddenNodes
+          else
+            HiddenNodes:=TargetInfo^.HiddenNodes;
+          // create hidden nodes
+          for l:=SourceNode.Level.Index+1 to TargetNode.Level.Index-1 do
+            if HiddenNodes[l]=nil then
+              HiddenNodes[l]:=CreateHiddenNode(l);
+        end;
+        // create edges
+        LastNode:=SourceNode;
+        for l:=SourceNode.Level.Index+1 to TargetNode.Level.Index do begin
+          if l<TargetNode.Level.Index then begin
+            if SplitMode=lgesSeparate then
+              NextNode:=CreateHiddenNode(l)
+            else
+              NextNode:=HiddenNodes[l];
+          end else
+            NextNode:=TargetNode;
+          Edge:=GetEdge(LastNode,NextNode,true);
+          Edge.Weight:=Edge.Weight+EdgeWeight;
+          if Edge.Data=nil then
+            Edge.Data:=EdgeData;
+          LastNode:=NextNode;
         end;
       end;
     end;
-
-  lgesMergeTarget:
-    begin
-      // lgesMergeTarget: each node has a list of hidden nodes, long edges share this list from target to source
-      SetLength(HiddenNodes,LevelCount-1);
-      for n:=0 to NodeCount-1 do begin
-        TargetNode:=Nodes[n];
-        for e:=1 to TargetNode.Level.Index-1 do
-          HiddenNodes[e]:=nil;
-        for e:=TargetNode.InEdgeCount-1 downto 0 do begin
-          Edge:=TargetNode.InEdges[e];
-          SourceNode:=Edge.Source;
-          if TargetNode.Level.Index-SourceNode.Level.Index<=1 then continue;
-          //debugln(['TLvlGraph.SplitLongEdges long edge: ',SourceNode.Caption,' ',TargetNode.Caption]);
-          Weight:=Edge.Weight;
-          // remove long edge
-          Edge.Free;
-          LastNode:=TargetNode;
-          for l:=TargetNode.Level.Index-1 downto SourceNode.Level.Index do begin
-            if l>SourceNode.Level.Index then begin
-              NextNode:=HiddenNodes[l];
-              if NextNode=nil then begin
-                NextNode:=CreateHiddenNode(l);
-                HiddenNodes[l]:=NextNode;
-              end;
-            end else
-              NextNode:=SourceNode;
-            Edge:=GetEdge(NextNode,LastNode,true);
-            Edge.Weight:=Edge.Weight+Weight;
-            LastNode:=NextNode;
-          end;
-        end;
-      end;
+  finally
+    // free NodeToInfo
+    AVLNode:=NodeToInfo.Tree.FindLowest;
+    while AVLNode<>nil do begin
+      P2PItem:=PPointerToPointerItem(AVLNode.Data);
+      SourceInfo:=PNodeInfo(P2PItem^.Value);
+      Dispose(SourceInfo);
+      AVLNode:=NodeToInfo.Tree.FindSuccessor(AVLNode);
     end;
-
+    NodeToInfo.Free;
   end;
 end;
 
