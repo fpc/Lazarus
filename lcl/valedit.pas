@@ -1007,6 +1007,8 @@ var
   ItemProp: TItemProp;
 begin
   Result:=inherited GetDefaultEditor(Column);
+  //Need this to be able to intercept VK_Delete in the editor
+  EditorOptions := EditorOptions or EO_HOOKKEYDOWN;
   if Column=1 then
   begin
     ItemProp := nil;
@@ -1065,8 +1067,14 @@ begin
   end;
   if (KeyDelete in KeyOptions) then
   begin
-    //ToDo: delete a row if user presses Delete, need to find out (blackbox Delphi) when this should happen
+    //Although Delphi help says this happens if user presses Delete, testers report it only happens with Ctrl+Delete
+    if (Key = VK_DELETE) and (Shift = [ssModifier]) then
+    begin
+      DeleteRow(Row);
+      Key := 0;
+    end;
   end;
+
 end;
 
 procedure TValueListEditor.SetCells(ACol, ARow: Integer; const AValue: string);
