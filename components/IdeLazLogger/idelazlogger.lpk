@@ -3,6 +3,7 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="IdeLazLogger"/>
+    <Author Value="M. Friebe"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
@@ -16,6 +17,12 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Extends the IDE.
+Allows to change the IDE log-file settings from within the IDE.
+
+The IDE uses LazLogger for logging. Lazlogger accepts command line switches such as --debug-log= and --debug-enable. This package allows to temporarily (none persistent) change the settings supplied by those params for the current running IDE.
+"/>
+    <License Value="LGPL - with LE"/>
     <Version Major="1"/>
     <Files Count="1">
       <Item1>
