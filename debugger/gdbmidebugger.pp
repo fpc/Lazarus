@@ -2337,9 +2337,9 @@ begin
       FTheDebugger.FAsyncModeEnabled := (R.State <> dsError) and
         (pos('mode is on', LowerCase(R.Values)) > 0);
     end;
+    if not FTheDebugger.FAsyncModeEnabled then
+      ExecuteCommand('set target-async off', R, []);
   end;
-  if not FTheDebugger.FAsyncModeEnabled then
-    ExecuteCommand('set target-async off', R, []);
 
   ParseGDBVersionMI;
 end;
