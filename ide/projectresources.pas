@@ -631,8 +631,7 @@ begin
         if not CodeToolBoss.RemoveDirective(NewCode, NewX, NewY, true) then
         begin
           Result := False;
-          Messages.Add(Format(lisCouldNotRemoveIFromMainSource, ['"', Filename,
-            '"']));
+          Messages.Add(Format(lisCouldNotRemoveIFromMainSource, ['"', Filename, '"']));
           debugln(['TProjectResources.UpdateMainSourceFile removing include directive from main source failed']);
           Exit;
         end;
