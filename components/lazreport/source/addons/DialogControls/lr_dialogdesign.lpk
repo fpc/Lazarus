@@ -15,6 +15,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Design dialogs at runtime in LazReport designer"/>
     <License Value="modified LGPL-2
 "/>
     <Version Minor="2" Release="2"/>

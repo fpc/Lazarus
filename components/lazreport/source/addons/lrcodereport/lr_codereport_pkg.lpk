@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="lr_codereport_pkg"/>
+    <Author Value="Julio Jiménez Borreguero"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
@@ -14,6 +15,8 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Makes LazReport reports at runtime with an easy to use api and it doesn't need the report designer"/>
+    <License Value="Modified LGPL"/>
     <Version Major="1"/>
     <Files Count="2">
       <Item1>

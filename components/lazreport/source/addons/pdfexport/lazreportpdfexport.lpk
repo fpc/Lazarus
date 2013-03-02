@@ -21,8 +21,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="PDF Exporter for PDF
-"/>
+    <Description Value="LazReport PDF exporter"/>
     <Version Minor="8"/>
     <Files Count="2">
       <Item1>

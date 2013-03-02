@@ -15,6 +15,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Add support to DBF components for designing LazReport dialogs at runtime with lr_dialogdesign package"/>
     <License Value="modified LGPL-2
 "/>
     <Version Minor="1" Release="1"/>

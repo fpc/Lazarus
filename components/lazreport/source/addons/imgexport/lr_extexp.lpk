@@ -17,7 +17,8 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="TfrImageExport - export report to image file set (bmp, jpg, png)
+    <Description Value="LazReport additional exporter formats:
+TfrImageExport - export report to image file set (bmp, jpg, png)
 TfrHtmDivExport - export report to html file with images"/>
     <Files Count="3">
       <Item1>
