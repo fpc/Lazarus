@@ -837,12 +837,8 @@ end;
 
 procedure TValueListEditor.SetKeyOptions({const} AValue: TKeyOptions);
 begin
-  // ToDo: Disable Add or enable Edit based on current value.
-  // Enable Edit when Adding, disable Add when Editing.
-  // Change Col if needed when editing keys is disabled.
-  // KeyAdd and KeyDelete (not quite sure about the latter) require KeyEdit
+  // KeyAdd requires KeyEdit, KeyAdd oddly enough does not according to Delphi specs
   if (KeyAdd in AValue) and not (KeyEdit in AValue) then AValue := AValue - [KeyAdd];
-  if (KeyDelete in AValue) and not (KeyEdit in AValue) then AValue := AValue - [KeyDelete];
   FKeyOptions := AValue;
   if (KeyAdd in FKeyOptions) then
     Options := Options + [goAutoAddRows]
