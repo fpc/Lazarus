@@ -363,8 +363,6 @@ begin
 end;
 
 procedure TCoolBands.Update(aItem: TCollectionItem);
-var
-  i: Integer;
 begin
   inherited Update(aItem);
   if FCoolBar = Nil then Exit;
