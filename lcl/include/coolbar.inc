@@ -373,22 +373,6 @@ begin
     UpdControls;    // Calculate control positions
 end;
 
-procedure TCoolBands.Notify(aItem: TCollectionItem; aAction: TCollectionNotification);
-begin
-  inherited Notify(aItem, aAction);
-  case aAction of
-    cnAdded: begin
-      DebugLn('TCoolBands.Notify: aAction = cnAdded');
-    end;
-    cnExtracting: begin
-      DebugLn('TCoolBands.Notify: aAction = cnExtracting');
-    end;
-    cnDeleting: begin
-      DebugLn('TCoolBands.Notify: aAction = cnDeleting');
-    end;
-  end;
-end;
-
 function TCoolBands.Add: TCoolBand;
 begin
   Result := TCoolBand(inherited Add);

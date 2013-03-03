@@ -2227,12 +2227,10 @@ type
   protected
     function GetOwner: TPersistent; override;
     procedure Update(aItem: TCollectionItem); override;
-    procedure Notify(aItem: TCollectionItem; aAction: TCollectionNotification); override;
   public
     constructor Create(aCoolBar: TCustomCoolBar);
     function Add: TCoolBand;
     function FindBand(aControl: TControl): TCoolBand;
-//    property CoolBar: TCustomCoolBar read FCoolBar;
     property Items[Index: Integer]: TCoolBand read GetItem write SetItem; default;
   end;
 
