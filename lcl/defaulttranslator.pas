@@ -87,78 +87,74 @@ var
   function GetLocaleFileName(const LangID, LCExt: string): string;
   var
     LangShortID: string;
+    AppDir,LCFileName,FullLCFileName: String;
   begin
     if LangID <> '' then
     begin
+      AppDir := ExtractFilePath(ParamStrUTF8(0));
+      LCFileName := ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
+      FullLCFileName := ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangID) + LCExt;
+
       //ParamStrUTF8(0) is said not to work properly in linux, but I've tested it
-      Result := ExtractFilePath(ParamStrUTF8(0)) + LangID +
-        DirectorySeparator + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
+      Result := AppDir + LangID + DirectorySeparator + LCFileName;
       if FileExistsUTF8(Result) then
         exit;
 
-      Result := ExtractFilePath(ParamStrUTF8(0)) + 'languages' + DirectorySeparator + LangID +
-        DirectorySeparator + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
+      Result := AppDir + 'languages' + DirectorySeparator + LangID +
+        DirectorySeparator + LCFileName;
       if FileExistsUTF8(Result) then
         exit;
 
-      Result := ExtractFilePath(ParamStrUTF8(0)) + 'locale' + DirectorySeparator
-        + LangID + DirectorySeparator + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
+      Result := AppDir + 'locale' + DirectorySeparator + LangID +
+        DirectorySeparator + LCFileName;
       if FileExistsUTF8(Result) then
         exit;
 
-      Result := ExtractFilePath(ParamStrUTF8(0)) + 'locale' + DirectorySeparator
-        + LangID + DirectorySeparator + 'LC_MESSAGES' + DirectorySeparator +
-        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
+      Result := AppDir + 'locale' + DirectorySeparator + LangID +
+        DirectorySeparator + 'LC_MESSAGES' + DirectorySeparator + LCFileName;
       if FileExistsUTF8(Result) then
         exit;
 
       {$IFDEF UNIX}
       //In unix-like systems we can try to search for global locale
-      Result := '/usr/share/locale/' + LangID + '/LC_MESSAGES/' +
-        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
+      Result := '/usr/share/locale/' + LangID + '/LC_MESSAGES/' + LCFileName;
       if FileExistsUTF8(Result) then
         exit;
       {$ENDIF}
       //Let us search for reducted files
       LangShortID := copy(LangID, 1, 2);
       //At first, check all was checked
-      Result := ExtractFilePath(ParamStrUTF8(0)) + LangShortID +
-        DirectorySeparator + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
+      Result := AppDir + LangShortID + DirectorySeparator + LCFileName;
       if FileExistsUTF8(Result) then
         exit;
 
-      Result := ExtractFilePath(ParamStrUTF8(0)) + 'languages' + DirectorySeparator +
-        LangShortID + DirectorySeparator + ChangeFileExt(
-        ExtractFileName(ParamStrUTF8(0)), LCExt);
+      Result := AppDir + 'languages' + DirectorySeparator +
+        LangShortID + DirectorySeparator + LCFileName;
       if FileExistsUTF8(Result) then
         exit;
 
-      Result := ExtractFilePath(ParamStrUTF8(0)) + 'locale' + DirectorySeparator
-        + LangShortID + DirectorySeparator + ChangeFileExt(
-        ExtractFileName(ParamStrUTF8(0)), LCExt);
+      Result := AppDir + 'locale' + DirectorySeparator
+        + LangShortID + DirectorySeparator + LCFileName;
       if FileExistsUTF8(Result) then
         exit;
 
-      Result := ExtractFilePath(ParamStrUTF8(0)) + 'locale' + DirectorySeparator
-        + LangShortID + DirectorySeparator + 'LC_MESSAGES' + DirectorySeparator +
-        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
+      Result := AppDir + 'locale' + DirectorySeparator + LangShortID +
+        DirectorySeparator + 'LC_MESSAGES' + DirectorySeparator + LCFileName;
       if FileExistsUTF8(Result) then
         exit;
 
       //Full language in file name - this will be default for the project
       //We need more careful handling, as it MAY result in incorrect filename
       try
-        Result := ExtractFilePath(ParamStrUTF8(0)) + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangID) + LCExt;
+        Result := AppDir + FullLCFileName;
         if FileExistsUTF8(Result) then
           exit;
         //Common location (like in Lazarus)
-        Result := ExtractFilePath(ParamStrUTF8(0)) + 'locale' + DirectorySeparator +
-          ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangID) + LCExt;
+        Result := AppDir + 'locale' + DirectorySeparator + FullLCFileName;
         if FileExistsUTF8(Result) then
           exit;
 
-        Result := ExtractFilePath(ParamStrUTF8(0)) + 'languages' +
-          DirectorySeparator + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangID) + LCExt;
+        Result := AppDir + 'languages' + DirectorySeparator + FullLCFileName;
         if FileExistsUTF8(Result) then
           exit;
       except
@@ -166,22 +162,22 @@ var
       end;
       {$IFDEF UNIX}
       Result := '/usr/share/locale/' + LangShortID + '/LC_MESSAGES/' +
-        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
+        LCFileName;
       if FileExistsUTF8(Result) then
         exit;
       {$ENDIF}
-      Result := ExtractFilePath(ParamStrUTF8(0)) + ChangeFileExt(
-        ExtractFileName(ParamStrUTF8(0)), '.' + LangShortID) + LCExt;
+
+      FullLCFileName := ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangShortID) + LCExt;
+
+      Result := AppDir + FullLCFileName;
       if FileExistsUTF8(Result) then
         exit;
 
-      Result := ExtractFilePath(ParamStrUTF8(0)) + 'locale' + DirectorySeparator +
-        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangShortID) + LCExt;
+      Result := AppDir + 'locale' + DirectorySeparator + FullLCFileName;
       if FileExistsUTF8(Result) then
         exit;
 
-      Result := ExtractFilePath(ParamStrUTF8(0)) + 'languages' + DirectorySeparator +
-        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangShortID) + LCExt;
+      Result := AppDir + 'languages' + DirectorySeparator + FullLCFileName;
       if FileExistsUTF8(Result) then
         exit;
     end;
