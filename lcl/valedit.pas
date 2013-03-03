@@ -517,7 +517,7 @@ begin
       EditorHasFocus := False;
   end
   else
-    EditorHasFocus := FGrid.Editor.Focused;
+    EditorHasFocus := Assigned(FGrid.Editor) and FGrid.Editor.Focused;
   MustHideShowingEditor := (goAlwaysShowEditor in FGrid.Options) and
                            FGrid.Editor.Visible and
                            (IndexToRow = FGrid.Row) and
