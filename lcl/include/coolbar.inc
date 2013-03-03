@@ -19,9 +19,7 @@
 
 }
 const
-  GrabLeft = 2;
   GrabWidth = 9;
-  ControlLeft = GrabLeft + GrabWidth + 6;
 
 { TCoolBand }
 
@@ -87,8 +85,14 @@ end;
 procedure TCoolBand.ResetControlProps;
 begin
   FControl.AnchorSide[akLeft].Control := Nil;
+  FControl.AnchorSide[akRight].Control := Nil;
   FControl.BorderSpacing.Left := 0;
-  FControl.Left := ControlLeft;
+  FControl.BorderSpacing.Right := 0;
+  FControl.Anchors := [];
+  if FCoolBar.BiDiMode = bdLeftToRight then
+    FControl.Left := FCoolBar.GrabLeft + GrabWidth + 6
+  else
+    FControl.Left := FCoolBar.GrabLeft - FControl.Width;
 end;
 
 procedure TCoolBand.SetBorderStyle(aValue: TBorderStyle);
@@ -164,8 +168,13 @@ end;
 
 procedure TCoolBand.SetControlWidth;
 begin
-  if not (FControl is TCustomCheckBox) then
-    FControl.Width := FCoolBar.Width - FControl.Left - 6;
+  if FControl is TCustomCheckBox then Exit;
+  if FCoolBar.BiDiMode = bdLeftToRight then
+    FControl.Width := Width - FControl.Left - 6
+  else if Assigned(FTextLabel) then
+    FControl.Width := FTextLabel.Left - 12
+  else
+    FControl.Width := GrabWidth - 12;
 end;
 
 procedure TCoolBand.UpdControl;
@@ -177,7 +186,10 @@ begin
       FTextLabel.Top := FTop+4 // Adjust text position for the control (which is higher).
     else
       FTextLabel.Top := FTop+1;
-    FTextLabel.Left := ControlLeft;
+    if FCoolBar.BiDiMode = bdLeftToRight then
+      FTextLabel.Left := FCoolBar.GrabLeft + GrabWidth + 6
+    else
+      FTextLabel.Left := FCoolBar.GrabLeft - FTextLabel.Width - 6;
     FTextLabel.Visible := FCoolBar.ShowText;
   end;
   if Assigned(FControl) then
@@ -190,14 +202,25 @@ begin
     FControl.Top := FTop;
     if Assigned(FTextLabel) and FCoolBar.ShowText then
     begin
-      FControl.AnchorSide[akLeft].Control := FTextLabel;
-      FControl.AnchorSide[akLeft].Side := asrRight;
-      FControl.BorderSpacing.Left := 7;
+      if FCoolBar.BiDiMode = bdLeftToRight then
+      begin
+        FControl.AnchorSide[akRight].Control := Nil;
+        FControl.AnchorSide[akLeft].Control := FTextLabel;
+        FControl.AnchorSide[akLeft].Side := asrRight;
+        FControl.BorderSpacing.Left := 7;
+        FControl.Anchors := [akLeft];
+      end
+      else begin
+        FControl.AnchorSide[akLeft].Control := Nil;
+        FControl.AnchorSide[akRight].Control := FTextLabel;
+        FControl.AnchorSide[akRight].Side := asrLeft;
+        FControl.BorderSpacing.Right := 7;
+        FControl.Anchors := [akRight];
+      end;
     end
     else
       ResetControlProps;
     // Make sure other Anchors a Nil
-    FControl.AnchorSide[akRight].Control := Nil;
     FControl.AnchorSide[akBottom].Control := Nil;
     FControl.AnchorSide[akTop].Control := Nil;
     SetControlWidth;
@@ -433,6 +456,13 @@ begin
   inherited Destroy;
 end;
 
+function TCustomCoolBar.GrabLeft: integer;
+begin
+  Result := 2;
+  if BiDiMode <> bdLeftToRight then
+    Result := Width - GrabWidth - Result;
+end;
+
 function TCustomCoolBar.GetAlign: TAlign;
 begin
   Result := inherited Align;
@@ -525,7 +555,7 @@ begin
     Band := Bands.FindBand(AControl);
     if Band = Nil then
     begin
-      DebugLn('TCoolBar.InsertControl: Adding band for Comp=' + AControl.Name + ', class=' + AControl.ClassName);
+      //DebugLn('TCoolBar.InsertControl: Adding band for Comp=' + AControl.Name + ', class=' + AControl.ClassName);
       Band := FBands.Add;
       Band.Control := AControl;
     end;
@@ -545,7 +575,7 @@ end;
 procedure TCustomCoolBar.Loaded;
 begin
   inherited Loaded;
-  DebugLn('TCoolBar.Loaded');
+  //DebugLn('TCoolBar.Loaded');
   FBands.Update(Nil);
 end;
 

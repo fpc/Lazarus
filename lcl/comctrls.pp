@@ -2257,6 +2257,7 @@ type
     FVertical: Boolean;
     FNewControl: TControl;
     FOnChange: TNotifyEvent;
+    function GrabLeft: integer;
     function GetAlign: TAlign;
     procedure SetAlign(aValue: TAlign); reintroduce;
     procedure SetBands(aValue: TCoolBands);
