@@ -410,7 +410,7 @@ type
     procedure EndLayout;
     function  FieldIndexFromGridColumn(AGridCol: Integer): Integer;
     function  FirstGridColumn: Integer; override;
-    function  GetBufferCount: integer;
+    function  GetBufferCount: integer; virtual;
     function  GetCellHintText(aCol, aRow: Integer): String; override;
     function  GetDefaultColumnAlignment(Column: Integer): TAlignment; override;
     function  GetDefaultColumnWidth(Column: Integer): Integer; override;
