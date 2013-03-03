@@ -161,8 +161,14 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DeleteColRow(IsColumn: Boolean; index: Integer);
     procedure DeleteRow(Index: Integer); override;
+    procedure DeleteCol(Index: Integer); override;
+    procedure InsertColRow(IsColumn: boolean; index: integer);
     function InsertRow(const KeyName, Value: string; Append: Boolean): Integer;
+    procedure ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
+    procedure MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
+
     property FixedRows: Integer read GetFixedRows write SetFixedRows default 1;
     property Modified;
     property Keys[Index: Integer]: string read GetKey write SetKey;
@@ -292,6 +298,7 @@ const
   //ToDo: Make this a resourcestring in lclstrconsts unit, once we are satisfied with ShowColumnTitles
   rsVLEKey = 'Key';
   rsVLEName = 'Name';
+  rsVLEInvalidRowColOperation = 'The operation %s is not allowed on a TValueListEditor%s.';
 
 procedure Register;
 
@@ -639,7 +646,8 @@ var
 begin
   IndexToRow1 := Index1 + FGrid.FixedRows;
   IndexToRow2 := Index2 + FGrid.FixedRows;
-  MustHideShowingEditor := (goAlwaysShowEditor in FGrid.Options) and
+  MustHideShowingEditor := Assigned(FGrid.Editor) and
+                           (goAlwaysShowEditor in FGrid.Options) and
                            FGrid.Editor.Visible and
                            ((IndexToRow1 = FGrid.Row) or (IndexToRow2 = FGrid.Row));
   if MustHideShowingEditor then FGrid.Options := FGrid.Options - [goAlwaysShowEditor];
@@ -717,11 +725,32 @@ begin
   inherited Destroy;
 end;
 
+procedure TValueListEditor.DeleteColRow(IsColumn: Boolean; index: Integer);
+begin
+  if not IsColumn then
+    DeleteRow(Index)
+  else
+    DeleteCol(Index);
+end;
+
 procedure TValueListEditor.DeleteRow(Index: Integer);
 begin
   Index := Index - FixedRows;
   //If we have only one row, it may be empty and we cannot remove
   if not ((Index = 0) and (Strings.Count = 0)) then Strings.Delete(Index);
+end;
+
+procedure TValueListEditor.DeleteCol(Index: Integer);
+begin
+  Raise EGridException.CreateFmt(rsVLEInvalidRowColOperation,['DeleteCol','']);
+end;
+
+procedure TValueListEditor.InsertColRow(IsColumn: boolean; index: integer);
+begin
+  if not IsColumn then
+    Strings.InsertItem(Index - FixedRows,'')
+  else
+    Raise EGridException.CreateFmt(rsVLEInvalidRowColOperation,['InsertColRow',' on columns']);
 end;
 
 function TValueListEditor.InsertRow(const KeyName, Value: string; Append: Boolean): Integer;
@@ -755,6 +784,35 @@ begin
   Result := NewInd;
   NewCol := NewInd + FixedRows;
   if (NewCol <> Col) then Col := NewCol;
+end;
+
+procedure TValueListEditor.ExchangeColRow(IsColumn: Boolean; index,
+  WithIndex: Integer);
+begin
+  if not IsColumn then
+    Strings.Exchange(Index - FixedRows, WithIndex - FixedRows)
+  else
+    Raise EGridException.CreateFmt(rsVLEInvalidRowColOperation,['ExchangeColRow',' on columns']);
+end;
+
+procedure TValueListEditor.MoveColRow(IsColumn: Boolean; FromIndex,
+  ToIndex: Integer);
+var
+  Line: String;
+begin
+  if not IsColumn then
+  begin
+    try
+      Strings.BeginUpdate;
+      Line := Strings.Strings[FromIndex - FixedRows];
+      Strings.Delete(FromIndex - FixedRows);
+      Strings.InsertItem(ToIndex - FixedRows, Line);
+    finally
+      Strings.EndUpdate;
+    end;
+  end
+  else
+    Raise EGridException.CreateFmt(rsVLEInvalidRowColOperation,['MoveColRow',' on columns']);
 end;
 
 procedure TValueListEditor.StringsChange(Sender: TObject);
