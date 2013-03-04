@@ -54,7 +54,7 @@ help:
 	@$(ECHO) "   all            build minimal IDE, lazbuild, startlazarus."
 	@$(ECHO) "   clean          deletes files that 'all' creates"
 	@$(ECHO) "   lazbuild       build lazbuild and lcl with nogui widgetset"
-	@$(ECHO) "   bigide         as all, except that the IDE is build with a lot of extra packages"
+	@$(ECHO) "   bigide         as all, except that the IDE is built with a lot of extra packages"
 	@$(ECHO) "   useride        calls lazbuild to build an IDE with your active profile, requires lazbuild"
 	@$(ECHO) "   install        installs Lazarus under $(LAZARUS_INSTALL_DIR)"
 	@$(ECHO) "                  You can change the directory by appending INSTALL_PREFIX=/some/path"
