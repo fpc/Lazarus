@@ -210,7 +210,7 @@ examples:
 all: lazbuild lcl basecomponents ide starter
 
 #-----------------------------------------------------------------------------
-# build lazarus,lcl,lazbuild,startlazarus with bigide packages for the LCL_PLATFORM
+# build lazarus,lcl,lazbuild,startlazarus,lhelp with bigide packages for the LCL_PLATFORM
 bigide: lazbuild lcl basecomponents bigidecomponents idebig starter lhelp
 
 #-----------------------------------------------------------------------------
