@@ -42,7 +42,7 @@ type
     procedure SetPrinter(Value: TPrinter);
     procedure SetPrinterIndex(Value: Integer);
     function  GetPaperNames: TStringList;
-    
+    function  MatchPrinterPaper(const aWidth, aHeight: Integer): integer;
   public
     Orientation: TPrinterOrientation;
     PaperSize: Integer;
@@ -891,12 +891,26 @@ begin
     DebugLn('SetCustomPaperSize REQUESTED, not yet supported...');
   end else begin
     // Standard paper sizes are handled here
+    n := -1;
     for i:=0 to PaperSizesNum-1 do
       if PaperSizes[i]=PaperSize then begin
         n:=i;
         FPrinter.PaperSize.PaperName := PaperNames[i];
         break;
       end;
+    if (n<0) and (PaperWidth>1) and (PaperHeight>1) then
+    begin
+      // this standard paperSize was not found by number
+      // try to find a suitable paper size within the list
+      // of printer papers based on Paper's width and height
+      n := MatchPrinterPaper(PaperWidth, PaperHeight);
+      if n>=0 then begin
+        FPrinter.PaperSize.PaperName := FPrinter.PaperSize.SupportedPapers[n];
+        // actually PaperSize is a better choice than PaperSizes[n], Update it
+        PaperSizes[n] := PaperSize;
+      end;
+    end;
+
     {$IFDEF DbgPrinter}
     DebugLn(['PaperSize standard requested: PaperSize=', PaperSize,' i=',i,' Paper=', FPrinter.PaperSize.PaperName]);
     {$ENDIF}
@@ -1059,6 +1073,32 @@ end;
 function TfrPrinter.GetPaperNames: TStringList;
 begin
   result := FPaperNames;
+end;
+
+function TfrPrinter.MatchPrinterPaper(const aWidth, aHeight: Integer): integer;
+var
+  i,dw,dh: Integer;
+begin
+  result := -1;
+  if FPrinter=nil then
+    exit;
+
+  with FPrinter.PaperSize do
+    for i:=0 to SupportedPapers.Count-1 do
+    begin
+      try
+        with PaperRectOf[SupportedPapers[i]].PhysicalRect do
+        begin
+          dw := round((Right-Left)*72/FPrinter.XDPI) - aWidth;
+          dh := round((Bottom-Top)*72/FPrinter.YDPI) - aHeight;
+          if (dw>=0)and(dw<=6) and (dh>=0)and(dh<=6) then begin
+            result := i;
+            exit;
+          end;
+        end;
+      except
+      end;
+    end;
 end;
 
 procedure TfrPrinter.SetPrinter(Value: TPrinter);
