@@ -133,8 +133,8 @@ const
   FPCOperatingSystemAlternativeNames: array[1..2] of shortstring =(
       'unix', 'win' // see GetDefaultSrcOSForTargetOS
     );
-  FPCOperatingSystemAlternative2Names: array[1..1] of shortstring =(
-      'bsd' // see GetDefaultSrcOS2ForTargetOS
+  FPCOperatingSystemAlternative2Names: array[1..2] of shortstring =(
+      'bsd', 'linux' // see GetDefaultSrcOS2ForTargetOS
     );
   FPCProcessorNames: array[1..6] of shortstring =(
       'i386', 'powerpc', 'm68k', 'x86_64', 'sparc', 'arm'
@@ -2567,6 +2567,7 @@ begin
   or (CompareText(TargetOS,'darwin')=0)
   or (CompareText(TargetOS,'solaris')=0)
   or (CompareText(TargetOS,'haiku')=0)
+  or (CompareText(TargetOS,'android')=0)
   then
     Result:='unix'
   else
@@ -2585,7 +2586,9 @@ begin
   or (CompareText(TargetOS,'openbsd')=0)
   or (CompareText(TargetOS,'darwin')=0)
   then
-    Result:='bsd';
+    Result:='bsd'
+  else if (CompareText(TargetOS,'android')=0) then
+    Result:='linux';
 end;
 
 function GetDefaultSrcCPUForTargetCPU(const TargetCPU: string): string;
