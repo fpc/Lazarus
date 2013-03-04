@@ -3549,7 +3549,7 @@ var
 begin
   {$IFDEF DebugLR}
   WriteStr(St, DrawMode);
-  DebugLnEnter('TfrMemoView.Print INIT %s DrawMode=%s',[ViewInfoDIM(Self), st]);
+  DebugLnEnter('TfrMemoView.Print INIT %s DrawMode=%s Visible=%s',[ViewInfoDIM(Self), st, dbgs(Visible)]);
   {$ENDIF}
   BeginDraw(TempBmp.Canvas);
   Streaming := True;
@@ -3581,6 +3581,9 @@ begin
 
   if not Visible then
   begin
+    {$IFDEF DebugLR}
+    DebugLnExit('TfrMemoView.Print EXIT Not Visible!');
+    {$ENDIF}
     DrawMode := drAll;
     Exit;
   end;
@@ -9968,9 +9971,11 @@ end;
 procedure TfrReport.SetPrinterTo(const PrnName: String);
 begin
   {$ifdef dbgPrinter}
-  DebugLn('TfrReport.SetPrinterTo PrnName=%s PrintToDefault=%d PrnExist?=%d PrnIndex=%d PrinterIndex=%d Name=%s',
-    [prnName, Ord(PrintToDefault), Ord(Prn.Printers.IndexOf(PrnName)>=0),
-     prn.PrinterIndex, Prn.Printer.PrinterIndex, prn.Printer.Printers[prn.Printer.PrinterIndex]]);
+  DebugLn;
+  DebugLnENTER('TfrReport.SetPrinterTo PrnName="%s" PrnExist?=%s CurPrinter=%s',
+    [prnName, dbgs(Prn.Printers.IndexOf(PrnName)>=0), prn.Printer.PrinterName]);
+  DebugLn(['PrintToDefault=',PrintToDefault,' prnIndex=',prn.PrinterIndex,
+    ' PrinterIndex=',Prn.Printer.PrinterIndex]);
   {$endif}
   if not PrintToDefault then
   begin
@@ -9981,6 +9986,9 @@ begin
       Prn.PrinterIndex := 0 // either the system default or
                             // own virtual default printer
   end;
+  {$ifdef dbgPrinter}
+  DebugLnExit('TfrReport.SetPrinterTo DONE Printer="%s"',[Prn.Printer.PrinterName]);
+  {$endif}
 end;
 
 function TfrReport.ChangePrinter(OldIndex, NewIndex: Integer): Boolean;
@@ -9997,24 +10005,30 @@ function TfrReport.ChangePrinter(OldIndex, NewIndex: Integer): Boolean;
   end;
   
 begin
+  {$ifdef dbgPrinter}
+  DebugLn;
+  DebugLnEnter('TfrReport.ChangePrinter INIT CurIndex=%d OldIndex=%d NewIndex=%d',
+    [Prn.PrinterIndex,OldIndex,NewIndex]);
+  DebugLn('CurPrinter=%s NewPrinter=%s',[prn.Printer.PrinterName, prn.Printer.Printers[NewIndex]]);
+  {$endif}
   Result := True;
   try
-    {$ifdef dbgPrinter}
-    DebugLn('TfrReport.ChangePrinter CurIndex=%d OldIndex=%d NewIndex=%d',
-      [Prn.PrinterIndex,OldIndex,NewIndex]);
-    {$endif}
     Prn.PrinterIndex := NewIndex;
     Prn.PaperSize := -1;
     ChangePages;
   except
-    on Exception do
+    on E:Exception do
     begin
+      {$ifdef dbgPrinter}DebugLn('Change printer error: %s',[E.Message]);{$endif}
       MessageDlg(sPrinterError,mtError,[mbOk],0);
       Prn.PrinterIndex := OldIndex;
       ChangePages;
       Result := False;
     end;
   end;
+  {$ifdef dbgPrinter}
+  DebugLnExit('TfrReport.ChangePrinter DONE Printer=%s', [Prn.Printer.PrinterName]);
+  {$endif}
 end;
 
 procedure TfrReport.EditPreparedReport(PageIndex: Integer);
