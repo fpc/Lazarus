@@ -801,11 +801,14 @@ begin
     {$Endif}
     
     try
-      PaperWidth:=fPrinter.PageWidth;
-      PaperHeight:=fPrinter.PageHeight;
-    finally
+      // update paper size in std pt units
+      PaperWidth := round(fPrinter.PaperSize.Width * 72 / fPrinter.XDPI);
+      PaperHeight := round(fPrinter.PaperSize.Height * 72 / fPrinter.YDPI);
+    except
       PaperWidth:=1;
       PaperHeight:=1;
+      // let it as it was ....
+      raise
     end;
   end;
   {$ifdef DbgPrinter}
