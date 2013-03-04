@@ -636,86 +636,77 @@ end;
     DMPAPER_PENV_10_ROTATED                 = 118; // 458X324
 }
 
-
-// this function tries to retrieve a windows paper number given a paper
-// width and height in points, where each point is 1/72 of inch.
-function PaperSizeToWinPaper(const aWidth,aHeight: Integer): Integer;
+function MatchWindowsPaper(aPaperName: string): integer;
 var
-  i: integer;
-  Dw,DL: Integer;
-  FW,FL: Integer;
+  i, aWidth, aHeight, BDeltaW, BDeltaH, BIndex,Cw,Ch: Integer;
+  PaperRect: TPaperRect;
+  ValidSize: Boolean;
 begin
-  Result := 256;
-  for i:=0 to PaperCount-2 do begin // we don't need the very last record
-    // alternative 1: strict
-    // we need a perfect match here
-    // if no match could be made here return 256 (custom paper)
-    //    and use (will always work with the same printer) and store
-    //    the paper name used
-    // if a match is made, use this value
-    FW := PPDPaperInfo[i].X;
-    FL := PPDPaperInfo[i].Y;
-    DW := (FW-aWidth);
-    DL := (FL-aHeight);
-    if (DW=0)and(DL=0) then begin
-      Result := PaperInfo[i].Typ;
-      break;
-    end;
-    // alternative 2: best fit
-    // given a paper p with name aName, find a paper f
-    // calc: dw[i]:=(F[i].Width-P.Width) and dl[i]:=(F[i].Length-P.Length);
-    // such that (dw[i]>=0)and(dl[i]>=0)and(dw[i]<dw[n])and(dl[i]<dw[n]);
-    // this should garantee that the requested paper fits within found paper
-  end;
-end;
+  result := -1;
 
-function PaperNameToWinPaper(const aName: String; const TrySize:boolean): Integer;
-var
-  i: Integer;
-  CurrentPaper: string;
-  CurrentOrient: TPrinterOrientation;
-begin
-  // simple name search....
-  for i:=0 to PAPERCOUNT-1 do begin
-    if LowerCase(PPDPaperInfo[i].Name)=aName then begin
-      Result := PPDPaperInfo[i].Typ;
-      exit;
-    end else begin
-      // excepciones, casos conocidos
-    end;
-  end;
-  
-  Result := 256;
-  if not TrySize then
-    exit;
-
-  // if paper is not current printer papers list, exit
-  if Prn.Printer.PaperSize.SupportedPapers.IndexOf(aName)<0 then
-    exit;
-
-  // paper is in list, try to find size that matches
-  CurrentPaper := Prn.Printer.PaperSize.PaperName;
-  CurrentOrient := Prn.Printer.Orientation;
+  ValidSize := true;
   try
-    Prn.Printer.Orientation := poPortrait;
-    Prn.Printer.PaperSize.PaperName := aName;
-    
-    with Prn.Printer do
-      Result := PaperSizeToWinPaper(PageWidth, Pageheight);
-    
-  finally
-    Prn.Printer.Orientation := CurrentOrient;
-    Prn.Printer.PaperSize.PaperName := CurrentPaper;
+    PaperRect := prn.Printer.PaperSize.PaperRectOf[aPaperName];
+    aWidth := PaperRect.PhysicalRect.Right-PaperRect.PhysicalRect.Left;
+    aHeight := PaperRect.PhysicalRect.Bottom-PaperRect.PhysicalRect.Top;
+  except
+    ValidSize := false;
   end;
+
+  BIndex := -1;
+  BDeltaW := 2013;
+  BDeltaH := 2013;
+
+  // name and size match
+  for i:=0 to PAPERCOUNT-1 do
+  with PPDPaperInfo[i] do begin
+    if CompareText(aPaperName, Name)=0 then
+    begin
+      // perfect name match, no need to look anymore
+      {$ifdef DbgPrinter}DebugLn('i=%d Perfect Name Match %s',[i, Name]);{$Endif}
+      BIndex := i;
+      Break;
+    end else
+    if ValidSize and (X>=aWidth) and (Y>=aHeight) then
+    begin
+      // only interested on papers that are same or bigger size than match paper
+      Cw := X-aWidth;
+      Ch := Y-aHeight;
+      if (Cw=0) and (Ch=0) then
+      begin
+        // no need to look more, perfect match
+        {$ifdef DbgPrinter}DebugLn('i=%d Perfect Size Match w=%d h=%d "%s"->%s',[i,X,Y,aPaperName,Name]);{$Endif}
+        BIndex := i;
+        break;
+      end else
+      if (Cw<6) and (Ch<6) and (Cw<=BDeltaW) and (Cw<=BDeltaH) then
+      begin
+        {$ifdef DbgPrinter}DebugLn('i=%d Close Size cw=%d ch=%d  "%s"->%s',[i,cw,ch,aPaperName,Name]);{$endif}
+        // we are interested only on differences with searched paper of
+        // about 2 mm or less (1 mm is aprox 3 points)
+        BIndex := i;
+        BDeltaW := Cw;
+        BDeltaH := CH;
+      end
+      {$ifdef DbgPrinter}
+      //else
+      //  DebugLn('i=%d Missed cw=%d ch=%d %s',[i, cw, ch, Name])
+      {$endif}
+      ;
+    end;
+  end;
+
+  if bIndex>=0 then
+  begin
+    result := PPDPaperInfo[bIndex].Typ
+  end
+  {$ifdef DbgPrinter}
+  else
+    DebugLn(['Matching Paper ',aPaperName,' failed'])
+  {$endif}
+  ;
 end;
 
-function PaperIndexToWinPaper(const aIndex: Integer): Integer;
-var
-  aName: String;
-begin
-  aName := LowerCase(Prn.Printer.PaperSize.SupportedPapers[aIndex]);
-  Result := PaperNameToWinpaper(aName, False);
-end;
 {$ENDIF}
 
 procedure TfrPrinter.GetSettings(PrinterChanged: boolean = true);
@@ -740,40 +731,23 @@ begin
     //
     // Under cups (ie, using ppd files), ppd file builders can add paper names
     // not included in ref [1], that difficult the selection of papers
-    // current implementation will try to find matches based only on paper name
-    //
-    // todo: use the provided points values for X and Y in PPD paper info to
-    //       find a most close match. (maybe not desired)
-    if PrinterChanged then begin
+    if PrinterChanged then
       for i:=0 to FPaperNames.Count-1 do
       begin
-        n := PaperIndexToWinPaper(i);
-        if n=256 then begin
-          // a non windows paper was found, also, it may not be a paper at all
-          // but an input slot for example.
-          // try to find if it is an input slot, paper that are not real papers
-          // raise an exception when trying to get paper dimensions...
-          try
-            FPrinter.PaperSize.PaperRectOf[FPaperNames[i]];
-            n := 1000+i; // it's a non windows standard paper, mark it
-                         // as custom size paper but one that we will be
-                         // able to recognize later as an index within the
-                         // list of papers for current printer
-          except
-            // it's an input slot or something else ....
-            // return the default paper identifier instead, but maybe that is not
-            // yet readed, so delay this until we finish of filling win paper numbers
-            //
-            // it's a reference to default paper
-            n := 2000+i;
-          end;
-        end;
+
+        n := MatchWindowsPaper(FPaperNames[i]);
+        if n<0 then
+          // it's a non windows standard paper, mark it
+          // as custom size paper but one that we will be
+          // able to recognize later as an index within the
+          // list of papers for current printer
+          n := 1000 + i;
+
         PaperSizes[i] := n;
         FPaperNames.Objects[i] := TObject(PtrInt(n)); // this is used under page options
                                               // dialog to show if the paper item
                                               // is a windows paper or other thing
       end;
-    end;
     {$ELSE}
     for i:=0 to FPaperNames.Count-1 do
       PaperSizes[i] := PtrInt(FPaperNames.Objects[i]);
@@ -898,16 +872,6 @@ begin
 
   FPrinter.Orientation := Orientation;
   
-  if PaperSize>=2000 then begin
-    // here we handle those papers that are not really papers but that
-    // are a reference to default paper size
-    i := Papersize-2000;
-    if (i>=0)and(i<FPapernames.Count) then
-      FPrinter.PaperSize.PaperName := FPrinter.PaperSize.DefaultPaperName;
-    {$IFDEF DbgPrinter}
-    DebugLn(['PaperSize InputSlot requested: PaperSize=', PaperSize,' i=',i,' Paper=',FPrinter.PaperSize.PaperName]);
-    {$ENDIF}
-  end else
   if PaperSize>=1000 then begin
     // paper sizes above 1000 have an encoded index
     // in order to use a real paper from the list instead of a custom
