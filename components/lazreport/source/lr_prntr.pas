@@ -70,6 +70,9 @@ type
 var
   Prn: TfrPrinter;
 
+const
+  MAX_TYP_KNOWN = 118;
+
 implementation
 
 type

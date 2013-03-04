@@ -117,7 +117,8 @@ begin
     Canvas.FillRect(aRect);
     
     i := PtrInt(Items.Objects[Index]);
-    if (i>=1)and(i<256) then S:='W' else    // Windows std paper size
+    if (i>=1)and(i<=MAX_TYP_KNOWN) then S := 'W' else // Known Windows std paper size
+    if (i>MAX_TYP_KNOWN)and (i<256) then S:='w' else // Unkknown Windows std paper size
     if (i=256) then S:='U' else             // User Defined paper size
     if (i>=2000) then S:='I' else           // Looks like an Input Slot
     if (i>=1000) then S:='C'                // Known Custom No-Std Paper Size
