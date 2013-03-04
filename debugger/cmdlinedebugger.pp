@@ -114,7 +114,7 @@ var
   TimeOut: Integer;
   FDSWait, FDS: TFDSet;
   Step: Integer;
-  t, t2, t3: DWord;
+  t, t2, t3: QWord;
 begin
   Result := 0;
   Max := 0;
