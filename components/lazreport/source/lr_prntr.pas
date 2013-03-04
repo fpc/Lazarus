@@ -724,7 +724,7 @@ var
   n: Integer;
 begin
   {$ifdef DbgPrinter}
-  WriteLn('TfrPrinter.GetSettings INIT: PrinterChanged: ', PrinterChanged);
+  DebugLnEnter(['TfrPrinter.GetSettings INIT: PrinterChanged: ', PrinterChanged]);
   {$endif}
   if fPrinter.Printers.Count>0 then
   begin
@@ -793,14 +793,14 @@ begin
 
     /// Debug Information
     for i:=0 to FPaperNames.Count-1 do begin
-      Write(i:4,' ');
+      DbgOut('%4d ',[i]);
       if i=n then
-        Write('*')
+        DbgOut('*')
       else
-        Write(' ');
-      WriteLn(' WinNum=', PaperSizes[i]:5, ' Paper=', FPaperNames[i]);
+        DbgOut(' ');
+      DebugLn(' WinNum=%5d Paper=%s', [PaperSizes[i], FPaperNames[i]]);
     end;
-    Writeln('PaperSize is ',PaperSize);
+    DebugLn('PaperSize is %d',[PaperSize]);
     {$Endif}
     
     try
@@ -815,7 +815,7 @@ begin
     end;
   end;
   {$ifdef DbgPrinter}
-  WriteLn('TfrPrinter.GetSettings FIN: PrinterChanged: ', PrinterChanged);
+  DebugLnExit(['TfrPrinter.GetSettings DONE: PrinterChanged: ', PrinterChanged]);
   {$endif}
 end;
 
@@ -825,10 +825,10 @@ var
   
 begin
   {$ifdef DbgPrinter}
-  WriteLn('TfrPrinter.SetSettings INIT: PrinterIndex=',FPrinterIndex);
-  WriteLn('  PaperSize  =', PaperSize);
-  WriteLn('  PaperWidth =', PaperWidth);
-  WriteLn('  PaperHeight=', PaperHeight);
+  DebugLnEnter(['TfrPrinter.SetSettings INIT: PrinterIndex=',FPrinterIndex]);
+  DebugLn(['PaperSize  =', PaperSize]);
+  DebugLn(['PaperWidth =', PaperWidth]);
+  DebugLn(['PaperHeight=', PaperHeight]);
   {$Endif}
   // if selected printer is default printer, ie our virtual printer
   // then select our own set of papers
@@ -867,7 +867,7 @@ begin
     end;
     *)
     {$ifdef DbgPrinter}
-    WriteLn('  DefaultPrinter, setting up defaultSet of Papers');
+    DebugLn('DefaultPrinter, setting up defaultSet of Papers');
     {$endif}
     FPaperNames.Clear;
     for i := 0 to PAPERCOUNT - 1 do
@@ -877,7 +877,7 @@ begin
       if (PaperSize <> $100) and (PaperSize = PaperInfo[i].Typ) then
       begin
       {$ifdef DbgPrinter}
-      WriteLn('  DefaultPrinter, PaperSize=',PaperSize,' Corresponds to ', PaperInfo[i].Name);
+      DebugLn(['DefaultPrinter, PaperSize=',PaperSize,' Corresponds to ', PaperInfo[i].Name]);
       {$endif}
         PaperWidth := PaperInfo[i].X;
         PaperHeight := PaperInfo[i].Y;
@@ -891,7 +891,7 @@ begin
     end;
     PaperSizesNum := PAPERCOUNT;
     {$IFDEF DbgPrinter}
-    WriteLn('TfrPrinter.SetSettings: FIN (default printer)');
+    DebugLnExit('TfrPrinter.SetSettings: EXIT (default printer)');
     {$ENDIF}
     Exit;
   end;
@@ -905,7 +905,7 @@ begin
     if (i>=0)and(i<FPapernames.Count) then
       FPrinter.PaperSize.PaperName := FPrinter.PaperSize.DefaultPaperName;
     {$IFDEF DbgPrinter}
-    WriteLn('PaperSize InputSlot requested: PaperSize=', PaperSize,' i=',i,' Paper=',FPrinter.PaperSize.PaperName);
+    DebugLn(['PaperSize InputSlot requested: PaperSize=', PaperSize,' i=',i,' Paper=',FPrinter.PaperSize.PaperName]);
     {$ENDIF}
   end else
   if PaperSize>=1000 then begin
@@ -917,7 +917,7 @@ begin
     if (i>=0)and(i<FPaperNames.Count) then
       FPrinter.PaperSize.PaperName := FPaperNames[i];
     {$IFDEF DbgPrinter}
-    WriteLn('PaperSize (NoWin)CupsPaper requested: PaperSize=', PaperSize,' i=',i,' Paper=',FPrinter.PaperSize.PaperName);
+    DebugLn(['PaperSize (NoWin)CupsPaper requested: PaperSize=', PaperSize,' i=',i,' Paper=',FPrinter.PaperSize.PaperName]);
     {$ENDIF}
   end else
   if PaperSize=256 then begin
@@ -934,7 +934,7 @@ begin
         break;
       end;
     {$IFDEF DbgPrinter}
-    WriteLn('PaperSize standard requested: PaperSize=', PaperSize,' i=',i,' Paper=', FPrinter.PaperSize.PaperName);
+    DebugLn(['PaperSize standard requested: PaperSize=', PaperSize,' i=',i,' Paper=', FPrinter.PaperSize.PaperName]);
     {$ENDIF}
   end;
 
@@ -967,7 +967,7 @@ begin
   
   GetSettings( False );
   {$IFDEF DbgPrinter}
-  WriteLn('TfrPrinter.SetSettings FIN');
+  DebugLnExit('TfrPrinter.SetSettings DONE');
   {$ENDIF}
 end;
 
@@ -1016,9 +1016,9 @@ begin
       Ph  := round(PPh  * ky);
       
       {$IFDEF DbgPrinter}
-      WriteLn('[prn] PPgw/PPgh=', PPgw,'/',Ppgh,' [scr] Pgw/Pgh=', Pgw,'/',Pgh);
-      WriteLn('[prn] POfx/POfy=', POfx,'/',Pofy,' [scr] Ofx/Ofy=', Ofx,'/',Ofy);
-      WriteLn('[prn]  PPw/ PPh=', PPw,'/',PPh,  ' [scr]  Pw/ Ph=', Pw,'/',Ph);
+      DebugLn(['[prn] PPgw/PPgh=', PPgw,'/',Ppgh,' [scr] Pgw/Pgh=', Pgw,'/',Pgh]);
+      DebugLn(['[prn] POfx/POfy=', POfx,'/',Pofy,' [scr] Ofx/Ofy=', Ofx,'/',Ofy]);
+      DebugLn(['[prn]  PPw/ PPh=', PPw,'/',PPh,  ' [scr]  Pw/ Ph=', Pw,'/',Ph]);
       {$ENDIF}
     end;
   end;
