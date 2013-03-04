@@ -92,7 +92,7 @@ begin
   if FCoolBar.BiDiMode = bdLeftToRight then
     FControl.Left := FCoolBar.GrabLeft + GrabWidth + 6
   else
-    FControl.Left := FCoolBar.GrabLeft - FControl.Width;
+    FControl.Left := FCoolBar.GrabLeft - FControl.Width - 6;
 end;
 
 procedure TCoolBand.SetBorderStyle(aValue: TBorderStyle);
@@ -174,7 +174,7 @@ begin
   else if Assigned(FTextLabel) then
     FControl.Width := FTextLabel.Left - 12
   else
-    FControl.Width := GrabWidth - 12;
+    FControl.Width := FCoolBar.GrabLeft - 12;
 end;
 
 procedure TCoolBand.UpdControl;
