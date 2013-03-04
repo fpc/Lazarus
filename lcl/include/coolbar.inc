@@ -236,12 +236,9 @@ begin
   if Assigned(aValue) then begin
     Band := TCoolBands(Collection).FindBand(aValue);
     if Assigned(Band) and (Band <> Self) then begin
-      DebugLn(['TCoolBand.SetControl, removing old, FTop=', Band.FTop,
-        ', FControl.Name=', Band.FControl.Name, ', FControl.ClassName=', Band.FControl.ClassName]);
       Band.ResetControlProps;
       Band.SetControl(nil);        // Remove old association
     end;
-    DebugLn(['TCoolBand.SetControl, adding new, aValue.Name=', aValue.Name, ', aValue.ClassName=', aValue.ClassName]);
     aValue.Parent := Nil;
   end;
   FControl := aValue;
@@ -368,7 +365,7 @@ begin
   if FCoolBar = Nil then Exit;
   if csDestroying in FCoolBar.ComponentState then Exit;
   if FCoolBar.FUpdateCount = 0 then
-    UpdControls;    // Calculate control positions
+    CalcHeight(True);    // Calculate control positions
 end;
 
 function TCoolBands.Add: TCoolBand;
@@ -383,30 +380,57 @@ var
 begin
   Result := nil;
   for i := 0 to Count-1 do
-  begin
     if GetItem(i).FControl = AControl then
-    begin
-      Result := GetItem(i);
-      Exit;
-    end;
-  end;
+      Exit(GetItem(i));
 end;
 
-procedure TCoolBands.UpdControls;
+function TCoolBands.CalcHeight(aAlsoUpdate: Boolean): Integer;
 var
-  i, hh, yy: Integer;
+  i, hh: Integer;
   Band: TCoolBand;
 begin
-  yy := 3;
+  Result := 3;
   for i := 0 to Count-1 do
   begin
     Band := Items[i];
     hh := Band.Height;
     if FCoolBar.BandBorderStyle = bsSingle then
       Inc(hh, 2);
-    Band.FTop := yy;
-    Band.UpdControl;   // Set control's location
-    Inc(yy, hh+3);
+    if aAlsoUpdate then
+    begin
+      Band.FTop := Result;
+      Band.UpdControl;   // Set control's location
+    end;
+    Inc(Result, hh+3);
+  end;
+end;
+
+function TCoolBands.CalcWidth: Integer;
+var
+  Band: TCoolBand;
+  i, BandWidth, PrefWidth, PrefHeight: integer;
+begin
+  Result := 0;
+  for i := 0 to Count-1 do
+  begin
+    Band := Items[i];
+    BandWidth := 0;
+    if Assigned(Band.FTextLabel) and FCoolBar.ShowText then
+    begin
+      PrefWidth := 0;
+      PrefHeight := 0;
+      Band.FTextLabel.GetPreferredSize(PrefWidth, PrefHeight);
+      BandWidth := PrefWidth;
+    end;
+    if Assigned(Band.FControl) then
+    begin
+      PrefWidth := 0;
+      PrefHeight := 0;
+      Band.FControl.GetPreferredSize(PrefWidth, PrefHeight);
+      Inc(BandWidth, PrefWidth);
+    end;
+    // Select the widest band
+    Result := Max(Result, BandWidth);
   end;
 end;
 
@@ -510,9 +534,23 @@ begin
   //DebugLn('TCoolBar.AlignControls');
   if FUpdateCount = 0 then
   begin
-    FBands.UpdControls;
+    FBands.CalcHeight(True);
     inherited AlignControls(aControl, aRect);
   end;
+end;
+
+procedure TCustomCoolBar.CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+var
+  MinWidth, MinHeight: Integer;
+begin
+  // Calculate preferred width
+  PreferredWidth:=Max(PreferredWidth, FBands.CalcWidth);
+  // Calculate preferred height
+  PreferredHeight := Max(PreferredHeight, FBands.CalcHeight(False));
+
+  DebugLn('*** TCoolBar.CalculatePreferredSize ***');
+  //inherited CalculatePreferredSize(PreferredWidth, PreferredHeight, WithThemeSpace);
 end;
 
 procedure TCustomCoolBar.Notification(AComponent: TComponent; Operation: TOperation);

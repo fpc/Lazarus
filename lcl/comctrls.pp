@@ -2223,7 +2223,8 @@ type
     FVisibleCount: Longword;
     function GetItem(Index: Integer): TCoolBand;
     procedure SetItem(Index: Integer; aValue: TCoolBand);
-    procedure UpdControls;
+    function CalcHeight(aAlsoUpdate: Boolean): Integer;
+    function CalcWidth: Integer;
   protected
     function GetOwner: TPersistent; override;
     procedure Update(aItem: TCollectionItem); override;
@@ -2266,6 +2267,8 @@ type
     procedure ImageListChange(Sender: TObject);
   protected
     procedure AlignControls(aControl: TControl; var aRect: TRect); override;
+    procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
+                                     WithThemeSpace: Boolean); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure InsertControl(AControl: TControl; Index: integer); override;
     procedure RemoveControl(AControl: TControl); override;
