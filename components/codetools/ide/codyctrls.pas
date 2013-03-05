@@ -317,6 +317,10 @@ type
   TLvlGraphEdge = class(TPersistent)
   private
     FBackEdge: boolean;
+    FDrawX1: integer;
+    FDrawX2: integer;
+    FDrawY1: integer;
+    FDrawY2: integer;
     FHighlighted: boolean;
     FSource: TLvlGraphNode;
     FTarget: TLvlGraphNode;
@@ -333,6 +337,10 @@ type
     function IsBackEdge: boolean;
     property BackEdge: boolean read FBackEdge; // edge was disabled to break a cycle
     property Highlighted: boolean read FHighlighted write SetHighlighted;
+    property DrawX1: integer read FDrawX1;
+    property DrawY1: integer read FDrawY1;
+    property DrawX2: integer read FDrawX2;
+    property DrawY2: integer read FDrawY2;
     function AsString: string;
   end;
   TLvlGraphEdgeClass = class of TLvlGraphEdge;
@@ -583,8 +591,7 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer
       ); override;
     procedure CreateWnd; override;
-    procedure HighlightConnectedEgdes(Node: TLvlGraphNode);
-    procedure HighlightConnectedEgdes(Edge: TLvlGraphEdge);
+    procedure HighlightConnectedEgdes(Element: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -597,6 +604,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     function GetNodeAt(X,Y: integer): TLvlGraphNode;
+    function GetEdgeAt(X,Y,Radius: integer): TLvlGraphEdge;
     class function GetControlClassDefaultSize: TSize; override;
     function GetDrawSize: TPoint;
   public
@@ -1910,6 +1918,10 @@ begin
           Canvas.Pen.Color:=clRed;
           Canvas.Line(x1,y1,x2,y2);
         end;
+        Edge.FDrawX1:=x1;
+        Edge.FDrawY1:=y1;
+        Edge.FDrawX2:=x2;
+        Edge.FDrawY2:=x2;
       end;
     end;
   end;
@@ -2270,7 +2282,7 @@ begin
   UpdateScrollBars;
 end;
 
-procedure TCustomLvlGraphControl.HighlightConnectedEgdes(Node: TLvlGraphNode);
+procedure TCustomLvlGraphControl.HighlightConnectedEgdes(Element: TObject);
 var
   n: Integer;
   CurNode: TLvlGraphNode;
@@ -2281,46 +2293,21 @@ begin
   BeginUpdate;
   HighlightedElements:=TAvgLvlTree.Create;
   try
-    if Node<>nil then
-      LvlGraphHighlightNode(Node,HighlightedElements,true,true);
-    // unhighlight the rest
-    for n:=0 to Graph.NodeCount-1 do begin
-      CurNode:=Graph.Nodes[n];
-      for e:=0 to CurNode.OutEdgeCount-1 do begin
-        Edge:=CurNode.OutEdges[e];
-        Edge.Highlighted:=HighlightedElements.Find(Edge)<>nil;
-      end;
-    end;
-  finally
-    HighlightedElements.Free;
-  end;
-  EndUpdate;
-end;
-
-procedure TCustomLvlGraphControl.HighlightConnectedEgdes(Edge: TLvlGraphEdge);
-var
-  n: Integer;
-  CurNode: TLvlGraphNode;
-  e: Integer;
-  HighlightedElements: TAvgLvlTree;
-  CurEdge: TLvlGraphEdge;
-begin
-  BeginUpdate;
-  HighlightedElements:=TAvgLvlTree.Create;
-  try
-    if Edge<>nil then begin
+    if Element is TLvlGraphNode then
+      LvlGraphHighlightNode(TLvlGraphNode(Element),HighlightedElements,true,true)
+    else if Element is TLvlGraphEdge then begin
+      Edge:=TLvlGraphEdge(Element);
       HighlightedElements.Add(Edge);
       if not Edge.Source.Visible then
         LvlGraphHighlightNode(Edge.Source,HighlightedElements,true,false);
       if not Edge.Target.Visible then
         LvlGraphHighlightNode(Edge.Target,HighlightedElements,false,true);
     end;
-    // unhighlight the rest
     for n:=0 to Graph.NodeCount-1 do begin
       CurNode:=Graph.Nodes[n];
       for e:=0 to CurNode.OutEdgeCount-1 do begin
-        CurEdge:=CurNode.OutEdges[e];
-        CurEdge.Highlighted:=HighlightedElements.Find(CurEdge)<>nil;
+        Edge:=CurNode.OutEdges[e];
+        Edge.Highlighted:=HighlightedElements.Find(Edge)<>nil;
       end;
     end;
   finally
@@ -2491,6 +2478,44 @@ begin
       if not Node.Visible then continue;
       if (Y<Node.DrawPosition) or (Y>=Node.DrawPositionEnd) then continue;
       exit(Node);
+    end;
+  end;
+end;
+
+function TCustomLvlGraphControl.GetEdgeAt(X, Y, Radius: integer): TLvlGraphEdge;
+var
+  l: Integer;
+  Level: TLvlGraphLevel;
+  n: Integer;
+  Node: TLvlGraphNode;
+  e: Integer;
+  Edge: TLvlGraphEdge;
+  x1: Integer;
+  y1: Integer;
+  x2: Integer;
+  y2: Integer;
+  h: Integer;
+begin
+  Result:=nil;
+  X+=ScrollLeft;
+  Y+=ScrollTop;
+  // check in reverse painting order
+  for l:=Graph.LevelCount-1 downto 0 do begin
+    Level:=Graph.Levels[l];
+    for n:=Level.Count-1 downto 0 do begin
+      Node:=Level.Nodes[n];
+      for e:=Node.OutEdgeCount-1 downto 0 do begin
+        Edge:=Node.OutEdges[e];
+        x1:=Edge.FDrawX1;
+        y1:=Edge.FDrawY1;
+        x2:=Edge.FDrawX2;
+        y2:=Edge.FDrawY2;
+        if x1<x2 then begin
+          h:=x1; x1:=x2; x2:=h;
+          h:=y1; y1:=y2; y2:=h;
+        end;
+
+      end;
     end;
   end;
 end;
