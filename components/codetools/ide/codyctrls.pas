@@ -450,19 +450,28 @@ type
     lgncLeft,
     lgncTop,
     lgncRight,
-    lgncBottom);
+    lgncBottom
+    );
+  TLvlGraphNodeCaptionPositions = set of TLvlGraphNodeCaptionPosition;
+
+  TLvlGraphNodeShape = (
+    lgnsRectangle,
+    lgnsEllipse
+    );
+  TLvlGraphNodeShapes = set of TLvlGraphNodeShape;
 
 const
   DefaultLvlGraphCtrlOptions = [lgoAutoLayout,
                                 lgoHighlightNodeUnderMouse,lgoMouseSelects];
-  DefaultLvlGraphEdgeSplitMode = lgesMergeHighest;
-  DefaultLvlGraphNodeWith = 10;
-  DefaultLvlGraphNodeCaptionScale = 0.7;
-  DefaultLvlGraphNodeCaptionPosition = lgncTop;
-  DefaultLvlGraphNodeGapLeft   = 2;
-  DefaultLvlGraphNodeGapRight  = 2;
-  DefaultLvlGraphNodeGapTop    = 1;
-  DefaultLvlGraphNodeGapBottom = 1;
+  DefaultLvlGraphEdgeSplitMode        = lgesMergeHighest;
+  DefaultLvlGraphNodeWith             = 10;
+  DefaultLvlGraphNodeCaptionScale     = 0.7;
+  DefaultLvlGraphNodeCaptionPosition  = lgncTop;
+  DefaultLvlGraphNodeGapLeft          = 2;
+  DefaultLvlGraphNodeGapRight         = 2;
+  DefaultLvlGraphNodeGapTop           = 1;
+  DefaultLvlGraphNodeGapBottom        = 1;
+  DefaultLvlGraphNodeShape            = lgnsRectangle;
 
 type
   TLvlGraphControlFlag =  (
@@ -486,6 +495,7 @@ type
     FGapLeft: integer;
     FGapRight: integer;
     FGapTop: integer;
+    FShape: TLvlGraphNodeShape;
     FWidth: integer;
     procedure SetCaptionPosition(AValue: TLvlGraphNodeCaptionPosition);
     procedure SetCaptionScale(AValue: single);
@@ -493,6 +503,7 @@ type
     procedure SetGapLeft(AValue: integer);
     procedure SetGapRight(AValue: integer);
     procedure SetGapTop(AValue: integer);
+    procedure SetShape(AValue: TLvlGraphNodeShape);
     procedure SetWidth(AValue: integer);
   public
     constructor Create(AControl: TCustomLvlGraphControl);
@@ -504,6 +515,7 @@ type
     property CaptionPosition: TLvlGraphNodeCaptionPosition
       read FCaptionPosition write SetCaptionPosition default DefaultLvlGraphNodeCaptionPosition;
     property CaptionScale: single read FCaptionScale write SetCaptionScale default DefaultLvlGraphNodeCaptionScale;
+    property Shape: TLvlGraphNodeShape read FShape write SetShape default DefaultLvlGraphNodeShape;
     property GapLeft: integer read FGapLeft write SetGapLeft default DefaultLvlGraphNodeGapLeft; // used by AutoLayout
     property GapTop: integer read FGapTop write SetGapTop default DefaultLvlGraphNodeGapTop; // used by AutoLayout
     property GapRight: integer read FGapRight write SetGapRight default DefaultLvlGraphNodeGapRight; // used by AutoLayout
@@ -1614,6 +1626,13 @@ begin
   Control.InvalidateAutoLayout;
 end;
 
+procedure TLvlGraphNodeStyle.SetShape(AValue: TLvlGraphNodeShape);
+begin
+  if FShape=AValue then Exit;
+  FShape:=AValue;
+  Control.Invalidate;
+end;
+
 procedure TLvlGraphNodeStyle.SetWidth(AValue: integer);
 begin
   if FWidth=AValue then Exit;
@@ -1631,6 +1650,7 @@ begin
   FGapBottom:=DefaultLvlGraphNodeGapBottom;
   FCaptionScale:=DefaultLvlGraphNodeCaptionScale;
   FCaptionPosition:=DefaultLvlGraphNodeCaptionPosition;
+  FShape:=DefaultLvlGraphNodeShape;
 end;
 
 destructor TLvlGraphNodeStyle.Destroy;
@@ -1920,6 +1940,8 @@ var
   Level: TLvlGraphLevel;
   j: Integer;
   Node: TLvlGraphNode;
+  x: Integer;
+  y: Integer;
 begin
   Canvas.Brush.Style:=bsSolid;
   for i:=0 to Graph.LevelCount-1 do begin
@@ -1930,8 +1952,14 @@ begin
       //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' ',dbgs(FPColorToTColor(Node.Color)),' Level.DrawPosition=',Level.DrawPosition,' Node.DrawPosition=',Node.DrawPosition,' ',Node.DrawPositionEnd]);
       Canvas.Brush.Color:=FPColorToTColor(Node.Color);
       Canvas.Pen.Color:=Darker(Canvas.Brush.Color);
-      Canvas.Rectangle(Level.DrawPosition-ScrollLeft, Node.DrawPosition-ScrollTop,
-        Level.DrawPosition+NodeStyle.Width-ScrollLeft, Node.DrawPositionEnd-ScrollTop);
+      x:=Level.DrawPosition-ScrollLeft;
+      y:=Node.DrawPosition-ScrollTop;
+      case NodeStyle.Shape of
+      lgnsRectangle:
+        Canvas.Rectangle(x, y, x+NodeStyle.Width, y+Node.DrawSize);
+      lgnsEllipse:
+        Canvas.Ellipse(x, y, x+NodeStyle.Width, y+Node.DrawSize);
+      end;
     end;
   end;
 end;
