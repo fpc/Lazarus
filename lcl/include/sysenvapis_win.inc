@@ -8,11 +8,13 @@ var
 {$ELSE}
   ws: WideString;
   ans: AnsiString;
+  IsFileUriWithSpaces, IsQuoted: Boolean;
+const
+  FileURIScheme = 'file://';
 {$ENDIF}
 begin
   Result := False;
   if AURL = '' then Exit;
-
   {$IFDEF WinCE}
   FillChar(Info, SizeOf(Info), 0);
   Info.cbSize := SizeOf(Info);
@@ -23,6 +25,12 @@ begin
   {$ELSE}
   if Win32Platform = VER_PLATFORM_WIN32_NT then
   begin
+    //Urls that start with file:// are allowed to contain spaces and should be quoted on NT platform,
+    //but on Win9x quoting it fails
+    //Since on Windows filenames cannot contain the " character, we need not care about it and simply enclose the AURL
+    IsFileUriWithSpaces := (Pos(#32,AURL) > 0) and (CompareText(Copy(AURL,1,Length(FileURIScheme)), FileURIScheme) = 0);
+    IsQuoted := (Length(AURL) > 1) and (AURL[1] = '"') and (AURL[Length(AURL)] = '"');
+    if IsFileUriWithSpaces and not IsQuoted then AURL := '"' + AURL + '"';
     ws := UTF8Decode(AURL);
     Result := ShellExecuteW(0, nil, PWideChar(ws), nil, nil, SW_SHOWNORMAL) > 32;
   end
