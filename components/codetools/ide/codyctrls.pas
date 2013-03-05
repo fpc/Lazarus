@@ -584,6 +584,7 @@ type
       ); override;
     procedure CreateWnd; override;
     procedure HighlightConnectedEgdes(Node: TLvlGraphNode);
+    procedure HighlightConnectedEgdes(Edge: TLvlGraphEdge);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -684,6 +685,8 @@ function dbgs(o: TLvlGraphCtrlOption): string; overload;
 function dbgs(Options: TLvlGraphCtrlOptions): string; overload;
 
 procedure LvlGraphMinimizeCrossings(Graph: TLvlGraph); overload;
+procedure LvlGraphHighlightNode(Node: TLvlGraphNode; HighlightedElements: TAvgLvlTree;
+  FollowIn, FollowOut: boolean);
 
 implementation
 
@@ -793,6 +796,30 @@ begin
   finally
     g.Free;
   end;
+end;
+
+procedure LvlGraphHighlightNode(Node: TLvlGraphNode; HighlightedElements: TAvgLvlTree;
+  FollowIn, FollowOut: boolean);
+var
+  i: Integer;
+  Edge: TLvlGraphEdge;
+begin
+  if HighlightedElements.Find(Node)<>nil then exit;
+  HighlightedElements.Add(Node);
+  if FollowIn then
+    for i:=0 to Node.InEdgeCount-1 do begin
+      Edge:=Node.InEdges[i];
+      HighlightedElements.Add(Edge);
+      if not Edge.Source.Visible then
+        LvlGraphHighlightNode(Edge.Source,HighlightedElements,true,false);
+    end;
+  if FollowOut then
+    for i:=0 to Node.OutEdgeCount-1 do begin
+      Edge:=Node.OutEdges[i];
+      HighlightedElements.Add(Edge);
+      if not Edge.Target.Visible then
+        LvlGraphHighlightNode(Edge.Target,HighlightedElements,false,true);
+    end;
 end;
 
 procedure FreeTVNodeData(TV: TCustomTreeView);
@@ -2244,31 +2271,6 @@ begin
 end;
 
 procedure TCustomLvlGraphControl.HighlightConnectedEgdes(Node: TLvlGraphNode);
-
-  procedure HighlightNode(Node: TLvlGraphNode; HighlightedElements: TAvgLvlTree;
-    FollowIn, FollowOut: boolean);
-  var
-    i: Integer;
-    Edge: TLvlGraphEdge;
-  begin
-    if HighlightedElements.Find(Node)<>nil then exit;
-    HighlightedElements.Add(Node);
-    if FollowIn then
-      for i:=0 to Node.InEdgeCount-1 do begin
-        Edge:=Node.InEdges[i];
-        HighlightedElements.Add(Edge);
-        if not Edge.Source.Visible then
-          HighlightNode(Edge.Source,HighlightedElements,true,false);
-      end;
-    if FollowOut then
-      for i:=0 to Node.OutEdgeCount-1 do begin
-        Edge:=Node.OutEdges[i];
-        HighlightedElements.Add(Edge);
-        if not Edge.Target.Visible then
-          HighlightNode(Edge.Target,HighlightedElements,false,true);
-      end;
-  end;
-
 var
   n: Integer;
   CurNode: TLvlGraphNode;
@@ -2276,11 +2278,11 @@ var
   HighlightedElements: TAvgLvlTree;
   Edge: TLvlGraphEdge;
 begin
+  BeginUpdate;
   HighlightedElements:=TAvgLvlTree.Create;
   try
-    BeginUpdate;
     if Node<>nil then
-      HighlightNode(Node,HighlightedElements,true,true);
+      LvlGraphHighlightNode(Node,HighlightedElements,true,true);
     // unhighlight the rest
     for n:=0 to Graph.NodeCount-1 do begin
       CurNode:=Graph.Nodes[n];
@@ -2292,7 +2294,38 @@ begin
   finally
     HighlightedElements.Free;
   end;
+  EndUpdate;
+end;
 
+procedure TCustomLvlGraphControl.HighlightConnectedEgdes(Edge: TLvlGraphEdge);
+var
+  n: Integer;
+  CurNode: TLvlGraphNode;
+  e: Integer;
+  HighlightedElements: TAvgLvlTree;
+  CurEdge: TLvlGraphEdge;
+begin
+  BeginUpdate;
+  HighlightedElements:=TAvgLvlTree.Create;
+  try
+    if Edge<>nil then begin
+      HighlightedElements.Add(Edge);
+      if not Edge.Source.Visible then
+        LvlGraphHighlightNode(Edge.Source,HighlightedElements,true,false);
+      if not Edge.Target.Visible then
+        LvlGraphHighlightNode(Edge.Target,HighlightedElements,false,true);
+    end;
+    // unhighlight the rest
+    for n:=0 to Graph.NodeCount-1 do begin
+      CurNode:=Graph.Nodes[n];
+      for e:=0 to CurNode.OutEdgeCount-1 do begin
+        CurEdge:=CurNode.OutEdges[e];
+        CurEdge.Highlighted:=HighlightedElements.Find(CurEdge)<>nil;
+      end;
+    end;
+  finally
+    HighlightedElements.Free;
+  end;
   EndUpdate;
 end;
 
