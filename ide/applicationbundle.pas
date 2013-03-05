@@ -111,6 +111,9 @@ begin
   Add('      </array>');
   Add('    </dict>');
   Add('  </array>');
+  // needed for retina
+  Add('  <key>NSHighResolutionCapable</key>');
+  Add('  <true/>');
   Add('</dict>');
   Add('</plist>');
 end;
