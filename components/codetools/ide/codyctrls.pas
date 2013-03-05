@@ -32,7 +32,7 @@ interface
 uses
   types, math, typinfo, contnrs, Classes, SysUtils, FPCanvas, FPimage,
   LazLogger, AvgLvlTree, ComCtrls, Controls, Graphics, LCLType, Forms, LCLIntf,
-  LMessages;
+  LMessages, ImgList, GraphType;
 
 type
   TCodyCtrlPalette = array of TFPColor;
@@ -245,6 +245,8 @@ type
     FCaption: string;
     FColor: TFPColor;
     FGraph: TLvlGraph;
+    FImageEffect: TGraphicsDrawEffect;
+    FImageIndex: integer;
     FInEdges: TFPList; // list of TLvlGraphEdge
     FDrawSize: integer;
     FInWeight: single;
@@ -253,6 +255,7 @@ type
     FOutEdges: TFPList; // list of TLvlGraphEdge
     FDrawPosition: integer;
     FOutWeight: single;
+    FOverlayIndex: integer;
     FPrevSelected: TLvlGraphNode;
     FSelected: boolean;
     FVisible: boolean;
@@ -263,8 +266,11 @@ type
     procedure SetColor(AValue: TFPColor);
     procedure OnLevelDestroy;
     procedure SetDrawSize(AValue: integer);
+    procedure SetImageEffect(AValue: TGraphicsDrawEffect);
+    procedure SetImageIndex(AValue: integer);
     procedure SetIndexInLevel(AValue: integer);
     procedure SetLevel(AValue: TLvlGraphLevel);
+    procedure SetOverlayIndex(AValue: integer);
     procedure SetSelected(AValue: boolean);
     procedure SetVisible(AValue: boolean);
     procedure UnbindLevel;
@@ -278,6 +284,9 @@ type
     property Color: TFPColor read FColor write SetColor;
     property Caption: string read FCaption write SetCaption;
     property Visible: boolean read FVisible write SetVisible;
+    property ImageIndex: integer read FImageIndex write SetImageIndex;
+    property OverlayIndex: integer read FOverlayIndex write SetOverlayIndex; // requires ImageIndex>=0
+    property ImageEffect: TGraphicsDrawEffect read FImageEffect write SetImageEffect;
     property Graph: TLvlGraph read FGraph;
     function IndexOfInEdge(Source: TLvlGraphNode): integer;
     function FindInEdge(Source: TLvlGraphNode): TLvlGraphEdge;
@@ -455,6 +464,7 @@ type
   TLvlGraphNodeCaptionPositions = set of TLvlGraphNodeCaptionPosition;
 
   TLvlGraphNodeShape = (
+    lgnsNone,
     lgnsRectangle,
     lgnsEllipse
     );
@@ -491,6 +501,7 @@ type
     FCaptionPosition: TLvlGraphNodeCaptionPosition;
     FCaptionScale: single;
     FControl: TCustomLvlGraphControl;
+    FDefaultImageIndex: integer;
     FGapBottom: integer;
     FGapLeft: integer;
     FGapRight: integer;
@@ -499,6 +510,7 @@ type
     FWidth: integer;
     procedure SetCaptionPosition(AValue: TLvlGraphNodeCaptionPosition);
     procedure SetCaptionScale(AValue: single);
+    procedure SetDefaultImageIndex(AValue: integer);
     procedure SetGapBottom(AValue: integer);
     procedure SetGapLeft(AValue: integer);
     procedure SetGapRight(AValue: integer);
@@ -521,6 +533,7 @@ type
     property GapRight: integer read FGapRight write SetGapRight default DefaultLvlGraphNodeGapRight; // used by AutoLayout
     property GapBottom: integer read FGapBottom write SetGapBottom default DefaultLvlGraphNodeGapBottom; // used by AutoLayout
     property Width: integer read FWidth write SetWidth default DefaultLvlGraphNodeWith;
+    property DefaultImageIndex: integer read FDefaultImageIndex write SetDefaultImageIndex;
   end;
 
   { TCustomLvlGraphControl }
@@ -529,6 +542,8 @@ type
   private
     FEdgeSplitMode: TLvlGraphEdgeSplitMode;
     FGraph: TLvlGraph;
+    FImageChangeLink: TChangeLink;
+    FImages: TCustomImageList;
     FNodeStyle: TLvlGraphNodeStyle;
     FNodeUnderMouse: TLvlGraphNode;
     FOnMinimizeCrossings: TNotifyEvent;
@@ -543,6 +558,7 @@ type
     procedure DrawCaptions(const TxtH: integer);
     procedure DrawEdges(Highlighted: boolean);
     procedure DrawNodes;
+    procedure SetImages(AValue: TCustomImageList);
     procedure SetNodeStyle(AValue: TLvlGraphNodeStyle);
     procedure SetNodeUnderMouse(AValue: TLvlGraphNode);
     procedure SetOptions(AValue: TLvlGraphCtrlOptions);
@@ -552,6 +568,7 @@ type
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
     procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
+    procedure ImageListChange(Sender: TObject);
   protected
     procedure AutoLayoutLevels(TxtH: LongInt); virtual;
     procedure GraphInvalidate(Sender: TObject); virtual;
@@ -588,6 +605,7 @@ type
     property ScrollLeft: integer read FScrollLeft write SetScrollLeft;
     property ScrollLeftMax: integer read FScrollLeftMax;
     property OnMinimizeCrossings: TNotifyEvent read FOnMinimizeCrossings write FOnMinimizeCrossings;// provide an alternative minimize crossing algorithm
+    property Images: TCustomImageList read FImages write SetImages;
   end;
 
   { TLvlGraphControl }
@@ -1598,6 +1616,13 @@ begin
   Control.InvalidateAutoLayout;
 end;
 
+procedure TLvlGraphNodeStyle.SetDefaultImageIndex(AValue: integer);
+begin
+  if FDefaultImageIndex=AValue then Exit;
+  FDefaultImageIndex:=AValue;
+  Control.Invalidate;
+end;
+
 procedure TLvlGraphNodeStyle.SetGapBottom(AValue: integer);
 begin
   if FGapBottom=AValue then Exit;
@@ -1651,6 +1676,7 @@ begin
   FCaptionScale:=DefaultLvlGraphNodeCaptionScale;
   FCaptionPosition:=DefaultLvlGraphNodeCaptionPosition;
   FShape:=DefaultLvlGraphNodeShape;
+  FDefaultImageIndex:=-1;
 end;
 
 destructor TLvlGraphNodeStyle.Destroy;
@@ -1672,6 +1698,8 @@ begin
     GapBottom:=Src.GapBottom;
     CaptionScale:=Src.CaptionScale;
     CaptionPosition:=Src.CaptionPosition;
+    Shape:=Src.Shape;
+    DefaultImageIndex:=Src.DefaultImageIndex;
   end else
     inherited Assign(Source);
 end;
@@ -1690,7 +1718,9 @@ begin
         and (GapTop=Src.GapTop)
         and (GapBottom=Src.GapBottom)
         and (CaptionScale=Src.CaptionScale)
-        and (CaptionPosition=Src.CaptionPosition);
+        and (CaptionPosition=Src.CaptionPosition)
+        and (Shape=Src.Shape)
+        and (DefaultImageIndex=Src.DefaultImageIndex);
   end;
 end;
 
@@ -1895,6 +1925,11 @@ begin
     OnSelectionChanged(Self);
 end;
 
+procedure TCustomLvlGraphControl.ImageListChange(Sender: TObject);
+begin
+  Invalidate;
+end;
+
 procedure TCustomLvlGraphControl.DrawCaptions(const TxtH: integer);
 var
   Node: TLvlGraphNode;
@@ -1942,6 +1977,7 @@ var
   Node: TLvlGraphNode;
   x: Integer;
   y: Integer;
+  ImgIndex: Integer;
 begin
   Canvas.Brush.Style:=bsSolid;
   for i:=0 to Graph.LevelCount-1 do begin
@@ -1950,6 +1986,8 @@ begin
       Node:=Level.Nodes[j];
       if not Node.Visible then continue;
       //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' ',dbgs(FPColorToTColor(Node.Color)),' Level.DrawPosition=',Level.DrawPosition,' Node.DrawPosition=',Node.DrawPosition,' ',Node.DrawPositionEnd]);
+
+      // draw shape
       Canvas.Brush.Color:=FPColorToTColor(Node.Color);
       Canvas.Pen.Color:=Darker(Canvas.Brush.Color);
       x:=Level.DrawPosition-ScrollLeft;
@@ -1960,8 +1998,35 @@ begin
       lgnsEllipse:
         Canvas.Ellipse(x, y, x+NodeStyle.Width, y+Node.DrawSize);
       end;
+
+      // draw image and overlay
+      if (Images<>nil) then begin
+        x:=Level.DrawPosition+((NodeStyle.Width-Images.Width) div 2)-ScrollLeft;
+        y:=Node.DrawCenter-(Images.Height div 2)-ScrollTop;
+        ImgIndex:=Node.ImageIndex;
+        if (ImgIndex<0) or (ImgIndex>=Images.Count) then
+          ImgIndex:=NodeStyle.DefaultImageIndex;
+        if (ImgIndex>=0) and (ImgIndex<Images.Count) then begin
+          Images.Draw(Canvas, x, y, ImgIndex, Node.FImageEffect);
+          if (Node.OverlayIndex>=0) and (Node.OverlayIndex<Images.Count) then
+            Images.DrawOverlay(Canvas, x, y, ImgIndex, Node.OverlayIndex, Node.FImageEffect);
+        end;
+      end;
     end;
   end;
+end;
+
+procedure TCustomLvlGraphControl.SetImages(AValue: TCustomImageList);
+begin
+  if FImages=AValue then Exit;
+  if Images <> nil then
+    Images.UnRegisterChanges(FImageChangeLink);
+  FImages:=AValue;
+  if Images <> nil then begin
+    Images.RegisterChanges(FImageChangeLink);
+    Images.FreeNotification(Self);
+  end;
+  Invalidate;
 end;
 
 procedure TCustomLvlGraphControl.SetNodeStyle(AValue: TLvlGraphNodeStyle);
@@ -2219,10 +2284,13 @@ begin
   FGraph.OnSelectionChanged:=@GraphSelectionChanged;
   FGraph.OnStructureChanged:=@GraphStructureChanged;
   FNodeStyle:=TLvlGraphNodeStyle.Create(Self);
+  FImageChangeLink := TChangeLink.Create;
+  FImageChangeLink.OnChange:=@ImageListChange;
 end;
 
 destructor TCustomLvlGraphControl.Destroy;
 begin
+  FreeAndNil(FImageChangeLink);
   FreeAndNil(FGraph);
   FreeAndNil(FNodeStyle);
   inherited Destroy;
@@ -3151,6 +3219,20 @@ begin
   Invalidate;
 end;
 
+procedure TLvlGraphNode.SetImageEffect(AValue: TGraphicsDrawEffect);
+begin
+  if FImageEffect=AValue then Exit;
+  FImageEffect:=AValue;
+  Invalidate;
+end;
+
+procedure TLvlGraphNode.SetImageIndex(AValue: integer);
+begin
+  if FImageIndex=AValue then Exit;
+  FImageIndex:=AValue;
+  Invalidate;
+end;
+
 procedure TLvlGraphNode.SetIndexInLevel(AValue: integer);
 begin
   Level.MoveNode(Self,AValue);
@@ -3167,6 +3249,13 @@ begin
     UnbindLevel;
   FLevel:=AValue;
   FLevel.fNodes.Add(Self);
+end;
+
+procedure TLvlGraphNode.SetOverlayIndex(AValue: integer);
+begin
+  if FOverlayIndex=AValue then Exit;
+  FOverlayIndex:=AValue;
+  Invalidate;
 end;
 
 procedure TLvlGraphNode.SetSelected(AValue: boolean);
@@ -3251,6 +3340,8 @@ begin
   FOutEdges:=TFPList.Create;
   FDrawSize:=1;
   FVisible:=true;
+  FImageIndex:=-1;
+  FOverlayIndex:=-1;
   Level:=TheLevel;
 end;
 
