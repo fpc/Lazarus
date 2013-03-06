@@ -2279,6 +2279,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure BeginUpdate; override;
+    procedure EndUpdate; override;
   public
     property Align read GetAlign write SetAlign default alTop;
     property BandBorderStyle: TBorderStyle read FBandBorderStyle write FBandBorderStyle default bsSingle;

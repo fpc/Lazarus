@@ -187,52 +187,57 @@ end;
 procedure TCoolBand.UpdControl(aLabelWidth: integer);
 begin
   if FCoolBar = Nil then Exit;
-  Inc(FCoolBar.FUpdateCount);
-  if Assigned(FTextLabel) then
-  begin
-    if Assigned(FControl) then
-      FTextLabel.Top := FTop+4 // Adjust text position for the control (which is higher).
-    else
-      FTextLabel.Top := FTop+1;
-    if FCoolBar.BiDiMode = bdLeftToRight then
-      FTextLabel.Left := FCoolBar.GrabLeft + GrabWidth + 6
-    else
-      FTextLabel.Left := FCoolBar.GrabLeft - aLabelWidth - 6;
-    FTextLabel.Visible := FCoolBar.ShowText;
-  end;
-  if Assigned(FControl) then
-  begin
-    // Calculate left positions and anchoring for text label and control
-    FControl.Align := alNone; // alCustom does not work here
-    FControl.Parent := FCoolBar;
-    FControl.FreeNotification(FCoolBar);
-    FControl.Top := FTop;
-    if Assigned(FTextLabel) and FCoolBar.ShowText then
+  FCoolBar.DisableAlign;
+  try
+    Inc(FCoolBar.FUpdateCount);
+    if Assigned(FTextLabel) then
     begin
+      if Assigned(FControl) then
+        FTextLabel.Top := FTop+4 // Adjust text position for the control (which is higher).
+      else
+        FTextLabel.Top := FTop+1;
       if FCoolBar.BiDiMode = bdLeftToRight then
+        FTextLabel.Left := FCoolBar.GrabLeft + GrabWidth + 6
+      else
+        FTextLabel.Left := FCoolBar.GrabLeft - aLabelWidth - 6;
+      FTextLabel.Visible := FCoolBar.ShowText;
+    end;
+    if Assigned(FControl) then
+    begin
+      // Calculate left positions and anchoring for text label and control
+      FControl.Align := alNone; // alCustom does not work here
+      FControl.FreeNotification(FCoolBar);
+      FControl.Top := FTop;
+      if Assigned(FTextLabel) and FCoolBar.ShowText then
       begin
-        FControl.AnchorSide[akRight].Control := Nil;
-        FControl.AnchorSide[akLeft].Control := FTextLabel;
-        FControl.AnchorSide[akLeft].Side := asrRight;
-        FControl.BorderSpacing.Left := 7;
-        FControl.Anchors := [akLeft];
+        if FCoolBar.BiDiMode = bdLeftToRight then
+        begin
+          FControl.AnchorSide[akRight].Control := Nil;
+          FControl.AnchorSide[akLeft].Control := FTextLabel;
+          FControl.AnchorSide[akLeft].Side := asrRight;
+          FControl.BorderSpacing.Left := 7;
+          FControl.Anchors := [akLeft];
+        end
+        else begin
+          FControl.AnchorSide[akLeft].Control := Nil;
+          FControl.AnchorSide[akRight].Control := FTextLabel;
+          FControl.AnchorSide[akRight].Side := asrLeft;
+          FControl.BorderSpacing.Right := 7;
+          FControl.Anchors := [akRight];
+        end;
       end
-      else begin
-        FControl.AnchorSide[akLeft].Control := Nil;
-        FControl.AnchorSide[akRight].Control := FTextLabel;
-        FControl.AnchorSide[akRight].Side := asrLeft;
-        FControl.BorderSpacing.Right := 7;
-        FControl.Anchors := [akRight];
-      end;
-    end
-    else
-      ResetControlProps;
-    // Make sure other Anchors a Nil
-    FControl.AnchorSide[akBottom].Control := Nil;
-    FControl.AnchorSide[akTop].Control := Nil;
-    SetControlWidth;
+      else
+        ResetControlProps;
+      // Make sure other Anchors a Nil
+      FControl.AnchorSide[akBottom].Control := Nil;
+      FControl.AnchorSide[akTop].Control := Nil;
+      FControl.Parent := FCoolBar;
+      SetControlWidth;
+    end;
+    Dec(FCoolBar.FUpdateCount);
+  finally
+    FCoolBar.EnableAlign;
   end;
-  Dec(FCoolBar.FUpdateCount);
 end;
 
 procedure TCoolBand.SetControl(aValue: TControl);
@@ -241,17 +246,20 @@ var
 begin
   if FControl = aValue then Exit;
   FCoolBar.BeginUpdate;
-  if Assigned(aValue) then begin
-    Band := TCoolBands(Collection).FindBand(aValue);
-    if Assigned(Band) and (Band <> Self) then begin
-      Band.ResetControlProps;
-      Band.SetControl(Nil);        // Remove old association
+  try
+    if Assigned(aValue) then begin
+      Band := TCoolBands(Collection).FindBand(aValue);
+      if Assigned(Band) and (Band <> Self) then begin
+        Band.ResetControlProps;
+        Band.SetControl(Nil);        // Remove old association
+      end;
+      aValue.Parent := Nil;
     end;
-    aValue.Parent := Nil;
+    FControl := aValue;
+    Changed(True);
+  finally
+    FCoolBar.EndUpdate;
   end;
-  FControl := aValue;
-  FCoolBar.EndUpdate;
-  Changed(True);
 end;
 
 procedure TCoolBand.SetParentColor(aValue: Boolean);
@@ -484,6 +492,18 @@ begin
   FBitmap.Free;
   FBands.Free;
   inherited Destroy;
+end;
+
+procedure TCustomCoolBar.BeginUpdate;
+begin
+  DisableAlign;
+  inherited BeginUpdate;
+end;
+
+procedure TCustomCoolBar.EndUpdate;
+begin
+  inherited EndUpdate;
+  EnableAlign;
 end;
 
 function TCustomCoolBar.GrabLeft: integer;
