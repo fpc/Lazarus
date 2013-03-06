@@ -278,10 +278,10 @@ begin
       {$ELSE}
       FTextLabel := TLabel.Create(FCoolBar);
       {$ENDIF}
-      FTextLabel.Parent := FCoolBar;
       FTextLabel.Name := Format('TextLabel%d', [Index]);
       FTextLabel.AutoSize := True;
       FTextLabel.FreeNotification(FCoolBar);
+      FTextLabel.Parent := FCoolBar;
       Dec(FCoolBar.FUpdateCount);
     end
     else if FTextLabel.Caption = aValue then Exit;
