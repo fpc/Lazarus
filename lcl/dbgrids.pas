@@ -808,7 +808,7 @@ end;
 procedure TCustomDBGrid.OnDataSetChanged(aDataSet: TDataSet);
 begin
   {$Ifdef dbgDBGrid}
-  DebugLn('(%s) TCustomDBDrid.OnDataSetChanged(aDataSet=%s) INIT',[name,dbgsname(ADataset)]);
+  DebugLnEnter('(%s) TCustomDBDrid.OnDataSetChanged(aDataSet=%s) INIT',[name,dbgsname(ADataset)]);
   {$endif}
   if not (gsStartEditing in FGridStatus) then begin
     if EditorMode then
@@ -822,21 +822,21 @@ begin
       EditorMode := true;
   end;
   {$Ifdef dbgDBGrid}
-  DebugLn('(%s) TCustomDBDrid.OnDataSetChanged(aDataSet=%s) DONE',[name,dbgsname(ADataset)]);
+  DebugLnExit('(%s) TCustomDBDrid.OnDataSetChanged(aDataSet=%s) DONE',[name,dbgsname(ADataset)]);
   {$endif}
 end;
 
 procedure TCustomDBGrid.OnDataSetOpen(aDataSet: TDataSet);
 begin
   {$Ifdef dbgDBGrid}
-  DebugLn('(%s) TCustomDBDrid.OnDataSetOpen INIT',[name]);
+  DebugLnEnter('(%s) TCustomDBDrid.OnDataSetOpen INIT',[name]);
   {$endif}
   RenewColWidths;
   LinkActive(True);
   UpdateActive;
   SelectEditor;
   {$Ifdef dbgDBGrid}
-  DebugLn('(%s) TCustomDBDrid.OnDataSetOpen DONE',[name]);
+  DebugLnExit('(%s) TCustomDBDrid.OnDataSetOpen DONE',[name]);
   {$endif}
 end;
 
@@ -889,14 +889,14 @@ end;
 procedure TCustomDBGrid.OnNewDataSet(aDataSet: TDataset);
 begin
   {$Ifdef dbgDBGrid}
-  DebugLn('(%s) TCustomDBDrid.OnNewDataset INIT',[name]);
+  DebugLnEnter('(%s) TCustomDBDrid.OnNewDataset INIT',[name]);
   {$endif}
   RenewColWidths;
   LinkActive(True);
   UpdateActive;
   SelectEditor;
   {$Ifdef dbgDBGrid}
-  DebugLn('(%s) TCustomDBDrid.OnNewDataset DONE',[name]);
+  DebugLnExit('(%s) TCustomDBDrid.OnNewDataset DONE',[name]);
   {$endif}
 end;
 
@@ -1533,13 +1533,14 @@ procedure TCustomDBGrid.doLayoutChanged;
 begin
   if csDestroying in ComponentState then
     exit;
-  {$ifdef dbgDBGrid} DebugLn('doLayoutChanged INIT'); {$endif}
+
+  {$ifdef dbgDBGrid}DebugLnEnter('TCustomDBGrid.doLayoutChanged INIT',[]);{$endif}
   BeginUpdate;
   if UpdateGridCounts=0 then
     EmptyGrid;
   EndUpdate;
   UpdateScrollbarRange;
-  {$ifdef dbgDBGrid} DebugLn('doLayoutChanged FIN'); {$endif}
+  {$ifdef dbgDBGrid}DebugLnExit('TCustomDBGrid.doLayoutChanged DONE',[]);{$endif}
 end;
 {
 procedure TCustomDBGrid.WriteColumns(Writer: TWriter);
@@ -2114,7 +2115,7 @@ var
       ResetEditor;
   end;
 begin
-  {$IfDef dbgGrid}DebugLn('DBGrid.KeyDown %s INIT Key=%d',[Name,Key]);{$Endif}
+  {$IfDef dbgGrid}DebugLnEnter('DBGrid.KeyDown %s INIT Key=%d',[Name,Key]);{$Endif}
   case Key of
 
     VK_TAB:
@@ -2296,7 +2297,7 @@ begin
     else
       inherited KeyDown(Key, Shift);
   end;
-  {$IfDef dbgGrid}DebugLn('DBGrid.KeyDown END Key= %d',[Key]);{$Endif}
+  {$IfDef dbgGrid}DebugLnExit('DBGrid.KeyDown END Key= %d',[Key]);{$Endif}
 end;
 
 procedure TCustomDBGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
@@ -2339,9 +2340,11 @@ var
       EditorMode := False;
   end;
 begin
-  {$ifdef dbgDBGrid}DebugLn('DBGrid.mousedown - INIT');{$endif}
-  if (csDesigning in componentState) {or not GCache.ValidGrid }then
+
+  if (csDesigning in componentState) {or not GCache.ValidGrid }then begin
+    {$ifdef dbgDBGrid}DebugLn('DBGrid.mousedown - checkDesigning');{$endif}
     exit;
+  end;
 
   if UpdatingData then begin
     {$ifdef dbgDBGrid}DebugLn('DBGrid.MouseDown - UpdatingData');{$endif}
@@ -2349,11 +2352,12 @@ begin
   end;
 
   if not MouseButtonAllowed(Button) then begin
+    {$ifdef dbgDBGrid}DebugLn('DBGrid.MouseDown - no mouse allowed');{$endif}
     doInherited;
     exit;
   end;
 
-  {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown INIT'); {$Endif}
+  {$IfDef dbgGrid} DebugLnEnter('DBGrid.MouseDown INIT'); {$Endif}
   Gz:=MouseToGridZone(X,Y);
   CacheMouseDown(X,Y);
   case Gz of
@@ -2404,7 +2408,7 @@ begin
         end;
       end;
   end;
-  {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown END'); {$Endif}
+  {$IfDef dbgGrid} DebugLnExit('DBGrid.MouseDown END'); {$Endif}
 end;
 
 procedure TCustomDBGrid.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -3106,7 +3110,7 @@ begin
   // find out the column count, if result=0 then
   // there are no visible columns defined or dataset is inactive
   // or there are no visible fields, ie the grid is blank
-  {$IfDef dbgDBGrid}DebugLn('TCustomDbgrid.UpdateGridCounts INIT');{$endif}
+  {$IfDef dbgDBGrid}DebugLnEnter('TCustomDbgrid.UpdateGridCounts INIT');{$endif}
   BeginUpdate;
   try
     Result := GetColumnCount;
@@ -3142,7 +3146,7 @@ begin
   finally
     EndUpdate;
   end;
-  {$IfDef dbgDBGrid}DebugLn('TCustomDbgrid.UpdateGridCounts END');{$endif}
+  {$IfDef dbgDBGrid}DebugLnExit('TCustomDbgrid.UpdateGridCounts END');{$endif}
 end;
 
 constructor TCustomDBGrid.Create(AOwner: TComponent);
@@ -3431,10 +3435,13 @@ end;
 procedure TComponentDataLink.LayoutChanged;
 begin
   {$ifdef dbgDBGrid}
-  DebugLn('TComponentDataLink.LayoutChanged');
+  DebugLnEnter('TComponentDataLink.LayoutChanged INIT');
   {$Endif}
   if Assigned(OnLayoutChanged) then
     OnLayoutChanged(DataSet);
+  {$ifdef dbgDBGrid}
+  DebugLnExit('TComponentDataLink.LayoutChanged END');
+  {$Endif}
 end;
 
 procedure TComponentDataLink.DataSetScrolled(Distance: Integer);
