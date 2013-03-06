@@ -2148,7 +2148,11 @@ type
   private
     FCoolBar: TCustomCoolBar;
     FControl: TControl;  // Associated control
+    {$IFDEF CoolBarTextIsTEdit}
+    FTextLabel: TEdit;   // For debugging AutoSize problems
+    {$ELSE}
     FTextLabel: TLabel;  // Possible text is shown in a Label
+    {$ENDIF}
     FBorderStyle: TBorderStyle;
     FBreak: Boolean;
     FFixedSize: Boolean;
@@ -2163,6 +2167,7 @@ type
     FParentBitmap: Boolean;
     FBitmap: TBitmap;
     FTop: Integer;
+    fCreatingTextLabel: Boolean;
     function GetText: string;
     function GetWidth: Integer;
     function IsBitmapStored: Boolean;
@@ -2181,7 +2186,7 @@ type
     procedure SetColor(aValue: TColor);
     procedure SetControlWidth;
     procedure ResetControlProps;
-    procedure UpdControl;
+    procedure UpdControl(aLabelWidth: integer);
     procedure SetControl(aValue: TControl);
     procedure SetParentColor(aValue: Boolean);
     procedure SetParentBitmap(aValue: Boolean);
@@ -2223,11 +2228,11 @@ type
     FVisibleCount: Longword;
     function GetItem(Index: Integer): TCoolBand;
     procedure SetItem(Index: Integer; aValue: TCoolBand);
-    function CalcHeight(aAlsoUpdate: Boolean): Integer;
-    function CalcWidth: Integer;
+    procedure CalcPreferredSize(aAlsoUpdate: Boolean; var aPrefWidth, aPrefHeight: integer);
   protected
     function GetOwner: TPersistent; override;
     procedure Update(aItem: TCollectionItem); override;
+    procedure Notify(aItem: TCollectionItem; aAction: TCollectionNotification); override;
   public
     constructor Create(aCoolBar: TCustomCoolBar);
     function Add: TCoolBand;
