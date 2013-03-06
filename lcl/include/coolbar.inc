@@ -167,14 +167,21 @@ begin
 end;
 
 procedure TCoolBand.SetControlWidth;
+var
+  www: Integer;
 begin
   if FControl is TCustomCheckBox then Exit;
+  // Calculate width in different situations.
   if FCoolBar.BiDiMode = bdLeftToRight then
-    FControl.Width := Width - FControl.Left - 6
+    www := Width - FControl.Left - 6           // LeftToRight
   else if Assigned(FTextLabel) then
-    FControl.Width := FTextLabel.Left - 12
+    www := FTextLabel.Left - 12                // RightToLeft with TextLabel
   else
-    FControl.Width := FCoolBar.GrabLeft - 12;
+    www := FCoolBar.GrabLeft - 12;             // RightToLeft without TextLabel
+  // Control's width can go negative if CoolBar's width < TextLabel's width.
+  if www < 0 then
+    www := 0;
+  FControl.Width := www;
 end;
 
 procedure TCoolBand.UpdControl(aLabelWidth: integer);
@@ -659,9 +666,9 @@ var
 begin
   inherited Resize;
   if [csLoading, csDestroying] * ComponentState <> [] then Exit;
-  if not Assigned(FBands) then Exit;
-  for i := 0 to FBands.Count-1 do
-    if Assigned(FBands[i].FControl) then
-      FBands[i].SetControlWidth;
+  if (FUpdateCount = 0) and Assigned(FBands) then
+    for i := 0 to FBands.Count-1 do
+      if Assigned(FBands[i].FControl) then
+        FBands[i].SetControlWidth;
 end;
 
