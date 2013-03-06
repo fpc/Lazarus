@@ -196,7 +196,7 @@ begin
   if Assigned(FControl) then
   begin
     // Calculate left positions and anchoring for text label and control
-    FControl.Align := alNone;
+    FControl.Align := alCustom;
     FControl.Parent := FCoolBar;
     FControl.FreeNotification(FCoolBar);
     FControl.Top := FTop;
@@ -237,7 +237,7 @@ begin
     Band := TCoolBands(Collection).FindBand(aValue);
     if Assigned(Band) and (Band <> Self) then begin
       Band.ResetControlProps;
-      Band.SetControl(nil);        // Remove old association
+      Band.SetControl(Nil);        // Remove old association
     end;
     aValue.Parent := Nil;
   end;
@@ -273,11 +273,7 @@ begin
     if FTextLabel = Nil then
     begin
       Inc(FCoolBar.FUpdateCount);
-      {$IFDEF CoolBarTextIsTEdit}
-      FTextLabel := TEdit.Create(FCoolBar); // For debugging AutoSize problems
-      {$ELSE}
       FTextLabel := TLabel.Create(FCoolBar);
-      {$ENDIF}
       FTextLabel.Name := Format('TextLabel%d', [Index]);
       FTextLabel.AutoSize := True;
       FTextLabel.FreeNotification(FCoolBar);

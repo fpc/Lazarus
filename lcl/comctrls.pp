@@ -2148,11 +2148,7 @@ type
   private
     FCoolBar: TCustomCoolBar;
     FControl: TControl;  // Associated control
-    {$IFDEF CoolBarTextIsTEdit}
-    FTextLabel: TEdit;   // For debugging AutoSize problems
-    {$ELSE}
     FTextLabel: TLabel;  // Possible text is shown in a Label
-    {$ENDIF}
     FBorderStyle: TBorderStyle;
     FBreak: Boolean;
     FFixedSize: Boolean;
