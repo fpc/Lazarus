@@ -316,6 +316,7 @@ type
     FKeySign: Integer;
     FSavedRecord: Integer;
     FOnGetCellHint: TDbGridCellHintEvent;
+    FIntScrollDisabled: Boolean;
     procedure EmptyGrid;
     function GetColumns: TDBGridColumns;
     function GetCurrentColumn: TColumn;
@@ -1235,7 +1236,8 @@ var
   end;
 
 begin
-  if not FDatalink.Active then exit;
+  if FIntScrollDisabled or not FDatalink.Active then
+    exit;
 
   {$ifdef dbgDBGrid}
   DebugLn('VSCROLL: Code=',SbCodeToStr(Message.ScrollCode),
@@ -1517,11 +1519,19 @@ begin
   // if the scrollbar is visible or not, in windows it
   // seems to mean if the scrollbar is redrawn or not
   // to reflect the scrollbar changes made
-  SetScrollInfo(Handle, SB_VERT, ScrollInfo,
-    (ScrollBars in [ssBoth, ssVertical]) or
-    ((Scrollbars in [ssAutoVertical, ssAutoBoth]) and (aRange>aPAge))
-  );
-  FOldPosition := aPos;
+  //
+  // FInt(eractive)ScrollDisabled is workaround for qt
+  // that triggers a spurious scroll event when it shouldn't
+  FIntScrollDisabled := true;
+  try
+    SetScrollInfo(Handle, SB_VERT, ScrollInfo,
+      (ScrollBars in [ssBoth, ssVertical]) or
+      ((Scrollbars in [ssAutoVertical, ssAutoBoth]) and (aRange>aPAge))
+    );
+  finally
+    FIntScrollDisabled := false;
+    FOldPosition := aPos;
+  end;
   {$ifdef dbgDBGrid}
   DebugLn('UpdateScrollBarRange: Handle=',IntToStr(Handle),
    ' aRange=', IntToStr(aRange),
