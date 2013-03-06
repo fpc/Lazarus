@@ -382,6 +382,7 @@ var
   CC: PChooseColor;
   UserResult: WINBOOL;
   State: TApplicationState;
+  i: Integer;
 begin
   if ACommonDialog.Handle <> 0 then
   begin
@@ -392,7 +393,14 @@ begin
       UserResult := ChooseColor(CC);
       SetDialogResult(ACommonDialog, UserResult);
       if UserResult then
+      begin
         TColorDialog(ACommonDialog).Color := CC^.RGBResult;
+        for i := 0 to 15 do
+        if i < TColorDialog(ACommonDialog).CustomColors.Count then
+          TColorDialog(ACommonDialog).CustomColors[i] := Format('Color%s=%x', [Chr(Ord('A')+i), CC^.lpCustColors[i]])
+        else
+          TColorDialog(ACommonDialog).CustomColors.Add (Format('Color%s=%x', [Chr(Ord('A')+i), CC^.lpCustColors[i]]));
+      end;
     finally
       RestoreApplicationState(State);
     end;
