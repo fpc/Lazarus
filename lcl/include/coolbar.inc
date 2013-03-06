@@ -169,7 +169,6 @@ end;
 procedure TCoolBand.SetControlWidth;
 begin
   if FControl is TCustomCheckBox then Exit;
-  if FCoolBar.AutoSize then Exit;
   if FCoolBar.BiDiMode = bdLeftToRight then
     FControl.Width := Width - FControl.Left - 6
   else if Assigned(FTextLabel) then
@@ -181,6 +180,7 @@ end;
 procedure TCoolBand.UpdControl(aLabelWidth: integer);
 begin
   if FCoolBar = Nil then Exit;
+  Inc(FCoolBar.FUpdateCount);
   if Assigned(FTextLabel) then
   begin
     if Assigned(FControl) then
@@ -196,7 +196,7 @@ begin
   if Assigned(FControl) then
   begin
     // Calculate left positions and anchoring for text label and control
-    FControl.Align := alCustom;
+    FControl.Align := alNone; // alCustom does not work here
     FControl.Parent := FCoolBar;
     FControl.FreeNotification(FCoolBar);
     FControl.Top := FTop;
@@ -225,6 +225,7 @@ begin
     FControl.AnchorSide[akTop].Control := Nil;
     SetControlWidth;
   end;
+  Dec(FCoolBar.FUpdateCount);
 end;
 
 procedure TCoolBand.SetControl(aValue: TControl);
