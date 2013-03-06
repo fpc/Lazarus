@@ -281,6 +281,7 @@ begin
       FTextLabel.Name := Format('TextLabel%d', [Index]);
       FTextLabel.AutoSize := True;
       FTextLabel.FreeNotification(FCoolBar);
+      FTextLabel.Align := alCustom;
       FTextLabel.Parent := FCoolBar;
       Dec(FCoolBar.FUpdateCount);
     end
