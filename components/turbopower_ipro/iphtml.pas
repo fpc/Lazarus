@@ -17516,7 +17516,7 @@ procedure TIpHtmlInternalPanel.KeyDown(var Key: Word; Shift: TShiftState);
 var
   TabList: TIpHtmlTabList;
 begin
-  if key = VK_TAB then
+  if (key = VK_TAB) and TIpHtmlCustomPanel(Owner).WantTabs then
   begin
     TabList := FHyper.FTabList;
 
