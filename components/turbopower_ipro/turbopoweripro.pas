@@ -2,22 +2,22 @@
   This source is only used to compile and install the package.
  }
 
-unit TurboPowerIPro; 
+unit TurboPowerIPro;
 
 interface
 
 uses
-    IpAnim, IpConst, Ipfilebroker, IpHtml, IpHtmlPv, IpMsg, IpStrms, IpUtils, 
-  LazarusPackageIntf;
+  IpAnim, IpConst, Ipfilebroker, IpHtml, IpHtmlPv, IpMsg, IpStrms, IpUtils, 
+  IpHtmlTabList, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('Ipfilebroker', @Ipfilebroker.Register); 
-  RegisterUnit('IpHtml', @IpHtml.Register); 
-end; 
+  RegisterUnit('Ipfilebroker', @Ipfilebroker.Register);
+  RegisterUnit('IpHtml', @IpHtml.Register);
+end;
 
 initialization
-  RegisterPackage('TurboPowerIPro', @Register); 
+  RegisterPackage('TurboPowerIPro', @Register);
 end.

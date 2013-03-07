@@ -3293,6 +3293,7 @@ components/turbopower_ipro/iphtml.lrs svneol=native#text/pascal
 components/turbopower_ipro/iphtml.pas svneol=native#text/pascal
 components/turbopower_ipro/iphtmlpv.lfm svneol=native#text/plain
 components/turbopower_ipro/iphtmlpv.pas svneol=native#text/pascal
+components/turbopower_ipro/iphtmltablist.pas svneol=native#text/plain
 components/turbopower_ipro/ipmsg.pas svneol=native#text/pascal
 components/turbopower_ipro/ipstrms.pas svneol=native#text/pascal
 components/turbopower_ipro/iputils.pas svneol=native#text/pascal

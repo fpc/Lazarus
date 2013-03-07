@@ -64,6 +64,7 @@ uses
   FileUtil,
   LConvEncoding,
   contnrs,
+  IpHtmlTabList,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -2616,7 +2617,7 @@ type
       of object;
 
   TIpHtmlScrollEvent =
-    procedure(Sender: TIpHtml; const R: TRect) of object;
+    procedure(Sender: TIpHtml; const R: TRect{$IFDEF IP_LAZARUS}; ShowAtTop: Boolean{$ENDIF}) of object;
 
   TGetEvent =
     procedure(Sender: TIpHtml; const URL: string) of object;
@@ -2686,6 +2687,7 @@ type
     FCSS: TCSSGlobalProps;
     FDocCharset: string;
     FHasBOM: boolean;
+    FTabList: TIpHtmlTabList;
     {$ENDIF}
   protected
     CharStream : TStream;
@@ -2917,7 +2919,7 @@ type
     procedure InvalidateRect(R : TRect);
     procedure SetDefaultProps;
     function BuildPath(const Ext: string): string;
-    procedure MakeVisible(const R: TRect);
+    procedure MakeVisible(const R: TRect{$IFDEF IP_LAZARUS}; ShowAtTop: Boolean = True{$ENDIF});
     procedure InvalidateSize;
     procedure AddGifQueue(Graphic: TGraphic; const R: TRect);
     procedure ClearGifQueue;
@@ -3040,6 +3042,7 @@ type
     property MouseLastPoint : TPoint read FMouseLastPoint;
   end;
 
+  {$IFNDEF IP_LAZARUS}
   TIpHtmlFocusRect = class(TCustomControl)
   private
     FAnchor : TIpHtmlNodeA;
@@ -3057,6 +3060,7 @@ type
     constructor Create(AOwner: TComponent); override;
     property Anchor : TIpHtmlNodeA read FAnchor write FAnchor;
   end;
+  {$ENDIF}
 
   TIpHtmlInternalPanel = class;
 
@@ -3150,6 +3154,7 @@ type
       X, Y: Integer); override;
     {$IFDEF IP_LAZARUS}
     procedure MouseLeave; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     {$ENDIF}
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     procedure DoHotChange;
@@ -3186,7 +3191,7 @@ type
     property OnHotClick : TNotifyEvent read FOnHotClick write FOnHotClick;
     property OnClick : TNotifyEvent read FOnClick write FOnClick;
     destructor Destroy; override;
-    procedure ScrollRequest(Sender: TIpHtml; const R: TRect);
+    procedure ScrollRequest(Sender: TIpHtml; const R: TRect{$IFDEF IP_LAZARUS}; ShowAtTop: Boolean = True{$ENDIF});
     function GetPrintPageCount: Integer;
     procedure PrintPages(FromPage, ToPage: Integer);
     procedure PrintPreview;
@@ -6563,12 +6568,19 @@ var
   CurFieldset : TIpHtmlNodeFIELDSET;
   CurLegend : TIpHtmlNodeLEGEND;
   CurOption : TIpHtmlNodeOPTION;
+  {$IFDEF IP_LAZARUS}
+  CurInput : TIpHtmlNodeINPUT;
+  {$ENDIF}
 begin
   while not (CurToken in EndTokens) do begin
     case CurToken of
     IpHtmlTagINPUT :
       begin
-        with TIpHtmlNodeINPUT.Create(Parent) do begin
+        CurInput := TIpHtmlNodeINPUT.Create(Parent);
+        {$IFDEF IP_LAZARUS}
+        FTabList.Add(CurInput);
+        {$ENDIF}
+        with CurInput do begin
           ParseBaseProps(Self);
           InputType := ParseInputType;
           Name := FindAttribute(htmlAttrNAME);
@@ -6588,6 +6600,9 @@ begin
     IpHtmlTagBUTTON :
       begin
         CurButton := TIpHtmlNodeBUTTON.Create(Parent);
+        {$IFDEF IP_LAZARUS}
+        FTabList.Add(CurButton);
+        {$ENDIF}
         with CurButton do begin
           ParseBaseProps(Self);
           ButtonType := ParseButtonType;
@@ -6649,6 +6664,9 @@ begin
               NextNonBlankToken;
               while CurToken = IpHtmlTagOPTION do begin
                 CurOption := TIpHtmlNodeOPTION.Create(CurOptGroup);
+                {$IFDEF IP_LAZARUS}
+                FTabList.Add(CurOption);
+                {$ENDIF}
                 with CurOption do begin
                   ParseBaseProps(Self);
                   Selected := ParseBoolean(htmlAttrSELECTED);
@@ -6685,6 +6703,9 @@ begin
     IpHtmlTagTEXTAREA :
       begin
         CurTextArea := TIpHtmlNodeTEXTAREA.Create(Parent);
+        {$IFDEF IP_LAZARUS}
+        FTabList.Add(CurTextArea);
+        {$ENDIF}
         with CurTextArea do begin
           Name := FindAttribute(htmlAttrNAME);
           Rows := ParseInteger(htmlAttrROWS, 20);
@@ -7075,6 +7096,9 @@ var
   CurAnchor : TIpHtmlNodeA;
 begin
   CurAnchor := TIpHtmlNodeA.Create(Parent);
+  {$IFDEF IP_LAZARUS}
+  FTabList.Add(CurAnchor);
+  {$ENDIF}
   with CurAnchor do begin
     Name := FindAttribute(htmlAttrNAME);
     HRef := FindAttribute(htmlAttrHREF);
@@ -8493,6 +8517,7 @@ begin
   ALinkColor := clRed;
   {$IFDEF IP_LAZARUS}
   FCSS := TCSSGlobalProps.Create;
+  FTabList := TIpHtmlTabList.Create;
     {$IFDEF UseGifImageUnit}
     GifImages := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
     {$ELSE}
@@ -9450,10 +9475,10 @@ begin
   SetWordRect(Result, Rect(0, 0, 0, 0));
 end;
 
-procedure TIpHtml.MakeVisible(const R: TRect);
+procedure TIpHtml.MakeVisible(const R: TRect{$IFDEF IP_LAZARUS}; ShowAtTop: Boolean = True{$ENDIF});
 begin
   if assigned(FOnScroll) then
-    FOnScroll(Self, R);
+    FOnScroll(Self, R{$IFDEF IP_LAZARUS}, ShowAtTop{$ENDIF});
 end;
 
 function TIpHtml.FindElement(const Name: string): TIpHtmlNode;
@@ -10142,12 +10167,22 @@ var
     aCanvas.Brush.Style := OldBrushStyle;
     aCanvas.Font.Style := OldFontStyle;
   end;
+  var
+    CurTabFocus: TIpHtmlNode;
+
   {$ENDIF}
 
 begin
   L0 := Level0;
   LastProp := nil;
   aCanvas := Owner.Target;
+  {$IFDEF IP_LAZARUS}
+  // to draw focus rect
+  if (FOwner.FTabList.Count > 0) and (FOwner.FTabList.Index <> -1) then
+    CurTabFocus := TIpHtmlNode(FOwner.FTabList[FOwner.FTabList.Index])
+  else
+    CurTabFocus := nil;
+  {$ENDIF}
   for i := 0 to Pred(ElementQueue.Count) do begin
     CurWord := PIpHtmlElement(ElementQueue[i]);
 
@@ -10207,6 +10242,10 @@ begin
           //debugln(['TIpHtmlNodeBlock.RenderQueue ',CurWord.AnsiWord]);
           Owner.PageRectToScreen(CurWord.WordRect2, R);
           {$IFDEF IP_LAZARUS}
+          if CurWord.Owner.FParentNode = CurTabFocus then
+          begin
+            aCanvas.DrawFocusRect(R);
+          end;
           if aCanvas.Font.color=-1 then
             aCanvas.Font.color:=clBlack;
           {$ENDIF}
@@ -12277,7 +12316,7 @@ begin
   SetRectEmpty(R);
   for i := 0 to Pred(AreaList.Count) do
     UnionRect(R, R, PRect(AreaList[i])^);
-  Owner.MakeVisible(R);
+  Owner.MakeVisible(R{$IFDEF IP_LAZARUS}, False{$ENDIF});
 end;
 
 procedure TIpHtmlNodeA.SetProps(const RenderProps: TIpHtmlProps);
@@ -17433,6 +17472,7 @@ begin
   MouseDownY := Y;
   MouseIsDown := True;
   {$IFDEF IP_LAZARUS}
+  Self.SetFocus;
   if (Button=mbLeft) and HtmlPanel.AllowTextSelect then begin
     ClearSelection;
     SelStart := Point(X + ViewLeft, Y + ViewTop);
@@ -17471,6 +17511,115 @@ begin
   HideHint;
   inherited MouseLeave;
 end;
+
+procedure TIpHtmlInternalPanel.KeyDown(var Key: Word; Shift: TShiftState);
+var
+  TabList: TIpHtmlTabList;
+begin
+  if key = VK_TAB then
+  begin
+    TabList := FHyper.FTabList;
+
+    if TabList.Index = -1 then
+    begin
+      // TODO find best place to start the index at...
+      TabList.Index := 0;
+    end;
+
+    if (TabList.Count > 0) then
+    begin
+      if TIpHtmlNode(TabList[TabList.Index]) is TIpHtmlNodeA then
+        TIpHtmlNodeA(TabList[TabList.Index]).DoOnBlur
+      else if TObject(TabList[TabList.Index]).InheritsFrom(TIpHtmlNodeControl) then
+        TIpHtmlNodeControl(TabList[TabList.Index]).FControl.Parent.SetFocus;
+
+      if (ssShift in Shift) then
+      begin
+        if (TabList.Index > 0) then
+        begin
+          TabList.Index := TabList.Index -1;
+          Key := 0;
+        end
+        else
+          TabList.Index:=TabList.Count-1;
+      end;
+
+      if not(ssShift in Shift) then
+      begin
+        if TabList.Index < TabList.Count-1 then
+        begin
+          TabList.Index := TabList.Index + 1;
+          Key := 0;
+        end
+        else
+          TabList.Index := 0;
+      end;
+
+      if Key = 0 then
+      begin
+        if TIpHtmlNode(TabList[TabList.Index]) is TIpHtmlNodeA then
+          TIpHtmlNodeA(TabList[TabList.Index]).DoOnFocus
+        else if TObject(TabList[TabList.Index]).InheritsFrom(TIpHtmlNodeControl) then
+          TIpHtmlNodeControl(TabList[TabList.Index]).FControl.SetFocus;
+      end;
+    end;
+  end
+  else if (key = VK_PRIOR) or ((key = VK_SPACE) and (ssShift in Shift)) then // page up
+  begin
+    TIpHtmlCustomPanel(Owner).Scroll(hsaPgUp);
+    Key := 0
+  end
+  else if (key = VK_NEXT) or ((key = VK_SPACE) and not(ssShift in Shift)) then // page down
+  begin
+    TIpHtmlCustomPanel(Owner).Scroll(hsaPgDn);
+    Key := 0
+  end
+  else if key = VK_UP then // up
+  begin
+    TIpHtmlCustomPanel(Owner).Scroll(hsaUp);
+    Key := 0
+  end
+  else if key = VK_DOWN then // down
+  begin
+    TIpHtmlCustomPanel(Owner).Scroll(hsaDown);
+    Key := 0
+  end
+  else if key = VK_LEFT then // left
+  begin
+    TIpHtmlCustomPanel(Owner).Scroll(hsaLeft);
+    Key := 0
+  end
+  else if key = VK_RIGHT then // right
+  begin
+    TIpHtmlCustomPanel(Owner).Scroll(hsaRight);
+    Key := 0
+  end
+  else if key = VK_HOME then // home
+  begin
+    TIpHtmlCustomPanel(Owner).Scroll(hsaHome);
+    Key := 0
+  end
+  else if key = VK_END then // end
+  begin
+    TIpHtmlCustomPanel(Owner).Scroll(hsaEnd);
+    Key := 0
+  end
+  else if key = VK_RETURN then // return
+  begin
+    if (FHyper.FTabList.TabItem <> nil) and (FHyper.FTabList.TabItem is TIpHtmlNodeA) then
+    begin
+      TIpHtmlNodeA(FHyper.FTabList.TabItem).Hot:=True;
+      FHyper.FHotNode := TIpHtmlNodeA(FHyper.FTabList.TabItem);
+
+      DoHotChange;
+      Application.QueueAsyncCall(AsyncHotInvoke, 0);
+      Key := 0
+    end;
+  end
+  else
+    inherited KeyDown(Key, Shift);
+end;
+
 {$ENDIF}
 
 function TIpHtmlInternalPanel.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean;
@@ -17767,8 +17916,13 @@ begin
   end;
 end;
 
-procedure TIpHtmlInternalPanel.ScrollRequest(Sender: TIpHtml; const R: TRect);
+procedure TIpHtmlInternalPanel.ScrollRequest(Sender: TIpHtml; const R: TRect{$IFDEF IP_LAZARUS}; ShowAtTop: Boolean = True{$ENDIF});
 begin
+  {$IFDEF IP_LAZARUS}
+  if not ShowAtTop then
+    ScrollInViewRaw(R)
+  else
+  {$ENDIF}
   ScrollInView(R);
 end;
 
@@ -18089,6 +18243,8 @@ begin
   FPageIncrement := iPi;
 end;
 
+
+{$IFNDEF IP_LAZARUS}
 { TIpHtmlFocusRect }
 
 constructor TIpHtmlFocusRect.Create(AOwner: TComponent);
@@ -18140,6 +18296,7 @@ begin
   {HaveFocus := False;}                                                {!!.12}
 end;
 
+{$ENDIF}
 {$ENDIF}
 { TIpHtmlFrame }
 
@@ -18447,6 +18604,7 @@ begin
     FHtml.OnControlChange := ControlOnChange;
     FHtml.OnControlEditingdone := ControlOnEditingDone;
     FHtml.OnControlCreate := ControlCreate;
+    {$IFNDEF IP_LAZARUS}
     for i := 0 to Pred(FHtml.AnchorList.Count) do
       with TIpHtmlFocusRect.Create(HyperPanel) do begin
         SetBounds(-100, -100, 10, 10);
@@ -18454,6 +18612,7 @@ begin
         Parent := HyperPanel;
         Anchor := FHtml.AnchorList[i];
       end;
+    {$ENDIF}
     for i := 0 to Pred(FHtml.FControlList.Count) do
       TIpHtmlNode(FHtml.FControlList[i]).CreateControl(HyperPanel);
     HyperPanel.Hyper := FHtml;
