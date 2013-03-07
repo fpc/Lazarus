@@ -58,8 +58,6 @@ end else if LCLWidgetType='fpgui' then begin
   IncPath := UnitPath;
 end else if LCLWidgetType='customdrawn' then begin
   UnitPath := base+'android;';
-  if TargetCPU='arm' then
-    CustomOptions := '-CpARMV6';
 end;
 
 // linker options
