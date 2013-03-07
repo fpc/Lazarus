@@ -13,12 +13,6 @@ begin
   Result := False;
   if AURL = '' then Exit;
 
-  // A help for users which forget to properly encode their URLs
-  // See bug 21659 and see http://www.ietf.org/rfc/rfc1738.txt which says
-  // that spaces in URLs need to be encoded
-  if Pos(' ', AURL) > 0 then
-    AURL := StringReplace(AURL, ' ', '%20', [rfReplaceAll, rfIgnoreCase]);
-
   {$IFDEF WinCE}
   FillChar(Info, SizeOf(Info), 0);
   Info.cbSize := SizeOf(Info);
