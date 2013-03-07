@@ -247,9 +247,11 @@ begin
   if FControl = aValue then Exit;
   FCoolBar.BeginUpdate;
   try
-    if Assigned(aValue) then begin
+    if Assigned(aValue) then
+    begin
       Band := TCoolBands(Collection).FindBand(aValue);
-      if Assigned(Band) and (Band <> Self) then begin
+      if Assigned(Band) and (Band <> Self) then
+      begin
         Band.ResetControlProps;
         Band.SetControl(Nil);        // Remove old association
       end;

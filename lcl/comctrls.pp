@@ -2255,7 +2255,6 @@ type
     FImageChangeLink: TChangeLink;
     FShowText: Boolean;
     FVertical: Boolean;
-    FNewControl: TControl;
     FOnChange: TNotifyEvent;
     function GrabLeft: integer;
     function GetAlign: TAlign;
