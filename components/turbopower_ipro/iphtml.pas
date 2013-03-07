@@ -8647,6 +8647,7 @@ begin
   FControlList.Free;
   DefaultProps.Free;
  {$IFDEF IP_LAZARUS} //JMN
+  FTabList.Free;
   {$IFDEF UseGifImageUnit}
   GifImages.Free;
   {$ELSE}
