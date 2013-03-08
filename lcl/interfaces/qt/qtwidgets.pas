@@ -7457,6 +7457,10 @@ var
   LMScroll: TLMScroll;
   SliderAction: QAbstractSliderSliderAction;
 begin
+
+  if InUpdate then
+    exit;
+
   {$ifdef VerboseQt}
   writeln('TQtAbstractSlider.SlotActionTriggered() action = ',action,' inUpdate ',inUpdate);
   {$endif}
