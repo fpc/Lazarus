@@ -461,6 +461,7 @@ type
   TLvlGraphCtrlOption = (
     lgoAutoLayout, // automatic graph layout after graph was changed
     lgoHighlightNodeUnderMouse, // when mouse over node highlight node and its edges
+    lgoHighlightEdgeNearMouse, // when mouse near an edge highlight edge and its edges, lgoHighlightNodeUnderMouse takes precedence
     lgoMouseSelects,
     lgoHighLevels // put nodes topologically at higher levels
     );
@@ -483,7 +484,7 @@ type
 
 const
   DefaultLvlGraphCtrlOptions = [lgoAutoLayout,
-                                lgoHighlightNodeUnderMouse,lgoMouseSelects];
+          lgoHighlightNodeUnderMouse,lgoHighlightEdgeNearMouse,lgoMouseSelects];
   DefaultLvlGraphEdgeSplitMode        = lgesMergeHighest;
   DefaultLvlGraphNodeWith             = 10;
   DefaultLvlGraphNodeCaptionScale     = 0.7;
@@ -493,6 +494,7 @@ const
   DefaultLvlGraphNodeGapTop           = 1;
   DefaultLvlGraphNodeGapBottom        = 1;
   DefaultLvlGraphNodeShape            = lgnsRectangle;
+  DefaultLvlGraphEdgeNearMouseDistMax = 5;
 
 type
   TLvlGraphControlFlag =  (
@@ -551,6 +553,8 @@ type
 
   TCustomLvlGraphControl = class(TCustomControl)
   private
+    FEdgeMouseDistMax: integer;
+    FEdgeNearMouse: TLvlGraphEdge;
     FEdgeSplitMode: TLvlGraphEdgeSplitMode;
     FGraph: TLvlGraph;
     FImageChangeLink: TChangeLink;
@@ -569,6 +573,7 @@ type
     procedure DrawCaptions(const TxtH: integer);
     procedure DrawEdges(Highlighted: boolean);
     procedure DrawNodes;
+    procedure SetEdgeNearMouse(AValue: TLvlGraphEdge);
     procedure SetImages(AValue: TCustomImageList);
     procedure SetNodeStyle(AValue: TLvlGraphNodeStyle);
     procedure SetNodeUnderMouse(AValue: TLvlGraphNode);
@@ -604,13 +609,15 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     function GetNodeAt(X,Y: integer): TLvlGraphNode;
-    function GetEdgeAt(X,Y,Radius: integer): TLvlGraphEdge;
+    function GetEdgeAt(X,Y: integer; out Distance: integer): TLvlGraphEdge;
     class function GetControlClassDefaultSize: TSize; override;
     function GetDrawSize: TPoint;
   public
     property EdgeSplitMode: TLvlGraphEdgeSplitMode read FEdgeSplitMode write FEdgeSplitMode default DefaultLvlGraphEdgeSplitMode;
     property NodeStyle: TLvlGraphNodeStyle read FNodeStyle write SetNodeStyle;
     property NodeUnderMouse: TLvlGraphNode read FNodeUnderMouse write SetNodeUnderMouse;
+    property EdgeNearMouse: TLvlGraphEdge read FEdgeNearMouse write SetEdgeNearMouse;
+    property EdgeMouseDistMax: integer read FEdgeMouseDistMax write FEdgeMouseDistMax default DefaultLvlGraphEdgeNearMouseDistMax;
     property Options: TLvlGraphCtrlOptions read FOptions write SetOptions default DefaultLvlGraphCtrlOptions;
     property OnSelectionChanged: TNotifyEvent read FOnSelectionChanged write FOnSelectionChanged;
     property ScrollTop: integer read FScrollTop write SetScrollTop;
@@ -635,6 +642,7 @@ type
     property DragCursor;
     property DragKind;
     property DragMode;
+    property EdgeMouseDistMax;
     property EdgeSplitMode;
     property Enabled;
     property Font;
@@ -679,6 +687,10 @@ function GetCCPaletteRGB(Cnt: integer; Shuffled: boolean): TCodyCtrlPalette;
 procedure ShuffleCCPalette(Palette: TCodyCtrlPalette);
 function Darker(const c: TColor): TColor; overload;
 
+function GetManhattanDistancePointLine(X,Y, LineX1, LineY1, LineX2, LineY2: integer): integer;
+function GetDistancePointLine(X,Y, LineX1, LineY1, LineX2, LineY2: integer): integer;
+function GetDistancePointPoint(X1,Y1,X2,Y2: integer): integer;
+
 // diagram
 procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2: integer;
   InnerSize: single; StartAngle16, EndAngle16: integer); overload;
@@ -686,15 +698,15 @@ procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2,
   InnerSize, StartAngle, EndAngle: single); overload;
 
 // level graph
+procedure LvlGraphMinimizeCrossings(Graph: TLvlGraph); overload;
+procedure LvlGraphHighlightNode(Node: TLvlGraphNode;
+  HighlightedElements: TAvgLvlTree; FollowIn, FollowOut: boolean);
 function CompareLGNodesByCenterPos(Node1, Node2: Pointer): integer;
 
+// debugging
 function dbgs(p: TLvlGraphNodeCaptionPosition): string; overload;
 function dbgs(o: TLvlGraphCtrlOption): string; overload;
 function dbgs(Options: TLvlGraphCtrlOptions): string; overload;
-
-procedure LvlGraphMinimizeCrossings(Graph: TLvlGraph); overload;
-procedure LvlGraphHighlightNode(Node: TLvlGraphNode; HighlightedElements: TAvgLvlTree;
-  FollowIn, FollowOut: boolean);
 
 implementation
 
@@ -798,7 +810,8 @@ begin
                        Min(10000,Graph.NodeCount*Graph.NodeCount));
     {$ELSE}
     g.SwitchAndShuffle(100*Graph.NodeCount,
-                       Min(100000,Graph.NodeCount*Graph.NodeCount));
+                       Min(100000,Graph.NodeCount*Graph.NodeCount)
+                       ){%H-};
     {$ENDIF}
     g.Apply;
   finally
@@ -844,6 +857,76 @@ begin
     Node:=Node.GetNext;
   end;
   TV.EndUpdate;
+end;
+
+function GetManhattanDistancePointLine(X, Y, LineX1, LineY1, LineX2, LineY2: integer
+  ): integer;
+// Manhattan distance
+var
+  m: Integer;
+begin
+  Result:=abs(X-LineX1)+abs(Y-LineY1);
+  Result:=Min(Result,abs(X-LineX2)+abs(Y-LineY2));
+  // from left to right
+  if abs(LineX2-LineX1)<abs(LineY2-LineY1) then begin
+    // vertical line
+    if (LineY1<LineY2) and ((Y<LineY1) or (Y>LineY2)) then exit;
+    if (LineY1>LineY2) and ((Y<LineY2) or (Y>LineY1)) then exit;
+    m:=((LineX2-LineX1)*(Y-LineY1)) div (LineY2-LineY1);
+    Result:=Min(Result,abs(X-m));
+  end else if LineX1<>LineX2 then begin
+    // horizontal line
+    if (LineX1<LineX2) and ((X<LineX1) or (X>LineX2)) then exit;
+    if (LineX1>LineX2) and ((X<LineX2) or (X>LineX1)) then exit;
+    m:=((LineY2-LineY1)*(X-LineX1)) div (LineX2-LineX1);
+    Result:=Min(Result,abs(Y-m));
+  end;
+end;
+
+function GetDistancePointLine(X, Y, LineX1, LineY1, LineX2, LineY2: integer
+  ): integer;
+var
+  lx, ly: single; // nearest point on line
+  lm, ln, pm, pn: single;
+  d: integer;
+begin
+  //debugln(['GetDistancePointLine X=',X,',Y=',Y,' Line=',LineX1,',',LineY1,'..',LineX2,',',LineY2]);
+  Result:=GetDistancePointPoint(X,Y,LineX1,LineY1);
+  if Result<=1 then exit;
+  Result:=Min(Result,GetDistancePointPoint(X,Y,LineX2,LineY2));
+  if Result<=1 then exit;
+  if Abs(LineX1-LineX2)<=1 then begin
+    // vertical line
+    lx:=LineX1;
+    ly:=Y;
+  end else if Abs(LineY1-LineY2)<=1 then begin
+    lx:=X;
+    ly:=LineY1;
+  end else begin
+    lm:=single(LineY2-LineY1)/single(LineX2-LineX1);
+    ln:=single(LineY1)-single(LineX1)*lm;
+    pm:=single(-1)/lm;
+    pn:=single(Y)-single(X)*pm;
+    //debugln(['GetDistancePointLine lm=',lm,' ln=',ln,' pm=',pm,' pn=',pn]);
+    // ly = lx*lm+ln = lx*pm'+pn
+    // <=> lx*(lm-pm)=pn-ln
+    // <=> lx = (pn-ln) / (lm-pm)
+    lx:=(pn-ln)/(lm-pm);
+    ly:=single(lx)*lm+ln;
+  end;
+  //debugln(['GetDistancePointLine lx=',lx,', ly=',ly]);
+
+  // check if nearest point is on the line
+  if (LineX1<LineX2) and ((lx<LineX1) or (lx>LineX2)) then exit;
+  if (LineX1>LineX2) and ((lx>LineX1) or (lx<LineX2)) then exit;
+  d:=round(sqrt(sqr(single(X)-lx)+sqr(single(Y)-ly)));
+  Result:=Min(Result,d);
+  //debugln(['GetDistancePointLine lx=',lx,', ly=',ly,' Result=',Result]);
+end;
+
+function GetDistancePointPoint(X1, Y1, X2, Y2: integer): integer;
+begin
+  Result:=round(sqrt(sqr(X2-X1)+sqr(Y1-Y2))+0.5);
 end;
 
 procedure RingSector(Canvas: TFPCustomCanvas; x1, y1, x2, y2: integer;
@@ -1866,7 +1949,8 @@ procedure TCustomLvlGraphControl.SetNodeUnderMouse(AValue: TLvlGraphNode);
 begin
   if FNodeUnderMouse=AValue then Exit;
   FNodeUnderMouse:=AValue;
-  HighlightConnectedEgdes(NodeUnderMouse);
+  if lgoHighlightNodeUnderMouse in Options then
+    HighlightConnectedEgdes(NodeUnderMouse);
 end;
 
 procedure TCustomLvlGraphControl.DrawEdges(Highlighted: boolean);
@@ -1921,7 +2005,7 @@ begin
         Edge.FDrawX1:=x1;
         Edge.FDrawY1:=y1;
         Edge.FDrawX2:=x2;
-        Edge.FDrawY2:=x2;
+        Edge.FDrawY2:=y2;
       end;
     end;
   end;
@@ -2022,6 +2106,16 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TCustomLvlGraphControl.SetEdgeNearMouse(AValue: TLvlGraphEdge);
+begin
+  if FEdgeNearMouse=AValue then Exit;
+  FEdgeNearMouse:=AValue;
+  if (lgoHighlightEdgeNearMouse in Options)
+  and ((NodeUnderMouse=nil) or (not (lgoHighlightNodeUnderMouse in Options)))
+  then
+    HighlightConnectedEgdes(EdgeNearMouse);
 end;
 
 procedure TCustomLvlGraphControl.SetImages(AValue: TCustomImageList);
@@ -2243,9 +2337,17 @@ begin
 end;
 
 procedure TCustomLvlGraphControl.MouseMove(Shift: TShiftState; X, Y: Integer);
+var
+  Distance: integer;
+  Edge: TLvlGraphEdge;
 begin
   inherited MouseMove(Shift, X, Y);
   NodeUnderMouse:=GetNodeAt(X,Y);
+  Edge:=GetEdgeAt(X,Y,Distance);
+  if Distance<=EdgeMouseDistMax then
+    EdgeNearMouse:=Edge
+  else
+    EdgeNearMouse:=nil;
 end;
 
 procedure TCustomLvlGraphControl.MouseDown(Button: TMouseButton;
@@ -2320,6 +2422,7 @@ constructor TCustomLvlGraphControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FEdgeSplitMode:=DefaultLvlGraphEdgeSplitMode;
+  FEdgeMouseDistMax:=DefaultLvlGraphEdgeNearMouseDistMax;
   FOptions:=DefaultLvlGraphCtrlOptions;
   FGraph:=TLvlGraph.Create;
   FGraph.OnInvalidate:=@GraphInvalidate;
@@ -2482,7 +2585,8 @@ begin
   end;
 end;
 
-function TCustomLvlGraphControl.GetEdgeAt(X, Y, Radius: integer): TLvlGraphEdge;
+function TCustomLvlGraphControl.GetEdgeAt(X, Y: integer; out Distance: integer
+  ): TLvlGraphEdge;
 var
   l: Integer;
   Level: TLvlGraphLevel;
@@ -2490,13 +2594,10 @@ var
   Node: TLvlGraphNode;
   e: Integer;
   Edge: TLvlGraphEdge;
-  x1: Integer;
-  y1: Integer;
-  x2: Integer;
-  y2: Integer;
-  h: Integer;
+  CurDist: Integer;
 begin
   Result:=nil;
+  Distance:=High(Integer);
   X+=ScrollLeft;
   Y+=ScrollTop;
   // check in reverse painting order
@@ -2506,15 +2607,13 @@ begin
       Node:=Level.Nodes[n];
       for e:=Node.OutEdgeCount-1 downto 0 do begin
         Edge:=Node.OutEdges[e];
-        x1:=Edge.FDrawX1;
-        y1:=Edge.FDrawY1;
-        x2:=Edge.FDrawX2;
-        y2:=Edge.FDrawY2;
-        if x1<x2 then begin
-          h:=x1; x1:=x2; x2:=h;
-          h:=y1; y1:=y2; y2:=h;
+        CurDist:=GetDistancePointLine(X,Y,
+                  Edge.FDrawX1,Edge.FDrawY1,Edge.FDrawX2,Edge.FDrawY2);
+        if CurDist<Distance then begin
+          //debugln(['TCustomLvlGraphControl.GetEdgeAt ',Edge.AsString,' X=',X,' Y=',Y,' Line=',Edge.FDrawX1,',',Edge.FDrawY1,',',Edge.FDrawX2,',',Edge.FDrawY2,' D=',CurDist]);
+          Result:=Edge;
+          Distance:=CurDist;
         end;
-
       end;
     end;
   end;
