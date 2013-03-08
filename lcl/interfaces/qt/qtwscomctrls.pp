@@ -792,7 +792,7 @@ begin
 
   if QTreeWidgetItem_childCount(TWI) < (AIndex + 1) then
   begin
-    TWIChild := QTreeWidgetItem_create(0);
+    TWIChild := QTreeWidgetItem_create(QTreeWidgetItemType);
     QTreeWidgetItem_setFlags(TWIChild, QtItemIsEnabled);
     QTreeWidgetItem_addChild(TWI, TWIChild);
     Str := GetUtf8String(ALV.Column[AIndex].Caption);
@@ -1423,7 +1423,7 @@ begin
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
-    TWI := QTreeWidgetItem_create(Integer(0));
+    TWI := QTreeWidgetItem_create(QTreeWidgetItemType);
     if AItem.Caption <> '' then
       Str := GetUtf8String(AItem.Caption)
     else

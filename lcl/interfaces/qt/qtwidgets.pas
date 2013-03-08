@@ -11331,7 +11331,7 @@ procedure TQtListWidget.insertItem(AIndex: Integer; AText: PWideString);
 var
   Item: QListWidgetItemH;
 begin
-  Item := QListWidgetItem_create(AText, nil, 0);
+  Item := QListWidgetItem_create(AText, nil, QListWidgetItemType);
   if Checkable then
     QListWidgetItem_setCheckState(Item, QtUnChecked);
   QListWidget_insertItem(QListWidgetH(Widget), AIndex, Item);
@@ -12527,10 +12527,10 @@ begin
     SetLength(Items, AValue);
     for i := 0 to High(Items) do
     begin
-      Item := QTreeWidgetItem_create(QTreeWidgetH(Widget), 0);
+      Item := QTreeWidgetItem_create(QTreeWidgetH(Widget), QTreeWidgetItemType);
       for j := 0 to ColCount - 1 do
       begin
-        ItemChild := QTreeWidgetItem_create(item, 0);
+        ItemChild := QTreeWidgetItem_create(item, QTreeWidgetItemType);
         QTreeWidgetItem_addChild(item, ItemChild);
       end;
       Items[i] := PtrUInt(Item);

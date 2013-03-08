@@ -9150,10 +9150,10 @@ type
     QListWidgetItemType = 0,
     QListWidgetItemUserType = 1000 );
 
-function QListWidgetItem_create(view: QListWidgetH = nil; _type: Integer = QListWidgetItemType): QListWidgetItemH; cdecl; external Qt4PasLib name 'QListWidgetItem_create';
+function QListWidgetItem_create(view: QListWidgetH = nil; _type: QListWidgetItemItemType = QListWidgetItemType): QListWidgetItemH; cdecl; external Qt4PasLib name 'QListWidgetItem_create';
 procedure QListWidgetItem_destroy(handle: QListWidgetItemH); cdecl; external Qt4PasLib name 'QListWidgetItem_destroy'; 
-function QListWidgetItem_create(text: PWideString; view: QListWidgetH = nil; _type: Integer = QListWidgetItemType): QListWidgetItemH; cdecl; external Qt4PasLib name 'QListWidgetItem_create2';
-function QListWidgetItem_create(icon: QIconH; text: PWideString; view: QListWidgetH = nil; _type: Integer = QListWidgetItemType): QListWidgetItemH; cdecl; external Qt4PasLib name 'QListWidgetItem_create3';
+function QListWidgetItem_create(text: PWideString; view: QListWidgetH = nil; _type: QListWidgetItemItemType = QListWidgetItemType): QListWidgetItemH; cdecl; external Qt4PasLib name 'QListWidgetItem_create2';
+function QListWidgetItem_create(icon: QIconH; text: PWideString; view: QListWidgetH = nil; _type: QListWidgetItemItemType = QListWidgetItemType): QListWidgetItemH; cdecl; external Qt4PasLib name 'QListWidgetItem_create3';
 function QListWidgetItem_create(other: QListWidgetItemH): QListWidgetItemH; cdecl; external Qt4PasLib name 'QListWidgetItem_create4';
 function QListWidgetItem_clone(handle: QListWidgetItemH): QListWidgetItemH; cdecl; external Qt4PasLib name 'QListWidgetItem_clone';
 function QListWidgetItem_listWidget(handle: QListWidgetItemH): QListWidgetH; cdecl; external Qt4PasLib name 'QListWidgetItem_listWidget';
@@ -9326,15 +9326,15 @@ type
     QTreeWidgetItemType = 0,
     QTreeWidgetItemUserType = 1000 );
 
-function QTreeWidgetItem_create(_type: Integer = QTreeWidgetItemType): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create';
+function QTreeWidgetItem_create(_type: QTreeWidgetItemItemType = QTreeWidgetItemType): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create';
 procedure QTreeWidgetItem_destroy(handle: QTreeWidgetItemH); cdecl; external Qt4PasLib name 'QTreeWidgetItem_destroy'; 
-function QTreeWidgetItem_create(strings: QStringListH; _type: Integer = QTreeWidgetItemType): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create2';
-function QTreeWidgetItem_create(view: QTreeWidgetH; _type: Integer = QTreeWidgetItemType): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create3';
-function QTreeWidgetItem_create(view: QTreeWidgetH; strings: QStringListH; _type: Integer = QTreeWidgetItemType): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create4';
-function QTreeWidgetItem_create(view: QTreeWidgetH; after: QTreeWidgetItemH; _type: Integer = QTreeWidgetItemType): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create5';
-function QTreeWidgetItem_create(parent: QTreeWidgetItemH; _type: Integer = QTreeWidgetItemType): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create6';
-function QTreeWidgetItem_create(parent: QTreeWidgetItemH; strings: QStringListH; _type: Integer = QTreeWidgetItemType): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create7';
-function QTreeWidgetItem_create(parent: QTreeWidgetItemH; after: QTreeWidgetItemH; _type: Integer = QTreeWidgetItemType): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create8';
+function QTreeWidgetItem_create(strings: QStringListH; _type: QTreeWidgetItemItemType = QTreeWidgetItemType): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create2';
+function QTreeWidgetItem_create(view: QTreeWidgetH; _type: QTreeWidgetItemItemType = QTreeWidgetItemType): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create3';
+function QTreeWidgetItem_create(view: QTreeWidgetH; strings: QStringListH; _type: QTreeWidgetItemItemType = QTreeWidgetItemType): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create4';
+function QTreeWidgetItem_create(view: QTreeWidgetH; after: QTreeWidgetItemH; _type: QTreeWidgetItemItemType = QTreeWidgetItemType): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create5';
+function QTreeWidgetItem_create(parent: QTreeWidgetItemH; _type: QTreeWidgetItemItemType = QTreeWidgetItemType): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create6';
+function QTreeWidgetItem_create(parent: QTreeWidgetItemH; strings: QStringListH; _type: QTreeWidgetItemItemType = QTreeWidgetItemType): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create7';
+function QTreeWidgetItem_create(parent: QTreeWidgetItemH; after: QTreeWidgetItemH; _type: QTreeWidgetItemItemType = QTreeWidgetItemType): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create8';
 function QTreeWidgetItem_create(other: QTreeWidgetItemH): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_create9';
 function QTreeWidgetItem_clone(handle: QTreeWidgetItemH): QTreeWidgetItemH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_clone';
 function QTreeWidgetItem_treeWidget(handle: QTreeWidgetItemH): QTreeWidgetH; cdecl; external Qt4PasLib name 'QTreeWidgetItem_treeWidget';
@@ -9819,10 +9819,10 @@ function QTableWidgetSelectionRange_rightColumn(handle: QTableWidgetSelectionRan
 function QTableWidgetSelectionRange_rowCount(handle: QTableWidgetSelectionRangeH): Integer; cdecl; external Qt4PasLib name 'QTableWidgetSelectionRange_rowCount';
 function QTableWidgetSelectionRange_columnCount(handle: QTableWidgetSelectionRangeH): Integer; cdecl; external Qt4PasLib name 'QTableWidgetSelectionRange_columnCount';
 
-function QTableWidgetItem_create(_type: Integer = QTableWidgetItemType): QTableWidgetItemH; cdecl; external Qt4PasLib name 'QTableWidgetItem_create';
+function QTableWidgetItem_create(_type: QTableWidgetItemItemType = QTableWidgetItemType): QTableWidgetItemH; cdecl; external Qt4PasLib name 'QTableWidgetItem_create';
 procedure QTableWidgetItem_destroy(handle: QTableWidgetItemH); cdecl; external Qt4PasLib name 'QTableWidgetItem_destroy'; 
-function QTableWidgetItem_create(text: PWideString; _type: Integer = QTableWidgetItemType): QTableWidgetItemH; cdecl; external Qt4PasLib name 'QTableWidgetItem_create2';
-function QTableWidgetItem_create(icon: QIconH; text: PWideString; _type: Integer = QTableWidgetItemType): QTableWidgetItemH; cdecl; external Qt4PasLib name 'QTableWidgetItem_create3';
+function QTableWidgetItem_create(text: PWideString; _type: QTableWidgetItemItemType = QTableWidgetItemType): QTableWidgetItemH; cdecl; external Qt4PasLib name 'QTableWidgetItem_create2';
+function QTableWidgetItem_create(icon: QIconH; text: PWideString; _type: QTableWidgetItemItemType = QTableWidgetItemType): QTableWidgetItemH; cdecl; external Qt4PasLib name 'QTableWidgetItem_create3';
 function QTableWidgetItem_create(other: QTableWidgetItemH): QTableWidgetItemH; cdecl; external Qt4PasLib name 'QTableWidgetItem_create4';
 function QTableWidgetItem_clone(handle: QTableWidgetItemH): QTableWidgetItemH; cdecl; external Qt4PasLib name 'QTableWidgetItem_clone';
 function QTableWidgetItem_tableWidget(handle: QTableWidgetItemH): QTableWidgetH; cdecl; external Qt4PasLib name 'QTableWidgetItem_tableWidget';
@@ -11600,7 +11600,7 @@ procedure QStyleOption_fontMetrics(handle : QStyleOptionH; retval : QFontMetrics
 procedure QStyleOption_setFontMetrics(handle : QStyleOptionH; fontMetrics :  QFontMetricsH); cdecl; external Qt4PasLib name 'QStyleOption_setFontMetrics';
 procedure QStyleOption_palette(handle : QStyleOptionH; retval : QPaletteH ); cdecl; external Qt4PasLib name 'QStyleOption_palette';
 procedure QStyleOption_setPalette(handle : QStyleOptionH; palette :  QPaletteH); cdecl; external Qt4PasLib name 'QStyleOption_setPalette';
-function QStyleOption_create(version: Integer = QStyleOptionVersion; _type: Integer = QStyleOptionSO_Default): QStyleOptionH; cdecl; external Qt4PasLib name 'QStyleOption_create';
+function QStyleOption_create(version: QStyleOptionStyleOptionVersion = QStyleOptionVersion; _type: QStyleOptionOptionType = QStyleOptionSO_Default): QStyleOptionH; cdecl; external Qt4PasLib name 'QStyleOption_create';
 procedure QStyleOption_destroy(handle: QStyleOptionH); cdecl; external Qt4PasLib name 'QStyleOption_destroy'; 
 function QStyleOption_create(other: QStyleOptionH): QStyleOptionH; cdecl; external Qt4PasLib name 'QStyleOption_create2';
 procedure QStyleOption_init(handle: QStyleOptionH; w: QWidgetH); cdecl; external Qt4PasLib name 'QStyleOption_init';
@@ -12047,7 +12047,7 @@ function QStyleHintReturn_version(handle : QStyleHintReturnH) : Integer; cdecl; 
 procedure QStyleHintReturn_setVersion(handle : QStyleHintReturnH; version : Integer); cdecl; external Qt4PasLib name 'QStyleHintReturn_setVersion';
 function QStyleHintReturn__type(handle : QStyleHintReturnH) : Integer; cdecl; external Qt4PasLib name 'QStyleHintReturn__type';
 procedure QStyleHintReturn_setType(handle : QStyleHintReturnH; _type : Integer); cdecl; external Qt4PasLib name 'QStyleHintReturn_setType';
-function QStyleHintReturn_create(version: Integer = QStyleOptionVersion; _type: Integer = QStyleHintReturnSH_Default): QStyleHintReturnH; cdecl; external Qt4PasLib name 'QStyleHintReturn_create';
+function QStyleHintReturn_create(version: QStyleOptionStyleOptionVersion = QStyleOptionVersion; _type: QStyleHintReturnHintReturnType = QStyleHintReturnSH_Default): QStyleHintReturnH; cdecl; external Qt4PasLib name 'QStyleHintReturn_create';
 procedure QStyleHintReturn_destroy(handle: QStyleHintReturnH); cdecl; external Qt4PasLib name 'QStyleHintReturn_destroy'; 
 
 procedure QStyleHintReturnMask_region(handle : QStyleHintReturnMaskH; retval : QRegionH ); cdecl; external Qt4PasLib name 'QStyleHintReturnMask_region';

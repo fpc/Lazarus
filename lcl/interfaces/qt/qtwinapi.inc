@@ -1260,7 +1260,7 @@ var
 
     if Element = QStylePE_CustomBase then
       exit;
-    Opt := QStyleOption_create(1, 0);
+    Opt := QStyleOption_create(QStyleOptionVersion, QStyleOptionSO_Default);
     QStyleOption_setRect(Opt, @Rect);
     QStyleOption_setState(Opt, State);
     QStyle_drawPrimitive(QApplication_style(), Element, Opt, Painter, Widget);

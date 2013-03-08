@@ -114,7 +114,7 @@ begin
   DC := TQtDeviceContext(ACanvas.Handle);
   ARect := AArrow.ClientRect;
 
-  StyleOption := QStyleOption_create(1, integer(QStyleOptionSO_Default));
+  StyleOption := QStyleOption_create(QStyleOptionVersion, QStyleOptionSO_Default);
   try
     // I do not know the reason, but under windows down arrow size is very small
     // and is not dependent on passed ARect.

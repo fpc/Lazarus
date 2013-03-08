@@ -297,8 +297,7 @@ begin
             QStylePE_IndicatorBranch:
               begin
 
-                opt := QStyleOption_create(Integer(QStyleOptionVersion),
-                  Integer(QStyleOptionSO_Default));
+                opt := QStyleOption_create(QStyleOptionVersion, QStyleOptionSO_Default);
 
                 QStyleOption_setState(opt, StyleState);
                 if AViewPortPaint then
@@ -324,7 +323,7 @@ begin
                 end;
               end;
             else
-              opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
+              opt := QStyleOption_create(QStyleOptionVersion, QStyleOptionSO_Default);
           end;
 
           QStyleOption_setState(opt, StyleState);
@@ -335,7 +334,7 @@ begin
         end;
         qdvStandardPixmap:
         begin
-          opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
+          opt := QStyleOption_create(QStyleOptionVersion, QStyleOptionSO_Default);
           AIcon := QIcon_create();
           QStyle_standardIcon(Style, AIcon, Element.StandardPixmap, opt);
           QIcon_paint(AIcon, Context.Widget, ARect.Left, ARect.Top,
@@ -648,7 +647,7 @@ begin
     end;
   end;
 
-  opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
+  opt := QStyleOption_create(QStyleOptionVersion, QStyleOptionSO_Default);
   APixmap := QPixmap_create();
   if StockID in [idButtonOk..idButtonShield] then
     IconSize := GetPixelMetric(QStylePM_ButtonIconSize, opt, nil)
