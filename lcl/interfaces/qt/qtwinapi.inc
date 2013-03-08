@@ -6033,6 +6033,8 @@ var
     i: Integer;
     WheelLines: Integer;
   begin
+    Scrollbar.BeginUpdate;
+
     Result := 0;
 
     if (ScrollInfo.FMask and SIF_RANGE) <> 0 then
@@ -6092,6 +6094,7 @@ var
 
     Result := ScrollBar.getSliderPosition;
 
+    ScrollBar.EndUpdate;
   end;
 
 begin
