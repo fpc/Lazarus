@@ -1016,16 +1016,18 @@ var
 begin
   Result := -1;
   for x := 0 to Count-1 do
-    if (Items[x].Key = Code1) and (Items[x].Shift = SS1) and
-       (Items[x].Key2 = Code2) and (Items[x].Shift2 = SS2) then
+    // If first key requires CTRL, ignore CTRL status on 2nd key
+    with Items[x] do
+      if (Key = Code1) and (Shift = SS1) and
+         (Key2 = Code2) and ((Shift2 = SS2) or
+              ((Shift2 = (SS2 >< [ssCtrl])) and (Shift = [ssCtrl]))) then
     begin
       Result := x;
       break;
     end;
 end;
 
-function TSynEditKeyStrokes.FindKeycode2Start(Code: word; SS: TShiftState
-  ): integer;
+function TSynEditKeyStrokes.FindKeycode2Start(Code: word; SS: TShiftState): integer;
 var
   x: integer;
 begin

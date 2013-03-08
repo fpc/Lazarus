@@ -738,9 +738,8 @@ function FindKeymapConflicts(Keymap: TKeyCommandRelationList;
 // 0 = ok, no errors
 // >0 number of errors found
 var
-  a,b:integer;
-  Key1: TKeyCommandRelation;
-  Key2: TKeyCommandRelation;
+  a,b: integer;
+  Key1,Key2: TKeyCommandRelation;
 
   procedure Add(const s: string);
   begin
@@ -750,13 +749,25 @@ var
 
   procedure Check(const ShortCut1, ShortCut2: TIDEShortCut);
   // check if ShortCut1 hides ShortCut2
+  var
+    sc1EffShift2, sc2EffShift2: TShiftState;
   begin
     if (ShortCut1.Key1=VK_UNKNOWN) then exit;
     if (ShortCut1.Key1<>ShortCut2.Key1) or (ShortCut1.Shift1<>ShortCut2.Shift1)
     then exit;
     // first key fits
+
+    // Make CTRL-Q S into CTRL-Q CTRL-S for check, since both work the same
+    sc1EffShift2:= ShortCut1.Shift2;
+    if( (ShortCut1.Shift1=[ssCtrl]) and (sc1EffShift2 = [])) then
+      sc1EffShift2:= [ssCtrl];
+
+    sc2EffShift2:= ShortCut2.Shift2;
+    if( (ShortCut2.Shift1=[ssCtrl]) and (sc2EffShift2 = [])) then
+      sc2EffShift2:= [ssCtrl];
+
     if (ShortCut1.Key2=VK_UNKNOWN) or (ShortCut2.Key2=VK_UNKNOWN)
-    or ((ShortCut1.Key2=ShortCut2.Key2) and (ShortCut1.Shift2=ShortCut2.Shift2))
+    or ((ShortCut1.Key2=ShortCut2.Key2) and (sc1EffShift2=sc2EffShift2))
     then begin
       // conflict found
       if Result=0 then begin
@@ -921,12 +932,12 @@ begin
   ecSelectAll:           SetSingle(VK_A,[ssCtrl]);
   ecSelectToBrace:       SetSingle(VK_UNKNOWN,[]);
   ecSelectCodeBlock:     SetSingle(VK_UNKNOWN,[]);
-  ecSelectWord:          SetCombo(VK_K,[SSCtrl],VK_T,[],  VK_K,[SSCtrl],VK_T,[ssCtrl]);
-  ecSelectLine:          SetCombo(VK_K,[SSCtrl],VK_L,[],  VK_K,[SSCtrl],VK_L,[ssCtrl]);
+  ecSelectWord:          SetCombo(VK_K,[SSCtrl],VK_T,[]);
+  ecSelectLine:          SetCombo(VK_K,[SSCtrl],VK_L,[]);
   ecSelectParagraph:     SetSingle(VK_UNKNOWN,[]);
-  ecSelectionUpperCase:  SetCombo(VK_K,[SSCtrl],VK_N,[],  VK_K,[SSCtrl],VK_N,[ssCtrl]);
-  ecSelectionLowerCase:  SetCombo(VK_K,[SSCtrl],VK_O,[],  VK_K,[SSCtrl],VK_O,[ssCtrl]);
-  ecSelectionSwapCase:   SetCombo(VK_K,[SSCtrl],VK_P,[],  VK_K,[SSCtrl],VK_P,[ssCtrl]);
+  ecSelectionUpperCase:  SetCombo(VK_K,[SSCtrl],VK_N,[]);
+  ecSelectionLowerCase:  SetCombo(VK_K,[SSCtrl],VK_O,[]);
+  ecSelectionSwapCase:   SetCombo(VK_K,[SSCtrl],VK_P,[]);
   ecSelectionTabs2Spaces:SetSingle(VK_UNKNOWN,[]);
   ecSelectionEnclose:    SetSingle(VK_N,[ssShift,ssCtrl]);
   ecSelectionComment:    SetSingle(VK_V,[ssShift,ssCtrl]);
@@ -936,20 +947,20 @@ begin
   ecSelectionSort:       SetSingle(VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetSingle(VK_UNKNOWN,[]);
 
-  ecStickySelection:     SetCombo(VK_K,[ssCtrl],VK_S,[],  VK_K,[ssCtrl],VK_S,[ssCtrl]);
-  ecStickySelectionCol:  SetCombo(VK_K,[ssCtrl],VK_S,[ssAlt],  VK_K,[ssCtrl],VK_S,[ssCtrl, ssAlt]);
-  ecStickySelectionStop: SetCombo(VK_K,[ssCtrl],VK_E,[],  VK_K,[ssCtrl],VK_E,[ssCtrl]);
+  ecStickySelection:     SetCombo(VK_K,[ssCtrl],VK_S,[]);
+  ecStickySelectionCol:  SetCombo(VK_K,[ssCtrl],VK_S,[ssAlt]);
+  ecStickySelectionStop: SetCombo(VK_K,[ssCtrl],VK_E,[]);
 
-  ecBlockSetBegin:       SetCombo(VK_K,[ssCtrl],VK_B,[],  VK_K,[ssCtrl],VK_B,[ssCtrl]);
-  ecBlockSetEnd:         SetCombo(VK_K,[ssCtrl],VK_K,[],  VK_K,[ssCtrl],VK_K,[ssCtrl]);
-  ecBlockToggleHide:     SetCombo(VK_K,[ssCtrl],VK_H,[],  VK_K,[ssCtrl],VK_H,[ssCtrl]);
+  ecBlockSetBegin:       SetCombo(VK_K,[ssCtrl],VK_B,[]);
+  ecBlockSetEnd:         SetCombo(VK_K,[ssCtrl],VK_K,[]);
+  ecBlockToggleHide:     SetCombo(VK_K,[ssCtrl],VK_H,[]);
   ecBlockHide:           SetCombo(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecBlockShow:           SetCombo(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecBlockMove:           SetCombo(VK_K,[ssCtrl],VK_V,[],  VK_K,[ssCtrl],VK_V,[ssCtrl]);
-  ecBlockCopy:           SetCombo(VK_K,[ssCtrl],VK_C,[],  VK_K,[ssCtrl],VK_C,[ssCtrl]);
-  ecBlockDelete:         SetCombo(VK_K,[ssCtrl],VK_Y,[],  VK_K,[ssCtrl],VK_Y,[ssCtrl]);
-  ecBlockGotoBegin:      SetCombo(VK_Q,[ssCtrl],VK_B,[ssCtrl]);
-  ecBlockGotoEnd:        SetCombo(VK_Q,[ssCtrl],VK_K,[ssCtrl]);
+  ecBlockMove:           SetCombo(VK_K,[ssCtrl],VK_V,[]);
+  ecBlockCopy:           SetCombo(VK_K,[ssCtrl],VK_C,[]);
+  ecBlockDelete:         SetCombo(VK_K,[ssCtrl],VK_Y,[]);
+  ecBlockGotoBegin:      SetCombo(VK_Q,[ssCtrl],VK_B,[]);
+  ecBlockGotoEnd:        SetCombo(VK_Q,[ssCtrl],VK_K,[]);
 
   // column mode selection
   ecColSelUp:            SetSingle(VK_UP,[ssAlt,ssShift]);
@@ -1364,7 +1375,7 @@ begin
   ecPaste:               SetSingle(VK_Insert,[ssShift]);
   ecNormalSelect:        SetSingle(VK_UNKNOWN,[]);
   ecColumnSelect:        SetSingle(VK_UNKNOWN,[]);
-  ecLineSelect:          SetCombo(VK_K,[ssCtrl],VK_L,[],   VK_K,[ssCtrl],VK_L,[ssCtrl]);
+  ecLineSelect:          SetCombo(VK_K,[ssCtrl],VK_L,[]);
   ecSelWordLeft:         SetSingle(VK_LEFT,[ssCtrl,ssShift]);
   ecSelWordRight:        SetSingle(VK_RIGHT,[ssCtrl,ssShift]);
   ecSelLineStart:        SetSingle(VK_HOME,[ssShift]);
@@ -1376,12 +1387,12 @@ begin
   ecSelectAll:           SetSingle(VK_UNKNOWN,[]);
   ecSelectToBrace:       SetSingle(VK_UNKNOWN,[]);
   ecSelectCodeBlock:     SetSingle(VK_UNKNOWN,[]);
-  ecSelectWord:          SetCombo(VK_K,[ssCtrl],VK_T,[],   VK_K,[ssCtrl],VK_T,[ssCtrl]);
-  ecSelectLine:          SetCombo(VK_O,[ssCtrl],VK_L,[],   VK_O,[ssCtrl],VK_L,[ssCtrl]);
+  ecSelectWord:          SetCombo(VK_K,[ssCtrl],VK_T,[]);
+  ecSelectLine:          SetCombo(VK_O,[ssCtrl],VK_L,[]);
   ecSelectParagraph:     SetSingle(VK_UNKNOWN,[]);
-  ecSelectionUpperCase:  SetCombo(VK_K,[ssCtrl],VK_N,[],   VK_K,[ssCtrl],VK_N,[ssCtrl]);
-  ecSelectionLowerCase:  SetCombo(VK_K,[ssCtrl],VK_O,[],   VK_K,[ssCtrl],VK_O,[ssCtrl]);
-  ecSelectionSwapCase:   SetCombo(VK_K,[SSCtrl],VK_P,[],   VK_K,[SSCtrl],VK_P,[ssCtrl]);
+  ecSelectionUpperCase:  SetCombo(VK_K,[ssCtrl],VK_N,[]);
+  ecSelectionLowerCase:  SetCombo(VK_K,[ssCtrl],VK_O,[]);
+  ecSelectionSwapCase:   SetCombo(VK_K,[SSCtrl],VK_P,[]);
   ecSelectionTabs2Spaces:SetSingle(VK_UNKNOWN,[]);
   ecSelectionEnclose:    SetSingle(VK_UNKNOWN,[]);
   ecSelectionComment:    SetSingle(VK_UNKNOWN,[]);
@@ -1391,14 +1402,14 @@ begin
   ecSelectionSort:       SetSingle(VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetSingle(VK_UNKNOWN,[]);
 
-  ecBlockSetBegin:       SetCombo(VK_K,[ssCtrl],VK_B,[],   VK_K,[ssCtrl],VK_B,[ssCtrl]);
-  ecBlockSetEnd:         SetCombo(VK_K,[ssCtrl],VK_K,[],   VK_K,[ssCtrl],VK_K,[ssCtrl]);
-  ecBlockToggleHide:     SetCombo(VK_K,[ssCtrl],VK_H,[],   VK_K,[ssCtrl],VK_H,[ssCtrl]);
+  ecBlockSetBegin:       SetCombo(VK_K,[ssCtrl],VK_B,[]);
+  ecBlockSetEnd:         SetCombo(VK_K,[ssCtrl],VK_K,[]);
+  ecBlockToggleHide:     SetCombo(VK_K,[ssCtrl],VK_H,[]);
   ecBlockHide:           SetSingle(VK_UNKNOWN,[]);
   ecBlockShow:           SetSingle(VK_UNKNOWN,[]);
-  ecBlockMove:           SetCombo(VK_K,[ssCtrl],VK_V,[],   VK_K,[ssCtrl],VK_V,[ssCtrl]);
-  ecBlockCopy:           SetCombo(VK_K,[ssCtrl],VK_C,[],   VK_K,[ssCtrl],VK_C,[ssCtrl]);
-  ecBlockDelete:         SetCombo(VK_K,[ssCtrl],VK_Y,[],   VK_K,[ssCtrl],VK_Y,[ssCtrl]);
+  ecBlockMove:           SetCombo(VK_K,[ssCtrl],VK_V,[]);
+  ecBlockCopy:           SetCombo(VK_K,[ssCtrl],VK_C,[]);
+  ecBlockDelete:         SetCombo(VK_K,[ssCtrl],VK_Y,[]);
   ecBlockGotoBegin:      SetCombo(VK_Q,[ssCtrl],VK_B,[ssCtrl]);
   ecBlockGotoEnd:        SetCombo(VK_Q,[ssCtrl],VK_K,[ssCtrl]);
 
@@ -1418,14 +1429,14 @@ begin
 
   // editing
   ecInsertMode:          SetSingle(VK_V,[ssCtrl],    VK_INSERT,[]);
-  ecBlockIndent:         SetCombo(VK_K,[ssCtrl],VK_I,[],   VK_K,[ssCtrl],VK_I,[ssCtrl]);
-  ecBlockUnindent:       SetCombo(VK_K,[ssCtrl],VK_U,[],   VK_K,[ssCtrl],VK_U,[ssCtrl]);
+  ecBlockIndent:         SetCombo(VK_K,[ssCtrl],VK_I,[]);
+  ecBlockUnindent:       SetCombo(VK_K,[ssCtrl],VK_U,[]);
   ecDeleteLastChar:      SetSingle(VK_H,[ssCtrl],    VK_BACK,[]);
   ecDeleteChar:          SetSingle(VK_G,[ssCtrl],    VK_DELETE,[]);
   ecDeleteWord:          SetSingle(VK_T,[ssCtrl]);
   ecDeleteLastWord:      SetSingle(VK_BACK,[ssCtrl]);
-  ecDeleteBOL:           SetCombo(VK_Q,[ssCtrl],VK_H,[],   VK_Q,[ssCtrl],VK_H,[ssCtrl]);
-  ecDeleteEOL:           SetCombo(VK_Q,[ssCtrl],VK_Y,[],   VK_Q,[ssCtrl],VK_Y,[ssCtrl]);
+  ecDeleteBOL:           SetCombo(VK_Q,[ssCtrl],VK_H,[]);
+  ecDeleteEOL:           SetCombo(VK_Q,[ssCtrl],VK_Y,[]);
   ecDeleteLine:          SetSingle(VK_Y,[ssCtrl]);
   ecClearAll:            SetSingle(VK_UNKNOWN,[]);
   ecLineBreak:           SetSingle(VK_RETURN,[],     VK_M,[ssCtrl]);
@@ -1453,13 +1464,13 @@ begin
 
   // search & replace
   ecMatchBracket:        SetSingle(VK_UNKNOWN,[]);
-  ecFind:                SetCombo(VK_Q,[SSCtrl],VK_F,[],   VK_Q,[SSCtrl],VK_F,[ssCtrl]);
+  ecFind:                SetCombo(VK_Q,[SSCtrl],VK_F,[]);
   ecFindNext:            SetSingle(VK_L,[ssCtrl]);
   ecFindPrevious:        SetSingle(VK_UNKNOWN,[]);
   ecFindInFiles:         SetSingle(VK_UNKNOWN,[]);
-  ecReplace:             SetCombo(VK_Q,[SSCtrl],VK_A,[],   VK_Q,[SSCtrl],VK_A,[ssCtrl]);
+  ecReplace:             SetCombo(VK_Q,[SSCtrl],VK_A,[]);
   ecIncrementalFind:     SetSingle(VK_UNKNOWN,[]);
-  ecGotoLineNumber:      SetCombo(VK_Q,[ssCtrl],VK_G,[],   VK_Q,[ssCtrl],VK_G,[ssCtrl]);
+  ecGotoLineNumber:      SetCombo(VK_Q,[ssCtrl],VK_G,[]);
   ecFindNextWordOccurrence:SetSingle(VK_UNKNOWN,[]);
   ecFindPrevWordOccurrence:SetSingle(VK_UNKNOWN,[]);
   ecJumpBack:            SetSingle(VK_B,[ssCtrl]);
@@ -1990,12 +2001,12 @@ begin
   ecSelectAll:           SetSingle(VK_A,[ssMeta]);
   ecSelectToBrace:       SetSingle(VK_UNKNOWN,[]);
   ecSelectCodeBlock:     SetSingle(VK_UNKNOWN,[]);
-  ecSelectWord:          SetCombo(VK_K,[SSCtrl],VK_T,[],   VK_K,[SSCtrl],VK_T,[ssCtrl]);
-  ecSelectLine:          SetCombo(VK_K,[SSCtrl],VK_L,[],   VK_K,[SSCtrl],VK_L,[ssCtrl]);
+  ecSelectWord:          SetCombo(VK_K,[SSCtrl],VK_T,[]);
+  ecSelectLine:          SetCombo(VK_K,[SSCtrl],VK_L,[]);
   ecSelectParagraph:     SetSingle(VK_UNKNOWN,[]);
-  ecSelectionUpperCase:  SetCombo(VK_K,[SSCtrl],VK_N,[],   VK_K,[SSCtrl],VK_N,[ssCtrl]);
-  ecSelectionLowerCase:  SetCombo(VK_K,[SSCtrl],VK_O,[],   VK_K,[SSCtrl],VK_O,[ssCtrl]);
-  ecSelectionSwapCase:   SetCombo(VK_K,[SSCtrl],VK_P,[],   VK_K,[SSCtrl],VK_P,[ssCtrl]);
+  ecSelectionUpperCase:  SetCombo(VK_K,[SSCtrl],VK_N,[]);
+  ecSelectionLowerCase:  SetCombo(VK_K,[SSCtrl],VK_O,[]);
+  ecSelectionSwapCase:   SetCombo(VK_K,[SSCtrl],VK_P,[]);
   ecSelectionTabs2Spaces:SetSingle(VK_UNKNOWN,[]);
   ecSelectionEnclose:    SetSingle(VK_UNKNOWN,[]);
   ecSelectionComment:    SetSingle(VK_UNKNOWN,[]);
@@ -2005,20 +2016,20 @@ begin
   ecSelectionSort:       SetSingle(VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetSingle(VK_UNKNOWN,[]);
 
-  ecStickySelection:     SetCombo(VK_K,[ssCtrl],VK_S,[],  VK_K,[ssCtrl],VK_S,[ssCtrl]);
-  ecStickySelectionCol:  SetCombo(VK_K,[ssCtrl],VK_S,[ssAlt],  VK_K,[ssCtrl],VK_S,[ssCtrl, ssAlt]);
-  ecStickySelectionStop: SetCombo(VK_K,[ssCtrl],VK_E,[],  VK_K,[ssCtrl],VK_E,[ssCtrl]);
+  ecStickySelection:     SetCombo(VK_K,[ssCtrl],VK_S,[]);
+  ecStickySelectionCol:  SetCombo(VK_K,[ssCtrl],VK_S,[ssAlt]);
+  ecStickySelectionStop: SetCombo(VK_K,[ssCtrl],VK_E,[]);
 
-  ecBlockSetBegin:       SetCombo(VK_K,[ssCtrl],VK_B,[],   VK_K,[ssCtrl],VK_B,[ssCtrl]);
-  ecBlockSetEnd:         SetCombo(VK_K,[ssCtrl],VK_K,[],   VK_K,[ssCtrl],VK_K,[ssCtrl]);
-  ecBlockToggleHide:     SetCombo(VK_K,[ssCtrl],VK_H,[],   VK_K,[ssCtrl],VK_H,[ssCtrl]);
+  ecBlockSetBegin:       SetCombo(VK_K,[ssCtrl],VK_B,[]);
+  ecBlockSetEnd:         SetCombo(VK_K,[ssCtrl],VK_K,[]);
+  ecBlockToggleHide:     SetCombo(VK_K,[ssCtrl],VK_H,[]);
   ecBlockHide:           SetCombo(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecBlockShow:           SetCombo(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecBlockMove:           SetCombo(VK_K,[ssCtrl],VK_V,[],   VK_K,[ssCtrl],VK_V,[ssCtrl]);
-  ecBlockCopy:           SetCombo(VK_K,[ssCtrl],VK_C,[],   VK_K,[ssCtrl],VK_C,[ssCtrl]);
-  ecBlockDelete:         SetCombo(VK_K,[ssCtrl],VK_Y,[],   VK_K,[ssCtrl],VK_Y,[ssCtrl]);
-  ecBlockGotoBegin:      SetCombo(VK_Q,[ssCtrl],VK_B,[],   VK_Q,[ssCtrl],VK_B,[ssCtrl]);
-  ecBlockGotoEnd:        SetCombo(VK_Q,[ssCtrl],VK_K,[],   VK_Q,[ssCtrl],VK_K,[ssCtrl]);
+  ecBlockMove:           SetCombo(VK_K,[ssCtrl],VK_V,[]);
+  ecBlockCopy:           SetCombo(VK_K,[ssCtrl],VK_C,[]);
+  ecBlockDelete:         SetCombo(VK_K,[ssCtrl],VK_Y,[]);
+  ecBlockGotoBegin:      SetCombo(VK_Q,[ssCtrl],VK_B,[]);
+  ecBlockGotoEnd:        SetCombo(VK_Q,[ssCtrl],VK_K,[]);
 
 // column mode selection
   ecColSelUp:            SetSingle(VK_UP,[ssAlt,ssShift]);
