@@ -493,17 +493,35 @@ end;
 procedure TValueListStrings.InsertItem(Index: Integer; const S: string; AObject: TObject);
 var
   i: Integer;
-  IsShowingEditor: Boolean;
+  MustHideShowingEditor, EditorHasFocus: Boolean;
+  WC: TWinControl;
+  IndexToRow: Integer;
 begin
   // ToDo: Check validity of key
   //debugln('TValueListStrings.InsertItem: Index=',dbgs(index),' S=',S,' AObject=',dbgs(aobject));
   FGrid.InvalidateCachedRow;
-  IsShowingEditor := goAlwaysShowEditor in FGrid.Options;
-  if IsShowingEditor then FGrid.Options := FGrid.Options - [goAlwaysShowEditor];
+  IndexToRow := Index + FGrid.FixedRows;
+  if (FGrid.Editor is TCompositeCellEditor) then
+  begin
+    WC := TCompositeCellEditorAccess(FGrid.Editor).GetActiveControl;
+    if (WC is TCustomEdit) then
+      EditorHasFocus := TCustomEdit(WC).Focused
+    else
+      EditorHasFocus := False;
+  end
+  else
+    EditorHasFocus := Assigned(FGrid.Editor) and FGrid.Editor.Focused;
+  MustHideShowingEditor := Assigned(FGrid.Editor) and
+                           (goAlwaysShowEditor in FGrid.Options) and
+                           FGrid.Editor.Visible and
+                           (IndexToRow = FGrid.Row) and
+                           //if editor is Focussed, we are editing a cell, so we cannot hide!
+                           (not EditorHasFocus);
+  if MustHideShowingEditor then FGrid.Options := FGrid.Options - [goAlwaysShowEditor];
   inherited InsertItem(Index, S, AObject);
   FItemProps.Insert(Index, TItemProp.Create(FGrid));
   //only restore this _after_ FItemProps is updated!
-  if IsShowingEditor then FGrid.Options := FGrid.Options + [goAlwaysShowEditor];
+  if MustHideShowingEditor then FGrid.Options := FGrid.Options + [goAlwaysShowEditor];
 end;
 
 procedure TValueListStrings.InsertItem(Index: Integer; const S: string);
