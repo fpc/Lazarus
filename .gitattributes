@@ -2096,6 +2096,7 @@ components/lazutils/Makefile.fpc svneol=native#text/plain
 components/lazutils/asiancodepagefunctions.inc svneol=native#text/pascal
 components/lazutils/asiancodepages.inc svneol=native#text/pascal
 components/lazutils/avglvltree.pas svneol=native#text/pascal
+components/lazutils/dictionarystringlist.pas svneol=native#text/plain
 components/lazutils/easylazfreetype.pas svneol=native#text/pascal
 components/lazutils/fileutil.inc svneol=native#text/pascal
 components/lazutils/fileutil.pas svneol=native#text/pascal
