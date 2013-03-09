@@ -168,6 +168,8 @@ type
     procedure InsertColRow(IsColumn: boolean; index: integer);
     function InsertRow(const KeyName, Value: string; Append: Boolean): Integer;
     procedure ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
+    function IsEmptyRow: Boolean; {Delphi compatible function}
+    function IsEmptyRow(aRow: Integer): Boolean; {This for makes more sense to me}
     procedure MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
 
     property FixedRows: Integer read GetFixedRows write SetFixedRows default 1;
@@ -803,6 +805,28 @@ begin
     Strings.Exchange(Index - FixedRows, WithIndex - FixedRows)
   else
     Raise EGridException.CreateFmt(rsVLEInvalidRowColOperation,['ExchangeColRow',' on columns']);
+end;
+function TValueListEditor.IsEmptyRow: Boolean;
+{As per help text on Embarcadero: the function does not have a parameter for row, so assume current one?}
+begin
+  Result := IsEmptyRow(Row);
+end;
+
+function TValueListEditor.IsEmptyRow(aRow: Integer): Boolean;
+begin
+  if (Strings.Count = 0) and (aRow - FixedRows = 0) then
+  //special case: we have just one row, and it is empty
+  begin
+    Result := True;
+  end
+  else if (aRow = 0) and (FixedRows = 0) then
+  begin
+    Result := ((inherited GetCells(0,0)) = EmptyStr)  and ((inherited GetCells(1,0)) = EmptyStr);
+  end
+  else
+  begin
+    Result := Strings.Strings[aRow - FixedRows] = EmptyStr;
+  end;
 end;
 
 procedure TValueListEditor.MoveColRow(IsColumn: Boolean; FromIndex,
