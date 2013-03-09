@@ -1073,7 +1073,7 @@ begin
   else
   begin
     I:=ARow-FixedRows;
-    if Strings.Count<=I then exit;
+    if (I=0) and (Strings.Count=0) then exit; //empty grid
     if ACol=0 then
       Result:=Strings.Names[I]
     else if ACol=1 then
