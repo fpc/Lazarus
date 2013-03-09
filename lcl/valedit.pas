@@ -547,7 +547,8 @@ begin
   end
   else
     EditorHasFocus := Assigned(FGrid.Editor) and FGrid.Editor.Focused;
-  MustHideShowingEditor := (goAlwaysShowEditor in FGrid.Options) and
+  MustHideShowingEditor := Assigned(FGrid.Editor) and
+                           (goAlwaysShowEditor in FGrid.Options) and
                            FGrid.Editor.Visible and
                            (IndexToRow = FGrid.Row) and
                            //if editor is Focussed, we are editing a cell, so we cannot hide!
