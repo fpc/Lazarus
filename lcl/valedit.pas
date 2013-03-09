@@ -164,6 +164,7 @@ type
     procedure DeleteColRow(IsColumn: Boolean; index: Integer);
     procedure DeleteRow(Index: Integer); override;
     procedure DeleteCol(Index: Integer); override;
+    function FindRow(const KeyName: string; out aRow: Integer): Boolean;
     procedure InsertColRow(IsColumn: boolean; index: integer);
     function InsertRow(const KeyName, Value: string; Append: Boolean): Integer;
     procedure ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
@@ -743,6 +744,15 @@ end;
 procedure TValueListEditor.DeleteCol(Index: Integer);
 begin
   Raise EGridException.CreateFmt(rsVLEInvalidRowColOperation,['DeleteCol','']);
+end;
+
+function TValueListEditor.FindRow(const KeyName: string; out aRow: Integer): Boolean;
+var
+  Index: Integer;
+begin
+  Index := Strings.IndexOfName(KeyName);
+  Result := (Index > -1);
+  if Result then aRow := Index + FixedRows;
 end;
 
 procedure TValueListEditor.InsertColRow(IsColumn: boolean; index: integer);
