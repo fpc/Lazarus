@@ -19,7 +19,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="67">
+    <Files Count="68">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
         <UnitName Value="laz2_DOM"/>
@@ -289,6 +289,10 @@
         <Filename Value="laz2_xpath.pas"/>
         <UnitName Value="laz2_xpath"/>
       </Item67>
+      <Item68>
+        <Filename Value="dictionarystringlist.pas"/>
+        <UnitName Value="dictionarystringlist"/>
+      </Item68>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>

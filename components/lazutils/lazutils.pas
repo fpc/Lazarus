@@ -15,7 +15,8 @@ uses
   TTCalc, TTCMap, TTDebug, TTError, TTFile, TTGLoad, TTInterp, TTLoad, 
   TTMemory, TTObjs, TTProfile, TTRASTER, TTTables, TTTypes, EasyLazFreeType, 
   LazLoggerBase, LazLoggerDummy, LazClasses, LazFreeTypeFontCollection, 
-  LazConfigStorage, UTF8Process, laz2_xpath, LazarusPackageIntf;
+  LazConfigStorage, UTF8Process, laz2_xpath, DictionaryStringList, 
+  LazarusPackageIntf;
 
 implementation
 
