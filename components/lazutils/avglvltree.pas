@@ -504,8 +504,7 @@ begin
     Result:=nil
 end;
 
-procedure TStringToPointerTree.SetValues(const s: string; const AValue: Pointer
-  );
+procedure TStringToPointerTree.SetValues(const s: string; const AValue: Pointer);
 var
   Node: TAvgLvlTreeNode;
   NewItem: PStringToPointerItem;
@@ -550,8 +549,7 @@ begin
   Result:=PStringMapItem(NewItem);
 end;
 
-function TStringToPointerTree.GetData(const Name: string; out Value: Pointer
-  ): boolean;
+function TStringToPointerTree.GetData(const Name: string; out Value: Pointer): boolean;
 var
   Node: TAvgLvlTreeNode;
 begin
@@ -589,8 +587,7 @@ begin
     Result:=''
 end;
 
-procedure TStringToStringTree.SetValues(const s: string;
-  const AValue: string);
+procedure TStringToStringTree.SetValues(const s: string; const AValue: string);
 var
   Node: TAvgLvlTreeNode;
   Item: PStringToStringItem;
@@ -652,8 +649,7 @@ begin
   end;
 end;
 
-function TStringToStringTree.GetString(const Name: string; out Value: string
-  ): boolean;
+function TStringToStringTree.GetString(const Name: string; out Value: string): boolean;
 var
   Node: TAvgLvlTreeNode;
 begin
