@@ -96,6 +96,9 @@ type
     procedure Exchange(Index1, Index2: Integer); override;
   end;
 
+  TKeyValuePair = record
+    Key, Value: String;
+  end;
 
   TDisplayOption = (doColumnTitles, doAutoColResize, doKeyColFixed);
   TDisplayOptions = set of TDisplayOption;
@@ -122,6 +125,8 @@ type
     FOnStringsChange: TNotifyEvent;
     FOnStringsChanging: TNotifyEvent;
     FOnValidate: TOnValidateEvent;
+    FRowTextOnEnter: TKeyValuePair;
+    FLastEditedRow: Integer;
     function GetFixedRows: Integer;
     function GetItemProp(const AKeyOrIndex: Variant): TItemProp;
     procedure SetFixedRows(AValue: Integer);
@@ -148,6 +153,7 @@ type
     procedure AdjustRowCount; virtual;
     procedure ColWidthsChanged; override;
     procedure DefineCellsProperty(Filer: TFiler); override;
+    procedure InvalidateCachedRow;
     function GetEditText(ACol, ARow: Integer): string; override;
     function GetCells(ACol, ARow: Integer): string; override;
     function GetDefaultEditor(Column: Integer): TWinControl; override;
@@ -171,6 +177,7 @@ type
     function IsEmptyRow: Boolean; {Delphi compatible function}
     function IsEmptyRow(aRow: Integer): Boolean; {This for makes more sense to me}
     procedure MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
+    function RestoreCurrentRow: Boolean;
 
     property FixedRows: Integer read GetFixedRows write SetFixedRows default 1;
     property Modified;
@@ -490,6 +497,7 @@ var
 begin
   // ToDo: Check validity of key
   //debugln('TValueListStrings.InsertItem: Index=',dbgs(index),' S=',S,' AObject=',dbgs(aobject));
+  FGrid.InvalidateCachedRow;
   IsShowingEditor := goAlwaysShowEditor in FGrid.Options;
   if IsShowingEditor then FGrid.Options := FGrid.Options - [goAlwaysShowEditor];
   inherited InsertItem(Index, S, AObject);
@@ -548,6 +556,7 @@ end;
 
 procedure TValueListStrings.Assign(Source: TPersistent);
 begin
+  FGrid.InvalidateCachedRow;
   inherited Assign(Source);
   if (Source is TValueListStrings) then
     FItemProps.Assign(TValueListStrings(Source).FItemProps);
@@ -557,6 +566,7 @@ procedure TValueListStrings.Clear;
 var
   IsShowingEditor: Boolean;
 begin
+  FGrid.InvalidateCachedRow;
   IsShowingEditor := goAlwaysShowEditor in FGrid.Options;
   if IsShowingEditor then FGrid.Options := FGrid.Options - [goAlwaysShowEditor];
   inherited Clear;
@@ -621,6 +631,7 @@ begin
   begin
     try
       BeginUpdate;
+      FGrid.InvalidateCachedRow;
       QuickSortStringsAndItemProps(0,Count-1, Compare);
     finally
       EndUpdate;
@@ -633,6 +644,7 @@ var
   i: Integer;
   IsShowingEditor: Boolean;
 begin
+  FGrid.InvalidateCachedRow;
   IsShowingEditor := goAlwaysShowEditor in FGrid.Options;
   if IsShowingEditor then FGrid.Options := FGrid.Options - [goAlwaysShowEditor];
   inherited Delete(Index);
@@ -647,6 +659,7 @@ var
   IndexToRow1, IndexToRow2: Integer;
   MustHideShowingEditor: Boolean;
 begin
+  FGrid.InvalidateCachedRow;
   IndexToRow1 := Index1 + FGrid.FixedRows;
   IndexToRow2 := Index2 + FGrid.FixedRows;
   MustHideShowingEditor := Assigned(FGrid.Editor) and
@@ -717,6 +730,7 @@ begin
               goColSizing, goEditing, goAlwaysShowEditor, goThumbTracking];
   FDisplayOptions := [doColumnTitles, doAutoColResize, doKeyColFixed];
   Col := 1;
+  FLastEditedRow := -1;
   FDropDownRows := 8;
   ShowColumnTitles;
 end;
@@ -847,6 +861,26 @@ begin
   end
   else
     Raise EGridException.CreateFmt(rsVLEInvalidRowColOperation,['MoveColRow',' on columns']);
+end;
+
+function TValueListEditor.RestoreCurrentRow: Boolean;
+begin
+  //DbgOut('RestoreCurrentRow: Row=',DbgS(Row),' FLastEditedRow=',DbgS(FLastEditedRow),' SavedKey=',FRowTextOnEnter.Key,' SavedValue=',FRowTextOnEnter.Value);
+  Result := False;
+  if (Row = FLastEditedRow) and Assigned(Editor) and Editor.Focused then
+  begin
+    if (Cells[0,Row] <> FRowTextOnEnter.Key) or (Cells[1,Row] <> FRowTextOnEnter.Value) then
+    begin
+      try
+        EditorHide;
+        if (Cells[0,Row] <> FRowTextOnEnter.Key) then Cells[0,Row] := FRowTextOnEnter.Key;
+        if (Cells[1,Row] <> FRowTextOnEnter.Value) then Cells[1,Row] := FRowTextOnEnter.Value;
+      finally
+        EditorShow(True);
+      end;
+      Result := True;
+    end;
+  end;
 end;
 
 procedure TValueListEditor.StringsChange(Sender: TObject);
@@ -1061,6 +1095,19 @@ procedure TValueListEditor.DefineCellsProperty(Filer: TFiler);
 begin
 end;
 
+procedure TValueListEditor.InvalidateCachedRow;
+begin
+  if (Strings.Count = 0) then
+  begin
+    FLastEditedRow := FixedRows;
+    FRowTextOnEnter.Key := '';
+    FRowTextOnEnter.Value := '';
+  end
+  else
+    FLastEditedRow := -1;
+end;
+
+
 function TValueListEditor.GetCells(ACol, ARow: Integer): string;
 var
   I: Integer;
@@ -1098,6 +1145,13 @@ function TValueListEditor.GetDefaultEditor(Column: Integer): TWinControl;
 var
   ItemProp: TItemProp;
 begin
+  if (Row <> FLastEditedRow) then
+  //save current contents for RestoreCurrentRow
+  begin
+    FLastEditedRow := Row;
+    FRowTextOnEnter.Key := Cells[0,Row];
+    FRowTextOnEnter.Value := Cells[1,Row];
+  end;
   Result:=inherited GetDefaultEditor(Column);
   //Need this to be able to intercept VK_Delete in the editor
   EditorOptions := EditorOptions or EO_HOOKKEYDOWN;
@@ -1166,6 +1220,8 @@ begin
       Key := 0;
     end;
   end;
+  if (Key = VK_ESCAPE) and (Shift = []) then
+    if RestoreCurrentRow then Key := 0;
 
 end;
 
