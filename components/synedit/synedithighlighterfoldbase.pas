@@ -325,6 +325,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    class function GetCapabilities: TSynHighlighterCapabilities; override;
     function GetRange: Pointer; override;
 
     // Info about Folds
@@ -757,7 +758,12 @@ begin
   FFoldConfig := nil;
 end;
 
-function TSynCustomFoldHighlighter.GetRange: pointer;
+class function TSynCustomFoldHighlighter.GetCapabilities: TSynHighlighterCapabilities;
+begin
+  Result := inherited GetCapabilities + [hcCodeFolding];
+end;
+
+function TSynCustomFoldHighlighter.GetRange: Pointer;
 begin
   // FCodeFoldRange is the working range and changed steadily
   // => return a fixed copy of the current CodeFoldRange instance,

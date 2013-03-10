@@ -189,7 +189,8 @@ type
 
   TSynHighlighterCapability = (
     hcUserSettings, // supports Enum/UseUserSettings
-    hcRegistry      // supports LoadFrom/SaveToRegistry
+    hcRegistry,     // supports LoadFrom/SaveToRegistry
+    hcCodeFolding
   );
 
   TSynHighlighterCapabilities = set of TSynHighlighterCapability;
