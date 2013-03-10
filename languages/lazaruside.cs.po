@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazarus\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-03-09 22:23+0100\n"
+"PO-Revision-Date: 2013-03-10 14:46+0100\n"
 "Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -1022,7 +1022,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcommentcontinuematchline
 msgid "Match whole line"
-msgstr "Shoda celého řádku"
+msgstr "řádku"
 
 #: lazarusidestrconsts.dlgcommentcontinuematchtext
 msgid "Match text after token \"%s\""
@@ -1724,7 +1724,7 @@ msgstr "Sekce Unit"
 
 #: lazarusidestrconsts.dlgfoldpasuserregion
 msgid "{%Region}"
-msgstr "{%Oblast}"
+msgstr "{%Region}"
 
 #: lazarusidestrconsts.dlgfoldpasuses
 msgctxt "lazarusidestrconsts.dlgfoldpasuses"
@@ -4496,7 +4496,7 @@ msgstr "Vlastnosti bodů zastavení"
 
 #: lazarusidestrconsts.lisbrowseforcompiler
 msgid "Browse for Compiler (%s)"
-msgstr "Procházet pro překladač"
+msgstr "Procházet pro překladač (%s)"
 
 #: lazarusidestrconsts.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
@@ -6200,11 +6200,11 @@ msgstr "Jméno komponenty \"%s\" je klíčovým slovem Pascalu."
 
 #: lazarusidestrconsts.liscomponentnameiskeyword
 msgid "Component name %s%s%s is keyword"
-msgstr "Jméno komponenty je klíčové slovo"
+msgstr "Jméno komponenty %s%s%s je klíčové slovo"
 
 #: lazarusidestrconsts.liscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
-msgstr "Jméno komponenty není platný identifikátor"
+msgstr "Jméno komponenty %s%s%s není platný identifikátor"
 
 #: lazarusidestrconsts.liscomppalcomponentlist
 msgid "View All"
@@ -8118,7 +8118,7 @@ msgstr "Chyba načítání XML"
 
 #: lazarusidestrconsts.liserrorreadingxmlfile
 msgid "Error reading xml file %s%s%s%s%s"
-msgstr "Chyba čtení xml souboru %s%s%s%s"
+msgstr "Chyba čtení xml souboru %s%s%s%s%s"
 
 #: lazarusidestrconsts.liserrorrenamingfile
 msgid "Error renaming file"
@@ -12163,7 +12163,7 @@ msgstr "%spřepíše cpu projektu. např. i386 x86_64 powerpc powerpc_64 aj. vý
 
 #: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
 msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
-msgstr "%přepíše operační systém projektu. např. win32 linux. výchozí: %s"
+msgstr "%spřepíše operační systém projektu. např. win32 linux. výchozí: %s"
 
 #: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
 msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
@@ -12699,7 +12699,7 @@ msgstr "Čas běhu"
 
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
 msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
-msgstr "Balíček %s%s% má vlajku autoinstalace.%sTo znamená, že bude instalován do IDE. Instalované balíčky musí"
+msgstr "Balíček %s%s%s má vlajku autoinstalace.%sTo znamená, že bude instalován do IDE. Instalované balíčky%smusí být designtime."
 
 #: lazarusidestrconsts.lispckoptsthispackageprovidesthesameasthefollowingpackages
 msgid "This package provides the same as the following packages:"
@@ -15205,7 +15205,7 @@ msgstr "Maska souboru \"%s\" není platný regulární výraz."
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
-msgstr "Soubor %s%s%s%svypadá jako program. Zavřít aktuální projekt a vytvořit nový projekt lazarusu pro tento"
+msgstr "Soubor %s%s%s%svypadá jako program. Zavřít aktuální projekt a vytvořit nový projekt lazarusu pro tento program?%s\"Ne\" načte soubor jako normální zdroj."
 
 #: lazarusidestrconsts.listhefileseemstobetheprogramfileofanexistinglazarusp
 msgid "The file %s seems to be the program file of an existing lazarus Project."
@@ -15406,7 +15406,7 @@ msgstr "Před sestavením musíte projekt uložit%sPokud jste nastavili testovac
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
-msgstr "Projekt používá cílový OS=%s a CPU=%s.%sSoubor system.ppu pro tento cílový systém nebyl nalezen v programovém adresáři FPC. Ujistěte se, že je FPC nainstalován pro tento cílový systém a fpc.cfg obsahuje správné adresáře."
+msgstr "Projekt používá cílový OS=%s a CPU=%s.%sSoubor system.ppu pro tento cílový systém nebyl nalezen v programovém adresáři FPC. %sUjistěte se, že je FPC nainstalován pro tento cílový systém a fpc.cfg obsahuje správné adresáře."
 
 #: lazarusidestrconsts.listheprojectusesthenewfpcresourceswhichrequiresatlea
 msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
@@ -15748,7 +15748,7 @@ msgstr "Hledaný řetězec '%s' nenalezen!"
 
 #: lazarusidestrconsts.lisuethecurre
 msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
-msgstr "Aktuální písmo editoru nepodporuje UTF-8, ale váš sytém vypadá, že ho používá.%sTo znamená, že ne-ASCII"
+msgstr "Aktuální písmo editoru nepodporuje UTF-8, ale váš sytém vypadá, že ho používá.%sTo znamená, že ne-ASCII budou pravděpodobně zobrazeny nekorektně.%sMůžete vybrat jiný font v nastavení editoru."
 
 #: lazarusidestrconsts.lisuiclearincludedbyreference
 msgid "Clear include cache"
@@ -15967,7 +15967,7 @@ msgstr "Nelze najít metodu."
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
-msgstr "Nelze najít pascalovskou jednotku (.pas,.pp) pro soubor .lfm%s%%s%s"
+msgstr "Nelze najít pascalovskou jednotku (.pas,.pp) pro soubor .lfm %s%s%s%s"
 
 #: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
 msgid "Unable to find the component class \"%s\".%sIt is not registered via RegisterClass and no lfm was found.%sIt is needed by unit:%s%s"
@@ -15991,11 +15991,11 @@ msgstr "Nelze nahrát soubor %s: %s"
 
 #: lazarusidestrconsts.lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
-msgstr "Nelze načíst starý soubor zdrojů.%sSoubor zdrojů je první vkládaný soubor v inicializační části %s.Na příklad {$I %s.lrs}.%sPravděpodobně chyba syntaxe."
+msgstr "Nelze načíst starý soubor zdrojů.%sSoubor zdrojů je první vkládaný soubor %sv inicializační části %s.Na příklad {$I %s.lrs}.%sPravděpodobně chyba syntaxe."
 
 #: lazarusidestrconsts.lisunabletoloadpackage
 msgid "Unable to load package %s%s%s"
-msgstr "Nelze přečíst balíček %s%s%"
+msgstr "Nelze přečíst balíček %s%s%s"
 
 #: lazarusidestrconsts.lisunabletoloadthecomponentclassbecauseitdependsonits
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
@@ -16133,7 +16133,7 @@ msgstr "Nelze zapisovat do souboru %s%s%s%sChyba: %s"
 
 #: lazarusidestrconsts.lisunabletowritetheprojectinfofileerror
 msgid "Unable to write the project info file%s%s%s%s.%sError: %s"
-msgstr "Nelze zapisovat do informačního souboru projektu %s%s%s%sChyba: %s"
+msgstr "Nelze zapisovat do informačního souboru projektu %s%s%s%s.%sChyba: %s"
 
 #: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
 msgid "Unable to write the project session file%s\"%s\".%sError: %s"
@@ -16430,7 +16430,7 @@ msgstr "Varování: "
 
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
-msgstr "Varování: víceznačný soubor nalezen: %s%s%s. Zdrojový soubor je: %s%s%"
+msgstr "Varování: víceznačný soubor nalezen: %s%s%s. Zdrojový soubor je: %s%s%s"
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
 msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
