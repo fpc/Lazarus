@@ -297,6 +297,8 @@ type
     FKey2: word;
     FShift2: TShiftState;
     FCommand: TSynEditorCommand;
+    FShiftMask: TShiftState;
+    FShiftMask2: TShiftState;
     function GetCommand: TSynEditorCommand;
     function GetShortCut: TShortCut;
     function GetShortCut2: TShortCut;
@@ -312,6 +314,7 @@ type
   public
     procedure Assign(Source: TPersistent); override;
 {begin}                                                                         //ac 2000-07-05
+    // TODO: add ShiftMask optional
     procedure LoadFromStream(AStream: TStream);
     procedure SaveToStream(AStream: TStream);
 {end}                                                                           //ac 2000-07-05
@@ -320,6 +323,9 @@ type
     property Key2: word read FKey2 write SetKey2;
     property Shift: TShiftState read FShift write SetShift;
     property Shift2: TShiftState read FShift2 write SetShift2;
+    // Modifier keys, that should be ignored
+    property ShiftMask: TShiftState read FShiftMask write FShiftMask;
+    property ShiftMask2: TShiftState read FShiftMask2 write FShiftMask2;
   published
     property Command: TSynEditorCommand read GetCommand write SetCommand;
     property ShortCut: TShortCut read GetShortCut write SetShortCut
@@ -744,10 +750,12 @@ begin
   if Source is TSynEditKeyStroke then
   begin
     Command := TSynEditKeyStroke(Source).Command;
-    Key := TSynEditKeyStroke(Source).Key;
-    Key2 := TSynEditKeyStroke(Source).Key2;
-    Shift := TSynEditKeyStroke(Source).Shift;
-    Shift2 := TSynEditKeyStroke(Source).Shift2;
+    Key        := TSynEditKeyStroke(Source).Key;
+    Key2       := TSynEditKeyStroke(Source).Key2;
+    Shift      := TSynEditKeyStroke(Source).Shift;
+    Shift2     := TSynEditKeyStroke(Source).Shift2;
+    ShiftMask  := TSynEditKeyStroke(Source).ShiftMask;
+    ShiftMask2 := TSynEditKeyStroke(Source).ShiftMask2;
   end else
     inherited Assign(Source);
 end;
@@ -813,6 +821,7 @@ begin
   end;
 
   Menus.ShortCutToKey(Value, NewKey, NewShift);
+  ShiftMask := [];
   if (NewKey <> Key) or (NewShift <> Shift) then
   begin
     Key := NewKey;
@@ -848,6 +857,7 @@ begin
   end;
 
   Menus.ShortCutToKey(Value, NewKey, NewShift);
+  ShiftMask2 := [];
   if (NewKey <> Key2) or (NewShift <> Shift2) then
   begin
     Key2 := NewKey;
@@ -936,7 +946,7 @@ var
 begin
   Result := -1;
   for x := 0 to Count-1 do
-    if (Items[x].Key = Code) and (Items[x].Shift = SS) and (Items[x].Key2 = 0)
+    if (Items[x].Key = Code) and (Items[x].Shift = SS - Items[x].ShiftMask) and (Items[x].Key2 = 0)
     then begin
       Result := x;
       break;
@@ -1018,8 +1028,8 @@ begin
   for x := 0 to Count-1 do
     // If first key requires CTRL, ignore CTRL status on 2nd key
     with Items[x] do
-      if (Key = Code1) and (Shift = SS1) and
-         (Key2 = Code2) and ((Shift2 = SS2) or
+      if (Key = Code1) and (Shift = SS1 - ShiftMask) and
+         (Key2 = Code2) and ((Shift2 = SS2 - ShiftMask2) or
               ((Shift2 = (SS2 >< [ssCtrl])) and (Shift = [ssCtrl]))) then
     begin
       Result := x;
@@ -1033,7 +1043,7 @@ var
 begin
   Result := -1;
   for x := 0 to Count-1 do
-    if (Items[x].Key = Code) and (Items[x].Shift = SS) and
+    if (Items[x].Key = Code) and (Items[x].Shift = SS - Items[x].ShiftMask) and
        (Items[x].Key2 <> VK_UNKNOWN) then
     begin
       Result := x;
@@ -1095,13 +1105,14 @@ end;
 procedure TSynEditKeyStrokes.ResetDefaults;
 
   procedure AddKey(const ACmd: TSynEditorCommand; const AKey: word;
-     const AShift: TShiftState);
+     const AShift: TShiftState; const AShiftMask: TShiftState = []);
   begin
     with Add do
     begin
-      Key := AKey;
-      Shift := AShift;
-      Command := ACmd;
+      Key       := AKey;
+      Shift     := AShift;
+      ShiftMask := AShiftMask;
+      Command   := ACmd;
     end;
   end;
 
