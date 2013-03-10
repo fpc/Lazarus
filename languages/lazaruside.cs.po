@@ -2,17 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazarus\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-01-05 16:32+0300\n"
-"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"PO-Revision-Date: 2013-03-09 22:23+0100\n"
+"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Czech\n"
-"X-Poedit-Country: CZECH REPUBLIC\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: Poedit 1.5.5\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Language: cs_CZ\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
@@ -568,7 +567,7 @@ msgstr "Varování při překládání"
 
 #: lazarusidestrconsts.dlgansicommenttab
 msgid "Ansi (* *)"
-msgstr ""
+msgstr "Ansi (* *)"
 
 #: lazarusidestrconsts.dlgapplicationsettings
 msgid "Application settings"
@@ -656,11 +655,11 @@ msgstr "Odsazení bloku (mezery)"
 
 #: lazarusidestrconsts.dlgblockindentkeys
 msgid "Block indent"
-msgstr ""
+msgstr "Odsazení bloku"
 
 #: lazarusidestrconsts.dlgblockindentlink
 msgid "(edit keys)"
-msgstr ""
+msgstr "(upravit klávesy)"
 
 #: lazarusidestrconsts.dlgblockindenttype
 msgid "Indent method"
@@ -1003,19 +1002,19 @@ msgstr "Parametry příkazové řádky (bez jména aplikace)"
 
 #: lazarusidestrconsts.dlgcommentalignmaxdefault
 msgid "Make default indent for new line if comment opens at column:"
-msgstr ""
+msgstr "Vychozí odsazení pro nový řádek pokud komentář začíná ve sloupi:"
 
 #: lazarusidestrconsts.dlgcommentalignmaxtoken
 msgid "Limit indent to"
-msgstr ""
+msgstr "Omezit odsazení na"
 
 #: lazarusidestrconsts.dlgcommentcontinue
 msgid "Prefix comments on linebreak"
-msgstr ""
+msgstr "Přefixovat komentáře na zalomení řádku"
 
 #: lazarusidestrconsts.dlgcommentcontinuematch
 msgid "Match current line"
-msgstr ""
+msgstr "Shoda aktuálního řádku"
 
 #: lazarusidestrconsts.dlgcommentcontinuematchasterisk
 msgid "Match text including \"*\" of token \"(*\""
@@ -1023,7 +1022,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcommentcontinuematchline
 msgid "Match whole line"
-msgstr ""
+msgstr "Shoda celého řádku"
 
 #: lazarusidestrconsts.dlgcommentcontinuematchtext
 msgid "Match text after token \"%s\""
@@ -1051,7 +1050,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcommentindentgroupoptions
 msgid "Comments"
-msgstr ""
+msgstr "Komentáře"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
 msgid "Extend, if matched or not matched"
@@ -1206,7 +1205,7 @@ msgstr "Ctrl-prostřední-klik na záložku zavře všechny ostatní"
 
 #: lazarusidestrconsts.dlgcurlycommenttab
 msgid "Curly { }"
-msgstr ""
+msgstr "Kudrnaté {}"
 
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
@@ -1513,7 +1512,7 @@ msgstr "Zapnuto"
 
 #: lazarusidestrconsts.dlgedtabindent
 msgid "Tab and Indent"
-msgstr ""
+msgstr "Tab a odsazení"
 
 #: lazarusidestrconsts.dlgedunder
 msgid "Underline"
@@ -1986,13 +1985,12 @@ msgstr "Odsadit kód na"
 
 #: lazarusidestrconsts.dlgindentsindentgroupoptions
 msgid "Indent"
-msgstr ""
+msgstr "Odsazení"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-#, fuzzy
 #| msgid "Indent and Tabs"
 msgid "Tabs"
-msgstr "Odsazení a tabulátory"
+msgstr "Taby"
 
 #: lazarusidestrconsts.dlginfrontofmethods
 msgid "In front of methods"
@@ -2044,7 +2042,7 @@ msgstr "Udržovat x-ovou pozici kurzoru"
 
 #: lazarusidestrconsts.dlgkeylink
 msgid "(Edit Key)"
-msgstr ""
+msgstr "(Upravit klávesu)"
 
 #: lazarusidestrconsts.dlgkeymapping
 msgid "Key Mappings"
@@ -2159,7 +2157,7 @@ msgstr "Zvýraznění slova pod kurzorem"
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
 msgid "User defined markup"
-msgstr ""
+msgstr "Uživatelem definované zvýraznění syntaxe"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddelcaption
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefineddelcaption"
@@ -2168,7 +2166,7 @@ msgstr "Odstranit"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddelprompt
 msgid "Delete list \"%s\"?"
-msgstr ""
+msgstr "Odstranit seznam \"%s\"?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
 msgid "Add Word or Term"
@@ -2192,11 +2190,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedgloballist
 msgid "Add/Remove in all editors"
-msgstr ""
+msgstr "Přidat/Odebrat ve všech editorech"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedlistdel
 msgid "Delete list"
-msgstr ""
+msgstr "Odstranit seznam"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedlistname
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefinedlistname"
@@ -2205,11 +2203,11 @@ msgstr "Jméno"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedlistnew
 msgid "Add list"
-msgstr ""
+msgstr "Přidat seznam"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedmatchcase
 msgid "Case sensitive"
-msgstr ""
+msgstr "Rozlišovat velikost písmen"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedmatchendbound
 msgid "Set bound at term end"
@@ -2225,11 +2223,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylenselect
 msgid "selection"
-msgstr ""
+msgstr "výběr"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylenword
 msgid "current word"
-msgstr ""
+msgstr "aktuální slovo"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeyopts
 msgid "Settings for terms added by key"
@@ -2241,23 +2239,23 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewname
 msgid "New list"
-msgstr ""
+msgstr "Nový seznam"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednolists
 msgid "No lists"
-msgstr ""
+msgstr "Žádné seznamy"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednolistssel
 msgid "Select ..."
-msgstr ""
+msgstr "Vybrat ..."
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
 msgid "Key Settings"
-msgstr ""
+msgstr "Nastavení kláves"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain
 msgid "Main settings"
-msgstr ""
+msgstr "Hlavní nastavení"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match word boundaries for words up to this length:"
@@ -3183,7 +3181,7 @@ msgstr "Přeskočit dopředné deklarace tříd"
 
 #: lazarusidestrconsts.dlgslashcommenttab
 msgid "Slash //"
-msgstr ""
+msgstr "Lomítko //"
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"
@@ -3237,7 +3235,7 @@ msgstr "Zastavit po počtu chyb:"
 
 #: lazarusidestrconsts.dlgstringautoappend
 msgid "Append text to close string"
-msgstr ""
+msgstr "Připojit text k uzavíracímu řetězci"
 
 #: lazarusidestrconsts.dlgstringautoprefix
 msgid "Prefix string on new line"
@@ -3245,7 +3243,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgstringbreakindenttab
 msgid "String ''"
-msgstr ""
+msgstr "Řetězec ''"
 
 #: lazarusidestrconsts.dlgstringenableautocontinue
 msgid "Extend strings on linebreak"
@@ -6375,7 +6373,7 @@ msgstr "Převod připraven"
 
 #: lazarusidestrconsts.lisconvdelphiconversiontook
 msgid "Conversion took: %s"
-msgstr ""
+msgstr "Konverze zabrala: %s"
 
 #: lazarusidestrconsts.lisconvdelphiconvertdelphipackage
 msgid "Convert Delphi package"
@@ -6394,10 +6392,9 @@ msgid "* Converting file %s *"
 msgstr "* Převádění souboru %s *"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-#, fuzzy
 #| msgid "*** Converting unit files ... ***"
 msgid "*** Converting unit files ***"
-msgstr "*** Převádění souborů jednotek ... ***"
+msgstr "*** Převádění souborů jednotek ***"
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
 msgid "Delphi package main source (.dpk) file not found for package%s%s"
@@ -6420,10 +6417,9 @@ msgid "Failed to convert unit%s%s%s"
 msgstr "Selhal převod jednotky%s%s%s"
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
-#, fuzzy
 #| msgid "*** Find all unit files ... ***"
 msgid "*** Find all unit files ***"
-msgstr "*** Najít všechny soubory jednotek ... ***"
+msgstr "*** Najít všechny soubory jednotek ***"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
@@ -6455,7 +6451,7 @@ msgstr "Jméno balíčku existuje"
 
 #: lazarusidestrconsts.lisconvdelphipackagerequired
 msgid "Package %s is required but not installed in Lazarus! Install it later."
-msgstr ""
+msgstr "Balík %s je vyžadování v Lazarusu! Nainstalujte jej později."
 
 #: lazarusidestrconsts.lisconvdelphiprojomittedunit
 msgid "Omitted unit %s from project"
@@ -6478,10 +6474,9 @@ msgid "* Repairing form file %s *"
 msgstr "* Oprava formulářového souboru %s *"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
-#, fuzzy
 #| msgid "*** Repairing form files ... ***"
 msgid "*** Fixing used units and Repairing form files ***"
-msgstr "*** Opravování formulářových souborů ... ***"
+msgstr "*** Opravování formulářových souborů ***"
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
 msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
@@ -6531,11 +6526,11 @@ msgstr "Cíl"
 
 #: lazarusidestrconsts.lisconverttargetcrossplatform
 msgid "Cross-platform"
-msgstr ""
+msgstr "Multi-platformní"
 
 #: lazarusidestrconsts.lisconverttargetcrossplatformhint
 msgid "Cross-platform versus Windows-only"
-msgstr ""
+msgstr "Multi-platformní vs. Pouze pro windows"
 
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
@@ -10459,7 +10454,7 @@ msgstr "Řetězec malými písmeny daný jako parametr"
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 msgid "lpk has vanished on disk. Using as alternative%s"
-msgstr ""
+msgstr "lpk zmizel z disku. Použiji alternativu %s"
 
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "lrs include files"
@@ -14183,7 +14178,7 @@ msgstr "Přejmenování souboru selhalo"
 
 #: lazarusidestrconsts.lisrenameshowresult
 msgid "Show list of renamed Identifiers"
-msgstr ""
+msgstr "Ukázat seznam přejmenovaných identifikátorů"
 
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
@@ -16320,7 +16315,7 @@ msgstr "Použít balíček v projektu"
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeyadd
 msgid "Add to list \"%s\""
-msgstr ""
+msgstr "Přidat na seznam \"%s\""
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeygroup
 msgctxt "lazarusidestrconsts.lisuserdefinedmarkupkeygroup"
@@ -16329,11 +16324,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeyremove
 msgid "Remove from list \"%s\""
-msgstr ""
+msgstr "Odebrat ze seznamu \"%s\""
 
 #: lazarusidestrconsts.lisuserdefinedmarkupkeytoggle
 msgid "Toggle on list \"%s\""
-msgstr ""
+msgstr "Přepnout na seznamu \"%s\""
 
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
@@ -16637,27 +16632,27 @@ msgstr "Editor zdrojového kódu"
 
 #: lazarusidestrconsts.lrsplddeleteselected
 msgid "Delete selected"
-msgstr ""
+msgstr "Odstranit vybrané"
 
 #: lazarusidestrconsts.lrspldinvalid
 msgid "invalid"
-msgstr ""
+msgstr "neplatný"
 
 #: lazarusidestrconsts.lrspldlpkfileinvalid
 msgid "lpk file invalid (%s)"
-msgstr ""
+msgstr "neplatný lpk soubor (%s)"
 
 #: lazarusidestrconsts.lrspldlpkfilevalid
 msgid "lpk file valid (%s)"
-msgstr ""
+msgstr "platný lpk soubor (%s)"
 
 #: lazarusidestrconsts.lrspldunabletodeletefile
 msgid "Unable to delete file \"%s\""
-msgstr ""
+msgstr "Nebylo možné odstanit soubor \"%s\""
 
 #: lazarusidestrconsts.lrspldvalid
 msgid "valid"
-msgstr ""
+msgstr "platný"
 
 #: lazarusidestrconsts.lrsrescanlplfiles
 msgid "Rescan lpl files"
@@ -17178,11 +17173,11 @@ msgstr "Odstranit celý text"
 
 #: lazarusidestrconsts.srkmecclearallbookmark
 msgid "Clear all Bookmarks"
-msgstr ""
+msgstr "Vyčistit všechny záložky"
 
 #: lazarusidestrconsts.srkmecclearbookmarkforfile
 msgid "Clear Bookmarks for current file"
-msgstr ""
+msgstr "Vyčistit záložky pro aktuální soubor"
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

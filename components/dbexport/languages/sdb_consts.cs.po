@@ -8,15 +8,15 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.5.5\n"
 
 #: sdb_consts.scancelrecordsexported
 msgid "Exported %d before user canceled."
-msgstr "Bylo exportováno %d před zrušením."
+msgstr "Před zrušením bylo exportováno %d položek."
 
 #: sdb_consts.sdb_availableexportformats
 msgid "Available export formats:"
-msgstr "Dostupné formáty exportu"
+msgstr "Dostupné formáty pro export:"
 
 #: sdb_consts.sdb_cancel
 msgid "&Cancel"
@@ -24,7 +24,7 @@ msgstr "&Zrusit"
 
 #: sdb_consts.sdb_configuredataexport
 msgid "Configure data export"
-msgstr "Konfigurovat export dat"
+msgstr "Konfigurace exportu dat"
 
 #: sdb_consts.sdb_exportprogress
 msgid "Export progress"
@@ -32,7 +32,7 @@ msgstr "Průběh exportu"
 
 #: sdb_consts.sdb_fields
 msgid "Fields"
-msgstr "Políčka"
+msgstr "Položky"
 
 #: sdb_consts.sdb_filename
 msgid "Filename:"
@@ -44,23 +44,23 @@ msgstr "Formátování"
 
 #: sdb_consts.sdb_moveselectedfielddown
 msgid "Move selected field down"
-msgstr "Posunout vybrané pole dolů"
+msgstr "Posunout vybranou položku dolů"
 
 #: sdb_consts.sdb_moveselectedfieldup
 msgid "Move selected field up"
-msgstr "Posunout vybrané pole nahoru"
+msgstr "Posunout vybranou položku nahoru"
 
 #: sdb_consts.sdb_propertiesforselectedfield
 msgid "Properties for selected field:"
-msgstr "Vlastnosti pro vybrané políčko"
+msgstr "Vlastnosti pro vybranou položku:"
 
 #: sdb_consts.sdb_selectdataexportformat
 msgid "Select data export Format"
-msgstr "Vybrat formát exportu dat"
+msgstr "Zvolit Formát exportu dat"
 
 #: sdb_consts.sdb_selectfieldstoexport
 msgid "Select fi&elds to export"
-msgstr "Vybrat pol&e pro export"
+msgstr "Vybrat položky k &exportu"
 
 #: sdb_consts.serrnodatasetassigned
 msgid "DataExporter has no Dataset assigned."
@@ -68,7 +68,7 @@ msgstr "DataExporter nemá přiřazený Dataset."
 
 #: sdb_consts.serropeningdataset
 msgid "Could not open dataset for exporting: %s"
-msgstr "Není možné otevřít dataset pro export: %s"
+msgstr "Není možné otevřít dataset pro exportování: %s"
 
 #: sdb_consts.sexecute
 msgid "Execute ..."
@@ -76,8 +76,8 @@ msgstr "Spustit ..."
 
 #: sdb_consts.snrecordsexported
 msgid "Succesfully exported %d records."
-msgstr "Úspěšně exportováno %d záznamů"
+msgstr "Úspěšně exportováno %d položek."
 
 #: sdb_consts.sprogress
 msgid "Exporting %d records"
-msgstr "Exportuji %d záznamů"
+msgstr "Exportuji %d položek"
