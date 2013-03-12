@@ -111,7 +111,7 @@ procedure TDictionaryStringList.InsertItem(Index: Integer; const S: string);
 begin
 //  if FAssigning then Exit;
   if (Duplicates <> dupAccept) and not Sorted then
-    if IndexOf(S) <> -1 then
+    if FMap.Contains(S) then
       case Duplicates of
         DupIgnore : Exit;
         DupError : raise Exception.Create('TDictionaryStringList.InsertItem:'
