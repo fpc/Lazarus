@@ -110,6 +110,7 @@ Type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnDrawItem;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
