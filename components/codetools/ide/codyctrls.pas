@@ -2847,7 +2847,7 @@ var
   GapInFront: Integer;
   GapBehind: Integer;
 begin
-  debugln(['TCustomLvlGraphControl.AutoLayout ',DbgSName(Self),' ClientRect=',dbgs(ClientRect)]);
+  //debugln(['TCustomLvlGraphControl.AutoLayout ',DbgSName(Self),' ClientRect=',dbgs(ClientRect)]);
   BeginUpdate;
   try
     Canvas.Font.Assign(Font);
