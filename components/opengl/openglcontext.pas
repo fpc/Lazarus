@@ -69,6 +69,7 @@ uses
 {$ENDIF}
 {$IFDEF UseGtk2GLX}
   GLGtkGlxContext;
+  {$DEFINE UsesModernGL}
   {$DEFINE HasRGBBits}
 {$ENDIF}
 {$IFDEF UseCarbonAGL}
@@ -114,6 +115,8 @@ type
     FOnPaint: TNotifyEvent;
     FCurrentFrameTime: integer; // in msec
     FLastFrameTime: integer; // in msec
+    fOpenGLMajorVersion: Cardinal;
+    fOpenGLMinorVersion: Cardinal;
     FRGBA: boolean;
     {$IFDEF HasRGBBits}
     FRedBits, FGreenBits, FBlueBits,
@@ -124,6 +127,8 @@ type
     function GetSharingControls(Index: integer): TCustomOpenGLControl;
     procedure SetAutoResizeViewport(const AValue: boolean);
     procedure SetDoubleBuffered(const AValue: boolean);
+    procedure SetOpenGLMajorVersion(AValue: Cardinal);
+    procedure SetOpenGLMinorVersion(AValue: Cardinal);
     procedure SetRGBA(const AValue: boolean);
     {$IFDEF HasRGBBits}
     procedure SetRedBits(const AValue: Cardinal);
@@ -170,6 +175,8 @@ type
     property GreenBits: Cardinal read FGreenBits write SetGreenBits default 8;
     property BlueBits: Cardinal read FBlueBits write SetBlueBits default 8;
     {$ENDIF}
+    property OpenGLMajorVersion: Cardinal read fOpenGLMajorVersion write SetOpenGLMajorVersion default 0;
+    property OpenGLMinorVersion: Cardinal read fOpenGLMinorVersion write SetOpenGLMinorVersion default 0;
     { Number of samples per pixel, for OpenGL multi-sampling (anti-aliasing).
 
       Value <= 1 means that we use 1 sample per pixel, which means no anti-aliasing.
@@ -203,6 +210,8 @@ type
     property GreenBits;
     property BlueBits;
     {$ENDIF}
+    property OpenGLMajorVersion;
+    property OpenGLMinorVersion;
     property MultiSampling;
     property AlphaBits;
     property DepthBits;
@@ -284,6 +293,18 @@ begin
   if FDoubleBuffered=AValue then exit;
   FDoubleBuffered:=AValue;
   OpenGLAttributesChanged;
+end;
+
+procedure TCustomOpenGLControl.SetOpenGLMajorVersion(AValue: Cardinal);
+begin
+  if fOpenGLMajorVersion=AValue then Exit;
+  fOpenGLMajorVersion:=AValue;
+end;
+
+procedure TCustomOpenGLControl.SetOpenGLMinorVersion(AValue: Cardinal);
+begin
+  if fOpenGLMinorVersion=AValue then Exit;
+  fOpenGLMinorVersion:=AValue;
 end;
 
 procedure TCustomOpenGLControl.SetRGBA(const AValue: boolean);
@@ -444,6 +465,8 @@ begin
   FGreenBits:=8;
   FBlueBits:=8;
   {$ENDIF}
+  fOpenGLMajorVersion:=0;
+  fOpenGLMinorVersion:=0;
   FMultiSampling:=1;
   FDepthBits:=DefaultDepthBits;
   ControlStyle:=ControlStyle-[csSetCaption];
@@ -473,7 +496,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TCustomOpenGLControl.Paint;
+Procedure TCustomOpenGLControl.Paint;
 begin
   if IsVisible and HandleAllocated then begin
     UpdateFrameTimeDiff;
@@ -591,6 +614,10 @@ begin
                                  AttrControl.RedBits,
                                  AttrControl.GreenBits,
                                  AttrControl.BlueBits,
+                                 {$ENDIF}
+                                 {$IFDEF UsesModernGL}
+                                 AttrControl.OpenGLMajorVersion,
+                                 AttrControl.OpenGLMinorVersion,
                                  {$ENDIF}
                                  AttrControl.MultiSampling,
                                  AttrControl.AlphaBits,

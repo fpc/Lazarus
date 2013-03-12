@@ -26,7 +26,8 @@ unit GLGtkGlxContext;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, X, XUtil, XLib, gl, InterfaceBase,
+  Classes, SysUtils, ctypes, LCLProc, LCLType, X, XUtil, XLib, gl,
+  InterfaceBase,
   {$IFDEF UseFPGLX}
   glx,
   {$ELSE}
@@ -133,6 +134,13 @@ type
     parent_class: TGtkDrawingAreaClass;
   end;
 
+  TContextAttribs = record
+    AttributeList: PLongint;
+    MajorVersion: Cardinal;
+    MinorVersion: Cardinal;
+    MultiSampling: Cardinal;
+  end;
+
 function GTK_TYPE_GL_AREA: TGtkType;
 function GTK_GL_AREA(obj: Pointer): PGtkGLArea;
 function GTK_GL_AREA_CLASS(klass: Pointer): PGtkGLAreaClass;
@@ -140,9 +148,9 @@ function GTK_IS_GL_AREA(obj: Pointer): Boolean;
 function GTK_IS_GL_AREA_CLASS(klass: Pointer): Boolean;
 
 function gtk_gl_area_get_type: TGtkType;
-function gtk_gl_area_new(attrList: Plongint): PGtkWidget;
-function gtk_gl_area_share_new(attrList: Plongint; share: PGtkGLArea): PGtkWidget;
-function gtk_gl_area_share_new_usefpglx(attrList: Plongint; share: PGtkGLArea): PGtkGLArea;
+function gtk_gl_area_new(Attribs: TContextAttribs): PGtkWidget;
+function gtk_gl_area_share_new(Attribs: TContextAttribs; share: PGtkGLArea): PGtkWidget;
+function gtk_gl_area_share_new_usefpglx(Attribs: TContextAttribs; share: PGtkGLArea): PGtkGLArea;
 function gtk_gl_area_make_current(glarea: PGtkGLArea): boolean;
 function gtk_gl_area_begingl(glarea: PGtkGLArea): boolean;
 procedure gtk_gl_area_swap_buffers(gl_area: PGtkGLArea);
@@ -158,18 +166,16 @@ function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
              WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
              DoubleBuffered, RGBA: boolean;
-             const RedBits, GreenBits, BlueBits,
+             const RedBits, GreenBits, BlueBits, MajorVersion, MinorVersion,
              MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
              const AParams: TCreateParams): HWND;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 
-{ Create GLX attributes list suitable for glXChooseVisual or glXChooseFBConfig.
-  Note that if MultiSampling is > 1, it is expected that caller 
-  already checked that GLX_ARB_multisample is available. }
+{ Create GLX attributes list suitable for glXChooseVisual or glXChooseFBConfig. }
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
   RGBA: boolean;
   const RedBits, GreenBits, BlueBits,
-  MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal): PInteger;
+  AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal): PInteger;
 
 implementation
 
@@ -635,21 +641,9 @@ begin
   Result:=GTK_TYPE_GL_AREA;
 end;
 
-function gtk_gl_area_new(attrList: Plongint): PGtkWidget;
-var
-  Count: Integer;
-  CopyAttrList: Plongint;
-  Size: Integer;
+function gtk_gl_area_new(Attribs: TContextAttribs): PGtkWidget;
 begin
-  Count:=0;
-  while (attrList[Count]<>0) do inc(Count);
-  inc(Count);
-  Size:=SizeOf(Integer)*Count;
-  CopyAttrList:=nil;
-  GetMem(CopyAttrList,Size);
-  System.Move(attrList^,CopyAttrList^,Size);
-  Result:=gtk_gl_area_share_new(CopyAttrList,nil);
-  FreeMem(CopyAttrList);
+  Result:=gtk_gl_area_share_new(Attribs, nil);
 end;
 
 {$IFDEF VerboseMultiSampling}
@@ -664,7 +658,7 @@ begin
 end;
 {$ENDIF}
 
-function gtk_gl_area_share_new(attrList: Plongint; share: PGtkGLArea
+function gtk_gl_area_share_new(Attribs: TContextAttribs; share: PGtkGLArea
   ): PGtkWidget;
 var
   gl_area: PGtkGLArea;
@@ -679,7 +673,7 @@ begin
   if (share <> nil) and (not GTK_IS_GL_AREA(share)) then
     exit;
   {$IFDEF UseFPGLX}
-    gl_area:=gtk_gl_area_share_new_usefpglx(attrList, share);
+    gl_area:=gtk_gl_area_share_new_usefpglx(Attribs, share);
   {$ELSE}
     {$IFNDEF MSWindows}
       {$IFDEF lclgtk2}
@@ -717,7 +711,15 @@ begin
   Result:=PGtkWidget(gl_area);
 end;
 
-function gtk_gl_area_share_new_usefpglx(attrList: Plongint; share: PGtkGLArea): PGtkGLArea;
+function CustomXErrorHandler(para1:PDisplay; para2:PXErrorEvent):cint;cdecl;
+begin
+  if para2^.error_code=8 then begin
+    raise Exception.Create('A BadMatch X error occured. Most likely the requested OpenGL version is invalid.');
+  end;
+  Result:=0;
+end;
+
+function gtk_gl_area_share_new_usefpglx(Attribs: TContextAttribs; share: PGtkGLArea): PGtkGLArea;
 var
   GLArea: PGtkGLArea;
   ShareList: PGdkGLContext;
@@ -731,7 +733,13 @@ var
   FBConfig: TGLXFBConfig;
   FBConfigs: PGLXFBConfig;
   FBConfigsCount: Integer;
+  Samples: cint;
+  BestSamples: Integer;
+  BestFBConfig: Integer;
   GLXContext: TGLXContext;
+  i: Integer;
+  { Used with glXCreateContextAttribsARB to select 3.X and above context }
+  Context3X: array [0..4] of Integer;
 
 begin
   Result:=nil;
@@ -743,27 +751,70 @@ begin
   if GLX_version_1_3(XDisplay) then begin
     { use approach recommended since glX 1.3 }
     FBConfigsCount:=0;
-    FBConfigs:=glXChooseFBConfig(XDisplay, ScreenNum, @attrList[0], FBConfigsCount);
+    FBConfigs:=glXChooseFBConfig(XDisplay, ScreenNum, @Attribs.AttributeList[0], FBConfigsCount);
     if FBConfigsCount = 0 then
       raise Exception.Create('Could not find FB config');
 
-    { just choose the first FB config from the FBConfigs list.
-      More involved selection possible. }
-    FBConfig := FBConfigs^;
+    // if multisampling is requested try to get a number of sample buffers as
+    // close to the specified number as possible
+    if Attribs.MultiSampling>0 then begin
+      BestSamples:=0;
+      for i:=0 to FBConfigsCount-1 do begin
+        Samples:=0;
+        glXGetFBConfigAttrib(XDisplay, FBConfigs[i], GLX_SAMPLES_ARB, Samples);
+        if Samples=Attribs.MultiSampling then begin
+          BestFBConfig:=i;
+          break;
+        end else begin
+          if (Samples>BestSamples) and (Samples<Attribs.MultiSampling) then begin
+            BestSamples:=Samples;
+            BestFBConfig:=i;
+          end;
+        end;
+      end;
+      FBConfig := FBConfigs[BestFBConfig];
+    end else begin
+      { just choose the first FB config from the FBConfigs list.
+        More involved selection possible. }
+      FBConfig := FBConfigs^;
+    end;
     XVInfo:=glXGetVisualFromFBConfig(XDisplay, FBConfig);
   end else begin
-    XVInfo:=glXChooseVisual(XDisplay, ScreenNum, @attrList[0]);
+    XVInfo:=glXChooseVisual(XDisplay, ScreenNum, @Attribs.AttributeList[0]);
   end;
 
   if XVInfo=nil then
     raise Exception.Create('gdk_gl_context_share_new_usefpglx no visual found');
 
   if GLX_version_1_3(XDisplay) then begin
-    if (ShareList<>nil) then
-      GLXContext:=glXCreateNewContext(XDisplay, FBConfig, GLX_RGBA_TYPE,
-                                      PrivateShareList^.glxcontext, True)
-    else
-      GLXContext:=glXCreateNewContext(XDisplay, FBConfig, GLX_RGBA_TYPE, Nil, True);
+    if (GLX_ARB_create_context(XDisplay, DefaultScreen(XDisplay))) and
+       (Attribs.MajorVersion>0) then begin
+      // install custom X error handler
+      XSetErrorHandler(@CustomXErrorHandler);
+      Context3X[0]:=GLX_CONTEXT_MAJOR_VERSION_ARB;
+      Context3X[1]:=Attribs.MajorVersion;
+      Context3X[2]:=GLX_CONTEXT_MINOR_VERSION_ARB;
+      Context3X[3]:=Attribs.MinorVersion;
+      Context3X[4]:=None;
+      if (ShareList<>nil) then begin
+        GLXContext:=glXCreateContextAttribsARB(XDisplay, FBConfig,
+                                              PrivateShareList^.glxcontext, true,
+                                               Context3X);
+      end else begin
+        GLXContext:=glXCreateContextAttribsARB(XDisplay, FBConfig, Nil, true,
+                                               Context3X);
+      end;
+      // restore default error handler
+      XSetErrorHandler(nil);
+    end else begin
+      if (ShareList<>nil) then begin
+        GLXContext:=glXCreateNewContext(XDisplay, FBConfig, GLX_RGBA_TYPE,
+                                        PrivateShareList^.glxcontext, True)
+      end else begin
+        GLXContext:=glXCreateNewContext(XDisplay, FBConfig, GLX_RGBA_TYPE, Nil,
+                                        True);
+      end;
+    end;
     if FBConfigs<>nil then
       XFree(FBConfigs);
   end else begin
@@ -903,28 +954,35 @@ end;
 function LOpenGLCreateContextCore(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
   DoubleBuffered, RGBA: boolean;
-  const RedBits, GreenBits, BlueBits,
+  const RedBits, GreenBits, BlueBits, MajorVersion, MinorVersion,
   MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
   const AParams: TCreateParams): HWND;
 var
   NewWidget: PGtkWidget;
   SharedArea: PGtkGLArea;
-  AttrList: PInteger;
+  Attribs: TContextAttribs;
 begin
   if WSPrivate=nil then ;
   {$IFDEF VerboseMultiSampling}
   debugln(['LOpenGLCreateContextCore MultiSampling=',MultiSampling]);
   {$ENDIF}
-  AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA,RedBits,GreenBits,
-    BlueBits,MultiSampling,AlphaBits,DepthBits,StencilBits,AUXBuffers);
+  Attribs.AttributeList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA,RedBits,GreenBits,
+    BlueBits,AlphaBits,DepthBits,StencilBits,AUXBuffers);
+  Attribs.MajorVersion:=MajorVersion;
+  Attribs.MinorVersion:=MinorVersion;
+  if MultiSampling>1 then begin
+    Attribs.MultiSampling:=MultiSampling;
+  end else begin
+    Attribs.MultiSampling:=0;
+  end;
   try
     if SharedControl<>nil then begin
       SharedArea:={%H-}PGtkGLArea(PtrUInt(SharedControl.Handle));
       if not GTK_IS_GL_AREA(SharedArea) then
         RaiseGDBException('LOpenGLCreateContext');
-      NewWidget:=gtk_gl_area_share_new(AttrList,SharedArea);
+      NewWidget:=gtk_gl_area_share_new(Attribs,SharedArea);
     end else begin
-      NewWidget:=gtk_gl_area_new(AttrList);
+      NewWidget:=gtk_gl_area_new(Attribs);
     end;
     Result:=HWND({%H-}PtrUInt(Pointer(NewWidget)));
     PGtkobject(NewWidget)^.flags:=PGtkobject(NewWidget)^.flags or GTK_CAN_FOCUS;
@@ -936,14 +994,14 @@ begin
                        TGTKSignalFunc(@gtkglarea_size_allocateCB), AWinControl);
     {$ENDIF}
   finally
-    FreeMem(AttrList);
+    FreeMem(Attribs.AttributeList);
   end;
 end;
 
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
   DoubleBuffered, RGBA: boolean;
-  const RedBits, GreenBits, BlueBits,
+  const RedBits, GreenBits, BlueBits, MajorVersion, MinorVersion,
   MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
   const AParams: TCreateParams): HWND;
 begin
@@ -964,23 +1022,25 @@ begin
     {$ENDIF}
     try
       Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl,
-        DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, MultiSampling,
-        AlphaBits, DepthBits, StencilBits, AUXBuffers, AParams);
+        DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, MajorVersion,
+        MinorVersion, MultiSampling, AlphaBits, DepthBits, StencilBits,
+        AUXBuffers, AParams);
     except
       {$IFDEF VerboseMultiSampling}
       debugln(['LOpenGLCreateContext LOpenGLCreateContextCore failed, trying without multisampling']);
       {$ENDIF}
       { retry without MultiSampling }
       Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl,
-        DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, 1, AlphaBits,
-        DepthBits, StencilBits, AUXBuffers, AParams);
+        DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, MajorVersion,
+        MinorVersion, 1, AlphaBits, DepthBits, StencilBits, AUXBuffers, AParams);
     end;
   end else begin
     { no multi-sampling requested (or GLX_ARB_multisample not available),
       just pass to LOpenGLCreateContextCore }
     Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl, 
-      DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, MultiSampling,
-      AlphaBits, DepthBits, StencilBits, AUXBuffers, AParams);
+      DoubleBuffered, RGBA, RedBits, GreenBits, BlueBits, MajorVersion,
+      MinorVersion, MultiSampling, AlphaBits, DepthBits, StencilBits,
+      AUXBuffers, AParams);
   end;
 end;
 
@@ -991,8 +1051,8 @@ begin
 end;
 
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean;
-  const RedBits, GreenBits, BlueBits, MultiSampling, AlphaBits, DepthBits,
-  StencilBits, AUXBuffers: Cardinal): PInteger;
+  const RedBits, GreenBits, BlueBits, AlphaBits, DepthBits, StencilBits,
+  AUXBuffers: Cardinal): PInteger;
 var
   p: integer;
   UseFBConfig: boolean;
@@ -1007,7 +1067,10 @@ var
   procedure CreateList;
   begin
     p:=0;
-    if UseFBConfig then begin Add(GLX_X_RENDERABLE); Add(1); end;
+    if UseFBConfig then begin
+      Add(GLX_X_RENDERABLE); Add(1);
+      Add(GLX_X_VISUAL_TYPE); Add(GLX_TRUE_COLOR);
+    end;
     if DoubleBuffered then
     begin
       if UseFBConfig then 
@@ -1038,14 +1101,7 @@ var
     begin
       Add(GLX_AUX_BUFFERS);  Add(AUXBuffers);
     end;
-    if MultiSampling > 1 then
-    begin
-      // multisampling contexts are non-conformant so only ask for those
-      Add(GLX_CONFIG_CAVEAT); Add(GLX_NON_CONFORMANT_CONFIG);
-      Add(GLX_SAMPLE_BUFFERS_ARB); Add(1);
-      Add(GLX_SAMPLES_ARB); Add(MultiSampling);
-    end;
-    
+
     Add(0); { 0 = X.None (be careful: GLX_NONE is something different) }
   end;
   
