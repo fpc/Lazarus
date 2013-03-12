@@ -337,7 +337,7 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.SetRegion(value : TRegion);
+procedure TCanvas.SetRegion(Value: TRegion);
 begin
   FRegion.Assign(Value);
 end;
@@ -556,6 +556,12 @@ begin
   Polyline(Points);
 end;
 
+procedure TCanvas.DoPolyBezier(Points: PPoint; NumPts: Integer;
+  Filled: boolean; Continuous: boolean);
+begin
+  PolyBezier(Points,NumPts,Filled,Continuous);
+end;
+
 procedure TCanvas.DoFloodFill(x, y: integer);
 begin
   FloodFill(x, y, Brush.Color, fsSurface);
@@ -680,7 +686,7 @@ end;
   between which the Arc is drawn.
 
 ------------------------------------------------------------------------------}
-procedure TCanvas.Arc(ALeft,ATop,ARight,ABottom,sx,sy,ex,ey : Integer);
+procedure TCanvas.Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
@@ -1181,8 +1187,8 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.TextRect(const ARect: TRect; X,Y : Integer;
-  const Text : String);
+procedure TCanvas.TextRect(const ARect: TRect; X, Y: integer; const Text: string
+  );
 begin
   TextRect(ARect,X,Y,Text,TextStyle);
 end;
@@ -1193,8 +1199,8 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.TextRect(ARect: TRect; X, Y : Integer; const Text : String;
-  const Style : TTextStyle);
+procedure TCanvas.TextRect(ARect: TRect; X, Y: integer; const Text: string;
+  const Style: TTextStyle);
 var
   Options : Longint;
   fRect : TRect;
@@ -1526,7 +1532,7 @@ end;
   the Arc is draw.
 
 ------------------------------------------------------------------------------}
-procedure TCanvas.Chord(x1, y1, x2, y2, sx, sy, ex, ey : Integer);
+procedure TCanvas.Chord(x1, y1, x2, y2, SX, SY, EX, EY: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);

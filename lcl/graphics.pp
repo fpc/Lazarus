@@ -1104,6 +1104,9 @@ type
     procedure DoPolygonFill(const Points: array of TPoint); override;
     procedure DoPolygonAndFill(const Points: array of TPoint); override;
     procedure DoPolyline(const Points: array of TPoint); override;
+    procedure DoPolyBezier(Points: PPoint; NumPts: Integer;
+                           Filled: boolean = False;
+                           Continuous: boolean = False); override;
     procedure DoFloodFill(x, y: integer); override;
     procedure DoMoveTo(x, y: integer); override;
     procedure DoLineTo(x, y: integer); override;
