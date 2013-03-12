@@ -32,7 +32,7 @@ interface
 uses
   types, math, typinfo, contnrs, Classes, SysUtils, FPCanvas, FPimage,
   LazLogger, AvgLvlTree, ComCtrls, Controls, Graphics, LCLType, Forms, LCLIntf,
-  LMessages, ImgList, GraphType;
+  LMessages, ImgList, GraphType, GraphMath;
 
 type
   TCodyCtrlPalette = array of TFPColor;
@@ -233,6 +233,8 @@ type
 
 
 {off $DEFINE CheckMinXGraph}
+const
+  DefaultLvlGraphNodeImageEffect = gdeNormal;
 type
   TLvlGraph = class;
   TLvlGraphEdge = class;
@@ -244,6 +246,7 @@ type
   private
     FCaption: string;
     FColor: TFPColor;
+    FDrawnCaptionRect: TRect;
     FGraph: TLvlGraph;
     FImageEffect: TGraphicsDrawEffect;
     FImageIndex: integer;
@@ -260,8 +263,8 @@ type
     FSelected: boolean;
     FVisible: boolean;
     function GetIndexInLevel: integer;
-    function GetInEdges(Index: integer): TLvlGraphEdge;
-    function GetOutEdges(Index: integer): TLvlGraphEdge;
+    function GetInEdges(Index: integer): TLvlGraphEdge; inline;
+    function GetOutEdges(Index: integer): TLvlGraphEdge; inline;
     procedure SetCaption(AValue: string);
     procedure SetColor(AValue: TFPColor);
     procedure OnLevelDestroy;
@@ -286,14 +289,14 @@ type
     property Visible: boolean read FVisible write SetVisible;
     property ImageIndex: integer read FImageIndex write SetImageIndex;
     property OverlayIndex: integer read FOverlayIndex write SetOverlayIndex; // requires ImageIndex>=0
-    property ImageEffect: TGraphicsDrawEffect read FImageEffect write SetImageEffect;
+    property ImageEffect: TGraphicsDrawEffect read FImageEffect write SetImageEffect default DefaultLvlGraphNodeImageEffect;
     property Graph: TLvlGraph read FGraph;
     function IndexOfInEdge(Source: TLvlGraphNode): integer;
-    function FindInEdge(Source: TLvlGraphNode): TLvlGraphEdge;
-    function InEdgeCount: integer;
+    function FindInEdge(Source: TLvlGraphNode): TLvlGraphEdge; virtual;
+    function InEdgeCount: integer; inline;
     property InEdges[Index: integer]: TLvlGraphEdge read GetInEdges;
     function IndexOfOutEdge(Target: TLvlGraphNode): integer;
-    function FindOutEdge(Target: TLvlGraphNode): TLvlGraphEdge;
+    function FindOutEdge(Target: TLvlGraphNode): TLvlGraphEdge; virtual;
     function OutEdgeCount: integer;
     property OutEdges[Index: integer]: TLvlGraphEdge read GetOutEdges;
     property IndexInLevel: integer read GetIndexInLevel write SetIndexInLevel;
@@ -305,6 +308,7 @@ type
     property DrawSize: integer read FDrawSize write SetDrawSize default 1;
     function DrawCenter: integer;
     function DrawPositionEnd: integer;// = DrawPosition+Max(InSize,OutSize)
+    property DrawnCaptionRect: TRect read FDrawnCaptionRect; // last draw position of caption with scrolling
     property InWeight: single read FInWeight; // total weight of InEdges
     property OutWeight: single read FOutWeight; // total weight of OutEdges
   end;
@@ -317,10 +321,7 @@ type
   TLvlGraphEdge = class(TPersistent)
   private
     FBackEdge: boolean;
-    FDrawX1: integer;
-    FDrawX2: integer;
-    FDrawY1: integer;
-    FDrawY2: integer;
+    FDrawnAt: TRect;
     FHighlighted: boolean;
     FSource: TLvlGraphNode;
     FTarget: TLvlGraphNode;
@@ -337,13 +338,12 @@ type
     function IsBackEdge: boolean;
     property BackEdge: boolean read FBackEdge; // edge was disabled to break a cycle
     property Highlighted: boolean read FHighlighted write SetHighlighted;
-    property DrawX1: integer read FDrawX1;
-    property DrawY1: integer read FDrawY1;
-    property DrawX2: integer read FDrawX2;
-    property DrawY2: integer read FDrawY2;
+    property DrawnAt: TRect read FDrawnAt;  // last drawn with scrolling
     function AsString: string;
   end;
   TLvlGraphEdgeClass = class of TLvlGraphEdge;
+  TLvlGraphEdgeArray = array of TLvlGraphEdge;
+  PLvlGraphEdge = ^TLvlGraphEdge;
 
   { TLvlGraphLevel }
 
@@ -443,7 +443,7 @@ type
     procedure CreateTopologicalLevels(HighLevels: boolean); // create levels from edges
     procedure SplitLongEdges(SplitMode: TLvlGraphEdgeSplitMode); // split long edges by adding hidden nodes
     procedure ScaleNodeDrawSizes(NodeGapAbove, NodeGapBelow,
-      HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer);
+      HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer; out PixelPerWeight: single);
     procedure SetAllNodeDrawSizes(PixelPerWeight: single = 1.0; MinWeight: single = 0.0);
     procedure MarkBackEdges;
     procedure MinimizeCrossings; // permutate nodes to minimize crossings
@@ -466,7 +466,11 @@ type
     lgoHighLevels // put nodes topologically at higher levels
     );
   TLvlGraphCtrlOptions = set of TLvlGraphCtrlOption;
+const
+  DefaultLvlGraphCtrlOptions = [lgoAutoLayout,
+          lgoHighlightNodeUnderMouse,lgoHighlightEdgeNearMouse,lgoMouseSelects];
 
+type
   TLvlGraphNodeCaptionPosition = (
     lgncLeft,
     lgncTop,
@@ -482,10 +486,14 @@ type
     );
   TLvlGraphNodeShapes = set of TLvlGraphNodeShape;
 
+  TLvlGraphNodeColoring = (
+    lgncNone,
+    lgncRGB
+    );
+  TLvlGraphNodeColorings = set of TLvlGraphNodeColoring;
+
 const
-  DefaultLvlGraphCtrlOptions = [lgoAutoLayout,
-          lgoHighlightNodeUnderMouse,lgoHighlightEdgeNearMouse,lgoMouseSelects];
-  DefaultLvlGraphEdgeSplitMode        = lgesMergeHighest;
+  // node style
   DefaultLvlGraphNodeWith             = 10;
   DefaultLvlGraphNodeCaptionScale     = 0.7;
   DefaultLvlGraphNodeCaptionPosition  = lgncTop;
@@ -494,16 +502,26 @@ const
   DefaultLvlGraphNodeGapTop           = 1;
   DefaultLvlGraphNodeGapBottom        = 1;
   DefaultLvlGraphNodeShape            = lgnsRectangle;
-  DefaultLvlGraphEdgeNearMouseDistMax = 5;
+  DefaultLvlGraphNodeColoring         = lgncRGB;
 
 type
-  TLvlGraphControlFlag =  (
-    lgcNeedInvalidate,
-    lgcNeedAutoLayout,
-    lgcIgnoreGraphInvalidate,
-    lgcUpdatingScrollBars
+  TLvlGraphEdgeShape = (
+    lgesStraight,
+    lgesCurved
     );
-  TLvlGraphControlFlags = set of TLvlGraphControlFlag;
+  TLvlGraphEdgeShapes = set of TLvlGraphEdgeShape;
+
+const
+  // edge style
+  DefaultLvlGraphEdgeSplitMode          = lgesMergeHighest;
+  DefaultLvlGraphEdgeNearMouseDistMax   = 5;
+  DefaultLvlGraphEdgeShape              = lgesCurved;
+  DefaultLvlGraphEdgeColor              = clSilver;
+  DefaultLvlGraphEdgeHighlightColor     = clBlack;
+  DefaultLvlGraphEdgeBackColor          = clRed;
+  DefaultLvlGraphEdgeBackHighlightColor = clBlue;
+
+type
 
   TCustomLvlGraphControl = class;
 
@@ -513,6 +531,7 @@ type
   private
     FCaptionPosition: TLvlGraphNodeCaptionPosition;
     FCaptionScale: single;
+    FColoring: TLvlGraphNodeColoring;
     FControl: TCustomLvlGraphControl;
     FDefaultImageIndex: integer;
     FGapBottom: integer;
@@ -523,6 +542,7 @@ type
     FWidth: integer;
     procedure SetCaptionPosition(AValue: TLvlGraphNodeCaptionPosition);
     procedure SetCaptionScale(AValue: single);
+    procedure SetColoring(AValue: TLvlGraphNodeColoring);
     procedure SetDefaultImageIndex(AValue: integer);
     procedure SetGapBottom(AValue: integer);
     procedure SetGapLeft(AValue: integer);
@@ -533,10 +553,10 @@ type
   public
     constructor Create(AControl: TCustomLvlGraphControl);
     destructor Destroy; override;
-  published
     procedure Assign(Source: TPersistent); override;
     function Equals(Obj: TObject): boolean; override;
     property Control: TCustomLvlGraphControl read FControl;
+  published
     property CaptionPosition: TLvlGraphNodeCaptionPosition
       read FCaptionPosition write SetCaptionPosition default DefaultLvlGraphNodeCaptionPosition;
     property CaptionScale: single read FCaptionScale write SetCaptionScale default DefaultLvlGraphNodeCaptionScale;
@@ -547,30 +567,94 @@ type
     property GapBottom: integer read FGapBottom write SetGapBottom default DefaultLvlGraphNodeGapBottom; // used by AutoLayout
     property Width: integer read FWidth write SetWidth default DefaultLvlGraphNodeWith;
     property DefaultImageIndex: integer read FDefaultImageIndex write SetDefaultImageIndex;
+    property Coloring: TLvlGraphNodeColoring read FColoring write SetColoring;
   end;
+
+  { TLvlGraphEdgeStyle }
+
+  TLvlGraphEdgeStyle = class(TPersistent)
+  private
+    FBackColor: TColor;
+    FColor: TColor;
+    FControl: TCustomLvlGraphControl;
+    FBackHighlightColor: TColor;
+    FHighlightColor: TColor;
+    FMouseDistMax: integer;
+    FShape: TLvlGraphEdgeShape;
+    FSplitMode: TLvlGraphEdgeSplitMode;
+    procedure SetBackColor(AValue: TColor);
+    procedure SetColor(AValue: TColor);
+    procedure SetBackHighlightColor(AValue: TColor);
+    procedure SetHighlightColor(AValue: TColor);
+    procedure SetMouseDistMax(AValue: integer);
+    procedure SetShape(AValue: TLvlGraphEdgeShape);
+    procedure SetSplitMode(AValue: TLvlGraphEdgeSplitMode);
+  public
+    constructor Create(AControl: TCustomLvlGraphControl);
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+    function Equals(Obj: TObject): boolean; override;
+    property Control: TCustomLvlGraphControl read FControl;
+  published
+    property SplitMode: TLvlGraphEdgeSplitMode read FSplitMode write SetSplitMode default DefaultLvlGraphEdgeSplitMode;
+    property MouseDistMax: integer read FMouseDistMax write SetMouseDistMax default DefaultLvlGraphEdgeNearMouseDistMax;
+    property Shape: TLvlGraphEdgeShape read FShape write SetShape default DefaultLvlGraphEdgeShape;
+    property Color: TColor read FColor write SetColor default DefaultLvlGraphEdgeColor;
+    property BackColor: TColor read FBackColor write SetBackColor default DefaultLvlGraphEdgeBackColor;
+    property HighlightColor: TColor read FHighlightColor write SetHighlightColor default DefaultLvlGraphEdgeHighlightColor;
+    property BackHighlightColor: TColor read FBackHighlightColor write SetBackHighlightColor default DefaultLvlGraphEdgeBackHighlightColor;
+  end;
+
+  TLvlGraphControlFlag =  (
+    lgcNeedInvalidate,
+    lgcNeedAutoLayout,
+    lgcIgnoreGraphInvalidate,
+    lgcUpdatingScrollBars
+    );
+  TLvlGraphControlFlags = set of TLvlGraphControlFlag;
+
+  TLvlGraphMinimizeOverlappingsEvent = procedure(MinPos: integer = 0;
+      NodeGapInFront: integer = 1; NodeGapBehind: integer = 1) of object;
+  TLvlGraphDrawStep = (
+    lgdsBackground,
+    lgdsHeader,
+    lgdsNormalEdges,
+    lgdsNodeCaptions,
+    lgdsHighlightedEdges,
+    lgdsNodes,
+    lgdsFinish
+    );
+  TLvlGraphDrawSteps = set of TLvlGraphDrawStep;
+  TLvlGraphDrawEvent = procedure(Step: TLvlGraphDrawStep; var Skip: boolean) of object;
 
   { TCustomLvlGraphControl }
 
   TCustomLvlGraphControl = class(TCustomControl)
   private
-    FEdgeMouseDistMax: integer;
+    FEdgeStyle: TLvlGraphEdgeStyle;
     FEdgeNearMouse: TLvlGraphEdge;
-    FEdgeSplitMode: TLvlGraphEdgeSplitMode;
     FGraph: TLvlGraph;
     FImageChangeLink: TChangeLink;
     FImages: TCustomImageList;
     FNodeStyle: TLvlGraphNodeStyle;
     FNodeUnderMouse: TLvlGraphNode;
+    FOnDrawStep: TLvlGraphDrawEvent;
+    FOnEndAutoLayout: TNotifyEvent;
     FOnMinimizeCrossings: TNotifyEvent;
+    FOnMinimizeOverlappings: TLvlGraphMinimizeOverlappingsEvent;
     FOnSelectionChanged: TNotifyEvent;
+    FOnStartAutoLayout: TNotifyEvent;
     FOptions: TLvlGraphCtrlOptions;
+    FPixelPerWeight: single;
     FScrollLeft: integer;
     FScrollLeftMax: integer;
     FScrollTopMax: integer;
     FScrollTop: integer;
     fUpdateLock: integer;
     FFlags: TLvlGraphControlFlags;
+    procedure ColorNodesRandomRGB;
     procedure DrawCaptions(const TxtH: integer);
+    procedure ComputeEdgeCoords;
     procedure DrawEdges(Highlighted: boolean);
     procedure DrawNodes;
     procedure SetEdgeNearMouse(AValue: TLvlGraphEdge);
@@ -586,12 +670,19 @@ type
     procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
     procedure ImageListChange(Sender: TObject);
   protected
-    procedure AutoLayoutLevels(TxtH: LongInt); virtual;
     procedure GraphInvalidate(Sender: TObject); virtual;
     procedure GraphSelectionChanged(Sender: TObject); virtual;
     procedure GraphStructureChanged(Sender, Element: TObject; Operation: TOperation); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+    procedure DoStartAutoLayout; virtual;
+    procedure DoMinimizeCrossings; virtual;
+    procedure DoAutoLayoutLevels(TxtHeight: integer); virtual;
+    procedure DoMinimizeOverlappings(MinPos: integer = 0;
+      NodeGapInFront: integer = 1; NodeGapBehind: integer = 1); virtual;
+    procedure DoEndAutoLayout; virtual;
+    procedure DoDrawEdge(Edge: TLvlGraphEdge); virtual; // draw line at Edge.DrawX1,Y1,X2,Y2 with current Canvas colors
     procedure Paint; override;
+    function Draw(Step: TLvlGraphDrawStep): boolean; virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer
       ); override;
@@ -603,7 +694,7 @@ type
     procedure EraseBackground({%H-}DC: HDC); override;
     property Graph: TLvlGraph read FGraph;
     procedure Clear;
-    procedure AutoLayout(RndColors: boolean = true); virtual;
+    procedure AutoLayout; virtual;
     procedure Invalidate; override;
     procedure InvalidateAutoLayout;
     procedure BeginUpdate;
@@ -613,11 +704,10 @@ type
     class function GetControlClassDefaultSize: TSize; override;
     function GetDrawSize: TPoint;
   public
-    property EdgeSplitMode: TLvlGraphEdgeSplitMode read FEdgeSplitMode write FEdgeSplitMode default DefaultLvlGraphEdgeSplitMode;
     property NodeStyle: TLvlGraphNodeStyle read FNodeStyle write SetNodeStyle;
     property NodeUnderMouse: TLvlGraphNode read FNodeUnderMouse write SetNodeUnderMouse;
     property EdgeNearMouse: TLvlGraphEdge read FEdgeNearMouse write SetEdgeNearMouse;
-    property EdgeMouseDistMax: integer read FEdgeMouseDistMax write FEdgeMouseDistMax default DefaultLvlGraphEdgeNearMouseDistMax;
+    property EdgeStyle: TLvlGraphEdgeStyle read FEdgeStyle;
     property Options: TLvlGraphCtrlOptions read FOptions write SetOptions default DefaultLvlGraphCtrlOptions;
     property OnSelectionChanged: TNotifyEvent read FOnSelectionChanged write FOnSelectionChanged;
     property ScrollTop: integer read FScrollTop write SetScrollTop;
@@ -625,7 +715,12 @@ type
     property ScrollLeft: integer read FScrollLeft write SetScrollLeft;
     property ScrollLeftMax: integer read FScrollLeftMax;
     property OnMinimizeCrossings: TNotifyEvent read FOnMinimizeCrossings write FOnMinimizeCrossings;// provide an alternative minimize crossing algorithm
+    property OnMinimizeOverlappings: TLvlGraphMinimizeOverlappingsEvent read FOnMinimizeOverlappings write FOnMinimizeOverlappings;// provide an alternative minimize overlappings algorithm
+    property OnStartAutoLayout: TNotifyEvent read FOnStartAutoLayout write FOnStartAutoLayout;
+    property OnEndAutoLayout: TNotifyEvent read FOnEndAutoLayout write FOnEndAutoLayout;
+    property OnDrawStep: TLvlGraphDrawEvent read FOnDrawStep write FOnDrawStep;
     property Images: TCustomImageList read FImages write SetImages;
+    property PixelPerWeight: single read FPixelPerWeight;
   end;
 
   { TLvlGraphControl }
@@ -642,8 +737,7 @@ type
     property DragCursor;
     property DragKind;
     property DragMode;
-    property EdgeMouseDistMax;
-    property EdgeSplitMode;
+    property EdgeStyle;
     property Enabled;
     property Font;
     property NodeStyle;
@@ -652,6 +746,8 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnDrawStep;
+    property OnEndAutoLayout;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -659,6 +755,7 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMinimizeCrossings;
+    property OnMinimizeOverlappings;
     property OnMouseDown;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -666,6 +763,7 @@ type
     property OnMouseUp;
     property OnSelectionChanged;
     property OnShowHint;
+    property OnStartAutoLayout;
     property OnStartDrag;
     property OnUTF8KeyPress;
     property Options;
@@ -702,6 +800,7 @@ procedure LvlGraphMinimizeCrossings(Graph: TLvlGraph); overload;
 procedure LvlGraphHighlightNode(Node: TLvlGraphNode;
   HighlightedElements: TAvgLvlTree; FollowIn, FollowOut: boolean);
 function CompareLGNodesByCenterPos(Node1, Node2: Pointer): integer;
+procedure DrawCurvedLvlLeftToRightEdge(Canvas: TFPCustomCanvas; x1, y1, x2, y2: integer);
 
 // debugging
 function dbgs(p: TLvlGraphNodeCaptionPosition): string; overload;
@@ -804,8 +903,8 @@ begin
   try
     if length(g.Pairs)=0 then exit;
     g.InitSearch;
-    debugln(['LvlGraphMinimizeCrossings Graph.NodeCount=',Graph.NodeCount]);
     {$IFDEF CheckMinXGraph}
+    debugln(['LvlGraphMinimizeCrossings Graph.NodeCount=',Graph.NodeCount]);
     g.SwitchAndShuffle(100*Graph.NodeCount,
                        Min(10000,Graph.NodeCount*Graph.NodeCount));
     {$ELSE}
@@ -1064,6 +1163,34 @@ begin
   Result:=LNode1.IndexInLevel-LNode2.IndexInLevel;
 end;
 
+procedure DrawCurvedLvlLeftToRightEdge(Canvas: TFPCustomCanvas;
+  x1, y1, x2, y2: integer);
+var
+  b: TBezier;
+  Points: PPoint;
+  Count: Longint;
+  p: PPoint;
+  i: Integer;
+begin
+  Canvas.PolyBezier([Point(x1,y1),Point(x1+10,y1),Point(x2-10,y2),Point(x2,y2)]);
+  exit;
+  b:=Bezier(Point(x1,y1),Point(x1+10,y1),Point(x2-10,y2),Point(x2,y2));
+  Points:=nil;
+  Count:=0;
+  Bezier2Polyline(b,Points,Count);
+  //debugln(['DrawCurvedLvlLeftToRightEdge Count=',Count]);
+  if Count=0 then exit;
+  p:=Points;
+  Canvas.MoveTo(p^);
+  //debugln(['DrawCurvedLvlLeftToRightEdge Point0=',dbgs(p^)]);
+  for i:=1 to Count-1 do begin
+    inc(p);
+    //debugln(['DrawCurvedLvlLeftToRightEdge Point',i,'=',dbgs(p^)]);
+    Canvas.LineTo(p^);
+  end;
+  Freemem(Points);
+end;
+
 function dbgs(p: TLvlGraphNodeCaptionPosition): string;
 begin
   Result:=GetEnumName(typeinfo(p),ord(p));
@@ -1085,6 +1212,109 @@ begin
       Result+=dbgs(o);
     end;
   Result:='['+Result+']';
+end;
+
+{ TLvlGraphEdgeStyle }
+
+procedure TLvlGraphEdgeStyle.SetMouseDistMax(AValue: integer);
+begin
+  if FMouseDistMax=AValue then Exit;
+  FMouseDistMax:=AValue;
+end;
+
+procedure TLvlGraphEdgeStyle.SetBackColor(AValue: TColor);
+begin
+  if FBackColor=AValue then Exit;
+  FBackColor:=AValue;
+  Control.Invalidate;
+end;
+
+procedure TLvlGraphEdgeStyle.SetColor(AValue: TColor);
+begin
+  if FColor=AValue then Exit;
+  FColor:=AValue;
+  Control.Invalidate;
+end;
+
+procedure TLvlGraphEdgeStyle.SetBackHighlightColor(AValue: TColor);
+begin
+  if FBackHighlightColor=AValue then Exit;
+  FBackHighlightColor:=AValue;
+  Control.Invalidate;
+end;
+
+procedure TLvlGraphEdgeStyle.SetHighlightColor(AValue: TColor);
+begin
+  if FHighlightColor=AValue then Exit;
+  FHighlightColor:=AValue;
+  Control.Invalidate;
+end;
+
+procedure TLvlGraphEdgeStyle.SetShape(AValue: TLvlGraphEdgeShape);
+begin
+  if FShape=AValue then Exit;
+  FShape:=AValue;
+  Control.Invalidate;
+end;
+
+procedure TLvlGraphEdgeStyle.SetSplitMode(AValue: TLvlGraphEdgeSplitMode);
+begin
+  if FSplitMode=AValue then Exit;
+  FSplitMode:=AValue;
+  Control.InvalidateAutoLayout;
+end;
+
+constructor TLvlGraphEdgeStyle.Create(AControl: TCustomLvlGraphControl);
+begin
+  FControl:=AControl;
+  FMouseDistMax:=DefaultLvlGraphEdgeNearMouseDistMax;
+  FSplitMode:=DefaultLvlGraphEdgeSplitMode;
+  FShape:=DefaultLvlGraphEdgeShape;
+  FColor:=DefaultLvlGraphEdgeColor;
+  FHighlightColor:=DefaultLvlGraphEdgeHighlightColor;
+  FBackColor:=DefaultLvlGraphEdgeBackColor;
+  FBackHighlightColor:=DefaultLvlGraphEdgeBackHighlightColor;
+end;
+
+destructor TLvlGraphEdgeStyle.Destroy;
+begin
+  FControl.FEdgeStyle:=nil;
+  inherited Destroy;
+end;
+
+procedure TLvlGraphEdgeStyle.Assign(Source: TPersistent);
+var
+  Src: TLvlGraphEdgeStyle;
+begin
+  if Source is TLvlGraphEdgeStyle then begin
+    Src:=TLvlGraphEdgeStyle(Source);
+    MouseDistMax:=Src.MouseDistMax;
+    SplitMode:=Src.SplitMode;
+    Shape:=Src.Shape;
+    Color:=Src.Color;
+    HighlightColor:=Src.HighlightColor;
+    BackColor:=Src.BackColor;
+    BackHighlightColor:=Src.BackHighlightColor;
+  end else
+    inherited Assign(Source);
+end;
+
+function TLvlGraphEdgeStyle.Equals(Obj: TObject): boolean;
+var
+  Src: TLvlGraphEdgeStyle;
+begin
+  Result:=inherited Equals(Obj);
+  if not Result then exit;
+  if Obj is TLvlGraphEdgeStyle then begin
+    Src:=TLvlGraphEdgeStyle(Obj);
+    Result:=(SplitMode=Src.SplitMode)
+        and (MouseDistMax=Src.MouseDistMax)
+        and (Shape=Src.Shape)
+        and (Color=Src.Color)
+        and (HighlightColor=Src.HighlightColor)
+        and (BackColor=Src.BackColor)
+        and (BackHighlightColor=Src.BackHighlightColor);
+  end;
 end;
 
 { TMinXPair }
@@ -1738,6 +1968,16 @@ begin
   Control.InvalidateAutoLayout;
 end;
 
+procedure TLvlGraphNodeStyle.SetColoring(AValue: TLvlGraphNodeColoring);
+begin
+  if FColoring=AValue then Exit;
+  FColoring:=AValue;
+  if not (csLoading in Control.ComponentState) then begin
+    if Coloring=lgncRGB then
+      Control.ColorNodesRandomRGB;
+  end;
+end;
+
 procedure TLvlGraphNodeStyle.SetDefaultImageIndex(AValue: integer);
 begin
   if FDefaultImageIndex=AValue then Exit;
@@ -1799,6 +2039,7 @@ begin
   FCaptionPosition:=DefaultLvlGraphNodeCaptionPosition;
   FShape:=DefaultLvlGraphNodeShape;
   FDefaultImageIndex:=-1;
+  FColoring:=DefaultLvlGraphNodeColoring;
 end;
 
 destructor TLvlGraphNodeStyle.Destroy;
@@ -1962,7 +2203,6 @@ var
   k: Integer;
   Edge: TLvlGraphEdge;
   TargetNode: TLvlGraphNode;
-  x1, y1, x2, y2: Integer;
 begin
   for i:=0 to Graph.LevelCount-1 do begin
     Level:=Graph.Levels[i];
@@ -1972,40 +2212,22 @@ begin
         Edge:=Node.OutEdges[k];
         TargetNode:=Edge.Target;
         if Edge.Highlighted<>Highlighted then continue;
-        x1:=Level.DrawPosition-ScrollLeft;
-        y1:=Node.DrawCenter-ScrollTop;
-        x2:=TargetNode.Level.DrawPosition-ScrollLeft;
-        y2:=TargetNode.DrawCenter-ScrollTop;
         if TargetNode.Level.Index>Level.Index then begin
           // normal dependency
           // => draw line from right of Node to left of TargetNode
-          if Node.Visible then
-            x1+=NodeStyle.Width
-          else
-            x1+=NodeStyle.Width div 2;
-          if not TargetNode.Visible then
-            x2+=NodeStyle.Width div 2;
           if Edge.Highlighted then
-            Canvas.Pen.Color:=clGray
+            Canvas.Pen.Color:=EdgeStyle.HighlightColor
           else
-            Canvas.Pen.Color:=clSilver;
-          Canvas.Line(x1,y1,x2,y2);
+            Canvas.Pen.Color:=EdgeStyle.Color;
         end else begin
           // cycle dependency
           // => draw line from left of Node to right of TargetNode
-          if not Node.Visible then
-            x1+=NodeStyle.Width div 2;
-          if TargetNode.Visible then
-            x2+=NodeStyle.Width
+          if Edge.Highlighted then
+            Canvas.Pen.Color:=EdgeStyle.BackHighlightColor
           else
-            x2+=NodeStyle.Width div 2;
-          Canvas.Pen.Color:=clRed;
-          Canvas.Line(x1,y1,x2,y2);
+            Canvas.Pen.Color:=EdgeStyle.BackColor;
         end;
-        Edge.FDrawX1:=x1;
-        Edge.FDrawY1:=y1;
-        Edge.FDrawX2:=x2;
-        Edge.FDrawY2:=y2;
+        DoDrawEdge(Edge);
       end;
     end;
   end;
@@ -2030,6 +2252,8 @@ var
   i: Integer;
   TxtW: Integer;
   p: TPoint;
+  x: Integer;
+  y: Integer;
 begin
   Canvas.Font.Height:=round(single(TxtH)*NodeStyle.CaptionScale+0.5);
   for i:=0 to Graph.LevelCount-1 do begin
@@ -2049,6 +2273,9 @@ begin
       lgncTop,lgncBottom: p.x:=Level.DrawPosition+((NodeStyle.Width-TxtW) div 2);
       end;
       //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' DrawPosition=',Node.DrawPosition,' DrawSize=',Node.DrawSize,' TxtH=',TxtH,' TxtW=',TxtW,' p=',dbgs(p),' Selected=',Node.Selected]);
+      x:=p.x-ScrollLeft;
+      y:=p.y-ScrollTop;
+      Node.FDrawnCaptionRect:=Rect(x,y,x+TxtW,y+TxtH);
       if Node.Selected then begin
         Canvas.Brush.Style:=bsSolid;
         Canvas.Brush.Color:=clHighlight;
@@ -2056,9 +2283,89 @@ begin
         Canvas.Brush.Style:=bsClear;
         Canvas.Brush.Color:=clNone;
       end;
-      Canvas.TextOut(p.x-ScrollLeft,p.y-ScrollTop,Node.Caption);
+      Canvas.TextOut(x,y,Node.Caption);
     end;
   end;
+end;
+
+procedure TCustomLvlGraphControl.ComputeEdgeCoords;
+var
+  l: Integer;
+  Level: TLvlGraphLevel;
+  n: Integer;
+  Node: TLvlGraphNode;
+  e: Integer;
+  Edge: TLvlGraphEdge;
+  TargetNode: TLvlGraphNode;
+  x1: Integer;
+  x2: Integer;
+  TotalWeight, Weight: Single;
+  Start: Integer;
+begin
+  for l:=0 to Graph.LevelCount-1 do begin
+    Level:=Graph.Levels[l];
+    for n:=0 to Level.Count-1 do begin
+      Node:=Level.Nodes[n];
+
+      // out edges
+      TotalWeight:=Node.OutWeight;
+      Weight:=0.0;
+      Start:=Node.DrawCenter-ScrollTop-integer(round(TotalWeight*PixelPerWeight) div 2);
+      for e:=0 to Node.OutEdgeCount-1 do begin
+        Edge:=Node.OutEdges[e];
+        Edge.FDrawnAt.Top:=Start+round(Weight*PixelPerWeight);
+        Weight+=Edge.Weight;
+      end;
+
+      // in edges
+      TotalWeight:=Node.InWeight;
+      Weight:=0.0;
+      Start:=Node.DrawCenter-ScrollTop-integer(round(TotalWeight*PixelPerWeight) div 2);
+      for e:=0 to Node.InEdgeCount-1 do begin
+        Edge:=Node.InEdges[e];
+        Edge.FDrawnAt.Bottom:=Start+round(Weight*PixelPerWeight);
+        Weight+=Edge.Weight;
+      end;
+
+      // x1, x2
+      for e:=0 to Node.OutEdgeCount-1 do begin
+        Edge:=Node.OutEdges[e];
+        TargetNode:=Edge.Target;
+        x1:=Level.DrawPosition-ScrollLeft;
+        x2:=TargetNode.Level.DrawPosition-ScrollLeft;
+        if TargetNode.Level.Index>Level.Index then begin
+          // normal dependency
+          // => draw line from right of Node to left of TargetNode
+          if Node.Visible then
+            x1+=NodeStyle.Width
+          else
+            x1+=NodeStyle.Width div 2;
+          if not TargetNode.Visible then
+            x2+=NodeStyle.Width div 2;
+        end else begin
+          // cycle dependency
+          // => draw line from left of Node to right of TargetNode
+          if not Node.Visible then
+            x1+=NodeStyle.Width div 2;
+          if TargetNode.Visible then
+            x2+=NodeStyle.Width
+          else
+            x2+=NodeStyle.Width div 2;
+        end;
+        Edge.FDrawnAt.Left:=x1;
+        Edge.FDrawnAt.Right:=x2;
+      end;
+    end;
+  end;
+end;
+
+procedure TCustomLvlGraphControl.ColorNodesRandomRGB;
+var
+  Palette: TCodyCtrlPalette;
+begin
+  Palette:=GetCCPaletteRGB(Graph.NodeCount, true);
+  Graph.SetColors(Palette);
+  SetLength(Palette, 0);
 end;
 
 procedure TCustomLvlGraphControl.DrawNodes;
@@ -2248,7 +2555,7 @@ begin
   Message.Result := 1;
 end;
 
-procedure TCustomLvlGraphControl.AutoLayoutLevels(TxtH: LongInt);
+procedure TCustomLvlGraphControl.DoAutoLayoutLevels(TxtHeight: integer);
 // compute all Levels.DrawPosition
 var
   j: Integer;
@@ -2257,7 +2564,7 @@ var
   LevelTxtWidths: array of integer;
   Level: TLvlGraphLevel;
 begin
-  Canvas.Font.Height:=round(single(TxtH)*NodeStyle.CaptionScale+0.5);
+  Canvas.Font.Height:=round(single(TxtHeight)*NodeStyle.CaptionScale+0.5);
   if Graph.LevelCount=0 then exit;
   SetLength(LevelTxtWidths,Graph.LevelCount);
   for i:=0 to Graph.LevelCount-1 do begin
@@ -2297,6 +2604,59 @@ begin
   UpdateScrollBars;
 end;
 
+procedure TCustomLvlGraphControl.DoStartAutoLayout;
+begin
+  if Assigned(OnStartAutoLayout) then
+    OnStartAutoLayout(Self);
+end;
+
+procedure TCustomLvlGraphControl.DoEndAutoLayout;
+begin
+  if Assigned(OnEndAutoLayout) then
+    OnEndAutoLayout(Self);
+end;
+
+procedure TCustomLvlGraphControl.DoDrawEdge(Edge: TLvlGraphEdge);
+var
+  r: TRect;
+  s: integer;
+begin
+  r:=Edge.DrawnAt;
+  s:=round(Edge.Weight*PixelPerWeight);
+  if s>1 then begin
+    case EdgeStyle.Shape of
+    lgesStraight: Canvas.Line(r);
+    lgesCurved:
+      begin
+        DrawCurvedLvlLeftToRightEdge(Canvas,r.Left,r.Top,r.Right,r.Bottom);
+        DrawCurvedLvlLeftToRightEdge(Canvas,r.Left,r.Top+s,r.Right,r.Bottom+s);
+      end;
+    end;
+  end else begin
+    case EdgeStyle.Shape of
+    lgesStraight: Canvas.Line(r);
+    lgesCurved: DrawCurvedLvlLeftToRightEdge(Canvas,r.Left,r.Top,r.Right,r.Bottom);
+    end;
+  end;
+end;
+
+procedure TCustomLvlGraphControl.DoMinimizeCrossings;
+begin
+  if OnMinimizeCrossings<>nil then
+    OnMinimizeCrossings(Self)
+  else
+    Graph.MinimizeCrossings;
+end;
+
+procedure TCustomLvlGraphControl.DoMinimizeOverlappings(MinPos: integer;
+  NodeGapInFront: integer; NodeGapBehind: integer);
+begin
+  if Assigned(OnMinimizeOverlappings) then
+    OnMinimizeOverlappings(MinPos,NodeGapInFront,NodeGapBehind)
+  else
+    Graph.MinimizeOverlappings(MinPos,NodeGapInFront,NodeGapBehind);
+end;
+
 procedure TCustomLvlGraphControl.Paint;
 var
   w: Integer;
@@ -2317,23 +2677,43 @@ begin
   end;
 
   // background
-  Canvas.Brush.Style:=bsSolid;
-  Canvas.Brush.Color:=clWhite;
-  Canvas.FillRect(ClientRect);
+  if Draw(lgdsBackground) then begin
+    Canvas.Brush.Style:=bsSolid;
+    Canvas.Brush.Color:=clWhite;
+    Canvas.FillRect(ClientRect);
+  end;
 
   TxtH:=Canvas.TextHeight('ABCTM');
 
   // header
-  if Caption<>'' then begin
+  if Draw(lgdsHeader) and (Caption<>'') then begin
     w:=Canvas.TextWidth(Caption);
     Canvas.TextOut((ClientWidth-w) div 2-ScrollLeft,round(0.25*TxtH)-ScrollTop,Caption);
   end;
 
-  // draw
-  DrawEdges(false); // draw normal edges
-  DrawCaptions(TxtH);
-  DrawEdges(true); // draw highlighted edges
-  DrawNodes;
+  // draw edges, node captions, nodes
+  ComputeEdgeCoords;
+  if Draw(lgdsNormalEdges) then
+    DrawEdges(false);
+  if Draw(lgdsNodeCaptions) then
+    DrawCaptions(TxtH);
+  if Draw(lgdsHighlightedEdges) then
+    DrawEdges(true);
+  if Draw(lgdsNodes) then
+    DrawNodes;
+
+  // finish
+  Draw(lgdsFinish);
+end;
+
+function TCustomLvlGraphControl.Draw(Step: TLvlGraphDrawStep): boolean;
+var
+  Skip: Boolean;
+begin
+  if not Assigned(OnDrawStep) then exit(true);
+  Skip:=false;
+  OnDrawStep(Step,Skip);
+  Result:=not Skip;
 end;
 
 procedure TCustomLvlGraphControl.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -2344,7 +2724,7 @@ begin
   inherited MouseMove(Shift, X, Y);
   NodeUnderMouse:=GetNodeAt(X,Y);
   Edge:=GetEdgeAt(X,Y,Distance);
-  if Distance<=EdgeMouseDistMax then
+  if Distance<=EdgeStyle.MouseDistMax then
     EdgeNearMouse:=Edge
   else
     EdgeNearMouse:=nil;
@@ -2421,14 +2801,13 @@ end;
 constructor TCustomLvlGraphControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FEdgeSplitMode:=DefaultLvlGraphEdgeSplitMode;
-  FEdgeMouseDistMax:=DefaultLvlGraphEdgeNearMouseDistMax;
   FOptions:=DefaultLvlGraphCtrlOptions;
   FGraph:=TLvlGraph.Create;
   FGraph.OnInvalidate:=@GraphInvalidate;
   FGraph.OnSelectionChanged:=@GraphSelectionChanged;
   FGraph.OnStructureChanged:=@GraphStructureChanged;
   FNodeStyle:=TLvlGraphNodeStyle.Create(Self);
+  FEdgeStyle:=TLvlGraphEdgeStyle.Create(Self);
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange:=@ImageListChange;
 end;
@@ -2437,6 +2816,7 @@ destructor TCustomLvlGraphControl.Destroy;
 begin
   FreeAndNil(FImageChangeLink);
   FreeAndNil(FGraph);
+  FreeAndNil(FEdgeStyle);
   FreeAndNil(FNodeStyle);
   inherited Destroy;
 end;
@@ -2456,22 +2836,23 @@ begin
   end;
 end;
 
-procedure TCustomLvlGraphControl.AutoLayout(RndColors: boolean);
+procedure TCustomLvlGraphControl.AutoLayout;
 { Min/MaxPixelPerWeight: used to scale Node.DrawSize depending on weight of
                          incoming and outgoing edges
   NodeGap: space between nodes
 }
 var
   HeaderHeight: integer;
-  Palette: TCodyCtrlPalette;
   TxtH: LongInt;
-  GapTop: Integer;
-  GapBottom: Integer;
+  GapInFront: Integer;
+  GapBehind: Integer;
 begin
   debugln(['TCustomLvlGraphControl.AutoLayout ',DbgSName(Self),' ClientRect=',dbgs(ClientRect)]);
   BeginUpdate;
   try
     Canvas.Font.Assign(Font);
+
+    DoStartAutoLayout;
 
     if HandleAllocated then
       TxtH:=Canvas.TextHeight('M')
@@ -2485,41 +2866,39 @@ begin
     // distribute the nodes on levels and mark back edges
     Graph.CreateTopologicalLevels(lgoHighLevels in Options);
 
-    Graph.SplitLongEdges(EdgeSplitMode);
+    Graph.SplitLongEdges(EdgeStyle.SplitMode);
+
+    // permutate nodes within levels to avoid crossings
+    DoMinimizeCrossings;
 
     // Level DrawPosition
-    AutoLayoutLevels(TxtH);
+    DoAutoLayoutLevels(TxtH);
 
-    GapTop:=NodeStyle.GapTop;
-    GapBottom:=NodeStyle.GapBottom;
+    GapInFront:=NodeStyle.GapTop;
+    GapBehind:=NodeStyle.GapBottom;
     case NodeStyle.CaptionPosition of
-    lgncTop: GapTop+=TxtH;
-    lgncBottom: GapBottom+=TxtH;
+    lgncTop: GapInFront+=TxtH;
+    lgncBottom: GapBehind+=TxtH;
     end;
 
     // scale Nodes.DrawSize
     // Preferably the smallest node should be the size of the text
     // Preferably the largest level should fit without needing a scrollbar
-    Graph.ScaleNodeDrawSizes(GapTop,GapBottom,Screen.Height*2,1,
-      ClientHeight-HeaderHeight,round(single(TxtH)*NodeStyle.CaptionScale+0.5));
-
-    // sort nodes within levels to avoid crossings
-    if OnMinimizeCrossings<>nil then
-      OnMinimizeCrossings(Self)
-    else
-      Graph.MinimizeCrossings;
+    Graph.ScaleNodeDrawSizes(GapInFront,GapBehind,Screen.Height*2,1,
+      ClientHeight-HeaderHeight,round(single(TxtH)*NodeStyle.CaptionScale+0.5),
+      FPixelPerWeight);
 
     // position nodes without overlapping
-    Graph.MinimizeOverlappings(HeaderHeight,GapTop,GapBottom);
+    DoMinimizeOverlappings;
+    Graph.MinimizeOverlappings(HeaderHeight,GapInFront,GapBehind);
+
+    // node colors
+    if NodeStyle.Coloring=lgncRGB then
+      ColorNodesRandomRGB;
 
     UpdateScrollBars;
 
-    // node colors
-    if RndColors then begin
-      Palette:=GetCCPaletteRGB(Graph.NodeCount,true);
-      Graph.SetColors(Palette);
-      SetLength(Palette,0);
-    end;
+    DoEndAutoLayout;
 
     Exclude(FFlags,lgcNeedAutoLayout);
   finally
@@ -2595,11 +2974,10 @@ var
   e: Integer;
   Edge: TLvlGraphEdge;
   CurDist: Integer;
+  r: TRect;
 begin
   Result:=nil;
   Distance:=High(Integer);
-  X+=ScrollLeft;
-  Y+=ScrollTop;
   // check in reverse painting order
   for l:=Graph.LevelCount-1 downto 0 do begin
     Level:=Graph.Levels[l];
@@ -2607,10 +2985,10 @@ begin
       Node:=Level.Nodes[n];
       for e:=Node.OutEdgeCount-1 downto 0 do begin
         Edge:=Node.OutEdges[e];
+        r:=Edge.DrawnAt;
         CurDist:=GetDistancePointLine(X,Y,
-                  Edge.FDrawX1,Edge.FDrawY1,Edge.FDrawX2,Edge.FDrawY2);
+                  r.Left,r.Top,r.Right,r.Bottom);
         if CurDist<Distance then begin
-          //debugln(['TCustomLvlGraphControl.GetEdgeAt ',Edge.AsString,' X=',X,' Y=',Y,' Line=',Edge.FDrawX1,',',Edge.FDrawY1,',',Edge.FDrawX2,',',Edge.FDrawY2,' D=',CurDist]);
           Result:=Edge;
           Distance:=CurDist;
         end;
@@ -2632,18 +3010,24 @@ var
   n: Integer;
   Node: TLvlGraphNode;
   x: LongInt;
+  CaptionRect: TRect;
 begin
   Result:=Point(0,0);
   for l:=0 to Graph.LevelCount-1 do begin
     Level:=Graph.Levels[l];
     for n:=0 to Level.Count-1 do begin
       Node:=Level[n];
+      CaptionRect:=Node.DrawnCaptionRect;
+
       Result.Y:=Max(Result.Y,Node.DrawPositionEnd+NodeStyle.GapBottom);
+      Result.Y:=Max(Result.Y,CaptionRect.Bottom+ScrollTop);
+
       x:=NodeStyle.GapRight;
       if Node.OutEdgeCount>0 then
         x:=Max(x,NodeStyle.Width);
       x+=Level.DrawPosition+NodeStyle.Width;
       Result.X:=Max(Result.X,x);
+      Result.X:=Max(Result.X,CaptionRect.Right+ScrollLeft);
     end;
   end;
 end;
@@ -2861,26 +3245,27 @@ var
     e: Integer;
     Edge: TLvlGraphEdge;
     ExtNextNode: TGraphLevelerNode;
+    Cnt: Integer;
   begin
     if ExtNode.Visited then exit;
     ExtNode.InPath:=true;
     ExtNode.Visited:=true;
     Node:=ExtNode.Node;
-    if HighLevels then begin
-      for e:=0 to Node.OutEdgeCount-1 do begin
+    if HighLevels then
+      Cnt:=Node.OutEdgeCount
+    else
+      Cnt:=Node.InEdgeCount;
+    for e:=0 to Cnt-1 do begin
+      if HighLevels then begin
         Edge:=Node.OutEdges[e];
         ExtNextNode:=GetExtNode(Edge.Target);
-        if ExtNextNode.InPath then
-          Edge.FBackEdge:=true; // edge is part of a cycle
-        Traverse(ExtNextNode);
-        ExtNode.Level:=Max(ExtNode.Level,ExtNextNode.Level+1);
-      end;
-    end else begin
-      for e:=0 to Node.InEdgeCount-1 do begin
+      end else begin
         Edge:=Node.InEdges[e];
         ExtNextNode:=GetExtNode(Edge.Source);
-        if ExtNextNode.InPath then
-          Edge.FBackEdge:=true; // edge is part of a cycle
+      end;
+      if ExtNextNode.InPath then begin
+        Edge.FBackEdge:=true // edge is part of a cycle
+      end else begin
         Traverse(ExtNextNode);
         ExtNode.Level:=Max(ExtNode.Level,ExtNextNode.Level+1);
       end;
@@ -2910,8 +3295,8 @@ begin
       ExtNode:=TGraphLevelerNode.Create;
       ExtNode.Node:=Node;
       ExtNodes.Add(ExtNode);
-      for j:=0 to Node.InEdgeCount-1 do begin
-        Edge:=Node.InEdges[j];
+      for j:=0 to Node.OutEdgeCount-1 do begin
+        Edge:=Node.OutEdges[j];
         Edge.fBackEdge:=false;
       end;
     end;
@@ -3059,7 +3444,8 @@ begin
 end;
 
 procedure TLvlGraph.ScaleNodeDrawSizes(NodeGapAbove, NodeGapBelow,
-  HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer);
+  HardMaxTotal, HardMinOneNode, SoftMaxTotal, SoftMinOneNode: integer; out
+  PixelPerWeight: single);
 { NodeGapAbove: minimum space above each node
   NodeGapBelow: minimum space below each node
   HardMaxTotal: maximum size of largest level
@@ -3080,9 +3466,10 @@ var
   LvlWeight: Single;
   MinPixelPerWeight, PrefMinPixelPerWeight: single;
   DrawHeight: integer;
-  PixelPerWeight, MaxPixelPerWeight, PrefMaxPixelPerWeight: single;
+  MaxPixelPerWeight, PrefMaxPixelPerWeight: single;
   Gap: Integer;
 begin
+  PixelPerWeight:=1.0;
   //debugln(['TLvlGraph.ScaleNodeDrawSizes',
   //  ' NodeGapAbove=',NodeGapAbove,' NodeGapBelow=',NodeGapBelow,
   //  ' HardMaxTotal=',HardMaxTotal,' HardMinOneNode=',HardMinOneNode,
@@ -3127,10 +3514,7 @@ begin
     DrawHeight:=HardMaxTotal;
     for j:=0 to Level.Count-1 do begin
       LvlWeight+=Max(Node.InWeight,Node.OutWeight);
-      if Node.Visible then
-        Gap+=NodeGapAbove+NodeGapBelow
-      else
-        Gap+=1;
+      Gap+=NodeGapAbove+NodeGapBelow;
     end;
     if LvlWeight=0.0 then continue;
     DrawHeight:=Max(1,HardMaxTotal-Gap);
@@ -3358,6 +3742,11 @@ end;
 
 { TLvlGraphNode }
 
+function TLvlGraphNode.InEdgeCount: integer;
+begin
+  Result:=FInEdges.Count;
+end;
+
 function TLvlGraphNode.GetInEdges(Index: integer): TLvlGraphEdge;
 begin
   Result:=TLvlGraphEdge(FInEdges[Index]);
@@ -3528,6 +3917,7 @@ begin
   FVisible:=true;
   FImageIndex:=-1;
   FOverlayIndex:=-1;
+  FImageEffect:=DefaultLvlGraphNodeImageEffect;
   Level:=TheLevel;
 end;
 
@@ -3567,11 +3957,6 @@ begin
     Result:=InEdges[i]
   else
     Result:=nil;
-end;
-
-function TLvlGraphNode.InEdgeCount: integer;
-begin
-  Result:=FInEdges.Count;
 end;
 
 function TLvlGraphNode.IndexOfOutEdge(Target: TLvlGraphNode): integer;
