@@ -19,7 +19,7 @@
     </CompilerOptions>
     <Description Value="IDE-Extension: Adds PascalScript to editor-macros. 
 
-This package requires: PascalScript fron REM Objects (http://www.remobjects.com/ps.aspx)
+This package requires: PascalScript from REM Objects (http://www.remobjects.com/ps.aspx)
 
 Extends the Editors macro recorder and player. Macros can be written in pascal script. They also have access to additional properties and methods."/>
     <License Value="GPL"/>
