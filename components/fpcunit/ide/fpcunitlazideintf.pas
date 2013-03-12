@@ -43,7 +43,7 @@ type
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
-    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
   end;
   
   { TFPCUnitConsoleApplicationDescriptor }
@@ -54,7 +54,7 @@ type
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
-    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
   end;
 
   { TFileDescPascalUnitFPCUnitTestCase }
@@ -71,10 +71,10 @@ type
     function GetInterfaceUsesSection: string; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
-    function GetInterfaceSource(const Filename, SourceName,
-                                ResourceName: string): string;override;
-    function GetImplementationSource(const Filename, SourceName,
-                                     ResourceName: string): string; override;
+    function GetInterfaceSource(const {%H-}Filename, {%H-}SourceName,
+                                {%H-}ResourceName: string): string;override;
+    function GetImplementationSource(const {%H-}Filename, {%H-}SourceName,
+                                     {%H-}ResourceName: string): string; override;
     property TestCaseName: string read FTestCaseName write FTestCaseName;
     property CreateSetup: boolean read FCreateSetup write FCreateSetup;
     property CreateTeardown: boolean read FCreateTeardown write FCreateTeardown;
