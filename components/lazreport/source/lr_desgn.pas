@@ -172,8 +172,17 @@ type
     procedure DClick(Sender: TObject);
     procedure MoveResize(Kx,Ky:Integer; UseFrames,AResize: boolean);
 
+    // focusrect
     procedure NPDrawFocusRect;
     procedure NPEraseFocusRect;
+    // objects
+    procedure NPDrawLayerObjects(Rgn: HRGN; Start:Integer=10000);
+    procedure NPRedrawViewCheckBand(t: TfrView);
+    // selection
+    procedure NPPaintSelection;                   // this is the only function that works during Paint
+    procedure NPDrawSelection;
+    procedure NPEraseSelection;
+
   protected
     procedure Paint; override;
     procedure WMEraseBkgnd(var {%H-}Message: TLMEraseBkgnd); message LM_ERASEBKGND;
@@ -1151,7 +1160,7 @@ begin
   SelectClipRgn(Canvas.Handle, 0);
 
   if not Down then
-    DrawPage(dmSelection);
+    NPPaintSelection;
 
   {$IFDEF DebugLR}
   DebugLnExit('TfrDesignerPage.Draw DONE');
@@ -1286,7 +1295,7 @@ begin
     NPEraseFocusRect;
 
   RFlag := False;
-  DrawPage(dmSelection);
+  NPEraseSelection;
   Down := True;
   DontChange := False;
   if Button = mbLeft then
@@ -1419,7 +1428,7 @@ begin
   
   if Button = mbRight then
   begin
-    DrawPage(dmSelection);
+    NPDrawSelection;
     Down := False;
     GetCursorPos(p{%H-});
     //FDesigner.Popup1Popup(nil);
@@ -1640,19 +1649,8 @@ begin
       end;
       
       SelNum := 1;
-      if t.Typ = gtBand then
-      begin
-        {$IFDEF DebugLR}
-        DebugLn('A new band was inserted');
-        {$ENDIF}
-        Draw(10000, t.GetClipRgn(rtExtended))
-      end
-      else
-      begin
-        t.Draw(Canvas);
-        DrawSelection(t);
-      end;
-      
+      NPRedrawViewCheckBand(t);
+
       with FDesigner do
       begin
         SelectionChanged;
@@ -1703,8 +1701,7 @@ begin
     t.FrameWidth := LastLineWidth;
     t.FrameColor := LastFrameColor;
     SelNum := 1;
-    t.Draw(Canvas);
-    DrawSelection(t);
+    NPRedrawViewCheckBand(t);
     FDesigner.SelectionChanged;
     FDesigner.AddUndoAction(acInsert);
     {$IFDEF DebugLR}
@@ -1737,7 +1734,7 @@ begin
     end;
     GetMultipleSelected;
     FDesigner.SelectionChanged;
-    DrawPage(dmSelection);
+    NPDrawSelection;
     {$IFDEF DebugLR}
     DebugLnExit('TfrDesignerPage.MUp DONE: objects contained in frame');
     {$ENDIF}
@@ -1758,7 +1755,7 @@ begin
       end;
     end;
     GetMultipleSelected;
-    Draw(TopSelected, ClipRgn);
+    NPDrawLayerObjects(ClipRgn, TopSelected);
     {$IFDEF DebugLR}
     DebugLnExit('TfrDesignerPage.MUp DONE: Splitting');
     {$ENDIF}
@@ -1768,7 +1765,7 @@ begin
   //resizing several objects
   if Moved and MRFlag and (Cursor <> crDefault) then
   begin
-    Draw(TopSelected, ClipRgn);
+    NPDrawLayerObjects(ClipRgn, TopSelected);
     {$IFDEF DebugLR}
     DebugLnExit('TfrDesignerPage.MUp DONE: resizing several objects');
     {$ENDIF}
@@ -1778,7 +1775,7 @@ begin
   //redrawing all moved or resized objects
   if not Moved then
   begin
-    DrawPage(dmSelection);
+    NPDrawSelection;
     {$IFDEF DebugLR}
     DebugLn('redrawing all moved or resized objects');
     {$ENDIF}
@@ -1789,7 +1786,7 @@ begin
     if SelNum > 1 then
     begin
       //JRA DebugLn('HERE, ClipRgn', Dbgs(ClipRgn));
-      Draw(TopSelected, ClipRgn);
+      NPDrawLayerObjects(ClipRgn, TopSelected);
       GetMultipleSelected;
       FDesigner.ShowPosition;
     end
@@ -1799,7 +1796,7 @@ begin
       NormalizeCoord(t);
       if Cursor <> crDefault then
         t.Resized;
-      Draw(TopSelected, ClipRgn);
+      NPDrawLayerObjects(ClipRgn, TopSelected);
       FDesigner.ShowPosition;
     end;
   end;
@@ -2104,8 +2101,8 @@ begin
       DrawPage(dmShape)
     else
     begin
-      Draw(10000, hr);
-      Draw(10000, hr1);
+      NPDrawLayerObjects(hr);
+      NPDrawLayerObjects(hr1);
     end;
     
     Inc(LastX, kx);
@@ -2265,7 +2262,7 @@ begin
       Hr2:=t.GetClipRgn(rtExtended);
       CombineRgn(hr1, hr, hr2, RGN_OR);
       DeleteObject(Hr2);
-      Draw(10000, hr1);
+      NPDrawLayerObjects(hr1);
       DeleteObject(Hr);
       {$IFDEF DebugLR}
       DebugLn('MDown resizing 2');
@@ -2341,7 +2338,8 @@ begin
   begin
     CombineRgn(hr, hr, hr1, RGN_OR);
     DeleteObject(hr1);
-    Draw(10000, hr);
+
+    NPDrawLayerObjects(hr);
   end;
   {$IFDEF LCLQt}Invalidate;{$endif}
   {$IFDEF LCLCarbon}Invalidate;{$endif}
@@ -2355,6 +2353,44 @@ end;
 procedure TfrDesignerPage.NPEraseFocusRect;
 begin
   DrawFocusRect(OldRect);
+end;
+
+procedure TfrDesignerPage.NPDrawLayerObjects(Rgn: HRGN; Start:Integer=10000);
+begin
+  // here one just have to invalidate Rgn and objects will be drawn normally
+  // NOTE: this case, one needs to delete Rgn
+  Draw(Start, Rgn);
+end;
+
+procedure TfrDesignerPage.NPDrawSelection;
+begin
+  DrawPage(dmSelection);
+end;
+
+procedure TfrDesignerPage.NPPaintSelection;
+begin
+  DrawPage(dmSelection);
+end;
+
+procedure TfrDesignerPage.NPEraseSelection;
+begin
+  DrawPage(dmSelection);
+end;
+
+procedure TfrDesignerPage.NPRedrawViewCheckBand(t: TfrView);
+begin
+  if t.Typ = gtBand then
+  begin
+    {$IFDEF DebugLR}
+    DebugLn('A new band was inserted');
+    {$ENDIF}
+    Draw(10000, t.GetClipRgn(rtExtended))
+  end
+  else
+  begin
+    t.Draw(Canvas);
+    DrawSelection(t);
+  end;
 end;
 
 procedure TfrDesignerPage.CMMouseLeave(var Message: TLMessage);
@@ -3272,7 +3308,7 @@ end;
 
 procedure TfrDesignerForm.RedrawPage;
 begin
-  PageView.Draw(10000, 0);
+  PageView.NPDrawLayerObjects(0);
 end;
 
 procedure TfrDesignerForm.OnModify(sender: TObject);
@@ -3439,11 +3475,11 @@ begin
           t := TfrView(Objects[TopSelected]);
           if not (ssAlt in Shift) then
           begin
-            PageView.DrawPage(dmSelection);
+            PageView.NPEraseSelection;
             Unselect;
             SelNum := 1;
             t1.Selected := True;
-            PageView.DrawPage(dmSelection);
+            PageView.NPDrawSelection;
           end
           else
           begin
@@ -3468,7 +3504,7 @@ end;
 procedure TfrDesignerForm.MoveObjects(dx, dy: Integer; aResize: Boolean);
 begin
   AddUndoAction(acEdit);
-  PageView.DrawPage(dmSelection);
+  PageView.NPEraseSelection;
   PageView.MoveResize(Dx,Dy, false, aResize);
   ShowPosition;
   PageView.GetMultipleSelected;
@@ -3490,7 +3526,7 @@ var
 begin
   AddUndoAction(acDelete);
   GetRegion; // JRA 3
-  PageView.DrawPage(dmSelection);
+  PageView.NPEraseSelection;
   for i := Objects.Count - 1 downto 0 do
   begin
     t := TfrView(Objects[i]);
@@ -3883,10 +3919,10 @@ begin
     View := TfrView(TMenuItem(Sender).Tag);
     if Objects.IndexOf(View)>=0 then
     begin
-      PageView.DrawPage(dmSelection);
+      PageView.NPEraseSelection;
       SelectSameClass(View);
       PageView.GetMultipleSelected;
-      PageView.DrawPage(dmSelection);
+      PageView.NPDrawSelection;
       SelectionChanged;
     end;
   end;
@@ -3960,7 +3996,7 @@ begin
     AddUndoAction(acEdit);
 
   if WithRedraw then begin
-    PageView.DrawPage(dmSelection);
+    PageView.NPEraseSelection;
     GetRegion;
   end;
 
@@ -3971,7 +4007,7 @@ begin
   end;
 
   if WithRedraw then
-    PageView.Draw(TopSelected, ClipRgn);
+    PageView.NPDrawLayerObjects(ClipRgn, TopSelected);
 end;
 
 // data=0 remove all borders
@@ -4239,7 +4275,7 @@ begin
   if Busy then
     Exit;
   AddUndoAction(acEdit);
-  PageView.DrawPage(dmSelection);
+  PageView.NPEraseSelection;
   GetRegion;
   b:=(Sender as TControl).Tag;
   
@@ -4377,7 +4413,7 @@ begin
     end;
   end;
 
-  PageView.Draw(TopSelected, ClipRgn);
+  PageView.NPDrawLayerObjects(ClipRgn, TopSelected);
 
   ActiveControl := nil;
   if b in [20, 21] then
@@ -4768,8 +4804,8 @@ begin
     View := TfrView(Objects[TopSelected]);
     if ShowEditor = mrOk then
     begin
-      PageView.DrawPage(dmSelection);
-      PageView.Draw(TopSelected, View.GetClipRgn(rtExtended));
+      PageView.NPDrawSelection;
+      PageView.NPDrawLayerObjects(View.GetClipRgn(rtExtended), TopSelected);
     end;
   end;
   ActiveControl := nil;
@@ -4794,16 +4830,16 @@ begin
       if ShowModal = mrOk then
       begin
         AddUndoAction(acEdit);
-        PageView.DrawPage(dmSelection);
         (t as TfrPictureView).Picture.Assign(Image1.Picture);
-        PageView.Draw(TopSelected, t.GetClipRgn(rtExtended));
+        PageView.NPDrawSelection;
+        PageView.NPDrawLayerObjects(t.GetClipRgn(rtExtended), TopSelected);
       end;
     end;
     frGEditorForm.Free;
   end
   else if t.Typ = gtBand then
   begin
-    PageView.DrawPage(dmSelection);
+    PageView.NPEraseSelection;
     bt := (t as TfrBandView).BandType;
     if bt in [btMasterData, btDetailData, btSubDetailData] then
     begin
@@ -4825,7 +4861,7 @@ begin
     end
     else
       PageView.DFlag := False;
-    PageView.Draw(TopSelected, t.GetClipRgn(rtExtended));
+    PageView.NPDrawLayerObjects(t.GetClipRgn(rtExtended), TopSelected);
   end
   else if t.Typ = gtSubReport then
     CurPage := (t as TfrSubReportView).SubPage
@@ -4836,9 +4872,9 @@ begin
       begin
         if frAddIns[i].EditorForm <> nil then
         begin
-          PageView.DrawPage(dmSelection);
+          PageView.NPEraseSelection;
           frAddIns[i].EditorForm.ShowEditor(t);
-          PageView.Draw(TopSelected, t.GetClipRgn(rtExtended));
+          PageView.NPDrawLayerObjects(t.GetClipRgn(rtExtended), TopSelected);
         end
         else
           ShowMemoEditor;
@@ -5088,8 +5124,8 @@ end;
 
 procedure TfrDesignerForm.AfterChange;
 begin
-  PageView.DrawPage(dmSelection);
-  PageView.Draw(TopSelected, 0);
+  PageView.NPDrawSelection;
+  PageView.NPDrawLayerObjects(0, TopSelected);
   ObjInspRefresh;
 end;
 
@@ -5241,10 +5277,10 @@ end;
 
 procedure TfrDesignerForm.SelAllBClick(Sender: TObject); // select all
 begin
-  PageView.DrawPage(dmSelection);
+  PageView.NPEraseSelection;
   SelectAll;
   PageView.GetMultipleSelected;
-  PageView.DrawPage(dmSelection);
+  PageView.NPDrawSelection;
   SelectionChanged;
 end;
 
