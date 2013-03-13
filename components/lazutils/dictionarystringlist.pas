@@ -12,7 +12,7 @@
  *                                                                           *
  *****************************************************************************
 
-  Author: Juha Manninen
+  Author: Juha Manninen / Antônio Galvão
 
   Abstract:
     This is an unsorted StringList with a fast lookup feature.
