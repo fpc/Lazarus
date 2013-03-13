@@ -54,6 +54,8 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
+    function Add(const S: string): Integer; override;
+    function AddObject(const S: string; AObject: TObject): Integer; override;
     function Contains(const S: string): Boolean; // A new function
     function Find(const S: string; out Index: Integer): Boolean; override;
     function IndexOf(const S: string): Integer; override;
@@ -107,10 +109,25 @@ begin
     FMap.Remove(s);
 end;
 
+function TDictionaryStringList.Add(const S: string): Integer;
+begin
+  if not Sorted and (Duplicates = dupIgnore) and FMap.Contains(S) then
+    Result := -1
+  else
+    Result := inherited Add(S);
+end;
+
+function TDictionaryStringList.AddObject(const S: string; AObject: TObject): Integer;
+begin
+  Result := Add(S);
+  if Result > -1 then
+    Objects[Result] := AObject;
+end;
+
 procedure TDictionaryStringList.InsertItem(Index: Integer; const S: string);
 begin
 //  if FAssigning then Exit;
-  if (Duplicates <> dupAccept) and not Sorted then
+  if not Sorted and (Duplicates <> dupAccept) then
     if FMap.Contains(S) then
       case Duplicates of
         DupIgnore : Exit;
