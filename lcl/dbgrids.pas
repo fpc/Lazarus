@@ -1361,12 +1361,14 @@ end;
 
 procedure TCustomDBGrid.PrepareCellHints(ACol, ARow: Integer);
 begin
+  if not DataLink.Active then Exit;
   FSavedRecord := DataLink.ActiveRecord;
   DataLink.ActiveRecord := ARow - FixedRows;
 end;
 
 procedure TCustomDBGrid.UnprepareCellHints;
 begin
+  if not DataLink.Active then Exit;
   DataLink.ActiveRecord := FSavedRecord;
 end;
 
