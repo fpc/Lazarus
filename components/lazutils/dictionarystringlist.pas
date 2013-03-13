@@ -47,7 +47,7 @@ type
 //    FAssigning: Boolean;
   protected
     procedure InsertItem(Index: Integer; const S: string); override;
-    procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
+    procedure InsertItem({%H-}Index: Integer; const {%H-}S: string; {%H-}O: TObject); override;
   public
     constructor Create;
     destructor Destroy; override;
