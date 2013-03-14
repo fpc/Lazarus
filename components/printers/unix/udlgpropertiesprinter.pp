@@ -86,7 +86,7 @@ type
 
     function number_up_supported: string;
     procedure SetupOptions;
-    procedure SetupAdvancedOptions;
+    procedure SetupAdvancedOptions(Data: Ptrint);
 
   public
     { public declarations }
@@ -206,11 +206,11 @@ begin
     rbSheet1.Checked:=((i=1) or (i>4));
   end;
 
-  SetupAdvancedOptions;
+  Application.QueueAsyncCall(@SetupAdvancedOptions, 0);
 end;
 
 // TODO: do this in a frame to make printer properties dialog
-procedure Tdlgpropertiesprinter.SetupAdvancedOptions;
+procedure Tdlgpropertiesprinter.SetupAdvancedOptions(Data: PtrInt);
 var
   Group: pppd_group_t;
   Option: pppd_option_t;
@@ -264,24 +264,22 @@ begin
 
       // todo: use exclusively anchor options to do layout
       lab := TLabel.Create(Self);
+      lab.Parent := sb;
       lab.Font.Style:=lab.font.style + [fsBold];
       lab.Top := Y;
       lab.Caption := group^.text;
       lab.BorderSpacing.Around:=C_SPACE;
-      lab.AnchorSideLeft.Control := sb;
-      lab.Parent := sb;
 
       Bevel := TBevel.Create(Self);
+      Bevel.Parent := sb;
       Bevel.Shape := bsTopLine;
       Bevel.Top:= y + lab.Height div 2;
       Bevel.Height:= C_SPACE div 2;
       Bevel.BorderSpacing.Around := C_SPACE;
       Bevel.AnchorSideLeft.Control := lab;
       Bevel.AnchorSideLeft.Side := asrBottom;
-      Bevel.AnchorSideRight.Control := sb;
-      Bevel.AnchorSideRight.Side := asrBottom;
+      Bevel.width := sb.Width - C_SPACE;
       Bevel.anchors := [akLeft, akTop, akRight];
-      Bevel.Parent := sb;
 
       inc(y, Lab.Height);
 
@@ -296,6 +294,7 @@ begin
           y := y + C_SPACE;
 
           lab := TLabel.Create(Self);
+          lab.Parent := sb;
           lab.Layout:=tlCenter;
           lab.AutoSize := false;
           lab.Top := Y;
@@ -303,9 +302,9 @@ begin
           lab.BorderSpacing.Around:=C_SPACE;
           lab.AnchorSideLeft.Control := sb;
           lab.Caption := Option^.text;
-          lab.Parent := sb;
 
           combo := TCombobox.Create(self);
+          combo.Parent := sb;
           combo.Style:= csDropDownList;
           combo.Top:= y + lab.Height div 2;
           combo.BorderSpacing.Around := C_SPACE;
@@ -314,7 +313,7 @@ begin
           combo.AnchorSideRight.Control := sb;
           combo.AnchorSideRight.Side := asrBottom;
           combo.anchors := [akLeft, akTop, akRight];
-          combo.Parent := sb;
+
           lab.Height:= combo.height;
 
           SetupCupsCombo(Combo, Option);
@@ -331,6 +330,13 @@ begin
     inc(group);
     inc(g);
   end; // group
+
+  // final space
+  with TPanel.Create(Self) do begin
+    SetBounds(C_SPACE, y+C_SPACE, 1, C_SPACE);
+    BevelOuter := bvNone;
+    Parent := sb;
+  end;
 
 end;
 
