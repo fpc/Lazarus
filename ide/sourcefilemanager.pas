@@ -1487,19 +1487,19 @@ end;
 function TLazSourceFileManager.OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo): TModalResult;
 var
-  FName,SPath: String;
+  FileName,SearchPath: String;
 
-  function FindFile(var FName: String; SPath: String): Boolean;
-  //  Searches for FName in SPath
-  //  If FName is not found, we'll check extensions pp and pas too
+  function FindFile(var CurFileName: String; CurSearchPath: String): Boolean;
+  //  Searches for FileName in SearchPath
+  //  If FileName is not found, we'll check extensions pp and pas too
   //  Returns true if found. FName contains the full file+path in that case
   var TempFile,TempPath,CurPath,FinalFile, Ext: String;
       p,c: Integer;
       PasExt: TPascalExtType;
   begin
-    if SPath='' then SPath:='.';
+    if CurSearchPath='' then CurSearchPath:='.';
     Result:=true;
-    TempPath:=SPath;
+    TempPath:=CurSearchPath;
     while TempPath<>'' do begin
       p:=pos(';',TempPath);
       if p=0 then p:=length(TempPath)+1;
@@ -1517,23 +1517,23 @@ var
       for c:=0 to 2 do begin
         // FPC searches first lowercase, then keeping case, then uppercase
         case c of
-          0: TempFile:=LowerCase(FName);
-          1: TempFile:=FName;
-          2: TempFile:=UpperCase(FName);
+          0: TempFile:=LowerCase(CurFileName);
+          1: TempFile:=CurFileName;
+          2: TempFile:=UpperCase(CurFileName);
         end;
         if ExtractFileExt(TempFile)='' then begin
           for PasExt:=Low(TPascalExtType) to High(TPascalExtType) do begin
             Ext:=PascalExtension[PasExt];
             FinalFile:=ExpandFileNameUTF8(CurPath+TempFile+Ext);
             if FileExistsUTF8(FinalFile) then begin
-              FName:=FinalFile;
+              CurFileName:=FinalFile;
               exit;
             end;
           end;
         end else begin
           FinalFile:=ExpandFileNameUTF8(CurPath+TempFile);
           if FileExistsUTF8(FinalFile) then begin
-            FName:=FinalFile;
+            CurFileName:=FinalFile;
             exit;
           end;
         end;
@@ -1582,6 +1582,11 @@ var
         StopChars := [',',';',':','[',']','{','}','(',')',' ','''','"','`'
                      ,'#','%','=','>'];
         Stop := XY.X;
+        while (Stop >= 1) and (not (Line[Stop] in ['''','"','`'])) do
+          dec(Stop);
+        if Stop<1 then
+          StopChars:=StopChars+[' ',#9]; // no quotes in front => use spaces as boundaries
+        Stop := XY.X;
         while (Stop <= Len) and (not (Line[Stop] in StopChars)) do
           Inc(Stop);
         while (XY.X > 1) and (not (Line[XY.X - 1] in StopChars)) do
@@ -1609,13 +1614,13 @@ begin
   // parse filename at cursor
   IsIncludeDirective:=false;
   Found:=false;
-  FName:=GetFilenameAtRowCol(ActiveSrcEdit.EditorComponent.LogicalCaretXY,
+  FileName:=GetFilenameAtRowCol(ActiveSrcEdit.EditorComponent.LogicalCaretXY,
                              IsIncludeDirective);
-  if FName='' then exit;
+  if FileName='' then exit;
 
   // check if absolute filename
-  if FilenameIsAbsolute(FName) then begin
-    if FileExistsUTF8(FName) then
+  if FilenameIsAbsolute(FileName) then begin
+    if FileExistsUTF8(FileName) then
       Found:=true
     else
       exit;
@@ -1624,55 +1629,55 @@ begin
   if (not Found) then begin
     if IsIncludeDirective then begin
       // search include file
-      SPath:='.;'+CodeToolBoss.DefineTree.GetIncludePathForDirectory(BaseDir);
-      if FindFile(FName,SPath) then
+      SearchPath:='.;'+CodeToolBoss.DefineTree.GetIncludePathForDirectory(BaseDir);
+      if FindFile(FileName,SearchPath) then
         Found:=true;
-    end else if FilenameIsPascalSource(FName) or (ExtractFileExt(FName)='') then
+    end else if FilenameIsPascalSource(FileName) or (ExtractFileExt(FileName)='') then
     begin
       // search pascal unit
-      AUnitName:=ExtractFileNameOnly(FName);
-      InFilename:=FName;
-      if ExtractFileExt(FName)='' then InFilename:='';
+      AUnitName:=ExtractFileNameOnly(FileName);
+      InFilename:=FileName;
+      if ExtractFileExt(FileName)='' then InFilename:='';
       NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
                            BaseDir,AUnitName,InFilename,true);
       if NewFilename<>'' then begin
         Found:=true;
-        FName:=NewFilename;
+        FileName:=NewFilename;
       end;
     end;
   end;
 
   if (not Found) then begin
     // simple search relative to current unit
-    InFilename:=AppendPathDelim(BaseDir)+FName;
+    InFilename:=AppendPathDelim(BaseDir)+FileName;
     if FileExistsCached(InFilename) then begin
       Found:=true;
-      FName:=InFilename;
+      FileName:=InFilename;
     end;
   end;
 
-  if (not Found) and (System.Pos('.',FName)>0) and (not IsIncludeDirective) then
+  if (not Found) and (System.Pos('.',FileName)>0) and (not IsIncludeDirective) then
   begin
     // for example 'SysUtils.CompareText'
-    FName:=ActiveSrcEdit.EditorComponent.GetWordAtRowCol(
+    FileName:=ActiveSrcEdit.EditorComponent.GetWordAtRowCol(
       ActiveSrcEdit.EditorComponent.LogicalCaretXY);
-    if (FName<>'') and IsValidIdent(FName) then begin
+    if (FileName<>'') and IsValidIdent(FileName) then begin
       // search pascal unit
-      AUnitName:=FName;
+      AUnitName:=FileName;
       InFilename:='';
       NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
                            BaseDir,AUnitName,InFilename,true);
       if NewFilename<>'' then begin
         Found:=true;
-        FName:=NewFilename;
+        FileName:=NewFilename;
       end;
     end;
   end;
 
   if Found then begin
     // open
-    InputHistories.SetFileDialogSettingsInitialDir(ExtractFilePath(FName));
-    Result:=OpenEditorFile(FName, -1, -1, nil, [ofAddToRecent]);
+    InputHistories.SetFileDialogSettingsInitialDir(ExtractFilePath(FileName));
+    Result:=OpenEditorFile(FileName, -1, -1, nil, [ofAddToRecent]);
   end;
 end;
 
