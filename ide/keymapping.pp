@@ -3411,6 +3411,20 @@ end;
 
 procedure TKeyCommandRelationList.AssignTo(ASynEditKeyStrokes: TSynEditKeyStrokes;
   IDEWindowClass: TCustomFormClass; ACommandOffsetOffset: Integer = 0);
+
+  procedure SetKeyCombo(aKey: TSynEditKeyStroke; aShortcut: PIDEShortCut);
+  // Define a key for a command
+  begin
+    aKey.Key   :=aShortcut^.Key1;
+    aKey.Shift :=aShortcut^.Shift1;
+    aKey.Key2  :=aShortcut^.Key2;
+    aKey.Shift2:=aShortcut^.Shift2;
+    // Ignore the second Ctrl key in sequential combos.
+    // For example "Ctrl-X, Y" and "Ctrl-X, Ctrl-Y" are then treated the same.
+    if aKey.Shift=[ssCtrl] then
+      aKey.ShiftMask2:=[ssCtrl];
+  end;
+
 var
   i,j,MaxKeyCnt,KeyCnt:integer;
   Key: TSynEditKeyStroke;
@@ -3449,22 +3463,12 @@ begin
         if (ccid >= ecFirstPlugin) and (ccid < ecLastPlugin) then
           ccid := ccid + ACommandOffsetOffset;
         if Key.Command=ccid then begin
-          if KeyCnt>MaxKeyCnt then begin
-            // All keys with this command are already defined -> delete this one
-            Key.Free;
-          end else if KeyCnt=1 then begin
-            // Define key1 for this command
-            Key.Key:=CurRelation.ShortcutA.Key1;
-            Key.Shift:=CurRelation.ShortcutA.Shift1;
-            Key.Key2:=CurRelation.ShortcutA.Key2;
-            Key.Shift2:=CurRelation.ShortcutA.Shift2;
-          end else if KeyCnt=2 then begin
-            // Define key2 for this command
-            Key.Key:=CurRelation.ShortcutB.Key1;
-            Key.Shift:=CurRelation.ShortcutB.Shift1;
-            Key.Key2:=CurRelation.ShortcutB.Key2;
-            Key.Shift2:=CurRelation.ShortcutB.Shift2;
-          end;
+          if KeyCnt>MaxKeyCnt then
+            Key.Free // All keys with this command are already defined -> delete this one
+          else if KeyCnt=1 then
+            SetKeyCombo(Key, @CurRelation.ShortcutA)  // Key1 for this command
+          else if KeyCnt=2 then
+            SetKeyCombo(Key, @CurRelation.ShortcutB); // Key2 for this command
           inc(KeyCnt);
         end
         else
@@ -3496,17 +3500,10 @@ begin
         if (ccid >= ecFirstPlugin) and (ccid < ecLastPlugin) then
           ccid := ccid + ACommandOffsetOffset;
         Key.Command:=ccid;
-        if KeyCnt=1 then begin
-          Key.Key:=CurRelation.ShortcutA.Key1;
-          Key.Shift:=CurRelation.ShortcutA.Shift1;
-          Key.Key2:=CurRelation.ShortcutA.Key2;
-          Key.Shift2:=CurRelation.ShortcutA.Shift2;
-        end else begin
-          Key.Key:=CurRelation.ShortcutB.Key1;
-          Key.Shift:=CurRelation.ShortcutB.Shift1;
-          Key.Key2:=CurRelation.ShortcutB.Key2;
-          Key.Shift2:=CurRelation.ShortcutB.Shift2;
-        end;
+        if KeyCnt=1 then
+          SetKeyCombo(Key, @CurRelation.ShortcutA)
+        else
+          SetKeyCombo(Key, @CurRelation.ShortcutB);
         inc(KeyCnt);
       end;
     end;

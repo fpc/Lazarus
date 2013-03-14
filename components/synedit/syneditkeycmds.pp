@@ -1026,15 +1026,15 @@ var
 begin
   Result := -1;
   for x := 0 to Count-1 do
-    // If first key requires CTRL, ignore CTRL status on 2nd key
+    // If ShiftMask2 = [ssCtrl] and shortcut is "Ctrl-X, Y", then both
+    // "Ctrl-X, Y" and "Ctrl-X, Ctrl-Y" are accepted. The second CTRL is ignored.
     with Items[x] do
-      if (Key = Code1) and (Shift = SS1 - ShiftMask) and
-         (Key2 = Code2) and ((Shift2 = SS2 - ShiftMask2) or
-              ((Shift2 = (SS2 >< [ssCtrl])) and (Shift = [ssCtrl]))) then
-    begin
-      Result := x;
-      break;
-    end;
+      if (Key = Code1) and (Shift = SS1 - ShiftMask)
+      and (Key2 = Code2) and (Shift2 = SS2 - ShiftMask2) then
+      begin
+        Result := x;
+        break;
+      end;
 end;
 
 function TSynEditKeyStrokes.FindKeycode2Start(Code: word; SS: TShiftState): integer;
