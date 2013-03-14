@@ -165,9 +165,9 @@ type
       IDEWindowClass: TCustomFormClass; UseLastKey: boolean = true): word;
     function IndexOf(ARelation: TKeyCommandRelation): integer;
     function CommandToShortCut(ACommand: word): TShortCut;
-    function LoadFromXMLConfig(XMLConfig:TXMLConfig; const Path: String):boolean;
-    function SaveToXMLConfig(XMLConfig:TXMLConfig; const Path: String):boolean;
-    procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes;
+    function LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: String):boolean;
+    function SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: String):boolean;
+    procedure AssignTo(ASynEditKeyStrokes: TSynEditKeyStrokes;
                        IDEWindowClass: TCustomFormClass;
                        ACommandOffsetOffset: Integer = 0);
     procedure Assign(List: TKeyCommandRelationList);
@@ -3432,8 +3432,8 @@ begin
     for i:=0 to FRelations.Count-1 do begin
       CurRelation:=Relations[i];
       if (CurRelation.ShortcutA.Key1=VK_UNKNOWN)
-      or ((IDEWindowClass<>nil) and (CurRelation.Category.Scope<>nil)
-          and (not CurRelation.Category.Scope.HasIDEWindowClass(IDEWindowClass)))
+      or ( (IDEWindowClass<>nil) and (CurRelation.Category.Scope<>nil)
+          and not CurRelation.Category.Scope.HasIDEWindowClass(IDEWindowClass) )
       then
         MaxKeyCnt:=0
       else if CurRelation.ShortcutB.Key1=VK_UNKNOWN then
@@ -3450,8 +3450,7 @@ begin
           ccid := ccid + ACommandOffsetOffset;
         if Key.Command=ccid then begin
           if KeyCnt>MaxKeyCnt then begin
-            // All keys with this command are already defined
-            // -> delete this one
+            // All keys with this command are already defined -> delete this one
             Key.Free;
           end else if KeyCnt=1 then begin
             // Define key1 for this command
