@@ -17,7 +17,7 @@
   Abstract:
     This is an unsorted StringList with a fast lookup feature.
      Internally it uses a string map container to store the string again.
-     It is then used for InserItem, Contains, IndexOf and Find methods.
+     It is then used for Contains, IndexOf and Find methods.
 
     The extra container does not reserve too much memory because the strings are
      reference counted and not really copied.
@@ -44,7 +44,6 @@ type
   TDictionaryStringList = class(TStringList)
   private
     FMap: TStringMap;
-//    FAssigning: Boolean;
   protected
     procedure InsertItem(Index: Integer; const S: string); override;
     procedure InsertItem({%H-}Index: Integer; const {%H-}S: string; {%H-}O: TObject); override;
@@ -82,12 +81,10 @@ procedure TDictionaryStringList.Assign(Source: TPersistent);
 begin
   if Source is TStrings then
   begin
-//    FAssigning := True;
     // This crashes when the Source is a normal TStringList. Why?
     inherited Assign(Source);
     if Source is TDictionaryStringList then
       FMap.Assign(TDictionaryStringList(Source).FMap);
-//    FAssigning := False;
   end;
 end;
 
@@ -126,7 +123,6 @@ end;
 
 procedure TDictionaryStringList.InsertItem(Index: Integer; const S: string);
 begin
-//  if FAssigning then Exit;
   if not Sorted and (Duplicates <> dupAccept) then
     if FMap.Contains(S) then
       case Duplicates of
