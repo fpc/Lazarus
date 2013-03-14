@@ -822,7 +822,7 @@ begin
     end;
 
     LM_CONTEXTMENU:
-      ConnectSenderSignal(gCore, 'popup-menu', @gtk2PopupMenuCB);
+      ConnectSenderSignal(gObject, 'popup-menu', @gtk2PopupMenuCB); // TCustomControl needs gObject, not gCore nor gFixed
 
   else
     _SetCallbackEx(AMsg, AGTKObject, ALCLObject, Direct);

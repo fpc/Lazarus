@@ -282,7 +282,6 @@ type
     procedure AppTerminate; override;
     procedure AppSetTitle(const {%H-}ATitle: string); override;
 
-    // copied from GtkInt
     procedure _SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: Boolean);
     procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: Boolean);
     procedure SetCommonCallbacks(const AGTKObject: PGTKObject; const ALCLObject: TObject);
