@@ -79,13 +79,9 @@ end;
 
 procedure TDictionaryStringList.Assign(Source: TPersistent);
 begin
-  if Source is TStrings then
-  begin
-    // This crashes when the Source is a normal TStringList. Why?
-    inherited Assign(Source);
-    if Source is TDictionaryStringList then
-      FMap.Assign(TDictionaryStringList(Source).FMap);
-  end;
+  inherited Assign(Source);
+  if Source is TDictionaryStringList then
+    FMap.Assign(TDictionaryStringList(Source).FMap);
 end;
 
 procedure TDictionaryStringList.Clear;
@@ -137,7 +133,6 @@ end;
 procedure TDictionaryStringList.InsertItem(Index: Integer; const S: string; O: TObject);
 begin
   raise Exception.Create('TDictionaryStringList.InsertItem: is this needed?');
-  //inherited InsertItem(Index, S, O);
 end;
 
 function TDictionaryStringList.Contains(const S: string): Boolean;
