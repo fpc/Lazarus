@@ -13600,14 +13600,12 @@ begin
   PkgBoss.AddDependencyToUnitOwners(AnUnitInfo.Filename,RequiredUnitName);
 end;
 
-procedure TMainIDE.OnPropHookGetComponentNames(TypeData: PTypeData;
-  Proc: TGetStrProc);
+procedure TMainIDE.OnPropHookGetComponentNames(TypeData: PTypeData; Proc: TGetStrProc);
 begin
   PkgBoss.IterateComponentNames(GlobalDesignHook.LookupRoot,TypeData,Proc);
 end;
 
-function TMainIDE.OnPropHookGetComponent(const ComponentPath: String
-  ): TComponent;
+function TMainIDE.OnPropHookGetComponent(const ComponentPath: String): TComponent;
 begin
   Result:=PkgBoss.FindUsableComponent(GlobalDesignHook.LookupRoot,ComponentPath);
 end;
