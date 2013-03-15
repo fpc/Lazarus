@@ -23,7 +23,7 @@ interface
 
 uses
   Math, Classes, SysUtils, LCLProc, TypInfo, types, Forms, Controls,
-  ProjectIntf, ComponentEditors, ObjectInspector;
+  LCLClasses, ProjectIntf, ComponentEditors, ObjectInspector;
   
 const
   ComponentPaletteImageWidth = 24;
@@ -241,24 +241,24 @@ end;
 
 function LeftFromDesignInfo(ADesignInfo: LongInt): SmallInt;
 begin
-  Result := LongRec(ADesignInfo).Lo;
+  Result := LazLongRec(ADesignInfo).Lo;
 end;
 
 function TopFromDesignInfo(ADesignInfo: LongInt): SmallInt;
 begin
-  Result := LongRec(ADesignInfo).Hi;
+  Result := LazLongRec(ADesignInfo).Hi;
 end;
 
 function LeftTopToDesignInfo(const ALeft, ATop: SmallInt): LongInt;
 begin
-  LongRec(Result).Lo:=ALeft;
-  LongRec(Result).Hi:=ATop;
+  LazLongRec(Result).Lo:=ALeft;
+  LazLongRec(Result).Hi:=ATop;
 end;
 
 procedure DesignInfoToLeftTop(ADesignInfo: LongInt; out ALeft, ATop: SmallInt);
 begin
-  ALeft := LongRec(ADesignInfo).Lo;
-  ATop := LongRec(ADesignInfo).Hi;
+  ALeft := LazLongRec(ADesignInfo).Lo;
+  ATop := LazLongRec(ADesignInfo).Hi;
 end;
 
 { TDesignerMediator }

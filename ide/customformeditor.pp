@@ -1298,7 +1298,7 @@ begin
           // no parent and not a form
           AControl.SetBounds(0,0,CompWidth,CompHeight);
           AControl.DesignInfo := LeftTopToDesignInfo(CompLeft, CompTop);
-          //DebugLn(['TCustomFormEditor.CreateComponent ',dbgsName(AControl),' ',LongRec(AControl.DesignInfo).Lo,',',LongRec(AControl.DesignInfo).Hi]);
+          //DebugLn(['TCustomFormEditor.CreateComponent ',dbgsName(AControl),' ',LazLongRec(AControl.DesignInfo).Lo,',',LongRec(AControl.DesignInfo).Hi]);
         end;
       end
       else
