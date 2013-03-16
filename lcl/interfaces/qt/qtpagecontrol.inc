@@ -66,7 +66,10 @@ begin
 
   AColor.Alpha := 0;
   FillChar(AColor, SizeOf(AColor), #0);
-  ColorRefToTQColor(ColorToRGB(AFont.Color), AColor);
+  if AFont.Color = clDefault then
+    AColor := ATabWidget.Palette.DefaultTextColor
+  else
+    ColorRefToTQColor(ColorToRGB(AFont.Color), AColor);
   with ATabWidget.TabBar do
     SetTabFontColor(APage.PageIndex, AColor);
 end;
