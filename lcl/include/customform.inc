@@ -116,8 +116,12 @@ var
       // for unknown reasons on some systems SM_*MAXIMIZED* system metrics
       // (tested xubuntu,64bits) return 0 or negative values, in this case
       // a maximized window is expected to have at least WorkArea width/height.
-      // In the event WorkArea is also 0 width/height, at least
-      // design sizes should be respected, see bug #21634
+      //
+      // Reproduced again under Debian Wheezy.
+      // mistery solved, it ocurrs under gtk2/64-bit, fixed at the place
+      // the checks doesn't hurt though
+      //
+      // see bug #21634
       if NewWidth<=0 then
         NewWidth := Screen.WorkAreaWidth;
       if NewHeight<=0 then
