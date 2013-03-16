@@ -2875,8 +2875,7 @@ var
       Msg:=Msg+PackageAdditions;
     end;
     if Msg<>'' then begin
-      Result:=IDEMessageDialog(lisConfirmChanges,
-        Msg,mtConfirmation,[mbOk,mbAbort]);
+      Result:=IDEMessageDialog(lisConfirmChanges,Msg,mtConfirmation,[mbOk,mbAbort]);
       exit;
     end;
     Result:=mrOk;
