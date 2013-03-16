@@ -441,40 +441,13 @@ end;
 class function TGtk2WSCustomTabControl.GetNotebookMinTabHeight(
   const AWinControl: TWinControl): integer;
 var
-  NBWidget: PGTKWidget;
-  BorderWidth: Integer;
-  Page: PGtkNotebookPage;
+  FrameBorders: TRect;
 begin
-  Result:=inherited GetNotebookMinTabHeight(AWinControl);
+  FrameBorders:=GetStyleNotebookFrameBorders;
+  Result := FrameBorders.Top + 2; // +1 for getting size, +1 to see border line
+  if Result<=0 then
+    Result:=inherited GetNotebookMinTabHeight(AWinControl);
   //debugln('TGtkWSCustomTabControl.GetNotebookMinTabHeight A ',dbgs(Result));
-  exit;
-
-  debugln('TGtkWSCustomTabControl.GetNotebookMinTabHeight A ',dbgs(AWinControl.HandleAllocated));
-  if AWinControl.HandleAllocated then
-    NBWidget:={%H-}PGTKWidget(AWinControl.Handle)
-  else
-    NBWidget:=GetStyleWidget(lgsNotebook);
-
-  // ToDo: find out how to create a fully working hidden Notebook style widget
-
-  if (NBWidget=nil) then begin
-    Result:=TWSCustomTabControl.GetNotebookMinTabHeight(AWinControl);
-    exit;
-  end;
-  debugln('TGtkWSCustomTabControl.GetNotebookMinTabHeight NBWidget: ',GetWidgetDebugReport(NBWidget),
-   ' ',dbgs(NBWidget^.allocation.width),'x',dbgs(NBWidget^.allocation.height));
-
-  BorderWidth:=(PGtkContainer(NBWidget)^.flag0 and bm_TGtkContainer_border_width)
-               shr bp_TGtkContainer_border_width;
-  if PGtkNoteBook(NBWidget)^.first_tab<>nil then
-    Page:=PGtkNoteBook(NBWidget)^.cur_page;
-
-  Result:=BorderWidth;
-  if (Page<>nil) then begin
-    debugln('TGtkWSCustomTabControl.RemovePage TODO');
-  end;
-  debugln('TGtkWSCustomTabControl.GetNotebookMinTabHeight END ',dbgs(Result),' ',
-    GetWidgetDebugReport(NBWidget));
 end;
 
 class function TGtk2WSCustomTabControl.GetNotebookMinTabWidth(
