@@ -672,7 +672,7 @@ begin
       LfmFixer.RootMustBeClassInUnit:=true;
       LfmFixer.RootMustBeClassInIntf:=true;
       LfmFixer.ObjectsMustExist:=true;
-      if LfmFixer.Repair<>mrOk then begin
+      if LfmFixer.ConvertAndRepair<>mrOk then begin
         LazarusIDE.DoJumpToCompilerMessage(-1,true);
         fOwnerConverter.fErrorMsg:='Problems when repairing form file '
                                   +fOrigUnitFilename;

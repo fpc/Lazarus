@@ -42,7 +42,7 @@ uses
   // IDE
   IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf, DialogProcs,
   CustomFormEditor, LazarusIDEStrConsts, IDEProcs, OutputFilter,
-  EditorOptions, CheckLFMDlg, IDEMsgIntf,
+  EditorOptions, CheckLFMDlg, IDEMsgIntf, Project,
   // Converter
   ConverterTypes, ConvertSettings, ReplaceNamesUnit,
   ConvCodeTool, FormFileConv, UsedUnits;
@@ -83,14 +83,15 @@ type
     function AddNewProps(aNewProps: TList): TModalResult;
     // Fill StringGrids with missing properties and types from fLFMTree.
     procedure FillReplaceGrids;
+    function ShowConvertLFMWizard: TModalResult;
   protected
+    function FixMissingComponentClasses(aMissingTypes: TStringList): TModalResult; override;
     procedure LoadLFM;
-    function ShowRepairLFMWizard: TModalResult; override;
   public
     constructor Create(ACTLink: TCodeToolLink; ALFMBuffer: TCodeBuffer;
                        const AOnOutput: TOnAddFilteredLine);
     destructor Destroy; override;
-    function Repair: TModalResult;
+    function ConvertAndRepair: TModalResult;
   public
     property Settings: TConvertSettings read fSettings write fSettings;
     property UsedUnitsTool: TUsedUnitsTool read fUsedUnitsTool write fUsedUnitsTool;
@@ -311,11 +312,6 @@ begin
             AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
             IDEMessagesWindow.AddMsg(Format(
                       'Replaced type "%s" with "%s".',[OldIdent, NewIdent]),'',-1);
-            if Assigned(fUsedUnitsTool) then begin
-              // ToDo: This is a test and will be replaced by configurable unit names.
-              if NewIdent='TRichMemo' then
-                fUsedUnitsTool.AddUnitIfNeeded('RichMemo');
-            end;
             Result:=mrRetry;
           end;
         end
@@ -436,13 +432,7 @@ begin
   end;
 end;
 
-procedure TLFMFixer.LoadLFM;
-begin
-  inherited LoadLFM;
-  FillReplaceGrids;         // Fill both ReplaceGrids.
-end;
-
-function TLFMFixer.ShowRepairLFMWizard: TModalResult;
+function TLFMFixer.ShowConvertLFMWizard: TModalResult;
 var
   FixLFMDialog: TFixLFMDialog;
   PrevCursor: TCursor;
@@ -473,7 +463,44 @@ begin
   end;
 end;
 
-function TLFMFixer.Repair: TModalResult;
+function TLFMFixer.FixMissingComponentClasses(aMissingTypes: TStringList): TModalResult;
+// This is called from TLFMChecker.FindAndFixMissingComponentClasses.
+// Add needed units to uses section using methods already defined in fUsedUnitsTool.
+var
+  RegComp: TRegisteredComponent;
+  ClassUnitInfo: TUnitInfo;
+  i: Integer;
+  CompClassName, NeededUnitName: String;
+begin
+  Result:=mrOK;
+  if not Assigned(fUsedUnitsTool) then Exit;
+  for i := 0 to aMissingTypes.Count-1 do begin
+    CompClassName := aMissingTypes[i];
+    RegComp:=IDEComponentPalette.FindComponent(CompClassName);
+    NeededUnitName:='';
+    if (RegComp<>nil) then begin
+      if RegComp.ComponentClass<>nil then begin
+        NeededUnitName:=RegComp.ComponentClass.UnitName;
+        if NeededUnitName='' then
+          NeededUnitName:=RegComp.GetUnitName;
+      end;
+    end else begin
+      ClassUnitInfo:=Project1.UnitWithComponentClassName(CompClassName);
+      if ClassUnitInfo<>nil then
+        NeededUnitName:=ClassUnitInfo.Unit_Name;
+    end;
+    if NeededUnitName<>'' then
+      fUsedUnitsTool.AddUnitIfNeeded(NeededUnitName);
+  end;
+end;
+
+procedure TLFMFixer.LoadLFM;
+begin
+  inherited LoadLFM;
+  FillReplaceGrids;         // Fill both ReplaceGrids.
+end;
+
+function TLFMFixer.ConvertAndRepair: TModalResult;
 var
   ConvTool: TConvDelphiCodeTool;
   FormFileTool: TFormFileConverter;
@@ -499,13 +526,24 @@ begin
         fRootMustBeClassInUnit, fRootMustBeClassInIntf, fObjectsMustExist) then
       Result:=mrOk
     else                     // Rename/remove properties and types interactively.
-      Result:=ShowRepairLFMWizard;  // Can return mrRetry.
+      Result:=ShowConvertLFMWizard;  // Can return mrRetry.
     Inc(LoopCount);
   until (Result in [mrOK, mrCancel]) or (LoopCount=10);
-  // Show remaining errors to user.
-  WriteLFMErrors;
+
+  // Check for missing object types and add units as needed.
+  if not fLFMTree.ParseIfNeeded then
+    Exit(mrCancel);
+  if CodeToolBoss.CheckLFM(fPascalBuffer, fLFMBuffer, fLFMTree,
+      fRootMustBeClassInUnit, fRootMustBeClassInIntf, fObjectsMustExist) then
+    Result:=mrOk
+  else begin
+    Result:=FindAndFixMissingComponentClasses;
+    if Result = mrCancel then  // Returns mrCancel when nothing was done.
+      Result := mrOK;
+  end;
+
+  // Fix top offsets of some components in visual containers
   if (Result=mrOK) and (fSettings.CoordOffsMode=rsEnabled) then begin
-    // Fix top offsets of some components in visual containers
     FormFileTool:=TFormFileConverter.Create(fCTLink, fLFMBuffer);
     SrcCoordOffs:=TObjectList.Create;
     SrcNewProps:=TObjectList.Create;

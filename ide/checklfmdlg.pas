@@ -49,10 +49,10 @@ type
   TLFMChecker = class
   private
     fOnOutput: TOnAddFilteredLine;
-    procedure WriteUnitError(Code: TCodeBuffer; X, Y: integer;
-      const ErrorMessage: string);
+    procedure WriteUnitError(Code: TCodeBuffer; X, Y: integer; const ErrorMessage: string);
     procedure WriteCodeToolsError;
     function CheckUnit: boolean;
+    function ShowRepairLFMWizard: TModalResult; // Show the interactive user interface.
   protected
     fPascalBuffer: TCodeBuffer;
     fLFMBuffer: TCodeBuffer;
@@ -70,14 +70,13 @@ type
                                  var StartPos, EndPos: integer);
     function FindListBoxError: TLFMError;
     procedure WriteLFMErrors;
-    function FixMissingComponentClasses: TModalResult;
+    function FindAndFixMissingComponentClasses: TModalResult;
+    function FixMissingComponentClasses(aMissingTypes: TStringList): TModalResult; virtual;
     procedure FillErrorsListBox;
     procedure JumpToError(LFMError: TLFMError);
     procedure AddReplacement(LFMChangeList: TObjectList; StartPos, EndPos: integer;
                              const NewText: string);
     function ApplyReplacements(LFMChangeList: TList): boolean;
-    // Show the interactive user interface.
-    function ShowRepairLFMWizard: TModalResult; virtual;
   public
     constructor Create(APascalBuffer, ALFMBuffer: TCodeBuffer;
                        const AOnOutput: TOnAddFilteredLine);
@@ -426,7 +425,7 @@ begin
     Result:=mrOk;
     exit;
   end;
-  Result:=FixMissingComponentClasses;
+  Result:=FindAndFixMissingComponentClasses;
   if Result in [mrAbort,mrOk] then exit;
   WriteLFMErrors;
   Result:=ShowRepairLFMWizard;
@@ -480,7 +479,7 @@ begin
   Application.ProcessMessages;
 end;
 
-function TLFMChecker.FixMissingComponentClasses: TModalResult;
+function TLFMChecker.FindAndFixMissingComponentClasses: TModalResult;
 // returns true, if after adding units to uses section all errors are fixed
 var
   CurError: TLFMError;
@@ -501,8 +500,7 @@ begin
           MissingObjectTypes.Add(TypeName);
       end;
       CurError:=CurError.NextError;
-    end;
-    // Missing object types in unit.
+    end;                                    // Missing object types in unit.
 
     // keep all object types with a registered component class
     for i:=MissingObjectTypes.Count-1 downto 0 do begin
@@ -513,21 +511,26 @@ begin
     if MissingObjectTypes.Count=0 then exit;
     // Missing object types, but luckily found in IDE.
 
-    // there are missing object types with registered component classes
-    Result:=PackageEditingInterface.AddUnitDependenciesForComponentClasses(
-         fPascalBuffer.Filename,MissingObjectTypes);
-    if Result<>mrOk then exit;
-
-    // check LFM again
-    if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
-               fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExist)
-    then begin
-      Result:=mrOk;
-    end else begin
-      Result:=mrCancel;
-    end;
+    Result:=FixMissingComponentClasses(MissingObjectTypes); // Fix them.
   finally
     MissingObjectTypes.Free;
+  end;
+end;
+
+function TLFMChecker.FixMissingComponentClasses(aMissingTypes: TStringList): TModalResult;
+begin
+  // add units for the missing object types with registered component classes
+  Result:=PackageEditingInterface.AddUnitDependenciesForComponentClasses(
+       fPascalBuffer.Filename, aMissingTypes);
+  if Result<>mrOk then exit;
+
+  // check LFM again
+  if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
+             fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExist)
+  then begin
+    Result:=mrOk;
+  end else begin
+    Result:=mrCancel;
   end;
 end;
 
@@ -537,7 +540,6 @@ var
   NewX, NewY, NewTopLine: integer;
   ErrorMsg: string;
   MissingUnits: TStrings;
-  s: String;
 begin
   Result:=false;
   // check syntax
@@ -555,8 +557,8 @@ begin
       exit;
     end;
     if (MissingUnits<>nil) and (MissingUnits.Count>0) then begin
-      s:=StringListToText(MissingUnits,',');
-      WriteUnitError(fPascalBuffer,1,1,'Units not found: '+s);
+      ErrorMsg:=StringListToText(MissingUnits,',');
+      WriteUnitError(fPascalBuffer,1,1,'Units not found: '+ErrorMsg);
       exit;
     end;
   finally
@@ -704,7 +706,7 @@ begin
   end;
 end;
 
-function TLFMChecker.ApplyReplacements(LfmChangeList: TList): boolean;
+function TLFMChecker.ApplyReplacements(LFMChangeList: TList): boolean;
 var
   i: Integer;
   Entry: TLFMChangeEntry;
