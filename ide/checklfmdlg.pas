@@ -500,18 +500,17 @@ begin
           MissingObjectTypes.Add(TypeName);
       end;
       CurError:=CurError.NextError;
-    end;                                    // Missing object types in unit.
+    end;
 
-    // keep all object types with a registered component class
+    // keep only the missing object types with a registered component class
     for i:=MissingObjectTypes.Count-1 downto 0 do begin
       RegComp:=IDEComponentPalette.FindComponent(MissingObjectTypes[i]);
       if (RegComp=nil) or (RegComp.GetUnitName='') then
         MissingObjectTypes.Delete(i);
     end;
-    if MissingObjectTypes.Count=0 then exit;
-    // Missing object types, but luckily found in IDE.
-
-    Result:=FixMissingComponentClasses(MissingObjectTypes); // Fix them.
+    // Now the list contains only types that are found in IDE.
+    if MissingObjectTypes.Count>0 then
+      Result:=FixMissingComponentClasses(MissingObjectTypes); // Fix them.
   finally
     MissingObjectTypes.Free;
   end;
@@ -523,7 +522,6 @@ begin
   Result:=PackageEditingInterface.AddUnitDependenciesForComponentClasses(
        fPascalBuffer.Filename, aMissingTypes);
   if Result<>mrOk then exit;
-
   // check LFM again
   if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
              fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExist)
