@@ -647,7 +647,11 @@ begin
   ConvTool:=TConvDelphiCodeTool.Create(fCTLink);
   try
     ConvTool.IsConsoleApp:=fOwnerConverter.fIsConsoleApp;
-    ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
+    ConvTool.ResAction:=raNone;
+    if FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res')) then
+      ConvTool.ResAction:=raLowerCase
+    else if not FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.RES')) then
+      ConvTool.ResAction:=raDelete;  // No lower- or uppercase version exists -> delete
     ConvTool.HasFormFile:=DfmFilename<>'';
     ConvTool.AddUnitEvent:=@fUsedUnitsTool.AddUnitIfNeeded;
     Result:=ConvTool.Convert;

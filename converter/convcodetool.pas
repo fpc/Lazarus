@@ -78,7 +78,7 @@ type
     fCTLinkCreated: boolean;
     fIsConsoleApp: Boolean;
     fHasFormFile: boolean;
-    fLowerCaseRes: boolean;
+    fResAction: TResAction;
     fAddUnitEvent: TAddUnitEvent;
     // Delphi Function names to replace with FCL/LCL functions.
     fDefinedProcNames: TStringList;
@@ -101,7 +101,7 @@ type
   public
     property IsConsoleApp: Boolean read fIsConsoleApp write fIsConsoleApp;
     property HasFormFile: boolean read fHasFormFile write fHasFormFile;
-    property LowerCaseRes: boolean read fLowerCaseRes write fLowerCaseRes;
+    property ResAction: TResAction read fResAction write fResAction;
     property AddUnitEvent: TAddUnitEvent read fAddUnitEvent write fAddUnitEvent;
   end;
 
@@ -173,7 +173,7 @@ begin
   inherited Create;
   fCTLink:=TCodeToolLink.Create(APascalBuffer);
   fCTLink.AskAboutError:=False;
-  fLowerCaseRes:=True;
+  fResAction:=raLowerCase;
   fIsConsoleApp:=False;
   fCTLinkCreated:=True;
   if Assigned(fCTLink.CodeTool) then
@@ -189,7 +189,7 @@ constructor TConvDelphiCodeTool.Create(ACTLink: TCodeToolLink);
 begin
   inherited Create;
   fCTLink:=ACTLink;
-  fLowerCaseRes:=False;
+  fResAction:=raNone;
   fIsConsoleApp:=False;
   fCTLinkCreated:=False;
 end;
@@ -273,24 +273,24 @@ end;
 
 function TConvDelphiCodeTool.RenameResourceDirectives: boolean;
 // rename {$R *.dfm} directive to {$R *.lfm}, or lowercase it.
-// lowercase {$R *.RES} to {$R *.res}
+// lowercase {$R *.RES} to {$R *.res}, or change it to a comment
 var
-  ParamPos, ACleanPos: Integer;
+  ParamPos, CleanPos: Integer;
   Key, LowKey, NewKey: String;
   s: string;
 begin
   Result:=false;
   if fCTLink.CodeTool=nil then exit;
-  ACleanPos:=1;
+  CleanPos:=1;
   // find $R directive
   with fCTLink.CodeTool do begin
     if Scanner=nil then exit;
     repeat
-      ACleanPos:=FindNextCompilerDirectiveWithName(Src, ACleanPos, 'R',
-                                                   Scanner.NestedComments, ParamPos);
-      if (ACleanPos<1) or (ACleanPos>SrcLen) or (ParamPos>SrcLen-6) then break;
+      CleanPos:=FindNextCompilerDirectiveWithName(Src, CleanPos, 'R',
+                                                  Scanner.NestedComments, ParamPos);
+      if (CleanPos<1) or (CleanPos>SrcLen) or (ParamPos>SrcLen-6) then break;
       NewKey:='';
-      if (Src[ACleanPos]='{') and
+      if (Src[CleanPos]='{') and
          (Src[ParamPos]='*') and (Src[ParamPos+1]='.') and (Src[ParamPos+5]='}')
       then begin
         Key:=copy(Src,ParamPos+2,3);
@@ -310,21 +310,27 @@ begin
                  '{$ELSE}'+LineEnding+
                  '  {$R *.lfm}'+LineEnding+
                  '{$ENDIF}';
-              if not fCTLink.SrcCache.Replace(gtNone,gtNone,ACleanPos,ParamPos+6,s) then exit;
+              if not fCTLink.SrcCache.Replace(gtNone,gtNone,CleanPos,ParamPos+6,s) then exit;
             end;
           end
           else       // Change .dfm to .lfm.
             NewKey:='lfm';
         end
-        // lowercase {$R *.RES} to {$R *.res}
-        else if (Key='RES') and fLowerCaseRes then
-          NewKey:=LowKey;
-        // Change a single resource name.
-        if NewKey<>'' then begin
-          if not fCTLink.SrcCache.Replace(gtNone,gtNone,ParamPos+2,ParamPos+5,NewKey) then exit;
+        // lowercase {$R *.RES} to {$R *.res}, or change it to a comment
+        else if LowKey='res' then begin
+          case fResAction of
+            raLowerCase:
+              if Key='RES' then
+                NewKey:=LowKey;
+            raDelete:        // Make it a comment by adding a dot (.)
+              if not fCTLink.SrcCache.Replace(gtNone,gtNone,CleanPos,CleanPos+1,'{.') then exit;
+          end;
         end;
+        // Change a single resource name.
+        if NewKey<>'' then
+          if not fCTLink.SrcCache.Replace(gtNone,gtNone,ParamPos+2,ParamPos+5,NewKey) then exit;
       end;
-      ACleanPos:=FindCommentEnd(Src, ACleanPos, Scanner.NestedComments);
+      CleanPos:=FindCommentEnd(Src, CleanPos, Scanner.NestedComments);
     until false;
   end;
   Result:=true;

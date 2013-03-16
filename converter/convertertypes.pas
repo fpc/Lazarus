@@ -12,6 +12,9 @@ type
   TAddUnitEvent = procedure (AUnitName: string) of object;
   TCheckUnitEvent = function (AUnitName: string): Boolean of object;
 
+  // What to do with {$R *.RES} directive, convert to lowercase or delete.
+  TResAction = (raNone, raLowerCase, raDelete);
+
   { TSrcPropOffset }
 
   // Used when fixing top coordinates of controls inside a visual container.
