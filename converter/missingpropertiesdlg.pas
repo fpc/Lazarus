@@ -309,9 +309,9 @@ begin
           if NewIdent<>'' then begin
             StartPos:=ObjNode.TypeNamePosition;
             EndPos:=StartPos+Length(OldIdent);
-            AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
             IDEMessagesWindow.AddMsg(Format(
                       'Replaced type "%s" with "%s".',[OldIdent, NewIdent]),'',-1);
+            AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
             Result:=mrRetry;
           end;
         end
@@ -330,6 +330,7 @@ begin
               IDEMessagesWindow.AddMsg(Format(
                       'Replaced property "%s" with "%s".',[OldIdent, NewIdent]),'',-1);
             AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
+            Result:=mrRetry;
           end;
         end;
       end;
@@ -528,7 +529,7 @@ begin
     else                     // Rename/remove properties and types interactively.
       Result:=ShowConvertLFMWizard;  // Can return mrRetry.
     Inc(LoopCount);
-  until (Result in [mrOK, mrCancel]) or (LoopCount=10);
+  until (Result in [mrOK, mrCancel]) or (LoopCount=20);
 
   // Check for missing object types and add units as needed.
   if not fLFMTree.ParseIfNeeded then
