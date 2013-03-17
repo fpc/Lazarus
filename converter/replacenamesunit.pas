@@ -15,11 +15,10 @@ type
 
   TStringMapUpdater = class
   private
-    fStringMap: TStringToStringTree;
-    fMapNames: TStringList;  // Names (keys) in fStringMap.
+    fStringToStringMap: TStringToStringTree;
     fSeenNames: TStringList;
   public
-    constructor Create(AStringsMap: TStringToStringTree);
+    constructor Create(AStringToStringMap: TStringToStringTree);
     destructor Destroy; override;
     function FindReplacement(AIdent: string; out AReplacement: string): boolean;
   end;
@@ -31,7 +30,7 @@ type
     fGrid: TStringGrid;
     GridEndInd: Integer;
   public
-    constructor Create(AStringsMap: TStringToStringTree; AGrid: TStringGrid);
+    constructor Create(AStringToStringMap: TStringToStringTree; AGrid: TStringGrid);
     destructor Destroy; override;
     function AddUnique(AOldIdent: string): string;
   end;
@@ -198,18 +197,15 @@ end;
 
 { TStringMapUpdater }
 
-constructor TStringMapUpdater.Create(AStringsMap: TStringToStringTree);
+constructor TStringMapUpdater.Create(AStringToStringMap: TStringToStringTree);
 begin
-  fStringMap:=AStringsMap;
-  fMapNames:=TStringList.Create;
-  fStringMap.GetNames(fMapNames);
+  fStringToStringMap:=AStringToStringMap;
   fSeenNames:=TStringList.Create;
 end;
 
 destructor TStringMapUpdater.Destroy;
 begin
   fSeenNames.Free;
-  fMapNames.Free;
   inherited Destroy;
 end;
 
@@ -218,31 +214,35 @@ function TStringMapUpdater.FindReplacement(AIdent: string;
 // Try to find a matching replacement using regular expression.
 var
   RE: TRegExpr;
+  MapNames: TStringList;  // Names (keys) in fStringToStringMap.
   i: Integer;
   Key: string;
 begin
-  if fStringMap.Contains(AIdent) then begin
-    AReplacement:=fStringMap[AIdent];
+  if fStringToStringMap.Contains(AIdent) then begin
+    AReplacement:=fStringToStringMap[AIdent];
     Result:=true;
   end
   else begin                     // Not found by name, try regexp.
     Result:=false;
     AReplacement:='';
     RE:=TRegExpr.Create;
+    MapNames:=TStringList.Create;
     try
-      for i:=0 to fMapNames.Count-1 do begin
-        Key:=fMapNames[i];       // fMapNames has names extracted from fStringMap.
+      fStringToStringMap.GetNames(MapNames);
+      for i:=0 to MapNames.Count-1 do begin
+        Key:=MapNames[i]; // fMapNames has names extracted from fStringToStringMap.
         // If key contains special chars, assume it is a regexp.
         if (Pos('(',Key)>0) or (Pos('*',Key)>0) or (Pos('+',Key)>0) then begin
           RE.Expression:=Key;
           if RE.Exec(AIdent) then begin  // Match with regexp.
-            AReplacement:=RE.Substitute(fStringMap[Key]);
+            AReplacement:=RE.Substitute(fStringToStringMap[Key]);
             Result:=true;
             Break;
           end;
         end;
       end;
     finally
+      MapNames.Free;
       RE.Free;
     end;
   end;
@@ -251,9 +251,9 @@ end;
 
 { TGridUpdater }
 
-constructor TGridUpdater.Create(AStringsMap: TStringToStringTree; AGrid: TStringGrid);
+constructor TGridUpdater.Create(AStringToStringMap: TStringToStringTree; AGrid: TStringGrid);
 begin
-  inherited Create(AStringsMap);
+  inherited Create(AStringToStringMap);
   fGrid:=AGrid;
   GridEndInd:=1;
 end;
@@ -269,7 +269,7 @@ function TGridUpdater.AddUnique(AOldIdent: string): string;
 begin
   if fSeenNames.IndexOf(AOldIdent)<0 then begin
     // Add only one instance of each name.
-    fSeenNames.Append(AOldIdent);
+    fSeenNames.Add(AOldIdent);
     FindReplacement(AOldIdent, Result);
     if fGrid.RowCount<GridEndInd+1 then
       fGrid.RowCount:=GridEndInd+1;

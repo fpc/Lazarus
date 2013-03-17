@@ -37,7 +37,7 @@ uses
   // IDE
   LazarusIDEStrConsts, LazIDEIntf, FormEditor, IDEMsgIntf,
   // codetools
-  CodeToolManager, StdCodeTools, CodeTree, CodeAtom, AVL_Tree,
+  CodeToolManager, StdCodeTools, CodeTree, CodeAtom,
   FindDeclarationTool, PascalReaderTool, PascalParserTool, LFMTrees,
   ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
   CodeCache, SourceChanger, CustomCodeTool, CodeToolsStructs, EventCodeTool,
