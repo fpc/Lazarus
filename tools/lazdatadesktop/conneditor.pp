@@ -73,7 +73,9 @@ Type
     Procedure Connect(Connectstring : String);
     Procedure DisConnect;
     Function CanCreateCode : Boolean;
+    Function CanCreateSQL : Boolean;
     Procedure CreateCode;
+    Procedure CreateSQL;
     Property Engine : TFPDDEngine Read FEngine Write SetEngine;
     Property ObjectType : TObjectType Read GetCurrentObjectType;
     Property Description : String Read FDescription Write SetDescription;
@@ -103,7 +105,7 @@ Const
 
 implementation
 
-uses typinfo, datapanel;
+uses typinfo, datapanel, frmgeneratesql;
 
 { TConnectionEditor }
 
@@ -237,6 +239,50 @@ begin
       C:=Nil;
     Result:=Assigned(C);
     end;
+end;
+
+function TConnectionEditor.CanCreateSQL: Boolean;
+begin
+  Result:=(ObjectType in [otTable,otFields,otField,otTableData,otIndexDefs]);
+end;
+
+procedure TConnectionEditor.CreateSQL;
+
+Var
+  N,PN,PPN : TTreeNode;
+  TN : String;
+  TS : TDDTableDefs;
+  L : TStringList;
+begin
+  N:=FTV.Selected;
+  If N=Nil then
+    exit;
+  If Assigned(N.Parent) then
+    begin
+    PN:=N.Parent;
+    If Assigned(PN) then
+      PPN:=PN.Parent;
+    end;
+  Case ObjectType of
+    otTable : TN:=N.Text;
+    otFields,
+    otTableData,
+    otIndexDefs : TN:=PN.Text;
+    otField : TN:=PPN.Text;
+  end;
+  TS:=TDDTableDefs.Create(TDDTableDef);
+  try
+    L:=TStringList.Create;
+    try
+      L.Add(TN);
+      FEngine.ImportTables(TS,L,True);
+    finally
+      L.Free;
+    end;
+    TGenerateSQLForm.GenerateSQLDialog(TS,TN,False);
+  finally
+    TS.Free;
+  end;
 end;
 
 procedure TConnectionEditor.CreateCode;

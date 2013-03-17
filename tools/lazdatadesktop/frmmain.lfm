@@ -5,7 +5,7 @@ object MainForm: TMainForm
   Width = 666
   ActiveControl = PCDD
   Caption = 'Lazarus Database Desktop'
-  ClientHeight = 453
+  ClientHeight = 464
   ClientWidth = 666
   Menu = MainMenu1
   OnClose = FormClose
@@ -110,7 +110,7 @@ object MainForm: TMainForm
   end
   object PCDD: TPageControl
     Left = 0
-    Height = 407
+    Height = 418
     Top = 26
     Width = 666
     ActivePage = TSRecent
@@ -119,13 +119,13 @@ object MainForm: TMainForm
     TabOrder = 1
     object TSRecent: TTabSheet
       Caption = 'Dictionaries'
-      ClientHeight = 374
-      ClientWidth = 662
+      ClientHeight = 384
+      ClientWidth = 658
       object LVDicts: TListView
         Left = 0
-        Height = 374
+        Height = 384
         Top = 0
-        Width = 662
+        Width = 658
         Align = alClient
         Columns = <        
           item
@@ -138,7 +138,7 @@ object MainForm: TMainForm
           end        
           item
             Caption = 'Last used on'
-            Width = 487
+            Width = 617
           end>
         PopupMenu = PMDataDict
         ReadOnly = True
@@ -152,8 +152,8 @@ object MainForm: TMainForm
     end
     object TSConnections: TTabSheet
       Caption = 'Connections'
-      ClientHeight = 374
-      ClientWidth = 662
+      ClientHeight = 384
+      ClientWidth = 658
       object LVConnections: TListView
         Left = 0
         Height = 374
@@ -191,7 +191,7 @@ object MainForm: TMainForm
   object PStatus: TPanel
     Left = 0
     Height = 20
-    Top = 433
+    Top = 444
     Width = 666
     Align = alBottom
     BevelOuter = bvNone
@@ -910,7 +910,7 @@ object MainForm: TMainForm
       Hint = 'Generate SQL statements for the current table'
       ImageIndex = 7
       OnExecute = AGenerateSQLExecute
-      OnUpdate = HaveTables
+      OnUpdate = AllowSQL
       ShortCut = 16455
     end
     object ASaveAs: TAction

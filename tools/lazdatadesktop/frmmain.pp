@@ -159,6 +159,7 @@ type
     procedure ADeleteRecentDataDictExecute(Sender: TObject);
     procedure AExitExecute(Sender: TObject);
     procedure AGenerateSQLExecute(Sender: TObject);
+    procedure AllowSQL(Sender: TObject);
     procedure ANewConnectionExecute(Sender: TObject);
     procedure ANewExecute(Sender: TObject);
     procedure ANewFieldExecute(Sender: TObject);
@@ -263,6 +264,8 @@ uses
   fpddmysql40, // MySQL 4.0
   fpddmysql41, // MySQL 4.1
   fpddmysql50, // MySQL 5.0
+  fpddmysql51, // MySQL 5.1
+  fpddmysql55, // MySQL 5.5
   fpddoracle,  // Oracle
   fpddpq,      // PostgreSQL
   {$endif}
@@ -472,6 +475,8 @@ begin
   RegisterMySQL40DDEngine;
   RegisterMySQL41DDEngine;
   RegisterMySQL50DDEngine;
+  RegisterMySQL51DDEngine;
+  RegisterMySQL55DDEngine;
   RegisterOracleDDEngine;
   RegisterPostgreSQLDDengine;
 {$endif}
@@ -499,6 +504,8 @@ begin
     MaybeRegisterConnectionStringCallback('TSQLDBMySql40DDEngine',@GetSQLConnectionDlg);
     MaybeRegisterConnectionStringCallback('TSQLDBMySql41DDEngine',@GetSQLConnectionDlg);
     MaybeRegisterConnectionStringCallback('TSQLDBMySql5DDEngine',@GetSQLConnectionDlg);
+    MaybeRegisterConnectionStringCallback('TSQLDBMySql51DDEngine',@GetSQLConnectionDlg);
+    MaybeRegisterConnectionStringCallback('TSQLDBMySql55DDEngine',@GetSQLConnectionDlg);
     MaybeRegisterConnectionStringCallback('TSQLDBODBCDDEngine',@GetSQLConnectionDlg);
     MaybeRegisterConnectionStringCallback('TSQLDBPOSTGRESQLDDEngine',@GetSQLConnectionDlg);
     MaybeRegisterConnectionStringCallback('TSQLDBFBDDEngine',@GetSQLConnectionDlg);
@@ -785,6 +792,18 @@ end;
 procedure TMainForm.AGenerateSQLExecute(Sender: TObject);
 begin
   ShowGenerateSQL;
+end;
+
+procedure TMainForm.AllowSQL(Sender: TObject);
+
+Var
+  B : Boolean;
+
+begin
+  B:=Assigned(CurrentEditor) and (CurrentEditor.DataDictionary.Tables.Count>0);
+  If not B then
+    B:=Assigned(CurrentConnection) and CurrentConnection.CanCreateSQL;
+  (Sender as TAction).Enabled:=B;
 end;
 
 procedure TMainForm.ANewConnectionExecute(Sender: TObject);
@@ -1209,16 +1228,18 @@ end;
 
 procedure TMainForm.ShowGenerateSQL;
 
+Var
+  TN : String;
+
 begin
-  With TGenerateSQLFOrm.Create(Self) do
-    try
-      TableDefs:=CurrentEditor.DataDictionary.Tables;
-      If CurrentEditor.CurrentTable<>Nil then
-        TableName:=CurrentEditor.CurrentTable.TableName;
-      ShowModal;
-    Finally
-      Free;
-    end;
+  if Assigned(CurrentConnection) then
+    CurrentConnection.CreateSQL
+  else
+    begin
+    If CurrentEditor.CurrentTable<>Nil then
+      TN:=CurrentEditor.CurrentTable.TableName;
+    TGenerateSQLForm.GenerateSQLDialog(CurrentEditor.DataDictionary.Tables,TN,True);
+    end
 end;
 
 procedure TMainForm.DeleteCurrentObject;

@@ -72,9 +72,11 @@ type
     FTableDefs : TDDTableDefs;
     FGenerator : TFPDDSQLEngine;
     FSQLGenerated : Boolean;
+    function GetAS: Boolean;
     function GetSQLStatement(Index: integer): TStrings;
     function GetTableDef: TDDTableDef;
     function GetTableName: String;
+    procedure SetAS(AValue: Boolean);
     procedure SetTableDefs(const AValue: TDDTableDefs);
     procedure SetTableName(const AValue: String);
     Procedure SetFieldLists(TD : TDDTableDef);
@@ -84,6 +86,7 @@ type
     Procedure RefreshTableList;
     Procedure GenerateSQL;
     Procedure ClearSQL;
+    Class Function GenerateSQLDialog(TDS : TDDTableDefs; TN : String; AllowChangeTable : Boolean = True) : Boolean;
     Property TableDefs : TDDTableDefs Read FTableDefs Write SetTableDefs;
     Property TableName : String Read GetTableName Write SetTableName;
     Property SelectSQL : TStrings Index 0 Read GetSQLStatement;
@@ -92,12 +95,28 @@ type
     Property DeleteSQL : TStrings Index 3 Read GetSQLStatement;
     Property CreateSQL : TStrings Index 4 Read GetSQLStatement;
     Property TableDef  : TDDTableDef Read GetTableDef;
+    Property AllowSelectTable : Boolean Read GetAS Write SetAS;
   end; 
 
 var
   GenerateSQLForm: TGenerateSQLForm;
 
+
 implementation
+
+Class Function TGenerateSQLFOrm.GenerateSQLDialog(TDS : TDDTableDefs; TN : String; AllowChangeTable : Boolean = True) : Boolean;
+
+begin
+  With TGenerateSQLFOrm.Create(Application) do
+    try
+      TableDefs:=TDS;
+      TableName:=TN;
+      AllowSelectTable:=AllowChangeTable;
+      Result:=ShowModal=mroK;
+    Finally
+      Free;
+    end;
+end;
 
 {$R *.lfm}
 
@@ -127,6 +146,11 @@ begin
   Result:=CBTables.Text;
 end;
 
+procedure TGenerateSQLForm.SetAS(AValue: Boolean);
+begin
+  CBTables.Enabled:=AValue;
+end;
+
 function TGenerateSQLForm.GetSQLStatement(Index: integer): TStrings;
 begin
   Case Index of
@@ -136,6 +160,11 @@ begin
     3 : Result:=MDelete.Lines;
     4 : Result:=MCreate.Lines;
   end;
+end;
+
+function TGenerateSQLForm.GetAS: Boolean;
+begin
+  Result:=CBTables.Enabled;
 end;
 
 function TGenerateSQLForm.GetTableDef: TDDTableDef;
