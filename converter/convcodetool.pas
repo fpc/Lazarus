@@ -436,7 +436,7 @@ var
   end;
 
   function GetComment(const aStr: string; aPossibleStartPos: integer): string;
-  // Extract and return a possible comment.
+  // Extract and return a possible comment from replacement function definition.
   var
     CommChBeg, CommBeg, CommEnd, i: Integer;   // Start and end of comment.
   begin
@@ -476,10 +476,13 @@ begin
       // Replace only if the params match somehow, so eg. a variable is not replaced.
       if (FuncInfo.Params.Count>0) or (ReplacementParams.Count=0) then begin
         NewFunc:=InsertParams2Replacement(FuncInfo);
-        Comment:=GetComment(FuncInfo.ReplFunc, PossibleCommentPos);
         // Separate function body
-        NewFunc:=Format('%s%s { *Converted from %s* %s }',
-          [NewFunc, FuncInfo.InclSemiColon, FuncInfo.FuncName, Comment]);
+        NewFunc:=NewFunc+FuncInfo.InclSemiColon;
+        if fCTLink.fSettings.FuncReplaceComment then
+          NewFunc:=NewFunc+' { *Converted from '+FuncInfo.FuncName+'* }';
+        Comment:=GetComment(FuncInfo.ReplFunc, PossibleCommentPos);
+        if Comment<>'' then            // Possible comment from the configuration
+          NewFunc:=NewFunc+' { ' +Comment+' }';
         // Old function call with params for IDE message output.
         s:=copy(fCTLink.CodeTool.Src, FuncInfo.StartPos, FuncInfo.EndPos-FuncInfo.StartPos);
         s:=StringReplace(s, LineEnding, '', [rfReplaceAll]);

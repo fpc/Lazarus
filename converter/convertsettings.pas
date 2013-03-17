@@ -56,11 +56,12 @@ type
     fConfigStorage: TConfigStorage;
     fSettingsForm: TConvertSettingsForm;
     // Actual user settings.
-    fBackupFiles: boolean;
-    fKeepFileOpen: boolean;
-    fCrossPlatform: boolean;
-    fSupportDelphi: boolean;
-    fSameDfmFile: boolean;
+    fBackupFiles: Boolean;
+    fKeepFileOpen: Boolean;
+    fCrossPlatform: Boolean;
+    fSupportDelphi: Boolean;
+    fSameDfmFile: Boolean;
+    fFuncReplaceComment: Boolean;
     // Modes for replacements:
     fUnitsReplaceMode: TReplaceModeLong;
     fPropReplaceMode: TReplaceModeLong;
@@ -88,16 +89,16 @@ type
 
     // Lazarus file name based on Delphi file name, keep suffix.
     function DelphiToLazFilename(const DelphiFilename: string;
-      LowercaseFilename: boolean): string; overload;
+      LowercaseFilename: Boolean): string; overload;
     // Lazarus file name based on Delphi file name with new suffix.
     function DelphiToLazFilename(const DelphiFilename, LazExt: string;
-      LowercaseFilename: boolean): string; overload;
+      LowercaseFilename: Boolean): string; overload;
     // Create Lazarus file name and copy/rename from Delphi file, keep suffix.
     function RenameDelphiToLazFile(const DelphiFilename: string;
-      out LazFilename: string; LowercaseFilename: boolean): TModalResult; overload;
+      out LazFilename: string; LowercaseFilename: Boolean): TModalResult; overload;
     // Create Lazarus file name and copy/rename from Delphi file with new suffix.
     function RenameDelphiToLazFile(const DelphiFilename, LazExt: string;
-      out LazFilename: string; LowercaseFilename: boolean): TModalResult; overload;
+      out LazFilename: string; LowercaseFilename: Boolean): TModalResult; overload;
 
     function RenameFile(const SrcFilename, DestFilename: string): TModalResult;
     function BackupFile(const AFilename: string): TModalResult;
@@ -106,11 +107,12 @@ type
     property MainPath: String read fMainPath;
     property BackupPath: String read GetBackupPath;
     property Enabled: Boolean read fEnabled write SetEnabled;
-    property BackupFiles: boolean read fBackupFiles;
-    property KeepFileOpen: boolean read fKeepFileOpen;
-    property CrossPlatform: boolean read fCrossPlatform;
-    property SupportDelphi: boolean read fSupportDelphi;
-    property SameDfmFile: boolean read fSameDfmFile;
+    property BackupFiles: Boolean read fBackupFiles;
+    property KeepFileOpen: Boolean read fKeepFileOpen;
+    property CrossPlatform: Boolean read fCrossPlatform;
+    property SupportDelphi: Boolean read fSupportDelphi;
+    property SameDfmFile: Boolean read fSameDfmFile;
+    property FuncReplaceComment: Boolean read fFuncReplaceComment;
     property UnitsReplaceMode: TReplaceModeLong read fUnitsReplaceMode;
     property PropReplaceMode: TReplaceModeLong read fPropReplaceMode;
     property TypeReplaceMode: TReplaceModeAllow read fTypeReplaceMode;
@@ -127,6 +129,7 @@ type
   { TConvertSettingsForm }
 
   TConvertSettingsForm = class(TForm)
+    FuncReplaceCommentCB: TCheckBox;
     StopScanButton: TBitBtn;
     CoordOffsComboBox: TComboBox;
     ScanLabel: TLabel;
@@ -394,8 +397,9 @@ begin
   fCrossPlatform                    :=fConfigStorage.GetValue('CrossPlatform', true);
   fSupportDelphi                    :=fConfigStorage.GetValue('SupportDelphi', false);
   fSameDfmFile                      :=fConfigStorage.GetValue('SameDfmFile', false);
+  fFuncReplaceComment               :=fConfigStorage.GetValue('FuncReplaceComment', true);
   fUnitsReplaceMode:=TReplaceModeLong(fConfigStorage.GetValue('UnitsReplaceMode', 2));
-  fPropReplaceMode:=TReplaceModeLong(fConfigStorage.GetValue('UnknownPropsMode', 2));
+  fPropReplaceMode :=TReplaceModeLong(fConfigStorage.GetValue('UnknownPropsMode', 2));
   fTypeReplaceMode:=TReplaceModeAllow(fConfigStorage.GetValue('TypeReplaceMode', 1));
   fFuncReplaceMode:=TReplaceModeShort(fConfigStorage.GetValue('FuncReplaceMode', 1));
   fCoordOffsMode  :=TReplaceModeShort(fConfigStorage.GetValue('CoordOffsMode', 1));
@@ -615,11 +619,12 @@ end;
 destructor TConvertSettings.Destroy;
 begin
   // Save possibly modified settings to ConfigStorage.
-  fConfigStorage.SetDeleteValue('BackupFiles',      fBackupFiles, true);
-  fConfigStorage.SetDeleteValue('KeepFileOpen',     fKeepFileOpen, false);
-  fConfigStorage.SetDeleteValue('CrossPlatform',    fCrossPlatform, true);
-  fConfigStorage.SetDeleteValue('SupportDelphi',    fSupportDelphi, false);
-  fConfigStorage.SetDeleteValue('SameDfmFile',      fSameDfmFile, false);
+  fConfigStorage.SetDeleteValue('BackupFiles',       fBackupFiles, true);
+  fConfigStorage.SetDeleteValue('KeepFileOpen',      fKeepFileOpen, false);
+  fConfigStorage.SetDeleteValue('CrossPlatform',     fCrossPlatform, true);
+  fConfigStorage.SetDeleteValue('SupportDelphi',     fSupportDelphi, false);
+  fConfigStorage.SetDeleteValue('SameDfmFile',       fSameDfmFile, false);
+  fConfigStorage.SetDeleteValue('FuncReplaceComment',fFuncReplaceComment, true);
   fConfigStorage.SetDeleteValue('UnitsReplaceMode', integer(fUnitsReplaceMode), 2);
   fConfigStorage.SetDeleteValue('UnknownPropsMode', integer(fPropReplaceMode), 2);
   fConfigStorage.SetDeleteValue('TypeReplaceMode',  integer(fTypeReplaceMode), 1);
@@ -656,26 +661,28 @@ begin
       Caption:=fTitle + ' - ' + ExtractFileName(fMainFilename);
       ProjectPathEdit.Text:=fMainPath;
       // Settings --> UI. Loaded from ConfigSettings earlier.
-      BackupCheckBox.Checked          :=fBackupFiles;
-      KeepFileOpenCheckBox.Checked    :=fKeepFileOpen;
-      CrossPlatformCheckBox.Checked   :=fCrossPlatform;
-      SupportDelphiCheckBox.Checked   :=fSupportDelphi;
-      SameDfmCheckBox.Checked         :=fSameDfmFile;
-      UnitReplaceComboBox.ItemIndex   :=integer(fUnitsReplaceMode);
-      UnknownPropsComboBox.ItemIndex  :=integer(fPropReplaceMode);
-      TypeReplaceComboBox.ItemIndex   :=integer(fTypeReplaceMode);
-      FuncReplaceComboBox.ItemIndex   :=integer(fFuncReplaceMode);
-      CoordOffsComboBox.ItemIndex     :=integer(fCoordOffsMode);
+      BackupCheckBox.Checked         :=fBackupFiles;
+      KeepFileOpenCheckBox.Checked   :=fKeepFileOpen;
+      CrossPlatformCheckBox.Checked  :=fCrossPlatform;
+      SupportDelphiCheckBox.Checked  :=fSupportDelphi;
+      SameDfmCheckBox.Checked        :=fSameDfmFile;
+      FuncReplaceCommentCB.Checked   :=fFuncReplaceComment;
+      UnitReplaceComboBox.ItemIndex  :=integer(fUnitsReplaceMode);
+      UnknownPropsComboBox.ItemIndex :=integer(fPropReplaceMode);
+      TypeReplaceComboBox.ItemIndex  :=integer(fTypeReplaceMode);
+      FuncReplaceComboBox.ItemIndex  :=integer(fFuncReplaceMode);
+      CoordOffsComboBox.ItemIndex    :=integer(fCoordOffsMode);
       SupportDelphiCheckBoxChange(SupportDelphiCheckBox);
       SameDfmCheckBoxChange(SameDfmCheckBox);
       Result:=ShowModal;        // Let the user change settings in a form.
       if Result=mrOK then begin // The thread will finished before the form closes.
         // UI --> Settings. Will be saved to ConfigSettings later.
-        fBackupFiles     :=BackupCheckBox.Checked;
-        fKeepFileOpen    :=KeepFileOpenCheckBox.Checked;
-        fCrossPlatform   :=CrossPlatformCheckBox.Checked;
-        fSupportDelphi   :=SupportDelphiCheckBox.Checked;
-        fSameDfmFile     :=SameDfmCheckBox.Checked;
+        fBackupFiles       :=BackupCheckBox.Checked;
+        fKeepFileOpen      :=KeepFileOpenCheckBox.Checked;
+        fCrossPlatform     :=CrossPlatformCheckBox.Checked;
+        fSupportDelphi     :=SupportDelphiCheckBox.Checked;
+        fSameDfmFile       :=SameDfmCheckBox.Checked;
+        fFuncReplaceComment:=FuncReplaceCommentCB.Checked;
         fUnitsReplaceMode:=TReplaceModeLong(UnitReplaceComboBox.ItemIndex);
         fPropReplaceMode :=TReplaceModeLong(UnknownPropsComboBox.ItemIndex);
         fTypeReplaceMode :=TReplaceModeAllow(TypeReplaceComboBox.ItemIndex);
@@ -689,13 +696,13 @@ begin
 end;
 
 function TConvertSettings.DelphiToLazFilename(const DelphiFilename: string;
-                                              LowercaseFilename: boolean): string;
+                                              LowercaseFilename: Boolean): string;
 begin
   Result:=DelphiToLazFilename(DelphiFilename,'',LowercaseFilename);
 end;
 
 function TConvertSettings.DelphiToLazFilename(const DelphiFilename, LazExt: string;
-                                              LowercaseFilename: boolean): string;
+                                              LowercaseFilename: Boolean): string;
 var
   RelPath, SubPath, fn: string;
 begin
@@ -711,13 +718,13 @@ begin
 end;
 
 function TConvertSettings.RenameDelphiToLazFile(const DelphiFilename: string;
-  out LazFilename: string; LowercaseFilename: boolean): TModalResult;
+  out LazFilename: string; LowercaseFilename: Boolean): TModalResult;
 begin
   Result:=RenameDelphiToLazFile(DelphiFilename,'',LazFilename,LowercaseFilename);
 end;
 
 function TConvertSettings.RenameDelphiToLazFile(const DelphiFilename, LazExt: string;
-  out LazFilename: string; LowercaseFilename: boolean): TModalResult;
+  out LazFilename: string; LowercaseFilename: Boolean): TModalResult;
 var
   RelPath, SubPath, fn: string;
 begin
@@ -869,7 +876,7 @@ end;
 
 procedure TConvertSettingsForm.SupportDelphiCheckBoxChange(Sender: TObject);
 var
-  Chk: boolean;
+  Chk: Boolean;
 begin
   Chk:=(Sender as TCheckBox).Checked;
   SameDfmCheckBox.Enabled:=Chk;
@@ -879,7 +886,7 @@ end;
 
 procedure TConvertSettingsForm.SameDfmCheckBoxChange(Sender: TObject);
 var
-  Chk: boolean;
+  Chk: Boolean;
 begin
   Chk:=(Sender as TCheckBox).Checked;
   if Chk then
