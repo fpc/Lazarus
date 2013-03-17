@@ -2031,6 +2031,7 @@ var
   AnUnitInfo: TUnitInfo;
   SaveFileFlags: TSaveFlags;
   SrcEdit: TSourceEditor;
+  j: Integer;
 begin
   Result:=mrCancel;
   if not (MainIDE.ToolStatus in [itNone,itDebugger]) then begin
@@ -2086,9 +2087,21 @@ begin
     SaveFileFlags:=[sfProjectSaving]+Flags*[sfCheckAmbiguousFiles];
     if AnUnitInfo = nil
     then begin
-      // consistency check
-      DebugLn(['TLazSourceFileManager.SaveProject - unit not found for page ',i,' File="',SrcEdit.FileName,'"']);
+      // inconsistency detected, write debug info
+      DebugLn(['TLazSourceFileManager.SaveProject - unit not found for page ',i,' File="',SrcEdit.FileName,'" SrcEdit=',dbgsname(SrcEdit),'=',dbgs(Pointer(SrcEdit))]);
       DumpStack;
+      debugln(['TLazSourceFileManager.SaveProject Project1 has the following information about the source editor:']);
+      AnUnitInfo:=Project1.FirstUnitWithEditorIndex;
+      while AnUnitInfo<>nil do begin
+        for j:=0 to AnUnitInfo.EditorInfoCount-1 do begin
+          dbgout(['  ',AnUnitInfo.Filename,' ',j,'/',AnUnitInfo.EditorInfoCount,' Component=',dbgsname(AnUnitInfo.EditorInfo[j].EditorComponent),'=',dbgs(Pointer(AnUnitInfo.EditorInfo[j].EditorComponent))]);
+          if AnUnitInfo.EditorInfo[j].EditorComponent<>nil then
+            dbgout(AnUnitInfo.EditorInfo[j].EditorComponent.FileName);
+          debugln;
+        end;
+        debugln(['  ',AnUnitInfo.EditorInfoCount]);
+        AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
+      end;
     end else begin
       if AnUnitInfo.IsVirtual
       then begin
