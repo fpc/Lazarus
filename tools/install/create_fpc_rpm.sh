@@ -38,7 +38,7 @@ else
 fi
 
 if [ ! -d $FPCSrcDir/compiler ]; then
-  echo "The directory $FPCSrcDir does not look like a fpc source directory (fpc/)"
+  echo "The directory $FPCSrcDir does not look like a fpc source directory (missing subdirectory compiler)"
   exit -1
 fi
 
