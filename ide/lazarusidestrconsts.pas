@@ -715,6 +715,9 @@ resourcestring
     +'be saved before building%sIf you set the Test Directory in the '
     +'IDE options,%syou can create new projects and build them at '
     +'once.%sSave project?';
+  lisBusy = 'Busy';
+  lisCanNotTestTheCompilerWhileDebuggingOrCompiling = 'Can not test the '
+    +'compiler while debugging or compiling.';
   lisProjectSuccessfullyBuilt = 'Project %s%s%s successfully built';
   lisExecutingCommandBefore = 'Executing command before';
   lisExecutingCommandAfter = 'Executing command after';

@@ -11981,7 +11981,11 @@ function TMainIDE.DoTestCompilerSettings(
   TheCompilerOptions: TCompilerOptions): TModalResult;
 begin
   Result:=mrCancel;
-  if (Project1=nil) or (ToolStatus<>itNone) then exit;
+  if (Project1=nil) or (ToolStatus<>itNone) then begin
+    IDEMessageDialog(lisBusy,
+      lisCanNotTestTheCompilerWhileDebuggingOrCompiling, mtInformation, [mbOk]);
+    exit;
+  end;
 
   // change tool status
   CheckCompilerOptsDlg:=TCheckCompilerOptsDlg.Create(nil);
