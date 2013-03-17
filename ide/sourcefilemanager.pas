@@ -78,10 +78,10 @@ type
         out AllEditorMask, AllMask: string);
     function SaveEditorFile(AEditor: TSourceEditorInterface;
                               Flags: TSaveFlags): TModalResult;
+    function SaveEditorFile(const Filename: string; Flags: TSaveFlags): TModalResult;
     function CloseEditorFile(AEditor: TSourceEditorInterface;
                                Flags: TCloseFlags):TModalResult;
-    function CloseEditorFile(const Filename: string;
-                               Flags: TCloseFlags): TModalResult;
+    function CloseEditorFile(const Filename: string; Flags: TCloseFlags): TModalResult;
     function OpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
                               AEditorInfo: TUnitEditorInfo;
                               Flags: TOpenFlags;
@@ -980,6 +980,24 @@ begin
   Result:=mrOk;
 end;
 
+function TLazSourceFileManager.SaveEditorFile(const Filename: string;
+  Flags: TSaveFlags): TModalResult;
+var
+  UnitIndex: Integer;
+  AnUnitInfo: TUnitInfo;
+  i: Integer;
+begin
+  Result:=mrOk;
+  if Filename='' then exit;
+  UnitIndex:=Project1.IndexOfFilename(TrimFilename(Filename),[pfsfOnlyEditorFiles]);
+  if UnitIndex<0 then exit;
+  AnUnitInfo:=Project1.Units[UnitIndex];
+  for i := 0 to AnUnitInfo.OpenEditorInfoCount-1 do begin
+    Result:=SaveEditorFile(AnUnitInfo.OpenEditorInfo[i].EditorComponent, Flags);
+    if Result <> mrOK then Break;
+  end;
+end;
+
 function TLazSourceFileManager.CloseEditorFile(AEditor: TSourceEditorInterface;
   Flags: TCloseFlags): TModalResult;
 var
@@ -1113,11 +1131,9 @@ var
 begin
   Result:=mrOk;
   if Filename='' then exit;
-  UnitIndex:=Project1.IndexOfFilename(TrimFilename(Filename),
-                                      [pfsfOnlyEditorFiles]);
+  UnitIndex:=Project1.IndexOfFilename(TrimFilename(Filename),[pfsfOnlyEditorFiles]);
   if UnitIndex<0 then exit;
   AnUnitInfo:=Project1.Units[UnitIndex];
-  Result:=mrOk;
   while (AnUnitInfo.OpenEditorInfoCount > 0) and (Result = mrOK) do
     Result:=CloseEditorFile(AnUnitInfo.OpenEditorInfo[0].EditorComponent, Flags);
 end;
@@ -2047,8 +2063,7 @@ begin
       and AnUnitInfo.IsPartOfProject
       and (Project1.MainUnitID<>i)
       and (AnUnitInfo.OpenEditorInfoCount > 0) then begin
-        SaveFileFlags:=[sfSaveAs,sfProjectSaving]
-                       +[sfCheckAmbiguousFiles]*Flags;
+        SaveFileFlags:=[sfSaveAs,sfProjectSaving]+[sfCheckAmbiguousFiles]*Flags;
         if sfSaveToTestDir in Flags then begin
           if AnUnitInfo.IsPartOfProject or AnUnitInfo.IsVirtual then
             Include(SaveFileFlags,sfSaveToTestDir);
@@ -2068,8 +2083,7 @@ begin
     AnUnitInfo:=Project1.UnitWithEditorComponent(SrcEdit);
     if (Project1.MainUnitID>=0) and (Project1.MainUnitInfo = AnUnitInfo) then
       continue;
-    SaveFileFlags:=[sfProjectSaving]
-                   +Flags*[sfCheckAmbiguousFiles];
+    SaveFileFlags:=[sfProjectSaving]+Flags*[sfCheckAmbiguousFiles];
     if AnUnitInfo = nil
     then begin
       // consistency check

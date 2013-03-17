@@ -206,6 +206,8 @@ type
                               deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function DoSaveEditorFile(AEditor: TSourceEditorInterface;
                               Flags: TSaveFlags): TModalResult; virtual; abstract;
+    function DoSaveEditorFile(const Filename: string;
+                              Flags: TSaveFlags): TModalResult; virtual; abstract;
     function DoSaveAll(Flags: TSaveFlags): TModalResult; virtual; abstract;
     function DoCloseEditorFile(PageIndex:integer;
                                Flags: TCloseFlags):TModalResult; virtual; abstract;

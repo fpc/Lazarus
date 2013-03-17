@@ -738,6 +738,8 @@ type
                               deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function DoSaveEditorFile(AEditor: TSourceEditorInterface;
                               Flags: TSaveFlags): TModalResult; override;
+    function DoSaveEditorFile(const Filename: string;
+                              Flags: TSaveFlags): TModalResult; override;
 
     function DoCloseEditorFile(PageIndex:integer;
                                Flags: TCloseFlags):TModalResult; override;
@@ -746,6 +748,7 @@ type
                                Flags: TCloseFlags):TModalResult; override;
     function DoCloseEditorFile(const Filename: string;
                                Flags: TCloseFlags): TModalResult; override;
+
     function DoSaveAll(Flags: TSaveFlags): TModalResult; override;
     function DoOpenEditorFile(AFileName: string; PageIndex: integer;
                               Flags: TOpenFlags): TModalResult; override;
@@ -5473,7 +5476,7 @@ begin
   SourceFileMgr.CreateFileDialogFilterForSourceEditorFiles(Filter, AllEditorMask, AllMask);
 end;
 
-function TMainIDE.DoSaveEditorFile(PageIndex:integer; Flags: TSaveFlags):TModalResult;
+function TMainIDE.DoSaveEditorFile(PageIndex:integer; Flags: TSaveFlags): TModalResult;
 begin
   Result := DoSaveEditorFile(
     SourceEditorManager.ActiveSourceWindow.FindSourceEditorWithPageIndex(PageIndex),Flags);
@@ -5482,6 +5485,11 @@ end;
 function TMainIDE.DoSaveEditorFile(AEditor: TSourceEditorInterface; Flags: TSaveFlags): TModalResult;
 begin
   Result:=SourceFileMgr.SaveEditorFile(AEditor, Flags);
+end;
+
+function TMainIDE.DoSaveEditorFile(const Filename: string; Flags: TSaveFlags): TModalResult;
+begin
+  Result:=SourceFileMgr.SaveEditorFile(Filename, Flags);
 end;
 
 function TMainIDE.DoCloseEditorFile(PageIndex:integer; Flags: TCloseFlags): TModalResult;
