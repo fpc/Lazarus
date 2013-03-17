@@ -1,3 +1,9 @@
+lazarus (1.0.9-0) unstable; urgency=low
+
+  * Snapshot building.
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sat, 3 Mar 2013 13:04:12 +0200
+
 lazarus (1.0.8-0) unstable; urgency=low
 
   * Snapshot building.
