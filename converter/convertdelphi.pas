@@ -880,19 +880,14 @@ begin
       with DelphiUnit do
       try
         Result:=CopyAndLoadFile;
-        if Result=mrOK then begin
-          Result:=ConvertUnitFile;
-          if Result=mrOk then begin
-            Result:=SaveCodeBufferToFile(fPascalBuffer,fLazUnitFilename);
-            if Result=mrOk then begin
-              Result:=LazarusIDE.DoOpenEditorFile(fLazUnitFilename,0,0,
-                                                  [ofAddToRecent,ofQuiet]);
-              if Result=mrOk then begin
-                Result:=ConvertFormFile;
-              end;
-            end;
-          end;
-        end;
+        if Result<>mrOK then Exit;
+        Result:=ConvertUnitFile;
+        if Result<>mrOK then Exit;
+        Result:=SaveCodeBufferToFile(fPascalBuffer,fLazUnitFilename);
+        if Result<>mrOK then Exit;
+        Result:=ConvertFormFile;
+        if Result<>mrOK then Exit;
+        Result:=LazarusIDE.DoSaveEditorFile(fLazUnitFilename,[]);
       except
         on e: EDelphiConverterError do begin
           fErrorMsg:=e.Message;
@@ -903,8 +898,8 @@ begin
         Result:=mrAbort;
       end;
     end;
-    ShowEndingMessage(Result);
   finally
+    ShowEndingMessage(Result);
     DelphiUnit.Free;
   end;
 end;
@@ -1533,7 +1528,7 @@ begin
       fErrorMsg:='Problems when trying to find all units from project file '+fOrigFilename;
       exit(mrCancel);
     end;
-    try        // add all units to the project
+    try        // Add all units to the project
       for i:=0 to FoundUnits.Count-1 do begin
         CurFilename:=FoundUnits[i];
         p:=System.Pos(' in ',CurFilename);
@@ -1546,15 +1541,15 @@ begin
       end;
     finally
       AllPath:=fUnitSearchPaths.DelimitedText;
-      // set unit and include paths for project
+      // Set unit and include paths for project
       with LazProject.CompilerOptions do begin
         OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,AllPath);
         IncludePath:=MergeSearchPaths(IncludePath,AllPath);
       end;
-      // clear caches
+      // Clear caches
       LazProject.DefineTemplates.SourceDirectoriesChanged;
     end;
-    // save project
+    // Save project
     Result:=LazarusIDE.DoSaveProject([sfQuietUnitCheck]);
     if Result<>mrOk then exit;
   finally
@@ -1622,6 +1617,9 @@ begin
       end;
       Result:=ConvertAllFormFiles(ConvUnits);
     end;
+    // Finally save project once more
+    Result:=LazarusIDE.DoSaveProject([sfQuietUnitCheck]);
+    if Result<>mrOk then exit;
   finally
     ConvUnits.Free;  // Owns and frees converter objects.
   end;
@@ -1762,40 +1760,6 @@ begin
   end;
 end;
 
-function TConvertDelphiPackage.ConvertAllUnits: TModalResult;
-var
-  i: Integer;
-  PkgFile: TPkgFile;
-  Converter: TDelphiUnit;
-  ConvUnits: TObjectList;       // List of ConvertDelphiUnits.
-begin
-  Result:=mrOk;
-  ConvUnits:=TObjectList.create;
-  try
-    // convert all units and fix .lfm files
-    IDEMessagesWindow.AddMsg('', '', -1);
-    IDEMessagesWindow.AddMsg(lisConvDelphiConvertingUnitFiles, '', -1);
-    Application.ProcessMessages;
-    for i:=0 to LazPackage.FileCount-1 do begin
-      PkgFile:=LazPackage.Files[i];
-      Converter:=TDelphiUnit.Create(Self, PkgFile.Filename,[]);
-      ConvUnits.Add(Converter);
-      Result:=Converter.CopyAndLoadFile;
-      if Result<>mrOK then exit;
-      //Result:=Converter.CheckFailed(Result);
-      //if Result<>mrOK then Break;
-      Result:=Converter.ConvertUnitFile;
-      if Result<>mrOK then exit;
-      Result:=Converter.CheckFailed(Result);
-      if Result<>mrOK then Break;
-    end;
-    if Result=mrOK then
-      Result:=ConvertAllFormFiles(ConvUnits);
-  finally
-    ConvUnits.Free;  // Owns and frees converter objects.
-  end;
-end;
-
 function TConvertDelphiPackage.FindAllUnits: TModalResult;
 var
   FoundInUnits, MissingInUnits, NormalUnits: TStrings;
@@ -1821,7 +1785,7 @@ begin
       exit(mrCancel);
     end;
     try
-      // add all units to the package
+      // Add all units to the package
       for i:=0 to FoundInUnits.Count-1 do begin
         CurFilename:=FoundInUnits[i];
         p:=System.Pos(' in ',CurFilename);
@@ -1837,7 +1801,7 @@ begin
         PkgFile:=LazPackage.FindPkgFile(CurFilename,true,false);
         if PkgFile=nil then begin
           if FilenameIsPascalUnit(CurFilename) then begin
-            // check unitname
+            // Check unitname
             OffendingUnit:=LazPackage.FindUnit(ExtractFileNameOnly(CurFilename));
             if OffendingUnit<>nil then begin
               Result:=QuestionDlg(lisConvDelphiUnitnameExistsTwice,
@@ -1854,7 +1818,7 @@ begin
               end;
             end;
           end;
-          // add new unit to package
+          // Add new unit to package
           LazPackage.AddFile(CurFilename,ExtractFileNameOnly(CurFilename),
                            pftUnit,[pffAddToPkgUsesSection],cpNormal);
         end;
@@ -1862,22 +1826,21 @@ begin
     finally
       AllPath:=LazPackage.SourceDirectories.CreateSearchPathFromAllFiles;
       UselessPath:='.;'+VirtualDirectory+';'+VirtualTempDir+';'+LazPackage.Directory;
-      // set unit paths to find all project units
+      // Set unit paths to find all project units
       NewSearchPath:=MergeSearchPaths(LazPackage.CompilerOptions.OtherUnitFiles,AllPath);
       NewSearchPath:=RemoveSearchPaths(NewSearchPath,UselessPath);
       LazPackage.CompilerOptions.OtherUnitFiles:=MinimizeSearchPath(
                RemoveNonExistingPaths(NewSearchPath,LazPackage.Directory));
-      // set include path
+      // Set include path
       NewSearchPath:=MergeSearchPaths(LazPackage.CompilerOptions.IncludePath,AllPath);
       NewSearchPath:=RemoveSearchPaths(NewSearchPath,UselessPath);
       LazPackage.CompilerOptions.IncludePath:=MinimizeSearchPath(
                RemoveNonExistingPaths(NewSearchPath,LazPackage.Directory));
-      // clear caches
+      // Clear caches
       LazPackage.DefineTemplates.SourceDirectoriesChanged;
       CodeToolBoss.DefineTree.ClearCache;
     end;
-
-    // save package
+    // Save package
     Result:=PackageEditors.SavePackage(LazPackage,false);
     if Result<>mrOk then exit;
   finally
@@ -1886,6 +1849,43 @@ begin
     NormalUnits.Free;
   end;
   Result:=mrOk;
+end;
+
+function TConvertDelphiPackage.ConvertAllUnits: TModalResult;
+var
+  i: Integer;
+  PkgFile: TPkgFile;
+  Converter: TDelphiUnit;
+  ConvUnits: TObjectList;       // List of ConvertDelphiUnits.
+begin
+  Result:=mrOk;
+  ConvUnits:=TObjectList.create;
+  try
+    // Convert all units and fix .lfm files
+    IDEMessagesWindow.AddMsg('', '', -1);
+    IDEMessagesWindow.AddMsg(lisConvDelphiConvertingUnitFiles, '', -1);
+    Application.ProcessMessages;
+    for i:=0 to LazPackage.FileCount-1 do begin
+      PkgFile:=LazPackage.Files[i];
+      Converter:=TDelphiUnit.Create(Self, PkgFile.Filename,[]);
+      ConvUnits.Add(Converter);
+      Result:=Converter.CopyAndLoadFile;
+      if Result<>mrOK then exit;
+      //Result:=Converter.CheckFailed(Result);
+      //if Result<>mrOK then Break;
+      Result:=Converter.ConvertUnitFile;
+      if Result<>mrOK then exit;
+      Result:=Converter.CheckFailed(Result);
+      if Result<>mrOK then Break;
+    end;
+    if Result=mrOK then
+      Result:=ConvertAllFormFiles(ConvUnits);
+    // Finally save the package one more time
+    Result:=PackageEditors.SavePackage(LazPackage,false);
+    if Result<>mrOk then exit;
+  finally
+    ConvUnits.Free;  // Owns and frees converter objects.
+  end;
 end;
 
 function TConvertDelphiPackage.LoadDPKFile: TModalResult;
