@@ -217,6 +217,7 @@ type
     ImgIndic: TImageList;
     LinePanel: TPanel;
     OB7: TSpeedButton;
+    panTab: TPanel;
     panForDlg: TPanel;
     PgB4: TSpeedButton;
     Tab1: TTabControl;
