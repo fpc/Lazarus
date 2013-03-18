@@ -1699,6 +1699,7 @@ components/lazcontrols/lazcontrols.lpk svneol=native#text/xml
 components/lazcontrols/lazcontrols.pas svneol=native#text/pascal
 components/lazcontrols/listfilteredit.pas svneol=native#text/plain
 components/lazcontrols/listfilteredit_icon.lrs svneol=native#text/plain
+components/lazcontrols/lvlgraphctrl.pas svneol=native#text/plain
 components/lazcontrols/shortpathedit.pas svneol=native#text/plain
 components/lazcontrols/shortpathedit_icon.lrs svneol=native#text/plain
 components/lazcontrols/treefilteredit.pas svneol=native#text/plain

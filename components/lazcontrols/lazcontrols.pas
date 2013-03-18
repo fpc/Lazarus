@@ -8,7 +8,7 @@ interface
 
 uses
   DividerBevel, ExtendedNotebook, ListFilterEdit, TreeFilterEdit, 
-  ShortPathEdit, LazarusPackageIntf;
+  ShortPathEdit, LvlGraphCtrl, LazarusPackageIntf;
 
 implementation
 

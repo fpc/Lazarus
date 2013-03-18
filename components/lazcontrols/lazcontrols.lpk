@@ -19,7 +19,7 @@
     <Description Value="Some extra LCL controls needed by the IDE."/>
     <License Value="modified LGPL-2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="5">
+    <Files Count="6">
       <Item1>
         <Filename Value="dividerbevel.pas"/>
         <HasRegisterProc Value="True"/>
@@ -43,8 +43,12 @@
       <Item5>
         <Filename Value="shortpathedit.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="shortpathedit"/>
+        <UnitName Value="ShortPathEdit"/>
       </Item5>
+      <Item6>
+        <Filename Value="lvlgraphctrl.pas"/>
+        <UnitName Value="lvlgraphctrl"/>
+      </Item6>
     </Files>
     <LazDoc Paths="docs"/>
     <Type Value="RunAndDesignTime"/>

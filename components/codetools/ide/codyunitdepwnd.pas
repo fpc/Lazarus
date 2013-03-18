@@ -34,7 +34,7 @@ uses
   LazLogger, TreeFilterEdit, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   Buttons, ComCtrls, LCLType, LazIDEIntf, ProjectIntf, IDEWindowIntf,
   PackageIntf, CTUnitGraph, CodeToolManager, DefineTemplates, CTUnitGroupGraph,
-  CodeToolsStructs, CodyCtrls;
+  CodeToolsStructs, CodyCtrls, LvlGraphCtrl;
 
 const  // ToDo: make resourcestring
   lisSelectAUnit = 'Select an unit';
