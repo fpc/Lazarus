@@ -1,0 +1,158 @@
+object Form1: TForm1
+  Left = 435
+  Height = 224
+  Top = 198
+  Width = 608
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  ActiveControl = StringGrid1
+  Caption = 'StringGrid Editor'
+  ClientHeight = 224
+  ClientWidth = 608
+  OnCreate = FormCreate
+  LCLVersion = '1.1'
+  object StringGrid1: TStringGrid
+    Left = 16
+    Height = 136
+    Top = 53
+    Width = 576
+    ColCount = 8
+    Columns = <    
+      item
+        Title.Caption = 'Auto'
+      end    
+      item
+        Title.Caption = 'EditMask'
+      end    
+      item
+        ButtonStyle = cbsButton
+        Title.Caption = 'Button'
+      end    
+      item
+        ButtonStyle = cbsButtonColumn
+        Title.Caption = 'ButtonColumn'
+        Width = 90
+      end    
+      item
+        ButtonStyle = cbsCheckboxColumn
+        Title.Caption = 'CheckBox'
+      end    
+      item
+        ButtonStyle = cbsEllipsis
+        Title.Caption = 'Ellipsis'
+      end    
+      item
+        ButtonStyle = cbsNone
+        Title.Caption = 'None'
+        Width = 80
+      end    
+      item
+        ButtonStyle = cbsPickList
+        PickList.Strings = (
+          'Cow'
+          'Dog'
+          'Pig'
+          'Goat'
+          'Elephant'
+        )
+        Title.Caption = 'PickList'
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goAlwaysShowEditor, goSmoothScroll, goCellHints]
+    ParentShowHint = False
+    ScrollBars = ssBoth
+    ShowHint = True
+    TabOrder = 0
+    OnCheckboxToggled = StringGrid1CheckboxToggled
+    OnDrawCell = StringGrid1DrawCell
+    OnButtonClick = StringGrid1ButtonClick
+    OnGetCellHint = StringGrid1GetCellHint
+    OnGetCheckboxState = StringGrid1GetCheckboxState
+    OnGetEditMask = StringGrid1GetEditMask
+    OnSetEditText = StringGrid1SetEditText
+    OnValidateEntry = StringGrid1ValidateEntry
+    Cells = (
+      1
+      0
+      0
+      'Name'
+    )
+  end
+  object Edit1: TEdit
+    Left = 429
+    Height = 21
+    Hint = 'Change ''None'' text'
+    Top = 192
+    Width = 80
+    OnChange = Edit1Change
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+  end
+  object Label1: TLabel
+    Left = 16
+    Height = 26
+    Top = 8
+    Width = 501
+    Caption = 'The stringgrid below shows the following button types:'#13#10'Auto, Auto with Editmask,   Button,   ButtonColumn,   CheckBox,   Ellipsis,          None,           and Picklist.'
+    ParentColor = False
+    WordWrap = True
+  end
+  object Label2: TLabel
+    Left = 296
+    Height = 13
+    Top = 199
+    Width = 116
+    Caption = 'Change text in this box:'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 16
+    Height = 13
+    Top = 198
+    Width = 64
+    Caption = 'SetEdit text: '
+    ParentColor = False
+  end
+  object Label4: TLabel
+    Left = 88
+    Height = 13
+    Top = 198
+    Width = 101
+    Caption = 'Auto && EditMask text'
+    ParentColor = False
+  end
+  object ColorDialog1: TColorDialog
+    Color = clBlack
+    CustomColors.Strings = (
+      'ColorA=000000'
+      'ColorB=000080'
+      'ColorC=008000'
+      'ColorD=008080'
+      'ColorE=800000'
+      'ColorF=800080'
+      'ColorG=808000'
+      'ColorH=808080'
+      'ColorI=C0C0C0'
+      'ColorJ=0000FF'
+      'ColorK=00FF00'
+      'ColorL=00FFFF'
+      'ColorM=FF0000'
+      'ColorN=FF00FF'
+      'ColorO=FFFF00'
+      'ColorP=FFFFFF'
+      'ColorQ=C0DCC0'
+      'ColorR=F0CAA6'
+      'ColorS=F0FBFF'
+      'ColorT=A4A0A0'
+    )
+    left = 24
+    top = 120
+  end
+  object CalculatorDialog1: TCalculatorDialog
+    CalculatorLayout = clNormal
+    Value = 0
+    left = 136
+    top = 120
+  end
+end
