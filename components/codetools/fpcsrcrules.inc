@@ -20,11 +20,14 @@ Add('packages/amunits/src/otherlibs');
 Add('packages/httpd20/examples');
 Add('packages/httpd22/examples');
 Add('packages/cocoaint/utils/cocoa-skel/src');
+Add('packages/fcl-base/src/wince'); // for unit src/fileinfo and src/wince/fileinfo
 
 Score:=10;
 Targets:='wince';
 Add('rtl/wince');
 Add('packages/winceunits');
+Add('packages/fcl-base/src/wince');
+
 Score:=-10;
 Targets:='win32,win64';
 Add('packages/winceunits');
