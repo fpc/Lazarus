@@ -723,7 +723,7 @@ resourcestring
     +'IDE options,%syou can create new projects and build them at '
     +'once.%sSave project?';
   lisBusy = 'Busy';
-  lisCanNotTestTheCompilerWhileDebuggingOrCompiling = 'Can not test the '
+  lisCanNotTestTheCompilerWhileDebuggingOrCompiling = 'Cannot test the '
     +'compiler while debugging or compiling.';
   lisProjectSuccessfullyBuilt = 'Project %s%s%s successfully built';
   lisExecutingCommandBefore = 'Executing command before';
