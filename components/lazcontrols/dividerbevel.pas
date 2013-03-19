@@ -52,15 +52,17 @@ type
   published
     property Caption;
     property Align;
-    property Autosize;
+    property AutoSize;
     property Anchors;
     property BevelStyle: TBevelStyle read FBevelStyle write SetBevelStyle default bsLowered;
     property BevelWidth: Integer read FBevelWidth write SetBevelWidth default -1;
+    property BiDiMode;
     property BorderSpacing;
     property Color;
     property Constraints;
     property Font;
     property Hint;
+    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -113,7 +115,7 @@ begin
   else
     FBevelHeight := FBevelWidth;
   FTextHeight := Max(FTextHeight, FBevelHeight + 2);
-  FBevelTop := (FTextHeight - FBevelHeight) div 2;
+  FBevelTop := (FTextHeight - FBevelHeight) div 2 + 1;
 end;
 
 procedure TDividerBevel.SetBevelStyle(AValue: TBevelStyle);
@@ -154,13 +156,14 @@ end;
 
 class function TDividerBevel.GetControlClassDefaultSize: TSize;
 begin
-  Result.CX := 150;
+  Result.CX := 240;
   Result.CY := 17;
 end;
 
 procedure TDividerBevel.Paint;
 var
   aBevel: TGraphicsBevelCut;
+  aIndent, aRight: Integer;
   PaintRect: TRect;
 begin
   CalcSize;
@@ -182,23 +185,34 @@ begin
     Canvas.Frame3D(PaintRect, 1, aBevel);
     exit;
   end;
-  PaintRect.Right := FLeftIndent;
-  Canvas.Frame3D(PaintRect, 1, aBevel);
+
+  if FLeftIndent > 0 then
+    aIndent := FLeftIndent + FCaptionSpacing
+  else
+    aIndent := 0;
+
+  if not IsRightToLeft then
+    aRight := FLeftIndent
+  else
+    aRight := Width - FTextWidth - FCaptionSpacing - aIndent;
+  if aRight > 0 then begin
+    PaintRect.Right := aRight;
+    Canvas.Frame3D(PaintRect, 1, aBevel);
+  end;
 
   PaintRect.Top := FBevelTop;
   PaintRect.Bottom := FBevelTop + FBevelHeight;
-  if FLeftIndent > 0 then
-    PaintRect.Left := FLeftIndent + 2*FCaptionSpacing + FTextWidth
-  else
-    PaintRect.Left := FTextWidth + FCaptionSpacing;
+  PaintRect.Left := aRight + FTextWidth + FCaptionSpacing;
+  if aIndent > 0 then
+    PaintRect.Left := PaintRect.Left + FCaptionSpacing;
   PaintRect.Right := Width;
   Canvas.Frame3D(PaintRect, 1, aBevel);
 
   Canvas.Brush.Style := bsClear;
-  if FLeftIndent > 0 then
-    Canvas.TextOut(FLeftIndent + FCaptionSpacing, 0, Caption)
+  if not IsRightToLeft then
+    Canvas.TextOut(aIndent, 0, Caption)
   else
-    Canvas.TextOut(0, 0, Caption);
+    Canvas.TextOut(Width - FTextWidth - aIndent, 0, Caption)
 end;
 
 procedure TDividerBevel.FontChanged(Sender: TObject);
