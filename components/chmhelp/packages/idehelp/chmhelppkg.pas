@@ -2,20 +2,22 @@
   This source is only used to compile and install the package.
  }
 
-unit ChmHelpPkg; 
+unit ChmHelpPkg;
 
 interface
 
 uses
-  LazChmHelp, ChmLangRef, ChmLcl, ChmProg, LazarusPackageIntf;
+  LazChmHelp, ChmLangRef, ChmLcl, ChmProg, LazCHMHelpRegister, 
+  LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('LazChmHelp', @LazChmHelp.Register); 
-end; 
+  RegisterUnit('LazChmHelp', @LazChmHelp.Register);
+  RegisterUnit('LazCHMHelpRegister', @LazCHMHelpRegister.Register);
+end;
 
 initialization
-  RegisterPackage('ChmHelpPkg', @Register); 
+  RegisterPackage('ChmHelpPkg', @Register);
 end.

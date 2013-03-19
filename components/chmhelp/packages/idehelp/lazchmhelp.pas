@@ -40,6 +40,8 @@ type
     function DBFindViewer({%H-}HelpDB: THelpDatabase; {%H-}const MimeType: string;
       var {%H-}ErrMsg: string; out Viewer: THelpViewer): TShowHelpResult;
     function GetHelpLabel: String;
+    // Shows all chm files in the given search path. Requires help viewer to be running already
+    procedure OpenAllCHMsInSearchPath(const SearchPath: String);
     procedure SetChmsFilePath(const AValue: String);
     procedure SetHelpEXE(AValue: String);
   protected
@@ -54,6 +56,9 @@ type
     function SupportsTableOfContents: boolean; override;
     procedure ShowTableOfContents({%H-}Node: THelpNode); override;
     function SupportsMimeType(const AMimeType: string): boolean; override;
+    // Shows all chm help files. Opens lhelp if necessary. Used by menu commands.
+    procedure ShowAllHelp(Sender: TObject);
+    // Shows help for the indicated node or an error message if it cannot. Opens lhelp if necessary
     function ShowNode(Node: THelpNode; var ErrMsg: string): TShowHelpResult; override;
     //procedure Hide; virtual;
     procedure Assign(Source: TPersistent); override;
@@ -68,12 +73,26 @@ type
     property HelpFilesPath: String read fCHMSearchPath write SetChmsFilePath; // directories separated with semicolon, with macros, see GetHelpFilesPath
     property HelpExeParams: String read fHelpExeParams write fHelpExeParams;
   end;
-  
+
   procedure Register;
 
 implementation
 
 uses Process, MacroIntf, InterfaceBase, Forms, Dialogs, HelpFPDoc, IDEMsgIntf;
+
+procedure Register;
+var
+  ChmHelp: TChmHelpViewer;
+begin
+  ChmHelp := TChmHelpViewer.Create(nil);
+  HelpViewers.RegisterViewer(ChmHelp);
+  RegisterLangRefHelpDatabase;
+  LangRefHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
+  RegisterLclHelpDatabase;
+  LCLHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
+  RegisterFPCDirectivesHelpDatabase;
+  FPCDirectivesHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
+end;
 
 
 { TChmHelpViewer }
@@ -91,6 +110,57 @@ begin
   if Length(fHelpLabel) = 0 then
     fHelpLabel := 'lazhelp';
   Result := fHelpLabel;
+end;
+
+procedure TChmHelpViewer.OpenAllCHMsInSearchPath(const SearchPath: String);
+var
+  SearchPathList: TStringlist; //SearchPath as a stringlist
+  CHMFiles: TStringList;
+  i: integer;
+  DirCounter: integer;
+begin
+  { Alternative:
+    Open registered chm help files (no online html help etc)
+    Using SupportsMimetype would seem to be the solution here.
+    This does mean that all classes providing chm file support add
+    AddSupportedMimeType('application/x-chm');
+    in their constructors as they normally inherit
+    text/html from their HTML help parents.
+    Also, this will not work for other .chm files in the relevant directories.
+    this still does not open all help files such as rtl.chm
+
+   for i := 0 to HelpDatabases.Count-1 do begin
+     if HelpDatabases[i].SupportsMimeType('application/x-chm') then begin
+       HelpDatabases[i].ShowTableOfContents;
+       Sleep(200); //give viewer chance to open file. todo: better way of doing this?
+       Application.ProcessMessages;
+     end;
+   end;
+   }
+  // Just open all CHM files in all directories+subdirs in ;-delimited searchpath:
+  SearchPathList:=TStringList.Create;
+  CHMFiles:=TStringList.Create;
+  try
+    CHMFiles.Sorted:=true;
+    CHMFiles.Duplicates:=dupIgnore;
+    SearchPathList.Delimiter:=';';
+    SearchPathList.StrictDelimiter:=false;
+    SearchPathList.DelimitedText:=SearchPath;
+    for DirCounter := 0 to SearchPathList.Count-1 do begin
+      // Note: FindAllFiles has a SearchPath parameter that is a *single* directory,
+      CHMFiles.AddStrings(FindAllFiles(SearchPathList[DirCounter], '', true));
+    end;
+    for i := 0 to CHMFiles.Count-1 do begin
+      if UpperCase(ExtractFileExt(CHMFiles[i]))='.CHM' then begin
+        fHelpConnection.OpenURL(CHMFiles[i], '/index.html');
+        Sleep(200); //give viewer chance to open file. todo: better way of doing this?
+        Application.ProcessMessages;
+      end;
+    end;
+  finally
+    CHMFiles.Free;
+    SearchPathList.Free;
+  end;
 end;
 
 procedure TChmHelpViewer.SetChmsFilePath(const AValue: String);
@@ -338,17 +408,25 @@ begin
   Result := inherited;
 end;
 
+procedure TChmHelpViewer.ShowAllHelp(Sender: TObject);
+var
+  SearchPath: String; //; delimited list of directories
+begin
+  SearchPath := GetHelpFilesPath;
+  // Start up server if needed
+  if not(fHelpConnection.ServerRunning) then
+    fHelpConnection.StartHelpServer(HelpLabel, GetHelpExe);
+  // Open all chm files after it has started
+  OpenAllCHMsInSearchPath(SearchPath);
+end;
+
 function TChmHelpViewer.ShowNode(Node: THelpNode; var ErrMsg: string
   ): TShowHelpResult;
 var
-  DirCounter: integer;
-  i: integer;
   FileName: String;
-  CHMFiles: TStringList;
   Url: String;
   Res: TLHelpResponse;
   SearchPath: String; //; delimited list of directories
-  SearchPathList: tstringlist; //SearchPath as a stringlist
   Proc: TProcessUTF8;
   FoundFileName: String;
   LHelpPath: String;
@@ -393,47 +471,7 @@ begin
     // If the server is not already running, open all chm files after it has started
     // This will allow cross-chm (LCL, FCL etc) searching and browsing in lhelp.
     if not(WasRunning) then begin
-      // Open registered chm help files (no online html help etc)
-      // Using SupportsMimetype would seem to be the solution here.
-      // This does mean that all classes providing chm file support add
-      // AddSupportedMimeType('application/x-chm');
-      // in their constructors as they normally inherit
-      // text/html from their HTML help parents.
-      // Also, this will not work for other .chm files in the relevant directories.
-      // this still does not open all help files such as rtl.chm
-      {
-      for i := 0 to HelpDatabases.Count-1 do begin
-        if HelpDatabases[i].SupportsMimeType('application/x-chm') then begin
-          HelpDatabases[i].ShowTableOfContents;
-          Sleep(200); //give viewer chance to open file. todo: better way of doing this?
-          Application.ProcessMessages;
-        end;
-      end;
-      }
-      // Just open all CHM files in all directories+subdirs in ;-delimited searchpath:
-      SearchPathList:=TStringList.Create;
-      CHMFiles:=TStringList.Create;
-      try
-        CHMFiles.Sorted:=true;
-        CHMFiles.Duplicates:=dupIgnore;
-        SearchPathList.Delimiter:=';';
-        SearchPathList.StrictDelimiter:=false;
-        SearchPathList.DelimitedText:=SearchPath;
-        for DirCounter := 0 to SearchPathList.Count-1 do begin
-          // Note: FindAllFiles has a SearchPath parameter that is a *single* directory,
-          CHMFiles.AddStrings(FindAllFiles(SearchPathList[DirCounter],'',true));
-        end;
-        for i := 0 to CHMFiles.Count-1 do begin
-          if UpperCase(ExtractFileExt(CHMFiles[i]))='.CHM' then begin
-            fHelpConnection.OpenURL(CHMFiles[i], '/index.html');
-            Sleep(200); //give viewer chance to open file. todo: better way of doing this?
-            Application.ProcessMessages;
-          end;
-        end;
-      finally
-        CHMFiles.Free;
-        SearchPathList.Free;
-      end;
+      OpenAllCHMsInSearchPath(SearchPath);
     end;
     Res := fHelpConnection.OpenURL(FileName, Url);
   end else begin
@@ -523,20 +561,6 @@ end;
 function TChmHelpViewer.GetLocalizedName: string;
 begin
   Result := 'CHM Help Viewer';
-end;
-
-procedure Register;
-var
-  ChmHelp: TChmHelpViewer;
-begin
-  ChmHelp := TChmHelpViewer.Create(nil);
-  HelpViewers.RegisterViewer(ChmHelp);
-  RegisterLangRefHelpDatabase;
-  LangRefHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
-  RegisterLclHelpDatabase;
-  LCLHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
-  RegisterFPCDirectivesHelpDatabase;
-  FPCDirectivesHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
 end;
 
 initialization

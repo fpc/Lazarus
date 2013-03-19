@@ -614,6 +614,7 @@ components/chmhelp/packages/idehelp/chmlangref.pas svneol=native#text/plain
 components/chmhelp/packages/idehelp/chmlcl.pas svneol=native#text/plain
 components/chmhelp/packages/idehelp/chmprog.pas svneol=native#text/plain
 components/chmhelp/packages/idehelp/lazchmhelp.pas svneol=native#text/plain
+components/chmhelp/packages/idehelp/lazchmhelpregister.pas svneol=native#text/plain
 components/codetools/Makefile.compiled svneol=native#text/plain
 components/codetools/basiccodetools.pas svneol=native#text/pascal
 components/codetools/cachecodetools.pas svneol=native#text/plain
