@@ -39,16 +39,8 @@ uses
   LazCHMHelp, InterfaceBase, IDEMsgIntf;
 
 const
-  //HELP_MENU_NAME     = 'chpOfflineHelp';
   HELP_CURRENT_NAME  = 'chpHelp';
   HELP_CATEGORY_IDECMD_NAME = 'chpFormat';
-
-resourcestring
-  //HELP_MENU     = '&Help';
-  HELP_CURRENT_MENU  = '&Help';
-  HELP_CURRENT_IDECMD  = 'Show help';
-  HELP_CATEGORY_IDECMD = 'CHM Help';
-
 
 var
   IDECHMHelp: TChmHelpViewer;

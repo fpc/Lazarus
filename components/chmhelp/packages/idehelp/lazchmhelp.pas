@@ -23,9 +23,17 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazLogger, LazFileUtils, LazHelpIntf, HelpIntfs,
-  LazConfigStorage, PropEdits, LazIDEIntf, LHelpControl, Controls, UTF8Process,
-  ChmLangRef, ChmLcl, ChmProg;
+  LazConfigStorage, PropEdits, LazIDEIntf, IDEDialogs, LHelpControl, Controls,
+  UTF8Process, ChmLangRef, ChmLcl, ChmProg;
   
+resourcestring
+  HELP_CURRENT_MENU  = '&Help';
+  HELP_CURRENT_IDECMD  = 'Show help';
+  HELP_CATEGORY_IDECMD = 'CHM Help';
+  HELP_MissingLhelp = 'Missing lhelp';
+  HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro = 'Unable to find '
+    +'the lhelp viewer:%s%s%s%sPlease compile the lhelp project:%s%s';
+
 type
   
   { TChmHelpViewer }
@@ -74,7 +82,7 @@ type
     property HelpExeParams: String read fHelpExeParams write fHelpExeParams;
   end;
 
-  procedure Register;
+procedure Register;
 
 implementation
 
@@ -411,11 +419,24 @@ end;
 procedure TChmHelpViewer.ShowAllHelp(Sender: TObject);
 var
   SearchPath: String; //; delimited list of directories
+  LHelpFilename: String;
 begin
   SearchPath := GetHelpFilesPath;
   // Start up server if needed
   if not(fHelpConnection.ServerRunning) then
-    fHelpConnection.StartHelpServer(HelpLabel, GetHelpExe);
+  begin
+    LHelpFilename:=GetHelpExe;
+    if not FileExistsUTF8(LHelpFilename) then
+    begin
+      IDEMessageDialog(HELP_MissingLhelp, Format(
+        HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
+        [#13, LHelpFilename, #13, #13, #13,
+        SetDirSeparators('components/chmhelp/lhelp/lhelp.lpi')]),
+        mtError,[mbCancel]);
+      exit;
+    end;
+    fHelpConnection.StartHelpServer(HelpLabel, LHelpFilename);
+  end;
   // Open all chm files after it has started
   OpenAllCHMsInSearchPath(SearchPath);
 end;
