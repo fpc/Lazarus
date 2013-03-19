@@ -736,7 +736,7 @@ end;
    end;
 
    try
-     FStream := TFileStream.Create(FName, fmOpenRead);
+     FStream := TFileStream.Create(FName, fmOpenRead or fmShareDenyWrite);
      FOpen := True;
      FBase := 0;
      try
