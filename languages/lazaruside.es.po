@@ -3375,7 +3375,7 @@ msgstr "Barra oblicua //"
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"
-msgstr "Tabuladores en espacios"
+msgstr "Tabuladores inteligentes"
 
 #: lazarusidestrconsts.dlgsmbbehind
 msgid "Symbol behind (.pp~)"
