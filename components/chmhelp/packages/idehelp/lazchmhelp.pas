@@ -419,23 +419,25 @@ end;
 procedure TChmHelpViewer.ShowAllHelp(Sender: TObject);
 var
   SearchPath: String; //; delimited list of directories
-  LHelpFilename: String;
+  HelpExeFileName: String;
 begin
+  // Make sure the lhelp help viewer exists; build it if doesn't and it is lhelp
+  HelpExeFileName:=GetHelpExe;
+  if (not FileExistsUTF8(HelpExeFileName)) and
+    ((ExtractFileNameOnly(HelpExeFileName) = 'lhelp') and (CheckBuildLHelp <> mrOK)) then begin
+    IDEMessageDialog(HELP_MissingLhelp, Format(
+      HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
+      [#13, HelpExeFileName, #13, #13, #13,
+      SetDirSeparators('components/chmhelp/lhelp/lhelp.lpi')]),
+      mtError,[mbCancel]);
+    exit;
+  end;
+
   SearchPath := GetHelpFilesPath;
   // Start up server if needed
   if not(fHelpConnection.ServerRunning) then
   begin
-    LHelpFilename:=GetHelpExe;
-    if not FileExistsUTF8(LHelpFilename) then
-    begin
-      IDEMessageDialog(HELP_MissingLhelp, Format(
-        HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
-        [#13, LHelpFilename, #13, #13, #13,
-        SetDirSeparators('components/chmhelp/lhelp/lhelp.lpi')]),
-        mtError,[mbCancel]);
-      exit;
-    end;
-    fHelpConnection.StartHelpServer(HelpLabel, LHelpFilename);
+    fHelpConnection.StartHelpServer(HelpLabel, HelpExeFileName);
   end;
   // Open all chm files after it has started
   OpenAllCHMsInSearchPath(SearchPath);
