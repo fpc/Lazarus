@@ -4471,6 +4471,12 @@ examples/lclversion/lclversionexample.lpr svneol=native#text/plain
 examples/lclversion/unit1.lfm svneol=native#text/plain
 examples/lclversion/unit1.lrs svneol=native#text/pascal
 examples/lclversion/unit1.pas svneol=native#text/plain
+examples/levelgraph/lvlgraph_dep_unit1.lfm svneol=native#text/plain
+examples/levelgraph/lvlgraph_dep_unit1.pas svneol=native#text/plain
+examples/levelgraph/lvlgraph_dependencies.ico -text svneol=unset#image/ico
+examples/levelgraph/lvlgraph_dependencies.lpi svneol=native#text/plain
+examples/levelgraph/lvlgraph_dependencies.lpr svneol=native#text/plain
+examples/levelgraph/lvlgraph_dependencies.res -text
 examples/listboxtest.lpi svneol=native#text/plain
 examples/listboxtest.pp svneol=native#text/pascal
 examples/listview/listview.lpi svneol=native#text/plain
