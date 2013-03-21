@@ -733,8 +733,6 @@ end;
 function TSynEditMarkLineList.GetOrAddMarkLine(LineNum: Integer;
   AddIfNotExist: Boolean; UseNext: Boolean = False): TSynEditMarkLine;
 var
-  rStartPosition: Integer;
-  p: TSynEditMarkLine;
   d1, d2: Integer;
 begin
   if AddIfNotExist then
