@@ -463,8 +463,8 @@ type
   TvArcDimension = class(TvEntityWithPen)
   public
     // Mandatory fields
-    ArcValue: Double;
-    DimArcPos, TextPos, BaseLeft, BaseRight, DimensionLeft, DimensionRight: T3DPoint;
+    ArcValue, ArcRadius: Double; // ArcValue is in degrees
+    TextPos, BaseLeft, BaseRight, DimensionLeft, DimensionRight: T3DPoint;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
@@ -788,7 +788,7 @@ type
     // Dimensions
     function AddAlignedDimension(BaseLeft, BaseRight, DimLeft, DimRight: T3DPoint; AOnlyCreate: Boolean = False): TvAlignedDimension;
     function AddRadialDimension(AIsDiameter: Boolean; ACenter, ADimLeft, ADimRight: T3DPoint; AOnlyCreate: Boolean = False): TvRadialDimension;
-    function AddArcDimension(ABaseLeft, ABaseRight, ADimLeft, ADimRight, ADimArcPos, ATextPos: T3DPoint; AOnlyCreate: Boolean = False): TvArcDimension;
+    function AddArcDimension(AArcValue, AArcRadius: Double; ABaseLeft, ABaseRight, ADimLeft, ADimRight, ATextPos: T3DPoint; AOnlyCreate: Boolean): TvArcDimension;
     //
     function AddPoint(AX, AY, AZ: Double): TvPoint;
     { Drawing methods }
@@ -2374,19 +2374,28 @@ var
   Points: array of TPoint;
   lAngleLeft, lAngleRight: Double;
   lTriangleCenter, lTriangleCorner, lCanvasDim: TPoint;
+  {$ifdef USE_LCL_CANVAS}
+  ALCLDest: TCanvas absolute ADest;
+  {$endif}
 begin
   ADest.Pen.FPColor := colYellow;//AdjustColorToBackground(colBlack, ARenderInfo);
   ADest.Pen.Width := 1;
   ADest.Pen.Style := psSolid;
 
-  // Get an arrow in the right part of the circle
-  SetLength(Points, 3);
-  ADest.Line(CoordToCanvasX(BaseLeft.X), CoordToCanvasY(BaseLeft.Y), CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
-  ADest.Line(CoordToCanvasX(BaseRight.X), CoordToCanvasY(BaseRight.Y), CoordToCanvasX(DimensionRight.X), CoordToCanvasY(DimensionRight.Y));
+  // Debug lines
+  //ADest.Line(CoordToCanvasX(BaseLeft.X), CoordToCanvasY(BaseLeft.Y), CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
+  //ADest.Line(CoordToCanvasX(BaseRight.X), CoordToCanvasY(BaseRight.Y), CoordToCanvasX(DimensionRight.X), CoordToCanvasY(DimensionRight.Y));
+
+  // Now the arc
+  ALCLDest.Arc(
+    CoordToCanvasX(BaseLeft.X - ArcRadius), CoordToCanvasY(BaseLeft.Y - ArcRadius),
+    CoordToCanvasX(BaseLeft.X + ArcRadius), CoordToCanvasY(BaseLeft.Y + ArcRadius),
+    CoordToCanvasX(DimensionRight.X), CoordToCanvasY(DimensionRight.Y),
+    CoordToCanvasX(DimensionLeft.X),  CoordToCanvasY(DimensionLeft.Y));
 
   // Now the arrows
   SetLength(Points, 3);
-  ADest.Brush.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
+{  ADest.Brush.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
   ADest.Brush.Style := bsSolid;
 
   // Angle of the line of BaseLeft->DimensionLeft
@@ -2402,16 +2411,15 @@ begin
   lTriangleCorner := Rotate2DPoint(lTriangleCenter, lCanvasDim, - Pi * 10 / 180);
   Points[2] := Point(lTriangleCorner.X, lTriangleCorner.Y);
   ADest.Polygon(Points);
-  ADest.Brush.Style := bsClear;
+  ADest.Brush.Style := bsClear; }
 
   // Dimension text
-{  Points[0].X := CoordToCanvasX((DimensionLeft.X+DimensionRight.X)/2);
-  Points[0].Y := CoordToCanvasY(DimensionLeft.Y);
-  LowerDim.X := DimensionRight.X-DimensionLeft.X;
+  Points[0].X := CoordToCanvasX(TextPos.X);
+  Points[0].Y := CoordToCanvasY(TextPos.Y);
   ADest.Font.Size := 10;
   ADest.Font.Orientation := 0;
-  ADest.Font.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
-  ADest.TextOut(Points[0].X, Points[0].Y-Round(ADest.Font.Size*1.5), Format('%.1f', [LowerDim.X]));}
+  ADest.Font.FPColor := colYellow;//AdjustColorToBackground(colBlack, ARenderInfo);
+  ADest.TextOut(Points[0].X, Points[0].Y-Round(ADest.Font.Size*1.5), Format('%.1f', [ArcValue]));
 end;
 
 function TvArcDimension.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -2422,8 +2430,8 @@ var
 begin
   Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
   // Add the font debug info in a sub-item
-  lStr := Format('[TvArcDimension] DimArcPos=%f %f TextPos=%f %f BaseLeft=%f %f BaseRight=%f %f DimensionLeft=%f %f DimensionRight=%f %f',
-    [DimArcPos.X, DimArcPos.Y,
+  lStr := Format('[TvArcDimension] ArcValue=%f ArcRadius=%f TextPos=%f %f BaseLeft=%f %f BaseRight=%f %f DimensionLeft=%f %f DimensionRight=%f %f',
+    [ArcValue, ArcRadius,
      TextPos.X, TextPos.Y,
      BaseLeft.X, BaseLeft.Y,
      BaseRight.X, BaseRight.Y,
@@ -3707,7 +3715,7 @@ begin
   if not AOnlyCreate then AddEntity(lDim);
 end;
 
-function TvVectorialPage.AddArcDimension(ABaseLeft, ABaseRight, ADimLeft, ADimRight, ADimArcPos, ATextPos: T3DPoint; AOnlyCreate: Boolean): TvArcDimension;
+function TvVectorialPage.AddArcDimension(AArcValue, AArcRadius: Double; ABaseLeft, ABaseRight, ADimLeft, ADimRight, ATextPos: T3DPoint; AOnlyCreate: Boolean): TvArcDimension;
 var
   lDim: TvArcDimension;
 begin
@@ -3716,7 +3724,8 @@ begin
   lDim.BaseRight := ABaseRight;
   lDim.DimensionLeft := ADimLeft;
   lDim.DimensionRight := ADimRight;
-  lDim.DimArcPos := ADimArcPos;
+  lDim.ArcRadius := AArcRadius;
+  lDim.ArcValue := AArcValue;
   lDim.TextPos := ATextPos;
   Result := lDim;
   if not AOnlyCreate then AddEntity(lDim);
