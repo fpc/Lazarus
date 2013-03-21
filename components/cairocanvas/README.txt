@@ -14,6 +14,9 @@ TCairoPaintBox can be used as TPaintBoxReplacement.
 One of Win32CairoCanvas or GdkCairoCanvas must be in uses clausule
 
 To use TCairoPsCanvas as default Printer.Canvas set
-CupsCanvasClass := TCairoPsCanvas
+Printer.CanvasClass := TCairoPsCanvas
 
+Note.
+Currently only TCairoPsCanvas has been tested and it's only functional
+under linux/gtk2
 
