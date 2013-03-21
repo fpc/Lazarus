@@ -4308,7 +4308,6 @@ resourcestring
   lisMenuPackageGraph = 'Package Graph';
   lisPckExplLoadedPackages = 'Loaded Packages:';
   lisPckExplUninstallPackage = 'Uninstall package %s';
-  lisPckExplIsRequiredBy = 'Selected package is required by:';
   lisPckExplPackageNotFound = 'Package %s not found';
   lisPckExplState = '%sState: ';
   lisPckExplAutoCreated = 'AutoCreated';

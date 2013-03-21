@@ -3,14 +3,13 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
   Height = 413
   Top = 239
   Width = 462
-  ActiveControl = PkgTreePanel
   Caption = 'PkgGraphExplorerDlg'
   ClientHeight = 413
   ClientWidth = 462
   KeyPreview = True
   OnShow = PkgGraphExplorerShow
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.1'
   object InfoMemo: TMemo
     Left = 0
     Height = 144
@@ -32,85 +31,21 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
     Align = alBottom
     ResizeAnchor = akBottom
   end
-  object PkgListPanel: TPanel
-    Left = 233
-    Height = 264
-    Top = 0
-    Width = 229
-    Align = alRight
-    BevelOuter = bvNone
-    ClientHeight = 264
-    ClientWidth = 229
-    TabOrder = 1
-    object PkgListLabel: TLabel
-      Left = 6
-      Height = 17
-      Top = 6
-      Width = 217
-      Align = alTop
-      BorderSpacing.Around = 6
-      Caption = 'PkgListLabel'
-      ParentColor = False
-    end
-    object PkgListBox: TListBox
-      Left = 0
-      Height = 235
-      Top = 29
-      Width = 229
-      Align = alClient
-      ClickOnSelChange = False
-      ItemHeight = 0
-      OnClick = PkgListBoxClick
-      OnDblClick = PkgListBoxDblClick
-      OnKeyDown = InfoMemoKeyDown
-      TabOrder = 0
-    end
-  end
-  object HorizontalSplitter: TSplitter
-    Left = 229
-    Height = 264
-    Top = 0
-    Width = 4
-    Align = alRight
-    ResizeAnchor = akRight
-  end
-  object PkgTreePanel: TPanel
+  object LvlGraphControl1: TLvlGraphControl
     Left = 0
     Height = 264
     Top = 0
-    Width = 229
+    Width = 462
     Align = alClient
-    BevelOuter = bvNone
-    ClientHeight = 264
-    ClientWidth = 229
+    NodeStyle.Shape = lgnsNone
+    NodeStyle.DefaultImageIndex = -1
+    NodeStyle.Coloring = lgncRGB
+    OnDblClick = LvlGraphControl1DblClick
+    OnSelectionChanged = LvlGraphControl1SelectionChanged
+    ParentColor = True
+    PopupMenu = PkgPopupMenu
     TabOrder = 2
-    object PkgTreeLabel: TLabel
-      Left = 6
-      Height = 17
-      Top = 6
-      Width = 217
-      Align = alTop
-      BorderSpacing.Around = 6
-      Caption = 'PkgTreeLabel'
-      ParentColor = False
-    end
-    object PkgTreeView: TTreeView
-      Left = 0
-      Height = 235
-      Top = 29
-      Width = 229
-      Align = alClient
-      DefaultItemHeight = 18
-      PopupMenu = PkgPopupMenu
-      ReadOnly = True
-      RightClickSelect = True
-      TabOrder = 0
-      OnDblClick = PkgTreeViewDblClick
-      OnExpanding = PkgTreeViewExpanding
-      OnKeyDown = InfoMemoKeyDown
-      OnSelectionChanged = PkgTreeViewSelectionChanged
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
-    end
+    TabStop = False
   end
   object PkgPopupMenu: TPopupMenu
     OnPopup = PkgPopupMenuPopup

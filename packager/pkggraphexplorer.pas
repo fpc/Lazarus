@@ -38,13 +38,17 @@ unit PkgGraphExplorer;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, ComCtrls,
-  StdCtrls, Menus, Dialogs, Graphics, FileCtrl, LCLType,
+  Classes, SysUtils, Math, LCLProc, Forms, Controls, Buttons, ComCtrls,
+  StdCtrls, Menus, Dialogs, Graphics, FileCtrl, LCLType, ExtCtrls,
   AVL_Tree,
-  IDECommands, PackageIntf,
+  IDECommands, PackageIntf, IDEImagesIntf,
+  LvlGraphCtrl,
   LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
-  Project, PackageDefs, PackageSystem, PackageEditor, ExtCtrls;
+  Project, PackageDefs, PackageSystem, PackageEditor;
   
+const
+  GroupPrefixProject = '-Project-';
+  GroupPrefixIDE = '-IDE-';
 type
   TOnOpenProject =
     function(Sender: TObject; AProject: TProject): TModalResult of object;
@@ -52,27 +56,17 @@ type
   { TPkgGraphExplorerDlg }
 
   TPkgGraphExplorerDlg = class(TForm)
-    PkgTreeLabel: TLabel;
-    PkgTreeView: TTreeView;
-    PkgListPanel: TPanel;
-    PkgTreePanel: TPanel;
-    PkgListLabel: TLabel;
-    PkgListBox: TListBox;
     InfoMemo: TMemo;
+    LvlGraphControl1: TLvlGraphControl;
     PkgPopupMenu: TPopupMenu;
     VerticalSplitter: TSplitter;
-    HorizontalSplitter: TSplitter;
     UninstallMenuItem: TMenuItem;
+    procedure LvlGraphControl1DblClick(Sender: TObject);
+    procedure LvlGraphControl1SelectionChanged(Sender: TObject);
     procedure PkgGraphExplorerShow(Sender: TObject);
-    procedure PkgListBoxClick(Sender: TObject);
-    procedure PkgListBoxDblClick(Sender: TObject);
     procedure PkgPopupMenuPopup(Sender: TObject);
-    procedure PkgTreeViewDblClick(Sender: TObject);
-    procedure PkgTreeViewExpanding(Sender: TObject; Node: TTreeNode;
-      var AllowExpansion: Boolean);
     procedure InfoMemoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure PkgTreeViewSelectionChanged(Sender: TObject);
     procedure UninstallMenuItemClick(Sender: TObject);
   private
     FOnOpenProject: TOnOpenProject;
@@ -87,13 +81,10 @@ type
     fSortedPackages: TAVLTree;
     FChangedDuringLock: boolean;
     FUpdateLock: integer;
+    procedure OpenDependencyOwner(DependencyOwner: TObject);
     procedure SetupComponents;
     function GetPackageImageIndex(Pkg: TLazPackage): integer;
-    procedure GetDependency(ANode: TTreeNode; var Pkg: TLazPackage;
-      var Dependency: TPkgDependency);
-    procedure GetCurrentIsUsedBy(var Dependency: TPkgDependency);
-    function SearchParentNodeWithText(ANode: TTreeNode;
-      const NodeText: string): TTreeNode;
+    function GetSelectedPackage: TLazPackage;
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
@@ -103,15 +94,13 @@ type
     procedure EndUpdate;
     function IsUpdateLocked: boolean;
     procedure UpdateAll;
-    procedure UpdateTree;
-    procedure UpdateList;
+    procedure UpdateLvlGraph;
     procedure UpdateInfo;
     procedure UpdatePackageName(Pkg: TLazPackage; const OldName: string);
     procedure UpdatePackageID(Pkg: TLazPackage);
     procedure UpdatePackageAdded(Pkg: TLazPackage);
     procedure SelectPackage(Pkg: TLazPackage);
-    procedure OpenDependencyOwner(DependencyOwner: TObject);
-    function FindMainNodeWithText(const s: string): TTreeNode;
+    function FindViewNodeWithText(const s: string): TLvlGraphNode;
     procedure ShowPath(PathList: TFPList);
   public
     property OnOpenPackage: TOnOpenPackage read FOnOpenPackage write FOnOpenPackage;
@@ -127,124 +116,39 @@ implementation
 
 {$R *.lfm}
 
-uses 
-  Math, IDEImagesIntf;
-
 { TPkgGraphExplorerDlg }
+
 procedure TPkgGraphExplorerDlg.PkgGraphExplorerShow(Sender: TObject);
 begin
   UpdateAll;
 end;
 
-procedure TPkgGraphExplorerDlg.PkgListBoxClick(Sender: TObject);
-var
-  Dependency: TPkgDependency;
-begin
-  GetCurrentIsUsedBy(Dependency);
-  if (Dependency=nil) or (Dependency.Owner=nil) then begin
-    PkgListBox.ItemIndex:=-1;
-    exit;
-  end;
-  if Dependency.Owner is TLazPackage then
-    SelectPackage(TLazPackage(Dependency.Owner));
-end;
-
-procedure TPkgGraphExplorerDlg.PkgListBoxDblClick(Sender: TObject);
-var
-  Dependency: TPkgDependency;
-begin
-  GetCurrentIsUsedBy(Dependency);
-  if (Dependency=nil) or (Dependency.Owner=nil) then begin
-    PkgListBox.ItemIndex:=-1;
-    exit;
-  end;
-  if Dependency.Owner<>nil then
-    OpenDependencyOwner(Dependency.Owner);
-end;
-
-procedure TPkgGraphExplorerDlg.PkgPopupMenuPopup(Sender: TObject);
+procedure TPkgGraphExplorerDlg.LvlGraphControl1DblClick(Sender: TObject);
 var
   Pkg: TLazPackage;
-  Dependency: TPkgDependency;
 begin
-  GetDependency(PkgTreeView.Selected,Pkg,Dependency);
-  //DebugLn(['TPkgGraphExplorerDlg.PkgPopupMenuPopup ',Pkg<>nil,' ',(Pkg<>nil) and (Pkg.AutoInstall<>pitNope)]);
-  UninstallMenuItem.Visible:=(Pkg<>nil) and (Pkg.AutoInstall<>pitNope);
-  if UninstallMenuItem.Visible then
-    UninstallMenuItem.Caption:=Format(lisPckExplUninstallPackage, [Pkg.IDAsString]);
-end;
-
-procedure TPkgGraphExplorerDlg.PkgTreeViewDblClick(Sender: TObject);
-var
-  Pkg: TLazPackage;
-  Dependency: TPkgDependency;
-begin
-  GetDependency(PkgTreeView.Selected,Pkg,Dependency);
+  Pkg:=GetSelectedPackage;
   if Pkg<>nil then begin
     if Assigned(OnOpenPackage) then
       OnOpenPackage(Self,Pkg);
   end;
 end;
 
-procedure TPkgGraphExplorerDlg.PkgTreeViewExpanding(Sender: TObject;
-  Node: TTreeNode; var AllowExpansion: Boolean);
-var
-  Pkg, ChildPackage: TLazPackage;
-  Dependency: TPkgDependency;
-  ViewNode: TTreeNode;
-  NodeText: String;
-  NodeImgIndex: Integer;
-  NextViewNode: TTreeNode;
+procedure TPkgGraphExplorerDlg.LvlGraphControl1SelectionChanged(Sender: TObject
+  );
 begin
-  // add child nodes
-  GetDependency(Node,Pkg,Dependency);
-  if Dependency<>nil then begin
-    // node is a not fullfilled dependency
-    AllowExpansion:=false;
-  end else if Pkg<>nil then begin
-    // node is a package
-    ViewNode:=Node.GetFirstChild;
-    Dependency:=Pkg.FirstRequiredDependency;
-    while Dependency<>nil do begin
-      // find required package
-      if PackageGraph.OpenDependency(Dependency,false)=lprSuccess then
-      begin
-        ChildPackage:=Dependency.RequiredPackage;
-        // package found
-        NodeText:=ChildPackage.IDAsString;
-        if SearchParentNodeWithText(Node,NodeText)<>nil then
-          NodeImgIndex:=ImgIndexCyclePackage
-        else
-          NodeImgIndex:=GetPackageImageIndex(ChildPackage);
-      end else begin
-        // package not found
-        NodeText:=Dependency.AsString;
-        NodeImgIndex:=ImgIndexMissingPackage;
-        ChildPackage:=nil;
-        // Todo broken packages
-      end;
-      // add node
-      if ViewNode=nil then
-        ViewNode:=PkgTreeView.Items.AddChild(Node,NodeText)
-      else
-        ViewNode.Text:=NodeText;
-      ViewNode.ImageIndex:=NodeImgIndex;
-      ViewNode.SelectedIndex:=ViewNode.ImageIndex;
-      ViewNode.Expanded:=false;
-      ViewNode.HasChildren:=
-            (ChildPackage<>nil) and (ChildPackage.FirstRequiredDependency<>nil);
-      ViewNode:=ViewNode.GetNextSibling;
-      Dependency:=Dependency.NextRequiresDependency;
-    end;
-    // delete unneeded nodes
-    while ViewNode<>nil do begin
-      NextViewNode:=ViewNode.GetNextSibling;
-      ViewNode.Free;
-      ViewNode:=NextViewNode;
-    end;
-  end else begin
-    DebugLn(['TPkgGraphExplorerDlg.PkgTreeViewExpanding Node has no package ',Node.Text]);
-  end;
+  UpdateInfo;
+end;
+
+procedure TPkgGraphExplorerDlg.PkgPopupMenuPopup(Sender: TObject);
+var
+  Pkg: TLazPackage;
+begin
+  Pkg:=GetSelectedPackage;
+  //DebugLn(['TPkgGraphExplorerDlg.PkgPopupMenuPopup ',Pkg<>nil,' ',(Pkg<>nil) and (Pkg.AutoInstall<>pitNope)]);
+  UninstallMenuItem.Visible:=(Pkg<>nil) and (Pkg.AutoInstall<>pitNope);
+  if UninstallMenuItem.Visible then
+    UninstallMenuItem.Caption:=Format(lisPckExplUninstallPackage, [Pkg.IDAsString]);
 end;
 
 procedure TPkgGraphExplorerDlg.InfoMemoKeyDown(Sender: TObject;
@@ -254,18 +158,11 @@ begin
     Close;
 end;
 
-procedure TPkgGraphExplorerDlg.PkgTreeViewSelectionChanged(Sender: TObject);
-begin
-  UpdateInfo;
-  UpdateList;
-end;
-
 procedure TPkgGraphExplorerDlg.UninstallMenuItemClick(Sender: TObject);
 var
   Pkg: TLazPackage;
-  Dependency: TPkgDependency;
 begin
-  GetDependency(PkgTreeView.Selected,Pkg,Dependency);
+  Pkg:=GetSelectedPackage;
   if Pkg<>nil then begin
     if Assigned(OnUninstallPackage) then OnUninstallPackage(Self,Pkg);
   end;
@@ -273,7 +170,6 @@ end;
 
 procedure TPkgGraphExplorerDlg.SetupComponents;
 begin
-  PkgTreeView.Images := IDEImages.Images_16;
   ImgIndexPackage          := IDEImages.LoadImage(16, 'item_package');
   ImgIndexInstalledPackage := IDEImages.LoadImage(16, 'pkg_installed');
   ImgIndexInstallPackage   := IDEImages.LoadImage(16, 'pkg_package_autoinstall');
@@ -281,8 +177,9 @@ begin
   ImgIndexCyclePackage     := IDEImages.LoadImage(16, 'pkg_package_circle');
   ImgIndexMissingPackage   := IDEImages.LoadImage(16, 'pkg_conflict');
 
-  PkgTreeLabel.Caption:=lisPckExplLoadedPackages;
-  PkgListLabel.Caption:=lisPckExplIsRequiredBy;
+  LvlGraphControl1.Images:=IDEImages.Images_16;
+  LvlGraphControl1.NodeStyle.DefaultImageIndex:=ImgIndexPackage;
+  LvlGraphControl1.Caption:=lisPckExplLoadedPackages;
 end;
 
 function TPkgGraphExplorerDlg.GetPackageImageIndex(Pkg: TLazPackage): integer;
@@ -302,74 +199,22 @@ begin
   end;
 end;
 
-procedure TPkgGraphExplorerDlg.GetDependency(ANode: TTreeNode;
-  var Pkg: TLazPackage; var Dependency: TPkgDependency);
-// if Dependency<>nil then Pkg is the Parent
+function TPkgGraphExplorerDlg.GetSelectedPackage: TLazPackage;
 var
-  NodeText: String;
+  Node: TLvlGraphNode;
   NodePackageID: TLazPackageID;
+  NodeText: String;
 begin
-  // keep in mind, that packages can be deleted and the node is outdated
-  Pkg:=nil;
-  Dependency:=nil;
-  if ANode=nil then exit;
+  Result:=nil;
+  Node:=LvlGraphControl1.Graph.FirstSelected;
+  if Node=nil then exit;
   NodePackageID:=TLazPackageID.Create;
   try
-    // try to find a package
-    NodeText:=ANode.Text;
+    NodeText:=Node.Caption;
     if NodePackageID.StringToID(NodeText) then
-      Pkg:=PackageGraph.FindPackageWithID(NodePackageID);
-    if Pkg<>nil then exit;
-    // try to find the parent package
-    if (ANode.Parent=nil) or (not NodePackageID.StringToID(ANode.Parent.Text))
-    then
-      exit;
-    Pkg:=PackageGraph.FindPackageWithID(NodePackageID);
-    if Pkg=nil then exit;
-    // there is a parent package -> search the dependency
-    Dependency:=Pkg.FirstRequiredDependency;
-    while Dependency<>nil do begin
-      if Dependency.AsString=NodeText then exit;
-      Dependency:=Dependency.NextRequiresDependency;
-    end;
+      Result:=PackageGraph.FindPackageWithID(NodePackageID);
   finally
     NodePackageID.Free;
-  end;
-end;
-
-procedure TPkgGraphExplorerDlg.GetCurrentIsUsedBy(var Dependency: TPkgDependency);
-var
-  TreePkg: TLazPackage;
-  TreeDependency: TPkgDependency;
-  ListIndex: Integer;
-  UsedByDep: TPkgDependency;
-  SelName: string;
-begin
-  Dependency:=nil;
-  ListIndex:=PkgListBox.ItemIndex;
-  if ListIndex<0 then exit;
-  GetDependency(PkgTreeView.Selected,TreePkg,TreeDependency);
-  if (Dependency=nil) and (TreePkg<>nil) then begin
-    SelName:=PkgListBox.Items[ListIndex];
-    UsedByDep:=TreePkg.FirstUsedByDependency;
-    while UsedByDep<>nil do begin
-      if UsedByDep.Owner<>PackageGraph then begin
-        if SelName=GetDependencyOwnerAsString(UsedByDep) then begin
-          Dependency:=UsedByDep;
-        end;
-      end;
-      UsedByDep:=UsedByDep.NextUsedByDependency;
-    end;
-  end;
-end;
-
-function TPkgGraphExplorerDlg.SearchParentNodeWithText(ANode: TTreeNode;
-  const NodeText: string): TTreeNode;
-begin
-  Result:=ANode;
-  while Result<>nil do begin
-    if Result.Text=NodeText then exit;
-    Result:=Result.Parent;
   end;
 end;
 
@@ -421,92 +266,60 @@ begin
   end;
   FChangedDuringLock:=false;
   if not Visible then exit;
-  UpdateTree;
-  UpdateList;
+  UpdateLvlGraph;
   UpdateInfo;
 end;
 
-procedure TPkgGraphExplorerDlg.UpdateTree;
+procedure TPkgGraphExplorerDlg.UpdateLvlGraph;
 var
+  AVLNode: TAVLTreeNode;
+  CurPkg: TLazPackage;
   Cnt: Integer;
   i: Integer;
-  CurIndex: Integer;
-  ViewNode: TTreeNode;
-  NextViewNode: TTreeNode;
-  HiddenNode: TAVLTreeNode;
-  CurPkg: TLazPackage;
-  OldExpanded: TTreeNodeExpandedState;
+  PkgName: String;
+  ViewNode: TLvlGraphNode;
+  OldSelected: String;
+  CurDependency: TPkgDependency;
 begin
   // rebuild internal sorted packages
   fSortedPackages.Clear;
   Cnt:=PackageGraph.Count;
   for i:=0 to Cnt-1 do
     fSortedPackages.Add(PackageGraph[i]);
-  // rebuild the TreeView
-  PkgTreeView.BeginUpdate;
-  // save old expanded state
-  OldExpanded:=TTreeNodeExpandedState.Create(PkgTreeView);
-  // create first level
-  CurIndex:=0;
-  HiddenNode:=fSortedPackages.FindLowest;
-  ViewNode:=PkgTreeView.Items.GetFirstNode;
-  while HiddenNode<>nil do begin
-    CurPkg:=TLazPackage(HiddenNode.Data);
-    if ViewNode=nil then
-      ViewNode:=PkgTreeView.Items.Add(nil,CurPkg.IDAsString)
-    else
-      ViewNode.Text:=CurPkg.IDAsString;
-    ViewNode.HasChildren:=CurPkg.FirstRequiredDependency<>nil;
-    ViewNode.Expanded:=false;
-    ViewNode.ImageIndex:=GetPackageImageIndex(CurPkg);
-    ViewNode.SelectedIndex:=ViewNode.ImageIndex;
-    ViewNode:=ViewNode.GetNextSibling;
-    HiddenNode:=fSortedPackages.FindSuccessor(HiddenNode);
-    inc(CurIndex);
-  end;
-  while ViewNode<>nil do begin
-    NextViewNode:=ViewNode.GetNextSibling;
-    ViewNode.Free;
-    ViewNode:=NextViewNode;
-  end;
-  // restore old expanded state
-  OldExpanded.Apply(PkgTreeView);
-  OldExpanded.Free;
-  // completed
-  PkgTreeView.EndUpdate;
-end;
 
-procedure TPkgGraphExplorerDlg.UpdateList;
-var
-  Pkg: TLazPackage;
-  Dependency: TPkgDependency;
-  UsedByDep: TPkgDependency;
-  sl: TStringList;
-  NewItem: String;
-begin
-  GetDependency(PkgTreeView.Selected,Pkg,Dependency);
-  if Dependency<>nil then begin
-    PkgListBox.Items.Clear;
-  end else if Pkg<>nil then begin
-    UsedByDep:=Pkg.FirstUsedByDependency;
-    sl:=TStringList.Create;
-    while UsedByDep<>nil do begin
-      if UsedByDep.Owner<>PackageGraph then begin
-        NewItem:=GetDependencyOwnerAsString(UsedByDep);
-        sl.Add(NewItem);
-      end;
-      UsedByDep:=UsedByDep.NextUsedByDependency;
-    end;
-    PkgListBox.Items.Assign(sl);
-    PkgListBox.ItemIndex:=-1;
-    sl.Free;
+  // create nodes
+  LvlGraphControl1.BeginUpdate;
+  OldSelected:='';
+  ViewNode:=LvlGraphControl1.Graph.FirstSelected;
+  if ViewNode<>nil then
+    OldSelected:=ViewNode.Caption;
+  AVLNode:=fSortedPackages.FindLowest;
+  while AVLNode<>nil do begin
+    CurPkg:=TLazPackage(AVLNode.Data);
+    PkgName:=CurPkg.IDAsString;
+    ViewNode:=LvlGraphControl1.Graph.GetNode(PkgName,true);
+    ViewNode.ImageIndex:=GetPackageImageIndex(CurPkg);
+    ViewNode.Selected:=PkgName=OldSelected;
+    AVLNode:=fSortedPackages.FindSuccessor(AVLNode);
   end;
+  // add dependencies
+  AVLNode:=fSortedPackages.FindLowest;
+  while AVLNode<>nil do begin
+    CurPkg:=TLazPackage(AVLNode.Data);
+    CurDependency:=CurPkg.FirstRequiredDependency;
+    while CurDependency<>nil do begin
+      if CurDependency.RequiredPackage<>nil then
+        LvlGraphControl1.Graph.GetEdge(CurPkg.IDAsString,CurDependency.RequiredPackage.IDAsString,true);
+      CurDependency:=CurDependency.NextRequiresDependency;
+    end;
+    AVLNode:=fSortedPackages.FindSuccessor(AVLNode);
+  end;
+  LvlGraphControl1.EndUpdate;
 end;
 
 procedure TPkgGraphExplorerDlg.UpdateInfo;
 var
   Pkg: TLazPackage;
-  Dependency: TPkgDependency;
   InfoStr: String;
 
   procedure AddState(const NewState: string);
@@ -518,10 +331,8 @@ var
 
 begin
   InfoStr:='';
-  GetDependency(PkgTreeView.Selected,Pkg,Dependency);
-  if Dependency<>nil then begin
-    InfoStr:=Format(lisPckExplPackageNotFound, [Dependency.AsString]);
-  end else if Pkg<>nil then begin
+  Pkg:=GetSelectedPackage;
+  if Pkg<>nil then begin
     // filename and title
     InfoStr:=Format(lisOIPFilename, [Pkg.Filename]);
     // state
@@ -557,13 +368,9 @@ begin
 end;
 
 procedure TPkgGraphExplorerDlg.SelectPackage(Pkg: TLazPackage);
-var
-  NewNode: TTreeNode;
 begin
   if Pkg=nil then exit;
-  NewNode:=FindMainNodeWithText(Pkg.IDAsString);
-  if NewNode<>nil then
-    PkgTreeView.Selected:=NewNode;
+  LvlGraphControl1.SelectedNode:=FindViewNodeWithText(Pkg.IDAsString);
 end;
 
 procedure TPkgGraphExplorerDlg.OpenDependencyOwner(DependencyOwner: TObject);
@@ -577,56 +384,24 @@ begin
   end;
 end;
 
-function TPkgGraphExplorerDlg.FindMainNodeWithText(const s: string): TTreeNode;
+function TPkgGraphExplorerDlg.FindViewNodeWithText(const s: string
+  ): TLvlGraphNode;
 begin
-  Result:=nil;
-  if PkgTreeView.Items.Count=0 then exit;
-  Result:=PkgTreeView.Items[0];
-  while (Result<>nil) and (Result.Text<>s) do Result:=Result.GetNextSibling;
+  Result:=LvlGraphControl1.Graph.GetNode(s,false);
 end;
 
 procedure TPkgGraphExplorerDlg.ShowPath(PathList: TFPList);
+// PathList is a list of TLazPackage and TPkgDependency
 var
   AnObject: TObject;
-  CurNode, LastNode: TTreeNode;
-  i: Integer;
-  
-  procedure SelectChild(var Node: TTreeNode; const NodeText: string);
-  var
-    i: Integer;
-  begin
-    if Node=nil then
-      Node:=FindMainNodeWithText(NodeText)
-    else begin
-      Node.Expanded:=true;
-      i:=0;
-      while (i<=Node.Count) and (SysUtils.CompareText(Node[i].Text,NodeText)<>0)
-      do inc(i);
-      if i<Node.Count then
-        Node:=Node.Items[i]
-      else
-        Node:=nil;
-    end;
-  end;
-  
 begin
-  PkgTreeView.BeginUpdate;
-  CurNode:=nil;
-  LastNode:=nil;
-  for i:=0 to PathList.Count-1 do begin
-    AnObject:=TObject(PathList[i]);
-    LastNode:=CurNode;
-    if AnObject is TLazPackage then begin
-      SelectChild(CurNode,TLazPackage(AnObject).IDAsString);
-    end else if AnObject is TPkgDependency then begin
-      SelectChild(CurNode,TPkgDependency(AnObject).AsString);
-    end else
-      break;
-    if CurNode=nil then break;
+  LvlGraphControl1.BeginUpdate;
+  if (PathList.Count>0) then begin
+    AnObject:=TObject(PathList[PathList.Count-1]);
+    if AnObject is TLazPackage then
+      SelectPackage(TLazPackage(AnObject));
   end;
-  if CurNode<>nil then Lastnode:=CurNode;
-  PkgTreeView.Selected:=LastNode;
-  PkgTreeView.EndUpdate;
+  LvlGraphControl1.EndUpdate;
 end;
 
 end.
