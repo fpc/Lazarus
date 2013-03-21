@@ -135,7 +135,7 @@ procedure TCairoPrinterCanvas.SetPenProperties;
   var
     i, w: integer;
   begin
-    w := Pen.Width * 2;
+    w := Pen.Width;
     for i := 0 to High(d) do
       d[i] := d[i] * w;
     cairo_set_dash(cr, @d, High(d), 0);
@@ -189,7 +189,7 @@ begin
     pjsMiter: cairo_set_line_join(cr, CAIRO_LINE_JOIN_MITER);
   end;
 
-  cairo_set_line_width(cr, Pen.Width*FontScale); //line_width is diameter of the pen circle
+  cairo_set_line_width(cr, Pen.Width*72/XDPI); //line_width is diameter of the pen circle
 end;
 
 procedure TCairoPrinterCanvas.SetBrushProperties;
@@ -676,7 +676,7 @@ begin
       BreakBoxWidth := BoxWidth;
 
     if Style.Clipping then begin
-      cairo_rectangle(cr, BoxLeft, BoxTop, BoxWidth, BoxHeight);
+      cairo_rectangle(cr, BoxLeft, BoxTop, BoxWidth+Pen.Width, BoxHeight+Pen.Width);
       cairo_clip(cr);
     end;
     if Style.ExpandTabs then
