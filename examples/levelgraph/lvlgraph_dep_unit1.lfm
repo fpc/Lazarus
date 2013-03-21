@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 161
+  Left = 456
   Height = 474
-  Top = 149
+  Top = 192
   Width = 754
   Caption = 'Form1'
   ClientHeight = 474
@@ -36,5 +36,17 @@ object Form1: TForm1
     Height = 474
     Top = 0
     Width = 5
+  end
+  object LvlGraphControl1: TLvlGraphControl
+    Left = 205
+    Height = 474
+    Top = 0
+    Width = 549
+    Align = alClient
+    NodeStyle.DefaultImageIndex = -1
+    NodeStyle.Coloring = lgncRGB
+    ParentColor = True
+    TabOrder = 2
+    TabStop = False
   end
 end

@@ -1,4 +1,4 @@
-unit lvlgraph_dep_unit1;
+unit LvlGraph_Dep_Unit1;
 
 {$mode objfpc}{$H+}
 
@@ -13,14 +13,13 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    LvlGraphControl1: TLvlGraphControl;
     Panel1: TPanel;
     Splitter1: TSplitter;
     TIPropertyGrid1: TTIPropertyGrid;
     procedure FormCreate(Sender: TObject);
   private
-    { private declarations }
   public
-    { public declarations }
   end;
 
 var
@@ -33,12 +32,8 @@ implementation
 { TForm1 }
 
 procedure TForm1.FormCreate(Sender: TObject);
-var
-  LvlGraph: TLvlGraphControl;
 begin
-  LvlGraph:=TLvlGraphControl.Create(Self);
-  with LvlGraph do begin
-    Name:='LvlGraph';
+  with LvlGraphControl1 do begin
     Graph.GetEdge('-Project-','LCL',true);
     Graph.GetEdge('-Project-','Cody',true);
     Graph.GetEdge('Cody','IDEIntf',true);
@@ -53,11 +48,9 @@ begin
     Graph.GetEdge('Cody','LazUtils',true);
     Graph.GetEdge('-Project-','OpenGLControl',true);
     Graph.GetEdge('OpenGLControl','LCL',true);
-    Align:=alClient;
-    Parent:=Self;
   end;
 
-  TIPropertyGrid1.TIObject:=LvlGraph;
+  TIPropertyGrid1.TIObject:=LvlGraphControl1;
 end;
 
 end.
