@@ -271,6 +271,17 @@ begin
 end;
 
 procedure TPkgGraphExplorerDlg.UpdateLvlGraph;
+
+  procedure AddEdges(LGNode: TLvlGraphNode; Dependency: TPkgDependency);
+  begin
+    while Dependency<>nil do begin
+      if Dependency.RequiredPackage<>nil then
+        LvlGraphControl1.Graph.GetEdge(LGNode,
+          LvlGraphControl1.Graph.GetNode(Dependency.RequiredPackage.IDAsString,true),true);
+      Dependency:=Dependency.NextRequiresDependency;
+    end;
+  end;
+
 var
   AVLNode: TAVLTreeNode;
   CurPkg: TLazPackage;
@@ -279,7 +290,7 @@ var
   PkgName: String;
   ViewNode: TLvlGraphNode;
   OldSelected: String;
-  CurDependency: TPkgDependency;
+  ProjectNode: TLvlGraphNode;
 begin
   // rebuild internal sorted packages
   fSortedPackages.Clear;
@@ -293,27 +304,36 @@ begin
   ViewNode:=LvlGraphControl1.Graph.FirstSelected;
   if ViewNode<>nil then
     OldSelected:=ViewNode.Caption;
+
+  // add a node for the project
+  ProjectNode:=nil;
+  if Project1<>nil then
+    ProjectNode:=LvlGraphControl1.Graph.GetNode(GroupPrefixProject,true);
+
+  // add nodes for packages
   AVLNode:=fSortedPackages.FindLowest;
   while AVLNode<>nil do begin
     CurPkg:=TLazPackage(AVLNode.Data);
     PkgName:=CurPkg.IDAsString;
     ViewNode:=LvlGraphControl1.Graph.GetNode(PkgName,true);
     ViewNode.ImageIndex:=GetPackageImageIndex(CurPkg);
-    ViewNode.Selected:=PkgName=OldSelected;
     AVLNode:=fSortedPackages.FindSuccessor(AVLNode);
   end;
-  // add dependencies
+
+  // add project dependencies
+  if ProjectNode<>nil then
+    AddEdges(ProjectNode,Project1.FirstRequiredDependency);
+
+  // add package dependencies
   AVLNode:=fSortedPackages.FindLowest;
   while AVLNode<>nil do begin
     CurPkg:=TLazPackage(AVLNode.Data);
-    CurDependency:=CurPkg.FirstRequiredDependency;
-    while CurDependency<>nil do begin
-      if CurDependency.RequiredPackage<>nil then
-        LvlGraphControl1.Graph.GetEdge(CurPkg.IDAsString,CurDependency.RequiredPackage.IDAsString,true);
-      CurDependency:=CurDependency.NextRequiresDependency;
-    end;
+    ViewNode:=LvlGraphControl1.Graph.GetNode(CurPkg.IDAsString,true);
+    AddEdges(ViewNode,CurPkg.FirstRequiredDependency);
     AVLNode:=fSortedPackages.FindSuccessor(AVLNode);
   end;
+
+  LvlGraphControl1.SelectedNode:=LvlGraphControl1.Graph.GetNode(OldSelected,false);
   LvlGraphControl1.EndUpdate;
 end;
 

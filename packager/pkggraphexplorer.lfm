@@ -38,6 +38,8 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
     Width = 462
     Align = alClient
     NodeStyle.Shape = lgnsNone
+    NodeStyle.GapTop = 2
+    NodeStyle.GapBottom = 6
     NodeStyle.DefaultImageIndex = -1
     NodeStyle.Coloring = lgncRGB
     OnDblClick = LvlGraphControl1DblClick
