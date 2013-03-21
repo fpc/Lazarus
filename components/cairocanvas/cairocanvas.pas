@@ -5,7 +5,7 @@ unit CairoCanvas;
 interface
 
 uses
-  Types, Graphics, GraphMath, LCLType, Classes, SysUtils, Printers, Cairo;
+  Types, Graphics, GraphMath, LCLType, Classes, SysUtils, Printers, Cairo, Pango, PangoCairo, GLib2;
 
 type
   { TCairoPrinterCanvas }
@@ -618,6 +618,24 @@ var
     LastBreakStart := 0;
   end;
 
+  function StylesToStr(Styles: TFontStyles):string;
+  begin
+    Result := '';
+    if fsBold in Styles then
+      Result := Result + 'bold ';
+    if fsItalic in Styles then
+      Result := Result + 'italic ';
+  end;
+
+  function StyleToStr(Style: TFontStyle):string;
+  begin
+    result := '';
+    case Style of
+      fsBold: result := 'bold ';
+      fsItalic: result := 'italic ';
+    end;
+  end;
+
 var
   te: cairo_text_extents_t;
   fd: TFontData;
@@ -627,6 +645,10 @@ var
   StartLeft, StartTop: Double;
   BreakBoxWidth: Double;
   x, y: Double;
+  //--------
+  Layout: PPangoLayout;
+  desc: PPangoFontDescription;
+  theFont: string;
 begin
   Changing;
   RequiredState([csHandleValid, csFontValid, csBrushValid]);
@@ -667,8 +689,11 @@ begin
       fd := GetFontData(OnGetSystemFont());
       SelectFontEx(fd.Style, fd.Name, fd.Height);
       SetSourceColor(clWindowText);
-    end else
+      theFont := format('%s %s %d',[fd.name, StylesToStr(fd.Style), Round(fd.Height*FontScale)]);
+    end else begin
       SelectFont;
+      theFOnt := format('%s %s %d',[Font.name, StylesToStr(Font.Style), Round(Font.Height*FontScale)]);
+    end;
     cairo_font_extents(cr, @fe);
 
     //Break lines
@@ -737,6 +762,10 @@ begin
       tlBottom: y := BoxTop+BoxHeight - fe.height*Lines.Count;
     end;
 
+    Layout := Pango_Cairo_Create_Layout(cr);
+    desc := pango_font_description_from_string(pchar(TheFont));
+    pango_layout_set_font_description(layout, desc);
+
     //Text output
     for i := 0 to Lines.Count-1 do begin
       CurLine := TLine(Lines.Items[i]);
@@ -747,9 +776,18 @@ begin
       end;
       cairo_move_to(cr, x, y+fe.ascent);
       s1 := Copy(s, CurLine.Start, CurLine.EndL-CurLine.Start+1);
-      cairo_show_text(cr, PChar(s1)); //Reference point is on the base line
+
+      pango_layout_set_text(layout, pchar(s1), -1);
+      //cairo_show_text(cr, PChar(s1)); //Reference point is on the base line
       y := y + fe.height;
     end;
+
+    pango_font_description_free(desc);
+    pango_cairo_update_layout(cr, layout);
+    pango_cairo_show_layout(cr, layout);
+    g_object_unref(layout);
+
+
   finally
     cairo_restore(cr);
     for i := 0 to Lines.Count-1 do
