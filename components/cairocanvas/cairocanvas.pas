@@ -865,10 +865,9 @@ begin
   W := SrcGraphic.Width;
   H := SrcGraphic.Height;
 
-  cairo_save(cr);
   buf := GetMem(W*H*4);
   try
-
+    cairo_save(cr);
     //FillDWord(buf^, W*H, $00000000);
     if not TranslateBufferByIntfImage(buf, W, H) then
       Exit;
@@ -880,11 +879,10 @@ begin
     cairo_scale(cr, SX(SW), SY(SH));
     cairo_set_source_surface(cr, sf, 0, 0);
     cairo_paint(cr);
-
     cairo_surface_destroy(sf);
+    cairo_restore(cr);
   finally
     FreeMem(buf);
-    cairo_restore(cr);
   end;
   Changed;
 end;
