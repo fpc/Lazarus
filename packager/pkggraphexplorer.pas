@@ -71,6 +71,7 @@ type
   private
     FOnOpenProject: TOnOpenProject;
     FOnUninstallPackage: TOnUninstallPackage;
+    ImgIndexProject: integer;
     ImgIndexPackage: integer;
     ImgIndexInstallPackage: integer;
     ImgIndexInstalledPackage: integer;
@@ -170,6 +171,7 @@ end;
 
 procedure TPkgGraphExplorerDlg.SetupComponents;
 begin
+  ImgIndexProject          := IDEImages.LoadImage(16, 'item_project');
   ImgIndexPackage          := IDEImages.LoadImage(16, 'item_package');
   ImgIndexInstalledPackage := IDEImages.LoadImage(16, 'pkg_installed');
   ImgIndexInstallPackage   := IDEImages.LoadImage(16, 'pkg_package_autoinstall');
@@ -179,7 +181,7 @@ begin
 
   LvlGraphControl1.Images:=IDEImages.Images_16;
   LvlGraphControl1.NodeStyle.DefaultImageIndex:=ImgIndexPackage;
-  LvlGraphControl1.Caption:=lisPckExplLoadedPackages;
+  LvlGraphControl1.Caption:='';
 end;
 
 function TPkgGraphExplorerDlg.GetPackageImageIndex(Pkg: TLazPackage): integer;
@@ -291,15 +293,17 @@ var
   ViewNode: TLvlGraphNode;
   OldSelected: String;
   ProjectNode: TLvlGraphNode;
+  IDENode: TLvlGraphNode;
 begin
+  LvlGraphControl1.BeginUpdate;
+
   // rebuild internal sorted packages
   fSortedPackages.Clear;
   Cnt:=PackageGraph.Count;
   for i:=0 to Cnt-1 do
     fSortedPackages.Add(PackageGraph[i]);
 
-  // create nodes
-  LvlGraphControl1.BeginUpdate;
+  // save old selection
   OldSelected:='';
   ViewNode:=LvlGraphControl1.Graph.FirstSelected;
   if ViewNode<>nil then
@@ -307,8 +311,14 @@ begin
 
   // add a node for the project
   ProjectNode:=nil;
-  if Project1<>nil then
+  if Project1<>nil then begin
     ProjectNode:=LvlGraphControl1.Graph.GetNode(GroupPrefixProject,true);
+    ProjectNode.ImageIndex:=ImgIndexProject;
+  end;
+
+  // add a node for the IDE
+  IDENode:=LvlGraphControl1.Graph.GetNode(GroupPrefixIDE,true);
+  IDENode.ImageIndex:=ImgIndexProject;
 
   // add nodes for packages
   AVLNode:=fSortedPackages.FindLowest;
@@ -323,6 +333,9 @@ begin
   // add project dependencies
   if ProjectNode<>nil then
     AddEdges(ProjectNode,Project1.FirstRequiredDependency);
+
+  // add IDE dependencies
+  AddEdges(IDENode,PackageGraph.FirstAutoInstallDependency);
 
   // add package dependencies
   AVLNode:=fSortedPackages.FindLowest;

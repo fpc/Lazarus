@@ -4306,7 +4306,6 @@ resourcestring
 
   // package explorer (package graph)
   lisMenuPackageGraph = 'Package Graph';
-  lisPckExplLoadedPackages = 'Loaded Packages:';
   lisPckExplUninstallPackage = 'Uninstall package %s';
   lisPckExplPackageNotFound = 'Package %s not found';
   lisPckExplState = '%sState: ';
