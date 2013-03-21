@@ -19,6 +19,7 @@ begin
   RegisterUnit('ListFilterEdit', @ListFilterEdit.Register);
   RegisterUnit('TreeFilterEdit', @TreeFilterEdit.Register);
   RegisterUnit('ShortPathEdit', @ShortPathEdit.Register);
+  RegisterUnit('LvlGraphCtrl', @LvlGraphCtrl.Register);
 end;
 
 initialization

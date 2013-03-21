@@ -19,7 +19,7 @@
     <Description Value="Some extra LCL controls needed by the IDE."/>
     <License Value="modified LGPL-2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="6">
+    <Files Count="12">
       <Item1>
         <Filename Value="dividerbevel.pas"/>
         <HasRegisterProc Value="True"/>
@@ -47,8 +47,33 @@
       </Item5>
       <Item6>
         <Filename Value="lvlgraphctrl.pas"/>
-        <UnitName Value="lvlgraphctrl"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="LvlGraphCtrl"/>
       </Item6>
+      <Item7>
+        <Filename Value="extendednotebook_icon.lrs"/>
+        <Type Value="LRS"/>
+      </Item7>
+      <Item8>
+        <Filename Value="dividerbevel_icon.lrs"/>
+        <Type Value="LRS"/>
+      </Item8>
+      <Item9>
+        <Filename Value="lvlgraph_icon.lrs"/>
+        <Type Value="LRS"/>
+      </Item9>
+      <Item10>
+        <Filename Value="treefilteredit_icon.lrs"/>
+        <Type Value="LRS"/>
+      </Item10>
+      <Item11>
+        <Filename Value="shortpathedit_icon.lrs"/>
+        <Type Value="LRS"/>
+      </Item11>
+      <Item12>
+        <Filename Value="listfilteredit_icon.lrs"/>
+        <Type Value="LRS"/>
+      </Item12>
     </Files>
     <LazDoc Paths="docs"/>
     <Type Value="RunAndDesignTime"/>

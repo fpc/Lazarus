@@ -17,8 +17,8 @@ interface
 uses
   Classes, SysUtils, types, math, typinfo,
   FPimage, FPCanvas,
-  AvgLvlTree, LazLoggerBase, LMessages, LCLType, GraphType, GraphMath, Graphics,
-  Controls, ImgList, LCLIntf, Forms;
+  AvgLvlTree, LazLoggerBase, LMessages, LCLType, LResources,
+  GraphType, GraphMath, Graphics, Controls, ImgList, LCLIntf, Forms;
 
 type
   TLazCtrlPalette = array of TFPColor;
@@ -589,6 +589,8 @@ function dbgs(p: TLvlGraphNodeCaptionPosition): string; overload;
 function dbgs(o: TLvlGraphCtrlOption): string; overload;
 function dbgs(Options: TLvlGraphCtrlOptions): string; overload;
 
+procedure Register;
+
 implementation
 
 type
@@ -931,6 +933,12 @@ begin
       Result+=dbgs(o);
     end;
   Result:='['+Result+']';
+end;
+
+procedure Register;
+begin
+  {$I lvlgraph_icon.lrs}
+  RegisterComponents('LazControls',[TLvlGraphControl]);
 end;
 
 { TLvlGraphEdgeStyle }
