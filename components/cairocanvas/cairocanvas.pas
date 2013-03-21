@@ -2,10 +2,16 @@ unit CairoCanvas;
 
 {$mode objfpc}{$H+}
 
+{.$define pangocairo}
+
 interface
 
 uses
-  Types, Graphics, GraphMath, LCLType, Classes, SysUtils, Printers, Cairo, Pango, PangoCairo, GLib2;
+  Types, Graphics, GraphMath, LCLType, Classes, SysUtils, Printers, Cairo
+  {$ifdef pangocairo}
+  ,Pango, PangoCairo, GLib2
+  {$endif}
+  ;
 
 type
   { TCairoPrinterCanvas }
@@ -617,7 +623,7 @@ var
     LastBreakEndL := 0;
     LastBreakStart := 0;
   end;
-
+  {$ifdef pangocairo}
   function StylesToStr(Styles: TFontStyles):string;
   begin
     Result := '';
@@ -635,7 +641,7 @@ var
       fsItalic: result := 'italic ';
     end;
   end;
-
+  {$endif}
 var
   te: cairo_text_extents_t;
   fd: TFontData;
@@ -645,10 +651,12 @@ var
   StartLeft, StartTop: Double;
   BreakBoxWidth: Double;
   x, y: Double;
+  {$ifdef pangocairo}
   //--------
   Layout: PPangoLayout;
   desc: PPangoFontDescription;
   theFont: string;
+  {$endif}
 begin
   Changing;
   RequiredState([csHandleValid, csFontValid, csBrushValid]);
@@ -689,10 +697,14 @@ begin
       fd := GetFontData(OnGetSystemFont());
       SelectFontEx(fd.Style, fd.Name, fd.Height);
       SetSourceColor(clWindowText);
+      {$ifdef pangocairo}
       theFont := format('%s %s %d',[fd.name, StylesToStr(fd.Style), Round(fd.Height*FontScale)]);
+      {$endif}
     end else begin
       SelectFont;
+      {$ifdef pangocairo}
       theFOnt := format('%s %s %d',[Font.name, StylesToStr(Font.Style), Round(Font.Height*FontScale)]);
+      {$endif}
     end;
     cairo_font_extents(cr, @fe);
 
@@ -761,11 +773,11 @@ begin
       tlCenter: y := boxTop + BoxHeight/2 - fe.height*Lines.Count/2;
       tlBottom: y := BoxTop+BoxHeight - fe.height*Lines.Count;
     end;
-
+    {$ifdef pangocairo}
     Layout := Pango_Cairo_Create_Layout(cr);
     desc := pango_font_description_from_string(pchar(TheFont));
     pango_layout_set_font_description(layout, desc);
-
+    {$endif}
     //Text output
     for i := 0 to Lines.Count-1 do begin
       CurLine := TLine(Lines.Items[i]);
@@ -776,17 +788,19 @@ begin
       end;
       cairo_move_to(cr, x, y+fe.ascent);
       s1 := Copy(s, CurLine.Start, CurLine.EndL-CurLine.Start+1);
-
+      {$ifdef pangocairo}
       pango_layout_set_text(layout, pchar(s1), -1);
-      //cairo_show_text(cr, PChar(s1)); //Reference point is on the base line
+      {$else}
+      cairo_show_text(cr, PChar(s1)); //Reference point is on the base line
+      {$endif}
       y := y + fe.height;
     end;
-
+    {$ifdef pangocairo}
     pango_font_description_free(desc);
     pango_cairo_update_layout(cr, layout);
     pango_cairo_show_layout(cr, layout);
     g_object_unref(layout);
-
+    {$endif}
 
   finally
     cairo_restore(cr);
