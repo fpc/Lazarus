@@ -1,4 +1,3 @@
-{  $Id$  }
 {
  /***************************************************************************
                             pkggraphexplorer.pas
@@ -41,7 +40,7 @@ uses
   Classes, SysUtils, Math, LCLProc, Forms, Controls, Buttons, ComCtrls,
   StdCtrls, Menus, Dialogs, Graphics, FileCtrl, LCLType, ExtCtrls,
   AVL_Tree,
-  IDECommands, PackageIntf, IDEImagesIntf,
+  IDECommands, PackageIntf, IDEImagesIntf, LazIDEIntf,
   LvlGraphCtrl,
   LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
   Project, PackageDefs, PackageSystem, PackageEditor;
@@ -127,7 +126,19 @@ end;
 procedure TPkgGraphExplorerDlg.LvlGraphControl1DblClick(Sender: TObject);
 var
   Pkg: TLazPackage;
+  LGNode: TLvlGraphNode;
 begin
+  LGNode:=LvlGraphControl1.SelectedNode;
+  if LGNode=nil then exit;
+  if LGNode.Caption=GroupPrefixProject then begin
+    if Assigned(OnOpenProject) and (Project1<>nil) then
+      OnOpenProject(Self,Project1);
+    exit;
+  end;
+  if LGNode.Caption=GroupPrefixIDE then begin
+    ExecuteIDECommand(Self,ecEditInstallPkgs);
+    exit;
+  end;
   Pkg:=GetSelectedPackage;
   if Pkg<>nil then begin
     if Assigned(OnOpenPackage) then
