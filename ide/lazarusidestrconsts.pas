@@ -4312,7 +4312,7 @@ resourcestring
   lisPckExplAutoCreated = 'AutoCreated';
   lisPckExplInstalled = 'Installed';
   lisPckExplInstallOnNextStart = 'Install on next start';
-  lisPckExplUninstallOnNextStart = 'Uninstall on next start';
+  lisPckExplUninstallOnNextStart = 'Uninstall on next start (unless needed by an installed package)';
   lisPckExplBase = 'Base, can not be uninstalled';
 
   // project inspector

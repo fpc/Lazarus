@@ -190,11 +190,11 @@ begin
     if Pkg.AutoInstall<>pitNope then begin
       Result:=ImgIndexInstalledPackage;
     end else begin
-      Result:=ImgIndexInstallPackage;
+      Result:=ImgIndexUninstallPackage;
     end;
   end else begin
     if Pkg.AutoInstall<>pitNope then begin
-      Result:=ImgIndexUninstallPackage;
+      Result:=ImgIndexInstallPackage;
     end else begin
       Result:=ImgIndexPackage;
     end;
