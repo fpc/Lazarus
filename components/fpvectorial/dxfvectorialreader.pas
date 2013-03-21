@@ -1281,15 +1281,15 @@ The point (11,21,31) specifies the midpoint of the dimension text.
 }
 function TvDXFVectorialReader.ReadENTITIES_DIMENSION(ATokens: TDXFTokens;
   AData: TvVectorialPage; ADoc: TvVectorialDocument; AOnlyCreate: Boolean = False): TvEntity;
+type
+  TDXFDimensionType = (ddtUnknown, ddtAligned, ddtRadial, ddtDiametric, ddt2LineAngular);
 var
   CurToken: TDXFToken;
   i: Integer;
   // DIMENSION
-  BaseLeft, BaseRight, DimensionRight, DimensionLeft, TmpPoint: T3DPoint;
-  lCenter, Dim1, Dim5: T3DPoint;
-  IsAlignedDimension: Boolean = False;
-  IsRadialDimension: Boolean = False;
-  IsDiametricDimension: Boolean = False;
+  BaseLeft, BaseRight, DimensionRight, DimensionLeft, lCenter, lTextPos, TmpPoint: T3DPoint;
+  Dim0, Dim1, Dim3, Dim4, Dim5, Dim6: T3DPoint;
+  DXFDimensionType: TDXFDimensionType = ddtUnknown;
 begin
   // Initial values
   BaseLeft.X := 0;
@@ -1314,35 +1314,58 @@ begin
     end;
 
     case CurToken.GroupCode of
-      10: DimensionRight.X := CurToken.FloatValue;
-      20: DimensionRight.Y := CurToken.FloatValue;
-      30: DimensionRight.Z := CurToken.FloatValue;
+      10: Dim0.X := CurToken.FloatValue;
+      20: Dim0.Y := CurToken.FloatValue;
+      30: Dim0.Z := CurToken.FloatValue;
       11: Dim1.X := CurToken.FloatValue;
       21: Dim1.Y := CurToken.FloatValue;
       31: Dim1.Z := CurToken.FloatValue;
-      13: BaseRight.X := CurToken.FloatValue;
-      23: BaseRight.Y := CurToken.FloatValue;
-      33: BaseRight.Z := CurToken.FloatValue;
-      14: BaseLeft.X := CurToken.FloatValue;
-      24: BaseLeft.Y := CurToken.FloatValue;
-      34: BaseLeft.Z := CurToken.FloatValue;
+      13: Dim3.X := CurToken.FloatValue;
+      23: Dim3.Y := CurToken.FloatValue;
+      33: Dim3.Z := CurToken.FloatValue;
+      14: Dim4.X := CurToken.FloatValue;
+      24: Dim4.Y := CurToken.FloatValue;
+      34: Dim4.Z := CurToken.FloatValue;
       15: Dim5.X := CurToken.FloatValue;
       25: Dim5.Y := CurToken.FloatValue;
       35: Dim5.Z := CurToken.FloatValue;
+      16: Dim6.X := CurToken.FloatValue;
+      26: Dim6.Y := CurToken.FloatValue;
+      36: Dim6.Z := CurToken.FloatValue;
       100:
       begin
-        if CurToken.StrValue = 'AcDbAlignedDimension' then IsAlignedDimension := True
-        else if CurToken.StrValue = 'AcDbRadialDimension' then IsRadialDimension := True
-        else if CurToken.StrValue = 'AcDbDiametricDimension' then IsDiametricDimension := True;
+        if CurToken.StrValue = 'AcDbAlignedDimension' then DXFDimensionType := ddtAligned
+        else if CurToken.StrValue = 'AcDbRadialDimension' then DXFDimensionType := ddtRadial
+        else if CurToken.StrValue = 'AcDbDiametricDimension' then DXFDimensionType := ddtDiametric
+        else if CurToken.StrValue = 'AcDb2LineAngularDimension' then DXFDimensionType := ddt2LineAngular;
       end;
     end;
   end;
+
+  // Position fixing for documents with negative coordinates
+  Dim0.X := Dim0.X - DOC_OFFSET.X;
+  Dim0.Y := Dim0.Y - DOC_OFFSET.Y;
+  Dim1.X := Dim1.X - DOC_OFFSET.X;
+  Dim1.Y := Dim1.Y - DOC_OFFSET.Y;
+  Dim3.X := Dim3.X - DOC_OFFSET.X;
+  Dim3.Y := Dim3.Y - DOC_OFFSET.Y;
+  Dim4.X := Dim4.X - DOC_OFFSET.X;
+  Dim4.Y := Dim4.Y - DOC_OFFSET.Y;
+  Dim5.X := Dim5.X - DOC_OFFSET.X;
+  Dim5.Y := Dim5.Y - DOC_OFFSET.Y;
+  Dim6.X := Dim6.X - DOC_OFFSET.X;
+  Dim6.Y := Dim6.Y - DOC_OFFSET.Y;
+
+  // Standard value meaning
+  DimensionRight := Dim0;
+  BaseRight := Dim3;
+  BaseLeft := Dim4;
 
   // And now write it
   {$ifdef FPVECTORIALDEBUG}
 //  WriteLn(Format('Adding Line from %f,%f to %f,%f', [LineStartX, LineStartY, LineEndX, LineEndY]));
   {$endif}
-  if IsAlignedDimension then
+  if DXFDimensionType = ddtAligned then
   begin
     // Now make sure that we actually that BaseLeft is to the left of BaseRight
     if BaseRight.X < BaseLeft.X then
@@ -1397,26 +1420,34 @@ begin
     Result := AData.AddAlignedDimension(BaseLeft, BaseRight, DimensionLeft, DimensionRight, AOnlyCreate);
   end
   // Radius and Diameters are very similar
-  else if IsRadialDimension or IsDiametricDimension then
+  else if DXFDimensionType in [ddtRadial, ddtDiametric] then
   begin
-    if IsRadialDimension then
+    if DXFDimensionType = ddtRadial then
     begin
-      lCenter.X := DimensionRight.X;
-      lCenter.Y := DimensionRight.Y;
-      DimensionLeft.X := Dim5.X;
-      DimensionLeft.Y := Dim5.Y;
+      lCenter := DimensionRight;
+      DimensionLeft := Dim5;
     end
     else
     begin
-      lCenter.X := Dim1.X;
-      lCenter.Y := Dim1.Y;
-      DimensionLeft.X := Dim5.X;
-      DimensionLeft.Y := Dim5.Y;
+      lCenter := Dim1;
+      DimensionLeft := Dim5;
       DimensionRight.X := DimensionRight.X;
       DimensionRight.Y := DimensionRight.Y;
     end;
 
-    Result := AData.AddRadialDimension(IsDiametricDimension, lCenter, DimensionLeft, DimensionRight, AOnlyCreate);
+    Result := AData.AddRadialDimension(DXFDimensionType = ddtDiametric, lCenter, DimensionLeft, DimensionRight, AOnlyCreate);
+  end
+  // A arc dimension
+  else if DXFDimensionType = ddt2LineAngular then
+  begin
+    BaseLeft := Dim5;
+    BaseRight := Dim3;
+    DimensionLeft := Dim0;
+    DimensionRight := Dim4;
+    lCenter := Dim6;
+    lTextPos := Dim1;
+
+    Result := AData.AddArcDimension(BaseLeft, BaseRight, DimensionLeft, DimensionRight, lCenter, lTextPos, AOnlyCreate);
   end;
 end;
 

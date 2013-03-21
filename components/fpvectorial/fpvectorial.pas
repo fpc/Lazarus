@@ -439,6 +439,7 @@ type
     BaseLeft, BaseRight, DimensionLeft, DimensionRight: T3DPoint;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   {@@
@@ -454,6 +455,19 @@ type
     Center, DimensionLeft, DimensionRight: T3DPoint; // Diameter uses both, Radius uses only DImensionLeft
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+  end;
+
+  { TvArcDimension }
+
+  TvArcDimension = class(TvEntityWithPen)
+  public
+    // Mandatory fields
+    ArcValue: Double;
+    DimArcPos, TextPos, BaseLeft, BaseRight, DimensionLeft, DimensionRight: T3DPoint;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   {@@
@@ -774,6 +788,7 @@ type
     // Dimensions
     function AddAlignedDimension(BaseLeft, BaseRight, DimLeft, DimRight: T3DPoint; AOnlyCreate: Boolean = False): TvAlignedDimension;
     function AddRadialDimension(AIsDiameter: Boolean; ACenter, ADimLeft, ADimRight: T3DPoint; AOnlyCreate: Boolean = False): TvRadialDimension;
+    function AddArcDimension(ABaseLeft, ABaseRight, ADimLeft, ADimRight, ADimArcPos, ATextPos: T3DPoint; AOnlyCreate: Boolean = False): TvArcDimension;
     //
     function AddPoint(AX, AY, AZ: Double): TvPoint;
     { Drawing methods }
@@ -2211,6 +2226,23 @@ begin
   ADest.TextOut(CoordToCanvasX(CurDim.BaseLeft.X), CoordToCanvasY(CurDim.BaseLeft.Y), 'BL');}
 end;
 
+function TvAlignedDimension.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  lStr: string;
+  lCurPathSeg: TPathSegment;
+begin
+  Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
+  // Add the font debug info in a sub-item
+  lStr := Format('[TvAlignedDimension] BaseLeft=%f %f BaseRight=%f %f DimensionLeft=%f %f DimensionRight=%f %f',
+    [BaseLeft.X, BaseLeft.Y,
+     BaseRight.X, BaseRight.Y,
+     DimensionLeft.X, DimensionLeft.Y,
+     DimensionRight.X, DimensionRight.Y
+    ]);
+  ADestRoutine(lStr, Result);
+end;
+
 { TvRadialDimension }
 
 procedure TvRadialDimension.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
@@ -2302,6 +2334,103 @@ begin
   end;
 
   SetLength(Points, 0);
+end;
+
+function TvRadialDimension.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  lStr, lIsDiameterStr: string;
+  lCurPathSeg: TPathSegment;
+begin
+  Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
+  // Add the font debug info in a sub-item
+  if IsDiameter then lIsDiameterStr := 'true' else lIsDiameterStr := 'false';
+  lStr := Format('[TvAlignedDimension] IsDiameter=%s Center=%f %f DimensionLeft=%f %f DimensionRight=%f %f',
+    [lIsDiameterStr,
+     Center.X, Center.Y,
+     DimensionLeft.X, DimensionLeft.Y,
+     DimensionRight.X, DimensionRight.Y
+    ]);
+  ADestRoutine(lStr, Result);
+end;
+
+{ TvArcDimension }
+
+procedure TvArcDimension.Render(ADest: TFPCustomCanvas;
+  ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double;
+  AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  Points: array of TPoint;
+  lAngleLeft, lAngleRight: Double;
+  lTriangleCenter, lTriangleCorner, lCanvasDim: TPoint;
+begin
+  ADest.Pen.FPColor := colYellow;//AdjustColorToBackground(colBlack, ARenderInfo);
+  ADest.Pen.Width := 1;
+  ADest.Pen.Style := psSolid;
+
+  // Get an arrow in the right part of the circle
+  SetLength(Points, 3);
+  ADest.Line(CoordToCanvasX(BaseLeft.X), CoordToCanvasY(BaseLeft.Y), CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
+  ADest.Line(CoordToCanvasX(BaseRight.X), CoordToCanvasY(BaseRight.Y), CoordToCanvasX(DimensionRight.X), CoordToCanvasY(DimensionRight.Y));
+
+  // Now the arrows
+  SetLength(Points, 3);
+  ADest.Brush.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
+  ADest.Brush.Style := bsSolid;
+
+  // Angle of the line of BaseLeft->DimensionLeft
+  lAngleLeft := arctan(Abs(BaseLeft.Y-DimensionLeft.Y)/Abs(BaseLeft.X-DimensionLeft.X));
+  lTriangleCenter := Point(CoordToCanvasX(DimensionLeft.X + 5 * Cos(lAngleLeft)),
+    CoordToCanvasY(DimensionLeft.Y + 5 * Sin(lAngleLeft)));
+  lCanvasDim := Point(CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
+
+  // Left one
+  Points[0] := Point(CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
+  lTriangleCorner := Rotate2DPoint(lTriangleCenter, lCanvasDim, Pi * 10 / 180);
+  Points[1] := Point(lTriangleCorner.X, lTriangleCorner.Y);
+  lTriangleCorner := Rotate2DPoint(lTriangleCenter, lCanvasDim, - Pi * 10 / 180);
+  Points[2] := Point(lTriangleCorner.X, lTriangleCorner.Y);
+  ADest.Polygon(Points);
+  ADest.Brush.Style := bsClear;
+
+  // Dimension text
+{  Points[0].X := CoordToCanvasX((DimensionLeft.X+DimensionRight.X)/2);
+  Points[0].Y := CoordToCanvasY(DimensionLeft.Y);
+  LowerDim.X := DimensionRight.X-DimensionLeft.X;
+  ADest.Font.Size := 10;
+  ADest.Font.Orientation := 0;
+  ADest.Font.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
+  ADest.TextOut(Points[0].X, Points[0].Y-Round(ADest.Font.Size*1.5), Format('%.1f', [LowerDim.X]));}
+end;
+
+function TvArcDimension.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  lStr, lIsDiameterStr: string;
+  lCurPathSeg: TPathSegment;
+begin
+  Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
+  // Add the font debug info in a sub-item
+  lStr := Format('[TvArcDimension] DimArcPos=%f %f TextPos=%f %f BaseLeft=%f %f BaseRight=%f %f DimensionLeft=%f %f DimensionRight=%f %f',
+    [DimArcPos.X, DimArcPos.Y,
+     TextPos.X, TextPos.Y,
+     BaseLeft.X, BaseLeft.Y,
+     BaseRight.X, BaseRight.Y,
+     DimensionLeft.X, DimensionLeft.Y,
+     DimensionRight.X, DimensionRight.Y
+    ]);
+  ADestRoutine(lStr, Result);
 end;
 
 { TvRasterImage }
@@ -2428,7 +2557,10 @@ begin
   // Sin(Alfa) := (D.X - F.X) / (ArrowBaseLength/2)
   // Cos(Alfa) := (D.Y - F.Y) / (ArrowBaseLength/2)
   //
-  AlfaAngle := ArcTan((Base.Y - Y) / (Base.X - X));
+  if (Base.X - X) = 0 then
+    AlfaAngle := 0
+  else
+    AlfaAngle := ArcTan((Base.Y - Y) / (Base.X - X));
   lPointD.Y := Sin(AlfaAngle) * ArrowLength + Y;
   lPointD.X := Cos(AlfaAngle) * ArrowLength + X;
   lPointE.X := Sin(AlfaAngle) * (ArrowBaseLength/2) + lPointD.X;
@@ -3571,6 +3703,21 @@ begin
   lDim.Center := ACenter;
   lDim.DimensionLeft := ADimLeft;
   lDim.DimensionRight := ADimRight;
+  Result := lDim;
+  if not AOnlyCreate then AddEntity(lDim);
+end;
+
+function TvVectorialPage.AddArcDimension(ABaseLeft, ABaseRight, ADimLeft, ADimRight, ADimArcPos, ATextPos: T3DPoint; AOnlyCreate: Boolean): TvArcDimension;
+var
+  lDim: TvArcDimension;
+begin
+  lDim := TvArcDimension.Create;
+  lDim.BaseLeft := ABaseLeft;
+  lDim.BaseRight := ABaseRight;
+  lDim.DimensionLeft := ADimLeft;
+  lDim.DimensionRight := ADimRight;
+  lDim.DimArcPos := ADimArcPos;
+  lDim.TextPos := ATextPos;
   Result := lDim;
   if not AOnlyCreate then AddEntity(lDim);
 end;
