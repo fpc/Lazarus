@@ -86,7 +86,7 @@ type
 
     function number_up_supported: string;
     procedure SetupOptions;
-    procedure SetupAdvancedOptions(Data: Ptrint);
+    procedure SetupAdvancedOptions({%H-}Data: Ptrint);
 
   public
     { public declarations }
