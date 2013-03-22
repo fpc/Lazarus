@@ -7,7 +7,7 @@ unit CairoCanvas;
 interface
 
 uses
-  Types, Graphics, GraphMath, LCLType, Classes, SysUtils, Printers, Cairo
+  Types, Graphics, GraphMath, LCLType, Classes, SysUtils, Printers, Cairo, math
   {$ifdef pangocairo}
   ,Pango, PangoCairo, GLib2
   {$endif}
@@ -537,14 +537,8 @@ end;
 
 //Toy interface
 procedure TCairoPrinterCanvas.SelectFont;
-var
-  h: Integer;
 begin
-  if Font.Size > 0 then
-    h := Font.Size
-  else
-    h := Font.Height;
-  SelectFontEx(Font.Style, Font.Name, h);
+  SelectFontEx(Font.Style, Font.Name, abs(Font.Size));
   SetSourceColor(Font.Color);
 end;
 
@@ -570,11 +564,23 @@ var
   e: cairo_font_extents_t;
 begin
   Changing;
+
   RequiredState([csHandleValid, csFontValid, csBrushValid]);
   SelectFont;
   cairo_font_extents(cr, @e);
-  cairo_move_to(cr, SX(X), SY(Y)+e.ascent);
-  cairo_show_text(cr, PChar(Text)); //Reference point is on the base line
+  if Font.Orientation = 0 then
+  begin
+    cairo_move_to(cr, SX(X), SY(Y)+e.ascent);
+    cairo_show_text(cr, PChar(Text)); //Reference point is on the base line
+  end
+  else
+  begin
+    cairo_save(cr);
+    cairo_move_to(cr, SX(X)+e.ascent, SY(Y));
+    cairo_rotate(cr, -gradtorad(Font.Orientation));
+    cairo_show_text(cr, PChar(Text));
+    cairo_restore(cr);
+  end;
   Changed;
 end;
 
