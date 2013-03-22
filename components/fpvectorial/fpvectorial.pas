@@ -461,12 +461,17 @@ type
   { TvArcDimension }
 
   TvArcDimension = class(TvEntityWithPen)
+  private
+    // Calculated fields
+    AngleBase, ArcLeft, ArcRight: T3DPoint;
+    al, bl, ar, br, AngleLeft, AngleRight: Double;
   public
     // Mandatory fields
     ArcValue, ArcRadius: Double; // ArcValue is in degrees
     TextPos, BaseLeft, BaseRight, DimensionLeft, DimensionRight: T3DPoint;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    procedure CalculateExtraArcInfo;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
@@ -2373,7 +2378,7 @@ procedure TvArcDimension.Render(ADest: TFPCustomCanvas;
 var
   Points: array of TPoint;
   lAngleLeft, lAngleRight: Double;
-  lTriangleCenter, lTriangleCorner, lCanvasDim: TPoint;
+  lTriangleCenter, lTriangleCorner: T3DPoint;
   {$ifdef USE_LCL_CANVAS}
   ALCLDest: TCanvas absolute ADest;
   {$endif}
@@ -2395,23 +2400,30 @@ begin
 
   // Now the arrows
   SetLength(Points, 3);
-{  ADest.Brush.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
+  CalculateExtraArcInfo();
+  ADest.Brush.FPColor := colYellow;//AdjustColorToBackground(colBlack, ARenderInfo);
   ADest.Brush.Style := bsSolid;
 
-  // Angle of the line of BaseLeft->DimensionLeft
-  lAngleLeft := arctan(Abs(BaseLeft.Y-DimensionLeft.Y)/Abs(BaseLeft.X-DimensionLeft.X));
-  lTriangleCenter := Point(CoordToCanvasX(DimensionLeft.X + 5 * Cos(lAngleLeft)),
-    CoordToCanvasY(DimensionLeft.Y + 5 * Sin(lAngleLeft)));
-  lCanvasDim := Point(CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
-
-  // Left one
-  Points[0] := Point(CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
-  lTriangleCorner := Rotate2DPoint(lTriangleCenter, lCanvasDim, Pi * 10 / 180);
-  Points[1] := Point(lTriangleCorner.X, lTriangleCorner.Y);
-  lTriangleCorner := Rotate2DPoint(lTriangleCenter, lCanvasDim, - Pi * 10 / 180);
-  Points[2] := Point(lTriangleCorner.X, lTriangleCorner.Y);
+  // Left Arrow
+  Points[0] := Point(CoordToCanvasX(ArcLeft.X), CoordToCanvasY(ArcLeft.Y));
+  lTriangleCenter.X := Cos(AngleLeft+Pi/2) * -(ArcRadius/10) + ArcLeft.X;
+  lTriangleCenter.Y := Sin(AngleLeft+Pi/2) * -(ArcRadius/10) + ArcLeft.Y;
+  lTriangleCorner := Rotate3DPointInXY(lTriangleCenter, ArcLeft, Pi * 10 / 180);
+  Points[1] := Point(CoordToCanvasX(lTriangleCorner.X), CoordToCanvasY(lTriangleCorner.Y));
+  lTriangleCorner := Rotate3DPointInXY(lTriangleCenter, ArcLeft, - Pi * 10 / 180);
+  Points[2] := Point(CoordToCanvasX(lTriangleCorner.X), CoordToCanvasY(lTriangleCorner.Y));
   ADest.Polygon(Points);
-  ADest.Brush.Style := bsClear; }
+
+  // Right Arrow
+  Points[0] := Point(CoordToCanvasX(ArcRight.X), CoordToCanvasY(ArcRight.Y));
+  lTriangleCenter.X := Cos(AngleRight+Pi/2) * (ArcRadius/10) + ArcRight.X;
+  lTriangleCenter.Y := Sin(AngleRight+Pi/2) * (ArcRadius/10) + ArcRight.Y;
+  lTriangleCorner := Rotate3DPointInXY(lTriangleCenter, ArcRight, Pi * 10 / 180);
+  Points[1] := Point(CoordToCanvasX(lTriangleCorner.X), CoordToCanvasY(lTriangleCorner.Y));
+  lTriangleCorner := Rotate3DPointInXY(lTriangleCenter, ArcRight, - Pi * 10 / 180);
+  Points[2] := Point(CoordToCanvasX(lTriangleCorner.X), CoordToCanvasY(lTriangleCorner.Y));
+  ADest.Polygon(Points);
+  ADest.Brush.Style := bsClear;
 
   // Dimension text
   Points[0].X := CoordToCanvasX(TextPos.X);
@@ -2419,7 +2431,32 @@ begin
   ADest.Font.Size := 10;
   ADest.Font.Orientation := 0;
   ADest.Font.FPColor := colYellow;//AdjustColorToBackground(colBlack, ARenderInfo);
-  ADest.TextOut(Points[0].X, Points[0].Y-Round(ADest.Font.Size*1.5), Format('%.1f', [ArcValue]));
+  ADest.TextOut(Points[0].X, Points[0].Y-Round(ADest.Font.Size*1.5), Format('%.1fº', [ArcValue]));
+end;
+
+procedure TvArcDimension.CalculateExtraArcInfo;
+begin
+  // Line equation of the Left line
+  AngleLeft := arctan(Abs(BaseLeft.Y-DimensionLeft.Y)/Abs(BaseLeft.X-DimensionLeft.X));
+  if DimensionLeft.X<BaseLeft.X then AngleLeft := Pi-AngleLeft;
+  al := Tan(AngleLeft);
+  bl := BaseLeft.Y - al * BaseLeft.X;
+
+  // Line equation of the Right line
+  AngleRight := arctan(Abs(BaseRight.Y-DimensionRight.Y)/Abs(BaseRight.X-DimensionRight.X));
+  if DimensionRight.X<BaseRight.X then AngleRight := Pi-AngleRight;
+  ar := Tan(AngleRight);
+  br := BaseRight.Y - ar * BaseRight.X;
+
+  // The lines meet at the AngleBase
+  AngleBase.X := (bl - br) / (ar - al);
+  AngleBase.Y := al * AngleBase.X + bl;
+
+  //  And also now the left and right points of the arc
+  ArcLeft.X := Cos(AngleLeft) * ArcRadius + AngleBase.X;
+  ArcLeft.Y := Sin(AngleLeft) * ArcRadius + AngleBase.Y;
+  ArcRight.X := Cos(AngleRight) * ArcRadius + AngleBase.X;
+  ArcRight.Y := Sin(AngleRight) * ArcRadius + AngleBase.Y;
 end;
 
 function TvArcDimension.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
