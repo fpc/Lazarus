@@ -27,7 +27,7 @@ type
     sttLineTo, sttRelativeLineTo,
     sttHorzLineTo, sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo,
     // cubic beziers
-    sttBezierTo, sttRelativeBezierTo,
+    sttBezierTo, sttRelativeBezierTo, sttSmoothBezierTo, sttRelativeSmoothBezierTo,
     // quadratic beziers
     sttQuadraticBezierTo, sttRelativeQuadraticBezierTo,
     // Elliptic curves
@@ -155,6 +155,8 @@ begin
   // cubic Bézier curve commands
   else if lStr[1] = 'C' then lToken.TokenType := sttBezierTo
   else if lStr[1] = 'c' then lToken.TokenType := sttRelativeBezierTo
+  else if lStr[1] = 'S' then lToken.TokenType := sttSmoothBezierTo
+  else if lStr[1] = 's' then lToken.TokenType := sttRelativeSmoothBezierTo
   // quadratic beziers
   else if lStr[1] = 'Q' then lToken.TokenType := sttQuadraticBezierTo
   else if lStr[1] = 'q' then lToken.TokenType := sttRelativeQuadraticBezierTo
@@ -748,7 +750,7 @@ begin
   else if AKey = 'fill-opacity' then
     ADestEntity.Font.Color.Alpha := StrToInt(AValue)*$101
   else if AKey = 'font-size' then
-    ADestEntity.Font.Size := StrToInt(AValue)
+    ADestEntity.Font.Size := Round(StringWithUnitToFloat(AValue))
   else if AKey = 'font-family' then
     ADestEntity.Font.Name := AValue
   else if AKey = 'font-weight' then
@@ -1138,14 +1140,27 @@ begin
     // --------------
     // Cubic Bezier
     // --------------
-    else if lCurTokenType in [sttBezierTo, sttRelativeBezierTo] then
+    else if lCurTokenType in [sttBezierTo, sttRelativeBezierTo,
+      sttSmoothBezierTo, sttRelativeSmoothBezierTo] then
     begin
-      X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-      Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
-      X3 := FSVGPathTokenizer.Tokens.Items[i+3].Value;
-      Y3 := FSVGPathTokenizer.Tokens.Items[i+4].Value;
-      X := FSVGPathTokenizer.Tokens.Items[i+5].Value;
-      Y := FSVGPathTokenizer.Tokens.Items[i+6].Value;
+      if lCurTokenType in [sttBezierTo, sttRelativeBezierTo] then
+      begin
+        X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+        Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
+        X3 := FSVGPathTokenizer.Tokens.Items[i+3].Value;
+        Y3 := FSVGPathTokenizer.Tokens.Items[i+4].Value;
+        X := FSVGPathTokenizer.Tokens.Items[i+5].Value;
+        Y := FSVGPathTokenizer.Tokens.Items[i+6].Value;
+      end
+      else
+      begin
+        X2 := CurX;
+        Y2 := CurY;
+        X3 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+        Y3 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
+        X := FSVGPathTokenizer.Tokens.Items[i+3].Value;
+        Y := FSVGPathTokenizer.Tokens.Items[i+4].Value;
+      end;
 
       ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
       ConvertSVGDeltaToFPVDelta(AData, X3, Y3, X3, Y3);
@@ -1164,7 +1179,9 @@ begin
         CurY := Y;
       end;
 
-      Inc(i, 7);
+      if lCurTokenType in [sttBezierTo, sttRelativeBezierTo] then
+        Inc(i, 7)
+      else Inc(i, 5);
     end
     // --------------
     // Quadratic Bezier
@@ -1443,12 +1460,14 @@ function TvSVGVectorialReader.StringWithUnitToFloat(AStr: string): Double;
 var
   UnitStr, ValueStr: string;
   Len: Integer;
+  LastChar: Char;
 begin
   if AStr = '' then Exit(0.0);
 
   // Check the unit
   Len := Length(AStr);
   UnitStr := Copy(AStr, Len-1, 2);
+  LastChar := AStr[Len];
   if UnitStr = 'mm' then
   begin
     ValueStr := Copy(AStr, 1, Len-2);
@@ -1462,6 +1481,11 @@ begin
   else if UnitStr = 'px' then
   begin
     ValueStr := Copy(AStr, 1, Len-2);
+    Result := StrToFloat(ValueStr, FPointSeparator);
+  end
+  else if LastChar = '%' then
+  begin
+    ValueStr := Copy(AStr, 1, Len-1);
     Result := StrToInt(ValueStr);
   end
   else // If there is no unit, just use StrToFloat
