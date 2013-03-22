@@ -12,7 +12,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="17">
+    <Files Count="18">
       <Item1>
         <Filename Value="fpvectorial.pas"/>
         <UnitName Value="fpvectorial"/>
@@ -81,6 +81,10 @@
         <Filename Value="svgvectorialwriter.pas"/>
         <UnitName Value="svgvectorialwriter"/>
       </Item17>
+      <Item18>
+        <Filename Value="svgzvectorialreader.pas"/>
+        <UnitName Value="svgzvectorialreader"/>
+      </Item18>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

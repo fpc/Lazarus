@@ -1237,6 +1237,7 @@ components/fpvectorial/pdfvrsintatico.pas svneol=native#text/plain
 components/fpvectorial/rawvectorialreadwrite.pas svneol=native#text/plain
 components/fpvectorial/svgvectorialreader.pas svneol=native#text/plain
 components/fpvectorial/svgvectorialwriter.pas svneol=native#text/plain
+components/fpvectorial/svgzvectorialreader.pas svneol=native#text/pascal
 components/fpvectorial/tools/laszip/laszip.lpi svneol=native#text/plain
 components/fpvectorial/tools/laszip/laszip.pas svneol=native#text/plain
 components/fpweb/README.txt svneol=native#text/plain

@@ -12,7 +12,7 @@ uses
   dxfvectorialreader, epsvectorialreader, lasvectorialreader, 
   lazvectorialreader, mathmlvectorialreader, odgvectorialreader, 
   rawvectorialreadwrite, svgvectorialreader, svgvectorialwriter, 
-  LazarusPackageIntf;
+  svgzvectorialreader, LazarusPackageIntf;
 
 implementation
 

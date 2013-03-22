@@ -40,7 +40,7 @@ uses
 type
   TvVectorialFormat = (
     { Multi-purpose document formats }
-    vfPDF, vfSVG, vfCorelDrawCDR, vfWindowsMetafileWMF, vfODG,
+    vfPDF, vfSVG, vfSVGZ, vfCorelDrawCDR, vfWindowsMetafileWMF, vfODG,
     { CAD formats }
     vfDXF,
     { Geospatial formats }
@@ -71,6 +71,7 @@ const
   STR_PDF_EXTENSION = '.pdf';
   STR_POSTSCRIPT_EXTENSION = '.ps';
   STR_SVG_EXTENSION = '.svg';
+  STR_SVGZ_EXTENSION = '.svgz';
   STR_CORELDRAW_EXTENSION = '.cdr';
   STR_WINMETAFILE_EXTENSION = '.wmf';
   STR_AUTOCAD_EXCHANGE_EXTENSION = '.dxf';
@@ -4068,6 +4069,7 @@ begin
   if AnsiCompareText(lExt, STR_PDF_EXTENSION) = 0 then Result := vfPDF
   else if AnsiCompareText(lExt, STR_POSTSCRIPT_EXTENSION) = 0 then Result := vfPostScript
   else if AnsiCompareText(lExt, STR_SVG_EXTENSION) = 0 then Result := vfSVG
+  else if AnsiCompareText(lExt, STR_SVGZ_EXTENSION) = 0 then Result := vfSVGZ
   else if AnsiCompareText(lExt, STR_CORELDRAW_EXTENSION) = 0 then Result := vfCorelDrawCDR
   else if AnsiCompareText(lExt, STR_WINMETAFILE_EXTENSION) = 0 then Result := vfWindowsMetafileWMF
   else if AnsiCompareText(lExt, STR_AUTOCAD_EXCHANGE_EXTENSION) = 0 then Result := vfDXF
