@@ -680,6 +680,10 @@ var
   ARgb: QRgb;
   ReturnBool: Boolean;
   ColorDialog: TColorDialog absolute ACommonDialog;
+  {$IFDEF HASX11}
+  AWND: HWND;
+  {$ENDIF}
+
 
   procedure FillCustomColors;
   var
@@ -719,6 +723,14 @@ begin
     ACommonDialog.UserChoice := mrOk
   else
     ACommonDialog.UserChoice := mrCancel;
+  {$IFDEF HASX11}
+  if (QtWidgetSet.WindowManagerName = 'xfwm4') and (QApplication_activeModalWidget() <> nil) then
+  begin
+    AWND := HwndFromWidgetH(QApplication_activeModalWidget());
+    if (AWND <> 0) and (X11GetActivewindow <> TQtWidget(AWND).Widget) then
+      X11Raise(QWidget_winID(TQtWidget(AWND).Widget));
+  end;
+  {$ENDIF}
 end;
 
 { TQtWSFontDialog }
@@ -739,6 +751,9 @@ var
   ReturnFont, CurrentFont: QFontH;
   ReturnBool: Boolean;
   Str: WideString;
+  {$IFDEF HASX11}
+  AWND: HWND;
+  {$ENDIF}
 begin
   {------------------------------------------------------------------------------
     Code to call the dialog
@@ -785,6 +800,14 @@ begin
     ACommonDialog.UserChoice := mrOk
   else
     ACommonDialog.UserChoice := mrCancel;
+  {$IFDEF HASX11}
+  if (QtWidgetSet.WindowManagerName = 'xfwm4') and (QApplication_activeModalWidget() <> nil) then
+  begin
+    AWND := HwndFromWidgetH(QApplication_activeModalWidget());
+    if (AWND <> 0) and (X11GetActivewindow <> TQtWidget(AWND).Widget) then
+      X11Raise(QWidget_winID(TQtWidget(AWND).Widget));
+  end;
+  {$ENDIF}
 end;
 
 end.
