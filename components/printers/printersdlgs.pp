@@ -92,7 +92,7 @@ uses
     {$ENDIF}
   {$ELSE}
     {$IFDEF LCLQt}
-    uses Controls, qtobjects, qt4, FileUtil;
+    uses Controls, qtobjects, qt4, qtint, FileUtil;
     {$I qtprndialogs.inc}
    {$ELSE}
 uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, udlgPageSetup, FileUtil;

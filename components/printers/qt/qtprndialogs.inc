@@ -6,6 +6,9 @@
 function TPageSetupDialog.Execute: Boolean;
 var
   PgDlg: QPageSetupDialogH;
+  {$IFDEF HASX11}
+  AWND: HWND;
+  {$ENDIF}
 begin
   Result := False;
   if not Assigned(Printer) then Exit;
@@ -16,6 +19,14 @@ begin
   finally
     QPageSetupDialog_destroy(PgDlg);
   end;
+  {$IFDEF HASX11}
+  if (QtWidgetSet.WindowManagerName = 'xfwm4') and (QApplication_activeModalWidget() <> nil) then
+  begin
+    AWND := HwndFromWidgetH(QApplication_activeModalWidget());
+    if (AWND <> 0) and (X11GetActivewindow <> TQtWidget(AWND).Widget) then
+      X11Raise(QWidget_winID(TQtWidget(AWND).Widget));
+  end;
+  {$ENDIF}
 end;
 
 { TPrinterSetupDialog }
@@ -23,6 +34,9 @@ end;
 function TPrinterSetupDialog.Execute: Boolean;
 var
   PgDlg: QPageSetupDialogH;
+  {$IFDEF HASX11}
+  AWND: HWND;
+  {$ENDIF}
 begin
   Result := False;
   if not Assigned(Printer) then Exit;
@@ -35,6 +49,14 @@ begin
   finally
     QPageSetupDialog_destroy(PgDlg);
   end;
+  {$IFDEF HASX11}
+  if (QtWidgetSet.WindowManagerName = 'xfwm4') and (QApplication_activeModalWidget() <> nil) then
+  begin
+    AWND := HwndFromWidgetH(QApplication_activeModalWidget());
+    if (AWND <> 0) and (X11GetActivewindow <> TQtWidget(AWND).Widget) then
+      X11Raise(QWidget_winID(TQtWidget(AWND).Widget));
+  end;
+  {$ENDIF}
 end;
 
 { TPrintDialog }
@@ -45,6 +67,9 @@ var
   PrnOptions: QAbstractPrintDialogPrintDialogOptions;
   Str: WideString;
   S: String;
+  {$IFDEF HASX11}
+  AWND: HWND;
+  {$ENDIF}
 begin
   Result := False;
 
@@ -125,5 +150,14 @@ begin
   finally
     QPrintDialog_destroy(QtPrnDlg);
   end;
+
+  {$IFDEF HASX11}
+  if (QtWidgetSet.WindowManagerName = 'xfwm4') and (QApplication_activeModalWidget() <> nil) then
+  begin
+    AWND := HwndFromWidgetH(QApplication_activeModalWidget());
+    if (AWND <> 0) and (X11GetActivewindow <> TQtWidget(AWND).Widget) then
+      X11Raise(QWidget_winID(TQtWidget(AWND).Widget));
+  end;
+  {$ENDIF}
 end;
 
