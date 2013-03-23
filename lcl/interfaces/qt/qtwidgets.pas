@@ -6095,6 +6095,12 @@ begin
   else
     inherited Activate;
   {$IFDEF HASX11}
+  if (QtWidgetSet.WindowManagerName = 'xfwm4') and not IsMDIChild and
+    QWidget_isModal(Widget) then
+  begin
+    if X11GetActivewindow <> Widget then
+      X11Raise(QWidget_winID(Widget));
+  end else
   if not QWidget_isModal(Widget) then
   begin
     if (QtWidgetSet.WindowManagerName = 'metacity') and not IsMDIChild then

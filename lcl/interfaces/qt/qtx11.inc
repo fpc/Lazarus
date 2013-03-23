@@ -104,7 +104,7 @@ begin
   XClient.message_type := WMATom;
   XClient.format := 32;
   XClient.data.l[0] := 1;
-  XClient.data.l[1] := 0;
+  XClient.data.l[1] := CurrentTime; // _NET_WM_USER_TIME
   XClient.data.l[2] := 0;
   Result := XSendEvent(Display, RootWin, False,
 	      SubstructureRedirectMask or SubstructureNotifyMask,
