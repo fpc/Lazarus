@@ -14300,6 +14300,10 @@ begin
 end;
 
 function TQtDialog.exec: Integer;
+{$IFDEF HASX11}
+var
+  AWND: HWND;
+{$ENDIF}
 begin
   {$IF DEFINED(DARWIN) OR DEFINED(QT_DIALOGS_USE_QT_LOOP)}
   Result := QDialog_exec(QDialogH(Widget));
@@ -14315,6 +14319,14 @@ begin
       Application.Idle(true);
     until not QWidget_isVisible(Widget) or Application.Terminated;
     Result := QDialog_result(QDialogH(Widget));
+  end;
+  {$ENDIF}
+  {$IFDEF HASX11}
+  if (QtWidgetSet.WindowManagerName = 'xfwm4') and (QApplication_activeModalWidget() <> nil) then
+  begin
+    AWND := HwndFromWidgetH(QApplication_activeModalWidget());
+    if (AWND <> 0) and (X11GetActivewindow <> TQtWidget(AWND).Widget) then
+      X11Raise(QWidget_winID(TQtWidget(AWND).Widget));
   end;
   {$ENDIF}
 end;
