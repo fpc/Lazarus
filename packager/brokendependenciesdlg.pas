@@ -44,6 +44,9 @@ uses
   IDEWindowIntf, LazarusIDEStrConsts, Project, PackageDefs, PackageSystem;
 
 type
+
+  { TBrokenDependenciesDialog }
+
   TBrokenDependenciesDialog = class(TForm)
     NoteLabel: TLabel;
     DependencyListView: TListView;
@@ -51,14 +54,14 @@ type
       var CloseAction: TCloseAction);
     procedure BrokenDependenciesDialogResize(Sender: TObject);
   private
-    fButtons: TList; // list of TBitBtn
+    fButtons: TFPList; // list of TBitBtn
     fButtonSet: TMsgDlgButtons;
     function GetButtons(Btn: TMsgDlgBtn): TBitBtn;
     procedure SetupComponents;
     procedure ClearButtons;
   public
     DependencyList: TFPList;
-    constructor Create(TheOwner: TComponent); override;
+    constructor CreateNew(TheOwner: TComponent; Num: Integer = 0); override;
     destructor Destroy; override;
     property Buttons[Btn: TMsgDlgBtn]: TBitBtn read GetButtons;
     procedure CreateButtons(BtnSet: TMsgDlgButtons);
@@ -81,7 +84,7 @@ function ShowBrokenDependencies(DependencyList: TFPList;
 var
   BrokenDependenciesDialog: TBrokenDependenciesDialog;
 begin
-  BrokenDependenciesDialog:=TBrokenDependenciesDialog.Create(nil);
+  BrokenDependenciesDialog:=TBrokenDependenciesDialog.CreateNew(nil);
   BrokenDependenciesDialog.DependencyList:=DependencyList;
   with BrokenDependenciesDialog do begin
     CreateButtons(BtnSet);
@@ -168,16 +171,18 @@ procedure TBrokenDependenciesDialog.ClearButtons;
 var
   i: Integer;
 begin
-  for i:=0 to fButtons.Count-1 do TBitBtn(fButtons[i]).Free;
+  for i:=0 to fButtons.Count-1 do
+    TBitBtn(fButtons[i]).Free;
   fButtons.Clear;
 end;
 
-constructor TBrokenDependenciesDialog.Create(TheOwner: TComponent);
+constructor TBrokenDependenciesDialog.CreateNew(TheOwner: TComponent;
+  Num: Integer);
 begin
-  inherited Create(TheOwner);
+  inherited CreateNew(TheOwner,Num);
   Name:='BrokenDependenciesDialog';
   Caption:=lisA2PBrokenDependencies;
-  fButtons:=TList.Create;
+  fButtons:=TFPList.Create;
   SetupComponents;
   OnResize:=@BrokenDependenciesDialogResize;
   Position:=poScreenCenter;
@@ -189,7 +194,7 @@ end;
 destructor TBrokenDependenciesDialog.Destroy;
 begin
   ClearButtons;
-  fButtons.Free;
+  FreeAndNil(fButtons);
   inherited Destroy;
 end;
 
