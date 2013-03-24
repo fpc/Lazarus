@@ -3964,6 +3964,7 @@ examples/SynEdit/SynPositionHighlighter/synpositionhighlighterexample1.lpr svneo
 examples/SynEdit/SynPositionHighlighter/unit1.lfm svneol=native#text/plain
 examples/SynEdit/SynPositionHighlighter/unit1.lrs svneol=native#text/pascal
 examples/SynEdit/SynPositionHighlighter/unit1.pas svneol=native#text/plain
+examples/address_book/README.txt svneol=native#text/plain
 examples/address_book/addrbook.dpr svneol=native#text/pascal
 examples/address_book/addrbook.lpi svneol=native#text/plain
 examples/address_book/addrbook.lpr svneol=native#text/pascal
