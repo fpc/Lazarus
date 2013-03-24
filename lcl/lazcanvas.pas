@@ -761,8 +761,8 @@ begin
   Font.Bold := AFont.Bold;
   Font.Italic := AFont.Italic;
   Font.Underline := AFont.Underline;
-  {$IF (FPC_FULLVERSION<=20600) or (FPC_FULLVERSION=20602)}
-  Font.StrikeTrough := AFont.StrikeTrough; //old version with typo
+  {$IF (FPC_FULLVERSION<=20600)}
+  Font.{%H-}StrikeTrough := AFont.{%H-}StrikeTrough; //old version with typo
   {$ELSE}
   Font.StrikeThrough := AFont.StrikeThrough;
   {$ENDIF}
