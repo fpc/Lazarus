@@ -6217,70 +6217,6 @@ begin
   Result := PTypeInfo(Value.ClassInfo);
 end;
 
-procedure InitPropEdits;
-begin
-  PropertyClassList:=TList.Create;
-  PropertyEditorMapperList:=TList.Create;
-  // register the standard property editors
-
-  RegisterPropertyEditor(TypeInfo(AnsiString), TComponent, 'Name', TComponentNamePropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomLabel, 'Caption', TStringMultilinePropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomStaticText, 'Caption', TStringMultilinePropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomCheckBox, 'Caption', TStringMultilinePropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TTranslateString), TComponent, 'Hint', TStringMultilinePropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TTabOrder), TControl, 'TabOrder', TTabOrderPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(ShortString), nil, '', TCaptionPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TStrings), nil, '', TStringsPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(AnsiString), nil, 'SessionProperties', TSessionPropertiesPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TModalResult), nil, 'ModalResult', TModalResultPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TShortCut), nil, '', TShortCutPropertyEditor);
-  //RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDate'),
-  //  nil,'',TDatePropertyEditor);
-  //RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTime'),
-  //  nil,'',TTimePropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TDateTimePropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TCursor), nil, '', TCursorPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TComponent), nil, '', TComponentPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TCollection), nil, '', TCollectionPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(AnsiString), TFileDialog, 'Filter', TFileDlgFilterProperty);
-  RegisterPropertyEditor(TypeInfo(AnsiString), TFilterComboBox, 'Filter', TFileDlgFilterProperty);
-  RegisterPropertyEditor(TypeInfo(AnsiString), TFileNameEdit, 'Filter', TFileDlgFilterProperty);
-  RegisterPropertyEditor(TypeInfo(AnsiString), TCustomPropertyStorage, 'Filename', TFileNamePropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideLeft', THiddenPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideTop', THiddenPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideRight', THiddenPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideBottom', THiddenPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(LongInt), TControl, 'ClientWidth', THiddenPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(LongInt), TControl, 'ClientHeight', THiddenPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(AnsiString), TCustomForm, 'LCLVersion', THiddenPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(AnsiString), TCustomFrame, 'LCLVersion', THiddenPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TCustomPage), TCustomTabControl, 'ActivePage', TNoteBookActiveControlPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TSizeConstraints), TControl, 'Constraints', TConstraintsPropertyEditor);
-end;
-
-procedure FinalPropEdits;
-var i: integer;
-  pm: PPropertyEditorMapperRec;
-  pc: PPropertyClassRec;
-begin
-  for i:=0 to PropertyEditorMapperList.Count-1 do begin
-    pm:=PPropertyEditorMapperRec(PropertyEditorMapperList.Items[i]);
-    Dispose(pm);
-  end;
-  PropertyEditorMapperList.Free;
-  PropertyEditorMapperList:=nil;
-
-  for i:=0 to PropertyClassList.Count-1 do begin
-    pc:=PPropertyClassRec(PropertyClassList[i]);
-    Dispose(pc);
-  end;
-  PropertyClassList.Free;
-  PropertyClassList:=nil;
-
-  FreeAndNil(ListPropertyEditors);
-  FreeAndNil(VirtualKeyStrings);
-end;
-
 procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
 begin
   TCollectionPropertyEditor.ShowCollectionEditor(ACollection, AComponent, APropertyName);
@@ -6664,8 +6600,76 @@ begin
   {$ENDIF}
 end;
 
-initialization
+procedure InitPropEdits;
+begin
+  PropertyClassList:=TList.Create;
+  PropertyEditorMapperList:=TList.Create;
+  // register the standard property editors
 
+  RegisterPropertyEditor(TypeInfo(AnsiString), TComponent, 'Name', TComponentNamePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomLabel, 'Caption', TStringMultilinePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomStaticText, 'Caption', TStringMultilinePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomCheckBox, 'Caption', TStringMultilinePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TTranslateString), TComponent, 'Hint', TStringMultilinePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TTabOrder), TControl, 'TabOrder', TTabOrderPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(ShortString), nil, '', TCaptionPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TStrings), nil, '', TStringsPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(AnsiString), nil, 'SessionProperties', TSessionPropertiesPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TModalResult), nil, 'ModalResult', TModalResultPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TShortCut), nil, '', TShortCutPropertyEditor);
+  //RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDate'),
+  //  nil,'',TDatePropertyEditor);
+  //RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TTime'),
+  //  nil,'',TTimePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TDateTimePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TCursor), nil, '', TCursorPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TComponent), nil, '', TComponentPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TCollection), nil, '', TCollectionPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(AnsiString), TFileDialog, 'Filter', TFileDlgFilterProperty);
+  RegisterPropertyEditor(TypeInfo(AnsiString), TFilterComboBox, 'Filter', TFileDlgFilterProperty);
+  RegisterPropertyEditor(TypeInfo(AnsiString), TFileNameEdit, 'Filter', TFileDlgFilterProperty);
+  RegisterPropertyEditor(TypeInfo(AnsiString), TCustomPropertyStorage, 'Filename', TFileNamePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideLeft', THiddenPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideTop', THiddenPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideRight', THiddenPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideBottom', THiddenPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(LongInt), TControl, 'ClientWidth', THiddenPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(LongInt), TControl, 'ClientHeight', THiddenPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(AnsiString), TCustomForm, 'LCLVersion', THiddenPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(AnsiString), TCustomFrame, 'LCLVersion', THiddenPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TCustomPage), TCustomTabControl, 'ActivePage', TNoteBookActiveControlPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TSizeConstraints), TControl, 'Constraints', TConstraintsPropertyEditor);
+
+  // since fpc 2.6.0 WordBool, LongBool and QWordBool only allow 0 and 1
+  RegisterPropertyEditor(TypeInfo(WordBool), nil, '', TBoolPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(LongBool), nil, '', TBoolPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(QWordBool), nil, '', TBoolPropertyEditor);
+end;
+
+procedure FinalPropEdits;
+var i: integer;
+  pm: PPropertyEditorMapperRec;
+  pc: PPropertyClassRec;
+begin
+  for i:=0 to PropertyEditorMapperList.Count-1 do begin
+    pm:=PPropertyEditorMapperRec(PropertyEditorMapperList.Items[i]);
+    Dispose(pm);
+  end;
+  PropertyEditorMapperList.Free;
+  PropertyEditorMapperList:=nil;
+
+  for i:=0 to PropertyClassList.Count-1 do begin
+    pc:=PPropertyClassRec(PropertyClassList[i]);
+    Dispose(pc);
+  end;
+  PropertyClassList.Free;
+  PropertyClassList:=nil;
+
+  FreeAndNil(ListPropertyEditors);
+  FreeAndNil(VirtualKeyStrings);
+end;
+
+initialization
   InitPropEdits;
 
 finalization
