@@ -58,7 +58,7 @@ begin
   RegisterComponents('Data Access',[TDatasource
 // Only for fpc version 2.4.1 and above
 {$IFNDEF VER2_4_0}
-                                    ,TBufDataset
+                                    ,TBufDataset  // this bites dbflaz
 {$ENDIF}
                                     ]);
 end;
