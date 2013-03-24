@@ -1478,6 +1478,9 @@ begin
       begin
         Msg := CN_KEYDOWN;
         KeyData := LParam;
+        // Work around to get readings of some barcode scanners
+        if (WParam = 0) and (WinCEWidgetset.BarcodeScannerWorkaround) then
+          WParam := VK_0;
         CharCode := Word(WParam);
         Result := 0;
         //DebugLn(Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));

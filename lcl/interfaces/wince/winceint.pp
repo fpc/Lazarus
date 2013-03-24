@@ -215,6 +215,7 @@ type
     { Variables to be set by the user }
 
     WinCETitlePolicy: TWinCETitlePolicy;
+    BarcodeScannerWorkaround: Boolean;
   end;
 
 {$I wincelistslh.inc}

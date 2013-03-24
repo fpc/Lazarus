@@ -52,6 +52,8 @@ begin
   GetObject(Font, SizeOf(FMetrics.lfStatusFont), @FMetrics.lfStatusFont);
   GetObject(Font, SizeOf(FMetrics.lfMenuFont), @FMetrics.lfMenuFont);
 
+  BarcodeScannerWorkaround := True;
+
   WinCEWidgetSet := Self;
 end;
 {------------------------------------------------------------------------------
