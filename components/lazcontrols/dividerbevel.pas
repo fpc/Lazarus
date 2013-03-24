@@ -46,7 +46,7 @@ type
     procedure TextChanged; override;
     procedure CalculatePreferredSize(
                          var PreferredWidth, PreferredHeight: Integer;
-                         WithThemeSpace: Boolean); override;
+                         {%H-}WithThemeSpace: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
   published
