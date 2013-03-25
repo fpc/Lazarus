@@ -3453,10 +3453,12 @@ begin
     Filename:=APackageList[i];
     if Filename='' then
       Filename:=APackage.Filename;
-    if FileExistsCached(APackage.Filename) then
-      Result:=DoOpenPackageFile(APackage.Filename,[pofRevert],true)
+    debugln(['TPkgManager.RevertPackages BEFORE Old=',APackage.Filename,' New=',Filename,' ',FileExistsCached(Filename)]);
+    if FileExistsCached(Filename) then
+      Result:=DoOpenPackageFile(Filename,[pofRevert],true)
     else
       APackage.LPKSource:=nil;
+    debugln(['TPkgManager.RevertPackages AFTER ',PackageGraph.FindPackageWithFilename(Filename)<>nil]);
     if Result=mrAbort then exit;
   end;
   Result:=mrOk;
