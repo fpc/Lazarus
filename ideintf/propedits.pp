@@ -625,12 +625,22 @@ type
   end;
 
 { TComponentPropertyEditor
-  The default editor for TComponents. It does allow editing of the
-  properties of the component. It allows the user to set the value of this
+  The default editor for TComponents. It allows the user to set the value of this
   property to point to a component in the same form that is type compatible
   with the property being edited (e.g. the ActiveControl property). }
 
   TComponentPropertyEditor = class(TPersistentPropertyEditor)
+  public
+    function AllEqual: Boolean; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+  end;
+
+{ TComponentAllPropertyEditor
+  The default editor for TComponents. It allows the user to set the value of this
+  property to point to a component in any form in the project (?) that is
+  type compatible with the property being edited. }
+
+  TComponentAllPropertyEditor = class(TPersistentPropertyEditor)
   protected
     function GetComponentReference: TComponent; virtual;
   public
@@ -643,7 +653,7 @@ type
   a component on the form (or via form linking) that is type compatible
   with the property being edited. }
 
-  TInterfacePropertyEditor = class(TComponentPropertyEditor)
+  TInterfacePropertyEditor = class(TComponentAllPropertyEditor)
   private
   protected
     procedure ReceiveComponentNames(const S: string);
@@ -658,7 +668,7 @@ type
 
   { TNoteBookActiveControlPropertyEditor }
 
-  TNoteBookActiveControlPropertyEditor = class(TComponentPropertyEditor)
+  TNoteBookActiveControlPropertyEditor = class(TComponentAllPropertyEditor)
   protected
     function CheckNewValue(APersistent: TPersistent): boolean; override;
   public
@@ -4289,12 +4299,46 @@ end;
 
 { TComponentPropertyEditor }
 
-function TComponentPropertyEditor.GetComponentReference: TComponent;
+function TComponentPropertyEditor.AllEqual: Boolean;
+var
+  AComponent: TComponent;
+begin
+  Result:=false;
+  if not (inherited AllEqual) then exit;
+  AComponent:=TComponent(GetObjectValue);
+  if AComponent=nil then exit;
+  Result:=csDesigning in AComponent.ComponentState;
+end;
+
+procedure TComponentPropertyEditor.GetValues(Proc: TGetStrProc);
+var
+  comp: TPersistent;
+
+  procedure TraverseComponents(Root: TComponent);
+  var
+    i: integer;
+  begin
+    for i := 0 to Root.ComponentCount - 1 do   // A hack for testing purposes !!!
+      if not ((Root.Components[i] is TCustomCoolBar) and (comp is TCoolBand)) then
+        Proc(Root.Components[i].Name);
+  end;
+
+begin
+  comp := GetComponent(0);
+  //debugln(['TComponentPropertyEditor.GetValues: Comp.ClassName=', comp.ClassName]);
+  Proc(oisNone);
+  if Assigned(PropertyHook) and (PropertyHook.FLookupRoot is TComponent) then
+    TraverseComponents(TComponent(PropertyHook.FLookupRoot));
+end;
+
+{ TComponentAllPropertyEditor }
+
+function TComponentAllPropertyEditor.GetComponentReference: TComponent;
 begin
   Result := TComponent(GetObjectValue);
 end;
 
-function TComponentPropertyEditor.AllEqual: Boolean;
+function TComponentAllPropertyEditor.AllEqual: Boolean;
 var
   AComponent: TComponent;
 begin
@@ -4304,7 +4348,6 @@ begin
   if AComponent=nil then exit;
   Result:=csDesigning in AComponent.ComponentState;
 end;
-
 
 { TInterfacePropertyEditor }
 
@@ -6623,7 +6666,9 @@ begin
   //  nil,'',TTimePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TDateTimePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TCursor), nil, '', TCursorPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TComponent), nil, '', TComponentPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TComponent), nil, '', TComponentAllPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TComponent), nil, 'ActiveControl', TComponentPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TComponent), nil, 'Control', TComponentPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TCollection), nil, '', TCollectionPropertyEditor);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFileDialog, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFilterComboBox, 'Filter', TFileDlgFilterProperty);
