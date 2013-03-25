@@ -5645,6 +5645,7 @@ resourcestring
   lisEnterNewNameForMacroS = 'Enter new name for Macro "%s"';
   rsAttachTo = 'Attach to';
   rsEnterPID = 'Enter PID';
+  lisFreePascalCompilerMessages = 'FreePascal Compiler messages';
 
 implementation
 
