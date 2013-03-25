@@ -41,11 +41,12 @@ uses
   LazarusIDEStrConsts, LazConfigStorage, HelpIntfs, IDEHelpIntf, BaseIDEIntf,
   IDEMsgIntf, IDEDialogs, LazHelpIntf, LazHelpHTML, StdCtrls, ButtonPanel,
   ExtCtrls, Forms, Controls, Graphics, LCLIntf, CodeToolsFPCMsgs, FileProcs,
-  CodeToolManager, CodeCache;
+  CodeToolManager, CodeCache, DefineTemplates;
   
 const
   lihcFPCMessages = 'FreePascal Compiler messages';
   lihFPCMessagesURL = 'http://wiki.lazarus.freepascal.org/';
+  lihFPCMessagesInternalURL = 'file://Build_messages#FreePascal_Compiler_messages';
 
 type
 
@@ -225,8 +226,8 @@ begin
   FPCMsgHelpDB.DefaultBaseURL:=lihFPCMessagesURL;
 
   // HTML nodes
-  StartNode:=THelpNode.CreateURLID(FPCMsgHelpDB,'FreePascal Compiler messages',
-          'file://Build_messages#FreePascal_Compiler_messages',lihcFPCMessages);
+  StartNode:=THelpNode.CreateURLID(FPCMsgHelpDB, lisFreePascalCompilerMessages,
+          lihFPCMessagesInternalURL,lihcFPCMessages);
   FPCMsgHelpDB.TOCNode:=THelpNode.Create(FPCMsgHelpDB,StartNode);// once as TOC
   FPCMsgHelpDB.RegisterItemWithNode(StartNode);// and once as normal page
 end;
@@ -885,10 +886,12 @@ begin
 
   // search message in FPC message file
   GetMsgFile;
-  MsgItem:=MsgFile.FindWithMessage(AMessage);
-  if MsgItem<>nil then begin
-    FoundComment:=MsgItem.GetTrimmedComment(true,true);
-    FPCID:=MsgItem.ID;
+  if MsgFile<>nil then begin
+    MsgItem:=MsgFile.FindWithMessage(AMessage);
+    if MsgItem<>nil then begin
+      FoundComment:=MsgItem.GetTrimmedComment(true,true);
+      FPCID:=MsgItem.ID;
+    end;
   end;
 
   // search message in additions
@@ -962,6 +965,9 @@ var
   Filename: String;
   FPCSrcDir: String;
   Code: TCodeBuffer;
+  AltFilename: String;
+  UnitSet: TFPCUnitSetCache;
+  CfgCache: TFPCTargetConfigCache;
 begin
   Result:=nil;
   Filename:=FPCTranslationFile;
@@ -970,13 +976,49 @@ begin
   Filename:=TrimFilename(Filename);
   if Filename='' then
     FileName:='errore.msg';
-  if not FilenameIsAbsolute(Filename) then begin
-    FPCSrcDir:='$(FPCSrcDir)';
-    IDEMacros.SubstituteMacros(FPCSrcDir);
-    if (FPCSrcDir='') then exit;
-    Filename:=TrimFilename(AppendPathDelim(FPCSrcDir)
-              +SetDirSeparators('compiler/msg/')+Filename);
+  if not FilenameIsAbsolute(Filename) then
+  begin
+    // try in FPC sources and Compiler directory
+    UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
+    if UnitSet=nil then exit;
+
+    // try in FPC sources
+    FPCSrcDir:=UnitSet.FPCSourceDirectory;
+    if (FPCSrcDir<>'') then begin
+      AltFilename:=TrimFilename(AppendPathDelim(FPCSrcDir)
+                +SetDirSeparators('compiler/msg/')+Filename);
+      if FileExistsCached(AltFilename) then
+        Filename:=AltFilename;
+    end;
+
+    if not FilenameIsAbsolute(Filename) then
+    begin
+      // try in compiler path
+      CfgCache:=UnitSet.GetConfigCache(true);
+      if CfgCache<>nil then begin
+        // try in back end compiler path
+        if FilenameIsAbsolute(CfgCache.RealCompiler) then
+        begin
+          AltFilename:=AppendPathDelim(ExtractFilePath(CfgCache.RealCompiler))
+                      +SetDirSeparators('msg/')+Filename;
+          if FileExistsCached(AltFilename) then
+            Filename:=AltFilename;
+        end;
+        // try in front end compiler path
+        if (not FilenameIsAbsolute(Filename))
+        and FilenameIsAbsolute(CfgCache.Compiler) then
+        begin
+          AltFilename:=AppendPathDelim(ExtractFilePath(CfgCache.Compiler))
+                      +SetDirSeparators('msg/')+Filename;
+          if FileExistsCached(AltFilename) then
+            Filename:=AltFilename;
+        end;
+      end;
+    end;
+
+    if not FilenameIsAbsolute(Filename) then exit;
   end;
+
   Code:=CodeToolBoss.LoadFile(Filename,true,false);
   if Code=nil then exit;
 

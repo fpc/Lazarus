@@ -5524,6 +5524,7 @@ resourcestring
   lisTarget = 'Target:';
   lisDirectives = 'Directives';
   lisFailedToSaveFile = 'Failed to save file.';
+  lisFreePascalCompilerMessages = 'FreePascal Compiler messages';
 
 implementation
 
