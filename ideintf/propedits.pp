@@ -160,7 +160,7 @@ type
     GetProperties
       Should be overridden to call PropertyProc for every sub-property (or
       nested property) of the property begin edited and passing a new
-      TPropertyEdtior for each sub-property. By default,PropertyProc is not
+      TPropertyEditor for each sub-property. By default, PropertyProc is not
       called and no sub-properties are assumed. TClassPropertyEditor will pass a
       new property editor for each published property in a class.
       TSetPropertyEditor passes a new editor for each element in the set.
@@ -572,8 +572,7 @@ type
   protected
     function GetSelections: TPersistentSelectionList; virtual;
   public
-    constructor Create(
-      Hook: TPropertyEditorHook; APropCount: Integer); override;
+    constructor Create(Hook: TPropertyEditorHook; APropCount: Integer); override;
 
     function GetAttributes: TPropertyAttributes; override;
     procedure GetProperties(Proc: TGetPropEditProc); override;
@@ -5443,7 +5442,7 @@ end;
 
 procedure TPropertyEditorHook.GetComponentNames(TypeData: PTypeData;
   const Proc: TGetStrProc);
-  
+
   procedure TraverseComponents(Root: TComponent);
   var
     i: integer;
@@ -5452,7 +5451,7 @@ procedure TPropertyEditorHook.GetComponentNames(TypeData: PTypeData;
       if (Root.Components[i] is TypeData^.ClassType) then
         Proc(Root.Components[i].Name);
   end;
-  
+
 var
   i: integer;
   Handler: TPropHookGetComponentNames;
@@ -5468,12 +5467,9 @@ begin
       Handler(TypeData, Proc);
     end;
   end
-  else
-  if LookupRoot is TComponent then
-  begin
-    // only traverse local form/datamodule components
+  else if LookupRoot is TComponent then
+    // No handler -> only traverse local form/datamodule components
     TraverseComponents(TComponent(LookupRoot));
-  end;
 end;
 
 function TPropertyEditorHook.GetRootClassName: Shortstring;
