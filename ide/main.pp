@@ -6555,18 +6555,18 @@ begin
       mnuNewProjectClicked(Sender);
     tpws_open:
       mnuOpenProjectClicked(Sender);
-      tpws_openRecent:
+    tpws_openRecent:
+      begin
+        ARecentProject := ExpandFileNameUTF8(ARecentProject);
+        if DoOpenProjectFile(ARecentProject, [ofAddToRecent]) <> mrOk then
         begin
-          ARecentProject := ExpandFileNameUTF8(ARecentProject);
-          if DoOpenProjectFile(ARecentProject, [ofAddToRecent]) <> mrOk then
-          begin
-            // open failed
-            if not FileExistsUTF8(ARecentProject) then
-              EnvironmentOptions.RemoveFromRecentProjectFiles(ARecentProject)
-            else
-              SourceFileMgr.AddRecentProjectFileToEnvironment(ARecentProject);
-          end;
+          // open failed
+          if not FileExistsUTF8(ARecentProject) then
+            EnvironmentOptions.RemoveFromRecentProjectFiles(ARecentProject)
+          else
+            SourceFileMgr.AddRecentProjectFileToEnvironment(ARecentProject);
         end;
+      end;
     tpws_examples:
       mnuToolManageExamplesClicked(Sender);
     tpws_convert:
