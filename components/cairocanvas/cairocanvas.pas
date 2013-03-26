@@ -18,10 +18,13 @@ type
 
   TCairoPrinterCanvas = Class(TFilePrinterCanvas)
   private
+    FLazClipRect   : TRect;
     procedure SelectFontEx(AStyle: TFontStyles; const AName: string;
       ASize: double);
     function SX(x: double): double;
     function SY(y: double): double;
+    function SX2(x: double): double;
+    function SY2(y: double): double;
     procedure SetSourceColor(Color: TColor);
     procedure SetPenProperties;
     procedure SetBrushProperties;
@@ -41,6 +44,7 @@ type
     procedure CreateCairoHandle(BaseHandle: HDC); virtual;
     procedure DestroyCairoHandle; virtual;
     procedure SetHandle(NewHandle: HDC); override;
+    procedure BeginDoc; override;
     procedure EndDoc; override;
     procedure NewPage; override;
     procedure CreateBrush; override;
@@ -238,6 +242,13 @@ begin
     CreateCairoHandle(NewHandle);
 end;
 
+procedure TCairoPrinterCanvas.BeginDoc;
+begin
+  inherited BeginDoc;
+  if assigned(printer) then
+    FLazClipRect:=printer.PaperSize.PaperRect.WorkRect;
+end;
+
 procedure TCairoPrinterCanvas.EndDoc;
 begin
   inherited EndDoc;
@@ -280,10 +291,20 @@ end;
 
 function TCairoPrinterCanvas.SX(x: double): double;
 begin
-  Result := ScaleX*x;
+  Result := ScaleX*(x+FLazClipRect.Left);
 end;
 
 function TCairoPrinterCanvas.SY(y: double): double;
+begin
+  Result := ScaleY*(y+FLazClipRect.Top);
+end;
+
+function TCairoPrinterCanvas.SX2(x: double): double;
+begin
+  Result := ScaleX*x;
+end;
+
+function TCairoPrinterCanvas.SY2(y: double): double;
 begin
   Result := ScaleY*y;
 end;
@@ -304,7 +325,7 @@ begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
   SetPenProperties;
-  cairo_rectangle(cr, SX(X1), SY(Y1), SX(X2-X1), SY(Y2-Y1));
+  cairo_rectangle(cr, SX(X1), SY(Y1), SX2(X2-X1), SY2(Y2-Y1));
   FillAndStroke;
   Changed;
 end;
@@ -314,7 +335,7 @@ procedure TCairoPrinterCanvas.FrameRect(const ARect: TRect);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid]);
-  cairo_rectangle(cr, SX(ARect.Left), SY(ARect.Top), SX(ARect.Right-ARect.Left), SY(ARect.Bottom-ARect.Top));
+  cairo_rectangle(cr, SX(ARect.Left), SY(ARect.Top), SX2(ARect.Right-ARect.Left), SY2(ARect.Bottom-ARect.Top));
   SetSourceColor(Brush.Color);
   cairo_set_line_width(cr, 1);
   cairo_stroke(cr); //Don't touch
@@ -325,7 +346,7 @@ procedure TCairoPrinterCanvas.Frame(const ARect: TRect);
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
-  cairo_rectangle(cr, SX(ARect.Left), SY(ARect.Top), SX(ARect.Right-ARect.Left), SY(ARect.Bottom-ARect.Top));
+  cairo_rectangle(cr, SX(ARect.Left), SY(ARect.Top), SX2(ARect.Right-ARect.Left), SY2(ARect.Bottom-ARect.Top));
   cairo_set_line_width(cr, 1);
   SetSourceColor(Pen.Color);
   cairo_stroke(cr); //Don't touch
@@ -340,7 +361,7 @@ begin
   cairo_save(cr);
   try
     cairo_translate(cr, SX(CX), SY(CY));
-    cairo_scale(cr, SX(RX), SY(RY));
+    cairo_scale(cr, SX2(RX), SY2(RY));
     if not Continuous then
       cairo_move_to(cr, cos(Angle1), sin(Angle1)); //Move to arcs starting point
     if Clockwise then
@@ -670,8 +691,8 @@ begin
   cairo_save(cr);
   try
     s := Text;
-    BoxWidth := SX(ARect.Right-ARect.Left);
-    BoxHeight := SY(ARect.Bottom-ARect.Top);
+    BoxWidth := SX2(ARect.Right-ARect.Left);
+    BoxHeight := SY2(ARect.Bottom-ARect.Top);
     BoxLeft := SX(ARect.Left);
     BoxTop := SY(ARect.Top);
     StartLeft := SX(X1);
@@ -896,7 +917,7 @@ begin
     cairo_translate(cr, SX(DestRect.Left), SY(DestRect.Top));
     SW := (DestRect.Right - DestRect.Left)/W;
     SH := (DestRect.Bottom - DestRect.Top)/H;
-    cairo_scale(cr, SX(SW), SY(SH));
+    cairo_scale(cr, SX2(SW), SY2(SH));
     cairo_set_source_surface(cr, sf, 0, 0);
     cairo_paint(cr);
     cairo_surface_destroy(sf);
@@ -957,7 +978,7 @@ procedure TCairoPrinterCanvas.FillRect(const ARect: TRect);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid]);
-  cairo_rectangle(cr, SX(ARect.Left), SY(ARect.Top), SX(ARect.Right-ARect.Left), SY(ARect.Bottom-ARect.Top));
+  cairo_rectangle(cr, SX(ARect.Left), SY(ARect.Top), SX2(ARect.Right-ARect.Left), SY2(ARect.Bottom-ARect.Top));
   FillOnly;
   Changed;
 end;
