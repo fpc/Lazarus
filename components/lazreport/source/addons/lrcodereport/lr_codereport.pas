@@ -219,10 +219,8 @@ begin
   // Init margins
   PageMargin.Left := 0.0;
   PageMargin.Right := 0.0;
-  PageMargin.Left := 0.0;
-  PageMargin.Right := 0.0;
-  PageMargin.Left := 0;
-  PageMargin.Top := 0;
+  PageMargin.Top := 0.0;
+  PageMargin.Bottom := 0.0;
   ABitMap := TBitMap.Create; // for canvas stuff
   // Set default paper
   PaperSize := 9;  // A4   check LR_Prntr unit for a list
