@@ -35,6 +35,7 @@ type
     FInDoChange: Boolean;
     FChangeLock: Integer;
     FNeedOnChange, FNeedOnResize: Boolean;
+    FFlags: set of (gfNeedChildBounds);
     FOnResize: TNotifyEvent;
     FOnChange: TNotifyEvent;
     FMouseActions: TSynEditMouseInternalActions;
@@ -84,7 +85,7 @@ type
     property Side:TSynGutterSide read FSide;
     property AutoSize: boolean read FAutoSize write SetAutoSize default True;
     property Visible: boolean read FVisible write SetVisible default True;
-        property LeftOffset: integer read FLeftOffset write SetLeftOffset
+    property LeftOffset: integer read FLeftOffset write SetLeftOffset
       default 0;
     property RightOffset: integer read FRightOffset write SetRightOffset
       default 0;
@@ -424,8 +425,20 @@ begin
 
   if FWidth = NewWidth then exit;
 
-  FWidth := NewWidth;
-  DoResize(Self);
+  IncChangeLock;
+  try
+    FWidth := NewWidth;
+    Include(FFlags, gfNeedChildBounds);
+
+    RecalcBounds;
+
+    if gfNeedChildBounds in FFlags then
+      SetChildBounds;
+
+    DoResize(Self);
+  finally
+    DecChangeLock;
+  end;
 end;
 
 procedure TSynGutterBase.SetChildBounds;
@@ -438,6 +451,7 @@ begin
       Parts[i].SetBounds(NewLeft, Top, Height);
       NewLeft := NewLeft + Parts[i].Width;
     end;
+  Exclude(FFlags, gfNeedChildBounds);
 end;
 
 function TSynGutterBase.PartCount: integer;
@@ -658,7 +672,6 @@ begin
   try
     if Gutter.AutoSize then
       Gutter.DoAutoSize;  // Calculate new total width of gutter
-    Gutter.RecalcBounds;  // New Bounds (needs Gutter.Width) and call SetChildBounds
     DoResize(Self);
     if aCallDoChange then
       DoChange(Self);
