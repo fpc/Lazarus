@@ -44,7 +44,7 @@ uses
   CodeToolManager, CodeCache, DefineTemplates;
   
 const
-  lihcFPCMessages = 'FreePascal Compiler messages';
+  lihcFPCMessages = 'Free Pascal Compiler messages';
   lihFPCMessagesURL = 'http://wiki.lazarus.freepascal.org/';
   lihFPCMessagesInternalURL = 'file://Build_messages#FreePascal_Compiler_messages';
 
