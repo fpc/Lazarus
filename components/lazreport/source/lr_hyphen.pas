@@ -42,6 +42,9 @@ const
   MAX_CHARS = 100;
 
 type
+
+  EHyphenationException = class(Exception);
+
   PHyphenTrans = ^HyphenTrans;
   HyphenTrans = record
     ch: char;
@@ -220,10 +223,10 @@ begin
   result := '';
 
   if not CheckLibrary then
-    raise Exception.Create('hyphen libarary not loaded');
+    raise EHyphenationException.Create('hyphen libarary not loaded');
 
   if not CheckDictionary then
-    raise Exception.Create('hyphen dictionary not loaded');
+    raise EHyphenationException.Create('hyphen dictionary not loaded');
 
   len := Length(word);
   hyphens := StrAlloc(Len + 5);

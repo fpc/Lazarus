@@ -1764,7 +1764,7 @@ begin
   try
     FHyp.BreakWord('lazreport');
   except
-    on E:Exception do
+    on E:EHyphenationException do
       DebugLn('Error: ', e.message,'. Hyphenation support will be disabled');
   end;
 end;
