@@ -9008,6 +9008,10 @@ msgstr "חפש אחורנית"
 msgid "Free Pascal"
 msgstr "Free Pascal"
 
+#: lazarusidestrconsts.lisfreepascalcompilermessages
+msgid "Free Pascal Compiler messages"
+msgstr ""
+
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr "מהדר Free Pascal לא נמצא"
@@ -13284,14 +13288,6 @@ msgstr "מותקן"
 msgid "Install on next start"
 msgstr "התקן בהתחלה הבאה"
 
-#: lazarusidestrconsts.lispckexplisrequiredby
-msgid "Selected package is required by:"
-msgstr "החבילה שנבחרה דרושה ע\"י:"
-
-#: lazarusidestrconsts.lispckexplloadedpackages
-msgid "Loaded Packages:"
-msgstr "חבילות טעונות:"
-
 #: lazarusidestrconsts.lispckexplpackagenotfound
 msgid "Package %s not found"
 msgstr "החבילה %s לא נמצאה"
@@ -13301,7 +13297,9 @@ msgid "%sState: "
 msgstr "מצב"
 
 #: lazarusidestrconsts.lispckexpluninstallonnextstart
-msgid "Uninstall on next start"
+#, fuzzy
+#| msgid "Uninstall on next start"
+msgid "Uninstall on next start (unless needed by an installed package)"
 msgstr "הסר התקנה בהתחלה הבאה"
 
 #: lazarusidestrconsts.lispckexpluninstallpackage

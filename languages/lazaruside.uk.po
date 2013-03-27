@@ -8810,6 +8810,10 @@ msgstr "Пошук на&зад"
 msgid "Free Pascal"
 msgstr "Free Pascal"
 
+#: lazarusidestrconsts.lisfreepascalcompilermessages
+msgid "Free Pascal Compiler messages"
+msgstr ""
+
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr "Компілятор FreePascal не знайдений"
@@ -12865,14 +12869,6 @@ msgstr "Встановлено"
 msgid "Install on next start"
 msgstr "Встановити при наст. запуску"
 
-#: lazarusidestrconsts.lispckexplisrequiredby
-msgid "Selected package is required by:"
-msgstr "Вибраний пакунок потрібен для:"
-
-#: lazarusidestrconsts.lispckexplloadedpackages
-msgid "Loaded Packages:"
-msgstr "Завантажені пакунки"
-
 #: lazarusidestrconsts.lispckexplpackagenotfound
 msgid "Package %s not found"
 msgstr "Пакунок %s не знайдено"
@@ -12882,7 +12878,9 @@ msgid "%sState: "
 msgstr "%sСтан: "
 
 #: lazarusidestrconsts.lispckexpluninstallonnextstart
-msgid "Uninstall on next start"
+#, fuzzy
+#| msgid "Uninstall on next start"
+msgid "Uninstall on next start (unless needed by an installed package)"
 msgstr "Видалити при наст. пуску"
 
 #: lazarusidestrconsts.lispckexpluninstallpackage

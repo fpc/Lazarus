@@ -8906,6 +8906,10 @@ msgstr ""
 msgid "Free Pascal"
 msgstr ""
 
+#: lazarusidestrconsts.lisfreepascalcompilermessages
+msgid "Free Pascal Compiler messages"
+msgstr ""
+
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr "Kompilator Free Pascal tidak ditemukan"
@@ -13104,14 +13108,6 @@ msgstr "Diinstalasi"
 msgid "Install on next start"
 msgstr "Instalasi saat mulai nanti"
 
-#: lazarusidestrconsts.lispckexplisrequiredby
-msgid "Selected package is required by:"
-msgstr "Paket yang dipilih dibutuhkan oleh:"
-
-#: lazarusidestrconsts.lispckexplloadedpackages
-msgid "Loaded Packages:"
-msgstr "Paket yang Diambil:"
-
 #: lazarusidestrconsts.lispckexplpackagenotfound
 msgid "Package %s not found"
 msgstr "Paket %s tidak ditemukan"
@@ -13121,7 +13117,9 @@ msgid "%sState: "
 msgstr "%sKondisi: "
 
 #: lazarusidestrconsts.lispckexpluninstallonnextstart
-msgid "Uninstall on next start"
+#, fuzzy
+#| msgid "Uninstall on next start"
+msgid "Uninstall on next start (unless needed by an installed package)"
 msgstr "Jangan instalasi saat mulai nanti"
 
 #: lazarusidestrconsts.lispckexpluninstallpackage

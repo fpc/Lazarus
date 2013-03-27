@@ -8943,6 +8943,10 @@ msgstr "&Spätné hľadanie"
 msgid "Free Pascal"
 msgstr "Free Pascal"
 
+#: lazarusidestrconsts.lisfreepascalcompilermessages
+msgid "Free Pascal Compiler messages"
+msgstr ""
+
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr "Nenájdený prekladač Free Pascal"
@@ -13173,14 +13177,6 @@ msgstr "Nainštalované"
 msgid "Install on next start"
 msgstr "Inštalovať pri ďalšom štarte"
 
-#: lazarusidestrconsts.lispckexplisrequiredby
-msgid "Selected package is required by:"
-msgstr "Zvolené balíčky sú vyžadované:"
-
-#: lazarusidestrconsts.lispckexplloadedpackages
-msgid "Loaded Packages:"
-msgstr "Načítané balíčky:"
-
 #: lazarusidestrconsts.lispckexplpackagenotfound
 msgid "Package %s not found"
 msgstr "Balíček %s nenájdený"
@@ -13190,7 +13186,9 @@ msgid "%sState: "
 msgstr "%sStav: "
 
 #: lazarusidestrconsts.lispckexpluninstallonnextstart
-msgid "Uninstall on next start"
+#, fuzzy
+#| msgid "Uninstall on next start"
+msgid "Uninstall on next start (unless needed by an installed package)"
 msgstr "Odinštalovať pri ďalšom štarte"
 
 #: lazarusidestrconsts.lispckexpluninstallpackage

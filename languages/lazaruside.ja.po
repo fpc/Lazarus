@@ -9035,6 +9035,10 @@ msgstr "後方検索(&B)"
 msgid "Free Pascal"
 msgstr "Free Pascal"
 
+#: lazarusidestrconsts.lisfreepascalcompilermessages
+msgid "Free Pascal Compiler messages"
+msgstr ""
+
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr "Free Pascalコンパイラが見つかりません"
@@ -13321,14 +13325,6 @@ msgstr "インストールされました"
 msgid "Install on next start"
 msgstr "次回起動時にインストール"
 
-#: lazarusidestrconsts.lispckexplisrequiredby
-msgid "Selected package is required by:"
-msgstr "下記は選択したパッケージを必要としています："
-
-#: lazarusidestrconsts.lispckexplloadedpackages
-msgid "Loaded Packages:"
-msgstr "読み込みパッケージ:"
-
 #: lazarusidestrconsts.lispckexplpackagenotfound
 msgid "Package %s not found"
 msgstr "パッケージ %s が見つかりません"
@@ -13338,7 +13334,9 @@ msgid "%sState: "
 msgstr "%s状態:"
 
 #: lazarusidestrconsts.lispckexpluninstallonnextstart
-msgid "Uninstall on next start"
+#, fuzzy
+#| msgid "Uninstall on next start"
+msgid "Uninstall on next start (unless needed by an installed package)"
 msgstr "次回の起動時にアンストール"
 
 #: lazarusidestrconsts.lispckexpluninstallpackage

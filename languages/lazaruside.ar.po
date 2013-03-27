@@ -8667,6 +8667,10 @@ msgstr "بحث للخلف"
 msgid "Free Pascal"
 msgstr "فري باسكال"
 
+#: lazarusidestrconsts.lisfreepascalcompilermessages
+msgid "Free Pascal Compiler messages"
+msgstr ""
+
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr "لم يتم ايجاد مترجم فري  باسكال"
@@ -12585,14 +12589,6 @@ msgstr "تم تنصيبه"
 msgid "Install on next start"
 msgstr "التركيب عند التشغيل القادم"
 
-#: lazarusidestrconsts.lispckexplisrequiredby
-msgid "Selected package is required by:"
-msgstr "الحزمة المختارة مطلوبة من قبل:"
-
-#: lazarusidestrconsts.lispckexplloadedpackages
-msgid "Loaded Packages:"
-msgstr "الحزم المحملة:"
-
 #: lazarusidestrconsts.lispckexplpackagenotfound
 msgid "Package %s not found"
 msgstr "الحزمة %s لم يتم إيجادها"
@@ -12602,7 +12598,9 @@ msgid "%sState: "
 msgstr "%sالحالة:"
 
 #: lazarusidestrconsts.lispckexpluninstallonnextstart
-msgid "Uninstall on next start"
+#, fuzzy
+#| msgid "Uninstall on next start"
+msgid "Uninstall on next start (unless needed by an installed package)"
 msgstr "إزالة التركيب عند التشغيل االقادم"
 
 #: lazarusidestrconsts.lispckexpluninstallpackage

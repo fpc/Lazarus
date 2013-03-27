@@ -8924,6 +8924,10 @@ msgstr "&Recherche en arrière"
 msgid "Free Pascal"
 msgstr "Free Pascal"
 
+#: lazarusidestrconsts.lisfreepascalcompilermessages
+msgid "Free Pascal Compiler messages"
+msgstr ""
+
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr "Compilateur Free Pascal introuvable"
@@ -13151,14 +13155,6 @@ msgstr "Installé"
 msgid "Install on next start"
 msgstr "Installer au prochain démarrage"
 
-#: lazarusidestrconsts.lispckexplisrequiredby
-msgid "Selected package is required by:"
-msgstr "Le paquet sélectionné est requis par:"
-
-#: lazarusidestrconsts.lispckexplloadedpackages
-msgid "Loaded Packages:"
-msgstr "Paquets chargés :"
-
 #: lazarusidestrconsts.lispckexplpackagenotfound
 msgid "Package %s not found"
 msgstr "Paquet %s non trouvé"
@@ -13168,7 +13164,9 @@ msgid "%sState: "
 msgstr "%sEtat : "
 
 #: lazarusidestrconsts.lispckexpluninstallonnextstart
-msgid "Uninstall on next start"
+#, fuzzy
+#| msgid "Uninstall on next start"
+msgid "Uninstall on next start (unless needed by an installed package)"
 msgstr "Désinstaller au prochain démarrage"
 
 #: lazarusidestrconsts.lispckexpluninstallpackage

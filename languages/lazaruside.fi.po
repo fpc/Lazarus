@@ -8636,6 +8636,10 @@ msgstr "Taaksepäin"
 msgid "Free Pascal"
 msgstr ""
 
+#: lazarusidestrconsts.lisfreepascalcompilermessages
+msgid "Free Pascal Compiler messages"
+msgstr ""
+
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr "Free Pascal kääntäjää ei löydy"
@@ -12535,14 +12539,6 @@ msgstr "Asennettu"
 msgid "Install on next start"
 msgstr "Asennetaan seuraavan käynnistyksen yhteydessä"
 
-#: lazarusidestrconsts.lispckexplisrequiredby
-msgid "Selected package is required by:"
-msgstr "Valittu komponenttipaketti käyttää:"
-
-#: lazarusidestrconsts.lispckexplloadedpackages
-msgid "Loaded Packages:"
-msgstr "Lazatut paketit:"
-
 #: lazarusidestrconsts.lispckexplpackagenotfound
 msgid "Package %s not found"
 msgstr "Komponenttipakettia %s ei löydetty"
@@ -12552,7 +12548,9 @@ msgid "%sState: "
 msgstr "%sTila:"
 
 #: lazarusidestrconsts.lispckexpluninstallonnextstart
-msgid "Uninstall on next start"
+#, fuzzy
+#| msgid "Uninstall on next start"
+msgid "Uninstall on next start (unless needed by an installed package)"
 msgstr "Poista asennus seuraavassa käynnistyksessä"
 
 #: lazarusidestrconsts.lispckexpluninstallpackage

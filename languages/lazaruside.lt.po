@@ -8845,6 +8845,10 @@ msgstr "Ieškoti a&tgal"
 msgid "Free Pascal"
 msgstr "Free Pascal"
 
+#: lazarusidestrconsts.lisfreepascalcompilermessages
+msgid "Free Pascal Compiler messages"
+msgstr ""
+
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr "Nerastas Free Pascal kompiliatorius"
@@ -12935,14 +12939,6 @@ msgstr "įdiegtas"
 msgid "Install on next start"
 msgstr "Įdiegti kitąkart startuojant"
 
-#: lazarusidestrconsts.lispckexplisrequiredby
-msgid "Selected package is required by:"
-msgstr "Pažymėtojo paketo reikia:"
-
-#: lazarusidestrconsts.lispckexplloadedpackages
-msgid "Loaded Packages:"
-msgstr "Įkelti paketai:"
-
 #: lazarusidestrconsts.lispckexplpackagenotfound
 msgid "Package %s not found"
 msgstr "%s paketas nerastas"
@@ -12952,7 +12948,9 @@ msgid "%sState: "
 msgstr "%sBūsena: "
 
 #: lazarusidestrconsts.lispckexpluninstallonnextstart
-msgid "Uninstall on next start"
+#, fuzzy
+#| msgid "Uninstall on next start"
+msgid "Uninstall on next start (unless needed by an installed package)"
 msgstr "Išdiegti kitąkart startuojant"
 
 #: lazarusidestrconsts.lispckexpluninstallpackage

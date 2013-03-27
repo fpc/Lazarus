@@ -8967,6 +8967,10 @@ msgstr "向后搜索(&B)"
 msgid "Free Pascal"
 msgstr ""
 
+#: lazarusidestrconsts.lisfreepascalcompilermessages
+msgid "Free Pascal Compiler messages"
+msgstr ""
+
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr "Free Pascal 编译器未找到"
@@ -13205,14 +13209,6 @@ msgstr "已经安装"
 msgid "Install on next start"
 msgstr "下一次启动时安装"
 
-#: lazarusidestrconsts.lispckexplisrequiredby
-msgid "Selected package is required by:"
-msgstr "选择包:"
-
-#: lazarusidestrconsts.lispckexplloadedpackages
-msgid "Loaded Packages:"
-msgstr "装载的包:"
-
 #: lazarusidestrconsts.lispckexplpackagenotfound
 msgid "Package %s not found"
 msgstr "未找到包 %s"
@@ -13222,7 +13218,9 @@ msgid "%sState: "
 msgstr "%s状态: "
 
 #: lazarusidestrconsts.lispckexpluninstallonnextstart
-msgid "Uninstall on next start"
+#, fuzzy
+#| msgid "Uninstall on next start"
+msgid "Uninstall on next start (unless needed by an installed package)"
 msgstr "下一次启动时卸载"
 
 #: lazarusidestrconsts.lispckexpluninstallpackage

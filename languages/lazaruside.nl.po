@@ -8886,6 +8886,10 @@ msgstr ""
 msgid "Free Pascal"
 msgstr ""
 
+#: lazarusidestrconsts.lisfreepascalcompilermessages
+msgid "Free Pascal Compiler messages"
+msgstr ""
+
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr "FP compiler niet gevonden"
@@ -13046,14 +13050,6 @@ msgstr "Geinstalleerd"
 msgid "Install on next start"
 msgstr "Installeer bij volgende start"
 
-#: lazarusidestrconsts.lispckexplisrequiredby
-msgid "Selected package is required by:"
-msgstr "Geselecteerde pakket is nodig voor:"
-
-#: lazarusidestrconsts.lispckexplloadedpackages
-msgid "Loaded Packages:"
-msgstr "Geladen Pakketten:"
-
 #: lazarusidestrconsts.lispckexplpackagenotfound
 msgid "Package %s not found"
 msgstr "Pakket %s niet gevonden"
@@ -13063,7 +13059,9 @@ msgid "%sState: "
 msgstr "%sStatus: "
 
 #: lazarusidestrconsts.lispckexpluninstallonnextstart
-msgid "Uninstall on next start"
+#, fuzzy
+#| msgid "Uninstall on next start"
+msgid "Uninstall on next start (unless needed by an installed package)"
 msgstr "De-installeer bij volgende start"
 
 #: lazarusidestrconsts.lispckexpluninstallpackage
