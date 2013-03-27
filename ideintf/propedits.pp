@@ -629,9 +629,20 @@ type
   with the property being edited (e.g. the ActiveControl property). }
 
   TComponentPropertyEditor = class(TPersistentPropertyEditor)
+  private
+    fIgnoreClass: TControlClass;
   public
     function AllEqual: Boolean; override;
     procedure GetValues(Proc: TGetStrProc); override;
+  end;
+
+  { TCoolBarControlPropertyEditor }
+
+  TCoolBarControlPropertyEditor = class(TComponentPropertyEditor)
+  protected
+    function CheckNewValue(APersistent: TPersistent): boolean; override;
+  public
+    constructor Create(Hook: TPropertyEditorHook; APropCount: Integer); override;
   end;
 
 { TComponentAllPropertyEditor
@@ -3856,8 +3867,7 @@ end;
 
 { TClassPropertyEditor }
 
-constructor TClassPropertyEditor.Create(Hook: TPropertyEditorHook;
-  APropCount: Integer);
+constructor TClassPropertyEditor.Create(Hook: TPropertyEditorHook; APropCount: Integer);
 begin
   inherited Create(Hook, APropCount);
   FSubPropsTypeFilter := tkAny;
@@ -4275,7 +4285,8 @@ begin
 end;
 
 procedure TPersistentPropertyEditor.SetValue(const NewValue: ansistring);
-var Persistent: TPersistent;
+var
+  Persistent: TPersistent;
 begin
   if NewValue=GetValue then exit;
   if (NewValue = '') or (NewValue=oisNone) then
@@ -4310,24 +4321,33 @@ begin
 end;
 
 procedure TComponentPropertyEditor.GetValues(Proc: TGetStrProc);
-var
-  comp: TPersistent;
 
   procedure TraverseComponents(Root: TComponent);
   var
     i: integer;
   begin
-    for i := 0 to Root.ComponentCount - 1 do   // A hack for testing purposes !!!
-      if not ((Root.Components[i] is TCustomCoolBar) and (comp is TCoolBand)) then
+    for i := 0 to Root.ComponentCount - 1 do
+      if not (Root.Components[i] is fIgnoreClass) then
         Proc(Root.Components[i].Name);
   end;
 
 begin
-  comp := GetComponent(0);
-  //debugln(['TComponentPropertyEditor.GetValues: Comp.ClassName=', comp.ClassName]);
   Proc(oisNone);
   if Assigned(PropertyHook) and (PropertyHook.FLookupRoot is TComponent) then
     TraverseComponents(TComponent(PropertyHook.FLookupRoot));
+end;
+
+{ TCoolBarControlPropertyEditor }
+
+constructor TCoolBarControlPropertyEditor.Create(Hook: TPropertyEditorHook; APropCount: Integer);
+begin
+  inherited Create(Hook, APropCount);
+  fIgnoreClass := TCustomCoolBar;
+end;
+
+function TCoolBarControlPropertyEditor.CheckNewValue(APersistent: TPersistent): boolean;
+begin
+  raise Exception.Create('TCoolBarControlPropertyEditor.CheckNewValue is called after all!');
 end;
 
 { TComponentAllPropertyEditor }
@@ -6345,8 +6365,7 @@ end;
 
 { TNoteBookActiveControlPropertyEditor }
 
-function TNoteBookActiveControlPropertyEditor.CheckNewValue(
-  APersistent: TPersistent): boolean;
+function TNoteBookActiveControlPropertyEditor.CheckNewValue(APersistent: TPersistent): boolean;
 var
   AComponent: TPersistent;
   Notebook: TCustomTabControl;
@@ -6664,7 +6683,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TCursor), nil, '', TCursorPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TComponent), nil, '', TComponentAllPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TComponent), nil, 'ActiveControl', TComponentPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TComponent), nil, 'Control', TComponentPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TControl), TCoolBand, 'Control', TCoolBarControlPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TCollection), nil, '', TCollectionPropertyEditor);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFileDialog, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFilterComboBox, 'Filter', TFileDlgFilterProperty);
