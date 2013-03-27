@@ -205,8 +205,6 @@ type
       property Active:boolean read FActive write SetActive;
     end;
 
-
-
 implementation
 
 {$ifdef wince}
@@ -234,7 +232,6 @@ function WndCallback(Ahwnd: HWND; uMsg: UINT; wParam: WParam;
   var
     bounds:TRect;
     DC: HDC;
-    PS: TPaintStruct;
     size:TPOINT;
     AXC:TActiveXContainer;
 begin
@@ -246,7 +243,7 @@ begin
       size.x:=(LOWORD(lparam)*2540) div Screen.PixelsPerInch;
       size.y:=(HIWORD(lparam)*2540) div Screen.PixelsPerInch;
       AXC.Width:=LOWORD(lparam);
-      AXC.Height:=LOWORD(lparam);
+      AXC.Height:=HIWORD(lparam);
       olecheck((AXC.ComServer as IOleObject).SetExtent(DVASPECT_CONTENT,size));
       bounds:=AXC.ClientRect;
       olecheck((AXC.ComServer as IOleInPlaceObject).SetObjectRects(@bounds,@bounds));
@@ -261,8 +258,6 @@ begin
   end;
   result:=CallWindowProc(AXC.FPrevWndProc,Ahwnd, uMsg, WParam, LParam);
 end;
-
-
 
 { TActiveXContainer }
 
@@ -546,8 +541,6 @@ end;
 function TActiveXContainer.Invoke(DispID: LongInt; const iid: TGUID;
   LocaleID: longint; Flags: Word; var params; VarResult, ExcepInfo,
   ArgErr: pointer): HResult; stdcall;
-var
-  F: TFont;
 const
   DISPID_AMBIENT_BACKCOLOR         = -701;
   DISPID_AMBIENT_DISPLAYNAME       = -702;
@@ -561,8 +554,6 @@ const
   DISPID_AMBIENT_SHOWHATCHING      = -712;
   DISPID_AMBIENT_SUPPORTSMNEMONICS = -714;
   DISPID_AMBIENT_AUTOCLIP          = -715;
-
-
 begin
   if (Flags and DISPATCH_PROPERTYGET <> 0) and (VarResult <> nil) then
   begin
