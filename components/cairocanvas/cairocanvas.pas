@@ -636,7 +636,7 @@ var
         CurLine.EndL := 1;
       s1 := Copy(s, CurLine.Start, CurLine.EndL-CurLine.Start+1);
       cairo_text_extents(cr, PChar(s1), @te);
-      CurLine.Width := te.width;
+      CurLine.Width := te.width + te.x_bearing;
     end;
     if st > 0 then begin
       CurLine := TLine.Create;
@@ -730,7 +730,8 @@ begin
     end else begin
       SelectFont;
       {$ifdef pangocairo}
-      theFOnt := format('%s %s %d',[Font.name, StylesToStr(Font.Style), Round(Font.Height*FontScale)]);
+      // use absolute font size sintax  (px)
+      theFOnt := format('%s %s %dpx',[Font.name, StylesToStr(Font.Style), abs(Font.Size)]);
       {$endif}
     end;
     cairo_font_extents(cr, @fe);
@@ -813,7 +814,11 @@ begin
         taCenter: x := BoxLeft + BoxWidth/2 - CurLine.Width/2;
         taRightJustify: x := BoxLeft+BoxWidth - CurLine.Width;
       end;
+      {$ifdef pangocairo}
+      cairo_move_to(cr, x, y);
+      {$else}
       cairo_move_to(cr, x, y+fe.ascent);
+      {$endif}
       s1 := Copy(s, CurLine.Start, CurLine.EndL-CurLine.Start+1);
       {$ifdef pangocairo}
       pango_layout_set_text(layout, pchar(s1), -1);
