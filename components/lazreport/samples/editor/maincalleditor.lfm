@@ -5,7 +5,7 @@ object frmMain: TfrmMain
   Width = 828
   ActiveControl = Panel1
   Caption = 'LazReport Test Suite'
-  ClientHeight = 518
+  ClientHeight = 520
   ClientWidth = 828
   Font.Name = 'Sans'
   Menu = MainMenu1
@@ -39,8 +39,8 @@ object frmMain: TfrmMain
   end
   object sbar: TStatusBar
     Left = 0
-    Height = 21
-    Top = 497
+    Height = 19
+    Top = 501
     Width = 828
     Panels = <    
       item
@@ -72,7 +72,7 @@ object frmMain: TfrmMain
     AnchorSideRight.Control = grid
     AnchorSideBottom.Control = sbar
     Left = 0
-    Height = 374
+    Height = 378
     Top = 123
     Width = 204
     Anchors = [akTop, akLeft, akBottom]
@@ -91,7 +91,7 @@ object frmMain: TfrmMain
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = sbar
     Left = 0
-    Height = 374
+    Height = 378
     Top = 123
     Width = 828
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -123,47 +123,47 @@ object frmMain: TfrmMain
       Left = 6
       Height = 33
       Top = 6
-      Width = 170
+      Width = 173
       Action = accNewReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 0
     end
     object btnOpenReport: TButton
-      Left = 182
+      Left = 185
       Height = 33
       Top = 6
-      Width = 144
+      Width = 147
       Action = accOpenReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 2
     end
     object btnEditReport: TButton
-      Left = 332
+      Left = 338
       Height = 33
       Top = 6
-      Width = 135
+      Width = 138
       Action = accEditReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 3
     end
     object btnPreviewReport: TButton
-      Left = 473
+      Left = 482
       Height = 33
       Top = 6
-      Width = 162
+      Width = 165
       Action = accPreviewReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 4
     end
     object btnPrintReport: TButton
-      Left = 641
+      Left = 653
       Height = 33
       Top = 6
-      Width = 181
+      Width = 169
       Action = accPrintReport
       AutoSize = True
       BorderSpacing.Around = 6
@@ -173,7 +173,7 @@ object frmMain: TfrmMain
       Left = 6
       Height = 33
       Top = 45
-      Width = 170
+      Width = 173
       Action = accCustomPreview
       AutoSize = True
       BorderSpacing.Around = 6
@@ -181,10 +181,10 @@ object frmMain: TfrmMain
     end
     object btnPrintGrid: TButton
       AnchorSideRight.Side = asrBottom
-      Left = 182
+      Left = 185
       Height = 33
       Top = 45
-      Width = 144
+      Width = 147
       Action = accPrintGrid
       AutoSize = True
       BorderSpacing.Around = 6
@@ -192,10 +192,10 @@ object frmMain: TfrmMain
     end
     object btnComposite: TButton
       AnchorSideTop.Side = asrBottom
-      Left = 332
+      Left = 338
       Height = 33
       Top = 45
-      Width = 135
+      Width = 138
       Action = accComposite
       AutoSize = True
       BorderSpacing.Around = 6
@@ -204,20 +204,20 @@ object frmMain: TfrmMain
     object btnImageList: TButton
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 473
+      Left = 482
       Height = 33
       Top = 45
-      Width = 162
+      Width = 165
       Action = accThumbnails
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 7
     end
     object btnMasterDetail: TToggleBox
-      Left = 641
+      Left = 653
       Height = 33
       Top = 45
-      Width = 181
+      Width = 169
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Master-Detail Test'
@@ -624,6 +624,14 @@ object frmMain: TfrmMain
   object frDbMaster: TfrDBDataSet
     DataSet = master
     left = 112
+    top = 312
+  end
+  object frHtmlDivExport1: TfrHtmlDivExport
+    left = 500
+    top = 228
+  end
+  object frTNPDFExport1: TfrTNPDFExport
+    left = 420
     top = 312
   end
 end

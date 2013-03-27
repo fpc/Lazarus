@@ -30,7 +30,7 @@ uses
   Buttons, StdCtrls, LR_Const, LR_Class, LR_Desgn, Dbf, DB, DBGrids, LR_DBSet,
   LR_PGrid, Menus, ComCtrls, ActnList, Lr_e_txt, Lr_e_htm, LR_E_CSV, LR_DSet,
   LR_BarC, LR_RRect, LR_Shape, LR_ChBox, lr_e_pdf, lconvencoding, lr_e_gen,
-  lr_utils, LCLProc, ExtCtrls, custompreview, LR_Pars;
+  lr_utils, LCLProc, ExtCtrls, custompreview, LR_Pars, LR_e_htmldiv;
 
 type
 
@@ -65,6 +65,8 @@ type
     btnComposite: TButton;
     comboIndex: TComboBox;
     frDbMaster: TfrDBDataSet;
+    frHtmlDivExport1: TfrHtmlDivExport;
+    frTNPDFExport1: TfrTNPDFExport;
     mastergrid: TDBGrid;
     Panel1: TPanel;
     srcMaster: TDatasource;
