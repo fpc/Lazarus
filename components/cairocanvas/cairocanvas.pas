@@ -2,7 +2,7 @@ unit CairoCanvas;
 
 {$mode objfpc}{$H+}
 
-{.$define pangocairo}
+{$define pangocairo}
 
 interface
 
