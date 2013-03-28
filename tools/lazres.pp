@@ -64,7 +64,7 @@ var
 begin
   if ParamCount<2 then begin
     debugln('Usage: ',ExtractFileName(ParamStrUTF8(0))
-       ,' resourcefilename filename1 [filename2 ... filenameN]');
+       ,' resourcefilename filename1[=resname1] [filename2[=resname2] ... filenameN=resname[N]]');
     debugln('       ',ExtractFileName(ParamStrUTF8(0))
        ,' resourcefilename @filelist');
     exit;
@@ -87,12 +87,19 @@ begin
           FileList.Delete(a);
     end
     else for a:=2 to ParamCount do FileList.Add(ParamStrUTF8(a));
-    
+    // cleanup lines
+    for a:=fileList.Count-1 downto 0 do begin
+      s := Trim(filelist[a]);
+      if (s='') or (s[1]='#') then
+        filelist.Delete(a);
+      if filelist.Names[a]='' then
+        filelist[a] := filelist[a] + '=';
+    end;
     ResourceFilename := ParamStrUTF8(1);
     FullResourceFilename := ExpandFileNameUTF8(ResourceFilename);
     // check that all resources exists and are not the destination file
     for a:=0 to FileList.Count-1 do begin
-      S := FileList[a]; 
+      S := FileList.Names[a];
       if not FileExistsUTF8(S) 
       then begin
         debugln('ERROR: file not found: ', S);
@@ -114,7 +121,7 @@ begin
     ResMemStream:=TMemoryStream.Create;
     try
       for a:=0 to FileList.Count-1 do begin
-        BinFilename:=FileList[a];
+        BinFilename:=FileList.Names[a];
         dbgout(BinFilename);
         try
           BinFileStream:=TFileStream.Create(UTF8ToSys(BinFilename),fmOpenRead);
@@ -137,9 +144,12 @@ begin
             end 
             else begin
               ResourceType:=copy(BinExt,2,length(BinExt)-1);
-              ResourceName:=ExtractFileName(BinFilename);
-              ResourceName:=copy(ResourceName,1
-                 ,length(ResourceName)-length(BinExt));
+              ResourceName := FileList.ValueFromIndex[a];
+              if ResourceName='' then begin
+                ResourceName:=ExtractFileName(BinFilename);
+                ResourceName:=copy(ResourceName,1
+                   ,length(ResourceName)-length(BinExt));
+              end;
               if ResourceName='' then begin
                 debugln(' ERROR: no resourcename');
                 halt(2);
