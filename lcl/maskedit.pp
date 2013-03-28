@@ -1615,14 +1615,16 @@ begin
   {$IFNDEF MASKEDIT_NOVALIDATEONEXIT}
   //Do not validate if FValidationFailed, or risk raising an exception while the previous exception was
   //not handled, resulting in an application crash
-  if IsMasked and (FTextOnEnter <> Inherited Text) and (not FValidationFailed) then
+  if IsMasked and (FTextOnEnter <> Inherited Text) then
   begin
     //assume failure
     try
       //debugln('TCustomMaskedit.DoExit: try ValidateEdit');
-      FValidationFailed := True;
-      ValidateEdit;
-      FValidationFailed := False;
+      if (not FValidationFailed) then
+      begin
+        ValidateEdit;
+        FValidationFailed := False;
+      end ;
     finally
       if FValidationFailed then
       begin
@@ -1967,6 +1969,7 @@ begin
     if not TextIsValid(S) then
     begin
       SetCursorPos;
+      FValidationFailed := True;
       Raise EDBEditError.Create(SMaskEditNoMatch);
     end;
   end;
