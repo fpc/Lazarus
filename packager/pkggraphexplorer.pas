@@ -219,7 +219,9 @@ var
   NodeText: String;
 begin
   Result:=nil;
-  Node:=LvlGraphControl1.Graph.FirstSelected;
+  Node:=nil;
+  if assigned(LvlGraphControl1) and assigned(LvlGraphControl1.Graph) Then
+    Node:=LvlGraphControl1.Graph.FirstSelected;
   if Node=nil then exit;
   NodePackageID:=TLazPackageID.Create;
   try
