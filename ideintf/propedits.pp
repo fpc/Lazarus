@@ -4347,6 +4347,7 @@ end;
 
 function TCoolBarControlPropertyEditor.CheckNewValue(APersistent: TPersistent): boolean;
 begin
+  Result:=false;
   raise Exception.Create('TCoolBarControlPropertyEditor.CheckNewValue is called after all!');
 end;
 
