@@ -814,11 +814,7 @@ begin
         taCenter: x := BoxLeft + BoxWidth/2 - CurLine.Width/2;
         taRightJustify: x := BoxLeft+BoxWidth - CurLine.Width;
       end;
-      {$ifdef pangocairo}
-      cairo_move_to(cr, x, y);
-      {$else}
       cairo_move_to(cr, x, y+fe.ascent);
-      {$endif}
       s1 := Copy(s, CurLine.Start, CurLine.EndL-CurLine.Start+1);
       {$ifdef pangocairo}
       pango_layout_set_text(layout, pchar(s1), -1);
@@ -828,10 +824,11 @@ begin
       y := y + fe.height;
     end;
     {$ifdef pangocairo}
-    pango_font_description_free(desc);
     pango_cairo_update_layout(cr, layout);
-    pango_cairo_show_layout(cr, layout);
+    // get the same text origin as cairo_show_text (baseline left, instead of Pango's top left)
+    pango_cairo_show_layout_line (cr, pango_layout_get_line (layout, 0));
     g_object_unref(layout);
+    pango_font_description_free(desc);
     {$endif}
 
   finally
