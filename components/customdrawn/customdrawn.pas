@@ -9,7 +9,7 @@ interface
 uses
   customdrawnextras, customdrawn_wince, customdrawn_win2000, 
   customdrawn_extra1, customdrawn_kde, customdrawn_gnome, 
-  customdrawnlcldrawers, LazarusPackageIntf;
+  customdrawnlcldrawers, customdrawn_windows7, LazarusPackageIntf;
 
 implementation
 

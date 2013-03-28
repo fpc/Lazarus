@@ -10,10 +10,10 @@ object Form1: TForm1
   LCLVersion = '1.1'
   object comboControls: TComboBox
     Left = 80
-    Height = 21
+    Height = 23
     Top = 12
     Width = 136
-    ItemHeight = 13
+    ItemHeight = 15
     ItemIndex = 0
     Items.Strings = (
       'TCDMenu'
@@ -61,7 +61,7 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 463
-    PageIndex = 4
+    PageIndex = 2
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 2
     TabStop = True
@@ -151,6 +151,16 @@ object Form1: TForm1
         DrawStyle = dsWin2000
         Enabled = False
         TabOrder = 7
+        TabStop = True
+      end
+      object CDButton8: TCDButton
+        Left = 120
+        Height = 25
+        Top = 200
+        Width = 91
+        Caption = 'dsWindows7'
+        DrawStyle = dsWindows7
+        TabOrder = 8
         TabStop = True
       end
     end
@@ -486,7 +496,7 @@ object Form1: TForm1
         Lines.Strings = (
           'dsDefault'
         )
-        ItemIndex = 0
+        ItemIndex = -1
         KeyboardInputBehavior = kibAutomatic
       end
       object comboAndroid: TCDComboBox
@@ -498,7 +508,7 @@ object Form1: TForm1
         Lines.Strings = (
           'dsAndroid'
         )
-        ItemIndex = 0
+        ItemIndex = -1
         KeyboardInputBehavior = kibAutomatic
       end
       object comboWinXP: TCDComboBox
@@ -510,7 +520,7 @@ object Form1: TForm1
         Lines.Strings = (
           'dsWinXP'
         )
-        ItemIndex = 0
+        ItemIndex = -1
         KeyboardInputBehavior = kibAutomatic
       end
     end

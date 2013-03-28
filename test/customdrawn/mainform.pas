@@ -27,6 +27,7 @@ type
     CDButton7: TCDButton;
     buttonGlyphWinCE: TCDButton;
     buttonGlyphWinXP: TCDButton;
+    CDButton8: TCDButton;
     CDCheckBox1: TCDCheckBox;
     CDCheckBox2: TCDCheckBox;
     CDCheckBox3: TCDCheckBox;

@@ -885,10 +885,14 @@ components/customdrawn/customdrawn_gnome.pas svneol=native#text/plain
 components/customdrawn/customdrawn_kde.pas svneol=native#text/plain
 components/customdrawn/customdrawn_win2000.pas svneol=native#text/plain
 components/customdrawn/customdrawn_wince.pas svneol=native#text/plain
+components/customdrawn/customdrawn_windows7.pas svneol=native#text/pascal
 components/customdrawn/customdrawnextras.pas svneol=native#text/plain
 components/customdrawn/customdrawnimages/android.lrs svneol=native#text/plain
 components/customdrawn/customdrawnimages/android_checkbox.bmp -text
 components/customdrawn/customdrawnimages/android_checkbox_checked.bmp -text
+components/customdrawn/customdrawnimages/build.bat svneol=native#text/plain
+components/customdrawn/customdrawnimages/windows7.lrs svneol=native#text/plain
+components/customdrawn/customdrawnimages/windows7_button.bmp -text
 components/customdrawn/customdrawnlcldrawers.pas svneol=native#text/plain
 components/customdrawn/paletteimg.lrs svneol=native#text/plain
 components/customform/custforms.pp svneol=native#text/plain
