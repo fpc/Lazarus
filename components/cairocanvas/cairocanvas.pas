@@ -37,6 +37,10 @@ type
     procedure FillAndStroke;
     procedure FillOnly;
     procedure StrokeOnly;
+    {$ifdef pangocairo}
+    function StylesToStr(Styles: TFontStyles):string;
+    function StyleToStr(Style: TFontStyle):string;
+    {$endif}
   protected
     cr: Pcairo_t;
     ScaleX, ScaleY, FontScale: Double;
@@ -389,6 +393,26 @@ begin
   end;
 end;
 
+{$ifdef pangocairo}
+function TCairoPrinterCanvas.StylesToStr(Styles: TFontStyles): string;
+begin
+  Result := '';
+  if fsBold in Styles then
+    Result := Result + 'bold ';
+  if fsItalic in Styles then
+    Result := Result + 'italic ';
+end;
+
+function TCairoPrinterCanvas.StyleToStr(Style: TFontStyle): string;
+begin
+  result := '';
+  case Style of
+    fsBold: result := 'bold ';
+    fsItalic: result := 'italic ';
+  end;
+end;
+{$endif}
+
 procedure TCairoPrinterCanvas.FillAndStroke;
 begin
   if Brush.Style <> bsClear then begin
@@ -583,25 +607,52 @@ end;
 procedure TCairoPrinterCanvas.TextOut(X, Y: Integer; const Text: String);
 var
   e: cairo_font_extents_t;
+  {$ifdef pangocairo}
+  Layout: PPangoLayout;
+  desc: PPangoFontDescription;
+  theFont: string;
+  {$endif}
 begin
   Changing;
 
   RequiredState([csHandleValid, csFontValid, csBrushValid]);
   SelectFont;
   cairo_font_extents(cr, @e);
+  cairo_save(cr);
+  {$ifdef pangocairo}
+  // use absolute font size sintax  (px)
+  theFOnt := format('%s %s %dpx',[Font.name, StylesToStr(Font.Style), abs(Font.Size)]);
+  Layout := Pango_Cairo_Create_Layout(cr);
+  desc := pango_font_description_from_string(pchar(TheFont));
+  pango_layout_set_font_description(layout, desc);
+  {$endif}
   if Font.Orientation = 0 then
   begin
     cairo_move_to(cr, SX(X), SY(Y)+e.ascent);
+    {$ifdef pangocairo}
+    pango_layout_set_text(layout, PChar(Text), -1);
+    {$else}
     cairo_show_text(cr, PChar(Text)); //Reference point is on the base line
+    {$endif}
   end
   else
   begin
-    cairo_save(cr);
     cairo_move_to(cr, SX(X)+e.ascent, SY(Y));
     cairo_rotate(cr, -gradtorad(Font.Orientation));
-    cairo_show_text(cr, PChar(Text));
-    cairo_restore(cr);
+    {$ifdef pangocairo}
+    pango_layout_set_text(layout, PChar(Text), -1);
+    {$else}
+    cairo_show_text(cr, PChar(Text)); //Reference point is on the base line
+    {$endif}
   end;
+  {$ifdef pangocairo}
+  pango_cairo_update_layout(cr, layout);
+  // get the same text origin as cairo_show_text (baseline left, instead of Pango's top left)
+  pango_cairo_show_layout_line (cr, pango_layout_get_line (layout, 0));
+  g_object_unref(layout);
+  pango_font_description_free(desc);
+  {$endif}
+  cairo_restore(cr);
   Changed;
 end;
 
@@ -650,25 +701,6 @@ var
     LastBreakEndL := 0;
     LastBreakStart := 0;
   end;
-  {$ifdef pangocairo}
-  function StylesToStr(Styles: TFontStyles):string;
-  begin
-    Result := '';
-    if fsBold in Styles then
-      Result := Result + 'bold ';
-    if fsItalic in Styles then
-      Result := Result + 'italic ';
-  end;
-
-  function StyleToStr(Style: TFontStyle):string;
-  begin
-    result := '';
-    case Style of
-      fsBold: result := 'bold ';
-      fsItalic: result := 'italic ';
-    end;
-  end;
-  {$endif}
 var
   te: cairo_text_extents_t;
   fd: TFontData;
@@ -679,7 +711,6 @@ var
   BreakBoxWidth: Double;
   x, y: Double;
   {$ifdef pangocairo}
-  //--------
   Layout: PPangoLayout;
   desc: PPangoFontDescription;
   theFont: string;
