@@ -1955,6 +1955,7 @@ components/lazreport/source/addons/pdfexport/lr_pdfexp_reg.pas svneol=native#tex
 components/lazreport/source/addons/pdfexport/readme.txt svneol=native#text/plain
 components/lazreport/source/addons/pdfexport/tfrtnpdfexport.png -text svneol=unset#image/png
 components/lazreport/source/barcode.pas svneol=native#text/pascal
+components/lazreport/source/bullets.lrs svneol=native#text/plain
 components/lazreport/source/fr_pencil.lrs svneol=native#text/pascal
 components/lazreport/source/languages/lr_const.ar.po svneol=native#text/plain
 components/lazreport/source/languages/lr_const.cs.po svneol=native#text/plain
