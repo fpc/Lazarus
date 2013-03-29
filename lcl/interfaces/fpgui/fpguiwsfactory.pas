@@ -175,7 +175,8 @@ end;
 
 function RegisterCustomProgressBar: Boolean; alias : 'WSRegisterCustomProgressBar';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomProgressBar, TFpGuiWSProgressBar);
+  Result := True;
 end;
 
 function RegisterCustomUpDown: Boolean; alias : 'WSRegisterCustomUpDown';

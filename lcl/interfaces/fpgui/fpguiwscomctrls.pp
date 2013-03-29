@@ -101,6 +101,12 @@ type
   private
   protected
   public
+  published
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
+    class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
+//    class procedure SetStyle(const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle); override;
   end;
 
   { TFpGuiWSCustomUpDown }
@@ -161,6 +167,38 @@ type
 
 
 implementation
+
+uses
+  fpg_progressbar;
+
+{ TFpGuiWSProgressBar }
+
+class function TFpGuiWSProgressBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TFPGUIPrivateProgressBar.Create(AWinControl, AParams));
+end;
+
+class procedure TFpGuiWSProgressBar.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TFPGUIPrivateProgressBar(AWinControl.Handle).Free;
+  AWinControl.Handle := 0;
+end;
+
+class procedure TFpGuiWSProgressBar.ApplyChanges(
+  const AProgressBar: TCustomProgressBar);
+begin
+  SetPosition(AProgressBar, AProgressBar.Position);
+end;
+
+class procedure TFpGuiWSProgressBar.SetPosition(
+  const AProgressBar: TCustomProgressBar; const NewPosition: integer);
+var
+  lProgressBar: TfpgProgressBar;
+begin
+  lProgressBar := TFPGUIPrivateProgressBar(AProgressBar.Handle).ProgressBar;
+  lProgressBar.Position := NewPosition;
+end;
 
 { TFpGuiWSCustomNotebook }
 

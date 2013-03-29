@@ -112,6 +112,7 @@ uses
   FpGuiWSForms,
   FpGuiWSMenus,
   FpGuiWSStdCtrls,
+  FpGuiWSComCtrls,
 ////////////////////////////////////////////////////
   Graphics, buttons, Menus;
 

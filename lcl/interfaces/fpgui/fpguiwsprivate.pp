@@ -42,7 +42,7 @@ uses
   fpg_widget, fpg_form, fpg_button, fpg_combobox, fpg_dialogs,
   fpg_edit, fpg_checkbox, fpg_radiobutton, fpg_tab, fpg_memo,
   fpg_menu, fpg_label, fpg_listbox, fpg_panel,
-  fpg_popupwindow, fpg_base, fpguiproc;
+  fpg_popupwindow, fpg_base, fpg_progressbar, fpguiproc;
 
 
 type
@@ -471,6 +471,14 @@ type
     procedure PopUp(X, Y: Integer);
   end;
 
+  TFPGUIPrivateProgressBar = class(TFPGUIPrivateWidget)
+  public
+    procedure CreateWidget(const AParams: TCreateParams); override;
+  public
+    function ProgressBar: TfpgProgressBar;
+  end;
+
+
 var
   GlobalMouseCursorPos: TPoint;
   GlobalMouseCursorPosWidget: TFPGUIPrivateWidget;
@@ -479,6 +487,18 @@ implementation
 
 uses
   LCLMessageGlue;
+
+{ TFPGUIPrivateProgressBar }
+
+procedure TFPGUIPrivateProgressBar.CreateWidget(const AParams: TCreateParams);
+begin
+  Widget := TfpgProgressBar.Create(GetParentContainerWidget());
+end;
+
+function TFPGUIPrivateProgressBar.ProgressBar: TfpgProgressBar;
+begin
+  Result := TfpgProgressBar(Widget);
+end;
 
 { TFPGUIPrivate }
 
