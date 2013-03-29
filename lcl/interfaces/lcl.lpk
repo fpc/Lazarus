@@ -47,15 +47,16 @@ end else if LCLWidgetType='wince' then begin
 end else if LCLWidgetType='fpgui' then begin
   if undefined(fpGUIPlatform) then begin
     if SrcOS='win32' then
-      fpGUIPlatform := 'gdi'
+      fpGUIPlatform := 'gdi;'
     else
-      fpGUIPlatform := 'x11';
+      fpGUIPlatform := 'x11;';
   end;
   CustomOptions := ' -dfpgui'+fpGUIPlatform;
-  UnitPath := base+'gui;'
-             +base+'corelib;'
-             +base+'corelib/'+fpGUIPlatform;
-  IncPath := UnitPath;
+  UnitPath := base+'src/gui;'
+             +base+'src/corelib;'
+             +base+'src/corelib/'+fpGUIPlatform
+             +base+'src/corelib/reportengine;';
+  IncPath := UnitPath+base+'src;';
 end else if LCLWidgetType='customdrawn' then begin
   UnitPath := base+'android;';
 end;

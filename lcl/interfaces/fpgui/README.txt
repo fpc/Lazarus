@@ -1,25 +1,43 @@
-The Lazarus svn does not contain the fpGUI sources.
-You can get the fpGUI sources with
 
-git (State may 2010):
---------------------------------
-Using GIT: git clone git://fpgui.git.sourceforge.net/gitroot/fpgui/fpgui
-Web access: http://sourceforge.net/projects/fpgui/files/
+fpGUI Toolkit
+=============
 
-Copy or link directories
-<fpGUI dir>/src/gui ⇒ lazarus/lcl/interfaces/fpgui/gui
-<fpGUI dir>/src/corelib ⇒ lazarus/lcl/interfaces/fpgui/corelib
-<fpGUI dir>/src/VERSION_FILE.inc ⇒ lazarus/lcl/interfaces/fpgui/VERSION_FILE.inc
+The official fpGUI website is:
 
-For example via symlinks:
-cd lazarus/lcl/interfaces/fpgui
-export FPGUI_DIR=/path/to/fpgui
-rm -f corelib gui VERSION_FILE.inc
-ln -s $FPGUI_DIR/src/gui .
-ln -s $FPGUI_DIR/src/corelib .
-ln -s $FPGUI_DIR/src/VERSION_FILE.inc .
+  http://fpgui.sourceforge.net
+
+
+Getting the source code
+-----------------------
+The Lazarus svn does not contain the fpGUI sources. You can get the
+fpGUI sources via the fpGUI Git repository as follows:
+
+  git clone git://git.code.sf.net/p/fpgui/code fpgui-code
+
+...or you can download a zip archive of the latest code, using
+the mirror repository on GitHub.
+
+  https://github.com/graemeg/fpGUI/archive/master.zip
+
+
+Setup to compile LCL-fpGUI
+--------------------------
+
+ Option 1)
+   Copy the 'src' directory from the fpGUI sources into your Lazarus
+   directory as follows:
+
+     <fpgui>/src/ ⇒ <lazarus>/lcl/interfaces/fpgui/src/
+
+ Option 2)
+   Use your file systems's symbolic linking function to simply link
+   the fpGUI src directory to the correct location in Lazarus.
+
+   For example:
+     cd /opt/lazarus/lcl/interfaces/fpgui
+     ln -s /path/to/fpgui/src src
+
 
 For more details see:
-http://wiki.lazarus.freepascal.org/fpGUI_Interface
+http://wiki.freepascal.org/fpGUI_Interface
 
-Current code tested using fpgui 0.7.rc2
