@@ -1816,6 +1816,7 @@ components/lazreport/samples/barcode/cbunit.pas svneol=native#text/pascal
 components/lazreport/samples/barcode/reports/codigobarras.lrf svneol=native#text/xml
 components/lazreport/samples/editor/BarcodeTester.lrf svneol=native#text/xml
 components/lazreport/samples/editor/albumsbycountry.lrf svneol=LF#text/xml eol=lf
+components/lazreport/samples/editor/alignments.lrf svneol=native#text/xml
 components/lazreport/samples/editor/calleditorwithpkg.lpi svneol=native#text/plain
 components/lazreport/samples/editor/calleditorwithpkg.lpr svneol=native#text/pascal
 components/lazreport/samples/editor/calleditorwithpkg.res -text
