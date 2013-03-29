@@ -6246,6 +6246,21 @@ begin
     Rect^.Top := 0;//PaintWidget^.Allocation.Y;
     Rect^.Right := PaintWidget^.Allocation.Width;
     Rect^.Bottom := PaintWidget^.Allocation.Height;
+  end else
+  begin
+    // normalize rect
+    r := Rect^;
+    if r.Left>r.Right then
+    begin
+      r.Left := r.Right;
+      r.Right := Rect^.Left;
+    end;
+    if r.Top>r.Bottom then
+    begin
+      r.Top := r.Bottom;
+      r.Bottom := Rect^.Top;
+    end;
+    Rect := @r;
   end;
 
   gdkRect.X := Rect^.Left;
@@ -6285,6 +6300,16 @@ begin
   //DebugLn(['TGtk2WidgetSet.InvalidateRect ',GetWidgetDebugReport(Widget),' IsAPI=',GtkWidgetIsA(PGTKWidget(Widget),GTKAPIWidget_GetType)]);
   if GtkWidgetIsA(PGTKWidget(Widget),GTKAPIWidget_GetType) then
     GTKAPIWidget_InvalidateCaret(PGTKAPIWidget(Widget));
+end;
+
+function TGtk2WidgetSet.InvalidateRgn(Handle: HWND; Rgn: HRGN; Erase: Boolean
+  ): Boolean;
+var
+  R: TRect;
+begin
+  // TODO: use gdk_window_invalidate_region to implement this function
+  GetRgnBox(Rgn, @R);
+  InvalidateRect(Handle, @R, Erase);
 end;
 
 function TGtk2WidgetSet.IsIconic(handle: HWND): boolean;

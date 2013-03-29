@@ -157,6 +157,7 @@ function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; over
 
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
+function InvalidateRgn(Handle: HWND; Rgn: HRGN; Erase: Boolean): Boolean; override;
 function IsIconic(handle: HWND): boolean; override;
 function IsWindow(handle: HWND): boolean; override;
 function IsWindowEnabled(handle: HWND): boolean; override;
