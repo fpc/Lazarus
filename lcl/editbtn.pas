@@ -24,18 +24,184 @@ unit EditBtn;
 
 {$mode objfpc}{$H+}
 
+{$IFDEF NewEditButton}{$I lcl_defines.inc}{$ENDIF}
+
 interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, LCLStrConsts, LCLType, LMessages,
   Graphics, Controls, Forms, FileUtil, Dialogs, StdCtrls, Buttons, Calendar,
-  ExtDlgs, CalendarPopup, MaskEdit;
+  ExtDlgs, CalendarPopup, MaskEdit, Menus;
 
 
 const
   NullDate: TDateTime = 0;
 
 type
+{$IFDEF NewEditButton}
+
+  TEBMaskEdit = class(TCustomMaskEdit)
+  protected
+    { this is only because of the property ButtonOnlyWhenFocused }
+    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+    procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
+  end;
+
+  { TCustomEditButton }
+
+  TCustomEditButton = class(TWinControl)
+  private
+    FButton: TSpeedButton;
+    FButtonNeedsFocus: Boolean;
+    FDirectInput: Boolean;
+    FEdit: TEBMaskEdit;
+    FOnButtonClick: TNotifyEvent;
+    FReadOnly: Boolean;
+    function GetAlignment: TAlignment;
+    function GetAutoSelect: Boolean;
+    function GetButtonHint: TTranslateString;
+    function GetButtonWidth: Integer;
+    function GetCharCase: TEditCharCase;
+    function GetEditDragCursor: TCursor;
+    function GetEditDragMode: TDragMode;
+    function GetEchoMode: TEchoMode;
+    function GetEditColor: TColor;
+    function GetEditMask: string;
+    function GetEditPopupMenu: TPopupMenu;
+    function GetEditText: string;
+    function GetFlat: Boolean;
+    function GetGlyph: TBitmap;
+    function GetMaxLength: Integer;
+    function GetNumGlyphs: Integer;
+    function GetOnChange: TNotifyEvent;
+    function GetOnClick: TNotifyEvent;
+    function GetOnDblClick: TNotifyEvent;
+    function GetOnDragDrop: TDragDropEvent;
+    function GetOnDragOver: TDragOverEvent;
+    function GetOnEditingDone: TNotifyEvent;
+    function GetOnEndDrag: TEndDragEvent;
+    function GetOnEnter: TNotifyEvent;
+    function GetOnKeyDown: TKeyEvent;
+    function GetOnKeyPress: TKeyPressEvent;
+    function GetOnKeyUp: TKeyEvent;
+    function GetOnMouseDown: TMouseEvent;
+    function GetOnMouseMove: TMouseMoveEvent;
+    function GetOnMouseUp: TMouseEvent;
+    function GetOnStartDrag: TStartDragEvent;
+    function GetOnUTF8KeyPress: TUTF8KeyPressEvent;
+    function GetPasswordChar: Char;
+    function GetTabStop: Boolean;
+    function IsCustomGlyph: Boolean;
+    procedure SetAlignment(AValue: TAlignment);
+    procedure SetAutoSelect(AValue: Boolean);
+    procedure SetButtonHint(AValue: TTranslateString);
+    procedure SetButtonNeedsFocus(AValue: Boolean);
+    procedure SetButtonWidth(AValue: Integer);
+    procedure SetCharCase(AValue: TEditCharCase);
+    procedure SetDirectInput(AValue: Boolean);
+    procedure SetEchoMode(AValue: TEchoMode);
+    procedure SetEditDragCursor(AValue: TCursor);
+    procedure SetEditColor(AValue: TColor);
+    procedure SetEditDragMode(AValue: TDragMode);
+    procedure SetEditMask(AValue: string);
+    procedure SetEditBtnPopupMenu(AValue: TPopupMenu);
+    procedure SetEditText(AValue: string);
+    procedure SetFlat(AValue: Boolean);
+    procedure SetGlyph(AValue: TBitmap);
+    procedure SetMaxLength(AValue: Integer);
+    procedure SetNumGlyphs(AValue: Integer);
+    procedure SetOnChange(const AValue: TNotifyEvent);
+    procedure SetOnClick(AValue: TNotifyEvent);
+    procedure SetOnDblClick(AValue: TNotifyEvent);
+    procedure SetOnDragDrop(AValue: TDragDropEvent);
+    procedure SetOnDragOver(AValue: TDragOverEvent);
+    procedure SetOnEditingDone(AValue: TNotifyEvent);
+    procedure SetOnEndDrag(AValue: TEndDragEvent);
+    procedure SetOnEnter(AValue: TNotifyEvent);
+    procedure SetOnKeyDown(AValue: TKeyEvent);
+    procedure SetOnKeyPress(AValue: TKeyPressEvent);
+    procedure SetOnKeyUp(AValue: TKeyEvent);
+    procedure SetOnMouseDown(AValue: TMouseEvent);
+    procedure SetOnMouseMove(AValue: TMouseMoveEvent);
+    procedure SetOnMouseUp(AValue: TMouseEvent);
+    procedure SetOnStartDrag(AValue: TStartDragEvent);
+    procedure SetOnUTF8KeyPress(AValue: TUTF8KeyPressEvent);
+    procedure SetPasswordChar(AValue: Char);
+    procedure SetReadOnly(AValue: Boolean);
+    procedure SetTabStop(AValue: Boolean);
+  protected
+    procedure AnchorEditAndButton; virtual;
+    function CalcButtonVisible: Boolean; virtual;
+    procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
+      WithThemeSpace: Boolean); override;
+    procedure Change; virtual;
+    procedure CheckButtonVisible; virtual;
+    procedure CMEnter(var Message: TLMessage); message CM_ENTER;
+    procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
+    function ColorIsStored: Boolean; override;
+    procedure DoButtonClick(Sender: TObject); virtual;
+    function GetBorderStyle: TBorderStyle;
+    function GetDefaultGlyph: TBitmap; virtual;
+    function GetDefaultGlyphName: string; virtual;
+    procedure Loaded; override;
+    procedure RealSetText(const AValue: TCaption); override;
+    procedure SetBiDiMode(AValue: TBiDiMode); override;
+    procedure SetBorderStyle(NewStyle: TBorderStyle); override;
+    property DirectInput: Boolean read FDirectInput write SetDirectInput default True;
+    property ReadOnly: Boolean read FReadOnly write SetReadOnly default False;
+  protected
+    // edit
+    property Edit:TEBMaskEdit read FEdit;
+    property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
+    property AutoSelect: Boolean read GetAutoSelect write SetAutoSelect default True;
+    property AutoSize default True;
+    property CharCase: TEditCharCase read GetCharCase write SetCharCase default ecNormal;
+    property Color: TColor read GetEditColor write SetEditColor stored ColorIsStored
+               default {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
+    property DragCursor: TCursor read GetEditDragCursor write SetEditDragCursor;
+    property DragMode: TDragMode read GetEditDragMode write SetEditDragMode;
+    property EchoMode: TEchoMode read GetEchoMode write SetEchoMode default emNormal;
+    property EditMask: string read GetEditMask write SetEditMask;
+    property MaxLength: Integer read GetMaxLength write SetMaxLength default 0;
+    property OnChange: TNotifyEvent read GetOnChange write SetOnChange;
+    property OnClick: TNotifyEvent read GetOnClick write SetOnClick;
+    property OnDblClick: TNotifyEvent read GetOnDblClick write SetOnDblClick;
+    property OnDragDrop: TDragDropEvent read GetOnDragDrop write SetOnDragDrop;
+    property OnDragOver: TDragOverEvent read GetOnDragOver write SetOnDragOver;
+    property OnEditingDone: TNotifyEvent read GetOnEditingDone write SetOnEditingDone;
+    property OnEndDrag: TEndDragEvent read GetOnEndDrag write SetOnEndDrag;
+    property OnEnter: TNotifyEvent read GetOnEnter write SetOnEnter;
+    property OnKeyDown: TKeyEvent read GetOnKeyDown write SetOnKeyDown;
+    property OnKeyPress: TKeyPressEvent read GetOnKeyPress write SetOnKeyPress;
+    property OnKeyUp: TKeyEvent read GetOnKeyUp write SetOnKeyUp;
+    property OnMouseDown: TMouseEvent read GetOnMouseDown write SetOnMouseDown;
+    property OnMouseMove: TMouseMoveEvent read GetOnMouseMove write SetOnMouseMove;
+    property OnMouseUp: TMouseEvent read GetOnMouseUp write SetOnMouseUp;
+    property OnStartDrag: TStartDragEvent read GetOnStartDrag write SetOnStartDrag;
+    property OnUTF8KeyPress: TUTF8KeyPressEvent read GetOnUTF8KeyPress write SetOnUTF8KeyPress;
+    property PasswordChar: Char read GetPasswordChar write SetPasswordChar default #0;
+  protected
+    // button
+    property Button: TSpeedButton read FButton;
+    property ButtonHint: TTranslateString read GetButtonHint write SetButtonHint;
+    property ButtonOnlyWhenFocused: Boolean read FButtonNeedsFocus write SetButtonNeedsFocus default False;
+    property ButtonWidth: Integer read GetButtonWidth write SetButtonWidth;
+    property Flat: Boolean read GetFlat write SetFlat default False;
+    property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
+    property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs;
+    property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    property BorderStyle read GetBorderStyle write SetBorderStyle default bsSingle;
+    property ParentColor default False;
+    property PopupMenu: TPopupMenu read GetEditPopupMenu write SetEditBtnPopupMenu;
+    property TabStop read GetTabStop write SetTabStop default True;
+    property Text: string read GetEditText write SetEditText;
+  end;
+
+{$ELSE}
+
   { TCustomEditButton }
 
   TCustomEditButton = class(TCustomMaskEdit)
@@ -92,6 +258,8 @@ type
     property Flat: Boolean read GetFlat write SetFlat default False;
     property ButtonOnlyWhenFocused: Boolean read FButtonNeedsFocus write SetButtonNeedsFocus default False;
   end;
+
+{$ENDIF}
   
   { TEditButton }
 
@@ -630,6 +798,596 @@ procedure Register;
 
 implementation
 
+{$IFDEF NewEditButton}
+
+{ TEBMaskEdit }
+
+procedure TEBMaskEdit.WMKillFocus(var Message: TLMKillFocus);
+begin
+  with Parent as TCustomEditButton do CheckButtonVisible;
+  inherited;
+end;
+
+procedure TEBMaskEdit.WMSetFocus(var Message: TLMSetFocus);
+begin
+  with Parent as TCustomEditButton do CheckButtonVisible;
+  inherited;
+end;
+
+{ TCustomEditButton }
+
+procedure TCustomEditButton.DoButtonClick(Sender: TObject);
+begin
+  if (not ReadOnly) and assigned(FOnButtonClick) then FOnButtonClick(self);
+end;
+
+function TCustomEditButton.GetAlignment: TAlignment;
+begin
+  Result:=FEdit.Alignment;
+end;
+
+function TCustomEditButton.ColorIsStored: Boolean;
+begin
+  Result:= inherited ColorIsStored;     ///FEdit.IsColorStored
+end;
+
+function TCustomEditButton.GetAutoSelect: Boolean;
+begin
+  Result:=Edit.AutoSelect;
+end;
+
+function TCustomEditButton.GetBorderStyle: TBorderStyle;
+begin
+  Result:=FEdit.BorderStyle;
+end;
+
+function TCustomEditButton.GetButtonHint: TTranslateString;
+begin
+  Result:=Button.Hint;
+end;
+
+function TCustomEditButton.GetButtonWidth: Integer;
+begin
+  Result:=Button.Width;
+end;
+
+function TCustomEditButton.GetCharCase: TEditCharCase;
+begin
+  Result:=Edit.CharCase;
+end;
+
+function TCustomEditButton.GetDefaultGlyph: TBitmap;
+begin
+  Result:=nil;
+end;
+
+function TCustomEditButton.GetDefaultGlyphName: string;
+begin
+  Result:='';
+end;
+
+function TCustomEditButton.GetEchoMode: TEchoMode;
+begin
+  Result:=Edit.EchoMode;
+end;
+
+function TCustomEditButton.GetEditColor: TColor;
+begin
+  Result:=Edit.Color;
+end;
+
+function TCustomEditButton.GetEditDragCursor: TCursor;
+begin
+  Result:=Edit.DragCursor;
+end;
+
+function TCustomEditButton.GetEditDragMode: TDragMode;
+begin
+  Result:=Edit.DragMode;
+end;
+
+function TCustomEditButton.GetEditMask: string;
+begin
+  with Edit do Result:=EditMask;
+end;
+
+function TCustomEditButton.GetEditPopupMenu: TPopupMenu;
+begin
+  Result:=Edit.PopupMenu;
+end;
+
+function TCustomEditButton.GetEditText: string;
+begin
+  Result:=Edit.Text;
+end;
+
+function TCustomEditButton.GetFlat: Boolean;
+begin
+  Result:=Button.Flat;
+end;
+
+function TCustomEditButton.GetGlyph: TBitmap;
+begin
+  Result:=Button.Glyph;
+end;
+
+function TCustomEditButton.GetMaxLength: Integer;
+begin
+  Result:=Edit.MaxLength;
+end;
+
+function TCustomEditButton.GetNumGlyphs: Integer;
+begin
+  Result:=Button.NumGlyphs;
+end;
+
+function TCustomEditButton.GetOnChange: TNotifyEvent;
+begin
+  Result:=Edit.OnChange;
+end;
+
+function TCustomEditButton.GetOnClick: TNotifyEvent;
+begin
+  Result:=Edit.OnClick;
+end;
+
+function TCustomEditButton.GetOnDblClick: TNotifyEvent;
+begin
+  Result:=Edit.OnDblClick;
+end;
+
+function TCustomEditButton.GetOnDragDrop: TDragDropEvent;
+begin
+  Result:=Edit.OnDragDrop;
+end;
+
+function TCustomEditButton.GetOnDragOver: TDragOverEvent;
+begin
+  Result:=Edit.OnDragOver;
+end;
+
+function TCustomEditButton.GetOnEditingDone: TNotifyEvent;
+begin
+  Result:=Edit.OnEditingDone;
+end;
+
+function TCustomEditButton.GetOnEndDrag: TEndDragEvent;
+begin
+  Result:=Edit.OnEndDrag;
+end;
+
+function TCustomEditButton.GetOnEnter: TNotifyEvent;
+begin
+  Result:=Edit.OnEnter;
+end;
+
+function TCustomEditButton.GetOnKeyDown: TKeyEvent;
+begin
+  Result:=Edit.OnKeyDown;
+end;
+
+function TCustomEditButton.GetOnKeyPress: TKeyPressEvent;
+begin
+  Result:=Edit.OnKeyPress;
+end;
+
+function TCustomEditButton.GetOnKeyUp: TKeyEvent;
+begin
+  Result:=Edit.OnKeyUp;
+end;
+
+function TCustomEditButton.GetOnMouseDown: TMouseEvent;
+begin
+  Result:=Edit.OnMouseDown;
+end;
+
+function TCustomEditButton.GetOnMouseMove: TMouseMoveEvent;
+begin
+  Result:=Edit.OnMouseMove;
+end;
+
+function TCustomEditButton.GetOnMouseUp: TMouseEvent;
+begin
+  Result:=Edit.OnMouseUp;
+end;
+
+function TCustomEditButton.GetOnStartDrag: TStartDragEvent;
+begin
+  Result:=Edit.OnStartDrag;
+end;
+
+function TCustomEditButton.GetOnUTF8KeyPress: TUTF8KeyPressEvent;
+begin
+  Result:=Edit.OnUTF8KeyPress;
+end;
+
+function TCustomEditButton.GetPasswordChar: Char;
+begin
+  Result:=Edit.PasswordChar;
+end;
+
+function TCustomEditButton.GetTabStop: Boolean;
+begin
+  Result:=FEdit.TabStop;
+end;
+
+function TCustomEditButton.IsCustomGlyph: Boolean;
+
+  function _LoadRes: TBitmap;
+  var
+    ResName: String;
+    C : TCustomBitmap;
+  begin
+    ResName := GetDefaultGlyphName;
+    if ResName = '' then
+      Exit(nil);
+    Result := TBitmap.Create;
+    try
+      try
+        C := CreateBitmapFromLazarusResource(ResName);
+        Result.Assign(C); // the "Equals" did not work with ClassType different
+        // maybe it should compare the "RawImage" because it is independent of ClassType
+      finally
+        C.Free;
+      end;
+    except
+      Result.Free;
+      raise;
+    end;
+  end;
+
+var
+  B, GlypRes, GlypActual: TBitmap;
+begin
+  GlypActual := nil;
+  GlypRes := nil;
+  try
+    B := GetDefaultGlyph;
+    if B = nil then                // if Default Glyph is nil, use the resource
+    begin
+      GlypRes := _LoadRes;
+      B := GlypRes;
+    end;
+    if B = nil then
+      Result := Glyph <> nil
+    else if Glyph = nil then
+      Result := True
+    else
+    begin
+      GlypActual := TBitmap.Create; // the "Equals" did not work with ClassType different.
+      GlypActual.Assign(Glyph);
+      Result := not GlypActual.Equals(B);
+    end;
+  finally
+    GlypRes.Free;
+    GlypActual.Free;
+  end;
+end;
+
+procedure TCustomEditButton.SetAlignment(AValue: TAlignment);
+begin
+  Edit.Alignment:=AValue;
+end;
+
+procedure TCustomEditButton.SetAutoSelect(AValue: Boolean);
+begin
+  Edit.AutoSelect:=AValue;
+end;
+
+procedure TCustomEditButton.SetBiDiMode(AValue: TBiDiMode);
+begin
+  if BiDiMode=AValue then exit;
+  inherited SetBiDiMode(AValue);
+  DisableAutoSizing;
+  try
+    AnchorEditAndButton;
+  finally
+    EnableAutoSizing;
+  end;
+end;
+
+procedure TCustomEditButton.SetBorderStyle(NewStyle: TBorderStyle);
+begin
+  Edit.BorderStyle:=NewStyle;
+end;
+
+procedure TCustomEditButton.SetButtonHint(AValue: TTranslateString);
+begin
+  Button.Hint:=AValue;
+end;
+
+procedure TCustomEditButton.SetButtonNeedsFocus(AValue: Boolean);
+begin
+  if FButtonNeedsFocus=AValue then exit;
+  FButtonNeedsFocus:=AValue;
+  AnchorEditAndButton;
+  CheckButtonVisible;
+end;
+
+procedure TCustomEditButton.SetButtonWidth(AValue: Integer);
+begin
+  Button.Width:=AValue;
+end;
+
+procedure TCustomEditButton.SetCharCase(AValue: TEditCharCase);
+begin
+  Edit.CharCase:=AValue;
+end;
+
+procedure TCustomEditButton.SetDirectInput(AValue: Boolean);
+begin
+  FDirectInput:=AValue;
+  if not ReadOnly then Edit.ReadOnly:= not AValue;
+end;
+
+procedure TCustomEditButton.SetEditDragCursor(AValue: TCursor);
+begin
+  Edit.DragCursor:=AValue;
+end;
+
+procedure TCustomEditButton.SetEchoMode(AValue: TEchoMode);
+begin
+  Edit.EchoMode:=AValue;
+end;
+
+procedure TCustomEditButton.SetEditColor(AValue: TColor);
+begin
+  Edit.Color:=AValue;
+end;
+
+procedure TCustomEditButton.SetEditDragMode(AValue: TDragMode);
+begin
+  Edit.DragMode:=AValue;
+end;
+
+procedure TCustomEditButton.SetEditMask(AValue: string);
+begin
+  with Edit do EditMask:=AValue;
+end;
+
+procedure TCustomEditButton.SetEditBtnPopupMenu(AValue: TPopupMenu);
+begin
+  Edit.PopupMenu:=AValue;
+  Button.PopupMenu:=AValue;
+end;
+
+procedure TCustomEditButton.SetEditText(AValue: string);
+begin
+  Edit.Text:=AValue;
+end;
+
+procedure TCustomEditButton.SetFlat(AValue: Boolean);
+begin
+  Button.Flat:=AValue;
+end;
+
+procedure TCustomEditButton.SetGlyph(AValue: TBitmap);
+begin
+  Button.Glyph:=AValue;
+end;
+
+procedure TCustomEditButton.SetMaxLength(AValue: Integer);
+begin
+  Edit.MaxLength:=AValue;
+end;
+
+procedure TCustomEditButton.SetNumGlyphs(AValue: Integer);
+begin
+  Button.NumGlyphs:=AValue;
+end;
+
+procedure TCustomEditButton.SetOnChange(const AValue: TNotifyEvent);
+begin
+  Edit.OnChange:=AValue;
+end;
+
+procedure TCustomEditButton.SetOnClick(AValue: TNotifyEvent);
+begin
+  Edit.OnClick:=AValue;
+end;
+
+procedure TCustomEditButton.SetOnDblClick(AValue: TNotifyEvent);
+begin
+  Edit.OnDblClick:=AValue;
+end;
+
+procedure TCustomEditButton.SetOnDragDrop(AValue: TDragDropEvent);
+begin
+  Edit.OnDragDrop:=AValue;
+end;
+
+procedure TCustomEditButton.SetOnDragOver(AValue: TDragOverEvent);
+begin
+  Edit.OnDragOver:=AValue;
+end;
+
+procedure TCustomEditButton.SetOnEditingDone(AValue: TNotifyEvent);
+begin
+  Edit.OnEditingDone:=AValue;
+end;
+
+procedure TCustomEditButton.SetOnEndDrag(AValue: TEndDragEvent);
+begin
+  Edit.OnEndDrag:=AValue;
+end;
+
+procedure TCustomEditButton.SetOnEnter(AValue: TNotifyEvent);
+begin
+  Edit.OnEnter:=AValue;
+end;
+
+procedure TCustomEditButton.SetOnKeyDown(AValue: TKeyEvent);
+begin
+  Edit.OnKeyDown:=AValue;
+end;
+
+procedure TCustomEditButton.SetOnKeyPress(AValue: TKeyPressEvent);
+begin
+  Edit.OnKeyPress:=AValue;
+end;
+
+procedure TCustomEditButton.SetOnKeyUp(AValue: TKeyEvent);
+begin
+  Edit.OnKeyUp:=AValue;
+end;
+
+procedure TCustomEditButton.SetOnMouseDown(AValue: TMouseEvent);
+begin
+  Edit.OnMouseDown:=AValue;
+end;
+
+procedure TCustomEditButton.SetOnMouseMove(AValue: TMouseMoveEvent);
+begin
+  Edit.OnMouseMove:=AValue;
+end;
+
+procedure TCustomEditButton.SetOnMouseUp(AValue: TMouseEvent);
+begin
+  Edit.OnMouseUp:=AValue;
+end;
+
+procedure TCustomEditButton.SetOnStartDrag(AValue: TStartDragEvent);
+begin
+  Edit.OnStartDrag:=AValue;
+end;
+
+procedure TCustomEditButton.SetOnUTF8KeyPress(AValue: TUTF8KeyPressEvent);
+begin
+  Edit.OnUTF8KeyPress:=AValue;
+end;
+
+procedure TCustomEditButton.SetPasswordChar(AValue: Char);
+begin
+  Edit.PasswordChar:=AValue;
+end;
+
+procedure TCustomEditButton.SetReadOnly(AValue: Boolean);
+begin
+  FReadOnly:=AValue;
+  if AValue or DirectInput then Edit.ReadOnly:=AValue;
+  Button.Enabled:=not AValue;
+end;
+
+procedure TCustomEditButton.SetTabStop(AValue: Boolean);
+begin
+  FEdit.TabStop:=AValue;
+end;
+
+procedure TCustomEditButton.AnchorEditAndButton;
+begin
+  DisableAutoSizing;
+  try
+    Button.Anchors:=[];
+    if IsRightToLeft then begin
+      // button + edit
+      Button.AnchorParallel(akLeft, 0, Self);
+      Edit.AnchorAsAlign(alRight, 0);
+      Edit.AnchorToNeighbour(akLeft, 0, Button);
+    end else begin
+      // edit + button
+      Button.AnchorParallel(akRight, 0, Self);
+      Edit.AnchorAsAlign(alLeft, 0);
+      Edit.AnchorToNeighbour(akRight, 0, Button);
+    end;
+    Button.AnchorParallel(akTop, 0, Edit);
+    Button.AnchorParallel(akBottom, 0, Edit);
+  finally
+    EnableAutoSizing;
+  end;
+end;
+
+function TCustomEditButton.CalcButtonVisible: Boolean;
+begin
+  Result:=(csDesigning in ComponentState) or
+          (Visible and (FEdit.Focused or not FButtonNeedsFocus));
+end;
+
+procedure TCustomEditButton.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
+    WithThemeSpace);
+  PreferredWidth:=0;
+end;
+
+procedure TCustomEditButton.CheckButtonVisible;
+begin
+  if assigned(FButton) then FButton.Visible:=CalcButtonVisible;
+end;
+
+procedure TCustomEditButton.Change;
+begin
+  with FEdit do Change;
+end;
+
+procedure TCustomEditButton.CMEnter(var Message: TLMessage);
+begin
+  FEdit.SetFocus;
+end;
+
+procedure TCustomEditButton.CMParentColorChanged(var Message: TLMessage);
+begin
+  inherited CMParentColorChanged(Message);
+  FEdit.ParentColor:=ParentColor;
+end;
+
+procedure TCustomEditButton.Loaded;
+begin
+  inherited Loaded;
+  CheckButtonVisible;
+end;
+
+procedure TCustomEditButton.RealSetText(const AValue: TCaption);
+begin
+  inherited RealSetText(AValue);
+  SetEditText(AValue);
+end;
+
+constructor TCustomEditButton.Create(TheOwner: TComponent);
+var aGlyph: TBitmap;
+begin
+  inherited Create(TheOwner);
+  FCompStyle:=csNone;
+
+  ControlStyle:=ControlStyle
+               + [csAcceptsControls, csNoFocus, csNoStdEvents, csOwnedChildrenNotSelectable]
+               - [csClickEvents, csDoubleClicks, csOpaque, csSetCaption];
+
+  AutoSize:=True;
+  Caption:='';
+  FDirectInput:=True;
+  ParentColor:=False;
+
+  FEdit:=TEBMaskEdit.Create(self);
+  Edit.ControlStyle := FEdit.ControlStyle + [csNoDesignSelectable] - [csSetCaption];
+  Edit.Parent:=self;
+
+  BorderStyle:=bsSingle;
+
+  FButton:=TSpeedButton.Create(self);
+  Button.OnClick:=@DoButtonClick;
+  Button.Cursor := crArrow;
+  Button.ControlStyle := Button.ControlStyle + [csNoDesignSelectable];
+  aGlyph := GetDefaultGlyph;
+  if aGlyph = nil then
+    Button.LoadGlyphFromLazarusResource(GetDefaultGlyphName)
+  else
+    Button.Glyph := aGlyph;
+  Button.Parent:=self;
+
+  CheckButtonVisible;
+  SetInitialBounds(0, 0, Edit.Width+Button.Width, Edit.Height);
+  AnchorEditAndButton;
+end;
+
+destructor TCustomEditButton.Destroy;
+begin
+  FreeAndNil(FButton);
+  FreeAndNil(FEdit);
+  inherited Destroy;
+end;
+
+{$ELSE}
 
 { TCustomEditButton }
 
@@ -904,6 +1662,7 @@ begin
   inherited;
 end;
 
+{$ENDIF}
 
 { TCustomControlFilterEdit }
 
