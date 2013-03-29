@@ -178,28 +178,6 @@ begin
   AWinControl.Handle := 0;
 end;
 
-initialization
 
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To improve speed, register only classes
-// which actually implement something
-////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomStatusBar, TFpGuiWSStatusBar);
-//  RegisterWSComponent(TCustomTabSheet, TFpGuiWSTabSheet);
-//  RegisterWSComponent(TCustomPageControl, TFpGuiWSPageControl);
-//  RegisterWSComponent(TCustomListView, TFpGuiWSCustomListView);
-//  RegisterWSComponent(TCustomListView, TFpGuiWSListView);
-//  RegisterWSComponent(TCustomProgressBar, TFpGuiWSProgressBar);
-//  RegisterWSComponent(TCustomUpDown, TFpGuiWSCustomUpDown);
-//  RegisterWSComponent(TCustomUpDown, TFpGuiWSUpDown);
-//  RegisterWSComponent(TCustomToolButton, TFpGuiWSToolButton);
-//  RegisterWSComponent(TCustomToolBar, TFpGuiWSToolBar);
-//  RegisterWSComponent(TCustomToolButton, TFpGuiWSToolButton);
-//  RegisterWSComponent(TCustomToolBar, TFpGuiWSToolBar);
-//  RegisterWSComponent(TCustomTrackBar, TFpGuiWSTrackBar);
-//  RegisterWSComponent(TCustomTreeView, TFpGuiWSCustomTreeView);
-//  RegisterWSComponent(TCustomTreeView, TFpGuiWSTreeView);
-////////////////////////////////////////////////////
 end.
+
