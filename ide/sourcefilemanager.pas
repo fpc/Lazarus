@@ -1598,6 +1598,7 @@ var
         StopChars := [',',';',':','[',']','{','}','(',')','''','"','`'
                      ,'#','%','=','>'];
         Stop := XY.X;
+        if Stop>Len then Stop:=Len;
         while (Stop >= 1) and (not (Line[Stop] in ['''','"','`'])) do
           dec(Stop);
         if Stop<1 then
