@@ -143,12 +143,12 @@ begin
               LFMtoLRSstream(BinMemStream,ResMemStream);
             end 
             else begin
-              ResourceType:=copy(BinExt,2,length(BinExt)-1);
-              ResourceName := FileList.ValueFromIndex[a];
+              ResourceType := trim(copy(BinExt,2,length(BinExt)-1));
+              ResourceName := trim(FileList.ValueFromIndex[a]);
               if ResourceName='' then begin
-                ResourceName:=ExtractFileName(BinFilename);
-                ResourceName:=copy(ResourceName,1
-                   ,length(ResourceName)-length(BinExt));
+                ResourceName := ExtractFileName(BinFilename);
+                ResourceName := trim(copy(ResourceName,1
+                   ,length(ResourceName)-length(BinExt)));
               end;
               if ResourceName='' then begin
                 debugln(' ERROR: no resourcename');
