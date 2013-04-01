@@ -223,6 +223,8 @@ type
     constructor Create;
     procedure AssignFrom(Src: TSynEditBaseCaret);
     procedure Invalidate; // force to 1,1
+    procedure InvalidateBytePos; // 1,1 IF no validCharPos
+    procedure InvalidateCharPos;
 
     function IsAtLineChar(aPoint: TPoint): Boolean;
     function IsAtLineByte(aPoint: TPoint; aByteOffset: Integer = -1): Boolean;
@@ -567,6 +569,22 @@ begin
   FCharPos := 1;
   FBytePos := 1;
   FFlags := [];
+end;
+
+procedure TSynEditBaseCaret.InvalidateBytePos;
+begin
+  if not (scCharPosValid in FFlags) then
+    Invalidate
+  else
+    Exclude(FFlags, scBytePosValid);
+end;
+
+procedure TSynEditBaseCaret.InvalidateCharPos;
+begin
+  if not (scBytePosValid in FFlags) then
+    Invalidate
+  else
+    Exclude(FFlags, scCharPosValid);
 end;
 
 function TSynEditBaseCaret.IsAtLineChar(aPoint: TPoint): Boolean;

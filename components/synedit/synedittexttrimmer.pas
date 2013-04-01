@@ -117,7 +117,7 @@ type
     procedure UnLock;
     procedure ForceTrim; // for redo; redo can not wait for UnLock
     property Enabled : Boolean read fEnabled write SetEnabled;
-    property UndoTrimmedSpaces: Boolean read FUndoTrimmedSpaces write FUndoTrimmedSpaces;
+    property UndoTrimmedSpaces: Boolean read FUndoTrimmedSpaces write FUndoTrimmedSpaces; deprecated 'not implemented';
 
     property IsTrimming: Boolean read FIsTrimming;
     property TrimType: TSynEditStringTrimmingType read FTrimType write SetTrimType;
@@ -464,6 +464,7 @@ begin
     CurUndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(FLineIndex+1, FSpaces));
     i := length(FSpaces);
     fSpaces := '';
+    TSynEditCaret(Sender).InvalidateBytePos; // tabs at EOL may now be spaces
     SendNotification(senrLineChange, self, fLineIndex, 1);
     SendNotification(senrEditAction, self, FLineIndex+1, 0,
                      1+length(fSynStrings[FLineIndex]), -i, '');
@@ -645,6 +646,7 @@ procedure TSynEditStringTrimmingList.UnLock;
 begin
   dec(fLockCount);
   if (fLockCount = 0) then TrimAfterLock;
+  if (FTrimType = settIgnoreAll) then DoCaretChanged(fCaret);
 end;
 
 procedure TSynEditStringTrimmingList.TrimAfterLock;
@@ -839,7 +841,7 @@ procedure TSynEditStringTrimmingList.EditInsertTrim(LogX, LogY: Integer;
 var
   s: string;
 begin
-  if (AText = '') or (FTrimType = settIgnoreAll) then
+  if (AText = '') then
     exit;
   {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- EditInsertTrim', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  X=', LogX, ' Y=',LogY, ' text=',length(AText)]);{$ENDIF}
   s := Spaces(LogY - 1);
@@ -855,7 +857,7 @@ function TSynEditStringTrimmingList.EditDeleteTrim(LogX, LogY, ByteLen:
 var
   s: string;
 begin
-  if (ByteLen <= 0) or (FTrimType = settIgnoreAll) then
+  if (ByteLen <= 0) then
     exit('');
   {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- EditDeleteTrim()', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  X=', LogX, ' Y=',LogY, ' ByteLen=',ByteLen]);{$ENDIF}
   s := Spaces(LogY - 1);
