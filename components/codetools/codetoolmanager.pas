@@ -1667,12 +1667,14 @@ begin
   ClearCurCodeTool;
   MainCode:=GetMainCode(Code);
   if MainCode=nil then begin
+    FErrorLine:=1;
+    FErrorColumn:=1;
+    fErrorCode:=Code;
     if Code = nil then
+    begin
       fErrorMsg:='TCodeToolManager.InitCurCodeTool Code=nil'
+    end
     else begin
-      fErrorCode:=Code;
-      FErrorLine:=1;
-      FErrorColumn:=1;
       fErrorMsg:='unit of include file is not known (hint: open and explore unit first)';
     end;
     exit;
