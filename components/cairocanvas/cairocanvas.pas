@@ -583,6 +583,7 @@ end;
 //Toy interface
 procedure TCairoPrinterCanvas.SelectFont;
 begin
+  RequiredState([csHandleValid]);
   SelectFontEx(Font.Style, Font.Name, abs(Font.Size));
   SetSourceColor(Font.Color);
 end;
