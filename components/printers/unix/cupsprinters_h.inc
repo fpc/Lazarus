@@ -55,7 +55,7 @@
   ---------------------------------------------------------------------}
 uses
   Classes, SysUtils, LCLProc, PostScriptCanvas, Printers, Dialogs, Controls,
-  CUPSDyn;
+  CUPSDyn, CairoCanvas;
   
 type
   TCUPSPrinterState = (
