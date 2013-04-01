@@ -2408,19 +2408,19 @@ var
   i: integer;
 begin
   if not assigned(FUnitResourceFileformat) then
-    begin
+  begin
     ResourceFormats := GetUnitResourcefileFormats;
     for i := 0 to high(ResourceFormats) do
+    begin
+      if ResourceFormats[i].FindResourceDirective(Source) then
       begin
-        if ResourceFormats[i].FindResourceDirective(Source) then
-          begin
-          FUnitResourceFileformat:=ResourceFormats[i];
-          result := FUnitResourceFileformat;
-          Exit;
-          end;
+        FUnitResourceFileformat:=ResourceFormats[i];
+        result := FUnitResourceFileformat;
+        Exit;
       end;
-    FUnitResourceFileformat := TLFMUnitResourcefileFormat;
     end;
+    FUnitResourceFileformat := TLFMUnitResourcefileFormat;
+  end;
   result := FUnitResourceFileformat;
 end;
 

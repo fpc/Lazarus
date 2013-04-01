@@ -66,17 +66,21 @@ uses
 
 class function TLFMUnitResourcefileFormat.FindResourceDirective(Source: TObject): boolean;
 var
-  cb: TCodeBuffer;
-  nx,ny,nt: integer;
+  NewCode: TCodeBuffer;
+  NewX,NewY,NewTopLine: integer;
+  CodeBuf: TCodeBuffer;
 begin
-  result := CodeToolBoss.FindResourceDirective(Source as TCodeBuffer,1,1,cb,nx,ny,nt, ResourceDirectiveFilename,false);
-  if not result then
-    result := CodeToolBoss.FindResourceDirective(Source as TCodeBuffer,1,1,cb,nx,ny,nt, '*.dfm',false);
+  CodeBuf:=Source as TCodeBuffer;
+  Result := CodeToolBoss.FindResourceDirective(CodeBuf,1,1,
+    NewCode,NewX,NewY,NewTopLine, ResourceDirectiveFilename,false);
+  if (not Result) and (ResourceDirectiveFilename<>'*.dfm') then
+    Result := CodeToolBoss.FindResourceDirective(CodeBuf,1,1,
+                   NewCode,NewX,NewY,NewTopLine, '*.dfm',false);
 end;
 
 class function TLFMUnitResourcefileFormat.ResourceDirectiveFilename: string;
 begin
-  result := '*.lfm';
+  Result := '*.lfm';
 end;
 
 class function TLFMUnitResourcefileFormat.GetUnitResourceFilename(
