@@ -222,6 +222,7 @@ type
   public
     constructor Create;
     procedure AssignFrom(Src: TSynEditBaseCaret);
+    procedure Invalidate; // force to 1,1
 
     function IsAtLineChar(aPoint: TPoint): Boolean;
     function IsAtLineByte(aPoint: TPoint; aByteOffset: Integer = -1): Boolean;
@@ -558,6 +559,14 @@ begin
   FBytePosOffset := Src.FBytePosOffset;
   FFlags         := Src.FFlags;
   SetLines(Src.FLines);
+end;
+
+procedure TSynEditBaseCaret.Invalidate;
+begin
+  FLinePos := 1;
+  FCharPos := 1;
+  FBytePos := 1;
+  FFlags := [];
 end;
 
 function TSynEditBaseCaret.IsAtLineChar(aPoint: TPoint): Boolean;
@@ -1349,6 +1358,7 @@ begin
           // Calculate the byte positions for each line
           SetLength(Col, Last - First + 1);
           SetLength(Len, Last - First + 1);
+          FInternalCaret.Invalidate;
           FInternalCaret.LineBytePos := FirstLineBytePos;
           C1 := FInternalCaret.CharPos;
           FInternalCaret.LineBytePos := LastLineBytePos;
@@ -1768,6 +1778,7 @@ begin
     // BB is lower than BE
     BB := FirstLineBytePos;
     BE := LastLineBytePos;
+    FInternalCaret.Invalidate;
     if SelAvail then begin
       if FActiveSelectionMode = smLine then begin
         BB.X := 1;
