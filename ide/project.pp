@@ -2409,19 +2409,24 @@ var
 begin
   if not assigned(FUnitResourceFileformat) then
   begin
-    ResourceFormats := GetUnitResourcefileFormats;
-    for i := 0 to high(ResourceFormats) do
+    if Source=nil then
+      Source:=CodeToolBoss.LoadFile(Filename,true,false);
+    if Source<>nil then
     begin
-      if ResourceFormats[i].FindResourceDirective(Source) then
+      ResourceFormats := GetUnitResourcefileFormats;
+      for i := 0 to high(ResourceFormats) do
       begin
-        FUnitResourceFileformat:=ResourceFormats[i];
-        result := FUnitResourceFileformat;
-        Exit;
+        if ResourceFormats[i].FindResourceDirective(Source) then
+        begin
+          FUnitResourceFileformat:=ResourceFormats[i];
+          Result := FUnitResourceFileformat;
+          Exit;
+        end;
       end;
     end;
     FUnitResourceFileformat := TLFMUnitResourcefileFormat;
   end;
-  result := FUnitResourceFileformat;
+  Result := FUnitResourceFileformat;
 end;
 
 procedure TUnitInfo.SetAutoReferenceSourceDir(const AValue: boolean);
