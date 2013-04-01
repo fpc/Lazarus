@@ -90,8 +90,11 @@ begin
     // cleanup lines
     for a:=fileList.Count-1 downto 0 do begin
       s := Trim(filelist[a]);
-      if (s='') or (s[1]='#') then
+      if (s='') or (s[1]='#') then begin
         filelist.Delete(a);
+        continue;
+      end;
+      filelist[a] := s;
       if filelist.Names[a]='' then
         filelist[a] := filelist[a] + '=';
     end;
