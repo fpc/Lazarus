@@ -12,6 +12,7 @@
           <MsgFileName Value=""/>
         </CompilerMessages>
         <CompilerPath Value="$(CompPath)"/>
+        <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
     <Files Count="1">
