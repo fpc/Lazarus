@@ -33,7 +33,7 @@ uses
   Classes, SysUtils,
   LCLMemManager,
   Forms,
-  UnitResources, SrcEditorIntf, LazFileCache;
+  UnitResources, LazFileCache;
 
 type
 
@@ -43,7 +43,7 @@ type
   public
     class function FindResourceDirective(Source: TObject): boolean; override;
     class function ResourceDirectiveFilename: string; override;
-    class function GetUnitResourceFilename(AUnitFilename: string; Loading: boolean): string; override;
+    class function GetUnitResourceFilename(AUnitFilename: string; {%H-}Loading: boolean): string; override;
     class procedure TextStreamToBinStream(ATxtStream, ABinStream: TExtMemoryStream); override;
     class procedure BinStreamToTextStream(ABinStream, ATextStream: TExtMemoryStream); override;
     class function GetClassNameFromStream(s: TStream; out IsInherited: Boolean): shortstring; override;

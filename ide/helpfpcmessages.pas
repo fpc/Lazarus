@@ -165,7 +165,7 @@ type
     URLLabel: TLabel;
     AllListBox: TListBox;
     procedure AddButtonClick(Sender: TObject);
-    procedure AllListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure AllListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure ButtonPanel1Click(Sender: TObject);
     procedure ButtonPanel1OKButtonClick(Sender: TObject);
     procedure DeleteButtonClick(Sender: TObject);

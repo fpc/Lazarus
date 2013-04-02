@@ -45,7 +45,7 @@ type
     procedure FormDestroy(Sender: TObject);
   private
   public
-    procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
+    procedure ApplicationIdle(Sender: TObject; var {%H-}Done: Boolean);
   end; 
   
 var
@@ -67,7 +67,7 @@ type
     StartTime: TDateTime;
     StartTimeValid: boolean;
     constructor Create;
-    procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
+    procedure ApplicationIdle(Sender: TObject; var {%H-}Done: Boolean);
   end;
 
 { TProgressWait }

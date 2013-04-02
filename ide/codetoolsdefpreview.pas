@@ -35,8 +35,7 @@ uses
   StdCtrls, Buttons, ComCtrls, ExtCtrls, FileUtil, AVGLvlTree,
   SynEdit, DefineTemplates, ExprEval,
   IDEWindowIntf, IDEHelpIntf,
-  EditorOptions, LazarusIDEStrConsts, InputHistory, CodeToolsOptions,
-  IDEContextHelpEdit, IDEProcs;
+  EditorOptions, LazarusIDEStrConsts, InputHistory, CodeToolsOptions, IDEProcs;
 
 type
   TCodeToolsDefinesNodeValues = class
@@ -70,15 +69,15 @@ type
     ValueGroupbox: TGroupBox;
     ValuesListview: TListView;
     procedure CodeToolsDefinesDialogCLOSE(Sender: TObject;
-      var CloseAction: TCloseAction);
+      var {%H-}CloseAction: TCloseAction);
     procedure CodeToolsDefinesDialogCREATE(Sender: TObject);
     procedure DirectoryBrowseButtonCLICK(Sender: TObject);
     procedure DirectoryComboboxCHANGE(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure ParsedTemplatesTreeViewSelectionChanged(Sender: TObject);
-    procedure ValuesListviewSELECTITEM(Sender: TObject; Item: TListItem;
-      Selected: Boolean);
+    procedure ValuesListviewSELECTITEM(Sender: TObject; {%H-}Item: TListItem;
+      {%H-}Selected: Boolean);
   private
     FDefineTree: TDefineTree;
     FNodeValues: TAvgLvlTree;
@@ -90,7 +89,7 @@ type
     procedure ClearValues;
     procedure FillTemplateTree;
     procedure SetComboBox(AComboBox: TComboBox; const NewText: string);
-    procedure DefineTreeCalculate(Tree: TDefineTree; Node: TDefineTemplate;
+    procedure DefineTreeCalculate(DefineTree: TDefineTree; Node: TDefineTemplate;
                   ValueParsed: boolean; const ParsedValue: string;
                   ExpressionCalculated: boolean; const ExpressionResult: string;
                   Execute: boolean);
@@ -414,7 +413,7 @@ begin
   //writeln('TCodeToolsDefinesDialog.SetComboBox Text=',AComboBox.Text,' NewText=',NewText);
 end;
 
-procedure TCodeToolsDefinesDialog.DefineTreeCalculate(Tree: TDefineTree;
+procedure TCodeToolsDefinesDialog.DefineTreeCalculate(DefineTree: TDefineTree;
   Node: TDefineTemplate; ValueParsed: boolean; const ParsedValue: string;
   ExpressionCalculated: boolean; const ExpressionResult: string;
   Execute: boolean);

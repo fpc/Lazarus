@@ -37,7 +37,7 @@ unit IDEDefs;
 interface
 
 uses
-  Classes, SysUtils, Menus, MacroIntf;
+  Classes, SysUtils, Menus;
 
 type
   TIDEFileStateFlag = (

@@ -59,18 +59,17 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, LCLType, LCLIntf, StdCtrls, Buttons, Menus, ComCtrls, SysUtils,
+  Classes, LCLType, LCLIntf, Buttons, Menus, SysUtils,
   typinfo, Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms,
   CodeToolManager, CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDE
-  PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, ProjectIntf, MacroIntf,
+  PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, ProjectIntf,
   CompOptsIntf, LazIDEIntf,
   LazConf, LazarusIDEStrConsts,
-  ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
-  ComponentReg,
-  TransferMacros, OutputFilter, IDEDefs, MsgView, ProgressDlg,
+  ProjectDefs, Project, PublishModule, BuildLazDialog,
+  TransferMacros, IDEDefs, ProgressDlg,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
-  IDEOptionDefs, CodeToolsDefines;
+  IDEOptionDefs;
 
 type
   // The IDE is at anytime in a specific state:
@@ -272,7 +271,7 @@ type
     FInheritedUnits: string;
   public
     function GetResourceSource(const ResourceName: string): string; override;
-    function GetInterfaceSource(const Filename, SourceName,
+    function GetInterfaceSource(const {%H-}Filename, {%H-}SourceName,
                                 ResourceName: string): string; override;
     property InheritedUnits: string read FInheritedUnits write FInheritedUnits;
   end;

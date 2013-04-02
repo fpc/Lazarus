@@ -35,8 +35,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Laz2_XMLCfg, lazutf8classes, Process, LCLProc,
-  Controls, Forms, CodeToolManager, CodeCache, FileProcs, LazConf, LResources,
-  resource, DialogProcs, groupiconresource, ProjectIntf, ProjectResourcesIntf;
+  Controls, Forms, CodeToolManager, FileProcs, LazConf, LResources,
+  resource, groupiconresource, ProjectIntf, ProjectResourcesIntf;
    
 type
   TIconData = array of byte;

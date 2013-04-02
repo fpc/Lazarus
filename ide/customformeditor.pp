@@ -85,8 +85,8 @@ type
           ErrorType: TJITFormError; var Action: TModalResult); virtual;
     procedure JITListBeforeCreate(Sender: TObject; Instance: TPersistent);
     procedure JITListException(Sender: TObject; E: Exception;
-                               var Action: TModalResult);
-    procedure JITListPropertyNotFound(Sender: TObject; Reader: TReader;
+                               var {%H-}Action: TModalResult);
+    procedure JITListPropertyNotFound(Sender: TObject; {%H-}Reader: TReader;
       Instance: TPersistent; var PropName: string; IsPath: boolean;
       var Handled, Skip: Boolean);
     procedure JITListFindAncestors(Sender: TObject; AClass: TClass;
@@ -152,7 +152,7 @@ type
                                          ): TComponent;
     function FindJITComponentByClass(AComponentClass: TComponentClass
                                      ): TComponent;
-    procedure WriteMethodPropertyEvent(Writer: TWriter; Instance: TPersistent;
+    procedure WriteMethodPropertyEvent(Writer: TWriter; {%H-}Instance: TPersistent;
       PropInfo: PPropInfo; const MethodValue, DefMethodValue: TMethod;
       var Handled: boolean);
     function SaveUnitComponentToBinStream(AnUnitInfo: TUnitInfo;
@@ -220,8 +220,8 @@ type
                        ComponentClass: TComponentClass; Root: TComponent;
                        ParentControl: TWinControl; NewComponents: TFPList); override;
     function FixupReferences(AComponent: TComponent): TModalResult;
-    procedure WriterFindAncestor(Writer: TWriter; Component: TComponent;
-                                 const Name: string;
+    procedure WriterFindAncestor({%H-}Writer: TWriter; Component: TComponent;
+                                 const {%H-}Name: string;
                                  var Ancestor, RootAncestor: TComponent);
     procedure SetComponentNameAndClass(AComponent: TComponent;
                                        const NewName, NewClassName: shortstring);
@@ -271,11 +271,11 @@ type
   public
     destructor Destroy; override;
     procedure DefineProperty(const Name: string;
-      ReadData: TReaderProc; WriteData: TWriterProc;
-      HasData: Boolean); override;
+      {%H-}ReadData: TReaderProc; {%H-}WriteData: TWriterProc;
+      {%H-}HasData: Boolean); override;
     procedure DefineBinaryProperty(const Name: string;
-      ReadData, WriteData: TStreamProc;
-      HasData: Boolean); override;
+      {%H-}ReadData, {%H-}WriteData: TStreamProc;
+      {%H-}HasData: Boolean); override;
     property DefinePropertyNames: TStrings read FDefinePropertyNames;
   end;
   

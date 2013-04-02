@@ -41,7 +41,7 @@ interface
 uses
   Classes, SysUtils, AVL_Tree,
   LCLProc, LCLType, ClipBrd, Controls, Dialogs, FileUtil, Forms,
-  Menus, ExtCtrls, StdCtrls, ComCtrls, Graphics,
+  Menus, ExtCtrls, ComCtrls, Graphics,
   CodeToolManager,
   IDEImagesIntf, IDEExternToolIntf, IDECommands, MenuIntf, IDEMsgIntf,
   SrcEditorIntf, LazIDEIntf,
@@ -106,7 +106,7 @@ type
       Shift: TShiftState);
     procedure MessageViewDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
       State: TCustomDrawState; Stage: TCustomDrawStage;
-      var PaintImages, DefaultDraw: Boolean);
+      var {%H-}PaintImages, {%H-}DefaultDraw: Boolean);
     procedure SaveAllToFileMenuItemClick(Sender: TObject);
     procedure OnQuickFixClick(Sender: TObject);
   private

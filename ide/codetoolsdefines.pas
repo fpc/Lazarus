@@ -255,9 +255,6 @@ implementation
 
 {$R *.lfm}
 
-type
-  TWinControlClass = class of TWinControl;
-
 function ShowCodeToolsDefinesEditor(ACodeToolBoss: TCodeToolManager;
   Options: TCodeToolsOptions; Macros: TTransferMacroList): TModalResult;
 var CodeToolsDefinesEditor: TCodeToolsDefinesEditor;

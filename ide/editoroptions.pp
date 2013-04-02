@@ -1245,7 +1245,7 @@ type
     function  Add(AName: String): TEditorUserDefinedWords;
     function  IndexOf(AName: String): Integer;
     function  IndexOf(AList: TEditorUserDefinedWords): Integer;
-    procedure Remove(AName: String; FreeList: Boolean = True);
+    procedure Remove(AName: String; {%H-}FreeList: Boolean = True);
     procedure Remove(AList: TEditorUserDefinedWords; FreeList: Boolean = True);
     procedure Delete(AIndex: Integer);
     function  Count: Integer;

@@ -692,7 +692,7 @@ begin
   end;
 end;
 
-function ValueOfKey(const aLine, aKey: string; var aValue: string): boolean;
+function ValueOfKey(const aLine, aKey: string; out aValue: string): boolean;
 // If aKey is found in aLine, separate a quoted number following "aKey =",
 //  save it to aValue and return True. Return False if aKey is not found.
 // Example line:     version_nr = '2';
@@ -700,6 +700,7 @@ var
   i,j: Integer;
 begin
   Result:=False;
+  aValue:='';
   i:=Pos(aKey, aLine);
   if i>0 then begin            // aKey found
     i:=PosEx('=', aLine, i+Length(aKey));

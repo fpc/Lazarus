@@ -67,7 +67,7 @@ type
     procedure LoadLFM;
     function RemoveAll: TModalResult;
     procedure FindNiceNodeBounds(LFMNode: TLFMTreeNode;
-                                 var StartPos, EndPos: integer);
+                                 out StartPos, EndPos: integer);
     function FindListBoxError: TLFMError;
     procedure WriteLFMErrors;
     function FindAndFixMissingComponentClasses: TModalResult;
@@ -108,7 +108,7 @@ type
     RemoveAllButton: TBitBtn;
     SynLFMSyn1: TSynLFMSyn;
     procedure ErrorsListBoxClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure LFMSynEditSpecialLineMarkup(Sender: TObject; Line: integer;
       var Special: boolean; AMarkup: TSynSelectedColor);
     procedure RemoveAllButtonClick(Sender: TObject);
@@ -594,7 +594,7 @@ begin
 end;
 
 procedure TLFMChecker.FindNiceNodeBounds(LFMNode: TLFMTreeNode;
-  var StartPos, EndPos: integer);
+  out StartPos, EndPos: integer);
 var
   Src: String;
 begin

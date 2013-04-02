@@ -180,9 +180,9 @@ type
     FRemoveTermCmd: TSynEditorCommand;
     FToggleTermCmd: TSynEditorCommand;
 
-    procedure ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
+    procedure ProcessSynCommand(Sender: TObject; {%H-}AfterProcessing: boolean;
               var Handled: boolean; var Command: TSynEditorCommand;
-              var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
+              var {%H-}AChar: TUTF8Char; {%H-}Data: pointer; {%H-}HandlerData: pointer);
   protected
     function CreateTermsList: TSynSearchTermDict; override;
   public
