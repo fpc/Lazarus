@@ -34,6 +34,7 @@ help:
 # build the extra packages needed by the bigide
 bigide:
 	$(MAKE) -C rtticontrols
+	$(MAKE) -C cairocanvas
 	$(MAKE) -C printers
 	$(MAKE) -C printers/design
 	$(MAKE) -C turbopower_ipro
@@ -63,6 +64,7 @@ clean:
 	$(MAKE) -C synedit/design clean
 	$(MAKE) -C lazcontrols clean
 	$(MAKE) -C rtticontrols clean
+	$(MAKE) -C cairocanvas clean
 	$(MAKE) -C printers clean
 	$(MAKE) -C printers/design clean
 	$(MAKE) -C turbopower_ipro clean
