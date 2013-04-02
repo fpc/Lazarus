@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Makefile Value="True"/>
-  <Params Value=" -MObjFPC -Scghi -O1 -g -gl -vewnhi -l -Fu../../packager/units/%(CPU_TARGET)-%(OS_TARGET);. lazutils.pas"/>
+  <Params Value=" -Fu../../packager/units/%(CPU_TARGET)-%(OS_TARGET);.  -MObjFPC -Scghi -O1 -g -gl -vewnhi -l lazutils.pas"/>
 </CONFIG>

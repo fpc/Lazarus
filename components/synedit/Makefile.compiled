@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Makefile Value="True"/>
-  <Params Value=" -MObjFPC -Scghi -CR -O1 -g -gl -vewnh -l -vm4055,5024 -Fu../../lcl/units/%(CPU_TARGET)-%(OS_TARGET)/%(LCL_PLATFORM);../../lcl/units/%(CPU_TARGET)-%(OS_TARGET);../lazutils/lib/%(CPU_TARGET)-%(OS_TARGET);../../packager/units/%(CPU_TARGET)-%(OS_TARGET);. -dLCL -dLCL%(LCL_PLATFORM) -CR -dgc allsynedit.pas"/>
+  <Params Value=" -Fu../../packager/units/%(CPU_TARGET)-%(OS_TARGET);../lazutils/lib/%(CPU_TARGET)-%(OS_TARGET);../../lcl/units/%(CPU_TARGET)-%(OS_TARGET);../../lcl/units/%(CPU_TARGET)-%(OS_TARGET)/%(LCL_PLATFORM);.  -MObjFPC -Scghi -CR -O1 -g -gl -vewnh -l -vm4055,5024 allsynedit.pas"/>
 </CONFIG>

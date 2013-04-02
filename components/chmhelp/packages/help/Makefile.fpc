@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for lhelpcontrolpkg 0.2
 #
-#   This file was generated on 27-8-12
+#   This file was generated on 2-4-13
 
 [package]
 name=lhelpcontrolpkg
@@ -10,7 +10,7 @@ version=0.2
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=../../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
 options= -MObjFPC -Scgi -O1 -g -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]

@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for SynEditDsgn 1.0
 #
-#   This file was generated on 8-11-12
+#   This file was generated on 2-4-13
 
 [package]
 name=syneditdsgn
@@ -10,7 +10,7 @@ version=1.0
 
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=../units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
 options= -MObjFPC -Scghi -O1 -g -gl -vewnh -l -vm4055,5024 -dLCL -dLCL$(LCL_PLATFORM) -dgc
 
 [target]

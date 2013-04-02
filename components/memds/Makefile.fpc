@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for MemDSLaz 1.2.1
 #
-#   This file was generated on 8-11-12
+#   This file was generated on 2-4-13
 
 [package]
 name=memdslaz
@@ -10,7 +10,7 @@ version=1.2.1
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
 options= -MObjFPC -Scgi -O1 -g -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]

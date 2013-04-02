@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for lazsvnpkg 0.0.1
 #
-#   This file was generated on 8-11-12
+#   This file was generated on 2-4-13
 
 [package]
 name=lazsvnpkg
@@ -10,7 +10,7 @@ version=0.0.1
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../codetools/units/$(CPU_TARGET)-$(OS_TARGET) ../synedit/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../codetools/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../synedit/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
 options= -MObjFPC -Sgi -O1 -g -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
