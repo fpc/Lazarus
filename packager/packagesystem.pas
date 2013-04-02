@@ -3561,7 +3561,7 @@ begin
     XMLConfig:=TXMLConfig.Create(TargetCompiledFile);
     try
       XMLConfig.SetValue('Makefile/Value',True);
-      s:=OtherOptions;
+      s:='';
       if UnitPath<>'' then
         s:=s+' -Fu'+SwitchPathDelims(UnitPath,pdsUnix);
       if IncPath<>'' then
@@ -3571,8 +3571,7 @@ begin
       // do no write the unit output directory
       // it is not needed because it is the location of the Makefile.compiled
       s:=s+' '+SwitchPathDelims(CreateRelativePath(APackage.GetSrcFilename,APackage.Directory),pdsUnix);
-
-      //debugln(['TLazPackageGraph.WriteMakefileCompiled IncPath="',IncPath,'" UnitPath="',UnitPath,'" Custom="',CustomOptions,'" Out="',UnitOutputPath,'"']);
+      //debugln(['TLazPackageGraph.WriteMakefileCompiled IncPath="',IncPath,'" UnitPath="',UnitPath,'" Custom="',OtherOptions,'"']);
       XMLConfig.SetValue('Params/Value',s);
       if XMLConfig.Modified then begin
         InvalidateFileStateCache;
