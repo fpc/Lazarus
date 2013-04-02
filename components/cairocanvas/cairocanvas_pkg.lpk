@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="cairocanvas_pkg"/>
+    <Author Value="Petr Kristan"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
@@ -15,6 +16,8 @@
         <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
+    <Description Value="TCairoPrinterCanvas using the Cairo library."/>
+    <License Value="see COPYING.modifiedLGPL.txt"/>
     <Files Count="1">
       <Item1>
         <Filename Value="cairocanvas.pas"/>

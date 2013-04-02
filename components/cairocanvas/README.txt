@@ -2,7 +2,7 @@ Package for use libcairo in fpc.
 
 Author: Petr Kristan  (petr.kristan@epos.cz)
 
-Licence: LGPL 
+Licence: see COPYING.modifiedLGPL.txt
 
 Base is TCairoPrinterCanvas class which implements TCanvas interface using 
 cairo calls.
