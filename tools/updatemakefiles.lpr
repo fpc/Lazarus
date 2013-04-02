@@ -143,6 +143,12 @@ var
   LPKFiles: TStringList;
   LazbuildOut: TStringList;
 begin
+  if Paramcount>0 then begin
+    writeln('Updates for every lpk in the lazarus directory the Makefile.fpc, Makefile.compiled and Makefile.');
+    writeln;
+    writeln('Usage: ./tools/updatemakefiles');
+    exit;
+  end;
   LazarusDir:=CleanAndExpandDirectory(GetCurrentDirUTF8);
   if ExtractFileName(ChompPathDelim(LazarusDir))='tools' then
     LazarusDir:=ExtractFilePath(ChompPathDelim(LazarusDir));
@@ -151,7 +157,7 @@ begin
   writeln(LPKFiles.Text);
   LPKFiles.StrictDelimiter:=true;
   LPKFiles.Delimiter:=' ';
-  LazbuildOut:=RunTool(SetDirSeparators('./lazbuild'+ExeExt),'--lazarusdir='+LazarusDir+' --create-makefile '+LPKFiles.DelimitedText,LazarusDir);
+  LazbuildOut:=RunTool(SetDirSeparators('./lazbuild'+ExeExt),'--lazarusdir="'+LazarusDir+'" --create-makefile '+LPKFiles.DelimitedText,LazarusDir);
   writeln(LazbuildOut.Text);
   LPKFiles.Free;
 end.
