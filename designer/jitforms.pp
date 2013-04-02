@@ -121,21 +121,21 @@ type
     procedure DoRenameUnitNameOfClass(JITClass: TClass;
                                       const NewUnitName: ShortString);
     // TReader events
-    procedure ReaderFindMethod(Reader: TReader; const FindMethodName: Ansistring;
-      var Address: Pointer; var Error: Boolean);
+    procedure ReaderFindMethod({%H-}Reader: TReader; const {%H-}FindMethodName: Ansistring;
+      var {%H-}Address: Pointer; var {%H-}Error: Boolean);
     procedure ReaderSetMethodProperty(Reader: TReader; Instance: TPersistent;
       PropInfo: PPropInfo; const TheMethodName: string; var Handled: boolean);
     procedure ReaderPropertyNotFound(Reader: TReader; Instance: TPersistent;
       var PropName: string; IsPath: Boolean; var Handled, Skip: Boolean);
-    procedure ReaderSetName(Reader: TReader; Component: TComponent;
+    procedure ReaderSetName({%H-}Reader: TReader; {%H-}Component: TComponent;
       var NewName: Ansistring);
-    procedure ReaderReferenceName(Reader: TReader; var RefName: Ansistring);
-    procedure ReaderAncestorNotFound(Reader: TReader;
+    procedure ReaderReferenceName({%H-}Reader: TReader; var RefName: Ansistring);
+    procedure ReaderAncestorNotFound({%H-}Reader: TReader;
       const ComponentName: Ansistring; ComponentClass: TPersistentClass;
       var Component: TComponent);
     procedure ReaderError(Reader: TReader; const ErrorMsg: Ansistring;
       var Handled: Boolean);
-    procedure ReaderFindComponentClass(Reader: TReader;
+    procedure ReaderFindComponentClass({%H-}Reader: TReader;
       const FindClassName: Ansistring; var ComponentClass: TComponentClass);
     procedure ReaderCreateComponent(Reader: TReader;
       ComponentClass: TComponentClass; var Component: TComponent);
@@ -144,7 +144,7 @@ type
 
     // some useful functions
     function GetItem(Index:integer):TComponent;
-    function OnFindGlobalComponent(const AName:AnsiString):TComponent;
+    function OnFindGlobalComponent(const {%H-}AName:AnsiString):TComponent;
     procedure InitReading;
     procedure CreateReader(BinStream: TStream;
                            UnitResourcefileFormat: TUnitResourcefileFormatClass;
@@ -170,7 +170,7 @@ type
                                 UnitResourcefileFormat: TUnitResourcefileFormatClass;
                                 AncestorClass: TClass;
                                 const NewUnitName: ShortString;
-                                Interactive, Visible, DisableAutoSize: Boolean;
+                                {%H-}Interactive, Visible, DisableAutoSize: Boolean;
                                 ContextObj: TObject): integer;
     procedure DestroyJITComponent(JITComponent: TComponent);
     procedure DestroyJITComponent(Index: integer);
@@ -179,7 +179,7 @@ type
     function FindComponentByClassName(const AClassName: shortstring): integer;
     function FindComponentByClass(AClass: TComponentClass): integer;
     function FindComponentByName(const AName: shortstring): integer;
-    procedure GetUnusedNames(var ComponentName, ComponentClassName: shortstring);
+    procedure GetUnusedNames(out ComponentName: shortstring; var ComponentClassName: shortstring);
     function CreateNewMethod(JITComponent: TComponent;
                              const AName: ShortString): TMethod;
     procedure RemoveMethod(JITComponent: TComponent; const AName: ShortString);
@@ -320,17 +320,17 @@ type
 
 procedure SetComponentDesignMode(AComponent: TComponent; Value: Boolean);
 begin
-  TSetDesigningComponent.SetDesigningOfComponent(AComponent, True);
+  TSetDesigningComponent.SetDesigningOfComponent(AComponent, Value);
 end;
 
 procedure SetComponentDesignInstanceMode(AComponent: TComponent; Value: Boolean);
 begin
-  TSetDesigningComponent.SetDesignInstanceOfComponent(AComponent, True);
+  TSetDesigningComponent.SetDesignInstanceOfComponent(AComponent, Value);
 end;
 
 procedure SetComponentInlineMode(AComponent: TComponent; Value: Boolean);
 begin
-  TSetDesigningComponent.SetInlineOfComponent(AComponent, True);
+  TSetDesigningComponent.SetInlineOfComponent(AComponent, Value);
 end;
 
 procedure SetComponentAncestorMode(AComponent: TComponent; Value: Boolean);
@@ -796,8 +796,8 @@ begin
     dec(Result);
 end;
 
-procedure TJITComponentList.GetUnusedNames(
-  var ComponentName,ComponentClassName:shortstring);
+procedure TJITComponentList.GetUnusedNames(out ComponentName: shortstring;
+  var ComponentClassName: shortstring);
 var a:integer;
   ComponentPrefix: String;
 begin
@@ -853,6 +853,7 @@ function TJITComponentList.AddJITComponentFromStream(BinStream: TStream;
     FCurReadStreamClass:=StreamClass;
     DestroyDriver:=false;
     InitReading;
+    Reader:=nil;
     CreateReader(AStream,UnitResourcefileFormat,Reader,DestroyDriver);
     {$IFDEF VerboseJITForms}
     DebugLn(['TJITComponentList.AddJITComponentFromStream.ReadStream Reading: FCurReadJITComponent=',DbgSName(FCurReadJITComponent),' StreamClass=',DbgSName(StreamClass)]);
@@ -1305,6 +1306,7 @@ begin
   FCurReadJITComponent:=nil;
   FCurReadClass:=nil;
   FCurReadStreamClass:=nil;
+  Reader:=nil;
   try
     DestroyDriver:=false;
     InitReading;

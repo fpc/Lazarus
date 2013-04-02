@@ -74,7 +74,7 @@ type
   public
     procedure SaveBounds;
     procedure Move(NewLeft, NewTop: integer);
-    procedure GetRect(var ARect: TRect);
+    procedure GetRect(out ARect: TRect);
     procedure InvalidateOnForm(AForm: TCustomForm);
 
     property Positions: TGrabPositions read FPositions write FPositions;
@@ -144,7 +144,7 @@ type
     destructor Destroy; override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure SetFormRelativeBounds(ALeft, ATop, AWidth, AHeight: integer);
-    procedure GetFormRelativeBounds(var ALeft, ATop, AWidth, AHeight: integer;
+    procedure GetFormRelativeBounds(out ALeft, ATop, AWidth, AHeight: integer;
                                     StoreAsUsed: boolean = false);
     procedure SetUsedBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure SaveBounds;
@@ -328,7 +328,7 @@ type
     function GetSnapping: boolean;
     function GetVisible: boolean;
     procedure DoChangeProperties;
-    procedure GrabberMove(Grabber: TGrabber; const OldRect, NewRect: TRect);
+    procedure GrabberMove({%H-}Grabber: TGrabber; const OldRect, NewRect: TRect);
     procedure SetActiveGrabber(AGrabber: TGrabber);
     procedure SetCacheGuideLines(const AValue: boolean);
     procedure SetCustomForm;
@@ -375,7 +375,7 @@ type
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
 
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -548,7 +548,7 @@ begin
   if Assigned(FOnMove) then FOnMove(Self,OldRect,NewRect);
 end;
 
-procedure TGrabber.GetRect(var ARect: TRect);
+procedure TGrabber.GetRect(out ARect: TRect);
 begin
   ARect.Left:=FLeft;
   ARect.Top:=FTop;
@@ -637,7 +637,7 @@ begin
   end;
 end;
 
-procedure TSelectedControl.GetFormRelativeBounds(var ALeft, ATop, AWidth,
+procedure TSelectedControl.GetFormRelativeBounds(out ALeft, ATop, AWidth,
   AHeight: integer; StoreAsUsed: boolean);
 var
   ALeftTop: TPoint;
@@ -3137,6 +3137,8 @@ var
   g: TGuideLineType;
 begin
   if (Count=0) or (FForm=nil) or LookupRootSelected then exit;
+  for g:=Low(TGuideLineType) to high(TGuideLineType) do
+    Line[g]:=Rect(0,0,0,0);
   LineExists[glLeft]:=GetLeftGuideLine(Line[glLeft]);
   LineExists[glRight]:=GetRightGuideLine(Line[glRight]);
   LineExists[glTop]:=GetTopGuideLine(Line[glTop]);
