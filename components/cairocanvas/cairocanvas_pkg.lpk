@@ -18,11 +18,15 @@
     </CompilerOptions>
     <Description Value="TCairoPrinterCanvas using the Cairo library."/>
     <License Value="see COPYING.modifiedLGPL.txt"/>
-    <Files Count="1">
+    <Files Count="2">
       <Item1>
         <Filename Value="cairocanvas.pas"/>
         <UnitName Value="CairoCanvas"/>
       </Item1>
+      <Item2>
+        <Filename Value="cairoprinter.pas"/>
+        <UnitName Value="cairoprinter"/>
+      </Item2>
     </Files>
     <Type Value="RunTimeOnly"/>
     <RequiredPkgs Count="2">
@@ -39,5 +43,8 @@
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>
