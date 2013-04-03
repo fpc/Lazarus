@@ -217,6 +217,7 @@ const
   CTEXT='Hola';
 var
   R: TRect;
+  sz: TSize;
 begin
 
   R := Rect(XDPI, YDPI*2, XDPI*3, round(YDPI*2.5));
@@ -234,6 +235,13 @@ begin
   cnv.Font.Color := clRed;
   cnv.TextOut(R.left, R.Top, CTEXT);
   cnv.Rectangle(R);
+
+  OffsetRect(R, -5, Round(YDPI*0.5));
+  sz := cnv.TextExtent('Line1');
+  cnv.Font.color := clDefault;
+  cnv.TextOut(R.Left, R.Top, 'Line1'); OffsetRect(R, 0, sz.cy);
+  cnv.TextOut(R.Left, R.Top, 'Line2'); OffsetRect(R, 0, sz.cy);
+  cnv.TextOut(R.Left, R.Top, 'Line3'); OffsetRect(R, 0, sz.cy);
 end;
 
 end.
