@@ -888,7 +888,7 @@ var
 begin
   SelectFont;
   cairo_font_extents(cr, @e); //transformation matrix is here ignored
-  FillChar(M, SizeOf(M), 0);
+  FillChar(M{%H-}, SizeOf(M), 0);
   M.Ascender := Round(e.ascent/ScaleY);
   M.Descender := Round(e.descent/ScaleY);
   M.Height := Round(e.height/ScaleY);
