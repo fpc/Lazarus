@@ -715,6 +715,7 @@ var
   Layout: PPangoLayout;
   desc: PPangoFontDescription;
   theFont: string;
+  theRect: TPangoRectangle;
   {$endif}
 begin
   Changing;
@@ -804,7 +805,7 @@ begin
           j := i+1;
           while (j<=len) and (s[j] = ' ') do
             inc(j);
-          if te.width <= BreakBoxWidth then begin
+          if (te.width+te.x_bearing) <= BreakBoxWidth then begin
             LastBreakEndL := i-1;
             LastBreakStart := j;
           end else begin //overflow
@@ -841,16 +842,25 @@ begin
     //Text output
     for i := 0 to Lines.Count-1 do begin
       CurLine := TLine(Lines.Items[i]);
+
+      s1 := Copy(s, CurLine.Start, CurLine.EndL-CurLine.Start+1);
+      {$ifdef pangocairo}
+      cairo_text_extents(cr, PChar(s1), @te);
+      pango_layout_set_text(layout, pchar(s1), -1);
+      pango_layout_get_extents(Layout, @theRect, nil);
+      case Style.Alignment of
+        taLeftJustify: x := StartLeft;
+        taCenter: x := BoxLeft + BoxWidth/2 - theRect.width/PANGO_SCALE/2 - te.x_bearing;
+        taRightJustify: x := BoxLeft+BoxWidth - theRect.Width/PANGO_SCALE - te.x_bearing;
+      end;
+      cairo_move_to(cr, x, y+fe.ascent);
+      {$else}
       case Style.Alignment of
         taLeftJustify: x := StartLeft;
         taCenter: x := BoxLeft + BoxWidth/2 - CurLine.Width/2;
         taRightJustify: x := BoxLeft+BoxWidth - CurLine.Width;
       end;
       cairo_move_to(cr, x, y+fe.ascent);
-      s1 := Copy(s, CurLine.Start, CurLine.EndL-CurLine.Start+1);
-      {$ifdef pangocairo}
-      pango_layout_set_text(layout, pchar(s1), -1);
-      {$else}
       cairo_show_text(cr, PChar(s1)); //Reference point is on the base line
       {$endif}
       y := y + fe.height;
@@ -875,11 +885,31 @@ end;
 function TCairoPrinterCanvas.TextExtent(const Text: string): TSize;
 var
   extents: cairo_text_extents_t;
+  {$ifdef pangocairo}
+  Layout: PPangoLayout;
+  desc: PPangoFontDescription;
+  theFont: string;
+  theRect: TPangoRectangle;
+  {$endif}
 begin
   SelectFont;
+  {$ifdef pangocairo}
+  Layout := Pango_Cairo_Create_Layout(cr);
+  theFOnt := format('%s %s %dpx',[Font.name, StylesToStr(Font.Style), abs(Font.Size)]);
+  desc := pango_font_description_from_string(pchar(TheFont));
+  pango_layout_set_font_description(Layout, desc);
+  cairo_text_extents(cr, PChar(Text), @extents);
+  pango_layout_set_text(Layout, pchar(Text), -1);
+  pango_layout_get_extents(Layout, @theRect, nil);
+  Result.cx := Round((theRect.width/PANGO_SCALE-extents.x_bearing)/ScaleX);
+  Result.cy := Round((theRect.height/PANGO_SCALE-extents.y_bearing)/ScaleY);
+  g_object_unref(Layout);
+  pango_font_description_free(desc);
+  {$else}
   cairo_text_extents(cr, PChar(Text), @extents); //transformation matrix is here ignored
-  Result.cx := Round(extents.width/ScaleX);
-  Result.cy := Round(extents.height/ScaleY);
+  Result.cx := Round((extents.width+extents.x_bearing)/ScaleX);
+  Result.cy := Round((extents.height+extents.y_bearing)/ScaleY);
+  {$endif}
 end;
 
 function TCairoPrinterCanvas.GetTextMetrics(out M: TLCLTextMetric): boolean;
