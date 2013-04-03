@@ -15,7 +15,8 @@ type
   TvSVGZVectorialReader = class(TvSVGVectorialReader)
   public
     { General reading methods }
-    procedure ReadFromFile(AFileName: string; AData: TvVectorialDocument); virtual;
+    procedure InflateGZ(AGZFilename: string; ADest: TStream);
+    procedure ReadFromFile(AFileName: string; AData: TvVectorialDocument); override;
     procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); override;
   end;
 
@@ -23,16 +24,40 @@ implementation
 
 { TvSVGZVectorialReader }
 
+procedure TvSVGZVectorialReader.InflateGZ(AGZFilename: string; ADest: TStream);
+var
+  GZStream: TGZFileStream;
+  chunk:string;
+  cnt:integer;
+const
+  CHUNKSIZE=4096;
+begin
+  GZStream := TGZFileStream.Create(AGZFilename, gzopenread);
+  try
+    setlength(chunk,CHUNKSIZE);
+    repeat
+      cnt := GZStream.read(chunk[1],CHUNKSIZE);
+      if cnt<CHUNKSIZE then
+        setlength(chunk,cnt);
+      ADest.Write(chunk[1], Length(chunk));
+    until cnt<CHUNKSIZE;
+  finally
+    GZStream.Free;
+  end;
+end;
+
 procedure TvSVGZVectorialReader.ReadFromFile(AFileName: string;
   AData: TvVectorialDocument);
 var
-  FileStream: TGZFileStream;
+  DataStream: TMemoryStream;
 begin
-  FileStream := TGZFileStream.Create(AFileName, gzopenread);
+  DataStream := TMemoryStream.Create;
   try
-    ReadFromStream(FileStream, AData);
+    InflateGZ(AFileName, DataStream);
+    DataStream.Position := 0;
+    ReadFromStream(DataStream, AData);
   finally
-    FileStream.Free;
+    DataStream.Free;
   end;
 end;
 

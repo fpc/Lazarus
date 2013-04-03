@@ -14,7 +14,7 @@ interface
 
 uses
   Classes, SysUtils, math,
-  fpimage, fpcanvas, xmlread, dom, fgl,
+  fpimage, fpcanvas, laz2_xmlread, laz2_dom, fgl,
   fpvectorial, fpvutils, lazutf8;
 
 type
