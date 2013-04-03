@@ -28,7 +28,6 @@
         <UnitName Value="cairoprinter"/>
       </Item2>
     </Files>
-    <Type Value="RunTimeOnly"/>
     <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="LCL"/>
