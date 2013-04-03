@@ -6308,7 +6308,7 @@ var
   R: TRect;
 begin
   // TODO: use gdk_window_invalidate_region to implement this function
-  GetRgnBox(Rgn, @R);
+  Result:=GetRgnBox(Rgn, @R)=0;
   InvalidateRect(Handle, @R, Erase);
 end;
 
