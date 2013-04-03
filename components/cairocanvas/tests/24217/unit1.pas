@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, PrintersDlgs, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, CairoPrinter;
+  StdCtrls, ExtCtrls, CairoPrinter;
 
 type
 
@@ -14,13 +14,20 @@ type
 
   TForm1 = class(TForm)
     Button1: TButton;
-    Button2: TButton;
+    btn24217: TButton;
+    btn19435: TButton;
+    btnPrintAll: TButton;
+    chkTests: TCheckGroup;
     PrintDialog1: TPrintDialog;
+    procedure btn19435Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
+    procedure btn24217Click(Sender: TObject);
+    procedure chkTestsItemClick(Sender: TObject; Index: integer);
+    procedure FormPaint(Sender: TObject);
   private
-    { private declarations }
-    procedure DrawSample(cnv: TCanvas; XDPI,YDPI: Integer);
+    procedure Draw19435(cnv: TCanvas; XDPI,YDPI: Integer);
+    procedure Draw24217(cnv: TCanvas; XDPI,YDPI: Integer);
+    procedure DrawTestBoth(cnv: TCanvas; XDPI,YDPI: Integer);
   public
     { public declarations }
   end;
@@ -46,28 +53,96 @@ begin
     Printer.BeginDoc;
 
     with Printer do
-      DrawSample(Canvas, XDPI, YDPI);
+      Draw24217(Canvas, XDPI, YDPI);
 
     Printer.EndDoc;
   end;
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+procedure TForm1.btn19435Click(Sender: TObject);
 var
   CairoPrinter: TCairoFilePrinter;
 begin
   CairoPrinter := TCairoFilePrinter.create;
-  CairoPrinter.CairoBackend:=cbPS;
-  //CairoPrinter.CairoBackend:=cbPDF;
-  CairoPrinter.FileName:='salida';
+  //CairoPrinter.CairoBackend:=cbPS;
+  CairoPrinter.CairoBackend:=cbPDF;
+  CairoPrinter.FileName:='19435';
   CairoPrinter.BeginDoc;
   with CairoPrinter do
-    DrawSample(Canvas, XDPI, YDPI);
+    Draw19435(Canvas, XDPI, YDPI);
   CairoPrinter.EndDoc;
   CairoPrinter.Free;
 end;
 
-procedure TForm1.DrawSample(cnv: TCanvas; XDPI, YDPI: Integer);
+procedure TForm1.btn24217Click(Sender: TObject);
+var
+  CairoPrinter: TCairoFilePrinter;
+begin
+  CairoPrinter := TCairoFilePrinter.create;
+  //CairoPrinter.CairoBackend:=cbPS;
+  CairoPrinter.CairoBackend:=cbPDF;
+  CairoPrinter.FileName:='salida';
+  CairoPrinter.BeginDoc;
+  with CairoPrinter do
+    Draw24217(Canvas, XDPI, YDPI);
+  CairoPrinter.EndDoc;
+  CairoPrinter.Free;
+end;
+
+procedure TForm1.chkTestsItemClick(Sender: TObject; Index: integer);
+begin
+  Invalidate;
+end;
+
+procedure TForm1.FormPaint(Sender: TObject);
+var
+  ResX,ResY: Integer;
+begin
+  ResX := Screen.PixelsPerInch;
+  ResY := ResX;
+  if chkTests.Checked[0] then Draw24217(Canvas, ResX, ResY);
+  if chkTests.Checked[1] then Draw19435(Canvas, ResX, ResY);
+  if chkTests.Checked[2] then DrawTestBoth(Canvas, ResX, ResY);
+end;
+
+procedure TForm1.Draw19435(cnv: TCanvas; XDPI, YDPI: Integer);
+const
+  prefix = 'Arabic: ';
+var
+  sz: TSize;
+  x,y: Integer;
+  fx: Integer;
+begin
+  with cnv do
+  begin
+    Font.Color := clDefault;
+    Font.Name := 'Sans';
+    Font.Size := 24;
+    cnv.Brush.Style := bsClear;
+    x := Round(XDPI);
+    y := Round(YDPI);
+    sz := TextExtent(PREFIX);
+    fx := Round(250*XDPI/300); // for demostration purposes this should make both
+                               // texts overlap both in screen and in printer
+    TextOut(x, y, 'English with font ');
+
+    // alternative 1, depend on font size, for Size=24 both texts overlaps
+    inc(y, sz.cy);
+    TextOut(x,       y, PREFIX);
+    TextOut(x+fx,    y, 'اللغة العربية');
+
+    // alternative 2, measure prefix
+    inc(y, sz.cy);
+    TextOut(x,       y, PREFIX);
+    TextOut(x+sz.cx, y, 'اللغة العربية');
+
+    // alternative 3, simpler
+    inc(y, sz.cy);
+    Textout(x,       y, PREFIX + 'اللغة العربية');
+  end;
+end;
+
+procedure TForm1.Draw24217(cnv: TCanvas; XDPI, YDPI: Integer);
 var
   sz:TSize;
   r:tRect;
@@ -75,7 +150,10 @@ var
   kx,ky:double;
 begin
 
+  cnv.Font.Color := clDefault;
+  cnv.Pen.Color := clBlack;
   cnv.Font.Size:=24;
+  cnv.Brush.style := bsClear;
 
   r.Left:=round(XDPI*0.5);
   r.Top:=round(YDPI*0.5);
@@ -132,6 +210,30 @@ begin
   cnv.font.Orientation:=0;
   cnv.TextOut((XDPI*2),(YDPI*5),'Clipping doesn''t work for text!');
 
+end;
+
+procedure TForm1.DrawTestBoth(cnv: TCanvas; XDPI, YDPI: Integer);
+const
+  CTEXT='Hola';
+var
+  R: TRect;
+begin
+
+  R := Rect(XDPI, YDPI*2, XDPI*3, round(YDPI*2.5));
+
+  cnv.Font.Name := 'Arial';
+  cnv.Font.Size := 40;
+  cnv.Font.Color := clBlue;
+  cnv.Pen.Color := RGBToColor($AA, $CC, $FF);
+  cnv.Brush.Style := bsClear;
+  cnv.TextRect(R, R.Left, R.Top, CTEXT);
+  cnv.Rectangle(R);
+
+  OffsetRect(R, 5, 5);
+  cnv.Pen.Color := RGBToColor($FF, $AA, $AA);
+  cnv.Font.Color := clRed;
+  cnv.TextOut(R.left, R.Top, CTEXT);
+  cnv.Rectangle(R);
 end;
 
 end.
