@@ -14,22 +14,28 @@ type
   { TPackageIntegrationOptionsFrame }
 
   TPackageIntegrationOptionsFrame = class(TAbstractIDEOptionsEditor)
+    DesignTimeRadioButton: TRadioButton;
     FPDocPackageNameEdit: TEdit;
     FPDocPackageNameLabel: TLabel;
     FPDocSearchPathsLabel: TLabel;
     DocGroupBox: TGroupBox;
     FPDocSearchPathsEdit: TEdit;
-    PkgTypeRadioGroup: TRadioGroup;
+    PkgTypeGroupBox: TGroupBox;
+    RunAndDesignTimeRadioButton: TRadioButton;
+    RunTimeOnlyRadioButton: TRadioButton;
+    RunTimeRadioButton: TRadioButton;
     UpdateRadioGroup: TRadioGroup;
     procedure FPDocPackageNameEditEnter(Sender: TObject);
     procedure FPDocPackageNameEditExit(Sender: TObject);
-    procedure PkgTypeRadioGroupClick(Sender: TObject);
+    procedure PkgTypeGroupBoxClick(Sender: TObject);
   private
     FLazPackage: TLazPackage;
     FPDocPathButton: TPathEditorButton;
-    FStoredPkgType: Integer;
+    FStoredPkgType: TLazPackageType;
+    function GetSelectedPkgType: TLazPackageType;
     procedure PathEditBtnClick(Sender: TObject);
     procedure PathEditBtnExecuted(Sender: TObject);
+    procedure SetSelectedPkgType(PkgType: TLazPackageType);
     function ShowMsgPackageTypeMustBeDesign: boolean;
     function GetFPDocPkgNameEditValue: string;
   public
@@ -49,12 +55,12 @@ implementation
 
 { TPackageIntegrationOptionsFrame }
 
-procedure TPackageIntegrationOptionsFrame.PkgTypeRadioGroupClick(Sender: TObject);
+procedure TPackageIntegrationOptionsFrame.PkgTypeGroupBoxClick(Sender: TObject);
 var
   NewPkgType: TLazPackageType;
 begin
-  NewPkgType:=CaptionToPkgType(PkgTypeRadioGroup.Items[PkgTypeRadioGroup.ItemIndex]);
-  if (FStoredPkgType<>PkgTypeRadioGroup.ItemIndex)
+  NewPkgType:=GetSelectedPkgType;
+  if (FStoredPkgType<>NewPkgType)
   and (NewPkgType in [lptRunTime,lptRunTimeOnly])
   then begin
     // user sets to runtime
@@ -85,6 +91,18 @@ var
 begin
   AButton.CurrentPathEditor.Path := FPDocSearchPathsEdit.Text;
   AButton.CurrentPathEditor.Templates := '';
+end;
+
+function TPackageIntegrationOptionsFrame.GetSelectedPkgType: TLazPackageType;
+begin
+  if RunTimeOnlyRadioButton.Checked then
+    Result:=lptRunTimeOnly
+  else if DesignTimeRadioButton.Checked then
+    Result:=lptDesignTime
+  else if RunTimeRadioButton.Checked then
+    Result:=lptRunTime
+  else
+    Result:=lptRunAndDesignTime;
 end;
 
 procedure TPackageIntegrationOptionsFrame.PathEditBtnExecuted(Sender: TObject);
@@ -138,6 +156,17 @@ begin
   FPDocSearchPathsEdit.Text := NewPath;
 end;
 
+procedure TPackageIntegrationOptionsFrame.SetSelectedPkgType(
+  PkgType: TLazPackageType);
+begin
+  case PkgType of
+  lptRunTime: RunTimeRadioButton.Checked:=true;
+  lptDesignTime: DesignTimeRadioButton.Checked:=true;
+  lptRunAndDesignTime: RunAndDesignTimeRadioButton.Checked:=true;
+  lptRunTimeOnly: RunTimeOnlyRadioButton.Checked:=true;
+  end;
+end;
+
 function TPackageIntegrationOptionsFrame.GetTitle: string;
 begin
   Result := lisPckOptsIDEIntegration;
@@ -145,15 +174,17 @@ end;
 
 procedure TPackageIntegrationOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  PkgTypeRadioGroup.Caption := lisPckOptsPackageType;
-  PkgTypeRadioGroup.Items[0] := PkgTypeToCaption(lptRunAndDesignTime);
-  PkgTypeRadioGroup.Items[1] := PkgTypeToCaption(lptDesignTime);
-  PkgTypeRadioGroup.Items[2] := PkgTypeToCaption(lptRunTime);
-  PkgTypeRadioGroup.Items[3] := PkgTypeToCaption(lptRunTimeOnly);
+  PkgTypeGroupBox.Caption := lisPckOptsPackageType;
+  RunAndDesignTimeRadioButton.Caption:=PkgTypeToCaption(lptRunAndDesignTime);
+  DesignTimeRadioButton.Caption:=PkgTypeToCaption(lptDesignTime);
+  RunTimeRadioButton.Caption:=PkgTypeToCaption(lptRunTime);
+  RunTimeOnlyRadioButton.Caption:=PkgTypeToCaption(lptRunTimeOnly);
+
   UpdateRadioGroup.Caption := lisPckOptsUpdateRebuild;
   UpdateRadioGroup.Items[0] := lisPckOptsAutomaticallyRebuildAsNeeded;
   UpdateRadioGroup.Items[1] := lisPckOptsAutoRebuildWhenRebuildingAll;
   UpdateRadioGroup.Items[2] := lisPckOptsManualCompilationNeverAutomatically;
+
   DocGroupBox.Caption := lisCodeHelpGroupBox;
 
   FPDocPackageNameLabel.Caption:=lisPckPackage;
@@ -181,13 +212,10 @@ end;
 procedure TPackageIntegrationOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   LazPackage: TLazPackage absolute AOptions;
-  i: Integer;
 begin
   FLazPackage := LazPackage;
-  for i:=0 to PkgTypeRadioGroup.Items.Count-1 do
-    if PkgTypeRadioGroup.Items[i]=PkgTypeToCaption(LazPackage.PackageType) then
-      PkgTypeRadioGroup.ItemIndex:=i;
-  FStoredPkgType := PkgTypeRadioGroup.ItemIndex;
+  FStoredPkgType := LazPackage.PackageType;
+  SetSelectedPkgType(FStoredPkgType);
   case LazPackage.AutoUpdate of
     pupAsNeeded: UpdateRadioGroup.ItemIndex := 0;
     pupOnRebuildingAll: UpdateRadioGroup.ItemIndex := 1;
@@ -209,7 +237,7 @@ begin
     mtWarning, [mbIgnore, mbCancel], 0) <> mrIgnore then
   begin
     Result := True;
-    PkgTypeRadioGroup.ItemIndex := FStoredPkgType;
+    SetSelectedPkgType(FStoredPkgType);
   end
   else
     Result := False;
@@ -227,7 +255,7 @@ function TPackageIntegrationOptionsFrame.Check: Boolean;
 var
   NewPkgType: TLazPackageType;
 begin
-  NewPkgType:=CaptionToPkgType(PkgTypeRadioGroup.Items[PkgTypeRadioGroup.ItemIndex]);
+  NewPkgType:=GetSelectedPkgType;
   if NewPkgType <> FLazPackage.PackageType then
   begin
     if (NewPkgType in [lptRunTime,lptRunTimeOnly])
@@ -243,10 +271,8 @@ end;
 procedure TPackageIntegrationOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   LazPackage: TLazPackage absolute AOptions;
-  NewPkgType: TLazPackageType;
 begin
-  NewPkgType:=CaptionToPkgType(PkgTypeRadioGroup.Items[PkgTypeRadioGroup.ItemIndex]);
-  LazPackage.PackageType := NewPkgType;
+  LazPackage.PackageType := GetSelectedPkgType;
   case UpdateRadioGroup.ItemIndex of
     2: LazPackage.AutoUpdate := pupManually;
     1: LazPackage.AutoUpdate := pupOnRebuildingAll;
