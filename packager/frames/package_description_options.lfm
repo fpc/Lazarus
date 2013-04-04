@@ -19,10 +19,6 @@ object PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
     ClientWidth = 548
     TabOrder = 0
     object DescriptionMemo: TMemo
-      AnchorSideLeft.Control = DescriptionGroupBox
-      AnchorSideTop.Control = DescriptionGroupBox
-      AnchorSideRight.Control = DescriptionGroupBox
-      AnchorSideBottom.Control = DescriptionGroupBox
       Left = 6
       Height = 65
       Top = 6
@@ -71,10 +67,6 @@ object PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
     ClientWidth = 548
     TabOrder = 2
     object LicenseMemo: TMemo
-      AnchorSideLeft.Control = LicenseGroupBox
-      AnchorSideTop.Control = LicenseGroupBox
-      AnchorSideRight.Control = LicenseGroupBox
-      AnchorSideBottom.Control = LicenseGroupBox
       Left = 6
       Height = 75
       Top = 6
