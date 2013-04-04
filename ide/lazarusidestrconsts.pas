@@ -5646,6 +5646,18 @@ resourcestring
   rsAttachTo = 'Attach to';
   rsEnterPID = 'Enter PID';
   lisFreePascalCompilerMessages = 'Free Pascal Compiler messages';
+  lisRunAndDesignTimePackagesHaveNoLimitations = '"Run and Design time" '
+    +'packages have no limitations.';
+  lisDesignTimePackagesAddComponentsAndMenuItemsToTheID = '"Design time" '
+    +'packages add components and menu items to the IDE. They can be used by '
+    +'projects, but are not compiled into the project. The compiler will not '
+    +'find units of this package when compiling the project.';
+  lisRunTimePackagesCanBeUsedByProjectsTheyCanNotBeInst = '"Run time" packages'
+    +' can be used by projects. They can not be installed in the IDE, unless '
+    +'some design time package requires them.';
+  lisRunTimeOnlyPackagesAreOnlyForProjectsTheyCanNotBeI = '"Run time only" '
+    +'packages are only for projects. They can not be installed in the IDE, '
+    +'not even indirectly.';
 
 implementation
 

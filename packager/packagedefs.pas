@@ -502,7 +502,7 @@ type
     lptRunTime,         // RunTime packages can't register anything in the IDE.
                         // They can be used by designtime packages.
     lptDesignTime,      // DesignTime packages can register anything in the IDE
-                        // and should not be compiled into projects.
+                        // and are not compiled into projects.
                         // The IDE calls the 'register' procedures of each unit.
     lptRunAndDesignTime,// RunAndDesignTime packages can do anything.
     lptRunTimeOnly      // as lptRunTime, but they can not be used in the IDE

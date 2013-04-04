@@ -136,6 +136,8 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
       Width = 445
       Caption = 'RunAndDesignTimeRadioButton'
       Checked = True
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       TabStop = True
     end
@@ -145,6 +147,8 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
       Top = 30
       Width = 445
       Caption = 'DesignTimeRadioButton'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
     end
     object RunTimeRadioButton: TRadioButton
@@ -153,6 +157,8 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
       Top = 54
       Width = 445
       Caption = 'RunTimeRadioButton'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 2
     end
     object RunTimeOnlyRadioButton: TRadioButton
@@ -161,6 +167,8 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
       Top = 78
       Width = 445
       Caption = 'RunTimeOnlyRadioButton'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 3
     end
   end

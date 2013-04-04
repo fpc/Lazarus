@@ -176,9 +176,17 @@ procedure TPackageIntegrationOptionsFrame.Setup(ADialog: TAbstractOptionsEditorD
 begin
   PkgTypeGroupBox.Caption := lisPckOptsPackageType;
   RunAndDesignTimeRadioButton.Caption:=PkgTypeToCaption(lptRunAndDesignTime);
+  RunAndDesignTimeRadioButton.Hint:=
+    lisRunAndDesignTimePackagesHaveNoLimitations;
   DesignTimeRadioButton.Caption:=PkgTypeToCaption(lptDesignTime);
+  DesignTimeRadioButton.Hint:=
+    lisDesignTimePackagesAddComponentsAndMenuItemsToTheID;
   RunTimeRadioButton.Caption:=PkgTypeToCaption(lptRunTime);
+  RunTimeRadioButton.Hint:=
+    lisRunTimePackagesCanBeUsedByProjectsTheyCanNotBeInst;
   RunTimeOnlyRadioButton.Caption:=PkgTypeToCaption(lptRunTimeOnly);
+  RunTimeOnlyRadioButton.Hint:=
+    lisRunTimeOnlyPackagesAreOnlyForProjectsTheyCanNotBeI;
 
   UpdateRadioGroup.Caption := lisPckOptsUpdateRebuild;
   UpdateRadioGroup.Items[0] := lisPckOptsAutomaticallyRebuildAsNeeded;
