@@ -1,23 +1,21 @@
-inherited PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
+object PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
+  Left = 0
   Height = 384
+  Top = 0
   Width = 552
   ClientHeight = 384
   ClientWidth = 552
   TabOrder = 0
   DesignLeft = 335
   DesignTop = 177
-  object DescriptionGroupBox: TGroupBox[0]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
+  object DescriptionGroupBox: TGroupBox
     Left = 0
     Height = 96
     Top = 0
     Width = 552
-    Anchors = [akTop, akLeft, akRight]
+    Align = alTop
     Caption = 'Description/Abstract'
-    ClientHeight = 79
+    ClientHeight = 77
     ClientWidth = 548
     TabOrder = 0
     object DescriptionMemo: TMemo
@@ -26,7 +24,7 @@ inherited PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideRight.Control = DescriptionGroupBox
       AnchorSideBottom.Control = DescriptionGroupBox
       Left = 6
-      Height = 67
+      Height = 65
       Top = 6
       Width = 536
       Align = alClient
@@ -35,29 +33,24 @@ inherited PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       TabOrder = 0
     end
   end
-  object AuthorGroupBox: TGroupBox[1]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = DescriptionGroupBox
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
+  object AuthorGroupBox: TGroupBox
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 52
+    Height = 58
     Top = 102
     Width = 552
-    Anchors = [akTop, akLeft, akRight]
+    Align = alTop
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Author:'
-    ClientHeight = 35
+    ClientHeight = 39
     ClientWidth = 548
     TabOrder = 1
     object AuthorEdit: TEdit
       AnchorSideBottom.Control = AuthorGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 23
+      Height = 27
       Top = 6
       Width = 536
       Align = alTop
@@ -65,20 +58,16 @@ inherited PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       TabOrder = 0
     end
   end
-  object LicenseGroupBox: TGroupBox[2]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = AuthorGroupBox
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
+  object LicenseGroupBox: TGroupBox
     Left = 0
-    Height = 112
-    Top = 160
+    Height = 106
+    Top = 166
     Width = 552
+    Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     Caption = 'License:'
-    ClientHeight = 95
+    ClientHeight = 87
     ClientWidth = 548
     TabOrder = 2
     object LicenseMemo: TMemo
@@ -87,7 +76,7 @@ inherited PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideRight.Control = LicenseGroupBox
       AnchorSideBottom.Control = LicenseGroupBox
       Left = 6
-      Height = 83
+      Height = 75
       Top = 6
       Width = 536
       Align = alClient
@@ -96,30 +85,25 @@ inherited PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       TabOrder = 0
     end
   end
-  object VersionGroupBox: TGroupBox[3]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = LicenseGroupBox
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
+  object VersionGroupBox: TGroupBox
     Left = 0
-    Height = 63
+    Height = 70
     Top = 278
     Width = 552
-    Anchors = [akTop, akLeft, akRight]
+    Align = alTop
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Version'
-    ClientHeight = 46
+    ClientHeight = 51
     ClientWidth = 548
     TabOrder = 3
     object VersionMajorLabel: TLabel
       AnchorSideLeft.Control = VersionGroupBox
       AnchorSideTop.Control = VersionGroupBox
       Left = 6
-      Height = 16
+      Height = 17
       Top = 0
-      Width = 35
+      Width = 40
       BorderSpacing.Left = 6
       Caption = 'Major'
       ParentColor = False
@@ -128,9 +112,9 @@ inherited PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideLeft.Control = VersionMajorSpinEdit
       AnchorSideLeft.Side = asrBottom
       Left = 119
-      Height = 16
-      Top = 0
-      Width = 35
+      Height = 17
+      Top = 1
+      Width = 40
       Anchors = [akLeft]
       BorderSpacing.Left = 45
       Caption = 'Minor'
@@ -140,9 +124,9 @@ inherited PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideLeft.Control = VersionMinorSpinEdit
       AnchorSideLeft.Side = asrBottom
       Left = 232
-      Height = 16
-      Top = 0
-      Width = 50
+      Height = 17
+      Top = 1
+      Width = 52
       Anchors = [akLeft]
       BorderSpacing.Left = 45
       Caption = 'Release'
@@ -152,9 +136,9 @@ inherited PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideLeft.Control = VersionReleaseSpinEdit
       AnchorSideLeft.Side = asrBottom
       Left = 345
-      Height = 16
+      Height = 17
       Top = 0
-      Width = 84
+      Width = 92
       BorderSpacing.Left = 45
       Caption = 'Build Number'
       ParentColor = False
@@ -164,8 +148,8 @@ inherited PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideTop.Control = VersionMajorLabel
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 23
-      Top = 16
+      Height = 27
+      Top = 17
       Width = 68
       MaxValue = 9999
       TabOrder = 0
@@ -175,8 +159,8 @@ inherited PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideTop.Control = VersionMinorLabel
       AnchorSideTop.Side = asrBottom
       Left = 119
-      Height = 23
-      Top = 16
+      Height = 27
+      Top = 18
       Width = 68
       MaxValue = 9999
       TabOrder = 1
@@ -186,8 +170,8 @@ inherited PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideTop.Control = VersionReleaseLabel
       AnchorSideTop.Side = asrBottom
       Left = 232
-      Height = 23
-      Top = 16
+      Height = 27
+      Top = 18
       Width = 68
       MaxValue = 9999
       TabOrder = 2
@@ -197,8 +181,8 @@ inherited PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideTop.Control = VersionBuildLabel
       AnchorSideTop.Side = asrBottom
       Left = 345
-      Height = 23
-      Top = 16
+      Height = 27
+      Top = 17
       Width = 68
       MaxValue = 9999
       TabOrder = 3
@@ -208,7 +192,7 @@ inherited PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideTop.Side = asrBottom
       Left = 421
       Height = 1
-      Top = 45
+      Top = 50
       Width = 1
       BorderSpacing.Top = 6
       ParentColor = False
