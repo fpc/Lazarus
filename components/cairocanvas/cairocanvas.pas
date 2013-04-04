@@ -901,14 +901,14 @@ begin
   cairo_text_extents(cr, PChar(Text), @extents);
   pango_layout_set_text(Layout, pchar(Text), -1);
   pango_layout_get_extents(Layout, @theRect, nil);
-  Result.cx := Round((theRect.width/PANGO_SCALE-extents.x_bearing)/ScaleX);
-  Result.cy := Round((theRect.height/PANGO_SCALE-extents.y_bearing)/ScaleY);
+  Result.cx := Round((theRect.width/PANGO_SCALE)/ScaleX-extents.x_bearing);
+  Result.cy := Round((theRect.height/PANGO_SCALE)/ScaleY-extents.y_bearing);
   g_object_unref(Layout);
   pango_font_description_free(desc);
   {$else}
   cairo_text_extents(cr, PChar(Text), @extents); //transformation matrix is here ignored
-  Result.cx := Round((extents.width+extents.x_bearing)/ScaleX);
-  Result.cy := Round((extents.height+extents.y_bearing)/ScaleY);
+  Result.cx := Round((extents.width)/ScaleX+extents.x_bearing);
+  Result.cy := Round((extents.height)/ScaleY-extents.y_bearing);
   {$endif}
 end;
 
