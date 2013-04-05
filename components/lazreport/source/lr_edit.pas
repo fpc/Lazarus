@@ -100,7 +100,7 @@ begin
     M1.SelStart:=0;
   M1.SetFocus;
   FActiveMemo := M1;
-  CB1.Checked:=(View.Script.Count>0);
+  CB1.Checked:=(View.Script.Count>0) or (View is TfrControl);
   M2.Lines.Text:=View.Script.Text;
   Button5.Visible := (View is TfrMemoView);
   M1.Font.Charset := frCharset;

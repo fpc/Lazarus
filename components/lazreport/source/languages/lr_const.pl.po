@@ -787,6 +787,10 @@ msgstr "Formularz FastReport"
 msgid "Force new page"
 msgstr "Wymuś nową stronę"
 
+#: lr_const.sfrdesignerexists
+msgid "You already have one TfrDesigner component"
+msgstr ""
+
 #: lr_const.sfrdesignerformaddpg
 msgctxt "lr_const.sfrdesignerformaddpg"
 msgid "Add page"

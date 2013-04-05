@@ -1,3 +1,33 @@
+{ LazReport dialogs control
+
+  Copyright (C) 2012-2013 alexs alexs75.at.hotbox.ru
+
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Library General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or (at your
+  option) any later version with the following modification:
+
+  As a special exception, the copyright holders of this library give you
+  permission to link this library with independent modules to produce an
+  executable, regardless of the license terms of these independent modules,and
+  to copy and distribute the resulting executable under terms of your choice,
+  provided that you also meet, for each linked independent module, the terms
+  and conditions of the license of that module. An independent module is a
+  module which is not derived from or based on this library. If you modify
+  this library, you may extend this exception to your version of the library,
+  but you are not obligated to do so. If you do not wish to do so, delete this
+  exception statement from your version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License
+  for more details.
+
+  You should have received a copy of the GNU Library General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+}
+
 unit LRDialogControls;
 
 {$mode objfpc}{$H+}
@@ -6,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Graphics, DB, LR_Class, Controls, StdCtrls,
-  LMessages, LCLType, LCLIntf, Buttons, EditBtn, Themes;
+  LMessages, LCLType, LCLIntf, Buttons, EditBtn, Themes, ButtonPanel;
 
 type
   TLRDialogControls = class(TComponent)
@@ -33,13 +63,13 @@ type
     FControl: TControl;
     procedure PaintDesignControl; override;
     procedure SetName(const AValue: string); override;
-    procedure UpdateControlPosition; override;
     procedure AfterCreate;override;
     function CreateControl:TControl;virtual;abstract;
   public
     constructor Create(AOwnerPage:TfrPage); override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure UpdateControlPosition; override;
 
     property Control: TControl read FControl write FControl;
     property AutoSize: Boolean read GetAutoSize write SetAutoSize;
@@ -244,6 +274,32 @@ type
     property OnClick;
   end;
 
+  { TlrButtonPanel }
+
+  TlrButtonPanel = class(TlrVisualControl)
+  private
+    function GetButtonOrder: TButtonOrder;
+    function GetShowButtons: TPanelButtons;
+    procedure SetButtonOrder(AValue: TButtonOrder);
+    procedure SetShowButtons(AValue: TPanelButtons);
+  protected
+    procedure PaintDesignControl; override;
+    function CreateControl:TControl;override;
+    procedure AfterCreate;override;
+  public
+    constructor Create(AOwnerPage:TfrPage); override;
+    procedure UpdateControlPosition; override;
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
+  published
+    property ButtonOrder: TButtonOrder read GetButtonOrder write SetButtonOrder default boDefault;
+    property ShowButtons: TPanelButtons read GetShowButtons write SetShowButtons default DefShowButtons;
+    property Color;
+    property Enabled;
+    property Text;
+    property OnClick;
+  end;
+
 procedure Register;
 
 procedure DoRegsiterControl(var cmpBMP:TBitmap; lrClass:TlrVisualControlClass);
@@ -266,6 +322,7 @@ var
   lrBMP_LRMemo:TBitmap = nil;
   lrBMP_LRListBox:TBitmap = nil;
   lrBMP_LRDateEdit:TBitmap = nil;
+  lrBMP_LRButtonPanel:TBitmap = nil;
 
 procedure DoRegsiterControl(var cmpBMP:TBitmap; lrClass:TlrVisualControlClass);
 begin
@@ -288,6 +345,126 @@ begin
   DoRegsiterControl(lrBMP_LRRadioButton, TlrRadioButton);
   DoRegsiterControl(lrBMP_LRListBox, TlrListBox);
   DoRegsiterControl(lrBMP_LRDateEdit, TlrDateEdit);
+  DoRegsiterControl(lrBMP_LRButtonPanel, TlrButtonPanel);
+
+end;
+
+{ TlrButtonPanel }
+
+function TlrButtonPanel.GetButtonOrder: TButtonOrder;
+begin
+  Result:= TButtonPanel(FControl).ButtonOrder;
+end;
+
+function TlrButtonPanel.GetShowButtons: TPanelButtons;
+begin
+  Result:= TButtonPanel(FControl).ShowButtons;
+end;
+
+procedure TlrButtonPanel.SetButtonOrder(AValue: TButtonOrder);
+begin
+  TButtonPanel(FControl).ButtonOrder:=AValue;
+end;
+
+procedure TlrButtonPanel.SetShowButtons(AValue: TPanelButtons);
+begin
+  TButtonPanel(FControl).ShowButtons:=AValue;
+end;
+
+procedure TlrButtonPanel.PaintDesignControl;
+var
+  AY, AX, aH, aW:integer;
+  R1:TRect;
+  i:TPanelButton;
+
+  B:TPanelBitBtn;
+begin
+  AY:=(DRect.Top + DRect.Bottom) div 2;
+  aH:=Canvas.TextHeight(Text) div 2;
+  Canvas.Frame3d(DRect, 1, bvLowered);
+  Canvas.Brush.Color := FControl.Color;
+  Canvas.FillRect(DRect);
+
+  R1:=DRect;
+  R1.Right:=R1.Right - 6;
+  R1.Top:=R1.Top + 6;
+  R1.Bottom:=R1.Bottom - 6;
+
+  for i:=Low(TPanelButton) to High(TPanelButton) do
+  begin
+    if i in ShowButtons then
+    begin
+
+      case i of
+        pbOK:B:=TButtonPanel(FControl).OKButton;
+        pbCancel:B:=TButtonPanel(FControl).CancelButton;
+        pbClose:B:=TButtonPanel(FControl).CloseButton;
+        pbHelp:B:=TButtonPanel(FControl).HelpButton;
+      else
+        b:=nil;
+      end;
+      if Assigned(B) then
+      begin
+        R1.Left:=R1.Right - B.Width;
+        DrawFrameControl(Canvas.Handle, R1, DFC_BUTTON, DFCS_BUTTONPUSH);
+
+        AX:=(R1.Left +  R1.Right) div 2;
+        AY:=(R1.Top +  R1.Bottom) div 2;
+        aW:=Canvas.TextWidth(B.Caption);
+        aH:=Canvas.TextHeight(B.Caption) div 2;
+
+        if aW>B.Width then
+          Canvas.TextRect(R1, 0, AY - aH, B.Caption)
+        else
+          Canvas.TextRect(R1, AX - (aW div 2), AY - aH, B.Caption)
+
+      end;
+      R1.Right:=R1.Left - 6;
+    end;
+  end;
+end;
+
+function TlrButtonPanel.CreateControl: TControl;
+begin
+  Result:=TButtonPanel.Create(OwnerForm);
+end;
+
+procedure TlrButtonPanel.AfterCreate;
+begin
+  inherited AfterCreate;
+  FControl.OnClick:=nil;
+  TButtonPanel(FControl).OKButton.OnClick:=@OnClickHandle;
+end;
+
+constructor TlrButtonPanel.Create(AOwnerPage: TfrPage);
+begin
+  inherited Create(AOwnerPage);
+  BaseName := 'lrButtonPanel';
+  AutoSize:=true;
+  UpdateControlPosition;
+end;
+
+procedure TlrButtonPanel.UpdateControlPosition;
+begin
+  X:=2;
+  Y:=OwnerPage.Height - FControl.Height - 4;
+  Dx:=OwnerPage.Width-8;
+  Dy:=FControl.Height;
+end;
+
+procedure TlrButtonPanel.LoadFromXML(XML: TLrXMLConfig; const Path: String);
+begin
+  inherited LoadFromXML(XML, Path);
+  RestoreProperty('ButtonOrder',XML.GetValue(Path+'ButtonOrder', 'boDefault'));
+  RestoreProperty('ShowButtons',XML.GetValue(Path+'ShowButtons', 'pbOK, pbCancel, pbClose, pbHelp'));
+  UpdateControlPosition;
+end;
+
+procedure TlrButtonPanel.SaveToXML(XML: TLrXMLConfig; const Path: String);
+begin
+  inherited SaveToXML(XML, Path);
+  XML.SetValue(Path+'ButtonOrder', GetSaveProperty('ButtonOrder'));
+  XML.SetValue(Path+'ShowButtons', GetSaveProperty('ShowButtons'));
 end;
 
 { TlrDateEdit }
@@ -774,6 +951,7 @@ begin
   Result:=TLabel.Create(OwnerForm);
 end;
 
+
 constructor TlrLabel.Create(AOwnerPage: TfrPage);
 begin
   inherited Create(AOwnerPage);
@@ -841,6 +1019,8 @@ end;
 procedure TlrVisualControl.SetCaption(AValue: string);
 begin
   FControl.Caption:=AValue;
+{  DX:=FControl.Width;
+  DY:=FControl.Height;}
   Invalidate;
 end;
 
@@ -928,6 +1108,10 @@ begin
   if Assigned(FControl) then
   begin
     FControl.Parent:=OwnerForm;
+    x:=FControl.Left;
+    Y:=FControl.Top;
+    DX:=FControl.Width;
+    DY:=FControl.Height;
   end;
 end;
 
@@ -993,6 +1177,8 @@ finalization
     FreeAndNil(lrBMP_LRListBox);
   if Assigned(lrBMP_LRDateEdit) then
     FreeAndNil(lrBMP_LRDateEdit);
+  if Assigned(lrBMP_LRButtonPanel) then
+    FreeAndNil(lrBMP_LRButtonPanel);
 end.
 
 

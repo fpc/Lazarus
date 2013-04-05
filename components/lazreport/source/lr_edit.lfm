@@ -1,4 +1,4 @@
-inherited frEditorForm: TfrEditorForm
+object frEditorForm: TfrEditorForm
   Left = 426
   Height = 436
   Top = 253
@@ -17,7 +17,8 @@ inherited frEditorForm: TfrEditorForm
   OnShow = FormShow
   Position = poScreenCenter
   ShowHint = True
-  object Panel2: TPanel[0]
+  LCLVersion = '1.1'
+  object Panel2: TPanel
     Left = 0
     Height = 47
     Top = 389
@@ -132,7 +133,7 @@ inherited frEditorForm: TfrEditorForm
       TabOrder = 5
     end
   end
-  object ScriptPanel: TPanel[1]
+  object ScriptPanel: TPanel
     Left = 0
     Height = 152
     Top = 237
@@ -145,9 +146,9 @@ inherited frEditorForm: TfrEditorForm
     TabOrder = 1
     object Label2: TLabel
       Left = 4
-      Height = 16
+      Height = 15
       Top = 0
-      Width = 36
+      Width = 35
       Caption = 'S&cript'
       ParentColor = False
     end
@@ -589,6 +590,12 @@ inherited frEditorForm: TfrEditorForm
         'End'
       )
       VisibleSpecialChars = [vscSpace, vscTabAtLast]
+      SelectedColor.BackPriority = 50
+      SelectedColor.ForePriority = 50
+      SelectedColor.FramePriority = 50
+      SelectedColor.BoldPriority = 50
+      SelectedColor.ItalicPriority = 50
+      SelectedColor.UnderlinePriority = 50
       BracketHighlightStyle = sbhsBoth
       BracketMatchColor.Background = clNone
       BracketMatchColor.Foreground = clNone
@@ -625,6 +632,8 @@ inherited frEditorForm: TfrEditorForm
         object TSynGutterSeparator
           Width = 2
           MouseActions = <>
+          MarkupInfo.Background = clWhite
+          MarkupInfo.Foreground = clGray
         end
         object TSynGutterCodeFolding
           MouseActions = <          
@@ -680,7 +689,7 @@ inherited frEditorForm: TfrEditorForm
       end
     end
   end
-  object MemoPanel: TPanel[2]
+  object MemoPanel: TPanel
     Left = 0
     Height = 192
     Top = 36
@@ -700,8 +709,8 @@ inherited frEditorForm: TfrEditorForm
       AnchorSideBottom.Control = MemoPanel
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 164
-      Top = 28
+      Height = 165
+      Top = 27
       Width = 589
       Anchors = [akTop, akLeft, akRight, akBottom]
       OnEnter = M1Enter
@@ -714,15 +723,15 @@ inherited frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = MemoPanel
       AnchorSideTop.Control = MemoPanel
       Left = 6
-      Height = 16
+      Height = 15
       Top = 6
-      Width = 38
+      Width = 37
       BorderSpacing.Around = 6
       Caption = '&Memo'
       ParentColor = False
     end
   end
-  object Splitter: TSplitter[3]
+  object Splitter: TSplitter
     Cursor = crVSplit
     Left = 0
     Height = 9
@@ -734,7 +743,7 @@ inherited frEditorForm: TfrEditorForm
     ResizeAnchor = akBottom
     ResizeStyle = rsLine
   end
-  object Panel3: TPanel[4]
+  object Panel3: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
@@ -791,7 +800,7 @@ inherited frEditorForm: TfrEditorForm
       TabOrder = 2
     end
   end
-  object SynPasSyn1: TSynPasSyn[5]
+  object SynPasSyn1: TSynPasSyn
     DefaultFilter = '(TSynHighlighterAttributes)'
     Enabled = False
     AsmAttri.Foreground = 5812813

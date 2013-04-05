@@ -222,11 +222,9 @@ type
     fFormat    : Integer;
     fFormatStr : string;
     fFrameTyp  : word;
-    function GetHeight: Double;
     function GetLeft: Double;
     function GetStretched: Boolean;
     function GetTop: Double;
-    function GetWidth: Double;
     procedure P1Click(Sender: TObject);
     procedure SetFillColor(const AValue: TColor);
     procedure SetFormat(const AValue: Integer);
@@ -263,6 +261,8 @@ type
     procedure SetLeft(const AValue: Double);virtual;
     procedure SetTop(const AValue: Double);virtual;
     procedure SetWidth(const AValue: Double);virtual;
+    function GetHeight: Double;virtual;
+    function GetWidth: Double;virtual;
   public
     Parent: TfrBand;
     ID: Integer;
@@ -338,8 +338,8 @@ type
   TfrControl = class(TfrView)
   protected
     procedure PaintDesignControl; virtual;abstract;
-    procedure UpdateControlPosition; virtual;
   public
+    procedure UpdateControlPosition; virtual;
     function OwnerForm:TWinControl;
     constructor Create(AOwnerPage:TfrPage); override;
     procedure Draw(ACanvas: TCanvas); override;
@@ -943,6 +943,7 @@ type
   TfrReport = class(TComponent)
   private
     FDataType: TfrDataType;
+    FDefaultCopies: Integer;
     FOnExportFilterSetup: TExportFilterSetup;
     FPages: TfrPages;
     FEMFPages: TfrEMFPages;
@@ -1101,6 +1102,7 @@ type
     
   published
     property Dataset: TfrDataset read FDataset write FDataset;
+    property DefaultCopies: Integer read FDefaultCopies write FDefaultCopies default 1;
     property GrayedButtons: Boolean read FGrayedButtons write FGrayedButtons default False;
     property InitialZoom: TfrPreviewZoom read FInitialZoom write FInitialZoom;
     property ModalPreview: Boolean read FModalPreview write FModalPreview default True;
@@ -9175,7 +9177,7 @@ begin
   Stream.Free;
 end;
 
-procedure TfrReport.LoadTemplate(const FName: String; comm: TStrings;
+procedure TfrReport.LoadTemplate(const fname: String; comm: TStrings;
   Bmp: TBitmap; Load: Boolean);
 var
   Stream: TFileStream;
@@ -9245,7 +9247,8 @@ begin
   end;
 end;
 
-procedure TfrReport.SaveTemplate(const FName: String; Comm: TStrings; Bmp: TBitmap);
+procedure TfrReport.SaveTemplate(const fname: String; comm: TStrings;
+  Bmp: TBitmap);
 var
   Stream: TFileStream;
   b: Byte;
@@ -9658,7 +9661,7 @@ begin
           if Pages[i] is TfrPageReport then
           begin
             FCurPage := Pages[i];
-            if FCurPage.Skip then
+            if FCurPage.Skip or (not FCurPage.Visible) then
               Continue;
             FCurPage.Mode := pmNormal;
             if Assigned(FOnManualBuild) then
@@ -11635,7 +11638,7 @@ begin
   FForm.Left:=Left;
   FForm.Top:=Top;
   FForm.Width:=Width;
-  FForm.Height:=Height;
+  FForm.Height:=Height - 20;
   FForm.Position:=poScreenCenter;
 end;
 

@@ -18,7 +18,7 @@
     <Description Value="Design dialogs at runtime in LazReport designer"/>
     <License Value="modified LGPL-2
 "/>
-    <Version Minor="2" Release="2"/>
+    <Version Minor="3" Release="1"/>
     <Files Count="4">
       <Item1>
         <Filename Value="lrdialogcontrols.pas"/>

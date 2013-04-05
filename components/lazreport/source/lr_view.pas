@@ -44,7 +44,9 @@ type
   private
     FWindow: TfrPreviewForm;
     FScrollBars: TScrollStyle;
+    function GetOnScrollPage: TNotifyEvent;
     function GetPage: Integer;
+    procedure SetOnScrollPage(AValue: TNotifyEvent);
     procedure SetPage(Value: Integer);
     function GetZoom: Double;
     procedure SetZoom(Value: Double);
@@ -75,6 +77,7 @@ type
     property Zoom: Double read GetZoom write SetZoom;
   published
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
+    property OnScrollPage:TNotifyEvent read GetOnScrollPage write SetOnScrollPage;
   end;
 
   TfrPBox = class(TPanel)
@@ -185,6 +188,7 @@ type
 
     HF: String;
     
+    FOnScrollPage:TNotifyEvent;
     procedure ShowPageNum;
     procedure SetToCurPage;
 //    procedure WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
@@ -255,6 +259,16 @@ end;
 function TfrPreview.GetPage: Integer;
 begin
   Result := FWindow.CurPage;
+end;
+
+function TfrPreview.GetOnScrollPage: TNotifyEvent;
+begin
+  Result:=FWindow.FOnScrollPage;
+end;
+
+procedure TfrPreview.SetOnScrollPage(AValue: TNotifyEvent);
+begin
+  FWindow.FOnScrollPage:=AValue;
 end;
 
 procedure TfrPreview.SetPage(Value: Integer);
@@ -638,6 +652,7 @@ begin
   if (EMFPages = nil) or (Printer.Printers.Count = 0) then Exit;
   ind := Printer.PrinterIndex;
   frPrintForm := TfrPrintForm.Create(nil);
+  frPrintForm.E1.Text:=IntToStr(TfrReport(Doc).DefaultCopies);
   with frPrintForm do
   begin
     if ShowModal = mrOk then
@@ -938,6 +953,9 @@ begin
   if EMFPages = nil then Exit;
   LbPanel.Caption := sPg + ' ' + IntToStr(CurPage) + '/' +
     IntToStr(TfrEMFPages(EMFPages).Count);
+
+  if Assigned(FOnScrollPage) then
+    FOnScrollPage(Self);
 end;
 
 procedure TfrPreviewForm.VScrollBarChange(Sender: TObject);

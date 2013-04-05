@@ -809,6 +809,10 @@ msgstr "Formulář FastReportu"
 msgid "Force new page"
 msgstr "Vynutit novou stránku"
 
+#: lr_const.sfrdesignerexists
+msgid "You already have one TfrDesigner component"
+msgstr ""
+
 #: lr_const.sfrdesignerformaddpg
 msgctxt "lr_const.sfrdesignerformaddpg"
 msgid "Add page"
