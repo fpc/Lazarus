@@ -15,7 +15,7 @@ interface
 uses
   Classes, SysUtils, math,
   fpimage, fpcanvas, laz2_xmlread, laz2_dom, fgl,
-  fpvectorial, fpvutils, lazutf8;
+  fpvectorial, fpvutils, lazutf8, TypInfo;
 
 type
   TSVGTokenType = (
@@ -52,6 +52,7 @@ type
     Destructor Destroy; override;
     procedure AddToken(AStr: string);
     procedure TokenizePathString(AStr: string);
+    function DebugOutTokensAsString: string;
   end;
 
   { TvSVGVectorialReader }
@@ -241,6 +242,15 @@ begin
 
   // If there is a token still to be added, add it now
   if (lState = 0) and (lTmpStr <> '') then AddToken(lTmpStr);
+end;
+
+function TSVGPathTokenizer.DebugOutTokensAsString: string;
+var
+  i: Integer;
+begin
+  for i := 0 to Tokens.Count-1 do
+    Result := Result + GetEnumName(TypeInfo(TSVGTokenType), integer(Tokens.Items[i].TokenType))
+      + Format('(%f) ', [Tokens.Items[i].Value]);
 end;
 
 { Example of a supported SVG image:
@@ -1055,17 +1065,21 @@ var
   i: Integer;
   X, Y, X2, Y2, X3, Y3: Double;
   CurX, CurY: Double;
-  lCurTokenType: TSVGTokenType;
+  lCurTokenType, lLastCommandToken: TSVGTokenType;
+  lDebugStr: String;
 begin
   FSVGPathTokenizer.Tokens.Clear;
   FSVGPathTokenizer.TokenizePathString(AStr);
+  //lDebugStr := FSVGPathTokenizer.DebugOutTokensAsString();
   CurX := 0;
   CurY := 0;
+  lLastCommandToken := sttFloatValue;
 
   i := 0;
   while i < FSVGPathTokenizer.Tokens.Count do
   begin
     lCurTokenType := FSVGPathTokenizer.Tokens.Items[i].TokenType;
+    if not (lCurTokenType = sttFloatValue) then lLastCommandToken := lCurTokenType;
     // --------------
     // Moves
     // --------------
@@ -1089,6 +1103,21 @@ begin
       AData.AddMoveToPath(CurX, CurY);
 
       Inc(i, 3);
+    end
+    // --------------
+    // Lines which appear without a command token and after a MoveTo
+    // --------------
+    else if (lCurTokenType = sttFloatValue) and (lLastCommandToken in [sttMoveTo, sttRelativeMoveTo]) then
+    begin
+      X := FSVGPathTokenizer.Tokens.Items[i].Value;
+      Y := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+
+      CurX := X;
+      CurY := Y;
+      AData.AddLineToPath(CurX, CurY);
+
+      Inc(i, 2);
     end
     // --------------
     // Close Path
