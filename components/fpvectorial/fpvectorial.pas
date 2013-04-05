@@ -791,6 +791,8 @@ type
     function AddLayer(AName: string): TvLayer;
     function AddLayerAndSetAsCurrent(AName: string): TvLayer;
     procedure ClearLayerSelection();
+    function SetCurrentLayer(ALayer: TvLayer): Boolean;
+    function GetCurrentLayer: TvLayer;
     // Dimensions
     function AddAlignedDimension(BaseLeft, BaseRight, DimLeft, DimRight: T3DPoint; AOnlyCreate: Boolean = False): TvAlignedDimension;
     function AddRadialDimension(AIsDiameter: Boolean; ACenter, ADimLeft, ADimRight: T3DPoint; AOnlyCreate: Boolean = False): TvRadialDimension;
@@ -3722,6 +3724,17 @@ end;
 procedure TvVectorialPage.ClearLayerSelection;
 begin
   FCurrentLayer := nil;
+end;
+
+function TvVectorialPage.SetCurrentLayer(ALayer: TvLayer): Boolean;
+begin
+  Result := True;
+  FCurrentLayer := ALayer;
+end;
+
+function TvVectorialPage.GetCurrentLayer: TvLayer;
+begin
+  Result := FCurrentLayer;
 end;
 
 

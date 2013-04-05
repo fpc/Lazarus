@@ -916,7 +916,7 @@ var
   lNodeName: DOMString;
   lLayerName: string = '';
   lCurNode, lLayerNameNode: TDOMNode;
-  lLayer: TvLayer;
+  lLayer, lParentLayer: TvLayer;
   i: Integer;
   lLayerStyleKeys, lLayerStyleValues: TStringList;
 begin
@@ -938,6 +938,7 @@ begin
     end;
   end;
 
+  lParentLayer := AData.GetCurrentLayer();
   lLayer := AData.AddLayerAndSetAsCurrent(lLayerName);
 
   lCurNode := ANode.FirstChild;
@@ -952,6 +953,10 @@ begin
   lLayerStyleKeys.Free;
   FLayerStylesValues.Remove(lLayerStyleValues);
   lLayerStyleValues.Free;
+
+  // Set the current layer to the parent node,
+  // or else items read next will be put as children of this layer
+  AData.SetCurrentLayer(lParentLayer);
 end;
 
 procedure TvSVGVectorialReader.ReadLineFromNode(ANode: TDOMNode;
