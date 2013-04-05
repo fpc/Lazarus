@@ -233,9 +233,11 @@ procedure TForm1.DrawOther(cnv: TCanvas; XDPI, YDPI: Integer);
 const
   CTEXT='Hola';
   Par =
-    'Uno' + LineEnding+
-    'noU' + LineEnding+
-    'oUn' + LineEnding+
+    '1.111' + LineEnding+
+    '0.000' + LineEnding+
+     '.101' + LineEnding+
+    'M.Unl' + LineEnding+
+    '.UnlM' + LineEnding+
     '01.' + LineEnding+
     '1.0' + LineEnding+
     '.01';
@@ -269,7 +271,7 @@ begin
   cnv.TextOut(R.Left, R.Top, 'Line3'); OffsetRect(R, 0, sz.cy);
 
   R := Rect(XDPI*4, YDPI*2, Round(XDPI*6), round(YDPI*6));
-  cnv.Font.Name := 'Arial';
+  cnv.Font.Name := 'Sans';
   cnv.Font.Size := 40;
   cnv.Font.Color := clGreen;
   cnv.Brush.Style := bsClear;

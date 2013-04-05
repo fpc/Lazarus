@@ -934,9 +934,9 @@ begin
       pango_layout_set_text(layout, pchar(s1), -1);
       pango_layout_get_extents(Layout, @ink, @logical);
       case Style.Alignment of
-        taLeftJustify: x := StartLeft;
-        taCenter: x := BoxLeft + BoxWidth/2 - ink.width/PANGO_SCALE/2;
-        taRightJustify: x := BoxLeft+BoxWidth - ink.Width/PANGO_SCALE;
+        taLeftJustify:  x := StartLeft;
+        taCenter:       x := BoxLeft + BoxWidth/2 - logical.width/PANGO_SCALE/2;
+        taRightJustify: x := BoxLeft+BoxWidth - logical.Width/PANGO_SCALE;
       end;
       cairo_move_to(cr, x, y);
       //DebugLn('TextRect ',S1);
