@@ -772,7 +772,7 @@ var
   r,b: double;
   {$ifdef pangocairo}
   Layout: PPangoLayout;
-  theRect: TPangoRectangle;
+  ink,logical: TPangoRectangle;
   {$endif}
 
   {$ifndef breaklines}
@@ -930,18 +930,19 @@ begin
 
       //DebugLn('i=%i y=%f s1=%s',[i,y,s1]);
       {$ifdef pangocairo}
-      cairo_text_extents(cr, PChar(s1), @te);
+      //cairo_text_extents(cr, PChar(s1), @te);
       pango_layout_set_text(layout, pchar(s1), -1);
-      pango_layout_get_extents(Layout, @theRect, nil);
+      pango_layout_get_extents(Layout, @ink, @logical);
       case Style.Alignment of
         taLeftJustify: x := StartLeft;
-        taCenter: x := BoxLeft + BoxWidth/2 - theRect.width/PANGO_SCALE/2 - te.x_bearing;
-        taRightJustify: x := BoxLeft+BoxWidth - theRect.Width/PANGO_SCALE - te.x_bearing;
+        taCenter: x := BoxLeft + BoxWidth/2 - ink.width/PANGO_SCALE/2;
+        taRightJustify: x := BoxLeft+BoxWidth - ink.Width/PANGO_SCALE;
       end;
       cairo_move_to(cr, x, y);
       //DebugLn('TextRect ',S1);
       //DebugSys;
       pango_cairo_show_layout(cr, layout);
+      y := y + logical.height/PANGO_SCALE;
       {$else}
       case Style.Alignment of
         taLeftJustify: x := StartLeft;
@@ -950,8 +951,8 @@ begin
       end;
       cairo_move_to(cr, x, y+fe.ascent);
       cairo_show_text(cr, PChar(s1)); //Reference point is on the base line
-      {$endif}
       y := y + fe.height;
+      {$endif}
     end;
     {$ifdef pangocairo}
     g_object_unref(layout);

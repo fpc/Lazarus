@@ -36,9 +36,9 @@ object Form1: TForm1
     TabOrder = 2
   end
   object chkTests: TCheckGroup
-    Left = 528
+    Left = 526
     Height = 80
-    Top = 100
+    Top = 144
     Width = 97
     AutoFill = True
     Caption = 'Paint or Print'
@@ -55,7 +55,7 @@ object Form1: TForm1
     Items.Strings = (
       '24217'
       '19435'
-      'TestHola'
+      'Other'
     )
     OnItemClick = chkTestsItemClick
     TabOrder = 3
@@ -64,12 +64,21 @@ object Form1: TForm1
     }
   end
   object btnPrintAll: TButton
-    Left = 548
+    Left = 546
     Height = 25
-    Top = 192
+    Top = 236
     Width = 75
     Caption = 'btnPrintAll'
     TabOrder = 4
+  end
+  object btnOther: TButton
+    Left = 548
+    Height = 25
+    Top = 100
+    Width = 75
+    Caption = 'btnOther'
+    OnClick = btnOtherClick
+    TabOrder = 5
   end
   object PrintDialog1: TPrintDialog
     left = 129

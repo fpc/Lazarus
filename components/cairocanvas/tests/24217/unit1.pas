@@ -17,9 +17,11 @@ type
     btn24217: TButton;
     btn19435: TButton;
     btnPrintAll: TButton;
+    btnOther: TButton;
     chkTests: TCheckGroup;
     PrintDialog1: TPrintDialog;
     procedure btn19435Click(Sender: TObject);
+    procedure btnOtherClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure btn24217Click(Sender: TObject);
     procedure chkTestsItemClick(Sender: TObject; Index: integer);
@@ -27,7 +29,7 @@ type
   private
     procedure Draw19435(cnv: TCanvas; XDPI,YDPI: Integer);
     procedure Draw24217(cnv: TCanvas; XDPI,YDPI: Integer);
-    procedure DrawTestBoth(cnv: TCanvas; XDPI,YDPI: Integer);
+    procedure DrawOther(cnv: TCanvas; XDPI,YDPI: Integer);
   public
     { public declarations }
   end;
@@ -74,6 +76,21 @@ begin
   CairoPrinter.Free;
 end;
 
+procedure TForm1.btnOtherClick(Sender: TObject);
+var
+  CairoPrinter: TCairoFilePrinter;
+begin
+  CairoPrinter := TCairoFilePrinter.create;
+  //CairoPrinter.CairoBackend:=cbPS;
+  CairoPrinter.CairoBackend:=cbPDF;
+  CairoPrinter.FileName:='other';
+  CairoPrinter.BeginDoc;
+  with CairoPrinter do
+    DrawOther(Canvas, XDPI, YDPI);
+  CairoPrinter.EndDoc;
+  CairoPrinter.Free;
+end;
+
 procedure TForm1.btn24217Click(Sender: TObject);
 var
   CairoPrinter: TCairoFilePrinter;
@@ -102,7 +119,7 @@ begin
   ResY := ResX;
   if chkTests.Checked[0] then Draw24217(Canvas, ResX, ResY);
   if chkTests.Checked[1] then Draw19435(Canvas, ResX, ResY);
-  if chkTests.Checked[2] then DrawTestBoth(Canvas, ResX, ResY);
+  if chkTests.Checked[2] then DrawOther(Canvas, ResX, ResY);
 end;
 
 procedure TForm1.Draw19435(cnv: TCanvas; XDPI, YDPI: Integer);
@@ -212,12 +229,20 @@ begin
 
 end;
 
-procedure TForm1.DrawTestBoth(cnv: TCanvas; XDPI, YDPI: Integer);
+procedure TForm1.DrawOther(cnv: TCanvas; XDPI, YDPI: Integer);
 const
   CTEXT='Hola';
+  Par =
+    'Uno' + LineEnding+
+    'noU' + LineEnding+
+    'oUn' + LineEnding+
+    '01.' + LineEnding+
+    '1.0' + LineEnding+
+    '.01';
 var
   R: TRect;
   sz: TSize;
+  style: TTextStyle;
 begin
 
   R := Rect(XDPI, YDPI*2, XDPI*3, round(YDPI*2.5));
@@ -242,6 +267,19 @@ begin
   cnv.TextOut(R.Left, R.Top, 'Line1'); OffsetRect(R, 0, sz.cy);
   cnv.TextOut(R.Left, R.Top, 'Line2'); OffsetRect(R, 0, sz.cy);
   cnv.TextOut(R.Left, R.Top, 'Line3'); OffsetRect(R, 0, sz.cy);
+
+  R := Rect(XDPI*4, YDPI*2, Round(XDPI*6), round(YDPI*6));
+  cnv.Font.Name := 'Arial';
+  cnv.Font.Size := 40;
+  cnv.Font.Color := clGreen;
+  cnv.Brush.Style := bsClear;
+  cnv.Pen.Color := clSilver;
+  style := cnv.TextStyle;
+  style.SingleLine := false;
+  style.Alignment := taRightJustify;
+  cnv.TextStyle := style;
+  cnv.TextRect(R, R.Left, R.Top,  Par);
+  cnv.Rectangle(R);
 end;
 
 end.
