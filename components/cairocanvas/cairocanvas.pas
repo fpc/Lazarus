@@ -3,11 +3,13 @@ unit CairoCanvas;
 {$mode objfpc}{$H+}
 
 {$define pangocairo}
+{-$define breaklines}   // disabled as it's not UTF-8 safe
 
 interface
 
 uses
-  Types, Graphics, GraphMath, LCLType, Classes, SysUtils, Printers, Cairo, math
+  Types, SysUtils, Classes, LCLType, LCLProc, Graphics, math, GraphMath,
+  Printers, Cairo
   {$ifdef pangocairo}
   ,Pango, PangoCairo, GLib2
   {$endif}
@@ -16,9 +18,14 @@ uses
 type
   { TCairoPrinterCanvas }
 
-  TCairoPrinterCanvas = Class(TFilePrinterCanvas)
+  TCairoPrinterCanvas = class(TFilePrinterCanvas)
   private
     FLazClipRect   : TRect;
+    {$ifdef pangocairo}
+    fFontDesc: PPangoFontDescription;
+    fFontDescStr: string;
+    function StylesToStr(Styles: TFontStyles):string;
+    {$endif}
     procedure SelectFontEx(AStyle: TFontStyles; const AName: string;
       ASize: double);
     function SX(x: double): double;
@@ -37,10 +44,11 @@ type
     procedure FillAndStroke;
     procedure FillOnly;
     procedure StrokeOnly;
-    {$ifdef pangocairo}
-    function StylesToStr(Styles: TFontStyles):string;
-    function StyleToStr(Style: TFontStyle):string;
-    {$endif}
+    procedure TColorToRGB(Color: TColor; out R,G,B: double);
+    // debug tools
+    procedure DrawPoint(x,y: double; color: TColor);
+    procedure DrawRefRect(x,y,awidth,aheight: double; color:TColor);
+    procedure DebugSys;
   protected
     cr: Pcairo_t;
     ScaleX, ScaleY, FontScale: Double;
@@ -271,6 +279,43 @@ procedure TCairoPrinterCanvas.CreateBrush;
 begin
 end;
 
+procedure TCairoPrinterCanvas.DrawPoint(x, y: double; color: TColor);
+var
+  r,g,b: Double;
+begin
+  TColorToRGB(color, r, g, b);
+  cairo_set_source_rgb(cr, r, g, b);
+  cairo_rectangle(cr, x-2, y-2, 4, 4);
+  cairo_fill(cr);
+end;
+
+procedure TCairoPrinterCanvas.DrawRefRect(x, y, awidth, aheight: double;
+  color: TColor);
+var
+  r,g,b: double;
+begin
+  TColorToRGB(color, r, g, b);
+  cairo_set_source_rgb(cr, r, g, b);
+  cairo_rectangle(cr, x, y, awidth, aheight);
+  cairo_move_to(cr, x, y);
+  cairo_line_to(cr, x+awidth, y+aheight);
+  cairo_move_to(cr, x+awidth, y);
+  cairo_line_to(cr, x, y+aheight);
+  cairo_stroke(cr);
+end;
+
+procedure TCairoPrinterCanvas.DebugSys;
+var
+  x,y: double;
+  matrix: cairo_matrix_t;
+begin
+  cairo_get_current_point(cr, @x, @y);
+  cairo_get_matrix(cr, @matrix);
+  DebugLn('CurPoint:  x=%f y=%f',[x, y]);
+  with matrix do
+    DebugLn('CurMatrix: xx=%f yx=%f xy=%f yy=%f x0=%f y0=%f',[xx,yx,xy,yy,x0,y0]);
+end;
+
 constructor TCairoPrinterCanvas.Create(APrinter: TPrinter);
 begin
   inherited Create(APrinter);
@@ -290,6 +335,10 @@ end;
 
 destructor TCairoPrinterCanvas.Destroy;
 begin
+  {$ifdef pangocairo}
+  if fFontDesc<>nil then
+    pango_font_description_free(fFontDesc);
+  {$endif}
   inherited Destroy;
 end;
 
@@ -318,9 +367,7 @@ var
   R, G, B: double;
 begin
   //TColor je ve formatu BGR
-  R := (Color and $FF) / 255;
-  G := ((Color shr 8) and $FF) / 255;
-  B := ((Color shr 16) and $FF) / 255;
+  TColorToRGB(Color, R, G, B);
   cairo_set_source_rgb(cr, R, G, B);
 end;
 
@@ -393,6 +440,14 @@ begin
   end;
 end;
 
+procedure TCairoPrinterCanvas.TColorToRGB(Color: TColor; out R, G, B: double);
+begin
+  R := (Color and $FF) / 255;
+  G := ((Color shr 8) and $FF) / 255;
+  B := ((Color shr 16) and $FF) / 255;
+end;
+
+
 {$ifdef pangocairo}
 function TCairoPrinterCanvas.StylesToStr(Styles: TFontStyles): string;
 begin
@@ -401,15 +456,6 @@ begin
     Result := Result + 'bold ';
   if fsItalic in Styles then
     Result := Result + 'italic ';
-end;
-
-function TCairoPrinterCanvas.StyleToStr(Style: TFontStyle): string;
-begin
-  result := '';
-  case Style of
-    fsBold: result := 'bold ';
-    fsItalic: result := 'italic ';
-  end;
 end;
 {$endif}
 
@@ -592,6 +638,9 @@ procedure TCairoPrinterCanvas.SelectFontEx(AStyle: TFontStyles; const AName: str
 var
   slant: cairo_font_slant_t;
   weight: cairo_font_weight_t;
+  {$ifdef pangocairo}
+  S: string;
+  {$endif}
 begin
   if fsBold in Font.Style then
     weight := CAIRO_FONT_WEIGHT_BOLD
@@ -601,6 +650,16 @@ begin
     slant := CAIRO_FONT_SLANT_ITALIC
   else
     slant := CAIRO_FONT_SLANT_NORMAL;
+  {$ifdef pangocairo}
+  S := format('%s %s %dpx',[AName, StylesToStr(AStyle), round(ASize)]);
+  if (fFontDesc=nil) or (S<>fFontDescStr) then
+  begin
+    if fFontDesc<>nil then
+      pango_font_description_free(fFontDesc);
+    fFontDesc := pango_font_description_from_string(pchar(s));
+  end;
+  fFontDescStr := s;
+  {$endif}
   cairo_select_font_face(cr, PChar(AName), slant, weight);
   cairo_set_font_size(cr, ASize*FontScale)
 end;
@@ -610,27 +669,24 @@ var
   e: cairo_font_extents_t;
   {$ifdef pangocairo}
   Layout: PPangoLayout;
-  desc: PPangoFontDescription;
-  theFont: string;
   {$endif}
 begin
   Changing;
-
   RequiredState([csHandleValid, csFontValid, csBrushValid]);
   SelectFont;
   cairo_font_extents(cr, @e);
   cairo_save(cr);
   {$ifdef pangocairo}
   // use absolute font size sintax  (px)
-  theFOnt := format('%s %s %dpx',[Font.name, StylesToStr(Font.Style), abs(Font.Size)]);
   Layout := Pango_Cairo_Create_Layout(cr);
-  desc := pango_font_description_from_string(pchar(TheFont));
-  pango_layout_set_font_description(layout, desc);
+  pango_layout_set_font_description(layout, fFontDesc);
   {$endif}
   if Font.Orientation = 0 then
   begin
     cairo_move_to(cr, SX(X), SY(Y)+e.ascent);
     {$ifdef pangocairo}
+    //DebugLn('TextOut ',Text);
+    //DebugSys;
     pango_layout_set_text(layout, PChar(Text), -1);
     {$else}
     cairo_show_text(cr, PChar(Text)); //Reference point is on the base line
@@ -651,7 +707,6 @@ begin
   // get the same text origin as cairo_show_text (baseline left, instead of Pango's top left)
   pango_cairo_show_layout_line (cr, pango_layout_get_line (layout, 0));
   g_object_unref(layout);
-  pango_font_description_free(desc);
   {$endif}
   cairo_restore(cr);
   Changed;
@@ -665,13 +720,14 @@ type
 
 procedure TCairoPrinterCanvas.TextRect(ARect: TRect; X1, Y1: integer; const Text: string; const Style: TTextStyle);
 var
+  te: cairo_text_extents_t;
+  s: string;
+{$ifdef breaklines}
   Lines: TList;
   CurLine: TLine;
   len: integer;
   LastBreakEndL: Integer;
   LastBreakStart: Integer;
-  s: string;
-  fe: cairo_font_extents_t;
 
   procedure BreakLine(en, st: Integer);
   var
@@ -702,8 +758,10 @@ var
     LastBreakEndL := 0;
     LastBreakStart := 0;
   end;
+{$endif}
+
 var
-  te: cairo_text_extents_t;
+  fe: cairo_font_extents_t;
   fd: TFontData;
   s1, ch: string;
   i, j: integer;
@@ -711,16 +769,18 @@ var
   StartLeft, StartTop: Double;
   BreakBoxWidth: Double;
   x, y: Double;
+  r,b: double;
   {$ifdef pangocairo}
   Layout: PPangoLayout;
-  desc: PPangoFontDescription;
-  theFont: string;
   theRect: TPangoRectangle;
+  {$endif}
+
+  {$ifndef breaklines}
+  Lines: TStringList;
   {$endif}
 begin
   Changing;
   RequiredState([csHandleValid, csFontValid, csBrushValid]);
-  Lines := TList.Create;
   cairo_save(cr);
   try
     s := Text;
@@ -730,45 +790,58 @@ begin
     BoxTop := SY(ARect.Top);
     StartLeft := SX(X1);
     StartTop := SY(Y1);
+    //DebugLn('Box= l=%f t=%f',[BoxLeft,BoxTop]);
+    //DebugLn('     x=%f y=%f',[StartLeft,StartTop]);
     if Style.Alignment = taLeftJustify then
       BreakBoxWidth := SX(ARect.Right - X1)
     else
       BreakBoxWidth := BoxWidth;
 
     if Style.Clipping then begin
-      cairo_rectangle(cr, BoxLeft, BoxTop, BoxWidth+Pen.Width, BoxHeight+Pen.Width);
+      r := BoxWidth+Pen.Width;
+      b := BoxHeight+Pen.Width;
+
+      //DrawPoint(boxLeft, boxTop, clRed);
+      //DrawPoint(boxLeft+r, boxTop+b, clBlue);
+      //DrawRefRect(boxLeft, boxTop, r, b, clGreen);
+
+      cairo_rectangle(cr, BoxLeft, BoxTop, r, b);
       cairo_clip(cr);
     end;
+
     if Style.ExpandTabs then
       s := StringReplace(s, #9, '        ', [rfReplaceAll])
     else
       s := StringReplace(s, #9, ' ', [rfReplaceAll]);
+
     if Style.SingleLine then begin
       s := StringReplace(s, #13+#10, ' ', [rfReplaceAll]);
       s := StringReplace(s, #13, ' ', [rfReplaceAll]);
       s := StringReplace(s, #10, ' ', [rfReplaceAll]);
     end;
+
     if Style.Opaque then begin
       SetSourceColor(Brush.Color);
       cairo_rectangle(cr, BoxLeft, BoxTop, BoxWidth, BoxHeight);
       cairo_fill(cr)
     end;
+
     if Style.SystemFont and Assigned(OnGetSystemFont) then begin
       fd := GetFontData(OnGetSystemFont());
       SelectFontEx(fd.Style, fd.Name, fd.Height);
       SetSourceColor(clWindowText);
-      {$ifdef pangocairo}
-      theFont := format('%s %s %d',[fd.name, StylesToStr(fd.Style), Round(fd.Height*FontScale)]);
-      {$endif}
-    end else begin
+    end else
       SelectFont;
-      {$ifdef pangocairo}
-      // use absolute font size sintax  (px)
-      theFOnt := format('%s %s %dpx',[Font.name, StylesToStr(Font.Style), abs(Font.Size)]);
-      {$endif}
-    end;
-    cairo_font_extents(cr, @fe);
 
+    {$ifdef pangocairo}
+    Layout := Pango_Cairo_Create_Layout(cr);
+    pango_layout_set_font_description(layout, fFontDesc);
+    {$else}
+    cairo_font_extents(cr, @fe);
+    {$endif}
+
+    {$ifdef breaklines}
+    Lines := TList.Create;
     //Break lines
     len := Length(s);
     BreakLine(-1, 1);
@@ -800,7 +873,10 @@ begin
       if Style.Wordbreak then begin
         if (ch = '') or (ch = ' ') then begin //'' last char
           s1 := Copy(s, CurLine.Start, i-CurLine.Start);
+          {$ifdef pangocairo}
+          {$else}
           cairo_text_extents(cr, PChar(s1), @te);
+          {$endif}
           //skip following break chars
           j := i+1;
           while (j<=len) and (s[j] = ' ') do
@@ -828,22 +904,31 @@ begin
     //Close last CurLine
     BreakLine(Len, -1);
 
+    {$else breaklines}
+
+    Lines := TStringList.Create;
+    Lines.Text := s;
+
+    {$endif}
+
     //Calc start positions
     case Style.Layout of
-      tlTop: y := StartTop;
+      tlTop:    y := StartTop;
       tlCenter: y := boxTop + BoxHeight/2 - fe.height*Lines.Count/2;
       tlBottom: y := BoxTop+BoxHeight - fe.height*Lines.Count;
     end;
-    {$ifdef pangocairo}
-    Layout := Pango_Cairo_Create_Layout(cr);
-    desc := pango_font_description_from_string(pchar(TheFont));
-    pango_layout_set_font_description(layout, desc);
-    {$endif}
+
     //Text output
     for i := 0 to Lines.Count-1 do begin
-      CurLine := TLine(Lines.Items[i]);
 
+      {$ifdef breaklines}
+      CurLine := TLine(Lines.Items[i]);
       s1 := Copy(s, CurLine.Start, CurLine.EndL-CurLine.Start+1);
+      {$else}
+      s1 := Lines[i];
+      {$endif}
+
+      //DebugLn('i=%i y=%f s1=%s',[i,y,s1]);
       {$ifdef pangocairo}
       cairo_text_extents(cr, PChar(s1), @te);
       pango_layout_set_text(layout, pchar(s1), -1);
@@ -853,7 +938,10 @@ begin
         taCenter: x := BoxLeft + BoxWidth/2 - theRect.width/PANGO_SCALE/2 - te.x_bearing;
         taRightJustify: x := BoxLeft+BoxWidth - theRect.Width/PANGO_SCALE - te.x_bearing;
       end;
-      cairo_move_to(cr, x, y+fe.ascent);
+      cairo_move_to(cr, x, y);
+      //DebugLn('TextRect ',S1);
+      //DebugSys;
+      pango_cairo_show_layout(cr, layout);
       {$else}
       case Style.Alignment of
         taLeftJustify: x := StartLeft;
@@ -866,17 +954,15 @@ begin
       y := y + fe.height;
     end;
     {$ifdef pangocairo}
-    pango_cairo_update_layout(cr, layout);
-    // get the same text origin as cairo_show_text (baseline left, instead of Pango's top left)
-    pango_cairo_show_layout_line (cr, pango_layout_get_line (layout, 0));
     g_object_unref(layout);
-    pango_font_description_free(desc);
     {$endif}
 
   finally
     cairo_restore(cr);
+    {$ifdef breaklines}
     for i := 0 to Lines.Count-1 do
       TLine(Lines.Items[i]).Free;
+    {$endif}
     Lines.Free;
   end;
   Changed;
@@ -887,24 +973,19 @@ var
   extents: cairo_text_extents_t;
   {$ifdef pangocairo}
   Layout: PPangoLayout;
-  desc: PPangoFontDescription;
-  theFont: string;
   theRect: TPangoRectangle;
   {$endif}
 begin
   SelectFont;
   {$ifdef pangocairo}
   Layout := Pango_Cairo_Create_Layout(cr);
-  theFOnt := format('%s %s %dpx',[Font.name, StylesToStr(Font.Style), abs(Font.Size)]);
-  desc := pango_font_description_from_string(pchar(TheFont));
-  pango_layout_set_font_description(Layout, desc);
+  pango_layout_set_font_description(Layout, fFontDesc);
   cairo_text_extents(cr, PChar(Text), @extents);
   pango_layout_set_text(Layout, pchar(Text), -1);
   pango_layout_get_extents(Layout, @theRect, nil);
   Result.cx := Round((theRect.width/PANGO_SCALE)/ScaleX-extents.x_bearing);
   Result.cy := Round((theRect.height/PANGO_SCALE)/ScaleY-extents.y_bearing);
   g_object_unref(Layout);
-  pango_font_description_free(desc);
   {$else}
   cairo_text_extents(cr, PChar(Text), @extents); //transformation matrix is here ignored
   Result.cx := Round((extents.width)/ScaleX+extents.x_bearing);
