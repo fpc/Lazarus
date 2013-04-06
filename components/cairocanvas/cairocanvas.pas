@@ -1005,9 +1005,9 @@ begin
   pango_layout_set_font_description(Layout, fFontDesc);
   cairo_text_extents(cr, PChar(Text), @extents);
   pango_layout_set_text(Layout, pchar(Text), -1);
-  pango_layout_get_extents(Layout, @theRect, nil);
-  Result.cx := Round((theRect.width/PANGO_SCALE)/ScaleX-extents.x_bearing);
-  Result.cy := Round((theRect.height/PANGO_SCALE)/ScaleY-extents.y_bearing);
+  pango_layout_get_extents(Layout, nil, @theRect);
+  Result.cx := Round((theRect.width/PANGO_SCALE)/ScaleX);
+  Result.cy := Round((theRect.height/PANGO_SCALE)/ScaleY);
   g_object_unref(Layout);
   {$else}
   cairo_text_extents(cr, PChar(Text), @extents); //transformation matrix is here ignored
