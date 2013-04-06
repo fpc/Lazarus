@@ -809,6 +809,12 @@ begin
       cairo_clip(cr);
     end;
 
+    if (Font.Orientation=900) or (Font.Orientation=2700) then begin
+      x := BoxWidth;
+      BoxWidth := BoxHeight;
+      BoxHeight := x;
+    end;
+
     if Style.ExpandTabs then
       s := StringReplace(s, #9, '        ', [rfReplaceAll])
     else
@@ -911,12 +917,29 @@ begin
 
     {$endif}
 
+    {$ifdef pangocairo}
+    // TODO: missing breaklines
+    pango_layout_set_text(layout, pchar(s), -1);
+    pango_layout_get_extents(Layout, @ink, @logical);
+    //Calc start 'box' relative positions
+    case Style.Layout of
+      tlTop:    y := 0;
+      tlCenter: y := BoxHeight/2 - logical.Height/PANGO_SCALE/2;
+      tlBottom: y := BoxHeight - logical.height/PANGO_SCALE;
+    end;
+    {$else}
     //Calc start positions
     case Style.Layout of
-      tlTop:    y := StartTop;
-      tlCenter: y := boxTop + BoxHeight/2 - fe.height*Lines.Count/2;
-      tlBottom: y := BoxTop+BoxHeight - fe.height*Lines.Count;
+      tlTop:    y := 0;
+      tlCenter: y := BoxHeight/2 - fe.height*Lines.Count/2;
+      tlBottom: y := BoxHeight - fe.height*Lines.Count;
     end;
+    {$endif}
+
+    // translate origin
+    cairo_translate(cr, StartLeft, StartTop);
+    // rotate
+    cairo_rotate(cr, -DegToRad(Font.Orientation/10));
 
     //Text output
     for i := 0 to Lines.Count-1 do begin
@@ -930,13 +953,12 @@ begin
 
       //DebugLn('i=%i y=%f s1=%s',[i,y,s1]);
       {$ifdef pangocairo}
-      //cairo_text_extents(cr, PChar(s1), @te);
       pango_layout_set_text(layout, pchar(s1), -1);
       pango_layout_get_extents(Layout, @ink, @logical);
       case Style.Alignment of
-        taLeftJustify:  x := StartLeft;
-        taCenter:       x := BoxLeft + BoxWidth/2 - logical.width/PANGO_SCALE/2;
-        taRightJustify: x := BoxLeft+BoxWidth - logical.Width/PANGO_SCALE;
+        taLeftJustify:  x := 0;
+        taCenter:       x := BoxWidth/2 - logical.width/PANGO_SCALE/2;
+        taRightJustify: x := BoxWidth - logical.Width/PANGO_SCALE;
       end;
       cairo_move_to(cr, x, y);
       //DebugLn('TextRect ',S1);
