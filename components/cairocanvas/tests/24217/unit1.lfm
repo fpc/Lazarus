@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 245
+  Left = 226
   Height = 552
-  Top = 98
+  Top = 148
   Width = 628
   Caption = 'Form1'
   ClientHeight = 552
@@ -50,7 +50,7 @@ object Form1: TForm1
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 63
+    ClientHeight = 62
     ClientWidth = 93
     Items.Strings = (
       '24217'
@@ -79,6 +79,64 @@ object Form1: TForm1
     Caption = 'btnOther'
     OnClick = btnOtherClick
     TabOrder = 5
+  end
+  object radOtherAlign: TRadioGroup
+    Left = 544
+    Height = 76
+    Top = 272
+    Width = 68
+    AutoFill = True
+    Caption = 'radOtherAlign'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 3
+    ClientHeight = 58
+    ClientWidth = 64
+    Columns = 3
+    ItemIndex = 0
+    Items.Strings = (
+      ' '
+      ' '
+      ' '
+      ' '
+      ' '
+      ' '
+      ' '
+      ' '
+      ' '
+    )
+    TabOrder = 6
+  end
+  object radOtherAngle: TRadioGroup
+    Left = 544
+    Height = 100
+    Top = 352
+    Width = 68
+    AutoFill = True
+    Caption = 'radOtherAngle'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 82
+    ClientWidth = 64
+    ItemIndex = 0
+    Items.Strings = (
+      '0'
+      '90'
+      '180'
+      '270'
+    )
+    TabOrder = 7
   end
   object PrintDialog1: TPrintDialog
     left = 129

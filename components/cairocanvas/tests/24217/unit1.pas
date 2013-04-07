@@ -20,6 +20,8 @@ type
     btnOther: TButton;
     chkTests: TCheckGroup;
     PrintDialog1: TPrintDialog;
+    radOtherAlign: TRadioGroup;
+    radOtherAngle: TRadioGroup;
     procedure btn19435Click(Sender: TObject);
     procedure btnOtherClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -167,6 +169,7 @@ var
   kx,ky:double;
 begin
 
+  cnv.Font.Name:='Sans';
   cnv.Font.Color := clDefault;
   cnv.Pen.Color := clBlack;
   cnv.Font.Size:=24;
@@ -188,6 +191,7 @@ begin
   r.Right:=r.left+sz.cx;
   r.Bottom:=r.Top+sz.cy;
   cnv.Rectangle(r);
+  cnv.Font.Color := clBlue;
   cnv.TextRect(R,r.left,r.top,sTextRect);
 
   // rotated text
@@ -200,6 +204,7 @@ begin
   r.Right:=r.left+sz.cy;
   r.Bottom:=r.Top+sz.cx;
   cnv.Rectangle(r);
+  cnv.font.color := clDefault;
   cnv.TextOut(r.left,r.bottom,sTextOut);
 
   inc(r.Left,round(XDPI*0.5));
@@ -211,6 +216,7 @@ begin
   // thsi works
   //cnv.TextOut(r.left,r.bottom,sTextOut);
   // thsi does not work
+  cnv.Font.Color := clRed;
   cnv.TextRect(r,r.left,r.bottom,sTextRect);
 
 
@@ -225,7 +231,8 @@ begin
     cnv.LineTo(r.left+round(kx*i),r.Bottom-round(ky*2000*exp(-sqr(i-500)/500)));
   end;
   cnv.font.Orientation:=0;
-  cnv.TextOut((XDPI*2),(YDPI*5),'Clipping doesn''t work for text!');
+  cnv.font.Color := clGreen;
+  cnv.TextOut((XDPI*2),(YDPI*5),'Clipping does work for text!');
 
 end;
 
@@ -242,6 +249,7 @@ const
     '1.0' + LineEnding+
     '.01';
 var
+  x,y: Integer;
   R: TRect;
   sz: TSize;
   style: TTextStyle;
@@ -272,15 +280,66 @@ begin
 
   R := Rect(XDPI*4, YDPI*2, Round(XDPI*6), round(YDPI*6));
   cnv.Font.Name := 'Sans';
-  cnv.Font.Size := 40;
+  cnv.Font.Size := 20;
   cnv.Font.Color := clGreen;
+  cnv.Font.Orientation:=1800;
   cnv.Brush.Style := bsClear;
   cnv.Pen.Color := clSilver;
   style := cnv.TextStyle;
   style.SingleLine := false;
   style.Alignment := taRightJustify;
   cnv.TextStyle := style;
-  cnv.TextRect(R, R.Left, R.Top,  Par);
+  //cnv.TextRect(R, R.Left, R.Top,  Par);
+  cnv.TextRect(R, R.Right, R.Bottom,  Par);
+  cnv.Rectangle(R);
+
+  R := Rect(XDPI, YDPI*7, XDPI*7, YDPI*9);
+  cnv.Font.Size := 30;
+  cnv.Font.Color := clFuchsia;
+  cnv.Pen.Color := clSilver;
+  // style
+  style := cnv.TextStyle;
+  style.SingleLine := false;
+  with style do begin
+    case radOtherAlign.ItemIndex of
+      0,3,6: Alignment := taLeftJustify;
+      1,4,7: Alignment := taCenter;
+      else   Alignment := taRightJustify;
+    end;
+    case radOtherAlign.ItemIndex of
+      0,1,2: Layout := tlTop;
+      3,4,5: Layout := tlCenter;
+      else   Layout := tlBottom;
+    end;
+  end;
+  cnv.TextStyle := style;
+  // orientation
+  cnv.Font.Orientation := radOtherAngle.ItemIndex * 90 * 10;
+  x := r.Left;
+  y := r.Top;
+  case cnv.Font.Orientation of
+    0:
+      begin
+        x := r.Left;
+        y := r.Top;
+      end;
+    900:
+      begin
+        x := r.Left;
+        y := r.Bottom;
+      end;
+    1800:
+      begin
+        x := r.Right;
+        y := r.Bottom;
+      end;
+    2700:
+      begin
+        x := r.right;
+        y := r.Top;
+      end;
+  end;
+  cnv.TextRect(R, x, y, Par);
   cnv.Rectangle(R);
 end;
 
