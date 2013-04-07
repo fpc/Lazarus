@@ -269,6 +269,10 @@ type
     property ShellTreeView;
   end;
 
+const
+  //ToDo: make it a resource string
+  SShellCtrlsInvalidRoot = '%s is not a valid path.';
+
 procedure Register;
 
 implementation
@@ -342,6 +346,11 @@ var
 begin
   //ToDo: raise an exception if AValue is not valid
   if FRoot=AValue then exit;
+  //Delphi raises an unspecified exception in this case, but don't crash the IDE at designtime
+  if not (csDesigning in ComponentState)
+     and (AValue <> '')
+     and not DirectoryExistsUtf8(ExcludeTrailingPathDelimiter(ExpandFilename(AValue))) then
+     Raise Exception.CreateFmt(SShellCtrlsInvalidRoot,[AValue]);
   FRoot:=AValue;
   Items.Clear;
   if FRoot = '' then
@@ -806,6 +815,11 @@ procedure TCustomShellListView.SetRoot(const Value: string);
 begin
   if FRoot <> Value then
   begin
+    //Delphi raises an unspecified exception in this case, but don't crash the IDE at designtime
+    if not (csDesigning in ComponentState)
+       and (Value <> '')
+       and not DirectoryExistsUtf8(ExcludeTrailingPathDelimiter(ExpandFilename(Value))) then
+       Raise Exception.CreateFmt(SShellCtrlsInvalidRoot,[Value]);
     FRoot := Value;
     Clear;
     Items.Clear;
