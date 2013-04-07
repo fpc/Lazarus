@@ -337,14 +337,25 @@ begin
 end;
 
 procedure TCustomShellTreeView.SetRoot(const AValue: string);
+var
+  RootNode: TTreeNode;
 begin
+  //ToDo: raise an exception if AValue is not valid
   if FRoot=AValue then exit;
   FRoot:=AValue;
   Items.Clear;
   if FRoot = '' then
     PopulateWithBaseFiles()
   else
-    PopulateTreeNodeWithFiles(nil, AValue);
+  begin
+    //Add a node for Root and expand it (issue #0024230)
+    //Make FRoot contain fully qualified pathname, we need it later in GetPathFromNode()
+    FRoot := ExpandFileName(FRoot);
+    //Set RootNode.Text to AValue so user can choose if text is fully qualified path or not
+    RootNode := Items.AddChild(nil, AValue);
+    RootNode.HasChildren := True;
+    RootNode.Expand(False);
+  end;
   if Assigned(ShellListView) then
     ShellListView.Root := FRoot;
 end;
@@ -600,7 +611,6 @@ begin
   Files := TStringList.Create;
   try
     GetFilesInDir(ANodePath, AllFilesMask, FObjectTypes, Files, FFileSortType);
-
     Result := Files.Count > 0;
 
     for i := 0 to Files.Count - 1 do
@@ -631,7 +641,6 @@ var
 begin
   // avoids crashes in the IDE by not populating during design
   if (csDesigning in ComponentState) then Exit;
-
   r := GetLogicalDriveStrings(SizeOf(Drives), Drives);
   if r = 0 then Exit;
   if r > SizeOf(Drives) then Exit;
@@ -681,14 +690,19 @@ begin
   if ANode <> nil then  // Will return the root if nothing is selected (ANode=nil)
   begin
     // Build the path. In the future use ANode.Data instead of ANode.Text
-    Result := ANode.Text;
+    if (ANode.Parent = nil) and (GetRootPath <> '') then
+      //This node is RootNode and GetRooPath contains fully qualified root path
+      Result := ''
+    else
+      Result := ANode.Text;
     while (ANode.Parent <> nil) do
     begin
       ANode := ANode.Parent;
       Result := IncludeTrailingPathDelimiter(ANode.Text) + Result;
     end;
   end;
-  Result := GetRootPath() + Result;    // Include root directory
+  if not FilenameIsAbsolute(Result) then
+    Result := GetRootPath() + Result;    // Include root directory
 end;
 
 function TCustomShellTreeView.GetSelectedNodePath: string;
