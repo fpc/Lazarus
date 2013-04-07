@@ -7694,6 +7694,10 @@ msgstr "Proyecto Delphi"
 msgid "Delphi unit"
 msgstr "Unidad Delphi"
 
+#: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
+msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
+msgstr ""
+
 #: lazarusidestrconsts.lisdesthereisalreadyanothercomponentwiththename
 msgid "There is already another component with the name %s%s%s."
 msgstr "Ya hay un componente con el nombre %s%s%s."
@@ -15073,6 +15077,10 @@ msgctxt "lazarusidestrconsts.lisrun"
 msgid "Run"
 msgstr "Ejecutar"
 
+#: lazarusidestrconsts.lisrunanddesigntimepackageshavenolimitations
+msgid "\"Run and Design time\" packages have no limitations."
+msgstr ""
+
 #: lazarusidestrconsts.lisrunbuttonhint
 msgctxt "lazarusidestrconsts.lisrunbuttonhint"
 msgid "Run"
@@ -15098,6 +15106,14 @@ msgstr "Ejecutar"
 #: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
 msgid "Runtime only, can not be installed in IDE"
 msgstr "Tiempo de ejecución solo, no puede ser instalado en el IDE"
+
+#: lazarusidestrconsts.lisruntimeonlypackagesareonlyforprojectstheycannotbei
+msgid "\"Run time only\" packages are only for projects. They can not be installed in the IDE, not even indirectly."
+msgstr ""
+
+#: lazarusidestrconsts.lisruntimepackagescanbeusedbyprojectstheycannotbeinst
+msgid "\"Run time\" packages can be used by projects. They can not be installed in the IDE, unless some design time package requires them."
+msgstr ""
 
 #: lazarusidestrconsts.lisruntofailed
 msgid "Run-to failed"

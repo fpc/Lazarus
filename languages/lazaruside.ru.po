@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-03-28 03:16+0400\n"
+"PO-Revision-Date: 2013-04-07 17:34+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -7577,6 +7577,10 @@ msgstr "Проект Delphi"
 msgid "Delphi unit"
 msgstr "Модуль Delphi"
 
+#: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
+msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
+msgstr "Пакеты времени разработки добавляют компоненты и элементы меню в IDE. Они могут использоваться проектами, но не собираться с ними. Компилятор не найдёт модулей такого пакета при сборке проекта."
+
 #: lazarusidestrconsts.lisdesthereisalreadyanothercomponentwiththename
 msgid "There is already another component with the name %s%s%s."
 msgstr "Компонент с именем %s%s%s уже имеется."
@@ -14790,6 +14794,10 @@ msgctxt "lazarusidestrconsts.lisrun"
 msgid "Run"
 msgstr "Запуск"
 
+#: lazarusidestrconsts.lisrunanddesigntimepackageshavenolimitations
+msgid "\"Run and Design time\" packages have no limitations."
+msgstr "Пакеты времени разработки и исполнения не имеют ограничений."
+
 #: lazarusidestrconsts.lisrunbuttonhint
 msgctxt "lazarusidestrconsts.lisrunbuttonhint"
 msgid "Run"
@@ -14815,6 +14823,14 @@ msgstr "запуске"
 #: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
 msgid "Runtime only, can not be installed in IDE"
 msgstr "Только времени исполнения, не может быть установлен в IDE"
+
+#: lazarusidestrconsts.lisruntimeonlypackagesareonlyforprojectstheycannotbei
+msgid "\"Run time only\" packages are only for projects. They can not be installed in the IDE, not even indirectly."
+msgstr "Пакеты только времени исполнения предназначены исключительно для проектов. Они не могут быть установлены в IDE, даже косвенно."
+
+#: lazarusidestrconsts.lisruntimepackagescanbeusedbyprojectstheycannotbeinst
+msgid "\"Run time\" packages can be used by projects. They can not be installed in the IDE, unless some design time package requires them."
+msgstr "Пакеты времени исполнения могут использоваться проектами. Они не могут быть установлены в IDE, если не требуются каким-либо пакетам времени разработки."
 
 #: lazarusidestrconsts.lisruntofailed
 msgid "Run-to failed"
