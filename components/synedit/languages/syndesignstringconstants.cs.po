@@ -37,3 +37,4 @@ msgstr "Resetovat akce myši"
 #: syndesignstringconstants.syndsseparator
 msgid "Separator"
 msgstr "Oddělovač"
+
