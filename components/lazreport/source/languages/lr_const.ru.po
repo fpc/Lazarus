@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-06-26 00:39+0400\n"
+"PO-Revision-Date: 2013-04-07 17:11+0400\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -784,7 +784,7 @@ msgstr "С новой страницы"
 
 #: lr_const.sfrdesignerexists
 msgid "You already have one TfrDesigner component"
-msgstr ""
+msgstr "Экземпляр компонента TfrDesigner уже имеется"
 
 #: lr_const.sfrdesignerformaddpg
 msgctxt "lr_const.sfrdesignerformaddpg"
