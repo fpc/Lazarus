@@ -2558,7 +2558,11 @@ end;
 destructor TCustomLvlGraphControl.Destroy;
 begin
   FreeAndNil(FImageChangeLink);
-  FreeAndNil(FGraph);
+  FGraph.OnInvalidate:=nil;
+  FGraph.OnSelectionChanged:=nil;
+  FGraph.OnStructureChanged:=nil;
+  FGraph.Free;
+  FGraph:=nil;
   FreeAndNil(FEdgeStyle);
   FreeAndNil(FNodeStyle);
   inherited Destroy;
