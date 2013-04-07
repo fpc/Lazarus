@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
-"PO-Revision-Date: 2012-05-19 20:36+0100\n"
+"PO-Revision-Date: 2013-04-07 16:08+0100\n"
 "Project-Id-Version: lazreport\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -651,7 +651,7 @@ msgstr "&1. Seite"
 
 #: lr_const.sfindtextnotfound
 msgid "Search text not found."
-msgstr ""
+msgstr "Suchtext nicht gefunden"
 
 #: lr_const.sfindtextoptions
 msgctxt "lr_const.sfindtextoptions"
@@ -1423,7 +1423,7 @@ msgstr "LazReport-Formular"
 
 #: lr_const.slaztemplatefile
 msgid "LazReport template"
-msgstr ""
+msgstr "LazReport-Vorlage"
 
 #: lr_const.smathcategory
 msgid "Math"
@@ -2187,11 +2187,11 @@ msgstr "Reportdatei"
 
 #: lr_const.sreportcreatedate
 msgid "Report create date"
-msgstr ""
+msgstr "Erstelldatum"
 
 #: lr_const.sreportlastmodifydate
 msgid "Report last modify date"
-msgstr ""
+msgstr "Datum der letzten Änderung"
 
 #: lr_const.sreportpreparing
 msgid "Report preparing"
@@ -2317,11 +2317,11 @@ msgstr "Unterreport auf der Seite"
 
 #: lr_const.stemplemptydesc
 msgid "New report based on empty template"
-msgstr ""
+msgstr "Neuer Report basierend auf einer leeren Vorlage"
 
 #: lr_const.stemplemtpyrp
 msgid "Empty template"
-msgstr ""
+msgstr "Leere Vorlage"
 
 #: lr_const.stemplfile
 msgid "FastReport template"
@@ -2354,7 +2354,7 @@ msgstr "Unbenannt"
 
 #: lr_const.svar1
 msgid "Page#"
-msgstr "Seite #"
+msgstr "Seite#"
 
 #: lr_const.svar2
 msgid "Expression"
@@ -2384,7 +2384,7 @@ msgstr "Spalte#"
 
 #: lr_const.svar8
 msgid "Current line#"
-msgstr "Current line#"
+msgstr "Aktuelle Zeile#"
 
 #: lr_const.svar9
 msgid "TotalPages"

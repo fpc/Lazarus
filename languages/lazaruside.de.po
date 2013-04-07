@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-02-03 21:26+0100\n"
+"PO-Revision-Date: 2013-04-07 16:37+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -15410,7 +15410,7 @@ msgstr "Debuggen abbrechen?"
 
 #: lazarusidestrconsts.lisstorepathdelimitersandas
 msgid "Store path delimiters \\ and / as"
-msgstr "Speichere Pfadtrenner \\ und / als"
+msgstr "Speichere Pfadtrenner \\ und /"
 
 #: lazarusidestrconsts.lisstrangelpifile
 msgid "Strange lpi file"
@@ -15666,7 +15666,7 @@ msgstr "Der Debugger %s%s%s%sfehlt oder ist nicht ausführbar.%s%sSiehe: Einstel
 
 #: lazarusidestrconsts.listhedebuggerexecutabletypicallyhasthenamepleasegive
 msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
-msgstr ""
+msgstr "Der Debugger hat typischerweise den Namen \"%s\". Bitte geben sie den vollständigen Dateipfad an."
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
@@ -15813,7 +15813,7 @@ msgstr "Das Makro \"%s\" beginnt nicht mit \"%s\"."
 
 #: lazarusidestrconsts.listhemakeexecutabletypicallyhasthename
 msgid "The \"make\" executable typically has the name \"%s\". It is needed for building the IDE. Please give the full file path."
-msgstr ""
+msgstr "\"make\" hat typischerweise den Namen \"%s\". Es wird für die Erstellung der IDE benötigt. Bitte geben sie den vollständigen Dateipfad an."
 
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
@@ -15979,7 +15979,7 @@ msgstr "Es gibt schon eine Unit mit dem Namen %s%s%s im Projekt.%sBitte wählen 
 
 #: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
-msgstr ""
+msgstr "Es gibt keine fpc.exe im Verzeichnis von %s. Üblicherweise wird \"make\" zusammen mit dem FPC-Compiler installiert."
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
@@ -16504,7 +16504,7 @@ msgstr "Kann keine Pascal-Unit (.pas,.pp) finden für .lfm Datei%s%s%s%s"
 
 #: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
 msgid "Unable to find the component class \"%s\".%sIt is not registered via RegisterClass and no lfm was found.%sIt is needed by unit:%s%s"
-msgstr ""
+msgstr "Kann die Komponentenklasse \"%s\" nicht finden.%sSie ist nicht mittels RegisterClass registriert und keine lfm wurde gefunden.%sSie wird benötigt von Unit:%s%s"
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
@@ -17719,11 +17719,11 @@ msgstr "Gesamten Text löschen"
 
 #: lazarusidestrconsts.srkmecclearallbookmark
 msgid "Clear all Bookmarks"
-msgstr ""
+msgstr "Alle Lesezeichen löschen"
 
 #: lazarusidestrconsts.srkmecclearbookmarkforfile
 msgid "Clear Bookmarks for current file"
-msgstr ""
+msgstr "Lesezeichen für aktuelle Datei löschen"
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"
