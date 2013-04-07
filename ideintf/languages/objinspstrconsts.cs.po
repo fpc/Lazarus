@@ -1064,33 +1064,20 @@ msgid "Test Input"
 msgstr "Zkušební vstup"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-msgid ""
-"The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore "
-"to force it."
-msgstr ""
-"Identifikátor %s%s%s není metoda.%sStiskněte Zrušit k návratu zpět,"
-"%sstiskněte Ignorovat k vynucení."
+msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "Identifikátor %s%s%s není metoda.%sStiskněte Zrušit k návratu zpět,%sstiskněte Ignorovat k vynucení."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-msgid ""
-"The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,"
-"%spress Ignore to force it."
-msgstr ""
-"Metoda %s%s%s není kompatibilní s touto událostí (%s).%sStiskněte Zrušit pro "
-"návrat zpět, %sstiskněte Ignorovat pro vynucení."
+msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "Metoda %s%s%s není kompatibilní s touto událostí (%s).%sStiskněte Zrušit pro návrat zpět, %sstiskněte Ignorovat pro vynucení."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-msgid ""
-"The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to "
-"force it."
-msgstr ""
-"Metoda %s%s%s není zveřejněná.%sStiskněte Zrušit pro návrat zpět,%sstiskněte "
-"Ignorovat pro vynucení."
+msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "Metoda %s%s%s není zveřejněná.%sStiskněte Zrušit pro návrat zpět,%sstiskněte Ignorovat pro vynucení."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
-msgstr ""
-"Nelze změnit rodiče ovládacího prvku %s%s%s na nového rodiče %s%s%s.%s%s"
+msgstr "Nelze změnit rodiče ovládacího prvku %s%s%s na nového rodiče %s%s%s.%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
@@ -1548,3 +1535,4 @@ msgstr "Přesunout záložku vlevo"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Přesunou záložku vpravo"
+
