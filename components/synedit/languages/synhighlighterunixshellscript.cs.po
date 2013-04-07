@@ -13,3 +13,4 @@ msgstr ""
 #: synhighlighterunixshellscript.langname
 msgid "UNIX Shell Script"
 msgstr "Script UNIX Shellu"
+
