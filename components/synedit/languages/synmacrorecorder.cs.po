@@ -25,3 +25,4 @@ msgstr "Nelze zaznamenávat makro během zaznamenávání"
 #: synmacrorecorder.scannotresume
 msgid "Can only resume when paused"
 msgstr "Obnovit lze jen pokud je pozastaveno"
+

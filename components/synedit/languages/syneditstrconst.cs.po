@@ -420,8 +420,7 @@ msgid "Whitespace"
 msgstr "Bílé místo"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
-msgid ""
-"The keystroke \"%s\" is already assigned to another editor command. (%s)"
+msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "Klávesová zkratka \"%s\" je již přiřazena jinému příkazu editoru. (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
@@ -458,8 +457,7 @@ msgstr "Kontextové menu"
 
 #: syneditstrconst.syns_emccontextmenucaretmove_opt
 msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
-msgstr ""
-"\"Přesunout ukazatel, když existuje výběr\", Nikdy, \"Kliknout vně\", Vždy"
+msgstr "\"Přesunout ukazatel, když existuje výběr\", Nikdy, \"Kliknout vně\", Vždy"
 
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
@@ -535,9 +533,7 @@ msgstr "Scrollování nahoru"
 
 #: syneditstrconst.syns_emcwheelscroll_opt
 msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
-msgstr ""
-"Rychlost,\"Sytémová nastavnení\",Řádky,Stránky,\"Stránky (měně než jeden "
-"řádek)\""
+msgstr "Rychlost,\"Sytémová nastavnení\",Řádky,Stránky,\"Stránky (měně než jeden řádek)\""
 
 #: syneditstrconst.syns_emcwheelvertscrolldown
 msgid "Wheel scroll down (Vertical)"
@@ -744,10 +740,8 @@ msgid "x86 Assembly Files (*.asm)|*.ASM"
 msgstr "Soubory assembleru x86 (*.asm)|*.ASM"
 
 #: syneditstrconst.syns_filterxml
-msgid ""
-"XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
-msgstr ""
-"XML Dokument (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+msgstr "XML Dokument (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
 
 #: syneditstrconst.syns_previewscrollinfofmt
 msgid "Page: %d"
@@ -768,3 +762,4 @@ msgstr "<žádné>"
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
 msgstr "Nepojmenovaný"
+
