@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-04-07 19:42+0400\n"
+"PO-Revision-Date: 2013-04-07 19:52+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -12723,7 +12723,7 @@ msgstr "Установлен"
 
 #: lazarusidestrconsts.lispckexplinstallonnextstart
 msgid "Install on next start"
-msgstr "Установить при след. запуске"
+msgstr "Будет установлен при следующем запуске"
 
 #: lazarusidestrconsts.lispckexplisrequiredby
 msgid "Selected package is required by:"
@@ -12743,7 +12743,7 @@ msgstr "%sСостояние: "
 
 #: lazarusidestrconsts.lispckexpluninstallonnextstart
 msgid "Uninstall on next start"
-msgstr "Удалить при след. пуске"
+msgstr "Будет удалён при следующем запуске"
 
 #: lazarusidestrconsts.lispckexpluninstallpackage
 msgctxt "lazarusidestrconsts.lispckexpluninstallpackage"
