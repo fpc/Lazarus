@@ -27,7 +27,14 @@ interface
 
 uses
   Classes, SysUtils, Forms, Graphics, LCLType,
-  ComCtrls, FileUtil;
+  ComCtrls, FileUtil, LazUtf8;
+
+{$if defined(Windows) or defined(darwin)}
+{$define CaseInsensitiveFilenames}
+{$endif}
+{$IF defined(CaseInsensitiveFilenames) or defined(darwin)}
+{$DEFINE NotLiteralFilenames}
+{$ENDIF}
 
 type
 
@@ -269,9 +276,14 @@ type
     property ShellTreeView;
   end;
 
+  EInvalidPath = class(Exception);
+
 const
   //ToDo: make it a resource string
-  SShellCtrlsInvalidRoot = '%s is not a valid path.';
+  SShellCtrlsInvalidRoot         = 'Invalid pathname:'+^m+'"%s"';
+  SShellCtrlsInvalidPath         = 'Invalid pathname:'+^m+'"%s"';
+  SShellCtrlsInvalidPathRelative = 'Invalid relative pathname:'+^m+'"%s"'+
+                                    ^m+'in relation to rootpath:'+^m+'"%s"';
 
 procedure Register;
 
@@ -344,13 +356,12 @@ procedure TCustomShellTreeView.SetRoot(const AValue: string);
 var
   RootNode: TTreeNode;
 begin
-  //ToDo: raise an exception if AValue is not valid
   if FRoot=AValue then exit;
   //Delphi raises an unspecified exception in this case, but don't crash the IDE at designtime
   if not (csDesigning in ComponentState)
      and (AValue <> '')
      and not DirectoryExistsUtf8(ExcludeTrailingPathDelimiter(ExpandFilename(AValue))) then
-     Raise Exception.CreateFmt(SShellCtrlsInvalidRoot,[AValue]);
+     Raise Exception.CreateFmt(SShellCtrlsInvalidRoot,[ExpandFileName(AValue)]);
   FRoot:=AValue;
   Items.Clear;
   if FRoot = '' then
@@ -729,29 +740,74 @@ var
   sl: TStringList;
   Node: TTreeNode;
   i: integer;
-begin
-  if DirectoryExistsUTF8(AValue) then begin
-    // We got a full path, make it relative to root
-    if FRoot = PathDelim then
-      AValue := ExcludeLeadingPathDelimiter(AValue) // Make relative to top dir ('/')
-    else if FRoot <> '' then // When issue #22603 is fixed, can be replaced with:
-      // AValue := CreateRelativePath(AValue, GetRootPath());
-      Avalue := Stringreplace(AValue, GetRootPath(), '', []);
+  FQPath, FQRootPath: String;
+  RootIsAbsolute: Boolean;
+
+  function GetAdjustedNodeText(ANode: TTreeNode): String;
+  begin
+    if (ANode = Items.GetFirstVisibleNode) and (FQRootPath <> '') then
+    begin
+      if not RootIsAbsolute then
+        Result := ''
+      else
+        Result := FQRootPath;
+    end
+    else Result := ANode.Text;
   end;
-  // Make sure the path is correct now
-  if not DirectoryExistsUTF8(GetRootPath()+AValue) then Exit;
+begin
+  //writeln('SetPath: FRoot = "',FRoot,'" GetRootPath = "',getrootpath,'"');
+  if (GetRootPath <> '') then
+    FQRootPath := IncludeTrailingPathDelimiter(ExpandFileName(GetRootPath))
+  else
+    FQRootPath := '';
+  RootIsAbsolute := (FQRootPath = '') or (FQRootPath = PathDelim)
+                    or ((Length(FQRootPath) = 3) and (FQRootPath[2] = ':') and (FQRootPath[3] = PathDelim));
+  //writeln('SetPath: FQRootPath = ',fqrootpath);
+  //writeln('SetPath: RootIsAbsolute = ',RootIsAbsolute);
+
+  if not RootIsAbsolute and not FileNameIsAbsolute(AValue) then
+  begin
+    //FileName must be relative to Root in this case
+    FQPath := FQRootPath + AValue;
+  end
+  else
+    FQPath := ExcludeTrailingPathDelimiter(ExpandFileName(AValue));
+  if not DirectoryExistsUTF8(FQPath) then
+  begin
+    //writeln('SetPath: InvalidPath: ',AValue);
+    if not RootIsAbsolute then
+      Raise EInvalidPath.CreateFmt(SShellCtrlsInvalidPathRelative,[AValue, FQRootPath])
+    else
+      Raise EInvalidPath.CreateFmt(SShellCtrlsInvalidPath,[FQPath]);
+  end;
+  //writeln('SetPath: FQPath = ',fqpath);
+  AValue := FQPath;
+
   sl := TStringList.Create;
   sl.Delimiter := PathDelim;
   sl.StrictDelimiter := True;
   sl.DelimitedText := TrimFilename(AValue);  // Clean the path and then split it
   if sl[0] = '' then                    // This happens when root dir is empty
     sl[0] := PathDelim;                 //  and PathDelim was the first char
+
+  //C: -> C:\ on Windows
+  if RootIsAbsolute and (FQRootPath <> '') and (sl.Count > 0) then sl[0] := IncludeTrailingPathDelimiter(sl[0]);
+
+
   BeginUpdate;
   try
     Node := Items.GetFirstVisibleNode;
+    //Skip first node if not RootIsAbsolute, because we deleted that part form AValue
+    if (not RootIsAbsolute) and Assigned(Node) then Node := Node.GetFirstVisibleChild;
     for i := 0 to sl.Count-1 do
     begin
-      while (Node <> Nil) and (Node.Text <> sl[i]) do
+      while (Node <> Nil) and
+            {$IF defined(CaseInsensitiveFilenames) or defined(NotLiteralFilenames)}
+            (Utf8LowerCase(GetAdjustedNodeText(Node)) <> Utf8LowerCase(sl[i]))
+            {$ELSE}
+            (GetAdjustedNodeText(Node) <> sl[i])
+            {$ENDIF}
+            do
         Node := Node.GetNextVisibleSibling;
       if Node <> Nil then
       begin
