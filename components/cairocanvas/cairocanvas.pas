@@ -20,7 +20,8 @@ type
 
   TCairoPrinterCanvas = class(TFilePrinterCanvas)
   private
-    FLazClipRect   : TRect;
+    FLazClipRect: TRect;
+    FUserClipRect: Pcairo_rectangle_t;
     {$ifdef pangocairo}
     fFontDesc: PPangoFontDescription;
     fFontDescStr: string;
@@ -60,6 +61,10 @@ type
     procedure EndDoc; override;
     procedure NewPage; override;
     procedure CreateBrush; override;
+    function GetClipRect: TRect; override;
+    procedure SetClipRect(const ARect: TRect); override;
+    function GetClipping: Boolean; override;
+    procedure SetClipping(const AValue: boolean); override;
   public
     SurfaceXDPI, SurfaceYDPI: Integer;
     constructor Create(APrinter : TPrinter); override;
@@ -279,6 +284,68 @@ procedure TCairoPrinterCanvas.CreateBrush;
 begin
 end;
 
+function TCairoPrinterCanvas.GetClipRect: TRect;
+var
+  x1,y1,x2,y2: double;
+begin
+  RequiredState([csHandleValid]);
+
+  // it doesn't matter what the clip is in use, default or user
+  // this returns always the current clip
+
+  cairo_clip_extents(cr, @x1, @y1, @x2, @y2);
+  result.Left:=round(x1/ScaleX);
+  result.Top:=round(y1/ScaleY);
+  result.Right:=round(x2/ScaleX);
+  result.Bottom:=round(y2/ScaleY);
+end;
+
+procedure TCairoPrinterCanvas.SetClipRect(const ARect: TRect);
+begin
+  if FUserClipRect=nil then
+    New(FUserClipRect);
+
+  fUserClipRect^.x := SX(ARect.Left);
+  fUserClipRect^.y := SY(ARect.Top);
+  fUserClipRect^.width := SX2(ARect.Right-ARect.Left);
+  fUserClipRect^.height:= SY2(ARect.Bottom-ARect.Top);
+
+  cairo_reset_clip(cr);
+
+  with fUserClipRect^ do
+    cairo_rectangle(cr, x, y, width, Height);
+
+  cairo_Clip(cr);
+end;
+
+function TCairoPrinterCanvas.GetClipping: Boolean;
+begin
+  result := (fUserClipRect<>nil);
+end;
+
+procedure TCairoPrinterCanvas.SetClipping(const AValue: boolean);
+begin
+  cairo_reset_clip(cr);
+
+  if not AValue then begin
+    // free user cliprect if exists
+    if fUserClipRect<>nil then
+      Dispose(fUserClipRect);
+    fUserClipRect := nil;
+  end
+  else begin
+    if fUserClipRect<>nil then
+    begin
+      with fUserClipRect^ do
+      begin
+        cairo_rectangle(cr, x, y, width, height);
+        cairo_clip(cr);
+      end;
+    end else
+      ; // cairo_reset_clip always clip
+  end;
+end;
+
 procedure TCairoPrinterCanvas.DrawPoint(x, y: double; color: TColor);
 var
   r,g,b: Double;
@@ -335,6 +402,9 @@ end;
 
 destructor TCairoPrinterCanvas.Destroy;
 begin
+  if fUserClipRect<>nil then
+    Dispose(fUserClipRect);
+  fUserClipRect := nil;
   {$ifdef pangocairo}
   if fFontDesc<>nil then
     pango_font_description_free(fFontDesc);
