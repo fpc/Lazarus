@@ -6103,6 +6103,11 @@ begin
   RegisterPropertyEditor(TypeInfo(AnsiString), TCustomForm, 'LCLVersion', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(AnsiString), TCustomFrame, 'LCLVersion', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TCustomPage), TCustomTabControl, 'ActivePage', TNoteBookActiveControlPropertyEditor);
+
+  // since fpc 2.6.0 WordBool, LongBool and QWordBool only allow 0 and 1
+  RegisterPropertyEditor(TypeInfo(WordBool), nil, '', TBoolPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(LongBool), nil, '', TBoolPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(QWordBool), nil, '', TBoolPropertyEditor);
 end;
 
 procedure FinalPropEdits;

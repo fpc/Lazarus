@@ -84,6 +84,7 @@ type
     function GetLanguages: TStringList;
     function GetVersion(AIndex: integer): integer;
     procedure SetAutoIncrementBuild(const AValue: boolean);
+    procedure SetFileVersionFromVersion;
     procedure SetHexCharSet(const AValue: string);
     procedure SetHexLang(const AValue: string);
     procedure SetUseVersionInfo(const AValue: boolean);
@@ -375,8 +376,7 @@ begin
     if charset = '' then
       charset := DefaultCharSet;
 
-    // set FileVersion from version numbers
-    FStringTable['FileVersion'] := BuildFileVersionString;
+    SetFileVersionFromVersion;
 
     st := TVersionStringTable.Create(lang + charset);
     for i := 0 to FStringTable.Count - 1 do
@@ -467,6 +467,8 @@ begin
       StringTable['ProductName'] := GetValue(Path + 'VersionInfo/ProductName/Value', '');
       StringTable['ProductVersion'] := GetValue(Path + 'VersionInfo/ProjectVersion/Value', BuildFileVersionString);
     end;
+
+    SetFileVersionFromVersion;
   end;
 end;
 
@@ -505,6 +507,11 @@ begin
     exit;
   FAutoIncrementBuild := AValue;
   Modified := True;
+end;
+
+procedure TProjectVersionInfo.SetFileVersionFromVersion;
+begin
+  FStringTable['FileVersion'] := BuildFileVersionString;
 end;
 
 procedure TProjectVersionInfo.SetHexCharSet(const AValue: string);
@@ -614,6 +621,8 @@ begin
   idx := KeyToIndex(Key);
   if idx = -1 then
     Add(Key, AValue)
+  else if ValuesByIndex[idx] = AValue then
+    exit
   else
     ValuesByIndex[idx] := AValue;
   DoModified;
