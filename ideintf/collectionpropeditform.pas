@@ -32,6 +32,7 @@ type
     procedure FormDestroy(Sender: TObject);
   private
     FCollection: TCollection;
+    FOwnerComponent: TPersistent;
     FOwnerPersistent: TPersistent;
     FPropertyName: String;
   protected
@@ -49,6 +50,7 @@ type
     procedure Modified;
   public
     property Collection: TCollection read FCollection;
+    property OwnerComponent: TPersistent read FOwnerComponent;
     property OwnerPersistent: TPersistent read FOwnerPersistent;
     property PropertyName: String read FPropertyName;
   end;
@@ -60,6 +62,11 @@ implementation
 uses
   Controls, Dialogs, LCLProc, IDEImagesIntf, ObjInspStrConsts, PropEdits,
   PropEditUtils;
+
+type
+  TPersistentAccess = class(TPersistent)
+
+  end;
 
 procedure TCollectionPropertyEditorForm.FormCreate(Sender: TObject);
 begin
@@ -244,7 +251,7 @@ procedure TCollectionPropertyEditorForm.PersistentDeleting(APersistent: TPersist
 var
   AIndex, I: Integer;
 begin
-  if APersistent = OwnerPersistent then
+  if (APersistent = OwnerPersistent) or (APersistent = OwnerComponent) then
   begin
     SetCollection(nil, nil, '');
     Hide;
@@ -348,6 +355,14 @@ begin
   FCollection := NewCollection;
   FOwnerPersistent := NewOwnerPersistent;
   FPropertyName := NewPropName;
+  //find the component that owns the collection
+  FOwnerComponent := NewOwnerPersistent;
+  while FOwnerComponent <> nil do
+  begin
+    if FOwnerComponent is TComponent then
+      break;
+    FOwnerComponent := TPersistentAccess(FOwnerComponent).GetOwner;
+  end;
   //debugln('TCollectionPropertyEditorForm.SetCollection A Collection=',dbgsName(FCollection),' OwnerPersistent=',dbgsName(OwnerPersistent),' PropName=',PropertyName);
   if GlobalDesignHook <> nil then
   begin
