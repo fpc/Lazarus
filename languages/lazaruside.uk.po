@@ -4483,6 +4483,10 @@ msgctxt "lazarusidestrconsts.lisbuildstage"
 msgid "Build"
 msgstr "Побудувати"
 
+#: lazarusidestrconsts.lisbusy
+msgid "Busy"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Виклик %s для створення Makefile з %s не вдався."
@@ -4523,6 +4527,10 @@ msgstr "Не можу створити файл %s%s%s"
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 msgid "Cannot find lazarus starter:%s%s"
 msgstr "Не можу знайти пускач lazarus:%s%s"
+
+#: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
+msgid "Cannot test the compiler while debugging or compiling."
+msgstr ""
 
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
@@ -8536,6 +8544,10 @@ msgstr "Пошук на&зад"
 #: lazarusidestrconsts.lisfreepascal
 msgid "Free Pascal"
 msgstr "Free Pascal"
+
+#: lazarusidestrconsts.lisfreepascalcompilermessages
+msgid "Free Pascal Compiler messages"
+msgstr ""
 
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"

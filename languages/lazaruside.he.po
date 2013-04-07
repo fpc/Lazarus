@@ -4623,6 +4623,10 @@ msgctxt "lazarusidestrconsts.lisbuildstage"
 msgid "Build"
 msgstr "בנה"
 
+#: lazarusidestrconsts.lisbusy
+msgid "Busy"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "קריאת s% ליצירת makefile מ s% נכשלה."
@@ -4663,6 +4667,10 @@ msgstr "לא יכול לצור את הקובץ s%s%s%"
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 msgid "Cannot find lazarus starter:%s%s"
 msgstr "לא יכול למצוא את מאתחל לזארוס: s%s%"
+
+#: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
+msgid "Cannot test the compiler while debugging or compiling."
+msgstr ""
 
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
@@ -8742,6 +8750,10 @@ msgstr "חפש אחורנית"
 #: lazarusidestrconsts.lisfreepascal
 msgid "Free Pascal"
 msgstr "Free Pascal"
+
+#: lazarusidestrconsts.lisfreepascalcompilermessages
+msgid "Free Pascal Compiler messages"
+msgstr ""
 
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"

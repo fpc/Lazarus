@@ -4629,6 +4629,10 @@ msgctxt "lazarusidestrconsts.lisbuildstage"
 msgid "Build"
 msgstr "Buduj"
 
+#: lazarusidestrconsts.lisbusy
+msgid "Busy"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr ""
@@ -4668,6 +4672,10 @@ msgstr "Nie można utworzyć pliku %s%s%s"
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 msgid "Cannot find lazarus starter:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
+msgid "Cannot test the compiler while debugging or compiling."
 msgstr ""
 
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
@@ -8684,6 +8692,10 @@ msgstr "W&yszukiwanie w górę"
 
 #: lazarusidestrconsts.lisfreepascal
 msgid "Free Pascal"
+msgstr ""
+
+#: lazarusidestrconsts.lisfreepascalcompilermessages
+msgid "Free Pascal Compiler messages"
 msgstr ""
 
 #: lazarusidestrconsts.lisfreepascalcompilernotfound

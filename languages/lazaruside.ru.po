@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-12-31 22:32+0400\n"
+"PO-Revision-Date: 2013-04-07 19:42+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4545,6 +4545,10 @@ msgctxt "lazarusidestrconsts.lisbuildstage"
 msgid "Build"
 msgstr "сборке"
 
+#: lazarusidestrconsts.lisbusy
+msgid "Busy"
+msgstr "Приложение занято"
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Вызов %s для создания Makefile из %s не удался."
@@ -4586,6 +4590,10 @@ msgstr "Невозможно создать файл %s%s%s"
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 msgid "Cannot find lazarus starter:%s%s"
 msgstr "Невозможно найти пускатель Lazarus:%s%s"
+
+#: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
+msgid "Cannot test the compiler while debugging or compiling."
+msgstr "Проверка компилятора невозможна во время отладки или компиляции."
 
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
@@ -8625,6 +8633,10 @@ msgstr "&Назад"
 #: lazarusidestrconsts.lisfreepascal
 msgid "Free Pascal"
 msgstr "Free Pascal"
+
+#: lazarusidestrconsts.lisfreepascalcompilermessages
+msgid "Free Pascal Compiler messages"
+msgstr "Сообщения компилятора Free Pascal"
 
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
