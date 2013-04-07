@@ -1,3 +1,2 @@
-Since fpc 2.6.2 the unit dbf was marked deprecated.
-The dbf units are now on Sourceforge. 
-Users are encouraged to switch to the sourceforge version instead of the FPC units.
+In fpc 2.6.2 the unit dbf was marked deprecated, due to the lack of a maintainer.
+Now there is a maintainer again and the next fpc version has removed the deprecated warning.
