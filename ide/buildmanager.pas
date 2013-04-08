@@ -2244,7 +2244,7 @@ begin
 
       if ParseOpts.MacroValuesParsing then begin
         if ConsoleVerbosity>=-1 then
-          debugln(['TBuildManager.OnGetBuildMacroValues circle computing macros of ',dbgsname(Options.Owner)]);
+          debugln(['TBuildManager.OnGetBuildMacroValues cycle computing macros of ',dbgsname(Options.Owner)]);
         exit;
       end;
 
@@ -2259,7 +2259,8 @@ begin
         if Values<>nil then
           Result.Assign(Values);
         {$IFDEF VerboseBuildMacros}
-        Result.WriteDebugReport('TPkgManager.OnGetBuildMacroValues before execute: '+dbgstr(Options.Conditionals),'  ');
+        if (Options.Owner is TLazPackage) and (TLazPackage(Options.Owner).Name='LCL') then
+          Result.WriteDebugReport('TPkgManager.OnGetBuildMacroValues before execute: '+dbgstr(Options.Conditionals),'  ');
         {$ENDIF}
         if not ParseOpts.MacroValues.Execute(Options.Conditionals) then begin
           if ConsoleVerbosity>=0 then
@@ -2268,7 +2269,8 @@ begin
         end;
 
         {$IFDEF VerboseBuildMacros}
-        Result.WriteDebugReport('TPkgManager.OnGetBuildMacroValues executed: '+dbgstr(Options.Conditionals),'  ');
+        if (Options.Owner is TLazPackage) and (TLazPackage(Options.Owner).Name='LCL') then
+          Result.WriteDebugReport('TPkgManager.OnGetBuildMacroValues executed: '+dbgstr(Options.Conditionals),'  ');
         {$ENDIF}
 
         // the macro values of the active project take precedence
