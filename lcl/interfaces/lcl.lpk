@@ -11,14 +11,14 @@
         <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
       <Conditionals Value="// LCLWidgetType
-if undefined(LCLWidgetType) then begin
+if LCLWidgetType+''='' then begin
   if GetIDEValue('OS')=TargetOS then begin
     // use the same widgettype as the IDE
     LCLWidgetType := GetIDEValue('LCLWidgetType');
     if LCLWidgetType='nogui' then
       LCLWidgetType:='';
   end;
-  if LCLWidgetType='' then begin
+  if LCLWidgetType+''='' then begin
     if (TargetOS='win32') or (TargetOS='win64') then
       LCLWidgetType := 'win32'
     else if TargetOS='wince' then
