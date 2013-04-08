@@ -3225,7 +3225,7 @@ var
         // handle any alignment with same code
         Ts := Canvas.TextStyle;
         Ts.Layout    :=tlTop;
-        Ts.Alignment :=self.Alignment;
+        Ts.Alignment := taLeftJustify;
         Ts.Wordbreak :=false;
         Ts.SingleLine:=True;
         Ts.Clipping  :=True;
