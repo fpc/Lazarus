@@ -102,6 +102,8 @@ type
   TBeginColumnEvent = procedure(Band: TfrBand) of object;
   TPrintColumnEvent = procedure(ColNo: Integer; var Width: Integer) of object;
   TManualBuildEvent = procedure(Page: TfrPage) of object;
+  TObjectClickEvent = procedure(View: TfrView) of object;
+  TMouseOverObjectEvent = procedure(View: TfrView; var ACursor: TCursor) of object;
 
   TfrHighlightAttr = packed record
     FontStyle: Word;
@@ -222,6 +224,8 @@ type
     fFormat    : Integer;
     fFormatStr : string;
     fFrameTyp  : word;
+    FTag: string;
+    FURLInfo: string;
     function GetLeft: Double;
     function GetStretched: Boolean;
     function GetTop: Double;
@@ -316,6 +320,8 @@ type
   published
     property Left: double read GetLeft write SetLeft;
     property Top: double read GetTop write SetTop;
+    property Tag: string read FTag write FTag;
+    property URLInfo: string read FURLInfo write FURLInfo;
     property Width: double read GetWidth write SetWidth;
     property Height: double read GetHeight write SetHeight;
   end;
@@ -889,6 +895,10 @@ type
     procedure Add(APage: TfrPage);
     procedure Insert(Index: Integer; APage: TfrPage);
     procedure Delete(Index: Integer);
+
+    function DoMouseClick(Index: Integer; pt: TPoint; var AInfo: String): Boolean;
+    function DoMouseMove(Index: Integer; pt: TPoint; var Cursor: TCursor; var AInfo: String): Boolean;
+
     procedure LoadFromStream(AStream: TStream);
     procedure AddPagesFromStream(AStream: TStream; AReadHeader: boolean=true);
     procedure LoadFromXML({%H-}XML: TLrXMLConfig; const {%H-}Path: String);
@@ -944,6 +954,8 @@ type
   private
     FDataType: TfrDataType;
     FDefaultCopies: Integer;
+    FMouseOverObject: TMouseOverObjectEvent;
+    FObjectClick: TObjectClickEvent;
     FOnExportFilterSetup: TExportFilterSetup;
     FPages: TfrPages;
     FEMFPages: TfrEMFPages;
@@ -1131,6 +1143,8 @@ type
     property OnPrintColumn: TPrintColumnEvent read FOnPrintColumn write FOnPrintColumn;
     property OnManualBuild: TManualBuildEvent read FOnManualBuild write FOnManualBuild;
     property OnExportFilterSetup: TExportFilterSetup read FOnExportFilterSetup write FOnExportFilterSetup;
+    property OnObjectClick: TObjectClickEvent read FObjectClick write FObjectClick;
+    property OnMouseOverObject: TMouseOverObjectEvent read FMouseOverObject write FMouseOverObject;
   end;
 
   TfrCompositeReport = class(TfrReport)
@@ -1240,9 +1254,10 @@ procedure frSelectHyphenDictionary(ADict: string);
 
 const
   lrTemplatePath = 'LazReportTemplate/';
-  frCurrentVersion = 25;
+  frCurrentVersion = 26;
     // version 2.5: lazreport: added to binary stream ParentBandType variable
     //                         on TfrView, used to extend export facilities
+    // version 2.6: lazreport: added to binary stream Tag property on TfrView
 
   frSpecCount = 9;
   frSpecFuncs: Array[0..frSpecCount - 1] of String = ('PAGE#', '',
@@ -1976,6 +1991,8 @@ begin
   fFormatStr := From.FormatStr;
   fVisible := From.Visible;
   fFrames:=From.Frames;
+  FTag:=From.FTag;
+  FURLInfo:=From.FURLInfo;
 end;
 
 procedure TfrView.CalcGaps;
@@ -2032,7 +2049,7 @@ begin
   fFrameWidth := SaveFW;
 end;
 
-procedure TfrView.ShowBackground;
+procedure TfrView.ShowBackGround;
 var
   fp: TColor;
 begin
@@ -2182,6 +2199,9 @@ begin
 end;
 
 procedure TfrView.Print(Stream: TStream);
+var
+  FTmpTag:string;
+
 begin
   {$IFDEF DebugLR}
   DebugLn('%s.TfrView.Print()',[name]);
@@ -2195,7 +2215,14 @@ begin
   Stream.Write(Typ, 1);
   if Typ = gtAddIn then
     frWriteString(Stream, ClassName);
+
+
+{  FTmpTag:=FTag;
+  if (FTag<>'') and (Pos('[', FTag) > 0) then
+    ExpandVariables(FTag);}
+
   SaveToStream(Stream);
+{  FTag:=FTmpTag;}
   {$IFDEF DebugLR}
   DebugLn('%s.TfrView.Print() end',[name]);
   {$ENDIF}
@@ -2285,6 +2312,12 @@ begin
       ParentBandType := TfrBandType(I);
     end;
 
+    if frVersion>25 then
+    begin
+      FTag := frReadString(Stream);
+      FURLInfo := frReadString(Stream);
+    end;
+
   end;
   {$IFDEF DebugLR}
   DebugLn('%s.TfrView.LoadFromStream end',[name]);
@@ -2331,8 +2364,11 @@ begin
     Memo.Text  := XML.GetValue(Path+'Data/Memo/Value', '');   // TODO Check default
     Script.Text:= XML.GetValue(Path+'Data/Script/Value', '');   // TODO Check default
   end
-    else
-      memo1.text := XML.GetValue(Path+'Data/Memo1/Value', ''); // TODO Check default
+  else
+    memo1.text := XML.GetValue(Path+'Data/Memo1/Value', ''); // TODO Check default
+
+  FTag:=XML.GetValue(Path+'Tag/Value', '');
+  FURLInfo:=XML.GetValue(Path+'FURLInfo/Value', '');
 end;
 
 procedure TfrView.SaveToStream(Stream: TStream);
@@ -2383,6 +2419,9 @@ begin
       B := ord(Parent.Typ);
     Write(B, 4);
 
+    //Tag property stream format 26
+    frWriteString(Stream, FTag);
+    frWriteString(Stream, FURLInfo);
   end;
   {$IFDEF DebugLR}
   Debugln('%s.SaveToStream end',[name]);
@@ -2427,8 +2466,10 @@ begin
       XML.SetValue(Path+'Data/Script/Value', TStrings(Script).Text);
 
   end
-    else
-      XML.SetValue(Path+'Data/Memo1/Value', Memo1.Text);
+  else
+    XML.SetValue(Path+'Data/Memo1/Value', Memo1.Text);
+  XML.SetValue(Path+'Tag/Value', FTag);
+  XML.SetValue(Path+'FURLInfo/Value', FURLInfo);
 end;
 
 procedure TfrView.Resized;
@@ -7996,6 +8037,71 @@ begin
   if Pages[Index]^.Stream <> nil then Pages[Index]^.Stream.Free;
   FreeMem(Pages[Index], SizeOf(TfrPageInfo));
   FPages.Delete(Index);
+end;
+
+function TfrEMFPages.DoMouseClick(Index: Integer; pt: TPoint; var AInfo: String
+  ): Boolean;
+var
+  PgInf:  PfrPageInfo;
+  V: TfrView;
+  i: Integer;
+  R1:TRect;
+begin
+  Result := False;
+  PgInf := FPages[Index];
+  if not Assigned(PgInf) then exit;
+
+  AInfo := '';
+  if not Assigned(PgInf^.Page) then
+    ObjectsToPage(Index);
+
+  for i := 0 to PgInf^.Page.Objects.Count - 1 do
+  begin
+    V := TfrView(PgInf^.Page.Objects[i]);
+    R1:=Rect(Round(V.X), Round(V.Y), Round((V.X + V.DX)), Round((V.Y + V.DY)));
+    if PtInRect(R1, pt) then
+    begin
+      if Assigned(Parent.OnObjectClick) then
+      begin
+        Parent.OnObjectClick(V);
+        Result := True;
+        AInfo:=V.FURLInfo;
+      end;
+      exit;
+    end;
+  end;
+end;
+
+function TfrEMFPages.DoMouseMove(Index: Integer; pt: TPoint;
+  var Cursor: TCursor; var AInfo: String): Boolean;
+var
+  PgInf:  PfrPageInfo;
+  V: TfrView;
+  i: Integer;
+  R1:TRect;
+begin
+  Result := False;
+  PgInf := FPages[Index];
+  if not Assigned(PgInf) then exit;
+
+  AInfo := '';
+  if not Assigned(PgInf^.Page) then
+    ObjectsToPage(Index);
+
+  for i := 0 to PgInf^.Page.Objects.Count - 1 do
+  begin
+    V := TfrView(PgInf^.Page.Objects[i]);
+    R1:=Rect(Round(V.X), Round(V.Y), Round((V.X + V.DX)), Round((V.Y + V.DY)));
+    if PtInRect(R1, pt) then
+    begin
+      if Assigned(Parent.OnMouseOverObject) then
+      begin
+        Parent.OnMouseOverObject(V, Cursor);
+        Result := True;
+      end;
+      exit;
+    end;
+  end;
 end;
 
 procedure TfrEMFPages.LoadFromStream(AStream: TStream);

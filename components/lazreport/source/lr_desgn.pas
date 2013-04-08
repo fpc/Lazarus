@@ -3192,6 +3192,8 @@ begin
   CurReport:=nil;
 
   Rep:=TfrReport.Create(SaveR.Owner);
+  Rep.OnMouseOverObject:=SaveR.OnMouseOverObject;
+  Rep.OnObjectClick:=SaveR.OnObjectClick;
   try
     Rep.LoadFromXMLStream(TestRepStream);
     Rep.ShowReport;
@@ -5824,125 +5826,6 @@ begin
   frTemplForm.Free;
 end;
 
-{
-procedure TfrDesignerForm.N20Click(Sender: TObject); // save as
-var
-  s: String;
-begin
-  WasOk := False;
-  with SaveDialog1 do
-  begin
-    Filter := sFormFile + ' (*.frf)|*.frf|' +
-              sTemplFile + ' (*.frt)|*.frt|' +
-              sLazFormFile + ' (*.lrf)|*.lrf' +
-              '';
-    InitialDir:=ExtractFilePath(ParamStrUTF8(0));
-    FileName := CurDocName;
-    FilterIndex := 3;
-    if Execute then
-       FCurDocFileType := FilterIndex;
-      case FCurDocFileType of
-        dtFastReportForm:
-          begin
-            s := ChangeFileExt(FileName, '.frf');
-            CurReport.SaveToFile(s);
-            CurDocName := s;
-            WasOk := True;
-          end;
-        dtFastReportTemplate:
-          begin
-            s := ExtractFileName(ChangeFileExt(FileName, '.frt'));
-            if frTemplateDir <> '' then
-              s := frTemplateDir + PathDelim + s;
-            frTemplNewForm := TfrTemplNewForm.Create(nil);
-            with frTemplNewForm do
-            if ShowModal = mrOk then
-            begin
-              CurReport.SaveTemplate(s, Memo1.Lines, Image1.Picture.Bitmap);
-              WasOk := True;
-            end;
-            frTemplNewForm.Free;
-          end;
-        dtLazReportForm: // lasreport form xml format
-          begin
-            s := ChangeFileExt(FileName, '.lrf');
-            CurReport.SaveToXMLFile(s);
-            CurDocName := s;
-            WasOk := True;
-          end;
-      end;
-  end;
-end;
-
-procedure TfrDesignerForm.FileBtn3Click(Sender: TObject); // save
-begin
-  if CurDocName <> sUntitled then
-  begin
-    if FCurDocFileType=dtLazReportForm then
-      CurReport.SaveToXMLFile(curDocName)
-    else
-      CurReport.SaveToFile(CurDocName);
-//    FileModified := False;
-    Modified := False;
-  end
-  else
-    N20Click(nil);
-end;
-
-procedure TfrDesignerForm.FilePreviewExecute(Sender: TObject); // preview
-var
-  v1, v2: Boolean;
-  TestRepStream:TMemoryStream;
-  Rep, SaveR:TfrReport;
-
-procedure DoClearFormsName;
-var
-  i:integer;
-begin
-  for i:=0 to CurReport.Pages.Count - 1 do
-    if CurReport.Pages[i] is TfrPageDialog then
-      TfrPageDialog(CurReport.Pages[i]).Form.Name:='';
-end;
-
-procedure DoResoreFormsName;
-var
-  i:integer;
-begin
-  for i:=0 to CurReport.Pages.Count - 1 do
-    if CurReport.Pages[i] is TfrPageDialog then
-      TfrPageDialog(CurReport.Pages[i]).Form.Name:=TfrPageDialog(CurReport.Pages[i]).Name;
-end;
-
-begin
-  if CurReport is TfrCompositeReport then Exit;
-  Application.ProcessMessages;
-  SaveR:=CurReport;
-  TestRepStream:=TMemoryStream.Create;
-  CurReport.SaveToXMLStream(TestRepStream);
-  TestRepStream.Position:=0;
-
-  DoClearFormsName;
-  CurReport:=nil;
-
-  Rep:=TfrReport.Create(SaveR.Owner);
-  try
-    Rep.LoadFromXMLStream(TestRepStream);
-    Rep.ShowReport;
-    FreeAndNil(Rep)
-  except
-    on E:Exception do
-    begin
-      ShowMessage(E.Message);
-      if Assigned(Rep) then
-        FreeAndNil(Rep)
-    end;
-  end;
-  TestRepStream.Free;
-  CurReport:=SaveR;
-  CurPage := 0;
-  DoResoreFormsName;
-end;
-}
 procedure TfrDesignerForm.N42Click(Sender: TObject); // var editor
 begin
   if ShowEvEditor(CurReport) then

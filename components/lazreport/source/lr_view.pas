@@ -80,6 +80,8 @@ type
     property OnScrollPage:TNotifyEvent read GetOnScrollPage write SetOnScrollPage;
   end;
 
+  { TfrPBox }
+
   TfrPBox = class(TPanel)
   public
     Preview: TfrPreviewForm;
@@ -87,6 +89,7 @@ type
     procedure Paint; override;
     procedure MouseDown(Button: TMouseButton;
       {%H-}Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure DblClick; override;
 
     property OnMouseWheelDown;
@@ -215,10 +218,10 @@ type
 
 
 implementation
+uses LR_Class, LR_Prntr, LR_Srch, LR_PrDlg, Printers, strutils;
 
 {$R *.lfm}
 
-uses LR_Class, LR_Prntr, LR_Srch, LR_PrDlg,Printers;
 
 type
   THackControl = class(TWinControl)
@@ -480,16 +483,35 @@ end;
 
 procedure TfrPBox.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  i: Integer;
+  i, k, PP: Integer;
   pt: TPoint;
+  AInfo:string;
 begin
   if Preview.EMFPages = nil then Exit;
   with Preview do
   if Button = mbLeft then
   begin
+    Pt:=Point(X - Preview.ofx, Y - Preview.ofy);
     for i := 0 to TfrEMFPages(EMFPages).Count - 1 do
-      if PtInRect(TfrEMFPages(EMFPages)[i]^.r, Point(x - ofx, y - ofy)) then
+      if PtInRect(TfrEMFPages(EMFPages)[i]^.r, Pt) then
       begin
+        if TfrEMFPages(EMFPages).DoMouseClick(i, Point(Round((pt.X - TfrEMFPages(EMFPages)[i]^.r.Left) / per), Round((pt.Y - TfrEMFPages(EMFPages)[i]^.r.Top) / per)), AInfo) then
+        begin
+          K:=Pos ('@', AInfo);
+          if (K > 0) then
+          begin
+            PP:=StrToIntDef(Copy(AInfo, K+1, 255), -1);
+            if (PP>0) and (K<TfrEMFPages(EMFPages).Count) then
+            begin
+              CurPage := PP;
+              SetToCurPage;
+              CurPage := PP;
+              ShowPageNum;
+            end;
+          end;
+          Exit;
+        end;
+
         CurPage := i + 1;
         SetToCurPage;
         CurPage := i + 1;
@@ -497,7 +519,8 @@ begin
         break;
       end;
   end
-  else if Button = mbRight then
+  else
+  if Button = mbRight then
   begin
     pt := Self.ClientToScreen(Point(X, Y));
     if frDesigner <> nil then
@@ -511,6 +534,29 @@ begin
       ProcMenu.Popup(pt.x, pt.y) else
       THackControl(Preview.PreviewPanel.Parent).PopupMenu.Popup(pt.x, pt.y);
   end;
+end;
+
+procedure TfrPBox.MouseMove(Shift: TShiftState; X, Y: Integer);
+var
+  E:TfrEMFPages;
+  i:integer;
+  P:TPoint;
+  C:TCursor;
+  S:string;
+begin
+  if not Assigned(Preview.EMFPages) then Exit;
+  E:=TfrEMFPages(Preview.EMFPages);
+  P:=Point(X - Preview.ofx, Y - Preview.ofy);
+  for i := 0 to E.Count - 1 do
+    if PtInRect(E[i]^.R, P) then
+    begin
+      if E.DoMouseMove(i, Point(Round((P.X - E[i]^.R.Left) / Preview.per), Round((P.Y - E[i]^.r.Top) / Preview.per)), C, S) then
+        Cursor:=C
+      else
+        Cursor:=crDefault;
+      Break;
+    end;
+  inherited MouseMove(Shift, X, Y);
 end;
 
 procedure TfrPBox.DblClick;

@@ -1868,6 +1868,12 @@ components/lazreport/samples/enduser_reports/sql_demo/sql_demo.lpr svneol=native
 components/lazreport/samples/enduser_reports/sql_demo/unit1.lfm svneol=native#text/plain
 components/lazreport/samples/enduser_reports/sql_demo/unit1.pas svneol=native#text/plain
 components/lazreport/samples/index.txt svneol=native#text/plain
+components/lazreport/samples/report_url/report_url.lpi svneol=native#text/plain
+components/lazreport/samples/report_url/report_url.lpr svneol=native#text/pascal
+components/lazreport/samples/report_url/report_url.lps svneol=native#text/xml
+components/lazreport/samples/report_url/unit1.lfm svneol=native#text/plain
+components/lazreport/samples/report_url/unit1.pas svneol=native#text/pascal
+components/lazreport/samples/report_url/url_demo.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/stringgrid/project1.lpi svneol=native#text/plain
 components/lazreport/samples/stringgrid/project1.lpr svneol=native#text/pascal
 components/lazreport/samples/stringgrid/sample.lrf svneol=LF#text/xml eol=lf
