@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, RTTIGrids, Forms, Controls, Graphics,
-  Dialogs, ExtCtrls, LvlGraphCtrl;
+  Dialogs, ExtCtrls, LvlGraphCtrl, PropEdits, ObjectInspector;
 
 type
 
@@ -18,6 +18,8 @@ type
     Splitter1: TSplitter;
     TIPropertyGrid1: TTIPropertyGrid;
     procedure FormCreate(Sender: TObject);
+    procedure TIPropertyGrid1EditorFilter(Sender: TObject;
+      aEditor: TPropertyEditor; var aShow: boolean);
   private
   public
   end;
@@ -49,8 +51,15 @@ begin
     Graph.GetEdge('-Project-','OpenGLControl',true);
     Graph.GetEdge('OpenGLControl','LCL',true);
   end;
+end;
 
-  TIPropertyGrid1.TIObject:=LvlGraphControl1;
+procedure TForm1.TIPropertyGrid1EditorFilter(Sender: TObject;
+  aEditor: TPropertyEditor; var aShow: boolean);
+var
+  PropName: String;
+begin
+  PropName:=aEditor.GetName;
+  aShow:=(PropName='NodeStyle') or (PropName='EdgeStyle') or (PropName='Options');
 end;
 
 end.

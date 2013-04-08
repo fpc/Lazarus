@@ -28,6 +28,8 @@ object Form1: TForm1
       Filter = [tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod, tkSString, tkLString, tkAString, tkWString, tkVariant, tkArray, tkRecord, tkInterface, tkClass, tkObject, tkWChar, tkBool, tkInt64, tkQWord, tkDynArray, tkInterfaceRaw, tkProcVar, tkUString, tkUChar, tkHelper]
       Indent = 13
       NameFont.Color = clWindowText
+      OnEditorFilter = TIPropertyGrid1EditorFilter
+      TIObject = LvlGraphControl1
       ValueFont.Color = clMaroon
     end
   end
