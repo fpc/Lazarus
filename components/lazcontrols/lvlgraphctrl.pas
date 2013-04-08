@@ -30,6 +30,8 @@ type
   TLvlGraph = class;
   TLvlGraphEdge = class;
   TLvlGraphLevel = class;
+  TLvlGraphNode = class;
+  TLvlGraphNodeArray = array of TLvlGraphNode;
 
   { TLvlGraphNode }
 
@@ -90,6 +92,10 @@ type
     function FindOutEdge(Target: TLvlGraphNode): TLvlGraphEdge; virtual;
     function OutEdgeCount: integer;
     property OutEdges[Index: integer]: TLvlGraphEdge read GetOutEdges;
+    function GetVisibleSourceNodes: TLvlGraphNodeArray;
+    function GetVisibleSourceNodesAsAVLTree: TAvgLvlTree;
+    function GetVisibleTargetNodes: TLvlGraphNodeArray;
+    function GetVisibleTargetNodesAsAVLTree: TAvgLvlTree;
     property IndexInLevel: integer read GetIndexInLevel write SetIndexInLevel;
     property Level: TLvlGraphLevel read FLevel write SetLevel;
     property Selected: boolean read FSelected write SetSelected;
@@ -104,7 +110,6 @@ type
     property OutWeight: single read FOutWeight; // total weight of OutEdges
   end;
   TLvlGraphNodeClass = class of TLvlGraphNode;
-  TLvlGraphNodeArray = array of TLvlGraphNode;
   PLvlGraphNode = ^TLvlGraphNode;
 
   { TLvlGraphEdge }
@@ -255,10 +260,10 @@ type
 type
   TLvlGraphCtrlOption = (
     lgoAutoLayout, // automatic graph layout after graph was changed
+    lgoHighLevels, // put nodes topologically at higher levels
     lgoHighlightNodeUnderMouse, // when mouse over node highlight node and its edges
     lgoHighlightEdgeNearMouse, // when mouse near an edge highlight edge and its edges, lgoHighlightNodeUnderMouse takes precedence
-    lgoMouseSelects,
-    lgoHighLevels // put nodes topologically at higher levels
+    lgoMouseSelects
     );
   TLvlGraphCtrlOptions = set of TLvlGraphCtrlOption;
 const
@@ -485,6 +490,7 @@ type
       ); override;
     procedure CreateWnd; override;
     procedure HighlightConnectedEgdes(Element: TObject);
+    procedure DoOnShowHint(HintInfo: PHintInfo); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -519,6 +525,7 @@ type
     property Images: TCustomImageList read FImages write SetImages;
     property PixelPerWeight: single read FPixelPerWeight;
     property SelectedNode: TLvlGraphNode read GetSelectedNode write SetSelectedNode;
+    property ShowHint default True;
   end;
 
   { TLvlGraphControl }
@@ -590,6 +597,8 @@ procedure LvlGraphHighlightNode(Node: TLvlGraphNode;
   HighlightedElements: TAvgLvlTree; FollowIn, FollowOut: boolean);
 function CompareLGNodesByCenterPos(Node1, Node2: Pointer): integer;
 procedure DrawCurvedLvlLeftToRightEdge(Canvas: TFPCustomCanvas; x1, y1, x2, y2: integer);
+function NodeAVLTreeToNodeArray(Nodes: TAvgLvlTree; RemoveHidden: boolean): TLvlGraphNodeArray;
+function NodeArrayAsString(Nodes: TLvlGraphNodeArray): String;
 
 // debugging
 function dbgs(p: TLvlGraphNodeCaptionPosition): string; overload;
@@ -917,6 +926,43 @@ begin
     Canvas.LineTo(p^);
   end;
   Freemem(Points);
+end;
+
+function NodeAVLTreeToNodeArray(Nodes: TAvgLvlTree; RemoveHidden: boolean
+  ): TLvlGraphNodeArray;
+var
+  AVLNode: TAvgLvlTreeNode;
+  Node: TLvlGraphNode;
+  i: Integer;
+begin
+  if Nodes=nil then begin
+    SetLength(Result,0);
+    exit;
+  end;
+  AVLNode:=Nodes.FindLowest;
+  i:=0;
+  SetLength(Result,Nodes.Count);
+  while AVLNode<>nil do begin
+    Node:=TLvlGraphNode(AVLNode.Data);
+    if Node.Visible or (not RemoveHidden) then begin
+      Result[i]:=Node;
+      inc(i);
+    end;
+    AVLNode:=Nodes.FindSuccessor(AVLNode);
+  end;
+  SetLength(Result,i);
+end;
+
+function NodeArrayAsString(Nodes: TLvlGraphNodeArray): String;
+var
+  i: Integer;
+begin
+  Result:='';
+  for i:=0 to Length(Nodes)-1 do begin
+    if i>0 then
+      Result+=', ';
+    Result+=Nodes[i].Caption;
+  end;
 end;
 
 function dbgs(p: TLvlGraphNodeCaptionPosition): string;
@@ -2545,6 +2591,27 @@ begin
   EndUpdate;
 end;
 
+procedure TCustomLvlGraphControl.DoOnShowHint(HintInfo: PHintInfo);
+var
+  s: String;
+begin
+  if NodeUnderMouse<>nil then begin
+    s:=NodeArrayAsString(NodeUnderMouse.GetVisibleSourceNodes);
+    s+=#13'->'#13;
+    s+=NodeUnderMouse.Caption;
+    s+=#13'->'#13;
+    s+=NodeArrayAsString(NodeUnderMouse.GetVisibleTargetNodes);
+    HintInfo^.HintStr:=s;
+  end else if EdgeNearMouse<>nil then begin
+    s:=NodeArrayAsString(EdgeNearMouse.GetVisibleSourceNodes);
+    s+=#13'->'#13;
+    s+=NodeArrayAsString(EdgeNearMouse.GetVisibleTargetNodes);
+    HintInfo^.HintStr:=s;
+  end;
+
+  inherited DoOnShowHint(HintInfo);
+end;
+
 constructor TCustomLvlGraphControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -2557,6 +2624,7 @@ begin
   FEdgeStyle:=TLvlGraphEdgeStyle.Create(Self);
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange:=@ImageListChange;
+  ShowHint:=true;
 end;
 
 destructor TCustomLvlGraphControl.Destroy;
@@ -3491,37 +3559,24 @@ end;
 
 function TLvlGraphEdge.GetVisibleSourceNodes: TLvlGraphNodeArray;
 // return all visible nodes connected in Source direction
-var
-  Nodes: TAvgLvlTree; // tree of TLvlGraphNode
-  i: Integer;
-  AVLNode: TAvgLvlTreeNode;
 begin
-  Nodes:=GetVisibleSourceNodesAsAVLTree;
-  try
-    SetLength(Result,Nodes.Count);
-    AVLNode:=Nodes.FindLowest;
-    i:=0;
-    while AVLNode<>nil do begin
-      Result[i]:=TLvlGraphNode(AVLNode.Data);
-      inc(i);
-      AVLNode:=Nodes.FindSuccessor(AVLNode);
-    end;
-  finally
-    Nodes.Free;
-  end;
+  Result:=NodeAVLTreeToNodeArray(GetVisibleSourceNodesAsAVLTree,true);
 end;
 
 function TLvlGraphEdge.GetVisibleSourceNodesAsAVLTree: TAvgLvlTree;
 // return all visible nodes connected in Source direction
+var
+  Visited: TAvgLvlTree;
 
   procedure Search(Node: TLvlGraphNode);
   var
     i: Integer;
   begin
     if Node=nil then exit;
+    if Visited.Find(Node)<>nil then exit;
+    Visited.Add(Node);
     if Node.Visible then begin
-      if Result.Find(Node)=nil then
-        Result.Add(Node)
+      Result.Add(Node);
     end else begin
       for i:=0 to Node.InEdgeCount-1 do
         Search(Node.InEdges[i].Source);
@@ -3530,51 +3585,48 @@ function TLvlGraphEdge.GetVisibleSourceNodesAsAVLTree: TAvgLvlTree;
 
 begin
   Result:=TAvgLvlTree.Create;
-  Search(Source);
+  Visited:=TAvgLvlTree.Create;
+  try
+    Search(Source);
+  finally
+    Visited.Free;
+  end;
 end;
 
 function TLvlGraphEdge.GetVisibleTargetNodes: TLvlGraphNodeArray;
 // return all visible nodes connected in Target direction
-var
-  Nodes: TAvgLvlTree; // tree of TLvlGraphNode
-  i: Integer;
-  AVLNode: TAvgLvlTreeNode;
 begin
-  Nodes:=GetVisibleTargetNodesAsAVLTree;
-  try
-    SetLength(Result,Nodes.Count);
-    AVLNode:=Nodes.FindLowest;
-    i:=0;
-    while AVLNode<>nil do begin
-      Result[i]:=TLvlGraphNode(AVLNode.Data);
-      inc(i);
-      AVLNode:=Nodes.FindSuccessor(AVLNode);
-    end;
-  finally
-    Nodes.Free;
-  end;
+  Result:=NodeAVLTreeToNodeArray(GetVisibleTargetNodesAsAVLTree,true);
 end;
 
 function TLvlGraphEdge.GetVisibleTargetNodesAsAVLTree: TAvgLvlTree;
 // return all visible nodes connected in Target direction
+var
+  Visited: TAvgLvlTree;
 
   procedure Search(Node: TLvlGraphNode);
   var
     i: Integer;
   begin
     if Node=nil then exit;
+    if Visited.Find(Node)<>nil then exit;
+    Visited.Add(Node);
     if Node.Visible then begin
-      if Result.Find(Node)=nil then
-        Result.Add(Node)
+      Result.Add(Node);
     end else begin
       for i:=0 to Node.OutEdgeCount-1 do
-        Search(Node.OutEdges[i].Source);
+        Search(Node.OutEdges[i].Target);
     end;
   end;
 
 begin
   Result:=TAvgLvlTree.Create;
-  Search(Target);
+  Visited:=TAvgLvlTree.Create;
+  try
+    Search(Source);
+  finally
+    Visited.Free;
+  end;
 end;
 
 function TLvlGraphEdge.AsString: string;
@@ -3823,6 +3875,75 @@ end;
 function TLvlGraphNode.OutEdgeCount: integer;
 begin
   Result:=FOutEdges.Count;
+end;
+
+function TLvlGraphNode.GetVisibleSourceNodes: TLvlGraphNodeArray;
+// return all visible nodes connected in Source direction
+begin
+  Result:=NodeAVLTreeToNodeArray(GetVisibleSourceNodesAsAVLTree,true);
+end;
+
+function TLvlGraphNode.GetVisibleSourceNodesAsAVLTree: TAvgLvlTree;
+// return all visible nodes connected in Source direction
+
+  procedure Search(Node: TLvlGraphNode);
+  var
+    i: Integer;
+  begin
+    if Node=nil then exit;
+    if Node.Visible then begin
+      Result.Add(Node);
+    end else begin
+      for i:=0 to Node.InEdgeCount-1 do
+        Search(Node.InEdges[i].Source);
+    end;
+  end;
+
+var
+  i: Integer;
+begin
+  Result:=TAvgLvlTree.Create;
+  for i:=0 to InEdgeCount-1 do
+    Search(InEdges[i].Source);
+end;
+
+function TLvlGraphNode.GetVisibleTargetNodes: TLvlGraphNodeArray;
+// return all visible nodes connected in Target direction
+begin
+  Result:=NodeAVLTreeToNodeArray(GetVisibleTargetNodesAsAVLTree,true);
+end;
+
+function TLvlGraphNode.GetVisibleTargetNodesAsAVLTree: TAvgLvlTree;
+// return all visible nodes connected in Target direction
+var
+  Visited: TAvgLvlTree;
+
+  procedure Search(Node: TLvlGraphNode);
+  var
+    i: Integer;
+  begin
+    if Node=nil then exit;
+    if Visited.Find(Node)<>nil then exit;
+    Visited.Add(Node);
+    if Node.Visible then begin
+      Result.Add(Node);
+    end else begin
+      for i:=0 to Node.OutEdgeCount-1 do
+        Search(Node.OutEdges[i].Target);
+    end;
+  end;
+
+var
+  i: Integer;
+begin
+  Result:=TAvgLvlTree.Create;
+  Visited:=TAvgLvlTree.Create;
+  try
+    for i:=0 to OutEdgeCount-1 do
+      Search(OutEdges[i].Target);
+  finally
+    Visited.Free;
+  end;
 end;
 
 function TLvlGraphNode.DrawCenter: integer;
