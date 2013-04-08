@@ -58,6 +58,7 @@ type
     property NameFont;
     property OnChangeBounds;
     property OnClick;
+    property OnEditorFilter;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
