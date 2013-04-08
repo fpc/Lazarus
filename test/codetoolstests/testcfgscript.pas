@@ -115,7 +115,7 @@ begin
       +'    //if LCLWidgetType=''nogui'' then'#10
       +'      //LCLWidgetType:='''';'#10
       +'  //end;'#10
-      +'  if (LCLWidgetType='''') or undefined(LCLWidgetType) then begin'#10
+      +'  if LCLWidgetType+''''='''' then begin'#10
       +'    if (TargetOS=''win32'') or (TargetOS=''win64'') then'#10
       +'      LCLWidgetType := ''win32'''#10
       +'    else if TargetOS=''wince'' then'#10
