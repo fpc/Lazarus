@@ -252,6 +252,9 @@ type
             out HintWinRect: TRect; out AHint: string
              ): boolean of object;
 
+  TOIEditorFilterEvent = procedure(Sender: TObject; aEditor: TPropertyEditor;
+            var aShow: boolean) of object;
+
   TOICustomPropertyGrid = class(TCustomControl)
   private
     FBackgroundColor: TColor;
@@ -260,6 +263,7 @@ type
     FGutterEdgeColor: TColor;
     FHighlightColor: TColor;
     FLayout: TOILayout;
+    FOnEditorFilter: TOIEditorFilterEvent;
     FOnOIKeyDown: TKeyEvent;
     FOnPropertyHint: TOIPropertyHint;
     FOnSelectionChange: TNotifyEvent;
@@ -481,6 +485,7 @@ type
     property Indent: integer read FIndent write FIndent;
     property ItemIndex: integer read FItemIndex write SetItemIndex;
     property Layout: TOILayout read FLayout write FLayout default oilHorizontal;
+    property OnEditorFilter: TOIEditorFilterEvent read FOnEditorFilter write FOnEditorFilter;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
@@ -2281,6 +2286,8 @@ function TOICustomPropertyGrid.EditorFilter(
   const AEditor: TPropertyEditor): Boolean;
 begin
   Result := IsInteresting(AEditor, FFilter);
+  if Result and Assigned(OnEditorFilter) then
+    OnEditorFilter(Self,AEditor,Result);
 end;
 
 procedure TOICustomPropertyGrid.EraseBackground(DC: HDC);
@@ -3107,7 +3114,7 @@ begin
   end;
 end;
 
-procedure TOICustomPropertyGrid.HintTimer(sender : TObject);
+procedure TOICustomPropertyGrid.HintTimer(Sender: TObject);
 var
   HintRect : TRect;
   AHint : String;
@@ -3173,7 +3180,7 @@ begin
   FHintWindow.ActivateHint(HintRect, AHint);
 end;
 
-Procedure TOICustomPropertyGrid.ResetHintTimer;
+procedure TOICustomPropertyGrid.ResetHintTimer;
 begin
   if FHintWindow = nil then exit;
 
