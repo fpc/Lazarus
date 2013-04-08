@@ -100,6 +100,7 @@ type
     property Tree: TAVLTree read FItems;
     procedure WriteDebugReport(const Title: string; const Prefix: string = '');
   end;
+  PCTCfgScriptVariables = ^TCTCfgScriptVariables;
 
 type
   TCTCfgScriptOperator = (
