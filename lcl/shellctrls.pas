@@ -661,6 +661,7 @@ var
 begin
   // avoids crashes in the IDE by not populating during design
   if (csDesigning in ComponentState) then Exit;
+
   r := GetLogicalDriveStrings(SizeOf(Drives), Drives);
   if r = 0 then Exit;
   if r > SizeOf(Drives) then Exit;
