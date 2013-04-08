@@ -2557,6 +2557,7 @@ end;
 
 destructor TCustomLvlGraphControl.Destroy;
 begin
+  inc(fUpdateLock);
   FreeAndNil(FImageChangeLink);
   FGraph.OnInvalidate:=nil;
   FGraph.OnSelectionChanged:=nil;
