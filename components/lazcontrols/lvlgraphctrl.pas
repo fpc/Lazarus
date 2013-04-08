@@ -130,6 +130,10 @@ type
     property BackEdge: boolean read FBackEdge; // edge was disabled to break a cycle
     property Highlighted: boolean read FHighlighted write SetHighlighted;
     property DrawnAt: TRect read FDrawnAt;  // last drawn with scrolling
+    function GetVisibleSourceNodes: TLvlGraphNodeArray;
+    function GetVisibleSourceNodesAsAVLTree: TAvgLvlTree;
+    function GetVisibleTargetNodes: TLvlGraphNodeArray;
+    function GetVisibleTargetNodesAsAVLTree: TAvgLvlTree;
     function AsString: string;
   end;
   TLvlGraphEdgeClass = class of TLvlGraphEdge;
@@ -3483,6 +3487,94 @@ end;
 function TLvlGraphEdge.IsBackEdge: boolean;
 begin
   Result:=Source.Level.Index>=Target.Level.Index;
+end;
+
+function TLvlGraphEdge.GetVisibleSourceNodes: TLvlGraphNodeArray;
+// return all visible nodes connected in Source direction
+var
+  Nodes: TAvgLvlTree; // tree of TLvlGraphNode
+  i: Integer;
+  AVLNode: TAvgLvlTreeNode;
+begin
+  Nodes:=GetVisibleSourceNodesAsAVLTree;
+  try
+    SetLength(Result,Nodes.Count);
+    AVLNode:=Nodes.FindLowest;
+    i:=0;
+    while AVLNode<>nil do begin
+      Result[i]:=TLvlGraphNode(AVLNode.Data);
+      inc(i);
+      AVLNode:=Nodes.FindSuccessor(AVLNode);
+    end;
+  finally
+    Nodes.Free;
+  end;
+end;
+
+function TLvlGraphEdge.GetVisibleSourceNodesAsAVLTree: TAvgLvlTree;
+// return all visible nodes connected in Source direction
+
+  procedure Search(Node: TLvlGraphNode);
+  var
+    i: Integer;
+  begin
+    if Node=nil then exit;
+    if Node.Visible then begin
+      if Result.Find(Node)=nil then
+        Result.Add(Node)
+    end else begin
+      for i:=0 to Node.InEdgeCount-1 do
+        Search(Node.InEdges[i].Source);
+    end;
+  end;
+
+begin
+  Result:=TAvgLvlTree.Create;
+  Search(Source);
+end;
+
+function TLvlGraphEdge.GetVisibleTargetNodes: TLvlGraphNodeArray;
+// return all visible nodes connected in Target direction
+var
+  Nodes: TAvgLvlTree; // tree of TLvlGraphNode
+  i: Integer;
+  AVLNode: TAvgLvlTreeNode;
+begin
+  Nodes:=GetVisibleTargetNodesAsAVLTree;
+  try
+    SetLength(Result,Nodes.Count);
+    AVLNode:=Nodes.FindLowest;
+    i:=0;
+    while AVLNode<>nil do begin
+      Result[i]:=TLvlGraphNode(AVLNode.Data);
+      inc(i);
+      AVLNode:=Nodes.FindSuccessor(AVLNode);
+    end;
+  finally
+    Nodes.Free;
+  end;
+end;
+
+function TLvlGraphEdge.GetVisibleTargetNodesAsAVLTree: TAvgLvlTree;
+// return all visible nodes connected in Target direction
+
+  procedure Search(Node: TLvlGraphNode);
+  var
+    i: Integer;
+  begin
+    if Node=nil then exit;
+    if Node.Visible then begin
+      if Result.Find(Node)=nil then
+        Result.Add(Node)
+    end else begin
+      for i:=0 to Node.OutEdgeCount-1 do
+        Search(Node.OutEdges[i].Source);
+    end;
+  end;
+
+begin
+  Result:=TAvgLvlTree.Create;
+  Search(Target);
 end;
 
 function TLvlGraphEdge.AsString: string;
