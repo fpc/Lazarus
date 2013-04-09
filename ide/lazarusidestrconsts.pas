@@ -5658,6 +5658,7 @@ resourcestring
   lisRunTimeOnlyPackagesAreOnlyForProjectsTheyCanNotBeI = '"Run time only" '
     +'packages are only for projects. They can not be installed in the IDE, '
     +'not even indirectly.';
+  lisPckEditCleanUpDependencies = 'Clean up dependencies ...';
 
 implementation
 

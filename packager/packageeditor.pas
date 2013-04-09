@@ -42,40 +42,47 @@ uses
   MainIntf, IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   IDEContextHelpEdit, CompilerOptions, ComponentReg,
   PackageDefs, AddToPackageDlg, PkgVirtualUnitEditor,
-  MissingPkgFilesDlg, PackageSystem;
+  MissingPkgFilesDlg, PackageSystem, CleanPkgDeps;
   
 const
   PackageEditorMenuRootName = 'PackageEditor';
   PackageEditorMenuFilesRootName = 'PackageEditorFiles';
   PackageEditorWindowPrefix = 'PackageEditor_';
 var
+  // single file
   PkgEditMenuOpenFile: TIDEMenuCommand;
   PkgEditMenuRemoveFile: TIDEMenuCommand;
   PkgEditMenuReAddFile: TIDEMenuCommand;
   PkgEditMenuEditVirtualUnit: TIDEMenuCommand;
   PkgEditMenuSectionFileType: TIDEMenuSection;
 
+  // directories
   PkgEditMenuExpandDirectory: TIDEMenuCommand;
   PkgEditMenuCollapseDirectory: TIDEMenuCommand;
   PkgEditMenuUseAllUnitsInDirectory: TIDEMenuCommand;
   PkgEditMenuUseNoUnitsInDirectory: TIDEMenuCommand;
 
+  // dependencies
   PkgEditMenuOpenPackage: TIDEMenuCommand;
   PkgEditMenuRemoveDependency: TIDEMenuCommand;
   PkgEditMenuReAddDependency: TIDEMenuCommand;
   PkgEditMenuDependencyStoreFileNameAsDefault: TIDEMenuCommand;
   PkgEditMenuDependencyStoreFileNameAsPreferred: TIDEMenuCommand;
   PkgEditMenuDependencyClearStoredFileName: TIDEMenuCommand;
+  PkgEditMenuCleanDependencies: TIDEMenuCommand;
 
+  // multi files
   PkgEditMenuSortFiles: TIDEMenuCommand;
   PkgEditMenuFixFilesCase: TIDEMenuCommand;
   PkgEditMenuShowMissingFiles: TIDEMenuCommand;
 
+  // package
   PkgEditMenuSave: TIDEMenuCommand;
   PkgEditMenuSaveAs: TIDEMenuCommand;
   PkgEditMenuRevert: TIDEMenuCommand;
   PkgEditMenuPublish: TIDEMenuCommand;
 
+  // compile
   PkgEditMenuCompile: TIDEMenuCommand;
   PkgEditMenuRecompileClean: TIDEMenuCommand;
   PkgEditMenuRecompileAllRequired: TIDEMenuCommand;
@@ -172,6 +179,7 @@ type
     procedure ApplyDependencyButtonClick(Sender: TObject);
     procedure CallRegisterProcCheckBoxChange(Sender: TObject);
     procedure ChangeFileTypeMenuItemClick(Sender: TObject);
+    procedure CleanDependenciesMenuItemClick(Sender: TObject);
     procedure ClearDependencyFilenameMenuItemClick(Sender: TObject);
     procedure CollapseDirectoryMenuItemClick(Sender: TObject);
     procedure CompileAllCleanClick(Sender: TObject);
@@ -438,7 +446,7 @@ begin
   PkgEditMenuUseAllUnitsInDirectory:=RegisterIDEMenuCommand(AParent, 'Use all units in directory', lisPEUseAllUnitsInDirectory);
   PkgEditMenuUseNoUnitsInDirectory:=RegisterIDEMenuCommand(AParent, 'Use no units in directory', lisPEUseNoUnitsInDirectory);
 
-  // register the section for operations on single dependencies
+  // register the section for operations on dependencies
   PkgEditMenuSectionDependency:=RegisterIDEMenuSection(PackageEditorMenuFilesRoot,'Dependency');
   AParent:=PkgEditMenuSectionDependency;
   PkgEditMenuOpenPackage:=RegisterIDEMenuCommand(AParent,'Open Package',lisMenuOpenPackage);
@@ -447,6 +455,7 @@ begin
   PkgEditMenuDependencyStoreFileNameAsDefault:=RegisterIDEMenuCommand(AParent,'Dependency Store Filename As Default',lisPckEditStoreFileNameAsDefaultForThisDependency);
   PkgEditMenuDependencyStoreFileNameAsPreferred:=RegisterIDEMenuCommand(AParent,'Dependency Store Filename As Preferred',lisPckEditStoreFileNameAsPreferredForThisDependency);
   PkgEditMenuDependencyClearStoredFileName:=RegisterIDEMenuCommand(AParent,'Dependency Clear Stored Filename',lisPckEditClearDefaultPreferredFilenameOfDependency);
+  PkgEditMenuCleanDependencies:=RegisterIDEMenuCommand(AParent, 'Clean up dependencies', lisPckEditCleanUpDependencies);
 
   // register the section for operations on all files
   PkgEditMenuSectionFiles:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Files');
@@ -618,23 +627,31 @@ begin
     end;
 
     // items for dependencies, under section PkgEditMenuSectionDependency
-    if CurDependency<>nil then begin
-      PkgEditMenuSectionDependency.Visible:=true;
-      SetItem(PkgEditMenuOpenPackage,@OpenFileMenuItemClick,CurDependency.RequiredPackage<>nil);
-      SetItem(PkgEditMenuRemoveDependency,@RemoveBitBtnClick,not Removed,
-              RemoveBitBtn.Enabled);
-      SetItem(PkgEditMenuReAddDependency,@ReAddMenuItemClick,Removed and AddBitBtn.Enabled);
-      SetItem(PkgEditMenuDependencyStoreFileNameAsDefault,
-              @SetDependencyDefaultFilenameMenuItemClick,not Removed,
-              Writable and (CurDependency.RequiredPackage<>nil));
-      SetItem(PkgEditMenuDependencyStoreFileNameAsPreferred,
-              @SetDependencyPreferredFilenameMenuItemClick,not Removed,
-              Writable and (CurDependency.RequiredPackage<>nil));
-      SetItem(PkgEditMenuDependencyClearStoredFileName,
-              @ClearDependencyFilenameMenuItemClick,not Removed,
-              Writable and (CurDependency.DefaultFilename<>''));
-    end else
-      PkgEditMenuSectionDependency.Visible:=false;
+    PkgEditMenuSectionDependency.Visible:=(CurDependency<>nil) or (CurNode=FRequiredPackagesNode);
+    SetItem(PkgEditMenuOpenPackage,@OpenFileMenuItemClick,
+            (CurDependency<>nil) and (CurDependency.RequiredPackage<>nil),
+            CurDependency<>nil);
+    SetItem(PkgEditMenuRemoveDependency,@RemoveBitBtnClick,
+            (CurDependency<>nil) and (not Removed),
+            RemoveBitBtn.Enabled);
+    SetItem(PkgEditMenuReAddDependency,@ReAddMenuItemClick,
+            (CurDependency<>nil) and Removed and AddBitBtn.Enabled,
+            CurDependency<>nil);
+    SetItem(PkgEditMenuDependencyStoreFileNameAsDefault,
+            @SetDependencyDefaultFilenameMenuItemClick,
+            (CurDependency<>nil) and (not Removed),
+            (CurDependency<>nil) and Writable and (CurDependency.RequiredPackage<>nil));
+    SetItem(PkgEditMenuDependencyStoreFileNameAsPreferred,
+            @SetDependencyPreferredFilenameMenuItemClick,
+            (CurDependency<>nil) and (not Removed),
+            (CurDependency<>nil) and Writable and (CurDependency.RequiredPackage<>nil));
+    SetItem(PkgEditMenuDependencyClearStoredFileName,
+            @ClearDependencyFilenameMenuItemClick,
+            (CurDependency<>nil) and (not Removed),
+            (CurDependency<>nil) and Writable and (CurDependency.RequiredPackage<>nil));
+    SetItem(PkgEditMenuCleanDependencies,
+            @CleanDependenciesMenuItemClick,LazPackage.FirstRequiredDependency<>nil,
+            Writable);
 
   finally
     PackageEditorMenuRoot.EndUpdate;
@@ -1189,6 +1206,11 @@ begin
       exit;
     end;
   end;
+end;
+
+procedure TPackageEditorForm.CleanDependenciesMenuItemClick(Sender: TObject);
+begin
+  ShowCleanPkgDepDlg(LazPackage);
 end;
 
 procedure TPackageEditorForm.CompileAllCleanClick(Sender: TObject);
