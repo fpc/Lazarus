@@ -77,7 +77,8 @@ type
     dgCellHints,                        // show individual cell hints
     dgTruncCellHints,                   // show cell hints if cell text is too long
     dgCellEllipsis,                     // show ... if cell text is truncated
-    dgRowHighlight                      // Highlight current row
+    dgRowHighlight,                     // Highlight current row
+    dgThumbTracking
   );
   TDbGridOptions = set of TDbGridOption;
 
@@ -326,7 +327,6 @@ type
     function GetRecordCount: Integer;
     function GetSelectedFieldRect: TRect;
     function GetSelectedIndex: Integer;
-    function GetThumbTracking: boolean;
     procedure OnRecordChanged(Field:TField);
     procedure OnDataSetChanged(aDataSet: TDataSet);
     procedure OnDataSetOpen(aDataSet: TDataSet);
@@ -346,7 +346,6 @@ type
     procedure SetExtraOptions(const AValue: TDBGridExtraOptions);
     procedure SetOptions(const AValue: TDBGridOptions);
     procedure SetSelectedIndex(const AValue: Integer);
-    procedure SetThumbTracking(const AValue: boolean);
     procedure UpdateBufferCount;
 
     // Temporal
@@ -502,7 +501,6 @@ type
     property SelectedFieldRect: TRect read GetSelectedFieldRect;
     property LastColumn: TColumn read GetLastColumn;
     property FirstColumn: TColumn read GetFirstColumn;
-    property ThumbTracking: boolean read GetThumbTracking write SetThumbTracking;
   end;
 
   TDBGrid=class(TCustomDBGrid)
@@ -762,11 +760,6 @@ begin
     Result := ColumnIndexFromGridColumn( Col )
   else
     Result := FieldIndexFromGridColumn( Col );
-end;
-
-function TCustomDBGrid.GetThumbTracking: boolean;
-begin
-  Result :=  goThumbTracking in inherited Options;
 end;
 
 procedure TCustomDBGrid.EmptyGrid;
@@ -1101,6 +1094,13 @@ begin
       Exclude(FGridStatus, gsAutoSized);
     end;
 
+    if dgThumbTracking in ChangedOptions then begin
+      if dgThumbTracking in FOptions then
+        Include(OldOptions, goThumbTracking)
+      else
+        Exclude(OldOptions, goThumbTracking);
+    end;
+
     inherited Options := OldOptions;
 
     if MultiSel and not (dgMultiSelect in FOptions) then begin
@@ -1115,16 +1115,6 @@ end;
 procedure TCustomDBGrid.SetSelectedIndex(const AValue: Integer);
 begin
   Col := FirstGridColumn + AValue;
-end;
-
-procedure TCustomDBGrid.SetThumbTracking(const AValue: boolean);
-begin
-  BeginUpdate;
-  if Avalue then
-    inherited Options := inherited Options + [goThumbTracking]
-  else
-    inherited Options := inherited Options - [goThumbTracking];
-  EndUpdate(false);
 end;
 
 procedure TCustomDBGrid.UpdateBufferCount;
@@ -1234,6 +1224,35 @@ var
     GetScrollbarParams(aRange, aPage, aPos);
   end;
 
+  function DsPos: boolean;
+  begin
+    result := false;
+    aPos := Message.Pos;
+    if aPos=FOldPosition then begin
+      result := true;
+      exit;
+    end;
+    if aPos>=MaxPos then
+      dsGoto(False)
+    else if aPos<=0 then
+      dsGoto(True)
+    else if IsSeq then
+      FDatalink.DataSet.RecNo := aPos + 1
+    else begin
+      DeltaRec := Message.Pos - FOldPosition;
+      if DeltaRec=0 then begin
+        result := true;
+        exit
+      end
+      else if DeltaRec<-1 then
+        DsMoveBy(-VisibleRowCount)
+      else if DeltaRec>1 then
+        DsMoveBy(VisibleRowCount)
+      else
+        DsMoveBy(DeltaRec);
+    end;
+  end;
+
 begin
   if not FDatalink.Active then exit;
 
@@ -1257,28 +1276,14 @@ begin
     SB_PAGEDOWN:
       DsMoveBy(VisibleRowCount);
     SB_THUMBPOSITION:
-      begin
-        aPos := Message.Pos;
-        if aPos=FOldPosition then
+      if DsPos then
+        exit;
+    SB_THUMBTRACK:
+      if dgThumbTracking in Options then begin
+        if not (FDatalink.DataSet.IsSequenced) or DsPos then
           exit;
-        if aPos>=MaxPos then
-          dsGoto(False)
-        else if aPos<=0 then
-          dsGoto(True)
-        else if IsSeq then
-          FDatalink.DataSet.RecNo := aPos + 1
-        else begin
-          DeltaRec := Message.Pos - FOldPosition;
-          if DeltaRec=0 then
-            exit
-          else if DeltaRec<-1 then
-            DsMoveBy(-VisibleRowCount)
-          else if DeltaRec>1 then
-            DsMoveBy(VisibleRowCount)
-          else
-            DsMoveBy(DeltaRec);
-        end;
-      end;
+      end else
+        Exit;
     else
       Exit;
   end;
