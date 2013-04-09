@@ -29,7 +29,7 @@ interface
 uses
   Classes, SysUtils, contnrs, FileUtil, AvgLvlTree, LazLogger, LvlGraphCtrl,
   Forms, Controls, Graphics, Dialogs, ButtonPanel, ComCtrls, ExtCtrls, StdCtrls,
-  LazarusIDEStrConsts, Project, PackageDefs, IDEImagesIntf;
+  Buttons, LazarusIDEStrConsts, Project, PackageDefs, IDEImagesIntf;
 
 const
   CPDProjectName = '-Project-';
@@ -46,13 +46,18 @@ type
   { TCleanPkgDepsDlg }
 
   TCleanPkgDepsDlg = class(TForm)
-    ButtonPanel1: TButtonPanel;
+    CancelBitBtn: TBitBtn;
+    DeleteSelectedBitBtn: TBitBtn;
+    BtnPanel: TPanel;
+    SelectAllBitBtn: TBitBtn;
+    SelectNoneBitBtn: TBitBtn;
     TransitivityGroupBox: TGroupBox;
     TransitivityLabel: TLabel;
     TransitivityTreeView: TTreeView;
-    procedure ButtonPanel1OKButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure SelectAllBitBtnClick(Sender: TObject);
+    procedure SelectNoneBitBtnClick(Sender: TObject);
     procedure TransitivityTreeViewMouseDown(Sender: TObject;
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   private
@@ -141,13 +146,31 @@ begin
   TransitivityLabel.Caption:=
     lisPkgTheFollowingDependenciesAreNotNeededBecauseOfTheAu;
   TransitivityTreeView.Images:=IDEImages.Images_16;
-  ButtonPanel1.OKButton.Caption:=lisPkgDeleteDependencies;
-  ButtonPanel1.OKButton.OnClick:=@ButtonPanel1OKButtonClick;
+
+  SelectAllBitBtn.Caption:=lisMenuSelectAll;
+  SelectNoneBitBtn.Caption:=lisPkgClearSelection;
+  DeleteSelectedBitBtn.Caption:=lisPkgDeleteDependencies;
 end;
 
 procedure TCleanPkgDepsDlg.FormDestroy(Sender: TObject);
 begin
   ClearTreeData;
+end;
+
+procedure TCleanPkgDepsDlg.SelectAllBitBtnClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i:=0 to TransitivityTreeView.Items.Count-1 do
+    TVNodeChecked[TransitivityTreeView.Items[i]]:=true;
+end;
+
+procedure TCleanPkgDepsDlg.SelectNoneBitBtnClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i:=0 to TransitivityTreeView.Items.Count-1 do
+    TVNodeChecked[TransitivityTreeView.Items[i]]:=false;
 end;
 
 procedure TCleanPkgDepsDlg.TransitivityTreeViewMouseDown(Sender: TObject;
@@ -164,21 +187,19 @@ end;
 
 function TCleanPkgDepsDlg.GetTVNodeChecked(TVNode: TTreeNode): boolean;
 begin
-  Result:=(TVNode<>nil) and (TVNode.ImageIndex=ImgIndexDelete);
+  Result:=(TVNode<>nil) and (TVNode.Data<>nil) and (TVNode.ImageIndex=ImgIndexDelete);
 end;
 
 procedure TCleanPkgDepsDlg.SetTVNodeChecked(TVNode: TTreeNode; AValue: boolean);
 begin
+  if TVNode.Data=nil then exit;
+  if TVNodeChecked[TVNode]=AValue then exit;
   if AValue then
     TVNode.ImageIndex:=ImgIndexDelete
   else
     TVNode.ImageIndex:=ImgIndexKeep;
   TVNode.SelectedIndex:=TVNode.ImageIndex;
   UpdateButtons;
-end;
-
-procedure TCleanPkgDepsDlg.ButtonPanel1OKButtonClick(Sender: TObject);
-begin
 end;
 
 procedure TCleanPkgDepsDlg.SetOwners(AValue: TFPList);
@@ -238,7 +259,7 @@ begin
     if TVNodeChecked[TVNode] then
       CheckCnt+=1;
   end;
-  ButtonPanel1.OKButton.Enabled:=CheckCnt>0;
+  DeleteSelectedBitBtn.Enabled:=CheckCnt>0;
 end;
 
 procedure TCleanPkgDepsDlg.AddTransitivities(NodeCaption: string;

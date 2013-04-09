@@ -5665,6 +5665,7 @@ resourcestring
     +'dependencies are not needed, because of the automatic transitivity '
     +'between package dependencies.';
   lisPkgDeleteDependencies = 'Delete dependencies';
+  lisPkgClearSelection = 'Clear Selection';
 
 implementation
 

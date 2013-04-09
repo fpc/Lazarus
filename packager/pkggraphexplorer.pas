@@ -178,6 +178,9 @@ begin
       end else begin
         Pkg:=PackageGraph.FindPackageWithName(Info.Owner,nil);
         if Pkg<>nil then begin
+          // open package editor
+          if Assigned(OnOpenPackage) then
+            OnOpenPackage(Self,Pkg);
 
         end;
       end;
