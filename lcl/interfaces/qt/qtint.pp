@@ -289,7 +289,7 @@ uses
 // uncomment only those units with implementation
 ////////////////////////////////////////////////////
  {$IFDEF HASX11}
- XAtom, X, XLib,
+ XAtom, X, XLib, XKB, xkblib,
  {$ENDIF}
  QtWSFactory,
  QtCaret,

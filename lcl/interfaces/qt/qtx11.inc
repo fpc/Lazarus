@@ -256,11 +256,6 @@ begin
 	      @Xclient);
 end;
 
-{$warning xkblib is not included because of codetools errors. When codetools
-  are fixed remove this and include xkblib.}
-function XkbGetIndicatorState (dpy : PDisplay; deviceSpec : Word; pStateRtrn : PWord) : TStatus;
-        cdecl; external libX11 name 'XkbGetIndicatorState';
-
 function GetKeyLockState(const AKey: Byte): Boolean;
 var
   Display: PDisplay;
@@ -271,8 +266,8 @@ begin
 
   if (Display = nil) then
     exit;
-  // to avoid XKB unit inclusion XkbUseCoreKbd   = $0100;
-  if (XkbGetIndicatorState(Display, $0100, @n) = Success) then
+
+  if (XkbGetIndicatorState(Display, XkbUseCoreKbd, @n) = Success) then
   begin
     if (AKey = VK_LCL_CAPSLOCK) then
       Result := (n and $01) = 1
