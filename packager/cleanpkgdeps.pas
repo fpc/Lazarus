@@ -51,18 +51,25 @@ type
     procedure ButtonPanel1OKButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure TransitivityTreeViewMouseDown(Sender: TObject;
+      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+  private
+    function GetTVNodeChecked(TVNode: TTreeNode): boolean;
+    procedure SetTVNodeChecked(TVNode: TTreeNode; AValue: boolean);
   private
     FOwners: TFPList;
     ImgIndexProject: integer;
     ImgIndexPackage: integer;
+    ImgIndexDelete: integer;
+    ImgIndexKeep: integer;
     procedure SetOwners(AValue: TFPList);
     procedure ClearTreeData;
     procedure UpdateTransitivityTree;
     procedure UpdateButtons;
-    function IsTVNodeChecked(TVNode: TTreeNode): boolean;
     procedure AddTransitivities(NodeCaption: string; ImgIndex: integer;
       FirstDependency: TPkgDependency);
     function FindAlternativeRoute(Dependency, StartDependency: TPkgDependency): TFPList;
+    property TVNodeChecked[TVNode: TTreeNode]: boolean read GetTVNodeChecked write SetTVNodeChecked;
   public
     property Owners: TFPList read FOwners write SetOwners;
   end;
@@ -117,18 +124,48 @@ procedure TCleanPkgDepsDlg.FormCreate(Sender: TObject);
 begin
   ImgIndexProject          := IDEImages.LoadImage(16, 'item_project');
   ImgIndexPackage          := IDEImages.LoadImage(16, 'item_package');
+  ImgIndexDelete           := IDEImages.LoadImage(16, 'laz_delete');
+  ImgIndexKeep             := IDEImages.LoadImage(16, 'menu_run');
 
-  Caption:='Clean up package dependencies';
-  TransitivityGroupBox.Caption:='Transitivity';
-  TransitivityLabel.Caption:='The following dependencies are not needed, because of the automatic transitivity between package dependencies.';
+  Caption:=lisPkgCleanUpPackageDependencies;
+  TransitivityGroupBox.Caption:=lisPkgTransitivity;
+  TransitivityLabel.Caption:=
+    lisPkgTheFollowingDependenciesAreNotNeededBecauseOfTheAu;
   TransitivityTreeView.Images:=IDEImages.Images_16;
-  ButtonPanel1.OKButton.Caption:='Delete dependencies';
+  ButtonPanel1.OKButton.Caption:=lisPkgDeleteDependencies;
   ButtonPanel1.OKButton.OnClick:=@ButtonPanel1OKButtonClick;
 end;
 
 procedure TCleanPkgDepsDlg.FormDestroy(Sender: TObject);
 begin
   ClearTreeData;
+end;
+
+procedure TCleanPkgDepsDlg.TransitivityTreeViewMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  TVNode: TTreeNode;
+begin
+  TVNode:=TransitivityTreeView.GetNodeAt(X,Y);
+  if TVNode=nil then exit;
+  if X>=TVNode.DisplayIconLeft then begin
+    TVNodeChecked[TVNode]:=not TVNodeChecked[TVNode];
+  end;
+end;
+
+function TCleanPkgDepsDlg.GetTVNodeChecked(TVNode: TTreeNode): boolean;
+begin
+  Result:=(TVNode<>nil) and (TVNode.ImageIndex=ImgIndexDelete);
+end;
+
+procedure TCleanPkgDepsDlg.SetTVNodeChecked(TVNode: TTreeNode; AValue: boolean);
+begin
+  if AValue then
+    TVNode.ImageIndex:=ImgIndexDelete
+  else
+    TVNode.ImageIndex:=ImgIndexKeep;
+  TVNode.SelectedIndex:=TVNode.ImageIndex;
+  UpdateButtons;
 end;
 
 procedure TCleanPkgDepsDlg.ButtonPanel1OKButtonClick(Sender: TObject);
@@ -191,15 +228,10 @@ begin
   CheckCnt:=0;
   for i:=0 to TransitivityTreeView.Items.Count-1 do begin
     TVNode:=TransitivityTreeView.Items[i];
-    if IsTVNodeChecked(TVNode) then
+    if TVNodeChecked[TVNode] then
       CheckCnt+=1;
   end;
   ButtonPanel1.OKButton.Enabled:=CheckCnt>0;
-end;
-
-function TCleanPkgDepsDlg.IsTVNodeChecked(TVNode: TTreeNode): boolean;
-begin
-  Result:=(TVNode<>nil) and (TVNode.StateIndex=1);
 end;
 
 procedure TCleanPkgDepsDlg.AddTransitivities(NodeCaption: string;
@@ -221,6 +253,7 @@ begin
       if MainTVNode=nil then begin
         MainTVNode:=TransitivityTreeView.Items.Add(nil,NodeCaption);
         MainTVNode.ImageIndex:=ImgIndex;
+        MainTVNode.SelectedIndex:=MainTVNode.ImageIndex;
       end;
       s:=Dependency.AsString+' = ';
       for i:=0 to AltRoute.Count-1 do begin
@@ -229,7 +262,8 @@ begin
         s+=TLazPackage(AltRoute[i]).Name;
       end;
       TVNode:=TransitivityTreeView.Items.AddChild(MainTVNode,s);
-      TVNode.ImageIndex:=ImgIndexPackage;
+      TVNode.ImageIndex:=ImgIndexDelete;
+      TVNode.SelectedIndex:=TVNode.ImageIndex;
       Info:=TCPDNodeInfo.Create;
       TVNode.Data:=Info;
       Info.Owner:=NodeCaption;

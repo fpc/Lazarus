@@ -43,7 +43,10 @@ object CleanPkgDepsDlg: TCleanPkgDepsDlg
       Width = 518
       Align = alClient
       DefaultItemHeight = 18
+      ReadOnly = True
       TabOrder = 0
+      OnMouseDown = TransitivityTreeViewMouseDown
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
     object TransitivityLabel: TLabel
       Left = 0

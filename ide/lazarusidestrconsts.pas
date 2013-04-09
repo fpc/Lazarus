@@ -5659,6 +5659,12 @@ resourcestring
     +'packages are only for projects. They can not be installed in the IDE, '
     +'not even indirectly.';
   lisPckEditCleanUpDependencies = 'Clean up dependencies ...';
+  lisPkgCleanUpPackageDependencies = 'Clean up package dependencies';
+  lisPkgTransitivity = 'Transitivity';
+  lisPkgTheFollowingDependenciesAreNotNeededBecauseOfTheAu = 'The following '
+    +'dependencies are not needed, because of the automatic transitivity '
+    +'between package dependencies.';
+  lisPkgDeleteDependencies = 'Delete dependencies';
 
 implementation
 
