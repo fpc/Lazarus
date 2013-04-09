@@ -64,9 +64,9 @@ type
     FLayerStylesKeys, FLayerStylesValues: TFPList; // of TStringList;
     function ReadSVGColor(AValue: string): TFPColor;
     procedure ReadSVGStyle(AValue: string; ADestEntity: TvEntityWithPen; AUseFillAsPen: Boolean = False);
-    procedure ReadSVGPenStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen);
-    procedure ReadSVGBrushStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush);
-    procedure ReadSVGFontStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenBrushAndFont);
+    function ReadSVGPenStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
+    function ReadSVGBrushStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush): TvSetPenBrushAndFontElements;
+    function ReadSVGFontStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenBrushAndFont): TvSetPenBrushAndFontElements;
     function IsAttributeFromStyle(AStr: string): Boolean;
     procedure ApplyLayerStyles(ADestEntity: TvEntity);
     //
@@ -696,11 +696,12 @@ begin
   end;
 end;
 
-procedure TvSVGVectorialReader.ReadSVGPenStyleWithKeyAndValue(AKey,
-  AValue: string; ADestEntity: TvEntityWithPen);
+function TvSVGVectorialReader.ReadSVGPenStyleWithKeyAndValue(AKey,
+  AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
 var
   OldAlpha: Word;
 begin
+  Result := [];
   if AKey = 'stroke' then
   begin
     // We store and restore the old alpha to support the "-opacity" element
@@ -728,11 +729,12 @@ begin
   end;
 end;
 
-procedure TvSVGVectorialReader.ReadSVGBrushStyleWithKeyAndValue(AKey,
-  AValue: string; ADestEntity: TvEntityWithPenAndBrush);
+function TvSVGVectorialReader.ReadSVGBrushStyleWithKeyAndValue(AKey,
+  AValue: string; ADestEntity: TvEntityWithPenAndBrush): TvSetPenBrushAndFontElements;
 var
   OldAlpha: Word;
 begin
+  Result := [];
   if AKey = 'fill' then
   begin
     // We store and restore the old alpha to support the "-opacity" element
@@ -750,9 +752,10 @@ begin
     ADestEntity.Brush.Color.Alpha := StrToInt(AValue)*$101;
 end;
 
-procedure TvSVGVectorialReader.ReadSVGFontStyleWithKeyAndValue(AKey,
-  AValue: string; ADestEntity: TvEntityWithPenBrushAndFont);
+function TvSVGVectorialReader.ReadSVGFontStyleWithKeyAndValue(AKey,
+  AValue: string; ADestEntity: TvEntityWithPenBrushAndFont): TvSetPenBrushAndFontElements;
 begin
+  Result := [];
   // SVG text uses "fill" to indicate the pen color of the text, very unintuitive as
   // "fill" is usually for brush in other elements
   if AKey = 'fill' then

@@ -118,6 +118,13 @@ type
     StrikeThrough: boolean;
   end;
 
+  TvSetPenBrushAndFontElement = (
+    spbfPenColor, spbfPenStyle, spbfPenWidth,
+    spbfBrushColor, spbfBrushStyle,
+    spbfFontColor, spbfFontSize
+    );
+  TvSetPenBrushAndFontElements = set of TvSetPenBrushAndFontElement;
+
   { Coordinates and polyline segments }
 
   T3DPoint = record
@@ -225,6 +232,7 @@ type
 
   TvEntity = class
   public
+    Parent: TvEntity; // Might be nil if this is placed directly in the page!!!
     X, Y, Z: Double;
     constructor Create; virtual;
     procedure Clear; virtual;
@@ -241,6 +249,7 @@ type
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
     function AdjustColorToBackground(AColor: TFPColor; ARenderInfo: TvRenderInfo): TFPColor;
+    procedure CreateFinalDrawingTools(AEntity: TvEntity; var AFinalPen: TvPen; var AFinalBrush: TvBrush; var AFinalFont: TvFont);
     function GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
     function GenerateDebugStrForFPColor(AColor: TFPColor): string;
@@ -666,12 +675,20 @@ type
     Layers are groups of elements.
     Layers are similar to blocks and the diference is that the layer draws
     its contents, while the block doesnt, and it cannot be pasted with an TvInsert.
+
+    A EntityWithSubEntities may have Pen, Brush and/or Font data associated with it, but it is disabled by default
+    This data can be active recursively in all children of the layer if set in the field
+    SetPenBrushAndFontElements
   }
 
   { TvLayer }
 
   TvLayer = class(TvEntityWithSubEntities)
   public
+    Pen: TvPen;
+    Brush: TvBrush;
+    Font: TvFont;
+    SetPenBrushAndFontElements: TvSetPenBrushAndFontElements;
   end;
 
   { TvVectorialDocument }
@@ -1104,6 +1121,47 @@ begin
       Result := colWhite
     else Result := colBlack;
   end;
+end;
+
+procedure TvEntity.CreateFinalDrawingTools(AEntity: TvEntity;
+  var AFinalPen: TvPen; var AFinalBrush: TvBrush; var AFinalFont: TvFont);
+var
+  lParent: TvEntity;
+  lAsLayer: TvLayer;
+begin
+  if AEntity is TvEntityWithPen then
+    AFinalPen := (AEntity as TvEntityWithPen).Pen;
+  if AEntity is TvEntityWithPenAndBrush then
+    AFinalBrush := (AEntity as TvEntityWithPenAndBrush).Brush;
+  if AEntity is TvEntityWithPenBrushAndFont then
+    AFinalFont := (AEntity as TvEntityWithPenBrushAndFont).Font;
+
+  if AEntity is TvLayer then
+  begin
+    lAsLayer := AEntity as TvLayer;
+    // Pen
+    if spbfPenColor in lAsLayer.SetPenBrushAndFontElements then
+      AFinalPen.Color := lAsLayer.Pen.Color;
+    if spbfPenStyle in lAsLayer.SetPenBrushAndFontElements then
+      AFinalPen.Style := lAsLayer.Pen.Style;
+    if spbfPenWidth in lAsLayer.SetPenBrushAndFontElements then
+      AFinalPen.Width := lAsLayer.Pen.Width;
+    // Brush
+    if spbfBrushColor in lAsLayer.SetPenBrushAndFontElements then
+      AFinalBrush.Color := lAsLayer.Brush.Color;
+    if spbfBrushStyle in lAsLayer.SetPenBrushAndFontElements then
+      AFinalBrush.Style := lAsLayer.Brush.Style;
+    // Font
+    if spbfFontColor in lAsLayer.SetPenBrushAndFontElements then
+      AFinalFont.Color := lAsLayer.Font.Color;
+    if spbfFontSize in lAsLayer.SetPenBrushAndFontElements then
+      AFinalFont.Size := lAsLayer.Font.Size;
+  end;
+
+  // Recurse through all parents
+  lParent := AEntity.Parent;
+  if lParent <> nil then
+    CreateFinalDrawingTools(lParent, AFinalPen, AFinalBrush, AFinalFont);
 end;
 
 function TvEntity.GetNormalizedPos(APage: TvVectorialPage; ANewMin,
@@ -1540,20 +1598,25 @@ var
   ClipRegion, OldClipRegion: HRGN;
   ACanvas: TCanvas absolute ADest;
   {$endif}
+  // Calculated tools
+  lPen: TvPen;
+  lBrush: TvBrush;
+  lFont: TvFont;
 begin
   PosX := 0;
   PosY := 0;
   ADest.Brush.Style := bsClear;
+  CreateFinalDrawingTools(Self, lPen, lBrush, lFont);
 
   ADest.MoveTo(ADestX, ADestY);
 
   // Set the path Pen and Brush options
-  ADest.Pen.Style := Pen.Style;
-  ADest.Pen.Width := Round(Pen.Width * AMulX);
+  ADest.Pen.Style := lPen.Style;
+  ADest.Pen.Width := Round(lPen.Width * AMulX);
   if ADest.Pen.Width < 1 then ADest.Pen.Width := 1;
-  if (Pen.Width <= 2) and (ADest.Pen.Width > 2) then ADest.Pen.Width := 2;
-  if (Pen.Width <= 5) and (ADest.Pen.Width > 5) then ADest.Pen.Width := 5;
-  ADest.Pen.FPColor := AdjustColorToBackground(Pen.Color, ARenderInfo);
+  if (lPen.Width <= 2) and (ADest.Pen.Width > 2) then ADest.Pen.Width := 2;
+  if (lPen.Width <= 5) and (ADest.Pen.Width > 5) then ADest.Pen.Width := 5;
+  ADest.Pen.FPColor := AdjustColorToBackground(lPen.Color, ARenderInfo);
   ADest.Brush.FPColor := Brush.Color;
 
   // Prepare the Clipping Region, if any
@@ -1614,7 +1677,7 @@ begin
   //
   // For other paths, draw more carefully
   //
-  ADest.Pen.Style := Pen.Style;
+  ADest.Pen.Style := lPen.Style;
   PrepareForSequentialReading;
 
   for j := 0 to Len - 1 do
@@ -1648,7 +1711,7 @@ begin
       PosX := Cur2DSegment.X;
       PosY := Cur2DSegment.Y;
 
-      ADest.Pen.FPColor := Pen.Color;
+      ADest.Pen.FPColor := lPen.Color;
 
       {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
       Write(Format(' L%d,%d', [CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y)]));
@@ -1688,7 +1751,7 @@ begin
         Points
       );
 
-      ADest.Brush.Style := Brush.Style;
+      ADest.Brush.Style := lBrush.Style;
       if Length(Points) >= 3 then
         ADest.Polygon(Points);
 
@@ -3126,6 +3189,7 @@ end;
 
 procedure TvEntityWithSubEntities.AddEntity(AEntity: TvEntity);
 begin
+  AEntity.Parent := Self;
   FElements.Add(AEntity);
 end;
 
@@ -3393,12 +3457,14 @@ begin
   if FCurrentLayer = nil then
   begin
     Result := FEntities.Count;
+    AEntity.Parent := nil;
     FEntities.Add(Pointer(AEntity));
   end
   // If a layer is selected as current, add elements to it instead
   else
   begin
     Result := FCurrentLayer.GetSubpartCount();
+    AEntity.Parent := FCurrentLayer;
     FCurrentLayer.AddEntity(AEntity);
   end;
 end;
