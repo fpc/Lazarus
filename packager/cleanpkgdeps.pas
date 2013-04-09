@@ -27,13 +27,15 @@ unit CleanPkgDeps;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, AvgLvlTree, LazLogger, LvlGraphCtrl, Forms,
-  Controls, Graphics, Dialogs, ButtonPanel, ComCtrls, ExtCtrls, StdCtrls,
+  Classes, SysUtils, contnrs, FileUtil, AvgLvlTree, LazLogger, LvlGraphCtrl,
+  Forms, Controls, Graphics, Dialogs, ButtonPanel, ComCtrls, ExtCtrls, StdCtrls,
   LazarusIDEStrConsts, Project, PackageDefs, IDEImagesIntf;
 
 const
   CPDProjectName = '-Project-';
 type
+
+  { TCPDNodeInfo }
 
   TCPDNodeInfo = class
   public
@@ -72,45 +74,52 @@ type
     property TVNodeChecked[TVNode: TTreeNode]: boolean read GetTVNodeChecked write SetTVNodeChecked;
   public
     property Owners: TFPList read FOwners write SetOwners;
+    function FetchDeletes: TObjectList; // list of TCPDNodeInfo
   end;
 
 var
   CleanPkgDepsDlg: TCleanPkgDepsDlg;
 
-function ShowCleanPkgDepDlg(Pkg: TLazPackage): TModalResult;
-function ShowCleanPkgDepDlg(AProject: TProject): TModalResult;
-function ShowCleanPkgDepDlg(Owners: TFPList; FreeList: boolean): TModalResult;
+function ShowCleanPkgDepDlg(Pkg: TLazPackage; out ListOfNodeInfos: TObjectList): TModalResult;
+function ShowCleanPkgDepDlg(AProject: TProject; out ListOfNodeInfos: TObjectList): TModalResult;
+function ShowCleanPkgDepDlg(Owners: TFPList; FreeOwners: boolean;
+  out ListOfNodeInfos: TObjectList): TModalResult;
 
 implementation
 
-function ShowCleanPkgDepDlg(Pkg: TLazPackage): TModalResult;
+function ShowCleanPkgDepDlg(Pkg: TLazPackage; out ListOfNodeInfos: TObjectList): TModalResult;
 var
   Owners: TFPList;
 begin
   Owners:=TFPList.Create;
   Owners.Add(Pkg);
-  Result:=ShowCleanPkgDepDlg(Owners,true);
+  Result:=ShowCleanPkgDepDlg(Owners,true,ListOfNodeInfos);
 end;
 
-function ShowCleanPkgDepDlg(AProject: TProject): TModalResult;
+function ShowCleanPkgDepDlg(AProject: TProject;
+  out ListOfNodeInfos: TObjectList): TModalResult;
 var
   Owners: TFPList;
 begin
   Owners:=TFPList.Create;
   Owners.Add(AProject);
-  Result:=ShowCleanPkgDepDlg(Owners,true);
+  Result:=ShowCleanPkgDepDlg(Owners,true,ListOfNodeInfos);
 end;
 
-function ShowCleanPkgDepDlg(Owners: TFPList; FreeList: boolean): TModalResult;
+function ShowCleanPkgDepDlg(Owners: TFPList; FreeOwners: boolean;
+  out ListOfNodeInfos: TObjectList): TModalResult;
 var
   Dlg: TCleanPkgDepsDlg;
 begin
+  ListOfNodeInfos:=nil;
   Dlg:=TCleanPkgDepsDlg.Create(nil);
   try
     Dlg.Owners:=Owners;
     Result:=Dlg.ShowModal;
+    if Result=mrOk then
+      ListOfNodeInfos:=Dlg.FetchDeletes;
   finally
-    if FreeList then
+    if FreeOwners then
       Owners.Free;
     Dlg.Free;
   end;
@@ -170,8 +179,6 @@ end;
 
 procedure TCleanPkgDepsDlg.ButtonPanel1OKButtonClick(Sender: TObject);
 begin
-  ShowMessage('Not implemented yet');
-  ModalResult:=mrNone;
 end;
 
 procedure TCleanPkgDepsDlg.SetOwners(AValue: TFPList);
@@ -322,6 +329,23 @@ begin
     end;
   finally
     Visited.Free;
+  end;
+end;
+
+function TCleanPkgDepsDlg.FetchDeletes: TObjectList;
+var
+  i: Integer;
+  TVNode: TTreeNode;
+  Info: TCPDNodeInfo;
+begin
+  Result:=TObjectList.Create(true);
+  for i:=0 to TransitivityTreeView.Items.Count-1 do begin
+    TVNode:=TransitivityTreeView.Items[i];
+    if TObject(TVNode.Data) is TCPDNodeInfo then begin
+      Info:=TCPDNodeInfo(TVNode.Data);
+      TVNode.Data:=nil;
+      Result.Add(Info);
+    end;
   end;
 end;
 

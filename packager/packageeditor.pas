@@ -33,7 +33,7 @@ uses
   // LCL FCL
   Classes, SysUtils, Math, Forms, Controls, StdCtrls, ComCtrls, Buttons,
   LResources, Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil, AVL_Tree,
-  Laz2_XMLCfg,
+  contnrs, Laz2_XMLCfg,
   // IDEIntf CodeTools
   IDEImagesIntf, MenuIntf, HelpIntfs, ExtCtrls, LazIDEIntf, ProjectIntf,
   CodeToolsStructs, FormEditingIntf, TreeFilterEdit, PackageIntf,
@@ -1209,8 +1209,24 @@ begin
 end;
 
 procedure TPackageEditorForm.CleanDependenciesMenuItemClick(Sender: TObject);
+var
+  ListOfNodeInfos: TObjectList;
+  i: Integer;
+  Info: TCPDNodeInfo;
+  Dependency: TPkgDependency;
 begin
-  ShowCleanPkgDepDlg(LazPackage);
+  ListOfNodeInfos:=nil;
+  try
+    if ShowCleanPkgDepDlg(LazPackage,ListOfNodeInfos)<>mrOk then exit;
+    for i:=0 to ListOfNodeInfos.Count-1 do begin
+      Info:=TCPDNodeInfo(ListOfNodeInfos[i]);
+      Dependency:=LazPackage.FindDependencyByName(Info.Dependency);
+      if Dependency<>nil then
+        PackageGraph.RemoveDependencyFromPackage(LazPackage,Dependency,true);
+    end;
+  finally
+    ListOfNodeInfos.Free;
+  end;
 end;
 
 procedure TPackageEditorForm.CompileAllCleanClick(Sender: TObject);
