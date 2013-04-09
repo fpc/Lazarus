@@ -73,10 +73,11 @@ type
     procedure ClearTreeData;
     procedure UpdateTransitivityTree;
     procedure UpdateButtons;
-    procedure AddTransitivities(NodeCaption: string; ImgIndex: integer;
+    procedure AddTransitivities(DepOwner: TObject; ImgIndex: integer;
       FirstDependency: TPkgDependency);
     function FindAlternativeRoute(Dependency, StartDependency: TPkgDependency): TFPList;
     property TVNodeChecked[TVNode: TTreeNode]: boolean read GetTVNodeChecked write SetTVNodeChecked;
+    function GetDepOwnerName(DepOwner: TObject; WithVersion: boolean): string;
   public
     property Owners: TFPList read FOwners write SetOwners;
     function FetchDeletes: TObjectList; // list of TCPDNodeInfo
@@ -238,10 +239,10 @@ begin
     CurOwner:=TObject(Owners[i]);
     if CurOwner is TProject then begin
       AProject:=TProject(CurOwner);
-      AddTransitivities(CPDProjectName,ImgIndexProject,AProject.FirstRequiredDependency);
+      AddTransitivities(AProject,ImgIndexProject,AProject.FirstRequiredDependency);
     end else if CurOwner is TLazPackage then begin
       APackage:=TLazPackage(CurOwner);
-      AddTransitivities(APackage.IDAsString,ImgIndexPackage,APackage.FirstRequiredDependency);
+      AddTransitivities(APackage,ImgIndexPackage,APackage.FirstRequiredDependency);
     end;
   end;
   TransitivityTreeView.EndUpdate;
@@ -262,8 +263,8 @@ begin
   DeleteSelectedBitBtn.Enabled:=CheckCnt>0;
 end;
 
-procedure TCleanPkgDepsDlg.AddTransitivities(NodeCaption: string;
-  ImgIndex: integer; FirstDependency: TPkgDependency);
+procedure TCleanPkgDepsDlg.AddTransitivities(DepOwner: TObject; ImgIndex: integer;
+  FirstDependency: TPkgDependency);
 var
   Dependency: TPkgDependency;
   AltRoute: TFPList;
@@ -279,7 +280,7 @@ begin
     AltRoute:=FindAlternativeRoute(Dependency,FirstDependency);
     if AltRoute<>nil then begin
       if MainTVNode=nil then begin
-        MainTVNode:=TransitivityTreeView.Items.Add(nil,NodeCaption);
+        MainTVNode:=TransitivityTreeView.Items.Add(nil,GetDepOwnerName(DepOwner,true));
         MainTVNode.ImageIndex:=ImgIndex;
         MainTVNode.SelectedIndex:=MainTVNode.ImageIndex;
       end;
@@ -294,7 +295,7 @@ begin
       TVNode.SelectedIndex:=TVNode.ImageIndex;
       Info:=TCPDNodeInfo.Create;
       TVNode.Data:=Info;
-      Info.Owner:=NodeCaption;
+      Info.Owner:=GetDepOwnerName(DepOwner,false);
       Info.Dependency:=Dependency.RequiredPackage.Name;
       MainTVNode.Expand(true);
       AltRoute.Free;
@@ -353,6 +354,19 @@ begin
   end;
 end;
 
+function TCleanPkgDepsDlg.GetDepOwnerName(DepOwner: TObject; WithVersion: boolean
+  ): string;
+begin
+  if DepOwner is TProject then
+    Result:=CPDProjectName
+  else if DepOwner is TLazPackage then begin
+    if WithVersion then
+      Result:=TLazPackage(DepOwner).IDAsString
+    else
+      Result:=TLazPackage(DepOwner).Name;
+  end;
+end;
+
 function TCleanPkgDepsDlg.FetchDeletes: TObjectList;
 var
   i: Integer;
@@ -362,7 +376,7 @@ begin
   Result:=TObjectList.Create(true);
   for i:=0 to TransitivityTreeView.Items.Count-1 do begin
     TVNode:=TransitivityTreeView.Items[i];
-    if TObject(TVNode.Data) is TCPDNodeInfo then begin
+    if TVNodeChecked[TVNode] and (TObject(TVNode.Data) is TCPDNodeInfo) then begin
       Info:=TCPDNodeInfo(TVNode.Data);
       TVNode.Data:=nil;
       Result.Add(Info);

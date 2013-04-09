@@ -161,28 +161,34 @@ var
   i: Integer;
   Info: TCPDNodeInfo;
   Pkg: TLazPackage;
+  Dependency: TPkgDependency;
 begin
   Owners:=TFPList.Create;
   ListOfNodeInfos:=nil;
   try
-    if (Project1<>nil) then
-      Owners.Add(Project1);
+    //if (Project1<>nil) then
+    //  Owners.Add(Project1);
     for i:=0 to PackageGraph.Count-1 do
       Owners.Add(PackageGraph[i]);
 
     if ShowCleanPkgDepDlg(Owners,true,ListOfNodeInfos)<>mrOk then exit;
     for i:=0 to ListOfNodeInfos.Count-1 do begin
       Info:=TCPDNodeInfo(ListOfNodeInfos[i]);
+      debugln(['TPkgGraphExplorerDlg.CleanPkgDepsMenuItemClick ',Info.Owner,'->',Info.Dependency]);
       if Info.Owner=CPDProjectName then begin
 
       end else begin
         Pkg:=PackageGraph.FindPackageWithName(Info.Owner,nil);
-        if Pkg<>nil then begin
-          // open package editor
-          if Assigned(OnOpenPackage) then
-            OnOpenPackage(Self,Pkg);
-
-        end;
+        debugln(['TPkgGraphExplorerDlg.CleanPkgDepsMenuItemClick Pkg=',Pkg<>nil]);
+        if Pkg=nil then continue;
+        Dependency:=Pkg.FindDependencyByName(Info.Dependency);
+        debugln(['TPkgGraphExplorerDlg.CleanPkgDepsMenuItemClick Dep=',Dependency<>nil]);
+        if Dependency=nil then continue;
+        // open package editor
+        if Assigned(OnOpenPackage) then
+          OnOpenPackage(Self,Pkg);
+        // remove dependency
+        PackageGraph.RemoveDependencyFromPackage(Pkg,Dependency,true);
       end;
     end;
   finally
