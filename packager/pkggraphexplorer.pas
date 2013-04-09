@@ -473,6 +473,8 @@ begin
     if ViewNode<>nil then
       OldSelected:=ViewNode.Caption;
 
+    LvlGraphControl1.Graph.Clear;
+
     // add a node for the project
     ProjectNode:=nil;
     if Project1<>nil then begin
