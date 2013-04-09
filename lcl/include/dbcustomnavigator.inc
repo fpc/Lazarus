@@ -396,7 +396,11 @@ end;
 
 procedure TDBCustomNavigator.ButtonClickHandler(Sender: TObject);
 begin
-  BtnClick(TDBNavButton(Sender).Index);
+  if sender is TDBNavButton then
+    BtnClick(TDBNavButton(Sender).Index)
+  else
+  if sender is TDBNavFocusableButton then
+    BtnClick(TDBNavFocusableButton(sender).Index);
 end;
 
 class function TDBCustomNavigator.GetControlClassDefaultSize: TSize;
