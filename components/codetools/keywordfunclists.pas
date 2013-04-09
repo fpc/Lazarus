@@ -1043,14 +1043,14 @@ begin
     Add('NOT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OBJECT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OF',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('OPERATOR',{$ifdef FPC}@{$endif}AllwaysTrue); // not for Delphi
+    Add('OPERATOR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PACKED',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PRIVATE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PROCEDURE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PROGRAM',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PROPERTY',{$ifdef FPC}@{$endif}AllwaysTrue); // not for Delphi
-    Add('PROTECTED',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PROPERTY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    //Add('PROTECTED',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PUBLIC',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PUBLISHED',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('RAISE',{$ifdef FPC}@{$endif}AllwaysTrue);
