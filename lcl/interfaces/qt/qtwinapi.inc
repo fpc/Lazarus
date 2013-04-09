@@ -2990,6 +2990,17 @@ begin
     VK_LWIN, VK_RWIN:
       if (QApplication_keyboardModifiers and QtMetaModifier) > 0 then
         Result := Result or StateDown;
+    VK_LCL_CAPSLOCK, VK_NUMLOCK:
+    begin
+      {$IFDEF MSWINDOWS}
+      Result := Windows.GetKeyState(nVirtKey);
+      {$ELSE}
+      {$IFDEF HASX11}
+      if GetKeyLockState(nVirtKey) then
+        Result := StateDown;
+      {$ENDIF}
+      {$ENDIF}
+    end;
    {$ifdef VerboseQtWinAPI}
     else
       DebugLn('TQtWidgetSet.GetKeyState TODO ', DbgSVKCode(Word(nVirtkey)));
