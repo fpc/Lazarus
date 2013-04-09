@@ -1315,8 +1315,12 @@ begin
   else 
   begin
     FHandle := QImage_create(FData, width, height, format);
-    if format=QImageFormat_Mono then
+    if format = QImageFormat_Mono then
+    begin
       QImage_setNumColors(FHandle, 2);
+      QImage_SetColor(FHandle, 0, $FF000000);
+      QImage_SetColor(FHandle, 1, $FFFFFFFF);
+    end;
   end;
   QtGDIObjects.AddGDIObject(Self);
 end;
@@ -1332,8 +1336,12 @@ begin
   else 
   begin
     FHandle := QImage_create(FData, width, height, bytesPerLine, format);
-    if format=QImageFormat_Mono then
+    if format = QImageFormat_Mono then
+    begin
       QImage_setNumColors(FHandle, 2);
+      QImage_SetColor(FHandle, 0, $FF000000);
+      QImage_SetColor(FHandle, 1, $FFFFFFFF);
+    end;
   end;
   QtGDIObjects.AddGDIObject(Self);
 end;
