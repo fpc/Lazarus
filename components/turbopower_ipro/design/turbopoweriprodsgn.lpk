@@ -1,15 +1,18 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="TurboPowerIProDsgn"/>
+    <AddToProjectUsesSection Value="True"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -22,17 +25,13 @@
       </Item1>
     </Files>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="TurboPowerIPro"/>
       </Item1>
       <Item2>
         <PackageName Value="IDEIntf"/>
       </Item2>
-      <Item3>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
-      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

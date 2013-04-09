@@ -1207,14 +1207,10 @@
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="2">
+    <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="LazUtils"/>
       </Item1>
-      <Item2>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1"/>
-      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

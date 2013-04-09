@@ -358,19 +358,16 @@ If you wish to allow use of your version of these files only under the terms of 
         <UnitName Value="SynEditTextDoubleWidthChars"/>
       </Item79>
     </Files>
-    <LazDoc Paths="docs/xml"/>
+    <LazDoc Paths="docs\xml"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="2">
+    <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="LCL"/>
       </Item1>
-      <Item2>
-        <PackageName Value="LazUtils"/>
-      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

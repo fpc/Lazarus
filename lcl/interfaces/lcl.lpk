@@ -1998,13 +1998,10 @@ end;"/>
       <OutDir Value="../languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="2">
+    <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="LCLBase"/>
       </Item1>
-      <Item2>
-        <PackageName Value="FCL"/>
-      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <CustomOptions Value="-dLCL -dLCL$(LCLWidgetType)"/>

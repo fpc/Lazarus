@@ -85,13 +85,10 @@
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="2">
+    <RequiredPkgs Count="1">
       <Item1>
-        <PackageName Value="LCL"/>
-      </Item1>
-      <Item2>
         <PackageName Value="Printer4Lazarus"/>
-      </Item2>
+      </Item1>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

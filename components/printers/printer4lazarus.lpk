@@ -219,17 +219,10 @@
       </Item43>
     </Files>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="cairocanvas_pkg"/>
       </Item1>
-      <Item2>
-        <PackageName Value="LCL"/>
-      </Item2>
-      <Item3>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
-      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
