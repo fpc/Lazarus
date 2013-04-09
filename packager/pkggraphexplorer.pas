@@ -39,11 +39,11 @@ interface
 uses
   Classes, SysUtils, Math, LCLProc, Forms, Controls, Buttons, ComCtrls,
   StdCtrls, Menus, Dialogs, Graphics, FileCtrl, LCLType, ExtCtrls,
-  AVL_Tree,
+  AVL_Tree, contnrs,
   IDECommands, PackageIntf, IDEImagesIntf, LazIDEIntf,
   LvlGraphCtrl,
   LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
-  Project, PackageDefs, PackageSystem, PackageEditor;
+  Project, PackageDefs, PackageSystem, PackageEditor, CleanPkgDeps;
   
 const
   GroupPrefixProject = '-Project-';
@@ -55,6 +55,7 @@ type
   { TPkgGraphExplorerDlg }
 
   TPkgGraphExplorerDlg = class(TForm)
+    CleanPkgDepsMenuItem: TMenuItem;
     PkgTreeView: TTreeView;
     InfoMemo: TMemo;
     LvlGraphControl1: TLvlGraphControl;
@@ -63,6 +64,7 @@ type
     Splitter1: TSplitter;
     VerticalSplitter: TSplitter;
     UninstallMenuItem: TMenuItem;
+    procedure CleanPkgDepsMenuItemClick(Sender: TObject);
     procedure LvlGraphControl1DblClick(Sender: TObject);
     procedure LvlGraphControl1SelectionChanged(Sender: TObject);
     procedure PkgGraphExplorerShow(Sender: TObject);
@@ -150,6 +152,39 @@ begin
   if Pkg=nil then exit;
   if Assigned(OnOpenPackage) then
     OnOpenPackage(Self,Pkg);
+end;
+
+procedure TPkgGraphExplorerDlg.CleanPkgDepsMenuItemClick(Sender: TObject);
+var
+  Owners: TFPList;
+  ListOfNodeInfos: TObjectList;
+  i: Integer;
+  Info: TCPDNodeInfo;
+  Pkg: TLazPackage;
+begin
+  Owners:=TFPList.Create;
+  ListOfNodeInfos:=nil;
+  try
+    if (Project1<>nil) then
+      Owners.Add(Project1);
+    for i:=0 to PackageGraph.Count-1 do
+      Owners.Add(PackageGraph[i]);
+
+    if ShowCleanPkgDepDlg(Owners,true,ListOfNodeInfos)<>mrOk then exit;
+    for i:=0 to ListOfNodeInfos.Count-1 do begin
+      Info:=TCPDNodeInfo(ListOfNodeInfos[i]);
+      if Info.Owner=CPDProjectName then begin
+
+      end else begin
+        Pkg:=PackageGraph.FindPackageWithName(Info.Owner,nil);
+        if Pkg<>nil then begin
+
+        end;
+      end;
+    end;
+  finally
+    ListOfNodeInfos.Free;
+  end;
 end;
 
 procedure TPkgGraphExplorerDlg.LvlGraphControl1SelectionChanged(Sender: TObject

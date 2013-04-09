@@ -55,6 +55,7 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
       OnDblClick = LvlGraphControl1DblClick
       OnSelectionChanged = LvlGraphControl1SelectionChanged
       ParentColor = True
+      ParentShowHint = False
       PopupMenu = PkgPopupMenu
       TabOrder = 0
       TabStop = False
@@ -65,6 +66,8 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
       Top = 1
       Width = 194
       Align = alLeft
+      DefaultItemHeight = 18
+      PopupMenu = PkgPopupMenu
       ReadOnly = True
       TabOrder = 1
       OnDblClick = PkgTreeViewDblClick
@@ -83,8 +86,12 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
     left = 32
     top = 40
     object UninstallMenuItem: TMenuItem
-      Caption = 'New Item1'
+      Caption = 'Uninstall'
       OnClick = UninstallMenuItemClick
+    end
+    object CleanPkgDepsMenuItem: TMenuItem
+      Caption = 'Unneeded dependencies'
+      OnClick = CleanPkgDepsMenuItemClick
     end
   end
 end
