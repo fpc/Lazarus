@@ -96,26 +96,13 @@
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="6">
+    <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="LazControls"/>
+        <PackageName Value="IDEIntf"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
-      </Item2>
-      <Item3>
-        <PackageName Value="LCLBase"/>
-      </Item3>
-      <Item4>
-        <PackageName Value="IDEIntf"/>
-      </Item4>
-      <Item5>
         <PackageName Value="CodeTools"/>
-      </Item5>
-      <Item6>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Release="1" Valid="True"/>
-      </Item6>
+      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
