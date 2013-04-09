@@ -7,12 +7,13 @@ object CleanPkgDepsDlg: TCleanPkgDepsDlg
   ClientHeight = 380
   ClientWidth = 522
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '1.1'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 30
-    Top = 344
+    Height = 36
+    Top = 338
     Width = 510
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -27,28 +28,28 @@ object CleanPkgDepsDlg: TCleanPkgDepsDlg
   end
   object TransitivityGroupBox: TGroupBox
     Left = 0
-    Height = 338
+    Height = 332
     Top = 0
     Width = 522
     Align = alClient
     Caption = 'TransitivityGroupBox'
-    ClientHeight = 316
-    ClientWidth = 514
+    ClientHeight = 315
+    ClientWidth = 518
     TabOrder = 1
     object TransitivityTreeView: TTreeView
       Left = 0
       Height = 300
-      Top = 16
-      Width = 514
+      Top = 15
+      Width = 518
       Align = alClient
       DefaultItemHeight = 18
       TabOrder = 0
     end
     object TransitivityLabel: TLabel
       Left = 0
-      Height = 16
+      Height = 15
       Top = 0
-      Width = 514
+      Width = 518
       Align = alTop
       Caption = 'TransitivityLabel'
       ParentColor = False
