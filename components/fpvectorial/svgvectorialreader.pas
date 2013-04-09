@@ -1111,7 +1111,7 @@ begin
     begin
       X := FSVGPathTokenizer.Tokens.Items[i].Value;
       Y := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+      ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
 
       CurX := X;
       CurY := Y;
@@ -1143,7 +1143,20 @@ begin
       X := FSVGPathTokenizer.Tokens.Items[i+1].Value;
       if not (lCurTokenType in [sttHorzLineTo, sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo]) then
         Y := FSVGPathTokenizer.Tokens.Items[i+2].Value;
-      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+
+      // "l" LineTo uses relative coordenates in SVG
+      if lCurTokenType in [sttRelativeLineTo, sttRelativeHorzLineTo, sttRelativeVertLineTo] then
+      begin
+        ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+        CurX := CurX + X;
+        CurY := CurY + Y;
+      end
+      else
+      begin
+        ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
+        CurX := X;
+        CurY := Y;
+      end;
 
       // horizontal and vertical line corrections
       if lCurTokenType in [sttHorzLineTo, sttRelativeHorzLineTo] then
@@ -1154,17 +1167,6 @@ begin
         X := 0;
       end;
 
-      // "l" LineTo uses relative coordenates in SVG
-      if lCurTokenType in [sttRelativeLineTo, sttRelativeHorzLineTo, sttRelativeVertLineTo] then
-      begin
-        CurX := CurX + X;
-        CurY := CurY + Y;
-      end
-      else
-      begin
-        CurX := X;
-        CurY := Y;
-      end;
       AData.AddLineToPath(CurX, CurY);
 
       if not (lCurTokenType in [sttHorzLineTo, sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo]) then
@@ -1196,9 +1198,19 @@ begin
         Y := FSVGPathTokenizer.Tokens.Items[i+4].Value;
       end;
 
-      ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
-      ConvertSVGDeltaToFPVDelta(AData, X3, Y3, X3, Y3);
-      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+      // Careful that absolute coordinates require using ConvertSVGCoordinatesToFPVCoordinates
+      if lCurTokenType in [sttRelativeBezierTo, sttRelativeSmoothBezierTo] then
+      begin
+        ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
+        ConvertSVGDeltaToFPVDelta(AData, X3, Y3, X3, Y3);
+        ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+      end
+      else
+      begin
+        ConvertSVGCoordinatesToFPVCoordinates(AData, X2, Y2, X2, Y2);
+        ConvertSVGCoordinatesToFPVCoordinates(AData, X3, Y3, X3, Y3);
+        ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
+      end;
 
       if lCurTokenType = sttRelativeBezierTo then
       begin
@@ -1227,8 +1239,17 @@ begin
       X := FSVGPathTokenizer.Tokens.Items[i+3].Value;
       Y := FSVGPathTokenizer.Tokens.Items[i+4].Value;
 
-      ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
-      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+      // Careful that absolute coordinates require using ConvertSVGCoordinatesToFPVCoordinates
+      if lCurTokenType in [sttRelativeQuadraticBezierTo] then
+      begin
+        ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
+        ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+      end
+      else
+      begin
+        ConvertSVGCoordinatesToFPVCoordinates(AData, X2, Y2, X2, Y2);
+        ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
+      end;
 
       if lCurTokenType = sttRelativeQuadraticBezierTo then
       begin
@@ -1255,8 +1276,17 @@ begin
       X := FSVGPathTokenizer.Tokens.Items[i+3].Value;
       Y := FSVGPathTokenizer.Tokens.Items[i+4].Value;
 
-      ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
-      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+      // Careful that absolute coordinates require using ConvertSVGCoordinatesToFPVCoordinates
+      if lCurTokenType in [sttRelativeQuadraticBezierTo] then
+      begin
+        ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
+        ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+      end
+      else
+      begin
+        ConvertSVGCoordinatesToFPVCoordinates(AData, X2, Y2, X2, Y2);
+        ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
+      end;
 
       if lCurTokenType = sttRelativeQuadraticBezierTo then
       begin
