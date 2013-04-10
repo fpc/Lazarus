@@ -1318,7 +1318,13 @@ begin
     if format = QImageFormat_Mono then
     begin
       QImage_setNumColors(FHandle, 2);
+      {$IFDEF DARWIN}
+      //rgba
+      QImage_SetColor(FHandle, 0, $000000FF);
+      {$ELSE}
+      //argb
       QImage_SetColor(FHandle, 0, $FF000000);
+      {$ENDIF}
       QImage_SetColor(FHandle, 1, $FFFFFFFF);
     end;
   end;
@@ -1339,7 +1345,13 @@ begin
     if format = QImageFormat_Mono then
     begin
       QImage_setNumColors(FHandle, 2);
+      {$IFDEF DARWIN}
+      // rgba
+      QImage_SetColor(FHandle, 0, $000000FF);
+      {$ELSE}
+      // argb
       QImage_SetColor(FHandle, 0, $FF000000);
+      {$ENDIF}
       QImage_SetColor(FHandle, 1, $FFFFFFFF);
     end;
   end;
