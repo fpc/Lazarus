@@ -4463,6 +4463,16 @@ var
   i: Integer;
   NewFilename: String;
   HaveUpdatedGlobalPkgLinks: Boolean;
+
+  procedure UpdateGlobalLinks;
+  begin
+    if not HaveUpdatedGlobalPkgLinks then
+    begin
+      PkgLinks.UpdateGlobalLinks;
+      HaveUpdatedGlobalPkgLinks:=true;
+    end;
+  end;
+
 begin
   ListOfPackages:=nil;
   MarkNeededPackages;
@@ -4477,13 +4487,11 @@ begin
     if FileExistsCached(APackage.Filename) then begin
       if (not APackage.LPKSource.FileNeedsUpdate) then
         continue;
+      // a lpk has changed, this might include dependencies => reload lpl files
+      UpdateGlobalLinks;
     end else begin
-      // lpk has vanished -> search alternative
-      if not HaveUpdatedGlobalPkgLinks then
-      begin
-        PkgLinks.UpdateGlobalLinks;
-        HaveUpdatedGlobalPkgLinks:=true;
-      end;
+      // lpk has vanished -> search alternative => reload lpl files
+      UpdateGlobalLinks;
       NewFilename:=PackageGraph.FindAlternativeLPK(APackage);
     end;
     if ListOfPackages=nil then
