@@ -7403,10 +7403,13 @@ begin
 end;
 
 procedure TCustomGrid.EditorHide;
+var
+  WasFocused: boolean;
 begin
   if not EditorLocked and (Editor<>nil) and Editor.HandleAllocated
     and Editor.Visible then
   begin
+    WasFocused := Editor.Focused;
     FEditorMode:=False;
     FGridState := gsNormal;
     {$ifdef dbgGrid}DebugLnEnter('EditorHide [',Editor.ClassName,'] INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$endif}
@@ -7414,6 +7417,8 @@ begin
     try
       DoEditorHide;
     finally
+      if WasFocused then
+        SetFocus;
       UnLockEditor;
     end;
     {$ifdef dbgGrid}DebugLnExit('EditorHide END');{$endif}
