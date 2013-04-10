@@ -82,11 +82,12 @@ object CleanPkgDepsDlg: TCleanPkgDepsDlg
       TabOrder = 1
     end
     object SelectAllBitBtn: TBitBtn
-      Left = 88
+      Left = 125
       Height = 28
       Top = 7
-      Width = 75
+      Width = 96
       Align = alLeft
+      AutoSize = True
       Caption = 'SelectAllBitBtn'
       OnClick = SelectAllBitBtnClick
       TabOrder = 2
@@ -95,8 +96,9 @@ object CleanPkgDepsDlg: TCleanPkgDepsDlg
       Left = 7
       Height = 28
       Top = 7
-      Width = 75
+      Width = 112
       Align = alLeft
+      AutoSize = True
       Caption = 'SelectNoneBitBtn'
       OnClick = SelectNoneBitBtnClick
       TabOrder = 3
