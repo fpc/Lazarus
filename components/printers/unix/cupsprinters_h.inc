@@ -53,9 +53,18 @@
   This code is heavily based on Tony Maro's initial Printers.pas
   implementation in the LCL, but was adapted to work with CUPS.
   ---------------------------------------------------------------------}
+
+{$IFNDEF win64}
+  {$DEFINE UseCairo}
+{$ENDIF}
+
 uses
   Classes, SysUtils, LCLProc, PostScriptCanvas, Printers, Dialogs, Controls,
-  CUPSDyn, CairoCanvas;
+  CUPSDyn
+  {$IFDEF UseCairo}
+  ,CairoCanvas
+  {$ENDIF}
+  ;
   
 type
   TCUPSPrinterState = (

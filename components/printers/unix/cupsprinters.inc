@@ -1184,8 +1184,11 @@ end;
 
 function TCUPSPrinter.DoGetDefaultCanvasClass: TPrinterCanvasRef;
 begin
-  //Result := TPostscriptPrinterCanvas;
+  {$IFDEF UseCairo}
   Result := TCairoPsCanvas;
+  {$ELSE}
+  Result := TPostscriptPrinterCanvas;
+  {$ENDIF}
 end;
 
 function TCUPSPrinter.GetPrinterType: TPrinterType;

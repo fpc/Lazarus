@@ -570,6 +570,7 @@ components/cairocanvas/README.txt svneol=native#text/plain
 components/cairocanvas/cairocanvas.pas svneol=native#text/plain
 components/cairocanvas/cairocanvas_pkg.lpk svneol=native#text/plain
 components/cairocanvas/cairocanvas_pkg.pas svneol=native#text/plain
+components/cairocanvas/cairocanvasall.pas svneol=native#text/plain
 components/cairocanvas/cairographics.pas svneol=native#text/plain
 components/cairocanvas/cairoprinter.pas svneol=native#text/pascal
 components/cairocanvas/tests/24217/project1.lpi svneol=native#text/plain
