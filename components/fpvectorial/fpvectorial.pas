@@ -232,7 +232,7 @@ type
 
   TvEntity = class
   public
-    Parent: TvEntity; // Might be nil if this is placed directly in the page!!!
+    //not used currently Parent: TvEntity; // Might be nil if this is placed directly in the page!!!
     X, Y, Z: Double;
     constructor Create; virtual;
     procedure Clear; virtual;
@@ -249,7 +249,6 @@ type
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
     function AdjustColorToBackground(AColor: TFPColor; ARenderInfo: TvRenderInfo): TFPColor;
-    procedure CreateFinalDrawingTools(AEntity: TvEntity; var AFinalPen: TvPen; var AFinalBrush: TvBrush; var AFinalFont: TvFont);
     function GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
     function GenerateDebugStrForFPColor(AColor: TFPColor): string;
@@ -1119,52 +1118,6 @@ begin
        (ARenderInfo.BackgroundColor.Blue <= $1000) then
       Result := colWhite
     else Result := colBlack;
-  end;
-end;
-
-procedure TvEntity.CreateFinalDrawingTools(AEntity: TvEntity;
-  var AFinalPen: TvPen; var AFinalBrush: TvBrush; var AFinalFont: TvFont);
-var
-  lParent: TvEntity;
-  lAsLayer: TvLayer;
-begin
-  // Recurse through all parents
-  lParent := AEntity.Parent;
-  if lParent <> nil then
-    CreateFinalDrawingTools(lParent, AFinalPen, AFinalBrush, AFinalFont);
-
-  // And after that add our own data, since our own data has a higher priority
-  // then parent's data
-  if not (AEntity is TvLayer) then
-  begin
-    if AEntity is TvEntityWithPen then
-      AFinalPen := (AEntity as TvEntityWithPen).Pen;
-    if AEntity is TvEntityWithPenAndBrush then
-      AFinalBrush := (AEntity as TvEntityWithPenAndBrush).Brush;
-    if AEntity is TvEntityWithPenBrushAndFont then
-      AFinalFont := (AEntity as TvEntityWithPenBrushAndFont).Font;
-  end;
-
-  if AEntity is TvLayer then
-  begin
-    lAsLayer := AEntity as TvLayer;
-    // Pen
-    if spbfPenColor in lAsLayer.SetPenBrushAndFontElements then
-      AFinalPen.Color := lAsLayer.Pen.Color;
-    if spbfPenStyle in lAsLayer.SetPenBrushAndFontElements then
-      AFinalPen.Style := lAsLayer.Pen.Style;
-    if spbfPenWidth in lAsLayer.SetPenBrushAndFontElements then
-      AFinalPen.Width := lAsLayer.Pen.Width;
-    // Brush
-    if spbfBrushColor in lAsLayer.SetPenBrushAndFontElements then
-      AFinalBrush.Color := lAsLayer.Brush.Color;
-    if spbfBrushStyle in lAsLayer.SetPenBrushAndFontElements then
-      AFinalBrush.Style := lAsLayer.Brush.Style;
-    // Font
-    if spbfFontColor in lAsLayer.SetPenBrushAndFontElements then
-      AFinalFont.Color := lAsLayer.Font.Color;
-    if spbfFontSize in lAsLayer.SetPenBrushAndFontElements then
-      AFinalFont.Size := lAsLayer.Font.Size;
   end;
 end;
 
@@ -3188,7 +3141,7 @@ end;
 
 procedure TvEntityWithSubEntities.AddEntity(AEntity: TvEntity);
 begin
-  AEntity.Parent := Self;
+  //AEntity.Parent := Self;
   FElements.Add(AEntity);
 end;
 
@@ -3477,14 +3430,14 @@ begin
   if FCurrentLayer = nil then
   begin
     Result := FEntities.Count;
-    AEntity.Parent := nil;
+    //AEntity.Parent := nil;
     FEntities.Add(Pointer(AEntity));
   end
   // If a layer is selected as current, add elements to it instead
   else
   begin
     Result := FCurrentLayer.GetSubpartCount();
-    AEntity.Parent := FCurrentLayer;
+    //AEntity.Parent := FCurrentLayer;
     FCurrentLayer.AddEntity(AEntity);
   end;
 end;
