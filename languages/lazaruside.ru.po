@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-04-07 17:34+0400\n"
+"PO-Revision-Date: 2013-04-11 01:33+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -12785,6 +12785,10 @@ msgstr "Применить"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Вызвать процедуру %sRegister%s выбранного модуля"
 
+#: lazarusidestrconsts.lispckeditcleanupdependencies
+msgid "Clean up dependencies ..."
+msgstr "Очистить зависимости ..."
+
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
 msgstr "Очистить выбранное имя файла зависимости"
@@ -13160,6 +13164,10 @@ msgstr "Пакет:"
 msgid "Search paths for fpdoc xml files. Multiple paths must be separated by semicolon."
 msgstr "Пути поиска файлов XML FPDoc. Несколько путей разделяются точкой с запятой."
 
+#: lazarusidestrconsts.lispckshowunneededdependencies
+msgid "Show unneeded dependencies"
+msgstr "Показать нетребуемые зависимости"
+
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
 msgstr "При сохранении формы IDE может помещать значения всех свойств типа TTranslateString в файл PO пакета. Для этого следует включить i18n для этого пакета, указать каталог вывода файлов PO и отключить данный параметр."
@@ -13302,6 +13310,14 @@ msgstr "Использовать все модули в каталоге"
 msgid "Use no units in directory"
 msgstr "Не использовать модули из каталога"
 
+#: lazarusidestrconsts.lispkgcleanuppackagedependencies
+msgid "Clean up package dependencies"
+msgstr "Очистка зависимостей пакетов"
+
+#: lazarusidestrconsts.lispkgclearselection
+msgid "Clear Selection"
+msgstr "Снять выделение"
+
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "добавление CompiledSrcPath"
@@ -13317,6 +13333,10 @@ msgstr "Метка каталога исходного кода пакета"
 #: lazarusidestrconsts.lispkgdefsunitpath
 msgid "Unit Path"
 msgstr "Пути к модулям"
+
+#: lazarusidestrconsts.lispkgdeletedependencies
+msgid "Delete dependencies"
+msgstr "Удалить зависимости"
 
 #: lazarusidestrconsts.lispkgeditdoyoureallywanttoforgetallchangestopackageand
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
@@ -13932,9 +13952,17 @@ msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
 msgid "Unit \"%s\" was removed from package (lpk)"
 msgstr "Модуль \"%s\" был удалён из пакета (LPK)"
 
+#: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
+msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
+msgstr "Следующие зависимости не требуются, так как они уже автоматически унаследованы."
+
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
 msgstr "Этот файл отсутствует во всех загруженных пакетах."
+
+#: lazarusidestrconsts.lispkgtransitivity
+msgid "Transitivity"
+msgstr "Транзитивность"
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
 msgid "Unable to read package file %s%s%s.%sError: %s"

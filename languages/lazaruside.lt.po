@@ -12716,6 +12716,10 @@ msgstr "Pritaikyti keitimus"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Iškviesti pažymėto modulio %sRegister%s procedūrą"
 
+#: lazarusidestrconsts.lispckeditcleanupdependencies
+msgid "Clean up dependencies ..."
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
 msgstr "Išvalyti priklausomybės numatytą/pageidautiną failo pavadinimą"
@@ -13092,6 +13096,10 @@ msgstr "Paketas:"
 msgid "Search paths for fpdoc xml files. Multiple paths must be separated by semicolon."
 msgstr "FPDoc „.xml“ failų paieškos kelias. Naudojant daugiau nei vieną, jie vienas nuo kito atskiriami kabliataškiu."
 
+#: lazarusidestrconsts.lispckshowunneededdependencies
+msgid "Show unneeded dependencies"
+msgstr ""
+
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
 msgstr "Įrašius formą, IKA visas „TTranslateString“ savybes gali įrašyti į paketo „.po“ failą. Kad taip ir vyktų, ši parinktis turi būti nepažymėta, dar būtina įgalinti šio paketo internacionalizaciją ir nurodyti „.po“ išvesties aplanką."
@@ -13231,6 +13239,14 @@ msgstr "Naudoti visus aplanke esančius modulius"
 msgid "Use no units in directory"
 msgstr "Nenaudoti aplanke esančių modulių"
 
+#: lazarusidestrconsts.lispkgcleanuppackagedependencies
+msgid "Clean up package dependencies"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgclearselection
+msgid "Clear Selection"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "Priedas prie CompiledSrcPath"
@@ -13246,6 +13262,10 @@ msgstr "Paketo pradinio aplanko žymė"
 #: lazarusidestrconsts.lispkgdefsunitpath
 msgid "Unit Path"
 msgstr "Kelias iki modulio"
+
+#: lazarusidestrconsts.lispkgdeletedependencies
+msgid "Delete dependencies"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgeditdoyoureallywanttoforgetallchangestopackageand
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
@@ -13856,9 +13876,17 @@ msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
 msgid "Unit \"%s\" was removed from package (lpk)"
 msgstr "Modulis „%s“ pašalintas iš paketo (.lpk)"
 
+#: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
+msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
 msgstr "Failas nerastas nė viename įkeltame pakete."
+
+#: lazarusidestrconsts.lispkgtransitivity
+msgid "Transitivity"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
 msgid "Unable to read package file %s%s%s.%sError: %s"

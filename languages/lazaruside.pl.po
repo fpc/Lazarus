@@ -12916,6 +12916,10 @@ msgstr "Zastosuj zmiany"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Wywołaj procedurę %sRegister%s bieżącego modułu"
 
+#: lazarusidestrconsts.lispckeditcleanupdependencies
+msgid "Clean up dependencies ..."
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
 msgstr ""
@@ -13302,6 +13306,10 @@ msgstr ""
 msgid "Search paths for fpdoc xml files. Multiple paths must be separated by semicolon."
 msgstr ""
 
+#: lazarusidestrconsts.lispckshowunneededdependencies
+msgid "Show unneeded dependencies"
+msgstr ""
+
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
 msgstr ""
@@ -13442,6 +13450,14 @@ msgstr ""
 msgid "Use no units in directory"
 msgstr ""
 
+#: lazarusidestrconsts.lispkgcleanuppackagedependencies
+msgid "Clean up package dependencies"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgclearselection
+msgid "Clear Selection"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "dodatek ŚcieżkaŹródłowaKompilatora"
@@ -13457,6 +13473,10 @@ msgstr "Znacznik katalogu źródeł pakietu"
 #: lazarusidestrconsts.lispkgdefsunitpath
 msgid "Unit Path"
 msgstr "Ścieżka modułu"
+
+#: lazarusidestrconsts.lispkgdeletedependencies
+msgid "Delete dependencies"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgeditdoyoureallywanttoforgetallchangestopackageand
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
@@ -14071,8 +14091,16 @@ msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
 msgid "Unit \"%s\" was removed from package (lpk)"
 msgstr ""
 
+#: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
+msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
+msgstr ""
+
+#: lazarusidestrconsts.lispkgtransitivity
+msgid "Transitivity"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror

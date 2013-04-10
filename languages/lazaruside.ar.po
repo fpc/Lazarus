@@ -12370,6 +12370,10 @@ msgstr "اعتماد التغييرات"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "استدع إجرائية %sRegister%s الخاصة بالوحدة المختارة"
 
+#: lazarusidestrconsts.lispckeditcleanupdependencies
+msgid "Clean up dependencies ..."
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
 msgstr "مسح إسم الملف الافتراضي/ المفضل لهذه الاعتمادية "
@@ -12736,6 +12740,10 @@ msgstr "الحزمة:"
 msgid "Search paths for fpdoc xml files. Multiple paths must be separated by semicolon."
 msgstr "مسارات البحث لملفات xml الخاصة ب fpdoc. المسارات المتعددة يحب فصلها بعلامة فاصلة."
 
+#: lazarusidestrconsts.lispckshowunneededdependencies
+msgid "Show unneeded dependencies"
+msgstr ""
+
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
 msgstr "عندما يتم حفظ النموذج، يمكن لبيئة التطوير أن تقوم بتخزين كل خصائص TTranslateString في ملف po الخاص بالحزمة. لهذا يجب تمكين التدويل I18N لهذه الحزمة، وتوفير دليل مخرجات ملف po وترك هذا الخيار غير مؤشّر عليه."
@@ -12874,6 +12882,14 @@ msgstr "إستخدام كل الوحدات في الدليل"
 msgid "Use no units in directory"
 msgstr "عدم استخدام أية وحدة في الدليل"
 
+#: lazarusidestrconsts.lispkgcleanuppackagedependencies
+msgid "Clean up package dependencies"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgclearselection
+msgid "Clear Selection"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "إضافة CompiledSrcPath"
@@ -12889,6 +12905,10 @@ msgstr "علامة دليل مصدر حزمة"
 #: lazarusidestrconsts.lispkgdefsunitpath
 msgid "Unit Path"
 msgstr "مسار الوحدة"
+
+#: lazarusidestrconsts.lispkgdeletedependencies
+msgid "Delete dependencies"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgeditdoyoureallywanttoforgetallchangestopackageand
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
@@ -13495,9 +13515,17 @@ msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
 msgid "Unit \"%s\" was removed from package (lpk)"
 msgstr "الوحدة \"%s\" تم إزالتها من الحزمة (lpk)"
 
+#: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
+msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
 msgstr "هذا الملف ليس في أية حزمة محملة."
+
+#: lazarusidestrconsts.lispkgtransitivity
+msgid "Transitivity"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
 msgid "Unable to read package file %s%s%s.%sError: %s"

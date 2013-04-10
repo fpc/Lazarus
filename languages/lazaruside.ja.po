@@ -13098,6 +13098,10 @@ msgstr "変更を適用"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "選択されたユニットの%Register%s手続きを呼び出す"
 
+#: lazarusidestrconsts.lispckeditcleanupdependencies
+msgid "Clean up dependencies ..."
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
 msgstr "既定のあるいは望ましい依存性のファイル名をクリア"
@@ -13484,6 +13488,10 @@ msgstr "パッケージ"
 msgid "Search paths for fpdoc xml files. Multiple paths must be separated by semicolon."
 msgstr "fpdoc xmlファイルのパスを検索。複数のパスはセミコロンで区分されなければなりません。"
 
+#: lazarusidestrconsts.lispckshowunneededdependencies
+msgid "Show unneeded dependencies"
+msgstr ""
+
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
 msgstr "フォームが保存される時、IDEはすべてのTTranslateStringプロパティをパッケージpoファイルに保存できます。これを行うためには、あなたはこのパッケージへの国際化を有効化し、po出力ディレクトリを提供し、このオプションのチェックを外さなければなりません。"
@@ -13624,6 +13632,14 @@ msgstr "ディレクトリ内のすべてのユニットを使用"
 msgid "Use no units in directory"
 msgstr "ディレクトリ内のユニットを使用しない"
 
+#: lazarusidestrconsts.lispkgcleanuppackagedependencies
+msgid "Clean up package dependencies"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgclearselection
+msgid "Clear Selection"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "コンパイルのソースパスを追加"
@@ -13639,6 +13655,10 @@ msgstr "パッケージソースディレクトリマーク"
 #: lazarusidestrconsts.lispkgdefsunitpath
 msgid "Unit Path"
 msgstr "ユニットパス"
+
+#: lazarusidestrconsts.lispkgdeletedependencies
+msgid "Delete dependencies"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgeditdoyoureallywanttoforgetallchangestopackageand
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
@@ -14253,9 +14273,17 @@ msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
 msgid "Unit \"%s\" was removed from package (lpk)"
 msgstr "ユニット \"%s\"はパッケージ(lpk)から削除されました"
 
+#: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
+msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
 msgstr "このファイルは読み込まれたどのパッケージにもありません。"
+
+#: lazarusidestrconsts.lispkgtransitivity
+msgid "Transitivity"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
 msgid "Unable to read package file %s%s%s.%sError: %s"

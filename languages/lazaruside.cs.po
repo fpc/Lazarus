@@ -12365,6 +12365,10 @@ msgstr "Použít změny"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Volání %sRegistr%s procedura vybrané jednotky"
 
+#: lazarusidestrconsts.lispckeditcleanupdependencies
+msgid "Clean up dependencies ..."
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
 msgstr "Vyčistit přednastavené/preferované jméno souboru závislosti"
@@ -12731,6 +12735,10 @@ msgstr "Balíček:"
 msgid "Search paths for fpdoc xml files. Multiple paths must be separated by semicolon."
 msgstr "Prohledávané cesty XML souborů pro fpdoc. Více cest musí být odděleno středníkem."
 
+#: lazarusidestrconsts.lispckshowunneededdependencies
+msgid "Show unneeded dependencies"
+msgstr ""
+
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
 msgstr "Když je formulář uložen, IDE může uložit všechny vlastnosti TTranslateString do \"po\" souboru balíčku. K tomu je nutné povolit I18N pro tento balíček, zadat výstupní adresář \"po\" souboru a ponechat tuto volbu nezatrženou."
@@ -12869,6 +12877,14 @@ msgstr "Použít všechny jednotky v adresáři"
 msgid "Use no units in directory"
 msgstr "Nepoužít žádné jednotky v adresáři"
 
+#: lazarusidestrconsts.lispkgcleanuppackagedependencies
+msgid "Clean up package dependencies"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgclearselection
+msgid "Clear Selection"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "Doplněk CompiledSrcPath"
@@ -12884,6 +12900,10 @@ msgstr "Značka zdrojového adresáře balíčku"
 #: lazarusidestrconsts.lispkgdefsunitpath
 msgid "Unit Path"
 msgstr "Cesta jednotky"
+
+#: lazarusidestrconsts.lispkgdeletedependencies
+msgid "Delete dependencies"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgeditdoyoureallywanttoforgetallchangestopackageand
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
@@ -13490,9 +13510,17 @@ msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
 msgid "Unit \"%s\" was removed from package (lpk)"
 msgstr "Jednotka \"%s\" byla odstraněna z balíčku (lpk)"
 
+#: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
+msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
 msgstr "Soubor není v žádném načteném balíčku."
+
+#: lazarusidestrconsts.lispkgtransitivity
+msgid "Transitivity"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
 msgid "Unable to read package file %s%s%s.%sError: %s"

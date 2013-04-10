@@ -13045,6 +13045,10 @@ msgstr "Aplicar cambios"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Llamar %sRegistro%s procedimiento de la unidad seleccionada"
 
+#: lazarusidestrconsts.lispckeditcleanupdependencies
+msgid "Clean up dependencies ..."
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
 msgstr "Borrar nombre de archivo predeterminado/preferido de la dependencia"
@@ -13430,6 +13434,10 @@ msgstr "Paquete:"
 msgid "Search paths for fpdoc xml files. Multiple paths must be separated by semicolon."
 msgstr "Path de búsqueda para archivos fpdoc XML. Varios path deben estar separadas por punto y coma."
 
+#: lazarusidestrconsts.lispckshowunneededdependencies
+msgid "Show unneeded dependencies"
+msgstr ""
+
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
 msgstr "Cuando el formulario se guarda, el IDE puede almacenar todas las propiedades TTranslateString del paquete en el archivo po. Para ello es necesario habilitar I18N para este paquete, proporcione un directorio po de salida y deje esta opción sin marcar."
@@ -13576,6 +13584,14 @@ msgstr "Usar todas las unidades dentro del directorio"
 msgid "Use no units in directory"
 msgstr "No usar ninguna unidad dentro del directorio"
 
+#: lazarusidestrconsts.lispkgcleanuppackagedependencies
+msgid "Clean up package dependencies"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgclearselection
+msgid "Clear Selection"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "Añadir ruta de fuentes compilados"
@@ -13591,6 +13607,10 @@ msgstr "Marca de directorio fuente del Paquete"
 #: lazarusidestrconsts.lispkgdefsunitpath
 msgid "Unit Path"
 msgstr "Ruta de Unidad"
+
+#: lazarusidestrconsts.lispkgdeletedependencies
+msgid "Delete dependencies"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgeditdoyoureallywanttoforgetallchangestopackageand
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
@@ -14204,9 +14224,17 @@ msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
 msgid "Unit \"%s\" was removed from package (lpk)"
 msgstr "Unidad \"%s\" ha sido removida del paquete (lpk)"
 
+#: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
+msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
 msgstr "Este archivo no está en ningún paquete cargado."
+
+#: lazarusidestrconsts.lispkgtransitivity
+msgid "Transitivity"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
 msgid "Unable to read package file %s%s%s.%sError: %s"
