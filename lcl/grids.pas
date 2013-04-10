@@ -8801,7 +8801,12 @@ begin
       end;
     end;
   end;
-  inherited SetFocus;
+
+  if (Editor <> nil) and (Editor.Visible) then
+     Editor.SetFocus
+  else
+     inherited SetFocus;
+
   {$IFDEF dbgGrid}
   DebugLnExit('TCustomGrid.SetFocus END');
   {$ENDIF}
