@@ -223,6 +223,7 @@ begin
   UninstallMenuItem.Visible:=(Pkg<>nil) and (Pkg.AutoInstall<>pitNope);
   if UninstallMenuItem.Visible then
     UninstallMenuItem.Caption:=Format(lisPckExplUninstallPackage, [Pkg.IDAsString]);
+  CleanPkgDepsMenuItem.Caption:=lisPckShowUnneededDependencies;
 end;
 
 procedure TPkgGraphExplorerDlg.InfoMemoKeyDown(Sender: TObject;
