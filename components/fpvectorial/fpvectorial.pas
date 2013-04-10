@@ -623,15 +623,22 @@ type
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
+  {@@
+    A EntityWithSubEntities may have Pen, Brush and/or Font data associated with it, but it is disabled by default
+    This data can be active recursively in all children of the group if set in the field
+    SetPenBrushAndFontElements
+  }
+
   { TvEntityWithSubEntities }
 
-  TvEntityWithSubEntities = class(TvNamedEntity)
+  TvEntityWithSubEntities = class(TvEntityWithPenBrushAndFont)
   private
     FCurIndex: Integer;
     procedure CallbackDeleteElement(data,arg:pointer);
   protected
     FElements: TFPList; // of TvEntity
   public
+    SetPenBrushAndFontElements: TvSetPenBrushAndFontElements;
     constructor Create; override;
     destructor Destroy; override;
     //
@@ -675,20 +682,12 @@ type
     Layers are groups of elements.
     Layers are similar to blocks and the diference is that the layer draws
     its contents, while the block doesnt, and it cannot be pasted with an TvInsert.
-
-    A EntityWithSubEntities may have Pen, Brush and/or Font data associated with it, but it is disabled by default
-    This data can be active recursively in all children of the layer if set in the field
-    SetPenBrushAndFontElements
   }
 
   { TvLayer }
 
   TvLayer = class(TvEntityWithSubEntities)
   public
-    Pen: TvPen;
-    Brush: TvBrush;
-    Font: TvFont;
-    SetPenBrushAndFontElements: TvSetPenBrushAndFontElements;
   end;
 
   { TvVectorialDocument }
@@ -1129,12 +1128,22 @@ var
   lParent: TvEntity;
   lAsLayer: TvLayer;
 begin
-  if AEntity is TvEntityWithPen then
-    AFinalPen := (AEntity as TvEntityWithPen).Pen;
-  if AEntity is TvEntityWithPenAndBrush then
-    AFinalBrush := (AEntity as TvEntityWithPenAndBrush).Brush;
-  if AEntity is TvEntityWithPenBrushAndFont then
-    AFinalFont := (AEntity as TvEntityWithPenBrushAndFont).Font;
+  // Recurse through all parents
+  lParent := AEntity.Parent;
+  if lParent <> nil then
+    CreateFinalDrawingTools(lParent, AFinalPen, AFinalBrush, AFinalFont);
+
+  // And after that add our own data, since our own data has a higher priority
+  // then parent's data
+  if not (AEntity is TvLayer) then
+  begin
+    if AEntity is TvEntityWithPen then
+      AFinalPen := (AEntity as TvEntityWithPen).Pen;
+    if AEntity is TvEntityWithPenAndBrush then
+      AFinalBrush := (AEntity as TvEntityWithPenAndBrush).Brush;
+    if AEntity is TvEntityWithPenBrushAndFont then
+      AFinalFont := (AEntity as TvEntityWithPenBrushAndFont).Font;
+  end;
 
   if AEntity is TvLayer then
   begin
@@ -1157,11 +1166,6 @@ begin
     if spbfFontSize in lAsLayer.SetPenBrushAndFontElements then
       AFinalFont.Size := lAsLayer.Font.Size;
   end;
-
-  // Recurse through all parents
-  lParent := AEntity.Parent;
-  if lParent <> nil then
-    CreateFinalDrawingTools(lParent, AFinalPen, AFinalBrush, AFinalFont);
 end;
 
 function TvEntity.GetNormalizedPos(APage: TvVectorialPage; ANewMin,
@@ -1598,25 +1602,20 @@ var
   ClipRegion, OldClipRegion: HRGN;
   ACanvas: TCanvas absolute ADest;
   {$endif}
-  // Calculated tools
-  lPen: TvPen;
-  lBrush: TvBrush;
-  lFont: TvFont;
 begin
   PosX := 0;
   PosY := 0;
   ADest.Brush.Style := bsClear;
-  CreateFinalDrawingTools(Self, lPen, lBrush, lFont);
 
   ADest.MoveTo(ADestX, ADestY);
 
   // Set the path Pen and Brush options
-  ADest.Pen.Style := lPen.Style;
-  ADest.Pen.Width := Round(lPen.Width * AMulX);
+  ADest.Pen.Style := Pen.Style;
+  ADest.Pen.Width := Round(Pen.Width * AMulX);
   if ADest.Pen.Width < 1 then ADest.Pen.Width := 1;
-  if (lPen.Width <= 2) and (ADest.Pen.Width > 2) then ADest.Pen.Width := 2;
-  if (lPen.Width <= 5) and (ADest.Pen.Width > 5) then ADest.Pen.Width := 5;
-  ADest.Pen.FPColor := AdjustColorToBackground(lPen.Color, ARenderInfo);
+  if (Pen.Width <= 2) and (ADest.Pen.Width > 2) then ADest.Pen.Width := 2;
+  if (Pen.Width <= 5) and (ADest.Pen.Width > 5) then ADest.Pen.Width := 5;
+  ADest.Pen.FPColor := AdjustColorToBackground(Pen.Color, ARenderInfo);
   ADest.Brush.FPColor := Brush.Color;
 
   // Prepare the Clipping Region, if any
@@ -1677,7 +1676,7 @@ begin
   //
   // For other paths, draw more carefully
   //
-  ADest.Pen.Style := lPen.Style;
+  ADest.Pen.Style := Pen.Style;
   PrepareForSequentialReading;
 
   for j := 0 to Len - 1 do
@@ -1711,7 +1710,7 @@ begin
       PosX := Cur2DSegment.X;
       PosY := Cur2DSegment.Y;
 
-      ADest.Pen.FPColor := lPen.Color;
+      ADest.Pen.FPColor := Pen.Color;
 
       {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
       Write(Format(' L%d,%d', [CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y)]));
@@ -1751,7 +1750,7 @@ begin
         Points
       );
 
-      ADest.Brush.Style := lBrush.Style;
+      ADest.Brush.Style := Brush.Style;
       if Length(Points) >= 3 then
         ADest.Polygon(Points);
 
@@ -3227,8 +3226,29 @@ var
   lStr: string;
   lCurEntity: TvEntity;
 begin
-  lStr := Format('[%s] Name=%s', [Self.ClassName, Self.Name]);
+  lStr := Format('[%s] Name="%s"', [Self.ClassName, Self.Name]);
+
+  // Add styles
+  // Pen
+  if spbfPenColor in SetPenBrushAndFontElements then
+    lStr := lStr + Format(' Pen.Color=%s', [GenerateDebugStrForFPColor(Pen.Color)]);
+  if spbfPenStyle in SetPenBrushAndFontElements then
+    lStr := lStr + Format(' Pen.Style=%s', [GetEnumName(TypeInfo(TFPPenStyle), integer(Pen.Style))]);
+  if spbfPenWidth in SetPenBrushAndFontElements then
+    lStr := lStr + Format(' Pen.Width=%d', [Pen.Width]);
+  // Brush
+  if spbfBrushColor in SetPenBrushAndFontElements then
+    lStr := lStr + Format(' Brush.Color=%s', [GenerateDebugStrForFPColor(Brush.Color)]);
+  if spbfBrushStyle in SetPenBrushAndFontElements then
+    lStr := lStr + Format(' Brush.Style=%s', [GetEnumName(TypeInfo(TFPBrushStyle), integer(Brush.Style))]);
+  // Font
+  if spbfFontColor in SetPenBrushAndFontElements then
+    lStr := lStr + Format(' Font.Color=%s', [GenerateDebugStrForFPColor(Font.Color)]);
+  if spbfFontSize in SetPenBrushAndFontElements then
+    lStr := lStr + Format(' Font.Size=%d', [Font.Size]);
+
   Result := ADestRoutine(lStr, APageItem);
+
   // Add sub-entities
   lCurEntity := GetFirstEntity();
   while lCurEntity <> nil do

@@ -9,6 +9,7 @@ AUTHORS: Felipe Monteiro de Carvalho
 unit svgvectorialreader;
 
 {$mode objfpc}{$H+}
+{$define SVG_MERGE_LAYER_STYLES}
 
 interface
 
@@ -63,7 +64,7 @@ type
     FSVGPathTokenizer: TSVGPathTokenizer;
     FLayerStylesKeys, FLayerStylesValues: TFPList; // of TStringList;
     function ReadSVGColor(AValue: string): TFPColor;
-    procedure ReadSVGStyle(AValue: string; ADestEntity: TvEntityWithPen; AUseFillAsPen: Boolean = False);
+    function ReadSVGStyle(AValue: string; ADestEntity: TvEntityWithPen; AUseFillAsPen: Boolean = False): TvSetPenBrushAndFontElements;
     function ReadSVGPenStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
     function ReadSVGBrushStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush): TvSetPenBrushAndFontElements;
     function ReadSVGFontStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenBrushAndFont): TvSetPenBrushAndFontElements;
@@ -309,8 +310,8 @@ begin
       if lStrings.Count = 3 then
       begin
         Result.Red := StrToInt(lStrings.Strings[0]) * $101;
-        Result.Blue := StrToInt(lStrings.Strings[1]) * $101;
-        Result.Green := StrToInt(lStrings.Strings[2]) * $101;
+        Result.Green := StrToInt(lStrings.Strings[1]) * $101;
+        Result.Blue := StrToInt(lStrings.Strings[2]) * $101;
       end
       else
         raise Exception.Create(Format('[TvSVGVectorialReader.ReadSVGColor] An unexpected number of channels was found: %d', [lStrings.Count]));
@@ -663,13 +664,14 @@ floralwhite #FFFAF0
 end;
 
 // style="fill:none;stroke:black;stroke-width:3"
-procedure TvSVGVectorialReader.ReadSVGStyle(AValue: string;
-  ADestEntity: TvEntityWithPen; AUseFillAsPen: Boolean = False);
+function TvSVGVectorialReader.ReadSVGStyle(AValue: string;
+  ADestEntity: TvEntityWithPen; AUseFillAsPen: Boolean = False): TvSetPenBrushAndFontElements;
 var
   lStr, lStyleKeyStr, lStyleValueStr: String;
   lStrings: TStringList;
   i, lPosEqual: Integer;
 begin
+  Result := [];
   if AValue = '' then Exit;
 
   // Now split using ";" separator
@@ -685,11 +687,11 @@ begin
       lStyleValueStr := Copy(lStr, lPosEqual+1, Length(lStr));
       ReadSVGPenStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
       if AUseFillAsPen and (lStyleKeyStr = 'fill') then
-        ReadSVGPenStyleWithKeyAndValue('stroke', lStyleValueStr, ADestEntity)
+        Result := Result + ReadSVGPenStyleWithKeyAndValue('stroke', lStyleValueStr, ADestEntity)
       else if ADestEntity is TvText then
-        ReadSVGFontStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity as TvText)
+        Result := Result + ReadSVGFontStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity as TvText)
       else if ADestEntity is TvEntityWithPenAndBrush then
-        ReadSVGBrushStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity as TvEntityWithPenAndBrush);
+        Result := Result + ReadSVGBrushStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity as TvEntityWithPenAndBrush);
     end;
   finally
     lStrings.Free;
@@ -714,11 +716,17 @@ begin
       ADestEntity.Pen.Color := ReadSVGColor(AValue);
       ADestEntity.Pen.Color.Alpha := OldAlpha;
     end;
+    Result := Result + [spbfPenColor, spbfPenStyle];
   end
   else if AKey = 'stroke-width' then
-    ADestEntity.Pen.Width := Round(StringWithUnitToFloat(AValue))
+  begin
+    ADestEntity.Pen.Width := Round(StringWithUnitToFloat(AValue));
+    Result := Result + [spbfPenWidth];
+  end
   else if AKey = 'stroke-opacity' then
+  begin
     ADestEntity.Pen.Color.Alpha := StrToInt(AValue)*$101
+  end
   else if AKey = 'stroke-linecap' then
   begin
     {case LowerCase(AValue) of
@@ -747,6 +755,8 @@ begin
       ADestEntity.Brush.Color := ReadSVGColor(AValue);
       ADestEntity.Brush.Color.Alpha := OldAlpha;
     end;
+
+    Result := Result + [spbfBrushColor, spbfBrushStyle];
   end
   else if AKey = 'fill-opacity' then
     ADestEntity.Brush.Color.Alpha := StrToInt(AValue)*$101;
@@ -759,11 +769,17 @@ begin
   // SVG text uses "fill" to indicate the pen color of the text, very unintuitive as
   // "fill" is usually for brush in other elements
   if AKey = 'fill' then
-    ADestEntity.Font.Color := ReadSVGColor(AValue)
+  begin
+    ADestEntity.Font.Color := ReadSVGColor(AValue);
+    Result := Result + [spbfFontColor];
+  end
   else if AKey = 'fill-opacity' then
     ADestEntity.Font.Color.Alpha := StrToInt(AValue)*$101
   else if AKey = 'font-size' then
-    ADestEntity.Font.Size := Round(StringWithUnitToFloat(AValue))
+  begin
+    ADestEntity.Font.Size := Round(StringWithUnitToFloat(AValue));
+    Result := Result + [spbfFontSize];
+  end
   else if AKey = 'font-family' then
     ADestEntity.Font.Name := AValue
   else if AKey = 'font-weight' then
@@ -931,28 +947,50 @@ var
   lCurNode, lLayerNameNode: TDOMNode;
   lLayer, lParentLayer: TvLayer;
   i: Integer;
+  {$ifdef SVG_MERGE_LAYER_STYLES}
   lLayerStyleKeys, lLayerStyleValues: TStringList;
+  {$endif}
 begin
   // Store the style of this layer in the list
+  {$ifdef SVG_MERGE_LAYER_STYLES}
   lLayerStyleKeys := TStringList.Create;
   lLayerStyleValues := TStringList.Create;
   FLayerStylesKeys.Add(lLayerStyleKeys);
   FLayerStylesValues.Add(lLayerStyleValues);
+  {$endif}
 
+  // first attribute reader, there is a second one
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
     if lNodeName = 'id' then
-      lLayerName := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
-    else if IsAttributeFromStyle(lNodeName) then
-    begin
-      lLayerStyleKeys.Add(lNodeName);
-      lLayerStyleValues.Add(UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue));
-    end;
+      lLayerName := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue);
   end;
 
   lParentLayer := AData.GetCurrentLayer();
   lLayer := AData.AddLayerAndSetAsCurrent(lLayerName);
+
+  // attribute reading again after getting the object
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if lNodeName = 'style' then
+    begin
+      {$ifndef SVG_MERGE_LAYER_STYLES}
+      lLayer.SetPenBrushAndFontElements += ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lLayer)
+      {$endif}
+    end
+    else if IsAttributeFromStyle(lNodeName) then
+    begin
+      {$ifdef SVG_MERGE_LAYER_STYLES}
+      lLayerStyleKeys.Add(lNodeName);
+      lLayerStyleValues.Add(UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue));
+      {$else}
+      lLayer.SetPenBrushAndFontElements += ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lLayer);
+      lLayer.SetPenBrushAndFontElements += ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lLayer);
+      {$endif}
+    end;
+  end;
 
   lCurNode := ANode.FirstChild;
   while Assigned(lCurNode) do
@@ -961,11 +999,13 @@ begin
     lCurNode := lCurNode.NextSibling;
   end;
 
+  {$ifdef SVG_MERGE_LAYER_STYLES}
   // Now remove the style from this layer
   FLayerStylesKeys.Remove(lLayerStyleKeys);
   lLayerStyleKeys.Free;
   FLayerStylesValues.Remove(lLayerStyleValues);
   lLayerStyleValues.Free;
+  {$endif}
 
   // Set the current layer to the parent node,
   // or else items read next will be put as children of this layer
