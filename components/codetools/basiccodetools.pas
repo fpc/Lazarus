@@ -84,7 +84,7 @@ function GetLineIndentWithTabs(const Source: string; Position: integer;
 function GetPosInLine(const Source: string; Position: integer): integer; // 0 based
 function GetBlockMinIndent(const Source: string;
     StartPos, EndPos: integer): integer;
-function GetIndentStr(Indent: integer): string;
+function GetIndentStr(Indent: integer; TabWidth: integer = 0): string;
 procedure IndentText(const Source: string; Indent, TabWidth: integer;
     out NewSource: string);
 function FindFirstNonSpaceCharInLine(const Source: string;
@@ -4083,11 +4083,25 @@ begin
   end;
 end;
 
-function GetIndentStr(Indent: integer): string;
+function GetIndentStr(Indent: integer; TabWidth: integer): string;
+var
+  TabCnt: Integer;
+  SpaceCnt: Integer;
+  i: Integer;
 begin
-  SetLength(Result,Indent);
-  if Indent>0 then
-    FillChar(Result[1],length(Result),' ');
+  if TabWidth<=0 then begin
+    SetLength(Result,Indent);
+    if Indent>0 then
+      FillChar(Result[1],length(Result),' ');
+  end else begin
+    TabCnt:=Indent div TabWidth;
+    SpaceCnt:=Indent mod TabWidth;
+    SetLength(Result,TabCnt+SpaceCnt);
+    for i:=1 to TabCnt do
+      Result[i]:=#9;
+    for i:=TabCnt+1 to TabCnt+SpaceCnt do
+      Result[i]:=' ';
+  end;
 end;
 
 procedure IndentText(const Source: string; Indent, TabWidth: integer;

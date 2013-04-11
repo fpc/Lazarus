@@ -112,6 +112,9 @@ type
   TBeautifyCodeOptions = class(TPersistent)
   private
     CurLineLen: integer;
+    FTabWidth: integer;
+    FUseTabs: boolean;
+    FUseTabWidth: integer;
     LastSplitPos: integer; // last position where splitting is allowed
     LastSrcLineStart: integer;// last line start, not added by splitting
     CurAtomType, LastAtomType: TAtomType;
@@ -125,13 +128,14 @@ type
     procedure ReadNextAtom;
     procedure ReadTilCommentEnd;
     function IsCommentType(aCommentType: char): boolean;
+    procedure SetTabWidth(AValue: integer);
+    procedure SetUseTabs(AValue: boolean);
     procedure StartComment(p: integer);
     function EndComment(CommentStart: char; p: integer): boolean;
   public
     LineLength: integer;
     LineEnd: string;
-    Indent: integer;
-    TabWidth: integer;
+    Indent: integer; // see TabWidth, UseTabs and UseTabWidth
     KeyWordPolicy: TWordPolicy;
     IdentifierPolicy: TWordPolicy;
     WordExceptions: TWordPolicyExceptions;
@@ -175,6 +179,10 @@ type
     function BeautifyWord(const AWord: string; WordPolicy: TWordPolicy): string;
     function BeautifyKeyWord(const AWord: string): string;
     function BeautifyIdentifier(const AWord: string): string;
+    property UseTabs: boolean read FUseTabs write SetUseTabs; // true=when indenting use tabs of TabWidth
+    property UseTabWidth: integer read FUseTabWidth; // when UseTabs is true, UseTabWidth=TabWidth otherwise UseTabWidth=0
+    property TabWidth: integer read FTabWidth write SetTabWidth;
+
     procedure ConsistencyCheck;
     procedure WriteDebugReport;
     constructor Create;
@@ -1587,6 +1595,24 @@ end;
 function TBeautifyCodeOptions.IsCommentType(aCommentType: char): boolean;
 begin
   Result:=(CommentLvl>0) and (CommentType=aCommentType);
+end;
+
+procedure TBeautifyCodeOptions.SetTabWidth(AValue: integer);
+begin
+  if FTabWidth=AValue then Exit;
+  FTabWidth:=AValue;
+  if UseTabs then
+    FUseTabWidth:=FTabWidth;
+end;
+
+procedure TBeautifyCodeOptions.SetUseTabs(AValue: boolean);
+begin
+  if FUseTabs=AValue then Exit;
+  FUseTabs:=AValue;
+  if UseTabs then
+    FUseTabWidth:=FTabWidth
+  else
+    FUseTabWidth:=0;
 end;
 
 procedure TBeautifyCodeOptions.StartComment(p: integer);
