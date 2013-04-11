@@ -91,6 +91,8 @@ function FindFirstNonSpaceCharInLine(const Source: string;
     Position: integer): integer;
 function IsFirstNonSpaceCharInLine(const Source: string;
     Position: integer): boolean;
+procedure GuessIndentSize(const Source: string; TabWidth: integer;
+  var IndentSize: integer; MaxLineCount: integer = 10000);
 
 // identifiers
 procedure GetIdentStartEndAtPosition(const Source:string; Position:integer;
@@ -2629,6 +2631,90 @@ begin
   while (Position>1) and (Source[Position-1] in [' ',#9]) do
     dec(Position);
   Result:=(Position=1) or (Source[Position-1] in [#10,#13]);
+end;
+
+procedure GuessIndentSize(const Source: string; TabWidth: integer;
+  var IndentSize: integer; MaxLineCount: integer = 10000);
+{ check all line indents and return the most common.
+  Stop after MaxLineCount lines. Ignore empty lines.
+}
+const
+  MaxIndentSize = 20;
+var
+  IndentCounts: PSizeInt;
+  BestCount: SizeInt;
+
+  procedure AddIndent(CurIndent: integer);
+  var
+    i: SizeInt;
+  begin
+    if (CurIndent<1) or (CurIndent>MaxIndentSize) then exit;
+    i:=IndentCounts[CurIndent-1]+1;
+    IndentCounts[CurIndent-1]:=i;
+    if BestCount>=i then
+      exit;
+    IndentSize:=CurIndent;
+    BestCount:=i;
+  end;
+
+var
+  LineNumber: Integer;
+  p: PChar;
+  CurIndent: Integer;
+  LastIndent: Integer;
+begin
+  LineNumber:=0;
+  if Source='' then exit;
+  if TabWidth<=0 then TabWidth:=8;
+  Getmem(IndentCounts,SizeOf(SizeInt)*MaxIndentSize);
+  try
+    FillByte(IndentCounts[0],SizeOf(SizeInt)*MaxIndentSize,0);
+    BestCount:=0;
+    p:=PChar(Source);
+    LastIndent:=0;
+    repeat
+      inc(LineNumber);
+      // read indent
+      CurIndent:=0;
+      repeat
+        case p^ of
+        ' ': inc(CurIndent);
+        #9:
+          begin
+            CurIndent+=TabWidth;
+            CurIndent-=(CurIndent mod TabWidth);
+          end;
+        else break;
+        end;
+      until false;
+      if not (p^ in [#0,#10,#13]) then begin
+        // not an empty line
+        AddIndent(CurIndent-LastIndent);
+        LastIndent:=CurIndent;
+      end;
+      // skip to next line
+      repeat
+        case p^ of
+        #0:
+          if p-PChar(Source)=length(Source) then begin
+            // end of soure
+            exit;
+          end;
+        #10,#13:
+          begin
+            // line break
+            repeat
+              inc(p)
+            until not (p^ in [#10,#13]);
+            break;
+          end;
+        end;
+        inc(p);
+      until false;
+    until LineNumber>MaxLineCount;
+  finally
+    FreeMem(IndentCounts);
+  end;
 end;
 
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
