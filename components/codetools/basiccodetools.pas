@@ -91,8 +91,8 @@ function FindFirstNonSpaceCharInLine(const Source: string;
     Position: integer): integer;
 function IsFirstNonSpaceCharInLine(const Source: string;
     Position: integer): boolean;
-procedure GuessIndentSize(const Source: string; TabWidth: integer;
-  var IndentSize: integer; MaxLineCount: integer = 10000);
+procedure GuessIndentSize(const Source: string;
+  var IndentSize: integer; TabWidth: integer = 2; MaxLineCount: integer = 10000);
 
 // identifiers
 procedure GetIdentStartEndAtPosition(const Source:string; Position:integer;
@@ -2633,8 +2633,8 @@ begin
   Result:=(Position=1) or (Source[Position-1] in [#10,#13]);
 end;
 
-procedure GuessIndentSize(const Source: string; TabWidth: integer;
-  var IndentSize: integer; MaxLineCount: integer = 10000);
+procedure GuessIndentSize(const Source: string; var IndentSize: integer;
+  TabWidth: integer; MaxLineCount: integer = 10000);
 { check all line indents and return the most common.
   Stop after MaxLineCount lines. Ignore empty lines.
 }
@@ -2660,8 +2660,8 @@ var
 var
   LineNumber: Integer;
   p: PChar;
-  CurIndent: Integer;
-  LastIndent: Integer;
+  CurLineIndent: Integer;
+  LastLineIndent: Integer;
 begin
   LineNumber:=0;
   if Source='' then exit;
@@ -2671,26 +2671,27 @@ begin
     FillByte(IndentCounts[0],SizeOf(SizeInt)*MaxIndentSize,0);
     BestCount:=0;
     p:=PChar(Source);
-    LastIndent:=0;
+    LastLineIndent:=0;
     repeat
       inc(LineNumber);
       // read indent
-      CurIndent:=0;
+      CurLineIndent:=0;
       repeat
         case p^ of
-        ' ': inc(CurIndent);
+        ' ': inc(CurLineIndent);
         #9:
           begin
-            CurIndent+=TabWidth;
-            CurIndent-=(CurIndent mod TabWidth);
+            CurLineIndent+=TabWidth;
+            CurLineIndent-=(CurLineIndent mod TabWidth);
           end;
         else break;
         end;
+        inc(p);
       until false;
       if not (p^ in [#0,#10,#13]) then begin
         // not an empty line
-        AddIndent(CurIndent-LastIndent);
-        LastIndent:=CurIndent;
+        AddIndent(CurLineIndent-LastLineIndent);
+        LastLineIndent:=CurLineIndent;
       end;
       // skip to next line
       repeat

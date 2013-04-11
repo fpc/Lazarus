@@ -6,6 +6,7 @@
    ./runtests --format=plain --suite=TestBasicFindCommentEnd
    ./runtests --format=plain --suite=TestBasicFindNextComment
    ./runtests --format=plain --suite=TestCompareTextIgnoringSpace
+   ./runtests --format=plain --suite=TestGuessIndentSize
 }
 unit TestBasicCodetools;
 
@@ -27,6 +28,7 @@ type
     procedure TestBasicFindCommentEnd;
     procedure TestBasicFindNextComment;
     procedure TestCompareTextIgnoringSpace;
+    procedure TestGuessIndentSize;
   end;
 
 implementation
@@ -162,6 +164,28 @@ begin
   t(' a: b','a:b',0);
   t('procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings; AIndex,'#13#10'  ACount: Integer); ',
     'procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);',0);
+end;
+
+procedure TTestBasicCodeTools.TestGuessIndentSize;
+
+  procedure t(Src: string; ExpectedIndent: integer; DefaultIndent: integer = 2; TabWidth: integer = 2);
+  var
+    ActualIndent: Integer;
+  begin
+    ActualIndent:=DefaultIndent;
+    GuessIndentSize(Src,ActualIndent,TabWidth);
+    if ActualIndent=ExpectedIndent then exit;
+    AssertEquals('"'+DbgStr(Src)+'"',ExpectedIndent,ActualIndent);
+  end;
+
+begin
+  t('',2,2);
+  t(' a',1);
+  t('  a',2);
+  t('   a',3);
+  t('  a'#10'b',2);
+  t('  a'#10#13'  b',2);
+  t('  a'#10'    b'#10'  c',2);
 end;
 
 initialization
