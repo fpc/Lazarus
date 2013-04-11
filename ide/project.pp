@@ -360,8 +360,6 @@ type
     procedure ClearModifieds; override;
     procedure ClearComponentDependencies;
     procedure WriteDebugReportUnitComponentDependencies(Prefix: string);
-    procedure CreateStartCode(Descriptor: TProjectFileDescriptor;
-                              const NewUnitName: string);
     procedure IgnoreCurrentFileDateOnDisk;
     procedure IncreaseAutoRevertLock; // do not auto revert from disk
     procedure DecreaseAutoRevertLock;
@@ -2312,23 +2310,6 @@ begin
   fUserReadOnly:=NewValue;
   if fSource<>nil then
     fSource.ReadOnly:=ReadOnly;
-end;
-
-procedure TUnitInfo.CreateStartCode(Descriptor: TProjectFileDescriptor;
-  const NewUnitName: string);
-var
-  NewSource: string;
-  
-  function Beautified(const s: string): string;
-  begin
-    Result:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(s,0);
-  end;
-  
-begin
-  if fSource=nil then exit;
-  NewSource:=Beautified(Descriptor.CreateSource(Filename,NewUnitName,fComponentName));
-  fSource.Source:=NewSource;
-  Modified:=true;
 end;
 
 function TUnitInfo.GetHasResources:boolean;

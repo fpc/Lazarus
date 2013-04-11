@@ -415,6 +415,7 @@ var
   APackage: TLazPackage;
   IsPartOfProject: Boolean;
   RequiredPackages: String;
+  Src: String;
 begin
   //debugln('TLazSourceFileManager.NewEditorFile A NewFilename=',NewFilename);
   // empty NewFilename is ok, it will be auto generated
@@ -534,14 +535,17 @@ begin
       NewUnitInfo.ComponentName:=NewUniqueComponentName(NewFileDescriptor.DefaultResourceName);
       NewUnitInfo.ComponentResourceName:='';
     end;
-    NewUnitInfo.CreateStartCode(NewFileDescriptor,NewUnitName);
+    Src:=NewFileDescriptor.CreateSource(NewUnitInfo.Filename,NewUnitName,NewUnitInfo.ComponentName);
+    // ToDo: use editor options Block Indent Spaces+Tabs
+    Src:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(Src,0);
+    NewUnitInfo.Source.Source:=Src;
   end else begin
     if nfBeautifySrc in NewFlags then
       NewBuffer.Source:=BeautifySrc(NewSource)
     else
       NewBuffer.Source:=NewSource;
-    NewUnitInfo.Modified:=true;
   end;
+  NewUnitInfo.Modified:=true;
 
   // add to project
   NewUnitInfo.Loaded:=true;
