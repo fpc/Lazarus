@@ -116,6 +116,7 @@ type
     FSourceExtensions: string; // default is '.pp;.pas;.lpr;.dpr;.dpk'
     FPascalTools: TAVLTree; // tree of TCustomCodeTool sorted TCustomCodeTool(Data).Scanner.MainCode
     FTabWidth: integer;
+    FUseTabs: boolean;
     FVisibleEditorLines: integer;
     FWriteExceptions: boolean;
     FWriteLockCount: integer;// Set/Unset counter
@@ -140,6 +141,7 @@ type
     procedure SetCompleteProperties(const AValue: boolean);
     procedure SetIndentSize(NewValue: integer);
     procedure SetTabWidth(const AValue: integer);
+    procedure SetUseTabs(AValue: boolean);
     procedure SetVisibleEditorLines(NewValue: integer);
     procedure SetJumpCentered(NewValue: boolean);
     procedure SetCursorBeyondEOL(NewValue: boolean);
@@ -274,6 +276,7 @@ type
     property VisibleEditorLines: integer
                            read FVisibleEditorLines write SetVisibleEditorLines;
     property TabWidth: integer read FTabWidth write SetTabWidth;
+    property UseTabs: boolean read FUseTabs write SetUseTabs;
     property CompleteProperties: boolean
                            read FCompleteProperties write SetCompleteProperties;
     property AddInheritedCodeToOverrideMethod: boolean
@@ -5412,6 +5415,13 @@ begin
   FTabWidth:=AValue;
   SourceChangeCache.BeautifyCodeOptions.TabWidth:=AValue;
   Indenter.DefaultTabWidth:=AValue;
+end;
+
+procedure TCodeToolManager.SetUseTabs(AValue: boolean);
+begin
+  if FUseTabs=AValue then Exit;
+  FUseTabs:=AValue;
+  SourceChangeCache.BeautifyCodeOptions.UseTabs:=UseTabs;
 end;
 
 procedure TCodeToolManager.SetVisibleEditorLines(NewValue: integer);

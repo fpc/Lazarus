@@ -68,7 +68,7 @@ uses
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
   Debugger, IDEOptionDefs, CodeToolsDefines, Splash, Designer,
   SourceEditor, BuildManager, FindInFilesDlg,
-  MainBar, MainIntf, PseudoTerminalDlg;
+  MainBar, MainIntf, SourceSynEditor, PseudoTerminalDlg;
 
 type
   TResetToolFlag = (
@@ -332,6 +332,8 @@ end;
 function TMainIDEBase.BeginCodeTool(ADesigner: TDesigner;
   var ActiveSrcEdit: TSourceEditor; out ActiveUnitInfo: TUnitInfo;
   Flags: TCodeToolsFlags): boolean;
+var
+  Edit: TIDESynEditor;
 begin
   Result:=false;
   if (ctfUseGivenSourceEditor in Flags) and (Project1<>nil)
@@ -370,13 +372,16 @@ begin
   // init codetools
   SaveSourceEditorChangesToCodeCache(nil);
   if ActiveSrcEdit<>nil then begin
-    CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
-    CodeToolBoss.TabWidth:=ActiveSrcEdit.EditorComponent.TabWidth;
-    CodeToolBoss.IndentSize:=ActiveSrcEdit.EditorComponent.BlockIndent;
+    Edit:=ActiveSrcEdit.EditorComponent;
+    CodeToolBoss.VisibleEditorLines:=Edit.LinesInWindow;
+    CodeToolBoss.TabWidth:=Edit.TabWidth;
+    CodeToolBoss.IndentSize:=Edit.BlockIndent+Edit.BlockTabIndent*Edit.TabWidth;
+    CodeToolBoss.UseTabs:=Edit.BlockTabIndent>0;
   end else begin
     CodeToolBoss.VisibleEditorLines:=25;
     CodeToolBoss.TabWidth:=EditorOpts.TabWidth;
-    CodeToolBoss.IndentSize:=EditorOpts.BlockIndent;
+    CodeToolBoss.IndentSize:=EditorOpts.BlockIndent+EditorOpts.BlockTabIndent*EditorOpts.TabWidth;
+    CodeToolBoss.UseTabs:=EditorOpts.BlockTabIndent>0;
   end;
 
   if ctfActivateAbortMode in Flags then
