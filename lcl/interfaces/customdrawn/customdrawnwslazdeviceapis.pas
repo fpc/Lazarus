@@ -55,6 +55,7 @@ type
     // TLazDevice
     class function GetDeviceManufacturer: string; override;
     class function GetDeviceModel: string; override;
+    class function GetScreenRotation(AScreenIndex: Integer): TScreenRotation; override;
     class procedure Vibrate(ADurationMS: Cardinal); override;
   end;
 
@@ -177,6 +178,55 @@ begin
   lNativeString := javaEnvRef^^.GetStringUTFChars(javaEnvRef, lJavaString, nil);
   Result := lNativeString;
   javaEnvRef^^.ReleaseStringUTFChars(javaEnvRef, lJavaString, lNativeString);
+end;
+
+class function TCDWSLazDeviceAPIs.GetScreenRotation(AScreenIndex: Integer
+  ): TScreenRotation;
+var
+  windowManagerClass, displayClass : jclass;
+  javaMethodId_WindowService, javaMethodId_getDefaultDisplay, javaMethodId_getRotation : JMethodID;
+  windowManagerObject, displayObject: JObject;
+  javaString_WINDOW_SERVICE, javaString_getDefaultDisplay : JString;
+  lRotation: Jint;
+const
+  ROTATION_0 = 0;
+  ROTATION_180 = 2;
+  ROTATION_270 = 3;
+  ROTATION_90 = 1;
+begin
+  windowManagerClass := javaEnvRef^^.FindClass(javaEnvRef, 'android/view/WindowManager');
+  displayClass := javaEnvRef^^.FindClass(javaEnvRef, 'android/view/Display');
+
+  // get the string Context.WINDOW_SERVICE remember that NewStringUTF does not require ReleaseStringUTFChars
+  javaString_WINDOW_SERVICE := javaEnvRef^^.NewStringUTF(javaEnvRef, pchar('getWindowManager'));
+
+  // get method id for WindowManager object
+  javaMethodId_WindowService := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidAppActivityClass, 'getWindowManager', '()Landroid/view/WindowManager;');
+
+  // Get the WindowManager object
+  // Window w = (Window) getSystemService(Context.WINDOW_SERVICE);
+  windowManagerObject := javaEnvRef^^.CallObjectMethod(javaEnvRef, javaActivityObject, javaMethodId_WindowService);
+
+  javaString_getDefaultDisplay := javaEnvRef^^.NewStringUTF(javaEnvRef, pchar('getDefaultDisplay'));
+
+  // Get method id for Display object
+  javaMethodId_getDefaultDisplay := javaEnvRef^^.GetMethodID(javaEnvRef, windowManagerClass, 'getDefaultDisplay', '()Landroid/view/Display;');
+
+  // Get the display object
+  displayObject := javaEnvRef^^.CallObjectMethod(javaEnvRef, windowManagerObject, javaMethodId_getDefaultDisplay);
+
+  // Get method id for method: getRotation
+  javaMethodId_getRotation := javaEnvRef^^.GetMethodID(javaEnvRef, displayClass, 'getRotation', '()I');
+
+  // Now call getRotation method in the display object
+  lRotation := javaEnvRef^^.CallIntMethod(javaEnvRef, displayObject, javaMethodId_getRotation);
+  case lRotation of
+  ROTATION_180: Result := srRotation_180;
+  ROTATION_270: Result := srRotation_270;
+  ROTATION_90:  Result := srRotation_90;
+  else
+    Result := srRotation_0;
+  end;
 end;
 
 class procedure TCDWSLazDeviceAPIs.Vibrate(ADurationMS: Cardinal);

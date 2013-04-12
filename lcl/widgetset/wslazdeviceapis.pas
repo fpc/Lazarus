@@ -63,6 +63,7 @@ type
     // TLazDevice
     class function GetDeviceManufacturer: string; virtual;
     class function GetDeviceModel: string; virtual;
+    class function GetScreenRotation(AScreenIndex: Integer): TScreenRotation; virtual;
     class procedure Vibrate(ADurationMS: Cardinal); virtual;
   end;
 
@@ -116,6 +117,12 @@ end;
 class function TWSLazDeviceAPIs.GetDeviceModel: string;
 begin
   Result := '';
+end;
+
+class function TWSLazDeviceAPIs.GetScreenRotation(AScreenIndex: Integer
+  ): TScreenRotation;
+begin
+  Result := srRotation_0;
 end;
 
 class procedure TWSLazDeviceAPIs.Vibrate(ADurationMS: Cardinal);

@@ -126,12 +126,15 @@ type
 
   // TLazDevice
 
+  TScreenRotation = (srRotation_0, srRotation_90, srRotation_180, srRotation_270);
+
   TLazDevice = class
   private
     function GetDeviceManufacturer: string;
     function GetDeviceModel: string;
   public
     procedure Vibrate(ADurationMS: Cardinal);
+    function GetScreenRotation(AScreenIndex: Integer): TScreenRotation;
     property Manufacturer: string read GetDeviceManufacturer;
     property Model: string read GetDeviceModel;
   end;
@@ -170,6 +173,14 @@ var
 begin
   WidgetsetClass := TWSLazDeviceAPIsClass(GetWSLazDeviceAPIs());
   WidgetsetClass.Vibrate(ADurationMS);
+end;
+
+function TLazDevice.GetScreenRotation(AScreenIndex: Integer): TScreenRotation;
+var
+  WidgetsetClass: TWSLazDeviceAPIsClass;
+begin
+  WidgetsetClass := TWSLazDeviceAPIsClass(GetWSLazDeviceAPIs());
+  Result := WidgetsetClass.GetScreenRotation(AScreenIndex);
 end;
 
 { TLazAccelerometer }
