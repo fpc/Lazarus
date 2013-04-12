@@ -132,6 +132,8 @@ function TCDWidgetSet.PromptUser(const DialogCaption : string;
                                        DefaultIndex  : LongInt;
                                        EscapeResult  : LongInt) : LongInt;
 begin
+  Result := 0;
+  Application.MessageBox(PChar(DialogMessage), PChar(DialogCaption), MB_OK);
 end;
 
 {------------------------------------------------------------------------------

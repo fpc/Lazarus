@@ -625,6 +625,7 @@ var
   Files: TStringList;
   NewNode: TTreeNode;
 begin
+  Result := False;
   // avoids crashes in the IDE by not populating during design
   if (csDesigning in ComponentState) then Exit;
 
