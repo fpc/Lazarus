@@ -1,14 +1,13 @@
-{  $Id: fileutil.pas 32656 2011-10-03 15:09:04Z sekelsenmat $  }
 {
  /***************************************************************************
                                fileutil.pas
-                               -----------
+                               ------------
 
  ***************************************************************************/
 
  *****************************************************************************
  *                                                                           *
- *  This file is part of the Lazarus Component Library (LCL)                 *
+ *  This file is part of the LazUtils package.                               *
  *                                                                           *
  *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
