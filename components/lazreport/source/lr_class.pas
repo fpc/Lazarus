@@ -7258,7 +7258,9 @@ var
                     b.Dataset.Eof then
                   begin
                     // next bands should be printed on the previous record context
-                    b.DataSet.GotoBookMark(BookPrev);
+                    // if we have a valid bookmark to previous record
+                    if BookPrev<>nil then
+                      b.DataSet.GotoBookMark(BookPrev);
                     ShowBand(b.FooterBand);
                     b2 := Bands[btGroupHeader].LastBand;
                     while b2 <> b1 do
@@ -7269,7 +7271,9 @@ var
                     end;
                     ShowBand(b1.FooterBand);
                     // advance to the actual current record
-                    b.DataSet.Next;
+                    // if we really were on previous record
+                    if BookPrev<>nil then
+                      b.DataSet.Next;
                     if not b.Dataset.Eof then
                     begin
                       if b1.NewPageAfter then NewPage;
