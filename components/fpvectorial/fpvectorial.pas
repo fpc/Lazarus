@@ -637,7 +637,7 @@ type
   protected
     FElements: TFPList; // of TvEntity
   public
-    SetPenBrushAndFontElements: TvSetPenBrushAndFontElements;
+    SetPenBrushAndFontElements: TvSetPenBrushAndFontElements;// This is not currently implemented!
     constructor Create; override;
     destructor Destroy; override;
     //
@@ -1827,7 +1827,16 @@ function TvText.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
 var
   lStr: string;
 begin
-  lStr := Format('[%s] Name=%s X=%f Y=%f Text=%s', [Self.ClassName, Name, X, Y, Value.Text]);
+  lStr := Format('[%s] Name=%s X=%f Y=%f Text="%s" Color=%s Size=%d Name=%s Orientation=%f Bold=%s Italic=%s Underline=%s StrikeThrough=%s',
+    [
+    Self.ClassName, Name, X, Y, Value.Text,
+    GenerateDebugStrForFPColor(Font.Color),
+    Font.Size, Font.Name, Font.Orientation,
+    BoolToStr(Font.Bold),
+    BoolToStr(Font.Italic),
+    BoolToStr(Font.Underline),
+    BoolToStr(Font.StrikeThrough)
+    ]);
   Result := ADestRoutine(lStr, APageItem);
 end;
 

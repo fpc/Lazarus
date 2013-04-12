@@ -773,6 +773,12 @@ begin
     ADestEntity.Font.Color := ReadSVGColor(AValue);
     Result := Result + [spbfFontColor];
   end
+  // But sometimes SVG also uses stroke! Oh no...
+  else if AKey = 'stroke' then
+  begin
+    ADestEntity.Font.Color := ReadSVGColor(AValue);
+    Result := Result + [spbfFontColor];
+  end
   else if AKey = 'fill-opacity' then
     ADestEntity.Font.Color.Alpha := StrToInt(AValue)*$101
   else if AKey = 'font-size' then
