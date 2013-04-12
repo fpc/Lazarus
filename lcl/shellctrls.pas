@@ -280,10 +280,10 @@ type
 
 const
   //ToDo: make it a resource string
-  SShellCtrlsInvalidRoot         = 'Invalid pathname:'+^m+'"%s"';
-  SShellCtrlsInvalidPath         = 'Invalid pathname:'+^m+'"%s"';
-  SShellCtrlsInvalidPathRelative = 'Invalid relative pathname:'+^m+'"%s"'+
-                                    ^m+'in relation to rootpath:'+^m+'"%s"';
+  SShellCtrlsInvalidRoot         = 'Invalid pathname:'#13'"%s"';
+  SShellCtrlsInvalidPath         = 'Invalid pathname:'#13'"%s"';
+  SShellCtrlsInvalidPathRelative = 'Invalid relative pathname:'#13'"%s"'#13
+                                    +'in relation to rootpath:'#13'"%s"';
 
 procedure Register;
 
