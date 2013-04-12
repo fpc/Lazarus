@@ -7249,13 +7249,13 @@ var
                 b1 := Bands[btGroupHeader];
                 while b1 <> nil do
                 begin
-                  curGroupValue := frParser.Calc(b1.GroupCondition);
+                  if not b.dataset.eof then
+                    curGroupValue := frParser.Calc(b1.GroupCondition);
                   {$IFDEF DebugLR}
                   DebugLn('GroupCondition=%s LastGroupValue=%s curGroupValue=%s',
                     [b1.GroupCondition,varstr(b1.LastGroupValue),varstr(curGroupValue)]);
                   {$ENDIF}
-                  if (curGroupValue <> b1.LastGroupValue) or
-                    b.Dataset.Eof then
+                  if b.dataset.eof or (curGroupValue <> b1.LastGroupValue) then
                   begin
                     // next bands should be printed on the previous record context
                     // if we have a valid bookmark to previous record
