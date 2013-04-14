@@ -2022,7 +2022,7 @@ begin
   // check if directory is already in the unit path of the package
   NewDirectory:=ExtractFilePath(AnUnitFilename);
   ShortDirectory:=NewDirectory;
-  LazPackage.ShortenFilename(ShortDirectory,false);
+  LazPackage.ShortenFilename(ShortDirectory,true);
   if ShortDirectory='' then exit;
   LazPackage.LongenFilename(NewDirectory);
   NewDirectory:=ChompPathDelim(NewDirectory);
