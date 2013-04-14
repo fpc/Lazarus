@@ -34,17 +34,16 @@ uses
   AVL_Tree, typinfo, math, Classes, SysUtils, Controls, Forms, Dialogs, LCLIntf,
   LCLType, LCLProc, FileProcs, FileUtil, IDEProcs, DialogProcs, IDEDialogs,
   LConvEncoding, LResources, PropEdits, DefineTemplates, IDEMsgIntf,
-  IDEProtocol, LazarusIDEStrConsts, NewDialog, NewProjectDlg,
-  LazIDEIntf, MainBase, MainBar, MainIntf, MenuIntf, NewItemIntf,
-  ProjectIntf, Project, ProjectDefs, ProjectInspector, CompilerOptions,
-  BasePkgManager, PackageIntf, PackageDefs, PackageSystem,
-  SrcEditorIntf, IDEWindowIntf, ComponentReg, SourceEditor, EditorOptions,
-  CustomFormEditor, FormEditor, EmptyMethodsDlg, BaseDebugManager,
-  ControlSelection, TransferMacros, EnvironmentOpts, BuildManager, Designer,
-  EditorMacroListViewer, KeywordFuncLists, FindRenameIdentifier, MsgView,
-  InputHistory, CheckLFMDlg, LCLMemManager, CodeToolManager, CodeToolsStructs,
-  ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool, BasicCodeTools,
-  UnitResources;
+  IDEProtocol, LazarusIDEStrConsts, NewDialog, NewProjectDlg, LazIDEIntf,
+  MainBase, MainBar, MainIntf, MenuIntf, NewItemIntf, ProjectIntf, Project,
+  ProjectDefs, ProjectInspector, CompilerOptions, BasePkgManager, PackageIntf,
+  PackageDefs, PackageSystem, SrcEditorIntf, IDEWindowIntf, ComponentReg,
+  SourceEditor, EditorOptions, CustomFormEditor, FormEditor, EmptyMethodsDlg,
+  BaseDebugManager, ControlSelection, TransferMacros, EnvironmentOpts,
+  BuildManager, Designer, EditorMacroListViewer, KeywordFuncLists,
+  FindRenameIdentifier, MsgView, InputHistory, CheckLFMDlg, LCLMemManager,
+  CodeToolManager, CodeToolsStructs, ConvCodeTool, CodeCache, CodeTree,
+  FindDeclarationTool, BasicCodeTools, SynEdit, UnitResources;
 
 
 type
@@ -108,6 +107,7 @@ type
         AncestorType: TPersistentClass; ResourceCode: TCodeBuffer;
         UseCreateFormStatements, DisableAutoSize: Boolean): TModalResult;
     function NewUniqueComponentName(Prefix: string): string;
+    function ReIndent(const Src: string; OldIndent: integer = 0; OldTabWidth: integer = 4): string;
 
     // methods for 'save unit'
     function ShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TUnitInfo;
@@ -536,7 +536,8 @@ begin
       NewUnitInfo.ComponentResourceName:='';
     end;
     Src:=NewFileDescriptor.CreateSource(NewUnitInfo.Filename,NewUnitName,NewUnitInfo.ComponentName);
-    // ToDo: use editor options Block Indent Spaces+Tabs
+    Src:=ReIndent(Src);
+    //debugln(['TLazSourceFileManager.NewFile ',dbgtext(Src)]);
     Src:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(Src,0);
     NewUnitInfo.Source.Source:=Src;
   end else begin
@@ -2539,6 +2540,24 @@ begin
     inc(i);
     Result:=Prefix+IntToStr(i);
   until IdentifierIsOk(Result);
+end;
+
+function TLazSourceFileManager.ReIndent(const Src: string; OldIndent: integer;
+  OldTabWidth: integer): string;
+var
+  NewTabWidth: Integer;
+  NewIndent: Integer;
+begin
+  if OldIndent=0 then
+    GuessIndentSize(Src,OldIndent,EditorOpts.TabWidth);
+  if (eoTabsToSpaces in EditorOpts.SynEditOptions)
+  or (EditorOpts.BlockTabIndent=0) then
+    NewTabWidth:=0
+  else
+    NewTabWidth:=EditorOpts.TabWidth;
+  NewIndent:=EditorOpts.BlockTabIndent*EditorOpts.TabWidth+EditorOpts.BlockIndent;
+  //debugln(['TLazSourceFileManager.ReIndent OldIndent=',OldIndent,' OldTabWidth=',OldTabWidth,' NewIndent=',NewIndent,' NewTabWidth=',NewTabWidth]);
+  Result:=BasicCodeTools.ReIndent(Src,OldIndent,OldTabWidth,NewIndent,NewTabWidth);
 end;
 
 function TLazSourceFileManager.ShowSaveFileAsDialog(var AFilename: string;

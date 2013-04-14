@@ -62,9 +62,10 @@ uses
   Classes, LCLType, LCLIntf, Buttons, Menus, SysUtils,
   typinfo, Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms,
   CodeToolManager, CodeCache, AVL_Tree, SynEditKeyCmds,
-  // IDE
+  // IDEIntf
   PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, ProjectIntf,
   CompOptsIntf, LazIDEIntf,
+  // IDE
   LazConf, LazarusIDEStrConsts,
   ProjectDefs, Project, PublishModule, BuildLazDialog,
   TransferMacros, IDEDefs, ProgressDlg,
