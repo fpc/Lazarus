@@ -597,7 +597,7 @@ procedure LvlGraphHighlightNode(Node: TLvlGraphNode;
   HighlightedElements: TAvgLvlTree; FollowIn, FollowOut: boolean);
 function CompareLGNodesByCenterPos(Node1, Node2: Pointer): integer;
 procedure DrawCurvedLvlLeftToRightEdge(Canvas: TFPCustomCanvas; x1, y1, x2, y2: integer);
-function NodeAVLTreeToNodeArray(Nodes: TAvgLvlTree; RemoveHidden: boolean): TLvlGraphNodeArray;
+function NodeAVLTreeToNodeArray(Nodes: TAvgLvlTree; RemoveHidden: boolean; FreeTree: boolean): TLvlGraphNodeArray;
 function NodeArrayAsString(Nodes: TLvlGraphNodeArray): String;
 
 // debugging
@@ -928,8 +928,8 @@ begin
   Freemem(Points);
 end;
 
-function NodeAVLTreeToNodeArray(Nodes: TAvgLvlTree; RemoveHidden: boolean
-  ): TLvlGraphNodeArray;
+function NodeAVLTreeToNodeArray(Nodes: TAvgLvlTree; RemoveHidden: boolean;
+  FreeTree: boolean): TLvlGraphNodeArray;
 var
   AVLNode: TAvgLvlTreeNode;
   Node: TLvlGraphNode;
@@ -951,6 +951,8 @@ begin
     AVLNode:=Nodes.FindSuccessor(AVLNode);
   end;
   SetLength(Result,i);
+  if FreeTree then
+    Nodes.Free;
 end;
 
 function NodeArrayAsString(Nodes: TLvlGraphNodeArray): String;
@@ -3560,7 +3562,7 @@ end;
 function TLvlGraphEdge.GetVisibleSourceNodes: TLvlGraphNodeArray;
 // return all visible nodes connected in Source direction
 begin
-  Result:=NodeAVLTreeToNodeArray(GetVisibleSourceNodesAsAVLTree,true);
+  Result:=NodeAVLTreeToNodeArray(GetVisibleSourceNodesAsAVLTree,true,true);
 end;
 
 function TLvlGraphEdge.GetVisibleSourceNodesAsAVLTree: TAvgLvlTree;
@@ -3596,7 +3598,7 @@ end;
 function TLvlGraphEdge.GetVisibleTargetNodes: TLvlGraphNodeArray;
 // return all visible nodes connected in Target direction
 begin
-  Result:=NodeAVLTreeToNodeArray(GetVisibleTargetNodesAsAVLTree,true);
+  Result:=NodeAVLTreeToNodeArray(GetVisibleTargetNodesAsAVLTree,true,true);
 end;
 
 function TLvlGraphEdge.GetVisibleTargetNodesAsAVLTree: TAvgLvlTree;
@@ -3880,7 +3882,7 @@ end;
 function TLvlGraphNode.GetVisibleSourceNodes: TLvlGraphNodeArray;
 // return all visible nodes connected in Source direction
 begin
-  Result:=NodeAVLTreeToNodeArray(GetVisibleSourceNodesAsAVLTree,true);
+  Result:=NodeAVLTreeToNodeArray(GetVisibleSourceNodesAsAVLTree,true,true);
 end;
 
 function TLvlGraphNode.GetVisibleSourceNodesAsAVLTree: TAvgLvlTree;
@@ -3910,7 +3912,7 @@ end;
 function TLvlGraphNode.GetVisibleTargetNodes: TLvlGraphNodeArray;
 // return all visible nodes connected in Target direction
 begin
-  Result:=NodeAVLTreeToNodeArray(GetVisibleTargetNodesAsAVLTree,true);
+  Result:=NodeAVLTreeToNodeArray(GetVisibleTargetNodesAsAVLTree,true,true);
 end;
 
 function TLvlGraphNode.GetVisibleTargetNodesAsAVLTree: TAvgLvlTree;
