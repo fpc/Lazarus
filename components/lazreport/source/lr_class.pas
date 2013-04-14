@@ -976,6 +976,7 @@ type
     FModalPreview: Boolean;
     FModifyPrepared: Boolean;
     FStoreInDFM: Boolean;
+    FStoreInForm: Boolean;
     FPreview: TfrPreview;
     FPreviewButtons: TfrPreviewButtons;
     FInitialZoom: TfrPreviewZoom;
@@ -1003,6 +1004,7 @@ type
     FKeyWords     : string;
     FComments     : TStringList;
     FDFMStream    : TStream;
+    FXMLReport    : string;
 
     function FormatValue(V: Variant; AFormat: Integer; const AFormatStr: String): String;
 //    function GetLRTitle: String;
@@ -1035,7 +1037,9 @@ type
     procedure DoUserFunction(const AName: String; p1, p2, p3: Variant; var Val: Variant); virtual;
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadBinaryData(Stream: TStream);
-    procedure WriteBinaryData(Stream: TStream);
+    procedure ReadStoreInDFM(Reader: TReader);
+    procedure ReadReportXML(Reader: TReader);
+    procedure WriteReportXML(Writer: TWriter);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Loaded; override;
   public
@@ -1124,7 +1128,7 @@ type
     property PreviewButtons: TfrPreviewButtons read FPreviewButtons write FPreviewButtons;
     property ReportType: TfrReportType read FReportType write FReportType default rtSimple;
     property ShowProgress: Boolean read FShowProgress write FShowProgress default True;
-    property StoreInDFM: Boolean read FStoreInDFM write FStoreInDFM default False;
+    property StoreInForm: Boolean read FStoreInForm write FStoreInForm default False;
     property DataType : TfrDataType read FDataType write FDataType;
 
     property Title: String read FTitle write FTitle;
@@ -8555,26 +8559,9 @@ end;
 procedure TfrReport.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
-  Filer.DefineBinaryProperty('ReportForm', @ReadBinaryData, @WriteBinaryData, True);
-end;
-
-procedure TfrReport.WriteBinaryData(Stream: TStream);
-var
-  n: Integer;
-  Stream1: TMemoryStream;
-begin
-  n := frCurrentVersion;
-  Stream.Write(n, 4);
-  if FStoreInDFM then
-  begin
-    Stream1 := TMemoryStream.Create;
-    SaveToStream(Stream1);
-    Stream1.Position := 0;
-    n := Stream1.Size;
-    Stream.Write(n, 4);
-    Stream.CopyFrom(Stream1, n);
-    Stream1.Free;
-  end;
+  Filer.DefineProperty('StoreInDFM', @ReadStoreInDFM, nil, false);
+  Filer.DefineProperty('ReportXML', @ReadReportXML, @WriteReportXML, fStoreInForm);
+  Filer.DefineBinaryProperty('ReportForm', @ReadBinaryData, nil, false);
 end;
 
 procedure TfrReport.ReadBinaryData(Stream: TStream);
@@ -8721,6 +8708,26 @@ procedure TfrReport.InternalOnExportText(x, y: Integer; const text: String;
   View: TfrView);
 begin
   FCurrentFilter.OnText(x, y, text, View);
+end;
+
+procedure TfrReport.ReadStoreInDFM(Reader: TReader);
+begin
+  FStoreInDFM := Reader.ReadBoolean;
+end;
+
+procedure TfrReport.ReadReportXML(Reader: TReader);
+begin
+  FXMLReport := Reader.ReadString;
+end;
+
+procedure TfrReport.WriteReportXML(Writer: TWriter);
+var
+  st: TStringStream;
+begin
+  st := TStringStream.Create('');
+  SaveToXMLStream(st);
+  Writer.WriteString(st.DataString);
+  st.free;
 end;
 
 function TfrReport.FormatValue(V: Variant;
@@ -10306,12 +10313,23 @@ begin
 end;
 
 procedure TfrReport.Loaded;
+var
+  st: TStringStream;
 begin
   inherited Loaded;
+  if FXMLReport<>'' then
+  begin
+    st := TStringStream.Create(FXMLReport);
+    LoadFromXMLStream(st);
+    st.free;
+    FXMLReport := '';
+  end;
   if assigned(FDFMStream) then
   begin
     LoadFromStream(FDFMStream);
-    FreeAndNil(FDFMStream)
+    FreeAndNil(FDFMStream);
+    FStoreInForm := true;
+    FStoreInDFM := false;
   end;
 end;
 
