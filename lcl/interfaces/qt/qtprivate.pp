@@ -27,6 +27,12 @@ interface
 
 {$I qtdefines.inc}
 
+// todo: check if build macros can handle this and define it
+// in package LCL instead (it's needed for several widgetsets)
+{$if (FPC_FULLVERSION>=20701)}
+{$define HAS_INHERITED_INSERTITEM}
+{$endif}
+
 uses
   // Bindings
   qt4,
@@ -47,7 +53,9 @@ type
     FOwner: TQtComboBox;
   protected
     procedure Put(Index: Integer; const S: string); override;
+    {$IFNDEF HAS_INHERITED_INSERTITEM}
     procedure InsertItem(Index: Integer; const S: string); override;
+    {$ENDIF}
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
     constructor Create(AWinControl: TWinControl; AOwner: TQtComboBox);
@@ -70,7 +78,9 @@ type
     FOwner: TQtListWidget;
   protected
     procedure Put(Index: Integer; const S: string); override;
+    {$IFNDEF HAS_INHERITED_INSERTITEM}
     procedure InsertItem(Index: Integer; const S: string); override;
+    {$ENDIF}
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
     constructor Create(AWinControl: TWinControl; AOwner: TQtListWidget);
@@ -471,7 +481,7 @@ begin
   FOwner.setItemText(Index, S);
   FOwner.EndUpdate;
 end;
-
+{$IFNDEF HAS_INHERITED_INSERTITEM}
 procedure TQtComboStrings.InsertItem(Index: Integer; const S: string);
 var
   FSavedIndex: Integer;
@@ -490,7 +500,7 @@ begin
   end;
   FOwner.EndUpdate;
 end;
-
+{$ENDIF}
 procedure TQtComboStrings.InsertItem(Index: Integer; const S: string; O: TObject);
 var
   FSavedIndex: Integer;
@@ -605,7 +615,7 @@ begin
     FOwner.EndUpdate;
   end;
 end;
-
+{$IFNDEF HAS_INHERITED_INSERTITEM}
 procedure TQtListStrings.InsertItem(Index: Integer; const S: string);
 begin
   inherited InsertItem(Index, S);
@@ -624,7 +634,7 @@ begin
     FOwner.EndUpdate;
   end;
 end;
-
+{$ENDIF}
 procedure TQtListStrings.InsertItem(Index: Integer; const S: string; O: TObject);
 begin
   inherited InsertItem(Index, S, O);
