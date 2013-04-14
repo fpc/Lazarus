@@ -7,6 +7,7 @@
    ./runtests --format=plain --suite=TestBasicFindNextComment
    ./runtests --format=plain --suite=TestCompareTextIgnoringSpace
    ./runtests --format=plain --suite=TestGuessIndentSize
+   ./runtests --format=plain --suite=TestReindent
 }
 unit TestBasicCodetools;
 
@@ -29,6 +30,7 @@ type
     procedure TestBasicFindNextComment;
     procedure TestCompareTextIgnoringSpace;
     procedure TestGuessIndentSize;
+    procedure TestReIndent;
   end;
 
 implementation
@@ -186,6 +188,31 @@ begin
   t('  a'#10'b',2);
   t('  a'#10#13'  b',2);
   t('  a'#10'    b'#10'  c',2);
+end;
+
+procedure TTestBasicCodeTools.TestReIndent;
+
+  procedure t(Src: string; OldIndent,OldTabWidth, NewIndentStep, NewTabWidth: integer; ExpectedSrc: string);
+  var
+    ActualSrc: String;
+  begin
+    ActualSrc:=ReIndent(Src,OldIndent,OldTabWidth, NewIndentStep, NewTabWidth);
+    if ExpectedSrc=ActualSrc then exit;
+    writeln(dbgsDiff(ExpectedSrc,ActualSrc));
+    AssertEquals('"'+DbgStr(Src)+'"',true,false);
+  end;
+
+begin
+  t('',2,4, 4,4,'');
+  t('A',2,4, 4,4,'A');
+  t(' A',2,4, 4,4,#9'A');
+  t('  A',2,4, 4,4,#9'A');
+  t('   A',2,4, 4,4,#9#9'A');
+  t('    A',2,4, 4,4,#9#9'A');
+  t('     A',2,4, 4,4,#9#9#9'A');
+  t('      A',2,4, 4,4,#9#9#9'A');
+  t(#9'A',4,4, 2,0,'  A');
+  t('A'#10'  B'#10,2,4, 3,0,'A'#10'   B'#10);
 end;
 
 initialization
