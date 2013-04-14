@@ -22,7 +22,7 @@
     <License Value="modified LGPL-2 like LCL
 "/>
     <Version Minor="6"/>
-    <Files Count="6">
+    <Files Count="7">
       <Item1>
         <Filename Value="anchordockpkg.pas"/>
         <Type Value="Main Unit"/>
@@ -48,6 +48,10 @@
         <Filename Value="anchordockoptionsdlg.pas"/>
         <UnitName Value="AnchorDockOptionsDlg"/>
       </Item6>
+      <Item7>
+        <Filename Value="anchordockoptionsdlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item7>
     </Files>
     <LazDoc Paths="doc"/>
     <i18n>
