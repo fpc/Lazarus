@@ -191,6 +191,8 @@ begin
         PackageGraph.RemoveDependencyFromPackage(Pkg,Dependency,true);
       end;
     end;
+
+    UpdateLvlGraph;
   finally
     ListOfNodeInfos.Free;
   end;
