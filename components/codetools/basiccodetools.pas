@@ -93,6 +93,8 @@ function IsFirstNonSpaceCharInLine(const Source: string;
     Position: integer): boolean;
 procedure GuessIndentSize(const Source: string;
   var IndentSize: integer; TabWidth: integer = 2; MaxLineCount: integer = 10000);
+function ReIndent(const Source: string; OldIndent, OldTabWidth,
+  NewIndent, NewTabWidth: integer): string;
 
 // identifiers
 procedure GetIdentStartEndAtPosition(const Source:string; Position:integer;
@@ -177,6 +179,8 @@ function IdentifierPos(Search, Identifier: PChar): PtrInt; // search Search in I
 function CompareAtom(p1, p2: PChar; NestedComments: boolean): integer;
 function CompareStringConstants(p1, p2: PChar): integer; // compare case sensitive
 function CompareComments(p1, p2: PChar; NestedComments: boolean): integer; // compare case insensitive
+function FindDiff(const s1, s2: string): integer;
+function dbgsDiff(Expected, Actual: string): string; overload;
 
 // dotted identifiers
 function DottedIdentifierLength(Identifier: PChar): integer;
@@ -2718,6 +2722,90 @@ begin
   end;
 end;
 
+function ReIndent(const Source: string; OldIndent, OldTabWidth,
+  NewIndent, NewTabWidth: integer): string;
+{ NewTabWidth = 0 means using spaces
+}
+var
+  Src: PChar;
+  SrcIndent: Integer;
+  DstIndent: Integer;
+  i: Integer;
+  Dst: PChar;
+
+  procedure Grow;
+  var
+    Old: PtrUInt;
+  begin
+    if (Dst^<>#0) or (Dst-PChar(Result)<>length(Result)) then exit;
+    // grow
+    Old:=Dst-PChar(Result);
+    SetLength(Result,(length(Result)*3) div 2);
+    FillByte(Result[Old+1],length(Result)-Old,ord('A'));
+    Dst:=PChar(Result)+Old;
+  end;
+
+  procedure Add(c: char); inline;
+  begin
+    //debugln(['Add c="',DbgStr(c),'"']);
+    if (Dst^=#0) then
+      Grow;
+    Dst^:=c;
+    inc(Dst);
+  end;
+
+begin
+  Result:=Source;
+  if (Result='') or (OldIndent<=0) or (OldTabWidth<0)
+  or (NewIndent<0) or (NewTabWidth<0) then exit;
+  UniqueString(Result);
+  Src:=PChar(Source);
+  Dst:=PChar(Result);
+  repeat
+    // read indent
+    SrcIndent:=0;
+    repeat
+      case Src^ of
+      ' ': inc(SrcIndent);
+      #9:
+        begin
+          SrcIndent:=SrcIndent+OldTabWidth;
+          SrcIndent:=SrcIndent-(SrcIndent mod SrcIndent);
+        end;
+      else break;
+      end;
+      inc(Src);
+    until false;
+    // write indent
+    DstIndent:=((SrcIndent+OldIndent-1) div OldIndent)*NewIndent;
+    //debugln(['ReIndent DstIndent=',DstIndent,' Src=',dbgstr(Src^),' at ',Src-PChar(Source)]);
+    if NewTabWidth>0 then begin
+      for i:=1 to (DstIndent div NewTabWidth) do
+        Add(#9);
+      for i:=1 to (DstIndent mod NewTabWidth) do
+        Add(' ');
+    end else begin
+      for i:=1 to DstIndent do
+        Add(' ');
+    end;
+    // copy line
+    repeat
+      case Src^ of
+      #0: if Src-PChar(Source)=length(Source) then break;
+      #10,#13: break;
+      end;
+      Add(Src^);
+      inc(Src);
+    until false;
+    // copy line break
+    while Src^ in [#10,#13] do begin
+      Add(Src^);
+      inc(Src);
+    end;
+  until (Src^=#0) and (Src-PChar(Source)=length(Source));
+  SetLength(Result,Dst-PChar(Result));
+end;
+
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
   Position, MinPosition: integer; NestedComments: boolean;
   StopAtDirectives: boolean; SkipSemicolonComma: boolean;
@@ -4002,6 +4090,24 @@ begin
     end;
   end;
   Result:=0;
+end;
+
+function FindDiff(const s1, s2: string): integer;
+begin
+  Result:=1;
+  while (Result<=length(s1)) and (Result<=length(s2)) and (s1[Result]=s2[Result]) do
+    inc(Result);
+end;
+
+function dbgsDiff(Expected, Actual: string): string;
+var
+  d: Integer;
+begin
+  Expected:=dbgstr(Expected);
+  Actual:=dbgstr(Actual);
+  d:=FindDiff(Expected, Actual);
+  Result:='Expected: '+dbgstr(Expected,1,d-1)+'|'+dbgstr(Expected,d,length(Expected))+LineEnding
+         +'Actual:   '+dbgstr(Actual,1,d-1)+'|'+dbgstr(Actual,d,length(Actual));
 end;
 
 function GetIdentifier(Identifier: PChar): string;
