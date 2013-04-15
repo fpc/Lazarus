@@ -815,7 +815,7 @@ begin
   Src:=MainScanner.CleanedSrc;
   SrcLen:=length(Src);
   if LineStartPos>SrcLen then exit(true);
-  OldIndent:=GetLineIndentWithTabs(Src,LineStartPos,BeautifyCodeOptions.TabWidth);
+  OldIndent:=BeautifyCodeOptions.GetLineIndent(Src,LineStartPos);
   NewIndent:=OldIndent+IndentDiff;
   if NewIndent<0 then NewIndent:=0;
   if OldIndent=NewIndent then exit(true);

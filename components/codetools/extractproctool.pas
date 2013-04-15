@@ -1265,8 +1265,7 @@ var
           break;
         end;
       until (CurPos.StartPos>SrcLen) or (CurPos.StartPos>StatementNode.EndPos);
-      IndentWith:=GetLineIndentWithTabs(Src,WithKeywordStartPos,
-                              Beauty.TabWidth);
+      IndentWith:=Beauty.GetLineIndent(Src,WithKeywordStartPos);
       WithKeywordStartPos:=FindLineEndOrCodeInFrontOfPosition(WithKeywordStartPos);
       DoKeywordEndPos:=FindLineEndOrCodeAfterPosition(DoKeywordEndPos);
       if not SourceChangeCache.Replace(gtSpace,gtNone,WithKeywordStartPos,DoKeywordEndPos,'')
@@ -1281,7 +1280,7 @@ var
 
         // unindent
         StartPos:=FindLineEndOrCodeAfterPosition(DoKeywordEndPos,true,true);
-        IndentInnerWith:=GetLineIndentWithTabs(Src,StartPos,Beauty.TabWidth);
+        IndentInnerWith:=Beauty.GetLineIndent(Src,StartPos);
         if IndentWith<IndentInnerWith then
           if not SourceChangeCache.IndentBlock(DoKeywordEndPos,EndKeywordStartPos,
             IndentWith-IndentInnerWith)
@@ -1504,8 +1503,7 @@ begin
   Beauty:=SourceChangeCache.BeautifyCodeOptions;
   if WithExpr<>'' then begin
     // add 'with expr do begin'
-    Indent:=GetLineIndentWithTabs(Src,CleanStartPos,
-                                Beauty.TabWidth);
+    Indent:=Beauty.GetLineIndent(Src,CleanStartPos);
     Code:='with '+WithExpr+' do begin';
     Code:=Beauty.BeautifyStatement(Code,Indent);
     //debugln(['TExtractProcTool.AddWithBlock Header=',Code]);
