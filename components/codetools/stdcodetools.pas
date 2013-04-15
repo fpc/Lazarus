@@ -859,7 +859,7 @@ begin
     InsertPos:=Node.StartPos;
     GetLineStartEndAtPosition(Src,InsertPos,LineStart,LineEnd);
     FirstIndent:=InsertPos-LineStart;
-    Indent:=GetLineIndent(Src,InsertPos);
+    Indent:=Beauty.GetLineIndent(Src,InsertPos);
     if PositionsInSameLine(Src,UsesNode.StartPos,InsertPos) then begin
       // for example: uses |unit1;
       inc(Indent,Beauty.Indent);
@@ -2753,7 +2753,7 @@ begin
     until (CurPos.StartPos>SrcLen);
     if FromPos<1 then exit;
     SourceChangeCache.MainScanner:=Scanner;
-    Indent:=GetLineIndent(Src,FromPos);
+    Indent:=Beauty.GetLineIndent(Src,FromPos);
     FromPos:=FindLineEndOrCodeInFrontOfPosition(FromPos);
     SourceChangeCache.Replace(gtNewLine,gtNewLine,FromPos,FromPos,
        Beauty.BeautifyStatement(
@@ -2868,6 +2868,7 @@ var Position, InsertPos, i, ColonPos, Indent: integer;
   MainBeginNode: TCodeTreeNode;
   AClassName, AVarName: string;
   LastEndPos: Integer;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:= false;
   if (List = nil) or (SourceChangeCache = nil) then exit;
@@ -2875,6 +2876,7 @@ begin
 
   { first delete all CreateForm Statements }
   SourceChangeCache.MainScanner:= Scanner;
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   MainBeginNode:=FindMainBeginEndNode;
   if MainBeginNode = nil then exit;
   Position:=MainBeginNode.StartPos;
@@ -2928,7 +2930,7 @@ begin
       AVarName:= List[i];  
       AClassName:= 'T' + AVarName;
     end;  
-    Indent:= GetLineIndent(Src, InsertPos);
+    Indent:=Beauty.GetLineIndent(Src, InsertPos);
 
     SourceChangeCache.Replace(gtNewLine, gtNewLine, InsertPos, InsertPos,
       SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
@@ -2999,15 +3001,17 @@ var
   NewStatement: String;
   Indent: Integer;
   MainBeginNode: TCodeTreeNode;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
   // search old Application.Title:= statement
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   OldExists:=FindApplicationTitleStatement(StartPos,StringConstStartPos,EndPos);
   if StringConstStartPos=0 then ;
   if OldExists then begin
     // replace old statement
     Indent:=0;
-    Indent:=GetLineIndent(Src,StartPos)
+    Indent:=Beauty.GetLineIndent(Src,StartPos)
   end else begin
     // insert as first line in program begin..end block
     MainBeginNode:=FindMainBeginEndNode;
@@ -3016,13 +3020,11 @@ begin
     ReadNextAtom;
     StartPos:=CurPos.EndPos;
     EndPos:=StartPos;
-    Indent:=GetLineIndent(Src,StartPos)
-            +SourceChangeCache.BeautifyCodeOptions.Indent;
+    Indent:=Beauty.GetLineIndent(Src,StartPos)+Beauty.Indent;
   end;
   // create statement
   NewStatement:='Application.Title:='+StringToPascalConst(NewTitle)+';';
-  NewStatement:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-    NewStatement,Indent);
+  NewStatement:=Beauty.BeautifyStatement(NewStatement,Indent);
   SourceChangeCache.MainScanner:=Scanner;
   if not SourceChangeCache.Replace(gtNewLine,gtNewLine,StartPos,EndPos,
                                    NewStatement)
@@ -4280,6 +4282,7 @@ var
   InsertPos: Integer;
   InsertSrc: String;
   NearestCleanPos: integer;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
   //DebugLn('TStandardCodeTool.AddResourcestring A ',NewIdentifier,'=',NewValue,' ');
@@ -4295,13 +4298,13 @@ begin
   if (SectionNode=nil) then exit;
   SectionNode:=SectionNode.GetNodeOfType(ctnResStrSection);
   if SectionNode=nil then exit;
-  
+
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   //DebugLn('TStandardCodeTool.AddResourcestring D SectionChilds=',SectionNode.FirstChild<>nil);
   // find insert position
   if SectionNode.FirstChild=nil then begin
     // no resourcestring in this section yet -> append as first child
-    Indent:=GetLineIndent(Src,SectionNode.StartPos)
-            +SourceChangeCache.BeautifyCodeOptions.Indent;
+    Indent:=Beauty.GetLineIndent(Src,SectionNode.StartPos)+Beauty.Indent;
     InsertPos:=SectionNode.StartPos+length('RESOURCESTRING');
   end else begin
     // search insert position
@@ -4320,11 +4323,11 @@ begin
         end;
         if ANode=nil then begin
           // append new identifier as last
-          Indent:=GetLineIndent(Src,SectionNode.LastChild.StartPos);
+          Indent:=Beauty.GetLineIndent(Src,SectionNode.LastChild.StartPos);
           InsertPos:=FindLineEndOrCodeAfterPosition(SectionNode.LastChild.EndPos);
         end else begin
           // insert in front of node
-          Indent:=GetLineIndent(Src,ANode.StartPos);
+          Indent:=Beauty.GetLineIndent(Src,ANode.StartPos);
           InsertPos:=FindLineEndOrCodeInFrontOfPosition(ANode.StartPos);
         end;
       end;
@@ -4348,11 +4351,11 @@ begin
         end;
         if ANode=nil then begin
           // append new identifier as last
-          Indent:=GetLineIndent(Src,SectionNode.LastChild.StartPos);
+          Indent:=Beauty.GetLineIndent(Src,SectionNode.LastChild.StartPos);
           InsertPos:=FindLineEndOrCodeAfterPosition(SectionNode.LastChild.EndPos);
         end else begin
           // insert behind node
-          Indent:=GetLineIndent(Src,ANode.StartPos);
+          Indent:=Beauty.GetLineIndent(Src,ANode.StartPos);
           InsertPos:=FindLineEndOrCodeAfterPosition(ANode.EndPos);
         end;
       end;
@@ -4360,7 +4363,7 @@ begin
     else
       begin
         // append new identifier
-        Indent:=GetLineIndent(Src,SectionNode.LastChild.StartPos);
+        Indent:=Beauty.GetLineIndent(Src,SectionNode.LastChild.StartPos);
         InsertPos:=FindLineEndOrCodeAfterPosition(SectionNode.LastChild.EndPos);
       end;
     end;
@@ -4414,6 +4417,7 @@ function TStandardCodeTool.AddPublishedVariable(const AClassName,
   VarName, VarType: string; SourceChangeCache: TSourceChangeCache): boolean;
 var ClassNode, SectionNode: TCodeTreeNode;
   Indent, InsertPos: integer;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
   if (AClassName='') or (length(AClassName)>255) then
@@ -4437,16 +4441,15 @@ begin
   and (SectionNode.NextBrother.Desc=ctnClassPublished) then
     SectionNode:=SectionNode.NextBrother;
   SourceChangeCache.MainScanner:=Scanner;
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   if SectionNode.FirstChild<>nil then begin
-    Indent:=GetLineIndent(Src,SectionNode.FirstChild.StartPos);
+    Indent:=Beauty.GetLineIndent(Src,SectionNode.FirstChild.StartPos);
   end else begin
-    Indent:=GetLineIndent(Src,SectionNode.StartPos)
-              +SourceChangeCache.BeautifyCodeOptions.Indent;
+    Indent:=Beauty.GetLineIndent(Src,SectionNode.StartPos)+Beauty.Indent;
   end;
   InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.EndPos);
   SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
-          SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-                     VarName+':'+VarType+';',Indent)
+          Beauty.BeautifyStatement(VarName+':'+VarType+';',Indent)
        );
   Result:=SourceChangeCache.Apply;
 end;
@@ -5269,6 +5272,7 @@ var
   CleanCursorPos: integer;
   StartNode: TCodeTreeNode;
   InternalCursorAtEmptyLine: TExBool;
+  Beauty: TBeautifyCodeOptions;
 
   function CursorAtEmptyLine: Boolean;
   // true if cursor in empty line or at line end in front of an empty line
@@ -5400,17 +5404,17 @@ var
     // adjust indent of first line
     if FrontGap in [gtNone,gtSpace] then begin
       BeautifyFlags:=BeautifyFlags+[bcfDoNotIndentFirstLine];
-      NewCode:=GetIndentStr(Indent-GetPosInLine(Src,FromPos))+NewCode;
+      NewCode:=Beauty.GetIndentStr(Indent-GetPosInLine(Src,FromPos))+NewCode;
     end;
     // beautify
-    NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+    NewCode:=Beauty.BeautifyStatement(
                      NewCode,Indent,BeautifyFlags);
 
     if AfterGap=gtNewLine then begin
       // do not reuse existing newline, but always add newline
-      NewCode:=NewCode+SourceChangeCache.BeautifyCodeOptions.LineEnd;
+      NewCode:=NewCode+Beauty.LineEnd;
       if (ToPos<SrcLen) and (not (Src[ToPos] in [#10,#13])) then
-        NewCode:=NewCode+GetIndentStr(GetLineIndent(Src,ToPos));
+        NewCode:=NewCode+Beauty.GetIndentStr(Beauty.GetLineIndent(Src,ToPos));
       AfterGap:=gtNone;
     end;
     {$IFDEF VerboseCompleteBlock}
@@ -5451,7 +5455,7 @@ var
       //DebugLn(['EndBlockIsOk ']);
       if (NeedCompletion>0) and (CursorBlockLvl>=0)
       and (Stack.Top=CursorBlockLvl)
-      and (GetLineIndent(Src,CurPos.StartPos)=CursorBlockOuterIndent) then begin
+      and (Beauty.GetLineIndent(Src,CurPos.StartPos)=CursorBlockOuterIndent) then begin
         // cursor block is properly closed => do not complete
         {$IFDEF VerboseCompleteBlock}
         debugln(['EndBlockIsOk cursor block is properly closed at ',CleanPosToStr(CurPos.StartPos)]);
@@ -5499,7 +5503,7 @@ var
       and (not PositionsInSameLine(Src,Stack.Stack[Stack.Top].StartPos,CurPos.StartPos))
       then begin
         // the first atom of this block is on a new line
-        Stack.Stack[Stack.Top].InnerIndent:=GetLineIndent(Src,CurPos.StartPos);
+        Stack.Stack[Stack.Top].InnerIndent:=Beauty.GetLineIndent(Src,CurPos.StartPos);
         Stack.Stack[Stack.Top].InnerStartPos:=CurPos.StartPos;
       end;
 
@@ -5515,7 +5519,7 @@ var
           exit;
         end else begin
           CursorBlock:=Stack.Stack[CursorBlockLvl];
-          CursorBlockOuterIndent:=GetLineIndent(Src,CursorBlock.StartPos);
+          CursorBlockOuterIndent:=Beauty.GetLineIndent(Src,CursorBlock.StartPos);
           CursorBlockInnerIndent:=Stack.Stack[Stack.Top].InnerIndent;
           if (CursorBlockInnerIndent<=CursorBlockOuterIndent)
           and OnlyIfCursorBlockIndented then begin
@@ -5561,7 +5565,7 @@ var
       LineStart:=InCursorBlock and (LastPos>0)
                  and not PositionsInSameLine(Src,LastPos,CurPos.StartPos);
       if LineStart then
-        Indent:=GetLineIndent(Src,CurPos.StartPos);
+        Indent:=Beauty.GetLineIndent(Src,CurPos.StartPos);
       if LineStart and (NeedCompletion=0) then begin
         // atom is in same block as cursor (not sub block)
         // and first atom of a line
@@ -5892,7 +5896,7 @@ var
           {$ENDIF}
           exit;
         end;
-        if (GetLineIndent(Src,BehindPos)>Indent) then begin
+        if (Beauty.GetLineIndent(Src,BehindPos)>Indent) then begin
           // code behind is more indented
           // for example
           //   repeat
@@ -5900,7 +5904,7 @@ var
           //     DoSomething;
           debugln(['CompleteStatements BehindPos ',dbgstr(copy(Src,BehindPos-8,8)),'|',dbgstr(copy(Src,BehindPos,8))]);
           {$IFDEF VerboseCompleteBlock}
-          DebugLn(['CompleteStatements code behind is indented more (Behind=',GetLineIndent(Src,BehindPos),' > Indent=',Indent,') => skip']);
+          DebugLn(['CompleteStatements code behind is indented more (Behind=',Beauty.GetLineIndent(Src,BehindPos),' > Indent=',Indent,') => skip']);
           {$ENDIF}
           exit;
         end;
@@ -5956,10 +5960,10 @@ var
   begin
     Result:=false;
     if CleanCursorPos<StartNode.StartPos then exit;
-    LastIndent:=GetLineIndent(Src,StartNode.Parent.StartPos);
+    LastIndent:=Beauty.GetLineIndent(Src,StartNode.Parent.StartPos);
     MoveCursorToNodeStart(StartNode);
     //debugln(['CompleteClassSection ',dbgstr(copy(Src,StartNode.StartPos-10,10)),'|',dbgstr(copy(Src,StartNode.StartPos,10))]);
-    Indent:=GetLineIndent(Src,CurPos.StartPos);
+    Indent:=Beauty.GetLineIndent(Src,CurPos.StartPos);
     if Indent<LastIndent then
       LastIndent:=Indent;
     ReadNextAtom;
@@ -5983,7 +5987,7 @@ var
         end else
           exit(true);
       end else begin
-        Indent:=GetLineIndent(Src,CurPos.StartPos);
+        Indent:=Beauty.GetLineIndent(Src,CurPos.StartPos);
         if Indent<LastIndent then begin
           { For example:
                 TMyClass = class
@@ -6017,14 +6021,14 @@ var
   begin
     Result:=false;
     if CleanCursorPos<StartNode.StartPos then exit;
-    LastIndent:=GetLineIndent(Src,StartNode.StartPos);
+    LastIndent:=Beauty.GetLineIndent(Src,StartNode.StartPos);
     MoveCursorToNodeStart(StartNode);
     ReadNextAtom;
     if CleanCursorPos<CurPos.EndPos then exit(true);
     ReadNextAtom;
     if CurPos.Flag=cafEnd then exit(true);
     if CleanCursorPos<=CurPos.StartPos then begin
-      Indent:=GetLineIndent(Src,CurPos.StartPos);
+      Indent:=Beauty.GetLineIndent(Src,CurPos.StartPos);
       InsertPos:=CleanCursorPos;
       if Indent<LastIndent then begin
         if not Replace('end;',InsertPos,InsertPos,LastIndent,
@@ -6049,14 +6053,14 @@ var
   begin
     Result:=false;
     if CleanCursorPos<StartNode.StartPos then exit;
-    LastIndent:=GetLineIndent(Src,StartNode.StartPos);
+    LastIndent:=Beauty.GetLineIndent(Src,StartNode.StartPos);
     MoveCursorToNodeStart(StartNode);
     ReadNextAtom; // record
     if CleanCursorPos<CurPos.EndPos then exit(true);
     ReadNextAtom;
     if CurPos.Flag=cafEnd then exit(true);
     if CleanCursorPos<=CurPos.StartPos then begin
-      Indent:=GetLineIndent(Src,CurPos.StartPos);
+      Indent:=Beauty.GetLineIndent(Src,CurPos.StartPos);
       InsertPos:=CleanCursorPos;
       if Indent<=LastIndent then begin
         if not Replace('end;',InsertPos,InsertPos,LastIndent,
@@ -6080,6 +6084,7 @@ begin
 
   InternalCursorAtEmptyLine:=ebNone;
   SourceChangeCache.MainScanner:=Scanner;
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   InitStack(Stack);
   try
     //DebugLn(['TStandardCodeTool.CompleteBlock ',StartNode.DescAsString]);
@@ -6235,23 +6240,25 @@ var
   Indent: LongInt;
   InsertPos: Integer;
   AddSrc: String;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
   BuildTree(lsrEnd);
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   // find an insert position
   ANode:=FindImplementationNode;
   if ANode<>nil then begin
-    Indent:=GetLineIndent(Src,ANode.StartPos);
+    Indent:=Beauty.GetLineIndent(Src,ANode.StartPos);
     InsertPos:=ANode.StartPos+length('implementation');
   end else begin
     ANode:=FindMainBeginEndNode;
     if ANode<>nil then begin
-      Indent:=GetLineIndent(Src,ANode.StartPos);
+      Indent:=Beauty.GetLineIndent(Src,ANode.StartPos);
       InsertPos:=ANode.StartPos;
     end else begin
       ANode:=FindMainUsesSection;
       if ANode<>nil then begin
-        Indent:=GetLineIndent(Src,ANode.StartPos);
+        Indent:=Beauty.GetLineIndent(Src,ANode.StartPos);
         InsertPos:=ANode.StartPos;
       end else begin
         Indent:=0;
@@ -6332,14 +6339,15 @@ var
   Indent: LongInt;
   InsertPos: Integer;
   AddSrc: String;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
   BuildTree(lsrEnd);
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   // find an insert position
   ANode:=FindInitializationNode;
   if ANode<>nil then begin
-    Indent:=GetLineIndent(Src,ANode.StartPos)
-            +SourceChangeCache.BeautifyCodeOptions.Indent;
+    Indent:=Beauty.GetLineIndent(Src,ANode.StartPos)+Beauty.Indent;
     InsertPos:=ANode.StartPos+length('initialization');
   end else begin
     ANode:=FindMainBeginEndNode;
@@ -6347,8 +6355,7 @@ begin
       MoveCursorToNodeStart(ANode);
       ReadNextAtom;
       //debugln(['TStandardCodeTool.AddIncludeDirective ',GetAtom]);
-      Indent:=GetLineIndent(Src,CurPos.StartPos)
-              +SourceChangeCache.BeautifyCodeOptions.Indent;
+      Indent:=Beauty.GetLineIndent(Src,CurPos.StartPos)+Beauty.Indent;
       InsertPos:=CurPos.EndPos;
     end else begin
       debugln(['TStandardCodeTool.AddIncludeDirective ToDo: add initialization / begin..end']);
@@ -6639,10 +6646,10 @@ begin
       or ((BlockType=bkwRepeat) and (CurBlockWord=bkwUntil)) then begin
         // block end found
         if (MinCleanPos<=CurPos.StartPos)
-        and (GetLineIndent(Src,CurPos.StartPos)<>GetLineIndent(Src,BlockStart))
+        and (Beautifier.GetLineIndent(Src,CurPos.StartPos)<>Beautifier.GetLineIndent(Src,BlockStart))
         then begin
           // different indent -> unclosed block found
-          if GetLineIndent(Src,BlockStart)>GetLineIndent(Src,CurPos.StartPos)
+          if Beautifier.GetLineIndent(Src,BlockStart)>Beautifier.GetLineIndent(Src,CurPos.StartPos)
           then begin
             // the current block is more indented than the next block
             // -> probably the current block misses a block end
@@ -6664,7 +6671,7 @@ begin
       begin
         // try..finally, try..except found
         if (MinCleanPos<=CurPos.StartPos)
-        and (GetLineIndent(Src,CurPos.StartPos)<>GetLineIndent(Src,BlockStart))
+        and (Beautifier.GetLineIndent(Src,CurPos.StartPos)<>Beautifier.GetLineIndent(Src,BlockStart))
         then begin
           // different indent -> unclosed block found
           //   probably a block start is missing, so the error position is
@@ -6699,7 +6706,7 @@ begin
       else
       begin
         // unexpected keyword found
-        if GetLineIndent(Src,BlockStart)>=GetLineIndent(Src,CurPos.StartPos)
+        if Beautifier.GetLineIndent(Src,BlockStart)>=Beautifier.GetLineIndent(Src,CurPos.StartPos)
         then begin
           // the current block is more or equal indented than the next block
           // -> probably the current block misses a block end
