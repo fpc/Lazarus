@@ -1015,6 +1015,8 @@ type
     procedure ClearExecutionMarks;
     procedure FillExecutionMarks;
     procedure ReloadEditorOptions;
+    function ReIndent(const Src: string; OldIndent: integer=0;
+      OldTabWidth: integer=4): string; override;
     // find / replace text
     procedure FindClicked(Sender: TObject);
     procedure FindNextClicked(Sender: TObject);
@@ -5463,7 +5465,7 @@ begin
   Manager.DeactivateCompletionForm;
 end;
 
-Procedure TSourceNotebook.CreateNotebook;
+procedure TSourceNotebook.CreateNotebook;
 var
   APage: TTabSheet;
 Begin
@@ -6026,7 +6028,7 @@ begin
   Result:=TSourceEditorInterface(FSourceEditorList[Index]);
 end;
 
-Procedure TSourceNotebook.BuildPopupMenu;
+procedure TSourceNotebook.BuildPopupMenu;
 begin
   //debugln('TSourceNotebook.BuildPopupMenu');
 
@@ -6308,7 +6310,7 @@ end;
 
   Called whenever an editor status changes. Sender is normally a TSynEdit.
 -------------------------------------------------------------------------------}
-Procedure TSourceNotebook.EditorChanged(Sender: TObject);
+procedure TSourceNotebook.EditorChanged(Sender: TObject);
 var SenderDeleted: boolean;
 Begin
   SenderDeleted:=(Sender as TControl).Parent=nil;
@@ -6398,8 +6400,8 @@ begin
   Result := SourceEditorManager.CompletionPlugins[Index];
 end;
 
-function TSourceNotebook.NewSE(PageNum: Integer; NewPageNum: Integer = -1;
-  ASharedEditor: TSourceEditor = nil; ATabCaption: String = ''): TSourceEditor;
+function TSourceNotebook.NewSE(Pagenum: Integer; NewPagenum: Integer;
+  ASharedEditor: TSourceEditor; ATabCaption: String): TSourceEditor;
 begin
   {$IFDEF IDE_DEBUG}
   debugln('TSourceNotebook.NewSE A ');
@@ -6477,7 +6479,7 @@ begin
   Result := TSourceEditor(FSourceEditorList[i]);
 end;
 
-Function TSourceNotebook.GetActiveSE: TSourceEditor;
+function TSourceNotebook.GetActiveSE: TSourceEditor;
 Begin
   Result := nil;
   if (FSourceEditorList=nil) or (FSourceEditorList.Count=0) or (PageIndex<0) then
@@ -6713,7 +6715,7 @@ begin
   UpdateStatusBar;
 end;
 
-Procedure TSourceNotebook.NextEditor;
+procedure TSourceNotebook.NextEditor;
 Begin
   if PageIndex < PageCount-1 then
     PageIndex := PageIndex+1
@@ -6721,7 +6723,7 @@ Begin
     PageIndex := 0;
 End;
 
-Procedure TSourceNotebook.PrevEditor;
+procedure TSourceNotebook.PrevEditor;
 Begin
   if PageIndex > 0 then
     PageIndex := PageIndex-1
@@ -7091,13 +7093,13 @@ begin
   MainIDEInterface.DoShowProjectInspector(True);
 end;
 
-Procedure TSourceNotebook.OpenAtCursorClicked(Sender: TObject);
+procedure TSourceNotebook.OpenAtCursorClicked(Sender: TObject);
 begin
   if assigned(Manager) and Assigned(Manager.OnOpenFileAtCursorClicked) then
     Manager.OnOpenFileAtCursorClicked(Sender);
 end;
 
-Procedure TSourceNotebook.CutClicked(Sender: TObject);
+procedure TSourceNotebook.CutClicked(Sender: TObject);
 var ActSE: TSourceEditor;
 begin
   ActSE := GetActiveSE;
@@ -7105,7 +7107,7 @@ begin
     ActSE.DoEditorExecuteCommand(ecCut);
 end;
 
-Procedure TSourceNotebook.CopyClicked(Sender: TObject);
+procedure TSourceNotebook.CopyClicked(Sender: TObject);
 var ActSE: TSourceEditor;
 begin
   ActSE := GetActiveSE;
@@ -7113,7 +7115,7 @@ begin
     ActSE.DoEditorExecuteCommand(ecCopy);
 end;
 
-Procedure TSourceNotebook.PasteClicked(Sender: TObject);
+procedure TSourceNotebook.PasteClicked(Sender: TObject);
 var ActSE: TSourceEditor;
 begin
   ActSE := GetActiveSE;
@@ -7374,7 +7376,7 @@ begin
   Result:=FSourceEditorList.Count;
 end;
 
-Procedure TSourceNotebook.CloseClicked(Sender: TObject; CloseOthers: Boolean = False);
+procedure TSourceNotebook.CloseClicked(Sender: TObject; CloseOthers: Boolean);
 Begin
   if assigned(Manager) and Assigned(Manager.OnCloseClicked) then
     Manager.OnCloseClicked(Sender, CloseOthers);
@@ -7472,7 +7474,7 @@ begin
   GetActiveSE.IsLocked := not GetActiveSE.IsLocked;
 end;
 
-Procedure TSourceNotebook.UpdateStatusBar;
+procedure TSourceNotebook.UpdateStatusBar;
 var
   tempEditor: TSourceEditor;
   PanelFilename: String;
@@ -7685,7 +7687,7 @@ begin
   FUpdateTabAndPageTimer.Enabled := True;
 end;
 
-Procedure TSourceNotebook.NotebookPageChanged(Sender: TObject);
+procedure TSourceNotebook.NotebookPageChanged(Sender: TObject);
 var
   TempEditor:TSourceEditor;
   CaretXY: TPoint;
@@ -7745,7 +7747,7 @@ Begin
   DebugLnExit(SRCED_PAGES, ['<< TSourceNotebook.NotebookPageChanged ']);
 end;
 
-Procedure TSourceNotebook.ProcessParentCommand(Sender: TObject;
+procedure TSourceNotebook.ProcessParentCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
   var Handled: boolean);
 var
@@ -7858,7 +7860,7 @@ begin
   FProcessingCommand:=false;
 end;
 
-Procedure TSourceNotebook.ParentCommandProcessed(Sender: TObject;
+procedure TSourceNotebook.ParentCommandProcessed(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
   var Handled: boolean);
 begin
@@ -7873,7 +7875,7 @@ begin
   if Handled then Command:=ecNone;
 end;
 
-Procedure TSourceNotebook.ReloadEditorOptions;
+procedure TSourceNotebook.ReloadEditorOptions;
 var
   I: integer;
 Begin
@@ -7935,8 +7937,8 @@ begin
   dec(fAutoFocusLock);
 end;
 
-Procedure TSourceNotebook.EditorMouseMove(Sender: TObject; Shift: TShiftstate;
-  X,Y: Integer);
+procedure TSourceNotebook.EditorMouseMove(Sender: TObject; Shift: TShiftstate;
+  X, Y: Integer);
 begin
   MaybeHideHint;
 
@@ -8021,7 +8023,7 @@ begin
   SrcEdit.CursorScreenXY:=Point(Indent+1,SrcEdit.CursorScreenXY.Y);
 end;
 
-Procedure TSourceNotebook.HintTimer(sender: TObject);
+procedure TSourceNotebook.HintTimer(Sender: TObject);
 var
   MousePos: TPoint;
   AControl: TControl;
@@ -9272,6 +9274,24 @@ begin
   end;
 end;
 
+function TSourceEditorManager.ReIndent(const Src: string; OldIndent: integer;
+  OldTabWidth: integer): string;
+var
+  NewTabWidth: Integer;
+  NewIndent: Integer;
+begin
+  if OldIndent=0 then
+    GuessIndentSize(Src,OldIndent,EditorOpts.TabWidth);
+  if (eoTabsToSpaces in EditorOpts.SynEditOptions)
+  or (EditorOpts.BlockTabIndent=0) then
+    NewTabWidth:=0
+  else
+    NewTabWidth:=EditorOpts.TabWidth;
+  NewIndent:=EditorOpts.BlockTabIndent*EditorOpts.TabWidth+EditorOpts.BlockIndent;
+  //debugln(['TSourceEditorManager.ReIndent OldIndent=',OldIndent,' OldTabWidth=',OldTabWidth,' NewIndent=',NewIndent,' NewTabWidth=',NewTabWidth]);
+  Result:=BasicCodeTools.ReIndent(Src,OldIndent,OldTabWidth,NewIndent,NewTabWidth);
+end;
+
 procedure TSourceEditorManager.FindClicked(Sender: TObject);
 begin
   if ActiveEditor <> nil then ActiveEditor.StartFindAndReplace(false);
@@ -9708,7 +9728,8 @@ begin
   end;
 end;
 
-procedure TSourceEditorManager.OnFilesDroping(Sender: TObject; const FileNames: Array of String);
+procedure TSourceEditorManager.OnFilesDroping(Sender: TObject;
+  const FileNames: array of String);
 begin
   if Sender is TSourceNotebook then
     ActiveSourceWindow := TSourceNotebook(Sender);

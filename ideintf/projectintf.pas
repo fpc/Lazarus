@@ -65,7 +65,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure SetSourceText(const SourceText: string); virtual; abstract;
+    procedure SetSourceText(const SourceText: string; Beautify: boolean = false); virtual; abstract;
     function GetSourceText: string; virtual; abstract;
     procedure ClearModifieds; virtual; abstract;
   public

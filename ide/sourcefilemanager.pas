@@ -107,7 +107,6 @@ type
         AncestorType: TPersistentClass; ResourceCode: TCodeBuffer;
         UseCreateFormStatements, DisableAutoSize: Boolean): TModalResult;
     function NewUniqueComponentName(Prefix: string): string;
-    function ReIndent(const Src: string; OldIndent: integer = 0; OldTabWidth: integer = 4): string;
 
     // methods for 'save unit'
     function ShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TUnitInfo;
@@ -536,7 +535,7 @@ begin
       NewUnitInfo.ComponentResourceName:='';
     end;
     Src:=NewFileDescriptor.CreateSource(NewUnitInfo.Filename,NewUnitName,NewUnitInfo.ComponentName);
-    Src:=ReIndent(Src);
+    Src:=SourceEditorManager.ReIndent(Src);
     //debugln(['TLazSourceFileManager.NewFile ',dbgtext(Src)]);
     Src:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(Src,0);
     NewUnitInfo.Source.Source:=Src;
@@ -2540,24 +2539,6 @@ begin
     inc(i);
     Result:=Prefix+IntToStr(i);
   until IdentifierIsOk(Result);
-end;
-
-function TLazSourceFileManager.ReIndent(const Src: string; OldIndent: integer;
-  OldTabWidth: integer): string;
-var
-  NewTabWidth: Integer;
-  NewIndent: Integer;
-begin
-  if OldIndent=0 then
-    GuessIndentSize(Src,OldIndent,EditorOpts.TabWidth);
-  if (eoTabsToSpaces in EditorOpts.SynEditOptions)
-  or (EditorOpts.BlockTabIndent=0) then
-    NewTabWidth:=0
-  else
-    NewTabWidth:=EditorOpts.TabWidth;
-  NewIndent:=EditorOpts.BlockTabIndent*EditorOpts.TabWidth+EditorOpts.BlockIndent;
-  //debugln(['TLazSourceFileManager.ReIndent OldIndent=',OldIndent,' OldTabWidth=',OldTabWidth,' NewIndent=',NewIndent,' NewTabWidth=',NewTabWidth]);
-  Result:=BasicCodeTools.ReIndent(Src,OldIndent,OldTabWidth,NewIndent,NewTabWidth);
 end;
 
 function TLazSourceFileManager.ShowSaveFileAsDialog(var AFilename: string;

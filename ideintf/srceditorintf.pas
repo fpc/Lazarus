@@ -312,7 +312,10 @@ type
     // Editor Preferences
     function GetEditorControlSettings(EditControl: TControl): boolean; virtual; abstract;
     function GetHighlighterSettings(Highlighter: TObject): boolean; virtual; abstract;
+    // Messages
     procedure ClearErrorLines; virtual; abstract;
+    // General source functions
+    function ReIndent(const Src: string; OldIndent: integer = 0; OldTabWidth: integer = 4): string; virtual; abstract;
   protected
     // Completion Plugins
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; virtual; abstract;

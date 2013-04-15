@@ -377,7 +377,7 @@ type
     procedure UpdateUsageCount(TheUsage: TUnitUsage; const Factor: TDateTime);
     procedure UpdateSourceDirectoryReference;
 
-    procedure SetSourceText(const SourceText: string); override;
+    procedure SetSourceText(const SourceText: string; Beautify: boolean = false); override;
     function GetSourceText: string; override;
 
     // component dependencies
@@ -2125,9 +2125,14 @@ begin
   end;
 end;
 
-procedure TUnitInfo.SetSourceText(const SourceText: string);
+procedure TUnitInfo.SetSourceText(const SourceText: string; Beautify: boolean);
+var
+  Src: String;
 begin
-  Source.Source:=SourceText;
+  Src:=SourceText;
+  if Beautify then
+    Src:=SourceEditorManagerIntf.ReIndent(Src);
+  Source.Source:=Src;
 end;
 
 function TUnitInfo.GetSourceText: string;

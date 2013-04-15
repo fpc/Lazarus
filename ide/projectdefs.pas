@@ -1309,7 +1309,7 @@ begin
     +'  Application.Run;'+LineEnding
     +'end.'+LineEnding
     +LineEnding;
-  AProject.MainFile.SetSourceText(NewSource);
+  AProject.MainFile.SetSourceText(NewSource,true);
 
   // add lcl pp/pas dirs to source search path
   AProject.AddPackageDependency('LCL');
@@ -1363,7 +1363,7 @@ begin
     +'begin'+LineEnding
     +'end.'+LineEnding
     +LineEnding;
-  AProject.MainFile.SetSourceText(NewSource);
+  AProject.MainFile.SetSourceText(NewSource,true);
 
   AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   AProject.LazCompilerOptions.TargetFilename:='project1';
@@ -1422,7 +1422,7 @@ begin
     +'begin'+LineEnding
     +'end.'+LineEnding
     +LineEnding;
-  AProject.MainFile.SetSourceText(NewSource);
+  AProject.MainFile.SetSourceText(NewSource,true);
 
   AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   AProject.LazCompilerOptions.TargetFilename:='project1';
@@ -1484,7 +1484,7 @@ begin
       +'begin'+LineEnding
       +'end.'+LineEnding
       +LineEnding;
-    AProject.MainFile.SetSourceText(NewSource);
+    AProject.MainFile.SetSourceText(NewSource,true);
     AProject.LazCompilerOptions.Win32GraphicApp:=false;
   end;
 end;
@@ -1664,7 +1664,7 @@ begin
   NewSource.Add('  Application.Free;');
   NewSource.Add('end.');
   NewSource.Add('');
-  AProject.MainFile.SetSourceText(NewSource.Text);
+  AProject.MainFile.SetSourceText(NewSource.Text,true);
   NewSource.Free;
 end;
 
@@ -1720,7 +1720,7 @@ begin
     +'begin'+LineEnding
     +'end.'+LineEnding
     +LineEnding;
-  AProject.MainFile.SetSourceText(NewSource);
+  AProject.MainFile.SetSourceText(NewSource,true);
 
   AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   AProject.LazCompilerOptions.TargetFilename:='project1';
