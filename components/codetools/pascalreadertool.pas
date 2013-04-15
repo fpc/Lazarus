@@ -235,8 +235,6 @@ type
           WithCommentBounds, CaseSensitive, IgnoreSpaces,
           CompareOnlyStart: boolean;
           out CommentStart, CommentEnd: integer): boolean;
-    function CommentCode(const StartPos, EndPos: integer;
-          SourceChangeCache: TSourceChangeCache; Apply: boolean): boolean;
     function GetPasDocComments(const StartPos: TCodeXYPosition;
                                InvokeBuildTree: boolean;
                                out ListOfPCodeXYPosition: TFPList): boolean;
@@ -3043,53 +3041,6 @@ begin
   Result:=(FoundStartPos>=1);
   CommentStart:=FoundStartPos;
   CommentEnd:=FoundEndPos;
-end;
-
-function TPascalReaderTool.CommentCode(const StartPos, EndPos: integer;
-  SourceChangeCache: TSourceChangeCache; Apply: boolean): boolean;
-var
-  i: LongInt;
-  CurStartPos: LongInt;
-  CommentNeeded: Boolean;
-  CurEndPos: LongInt;
-begin
-  if StartPos>=EndPos then
-    RaiseException('TStandardCodeTool CommentCode');
-
-  Result:=false;
-  // comment with curly brackets {}
-  i:=StartPos;
-  CurStartPos:=i;
-  CurEndPos:=CurStartPos;
-  CommentNeeded:=false;
-  repeat
-    //debugln(['TPascalReaderTool.CommentCode ',dbgstr(Src[i]),' Needed=',CommentNeeded,' ',dbgstr(copy(Src,CurStartPos,CurEndPos-CurStartPos))]);
-    if (Src[i]='{') or (i>=EndPos) then begin
-      // the area contains a comment -> comment in front
-      if CommentNeeded then begin
-        if not SourceChangeCache.Replace(gtNone,gtNone,
-          CurStartPos,CurStartPos,'{') then exit;
-        if not SourceChangeCache.Replace(gtNone,gtNone,
-          CurEndPos,CurEndPos,'}') then exit;
-        //DebugLn('Comment "',copy(Src,CurStartPos,i-CurStartPos),'"');
-        CommentNeeded:=false;
-      end;
-      if i>=EndPos then break;
-      // skip comment
-      i:=FindCommentEnd(Src,i,Scanner.NestedComments)-1;
-    end else if not IsSpaceChar[Src[i]] then begin
-      if not CommentNeeded then begin
-        CurStartPos:=i;
-        CommentNeeded:=true;
-      end;
-      CurEndPos:=i+1;
-    end;
-    inc(i);
-  until false;
-  if Apply then
-    Result:=SourceChangeCache.Apply
-  else
-    Result:=true;
 end;
 
 function TPascalReaderTool.GetPasDocComments(const StartPos: TCodeXYPosition;
