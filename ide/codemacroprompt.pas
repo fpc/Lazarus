@@ -64,7 +64,7 @@ type
     FCaret: TPoint;
     FEditCellList: TSynPluginSyncronizedEditList;
     FEnableMacros: Boolean;
-    FIndent: String;
+    FIndent: integer;
     FKeepSubIndent: Boolean;
     FSrcTemplate: String;
     FDestTemplate: String;
@@ -75,6 +75,7 @@ type
     FLevel: Integer;
     FSrcEdit: TSourceEditorInterface;
     FSubIndent: integer;
+    FUseTabWidth: integer;
   protected
     // nested macros, get the X pos of the outer macro
     function GetSrcPosition: Integer; override;
@@ -96,9 +97,10 @@ type
 
     property EnableMacros: Boolean read FEnableMacros write FEnableMacros;
     property KeepSubIndent: Boolean read FKeepSubIndent write FKeepSubIndent;
-    property Indent: String read FIndent write FIndent;
+    property Indent: integer read FIndent write FIndent;
     property SubIndent: integer read FSubIndent write FSubIndent;
     property DestCaret: TPoint read FCaret;
+    property UseTabWidth: integer read FUseTabWidth write FUseTabWidth; // if >0 use tabs for indenting with this size
 
     property EditCellList: TSynPluginSyncronizedEditList read FEditCellList;
   end;
@@ -211,77 +213,109 @@ const
   TemplateTabWidth = 8;
 var
   IndentLevel: Integer;
-  LastLineIndent: Integer;
+  CurLineIndent, LastLineIndent: Integer;
   IsLineStart: boolean;
 
-  procedure AppentToDest(S: String);
+  procedure AddIndent;
   var
-    i, LastCopy: Integer;
-    CurLineIndent: LongInt;
-    SpaceStart: LongInt;
+    i: Integer;
+    s: String;
   begin
-    i := 1;
+    // compare the indentation of the current and the last line of the template
+    if CurLineIndent>LastLineIndent then
+      inc(IndentLevel)
+    else if (IndentLevel>0) and (CurLineIndent<LastLineIndent) then
+      dec(IndentLevel);
+    //debugln(['AddIndent LastLineIndent=',LastLineIndent,' CurLineIndent=',CurLineIndent]);
+    LastLineIndent:=CurLineIndent;
+    // append space
+    i:=Indent+IndentLevel*SubIndent;
+    //debugln(['AddIndent Indent=',Indent,' IndentLevel=',IndentLevel,' SubIndent=',SubIndent,' UseTabWidth=',UseTabWidth]);
+    s:=GetIndentStr(i,UseTabWidth);
+    FDestTemplate += s;
+    FDestPosX:=length(s)+1;
+  end;
+
+  procedure AppendToDest(S: String);
+  // only called when FLevel=1
+  var
+    p, LastCopy: Integer;
+  begin
+    if IsLineStart then begin
+      // remove old indent
+      p:=length(FDestTemplate);
+      while (p>=1) and (FDestTemplate[p] in [' ',#9]) do dec(p);
+      FDestTemplate:=LeftStr(FDestTemplate,p);
+    end;
+    p := 1;
     LastCopy := 1;
-    //debugln(['AppentToDest START S="',dbgstr(S),'" Indent="',dbgstr(Indent),'"']);
-    while i <= length(S) do begin
-      case s[i] of
-        #10, #13:
+    //debugln(['AppendToDest START S="',dbgstr(S),'" Indent=',Indent,' IsLineStart=',IsLineStart,' KeepSubIndent=',KeepSubIndent]);
+    while p <= length(S) do begin
+      if IsLineStart and (not KeepSubIndent) and (FDestTemplate<>'')
+      then begin
+        // at start of template line (not first line)
+        LastCopy:=p;
+        case s[p] of
+        ' ':
           begin
-            inc(i);
-            if (i <= length(S)) and (s[i] in [#10,#13]) and (s[i] <> s[i-1]) then
-              inc(i);
-            FDestTemplate := FDestTemplate + copy(s, LastCopy, i - LastCopy) + FIndent;
-            LastCopy := i;
-            FDestPosX := 1 + length(FIndent);
-            IsLineStart:=true;
-            inc(FDestPosY);
+            inc(CurLineIndent);
+            inc(p);
+            continue;
           end;
-        else // case else
+        #9:
           begin
-            if (s[i] in [' ',#9])
-              and (not KeepSubIndent)
-              and ((FDestTemplate<>'') and IsLineStart)
-            then begin
-              // space at start of template line (not first line)
-              FDestTemplate:=FDestTemplate+copy(S,LastCopy,i-LastCopy);
-              LastCopy:=i;
-              SpaceStart:=i;
-              while (i<=length(S)) and (S[i] in [' ',#9]) do inc(i);
-              // compare the indentation of the current and the last line of the template
-              CurLineIndent:=GetLineIndentWithTabs(S,SpaceStart,TemplateTabWidth);
-              if CurLineIndent>LastLineIndent then
-                inc(IndentLevel)
-              else if (IndentLevel>0) and (CurLineIndent<LastLineIndent) then
-                dec(IndentLevel);
-              LastLineIndent:=CurLineIndent;
-              // append space
-              CurLineIndent:=IndentLevel*SubIndent;
-              //debugln(['AppentToDest CurLineIndent=',CurLineIndent,' ',IndentLevel,'*',SubIndent]);
-              FDestTemplate:=FDestTemplate+StringOfChar(' ',CurLineIndent);
-              LastCopy:=i;
-              inc(FDestPosX,CurLineIndent);
-            end else if (s[i] = '|') and (FCaret.y < 0) then
-            begin
-              // place cursor
-              System.Delete(s, i, 1);
-              FCaret.y := FDestPosY;
-              FCaret.x := FDestPosX;
-            end
-            else begin
-              inc(i);
-              inc(FDestPosX);
-            end;
-            IsLineStart:=false;
+            inc(p);
+            inc(CurLineIndent,TemplateTabWidth);
+            CurLineIndent:=CurLineIndent-(CurLineIndent mod TemplateTabWidth);
+            continue;
           end;
+        else
+          // first character of line
+          IsLineStart:=false;
+          LastCopy:=p;
+          AddIndent;
+          // keep p and handle the character in the next step
+        end;
+      end;
+
+      case s[p] of
+      #10, #13:
+        begin
+          // copy line break
+          inc(p);
+          if (p <= length(S)) and (s[p] in [#10,#13]) and (s[p] <> s[p-1]) then
+            inc(p);
+          //debugln(['AppendToDest linebreak flush "',dbgstr(copy(s, LastCopy, p - LastCopy)),'"']);
+          FDestTemplate += copy(s, LastCopy, p - LastCopy);
+          LastCopy := p;
+          FDestPosX := 1 + Indent;
+          IsLineStart:=true;
+          CurLineIndent:=0;
+          inc(FDestPosY);
+        end;
+      else // case else
+        if (s[p] = '|') and (FCaret.y < 0) then
+        begin
+          // place cursor
+          System.Delete(s, p, 1);
+          FCaret.y := FDestPosY;
+          FCaret.x := FDestPosX;
+          //debugln(['AppendToDest Caret=',dbgs(FCaret)]);
+        end
+        else begin
+          inc(p);
+          inc(FDestPosX);
+          IsLineStart:=false;
+        end;
       end;
     end;
-    if (FDestTemplate <> '') and (i > LastCopy) and
-       (FDestTemplate[length(FDestTemplate)] in [#10, #13])
-    then
-      FDestTemplate := FDestTemplate + FIndent;
-    FDestTemplate := FDestTemplate + copy(s, LastCopy, i - LastCopy);
+    //debugln(['AppendToDest LAST flush "',dbgstr(copy(s, LastCopy, p - LastCopy)),'"']);
+    if IsLineStart then
+      AddIndent
+    else
+      FDestTemplate += copy(s, LastCopy, p - LastCopy);
     FDestPosition := length(FDestTemplate);
-    //debugln(['AppentToDest END FDestTemplate=',dbgstr(FDestTemplate)]);
+    //debugln(['AppendToDest END FDestTemplate="',dbgstr(FDestTemplate),'" FDestPosition=',FDestPosition,' FDestPosX=',FDestPosX,' FDestPosY=',FDestPosY]);
   end;
 
 var
@@ -304,6 +338,7 @@ begin
   SrcCopiedPos := 1;
   len:=length(Template);
   IndentLevel:=0;
+  CurLineIndent:=0;
   LastLineIndent:=0;
   IsLineStart:=false;
   while p <= len do begin
@@ -352,7 +387,7 @@ begin
           else begin
             // Got a Macro
             if FLevel = 1 then begin
-              AppentToDest(copy(Template, SrcCopiedPos, MacroStartPos - SrcCopiedPos));
+              AppendToDest(copy(Template, SrcCopiedPos, MacroStartPos - SrcCopiedPos));
             end;
             FSrcPosition := FSrcPosition + MacroEndPos - MacroStartPos;
             // read macro name
@@ -375,7 +410,7 @@ begin
             SrcCopiedPos := p;
             // scan the result for new lines
             if FLevel = 1 then
-              AppentToDest(MacroValue);
+              AppendToDest(MacroValue);
           end;
           // else it is a normal $ character
         end;
@@ -388,7 +423,9 @@ begin
   end;
 
   if FLevel = 1 then begin
-    AppentToDest(copy(Template, SrcCopiedPos, p - SrcCopiedPos));
+    AppendToDest(copy(Template, SrcCopiedPos, p - SrcCopiedPos));
+    if IsLineStart and (not KeepSubIndent) and (FDestTemplate<>'') then
+      AddIndent;
   end;
   dec(FLevel);
   Result:=true;
@@ -435,7 +472,12 @@ begin
   Parser := TLazTemplateParser.Create(Pattern);
   AEditor.BeginUpdate;
   try
-    Parser.SubIndent:=AEditor.BlockIndent;
+    Parser.SubIndent:=AEditor.BlockIndent+AEditor.BlockTabIndent*AEditor.TabWidth;
+    if (AEditor.BlockTabIndent=0) or (eoTabsToSpaces in AEditor.Options) then
+      Parser.UseTabWidth:=0
+    else
+      Parser.UseTabWidth:=AEditor.BlockTabIndent*AEditor.TabWidth;
+
     p := AEditor.LogicalCaretXY;
     TokenStartX:=p.x;
     if IndentToTokenStart then begin
@@ -455,7 +497,7 @@ begin
 
     Parser.EnableMacros := Attributes.IndexOfName(CodeTemplateEnableMacros)>=0;
     Parser.KeepSubIndent := Attributes.IndexOfName(CodeTemplateKeepSubIndent)>=0;
-    Parser.Indent := StringOfChar(' ', BaseIndent);
+    Parser.Indent := BaseIndent;
     LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
     if not Parser.SubstituteCodeMacros(SrcEdit) then exit;
 
@@ -471,7 +513,7 @@ begin
     AEditor.BlockEnd := p;
 
     // New Caret
-    p := Parser.DestCaret ;
+    p := Parser.DestCaret;
     if p.y >= 0 then begin
       if p.y = 1 then
         p.x := p.x + TokenStartX - 1;
