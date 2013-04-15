@@ -341,6 +341,7 @@ type
 
   TIdentCompletionTool = class(TFindDeclarationTool)
   private
+    FBeautifier: TBeautifyCodeOptions;
     FLastGatheredIdentParent: TCodeTreeNode;
     FLastGatheredIdentLevel: integer;
     FICTClassAndAncestors: TFPList;// list of PCodeXYPosition
@@ -361,9 +362,9 @@ type
     function CollectAllIdentifiers(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
     procedure GatherPredefinedIdentifiers(CleanPos: integer;
-      const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
+      const Context: TFindContext);
     procedure GatherUsefulIdentifiers(CleanPos: integer;
-      const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
+      const Context: TFindContext);
     procedure GatherUnitnames;
     procedure GatherSourceNames(const Context: TFindContext);
     procedure GatherContextKeywords(const Context: TFindContext;
@@ -393,8 +394,7 @@ type
     function GatherAvailableUnitNames(const CursorPos: TCodeXYPosition;
                              var IdentifierList: TIdentifierList): Boolean;
     function GatherIdentifiers(const CursorPos: TCodeXYPosition;
-                            var IdentifierList: TIdentifierList;
-                            BeautifyCodeOptions: TBeautifyCodeOptions): boolean;
+                            var IdentifierList: TIdentifierList): boolean;
     function FindCodeContext(const CursorPos: TCodeXYPosition;
                              out CodeContexts: TCodeContextInfo): boolean;
     function FindAbstractMethods(const CursorPos: TCodeXYPosition;
@@ -402,6 +402,7 @@ type
                                  SkipAbstractsInStartClass: boolean = false): boolean;
     function GetValuesOfCaseVariable(const CursorPos: TCodeXYPosition;
                                      List: TStrings): boolean;
+    property Beautifier: TBeautifyCodeOptions read FBeautifier write FBeautifier;
 
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
@@ -1168,7 +1169,7 @@ begin
 end;
 
 procedure TIdentCompletionTool.GatherPredefinedIdentifiers(CleanPos: integer;
-  const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
+  const Context: TFindContext);
 // Add predefined identifiers
 
   function StatementLevel: integer;
@@ -1341,7 +1342,7 @@ begin
 end;
 
 procedure TIdentCompletionTool.GatherUsefulIdentifiers(CleanPos: integer;
-  const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
+  const Context: TFindContext);
 
   procedure AddPropertyProc(ProcName: string);
   var
@@ -1358,7 +1359,7 @@ var
   PropertyName: String;
 begin
   while (CleanPos>1) and (IsIdentChar[Src[CleanPos-1]]) do dec(CleanPos);
-  GatherPredefinedIdentifiers(CleanPos,Context,BeautifyCodeOptions);
+  GatherPredefinedIdentifiers(CleanPos,Context);
   if Context.Node.Desc=ctnProperty then begin
     PropertyName:=ExtractPropName(Context.Node,false);
     //debugln('TIdentCompletionTool.GatherUsefulIdentifiers Property ',PropertyName);
@@ -1366,21 +1367,21 @@ begin
     ReadPriorAtom;
     if UpAtomIs('READ') then begin
       // add the default class completion 'read' specifier function
-      AddPropertyProc(BeautifyCodeOptions.PropertyReadIdentPrefix+PropertyName);
+      AddPropertyProc(Beautifier.PropertyReadIdentPrefix+PropertyName);
     end;
     if UpAtomIs('WRITE') then begin
       // add the default class completion 'write' specifier function
-      AddPropertyProc(BeautifyCodeOptions.PropertyWriteIdentPrefix+PropertyName);
+      AddPropertyProc(Beautifier.PropertyWriteIdentPrefix+PropertyName);
     end;
     if (UpAtomIs('READ') or UpAtomIs('WRITE'))
     and (Context.Tool.FindClassOrInterfaceNode(Context.Node)<>nil)
     then begin
       // add the default class completion 'read'/'write' specifier variable
-      AddPropertyProc(BeautifyCodeOptions.PrivateVariablePrefix+PropertyName);
+      AddPropertyProc(Beautifier.PrivateVariablePrefix+PropertyName);
     end;
     if UpAtomIs('STORED') then begin
       // add the default class completion 'stored' specifier function
-      AddPropertyProc(PropertyName+BeautifyCodeOptions.PropertyStoredIdentPostfix);
+      AddPropertyProc(PropertyName+Beautifier.PropertyStoredIdentPostfix);
     end;
   end;
 end;
@@ -2303,8 +2304,8 @@ begin
 end;
 
 function TIdentCompletionTool.GatherIdentifiers(
-  const CursorPos: TCodeXYPosition; var IdentifierList: TIdentifierList;
-  BeautifyCodeOptions: TBeautifyCodeOptions): boolean;
+  const CursorPos: TCodeXYPosition; var IdentifierList: TIdentifierList
+  ): boolean;
 var
   CleanCursorPos, IdentStartPos, IdentEndPos: integer;
   CursorNode: TCodeTreeNode;
@@ -2406,7 +2407,7 @@ begin
         FindContextClassAndAncestors(IdentStartXY, FICTClassAndAncestors);
 
       CursorContext:=CreateFindContext(Self,CursorNode);
-      GatherContextKeywords(CursorContext,IdentStartPos,BeautifyCodeOptions);
+      GatherContextKeywords(CursorContext,IdentStartPos,Beautifier);
 
       // search and gather identifiers in context
       if (GatherContext.Tool<>nil) and (GatherContext.Node<>nil) then begin
@@ -2562,7 +2563,7 @@ begin
       {$IFDEF CTDEBUG}
       DebugLn('TIdentCompletionTool.GatherIdentifiers G');
       {$ENDIF}
-      GatherUsefulIdentifiers(IdentStartPos,CursorContext,BeautifyCodeOptions);
+      GatherUsefulIdentifiers(IdentStartPos,CursorContext);
     end;
 
     Result:=true;

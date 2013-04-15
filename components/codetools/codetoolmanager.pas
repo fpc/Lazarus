@@ -2268,8 +2268,7 @@ begin
   try
     FIdentifierListUpdating:=true;
     try
-      Result:=FCurCodeTool.GatherIdentifiers(CursorPos,IdentifierList,
-                                           SourceChangeCache.BeautifyCodeOptions);
+      Result:=FCurCodeTool.GatherIdentifiers(CursorPos,IdentifierList);
     finally
       FIdentifierListUpdating:=false;
     end;
@@ -5524,6 +5523,7 @@ begin
     Result:=TCodeTool.Create;
     Result.Scanner:=Code.Scanner;
     FPascalTools.Add(Result);
+    TCodeTool(Result).Beautifier:=SourceChangeCache.BeautifyCodeOptions;
     TCodeTool(Result).OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
     TCodeTool(Result).OnGetDirectoryCache:=@OnGetDirectoryCache;
     TCodeTool(Result).OnFindUsedUnit:=@DoOnFindUsedUnit;

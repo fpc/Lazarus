@@ -8623,7 +8623,7 @@ var
   AVLNode: TAVLTreeNode;
   ProcName: String;
   NewClassPart: TNewClassPart;
-  Beautifier: TBeautifyCodeOptions;
+  Beauty: TBeautifyCodeOptions;
   ProcCode: String;
   CurClassName: String;
 begin
@@ -8635,7 +8635,7 @@ begin
     RaiseException('need a SourceChangeCache');
 
   CodeCompleteSrcChgCache:=SourceChangeCache;
-  Beautifier:=SourceChangeCache.BeautifyCodeOptions;
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   NewMethods:=TAVLTree.Create(@CompareCodeTreeNodeExt);
   try
     ActivateGlobalWriteLock;
@@ -8687,9 +8687,9 @@ begin
         ProcCode:=NewCodeTool.ExtractProcHead(ProcNode,[phpWithStart,
                   phpWithoutClassName,phpWithVarModifiers,phpWithParameterNames,
                   phpWithResultType,phpWithCallingSpecs]);
-        ProcCode:=ProcCode+Beautifier.LineEnd
-                    +'begin'+Beautifier.LineEnd
-                    +Beautifier.GetIndentStr(Beautifier.Indent)+Beautifier.LineEnd
+        ProcCode:=ProcCode+Beauty.LineEnd
+                    +'begin'+Beauty.LineEnd
+                    +Beauty.GetIndentStr(Beauty.Indent)+Beauty.LineEnd
                     +'end;';
 
         // add method data
@@ -8747,7 +8747,7 @@ begin
       end;
 
       // change classname
-      ProcCode:=Beautifier.AddClassAndNameToProc(ProcCode,CurClassName,ProcName);
+      ProcCode:=Beauty.AddClassAndNameToProc(ProcCode,CurClassName,ProcName);
       AddClassInsertion(CleanProcCode,FullProcCode,ProcName,NewClassPart,nil,
                         ProcCode);
       
