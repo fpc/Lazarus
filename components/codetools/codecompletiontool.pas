@@ -4092,7 +4092,8 @@ const
   NodeMovedFlag = 1;
 var
   NodeMoves: TCodeGraph;// an edge means, move the FromNode in front of the ToNode
-  
+  Beauty: TBeautifyCodeOptions;
+
   procedure InitNodeMoves;
   begin
     if NodeMoves=nil then
@@ -4147,8 +4148,7 @@ var
     if MoveNode then begin
       FromPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
       ToPos:=FindLineEndOrCodeAfterPosition(Node.EndPos);
-      NodeSrc:=SourceChangeCache.BeautifyCodeOptions.GetIndentStr(Indent)
-                     +Trim(copy(Src,FromPos,ToPos-FromPos));
+      NodeSrc:=Beauty.GetIndentStr(Indent)+Trim(copy(Src,FromPos,ToPos-FromPos));
       // remove
       if (Node.PriorBrother=nil)
       and (Node.Parent<>nil) and (Node.Parent.Desc in AllDefinitionSections)
@@ -4252,6 +4252,7 @@ begin
   NodeMoves:=nil;
   Definitions:=nil;
   Graph:=nil;
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   try
     // move the pointer types to the same type sections
     if not BuildUnitDefinitionGraph(Definitions,Graph,false) then exit;

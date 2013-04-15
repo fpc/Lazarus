@@ -668,7 +668,7 @@ var
     end else begin
       // add new line
       Lines[Lines.Count-1]:=Line;
-      Line:=GetIndentStr(Indent)+NewUses;
+      Line:=Beauty.GetIndentStr(Indent)+NewUses;
       Lines.Add(Line);
     end;
   end;
@@ -3909,6 +3909,8 @@ end;
 
 function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;
   SourceChangeCache: TSourceChangeCache): boolean;
+var
+  Beauty: TBeautifyCodeOptions;
 
   function AddModeDelphiDirective: boolean;
   var
@@ -4022,15 +4024,15 @@ function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;
       end;
       if Tree.Root.Desc=ctnUnit then begin
         InitializationNode:=FindInitializationNode;
-        NewCode:=GetIndentStr(SourceChangeCache.BeautifyCodeOptions.Indent)
+        NewCode:=Beauty.GetIndentStr(Beauty.Indent)
                  +'{$i '+LRSFilename+'}';
         if InitializationNode=nil then begin
           // add also an initialization section
           ImplementationNode:=FindImplementationNode;
           InsertPos:=ImplementationNode.EndPos;
-          NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(
+          NewCode:=Beauty.BeautifyKeyWord(
                      'initialization')
-                   +SourceChangeCache.BeautifyCodeOptions.LineEnd
+                   +Beauty.LineEnd
                    +NewCode;
           if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
                                            InsertPos,InsertPos,
@@ -4053,6 +4055,7 @@ begin
   Result:=false;
   if SourceChangeCache=nil then exit;
   SourceChangeCache.MainScanner:=Scanner;
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   DebugLn('ConvertDelphiToLazarusSource AddModeDelphiDirective');
   if not AddModeDelphiDirective then exit;
   DebugLn('ConvertDelphiToLazarusSource RemoveDFMResourceDirective');
@@ -6272,7 +6275,7 @@ begin
   if NewSrc<>'' then
     AddSrc:=NewSrc
   else
-    AddSrc:=GetIndentStr(Indent)+'{$R '+Filename+'}';
+    AddSrc:=Beauty.GetIndentStr(Indent)+'{$R '+Filename+'}';
   if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
     AddSrc) then exit;
   if not SourceChangeCache.Apply then exit;
@@ -6368,7 +6371,7 @@ begin
   if NewSrc<>'' then
     AddSrc:=NewSrc
   else
-    AddSrc:=GetIndentStr(Indent)+'{$I '+Filename+'}';
+    AddSrc:=Beauty.GetIndentStr(Indent)+'{$I '+Filename+'}';
   if not SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
     AddSrc) then exit;
   if not SourceChangeCache.Apply then exit;
