@@ -266,6 +266,7 @@ var
   MainBlockNode: TCodeTreeNode; // the main proc node of the selection, or main begin block of program
   VarTree: TAVLTree;
   ResultNode: TCodeTreeNode;
+  Beauty: TBeautifyCodeOptions;
 
   function FindFunctionResultNode: boolean;
   var
@@ -332,8 +333,7 @@ var
     if ResultNode<>nil then begin
       CallCode:=GetIdentifier(@Src[ResultNode.StartPos])+':='+CallCode;
     end;
-    CallCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-                                                               CallCode,Indent);
+    CallCode:=Beauty.BeautifyStatement(CallCode,Indent);
     {$IFDEF CTDebug}
     DebugLn('TExtractProcTool.ReplaceSelectionWithCall C "',CallCode,'" Indent=',dbgs(Indent));
     {$ENDIF}
@@ -658,10 +658,8 @@ var
         begin
           // extract identifier and type
           if VarSectionCode='' then
-            VarSectionCode:='var'
-              +SourceChangeCache.BeautifyCodeOptions.LineEnd;
-          VarSectionCode:=VarSectionCode
-            +GetIndentStr(SourceChangeCache.BeautifyCodeOptions.Indent);
+            VarSectionCode:='var'+Beauty.LineEnd;
+          VarSectionCode:=VarSectionCode+Beauty.GetIndentStr(Beauty.Indent);
           VariableName:=GetIdentifier(@Src[ProcVar.Node.StartPos]);
           VarTypeNode:=FindTypeNodeOfDefinition(ProcVar.Node);
           {$IFDEF CTDebug}
@@ -677,7 +675,7 @@ var
           DebugLn('TExtractProcTool.CreateProcVarSection C VariableName="',VariableName,'" VariableType="',VariableTypeCode,'"');
           {$ENDIF}
           VarSectionCode:=VarSectionCode+VariableName+':'+VariableTypeCode
-                          +SourceChangeCache.BeautifyCodeOptions.LineEnd;
+                          +Beauty.LineEnd;
         end;
         AVLNode:=VarTree.FindSuccessor(AVLNode);
       end;
@@ -685,8 +683,7 @@ var
     {$IFDEF CTDebug}
     DebugLn('TExtractProcTool.CreateProcVarSection END VarSectionCode="',VarSectionCode,'"');
     {$ENDIF}
-    VarSectionCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-                                                               VarSectionCode,0);
+    VarSectionCode:=Beauty.BeautifyStatement(VarSectionCode,0);
     Result:=true;
   end;
   
@@ -699,7 +696,7 @@ var
   begin
     Result:=false;
     BeginEndCode:='';
-    le:=SourceChangeCache.BeautifyCodeOptions.LineEnd;
+    le:=Beauty.LineEnd;
     // extract dirty source, so that compiler directives are moved too
     StartPos.Code.LineColToPosition(StartPos.Y,StartPos.X,DirtyStartPos);
     StartPos.Code.LineColToPosition(EndPos.Y,EndPos.X,DirtyEndPos);
@@ -714,13 +711,13 @@ var
     // adjust indent
     Indent:=GetBlockMinIndent(DirtySelection,1,length(DirtySelection));
     IndentText(DirtySelection,
-               SourceChangeCache.BeautifyCodeOptions.Indent-Indent,
-               SourceChangeCache.BeautifyCodeOptions.TabWidth,
+               Beauty.Indent-Indent,
+               Beauty.TabWidth,
                s);
     DirtySelection:=s;
     if ResultNode<>nil then begin
       DirtySelection:=DirtySelection
-              +GetIndentStr(SourceChangeCache.BeautifyCodeOptions.Indent)
+              +Beauty.GetIndentStr(Beauty.Indent)
               +'Result:='+GetIdentifier(@Src[ResultNode.StartPos])+';'+le;
     end;
     // create Begin..End block
@@ -753,8 +750,7 @@ var
         while BeginNode.Desc<>ctnBeginBlock do
           BeginNode:=BeginNode.PriorBrother;
         InsertPos:=BeginNode.StartPos;
-        Indent:=GetLineIndent(Src,InsertPos)
-                +SourceChangeCache.BeautifyCodeOptions.Indent;
+        Indent:=GetLineIndent(Src,InsertPos)+Beauty.Indent;
       end;
       
     eptSubProcedureSameLvl:
@@ -879,8 +875,7 @@ var
     eptProcedureWithInterface:
       begin
         ProcHeader:=Keyword+' '+ProcName+CompleteParamList+';';
-        ProcHeader:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-          ProcHeader,IntfIndent);
+        ProcHeader:=Beauty.BeautifyStatement(ProcHeader,IntfIndent);
         {$IFDEF CTDebug}
         DebugLn('TExtractProcTool.InsertProcIntf END ProcHeader="',ProcHeader,'"');
         {$ENDIF}
@@ -931,7 +926,7 @@ var
     le: String;
     ProcHeader: String;
   begin
-    le:=SourceChangeCache.BeautifyCodeOptions.LineEnd;
+    le:=Beauty.LineEnd;
     if ResultNode=nil then
       ProcHeader:='procedure '
     else
@@ -939,8 +934,7 @@ var
     if ProcClassName<>'' then
       ProcHeader:=ProcHeader+ProcClassName+'.';
     ProcHeader:=ProcHeader+ProcName+ParamList+';'+le;
-    ProcHeader:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-                                                                  ProcHeader,0);
+    ProcHeader:=Beauty.BeautifyStatement(ProcHeader,0);
     ProcCode:=ProcHeader+VarSection+BeginEndCode;
     Result:=true;
   end;
@@ -958,7 +952,7 @@ var
       if not CreateMissingProcBodies then
         RaiseException(ctsErrorDuringCreationOfNewProcBodies);
     end else begin
-      TabWidth:=SourceChangeCache.BeautifyCodeOptions.TabWidth;
+      TabWidth:=Beauty.TabWidth;
       IndentText(ProcCode,Indent,TabWidth,IndentedProcCode);
       {$IFDEF CTDebug}
       DebugLn('TExtractProcTool.InsertProcBody END ProcCode="',ProcCode,'"');
@@ -1044,6 +1038,7 @@ begin
   if (not SubProcSameLvlPossible) and (ProcType=eptSubProcedureSameLvl) then
     exit;
   CodeCompleteSrcChgCache:=SourceChangeCache;
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
 
   VarTree:=CreateExtractProcVariableTree;
   NewProcPath:=nil;
@@ -1092,6 +1087,7 @@ var
   WithIdentifiers: TAVLTree; // identifiers to change
   WithVarCache: TFPList; // list of PWithVarCache
   WithVarEndPos: LongInt;
+  Beauty: TBeautifyCodeOptions;
 
   procedure AddIdentifier(CleanPos: integer);
   var
@@ -1270,7 +1266,7 @@ var
         end;
       until (CurPos.StartPos>SrcLen) or (CurPos.StartPos>StatementNode.EndPos);
       IndentWith:=GetLineIndentWithTabs(Src,WithKeywordStartPos,
-                              SourceChangeCache.BeautifyCodeOptions.TabWidth);
+                              Beauty.TabWidth);
       WithKeywordStartPos:=FindLineEndOrCodeInFrontOfPosition(WithKeywordStartPos);
       DoKeywordEndPos:=FindLineEndOrCodeAfterPosition(DoKeywordEndPos);
       if not SourceChangeCache.Replace(gtSpace,gtNone,WithKeywordStartPos,DoKeywordEndPos,'')
@@ -1285,8 +1281,7 @@ var
 
         // unindent
         StartPos:=FindLineEndOrCodeAfterPosition(DoKeywordEndPos,true,true);
-        IndentInnerWith:=GetLineIndentWithTabs(Src,StartPos,
-                                SourceChangeCache.BeautifyCodeOptions.TabWidth);
+        IndentInnerWith:=GetLineIndentWithTabs(Src,StartPos,Beauty.TabWidth);
         if IndentWith<IndentInnerWith then
           if not SourceChangeCache.IndentBlock(DoKeywordEndPos,EndKeywordStartPos,
             IndentWith-IndentInnerWith)
@@ -1353,6 +1348,7 @@ begin
     debugln(['TExtractProcTool.RemoveWithBlock missing statement']);
     exit;
   end;
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   // parse block
   WithVarEndPos:=FindEndOfTerm(WithVarNode.StartPos,false,true);
   MoveCursorToCleanPos(WithVarEndPos);
@@ -1394,6 +1390,7 @@ var
   CleanStartPos: integer;
   CleanEndPos: integer;
   StartNode: TCodeTreeNode;
+  Beauty: TBeautifyCodeOptions;
 
   function Add(IdentifierStart, IdentifierEnd: integer;
     const Identifier: string): boolean;
@@ -1504,25 +1501,26 @@ begin
 
   // ToDo: check if identifiers are variables
 
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   if WithExpr<>'' then begin
     // add 'with expr do begin'
     Indent:=GetLineIndentWithTabs(Src,CleanStartPos,
-                                SourceChangeCache.BeautifyCodeOptions.TabWidth);
+                                Beauty.TabWidth);
     Code:='with '+WithExpr+' do begin';
-    Code:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(Code,Indent);
+    Code:=Beauty.BeautifyStatement(Code,Indent);
     //debugln(['TExtractProcTool.AddWithBlock Header=',Code]);
     if not SourceChangeCache.Replace(gtNewLine,gtNewLine,
       CleanStartPos,CleanStartPos,Code) then exit;
     // add 'end;'
     Code:='end;';
-    Code:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(Code,Indent);
+    Code:=Beauty.BeautifyStatement(Code,Indent);
     //debugln(['TExtractProcTool.AddWithBlock Footer=',Code]);
     if not SourceChangeCache.Replace(gtNewLine,gtNewLine,
       CleanEndPos,CleanEndPos,Code) then exit;
     // indent all between
     //debugln(['TExtractProcTool.AddWithBlock Indent...']);
     if not SourceChangeCache.IndentBlock(CleanStartPos,CleanEndPos,
-      SourceChangeCache.BeautifyCodeOptions.Indent) then exit;
+      Beauty.Indent) then exit;
     //debugln(['TExtractProcTool.AddWithBlock Apply']);
     if not SourceChangeCache.Apply then exit;
   end;
