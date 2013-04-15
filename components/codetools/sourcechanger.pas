@@ -165,6 +165,7 @@ type
     
     NestedComments: boolean;
 
+    function GetIndentStr(TheIndent: integer): string; inline;
     procedure SetupWordPolicyExceptions(ws: TStrings);
     function BeautifyProc(const AProcCode: string; IndentSize: integer;
         AddBeginEnd: boolean): string;
@@ -1224,6 +1225,12 @@ begin
 end;
 
 { TBeautifyCodeOptions }
+
+// inline
+function TBeautifyCodeOptions.GetIndentStr(TheIndent: integer): string;
+begin
+  Result:=BasicCodeTools.GetIndentStr(TheIndent,UseTabWidth);
+end;
 
 constructor TBeautifyCodeOptions.Create;
 begin

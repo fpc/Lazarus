@@ -536,6 +536,7 @@ procedure TCodeCompletionCodeTool.AddClassInsertion(
 
 }
 var NewInsert, InsertPos, LastInsertPos: TCodeTreeNodeExtension;
+  Beauty: TBeautifyCodeOptions;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeCompletionCodeTool.AddClassInsertion] CleanDef="',CleanDef,'" Def="',Def,'" Identifiername="',Identifiername,'" Body="',Body,'"');
@@ -561,7 +562,8 @@ begin
     FirstInsert:=NewInsert;
     exit;
   end;
-  if ASourceChangeCache.BeautifyCodeOptions.ClassPartInsertPolicy=cpipLast then
+  Beauty:=ASourceChangeCache.BeautifyCodeOptions;
+  if Beauty.ClassPartInsertPolicy=cpipLast then
   begin
     // add as last to inserts
     InsertPos:=FirstInsert;
@@ -672,6 +674,7 @@ var
   ProcPosBehind: Integer;
   EmptyLinesInFront: Integer;
   EmptyLinesBehind: Integer;
+  Beauty: TBeautifyCodeOptions;
 begin
   IsInInterface:=ProcNode.HasParentOfType(ctnInterface);
   if IsInInterface then begin
@@ -701,8 +704,9 @@ begin
     end;
   end;
 
-  //debugln(['TCodeCompletionCodeTool.FindInsertPositionForForwardProc ',ord(SourceChangeCache.BeautifyCodeOptions.ForwardProcBodyInsertPolicy)]);
-  if SourceChangeCache.BeautifyCodeOptions.KeepForwardProcOrder then begin
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
+  //debugln(['TCodeCompletionCodeTool.FindInsertPositionForForwardProc ',ord(Beauty.ForwardProcBodyInsertPolicy)]);
+  if Beauty.KeepForwardProcOrder then begin
     // KeepForwardProcOrder: gather all procs and try to insert the new body
     //  in the same order of other forward proc definitions.
     ForwardProcNodes:=nil;
@@ -801,8 +805,7 @@ begin
     end;
   end;
 
-  if SourceChangeCache.BeautifyCodeOptions.ForwardProcBodyInsertPolicy
-    = fpipInFrontOfMethods
+  if Beauty.ForwardProcBodyInsertPolicy = fpipInFrontOfMethods
   then begin
     // Try to insert new proc in front of existing methods
 
@@ -824,8 +827,7 @@ begin
       end;
       exit;
     end;
-  end else if SourceChangeCache.BeautifyCodeOptions.ForwardProcBodyInsertPolicy
-    = fpipBehindMethods
+  end else if Beauty.ForwardProcBodyInsertPolicy = fpipBehindMethods
   then begin
     // Try to insert new proc behind existing methods
 
@@ -999,6 +1001,7 @@ var
   ParentNode: TCodeTreeNode;
   OtherSectionNode: TCodeTreeNode;
   HeaderNode: TCodeTreeNode;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
   if CleanLevelPos<1 then CleanLevelPos:=CleanCursorPos;
@@ -1007,6 +1010,7 @@ begin
     RaiseException('TCodeCompletionCodeTool.AddLocalVariable Internal Error: '
       +'CleanPosToCodePos');
   end;
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
 
   // find the level and find sections in front
   Node:=Tree.Root;
@@ -1063,7 +1067,7 @@ begin
     if VarNode<>nil then begin
       Indent:=GetLineIndent(Src,VarNode.StartPos);
       if PositionsInSameLine(Src,VarSectionNode.StartPos,VarNode.StartPos) then
-        inc(Indent,SourceChangeCache.BeautifyCodeOptions.Indent);
+        inc(Indent,Beauty.Indent);
       InsertPos:=FindLineEndOrCodeAfterPosition(VarNode.EndPos);
     end else begin
       Indent:=GetLineIndent(Src,VarSectionNode.StartPos);
@@ -1108,14 +1112,12 @@ begin
         Indent:=GetLineIndent(Src,InsertPos);
       end;
     end;
-    InsertTxt:='var'+SourceChangeCache.BeautifyCodeOptions.LineEnd
-               +GetIndentStr(Indent+SourceChangeCache.BeautifyCodeOptions.Indent)
-               +InsertTxt;
+    InsertTxt:='var'+Beauty.LineEnd
+               +Beauty.GetIndentStr(Indent+Beauty.Indent)+InsertTxt;
   end;
   
   // insert new code
-  InsertTxt:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-                InsertTxt,Indent);
+  InsertTxt:=Beauty.BeautifyStatement(InsertTxt,Indent);
   //DebugLn('TCodeCompletionCodeTool.AddLocalVariable E ',InsertTxt,' ');
   SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,InsertTxt);
 
@@ -1182,6 +1184,7 @@ procedure TCodeCompletionCodeTool.AddMethodCompatibleToProcType(
   MethodAttr: TProcHeadAttributes; SourceChangeCache: TSourceChangeCache);
 var
   CleanMethodDefinition: string;
+  Beauty: TBeautifyCodeOptions;
 begin
   MethodDefinition:='';
   MethodAttr:=[];
@@ -1202,13 +1205,13 @@ begin
   CodeCompleteSrcChgCache:=SourceChangeCache;
 
   // insert new published method to class
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   MethodAttr:=[phpWithStart, phpWithoutClassKeyword, phpWithVarModifiers,
                phpWithParameterNames,phpWithDefaultValues,phpWithResultType];
   MethodDefinition:=TrimCodeSpace(ProcContext.Tool.ExtractProcHead(
                        ProcContext.Node,
                        MethodAttr+[phpWithoutClassName,phpWithoutName]));
-  MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
-                 AddClassAndNameToProc(MethodDefinition, '', AnEventName);
+  MethodDefinition:=Beauty.AddClassAndNameToProc(MethodDefinition, '', AnEventName);
   {$IFDEF CTDEBUG}
   DebugLn('  CompleteEventAssignment: Add Method To Class...');
   {$ENDIF}
@@ -1217,8 +1220,7 @@ begin
     AddClassInsertion(CleanMethodDefinition, MethodDefinition,
                       AnEventName, ncpPublishedProcs);
   end;
-  MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
-                 AddClassAndNameToProc(MethodDefinition,
+  MethodDefinition:=Beauty.AddClassAndNameToProc(MethodDefinition,
                    ExtractClassName(AClassNode,false,true), AnEventName);
   if not InsertAllNewClassParts then
     RaiseException(ctsErrorDuringInsertingNewClassParts);
@@ -1239,6 +1241,7 @@ var
   Indent: Integer;
   InsertPos: Integer;
   NewProc: String;
+  Beauty: TBeautifyCodeOptions;
 begin
   // find a nice insert position in front of methods and CursorNode
   StartNode:=FindImplementationNode;
@@ -1289,6 +1292,8 @@ begin
     end;
   end;
 
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
+
   // extract method param list, result type and modifiers
   MethodAttr:=[phpWithStart, phpWithoutClassKeyword, phpWithVarModifiers,
                phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
@@ -1296,12 +1301,11 @@ begin
   MethodDefinition:=TrimCodeSpace(
                 ProcContext.Tool.ExtractProcHead(ProcContext.Node,
                               MethodAttr+[phpWithoutClassName,phpWithoutName]));
-  MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
-                 AddClassAndNameToProc(MethodDefinition, '', NewProcName);
+  MethodDefinition:=Beauty.AddClassAndNameToProc(MethodDefinition, '', NewProcName);
   debugln(['TCodeCompletionCodeTool.AddProcedureCompatibleToProcType MethodDefinition="',MethodDefinition,'"']);
 
   // create code and insert
-  NewProc:=SourceChangeCache.BeautifyCodeOptions.BeautifyProc(MethodDefinition,Indent,true);
+  NewProc:=Beauty.BeautifyProc(MethodDefinition,Indent,true);
   debugln(['TCodeCompletionCodeTool.AddProcedureCompatibleToProcType NewProc="',NewProc,'"']);
   if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,NewProc)
   then
@@ -1440,6 +1444,7 @@ var
   ProcCode: String;
   Indent: integer;
   InsertPos: integer;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=true;
   {$IFDEF CTDEBUG}
@@ -1493,6 +1498,7 @@ begin
                                      Indent,InsertPos);
 
     // build nice procs
+    Beauty:=SourceChangeCache.BeautifyCodeOptions;
     CurProcNode:=StartProcNode;
     repeat
       ProcCode:=ExtractProcHead(CurProcNode,[phpWithStart,
@@ -1509,8 +1515,7 @@ begin
           CurPos.EndPos,CurPos.EndPos,';') then
             RaiseException('CompleteForwardProcs: unable to insert semicolon');
       end;
-      ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyProc(ProcCode,
-                                                                 Indent,true);
+      ProcCode:=Beauty.BeautifyProc(ProcCode,Indent,true);
       if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
         InsertPos,InsertPos,ProcCode) then
           RaiseException('CompleteForwardProcs: unable to insert new proc body');
@@ -2383,6 +2388,7 @@ var
   FromPos: Integer;
   EndPos: Integer;
   Indent: Integer;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
 
@@ -2410,6 +2416,7 @@ begin
   //DebugLn(['CompleteMethod CurClassName=',CurClassName]);
   CodeCompleteClassNode:=FindClassNodeInUnit(CurClassName,true,false,false,true);
 
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   ClassProcs:=nil;
   ProcBodyNodes:=nil;
   try
@@ -2467,7 +2474,7 @@ begin
       FromPos:=DefProcNode.StartPos;
       EndPos:=DefProcNode.EndPos;
       SourceChangeCache.MainScanner:=Scanner;
-      NewProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+      NewProcCode:=Beauty.BeautifyStatement(
                                   NewProcCode,Indent,[bcfDoNotIndentFirstLine]);
       {$IFDEF VerboseCompleteMethod}
       debugln('TCodeCompletionCodeTool.CompleteMethodByBody final NewProcCode:');
@@ -2709,8 +2716,11 @@ const
   var
     le: String;
     ProcName: String;
+    Beauty: TBeautifyCodeOptions;
   begin
     Result:=false;
+
+    Beauty:=SourceChangeCache.BeautifyCodeOptions;
 
     // create param list
     ProcCode:=CreateParamListFromStatement(CursorNode,BracketOpenPos,CleanProcHead);
@@ -2732,13 +2742,13 @@ const
     CleanProcHead:=CleanProcHead+';';
 
     // append begin..end
-    le:=SourceChangeCache.BeautifyCodeOptions.LineEnd;
+    le:=Beauty.LineEnd;
     ProcCode:=ProcCode+le
       +'begin'+le
       +le
       +'end;';
 
-    ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(ProcCode,Indent);
+    ProcCode:=Beauty.BeautifyStatement(ProcCode,Indent);
 
     DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall ',ProcCode]);
     Result:=true;
@@ -3777,12 +3787,14 @@ var
   FromPos: LongInt;
   ToPos: LongInt;
   NewSrc: String;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
   if SourceChangeCache=nil then exit;
   if (TreeOfCodeTreeNodeExt=nil) or (TreeOfCodeTreeNodeExt.Count=0) then
     exit(true);
   SourceChangeCache.MainScanner:=Scanner;
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
 
   AVLNode:=TreeOfCodeTreeNodeExt.FindLowest;
   while AVLNode<>nil do begin
@@ -3809,7 +3821,7 @@ begin
     FromPos:=DefNode.StartPos;
     ToPos:=DefNode.EndPos;
     if Src[ToPos]=';' then inc(ToPos);// add semicolon
-    NewSrc:=GetIndentStr(SourceChangeCache.BeautifyCodeOptions.Indent)
+    NewSrc:=Beauty.GetIndentStr(Beauty.Indent)
       +ExtractProcName(DefNode,[])+' = '+Expr+';';
     SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,NewSrc);
     // add 'const' keyword
@@ -4026,12 +4038,14 @@ var
   FromPos: LongInt;
   ToPos: LongInt;
   NewSrc: String;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
   if SourceChangeCache=nil then exit;
   if (TreeOfCodeTreeNodeExt=nil) or (TreeOfCodeTreeNodeExt.Count=0) then
     exit(true);
   SourceChangeCache.MainScanner:=Scanner;
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
 
   AVLNode:=TreeOfCodeTreeNodeExt.FindLowest;
   while AVLNode<>nil do begin
@@ -4058,7 +4072,7 @@ begin
     FromPos:=DefNode.StartPos;
     ToPos:=DefNode.EndPos;
     if Src[ToPos]=';' then inc(ToPos);// add semicolon
-    NewSrc:=GetIndentStr(SourceChangeCache.BeautifyCodeOptions.Indent)
+    NewSrc:=Beauty.GetIndentStr(Beauty.Indent)
       +ExtractProcName(DefNode,[])+' = '+Expr+';';
     SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,NewSrc);
     // add 'type' keyword
@@ -4133,7 +4147,8 @@ var
     if MoveNode then begin
       FromPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
       ToPos:=FindLineEndOrCodeAfterPosition(Node.EndPos);
-      NodeSrc:=GetIndentStr(Indent)+Trim(copy(Src,FromPos,ToPos-FromPos));
+      NodeSrc:=SourceChangeCache.BeautifyCodeOptions.GetIndentStr(Indent)
+                     +Trim(copy(Src,FromPos,ToPos-FromPos));
       // remove
       if (Node.PriorBrother=nil)
       and (Node.Parent<>nil) and (Node.Parent.Desc in AllDefinitionSections)
@@ -4318,16 +4333,16 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
       Result:=true;
   end;
 
-  function CreateTypeSectionForCircle(CircleOfGraphNodes: TFPList;
+  function CreateTypeSectionForCircle(CycleOfGraphNodes: TFPList;
     var Definitions: TAVLTree; var Graph: TCodeGraph): boolean;
-  // CircleOfGraphNodes is a list of TCodeGraphNode that should be moved
+  // CycleOfGraphNodes is a list of TCodeGraphNode that should be moved
   // to a new type section
   
     function IndexOfNode(Node: TCodeTreeNode): integer;
     begin
-      Result:=CircleOfGraphNodes.Count-1;
+      Result:=CycleOfGraphNodes.Count-1;
       while (Result>=0)
-      and (TCodeGraphNode(CircleOfGraphNodes[Result]).Node<>Node) do
+      and (TCodeGraphNode(CycleOfGraphNodes[Result]).Node<>Node) do
         dec(Result);
     end;
   
@@ -4341,17 +4356,18 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
     Indent: LongInt;
     FromPos: LongInt;
     ToPos: LongInt;
+    Beauty: TBeautifyCodeOptions;
   begin
     // check if whole type sections are moved and combine them
-    i:=CircleOfGraphNodes.Count-1;
+    i:=CycleOfGraphNodes.Count-1;
     while i>=0 do begin
-      GraphNode:=TCodeGraphNode(CircleOfGraphNodes[i]);
+      GraphNode:=TCodeGraphNode(CycleOfGraphNodes[i]);
       Node:=GraphNode.Node;
       if Node.Parent.Desc=ctnTypeSection then begin
         if IndexOfNode(Node.Parent)>=0 then begin
           // the whole type section of this type will be moved
           // => remove this type
-          CircleOfGraphNodes.Delete(i);
+          CycleOfGraphNodes.Delete(i);
         end else begin
           // check if all types of this type section will be moved
           Node:=Node.Parent.FirstChild;
@@ -4360,8 +4376,8 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
           if Node=nil then begin
             // all types of this type section will be moved
             // => remove the type and add the type section instead
-            CircleOfGraphNodes.Delete(i);
-            CircleOfGraphNodes.Add(Graph.AddGraphNode(GraphNode.Node.Parent));
+            CycleOfGraphNodes.Delete(i);
+            CycleOfGraphNodes.Add(Graph.AddGraphNode(GraphNode.Node.Parent));
           end;
         end;
       end;
@@ -4369,21 +4385,22 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
     end;
   
     // create new type section
+    Beauty:=SourceChangeCache.BeautifyCodeOptions;
     // Note: InsertPos must be outside the types and type sections which are moved
-    GraphNode:=TCodeGraphNode(CircleOfGraphNodes[0]);
+    GraphNode:=TCodeGraphNode(CycleOfGraphNodes[0]);
     Node:=GraphNode.Node;
     if Node.Parent.Desc=ctnTypeSection then
       Node:=Node.Parent;
     InsertPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
     Indent:=GetLineIndent(Src,Node.StartPos);
     SourceChangeCache.Replace(gtEmptyLine,gtNewLine,InsertPos,InsertPos,
-      GetIndentStr(Indent)+'type');
-    inc(Indent,SourceChangeCache.BeautifyCodeOptions.Indent);
+      Beauty.GetIndentStr(Indent)+'type');
+    inc(Indent,Beauty.Indent);
     // move the types
-    for i:=0 to CircleOfGraphNodes.Count-1 do begin
-      GraphNode:=TCodeGraphNode(CircleOfGraphNodes[i]);
+    for i:=0 to CycleOfGraphNodes.Count-1 do begin
+      GraphNode:=TCodeGraphNode(CycleOfGraphNodes[i]);
       Node:=GraphNode.Node;
-      if i=CircleOfGraphNodes.Count-1 then
+      if i=CycleOfGraphNodes.Count-1 then
         EndGap:=gtEmptyLine
       else
         EndGap:=gtNewLine;
@@ -4397,7 +4414,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
         if Node.FirstChild<>nil then begin
           FromPos:=FindLineEndOrCodeInFrontOfPosition(Node.FirstChild.StartPos);
           ToPos:=FindLineEndOrCodeAfterPosition(Node.LastChild.EndPos);
-          NewTxt:=GetIndentStr(Indent)+ExtractCode(FromPos,ToPos,[phpWithComments]);
+          NewTxt:=Beauty.GetIndentStr(Indent)+ExtractCode(FromPos,ToPos,[phpWithComments]);
           DebugLn(['CreateTypeSectionForCircle Adding types: ',NewTxt]);
           SourceChangeCache.Replace(gtNewLine,EndGap,InsertPos,InsertPos,NewTxt);
         end;
@@ -4408,7 +4425,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
         DebugLn(['CreateTypeSectionForCircle Removing node: ',ExtractCode(FromPos,ToPos,[])]);
         SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'');
         // add type to new type section
-        NewTxt:=GetIndentStr(Indent)+ExtractNode(Node,[phpWithComments]);
+        NewTxt:=Beauty.GetIndentStr(Indent)+ExtractNode(Node,[phpWithComments]);
         DebugLn(['CreateTypeSectionForCircle Adding type: ',NewTxt]);
         SourceChangeCache.Replace(gtNewLine,EndGap,InsertPos,InsertPos,NewTxt);
       end else
@@ -4613,6 +4630,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
     DestSection: TCodeTreeNodeDesc;
     NewTxt: String;
     DestNodeInFront: TCodeTreeNode;
+    Beauty: TBeautifyCodeOptions;
   begin
     Result:=false;
     AVLNode:=TreeOfNodeMoveEdges.FindLowest;
@@ -4620,6 +4638,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
     LastInsertAtSamePos:=false;
     DestNode:=nil;
     DestSection:=ctnNone;
+    Beauty:=SourceChangeCache.BeautifyCodeOptions;
     // process every move
     while AVLNode<>nil do begin
       CurMove:=TNodeMoveEdge(AVLNode.Data);
@@ -4797,7 +4816,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
                                            InsertPos,InsertPos,NewTxt)
           then
             exit;
-          Indent:=SourceChangeCache.BeautifyCodeOptions.Indent;
+          Indent:=Beauty.Indent;
         end;
       end;
 
@@ -4817,7 +4836,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
         ToPos:=FindLineEndOrCodeAfterPosition(Node.EndPos);
         NewTxt:=ExtractCode(FromPos,ToPos,[phpWithComments]);
       end;
-      NewTxt:=GetIndentStr(Indent)+NewTxt;
+      NewTxt:=Beauty.GetIndentStr(Indent)+NewTxt;
       DebugLn(['MoveNodes insert "',NewTxt,'"']);
       if not SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
         NewTxt) then exit;
@@ -5691,12 +5710,14 @@ var
   IndentStep: LongInt;
   SrcVar: String;
   i: Integer;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
   NewPos:=CleanCodeXYPosition;
   NewTopLine:=-1;
   if ClassNode=nil then exit;
   if (ParamName='') or (ParamType='') then exit;
+  Beauty:=SourceChanger.BeautifyCodeOptions;
   aClassName:=ExtractClassName(ClassNode,false);
   CleanDef:=ProcName+'('+ParamType+');';
   Def:='procedure '+ProcName+'('+ParamName+':'+ParamType+');';
@@ -5720,7 +5741,7 @@ begin
         SrcVar:='aSource';
     end;
     ProcBody:=ProcBody+'var'+e
-       +GetIndentStr(Indent+IndentStep)+SrcVar+':'+aClassName+';'+e;
+       +Beauty.GetIndentStr(Indent+IndentStep)+SrcVar+':'+aClassName+';'+e;
   end;
   ProcBody:=ProcBody+'begin'+e;
   inc(Indent,IndentStep);
@@ -5728,15 +5749,15 @@ begin
   // call inherited
   if CallInherited and (not CallInheritedOnlyInElse) then
     ProcBody:=ProcBody
-      +GetIndentStr(Indent)+'inherited '+ProcName+'('+ParamName+');'+e;
+      +Beauty.GetIndentStr(Indent)+'inherited '+ProcName+'('+ParamName+');'+e;
 
   if not SameType then begin
     // add a parameter check to the new procedure
     ProcBody:=ProcBody
-        +GetIndentStr(Indent)+'if '+ParamName+' is '+aClassName+' then'+e
-        +GetIndentStr(Indent)+'begin'+e;
+        +Beauty.GetIndentStr(Indent)+'if '+ParamName+' is '+aClassName+' then'+e
+        +Beauty.GetIndentStr(Indent)+'begin'+e;
     inc(Indent,IndentStep);
-    ProcBody:=ProcBody+GetIndentStr(Indent)+SrcVar+':='+aClassName+'('+ParamName+');'+e;
+    ProcBody:=ProcBody+Beauty.GetIndentStr(Indent)+SrcVar+':='+aClassName+'('+ParamName+');'+e;
   end;
 
   // add assignments
@@ -5744,7 +5765,7 @@ begin
     for i:=0 to MemberNodeExts.Count-1 do begin
       NodeExt:=TCodeTreeNodeExtension(MemberNodeExts[i]);
       // add assignment
-      ProcBody:=ProcBody+GetIndentStr(Indent)+NodeExt.Txt+':='+SrcVar+'.'+NodeExt.Txt+';'+e;
+      ProcBody:=ProcBody+Beauty.GetIndentStr(Indent)+NodeExt.Txt+':='+SrcVar+'.'+NodeExt.Txt+';'+e;
     end;
   end;
 
@@ -5752,10 +5773,10 @@ begin
     // close if block
     dec(Indent,IndentStep);
     if CallInherited and CallInheritedOnlyInElse then begin
-      ProcBody:=ProcBody+GetIndentStr(Indent)+'end else'+e
-          +GetIndentStr(Indent+IndentStep)+'inherited '+ProcName+'('+ParamName+');'+e;
+      ProcBody:=ProcBody+Beauty.GetIndentStr(Indent)+'end else'+e
+          +Beauty.GetIndentStr(Indent+IndentStep)+'inherited '+ProcName+'('+ParamName+');'+e;
     end else begin
-      ProcBody:=ProcBody+GetIndentStr(Indent)+'end;'+e
+      ProcBody:=ProcBody+Beauty.GetIndentStr(Indent)+'end;'+e
     end;
   end;
   // close procedure body
@@ -6035,6 +6056,7 @@ var
   Indent: Integer;
   Node: TCodeTreeNode;
   NeedSection: Boolean;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -6047,6 +6069,7 @@ begin
   Indent:=0;
   FrontGap:=gtNewLine;
   AfterGap:=gtNewLine;
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   {$IFDEF CTDEBUG}
   debugln(['TCodeCompletionCodeTool.DeclareVariableAt CursorNode=',CursorNode.DescAsString]);
   {$ENDIF}
@@ -6073,8 +6096,7 @@ begin
     if CursorNode.FirstChild<>nil then
       Indent:=GetLineIndent(Src,CursorNode.FirstChild.StartPos)
     else
-      Indent:=GetLineIndent(Src,CursorNode.StartPos)
-              +SourceChangeCache.BeautifyCodeOptions.Indent;
+      Indent:=GetLineIndent(Src,CursorNode.StartPos)+Beauty.Indent;
   end else if CursorNode.Desc in [ctnProcedure,ctnInterface,ctnImplementation,
     ctnProgram,ctnLibrary,ctnPackage]
   then begin
@@ -6094,8 +6116,7 @@ begin
       if Node.LastChild<>nil then
         Indent:=GetLineIndent(Src,Node.LastChild.StartPos)
       else
-        Indent:=GetLineIndent(Src,Node.StartPos)
-                +SourceChangeCache.BeautifyCodeOptions.Indent;
+        Indent:=GetLineIndent(Src,Node.StartPos)+Beauty.Indent;
     end else begin
       // start a new var section
       NeedSection:=true;
@@ -6111,9 +6132,9 @@ begin
     NeedSection:=true;
   end;
   if NeedSection then
-    NewCode:='var'+SourceChangeCache.BeautifyCodeOptions.LineEnd
-      +GetIndentStr(SourceChangeCache.BeautifyCodeOptions.Indent)+NewCode;
-  NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(NewCode,
+    NewCode:='var'+Beauty.LineEnd
+      +Beauty.GetIndentStr(Beauty.Indent)+NewCode;
+  NewCode:=Beauty.BeautifyStatement(NewCode,
     Indent,[bcfIndentExistingLineBreaks]);
 
   SourceChangeCache.BeginUpdate;
@@ -6728,10 +6749,10 @@ var
               +'('+SetPropertyVariablename+':'+PropType+');'
               +BeautifyCodeOpts.LineEnd
               +'begin'+BeautifyCodeOpts.LineEnd
-              +GetIndentStr(BeautifyCodeOpts.Indent)
+              +BeautifyCodeOpts.GetIndentStr(BeautifyCodeOpts.Indent)
                 +'if '+VariableName+'='+SetPropertyVariablename+' then Exit;'
                 +BeautifyCodeOpts.LineEnd
-              +GetIndentStr(BeautifyCodeOpts.Indent)
+              +BeautifyCodeOpts.GetIndentStr(BeautifyCodeOpts.Indent)
                 +VariableName+':='+SetPropertyVariablename+';'
                 +BeautifyCodeOpts.LineEnd
               +'end;';
@@ -6890,9 +6911,11 @@ var ANodeExt: TCodeTreeNodeExtension;
   CurCode: string;
   IsVariable, InsertBehind: boolean;
   Visibility: TPascalClassSection;
+  Beauty: TBeautifyCodeOptions;
 begin
   ANodeExt:=FirstInsert;
   Visibility:=NewClassPartVisibility[PartType];
+  Beauty:=ASourceChangeCache.BeautifyCodeOptions;
   // insert all nodes of specific type
   while ANodeExt<>nil do begin
     IsVariable:=NodeExtIsVariable(ANodeExt);
@@ -6939,8 +6962,7 @@ begin
       if ClassSectionNode=nil then begin
         // there is no existing class section node
         // -> insert in the new one
-        Indent:=NewClassSectionIndent[Visibility]
-                    +ASourceChangeCache.BeautifyCodeOptions.Indent;
+        Indent:=NewClassSectionIndent[Visibility]+Beauty.Indent;
         InsertPos:=NewClassSectionInsertPos[Visibility];
         if InsertPos<1 then
           raise Exception.Create('TCodeCompletionCodeTool.InsertNewClassParts inconsistency: missing section: please create a bug report');
@@ -6968,7 +6990,7 @@ begin
         end;
 
         // find a nice position between similar siblings
-        case ASourceChangeCache.BeautifyCodeOptions.ClassPartInsertPolicy of
+        case Beauty.ClassPartInsertPolicy of
         
         cpipAlphabetically:
           begin
@@ -7018,7 +7040,7 @@ begin
                   break;
               end else begin
                 // the insertion is a method
-                if (not ASourceChangeCache.BeautifyCodeOptions.MixMethodsAndProperties)
+                if (not Beauty.MixMethodsAndProperties)
                 and (ANode.Desc=ctnProperty) then
                   break;
               end;
@@ -7062,8 +7084,7 @@ begin
         end else begin
           // insert as first variable/proc
           //debugln(['TCodeCompletionCodeTool.InsertNewClassParts insert as first var: ',ClassSectionNode.DescAsString,' ',dbgstr(copy(Src,ClassSectionNode.StartPos,ClassSectionNode.EndPos-ClassSectionNode.StartPos))]);
-          Indent:=GetLineIndent(Src,ClassSectionNode.StartPos)
-                    +ASourceChangeCache.BeautifyCodeOptions.Indent;
+          Indent:=GetLineIndent(Src,ClassSectionNode.StartPos)+Beauty.Indent;
           InsertPos:=ClassSectionNode.StartPos;
           if (ClassSectionNode.Desc=ctnClassPublished)
           and (CompareIdentifiers(@Src[ClassSectionNode.StartPos],'published')<>0)
@@ -7071,10 +7092,10 @@ begin
             // the first published section has no keyword
             if ClassSectionNode.NextBrother<>nil then
               Indent:=GetLineIndent(Src,ClassSectionNode.NextBrother.StartPos)
-                      +ASourceChangeCache.BeautifyCodeOptions.Indent
+                      +Beauty.Indent
             else
               Indent:=GetLineIndent(Src,ClassSectionNode.Parent.StartPos)
-                      +ASourceChangeCache.BeautifyCodeOptions.Indent;
+                      +Beauty.Indent;
           end else if (ClassSectionNode.Desc in AllClassBaseSections)
           then begin
             // skip keyword
@@ -7102,17 +7123,14 @@ begin
         end;
       end;
       CurCode:=ANodeExt.ExtTxt1;
-      CurCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-                          CurCode,Indent);
+      CurCode:=Beauty.BeautifyStatement(CurCode,Indent);
       {$IFDEF CTDEBUG}
       DebugLn('TCodeCompletionCodeTool.InsertNewClassParts:');
       DebugLn(CurCode);
       {$ENDIF}
       ASourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
          CurCode);
-      if (not IsVariable)
-      and (ASourceChangeCache.BeautifyCodeOptions.MethodInsertPolicy
-        =mipClassOrder) then
+      if (not IsVariable) and (Beauty.MethodInsertPolicy=mipClassOrder) then
       begin
         // this was a new method definition and the body should be added in
         // Class Order
@@ -7128,6 +7146,7 @@ function TCodeCompletionCodeTool.InsertAllNewClassParts: boolean;
 var
   NewSectionKeyWordNeeded: boolean;
   NewSection: TPascalClassSection;
+  Beauty: TBeautifyCodeOptions;
 
   function GetTopMostPositionNode(Visibility: TPascalClassSection
     ): TCodeTreeNode;
@@ -7176,6 +7195,7 @@ var
     ANode: TCodeTreeNode;
     FirstVisibilitySection: TCodeTreeNode;
     NewCode: String;
+    Beauty: TBeautifyCodeOptions;
   begin
     NewClassSectionInsertPos[Visibility]:=-1;
     NewClassSectionIndent[Visibility]:=0;
@@ -7212,6 +7232,7 @@ var
       the first published section. But if a variable is already
       needed in the first published section, then the new section
       must be inserted in front of all }
+    Beauty:=ASourceChangeCache.BeautifyCodeOptions;
     FirstVisibilitySection:=GetFirstVisibilitySectionNode;
     if (TopMostPositionNode<>nil)
     and (FirstVisibilitySection<>nil)
@@ -7257,11 +7278,11 @@ var
       NewClassSectionInsertPos[Visibility]:=ANode.EndPos;
     end;
     SectionKeyWord:=PascalClassSectionKeywords[Visibility];
-    NewCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(SectionKeyWord);
+    NewCode:=Beauty.BeautifyKeyWord(SectionKeyWord);
     ASourceChangeCache.Replace(gtNewLine,gtNewLine,
       NewClassSectionInsertPos[Visibility],
       NewClassSectionInsertPos[Visibility],
-      GetIndentStr(NewClassSectionIndent[Visibility])+NewCode);
+      Beauty.GetIndentStr(NewClassSectionIndent[Visibility])+NewCode);
   end;
 
 begin
@@ -7275,6 +7296,8 @@ begin
     Result:=true;
     exit;
   end;
+  Beauty:=ASourceChangeCache.BeautifyCodeOptions;
+
   NewSectionKeyWordNeeded:=false;// 'published'/'public' keyword after first private section needed
   if CodeCompleteClassNode.Desc = ctnClass then
     NewSection := pcsPublished
@@ -7293,8 +7316,8 @@ begin
     ASourceChangeCache.Replace(gtNewLine,gtNewLine,
       NewClassSectionInsertPos[NewSection],
       NewClassSectionInsertPos[NewSection],
-      GetIndentStr(NewClassSectionIndent[NewSection])+
-        ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(PascalClassSectionKeywords[NewSection]));
+      Beauty.GetIndentStr(NewClassSectionIndent[NewSection])+
+        Beauty.BeautifyKeyWord(PascalClassSectionKeywords[NewSection]));
   end
   else
     AddClassSection(pcsPublic);
@@ -7305,8 +7328,8 @@ begin
     ASourceChangeCache.Replace(gtNewLine,gtNewLine,
       NewClassSectionInsertPos[NewSection],
       NewClassSectionInsertPos[NewSection],
-      GetIndentStr(NewClassSectionIndent[NewSection])+
-        ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(PascalClassSectionKeywords[NewSection]));
+      Beauty.GetIndentStr(NewClassSectionIndent[NewSection])+
+        Beauty.BeautifyKeyWord(PascalClassSectionKeywords[NewSection]));
   end;
   InsertNewClassParts(ncpPublishedVars);
   InsertNewClassParts(ncpPublishedProcs);
@@ -7322,9 +7345,11 @@ var
   InsertPos: LongInt;
   Indent: LongInt;
   StartPos, CommentStart, CommentEnd: TCodeXYPosition;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=true;
-  if not ASourceChangeCache.BeautifyCodeOptions.ClassHeaderComments then exit;
+  Beauty:=ASourceChangeCache.BeautifyCodeOptions;
+  if not Beauty.ClassHeaderComments then exit;
   // check if there is already a comment in front of the class
   
   // find the start of the class (the position in front of the class name)
@@ -7351,7 +7376,7 @@ begin
   // insert comment in front
   InsertPos:=ClassIdentifierNode.StartPos;
   Indent:=GetLineIndent(Src,InsertPos);
-  Code:=GetIndentStr(Indent)+'{ '+Code+' }';
+  Code:=Beauty.GetIndentStr(Indent)+'{ '+Code+' }';
   ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
                              InsertPos,InsertPos,Code);
 end;
@@ -7503,11 +7528,13 @@ procedure TCodeCompletionCodeTool.AddNewPropertyAccessMethodsToClassProcs(
   ClassProcs: TAVLTree;  const TheClassName: string);
 var ANodeExt: TCodeTreeNodeExtension;
   NewNodeExt: TCodeTreeNodeExtension;
+  Beauty: TBeautifyCodeOptions;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeCompletionCodeTool.AddNewPropertyAccessMethodsToClassProcs]');
   {$ENDIF}
   // add new property access methods to ClassProcs
+  Beauty:=ASourceChangeCache.BeautifyCodeOptions;
   ANodeExt:=FirstInsert;
   while ANodeExt<>nil do begin
     if not NodeExtIsVariable(ANodeExt) then begin
@@ -7515,7 +7542,7 @@ begin
         NewNodeExt:=TCodeTreeNodeExtension.Create;
         with NewNodeExt do begin
           Txt:=UpperCaseStr(TheClassName)+'.'+ANodeExt.Txt; // Name+ParamTypeList
-          ExtTxt1:=ASourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
+          ExtTxt1:=Beauty.AddClassAndNameToProc(
              ANodeExt.ExtTxt1,TheClassName,''); // complete proc head code
           ExtTxt3:=ANodeExt.ExtTxt3;
           Position:=ANodeExt.Position;
@@ -7590,7 +7617,7 @@ begin
       if NodeIsFunction(ProcNode) then
         ProcCall:=Beauty.BeautifyIdentifier('Result')+':='+ProcCall;
       ProcCode:=ProcCode+Beauty.LineEnd+'begin'+Beauty.LineEnd
-                     +GetIndentStr(Beauty.Indent)+ProcCall+Beauty.LineEnd+'end;';
+                     +Beauty.GetIndentStr(Beauty.Indent)+ProcCall+Beauty.LineEnd+'end;';
       ProcCode:=Beauty.BeautifyProc(ProcCode,Indent,false);
       ANodeExt.ExtTxt3:=ProcCode;
     end;
@@ -7617,10 +7644,12 @@ var
   OldProcCode: String;
   Bodies: TFPList;
   i: Integer;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=true;
   ProcsCopied:=false;
   Bodies:=nil;
+  Beauty:=ASourceChangeCache.BeautifyCodeOptions;
   try
     // create a mapping in ClassProcs Data to ProcBodyNodes
     GuessMethodDefBodyMapping(ClassProcs,ProcBodyNodes);
@@ -7643,8 +7672,7 @@ begin
         InsertPos:=BodyNodeExt.Node.StartPos;
         InsertEndPos:=BodyProcHeadNode.EndPos;
         Indent:=GetLineIndent(Src,InsertPos);
-        NewProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
-                     NewProcCode,Indent,false);
+        NewProcCode:=Beauty.BeautifyProc(NewProcCode,Indent,false);
         OldProcCode:=ExtractProcHead(BodyNodeExt.Node,ProcAttrCopyDefToBody);
         if CompareTextIgnoringSpace(NewProcCode,OldProcCode,true)<>0 then begin
           // update body
@@ -7898,7 +7926,8 @@ const
                phpWithParameterNames,phpWithResultType,phpWithCallingSpecs];
 var
   TheClassName: string;
-   
+  Beauty: TBeautifyCodeOptions;
+
   procedure InsertProcBody(ANodeExt: TCodeTreeNodeExtension;
     InsertPos, Indent: integer);
   var ProcCode: string;
@@ -7907,13 +7936,11 @@ var
       ProcCode:=ANodeExt.ExtTxt3
     else
       ProcCode:=ANodeExt.ExtTxt1;
-    ProcCode:=ASourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
-                 ProcCode,TheClassName,'');
+    ProcCode:=Beauty.AddClassAndNameToProc(ProcCode,TheClassName,'');
     {$IFDEF CTDEBUG}
     DebugLn('CreateMissingProcBodies InsertProcBody ',TheClassName,' "',ProcCode,'"');
     {$ENDIF}
-    ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
-                 ProcCode,Indent,ANodeExt.ExtTxt3='');
+    ProcCode:=Beauty.BeautifyProc(ProcCode,Indent,ANodeExt.ExtTxt3='');
     ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,ProcCode);
     if FJumpToProcName='' then begin
       // remember one proc body to jump to after the completion
@@ -7939,8 +7966,7 @@ var
       ANode:=TheNodeExt.Node;
       if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
         ProcCode:=ExtractProcHead(ANode,ProcAttrDefToBody);
-        TheNodeExt.ExtTxt3:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
-                     ProcCode,Indent,true);
+        TheNodeExt.ExtTxt3:=Beauty.BeautifyProc(ProcCode,Indent,true);
       end;
     end;
   end;
@@ -8062,7 +8088,7 @@ var
       // class is not in interface section
       StartSearchProc:=CodeCompleteClassNode.GetTopMostNodeOfType(ctnTypeSection);
     end;
-    case ASourceChangeCache.BeautifyCodeOptions.ForwardProcBodyInsertPolicy of
+    case Beauty.ForwardProcBodyInsertPolicy of
     fpipInFrontOfMethods:
       begin
         // Try to insert new proc in front of existing methods
@@ -8130,7 +8156,7 @@ var
   begin
     // insert class comment
     if ClassProcs.Count=0 then exit;
-    if not ASourceChangeCache.BeautifyCodeOptions.ClassImplementationComments
+    if not Beauty.ClassImplementationComments
     then
       exit;
     // find the start of the class (the position in front of the class name)
@@ -8139,7 +8165,7 @@ var
       // comment already exists
       exit;
     end;
-    ClassStartComment:=GetIndentStr(Indent)
+    ClassStartComment:=Beauty.GetIndentStr(Indent)
                        +'{ '+ExtractClassName(CodeCompleteClassNode,false)+' }';
     ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
                                ClassStartComment);
@@ -8162,7 +8188,8 @@ begin
   end;
   
   Result:=false;
-  MethodInsertPolicy:=ASourceChangeCache.BeautifyCodeOptions.MethodInsertPolicy;
+  Beauty:=ASourceChangeCache.BeautifyCodeOptions;
+  MethodInsertPolicy:=Beauty.MethodInsertPolicy;
   // gather existing class proc bodies
   ClassProcs:=nil;
   ProcBodyNodes:=nil;
@@ -8662,7 +8689,7 @@ begin
                   phpWithResultType,phpWithCallingSpecs]);
         ProcCode:=ProcCode+Beautifier.LineEnd
                     +'begin'+Beautifier.LineEnd
-                    +GetIndentStr(Beautifier.Indent)+Beautifier.LineEnd
+                    +Beautifier.GetIndentStr(Beautifier.Indent)+Beautifier.LineEnd
                     +'end;';
 
         // add method data
