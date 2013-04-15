@@ -302,7 +302,7 @@ var
     {$IFDEF CTDebug}
     DebugLn('TExtractProcTool.ReplaceSelectionWithCall A');
     {$ENDIF}
-    Indent:=GetLineIndent(Src,BlockStartPos);
+    Indent:=Beauty.GetLineIndent(Src,BlockStartPos);
     ParamListCode:='';
     // gather all variables, that are used in the selection and in the rest of
     // the old proc (in front or behind). These are the parameters for the new proc.
@@ -750,14 +750,14 @@ var
         while BeginNode.Desc<>ctnBeginBlock do
           BeginNode:=BeginNode.PriorBrother;
         InsertPos:=BeginNode.StartPos;
-        Indent:=GetLineIndent(Src,InsertPos)+Beauty.Indent;
+        Indent:=Beauty.GetLineIndent(Src,InsertPos)+Beauty.Indent;
       end;
       
     eptSubProcedureSameLvl:
       begin
         // -> insert in front of old proc
         InsertPos:=FindLineEndOrCodeInFrontOfPosition(MainBlockNode.StartPos);
-        Indent:=GetLineIndent(Src,MainBlockNode.StartPos);
+        Indent:=Beauty.GetLineIndent(Src,MainBlockNode.StartPos);
       end;
 
     eptProcedure,eptProcedureWithInterface:
@@ -778,7 +778,7 @@ var
             InsertNode:=InsertNode.PriorBrother;
         end;
         // -> insert in front of top level proc
-        Indent:=GetLineIndent(Src,InsertNode.StartPos);
+        Indent:=Beauty.GetLineIndent(Src,InsertNode.StartPos);
         if InsertNode.PriorBrother<>nil then begin
           InsertPos:=FindLineEndOrCodeAfterPosition(
                                                 InsertNode.PriorBrother.EndPos);
@@ -795,7 +795,7 @@ var
       begin
         // set default values
         InsertPos:=FindLineEndOrCodeInFrontOfPosition(MainBlockNode.StartPos);
-        Indent:=GetLineIndent(Src,MainBlockNode.StartPos);
+        Indent:=Beauty.GetLineIndent(Src,MainBlockNode.StartPos);
       end;
 
     else

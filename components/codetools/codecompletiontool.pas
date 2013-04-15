@@ -651,10 +651,12 @@ end;
 procedure TCodeCompletionCodeTool.FindInsertPositionForForwardProc(
   SourceChangeCache: TSourceChangeCache; ProcNode: TCodeTreeNode; var Indent,
   InsertPos: integer);
+var
+  Beauty: TBeautifyCodeOptions;
 
   procedure SetIndentAndInsertPos(Node: TCodeTreeNode; Behind: boolean);
   begin
-    Indent:=GetLineIndent(Src,Node.StartPos);
+    Indent:=Beauty.GetLineIndent(Src,Node.StartPos);
     if Behind then
       InsertPos:=FindLineEndOrCodeAfterPosition(Node.EndPos)
     else
@@ -674,8 +676,8 @@ var
   ProcPosBehind: Integer;
   EmptyLinesInFront: Integer;
   EmptyLinesBehind: Integer;
-  Beauty: TBeautifyCodeOptions;
 begin
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   IsInInterface:=ProcNode.HasParentOfType(ctnInterface);
   if IsInInterface then begin
     // forward proc in interface
@@ -688,7 +690,7 @@ begin
     end else begin
       // implementation is empty
       // -> add it as first body
-      Indent:=GetLineIndent(Src,StartSearchProc.StartPos);
+      Indent:=Beauty.GetLineIndent(Src,StartSearchProc.StartPos);
       InsertPos:=StartSearchProc.StartPos+length('implementation');
       exit;
     end;
@@ -704,7 +706,6 @@ begin
     end;
   end;
 
-  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   //debugln(['TCodeCompletionCodeTool.FindInsertPositionForForwardProc ',ord(Beauty.ForwardProcBodyInsertPolicy)]);
   if Beauty.KeepForwardProcOrder then begin
     // KeepForwardProcOrder: gather all procs and try to insert the new body
@@ -819,7 +820,7 @@ begin
       if NearestProcNode.PriorBrother<>nil then
         SetIndentAndInsertPos(NearestProcNode.PriorBrother,true)
       else begin
-        Indent:=GetLineIndent(Src,NearestProcNode.StartPos);
+        Indent:=Beauty.GetLineIndent(Src,NearestProcNode.StartPos);
         InsertPos:=NearestProcNode.Parent.StartPos;
         while (InsertPos<=NearestProcNode.StartPos)
         and (not IsSpaceChar[Src[InsertPos]]) do
@@ -860,13 +861,15 @@ procedure TCodeCompletionCodeTool.FindInsertPositionForProcInterface(
   var Indent, InsertPos: integer; SourceChangeCache: TSourceChangeCache);
 var
   InsertNode: TCodeTreeNode;
+  Beauty: TBeautifyCodeOptions;
 begin
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   InsertNode:=FindInterfaceNode;
   if InsertNode<>nil then begin
     // there is an interface
     // -> append at end of interface
     InsertPos:=FindLineEndOrCodeInFrontOfPosition(InsertNode.EndPos,true);
-    Indent:=GetLineIndent(Src,InsertNode.EndPos);
+    Indent:=Beauty.GetLineIndent(Src,InsertNode.EndPos);
   end;
   if InsertPos<1 then begin
     // there is no interface
@@ -876,13 +879,13 @@ begin
       InsertNode:=InsertNode.NextBrother;
     if InsertNode<>nil then begin
       InsertPos:=FindLineEndOrCodeInFrontOfPosition(InsertNode.StartPos,true);
-      Indent:=GetLineIndent(Src,InsertPos);
+      Indent:=Beauty.GetLineIndent(Src,InsertPos);
     end;
   end;
   if InsertPos<1 then begin
     InsertNode:=FindFirstSectionChild;
     if InsertNode<>nil then begin
-      Indent:=GetLineIndent(Src,InsertNode.StartPos);
+      Indent:=Beauty.GetLineIndent(Src,InsertNode.StartPos);
       if InsertNode.Desc=ctnUsesSection then
         // insert behind uses section
         InsertPos:=FindLineEndOrCodeAfterPosition(InsertNode.EndPos)
@@ -893,7 +896,7 @@ begin
       // insert in interface or somewhere at start
       InsertNode:=Tree.Root;
       InsertPos:=FindLineEndOrCodeInFrontOfPosition(InsertNode.EndPos,true);
-      Indent:=GetLineIndent(Src,InsertNode.EndPos);
+      Indent:=Beauty.GetLineIndent(Src,InsertNode.EndPos);
     end;
   end;
 end;
@@ -1065,12 +1068,12 @@ begin
     //debugln(['TCodeCompletionCodeTool.AddLocalVariable insert into existing var section']);
     VarNode:=VarSectionNode.LastChild;
     if VarNode<>nil then begin
-      Indent:=GetLineIndent(Src,VarNode.StartPos);
+      Indent:=Beauty.GetLineIndent(Src,VarNode.StartPos);
       if PositionsInSameLine(Src,VarSectionNode.StartPos,VarNode.StartPos) then
         inc(Indent,Beauty.Indent);
       InsertPos:=FindLineEndOrCodeAfterPosition(VarNode.EndPos);
     end else begin
-      Indent:=GetLineIndent(Src,VarSectionNode.StartPos);
+      Indent:=Beauty.GetLineIndent(Src,VarSectionNode.StartPos);
       MoveCursorToNodeStart(VarSectionNode);
       ReadNextAtom;
       InsertPos:=CurPos.EndPos;
@@ -1083,7 +1086,7 @@ begin
       // => put the var section below
       //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section below '+OtherSectionNode.DescAsString]);
       InsertPos:=OtherSectionNode.EndPos;
-      Indent:=GetLineIndent(Src,OtherSectionNode.StartPos);
+      Indent:=Beauty.GetLineIndent(Src,OtherSectionNode.StartPos);
     end else begin
       // there is no var/type/const section in front
       if (ParentNode.Desc=ctnProcedure) and (HeaderNode=nil) then
@@ -1097,19 +1100,19 @@ begin
         // add the var section directly in front of the begin
         //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section in front of begin block']);
         InsertPos:=CursorNode.StartPos;
-        Indent:=GetLineIndent(Src,InsertPos);
+        Indent:=Beauty.GetLineIndent(Src,InsertPos);
       end else if HeaderNode<>nil then begin
         // put the var section below the header
         //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section below '+HeaderNode.DescAsString]);
         InsertPos:=HeaderNode.EndPos;
-        Indent:=GetLineIndent(Src,InsertPos);
+        Indent:=Beauty.GetLineIndent(Src,InsertPos);
       end else begin
         // insert behind section keyword
         //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section at start of '+ParentNode.DescAsString]);
         MoveCursorToNodeStart(ParentNode);
         ReadNextAtom;
         InsertPos:=CurPos.EndPos;
-        Indent:=GetLineIndent(Src,InsertPos);
+        Indent:=Beauty.GetLineIndent(Src,InsertPos);
       end;
     end;
     InsertTxt:='var'+Beauty.LineEnd
@@ -1243,6 +1246,7 @@ var
   NewProc: String;
   Beauty: TBeautifyCodeOptions;
 begin
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   // find a nice insert position in front of methods and CursorNode
   StartNode:=FindImplementationNode;
   if (StartNode=nil) and (Tree.Root.Desc<>ctnUnit) then
@@ -1262,13 +1266,13 @@ begin
   end;
   if InFrontOfNode<>nil then begin
     // insert in front
-    Indent:=GetLineIndent(Src,InFrontOfNode.StartPos);
+    Indent:=Beauty.GetLineIndent(Src,InFrontOfNode.StartPos);
     InsertPos:=FindLineEndOrCodeInFrontOfPosition(InFrontOfNode.StartPos);
   end else begin
     Node:=FindMainUsesSection(false);
     if Node<>nil then begin
       // insert behind uses section
-      Indent:=GetLineIndent(Src,Node.StartPos);
+      Indent:=Beauty.GetLineIndent(Src,Node.StartPos);
       InsertPos:=FindLineEndOrCodeAfterPosition(Node.EndPos);
     end else begin
       // insert at start
@@ -1280,10 +1284,10 @@ begin
       if Node<>nil then begin
         // insert in front of second node
         InsertPos:=Node.StartPos;
-        Indent:=GetLineIndent(Src,InsertPos);
+        Indent:=Beauty.GetLineIndent(Src,InsertPos);
       end else if StartNode.Desc=ctnImplementation then begin
         // empty implementation => insert at start
-        Indent:=GetLineIndent(Src,StartNode.StartPos);
+        Indent:=Beauty.GetLineIndent(Src,StartNode.StartPos);
         InsertPos:=StartNode.StartPos+length('implementation');
       end else begin
         // empty program
@@ -1291,8 +1295,6 @@ begin
       end;
     end;
   end;
-
-  Beauty:=SourceChangeCache.BeautifyCodeOptions;
 
   // extract method param list, result type and modifiers
   MethodAttr:=[phpWithStart, phpWithoutClassKeyword, phpWithVarModifiers,
@@ -2470,7 +2472,7 @@ begin
           +'CleanPosToCodePos');
       end;
 
-      Indent:=GetLineIndent(Src,DefProcNode.StartPos);
+      Indent:=Beauty.GetLineIndent(Src,DefProcNode.StartPos);
       FromPos:=DefProcNode.StartPos;
       EndPos:=DefProcNode.EndPos;
       SourceChangeCache.MainScanner:=Scanner;
@@ -2812,6 +2814,7 @@ var
   FuncType: String;
   CleanProcHead: string;
   NewProcPath: TStringList;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
   if not CheckProcSyntax(BeginNode,ProcNameAtom,BracketOpenPos,BracketClosePos)
@@ -2819,6 +2822,7 @@ begin
 
   CheckWholeUnitParsed(CursorNode,BeginNode);
 
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   Params:=TFindDeclarationParams.Create;
   ExprList:=nil;
   ActivateGlobalWriteLock;
@@ -2846,12 +2850,12 @@ begin
           // this is a normal proc or sub proc
           // insert new proc in front
           InsertPos:=FindLineEndOrCodeInFrontOfPosition(ProcNode.StartPos);
-          Indent:=GetLineIndent(Src,ProcNode.StartPos);
+          Indent:=Beauty.GetLineIndent(Src,ProcNode.StartPos);
         end else begin
           // this is a begin..end without proc (e.g. program or unit code)
           // insert new proc in front
           InsertPos:=FindLineEndOrCodeInFrontOfPosition(BeginNode.StartPos);
-          Indent:=GetLineIndent(Src,BeginNode.StartPos);
+          Indent:=Beauty.GetLineIndent(Src,BeginNode.StartPos);
         end;
       end;
     end else begin
@@ -4228,7 +4232,7 @@ var
       GraphNode:=TCodeGraphNode(ListOfGraphNodes[i]);
       if GraphNode.Flags=0 then begin
         InsertPos:=FindLineEndOrCodeInFrontOfPosition(GraphNode.Node.StartPos);
-        Indent:=GetLineIndent(Src,GraphNode.Node.StartPos);
+        Indent:=Beauty.GetLineIndent(Src,GraphNode.Node.StartPos);
         if not ApplyNodeMove(GraphNode,false,InsertPos,Indent) then exit;
       end;
     end;
@@ -4393,7 +4397,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
     if Node.Parent.Desc=ctnTypeSection then
       Node:=Node.Parent;
     InsertPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
-    Indent:=GetLineIndent(Src,Node.StartPos);
+    Indent:=Beauty.GetLineIndent(Src,Node.StartPos);
     SourceChangeCache.Replace(gtEmptyLine,gtNewLine,InsertPos,InsertPos,
       Beauty.GetIndentStr(Indent)+'type');
     inc(Indent,Beauty.Indent);
@@ -4794,7 +4798,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
           //DebugLn(['MoveNodes destination is not in a section']);
         end;
         InsertPos:=FindLineEndOrCodeAfterPosition(DestNode.StartPos);
-        Indent:=GetLineIndent(Src,DestNode.StartPos);
+        Indent:=Beauty.GetLineIndent(Src,DestNode.StartPos);
         //DebugLn(['MoveNodes DestNode=',GetRedefinitionNodeText(DestNode),':',DestNode.DescAsString,' DestSection=',NodeDescToStr(DestSection)]);
       end;
       
@@ -6080,7 +6084,7 @@ begin
     // insert in front of another var
     CursorNode:=GetFirstGroupVarNode(CursorNode);
     InsertPos:=CursorNode.StartPos;
-    Indent:=GetLineIndent(Src,InsertPos);
+    Indent:=Beauty.GetLineIndent(Src,InsertPos);
   end else if CursorNode.Desc in (AllClassBaseSections
     +[ctnVarSection,ctnRecordType,ctnClassClassVar])
   then begin
@@ -6095,9 +6099,9 @@ begin
         InsertPos:=CurPos.EndPos;
     end;
     if CursorNode.FirstChild<>nil then
-      Indent:=GetLineIndent(Src,CursorNode.FirstChild.StartPos)
+      Indent:=Beauty.GetLineIndent(Src,CursorNode.FirstChild.StartPos)
     else
-      Indent:=GetLineIndent(Src,CursorNode.StartPos)+Beauty.Indent;
+      Indent:=Beauty.GetLineIndent(Src,CursorNode.StartPos)+Beauty.Indent;
   end else if CursorNode.Desc in [ctnProcedure,ctnInterface,ctnImplementation,
     ctnProgram,ctnLibrary,ctnPackage]
   then begin
@@ -6115,18 +6119,18 @@ begin
     if (Node<>nil) and (Node.Desc=ctnVarSection) then begin
       // append to a var section
       if Node.LastChild<>nil then
-        Indent:=GetLineIndent(Src,Node.LastChild.StartPos)
+        Indent:=Beauty.GetLineIndent(Src,Node.LastChild.StartPos)
       else
-        Indent:=GetLineIndent(Src,Node.StartPos)+Beauty.Indent;
+        Indent:=Beauty.GetLineIndent(Src,Node.StartPos)+Beauty.Indent;
     end else begin
       // start a new var section
       NeedSection:=true;
       if Node<>nil then
-        Indent:=GetLineIndent(Src,Node.StartPos)
+        Indent:=Beauty.GetLineIndent(Src,Node.StartPos)
       else if CursorNode.FirstChild<>nil then
-        Indent:=GetLineIndent(Src,CursorNode.FirstChild.StartPos)
+        Indent:=Beauty.GetLineIndent(Src,CursorNode.FirstChild.StartPos)
       else
-        Indent:=GetLineIndent(Src,CursorNode.StartPos);
+        Indent:=Beauty.GetLineIndent(Src,CursorNode.StartPos);
     end;
   end else begin
     // default: add the variable at cursor
@@ -7074,7 +7078,7 @@ begin
             InsertBehind:=false;
           end;
           
-          Indent:=GetLineIndent(Src,InsertNode.StartPos);
+          Indent:=Beauty.GetLineIndent(Src,InsertNode.StartPos);
           if InsertBehind then begin
             // insert behind InsertNode
             InsertPos:=FindLineEndOrCodeAfterPosition(InsertNode.EndPos);
@@ -7085,17 +7089,17 @@ begin
         end else begin
           // insert as first variable/proc
           //debugln(['TCodeCompletionCodeTool.InsertNewClassParts insert as first var: ',ClassSectionNode.DescAsString,' ',dbgstr(copy(Src,ClassSectionNode.StartPos,ClassSectionNode.EndPos-ClassSectionNode.StartPos))]);
-          Indent:=GetLineIndent(Src,ClassSectionNode.StartPos)+Beauty.Indent;
+          Indent:=Beauty.GetLineIndent(Src,ClassSectionNode.StartPos)+Beauty.Indent;
           InsertPos:=ClassSectionNode.StartPos;
           if (ClassSectionNode.Desc=ctnClassPublished)
           and (CompareIdentifiers(@Src[ClassSectionNode.StartPos],'published')<>0)
           then begin
             // the first published section has no keyword
             if ClassSectionNode.NextBrother<>nil then
-              Indent:=GetLineIndent(Src,ClassSectionNode.NextBrother.StartPos)
+              Indent:=Beauty.GetLineIndent(Src,ClassSectionNode.NextBrother.StartPos)
                       +Beauty.Indent
             else
-              Indent:=GetLineIndent(Src,ClassSectionNode.Parent.StartPos)
+              Indent:=Beauty.GetLineIndent(Src,ClassSectionNode.Parent.StartPos)
                       +Beauty.Indent;
           end else if (ClassSectionNode.Desc in AllClassBaseSections)
           then begin
@@ -7243,7 +7247,7 @@ var
       // topmost node is in the first section
       // -> insert the new section as the first section
       ANode:=FirstVisibilitySection;
-      NewClassSectionIndent[Visibility]:=GetLineIndent(Src,ANode.StartPos);
+      NewClassSectionIndent[Visibility]:=Beauty.GetLineIndent(Src,ANode.StartPos);
       if (ANode.FirstChild<>nil) and (ANode.FirstChild.Desc<>ctnClassGUID)
       then
         NewClassSectionInsertPos[Visibility]:=ANode.StartPos
@@ -7275,7 +7279,7 @@ var
         // default: insert new section behind first published section
         ANode:=FirstVisibilitySection;
       end;
-      NewClassSectionIndent[Visibility]:=GetLineIndent(Src,ANode.StartPos);
+      NewClassSectionIndent[Visibility]:=Beauty.GetLineIndent(Src,ANode.StartPos);
       NewClassSectionInsertPos[Visibility]:=ANode.EndPos;
     end;
     SectionKeyWord:=PascalClassSectionKeywords[Visibility];
@@ -7376,7 +7380,7 @@ begin
 
   // insert comment in front
   InsertPos:=ClassIdentifierNode.StartPos;
-  Indent:=GetLineIndent(Src,InsertPos);
+  Indent:=Beauty.GetLineIndent(Src,InsertPos);
   Code:=Beauty.GetIndentStr(Indent)+'{ '+Code+' }';
   ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
                              InsertPos,InsertPos,Code);
@@ -7672,7 +7676,7 @@ begin
         BodyProcHeadNode:=BodyNodeExt.Node.FirstChild;
         InsertPos:=BodyNodeExt.Node.StartPos;
         InsertEndPos:=BodyProcHeadNode.EndPos;
-        Indent:=GetLineIndent(Src,InsertPos);
+        Indent:=Beauty.GetLineIndent(Src,InsertPos);
         NewProcCode:=Beauty.BeautifyProc(NewProcCode,Indent,false);
         OldProcCode:=ExtractProcHead(BodyNodeExt.Node,ProcAttrCopyDefToBody);
         if CompareTextIgnoringSpace(NewProcCode,OldProcCode,true)<>0 then begin
@@ -8042,7 +8046,7 @@ var
 
     procedure SetIndentAndInsertPos(Node: TCodeTreeNode; Behind: boolean);
     begin
-      Indent:=GetLineIndent(Src,Node.StartPos);
+      Indent:=Beauty.GetLineIndent(Src,Node.StartPos);
       if Behind then
         InsertPos:=FindLineEndOrCodeAfterPosition(Node.EndPos)
       else
@@ -8066,7 +8070,7 @@ var
       if ImplementationNode=nil then begin
         // create implementation section
         InsertPos:=UnitInterfaceNode.EndPos;
-        Indent:=GetLineIndent(Src,UnitInterfaceNode.StartPos);
+        Indent:=Beauty.GetLineIndent(Src,UnitInterfaceNode.StartPos);
         if not CodeCompleteSrcChgCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
           CodeCompleteSrcChgCache.BeautifyCodeOptions.BeautifyKeyWord('implementation'))
         then begin
@@ -8077,7 +8081,7 @@ var
       end else if (ImplementationNode.FirstChild=nil)
       or (ImplementationNode.FirstChild.Desc=ctnBeginBlock) then begin
         // implementation is empty
-        Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
+        Indent:=Beauty.GetLineIndent(Src,ImplementationNode.StartPos);
         if ImplementationNode.FirstChild<>nil then
           InsertPos:=ImplementationNode.FirstChild.StartPos
         else
@@ -8102,7 +8106,7 @@ var
         if NearestProcNode<>nil then begin
           // the comments in front of the first method probably belong to the class
           // Therefore insert behind the node in front of the first method
-          Indent:=GetLineIndent(Src,NearestProcNode.StartPos);
+          Indent:=Beauty.GetLineIndent(Src,NearestProcNode.StartPos);
           if NearestProcNode.PriorBrother<>nil then begin
             InsertPos:=FindLineEndOrCodeAfterPosition(NearestProcNode.PriorBrother.EndPos);
           end else begin
@@ -8305,7 +8309,7 @@ begin
       {$ENDIF}
 
       // set default insert position
-      Indent:=GetLineIndent(Src,LastExistingProcBody.StartPos);
+      Indent:=Beauty.GetLineIndent(Src,LastExistingProcBody.StartPos);
       InsertPos:=FindLineEndOrCodeAfterPosition(LastExistingProcBody.EndPos);
                         
       // check for all defined class methods (MissingNode), if there is a body
@@ -8333,7 +8337,7 @@ begin
               end;
               ANodeExt2:=TCodeTreeNodeExtension(ExistingNode.Data);
               ANode:=ANodeExt2.Node;
-              Indent:=GetLineIndent(Src,ANode.StartPos);
+              Indent:=Beauty.GetLineIndent(Src,ANode.StartPos);
               if cmp>0 then begin
                 // insert behind ExistingNode
                 InsertPos:=FindLineEndOrCodeAfterPosition(ANode.EndPos);
@@ -8369,14 +8373,14 @@ begin
                 ANodeExt2:=TCodeTreeNodeExtension(NearestAVLNode.Data);
                 // see above (note 1) for ANodeExt2.Data
                 ANode:=TCodeTreeNodeExtension(ANodeExt2.Data).Node;
-                Indent:=GetLineIndent(Src,ANode.StartPos);
+                Indent:=Beauty.GetLineIndent(Src,ANode.StartPos);
                 InsertPos:=FindLineEndOrCodeAfterPosition(ANode.EndPos);
               end else if NextAVLNode<>nil then begin
                 // there is a NextAVLNode behind -> insert in front of body
                 ANodeExt2:=TCodeTreeNodeExtension(NextAVLNode.Data);
                 // see above (note 1) for ANodeExt2.Data
                 ANode:=TCodeTreeNodeExtension(ANodeExt2.Data).Node;
-                Indent:=GetLineIndent(Src,ANode.StartPos);
+                Indent:=Beauty.GetLineIndent(Src,ANode.StartPos);
                 InsertPos:=FindLineEndOrCodeInFrontOfPosition(ANode.StartPos);
               end;
             end;
