@@ -95,14 +95,21 @@ begin
   CB1Click(nil);
   CB2Click(nil);
   CB3Click(nil);
-  M1.Lines.Text:=View.Memo.Text;
-  if not M1.HandleAllocated then
-    M1.SelStart:=0;
-  M1.SetFocus;
-  FActiveMemo := M1;
-  CB1.Checked:=(View.Script.Count>0) or (View is TfrControl);
-  M2.Lines.Text:=View.Script.Text;
-  Button5.Visible := (View is TfrMemoView);
+  if Assigned(View) then
+  begin
+    M1.Lines.Text:=View.Memo.Text;
+    if not M1.HandleAllocated then
+      M1.SelStart:=0;
+    M1.SetFocus;
+    FActiveMemo := M1;
+    CB1.Checked:=(View.Script.Count>0) or (View is TfrControl);
+    M2.Lines.Text:=View.Script.Text;
+    Button5.Visible := (View is TfrMemoView);
+  end
+  else
+  begin
+    Button5.Visible := false;
+  end;
   M1.Font.Charset := frCharset;
   M2.Font.Charset := frCharset;
   {$IFDEF DebugLR}
@@ -116,8 +123,11 @@ begin
   begin
     frDesigner.BeforeChange;
     M1.WordWrap := False;
-    View.Memo.Text := M1.Text;
-    View.Script.Text := M2.Text;
+    if Assigned(View) then
+    begin
+      View.Memo.Text := M1.Text;
+      View.Script.Text := M2.Text;
+    end;
   end;
 end;
 

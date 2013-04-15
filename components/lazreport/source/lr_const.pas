@@ -557,6 +557,7 @@ resourcestring
   sFRDesignerForm_Tools3 = 'Too&ls';
   sFRDesignerForm_About = '&About ...';
   sFRDesignerForm_SaveAs = 'Save &as ...';
+  sFRDesignerForm_BeforePrintScript = '&Before print script ...';
   sFRDesignerForm_Help1 = '&Help contents';
   sFRDesignerForm_Help2 = 'Help &tool';
   sFRDesignerForm_Line = 'Line style';

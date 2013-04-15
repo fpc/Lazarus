@@ -244,6 +244,7 @@ type
 
   TfrDesignerForm = class(TfrReportDesigner)
     acDuplicate: TAction;
+    FileBeforePrintScript: TAction;
     FileOpen: TAction;
     FilePreview: TAction;
     FileSaveAs: TAction;
@@ -262,6 +263,7 @@ type
     ActionsImageList: TImageList;
     ImgIndic: TImageList;
     LinePanel: TPanel;
+    MenuItem1: TMenuItem;
     OB7: TSpeedButton;
     panTab: TPanel;
     panForDlg: TPanel;
@@ -427,6 +429,7 @@ type
     procedure acDuplicateExecute(Sender: TObject);
     procedure acToggleFramesExecute(Sender: TObject);
     procedure C2GetItems(Sender: TObject);
+    procedure FileBeforePrintScriptExecute(Sender: TObject);
     procedure FileOpenExecute(Sender: TObject);
     procedure FilePreviewExecute(Sender: TObject);
     procedure FileSaveAsExecute(Sender: TObject);
@@ -3049,6 +3052,7 @@ begin
   //N17.Caption :=      sFRDesignerForm_SaveAs;
   FileSaveAs.Caption:=   sFRDesignerForm_Save;
   FileSaveAs.Caption:=   sFRDesignerForm_SaveAs;
+  FileBeforePrintScript.Caption := sFRDesignerForm_BeforePrintScript;
   N42.Caption :=      sFRDesignerForm_Var;
   N8.Caption :=       sFRDesignerForm_RptOpt;
   N25.Caption :=      sFRDesignerForm_PgOpt;
@@ -3106,6 +3110,23 @@ begin
       C2.ItemIndex := i;
     Screen.Cursor := crDefault;
   end;
+end;
+
+procedure TfrDesignerForm.FileBeforePrintScriptExecute(Sender: TObject);
+begin
+  EditorForm.View := nil;
+  EditorForm.M2.Lines.Assign(CurReport.Script);
+  EditorForm.MemoPanel.Visible:=false;
+  EditorForm.CB1.OnClick:=nil;
+  EditorForm.CB1.Checked:=true;
+  EditorForm.CB1.OnClick:=@EditorForm.CB1Click;
+  EditorForm.ScriptPanel.Align:=alClient;
+  if EditorForm.ShowModal = mrOk then
+  begin
+    CurReport.Script.Assign(EditorForm.M2.Lines);
+  end;
+  EditorForm.ScriptPanel.Align:=alBottom;
+  EditorForm.MemoPanel.Visible:=true;
 end;
 
 procedure TfrDesignerForm.FileOpenExecute(Sender: TObject);

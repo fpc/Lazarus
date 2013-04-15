@@ -967,6 +967,7 @@ type
     FReportVersionMajor: string;
     FReportVersionMinor: string;
     FReportVersionRelease: string;
+    FScript: TfrScriptStrings;
     FVars: TStrings;
     FVal: TfrValues;
     FDataset: TfrDataset;
@@ -1020,9 +1021,11 @@ type
     procedure DoPrintReport(const PageNumbers: String; Copies: Integer);
     procedure SetComments(const AValue: TStringList);
     procedure SetPrinterTo(const PrnName: String);
+    procedure SetScript(AValue: TfrScriptStrings);
     procedure SetVars(Value: TStrings);
     procedure ClearAttribs;
     function FindObjectByName(AName:string):TfrObject;
+    procedure ExecScript;
   protected
     procedure DoBeginBand(Band: TfrBand); virtual;
     procedure DoBeginColumn(Band: TfrBand); virtual;
@@ -1115,7 +1118,8 @@ type
     property EMFPages: TfrEMFPages read FEMFPages write FEMFPages;
     property Variables: TStrings read FVars write SetVars;
     property Values: TfrValues read FVal write FVal;
-    
+    property Script : TfrScriptStrings read FScript write SetScript;
+
   published
     property Dataset: TfrDataset read FDataset write FDataset;
     property DefaultCopies: Integer read FDefaultCopies write FDefaultCopies default 1;
@@ -2221,12 +2225,12 @@ begin
     frWriteString(Stream, ClassName);
 
 
-{  FTmpTag:=FTag;
+  FTmpTag:=FTag;
   if (FTag<>'') and (Pos('[', FTag) > 0) then
-    ExpandVariables(FTag);}
+    FTag:=lrExpandVariables(FTmpTag);
 
   SaveToStream(Stream);
-{  FTag:=FTmpTag;}
+  FTag:=FTmpTag;
   {$IFDEF DebugLR}
   DebugLn('%s.TfrView.Print() end',[name]);
   {$ENDIF}
@@ -2379,6 +2383,7 @@ procedure TfrView.SaveToStream(Stream: TStream);
 var
   S: Single;
   B: Integer;
+  FTmpS:string;
   {$IFDEF DebugLR}
   st: string;
   {$ENDIF}
@@ -2424,8 +2429,18 @@ begin
     Write(B, 4);
 
     //Tag property stream format 26
-    frWriteString(Stream, FTag);
-    frWriteString(Stream, FURLInfo);
+    if StreamMode = smDesigning then
+    begin
+      frWriteString(Stream, FTag);
+      frWriteString(Stream, FURLInfo);
+    end
+    else
+    begin
+      FTmpS:=lrExpandVariables(FTag);
+      frWriteString(Stream, FTmpS);
+      FTmpS:=lrExpandVariables(FURLInfo);
+      frWriteString(Stream, FTmpS);
+    end;
   end;
   {$IFDEF DebugLR}
   Debugln('%s.SaveToStream end',[name]);
@@ -8530,6 +8545,7 @@ begin
   FInitialZoom := pzDefault;
   FileName := sUntitled;
   FComments:=TStringList.Create;
+  FScript:=TfrScriptStrings.Create;
   UpdateObjectStringResources;
 end;
 
@@ -8543,6 +8559,7 @@ begin
   FEMFPages := nil;
   FPages.Free;
   FComments.Free;
+  FreeAndNil(FScript);
   inherited Destroy;
 end;
 
@@ -8620,8 +8637,16 @@ var
   AFormatStr: String;
 begin
   SubValue := '';
-  AFormat := CurView.Format;
-  AFormatStr := CurView.FormatStr;
+  if Assigned(CurView) then
+  begin
+    AFormat := CurView.Format;
+    AFormatStr := CurView.FormatStr;
+  end
+  else
+  begin
+    AFormat := 0;
+    AFormatStr := '';
+  end;
   i := Pos(' #', ParName);
   if i <> 0 then
   begin
@@ -9081,6 +9106,7 @@ begin
   FReportVersionMinor:=XML.GetValue(Path+'ReportVersionMinor/Value', '');
   FReportVersionRelease:=XML.GetValue(Path+'ReportVersionRelease/Value', '');
   FReportAutor:=XML.GetValue(Path+'ReportAutor/Value', '');
+  FScript.Text:= XML.GetValue(Path+'Script/Value', '');
 
   if frVersion < 21 then
     frVersion := 21;
@@ -9193,6 +9219,8 @@ begin
   XML.SetValue(Path+'ReportVersionMinor/Value', FReportVersionMinor);
   XML.SetValue(Path+'ReportVersionRelease/Value', FReportVersionRelease);
   XML.SetValue(Path+'ReportAutor/Value', FReportAutor);
+
+  XML.SetValue(Path+'Script/Value', FScript.Text);
 
   Pages.SaveToXML(XML, Path+'Pages/');
 end;
@@ -9736,6 +9764,8 @@ begin
   try
     if (DoublePass and not FinalPass) or (not DoublePass) then
     begin
+      ExecScript;
+
       for i := 0 to Pages.Count - 1 do
         Pages[i].Skip := False;
 
@@ -10111,6 +10141,11 @@ begin
   {$endif}
 end;
 
+procedure TfrReport.SetScript(AValue: TfrScriptStrings);
+begin
+  fScript.Assign(AValue);
+end;
+
 function TfrReport.ChangePrinter(OldIndex, NewIndex: Integer): Boolean;
 
   procedure ChangePages;
@@ -10243,6 +10278,26 @@ begin
   end
   else
     Result:=FindObject(AName);
+end;
+
+procedure TfrReport.ExecScript;
+var
+  CmdList, ErrorList:TStringList;
+begin
+  if DocMode = dmPrinting then
+  begin
+    CmdList:=TStringList.Create;
+    ErrorList:=TStringList.Create;
+    try
+      CurView := nil;
+      CurPage := nil;
+      frInterpretator.PrepareScript(Script, CmdList, ErrorList);
+      frInterpretator.DoScript(CmdList);
+    finally
+      FreeAndNil(CmdList);
+      FreeAndNil(ErrorList);
+    end;
+  end;
 end;
 
 procedure TfrReport.DoBeginBand(Band: TfrBand);

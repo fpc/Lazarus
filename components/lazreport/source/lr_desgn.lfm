@@ -4809,6 +4809,9 @@ object frDesignerForm: TfrDesignerForm
         Caption = 'Variables list...'
         OnClick = N42Click
       end
+      object MenuItem1: TMenuItem
+        Action = FileBeforePrintScript
+      end
       object N21: TMenuItem
         Caption = '-'
       end
@@ -5266,6 +5269,11 @@ object frDesignerForm: TfrDesignerForm
       Caption = 'Open...'
       ImageIndex = 2
       OnExecute = FileOpenExecute
+    end
+    object FileBeforePrintScript: TAction
+      Category = 'File'
+      Caption = 'Before print script...'
+      OnExecute = FileBeforePrintScriptExecute
     end
   end
   object ActionsImageList: TImageList

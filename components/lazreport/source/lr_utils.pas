@@ -66,6 +66,7 @@ function lrGetUnBrackedStr(const S:string):string; //remove '[' from begion of s
 function lrValidFieldReference(s: string):boolean;
 function lrDateTimeToStr(ADate:TDateTime):string;
 function lrStrToDateTime(AValue: string): TDateTime;
+function lrExpandVariables(const S:string):string;
 
 // utf8 tools
 function UTF8Desc(S:string; var Desc: string): Integer;
@@ -79,7 +80,7 @@ function UTF8CountWords(const str:string; out WordCount,SpcCount,SpcSize:Integer
 
 implementation
 
-uses LR_Class, LR_Const;
+uses LR_Class, LR_Const, LR_Pars;
 
 procedure frInitFont(aFont : TFont; aColor : TColor; aSize : Integer; aStyle : TFontStyles);
 begin
@@ -697,6 +698,33 @@ begin
   end
   else
     Result:=0;
+end;
+
+function lrExpandVariables(const S: string): string;
+var
+  i, j, k:integer;
+  SP, SV:string;
+begin
+  Result:='';
+  i:=1;
+  k:=1;
+  while i<=Length(S) do
+  begin
+    if S[i] = '[' then
+    begin
+      SP:=GetBrackedVariable(S, i, j);
+      SV:='';
+      CurReport.InternalOnGetValue(SP, SV);
+
+      Result:=Result + Copy(S, K, I-K) + SV;
+      i:=j+1;
+      k:=j+1;
+    end
+    else
+      Inc(I);
+  end;
+  if K<i then
+    Result:=Result + Copy(S, K, I-K);
 end;
 
 function UTF8Desc(S: string; var Desc: string): Integer;
