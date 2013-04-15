@@ -3100,8 +3100,8 @@ begin
     DebugLn('  Now="',dbgstr(CompilerParams),'"');
     DebugLn('  State file="',Stats^.StateFileName,'"');
     Note+='Compiler parameters changed:'+LineEnding
-       +'  Old="'+dbgstr(OldValue)+'"'+LineEnding
-       +'  Now="'+dbgstr(NewValue)+'"'+LineEnding
+       +'  Old="'+dbgstr(LastParams)+'"'+LineEnding
+       +'  Now="'+dbgstr(CompilerParams)+'"'+LineEnding
        +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
     ConfigChanged:=true;
     exit(mrYes);
