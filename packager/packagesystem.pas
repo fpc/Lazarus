@@ -3096,12 +3096,12 @@ begin
   end else if CompilerParams<>LastParams then begin
     // package was compiled by Lazarus
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler params changed for ',APackage.IDAsString);
-    DebugLn('  Old="',LastParams,'"');
-    DebugLn('  Now="',CompilerParams,'"');
+    DebugLn('  Old="',dbgstr(LastParams),'"');
+    DebugLn('  Now="',dbgstr(CompilerParams),'"');
     DebugLn('  State file="',Stats^.StateFileName,'"');
     Note+='Compiler parameters changed:'+LineEnding
-       +'  Old="'+OldValue+'"'+LineEnding
-       +'  Now="'+NewValue+'"'+LineEnding
+       +'  Old="'+dbgstr(OldValue)+'"'+LineEnding
+       +'  Now="'+dbgstr(NewValue)+'"'+LineEnding
        +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
     ConfigChanged:=true;
     exit(mrYes);
