@@ -468,7 +468,7 @@ type
     property DestTemplate: String read GetDestTemplate;
     property SrcPosition: Integer read GetSrcPosition;
     property DestPosition: Integer read GetDestPosition;
-    property DestPosX: Integer read GetDestPosX;
+    property DestPosX: Integer read GetDestPosX; // logical, byte position
     property DestPosY: Integer read GetDestPosY;
   end;
 
