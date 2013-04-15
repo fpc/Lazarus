@@ -605,7 +605,7 @@ const
     'cthreads'
     );
 var
-  Options: TBeautifyCodeOptions;
+  Beauty: TBeautifyCodeOptions;
 
   function SpecialUnitPriority(Identifier: PChar): integer;
   begin
@@ -647,21 +647,21 @@ var
       exit;
     end;
     Line:=Lines[Lines.Count-1];
-    if (atIdentifier in Options.DoInsertSpaceAfter)
-    or (atComma in Options.DoInsertSpaceInFront) then
+    if (atIdentifier in Beauty.DoInsertSpaceAfter)
+    or (atComma in Beauty.DoInsertSpaceInFront) then
       Line:=Line+' ';
     Line:=Line+',';
     l:=length(Line)+length(NewUses)+1; // +1 for the following , or ;
-    if (atComma in Options.DoInsertSpaceAfter)
-    or (atIdentifier in Options.DoInsertSpaceInFront) then
+    if (atComma in Beauty.DoInsertSpaceAfter)
+    or (atIdentifier in Beauty.DoInsertSpaceInFront) then
       inc(l);
     if Lines.Count=1 then
       inc(l,FirstIndent);
     //DebugLn(['AddUseUnit Lines.Count=',Lines.Count,' l=',l,' Line="',Line,'" NewUses=',NewUses,' FirstIndent=',FirstIndent]);
-    if l<=Options.LineLength then begin
+    if l<=Beauty.LineLength then begin
       // append to last line
-      if (atComma in Options.DoInsertSpaceAfter)
-      or (atIdentifier in Options.DoInsertSpaceInFront) then
+      if (atComma in Beauty.DoInsertSpaceAfter)
+      or (atIdentifier in Beauty.DoInsertSpaceInFront) then
         Line:=Line+' ';
       Line:=Line+NewUses;
       Lines[Lines.Count-1]:=Line;
@@ -702,12 +702,12 @@ begin
   or (not IsDottedIdentifier(NewUnitName))
   then exit;
   SourceChangeCache.MainScanner:=Scanner;
-  Options:=SourceChangeCache.BeautifyCodeOptions;
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
 
   // find nice insert position
 
   Prio:=SpecialUnitPriority(PChar(NewUnitName));
-  UsesInsertPolicy:=Options.UsesInsertPolicy;
+  UsesInsertPolicy:=Beauty.UsesInsertPolicy;
   if AsLast then
     UsesInsertPolicy:=uipLast;
   InsertPosFound:=false;
@@ -816,16 +816,16 @@ begin
   NewUsesTerm:=NewUnitName;
   if NewUnitInFile<>'' then
     NewUsesTerm:=NewUsesTerm+' '
-      +Options.BeautifyKeyWord('in')
+      +Beauty.BeautifyKeyWord('in')
       +' '''+NewUnitInFile+'''';
 
   NewComma:=',';
-  if (atComma in Options.DoInsertSpaceInFront)
-    or (atIdentifier in Options.DoInsertSpaceAfter)
+  if (atComma in Beauty.DoInsertSpaceInFront)
+    or (atIdentifier in Beauty.DoInsertSpaceAfter)
   then
     NewComma:=' '+NewComma;
-  if (atComma in Options.DoInsertSpaceAfter)
-    or (atIdentifier in Options.DoInsertSpaceInFront)
+  if (atComma in Beauty.DoInsertSpaceAfter)
+    or (atIdentifier in Beauty.DoInsertSpaceInFront)
   then
     NewComma:=NewComma+' ';
 
@@ -848,8 +848,8 @@ begin
   // if not, rebuild the uses section
   GetLineStartEndAtPosition(Src,InsertPos,LineStart,LineEnd);
   InsertLen:=length(NewUsesTerm)+length(NewComma);
-  //DebugLn(['TStandardCodeTool.AddUnitToUsesSection Line=',copy(Src,LineStart,InsertPos-LineStart),'<InsertPos>',copy(Src,InsertPos,LineEnd-InsertPos),' NewLen=',LineEnd-LineStart+InsertLen,' Max=',Options.LineLength,' Addition=',NewUsesTerm]);
-  if (LineEnd-LineStart+InsertLen > Options.LineLength) then begin
+  //DebugLn(['TStandardCodeTool.AddUnitToUsesSection Line=',copy(Src,LineStart,InsertPos-LineStart),'<InsertPos>',copy(Src,InsertPos,LineEnd-InsertPos),' NewLen=',LineEnd-LineStart+InsertLen,' Max=',Beauty.LineLength,' Addition=',NewUsesTerm]);
+  if (LineEnd-LineStart+InsertLen > Beauty.LineLength) then begin
     // line too long => reformat block of used units
     // find start of block of used units
     Node:=InsertNode;
@@ -862,7 +862,7 @@ begin
     Indent:=GetLineIndent(Src,InsertPos);
     if PositionsInSameLine(Src,UsesNode.StartPos,InsertPos) then begin
       // for example: uses |unit1;
-      inc(Indent,Options.Indent);
+      inc(Indent,Beauty.Indent);
     end;
     // create new block of used units
     Lines:=TStringList.Create;
@@ -874,7 +874,7 @@ begin
         InsertCode:=ExtractUsedUnitName(Node);
         if UpAtomIs('IN') then begin
           ReadNextAtom;
-          InsertCode:=InsertCode+' '+Options.BeautifyKeyWord('in')+' '+GetAtom;
+          InsertCode:=InsertCode+' '+Beauty.BeautifyKeyWord('in')+' '+GetAtom;
         end;
         AddUseUnit(Lines,FirstIndent,Indent,InsertCode);
         if (Node=InsertNode) and InsertBehind then
@@ -885,7 +885,7 @@ begin
       InsertCode:='';
       for i:=0 to Lines.Count-1 do begin
         if i>0 then
-          InsertCode:=InsertCode+Options.LineEnd;
+          InsertCode:=InsertCode+Beauty.LineEnd;
         InsertCode:=InsertCode+Lines[i];
       end;
     finally
@@ -923,7 +923,8 @@ var
   UsesNode, OtherUsesNode, SectionNode: TCodeTreeNode;
   NewUsesTerm: string;
   InsertPos: integer;
-  Junk     : TAtomPosition;
+  Junk: TAtomPosition;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
   if not IsDottedIdentifier(NewUnitName) then exit;
@@ -942,6 +943,7 @@ begin
     RaiseException('can not add a unit to the implementation, because only a unit has one');
   end;
   SourceChangeCache.MainScanner:=Scanner;
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   SourceChangeCache.BeginUpdate;
   try
     UsesNode:=FindMainUsesSection;
@@ -988,8 +990,8 @@ begin
           usMain: NewUsesTerm:='interface';
           usImplementation: NewUsesTerm:='implementation';
           end;
-          NewUsesTerm:=SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(NewUsesTerm)
-                      +SourceChangeCache.BeautifyCodeOptions.LineEnd;
+          NewUsesTerm:=Beauty.BeautifyKeyWord(NewUsesTerm)
+                      +Beauty.LineEnd;
           if SectionNode.FirstChild<>nil then begin
             // unit not empty => add in front of first node
             InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.FirstChild.StartPos,
@@ -1012,7 +1014,7 @@ begin
         end;
       end;
       NewUsesTerm:=NewUsesTerm
-           +SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('uses')
+           +Beauty.BeautifyKeyWord('uses')
            +' '+NewUnitName;
       if NewUnitInFile<>'' then
         NewUsesTerm:=NewUsesTerm+' in '''+NewUnitInFile+''';'
@@ -2725,6 +2727,7 @@ function TStandardCodeTool.AddCreateFormStatement(const AClassName,
 var MainBeginNode: TCodeTreeNode;
   OldPosition: TAtomPosition;
   FromPos, ToPos, Indent: integer;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
   if (AClassName='') or (length(AClassName)>255) or (AVarName='')
@@ -2732,6 +2735,7 @@ begin
   BuildTree(lsrEnd);
   MainBeginNode:=FindMainBeginEndNode;
   if MainBeginNode=nil then exit;
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   FromPos:=-1;
   if FindCreateFormStatement(MainBeginNode.StartPos,AClassName,
     AVarName,OldPosition)=-1
@@ -2752,7 +2756,7 @@ begin
     Indent:=GetLineIndent(Src,FromPos);
     FromPos:=FindLineEndOrCodeInFrontOfPosition(FromPos);
     SourceChangeCache.Replace(gtNewLine,gtNewLine,FromPos,FromPos,
-       SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+       Beauty.BeautifyStatement(
          'Application.CreateForm('+AClassName+','+AVarName+');',Indent));
   end else begin
     // it exists -> replace it
@@ -2760,9 +2764,9 @@ begin
     ToPos:=FindLineEndOrCodeAfterPosition(OldPosition.EndPos);
     SourceChangeCache.MainScanner:=Scanner;
     SourceChangeCache.Replace(gtNewLine,gtNewLine,FromPos,ToPos,
-       SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+       Beauty.BeautifyStatement(
          'Application.CreateForm('+AClassName+','+AVarName+');',
-         SourceChangeCache.BeautifyCodeOptions.Indent));
+         Beauty.Indent));
   end;
   Result:=SourceChangeCache.Apply;
 end;
@@ -2789,6 +2793,7 @@ function TStandardCodeTool.ChangeCreateFormStatement(StartPos: integer;
 var MainBeginNode: TCodeTreeNode;
   OldPosition: TAtomPosition;
   FromPos, ToPos: integer;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
   if (OldClassName='') or (length(OldClassName)>255)
@@ -2797,6 +2802,7 @@ begin
   or (NewVarName='') or (length(NewVarName)>255)
   then exit;
   BuildTree(lsrEnd);
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
   MainBeginNode:=FindMainBeginEndNode;
   if MainBeginNode=nil then exit;
   FromPos:=-1;
@@ -2814,9 +2820,9 @@ begin
     ToPos:=FindLineEndOrCodeAfterPosition(OldPosition.EndPos);
     SourceChangeCache.MainScanner:=Scanner;
     SourceChangeCache.Replace(gtNewLine,gtNewLine,FromPos,ToPos,
-       SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+       Beauty.BeautifyStatement(
          'Application.CreateForm('+NewClassName+','+NewVarName+');',
-         SourceChangeCache.BeautifyCodeOptions.Indent));
+         Beauty.Indent));
     Result:=SourceChangeCache.Apply;
   end;
 end;

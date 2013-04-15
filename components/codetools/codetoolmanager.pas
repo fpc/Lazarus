@@ -122,6 +122,7 @@ type
     FWriteLockCount: integer;// Set/Unset counter
     FWriteLockStep: integer; // current write lock ID
     FHandlers: array[TCodeToolManagerHandler] of TMethodList;
+    function GetBeautifier: TBeautifyCodeOptions; inline;
     function OnScannerGetInitValues(Code: Pointer;
       out AChangeStep: integer): TExpressionEvaluator;
     procedure OnDefineTreeReadValue(Sender: TObject; const VariableName: string;
@@ -190,6 +191,7 @@ type
     IdentifierHistory: TIdentifierHistoryList;
     Positions: TCodeXYPositions;
     Indenter: TFullyAutomaticBeautifier;
+    property Beautifier: TBeautifyCodeOptions read GetBeautifier;
 
     constructor Create;
     destructor Destroy; override;
@@ -897,6 +899,12 @@ end;
 
 
 { TCodeToolManager }
+
+// inline
+function TCodeToolManager.GetBeautifier: TBeautifyCodeOptions;
+begin
+  Result:=SourceChangeCache.BeautifyCodeOptions;
+end;
 
 constructor TCodeToolManager.Create;
 begin

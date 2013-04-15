@@ -277,7 +277,7 @@ begin
         end;
         while (FromPos>1) and (Tool.Src[FromPos-1] in [' ',#9]) do
           dec(FromPos);
-        NewCode:=GetIndentStr(Indent)+NewCode;
+        NewCode:=Tool.Beautifier.GetIndentStr(Indent)+NewCode;
         //debugln(['InsertCallInherited Indent=',Indent,' Line="',GetLineInSrc(Tool.Src,CleanPos),'"']);
       end;
 

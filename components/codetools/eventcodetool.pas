@@ -908,7 +908,7 @@ var
   NewSection: TNewClassPart;
   InsertCall: String;
   ProcBody: String;
-  BeautifyCodeOpts: TBeautifyCodeOptions;
+  Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
   try
@@ -979,15 +979,15 @@ begin
         NewSection:=ncpPrivateProcs;
       ProcBody:='';
       if InsertCall<>'' then begin
-        BeautifyCodeOpts:=SourceChangeCache.BeautifyCodeOptions;
+        Beauty:=SourceChangeCache.BeautifyCodeOptions;
         ProcBody:=SourceChangeCache.BeautifyCodeOptions.
                          AddClassAndNameToProc(MethodDefinition,
                          ExtractClassName(CodeCompleteClassNode,false),
                          AMethodName)
-          +BeautifyCodeOpts.LineEnd
-          +'begin'+BeautifyCodeOpts.LineEnd
-          +GetIndentStr(BeautifyCodeOpts.Indent)
-            +InsertCall+BeautifyCodeOpts.LineEnd
+          +Beauty.LineEnd
+          +'begin'+Beauty.LineEnd
+          +Beauty.GetIndentStr(Beauty.Indent)
+            +InsertCall+Beauty.LineEnd
           +'end;';
         //DebugLn(['TEventsCodeTool.CreateMethod ProcBody=""',ProcBody,'']);
       end;
