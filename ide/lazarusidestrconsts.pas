@@ -4397,6 +4397,8 @@ resourcestring
   lisMissingEvents = 'Missing Events';
   lisTheFollowingMethodsUsedByAreNotInTheSourceRemoveTh = 'The following methods '
     +'used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?';
+  lisLFMFileContainsInvalidProperties = 'The LFM file contains unknown'
+    +' properties/classes which do not exist in LCL. They can be replaced or removed.';
 
   // extract proc dialog
   lisNoCodeSelected = 'No code selected';

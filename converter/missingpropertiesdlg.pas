@@ -581,10 +581,6 @@ begin
 end;
 
 procedure TFixLFMDialog.CheckLFMDialogCREATE(Sender: TObject);
-const // Will be moved to LazarusIDEStrConsts
-  lisLFMFileContainsInvalidProperties = 'The LFM (Lazarus form) '
-    +'file contains unknown properties/classes which do not exist in LCL. '
-    +'They can be replaced or removed.';
 begin
   Caption:=lisFixLFMFile;
   Position:=poScreenCenter;
