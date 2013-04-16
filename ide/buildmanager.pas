@@ -63,6 +63,8 @@ type
     function OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
                                         const UnparsedValue: string;
                                         PlatformIndependent: boolean): string;
+    function MacroFuncBuildMode(const {%H-}Param: string; const {%H-}Data: PtrInt;
+                             var {%H-}Abort: boolean): string;
     function MacroFuncEnv(const Param: string; const {%H-}Data: PtrInt;
                           var {%H-}Abort: boolean): string;
     function MacroFuncFPCMsgFile(const {%H-}Param: string; const {%H-}Data: PtrInt;
@@ -270,6 +272,15 @@ begin
     GlobalMacroList.SubstituteStr(Result,CompilerOptionMacroNormal);
 end;
 
+function TBuildManager.MacroFuncBuildMode(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Project1<>nil then
+    Result:=Project1.ActiveBuildMode.Name
+  else
+    Result:='';
+end;
+
 constructor TBuildManager.Create(AOwner: TComponent);
 begin
   EnvironmentOptions := TEnvironmentOptions.Create;
@@ -316,6 +327,8 @@ begin
   // project
   GlobalMacroList.Add(TTransferMacro.Create('Project','',
                       lisProjectMacroProperties,@MacroFuncProject,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('BuildMode','',
+                      lisNameOfActiveBuildMode, @MacroFuncBuildMode, []));
   GlobalMacroList.Add(TTransferMacro.Create('LCLWidgetType','',
                       lisLCLWidgetType,@MacroFuncLCLWidgetType,[]));
   GlobalMacroList.Add(TTransferMacro.Create('TargetCPU','',

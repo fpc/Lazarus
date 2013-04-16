@@ -155,6 +155,7 @@ resourcestring
   lisLazarusLanguageID = 'Lazarus language ID (e.g. en, de, br, fi)';
   lisLazarusLanguageName = 'Lazarus language name (e.g. english, deutsch)';
   lisLCLWidgetType = 'LCL widget type';
+  lisNameOfActiveBuildMode = 'Name of active build mode';
   lisCOVarious = '%s (various)';
   lisTargetCPU = 'Target CPU';
   lisTargetOS = 'Target OS';
