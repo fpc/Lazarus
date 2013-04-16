@@ -946,7 +946,7 @@ var
   SrcHandle: THandle;
   DestHandle: THandle;
   Buffer: array[1..4096] of byte;
-  ReadCount, WriteCount: LongInt;
+  ReadCount, WriteCount, TryCount: LongInt;
 begin
   Result := False;
   // check overwrite
@@ -957,8 +957,19 @@ begin
   and (not DirectoryExistsUTF8(ExtractFilePath(DestFileName)))
   and (not ForceDirectoriesUTF8(ExtractFilePath(DestFileName))) then
     exit;
-  SrcHandle := FileOpenUTF8(SrcFilename, fmOpenRead or fmShareDenyWrite);
-  if (THandle(SrcHandle)=feInvalidHandle) then
+  TryCount := 0;
+  While TryCount <> 3 Do Begin
+    SrcHandle := FileOpenUTF8(SrcFilename, fmOpenRead or fmShareDenyWrite);
+    if (THandle(SrcHandle)=feInvalidHandle) then Begin
+      Inc(TryCount);
+      Sleep(10);
+    End
+    Else Begin
+      TryCount := 0;
+      Break;
+    End;
+  End;
+  If TryCount > 0 Then
     raise EFOpenError.Createfmt({SFOpenError}'Unable to open file "%s"', [SrcFilename]);
   try
     DestHandle := FileCreateUTF8(DestFileName);
