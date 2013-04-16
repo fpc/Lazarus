@@ -1871,7 +1871,6 @@ components/lazreport/samples/enduser_reports/sql_demo/unit1.pas svneol=native#te
 components/lazreport/samples/index.txt svneol=native#text/plain
 components/lazreport/samples/report_url/report_url.lpi svneol=native#text/plain
 components/lazreport/samples/report_url/report_url.lpr svneol=native#text/pascal
-components/lazreport/samples/report_url/report_url.lps svneol=native#text/xml
 components/lazreport/samples/report_url/unit1.lfm svneol=native#text/plain
 components/lazreport/samples/report_url/unit1.pas svneol=native#text/pascal
 components/lazreport/samples/report_url/url_demo.lrf svneol=LF#text/xml eol=lf
