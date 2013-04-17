@@ -83,7 +83,7 @@ object GUITestRunner: TGUITestRunner
       Left = 7
       Height = 34
       Top = 7
-      Width = 78
+      Width = 80
       Action = RunAction
       AutoSize = True
       BorderSpacing.Around = 6
@@ -172,10 +172,10 @@ object GUITestRunner: TGUITestRunner
       AnchorSideTop.Control = Panel1
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 489
+      Left = 486
       Height = 34
       Top = 7
-      Width = 79
+      Width = 82
       Action = ActCloseForm
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -266,10 +266,10 @@ object GUITestRunner: TGUITestRunner
       AnchorSideLeft.Control = BtnRun
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 91
+      Left = 93
       Height = 32
       Top = 7
-      Width = 147
+      Width = 158
       Action = ActRunHighlightedTest
       AutoSize = True
       BorderSpacing.Around = 6
@@ -367,27 +367,27 @@ object GUITestRunner: TGUITestRunner
       TabOrder = 0
       object tsTestTree: TTabSheet
         Caption = 'Testcase tree'
-        ClientHeight = 474
+        ClientHeight = 472
         ClientWidth = 565
         object Splitter1: TSplitter
           Cursor = crVSplit
           Left = 0
           Height = 5
-          Top = 336
+          Top = 334
           Width = 565
           Align = alBottom
           ResizeAnchor = akBottom
         end
         object TestTree: TTreeView
           Left = 6
-          Height = 324
+          Height = 322
           Top = 6
           Width = 553
           Align = alClient
           BorderSpacing.Around = 6
           BackgroundColor = clBtnFace
           Color = clBtnFace
-          DefaultItemHeight = 16
+          DefaultItemHeight = 18
           Images = TestTreeImageList
           PopupMenu = PopupMenu3
           ReadOnly = True
@@ -403,7 +403,7 @@ object GUITestRunner: TGUITestRunner
         object Memo1: TMemo
           Left = 6
           Height = 121
-          Top = 347
+          Top = 345
           Width = 553
           Align = alBottom
           BorderSpacing.Around = 6
@@ -850,6 +850,12 @@ object GUITestRunner: TGUITestRunner
             end>
           VisibleSpecialChars = [vscSpace, vscTabAtLast]
           ReadOnly = True
+          SelectedColor.BackPriority = 50
+          SelectedColor.ForePriority = 50
+          SelectedColor.FramePriority = 50
+          SelectedColor.BoldPriority = 50
+          SelectedColor.ItalicPriority = 50
+          SelectedColor.UnderlinePriority = 50
           BracketHighlightStyle = sbhsBoth
           BracketMatchColor.Background = clNone
           BracketMatchColor.Foreground = clNone
@@ -885,6 +891,8 @@ object GUITestRunner: TGUITestRunner
             object TSynGutterSeparator
               Width = 2
               MouseActions = <>
+              MarkupInfo.Background = clWhite
+              MarkupInfo.Foreground = clGray
             end
             object TSynGutterCodeFolding
               MouseActions = <              

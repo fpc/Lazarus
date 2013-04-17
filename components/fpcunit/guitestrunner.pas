@@ -724,26 +724,36 @@ begin
     TestResult.AddListener(self);
     pbBar.Invalidate;
     w := TXMLResultsWriter.Create(nil);
-    w.FileName := 'null'; // prevents output to the console
-    TestResult.AddListener(w);
+    try
+      w.FileName := 'null'; // prevents output to the console
+      TestResult.AddListener(w);
 
-    MemoLog(Format(rsRunning, [TestTree.Selected.Text]));
-    aTest.Run(TestResult);
-    MemoLog(Format(rsNumberOfExec, [IntToStr(TestResult.RunTests),
-      FormatDateTime('hh:nn:ss.zzz', Now - TestResult.StartingTime)]));
+      MemoLog(Format(rsRunning, [TestTree.Selected.Text]));
+      aTest.Run(TestResult);
+      MemoLog(Format(rsNumberOfExec, [IntToStr(TestResult.RunTests),
+        FormatDateTime('hh:nn:ss.zzz', Now - TestResult.StartingTime)]));
 
-    w.WriteResult(TestResult);
-    m := TMemoryStream.Create;
-    WriteXMLFile(w.Document, m);
-    m.Position := 0;
-    XMLSynEdit.Lines.LoadFromStream(m);
-
-    pbBar.Invalidate;
+      w.WriteResult(TestResult);
+      m := TMemoryStream.Create;
+      try
+        try
+          WriteXMLFile(w.Document, m);
+          m.Position := 0;
+          XMLSynEdit.Lines.LoadFromStream(m);
+        except
+          on E: Exception do
+            XMLSynEdit.Lines.Text:='WriteXMLFile exception: '+E.ClassName+'/'+E.Message;
+        end;
+      finally
+        m.Free;
+      end;
+      pbBar.Invalidate;
+    finally
+      w.Free;
+    end;
    finally
     EnableRunActions(true);
 
-    m.free;
-    w.Free;
     TestResult.Free;
   end;
 end;
