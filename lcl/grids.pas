@@ -5994,11 +5994,12 @@ begin
 
     gzNormal:
       begin
+        LockEditor;
         FIgnoreClick := False;
         WasFocused := Focused;
         if not WasFocused then
           SetFocus;
-
+        UnlockEditor;
         if IsCellButtonColumn(FGCache.ClickCell) then begin
           fGridState := gsButtonColumnClicking;
           DoPushCell;
@@ -7448,8 +7449,8 @@ begin
   or (not HandleAllocated) then
     Exit;
 
-  if EditingAllowed(FCol) and CanEditShow and
-     (not FEditorShowing) and (Editor<>nil) and (not Editor.Visible) then
+  if EditingAllowed(FCol) and CanEditShow and (not FEditorShowing) and
+     (Editor<>nil) and (not Editor.Visible) and (not EditorLocked) then
   begin
     {$ifdef dbgGrid} DebugLnEnter('EditorShow [',Editor.ClassName,'] INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$endif}
     FEditorMode:=True;
