@@ -994,6 +994,7 @@ type
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; virtual;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
+    procedure KeyPress(var Key: char); override;
     procedure LoadContent(cfg: TXMLConfig; Version: Integer); virtual;
     procedure Loaded; override;
     procedure LockEditor;
@@ -6703,11 +6704,6 @@ begin
         EditorShow(False);
         Key:=0;
       end ;
-    VK_RETURN:
-      if not FEditorKey and EditingAllowed(FCol) then begin
-        EditorShow(True);
-        Key := 0;
-      end;
     VK_BACK:
       // Workaround: LM_CHAR doesnt trigger with BACKSPACE
       if not FEditorKey and EditingAllowed(FCol) then begin
@@ -6742,6 +6738,15 @@ end;
 procedure TCustomGrid.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
+end;
+
+procedure TCustomGrid.KeyPress(var Key: char);
+begin
+  inherited KeyPress(Key);
+  if (Key=#13) and EditingAllowed(FCol) then begin
+    EditorShow(True);
+    Key := #0;
+  end;
 end;
 
 { Convert a fisical Mouse coordinate into fisical a cell coordinate }
