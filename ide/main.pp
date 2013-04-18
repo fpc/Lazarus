@@ -3526,7 +3526,7 @@ var
       aMenu.Items.Add(AMenuItem);
     end;
     AMenuItem.Caption := CurMode.GetCaption;
-    AMenuItem.Checked:=(Project1<>nil) and (Project1.ActiveBuildMode=CurMode);
+    AMenuItem.Checked := (Project1<>nil) and (Project1.ActiveBuildMode=CurMode);
     AMenuItem.ShowAlwaysCheckable:=true;
     inc(CurIndex);
   end;
@@ -4868,8 +4868,7 @@ var
       if not CodeToolBoss.SetApplicationTitleStatement(AProject.MainUnitInfo.Source, NewTitle) then
       begin
         IDEMessageDialog(lisProjOptsError,
-          Format(lisUnableToChangeProjectTitleInSource, [LineEnding, CodeToolBoss.
-            ErrorMessage]),
+          Format(lisUnableToChangeProjectTitleInSource, [LineEnding, CodeToolBoss.ErrorMessage]),
           mtWarning, [mbOk]);
         Result := False;
         Exit;
@@ -4879,8 +4878,7 @@ var
       if not CodeToolBoss.RemoveApplicationTitleStatement(AProject.MainUnitInfo.Source) then
       begin
         IDEMessageDialog(lisProjOptsError,
-          Format(lisUnableToRemoveProjectTitleFromSource, [LineEnding, CodeToolBoss.
-            ErrorMessage]),
+          Format(lisUnableToRemoveProjectTitleFromSource, [LineEnding, CodeToolBoss.ErrorMessage]),
           mtWarning, [mbOk]);
         Result := False;
         Exit;

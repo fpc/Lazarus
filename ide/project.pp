@@ -5993,9 +5993,9 @@ begin
   inherited Assign(Source);
   if Source is TProjectCompilerOptions then begin
     ProjCompOptions:=TProjectCompilerOptions(Source);
-    FCompileReasons := ProjCompOptions.FCompileReasons;
+    FCompileReasons:=ProjCompOptions.FCompileReasons;
   end else begin
-    FCompileReasons := [crCompile, crBuild, crRun];
+    FCompileReasons:=[crCompile, crBuild, crRun];
     // keep BuildModes
   end;
 end;
