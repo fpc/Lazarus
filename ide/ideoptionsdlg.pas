@@ -176,7 +176,9 @@ end;
 
 procedure TIDEOptionsDialog.CategoryTreeChange(Sender: TObject; Node: TTreeNode);
 var
+  {$IFDEF NewBuildModeWindow}
   GroupClass: TAbstractIDEOptionsClass;
+  {$ENDIF}
   AEditor: TAbstractIDEOptionsEditor;
 begin
   if Assigned(Node) then begin
@@ -188,14 +190,18 @@ begin
       Node := Node.GetFirstVisibleChild;
   end;
   AEditor := nil;
+  {$IFDEF NewBuildModeWindow}
   GroupClass := nil;
+  {$ENDIF}
   if Assigned(Node) and Assigned(Node.Data) then begin
     Assert(TObject(Node.Data) is TAbstractIDEOptionsEditor,
       'TIDEOptionsDialog.CategoryTreeChange: Node.Data is not TAbstractIDEOptionsEditor');
     if CategoryTree.Selected = nil then
       Node.Selected := True;
     AEditor := TAbstractIDEOptionsEditor(Node.Data);
+    {$IFDEF NewBuildModeWindow}
     GroupClass := FindGroupClass(Node);
+    {$ENDIF}
   end;
   // Show the Build Mode panel for Compiler Options
   {$IFDEF NewBuildModeWindow}
