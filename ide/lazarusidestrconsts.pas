@@ -155,7 +155,6 @@ resourcestring
   lisLazarusLanguageID = 'Lazarus language ID (e.g. en, de, br, fi)';
   lisLazarusLanguageName = 'Lazarus language name (e.g. english, deutsch)';
   lisLCLWidgetType = 'LCL widget type';
-  lisNameOfActiveBuildMode = 'Name of active build mode';
   lisCOVarious = '%s (various)';
   lisTargetCPU = 'Target CPU';
   lisTargetOS = 'Target OS';
@@ -1272,6 +1271,8 @@ resourcestring
   dlgReferenceColor = 'Reference';
   dlgValueColor = 'Value';
   lisUnableToAddSetting = 'Unable to add setting';
+  lisAllBuildModes = '<All build modes>';
+  lisNameOfActiveBuildMode = 'Name of active build mode';
   lisIsAGroupASettingCanOnlyBeAddedToNormalBuildModes = '%s is a group. A '
     +'setting can only be added to normal build modes.';
   lisPleaseSelectABuildModeFirst = 'Please select a build mode first.';

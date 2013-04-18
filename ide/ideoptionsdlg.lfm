@@ -2,12 +2,12 @@ object IDEOptionsDialog: TIDEOptionsDialog
   Left = 121
   Height = 404
   Top = 96
-  Width = 675
+  Width = 689
   ActiveControl = FilterEdit
   BorderIcons = [biSystemMenu]
   Caption = 'IDEOptionsDialog'
   ClientHeight = 404
-  ClientWidth = 675
+  ClientWidth = 689
   Constraints.MinHeight = 350
   Constraints.MinWidth = 500
   OnShow = FormShow
@@ -21,7 +21,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
     Left = 6
     Height = 34
     Top = 364
-    Width = 663
+    Width = 677
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
@@ -114,10 +114,10 @@ object IDEOptionsDialog: TIDEOptionsDialog
     Left = 259
     Height = 40
     Top = 0
-    Width = 413
+    Width = 427
     Anchors = [akTop, akLeft, akRight]
     ClientHeight = 40
-    ClientWidth = 413
+    ClientWidth = 427
     TabOrder = 3
     object BuildModeLabel: TLabel
       Left = 12
@@ -133,16 +133,14 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideTop.Control = BuildModeLabel
       AnchorSideTop.Side = asrCenter
       Left = 87
-      Height = 23
-      Top = 6
+      Height = 24
+      Top = 5
       Width = 154
       BorderSpacing.Left = 7
       ItemHeight = 0
-      Items.Strings = (
-        '<All build modes>'
-        'Juha''s test mode'
-        'Another test mode'
-      )
+      OnClick = BuildModeComboBoxClick
+      OnSelect = BuildModeComboBoxSelect
+      Style = csDropDownList
       TabOrder = 0
     end
     object BuildModeManageButton: TButton
@@ -159,16 +157,6 @@ object IDEOptionsDialog: TIDEOptionsDialog
       OnClick = BuildModeManageButtonClick
       TabOrder = 1
     end
-    object Label1: TLabel
-      Left = 286
-      Height = 15
-      Top = 13
-      Width = 137
-      Caption = 'Under construction ...'
-      Color = clFuchsia
-      ParentColor = False
-      Transparent = False
-    end
   end
   object EditorsPanel: TScrollBox
     AnchorSideLeft.Control = CatTVSplitter
@@ -179,8 +167,8 @@ object IDEOptionsDialog: TIDEOptionsDialog
     Left = 259
     Height = 324
     Top = 40
-    Width = 413
-    HorzScrollBar.Page = 407
+    Width = 427
+    HorzScrollBar.Page = 421
     HorzScrollBar.Tracking = True
     VertScrollBar.Page = 318
     VertScrollBar.Tracking = True

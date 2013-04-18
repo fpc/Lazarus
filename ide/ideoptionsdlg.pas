@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, Forms, ComCtrls, LCLProc, LCLType,
-  Buttons, ButtonPanel, ExtCtrls, EditBtn, StdCtrls,
+  Buttons, ButtonPanel, ExtCtrls, EditBtn, StdCtrls, Dialogs,
   TreeFilterEdit, IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf,
   EnvironmentOpts, LazarusIDEStrConsts, CompOptsIntf, EditorOptions,
   {$IFDEF NewBuildModeWindow}
@@ -62,8 +62,9 @@ type
     EditorsPanel: TScrollBox;
     FilterEdit: TTreeFilterEdit;
     BuildModeSelectPanel: TPanel;
-    Label1: TLabel;
     SettingsPanel: TPanel;
+    procedure BuildModeComboBoxClick(Sender: TObject);
+    procedure BuildModeComboBoxSelect(Sender: TObject);
     procedure BuildModeManageButtonClick(Sender: TObject);
     procedure CategoryTreeChange(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
@@ -85,6 +86,7 @@ type
     FEditorsCreated: Boolean;
     SelectNode: TTreeNode;
     NewLastSelected: PIDEOptionsEditorRec;
+    PrevComboIndex: integer;
 
     function FindGroupClass(Node: TTreeNode): TAbstractIDEOptionsClass;
     procedure TraverseSettings(AOptions: TAbstractIDEOptions; anAction: TIDEOptsDlgAction);
@@ -149,6 +151,16 @@ begin
   {.$ENDIF}
 end;
 
+procedure TIDEOptionsDialog.FormShow(Sender: TObject);
+begin
+  // make the category visible in the treeview
+  if (CategoryTree.Selected<>nil) and (CategoryTree.Selected.Parent<>nil) then
+    CategoryTree.TopItem:=CategoryTree.Selected.Parent;
+  {$IFDEF NewBuildModeWindow}
+  UpdateBuildModeCombo(BuildModeComboBox);
+  {$ENDIF}
+end;
+
 procedure TIDEOptionsDialog.HelpButtonClick(Sender: TObject);
 begin
   if PrevEditor<>nil then
@@ -207,11 +219,28 @@ begin
   end;
 end;
 
+procedure TIDEOptionsDialog.BuildModeComboBoxClick(Sender: TObject);
+begin
+  PrevComboIndex := BuildModeComboBox.ItemIndex;
+end;
+
+procedure TIDEOptionsDialog.BuildModeComboBoxSelect(Sender: TObject);
+begin
+  if BuildModeComboBox.Text = lisAllBuildModes then begin
+    ShowMessage('This will allow changing all build modes at once. Not implemented yet.');
+    BuildModeComboBox.ItemIndex := PrevComboIndex;
+  end
+  {$IFDEF NewBuildModeWindow}
+  else
+    SetActiveBuildModeID(BuildModeComboBox.Text);
+  {$ENDIF}
+end;
+
 procedure TIDEOptionsDialog.BuildModeManageButtonClick(Sender: TObject);
 begin
   {$IFDEF NewBuildModeWindow}
   if ShowBuildModesDlg = mrOK then begin
-
+    UpdateBuildModeCombo(BuildModeComboBox);
   end;
   {$ENDIF}
 end;
@@ -258,13 +287,6 @@ begin
   OptEditor:=TAbstractIDEOptionsEditor(Item);
   OptEditor.RememberDefaultStyles;
   Result:=OptEditor.ContainsTextInCaption(FilterEdit.Filter);
-end;
-
-procedure TIDEOptionsDialog.FormShow(Sender: TObject);
-begin
-  // make the category visible in the treeview
-  if (CategoryTree.Selected<>nil) and (CategoryTree.Selected.Parent<>nil) then
-    CategoryTree.TopItem:=CategoryTree.Selected.Parent;
 end;
 
 procedure TIDEOptionsDialog.OkButtonClick(Sender: TObject);
