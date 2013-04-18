@@ -1046,13 +1046,13 @@ begin
     DefaultVariables.Clear;
 
   CondSynEdit.Lines.Text:=Options.Conditionals;
-  EditorOpts.GetSynEditSettings(CondSynEdit);
   if FHighlighter=nil then
   begin
     FHighlighter := TPreviewPasSyn.Create(Self);
     CondSynEdit.Highlighter:=FHighlighter;
   end;
   EditorOpts.ReadHighlighterSettings(FHighlighter, '');
+  EditorOpts.GetSynEditSettings(CondSynEdit);
   UpdateStatusBar;
 end;
 
