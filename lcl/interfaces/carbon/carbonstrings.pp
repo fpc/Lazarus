@@ -40,6 +40,7 @@ type
     FOwner: TCarbonComboBox;  // Carbon combo box control owning strings
   protected
     procedure Put(Index: Integer; const S: string); override;
+    procedure InsertItem(Index: Integer; const S: string); override;
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
     constructor Create(AOwner: TCarbonComboBox);
@@ -112,6 +113,20 @@ begin
   inherited Put(Index, S);
 
   FOwner.Remove(Index);
+  FOwner.Insert(Index, S);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBoxStrings.InsertItem
+  Params:  Index - Line index
+           S     - Text to insert
+
+  Inserts the text on line with the specified index
+ ------------------------------------------------------------------------------}
+procedure TCarbonComboBoxStrings.InsertItem(Index: Integer; const S: string);
+begin
+  inherited InsertItem(Index, S);
+
   FOwner.Insert(Index, S);
 end;
 
