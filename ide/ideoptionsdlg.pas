@@ -146,9 +146,6 @@ begin
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
   OnKeyPress:=@IDEOptionsDialogKeyPress;
-  {.$IFnDEF NewBuildModeWindow}
-  //BuildModeManageButton.Visible:=False;
-  {.$ENDIF}
 end;
 
 procedure TIDEOptionsDialog.FormShow(Sender: TObject);
