@@ -1087,6 +1087,10 @@ msgstr "Lygiuotės p&aletė"
 msgid "Send to &back"
 msgstr "Perkelti į &galą"
 
+#: lr_const.sfrdesignerform_beforeprintscript
+msgid "&Before print script ..."
+msgstr ""
+
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
 msgstr "Perkelti &priekin"

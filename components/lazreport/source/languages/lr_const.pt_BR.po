@@ -1085,6 +1085,10 @@ msgstr "Paleta &Alinhamento"
 msgid "Send to &back"
 msgstr "&Enviar para trás"
 
+#: lr_const.sfrdesignerform_beforeprintscript
+msgid "&Before print script ..."
+msgstr ""
+
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
 msgstr "Trazer para &frente"

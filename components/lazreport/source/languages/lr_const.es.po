@@ -1086,6 +1086,10 @@ msgstr "Barra de &Alineación"
 msgid "Send to &back"
 msgstr "Enviar al &fondo"
 
+#: lr_const.sfrdesignerform_beforeprintscript
+msgid "&Before print script ..."
+msgstr ""
+
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
 msgstr "Traer al &frente"

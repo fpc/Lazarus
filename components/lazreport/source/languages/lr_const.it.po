@@ -1089,6 +1089,10 @@ msgstr "Tavolozza &allineamenti"
 msgid "Send to &back"
 msgstr "Manda in &fondo"
 
+#: lr_const.sfrdesignerform_beforeprintscript
+msgid "&Before print script ..."
+msgstr ""
+
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
 msgstr "Porta in &avanti"

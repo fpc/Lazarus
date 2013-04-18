@@ -1085,6 +1085,10 @@ msgstr "Панель &выравнивания"
 msgid "Send to &back"
 msgstr "О&тправить назад"
 
+#: lr_const.sfrdesignerform_beforeprintscript
+msgid "&Before print script ..."
+msgstr ""
+
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
 msgstr "П&еренести вперёд"

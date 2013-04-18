@@ -1088,6 +1088,10 @@ msgstr "J&ajarkan palet"
 msgid "Send to &back"
 msgstr "Kirim ke &belakang"
 
+#: lr_const.sfrdesignerform_beforeprintscript
+msgid "&Before print script ..."
+msgstr ""
+
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
 msgstr "Bawa ke &depan"

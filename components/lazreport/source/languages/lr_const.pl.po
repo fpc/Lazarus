@@ -1091,6 +1091,10 @@ msgstr "&Opcje wyrównania"
 msgid "Send to &back"
 msgstr "Przenieś do t&yłu"
 
+#: lr_const.sfrdesignerform_beforeprintscript
+msgid "&Before print script ..."
+msgstr ""
+
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
 msgstr "Przenieś do &przodu"

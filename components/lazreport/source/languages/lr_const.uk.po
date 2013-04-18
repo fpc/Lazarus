@@ -1088,6 +1088,10 @@ msgstr "П&анель вирівнювання"
 msgid "Send to &back"
 msgstr "Відіслати &назад"
 
+#: lr_const.sfrdesignerform_beforeprintscript
+msgid "&Before print script ..."
+msgstr ""
+
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
 msgstr "Перенести на&перед"

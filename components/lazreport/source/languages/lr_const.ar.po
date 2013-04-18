@@ -1086,6 +1086,10 @@ msgstr "لوحة المحا&داة"
 msgid "Send to &back"
 msgstr "إرسال لل&خلف"
 
+#: lr_const.sfrdesignerform_beforeprintscript
+msgid "&Before print script ..."
+msgstr ""
+
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
 msgstr "الجلب للأما&م"

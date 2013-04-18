@@ -1096,6 +1096,10 @@ msgstr "&Palette ausrichten"
 msgid "Send to &back"
 msgstr "&Nach hinten anordnen"
 
+#: lr_const.sfrdesignerform_beforeprintscript
+msgid "&Before print script ..."
+msgstr ""
+
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
 msgstr "Nach &vorn bringen"
