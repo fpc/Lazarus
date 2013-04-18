@@ -341,7 +341,7 @@ var
   ok: Boolean;
   E: Exception;
 begin
-  CurrentThread:=Self;
+  MTProcs.CurrentThread:=Self;
   aPool:=Item.Group.Pool;
   ok:=false;
   try
