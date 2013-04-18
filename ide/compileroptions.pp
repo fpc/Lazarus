@@ -278,6 +278,7 @@ type
     function DoParseOption(const OptionText: string;
                            Option: TParsedCompilerOptString;
                            PlatformIndependent: boolean): string;
+    procedure Assign(Src: TParsedCompilerOptions);
     procedure Clear;
     procedure InvalidateAll;
     procedure InvalidateFiles;
@@ -3314,6 +3315,13 @@ begin
   fStopAfterErrCount := CompOpts.fStopAfterErrCount;
   CustomOptions := CompOpts.CustomOptions;
 
+  // Inherited and parser options
+  FDefaultMakeOptionsFlags := CompOpts.FDefaultMakeOptionsFlags;
+  fInheritedOptions := CompOpts.fInheritedOptions;
+  fInheritedOptParseStamps := CompOpts.fInheritedOptParseStamps;
+  ParsedOpts.Assign(CompOpts.ParsedOpts);
+  FStorePathDelim := CompOpts.FStorePathDelim;
+
   // compilation
   CompilerPath := CompOpts.CompilerPath;
   ExecuteBefore.Assign(CompOpts.ExecuteBefore);
@@ -3896,6 +3904,28 @@ begin
     s:=SpecialCharsToSpaces(s,true);
   end;
   Result:=s;
+end;
+
+procedure TParsedCompilerOptions.Assign(Src: TParsedCompilerOptions);
+begin
+  FInvalidateParseOnChange := Src.FInvalidateParseOnChange;
+//  FOnLocalSubstitute := Src.FOnLocalSubstitute;
+  FOutputDirectoryOverride := Src.FOutputDirectoryOverride;
+  Values := Src.Values;
+  ParsedErrorOption := Src.ParsedErrorOption;
+  ParsedErrorMsg := Src.ParsedErrorMsg;
+  ParsedErrorStamp := Src.ParsedErrorStamp;
+  // parsed except for platform macros
+  ParsedPIValues := Src.ParsedPIValues;
+  ParsedPIStamp := Src.ParsedPIStamp;
+  ParsingPI := Src.ParsingPI;
+  // macro values
+//  InheritedMacroValues.Assign(Src.InheritedMacroValues);
+  InheritedMacroValuesStamp := Src.InheritedMacroValuesStamp;
+  InheritedMacroValuesParsing := Src.InheritedMacroValuesParsing;
+//  MacroValues: TIDECfgScriptEngine;
+  MacroValuesStamp := Src.MacroValuesStamp;
+  MacroValuesParsing := Src.MacroValuesParsing;
 end;
 
 procedure TParsedCompilerOptions.Clear;
