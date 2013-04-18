@@ -11348,7 +11348,8 @@ begin
     {$IFDEF DebugLR}
     DebugLn('Trying to find RT Object "',St,'"');
     {$ENDIF}
-    t := CurPage.FindRTObject(St);
+    if Assigned(CurPage) then
+      t := CurPage.FindRTObject(St);
     if not Assigned(t) then
        t:=CurReport.FindObject(Copy(Name, 1, Pos('.', Name) - 1));
     Prop := Copy(Name, Pos('.', Name) + 1, 255);
@@ -11853,6 +11854,8 @@ var
   i:integer;
   P:TfrControl;
 begin
+  if not fVisible then
+    exit;
   fHasVisibleControls:=False;
   for i:=0 to Objects.Count - 1 do
   begin
