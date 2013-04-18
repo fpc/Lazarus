@@ -133,9 +133,9 @@ uses
   compiler_linking_options, compiler_verbosity_options, compiler_messages_options,
   compiler_other_options, compiler_inherited_options, compiler_compilation_options,
   compiler_buildmacro_options, IdeMacroValues,
-{.$IFnDEF NewBuildModeWindow}  // remove '.' to remove the BuildModesEditor options frame
+{$IFnDEF NewBuildModeWindow}
   BuildModesEditor,
-{.$ENDIF}
+{$ENDIF}
   // package option frames
   package_usage_options, package_description_options, package_integration_options,
   package_provides_options, package_i18n_options,
@@ -3545,9 +3545,9 @@ end;
 
 procedure TMainIDE.mnuChgBuildModeClicked(Sender: TObject);
 begin
-{.$IFnDEF NewBuildModeWindow}  // remove '.' to remove the BuildModesEditor options frame
+{$IFnDEF NewBuildModeWindow}
   DoOpenIDEOptions(TBuildModesEditorFrame, '', [TProjectCompilerOptions], []);
-{.$ENDIF}
+{$ENDIF}
 end;
 
 procedure TMainIDE.mnuSetBuildModeClick(Sender: TObject);

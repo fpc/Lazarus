@@ -39,6 +39,7 @@ type
   private
     FDialog: TAbstractOptionsEditorDialog;
     FCompilerOpts: TBaseCompilerOptions;
+    FHasProjectCompilerOpts: boolean;
     OtherUnitsPathEditBtn: TPathEditorButton;
     IncludeFilesPathEditBtn: TPathEditorButton;
     OtherSourcesPathEditBtn: TPathEditorButton;
@@ -135,9 +136,11 @@ var
   Msg: String;
 begin
   Result:=false;
+  // Project compiler options have changed if BuildMode was changed by user.
+  if FHasProjectCompilerOpts then
+    FCompilerOpts := Project1.CompilerOptions;
 
   GetParsedPaths;
-
   OldParsedIncludePath := NewParsedIncludePath;
   OldUnparsedIncludePath := FCompilerOpts.IncludePath;
   OldParsedLibraryPath := NewParsedLibraries;
@@ -747,6 +750,7 @@ begin
 
   if AOptions is TProjectCompilerOptions then
   begin
+    FHasProjectCompilerOpts:=True;
     ProjTargetFileEdit.Visible:=true;
     ProjTargetFileLabel.Visible:=true;
     ProjTargetFileEdit.Text:=TProjectCompilerOptions(AOptions).TargetFilename;
@@ -755,6 +759,7 @@ begin
     LCLWidgetTypeLabel.Visible:=true;;
     UpdateTargetFileLabel;
   end else begin
+    FHasProjectCompilerOpts:=False;
     ProjTargetFileEdit.Visible:=false;
     ProjTargetFileLabel.Visible:=false;
     ProjTargetApplyConventionsCheckBox.Visible:=false;

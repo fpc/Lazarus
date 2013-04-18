@@ -1,7 +1,7 @@
 object BuildModesForm: TBuildModesForm
-  Left = 473
+  Left = 337
   Height = 366
-  Top = 550
+  Top = 564
   Width = 612
   Caption = 'BuildModesForm'
   ClientHeight = 366
@@ -19,16 +19,16 @@ object BuildModesForm: TBuildModesForm
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'BuildModesGroupBox'
-    ClientHeight = 288
-    ClientWidth = 596
+    ClientHeight = 276
+    ClientWidth = 594
     TabOrder = 0
     object BuildModesStringGrid: TStringGrid
       AnchorSideTop.Control = BuildModeAddSpeedButton
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 266
+      Height = 254
       Top = 22
-      Width = 596
+      Width = 594
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       AutoFillColumns = True
@@ -38,19 +38,19 @@ object BuildModesForm: TBuildModesForm
           ButtonStyle = cbsCheckboxColumn
           MaxSize = 50
           Title.Caption = 'Active'
-          Width = 197
+          Width = 196
         end      
         item
           ButtonStyle = cbsCheckboxColumn
           MaxSize = 50
           Title.Caption = 'InSession'
-          Width = 197
+          Width = 196
         end      
         item
           MaxSize = 500
           SizePriority = 100
           Title.Caption = 'Title'
-          Width = 198
+          Width = 196
         end>
       FixedCols = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
@@ -59,9 +59,9 @@ object BuildModesForm: TBuildModesForm
       OnSelection = BuildModesStringGridSelection
       OnValidateEntry = BuildModesStringGridValidateEntry
       ColWidths = (
-        197
-        197
-        198
+        196
+        196
+        196
       )
     end
     object BuildModeAddSpeedButton: TSpeedButton
@@ -127,17 +127,19 @@ object BuildModesForm: TBuildModesForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 38
-    Top = 322
+    Height = 34
+    Top = 326
     Width = 600
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
+    CancelButton.OnClick = CancelButtonClick
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

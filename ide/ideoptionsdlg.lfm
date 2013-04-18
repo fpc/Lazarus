@@ -1,4 +1,4 @@
-inherited IDEOptionsDialog: TIDEOptionsDialog
+object IDEOptionsDialog: TIDEOptionsDialog
   Left = 121
   Height = 404
   Top = 96
@@ -12,14 +12,15 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
   Constraints.MinWidth = 500
   OnShow = FormShow
   Position = poScreenCenter
-  object ButtonPanel: TButtonPanel[0]
+  LCLVersion = '1.1'
+  object ButtonPanel: TButtonPanel
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     Left = 6
-    Height = 38
-    Top = 360
+    Height = 34
+    Top = 364
     Width = 663
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -37,20 +38,20 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
-  object CatTVSplitter: TSplitter[1]
+  object CatTVSplitter: TSplitter
     Left = 255
-    Height = 360
+    Height = 364
     Top = 0
     Width = 4
   end
-  object CategoryPanel: TPanel[2]
+  object CategoryPanel: TPanel
     Left = 0
-    Height = 360
+    Height = 364
     Top = 0
     Width = 255
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 360
+    ClientHeight = 364
     ClientWidth = 255
     Constraints.MinWidth = 150
     TabOrder = 2
@@ -62,7 +63,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = SettingsPanel
       Left = 6
-      Height = 304
+      Height = 308
       Top = 36
       Width = 249
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -89,7 +90,6 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
-      Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
       TabOrder = 1
@@ -98,7 +98,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     object SettingsPanel: TPanel
       Left = 0
       Height = 20
-      Top = 340
+      Top = 344
       Width = 255
       Align = alBottom
       AutoSize = True
@@ -106,7 +106,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       TabOrder = 2
     end
   end
-  object BuildModeSelectPanel: TPanel[3]
+  object BuildModeSelectPanel: TPanel
     AnchorSideLeft.Control = CatTVSplitter
     AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Control = EditorsPanel
@@ -133,8 +133,8 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideTop.Control = BuildModeLabel
       AnchorSideTop.Side = asrCenter
       Left = 87
-      Height = 25
-      Top = 5
+      Height = 23
+      Top = 6
       Width = 154
       BorderSpacing.Left = 7
       ItemHeight = 0
@@ -170,19 +170,19 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       Transparent = False
     end
   end
-  object EditorsPanel: TScrollBox[4]
+  object EditorsPanel: TScrollBox
     AnchorSideLeft.Control = CatTVSplitter
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = BuildModeSelectPanel
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 259
-    Height = 320
+    Height = 324
     Top = 40
     Width = 413
-    HorzScrollBar.Page = 409
+    HorzScrollBar.Page = 407
     HorzScrollBar.Tracking = True
-    VertScrollBar.Page = 316
+    VertScrollBar.Page = 318
     VertScrollBar.Tracking = True
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabOrder = 4

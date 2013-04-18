@@ -22,6 +22,7 @@ type
     procedure chkCustomConfigFileClick(Sender: TObject);
   private
     FOptions: TBaseCompilerOptions;
+    FHasProjectCompilerOpts: boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     function Check: Boolean; override;
@@ -56,6 +57,10 @@ var
   NewConfigFilePath: String;
   AdditionalConfig: String;
 begin
+  // Project compiler options have changed if BuildMode was changed by user.
+  if FHasProjectCompilerOpts then
+    FOptions := Project1.CompilerOptions;
+
   NewDontUseConfigFile := not chkConfigFile.Checked;
   NewCustomConfigFile := chkCustomConfigFile.Checked;
   NewConfigFilePath := edtConfigPath.Text;
@@ -103,6 +108,7 @@ procedure TCompilerOtherOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions)
 begin
   if FOptions = nil then
     FOptions := AOptions as TBaseCompilerOptions;
+  FHasProjectCompilerOpts := (AOptions is TProjectCompilerOptions);
   with AOptions as TBaseCompilerOptions do
   begin
     chkConfigFile.Checked := not DontUseConfigFile;

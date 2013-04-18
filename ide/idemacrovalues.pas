@@ -53,7 +53,7 @@ type
       aRow: Integer);
   private
     FLoadShowSessionFromProject: boolean;
-    FMacroValues: TProjectBuildMacros;
+//    FMacroValues: TProjectBuildMacros;
     FProject: TProject;
     FShowSession: boolean;
     FSwitchingMode: boolean;
@@ -62,7 +62,6 @@ type
     procedure CleanMacrosGrid;
     procedure SaveMacros(UpdateControls: boolean);
     procedure UpdateInheritedOptions;
-    procedure ActivateMode(aMode: TProjectBuildMode);
     procedure UpdateShowSession;
     procedure UpdateDialogCaption;
     function GetDialogCaption: string;
@@ -75,7 +74,7 @@ type
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
     property AProject: TProject read FProject;
-    property MacroValues: TProjectBuildMacros read FMacroValues;
+//    property MacroValues: TProjectBuildMacros read FMacroValues;
     property SwitchingMode: boolean read FSwitchingMode; // the active mode is currently switched
     property ShowSession: boolean read FShowSession write FShowSession;
     property LoadShowSessionFromProjects: boolean read FLoadShowSessionFromProject
@@ -99,7 +98,7 @@ var
   i: LongInt;
   Macro: TLazBuildMacro;
 begin
-  if MacroValues=nil then exit;
+//  if MacroValues=nil then exit;
   Grid:=IdeMacroValuesStringGrid;
   if aCol=0 then begin
     // list all build MacroValues
@@ -164,13 +163,13 @@ var
   i: Integer;
 begin
   Grid:=IdeMacroValuesStringGrid;
-  Grid.RowCount:=MacroValues.Count+2; // + titles + add button
+  Grid.RowCount:=Project1.MacroValues.Count+2; // + titles + add button
 
-  for i:=0 to MacroValues.Count-1 do begin
-    Grid.Cells[0,i+1]:=MacroValues.Names[i];
-    Grid.Cells[1,i+1]:=MacroValues.ValueFromIndex(i);
+  for i:=0 to Project1.MacroValues.Count-1 do begin
+    Grid.Cells[0,i+1]:=Project1.MacroValues.Names[i];
+    Grid.Cells[1,i+1]:=Project1.MacroValues.ValueFromIndex(i);
   end;
-  i:=MacroValues.Count+1;
+  i:=Project1.MacroValues.Count+1;
   Grid.Cells[0,i]:='(none)';
   Grid.Cells[1,i]:='';
 end;
@@ -275,7 +274,7 @@ var
   Values: TStringList;
   Value: string;
 begin
-  if MacroValues=nil then exit;
+//  if MacroValues=nil then exit;
   Grid:=IdeMacroValuesStringGrid;
   Values:=TStringList.Create;
   try
@@ -285,9 +284,9 @@ begin
       Value:=Grid.Cells[1,aRow];
       Values.Values[MacroName]:=Value;
     end;
-    if not MacroValues.Equals(Values) then begin
+    if not Project1.MacroValues.Equals(Values) then begin
       // has changed
-      MacroValues.Assign(Values);
+      Project1.MacroValues.Assign(Values);
       IncreaseBuildMacroChangeStamp;
       if UpdateControls then begin
         UpdateInheritedOptions;
@@ -306,23 +305,6 @@ begin
                                FindOptionControl(TCompilerInheritedOptionsFrame));
   if InhOptionCtrl=nil then exit;
   InhOptionCtrl.UpdateInheritedTree(AProject.CompilerOptions);
-end;
-
-procedure TIdeMacroValuesFrame.ActivateMode(aMode: TProjectBuildMode);
-begin
-  if aMode=AProject.ActiveBuildMode then exit;
-  FSwitchingMode:=true;
-  try
-    // save changes
-    OnSaveIDEOptions(Self,AProject.CompilerOptions);
-    // switch
-    AProject.ActiveBuildMode:=aMode;
-    IncreaseBuildMacroChangeStamp;
-    // load options
-    OnLoadIDEOptions(Self,AProject.CompilerOptions);
-  finally
-    FSwitchingMode:=false;
-  end;
 end;
 
 procedure TIdeMacroValuesFrame.UpdateShowSession;
@@ -369,11 +351,12 @@ begin
   if AOptions is TProjectCompilerOptions then begin
     PCOptions:=TProjectCompilerOptions(AOptions);
     FProject:=PCOptions.LazProject;
-    FMacroValues:=FProject.ActiveBuildMode.MacroValues;
+    Assert(FProject=Project1, 'TIdeMacroValuesFrame.ReadSettings: FProject<>Project1');
+//    FMacroValues:=FProject.ActiveBuildMode.MacroValues;
     // modes
     UpdateShowSession;
     // macros
-    MacroValues.Assign(FProject.MacroValues);
+//    MacroValues.Assign(FProject.MacroValues);
     UpdateMacrosControls;
     // options dialog
     UpdateDialogCaption;

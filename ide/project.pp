@@ -705,6 +705,7 @@ type
 
   TProjectBuildModes = class(TComponent)
   private
+    FAssigning: Boolean;
     FChangeStamp: integer;
     fSavedChangeStamp: int64;
     fItems: TFPList;
@@ -727,13 +728,15 @@ type
     function Add(Identifier: string): TProjectBuildMode;
     procedure Move(FromIndex, ToIndex: integer);
     function Count: integer;
-    property Items[Index: integer]: TProjectBuildMode read GetItems; default;
-    property ChangeStamp: integer read FChangeStamp;
     procedure IncreaseChangeStamp;
     procedure AddOnChangedHandler(const Handler: TNotifyEvent);
     procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
     function IsModified(InSession: boolean): boolean;
+  public
+    property Items[Index: integer]: TProjectBuildMode read GetItems; default;
+    property ChangeStamp: integer read FChangeStamp;
     property LazProject: TProject read FLazProject write FLazProject;
+    property Assigning: Boolean read FAssigning;
     property Modified: boolean read GetModified write SetModified;
   end;
 
@@ -813,6 +816,7 @@ type
     FUpdateLock: integer;
     FUseAsDefault: Boolean;
     procedure ClearBuildModes;
+    function GetActiveBuildModeID: string;
     function GetAllEditorsInfo(Index: Integer): TUnitEditorInfo;
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
@@ -835,6 +839,7 @@ type
                                const OldUnitName, NewUnitName: string;
                                CheckIfAllowed: boolean; var Allowed: boolean);
     procedure SetActiveBuildMode(const AValue: TProjectBuildMode);
+    procedure SetActiveBuildModeID(aIdent: string);
     procedure SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
     procedure SetEnableI18N(const AValue: boolean);
     procedure SetEnableI18NForLFM(const AValue: boolean);
@@ -1046,6 +1051,8 @@ type
   public
     property ActiveBuildMode: TProjectBuildMode read FActiveBuildMode
                                                 write SetActiveBuildMode;
+    property ActiveBuildModeID: string read GetActiveBuildModeID
+                                      write SetActiveBuildModeID;
     property ActiveWindowIndexAtStart: integer read FActiveWindowIndexAtStart
                                                write FActiveWindowIndexAtStart;
     property AutoCreateForms: boolean
@@ -4262,6 +4269,11 @@ begin
     ActiveBuildMode:=FBuildModes.Add('default');
 end;
 
+function TProject.GetActiveBuildModeID: string;
+begin
+  Result := ActiveBuildMode.Identifier;
+end;
+
 function TProject.GetFirstUnitWithComponent: TUnitInfo;
 begin
   Result:=fFirst[uilWithComponent];
@@ -5168,15 +5180,12 @@ end;
 procedure TProject.SetActiveBuildMode(const AValue: TProjectBuildMode);
 begin
   if FActiveBuildMode=AValue then exit;
-  if FCompilerOptions<>nil then
-    FCompilerOptions.ParsedOpts.InvalidateParseOnChange:=false;
   FActiveBuildMode:=AValue;
   if FActiveBuildMode<>nil then
   begin
     FMacroValues:=FActiveBuildMode.MacroValues;
     FCompilerOptions:=FActiveBuildMode.CompilerOptions;
     FLazCompilerOptions:=FCompilerOptions;
-    FCompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
   end else begin
     FCompilerOptions:=nil;
     FLazCompilerOptions:=nil;
@@ -5185,6 +5194,20 @@ begin
   SessionModified:=true;
   if Self=Project1 then
     IncreaseBuildMacroChangeStamp;
+end;
+
+procedure TProject.SetActiveBuildModeID(aIdent: string);
+var
+  i: Integer;
+begin
+  for i:=0 to BuildModes.Count-1 do
+  begin
+    if BuildModes[i].Identifier=aIdent then
+    begin
+      ActiveBuildMode:=BuildModes[i];
+      Break;
+    end;
+  end;
 end;
 
 procedure TProject.SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
@@ -5909,7 +5932,7 @@ begin
   if CustomOptions=AValue then exit;
   InvalidateOptions;
   inherited SetCustomOptions(AValue);
-  if IsActive and (LazProject<>nil) then
+  if IsActive then
     LazProject.DefineTemplates.CustomDefinesChanged;
 end;
 
@@ -5960,7 +5983,7 @@ begin
   if UnitOutputDirectory=AValue then exit;
   InvalidateOptions;
   inherited SetUnitOutputDir(AValue);
-  if IsActive and (LazProject<>nil) then
+  if IsActive then
     LazProject.DefineTemplates.OutputDirectoryChanged;
 end;
 
@@ -6068,7 +6091,8 @@ end;
 
 function TProjectCompilerOptions.IsActive: boolean;
 begin
-  Result:=(LazProject<>nil) and (LazProject.CompilerOptions=Self);
+  Result:=(LazProject<>nil) and (LazProject.CompilerOptions=Self)
+          and not LazProject.BuildModes.Assigning;
 end;
 
 procedure TProjectCompilerOptions.Clear;
@@ -7097,6 +7121,7 @@ var
   CurMode: TProjectBuildMode;
 begin
   if Source is TProjectBuildModes then begin
+    FAssigning:=True;
     OtherModes:=TProjectBuildModes(Source);
     Clear;
     for i:=0 to OtherModes.Count-1 do
@@ -7108,6 +7133,7 @@ begin
     end;
     if WithModified then
       Modified:=OtherModes.Modified;
+    FAssigning:=False;
   end else
     inherited Assign(Source);
 end;

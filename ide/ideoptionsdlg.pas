@@ -35,11 +35,10 @@ uses
   TreeFilterEdit, IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf,
   EnvironmentOpts, LazarusIDEStrConsts, CompOptsIntf, EditorOptions,
   {$IFDEF NewBuildModeWindow}
-  BuildModesManager, project_save_options,
+  BuildModesManager, project_save_options;
   {$ELSE}
-  BuildModesEditor,
+  BuildModesEditor;
   {$ENDIF}
-  ProjectIntf;
 
 type
   TIDEOptsDlgAction = (
@@ -145,9 +144,9 @@ begin
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
   OnKeyPress:=@IDEOptionsDialogKeyPress;
-  {$IFnDEF NewBuildModeWindow}
-  BuildModeManageButton.Visible:=False;
-  {$ENDIF}
+  {.$IFnDEF NewBuildModeWindow}
+  //BuildModeManageButton.Visible:=False;
+  {.$ENDIF}
 end;
 
 procedure TIDEOptionsDialog.HelpButtonClick(Sender: TObject);
@@ -187,9 +186,11 @@ begin
     GroupClass := FindGroupClass(Node);
   end;
   // Show the Build Mode panel for Compiler Options
+  {$IFDEF NewBuildModeWindow}
   if (GroupClass <> nil) and (GroupClass.InheritsFrom(TLazCompilerOptions)) then
     BuildModeSelectPanel.Height:=40
   else
+  {$ENDIF}
     BuildModeSelectPanel.Height:=0;
   // Hide the old and show the new editor frame
   if Assigned(AEditor) then
@@ -207,44 +208,10 @@ begin
 end;
 
 procedure TIDEOptionsDialog.BuildModeManageButtonClick(Sender: TObject);
-{$IFDEF NewBuildModeWindow}
-var
-  BuildModesForm: TBuildModesForm;
-  ProjectSaveOptions: TProjectSaveOptionsFrame;
-  Rec: PIDEOptionsGroupRec;
-  i: Integer;
-{$ENDIF}
 begin
   {$IFDEF NewBuildModeWindow}
-  BuildModesForm := TBuildModesForm.Create(nil);
-  try
-    BuildModesForm.OnLoadIDEOptionsHook := @LoadIDEOptions;
-    BuildModesForm.OnSaveIDEOptionsHook := @SaveIDEOptions;
-{ Does not really work  (?)
-    ProjectSaveOptions:=Nil;
-    Rec := IDEEditorGroups.GetByIndex(GroupProject);
-    if Rec <> nil then
-    begin
-      for i := 0 to Rec^.Items.Count-1 do begin
-        if Rec^.Items.Items[i]^.EditorClass = TProjectSaveOptionsFrame then begin
-          ProjectSaveOptions:=TProjectSaveOptionsFrame(Rec^.Items.Items[i]^.EditorClass);
-          Break;
-        end;
-      end;
-    end;
-    if ProjectSaveOptions<>nil then
-    begin
-      BuildModesForm.LoadShowSessionFromProject:=false;
-      BuildModesForm.ShowSession:=ProjectSaveOptions.GetSessionLocation in [pssInIDEConfig,pssInProjectDir];
-    end;
-}
-    BuildModesForm.LoadShowSessionFromProject:=false;
-    BuildModesForm.ShowSession:=True;
-    if BuildModesForm.ShowModal = mrOK then begin
-      ;
-    end;
-  finally
-    BuildModesForm.Free;
+  if ShowBuildModesDlg = mrOK then begin
+
   end;
   {$ENDIF}
 end;
