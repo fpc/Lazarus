@@ -147,9 +147,10 @@ type
 
   TFileSearcher = class(TFileIterator)
   private
+    FMaskSeparator: char;
+    FFollowSymLink: Boolean;
     FOnFileFound: TFileFoundEvent;
     FOnDirectoryFound: TDirectoryFoundEvent;
-
     procedure RaiseSearchingError;
   protected
     procedure DoDirectoryEnter; virtual;
@@ -157,10 +158,11 @@ type
     procedure DoFileFound; virtual;
   public
     constructor Create;
-
     procedure Search(const ASearchPath: String; ASearchMask: String = '';
-      ASearchSubDirs: Boolean = True; AMaskSeparator: char = ';');
+      ASearchSubDirs: Boolean = True);
   public
+    property MaskSeparator: char read FMaskSeparator write FMaskSeparator;
+    property FollowSymLink: Boolean read FFollowSymLink write FFollowSymLink;
     property OnDirectoryFound: TDirectoryFoundEvent read FOnDirectoryFound write FOnDirectoryFound;
     property OnFileFound: TFileFoundEvent read FOnFileFound write FOnFileFound;
   end;

@@ -1053,7 +1053,7 @@ begin
     Searcher.FCopyFailedCount:=0;
     Searcher.FSourceDir:=SourceDir;
     Searcher.FTargetDir:=TargetDir;
-    Searcher.Search(SourceDir, GetAllFilesMask, True);
+    Searcher.Search(SourceDir);
     Result:=True;
   finally
     Result:=Searcher.FCopyFailedCount=0;
@@ -1422,11 +1422,13 @@ end;
 
 constructor TFileSearcher.Create;
 begin
+  FMaskSeparator := ';';
+  FFollowSymLink := True;
   FSearching := False;
 end;
 
 procedure TFileSearcher.Search(const ASearchPath: String; ASearchMask: String;
-  ASearchSubDirs: Boolean; AMaskSeparator: char);
+  ASearchSubDirs: Boolean);
 var
   MaskList: TMaskList;
 
@@ -1473,7 +1475,8 @@ var
       try
         repeat
           if (PathInfo.Name = '.') or (PathInfo.Name = '..') or
-             (PathInfo.Name = '') or ((PathInfo.Attr and faDirectory) = 0)
+             (PathInfo.Name = '') or ((PathInfo.Attr and faDirectory) = 0) or
+             (not FFollowSymLink and FileIsSymlink(APath + PathInfo.Name))
           then Continue;
 
           FPath := APath;
@@ -1493,9 +1496,10 @@ var
 begin
   if FSearching then RaiseSearchingError;
 
-  MaskList := TMaskList.Create(ASearchMask,AMaskSeparator);
+  MaskList := TMaskList.Create(ASearchMask, FMaskSeparator);
   // empty mask = all files mask
-  if MaskList.Count = 0 then FreeAndNil(MaskList);
+  if MaskList.Count = 0 then
+    FreeAndNil(MaskList);
 
   FSearching := True;
   try

@@ -850,7 +850,7 @@ begin
   begin
     Searcher := TLazFileSearcher.Create(Self);
     try
-      Searcher.Search(ADirectory, FMask, FRecursive,';');
+      Searcher.Search(ADirectory, FMask, FRecursive);
     finally
       Searcher.Free;
     end;
