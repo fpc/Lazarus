@@ -301,7 +301,7 @@ begin
     // create a search result page
     //debugln(['ShowIdentifierReferences ',DbgSName(SearchResultsView)]);
     SearchPageIndex:=SearchResultsView.AddSearch(
-      'References of '+Identifier,
+      'Ref: '+Identifier,
       Identifier,
       '',
       ExtractFilePath(DeclarationCode.Filename),
