@@ -103,7 +103,7 @@ type
 const
   AllDirectoryEntriesMask = '*';
   
-function GetAllFilesMask: string;
+function GetAllFilesMask: string; deprecated 'Use FPC''s AllFilesMask instead';
 function GetExeExt: string;
 function SearchFileInPath(const Filename, BasePath, SearchPath,
   Delimiter: string; Flags: TSearchFileInPathFlags): string;

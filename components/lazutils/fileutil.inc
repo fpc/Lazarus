@@ -1510,7 +1510,7 @@ begin
   end;
 end;
 
-function GetAllFilesMask: string; deprecated 'Use FPC''s AllFilesMask instead';
+function GetAllFilesMask: string;
 begin
   Result:=AllFilesMask;
 end;
