@@ -65,6 +65,7 @@ type
     FLayerStylesKeys, FLayerStylesValues: TFPList; // of TStringList;
     function ReadSVGColor(AValue: string): TFPColor;
     function ReadSVGStyle(AValue: string; ADestEntity: TvEntityWithPen; AUseFillAsPen: Boolean = False): TvSetPenBrushAndFontElements;
+    function ReadSVGStyleToStyleLists(AValue: string; AStyleKeys, AStyleValues: TStringList): TvSetPenBrushAndFontElements;
     function ReadSVGPenStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
     function ReadSVGBrushStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush): TvSetPenBrushAndFontElements;
     function ReadSVGFontStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenBrushAndFont): TvSetPenBrushAndFontElements;
@@ -78,6 +79,7 @@ type
     procedure ReadLineFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadPathFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadPathFromString(AStr: string; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadNextPathCommand(ACurTokenType: TSVGTokenType; var i: Integer; var CurX, CurY: Double; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadPointsFromString(AStr: string; AData: TvVectorialPage; ADoc: TvVectorialDocument; AClosePath: Boolean);
     procedure ReadPolyFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadRectFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
@@ -95,6 +97,7 @@ type
     constructor Create; override;
     Destructor Destroy; override;
     procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); override;
+    procedure ReadFromXML(Doc: TXMLDocument; AData: TvVectorialDocument);
   end;
 
 implementation
@@ -698,6 +701,36 @@ begin
   end;
 end;
 
+// style="fill:none;stroke:black;stroke-width:3"
+function TvSVGVectorialReader.ReadSVGStyleToStyleLists(AValue: string;
+  AStyleKeys, AStyleValues: TStringList): TvSetPenBrushAndFontElements;
+var
+  lStr, lStyleKeyStr, lStyleValueStr: String;
+  lStrings: TStringList;
+  i, lPosEqual: Integer;
+begin
+  Result := [];
+  if AValue = '' then Exit;
+
+  // Now split using ";" separator
+  lStrings := TStringList.Create;
+  try
+    lStrings.Delimiter := ';';
+    lStrings.DelimitedText := LowerCase(AValue);
+    for i := 0 to lStrings.Count-1 do
+    begin
+      lStr := lStrings.Strings[i];
+      lPosEqual := Pos(':', lStr);
+      lStyleKeyStr := Copy(lStr, 0, lPosEqual-1);
+      lStyleValueStr := Copy(lStr, lPosEqual+1, Length(lStr));
+      AStyleKeys.Add(lStyleKeyStr);
+      AStyleValues.Add(lStyleValueStr);
+    end;
+  finally
+    lStrings.Free;
+  end;
+end;
+
 function TvSVGVectorialReader.ReadSVGPenStyleWithKeyAndValue(AKey,
   AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
 var
@@ -982,7 +1015,9 @@ begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
     if lNodeName = 'style' then
     begin
-      {$ifndef SVG_MERGE_LAYER_STYLES}
+      {$ifdef SVG_MERGE_LAYER_STYLES}
+      ReadSVGStyleToStyleLists(ANode.Attributes.Item[i].NodeValue, lLayerStyleKeys, lLayerStyleValues);
+      {$else}
       lLayer.SetPenBrushAndFontElements += ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lLayer)
       {$endif}
     end
@@ -1116,6 +1151,7 @@ var
   CurX, CurY: Double;
   lCurTokenType, lLastCommandToken: TSVGTokenType;
   lDebugStr: String;
+  lTmpTokenType: TSVGTokenType;
 begin
   FSVGPathTokenizer.Tokens.Clear;
   FSVGPathTokenizer.TokenizePathString(AStr);
@@ -1128,234 +1164,242 @@ begin
   while i < FSVGPathTokenizer.Tokens.Count do
   begin
     lCurTokenType := FSVGPathTokenizer.Tokens.Items[i].TokenType;
-    if not (lCurTokenType = sttFloatValue) then lLastCommandToken := lCurTokenType;
-    // --------------
-    // Moves
-    // --------------
-    if lCurTokenType in [sttMoveTo, sttRelativeMoveTo] then
+    if not (lCurTokenType = sttFloatValue) then
     begin
-      X := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-      Y := FSVGPathTokenizer.Tokens.Items[i+2].Value;
-      ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
-
-      // take care of relative or absolute
-      if lCurTokenType = sttRelativeMoveTo then
-      begin
-        CurX := CurX + X;
-        CurY := CurY + Y;
-      end
-      else
-      begin
-        CurX := X;
-        CurY := Y;
-      end;
-      AData.AddMoveToPath(CurX, CurY);
-
-      Inc(i, 3);
-    end
-    // --------------
-    // Lines which appear without a command token and after a MoveTo
-    // --------------
-    else if (lCurTokenType = sttFloatValue) and (lLastCommandToken in [sttMoveTo, sttRelativeMoveTo]) then
-    begin
-      X := FSVGPathTokenizer.Tokens.Items[i].Value;
-      Y := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-      ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
-
-      CurX := X;
-      CurY := Y;
-      AData.AddLineToPath(CurX, CurY);
-
-      Inc(i, 2);
-    end
-    // --------------
-    // Close Path
-    // --------------
-    else if lCurTokenType = sttClosePath then
-    begin
-      // Get the first point
-      AData.GetTmpPathStartPos(X, Y);
-
-      // And repeat it
-      CurX := X;
-      CurY := Y;
-      AData.AddLineToPath(CurX, CurY);
-
-      Inc(i, 3);
-    end
-    // --------------
-    // Lines
-    // --------------
-    else if lCurTokenType in [sttLineTo, sttRelativeLineTo, sttHorzLineTo,
-      sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo] then
-    begin
-      X := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-      if not (lCurTokenType in [sttHorzLineTo, sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo]) then
-        Y := FSVGPathTokenizer.Tokens.Items[i+2].Value;
-
-      // "l" LineTo uses relative coordenates in SVG
-      if lCurTokenType in [sttRelativeLineTo, sttRelativeHorzLineTo, sttRelativeVertLineTo] then
-      begin
-        ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
-        CurX := CurX + X;
-        CurY := CurY + Y;
-      end
-      else
-      begin
-        ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
-        CurX := X;
-        CurY := Y;
-      end;
-
-      // horizontal and vertical line corrections
-      if lCurTokenType in [sttHorzLineTo, sttRelativeHorzLineTo] then
-        Y := 0
-      else if lCurTokenType in [sttVertLineTo, sttRelativeVertLineTo] then
-      begin
-        Y := X;
-        X := 0;
-      end;
-
-      AData.AddLineToPath(CurX, CurY);
-
-      if not (lCurTokenType in [sttHorzLineTo, sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo]) then
-        Inc(i, 3)
-      else Inc(i, 2);
-    end
-    // --------------
-    // Cubic Bezier
-    // --------------
-    else if lCurTokenType in [sttBezierTo, sttRelativeBezierTo,
-      sttSmoothBezierTo, sttRelativeSmoothBezierTo] then
-    begin
-      if lCurTokenType in [sttBezierTo, sttRelativeBezierTo] then
-      begin
-        X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-        Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
-        X3 := FSVGPathTokenizer.Tokens.Items[i+3].Value;
-        Y3 := FSVGPathTokenizer.Tokens.Items[i+4].Value;
-        X := FSVGPathTokenizer.Tokens.Items[i+5].Value;
-        Y := FSVGPathTokenizer.Tokens.Items[i+6].Value;
-      end
-      else
-      begin
-        X2 := CurX;
-        Y2 := CurY;
-        X3 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-        Y3 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
-        X := FSVGPathTokenizer.Tokens.Items[i+3].Value;
-        Y := FSVGPathTokenizer.Tokens.Items[i+4].Value;
-      end;
-
-      // Careful that absolute coordinates require using ConvertSVGCoordinatesToFPVCoordinates
-      if lCurTokenType in [sttRelativeBezierTo, sttRelativeSmoothBezierTo] then
-      begin
-        ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
-        ConvertSVGDeltaToFPVDelta(AData, X3, Y3, X3, Y3);
-        ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
-      end
-      else
-      begin
-        ConvertSVGCoordinatesToFPVCoordinates(AData, X2, Y2, X2, Y2);
-        ConvertSVGCoordinatesToFPVCoordinates(AData, X3, Y3, X3, Y3);
-        ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
-      end;
-
-      if lCurTokenType = sttRelativeBezierTo then
-      begin
-        AData.AddBezierToPath(X2 + CurX, Y2 + CurY, X3 + CurX, Y3 + CurY, X + CurX, Y + CurY);
-        CurX := CurX + X;
-        CurY := CurY + Y;
-      end
-      else
-      begin
-        AData.AddBezierToPath(X2, Y2, X3, Y3, X, Y);
-        CurX := X;
-        CurY := Y;
-      end;
-
-      if lCurTokenType in [sttBezierTo, sttRelativeBezierTo] then
-        Inc(i, 7)
-      else Inc(i, 5);
-    end
-    // --------------
-    // Quadratic Bezier
-    // --------------
-    else if lCurTokenType in [sttQuadraticBezierTo, sttRelativeQuadraticBezierTo] then
-    begin
-      X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-      Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
-      X := FSVGPathTokenizer.Tokens.Items[i+3].Value;
-      Y := FSVGPathTokenizer.Tokens.Items[i+4].Value;
-
-      // Careful that absolute coordinates require using ConvertSVGCoordinatesToFPVCoordinates
-      if lCurTokenType in [sttRelativeQuadraticBezierTo] then
-      begin
-        ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
-        ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
-      end
-      else
-      begin
-        ConvertSVGCoordinatesToFPVCoordinates(AData, X2, Y2, X2, Y2);
-        ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
-      end;
-
-      if lCurTokenType = sttRelativeQuadraticBezierTo then
-      begin
-        AData.AddBezierToPath(X2 + CurX, Y2 + CurY, X2 + CurX, Y2 + CurY, X + CurX, Y + CurY);
-        CurX := CurX + X;
-        CurY := CurY + Y;
-      end
-      else
-      begin
-        AData.AddBezierToPath(X2, Y2, X2, Y2, X, Y);
-        CurX := X;
-        CurY := Y;
-      end;
-
-      Inc(i, 5);
-    end
-    // --------------
-    // Elliptical arcs
-    // --------------
-    else if lCurTokenType in [sttEllipticArcTo, sttRelativeEllipticArcTo] then
-    begin
-      {X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-      Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
-      X := FSVGPathTokenizer.Tokens.Items[i+3].Value;
-      Y := FSVGPathTokenizer.Tokens.Items[i+4].Value;
-
-      // Careful that absolute coordinates require using ConvertSVGCoordinatesToFPVCoordinates
-      if lCurTokenType in [sttRelativeQuadraticBezierTo] then
-      begin
-        ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
-        ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
-      end
-      else
-      begin
-        ConvertSVGCoordinatesToFPVCoordinates(AData, X2, Y2, X2, Y2);
-        ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
-      end;
-
-      if lCurTokenType = sttRelativeQuadraticBezierTo then
-      begin
-        AData.AddBezierToPath(X2 + CurX, Y2 + CurY, X2 + CurX, Y2 + CurY, X + CurX, Y + CurY);
-        CurX := CurX + X;
-        CurY := CurY + Y;
-      end
-      else
-      begin
-        AData.AddBezierToPath(X2, Y2, X2, Y2, X, Y);
-        CurX := X;
-        CurY := Y;
-      end; }
-
-      Inc(i, 8);
+      lLastCommandToken := lCurTokenType;
+      ReadNextPathCommand(lCurTokenType, i, CurX, CurY, AData, ADoc);
     end
     else
     begin
-      Inc(i);
+      lTmpTokenType := lLastCommandToken;
+      if lLastCommandToken = sttMoveTo then lTmpTokenType := sttLineTo;
+      if lLastCommandToken = sttRelativeMoveTo then lTmpTokenType := sttRelativeLineTo;
+      Dec(i);// because there is command token
+      ReadNextPathCommand(lTmpTokenType, i, CurX, CurY, AData, ADoc);
     end;
+  end;
+end;
+
+procedure TvSVGVectorialReader.ReadNextPathCommand(ACurTokenType: TSVGTokenType;
+  var i: Integer; var CurX, CurY: Double; AData: TvVectorialPage;
+  ADoc: TvVectorialDocument);
+var
+  X, Y, X2, Y2, X3, Y3: Double;
+  lCurTokenType: TSVGTokenType;
+  lDebugStr: String;
+begin
+  lCurTokenType := ACurTokenType;
+  // --------------
+  // Moves
+  // --------------
+  if lCurTokenType in [sttMoveTo, sttRelativeMoveTo] then
+  begin
+    X := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+    Y := FSVGPathTokenizer.Tokens.Items[i+2].Value;
+    ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
+
+    // take care of relative or absolute
+    if lCurTokenType = sttRelativeMoveTo then
+    begin
+      CurX := CurX + X;
+      CurY := CurY + Y;
+    end
+    else
+    begin
+      CurX := X;
+      CurY := Y;
+    end;
+    AData.AddMoveToPath(CurX, CurY);
+
+    Inc(i, 3);
+  end
+  // --------------
+  // Close Path
+  // --------------
+  else if lCurTokenType = sttClosePath then
+  begin
+    // Get the first point
+    AData.GetTmpPathStartPos(X, Y);
+
+    // And repeat it
+    CurX := X;
+    CurY := Y;
+    AData.AddLineToPath(CurX, CurY);
+
+    Inc(i, 3);
+  end
+  // --------------
+  // Lines
+  // --------------
+  else if lCurTokenType in [sttLineTo, sttRelativeLineTo, sttHorzLineTo,
+    sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo] then
+  begin
+    X := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+    if not (lCurTokenType in [sttHorzLineTo, sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo]) then
+      Y := FSVGPathTokenizer.Tokens.Items[i+2].Value;
+
+    // "l" LineTo uses relative coordenates in SVG
+    if lCurTokenType in [sttRelativeLineTo, sttRelativeHorzLineTo, sttRelativeVertLineTo] then
+    begin
+      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+      CurX := CurX + X;
+      CurY := CurY + Y;
+    end
+    else
+    begin
+      ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
+      CurX := X;
+      CurY := Y;
+    end;
+
+    // horizontal and vertical line corrections
+    if lCurTokenType in [sttHorzLineTo, sttRelativeHorzLineTo] then
+      Y := 0
+    else if lCurTokenType in [sttVertLineTo, sttRelativeVertLineTo] then
+    begin
+      Y := X;
+      X := 0;
+    end;
+
+    AData.AddLineToPath(CurX, CurY);
+
+    if not (lCurTokenType in [sttHorzLineTo, sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo]) then
+      Inc(i, 3)
+    else Inc(i, 2);
+  end
+  // --------------
+  // Cubic Bezier
+  // --------------
+  else if lCurTokenType in [sttBezierTo, sttRelativeBezierTo,
+    sttSmoothBezierTo, sttRelativeSmoothBezierTo] then
+  begin
+    if lCurTokenType in [sttBezierTo, sttRelativeBezierTo] then
+    begin
+      X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+      Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
+      X3 := FSVGPathTokenizer.Tokens.Items[i+3].Value;
+      Y3 := FSVGPathTokenizer.Tokens.Items[i+4].Value;
+      X := FSVGPathTokenizer.Tokens.Items[i+5].Value;
+      Y := FSVGPathTokenizer.Tokens.Items[i+6].Value;
+    end
+    else
+    begin
+      X2 := CurX;
+      Y2 := CurY;
+      X3 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+      Y3 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
+      X := FSVGPathTokenizer.Tokens.Items[i+3].Value;
+      Y := FSVGPathTokenizer.Tokens.Items[i+4].Value;
+    end;
+
+    // Careful that absolute coordinates require using ConvertSVGCoordinatesToFPVCoordinates
+    if lCurTokenType in [sttRelativeBezierTo, sttRelativeSmoothBezierTo] then
+    begin
+      ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
+      ConvertSVGDeltaToFPVDelta(AData, X3, Y3, X3, Y3);
+      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+    end
+    else
+    begin
+      ConvertSVGCoordinatesToFPVCoordinates(AData, X2, Y2, X2, Y2);
+      ConvertSVGCoordinatesToFPVCoordinates(AData, X3, Y3, X3, Y3);
+      ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
+    end;
+
+    if lCurTokenType = sttRelativeBezierTo then
+    begin
+      AData.AddBezierToPath(X2 + CurX, Y2 + CurY, X3 + CurX, Y3 + CurY, X + CurX, Y + CurY);
+      CurX := CurX + X;
+      CurY := CurY + Y;
+    end
+    else
+    begin
+      AData.AddBezierToPath(X2, Y2, X3, Y3, X, Y);
+      CurX := X;
+      CurY := Y;
+    end;
+
+    if lCurTokenType in [sttBezierTo, sttRelativeBezierTo] then
+      Inc(i, 7)
+    else Inc(i, 5);
+  end
+  // --------------
+  // Quadratic Bezier
+  // --------------
+  else if lCurTokenType in [sttQuadraticBezierTo, sttRelativeQuadraticBezierTo] then
+  begin
+    X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+    Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
+    X := FSVGPathTokenizer.Tokens.Items[i+3].Value;
+    Y := FSVGPathTokenizer.Tokens.Items[i+4].Value;
+
+    // Careful that absolute coordinates require using ConvertSVGCoordinatesToFPVCoordinates
+    if lCurTokenType in [sttRelativeQuadraticBezierTo] then
+    begin
+      ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
+      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+    end
+    else
+    begin
+      ConvertSVGCoordinatesToFPVCoordinates(AData, X2, Y2, X2, Y2);
+      ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
+    end;
+
+    if lCurTokenType = sttRelativeQuadraticBezierTo then
+    begin
+      AData.AddBezierToPath(X2 + CurX, Y2 + CurY, X2 + CurX, Y2 + CurY, X + CurX, Y + CurY);
+      CurX := CurX + X;
+      CurY := CurY + Y;
+    end
+    else
+    begin
+      AData.AddBezierToPath(X2, Y2, X2, Y2, X, Y);
+      CurX := X;
+      CurY := Y;
+    end;
+
+    Inc(i, 5);
+  end
+  // --------------
+  // Elliptical arcs
+  // --------------
+  else if lCurTokenType in [sttEllipticArcTo, sttRelativeEllipticArcTo] then
+  begin
+    {X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+    Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
+    X := FSVGPathTokenizer.Tokens.Items[i+3].Value;
+    Y := FSVGPathTokenizer.Tokens.Items[i+4].Value;
+
+    // Careful that absolute coordinates require using ConvertSVGCoordinatesToFPVCoordinates
+    if lCurTokenType in [sttRelativeQuadraticBezierTo] then
+    begin
+      ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
+      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+    end
+    else
+    begin
+      ConvertSVGCoordinatesToFPVCoordinates(AData, X2, Y2, X2, Y2);
+      ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
+    end;
+
+    if lCurTokenType = sttRelativeQuadraticBezierTo then
+    begin
+      AData.AddBezierToPath(X2 + CurX, Y2 + CurY, X2 + CurX, Y2 + CurY, X + CurX, Y + CurY);
+      CurX := CurX + X;
+      CurY := CurY + Y;
+    end
+    else
+    begin
+      AData.AddBezierToPath(X2, Y2, X2, Y2, X, Y);
+      CurX := X;
+      CurY := Y;
+    end; }
+
+    Inc(i, 8);
+  end
+  else
+  begin
+    Inc(i);
   end;
 end;
 
@@ -1649,31 +1693,84 @@ procedure TvSVGVectorialReader.ReadFromStream(AStream: TStream;
   AData: TvVectorialDocument);
 var
   Doc: TXMLDocument;
-  lCurNode: TDOMNode;
-  lPage: TvVectorialPage;
 begin
   try
     // Read in xml file from the stream
     ReadXMLFile(Doc, AStream);
-
-    // Read the properties of the <svg> tag
-    AData.Width := StringWithUnitToFloat(Doc.DocumentElement.GetAttribute('width'));
-    AData.Height := StringWithUnitToFloat(Doc.DocumentElement.GetAttribute('height'));
-
-    // Now process the elements
-    lCurNode := Doc.DocumentElement.FirstChild;
-    lPage := AData.AddPage();
-    lPage.Width := AData.Width;
-    lPage.Height := AData.Height;
-    while Assigned(lCurNode) do
-    begin
-      ReadEntityFromNode(lCurNode, lPage, AData);
-      lCurNode := lCurNode.NextSibling;
-    end;
+    ReadFromXML(Doc, AData);
   finally
     // finally, free the document
     Doc.Free;
   end;
+end;
+
+procedure TvSVGVectorialReader.ReadFromXML(Doc: TXMLDocument;
+  AData: TvVectorialDocument);
+var
+  lCurNode: TDOMNode;
+  lPage: TvVectorialPage;
+  {$ifdef SVG_MERGE_LAYER_STYLES}
+  lLayerStyleKeys, lLayerStyleValues: TStringList;
+  {$endif}
+  lNodeName: DOMString;
+  ANode: TDOMElement;
+  i: Integer;
+begin
+  // ----------------
+  // Read the properties of the <svg> tag
+  // ----------------
+  AData.Width := StringWithUnitToFloat(Doc.DocumentElement.GetAttribute('width'));
+  AData.Height := StringWithUnitToFloat(Doc.DocumentElement.GetAttribute('height'));
+  {$ifdef SVG_MERGE_LAYER_STYLES}
+  FLayerStylesKeys.Clear;
+  FLayerStylesValues.Clear;
+  lLayerStyleKeys := TStringList.Create;
+  lLayerStyleValues := TStringList.Create;
+  FLayerStylesKeys.Add(lLayerStyleKeys);
+  FLayerStylesValues.Add(lLayerStyleValues);
+  {$endif}
+  ANode := Doc.DocumentElement;
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if lNodeName = 'style' then
+    begin
+      {$ifdef SVG_MERGE_LAYER_STYLES}
+      ReadSVGStyleToStyleLists(ANode.Attributes.Item[i].NodeValue, lLayerStyleKeys, lLayerStyleValues);
+      {$endif}
+    end
+    else if IsAttributeFromStyle(lNodeName) then
+    begin
+      {$ifdef SVG_MERGE_LAYER_STYLES}
+      lLayerStyleKeys.Add(lNodeName);
+      lLayerStyleValues.Add(UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue));
+      {$endif}
+    end;
+  end;
+
+  // ----------------
+  // Now process the elements
+  // ----------------
+  lCurNode := Doc.DocumentElement.FirstChild;
+  lPage := AData.AddPage();
+  lPage.Width := AData.Width;
+  lPage.Height := AData.Height;
+  while Assigned(lCurNode) do
+  begin
+    ReadEntityFromNode(lCurNode, lPage, AData);
+    lCurNode := lCurNode.NextSibling;
+  end;
+
+  // ----------------
+  // Remove the memory of the styles
+  // ----------------
+  {$ifdef SVG_MERGE_LAYER_STYLES}
+  // Now remove the style from this layer
+  FLayerStylesKeys.Remove(lLayerStyleKeys);
+  lLayerStyleKeys.Free;
+  FLayerStylesValues.Remove(lLayerStyleValues);
+  lLayerStyleValues.Free;
+  {$endif}
 end;
 
 initialization
