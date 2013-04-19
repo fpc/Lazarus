@@ -234,7 +234,7 @@ begin
 
   with OpenDialog do begin
     Title:=lisSelectFile;
-    Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+    Filter:=dlgAllFiles+' ('+AllFilesMask+')|'+AllFilesMask
       +'|'+lisExePrograms+' (*.exe)|*.exe';
   end;
 

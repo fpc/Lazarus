@@ -154,7 +154,7 @@ begin
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
     OpenDialog.Title:=lisChooseCompilerMessages;
     OpenDialog.Filter:=lisFPCMessageFile+' (*.msg)|*.msg|'+dlgAllFiles+'|'+
-      GetAllFilesMask;
+      AllFilesMask;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       SetComboBoxText(CompilerMessagesComboBox,AFilename,cstFilename);

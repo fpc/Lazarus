@@ -390,7 +390,7 @@ constructor TOpenPictureDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FDefaultFilter := GraphicFilter(TGraphic)+'|'+
-                       Format(rsAllFiles,[GetAllFilesMask, GetAllFilesMask,'']);
+                       Format(rsAllFiles,[AllFilesMask, AllFilesMask,'']);
   Filter:=FDefaultFilter;
 
   FPictureGroupBox:=TGroupBox.Create(Self);

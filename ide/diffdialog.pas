@@ -290,14 +290,14 @@ begin
 
   // dialogs
   dlgOpen.Title:=lisOpenExistingFile;
-  dlgOpen.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+  dlgOpen.Filter:=dlgAllFiles+' ('+AllFilesMask+')|'+AllFilesMask
                  +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
                  +'|'+lisLazarusProject+' (*.lpi)|*.lpi'
                  +'|'+lisLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm'
                  +'|'+lisLazarusPackage+' (*.lpk)|*.lpk'
                  +'|'+lisLazarusProjectSource+' (*.lpr)|*.lpr';
   dlgSave.Title:=lisSaveFileAs;
-  dlgSave.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask;
+  dlgSave.Filter:=dlgAllFiles+' ('+AllFilesMask+')|'+AllFilesMask;
 
   // diff
   EditorOpts.GetSynEditSettings(DiffSynEdit);

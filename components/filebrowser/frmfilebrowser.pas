@@ -96,7 +96,7 @@ begin
   if Dir <> '' then
   begin
     FCurrentDir := AppendPathDelim(Dir);
-    FCurrentDir := FCurrentDir + GetAllFilesMask;
+    FCurrentDir := FCurrentDir + AllFilesMask;
     try
       if SysUtils.FindFirst(FCurrentDir, faAnyFile or $00000080, FileInfo) = 0 then
         repeat
@@ -228,7 +228,7 @@ begin
     FCurrentDir := Dir;
     FCurrentDir := AppendPathDelim(FCurrentDir);
     i           := length(FCurrentDir);
-    FCurrentDir := FCurrentDir + GetAllFilesMask;
+    FCurrentDir := FCurrentDir + AllFilesMask;
     try
       if SysUtils.FindFirst(FCurrentDir, faAnyFile or $00000080, FileInfo) = 0 then
       begin

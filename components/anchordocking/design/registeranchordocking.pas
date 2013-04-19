@@ -505,7 +505,7 @@ begin
     InitIDEFileDialog(Dlg);
     Dlg.Title:=adrsLoadWindowLayoutFromFileXml;
     Dlg.Options:=Dlg.Options+[ofFileMustExist];
-    Dlg.Filter:=adrsAnchorDockingLayout+'|*.xml|'+adrsAllFiles+'|'+GetAllFilesMask;
+    Dlg.Filter:=adrsAnchorDockingLayout+'|*.xml|'+adrsAllFiles+'|'+AllFilesMask;
     if Dlg.Execute then begin
       Filename:=CleanAndExpandFilename(Dlg.FileName);
       try
@@ -534,7 +534,7 @@ begin
     InitIDEFileDialog(Dlg);
     Dlg.Title:=adrsSaveWindowLayoutToFileXml;
     Dlg.Options:=Dlg.Options+[ofPathMustExist,ofNoReadOnlyReturn,ofOverwritePrompt];
-    Dlg.Filter:=adrsAnchorDockingLayout+'|*.xml|'+adrsAllFiles+'|'+GetAllFilesMask;
+    Dlg.Filter:=adrsAnchorDockingLayout+'|*.xml|'+adrsAllFiles+'|'+AllFilesMask;
     if Dlg.Execute then begin
       Filename:=CleanAndExpandFilename(Dlg.FileName);
       if ExtractFileExt(Filename)='' then

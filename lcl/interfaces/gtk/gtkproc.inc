@@ -3716,7 +3716,7 @@ begin
   gtk_clist_clear(Files);
   { Add all directories }
   Strlist.Add('..'+PathDelim);
-  if FindFirstUTF8(AppendPathDelim(Dir)+GetAllFilesMask, faAnyFile and faDirectory,
+  if FindFirstUTF8(AppendPathDelim(Dir)+AllFilesMask, faAnyFile and faDirectory,
     Info) = 0
   then begin
     repeat
@@ -3730,8 +3730,8 @@ begin
   // add required files
   StrList.Clear;
   CurFileMask:=Mask;
-  if CurFileMask='' then CurFileMask:=GetAllFilesMask;
-  if FindFirstUTF8(AppendPathDelim(Dir)+GetAllFilesMask, faAnyFile, Info) = 0 then
+  if CurFileMask='' then CurFileMask:=AllFilesMask;
+  if FindFirstUTF8(AppendPathDelim(Dir)+AllFilesMask, faAnyFile, Info) = 0 then
   begin
     repeat
       if ((Info.Attr and faDirectory) <> faDirectory) then begin

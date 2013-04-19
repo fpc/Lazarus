@@ -158,7 +158,7 @@ begin
   Result:='';
   if aFilter='' then exit;
   if SkipAllFilesMask then
-    AllFilesMask:=GetAllFilesMask
+    AllFilesMask:=AllFilesMask
   else
     AllFilesMask:='';
   //debugln(['TFileDialog.ExtractAllFilterMasks Filter=',aFilter]);

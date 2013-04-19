@@ -98,7 +98,7 @@ var
 procedure TLazarusFileDialogForm.SetFilter(AFilter: string);
 begin
   if AFilter = '' then
-    FilterComboBox.Filter := Format(rsAllFiles,[GetAllFilesMask, GetAllFilesMask,''])
+    FilterComboBox.Filter := Format(rsAllFiles,[AllFilesMask, AllFilesMask,''])
   else
     FilterComboBox.Filter := AFilter;
 end;

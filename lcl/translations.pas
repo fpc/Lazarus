@@ -244,7 +244,7 @@ begin
   Name:=ExtractFilename(Filename);
   Ext:=ExtractFileExt(Filename);
   NameOnly:=LeftStr(Name,length(Name)-length(Ext));
-  if FindFirstUTF8(Path+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+  if FindFirstUTF8(Path+AllFilesMask,faAnyFile,FileInfo)=0 then begin
     repeat
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
       or (CompareFilenames(FileInfo.Name,Name)=0) then continue;

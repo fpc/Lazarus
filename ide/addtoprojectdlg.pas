@@ -379,7 +379,7 @@ begin
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options
                           +[ofFileMustExist,ofPathMustExist,ofAllowMultiSelect];
-    OpenDialog.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+    OpenDialog.Filter:=dlgAllFiles+' ('+AllFilesMask+')|'+AllFilesMask
                  +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
                  +'|'+lisLazarusInclude+' (*.inc)|*.inc'
                  +'|'+lisLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm';

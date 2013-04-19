@@ -1241,7 +1241,7 @@ begin
     in [afaAsk,afaAutoDelete,afaAutoRename]
   then begin
     ADirectory:=AppendPathDelim(ExtractFilePath(Filename));
-    if FindFirstUTF8(ADirectory+GetAllFilesMask,faAnyFile,FileInfo)=0 then
+    if FindFirstUTF8(ADirectory+AllFilesMask,faAnyFile,FileInfo)=0 then
     begin
       ShortFilename:=ExtractFileName(Filename);
       IsPascalUnit:=FilenameIsPascalUnit(ShortFilename);
@@ -1351,7 +1351,7 @@ begin
       if EndPos>StartPos then begin
         CurDir:=AppendPathDelim(TrimFilename(copy(UnitPath,StartPos,EndPos-StartPos)));
         FileInfoNeedClose:=true;
-        if FindFirstUTF8(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+        if FindFirstUTF8(CurDir+AllFilesMask,faAnyFile,FileInfo)=0 then begin
           IgnoreAll:=false;
           repeat
             if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
