@@ -44,7 +44,7 @@ type
   private
     fActiveBuildMode: TProjectBuildMode;
     fBuildModes: TProjectBuildModes;
-    FShowSession: boolean;
+    fShowSession: boolean;
     fModeActiveCol: integer;
     fModeInSessionCol: integer;
     fModeNameCol: integer;
@@ -63,39 +63,51 @@ type
   public
     property ActiveBuildMode: TProjectBuildMode read GetActiveBuildMode write SetActiveBuildMode;
     property BuildModes: TProjectBuildModes read fBuildModes;
-    property ShowSession: boolean read FShowSession write SetShowSession;
+    property ShowSession: boolean read fShowSession write SetShowSession;
   end;
 
-function ShowBuildModesDlg: TModalResult;
+var
+  OnLoadIDEOptionsHook: TOnLoadIDEOptions;
+  OnSaveIDEOptionsHook: TOnSaveIDEOptions;
+
+function ShowBuildModesDlg(frm: TBuildModesForm): TModalResult;
+procedure SwitchBuildMode(aBuildModeID: string);
 procedure UpdateBuildModeCombo(aCombo: TComboBox);
-procedure SetActiveBuildModeID(aID: string);
 
 
 implementation
 
 {$R *.lfm}
 
-function ShowBuildModesDlg: TModalResult;
-var
-  BuildModesForm: TBuildModesForm;
+function ShowBuildModesDlg(frm: TBuildModesForm): TModalResult;
 begin
   Assert(Assigned(Project1), 'ShowBuildModesDlg: Project is not assigned.');
-  Result := mrCancel;
-  BuildModesForm := TBuildModesForm.Create(nil);
-  try
-    BuildModesForm.fBuildModes.Assign(Project1.BuildModes, True); // Copy to dialog.
-    BuildModesForm.SetActiveBuildModeByID(Project1.ActiveBuildMode);
-    BuildModesForm.ShowSession:=Project1.SessionStorage in [pssInProjectDir,pssInIDEConfig];
-    // Show the form. Let user add / edit / delete build modes.
-    Result := BuildModesForm.ShowModal;
-    if Result = mrOk then begin
-      Project1.BuildModes.Assign(BuildModesForm.fBuildModes, True); // Copy back from dialog.
-      Project1.ActiveBuildModeID:=BuildModesForm.fActiveBuildMode.Identifier;
-      IncreaseBuildMacroChangeStamp;
-    end;
-  finally
-    BuildModesForm.Free;
+  // Save changes
+  OnSaveIDEOptionsHook(Nil, Project1.CompilerOptions);
+  // Copy to dialog
+  frm.fBuildModes.Assign(Project1.BuildModes, True);
+  frm.SetActiveBuildModeByID(Project1.ActiveBuildMode);
+  frm.ShowSession:=Project1.SessionStorage in [pssInProjectDir,pssInIDEConfig];
+  // Show the form. Let user add / edit / delete.
+  Result := frm.ShowModal;
+  if Result = mrOk then
+  begin
+    // Copy back from dialog
+    Project1.BuildModes.Assign(frm.fBuildModes, True);
+    // Switch
+    Project1.ActiveBuildModeID:=frm.fActiveBuildMode.Identifier;
+    IncreaseBuildMacroChangeStamp;
+    // Load options
+    OnLoadIDEOptionsHook(Nil, Project1.CompilerOptions);
   end;
+end;
+
+procedure SwitchBuildMode(aBuildModeID: string);
+begin
+  OnSaveIDEOptionsHook(Nil, Project1.CompilerOptions);    // Save changes
+  Project1.ActiveBuildModeID := aBuildModeID;             // Switch
+  IncreaseBuildMacroChangeStamp;
+  OnLoadIDEOptionsHook(Nil, Project1.CompilerOptions);    // Load options
 end;
 
 procedure UpdateBuildModeCombo(aCombo: TComboBox);
@@ -115,11 +127,6 @@ begin
   end;
   Assert(ActiveIndex > 0, 'UpdateBuildModeCombo: ActiveIndex = 0');
   aCombo.ItemIndex := ActiveIndex;
-end;
-
-procedure SetActiveBuildModeID(aID: string);
-begin
-  Project1.ActiveBuildModeID := aID;
 end;
 
 { TBuildModesForm }
@@ -413,8 +420,8 @@ end;
 
 procedure TBuildModesForm.SetShowSession(const AValue: boolean);
 begin
-  if AValue=FShowSession then exit;
-  FShowSession:=AValue;
+  if AValue=fShowSession then exit;
+  fShowSession:=AValue;
   DoShowSession;
   FillBuildModesGrid;
 end;
@@ -426,7 +433,7 @@ begin
   Grid:=BuildModesStringGrid;
   Grid.BeginUpdate;
   fModeActiveCol:=0;
-  if FShowSession then
+  if fShowSession then
   begin
     fModeInSessionCol:=1;
     fModeNameCol:=2;

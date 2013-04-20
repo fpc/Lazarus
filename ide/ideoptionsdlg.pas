@@ -229,21 +229,32 @@ end;
 
 procedure TIDEOptionsDialog.BuildModeComboBoxSelect(Sender: TObject);
 begin
+  {$IFDEF NewBuildModeWindow}
   if BuildModeComboBox.Text = lisAllBuildModes then begin
     ShowMessage('This will allow changing all build modes at once. Not implemented yet.');
     BuildModeComboBox.ItemIndex := PrevComboIndex;
   end
-  {$IFDEF NewBuildModeWindow}
   else
-    SetActiveBuildModeID(BuildModeComboBox.Text);
+    SwitchBuildMode(BuildModeComboBox.Text);
   {$ENDIF}
 end;
 
 procedure TIDEOptionsDialog.BuildModeManageButtonClick(Sender: TObject);
+{$IFDEF NewBuildModeWindow}
+var
+  frm: TBuildModesForm;
+{$ENDIF}
 begin
   {$IFDEF NewBuildModeWindow}
-  if ShowBuildModesDlg = mrOK then begin
-    UpdateBuildModeCombo(BuildModeComboBox);
+  BuildModesManager.OnLoadIDEOptionsHook := @LoadIDEOptions;
+  BuildModesManager.OnSaveIDEOptionsHook := @SaveIDEOptions;
+  frm := TBuildModesForm.Create(nil);
+  try
+    if ShowBuildModesDlg(frm) = mrOK then begin
+      UpdateBuildModeCombo(BuildModeComboBox);
+    end;
+  finally
+    frm.Free;
   end;
   {$ENDIF}
 end;

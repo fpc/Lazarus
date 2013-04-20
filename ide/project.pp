@@ -5187,9 +5187,9 @@ begin
     FCompilerOptions:=FActiveBuildMode.CompilerOptions;
     FLazCompilerOptions:=FCompilerOptions;
   end else begin
+    FMacroValues:=nil;
     FCompilerOptions:=nil;
     FLazCompilerOptions:=nil;
-    FMacroValues:=nil;
   end;
   SessionModified:=true;
   if Self=Project1 then
@@ -5204,6 +5204,8 @@ begin
   begin
     if BuildModes[i].Identifier=aIdent then
     begin
+      // Force setting active mode. Values may be assigned, looks like active mode
+      ActiveBuildMode:=Nil;                       // is already set but it is not
       ActiveBuildMode:=BuildModes[i];
       Break;
     end;
