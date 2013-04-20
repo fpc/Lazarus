@@ -893,6 +893,7 @@ begin
   HelpButton.Caption := lisMenuHelp;
 
   OptionsMemo.Hint := lisLazBuildOptionsPassedToCompiler;
+  ShowOptsMenuItem.Caption := lisLazBuildShowOptionsAndDefinesForCommandLine;
 
   with TargetOSComboBox do
   begin

@@ -3111,6 +3111,8 @@ resourcestring
   lisLazBuildManageProfiles2 = 'Manage profiles';
   lisLazBuildDefinesWithoutD = 'Defines without -d';
   lisLazBuildOptionsPassedToCompiler = 'Options passed to compiler';
+  lisLazBuildShowOptionsAndDefinesForCommandLine = 'Show options and defines '
+    +'for command line';
   lisLazBuildUpdateRevisionInfoInAboutLazarusDialog = 'Update revision info '
     +'in "About Lazarus" dialog';
   lisLazBuildRestartLazarusAutomatically = 'Restart Lazarus automatically after '+
