@@ -150,18 +150,12 @@ begin
   fItems:=TFPList.Create;
   FMarkUnhandledMacros:=true;
   FMaxUsePerMacro:=3;
-  Add(TTransferMacro.Create('Ext', '', lisTMFunctionExtractFileExtension,
-    @MF_Ext, []));
-  Add(TTransferMacro.Create('Path', '', lisTMFunctionExtractFilePath, @MF_Path,
-    []));
-  Add(TTransferMacro.Create('Name', '', lisTMFunctionExtractFileNameExtension,
-                                    @MF_Name,[]));
-  Add(TTransferMacro.Create('NameOnly', '', lisTMFunctionExtractFileNameOnly,
-                                    @MF_NameOnly,[]));
-  Add(TTransferMacro.Create('MakeDir', '', lisTMFunctionAppendPathDelimiter,
-                                    @MF_MakeDir,[]));
-  Add(TTransferMacro.Create('MakeFile', '', lisTMFunctionChompPathDelimiter,
-                                    @MF_MakeFile,[]));
+  Add(TTransferMacro.Create('Ext', '', lisTMFunctionExtractFileExtension, @MF_Ext, []));
+  Add(TTransferMacro.Create('Path', '', lisTMFunctionExtractFilePath, @MF_Path, []));
+  Add(TTransferMacro.Create('Name', '', lisTMFunctionExtractFileNameExtension, @MF_Name,[]));
+  Add(TTransferMacro.Create('NameOnly', '', lisTMFunctionExtractFileNameOnly, @MF_NameOnly,[]));
+  Add(TTransferMacro.Create('MakeDir', '', lisTMFunctionAppendPathDelimiter, @MF_MakeDir,[]));
+  Add(TTransferMacro.Create('MakeFile', '', lisTMFunctionChompPathDelimiter, @MF_MakeFile,[]));
 end;
 
 destructor TTransferMacroList.Destroy;
@@ -177,8 +171,7 @@ begin
   Result:=TTransferMacro(fItems[Index]);
 end;
 
-procedure TTransferMacroList.SetItems(Index: integer;
-  NewMacro: TTransferMacro);
+procedure TTransferMacroList.SetItems(Index: integer; NewMacro: TTransferMacro);
 begin
   fItems[Index]:=NewMacro;
 end;
@@ -244,7 +237,7 @@ end;
 function TTransferMacroList.SubstituteStr(var s:string; const Data: PtrInt;
   Depth: integer): boolean;
 
-  function SearchBracketClose(Position:integer): integer;
+  function SearchBracketClose(Position: integer): integer;
   var BracketClose:char;
   begin
     if s[Position]='(' then BracketClose:=')'
