@@ -404,6 +404,7 @@ procedure TBuildManager.TranslateMacros;
 
 begin
   tr('Project',lisProjectMacroProperties);
+  tr('BuildMode',lisNameOfActiveBuildMode);
   tr('LCLWidgetType',lisLCLWidgetType);
   tr('TargetCPU',lisTargetCPU);
   tr('TargetOS',lisTargetOS);
