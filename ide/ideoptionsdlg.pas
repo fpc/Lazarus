@@ -35,7 +35,7 @@ uses
   TreeFilterEdit, IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf,
   EnvironmentOpts, LazarusIDEStrConsts, CompOptsIntf, EditorOptions,
   {$IFDEF NewBuildModeWindow}
-  BuildModesManager, project_save_options;
+  BuildModesManager; //project_save_options;
   {$ELSE}
   BuildModesEditor;
   {$ENDIF}
@@ -154,6 +154,8 @@ begin
   if (CategoryTree.Selected<>nil) and (CategoryTree.Selected.Parent<>nil) then
     CategoryTree.TopItem:=CategoryTree.Selected.Parent;
   {$IFDEF NewBuildModeWindow}
+  BuildModesManager.OnLoadIDEOptionsHook := @LoadIDEOptions;
+  BuildModesManager.OnSaveIDEOptionsHook := @SaveIDEOptions;
   UpdateBuildModeCombo(BuildModeComboBox);
   {$ENDIF}
 end;
@@ -240,22 +242,10 @@ begin
 end;
 
 procedure TIDEOptionsDialog.BuildModeManageButtonClick(Sender: TObject);
-{$IFDEF NewBuildModeWindow}
-var
-  frm: TBuildModesForm;
-{$ENDIF}
 begin
   {$IFDEF NewBuildModeWindow}
-  BuildModesManager.OnLoadIDEOptionsHook := @LoadIDEOptions;
-  BuildModesManager.OnSaveIDEOptionsHook := @SaveIDEOptions;
-  frm := TBuildModesForm.Create(nil);
-  try
-    if ShowBuildModesDlg(frm) = mrOK then begin
-      UpdateBuildModeCombo(BuildModeComboBox);
-    end;
-  finally
-    frm.Free;
-  end;
+  if ShowBuildModesDlg = mrOK then
+    UpdateBuildModeCombo(BuildModeComboBox);
   {$ENDIF}
 end;
 

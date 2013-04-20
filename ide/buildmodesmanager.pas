@@ -70,7 +70,7 @@ var
   OnLoadIDEOptionsHook: TOnLoadIDEOptions;
   OnSaveIDEOptionsHook: TOnSaveIDEOptions;
 
-function ShowBuildModesDlg(frm: TBuildModesForm): TModalResult;
+function ShowBuildModesDlg: TModalResult;
 procedure SwitchBuildMode(aBuildModeID: string);
 procedure UpdateBuildModeCombo(aCombo: TComboBox);
 
@@ -79,26 +79,33 @@ implementation
 
 {$R *.lfm}
 
-function ShowBuildModesDlg(frm: TBuildModesForm): TModalResult;
+function ShowBuildModesDlg: TModalResult;
+var
+  frm: TBuildModesForm;
 begin
-  Assert(Assigned(Project1), 'ShowBuildModesDlg: Project is not assigned.');
-  // Save changes
-  OnSaveIDEOptionsHook(Nil, Project1.CompilerOptions);
-  // Copy to dialog
-  frm.fBuildModes.Assign(Project1.BuildModes, True);
-  frm.SetActiveBuildModeByID(Project1.ActiveBuildMode);
-  frm.ShowSession:=Project1.SessionStorage in [pssInProjectDir,pssInIDEConfig];
-  // Show the form. Let user add / edit / delete.
-  Result := frm.ShowModal;
-  if Result = mrOk then
-  begin
-    // Copy back from dialog
-    Project1.BuildModes.Assign(frm.fBuildModes, True);
-    // Switch
-    Project1.ActiveBuildModeID:=frm.fActiveBuildMode.Identifier;
-    IncreaseBuildMacroChangeStamp;
-    // Load options
-    OnLoadIDEOptionsHook(Nil, Project1.CompilerOptions);
+  frm := TBuildModesForm.Create(nil);
+  try
+    Assert(Assigned(Project1), 'ShowBuildModesDlg: Project is not assigned.');
+    // Save changes
+    OnSaveIDEOptionsHook(Nil, Project1.CompilerOptions);
+    // Copy to dialog
+    frm.fBuildModes.Assign(Project1.BuildModes, True);
+    frm.SetActiveBuildModeByID(Project1.ActiveBuildMode);
+    frm.fShowSession:=Project1.SessionStorage in [pssInProjectDir,pssInIDEConfig];
+    // Show the form. Let user add / edit / delete.
+    Result := frm.ShowModal;
+    if Result = mrOk then
+    begin
+      // Copy back from dialog
+      Project1.BuildModes.Assign(frm.fBuildModes, True);
+      // Switch
+      Project1.ActiveBuildModeID:=frm.fActiveBuildMode.Identifier;
+      IncreaseBuildMacroChangeStamp;
+      // Load options
+      OnLoadIDEOptionsHook(Nil, Project1.CompilerOptions);
+    end;
+  finally
+    frm.Free;
   end;
 end;
 
