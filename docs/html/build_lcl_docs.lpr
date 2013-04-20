@@ -213,7 +213,7 @@ begin
   for I := 0 to FileList.Count-1 do
   begin
     XMLFile := XMLSrcDir+ChangeFileExt(FileList[I],'.xml');
-    if FileExistsUTF8(PackageName+PathDelim+XMLFile) then
+    if FileExistsUTF8(PackageName+PathDelim+XMLFile) and (filelist[i]<>'fpmake.pp') then
     begin
       InputList.Add('..'+PathDelim+PasSrcDir+FileList[I] + ' -Fi..'+PathDelim+PasSrcDir+'include');
       ArgParams:=ArgParams+' --descr='+XMLSrcDir+ChangeFileExt(FileList[I],'.xml');
