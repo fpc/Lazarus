@@ -7000,6 +7000,7 @@ end;
 procedure TProjectBuildMode.Assign(Src: TProjectBuildMode);
 begin
   if Equals(Src) then exit;
+  InSession:=Src.InSession;
   CompilerOptions.Assign(Src.CompilerOptions);
   MacroValues.Assign(Src.MacroValues);
 end;
