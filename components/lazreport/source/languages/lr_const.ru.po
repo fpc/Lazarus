@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-04-07 17:11+0400\n"
+"PO-Revision-Date: 2013-04-20 23:29+0400\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -528,7 +528,7 @@ msgstr "Редактор текста"
 
 #: lr_const.seditorformfield
 msgid "&DB field"
-msgstr "&Поле БД"
+msgstr "По&ле БД"
 
 #: lr_const.seditorformformat
 msgctxt "lr_const.seditorformformat"
@@ -546,7 +546,7 @@ msgstr "Б&лок текста"
 
 #: lr_const.seditorformscr
 msgid "S&cript"
-msgstr "С&крипт"
+msgstr "С&ценарий"
 
 #: lr_const.seditorformscript
 msgid "&Script"
@@ -555,7 +555,7 @@ msgstr "&Сценарий"
 #: lr_const.seditorformvar
 msgctxt "lr_const.seditorformvar"
 msgid "&Variable"
-msgstr "&Переменная"
+msgstr "П&еременная"
 
 #: lr_const.seditorformword
 msgid "&Word wrap"
@@ -627,7 +627,7 @@ msgstr "Найти текст"
 
 #: lr_const.sfindtextcase
 msgid "&Case sensitive"
-msgstr "&Чувствителен к регистру"
+msgstr "У&читывать регистр"
 
 #: lr_const.sfindtextcurrentpg
 msgctxt "lr_const.sfindtextcurrentpg"
@@ -1087,7 +1087,7 @@ msgstr "О&тправить назад"
 
 #: lr_const.sfrdesignerform_beforeprintscript
 msgid "&Before print script ..."
-msgstr ""
+msgstr "С&ценарий для исполнения перед печатью ..."
 
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
@@ -2365,11 +2365,11 @@ msgstr "Время"
 
 #: lr_const.svar5
 msgid "Line#"
-msgstr "Строка№"
+msgstr "Строка №"
 
 #: lr_const.svar6
 msgid "Line through#"
-msgstr "Строки до№"
+msgstr "Строки до №"
 
 #: lr_const.svar7
 msgid "Column#"
@@ -2377,11 +2377,11 @@ msgstr "Столбец №"
 
 #: lr_const.svar8
 msgid "Current line#"
-msgstr "Текущая строка#"
+msgstr "Текущая строка №"
 
 #: lr_const.svar9
 msgid "TotalPages"
-msgstr "TotalPages"
+msgstr "Всего страниц"
 
 #: lr_const.svaredformcapt
 msgid "Variables list"
