@@ -4392,6 +4392,10 @@ msgstr "对齐方式"
 msgid "All blocks look ok."
 msgstr "所有块看起来正常。"
 
+#: lazarusidestrconsts.lisallbuildmodes
+msgid "<All build modes>"
+msgstr ""
+
 #: lazarusidestrconsts.lisallfiles
 msgid "All Files"
 msgstr "所有文件"
@@ -10640,6 +10644,10 @@ msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuildshowoptionsanddefinesforcommandline
+msgid "Show options and defines for command line"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
 msgstr "目标 CPU:"
@@ -10737,6 +10745,10 @@ msgstr ""
 #: lazarusidestrconsts.lislfmfile
 msgid "LFM file"
 msgstr "LFM 文件"
+
+#: lazarusidestrconsts.lislfmfilecontainsinvalidproperties
+msgid "The LFM file contains unknown properties/classes which do not exist in LCL. They can be replaced or removed."
+msgstr ""
 
 #: lazarusidestrconsts.lislfmfilecorrupt
 msgid "LFM file corrupt"
@@ -12238,6 +12250,10 @@ msgstr "名称"
 #: lazarusidestrconsts.lisnameconflict
 msgid "Name conflict"
 msgstr "命名冲突"
+
+#: lazarusidestrconsts.lisnameofactivebuildmode
+msgid "Name of active build mode"
+msgstr ""
 
 #: lazarusidestrconsts.lisnameofnewprocedure
 msgid "Name of new procedure"

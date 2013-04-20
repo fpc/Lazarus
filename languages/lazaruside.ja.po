@@ -4421,6 +4421,10 @@ msgstr "整列"
 msgid "All blocks look ok."
 msgstr "全てのブロックが大丈夫そうです。"
 
+#: lazarusidestrconsts.lisallbuildmodes
+msgid "<All build modes>"
+msgstr ""
+
 #: lazarusidestrconsts.lisallfiles
 msgid "All Files"
 msgstr "すべてのファイル"
@@ -10728,6 +10732,10 @@ msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr "ツールメニューから直接構築する際に確認ダイアログを表示"
 
+#: lazarusidestrconsts.lislazbuildshowoptionsanddefinesforcommandline
+msgid "Show options and defines for command line"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
 msgstr "対象CPU"
@@ -10825,6 +10833,10 @@ msgstr "レベル"
 #: lazarusidestrconsts.lislfmfile
 msgid "LFM file"
 msgstr "LFMファイル"
+
+#: lazarusidestrconsts.lislfmfilecontainsinvalidproperties
+msgid "The LFM file contains unknown properties/classes which do not exist in LCL. They can be replaced or removed."
+msgstr ""
 
 #: lazarusidestrconsts.lislfmfilecorrupt
 msgid "LFM file corrupt"
@@ -12350,6 +12362,10 @@ msgstr "名前"
 #: lazarusidestrconsts.lisnameconflict
 msgid "Name conflict"
 msgstr "名前の衝突"
+
+#: lazarusidestrconsts.lisnameofactivebuildmode
+msgid "Name of active build mode"
+msgstr ""
 
 #: lazarusidestrconsts.lisnameofnewprocedure
 msgid "Name of new procedure"

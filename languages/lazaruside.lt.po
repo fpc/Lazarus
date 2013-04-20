@@ -4287,6 +4287,10 @@ msgstr "Lygiuotė"
 msgid "All blocks look ok."
 msgstr "Visi blokai geri."
 
+#: lazarusidestrconsts.lisallbuildmodes
+msgid "<All build modes>"
+msgstr ""
+
 #: lazarusidestrconsts.lisallfiles
 msgid "All Files"
 msgstr "Visi failai"
@@ -10488,6 +10492,10 @@ msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr "Darant tiesiai iš menių „Įrankiai“ klausti patvirtinimo"
 
+#: lazarusidestrconsts.lislazbuildshowoptionsanddefinesforcommandline
+msgid "Show options and defines for command line"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
 msgstr "Skirtas procesoriui:"
@@ -10588,6 +10596,10 @@ msgstr "Lygiai"
 #: lazarusidestrconsts.lislfmfile
 msgid "LFM file"
 msgstr "LFM failas"
+
+#: lazarusidestrconsts.lislfmfilecontainsinvalidproperties
+msgid "The LFM file contains unknown properties/classes which do not exist in LCL. They can be replaced or removed."
+msgstr ""
 
 #: lazarusidestrconsts.lislfmfilecorrupt
 msgid "LFM file corrupt"
@@ -11985,6 +11997,10 @@ msgstr "Pavadinimas"
 #: lazarusidestrconsts.lisnameconflict
 msgid "Name conflict"
 msgstr "Pavadinimų konfliktas"
+
+#: lazarusidestrconsts.lisnameofactivebuildmode
+msgid "Name of active build mode"
+msgstr ""
 
 #: lazarusidestrconsts.lisnameofnewprocedure
 msgid "Name of new procedure"

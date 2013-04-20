@@ -4415,6 +4415,10 @@ msgstr "Allineamento"
 msgid "All blocks look ok."
 msgstr "Tutti i blocchi sembrano ok"
 
+#: lazarusidestrconsts.lisallbuildmodes
+msgid "<All build modes>"
+msgstr ""
+
 #: lazarusidestrconsts.lisallfiles
 msgid "All Files"
 msgstr "Tutti i files"
@@ -10710,6 +10714,10 @@ msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr "Chiedi conferma quando si costruisce direttamente dal menu Strumenti"
 
+#: lazarusidestrconsts.lislazbuildshowoptionsanddefinesforcommandline
+msgid "Show options and defines for command line"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
 msgstr "CPU di destinazione:"
@@ -10807,6 +10815,10 @@ msgstr "Livelli"
 #: lazarusidestrconsts.lislfmfile
 msgid "LFM file"
 msgstr "File LFM"
+
+#: lazarusidestrconsts.lislfmfilecontainsinvalidproperties
+msgid "The LFM file contains unknown properties/classes which do not exist in LCL. They can be replaced or removed."
+msgstr ""
 
 #: lazarusidestrconsts.lislfmfilecorrupt
 msgid "LFM file corrupt"
@@ -12332,6 +12344,10 @@ msgstr "Nome"
 #: lazarusidestrconsts.lisnameconflict
 msgid "Name conflict"
 msgstr "Conflitto di nomi"
+
+#: lazarusidestrconsts.lisnameofactivebuildmode
+msgid "Name of active build mode"
+msgstr ""
 
 #: lazarusidestrconsts.lisnameofnewprocedure
 msgid "Name of new procedure"

@@ -4331,6 +4331,10 @@ msgstr "Alineació"
 msgid "All blocks look ok."
 msgstr "Tots els blocs semblen correctes."
 
+#: lazarusidestrconsts.lisallbuildmodes
+msgid "<All build modes>"
+msgstr ""
+
 #: lazarusidestrconsts.lisallfiles
 msgid "All Files"
 msgstr "Tots els arxius"
@@ -10477,6 +10481,10 @@ msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuildshowoptionsanddefinesforcommandline
+msgid "Show options and defines for command line"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
 msgstr ""
@@ -10574,6 +10582,10 @@ msgstr ""
 #: lazarusidestrconsts.lislfmfile
 msgid "LFM file"
 msgstr "Fitxer LFM"
+
+#: lazarusidestrconsts.lislfmfilecontainsinvalidproperties
+msgid "The LFM file contains unknown properties/classes which do not exist in LCL. They can be replaced or removed."
+msgstr ""
 
 #: lazarusidestrconsts.lislfmfilecorrupt
 msgid "LFM file corrupt"
@@ -12050,6 +12062,10 @@ msgstr "Nom"
 
 #: lazarusidestrconsts.lisnameconflict
 msgid "Name conflict"
+msgstr ""
+
+#: lazarusidestrconsts.lisnameofactivebuildmode
+msgid "Name of active build mode"
 msgstr ""
 
 #: lazarusidestrconsts.lisnameofnewprocedure

@@ -4368,6 +4368,10 @@ msgstr "Zarovnanie"
 msgid "All blocks look ok."
 msgstr "Všetky bloky vyzerajú OK."
 
+#: lazarusidestrconsts.lisallbuildmodes
+msgid "<All build modes>"
+msgstr ""
+
 #: lazarusidestrconsts.lisallfiles
 msgid "All Files"
 msgstr "Všetky súbory"
@@ -10616,6 +10620,10 @@ msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuildshowoptionsanddefinesforcommandline
+msgid "Show options and defines for command line"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
 msgstr "Cieľový CPU:"
@@ -10713,6 +10721,10 @@ msgstr "Úrovne"
 #: lazarusidestrconsts.lislfmfile
 msgid "LFM file"
 msgstr "LFM súbor"
+
+#: lazarusidestrconsts.lislfmfilecontainsinvalidproperties
+msgid "The LFM file contains unknown properties/classes which do not exist in LCL. They can be replaced or removed."
+msgstr ""
 
 #: lazarusidestrconsts.lislfmfilecorrupt
 msgid "LFM file corrupt"
@@ -12208,6 +12220,10 @@ msgstr "Meno"
 #: lazarusidestrconsts.lisnameconflict
 msgid "Name conflict"
 msgstr "Konflikt mena"
+
+#: lazarusidestrconsts.lisnameofactivebuildmode
+msgid "Name of active build mode"
+msgstr ""
 
 #: lazarusidestrconsts.lisnameofnewprocedure
 msgid "Name of new procedure"

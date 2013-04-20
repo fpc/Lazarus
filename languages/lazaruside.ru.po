@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-04-11 01:33+0400\n"
+"PO-Revision-Date: 2013-04-20 23:53+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4321,6 +4321,10 @@ msgstr "Выравнивание"
 #| msgid "All blocks looks ok."
 msgid "All blocks look ok."
 msgstr "Все блоки выглядят нормально."
+
+#: lazarusidestrconsts.lisallbuildmodes
+msgid "<All build modes>"
+msgstr "<Все режимы сборки>"
 
 #: lazarusidestrconsts.lisallfiles
 msgid "All Files"
@@ -10543,6 +10547,10 @@ msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr "Выводить диалог подтверждения при пересборке напрямую из меню Сервис"
 
+#: lazarusidestrconsts.lislazbuildshowoptionsanddefinesforcommandline
+msgid "Show options and defines for command line"
+msgstr "Показать параметры и определения в формате командной строки"
+
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
 msgstr "Целевой CPU:"
@@ -10639,6 +10647,10 @@ msgstr "Уровни"
 #: lazarusidestrconsts.lislfmfile
 msgid "LFM file"
 msgstr "Файл LFM"
+
+#: lazarusidestrconsts.lislfmfilecontainsinvalidproperties
+msgid "The LFM file contains unknown properties/classes which do not exist in LCL. They can be replaced or removed."
+msgstr "Файл LFM содержит неизвестные свойства/классы, не существующие в LCL. Они могут быть заменены либо удалены."
 
 #: lazarusidestrconsts.lislfmfilecorrupt
 msgid "LFM file corrupt"
@@ -12054,6 +12066,10 @@ msgstr "Имя"
 #: lazarusidestrconsts.lisnameconflict
 msgid "Name conflict"
 msgstr "Конфликт имён"
+
+#: lazarusidestrconsts.lisnameofactivebuildmode
+msgid "Name of active build mode"
+msgstr "Имя активного режима сборки"
 
 #: lazarusidestrconsts.lisnameofnewprocedure
 msgid "Name of new procedure"
