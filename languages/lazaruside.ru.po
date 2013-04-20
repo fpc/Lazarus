@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-04-20 23:53+0400\n"
+"PO-Revision-Date: 2013-04-21 00:22+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -14112,7 +14112,7 @@ msgstr "первичный каталог настройки, где Lazarus х�
 
 #: lazarusidestrconsts.lisprimaryconfigpath
 msgid "Primary config path"
-msgstr "Первичный путь к каталогу настройки"
+msgstr "Путь к первичному каталогу настройки"
 
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
@@ -15070,7 +15070,7 @@ msgstr "вторичный каталог настройки, где Lazarus и�
 
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
-msgstr "Вторичный путь к каталогу настройки"
+msgstr "Путь к вторичному каталогу настройки"
 
 #: lazarusidestrconsts.lisseemessages
 msgid "See messages."
