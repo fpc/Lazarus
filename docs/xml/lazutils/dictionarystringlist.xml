@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    DictionaryStringList
+  ====================================================================
+-->
+
+<module name="DictionaryStringList">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TDictionaryStringList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDictionaryStringList.FMap">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDictionaryStringList.InsertItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDictionaryStringList.InsertItem.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDictionaryStringList.InsertItem.S">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDictionaryStringList.InsertItem.O">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TDictionaryStringList.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TDictionaryStringList.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDictionaryStringList.Assign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDictionaryStringList.Assign.Source">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDictionaryStringList.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDictionaryStringList.Delete">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDictionaryStringList.Delete.Index">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDictionaryStringList.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDictionaryStringList.Add.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDictionaryStringList.Add.S">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDictionaryStringList.AddObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDictionaryStringList.AddObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDictionaryStringList.AddObject.S">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDictionaryStringList.AddObject.AObject">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDictionaryStringList.Contains">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDictionaryStringList.Contains.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDictionaryStringList.Contains.S">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDictionaryStringList.Find">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDictionaryStringList.Find.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDictionaryStringList.Find.S">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDictionaryStringList.Find.Index">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TDictionaryStringList.IndexOf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDictionaryStringList.IndexOf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDictionaryStringList.IndexOf.S">
+<short></short>
+</element>
+
+</module> <!-- DictionaryStringList -->
+
+</package>
+</fpdoc-descriptions>

@@ -3754,6 +3754,7 @@ docs/xml/README.txt svneol=native#text/plain
 docs/xml/StyleGuide.txt svneol=native#text/plain
 docs/xml/ide/aboutfrm.xml svneol=native#text/plain
 docs/xml/lazutils/avglvltree.xml svneol=native#text/plain
+docs/xml/lazutils/dictionarystringlist.xml svneol=native#text/plain
 docs/xml/lazutils/easylazfreetype.xml svneol=native#text/plain
 docs/xml/lazutils/fileutil.xml svneol=native#text/plain
 docs/xml/lazutils/laz2_dom.xml svneol=native#text/plain
@@ -3761,12 +3762,14 @@ docs/xml/lazutils/laz2_xmlcfg.xml svneol=native#text/plain
 docs/xml/lazutils/laz2_xmlread.xml svneol=native#text/plain
 docs/xml/lazutils/laz2_xmlutils.xml svneol=native#text/plain
 docs/xml/lazutils/laz2_xmlwrite.xml svneol=native#text/plain
+docs/xml/lazutils/laz2_xpath.xml svneol=native#text/plain
 docs/xml/lazutils/laz_dom.xml svneol=native#text/plain
 docs/xml/lazutils/laz_xmlcfg.xml svneol=native#text/plain
 docs/xml/lazutils/laz_xmlread.xml svneol=native#text/plain
 docs/xml/lazutils/laz_xmlstreaming.xml svneol=native#text/plain
 docs/xml/lazutils/laz_xmlwrite.xml svneol=native#text/plain
 docs/xml/lazutils/lazclasses.xml svneol=native#text/plain
+docs/xml/lazutils/lazconfigstorage.xml svneol=native#text/plain
 docs/xml/lazutils/lazdbglog.xml svneol=native#text/plain
 docs/xml/lazutils/lazfilecache.xml svneol=native#text/plain
 docs/xml/lazutils/lazfileutils.xml svneol=native#text/plain
@@ -3801,6 +3804,7 @@ docs/xml/lazutils/ttprofile.xml svneol=native#text/plain
 docs/xml/lazutils/ttraster.xml svneol=native#text/plain
 docs/xml/lazutils/tttables.xml svneol=native#text/plain
 docs/xml/lazutils/tttypes.xml svneol=native#text/plain
+docs/xml/lazutils/utf8process.xml svneol=native#text/plain
 docs/xml/lcl/actnlist.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/alllclunits.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/arrow.xml svneol=LF#text/xml eol=lf

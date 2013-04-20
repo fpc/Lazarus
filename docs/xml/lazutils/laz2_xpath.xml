@@ -1,0 +1,3901 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    laz2_xpath
+  ====================================================================
+-->
+
+<module name="laz2_xpath">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TXPathContext">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathEnvironment">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathVariable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TXPathToken">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkInvalid">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkEndOfStream">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkIdentifier">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkNSNameTest">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkString">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkNumber">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkVariable">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkLeftBracket">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkRightBracket">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkAsterisk">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkPlus">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkComma">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkMinus">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkDot">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkDotDot">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkSlash">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkSlashSlash">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkColonColon">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkLess">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkLessEqual">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkEqual">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkNotEqual">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkGreater">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkGreaterEqual">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkAt">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkLeftSquareBracket">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkRightSquareBracket">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathToken.tkPipe">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TXPathKeyword">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkNone">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkAncestor">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkAncestorOrSelf">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkAttribute">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkChild">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkDescendant">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkDescendantOrSelf">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkFollowing">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkFollowingSibling">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkNamespace">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkParent">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkPreceding">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkPrecedingSibling">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkSelf">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkComment">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkText">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkProcessingInstruction">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkNode">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkAnd">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkOr">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkDiv">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkMod">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkLast">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkPosition">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkCount">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkId">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkLocalName">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkNamespaceUri">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkName">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkString">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkConcat">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkStartsWith">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkContains">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkSubstringBefore">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkSubstringAfter">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkSubstring">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkStringLength">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkNormalizeSpace">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkTranslate">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkBoolean">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkNot">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkTrue">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkFalse">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkLang">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkNumber">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkSum">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkFloor">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkCeiling">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathKeyword.xkRound">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathExprNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathExprNode.EvalPredicate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathExprNode.EvalPredicate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathExprNode.EvalPredicate.AContext">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathExprNode.EvalPredicate.AEnvironment">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathExprNode.Evaluate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathExprNode.Evaluate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathExprNode.Evaluate.AContext">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathExprNode.Evaluate.AEnvironment">
+<short></short>
+</element>
+
+<!-- array type Visibility: default -->
+<element name="TXPathNodeArray">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathConstantNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathConstantNode.FValue">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathConstantNode.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathConstantNode.Create.AValue">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TXPathConstantNode.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathConstantNode.Evaluate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathConstantNode.Evaluate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathConstantNode.Evaluate.AContext">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathConstantNode.Evaluate.AEnvironment">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathVariableNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathVariableNode.FName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathVariableNode.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathVariableNode.Create.AName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathVariableNode.Evaluate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathVariableNode.Evaluate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathVariableNode.Evaluate.AContext">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathVariableNode.Evaluate.AEnvironment">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathFunctionNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathFunctionNode.FName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathFunctionNode.FArgs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathFunctionNode.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathFunctionNode.Create.AName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathFunctionNode.Create.Args">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TXPathFunctionNode.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathFunctionNode.Evaluate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathFunctionNode.Evaluate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathFunctionNode.Evaluate.AContext">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathFunctionNode.Evaluate.AEnvironment">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathNegationNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathNegationNode.FOperand">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathNegationNode.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathNegationNode.Create.AOperand">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TXPathNegationNode.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathNegationNode.Evaluate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathNegationNode.Evaluate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathNegationNode.Evaluate.AContext">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathNegationNode.Evaluate.AEnvironment">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathBinaryNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TXPathBinaryNode.FOperand1">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TXPathBinaryNode.FOperand2">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TXPathBinaryNode.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TXPathMathOp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathMathOp.opAdd">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathMathOp.opSubtract">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathMathOp.opMultiply">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathMathOp.opDivide">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathMathOp.opMod">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathMathOpNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathMathOpNode.FOperator">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathMathOpNode.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathMathOpNode.Create.AOperator">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathMathOpNode.Create.AOperand1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathMathOpNode.Create.AOperand2">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathMathOpNode.Evaluate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathMathOpNode.Evaluate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathMathOpNode.Evaluate.AContext">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathMathOpNode.Evaluate.AEnvironment">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TXPathCompareOp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathCompareOp.opEqual">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathCompareOp.opNotEqual">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathCompareOp.opLess">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathCompareOp.opLessEqual">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathCompareOp.opGreater">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathCompareOp.opGreaterEqual">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathCompareNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathCompareNode.FOperator">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathCompareNode.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathCompareNode.Create.AOperator">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathCompareNode.Create.AOperand1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathCompareNode.Create.AOperand2">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathCompareNode.Evaluate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathCompareNode.Evaluate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathCompareNode.Evaluate.AContext">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathCompareNode.Evaluate.AEnvironment">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TXPathBooleanOp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathBooleanOp.opOr">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TXPathBooleanOp.opAnd">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathBooleanOpNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathBooleanOpNode.FOperator">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathBooleanOpNode.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathBooleanOpNode.Create.AOperator">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathBooleanOpNode.Create.AOperand1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathBooleanOpNode.Create.AOperand2">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathBooleanOpNode.Evaluate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathBooleanOpNode.Evaluate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathBooleanOpNode.Evaluate.AContext">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathBooleanOpNode.Evaluate.AEnvironment">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathUnionNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathUnionNode.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathUnionNode.Create.AOperand1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathUnionNode.Create.AOperand2">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathUnionNode.Evaluate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathUnionNode.Evaluate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathUnionNode.Evaluate.AContext">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathUnionNode.Evaluate.AEnvironment">
+<short></short>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="TNodeSet">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathFilterNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathFilterNode.FLeft">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathFilterNode.FPredicates">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TXPathFilterNode.ApplyPredicates">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathFilterNode.ApplyPredicates.Nodes">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathFilterNode.ApplyPredicates.AEnvironment">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathFilterNode.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathFilterNode.Create.AExpr">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TXPathFilterNode.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathFilterNode.Evaluate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathFilterNode.Evaluate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathFilterNode.Evaluate.AContext">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathFilterNode.Evaluate.AEnvironment">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TAxis">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAxis.axisInvalid">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAxis.axisAncestor">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAxis.axisAncestorOrSelf">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAxis.axisAttribute">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAxis.axisChild">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAxis.axisDescendant">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAxis.axisDescendantOrSelf">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAxis.axisFollowing">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAxis.axisFollowingSibling">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAxis.axisNamespace">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAxis.axisParent">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAxis.axisPreceding">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAxis.axisPrecedingSibling">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAxis.axisSelf">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAxis.axisRoot">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TNodeTestType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TNodeTestType.ntAnyPrincipal">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TNodeTestType.ntName">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TNodeTestType.ntTextNode">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TNodeTestType.ntCommentNode">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TNodeTestType.ntPINode">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TNodeTestType.ntAnyNode">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TStep">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TStep.SelectNodes">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStep.SelectNodes.ANode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStep.SelectNodes.ResultNodes">
+<short></short>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TStep.Axis">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TStep.NodeTestType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TStep.NodeTestString">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TStep.NSTestString">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TStep.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStep.Create.aAxis">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStep.Create.aTest">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TStep.Evaluate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TStep.Evaluate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStep.Evaluate.AContext">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStep.Evaluate.AEnvironment">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="EXPathEvaluationError">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="EvaluationError">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EvaluationError.Msg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EvaluationError.Args">
+<short></short>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TXPathVariable.FRefCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TXPathVariable.Error">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathVariable.Error.Msg">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathVariable.Error.Args">
+<short></short>
+</element>
+
+<!-- class function Visibility: default -->
+<element name="TXPathVariable.TypeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathVariable.TypeName.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXPathVariable.Release">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathVariable.AsNodeSet">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathVariable.AsNodeSet.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathVariable.AsBoolean">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathVariable.AsBoolean.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathVariable.AsNumber">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathVariable.AsNumber.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathVariable.AsText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathVariable.AsText.Result">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathNodeSetVariable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathNodeSetVariable.FValue">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathNodeSetVariable.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathNodeSetVariable.Create.AValue">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TXPathNodeSetVariable.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class function Visibility: default -->
+<element name="TXPathNodeSetVariable.TypeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathNodeSetVariable.TypeName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathNodeSetVariable.AsNodeSet">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathNodeSetVariable.AsNodeSet.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathNodeSetVariable.AsText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathNodeSetVariable.AsText.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathNodeSetVariable.AsBoolean">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathNodeSetVariable.AsBoolean.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathNodeSetVariable.AsNumber">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathNodeSetVariable.AsNumber.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXPathNodeSetVariable.Value">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathBooleanVariable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathBooleanVariable.FValue">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathBooleanVariable.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathBooleanVariable.Create.AValue">
+<short></short>
+</element>
+
+<!-- class function Visibility: default -->
+<element name="TXPathBooleanVariable.TypeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathBooleanVariable.TypeName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathBooleanVariable.AsBoolean">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathBooleanVariable.AsBoolean.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathBooleanVariable.AsNumber">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathBooleanVariable.AsNumber.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathBooleanVariable.AsText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathBooleanVariable.AsText.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXPathBooleanVariable.Value">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathNumberVariable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathNumberVariable.FValue">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathNumberVariable.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathNumberVariable.Create.AValue">
+<short></short>
+</element>
+
+<!-- class function Visibility: default -->
+<element name="TXPathNumberVariable.TypeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathNumberVariable.TypeName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathNumberVariable.AsBoolean">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathNumberVariable.AsBoolean.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathNumberVariable.AsNumber">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathNumberVariable.AsNumber.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathNumberVariable.AsText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathNumberVariable.AsText.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXPathNumberVariable.Value">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathStringVariable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathStringVariable.FValue">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathStringVariable.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathStringVariable.Create.AValue">
+<short></short>
+</element>
+
+<!-- class function Visibility: default -->
+<element name="TXPathStringVariable.TypeName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathStringVariable.TypeName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathStringVariable.AsBoolean">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathStringVariable.AsBoolean.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathStringVariable.AsNumber">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathStringVariable.AsNumber.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathStringVariable.AsText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathStringVariable.AsText.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXPathStringVariable.Value">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="TXPathNSResolver">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathScanner">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathScanner.FExpressionString">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathScanner.FCurData">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathScanner.FCurToken">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathScanner.FCurTokenString">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathScanner.FTokenStart">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathScanner.FTokenLength">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathScanner.FPrefixLength">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathScanner.FTokenId">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathScanner.FResolver">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TXPathScanner.Error">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathScanner.Error.Msg">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TXPathScanner.ParsePredicates">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathScanner.ParsePredicates.Dest">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathScanner.ParseStep">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.ParseStep.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathScanner.ParseNodeTest">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.ParseNodeTest.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathScanner.ParseNodeTest.axis">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathScanner.ParsePrimaryExpr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.ParsePrimaryExpr.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathScanner.ParseFunctionCall">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.ParseFunctionCall.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathScanner.ParseUnionExpr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.ParseUnionExpr.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathScanner.ParsePathExpr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.ParsePathExpr.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathScanner.ParseFilterExpr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.ParseFilterExpr.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathScanner.ParseOrExpr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.ParseOrExpr.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathScanner.ParseAndExpr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.ParseAndExpr.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathScanner.ParseEqualityExpr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.ParseEqualityExpr.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathScanner.ParseRelationalExpr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.ParseRelationalExpr.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathScanner.ParseAdditiveExpr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.ParseAdditiveExpr.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathScanner.ParseMultiplicativeExpr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.ParseMultiplicativeExpr.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathScanner.ParseUnaryExpr">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.ParseUnaryExpr.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathScanner.GetToken">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.GetToken.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathScanner.ScanQName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.ScanQName.Result">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathScanner.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathScanner.Create.AExpressionString">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathScanner.NextToken">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.NextToken.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathScanner.PeekToken">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.PeekToken.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathScanner.SkipToken">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathScanner.SkipToken.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathScanner.SkipToken.tok">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXPathScanner.CurToken">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXPathScanner.CurTokenString">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TXPathContext.ContextNode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TXPathContext.ContextPosition">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TXPathContext.ContextSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathContext.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathContext.Create.AContextNode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathContext.Create.AContextPosition">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathContext.Create.AContextSize">
+<short></short>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="TXPathVarList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function type Visibility: default -->
+<element name="TXPathFunction">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathFunction.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathFunction.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathFunction.Args">
+<short></short>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathEnvironment.FFunctions">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathEnvironment.FVariables">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathEnvironment.GetFunctionCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.GetFunctionCount.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathEnvironment.GetVariableCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.GetVariableCount.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathEnvironment.GetFunction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.GetFunction.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.GetFunction.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.GetFunction.AName">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TXPathEnvironment.GetVariable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.GetVariable.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.GetVariable.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.GetVariable.AName">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpLast">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpLast.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpLast.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpLast.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpPosition">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpPosition.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpPosition.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpPosition.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpCount.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpCount.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpCount.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpId">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpId.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpId.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpId.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpLocalName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpLocalName.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpLocalName.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpLocalName.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpNamespaceURI">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpNamespaceURI.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpNamespaceURI.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpNamespaceURI.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpName.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpName.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpName.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpString.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpString.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpString.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpConcat">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpConcat.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpConcat.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpConcat.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpStartsWith">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpStartsWith.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpStartsWith.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpStartsWith.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpContains">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpContains.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpContains.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpContains.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpSubstringBefore">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpSubstringBefore.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpSubstringBefore.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpSubstringBefore.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpSubstringAfter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpSubstringAfter.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpSubstringAfter.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpSubstringAfter.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpSubstring">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpSubstring.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpSubstring.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpSubstring.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpStringLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpStringLength.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpStringLength.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpStringLength.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpNormalizeSpace">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpNormalizeSpace.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpNormalizeSpace.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpNormalizeSpace.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpTranslate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpTranslate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpTranslate.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpTranslate.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpBoolean">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpBoolean.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpBoolean.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpBoolean.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpNot">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpNot.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpNot.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpNot.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpTrue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpTrue.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpTrue.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpTrue.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpFalse">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpFalse.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpFalse.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpFalse.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpLang">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpLang.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpLang.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpLang.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpNumber">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpNumber.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpNumber.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpNumber.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpSum">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpSum.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpSum.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpSum.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpFloor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpFloor.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpFloor.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpFloor.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpCeiling">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpCeiling.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpCeiling.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpCeiling.Args">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TXPathEnvironment.xpRound">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.xpRound.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpRound.Context">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.xpRound.Args">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathEnvironment.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TXPathEnvironment.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathEnvironment.GetFunctionIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.GetFunctionIndex.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.GetFunctionIndex.AName">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathEnvironment.GetVariableIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathEnvironment.GetVariableIndex.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.GetVariableIndex.AName">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXPathEnvironment.AddFunction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.AddFunction.AName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.AddFunction.AFunction">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXPathEnvironment.AddVariable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.AddVariable.AName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.AddVariable.AVariable">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXPathEnvironment.RemoveFunction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.RemoveFunction.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.RemoveFunction.AName">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TXPathEnvironment.RemoveVariable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.RemoveVariable.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.RemoveVariable.AName">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXPathEnvironment.FunctionCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXPathEnvironment.VariableCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXPathEnvironment.Functions">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.Functions.Index">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXPathEnvironment.FunctionsByName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.FunctionsByName.AName">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXPathEnvironment.Variables">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.Variables.Index">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TXPathEnvironment.VariablesByName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathEnvironment.VariablesByName.AName">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TXPathExpression">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TXPathExpression.FRootNode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TXPathExpression.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathExpression.Create.AScanner">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathExpression.Create.CompleteExpression">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathExpression.Create.AResolver">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TXPathExpression.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TXPathExpression.Evaluate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TXPathExpression.Evaluate.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathExpression.Evaluate.AContextNode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TXPathExpression.Evaluate.AEnvironment">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="EvaluateXPathExpression">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="EvaluateXPathExpression.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EvaluateXPathExpression.AExpressionString">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EvaluateXPathExpression.AContextNode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EvaluateXPathExpression.AResolver">
+<short></short>
+</element>
+
+</module> <!-- laz2_xpath -->
+
+</package>
+</fpdoc-descriptions>
