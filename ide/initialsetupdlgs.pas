@@ -692,7 +692,7 @@ begin
   end;
 end;
 
-function ValueOfKey(const aLine, aKey: string; out aValue: string): boolean;
+function ValueOfKey(const aLine, aKey: string; var aValue: string): boolean;
 // If aKey is found in aLine, separate a quoted number following "aKey =",
 //  save it to aValue and return True. Return False if aKey is not found.
 // Example line:     version_nr = '2';
@@ -700,7 +700,6 @@ var
   i,j: Integer;
 begin
   Result:=False;
-  aValue:='';
   i:=Pos(aKey, aLine);
   if i>0 then begin            // aKey found
     i:=PosEx('=', aLine, i+Length(aKey));
@@ -764,6 +763,7 @@ var
   ReleaseNr: String;
   PatchNr: String;
   SrcVer: String;
+  Line: String;
 begin
   Result:=sddqInvalid;
   Note:='';
@@ -787,11 +787,15 @@ begin
       try
         try
           sl.LoadFromFile(VersionFile);
+          VersionNr:='';
+          ReleaseNr:='';
+          PatchNr:='';
           for i:=0 to sl.Count-1 do
           begin
-            if      ValueOfKey(sl[i],'version_nr', VersionNr) then begin end
-            else if ValueOfKey(sl[i],'release_nr', ReleaseNr) then begin end
-            else if ValueOfKey(sl[i],'patch_nr',   PatchNr) then
+            Line:=sl[i];
+            if ValueOfKey(Line,'version_nr', VersionNr) then begin end
+            else if ValueOfKey(Line,'release_nr', ReleaseNr) then begin end
+            else if ValueOfKey(Line,'patch_nr',   PatchNr) then
               break;
           end;
           SrcVer:=VersionNr+'.'+ReleaseNr+'.'+PatchNr;
