@@ -646,6 +646,7 @@ type
     procedure InitValues;
     procedure DoAggregate;
     procedure ResetLastValues;
+    function getName: string;
   public
     maxdy: Integer;
 
@@ -662,6 +663,7 @@ type
     constructor Create(ATyp: TfrBandType; AParent: TfrPage); overload;
     destructor Destroy; override;
     function IsDataBand: boolean;
+    property Name: string read getName;
   end;
 
   TfrValue = class
@@ -5220,6 +5222,13 @@ end;
 function TfrBand.IsDataBand: boolean;
 begin
   result := (typ in [btMasterData, btDetailData, btSubDetailData]);
+end;
+
+function TfrBand.getName: string;
+begin
+  if Assigned(View) then
+    Result:= View.Name
+  else Result:= '';
 end;
 
 procedure TfrBand.InitDataSet(const Desc: String);
