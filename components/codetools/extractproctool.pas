@@ -605,7 +605,10 @@ var
           DebugLn('TExtractProcTool.CreateProcParamList C ParamName="',ParamName,'" ParamType="',ParamTypeCode,'"');
           {$ENDIF}
           // ToDo: ParamSpecifier 'var ' and none
-          ParamSpecifier:='const ';
+          if ProcVar.WriteInSelection then
+            ParamSpecifier:=''
+          else
+            ParamSpecifier:='const ';
           if ProcVar.ReadAfterSelection then
             ParamSpecifier:='var ';
           CompleteParamListCode:=CompleteParamListCode
