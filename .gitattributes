@@ -2130,7 +2130,6 @@ components/lazutils/asiancodepages.inc svneol=native#text/pascal
 components/lazutils/avglvltree.pas svneol=native#text/pascal
 components/lazutils/dictionarystringlist.pas svneol=native#text/plain
 components/lazutils/easylazfreetype.pas svneol=native#text/pascal
-components/lazutils/examples/DictionaryStringList/GgG.Txt svneol=native#text/plain
 components/lazutils/examples/DictionaryStringList/ReadMe.txt svneol=native#text/plain
 components/lazutils/examples/DictionaryStringList/TDictionaryStringListDemo.lpi svneol=native#text/plain
 components/lazutils/examples/DictionaryStringList/TDictionaryStringListDemo.lpr svneol=native#text/plain
