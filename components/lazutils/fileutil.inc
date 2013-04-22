@@ -1447,17 +1447,20 @@ var
           (PathInfo.Name = '') then Continue;
         // Deal with both files and directories
         if (PathInfo.Attr and faDirectory) = 0 then
-        begin
-          if (MaskList = nil) or MaskList.Matches(PathInfo.Name) then
-          begin
+        begin             // File
+          if (MaskList = nil) or MaskList.Matches(PathInfo.Name)
+          {$IFDEF Windows}
+          // On Windows files without extension must be included for *.*
+          or ((ASearchMask = AllFilesMask) and (ExtractFileExt(PathInfo.Name) = ''))
+          {$ENDIF}
+          then begin
             FPath := APath;
             FLevel := ALevel;
             FFileInfo := PathInfo;
             DoFileFound;
           end;
         end
-        else
-        begin
+        else begin        // Directory
           FPath := APath;
           FLevel := ALevel;
           FFileInfo := PathInfo;
