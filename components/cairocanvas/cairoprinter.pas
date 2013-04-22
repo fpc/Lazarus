@@ -235,14 +235,14 @@ begin
 
   Include(fStatus, csDoc);
 
-  TDocAccess(fCairoCanvas).XDPI:=fXDPI;
-  TDocAccess(fCairoCanvas).YDPI:=fYDPI;
-  TDocAccess(fCairoCanvas).BeginDoc;
+  {%H-}TDocAccess(fCairoCanvas).XDPI:=fXDPI;
+  {%H-}TDocAccess(fCairoCanvas).YDPI:=fYDPI;
+  {%H-}TDocAccess(fCairoCanvas).BeginDoc;
 end;
 
 procedure TCairoFilePrinter.EndDoc;
 begin
-  TDocAccess(fCairoCanvas).EndDoc;
+  {%H-}TDocAccess(fCairoCanvas).EndDoc;
   Exclude(fStatus, csDoc);
   fCairoCanvas.Free;
   fCairoCanvas:=nil;
@@ -250,7 +250,7 @@ end;
 
 procedure TCairoFilePrinter.NewPage;
 begin
-  TDocAccess(fCairoCanvas).NewPage;
+  {%H-}TDocAccess(fCairoCanvas).NewPage;
 end;
 
 

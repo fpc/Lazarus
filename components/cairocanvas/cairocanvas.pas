@@ -54,7 +54,7 @@ type
     cr: Pcairo_t;
     ScaleX, ScaleY, FontScale: Double;
     procedure DoLineTo(X1,Y1: Integer); override;
-    procedure CreateCairoHandle(BaseHandle: HDC); virtual;
+    procedure CreateCairoHandle({%H-}BaseHandle: HDC); virtual;
     procedure DestroyCairoHandle; virtual;
     procedure SetHandle(NewHandle: HDC); override;
     procedure BeginDoc; override;
@@ -77,7 +77,7 @@ type
     procedure FillRect(const ARect: TRect); override;
     procedure Rectangle(X1,Y1,X2,Y2: Integer); override;
     procedure Polyline(Points: PPoint; NumPts: Integer); override;
-    procedure Polygon(Points: PPoint; NumPts: Integer; Winding: boolean = False); override;
+    procedure Polygon(Points: PPoint; NumPts: Integer; {%H-}Winding: boolean = False); override;
     procedure FrameRect(const ARect: TRect); override;
     procedure Frame(const ARect: TRect); override;
     procedure RoundRect(X1, Y1, X2, Y2: Integer; RX, RY: Integer); override;
@@ -817,17 +817,19 @@ begin
   Changed;
 end;
 
+{$ifdef breaklines}
 type
   TLine = class
     Start, EndL: Integer;
     Width: Double;
   end;
+{$endif}
 
 procedure TCairoPrinterCanvas.TextRect(ARect: TRect; X1, Y1: integer; const Text: string; const Style: TTextStyle);
 var
-  te: cairo_text_extents_t;
   s: string;
 {$ifdef breaklines}
+  te: cairo_text_extents_t;
   Lines: TList;
   CurLine: TLine;
   len: integer;
@@ -866,13 +868,11 @@ var
 {$endif}
 
 var
-  fe: cairo_font_extents_t;
   fd: TFontData;
-  s1, ch: string;
-  i, j: integer;
+  s1: string;
+  i: integer;
   BoxLeft, BoxTop, BoxWidth, BoxHeight: Double;
   StartLeft, StartTop: Double;
-  BreakBoxWidth: Double;
   x, y: Double;
   r,b: double;
   {$ifdef pangocairo}
@@ -880,7 +880,12 @@ var
   ink,logical: TPangoRectangle;
   {$endif}
 
-  {$ifndef breaklines}
+  {$ifdef breaklines}
+  fe: cairo_font_extents_t;
+  BreakBoxWidth: Double;
+  j: integer;
+  ch: string;
+  {$else}
   Lines: TStringList;
   {$endif}
 begin
@@ -897,10 +902,12 @@ begin
     StartTop := SY(Y1);
     //DebugLn('Box= l=%f t=%f',[BoxLeft,BoxTop]);
     //DebugLn('     x=%f y=%f',[StartLeft,StartTop]);
+    {$ifdef breaklines}
     if Style.Alignment = taLeftJustify then
       BreakBoxWidth := SX(ARect.Right - X1)
     else
       BreakBoxWidth := BoxWidth;
+    {$endif}
 
     if Style.Clipping then begin
       r := BoxWidth+Pen.Width;
