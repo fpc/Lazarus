@@ -55,12 +55,18 @@ type
     fCairoBackend: TCairoBackend;
     fFileName: string;
     fStatus: TCairoStatus;
+    fStream: TStream;
     fYDPI,fXDPI: Integer;
     fOptions: TCairoPrinterOptions;
     function GetCanvas: TCanvas;
+    function GetPaperHeight: Integer;
+    function GetPaperWidth: Integer;
     procedure SetCairoBackend(AValue: TCairoBackend);
     procedure SetFilename(AValue: string);
     procedure SetOptions(AValue: TCairoPrinterOptions);
+    procedure SetPaperHeight(AValue: Integer);
+    procedure SetPaperWidth(AValue: Integer);
+    procedure SetStream(AValue: TStream);
     procedure SetXDPI(AValue: Integer);
     procedure SetYDPI(AValue: Integer);
 
@@ -75,11 +81,15 @@ type
     procedure NewPage;
 
     property FileName: string read fFileName write SetFilename;
+
     property CairoBackend: TCairoBackend read fCairoBackend write SetCairoBackend;
     property XDPI: Integer read fXDPI write SetXDPI;
     property YDPI: Integer read fYDPI write SetYDPI;
     property Canvas: TCanvas read GetCanvas;
+    property PaperWidth: Integer read GetPaperWidth write SetPaperWidth;
+    property PaperHeight: Integer read GetPaperHeight write SetPaperHeight;
     property Options: TCairoPrinterOptions read fOptions write SetOptions;
+    property Stream: TStream read fStream write SetStream;
   end;
 
 implementation
@@ -91,6 +101,16 @@ type
 function TCairoFilePrinter.GetCanvas: TCanvas;
 begin
   result := fCairoCanvas;
+end;
+
+function TCairoFilePrinter.GetPaperHeight: Integer;
+begin
+  result := fCairoCanvas.PageHeight;
+end;
+
+function TCairoFilePrinter.GetPaperWidth: Integer;
+begin
+  result := fCairocanvas.PaperWidth;
 end;
 
 procedure TCairoFilePrinter.SetCairoBackend(AValue: TCairoBackend);
@@ -121,6 +141,32 @@ begin
   CheckDoc('Options');
 
   fOptions:=AValue;
+end;
+
+procedure TCairoFilePrinter.SetPaperHeight(AValue: Integer);
+begin
+  if AValue=fCairoCanvas.PaperHeight then
+    exit;
+  fCairoCanvas.PaperHeight:=AValue;
+  fCairoCanvas.UpdatePageSize;
+end;
+
+procedure TCairoFilePrinter.SetPaperWidth(AValue: Integer);
+begin
+  if Avalue=fCairoCanvas.PaperWidth then
+    exit;
+  fCairocanvas.PaperWidth:=AValue;
+  fCairoCanvas.UpdatePageSize;
+end;
+
+procedure TCairoFilePrinter.SetStream(AValue: TStream);
+begin
+  if fStream=AValue then
+    Exit;
+
+  CheckDoc('Stream');
+
+  fStream:=AValue;
 end;
 
 procedure TCairoFilePrinter.SetXDPI(AValue: Integer);
@@ -162,7 +208,8 @@ procedure TCairoFilePrinter.BeginDoc;
 var
   s: string;
 begin
-  if fFileName='' then
+
+  if (fStream=nil) and (fFileName='') then
     raise ECairoPrinterException.Create('Error: Filename not specified');
 
   case fCairoBackend of
@@ -181,7 +228,10 @@ begin
       cbPNG   : s := s + '.png';
     end;
 
-  fCairoCanvas.OutputFileName:=s;
+  if fStream<>nil then
+    fCairoCanvas.Stream := fStream
+  else
+    fCairoCanvas.OutputFileName:=s;
 
   Include(fStatus, csDoc);
 

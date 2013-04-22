@@ -60,11 +60,15 @@ type
     procedure BeginDoc; override;
     procedure EndDoc; override;
     procedure NewPage; override;
-    procedure CreateBrush; override;
     function GetClipRect: TRect; override;
     procedure SetClipRect(const ARect: TRect); override;
     function GetClipping: Boolean; override;
     procedure SetClipping(const AValue: boolean); override;
+    //
+    procedure CreateBrush; override;
+    procedure CreateFont; override;
+    procedure CreatePen; override;
+    procedure RealizeAntialiasing; override;
   public
     SurfaceXDPI, SurfaceYDPI: Integer;
     constructor Create(APrinter : TPrinter); override;
@@ -102,8 +106,12 @@ type
   TCairoFileCanvas = class (TCairoPrinterCanvas)
   protected
     sf: Pcairo_surface_t;
+    fStream: TStream;
     procedure CreateHandle; override;
     procedure DestroyCairoHandle; override;
+  public
+    procedure UpdatePageSize; virtual;
+    property Stream: TStream read fStream write fStream;
   end;
 
   { TCairoPdfCanvas }
@@ -111,6 +119,8 @@ type
   TCairoPdfCanvas = class(TCairoFileCanvas)
   protected
     procedure CreateCairoHandle(BaseHandle: HDC); override;
+  public
+    procedure UpdatePageSize; override;
   end;
 
   { TCairoSvgCanvas }
@@ -135,6 +145,8 @@ type
   TCairoPsCanvas = class(TCairoFileCanvas)
   protected
     procedure CreateCairoHandle(BaseHandle: HDC); override;
+  public
+    procedure UpdatePageSize; override;
   end;
 
 implementation
@@ -142,13 +154,23 @@ implementation
 uses
   IntfGraphics, GraphType, FPimage;
 
-{ TCairoPrinterCanvas }
-
 const
   Dash_Dash: array [0..2] of double = (3, 1, 3); //_ _
   Dash_Dot: array [0..1] of double = (1, 1); //. .
   Dash_DashDot: array [0..4] of double = (3, 1, 1, 1, 3); //_ . _
   Dash_DashDotDot: array [0..6] of double = (3, 1, 1, 1, 1, 1, 3); //_ . . _
+
+function WriteToStream(closure: Pointer; data: PByte; length: LongWord): cairo_status_t; cdecl;
+var
+  Stream: TStream absolute closure;
+begin
+  if Stream.Write(data^, Length) = Length then
+    result := CAIRO_STATUS_SUCCESS
+  else
+    result := CAIRO_STATUS_WRITE_ERROR;
+end;
+
+{ TCairoPrinterCanvas }
 
 procedure TCairoPrinterCanvas.SetPenProperties;
 
@@ -269,6 +291,7 @@ end;
 procedure TCairoPrinterCanvas.EndDoc;
 begin
   inherited EndDoc;
+  cairo_show_page(cr);
   //if caller is printer, then at the end destroy cairo handles (flush output)
   //and establishes CreateCairoHandle call on the next print
   Handle := 0;
@@ -281,6 +304,18 @@ begin
 end;
 
 procedure TCairoPrinterCanvas.CreateBrush;
+begin
+end;
+
+procedure TCairoPrinterCanvas.CreateFont;
+begin
+end;
+
+procedure TCairoPrinterCanvas.CreatePen;
+begin
+end;
+
+procedure TCairoPrinterCanvas.RealizeAntialiasing;
 begin
 end;
 
@@ -1236,14 +1271,26 @@ begin
   inherited DestroyCairoHandle;
 end;
 
+procedure TCairoFileCanvas.UpdatePageSize;
+begin
+end;
+
 { TCairoPdfCanvas }
 
 procedure TCairoPdfCanvas.CreateCairoHandle(BaseHandle: HDC);
 begin
   inherited CreateCairoHandle(BaseHandle);
   //Sizes are in Points, 72DPI (1pt = 1/72")
-  sf := cairo_pdf_surface_create(PChar(FOutputFileName), PaperWidth*ScaleX, PaperHeight*ScaleY);
+  if fStream<>nil then
+    sf := cairo_pdf_surface_create_for_stream(@WriteToStream, fStream, PaperWidth*ScaleX, PaperHeight*ScaleY)
+  else
+    sf := cairo_pdf_surface_create(PChar(FOutputFileName), PaperWidth*ScaleX, PaperHeight*ScaleY);
   cr := cairo_create(sf);
+end;
+
+procedure TCairoPdfCanvas.UpdatePageSize;
+begin
+  cairo_pdf_surface_set_size(sf, PaperWidth*ScaleX, PaperHeight*ScaleY);
 end;
 
 { TCairoPsCanvas }
@@ -1266,7 +1313,10 @@ begin
   end;
 
   //Sizes are in Points, 72DPI (1pt = 1/72")
-  sf := cairo_ps_surface_create(PChar(FOutputFileName), W, H);
+  if fStream<>nil then
+    sf := cairo_ps_surface_create_for_stream(@WriteToStream, fStream, W, H)
+  else
+    sf := cairo_ps_surface_create(PChar(FOutputFileName), W, H);
   cr := cairo_create(sf);
 
   cairo_ps_surface_dsc_begin_setup(sf);
@@ -1276,6 +1326,11 @@ begin
     cairo_translate(cr, 0, H);
     cairo_rotate(cr, -PI/2);
   end;
+end;
+
+procedure TCairoPsCanvas.UpdatePageSize;
+begin
+  cairo_ps_surface_set_size(sf, PaperWidth*ScaleX, PaperHeight*ScaleY);
 end;
 
 { TCairoSvgCanvas }
