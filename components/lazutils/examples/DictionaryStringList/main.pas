@@ -14,11 +14,13 @@ type
 
   TForm1 = class(TForm)
     btnDedupeMemo: TButton;
+    btnDedupeFile: TButton;
     btnGenerate: TButton;
     lblLines: TLabel;
     lblTime: TLabel;
     Memo: TMemo;
     SpinEdit1: TSpinEdit;
+    procedure btnDedupeFileClick(Sender: TObject);
     procedure btnGenerateClick(Sender: TObject);
     procedure btnDedupeMemoClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -95,6 +97,36 @@ begin
     UpdateTime(Now - T);
   finally
     Screen.Cursor := crDefault;
+  end;
+end;
+
+procedure TForm1.btnDedupeFileClick(Sender: TObject);
+var
+  T :TDateTime;
+  N :integer;
+  DSL :TDictionaryStringList;
+begin
+  lblTime.Caption := 'Time:';
+  lblLines.Caption := 'Duplicated lines:';
+  Application.ProcessMessages;
+  ShowMessage('Generating data. Please wait.');
+  SpinEdit1.Value := 1000000;
+  btnGenerateClick(nil);
+  ShowMessage('Saving it to a file. Please wait.');
+  Memo.Lines.SaveToFile('temp.txt');
+  ShowMessage('Dedupping the file.');
+  T := Now;
+  N := Memo.Lines.Count;
+  DSL := TDictionaryStringList.Create;
+  try
+    DSL.LoadFromFile('temp.txt');
+    lblLines.Caption := 'Duplicated Lines: ' + IntToStr(N - DSL.Count);
+    DSL.SaveToFile('temp.txt');
+    lblTime.Caption := 'Time: ' + TimeToStr(Now - T);
+    ShowMessage('Deleting the file.');
+    DeleteFile('temp.txt');
+  finally
+    DSL.Free;
   end;
 end;
 
