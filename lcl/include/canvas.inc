@@ -1679,14 +1679,23 @@ begin
       RealizeAntialiasing;
       Include(FState, csHandleValid);
     end;
-    if csFontValid in Needed then CreateFont;
+    if csFontValid in Needed then
+    begin
+      CreateFont;
+      Include(FState, csFontValid);
+    end;
     if csPenValid in Needed then
     begin
       CreatePen;
-      if Pen.Style in [psDash, psDot, psDashDot, psDashDotDot]
-      then Include(Needed, csBrushValid);
+      if Pen.Style in [psDash, psDot, psDashDot, psDashDotDot] then
+        Include(Needed, csBrushValid);
+      Include(FState, csPenValid);
     end;
-    if csBrushValid in Needed then CreateBrush;
+    if csBrushValid in Needed then
+    begin
+      CreateBrush;
+      Include(FState, csBrushValid);
+    end;
   end;
 end;
 
