@@ -1451,7 +1451,7 @@ var
           if (MaskList = nil) or MaskList.Matches(PathInfo.Name)
           {$IFDEF Windows}
           // On Windows files without extension must be included for *.*
-          or ((ASearchMask = AllFilesMask) and (ExtractFileExt(PathInfo.Name) = ''))
+          or ((ASearchMask = '*.*') and (ExtractFileExt(PathInfo.Name) = ''))
           {$ENDIF}
           then begin
             FPath := APath;
