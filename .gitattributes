@@ -2135,6 +2135,7 @@ components/lazutils/examples/DictionaryStringList/TDictionaryStringListDemo.lpi 
 components/lazutils/examples/DictionaryStringList/TDictionaryStringListDemo.lpr svneol=native#text/plain
 components/lazutils/examples/DictionaryStringList/main.lfm svneol=native#text/plain
 components/lazutils/examples/DictionaryStringList/main.pas svneol=native#text/plain
+components/lazutils/examples/DictionaryStringList/test.pas svneol=native#text/pascal
 components/lazutils/fileutil.inc svneol=native#text/pascal
 components/lazutils/fileutil.pas svneol=native#text/pascal
 components/lazutils/fpmake.pp svneol=native#text/plain
