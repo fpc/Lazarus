@@ -2133,7 +2133,6 @@ components/lazutils/easylazfreetype.pas svneol=native#text/pascal
 components/lazutils/examples/DictionaryStringList/ReadMe.txt svneol=native#text/plain
 components/lazutils/examples/DictionaryStringList/TDictionaryStringListDemo.lpi svneol=native#text/plain
 components/lazutils/examples/DictionaryStringList/TDictionaryStringListDemo.lpr svneol=native#text/plain
-components/lazutils/examples/DictionaryStringList/ggg.txt svneol=native#text/plain
 components/lazutils/examples/DictionaryStringList/main.lfm svneol=native#text/plain
 components/lazutils/examples/DictionaryStringList/main.pas svneol=native#text/plain
 components/lazutils/fileutil.inc svneol=native#text/pascal
