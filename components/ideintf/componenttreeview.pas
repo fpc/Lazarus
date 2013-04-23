@@ -739,7 +739,7 @@ begin
 end;
 
 initialization
-  {$I ../images/componenttreeview.lrs}
+  {$I ../../images/componenttreeview.lrs}
 
 end.
 

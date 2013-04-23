@@ -132,7 +132,7 @@ lcl:
 basecomponents:
 	$(MAKE) -C components/lazcontrols
 	$(MAKE) -C components/synedit
-	$(MAKE) -C ideintf
+	$(MAKE) -C components/ideintf
 	$(MAKE) -C components/synedit/design
 
 #-----------------------------------------------------------------------------
@@ -190,7 +190,7 @@ lazbuild: registration lazutils codetools
 	$(MAKE) -C tools
 	$(MAKE) -C components/lazcontrols LCL_PLATFORM=nogui
 	$(MAKE) -C components/synedit LCL_PLATFORM=nogui
-	$(MAKE) -C ideintf LCL_PLATFORM=nogui
+	$(MAKE) -C components/ideintf LCL_PLATFORM=nogui
 	$(MAKE) -C ide lazbuilder LCL_PLATFORM=nogui
 
 #-----------------------------------------------------------------------------
@@ -221,7 +221,6 @@ cleanlaz: cleanide
 	$(MAKE) -C packager/registration clean
 	$(MAKE) -C lcl cleanall
 	$(MAKE) -C components clean
-	$(MAKE) -C ideintf clean
 
 clean: cleanlaz
 	$(MAKE) -C . cleanlaz LCL_PLATFORM=nogui
@@ -254,7 +253,7 @@ endif
 install:
 	$(MAKE) installbase
 	$(COPYTREE) packager debugger designer converter ide images languages lazarus.app units $(LAZARUS_INSTALL_DIR)
-	$(COPYTREE) components docs doceditor examples ideintf lcl test install tools $(LAZARUS_INSTALL_DIR)
+	$(COPYTREE) components docs doceditor examples lcl test install tools $(LAZARUS_INSTALL_DIR)
 	$(COPYTREE) Makefile* *.txt *.bat *.sh $(LAZARUS_INSTALL_DIR)
 	$(COPYTREE) lazarus startlazarus lazbuild $(LAZARUS_INSTALL_DIR)
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
@@ -349,7 +348,6 @@ ifdef DEBUSESVN
 		install \
 		examples \
 		ide \
-		ideintf \
 		images \
 		languages \
 		lazarus.app \

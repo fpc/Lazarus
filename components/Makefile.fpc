@@ -26,7 +26,7 @@ help:
 	@$(ECHO) " Targets"
 	@$(ECHO) "   all         same as bigide"
 	@$(ECHO) "               lazutils, codetools, lazcontrols, synedit,
-        @$(ECHO) "               ideintf are build separately"
+	@$(ECHO) "               and ideintf are build separately"
 	@$(ECHO) "   clean       deletes output files of base and bigide components"
 	@$(ECHO) "   bigide      build the extra packages for the bigide"
 
@@ -60,9 +60,10 @@ all: bigide
 clean:
 	$(MAKE) -C lazutils clean
 	$(MAKE) -C codetools clean
+	$(MAKE) -C lazcontrols clean
+	$(MAKE) -C ideintf clean
 	$(MAKE) -C synedit clean
 	$(MAKE) -C synedit/design clean
-	$(MAKE) -C lazcontrols clean
 	$(MAKE) -C rtticontrols clean
 	$(MAKE) -C cairocanvas clean
 	$(MAKE) -C printers clean

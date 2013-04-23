@@ -46,6 +46,10 @@ components/h2pas/*.bak
 components/h2pas/languages/*.bak
 components/h2pas/languages/units
 components/h2pas/units
+components/ideintf/*.bak
+components/ideintf/languages/*.bak
+components/ideintf/languages/units
+components/ideintf/units
 components/images/*.bak
 components/images/examples/*.bak
 components/images/examples/units
@@ -435,10 +439,6 @@ ide/include/win32/units
 ide/include/win64/*.bak
 ide/include/win64/units
 ide/units
-ideintf/*.bak
-ideintf/languages/*.bak
-ideintf/languages/units
-ideintf/units
 images/*.bak
 images/codeexplorer/*.bak
 images/codeexplorer/units

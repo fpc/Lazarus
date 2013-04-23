@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<CONFIG>
-  <Makefile Value="True"/>
-  <Params Value=" -Fu../packager/units/%(CPU_TARGET)-%(OS_TARGET);../components/lazutils/lib/%(CPU_TARGET)-%(OS_TARGET);../lcl/units/%(CPU_TARGET)-%(OS_TARGET);../lcl/units/%(CPU_TARGET)-%(OS_TARGET)/%(LCL_PLATFORM);../components/lazcontrols/lib/%(CPU_TARGET)-%(OS_TARGET)/%(LCL_PLATFORM);. -Fiimages  -MObjFPC -Scghi -O1 -g -gl -vew -l ideintf.pas"/>
-</CONFIG>

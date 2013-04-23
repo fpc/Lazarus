@@ -5853,7 +5853,7 @@ begin
        +LazarusSrcDir+'/packager;'
        +LazarusSrcDir+'/packager/registration;'
        +LazarusSrcDir+'/packager/frames;'
-       +LazarusSrcDir+'/ideintf;'
+       +LazarusSrcDir+'/components/ideintf;'
        +LazarusSrcDir+'/components/lazutils;'
        +LazarusSrcDir+'/components/lazcontrols;'
        +LazarusSrcDir+'/components/synedit;'
@@ -5885,7 +5885,7 @@ begin
        +';../lcl'
        +';../lcl/interfaces'
        +';../lcl/interfaces/'+WidgetType
-       +';../ideintf'
+       +';../components/ideintf'
        +';../components/synedit'
        +';../components/codetools'
        +';../components/lazcontrols'
@@ -5918,7 +5918,7 @@ begin
       d(LazarusSrcDir+'/debugger'
        +';'+LazarusSrcDir+'/debugger/frames'
        +';'+LazarusSrcDir+'/ide'
-       +';'+LazarusSrcDir+'/ideintf'
+       +';'+LazarusSrcDir+'/components/ideintf'
        +';'+LazarusSrcDir+'/components/lazutils'
        +';'+LazarusSrcDir+'/components/codetools'
        +';'+LazarusSrcDir+'/lcl'
@@ -5936,7 +5936,7 @@ begin
     Format(ctsAddsDirToSourcePath,['lcl, components']),
     ExternalMacroStart+'SrcPath',
       d('../ide'
-       +';../ideintf'
+       +';../components/ideintf'
        +';../components/lazutils'
        +';../components/codetools'
        +';../components/synedit'
@@ -5962,7 +5962,7 @@ begin
       +';'+LazarusSrcDir+'/lcl/interfaces'
       +';'+LazarusSrcDir+'/lcl/interfaces/'+WidgetType
       +';'+LazarusSrcDir+'/ide'
-      +';'+LazarusSrcDir+'/ideintf'
+      +';'+LazarusSrcDir+'/components/ideintf'
       +';'+LazarusSrcDir+'/components/synedit'
       +';'+LazarusSrcDir+'/components/lazcontrols'
       +';'+LazarusSrcDir+'/components/lazutils'
