@@ -2304,7 +2304,10 @@ end;
 
 function TLazPackage.GetRemovedFiles(Index: integer): TPkgFile;
 begin
-  Result:=TPkgFile(FRemovedFiles[Index]);
+  If (Index >= 0) And (Index < FRemovedFiles.Count) Then
+    Result:=TPkgFile(FRemovedFiles[Index])
+  Else
+    Result := NIL;
 end;
 
 function TLazPackage.GetFileCount: integer;
