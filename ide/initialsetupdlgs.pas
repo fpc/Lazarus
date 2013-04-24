@@ -309,7 +309,6 @@ begin
   if not SubDirExists('packager/globallinks',Result) then exit;
   if not SubDirExists('ide',Result) then exit;
   if not SubDirExists('components',Result) then exit;
-  if not SubDirExists('ideintf',Result) then exit;
   if not SubFileExists('ide/lazarus.lpi',Result) then exit;
   VersionIncFile:=SetDirSeparators('ide/version.inc');
   if not SubFileExists(VersionIncFile,Result) then exit;
