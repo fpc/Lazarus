@@ -153,7 +153,7 @@ begin
           WindowPositionsListBox.Items.AddObject(GetLayoutCaption(FLayouts[j]),FLayouts[j]);
       end;
     end;
-    //WindowPositionsListBox.Sorted := True;
+    WindowPositionsListBox.Sorted := True;
     WindowPositionsListBox.Items.EndUpdate;
 
     LeftLabel.Caption := dlgLeftPos;
