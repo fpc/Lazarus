@@ -231,7 +231,7 @@ type
     property TabOrder;
     property ToolTips;
     property Visible;
-    property ViewStyle;
+    property ViewStyle default vsReport;
 //    property OnAdvancedCustomDraw;
 //    property OnAdvancedCustomDrawItem;
 //    property OnAdvancedCustomDrawSubItem;
