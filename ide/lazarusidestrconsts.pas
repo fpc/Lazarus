@@ -2000,7 +2000,7 @@ resourcestring
   dlgInitDoneOnly = 'Constructor name must be ''' + 'init' + ''' (destructor must be ''' + 'done' + ''')';
   dlgStaticKeyword = 'Static keyword in objects';
   dlgDeplhiComp = 'Delphi compatible';
-  dlgCOAnsiStr = 'Use ansi strings';
+  dlgCOAnsiStr = 'Use Ansistrings';
   dlgGPCComp = 'GPC (GNU Pascal Compiler) compatible';
   dlgCOUnitStyle = 'Unit style';
   dlgCOSmartLinkable = 'Smart linkable';
