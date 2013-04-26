@@ -39,8 +39,8 @@ type
     Bevel1: TBevel;
     Bevel2: TBevel;
     dropSplitterPlacement: TComboBox;
-    CustomPositionRadioButton: TRadioButton;
-    DefaultRadioButton: TRadioButton;
+    CustomGeometryRadioButton: TRadioButton;
+    FixedDefaultRadioButton: TRadioButton;
     GetWindowPositionButton: TButton;
     HeightEdit: TSpinEdit;
     HeightLabel: TLabel;
@@ -59,13 +59,15 @@ type
     ProjectDirInIdeTitleCheckBox: TCheckBox;
     TopEdit: TSpinEdit;
     TopLabel: TLabel;
-    UseWindowManagerSettingRadioButton: TRadioButton;
+    LetWindowManagerDecideRadioButton: TRadioButton;
     WidthEdit: TSpinEdit;
     WidthLabel: TLabel;
     WindowPositionsGroupBox: TGroupBox;
     WindowPositionsListBox: TListBox;
     procedure ApplyButtonClick(Sender: TObject);
+    procedure CustomGeometryRadioButtonClick(Sender: TObject);
     procedure GetWindowPositionButtonClick(Sender: TObject);
+    procedure WindowGeometryRadioButtonClick(Sender: TObject);
     procedure SplitterListSelectionChange(Sender: TObject; User: boolean);
     procedure WindowPositionsListBoxSelectionChange(Sender: TObject; User: boolean);
   private
@@ -73,6 +75,7 @@ type
     FLayout: TSimpleWindowLayout;
     FDivider: TSimpleWindowLayoutDividerPos;
     FShowSimpleLayout: boolean;
+    procedure EnableGeometryEdits(aEnable: Boolean);
     function GetPlacementRadioButtons(APlacement: TIDEWindowPlacement): TRadioButton;
     procedure SetLayout(const AValue: TSimpleWindowLayout);
     procedure SetDivider(const AValue: TSimpleWindowLayoutDividerPos);
@@ -122,8 +125,7 @@ end;
 procedure TWindowOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   Creator: TIDEWindowCreator;
-  i: Integer;
-  j: Integer;
+  i, j: Integer;
 begin
   with AOptions as TEnvironmentOptions do
   begin
@@ -156,6 +158,11 @@ begin
     WindowPositionsListBox.Sorted := True;
     WindowPositionsListBox.Items.EndUpdate;
 
+    WindowPositionsListBox.Hint := rsiwpPositionWindowListHint;
+    SplitterList.Hint := rsiwpColumnNamesHint;
+    dropSplitterPlacement.Hint := rsiwpColumnStrategyHint;
+    SplitEdit.Hint := rsiwpColumnWidthHint;
+
     LeftLabel.Caption := dlgLeftPos;
     TopLabel.Caption := dlgTopPos;
     WidthLabel.Caption := dlgWidthPos;
@@ -164,15 +171,25 @@ begin
     GetWindowPositionButton.Caption := dlgGetPosition;
     SplitLabel.Caption := dlgWidthPos;
 
-    UseWindowManagerSettingRadioButton.Caption := rsiwpUseWindowManagerSetting;
-    DefaultRadioButton.Caption := rsiwpDefault;
+    LeftEdit.Hint := rsiwpSplitterCustomPosition;
+    TopEdit.Hint := rsiwpSplitterCustomPosition;
+    WidthEdit.Hint := rsiwpSplitterCustomPosition;
+    HeightEdit.Hint := rsiwpSplitterCustomPosition;
+
     RestoreWindowGeometryRadioButton.Caption := rsiwpRestoreWindowGeometry;
-    CustomPositionRadioButton.Caption := rsiwpCustomPosition;
+    LetWindowManagerDecideRadioButton.Caption := rsiwpLetWindowManagerDecide;
+    FixedDefaultRadioButton.Caption := rsiwpFixedDefaultGeometry;
+    CustomGeometryRadioButton.Caption := rsiwpCustomGeometry;
+
+    RestoreWindowGeometryRadioButton.Hint := rsiwpRestoreWindowGeometryHint;
+    LetWindowManagerDecideRadioButton.Hint := rsiwpLetWindowManagerDecideHint;
+    FixedDefaultRadioButton.Hint := rsiwpFixedDefaultGeometryHint;
+    CustomGeometryRadioButton.Hint := rsiwpCustomGeometryHint;
 
     dropSplitterPlacement.Clear;
     dropSplitterPlacement.Items.Add(rsiwpSplitterFollowWindow);
-    dropSplitterPlacement.Items.Add(rsiwpSplitterDefault);
     dropSplitterPlacement.Items.Add(rsiwpSplitterRestoreWindowGeometry);
+    dropSplitterPlacement.Items.Add(rsiwpSplitterDefault);
     dropSplitterPlacement.Items.Add(rsiwpSplitterCustomPosition);
 
     SetWindowPositionsItem(0);
@@ -202,9 +219,9 @@ function TWindowOptionsFrame.GetPlacementRadioButtons(
 begin
   case APlacement of
     iwpRestoreWindowGeometry:   Result := RestoreWindowGeometryRadioButton;
-    iwpDefault:                 Result := DefaultRadioButton;
-    iwpCustomPosition:          Result := CustomPositionRadioButton;
-    iwpUseWindowManagerSetting: Result := UseWindowManagerSettingRadioButton;
+    iwpDefault:                 Result := FixedDefaultRadioButton;
+    iwpCustomPosition:          Result := CustomGeometryRadioButton;
+    iwpUseWindowManagerSetting: Result := LetWindowManagerDecideRadioButton;
   else
     Result := nil;
   end;
@@ -281,8 +298,8 @@ begin
   SplitEdit.Value := FDivider.Size;
   case FDivider.Placement of
     iwpdUseWindowSetting: dropSplitterPlacement.ItemIndex := 0;
-    iwpdDefault:          dropSplitterPlacement.ItemIndex := 1;
-    iwpdRestore:          dropSplitterPlacement.ItemIndex := 2;
+    iwpdRestore:          dropSplitterPlacement.ItemIndex := 1;
+    iwpdDefault:          dropSplitterPlacement.ItemIndex := 2;
     iwpdCustomSize:       dropSplitterPlacement.ItemIndex := 3;
   end;
 end;
@@ -304,6 +321,24 @@ begin
     end;
     Layout.ApplyDivider(True);
   end;
+end;
+
+procedure TWindowOptionsFrame.EnableGeometryEdits(aEnable: Boolean);
+begin
+  LeftEdit.Enabled := aEnable;
+  TopEdit.Enabled := aEnable;
+  WidthEdit.Enabled := aEnable;
+  HeightEdit.Enabled := aEnable;
+end;
+
+procedure TWindowOptionsFrame.WindowGeometryRadioButtonClick(Sender: TObject);
+begin
+  EnableGeometryEdits(False);
+end;
+
+procedure TWindowOptionsFrame.CustomGeometryRadioButtonClick(Sender: TObject);
+begin
+  EnableGeometryEdits(True);
 end;
 
 procedure TWindowOptionsFrame.GetWindowPositionButtonClick(Sender: TObject);
@@ -346,8 +381,8 @@ begin
   if FDivider = nil then exit;
   case dropSplitterPlacement.ItemIndex of
     0: FDivider.Placement := iwpdUseWindowSetting;
-    1: FDivider.Placement := iwpdDefault;
-    2: FDivider.Placement := iwpdRestore;
+    1: FDivider.Placement := iwpdRestore;
+    2: FDivider.Placement := iwpdDefault;
     3: FDivider.Placement := iwpdCustomSize;
   end;
   FDivider.Size := SplitEdit.Value;

@@ -2421,17 +2421,24 @@ resourcestring
   dlgWidthPos    = 'Width:';
   dlgTopPos      = 'Top:';
   DlgHeightPos   = 'Height:';
-  rsiwpUseWindowManagerSetting = 'Use windowmanager setting';
-  rsiwpDefault                 = 'Default';
-  rsiwpRestoreWindowGeometry   = 'Restore window geometry';
-  rsiwpDocked                  = 'Docked';
-  rsiwpCustomPosition          = 'Custom position';
-  rsiwpRestoreWindowSize       = 'Restore window size';
+  rsiwpRestoreWindowGeometry  = 'Restore window geometry';
+  rsiwpLetWindowManagerDecide = 'Let windowmanager decide';
+  rsiwpFixedDefaultGeometry   = 'Fixed default geometry';
+  rsiwpCustomGeometry         = 'Custom geometry';
 
-  rsiwpSplitterFollowWindow            = 'Restore with window';
-  rsiwpSplitterDefault                 = 'Default Size';
-  rsiwpSplitterRestoreWindowGeometry   = 'Restore Size';
-  rsiwpSplitterCustomPosition          = 'Custom Size';
+  rsiwpPositionWindowListHint = 'Windows that have been open. They may be closed now.';
+  rsiwpColumnNamesHint    = 'Column Names';
+  rsiwpColumnStrategyHint = 'Strategy for saving Columns';
+  rsiwpColumnWidthHint    = 'Column Width';
+  rsiwpRestoreWindowGeometryHint  = 'Use previous position and size';
+  rsiwpLetWindowManagerDecideHint = 'System windowmanagers have different strategies for positioning windows';
+  rsiwpFixedDefaultGeometryHint   = 'Always the same fixed position and size';
+  rsiwpCustomGeometryHint         = 'User can define window''s position and size';
+
+  rsiwpSplitterFollowWindow          = 'Restore with window';
+  rsiwpSplitterRestoreWindowGeometry = 'Restore Size';
+  rsiwpSplitterDefault               = 'Default Size';
+  rsiwpSplitterCustomPosition        = 'Custom Size';
 
   // Code Explorer
   lisCodeExplorer = 'Code Explorer';
