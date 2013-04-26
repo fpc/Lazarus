@@ -17,7 +17,21 @@ interface
 uses Classes, SysUtils, Graphics, LR_Pars;
 
 type
+  TCharArray = array [0..31999] of Char;
+  PCharArray = ^TCharArray;
+
+type
+
+  { TfrInterpretator }
+
   TfrInterpretator = class(TObject)
+  private
+    Buf: PCharArray;
+    Cur:integer;
+    Len: Integer;
+    procedure SkipSpace;
+    function GetToken: String;
+    function CopyArr(ACur, ACnt: Integer): String;
   private
     FParser: TfrParser;
   public
@@ -59,9 +73,7 @@ implementation
 uses Variants;
 
 type
-  TCharArray = Array[0..31999] of Char;
-  PCharArray = ^TCharArray;
-  lrec = record
+  LRec = record
     name: String[16];
     n: Integer;
   end;
@@ -200,6 +212,62 @@ begin
   Result := Copy(s, k, i - k);
 end;
 
+procedure TfrInterpretator.SkipSpace;
+begin
+  while (Buf^[cur] = ' ') and (Cur < Len) do Inc(Cur);
+end;
+
+function TfrInterpretator.GetToken: String;
+var
+  ST, SC: Integer;
+begin
+  if Cur<Len then
+  begin
+    repeat
+      SkipSpace;
+      ST := Cur; //Start of token
+      SC:=-1;
+      while (Buf^[Cur] > ' ') and (Cur < Len) and (SC=-1) do
+      begin
+        if Buf^[ST] <> '''' then
+        begin
+          case Buf^[Cur] of
+            '{':begin
+                  //Skip {...} comment
+                  SC := Cur; //Start of comment
+                  while (Buf^[Cur] <> '}') and (cur < len) do Inc(cur);
+                  Move(Buf^[Cur + 1], Buf^[SC], Len - Cur);
+                  Dec(Len, Cur - SC + 1);
+                  Cur := SC;
+                  Continue;
+                end;
+            '/':if (Buf^[Cur + 1] = '/') then
+                begin
+                  //Skip // comment
+                  SC:= Cur; //Start of comment
+                  while (Buf^[Cur] <> #13) and (Cur < Len) do Inc(Cur);
+                  Move(Buf^[Cur + 1], Buf^[SC], Len - Cur);
+                  Dec(Len, Cur - SC + 1);
+                  Cur := SC;
+                  Continue;
+                end;
+          end
+        end;
+        Inc(Cur);
+      end;
+    until (SC=-1) or (Cur>=Len);
+    Result := UpperCase(CopyArr(ST, Cur - ST));
+  end
+  else
+    Result:='';
+end;
+
+function TfrInterpretator.CopyArr(ACur, ACnt: Integer): String;
+begin
+  SetLength(Result, ACnt);
+  Move(Buf^[ACur], Result[1], ACnt);
+end;
+
 {-----------------------------------------------------------------------------}
 constructor TfrInterpretator.Create;
 begin
@@ -217,10 +285,8 @@ end;
 
 procedure TfrInterpretator.PrepareScript(MemoFrom, MemoTo, MemoErr: TStringList);
 var
-  i, j, cur, lastp: Integer;
+  i, j, lastp: Integer;
   s, bs: String;
-  len: Integer;
-  buf: PCharArray;
   Error: Boolean;
 
 procedure DoCommand; forward;
@@ -245,12 +311,6 @@ procedure DoFuncId; forward;
     Result := MemoTo.Count;
   end;
 
-  function CopyArr(cur, n: Integer): String;
-  begin
-    SetLength(Result, n);
-    Move(buf^[cur], Result[1], n);
-  end;
-
   procedure AddLabel(s: String; n: Integer);
   var
     i: Integer;
@@ -265,21 +325,6 @@ procedure DoFuncId; forward;
       labels[labc].n := n;
       Inc(labc);
     end;
-  end;
-
-  procedure SkipSpace;
-  begin
-    while (buf^[cur] = ' ') and (cur < len) do Inc(cur);
-  end;
-
-  function GetToken: String;
-  var
-    j: Integer;
-  begin
-    SkipSpace;
-    j := cur; Inc(cur);
-    while (buf^[cur] > ' ') and (cur < len) do Inc(cur);
-    Result := AnsiUpperCase(CopyArr(j, cur - j));
   end;
 
   procedure AddError(s: String);
@@ -352,8 +397,11 @@ procedure DoFuncId; forward;
       cur := cur - Length(bs) + 1;
       goto 1;
     end
-    else if Pos('END', bs) = 1 then cur := cur - Length(bs) + 3
-    else AddError('Expected ";" or "end"');
+    else
+    if Pos('END', bs) = 1 then
+      cur := cur - Length(bs) + 3
+    else
+      AddError('Expected ";" or "end"');
   end;
 
   procedure DoIf;
@@ -399,12 +447,13 @@ procedure DoFuncId; forward;
     if Error then Exit;
     lastp := cur;
     bs := GetToken;
-    if bs[1] = ';' then
+    if (bs<>'') and (bs[1] = ';') then
     begin
       cur := cur - Length(bs) + 1;
       goto 1;
     end
-    else if bs = 'UNTIL' then
+    else
+    if bs = 'UNTIL' then
     begin
       nsm := cur;
       DoExpression;
@@ -427,9 +476,13 @@ procedure DoFuncId; forward;
     begin
       DoCommand;
       MemoTo.Add(ttGoto + Chr(nl) + Chr(nl div 256));
-      bs := MemoTo[nl]; bs[2] := Chr(last); bs[3] := Chr(last div 256); MemoTo[nl] := bs;
+      bs := MemoTo[nl];
+      bs[2] := Chr(last);
+      bs[3] := Chr(last div 256);
+      MemoTo[nl] := bs;
     end
-    else AddError('Expected "do"');
+    else
+      AddError('Expected "do"');
   end;
 
   procedure DoGoto;
@@ -460,7 +513,8 @@ procedure DoFuncId; forward;
       MemoTo.Add(ttProc + s + '(0)');
       cur := lastp;
     end
-    else if Pos(':=', bs) = 1 then
+    else
+    if Pos(':=', bs) = 1 then
     begin
       cur := cur - Length(bs) + 2;
       nsm := cur;
@@ -491,12 +545,14 @@ procedure DoFuncId; forward;
       cur := cur - Length(bs) + 2;
       DoSExpression;
     end
-    else if (bs[1] = '>') or (bs[1] = '<') or (bs[1] = '=') then
+    else
+    if (bs<>'') and ((bs[1] = '>') or (bs[1] = '<') or (bs[1] = '=')) then
     begin
       cur := cur - Length(bs) + 1;
       DoSExpression;
     end
-    else cur := nsm;
+    else
+      cur := nsm;
   end;
 
   procedure DoSExpression;
@@ -506,17 +562,19 @@ procedure DoFuncId; forward;
     DoTerm;
     nsm := cur;
     bs := GetToken;
-    if (bs[1] = '+') or (bs[1] = '-') then
+    if (bs<>'') and ((bs[1] = '+') or (bs[1] = '-')) then
     begin
       cur := cur - Length(bs) + 1;
       DoSExpression;
     end
-    else if Pos('OR', bs) = 1 then
+    else
+    if Pos('OR', bs) = 1 then
     begin
       cur := cur - Length(bs) + 2;
       DoSExpression;
     end
-    else cur := nsm;
+    else
+      cur := nsm;
   end;
 
   procedure DoTerm;
@@ -526,17 +584,19 @@ procedure DoFuncId; forward;
     DoFactor;
     nsm := cur;
     bs := GetToken;
-    if (bs[1] = '*') or (bs[1] = '/') then
+    if (bs<>'') and ((bs[1] = '*') or (bs[1] = '/')) then
     begin
       cur := cur - Length(bs) + 1;
       DoTerm;
     end
-    else if (Pos('AND', bs) = 1) or (Pos('MOD', bs) = 1) then
+    else
+    if (Pos('AND', bs) = 1) or (Pos('MOD', bs) = 1) then
     begin
       cur := cur - Length(bs) + 3;
       DoTerm;
     end
-    else cur := nsm;
+    else
+      cur := nsm;
   end;
 
   procedure DoFactor;
@@ -545,7 +605,7 @@ procedure DoFuncId; forward;
   begin
     nsm := cur;
     bs := GetToken;
-    if bs[1] = '(' then
+    if (bs<>'') and (bs[1] = '(') then
     begin
       cur := cur - Length(bs) + 1;
       DoExpression;
@@ -554,7 +614,8 @@ procedure DoFuncId; forward;
       if buf^[cur] = ')' then Inc(cur)
       else AddError('Expected ")"');
     end
-    else if bs[1] = '[' then
+    else
+    if (bs<>'') and (bs[1] = '[') then
     begin
       cur := cur - Length(bs);
       ProcessBrackets(cur);
@@ -563,12 +624,14 @@ procedure DoFuncId; forward;
       if buf^[cur] = ']' then Inc(cur)
       else AddError('Expected "]"');
     end
-    else if (bs[1] = '+') or (bs[1] = '-') then
+    else
+    if (bs<>'') and ((bs[1] = '+') or (bs[1] = '-')) then
     begin
       cur := cur - Length(bs) + 1;
       DoExpression;
     end
-    else if bs = 'NOT' then
+    else
+    if bs = 'NOT' then
     begin
       cur := cur - Length(bs) + 3;
       DoExpression;
@@ -678,11 +741,16 @@ procedure DoFuncId; forward;
     lastp := cur;
     bs := GetToken;
     if bs = 'BEGIN' then DoBegin
-    else if bs = 'IF' then DoIf
-    else if bs = 'REPEAT' then DoRepeat
-    else if bs = 'WHILE' then DoWhile
-    else if bs = 'GOTO' then DoGoto
-    else if Pos('END', bs) = 1 then
+    else
+    if bs = 'IF' then DoIf
+    else
+    if bs = 'REPEAT' then DoRepeat
+    else
+    if bs = 'WHILE' then DoWhile
+    else
+    if bs = 'GOTO' then DoGoto
+    else
+    if Pos('END', bs) = 1 then
     begin
       cur := nsm;
       Error := False;
@@ -725,13 +793,11 @@ begin
   for i := 0 to MemoFrom.Count - 1 do
   begin
     s := ' ' + MemoFrom[i];
-    if Pos('//', s) <> 0 then SetLength(s, Pos('//', s) - 1);
-    if Pos('{', s) <> 0 then SetLength(s, Pos('{', s) - 1);
     while Pos(#9, s) <> 0 do
       s[Pos(#9, s)] := ' ';
     while Pos('  ', s) <> 0 do
       Delete(s, Pos('  ', s), 1);
-    Move(s[1], buf^[len], Length(s));
+    Move(S[1], Buf^[len], Length(S));
     Inc(len, Length(s));
   end;
   cur := 0; labc := 0;
@@ -816,7 +882,7 @@ begin
 // abstract method
 end;
 
-procedure TfrInterpretator.DoFunction(const Name: String; p1, p2, p3: Variant;
+procedure TfrInterpretator.DoFunction(const name: String; p1, p2, p3: Variant;
   var val: Variant);
 begin
 // abstract method
