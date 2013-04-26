@@ -155,7 +155,7 @@ begin
   rgStyle.Items[4]:= lisUnsigned;
   rgStyle.Items[5]:= lisPointer;
   rgStyle.Items[6]:= lisRecordStruct;
-  rgStyle.Items[7]:= dlgAssemblerDefault;
+  rgStyle.Items[7]:= lisDefault;
   rgStyle.Items[8]:= lisMemoryDump;
   //rgStyle.Items[9]:= lisFloatingPoin;
 

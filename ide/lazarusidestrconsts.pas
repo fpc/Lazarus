@@ -114,6 +114,7 @@ resourcestring
   lisStop = 'Stop';
   lisLess = 'Less';
   lisMore = 'More';
+  lisDefault = 'Default';
 
   // errors
   lisErrInvalidOption = 'Invalid option at position %d: "%s"';
@@ -1990,7 +1991,6 @@ resourcestring
   liscustomOptions = 'custom options';
   dlgCOAsIs = 'As-Is';
   dlgSyntaxOptions = 'Syntax options';
-  dlgAssemblerDefault = 'Default';
   dlgCOCOps = 'C style operators (*=, +=, /= and -=)';
   dlgAssertCode = 'Include assertion code';
   dlgLabelGoto = 'Allow LABEL and GOTO';

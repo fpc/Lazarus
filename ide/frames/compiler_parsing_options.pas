@@ -79,7 +79,7 @@ begin
     with Items do
     begin
       BeginUpdate;
-      Add(dlgAssemblerDefault);
+      Add(lisDefault);
       Add('Intel');
       Add('AT&&T');
       EndUpdate;

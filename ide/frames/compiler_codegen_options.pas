@@ -84,7 +84,7 @@ begin
   else if SysUtils.CompareText(Processor, 'pentiumm') = 0 then
     Result := 'Pentium M (-OpPENTIUMM)'
   else
-    Result := '(' + rsiwpDefault + ')';
+    Result := '(' + lisDefault + ')';
 end;
 
 function CaptionToProcessor(const Caption: string): string;
@@ -139,7 +139,7 @@ begin
   begin
     with Items do
     begin
-      Add('(' + rsiwpDefault + ')');
+      Add('(' + lisDefault + ')');
       Add('Darwin');
       Add('FreeBSD');
       Add('Linux');
@@ -182,7 +182,7 @@ begin
   begin
     with Items do
     begin
-      Add('(' + rsiwpDefault + ')');
+      Add('(' + lisDefault + ')');
       Add('arm');
       Add('i386');
       Add('m68k');

@@ -143,10 +143,10 @@ begin
   lblMenus.Caption := dlgDesktopMenus;
   rbBtnGlyphShowAlways.Caption := lisAlways;
   rbBtnGlyphShowNever.Caption := lisNever;
-  rbBtnGlyphShowSystem.Caption := dlgAssemblerDefault;
+  rbBtnGlyphShowSystem.Caption := lisDefault;
   rbMenuGlyphShowAlways.Caption := lisAlways;
   rbMenuGlyphShowNever.Caption := lisNever;
-  rbMenuGlyphShowSystem.Caption := dlgAssemblerDefault;
+  rbMenuGlyphShowSystem.Caption := lisDefault;
 
   // hints
   lblHints.Caption := dlgDesktopHints;
