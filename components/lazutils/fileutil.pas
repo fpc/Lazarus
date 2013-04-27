@@ -159,7 +159,7 @@ type
   public
     constructor Create;
     procedure Search(const ASearchPath: String; ASearchMask: String = '';
-      ASearchSubDirs: Boolean = True);
+      ASearchSubDirs: Boolean = True; CaseSensitive: Boolean = False);
   public
     property MaskSeparator: char read FMaskSeparator write FMaskSeparator;
     property FollowSymLink: Boolean read FFollowSymLink write FFollowSymLink;
