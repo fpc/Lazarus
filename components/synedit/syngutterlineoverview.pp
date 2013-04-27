@@ -332,7 +332,7 @@ begin
   Result := Column - Other.Column;
   if Result <> 0 then exit;
   {$PUSH}{$Q-} // Overflow is allowed to occur
-  Result := PtrUint(self) - PtrUInt(Other);
+  Result := Integer(PtrUint(self) - PtrUInt(Other));
   {$POP}
 end;
 
@@ -345,7 +345,7 @@ begin
   Result := Priority - Other.Priority;
   if Result <> 0 then exit;
   {$PUSH}{$Q-} // Overflow is allowed to occur
-  Result := PtrUint(self) - PtrUInt(Other);
+  Result := Integer(PtrUint(self) - PtrUInt(Other));
   {$POP}
 end;
 
