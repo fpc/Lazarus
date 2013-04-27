@@ -3933,7 +3933,7 @@ begin
 
   Caption := oisObjectInspector;
   StatusBar.SimpleText := oisAll;
-  FilterLabel.Caption := oisComponents;
+  FilterLabel.Caption := oisBtnComponents;
   MainPopupMenu.Images := IDEImages.Images_16;
 
   AddPopupMenuItem(AddToFavoritesPopupMenuItem,nil,'AddToFavoritePopupMenuItem',

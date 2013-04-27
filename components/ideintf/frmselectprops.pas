@@ -116,8 +116,9 @@ begin
   BClear.Caption:=oisClear;
   BOK.Caption:=oisOk;
   BCancel.Caption:=oiStdActDataSetCancel1Hint;
-  LComponents.Caption:=oisComponents;
-  LProperties.Caption:=oisProperties;
+  LComponents.Caption:=oisBtnComponents;
+  LProperties.Caption:=oisBtnProperties;
+  LBSelected.Caption:=oisSelectedProperties;
   IDEDialogLayoutList.ApplyLayout(Self,485,460);
 end;
 

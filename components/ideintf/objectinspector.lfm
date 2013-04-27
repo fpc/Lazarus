@@ -11,8 +11,8 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   LCLVersion = '1.1'
   object StatusBar: TStatusBar
     Left = 0
-    Height = 22
-    Top = 647
+    Height = 20
+    Top = 649
     Width = 300
     Panels = <    
       item
@@ -48,13 +48,13 @@ object ObjectInspectorDlg: TObjectInspectorDlg
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = FilterLabel
       AnchorSideTop.Side = asrCenter
-      Left = 71
-      Height = 24
-      Top = 2
-      Width = 200
+      Left = 87
+      Height = 23
+      Top = 3
+      Width = 184
       UseFormActivate = True
       ButtonWidth = 23
-      NumGlyphs = 0
+      NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 5
       MaxLength = 0
@@ -64,8 +64,9 @@ object ObjectInspectorDlg: TObjectInspectorDlg
       Left = 3
       Height = 15
       Top = 7
-      Width = 63
-      Caption = 'Components'
+      Width = 79
+      Caption = 'Co&mponents'
+      FocusControl = CompFilterEdit
       ParentColor = False
     end
   end

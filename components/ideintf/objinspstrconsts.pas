@@ -48,9 +48,9 @@ resourcestring
   oisArray = 'Array';
   oisRecord = 'Record';
   oisInterface = 'Interface';
-
-  oisProperties='Properties';
-  oisEvents='Events';
+  oisProperties = 'Properties';
+  oisBtnProperties = '&Properties';
+  oisEvents = 'Events';
   oisFavorites = 'Favorites';
   oisRestricted = 'Restricted';
   
@@ -328,8 +328,10 @@ resourcestring
   oiStdActDataSetEditHint = 'Edit';
   oiStdActDataSetPostHint = 'Post';
   oiStdActDataSetCancel1Hint = 'Cancel';
-  oisComponents = 'Components';
+  //oisComponents = 'Components';
+  oisBtnComponents = 'Co&mponents';
   oiStdActDataSetRefreshHint = 'Refresh';
+  oisSelectedProperties = '&Selected Properties';
   
   oisStdActionListEditor = 'Standard Action Classes';
   oisStdActionListEditorClass = 'Available Action Classes:';

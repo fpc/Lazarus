@@ -41,6 +41,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
         Align = alTop
         BorderSpacing.Around = 6
         Caption = '&Properties'
+        FocusControl = LBProperties
         Layout = tlCenter
         ParentColor = False
       end
@@ -55,10 +56,8 @@ object SelectPropertiesForm: TSelectPropertiesForm
         MultiSelect = True
         OnClick = LBPropertiesClick
         OnDblClick = LBPropertiesDblClick
-        ScrollWidth = 238
         Sorted = True
         TabOrder = 0
-        TopIndex = -1
       end
     end
     object PComponents: TPanel
@@ -81,6 +80,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'Co&mponents'
+        FocusControl = LBComponents
         Layout = tlCenter
         ParentColor = False
       end
@@ -93,10 +93,8 @@ object SelectPropertiesForm: TSelectPropertiesForm
         BorderSpacing.Around = 6
         ItemHeight = 0
         OnSelectionChange = LBComponentsSelectionChange
-        ScrollWidth = 215
         Sorted = True
         TabOrder = 0
-        TopIndex = -1
       end
     end
     object VSplitter: TSplitter
@@ -132,9 +130,10 @@ object SelectPropertiesForm: TSelectPropertiesForm
       Left = 10
       Height = 15
       Top = 3
-      Width = 109
+      Width = 124
       BorderSpacing.Around = 6
       Caption = '&Selected Properties'
+      FocusControl = LBSelected
       ParentColor = False
     end
     object LBSelected: TListBox
@@ -152,9 +151,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
       BorderSpacing.Around = 6
       ItemHeight = 0
       MultiSelect = True
-      ScrollWidth = 390
       TabOrder = 0
-      TopIndex = -1
     end
     object BAdd: TButton
       AnchorSideTop.Control = LBSelected
