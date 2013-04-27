@@ -734,7 +734,7 @@ begin
 end;
 
 function FindKeymapConflicts(Keymap: TKeyCommandRelationList;
-   Protocol: TStrings; out Index1,Index2:integer):integer;
+   Protocol: TStrings; out Index1,Index2: integer): integer;
 // 0 = ok, no errors
 // >0 number of errors found
 var
@@ -749,25 +749,13 @@ var
 
   procedure Check(const ShortCut1, ShortCut2: TIDEShortCut);
   // check if ShortCut1 hides ShortCut2
-  var
-    sc1EffShift2, sc2EffShift2: TShiftState;
   begin
-    if (ShortCut1.Key1=VK_UNKNOWN) then exit;
-    if (ShortCut1.Key1<>ShortCut2.Key1) or (ShortCut1.Shift1<>ShortCut2.Shift1)
-    then exit;
-    // first key fits
-
-    // Make CTRL-Q S into CTRL-Q CTRL-S for check, since both work the same
-    sc1EffShift2:= ShortCut1.Shift2;
-    if( (ShortCut1.Shift1=[ssCtrl]) and (sc1EffShift2 = [])) then
-      sc1EffShift2:= [ssCtrl];
-
-    sc2EffShift2:= ShortCut2.Shift2;
-    if( (ShortCut2.Shift1=[ssCtrl]) and (sc2EffShift2 = [])) then
-      sc2EffShift2:= [ssCtrl];
+    if (ShortCut1.Key1=VK_UNKNOWN)
+    or (ShortCut1.Key1<>ShortCut2.Key1)
+    or (ShortCut1.Shift1<>ShortCut2.Shift1) then exit;    // first keys differ
 
     if (ShortCut1.Key2=VK_UNKNOWN) or (ShortCut2.Key2=VK_UNKNOWN)
-    or ((ShortCut1.Key2=ShortCut2.Key2) and (sc1EffShift2=sc2EffShift2))
+    or ((ShortCut1.Key2=ShortCut2.Key2) and (ShortCut1.Shift2=ShortCut2.Shift2))
     then begin
       // conflict found
       if Result=0 then begin
@@ -800,10 +788,6 @@ begin
     Key1:=Keymap[a];
     for b:=a+1 to Keymap.Count-1 do begin
       Key2:=Keymap[b];
-      {if (Key2.Command=ecConfigBuildLazarus)
-      and (Key1.Command=ecFindNext) then begin
-        debugln('FindKeymapConflicts ',dbgs(Key1.Category.ScopeIntersects(Key2.Category.Scope)),' ',dbgsName(Key1.Category.Scope),' ',dbgsName(Key2.Category.Scope));
-      end;}
       if (not Key1.Category.ScopeIntersects(Key2.Category.Scope)) then
         continue;
       Check(Key1.ShortcutA,Key2.ShortcutA);

@@ -1023,19 +1023,23 @@ end;
 function TSynEditKeyStrokes.FindKeycode2(Code1: word; SS1: TShiftState;
   Code2: word; SS2: TShiftState): integer;
 var
-  x: integer;
+  x, Candidate: integer;
 begin
   Result := -1;
-  for x := 0 to Count-1 do
-    // If ShiftMask2 = [ssCtrl] and shortcut is "Ctrl-X, Y", then both
-    // "Ctrl-X, Y" and "Ctrl-X, Ctrl-Y" are accepted. The second CTRL is ignored.
+  Candidate := -1;
+  // Use an exact match if found, then use a ShiftMasked match
+  for x := 0 to Count-1 do begin
     with Items[x] do
-      if (Key = Code1) and (Shift = SS1 - ShiftMask)
-      and (Key2 = Code2) and (Shift2 = SS2 - ShiftMask2) then
+      if (Key = Code1) and (Key2 = Code2) then
       begin
-        Result := x;
-        break;
+        if (Shift = SS1) and (Shift2 = SS2) then
+          Exit(x)                // Found exact match
+        else
+        if (Shift = SS1-ShiftMask) and (Shift2 = SS2-ShiftMask2) and (Candidate = -1) then
+          Candidate := x;        // Found ShiftMasked match
       end;
+  end;
+  Result := Candidate;  // Can be -1 or a ShiftMasked match
 end;
 
 function TSynEditKeyStrokes.FindKeycode2Start(Code: word; SS: TShiftState): integer;
