@@ -205,7 +205,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
       BorderSpacing.Top = 4
       Caption = 'RestoreWindowGeometryRadioButton'
       Checked = True
-      OnClick = WindowGeometryRadioButtonClick
+      OnClick = CustomGeometryRadioButtonClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 3
