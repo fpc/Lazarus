@@ -373,6 +373,14 @@ msgstr "Array"
 msgid "Boolean"
 msgstr "Boolean"
 
+#: objinspstrconsts.oisbtncomponents
+msgid "Co&mponents"
+msgstr ""
+
+#: objinspstrconsts.oisbtnproperties
+msgid "&Properties"
+msgstr ""
+
 #: objinspstrconsts.oiscadd
 msgid "&Add"
 msgstr "&Tambah"
@@ -417,10 +425,6 @@ msgstr "Nama komponen %s%s%s bukan pengenal yang benar"
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
 msgstr ""
-
-#: objinspstrconsts.oiscomponents
-msgid "Components"
-msgstr "Komponen"
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
@@ -716,6 +720,10 @@ msgstr ""
 
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
+msgstr ""
+
+#: objinspstrconsts.oisselectedproperties
+msgid "&Selected Properties"
 msgstr ""
 
 #: objinspstrconsts.oisselectshortcut

@@ -370,6 +370,14 @@ msgstr "Taulukko"
 msgid "Boolean"
 msgstr ""
 
+#: objinspstrconsts.oisbtncomponents
+msgid "Co&mponents"
+msgstr ""
+
+#: objinspstrconsts.oisbtnproperties
+msgid "&Properties"
+msgstr ""
+
 #: objinspstrconsts.oiscadd
 msgid "&Add"
 msgstr "&Lisää"
@@ -414,10 +422,6 @@ msgstr "Komponentin nimeksi ei käy %s%s%s (katso kohta Name) koska se ei ole sa
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
 msgstr "Komponenttien rajoitukset: "
-
-#: objinspstrconsts.oiscomponents
-msgid "Components"
-msgstr "Komponentit"
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
@@ -710,6 +714,10 @@ msgstr "Valitse kaikki"
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
 msgstr "Valitse kaikki kentät"
+
+#: objinspstrconsts.oisselectedproperties
+msgid "&Selected Properties"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"

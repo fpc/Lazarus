@@ -379,6 +379,14 @@ msgstr "Array"
 msgid "Boolean"
 msgstr "Booleano"
 
+#: objinspstrconsts.oisbtncomponents
+msgid "Co&mponents"
+msgstr ""
+
+#: objinspstrconsts.oisbtnproperties
+msgid "&Properties"
+msgstr ""
+
 #: objinspstrconsts.oiscadd
 msgid "&Add"
 msgstr "&Aggiungi"
@@ -423,10 +431,6 @@ msgstr "Il nome del componente %s%s%s non è un identificatore valido"
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
 msgstr "Restrizioni sui componenti:"
-
-#: objinspstrconsts.oiscomponents
-msgid "Components"
-msgstr "Componenti"
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
@@ -725,6 +729,10 @@ msgstr "&Seleziona tutto"
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
 msgstr "Seleziona tutti i campi"
+
+#: objinspstrconsts.oisselectedproperties
+msgid "&Selected Properties"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"

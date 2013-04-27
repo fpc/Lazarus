@@ -368,6 +368,14 @@ msgstr "Масив"
 msgid "Boolean"
 msgstr "Boolean"
 
+#: objinspstrconsts.oisbtncomponents
+msgid "Co&mponents"
+msgstr ""
+
+#: objinspstrconsts.oisbtnproperties
+msgid "&Properties"
+msgstr ""
+
 #: objinspstrconsts.oiscadd
 msgid "&Add"
 msgstr "&Додати"
@@ -412,10 +420,6 @@ msgstr "Назва компонету %s%s%s є неправильним іде�
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
 msgstr "Обмеження компонентів: "
-
-#: objinspstrconsts.oiscomponents
-msgid "Components"
-msgstr "Компонент"
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
@@ -704,6 +708,10 @@ msgstr "Ви&брати все"
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
 msgstr "Вибрати Всі Поля"
+
+#: objinspstrconsts.oisselectedproperties
+msgid "&Selected Properties"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"

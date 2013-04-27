@@ -361,6 +361,14 @@ msgstr "مصفوفة"
 msgid "Boolean"
 msgstr "منطقي"
 
+#: objinspstrconsts.oisbtncomponents
+msgid "Co&mponents"
+msgstr ""
+
+#: objinspstrconsts.oisbtnproperties
+msgid "&Properties"
+msgstr ""
+
 #: objinspstrconsts.oiscadd
 msgid "&Add"
 msgstr "إ&ضافة"
@@ -405,10 +413,6 @@ msgstr "إسم المكون %s%s%s غير سليم كمعرّف"
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
 msgstr "قيود المكوّن: "
-
-#: objinspstrconsts.oiscomponents
-msgid "Components"
-msgstr "المكونات"
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
@@ -695,6 +699,10 @@ msgstr "ا&ختيار الكل"
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
 msgstr "اختيار كل الحقول"
+
+#: objinspstrconsts.oisselectedproperties
+msgid "&Selected Properties"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"

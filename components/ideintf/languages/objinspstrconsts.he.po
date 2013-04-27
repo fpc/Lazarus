@@ -371,6 +371,14 @@ msgstr "מערך"
 msgid "Boolean"
 msgstr "בולאני"
 
+#: objinspstrconsts.oisbtncomponents
+msgid "Co&mponents"
+msgstr ""
+
+#: objinspstrconsts.oisbtnproperties
+msgid "&Properties"
+msgstr ""
+
 #: objinspstrconsts.oiscadd
 msgid "&Add"
 msgstr "הוסף"
@@ -417,10 +425,6 @@ msgstr "שם הרכיב   %s%s%s אינו מזהה חוקי"
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
 msgstr "הגבלות רכיבים:"
-
-#: objinspstrconsts.oiscomponents
-msgid "Components"
-msgstr "רכיבים"
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
@@ -711,6 +715,10 @@ msgstr "בחר הכל"
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
 msgstr "בחר את כל השדות"
+
+#: objinspstrconsts.oisselectedproperties
+msgid "&Selected Properties"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"

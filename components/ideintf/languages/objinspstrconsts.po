@@ -352,6 +352,14 @@ msgstr ""
 msgid "Boolean"
 msgstr ""
 
+#: objinspstrconsts.oisbtncomponents
+msgid "Co&mponents"
+msgstr ""
+
+#: objinspstrconsts.oisbtnproperties
+msgid "&Properties"
+msgstr ""
+
 #: objinspstrconsts.oiscadd
 msgid "&Add"
 msgstr ""
@@ -395,10 +403,6 @@ msgstr ""
 
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
-msgstr ""
-
-#: objinspstrconsts.oiscomponents
-msgid "Components"
 msgstr ""
 
 #: objinspstrconsts.oisconfirmdelete
@@ -685,6 +689,10 @@ msgstr ""
 
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
+msgstr ""
+
+#: objinspstrconsts.oisselectedproperties
+msgid "&Selected Properties"
 msgstr ""
 
 #: objinspstrconsts.oisselectshortcut

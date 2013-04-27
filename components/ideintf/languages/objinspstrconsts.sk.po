@@ -377,6 +377,14 @@ msgstr "Pole"
 msgid "Boolean"
 msgstr "Boolean"
 
+#: objinspstrconsts.oisbtncomponents
+msgid "Co&mponents"
+msgstr ""
+
+#: objinspstrconsts.oisbtnproperties
+msgid "&Properties"
+msgstr ""
+
 #: objinspstrconsts.oiscadd
 msgid "&Add"
 msgstr "&Pridať"
@@ -423,10 +431,6 @@ msgstr "Názov komponentu %s%s%s nie je platný identifikátor"
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
 msgstr "Obmedzenia komponentu:"
-
-#: objinspstrconsts.oiscomponents
-msgid "Components"
-msgstr "Komponenty"
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
@@ -722,6 +726,10 @@ msgstr ""
 
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
+msgstr ""
+
+#: objinspstrconsts.oisselectedproperties
+msgid "&Selected Properties"
 msgstr ""
 
 #: objinspstrconsts.oisselectshortcut

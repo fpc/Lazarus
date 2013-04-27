@@ -371,6 +371,14 @@ msgstr "Array"
 msgid "Boolean"
 msgstr "Boolean"
 
+#: objinspstrconsts.oisbtncomponents
+msgid "Co&mponents"
+msgstr ""
+
+#: objinspstrconsts.oisbtnproperties
+msgid "&Properties"
+msgstr ""
+
 #: objinspstrconsts.oiscadd
 msgid "&Add"
 msgstr "&Добавить"
@@ -416,10 +424,6 @@ msgstr "Имя компонента %s%s%s не является коррект�
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
 msgstr "Ограничения компонента: "
-
-#: objinspstrconsts.oiscomponents
-msgid "Components"
-msgstr "Компоненты"
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
@@ -712,6 +716,10 @@ msgstr "Вы&делить все"
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
 msgstr "Выделить все поля"
+
+#: objinspstrconsts.oisselectedproperties
+msgid "&Selected Properties"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"

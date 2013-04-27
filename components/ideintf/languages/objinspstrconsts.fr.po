@@ -378,6 +378,14 @@ msgstr "Tableau"
 msgid "Boolean"
 msgstr "Booléen"
 
+#: objinspstrconsts.oisbtncomponents
+msgid "Co&mponents"
+msgstr ""
+
+#: objinspstrconsts.oisbtnproperties
+msgid "&Properties"
+msgstr ""
+
 #: objinspstrconsts.oiscadd
 msgid "&Add"
 msgstr "&Ajouter"
@@ -424,10 +432,6 @@ msgstr "Le nom du composant %s%s%s n'est pas un identificateur valide"
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
 msgstr "Restrictions des composants"
-
-#: objinspstrconsts.oiscomponents
-msgid "Components"
-msgstr "Composants"
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
@@ -723,6 +727,10 @@ msgstr ""
 
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
+msgstr ""
+
+#: objinspstrconsts.oisselectedproperties
+msgid "&Selected Properties"
 msgstr ""
 
 #: objinspstrconsts.oisselectshortcut

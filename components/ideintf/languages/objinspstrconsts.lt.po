@@ -369,6 +369,14 @@ msgstr "Masyvas"
 msgid "Boolean"
 msgstr "Loginis tipas"
 
+#: objinspstrconsts.oisbtncomponents
+msgid "Co&mponents"
+msgstr ""
+
+#: objinspstrconsts.oisbtnproperties
+msgid "&Properties"
+msgstr ""
+
 #: objinspstrconsts.oiscadd
 msgid "&Add"
 msgstr "Pri&dėti"
@@ -414,10 +422,6 @@ msgstr "Komponentės vardas %s%s%s nėra teisingas identifikatorius"
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
 msgstr "Komponento apribojimai: "
-
-#: objinspstrconsts.oiscomponents
-msgid "Components"
-msgstr "Komponentai"
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
@@ -710,6 +714,10 @@ msgstr "Žymėti &viską"
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
 msgstr "Pažymėti visus laukelius"
+
+#: objinspstrconsts.oisselectedproperties
+msgid "&Selected Properties"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"

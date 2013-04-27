@@ -373,6 +373,14 @@ msgstr "配列"
 msgid "Boolean"
 msgstr "Boolean"
 
+#: objinspstrconsts.oisbtncomponents
+msgid "Co&mponents"
+msgstr ""
+
+#: objinspstrconsts.oisbtnproperties
+msgid "&Properties"
+msgstr ""
+
 #: objinspstrconsts.oiscadd
 msgid "&Add"
 msgstr "追加(&A)"
@@ -419,10 +427,6 @@ msgstr "コンポーネント名 %s%s%s は、有効な識別子ではありま�
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
 msgstr "コンポーネントの制限"
-
-#: objinspstrconsts.oiscomponents
-msgid "Components"
-msgstr "コンポーネント"
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
@@ -721,6 +725,10 @@ msgstr "すべて選択(&S)"
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
 msgstr "すべてのフィールドを選択"
+
+#: objinspstrconsts.oisselectedproperties
+msgid "&Selected Properties"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
