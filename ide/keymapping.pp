@@ -1090,8 +1090,8 @@ begin
   ecFindProcedureDefinition:SetSingle(VK_UP,[ssShift,SSCtrl]);
   ecFindProcedureMethod: SetSingle(VK_DOWN,[ssShift,SSCtrl]);
   ecFindDeclaration:     SetSingle(VK_UP,[ssAlt]);
-  ecFindBlockOtherEnd:   SetCombo(VK_Q,[ssCtrl],VK_K,[]);
-  ecFindBlockStart:      SetCombo(VK_Q,[ssCtrl],VK_B,[]);
+  ecFindBlockOtherEnd:   SetCombo(VK_Q,[ssCtrl],VK_O,[]);
+  ecFindBlockStart:      SetCombo(VK_Q,[ssCtrl],VK_M,[]);
   ecGotoIncludeDirective:SetSingle(VK_UNKNOWN,[]);
   ecShowAbstractMethods: SetSingle(VK_UNKNOWN,[]);
   ecRemoveEmptyMethods:  SetSingle(VK_UNKNOWN,[]);
@@ -1410,8 +1410,8 @@ begin
   ecBlockMove:           SetCombo(VK_K,[ssCtrl],VK_V,[]);
   ecBlockCopy:           SetCombo(VK_K,[ssCtrl],VK_C,[]);
   ecBlockDelete:         SetCombo(VK_K,[ssCtrl],VK_Y,[]);
-  ecBlockGotoBegin:      SetCombo(VK_Q,[ssCtrl],VK_B,[ssCtrl]);
-  ecBlockGotoEnd:        SetCombo(VK_Q,[ssCtrl],VK_K,[ssCtrl]);
+  ecBlockGotoBegin:      SetCombo(VK_Q,[ssCtrl],VK_B,[]);
+  ecBlockGotoEnd:        SetCombo(VK_Q,[ssCtrl],VK_K,[]);
 
   // column mode selection
   ecColSelUp:            SetSingle(VK_UP,   [ssAlt,ssShift]);
@@ -1530,8 +1530,8 @@ begin
   ecFindProcedureDefinition:SetSingle(VK_UP,[ssShift,SSCtrl]);
   ecFindProcedureMethod: SetSingle(VK_DOWN,[ssShift,SSCtrl]);
   ecFindDeclaration:     SetSingle(VK_UNKNOWN,[]);
-  ecFindBlockOtherEnd:   SetCombo(VK_Q,[ssCtrl],VK_K,[]);
-  ecFindBlockStart:      SetCombo(VK_Q,[ssCtrl],VK_B,[]);
+  ecFindBlockOtherEnd:   SetCombo(VK_Q,[ssCtrl],VK_O,[]);
+  ecFindBlockStart:      SetCombo(VK_Q,[ssCtrl],VK_M,[]);
   ecGotoIncludeDirective:SetSingle(VK_UNKNOWN,[]);
   ecShowAbstractMethods: SetSingle(VK_UNKNOWN,[]);
   ecRemoveEmptyMethods:  SetSingle(VK_UNKNOWN,[]);
@@ -1682,7 +1682,7 @@ begin
   ecConfigCustomComps:   SetSingle(VK_UNKNOWN,[]);
 
   // tools menu
-  ecEnvironmentOptions:  SetSingle(VK_UNKNOWN,[]);
+  ecEnvironmentOptions:  SetSingle(VK_O,[ssShift,ssCtrl]);
   ecRescanFPCSrcDir:     SetSingle(VK_UNKNOWN,[]);
   ecEditCodeTemplates:   SetSingle(VK_UNKNOWN,[]);
   ecCodeToolsDefinesEd:  SetSingle(VK_UNKNOWN,[]);
