@@ -946,8 +946,9 @@ var
 begin
   Result := -1;
   for x := 0 to Count-1 do
-    if (Items[x].Key = Code) and (Items[x].Shift = SS - Items[x].ShiftMask) and (Items[x].Key2 = 0)
-    then begin
+    if (Items[x].Key = Code) and (Items[x].Shift = SS-Items[x].ShiftMask)
+    and (Items[x].Key2 = 0) then
+    begin
       Result := x;
       break;
     end;
