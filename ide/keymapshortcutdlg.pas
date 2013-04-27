@@ -46,6 +46,7 @@ type
     SecondaryGroupBox: TGroupBox;
     procedure CancelButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   private
     FKeyCommandRelationList: TKeyCommandRelationList;
@@ -83,8 +84,7 @@ type
 
 function ShowKeyMappingEditForm(Index: integer;
                 AKeyCommandRelationList: TKeyCommandRelationList): TModalResult;
-function ShowKeyMappingGrabForm(out Key: TIDEShortCut;
-  AllowSequence: boolean = false): TModalResult;
+function ShowKeyMappingGrabForm(out Key: TIDEShortCut; AllowSequence: boolean = false): TModalResult;
 
 implementation
 
@@ -106,8 +106,7 @@ begin
   end;
 end;
 
-function ShowKeyMappingGrabForm(out Key: TIDEShortCut;
-  AllowSequence: boolean): TModalResult;
+function ShowKeyMappingGrabForm(out Key: TIDEShortCut; AllowSequence: boolean): TModalResult;
 var
   ShortCutDialog: TShortCutDialog;
 begin
@@ -175,6 +174,11 @@ begin
 
   UpdateCaptions;
   ClearKeys;
+end;
+
+procedure TShortCutDialog.FormShow(Sender: TObject);
+begin
+  FPrimaryKey1Box.GrabButton.SetFocus;
 end;
 
 procedure TShortCutDialog.CancelButtonClick(Sender: TObject);
@@ -264,6 +268,18 @@ begin
   SecondaryGroupBox.Visible:=FShowSecondary;
 end;
 
+procedure TShortCutDialog.SetShowSequence(const AValue: boolean);
+begin
+  if FShowSequence=AValue then exit;
+  FShowSequence:=AValue;
+  FPrimaryKey2Box.Visible:=FShowSequence;
+  FSecondaryKey2Box.Visible:=FShowSequence;
+  // With a single key GrabBox focus OK button after keypress.
+  if not (FShowSecondary or FShowSequence) then
+    FPrimaryKey1Box.MainOkButton:=BtnPanel.OKButton;
+  UpdateCaptions;
+end;
+
 procedure TShortCutDialog.SetPrimaryShortCut(const AValue: TIDEShortCut);
 var
   APrimaryShortCut: TIDEShortCut;
@@ -302,15 +318,6 @@ begin
   SecondaryKey1Box.ShiftState:=AValue.Shift1;
   SecondaryKey2Box.Key:=AValue.Key2;
   SecondaryKey2Box.ShiftState:=AValue.Shift2;
-end;
-
-procedure TShortCutDialog.SetShowSequence(const AValue: boolean);
-begin
-  if FShowSequence=AValue then exit;
-  FShowSequence:=AValue;
-  FPrimaryKey2Box.Visible:=FShowSequence;
-  FSecondaryKey2Box.Visible:=FShowSequence;
-  UpdateCaptions;
 end;
 
 function TShortCutDialog.ResolveConflicts(Key: TIDEShortCut;

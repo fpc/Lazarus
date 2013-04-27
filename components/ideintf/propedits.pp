@@ -1454,6 +1454,7 @@ type
   private
     FAllowedShifts: TShiftState;
     FGrabButton: TButton;
+    FMainOkButton: TCustomButton;
     FKey: Word;
     FKeyComboBox: TComboBox;
     FShiftButtons: TShiftState;
@@ -1467,15 +1468,13 @@ type
     procedure SetShiftState(const AValue: TShiftState);
     procedure OnGrabButtonClick(Sender: TObject);
     procedure OnShiftCheckBoxClick(Sender: TObject);
-    procedure OnGrabFormKeyDown(Sender: TObject; var AKey: Word;
-      AShift: TShiftState);
+    procedure OnGrabFormKeyDown(Sender: TObject; var AKey: Word; AShift: TShiftState);
     procedure OnKeyComboboxEditingDone(Sender: TObject);
   protected
     procedure Loaded; override;
     procedure RealSetText(const Value: TCaption); override;
     procedure UpdateShiftButons;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-           override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function ShiftToStr(s: TShiftStateEnum): string;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -1486,6 +1485,7 @@ type
     property AllowedShifts: TShiftState read FAllowedShifts write SetAllowedShifts;
     property KeyComboBox: TComboBox read FKeyComboBox;
     property GrabButton: TButton read FGrabButton;
+    property MainOkButton: TCustomButton read FMainOkButton write FMainOkButton;
     property ShiftCheckBox[Shift: TShiftStateEnum]: TCheckBox read GetShiftCheckBox;
   end;
 
@@ -6437,6 +6437,9 @@ begin
   FGrabForm.Height:=50;
   FGrabForm.AutoSize:=true;
   FGrabForm.ShowModal;
+  // After getting a key, focus the main form's OK button. User can just click Enter.
+  if (Key <> VK_UNKNOWN) and Assigned(MainOkButton) then
+    MainOkButton.SetFocus;
   FreeAndNil(FGrabForm);
 end;
 
@@ -6478,8 +6481,7 @@ begin
   Key:=KeyStringToVKCode(KeyComboBox.Text);
 end;
 
-function TCustomShortCutGrabBox.GetShiftCheckBox(Shift: TShiftStateEnum
-  ): TCheckBox;
+function TCustomShortCutGrabBox.GetShiftCheckBox(Shift: TShiftStateEnum): TCheckBox;
 begin
   Result:=FCheckBoxes[Shift];
 end;
@@ -6607,6 +6609,7 @@ end;
 constructor TCustomShortCutGrabBox.Create(TheOwner: TComponent);
 var
   i: Integer;
+  ShSt: TShiftStateEnum;
   s: String;
 begin
   inherited Create(TheOwner);
@@ -6648,6 +6651,17 @@ begin
   ShiftState:=[];
   Key:=VK_UNKNOWN;
   KeyComboBox.Text:=KeyAndShiftStateToKeyString(Key,[]);
+
+  // Fix TabOrders. The controls were created in "wrong" order.
+  i:=FGrabButton.TabOrder;                 // GrabButton was created first.
+  for ShSt:=Low(FCheckBoxes) to High(FCheckBoxes) do begin
+    if Assigned(FCheckBoxes[ShSt]) then begin
+      FCheckBoxes[ShSt].TabOrder:=i;
+      Inc(i);
+    end;
+  end;
+  FKeyComboBox.TabOrder:=i;
+  FGrabButton.TabOrder:=i+1;
 end;
 
 function TCustomShortCutGrabBox.GetDefaultShiftButtons: TShiftState;

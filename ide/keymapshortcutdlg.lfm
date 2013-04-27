@@ -10,7 +10,8 @@ object ShortCutDialog: TShortCutDialog
   ClientHeight = 260
   ClientWidth = 545
   OnCreate = FormCreate
-  LCLVersion = '0.9.31'
+  OnShow = FormShow
+  LCLVersion = '1.1'
   object PrimaryGroupBox: TGroupBox
     Left = 6
     Height = 93
