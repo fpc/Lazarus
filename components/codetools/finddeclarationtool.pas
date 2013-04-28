@@ -5895,8 +5895,6 @@ function TFindDeclarationTool.FindIdentifierInAncestors(
     Params.ContextNode:=AncestorClassNode;
     Params.Flags:=Params.Flags-[fdfIgnoreCurContextNode,fdfSearchInParentNodes];
     Result:=AncestorTool.FindIdentifierInContext(Params);
-    if not (fdfSearchInAncestors in Params.Flags) then
-      Exclude(OldInput.Flags, fdfSearchInAncestors);
     Params.Load(OldInput,true);
   end;
 
