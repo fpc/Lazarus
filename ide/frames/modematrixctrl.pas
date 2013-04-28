@@ -28,6 +28,7 @@ type
     constructor Create(aMatrix: TGroupedMatrix); virtual;
     destructor Destroy; override;
     procedure Clear; virtual;
+    function Equals(Obj: TObject): boolean; override;
     property Matrix: TGroupedMatrix read FMatrix;
     property Group: TGroupedMatrixGroup read FGroup write SetGroup;
     function GetGroupIndex: integer;
@@ -59,6 +60,7 @@ type
     constructor Create(aControl: TGroupedMatrix); override;
     destructor Destroy; override;
     procedure Clear; override;
+    function Equals(Obj: TObject): boolean; override;
     property Caption: TCaption read FCaption write SetCaption;
     property Count: integer read GetCount;
     property Items[Index: integer]: TGroupedMatrixRow read GetItems; default;
@@ -84,6 +86,7 @@ type
     procedure Assign(Source: TPersistent); override;
     constructor Create(aControl: TGroupedMatrix); override;
     destructor Destroy; override;
+    function Equals(Obj: TObject): boolean; override;
     property Value: string read FValue write SetValue;
     property Typ: string read FTyp write SetTyp;
     property Modes: TStrings read FModes write SetModes;
@@ -99,6 +102,7 @@ type
   public
     procedure Assign(Source: TPersistent); override;
     constructor Create;
+    function Equals(Obj: TObject): boolean; override;
     property Caption: string read FCaption write FCaption;
     property Color: TColor read FColor write FColor;
   end;
@@ -246,6 +250,17 @@ end;
 constructor TGroupedMatrixMode.Create;
 begin
   FColor:=clDefault;
+end;
+
+function TGroupedMatrixMode.Equals(Obj: TObject): boolean;
+var
+  SrcMode: TGroupedMatrixMode;
+begin
+  Result:=false;
+  if not (Obj is TGroupedMatrixMode) then exit;
+  SrcMode:=TGroupedMatrixMode(Obj);
+  if SrcMode.Caption<>Caption then exit;
+  if SrcMode.Color<>Color then exit;
 end;
 
 { TGroupedMatrixModes }
@@ -530,6 +545,21 @@ begin
   inherited Destroy;
 end;
 
+function TGroupedMatrixValue.Equals(Obj: TObject): boolean;
+var
+  SrcValue: TGroupedMatrixValue;
+  i: Integer;
+begin
+  Result:=false;
+  if not (Obj is TGroupedMatrixValue) then exit;
+  SrcValue:=TGroupedMatrixValue(Obj);
+  if SrcValue.Modes.Count<>Modes.Count then exit;
+  if SrcValue.Typ<>Typ then exit;
+  if SrcValue.Value<>Value then exit;
+  for i:=0 to Modes.Count-1 do
+    if SrcValue.Modes[i]<>Modes[i] then exit;
+end;
+
 function TGroupedMatrixValue.AsString: string;
 begin
   Result:=inherited AsString+Typ+':'+Value;
@@ -605,6 +635,22 @@ begin
   for i:=Count-1 downto 0 do
     Items[i].Free;
   inherited Clear;
+end;
+
+function TGroupedMatrixGroup.Equals(Obj: TObject): boolean;
+var
+  SrcGroup: TGroupedMatrixGroup;
+  i: Integer;
+begin
+  Result:=false;
+  if not (Obj is TGroupedMatrixGroup) then
+    exit;
+  SrcGroup:=TGroupedMatrixGroup(Obj);
+  if SrcGroup.Count<>Count then exit;
+  if SrcGroup.Color<>Color then exit;
+  if SrcGroup.Caption<>Caption then exit;
+  for i:=0 to Count-1 do
+    if not SrcGroup[i].Equals(Items[i]) then exit;
 end;
 
 function TGroupedMatrixGroup.IndexOfRow(aRow: TGroupedMatrixRow): integer;
@@ -697,6 +743,16 @@ end;
 procedure TGroupedMatrixRow.Clear;
 begin
 
+end;
+
+function TGroupedMatrixRow.Equals(Obj: TObject): boolean;
+var
+  SrcRow: TGroupedMatrixRow;
+begin
+  if not (Obj is TGroupedMatrixRow) then
+    exit(false);
+  SrcRow:=TGroupedMatrixRow(Obj);
+  Result:=SrcRow.RowInGrid=RowInGrid;
 end;
 
 function TGroupedMatrixRow.GetGroupIndex: integer;
