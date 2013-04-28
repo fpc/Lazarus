@@ -1,0 +1,25 @@
+ccwn2c08 - chroma chunk w:0.3127,0.3290 r:0.64,0.33 g:0.30,0.60 b:0.15,0.06
+ccwn3p08 - chroma chunk w:0.3127,0.3290 r:0.64,0.33 g:0.30,0.60 b:0.15,0.06
+cdfn2c08 - physical pixel dimensions, 8x32 flat pixels
+cdhn2c08 - physical pixel dimensions, 32x8 high pixels
+cdsn2c08 - physical pixel dimensions, 8x8 square pixels
+cdun2c08 - physical pixel dimensions, 1000 pixels per 1 meter
+ch1n3p04 - histogram 15 colors
+ch2n3p08 - histogram 256 colors
+cm0n0g04 - modification time, 01-jan-2000 12:34:56
+cm7n0g04 - modification time, 01-jan-1970 00:00:00
+cm9n0g04 - modification time, 31-dec-1999 23:59:59
+cs3n2c16 - color, 13 significant bits
+cs3n3p08 - paletted, 3 significant bits
+cs5n2c08 - color, 5 significant bits
+cs5n3p08 - paletted, 5 significant bits
+cs8n2c08 - color, 8 significant bits (reference)
+cs8n3p08 - paletted, 8 significant bits (reference)
+ct0n0g04 - no textual data
+ct1n0g04 - with textual data
+ctzn0g04 - with compressed textual data
+cten0g04 - international UTF-8, english
+ctfn0g04 - international UTF-8, finnish
+ctgn0g04 - international UTF-8, greek
+cthn0g04 - international UTF-8, hindi
+ctjn0g04 - international UTF-8, japanese 

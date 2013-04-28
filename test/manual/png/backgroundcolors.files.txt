@@ -1,0 +1,8 @@
+bgai4a08 - 8 bit grayscale, alpha, no background chunk, interlaced
+bgai4a16 - 16 bit grayscale, alpha, no background chunk, interlaced
+bgan6a08 - 3x8 bits rgb color, alpha, no background chunk
+bgan6a16 - 3x16 bits rgb color, alpha, no background chunk
+bgbn4a08 - 8 bit grayscale, alpha, black background chunk
+bggn4a16 - 16 bit grayscale, alpha, gray background chunk
+bgwn6a08 - 3x8 bits rgb color, alpha, white background chunk
+bgyn6a16 - 3x16 bits rgb color, alpha, yellow background chunk 

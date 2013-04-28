@@ -1,0 +1,11 @@
+f00n0g08 - grayscale, no interlacing, filter-type 0
+f00n2c08 - color, no interlacing, filter-type 0
+f01n0g08 - grayscale, no interlacing, filter-type 1
+f01n2c08 - color, no interlacing, filter-type 1
+f02n0g08 - grayscale, no interlacing, filter-type 2
+f02n2c08 - color, no interlacing, filter-type 2
+f03n0g08 - grayscale, no interlacing, filter-type 3
+f03n2c08 - color, no interlacing, filter-type 3
+f04n0g08 - grayscale, no interlacing, filter-type 4
+f04n2c08 - color, no interlacing, filter-type 4
+f99n0g04 - bit-depth 4, filter changing per scanline 
