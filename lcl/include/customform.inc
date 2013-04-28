@@ -3149,6 +3149,14 @@ end;
 
 procedure TFormPropertyStorage.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
+  If CloseAction = caFree Then Begin
+    Save;
+    TCustomForm(Owner).RemoveHandlerOnBeforeDestruction(@FormDestroy);
+  end;
+end;
+
+procedure TFormPropertyStorage.FormDestroy(Sender: TObject);
+begin
   Save;
 end;
 
@@ -3159,6 +3167,7 @@ begin
   begin
     TCustomForm(Owner).AddHandlerCreate(@FormCreate, True);
     TCustomForm(Owner).AddHandlerClose(@FormClose, True);
+    TCustomForm(Owner).AddHandlerOnBeforeDestruction(@FormDestroy, True);
   end;
 end;
 

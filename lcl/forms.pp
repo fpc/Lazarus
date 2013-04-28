@@ -1662,6 +1662,7 @@ type
   private
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormDestroy(Sender : TObject);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
