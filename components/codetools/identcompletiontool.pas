@@ -2542,7 +2542,9 @@ begin
 
         // check end of line
         if (not InFrontOfDirective)
-        and (not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos)) then
+        and (CursorPos.Code.LineColIsOutside(CursorPos.Y,CursorPos.X)
+          or (not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos)))
+        then
           CurrentIdentifierList.ContextFlags:=
             CurrentIdentifierList.ContextFlags+[ilcfEndOfLine];
 
