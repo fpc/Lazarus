@@ -1,15 +1,4 @@
 {
- /***************************************************************************
-                  project.pp  -  project utility class file
-                  -----------------------------------------
-          TProject is responsible for managing a complete project.
-
-
-              Initial Revision  : Sun Mar 28 23:15:32 CST 1999
-
-
- ***************************************************************************/
-
  ***************************************************************************
  *                                                                         *
  *   This source is free software; you can redistribute it and/or modify   *
