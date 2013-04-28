@@ -654,6 +654,18 @@ begin
         ScannedRange:=lsrSourceName;
         if ord(Range)<=ord(ScannedRange) then exit;
         if HasSourceType then begin
+          if (CurSection=ctnProgram)
+          and (CurPos.Flag=cafRoundBracketOpen) then begin
+            repeat
+              ReadNextAtom;
+              if CurPos.Flag<>cafWord then
+                AtomIsIdentifierSaveE;
+              ReadNextAtom; // should be ',' or ')'
+              if not (CurPos.Flag in [cafComma,cafRoundBracketClose]) then
+                RaiseCharExpectedButAtomFound(')');
+            until CurPos.Flag=cafRoundBracketClose;
+            ReadNextAtom;
+          end;
           if UpAtomIs('PLATFORM') then
             ReadNextAtom;
           if UpAtomIs('UNIMPLEMENTED') then
