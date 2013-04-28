@@ -6981,16 +6981,16 @@ test/lazutils/testpaswstring.lpi svneol=native#text/plain
 test/lazutils/testpaswstring.pas svneol=native#text/plain
 test/lazutils/testunicode.lpi svneol=native#text/plain
 test/lazutils/testunicode.pas svneol=native#text/pascal
-test/lclmanual/textextent/mainform.lfm svneol=native#text/plain
-test/lclmanual/textextent/mainform.pas svneol=native#text/plain
-test/lclmanual/textextent/textextent.ico -text
-test/lclmanual/textextent/textextent.lpi svneol=native#text/plain
-test/lclmanual/textextent/textextent.lpr svneol=native#text/plain
-test/lclmanual/textextent/textextent.res -text
 test/lcltests/testmethodcompare.pas svneol=native#text/plain
 test/lcltests/testpen.pas svneol=native#text/plain
 test/lcltests/testpreferredsize.pas svneol=native#text/plain
 test/lcltests/testunicode.pas svneol=native#text/plain
+test/manual/lcl/textextent/mainform.lfm svneol=native#text/plain
+test/manual/lcl/textextent/mainform.pas svneol=native#text/plain
+test/manual/lcl/textextent/textextent.ico -text
+test/manual/lcl/textextent/textextent.lpi svneol=native#text/plain
+test/manual/lcl/textextent/textextent.lpr svneol=native#text/plain
+test/manual/lcl/textextent/textextent.res -text
 test/manual/png/PngSuite.png -text svneol=unset#image/png
 test/manual/png/additionalpalettes.files.txt svneol=native#text/plain
 test/manual/png/ancillarychunks.files.txt svneol=native#text/plain
