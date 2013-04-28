@@ -24,6 +24,7 @@ type
     FRowInGrid: integer;
     procedure SetGroup(AValue: TGroupedMatrixGroup);
   public
+    procedure Assign(Source: TPersistent); override;
     constructor Create(aMatrix: TGroupedMatrix); virtual;
     destructor Destroy; override;
     procedure Clear; virtual;
@@ -54,6 +55,7 @@ type
     procedure SetCaption(AValue: TCaption);
     procedure SetColor(AValue: TColor);
   public
+    procedure Assign(Source: TPersistent); override;
     constructor Create(aControl: TGroupedMatrix); override;
     destructor Destroy; override;
     procedure Clear; override;
@@ -79,6 +81,7 @@ type
     procedure SetTyp(AValue: string);
     procedure SetValue(AValue: string);
   public
+    procedure Assign(Source: TPersistent); override;
     constructor Create(aControl: TGroupedMatrix); override;
     destructor Destroy; override;
     property Value: string read FValue write SetValue;
@@ -94,6 +97,7 @@ type
     FCaption: string;
     FColor: TColor;
   public
+    procedure Assign(Source: TPersistent); override;
     constructor Create;
     property Caption: string read FCaption write FCaption;
     property Color: TColor read FColor write FColor;
@@ -107,6 +111,7 @@ type
     fItems: TFPList; // list of TGroupedMatrixMode
     function GetItems(Index: integer): TGroupedMatrixMode;
   public
+    procedure Assign(Source: TObject);
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
@@ -131,6 +136,7 @@ type
     procedure InternalAdd(Group: TGroupedMatrixGroup; Row: TGroupedMatrixRow);
     procedure RebuildRows;
   public
+    procedure Assign(Source: TPersistent); override;
     constructor Create(aControl: TGroupedMatrixControl);
     destructor Destroy; override;
     procedure Clear;
@@ -224,6 +230,19 @@ end;
 
 { TGroupedMatrixMode }
 
+procedure TGroupedMatrixMode.Assign(Source: TPersistent);
+var
+  aSource: TGroupedMatrixMode;
+begin
+  if Source is TGroupedMatrixMode then
+  begin
+    aSource:=TGroupedMatrixMode(Source);
+    Color:=aSource.Color;
+    Caption:=aSource.Caption;
+  end else
+    inherited Assign(Source);
+end;
+
 constructor TGroupedMatrixMode.Create;
 begin
   FColor:=clDefault;
@@ -234,6 +253,27 @@ end;
 function TGroupedMatrixModes.GetItems(Index: integer): TGroupedMatrixMode;
 begin
   Result:=TGroupedMatrixMode(fItems[Index]);
+end;
+
+procedure TGroupedMatrixModes.Assign(Source: TObject);
+var
+  SrcModes: TGroupedMatrixModes;
+  i: Integer;
+  SrcMode: TGroupedMatrixMode;
+  NewMode: TGroupedMatrixMode;
+begin
+  if Source is TGroupedMatrixModes then
+  begin
+    SrcModes:=TGroupedMatrixModes(Source);
+    Active:=SrcModes.Active;
+    Clear;
+    for i:=0 to SrcModes.Count-1 do begin
+      SrcMode:=SrcModes[i];
+      NewMode:=TGroupedMatrixMode(SrcMode.ClassType).Create;
+      fItems.Add(NewMode);
+      NewMode.Assign(SrcMode);
+    end;
+  end;
 end;
 
 constructor TGroupedMatrixModes.Create;
@@ -327,6 +367,29 @@ begin
   FRows.Clear;
   for i:=0 to TopLvlCount-1 do
     Traverse(TopLvlItems[i]);
+end;
+
+procedure TGroupedMatrix.Assign(Source: TPersistent);
+var
+  SrcMatrix: TGroupedMatrix;
+  i: Integer;
+  SrcRow: TGroupedMatrixRow;
+  NewRow: TGroupedMatrixRow;
+begin
+  if Source is TGroupedMatrix then
+  begin
+    SrcMatrix:=TGroupedMatrix(Source);
+    Clear;
+    Modes.Assign(SrcMatrix.Modes);
+    for i:=0 to SrcMatrix.TopLvlCount-1 do begin
+      SrcRow:=SrcMatrix.TopLvlItems[i];
+      NewRow:=TGroupedMatrixRow(SrcRow.ClassType).Create(Self);
+      FTopLvlRows.Add(NewRow);
+      NewRow.Assign(SrcRow);
+    end;
+    RebuildRows;
+  end else
+    inherited Assign(Source);
 end;
 
 constructor TGroupedMatrix.Create(aControl: TGroupedMatrixControl);
@@ -426,7 +489,7 @@ end;
 procedure TGroupedMatrixValue.SetModes(AValue: TStrings);
 begin
   if FModes=AValue then Exit;
-  FModes:=AValue;
+  FModes.Assign(AValue);
 end;
 
 procedure TGroupedMatrixValue.SetTyp(AValue: string);
@@ -439,6 +502,20 @@ procedure TGroupedMatrixValue.SetValue(AValue: string);
 begin
   if FValue=AValue then Exit;
   FValue:=AValue;
+end;
+
+procedure TGroupedMatrixValue.Assign(Source: TPersistent);
+var
+  aSource: TGroupedMatrixValue;
+begin
+  inherited Assign(Source);
+  if Source is TGroupedMatrixValue then
+  begin
+    aSource:=TGroupedMatrixValue(Source);
+    Value:=aSource.Value;
+    Typ:=aSource.Typ;
+    Modes:=aSource.Modes;
+  end;
 end;
 
 constructor TGroupedMatrixValue.Create(aControl: TGroupedMatrix);
@@ -480,6 +557,30 @@ procedure TGroupedMatrixGroup.SetColor(AValue: TColor);
 begin
   if FColor=AValue then Exit;
   FColor:=AValue;
+end;
+
+procedure TGroupedMatrixGroup.Assign(Source: TPersistent);
+var
+  SrcGroup: TGroupedMatrixGroup;
+  i: Integer;
+  SrcItem: TGroupedMatrixRow;
+  Item: TGroupedMatrixRow;
+begin
+  inherited Assign(Source);
+  if Source is TGroupedMatrixGroup then
+  begin
+    SrcGroup:=TGroupedMatrixGroup(Source);
+    FColor:=SrcGroup.FColor;
+    FCaption:=SrcGroup.FCaption;
+    Clear;
+    for i:=0 to SrcGroup.Count-1 do begin
+      SrcItem:=SrcGroup[i];
+      Item:=TGroupedMatrixRow(SrcItem.ClassType).Create(Matrix);
+      FItems.Add(Item);
+      Item.FGroup:=Self;
+      Item.Assign(SrcItem);
+    end;
+  end;
 end;
 
 constructor TGroupedMatrixGroup.Create(aControl: TGroupedMatrix);
@@ -562,6 +663,18 @@ begin
   FGroup:=AValue;
   if FGroup<>nil then
     FGroup.FItems.Add(Self);
+end;
+
+procedure TGroupedMatrixRow.Assign(Source: TPersistent);
+var
+  aSource: TGroupedMatrixRow;
+begin
+  if Source is TGroupedMatrixRow then
+  begin
+    aSource:=TGroupedMatrixRow(Source);
+    FRowInGrid:=aSource.FRowInGrid;
+  end else
+    inherited Assign(Source);
 end;
 
 constructor TGroupedMatrixRow.Create(aMatrix: TGroupedMatrix);

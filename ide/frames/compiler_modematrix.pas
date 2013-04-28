@@ -42,7 +42,7 @@ type
     BMMNewTargetToolButton: TToolButton;
     BMMNewOptionToolButton: TToolButton;
     BMMDeleteToolButton: TToolButton;
-    procedure GridSelection(Sender: TObject; aCol, aRow: Integer);
+    procedure GridSelection(Sender: TObject; {%H-}aCol, {%H-}aRow: Integer);
   private
     FGrid: TGroupedMatrixControl;
     procedure UpdateButtons;
