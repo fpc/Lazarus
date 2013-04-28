@@ -8746,8 +8746,7 @@ begin
           Params.FoundProc^.ExprInputList.Count) then
         begin
           // the new proc fits better
-          Params.ChangeFoundProc(FoundContext,ParamCompatibility,
-            CurCompatibilityList);
+          Params.ChangeFoundProc(FoundContext,ParamCompatibility,CurCompatibilityList);
           CurCompatibilityList:=nil; // set to nil, so that it will not be freed
         end;
       end;
@@ -8758,6 +8757,14 @@ begin
         FreeMem(CurCompatibilityList);
       end;
     end;
+  end else
+  if (FoundContext.Node.Desc=ctnVarDefinition) then begin
+    if not (fdfIgnoreClassVisibility in Params.Flags)
+    and (FoundContext.Tool<>Params.IdentifierTool)
+    and (GetClassVisibility(FoundContext.Node)=ctnClassPrivate) then
+      Result:=ifrProceedSearch
+    else
+      Result:=ifrSuccess;
   end else begin
     Result:=ifrSuccess;
   end;
