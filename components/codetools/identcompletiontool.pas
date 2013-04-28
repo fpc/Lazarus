@@ -1393,13 +1393,14 @@ procedure TIdentCompletionTool.GatherUsefulIdentifiers(CleanPos: integer;
 var
   PropertyName: String;
 begin
-  while (CleanPos>1) and (IsIdentChar[Src[CleanPos-1]]) do dec(CleanPos);
+  //debugln(['TIdentCompletionTool.GatherUsefulIdentifiers ',CleanPosToStr(CleanPos),' ',dbgsFC(Context)]);
   GatherPredefinedIdentifiers(CleanPos,Context);
   if Context.Node.Desc=ctnProperty then begin
     PropertyName:=ExtractPropName(Context.Node,false);
     //debugln('TIdentCompletionTool.GatherUsefulIdentifiers Property ',PropertyName);
     MoveCursorToCleanPos(CleanPos);
     ReadPriorAtom;
+    //debugln(['TIdentCompletionTool.GatherUsefulIdentifiers Atom=',GetAtom]);
     if UpAtomIs('READ') then begin
       // add the default class completion 'read' specifier function
       AddPropertyProc(Beautifier.PropertyReadIdentPrefix+PropertyName);
@@ -1853,8 +1854,13 @@ begin
   end;
   
   // get identifier position
-  GetIdentStartEndAtPosition(Src,CleanCursorPos,IdentStartPos,IdentEndPos);
-  //DebugLn(['TIdentCompletionTool.ParseSourceTillCollectionStart ',dbgstr(copy(Src,IdentStartPos,10)),' CursorPos.X=',CursorPos.X,' LineLen=',CursorPos.Code.GetLineLength(CursorPos.Y-1),' ',CursorPos.Code.getline(CursorPos.Y-1)]);
+  if CursorPos.Code.LineColIsOutside(CursorPos.Y,CursorPos.X) then begin
+    IdentStartPos:=CleanCursorPos;
+    IdentEndPos:=CleanCursorPos;
+  end else begin
+    GetIdentStartEndAtPosition(Src,CleanCursorPos,IdentStartPos,IdentEndPos);
+  end;
+  //DebugLn(['TIdentCompletionTool.ParseSourceTillCollectionStart ',dbgstr(copy(Src,IdentStartPos,10)),' CursorPos.X=',CursorPos.X,' LineLen=',CursorPos.Code.GetLineLength(CursorPos.Y-1),' ',CursorPos.Code.GetLine(CursorPos.Y-1)]);
   if CursorPos.X>CursorPos.Code.GetLineLength(CursorPos.Y-1)+1 then
     IdentStartPos:=IdentEndPos;
 end;
@@ -2419,8 +2425,8 @@ begin
     // find context
     {$IFDEF CTDEBUG}
     DebugLn('TIdentCompletionTool.GatherIdentifiers B',
-      ' CleanCursorPos=',dbgs(CleanCursorPos),
-      ' IdentStartPos=',dbgs(IdentStartPos),' IdentEndPos=',dbgs(IdentEndPos),
+      ' CleanCursorPos=',CleanPosToStr(CleanCursorPos),
+      ' IdentStartPos=',CleanPosToStr(IdentStartPos),' IdentEndPos=',CleanPosToStr(IdentEndPos),
       ' Ident=',copy(Src,IdentStartPos,IdentEndPos-IdentStartPos));
     {$ENDIF}
     GatherContext:=CreateFindContext(Self,CursorNode);
