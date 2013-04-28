@@ -76,6 +76,8 @@ function ExtractCommentContent(const ASource: string; CommentStart: integer;
     TrimPasDoc: boolean = false): string;
 function FindMainUnitHint(const ASource: string; out Filename: string): boolean;
 function InEmptyLine(const ASource: string; StartPos: integer): boolean;
+function SkipResourceDirective(const ASource: string; StartPos, EndPos: integer;
+    NestedComments: boolean): integer;
 
 // indent
 function GetLineIndent(const Source: string; Position: integer): integer;
@@ -3714,6 +3716,53 @@ begin
     end;
   end;
   Result:=true;
+end;
+
+function SkipResourceDirective(const ASource: string;
+  StartPos, EndPos: integer; NestedComments: boolean): integer;
+var
+  MaxPos: integer;
+
+  function IsResourceDirective(DirNamePos: integer): boolean;
+  begin
+    if UpChars[ASource[DirNamePos]]<>'R' then exit(false);
+    if (DirNamePos < MaxPos)
+    and (UpChars[ASource[DirNamePos+1]] in [' ',#9]) then exit(true);
+    result:=CompareIdentifiers(@ASource[DirNamePos],'RESOURCE')=0;
+  end;
+
+var
+  i: integer;
+begin
+  MaxPos:=length(ASource);
+  if (EndPos>0) and (EndPos<=MaxPos) then
+    MaxPos:=EndPos-1;
+  Result:=StartPos;
+  i:=StartPos;
+  while (i<=MaxPos) do begin
+    case ASource[i] of
+    '{':
+      if (i+1<MaxPos) and (ASource[i+1]='$')
+      and IsResourceDirective(i+2) then begin
+        Result:=FindCommentEnd(ASource,i,NestedComments);
+        exit;
+      end
+      else exit;
+
+    '(':
+      if (i+2<MaxPos) and (ASource[i+1]='*') and (ASource[i+2]='$')
+      and IsResourceDirective(i+3) then begin
+        Result:=FindCommentEnd(ASource,i,NestedComments);
+        exit;
+      end
+      else exit;
+
+    #9,#10,#13,' ': inc(i);
+    else
+      exit;
+    end;
+
+  end;
 end;
 
 function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;

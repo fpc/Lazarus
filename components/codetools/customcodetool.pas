@@ -192,6 +192,7 @@ type
         SkipEmptyLines: boolean = false; IncludeLineEnd: boolean = false): integer;
     function FindLineEndOrCodeInFrontOfPosition(StartPos: integer;
         StopAtDirectives: boolean = true; SkipEmptyLines: boolean = false): integer;
+    function SkipResourceDirective(StartPos: integer): integer;
 
     function UpdateNeeded(Range: TLinkScannerRange): boolean;
     function UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean; deprecated; // use UpdateNeeded(lsrImplementationStart) or UpdateNeeded(lsrEnd)
@@ -2906,6 +2907,18 @@ begin
     Result:=BasicCodeTools.FindLineEndOrCodeInFrontOfPosition(Src,
               StartPos,LinkStart,Scanner.NestedComments,StopAtDirectives,false,
               SkipEmptyLines);
+  end;
+end;
+
+function TCustomCodeTool.SkipResourceDirective(StartPos: integer): integer;
+var
+  LinkIndex, LinkEnd: integer;
+begin
+  Result:=StartPos;
+  LinkIndex:=Scanner.LinkIndexAtCleanPos(StartPos);
+  if LinkIndex>=0 then begin
+    LinkEnd:=Scanner.LinkCleanedEndPos(LinkIndex);
+    Result:=BasicCodeTools.SkipResourceDirective(Src,StartPos,LinkEnd,Scanner.NestedComments);
   end;
 end;
 

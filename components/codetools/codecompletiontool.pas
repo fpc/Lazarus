@@ -8115,6 +8115,7 @@ var
             and (not IsSpaceChar[Src[InsertPos]]) do
               inc(InsertPos);
           end;
+          InsertPos:=SkipResourceDirective(InsertPos);
           exit;
         end;
       end;
@@ -8131,6 +8132,7 @@ var
           NearestProcNode:=NearestProcNode.PriorBrother;
         if NearestProcNode<>nil then begin
           SetIndentAndInsertPos(NearestProcNode,NearestProcNode.Desc<>ctnBeginBlock);
+          InsertPos:=SkipResourceDirective(InsertPos);
           exit;
         end;
       end;
@@ -8145,8 +8147,8 @@ var
     end;
     if NearestProcNode<>nil then begin
       Indent:=0;
-      InsertPos:=FindLineEndOrCodeAfterPosition(NearestProcNode.EndPos);
       SetIndentAndInsertPos(NearestProcNode,true);
+      InsertPos:=SkipResourceDirective(InsertPos);
       exit;
     end;
 
