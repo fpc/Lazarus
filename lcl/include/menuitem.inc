@@ -394,6 +394,8 @@ begin
       ShortCut := NewAction.ShortCut;
     if (not CheckDefaults) or (Visible = True) then
       Visible := NewAction.Visible;
+    if (not CheckDefaults) or not Assigned(OnClick) then
+      OnClick := NewAction.OnExecute;
   end;
 end;
 

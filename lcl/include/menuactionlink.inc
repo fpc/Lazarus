@@ -83,7 +83,7 @@ end;
 function TMenuActionLink.IsOnExecuteLinked: Boolean;
 begin
   Result := inherited IsOnExecuteLinked
-            and (@FClient.OnClick = @Action.OnExecute);
+    and CompareMethods(TMethod(FClient.OnClick),TMethod(Action.OnExecute));
 end;
 
 procedure TMenuActionLink.SetAutoCheck(Value: Boolean);
