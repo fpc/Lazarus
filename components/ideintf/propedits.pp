@@ -3077,7 +3077,9 @@ begin
         exit;
       end;
   with GetTypeData(GetPropType)^ do
-    if (L < MinValue) or (L > MaxValue) then begin
+    //Only Chars < #$80 are valid single-byte UTF-8 codepoints,
+    //so use this instead of MaxValue (255 for tkChar), since LCL is UTF-8
+    if (L < MinValue) or (L > $7F) then begin
       {raise EPropertyError.CreateResFmt(@SOutOfRange, [MinValue, MaxValue])};
       exit;
     end;
