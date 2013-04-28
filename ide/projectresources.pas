@@ -110,8 +110,6 @@ type
     property ProjectIcon: TProjectIcon read GetProjectIcon;
   end;
 
-procedure ParseResourceType(const Src: string; NestedComments: boolean;
-  out HasLRSIncludeDirective, HasRDirective: boolean);
 function GuessResourceType(Code: TCodeBuffer; out Typ: TResourceType): boolean;
 
 const
@@ -136,13 +134,34 @@ begin
   Result := rtLRS;
 end;
 
-procedure ParseResourceType(const Src: string; NestedComments: boolean;
+procedure ParseResourceType(Code: TCodeBuffer; NestedComments: boolean;
   out HasLRSIncludeDirective, HasRDirective: boolean);
+
+  function ExtractDirectiveFileName(ds: PChar): string;
+  var i: Integer;
+  begin
+    while IsIdentChar[ds^] do Inc(ds);
+    while ds^ in [' ',#9] do Inc(ds);
+    if ds^ = '''' then
+    begin
+      Inc(ds);
+      i := IndexChar(ds^, -1, '''');
+      SetLength(Result, i);
+      Move(ds^, Result[1], i);
+    end else begin
+      i := IndexChar(ds^, -1, '}');
+      SetLength(Result, i);
+      Move(ds^, Result[1], i);
+      Result := TrimRight(Result);
+    end;
+  end;
+
 var
   p: Integer;
   d: PChar;
-  PointPos: PChar;
+  Src, dFileName: string;
 begin
+  Src := Code.Source;
   HasLRSIncludeDirective := False;
   HasRDirective := False;
   p:=1;
@@ -154,29 +173,22 @@ begin
     if (d[0]='{') and (d[1]='$') then
     begin
       inc(d, 2);
-      if (d[0] in ['r','R']) and (not IsIdentChar[d[1]]) then
+      if (d[0] in ['r','R']) and not (HasRDirective or IsIdentChar[d[1]]) then
       begin
         // using resources
-        HasRDirective := True;
+        dFileName := ExtractDirectiveFileName(d);
+        HasRDirective := SameText(dFileName, '*.lfm') or
+          SameText(dFileName, ExtractFileNameOnly(Code.Filename) + '.lfm');
       end
       else
-      if (d[0] in ['i','I']) and ((d[1] in [' ',#9]) or
-         (CompareIdentifiers(@d[0],'include')=0)) then
+      if (d[0] in ['i','I']) and not HasLRSIncludeDirective
+      and ((d[1] in [' ',#9]) or (CompareIdentifiers(@d[0],'include')=0)) then
       begin
-        PointPos := nil;
-        while not (d^ in [#0,#10,#13,'}']) do
-        begin
-          if d^ = '.' then
-            PointPos := d;
-          inc(d);
-        end;
-        if (PointPos<>nil) and (d-PointPos=4) and (PointPos[1]='l') and
-           (PointPos[2]='r') and (PointPos[3]='s') then
-        begin
-          //DebugLn(['ParseResourceType ',copy(Src,p,PointPos-@Src[p]+3)]);
-          // using include directive with lrs file
-          HasLRSIncludeDirective := True;
-        end;
+        // using include directive with lrs file
+        dFileName := ExtractDirectiveFileName(d);
+        HasLRSIncludeDirective :=
+          SameText(dFileName, ExtractFileNameOnly(Code.Filename) + '.lrs') or
+          SameText(dFileName, '*.lrs');
       end;
     end;
     p := FindCommentEnd(Src, p, NestedComments);
@@ -263,7 +275,7 @@ begin
     Tree.Add(Item);
   end;
   Item.CodeStamp := Code.ChangeStep;
-  ParseResourceType(Code.Source,
+  ParseResourceType(Code,
     CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename),
     Item.HasLRSIncludeDirective, Item.HasRDirective);
   HasLRSIncludeDirective := Item.HasLRSIncludeDirective;
@@ -575,7 +587,7 @@ begin
         begin
           Result := False;
           Messages.Add(Format(lisCouldNotRemoveFromMainSource, ['"',LazResourcesUnit,'"']));
-          debugln(['TProjectResources.UpdateMainSourceFile adding LResources to main source failed']);
+          debugln(['TProjectResources.UpdateMainSourceFile removing LResources from all uses sections failed']);
         end;
       end;
     end
