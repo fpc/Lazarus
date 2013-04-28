@@ -229,6 +229,7 @@ type
     function GetFilteredCount: integer;
     function HasIdentifier(Identifier: PChar; const ParamList: string): boolean;
     function FindIdentifier(Identifier: PChar; const ParamList: string): TIdentifierListItem;
+    function FindIdentifier(Identifier: PChar): TIdentifierListItem;
     function FindCreatedIdentifier(const Ident: string): integer;
     function CreateIdentifier(const Ident: string): PChar;
     function StartUpAtomInFrontIs(const s: string): boolean;
@@ -491,6 +492,18 @@ begin
   Result:=TheItem.CompareParamList(TheSearchItem);
 end;
 
+function CompareIdentListSearchWithItemsWithoutParams(SearchItem, Item: Pointer): integer;
+var
+  TheSearchItem: TIdentifierListSearchItem;
+  TheItem: TIdentifierListItem;
+begin
+  TheSearchItem:=TIdentifierListSearchItem(SearchItem);
+  TheItem:=TIdentifierListItem(Item);
+
+  // sort alpabetically (lower is better)
+  Result:=CompareIdentifierPtrs(Pointer(TheItem.Identifier),TheSearchItem.Identifier);
+end;
+
 function CompareIdentHistListItem(Data1, Data2: Pointer): integer;
 var
   Item1: TIdentHistListItem;
@@ -694,6 +707,19 @@ begin
   FIdentSearchItem.Identifier:=Identifier;
   FIdentSearchItem.ParamList:=ParamList;
   AVLNode:=FIdentView.FindKey(FIdentSearchItem,@CompareIdentListSearchWithItems);
+  if AVLNode<>nil then
+    Result:=TIdentifierListItem(AVLNode.Data)
+  else
+    Result:=nil;
+end;
+
+function TIdentifierList.FindIdentifier(Identifier: PChar): TIdentifierListItem;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  FIdentSearchItem.Identifier:=Identifier;
+  // ignore ParamList (for checking function overloading)
+  AVLNode:=FIdentView.FindKey(FIdentSearchItem,@CompareIdentListSearchWithItemsWithoutParams);
   if AVLNode<>nil then
     Result:=TIdentifierListItem(AVLNode.Data)
   else
@@ -1099,7 +1125,16 @@ begin
     Ident:=@FoundContext.Tool.Src[FoundContext.Node.StartPos];
     
   ctnProcedure,ctnProcedureHead:
-    Ident:=FoundContext.Tool.GetProcNameIdentifier(FoundContext.Node);
+    begin
+      Ident:=FoundContext.Tool.GetProcNameIdentifier(FoundContext.Node);
+      NewItem := CurrentIdentifierList.FindIdentifier(Ident);
+      if Assigned(NewItem) then
+      begin
+        if (Lvl > NewItem.Level + 1)
+        or (Lvl <> NewItem.Level) and not NewItem.Tool.ProcNodeHasSpecifier(NewItem.Node, psOVERLOAD)
+        then Ident := nil; // there is previous declaration whitout 'overload'
+      end;
+    end;
     
   ctnProperty:
     begin
@@ -1935,10 +1970,14 @@ begin
       if (CurrentIdentifierContexts.ProcName='') then exit;
       FoundContext.Tool.MoveCursorToProcName(FoundContext.Node,true);
       //DebugLn(['TIdentCompletionTool.CollectAllContexts ProcName=',GetIdentifier(@FoundContext.Tool.Src[FoundContext.Tool.CurPos.StartPos])]);
-      if not FoundContext.Tool.CompareSrcIdentifiers(
+      if FoundContext.Tool.CompareSrcIdentifiers(
         FoundContext.Tool.CurPos.StartPos,
         PChar(CurrentIdentifierContexts.ProcName))
-      then exit;
+      then begin
+        // method without 'overload' hides inherited one
+        if not FoundContext.Tool.ProcNodeHasSpecifier(FoundContext.Node, psOVERLOAD) then
+          Exclude(Params.Flags, fdfSearchInAncestors);
+      end else exit
     end;
   ctnProperty:
     begin
