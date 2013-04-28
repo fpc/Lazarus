@@ -136,6 +136,7 @@ type
     TreePopupmenu: TPopupMenu;
     procedure CodeExplorerViewCreate(Sender: TObject);
     procedure CodeExplorerViewDestroy(Sender: TObject);
+    procedure CodeFilterEditEnter(Sender: TObject);
     procedure CodeFilterEditExit(Sender: TObject);
     procedure CodeTreeviewDblClick(Sender: TObject);
     procedure CodeTreeviewDeletion(Sender: TObject; Node: TTreeNode);
@@ -143,6 +144,8 @@ type
                                 Shift: TShiftState);
     procedure CodeFilterEditChange(Sender: TObject);
     procedure DirectivesFilterEditChange(Sender: TObject);
+    procedure DirectivesFilterEditEnter(Sender: TObject);
+    procedure DirectivesFilterEditExit(Sender: TObject);
     procedure DirectivesTreeViewDblClick(Sender: TObject);
     procedure DirectivesTreeViewDeletion(Sender: TObject; Node: TTreeNode);
     procedure DirectivesTreeViewKeyUp(Sender: TObject; var Key: Word;
@@ -521,6 +524,14 @@ begin
     CodeExplorerView:=nil;
 end;
 
+procedure TCodeExplorerView.CodeFilterEditEnter(Sender: TObject);
+begin
+  if CodeFilterEdit.Text = lisCEFilter then
+    CodeFilterEdit.Text:=''
+  else
+    CodeFilterEdit.SelectAll;
+end;
+
 procedure TCodeExplorerView.CodeFilterEditExit(Sender: TObject);
 begin
   if CodeFilterEdit.Text='' then
@@ -556,6 +567,20 @@ procedure TCodeExplorerView.DirectivesFilterEditChange(Sender: TObject);
 begin
   if Sender=nil then ;
   DirectivesFilterChanged;
+end;
+
+procedure TCodeExplorerView.DirectivesFilterEditEnter(Sender: TObject);
+begin
+  if DirectivesFilterEdit.Text = lisCEFilter then
+    DirectivesFilterEdit.Text:=''
+  else
+    DirectivesFilterEdit.SelectAll;
+end;
+
+procedure TCodeExplorerView.DirectivesFilterEditExit(Sender: TObject);
+begin
+  if DirectivesFilterEdit.Text='' then
+    DirectivesFilterEdit.Text:=lisCEFilter;
 end;
 
 procedure TCodeExplorerView.DirectivesTreeViewDblClick(Sender: TObject);
@@ -1860,7 +1885,7 @@ var
   ANode: TTreeNode;
   TheFilter: String;
 begin
-  TheFilter:=DirectivesFilterEdit.Text;
+  TheFilter:=GetDirectivesFilter;
   FLastDirectivesFilter:=TheFilter;
   DirectivesTreeView.BeginUpdate;
   DirectivesTreeView.Options:=DirectivesTreeView.Options+[tvoAllowMultiselect];
