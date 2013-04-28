@@ -1,0 +1,55 @@
+object Frame1: TFrame1
+  Left = 0
+  Height = 429
+  Top = 0
+  Width = 550
+  ClientHeight = 429
+  ClientWidth = 550
+  TabOrder = 0
+  DesignLeft = 307
+  DesignTop = 162
+  object BMMatrixToolBar: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 550
+    Caption = 'BMMatrixToolBar'
+    ShowCaptions = True
+    TabOrder = 0
+    object BMMMoveUpToolButton: TToolButton
+      Left = 1
+      Top = 2
+      Caption = 'Up'
+    end
+    object BMMMoveDownToolButton: TToolButton
+      Left = 26
+      Top = 2
+      Caption = 'Down'
+    end
+    object BMMUndoToolButton: TToolButton
+      Left = 70
+      Top = 2
+      Caption = 'Undo'
+    end
+    object BMMRedoToolButton: TToolButton
+      Left = 111
+      Top = 2
+      Caption = 'Redo'
+    end
+    object BMMNewTargetToolButton: TToolButton
+      Left = 151
+      Top = 2
+      Caption = 'New Target'
+    end
+    object BMMNewOptionToolButton: TToolButton
+      Left = 231
+      Top = 2
+      Caption = 'New Option'
+    end
+    object BMMDeleteToolButton: TToolButton
+      Left = 313
+      Top = 2
+      Caption = 'Delete'
+    end
+  end
+end
