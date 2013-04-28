@@ -985,9 +985,12 @@ begin
     ScrollInfo.nMin := 0;
     ScrollInfo.nTrackPos := 0;
     ScrollInfo.nMax := ATopMax+ClientHeight-1;
-    ScrollInfo.nPage := ClientHeight-1;
-    if ScrollInfo.nPage<1 then ScrollInfo.nPage:=1;
-    if TopY > ATopMax then TopY:=ATopMax;
+    if ClientHeight < 2 then
+      ScrollInfo.nPage := 1
+    else
+      ScrollInfo.nPage := ClientHeight-1;
+    if TopY > ATopMax then
+      TopY := ATopMax;
     ScrollInfo.nPos := TopY;
     ShowScrollBar(Handle, SB_VERT, True);
     SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
