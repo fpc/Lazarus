@@ -3696,6 +3696,11 @@ begin
   MainSrcFile:=CreateRelativePath(SrcFilename,APackage.Directory);
   CustomOptions:=ConvertLazarusOptionsToMakefileOptions(CustomOptions);
   OtherOptions:=ConvertLazarusOptionsToMakefileOptions(OtherOptions);
+  if CustomOptions<>'' then
+    if OtherOptions<>'' then
+      OtherOptions:=OtherOptions+' '+CustomOptions
+    else
+      OtherOptions:=CustomOptions;
 
   e:=LineEnding;
   s:='';
