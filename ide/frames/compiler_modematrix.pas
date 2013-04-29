@@ -26,8 +26,8 @@ unit Compiler_ModeMatrix;
 interface
 
 uses
-  Classes, SysUtils, LazFileUtils, LResources, Forms, Controls, Graphics,
-  ComCtrls, ModeMatrixCtrl;
+  Classes, SysUtils, LazFileUtils, LazLogger, LResources, Forms, Controls,
+  Graphics, ComCtrls, ModeMatrixCtrl;
 
 type
 
@@ -42,6 +42,14 @@ type
     BMMNewTargetToolButton: TToolButton;
     BMMNewOptionToolButton: TToolButton;
     BMMDeleteToolButton: TToolButton;
+    procedure BMMDeleteToolButtonClick(Sender: TObject);
+    procedure BMMMoveDownToolButtonClick(Sender: TObject);
+    procedure BMMMoveUpToolButtonClick(Sender: TObject);
+    procedure BMMNewOptionToolButtonClick(Sender: TObject);
+    procedure BMMNewTargetToolButtonClick(Sender: TObject);
+    procedure BMMRedoToolButtonClick(Sender: TObject);
+    procedure BMMUndoToolButtonClick(Sender: TObject);
+    procedure GridEditingDone(Sender: TObject);
     procedure GridSelection(Sender: TObject; {%H-}aCol, {%H-}aRow: Integer);
   private
     FGrid: TGroupedMatrixControl;
@@ -60,6 +68,47 @@ implementation
 procedure TFrame1.GridSelection(Sender: TObject; aCol, aRow: Integer);
 begin
   UpdateButtons;
+end;
+
+procedure TFrame1.BMMUndoToolButtonClick(Sender: TObject);
+begin
+  Grid.Undo;
+end;
+
+procedure TFrame1.GridEditingDone(Sender: TObject);
+begin
+  DebugLn(['TFrame1.GridEditingDone ']);
+  UpdateButtons;
+end;
+
+procedure TFrame1.BMMRedoToolButtonClick(Sender: TObject);
+begin
+  Grid.Redo;
+end;
+
+procedure TFrame1.BMMMoveUpToolButtonClick(Sender: TObject);
+begin
+
+end;
+
+procedure TFrame1.BMMNewOptionToolButtonClick(Sender: TObject);
+begin
+
+end;
+
+procedure TFrame1.BMMNewTargetToolButtonClick(Sender: TObject);
+begin
+
+end;
+
+procedure TFrame1.BMMMoveDownToolButtonClick(Sender: TObject);
+begin
+
+end;
+
+procedure TFrame1.BMMDeleteToolButtonClick(Sender: TObject);
+begin
+
 end;
 
 procedure TFrame1.UpdateButtons;
@@ -96,6 +145,7 @@ begin
     Align:=alClient;
     Parent:=Self;
     OnSelection:=@GridSelection;
+    OnEditingDone:=@GridEditingDone;
   end;
 
   UpdateButtons;

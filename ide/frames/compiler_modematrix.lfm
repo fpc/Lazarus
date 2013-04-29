@@ -20,36 +20,43 @@ object Frame1: TFrame1
       Left = 1
       Top = 2
       Caption = 'Up'
+      OnClick = BMMMoveUpToolButtonClick
     end
     object BMMMoveDownToolButton: TToolButton
       Left = 26
       Top = 2
       Caption = 'Down'
+      OnClick = BMMMoveDownToolButtonClick
     end
     object BMMUndoToolButton: TToolButton
       Left = 70
       Top = 2
       Caption = 'Undo'
+      OnClick = BMMUndoToolButtonClick
     end
     object BMMRedoToolButton: TToolButton
       Left = 111
       Top = 2
       Caption = 'Redo'
+      OnClick = BMMRedoToolButtonClick
     end
     object BMMNewTargetToolButton: TToolButton
       Left = 151
       Top = 2
       Caption = 'New Target'
+      OnClick = BMMNewTargetToolButtonClick
     end
     object BMMNewOptionToolButton: TToolButton
       Left = 231
       Top = 2
       Caption = 'New Option'
+      OnClick = BMMNewOptionToolButtonClick
     end
     object BMMDeleteToolButton: TToolButton
       Left = 313
       Top = 2
       Caption = 'Delete'
+      OnClick = BMMDeleteToolButtonClick
     end
   end
 end

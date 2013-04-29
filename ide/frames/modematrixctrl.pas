@@ -9,6 +9,7 @@ uses
   Grids, Graphics, StdCtrls, Menus, LazLogger;
 
 const
+  DefaultModeMatrixMaxUndo = 100;
   DefaultGroupMatrixIndent = 10;
 type
   TGroupedMatrix = class;
@@ -43,6 +44,7 @@ type
     function GetTopLvlItem: TGroupedMatrixRow;
     function AsString: string; virtual;
   end;
+  TGroupedMatrixRowClass = class of TGroupedMatrixRow;
 
   { TGroupedMatrixGroup }
 
@@ -106,6 +108,7 @@ type
     property Caption: string read FCaption write FCaption;
     property Color: TColor read FColor write FColor;
   end;
+  TGroupedMatrixModeClass = class of TGroupedMatrixMode;
 
   { TGroupedMatrixModes }
 
@@ -125,6 +128,7 @@ type
     function Add(aCaption: string; aColor: TColor = clDefault): TGroupedMatrixMode;
     property Active: integer read FActive write FActive;
   end;
+  TGroupedMatrixModesClass = class of TGroupedMatrixModes;
 
   { TGroupedMatrix }
 
@@ -182,7 +186,7 @@ type
     procedure SetActiveModeColor(AValue: TColor);
     procedure SetIndent(AValue: integer);
     procedure SetMaxUndo(AValue: integer);
-    procedure ToggleModeValue(ValueRow: TGroupedMatrixValue; aRow, aCol: integer);
+    procedure ToggleModeValue(aRow, aCol: integer);
     procedure PopupTypes(aRow: integer);
     procedure OnTypePopupMenuClick(Sender: TObject);
   protected
@@ -197,6 +201,8 @@ type
     function EditingAllowed(ACol: Integer=-1): Boolean; override;
     procedure GetCheckBoxState(const aCol, aRow: Integer;
       var aState: TCheckboxState); override;
+    procedure SetCheckboxState(const aCol, aRow: Integer;
+      const aState: TCheckboxState); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer
       ); override;
     procedure PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState);
@@ -213,6 +219,7 @@ type
       aState: TGridDrawState); override;
     property Matrix: TGroupedMatrix read FMatrix;
     property Modes: TGroupedMatrixModes read GetModes;
+    procedure MatrixChanging;
     procedure MatrixChanged;
     function ModeColFirst: integer;
     function ModeColLast: integer;
@@ -228,7 +235,7 @@ type
     function CanRedo: boolean;
     procedure Undo;
     procedure Redo;
-    property MaxUndo: integer read FMaxUndo write SetMaxUndo;
+    property MaxUndo: integer read FMaxUndo write SetMaxUndo default DefaultModeMatrixMaxUndo;
     procedure StoreUndo(EvenIfNothingChanged: boolean);
   end;
 
@@ -253,6 +260,7 @@ procedure TGroupedMatrixMode.Assign(Source: TPersistent);
 var
   aSource: TGroupedMatrixMode;
 begin
+  if Source=Self then exit;
   if Source is TGroupedMatrixMode then
   begin
     aSource:=TGroupedMatrixMode(Source);
@@ -293,14 +301,15 @@ var
   SrcMode: TGroupedMatrixMode;
   NewMode: TGroupedMatrixMode;
 begin
+  if Source=Self then exit;
   if Source is TGroupedMatrixModes then
   begin
     SrcModes:=TGroupedMatrixModes(Source);
-    Active:=SrcModes.Active;
     Clear;
+    Active:=SrcModes.Active;
     for i:=0 to SrcModes.Count-1 do begin
       SrcMode:=SrcModes[i];
-      NewMode:=TGroupedMatrixMode(SrcMode.ClassType).Create;
+      NewMode:=TGroupedMatrixModeClass(SrcMode.ClassType).Create;
       fItems.Add(NewMode);
       NewMode.Assign(SrcMode);
     end;
@@ -423,6 +432,7 @@ var
   SrcRow: TGroupedMatrixRow;
   NewRow: TGroupedMatrixRow;
 begin
+  if Source=Self then exit;
   if Source is TGroupedMatrix then
   begin
     SrcMatrix:=TGroupedMatrix(Source);
@@ -430,7 +440,7 @@ begin
     Modes.Assign(SrcMatrix.Modes);
     for i:=0 to SrcMatrix.TopLvlCount-1 do begin
       SrcRow:=SrcMatrix.TopLvlItems[i];
-      NewRow:=TGroupedMatrixRow(SrcRow.ClassType).Create(Self);
+      NewRow:=TGroupedMatrixRowClass(SrcRow.ClassType).Create(Self);
       FTopLvlRows.Add(NewRow);
       NewRow.Assign(SrcRow);
     end;
@@ -462,6 +472,8 @@ var
 begin
   for i:=TopLvlCount-1 downto 0 do
     TopLvlItems[i].Free;
+  FTopLvlRows.Clear;
+  FRows.Clear;
   FModes.Clear;
 end;
 
@@ -571,6 +583,7 @@ procedure TGroupedMatrixValue.Assign(Source: TPersistent);
 var
   aSource: TGroupedMatrixValue;
 begin
+  if Source=Self then exit;
   inherited Assign(Source);
   if Source is TGroupedMatrixValue then
   begin
@@ -646,6 +659,7 @@ var
   SrcItem: TGroupedMatrixRow;
   Item: TGroupedMatrixRow;
 begin
+  if Source=Self then exit;
   inherited Assign(Source);
   if Source is TGroupedMatrixGroup then
   begin
@@ -655,7 +669,7 @@ begin
     Clear;
     for i:=0 to SrcGroup.Count-1 do begin
       SrcItem:=SrcGroup[i];
-      Item:=TGroupedMatrixRow(SrcItem.ClassType).Create(Matrix);
+      Item:=TGroupedMatrixRowClass(SrcItem.ClassType).Create(Matrix);
       FItems.Add(Item);
       Item.FGroup:=Self;
       Item.Assign(SrcItem);
@@ -767,6 +781,7 @@ procedure TGroupedMatrixRow.Assign(Source: TPersistent);
 var
   aSource: TGroupedMatrixRow;
 begin
+  if Source=Self then exit;
   if Source is TGroupedMatrixRow then
   begin
     aSource:=TGroupedMatrixRow(Source);
@@ -903,17 +918,17 @@ end;
 
 { TGroupedMatrixControl }
 
-procedure TGroupedMatrixControl.ToggleModeValue(ValueRow: TGroupedMatrixValue;
-  aRow, aCol: integer);
+procedure TGroupedMatrixControl.ToggleModeValue(aRow, aCol: integer);
 var
-  i: Integer;
+  aState: TCheckboxState;
 begin
-  i:=ValueRow.Modes.IndexOf(Modes[aCol-1].Caption);
-  if i>=0 then
-    ValueRow.Modes.Delete(i)
+  aState:=cbUnchecked;
+  GetCheckBoxState(aCol,aRow,aState);
+  if aState=cbUnchecked then
+    aState:=cbChecked
   else
-    ValueRow.Modes.Add(Modes[aCol-1].Caption);
-  InvalidateCell(aCol, aRow);
+    aState:=cbUnchecked;
+  SetCheckboxState(aCol,aRow,aState);
 end;
 
 procedure TGroupedMatrixControl.PopupTypes(aRow: integer);
@@ -958,8 +973,10 @@ begin
     ValueRow:=TGroupedMatrixValue(Matrix[fTypePopupMenuRow-1]);
     NewType:=TypeColumn.PickList.Names[Item.MenuIndex];
     if NewType=ValueRow.Typ then exit;
+    StoreUndo(false);
     ValueRow.Typ:=NewType;
     InvalidateCell(TypeCol,fTypePopupMenuRow);
+    EditingDone;
   end;
 end;
 
@@ -1103,15 +1120,47 @@ begin
     MatRow:=Matrix.Rows[aRow-1];
     if MatRow is TGroupedMatrixValue then begin
       //debugln(['TGroupedMatrixControl.GetCheckBoxState ',aCol,' ',aRow,' "',Modes[aCol-1],'" ',TGroupedMatrixValue(MatRow).Modes.Text]);
-      if TGroupedMatrixValue(MatRow).Modes.IndexOf(Modes[aCol-1].Caption)>=0 then begin
+      if TGroupedMatrixValue(MatRow).Modes.IndexOf(Modes[aCol-1].Caption)>=0
+      then begin
         aState:=cbChecked;
         //debugln(['TGroupedMatrixControl.GetCheckBoxState ',aCol,' ',aRow,' "',Modes[aCol-1],'" ',TGroupedMatrixValue(MatRow).Modes.Text]);
-      end
-      else
+      end else
         aState:=cbUnchecked;
     end;
   end;
   inherited GetCheckBoxState(aCol, aRow, aState);
+end;
+
+procedure TGroupedMatrixControl.SetCheckboxState(const aCol, aRow: Integer;
+  const aState: TCheckboxState);
+var
+  MatRow: TGroupedMatrixRow;
+  ValueRow: TGroupedMatrixValue;
+  ModeName: String;
+  i: Integer;
+begin
+  if (aCol>=1) and (aCol<=Modes.Count)
+  and (aRow>0) then begin
+    MatRow:=Matrix.Rows[aRow-1];
+    if MatRow is TGroupedMatrixValue then begin
+      ValueRow:=TGroupedMatrixValue(MatRow);
+      if assigned(OnSetCheckboxState) then
+        OnSetCheckboxState(Self, aCol, aRow, aState);
+      ModeName:=Modes[aCol-1].Caption;
+      i:=ValueRow.Modes.IndexOf(ModeName);
+      if (i<0) = (aState=cbUnchecked) then exit;
+      StoreUndo(false);
+      if i>=0 then begin
+        ValueRow.Modes.Delete(i);
+      end else begin
+        ValueRow.Modes.Add(ModeName);
+      end;
+      InvalidateRow(aRow);
+      EditingDone;
+      exit;
+    end;
+  end;
+  inherited SetCheckboxState(aCol, aRow, aState);
 end;
 
 procedure TGroupedMatrixControl.AutoLayout;
@@ -1168,7 +1217,6 @@ var
   aCol: Longint;
   aRow: Longint;
   MatRow: TGroupedMatrixRow;
-  ValueRow: TGroupedMatrixValue;
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if (csDesigning in componentState) or not MouseButtonAllowed(Button) then
@@ -1180,11 +1228,10 @@ begin
   if aRow>0 then begin
     MatRow:=Matrix[aRow-1];
     if MatRow is TGroupedMatrixValue then begin
-      ValueRow:=TGroupedMatrixValue(MatRow);
       if (aCol>=ModeColFirst) and (aCol<=ModeColLast) then begin
         if Shift*[ssCtrl,ssShift,ssLeft]=[ssLeft] then begin
           // toggle a matrix cell
-          ToggleModeValue(ValueRow, aRow, aCol);
+          ToggleModeValue(aRow, aCol);
         end;
       end else if aCol=TypeCol then begin
         if Shift*[ssCtrl,ssShift,ssLeft]=[ssLeft] then begin
@@ -1240,11 +1287,15 @@ end;
 
 procedure TGroupedMatrixControl.SetEditText(ACol, ARow: Longint;
   const Value: string);
+var
+  ValueRow: TGroupedMatrixValue;
 begin
   if (aCol=ValueCol) and (aRow>0) and (Matrix[aRow-1] is TGroupedMatrixValue)
   then begin
-    TGroupedMatrixValue(Matrix[aRow-1]).Value:=Value;
-    exit;
+    ValueRow:=TGroupedMatrixValue(Matrix[aRow-1]);
+    if ValueRow.Value=Value then exit;
+    StoreUndo(false);
+    ValueRow.Value:=Value;
   end;
   inherited SetEditText(ACol, ARow, Value);
 end;
@@ -1266,6 +1317,7 @@ begin
   FMatrix:=TGroupedMatrix.Create(Self);
   fUndoItems:=TObjectList.Create(true);
   fRedoItems:=TObjectList.Create(true);
+  FMaxUndo:=DefaultModeMatrixMaxUndo;
 
   Options:=Options+[goEditing]; // ToDo: change property default
   FixedCols:=1; // ToDo: change property default
@@ -1372,6 +1424,11 @@ begin
   inherited DefaultDrawCell(aCol, aRow, aRect, aState);
 end;
 
+procedure TGroupedMatrixControl.MatrixChanging;
+begin
+  EditorHide;
+end;
+
 procedure TGroupedMatrixControl.MatrixChanged;
 var
   i: Integer;
@@ -1400,6 +1457,7 @@ begin
   RowCount:=Matrix.RowCount+1;
 
   AutoLayout;
+  Invalidate;
 end;
 
 function TGroupedMatrixControl.ModeColFirst: integer;
@@ -1437,13 +1495,17 @@ var
   DoMatrix: TGroupedMatrix;
 begin
   if not CanUndo then exit;
-  DoMatrix:=TGroupedMatrix(fUndoItems[fUndoItems.Count-1]);
-  fRedoItems.Add(DoMatrix);
-  fUndoItems.OwnsObjects:=false;
-  fUndoItems.Delete(fUndoItems.Count-1);
-  fUndoItems.OwnsObjects:=true;
-  Matrix.Assign(DoMatrix);
-  MatrixChanged;
+  MatrixChanging;
+  try
+    DoMatrix:=TGroupedMatrix(fUndoItems[fUndoItems.Count-1]);
+    fRedoItems.Add(DoMatrix);
+    fUndoItems.OwnsObjects:=false;
+    fUndoItems.Delete(fUndoItems.Count-1);
+    fUndoItems.OwnsObjects:=true;
+    Matrix.Assign(DoMatrix);
+  finally
+    MatrixChanged;
+  end;
 end;
 
 procedure TGroupedMatrixControl.Redo;
@@ -1451,13 +1513,17 @@ var
   DoMatrix: TGroupedMatrix;
 begin
   if not CanRedo then exit;
-  DoMatrix:=TGroupedMatrix(fRedoItems[fRedoItems.Count-1]);
-  fUndoItems.Add(DoMatrix);
-  fRedoItems.OwnsObjects:=false;
-  fRedoItems.Delete(fRedoItems.Count-1);
-  fRedoItems.OwnsObjects:=true;
-  Matrix.Assign(DoMatrix);
-  MatrixChanged;
+  MatrixChanging;
+  try
+    DoMatrix:=TGroupedMatrix(fRedoItems[fRedoItems.Count-1]);
+    fUndoItems.Add(DoMatrix);
+    fRedoItems.OwnsObjects:=false;
+    fRedoItems.Delete(fRedoItems.Count-1);
+    fRedoItems.OwnsObjects:=true;
+    Matrix.Assign(DoMatrix);
+  finally
+    MatrixChanged;
+  end;
 end;
 
 procedure TGroupedMatrixControl.StoreUndo(EvenIfNothingChanged: boolean);
