@@ -573,11 +573,6 @@ msgstr "Ansi (* *)"
 msgid "Application settings"
 msgstr "Nastavení aplikace"
 
-#: lazarusidestrconsts.dlgassemblerdefault
-msgctxt "lazarusidestrconsts.dlgassemblerdefault"
-msgid "Default"
-msgstr "Výchozí"
-
 #: lazarusidestrconsts.dlgassertcode
 msgid "Include assertion code"
 msgstr "Zahrnout kontrolní kód"
@@ -832,7 +827,10 @@ msgid "C style macros (global)"
 msgstr "Makra ve stylu C (globální)"
 
 #: lazarusidestrconsts.dlgcoansistr
-msgid "Use ansi strings"
+#, fuzzy
+#| msgid "Use ansi strings"
+msgctxt "lazarusidestrconsts.dlgcoansistr"
+msgid "Use Ansistrings"
 msgstr "Použít Ansi řetězce"
 
 #: lazarusidestrconsts.dlgcoasis
@@ -7219,6 +7217,11 @@ msgstr "Nelze načíst soubor %s%s%s."
 msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr "Číselný"
+
+#: lazarusidestrconsts.lisdefault
+msgctxt "lazarusidestrconsts.lisdefault"
+msgid "Default"
+msgstr "Výchozí"
 
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
@@ -16332,6 +16335,7 @@ msgid "Use >>"
 msgstr "Použít >>"
 
 #: lazarusidestrconsts.lisuseansistrings
+msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Použít Ansi řetězce"
 
@@ -16834,26 +16838,53 @@ msgstr "Nastavení i18n"
 msgid "Include version info in executable"
 msgstr "Zahrnout informaci o verzi ve spustitelném souboru"
 
-#: lazarusidestrconsts.rsiwpcustomposition
-msgid "Custom position"
-msgstr "Vlastní pozice"
+#: lazarusidestrconsts.rsiwpcolumnnameshint
+msgid "Column Names"
+msgstr ""
 
-#: lazarusidestrconsts.rsiwpdefault
-msgctxt "lazarusidestrconsts.rsiwpdefault"
-msgid "Default"
-msgstr "Výchozí"
+#: lazarusidestrconsts.rsiwpcolumnstrategyhint
+msgid "Strategy for saving Columns"
+msgstr ""
 
-#: lazarusidestrconsts.rsiwpdocked
-msgid "Docked"
-msgstr "Ukotvený"
+#: lazarusidestrconsts.rsiwpcolumnwidthhint
+msgid "Column Width"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpcustomgeometry
+msgid "Custom geometry"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpcustomgeometryhint
+msgid "User can define window's position and size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
+msgid "Fixed default geometry"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
+msgid "Always the same fixed position and size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
+msgid "Let windowmanager decide"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
+msgid "System windowmanagers have different strategies for positioning windows"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwppositionwindowlisthint
+msgid "Windows that have been open. They may be closed now."
+msgstr ""
 
 #: lazarusidestrconsts.rsiwprestorewindowgeometry
 msgid "Restore window geometry"
 msgstr "Obnovit rozměry okna"
 
-#: lazarusidestrconsts.rsiwprestorewindowsize
-msgid "Restore window size"
-msgstr "Obnovit velikost okna"
+#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
+msgid "Use previous position and size"
+msgstr ""
 
 #: lazarusidestrconsts.rsiwpsplittercustomposition
 msgid "Custom Size"
@@ -16870,10 +16901,6 @@ msgstr "Obnovit s oknem"
 #: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
 msgid "Restore Size"
 msgstr "Obnovit velikost"
-
-#: lazarusidestrconsts.rsiwpusewindowmanagersetting
-msgid "Use windowmanager setting"
-msgstr "Uživatelské nastavení manažeru oken"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

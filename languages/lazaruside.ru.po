@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-04-21 00:22+0400\n"
+"PO-Revision-Date: 2013-04-30 02:00+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -593,11 +593,6 @@ msgstr "ANSI (* *)"
 msgid "Application settings"
 msgstr "Параметры приложения"
 
-#: lazarusidestrconsts.dlgassemblerdefault
-msgctxt "lazarusidestrconsts.dlgassemblerdefault"
-msgid "Default"
-msgstr "По умолчанию"
-
 #: lazarusidestrconsts.dlgassertcode
 #| msgid "Include Assertion Code"
 msgid "Include assertion code"
@@ -861,9 +856,10 @@ msgid "C style macros (global)"
 msgstr "Макросы в стиле C (глобально)"
 
 #: lazarusidestrconsts.dlgcoansistr
-#| msgid "Use Ansi Strings"
-msgid "Use ansi strings"
-msgstr "Использовать строки Ansi"
+#| msgid "Use ansi strings"
+msgctxt "lazarusidestrconsts.dlgcoansistr"
+msgid "Use Ansistrings"
+msgstr "Использовать строки Ansistring"
 
 #: lazarusidestrconsts.dlgcoasis
 msgid "As-Is"
@@ -1876,7 +1872,7 @@ msgstr "Параметры"
 
 #: lazarusidestrconsts.dlggetposition
 msgid "Get position"
-msgstr "Принять позицию"
+msgstr "Взять положение"
 
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
@@ -3289,7 +3285,7 @@ msgstr "Показывать подсказку при прокрутке"
 
 #: lazarusidestrconsts.dlgshowsummary
 msgid "Show summary"
-msgstr "Показать сводку"
+msgstr "Показывать сводку"
 
 #: lazarusidestrconsts.dlgshowtriedfiles
 msgid "Show tried files"
@@ -3458,7 +3454,7 @@ msgstr "Подсказка о текущих классе/процедуре"
 
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
-msgstr "Верх:"
+msgstr "Сверху:"
 
 #: lazarusidestrconsts.dlgtplfname
 msgid "Template file name"
@@ -3621,7 +3617,7 @@ msgstr "Окно"
 #: lazarusidestrconsts.dlgwinpos
 #| msgid "Window Positions"
 msgid "Window positions"
-msgstr "Позиции окна"
+msgstr "Положения окон"
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
@@ -7430,6 +7426,11 @@ msgstr "Невозможно загрузить файл %s%s%s."
 msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr "Десятичное"
+
+#: lazarusidestrconsts.lisdefault
+msgctxt "lazarusidestrconsts.lisdefault"
+msgid "Default"
+msgstr "По умолчанию"
 
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
@@ -16824,6 +16825,7 @@ msgid "Use >>"
 msgstr "Использовать >>"
 
 #: lazarusidestrconsts.lisuseansistrings
+msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Использовать строки Ansistring"
 
@@ -17337,26 +17339,53 @@ msgstr "Параметры i18n"
 msgid "Include version info in executable"
 msgstr "Добавлять сведения о версии в исполнимый файл"
 
-#: lazarusidestrconsts.rsiwpcustomposition
-msgid "Custom position"
-msgstr "Пользовательская позиция"
+#: lazarusidestrconsts.rsiwpcolumnnameshint
+msgid "Column Names"
+msgstr "Имена столбцов"
 
-#: lazarusidestrconsts.rsiwpdefault
-msgctxt "lazarusidestrconsts.rsiwpdefault"
-msgid "Default"
-msgstr "По умолчанию"
+#: lazarusidestrconsts.rsiwpcolumnstrategyhint
+msgid "Strategy for saving Columns"
+msgstr "Стратегия сохранения столбцов"
 
-#: lazarusidestrconsts.rsiwpdocked
-msgid "Docked"
-msgstr "Прикрепить"
+#: lazarusidestrconsts.rsiwpcolumnwidthhint
+msgid "Column Width"
+msgstr "Ширина столбца"
+
+#: lazarusidestrconsts.rsiwpcustomgeometry
+msgid "Custom geometry"
+msgstr "Пользовательская геометрия"
+
+#: lazarusidestrconsts.rsiwpcustomgeometryhint
+msgid "User can define window's position and size"
+msgstr "Пользователь может задать положение и размер окна"
+
+#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
+msgid "Fixed default geometry"
+msgstr "Фиксированная геометрия по умолчанию"
+
+#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
+msgid "Always the same fixed position and size"
+msgstr "Всегда одни и те же фиксированные положение и размер"
+
+#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
+msgid "Let windowmanager decide"
+msgstr "На усмотрение диспетчера окон"
+
+#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
+msgid "System windowmanagers have different strategies for positioning windows"
+msgstr "Системные диспетчеры окон имеют разные стратегии расположения окон"
+
+#: lazarusidestrconsts.rsiwppositionwindowlisthint
+msgid "Windows that have been open. They may be closed now."
+msgstr "Открывавшиеся окна. Сейчас они могут быть закрыты."
 
 #: lazarusidestrconsts.rsiwprestorewindowgeometry
 msgid "Restore window geometry"
-msgstr "Восстановить геометрию окна"
+msgstr "Восстанавливать геометрию окна"
 
-#: lazarusidestrconsts.rsiwprestorewindowsize
-msgid "Restore window size"
-msgstr "Восстановить размер окна"
+#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
+msgid "Use previous position and size"
+msgstr "Использовать предыдущие положение и размер"
 
 #: lazarusidestrconsts.rsiwpsplittercustomposition
 msgid "Custom Size"
@@ -17373,10 +17402,6 @@ msgstr "Восстанавливать с окном"
 #: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
 msgid "Restore Size"
 msgstr "Восстанавливать размер"
-
-#: lazarusidestrconsts.rsiwpusewindowmanagersetting
-msgid "Use windowmanager setting"
-msgstr "Взять параметры оконного менеджера"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

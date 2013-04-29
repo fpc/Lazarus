@@ -573,11 +573,6 @@ msgstr ""
 msgid "Application settings"
 msgstr "Paràmetres de l'aplicació"
 
-#: lazarusidestrconsts.dlgassemblerdefault
-msgctxt "lazarusidestrconsts.dlgassemblerdefault"
-msgid "Default"
-msgstr "Predeterminat"
-
 #: lazarusidestrconsts.dlgassertcode
 #, fuzzy
 #| msgid "Include Assertion Code"
@@ -845,8 +840,9 @@ msgstr "Macroinstruccions estil C (global)"
 
 #: lazarusidestrconsts.dlgcoansistr
 #, fuzzy
-#| msgid "Use Ansi Strings"
-msgid "Use ansi strings"
+#| msgid "Use ansi strings"
+msgctxt "lazarusidestrconsts.dlgcoansistr"
+msgid "Use Ansistrings"
 msgstr "Utilitza Ansi Strings"
 
 #: lazarusidestrconsts.dlgcoasis
@@ -7415,6 +7411,11 @@ msgstr "No es pot carregar el fitxer %s%s%s."
 msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr ""
+
+#: lazarusidestrconsts.lisdefault
+msgctxt "lazarusidestrconsts.lisdefault"
+msgid "Default"
+msgstr "Predeterminat"
 
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
@@ -16828,8 +16829,9 @@ msgid "Use >>"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseansistrings
+msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
-msgstr ""
+msgstr "Utilitza Ansi Strings"
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
@@ -17330,26 +17332,53 @@ msgstr ""
 msgid "Include version info in executable"
 msgstr ""
 
-#: lazarusidestrconsts.rsiwpcustomposition
-msgid "Custom position"
-msgstr "Posició personalitzada"
+#: lazarusidestrconsts.rsiwpcolumnnameshint
+msgid "Column Names"
+msgstr ""
 
-#: lazarusidestrconsts.rsiwpdefault
-msgctxt "lazarusidestrconsts.rsiwpdefault"
-msgid "Default"
-msgstr "Predeterminat"
+#: lazarusidestrconsts.rsiwpcolumnstrategyhint
+msgid "Strategy for saving Columns"
+msgstr ""
 
-#: lazarusidestrconsts.rsiwpdocked
-msgid "Docked"
-msgstr "Amarrat"
+#: lazarusidestrconsts.rsiwpcolumnwidthhint
+msgid "Column Width"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpcustomgeometry
+msgid "Custom geometry"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpcustomgeometryhint
+msgid "User can define window's position and size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
+msgid "Fixed default geometry"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
+msgid "Always the same fixed position and size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
+msgid "Let windowmanager decide"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
+msgid "System windowmanagers have different strategies for positioning windows"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwppositionwindowlisthint
+msgid "Windows that have been open. They may be closed now."
+msgstr ""
 
 #: lazarusidestrconsts.rsiwprestorewindowgeometry
 msgid "Restore window geometry"
 msgstr "Restaura la geometria de la finestra"
 
-#: lazarusidestrconsts.rsiwprestorewindowsize
-msgid "Restore window size"
-msgstr "Restaura el tamany de la finestra"
+#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
+msgid "Use previous position and size"
+msgstr ""
 
 #: lazarusidestrconsts.rsiwpsplittercustomposition
 msgid "Custom Size"
@@ -17366,10 +17395,6 @@ msgstr ""
 #: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
 msgid "Restore Size"
 msgstr ""
-
-#: lazarusidestrconsts.rsiwpusewindowmanagersetting
-msgid "Use windowmanager setting"
-msgstr "Utilitza els paràmetres del gestor de finestres"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

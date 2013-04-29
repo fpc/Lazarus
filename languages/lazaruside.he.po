@@ -583,11 +583,6 @@ msgstr ""
 msgid "Application settings"
 msgstr "הגדרות יישום"
 
-#: lazarusidestrconsts.dlgassemblerdefault
-msgctxt "lazarusidestrconsts.dlgassemblerdefault"
-msgid "Default"
-msgstr "ברירת מחדל"
-
 #: lazarusidestrconsts.dlgassertcode
 #, fuzzy
 #| msgid "Include Assertion Code"
@@ -861,8 +856,9 @@ msgstr "מקרו בסגנון שפת c (גלובלי)"
 
 #: lazarusidestrconsts.dlgcoansistr
 #, fuzzy
-#| msgid "Use Ansi Strings"
-msgid "Use ansi strings"
+#| msgid "Use ansi strings"
+msgctxt "lazarusidestrconsts.dlgcoansistr"
+msgid "Use Ansistrings"
 msgstr "השתמש במחרוזת ansi"
 
 #: lazarusidestrconsts.dlgcoasis
@@ -7541,6 +7537,11 @@ msgstr "לא ניתן לטעון את הקובץ %s%s%s."
 msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr "עשרוני"
+
+#: lazarusidestrconsts.lisdefault
+msgctxt "lazarusidestrconsts.lisdefault"
+msgid "Default"
+msgstr "ברירת מחדל"
 
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
@@ -17148,8 +17149,9 @@ msgid "Use >>"
 msgstr "השתמש ב ..."
 
 #: lazarusidestrconsts.lisuseansistrings
+msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
-msgstr ""
+msgstr "השתמש במחרוזת ansi"
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
@@ -17669,26 +17671,53 @@ msgstr "אפשרויות i18n"
 msgid "Include version info in executable"
 msgstr "כלול מידע גירסה בקובץ הריצה"
 
-#: lazarusidestrconsts.rsiwpcustomposition
-msgid "Custom position"
-msgstr "מיקום מותאם אישית"
+#: lazarusidestrconsts.rsiwpcolumnnameshint
+msgid "Column Names"
+msgstr ""
 
-#: lazarusidestrconsts.rsiwpdefault
-msgctxt "lazarusidestrconsts.rsiwpdefault"
-msgid "Default"
-msgstr "ברירת מחדל"
+#: lazarusidestrconsts.rsiwpcolumnstrategyhint
+msgid "Strategy for saving Columns"
+msgstr ""
 
-#: lazarusidestrconsts.rsiwpdocked
-msgid "Docked"
-msgstr "מעוגן"
+#: lazarusidestrconsts.rsiwpcolumnwidthhint
+msgid "Column Width"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpcustomgeometry
+msgid "Custom geometry"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpcustomgeometryhint
+msgid "User can define window's position and size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
+msgid "Fixed default geometry"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
+msgid "Always the same fixed position and size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
+msgid "Let windowmanager decide"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
+msgid "System windowmanagers have different strategies for positioning windows"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwppositionwindowlisthint
+msgid "Windows that have been open. They may be closed now."
+msgstr ""
 
 #: lazarusidestrconsts.rsiwprestorewindowgeometry
 msgid "Restore window geometry"
 msgstr "שחזר את נתוני החלון"
 
-#: lazarusidestrconsts.rsiwprestorewindowsize
-msgid "Restore window size"
-msgstr "שחזר את גודל החלון"
+#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
+msgid "Use previous position and size"
+msgstr ""
 
 #: lazarusidestrconsts.rsiwpsplittercustomposition
 msgid "Custom Size"
@@ -17705,10 +17734,6 @@ msgstr ""
 #: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
 msgid "Restore Size"
 msgstr ""
-
-#: lazarusidestrconsts.rsiwpusewindowmanagersetting
-msgid "Use windowmanager setting"
-msgstr "השתמש בהגדרות מנהל החלונות"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

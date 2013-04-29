@@ -581,11 +581,6 @@ msgstr ""
 msgid "Application settings"
 msgstr "Impostazioni dell'applicazione"
 
-#: lazarusidestrconsts.dlgassemblerdefault
-msgctxt "lazarusidestrconsts.dlgassemblerdefault"
-msgid "Default"
-msgstr "Predefinito"
-
 #: lazarusidestrconsts.dlgassertcode
 #, fuzzy
 #| msgid "Include Assertion Code"
@@ -859,8 +854,9 @@ msgstr "Macro in stile C (globale)"
 
 #: lazarusidestrconsts.dlgcoansistr
 #, fuzzy
-#| msgid "Use Ansi Strings"
-msgid "Use ansi strings"
+#| msgid "Use ansi strings"
+msgctxt "lazarusidestrconsts.dlgcoansistr"
+msgid "Use Ansistrings"
 msgstr "Usa stringhe Ansi"
 
 #: lazarusidestrconsts.dlgcoasis
@@ -7562,6 +7558,11 @@ msgstr "Impossibile caricare il file %s%s%s."
 msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr "Decimale"
+
+#: lazarusidestrconsts.lisdefault
+msgctxt "lazarusidestrconsts.lisdefault"
+msgid "Default"
+msgstr "Predefinito"
 
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
@@ -17158,6 +17159,7 @@ msgid "Use >>"
 msgstr "Usa..."
 
 #: lazarusidestrconsts.lisuseansistrings
+msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Usa Ansistring"
 
@@ -17674,26 +17676,53 @@ msgstr "Opzioni i18n"
 msgid "Include version info in executable"
 msgstr "Includi informazioni di versione nell'eseguibile"
 
-#: lazarusidestrconsts.rsiwpcustomposition
-msgid "Custom position"
-msgstr "Posizione personalizzata"
+#: lazarusidestrconsts.rsiwpcolumnnameshint
+msgid "Column Names"
+msgstr ""
 
-#: lazarusidestrconsts.rsiwpdefault
-msgctxt "lazarusidestrconsts.rsiwpdefault"
-msgid "Default"
-msgstr "Predefinito"
+#: lazarusidestrconsts.rsiwpcolumnstrategyhint
+msgid "Strategy for saving Columns"
+msgstr ""
 
-#: lazarusidestrconsts.rsiwpdocked
-msgid "Docked"
-msgstr "Ridotti a icona"
+#: lazarusidestrconsts.rsiwpcolumnwidthhint
+msgid "Column Width"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpcustomgeometry
+msgid "Custom geometry"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpcustomgeometryhint
+msgid "User can define window's position and size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
+msgid "Fixed default geometry"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
+msgid "Always the same fixed position and size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
+msgid "Let windowmanager decide"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
+msgid "System windowmanagers have different strategies for positioning windows"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwppositionwindowlisthint
+msgid "Windows that have been open. They may be closed now."
+msgstr ""
 
 #: lazarusidestrconsts.rsiwprestorewindowgeometry
 msgid "Restore window geometry"
 msgstr "Ripristina la geometria della finestra"
 
-#: lazarusidestrconsts.rsiwprestorewindowsize
-msgid "Restore window size"
-msgstr "Ripristina la dimensione della finestra"
+#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
+msgid "Use previous position and size"
+msgstr ""
 
 #: lazarusidestrconsts.rsiwpsplittercustomposition
 msgid "Custom Size"
@@ -17710,10 +17739,6 @@ msgstr ""
 #: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
 msgid "Restore Size"
 msgstr ""
-
-#: lazarusidestrconsts.rsiwpusewindowmanagersetting
-msgid "Use windowmanager setting"
-msgstr "Usa impostazioni del windowmanager"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

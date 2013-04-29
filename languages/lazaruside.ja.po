@@ -580,11 +580,6 @@ msgstr ""
 msgid "Application settings"
 msgstr "アプリケーションの設定"
 
-#: lazarusidestrconsts.dlgassemblerdefault
-msgctxt "lazarusidestrconsts.dlgassemblerdefault"
-msgid "Default"
-msgstr "デフォルト"
-
 #: lazarusidestrconsts.dlgassertcode
 #, fuzzy
 #| msgid "Include Assertion Code"
@@ -858,8 +853,9 @@ msgstr "Cスタイルのマクロ（グローバル）"
 
 #: lazarusidestrconsts.dlgcoansistr
 #, fuzzy
-#| msgid "Use Ansi Strings"
-msgid "Use ansi strings"
+#| msgid "Use ansi strings"
+msgctxt "lazarusidestrconsts.dlgcoansistr"
+msgid "Use Ansistrings"
 msgstr "Ansi 文字列を使用"
 
 #: lazarusidestrconsts.dlgcoasis
@@ -7570,6 +7566,11 @@ msgstr "ファイル%s%s%sを読み込めません。"
 msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr "小数"
+
+#: lazarusidestrconsts.lisdefault
+msgctxt "lazarusidestrconsts.lisdefault"
+msgid "Default"
+msgstr "デフォルト"
 
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
@@ -17183,6 +17184,7 @@ msgid "Use >>"
 msgstr "使用..."
 
 #: lazarusidestrconsts.lisuseansistrings
+msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Ansistringsを使用"
 
@@ -17701,26 +17703,53 @@ msgstr "国際化オプション"
 msgid "Include version info in executable"
 msgstr "実行ファイルにバージョン情報を込める"
 
-#: lazarusidestrconsts.rsiwpcustomposition
-msgid "Custom position"
-msgstr "カスタム位置"
+#: lazarusidestrconsts.rsiwpcolumnnameshint
+msgid "Column Names"
+msgstr ""
 
-#: lazarusidestrconsts.rsiwpdefault
-msgctxt "lazarusidestrconsts.rsiwpdefault"
-msgid "Default"
-msgstr "デフォルト"
+#: lazarusidestrconsts.rsiwpcolumnstrategyhint
+msgid "Strategy for saving Columns"
+msgstr ""
 
-#: lazarusidestrconsts.rsiwpdocked
-msgid "Docked"
-msgstr "結合されました"
+#: lazarusidestrconsts.rsiwpcolumnwidthhint
+msgid "Column Width"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpcustomgeometry
+msgid "Custom geometry"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpcustomgeometryhint
+msgid "User can define window's position and size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
+msgid "Fixed default geometry"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
+msgid "Always the same fixed position and size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
+msgid "Let windowmanager decide"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
+msgid "System windowmanagers have different strategies for positioning windows"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwppositionwindowlisthint
+msgid "Windows that have been open. They may be closed now."
+msgstr ""
 
 #: lazarusidestrconsts.rsiwprestorewindowgeometry
 msgid "Restore window geometry"
 msgstr "ウィンドウの位置/サイズを復元"
 
-#: lazarusidestrconsts.rsiwprestorewindowsize
-msgid "Restore window size"
-msgstr "ウィンドウサイズを復元"
+#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
+msgid "Use previous position and size"
+msgstr ""
 
 #: lazarusidestrconsts.rsiwpsplittercustomposition
 msgid "Custom Size"
@@ -17737,10 +17766,6 @@ msgstr "ウィンドウを元に戻す"
 #: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
 msgid "Restore Size"
 msgstr "サイズを元に戻す"
-
-#: lazarusidestrconsts.rsiwpusewindowmanagersetting
-msgid "Use windowmanager setting"
-msgstr "ウィンドウマネージャーの設定を使う"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

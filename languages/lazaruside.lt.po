@@ -578,11 +578,6 @@ msgstr ""
 msgid "Application settings"
 msgstr "Programos nuostatos"
 
-#: lazarusidestrconsts.dlgassemblerdefault
-msgctxt "lazarusidestrconsts.dlgassemblerdefault"
-msgid "Default"
-msgstr "Numatytas"
-
 #: lazarusidestrconsts.dlgassertcode
 #| msgid "Include Assertion Code"
 msgid "Include assertion code"
@@ -846,8 +841,10 @@ msgid "C style macros (global)"
 msgstr "C stiliaus makrokomandos (globaliai)"
 
 #: lazarusidestrconsts.dlgcoansistr
-#| msgid "Use Ansi Strings"
-msgid "Use ansi strings"
+#, fuzzy
+#| msgid "Use ansi strings"
+msgctxt "lazarusidestrconsts.dlgcoansistr"
+msgid "Use Ansistrings"
 msgstr "Naudoti ANSI eilutes"
 
 #: lazarusidestrconsts.dlgcoasis
@@ -7395,6 +7392,11 @@ msgstr "Nepavyko įkelti failą %s%s%s."
 msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr "Dešimtainis"
+
+#: lazarusidestrconsts.lisdefault
+msgctxt "lazarusidestrconsts.lisdefault"
+msgid "Default"
+msgstr "Numatytas"
 
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
@@ -16749,6 +16751,7 @@ msgid "Use >>"
 msgstr "Naudoti >>"
 
 #: lazarusidestrconsts.lisuseansistrings
+msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Naudoti ANSI tekstą"
 
@@ -17259,26 +17262,53 @@ msgstr "Internacionalizacijos nuostatos"
 msgid "Include version info in executable"
 msgstr "Įrašyti versijos informaciją į vykdomąjį failą"
 
-#: lazarusidestrconsts.rsiwpcustomposition
-msgid "Custom position"
-msgstr "Nurodytas dydis"
+#: lazarusidestrconsts.rsiwpcolumnnameshint
+msgid "Column Names"
+msgstr ""
 
-#: lazarusidestrconsts.rsiwpdefault
-msgctxt "lazarusidestrconsts.rsiwpdefault"
-msgid "Default"
-msgstr "Numatytas"
+#: lazarusidestrconsts.rsiwpcolumnstrategyhint
+msgid "Strategy for saving Columns"
+msgstr ""
 
-#: lazarusidestrconsts.rsiwpdocked
-msgid "Docked"
-msgstr "Įstatytas"
+#: lazarusidestrconsts.rsiwpcolumnwidthhint
+msgid "Column Width"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpcustomgeometry
+msgid "Custom geometry"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpcustomgeometryhint
+msgid "User can define window's position and size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
+msgid "Fixed default geometry"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
+msgid "Always the same fixed position and size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
+msgid "Let windowmanager decide"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
+msgid "System windowmanagers have different strategies for positioning windows"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwppositionwindowlisthint
+msgid "Windows that have been open. They may be closed now."
+msgstr ""
 
 #: lazarusidestrconsts.rsiwprestorewindowgeometry
 msgid "Restore window geometry"
 msgstr "Atstatyti lango geometriją"
 
-#: lazarusidestrconsts.rsiwprestorewindowsize
-msgid "Restore window size"
-msgstr "Atstatyti lango dydį"
+#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
+msgid "Use previous position and size"
+msgstr ""
 
 #: lazarusidestrconsts.rsiwpsplittercustomposition
 msgid "Custom Size"
@@ -17295,10 +17325,6 @@ msgstr "Atstatyti kartu su langu"
 #: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
 msgid "Restore Size"
 msgstr "Atstatyti dydį"
-
-#: lazarusidestrconsts.rsiwpusewindowmanagersetting
-msgid "Use windowmanager setting"
-msgstr "Naudoti langų tvarkytuvės nuostatas"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"
