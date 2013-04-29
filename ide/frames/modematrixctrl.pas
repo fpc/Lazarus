@@ -150,6 +150,7 @@ type
     function Equals(Obj: TObject): boolean; override;
     property RowCount: integer read GetRowCount;
     property Rows[Index: integer]: TGroupedMatrixRow read GetRows; default;
+    procedure DeleteRow(Index: integer);
     function IndexOfRow(Row: TGroupedMatrixRow): integer;
     property TopLvlCount: integer read GetTopLvlCount;
     property TopLvlItems[Index: integer]: TGroupedMatrixRow read GetTopLvlItems;
@@ -221,6 +222,7 @@ type
     property Modes: TGroupedMatrixModes read GetModes;
     procedure MatrixChanging;
     procedure MatrixChanged;
+    procedure DeleteMatrixRow(aRow: integer);
     property ActiveMode: integer read FActiveMode write SetActiveMode;
     function ModeColFirst: integer;
     function ModeColLast: integer;
@@ -237,7 +239,7 @@ type
     procedure Undo;
     procedure Redo;
     property MaxUndo: integer read FMaxUndo write SetMaxUndo default DefaultModeMatrixMaxUndo;
-    procedure StoreUndo(EvenIfNothingChanged: boolean);
+    procedure StoreUndo(EvenIfNothingChanged: boolean = false);
   end;
 
 function VerticalIntersect(const aRect,bRect: TRect): boolean;
@@ -488,6 +490,12 @@ begin
   for i:=0 to TopLvlCount-1 do
     if not SrcMatrix.TopLvlItems[i].Equals(TopLvlItems[i]) then exit;
   Result:=true;
+end;
+
+procedure TGroupedMatrix.DeleteRow(Index: integer);
+begin
+  Rows[Index].Free;
+  RebuildRows;
 end;
 
 function TGroupedMatrix.IndexOfRow(Row: TGroupedMatrixRow): integer;
@@ -970,7 +978,7 @@ begin
     ValueRow:=TGroupedMatrixValue(Matrix[fTypePopupMenuRow-1]);
     NewType:=TypeColumn.PickList.Names[Item.MenuIndex];
     if NewType=ValueRow.Typ then exit;
-    StoreUndo(false);
+    StoreUndo;
     ValueRow.Typ:=NewType;
     InvalidateCell(TypeCol,fTypePopupMenuRow);
     EditingDone;
@@ -1153,7 +1161,7 @@ begin
       ModeName:=Modes[aCol-1].Caption;
       i:=ValueRow.Modes.IndexOf(ModeName);
       if (i<0) = (aState=cbUnchecked) then exit;
-      StoreUndo(false);
+      StoreUndo;
       if i>=0 then begin
         ValueRow.Modes.Delete(i);
       end else begin
@@ -1298,7 +1306,7 @@ begin
   then begin
     ValueRow:=TGroupedMatrixValue(Matrix[aRow-1]);
     if ValueRow.Value=Value then exit;
-    StoreUndo(false);
+    StoreUndo;
     ValueRow.Value:=Value;
   end;
   inherited SetEditText(ACol, ARow, Value);
@@ -1462,6 +1470,18 @@ begin
 
   AutoLayout;
   Invalidate;
+end;
+
+procedure TGroupedMatrixControl.DeleteMatrixRow(aRow: integer);
+begin
+  if (aRow<FixedRows) or (aRow>=RowCount) then exit;
+  MatrixChanging;
+  try
+    StoreUndo;
+    Matrix.DeleteRow(aRow-1);
+  finally
+    MatrixChanged;
+  end;
 end;
 
 function TGroupedMatrixControl.ModeColFirst: integer;

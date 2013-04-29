@@ -109,8 +109,19 @@ begin
 end;
 
 procedure TFrame1.BMMDeleteToolButtonClick(Sender: TObject);
+var
+  aRow: Integer;
+  MatRow: TGroupedMatrixRow;
 begin
-
+  aRow:=Grid.Row;
+  if aRow<1 then exit;
+  MatRow:=Grid.Matrix[aRow-1];
+  if MatRow.Group=nil then begin
+    // storage groups can not be deleted
+    exit;
+  end;
+  Grid.DeleteMatrixRow(aRow);
+  UpdateButtons;
 end;
 
 procedure TFrame1.UpdateButtons;
