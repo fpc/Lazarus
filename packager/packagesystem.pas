@@ -3696,11 +3696,13 @@ begin
   MainSrcFile:=CreateRelativePath(SrcFilename,APackage.Directory);
   CustomOptions:=ConvertLazarusOptionsToMakefileOptions(CustomOptions);
   OtherOptions:=ConvertLazarusOptionsToMakefileOptions(OtherOptions);
+  debugln(['TLazPackageGraph.WriteMakeFile Custom="',CustomOptions,'" Other="',OtherOptions,'"']);
   if CustomOptions<>'' then
     if OtherOptions<>'' then
       OtherOptions:=OtherOptions+' '+CustomOptions
     else
       OtherOptions:=CustomOptions;
+  debugln(['TLazPackageGraph.WriteMakeFile Other="',OtherOptions,'"']);
 
   e:=LineEnding;
   s:='';
@@ -3720,11 +3722,10 @@ begin
     s:=s+'unitdir='+UnitPath+e;
   if IncPath<>'' then
     s:=s+'includedir='+IncPath+e;
-  s:=s+'options='+OtherOptions+e; // ToDo do the other options
+  s:=s+'options='+OtherOptions+e;
   s:=s+''+e;
   s:=s+'[target]'+e;
   s:=s+'units='+MainSrcFile+e;
-  //s:=s+'implicitunits=syntextdrawer'+e; // TODO list all unit names
   s:=s+''+e;
   s:=s+'[clean]'+e;
   s:=s+'files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \'+e;
