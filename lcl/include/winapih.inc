@@ -268,7 +268,7 @@ function SetWindowExtEx(DC: HDC; XExtent, YExtent: Integer; OldSize: PSize): Boo
 function SetWindowOrgEx(dc : hdc; NewX, NewY: Integer; OldPoint: PPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
        X, Y, cx, cy: Integer; uFlags: UINT): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean):longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean): longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ShowCaret(hWnd: HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

@@ -43,8 +43,7 @@ begin
   Result := True;
 end;
 
-function TWidgetSet.AngleChord(DC: HDC;
-  x1, y1, x2, y2, angle1, angle2: Integer): Boolean;
+function TWidgetSet.AngleChord(DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer): Boolean;
 var
   Points : PPoint;
   Count : Longint;
@@ -89,8 +88,7 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.CombineRgn(Dest, Src1, Src2 : HRGN;
-  fnCombineMode : Longint) : Longint;
+function TWidgetSet.CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;
 begin
   Result := ERROR;
 end;
@@ -101,10 +99,8 @@ begin
   Result := 0;
 end;
 
-function TWidgetSet.CreateDIBitmap(DC: HDC;
-  var InfoHeader: TBitmapInfoHeader;
-  dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;
-  wUsage: UINT): HBITMAP;
+function TWidgetSet.CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHeader;
+  dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo; wUsage: UINT): HBITMAP;
 begin
   Result := 0;
 end;
@@ -776,8 +772,7 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.EnableScrollBar(Wnd: HWND;
-  wSBflags, wArrows: Cardinal): Boolean;
+function TWidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
 begin
   Result := False;
 end;
@@ -897,8 +892,7 @@ begin
   DeleteObject(OldC);
 end;
 
-function TWidgetSet.FillRect(DC: HDC; const Rect: TRect;
-  Brush: HBRUSH): Boolean;
+function TWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
 begin
   Result := False;
 end;
@@ -916,8 +910,7 @@ begin
   Result := false;
 end;
 
-function TWidgetSet.FrameRect(DC: HDC; const ARect: TRect;
-  hBr: HBRUSH) : integer;
+function TWidgetSet.FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH) : integer;
 begin
   Result:= 0;
 end;
@@ -927,8 +920,7 @@ begin
   Result := 0;
 end;
 
-function TWidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;
-  Bits: Pointer): Longint;
+function TWidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint; Bits: Pointer): Longint;
 begin
   Result := 0;
 end;
@@ -1037,8 +1029,7 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.GetObject(GDIObject: HGDIOBJ; BufSize: Integer;
-  Buf: Pointer): Integer;
+function TWidgetSet.GetObject(GDIObject: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
 begin
   Result := 0;
 end;
@@ -1584,8 +1575,7 @@ begin
   DeleteObject(RRGN);
 end;
 
-function TWidgetSet.InvalidateRect(aHandle : HWND; ARect : pRect;
-  bErase : Boolean) : Boolean;
+function TWidgetSet.InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boolean;
 begin
   Result := false;
 end;
@@ -1676,8 +1666,7 @@ begin
                     Mask,XMask,YMask,SRCCOPY);
 end;
 
-function TWidgetSet.MoveToEx(DC: HDC; X, Y: Integer;
-  OldPoint: PPoint): Boolean;
+function TWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 begin
   Result := False;
 end;
@@ -1729,8 +1718,7 @@ begin
   Result := false;
 end;
 
-function TWidgetSet.Polyline(DC: HDC; Points: PPoint;
-  NumPts: Integer): boolean;
+function TWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
 begin
   Result := false;
 end;
@@ -2013,8 +2001,7 @@ begin
   Result := 0;
 end;
 
-function TWidgetSet.SetProp(Handle: hwnd; Str : PChar;
-  Data : Pointer) : Boolean;
+function TWidgetSet.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
 begin
   Result := True;
 end;
@@ -2035,8 +2022,7 @@ begin
   Result := 0;
 end;
 
-function TWidgetSet.SetStretchBltMode(DC: HDC;
-  StretchMode: Integer): Integer;
+function TWidgetSet.SetStretchBltMode(DC: HDC; StretchMode: Integer): Integer;
 begin
   Result := 0;
 end;
@@ -2047,8 +2033,7 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.SetTextCharacterExtra(_hdc : hdc;
-  nCharExtra : Integer):Integer;
+function TWidgetSet.SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer;
 begin
   Result := 0;
 end;
@@ -2091,8 +2076,7 @@ begin
   Result:=false;
 end;
 
-function TWidgetset.SetWindowRgn(hWnd: HWND;
- hRgn: HRGN; bRedraw: Boolean):longint;
+function TWidgetset.SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean): longint;
 begin
   Result := 0;
 end;
@@ -2102,8 +2086,7 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer;
-  bShow: Boolean): Boolean;
+function TWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean;
 begin
   Result := False;
 end;
@@ -2120,10 +2103,8 @@ begin
 end;
 
 function TWidgetSet.StretchDIBits(DC: HDC;
-  DestX, DestY, DestWidth, DestHeight,
-  SrcX, SrcY, SrcWidth, SrcHeight: Integer;
-  Bits: Pointer; var BitsInfo: TBitmapInfo;
-  Usage: UINT; Rop: DWORD): Integer;
+  DestX, DestY, DestWidth, DestHeight, SrcX, SrcY, SrcWidth, SrcHeight: Integer;
+  Bits: Pointer; var BitsInfo: TBitmapInfo; Usage: UINT; Rop: DWORD): Integer;
 begin
   Result := 0;
 end;
