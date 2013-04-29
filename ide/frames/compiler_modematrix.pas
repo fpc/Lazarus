@@ -73,6 +73,7 @@ end;
 procedure TFrame1.BMMUndoToolButtonClick(Sender: TObject);
 begin
   Grid.Undo;
+  UpdateButtons;
 end;
 
 procedure TFrame1.GridEditingDone(Sender: TObject);
@@ -84,6 +85,7 @@ end;
 procedure TFrame1.BMMRedoToolButtonClick(Sender: TObject);
 begin
   Grid.Redo;
+  UpdateButtons;
 end;
 
 procedure TFrame1.BMMMoveUpToolButtonClick(Sender: TObject);

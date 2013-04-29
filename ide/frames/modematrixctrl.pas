@@ -114,7 +114,6 @@ type
 
   TGroupedMatrixModes = class(TPersistent)
   private
-    FActive: integer;
     fItems: TFPList; // list of TGroupedMatrixMode
     function GetItems(Index: integer): TGroupedMatrixMode;
   public
@@ -126,7 +125,6 @@ type
     property Items[Index: integer]: TGroupedMatrixMode read GetItems; default;
     function Count: integer;
     function Add(aCaption: string; aColor: TColor = clDefault): TGroupedMatrixMode;
-    property Active: integer read FActive write FActive;
   end;
   TGroupedMatrixModesClass = class of TGroupedMatrixModes;
 
@@ -171,6 +169,7 @@ type
 
   TGroupedMatrixControl = class(TCustomDrawGrid)
   private
+    FActiveMode: integer;
     FActiveModeColor: TColor;
     FIndent: integer;
     FMatrix: TGroupedMatrix;
@@ -183,6 +182,7 @@ type
     fRedoItems: TObjectList; // list of TGroupedMatrix, 0=oldest
     function GetModeColumns(Index: integer): TGridColumn;
     function GetModes: TGroupedMatrixModes;
+    procedure SetActiveMode(AValue: integer);
     procedure SetActiveModeColor(AValue: TColor);
     procedure SetIndent(AValue: integer);
     procedure SetMaxUndo(AValue: integer);
@@ -221,6 +221,7 @@ type
     property Modes: TGroupedMatrixModes read GetModes;
     procedure MatrixChanging;
     procedure MatrixChanged;
+    property ActiveMode: integer read FActiveMode write SetActiveMode;
     function ModeColFirst: integer;
     function ModeColLast: integer;
     property ModeColumns[Index: integer]: TGridColumn read GetModeColumns;
@@ -306,7 +307,6 @@ begin
   begin
     SrcModes:=TGroupedMatrixModes(Source);
     Clear;
-    Active:=SrcModes.Active;
     for i:=0 to SrcModes.Count-1 do begin
       SrcMode:=SrcModes[i];
       NewMode:=TGroupedMatrixModeClass(SrcMode.ClassType).Create;
@@ -320,7 +320,6 @@ end;
 constructor TGroupedMatrixModes.Create;
 begin
   fItems:=TFPList.Create;
-  FActive:=-1;
 end;
 
 destructor TGroupedMatrixModes.Destroy;
@@ -334,7 +333,6 @@ procedure TGroupedMatrixModes.Clear;
 var
   i: Integer;
 begin
-  FActive:=-1;
   for i:=0 to fItems.Count-1 do
     Items[i].Free;
   fItems.Clear;
@@ -349,7 +347,6 @@ begin
   if not (Obj is TGroupedMatrixModes) then exit;
   SrcModes:=TGroupedMatrixModes(Obj);
   if SrcModes.Count<>Count then exit;
-  if SrcModes.Active<>Active then exit;
   for i:=0 to Count-1 do
     if not SrcModes[i].Equals(Items[i]) then exit;
   Result:=true;
@@ -992,6 +989,13 @@ begin
   Result:=Matrix.Modes;
 end;
 
+procedure TGroupedMatrixControl.SetActiveMode(AValue: integer);
+begin
+  if FActiveMode=AValue then Exit;
+  FActiveMode:=AValue;
+  Invalidate;
+end;
+
 procedure TGroupedMatrixControl.SetActiveModeColor(AValue: TColor);
 begin
   if FActiveModeColor=AValue then Exit;
@@ -1360,8 +1364,8 @@ procedure TGroupedMatrixControl.DefaultDrawCell(aCol, aRow: Integer; var aRect: 
 
   procedure DrawActiveModeRow(ValueRow: TGroupedMatrixValue);
   begin
-    if Modes.Active<0 then exit;
-    if ValueRow.Modes.IndexOf(Modes[Modes.Active].Caption)<0 then exit;
+    if ActiveMode<0 then exit;
+    if ValueRow.Modes.IndexOf(Modes[ActiveMode].Caption)<0 then exit;
     Canvas.GradientFill(Rect(aRect.Left,(aRect.Top+aRect.Bottom) div 2,aRect.Right,aRect.Bottom),
       Color,ActiveModeColor,gdVertical);
   end;
@@ -1403,7 +1407,7 @@ begin
         ModeColor:=Modes[aCol-ModeColFirst].Color;
         if ModeColor=clDefault then ModeColor:=Color;
         StateColor:=Color;
-        if Modes.Active=aCol-ModeColFirst then
+        if ActiveMode=aCol-ModeColFirst then
           StateColor:=ActiveModeColor;
         if (ModeColor<>Color) or (StateColor<>Color) then begin
           Canvas.GradientFill(aRect,ModeColor,StateColor,gdHorizontal);
