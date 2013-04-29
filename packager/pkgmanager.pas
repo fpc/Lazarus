@@ -2103,7 +2103,7 @@ function TPkgManager.DoShowOpenInstalledPckDlg: TModalResult;
 var
   APackage: TLazPackage;
 begin
-  Result:=ShowOpenInstalledPkgDlg(APackage);
+  Result:=ShowOpenLoadedPkgDlg(APackage);
   if (Result<>mrOk) then exit;
   Result:=DoOpenPackage(APackage,[],false);
 end;

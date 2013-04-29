@@ -1,12 +1,4 @@
-{  $Id$  }
 {
- /***************************************************************************
-                            openinstalledpkgdlg.pas
-                            -----------------------
-
-
- ***************************************************************************/
-
  ***************************************************************************
  *                                                                         *
  *   This source is free software; you can redistribute it and/or modify   *
@@ -29,8 +21,8 @@
   Author: Mattias Gaertner
 
   Abstract:
-    Defines TOpenInstalledPackagesDlg - The dialog let the user choose one of
-    the installed packages.
+    Defines TOpenLoadedPackagesDlg - The dialog let the user choose one of
+    the loaded packages.
 }
 unit OpenInstalledPkgDlg;
 
@@ -46,9 +38,9 @@ uses
 
 type
 
-  { TOpenInstalledPackagesDlg }
+  { TOpenLoadedPackagesDlg }
 
-  TOpenInstalledPackagesDlg = class(TForm)
+  TOpenLoadedPackagesDlg = class(TForm)
     ButtonPanel1: TButtonPanel;
     PkgListView: TListView;
     HintMemo: TMemo;
@@ -67,21 +59,21 @@ type
     procedure UpdatePackageList;
   end;
   
-function ShowOpenInstalledPkgDlg(var OpenPackage: TLazPackage): TModalResult;
+function ShowOpenLoadedPkgDlg(var OpenPackage: TLazPackage): TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowOpenInstalledPkgDlg(var OpenPackage: TLazPackage): TModalResult;
+function ShowOpenLoadedPkgDlg(var OpenPackage: TLazPackage): TModalResult;
 begin
-  with TOpenInstalledPackagesDlg.Create(nil) do
+  with TOpenLoadedPackagesDlg.Create(nil) do
   try
     UpdatePackageList;
     UpdateSelection;
     Result:=ShowModal;
     if Result=mrOK then begin
-      Assert(Assigned(PkgListView.Selected), 'ShowOpenInstalledPkgDlg: Nothing selected');
+      Assert(Assigned(PkgListView.Selected), 'ShowOpenLoadedPkgDlg: Nothing selected');
       OpenPackage:=TLazPackage(PkgListView.Selected.Data);
     end
     else
@@ -91,20 +83,20 @@ begin
   end;
 end;
 
-{ TOpenInstalledPackagesDlg }
+{ TOpenLoadedPackagesDlg }
 
-procedure TOpenInstalledPackagesDlg.PkgListViewDblClick(Sender: TObject);
+procedure TOpenLoadedPackagesDlg.PkgListViewDblClick(Sender: TObject);
 begin
   OpenButtonClick(Sender);
 end;
 
-procedure TOpenInstalledPackagesDlg.PkgListViewSelectItem(Sender: TObject;
+procedure TOpenLoadedPackagesDlg.PkgListViewSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
   UpdateSelection;
 end;
 
-procedure TOpenInstalledPackagesDlg.UpdateSelection;
+procedure TOpenLoadedPackagesDlg.UpdateSelection;
 var
   CurPkg: TLazPackage;
   LI: TListItem;
@@ -127,13 +119,13 @@ begin
   end;
 end;
 
-procedure TOpenInstalledPackagesDlg.OpenButtonClick(Sender: TObject);
+procedure TOpenLoadedPackagesDlg.OpenButtonClick(Sender: TObject);
 begin
-  Assert(Assigned(PkgListView.Selected), 'TOpenInstalledPackagesDlg.OpenButtonClick: Nothing selected');
+  Assert(Assigned(PkgListView.Selected), 'TOpenLoadedPackagesDlg.OpenButtonClick: Nothing selected');
   ModalResult:=mrOk;
 end;
 
-procedure TOpenInstalledPackagesDlg.FormCreate(Sender: TObject);
+procedure TOpenLoadedPackagesDlg.FormCreate(Sender: TObject);
 var
   NewColumn: TListColumn;
 begin
@@ -156,17 +148,17 @@ begin
   ButtonPanel1.OKButton.Enabled:=False;
 end;
 
-procedure TOpenInstalledPackagesDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+procedure TOpenLoadedPackagesDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
-procedure TOpenInstalledPackagesDlg.HelpButtonClick(Sender: TObject);
+procedure TOpenLoadedPackagesDlg.HelpButtonClick(Sender: TObject);
 begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-function TOpenInstalledPackagesDlg.PkgStateToString(APackage: TLazPackage): string;
+function TOpenLoadedPackagesDlg.PkgStateToString(APackage: TLazPackage): string;
   
   procedure AddState(const s: string);
   begin
@@ -191,7 +183,7 @@ begin
   if APackage.ReadOnly then AddState(lisOIPreadonly);
 end;
 
-procedure TOpenInstalledPackagesDlg.UpdatePackageList;
+procedure TOpenLoadedPackagesDlg.UpdatePackageList;
 var
   Cnt: Integer;
   i: Integer;
@@ -202,7 +194,6 @@ begin
   Cnt:=PackageGraph.Count;
   for i:=0 to Cnt-1 do begin
     CurPkg:=PackageGraph[i];
-    //if not (CurPkg.Installed in [pitStatic,pitDynamic]) then continue;
     if PkgListView.Items.Count>i then begin
       CurListItem:=PkgListView.Items[i];
       CurListItem.SubItems[0]:=CurPkg.Version.AsString;

@@ -1,10 +1,10 @@
-object OpenInstalledPackagesDlg: TOpenInstalledPackagesDlg
+object OpenLoadedPackagesDlg: TOpenLoadedPackagesDlg
   Left = 407
   Height = 494
   Top = 151
   Width = 447
   ActiveControl = PkgListView
-  Caption = 'OpenInstalledPackagesDlg'
+  Caption = 'OpenLoadedPackagesDlg'
   ClientHeight = 494
   ClientWidth = 447
   OnClose = FormClose
@@ -14,7 +14,7 @@ object OpenInstalledPackagesDlg: TOpenInstalledPackagesDlg
   object HintMemo: TMemo
     Left = 0
     Height = 121
-    Top = 320
+    Top = 331
     Width = 447
     Align = alBottom
     Lines.Strings = (
@@ -26,7 +26,7 @@ object OpenInstalledPackagesDlg: TOpenInstalledPackagesDlg
   end
   object PkgListView: TListView
     Left = 0
-    Height = 315
+    Height = 326
     Top = 0
     Width = 447
     Align = alClient
@@ -41,15 +41,15 @@ object OpenInstalledPackagesDlg: TOpenInstalledPackagesDlg
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 315
+    Top = 326
     Width = 447
     Align = alBottom
     ResizeAnchor = akBottom
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 41
-    Top = 447
+    Height = 30
+    Top = 458
     Width = 435
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
