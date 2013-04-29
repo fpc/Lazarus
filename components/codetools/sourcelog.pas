@@ -781,7 +781,7 @@ begin
   if (Line=FLineCount+1)
   and ((Column>1) or (FSource='') or (not (FSource[FSrcLen] in [#10,#13]))) then
     exit;
-  Result:=true;
+  Result:=false;
 end;
 
 function TSourceLog.LineColIsSpace(Line, Column: integer): boolean;

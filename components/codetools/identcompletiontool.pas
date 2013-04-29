@@ -2536,6 +2536,7 @@ begin
       // context behind
       if (IdentEndPos<SrcLen) then begin
         MoveCursorToCleanPos(IdentEndPos);
+        //debugln(['TIdentCompletionTool.GatherIdentifiers "',dbgstr(Src,IdentStartPos,IdentEndPos-IdentStartPos),'"']);
         InFrontOfDirective:=(CurPos.StartPos<SrcLen) and (Src[CurPos.StartPos]='{')
                             and (Src[CurPos.StartPos+1]='$');
         ReadNextAtom;
