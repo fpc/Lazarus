@@ -49,7 +49,6 @@ type
     procedure BClearClick(Sender: TObject);
     procedure BDeleteClick(Sender: TObject);
     procedure LBComponentsSelectionChange(Sender: TObject; User: boolean);
-    procedure LBPropertiesClick(Sender: TObject);
     procedure LBPropertiesDblClick(Sender: TObject);
     procedure SelectPropertiesFormClose(Sender: TObject;
       var CloseAction: TCloseAction);
@@ -94,10 +93,6 @@ begin
   ShowProperties(GetSelectedComponent);
 end;
 
-procedure TSelectPropertiesForm.LBPropertiesClick(Sender: TObject);
-begin
-end;
-
 procedure TSelectPropertiesForm.LBPropertiesDblClick(Sender: TObject);
 begin
   AddSelectedProperties;
@@ -118,7 +113,7 @@ begin
   BCancel.Caption:=oiStdActDataSetCancel1Hint;
   LComponents.Caption:=oisBtnComponents;
   LProperties.Caption:=oisBtnProperties;
-  LBSelected.Caption:=oisSelectedProperties;
+  LLBSelected.Caption:=oisSelectedProperties;
   IDEDialogLayoutList.ApplyLayout(Self,485,460);
 end;
 
