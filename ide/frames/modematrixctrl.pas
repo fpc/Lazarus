@@ -1501,8 +1501,12 @@ begin
   if not CanUndo then exit;
   MatrixChanging;
   try
-    DoMatrix:=TGroupedMatrix(fUndoItems[fUndoItems.Count-1]);
+    DoMatrix:=TGroupedMatrix.Create(nil);
+    DoMatrix.Assign(Matrix);
     fRedoItems.Add(DoMatrix);
+    if MaxUndo<fRedoItems.Count then
+      fRedoItems.Delete(0);
+    DoMatrix:=TGroupedMatrix(fUndoItems[fUndoItems.Count-1]);
     fUndoItems.OwnsObjects:=false;
     fUndoItems.Delete(fUndoItems.Count-1);
     fUndoItems.OwnsObjects:=true;
@@ -1519,8 +1523,12 @@ begin
   if not CanRedo then exit;
   MatrixChanging;
   try
-    DoMatrix:=TGroupedMatrix(fRedoItems[fRedoItems.Count-1]);
+    DoMatrix:=TGroupedMatrix.Create(nil);
+    DoMatrix.Assign(Matrix);
     fUndoItems.Add(DoMatrix);
+    if MaxUndo<fUndoItems.Count then
+      fUndoItems.Delete(0);
+    DoMatrix:=TGroupedMatrix(fRedoItems[fRedoItems.Count-1]);
     fRedoItems.OwnsObjects:=false;
     fRedoItems.Delete(fRedoItems.Count-1);
     fRedoItems.OwnsObjects:=true;
