@@ -269,8 +269,9 @@ begin
   if not LazarusIDE.BeginCodeTools then
     Exit;
   SrcEdit := SourceEditorManagerIntf.ActiveEditor;
-  if Assigned(SrcEdit) then
-    Code := TCodeBuffer(SrcEdit.CodeToolsBuffer);
+  if SrcEdit=nil then
+    Exit;
+  Code := TCodeBuffer(SrcEdit.CodeToolsBuffer);
   if Code = nil then
     Exit;
   Comp := GetComponent(0);
