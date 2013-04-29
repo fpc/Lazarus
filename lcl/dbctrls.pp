@@ -271,6 +271,7 @@ Type
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     class procedure WSRegisterClass; override;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

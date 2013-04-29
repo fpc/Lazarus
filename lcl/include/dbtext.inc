@@ -89,6 +89,13 @@ begin
   Done := True;
 end;
 
+procedure TDBText.Loaded;
+begin
+  inherited Loaded;
+  if csDesigning in ComponentState then
+    Caption := Name
+end;
+
 { Public Methods}
 constructor TDBText.Create(AOwner: TComponent);
 begin
