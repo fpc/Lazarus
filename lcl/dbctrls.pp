@@ -969,10 +969,15 @@ Type
 
   { TDBImage }
 
+  TOnDBImageRead = procedure(Sender: TObject; S: TStream; var GraphExt : string) of object;
+  TOnDBImageWrite = procedure(Sender: TObject; S: TStream; GraphExt : string) of object;
+
   TDBImage = class(TCustomImage)
   private
     FDataLink: TFieldDataLink;
     FAutoDisplay: Boolean;
+    FOnDBImageRead: TOnDBImageRead;
+    FOnDBImageWrite: TOnDBImageWrite;
     FQuickDraw: Boolean;
     FPictureLoaded: boolean;
     FUpdatingRecord: boolean;
@@ -1011,6 +1016,9 @@ Type
     property DragMode;
     property OnClick;
     property OnDblClick;
+    property OnDBImageRead: TOnDBImageRead read  FOnDBImageRead write FOnDBImageRead;
+    property OnDBImageWrite: TOnDBImageWrite read FOnDBImageWrite write FOnDBImageWrite;
+    property PopupMenu;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;

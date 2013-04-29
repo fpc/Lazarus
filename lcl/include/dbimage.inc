@@ -107,7 +107,10 @@ begin
     try
       i := pos(';',fe);
       if i > 0 then fe := copy(fe,1,i-1);
-      s.WriteAnsiString(fe);
+      if assigned(FOnDBImageWrite)  then
+        OnDBImageWrite(self,s,fe) //Call extermal method to save type of image
+      else
+        s.WriteAnsiString(fe);  //otherwise write file extension to stream
       Picture.Graphic.SaveToStream(s);
     finally
       s.Free;
@@ -152,7 +155,11 @@ begin
           end;
         AGraphic := nil;
         try
-          GraphExt :=  s.ReadAnsiString;
+          if assigned(FOnDBImageRead) then
+            OnDBImageRead(self,s,GraphExt) //External method to identify graphic type
+                                             //returns file extension for graphic type (e.g. jpg)
+          else
+            GraphExt :=  s.ReadAnsiString;  //Read file extension Graphic type from stream
 
           gc := GetGraphicClassForFileExtension(GraphExt);
           if assigned(gc) then
