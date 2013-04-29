@@ -67,6 +67,7 @@ type
     property Count: integer read GetCount;
     property Items[Index: integer]: TGroupedMatrixRow read GetItems; default;
     function IndexOfRow(aRow: TGroupedMatrixRow): integer;
+    procedure Move(CurIndex, NewIndex: integer);
     function GetNext: TGroupedMatrixRow; override;
     function GetLastLeaf: TGroupedMatrixRow; override;
     property Color: TColor read FColor write SetColor;
@@ -141,13 +142,13 @@ type
     function GetTopLvlCount: integer;
     function GetTopLvlItems(Index: integer): TGroupedMatrixRow;
     procedure InternalAdd(Group: TGroupedMatrixGroup; Row: TGroupedMatrixRow);
-    procedure RebuildRows;
   public
     procedure Assign(Source: TPersistent); override;
     constructor Create(aControl: TGroupedMatrixControl);
     destructor Destroy; override;
     procedure Clear;
     function Equals(Obj: TObject): boolean; override;
+    procedure RebuildRows;
     property RowCount: integer read GetRowCount;
     property Rows[Index: integer]: TGroupedMatrixRow read GetRows; default;
     procedure DeleteRow(Index: integer);
@@ -729,6 +730,11 @@ begin
   for Result:=0 to Count-1 do
     if aRow=Items[Result] then exit;
   Result:=-1;
+end;
+
+procedure TGroupedMatrixGroup.Move(CurIndex, NewIndex: integer);
+begin
+  FItems.Move(CurIndex,NewIndex);
 end;
 
 function TGroupedMatrixGroup.GetNext: TGroupedMatrixRow;

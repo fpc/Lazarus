@@ -99,8 +99,37 @@ begin
 end;
 
 procedure TFrame1.BMMNewTargetToolButtonClick(Sender: TObject);
+var
+  aRow: Integer;
+  MatRow: TGroupedMatrixRow;
+  Group: TGroupedMatrixGroup;
 begin
-
+  aRow:=Grid.Row;
+  if aRow<Grid.FixedRows then aRow:=Grid.FixedRows;
+  Grid.MatrixChanging;
+  try
+    Grid.StoreUndo;
+    MatRow:=Grid.Matrix[aRow-1];
+    if MatRow is TGroupedMatrixGroup then
+      Group:=TGroupedMatrixGroup(MatRow)
+    else
+      Group:=MatRow.Group;
+    if Group.Group=nil then begin
+      // Group is a storage group
+      // => add as first target of storage group
+      Grid.Matrix.AddGroup(Group,'Target: *');
+      Group.Move(Group.Count-1,0);
+    end else begin
+      // Group is a target
+      // => add target behind current target
+      Grid.Matrix.AddGroup(Group.Group,'Target: *');
+      Group.Group.Move(Group.Group.Count-1,Group.GetGroupIndex+1);
+    end;
+    Grid.Matrix.RebuildRows;
+  finally
+    Grid.MatrixChanged;
+  end;
+  UpdateButtons;
 end;
 
 procedure TFrame1.BMMMoveDownToolButtonClick(Sender: TObject);
