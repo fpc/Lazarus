@@ -4190,9 +4190,10 @@ var
 begin
   if Parent=nil then exit;
   DisableAutoSizing;
-  p:=ClientOrigin;
+  p := Point(0,0);
+  p := ClientToScreen(p);
   Parent:=nil;
-  SetBounds(Left+p.x,Top+p.y,Width,Height);
+  SetBounds(p.x,p.y,Width,Height);
   EnableAutoSizing;
 end;
 
