@@ -76,8 +76,8 @@ begin
   // allow to delete targets and value rows
   BMMDeleteToolButton.Enabled:=(MatRow<>nil) and (MatRow.Group<>nil);
   //
-  BMMUndoToolButton.Enabled:=false;
-  BMMRedoToolButton.Enabled:=false;
+  BMMUndoToolButton.Enabled:=Grid.CanUndo;
+  BMMRedoToolButton.Enabled:=Grid.CanRedo;
   // move up/down
   BMMMoveUpToolButton.Enabled:=(MatRow<>nil) and (MatRow.Group<>nil)
                         and ((MatRow.GetPreviousSibling<>nil)

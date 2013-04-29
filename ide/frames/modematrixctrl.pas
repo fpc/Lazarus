@@ -5,7 +5,7 @@ unit ModeMatrixCtrl;
 interface
 
 uses
-  Classes, SysUtils, math, types, Controls, LCLType, LCLIntf,
+  Classes, SysUtils, math, types, contnrs, Controls, LCLType, LCLIntf,
   Grids, Graphics, StdCtrls, Menus, LazLogger;
 
 const
@@ -170,14 +170,18 @@ type
     FActiveModeColor: TColor;
     FIndent: integer;
     FMatrix: TGroupedMatrix;
+    FMaxUndo: integer;
     FTypeColumn: TGridColumn;
     FValueColumn: TGridColumn;
     fTypePopupMenu: TPopupMenu;
     fTypePopupMenuRow: integer; // grid row of fTypePopupMenu
+    fUndoItems: TObjectList; // list of TGroupedMatrix, 0=oldest
+    fRedoItems: TObjectList; // list of TGroupedMatrix, 0=oldest
     function GetModeColumns(Index: integer): TGridColumn;
     function GetModes: TGroupedMatrixModes;
     procedure SetActiveModeColor(AValue: TColor);
     procedure SetIndent(AValue: integer);
+    procedure SetMaxUndo(AValue: integer);
     procedure ToggleModeValue(ValueRow: TGroupedMatrixValue; aRow, aCol: integer);
     procedure PopupTypes(aRow: integer);
     procedure OnTypePopupMenuClick(Sender: TObject);
@@ -202,6 +206,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Clear;
   public
     property ActiveModeColor: TColor read FActiveModeColor write SetActiveModeColor;
     procedure DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
@@ -217,6 +222,14 @@ type
     property ValueColumn: TGridColumn read FValueColumn;
     function ValueCol: integer;
     property Indent: integer read FIndent write SetIndent default DefaultGroupMatrixIndent;
+  public
+    // undo/redo
+    function CanUndo: boolean;
+    function CanRedo: boolean;
+    procedure Undo;
+    procedure Redo;
+    property MaxUndo: integer read FMaxUndo write SetMaxUndo;
+    procedure StoreUndo(EvenIfNothingChanged: boolean);
   end;
 
 function VerticalIntersect(const aRect,bRect: TRect): boolean;
@@ -975,6 +988,20 @@ begin
   FIndent:=AValue;
 end;
 
+procedure TGroupedMatrixControl.SetMaxUndo(AValue: integer);
+begin
+  AValue:=Max(AValue,1);
+  if FMaxUndo=AValue then Exit;
+  FMaxUndo:=AValue;
+  while fUndoItems.Count+fRedoItems.Count>FMaxUndo do begin
+    if fRedoItems.Count>0 then begin
+      fRedoItems.Delete(0);
+    end else begin
+      fUndoItems.Delete(0);
+    end;
+  end;
+end;
+
 procedure TGroupedMatrixControl.PrepareCanvas(aCol, aRow: Integer;
   aState: TGridDrawState);
 begin
@@ -1237,6 +1264,9 @@ begin
   inherited Create(AOwner);
 
   FMatrix:=TGroupedMatrix.Create(Self);
+  fUndoItems:=TObjectList.Create(true);
+  fRedoItems:=TObjectList.Create(true);
+
   Options:=Options+[goEditing]; // ToDo: change property default
   FixedCols:=1; // ToDo: change property default
   FixedRows:=1; // ToDo: change property default
@@ -1260,8 +1290,17 @@ end;
 destructor TGroupedMatrixControl.Destroy;
 begin
   Clear;
+  FreeAndNil(fUndoItems);
+  FreeAndNil(fRedoItems);
   FreeAndNil(FMatrix);
   inherited Destroy;
+end;
+
+procedure TGroupedMatrixControl.Clear;
+begin
+  fUndoItems.Clear;
+  fRedoItems.Clear;
+  inherited Clear;
 end;
 
 procedure TGroupedMatrixControl.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
@@ -1381,6 +1420,60 @@ end;
 function TGroupedMatrixControl.ValueCol: integer;
 begin
   Result:=Modes.Count+2;
+end;
+
+function TGroupedMatrixControl.CanUndo: boolean;
+begin
+  Result:=fUndoItems.Count>0;
+end;
+
+function TGroupedMatrixControl.CanRedo: boolean;
+begin
+  Result:=fRedoItems.Count>0;
+end;
+
+procedure TGroupedMatrixControl.Undo;
+var
+  DoMatrix: TGroupedMatrix;
+begin
+  if not CanUndo then exit;
+  DoMatrix:=TGroupedMatrix(fUndoItems[fUndoItems.Count-1]);
+  fRedoItems.Add(DoMatrix);
+  fUndoItems.OwnsObjects:=false;
+  fUndoItems.Delete(fUndoItems.Count-1);
+  fUndoItems.OwnsObjects:=true;
+  Matrix.Assign(DoMatrix);
+  MatrixChanged;
+end;
+
+procedure TGroupedMatrixControl.Redo;
+var
+  DoMatrix: TGroupedMatrix;
+begin
+  if not CanRedo then exit;
+  DoMatrix:=TGroupedMatrix(fRedoItems[fRedoItems.Count-1]);
+  fUndoItems.Add(DoMatrix);
+  fRedoItems.OwnsObjects:=false;
+  fRedoItems.Delete(fRedoItems.Count-1);
+  fRedoItems.OwnsObjects:=true;
+  Matrix.Assign(DoMatrix);
+  MatrixChanged;
+end;
+
+procedure TGroupedMatrixControl.StoreUndo(EvenIfNothingChanged: boolean);
+var
+  DoMatrix: TGroupedMatrix;
+begin
+  if (not EvenIfNothingChanged)
+  and (fUndoItems.Count>0)
+  and TGroupedMatrix(fUndoItems[fUndoItems.Count-1]).Equals(Matrix) then
+    exit;
+  fRedoItems.Clear;
+  DoMatrix:=TGroupedMatrix.Create(nil);
+  DoMatrix.Assign(Matrix);
+  fUndoItems.Add(DoMatrix);
+  if fUndoItems.Count>MaxUndo then
+    fUndoItems.Delete(0);
 end;
 
 end.
