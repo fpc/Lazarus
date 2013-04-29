@@ -742,10 +742,16 @@ begin
   end;
 
   Watch:=TCurrentWatch(lvWatches.Selected.Data);
-  d := Watch.Values[GetThreadId, GetStackframe];
-  t := d.TypeInfo;
-
   InspectLabel.Caption := Watch.Expression;
+
+  d := Watch.Values[GetThreadId, GetStackframe];
+  if d = nil then begin
+    InspectMemo.WordWrap := True;
+    InspectMemo.Text := '<evaluating>';
+    exit;
+  end;
+
+  t := d.TypeInfo;
 
   if (t <> nil) and (t.Fields <> nil) and (t.Fields.Count > 0) and
      (d.DisplayFormat in [wdfDefault, wdfStructure])
