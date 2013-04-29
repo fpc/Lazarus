@@ -102,7 +102,9 @@ uses
   lazideintf,
   srceditorintf,
   ProjectIntf,
-  idemsgintf;
+  idemsgintf,
+  CodeCache,
+  CodeToolManager;
 
 Type
   { TSQLStringsPropertyEditor }
@@ -140,6 +142,7 @@ Type
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
+    procedure SetValue(const NewValue: ansistring); override;
   end;
 
 {$IFDEF HASLIBLOADER}
@@ -254,6 +257,30 @@ begin
   finally
     L.Free;
   end;
+end;
+
+procedure TSQLDBConnectorTypePropertyEditor.SetValue(const NewValue: ansistring);
+var
+  Comp: TPersistent;
+  Code: TCodeBuffer;
+  ConnDef: TConnectionDef;
+  SrcEdit: TSourceEditorInterface;
+begin
+  if not LazarusIDE.BeginCodeTools then
+    Exit;
+  SrcEdit := SourceEditorManagerIntf.ActiveEditor;
+  if Assigned(SrcEdit) then
+    Code := TCodeBuffer(SrcEdit.CodeToolsBuffer);
+  if Code = nil then
+    Exit;
+  Comp := GetComponent(0);
+  if Comp is TSQLConnector then
+  begin
+    ConnDef := GetConnectionDef(NewValue);
+    if Assigned(ConnDef) then
+      CodeToolBoss.AddUnitToMainUsesSection(Code, ConnDef.UnitName, '');
+  end;
+  inherited;
 end;
 
 {$IFDEF HASLIBLOADER}
