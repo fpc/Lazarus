@@ -95,6 +95,8 @@ begin
     // if current handle has paintdata information,
     // setup hdc with it
     //DC.DebugClipRect('BeginPaint: Before');
+    if (QtVersionMajor = 4) and (QtVersionMinor > 6) then
+      QPainter_setLayoutDirection(DC.Widget, QtLayoutDirectionAuto);
     if Widget.PaintData.ClipRegion <> nil then
     begin
       //Write('>>> Setting Paint ClipRegion: ');

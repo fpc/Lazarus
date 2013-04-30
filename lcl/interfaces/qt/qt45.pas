@@ -731,7 +731,7 @@ type
     QtToolButtonIconOnly, QtToolButtonTextOnly, QtToolButtonTextBesideIcon, QtToolButtonTextUnderIcon );
 
   QtLayoutDirection = ( // Qt::LayoutDirection (1)
-    QtLeftToRight, QtRightToLeft );
+    QtLeftToRight, QtRightToLeft, QtLayoutDirectionAuto );
 
   QtCheckState = ( // Qt::CheckState (1)
     QtUnchecked, QtPartiallyChecked, QtChecked );
