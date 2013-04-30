@@ -2332,6 +2332,8 @@ var
   R: TRect;
   hasClipping: Boolean;
   QtDC: TQtDeviceContext;
+  APath: QPainterPathH;
+  APolyFH: QPolygonFH;
 begin
   {$ifdef VerboseQtWinAPI}
     DebugLn('[WinAPI FillRgn Rgn=', dbgs(RegionHnd),' Brush=', dbghex(hbr));
@@ -2345,15 +2347,33 @@ begin
 
   HasClipping := QtDC.getClipping;
   QtDC.save;
+
   if HasClipping then
-    OldRgn := TQtRegion.Create(True);
+    OldRgn := TQtRegion.Create(True)
+  else
+    OldRgn := nil;
   try
     if HasClipping then
       QPainter_clipRegion(QtDC.Widget, OldRgn.FHandle);
+
     if SelectClipRgn(DC, RegionHnd) <> ERROR then
     begin
-      R := TQtRegion(RegionHnd).getBoundingRect;
-      QtDC.fillRect(@R, TQtBrush(hbr).FHandle);
+      if TQtRegion(RegionHnd).IsPolyRegion then
+      begin
+        APath := QPainterPath_create();
+        APolyFH := QPolygonF_create(TQtRegion(RegionHnd).Polygon);
+        try
+          QPainterPath_addPolygon(APath, APolyFH);
+          QPainter_fillPath(QtDC.Widget, APath, TQtBrush(hbr).FHandle);
+        finally
+          QPainterPath_destroy(APath);
+          QPolygonF_destroy(APolyFH);
+        end;
+      end else
+      begin
+        R := TQtRegion(RegionHnd).getBoundingRect;
+        QtDC.fillRect(@R, TQtBrush(hbr).FHandle);
+      end;
       if HasClipping then
         SelectClipRgn(DC, HRGN(OldRgn));
       Result := True;
@@ -2363,7 +2383,6 @@ begin
       OldRgn.Free;
     QtDC.restore;
   end;
-
 end;
 
 {------------------------------------------------------------------------------
