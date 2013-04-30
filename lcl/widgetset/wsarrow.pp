@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Types, Math, Arrow, Graphics,
+  LCLProc, LCLIntf, LCLType, Math, Classes, Arrow, Graphics,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSFactory;
 
@@ -72,8 +72,84 @@ class procedure TWSArrow.SetType(const AArrow: TArrow; const AArrowType: TArrowT
 begin
 end;
 
-class procedure TWSArrow.DrawArrow(const AArrow: TArrow;
-  const ACanvas: TCanvas);
+{$IFDEF NewArrow}
+class procedure TWSArrow.DrawArrow(const AArrow: TArrow; const ACanvas: TCanvas);
+const
+  SpaceFactor = 5;
+var
+  drawRect: TRect;
+  RegionHandle: HRGN;
+  Pt: array[0..2] of TPoint;
+  w, h, arrowSize1, arrowSize2, cx, cy, Space: integer;
+begin
+  drawRect := AArrow.ClientRect;
+  w := drawRect.Right - drawRect.Left;
+  h := drawRect.Bottom - drawRect.Top;
+  Space := Min(w, h) div SpaceFactor;
+  Dec(w, Space * 2);
+  Dec(h, Space * 2);
+  arrowSize1 := min(w,h) - 2;
+  if (arrowSize1 mod 2) = 0 then Inc(arrowSize1);
+  arrowSize2 := (arrowSize1 div 2) + 1;
+
+  case AArrow.ArrowType of
+    atUp:
+      begin
+        cx := drawRect.Left + Space + (max((w-arrowSize1) div 2,0)) - 1;
+        cy := drawRect.Top + Space + (max((h-arrowSize2) div 2,0)) - 1;
+        Pt[0].x := cx + (arrowSize1 div 2) + 1;
+        Pt[0].y := cy;
+        Pt[1].x := cx + arrowSize1 + 1;
+        Pt[1].y := cy + arrowSize2 + 1;
+        Pt[2].X := cx;
+        Pt[2].y := cy + arrowSize2 + 1;
+      end;
+    atDown:
+      begin
+        cx := drawRect.Left + Space + (max((w-arrowSize1) div 2,0));
+        cy := drawRect.Top + Space + (max((h-arrowSize2) div 2,0)) + 1;
+        Pt[0].X := cx;
+        Pt[0].y := cy;
+        Pt[1].x := cx + arrowSize1;
+        Pt[1].y := cy;
+        Pt[2].x := cx + (arrowSize1 div 2);
+        Pt[2].y := cy + arrowSize2;
+     end;
+   atLeft:
+     begin
+       cx := drawRect.Left + Space + (max((w-arrowSize2) div 2,0)) - 1;
+       cy := drawRect.Top + Space + (max((h-arrowSize1) div 2,0));
+       Pt[0].X := cx + arrowSize2;
+       Pt[0].y := cy;
+       Pt[1].x := cx + arrowSize2;
+       Pt[1].y := cy + arrowSize1 + 1;
+       Pt[2].x := cx;
+       Pt[2].y := cy + (arrowSize1 div 2) + 1;
+     end;
+   atRight:
+     begin
+       cx := drawRect.Left + Space + (max((w-arrowSize2) div 2,0)) + 1;
+       cy := drawRect.Top + Space + (max((h-arrowSize1) div 2,0));
+       Pt[0].X := cx;
+       Pt[0].y := cy;
+       Pt[1].x := cx + arrowSize2;
+       Pt[1].y := cy + (arrowSize1 div 2) + 1;
+       Pt[2].x := cx;
+       Pt[2].y := cy + arrowSize1 + 1;
+    end;
+   else
+     exit;
+  end;
+  RegionHandle := CreatePolygonRgn(Pt, 3, ALTERNATE);
+  aCanvas.FillRect(drawRect); // Same as FillRect(aCanvas.Handle, drawRect, aCanvas.Brush.Reference.Handle);
+  // This FillRgn crashes with QT and does not work with GTK2
+  FillRgn(aCanvas.Handle, RegionHandle, aCanvas.Pen.Reference.Handle);
+  DeleteObject(RegionHandle);
+end;
+
+{$ELSE}
+
+class procedure TWSArrow.DrawArrow(const AArrow: TArrow; const ACanvas: TCanvas);
 var
   P: Array [0..2] of TPoint;
   R: TRect;
@@ -114,9 +190,9 @@ begin
         P[2] := Point(R.Left, R.Bottom);
       end;
   end;
-
   ACanvas.Polygon(P);
 end;
+{$ENDIF}
 
 { WidgetSetRegistration }
 

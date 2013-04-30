@@ -41,7 +41,9 @@ type
   published
     class procedure SetType(const AArrow: TArrow; const AArrowType: TArrowType; 
       const AShadowType: TShadowType); override;
+    {$IFnDEF NewArrow}
     class procedure DrawArrow(const AArrow: TArrow; const ACanvas: TCanvas); override;
+    {$ENDIF}
   end;
 
 
@@ -55,12 +57,11 @@ begin
   // TODO: implement me!
 end;
 
-class procedure TWinCEWSArrow.DrawArrow(const AArrow: TArrow;
-  const ACanvas: TCanvas);
+{$IFnDEF NewArrow}
+class procedure TWinCEWSArrow.DrawArrow(const AArrow: TArrow; const ACanvas: TCanvas);
 const
-    { up, down, left, right }
-  ArrowTypeToState: array[TArrowType] of dword = (DFCS_SCROLLUP, DFCS_SCROLLDOWN,
-    DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT);
+  ArrowTypeToState: array[TArrowType] of dword =  // up, down, left, right
+    (DFCS_SCROLLUP, DFCS_SCROLLDOWN, DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT);
 var
   drawRect: Windows.RECT;
   canvasHandle: HDC;
@@ -74,5 +75,6 @@ begin
   inc(drawRect.Bottom, 2);
   Windows.DrawFrameControl(canvasHandle, @drawRect, DFC_SCROLL, ArrowTypeToState[AArrow.ArrowType]);
 end;
+{$ENDIF}
 
 end.

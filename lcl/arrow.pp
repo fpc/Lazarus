@@ -33,7 +33,7 @@ unit Arrow;
 interface
 
 uses
-  Types, SysUtils, Classes, LCLType, Controls;
+  Types, SysUtils, Classes, LCLType, Controls, Graphics;
   
 type
 
@@ -98,6 +98,7 @@ begin
   fCompStyle := csArrow;
   fArrowType := atLeft;
   fShadowType := stEtchedIn;
+  Canvas.Brush.Color := clBtnFace;
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
 end;

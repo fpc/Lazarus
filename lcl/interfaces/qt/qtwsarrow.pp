@@ -34,7 +34,7 @@ uses
   qt4,
   qtwidgets, qtobjects,
   // LCL
-  SysUtils, Controls, LCLType, LCLProc, Graphics, Arrow,
+  SysUtils, Controls, LCLType, Graphics, Arrow,
 ////////////////////////////////////////////////////
   WSArrow, WSLCLClasses;
 
@@ -48,8 +48,9 @@ type
           const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetType(const AArrow: TArrow; const AArrowType: TArrowType;
       const AShadowType: TShadowType); override;
-    class procedure DrawArrow(const AArrow: TArrow; const ACanvas: TCanvas);
-       override;
+    {$IFnDEF NewArrow}
+    class procedure DrawArrow(const AArrow: TArrow; const ACanvas: TCanvas); override;
+    {$ENDIF}
   end;
 
 
@@ -96,8 +97,8 @@ begin
   QtArrow.ArrowType := Ord(AArrowType);
 end;
 
-class procedure TQtWSArrow.DrawArrow(const AArrow: TArrow;
-  const ACanvas: TCanvas);
+{$IFnDEF NewArrow}
+class procedure TQtWSArrow.DrawArrow(const AArrow: TArrow; const ACanvas: TCanvas);
 const
   QtArrowTypeMap: array[TArrowType] of QStylePrimitiveElement =
   (
@@ -128,5 +129,6 @@ begin
     QStyleOption_destroy(StyleOption);
   end;
 end;
+{$ENDIF}
 
 end.
