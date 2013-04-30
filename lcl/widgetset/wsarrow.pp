@@ -140,11 +140,15 @@ begin
    else
      exit;
   end;
+  aCanvas.Brush.Style := bsClear;
   RegionHandle := CreatePolygonRgn(Pt, 3, ALTERNATE);
-  aCanvas.FillRect(drawRect); // Same as FillRect(aCanvas.Handle, drawRect, aCanvas.Brush.Reference.Handle);
-  // This FillRgn crashes with QT and does not work with GTK2
-  FillRgn(aCanvas.Handle, RegionHandle, aCanvas.Pen.Reference.Handle);
-  DeleteObject(RegionHandle);
+  try
+    aCanvas.FillRect(drawRect);
+    aCanvas.Brush.Color := aCanvas.Pen.Color; //TODO: what to do with brush color ?
+    FillRgn(aCanvas.Handle, RegionHandle, aCanvas.Brush.Reference.Handle);
+  finally
+    DeleteObject(RegionHandle);
+  end;
 end;
 
 {$ELSE}
