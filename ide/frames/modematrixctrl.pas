@@ -27,11 +27,70 @@ interface
 
 uses
   Classes, SysUtils, math, types, contnrs, Controls, LCLType, LCLIntf,
-  Grids, Graphics, StdCtrls, Menus, LazLogger;
+  Grids, Graphics, StdCtrls, Menus, LazLogger, FileProcs;
+
+type
+  TBuildMatrixOptionType = (
+    bmotCustom,  // append fpc parameters in Value
+    bmotOutDir,  // override output directory -FU of target
+    bmotMacro    // MacroName and Value
+    );
+  TBuildMatrixOptionTypes = set of TBuildMatrixOptionType;
+
+  TBuildMatrixOptions = class;
+
+  { TBuildMatrixOption }
+
+  TBuildMatrixOption = class(TPersistent)
+  private
+    FList: TBuildMatrixOptions;
+    FMacroName: string;
+    FTargets: string;
+    FTyp: TBuildMatrixOptionType;
+    FValue: string;
+    procedure SetMacroName(AValue: string);
+    procedure SetTargets(AValue: string);
+    procedure SetTyp(AValue: TBuildMatrixOptionType);
+    procedure SetValue(AValue: string);
+  public
+    procedure Assign(Source: TPersistent); override;
+    constructor Create(aList: TBuildMatrixOptions);
+    destructor Destroy; override;
+    property List: TBuildMatrixOptions read FList;
+    property Typ: TBuildMatrixOptionType read FTyp write SetTyp;
+    property MacroName: string read FMacroName write SetMacroName;
+    property Value: string read FValue write SetValue;
+    property Targets: string read FTargets write SetTargets;
+    function Equals(Obj: TObject): boolean; override;
+  end;
+
+  { TBuildMatrixOptions }
+
+  TBuildMatrixOptions = class(TPersistent)
+  private
+    FChangeStep: int64;
+    fClearing: boolean;
+    fItems: TObjectList; // list of TBuildMatrixOption
+    function GetItems(Index: integer): TBuildMatrixOption;
+  public
+    procedure Assign(Source: TPersistent); override;
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function Count: integer;
+    property Items[Index: integer]: TBuildMatrixOption read GetItems; default;
+    function IndexOf(Option: TBuildMatrixOption): integer;
+    function Add(Typ: TBuildMatrixOptionType = bmotCustom; Targets: string = '*'): TBuildMatrixOption;
+    procedure Delete(Index: integer);
+    property ChangeStep: int64 read FChangeStep;
+    procedure IncreaseChangeStep;
+    function Equals(Obj: TObject): boolean; override;
+  end;
 
 const
   DefaultModeMatrixMaxUndo = 100;
-  DefaultGroupMatrixIndent = 10;
+  DefaultModeMatrixIndent = 10;
+  DefaultModeMatrixOptions = DefaultGridOptions+[goEditing];
 type
   TGroupedMatrix = class;
   TGroupedMatrixGroup = class;
@@ -255,7 +314,7 @@ type
     function TypeCol: integer;
     property ValueColumn: TGridColumn read FValueColumn;
     function ValueCol: integer;
-    property Indent: integer read FIndent write SetIndent default DefaultGroupMatrixIndent;
+    property Indent: integer read FIndent write SetIndent default DefaultModeMatrixIndent;
   public
     // undo/redo
     function CanUndo: boolean;
@@ -265,6 +324,7 @@ type
     property MaxUndo: integer read FMaxUndo write SetMaxUndo default DefaultModeMatrixMaxUndo;
     procedure StoreUndo(EvenIfNothingChanged: boolean = false);
   public
+    property Options default DefaultModeMatrixOptions;
     property TitleStyle default tsNative;
   end;
 
@@ -281,6 +341,168 @@ end;
 function HorizontalIntersect(const aRect,bRect: TRect): boolean;
 begin
   result := (aRect.Left < bRect.Right) and (aRect.Right > bRect.Left);
+end;
+
+{ TBuildMatrixOptions }
+
+function TBuildMatrixOptions.GetItems(Index: integer): TBuildMatrixOption;
+begin
+  Result:=TBuildMatrixOption(fItems[Index]);
+end;
+
+procedure TBuildMatrixOptions.Assign(Source: TPersistent);
+var
+  aSource: TBuildMatrixOptions;
+  i: Integer;
+  Item: TBuildMatrixOption;
+begin
+  if Source is TBuildMatrixOptions then
+  begin
+    aSource:=TBuildMatrixOptions(Source);
+    Clear;
+    for i:=0 to aSource.Count-1 do begin
+      Item:=TBuildMatrixOption.Create(Self);
+      Item.Assign(aSource[i]);
+    end;
+  end else
+    inherited Assign(Source);
+end;
+
+constructor TBuildMatrixOptions.Create;
+begin
+  FChangeStep:=CTInvalidChangeStamp64;
+  fItems:=TObjectList.create(true);
+end;
+
+destructor TBuildMatrixOptions.Destroy;
+begin
+  Clear;
+  FreeAndNil(fItems);
+  inherited Destroy;
+end;
+
+procedure TBuildMatrixOptions.Clear;
+begin
+  fClearing:=true;
+  fItems.Clear;
+  fClearing:=false;
+end;
+
+function TBuildMatrixOptions.Count: integer;
+begin
+  Result:=fItems.Count;
+end;
+
+function TBuildMatrixOptions.IndexOf(Option: TBuildMatrixOption): integer;
+begin
+  Result:=fItems.IndexOf(Option);
+end;
+
+function TBuildMatrixOptions.Add(Typ: TBuildMatrixOptionType; Targets: string
+  ): TBuildMatrixOption;
+begin
+  Result:=TBuildMatrixOption.Create(Self);
+  Result.Targets:=Targets;
+  Result.Typ:=Typ;
+end;
+
+procedure TBuildMatrixOptions.Delete(Index: integer);
+begin
+  Items[Index].Free;
+end;
+
+procedure TBuildMatrixOptions.IncreaseChangeStep;
+begin
+  CTIncreaseChangeStamp64(FChangeStep);
+end;
+
+function TBuildMatrixOptions.Equals(Obj: TObject): boolean;
+var
+  Src: TBuildMatrixOptions;
+  i: Integer;
+begin
+  Result:=false;
+  if Self=Obj then exit;
+  if not (Obj is TBuildMatrixOptions) then exit;
+  Src:=TBuildMatrixOptions(Obj);
+  if Src.Count<>Count then exit;
+  for i:=0 to Count-1 do
+    if not Src[i].Equals(Items[i]) then exit;
+  Result:=true;
+end;
+
+{ TBuildMatrixOption }
+
+procedure TBuildMatrixOption.SetMacroName(AValue: string);
+begin
+  if FMacroName=AValue then Exit;
+  FMacroName:=AValue;
+  List.IncreaseChangeStep;
+end;
+
+procedure TBuildMatrixOption.SetTargets(AValue: string);
+begin
+  if FTargets=AValue then Exit;
+  FTargets:=AValue;
+  List.IncreaseChangeStep;
+end;
+
+procedure TBuildMatrixOption.SetTyp(AValue: TBuildMatrixOptionType);
+begin
+  if FTyp=AValue then Exit;
+  FTyp:=AValue;
+  List.IncreaseChangeStep;
+end;
+
+procedure TBuildMatrixOption.SetValue(AValue: string);
+begin
+  if FValue=AValue then Exit;
+  FValue:=AValue;
+  List.IncreaseChangeStep;
+end;
+
+procedure TBuildMatrixOption.Assign(Source: TPersistent);
+var
+  aSource: TBuildMatrixOption;
+begin
+  if Source is TBuildMatrixOption then
+  begin
+    aSource:=TBuildMatrixOption(Source);
+    Typ:=aSource.Typ;
+    MacroName:=aSource.MacroName;
+    Value:=aSource.Value;
+    Targets:=aSource.Targets;
+  end else
+    inherited Assign(Source);
+end;
+
+constructor TBuildMatrixOption.Create(aList: TBuildMatrixOptions);
+begin
+  FList:=aList;
+  if List<>nil then
+    List.fItems.Add(Self);
+end;
+
+destructor TBuildMatrixOption.Destroy;
+begin
+  List.fItems.Remove(Self);
+  FList:=nil;
+  inherited Destroy;
+end;
+
+function TBuildMatrixOption.Equals(Obj: TObject): boolean;
+var
+  Src: TBuildMatrixOption;
+begin
+  Result:=false;
+  if Obj=Self then exit;
+  if not (Obj is TBuildMatrixOption) then exit;
+  Src:=TBuildMatrixOption(Obj);
+  if Src.Typ<>Typ then exit;
+  if Src.MacroName<>MacroName then exit;
+  if Src.Value<>Value then exit;
+  if Src.Targets<>Targets then exit;
+  Result:=true;
 end;
 
 { TGroupedMatrixMode }
@@ -1385,11 +1607,11 @@ begin
   fRedoItems:=TObjectList.Create(true);
   FMaxUndo:=DefaultModeMatrixMaxUndo;
 
-  Options:=Options+[goEditing]; // ToDo: change property default
+  Options:=DefaultModeMatrixOptions;
   RowCount:=1;
   TitleStyle:=tsNative;
   AutoFillColumns:=true;
-  FIndent:=DefaultGroupMatrixIndent;
+  FIndent:=DefaultModeMatrixIndent;
   FActiveModeColor:=RGBToColor(220,255,220);
 
   // type column
