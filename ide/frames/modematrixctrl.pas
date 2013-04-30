@@ -53,24 +53,26 @@ type
     FCaption: TCaption;
     FColor: TColor;
     FItems: TFPList; // list of TGroupedMatrixRow
+    FValue: string;
+    FWritable: boolean;
     function GetCount: integer;
     function GetItems(Index: integer): TGroupedMatrixRow;
-    procedure SetCaption(AValue: TCaption);
-    procedure SetColor(AValue: TColor);
   public
     procedure Assign(Source: TPersistent); override;
     constructor Create(aControl: TGroupedMatrix); override;
     destructor Destroy; override;
     procedure Clear; override;
     function Equals(Obj: TObject): boolean; override;
-    property Caption: TCaption read FCaption write SetCaption;
+    property Caption: TCaption read FCaption write FCaption;
+    property Value: string read FValue write FValue;
+    property Writable: boolean read FWritable write FWritable;
     property Count: integer read GetCount;
     property Items[Index: integer]: TGroupedMatrixRow read GetItems; default;
     function IndexOfRow(aRow: TGroupedMatrixRow): integer;
     procedure Move(CurIndex, NewIndex: integer);
     function GetNext: TGroupedMatrixRow; override;
     function GetLastLeaf: TGroupedMatrixRow; override;
-    property Color: TColor read FColor write SetColor;
+    property Color: TColor read FColor write FColor;
     function GetEffectiveColor: TColor;
     function AsString: string; override;
   end;
@@ -160,7 +162,7 @@ type
     function GetTopLvlGroup(aCaption: TCaption): TGroupedMatrixGroup;
     function GetMaxLevel: integer;
     function AddGroup(ParentGroup: TGroupedMatrixGroup;
-      aCaption: TCaption): TGroupedMatrixGroup;
+      aCaption: TCaption; aValue: string = ''): TGroupedMatrixGroup;
     function AddValue(ParentGroup: TGroupedMatrixGroup;
       ModesAsText, aType, AValue: string): TGroupedMatrixValue;
     property Modes: TGroupedMatrixModes read FModes;
@@ -523,10 +525,12 @@ begin
 end;
 
 function TGroupedMatrix.AddGroup(ParentGroup: TGroupedMatrixGroup;
-  aCaption: TCaption): TGroupedMatrixGroup;
+  aCaption: TCaption; aValue: string): TGroupedMatrixGroup;
 begin
   Result:=TGroupedMatrixGroup.Create(Self);
   Result.Caption:=aCaption;
+  Result.Value:=aValue;
+  Result.Writable:=aValue<>'';
   InternalAdd(ParentGroup,Result);
 end;
 
@@ -646,18 +650,6 @@ begin
   Result:=TGroupedMatrixRow(FItems[Index]);
 end;
 
-procedure TGroupedMatrixGroup.SetCaption(AValue: TCaption);
-begin
-  if FCaption=AValue then Exit;
-  FCaption:=AValue;
-end;
-
-procedure TGroupedMatrixGroup.SetColor(AValue: TColor);
-begin
-  if FColor=AValue then Exit;
-  FColor:=AValue;
-end;
-
 procedure TGroupedMatrixGroup.Assign(Source: TPersistent);
 var
   SrcGroup: TGroupedMatrixGroup;
@@ -672,6 +664,8 @@ begin
     SrcGroup:=TGroupedMatrixGroup(Source);
     FColor:=SrcGroup.FColor;
     FCaption:=SrcGroup.FCaption;
+    FValue:=SrcGroup.FValue;
+    FWritable:=SrcGroup.FWritable;
     Clear;
     for i:=0 to SrcGroup.Count-1 do begin
       SrcItem:=SrcGroup[i];
@@ -720,6 +714,8 @@ begin
   if SrcGroup.Count<>Count then exit;
   if SrcGroup.Color<>Color then exit;
   if SrcGroup.Caption<>Caption then exit;
+  if SrcGroup.Value<>Value then exit;
+  if SrcGroup.Writable<>Writable then exit;
   for i:=0 to Count-1 do
     if not SrcGroup[i].Equals(Items[i]) then exit;
   Result:=true;
@@ -1077,7 +1073,7 @@ begin
       //Canvas.Brush.Color:=GroupRow.GetEffectiveColor;
       Canvas.GradientFill(Rect(x,aRect.Top-1,x+2*Indent,aRect.Bottom),GroupRow.GetEffectiveColor,Color,gdHorizontal);
       // draw group caption
-      Canvas.TextRect(aRect,constCellPadding+x,aRect.Top,GroupRow.Caption);
+      Canvas.TextRect(aRect,constCellPadding+x,aRect.Top,GroupRow.Caption+GroupRow.Value);
       // draw focus rect
       if aRow=Row then
         DrawFocusRect(0,aRow,Rect(x,aRect.Top,aRect.Right,aRect.Bottom));
@@ -1109,6 +1105,9 @@ begin
   if MatRow is TGroupedMatrixValue then begin
     if ACol<>ValueCol then exit;
     Result:=true;
+  end else if MatRow is TGroupedMatrixGroup then begin
+    if ACol<>ValueCol then exit;
+    Result:=TGroupedMatrixGroup(MatRow).Writable;
   end;
 end;
 
@@ -1294,10 +1293,15 @@ begin
 end;
 
 function TGroupedMatrixControl.GetEditText(aCol, aRow: Longint): string;
+var
+  MatRow: TGroupedMatrixRow;
 begin
-  if (aCol=ValueCol) and (aRow>0) and (Matrix[aRow-1] is TGroupedMatrixValue)
-  then begin
-    Result:=TGroupedMatrixValue(Matrix[aRow-1]).Value;
+  if (aCol=ValueCol) and (aRow>=FixedRows) then begin
+    MatRow:=Matrix[aRow-FixedRows];
+    if MatRow is TGroupedMatrixValue then
+      Result:=TGroupedMatrixValue(MatRow).Value
+    else
+      Result:=TGroupedMatrixGroup(MatRow).Caption;
     exit;
   end;
   Result:=inherited GetEditText(aCol, aRow);
@@ -1307,22 +1311,36 @@ procedure TGroupedMatrixControl.SetEditText(ACol, ARow: Longint;
   const Value: string);
 var
   ValueRow: TGroupedMatrixValue;
+  MatRow: TGroupedMatrixRow;
+  GroupRow: TGroupedMatrixGroup;
 begin
-  if (aCol=ValueCol) and (aRow>0) and (Matrix[aRow-1] is TGroupedMatrixValue)
-  then begin
-    ValueRow:=TGroupedMatrixValue(Matrix[aRow-1]);
-    if ValueRow.Value=Value then exit;
-    StoreUndo;
-    ValueRow.Value:=Value;
+  if (aCol=ValueCol) and (aRow>0) then begin
+    MatRow:=Matrix[aRow-FixedRows];
+    if MatRow is TGroupedMatrixValue then begin
+      ValueRow:=TGroupedMatrixValue(MatRow);
+      if ValueRow.Value=Value then exit;
+      StoreUndo;
+      ValueRow.Value:=Value;
+    end else begin
+      GroupRow:=TGroupedMatrixGroup(MatRow);
+      if GroupRow.Value=Value then exit;
+      StoreUndo;
+      GroupRow.Value:=Value;
+    end;
   end;
   inherited SetEditText(ACol, ARow, Value);
 end;
 
 function TGroupedMatrixControl.GetCells(ACol, ARow: Integer): string;
+var
+  MatRow: TGroupedMatrixRow;
 begin
-  if (aCol=ValueCol) and (aRow>0) and (Matrix[aRow-1] is TGroupedMatrixValue)
-  then begin
-    Result:=TGroupedMatrixValue(Matrix[aRow-1]).Value;
+  if (aCol=ValueCol) and (aRow>0) then begin
+    MatRow:=Matrix[ARow-FixedRows];
+    if MatRow is TGroupedMatrixValue then
+      Result:=TGroupedMatrixValue(MatRow).Value
+    else
+      Result:=TGroupedMatrixGroup(MatRow).Value;
     exit;
   end;
   Result:=inherited GetCells(ACol, ARow);

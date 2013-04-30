@@ -42,6 +42,9 @@ type
     BMMNewTargetToolButton: TToolButton;
     BMMNewOptionToolButton: TToolButton;
     BMMDeleteToolButton: TToolButton;
+    ToolButton1: TToolButton;
+    ToolButton2: TToolButton;
+    ToolButton3: TToolButton;
     procedure BMMDeleteToolButtonClick(Sender: TObject);
     procedure BMMMoveDownToolButtonClick(Sender: TObject);
     procedure BMMMoveUpToolButtonClick(Sender: TObject);
@@ -55,6 +58,7 @@ type
     FGrid: TGroupedMatrixControl;
     procedure MoveRow(Direction: integer);
     procedure UpdateButtons;
+    function AddTarget(StorageGroup: TGroupedMatrixGroup): TGroupedMatrixGroup;
   public
     constructor Create(TheOwner: TComponent); override;
     property Grid: TGroupedMatrixControl read FGrid;
@@ -119,7 +123,7 @@ begin
       if Group.Group=nil then begin
         if Group.Count=0 then begin
           // storage group without target => add a target
-          Group:=Grid.Matrix.AddGroup(Group,'Target: *');
+          Group:=AddTarget(Group);
         end;
       end;
       // add option as first item of Group
@@ -160,12 +164,12 @@ begin
     if Group.Group=nil then begin
       // Group is a storage group
       // => add as first target of storage group
-      NewRow:=Grid.Matrix.AddGroup(Group,'Target: *');
+      NewRow:=AddTarget(Group);
       Group.Move(Group.Count-1,0);
     end else begin
       // Group is a target
       // => add target behind current target
-      NewRow:=Grid.Matrix.AddGroup(Group.Group,'Target: *');
+      NewRow:=AddTarget(Group.Group);
       Group.Group.Move(Group.Group.Count-1,Group.GetGroupIndex+1);
     end;
     Grid.Matrix.RebuildRows;
@@ -222,6 +226,14 @@ begin
                         and  (MatRow.GetNextSkipChildren<>nil);
 end;
 
+function TFrame1.AddTarget(StorageGroup: TGroupedMatrixGroup
+  ): TGroupedMatrixGroup;
+begin
+  Result:=Grid.Matrix.AddGroup(StorageGroup,'Targets: ');
+  Result.Value:='*';
+  Result.Writable:=true;
+end;
+
 procedure TFrame1.MoveRow(Direction: integer);
 var
   MatRow: TGroupedMatrixRow;
@@ -264,7 +276,7 @@ begin
             TargetGroup:=TargetStorage[TargetStorage.Count-1] as TGroupedMatrixGroup;
           end else begin
             // add first target
-            TargetGroup:=Grid.Matrix.AddGroup(TargetStorage,'target: *');
+            TargetGroup:=AddTarget(TargetStorage);
           end;
         end else begin
           // this is already the first target of the first storage
@@ -300,7 +312,7 @@ begin
             TargetGroup:=TargetStorage[0] as TGroupedMatrixGroup;
           end else begin
             // add first target
-            TargetGroup:=Grid.Matrix.AddGroup(TargetStorage,'target: *');
+            TargetGroup:=AddTarget(TargetStorage);
           end;
         end else begin
           // this is already the last target of the last storage
