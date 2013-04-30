@@ -40,13 +40,13 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Process, LCLType, LCLProc, Controls, Forms,
-  Buttons, StdCtrls, ComCtrls, Dialogs, ExtCtrls, ButtonPanel, Menus,
+  Buttons, StdCtrls, ComCtrls, Dialogs, ExtCtrls, ButtonPanel,
   LazConfigStorage, FileProcs, UTF8Process,
   IDEExternToolIntf, IDEImagesIntf, IDEDialogs, IDEHelpIntf, IDECommands,
   CompOptsIntf, ProjectIntf,
   EnvironmentOpts,
   ExtToolEditDlg, KeyMapping, TransferMacros, IDEProcs,
-  InfoBuild, CompilerOptions, OutputFilter, LazarusIDEStrConsts, IDEOptionDefs;
+  InfoBuild, CompilerOptions, OutputFilter, LazarusIDEStrConsts;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;
@@ -104,13 +104,6 @@ type
   TExternalToolDialog = class(TForm)
     ButtonPanel: TButtonPanel;
     ListBox: TListBox;
-    MenuItemImport: TMenuItem;
-    MenuItemExport: TMenuItem;
-    MenuItemSeparator: TMenuItem;
-    MenuItemClone: TMenuItem;
-    OpenDialog1: TOpenDialog;
-    PopupDropdownMenu: TPopupMenu;
-    SaveDialog1: TSaveDialog;
     ToolBar: TToolBar;
     AddButton: TToolButton;
     RemoveButton: TToolButton;
@@ -118,13 +111,8 @@ type
     tbSeparator: TToolButton;
     MoveUpButton: TToolButton;
     MoveDownButton: TToolButton;
-    tbSeparator2: TToolButton;
-    ExtraButton: TToolButton;
     procedure AddButtonClick(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
-    procedure MenuItemCloneClick(Sender: TObject);
-    procedure MenuItemExportClick(Sender: TObject);
-    procedure MenuItemImportClick(Sender: TObject);
     procedure RemoveButtonClick(Sender: TObject);
     procedure EditButtonClick(Sender: TObject);
     procedure MoveUpButtonClick(Sender: TObject);
@@ -357,8 +345,7 @@ begin
     try
       CheckIfFileIsExecutable(Filename);
       TheProcess := TOutputFilterProcess.Create(nil);
-      TheProcess.Executable := FileName;
-      TheProcess.Parameters.Text := Params;
+      TheProcess.CommandLine := Filename+' '+Params;
       TheProcess.Options:= [poUsePipes,poStdErrToOutPut];
       if ExtTool.HideMainForm then
         TheProcess.ShowWindow := swoHide
@@ -541,11 +528,6 @@ begin
   MoveUpButton.Caption:=lisUp;
   MoveDownButton.Caption:=lisDown;
 
-  ExtraButton.Caption:=lisMoreSub;
-  MenuItemClone.Caption:=lisClone;
-  MenuItemExport.Caption:=lisDlgExport;
-  MenuItemImport.Caption:=lisDlgImport;
-
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
   AddButton.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
@@ -620,48 +602,6 @@ end;
 procedure TExternalToolDialog.HelpButtonClick(Sender: TObject);
 begin
   LazarusHelp.ShowHelpForIDEControl(Self);
-end;
-
-procedure TExternalToolDialog.MenuItemCloneClick(Sender: TObject);
-var
-  NewTool, OldTool : TExternalToolOptions;
-begin
-  If Listbox.ItemIndex <> -1 Then Begin
-    OldTool := fExtToolList.Items[Listbox.ItemIndex];
-    If Assigned(OldTool) Then Begin
-      NewTool := TExternalToolOptions.Create;
-      NewTool.Assign(OldTool);
-      fExtToolList.Add(NewTool);
-      Listbox.Items.Add(ToolDescription(fExtToolList.Count-1));
-    end;
-  end;
-end;
-
-procedure TExternalToolDialog.MenuItemExportClick(Sender: TObject);
-Var
-  FileConfig : TXMLOptionsStorage;
-begin
-  If SaveDialog1.Execute Then Begin
-    FileConfig := TXMLOptionsStorage.Create(SaveDialog1.FileName, False);
-    fExtToolList.Save(FileConfig);
-    FileConfig.WriteToDisk;
-    FreeAndNil(FileConfig);
-  end;
-end;
-
-procedure TExternalToolDialog.MenuItemImportClick(Sender: TObject);
-Var
-  FileConfig : TXMLOptionsStorage;
-  NewToolList : TExternalToolList;
-begin
-  If OpenDialog1.Execute Then Begin
-    NewToolList := TExternalToolList.Create;
-    FileConfig := TXMLOptionsStorage.Create(OpenDialog1.FileName, True);
-    NewToolList.Load(FileConfig);
-    SetExtToolList(NewToolList);
-    FreeAndNil(FileConfig);
-    FreeAndNil(NewToolList);
-  end;
 end;
 
 procedure TExternalToolDialog.RemoveButtonClick(Sender: TObject);
