@@ -1,16 +1,13 @@
-object EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
-  Left = 0
+inherited EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
   Height = 420
-  Top = 0
   Width = 610
   Anchors = [akTop]
   ClientHeight = 420
   ClientWidth = 610
-  TabOrder = 0
   Visible = False
   DesignLeft = 246
   DesignTop = 209
-  object ActionGrid: TStringGrid
+  object ActionGrid: TStringGrid[0]
     Left = 135
     Height = 243
     Top = 46
@@ -35,7 +32,7 @@ object EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
     OnResize = ActionGridResize
     OnSelection = ActionGridSelection
   end
-  object ContextTree: TTreeView
+  object ContextTree: TTreeView[1]
     Left = 0
     Height = 243
     Top = 46
@@ -51,14 +48,14 @@ object EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
     OnChange = ContextTreeChange
     Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowLines, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
   end
-  object Splitter1: TSplitter
+  object Splitter1: TSplitter[2]
     Left = 130
     Height = 243
     Top = 46
     Width = 5
     AutoSnap = False
   end
-  object ToolBar1: TToolBar
+  object ToolBar1: TToolBar[3]
     Left = 0
     Height = 46
     Top = 0
@@ -76,38 +73,38 @@ object EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
       OnClick = BtnImportClick
     end
     object BtnExport: TToolButton
-      Left = 70
+      Left = 63
       Top = 0
       Caption = 'BtnExport'
       OnClick = BtnExportClick
     end
     object ToolButton3: TToolButton
-      Left = 139
+      Left = 122
       Top = 0
       Width = 5
       Caption = 'ToolButton3'
       Style = tbsDivider
     end
     object UpdateButton: TToolButton
-      Left = 144
+      Left = 127
       Top = 0
       Caption = 'UpdateButton'
       OnClick = UpdateButtonClick
     end
     object AddNewButton: TToolButton
-      Left = 240
+      Left = 209
       Top = 0
       Caption = 'AddNewButton'
       OnClick = AddNewButtonClick
     end
     object DelButton: TToolButton
-      Left = 340
+      Left = 299
       Top = 0
       Caption = 'DelButton'
       OnClick = DelButtonClick
     end
   end
-  object OtherActionPanel: TPanel
+  object OtherActionPanel: TPanel[4]
     Left = 0
     Height = 126
     Top = 294
@@ -118,19 +115,19 @@ object EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
     TabOrder = 4
     object Panel1: TPanel
       Left = 1
-      Height = 26
+      Height = 21
       Top = 1
       Width = 608
       Align = alTop
       AutoSize = True
-      ClientHeight = 26
+      ClientHeight = 21
       ClientWidth = 608
       TabOrder = 0
       object OtherActionLabel: TLabel
         Left = 1
-        Height = 24
+        Height = 19
         Top = 1
-        Width = 107
+        Width = 94
         Align = alLeft
         Caption = 'OtherActionLabel'
         ParentColor = False
@@ -140,10 +137,10 @@ object EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
       object OtherActToggleBox: TToggleBox
         AnchorSideRight.Control = Panel1
         AnchorSideRight.Side = asrBottom
-        Left = 477
-        Height = 24
+        Left = 483
+        Height = 19
         Top = 0
-        Width = 130
+        Width = 124
         Anchors = [akTop, akRight]
         AutoSize = True
         Caption = 'OtherActToggleBox'
@@ -155,8 +152,8 @@ object EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
     end
     object OtherActionGrid: TStringGrid
       Left = 1
-      Height = 98
-      Top = 27
+      Height = 103
+      Top = 22
       Width = 608
       Align = alClient
       AutoEdit = False
@@ -180,7 +177,7 @@ object EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
       OnSelectCell = OtherActionGridSelectCell
     end
   end
-  object Splitter2: TSplitter
+  object Splitter2: TSplitter[5]
     Cursor = crVSplit
     Left = 0
     Height = 5
@@ -190,14 +187,14 @@ object EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
     MinSize = 40
     ResizeAnchor = akBottom
   end
-  object SaveDialog1: TSaveDialog
+  object SaveDialog1: TSaveDialog[6]
     DefaultExt = '.xml'
     Filter = 'xml|*.xml|any|*.*'
     Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
     left = 24
     top = 184
   end
-  object OpenDialog1: TOpenDialog
+  object OpenDialog1: TOpenDialog[7]
     DefaultExt = '.xml'
     Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
     left = 72

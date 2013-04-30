@@ -1,14 +1,11 @@
-object HistoryDialog: THistoryDialog
+inherited HistoryDialog: THistoryDialog
   Left = 1060
-  Height = 240
   Top = 216
   Width = 422
   BorderStyle = bsSizeToolWin
   Caption = 'HistoryDialog'
-  ClientHeight = 240
   ClientWidth = 422
-  LCLVersion = '1.1'
-  object lvHistory: TListView
+  object lvHistory: TListView[0]
     Left = 0
     Height = 214
     Top = 26
@@ -31,7 +28,7 @@ object HistoryDialog: THistoryDialog
     OnDblClick = lvHistoryDblClick
     OnSelectItem = lvHistorySelectItem
   end
-  object ToolBar1: TToolBar
+  object ToolBar1: TToolBar[1]
     Left = 0
     Height = 26
     Top = 0
@@ -129,7 +126,7 @@ object HistoryDialog: THistoryDialog
       OnClick = tbImportClick
     end
   end
-  object OpenDialog1: TOpenDialog
+  object OpenDialog1: TOpenDialog[2]
     Title = 'Import from'
     DefaultExt = '.xml'
     Filter = 'xml|*.xml|all|*.*'
@@ -137,7 +134,7 @@ object HistoryDialog: THistoryDialog
     left = 49
     top = 106
   end
-  object SaveDialog1: TSaveDialog
+  object SaveDialog1: TSaveDialog[3]
     Title = 'Export to'
     DefaultExt = '.xml'
     Filter = 'xml|*.xml|all|*.*'

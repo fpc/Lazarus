@@ -883,7 +883,7 @@ begin
   SetAllAttributesToDefaultButton.ImageIndex := IDEImages.LoadImage(16, 'laz_set_colors_default');
   SetAllAttributesToDefaultButton.Hint := dlgSetAllElementDefault;
   btnExport.ImageIndex := IDEImages.LoadImage(16, 'laz_save');
-  btnExport.Hint := lisExport;
+  btnExport.Hint := dlgColorExportButton;
 
   tbtnGlobal.Caption := dlgUseSchemeDefaults;
   tbtnLocal.Caption := dlgUseSchemeLocal;

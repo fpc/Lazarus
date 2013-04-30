@@ -1563,6 +1563,8 @@ resourcestring
   dlgMouseOptOtherAct  = 'Other actions using the same button';
   dlgMouseOptOtherActHint  = 'They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down ...';
   dlgMouseOptOtherActToggle = 'Filter Mod-Keys';
+  dlgMouseOptBtnImport = 'Import';
+  dlgMouseOptBtnExport = 'Export';
   lisDoNotShowThisMessageAgain = 'Do not show this message again';
   dlgMouseOptBtnModDef = 'Make Fallback';
   dlgMouseOptPriorLabel = 'Priority';
@@ -1635,6 +1637,7 @@ resourcestring
   dlgFileExts = 'File extensions';
   dlgSetElementDefault = 'Set element to default';
   dlgSetAllElementDefault = 'Set all elements to default';
+  dlgColorExportButton = 'Export';
   dlgUseSchemeDefaults = 'Use (and edit) global scheme settings';
   dlgUseSchemeLocal    = 'Use local scheme settings';
   dlgColor = 'Color';
@@ -4229,10 +4232,12 @@ resourcestring
   lisPckEditAddAnItem = 'Add an item';
   lisPckEditRemoveSelectedItem = 'Remove selected item';
   lisPckEditInstallPackageInTheIDE = 'Install package in the IDE';
-  lisUseSub = 'Use >>';
+  lisUse = 'Use >>';
   lisClickToSeeThePossibleUses = 'Click to see the possible uses';
   lisPckEditEditGeneralOptions = 'Edit General Options';
-  lisPkgEdThereAreMoreFunctionsInThePopupmenu = 'There are more functions in the popupmenu';
+  lisPkgEdThereAreMoreFunctionsInThePopupmenu = 'There are more functions in '
+    +'the popupmenu';
+  lisPckEditMore = 'More >>';
   lisPckEditEditOptionsToCompilePackage = 'Edit Options to compile package';
   lisPckEditRequiredPackages = 'Required Packages';
   lisPckEditFileProperties = 'File Properties';
@@ -4949,6 +4954,8 @@ resourcestring
   histdlgBtnShowSnapHint = 'View Snapshots';
   histdlgBtnMakeSnapHint = 'Take Snapshot';
   histdlgBtnRemoveHint   = 'Remove selected entry';
+  histdlgBtnImport   = 'Import';
+  histdlgBtnExport   = 'Export';
 
   // Exception Dialog
   lisExceptionDialog = 'Debugger Exception Notification';

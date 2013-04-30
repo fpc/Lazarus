@@ -693,8 +693,8 @@ begin
   FOtherSort[3] := 4; // CCount
   FOtherSort[4] := 5; // CDir
 
-  BtnImport.Caption := lisImport;
-  BtnExport.Caption := lisExport;
+  BtnImport.Caption := dlgMouseOptBtnImport;
+  BtnExport.Caption := dlgMouseOptBtnExport;
   UpdateButton.Caption := lisChange;
   AddNewButton.Caption := lisAdd;
   DelButton.Caption := lisDelete;
@@ -709,8 +709,8 @@ begin
   AddNewButton.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
   DelButton.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
 
-  OpenDialog1.Title := lisImport;
-  SaveDialog1.Title := lisExport;
+  OpenDialog1.Title := dlgMouseOptBtnImport;
+  SaveDialog1.Title := dlgMouseOptBtnExport;
 end;
 
 procedure TEditorMouseOptionsAdvFrame.ReadSettings(

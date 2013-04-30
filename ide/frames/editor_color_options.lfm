@@ -18,13 +18,13 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 200
-    Top = 243
+    Height = 192
+    Top = 251
     Width = 640
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 200
+    ClientHeight = 192
     ClientWidth = 640
     Constraints.MinHeight = 192
     TabOrder = 1
@@ -65,7 +65,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       end
       object tbtnLocal: TToolButton
         Tag = 1
-        Left = 74
+        Left = 65
         Top = 0
         AutoSize = True
         Caption = 'tbtnLocal'
@@ -74,13 +74,13 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         Style = tbsCheck
       end
       object SetAttributeToDefaultButton: TToolButton
-        Left = 150
+        Left = 133
         Top = 0
         OnClick = SetAttributeToDefaultButtonClick
         ShowCaption = False
       end
       object ToolButton3: TToolButton
-        Left = 140
+        Left = 123
         Top = 0
         Width = 10
         Caption = 'ToolButton3'
@@ -95,165 +95,18 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = pnlElementAttributes
       AnchorSideBottom.Side = asrBottom
-      Height = 159
+      Height = 151
       Top = 41
       Width = 640
       Anchors = [akTop, akLeft, akRight, akBottom]
-      ClientHeight = 159
+      ClientHeight = 151
       ClientWidth = 640
       TabOrder = 1
-      inherited ForeGroundLabel: TLabel
-        Top = 8
-        Width = 107
-      end
-      inherited BackGroundLabel: TLabel
-        Top = 35
-        Width = 109
-      end
       inherited ForeGroundUseDefaultCheckBox: TCheckBox
         AnchorSideLeft.Control = SynColorAttrEditor1
-        Height = 21
-        Width = 228
       end
       inherited ForegroundColorBox: TColorBox
         AnchorSideTop.Control = SynColorAttrEditor1
-        AnchorSideRight.Control = SynColorAttrEditor1
-        Left = 240
-        Height = 24
-      end
-      inherited BackGroundColorBox: TColorBox
-        AnchorSideRight.Control = SynColorAttrEditor1
-        Left = 240
-        Height = 24
-        Top = 30
-      end
-      inherited BackGroundUseDefaultCheckBox: TCheckBox
-        Height = 21
-        Top = 32
-        Width = 230
-      end
-      inherited FrameColorBox: TColorBox
-        AnchorSideRight.Control = SynColorAttrEditor1
-        Left = 240
-        Height = 24
-        Top = 57
-      end
-      inherited FrameColorUseDefaultCheckBox: TCheckBox
-        Height = 21
-        Top = 59
-        Width = 224
-      end
-      inherited pnlUnderline: TPanel
-        Height = 44
-        Top = 111
-        Width = 169
-        ClientHeight = 44
-        ClientWidth = 169
-        inherited TextUnderlineRadioPanel: TPanel
-          Height = 23
-          Top = 21
-          Width = 155
-          ClientHeight = 23
-          ClientWidth = 155
-          inherited TextUnderlineRadioOn: TRadioButton
-            Height = 21
-            Width = 42
-          end
-          inherited TextUnderlineRadioOff: TRadioButton
-            Left = 49
-            Height = 21
-            Width = 42
-          end
-          inherited TextUnderlineRadioInvert: TRadioButton
-            Left = 94
-            Height = 21
-            Width = 60
-          end
-        end
-        inherited TextUnderlineCheckBox: TCheckBox
-          Height = 21
-          Width = 169
-        end
-      end
-      inherited pnlBold: TPanel
-        Left = 181
-        Height = 44
-        Top = 111
-        Width = 155
-        ClientHeight = 44
-        ClientWidth = 155
-        inherited TextBoldRadioPanel: TPanel
-          Height = 23
-          Top = 21
-          Width = 155
-          ClientHeight = 23
-          ClientWidth = 155
-          inherited TextBoldRadioInvert: TRadioButton
-            Left = 94
-            Height = 21
-            Width = 60
-          end
-          inherited TextBoldRadioOn: TRadioButton
-            Height = 21
-            Width = 42
-          end
-          inherited TextBoldRadioOff: TRadioButton
-            Left = 49
-            Height = 21
-            Width = 42
-          end
-        end
-        inherited TextBoldCheckBox: TCheckBox
-          Height = 21
-          Width = 136
-        end
-      end
-      inherited pnlItalic: TPanel
-        Left = 342
-        Height = 44
-        Top = 111
-        Width = 155
-        ClientHeight = 44
-        ClientWidth = 155
-        inherited TextItalicRadioPanel: TPanel
-          Height = 23
-          Top = 21
-          Width = 155
-          ClientHeight = 23
-          ClientWidth = 155
-          inherited TextItalicRadioInvert: TRadioButton
-            Left = 94
-            Height = 21
-            Width = 60
-          end
-          inherited TextItalicRadioOn: TRadioButton
-            Height = 21
-            Width = 42
-          end
-          inherited TextItalicRadioOff: TRadioButton
-            Left = 49
-            Height = 21
-            Width = 42
-          end
-        end
-        inherited TextItalicCheckBox: TCheckBox
-          Height = 21
-          Width = 138
-        end
-      end
-      inherited FrameStyleBox: TComboBox
-        Left = 343
-        Height = 24
-        Top = 84
-      end
-      inherited FrameEdgesBox: TComboBox
-        Left = 240
-        Height = 24
-        Top = 84
-      end
-      inherited ColumnPosBevel: TPanel
-        Left = 240
-        Top = 158
       end
     end
   end
@@ -283,17 +136,17 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = pnlElementAttributes
     Left = 0
-    Height = 218
+    Height = 226
     Top = 25
     Width = 640
     Anchors = [akTop, akLeft, akRight, akBottom]
     BevelOuter = bvNone
-    ClientHeight = 218
+    ClientHeight = 226
     ClientWidth = 640
     TabOrder = 2
     object ColorElementTree: TTreeView
       Left = 0
-      Height = 212
+      Height = 220
       Top = 6
       Width = 200
       Align = alLeft
@@ -322,7 +175,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideBottom.Control = ColorElementTree
       AnchorSideBottom.Side = asrBottom
       Left = 207
-      Height = 212
+      Height = 220
       Top = 6
       Width = 433
       BorderSpacing.Left = 1
@@ -338,7 +191,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       TabStop = False
       OnMouseUp = ColorPreviewMouseUp
       BookMarkOptions.Xoffset = 30
-      Gutter.Width = 61
+      Gutter.Width = 59
       Gutter.MouseActions = <      
         item
           ClickCount = ccAny
@@ -776,7 +629,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           MouseActions = <>
         end
         object TSynGutterLineNumber
-          Width = 21
+          Width = 19
           MouseActions = <>
           MarkupInfo.Background = clBtnFace
           MarkupInfo.Foreground = clNone
@@ -794,8 +647,6 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         object TSynGutterSeparator
           Width = 2
           MouseActions = <>
-          MarkupInfo.Background = clWhite
-          MarkupInfo.Foreground = clGray
         end
         object TSynGutterCodeFolding
           MouseActions = <          
@@ -852,7 +703,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     end
     object Splitter1: TSplitter
       Left = 201
-      Height = 218
+      Height = 226
       Top = 0
       Width = 5
     end
@@ -904,7 +755,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       Top = 0
       Width = 139
       BorderSpacing.Top = 3
-      ItemHeight = 0
+      ItemHeight = 15
       Items.Strings = (
         'pp;pas;inc;lpr;lrs;dpr;dpk'
         'pp;pas;inc;lpr;lrs'
