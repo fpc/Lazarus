@@ -69,6 +69,7 @@ type
 
   TExternalToolOptionDlg = class(TForm)
     ButtonPanel: TButtonPanel;
+    MemoParameters: TMemo;
     ScannersButton: TButton;
     TitleLabel: TLabel;
     TitleEdit: TEdit;
@@ -77,7 +78,6 @@ type
     OpenDialog: TOpenDialog;
     OpenButton:TButton;
     ParametersLabel: TLabel;
-    ParametersEdit: TEdit;
     WorkingDirLabel: TLabel;
     WorkingDirEdit: TEdit;
     OptionsGroupBox: TGroupBox;
@@ -161,7 +161,7 @@ procedure TExternalToolOptionDlg.SaveToOptions;
 begin
   fOptions.Title:=TitleEdit.Text;
   fOptions.Filename:=FilenameEdit.Text;
-  fOptions.CmdLineParams:=ParametersEdit.Text;
+  fOptions.CmdLineParams:=MemoParameters.Lines.Text;
   fOptions.WorkingDirectory:=WorkingDirEdit.Text;
   fOptions.Key:=fKeyBox.Key;
   fOptions.Shift:=fKeyBox.ShiftState;
@@ -208,7 +208,7 @@ procedure TExternalToolOptionDlg.LoadFromOptions;
 begin
   TitleEdit.Text:=fOptions.Title;
   FilenameEdit.Text:=fOptions.Filename;
-  ParametersEdit.Text:=fOptions.CmdLineParams;
+  MemoParameters.Lines.Text:=fOptions.CmdLineParams;
   WorkingDirEdit.Text:=fOptions.WorkingDirectory;
   fKeyBox.Key:=fOptions.Key;
   fKeyBox.ShiftState:=fOptions.Shift;
@@ -336,8 +336,8 @@ begin
 end;
 
 procedure TExternalToolOptionDlg.MacrosInsertButtonClick(Sender: TObject);
-var i: integer;
-  s: string;
+var i, ALine: integer;
+  s, AStr: string;
 begin
   i:=MacrosListbox.ItemIndex;
   if i<0 then exit;
@@ -345,7 +345,11 @@ begin
     s:='$('+fTransferMacros[i].Name+')'
   else
     s:='$'+fTransferMacros[i].Name+'()';
-  ParametersEdit.Text:=ParametersEdit.Text+s;
+  ALine := MemoParameters.CaretPos.Y;
+  If MemoParameters.Lines.Count = 0 Then
+    MemoParameters.Lines.Add('');
+  AStr := MemoParameters.Lines[Aline];
+  MemoParameters.Lines[Aline] := AStr + s;
 end;
 
 procedure TExternalToolOptionDlg.MacrosListboxClick(Sender: TObject);
