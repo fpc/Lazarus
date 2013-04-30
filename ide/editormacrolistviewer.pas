@@ -1397,8 +1397,8 @@ begin
 
   SaveDialog1.Title := lisSaveMacroAs;
   OpenDialog1.Title := lisLoadMacroFrom;
-  mnImport.Caption := lisImport;
-  mnExport.Caption := lisExport;
+  mnImport.Caption := lisDlgImport;
+  mnExport.Caption := lisDlgExport;
 
   lbRecordedView.SmallImages := IDEImages.Images_16;
   FImageRec := IDEImages.LoadImage(16, 'Record');  // red dot

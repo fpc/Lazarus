@@ -351,10 +351,10 @@ begin
   tbRemove.Hint  := histdlgBtnRemoveHint;
 
   tbImport.ImageIndex := IDEImages.LoadImage(16, 'laz_open');
-  tbImport.Hint  := histdlgBtnImport;
+  tbImport.Hint  := lisImport;
 
   tbExport.ImageIndex := IDEImages.LoadImage(16, 'laz_save');
-  tbExport.Hint  := histdlgBtnExport;
+  tbExport.Hint  := lisExport;
 
   tbPowerClick(nil);
   tbHistorySelectedClick(nil);
