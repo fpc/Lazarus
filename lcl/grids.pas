@@ -168,6 +168,10 @@ const
   constRubberSpace: byte = 2;
   constCellPadding: byte = 3;
 
+  DefaultGridOptions = [goFixedVertLine, goFixedHorzLine,
+       goVertLine, goHorzLine, goRangeSelect, goSmoothScroll ];
+
+
 type
 
   TCustomGrid = class;
@@ -1105,9 +1109,7 @@ type
     property IsCellSelected[aCol,aRow: Integer]: boolean read GetIsCellSelected;
     property LeftCol:Integer read GetLeftCol write SetLeftCol;
     property MouseWheelOption: TMouseWheelOption read FMouseWheelOption write FMouseWheelOption default mwCursor;
-    property Options: TGridOptions read FOptions write SetOptions default
-      [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect,
-       goSmoothScroll ];
+    property Options: TGridOptions read FOptions write SetOptions default DefaultGridOptions;
     property Row: Integer read FRow write SetRow;
     property RowCount: Integer read GetRowCount write SetRowCount default 5;
     property RowHeights[aRow: Integer]: Integer read GetRowHeights write SetRowHeights;
