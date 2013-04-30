@@ -94,8 +94,44 @@ begin
 end;
 
 procedure TFrame1.BMMNewOptionToolButtonClick(Sender: TObject);
-begin
+var
+  aRow: Integer;
+  MatRow: TGroupedMatrixRow;
+  Group: TGroupedMatrixGroup;
 
+  procedure CreateOption;
+  begin
+    Grid.Matrix.AddValue(Group,Grid.Modes[Grid.ActiveMode].Caption,Grid.TypeColumn.PickList.Names[0],'');
+  end;
+
+begin
+  aRow:=Grid.Row;
+  if aRow<Grid.FixedRows then aRow:=Grid.FixedRows;
+  Grid.MatrixChanging;
+  try
+    Grid.StoreUndo;
+    MatRow:=Grid.Matrix[aRow-1];
+    if MatRow is TGroupedMatrixGroup then begin
+      Group:=TGroupedMatrixGroup(MatRow);
+      if Group.Group=nil then begin
+        if Group.Count=0 then begin
+          // storage group without target => add a target
+          Group:=Grid.Matrix.AddGroup(Group,'Target: *');
+        end;
+      end;
+      // add option as first item of Group
+      CreateOption;
+    end else begin
+      // add behind current value
+      Group:=MatRow.Group;
+      CreateOption;
+      Group.Move(Group.Count-1,MatRow.GetGroupIndex+1);
+    end;
+    Grid.Matrix.RebuildRows;
+  finally
+    Grid.MatrixChanged;
+  end;
+  UpdateButtons;
 end;
 
 procedure TFrame1.BMMNewTargetToolButtonClick(Sender: TObject);
