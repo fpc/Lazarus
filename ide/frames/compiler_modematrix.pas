@@ -56,12 +56,18 @@ type
     procedure GridSelection(Sender: TObject; {%H-}aCol, {%H-}aRow: Integer);
   private
     FGrid: TGroupedMatrixControl;
+    FIDEColor: TColor;
+    FProjectColor: TColor;
+    FSessionColor: TColor;
     procedure MoveRow(Direction: integer);
     procedure UpdateButtons;
     function AddTarget(StorageGroup: TGroupedMatrixGroup): TGroupedMatrixGroup;
   public
     constructor Create(TheOwner: TComponent); override;
     property Grid: TGroupedMatrixControl read FGrid;
+    property IDEColor: TColor read FIDEColor write FIDEColor;
+    property ProjectColor: TColor read FProjectColor write FProjectColor;
+    property SessionColor: TColor read FSessionColor write FSessionColor;
   end;
 
 implementation
@@ -335,6 +341,10 @@ end;
 constructor TFrame1.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+
+  IDEColor:=RGBToColor(200,255,255);
+  ProjectColor:=RGBToColor(255,255,255);
+  SessionColor:=RGBToColor(255,255,200);
 
   FGrid:=TGroupedMatrixControl.Create(Self);
   with Grid do begin
