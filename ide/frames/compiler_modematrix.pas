@@ -53,6 +53,7 @@ type
     procedure GridSelection(Sender: TObject; {%H-}aCol, {%H-}aRow: Integer);
   private
     FGrid: TGroupedMatrixControl;
+    procedure MoveRow(Direction: integer);
     procedure UpdateButtons;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -78,7 +79,7 @@ end;
 
 procedure TFrame1.GridEditingDone(Sender: TObject);
 begin
-  DebugLn(['TFrame1.GridEditingDone ']);
+  //DebugLn(['TFrame1.GridEditingDone ']);
   UpdateButtons;
 end;
 
@@ -90,7 +91,7 @@ end;
 
 procedure TFrame1.BMMMoveUpToolButtonClick(Sender: TObject);
 begin
-
+  MoveRow(-1);
 end;
 
 procedure TFrame1.BMMNewOptionToolButtonClick(Sender: TObject);
@@ -98,15 +99,17 @@ var
   aRow: Integer;
   MatRow: TGroupedMatrixRow;
   Group: TGroupedMatrixGroup;
+  NewRow: TGroupedMatrixValue;
 
   procedure CreateOption;
   begin
-    Grid.Matrix.AddValue(Group,Grid.Modes[Grid.ActiveMode].Caption,Grid.TypeColumn.PickList.Names[0],'');
+    NewRow:=Grid.Matrix.AddValue(Group,Grid.Modes[Grid.ActiveMode].Caption,Grid.TypeColumn.PickList.Names[0],'');
   end;
 
 begin
   aRow:=Grid.Row;
   if aRow<Grid.FixedRows then aRow:=Grid.FixedRows;
+  NewRow:=nil;
   Grid.MatrixChanging;
   try
     Grid.StoreUndo;
@@ -131,6 +134,8 @@ begin
   finally
     Grid.MatrixChanged;
   end;
+  if NewRow<>nil then
+    Grid.Row:=Grid.Matrix.IndexOfRow(NewRow)+1;
   UpdateButtons;
 end;
 
@@ -139,9 +144,11 @@ var
   aRow: Integer;
   MatRow: TGroupedMatrixRow;
   Group: TGroupedMatrixGroup;
+  NewRow: TGroupedMatrixGroup;
 begin
   aRow:=Grid.Row;
   if aRow<Grid.FixedRows then aRow:=Grid.FixedRows;
+  NewRow:=nil;
   Grid.MatrixChanging;
   try
     Grid.StoreUndo;
@@ -153,24 +160,26 @@ begin
     if Group.Group=nil then begin
       // Group is a storage group
       // => add as first target of storage group
-      Grid.Matrix.AddGroup(Group,'Target: *');
+      NewRow:=Grid.Matrix.AddGroup(Group,'Target: *');
       Group.Move(Group.Count-1,0);
     end else begin
       // Group is a target
       // => add target behind current target
-      Grid.Matrix.AddGroup(Group.Group,'Target: *');
+      NewRow:=Grid.Matrix.AddGroup(Group.Group,'Target: *');
       Group.Group.Move(Group.Group.Count-1,Group.GetGroupIndex+1);
     end;
     Grid.Matrix.RebuildRows;
   finally
     Grid.MatrixChanged;
   end;
+  if NewRow<>nil then
+    Grid.Row:=Grid.Matrix.IndexOfRow(NewRow)+1;
   UpdateButtons;
 end;
 
 procedure TFrame1.BMMMoveDownToolButtonClick(Sender: TObject);
 begin
-
+  MoveRow(1);
 end;
 
 procedure TFrame1.BMMDeleteToolButtonClick(Sender: TObject);
@@ -211,6 +220,104 @@ begin
                            or (MatRow.GetTopLvlItem.GetPreviousSibling<>nil));
   BMMMoveDownToolButton.Enabled:=(MatRow<>nil) and (MatRow.Group<>nil)
                         and  (MatRow.GetNextSkipChildren<>nil);
+end;
+
+procedure TFrame1.MoveRow(Direction: integer);
+var
+  MatRow: TGroupedMatrixRow;
+  aRow: Integer;
+  TargetGroup: TGroupedMatrixGroup;
+  i: Integer;
+  TargetStorage: TGroupedMatrixGroup;
+begin
+  aRow:=Grid.Row;
+  if aRow<1 then exit;
+  MatRow:=Grid.Matrix[aRow-1];
+  if MatRow.Group=nil then begin
+    // storage groups can not be moved
+    debugln(['TFrame1.MoveRow storage groups can not be moved']);
+    exit;
+  end;
+  Grid.MatrixChanging;
+  i:=MatRow.GetGroupIndex;
+  if Direction<0 then begin
+    if i>0 then begin
+      // move up in group
+      Grid.StoreUndo;
+      MatRow.Group.Move(i,i-1);
+    end else begin
+      // move to previous group
+      TargetGroup:=TGroupedMatrixGroup(MatRow.Group.GetPreviousSibling);
+      if TargetGroup=nil then begin
+        if MatRow is TGroupedMatrixValue then begin
+          // move value to last target of previous storage
+          if (MatRow.Group.Group=nil) then begin
+            debugln(['TFrame1.MoveRow value has no storage+target']);
+            exit;
+          end;
+          TargetStorage:=TGroupedMatrixGroup(MatRow.Group.Group.GetPreviousSibling);
+          if TargetStorage=nil then begin
+            debugln(['TFrame1.MoveRow no previous storage for value']);
+            exit;
+          end;
+          if TargetStorage.Count>0 then begin
+            TargetGroup:=TargetStorage[TargetStorage.Count-1] as TGroupedMatrixGroup;
+          end else begin
+            // add first target
+            TargetGroup:=Grid.Matrix.AddGroup(TargetStorage,'target: *');
+          end;
+        end else begin
+          // this is already the first target of the first storage
+          debugln(['TFrame1.MoveRow no previous storage for target']);
+          exit;
+        end;
+      end;
+      // move MatRow to TargetGroup as last
+      Grid.StoreUndo;
+      MatRow.Group:=TargetGroup;
+    end;
+  end else begin
+    if i+1<MatRow.Group.Count then begin
+      // move down in group
+      Grid.StoreUndo;
+      MatRow.Group.Move(i,i+1);
+    end else begin
+      // move to next group
+      TargetGroup:=TGroupedMatrixGroup(MatRow.Group.GetNextSibling);
+      if TargetGroup=nil then begin
+        if MatRow is TGroupedMatrixValue then begin
+          // move value to first target of next storage
+          if (MatRow.Group.Group=nil) then begin
+            debugln(['TFrame1.MoveRow value has no storage+target']);
+            exit;
+          end;
+          TargetStorage:=TGroupedMatrixGroup(MatRow.Group.Group.GetNextSibling);
+          if TargetStorage=nil then begin
+            debugln(['TFrame1.MoveRow no next storage for value']);
+            exit;
+          end;
+          if TargetStorage.Count>0 then begin
+            TargetGroup:=TargetStorage[0] as TGroupedMatrixGroup;
+          end else begin
+            // add first target
+            TargetGroup:=Grid.Matrix.AddGroup(TargetStorage,'target: *');
+          end;
+        end else begin
+          // this is already the last target of the last storage
+          debugln(['TFrame1.MoveRow no next storage for target']);
+          exit;
+        end;
+      end;
+      // move MatRow to TargetGroup as first
+      Grid.StoreUndo;
+      MatRow.Group:=TargetGroup;
+      TargetGroup.Move(TargetGroup.Count-1,0);
+    end;
+  end;
+  Grid.Matrix.RebuildRows;
+  Grid.MatrixChanged;
+  Grid.Row:=Grid.Matrix.IndexOfRow(MatRow)+1;
+  UpdateButtons;
 end;
 
 constructor TFrame1.Create(TheOwner: TComponent);
