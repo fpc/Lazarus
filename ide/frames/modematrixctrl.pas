@@ -1,3 +1,24 @@
+{
+ ***************************************************************************
+ *                                                                         *
+ *   This source is free software; you can redistribute it and/or modify   *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This code is distributed in the hope that it will be useful, but      *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   General Public License for more details.                              *
+ *                                                                         *
+ *   A copy of the GNU General Public License is available on the World    *
+ *   Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also      *
+ *   obtain it by writing to the Free Software Foundation,                 *
+ *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
+ *                                                                         *
+ ***************************************************************************
+
+}
 unit ModeMatrixCtrl;
 
 {$mode objfpc}{$H+}
@@ -243,6 +264,8 @@ type
     procedure Redo;
     property MaxUndo: integer read FMaxUndo write SetMaxUndo default DefaultModeMatrixMaxUndo;
     procedure StoreUndo(EvenIfNothingChanged: boolean = false);
+  public
+    property TitleStyle default tsNative;
   end;
 
 function VerticalIntersect(const aRect,bRect: TRect): boolean;
@@ -1234,6 +1257,7 @@ var
   aCol: Longint;
   aRow: Longint;
   MatRow: TGroupedMatrixRow;
+  GroupRow: TGroupedMatrixGroup;
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if (csDesigning in componentState) or not MouseButtonAllowed(Button) then
@@ -1247,7 +1271,6 @@ begin
     if MatRow is TGroupedMatrixValue then begin
       if (aCol>=ModeColFirst) and (aCol<=ModeColLast) then begin
         if Shift*[ssCtrl,ssShift,ssLeft]=[ssLeft] then begin
-          // toggle a matrix cell
           ToggleModeValue(aRow, aCol);
         end;
       end else if aCol=TypeCol then begin
@@ -1255,6 +1278,12 @@ begin
           PopupTypes(aRow);
         end;
       end else if aCol=ValueCol then begin
+        SelectEditor;
+        EditorShow(False);
+      end;
+    end else if MatRow is TGroupedMatrixGroup then begin
+      GroupRow:=TGroupedMatrixGroup(MatRow);
+      if (aCol=ValueCol) and (GroupRow.Writable) then begin
         SelectEditor;
         EditorShow(False);
       end;
@@ -1301,7 +1330,7 @@ begin
     if MatRow is TGroupedMatrixValue then
       Result:=TGroupedMatrixValue(MatRow).Value
     else
-      Result:=TGroupedMatrixGroup(MatRow).Caption;
+      Result:=TGroupedMatrixGroup(MatRow).Value;
     exit;
   end;
   Result:=inherited GetEditText(aCol, aRow);
@@ -1326,6 +1355,7 @@ begin
       if GroupRow.Value=Value then exit;
       StoreUndo;
       GroupRow.Value:=Value;
+      InvalidateRow(ARow);
     end;
   end;
   inherited SetEditText(ACol, ARow, Value);
@@ -1356,10 +1386,8 @@ begin
   FMaxUndo:=DefaultModeMatrixMaxUndo;
 
   Options:=Options+[goEditing]; // ToDo: change property default
-  FixedCols:=1; // ToDo: change property default
-  FixedRows:=1; // ToDo: change property default
-  RowCount:=1;  // ToDo: change property default
-  TitleStyle:=tsNative; // ToDo: change property default
+  RowCount:=1;
+  TitleStyle:=tsNative;
   AutoFillColumns:=true;
   FIndent:=DefaultGroupMatrixIndent;
   FActiveModeColor:=RGBToColor(220,255,220);
