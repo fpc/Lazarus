@@ -570,7 +570,7 @@ var
     if CheckFile(ADir+SubFile,List) then
       exit;
     try
-      if FindFirstUTF8(ADir+AllFilesMask,faAnyFile,FileInfo)=0 then begin
+      if FindFirstUTF8(ADir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
         repeat
           // check if special file
           if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
@@ -1416,7 +1416,7 @@ begin
     Filename:='gdb'+GetExecutableExt;
     Dlg.Title:=Format(lisSelectPathTo, [Filename]);
     Dlg.Options:=Dlg.Options+[ofFileMustExist];
-    Filter:=dlgAllFiles+'|'+AllFilesMask;
+    Filter:=dlgAllFiles+'|'+GetAllFilesMask;
     if ExtractFileExt(Filename)<>'' then
       Filter:=lisExecutable+'|*'+ExtractFileExt(Filename)+'|'+Filter;
     Dlg.Filter:=Filter;
@@ -1445,7 +1445,7 @@ begin
     Filename:='fpc'+GetExecutableExt;
     Dlg.Title:=Format(lisSelectPathTo, [Filename]);
     Dlg.Options:=Dlg.Options+[ofFileMustExist];
-    Filter:=dlgAllFiles+'|'+AllFilesMask;
+    Filter:=dlgAllFiles+'|'+GetAllFilesMask;
     if ExtractFileExt(Filename)<>'' then
       Filter:=lisExecutable+'|*'+ExtractFileExt(Filename)+'|'+Filter;
     Dlg.Filter:=Filter;
@@ -1513,7 +1513,7 @@ begin
     Filename:='make'+GetExecutableExt;
     Dlg.Title:=Format(lisSelectPathTo, [Filename]);
     Dlg.Options:=Dlg.Options+[ofFileMustExist];
-    Filter:=dlgAllFiles+'|'+AllFilesMask;
+    Filter:=dlgAllFiles+'|'+GetAllFilesMask;
     if ExtractFileExt(Filename)<>'' then
       Filter:=lisExecutable+'|*'+ExtractFileExt(Filename)+'|'+Filter;
     Dlg.Filter:=Filter;

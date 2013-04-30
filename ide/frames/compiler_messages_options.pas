@@ -81,7 +81,7 @@ begin
     OpenDialog.Title:=lisChooseAnFPCMessageFile;
     OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
     OpenDialog.Filter:=lisFPCMessageFile+' (*.msg)|*.msg|'+dlgAllFiles+'|'+
-      AllFilesMask;
+      GetAllFilesMask;
     if OpenDialog.Execute then
       MsgFileEdit.Text:=OpenDialog.FileName;
   finally

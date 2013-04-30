@@ -4961,7 +4961,7 @@ end;
 
 function TFileNamePropertyEditor.GetFilter: String;
 begin
-  Result:=oisAllFiles+' ('+AllFilesMask+')|'+AllFilesMask;
+  Result:=oisAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask;
 end;
 
 function TFileNamePropertyEditor.GetDialogOptions: TOpenOptions;

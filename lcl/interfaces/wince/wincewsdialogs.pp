@@ -135,7 +135,7 @@ type
 procedure TWinCEFileDialogForm.SetFilter();
 begin
   if LCLDialog.Filter = '' then
-    FilterComboBox.Filter := Format(rsAllFiles,[AllFilesMask, AllFilesMask,''])
+    FilterComboBox.Filter := Format(rsAllFiles,[GetAllFilesMask, GetAllFilesMask,''])
   else
     FilterComboBox.Filter := LCLDialog.Filter;
 end;

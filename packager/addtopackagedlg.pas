@@ -544,7 +544,7 @@ begin
     Dlg.Filter:='PNG|*.png'
               +'|Bitmap, bmp|*.bmp'
               +'|Pixmap, xpm|*.xpm'
-              +'|'+lisAllFiles+'|'+AllFilesMask;
+              +'|'+lisAllFiles+'|'+GetAllFilesMask;
     if Dlg.Execute then begin
       LoadComponentIcon(Dlg.FileName);
     end;
@@ -697,7 +697,7 @@ begin
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options
                           +[ofFileMustExist,ofPathMustExist,ofAllowMultiSelect];
-    OpenDialog.Filter:=dlgAllFiles+' ('+AllFilesMask+')|'+AllFilesMask
+    OpenDialog.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
                  +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
                  +'|'+lisLazarusProject+' (*.lpi)|*.lpi'
                  +'|'+lisLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm'

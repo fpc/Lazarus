@@ -1944,7 +1944,7 @@ Begin
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
     Filter := lisLazarusUnit + ' (*.pas;*.pp;*.p)|*.pas;*.pp;*.p'
       + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr';
-    Filter:=Filter+ '|' + dlgAllFiles + ' (' + AllFilesMask + ')|' + AllFilesMask;
+    Filter:=Filter+ '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
     OpenDialog.Filter := Filter;
     if OpenDialog.Execute then begin
       AFilename:=ExpandFileNameUTF8(OpenDialog.Filename);
@@ -2218,7 +2218,7 @@ begin
       InputHistories.ApplyFileDialogSettings(OpenDialog);
       OpenDialog.Title:=lisOpenProjectFile+' (*.lpi)';
       OpenDialog.Filter := lisLazarusProjectInfoFile+' (*.lpi)|*.lpi|'
-                          +lisAllFiles+'|'+AllFilesMask;
+                          +lisAllFiles+'|'+GetAllFilesMask;
       if OpenDialog.Execute then begin
         AFilename:=ExpandFileNameUTF8(OpenDialog.Filename);
         if FileUtil.CompareFileExt(AFilename,'.lpi')<>0 then begin
@@ -2614,7 +2614,7 @@ begin
       Filter:=Filter+ '|' + lisEditorFileTypes + ' (' + AllEditorExt + ')|' + AllEditorExt;
 
     // append an any file filter *.*
-    Filter:=Filter+ '|' + dlgAllFiles + ' (' + AllFilesMask + ')|' + AllFilesMask;
+    Filter:=Filter+ '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
 
     // prepend an all filter
     Filter:=  lisLazarusFile + ' ('+AllFilter+')|' + AllFilter + '|' + Filter;

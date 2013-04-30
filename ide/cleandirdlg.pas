@@ -307,7 +307,7 @@ var
   begin
     Result:=false;
     if (not DirPathExists(MainDirectory)) or (Lvl>20) then exit;
-    if FindFirstUTF8(MainDirectory+AllFilesMask,
+    if FindFirstUTF8(MainDirectory+GetAllFilesMask,
                           faAnyFile,FileInfo)=0
     then begin
       repeat

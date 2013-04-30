@@ -3396,7 +3396,7 @@ var
     end;
     // create new directory listing
     Result:=TStringList.Create;
-    if FindFirstUTF8(AppendPathDelim(ADirectory)+AllFilesMask,
+    if FindFirstUTF8(AppendPathDelim(ADirectory)+GetAllFilesMask,
                           faAnyFile,FileInfo)=0
     then begin
       repeat

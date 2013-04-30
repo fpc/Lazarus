@@ -231,7 +231,7 @@ begin
   FTemplateDir:=IncludeTrailingPathDelimiter(ATemplateDir);
   D:=FTemplateDir;
   try
-    If FindFirstUTF8(D+AllFilesMask,faDirectory,Info)=0 then
+    If FindFirstUTF8(D+GetAllFilesMask,faDirectory,Info)=0 then
       Repeat
         If ((Info.Attr and faDirectory)<>0)
            and not ((Info.Name='.') or (Info.Name='..') or (Info.Name='')) then
@@ -429,7 +429,7 @@ Var
   Info : TSearchRec;
   
 begin
-  If FindFirstUTF8(Dir+AllFilesMask,0,Info)=0 then
+  If FindFirstUTF8(Dir+GetAllFilesMask,0,Info)=0 then
     try
       repeat
         if Not SpecialFile(info.name) then
@@ -439,7 +439,7 @@ begin
       FindCloseUTF8(Info);
     end;
   if Recurse then
-    If (FindFirstUTF8(Dir+AllFilesMask,0,Info)=0) then
+    If (FindFirstUTF8(Dir+GetAllFilesMask,0,Info)=0) then
       try
         repeat
           if ((Info.attr and faDirectory)<>0) and
@@ -469,7 +469,7 @@ begin
   D2:=IncludeTrailingPathDelimiter(DestDir);
   If not ForceDirectoriesUTF8(D2) then
     Raise ETemplateError.CreateFmt(SErrCouldNotCreateDir,[D2]);
-  If FindFirstUTF8(D1+AllFilesMask,0,Info)=0 then
+  If FindFirstUTF8(D1+GetAllFilesMask,0,Info)=0 then
     try
       repeat
         N:=Info.Name;
@@ -484,7 +484,7 @@ begin
       FindCloseUTF8(Info);
     end;
   if Recurse then
-    If (FindFirstUTF8(D1+AllFilesMask,0,Info)<>0) then
+    If (FindFirstUTF8(D1+GetAllFilesMask,0,Info)<>0) then
       try
         repeat
           if ((Info.attr and faDirectory)<>0) and

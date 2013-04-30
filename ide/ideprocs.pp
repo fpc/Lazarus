@@ -364,7 +364,7 @@ var
   FileInfo: TSearchRec;
 begin
   Result:=nil;
-  if FindFirstUTF8(AppendPathDelim(Directory)+AllFilesMask,
+  if FindFirstUTF8(AppendPathDelim(Directory)+GetAllFilesMask,
                         faAnyFile,FileInfo)=0
   then begin
     repeat
@@ -406,7 +406,7 @@ var
 begin
   Result:='';
   ADirectory:=ExtractFilePath(Filename);
-  if FindFirstUTF8(AppendPathDelim(ADirectory)+AllFilesMask,
+  if FindFirstUTF8(AppendPathDelim(ADirectory)+GetAllFilesMask,
                         faAnyFile,FileInfo)=0
   then begin
     ShortFilename:=ExtractFilename(Filename);
@@ -958,7 +958,7 @@ var
   FileInfo: TSearchRec;
 begin
   Result:='';
-  if FindFirstUTF8(AppendPathDelim(Directory)+AllFilesMask,
+  if FindFirstUTF8(AppendPathDelim(Directory)+GetAllFilesMask,
                         faAnyFile,FileInfo)=0
   then begin
     repeat
@@ -2386,7 +2386,7 @@ var
     if not ForceDirectory(CurDestDir)
     and not HandleError(ceCreatingDirectory,CurDestDir,'') then exit;
     
-    if FindFirstUTF8(CurSrcDir+AllFilesMask,faAnyFile,FileInfo)=0 then begin
+    if FindFirstUTF8(CurSrcDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
       repeat
         // check if special file
         if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')

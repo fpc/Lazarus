@@ -654,7 +654,7 @@ var
 begin
   Result:=false;
   CurSrcDir:=CleanAndExpandDirectory(DirectoryName);
-  if FindFirstUTF8(CurSrcDir+AllFilesMask,faAnyFile,FileInfo)=0 then begin
+  if FindFirstUTF8(CurSrcDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
     repeat
       // check if special file
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
@@ -1212,7 +1212,7 @@ begin
       CurFile:=copy(Result,StartPos,EndPos-StartPos);
       AliasFile:='';
       Ambiguous:=false;
-      if FindFirstUTF8(CurDir+AllFilesMask,faAnyFile,FileInfo)=0 then
+      if FindFirstUTF8(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then
       begin
         repeat
           // check if special file
@@ -1255,7 +1255,7 @@ var
 begin
   Result:='';
   CurDir:=ExtractFilePath(Filename);
-  if FindFirstUTF8(CurDir+AllFilesMask,faAnyFile, FileInfo)=0 then begin
+  if FindFirstUTF8(CurDir+GetAllFilesMask,faAnyFile, FileInfo)=0 then begin
     ShortFilename:=ExtractFilename(Filename);
     repeat
       // check if special file
@@ -1515,7 +1515,11 @@ end;
 
 function GetAllFilesMask: string;
 begin
-  Result:=AllFilesMask;
+  {$IFDEF WINDOWS}
+  Result:='*.*';
+  {$ELSE}
+  Result:='*';
+  {$ENDIF}
 end;
 
 function GetExeExt: string;

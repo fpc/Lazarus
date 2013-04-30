@@ -466,7 +466,7 @@ begin
   while p<=length(AnUnitPath) do begin
     Directory:=TrimAndExpandDirectory(GetNextDirectoryInSearchPath(AnUnitPath,p));
     if Directory<>'' then begin
-      if FindFirstUTF8(Directory+AllFilesMask,faAnyFile,FileInfo)=0
+      if FindFirstUTF8(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0
       then begin
         repeat
           // check if special file
@@ -682,7 +682,7 @@ begin
       if (Directory<>'') and (FilenameIsAbsolute(Directory))
       and (WarnedDirectories.IndexOf(Directory)<0) then begin
         //DebugLn(['TCheckCompilerOptsDlg.CheckFPCUnitPathsContainSources Directory="',Directory,'"']);
-        if FindFirstUTF8(Directory+AllFilesMask,faAnyFile,FileInfo)=0
+        if FindFirstUTF8(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0
         then begin
           repeat
             // check if special file
@@ -769,7 +769,7 @@ begin
   try
     // search .ppu and .o files in output directory
     Directory:=AppendPathDelim(OutputDir);
-    if FindFirstUTF8(Directory+AllFilesMask,faAnyFile,FileInfo)=0 then
+    if FindFirstUTF8(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0 then
     begin
       repeat
         // check if special file

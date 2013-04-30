@@ -1127,7 +1127,7 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     with OpenDialog do begin
       Title:=dlgChsCodeTempl;
-      Filter:='DCI file (*.dci)|*.dci|' + dlgAllFiles  + '|' + AllFilesMask;
+      Filter:='DCI file (*.dci)|*.dci|' + dlgAllFiles  + '|' + GetAllFilesMask;
       if Execute then
         FilenameEdit.Text:=FileName;
     end;
