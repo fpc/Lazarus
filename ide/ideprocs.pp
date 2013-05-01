@@ -1527,7 +1527,7 @@ begin
   FpStat(Filename, OldInfo{%H-});
   {$ENDIF}
   
-  // if not a symlink/hardlink => rename old file, create empty new file
+  // if not a symlink/hardlink or locked => rename old file, create empty new file
   if not FileIsSymlink(Filename) and
      not FileIsHardLink(FileName) and
      not FileIsLocked(Filename) and
@@ -1537,7 +1537,7 @@ begin
     FHandle := FileCreate(UTF8ToSys(FileName));
     FileClose(FHandle);
   end
-  else // file is a symlink or rename failed => copy file
+  else // file is a symlink/hardlink or locked or rename failed => copy file
   if not CopyFile(Filename, BackupFilename) then exit;
 
   // restore file attributes
@@ -1545,7 +1545,7 @@ begin
   FileSetAttrUTF8(FileName, OldAttr);
   {$ELSE}
   FpChmod(Filename, OldInfo.st_Mode and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
-                           +STAT_ISUID+STAT_ISGID+STAT_ISVTX));
+                                        +STAT_ISUID+STAT_ISGID+STAT_ISVTX));
   {$ENDIF}
 
   Result := True;
