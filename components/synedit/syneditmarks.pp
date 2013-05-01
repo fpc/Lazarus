@@ -195,9 +195,6 @@ type
     function  GetMarkLine(LineNum: Integer): TSynEditMarkLine;
     function  GetOrAddMarkLine(LineNum: Integer; AddIfNotExist: Boolean;
                                UseNext: Boolean = False): TSynEditMarkLine;
-
-    Procedure AdjustForLinesInserted(AStartLine, ALineCount : Integer);
-    Procedure AdjustForLinesDeleted(AStartLine, ALineCount : Integer);
   protected
     // will be reset by TSynEditMarkLine.ChangeSize;
     FLastIteratorIndex: Integer;
@@ -742,67 +739,6 @@ begin
     Result := TSynEditMarkLine(FindNodeAtPosition(LineNum, afmNext, d1, d2))
   else
     Result := TSynEditMarkLine(FindNodeAtPosition(LineNum, afmNil, d1, d2));
-end;
-
-procedure TSynEditMarkLineList.AdjustForLinesInserted(AStartLine, ALineCount: Integer);
-var
-  Current: TSynEditMarkLine;
-  CurrentLine: Integer;
-begin
-  Current := TSynEditMarkLine(fRoot);
-  CurrentLine := FRootOffset;
-  while (Current <> nil) do begin
-    CurrentLine := CurrentLine + Current.LineOffset;
-
-    if AStartLine <= CurrentLine then begin
-      // move current node
-      Current.LineOffset := Current.LineOffset + ALineCount;
-      CurrentLine := CurrentLine + ALineCount;
-      if Current.Left <> nil then
-        Current.Left.LineOffset := Current.Left.LineOffset - ALineCount;
-      Current := Current.Left;
-    end
-    else if AStartLine > CurrentLine then begin
-      // The new lines are entirly behind the current node
-      Current := Current.Right;
-    end
-  end;
-end;
-
-procedure TSynEditMarkLineList.AdjustForLinesDeleted(AStartLine, ALineCount: Integer);
-var
-  Current : TSynEditMarkLine;
-  CurrentLine, LastLineToDelete: Integer;
-begin
-  Current := TSynEditMarkLine(fRoot);
-  CurrentLine := FRootOffset;;
-  LastLineToDelete := AStartLine + ALineCount - 1; // only valid for delete; ALineCount < 0
-
-  while (Current <> nil) do begin
-    CurrentLine := CurrentLine + Current.LineOffset;
-
-    if (AStartLine = CurrentLine) or
-       ((AStartLine < CurrentLine) and (LastLineToDelete >= CurrentLine)) then begin
-      { $IFDEF AssertSynMemIndex}
-      raise Exception.Create('TSynEditMarkLineList.AdjustForLinesDeleted node to remove');
-      { $ENDIF}
-    end
-
-    else if AStartLine < CurrentLine then begin
-      // move current node (includes right subtree / left subtree needs eval)
-      Current.LineOffset := Current.LineOffset - ALineCount;
-      CurrentLine := CurrentLine - ALineCount;
-
-      Current := Current.Left;
-      if Current <> nil then
-        Current.LineOffset := Current.LineOffset + ALineCount;
-    end
-
-    else if AStartLine > CurrentLine then begin
-      // The deleted lines are entirly behind the current node
-      Current := Current.Right;
-    end;
-  end;
 end;
 
 function TSynEditMarkLineList.CreateNode(APosition: Integer): TSynSizedDifferentialAVLNode;

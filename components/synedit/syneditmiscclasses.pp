@@ -566,6 +566,8 @@ type
                                 out aStartPosition, aSizesBeforeSum : Integer): TSynSizedDifferentialAVLNode;
     function FindNodeAtPosition(APosition: INteger; AMode: TSynSizedDiffAVLFindMode;
                                 out aStartPosition, aSizesBeforeSum : Integer): TSynSizedDifferentialAVLNode;
+    procedure AdjustForLinesInserted(AStartLine, ALineCount : Integer);
+    procedure AdjustForLinesDeleted(AStartLine, ALineCount : Integer);
   end;
 
 
@@ -2692,6 +2694,67 @@ begin
       Result := Result.FRight;
     end;
   end; // while
+end;
+
+procedure TSynSizedDifferentialAVLTree.AdjustForLinesInserted(AStartLine, ALineCount: Integer);
+var
+  Current: TSynSizedDifferentialAVLNode;
+  CurrentLine: Integer;
+begin
+  Current := TSynSizedDifferentialAVLNode(fRoot);
+  CurrentLine := FRootOffset;
+  while (Current <> nil) do begin
+    CurrentLine := CurrentLine + Current.FPositionOffset;
+
+    if AStartLine <= CurrentLine then begin
+      // move current node
+      Current.FPositionOffset := Current.FPositionOffset + ALineCount;
+      CurrentLine := CurrentLine + ALineCount;
+      if Current.FLeft <> nil then
+        Current.FLeft.FPositionOffset := Current.FLeft.FPositionOffset - ALineCount;
+      Current := Current.FLeft;
+    end
+    else if AStartLine > CurrentLine then begin
+      // The new lines are entirly behind the current node
+      Current := Current.FRight;
+    end
+  end;
+end;
+
+procedure TSynSizedDifferentialAVLTree.AdjustForLinesDeleted(AStartLine, ALineCount: Integer);
+var
+  Current : TSynSizedDifferentialAVLNode;
+  CurrentLine, LastLineToDelete: Integer;
+begin
+  Current := TSynSizedDifferentialAVLNode(fRoot);
+  CurrentLine := FRootOffset;;
+  LastLineToDelete := AStartLine + ALineCount - 1; // only valid for delete; ALineCount < 0
+
+  while (Current <> nil) do begin
+    CurrentLine := CurrentLine + Current.FPositionOffset;
+
+    if (AStartLine = CurrentLine) or
+       ((AStartLine < CurrentLine) and (LastLineToDelete >= CurrentLine)) then begin
+      { $IFDEF AssertSynMemIndex}
+      raise Exception.Create('TSynEditMarkLineList.AdjustForLinesDeleted node to remove');
+      { $ENDIF}
+    end
+
+    else if AStartLine < CurrentLine then begin
+      // move current node (includes Fright subtree / Fleft subtree needs eval)
+      Current.FPositionOffset := Current.FPositionOffset - ALineCount;
+      CurrentLine := CurrentLine - ALineCount;
+
+      Current := Current.FLeft;
+      if Current <> nil then
+        Current.FPositionOffset := Current.FPositionOffset + ALineCount;
+    end
+
+    else if AStartLine > CurrentLine then begin
+      // The deleted lines are entirly behind the current node
+      Current := Current.FRight;
+    end;
+  end;
 end;
 
 end.

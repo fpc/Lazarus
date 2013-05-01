@@ -299,18 +299,21 @@ type
   *)
 
   TLazSynEditNestedFoldsListEntry = record
-    FFLags: set of (nfeHasHNode);
+    FFLags: set of (nfeHasHNode, nfeMaxPrevReached);
     FGroupEndLevels: Array of Integer;
     //OpenCount: Integer;
     LineIdx: TLineIdx;
     HNode: TSynFoldNodeInfo;    // Highlighter Node
     //FNode: TSynTextFoldAVLNode; // AvlFoldNode
+    PrevNodeAtSameLevel: array of TLazSynEditNestedFoldsListEntry; // Only for same NodeGroup
   end;
+
+  TSynGetHighLighter = function(): TSynCustomFoldHighlighter of object;
 
   TLazSynEditNestedFoldsList = class
   // TODO: in all methods: get "FoldNodeInfo" from FoldProvider, instead of Highlighter
   private
-    FFoldProvider: TSynEditFoldProvider;
+    FHighLighterGetter: TSynGetHighLighter;
     FFoldGroup: Integer;
     FLine: TLineIdx;
     procedure SetFoldGroup(AValue: Integer);
@@ -331,6 +334,7 @@ type
     function GetNodeFoldGroup(Index: Integer): Integer;
     function GetNodeLine(Index: Integer): Integer;
     function GetNodeFoldType(Index: Integer): Pointer;
+    function GetNodeLineEx(Index, PrevCount: Integer): Integer;
     procedure InitSubGroupEndLevels(const AHighlighter: TSynCustomFoldHighlighter);
     procedure InitNestInfoForIndex(AnIndex: Integer);
     procedure InitLineInfoForIndex(AnIndex: Integer);
@@ -343,7 +347,8 @@ type
     procedure SetOpeningLineEndIndex(AValue: Integer);
     function HasCount: Boolean;
   public
-    constructor Create(aFoldProvider: TSynEditFoldProvider);
+    constructor Create(AHighLighterGetter: TSynGetHighLighter);
+    constructor Create(aFoldProvider: TSynEditFoldProvider); // TODO: deprecated
     procedure Clear;
     procedure ResetFilter;
     function Count: Integer;
@@ -362,7 +367,7 @@ type
     property NodeFoldType[Index: Integer]: Pointer read GetNodeFoldType;        // e.g.cfbtBeginEnd, cfbtcfbtProcedure ...
     property NodeFoldGroup[Index: Integer]: Integer read GetNodeFoldGroup;      // independend/overlapping folds, e.g begin/end; ifdef, region
     property NodeLine[Index: Integer]: Integer read GetNodeLine;                // Index
-
+    property NodeLineEx[Index, PrevCount: Integer]: Integer read GetNodeLineEx; // Index
   end;
 
   TSynEditFoldProvider = class
@@ -2957,7 +2962,7 @@ begin
     exit;
   end;
 
-  hl := FFoldProvider.HighLighterWithLines;
+  hl := FHighLighterGetter();
   if hl = nil then exit;
 
   // TODO: Cache
@@ -2965,6 +2970,75 @@ begin
     exit;
 
   Result := HLNode[Index].FoldType;
+end;
+
+function TLazSynEditNestedFoldsList.GetNodeLineEx(Index, PrevCount: Integer): Integer;
+var
+  Node: TLazSynEditNestedFoldsListEntry;
+  MinLvl, SearchLvl, Grp, PCnt, PLineIdx: Integer;
+  hl: TSynCustomFoldHighlighter;
+begin
+  InitLineInfoForIndex(Index);
+  Result := -1;
+
+  Node := FNestInfo[Index];
+  PCnt := length(Node.PrevNodeAtSameLevel);
+
+  if PrevCount > PCnt then begin
+    if (nfeMaxPrevReached in Node.FFLags) then
+      exit;
+    hl := FHighLighterGetter();
+    if hl = nil then exit;
+
+    if FoldGroup = 0 then begin
+      InitNestInfoForIndex(Index);
+      Grp    := Node.HNode.FoldGroup;
+      if sfbIncludeDisabled in FFoldFlags then
+        SearchLvl := Node.HNode.NestLvlStart
+      else
+        SearchLvl := Node.HNode.FoldLvlStart;
+    end else begin
+      Grp    := FoldGroup;
+      SearchLvl := Index;
+    end;
+    if PCnt = 0 then
+      PLineIdx := Node.LineIdx - 1
+    else
+      PLineIdx := Node.PrevNodeAtSameLevel[PCnt-1].LineIdx - 1;
+
+    while true do begin
+
+      MinLvl := hl.FoldBlockMinLevel(PLineIdx, Grp, FFoldFlags);
+      while (PLineIdx >= 0) and (SearchLvl < MinLvl) do begin
+        dec(PLineIdx);
+        MinLvl := hl.FoldBlockMinLevel(PLineIdx, Grp, FFoldFlags);
+      end;
+
+      if PLineIdx >= 0 then begin
+        if length(Node.PrevNodeAtSameLevel) = PCnt then
+          SetLength(Node.PrevNodeAtSameLevel, Max(PrevCount, PCnt+1));
+        Node.PrevNodeAtSameLevel[PCnt].LineIdx := PLineIdx;
+        Node.PrevNodeAtSameLevel[PCnt].FFLags  := [];
+        inc(PCnt);
+        if PCnt = PrevCount then begin
+          if length(Node.PrevNodeAtSameLevel) > PCnt then
+            SetLength(Node.PrevNodeAtSameLevel, PCnt);
+          Result := PLineIdx;
+          exit;
+        end;
+      end;
+
+      If (PLineIdx < 0) or (MinLvl < SearchLvl) then begin
+        Include(Node.FFLags, nfeMaxPrevReached);
+        if length(Node.PrevNodeAtSameLevel) > PCnt then
+          SetLength(Node.PrevNodeAtSameLevel, PCnt);
+        exit;
+      end;
+
+    end;
+  end;
+
+  Result := Node.PrevNodeAtSameLevel[PrevCount-1].LineIdx;
 end;
 
 procedure TLazSynEditNestedFoldsList.InitNestInfoForIndex(AnIndex: Integer);
@@ -2982,7 +3056,7 @@ begin
      )
   then exit;
 
-  hl := FFoldProvider.HighLighterWithLines;
+  hl := FHighLighterGetter();
   if hl = nil then exit;
 
   AquireFoldNodeInfoList(hl);
@@ -3050,7 +3124,7 @@ begin
   if HasCount and ((AnIndex >= Count - OpeningOnLineCount) or (AnIndex >= FEvaluationIndex)) then exit;
   assert(FEvaluationIndex > 0, 'TLazSynEditNestedFoldsList.InitLineInfoForIndex already finilhed');
 
-  hl := FFoldProvider.HighLighterWithLines;
+  hl := FHighLighterGetter();
   if hl = nil then exit;
 
   AquireFoldNodeInfoList(hl);
@@ -3268,13 +3342,18 @@ begin
   Clear;
 end;
 
-constructor TLazSynEditNestedFoldsList.Create(aFoldProvider: TSynEditFoldProvider);
+constructor TLazSynEditNestedFoldsList.Create(AHighLighterGetter: TSynGetHighLighter);
 begin
-  FFoldProvider := aFoldProvider;
+  FHighLighterGetter := AHighLighterGetter;
   FIncludeOpeningOnLine := True;
   FFoldFlags := [];
   FFoldGroup := 0;
   FFoldNodeInfoListHoldCnt := 0;
+end;
+
+constructor TLazSynEditNestedFoldsList.Create(aFoldProvider: TSynEditFoldProvider);
+begin
+  Create(@aFoldProvider.GetHighLighterWithLines);
 end;
 
 function TLazSynEditNestedFoldsList.Count: Integer;
@@ -3282,12 +3361,12 @@ var
   hl: TSynCustomFoldHighlighter;
 begin
   if (FCount < 0) then begin
-    hl := FFoldProvider.HighLighterWithLines;
+    hl := FHighLighterGetter();
     if hl = nil then exit(0);
     InitCount(hl);
   end;
   if FIncludeOpeningOnLine and (FOpeningOnLineCount < 0) then begin
-    hl := FFoldProvider.HighLighterWithLines;
+    hl := FHighLighterGetter();
     if hl = nil then exit(0);
     InitOpeningOnLine(hl);
   end;
@@ -3303,7 +3382,7 @@ begin
     exit(0);
 
   if (FOpeningOnLineCount < 0) then begin
-    hl := FFoldProvider.HighLighterWithLines;
+    hl := FHighLighterGetter();
     if hl = nil then exit(0);
     InitOpeningOnLine(hl);
   end;

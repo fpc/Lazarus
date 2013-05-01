@@ -5,8 +5,8 @@ unit TestMarkupHighAll;
 interface
 
 uses
-  Classes, SysUtils, testregistry, TestBase, TestHighlightPas, Forms, LCLProc, Controls,
-  Graphics, SynEdit, SynHighlighterPas, SynEditMarkupHighAll;
+  Classes, SysUtils, testregistry, TestBase, LCLProc, Controls,
+  Graphics, SynEdit, SynEditMarkupHighAll;
 
 type
 
@@ -105,6 +105,203 @@ exit;
   Dict.Add('all', 0);
   Dict.Add('alt', 0);
 
+(*
+Dict.Add('Algoritmus', 0);
+Dict.Add('Aho', 0);
+Dict.Add('Corasick', 0);
+Dict.Add('je', 0);
+Dict.Add('vyhledávací', 0);
+Dict.Add('algoritmus', 0);
+Dict.Add('vynalezený', 0);
+Dict.Add('Alfredem', 0);
+Dict.Add('Ahem', 0);
+Dict.Add('a', 0);
+Dict.Add('Margaret', 0);
+Dict.Add('J', 0);
+Dict.Add('Corasickovou', 0);
+Dict.Add('Je', 0);
+Dict.Add('to', 0);
+Dict.Add('druh', 0);
+Dict.Add('slovníkového', 0);
+Dict.Add('vyhledávacího', 0);
+Dict.Add('algoritmu', 0);
+Dict.Add('který', 0);
+Dict.Add('ve', 0);
+Dict.Add('vstupním', 0);
+Dict.Add('textu', 0);
+Dict.Add('hledá', 0);
+Dict.Add('prvky', 0);
+Dict.Add('konečné', 0);
+Dict.Add('množiny', 0);
+Dict.Add('řetězců', 0);
+Dict.Add('Vyhledává', 0);
+Dict.Add('všechny', 0);
+Dict.Add('prvky', 0);
+Dict.Add('množiny', 0);
+Dict.Add('najednou', 0);
+Dict.Add('jeho', 0);
+Dict.Add('asymptotická', 0);
+Dict.Add('složitost', 0);
+Dict.Add('je', 0);
+Dict.Add('proto', 0);
+Dict.Add('lineární', 0);
+Dict.Add('k', 0);
+Dict.Add('délce', 0);
+Dict.Add('všech', 0);
+Dict.Add('vyhledávaných', 0);
+Dict.Add('prvků', 0);
+Dict.Add('plus', 0);
+Dict.Add('délce', 0);
+Dict.Add('vstupního', 0);
+Dict.Add('textu', 0);
+Dict.Add('plus', 0);
+Dict.Add('délce', 0);
+Dict.Add('výstupu', 0);
+Dict.Add('Jelikož', 0);
+Dict.Add('algoritmus', 0);
+Dict.Add('najde', 0);
+Dict.Add('všechny', 0);
+Dict.Add('výskyty', 0);
+Dict.Add('celkový', 0);
+Dict.Add('počet', 0);
+Dict.Add('výskytů', 0);
+Dict.Add('pro', 0);
+Dict.Add('celou', 0);
+Dict.Add('množinu', 0);
+Dict.Add('může', 0);
+Dict.Add('být', 0);
+Dict.Add('až', 0);
+Dict.Add('kvadratický', 0);
+Dict.Add('(například', 0);
+Dict.Add('v', 0);
+Dict.Add('případě', 0);
+Dict.Add('kdy', 0);
+Dict.Add('vyhledávané', 0);
+Dict.Add('řetězce', 0);
+Dict.Add('jsou', 0);
+Dict.Add('a', 0);
+Dict.Add('aa', 0);
+Dict.Add('aaa', 0);
+Dict.Add('aaaa', 0);
+Dict.Add('a', 0);
+Dict.Add('vstupní', 0);
+Dict.Add('text', 0);
+Dict.Add('je', 0);
+Dict.Add('aaaa)', 0);
+Dict.Add('Neformálně', 0);
+Dict.Add('řečeno', 0);
+Dict.Add('algoritmus', 0);
+Dict.Add('konstruuje', 0);
+Dict.Add('trie', 0);
+Dict.Add('se', 0);
+Dict.Add('zpětnými', 0);
+Dict.Add('odkazy', 0);
+Dict.Add('pro', 0);
+Dict.Add('každý', 0);
+Dict.Add('vrchol', 0);
+Dict.Add('(například', 0);
+Dict.Add('abc)', 0);
+Dict.Add('na', 0);
+Dict.Add('nejdelší', 0);
+Dict.Add('vlastní', 0);
+Dict.Add('sufix', 0);
+Dict.Add('(pokud', 0);
+Dict.Add('existuje', 0);
+Dict.Add('tak', 0);
+Dict.Add('bc', 0);
+Dict.Add('jinak', 0);
+Dict.Add('pokud', 0);
+Dict.Add('existuje', 0);
+Dict.Add('c', 0);
+Dict.Add('jinak', 0);
+Dict.Add('do', 0);
+Dict.Add('kořene)', 0);
+Dict.Add('Obsahuje', 0);
+Dict.Add('také', 0);
+Dict.Add('odkazy', 0);
+Dict.Add('z', 0);
+Dict.Add('každého', 0);
+Dict.Add('vrcholu', 0);
+Dict.Add('na', 0);
+Dict.Add('prvek', 0);
+Dict.Add('slovníku', 0);
+Dict.Add('obsahující', 0);
+Dict.Add('odpovídající', 0);
+Dict.Add('nejdelší', 0);
+Dict.Add('sufix', 0);
+Dict.Add('Tudíž', 0);
+Dict.Add('všechny', 0);
+Dict.Add('výsledky', 0);
+Dict.Add('mohou', 0);
+Dict.Add('být', 0);
+Dict.Add('vypsány', 0);
+Dict.Add('procházením', 0);
+Dict.Add('výsledného', 0);
+Dict.Add('spojového', 0);
+Dict.Add('seznamu', 0);
+Dict.Add('Algoritmus', 0);
+Dict.Add('pak', 0);
+Dict.Add('pracuje', 0);
+Dict.Add('tak', 0);
+Dict.Add('že', 0);
+Dict.Add('postupně', 0);
+Dict.Add('zpracovává', 0);
+Dict.Add('vstupní', 0);
+Dict.Add('řetězec', 0);
+Dict.Add('a', 0);
+Dict.Add('pohybuje', 0);
+Dict.Add('se', 0);
+Dict.Add('po', 0);
+Dict.Add('nejdelší', 0);
+Dict.Add('odpovídající', 0);
+Dict.Add('cestě', 0);
+Dict.Add('stromu', 0);
+Dict.Add('Pokud', 0);
+Dict.Add('algoritmus', 0);
+Dict.Add('načte', 0);
+Dict.Add('znak', 0);
+Dict.Add('který', 0);
+Dict.Add('neodpovídá', 0);
+Dict.Add('žádné', 0);
+Dict.Add('další', 0);
+Dict.Add('možné', 0);
+Dict.Add('cestě', 0);
+Dict.Add('přejde', 0);
+Dict.Add('po', 0);
+Dict.Add('zpětném', 0);
+Dict.Add('odkazu', 0);
+Dict.Add('na', 0);
+Dict.Add('nejdelší', 0);
+Dict.Add('odpovídající', 0);
+Dict.Add('sufix', 0);
+Dict.Add('a', 0);
+Dict.Add('pokračuje', 0);
+Dict.Add('tam', 0);
+Dict.Add('(případně', 0);
+Dict.Add('opět', 0);
+Dict.Add('přejde', 0);
+Dict.Add('zpět)', 0);
+Dict.Add('Pokud', 0);
+Dict.Add('je', 0);
+Dict.Add('množina', 0);
+Dict.Add('vyhledávaných', 0);
+Dict.Add('řetězců', 0);
+Dict.Add('známa', 0);
+Dict.Add('předem', 0);
+Dict.Add('(např', 0);
+Dict.Add('databáze', 0);
+Dict.Add('počítačových', 0);
+Dict.Add('virů)', 0);
+Dict.Add('je', 0);
+Dict.Add('možné', 0);
+Dict.Add('zkonstruovat', 0);
+Dict.Add('automat', 0);
+Dict.Add('předem', 0);
+Dict.Add('a', 0);
+Dict.Add('ten', 0);
+Dict.Add('pak', 0);
+Dict.Add('uložit', 0);
+//*)
 
   Dict.Search('aallhellxlog', 12, @DoDictMatch);
 
@@ -231,9 +428,15 @@ var
       TestHasMCount(AName + ' init', AExpMin, AExpMax);
   end;
 
+  function Mtxt(i: Integer): String;
+  begin
+    Result := 'a'+IntToStr(i)+'a';
+  end;
+
 var
   N: string;
-  i, j, a, b: integer;
+  i, j: integer;
+  a, b: integer;
 begin
 
   {%region Searchrange}
@@ -499,6 +702,49 @@ begin
     TestHasMCount ('Found on last line+ext (249=<251', 2);
     TestHasMatches('Found on last line+ext (249=>251)', [l(291, 3, 8), l(292, 3, 8)]);
 
+
+    for i := -205 to 205 do begin
+      if abs(i) in [0..2, 5..15, 25..35, 50..95, 105..195] then continue;
+
+      N := 'Far Scroll '+IntToStr(i)+' to %d matches top/last > last ';
+      SetTextAndMatch(250, False, [Mtxt(250), Mtxt(290), Mtxt(290+i)]);
+      SynEdit.TopLine := 250 + i;
+      TestHasMatches(N + 'Found ', [l(290+i, 3, 3+length(Mtxt(290+i)))]);
+
+
+      N := 'Far Scroll '+IntToStr(i)+' to %d matches top/last > top ';
+      SetTextAndMatch(250, False, [Mtxt(250), Mtxt(290), Mtxt(250+i)]);
+      SynEdit.TopLine := 250 + i;
+      TestHasMatches(N + 'Found ', [l(250+i, 3, 3+length(Mtxt(250+i)))]);
+
+
+      N := 'Far Scroll '+IntToStr(i)+' to %d matches top > last ';
+      SetTextAndMatch(250, False, [Mtxt(250), Mtxt(290+i)]);
+      SynEdit.TopLine := 250 + i;
+      TestHasMatches(N + 'Found ', [l(290+i, 3, 3+length(Mtxt(290+i)))]);
+
+
+      N := 'Far Scroll '+IntToStr(i)+' to %d matches top > top ';
+      SetTextAndMatch(250, False, [Mtxt(250), Mtxt(250+i)]);
+      SynEdit.TopLine := 250 + i;
+      TestHasMatches(N + 'Found ', [l(250+i, 3, 3+length(Mtxt(250+i)))]);
+
+
+      N := 'Far Scroll '+IntToStr(i)+' to %d matches last > last ';
+      SetTextAndMatch(250, False, [Mtxt(290), Mtxt(290+i)]);
+      SynEdit.TopLine := 250 + i;
+      TestHasMatches(N + 'Found ', [l(290+i, 3, 3+length(Mtxt(290+i)))]);
+
+
+      N := 'Far Scroll '+IntToStr(i)+' to %d matches last > top ';
+      SetTextAndMatch(250, False, [Mtxt(290), Mtxt(250+i)]);
+      SynEdit.TopLine := 250 + i;
+      TestHasMatches(N + 'Found ', [l(250+i, 3, 3+length(Mtxt(250+i)))]);
+
+
+    end;
+
+
     PopBaseName;
     PopBaseName;
   {%endregion}
@@ -679,6 +925,10 @@ begin
     SynEdit.SimulatePaintText;
     TestHasMatches(N+' Found after edit',   4,  [l(265, 3, 8), l(275, 3,8), l(248, 3,8), l(292, 3,8)]);
     TestHasScanCnt(N+' Found after edit', 1, 12);
+
+
+
+
 
     PopBaseName;
   {%endregion}
