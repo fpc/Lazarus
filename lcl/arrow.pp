@@ -44,11 +44,9 @@ type
 
   TArrow = class(TCustomControl)
   private
-    FArrowType : TArrowType;
-    FShadowType : TShadowType;
-    function GetShadowType: TShadowType;
+    fArrowType : TArrowType;
+    fShadowType : TShadowType;
     procedure SetShadowType(const AValue: TShadowType);
-    function GetArrowType: TArrowType;
     procedure SetArrowType(const AValue: TArrowType);
     procedure SetProps;
   protected
@@ -60,21 +58,22 @@ type
     procedure Loaded; override;
     procedure InitializeWnd; override;
   published
+    property ArrowType: TArrowType read fArrowType write SetArrowType default atLeft;
+    property ShadowType: TShadowType read fShadowType write SetShadowType default stEtchedIn;
     property Align;
     property Anchors;
-    property ArrowType: TArrowType read GetArrowType write SetArrowType default atLeft;
     property BorderSpacing;
-    property ShadowType: TShadowType read fShadowType write SetShadowType default stEtchedIn;
+    property Color;
+    property OnChangeBounds;
+    property PopupMenu;
     property Visible;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnMouseMove;
     property OnMouseDown;
     property OnMouseUp;
-    property OnChangeBounds;
     property OnResize;
-    property OnContextPopup;
-    property PopupMenu;
   end;
   
 procedure Register;
@@ -127,38 +126,32 @@ begin
   SetProps;
 end;
 
-function TArrow.GetArrowType: TArrowType;
-begin
-  Result := FArrowType;
-end;
-
 procedure TArrow.SetArrowType(const AValue: TArrowType);
 begin
+  if fArrowType = aValue then Exit;
   fArrowType := AValue;
   SetProps;
+  Invalidate;
 end;
 
-function TArrow.GetShadowType: TShadowType;
+procedure TArrow.SetShadowType(const AValue: TShadowType);
 begin
-  Result := FShadowType;
+  if fShadowType = aValue then Exit;
+  fShadowType := aValue;
+  SetProps;
+  Invalidate;
 end;
 
 procedure TArrow.SetProps;
 begin
   if HandleAllocated and (not (csLoading in ComponentState)) then
-    TWSArrowClass(WidgetSetClass).SetType(Self, FArrowType, FShadowType);
+    TWSArrowClass(WidgetSetClass).SetType(Self, fArrowType, fShadowType);
 end;
 
 class procedure TArrow.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterArrow;
-end;
-
-procedure TArrow.SetShadowType(const AValue: TShadowType);
-begin
-  FShadowType := aValue;
-  SetProps;
 end;
 
 end.
