@@ -63,7 +63,8 @@ type
     property Align;
     property Anchors;
     property BorderSpacing;
-    property Color;
+    // The drawing code changes Color. More changes are needed if this is published.
+    //property Color;
     property OnChangeBounds;
     property PopupMenu;
     property Visible;
