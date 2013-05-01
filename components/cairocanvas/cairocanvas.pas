@@ -8,6 +8,7 @@ unit CairoCanvas;
 
 {$define pangocairo}
 {-$define breaklines}   // disabled as it's not UTF-8 safe
+{-$define DebugClip}
 
 interface
 
@@ -354,6 +355,14 @@ begin
   fUserClipRect^.height:= SY2(ARect.Bottom-ARect.Top);
 
   cairo_reset_clip(cr);
+
+  {$ifdef DebugClip}
+  with fUserClipRect^ do begin
+    DrawPoint(x, y, clRed);
+    DrawPoint(x+Width, y+Height, clBlue);
+    DrawRefRect(x, y, width, height, clAqua);
+  end;
+  {$endif}
 
   with fUserClipRect^ do
     cairo_rectangle(cr, x, y, width, Height);
@@ -968,9 +977,11 @@ begin
       r := BoxWidth+Pen.Width;
       b := BoxHeight+Pen.Width;
 
-      //DrawPoint(boxLeft, boxTop, clRed);
-      //DrawPoint(boxLeft+r, boxTop+b, clBlue);
-      //DrawRefRect(boxLeft, boxTop, r, b, clGreen);
+      {$ifdef DebugClip}
+      DrawPoint(boxLeft, boxTop, clRed);
+      DrawPoint(boxLeft+r, boxTop+b, clBlue);
+      DrawRefRect(boxLeft, boxTop, r, b, clGreen);
+      {$endif}
 
       cairo_rectangle(cr, BoxLeft, BoxTop, r, b);
       cairo_clip(cr);
