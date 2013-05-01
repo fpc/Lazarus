@@ -356,6 +356,8 @@ begin
   try
     try
       CheckIfFileIsExecutable(Filename);
+      if pos(' ',Filename)>0 then
+        Filename:='"'+Filename+'"';
       TheProcess := TOutputFilterProcess.Create(nil);
       TheProcess.Executable := FileName;
       SplitCmdLineParams(Params,TheProcess.Parameters);
