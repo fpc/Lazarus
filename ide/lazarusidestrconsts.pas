@@ -51,7 +51,6 @@ resourcestring
   lisRemove = 'Remove';
   lisBtnRemove = '&Remove';
   lisRename = 'Rename';
-  lisRenameShowResult = 'Show list of renamed Identifiers';
   lisReplace = 'Replace';
   lisBtnReplace = '&Replace';
   lisBtnDlgReplace = '&Replace ...';
@@ -67,14 +66,10 @@ resourcestring
   lisFile = 'File';
   lisNew = 'New';
   lisClose = 'Close';
-  lrsRescanLplFiles = 'Rescan lpl files';
-  lrsPLDDeleteSelected = 'Delete selected';
   lisBtnClose = '&Close';
   lisOk = 'OK';
   lisMenuOk = '&OK';
   lisCancel = 'Cancel';
-  lisImportPackageListXml = 'Import package list (*.xml)';
-  lisExportPackageListXml = 'Export package list (*.xml)';
   lisNo = 'No';
   lisContinue = 'Continue';
   lisBreak = 'Break';
@@ -114,7 +109,19 @@ resourcestring
   lisStop = 'Stop';
   lisLess = 'Less';
   lisMore = 'More';
+  lisMoreSub = 'More >>';
   lisDefault = 'Default';
+  lisClone = 'Clone';
+  lisExport = 'Export';
+  lisDlgExport = 'Export ...';
+  lisImport = 'Import';
+  lisDlgImport = 'Import ...';
+
+  lisImportPackageListXml = 'Import package list (*.xml)';
+  lisExportPackageListXml = 'Export package list (*.xml)';
+  lrsRescanLplFiles = 'Rescan lpl files';
+  lrsPLDDeleteSelected = 'Delete selected';
+  lisRenameShowResult = 'Show list of renamed Identifiers';
 
   // errors
   lisErrInvalidOption = 'Invalid option at position %d: "%s"';
@@ -2391,7 +2398,6 @@ resourcestring
   lisCollapseAllUnits = 'Collapse all units';
   lisExpandAllClasses = 'Expand all classes';
   lisCollapseAllClasses = 'Collapse all classes';
-  lisExport = 'Export ...';
   lisBegins = 'begins';
   lisIdentifierBeginsWith = 'Identifier begins with ...';
   lisUnitNameBeginsWith = 'Unit name begins with ...';
@@ -3737,7 +3743,7 @@ resourcestring
   lisExtToolMaximumToolsReached = 'Maximum Tools reached';
   lisExtToolThereIsAMaximumOfTools = 'There is a maximum of %s tools.';
   lisExtToolTitleCompleted = '"%s" completed';
-  
+
   // edit external tools
   lisEdtExtToolEditTool = 'Edit Tool';
   lisEdtExtToolProgramfilename = 'Program Filename:';
@@ -5645,7 +5651,6 @@ resourcestring
   lisDeleteSelectedMacro = 'Delete selected macro?';
   lisSaveMacroAs = 'Save macro as';
   lisLoadMacroFrom = 'Load macro from';
-  lisImport = 'Import ...';
   lisProjectMacro = 'Project';
   lisNewRecordedMacrosNotToBeSaved = 'New recorded macros. Not to be saved';
   lisSavedWithProjectSession = 'Saved with project session';
