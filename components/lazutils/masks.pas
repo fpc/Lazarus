@@ -26,7 +26,7 @@ interface
 
 uses
   // For Smart Linking: Do not use the LCL!
-  Classes, SysUtils, Contnrs, LazUtilsStrConsts;
+  Classes, SysUtils, Contnrs, StrUtils, LazUtilsStrConsts;
 
 type
   TMaskCharType = (mcChar, mcCharSet, mcAnyChar, mcAnyText);
@@ -53,11 +53,15 @@ type
   private
     FMask: TMaskString;
     fCaseSensitive: Boolean;
+    fInitialMask: String;
+    procedure InitMaskString(const AValue: String; const CaseSensitive: Boolean);
+    procedure ClearMaskString;
   public
     constructor Create(const AValue: String; const CaseSensitive: Boolean = False);
     destructor Destroy; override;
     
     function Matches(const AFileName: String): Boolean;
+    function MatchesWindowsMask(const AFileName: String): Boolean;
   end;
   
   { TParseStringList }
@@ -79,13 +83,16 @@ type
     destructor Destroy; override;
     
     function Matches(const AFileName: String): Boolean;
+    function MatchesWindowsMask(const AFileName: String): Boolean;
     
     property Count: Integer read GetCount;
     property Items[Index: Integer]: TMask read GetItem;
   end;
 
 function MatchesMask(const FileName, Mask: String; const CaseSensitive: Boolean = False): Boolean;
+function MatchesWindowsMask(const FileName, Mask: String; const CaseSensitive: Boolean = False): Boolean;
 function MatchesMaskList(const FileName, Mask: String; Separator: Char = ';'; const CaseSensitive: Boolean = False): Boolean;
+function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char = ';'; const CaseSensitive: Boolean = False): Boolean;
 
 implementation
 
@@ -96,6 +103,18 @@ begin
   AMask := TMask.Create(Mask, CaseSensitive);
   try
     Result := AMask.Matches(FileName);
+  finally
+    AMask.Free;
+  end;
+end;
+
+function MatchesWindowsMask(const FileName, Mask: String; const CaseSensitive: Boolean): Boolean;
+var
+  AMask: TMask;
+begin
+  AMask := TMask.Create(Mask, CaseSensitive);
+  try
+    Result := AMask.MatchesWindowsMask(FileName);
   finally
     AMask.Free;
   end;
@@ -113,18 +132,30 @@ begin
   end;
 end;
 
+function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char; const CaseSensitive: Boolean): Boolean;
+var
+  AMaskList: TMaskList;
+begin
+  AMaskList := TMaskList.Create(Mask, Separator, CaseSensitive);
+  try
+    Result := AMaskList.MatchesWindowsMask(FileName);
+  finally
+    AMaskList.Free;
+  end;
+end;
+
 { TMask }
 
-constructor TMask.Create(const AValue: String; const CaseSensitive: Boolean);
+procedure TMask.InitMaskString(const AValue: String; const CaseSensitive: Boolean);
 var
   I: Integer;
   SkipAnyText: Boolean;
-  
+
   procedure CharSetError;
   begin
     raise EConvertError.CreateFmt(lrsInvalidCharSet, [AValue]);
   end;
-  
+
   procedure AddAnyText;
   begin
     if SkipAnyText then
@@ -132,7 +163,7 @@ var
       Inc(I);
       Exit;
     end;
-    
+
     SetLength(FMask.Chars, Length(FMask.Chars) + 1);
     FMask.Chars[High(FMask.Chars)].CharType := mcAnyText;
 
@@ -140,7 +171,7 @@ var
     SkipAnyText := True;
     Inc(I);
   end;
-  
+
   procedure AddAnyChar;
   begin
     SkipAnyText := False;
@@ -150,10 +181,10 @@ var
 
     Inc(FMask.MinLength);
     if FMask.MaxLength < MaxInt then Inc(FMask.MaxLength);
-    
+
     Inc(I);
   end;
-  
+
   procedure AddCharSet;
   var
     CharSet: TCharSet;
@@ -161,7 +192,7 @@ var
     C, Last: Char;
   begin
     SkipAnyText := False;
-    
+
     SetLength(FMask.Chars, Length(FMask.Chars) + 1);
     FMask.Chars[High(FMask.Chars)].CharType := mcCharSet;
 
@@ -183,7 +214,7 @@ var
           begin
             if Last = '-' then CharSetError;
             Inc(I);
-            
+
             if (I > Length(AValue)) then CharSetError;
             if fCaseSensitive then
             begin
@@ -213,18 +244,18 @@ var
         end;
       end;
     end;
-    
+
     if (not Valid) or (CharSet = []) then CharSetError;
 
     New(FMask.Chars[High(FMask.Chars)].SetValue);
     FMask.Chars[High(FMask.Chars)].SetValue^ := CharSet;
-    
+
     Inc(FMask.MinLength);
     if FMask.MaxLength < MaxInt then Inc(FMask.MaxLength);
 
     Inc(I);
   end;
-  
+
   procedure AddChar;
   begin
     SkipAnyText := False;
@@ -244,14 +275,13 @@ var
 
     Inc(I);
   end;
-  
+
 begin
-  fCaseSensitive := CaseSensitive;
   SetLength(FMask.Chars, 0);
   FMask.MinLength := 0;
   FMask.MaxLength := 0;
   SkipAnyText := False;
-  
+
   I := 1;
   while I <= Length(AValue) do
   begin
@@ -264,14 +294,26 @@ begin
   end;
 end;
 
-destructor TMask.Destroy;
+procedure TMask.ClearMaskString;
 var
   I: Integer;
 begin
   for I := 0 to High(FMask.Chars) do
     if FMask.Chars[I].CharType = mcCharSet then
       Dispose(FMask.Chars[I].SetValue);
+end;
 
+constructor TMask.Create(const AValue: String; const CaseSensitive: Boolean);
+
+begin
+  fInitialMask := AValue;
+  fCaseSensitive := CaseSensitive;
+  InitMaskString(AValue, CaseSensitive);
+end;
+
+destructor TMask.Destroy;
+begin
+  ClearMaskString;
   inherited Destroy;
 end;
 
@@ -346,6 +388,68 @@ begin
   Result := MatchToEnd(0, 1);
 end;
 
+function TMask.MatchesWindowsMask(const AFileName: String): Boolean;
+var
+  NewMaskValue, Ext: String;
+begin
+  // treat initial mask differently for special cases:
+  // foo*.* -> foo*
+  // foo*. -> match foo*, but muts not have an extension
+  // *. -> any file without extension ( .foo is a filename without extension according to Windows)
+  // foo. matches only foo but not foo.txt
+  // foo.* -> match either foo or foo.*
+
+  if (Length(fInitialMask) > 2) and (RightStr(fInitialMask,3) = '*.*') then
+  // foo*.*
+  begin
+    NewMaskValue := Copy(fInitialMask,1,Length(fInitialMask)-2);
+    ClearMaskString;
+    InitMaskString(NewMaskValue, fCaseSensitive);
+    Result := Matches(AFileName);
+    //Restore initial state of FMask
+    ClearMaskString;
+    InitMaskString(fInitialMask, fCaseSensitive);
+  end
+  //else if (Length(fInitialMask) > 1) and (RightStr(fInitialMask,2) = '*.') then
+  else if (Length(fInitialMask) > 1) and (fInitialMask[Length(fInitialMask)] = '.') then
+
+  //foo*. or *. or foo.
+  begin
+    //if AFileName has an extension then Result is False, otherwise see if it matches foo*/foo
+    //a filename like .foo under Windows is considered to be a file without an extension
+    Ext := ExtractFileExt(AFileName);
+    if (Ext = '') or (Ext = AFileName) then
+    begin
+      NewMaskValue := Copy(fInitialMask,1,Length(fInitialMask)-1);
+      ClearMaskString;
+      InitMaskString(NewMaskValue, fCaseSensitive);
+      Result := Matches(AFileName);
+      //Restore initial state of FMask
+      ClearMaskString;
+      InitMaskString(fInitialMask, fCaseSensitive);
+    end
+    else
+    begin
+      Result := False;
+    end;
+  end
+  else if (Length(fInitialMask) > 2) and (RightStr(fInitialMask,2) = '.*') then
+  //foo.*  (but not '.*')
+  begin
+    //First see if we have 'foo'
+    if fCaseSensitive then
+      Result := (AFileName = Copy(fInitialMask,1,Length(fInitialMask)-2))
+    else
+      Result := (CompareText(AFileName,Copy(fInitialMask,1,Length(fInitialMask)-2)) = 0);
+    if not Result then Result := Matches(AFileName);
+  end
+  else
+  //all other cases just call Matches()
+  begin
+    Result := Matches(AFileName);
+  end;
+end;
+
 { TParseStringList }
 
 constructor TParseStringList.Create(const AText, ASeparators: String);
@@ -411,6 +515,22 @@ begin
   for I := 0 to FMasks.Count - 1 do
   begin
     if TMask(FMasks.Items[I]).Matches(AFileName) then
+    begin
+      Result := True;
+      Exit;
+    end;
+  end;
+end;
+
+function TMaskList.MatchesWindowsMask(const AFileName: String): Boolean;
+var
+  I: Integer;
+begin
+  Result := False;
+
+  for I := 0 to FMasks.Count - 1 do
+  begin
+    if TMask(FMasks.Items[I]).MatchesWindowsMask(AFileName) then
     begin
       Result := True;
       Exit;
