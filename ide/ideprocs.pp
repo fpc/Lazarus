@@ -1527,8 +1527,9 @@ begin
   FpStat(Filename, OldInfo{%H-});
   {$ENDIF}
   
-  // if not a symlink => rename old file, create empty new file
+  // if not a symlink/hardlink => rename old file, create empty new file
   if not FileIsSymlink(Filename) and
+     not FileIsHardLink(FileName) and
      not FileIsLocked(Filename) and
      FileProcs.RenameFileUTF8(Filename, BackupFilename) then
   begin
