@@ -1345,7 +1345,7 @@ begin
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', dlgFROpts, lisPckEditEditGeneralOptions, 'pkg_properties', @OptionsBitBtnClick);
   HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisPkgEdThereAreMoreFunctionsInThePopupmenu, 'menu_help', @HelpBitBtnClick);
-  MoreBitBtn    := CreateToolButton('MoreBitBtn', lisPckEditMore, lisPkgEdThereAreMoreFunctionsInThePopupmenu, '', nil);
+  MoreBitBtn    := CreateToolButton('MoreBitBtn', lisMoreSub, lisPkgEdThereAreMoreFunctionsInThePopupmenu, '', nil);
 
   MoreBitBtn.DropdownMenu := MorePopupMenu;
 
@@ -1662,7 +1662,7 @@ begin
            or (FilesTreeView.Selected.Parent=FRequiredPackagesNode));
   OpenButton.Enabled:=(FilesTreeView.Selected<>nil)
      and (TObject(FilesTreeView.Selected.Data) is TFileNameItem);
-  UseBitBtn.Caption:=lisUse;
+  UseBitBtn.Caption:=lisUseSub;
   UseBitBtn.Hint:=lisClickToSeeThePossibleUses;
   UseBitBtn.OnClick:=nil;
   UseBitBtn.DropdownMenu:=UsePopupMenu;

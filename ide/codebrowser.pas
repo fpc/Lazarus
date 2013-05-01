@@ -466,7 +466,7 @@ begin
   CollapseAllUnitsMenuItem.Caption:=lisCollapseAllUnits;
   ExpandAllClassesMenuItem.Caption:=lisExpandAllClasses;
   CollapseAllClassesMenuItem.Caption:=lisCollapseAllClasses;
-  ExportMenuItem.Caption:=lisExport;
+  ExportMenuItem.Caption:=lisDlgExport;
   OpenMenuItem.Caption:=lisOpen;
   // UsePkgInProjectMenuItem.Caption: see PopupMenu1Popup
   // UsePkgInCurUnitMenuItem.Caption: see PopupMenu1Popup
