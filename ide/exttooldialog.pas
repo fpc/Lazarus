@@ -45,7 +45,7 @@ uses
   IDEExternToolIntf, IDEImagesIntf, IDEDialogs, IDEHelpIntf, IDECommands,
   CompOptsIntf, ProjectIntf,
   EnvironmentOpts,
-  ExtToolEditDlg, KeyMapping, TransferMacros, IDEProcs,
+  ExtToolEditDlg, KeyMapping, TransferMacros, IDEProcs, LazFileUtils,
   InfoBuild, CompilerOptions, OutputFilter, LazarusIDEStrConsts, IDEOptionDefs;
 
 const
@@ -358,7 +358,7 @@ begin
       CheckIfFileIsExecutable(Filename);
       TheProcess := TOutputFilterProcess.Create(nil);
       TheProcess.Executable := FileName;
-      TheProcess.Parameters.Text := Params;
+      SplitCmdLineParams(Params,TheProcess.Parameters);
       TheProcess.Options:= [poUsePipes,poStdErrToOutPut];
       if ExtTool.HideMainForm then
         TheProcess.ShowWindow := swoHide
