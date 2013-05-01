@@ -48,9 +48,6 @@ type
           const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetType(const AArrow: TArrow; const AArrowType: TArrowType;
       const AShadowType: TShadowType); override;
-    {$IFnDEF NewArrow}
-    class procedure DrawArrow(const AArrow: TArrow; const ACanvas: TCanvas); override;
-    {$ENDIF}
   end;
 
 
@@ -96,39 +93,5 @@ begin
   QtArrow := TQtArrow(AArrow.Handle);
   QtArrow.ArrowType := Ord(AArrowType);
 end;
-
-{$IFnDEF NewArrow}
-class procedure TQtWSArrow.DrawArrow(const AArrow: TArrow; const ACanvas: TCanvas);
-const
-  QtArrowTypeMap: array[TArrowType] of QStylePrimitiveElement =
-  (
-{atUp   } QStylePE_IndicatorArrowUp,
-{atDown } QStylePE_IndicatorArrowDown,
-{atLeft } QStylePE_IndicatorArrowLeft,
-{atRight} QStylePE_IndicatorArrowRight
-  );
-var
-  DC: TQtDeviceContext;
-  ARect: TRect;
-  StyleOption: QStyleOptionH;
-begin
-  DC := TQtDeviceContext(ACanvas.Handle);
-  ARect := AArrow.ClientRect;
-
-  StyleOption := QStyleOption_create(QStyleOptionVersion, QStyleOptionSO_Default);
-  try
-    // I do not know the reason, but under windows down arrow size is very small
-    // and is not dependent on passed ARect.
-    // There is nothing in qt source that can cause such bad painting.
-    // Other styles draw down arrow very well.
-    QStyleOption_initFrom(StyleOption, DC.Parent);
-    QStyleOption_setRect(StyleOption, @ARect);
-    QStyle_drawPrimitive(QApplication_style, QtArrowTypeMap[AArrow.ArrowType],
-      StyleOption, DC.Widget, DC.Parent);
-  finally
-    QStyleOption_destroy(StyleOption);
-  end;
-end;
-{$ENDIF}
 
 end.

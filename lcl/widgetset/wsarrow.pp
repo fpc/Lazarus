@@ -72,7 +72,6 @@ class procedure TWSArrow.SetType(const AArrow: TArrow; const AArrowType: TArrowT
 begin
 end;
 
-{$IFDEF NewArrow}
 class procedure TWSArrow.DrawArrow(const AArrow: TArrow; const ACanvas: TCanvas);
 const
   SpaceFactor = 5;
@@ -150,53 +149,6 @@ begin
     DeleteObject(RegionHandle);
   end;
 end;
-
-{$ELSE}
-
-class procedure TWSArrow.DrawArrow(const AArrow: TArrow; const ACanvas: TCanvas);
-var
-  P: Array [0..2] of TPoint;
-  R: TRect;
-  S: Integer;
-begin
-  R := AArrow.ClientRect;
-  InflateRect(R, -1, -1);
-  // arrow bounds are square
-  S := Min(R.Right - R.Left, R.Bottom - R.Top);
-  R := Bounds((R.Left + R.Right - S) div 2, (R.Top + R.Bottom - S) div 2, S, S);
-
-  ACanvas.Brush.Color := clBlack;
-  ACanvas.Pen.Color := clBlack;
-
-  case Ord(AArrow.ArrowType) of
-    0: // up
-      begin
-        P[0] := Point(R.Left, R.Bottom);
-        P[1] := Point((R.Left + R.Right) div 2, R.Top);
-        P[2] := R.BottomRight;
-      end;
-    1: // down
-      begin
-        P[0] := R.TopLeft;
-        P[1] := Point(R.Right, R.Top);
-        P[2] := Point((R.Left + R.Right) div 2, R.Bottom);
-      end;
-    2: // left
-      begin
-        P[0] := R.BottomRight;
-        P[1] := Point(R.Left, (R.Top + R.Bottom) div 2);
-        P[2] := Point(R.Right, R.Top);
-      end;
-    3: // right
-      begin
-        P[0] := R.TopLeft;
-        P[1] := Point(R.Right, (R.Top + R.Bottom) div 2);
-        P[2] := Point(R.Left, R.Bottom);
-      end;
-  end;
-  ACanvas.Polygon(P);
-end;
-{$ENDIF}
 
 { WidgetSetRegistration }
 
