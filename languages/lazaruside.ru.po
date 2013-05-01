@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-04-30 02:00+0400\n"
+"PO-Revision-Date: 2013-05-01 21:49+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1009,11 +1009,6 @@ msgstr "Загрузка/сохранение"
 #: lazarusidestrconsts.dlgcolor
 msgid "Color"
 msgstr "Цвет"
-
-#: lazarusidestrconsts.dlgcolorexportbutton
-msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
-msgid "Export"
-msgstr "Экспорт"
 
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
@@ -2479,11 +2474,6 @@ msgstr "Четверной"
 msgid "Any"
 msgstr "Любой"
 
-#: lazarusidestrconsts.dlgmouseoptbtnexport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
-msgid "Export"
-msgstr "Экспорт"
-
 #: lazarusidestrconsts.dlgmouseoptbtnextra1
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra1"
 msgid "Extra 1"
@@ -2493,11 +2483,6 @@ msgstr "Дополнительная 1"
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra2"
 msgid "Extra 2"
 msgstr "Дополнительная 2"
-
-#: lazarusidestrconsts.dlgmouseoptbtnimport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
-msgid "Import"
-msgstr "Импорт"
 
 #: lazarusidestrconsts.dlgmouseoptbtnleft
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnleft"
@@ -3734,16 +3719,6 @@ msgstr "Очистить все снимки"
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
 msgstr "Переключить отображение между снимком и текущим состоянием"
-
-#: lazarusidestrconsts.histdlgbtnexport
-msgctxt "lazarusidestrconsts.histdlgbtnexport"
-msgid "Export"
-msgstr "Экспорт"
-
-#: lazarusidestrconsts.histdlgbtnimport
-msgctxt "lazarusidestrconsts.histdlgbtnimport"
-msgid "Import"
-msgstr "Импорт"
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
@@ -5580,6 +5555,10 @@ msgstr "Щёлкните здесь для выбора файла"
 #: lazarusidestrconsts.lisclicktoseethepossibleuses
 msgid "Click to see the possible uses"
 msgstr "Щёлкните для просмотра возможных вариантов использования"
+
+#: lazarusidestrconsts.lisclone
+msgid "Clone"
+msgstr "Клонировать"
 
 #: lazarusidestrconsts.lisclose
 #| msgid "&Close"
@@ -7783,6 +7762,16 @@ msgstr "Сменить класс ..."
 msgid "Editor Window Manager ..."
 msgstr "Управление вкладками редактора ..."
 
+#: lazarusidestrconsts.lisdlgexport
+msgctxt "lazarusidestrconsts.lisdlgexport"
+msgid "Export ..."
+msgstr "Экспортировать ..."
+
+#: lazarusidestrconsts.lisdlgimport
+msgctxt "lazarusidestrconsts.lisdlgimport"
+msgid "Import ..."
+msgstr "Импортировать ..."
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -8505,8 +8494,10 @@ msgid "Expanded filename of current editor file"
 msgstr "Полное имя файла в текущем редакторе"
 
 #: lazarusidestrconsts.lisexport
-msgid "Export ..."
-msgstr "Экспортировать ..."
+#| msgid "Export ..."
+msgctxt "lazarusidestrconsts.lisexport"
+msgid "Export"
+msgstr "Экспортировать"
 
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
@@ -9304,8 +9295,10 @@ msgid "Implementation comment for class"
 msgstr "Комментарий перед реализацией класса"
 
 #: lazarusidestrconsts.lisimport
-msgid "Import ..."
-msgstr "Импортировать ..."
+#| msgid "Import ..."
+msgctxt "lazarusidestrconsts.lisimport"
+msgid "Import"
+msgstr "Импортировать"
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -12026,6 +12019,11 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Подробнее"
 
+#: lazarusidestrconsts.lismoresub
+msgctxt "lazarusidestrconsts.lismoresub"
+msgid "More >>"
+msgstr "Прочие >>"
+
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
 msgstr "Переместить \"%s\" на позицию вниз"
@@ -12882,11 +12880,6 @@ msgstr "Минимальная версия:"
 #: lazarusidestrconsts.lispckeditmodified
 msgid "Modified: %s"
 msgstr "Изменён: %s"
-
-#: lazarusidestrconsts.lispckeditmore
-#| msgid "More ..."
-msgid "More >>"
-msgstr "Прочие >>"
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
 msgid "Move dependency down"
@@ -16819,11 +16812,6 @@ msgstr "Преобразовать регистр строки, переданн
 msgid "Usage message (-h option)"
 msgstr "Сообщение со справкой (параметр -h)"
 
-#: lazarusidestrconsts.lisuse
-#| msgid "Use>>"
-msgid "Use >>"
-msgstr "Использовать >>"
-
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
@@ -16900,6 +16888,11 @@ msgstr "Домашний каталог пользователя"
 #: lazarusidestrconsts.lisuseselected
 msgid "Use Selected"
 msgstr "Использовать выбранный"
+
+#: lazarusidestrconsts.lisusesub
+msgctxt "lazarusidestrconsts.lisusesub"
+msgid "Use >>"
+msgstr "Использовать >>"
 
 #: lazarusidestrconsts.lisuseunit
 #| msgid "Add unit to uses section"

@@ -968,11 +968,6 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
-#: lazarusidestrconsts.dlgcolorexportbutton
-msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
-msgid "Export"
-msgstr ""
-
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr ""
@@ -2380,11 +2375,6 @@ msgstr ""
 msgid "Any"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmouseoptbtnexport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
-msgid "Export"
-msgstr ""
-
 #: lazarusidestrconsts.dlgmouseoptbtnextra1
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra1"
 msgid "Extra 1"
@@ -2393,11 +2383,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptbtnextra2
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra2"
 msgid "Extra 2"
-msgstr ""
-
-#: lazarusidestrconsts.dlgmouseoptbtnimport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
-msgid "Import"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptbtnleft
@@ -3580,16 +3565,6 @@ msgstr ""
 
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
-msgstr ""
-
-#: lazarusidestrconsts.histdlgbtnexport
-msgctxt "lazarusidestrconsts.histdlgbtnexport"
-msgid "Export"
-msgstr ""
-
-#: lazarusidestrconsts.histdlgbtnimport
-msgctxt "lazarusidestrconsts.histdlgbtnimport"
-msgid "Import"
 msgstr ""
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
@@ -5399,6 +5374,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisclicktoseethepossibleuses
 msgid "Click to see the possible uses"
+msgstr ""
+
+#: lazarusidestrconsts.lisclone
+msgid "Clone"
 msgstr ""
 
 #: lazarusidestrconsts.lisclose
@@ -7575,6 +7554,16 @@ msgstr ""
 msgid "Editor Window Manager ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisdlgexport
+msgctxt "lazarusidestrconsts.lisdlgexport"
+msgid "Export ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisdlgimport
+msgctxt "lazarusidestrconsts.lisdlgimport"
+msgid "Import ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -8293,7 +8282,8 @@ msgid "Expanded filename of current editor file"
 msgstr ""
 
 #: lazarusidestrconsts.lisexport
-msgid "Export ..."
+msgctxt "lazarusidestrconsts.lisexport"
+msgid "Export"
 msgstr ""
 
 #: lazarusidestrconsts.lisexporthtml
@@ -9085,7 +9075,8 @@ msgid "Implementation comment for class"
 msgstr ""
 
 #: lazarusidestrconsts.lisimport
-msgid "Import ..."
+msgctxt "lazarusidestrconsts.lisimport"
+msgid "Import"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
@@ -11704,6 +11695,11 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr ""
 
+#: lazarusidestrconsts.lismoresub
+msgctxt "lazarusidestrconsts.lismoresub"
+msgid "More >>"
+msgstr ""
+
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
 msgstr ""
@@ -12543,10 +12539,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lispckeditmodified
 msgid "Modified: %s"
-msgstr ""
-
-#: lazarusidestrconsts.lispckeditmore
-msgid "More >>"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
@@ -16434,10 +16426,6 @@ msgstr ""
 msgid "Usage message (-h option)"
 msgstr ""
 
-#: lazarusidestrconsts.lisuse
-msgid "Use >>"
-msgstr ""
-
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
@@ -16510,6 +16498,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisuseselected
 msgid "Use Selected"
+msgstr ""
+
+#: lazarusidestrconsts.lisusesub
+msgctxt "lazarusidestrconsts.lisusesub"
+msgid "Use >>"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseunit

@@ -972,11 +972,6 @@ msgstr "Načíst/Uložit"
 msgid "Color"
 msgstr "Barva"
 
-#: lazarusidestrconsts.dlgcolorexportbutton
-msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
-msgid "Export"
-msgstr "Exportovat"
-
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(Barva editoru)"
@@ -2385,11 +2380,6 @@ msgstr "Čtyřnásobný"
 msgid "Any"
 msgstr "Jakékoliv"
 
-#: lazarusidestrconsts.dlgmouseoptbtnexport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
-msgid "Export"
-msgstr "Exportovat"
-
 #: lazarusidestrconsts.dlgmouseoptbtnextra1
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra1"
 msgid "Extra 1"
@@ -2399,11 +2389,6 @@ msgstr "Extra 1"
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra2"
 msgid "Extra 2"
 msgstr "Extra 2"
-
-#: lazarusidestrconsts.dlgmouseoptbtnimport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
-msgid "Import"
-msgstr "Import"
 
 #: lazarusidestrconsts.dlgmouseoptbtnleft
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnleft"
@@ -3580,16 +3565,6 @@ msgstr "Smazat všechny snímky"
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
 msgstr "Přepnout zobrazení snímku nebo aktuálního"
-
-#: lazarusidestrconsts.histdlgbtnexport
-msgctxt "lazarusidestrconsts.histdlgbtnexport"
-msgid "Export"
-msgstr "Exportovat"
-
-#: lazarusidestrconsts.histdlgbtnimport
-msgctxt "lazarusidestrconsts.histdlgbtnimport"
-msgid "Import"
-msgstr "Import"
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
@@ -5397,6 +5372,10 @@ msgstr "K procházení souboru klikněte zde"
 #: lazarusidestrconsts.lisclicktoseethepossibleuses
 msgid "Click to see the possible uses"
 msgstr "Klikněte pro zobrazení možných použití"
+
+#: lazarusidestrconsts.lisclone
+msgid "Clone"
+msgstr ""
 
 #: lazarusidestrconsts.lisclose
 msgctxt "lazarusidestrconsts.lisclose"
@@ -7569,6 +7548,16 @@ msgstr "Změnit třídu ..."
 msgid "Editor Window Manager ..."
 msgstr "Návrhář správce oken ..."
 
+#: lazarusidestrconsts.lisdlgexport
+msgctxt "lazarusidestrconsts.lisdlgexport"
+msgid "Export ..."
+msgstr "Exportovat ..."
+
+#: lazarusidestrconsts.lisdlgimport
+msgctxt "lazarusidestrconsts.lisdlgimport"
+msgid "Import ..."
+msgstr "Importovat ..."
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -8287,7 +8276,10 @@ msgid "Expanded filename of current editor file"
 msgstr "Úplné souborové jméno aktuálního souboru v editoru"
 
 #: lazarusidestrconsts.lisexport
-msgid "Export ..."
+#, fuzzy
+#| msgid "Export ..."
+msgctxt "lazarusidestrconsts.lisexport"
+msgid "Export"
 msgstr "Exportovat ..."
 
 #: lazarusidestrconsts.lisexporthtml
@@ -9077,7 +9069,10 @@ msgid "Implementation comment for class"
 msgstr "Komentář provedení pro třídu"
 
 #: lazarusidestrconsts.lisimport
-msgid "Import ..."
+#, fuzzy
+#| msgid "Import ..."
+msgctxt "lazarusidestrconsts.lisimport"
+msgid "Import"
 msgstr "Importovat ..."
 
 #: lazarusidestrconsts.lisimportlist
@@ -11624,6 +11619,11 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Více"
 
+#: lazarusidestrconsts.lismoresub
+msgctxt "lazarusidestrconsts.lismoresub"
+msgid "More >>"
+msgstr "Více >>"
+
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
 msgstr "Posunout \"%s\" o jednu pozici dolu"
@@ -12464,10 +12464,6 @@ msgstr "Minimální verze:"
 #: lazarusidestrconsts.lispckeditmodified
 msgid "Modified: %s"
 msgstr "Změněný: %s"
-
-#: lazarusidestrconsts.lispckeditmore
-msgid "More >>"
-msgstr "Více >>"
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
 msgid "Move dependency down"
@@ -16330,10 +16326,6 @@ msgstr "Řetězec velkými písmeny předán jako parametr"
 msgid "Usage message (-h option)"
 msgstr "Zpráva o použití (volba -h)"
 
-#: lazarusidestrconsts.lisuse
-msgid "Use >>"
-msgstr "Použít >>"
-
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
@@ -16407,6 +16399,11 @@ msgstr "Uživatelský domovský adresář"
 #: lazarusidestrconsts.lisuseselected
 msgid "Use Selected"
 msgstr "Použít vybrané"
+
+#: lazarusidestrconsts.lisusesub
+msgctxt "lazarusidestrconsts.lisusesub"
+msgid "Use >>"
+msgstr "Použít >>"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"

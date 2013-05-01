@@ -1020,11 +1020,6 @@ msgstr "טען/שמור"
 msgid "Color"
 msgstr "צבע"
 
-#: lazarusidestrconsts.dlgcolorexportbutton
-msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
-msgid "Export"
-msgstr "יצוא"
-
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(ערוך צבע)"
@@ -2509,11 +2504,6 @@ msgstr "מרובע"
 msgid "Any"
 msgstr "כלשהו"
 
-#: lazarusidestrconsts.dlgmouseoptbtnexport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
-msgid "Export"
-msgstr "יצוא"
-
 #: lazarusidestrconsts.dlgmouseoptbtnextra1
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra1"
 msgid "Extra 1"
@@ -2523,11 +2513,6 @@ msgstr "תוספות 1"
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra2"
 msgid "Extra 2"
 msgstr "תוספות 2"
-
-#: lazarusidestrconsts.dlgmouseoptbtnimport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
-msgid "Import"
-msgstr "יבוא"
 
 #: lazarusidestrconsts.dlgmouseoptbtnleft
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnleft"
@@ -3801,16 +3786,6 @@ msgstr ""
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
 msgstr ""
-
-#: lazarusidestrconsts.histdlgbtnexport
-msgctxt "lazarusidestrconsts.histdlgbtnexport"
-msgid "Export"
-msgstr "יצוא"
-
-#: lazarusidestrconsts.histdlgbtnimport
-msgctxt "lazarusidestrconsts.histdlgbtnimport"
-msgid "Import"
-msgstr "יבוא"
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
@@ -5666,6 +5641,10 @@ msgstr "לחץ כאן בשביל לצפות בקובץ"
 #: lazarusidestrconsts.lisclicktoseethepossibleuses
 msgid "Click to see the possible uses"
 msgstr "הקלק כדי לראות את השימושים האפשריים"
+
+#: lazarusidestrconsts.lisclone
+msgid "Clone"
+msgstr ""
 
 #: lazarusidestrconsts.lisclose
 #, fuzzy
@@ -7901,6 +7880,16 @@ msgstr ""
 msgid "Editor Window Manager ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisdlgexport
+msgctxt "lazarusidestrconsts.lisdlgexport"
+msgid "Export ..."
+msgstr "ייצא ..."
+
+#: lazarusidestrconsts.lisdlgimport
+msgctxt "lazarusidestrconsts.lisdlgimport"
+msgid "Import ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -8623,7 +8612,10 @@ msgid "Expanded filename of current editor file"
 msgstr "הרחב את שם הקובץ של הקובץ הנוכחי שנערך"
 
 #: lazarusidestrconsts.lisexport
-msgid "Export ..."
+#, fuzzy
+#| msgid "Export ..."
+msgctxt "lazarusidestrconsts.lisexport"
+msgid "Export"
 msgstr "ייצא ..."
 
 #: lazarusidestrconsts.lisexporthtml
@@ -9427,7 +9419,8 @@ msgid "Implementation comment for class"
 msgstr "הערת מימוש של המחלקה"
 
 #: lazarusidestrconsts.lisimport
-msgid "Import ..."
+msgctxt "lazarusidestrconsts.lisimport"
+msgid "Import"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
@@ -12289,6 +12282,13 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "עוד"
 
+#: lazarusidestrconsts.lismoresub
+#, fuzzy
+#| msgid "More ..."
+msgctxt "lazarusidestrconsts.lismoresub"
+msgid "More >>"
+msgstr "עוד ..."
+
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
 msgstr "הזז  \"%s\" מיקום אחד למטה"
@@ -13158,12 +13158,6 @@ msgstr "גירסה מינימלית"
 #: lazarusidestrconsts.lispckeditmodified
 msgid "Modified: %s"
 msgstr "השתנה: s%"
-
-#: lazarusidestrconsts.lispckeditmore
-#, fuzzy
-#| msgid "More ..."
-msgid "More >>"
-msgstr "עוד ..."
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
 msgid "Move dependency down"
@@ -17142,12 +17136,6 @@ msgstr "מחרוזת באותיות ראשיות ניתנה כפרמטר"
 msgid "Usage message (-h option)"
 msgstr "הודעת \"איך להשתמש\" (אפשרות h-)"
 
-#: lazarusidestrconsts.lisuse
-#, fuzzy
-#| msgid "Use>>"
-msgid "Use >>"
-msgstr "השתמש ב ..."
-
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
@@ -17225,6 +17213,13 @@ msgstr "תיקיית הבית של המשתמש"
 #: lazarusidestrconsts.lisuseselected
 msgid "Use Selected"
 msgstr ""
+
+#: lazarusidestrconsts.lisusesub
+#, fuzzy
+#| msgid "Use>>"
+msgctxt "lazarusidestrconsts.lisusesub"
+msgid "Use >>"
+msgstr "השתמש ב ..."
 
 #: lazarusidestrconsts.lisuseunit
 #, fuzzy

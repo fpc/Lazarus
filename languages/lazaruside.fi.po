@@ -959,11 +959,6 @@ msgstr "Lataa/Talleta"
 msgid "Color"
 msgstr "Väri"
 
-#: lazarusidestrconsts.dlgcolorexportbutton
-msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
-msgid "Export"
-msgstr "Vie"
-
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(Muokkaa väriä)"
@@ -2370,11 +2365,6 @@ msgstr "Nelois"
 msgid "Any"
 msgstr "Mikä vaan"
 
-#: lazarusidestrconsts.dlgmouseoptbtnexport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
-msgid "Export"
-msgstr "Vie"
-
 #: lazarusidestrconsts.dlgmouseoptbtnextra1
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra1"
 msgid "Extra 1"
@@ -2384,11 +2374,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra2"
 msgid "Extra 2"
 msgstr ""
-
-#: lazarusidestrconsts.dlgmouseoptbtnimport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
-msgid "Import"
-msgstr "Tuo"
 
 #: lazarusidestrconsts.dlgmouseoptbtnleft
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnleft"
@@ -3562,16 +3547,6 @@ msgstr ""
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
 msgstr ""
-
-#: lazarusidestrconsts.histdlgbtnexport
-msgctxt "lazarusidestrconsts.histdlgbtnexport"
-msgid "Export"
-msgstr "Vie"
-
-#: lazarusidestrconsts.histdlgbtnimport
-msgctxt "lazarusidestrconsts.histdlgbtnimport"
-msgid "Import"
-msgstr "Tuo"
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
@@ -5376,6 +5351,10 @@ msgstr "Klikkaa tästä selataksesi tiedostoa"
 #: lazarusidestrconsts.lisclicktoseethepossibleuses
 msgid "Click to see the possible uses"
 msgstr "Klikkaa nähdäksesi mahdolliset käyttötavat"
+
+#: lazarusidestrconsts.lisclone
+msgid "Clone"
+msgstr ""
 
 #: lazarusidestrconsts.lisclose
 msgctxt "lazarusidestrconsts.lisclose"
@@ -7541,6 +7520,16 @@ msgstr "Vaihda luokka ..."
 msgid "Editor Window Manager ..."
 msgstr "Editorin ikkunoiden hallinta ..."
 
+#: lazarusidestrconsts.lisdlgexport
+msgctxt "lazarusidestrconsts.lisdlgexport"
+msgid "Export ..."
+msgstr "Vie ..."
+
+#: lazarusidestrconsts.lisdlgimport
+msgctxt "lazarusidestrconsts.lisdlgimport"
+msgid "Import ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -8259,7 +8248,10 @@ msgid "Expanded filename of current editor file"
 msgstr "Laajenna nykyisen editorin tiedoston nimi"
 
 #: lazarusidestrconsts.lisexport
-msgid "Export ..."
+#, fuzzy
+#| msgid "Export ..."
+msgctxt "lazarusidestrconsts.lisexport"
+msgid "Export"
 msgstr "Vie ..."
 
 #: lazarusidestrconsts.lisexporthtml
@@ -9048,7 +9040,8 @@ msgid "Implementation comment for class"
 msgstr "Luokan toteutus-osan kommentti"
 
 #: lazarusidestrconsts.lisimport
-msgid "Import ..."
+msgctxt "lazarusidestrconsts.lisimport"
+msgid "Import"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
@@ -11582,6 +11575,11 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Lisää"
 
+#: lazarusidestrconsts.lismoresub
+msgctxt "lazarusidestrconsts.lismoresub"
+msgid "More >>"
+msgstr "Muut >>"
+
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
 msgstr "Siirrä \"%s\" yksi pykälä alaspäin"
@@ -12420,10 +12418,6 @@ msgstr "Minimiversio:"
 #: lazarusidestrconsts.lispckeditmodified
 msgid "Modified: %s"
 msgstr "Muunnettu: %s"
-
-#: lazarusidestrconsts.lispckeditmore
-msgid "More >>"
-msgstr "Muut >>"
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
 msgid "Move dependency down"
@@ -16280,10 +16274,6 @@ msgstr "muuta parametrina annettu merkkijono isoiksi kirjaimiksi"
 msgid "Usage message (-h option)"
 msgstr "Käyttöopastus (-h valinta)"
 
-#: lazarusidestrconsts.lisuse
-msgid "Use >>"
-msgstr "Käytä >>"
-
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
@@ -16357,6 +16347,11 @@ msgstr "Käyttäjän kotihakemisto"
 #: lazarusidestrconsts.lisuseselected
 msgid "Use Selected"
 msgstr ""
+
+#: lazarusidestrconsts.lisusesub
+msgctxt "lazarusidestrconsts.lisusesub"
+msgid "Use >>"
+msgstr "Käytä >>"
 
 #: lazarusidestrconsts.lisuseunit
 msgid "Add Unit to Uses Section"

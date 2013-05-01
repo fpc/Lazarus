@@ -1017,11 +1017,6 @@ msgstr "読み込み/保存"
 msgid "Color"
 msgstr "色"
 
-#: lazarusidestrconsts.dlgcolorexportbutton
-msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
-msgid "Export"
-msgstr "エクスポート"
-
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "（編集色）"
@@ -2512,11 +2507,6 @@ msgstr "Quad"
 msgid "Any"
 msgstr "いずれも"
 
-#: lazarusidestrconsts.dlgmouseoptbtnexport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
-msgid "Export"
-msgstr "エクスポート"
-
 #: lazarusidestrconsts.dlgmouseoptbtnextra1
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra1"
 msgid "Extra 1"
@@ -2526,11 +2516,6 @@ msgstr "追加１"
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra2"
 msgid "Extra 2"
 msgstr "追加２"
-
-#: lazarusidestrconsts.dlgmouseoptbtnimport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
-msgid "Import"
-msgstr "インポート"
 
 #: lazarusidestrconsts.dlgmouseoptbtnleft
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnleft"
@@ -3825,16 +3810,6 @@ msgstr "すべてのスナップショットをクリア"
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
 msgstr "スナップショットもしくはカレントビューを切り替え"
-
-#: lazarusidestrconsts.histdlgbtnexport
-msgctxt "lazarusidestrconsts.histdlgbtnexport"
-msgid "Export"
-msgstr "エクスポート"
-
-#: lazarusidestrconsts.histdlgbtnimport
-msgctxt "lazarusidestrconsts.histdlgbtnimport"
-msgid "Import"
-msgstr "インポート"
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
@@ -5694,6 +5669,10 @@ msgstr "ファイルを閲覧するためにここをクリックしてくださ
 #: lazarusidestrconsts.lisclicktoseethepossibleuses
 msgid "Click to see the possible uses"
 msgstr "可能な利用方法を見るにはクリック"
+
+#: lazarusidestrconsts.lisclone
+msgid "Clone"
+msgstr ""
 
 #: lazarusidestrconsts.lisclose
 #, fuzzy
@@ -7928,6 +7907,16 @@ msgstr ""
 msgid "Editor Window Manager ..."
 msgstr "エディタウィンドウマネージャー ..."
 
+#: lazarusidestrconsts.lisdlgexport
+msgctxt "lazarusidestrconsts.lisdlgexport"
+msgid "Export ..."
+msgstr "エクスポート..."
+
+#: lazarusidestrconsts.lisdlgimport
+msgctxt "lazarusidestrconsts.lisdlgimport"
+msgid "Import ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -8650,7 +8639,10 @@ msgid "Expanded filename of current editor file"
 msgstr "現在のエディタファイルの拡張されたファイル名"
 
 #: lazarusidestrconsts.lisexport
-msgid "Export ..."
+#, fuzzy
+#| msgid "Export ..."
+msgctxt "lazarusidestrconsts.lisexport"
+msgid "Export"
 msgstr "エクスポート..."
 
 #: lazarusidestrconsts.lisexporthtml
@@ -9456,7 +9448,8 @@ msgid "Implementation comment for class"
 msgstr "クラスのためのImplementationコメント"
 
 #: lazarusidestrconsts.lisimport
-msgid "Import ..."
+msgctxt "lazarusidestrconsts.lisimport"
+msgid "Import"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
@@ -12321,6 +12314,13 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "その他"
 
+#: lazarusidestrconsts.lismoresub
+#, fuzzy
+#| msgid "More ..."
+msgctxt "lazarusidestrconsts.lismoresub"
+msgid "More >>"
+msgstr "その他 ..."
+
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
 msgstr "\"%s\" を一つ下に移動"
@@ -13195,12 +13195,6 @@ msgstr "バージョン番号の下限値"
 #: lazarusidestrconsts.lispckeditmodified
 msgid "Modified: %s"
 msgstr "修正済: %s"
-
-#: lazarusidestrconsts.lispckeditmore
-#, fuzzy
-#| msgid "More ..."
-msgid "More >>"
-msgstr "その他 ..."
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
 msgid "Move dependency down"
@@ -17177,12 +17171,6 @@ msgstr "引数として与えられている大文字文字列 "
 msgid "Usage message (-h option)"
 msgstr "使用メッセージ（-hオプション）"
 
-#: lazarusidestrconsts.lisuse
-#, fuzzy
-#| msgid "Use>>"
-msgid "Use >>"
-msgstr "使用..."
-
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
@@ -17260,6 +17248,13 @@ msgstr "ユーザーのhomeディレクトリ"
 #: lazarusidestrconsts.lisuseselected
 msgid "Use Selected"
 msgstr ""
+
+#: lazarusidestrconsts.lisusesub
+#, fuzzy
+#| msgid "Use>>"
+msgctxt "lazarusidestrconsts.lisusesub"
+msgid "Use >>"
+msgstr "使用..."
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"

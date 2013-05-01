@@ -1003,11 +1003,6 @@ msgstr "Charger/Enregistrer"
 msgid "Color"
 msgstr "Couleur"
 
-#: lazarusidestrconsts.dlgcolorexportbutton
-msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
-msgid "Export"
-msgstr "Exporter"
-
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(Modifie la couleur)"
@@ -2460,11 +2455,6 @@ msgstr "Quadruple"
 msgid "Any"
 msgstr "Tous"
 
-#: lazarusidestrconsts.dlgmouseoptbtnexport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
-msgid "Export"
-msgstr "Exporter"
-
 #: lazarusidestrconsts.dlgmouseoptbtnextra1
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra1"
 msgid "Extra 1"
@@ -2474,11 +2464,6 @@ msgstr "Extra 1"
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra2"
 msgid "Extra 2"
 msgstr "Extra 2"
-
-#: lazarusidestrconsts.dlgmouseoptbtnimport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
-msgid "Import"
-msgstr "Importer"
 
 #: lazarusidestrconsts.dlgmouseoptbtnleft
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnleft"
@@ -3739,16 +3724,6 @@ msgstr "Nettoyer les snapshots"
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
 msgstr "Basculer l'affichage snapshot ou actuel"
-
-#: lazarusidestrconsts.histdlgbtnexport
-msgctxt "lazarusidestrconsts.histdlgbtnexport"
-msgid "Export"
-msgstr "Exporter"
-
-#: lazarusidestrconsts.histdlgbtnimport
-msgctxt "lazarusidestrconsts.histdlgbtnimport"
-msgid "Import"
-msgstr "Importer"
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
@@ -5603,6 +5578,10 @@ msgstr "Cliquez ici pour parcourir le fichier"
 #: lazarusidestrconsts.lisclicktoseethepossibleuses
 msgid "Click to see the possible uses"
 msgstr "Cliquez pour voir les utilisations possibles"
+
+#: lazarusidestrconsts.lisclone
+msgid "Clone"
+msgstr ""
 
 #: lazarusidestrconsts.lisclose
 #, fuzzy
@@ -7822,6 +7801,16 @@ msgstr ""
 msgid "Editor Window Manager ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisdlgexport
+msgctxt "lazarusidestrconsts.lisdlgexport"
+msgid "Export ..."
+msgstr "Exporter ..."
+
+#: lazarusidestrconsts.lisdlgimport
+msgctxt "lazarusidestrconsts.lisdlgimport"
+msgid "Import ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -8543,7 +8532,10 @@ msgid "Expanded filename of current editor file"
 msgstr "Nom étendu du fichier de l'éditeur courant"
 
 #: lazarusidestrconsts.lisexport
-msgid "Export ..."
+#, fuzzy
+#| msgid "Export ..."
+msgctxt "lazarusidestrconsts.lisexport"
+msgid "Export"
 msgstr "Exporter ..."
 
 #: lazarusidestrconsts.lisexporthtml
@@ -9340,7 +9332,8 @@ msgid "Implementation comment for class"
 msgstr "Commentaire d'implémentation pour la classe"
 
 #: lazarusidestrconsts.lisimport
-msgid "Import ..."
+msgctxt "lazarusidestrconsts.lisimport"
+msgid "Import"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
@@ -12156,6 +12149,11 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Plus"
 
+#: lazarusidestrconsts.lismoresub
+msgctxt "lazarusidestrconsts.lismoresub"
+msgid "More >>"
+msgstr "Plus >>"
+
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
 msgstr "Déplacer \"%s\" une position plus bas"
@@ -13027,11 +13025,6 @@ msgstr "Version minimum :"
 #: lazarusidestrconsts.lispckeditmodified
 msgid "Modified: %s"
 msgstr "Modifié : %s"
-
-#: lazarusidestrconsts.lispckeditmore
-#| msgid "More ..."
-msgid "More >>"
-msgstr "Plus >>"
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
 msgid "Move dependency down"
@@ -16970,10 +16963,6 @@ msgstr "chaîne de caractère en majuscules donnée en paramètre"
 msgid "Usage message (-h option)"
 msgstr "Utiliser message (option -h)"
 
-#: lazarusidestrconsts.lisuse
-msgid "Use >>"
-msgstr "Utiliser >>"
-
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
@@ -17049,6 +17038,11 @@ msgstr "Répertoire home de l'utilisateur"
 #: lazarusidestrconsts.lisuseselected
 msgid "Use Selected"
 msgstr ""
+
+#: lazarusidestrconsts.lisusesub
+msgctxt "lazarusidestrconsts.lisusesub"
+msgid "Use >>"
+msgstr "Utiliser >>"
 
 #: lazarusidestrconsts.lisuseunit
 #| msgid "Add unit to uses section"

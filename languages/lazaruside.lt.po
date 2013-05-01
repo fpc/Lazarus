@@ -996,11 +996,6 @@ msgstr "Įkelti/Įrašyti"
 msgid "Color"
 msgstr "Spalva"
 
-#: lazarusidestrconsts.dlgcolorexportbutton
-msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
-msgid "Export"
-msgstr "Eksportuoti"
-
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(Keisti spalvą)"
@@ -2451,11 +2446,6 @@ msgstr "Keturkartis"
 msgid "Any"
 msgstr "Bet koks"
 
-#: lazarusidestrconsts.dlgmouseoptbtnexport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
-msgid "Export"
-msgstr "Eksportuoti"
-
 #: lazarusidestrconsts.dlgmouseoptbtnextra1
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra1"
 msgid "Extra 1"
@@ -2465,11 +2455,6 @@ msgstr "Papildoma 1"
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra2"
 msgid "Extra 2"
 msgstr "Papildoma 2"
-
-#: lazarusidestrconsts.dlgmouseoptbtnimport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
-msgid "Import"
-msgstr "Importuoti"
 
 #: lazarusidestrconsts.dlgmouseoptbtnleft
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnleft"
@@ -3701,16 +3686,6 @@ msgstr "Išvalyti visas momentines kopijas"
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
 msgstr "Rodyti momentinę kopiją arba veikiamąjį"
-
-#: lazarusidestrconsts.histdlgbtnexport
-msgctxt "lazarusidestrconsts.histdlgbtnexport"
-msgid "Export"
-msgstr "Eksportuoti"
-
-#: lazarusidestrconsts.histdlgbtnimport
-msgctxt "lazarusidestrconsts.histdlgbtnimport"
-msgid "Import"
-msgstr "Importuoti"
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
@@ -5549,6 +5524,10 @@ msgstr "Čia paspaudę, galėsite naršyti failo"
 #: lazarusidestrconsts.lisclicktoseethepossibleuses
 msgid "Click to see the possible uses"
 msgstr "Paspaudus bus parodyti galimi naudojimai"
+
+#: lazarusidestrconsts.lisclone
+msgid "Clone"
+msgstr ""
 
 #: lazarusidestrconsts.lisclose
 #| msgid "&Close"
@@ -7744,6 +7723,16 @@ msgstr "Pakeisti klasę…"
 msgid "Editor Window Manager ..."
 msgstr "Rengyklės lango tvarkyklė…"
 
+#: lazarusidestrconsts.lisdlgexport
+msgctxt "lazarusidestrconsts.lisdlgexport"
+msgid "Export ..."
+msgstr "Eksportas…"
+
+#: lazarusidestrconsts.lisdlgimport
+msgctxt "lazarusidestrconsts.lisdlgimport"
+msgid "Import ..."
+msgstr "Importuoti…"
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -8464,7 +8453,10 @@ msgid "Expanded filename of current editor file"
 msgstr "Veikiamosios rengyklės failo pavadinimas su pilnu keliu iki jo"
 
 #: lazarusidestrconsts.lisexport
-msgid "Export ..."
+#, fuzzy
+#| msgid "Export ..."
+msgctxt "lazarusidestrconsts.lisexport"
+msgid "Export"
 msgstr "Eksportas…"
 
 #: lazarusidestrconsts.lisexporthtml
@@ -9261,7 +9253,10 @@ msgid "Implementation comment for class"
 msgstr "Komentaras klasės „Implementation“ dalyje"
 
 #: lazarusidestrconsts.lisimport
-msgid "Import ..."
+#, fuzzy
+#| msgid "Import ..."
+msgctxt "lazarusidestrconsts.lisimport"
+msgid "Import"
 msgstr "Importuoti…"
 
 #: lazarusidestrconsts.lisimportlist
@@ -11958,6 +11953,11 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Daugiau"
 
+#: lazarusidestrconsts.lismoresub
+msgctxt "lazarusidestrconsts.lismoresub"
+msgid "More >>"
+msgstr "Daugiau >>"
+
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
 msgstr "„%s“ perkelti vienu lygiu žemiau"
@@ -12814,11 +12814,6 @@ msgstr "Minimali versija:"
 #: lazarusidestrconsts.lispckeditmodified
 msgid "Modified: %s"
 msgstr "Pakeista: %s"
-
-#: lazarusidestrconsts.lispckeditmore
-#| msgid "More ..."
-msgid "More >>"
-msgstr "Daugiau >>"
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
 msgid "Move dependency down"
@@ -16746,10 +16741,6 @@ msgstr "Teksto, kuris pateiktas, kaip parametras, raides versti didžiosiomis"
 msgid "Usage message (-h option)"
 msgstr "Pranešimas apie naudojimą (-h parinktis)"
 
-#: lazarusidestrconsts.lisuse
-msgid "Use >>"
-msgstr "Naudoti >>"
-
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
@@ -16825,6 +16816,11 @@ msgstr "Naudotojo pradžios aplankas"
 #: lazarusidestrconsts.lisuseselected
 msgid "Use Selected"
 msgstr ""
+
+#: lazarusidestrconsts.lisusesub
+msgctxt "lazarusidestrconsts.lisusesub"
+msgid "Use >>"
+msgstr "Naudoti >>"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"

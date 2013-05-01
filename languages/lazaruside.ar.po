@@ -972,11 +972,6 @@ msgstr "تحميل/حفظ"
 msgid "Color"
 msgstr "اللون"
 
-#: lazarusidestrconsts.dlgcolorexportbutton
-msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
-msgid "Export"
-msgstr "تصدير"
-
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(تحرير اللون)"
@@ -2386,11 +2381,6 @@ msgstr "رباعي"
 msgid "Any"
 msgstr "أي"
 
-#: lazarusidestrconsts.dlgmouseoptbtnexport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
-msgid "Export"
-msgstr "تصدير"
-
 #: lazarusidestrconsts.dlgmouseoptbtnextra1
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra1"
 msgid "Extra 1"
@@ -2400,11 +2390,6 @@ msgstr "إضافي 1"
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra2"
 msgid "Extra 2"
 msgstr "إضافي 2"
-
-#: lazarusidestrconsts.dlgmouseoptbtnimport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
-msgid "Import"
-msgstr "توريد"
 
 #: lazarusidestrconsts.dlgmouseoptbtnleft
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnleft"
@@ -3581,16 +3566,6 @@ msgstr "مسح كل الصور الملتقطة"
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
 msgstr "التبديل بين عرض الصورة الملتقطة أو الحالي"
-
-#: lazarusidestrconsts.histdlgbtnexport
-msgctxt "lazarusidestrconsts.histdlgbtnexport"
-msgid "Export"
-msgstr "تصدير"
-
-#: lazarusidestrconsts.histdlgbtnimport
-msgctxt "lazarusidestrconsts.histdlgbtnimport"
-msgid "Import"
-msgstr "توريد"
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
@@ -5398,6 +5373,10 @@ msgstr "النقر هنا لاستعراض الملف"
 #: lazarusidestrconsts.lisclicktoseethepossibleuses
 msgid "Click to see the possible uses"
 msgstr "النقر لرؤية الاستخدامات المحتملة"
+
+#: lazarusidestrconsts.lisclone
+msgid "Clone"
+msgstr ""
 
 #: lazarusidestrconsts.lisclose
 msgctxt "lazarusidestrconsts.lisclose"
@@ -7572,6 +7551,16 @@ msgstr "تغيير الصنفية ..."
 msgid "Editor Window Manager ..."
 msgstr "مدير محرر النوافذ ..."
 
+#: lazarusidestrconsts.lisdlgexport
+msgctxt "lazarusidestrconsts.lisdlgexport"
+msgid "Export ..."
+msgstr "تصدير ..."
+
+#: lazarusidestrconsts.lisdlgimport
+msgctxt "lazarusidestrconsts.lisdlgimport"
+msgid "Import ..."
+msgstr "توريد ..."
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -8290,7 +8279,10 @@ msgid "Expanded filename of current editor file"
 msgstr "توسيع اسم ملف الخاص بملف المحرر الحالي"
 
 #: lazarusidestrconsts.lisexport
-msgid "Export ..."
+#, fuzzy
+#| msgid "Export ..."
+msgctxt "lazarusidestrconsts.lisexport"
+msgid "Export"
 msgstr "تصدير ..."
 
 #: lazarusidestrconsts.lisexporthtml
@@ -9080,7 +9072,10 @@ msgid "Implementation comment for class"
 msgstr "تعليقات التنفيذ للصنفية"
 
 #: lazarusidestrconsts.lisimport
-msgid "Import ..."
+#, fuzzy
+#| msgid "Import ..."
+msgctxt "lazarusidestrconsts.lisimport"
+msgid "Import"
 msgstr "توريد ..."
 
 #: lazarusidestrconsts.lisimportlist
@@ -11629,6 +11624,11 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "المزيد"
 
+#: lazarusidestrconsts.lismoresub
+msgctxt "lazarusidestrconsts.lismoresub"
+msgid "More >>"
+msgstr "المزيد"
+
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
 msgstr "تحريك \"%s\" منزلة واحدة لتحت"
@@ -12469,10 +12469,6 @@ msgstr "الإصدار الأدنى:"
 #: lazarusidestrconsts.lispckeditmodified
 msgid "Modified: %s"
 msgstr "تم تحويره: %s"
-
-#: lazarusidestrconsts.lispckeditmore
-msgid "More >>"
-msgstr "المزيد"
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
 msgid "Move dependency down"
@@ -16335,10 +16331,6 @@ msgstr "رفع حالة الأحرف لنص يعطى كضابط"
 msgid "Usage message (-h option)"
 msgstr "رسالة الاستخدام (-h option)"
 
-#: lazarusidestrconsts.lisuse
-msgid "Use >>"
-msgstr "استخدم >>"
-
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
@@ -16412,6 +16404,11 @@ msgstr "دليل موطن المستخدم"
 #: lazarusidestrconsts.lisuseselected
 msgid "Use Selected"
 msgstr "استخدام ما تمّ اختياره"
+
+#: lazarusidestrconsts.lisusesub
+msgctxt "lazarusidestrconsts.lisusesub"
+msgid "Use >>"
+msgstr "استخدم >>"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"

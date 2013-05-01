@@ -993,11 +993,6 @@ msgstr "Завант./Зберегти"
 msgid "Color"
 msgstr "Колір"
 
-#: lazarusidestrconsts.dlgcolorexportbutton
-msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
-msgid "Export"
-msgstr "Експорт"
-
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(Змінити Колір)"
@@ -2442,11 +2437,6 @@ msgstr "Почетвірний"
 msgid "Any"
 msgstr "Будь-який"
 
-#: lazarusidestrconsts.dlgmouseoptbtnexport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
-msgid "Export"
-msgstr "Експорт"
-
 #: lazarusidestrconsts.dlgmouseoptbtnextra1
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra1"
 msgid "Extra 1"
@@ -2456,11 +2446,6 @@ msgstr "Екстра 1"
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra2"
 msgid "Extra 2"
 msgstr "Екстра 2"
-
-#: lazarusidestrconsts.dlgmouseoptbtnimport
-msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
-msgid "Import"
-msgstr "Імпорт"
 
 #: lazarusidestrconsts.dlgmouseoptbtnleft
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnleft"
@@ -3681,16 +3666,6 @@ msgstr "Очистити всі знімки"
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
 msgstr "Перемкнути відображення між знімком та поточним"
-
-#: lazarusidestrconsts.histdlgbtnexport
-msgctxt "lazarusidestrconsts.histdlgbtnexport"
-msgid "Export"
-msgstr "Експорт"
-
-#: lazarusidestrconsts.histdlgbtnimport
-msgctxt "lazarusidestrconsts.histdlgbtnimport"
-msgid "Import"
-msgstr "Імпорт"
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
@@ -5517,6 +5492,10 @@ msgstr "Клацніть тут для вибору файлу"
 #: lazarusidestrconsts.lisclicktoseethepossibleuses
 msgid "Click to see the possible uses"
 msgstr "Клацніть для перегляду можливих варіантів використання"
+
+#: lazarusidestrconsts.lisclone
+msgid "Clone"
+msgstr ""
 
 #: lazarusidestrconsts.lisclose
 #| msgid "&Close"
@@ -7711,6 +7690,16 @@ msgstr ""
 msgid "Editor Window Manager ..."
 msgstr "Диспетчер Вікна Редактора ..."
 
+#: lazarusidestrconsts.lisdlgexport
+msgctxt "lazarusidestrconsts.lisdlgexport"
+msgid "Export ..."
+msgstr "Експорт ..."
+
+#: lazarusidestrconsts.lisdlgimport
+msgctxt "lazarusidestrconsts.lisdlgimport"
+msgid "Import ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -8430,7 +8419,10 @@ msgid "Expanded filename of current editor file"
 msgstr "Повна назва файлу в поточному редакторі"
 
 #: lazarusidestrconsts.lisexport
-msgid "Export ..."
+#, fuzzy
+#| msgid "Export ..."
+msgctxt "lazarusidestrconsts.lisexport"
+msgid "Export"
 msgstr "Експорт ..."
 
 #: lazarusidestrconsts.lisexporthtml
@@ -9223,7 +9215,8 @@ msgid "Implementation comment for class"
 msgstr "Коментар перед реалізацією класу"
 
 #: lazarusidestrconsts.lisimport
-msgid "Import ..."
+msgctxt "lazarusidestrconsts.lisimport"
+msgid "Import"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
@@ -11896,6 +11889,11 @@ msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Більше"
 
+#: lazarusidestrconsts.lismoresub
+msgctxt "lazarusidestrconsts.lismoresub"
+msgid "More >>"
+msgstr "Більше >>"
+
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
 msgstr "Перемістити \"%s\" на позицію вниз"
@@ -12745,10 +12743,6 @@ msgstr "Мінімальна версія"
 #: lazarusidestrconsts.lispckeditmodified
 msgid "Modified: %s"
 msgstr "Змінено: %s"
-
-#: lazarusidestrconsts.lispckeditmore
-msgid "More >>"
-msgstr "Більше >>"
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
 msgid "Move dependency down"
@@ -16644,10 +16638,6 @@ msgstr "ВЕЛИКИЙ рядок поданий як параметр"
 msgid "Usage message (-h option)"
 msgstr "Повідомлення використання (опція -h)"
 
-#: lazarusidestrconsts.lisuse
-msgid "Use >>"
-msgstr "Використати >>"
-
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
@@ -16723,6 +16713,11 @@ msgstr "Домашня тека користувача"
 #: lazarusidestrconsts.lisuseselected
 msgid "Use Selected"
 msgstr ""
+
+#: lazarusidestrconsts.lisusesub
+msgctxt "lazarusidestrconsts.lisusesub"
+msgid "Use >>"
+msgstr "Використати >>"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"
