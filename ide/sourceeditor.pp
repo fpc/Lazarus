@@ -1046,6 +1046,8 @@ type
                              var Abort: boolean): string;
     function MacroFuncCurToken(const s:string; const Data: PtrInt;
                                var Abort: boolean): string;
+    function MacroFuncConfirm(const s:string; const Data: PtrInt;
+                               var Abort: boolean): string;
     function MacroFuncPrompt(const s:string; const Data: PtrInt;
                              var Abort: boolean): string;
     function MacroFuncSave(const s:string; const Data: PtrInt;
@@ -9412,6 +9414,13 @@ begin
     Result := '';
 end;
 
+function TSourceEditorManager.MacroFuncConfirm(const s: string; const Data: PtrInt;
+  var Abort: boolean): string;
+begin
+  Result:=s;
+  Abort:=(ShowMacroConfirmDialog(Result)<>mrOk);
+end;
+
 function TSourceEditorManager.MacroFuncPrompt(const s: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
@@ -9444,6 +9453,8 @@ begin
                  lisWordAtCursorInCurrentEditor,@MacroFuncCurToken,[]));
   AMacroList.Add(TTransferMacro.Create('EdFile','',
                  lisExpandedFilenameOfCurrentEditor,@MacroFuncEdFile,[]));
+  AMacroList.Add(TTransferMacro.Create('Confirm','',
+                 lisConfirmation,@MacroFuncConfirm,[tmfInteractive]));
   AMacroList.Add(TTransferMacro.Create('Prompt','',
                  lisPromptForValue,@MacroFuncPrompt,[tmfInteractive]));
   AMacroList.Add(TTransferMacro.Create('Save','',

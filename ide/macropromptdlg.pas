@@ -21,7 +21,8 @@
   Author: Mattias Gaertner
 
   Abstract:
-    A simple dialog for the $PROMPT() tranfer macro function.
+    A simple dialog for the $PROMPT() tranfer macro function,
+    and a MessageDlg for the $CONFIRM() macro.
     
 }
 unit MacroPromptDlg;
@@ -56,11 +57,17 @@ type
   end;
 
 
+function ShowMacroConfirmDialog(const InitParam: string): TModalResult;
 function ShowMacroPromptDialog(var InitParam: string): TModalResult;
 
 
 implementation
 
+
+function ShowMacroConfirmDialog(const InitParam: string): TModalResult;
+begin
+  Result:=MessageDlg(InitParam, mtConfirmation, mbOKCancel, 0);
+end;
 
 function ShowMacroPromptDialog(var InitParam: string): TModalResult;
 var MacroPrompDialog: TMacroPrompDialog;
@@ -70,7 +77,7 @@ begin
   try
     MacroPrompDialog.DataEdit.Text:=InitParam;
     Result:=MacroPrompDialog.ShowModal;
-    if Result=mrOk then 
+    if Result=mrOk then
       InitParam:=MacroPrompDialog.DataEdit.Text;
   finally
     MacroPrompDialog.Free;
