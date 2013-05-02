@@ -6957,7 +6957,7 @@ end;
 
 function TProjectBuildMode.GetModified: boolean;
 begin
-  Result:=fSavedChangeStamp=FChangeStamp;
+  Result:=fSavedChangeStamp<>FChangeStamp;
 end;
 
 constructor TProjectBuildMode.Create(AOwner: TComponent);
