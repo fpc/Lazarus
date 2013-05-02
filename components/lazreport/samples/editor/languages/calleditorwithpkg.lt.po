@@ -1,4 +1,3 @@
- Valdas Jankūnas <zmuogs@gmail.com>, 2009, 2010, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: calleditorwithpkg\n"
@@ -185,6 +184,10 @@ msgstr "Spausdinti pranešima"
 msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
 msgid "Thumbnails"
 msgstr "Miniatiūros"
+
+#: tfrmmain.btnexportlast.caption
+msgid "Repeat Export"
+msgstr ""
 
 #: tfrmmain.btnmasterdetail.caption
 msgid "Master-Detail Test"

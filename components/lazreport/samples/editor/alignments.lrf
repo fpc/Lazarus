@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CONFIG>
   <LazReport>
-    <Version Value="25"/>
+    <Version Value="26"/>
     <Title Value=""/>
     <Subject Value=""/>
     <KeyWords Value=""/>
     <Comments Value=""/>
     <ReportCreateDate Value="1899-12-30 00:00:00"/>
-    <ReportLastChange Value="2013-03-29 12:05:28"/>
+    <ReportLastChange Value="2013-04-26 02:47:54"/>
     <ReportVersionBuild Value=""/>
     <ReportVersionMajor Value=""/>
     <ReportVersionMinor Value=""/>
     <ReportVersionRelease Value=""/>
     <ReportAutor Value=""/>
+    <Script Value=""/>
     <Pages>
       <PrintToDefault Value="False"/>
       <DoublePass Value="False"/>
-      <SelectedPrinter Value="PDF"/>
+      <SelectedPrinter Value="HP LaserJet 1200 Series PCL"/>
       <PageCount Value="1"/>
       <Page1>
         <Name Value="Page1"/>
@@ -35,7 +36,7 @@
         <Orientation Value="poPortrait"/>
         <UseMargins Value="True"/>
         <PrintToPrevPage Value="False"/>
-        <ColCount Value="0"/>
+        <ColCount Value="1"/>
         <ColGap Value="0"/>
         <LayoutOrder Value="loColumns"/>
         <ObjectCount Value="21"/>
@@ -62,9 +63,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Top Left&#xA;"/>
+            <Memo Value="Top Left&#xD;&#xA;Line 2&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -106,9 +109,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Top Center&#xA;"/>
+            <Memo Value="Top Center&#xD;&#xA;Line 2&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -150,9 +155,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Top Right&#xA;"/>
+            <Memo Value="Top Right&#xD;&#xA;Line 2&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -194,9 +201,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Vertical Right&#xA;"/>
+            <Memo Value="Vertical Right&#xD;&#xA;Linea 2&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -238,9 +247,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Vertical Center&#xA;"/>
+            <Memo Value="Vertical Center&#xD;&#xA;Line 2&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -282,9 +293,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Vertical Left&#xA;"/>
+            <Memo Value="Vertical Left&#xD;&#xA;Line 2&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -326,9 +339,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Bottom Right&#xA;"/>
+            <Memo Value="Bottom Right&#xD;&#xA;Line 2&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -370,9 +385,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Bottom Center&#xA;"/>
+            <Memo Value="Bottom Center&#xD;&#xA;Line 2&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -414,9 +431,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Bottom Left&#xA;"/>
+            <Memo Value="Bottom Left&#xD;&#xA;Line 2&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -458,9 +477,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Canvas: [Canvas]&#xA;"/>
+            <Memo Value="Canvas: [Canvas]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -502,9 +523,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Top Center&#xA;"/>
+            <Memo Value="Top Center&#xD;&#xA;Linea 2&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -546,9 +569,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="γεια σας κόσμο&#xA;"/>
+            <Memo Value="γεια σας κόσμο&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -590,9 +615,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="مرحبا العالم&#xA;"/>
+            <Memo Value="مرحبا العالم&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -634,9 +661,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Griego&#xA;"/>
+            <Memo Value="Griego&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -678,9 +707,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="Árabe&#xA;"/>
+            <Memo Value="Árabe&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -722,9 +753,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="γεια σας κόσμο&#xA;"/>
+            <Memo Value="γεια σας κόσμο&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -766,9 +799,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="γεια σας κόσμο&#xA;"/>
+            <Memo Value="γεια σας κόσμο&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -810,9 +845,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="مرحبا العالم&#xA;"/>
+            <Memo Value="مرحبا العالم&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -854,9 +891,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="مرحبا العالم&#xA;"/>
+            <Memo Value="مرحبا العالم&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -898,9 +937,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="中华人民共和国&#xA;"/>
+            <Memo Value="中华人民共和国&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -942,9 +983,11 @@
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="中华人民共和国&#xA;"/>
+            <Memo Value="中华人民共和国&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -981,7 +1024,7 @@
           <Item Value="Fecha"/>
         </Objects2>
       </FVal>
-      <ParentVars Value="Jujibo&#xA; Canvas&#xA; Fecha&#xA;"/>
+      <ParentVars Value="Jujibo&#xD;&#xA; Canvas&#xD;&#xA; Fecha&#xD;&#xA;"/>
     </Pages>
   </LazReport>
 </CONFIG>

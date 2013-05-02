@@ -186,6 +186,10 @@ msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
 msgid "Thumbnails"
 msgstr "Vignettes"
 
+#: tfrmmain.btnexportlast.caption
+msgid "Repeat Export"
+msgstr ""
+
 #: tfrmmain.btnmasterdetail.caption
 msgid "Master-Detail Test"
 msgstr ""

@@ -27,10 +27,11 @@ interface
 
 uses
   Classes, SysUtils, Variants, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls, LR_Const, LR_Class, LR_Desgn, Dbf, DB, DBGrids, LR_DBSet,
+  Buttons, StdCtrls, LR_Const, LR_Class, LR_Desgn, Dbf, DB, DBGrids, LR_DBSet, IniFiles,
   LR_PGrid, Menus, ComCtrls, ActnList, Lr_e_txt, Lr_e_htm, LR_E_CSV, LR_DSet,
   LR_BarC, LR_RRect, LR_Shape, LR_ChBox, lr_e_pdf, lconvencoding, lr_e_gen,
-  lr_utils, LCLProc, ExtCtrls, custompreview, LR_Pars, LR_e_htmldiv;
+  lr_utils, LCLProc, ExtCtrls, custompreview, LR_Pars, LR_e_htmldiv, lr_e_cairo,
+  LazLogger;
 
 type
 
@@ -63,10 +64,12 @@ type
     btnOpenReport: TButton;
     btnImageList: TButton;
     btnComposite: TButton;
+    btnExportLast: TButton;
     comboIndex: TComboBox;
     frDbMaster: TfrDBDataSet;
     frHtmlDivExport1: TfrHtmlDivExport;
     frTNPDFExport1: TfrTNPDFExport;
+    lrCairoExport1: TlrCairoExport;
     mastergrid: TDBGrid;
     Panel1: TPanel;
     srcMaster: TDatasource;
@@ -134,8 +137,10 @@ type
     procedure accPreviewReportExecute(Sender: TObject);
     procedure accPrintGridExecute(Sender: TObject);
     procedure accPrintReportExecute(Sender: TObject);
+    procedure btnExportLastClick(Sender: TObject);
     procedure btnMasterDetailClick(Sender: TObject);
     procedure comboIndexSelect(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure gridTitleClick(Column: TColumn);
     procedure frmMainCreate(Sender: TObject);
     procedure TheReportBeginDoc;
@@ -150,11 +155,15 @@ type
     FImageListIndex: Integer;
     FObjCount: Integer;
     FCountryIndex: Integer;
+    FCurReport: string;
     procedure UpdateAppTranslation;
     procedure SetIndex(const aIndexName: string);
     procedure OpenReport(const aFileName:string);
     procedure UpdateActiveReport;
+    function GetDataPath: string;
     procedure MasterDetail;
+    procedure LoadConfig;
+    procedure SaveConfig;
   public
     { public declarations }
   end; 
@@ -364,6 +373,14 @@ begin
     ShowMessage(cerPrepareFailed);
 end;
 
+procedure TfrmMain.btnExportLastClick(Sender: TObject);
+begin
+  if TheReport.PrepareReport then
+    TheReport.ExportTo(nil, '')
+  else
+    ShowMessage(cerPrepareFailed);
+end;
+
 procedure TfrmMain.btnMasterDetailClick(Sender: TObject);
 begin
   MasterDetail;
@@ -379,6 +396,11 @@ begin
   end else begin
     SetIndex(comboIndex.Items[i]);
   end;
+end;
+
+procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: boolean);
+begin
+  SaveConfig;
 end;
 
 procedure TfrmMain.gridTitleClick(Column: TColumn);
@@ -404,12 +426,11 @@ var
   dataPath: string;
 begin
 
+  DebugLogger.MaxNestPrefixLen:=100;
+
   UpdateAppTranslation;
 
-  dataPath := ExtractFilePath(ParamStr(0));
-  {$ifdef Darwin}
-  dataPath := IncludeTrailingPathDelimiter(ExpandFileName(dataPath + '../../..'));
-  {$endif}
+  DataPath := GetDataPath;
 
   LookCountries.Close;
   LookCountries.FilePath := datapath + 'db/';
@@ -429,16 +450,18 @@ begin
   Master.Close;
   Master.FilePath := datapath + 'db/';
   Master.TableName := 'countries.dbf';
-  
+
+  LoadConfig;
+
   comboIndex.Clear;
   comboIndex.Items.Add(cerNone);
   for i:=0 to Detail.Indexes.Count-1 do
     comboIndex.Items.Add(Detail.Indexes[i].Name);
   FCountryIndex := ComboIndex.Items.IndexOf('BYCOUNTRY');
   SetIndex('');
-  
-  if FileExistsUTF8(datapath + 'salida.lrf') then
-    OpenReport(datapath + 'salida.lrf');
+
+  if FileExistsUTF8(fCurReport) then
+    OpenReport(fCurReport);
 
   for i:=Low(rptArr) to High(rptArr) do begin
     r := TfrReport.Create(self);
@@ -521,12 +544,21 @@ end;
 procedure TfrmMain.OpenReport(const aFileName: string);
 begin
   TheReport.LoadFromFile(aFileName);
+  fCurReport := TheReport.FileName;
   UpdateActiveReport;
 end;
 
 procedure TfrmMain.UpdateActiveReport;
 begin
   SBar.Panels[0].Text:= format(cerActiveReport, [TheReport.FileName]);
+end;
+
+function TfrmMain.GetDataPath: string;
+begin
+  result := ExtractFilePath(ParamStr(0));
+  {$ifdef Darwin}
+  result := IncludeTrailingPathDelimiter(ExpandFileName(dataPath + '../../..'));
+  {$endif}
 end;
 
 procedure TfrmMain.MasterDetail;
@@ -551,6 +583,34 @@ begin
     Grid.AnchorSideLeft.Side := asrBottom;
     comboIndex.Enabled := false;
   end;
+end;
+
+procedure TfrmMain.LoadConfig;
+var
+  ini: TIniFile;
+  s: string;
+begin
+  ini := TIniFile.Create(GetDataPath+'config.ini');
+  s := ini.ReadString('General', 'LastReport', '');
+  if s<>'' then
+    fCurreport := s
+  else
+    fCurReport := GetDataPath + 'salida.lrf';
+  TheReport.DefExportFileName := ini.ReadString('General','LastExportFilename','');
+  TheReport.DefExportFilterClass := ini.ReadString('General','LastExportFilterClass', '');
+  ini.Free;
+end;
+
+procedure TfrmMain.SaveConfig;
+var
+  ini: TIniFile;
+  s: string;
+begin
+  ini := TIniFile.Create(GetDataPath+'config.ini');
+  ini.WriteString('General', 'LastReport', fCurReport);
+  ini.WriteString('General', 'LastExportFilename', theReport.DefExportFileName);
+  ini.WriteString('General', 'LastExportFilterClass', theReport.DefExportFilterClass);
+  ini.free;
 end;
 
 procedure TranslateResStrings;

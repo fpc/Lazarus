@@ -1,7 +1,3 @@
- Arabic translation of Free Pascal Lazarus Project.
- Copyright (C) 2012 Lazarus Project
- This file is distributed under the same license as the Lazarus package.
- Khaled Shagrouni <shagrouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
@@ -21,7 +17,6 @@ msgstr ""
 msgid "Active report: %s"
 msgstr "التقرير النشط %s"
 
- مركّب/ تركيب
 #: maincalleditor.cerappcaption
 msgctxt "maincalleditor.cerappcaption"
 msgid "LazReport Test Suite"
@@ -190,6 +185,10 @@ msgstr "طباعة التقرير"
 msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
 msgid "Thumbnails"
 msgstr "مصغرات"
+
+#: tfrmmain.btnexportlast.caption
+msgid "Repeat Export"
+msgstr ""
 
 #: tfrmmain.btnmasterdetail.caption
 msgid "Master-Detail Test"

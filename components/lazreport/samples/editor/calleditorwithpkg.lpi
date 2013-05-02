@@ -54,32 +54,35 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="7">
+    <RequiredPackages Count="8">
       <Item1>
-        <PackageName Value="lr_extexp"/>
+        <PackageName Value="lrcairoexport"/>
       </Item1>
       <Item2>
-        <PackageName Value="lazreport"/>
-        <MinVersion Minor="9" Release="6" Valid="True"/>
+        <PackageName Value="lr_extexp"/>
       </Item2>
       <Item3>
-        <PackageName Value="lazreportpdfexport"/>
-        <MinVersion Minor="5" Valid="True"/>
+        <PackageName Value="lazreport"/>
+        <MinVersion Minor="9" Release="6" Valid="True"/>
       </Item3>
       <Item4>
-        <PackageName Value="Printer4Lazarus"/>
+        <PackageName Value="lazreportpdfexport"/>
+        <MinVersion Minor="5" Valid="True"/>
       </Item4>
       <Item5>
-        <PackageName Value="LCL"/>
+        <PackageName Value="Printer4Lazarus"/>
       </Item5>
       <Item6>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="LCL"/>
       </Item6>
       <Item7>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item7>
+      <Item8>
         <PackageName Value="DBFLaz"/>
         <MinVersion Minor="1" Release="1" Valid="True"/>
-      </Item7>
+      </Item8>
     </RequiredPackages>
     <Units Count="3">
       <Unit0>
