@@ -1723,12 +1723,16 @@ begin
 end;
 
 function TCodeToolManager.HandleException(AnException: Exception): boolean;
-var ErrorSrcTool: TCustomCodeTool;
+var
+  ErrorSrcTool: TCustomCodeTool;
   DirtyPos: Integer;
   ErrorDirTool: TCompilerDirectivesTree;
 begin
   fErrorMsg:=AnException.Message;
   fErrorTopLine:=0;
+  fErrorCode:=nil;
+  fErrorColumn:=-1;
+  fErrorLine:=-1;
   if (AnException is ELinkScannerError) then begin
     // link scanner error
     if AnException is ELinkScannerConsistency then
@@ -1761,14 +1765,10 @@ begin
     // Compiler directive parser error
     ErrorDirTool:=ECDirectiveParserException(AnException).Sender;
     fErrorCode:=ErrorDirTool.Code;
-    fErrorColumn:=-1;
-    fErrorLine:=-1;
   end else if (AnException is ESourceChangeCacheError) then begin
     // SourceChangeCache error
-    fErrorCode:=nil;
   end else if (AnException is ECodeToolManagerError) then begin
     // CodeToolManager error
-    fErrorCode:=nil;
   end else begin
     // unknown exception
     DumpExceptionBackTrace;
