@@ -136,13 +136,14 @@ type
   { TCompilerDirectivesTree }
 
   TCompilerDirectivesTree = class
-    FChangeStep: integer;
   private
+    FChangeStep: integer;
     FDefaultDirectiveFuncList: TKeyWordFunctionList;
     FDisableUnusedDefines: boolean;
     FRemoveDisabledDirectives: boolean;
     FSimplifyExpressions: boolean;
     FUndefH2PasFunctions: boolean;
+    FLastErrorMsg: string;
     function IfdefDirective: boolean;
     function IfCDirective: boolean;
     function IfndefDirective: boolean;
@@ -175,6 +176,8 @@ type
     procedure EndIFNode(const ErrorMsg: string);
 
     procedure InternalRemoveNode(Node: TCodeTreeNode);
+    procedure RaiseException(const ErrorMsg: string);
+    procedure RaiseLastError;
   public
     Code: TCodeBuffer;
     Src: string;
@@ -667,17 +670,10 @@ begin
 end;
 
 procedure TCompilerDirectivesTree.EndIFNode(const ErrorMsg: string);
-
-  procedure RaiseMissingStartNode;
-  begin
-    WriteDebugReport;
-    raise ECDirectiveParserException.Create(Self,ErrorMsg);
-  end;
-
 begin
   if (CurNode.Desc<>cdnIf) and (CurNode.Desc<>cdnElse)
   and (CurNode.Desc<>cdnElseIf) then
-    RaiseMissingStartNode;
+    RaiseException(ErrorMsg);
   EndChildNode;
 end;
 
@@ -1159,7 +1155,7 @@ var
     Change: PDefineChange;
   begin
     if StackPointer=0 then
-      raise ECDirectiveParserException.Create(Self,'TCompilerDirectivesTree.DisableUnreachableBlocks.Pop without Push');
+      RaiseException('TCompilerDirectivesTree.DisableUnreachableBlocks.Pop without Push');
     // undo all changes
     while Stack[StackPointer]<>nil do begin
       Change:=Stack[StackPointer];
@@ -1358,7 +1354,7 @@ procedure TCompilerDirectivesTree.DisableIfNode(Node: TCodeTreeNode;
   
   procedure RaiseImpossible;
   begin
-    raise ECDirectiveParserException.Create(Self,'TCompilerDirectivesTree.DisableIfNode impossible');
+    RaiseException('TCompilerDirectivesTree.DisableIfNode impossible');
   end;
   
   function GetExpr(ExprNode: TCodeTreeNode; out Negated: boolean): string;
@@ -1596,6 +1592,17 @@ begin
   Tree.DeleteNode(Node);
 end;
 
+procedure TCompilerDirectivesTree.RaiseException(const ErrorMsg: string);
+begin
+  fLastErrorMsg:=ErrorMsg;
+  raise ECDirectiveParserException.Create(Self,ErrorMsg);
+end;
+
+procedure TCompilerDirectivesTree.RaiseLastError;
+begin
+  raise ECDirectiveParserException.Create(Self,fLastErrorMsg);
+end;
+
 procedure TCompilerDirectivesTree.RemoveEmptyNodes(var Changed: boolean);
 var
   Node: TCodeTreeNode;
@@ -1705,8 +1712,7 @@ procedure TCompilerDirectivesTree.Parse(aCode: TCodeBuffer;
   
   procedure RaiseDanglingIFDEF;
   begin
-    WriteDebugReport;
-    raise ECDirectiveParserException.Create(Self,'missing EndIf');
+    RaiseException('missing EndIf');
   end;
   
 var
@@ -1716,9 +1722,13 @@ begin
   {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
   {$R-}
   if (Code=aCode) and (NestedComments=aNestedComments) and (not UpdateNeeded)
-  then
+  then begin
+    if FLastErrorMsg<>'' then
+      RaiseLastError;
     exit;
+  end;
 
+  FLastErrorMsg:='';
   Code:=aCode;
   NestedComments:=aNestedComments;
   InitParser;
