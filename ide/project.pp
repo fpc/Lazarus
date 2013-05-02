@@ -60,7 +60,7 @@ uses
   SynEdit,
   // IDE
   CompOptsModes, ProjectResources, LazConf, W32Manifest, ProjectIcon,
-  LazarusIDEStrConsts, CompilerOptions, lfmUnitResource,
+  LazarusIDEStrConsts, CompilerOptions, lfmUnitResource, ModeMatrixCtrl,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
   FileReferenceList, EditDefineTree, PackageDefs, PackageSystem,
   IDEDialogs;
@@ -707,6 +707,8 @@ type
   private
     FAssigning: Boolean;
     FChangeStamp: integer;
+    FSessionMatrixOptions: TBuildMatrixOptions;
+    FSharedMatrixOptions: TBuildMatrixOptions;
     fSavedChangeStamp: int64;
     fItems: TFPList;
     FLazProject: TProject;
@@ -738,6 +740,8 @@ type
     property LazProject: TProject read FLazProject write FLazProject;
     property Assigning: Boolean read FAssigning;
     property Modified: boolean read GetModified write SetModified;
+    property SharedMatrixOptions: TBuildMatrixOptions read FSharedMatrixOptions;
+    property SessionMatrixOptions: TBuildMatrixOptions read FSessionMatrixOptions;
   end;
 
   { TProject }
@@ -2738,10 +2742,15 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
     end;
     XMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
 
+    if SaveData then
+      BuildModes.SharedMatrixOptions.SaveToXMLConfig(XMLConfig,Path+'BuildModes/SharedMatrixOptions/');
+
     // save what mode is currently active in the session
     //debugln(['SaveBuildModes SaveSession=',SaveSession,' ActiveBuildMode.Identifier=',ActiveBuildMode.Identifier]);
-    if SaveSession then
+    if SaveSession then begin
       XMLConfig.SetDeleteValue(Path+'BuildModes/Active',ActiveBuildMode.Identifier,'default');
+      BuildModes.SessionMatrixOptions.SaveToXMLConfig(XMLConfig,Path+'BuildModes/SessionMatrixOptions/');
+    end;
   end;
 
   procedure SaveUnits(XMLConfig: TXMLConfig; const Path: string;
@@ -3210,6 +3219,11 @@ var
       CurMode.MacroValues.LoadFromXMLConfig(XMLConfig,MacroValsPath);
       CurMode.CompilerOptions.LoadFromXMLConfig(XMLConfig,CompOptsPath);
     end;
+
+    if LoadData then
+      BuildModes.SharedMatrixOptions.LoadFromXMLConfig(XMLConfig,Path+'BuildModes/SharedMatrixOptions/');
+    if (not LoadData) and (not LoadParts) then
+      BuildModes.SessionMatrixOptions.LoadFromXMLConfig(XMLConfig,Path+'BuildModes/SessionMatrixOptions/');
 
     // set active mode
     ActiveIdentifier:=XMLConfig.GetValue(Path+'BuildModes/Active','default');
@@ -7077,11 +7091,18 @@ begin
 end;
 
 procedure TProjectBuildModes.SetModified(const AValue: boolean);
+var
+  i: Integer;
 begin
   if AValue then
     IncreaseChangeStamp
-  else
+  else begin
+    for i:=0 to Count-1 do
+      Items[i].Modified:=false;
+    SharedMatrixOptions.Modified:=false;
+    SessionMatrixOptions.Modified:=false;
     fSavedChangeStamp:=FChangeStamp;
+  end;
 end;
 
 constructor TProjectBuildModes.Create(AOwner: TComponent);
@@ -7091,12 +7112,18 @@ begin
   fItems:=TFPList.Create;
   FChangeStamp:=CTInvalidChangeStamp;
   fSavedChangeStamp:=FChangeStamp;
+  FSharedMatrixOptions:=TBuildMatrixOptions.Create;
+  FSharedMatrixOptions.OnChanged:=@OnItemChanged;
+  FSessionMatrixOptions:=TBuildMatrixOptions.Create;
+  FSessionMatrixOptions.OnChanged:=@OnItemChanged;
 end;
 
 destructor TProjectBuildModes.Destroy;
 begin
   FreeAndNil(fOnChanged);
   Clear;
+  FreeAndNil(FSharedMatrixOptions);
+  FreeAndNil(FSessionMatrixOptions);
   FreeAndNil(fItems);
   inherited Destroy;
 end;
@@ -7104,6 +7131,8 @@ end;
 procedure TProjectBuildModes.Clear;
 begin
   while Count>0 do Delete(Count-1);
+  SharedMatrixOptions.Clear;
+  SessionMatrixOptions.Clear;
 end;
 
 function TProjectBuildModes.IsEqual(OtherModes: TProjectBuildModes): boolean;
@@ -7114,6 +7143,8 @@ begin
   if OtherModes.Count<>Count then exit;
   for i:=0 to Count-1 do
     if not Items[i].Equals(OtherModes[i]) then exit;
+  if not SharedMatrixOptions.Equals(OtherModes.SharedMatrixOptions) then exit;
+  if not SessionMatrixOptions.Equals(OtherModes.SessionMatrixOptions) then exit;
   Result:=false;
 end;
 
@@ -7134,6 +7165,8 @@ begin
       if WithModified then
         CurMode.Modified:=OtherModes[i].Modified;
     end;
+    SharedMatrixOptions.Assign(OtherModes.SharedMatrixOptions);
+    SessionMatrixOptions.Assign(OtherModes.SessionMatrixOptions);
     if WithModified then
       Modified:=OtherModes.Modified;
     FAssigning:=False;
@@ -7215,9 +7248,15 @@ function TProjectBuildModes.IsModified(InSession: boolean): boolean;
 var
   i: Integer;
 begin
+  Result:=true;
+  if InSession then begin
+    if SessionMatrixOptions.Modified then exit;
+  end else begin
+    if SharedMatrixOptions.Modified then exit;
+  end;
   for i:=0 to Count-1 do
     if (Items[i].InSession=InSession) and Items[i].Modified then
-      exit(true);
+      exit;
   Result:=false;
 end;
 

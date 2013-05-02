@@ -44,7 +44,7 @@ uses
   CompOptsIntf, IDEExternToolIntf, IDEDialogs, MacroDefIntf,
   // IDE
   IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
-  IDEOptionDefs, TransferMacros, Debugger;
+  IDEOptionDefs, TransferMacros, Debugger, ModeMatrixCtrl;
 
 const
   EnvOptsVersion: integer = 107;
@@ -278,6 +278,7 @@ type
     FFPCSourceDirHistory: TStringList;
     FMakeFileHistory: TStringList;
     FCompilerMessagesFileHistory: TStringList;
+    FBuildMatrixOptions: TBuildMatrixOptions;
 
    // TODO: store per debuggerclass options
     // Maybe these should go to a new TDebuggerOptions class
@@ -406,12 +407,6 @@ type
     function MacroFuncConfDir(const {%H-}s:string; const {%H-}Data: PtrInt;
                               var {%H-}Abort: boolean): string;
 
-    // debugger
-    procedure SaveDebuggerPropertiesList;
-    procedure SaveDebuggerProperties(DebuggerClass: String; Properties: TDebuggerProperties);
-    procedure LoadDebuggerProperties(DebuggerClass: String; Properties: TDebuggerProperties);
-    property  DebuggerConfig: TDebuggerConfigStore read FDebuggerConfig;
-
     // auto save
     property AskSaveSessionOnly: boolean read FAskSaveSessionOnly write FAskSaveSessionOnly; // ask even if only project session needs saving
     property AutoSaveEditorFiles: boolean read FAutoSaveEditorFiles write FAutoSaveEditorFiles;
@@ -528,6 +523,21 @@ type
                                         write SetTestBuildDirectory;
     property TestBuildDirHistory: TStringList read FTestBuildDirHistory
                                               write FTestBuildDirHistory;
+    property CompilerMessagesFilename: string read GetCompilerMessagesFilename
+                                              write SetCompilerMessagesFilename;
+    property CompilerMessagesFileHistory: TStringList read FCompilerMessagesFileHistory
+                                                     write FCompilerMessagesFileHistory;
+
+    // global build options
+    property BuildMatrixOptions: TBuildMatrixOptions read FBuildMatrixOptions;
+
+    // Debugger
+    procedure SaveDebuggerPropertiesList;
+    procedure SaveDebuggerProperties(DebuggerClass: String; Properties: TDebuggerProperties);
+    procedure LoadDebuggerProperties(DebuggerClass: String; Properties: TDebuggerProperties);
+    property  DebuggerConfig: TDebuggerConfigStore read FDebuggerConfig;
+
+    // Debugger event log
     property DebuggerEventLogClearOnRun: Boolean read FDebuggerEventLogClearOnRun write FDebuggerEventLogClearOnRun;
     property DebuggerEventLogCheckLineLimit: Boolean read FDebuggerEventLogCheckLineLimit write FDebuggerEventLogCheckLineLimit;
     property DebuggerEventLogLineLimit: Integer read FDebuggerEventLogLineLimit write FDebuggerEventLogLineLimit;
@@ -540,11 +550,6 @@ type
     property DebuggerEventLogShowDebugger: Boolean read FDebuggerEventLogShowDebugger write FDebuggerEventLogShowDebugger;
     property DebuggerEventLogUseColors: Boolean read FDebuggerEventLogUseColors write FDebuggerEventLogUseColors;
     property DebuggerEventLogColors[AIndex: TDBGEventType]: TDebuggerEventLogColor read GetDebuggerEventLogColors write SetDebuggerEventLogColors;
-
-    property CompilerMessagesFilename: string read GetCompilerMessagesFilename
-                                              write SetCompilerMessagesFilename;
-    property CompilerMessagesFileHistory: TStringList read FCompilerMessagesFileHistory
-                                                     write FCompilerMessagesFileHistory;
 
     // recent files and directories
     property RecentOpenFiles: TStringList read FRecentOpenFiles
@@ -564,8 +569,8 @@ type
     property MaxRecentPackageFiles: integer read FMaxRecentPackageFiles
                                          write FMaxRecentPackageFiles;
     property LastSavedProjectFile: string read FLastSavedProjectFile
-                     write FLastSavedProjectFile; // if empty then create new project,
-    // if '-'=RestoreProjectClosed then do not load/create any project
+                     write FLastSavedProjectFile; { if empty then create new project,
+                                                    if '-' then do not load/create any project }
     property OpenLastProjectAtStart: boolean read FOpenLastProjectAtStart
                                              write FOpenLastProjectAtStart;
     property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;
@@ -885,12 +890,16 @@ begin
   //debug
   (* TODO: maybe revert relations. Create this in Debugger, and call environmentoptions for the configstore only? *)
   FDebuggerConfig := TDebuggerConfigStore.Create;
+
+  // global build options
+  FBuildMatrixOptions:=TBuildMatrixOptions.Create;
 end;
 
 destructor TEnvironmentOptions.Destroy;
 var
   i: Integer;
 begin
+  FreeAndNil(FBuildMatrixOptions);
   FreeAndNil(fExternalTools);
   FreeAndNil(FRecentOpenFiles);
   FreeAndNil(FRecentProjectFiles);
@@ -1078,7 +1087,7 @@ begin
       FCompletionWindowHeight:=XMLConfig.GetValue(
         Path+'Desktop/CompletionWindowHeight/Value', 6);
 
-      // EnvironmentOptionsDialog editor
+      // form editor
       FShowGrid:=XMLConfig.GetValue(
          Path+'FormEditor/ShowGrid',true);
       FShowBorderSpacing:=XMLConfig.GetValue(
@@ -1148,9 +1157,6 @@ begin
            Path+'FPCSourceDirectory/Value',FPCSourceDirectory);
         LoadRecentList(XMLConfig,FFPCSourceDirHistory,
            Path+'FPCSourceDirectory/History/',rltFile);
-        if FFPCSourceDirHistory.Count=0 then begin
-
-        end;
         MakeFilename:=TrimFilename(XMLConfig.GetValue(
            Path+'MakeFilename/Value',MakeFilename));
         LoadRecentList(XMLConfig,FMakeFileHistory,
@@ -1168,6 +1174,11 @@ begin
            Path+'CompilerMessagesFilename/Value',CompilerMessagesFilename);
         LoadRecentList(XMLConfig, FCompilerMessagesFileHistory,
            Path+'CompilerMessagesFilename/History/',rltFile);
+
+        // global buid options
+        Cfg.AppendBasePath('BuildMatrix');
+        FBuildMatrixOptions.LoadFromConfig(Cfg);
+        Cfg.UndoAppendBasePath;
 
         // backup
         LoadBackupInfo(FBackupInfoProjectFiles
@@ -1418,7 +1429,7 @@ begin
       XMLConfig.SetDeleteValue(Path+'Desktop/CompletionWindowHeight/Value',
                                FCompletionWindowHeight, 6);
 
-      // EnvironmentOptionsDialog editor
+      // form editor
       XMLConfig.SetDeleteValue(Path+'FormEditor/ShowBorderSpacing',
                                FShowBorderSpacing,false);
       XMLConfig.SetDeleteValue(Path+'FormEditor/ShowGrid',FShowGrid,true);
@@ -1504,6 +1515,11 @@ begin
            Path+'CompilerMessagesFilename/Value',CompilerMessagesFilename,'');
         SaveRecentList(XMLConfig,FCompilerMessagesFileHistory,
            Path+'CompilerMessagesFilename/History/');
+
+        // global buid options
+        Cfg.AppendBasePath('BuildMatrix');
+        FBuildMatrixOptions.SaveToConfig(Cfg);
+        Cfg.UndoAppendBasePath;
 
         // backup
         SaveBackupInfo(FBackupInfoProjectFiles

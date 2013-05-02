@@ -18,6 +18,36 @@
  *                                                                         *
  ***************************************************************************
 
+ ToDo:
+   - add frame
+   - follow active mode
+   - read options: global
+   - read options: shared
+   - read options: session
+   - write options: global, save envopt.xml
+   - write options: shared
+   - write options: session
+   - restore options: global
+   - restore options: shared
+   - restore options: session
+   - resourcestrings
+   - rename build mode => update matrix modes and title
+   - delete build mode => delete column
+   - add build mode => add column
+   - pkg custom options
+   - show added custom options in package inherited tree
+   - project custom options
+   - show added custom options in project inherited tree
+   - pkg out dir
+   - show OutDir in package inherited tree
+   - project outdir
+   - show OutDir in project inherited tree
+   - ide macro
+   - warn for syntax errors in ide macro
+   - wiki
+   - load old build macro values into matrix
+   - save matrix options for old build macro values
+   - remove old frame
 }
 unit Compiler_ModeMatrix;
 
@@ -26,8 +56,9 @@ unit Compiler_ModeMatrix;
 interface
 
 uses
-  Classes, SysUtils, LazFileUtils, LazLogger, LResources, Forms, Controls,
-  Graphics, ComCtrls, ModeMatrixCtrl;
+  Classes, SysUtils, LazFileUtils, LazLogger, KeywordFuncLists, LResources,
+  Forms, Controls, Graphics, ComCtrls,
+  ModeMatrixCtrl;
 
 type
 
@@ -54,6 +85,7 @@ type
     procedure BMMUndoToolButtonClick(Sender: TObject);
     procedure GridEditingDone(Sender: TObject);
     procedure GridSelection(Sender: TObject; {%H-}aCol, {%H-}aRow: Integer);
+    procedure GridShowHint(Sender: TObject; HintInfo: PHintInfo);
   private
     FGrid: TGroupedMatrixControl;
     FIDEColor: TColor;
@@ -70,7 +102,221 @@ type
     property SessionColor: TColor read FSessionColor write FSessionColor;
   end;
 
+function BuildMatrixOptionTypeCaption(Typ: TBuildMatrixOptionType): string;
+function CaptionToBuildMatrixOptionType(s: string): TBuildMatrixOptionType;
+function BuildMatrixOptionTypeHint(Typ: TBuildMatrixOptionType): string;
+function IsEqual(Options: TBuildMatrixOptions; StorageGroup: TGroupedMatrixGroup): boolean;
+procedure AssignBuildMatrixOptionsToGroup(Options: TBuildMatrixOptions;
+  Matrix: TGroupedMatrix; StorageGroup: TGroupedMatrixGroup);
+procedure AssignBuildMatrixGroupToOptions(StorageGroup: TGroupedMatrixGroup;
+  Options: TBuildMatrixOptions);
+function TargetsPrefix: string;
+function AddMatrixTarget(Matrix: TGroupedMatrix; StorageGroup: TGroupedMatrixGroup): TGroupedMatrixGroup;
+function SplitMatrixMacro(MacroAssignment: string;
+  out MacroName, MacroValue: string; ExceptionOnError: boolean): boolean;
+
 implementation
+
+function BuildMatrixOptionTypeCaption(Typ: TBuildMatrixOptionType): string;
+begin
+  case Typ of
+  bmotCustom: Result:='Custom';
+  bmotOutDir: Result:='OutDir';
+  bmotIDEMacro: Result:='IDE Macro';
+  else Result:='?';
+  end;
+end;
+
+function CaptionToBuildMatrixOptionType(s: string): TBuildMatrixOptionType;
+begin
+  for Result:=low(TBuildMatrixOptionType) to high(TBuildMatrixOptionType) do
+    if s=BuildMatrixOptionTypeCaption(Result) then exit;
+  Result:=bmotCustom;
+end;
+
+function BuildMatrixOptionTypeHint(Typ: TBuildMatrixOptionType): string;
+begin
+  case Typ of
+  bmotCustom: Result:='Append arbitrary fpc options, e.g. -O1 -ghtl -dFlag';
+  bmotOutDir: Result:='Override output directory -FU of target';
+  bmotIDEMacro: Result:='Set an IDE macro, e.g.: LCLWidgetType:=win32';
+  else Result:='?';
+  end;
+end;
+
+function IsEqual(Options: TBuildMatrixOptions; StorageGroup: TGroupedMatrixGroup
+  ): boolean;
+// ignore empty targets
+var
+  OptIndex: Integer;
+  GrpIndex: Integer;
+  Target: TGroupedMatrixGroup;
+  i: Integer;
+  ValueRow: TGroupedMatrixValue;
+  Option: TBuildMatrixOption;
+  MacroName: string;
+  MacroValue: string;
+begin
+  Result:=false;
+  OptIndex:=0;
+  for GrpIndex:=0 to StorageGroup.Count-1 do begin
+    Target:=TGroupedMatrixGroup(StorageGroup[GrpIndex]);
+    if not (Target is TGroupedMatrixGroup) then begin
+      debugln(['IsEqual StorageGroup expected group, but found ',DbgSName(Target)]);
+      exit;
+    end;
+    for i:=0 to Target.Count-1 do begin
+      ValueRow:=TGroupedMatrixValue(Target[i]);
+      if not (ValueRow is TGroupedMatrixValue) then begin
+        debugln(['IsEqual Target expected Value, but found ',DbgSName(ValueRow)]);
+        exit;
+      end;
+      if OptIndex>=Options.Count then exit;
+      // compare option
+      Option:=Options[OptIndex];
+      if Option.Targets<>Target.Value then exit;
+      if Option.Modes<>ValueRow.GetNormalizedModes then exit;
+      if Option.Typ<>CaptionToBuildMatrixOptionType(ValueRow.Typ) then exit;
+      if Option.Typ=bmotIDEMacro then begin
+        SplitMatrixMacro(ValueRow.Value,MacroName,MacroValue,false);
+        if Option.MacroName<>MacroName then exit;
+        if Option.Value<>MacroValue then exit;
+      end else begin
+        if Option.Value<>ValueRow.Value then exit;
+      end;
+      inc(OptIndex);
+    end;
+  end;
+  Result:=OptIndex=Options.Count;
+end;
+
+procedure AssignBuildMatrixOptionsToGroup(Options: TBuildMatrixOptions;
+  Matrix: TGroupedMatrix; StorageGroup: TGroupedMatrixGroup);
+var
+  OptIndex: Integer;
+  Option: TBuildMatrixOption;
+  TargetGrp: TGroupedMatrixGroup;
+  Value: String;
+begin
+  if IsEqual(Options,StorageGroup) then exit;
+  StorageGroup.Clear;
+  TargetGrp:=nil;
+  for OptIndex:=0 to Options.Count-1 do begin
+    Option:=Options[OptIndex];
+    if (TargetGrp=nil) or (TargetGrp.Value<>Option.Targets) then
+      TargetGrp:=AddMatrixTarget(Matrix,StorageGroup);
+    Value:=Option.Value;
+    if Option.Typ=bmotIDEMacro then
+      Value:=Option.MacroName+':='+Value;
+    Matrix.AddValue(TargetGrp,Option.Modes,
+                    BuildMatrixOptionTypeCaption(Option.Typ),Value);
+  end;
+end;
+
+procedure AssignBuildMatrixGroupToOptions(StorageGroup: TGroupedMatrixGroup;
+  Options: TBuildMatrixOptions);
+var
+  GrpIndex: Integer;
+  Target: TGroupedMatrixGroup;
+  ValueRow: TGroupedMatrixValue;
+  i: Integer;
+  Option: TBuildMatrixOption;
+  MacroName: string;
+  MacroValue: string;
+begin
+  if IsEqual(Options,StorageGroup) then exit;
+  Options.Clear;
+  for GrpIndex:=0 to StorageGroup.Count-1 do begin
+    Target:=TGroupedMatrixGroup(StorageGroup[GrpIndex]);
+    if not (Target is TGroupedMatrixGroup) then begin
+      debugln(['AssignBuildMatrixGroupToOptions StorageGroup expected group, but found ',DbgSName(Target)]);
+      exit;
+    end;
+    for i:=0 to Target.Count-1 do begin
+      ValueRow:=TGroupedMatrixValue(Target[i]);
+      if not (ValueRow is TGroupedMatrixValue) then begin
+        debugln(['AssignBuildMatrixGroupToOptions Target expected Value, but found ',DbgSName(ValueRow)]);
+        exit;
+      end;
+      Option:=Options.Add(CaptionToBuildMatrixOptionType(ValueRow.Typ),
+                          Target.Value);
+      Option.Modes:=ValueRow.GetNormalizedModes;
+      if Option.Typ=bmotIDEMacro then begin
+        SplitMatrixMacro(ValueRow.Value,MacroName,MacroValue,false);
+        Option.MacroName:=MacroName;
+        Option.Value:=MacroValue;
+      end else begin
+        Option.Value:=ValueRow.Value;
+      end;
+    end;
+  end;
+end;
+
+function TargetsPrefix: string;
+begin
+  Result:='Targets: ';
+end;
+
+function AddMatrixTarget(Matrix: TGroupedMatrix; StorageGroup: TGroupedMatrixGroup
+  ): TGroupedMatrixGroup;
+begin
+  Result:=Matrix.AddGroup(StorageGroup,TargetsPrefix,'*');
+  Result.Writable:=true;
+end;
+
+function SplitMatrixMacro(MacroAssignment: string; out MacroName,
+  MacroValue: string; ExceptionOnError: boolean): boolean;
+
+  procedure E(Msg: string);
+  begin
+    raise Exception.Create(Msg);
+  end;
+
+var
+  p: PChar;
+  StartP: PChar;
+begin
+  Result:=false;
+  MacroName:='';
+  MacroValue:='';
+  if MacroAssignment='' then begin
+    if ExceptionOnError then
+      E('missing macro name');
+    exit;
+  end;
+  p:=PChar(MacroAssignment);
+  if not IsIdentStartChar[p^] then begin
+    if ExceptionOnError then
+      E('expected macro name, but found '+dbgstr(p^));
+    exit;
+  end;
+  StartP:=p;
+  repeat
+    inc(p);
+  until not IsIdentChar[p^];
+  MacroName:=copy(MacroAssignment,1,p-StartP);
+  if p^<>':' then begin
+    if ExceptionOnError then
+      E('expected :, but found '+dbgstr(p^));
+    exit;
+  end;
+  inc(p);
+  if p^<>'=' then begin
+    if ExceptionOnError then
+      E('expected =, but found '+dbgstr(p^));
+    exit;
+  end;
+  repeat
+    if (p^=#0) and (p-PChar(MacroAssignment)=length(MacroAssignment)) then break;
+    if p^ in [#0..#31,#127] then begin
+      if ExceptionOnError then
+        E('invalid character in macro value '+dbgstr(p^));
+      exit;
+    end;
+  until false;
+  MacroValue:=copy(MacroAssignment,StartP-PChar(MacroAssignment)+1,p-StartP);
+  Result:=true;
+end;
 
 {$R *.lfm}
 
@@ -79,6 +325,89 @@ implementation
 procedure TFrame1.GridSelection(Sender: TObject; aCol, aRow: Integer);
 begin
   UpdateButtons;
+end;
+
+procedure TFrame1.GridShowHint(Sender: TObject; HintInfo: PHintInfo);
+var
+  aCol: Longint;
+  aRow: Longint;
+  MatRow: TGroupedMatrixRow;
+  h: String;
+  p: Integer;
+  GroupRow: TGroupedMatrixGroup;
+  Targets: String;
+  StartP: Integer;
+  Target: String;
+  Excludes: String;
+  Includes: String;
+  All: Boolean;
+  IncludeProject: Boolean;
+  ExcludeProject: Boolean;
+begin
+  aCol:=0;
+  aRow:=0;
+  Grid.MouseToCell(HintInfo^.CursorPos.X,HintInfo^.CursorPos.Y,aCol,aRow);
+  if aRow<Grid.FixedCols then exit;
+  MatRow:=Grid.Matrix[aRow-1];
+  h:='';
+  if MatRow is TGroupedMatrixGroup then begin
+    GroupRow:=TGroupedMatrixGroup(MatRow);
+    if GroupRow.Group<>nil then begin
+      // a target group
+      Targets:=GroupRow.Value;
+      p:=1;
+      Excludes:='';
+      Includes:='';
+      All:=false;
+      IncludeProject:=false;
+      ExcludeProject:=false;
+      while (p<=length(Targets)) do begin
+        StartP:=p;
+        while (p<=length(Targets)) and (Targets[p]<>',') do inc(p);
+        Target:=copy(Targets,StartP,p-StartP);
+        if Target<>'' then begin
+          if Target[1]='-' then begin
+            system.Delete(Target,1,1);
+            if Target<>'' then begin
+              if Target=BuildMatrixProjectName then
+                ExcludeProject:=true
+              else begin
+                if Excludes<>'' then Excludes+=',';
+                Excludes+=Target;
+              end;
+            end;
+          end else begin
+            if Target='*' then
+              All:=true
+            else if Target=BuildMatrixProjectName then
+              IncludeProject:=true
+            else begin
+              if Includes<>'' then Includes+=',';
+              Includes+=Target;
+            end;
+          end;
+        end;
+        inc(p);
+      end;
+      if ExcludeProject then
+        IncludeProject:=false;
+      if All then begin
+        if ExcludeProject then
+          h+='Apply to all packages.'+LineEnding
+        else
+          h+='Apply to all packages and projects.'+LineEnding;
+      end
+      else begin
+        if IncludeProject then
+          h+='Apply to project.'+LineEnding;
+        if Includes<>'' then
+          h+='Apply to all packages matching '+Includes+LineEnding;
+      end;
+      if Excludes<>'' then
+        h+='Exclude all packages matching '+Excludes+LineEnding;
+    end;
+  end;
+  HintInfo^.HintStr:=h;
 end;
 
 procedure TFrame1.BMMUndoToolButtonClick(Sender: TObject);
@@ -235,9 +564,7 @@ end;
 function TFrame1.AddTarget(StorageGroup: TGroupedMatrixGroup
   ): TGroupedMatrixGroup;
 begin
-  Result:=Grid.Matrix.AddGroup(StorageGroup,'Targets: ');
-  Result.Value:='*';
-  Result.Writable:=true;
+  Result:=AddMatrixTarget(Grid.Matrix,StorageGroup);
 end;
 
 procedure TFrame1.MoveRow(Direction: integer);
@@ -339,6 +666,8 @@ begin
 end;
 
 constructor TFrame1.Create(TheOwner: TComponent);
+var
+  t: TBuildMatrixOptionType;
 begin
   inherited Create(TheOwner);
 
@@ -348,11 +677,15 @@ begin
 
   FGrid:=TGroupedMatrixControl.Create(Self);
   with Grid do begin
-    Name:='TModeMatrixControl';
+    Name:='ModeMatrixControl';
     Align:=alClient;
+    for t:=low(TBuildMatrixOptionType) to high(TBuildMatrixOptionType) do
+      TypeColumn.PickList.Add(BuildMatrixOptionTypeCaption(t)+'='+BuildMatrixOptionTypeHint(t));
     Parent:=Self;
     OnSelection:=@GridSelection;
     OnEditingDone:=@GridEditingDone;
+    ShowHint:=true;
+    OnShowHint:=@GridShowHint;
   end;
 
   UpdateButtons;
