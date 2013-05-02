@@ -169,10 +169,10 @@ uses
   IntfGraphics, GraphType, FPimage;
 
 const
-  Dash_Dash: array [0..2] of double = (3, 1, 3); //_ _
-  Dash_Dot: array [0..1] of double = (1, 1); //. .
-  Dash_DashDot: array [0..4] of double = (3, 1, 1, 1, 3); //_ . _
-  Dash_DashDotDot: array [0..6] of double = (3, 1, 1, 1, 1, 1, 3); //_ . . _
+  Dash_Dash:        array [0..1] of double = (18, 6);             //____ ____
+  Dash_Dot:         array [0..1] of double = (3, 3);              //.........
+  Dash_DashDot:     array [0..3] of double = (9, 6, 3, 6);        //__ . __ .
+  Dash_DashDotDot:  array [0..5] of double = (9, 3, 3, 3, 3, 3);  //__ . . __
 
 function WriteToStream(closure: Pointer; data: PByte; length: LongWord): cairo_status_t; cdecl;
 var
@@ -215,16 +215,12 @@ end;
 { TCairoPrinterCanvas }
 
 procedure TCairoPrinterCanvas.SetPenProperties;
-
   procedure SetDash(d: array of double);
-  var
-    i, w: integer;
   begin
-    w := Pen.Width;
-    for i := 0 to High(d) do
-      d[i] := d[i] * w;
-    cairo_set_dash(cr, @d, High(d), 0);
+    cairo_set_dash(cr, @d, High(d)+1, 0);
   end;
+var
+  cap: cairo_line_cap_t;
 begin
   SetSourceColor(Pen.Color);
 (*  case Pen.Mode of
@@ -254,27 +250,37 @@ begin
   else
     cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
   end;*)
+  cairo_set_line_width(cr, Pen.Width*ScaleX); //line_width is diameter of the pen circle
+
   case Pen.Style of
-    psSolid: cairo_set_dash(cr, nil, 0, 0);
-    psDash: SetDash(Dash_Dash);
-    psDot: SetDash(Dash_Dot);
-    psDashDot: SetDash(Dash_DashDot);
+    psSolid:      cairo_set_dash(cr, nil, 0, 0);
+    psDash:       SetDash(Dash_Dash);
+    psDot:        SetDash(Dash_Dot);
+    psDashDot:    SetDash(Dash_DashDot);
     psDashDotDot: SetDash(Dash_DashDotDot);
   else
     cairo_set_dash(cr, nil, 0, 0);
   end;
+
   case Pen.EndCap of
-    pecRound: cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
-    pecSquare: cairo_set_line_cap(cr, CAIRO_LINE_CAP_SQUARE);
-    pecFlat: cairo_set_line_cap(cr, CAIRO_LINE_CAP_BUTT);
+    pecRound:   cap := CAIRO_LINE_CAP_ROUND;
+    pecSquare:  cap := CAIRO_LINE_CAP_SQUARE;
+    pecFlat:    cap := CAIRO_LINE_CAP_BUTT;
   end;
+
+  // dashed patterns do not look ok  combined with round or squared caps
+  // make it flat until a solution is found
+  case Pen.Style of
+    psDash, psDot, psDashDot, psDashDotDot:
+      cap := CAIRO_LINE_CAP_BUTT
+  end;
+  cairo_set_line_cap(cr, cap);
+
   case Pen.JoinStyle of
     pjsRound: cairo_set_line_join(cr, CAIRO_LINE_JOIN_ROUND);
     pjsBevel: cairo_set_line_join(cr, CAIRO_LINE_JOIN_BEVEL);
     pjsMiter: cairo_set_line_join(cr, CAIRO_LINE_JOIN_MITER);
   end;
-
-  cairo_set_line_width(cr, Pen.Width*72/XDPI); //line_width is diameter of the pen circle
 end;
 
 procedure TCairoPrinterCanvas.SetBrushProperties;
@@ -296,10 +302,14 @@ end;
 
 procedure TCairoPrinterCanvas.DoLineTo(X1, Y1: Integer);
 begin
+  Changing;
+  RequiredState([csHandleValid, csPenValid]);
+  SetPenProperties;
   cairo_move_to(cr, SX(PenPos.X), SY(PenPos.Y));
-  inherited DoLineTo(X1, Y1);
   cairo_line_to(cr, SX(X1), SY(Y1));
+  SetInternalPenPos(Point(X1,Y1));
   StrokeOnly;
+  Changed;
 end;
 
 procedure TCairoPrinterCanvas.DestroyCairoHandle;
