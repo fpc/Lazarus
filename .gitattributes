@@ -1951,6 +1951,7 @@ components/lazreport/samples/editor/calleditorwithpkg.lpi svneol=native#text/pla
 components/lazreport/samples/editor/calleditorwithpkg.lpr svneol=native#text/pascal
 components/lazreport/samples/editor/calleditorwithpkg.res -text
 components/lazreport/samples/editor/csvtest.lrf svneol=LF#text/xml eol=lf
+components/lazreport/samples/editor/cuadros.lrf svneol=native#text/xml
 components/lazreport/samples/editor/custompreview.lfm svneol=native#text/plain
 components/lazreport/samples/editor/custompreview.pas svneol=native#text/pascal
 components/lazreport/samples/editor/db/companies.dbf -text
@@ -1971,10 +1972,13 @@ components/lazreport/samples/editor/languages/calleditorwithpkg.uk.po svneol=nat
 components/lazreport/samples/editor/maincalleditor.lfm svneol=native#text/plain
 components/lazreport/samples/editor/maincalleditor.pas svneol=native#text/pascal
 components/lazreport/samples/editor/masterdetail.lrf svneol=LF#text/xml eol=lf
+components/lazreport/samples/editor/multisize.lrf svneol=native#text/xml
 components/lazreport/samples/editor/readme.txt svneol=native#text/plain
 components/lazreport/samples/editor/rpta.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/editor/rptb.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/editor/salida.lrf svneol=native#text/xml
+components/lazreport/samples/editor/salidaimg.lrf svneol=native#text/xml
+components/lazreport/samples/editor/shapes.lrf svneol=native#text/xml
 components/lazreport/samples/editor/testpage.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/editor/thumbnails.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/enduser_reports/dbf_demo/dbf_demo.lpi svneol=native#text/plain
