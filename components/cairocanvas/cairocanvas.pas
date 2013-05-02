@@ -26,6 +26,8 @@ type
   { TCairoPrinterCanvas }
 
   TCairoPrinterCanvas = class(TFilePrinterCanvas)
+  strict private
+    cr: Pcairo_t;
   private
     FLazClipRect: TRect;
     FUserClipRect: Pcairo_rectangle_t;
@@ -58,10 +60,9 @@ type
     procedure DrawRefRect(x,y,awidth,aheight: double; color:TColor);
     procedure DebugSys;
   protected
-    cr: Pcairo_t;
     ScaleX, ScaleY, FontScale: Double;
     procedure DoLineTo(X1,Y1: Integer); override;
-    procedure CreateCairoHandle({%H-}BaseHandle: HDC); virtual;
+    function CreateCairoHandle: HDC; virtual; abstract;
     procedure DestroyCairoHandle; virtual;
     procedure SetHandle(NewHandle: HDC); override;
     procedure BeginDoc; override;
@@ -74,8 +75,10 @@ type
     //
     procedure CreateBrush; override;
     procedure CreateFont; override;
+    procedure CreateHandle; override;
     procedure CreatePen; override;
     procedure RealizeAntialiasing; override;
+    procedure DestroyHandle;
   public
     SurfaceXDPI, SurfaceYDPI: Integer;
     constructor Create(APrinter : TPrinter); override;
@@ -116,7 +119,6 @@ type
   protected
     sf: Pcairo_surface_t;
     fStream: TStream;
-    procedure CreateHandle; override;
     procedure DestroyCairoHandle; override;
   public
     procedure UpdatePageSize; virtual;
@@ -127,7 +129,7 @@ type
 
   TCairoPdfCanvas = class(TCairoFileCanvas)
   protected
-    procedure CreateCairoHandle(BaseHandle: HDC); override;
+    function CreateCairoHandle: HDC; override;
   public
     procedure UpdatePageSize; override;
   end;
@@ -136,14 +138,14 @@ type
 
   TCairoSvgCanvas = class(TCairoFileCanvas)
   protected
-    procedure CreateCairoHandle(BaseHandle: HDC); override;
+    function CreateCairoHandle: HDC; override;
   end;
 
   { TCairoPngCanvas }
 
   TCairoPngCanvas = class(TCairoFileCanvas)
   protected
-    procedure CreateCairoHandle(BaseHandle: HDC); override;
+    function CreateCairoHandle: HDC; override;
     procedure DestroyCairoHandle; override;
   public
     constructor Create(APrinter: TPrinter); override;
@@ -153,7 +155,7 @@ type
 
   TCairoPsCanvas = class(TCairoFileCanvas)
   protected
-    procedure CreateCairoHandle(BaseHandle: HDC); override;
+    function CreateCairoHandle: HDC; override;
   public
     procedure UpdatePageSize; override;
   end;
@@ -269,25 +271,22 @@ begin
   StrokeOnly;
 end;
 
-procedure TCairoPrinterCanvas.CreateCairoHandle(BaseHandle: HDC);
-begin
-  ScaleX := SurfaceXDPI/XDPI; //DPI can be changed between Create and CreateCairoHandle
-  ScaleY := SurfaceYDPI/YDPI;
-end;
-
 procedure TCairoPrinterCanvas.DestroyCairoHandle;
 begin
-  cairo_destroy(cr);
-  cr := nil;
 end;
 
 procedure TCairoPrinterCanvas.SetHandle(NewHandle: HDC);
 begin
-  if Assigned(cr) then
-    DestroyCairoHandle;
+  if NewHandle = HDC(cr) then
+    exit;
+
+  if (NewHandle=0) and (cr<>nil) then
+    DestroyHandle;
+
+  cr := Pcairo_t(NewHandle);
+
+  // update state
   inherited SetHandle(NewHandle);
-  if NewHandle <> 0 then
-    CreateCairoHandle(NewHandle);
 end;
 
 procedure TCairoPrinterCanvas.BeginDoc;
@@ -320,12 +319,28 @@ procedure TCairoPrinterCanvas.CreateFont;
 begin
 end;
 
+procedure TCairoPrinterCanvas.CreateHandle;
+var
+  aHandle: HDC;
+begin
+  ScaleX := SurfaceXDPI/XDPI;
+  ScaleY := SurfaceYDPI/YDPI;
+  Handle := CreateCairoHandle;
+end;
+
 procedure TCairoPrinterCanvas.CreatePen;
 begin
 end;
 
 procedure TCairoPrinterCanvas.RealizeAntialiasing;
 begin
+end;
+
+procedure TCairoPrinterCanvas.DestroyHandle;
+begin
+  cairo_destroy(cr);
+  cr := nil;
+  DestroyCairoHandle;
 end;
 
 function TCairoPrinterCanvas.GetClipRect: TRect;
@@ -1331,17 +1346,11 @@ end;
 
 { TCairoFileCanvas }
 
-procedure TCairoFileCanvas.CreateHandle;
-begin
-  Handle := 1; // set dummy handle (calls SetHandle)
-end;
-
 procedure TCairoFileCanvas.DestroyCairoHandle;
 begin
   cairo_surface_finish(sf);
   cairo_surface_destroy(sf);
   sf := nil;
-  inherited DestroyCairoHandle;
 end;
 
 procedure TCairoFileCanvas.UpdatePageSize;
@@ -1350,15 +1359,14 @@ end;
 
 { TCairoPdfCanvas }
 
-procedure TCairoPdfCanvas.CreateCairoHandle(BaseHandle: HDC);
+function TCairoPdfCanvas.CreateCairoHandle: HDC;
 begin
-  inherited CreateCairoHandle(BaseHandle);
   //Sizes are in Points, 72DPI (1pt = 1/72")
   if fStream<>nil then
     sf := cairo_pdf_surface_create_for_stream(@WriteToStream, fStream, PaperWidth*ScaleX, PaperHeight*ScaleY)
   else
     sf := cairo_pdf_surface_create(PChar(FOutputFileName), PaperWidth*ScaleX, PaperHeight*ScaleY);
-  cr := cairo_create(sf);
+  result := HDC(cairo_create(sf));
 end;
 
 procedure TCairoPdfCanvas.UpdatePageSize;
@@ -1368,12 +1376,12 @@ end;
 
 { TCairoPsCanvas }
 
-procedure TCairoPsCanvas.CreateCairoHandle(BaseHandle: HDC);
+function TCairoPsCanvas.CreateCairoHandle: HDC;
 var
   s: string;
   W, H: Double;
+  acr: Pcairo_t;
 begin
-  inherited CreateCairoHandle(BaseHandle);
 
   if Orientation = poLandscape then begin
     s := '%%PageOrientation: Landscape';
@@ -1390,15 +1398,17 @@ begin
     sf := cairo_ps_surface_create_for_stream(@WriteToStream, fStream, W, H)
   else
     sf := cairo_ps_surface_create(PChar(FOutputFileName), W, H);
-  cr := cairo_create(sf);
+  acr := cairo_create(sf);
 
   cairo_ps_surface_dsc_begin_setup(sf);
   cairo_ps_surface_dsc_comment(sf, PChar(s));
 
   if Orientation = poLandscape then begin //rotate and move
-    cairo_translate(cr, 0, H);
-    cairo_rotate(cr, -PI/2);
+    cairo_translate(acr, 0, H);
+    cairo_rotate(acr, -PI/2);
   end;
+
+  result := HDC(acr);
 end;
 
 procedure TCairoPsCanvas.UpdatePageSize;
@@ -1406,26 +1416,27 @@ begin
   cairo_ps_surface_set_size(sf, PaperWidth*ScaleX, PaperHeight*ScaleY);
 end;
 
-{ TCairoSvgCanvas }
-
-procedure TCairoSvgCanvas.CreateCairoHandle(BaseHandle: HDC);
-begin
-  inherited CreateCairoHandle(BaseHandle);
-  //Sizes are in Points, 72DPI (1pt = 1/72")
-  sf := cairo_svg_surface_create(PChar(FOutputFileName), PaperWidth*ScaleX, PaperHeight*ScaleY);
-  cr := cairo_create(sf);
-end;
-
-{ TCairoPngCanvas }
-
 constructor TCairoPngCanvas.Create(APrinter: TPrinter);
 begin
   inherited Create(APrinter);
 end;
 
-procedure TCairoPngCanvas.CreateCairoHandle(BaseHandle: HDC);
+{ TCairoSvgCanvas }
+
+function TCairoSvgCanvas.CreateCairoHandle: HDC;
 begin
-  inherited CreateCairoHandle(BaseHandle);
+  //Sizes are in Points, 72DPI (1pt = 1/72")
+  sf := cairo_svg_surface_create(PChar(FOutputFileName), PaperWidth*ScaleX, PaperHeight*ScaleY);
+  result := HDC(cairo_create(sf));
+end;
+
+
+{ TCairoPngCanvas }
+
+function TCairoPngCanvas.CreateCairoHandle: HDC;
+var
+  acr: Pcairo_t;
+begin
   //I do not know how to retrieve DPI of cairo_image_surface
   //It looks like that Cairo uses same DPI as Screen, but how much is it in case of console app???
   //You must set Surface?DPI externally. For example:
@@ -1433,8 +1444,9 @@ begin
   //c.SurfaceXDPI := GetDeviceCaps(DC, LOGPIXELSX);
   //c.SurfaceYDPI := GetDeviceCaps(DC, LOGPIXELSY);
   sf := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, PaperWidth, PaperHeight);
-  cr := cairo_create(sf);
-  cairo_scale(cr, 1/ScaleX, 1/ScaleY);
+  acr := cairo_create(sf);
+  cairo_scale(acr, 1/ScaleX, 1/ScaleY);
+  result := HDC(acr);
 end;
 
 procedure TCairoPngCanvas.DestroyCairoHandle;
