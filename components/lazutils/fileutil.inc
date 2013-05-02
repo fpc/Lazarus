@@ -1327,6 +1327,7 @@ end;
 
 constructor TListFileSearcher.Create(AList: TStrings);
 begin
+  inherited Create;
   FList := AList;
 end;
 
