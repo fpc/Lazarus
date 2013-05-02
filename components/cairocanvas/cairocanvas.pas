@@ -160,6 +160,8 @@ type
     procedure UpdatePageSize; override;
   end;
 
+  function GraphicToARGB32(Source: TGraphic; buf: PByte): Boolean;
+
 implementation
 
 uses
@@ -180,6 +182,34 @@ begin
   else
     result := CAIRO_STATUS_WRITE_ERROR;
 end;
+
+function GraphicToARGB32(Source: TGraphic; buf: PByte): Boolean;
+var
+  p: PDWord;
+  x, y: Integer;
+  c: TFPColor;
+  Img: TLazIntfImage;
+begin
+  Img := TRasterImage(Source).CreateIntfImage;
+  try
+    if Img.DataDescription.Format=ricfNone then begin
+      Result := False;
+      Exit;
+    end;
+    p := Pointer(buf);
+    for y := 0 to Source.Height-1 do begin
+      for x := 0 to Source.Width-1 do begin
+        c := Img.Colors[x, y];
+        p^ := Hi(c.alpha) shl 24 + Hi(c.red) shl 16 + Hi(c.green) shl 8 + Hi(c.blue);
+        inc(p);
+      end;
+    end;
+  finally
+    Img.Free;
+  end;
+  Result := True;
+end;
+
 
 { TCairoPrinterCanvas }
 
@@ -1223,34 +1253,6 @@ begin
 end;
 
 procedure TCairoPrinterCanvas.StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic);
-
-  function TranslateBufferByIntfImage(buf: PByte; W, H: Integer): Boolean;
-  var
-    p: PDWord;
-    x, y: Integer;
-    c: TFPColor;
-    Img: TLazIntfImage;
-  begin
-    Img := TRasterImage(SrcGraphic).CreateIntfImage;
-    try
-      if Img.DataDescription.Format=ricfNone then begin
-        Result := False;
-        Exit;
-      end;
-      p := Pointer(buf);
-      for y := 0 to H-1 do begin
-        for x := 0 to W-1 do begin
-          c := Img.Colors[x, y];
-          p^ := Hi(c.alpha) shl 24 + Hi(c.red) shl 16 + Hi(c.green) shl 8 + Hi(c.blue);
-          inc(p);
-        end;
-      end;
-    finally
-      Img.Free;
-    end;
-    Result := True;
-  end;
-
 var
   sf: Pcairo_surface_t;
   buf: PByte;
@@ -1271,7 +1273,7 @@ begin
   try
     cairo_save(cr);
     //FillDWord(buf^, W*H, $00000000);
-    if not TranslateBufferByIntfImage(buf, W, H) then
+    if not GraphicToARGB32(SrcGraphic, buf) then
       Exit;
 
     sf := cairo_image_surface_create_for_data(buf, CAIRO_FORMAT_ARGB32, W, H, W*4);
