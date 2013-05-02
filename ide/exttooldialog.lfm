@@ -12,7 +12,7 @@ object ExternalToolDialog: TExternalToolDialog
   LCLVersion = '1.1'
   object ToolBar: TToolBar
     Left = 0
-    Height = 94
+    Height = 48
     Top = 0
     Width = 451
     AutoSize = True
@@ -24,28 +24,28 @@ object ExternalToolDialog: TExternalToolDialog
     ShowHint = True
     TabOrder = 0
     object MoveDownButton: TToolButton
-      Left = 1
-      Top = 48
+      Left = 281
+      Top = 2
       Caption = 'MoveDownButton'
       ImageIndex = 4
       OnClick = MoveDownButtonClick
     end
     object MoveUpButton: TToolButton
-      Left = 252
+      Left = 202
       Top = 2
       Caption = 'MoveUpButton'
       ImageIndex = 3
       OnClick = MoveUpButtonClick
     end
     object EditButton: TToolButton
-      Left = 173
+      Left = 139
       Top = 2
       Caption = 'EditButton'
       ImageIndex = 2
       OnClick = EditButtonClick
     end
     object RemoveButton: TToolButton
-      Left = 75
+      Left = 60
       Top = 2
       Caption = 'RemoveButton'
       ImageIndex = 1
@@ -59,30 +59,30 @@ object ExternalToolDialog: TExternalToolDialog
       OnClick = AddButtonClick
     end
     object tbSeparator: TToolButton
-      Left = 247
+      Left = 197
       Top = 2
       Width = 5
       Caption = 'tbSeparator'
       Style = tbsDivider
     end
     object tbSeparator2: TToolButton
-      Left = 117
-      Top = 48
+      Left = 374
+      Top = 2
       Width = 5
       Caption = 'tbSeparator2'
       Style = tbsDivider
     end
     object ExtraButton: TToolButton
-      Left = 122
-      Top = 48
+      Left = 379
+      Top = 2
       Caption = 'ExtraButton'
       DropdownMenu = PopupDropdownMenu
     end
   end
   object ListBox: TListBox
     Left = 0
-    Height = 215
-    Top = 94
+    Height = 261
+    Top = 48
     Width = 451
     Align = alClient
     BorderSpacing.Bottom = 6
@@ -127,11 +127,13 @@ object ExternalToolDialog: TExternalToolDialog
     end
   end
   object SaveDialog1: TSaveDialog
-    Options = [ofPathMustExist, ofEnableSizing, ofViewDetail]
+    Filter = 'XML configuration file (*.xml)|*.xml|All files (*.*)|*.*'
+    Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
     left = 312
     top = 40
   end
   object OpenDialog1: TOpenDialog
+    Filter = 'XML configuration file (*.xml)|*.xml|All files (*.*)|*.*'
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
     left = 384
     top = 48

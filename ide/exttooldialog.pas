@@ -640,9 +640,16 @@ end;
 procedure TExternalToolDialog.MenuItemExportClick(Sender: TObject);
 Var
   FileConfig : TXMLOptionsStorage;
+  AFileName : String;
 begin
   If SaveDialog1.Execute Then Begin
-    FileConfig := TXMLOptionsStorage.Create(SaveDialog1.FileName, False);
+    AFileName := SaveDialog1.FileName;
+    Case SaveDialog1.FilterIndex Of
+      1 : Begin
+            AFileName := ChangeFileExt(AFileName, '.xml');
+          end;
+    end;
+    FileConfig := TXMLOptionsStorage.Create(AFileName, False);
     fExtToolList.Save(FileConfig);
     FileConfig.WriteToDisk;
     FreeAndNil(FileConfig);
