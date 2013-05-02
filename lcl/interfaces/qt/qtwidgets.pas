@@ -175,7 +175,7 @@ type
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual; overload;
     constructor CreateFrom(const AWinControl: TWinControl; AWidget: QWidgetH); virtual;
     procedure InitializeWidget; virtual;
-    procedure DeInitializeWidget;
+    procedure DeInitializeWidget; virtual;
     procedure RecreateWidget;
     procedure DestroyNotify(AWidget: TQtWidget); virtual;
     
@@ -642,11 +642,16 @@ type
   { TQtHintWindow }
 
   TQtHintWindow = class(TQtMainWindow)
+  private
+    FNeedRestoreVisible: Boolean;
   protected
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
+    procedure InitializeWidget; override;
+    procedure DeInitializeWidget; override;
     procedure SetDefaultColorRoles; override;
     procedure setVisible(AVisible: Boolean); override;
+    property NeedRestoreVisible: Boolean read FNeedRestoreVisible write FNeedRestoreVisible;
   end;
 
   { TQtStaticText }
@@ -6220,11 +6225,14 @@ begin
       {$IFDEF HASX11}
       // for X11 we must ask state of each modified window.
       AState := getWindowState;
+
       IsMinimizeEvent := AState and QtWindowMinimized <> 0;
       if IsMinimizeEvent then
       begin
         CanSendEvent := IsCurrentDesktop(Widget);
         QtWidgetSet.FMinimizedByPager := not CanSendEvent;
+        if IsMainForm and QtWidgetSet.FMinimizedByPager then
+          QtWidgetSet.HideAllHints;
       end;
       {$ENDIF}
       if IsMainForm and CanSendEvent then
@@ -6292,8 +6300,10 @@ begin
           // pager switch !
           if (AOldState and QtWindowMinimized <> 0) and
             QtWidgetSet.FMinimizedByPager then
-              QtWidgetSet.FMinimizedByPager := False
-          else
+          begin
+            QtWidgetSet.FMinimizedByPager := False;
+            QtWidgetSet.RestoreAllHints;
+          end else
           {$ENDIF}
             Application.IntfAppRestore;
           {$ENDIF}
@@ -15486,6 +15496,7 @@ var
   Parent: QWidgetH;
 begin
   FHasPaint := True;
+  FNeedRestoreVisible := False;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -15493,6 +15504,22 @@ begin
   Result := QWidget_create(Parent, QtToolTip);
   FDeleteLater := True;
   MenuBar := nil;
+end;
+
+procedure TQtHintWindow.InitializeWidget;
+begin
+  inherited InitializeWidget;
+  {$IFDEF HASX11}
+  QtWidgetSet.AddHintHandle(Self);
+  {$ENDIF}
+end;
+
+procedure TQtHintWindow.DeInitializeWidget;
+begin
+  {$IFDEF HASX11}
+  QtWidgetSet.RemoveHintHandle(Self);
+  {$ENDIF}
+  inherited DeInitializeWidget;
 end;
 
 procedure TQtHintWindow.SetDefaultColorRoles;

@@ -100,6 +100,7 @@ begin
   StayOnTopList := nil;
   FAppActive := False;
   {$IFDEF HASX11}
+  SavedHintHandlesList := TFPList.Create;
   FMinimizedByPager := False;
   FLastMinimizeEvent := 0;
   if not FIsLibraryInstance and
@@ -152,6 +153,13 @@ begin
     SavedHandlesList.Free;
     SavedHandlesList := nil;
   end;
+  {$IFDEF HASX11}
+  if SavedHintHandlesList <> nil then
+  begin
+    SavedHintHandlesList.Free;
+    SavedHintHandlesList := nil;
+  end;
+  {$ENDIF}
   FSocketEventMap.Free;
   FGlobalActions.Free;
 
@@ -309,6 +317,7 @@ begin
   if (Application.MainForm <> nil) and (Application.MainForm.HandleAllocated) then
   begin
     {$IFDEF HASX11}
+    HideAllHints;
     for i := 0 to Screen.CustomFormZOrderCount-1 do
     begin
       AForm := Screen.CustomFormsZOrdered[i];
@@ -353,6 +362,7 @@ begin
           TQtMainWindow(AForm.Handle).setWindowState(States and not QtWindowMinimized);
       end;
     end;
+    RestoreAllHints;
     {$ELSE}
     TQtMainWindow(Application.MainForm.Handle).ShowNormal;
     {$ENDIF}
@@ -1064,6 +1074,86 @@ begin
   Result := SavedHandlesList.HasId(TObject(AHandle));
   System.LeaveCriticalsection(CriticalSection);
 end;
+
+{$IFDEF HASX11}
+procedure TQtWidgetSet.AddHintHandle(AHandle: TObject);
+begin
+  System.EnterCriticalsection(CriticalSection);
+  if SavedHintHandlesList.IndexOf(AHandle) < 0 then
+    SavedHintHandlesList.Add(AHandle);
+  System.LeaveCriticalsection(CriticalSection);
+end;
+
+procedure TQtWidgetSet.RemoveHintHandle(AHandle: TObject);
+var
+  AIndex: Integer;
+begin
+  System.EnterCriticalsection(CriticalSection);
+  AIndex := SavedHintHandlesList.IndexOf(AHandle);
+  if AIndex >= 0 then
+    SavedHintHandlesList.Delete(AIndex);
+  System.LeaveCriticalsection(CriticalSection);
+end;
+
+function TQtWidgetSet.IsValidHintHandle(AHandle: TObject): Boolean;
+begin
+  if (AHandle = nil) then
+    Exit(False);
+  System.EnterCriticalsection(CriticalSection);
+  Result := SavedHintHandlesList.IndexOf(AHandle) >= 0;
+  System.LeaveCriticalsection(CriticalSection);
+end;
+
+procedure TQtWidgetSet.HideAllHints;
+var
+  i: Integer;
+  AWidget: TQtHintWindow;
+begin
+  System.EnterCriticalsection(CriticalSection);
+  try
+    if not Assigned(SavedHintHandlesList) then
+      exit;
+    for i := SavedHintHandlesList.Count - 1 downto 0 do
+    begin
+      if IsValidHintHandle(TObject(SavedHintHandlesList.Items[i])) then
+      begin
+        AWidget := TQtHintWindow(SavedHintHandlesList.Items[i]);
+        AWidget.NeedRestoreVisible := AWidget.getVisible;
+        AWidget.Hide;
+      end;
+    end;
+  finally
+    System.LeaveCriticalsection(CriticalSection);
+  end;
+end;
+
+procedure TQtWidgetSet.RestoreAllHints;
+var
+  i: Integer;
+  AWidget: TQtHintWindow;
+begin
+  System.EnterCriticalsection(CriticalSection);
+  try
+    if not Assigned(SavedHintHandlesList) then
+      exit;
+    for i := SavedHintHandlesList.Count - 1 downto 0 do
+    begin
+      if IsValidHintHandle(TObject(SavedHintHandlesList.Items[i])) then
+      begin
+        AWidget := TQtHintWindow(SavedHintHandlesList.Items[i]);
+        if AWidget.NeedRestoreVisible then
+        begin
+          AWidget.NeedRestoreVisible := False;
+          AWidget.Show;
+        end;
+      end;
+    end;
+  finally
+    System.LeaveCriticalsection(CriticalSection);
+  end;
+end;
+
+{$ENDIF}
 
 procedure TQtWidgetSet.ClearGlobalActions;
 begin
