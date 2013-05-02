@@ -52,8 +52,8 @@
     Angle1 = 10*16, Angle2 = 30*16 will draw an arc from 10 to 40 degree.
 
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.Arc(DC: HDC;
-  left, top, right, bottom, angle1, angle2: Integer): Boolean;
+function TGtk2WidgetSet.Arc(DC: HDC; Left, top, right, bottom, angle1,
+  angle2: Integer): Boolean;
 var
   DevCtx: TGtkDeviceContext absolute DC;
   DCOrigin: TPoint;
@@ -191,7 +191,8 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer;
+function TGtk2WidgetSet.CallNextHookEx(hHk: HHOOK; ncode: Integer;
+  wParam: WParam; lParam: LParam): Integer;
 begin
   Result := 0;
   // TODO: TGtk2WidgetSet.CallNextHookEx: Does anything need to be done here?
@@ -207,8 +208,8 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND;
-  Msg : UINT; wParam: WParam; lParam : LParam) : Integer;
+function TGtk2WidgetSet.CallWindowProc(lpPrevWndFunc: TFarProc; Handle: HWND;
+  Msg: UINT; wParam: WParam; lParam: lParam): Integer;
 var
   Proc : TWndMethod;
   Mess : TLMessage;
@@ -725,8 +726,8 @@ end;
   Params:  AMimeType
   Returns: the registered Format identifier (TClipboardFormat)
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.ClipboardRegisterFormat(
-  const AMimeType:String): TClipboardFormat;
+function TGtk2WidgetSet.ClipboardRegisterFormat(const AMimeType: string
+  ): TClipboardFormat;
 var AtomName: PChar;
 begin
   if Assigned(Application) then begin
@@ -1102,8 +1103,8 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap;
-  Width, Height: Integer): Boolean;
+function TGtk2WidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; width,
+  Height: Integer): Boolean;
 var
   GTKObject: PGTKObject;
   BMP: PGDKPixmap;
@@ -1240,7 +1241,7 @@ begin
   //DebugLn(Format('trace:  [TGtk2WidgetSet.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
 end;
 
-function TGtk2WidgetSet.DestroyCursor(Handle: hCursor): Boolean;
+function TGtk2WidgetSet.DestroyCursor(Handle: HCURSOR): Boolean;
 begin
   Result := Handle <> 0;
   if Result then
@@ -3546,7 +3547,7 @@ end;
 
   Use Ellipse to draw a filled circle or ellipse.
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
+function TGtk2WidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
 var
   DevCtx: TGtkDeviceContext absolute DC;
   Left, Top, Width, Height: Integer;
@@ -3963,7 +3964,7 @@ end;
   Draws a 3d border in GTK native style.
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.Frame3d(DC: HDC; var ARect: TRect;
-  const FrameWidth: integer; const Style: TBevelCut): boolean;
+  const FrameWidth: integer; const Style: TBevelCut): Boolean;
 var
   DevCtx: TGtkDeviceContext absolute DC;
   TheStyle: PGtkStyle;
@@ -4475,7 +4476,7 @@ end;
      1 = ok
     -1 = error
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.GetClipRGN(DC : hDC; RGN : hRGN) : longint;
+function TGtk2WidgetSet.GetClipRGN(DC: hDC; RGN: hRGN): Longint;
 var
   DCOrigin: TPoint;
   ClipRegionWithDCOffset: PGdkRegion;
@@ -6670,7 +6671,7 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
-  Filled, Continuous: Boolean): Boolean;
+  Filled, Continuous: boolean): boolean;
 begin
   Result := inherited PolyBezier(DC, Points, NumPts, Filled, Continuous);
 end;
@@ -6694,7 +6695,7 @@ end;
   specifying the first point a second time at the end.
 }
 function TGtk2WidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
-  Winding: Boolean): boolean;
+  Winding: boolean): boolean;
 var
   DevCtx: TGtkDeviceContext absolute DC;
 
@@ -7106,7 +7107,7 @@ end;
   Params:  dc : hdc; ARect: TRect
   Returns: True if ARect is not completely clipped away.
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.RectVisible(DC: HDC; const ARect: TRect): Boolean;
+function TGtk2WidgetSet.RectVisible(dc: hdc; const ARect: TRect): Boolean;
 begin
   Result := inherited RectVisible(dc,ARect);
 end;
@@ -7121,8 +7122,8 @@ end;
   GroupIndex. The hndMenu is one of them.
   Update all radio groups.
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.RegroupMenuItem(hndMenu: HMENU;
-  GroupIndex: Integer): Boolean;
+function TGtk2WidgetSet.RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer
+  ): Boolean;
 
 const
   GROUPIDX_DATANAME = 'GroupIndex';
@@ -7968,7 +7969,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
+function TGtk2WidgetSet.SetBkColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
   Result := CLR_INVALID;
   if IsValidDC(DC)
@@ -8118,7 +8119,7 @@ end;
   Returns: true on success
 
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.SetCaretPosEx(Handle: HWNd; X, Y: Integer): Boolean;
+function TGtk2WidgetSet.SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
 var
   GtkObject: PGTKObject;
 begin
@@ -8969,7 +8970,8 @@ end;
 
   Sets the DC offset for the specified device context.
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean;
+function TGtk2WidgetSet.SetWindowOrgEx(dc: hdc; NewX, NewY: Integer;
+  OldPoint: PPoint): Boolean;
 var
   DevCtx: TGtkDeviceContext absolute DC;
 begin
