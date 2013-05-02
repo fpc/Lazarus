@@ -44,7 +44,7 @@ uses
   CompOptsIntf, IDEExternToolIntf, IDEDialogs, MacroDefIntf,
   // IDE
   IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
-  IDEOptionDefs, TransferMacros, Debugger, ModeMatrixCtrl;
+  IDEOptionDefs, TransferMacros, ModeMatrixOpts, Debugger;
 
 const
   EnvOptsVersion: integer = 107;

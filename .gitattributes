@@ -5171,6 +5171,7 @@ ide/makeresstrdlg.pas svneol=native#text/pascal
 ide/manageexamples.lfm svneol=native#text/plain
 ide/manageexamples.pas svneol=native#text/plain
 ide/miscoptions.pas svneol=native#text/pascal
+ide/modematrixopts.pas svneol=native#text/plain
 ide/mouseactiondialog.lfm svneol=native#text/plain
 ide/mouseactiondialog.pas svneol=native#text/pascal
 ide/msgquickfixes.pas svneol=native#text/plain

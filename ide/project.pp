@@ -60,9 +60,9 @@ uses
   SynEdit,
   // IDE
   CompOptsModes, ProjectResources, LazConf, W32Manifest, ProjectIcon,
-  LazarusIDEStrConsts, CompilerOptions, lfmUnitResource, ModeMatrixCtrl,
+  LazarusIDEStrConsts, CompilerOptions, lfmUnitResource,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
-  FileReferenceList, EditDefineTree, PackageDefs, PackageSystem,
+  FileReferenceList, EditDefineTree, ModeMatrixOpts, PackageDefs, PackageSystem,
   IDEDialogs;
 
 type
