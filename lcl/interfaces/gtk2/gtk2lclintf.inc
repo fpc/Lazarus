@@ -238,8 +238,8 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage;
-  out ABitmap, AMask: HBitmap; ASkipMask: Boolean): boolean;
+function TGtk2WidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage; out
+  ABitmap, AMask: HBitmap; ASkipMask: boolean): boolean;
 var
   GdiObject: PGDIObject absolute ABitmap;
   GdiMaskObject: PGDIObject absolute AMask;
@@ -523,7 +523,8 @@ end;
 
   Retrieves the information about the structure of the supported image data.
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): boolean;
+function TGtk2WidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out
+  ADesc: TRawImageDescription): Boolean;
 var
   DevCon: TGtkDeviceContext absolute ADC;
 
@@ -750,7 +751,8 @@ end;
     var NewRawImage: TRawImage): boolean;
 
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): boolean;
+function TGtk2WidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC;
+  const ARect: TRect): Boolean;
 var
   DevCtx: TGtkDeviceContext absolute ADC;
   DCOrigin: TPoint;
