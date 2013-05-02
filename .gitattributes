@@ -1959,6 +1959,7 @@ components/lazreport/samples/editor/db/countries.dbf -text
 components/lazreport/samples/editor/db/disco.dbf -text
 components/lazreport/samples/editor/db/disco.mdx -text
 components/lazreport/samples/editor/frroundrecttester.lrf svneol=native#text/xml
+components/lazreport/samples/editor/imgtester.lrf svneol=native#text/xml
 components/lazreport/samples/editor/languages/calleditorwithpkg.ar.po svneol=native#text/plain
 components/lazreport/samples/editor/languages/calleditorwithpkg.de.po svneol=native#text/plain
 components/lazreport/samples/editor/languages/calleditorwithpkg.es.po svneol=native#text/plain
