@@ -74,7 +74,7 @@ end;
   This function is Called:
   - Once on every OnPaint event
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct): hdc;
+function TQtWidgetSet.BeginPaint(Handle: hWnd; var PS: TPaintStruct): hdc;
 var
   Widget: TQtWidget;
   DC: TQtDeviceContext;
@@ -1490,7 +1490,7 @@ end;
 
   Use Ellipse to draw a filled circle or ellipse.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
+function TQtWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
 var
   R: TRect;
 begin
@@ -2394,8 +2394,8 @@ end;
 
   Draws a 3d border in Qt native style.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.Frame3d(DC : HDC; var ARect : TRect;
-  const FrameWidth : integer; const Style : TBevelCut) : boolean;
+function TQtWidgetSet.Frame3d(DC: HDC; var ARect: TRect;
+  const FrameWidth: integer; const Style: TBevelCut): Boolean;
 var
   QtDC: TQtDeviceContext;
 begin
@@ -3493,7 +3493,8 @@ end;
   Returns: boolean
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean;
+function TQtWidgetSet.GetScrollInfo(Handle: HWND; BarFlag: Integer;
+  var ScrollInfo: TScrollInfo): Boolean;
 var
   QtScrollBar: TQtScrollBar;
 begin
@@ -4393,7 +4394,7 @@ end;
 
   Retrieves the dimensions of the bounding rectangle of the specified window.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetWindowRect(Handle: HWND; var ARect: TRect): Integer;
+function TQtWidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
   APos: TQtPoint;
   R: TRect;
@@ -4422,7 +4423,8 @@ end;
   returns the current widget Left, Top, relative to the client origin of its
   parent
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetWindowRelativePosition(Handle: HWND; var Left, Top: integer): boolean;
+function TQtWidgetSet.GetWindowRelativePosition(Handle: hwnd; var Left,
+  Top: Integer): boolean;
 var
   R: TRect;
 begin
@@ -4444,7 +4446,8 @@ end;
 
   Returns the current widget Width and Height
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
+function TQtWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer
+  ): boolean;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetWindowSize]');
@@ -4483,8 +4486,8 @@ end;
   Alpha/Transparency for more advanced Gradients.
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
-  NumVertices : Longint;
-  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): boolean;
+  NumVertices: Longint; Meshes: Pointer; NumMeshes: Longint; Mode: Longint
+  ): Boolean;
 
   function DoFillTriangle: Boolean; inline;
   begin
@@ -4974,7 +4977,7 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
-  Filled, Continuous: Boolean): Boolean;
+  Filled, Continuous: boolean): boolean;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI PolyBezier] DC: ', dbghex(DC));
@@ -4988,7 +4991,7 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
-  Winding: Boolean): boolean;
+  Winding: boolean): boolean;
 var
   QtPoints: PQtPoint;
   i: integer;
@@ -6566,7 +6569,8 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : PChar; Count: Integer) : Boolean;
+function TQtWidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: Pchar; Count: Integer
+  ): Boolean;
 var
   WideStr: WideString;
 begin
