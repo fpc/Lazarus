@@ -324,7 +324,7 @@ end;
   Params:
   Returns:
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.FontCanUTF8(Font: HFont): Boolean;
+function TQtWidgetSet.FontCanUTF8(Font: HFont): boolean;
 begin
   Result := IsValidGDIObject(Font);
 end;
@@ -334,7 +334,7 @@ end;
   Params:
   Returns:
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.FontIsMonoSpace(Font: HFont): Boolean;
+function TQtWidgetSet.FontIsMonoSpace(Font: HFont): boolean;
 var
   QtFontInfo: QFontInfoH;
 begin
