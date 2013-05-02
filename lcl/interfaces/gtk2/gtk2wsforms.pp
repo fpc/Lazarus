@@ -180,9 +180,40 @@ begin
       end;
     GDK_WINDOW_STATE:
       begin
+
         if (GDK_WINDOW_STATE_WITHDRAWN and event^.window_state.changed_mask) = 1 then
           exit;
+
+        {$IFDEF HASX}
         WInfo := GetWidgetInfo(Widget);
+        if (event^.window_state.new_window_state = GDK_WINDOW_STATE_ICONIFIED) then
+        begin
+          if not Gtk2WidgetSet.IsCurrentDesktop(event^.window_state.window) then
+          begin
+            WInfo := GetWidgetInfo(Widget);
+            if (WInfo <> nil) and (WInfo^.LCLObject = Application.MainForm) then
+            begin
+              g_object_set_data(PGObject(Widget), 'lclhintrestore', Pointer(1));
+              GTK2WidgetSet.HideAllHints;
+              WInfo^.FormWindowState := Event^.window_state;
+              exit;
+            end;
+          end;
+        end;
+        if (event^.window_state.new_window_state <> GDK_WINDOW_STATE_ICONIFIED) and
+          (WInfo <> nil) and (WInfo^.LCLObject = Application.MainForm) and
+          (event^.window_state.changed_mask = GDK_WINDOW_STATE_ICONIFIED) and
+          (WInfo^.FormWindowState.new_window_state = GDK_WINDOW_STATE_ICONIFIED) and
+          (g_object_get_data(PGObject(Widget), 'lclhintrestore') <> nil) then
+        begin
+          g_object_set_data(PGObject(Widget), 'lclhintrestore', nil);
+          Gtk2WidgetSet.RestoreAllHints;
+          WInfo^.FormWindowState := Event^.window_state;
+          exit;
+        end;
+        {$ELSE}
+        WInfo := GetWidgetInfo(Widget);
+        {$ENDIF}
         if (WInfo <> nil) then
         begin
           if (WInfo^.FormWindowState.new_window_state <> event^.window_state.new_window_state)

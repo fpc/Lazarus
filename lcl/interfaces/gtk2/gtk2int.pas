@@ -302,6 +302,7 @@ type
     function GetDesktopWidget: PGtkWidget;
     //function X11Raise(AHandle: HWND): boolean; currently not used
     function GetWindowManager: String;
+    function IsCurrentDesktop(AWindow: PGdkWindow): Boolean;
     function X11GetActiveWindow: HWND;
 
     procedure HideAllHints;

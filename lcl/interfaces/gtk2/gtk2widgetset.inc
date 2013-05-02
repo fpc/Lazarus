@@ -4263,6 +4263,65 @@ begin
 	      @XClient)<>0;
 end;}
 
+function TGtk2WidgetSet.IsCurrentDesktop(AWindow: PGdkWindow): Boolean;
+var
+  Display: PDisplay;
+  ScreenNum: Integer;
+  RootWin: TWindow;
+  WMAtom: TAtom;
+
+  typeReturned: TAtom;
+  formatReturned: Integer;
+  nitemsReturned: PtrInt;
+  unused: PtrInt;
+  WidgetIndex, DesktopIndex: Pointer;
+  WidgetWin: TWindow;
+begin
+  Result := True;
+  if AWindow = nil then
+    exit;
+  Display := gdk_x11_get_default_xdisplay;
+  if Display = nil then
+    exit;
+  ScreenNum := gdk_x11_get_default_screen;
+  RootWin := XRootWindow(Display, ScreenNum);
+  WMAtom := XInternAtom(Display,'_NET_WM_DESKTOP', True);
+  WidgetWin := gdk_x11_drawable_get_xid(PGdkDrawable(AWindow));
+
+  if (WMAtom > 0) and (WidgetWin <> 0) then
+  begin
+    WidgetIndex := nil;
+    DesktopIndex := nil;
+    // first get our desktop num (virtual desktop !)
+    if XGetWindowProperty(Display, WidgetWin, WMAtom, 0, 4, False, XA_CARDINAL,
+       @typeReturned, @formatReturned, @nitemsReturned,
+       @unused, @WidgetIndex) = Success then
+    begin
+      if (typeReturned = XA_CARDINAL) and (formatReturned = 32) and
+        (WidgetIndex <> nil) then
+      begin
+        // now get current active desktop index
+        WMAtom := XInternAtom(Display,'_NET_CURRENT_DESKTOP', True);
+        if XGetWindowProperty(Display, RootWin, WMAtom, 0, 4, False,
+          XA_CARDINAL, @typeReturned, @formatReturned, @nitemsReturned,
+          @unused, @DesktopIndex) = Success then
+        begin
+          if (typeReturned = XA_CARDINAL) and (formatReturned = 32) and
+            (DesktopIndex <> nil) then
+            Result := PtrUint(WidgetIndex^) = PtrUint(DesktopIndex^);
+        end;
+      end;
+
+      if WidgetIndex <> nil then
+        XFree(WidgetIndex);
+      if DesktopIndex <> nil then
+        XFree(DesktopIndex);
+      WidgetIndex := nil;
+      DesktopIndex := nil;
+    end;
+  end;
+end;
+
 function TGtk2WidgetSet.GetWindowManager: String;
 {used to get window manager name, so we can handle different wm's behaviour
  eg. kde vs. gnome}
@@ -4382,8 +4441,10 @@ begin
           if g_object_get_data(PGObject(Window),'lclhintwindow') <> nil then
           begin
             if gdk_window_is_visible(PGDKWindow(List^.Data)) then
+            begin
               g_object_set_data(PGObject(Window),'lclneedrestorevisible',Pointer(1));
-            gdk_window_hide(PGDKWindow(List^.Data));
+              gdk_window_hide(PGDKWindow(List^.Data));
+            end;
           end;
         end;
       end;
