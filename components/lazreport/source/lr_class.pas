@@ -1009,6 +1009,8 @@ type
     FComments     : TStringList;
     FDFMStream    : TStream;
     FXMLReport    : string;
+    fDefExportFilterClass: string;
+    fDefExportFileName: string;
 
     function FormatValue(V: Variant; AFormat: Integer; const AFormatStr: String): String;
 //    function GetLRTitle: String;
@@ -1099,7 +1101,7 @@ type
     // report manipulation methods
     procedure DesignReport;
     function PrepareReport: Boolean;
-    procedure ExportTo(FilterClass: TfrExportFilterClass; const aFileName: String);
+    procedure ExportTo(FilterClass: TfrExportFilterClass; aFileName: String);
     procedure ShowReport;
     procedure ShowPreparedReport;
     procedure PrintPreparedReport(const PageNumbers: String; Copies: Integer);
@@ -1122,6 +1124,9 @@ type
     property Variables: TStrings read FVars write SetVars;
     property Values: TfrValues read FVal write FVal;
     property Script : TfrScriptStrings read FScript write SetScript;
+    //
+    property DefExportFilterClass: string read fDefExportFilterClass write fDefExportFilterClass;
+    property DefExportFileName: string read fDefExportFileName write fDefExportFileName;
 
   published
     property Dataset: TfrDataset read FDataset write FDataset;
@@ -9687,10 +9692,33 @@ begin
   frProgressForm.ModalResult := mrOk;
 end;
 
-procedure TfrReport.ExportTo(FilterClass: TfrExportFilterClass; const aFileName: String);
+procedure TfrReport.ExportTo(FilterClass: TfrExportFilterClass; aFileName: String);
 var
   s: String;
+  i: Integer;
 begin
+  // try to find a export filter from registered list
+  if (FilterClass=nil) and (fDefExportFilterClass<>'') then
+  begin
+    for i:=0 to Length(frFilters)-1 do
+      if (frFilters[i].ClassRef.ClassName=fDefExportFilterClass) then
+      begin
+        FilterClass := frFilters[i].ClassRef;
+        break;
+      end;
+  end;
+
+  if (aFileName='') and (fDefExportFileName<>'') then
+    aFileName := fDefExportFileName;
+
+  if FilterClass=nil then begin
+    raise Exception.Create('No valid filterclass was supplied');
+  end;
+
+  if aFilename='' then begin
+    raise Exception.create('No valid export filename was supplied');
+  end;
+
   ExportStream := TFileStream.Create(UTF8ToSys(aFileName), fmCreate);
   FCurrentFilter := FilterClass.Create(ExportStream);
 
@@ -9718,6 +9746,9 @@ begin
     Show_Modal(Self);
   end else
     ExportBeforeModal(nil);
+
+  fDefExportFilterClass := FCurrentFilter.ClassName;
+  fDefExportFileName := aFileName;
 
   FreeAndNil(FCurrentFilter);
   ExportStream.Free;
