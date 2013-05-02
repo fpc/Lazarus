@@ -3047,8 +3047,8 @@ function TCodeToolManager.FindResourceDirective(Code: TCodeBuffer; StartX,
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;
-  Tree: TCompilerDirectivesTree;
   p: integer;
+  ADirectivesTool: TDirectivesTool;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -3076,19 +3076,17 @@ begin
     end;
   end else begin
     try
-      Tree:=TCompilerDirectivesTree.Create;
-      try
-        Tree.Parse(Code,GetNestedCommentsFlagForFile(Code.Filename));
-        Code.LineColToPosition(StartY,StartX,p);
-        Result:=Tree.NodeStartToCodePos(Tree.FindResourceDirective(Filename,p),
-                                        CursorPos);
-        NewCode:=CursorPos.Code;
-        NewX:=CursorPos.X;
-        NewY:=CursorPos.Y;
-        NewTopLine:=NewY;
-      finally
-        Tree.Free;
-      end;
+      if not InitCurDirectivesTool(Code) then exit;
+      ADirectivesTool:=FCurDirectivesTool;
+      FCurDirectivesTool.Parse;
+      Code.LineColToPosition(StartY,StartX,p);
+      Result:=ADirectivesTool.NodeStartToCodePos(
+                        ADirectivesTool.FindResourceDirective(Filename,p),
+                        CursorPos);
+      NewCode:=CursorPos.Code;
+      NewX:=CursorPos.X;
+      NewY:=CursorPos.Y;
+      NewTopLine:=NewY;
     except
       on e: Exception do Result:=HandleException(e);
     end;
