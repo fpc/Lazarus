@@ -940,6 +940,9 @@ begin
   gtk_window_set_policy(GTK_WINDOW(p), 0, 0, 0);
   gtk_window_set_focus_on_map(P, False);
 
+  // issue #24363
+  g_object_set_data(P,'lclhintwindow',AWinControl);
+
   // Create the form client area
   TempWidget := CreateFixedClientWidget;
   gtk_container_add(p, TempWidget);

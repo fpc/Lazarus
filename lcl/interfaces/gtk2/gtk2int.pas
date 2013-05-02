@@ -303,6 +303,9 @@ type
     //function X11Raise(AHandle: HWND): boolean; currently not used
     function GetWindowManager: String;
     function X11GetActiveWindow: HWND;
+
+    procedure HideAllHints;
+    procedure RestoreAllHints;
     {$ENDIF}
     procedure StartFocusTimer;
     property AppActive: Boolean read GetAppActive write SetAppActive;

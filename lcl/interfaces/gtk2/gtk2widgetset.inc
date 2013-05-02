@@ -263,7 +263,7 @@ end;
  ------------------------------------------------------------------------------}
 //TODO: remove ALCLObject when creation splitup is finished
 procedure TGtk2WidgetSet._SetCallbackEx(const AMsg: LongInt;
-  const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: boolean);
+  const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: Boolean);
 
   procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
     const ACallBackProc: Pointer);
@@ -716,8 +716,8 @@ end;
 
   Applies a Message to the sender
  ------------------------------------------------------------------------------}
-procedure TGTK2WidgetSet.SetCallbackEx(const AMsg: LongInt;
-  const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: boolean);
+procedure TGtk2WidgetSet.SetCallbackEx(const AMsg: LongInt;
+  const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: Boolean);
 
   procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
     const ACallBackProc: Pointer);
@@ -909,7 +909,7 @@ end;
     MultiSelect, ExtendedSelect: boolean);
 ------------------------------------------------------------------------------}
 procedure TGtk2WidgetSet.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
-  MultiSelect, ExtendedSelect: boolean);
+  MultiSelect, ExtendedSelect: Boolean);
 var
   AControl: TWinControl;
   SelectionMode: TGtkSelectionMode;
@@ -930,7 +930,8 @@ begin
   end;
 end;
 
-procedure TGtk2WidgetSet.SetWidgetFont(const AWidget: PGtkWidget; const AFONT: tFont);
+procedure TGtk2WidgetSet.SetWidgetFont(const AWidget: PGtkWidget;
+  const AFont: TFont);
 var
   FontDesc: PPangoFontDescription;
   UseFont: PPangoLayout;
@@ -1079,6 +1080,9 @@ var
   WInfo: PWidgetInfo;
 begin
   if Screen=nil then exit;
+  {$IFDEF HASX}
+  HideAllHints;
+  {$ENDIF}
   for i:= 0 to Screen.CustomFormZOrderCount-1 do
   begin
     AForm := Screen.CustomFormsZOrdered[i];
@@ -1110,9 +1114,12 @@ begin
       not (AForm.BorderStyle in [bsNone]) then
         gtk_window_deiconify({%H-}PGtkWindow(AForm.Handle));
   end;
+  {$IFDEF HASX}
+  RestoreAllHints;
+  {$ENDIF}
 end;
 
-function TGtk2WidgetSet.GetAppHandle: Thandle;
+function TGtk2WidgetSet.GetAppHandle: THandle;
 begin
   {$ifdef windows}
   Result := GetWin32AppHandle;
@@ -2214,7 +2221,7 @@ end;
  Any system color
 }
 procedure TGtk2WidgetSet.SetWidgetColor(const AWidget: PGtkWidget;
-  const FGColor, BGColor: TColor; const Mask: TGtkStateEnum);
+  const FGColor, BGColor: TColor; const Mask: tGtkStateEnum);
 var
   i: integer;
   xfg, xbg: TGdkColor;
@@ -2894,7 +2901,9 @@ begin
   {$ifdef DebugGDK}finally EndGDKErrorTrap; end;{$endif}
 end;
 
-function TGtk2WidgetSet.RawImage_DescriptionFromDrawable(out ADesc: TRawImageDescription; ADrawable: PGdkDrawable; ACustomAlpha: Boolean): Boolean;
+function TGtk2WidgetSet.RawImage_DescriptionFromDrawable(out
+  ADesc: TRawImageDescription; ADrawable: PGdkDrawable; ACustomAlpha: Boolean
+  ): boolean;
 var
   Visual: PGdkVisual;
   Image: PGdkImage;
@@ -4319,7 +4328,7 @@ begin
   end;
 end;
 
-function TGtk2WidgetSet.X11GetActivewindow: HWND;
+function TGtk2WidgetSet.X11GetActiveWindow: HWND;
 var
   Display: PDisplay;
   RootWin, ResultWindow: TWindow;
@@ -4352,6 +4361,70 @@ begin
   end;
 
   if Valid then Result := {%H-}HWND(gdk_window_foreign_new(ResultWindow));
+end;
+
+procedure TGtk2WidgetSet.HideAllHints;
+var
+  TopList, List: PGList;
+  Window: PGTKWindow;
+begin
+  TopList := gdk_window_get_toplevels;
+  List := TopList;
+  while List <> nil do
+  begin
+    if (List^.Data <> nil) then
+    begin
+      gdk_window_get_user_data(PGDKWindow(List^.Data), Pgpointer(@Window));
+      if GDK_IS_WINDOW(PGDKWindow(List^.Data)) then
+      begin
+        if gtk_is_window(Window) then
+        begin
+          if g_object_get_data(PGObject(Window),'lclhintwindow') <> nil then
+          begin
+            if gdk_window_is_visible(PGDKWindow(List^.Data)) then
+              g_object_set_data(PGObject(Window),'lclneedrestorevisible',Pointer(1));
+            gdk_window_hide(PGDKWindow(List^.Data));
+          end;
+        end;
+      end;
+    end;
+    list := g_list_next(list);
+  end;
+  if TopList <> nil then
+    g_list_free(TopList);
+end;
+
+procedure TGtk2WidgetSet.RestoreAllHints;
+var
+  TopList, List: PGList;
+  Window: PGTKWindow;
+begin
+  TopList := gdk_window_get_toplevels;
+  List := TopList;
+  while List <> nil do
+  begin
+    if (List^.Data <> nil) then
+    begin
+      gdk_window_get_user_data(PGDKWindow(List^.Data), Pgpointer(@Window));
+      if GDK_IS_WINDOW(PGDKWindow(List^.Data)) then
+      begin
+        if gtk_is_window(Window) then
+        begin
+          if g_object_get_data(PGObject(Window),'lclhintwindow') <> nil then
+          begin
+            if g_object_get_data(PGObject(Window),'lclneedrestorevisible') <> nil then
+            begin
+              g_object_set_data(PGObject(Window),'lclneedrestorevisible', nil);
+              gdk_window_show(PGDKWindow(List^.Data));
+            end;
+          end;
+        end;
+      end;
+    end;
+    list := g_list_next(list);
+  end;
+  if TopList <> nil then
+    g_list_free(TopList);
 end;
 
 function TGtk2WidgetSet.compositeManagerRunning: Boolean;
@@ -5336,8 +5409,9 @@ end;
 
   Creates an initial DC
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.CreateDCForWidget(AWidget: PGtkWidget; AWindow: PGdkWindow;
-  AWithChildWindows: Boolean; ADoubleBuffer: PGdkDrawable): HDC;
+function TGtk2WidgetSet.CreateDCForWidget(AWidget: PGtkWidget;
+  AWindow: PGdkWindow; AWithChildWindows: Boolean; ADoubleBuffer: PgdkDrawable
+  ): HDC;
 var
   DC: TGtkDeviceContext absolute Result;
 begin
@@ -5374,7 +5448,7 @@ end;
 
   Dispose a GdiObject
  ------------------------------------------------------------------------------}
-procedure TGtk2WidgetSet.DisposeGDIObject(GDIObject: PGdiObject);
+procedure TGtk2WidgetSet.DisposeGDIObject(GdiObject: PGdiObject);
 begin
   if FGDIObjects.Contains(GDIObject) then
   begin
