@@ -248,6 +248,7 @@ var
   aFile: TUnitInfo;
   HeaderWritten: Boolean;
   s: String;
+  i: Integer;
 begin
   // summary
   if AProject.Modified then
@@ -262,8 +263,15 @@ begin
     sl.Add('SourceEditorManager.SomethingModified');
   if AProject.BuildModes.IsModified(false) then
     sl.Add('Project.BuildModes.IsModified data');
+  if AProject.BuildModes.SharedMatrixOptions.Modified then
+    sl.Add('Project.BuildModes.SharedMatrixOptions.Modified');
   if AProject.BuildModes.IsModified(true) then
     sl.Add('Project.BuildModes.IsModified session');
+  if AProject.BuildModes.SessionMatrixOptions.Modified then
+    sl.Add('Project.BuildModes.SessionMatrixOptions.Modified');
+  for i:=0 to AProject.BuildModes.Count-1 do
+    if AProject.BuildModes[i].Modified then
+      sl.Add('Project.BuildModes['+dbgs(i)+'].Name='+AProject.BuildModes[i].Name+' InSession='+dbgs(AProject.BuildModes[i].InSession));
   sl.Add('');
 
   // details
