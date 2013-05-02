@@ -1600,6 +1600,16 @@ begin
     if NewType='' then
       RaiseException('CompleteLocalVariableAssignment Internal error: NewType=""');
 
+    // check if there is another NewType in context of CursorNode
+    if (ExprType.Desc = xtContext) and (ExprType.Context.Tool <> nil) then
+    begin
+      Params.SetIdentifier(Self, PChar(NewType), nil);
+      Params.ContextNode := CursorNode;
+      Params.Flags := [fdfSearchInAncestors..fdfIgnoreCurContextNode];
+      if FindIdentifierInContext(Params)
+        and (Params.NewNode <> ExprType.Context.Node.Parent) then
+          NewType := ExprType.Context.Tool.ExtractSourceName + '.' + NewType;
+    end;
   finally
     Params.Free;
     DeactivateGlobalWriteLock;
@@ -1668,6 +1678,15 @@ var
     // check for semicolon at end of statement
     MoveCursorToCleanPos(UserEventAtom.EndPos);
     ReadNextAtom;
+    if CurPos.Flag = cafRoundBracketOpen then
+      if Scanner.CompilerMode <> cmDELPHI then
+        Exit // indeed it is assignment to function, e.g. x:=sin(y);
+      else begin
+        ReadNextAtom;
+        if CurPos.Flag <> cafRoundBracketClose then
+          Exit; // in Delhi mode empty brackets are allowed after method: OnClick:=FormCreate();
+        ReadNextAtom;
+      end;
     if AtomIsChar(';') then
       SemicolonPos:=CurPos.StartPos
     else
