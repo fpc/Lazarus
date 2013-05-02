@@ -992,6 +992,9 @@ begin
       Ofy := round(POfy * ky);
       Pw  := round(PPw  * kx);
       Ph  := round(PPh  * ky);
+
+      ResX := XDPI;
+      ResY := YDPI;
       
       {$IFDEF DbgPrinter}
       DebugLn(['[prn] PPgw/PPgh=', PPgw,'/',Ppgh,' [scr] Pgw/Pgh=', Pgw,'/',Pgh]);

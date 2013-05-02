@@ -115,6 +115,7 @@ type
     PPgw, PPgh, Pgw, Pgh : Integer; // page width/height (printer/screen)
     POfx, POfy, Ofx, Ofy : Integer; // offset x/y
     PPw, PPh, Pw, Ph     : Integer; // printable width/height
+    ResX, ResY           : Integer; // printer resolution
   end;
 
   PfrPageInfo = ^TfrPageInfo;
