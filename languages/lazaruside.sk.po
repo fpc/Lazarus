@@ -12,13 +12,8 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
-msgid "Select Groups"
-msgstr ""
-
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+#: lazarusidestrconsts.dbgbreakgroupdlgcaption
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"
 msgstr ""
 
@@ -11700,8 +11695,8 @@ msgstr "Parametre spustenia ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
 #, fuzzy
-#| msgid "Run to &cursor"
-msgid "Run to &Cursor"
+#| msgid "Run to &Cursor"
+msgid "Step over to &Cursor"
 msgstr "Spustiť po kurzor"
 
 #: lazarusidestrconsts.lismenusave

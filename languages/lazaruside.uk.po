@@ -10,13 +10,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
-msgid "Select Groups"
-msgstr "Виберіть групи"
-
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+#: lazarusidestrconsts.dbgbreakgroupdlgcaption
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"
 msgstr "Виберіть групи"
 
@@ -11442,8 +11437,9 @@ msgid "Run &Parameters ..."
 msgstr "Пара&метри виконання ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-#| msgid "Run to &cursor"
-msgid "Run to &Cursor"
+#, fuzzy
+#| msgid "Run to &Cursor"
+msgid "Step over to &Cursor"
 msgstr "Виконати до &курсора"
 
 #: lazarusidestrconsts.lismenusave

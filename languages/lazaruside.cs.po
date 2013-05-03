@@ -13,13 +13,8 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "Language: cs_CZ\n"
 
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
-msgid "Select Groups"
-msgstr "Vybrat skupiny"
-
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+#: lazarusidestrconsts.dbgbreakgroupdlgcaption
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"
 msgstr "Vybrat skupiny"
 
@@ -11202,7 +11197,9 @@ msgid "Run &Parameters ..."
 msgstr "Spustit s parametry ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-msgid "Run to &Cursor"
+#, fuzzy
+#| msgid "Run to &Cursor"
+msgid "Step over to &Cursor"
 msgstr "Spustit po ukazatel"
 
 #: lazarusidestrconsts.lismenusave

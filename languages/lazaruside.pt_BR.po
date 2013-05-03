@@ -11,13 +11,8 @@ msgstr ""
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: BRAZIL\n"
 
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
-msgid "Select Groups"
-msgstr "Selecionar grupos"
-
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+#: lazarusidestrconsts.dbgbreakgroupdlgcaption
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"
 msgstr "Selecionar grupos"
 
@@ -11544,8 +11539,9 @@ msgid "Run &Parameters ..."
 msgstr "&Parâmetros de Execução ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-#| msgid "Run to &cursor"
-msgid "Run to &Cursor"
+#, fuzzy
+#| msgid "Run to &Cursor"
+msgid "Step over to &Cursor"
 msgstr "Executar até o &cursor"
 
 #: lazarusidestrconsts.lismenusave

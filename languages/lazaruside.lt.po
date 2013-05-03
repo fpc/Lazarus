@@ -12,13 +12,8 @@ msgstr ""
 "POT-Creation-Date: \n"
 "Language: lt\n"
 
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
-msgid "Select Groups"
-msgstr "Pažymėti grupes"
-
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+#: lazarusidestrconsts.dbgbreakgroupdlgcaption
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"
 msgstr "Pažymėti grupes"
 
@@ -11505,8 +11500,9 @@ msgid "Run &Parameters ..."
 msgstr "Startavimo &parametrai…"
 
 #: lazarusidestrconsts.lismenuruntocursor
-#| msgid "Run to &cursor"
-msgid "Run to &Cursor"
+#, fuzzy
+#| msgid "Run to &Cursor"
+msgid "Step over to &Cursor"
 msgstr "Startuoti iki ž&ymeklio"
 
 #: lazarusidestrconsts.lismenusave

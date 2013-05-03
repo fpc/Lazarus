@@ -12,13 +12,8 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Country: GERMANY\n"
 
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
-msgid "Select Groups"
-msgstr "Gruppen auswählen"
-
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+#: lazarusidestrconsts.dbgbreakgroupdlgcaption
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"
 msgstr "Gruppen auswählen"
 
@@ -11575,8 +11570,9 @@ msgid "Run &Parameters ..."
 msgstr "Start&parameter ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-#| msgid "Run to &cursor"
-msgid "Run to &Cursor"
+#, fuzzy
+#| msgid "Run to &Cursor"
+msgid "Step over to &Cursor"
 msgstr "Start bis &Cursor"
 
 #: lazarusidestrconsts.lismenusave

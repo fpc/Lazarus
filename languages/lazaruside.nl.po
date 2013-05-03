@@ -9,13 +9,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
-msgid "Select Groups"
-msgstr ""
-
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+#: lazarusidestrconsts.dbgbreakgroupdlgcaption
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"
 msgstr ""
 
@@ -11581,8 +11576,8 @@ msgstr "Start Parameter ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
 #, fuzzy
-#| msgid "Run to &cursor"
-msgid "Run to &Cursor"
+#| msgid "Run to &Cursor"
+msgid "Step over to &Cursor"
 msgstr "Start tot cursor"
 
 #: lazarusidestrconsts.lismenusave

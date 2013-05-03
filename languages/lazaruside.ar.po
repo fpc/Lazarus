@@ -13,13 +13,8 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 "X-Generator: Easy Po 0.9.4.2\n"
 
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
-msgid "Select Groups"
-msgstr "اختيار المجموعات"
-
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+#: lazarusidestrconsts.dbgbreakgroupdlgcaption
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"
 msgstr "اختيار المجموعات"
 
@@ -11207,7 +11202,9 @@ msgid "Run &Parameters ..."
 msgstr "ضوابط التشغيل ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-msgid "Run to &Cursor"
+#, fuzzy
+#| msgid "Run to &Cursor"
+msgid "Step over to &Cursor"
 msgstr "تشغيل حتى المؤشر"
 
 #: lazarusidestrconsts.lismenusave

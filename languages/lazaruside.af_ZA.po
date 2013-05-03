@@ -11,13 +11,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
 
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
-msgid "Select Groups"
-msgstr ""
-
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+#: lazarusidestrconsts.dbgbreakgroupdlgcaption
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"
 msgstr ""
 
@@ -11255,8 +11250,8 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuruntocursor
 #, fuzzy
-#| msgid "Run to &cursor"
-msgid "Run to &Cursor"
+#| msgid "Run to &Cursor"
+msgid "Step over to &Cursor"
 msgstr "Hardloop tot by merker"
 
 #: lazarusidestrconsts.lismenusave

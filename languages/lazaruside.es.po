@@ -9,13 +9,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
-msgid "Select Groups"
-msgstr "Seleccionar Grupos"
-
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+#: lazarusidestrconsts.dbgbreakgroupdlgcaption
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"
 msgstr "Seleccionar Grupos"
 
@@ -11783,8 +11778,8 @@ msgstr "Parámetros de ejecución ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
 #, fuzzy
-#| msgid "Run to &cursor"
-msgid "Run to &Cursor"
+#| msgid "Run to &Cursor"
+msgid "Step over to &Cursor"
 msgstr "Ejecutar hasta el &Cursor"
 
 #: lazarusidestrconsts.lismenusave

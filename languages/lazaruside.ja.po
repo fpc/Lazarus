@@ -8,13 +8,8 @@ msgstr ""
 "Last-Translator: Haruyuki Fujimaki, from r36915\n"
 "Language-Team: Japanese Lazarus ML\n"
 
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
-msgid "Select Groups"
-msgstr "グループを選択"
-
-#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+#: lazarusidestrconsts.dbgbreakgroupdlgcaption
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"
 msgstr "グループを選択"
 
@@ -11824,8 +11819,8 @@ msgstr "実行パラメーター ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
 #, fuzzy
-#| msgid "Run to &cursor"
-msgid "Run to &Cursor"
+#| msgid "Run to &Cursor"
+msgid "Step over to &Cursor"
 msgstr "カーソル位置まで実行"
 
 #: lazarusidestrconsts.lismenusave
