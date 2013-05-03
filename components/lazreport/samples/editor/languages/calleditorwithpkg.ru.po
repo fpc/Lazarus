@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-09-22 16:33+0300\n"
+"PO-Revision-Date: 2013-05-03 20:14+0400\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -184,7 +184,7 @@ msgstr "Эскизы"
 
 #: tfrmmain.btnexportlast.caption
 msgid "Repeat Export"
-msgstr ""
+msgstr "Повторный экспорт"
 
 #: tfrmmain.btnmasterdetail.caption
 msgid "Master-Detail Test"
