@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, types, LResources, LCLProc, Forms, Controls, Graphics, Dialogs,
-  lr_class, lr_barc, lr_rrect, lr_shape, Cairo, CairoCanvas, CairoPrinter;
+  Barcode, lr_class, lr_barc, lr_rrect, lr_shape, Cairo, CairoCanvas, CairoPrinter;
 
 type
   TShapeData = record
@@ -49,6 +49,7 @@ type
     DataRect: TRect;
     fImageList: TfpList;
     fClipState: TClipState;
+    fBarc: TBarcode;
     procedure AddShape(Data: TShapeData; x, y, h, w: integer);
     procedure DefaultShowView(View: TfrView; nx, ny, ndy, ndx: Integer);
     procedure DbgPoint(x, y: Integer; color: TColor; delta:Integer=5);
@@ -267,10 +268,12 @@ begin
     end;
   end;
   fImageList := TfpList.Create;
+  fBarc := TBarcode.Create(nil);
 end;
 
 destructor TlrCairoExportFilter.Destroy;
 begin
+  fBarc.free;
   ClearImageList;
   fImageList.Free;
   fCairoPrinter.Free;
@@ -358,10 +361,154 @@ begin
   fCairoPrinter.Canvas.LineTo(X2,Y2);
 end;
 
+{$HINTS OFF}
+{$NOTES OFF}
+function isNumeric(St: String): Boolean;
+var
+  {%H-}R: Double;
+  E: Integer;
+begin
+  Val(St, R, E);
+  Result := (E = 0);
+end;
+{$NOTES ON}
+{$HINTS ON}
+
 procedure TlrCairoExportFilter.ShowBarCode(View: TfrBarCodeView; x, y, h,
   w: integer);
+const
+  cbDefaultText = '12345678';
+  arrIsAlpha: array[TBarcodeType] of boolean = (
+    false,  //bcCode_2_5_interleaved,
+    false,  //bcCode_2_5_industrial,
+    false,  //bcCode_2_5_matrix,
+    true,   //bcCode39,
+    true,   //bcCode39Extended,
+    true,   //bcCode128A,
+    true,   //bcCode128B,
+    false,  //bcCode128C,
+    true,   //bcCode93,
+    true,   //bcCode93Extended,
+    false,  //bcCodeMSI,
+    false,  //bcCodePostNet,
+    true,   //bcCodeCodabar,
+    false,  //bcCodeEAN8,
+    false   //bcCodeEAN13
+  );
+
+var
+  Text: string;
+  aLine: string;
+  dx, dy, ox, oy, Angle, fh: Integer;
+  r: TRect;
+  ts: TTextStyle;
 begin
 
+  fBarC.Typ:= View.BarType;
+  if Trim(View.Memo.Text)='' then
+    exit;
+
+  Text := View.Memo.Text;
+  aLine := View.Memo.Strings[0];
+
+  if (Text <> '') and (pos('[',aLine)=0) and
+    ((arrIsAlpha[fBarC.typ] or IsNumeric(aLine) or
+      fBarC.BarcodeTypeChecked(fBarC.Typ)))  then
+  begin
+    fBarC.Text := aLine;
+    fBarC.Checksum := view.CheckSum;
+  end else begin
+    fBarC.Text := cbDefaultText;
+    fBarC.Checksum := true;
+  end;
+
+  if fBarC.Text='0' then
+    exit;
+
+  if View.ShowText then
+    with fCairoPrinter.Canvas do begin
+      Font.Name := 'Arial';
+      Font.Color := clBlack;
+      Font.Size := 10;
+      Font.Orientation:=0;
+      fh := TextHeight('09');
+    end
+  else
+    fh := 0;
+
+  fBarC.Angle := View.Angle;
+  fBarC.Ratio := 2;
+  fBarC.Modul := rtrunc(ScaleX*View.Zoom);
+
+  Angle := round(View.Angle);
+
+  // barcode height
+  dx := w;
+  dy := h;
+  if (Angle=90) or (Angle=270) then begin
+    dy := fBarC.Width;
+    fBarC.Height := dx - fh;
+  end
+  else begin
+    dx := fBarC.Width;
+    fBarC.Height := dy - fh;
+  end;
+
+  // barcode origin
+  ox := x;
+  oy := y;
+  case angle of
+    0:
+      if fBarC.typ=bcCodePostNet then
+      begin
+        oy:=fBarC.Height;
+        fBarC.Height:=-oy;
+      end;
+    90:
+      oy := y+dy;
+    180:
+      begin
+        oy := y+dy;
+        ox := x+dx;
+      end;
+    270:
+      ox := x+dx;
+  end;
+  fBarC.Left := ox;
+  fBarC.Top := oy;
+
+  fBarC.DrawBarcode(fCairoPrinter.Canvas);
+
+  // barcode text
+  if View.ShowText then
+    with fCairoPrinter.Canvas do begin
+
+      if fBarC.Checksum then
+        aLine := fBarC.CodeText
+      else
+        aLine := fBarC.Text;
+
+      r := rect(x, y, x+dx, y+dy);
+
+      font.Orientation := angle * 10;
+
+      case angle of
+          0: begin r.top := r.bottom - fh; oy := r.Top; end;
+        180: begin r.Bottom := r.Top + fh; oy := r.Bottom; ox := r.Right; end;
+         90: begin r.left := r.right - fh; oy := r.Bottom; ox := r.Left;  end;
+        270: begin r.right := r.left + fh; oy := r.Top;    ox := r.Right; end;
+      end;
+
+      brush.Color := clWhite;
+      brush.style := bsSolid;
+      Fillrect(r);
+      ts := TextStyle;
+      ts.Alignment:=taCenter;
+      ts.Layout:=tlcenter;
+      ts.SingleLine:=true;
+
+      TextRect(r, ox, oy, aLine, ts);
+    end;
 end;
 
 procedure destroymstream(data: pointer); cdecl;
