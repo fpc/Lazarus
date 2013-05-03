@@ -5570,9 +5570,8 @@ resourcestring
   lisDebuggerFeedbackError = 'Debugger Error';
 
   // breakpointgroups
-  dbgBreakGroupDlgCaptionEnable = 'Select Groups';
+  dbgBreakGroupDlgCaption = 'Select Groups';
   dbgBreakGroupDlgHeaderEnable = 'Select groups to enable when breakpoint is hit';
-  dbgBreakGroupDlgCaptionDisable = 'Select Groups';
   dbgBreakGroupDlgHeaderDisable = 'Select groups to disable when breakpoint is hit';
 
   //Registers dialog

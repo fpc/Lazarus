@@ -75,17 +75,12 @@ begin
   FGroupList.Delimiter := ';';
   FGroupList.DelimitedText := AGroupList;
 
+  Caption := dbgBreakGroupDlgCaption;
   case AAction of
     bgaEnable:
-      begin
-        Caption := dbgBreakGroupDlgCaptionEnable;
-        Label1.Caption := dbgBreakGroupDlgHeaderEnable;
-      end;
+      Label1.Caption := dbgBreakGroupDlgHeaderEnable;
     bgaDisable:
-      begin
-        Caption := dbgBreakGroupDlgCaptionDisable;
-        Label1.Caption := dbgBreakGroupDlgHeaderDisable;
-      end;
+      Label1.Caption := dbgBreakGroupDlgHeaderDisable;
   end;
 
   for i := 0 to FAvailableGroups.Count - 1 do begin
