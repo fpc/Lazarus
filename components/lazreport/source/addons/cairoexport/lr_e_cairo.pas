@@ -74,6 +74,7 @@ type
     procedure ShowShape(View: TfrShapeView; x, y, h, w: integer);
     procedure OnText(X, Y: Integer; const Text: string; View: TfrView); override;
     procedure OnData(x, y: Integer; View: TfrView); override;
+    procedure OnExported(x, y: Integer; View: TfrView); override;
   public
     property Backend: TlrCairoBackend read fBackend write fBackend;
   end;
@@ -786,6 +787,14 @@ begin
 
   DataRect := Rect(nx, ny, nx+ndx, ny+ndy);
 
+  // enable global clipping only for this view classes
+  // others classes might need clipping only in some cases or
+  // may need another clipping shape.
+  if
+    (View is TfrMemoView)
+  then
+    SaveClipping(@DataRect);
+
   if View is TfrShapeView then begin
 
     ShowShape(TfrShapeView(View), nx, ny, ndy, ndx);
@@ -797,6 +806,11 @@ begin
 
   end else
     DefaultShowView(View, nx, ny, ndy, ndx);
+end;
+
+procedure TlrCairoExportFilter.OnExported(x, y: Integer; View: TfrView);
+begin
+  RestoreClipping;
 end;
 
 initialization
