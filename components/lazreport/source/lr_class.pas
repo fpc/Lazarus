@@ -941,6 +941,7 @@ type
     procedure OnEndPage; virtual;
     procedure OnData({%H-}x, {%H-}y: Integer; {%H-}View: TfrView); virtual;
     procedure OnText({%H-}x, {%H-}y: Integer; const {%H-}text: String; {%H-}View: TfrView); virtual;
+    procedure OnExported({%H-}x, {%H-}y: Integer; {%H-}View: TfrView); virtual;
 
     property BandTypes: TfrBandTypes read FBandTypes write FBandTypes;
     property UseProgressbar: boolean read FUseProgressBar write FUseProgressBar;
@@ -1072,6 +1073,7 @@ type
     procedure InternalOnEnterRect(Memo: TStringList; View: TfrView);
     procedure InternalOnExportData(View: TfrView);
     procedure InternalOnExportText(x, y: Integer; const text: String; View: TfrView);
+    procedure InternalOnExported(View: TfrView);
     procedure InternalOnGetValue(ParName: String; var ParValue: String);
     procedure InternalOnProgress(Percent: Integer);
     procedure FillQueryParams;
@@ -2247,6 +2249,7 @@ end;
 procedure TfrView.ExportData;
 begin
   CurReport.InternalOnExportData(Self);
+  CurReport.InternalOnExported(Self);
 end;
 
 procedure TfrView.LoadFromStream(Stream: TStream);
@@ -3708,10 +3711,11 @@ end;
 
 procedure TfrMemoView.ExportData;
 begin
-  inherited;
+  CurReport.InternalOnExportData(Self);
   Exporting := True;
   Draw(TempBmp.Canvas);
   Exporting := False;
+  CurReport.InternalOnExported(Self);
 end;
 
 function TfrMemoView.CalcHeight: Integer;
@@ -8750,6 +8754,11 @@ begin
   FCurrentFilter.OnText(x, y, text, View);
 end;
 
+procedure TfrReport.InternalOnExported(View: TfrView);
+begin
+  FCurrentFilter.OnExported(View.x, View.y, View);
+end;
+
 procedure TfrReport.ReadStoreInDFM(Reader: TReader);
 begin
   FStoreInDFM := Reader.ReadBoolean;
@@ -10815,6 +10824,10 @@ end;
 procedure TfrExportFilter.OnText(x, y: Integer; const text: String; View: TfrView);
 begin
 // abstract method
+end;
+
+procedure TfrExportFilter.OnExported(x, y: Integer; View: TfrView);
+begin
 end;
 
 function TfrFunctionLibrary.GetCount: integer;
