@@ -814,7 +814,7 @@ begin
 end;
 
 initialization
-    frRegisterExportFilter(TlrCairoExportFilter, 'Cairo Adobe Acrobat PDF (*.pdf)', '*.pdf');
+    frRegisterExportFilter(TlrCairoExportFilter, 'Cairo PDF (*.pdf)', '*.pdf');
     frRegisterExportFilter(TlrCairoExportFilter, 'Cairo Postscript (*.ps)', '*.ps');
 
 end.
