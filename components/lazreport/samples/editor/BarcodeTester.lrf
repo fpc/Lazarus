@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CONFIG>
   <LazReport>
-    <Version Value="25"/>
+    <Version Value="26"/>
     <Title Value=""/>
     <Subject Value=""/>
     <KeyWords Value=""/>
     <Comments Value=""/>
+    <ReportCreateDate Value="2013-05-02 08:43:25"/>
+    <ReportLastChange Value="2013-05-02 23:53:50"/>
     <ReportVersionBuild Value=""/>
     <ReportVersionMajor Value=""/>
     <ReportVersionMinor Value=""/>
     <ReportVersionRelease Value=""/>
     <ReportAutor Value=""/>
+    <Script Value=""/>
     <Pages>
       <PrintToDefault Value="False"/>
       <DoublePass Value="True"/>
-      <SelectedPrinter Value="HP LaserJet 1200 Series PCL 5e"/>
+      <SelectedPrinter Value="CutePDF Writer"/>
       <PageCount Value="1"/>
       <Page1>
         <Name Value="Page1"/>
         <ClassName Value="TfrPageReport"/>
-        <Visible Value="1"/>
-        <Width Value="1"/>
-        <Height Value="1" PageType="0"/>
+        <Visible Value="True"/>
+        <Width Value="612"/>
+        <Height Value="792"/>
+        <Script Value=""/>
         <PgSize Value="1"/>
         <Margins>
           <left Value="0"/>
@@ -35,11 +39,11 @@
         <ColCount Value="1"/>
         <ColGap Value="0"/>
         <LayoutOrder Value="loColumns"/>
-        <ObjectCount Value="52"/>
+        <ObjectCount Value="55"/>
         <Object1>
           <Name Value="Bar1"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -58,17 +62,19 @@
           <Data>
             <Memo Value="CODE 39&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="2" BarType="bcCode39" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="2" Angle="0" BarType="bcCode39" CheckSum="0" ShowText="1"/>
         </Object1>
         <Object2>
           <Name Value="Bar2"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="352"/>
-            <Top Value="44"/>
+            <Left Value="516"/>
+            <Top Value="40"/>
             <Width Value="234"/>
             <Height Value="46"/>
           </Size>
@@ -82,12 +88,14 @@
           <Data>
             <Memo Value="CODE 39&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="2" BarType="bcCode39" CheckSum="1" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="2" Angle="0" BarType="bcCode39" CheckSum="1" ShowText="1"/>
         </Object2>
         <Object3>
           <Name Value="Bar3"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -106,12 +114,14 @@
           <Data>
             <Memo Value="CODE128-A&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="2" BarType="bcCode128A" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="2" Angle="0" BarType="bcCode128A" CheckSum="0" ShowText="1"/>
         </Object3>
         <Object4>
           <Name Value="Bar4"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -130,12 +140,14 @@
           <Data>
             <Memo Value="Code128-B&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="2" BarType="bcCode128B" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="2" Angle="0" BarType="bcCode128B" CheckSum="0" ShowText="1"/>
         </Object4>
         <Object5>
           <Name Value="Bar5"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -154,17 +166,19 @@
           <Data>
             <Memo Value="1234567890&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="2" BarType="bcCode128C" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="2" Angle="0" BarType="bcCode128C" CheckSum="0" ShowText="1"/>
         </Object5>
         <Object6>
           <Name Value="Bar6"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="136"/>
-            <Top Value="148"/>
+            <Left Value="84"/>
+            <Top Value="160"/>
             <Width Value="116"/>
             <Height Value="46"/>
           </Size>
@@ -178,17 +192,19 @@
           <Data>
             <Memo Value="CODE 39&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCode39" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCode39" CheckSum="0" ShowText="1"/>
         </Object6>
         <Object7>
           <Name Value="Bar7"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="408"/>
-            <Top Value="144"/>
+            <Left Value="572"/>
+            <Top Value="140"/>
             <Width Value="117"/>
             <Height Value="46"/>
           </Size>
@@ -202,12 +218,14 @@
           <Data>
             <Memo Value="CODE 39&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCode39" CheckSum="1" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCode39" CheckSum="1" ShowText="1"/>
         </Object7>
         <Object8>
           <Name Value="Bar8"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -226,12 +244,14 @@
           <Data>
             <Memo Value="CODE128-A&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCode128A" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCode128A" CheckSum="0" ShowText="1"/>
         </Object8>
         <Object9>
           <Name Value="Bar9"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -250,12 +270,14 @@
           <Data>
             <Memo Value="Code128-B&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCode128B" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCode128B" CheckSum="0" ShowText="1"/>
         </Object9>
         <Object10>
           <Name Value="Bar10"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -274,19 +296,21 @@
           <Data>
             <Memo Value="1234567890&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCode128C" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCode128C" CheckSum="0" ShowText="1"/>
         </Object10>
         <Object11>
           <Name Value="Bar17"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="112"/>
-            <Top Value="212"/>
+            <Left Value="104"/>
+            <Top Value="248"/>
             <Width Value="168"/>
-            <Height Value="62"/>
+            <Height Value="42"/>
           </Size>
           <Flags Value="1"/>
           <Frames>
@@ -298,19 +322,21 @@
           <Data>
             <Memo Value="c39 ext&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCode39Extended" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCode39Extended" CheckSum="0" ShowText="1"/>
         </Object11>
         <Object12>
           <Name Value="Bar18"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="376"/>
-            <Top Value="208"/>
+            <Left Value="548"/>
+            <Top Value="240"/>
             <Width Value="169"/>
-            <Height Value="62"/>
+            <Height Value="46"/>
           </Size>
           <Flags Value="1"/>
           <Frames>
@@ -322,12 +348,14 @@
           <Data>
             <Memo Value="c39 ext&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCode39Extended" CheckSum="1" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCode39Extended" CheckSum="1" ShowText="1"/>
         </Object12>
         <Object13>
           <Name Value="Bar19"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -346,12 +374,14 @@
           <Data>
             <Memo Value="3243234309495&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="2" BarType="bcCodeEAN13" CheckSum="1" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="2" Angle="0" BarType="bcCodeEAN13" CheckSum="1" ShowText="1"/>
         </Object13>
         <Object14>
           <Name Value="Bar20"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -370,12 +400,14 @@
           <Data>
             <Memo Value="3243234309495&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="2" BarType="bcCodeEAN13" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="2" Angle="0" BarType="bcCodeEAN13" CheckSum="0" ShowText="1"/>
         </Object14>
         <Object15>
           <Name Value="Memo5"/>
           <ClassName Value="TfrMemoView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
@@ -398,6 +430,8 @@
             <Memo Value="Without Check&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -414,16 +448,17 @@
           <Alignment Value="taCenter"/>
           <Layout Value="tlTop"/>
           <Angle Value="0"/>
+          <Justify Value="False"/>
         </Object15>
         <Object16>
           <Name Value="Memo6"/>
           <ClassName Value="TfrMemoView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="348"/>
-            <Top Value="20"/>
+            <Left Value="512"/>
+            <Top Value="16"/>
             <Width Value="248"/>
             <Height Value="18"/>
           </Size>
@@ -441,6 +476,8 @@
             <Memo Value="With Check&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -457,11 +494,12 @@
           <Alignment Value="taCenter"/>
           <Layout Value="tlTop"/>
           <Angle Value="0"/>
+          <Justify Value="False"/>
         </Object16>
         <Object17>
           <Name Value="Bar21"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -480,17 +518,19 @@
           <Data>
             <Memo Value="CODE 39&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1.5" BarType="bcCode39" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1.5" Angle="0" BarType="bcCode39" CheckSum="0" ShowText="1"/>
         </Object17>
         <Object18>
           <Name Value="Bar22"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="384"/>
-            <Top Value="96"/>
+            <Left Value="548"/>
+            <Top Value="92"/>
             <Width Value="176"/>
             <Height Value="46"/>
           </Size>
@@ -504,12 +544,14 @@
           <Data>
             <Memo Value="CODE 39&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1.5" BarType="bcCode39" CheckSum="1" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1.5" Angle="0" BarType="bcCode39" CheckSum="1" ShowText="1"/>
         </Object18>
         <Object19>
           <Name Value="Bar11"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -528,12 +570,14 @@
           <Data>
             <Memo Value="CODE128-A&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1.5" BarType="bcCode128A" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1.5" Angle="0" BarType="bcCode128A" CheckSum="0" ShowText="1"/>
         </Object19>
         <Object20>
           <Name Value="Bar12"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -552,12 +596,14 @@
           <Data>
             <Memo Value="Code128-B&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1.5" BarType="bcCode128B" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1.5" Angle="0" BarType="bcCode128B" CheckSum="0" ShowText="1"/>
         </Object20>
         <Object21>
           <Name Value="Bar13"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -576,12 +622,14 @@
           <Data>
             <Memo Value="1234567890&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1.5" BarType="bcCode128C" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1.5" Angle="0" BarType="bcCode128C" CheckSum="0" ShowText="1"/>
         </Object21>
         <Object22>
           <Name Value="Memo2"/>
           <ClassName Value="TfrMemoView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
@@ -604,6 +652,8 @@
             <Memo Value="Code39 Ext&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -620,11 +670,12 @@
           <Alignment Value="taCenter"/>
           <Layout Value="tlTop"/>
           <Angle Value="90"/>
+          <Justify Value="False"/>
         </Object22>
         <Object23>
           <Name Value="Memo1"/>
           <ClassName Value="TfrMemoView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
@@ -647,6 +698,8 @@
             <Memo Value="Code39&#xD;&#xA;zoom 1       1.5         2&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -663,11 +716,12 @@
           <Alignment Value="taCenter"/>
           <Layout Value="tlTop"/>
           <Angle Value="90"/>
+          <Justify Value="False"/>
         </Object23>
         <Object24>
           <Name Value="Memo3"/>
           <ClassName Value="TfrMemoView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
@@ -690,6 +744,8 @@
             <Memo Value="EAN-13 &#xD;&#xA;zoom 1       1.5         2&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -706,11 +762,12 @@
           <Alignment Value="taCenter"/>
           <Layout Value="tlTop"/>
           <Angle Value="90"/>
+          <Justify Value="False"/>
         </Object24>
         <Object25>
           <Name Value="Memo4"/>
           <ClassName Value="TfrMemoView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
@@ -733,6 +790,8 @@
             <Memo Value="Invalid check digit&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -749,11 +808,12 @@
           <Alignment Value="taCenter"/>
           <Layout Value="tlTop"/>
           <Angle Value="90"/>
+          <Justify Value="False"/>
         </Object25>
         <Object26>
           <Name Value="Bar14"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -772,12 +832,14 @@
           <Data>
             <Memo Value="3243234309495&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1.5" BarType="bcCodeEAN13" CheckSum="1" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1.5" Angle="0" BarType="bcCodeEAN13" CheckSum="1" ShowText="1"/>
         </Object26>
         <Object27>
           <Name Value="Bar15"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -796,12 +858,14 @@
           <Data>
             <Memo Value="3243234309495&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1.5" BarType="bcCodeEAN13" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1.5" Angle="0" BarType="bcCodeEAN13" CheckSum="0" ShowText="1"/>
         </Object27>
         <Object28>
           <Name Value="Bar16"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -820,12 +884,14 @@
           <Data>
             <Memo Value="3243234309495&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCodeEAN13" CheckSum="1" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCodeEAN13" CheckSum="1" ShowText="1"/>
         </Object28>
         <Object29>
           <Name Value="Bar23"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -844,12 +910,14 @@
           <Data>
             <Memo Value="3243234309495&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCodeEAN13" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCodeEAN13" CheckSum="0" ShowText="1"/>
         </Object29>
         <Object30>
           <Name Value="Bar24"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -868,12 +936,14 @@
           <Data>
             <Memo Value="CODE 93&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="2" BarType="bcCode93" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="2" Angle="0" BarType="bcCode93" CheckSum="0" ShowText="1"/>
         </Object30>
         <Object31>
           <Name Value="Bar26"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -892,12 +962,14 @@
           <Data>
             <Memo Value="CODE 93&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCode93" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCode93" CheckSum="0" ShowText="1"/>
         </Object31>
         <Object32>
           <Name Value="Bar28"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -916,12 +988,14 @@
           <Data>
             <Memo Value="CODE 93&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1.5" BarType="bcCode93" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1.5" Angle="0" BarType="bcCode93" CheckSum="0" ShowText="1"/>
         </Object32>
         <Object33>
           <Name Value="Memo16"/>
           <ClassName Value="TfrMemoView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
@@ -944,6 +1018,8 @@
             <Memo Value="Code39&#xD;&#xA;zoom 1       1.5         2&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -960,11 +1036,12 @@
           <Alignment Value="taCenter"/>
           <Layout Value="tlTop"/>
           <Angle Value="90"/>
+          <Justify Value="False"/>
         </Object33>
         <Object34>
           <Name Value="Bar25"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -983,12 +1060,14 @@
           <Data>
             <Memo Value="CODE 93&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="2" BarType="bcCode93" CheckSum="1" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="2" Angle="0" BarType="bcCode93" CheckSum="1" ShowText="1"/>
         </Object34>
         <Object35>
           <Name Value="Bar27"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -1007,12 +1086,14 @@
           <Data>
             <Memo Value="CODE 93&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCode93" CheckSum="1" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCode93" CheckSum="1" ShowText="1"/>
         </Object35>
         <Object36>
           <Name Value="Bar29"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -1031,17 +1112,19 @@
           <Data>
             <Memo Value="CODE 93&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1.5" BarType="bcCode93" CheckSum="1" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1.5" Angle="0" BarType="bcCode93" CheckSum="1" ShowText="1"/>
         </Object36>
         <Object37>
           <Name Value="Bar30"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="612"/>
-            <Top Value="264"/>
+            <Left Value="628"/>
+            <Top Value="492"/>
             <Width Value="115"/>
             <Height Value="46"/>
           </Size>
@@ -1055,17 +1138,19 @@
           <Data>
             <Memo Value="12345678&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCodeMSI" CheckSum="1" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCodeMSI" CheckSum="1" ShowText="1"/>
         </Object37>
         <Object38>
           <Name Value="Memo17"/>
           <ClassName Value="TfrMemoView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="628"/>
-            <Top Value="240"/>
+            <Left Value="644"/>
+            <Top Value="468"/>
             <Width Value="96"/>
             <Height Value="18"/>
           </Size>
@@ -1083,6 +1168,8 @@
             <Memo Value="MSI&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -1099,11 +1186,12 @@
           <Alignment Value="taCenter"/>
           <Layout Value="tlTop"/>
           <Angle Value="0"/>
+          <Justify Value="False"/>
         </Object38>
         <Object39>
           <Name Value="Bar31"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -1122,12 +1210,14 @@
           <Data>
             <Memo Value="1234567890&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="2" BarType="bcCode_2_5_interleaved" CheckSum="1" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="2" Angle="0" BarType="bcCode_2_5_interleaved" CheckSum="1" ShowText="1"/>
         </Object39>
         <Object40>
           <Name Value="Memo18"/>
           <ClassName Value="TfrMemoView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
@@ -1150,6 +1240,8 @@
             <Memo Value="2_5_Interleaved&#xD;&#xA;zoom 1       1.5         2&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -1166,11 +1258,12 @@
           <Alignment Value="taCenter"/>
           <Layout Value="tlTop"/>
           <Angle Value="90"/>
+          <Justify Value="False"/>
         </Object40>
         <Object41>
           <Name Value="Bar32"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -1189,12 +1282,14 @@
           <Data>
             <Memo Value="1234567890&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1.5" BarType="bcCode_2_5_interleaved" CheckSum="1" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1.5" Angle="0" BarType="bcCode_2_5_interleaved" CheckSum="1" ShowText="1"/>
         </Object41>
         <Object42>
           <Name Value="Bar33"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -1213,12 +1308,14 @@
           <Data>
             <Memo Value="1234567890&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCode_2_5_interleaved" CheckSum="1" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCode_2_5_interleaved" CheckSum="1" ShowText="1"/>
         </Object42>
         <Object43>
           <Name Value="Bar34"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -1237,12 +1334,14 @@
           <Data>
             <Memo Value="1234567890&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="2" BarType="bcCode_2_5_interleaved" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="2" Angle="0" BarType="bcCode_2_5_interleaved" CheckSum="0" ShowText="1"/>
         </Object43>
         <Object44>
           <Name Value="Bar35"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -1261,12 +1360,14 @@
           <Data>
             <Memo Value="1234567890&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1.5" BarType="bcCode_2_5_interleaved" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1.5" Angle="0" BarType="bcCode_2_5_interleaved" CheckSum="0" ShowText="1"/>
         </Object44>
         <Object45>
           <Name Value="Bar36"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
@@ -1285,17 +1386,19 @@
           <Data>
             <Memo Value="1234567890&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCode_2_5_interleaved" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCode_2_5_interleaved" CheckSum="0" ShowText="1"/>
         </Object45>
         <Object46>
           <Name Value="Bar37"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="624"/>
-            <Top Value="360"/>
+            <Left Value="640"/>
+            <Top Value="588"/>
             <Width Value="101"/>
             <Height Value="42"/>
           </Size>
@@ -1309,17 +1412,19 @@
           <Data>
             <Memo Value="12345678&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCodeCodabar" CheckSum="1" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCodeCodabar" CheckSum="1" ShowText="1"/>
         </Object46>
         <Object47>
           <Name Value="Memo23"/>
           <ClassName Value="TfrMemoView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="628"/>
-            <Top Value="340"/>
+            <Left Value="644"/>
+            <Top Value="568"/>
             <Width Value="96"/>
             <Height Value="18"/>
           </Size>
@@ -1337,6 +1442,8 @@
             <Memo Value="Codabar&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -1353,16 +1460,17 @@
           <Alignment Value="taCenter"/>
           <Layout Value="tlTop"/>
           <Angle Value="0"/>
+          <Justify Value="False"/>
         </Object47>
         <Object48>
           <Name Value="Bar38"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="656"/>
-            <Top Value="168"/>
+            <Left Value="672"/>
+            <Top Value="396"/>
             <Width Value="67"/>
             <Height Value="42"/>
           </Size>
@@ -1376,17 +1484,19 @@
           <Data>
             <Memo Value="12345678&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCodeEAN8" CheckSum="1" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCodeEAN8" CheckSum="1" ShowText="1"/>
         </Object48>
         <Object49>
           <Name Value="Bar39"/>
           <ClassName Value="TfrBarCodeView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="656"/>
-            <Top Value="116"/>
+            <Left Value="672"/>
+            <Top Value="344"/>
             <Width Value="67"/>
             <Height Value="42"/>
           </Size>
@@ -1400,17 +1510,19 @@
           <Data>
             <Memo Value="12345678&#xD;&#xA;"/>
           </Data>
-          <BarCode Zoom="1" BarType="bcCodeEAN8" CheckSum="0" ShowText="1"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="0" BarType="bcCodeEAN8" CheckSum="0" ShowText="1"/>
         </Object49>
         <Object50>
           <Name Value="Memo24"/>
           <ClassName Value="TfrMemoView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="652"/>
-            <Top Value="88"/>
+            <Left Value="668"/>
+            <Top Value="316"/>
             <Width Value="76"/>
             <Height Value="18"/>
           </Size>
@@ -1428,6 +1540,8 @@
             <Memo Value="EAN-8&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -1444,16 +1558,17 @@
           <Alignment Value="taCenter"/>
           <Layout Value="tlTop"/>
           <Angle Value="0"/>
+          <Justify Value="False"/>
         </Object50>
         <Object51>
           <Name Value="Memo25"/>
           <ClassName Value="TfrMemoView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="572"/>
-            <Top Value="128"/>
+            <Left Value="588"/>
+            <Top Value="356"/>
             <Width Value="68"/>
             <Height Value="18"/>
           </Size>
@@ -1471,6 +1586,8 @@
             <Memo Value="w/o check&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -1487,16 +1604,17 @@
           <Alignment Value="taCenter"/>
           <Layout Value="tlTop"/>
           <Angle Value="0"/>
+          <Justify Value="False"/>
         </Object51>
         <Object52>
           <Name Value="Memo26"/>
           <ClassName Value="TfrMemoView"/>
-          <Visible Value="1"/>
+          <Visible Value="True"/>
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="572"/>
-            <Top Value="180"/>
+            <Left Value="588"/>
+            <Top Value="408"/>
             <Width Value="68"/>
             <Height Value="18"/>
           </Size>
@@ -1514,6 +1632,8 @@
             <Memo Value="w/check&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
           <Font>
             <Name Value="Arial"/>
             <Size Value="10"/>
@@ -1530,7 +1650,86 @@
           <Alignment Value="taCenter"/>
           <Layout Value="tlTop"/>
           <Angle Value="0"/>
+          <Justify Value="False"/>
         </Object52>
+        <Object53>
+          <Name Value="Bar40"/>
+          <ClassName Value="TfrBarCodeView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="352"/>
+            <Top Value="20"/>
+            <Width Value="64"/>
+            <Height Value="232"/>
+          </Size>
+          <Flags Value="1"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
+          </Frames>
+          <Data>
+            <Memo Value="CODE 39&#xD;&#xA;"/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="2" Angle="90" BarType="bcCode39" CheckSum="0" ShowText="1"/>
+        </Object53>
+        <Object54>
+          <Name Value="Bar41"/>
+          <ClassName Value="TfrBarCodeView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="424"/>
+            <Top Value="20"/>
+            <Width Value="64"/>
+            <Height Value="232"/>
+          </Size>
+          <Flags Value="1"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
+          </Frames>
+          <Data>
+            <Memo Value="CODE 39&#xD;&#xA;"/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="2" Angle="270" BarType="bcCode39" CheckSum="0" ShowText="1"/>
+        </Object54>
+        <Object55>
+          <Name Value="Bar42"/>
+          <ClassName Value="TfrBarCodeView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="224"/>
+            <Top Value="160"/>
+            <Width Value="116"/>
+            <Height Value="46"/>
+          </Size>
+          <Flags Value="1"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
+          </Frames>
+          <Data>
+            <Memo Value="CODE 39&#xD;&#xA;"/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BarCode Zoom="1" Angle="180" BarType="bcCode39" CheckSum="0" ShowText="1"/>
+        </Object55>
       </Page1>
       <FVal>
         <Count Value="0"/>
