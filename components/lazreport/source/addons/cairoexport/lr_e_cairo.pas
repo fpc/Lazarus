@@ -41,10 +41,8 @@ type
   TlrCairoExportFilter = class(TfrExportFilter)
   private
     fBackend: TlrCairoBackend;
-    NewPage: Boolean;
     fCairoPrinter: TCairoFilePrinter;
     FPageNo : Integer;
-    DummyControl: TForm;
     ScaleX,ScaleY: Double;
     DataRect: TRect;
     fImageList: TfpList;
@@ -85,9 +83,6 @@ implementation
 // missing cairo functions to make shared images posible
 const
   CAIRO_MIME_TYPE_JPEG = 'image/jpeg';
-  CAIRO_MIME_TYPE_PNG = 'image/png';
-  CAIRO_MIME_TYPE_JP2 = 'image/jp2';
-  CAIRO_MIME_TYPE_URI = 'text/x-uri';
 {$IFDEF CAIRO_HAS_MIME_TYPE_UNIQUE}
   CAIRO_MIME_TYPE_UNIQUE = 'application/x-cairo.uuid'
 {$ENDIF}
@@ -526,8 +521,7 @@ end;
 procedure TlrCairoExportFilter.ShowPicture(View: TfrPictureView; x, y, h,
   w: integer);
 var
-  cr: pcairo_t;
-  sf, isf: pcairo_surface_t;
+  isf: pcairo_surface_t;
   m: TMemoryStream;
   item: PImageItem;
 
@@ -544,9 +538,6 @@ begin
   picture := View.Picture;
   picw := Picture.Graphic.Width;
   pich := Picture.Graphic.Height;
-
-  cr := pcairo_t(fCairoPrinter.Canvas.Handle);
-  sf := cairo_get_target(cr);
 
   ImageShared := (View.SharedName<>'') and (Backend=cePDF);
 
@@ -727,8 +718,7 @@ procedure TlrCairoExportFilter.OnText(X, Y: Integer; const Text: string;
 var
   nx, ny, gapx, gapy, sgapx, sgapy: Integer;
   aStyle: TTextStyle;
-  OldClipping: Boolean;
-  OldClipRect, R: TRect;
+  R: TRect;
 begin
 
   // The text drawn in this function is enclosed in a view frame
