@@ -23,8 +23,6 @@ The license directory tree:
  |
  +- lcl             (modified LGPL)
  |
- +- ideintf         (modified LGPL)
- |
  +- components/
     |
     +- synedit      (MPL - Mozilla public license)
