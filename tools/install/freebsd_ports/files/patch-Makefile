@@ -8,4 +8,4 @@
 +LAZARUS_INSTALL_DIR=%%DATADIR%%
  endif
  ifeq ($(FULL_TARGET),i386-linux)
- override TARGET_DIRS+=lcl components packager/registration ideintf designer packager
+ override TARGET_DIRS+=lcl components packager/registration designer packager

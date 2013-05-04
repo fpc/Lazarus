@@ -184,7 +184,7 @@ pre-install:
 	@${ECHO_CMD} "@dirrm %%DATADIR%%" >> ${PLIST}
 
 do-install:
-.for DIRE in components converter debugger designer doceditor ide ideintf images install languages lcl lazarus.app \
+.for DIRE in components converter debugger designer doceditor ide images install languages lcl lazarus.app \
 	packager tools units
 		@${MKDIR} ${DATADIR}/${DIRE}
 		@cd ${WRKSRC}/${DIRE} && \
