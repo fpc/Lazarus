@@ -140,16 +140,16 @@ IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\components\lazcontrols
 cp -pr %BUILDDIR%\components\lazcontrols\lib %BUILDDIR%\image\components\lazcontrols\lib
 
-%SVN% export -q %LAZSVNDIR%\ideintf %BUILDDIR%\ideintf
+gmkdir -p %BUILDDIR%\components
+%SVN% export -q %LAZSVNDIR%\components\ideintf %BUILDDIR%\components\ideintf
 :: export images dir, the ideintf includes them
 %SVN% export -q %LAZSVNDIR%\images %BUILDDIR%\images
-cd %BUILDDIR%\ideintf
+cd %BUILDDIR%\components\ideintf
 IF ERRORLEVEL 1 GOTO CLEANUP
 %MAKEEXE% FPC=%compiler%
-gmkdir -p %BUILDDIR%\image\ideintf\units
-cp -pr %BUILDDIR%\ideintf\units\%FPCFULLTARGET% %BUILDDIR%\image\ideintf\units\%FPCFULLTARGET%
+gmkdir -p %BUILDDIR%\image\components\ideintf\units
+cp -pr %BUILDDIR%\components\ideintf\units\%FPCFULLTARGET% %BUILDDIR%\image\components\ideintf\units\%FPCFULLTARGET%
 
-gmkdir -p %BUILDDIR%\components
 %SVN% export -q %LAZSVNDIR%\components\synedit %BUILDDIR%\components\synedit
 cd %BUILDDIR%\components\synedit
 IF ERRORLEVEL 1 GOTO CLEANUP
