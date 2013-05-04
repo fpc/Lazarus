@@ -1199,28 +1199,33 @@ end;
 // Position is the position in bytes to the start of the pixel in TheData
 // Prec is the precision of the channel, usually 16 for this format
 // Bits is the value of the channel, which is the output
+
 procedure ReadRawImageBits_48(TheData: PByte;
   const Position: TRawImagePosition;
   Prec, Shift: cardinal;
   var Bits: word);
 var
   P: PByte;
-  W1, W2, W3: Word;
-  B1, B2, B3, B4, B5, B6: Byte;
-  PixelData: QWord;
 begin
-  P:=@(TheData[Position.Byte]);
-  B1 := P^;
-  B2 := (P+1)^;
-  B3 := (P+2)^;
-  B4 := (P+3)^;
-  B5 := (P+4)^;
-  B6 := (P+5)^;
-  W1 := B2 + B1 shl 8;
-  W2 := B4 + B3 shl 8;
-  W3 := B6 + B5 shl 8;
-  PixelData := W3 + W2 shl 16 + W1 shl 32;
-  Bits := (PixelData shr Shift);
+  if Prec=16 then begin
+    P:=@(TheData[Position.Byte]);
+    inc(P,Shift shr 3);
+    Bits:=PWORD(P)^;
+  end;
+end;
+
+procedure ReadRawImageBits_64(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal;
+  var Bits: word);
+var
+  P: PByte;
+begin
+  if Prec=16 then begin
+    P:=@(TheData[Position.Byte]);
+    inc(P,Shift shr 3);
+    Bits:=PWORD(P)^;
+  end;
 end;
 
 procedure WriteRawImageBits_1_2_4_BIO(TheData: PByte;
@@ -1394,15 +1399,21 @@ var
   PrecMask: Cardinal;
   FourBytes: Cardinal;
 begin
-  P:=@(TheData[Position.Byte]);
-  PrecMask:=(Cardinal(1) shl Prec)-1;
-  Bits:=Bits shr (16-Prec);
+  if Prec=8 then begin
+    P:=@(TheData[Position.Byte]);
+    PrecMask:=(Cardinal(1) shl Prec)-1;
+    Bits:=Bits shr (16-Prec);
 
-  FourBytes:=PDWord(P)^;
-  PrecMask:=not (PrecMask shl Shift);
-  FourBytes:=FourBytes and PrecMask; // clear old
-  FourBytes:=FourBytes or cardinal(Bits shl Shift); // set new
-  PDWord(P)^:=FourBytes;
+    FourBytes:=PDWord(P)^;
+    PrecMask:=not (PrecMask shl Shift);
+    FourBytes:=FourBytes and PrecMask; // clear old
+    FourBytes:=FourBytes or cardinal(Bits shl Shift); // set new
+    PDWord(P)^:=FourBytes;
+  end else if Prec=16 then begin
+    P:=@(TheData[Position.Byte]);
+    inc(P,2-Shift shr 3);
+    PWORD(P)^:=Bits;
+  end;
 end;
 
 procedure WriteRawImageBits_ReversedBytes_32(TheData: PByte;
@@ -1431,6 +1442,34 @@ begin
   FourBytes:=(FourBytes shr 24) or ((FourBytes shr 8) and $FF00)
              or ((FourBytes and $ff00) shl 8) or ((FourBytes and $ff) shl 24);
   PDWord(P)^:=FourBytes;
+end;
+
+procedure WriteRawImageBits_48(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal; Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  FourBytes: Cardinal;
+begin
+  P:=@(TheData[Position.Byte]);
+  inc(P,Shift shr 3);
+  PWORD(P)^:=Bits;
+end;
+
+procedure WriteRawImageBits_64(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal; Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  FourBytes: Cardinal;
+begin
+  if Prec=16 then begin
+    P:=@(TheData[Position.Byte]);
+    inc(P,Shift shr 3);
+    PWORD(P)^:=Bits;
+  end;
 end;
 
 procedure ReadRawImageBits_NULL(TheData: PByte;
@@ -1534,7 +1573,13 @@ begin
   48:
   begin
     ProcReadRawImageBits  := @ReadRawImageBits_48;
-    ProcWriteRawImageBits := @WriteRawImageBits_NULL;
+    ProcWriteRawImageBits := @WriteRawImageBits_48;
+  end;
+
+  64:
+  begin
+    ProcReadRawImageBits  := @ReadRawImageBits_64;
+    ProcWriteRawImageBits := @WriteRawImageBits_64;
   end;
 
   else
@@ -5884,15 +5929,17 @@ begin
           // no change
         end;
         16: begin
-          Desc.BitsPerPixel := Desc.Depth;
-          Desc.RedPrec := 16;
-          Desc.RedShift := Desc.RedShift * 2;
-          Desc.GreenPrec := 16;
-          Desc.GreenShift := Desc.GreenShift * 2;
-          Desc.BluePrec := 16;
-          Desc.BlueShift := Desc.BlueShift * 2;
-          Desc.AlphaPrec := Desc.AlphaPrec * 2; // might be zero
-          Desc.AlphaShift := Desc.AlphaShift * 2;
+          if not IsGray then begin
+            Desc.BitsPerPixel := Desc.Depth;
+            Desc.RedPrec := 16;
+            Desc.RedShift := Desc.RedShift * 2;
+            Desc.GreenPrec := 16;
+            Desc.GreenShift := Desc.GreenShift * 2;
+            Desc.BluePrec := 16;
+            Desc.BlueShift := Desc.BlueShift * 2;
+            Desc.AlphaPrec := Desc.AlphaPrec * 2; // might be zero
+            Desc.AlphaShift := Desc.AlphaShift * 2;
+          end;
         end;
       end;
     end;
