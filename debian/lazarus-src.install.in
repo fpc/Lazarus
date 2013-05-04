@@ -10,7 +10,6 @@
 /usr/lib/lazarus/${VERSION}/packager
 /usr/lib/lazarus/${VERSION}/test
 /usr/lib/lazarus/${VERSION}/doceditor
-/usr/lib/lazarus/${VERSION}/ideintf
 /usr/lib/lazarus/${VERSION}/tools
 /usr/lib/lazarus/${VERSION}/converter
 

@@ -249,7 +249,7 @@ install-source-stamp:
 	@echo "--- Cleaning the tree and copying the source code"
 	dh_testdir
 	dh_testroot
-	# Remove .lpk packages, they were installed with compiled binray files
+	# Remove .lpk packages, they were installed with compiled binary files
 	find -name '*.lpk' -delete
 	${MKDIR} ${SRC_DIR}
 	${CP} -t ${SRC_DIR} \
@@ -261,7 +261,6 @@ install-source-stamp:
 		$(CURDIR)/doceditor \
 		$(CURDIR)/examples \
 		$(CURDIR)/ide \
-		$(CURDIR)/ideintf \
 		$(CURDIR)/images \
 		$(CURDIR)/lcl \
 		$(CURDIR)/packager \
