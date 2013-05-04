@@ -1,4 +1,4 @@
-; Files that are now longer present in Lazarus 1.0
+; Files that are no longer present in Lazarus 1.0
 ; Either moved to a new location, or removed entirely
 ; This file should be included in the [InstallDelete] section
 Name: {app}\components\chmhelp\lhelp\chmpopup.lrs; Type: files
