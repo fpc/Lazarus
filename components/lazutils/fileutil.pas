@@ -142,6 +142,7 @@ type
 
   TFileFoundEvent = procedure (FileIterator: TFileIterator) of object;
   TDirectoryFoundEvent = procedure (FileIterator: TFileIterator) of object;
+  TDirectoryEnterEvent = procedure (FileIterator: TFileIterator) of object;
 
   { TFileSearcher }
 
@@ -152,6 +153,7 @@ type
     FFollowSymLink: Boolean;
     FOnFileFound: TFileFoundEvent;
     FOnDirectoryFound: TDirectoryFoundEvent;
+    FOnDirectoryEnter: TDirectoryEnterEvent;
     FFileAttribute: Word;
     FDirectoryAttribute: Word;
     procedure RaiseSearchingError;
@@ -170,6 +172,7 @@ type
     property DirectoryAttribute: Word read FDirectoryAttribute write FDirectoryAttribute default faDirectory;
     property OnDirectoryFound: TDirectoryFoundEvent read FOnDirectoryFound write FOnDirectoryFound;
     property OnFileFound: TFileFoundEvent read FOnFileFound write FOnFileFound;
+    property OnDirectoryEnter: TDirectoryEnterEvent read FOnDirectoryEnter write FOnDirectoryEnter;
   end;
 
 function FindAllFiles(const SearchPath: String; SearchMask: String = '';

@@ -1408,7 +1408,7 @@ end;
 
 procedure TFileSearcher.DoDirectoryEnter;
 begin
-  //
+  if Assigned(FonDirectoryEnter) then FOnDirectoryEnter(Self);
 end;
 
 procedure TFileSearcher.DoDirectoryFound;
