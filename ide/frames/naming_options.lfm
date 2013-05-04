@@ -1,5 +1,7 @@
-inherited NamingOptionsFrame: TNamingOptionsFrame
+object NamingOptionsFrame: TNamingOptionsFrame
+  Left = 0
   Height = 367
+  Top = 0
   Width = 507
   ClientHeight = 367
   ClientWidth = 507
@@ -7,15 +9,16 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
   Visible = False
   DesignLeft = 353
   DesignTop = 291
-  object PascalFileExtRadiogroup: TRadioGroup[0]
+  object PascalFileExtRadiogroup: TRadioGroup
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 47
     Top = 0
     Width = 507
-    Align = alTop
+    Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
     Caption = 'PascalFileExtRadiogroup'
@@ -30,15 +33,17 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     Columns = 2
     TabOrder = 0
   end
-  object AmbiguousFileActionRadioGroup: TRadioGroup[1]
+  object AmbiguousFileActionRadioGroup: TRadioGroup
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = CharcaseFileActionRadioGroup
+    AnchorSideTop.Control = PascalFileExtRadiogroup
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 67
     Top = 53
     Width = 507
-    Align = alTop
+    Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
     BorderSpacing.Top = 6
@@ -54,15 +59,17 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     Columns = 2
     TabOrder = 1
   end
-  object CharcaseFileActionRadioGroup: TRadioGroup[2]
+  object CharcaseFileActionRadioGroup: TRadioGroup
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = AmbiguousFileActionRadioGroup
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 58
     Top = 126
     Width = 507
-    Align = alTop
+    Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
     BorderSpacing.Top = 6
@@ -78,12 +85,17 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     Columns = 2
     TabOrder = 2
   end
-  object UnitReferencesRadioGroup: TRadioGroup[3]
+  object UnitReferencesRadioGroup: TRadioGroup
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CharcaseFileActionRadioGroup
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 50
     Top = 190
     Width = 507
-    Align = alTop
+    Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
     BorderSpacing.Top = 6
@@ -100,29 +112,33 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     Constraints.MinHeight = 50
     TabOrder = 3
   end
-  object AskForFilenameOnNewCheckBox: TCheckBox[4]
+  object AskForFilenameOnNewCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = UnitReferencesRadioGroup
     AnchorSideTop.Side = asrBottom
-    Left = 6
-    Height = 17
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 19
     Top = 246
-    Width = 175
-    BorderSpacing.Around = 6
+    Width = 507
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
     Caption = 'AskForFilenameOnNewCheckBox'
     TabOrder = 4
   end
-  object LowercaseDefaultFilenameCheckBox: TCheckBox[5]
-    AnchorSideLeft.Control = AskForFilenameOnNewCheckBox
+  object LowercaseDefaultFilenameCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = AskForFilenameOnNewCheckBox
     AnchorSideTop.Side = asrBottom
-    Left = 6
-    Height = 17
-    Top = 269
-    Width = 193
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 19
+    Top = 271
+    Width = 507
+    Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
-    BorderSpacing.Right = 6
-    BorderSpacing.Bottom = 6
     Caption = 'LowercaseDefaultFilenameCheckBox'
     Checked = True
     ParentShowHint = False
