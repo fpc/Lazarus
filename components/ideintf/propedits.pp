@@ -1825,6 +1825,15 @@ const
 {$IF declared(tkHelper)}
     ,nil                       // tkHelper
 {$ENDIF}
+{$IF declared(tkFile)}
+    ,nil                       // tkFile
+{$ENDIF}
+{$IF declared(tkClassRef)}
+    ,nil                       // tkClassRef
+{$ENDIF}
+{$IF declared(tkPointer)}
+    ,nil                       // tkPointer
+{$ENDIF}
     );
 
 var
