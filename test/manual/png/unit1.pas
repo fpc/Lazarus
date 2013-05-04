@@ -16,6 +16,7 @@ type
   { TfrmPNGTestSuite }
 
   TfrmPNGTestSuite = class(TForm)
+    gbPicType: TGroupBox;
     imgCheckboard: TImage;
     imgCheckboardExpected: TImage;
     imgTestSuite: TImage;
@@ -26,24 +27,23 @@ type
     ListBox1: TListBox;
     Panel1: TPanel;
     PanelExpected: TPanel;
-    rbRefGIF: TRadioButton;
+    rgTestGroups: TRadioGroup;
     rbConvGIF: TRadioButton;
     rbConvPNG: TRadioButton;
-    RadioGroup1: TRadioGroup;
+    rbRefGIF: TRadioButton;
     procedure FormDestroy(Sender: TObject);
     procedure imgExpectedResize(Sender: TObject);
     procedure imgTestSuiteResize(Sender: TObject);
     procedure ListBox1SelectionChange(Sender: TObject; User: boolean);
     procedure Panel1Resize(Sender: TObject);
     procedure PanelExpectedResize(Sender: TObject);
-    procedure RadioGroup1Click(Sender: TObject);
+    procedure rgTestGroupsClick(Sender: TObject);
     procedure rbRefGIFClick(Sender: TObject);
   private
-    { private declarations }
     FTestFiles: TStringList;
     procedure LoadTest(const aTestName: ansistring);
   public
-    { public declarations }
+
   end; 
 
 var
@@ -99,11 +99,10 @@ begin
   end else begin
     exit;
   end;
-  if FileExists(AsItShouldLook) then begin
-    imgExpected.Picture.LoadFromFile(AsItShouldLook);
-  end else begin
+  if FileExists(AsItShouldLook) then
+    imgExpected.Picture.LoadFromFile(AsItShouldLook)
+  else
     imgExpected.Picture.Clear;
-  end;
   TestFile:=format('%s%s%s.png',['testsuite',PathDelim,TestFile]);
   try
     imgTestSuite.Picture.LoadFromFile(TestFile);
@@ -126,9 +125,9 @@ begin
   imgCheckboardExpected.BoundsRect:=pnl.ClientRect;
 end;
 
-procedure TfrmPNGTestSuite.RadioGroup1Click(Sender: TObject);
+procedure TfrmPNGTestSuite.rgTestGroupsClick(Sender: TObject);
 begin
-  case RadioGroup1.ItemIndex of
+  case rgTestGroups.ItemIndex of
     0: LoadTest('basic');
     1: LoadTest('interlacing');
     2: LoadTest('oddsizes');
@@ -146,9 +145,8 @@ end;
 
 procedure TfrmPNGTestSuite.rbRefGIFClick(Sender: TObject);
 begin
-  if ListBox1.ItemIndex<>-1 then begin
+  if ListBox1.ItemIndex<>-1 then
     ListBox1.OnSelectionChange(ListBox1,false);
-  end;
 end;
 
 procedure TfrmPNGTestSuite.LoadTest(const aTestName: ansistring);
