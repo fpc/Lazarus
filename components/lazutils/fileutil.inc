@@ -1425,6 +1425,8 @@ constructor TFileSearcher.Create;
 begin
   FMaskSeparator := ';';
   FFollowSymLink := True;
+  FFileAttribute := faAnyFile;
+  FDirectoryAttribute := faDirectory;
   FSearching := False;
 end;
 
@@ -1440,7 +1442,7 @@ var
   begin
     P := APath + AllDirectoryEntriesMask;
 
-    if FindFirstUTF8(P, faAnyFile, PathInfo) = 0 then
+    if FindFirstUTF8(P, FileAttribute, PathInfo) = 0 then
     try
       repeat
         // skip special files
@@ -1475,7 +1477,7 @@ var
 
     if ASearchSubDirs or (ALevel > 0) then
       // search recursively in directories
-      if FindFirstUTF8(P, faDirectory, PathInfo) = 0 then
+      if FindFirstUTF8(P, DirectoryAttribute, PathInfo) = 0 then
       try
         repeat
           if (PathInfo.Name = '.') or (PathInfo.Name = '..') or

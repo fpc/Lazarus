@@ -145,12 +145,15 @@ type
 
   { TFileSearcher }
 
+
   TFileSearcher = class(TFileIterator)
   private
     FMaskSeparator: char;
     FFollowSymLink: Boolean;
     FOnFileFound: TFileFoundEvent;
     FOnDirectoryFound: TDirectoryFoundEvent;
+    FFileAttribute: Word;
+    FDirectoryAttribute: Word;
     procedure RaiseSearchingError;
   protected
     procedure DoDirectoryEnter; virtual;
@@ -163,6 +166,8 @@ type
   public
     property MaskSeparator: char read FMaskSeparator write FMaskSeparator;
     property FollowSymLink: Boolean read FFollowSymLink write FFollowSymLink;
+    property FileAttribute: Word read FFileAttribute write FFileAttribute default faAnyfile;
+    property DirectoryAttribute: Word read FDirectoryAttribute write FDirectoryAttribute default faDirectory;
     property OnDirectoryFound: TDirectoryFoundEvent read FOnDirectoryFound write FOnDirectoryFound;
     property OnFileFound: TFileFoundEvent read FOnFileFound write FOnFileFound;
   end;
