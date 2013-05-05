@@ -323,6 +323,13 @@ type
       (* only version 1 tables *)
       ulCodePageRange1    : TT_ULong;
       ulCodePageRange2    : TT_ULong;
+
+      (* only version 2 tables *)
+      sxHeight            : TT_Short;
+      sCapHeight          : TT_Short;
+      usDefaultChar       : TT_UShort;
+      usBreakChar         : TT_UShort;
+      usMaxContext        : TT_UShort;
   end;
 
   (******************************************************)

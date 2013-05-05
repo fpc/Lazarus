@@ -1272,6 +1272,18 @@ uses TTError, TTMemory;
          ulCodePageRange2 := 0;
        end;
 
+     if version >= $0002 then
+       begin
+            if AStream.AccessFrame(10) then exit;
+
+            sxHeight      := AStream.Get_Short;
+            sCapHeight    := AStream.Get_Short;
+            usDefaultChar := AStream.Get_UShort;
+            usBreakChar   := AStream.Get_UShort;
+            usMaxContext  := AStream.Get_UShort;
+
+            AStream.ForgetFrame;
+       end;
    end;
 
    {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}

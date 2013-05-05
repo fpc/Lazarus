@@ -241,13 +241,14 @@ type
     FGlyphTable: TAvgLvlTree;
     FCharMap: TT_CharMap;
     FCharmapOk: boolean;
-    FAscentValue, FDescentValue, FLineGapValue, FLargeLineGapValue: single;
+    FAscentValue, FDescentValue, FLineGapValue, FLargeLineGapValue, FCapHeight: single;
     function GetClearType: boolean; override;
     procedure SetClearType(const AValue: boolean); override;
     function GetLineFullHeight: single; override;
     function GetAscent: single; override;
     function GetDescent: single; override;
     function GetLineSpacing: single; override;
+    function GetCapHeight: single;
     procedure SetHinted(const AValue: boolean); override;
     function GetHinted: boolean; override;
     procedure OnDestroyFontItem;
@@ -272,6 +273,7 @@ type
     property DPI: integer read GetDPI write SetDPI;
     property SizeInPoints: single read FPointSize write SetPointSize;
     property SizeInPixels: single read GetPixelSize write SetPixelSize;
+    property CapHeight: single read GetCapHeight;
     property Glyph[Index: integer]: TFreeTypeGlyph read GetGlyph;
     property GlyphCount: integer read GetGlyphCount;
     property CharIndex[AChar: integer]: integer read GetCharIndex;
@@ -869,6 +871,11 @@ begin
   result := FAscentValue*SizeInPixels;
 end;
 
+function TFreeTypeFont.GetCapHeight: single;
+begin
+  result := FCapHeight*SizeInPixels;
+end;
+
 function TFreeTypeFont.GetClearType: boolean;
 begin
   Result:= FClearType;
@@ -1167,10 +1174,16 @@ begin
         FLargeLineGapValue := prop.os2^.sTypoLineGap;
     end;
 
+    if prop.os2^.version >= 2 then
+                                  FCapHeight:=prop.os2^.sCapHeight
+                              else
+                                  FCapHeight:=FAscentValue;
+
     FAscentValue /= prop.header^.units_per_EM;
     FDescentValue /= -prop.header^.units_per_EM;
     FLineGapValue /= prop.header^.units_per_EM;
     FLargeLineGapValue /= prop.header^.units_per_EM;
+    FCapHeight /= prop.header^.units_per_EM;
 
     if FLargeLineGapValue = 0 then
       FLargeLineGapValue := (FAscentValue+FDescentValue)*0.1;
