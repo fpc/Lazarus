@@ -5,15 +5,15 @@ object reMainForm: TreMainForm
   Width = 768
   ActiveControl = StringGrid1
   Caption = 'reMainForm'
-  ClientHeight = 585
+  ClientHeight = 584
   ClientWidth = 768
   Menu = MainMenu1
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.1'
   object TreeView1: TTreeView
     Left = 0
-    Height = 506
+    Height = 508
     Top = 56
     Width = 288
     Align = alLeft
@@ -26,7 +26,7 @@ object reMainForm: TreMainForm
   end
   object PageControl1: TPageControl
     Left = 293
-    Height = 506
+    Height = 508
     Top = 56
     Width = 475
     ActivePage = tabString
@@ -35,11 +35,11 @@ object reMainForm: TreMainForm
     TabOrder = 1
     object tabString: TTabSheet
       Caption = 'String'
-      ClientHeight = 480
+      ClientHeight = 478
       ClientWidth = 467
       object StringGrid1: TStringGrid
         Left = 0
-        Height = 480
+        Height = 478
         Top = 0
         Width = 467
         Align = alClient
@@ -49,8 +49,8 @@ object reMainForm: TreMainForm
         FixedRows = 0
         TabOrder = 0
         ColWidths = (
+          230
           231
-          232
         )
       end
     end
@@ -70,7 +70,7 @@ object reMainForm: TreMainForm
   end
   object Splitter1: TSplitter
     Left = 288
-    Height = 506
+    Height = 508
     Top = 56
     Width = 5
     OnChangeBounds = Splitter1ChangeBounds
@@ -98,8 +98,8 @@ object reMainForm: TreMainForm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 23
-    Top = 562
+    Height = 20
+    Top = 564
     Width = 768
     Panels = <>
   end
@@ -122,21 +122,21 @@ object reMainForm: TreMainForm
       AutoSize = True
     end
     object ToolButton2: TToolButton
-      Left = 67
+      Left = 74
       Top = 2
       Action = fileSave
       AutoSize = True
     end
     object ToolButton3: TToolButton
-      Left = 176
+      Left = 204
       Top = 2
-      Width = 8
+      Width = 10
       AutoSize = True
       Caption = 'ToolButton3'
       Style = tbsSeparator
     end
     object ToolButton4: TToolButton
-      Left = 184
+      Left = 214
       Top = 2
       Action = hlpAbout
       AutoSize = True
@@ -144,8 +144,8 @@ object reMainForm: TreMainForm
   end
   object ActionList1: TActionList
     Images = ImageList1
-    left = 338
-    top = 166
+    left = 408
+    top = 168
     object fileOpen: TAction
       Category = 'File'
       Caption = 'Open...'
@@ -173,8 +173,8 @@ object reMainForm: TreMainForm
   object ImageList1: TImageList
     Height = 18
     Width = 18
-    left = 384
-    top = 166
+    left = 496
+    top = 168
     Bitmap = {
       4C69040000001200000012000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -343,8 +343,8 @@ object reMainForm: TreMainForm
   end
   object MainMenu1: TMainMenu
     Images = ImageList1
-    left = 304
-    top = 166
+    left = 320
+    top = 168
     object MenuItem1: TMenuItem
       Caption = 'File'
       object MenuItem4: TMenuItem
@@ -394,7 +394,6 @@ object reMainForm: TreMainForm
           0000000000000000000000000000000000000000000000000000000000000000
           00000000000000000000
         }
-        OnClick = fileOpenExecute
       end
       object MenuItem5: TMenuItem
         Caption = '-'
@@ -446,7 +445,6 @@ object reMainForm: TreMainForm
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF006D9CD4896A9AD2FB6697
           CFEE0000000000000000
         }
-        OnClick = fileExitExecute
       end
     end
     object MenuItem2: TMenuItem
@@ -498,7 +496,6 @@ object reMainForm: TreMainForm
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF000000000000000000
         }
-        OnClick = hlpAboutExecute
       end
     end
   end
@@ -506,7 +503,6 @@ object reMainForm: TreMainForm
     Width = 948
     Height = 804
     DefaultExt = '.exe'
-    Filter = 'All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll'
     left = 338
     top = 232
   end

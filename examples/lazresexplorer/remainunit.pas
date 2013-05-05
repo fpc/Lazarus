@@ -96,6 +96,11 @@ begin
   tabString.Caption:=sStrings;
   tabImage.Caption:=sImage;
 
+  {$IFDEF Windows}
+  OpenDialog1.Filter:='All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll';
+  {$ELSE}
+  OpenDialog1.Filter:='All files (*)|*|Shared lib (*.so)|*.so';
+  {$ENDIF}
   Splitter1ChangeBounds(nil);
 end;
 

@@ -1,15 +1,11 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="7"/>
+    <Version Value="9"/>
     <General>
-      <Flags>
-        <UseDefaultCompilerOptions Value="True"/>
-      </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <AutoCreateForms Value="False"/>
-      <TargetFileExt Value=""/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
@@ -22,8 +18,11 @@
       <AutoIncrementBuild Value="True"/>
       <MinorVersionNr Value="1"/>
       <CharSet Value="04B0"/>
-      <StringTable Comments="Explore your resources in executables and resource files" CompanyName="Alexey Lagunov" FileDescription="Resource Explorer" FileVersion="0.1.0.0" InternalName="LazResExplorer" LegalCopyright="Alexey Lagunov" LegalTrademarks="No Trademarks" OriginalFilename="lazresexplorer" ProductName="Lazarus Resource Explorer" ProductVersion="0.1.0.0"/>
+      <StringTable Comments="Explore your resources in executables and resource files" CompanyName="Alexey Lagunov" FileDescription="Resource Explorer" InternalName="LazResExplorer" LegalCopyright="Alexey Lagunov" LegalTrademarks="No Trademarks" OriginalFilename="lazresexplorer" ProductName="Lazarus Resource Explorer"/>
     </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -52,6 +51,7 @@
         <Filename Value="remainunit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="reMainForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="reMainUnit"/>
       </Unit1>
@@ -70,19 +70,14 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="8"/>
+    <Version Value="11"/>
     <Target>
       <Filename Value="resexplorer"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="$(ProjOutDir)/"/>
+      <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <Parsing>
-      <SyntaxOptions>
-        <UseAnsiStrings Value="True"/>
-      </SyntaxOptions>
-    </Parsing>
     <Linking>
       <Options>
         <Win32>
