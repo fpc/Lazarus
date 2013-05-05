@@ -652,7 +652,7 @@ begin
   if (BaseDirectory='') or (Filename='') then Exit(FileName);
   Result := SysUtils.ExtractRelativePath(ExpandFileNameUtf8(IncludetrailingPathDelimiter(BaseDirectory)),FileName);
   if UsePointDirectory and (Result='') and (Filename<>'') then
-  Result:='.'; // Filename is the BaseDirectory
+    Result:='.'; // Filename is the BaseDirectory
 end;
 
 {------------------------------------------------------------------------------
