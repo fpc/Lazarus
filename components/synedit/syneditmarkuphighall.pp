@@ -28,7 +28,7 @@ interface
 uses
   Classes, SysUtils, ExtCtrls, SynEditMarkup, SynEditTypes, SynEditSearch,
   SynEditMiscClasses, Controls, LCLProc, SynEditHighlighter, SynEditPointClasses,
-  SynEditMiscProcs, SynEditFoldedView, LazClasses;
+  SynEditMiscProcs, SynEditFoldedView, SynEditTextBase, LazClasses;
 
 type
 
@@ -36,18 +36,16 @@ type
   TSynMarkupHighAllMatch = Record
     StartPoint, EndPoint : TPoint;
   end;
+  PSynMarkupHighAllMatch = ^TSynMarkupHighAllMatch;
 
   { TSynMarkupHighAllMatchList }
-  TSynMarkupHighAllMatchList = class(TObject)
+  TSynMarkupHighAllMatchList = class(TSynEditStorageMem)
   private
-    FCount, FCapacity : Integer;
-    FMatches : Array of TSynMarkupHighAllMatch;
-    
     function GetEndPoint(const Index : Integer) : TPoint;
     function GetPoint(const Index : Integer) : TPoint;
     function GetPointCount : Integer;
     function GetStartPoint(const Index : Integer) : TPoint;
-    procedure SetCount(const AValue : Integer);
+    procedure SetCount(const AValue : Integer); override;
     function  GetMatch(const Index : Integer) : TSynMarkupHighAllMatch;
     procedure SetEndPoint(const Index : Integer; const AValue : TPoint);
     procedure SetMatch(const Index : Integer; const AValue : TSynMarkupHighAllMatch);
@@ -60,7 +58,6 @@ type
     procedure Delete(AIndex: Integer; ACount: Integer = 1);
     procedure Insert(AIndex: Integer; ACount: Integer = 1);
     procedure Insert(AIndex: Integer; AStartPoint, AEndPoint: TPoint);
-    property Count : Integer read FCount write SetCount;
     property Match [const Index : Integer] : TSynMarkupHighAllMatch read GetMatch write SetMatch; default;
     property StartPoint [const Index : Integer] : TPoint read GetStartPoint write SetStartPoint;
     property EndPoint   [const Index : Integer] : TPoint read GetEndPoint write SetEndPoint;
@@ -69,18 +66,41 @@ type
   end;
   
   
+  { TSynEditMarkupHighlightMatches }
+
+  TSynEditMarkupHighlightMatches = class(TSynEditMarkup)
+  private
+    FMatches : TSynMarkupHighAllMatchList;
+    FNextPosIdx, FNextPosRow: Integer;
+  protected
+    function  HasDisplayAbleMatches: Boolean; virtual;
+    function  CreateMatchList: TSynMarkupHighAllMatchList; virtual;
+    property  Matches: TSynMarkupHighAllMatchList read FMatches;
+  public
+    constructor Create(ASynEdit : TSynEditBase);
+    destructor Destroy; override;
+
+    procedure PrepareMarkupForRow(aRow: Integer); override;
+    procedure EndMarkup; override;
+    function GetMarkupAttributeAtRowCol(const aRow: Integer;
+                                        const aStartCol: TLazSynDisplayTokenBound;
+                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
+    procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
+                                         const aStartCol: TLazSynDisplayTokenBound;
+                                         const AnRtlInfo: TLazSynDisplayRtlInfo;
+                                         out   ANextPhys, ANextLog: Integer); override;
+  end;
+
   { TSynEditMarkupHighlightAllBase }
 
-  TSynEditMarkupHighlightAllBase = class(TSynEditMarkup)
+  TSynEditMarkupHighlightAllBase = class(TSynEditMarkupHighlightMatches)
   private
     FFoldView: TSynEditFoldedView;
-    FNextPosIdx, FNextPosRow: Integer;
     FNeedValidate, FNeedValidatePaint: Boolean;
     FMarkupEnabled: Boolean;
 
     FStartPoint : TPoint;        // First found position, before TopLine of visible area
     FSearchedEnd: TPoint;
-    FMatches : TSynMarkupHighAllMatchList;
     FFirstInvalidLine, FLastInvalidLine: Integer;
     FHideSingleMatch: Boolean;
 
@@ -93,6 +113,7 @@ type
 
   protected
     function  HasSearchData: Boolean; virtual; abstract;
+    function HasDisplayAbleMatches: Boolean; override;
     function  SearchStringMaxLines: Integer; virtual; abstract;
     procedure FindInitialize;  virtual; abstract;
     function  FindMatches(AStartPoint, AEndPoint: TPoint;
@@ -109,23 +130,12 @@ type
     procedure DoVisibleChanged(AVisible: Boolean); override;
     function  HasVisibleMatch: Boolean; // does not check, if in visible line range. Only Count and DideSingleMatch
     property  MatchCount: Integer read GetMatchCount;
-    property  Matches: TSynMarkupHighAllMatchList read FMatches;
     property  MarkupEnabled: Boolean read FMarkupEnabled;
   public
     constructor Create(ASynEdit : TSynEditBase);
     destructor Destroy; override;
     procedure IncPaintLock; override;
     procedure DecPaintLock; override;
-
-    procedure PrepareMarkupForRow(aRow: Integer); override;
-    procedure EndMarkup; override;
-    function GetMarkupAttributeAtRowCol(const aRow: Integer;
-                                        const aStartCol: TLazSynDisplayTokenBound;
-                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
-    procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
-                                         const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnRtlInfo: TLazSynDisplayRtlInfo;
-                                         out   ANextPhys, ANextLog: Integer); override;
 
     // AFirst/ ALast are 1 based
     Procedure Invalidate(SkipPaint: Boolean = False);
@@ -411,6 +421,134 @@ const
   MATCHES_CLEAN_CNT_THRESHOLD = 2500; // Remove matches out of range, only if more Matches are present
   MATCHES_CLEAN_LINE_THRESHOLD = 300; // Remove matches out of range, only if they are at least n lines from visible area.
   MATCHES_CLEAN_LINE_KEEP = 200; // LinesKept, if cleaning. MUST be LESS than MATCHES_CLEAN_LINE_THRESHOLD
+
+{ TSynEditMarkupHighlightMatches }
+
+function TSynEditMarkupHighlightMatches.HasDisplayAbleMatches: Boolean;
+begin
+  Result := FMatches.Count > 0;
+end;
+
+function TSynEditMarkupHighlightMatches.CreateMatchList: TSynMarkupHighAllMatchList;
+begin
+  Result := TSynMarkupHighAllMatchList.Create;
+end;
+
+constructor TSynEditMarkupHighlightMatches.Create(ASynEdit: TSynEditBase);
+begin
+  FMatches := TSynMarkupHighAllMatchList.Create;
+  inherited Create(ASynEdit);
+end;
+
+destructor TSynEditMarkupHighlightMatches.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FMatches);
+end;
+
+procedure TSynEditMarkupHighlightMatches.PrepareMarkupForRow(aRow: Integer);
+begin
+  if not HasDisplayAbleMatches then
+    exit;
+
+  if (FNextPosRow > 0) and (aRow > FNextPosRow) and
+     ( (FNextPosIdx = -2) or // No match after FNextPosRow
+       ( (FNextPosIdx >= 0) and (FNextPosIdx < FMatches.PointCount) and (aRow <= FMatches.Point[FNextPosIdx].y) )
+      )
+  then begin
+    if (FNextPosIdx >= 0) and
+      ( (aRow = FMatches.Point[FNextPosIdx].y) or (FNextPosIdx and 1 = 1) )
+    then
+      FNextPosRow := aRow;
+    exit;
+  end;
+
+  FNextPosRow := aRow;
+  FNextPosIdx := FMatches.IndexOfFirstMatchForLine(aRow) * 2;
+  if (FNextPosIdx < 0) or (FNextPosIdx >= FMatches.PointCount) then
+    exit;
+  if (FMatches.Point[FNextPosIdx].y < aRow) then
+    inc(FNextPosIdx);  // Use EndPoint
+end;
+
+procedure TSynEditMarkupHighlightMatches.EndMarkup;
+begin
+  inherited EndMarkup;
+  FNextPosRow := -1;
+end;
+
+function TSynEditMarkupHighlightMatches.GetMarkupAttributeAtRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound;
+  const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
+var
+  pos, s, e: Integer;
+begin
+  result := nil;
+  if not HasDisplayAbleMatches then
+    exit;
+  if (aRow <> FNextPosRow) or (FNextPosIdx < 0) then
+    exit;
+
+  while (FNextPosIdx < fMatches.PointCount) and
+        (fMatches.Point[FNextPosIdx].y = aRow) and
+        (fMatches.Point[FNextPosIdx].x <= aStartCol.Logical)
+  do
+    inc(FNextPosIdx);
+
+  if FNextPosIdx >= fMatches.PointCount // last point was EndPoint => no markup
+  then exit;
+
+  pos := FNextPosIdx - 1;
+  while (pos >= 0) and (fMatches.Point[pos].y = aRow) and
+        (fMatches.Point[pos].x > aStartCol.Logical)
+  do
+    dec(pos);
+
+  if pos < 0 then
+    exit;
+
+  //pos is the point at or before LogPos
+  if (pos and 1)= 1 // the Point is a EndPoint => Outside Match
+  then exit;
+
+  if fMatches.Point[pos].y < aRow then
+    s := -1
+  else
+    s := fMatches.Point[pos].x;
+  if (pos = FMatches.PointCount) or (fMatches.Point[pos+1].y > aRow) then
+    e := -1
+  else
+    e := fMatches.Point[pos+1].x;
+  MarkupInfo.SetFrameBoundsLog(s, e);
+  Result := MarkupInfo;
+end;
+
+procedure TSynEditMarkupHighlightMatches.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo; out
+  ANextPhys, ANextLog: Integer);
+begin
+  ANextLog := -1;
+  ANextPhys := -1;
+  if not HasDisplayAbleMatches then
+    exit;
+  if (aRow <> FNextPosRow) or (FNextPosIdx < 0) or
+     (FNextPosIdx >= fMatches.PointCount) or (FMatches.Point[FNextPosIdx].y > aRow)
+  then
+    exit;
+
+  while (FNextPosIdx < fMatches.PointCount) and
+        (fMatches.Point[FNextPosIdx].y = aRow) and
+        (fMatches.Point[FNextPosIdx].x <= aStartCol.Logical)
+  do
+    inc(FNextPosIdx);
+
+  if FNextPosIdx >= fMatches.PointCount then
+    exit;
+  if fMatches.Point[FNextPosIdx].y <> aRow then
+    exit;
+
+  ANextLog := fMatches.Point[FNextPosIdx].x;
+end;
 
 { TSynSearchTermDict }
 
@@ -1473,22 +1611,21 @@ begin
   FreeAndNil(FSearch);
 end;
 
-{ TSynMarkupHighAllPosList }
+{ TSynMarkupHighAllMatchList }
 
 constructor TSynMarkupHighAllMatchList.Create;
 begin
-  FCount := 0;
-  FCapacity := 256;
-  SetLength(FMatches, FCapacity);
+  ItemSize := SizeOf(TSynMarkupHighAllMatch);
+  Count := 0;
+  Capacity := 256;
 end;
 
 function TSynMarkupHighAllMatchList.MaybeReduceCapacity : Boolean;
 begin
-  if not( (FCapacity > 512) and (FCapacity > FCount*4) )
+  if not( (Capacity > 512) and (Capacity > Count*4) )
   then exit(False);
 
-  FCapacity := FCapacity div 2;
-  SetLength(FMatches, FCapacity);
+  Capacity := Capacity div 2;
   result := true;
 end;
 
@@ -1496,19 +1633,19 @@ function TSynMarkupHighAllMatchList.IndexOfFirstMatchForLine(ALine: Integer): In
 var
   l, h: Integer;
 begin
-  if FCount = 0 then
+  if Count = 0 then
     exit(-1);
   l := 0;
-  h := FCount -1;
+  h := Count -1;
   Result := (l+h) div 2;
   while (h > l) do begin
-    if FMatches[Result].EndPoint.y >= ALine then
+    if PSynMarkupHighAllMatch(ItemPointer[Result])^.EndPoint.y >= ALine then
       h := Result
     else
       l := Result + 1;
     Result := (l+h) div 2;
   end;
-  if (FMatches[Result].EndPoint.y < ALine) then
+  if (PSynMarkupHighAllMatch(ItemPointer[Result])^.EndPoint.y < ALine) then
     inc(Result);
 end;
 
@@ -1516,61 +1653,57 @@ function TSynMarkupHighAllMatchList.IndexOfLastMatchForLine(ALine: Integer): Int
 var
   l, h: Integer;
 begin
-  if FCount = 0 then
+  if Count = 0 then
     exit(-1);
   l := 0;
-  h := FCount -1;
+  h := Count -1;
   Result := (l+h) div 2;
   while (h > l) do begin
-    if FMatches[Result].StartPoint.y <= ALine then
+    if PSynMarkupHighAllMatch(ItemPointer[Result])^.StartPoint.y <= ALine then
       l := Result + 1
     else
       h := Result;
     Result := (l+h) div 2;
   end;
-  if (FMatches[Result].StartPoint.y > ALine) then
+  if (PSynMarkupHighAllMatch(ItemPointer[Result])^.StartPoint.y > ALine) then
     dec(Result);
 end;
 
 procedure TSynMarkupHighAllMatchList.Delete(AIndex: Integer; ACount: Integer);
 begin
-  if AIndex >= FCount then
+  if AIndex >= Count then
     exit;
-  if AIndex + ACount > FCount then
-    ACount := FCount - AIndex
+  if AIndex + ACount > Count then
+    ACount := Count - AIndex
   else
-  if AIndex + ACount < FCount then
-    System.Move(FMatches[AIndex+ACount], FMatches[AIndex], (FCount-AIndex-ACount)*SizeOf(TSynMarkupHighAllMatch));
-  Count := Count - ACount;
+  DeleteRows(AIndex, ACount);
 end;
 
 procedure TSynMarkupHighAllMatchList.Insert(AIndex: Integer; ACount: Integer);
 begin
-  if AIndex > FCount then
+  if AIndex > Count then
     exit;
-  Count := FCount + ACount;
-  if AIndex < FCount then
-    System.Move(FMatches[AIndex], FMatches[AIndex+ACount], (FCount-AIndex-ACount)*SizeOf(TSynMarkupHighAllMatch));
+  InsertRows(AIndex, ACount);
 end;
 
 procedure TSynMarkupHighAllMatchList.Insert(AIndex: Integer; AStartPoint, AEndPoint: TPoint);
 begin
   Insert(AIndex);
-  FMatches[AIndex].StartPoint := AStartPoint;
-  FMatches[AIndex].EndPoint   := AEndPoint;
+  PSynMarkupHighAllMatch(ItemPointer[AIndex])^.StartPoint := AStartPoint;
+  PSynMarkupHighAllMatch(ItemPointer[AIndex])^.EndPoint   := AEndPoint;
 end;
 
 procedure TSynMarkupHighAllMatchList.SetCount(const AValue : Integer);
 begin
-  if FCount=AValue then exit;
-  FCount:=AValue;
-
-  if MaybeReduceCapacity
-  then exit;
-  if (FCapacity <= FCount)
-  then FCapacity := FCapacity * 2
-  else exit;
-  SetLength(FMatches, FCapacity);
+  if Count=AValue then exit;
+  if (Capacity <= AValue) then begin
+    Capacity := Max(Capacity, AValue) * 2;
+    inherited SetCount(AValue);
+  end
+  else begin
+    inherited SetCount(AValue);
+    MaybeReduceCapacity;
+  end;
 end;
 
 function TSynMarkupHighAllMatchList.GetPointCount : Integer;
@@ -1581,44 +1714,44 @@ end;
 function TSynMarkupHighAllMatchList.GetPoint(const Index : Integer) : TPoint;
 begin
   if (Index and 1) = 0
-  then Result := FMatches[Index>>1].StartPoint
-  else Result := FMatches[Index>>1].EndPoint
+  then Result := PSynMarkupHighAllMatch(ItemPointer[Index>>1])^.StartPoint
+  else Result := PSynMarkupHighAllMatch(ItemPointer[Index>>1])^.EndPoint
 end;
 
 function TSynMarkupHighAllMatchList.GetStartPoint(const Index : Integer) : TPoint;
 begin
-  Result := FMatches[Index].StartPoint;
+  Result := PSynMarkupHighAllMatch(ItemPointer[Index])^.StartPoint;
 end;
 
 procedure TSynMarkupHighAllMatchList.SetStartPoint(const Index : Integer; const AValue : TPoint);
 begin
   if Index = Count
   then Count := Count + 1; // AutoIncrease
-  FMatches[Index].StartPoint := AValue;
+  PSynMarkupHighAllMatch(ItemPointer[Index])^.StartPoint := AValue;
 end;
 
 function TSynMarkupHighAllMatchList.GetEndPoint(const Index : Integer) : TPoint;
 begin
-  Result := FMatches[Index].EndPoint;
+  Result := PSynMarkupHighAllMatch(ItemPointer[Index])^.EndPoint;
 end;
 
 procedure TSynMarkupHighAllMatchList.SetEndPoint(const Index : Integer; const AValue : TPoint);
 begin
   if Index = Count
   then Count := Count + 1; // AutoIncrease
-  FMatches[Index].EndPoint := AValue;
+  PSynMarkupHighAllMatch(ItemPointer[Index])^.EndPoint := AValue;
 end;
 
 function TSynMarkupHighAllMatchList.GetMatch(const index : Integer) : TSynMarkupHighAllMatch;
 begin
-  Result := FMatches[Index];
+  Result := PSynMarkupHighAllMatch(ItemPointer[Index])^;
 end;
 
 procedure TSynMarkupHighAllMatchList.SetMatch(const index : Integer; const AValue : TSynMarkupHighAllMatch);
 begin
   if Index = Count
   then Count := Count + 1; // AutoIncrease
-  FMatches[Index] := AValue;
+  PSynMarkupHighAllMatch(ItemPointer[Index])^ := AValue;
 end;
 
 
@@ -1629,7 +1762,6 @@ begin
   inherited Create(ASynEdit);
   fStartPoint.y := -1;
   FSearchedEnd.y := -1;
-  fMatches := TSynMarkupHighAllMatchList.Create;
   FFirstInvalidLine := 1;
   FLastInvalidLine := MaxInt;
   FHideSingleMatch := False;
@@ -1639,7 +1771,6 @@ end;
 destructor TSynEditMarkupHighlightAllBase.Destroy;
 begin
   FoldView := nil;
-  FreeAndNil(fMatches);
   inherited Destroy;
 end;
 
@@ -2153,6 +2284,13 @@ begin
   //finally  DebugLnExit(['  < ValidateMatches Cnt=',FMatches.Count, '  <<< # ', dbgs(FStartPoint), ' - ', dbgs(FSearchedEnd)]); end;
 end;
 
+function TSynEditMarkupHighlightAllBase.HasDisplayAbleMatches: Boolean;
+begin
+  Result := (inherited HasDisplayAbleMatches) and
+            HasSearchData and
+            ( (not HideSingleMatch) or (Matches.Count > 1) );
+end;
+
 procedure TSynEditMarkupHighlightAllBase.DoTextChanged(StartLine, EndLine,
   ACountDiff: Integer);
 begin
@@ -2234,109 +2372,6 @@ begin
   end;
 
   InvalidateSynLines(Line1, Line2);
-end;
-
-procedure TSynEditMarkupHighlightAllBase.PrepareMarkupForRow(aRow: Integer);
-begin
-  if (FNextPosRow > 0) and (aRow > FNextPosRow) and
-     ( (FNextPosIdx = -2) or // No match after FNextPosRow
-       ( (FNextPosIdx >= 0) and (FNextPosIdx < FMatches.PointCount) and (aRow <= FMatches.Point[FNextPosIdx].y) )
-      )
-  then begin
-    if (FNextPosIdx >= 0) and
-      ( (aRow = FMatches.Point[FNextPosIdx].y) or (FNextPosIdx and 1 = 1) )
-    then
-      FNextPosRow := aRow;
-    exit;
-  end;
-
-  FNextPosRow := aRow;
-  FNextPosIdx := FMatches.IndexOfFirstMatchForLine(aRow) * 2;
-  if (FNextPosIdx < 0) or (FNextPosIdx >= FMatches.PointCount) then
-    exit;
-  if (FMatches.Point[FNextPosIdx].y < aRow) then
-    inc(FNextPosIdx);  // Use EndPoint
-end;
-
-procedure TSynEditMarkupHighlightAllBase.EndMarkup;
-begin
-  inherited EndMarkup;
-  FNextPosRow := -1;
-end;
-
-function TSynEditMarkupHighlightAllBase.GetMarkupAttributeAtRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
-var
-  pos, s, e: Integer;
-begin
-  result := nil;
-  if (not HasSearchData) then
-    exit;
-
-  if (HideSingleMatch and (fMatches.Count <= 1)) or (aRow <> FNextPosRow) or (FNextPosIdx < 0)
-  then
-    exit;
-
-  while (FNextPosIdx < fMatches.PointCount) and
-        (fMatches.Point[FNextPosIdx].y = aRow) and
-        (fMatches.Point[FNextPosIdx].x <= aStartCol.Logical)
-  do
-    inc(FNextPosIdx);
-
-  if FNextPosIdx >= fMatches.PointCount // last point was EndPoint => no markup
-  then exit;
-
-  pos := FNextPosIdx - 1;
-  while (pos >= 0) and (fMatches.Point[pos].y = aRow) and
-        (fMatches.Point[pos].x > aStartCol.Logical)
-  do
-    dec(pos);
-
-  if pos < 0 then
-    exit;
-
-  //pos is the point at or before LogPos
-  if (pos and 1)= 1 // the Point is a EndPoint => Outside Match
-  then exit;
-  
-  if fMatches.Point[pos].y < aRow then
-    s := -1
-  else
-    s := fMatches.Point[pos].x;
-  if (pos = FMatches.PointCount) or (fMatches.Point[pos+1].y > aRow) then
-    e := -1
-  else
-    e := fMatches.Point[pos+1].x;
-  MarkupInfo.SetFrameBoundsLog(s, e);
-  Result := MarkupInfo;
-end;
-
-procedure TSynEditMarkupHighlightAllBase.GetNextMarkupColAfterRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo; out ANextPhys,
-  ANextLog: Integer);
-begin
-  ANextLog := -1;
-  ANextPhys := -1;
-  if (not HasSearchData) then
-  exit;
-  if (HideSingleMatch and (fMatches.Count <= 1)) or
-     (aRow <> FNextPosRow) or (FNextPosIdx < 0) or
-     (FNextPosIdx >= fMatches.PointCount) or (FMatches.Point[FNextPosIdx].y > aRow)
-  then
-    exit;
-
-  while (FNextPosIdx < fMatches.PointCount) and
-        (fMatches.Point[FNextPosIdx].y = aRow) and
-        (fMatches.Point[FNextPosIdx].x <= aStartCol.Logical)
-  do
-    inc(FNextPosIdx);
-
-  if FNextPosIdx >= fMatches.PointCount then
-    exit;
-  if fMatches.Point[FNextPosIdx].y <> aRow then
-    exit;
-
-  ANextLog := fMatches.Point[FNextPosIdx].x;
 end;
 
 procedure TSynEditMarkupHighlightAllBase.Invalidate(SkipPaint: Boolean);

@@ -11,11 +11,32 @@ uses windows,
 
 type
 
+  TSynMarkupIfdefNodeTypeTest = (idnIfdef, idnElse, idnEndIf, idnNone);
+  TPeerExpect = record
+    PeerType:  TSynMarkupIfdefNodeTypeTest;  // use idnDisabled as dummy
+    PeerY, PeerX: Integer;
+  end;
+  PPeerExpect = ^TPeerExpect;
+
+const
+  NodeTypeMap: array [TSynMarkupIfdefNodeType] of TSynMarkupIfdefNodeTypeTest =
+    (idnIfdef, idnElse, idnEndIf);
+
+type
+  TNodeExpect = record
+    ExpStart, ExpEnd, ExpEndLineOffs: Integer;
+    ExpType:  TSynMarkupIfdefNodeTypeTest;  // use idnDisabled as dummy
+    ExpState:  TSynMarkupIfdefNodeStateEx;
+    TestExpState: Boolean;
+    Peer1, Peer2: TPeerExpect;
+  end;
+
   { TTestMarkupIfDef }
 
   TTestMarkupIfDef = class(TTestBaseHighlighterFoldBase)
   private
     FTestTree: TSynMarkupHighIfDefLinesTree;
+    FNodeStateResponses, FNodeStateRequests: TStringList;
     FOpenings: TLazSynEditNestedFoldsList;
     function TestTextEmpty: TStringArray;
     function TestTextNoIfDef: TStringArray;
@@ -23,16 +44,228 @@ type
     function TestText1: TStringArray;
     function TestText2: TStringArray;
     function TestText3: TStringArray;
+    function TestText4: TStringArray;
+
+    procedure CheckNodes(AName: String; ALine: Integer;
+      AExp: array of TNodeExpect);
+    procedure CheckNodesXY(AName: String; ALine: Integer;
+      AExp: array of Integer; // [Start, end,  start, end, ....]
+      AExpEndOffs: Integer);
+    procedure CheckPeer(AName: String; ALine, ACol: Integer;
+      AType: TSynMarkupIfdefNodeTypeTest; ExpLine, ExpCol: Integer);
+
+    function TesTNodeStateHandler(Sender: TObject; LinePos,
+      XStartPos: Integer): TSynMarkupIfdefNodeState;
   protected
     function CreateTheHighLighter: TSynCustomFoldHighlighter; override;
     //procedure SetUp; override;
     //procedure TearDown; override;
     procedure ReCreateEditForTreeTest(Lines: Array of String); reintroduce;
   published
-    procedure TestIfDefTree;
+    procedure TestIfDefTreeMoveOnEdit;
+    procedure TestIfDefTreePeerConnect;
+    procedure TestIfDefTreeNodeState;
   end;
 
 implementation
+
+function dbgs(AFlag: TSynMarkupIfdefNodeTypeTest): String; overload;
+begin
+  Result := '';
+  WriteStr(Result, AFlag);
+end;
+
+function ExpP(PeerType: TSynMarkupIfdefNodeTypeTest; PeerY, PeerX: Integer): PPeerExpect;
+begin
+  New(Result);
+  Result^.PeerType := PeerType;
+  Result^.PeerY := PeerY;
+  Result^.PeerX := PeerX;
+end;
+
+function EpIf(PeerY, PeerX: Integer): PPeerExpect;
+begin
+  Result := ExpP(idnIfdef, PeerY, PeerX);
+end;
+function EpElse(PeerY, PeerX: Integer): PPeerExpect;
+begin
+  Result := ExpP(idnElse, PeerY, PeerX);
+end;
+function EpEnd(PeerY, PeerX: Integer): PPeerExpect;
+begin
+  Result := ExpP(idnEndIf, PeerY, PeerX);
+end;
+
+function ExpN(ExpStart: Integer; ExpEnd: Integer;
+  ExpEndLineOffs: Integer; // Default to check for same line end
+  ExpType: TSynMarkupIfdefNodeTypeTest;
+  ExpState: TSynMarkupIfdefNodeStateEx;
+  Peer1: PPeerExpect = nil; Peer2: PPeerExpect = nil): TNodeExpect;
+begin
+  Result.ExpStart       := ExpStart;
+  Result.ExpEnd         := ExpEnd;
+  Result.ExpEndLineOffs := ExpEndLineOffs;
+  Result.ExpType        := ExpType;
+  if Peer1 = nil then Peer1 := ExpP(idnNone, -1 , -1);
+  if Peer2 = nil then Peer2 := ExpP(idnNone, -1 , -1);
+  Result.Peer1          := Peer1^;
+  Result.Peer2          := Peer2^;
+  Result.ExpState     := ExpState;
+  Result.TestExpState := True;
+  Dispose(Peer1);
+  Dispose(Peer2);
+end;
+
+function ExpN(ExpStart, ExpEnd: Integer; ExpType: TSynMarkupIfdefNodeTypeTest;
+  ExpState: TSynMarkupIfdefNodeStateEx;
+  Peer1: PPeerExpect = nil; Peer2: PPeerExpect = nil): TNodeExpect;
+begin
+  Result := ExpN(ExpStart, ExpEnd, 0, ExpType, ExpState, Peer1, Peer2);
+end;
+
+function ExpN(ExpStart: Integer; ExpEnd: Integer = -1;
+  ExpEndLineOffs: Integer = 0; // Default to check for same line end
+  ExpType: TSynMarkupIfdefNodeTypeTest = idnDisabled;
+  Peer1: PPeerExpect = nil; Peer2: PPeerExpect = nil): TNodeExpect;
+begin
+  Result := ExpN(ExpStart, ExpEnd, ExpEndLineOffs, ExpType, idnUnknown, Peer1, Peer2);
+  Result.TestExpState := False;
+end;
+
+function ExpN(ExpStart, ExpEnd: Integer; ExpType: TSynMarkupIfdefNodeTypeTest;
+  Peer1: PPeerExpect = nil; Peer2: PPeerExpect = nil): TNodeExpect;
+begin
+  Result := ExpN(ExpStart, ExpEnd, 0, ExpType, Peer1, Peer2);
+end;
+
+function ExpN(ExpStart, ExpEnd: Integer; ExpEndLineOffs: Integer;
+  Peer1: PPeerExpect; Peer2: PPeerExpect = nil): TNodeExpect;
+begin
+  Result := ExpN(ExpStart, ExpEnd, ExpEndLineOffs, idnNone, Peer1, Peer2);
+end;
+
+function ExpN(ExpStart, ExpEnd: Integer; Peer1: PPeerExpect; Peer2: PPeerExpect = nil): TNodeExpect;
+begin
+  Result := ExpN(ExpStart, ExpEnd, 0, idnNone, Peer1, Peer2);
+end;
+
+function ExpN(ExpStart: Integer; Peer1: PPeerExpect; Peer2: PPeerExpect = nil): TNodeExpect;
+begin
+  Result := ExpN(ExpStart, -1, 0, idnNone, Peer1, Peer2);
+end;
+
+
+procedure TTestMarkupIfDef.CheckNodes(AName: String; ALine: Integer;
+  AExp: array of TNodeExpect);
+var
+  Node: TSynMarkupHighIfDefEntry;
+
+  procedure CheckPeerNode(ExpPeer: TPeerExpect);
+  var
+    TestPeer: TSynMarkupHighIfDefEntry;
+    PName: String;
+  begin
+    PName := '';
+    WriteStr(PName, AName, ' ', ExpPeer.PeerType);
+    case ExpPeer.PeerType of
+      idnIfdef: TestPeer := Node.IfDefPeer;
+      idnElse:  TestPeer := Node.ElsePeer;
+      idnEndIf: TestPeer := Node.EndIfPeer;
+    end;
+    if ExpPeer.PeerY = -99 then begin // special check for existence only
+      AssertTrue(PName + 'Has Peer', TestPeer <> nil);
+      AssertTrue(PName+' PeerType', ExpPeer.PeerType = NodeTypeMap[TestPeer.NodeType]);
+    end
+    else
+    if ExpPeer.PeerY < 0 then begin
+      AssertTrue(PName + 'NO Peer', TestPeer = nil);
+    end
+    else begin
+      AssertTrue(PName + 'Has Peer', TestPeer <> nil);
+      AssertTrue(PName+' PeerType', ExpPeer.PeerType = NodeTypeMap[TestPeer.NodeType]);
+      AssertEquals(PName + 'Peer.Y', ExpPeer.PeerY, TestPeer.Line.GetPosition);
+      if ExpPeer.PeerX >= 0 then
+        AssertEquals(PName + 'Peer.X', ExpPeer.PeerX, TestPeer.StartColumn);
+    end;
+  end;
+var
+  i, c: Integer;
+  LineNode: TSynMarkupHighIfDefLinesNodeInfo;
+  ExpNode: TNodeExpect;
+begin
+  AName := Format('%s - %s L=%d', [BaseTestName, AName, ALine]);
+  LineNode := FTestTree.FindNodeAtPosition(ALine, afmNil);
+  c := length(AExp);
+  if (c = 0) and (not LineNode.HasNode) then
+    exit;
+  AssertTrue(AName + 'HasNode', LineNode.HasNode);
+  AssertEquals(AName + 'EntryCount', c, LineNode.EntryCount);
+  for i := 0 to c - 1 do begin
+    ExpNode := AExp[i];
+    Node := LineNode.Entry[i];
+    AssertTrue('Node.Line = LineNode', Node.Line = LineNode.Node);
+    AssertEquals(AName+'StartCol', ExpNode.ExpStart, Node.StartColumn);
+    if ExpNode.ExpEnd >= 0 then
+      AssertEquals(AName+'EndCol', ExpNode.ExpEnd, Node.EndColumn);
+    if ExpNode.ExpEndLineOffs >= 0 then begin
+      AssertEquals(AName+'EndLineOffs', ExpNode.ExpEndLineOffs, LineNode.LastEntryEndLineOffs);
+//        AssertTrue(AName+'EndLineOffs flag', idnMultiLineTag in Node.NodeFlags);
+    end;
+    if ExpNode.ExpType <> idnNone then
+      AssertTrue(AName+'NodeTypeflag', NodeTypeMap[Node.NodeType] = ExpNode.ExpType);
+    if ExpNode.TestExpState then
+      AssertTrue(AName+'NodeState', Node.NodeState = ExpNode.ExpState);
+    if ExpNode.Peer1.PeerType <> idnNone then
+      CheckPeerNode(ExpNode.Peer1);
+    if ExpNode.Peer2.PeerType <> idnNone then
+      CheckPeerNode(ExpNode.Peer2);
+  end;
+
+end;
+
+procedure TTestMarkupIfDef.CheckNodesXY(AName: String; ALine: Integer;
+  AExp: array of Integer; // [Start, end,  start, end, ....]
+  AExpEndOffs: Integer);
+var
+  i, c: Integer;
+  n1: TSynMarkupHighIfDefLinesNodeInfo;
+begin
+  AName := Format('%s - %s L=%d', [BaseTestName, AName, ALine]);
+  n1 := FTestTree.FindNodeAtPosition(ALine, afmNil);
+  c := length(AExp);
+  if (c = 0) and (not n1.HasNode) then
+    exit;
+  AssertTrue(AName + 'HasNode', n1.HasNode);
+  AssertEquals(AName + 'EntryCount', c div 2, n1.EntryCount);
+  for i := 0 to (c div 2) - 1 do begin
+    AssertTrue('Node.Line = LineNode', n1.Entry[i].Line = n1.Node);
+    AssertEquals(AName+'StartCol', AExp[i*2], n1.Entry[i].StartColumn);
+    AssertEquals(AName+'EndCol', AExp[i*2+1], n1.Entry[i].EndColumn);
+  end;
+  AssertEquals(AName+'EndLine', AExpEndOffs, n1.LastEntryEndLineOffs);
+end;
+
+procedure TTestMarkupIfDef.CheckPeer(AName: String; ALine, ACol: Integer;
+  AType: TSynMarkupIfdefNodeTypeTest; ExpLine, ExpCol: Integer);
+var
+  n1: TSynMarkupHighIfDefLinesNodeInfo;
+  p: TSynMarkupHighIfDefEntry;
+begin
+  AName := Format('%s - %s L=%d Col=%d %s <=> %d, %d', [BaseTestName, AName, ALine, ACol, dbgs(AType), ExpLine, ExpCol]);
+  n1 := FTestTree.FindNodeAtPosition(ALine, afmNil);
+  AssertTrue(AName + 'HasNode', n1.HasNode);
+  AssertTrue(AName + 'HasEntry', n1.EntryCount > ACol);
+  case AType of
+    idnIfdef: p := n1.Entry[ACol].IfDefPeer;
+    idnElse:  p := n1.Entry[ACol].ElsePeer;
+    idnEndIf: p := n1.Entry[ACol].EndIfPeer;
+  end;
+  AssertTrue(AName + 'Peer', p <> nil);
+  AssertEquals(AName + 'Peer.Y', ExpLine, p.Line.GetPosition);
+  AssertTrue(AName + 'Peer.X (1)', p.Line.EntryCount > ExpCol);
+  AssertTrue(AName + 'Peer.X (2)', p.Line.Entry[ExpCol] = p);
+end;
+
 
 { TTestMarkupIfDef }
 
@@ -196,6 +429,22 @@ begin
   AddLine(''                                                      );
 end;
 
+function TTestMarkupIfDef.TestText4: TStringArray;
+  procedure AddLine(s: String);
+  begin
+    SetLength(Result, Length(Result)+1);
+    Result[Length(Result)-1] := s;
+  end;
+begin
+  // 1
+  AddLine('//'                                                    );
+  AddLine('{$IFDEF a}  {$Endif}'                                  );
+  AddLine(''                                                      );
+  AddLine('{$IFDEF a}  {$Endif}'                                  );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+end;
+
 function TTestMarkupIfDef.CreateTheHighLighter: TSynCustomFoldHighlighter;
 begin
   Result := TSynPasSyn.Create(nil);
@@ -218,202 +467,7 @@ begin
   FOpenings := FTestTree.CreateOpeningList;
 end;
 
-procedure TTestMarkupIfDef.TestIfDefTree;
-
-type
-  TSynMarkupIfdefNodeTypeTest = (idnIfdef, idnElse, idnEndIf, idnNone);
-  TPeerExpect = record
-    PeerType:  TSynMarkupIfdefNodeTypeTest;  // use idnDisabled as dummy
-    PeerY, PeerX: Integer;
-  end;
-  PPeerExpect = ^TPeerExpect;
-
-const
-  NodeTypeMap: array [TSynMarkupIfdefNodeType] of TSynMarkupIfdefNodeTypeTest =
-    (idnIfdef, idnElse, idnEndIf);
-
-type
-  TNodeExpect = record
-    ExpStart, ExpEnd, ExpEndLineOffs: Integer;
-    ExpType:  TSynMarkupIfdefNodeTypeTest;  // use idnDisabled as dummy
-    Peer1, Peer2: TPeerExpect;
-  end;
-
-  function dbgs(AFlag: TSynMarkupIfdefNodeTypeTest): String; overload;
-  begin
-    Result := '';
-    WriteStr(Result, AFlag);
-  end;
-
-  function ExpP(PeerType: TSynMarkupIfdefNodeTypeTest; PeerY, PeerX: Integer): PPeerExpect;
-  begin
-    New(Result);
-    Result^.PeerType := PeerType;
-    Result^.PeerY := PeerY;
-    Result^.PeerX := PeerX;
-  end;
-
-  function EpIf(PeerY, PeerX: Integer): PPeerExpect;
-  begin
-    Result := ExpP(idnIfdef, PeerY, PeerX);
-  end;
-  function EpElse(PeerY, PeerX: Integer): PPeerExpect;
-  begin
-    Result := ExpP(idnElse, PeerY, PeerX);
-  end;
-  function EpEnd(PeerY, PeerX: Integer): PPeerExpect;
-  begin
-    Result := ExpP(idnEndIf, PeerY, PeerX);
-  end;
-
-  function ExpN(ExpStart: Integer; ExpEnd: Integer = -1;
-    ExpEndLineOffs: Integer = 0; // Default to check for same line end
-    ExpType: TSynMarkupIfdefNodeTypeTest = idnDisabled;
-    Peer1: PPeerExpect = nil; Peer2: PPeerExpect = nil): TNodeExpect;
-  begin
-    Result.ExpStart       := ExpStart;
-    Result.ExpEnd         := ExpEnd;
-    Result.ExpEndLineOffs := ExpEndLineOffs;
-    Result.ExpType        := ExpType;
-    if Peer1 = nil then Peer1 := ExpP(idnNone, -1 , -1);
-    if Peer2 = nil then Peer2 := ExpP(idnNone, -1 , -1);
-    Result.Peer1          := Peer1^;
-    Result.Peer2          := Peer2^;
-    Dispose(Peer1);
-    Dispose(Peer2);
-  end;
-
-  function ExpN(ExpStart, ExpEnd: Integer; ExpType: TSynMarkupIfdefNodeTypeTest;
-    Peer1: PPeerExpect = nil; Peer2: PPeerExpect = nil): TNodeExpect;
-  begin
-    Result := ExpN(ExpStart, ExpEnd, 0, ExpType, Peer1, Peer2);
-  end;
-
-  function ExpN(ExpStart, ExpEnd: Integer; ExpEndLineOffs: Integer;
-    Peer1: PPeerExpect; Peer2: PPeerExpect = nil): TNodeExpect;
-  begin
-    Result := ExpN(ExpStart, ExpEnd, ExpEndLineOffs, idnNone, Peer1, Peer2);
-  end;
-
-  function ExpN(ExpStart, ExpEnd: Integer; Peer1: PPeerExpect; Peer2: PPeerExpect = nil): TNodeExpect;
-  begin
-    Result := ExpN(ExpStart, ExpEnd, 0, idnNone, Peer1, Peer2);
-  end;
-
-  function ExpN(ExpStart: Integer; Peer1: PPeerExpect; Peer2: PPeerExpect = nil): TNodeExpect;
-  begin
-    Result := ExpN(ExpStart, -1, 0, idnNone, Peer1, Peer2);
-  end;
-
-  procedure CheckNodes(AName: String; ALine: Integer;
-    AExp: array of TNodeExpect);
-  var
-    Node: TSynMarkupHighIfDefEntry;
-
-    procedure CheckPeer(ExpPeer: TPeerExpect);
-    var
-      TestPeer: TSynMarkupHighIfDefEntry;
-      PName: String;
-    begin
-      PName := '';
-      WriteStr(PName, AName, ' ', ExpPeer.PeerType);
-      case ExpPeer.PeerType of
-        idnIfdef: TestPeer := Node.IfDefPeer;
-        idnElse:  TestPeer := Node.ElsePeer;
-        idnEndIf: TestPeer := Node.EndIfPeer;
-      end;
-      if ExpPeer.PeerY = -99 then begin // special check for existence only
-        AssertTrue(PName + 'Has Peer', TestPeer <> nil);
-        AssertTrue(PName+' PeerType', ExpPeer.PeerType = NodeTypeMap[TestPeer.NodeType]);
-      end
-      else
-      if ExpPeer.PeerY < 0 then begin
-        AssertTrue(PName + 'NO Peer', TestPeer = nil);
-      end
-      else begin
-        AssertTrue(PName + 'Has Peer', TestPeer <> nil);
-        AssertTrue(PName+' PeerType', ExpPeer.PeerType = NodeTypeMap[TestPeer.NodeType]);
-        AssertEquals(PName + 'Peer.Y', ExpPeer.PeerY, TestPeer.Line.GetPosition);
-        if ExpPeer.PeerX >= 0 then
-          AssertEquals(PName + 'Peer.X', ExpPeer.PeerX, TestPeer.StartColumn);
-      end;
-    end;
-  var
-    i, c: Integer;
-    LineNode: TSynMarkupHighIfDefLinesNodeInfo;
-    ExpNode: TNodeExpect;
-  begin
-    AName := Format('%s - %s L=%d', [BaseTestName, AName, ALine]);
-    LineNode := FTestTree.FindNodeAtPosition(ALine, afmNil);
-    c := length(AExp);
-    if (c = 0) and (not LineNode.HasNode) then
-      exit;
-    AssertTrue(AName + 'HasNode', LineNode.HasNode);
-    AssertEquals(AName + 'EntryCount', c, LineNode.EntryCount);
-    for i := 0 to c - 1 do begin
-      ExpNode := AExp[i];
-      Node := LineNode.Entry[i];
-      AssertTrue('Node.Line = LineNode', Node.Line = LineNode.Node);
-      AssertEquals(AName+'StartCol', ExpNode.ExpStart, Node.StartColumn);
-      if ExpNode.ExpEnd >= 0 then
-        AssertEquals(AName+'EndCol', ExpNode.ExpEnd, Node.EndColumn);
-      if ExpNode.ExpEndLineOffs >= 0 then begin
-        AssertEquals(AName+'EndLineOffs', ExpNode.ExpEndLineOffs, LineNode.LastEntryEndLineOffs);
-//        AssertTrue(AName+'EndLineOffs flag', idnMultiLineTag in Node.NodeFlags);
-      end;
-      if ExpNode.ExpType <> idnNone then
-        AssertTrue(AName+'NodeTypeflag', NodeTypeMap[Node.NodeType] = ExpNode.ExpType);
-      if ExpNode.Peer1.PeerType <> idnNone then
-        CheckPeer(ExpNode.Peer1);
-      if ExpNode.Peer2.PeerType <> idnNone then
-        CheckPeer(ExpNode.Peer2);
-    end;
-
-  end;
-
-  procedure CheckNodesXY(AName: String; ALine: Integer;
-    AExp: array of Integer; // [Start, end,  start, end, ....]
-    AExpEndOffs: Integer);
-  var
-    i, c: Integer;
-    n1: TSynMarkupHighIfDefLinesNodeInfo;
-  begin
-    AName := Format('%s - %s L=%d', [BaseTestName, AName, ALine]);
-    n1 := FTestTree.FindNodeAtPosition(ALine, afmNil);
-    c := length(AExp);
-    if (c = 0) and (not n1.HasNode) then
-      exit;
-    AssertTrue(AName + 'HasNode', n1.HasNode);
-    AssertEquals(AName + 'EntryCount', c div 2, n1.EntryCount);
-    for i := 0 to (c div 2) - 1 do begin
-      AssertTrue('Node.Line = LineNode', n1.Entry[i].Line = n1.Node);
-      AssertEquals(AName+'StartCol', AExp[i*2], n1.Entry[i].StartColumn);
-      AssertEquals(AName+'EndCol', AExp[i*2+1], n1.Entry[i].EndColumn);
-    end;
-    AssertEquals(AName+'EndLine', AExpEndOffs, n1.LastEntryEndLineOffs);
-  end;
-
-  procedure CheckPeer(AName: String; ALine, ACol: Integer;
-    AType: TSynMarkupIfdefNodeTypeTest; ExpLine, ExpCol: Integer);
-  var
-    n1: TSynMarkupHighIfDefLinesNodeInfo;
-    p: TSynMarkupHighIfDefEntry;
-  begin
-    AName := Format('%s - %s L=%d Col=%d %s <=> %d, %d', [BaseTestName, AName, ALine, ACol, dbgs(AType), ExpLine, ExpCol]);
-    n1 := FTestTree.FindNodeAtPosition(ALine, afmNil);
-    AssertTrue(AName + 'HasNode', n1.HasNode);
-    AssertTrue(AName + 'HasEntry', n1.EntryCount > ACol);
-    case AType of
-      idnIfdef: p := n1.Entry[ACol].IfDefPeer;
-      idnElse:  p := n1.Entry[ACol].ElsePeer;
-      idnEndIf: p := n1.Entry[ACol].EndIfPeer;
-    end;
-    AssertTrue(AName + 'Peer', p <> nil);
-    AssertEquals(AName + 'Peer.Y', ExpLine, p.Line.GetPosition);
-    AssertTrue(AName + 'Peer.X (1)', p.Line.EntryCount > ExpCol);
-    AssertTrue(AName + 'Peer.X (2)', p.Line.Entry[ExpCol] = p);
-  end;
-
+procedure TTestMarkupIfDef.TestIfDefTreeMoveOnEdit;
 var
   n: String;
   nd: TSynMarkupHighIfDefLinesNodeInfo;
@@ -789,6 +843,8 @@ FTestTree.DebugPrint(true);DebugLn;
 
   {%endregion  Line Breaks }
 
+
+
   ReCreateEditForTreeTest(TestTextIfDef);
   FTestTree.ValidateRange(1, 14, FOpenings);
 FTestTree.DebugPrint(true);DebugLn;
@@ -832,6 +888,19 @@ FTestTree.DebugPrint(true);DebugLn;
   CheckNodesXY('', 4, [], 0);
   CheckNodesXY('', 5, [2, 12], 0);
   CheckNodesXY('', 6, [3, 14], 0);
+
+
+  FTestTree.DiscardOpeningList(FOpenings);
+  FOpenings := nil;;
+  FTestTree.Free;
+end;
+
+procedure TTestMarkupIfDef.TestIfDefTreePeerConnect;
+var
+  n: String;
+  nd: TSynMarkupHighIfDefLinesNodeInfo;
+begin
+  FTestTree := nil;
 
 
   {%region peers}
@@ -1086,6 +1155,8 @@ DebugLn('--------');FTestTree.DebugPrint(true);
 
   {%endregion peers}
 
+
+
   {%region peers + editing}
 
   n := 'Peers, TestText1: Before Edit';
@@ -1194,16 +1265,136 @@ DebugLn('--------');FTestTree.DebugPrint(true);
   CheckNodes(n,37, [ ExpN( 1, 9, idnEndIf, EpElse(30, 1)) ]);
 
 
+  SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '{$Else}';
+  FTestTree.ValidateRange(1, 37, FOpenings);
+DebugLn('--------');FTestTree.DebugPrint(true);
 
+  //SynEdit.TextBetweenPoints[point(1, 3),point(1, 8)] := '';
+  SynEdit.TextBetweenPoints[point(1, 3),point(8, 3)] := '';
+  FTestTree.ValidateRange(1, 37, FOpenings);
+DebugLn('--------');FTestTree.DebugPrint(true);
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd(18, 3)) ]);
+  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpEnd(12, 5)) ]);
+  CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpElse(7, 20)),
+                     ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
+                     ExpN(32,40, idnEndIf, EpElse(7, 20)),
+                     ExpN(43,53, idnIfdef, EpEnd(11, 7))  ]);
+  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpEnd(9, 1)),
+                     ExpN(19,29, idnIfdef, EpElse(8, 34)),
+                     ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
+                     ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
+  CheckNodes(n,11, [ ExpN( 7,15, idnEndIf, EpIf(7, 43)) ]);
+  CheckNodes(n,12, [ ExpN( 5,13, idnEndIf, EpIf(5, 3)) ]);
+  CheckNodes(n,14, [ ExpN( 5,16, idnIfdef, EpEnd(15, 5)) ]);
+  CheckNodes(n,15, [ ExpN( 5,13, idnEndIf, EpIf(14, 5)) ]);
+  CheckNodes(n,16, [ ExpN( 5,15, idnIfdef, EpEnd(16, 16)),
+                     ExpN(16,24, idnEndIf, EpIf(16, 5))  ]);
+  CheckNodes(n,18, [ ExpN( 3,11, idnEndIf, EpIf(2, 1)) ]);
+  CheckNodes(n,20, [ ExpN( 3,14, idnIfdef, EpElse(22, 3)) ]);
+  CheckNodes(n,22, [ ExpN( 3,10, idnElse,  EpIf(20, 3), EpEnd(28, 3)) ]);
+  CheckNodes(n,24, [ ExpN( 5,15, idnIfdef, EpEnd(26, 5)) ]);
+  CheckNodes(n,26, [ ExpN( 5,13, idnEndIf, EpIf(24, 5)) ]);
+  CheckNodes(n,27, [ ExpN( 5,15, idnIfdef, EpEnd(27, 16)),
+                     ExpN(16,24, idnEndIf, EpIf(27, 5))  ]);
+  CheckNodes(n,28, [ ExpN( 3,11, idnEndIf, EpElse(22, 3)) ]);
+  CheckNodes(n,30, [ ExpN( 1, 8, idnElse,  EpIf(-1, 1), EpEnd(37,1)) ]);
+  CheckNodes(n,32, [ ExpN( 3,13, idnIfdef, EpElse(33, 3)) ]);
+  CheckNodes(n,33, [ ExpN( 3,10, idnElse,  EpIf(32, 3), EpEnd(35,3)) ]);
+  CheckNodes(n,35, [ ExpN( 3,11, idnEndIf, EpElse(33, 3)) ]);
+  CheckNodes(n,37, [ ExpN( 1, 9, idnEndIf, EpElse(30, 1)) ]);
 
 
 
   {%endregion peers}
 
-  FTestTree.DiscardOpeningList(FOpenings);
-  FOpenings := nil;;
-  FTestTree.Free;
 
+  FTestTree.DiscardOpeningList(FOpenings);
+  FOpenings := nil;
+  FTestTree.Free;
+end;
+
+function TTestMarkupIfDef.TesTNodeStateHandler(Sender: TObject; LinePos,
+  XStartPos: Integer): TSynMarkupIfdefNodeState;
+var
+  n, v: String;
+begin
+  n := Format('%d/%d', [LinePos, XStartPos]);
+  v := FNodeStateRequests.Values[n];
+  v := IntToStr(StrToIntDef(v, 0) + 1);
+  FNodeStateRequests.Values[n] := v;
+
+  v := FNodeStateResponses.Values[n];
+  if v = '' then
+    Result := idnInvalid
+  else
+    Result := TSynMarkupIfdefNodeState(StrToIntDef(v, 0));
+
+  DebugLn('# TesTNodeStateHandler ', n, ' # ', v, ' ', dbgs(Result));
+end;
+
+procedure TTestMarkupIfDef.TestIfDefTreeNodeState;
+var
+  n: String;
+  nd: TSynMarkupHighIfDefLinesNodeInfo;
+begin
+  FTestTree := nil;
+  FNodeStateResponses := TStringList.Create;
+  FNodeStateRequests := TStringList.Create;
+
+  ReCreateEditForTreeTest(TestText3);
+  FTestTree.OnNodeStateRequest := @TesTNodeStateHandler;
+
+  n := 'TestText3 scan;';
+  FNodeStateResponses.Values['2/1'] := IntToStr(ord(idnEnabled));
+
+  FTestTree.ValidateRange(1, 10, FOpenings);
+DebugLn('--------');FTestTree.DebugPrint(true);
+
+  AssertEquals(n + 'Got reqest for 2/1' , '1', FNodeStateRequests.Values['2/1']);
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, idnEnabled) ]);
+
+
+  n := 'TestText3 edit existing ifdef;';
+  FNodeStateResponses.Values['2/1'] := IntToStr(ord(idnDisabled));
+  FNodeStateRequests.Clear;
+  SynEdit.TextBetweenPoints[point(9, 2),point(9, 2)] := 'x';
+DebugLn('--------');FTestTree.DebugPrint(true);
+  FTestTree.ValidateRange(1, 10, FOpenings);
+DebugLn('--------');FTestTree.DebugPrint(true);
+
+  AssertEquals(n + 'Got reqest for 2/1' , '1', FNodeStateRequests.Values['2/1']);
+  CheckNodes(n, 2, [ ExpN( 1,12, idnIfdef, idnDisabled) ]);
+
+
+  //SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '{$Else}';
+
+
+
+  n := 'TestText4 scan;';
+  ReCreateEditForTreeTest(TestText4);
+  FTestTree.OnNodeStateRequest := @TesTNodeStateHandler;
+
+  FNodeStateResponses.Clear;
+  FNodeStateRequests.Clear;
+  FNodeStateResponses.Values['2/1'] := IntToStr(ord(idnEnabled));
+  FNodeStateResponses.Values['4/1'] := IntToStr(ord(idnDisabled));
+
+  FTestTree.ValidateRange(1, 6, FOpenings);
+DebugLn('--------');FTestTree.DebugPrint(true);
+  AssertEquals(n + 'Got reqest for 2/1' , '1', FNodeStateRequests.Values['2/1']);
+  AssertEquals(n + 'Got reqest for 4/1' , '1', FNodeStateRequests.Values['4/1']);
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, idnEnabled), ExpN(13,21, idnEndIf, idnEnabled ) ]);
+  CheckNodes(n, 4, [ ExpN( 1,11, idnIfdef, idnDisabled), ExpN(13,21, idnEndIf, idnDisabled ) ]);
+
+
+
+
+
+  FTestTree.DiscardOpeningList(FOpenings);
+  FOpenings := nil;
+  FTestTree.Free;
+  FreeAndNil(FNodeStateResponses);
+  FreeAndNil(FNodeStateRequests);
 end;
 
 initialization

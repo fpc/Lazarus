@@ -23,9 +23,9 @@ unit SynEditMarkupIfDef;
 interface
 
 uses
-  SysUtils, windows, SynEditMarkup, SynEditMiscClasses, SynHighlighterPas,
+  SysUtils, types, SynEditMarkup, SynEditMiscClasses, SynHighlighterPas,
   SynEditMarkupHighAll, SynEditHighlighterFoldBase, SynEditFoldedView, LazSynEditText,
-  SynEditMiscProcs, LazClasses, LazLoggerBase, Graphics;
+  SynEditMiscProcs, LazClasses, LazLoggerBase, Graphics, LCLProc;
 
 type
 
@@ -83,10 +83,14 @@ type
     function  GetPeerField(APeerType: TSynMarkupIfdefNodeType): PSynMarkupHighIfDefEntry;
     function  GetOtherPeerField(APeer: PSynMarkupHighIfDefEntry): PSynMarkupHighIfDefEntry;
     function  GetPeer(APeerType: TSynMarkupIfdefNodeType): TSynMarkupHighIfDefEntry;
+    procedure SetLine(AValue: TSynMarkupHighIfDefLinesNode);
     procedure SetNodeState(AValue: TSynMarkupIfdefNodeStateEx);
     procedure SetPeer(APeerType: TSynMarkupIfdefNodeType; ANewPeer: TSynMarkupHighIfDefEntry);
     procedure ClearPeerField(APeer: PSynMarkupHighIfDefEntry);
     procedure RemoveForwardPeers;
+    procedure ApplyNodeStateToLine;
+    procedure RemoveNodeStateFromLine;
+    function  NodeStateForPeer(APeerType: TSynMarkupIfdefNodeType): TSynMarkupIfdefNodeStateEx;
   public
     constructor Create;
     destructor Destroy; override;
@@ -100,12 +104,15 @@ type
     property  IsDisabled:  Boolean read GetIsDisabled;
     property  IsRequested: Boolean read GetIsRequested;
     property  NeedsRequesting: Boolean read GetNeedsRequesting;
+    function  IsDisabledOpening: Boolean;
+    function  IsDisabledClosing: Boolean;
     function  NodeType: TSynMarkupIfdefNodeType;
     property  NodeState: TSynMarkupIfdefNodeStateEx read GetNodeState write SetNodeState;
-    property NodeFlags: SynMarkupIfDefNodeFlags read FNodeFlags write FNodeFlags;
-    property Line: TSynMarkupHighIfDefLinesNode read FLine;
-    property StartColumn: Integer read FStartColumn write FStartColumn;
-    property EndColumn:   Integer read FEndColumn write FEndColumn;
+    property  NodeFlags: SynMarkupIfDefNodeFlags read FNodeFlags write FNodeFlags;
+    property  Line: TSynMarkupHighIfDefLinesNode read FLine write SetLine;
+    property  StartColumn: Integer read FStartColumn write FStartColumn;
+    property  EndColumn:   Integer read FEndColumn write FEndColumn;
+    function  ClosingPeer: TSynMarkupHighIfDefEntry;
 // COMMENT  BEFORE  AUTO  COMPLETE !!!!!
     property IfDefPeer: TSynMarkupHighIfDefEntry index idnIfdef read GetPeer write SetPeer;
     property ElsePeer: TSynMarkupHighIfDefEntry  index idnElse  read GetPeer write SetPeer;
@@ -125,6 +132,8 @@ type
 
   TSynMarkupHighIfDefLinesNode = class(TSynSizedDifferentialAVLNode)
   private
+    FDisabledEntryCloseCount: Integer;
+    FDisabledEntryOpenCount: Integer;
     FEntries: Array of TSynMarkupHighIfDefEntry;
     FEntryCount: Integer;
 
@@ -149,10 +158,13 @@ type
     property LastEntryEndLineOffs: Integer read FLastEntryEndLineOffs write FLastEntryEndLineOffs;
     // ScanEndOffs: How many (empty) lines were scanned after this node
     property ScanEndOffs: Integer read FScanEndOffs write FScanEndOffs;
+    property DisabledEntryOpenCount: Integer read FDisabledEntryOpenCount write FDisabledEntryOpenCount;
+    property DisabledEntryCloseCount: Integer read FDisabledEntryCloseCount write FDisabledEntryCloseCount;
   public
     function AddEntry(AIndex: Integer = -1): TSynMarkupHighIfDefEntry;
     procedure DeletEntry(AIndex: Integer; AFree: Boolean = false);
     procedure ReduceCapacity;
+    function IndexOf(AEntry: TSynMarkupHighIfDefEntry): Integer;
     property EntryCount: Integer read FEntryCount write SetEntryCount;
     property EntryCapacity: Integer read GetEntryCapacity write SetEntryCapacity;
     property Entry[AIndex: Integer]: TSynMarkupHighIfDefEntry read GetEntry write SetEntry; default;
@@ -183,6 +195,7 @@ type
     procedure SetStartLine(AValue: Integer);  // Caller is responsible for staying between neighbours
   public
     procedure ClearInfo;
+    procedure InitForNode(ANode: TSynMarkupHighIfDefLinesNode; ALine: Integer);
     function Precessor: TSynMarkupHighIfDefLinesNodeInfo;
     function Successor: TSynMarkupHighIfDefLinesNodeInfo;
   public
@@ -200,7 +213,7 @@ type
     property LastEntryEndLine: Integer read GetLastEntryEndLine; // write SetLastEntryEndLineOffs;
     property ScanEndOffs: Integer read GetScanEndOffs write SetScanEndOffs;
     property ScanEndLine: Integer read GetScanEndLine write SetScanEndLine;
-    function ValidToLine(ANextNode: TSynMarkupHighIfDefLinesNodeInfo): Integer; // ScanEndLine or next node
+    function ValidToLine(const ANextNode: TSynMarkupHighIfDefLinesNodeInfo): Integer; // ScanEndLine or next node
 
     //function AddEntry: TSynMarkupHighIfDefEntry;
     //procedure DeletEntry(AIndex: Integer; AFree: Boolean = false);
@@ -223,7 +236,7 @@ type
     procedure SetCapacity(AValue: Integer);
     procedure SetCount(AValue: Integer);
     procedure SetNode(AIndex: Integer; AValue: TSynMarkupHighIfDefLinesNodeInfo);
-    procedure SetNodes(ALow, AHigh: Integer; AValue: TSynMarkupHighIfDefLinesNodeInfo);
+    procedure SetNodes(ALow, AHigh: Integer; const AValue: TSynMarkupHighIfDefLinesNodeInfo);
   public
     property Count: Integer read GetCount write SetCount;
     property Capacity: Integer read GetCapacity write SetCapacity;
@@ -295,19 +308,20 @@ type
 
   { TSynEditMarkupIfDef }
 
-  TSynEditMarkupIfDef = class(TSynEditMarkup)
+  TSynEditMarkupIfDef = class(TSynEditMarkupHighlightMatches)
   private
     FFoldView: TSynEditFoldedView;
     FHighlighter: TSynPasSyn;
     FIfDefTree: TSynMarkupHighIfDefLinesTree;
     FOuterLines: TLazSynEditNestedFoldsList;
-    FNeedValidate, FNeedValidatePaint: Boolean;
+    FNeedValidate: Boolean;
 
     procedure SetFoldView(AValue: TSynEditFoldedView);
     procedure SetHighlighter(AValue: TSynPasSyn);
     procedure DoBufferChanged(Sender: TObject);
+    function  DoNodeStateRequest(Sender: TObject; LinePos, XStartPos: Integer): TSynMarkupIfdefNodeState;
 
-    Procedure ValidateMatches(SkipPaint: Boolean = False);
+    Procedure ValidateMatches;
   protected
     procedure DoFoldChanged(aLine: Integer);
     procedure DoTopLineChanged(OldTopLine : Integer); override;
@@ -321,16 +335,6 @@ type
     destructor Destroy; override;
     procedure IncPaintLock; override;
     procedure DecPaintLock; override;
-
-    //procedure PrepareMarkupForRow(aRow: Integer); override;
-    //procedure EndMarkup; override;
-    function GetMarkupAttributeAtRowCol(const aRow: Integer;
-                                        const aStartCol: TLazSynDisplayTokenBound;
-                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
-    procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
-                                         const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnRtlInfo: TLazSynDisplayRtlInfo;
-                                         out   ANextPhys, ANextLog: Integer); override;
 
     // AFirst/ ALast are 1 based
     //Procedure Invalidate(SkipPaint: Boolean = False);
@@ -476,7 +480,7 @@ begin
 end;
 
 procedure TSynMarkupHighIfDefLinesNodeInfoList.SetNodes(ALow, AHigh: Integer;
-  AValue: TSynMarkupHighIfDefLinesNodeInfo);
+  const AValue: TSynMarkupHighIfDefLinesNodeInfo);
 var
   i: Integer;
 begin
@@ -545,6 +549,19 @@ begin
   Result := FNodeType;
 end;
 
+function TSynMarkupHighIfDefEntry.ClosingPeer: TSynMarkupHighIfDefEntry;
+begin
+  case NodeType of
+    idnIfdef:
+      if ElsePeer <> nil then
+        Result := ElsePeer
+      else
+        Result := EndIfPeer;
+    idnElse:  Result := EndIfPeer;
+    idnEndIf: assert(False, 'endif has no close peer');
+  end;
+end;
+
 function TSynMarkupHighIfDefEntry.GetPeerField(APeerType: TSynMarkupIfdefNodeType): PSynMarkupHighIfDefEntry;
 begin
   Result := nil;
@@ -608,16 +625,35 @@ begin
   Result := GetPeerField(APeerType)^;
 end;
 
+procedure TSynMarkupHighIfDefEntry.SetLine(AValue: TSynMarkupHighIfDefLinesNode);
+begin
+  if FLine = AValue then Exit;
+
+  RemoveNodeStateFromLine;
+  FLine := AValue;
+  ApplyNodeStateToLine;
+end;
+
 procedure TSynMarkupHighIfDefEntry.SetNodeState(AValue: TSynMarkupIfdefNodeStateEx);
 begin
+  RemoveNodeStateFromLine;
   FNodeState := AValue;
-  if (NodeType = idnIfdef) then begin
-    if NodeState = idnNotInCode then
-      Include(FLine.FLineFlags, idlHasNodesNotInCode)
-    else
-    if NeedsRequesting then
-      Include(FLine.FLineFlags, idlHasUnknownNodes);
+  ApplyNodeStateToLine;
+
+  case NodeType of
+    idnIfdef: begin
+        if ElsePeer <> nil then
+          ElsePeer.SetNodeState(NodeStateForPeer(idnElse))
+        else
+        if EndIfPeer <> nil then
+          EndIfPeer.SetNodeState(NodeStateForPeer(idnEndIf));
+      end;
+    idnElse: begin
+        if EndIfPeer <> nil then
+          EndIfPeer.SetNodeState(NodeStateForPeer(idnEndIf));
+      end;
   end;
+
 end;
 
 procedure TSynMarkupHighIfDefEntry.MakeDisabled;
@@ -637,7 +673,19 @@ end;
 
 procedure TSynMarkupHighIfDefEntry.MakeUnknown;
 begin
-  NodeState := idnInvalid;
+  NodeState := idnUnknown;
+end;
+
+function TSynMarkupHighIfDefEntry.IsDisabledOpening: Boolean;
+begin
+  Result := ( (NodeType = idnIfdef) and (NodeState = idnDisabled) ) or
+            ( (NodeType = idnElse) and (NodeState = idnDisabled) );
+end;
+
+function TSynMarkupHighIfDefEntry.IsDisabledClosing: Boolean;
+begin
+  Result := ( (NodeType = idnElse) and (NodeState = idnEnabled) ) or
+            ( (NodeType = idnEndIf) and (NodeState = idnDisabled) );
 end;
 
 procedure TSynMarkupHighIfDefEntry.SetPeer(APeerType: TSynMarkupIfdefNodeType;
@@ -678,21 +726,45 @@ begin
 
   OwnPeerField^ := ANewPeer;
 
-  if OwnPeerField^ <> nil then begin
+  if OwnPeerField^ = nil then begin
+    if NodeType <> idnIfdef then
+      MakeUnknown;
+  end
+  else begin
     OthersPeerField := OwnPeerField^.GetPeerField(NodeType);
     assert(OthersPeerField^ = nil, 'Peer is not empty');
     OthersPeerField^ := self;
-    if (NodeType = idnIfdef) and (APeerType = idnElse) then begin
-      if      IsEnabled  then ANewPeer.MakeEnabled
-      else if IsDisabled then ANewPeer.MakeDisabled
-      else ANewPeer.MakeUnknown;
-    end
-    else
-    if (NodeType = idnElse) and (APeerType = idnIfdef) then begin
-      if      ANewPeer.IsEnabled  then MakeEnabled
-      else if ANewPeer.IsDisabled then MakeDisabled
-      else MakeUnknown;
+
+    case NodeType of
+      idnIfdef:
+        case APeerType of
+          idnElse:  ANewPeer.SetNodeState(NodeStateForPeer(idnElse));
+          idnEndIf: ANewPeer.SetNodeState(NodeStateForPeer(idnEndIf));
+        end;
+      idnElse:
+        case APeerType of
+          idnIfdef: SetNodeState(ANewPeer.NodeStateForPeer(idnElse));
+          idnEndIf: ANewPeer.SetNodeState(NodeStateForPeer(idnEndIf));
+        end;
+      idnEndIf:
+        case APeerType of
+          idnIfdef: SetNodeState(ANewPeer.NodeStateForPeer(idnEndIf));
+          idnElse:  SetNodeState(ANewPeer.NodeStateForPeer(idnEndIf));
+        end;
     end;
+
+    //if (NodeType = idnIfdef) and (APeerType = idnElse) then begin
+    //  if      IsEnabled  then ANewPeer.MakeEnabled
+    //  else if IsDisabled then ANewPeer.MakeDisabled
+    //  else ANewPeer.MakeUnknown;
+    //end
+    //else
+    //if (NodeType = idnElse) and (APeerType = idnIfdef) then begin
+    //  if      ANewPeer.IsEnabled  then MakeEnabled
+    //  else if ANewPeer.IsDisabled then MakeDisabled
+    //  else MakeUnknown;
+    //end;
+
   end;
 
 end;
@@ -728,6 +800,73 @@ begin
   end;
 end;
 
+procedure TSynMarkupHighIfDefEntry.ApplyNodeStateToLine;
+begin
+  if (FLine <> nil) then begin
+    case NodeState of
+      idnDisabled:
+        case NodeType of
+          idnIfdef, idnElse:
+            FLine.DisabledEntryOpenCount := FLine.DisabledEntryOpenCount + 1;
+          idnEndIf:
+            FLine.DisabledEntryCloseCount := FLine.DisabledEntryCloseCount + 1;
+        end;
+      idnEnabled:
+        if NodeType = idnElse then
+          FLine.DisabledEntryCloseCount := FLine.DisabledEntryCloseCount + 1;
+    end;
+  end;
+
+  if NodeState = idnNotInCode then
+    Include(FLine.FLineFlags, idlHasNodesNotInCode)
+  else
+  if NeedsRequesting then
+    Include(FLine.FLineFlags, idlHasUnknownNodes);
+end;
+
+procedure TSynMarkupHighIfDefEntry.RemoveNodeStateFromLine;
+begin
+  if (FLine <> nil) then begin
+    case NodeState of
+      idnDisabled:
+        case NodeType of
+          idnIfdef, idnElse:
+            FLine.DisabledEntryOpenCount := FLine.DisabledEntryOpenCount - 1;
+          idnEndIf:
+            FLine.DisabledEntryCloseCount := FLine.DisabledEntryCloseCount - 1;
+        end;
+      idnEnabled:
+        if NodeType = idnElse then
+          FLine.DisabledEntryCloseCount := FLine.DisabledEntryCloseCount - 1;
+    end;
+  end;
+end;
+
+function TSynMarkupHighIfDefEntry.NodeStateForPeer(APeerType: TSynMarkupIfdefNodeType): TSynMarkupIfdefNodeStateEx;
+const
+  NodeStateMap: array [Boolean] of TSynMarkupIfdefNodeStateEx =
+    (idnDisabled, idnEnabled); // False, True
+begin
+  Result := idnUnknown;
+  Assert(NodeType <> APeerType, 'NodeStateForPeer: NodeType <> APeerType');
+  case NodeState of
+    idnEnabled: begin
+        case NodeType of
+          idnIfdef: Result := NodeStateMap[APeerType = idnEndIf]; // idnElse will be idnDisabled;
+          idnElse:  Result := NodeStateMap[APeerType = idnEndIf]; // idnIfdef will be idnDisabled;;
+          idnEndIf: Result := idnEnabled;
+        end;
+      end;
+    idnDisabled: begin
+        case NodeType of
+          idnIfdef: Result := NodeStateMap[APeerType <> idnEndIf];
+          idnElse:  Result := NodeStateMap[APeerType <> idnEndIf];
+          idnEndIf: Result := idnDisabled;
+        end;
+      end;
+  end;
+end;
+
 constructor TSynMarkupHighIfDefEntry.Create;
 begin
   FNodeState := idnUnknown;
@@ -735,6 +874,7 @@ end;
 
 destructor TSynMarkupHighIfDefEntry.Destroy;
 begin
+  NodeState := idnUnknown; //  RemoveNodeStateFromLine;
   if (FLine <> nil) and not(idlInGlobalClear in FLine.LineFlags) then
     ClearPeers;
   inherited Destroy;
@@ -770,7 +910,7 @@ procedure TSynMarkupHighIfDefLinesNode.SetEntry(AIndex: Integer;
 begin
   FEntries[AIndex] := AValue;
   if AValue <> nil then
-    AValue.FLine := Self;
+    AValue.Line := Self;
 end;
 
 procedure TSynMarkupHighIfDefLinesNode.SetEntryCapacity(AValue: Integer);
@@ -824,6 +964,9 @@ begin
   FLineFlags := [idlDisposed];
   while EntryCount > 0 do
     DeletEntry(EntryCount-1, True);
+  assert((FDisabledEntryOpenCount =0) and (FDisabledEntryCloseCount = 0), 'no close count left over');
+  FDisabledEntryOpenCount := 0;
+  FDisabledEntryCloseCount := 0;
 end;
 
 function TSynMarkupHighIfDefLinesNode.AddEntry(AIndex: Integer): TSynMarkupHighIfDefEntry;
@@ -834,7 +977,7 @@ begin
   EntryCount := c + 1;
   assert(FEntries[c]=nil, 'FEntries[c]=nil');
   Result := TSynMarkupHighIfDefEntry.Create;
-  Result.FLine := Self;
+  Result.Line := Self;
   if (AIndex > 0) then begin
     Assert(AIndex <= c, 'Add node index <= count');
     while c > AIndex do begin
@@ -856,12 +999,20 @@ begin
     FEntries[AIndex] := FEntries[AIndex + 1];
     inc(AIndex);
   end;
+  FEntries[AIndex] := nil;
   dec(FEntryCount);
 end;
 
 procedure TSynMarkupHighIfDefLinesNode.ReduceCapacity;
 begin
   EntryCapacity := EntryCount;
+end;
+
+function TSynMarkupHighIfDefLinesNode.IndexOf(AEntry: TSynMarkupHighIfDefEntry): Integer;
+begin
+  Result := EntryCount - 1;
+  while (Result >= 0) and (Entry[Result] <> AEntry) do
+    dec(Result);
 end;
 
 { TSynMarkupHighIfDefLinesNodeInfo }
@@ -966,6 +1117,14 @@ begin
   ClearNestCache;
 end;
 
+procedure TSynMarkupHighIfDefLinesNodeInfo.InitForNode(ANode: TSynMarkupHighIfDefLinesNode;
+  ALine: Integer);
+begin
+  ClearInfo;
+  FNode := ANode;
+  FStartLine := ALine;
+end;
+
 function TSynMarkupHighIfDefLinesNodeInfo.Precessor: TSynMarkupHighIfDefLinesNodeInfo;
 begin
   ClearNestCache;
@@ -1047,7 +1206,7 @@ begin
   Result := FCacheNestEnd;
 end;
 
-function TSynMarkupHighIfDefLinesNodeInfo.ValidToLine(ANextNode: TSynMarkupHighIfDefLinesNodeInfo): Integer;
+function TSynMarkupHighIfDefLinesNodeInfo.ValidToLine(const ANextNode: TSynMarkupHighIfDefLinesNodeInfo): Integer;
 begin
   if not HasNode then
     exit(-1);
@@ -1191,12 +1350,13 @@ begin
         if ANextNode.HasNode then begin
           ANextNode.FStartLine := Line;  // directly to field
           ANode.ScanEndLine := Line - 1;
+          MaybeRequestNodeStates(ANextNode);
           exit;
         end;
       end;
     end;
     // Line is empty, include in offs
-    if ANode.StartLine <> Line then begin
+    if ANode.ScanEndLine <> Line then begin
       debugln(['EXTEND FORWARD node ', ANode.StartLine, ' - ', ANode.ScanEndLine, ' TO ', Line]);
       ANode.ScanEndLine := Line;
     end;
@@ -1409,10 +1569,10 @@ procedure TSynMarkupHighIfDefLinesTree.DoLinesEdited(Sender: TSynEditStrings; aL
   end;
 
 var
-  i, c, c1: Integer;
+  i, c: Integer;
   WorkNode, NextNode, LinePosNode: TSynMarkupHighIfDefLinesNodeInfo;
   WorkLine, LineAfterDelete: Integer;
-  MovedEntry: TSynMarkupHighIfDefEntry;
+
 begin
   // Line nodes vill be invalidated in DoHighlightChanged
 
@@ -1817,6 +1977,8 @@ var
         then begin
           // Does match exactly, keep as is
           DebugLn(['++++ KEEPING NODE ++++ ', ALine, ' ', dbgs(AType), ': ', ALogStart, ' - ', ALogEnd]);
+          if not LineNeedsReq then
+            LineNeedsReq := Result.NeedsRequesting;
           if i > NodesAddedCnt then begin
             // Delete the skipped notes
             dec(i);
@@ -2033,7 +2195,7 @@ XXXCurTree := self; try
       if NextNode.EntryCount = 0 then begin
         // Merge nodes
         Node.ScanEndOffs := Node.ScanEndOffs  + NextNode.ScanEndOffs + 1;
-        RemoveNode(NextNode.FNode);
+        RemoveLine(NextNode.FNode);
         NextNode := Node.Successor;
         // Do NOT FixNodePeers again for Node
         SkipPeers := True;
@@ -2174,7 +2336,9 @@ procedure TSynMarkupHighIfDefLinesTree.DebugPrint(Flat: Boolean);
     DebugLn([PreFixOne, 'Line=', ANode.GetPosition, ' ScannedTo=', ANode.ScanEndOffs,
       '  Cnt=', ANode.EntryCount,
       ' EndLine=', ANode.LastEntryEndLineOffs,
-      ' Flags=', dbgs(ANode.LineFlags)
+      ' Flags=', dbgs(ANode.LineFlags),
+      ' D-Open=', ANode.DisabledEntryOpenCount,
+      ' D-Close=', ANode.DisabledEntryCloseCount
        ]);
     for i := 0 to ANode.EntryCount - 1 do
       DebugLn(Format('%s%s%s  x1-x2=%2d - %2d   %6s  %8s  flg=%12s %s',
@@ -2254,15 +2418,82 @@ begin
   FIfDefTree.Highlighter := AValue;
 end;
 
-procedure TSynEditMarkupIfDef.ValidateMatches(SkipPaint: Boolean);
+procedure TSynEditMarkupIfDef.ValidateMatches;
 var
+  LastMatchIdx: Integer;
   LastLine: Integer;
-  //n: TSynMarkupHighIfDefLinesNodeInfo;
+
+  function EntryToPointAtBegin(Entry: TSynMarkupHighIfDefEntry; Line: Integer): TPoint;
+  begin
+    Result.y := Line;
+    Result.x := Entry.StartColumn;
+  end;
+
+  function EntryToPointAtEnd(Entry: TSynMarkupHighIfDefEntry; Line: Integer): TPoint;
+  begin
+    Result.y := Line;
+    if idnMultiLineTag in Entry.NodeFlags then
+      Result.y := Line + Entry.Line.LastEntryEndLineOffs;
+    Result.x := Entry.EndColumn;
+  end;
+
+  procedure AddMatch(Entry1: TSynMarkupHighIfDefEntry; Line1: Integer;
+    Entry2: TSynMarkupHighIfDefEntry; Line2: Integer);
+  var
+    Match, OldMatch: TSynMarkupHighAllMatch;
+  begin
+    if Entry1 <> nil then
+      Match.StartPoint := EntryToPointAtEnd(Entry1, Line1)
+    else
+      Match.StartPoint := point(1, TopLine);
+    if Entry2 <> nil then
+      Match.EndPoint := EntryToPointAtBegin(Entry2, Line2)
+    else
+      Match.EndPoint := point(1, LastLine+1);
+
+    inc(LastMatchIdx);
+debugln(['MATCH AT ', dbgs(Match.StartPoint), ' ', dbgs(Match.EndPoint)]);
+
+    if LastMatchIdx >= Matches.Count then begin
+      Matches.Match[LastMatchIdx] := Match;
+      DebugLn(['!!!!!!! Invalidate  ', Match.StartPoint.y, ' - ', Match.EndPoint.y]);
+      InvalidateSynLines(Match.StartPoint.y, Match.EndPoint.y);
+      exit;
+    end;
+
+    OldMatch := Matches.Match[LastMatchIdx];
+    if ( (ComparePoints(OldMatch.StartPoint, Match.StartPoint) = 0) or
+         (Entry1 = nil) and (ComparePoints(OldMatch.StartPoint, Match.StartPoint) <= 0)
+       ) and
+       ( (ComparePoints(OldMatch.EndPoint, Match.EndPoint) = 0) or
+         (Entry2 = nil) and (ComparePoints(OldMatch.EndPoint, Match.EndPoint) >= 0)
+       )
+    then
+      exit; // existing match found
+
+    if ComparePoints(OldMatch.StartPoint, Match.EndPoint) >= 0 then
+      Matches.Insert(LastMatchIdx, 1)
+    else
+begin
+      InvalidateSynLines(OldMatch.StartPoint.y, OldMatch.EndPoint.y);;
+      DebugLn(['!!!!!!! Invalidate  ', Match.StartPoint.y, ' - ', Match.EndPoint.y]);
+end;
+
+    Matches.Match[LastMatchIdx] := Match;
+    DebugLn(['!!!!!!! Invalidate  ', Match.StartPoint.y, ' - ', Match.EndPoint.y]);
+    InvalidateSynLines(Match.StartPoint.y, Match.EndPoint.y);
+  end;
+
+var
+  NestLvl, NestLvlLow, FoundLvl, CurLine, EndLvl, FirstEntryIdx: Integer;
+  j, d: Integer;
+  NodeInfo: TSynMarkupHighIfDefLinesNodeInfo;
+  Node: TSynMarkupHighIfDefLinesNode;
+  Entry, EntryFound, Peer: TSynMarkupHighIfDefEntry;
+  m: TSynMarkupHighAllMatch;
 begin
   if (FPaintLock > 0) or (not SynEdit.IsVisible) then begin
     FNeedValidate := True;
-    if not SkipPaint then
-      FNeedValidatePaint := True;
     exit;
   end;
   FNeedValidate := False;
@@ -2275,7 +2506,128 @@ begin
   LastLine := ScreenRowToRow(LinesInWindow+1);
   FIfDefTree.ValidateRange(TopLine, LastLine, FOuterLines);
 
-  //InvalidateSynLines(TopLine, TopLine + LastLine);
+  LastMatchIdx := -1;
+  EntryFound := nil;
+
+  // *** Check outerlines, for node that goes into visible area
+  NestLvl := -1;
+  while NestLvl < FOuterLines.Count - 1 do begin
+    inc(NestLvl);
+
+    CurLine := ToPos(FOuterLines.NodeLine[NestLvl]);
+    NestLvlLow := NestLvl;
+    while (NestLvl < FOuterLines.Count - 1) and (ToPos(FOuterLines.NodeLine[NestLvl + 1]) = CurLine) do
+      inc(NestLvl);
+
+    NodeInfo := FIfDefTree.FindNodeAtPosition(CurLine, afmNil);
+    Node := NodeInfo.Node;
+    assert(NodeInfo.HasNode, 'ValidateMatches: No node for outerline');
+
+    if NodeInfo.Node.DisabledEntryOpenCount <= NodeInfo.Node.DisabledEntryCloseCount then
+      continue;
+
+    EndLvl := NodeInfo.NestDepthAtNodeEnd;
+    //d := NestLvl - NestLvlLow + 1;
+    EntryFound := nil;
+    FoundLvl := EndLvl + 1;
+
+    j := Node.EntryCount;
+    while (j > 0) {and (d > 0)} do begin
+      dec(j);
+      Entry := Node.Entry[j];
+      case Entry.NodeType of
+        idnIfdef: dec(EndLvl);
+        idnEndIf: inc(EndLvl);
+      end;
+
+      if EndLvl > FoundLvl - 1 then
+        continue;
+
+      dec(FoundLvl);
+      if Entry.IsDisabledOpening then
+        EntryFound := Entry;
+
+      if FoundLvl = NestLvlLow then
+        break;
+    end;
+
+    if EntryFound = nil then
+      Continue;
+
+    Peer := EntryFound.ClosingPeer;
+    If Peer = nil then
+      break;      // Disabled to end of display or beyond (end of validated)
+    d := Peer.Line.GetPosition;
+    if (d >= TopLine)  //or ( (idnMultiLineTag in Peer.NodeFlags) and (d + Peer.Line.LastEntryEndLineOffs) )
+    then
+      break;
+  end;
+  // *** END Check outerlines, for node that goes into visible area
+  // *** if found, then it is in EntryFound and Peer
+
+  if EntryFound <> nil then begin
+    AddMatch(EntryFound, CurLine, Peer, d);
+    NodeInfo.InitForNode(Peer.Line, d);
+    Node := NodeInfo.Node;
+    FirstEntryIdx := Node.IndexOf(Peer) + 1;
+  end
+  else begin
+//    Peer := nil;
+    NodeInfo := FIfDefTree.FindNodeAtPosition(TopLine, afmNext);
+    Node := NodeInfo.Node;
+    FirstEntryIdx := 0;
+  end;
+  CurLine := NodeInfo.StartLine;
+
+  while (Node <> nil) and (CurLine <= LastLine) do begin
+    EntryFound := nil;
+    while FirstEntryIdx < Node.EntryCount do begin
+      Entry := Node.Entry[FirstEntryIdx];
+      if Entry.IsDisabledOpening then begin
+        EntryFound := Entry;
+        break;
+      end;
+      inc(FirstEntryIdx);
+    end;
+
+    if EntryFound <> nil then begin
+      Peer := EntryFound.ClosingPeer;
+      If Peer = nil then begin   // Disabled to end of display or beyond (end of validated)
+        AddMatch(EntryFound, CurLine, Peer, 0);
+        NodeInfo.ClearInfo;
+        break;
+      end;
+      if Peer.Line = Node then begin
+        AddMatch(EntryFound, CurLine, Peer, CurLine);
+        FirstEntryIdx := Node.IndexOf(Peer) + 1;
+        continue;
+      end;
+      d := Peer.Line.GetPosition;
+      assert(d > CurLine, 'Node goes backward');
+      AddMatch(EntryFound, CurLine, Peer, d);
+      NodeInfo.InitForNode(Peer.Line, d);
+      Node := NodeInfo.Node;
+      FirstEntryIdx := Node.IndexOf(Peer) + 1;
+      CurLine := NodeInfo.StartLine;
+      continue;
+    end;
+
+    NodeInfo := NodeInfo.Successor;
+    if not NodeInfo.HasNode then
+      break;
+    CurLine := NodeInfo.StartLine;
+    Node := NodeInfo.Node;
+    FirstEntryIdx := 0;
+  end;
+
+  // delete remaining matchdata
+  while Matches.Count - 1 > LastMatchIdx do begin
+    m := Matches.Match[Matches.Count - 1];
+    DebugLn(['!!!!!!! Invalidate  ', m.StartPoint.y, ' - ', m.EndPoint.y]);
+    if (m.EndPoint.y >= TopLine) and (m.StartPoint.y <= LastLine) then
+      InvalidateSynLines(m.StartPoint.y, m.EndPoint.y);
+    Matches.Delete(Matches.Count - 1);
+  end;
 
 end;
 
@@ -2327,6 +2679,15 @@ begin
   ValidateMatches;
 end;
 
+function TSynEditMarkupIfDef.DoNodeStateRequest(Sender: TObject; LinePos,
+  XStartPos: Integer): TSynMarkupIfdefNodeState;
+begin
+  Result := idnEnabled;
+  if pos('y', copy(SynEdit.Lines[LinePos-1], XStartPos, 100)) > 1 then
+    Result := idnDisabled;
+  DebugLn(['STATE REQUEST ', LinePos, ' ', XStartPos, ' : ', dbgs(Result)]);
+end;
+
 procedure TSynEditMarkupIfDef.SetLines(const AValue: TSynEditStrings);
 begin
   if Lines <> nil then begin
@@ -2349,6 +2710,7 @@ constructor TSynEditMarkupIfDef.Create(ASynEdit: TSynEditBase);
 begin
   inherited Create(ASynEdit);
   FIfDefTree := TSynMarkupHighIfDefLinesTree.Create;
+  FIfDefTree.OnNodeStateRequest := @DoNodeStateRequest;
   FOuterLines := FIfDefTree.CreateOpeningList;
 
   MarkupInfo.Clear;
@@ -2365,7 +2727,6 @@ end;
 procedure TSynEditMarkupIfDef.IncPaintLock;
 begin
   if FPaintLock = 0 then begin
-    FNeedValidatePaint := False;
     FNeedValidate := False;
   end;
   inherited IncPaintLock;
@@ -2375,23 +2736,9 @@ procedure TSynEditMarkupIfDef.DecPaintLock;
 begin
   inherited DecPaintLock;
   if (FPaintLock = 0) and FNeedValidate then
-    ValidateMatches(not FNeedValidatePaint);
+    ValidateMatches;
 end;
 
-function TSynEditMarkupIfDef.GetMarkupAttributeAtRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound;
-  const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
-begin
-  Result := nil;
-end;
-
-procedure TSynEditMarkupIfDef.GetNextMarkupColAfterRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo; out
-  ANextPhys, ANextLog: Integer);
-begin
-  ANextLog := -1;
-  ANextPhys := -1;
-end;
 
 var OldAssert: TAssertErrorProc = @SysAssert;
 Procedure MyAssert(const Msg,FName:ShortString;LineNo:Longint;ErrorAddr:Pointer);

@@ -544,7 +544,7 @@ type
     procedure DisposeNode(var ANode: TSynSizedDifferentialAVLNode); virtual;
 
     function  InsertNode(ANode : TSynSizedDifferentialAVLNode) : Integer; // returns FoldedBefore // ANode may not have children
-    procedure RemoveNode(ANode: TSynSizedDifferentialAVLNode);
+    procedure RemoveNode(ANode: TSynSizedDifferentialAVLNode); // Does not Free
     procedure BalanceAfterInsert(ANode: TSynSizedDifferentialAVLNode);
     procedure BalanceAfterDelete(ANode: TSynSizedDifferentialAVLNode);
 
