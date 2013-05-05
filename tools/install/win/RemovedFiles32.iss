@@ -1986,3 +1986,4 @@ Name: {app}\units\i386-win32\window_options.o; Type: files
 Name: {app}\units\i386-win32\window_options.ppu; Type: files
 Name: {app}\units\i386-win32\wordcompletion.o; Type: files
 Name: {app}\units\i386-win32\wordcompletion.ppu; Type: files
+Name: {app}\ideintf; Type: filesandordirs

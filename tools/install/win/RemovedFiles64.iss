@@ -1983,3 +1983,4 @@ Name: {app}\units\x86_64-win64\window_options.o; Type: files
 Name: {app}\units\x86_64-win64\window_options.ppu; Type: files
 Name: {app}\units\x86_64-win64\wordcompletion.o; Type: files
 Name: {app}\units\x86_64-win64\wordcompletion.ppu; Type: files
+Name: {app}\ideintf; Type: filesandordirs
