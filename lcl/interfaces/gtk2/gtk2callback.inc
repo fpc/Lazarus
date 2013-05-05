@@ -1089,7 +1089,8 @@ end;
 function GtkEntryDelayClearCursorPos(AGtkWidget: Pointer): GBoolean; cdecl;
 var
   Info: PWidgetInfo;
-  //AStart,AEnd: gint;
+  p: Pgchar;
+  AStart,AEnd: gint;
 begin
   Result := AGtkWidget <> nil;
   if AGtkWidget <> nil then
@@ -1098,8 +1099,10 @@ begin
     Info := GetWidgetInfo(AGtkWidget);
     if Info <> nil then
     begin
-      //gtk_editable_get_selection_bounds(PGtkEditable(AGtkWidget),@AStart, @AEnd);
-      //Info^.CursorPos := AEnd;
+      gtk_editable_get_selection_bounds(PGtkEditable(AGtkWidget),@AStart, @AEnd);
+      p := gtk_editable_get_chars(PGtkEditable(AGtkWidget), AStart, AEnd);
+      if (AStart <> AEnd) then
+        gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), p, -1);
       gtk_editable_select_region(PGtkEditable(AGtkWidget), 0, 0);
     end;
   end;
@@ -2034,6 +2037,8 @@ var
   ShiftState: TShiftState;
   MappedXY: TPoint;
   EventXY: TPoint;
+  AClip: gtk2.PGtkClipboard;
+  AClipText: String;
 
 {off $DEFINE VerboseMouseBugfix}
 
@@ -2211,6 +2216,24 @@ begin
     MessI.Keys := MessI.Keys or ShiftStateToKeys(ShiftState);
 
     MessI.Result:=0;
+
+    {always send LM_SETFOCUS first}
+    if ((MessI.Msg = LM_LBUTTONDOWN) or (MessI.Msg = LM_RBUTTONDOWN) or
+      (MessI.Msg = LM_MBUTTONDOWN) or (MessI.Msg = LM_LBUTTONDBLCLK)) and
+      not AWinControl.Focused and AWinControl.CanFocus and
+      not (csDesigning in AWinControl.ComponentState) and (AWinControl is TCustomEdit) then
+    begin
+      AClipText := '';
+      AClip := gtk_clipboard_get(GDK_SELECTION_PRIMARY);
+      if gtk_clipboard_get_owner(AClip) = AClip then
+        AClip := nil;
+      if (AClip <> nil) and gtk_clipboard_wait_is_text_available(AClip) then
+        AClipText := gtk_clipboard_wait_for_text(AClip);
+      LCLIntf.SetFocus(AWinControl.Handle);
+      if Assigned(AClip) then
+        gtk_clipboard_set_text(AClip, PgChar(AClipText), length(AClipText));
+    end;
+
     // send the message directly to the LCL
     NotifyApplicationUserInput(AWinControl, MessI.Msg);
     Result := DeliverMessage(AWinControl, MessI);
