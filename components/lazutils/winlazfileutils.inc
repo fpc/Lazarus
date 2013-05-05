@@ -50,9 +50,10 @@ begin
   IsAbs := FileNameIsWinAbsolute(Fn);
   if not IsAbs then
   begin
-    StartsWithRoot := (Length(Fn) > 1) and
+    StartsWithRoot := (Fn = '\') or
+                      ((Length(Fn) > 1) and
                       (Fn[1] = DirectorySeparator) and
-                      (Fn[2] <> DirectorySeparator);
+                      (Fn[2] <> DirectorySeparator));
     {$ifndef WinCE}
     HasDrive := (Length(Fn) > 1) and
                 (Fn[2] = ':') and
