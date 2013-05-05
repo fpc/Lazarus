@@ -25,7 +25,7 @@ unit FileUtil;
 interface
 
 uses
-  SysConst, Classes, SysUtils, Masks, LazUtilsStrConsts, lazutf8;
+  SysConst, Classes, SysUtils, Masks, LazUtilsStrConsts, lazutf8, LazFileUtils;
   
 {$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}
@@ -216,7 +216,7 @@ function UTF8ToConsole(const s: string): string;// converts UTF8 string to conso
 function FileExistsUTF8(const Filename: string): boolean;
 function FileAgeUTF8(const FileName: string): Longint;
 function DirectoryExistsUTF8(const Directory: string): Boolean;
-function ExpandFileNameUTF8(const FileName: string): string;
+function ExpandFileNameUTF8(const FileName: string): string; inline;
 function ExpandUNCFileNameUTF8(const FileName: string): string;
 function ExtractShortPathNameUTF8(Const FileName : String) : String;
 function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;

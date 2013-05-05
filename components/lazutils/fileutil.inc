@@ -70,7 +70,13 @@ begin
 end;
 {$ENDIF}
 
-// For ExpandFileNameUTF8 and ExpandUNCFileNameUTF8
+
+function ExpandFileNameUTF8(const FileName: string): string;
+begin
+  Result := LazFileUtils.ExpandFileNameUtf8(Filename);
+end;
+
+// ToDo: For ExpandUNCFileNameUTF8
 //
 // Don't convert to and from Sys, because this RTL routines
 // simply work in simple string operations, without calling native
@@ -79,10 +85,7 @@ end;
 // The Ansi conversion just ruins Unicode strings
 //
 // See bug http://bugs.freepascal.org/view.php?id=20229
-function ExpandFileNameUTF8(const FileName: string): string;
-begin
-  Result:=SysUtils.ExpandFileName(Filename);
-end;
+// It needs fixing like we did for LazFileUtils.ExpandFileNameUtf8(Filename) on Windows
 
 function ExpandUNCFileNameUTF8(const FileName: string): string;
 begin
