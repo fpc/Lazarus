@@ -191,8 +191,8 @@ type
   TMouseButton = (mbLeft, mbRight, mbMiddle, mbExtra1, mbExtra2);
 
 const
-  fsAllStayOnTop = [fsStayOnTop, fsSplash, fsSystemStayOnTop];
-  fsAllNonSystemStayOnTop = [fsStayOnTop, fsSplash];
+  fsAllStayOnTop = [fsStayOnTop, fsSystemStayOnTop];
+  fsAllNonSystemStayOnTop = [fsStayOnTop];
 
   // Cursor constants
   crHigh        = TCursor(0);
