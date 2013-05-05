@@ -3929,26 +3929,25 @@ var
   CRect : TGDKRectangle;
   hasClipping: Boolean;
 begin
-  //todo: sanity checks for valid handle etc.
+
   Result := IsValidDC(DC) and IsValidGDIObject(hbr) and IsValidGDIObject(RegionHnd);
   if not Result then Exit;
-
   GtkDC := SaveDC(DC);
-  DevCtx.ClipRegion := {%H-}PGdiObject(CreateRegionCopy(RegionHnd));
-  OldRgn:= DevCtx.ClipRegion^.GDIRegionObject;
-
-  hasClipping := Assigned(OldRgn); //todo: Check a better way
+  if (DevCtx.ClipRegion <> nil) and (DevCtx.ClipRegion^.GDIRegionObject <> nil) then
+    OldRgn := gdk_region_copy(DevCtx.ClipRegion^.GDIRegionObject)
+  else
+    OldRgn := nil;
+  hasClipping := Assigned(OldRgn);
   try
-    if hasClipping then
-      if SelectClipRGN(DC, RegionHnd) <> ERROR then
-      begin
-        gdk_region_get_clipbox({%H-}PGDIObject(RegionHnd)^.GDIRegionObject, @CRect);
-        ARect := RectFromGdkRect(CRect);
-        DevCtx.FillRect(ARect, hbr, True);
-        if hasClipping then
-          SelectClipRGN(DC, {%H-}HRGN(OldRgn));
-        Result := True;
-      end;
+    if SelectClipRGN(DC, RegionHnd) <> ERROR then
+    begin
+      gdk_region_get_clipbox({%H-}PGDIObject(RegionHnd)^.GDIRegionObject, @CRect);
+      ARect := RectFromGdkRect(CRect);
+      DevCtx.FillRect(ARect, hbr, True);
+      // revert clip (whatever it is - null or valid region)
+      SelectClipRGN(DC, {%H-}HRGN(OldRgn));
+      Result := True;
+    end;
   finally
     if hasClipping then
       gdk_region_destroy(OldRgn);
@@ -7669,22 +7668,22 @@ begin
   if not IsValidDC(DC) then Exit(ERROR);
 
   // clear old clipregion
-  if Assigned(DevCtx.ClipRegion)
-  then begin
+  if Assigned(DevCtx.ClipRegion) then
+  begin
     OldClipRegion := DevCtx.ClipRegion;
     DevCtx.ClipRegion := nil;// decrease DCCount
-    if OldClipRegion = DevCtx.OwnedGDIObjects[gdiRegion]
-    then DeleteObject(HGDIOBJ({%H-}PtrUInt(OldClipRegion)));
+    if OldClipRegion = DevCtx.OwnedGDIObjects[gdiRegion] then
+      DeleteObject(HGDIOBJ({%H-}PtrUInt(OldClipRegion)));
   end;
 
-  if RGN = 0
-  then begin
+  if RGN = 0 then
+  begin
     DevCtx.SelectRegion;
     Exit(NULLREGION);
   end;
 
-  if IsValidGDIObject(RGN)
-  then begin
+  if IsValidGDIObject(RGN) then
+  begin
     DevCtx.ClipRegion := {%H-}PGdiObject(CreateRegionCopy(RGN));
     DevCtx.OwnedGDIObjects[gdiRegion] := DevCtx.ClipRegion;
     RegObj := DevCtx.ClipRegion^.GDIRegionObject;
