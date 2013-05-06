@@ -3137,8 +3137,11 @@ begin
     MaxValue := ARange^.adjustment^.upper - ARange^.adjustment^.page_size
   else
     MaxValue := ARange^.adjustment^.upper;
-  if (AValue > MaxValue) or (AValue < ARange^.adjustment^.lower) then
-    AValue := MaxValue;
+
+  if (AValue > MaxValue) then
+    AValue := MaxValue
+  else if (AValue < ARange^.adjustment^.lower) then
+    AValue := ARange^.adjustment^.lower;
 
   with Msg do
   begin
