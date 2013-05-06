@@ -797,9 +797,6 @@ type
        ): string; override;
     procedure MarkUnitsModifiedUsingSubComponent(SubComponent: TComponent);
 
-    function GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
-      ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
-
     // project(s)
     function CreateProjectObject(ProjectDesc,
                       FallbackProjectDesc: TProjectDescriptor): TProject; override;
@@ -6246,161 +6243,6 @@ begin
   UnitList.Free;
 end;
 
-function TMainIDE.GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
-  ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
-
-  function EditorMatches(AEditInfo: TUnitEditorInfo;
-     AAccess: TEditorOptionsEditAccessOrderEntry; ALockRun: Integer = 0): Boolean;
-  var
-    AEdit: TSourceEditor;
-  begin
-    AEdit := TSourceEditor(AEditInfo.EditorComponent);
-    Result := False;
-    case AAccess.SearchLocked of
-      eoeaIgnoreLock: ;
-      eoeaLockedOnly:   if not AEdit.IsLocked then exit;
-      eoeaUnlockedOnly: if AEdit.IsLocked then exit;
-      eoeaLockedFirst:  if (not AEdit.IsLocked) and (ALockRun = 0) then exit;
-      eoeaLockedLast:   if (AEdit.IsLocked) and (ALockRun = 0) then exit;
-    end;
-    case AAccess.SearchInView of
-      eoeaIgnoreInView: ;
-      eoeaInViewOnly:   if not AEdit.IsCaretOnScreen(ACaretPoint, False) then exit;
-      eoeaInViewSoftCenterOnly: if not AEdit.IsCaretOnScreen(ACaretPoint, True) then exit;
-    end;
-    Result := True;
-  end;
-
-  function AvailSrcWindowIndex: Integer;
-  var
-    i: Integer;
-  begin
-    Result := -1;
-    i := 0;
-    if AnUnitInfo.OpenEditorInfoCount > 0 then
-      while (i < SourceEditorManager.SourceWindowCount) and
-            (SourceEditorManager.SourceWindowByLastFocused[i].IndexOfEditorInShareWith
-               (TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent)) >= 0)
-      do
-        inc(i);
-    if i < SourceEditorManager.SourceWindowCount then
-      Result := SourceEditorManager.IndexOfSourceWindow(SourceEditorManager.SourceWindowByLastFocused[i]);
-  end;
-
-var
-  i, j, w, LockRun: Integer;
-  Access: TEditorOptionsEditAccessOrderEntry;
-begin
-  Result := nil;
-  // Check for already open Editor. If there is none, then it must be opened in DoOpenEditorFile
-  if AnUnitInfo.OpenEditorInfoCount = 0 then exit;
-  for i := 0 to EditorOpts.MultiWinEditAccessOrder.Count - 1 do begin
-    Access := EditorOpts.MultiWinEditAccessOrder[i];
-    if not Access.Enabled then continue;
-    LockRun := 1;
-    if Access.SearchLocked in [eoeaLockedFirst, eoeaLockedLast] then LockRun := 0;
-    repeat
-      case Access.RealSearchOrder of
-        eoeaOrderByEditFocus, eoeaOrderByListPref:
-          begin
-            for j := 0 to AnUnitInfo.OpenEditorInfoCount - 1 do
-              if EditorMatches(AnUnitInfo.OpenEditorInfo[j], Access) then begin
-                Result := AnUnitInfo.OpenEditorInfo[j];
-                break;
-              end;
-          end;
-        eoeaOrderByWindowFocus:
-          begin
-            for w := 0 to SourceEditorManager.SourceWindowCount - 1 do begin
-              for j := 0 to AnUnitInfo.OpenEditorInfoCount - 1 do
-                if (TSourceEditor(AnUnitInfo.OpenEditorInfo[j].EditorComponent).SourceNotebook
-                    = SourceEditorManager.SourceWindowByLastFocused[w])
-                and EditorMatches(AnUnitInfo.OpenEditorInfo[j], Access) then begin
-                  Result := AnUnitInfo.OpenEditorInfo[j];
-                  break;
-                end;
-              if Result <> nil then break;
-            end;
-          end;
-        eoeaOrderByOldestEditFocus:
-          begin
-            for j := AnUnitInfo.OpenEditorInfoCount - 1 downto 0 do
-              if EditorMatches(AnUnitInfo.OpenEditorInfo[j], Access) then begin
-                Result := AnUnitInfo.OpenEditorInfo[j];
-                break;
-              end;
-          end;
-        eoeaOrderByOldestWindowFocus:
-          begin
-            for w := SourceEditorManager.SourceWindowCount - 1 downto 0 do begin
-              for j := 0 to AnUnitInfo.OpenEditorInfoCount - 1 do
-                if (TSourceEditor(AnUnitInfo.OpenEditorInfo[j].EditorComponent).SourceNotebook
-                    = SourceEditorManager.SourceWindowByLastFocused[w])
-                and EditorMatches(AnUnitInfo.OpenEditorInfo[j], Access) then begin
-                  Result := AnUnitInfo.OpenEditorInfo[j];
-                  break;
-                end;
-              if Result <> nil then break;
-            end;
-          end;
-        eoeaOnlyCurrentEdit:
-          begin
-            LockRun := 1;
-            for j := 0 to AnUnitInfo.OpenEditorInfoCount - 1 do
-              if (AnUnitInfo.OpenEditorInfo[j].EditorComponent = SourceEditorManager.ActiveEditor)
-              and EditorMatches(AnUnitInfo.OpenEditorInfo[j], Access) then begin
-                Result := AnUnitInfo.OpenEditorInfo[j];
-                break;
-              end;
-          end;
-        eoeaOnlyCurrentWindow:
-          begin
-            LockRun := 1;
-            for j := 0 to AnUnitInfo.OpenEditorInfoCount - 1 do
-              if (TSourceEditor(AnUnitInfo.OpenEditorInfo[j].EditorComponent).SourceNotebook
-                  = SourceEditorManager.ActiveSourceWindow)
-              and EditorMatches(AnUnitInfo.OpenEditorInfo[j], Access) then begin
-                Result := AnUnitInfo.OpenEditorInfo[j];
-                break;
-              end;
-          end;
-      end;
-      inc(LockRun);
-    until (LockRun > 1) or (Result <> nil);
-    if (Result = nil) then
-      case Access.SearchOpenNew of
-        eoeaNoNewTab: ;
-        eoeaNewTabInExistingWindowOnly:
-          begin
-            w := AvailSrcWindowIndex;
-            if w >= 0 then
-              if SourceFileMgr.OpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo,
-                                                        -1, w, []) = mrOk then
-                Result := AnUnitInfo.OpenEditorInfo[0]; // newly opened will be last focused
-          end;
-        eoeaNewTabInNewWindowOnly:
-          begin
-            if SourceFileMgr.OpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo,
-                                  -1, SourceEditorManager.SourceWindowCount, []) = mrOk
-            then
-              Result := AnUnitInfo.OpenEditorInfo[0]; // newly opened will be last focused
-          end;
-        eoeaNewTabInExistingOrNewWindow:
-          begin
-            w := AvailSrcWindowIndex;
-            if w < 0 then w := SourceEditorManager.SourceWindowCount;
-            if SourceFileMgr.OpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo,
-                                                      -1, w, []) = mrOk then
-              Result := AnUnitInfo.OpenEditorInfo[0]; // newly opened will be last focused
-          end;
-      end;
-    if Result <> nil then
-      break;
-  end;
-  if Result = nil then // should never happen
-    Result := AnUnitInfo.OpenEditorInfo[0];
-end;
-
 function TMainIDE.DoOpenFileAndJumpToIdentifier(const AFilename,
   AnIdentifier: string; PageIndex: integer; Flags: TOpenFlags): TModalResult;
 begin
@@ -9089,7 +8931,7 @@ begin
         AnUnitInfo:=Project1.UnitInfoWithFilename(SearchedFilename);
       AnEditorInfo := nil;
       if AnUnitInfo <> nil then
-        AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, LogCaretXY);
+        AnEditorInfo := SourceFileMgr.GetAvailableUnitEditorInfo(AnUnitInfo, LogCaretXY);
       if AnEditorInfo <> nil then begin
         SourceEditorManager.ActiveEditor := TSourceEditor(AnEditorInfo.EditorComponent);
         Result := True;
@@ -9201,7 +9043,7 @@ begin
         AnUnitInfo := Project1.UnitInfoWithFilename(SearchedFilename);
       AnEditorInfo := nil;
       if AnUnitInfo <> nil then
-        AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, LogCaretXY);
+        AnEditorInfo := SourceFileMgr.GetAvailableUnitEditorInfo(AnUnitInfo, LogCaretXY);
       if AnEditorInfo <> nil then begin
         SourceEditorManager.ActiveEditor := TSourceEditor(AnEditorInfo.EditorComponent);
         Result := True;
@@ -10417,12 +10259,13 @@ begin
       then begin
         s := AppendPathDelim(GetTestBuildDirectory);
         if LazUTF8.UTF8LowerCase(copy(NewSource.Filename, 1, length(s))) = LazUTF8.UTF8LowerCase(s)
-        then ActiveUnitInfo := Project1.UnitInfoWithFilename(copy(NewSource.Filename, 1 + length(s), length(NewSource.Filename)), [pfsfOnlyVirtualFiles]);
+        then ActiveUnitInfo := Project1.UnitInfoWithFilename(copy(NewSource.Filename,
+                1+length(s), length(NewSource.Filename)), [pfsfOnlyVirtualFiles]);
       end;
 
       AnEditorInfo := nil;
       if ActiveUnitInfo <> nil then
-        AnEditorInfo := GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), NewTopLine);
+        AnEditorInfo := SourceFileMgr.GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), NewTopLine);
       if AnEditorInfo <> nil then begin
         SourceEditorManager.ActiveEditor := TSourceEditor(AnEditorInfo.EditorComponent);
         Result := mrOK;
@@ -10437,7 +10280,7 @@ begin
       NewSrcEdit := SourceEditorManager.ActiveEditor;
     end
     else begin
-      AnEditorInfo := GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), NewTopLine);
+      AnEditorInfo := SourceFileMgr.GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), NewTopLine);
       if AnEditorInfo <> nil then begin
         NewSrcEdit := TSourceEditor(AnEditorInfo.EditorComponent);
         SourceEditorManager.ActiveEditor := NewSrcEdit;
@@ -10595,7 +10438,7 @@ begin
     AnEditorInfo := nil;
     ActiveSrcEdit := nil;
     if AnUnitInfo <> nil then
-      AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, ErrorCaret);
+      AnEditorInfo := SourceFileMgr.GetAvailableUnitEditorInfo(AnUnitInfo, ErrorCaret);
     if AnEditorInfo <> nil then begin
       ActiveSrcEdit := TSourceEditor(AnEditorInfo.EditorComponent);
       SourceEditorManager.ActiveEditor := ActiveSrcEdit;
@@ -11578,7 +11421,7 @@ begin
     AnUnitInfo := TUnitInfo(Project1.Bookmarks.UnitInfoForBookmarkWithIndex(ID));
     if (AnUnitInfo <> nil) and (AnUnitInfo.OpenEditorInfoCount > 0) then begin
       NewXY := Project1.Bookmarks.BookmarkWithID(ID).CursorPos;
-      AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, NewXY);
+      AnEditorInfo := SourceFileMgr.GetAvailableUnitEditorInfo(AnUnitInfo, NewXY);
     end;
     if AnEditorInfo <> nil then
       AnEditor := TSourceEditor(AnEditorInfo.EditorComponent);
@@ -12339,7 +12182,7 @@ begin
       JumpHistory.HistoryIndex:=DestIndex;
       NewCaretXY:=DestJumpPoint.CaretXY;
       NewTopLine:=DestJumpPoint.TopLine;
-      AnEditorInfo := GetAvailableUnitEditorInfo(Project1.Units[UnitIndex], NewCaretXY);
+      AnEditorInfo := SourceFileMgr.GetAvailableUnitEditorInfo(Project1.Units[UnitIndex], NewCaretXY);
       if AnEditorInfo <> nil then
         DestEditor:=TSourceEditor(AnEditorInfo.EditorComponent);
       {$IFDEF VerboseJumpHistory}
