@@ -64,8 +64,7 @@ type
     property Shift: TShiftState read fShift write fShift;
   end;
 
-  { TExternalToolOptionDlg -
-    the editor dialog for a single external tool}
+  { TExternalToolOptionDlg - the editor dialog for a single external tool}
 
   TExternalToolOptionDlg = class(TForm)
     ButtonPanel: TButtonPanel;
@@ -165,10 +164,8 @@ begin
   fOptions.WorkingDirectory:=WorkingDirEdit.Text;
   fOptions.Key:=fKeyBox.Key;
   fOptions.Shift:=fKeyBox.ShiftState;
-  fOptions.ScanOutputForFPCMessages:=
-    OptionScanOutputForFPCMessagesCheckBox.Checked;
-  fOptions.ScanOutputForMakeMessages:=
-    OptionScanOutputForMakeMessagesCheckBox.Checked;
+  fOptions.ScanOutputForFPCMessages:=OptionScanOutputForFPCMessagesCheckBox.Checked;
+  fOptions.ScanOutputForMakeMessages:=OptionScanOutputForMakeMessagesCheckBox.Checked;
   FOptions.HideMainForm := chkHideMainForm.Checked;
   fOptions.Scanners:=fScanners;
 end;
@@ -177,8 +174,7 @@ procedure TExternalToolOptionDlg.UpdateButtons;
 begin
   if IDEMsgScanners.Count>0 then begin
     ScannersButton.Visible:=true;
-    ScannersButton.Caption:=Format(lisetEditCustomScanners, [ScannersToString(
-      fScanners)]);
+    ScannersButton.Caption:=Format(lisetEditCustomScanners, [ScannersToString(fScanners)]);
   end else begin
     ScannersButton.Visible:=false;
   end;
@@ -212,11 +208,9 @@ begin
   WorkingDirEdit.Text:=fOptions.WorkingDirectory;
   fKeyBox.Key:=fOptions.Key;
   fKeyBox.ShiftState:=fOptions.Shift;
-  OptionScanOutputForFPCMessagesCheckBox.Checked:=
-    fOptions.ScanOutputForFPCMessages;
-  OptionScanOutputForMakeMessagesCheckBox.Checked:=
-    fOptions.ScanOutputForMakeMessages;
-  chkHideMainForm.Checked := FOptions.HideMainForm;
+  OptionScanOutputForFPCMessagesCheckBox.Checked:=fOptions.ScanOutputForFPCMessages;
+  OptionScanOutputForMakeMessagesCheckBox.Checked:=fOptions.ScanOutputForMakeMessages;
+  chkHideMainForm.Checked:=FOptions.HideMainForm;
   fScanners.Assign(fOptions.Scanners);
   UpdateButtons;
 end;
@@ -225,11 +219,8 @@ procedure TExternalToolOptionDlg.FormCreate(Sender: TObject);
 begin
   fScanners:=TStringList.Create;
   Caption:=lisEdtExtToolEditTool;
-
   TitleLabel.Caption:=dlgPOTitle;
-
   FilenameLabel.Caption:=lisEdtExtToolProgramfilename;
-
   OpenButton.Hint:=lisClickHereToBrowseTheFileHint;
 
   with OpenDialog do begin
@@ -239,9 +230,7 @@ begin
   end;
 
   ParametersLabel.Caption:=lisEdtExtToolParameters;
-
   WorkingDirLabel.Caption:=lisEdtExtToolWorkingDirectory;
-
   OptionsGroupBox.Caption:=lisLazBuildOptions;
 
   with OptionScanOutputForFPCMessagesCheckBox do
