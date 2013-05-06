@@ -84,10 +84,8 @@ type
                                Flags: TCloseFlags):TModalResult;
     function CloseEditorFile(const Filename: string; Flags: TCloseFlags): TModalResult;
     function OpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
-                              AEditorInfo: TUnitEditorInfo;
-                              Flags: TOpenFlags;
-                              UseWindowID: Boolean = False // WindowIndex is WindowID
-                            ): TModalResult;
+      AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags;
+      UseWindowID: Boolean = False): TModalResult;  // WindowIndex is WindowID
     function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
       ActiveUnitInfo: TUnitInfo): TModalResult;
     function InitNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
