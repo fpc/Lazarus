@@ -2507,13 +2507,23 @@ begin
     inc(Run, 2);
     fToIdent := Run;
     KeyHash;
-    if KeyComp('ifdef') or KeyComp('ifndef') or KeyComp('if') or KeyComp('ifopt') then
+    if (fLine[Run] in ['i', 'I']) and
+       ( KeyComp('if') or KeyComp('ifc') or KeyComp('ifdef') or KeyComp('ifndef') or
+         KeyComp('ifopt') )
+    then
       StartDirectiveFoldBlock(cfbtIfDef)
-    else if KeyComp('endif') then
+    else
+    if ( (fLine[Run] in ['e', 'E']) and ( KeyComp('endif') or KeyComp('endc') ) ) or
+       KeyComp('ifend')
+    then
       EndDirectiveFoldBlock(cfbtIfDef)
-    else if KeyComp('else') then
+    else
+    if (fLine[Run] in ['e', 'E']) and
+       ( KeyComp('else') or KeyComp('elsec') or KeyComp('elseif') or KeyComp('elifc') )
+    then
       EndStartDirectiveFoldBlock(cfbtIfDef)
-    else if KeyComp('region') then begin
+    else
+    if KeyComp('region') then begin
       StartDirectiveFoldBlock(cfbtRegion);
       if FCatchNodeInfo then
         // Scan ahead
