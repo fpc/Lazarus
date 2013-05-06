@@ -1508,8 +1508,16 @@ begin
     if TopPascalCodeFoldBlockType = cfbtProcedure then begin
       EndPascalCodeFoldBlock(True);
     end;
-  end else
-    if KeyComp('Library') then Result := tkKey else Result := tkIdentifier;
+  end
+  else
+  if KeyComp('Library') then begin
+    fRange := fRange - [rsInterface] + [rsImplementation];
+    if TopPascalCodeFoldBlockType=cfbtNone then
+      StartPascalCodeFoldBlock(cfbtProgram);
+    Result := tkKey
+  end
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func86: TtkTokenKind;
@@ -1529,7 +1537,8 @@ function TSynPasSyn.Func88: TtkTokenKind;
 begin
   if KeyComp('Program') then begin
     fRange := fRange - [rsInterface] + [rsImplementation];
-    if TopPascalCodeFoldBlockType=cfbtNone then StartPascalCodeFoldBlock(cfbtProgram);
+    if TopPascalCodeFoldBlockType=cfbtNone then
+      StartPascalCodeFoldBlock(cfbtProgram);
     Result := tkKey;
   end
   else if KeyComp('Mwpascal') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
