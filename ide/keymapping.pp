@@ -1157,7 +1157,7 @@ begin
   ecToggleSearchResults: SetSingle(VK_F,[ssCtrl,ssAlt]);
   ecToggleWatches:       SetSingle(VK_W,[ssCtrl,ssAlt]);
   ecToggleBreakPoints:   SetSingle(VK_B,[ssCtrl,ssAlt]);
-  ecToggleLocals:        SetSingle(VK_L,[ssCtrl,ssAlt]);
+  ecToggleLocals:        SetSingle(VK_L,[ssCtrl,ssAlt],     VK_L,[ssCtrl,ssShift]);
   ecViewPseudoTerminal: if HasConsoleSupport then SetSingle(VK_O,[ssCtrl,ssAlt]);
   ecViewThreads:         SetSingle(VK_T,[ssCtrl,ssAlt]);
   ecToggleCallStack:     SetSingle(VK_S,[ssCtrl,ssAlt]);
@@ -2216,7 +2216,7 @@ begin
   ecToggleSearchResults: SetSingle(VK_F,[ssCtrl,ssAlt]);
   ecToggleWatches:       SetSingle(VK_W,[ssCtrl,ssAlt]);
   ecToggleBreakPoints:   SetSingle(VK_B,[ssCtrl,ssAlt]);
-  ecToggleLocals:        SetSingle(VK_L,[ssCtrl,ssAlt]);
+  ecToggleLocals:        SetSingle(VK_L,[ssCtrl,ssAlt],     VK_L,[ssCtrl,ssShift]);
   ecViewPseudoTerminal: if HasConsoleSupport then SetSingle(VK_O,[ssCtrl,ssAlt]);
   ecViewThreads:         SetSingle(VK_T,[ssCtrl,ssAlt]);
   ecToggleCallStack:     SetSingle(VK_S,[ssCtrl,ssAlt]);
