@@ -305,15 +305,9 @@ type
   function GetFontsInfoManager: TheFontsInfoManager;
 
 (*
-{$IFNDEF VER93}
-{$IFNDEF VER90}
-{$IFNDEF VER80}
 {$DEFINE HE_ASSERT}
 {$DEFINE HE_LEADBYTES}
 {$DEFINE HE_COMPAREMEM}
-{$ENDIF}
-{$ENDIF}
-{$ENDIF}
 *)
 
 {$IFNDEF HE_LEADBYTES}
@@ -1392,16 +1386,16 @@ begin
             SetTextCharacterExtra(StockDC, CharExtra + FCrntDx);
           if IsTrueType or (not (fsItalic in Style)) then
             FExtTextOutProc :=
-              {$IFDEF FPC}@{$ENDIF}TextOutOrExtTextOut
+              @TextOutOrExtTextOut
           else
             FExtTextOutProc :=
-              {$IFDEF FPC}@{$ENDIF}ExtTextOutFixed;
+              @ExtTextOutFixed;
         end;
       True:
         begin
           FCrntDBDx := DBCHAR_CALCULATION_FALED;
           FExtTextOutProc :=
-            {$IFDEF FPC}@{$ENDIF}ExtTextOutWithETO;
+            @ExtTextOutWithETO;
         end;
     end;
   end;

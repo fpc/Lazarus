@@ -4448,18 +4448,16 @@ begin
 end;
 
 procedure TCustomSynEdit.WMDropFiles(var Msg: TMessage);
-{$IFNDEF SYN_LAZARUS}
-// ToDo DropFiles
+{TODO: DropFiles
 var
   i, iNumberDropped: integer;
   szPathName: array[0..260] of char;
   Point: TPoint;
   FilesList: TStringList;
-{$ENDIF}
+}
 begin
-  {$IFDEF SYN_LAZARUS}
   LastMouseCaret:=Point(-1,-1);
-  {$ELSE}
+{TODO: DropFiles
   try
     if Assigned(fOnDropFiles) then begin
       FilesList := TStringList.Create;
@@ -4481,8 +4479,7 @@ begin
   finally
     Msg.Result := 0;
     DragFinish(THandle(Msg.wParam));
-  end;
-  {$ENDIF}
+  end;}
 end;
 
 procedure TCustomSynEdit.WMExit(var Message: TLMExit);
@@ -7736,12 +7733,9 @@ procedure TCustomSynEdit.CreateWnd;
 begin
   inherited;
   if (eoDropFiles in fOptions) and not (csDesigning in ComponentState) then
-    {$IFDEF SYN_LAZARUS}
     // ToDo DragAcceptFiles
+    //old DragAcceptFiles(Handle, TRUE);
     ;
-    {$ELSE}
-    DragAcceptFiles(Handle, TRUE);
-    {$ENDIF}
   SizeOrFontChanged(true);
 end;
 
@@ -7754,12 +7748,9 @@ begin
   end;
   {$ENDIF}
   if (eoDropFiles in fOptions) and not (csDesigning in ComponentState) then begin
-    {$IFDEF SYN_LAZARUS}
     // ToDo DragAcceptFiles
+    //DragAcceptFiles(Handle, FALSE);
     ;
-    {$ELSE}
-    DragAcceptFiles(Handle, FALSE);
-    {$ENDIF}
   end;
   {$IFDEF EnableDoubleBuf}
   FreeAndNil(BufferBitmap);

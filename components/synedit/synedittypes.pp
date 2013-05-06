@@ -61,13 +61,6 @@ type
   TSynCoordinateMappingFlag = (scmLimitToLines, scmIncludePartVisible);
   TSynCoordinateMappingFlags = set of TSynCoordinateMappingFlag;
 
-  {$IFDEF SYN_LAZARUS}
-  // NOTE: the note below is not valid for the LCL which uses UTF-8
-  {$ELSE}
-  //NOTE: This will need to be localized and currently will not work with
-  //      MBCS languages like Japanese or Korean.
-  {$ENDIF}
-
   PSynSelectionMode = ^TSynSelectionMode;
   // to be binary (clipboard) compatible with other (Delphi compiled) synedits
   // use {$PACKENUM 1}
