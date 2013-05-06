@@ -47,12 +47,13 @@ uses
   LazSynIMM,
   {$ENDIF}
   Classes, SysUtils, Controls, LCLProc, LCLType, Graphics, Menus, math, LazarusIDEStrConsts,
-  SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
-  SynEditTypes, SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
+  SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks, SynEditTypes,
+  SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
   SynGutterLineOverview, SynEditMarkup, SynEditMarkupGutterMark, SynEditMarkupSpecialLine,
   SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase, LazSynEditText,
   SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea, SynEditHighlighter,
-  SynEditHighlighterFoldBase, SynHighlighterPas, SynEditMarkupHighAll, SynEditKeyCmds;
+  SynEditHighlighterFoldBase, SynHighlighterPas, SynEditMarkupHighAll, SynEditKeyCmds,
+  SynEditMarkupIfDef;
 
 type
 
@@ -207,6 +208,9 @@ type
     FSyncroEdit: TSynPluginSyncroEdit;
     FTemplateEdit: TSynPluginTemplateEdit;
     FMarkupForGutterMark: TSynEditMarkupGutterMark;
+    {$IFDEF WithSynMarkupIfDef}
+    FMarkupIfDef: TSynEditMarkupIfDef;
+    {$ENDIF}
     FTopInfoDisplay: TSourceLazSynTopInfoView;
     FSrcSynCaretChangedLock: boolean;
     FExtraMarkupLine: TSynEditMarkupSpecialLine;
@@ -1510,6 +1514,13 @@ begin
 
   inherited SetHighlighter(Value);
 
+  {$IFDEF WithSynMarkupIfDef}
+  if Highlighter is TSynPasSyn then
+    FMarkupIfDef.Highlighter := TSynPasSyn(Highlighter)
+  else
+    FMarkupIfDef.Highlighter := nil;
+  {$ENDIF}
+
   if FUserWordsList = nil then
     exit;
   if Highlighter <> nil then
@@ -1526,8 +1537,15 @@ begin
   FUserWordsList := TList.Create;
   FTemplateEdit:=TSynPluginTemplateEdit.Create(Self);
   FSyncroEdit := TSynPluginSyncroEdit.Create(Self);
+
   FMarkupForGutterMark := TSynEditMarkupGutterMark.Create(Self, FWordBreaker);
   TSynEditMarkupManager(MarkupMgr).AddMarkUp(FMarkupForGutterMark);
+
+  {$IFDEF WithSynMarkupIfDef}
+  FMarkupIfDef := TSynEditMarkupIfDef.Create(Self);
+  FMarkupIfDef.FoldView := TSynEditFoldedView(FoldedTextBuffer);
+  TSynEditMarkupManager(MarkupMgr).AddMarkUp(FMarkupIfDef);
+  {$ENDIF}
 
   FPaintArea := TSourceLazSynSurfaceManager.Create(Self, FPaintArea);
   GetCaretObj.AddChangeHandler({$IFDEF FPC}@{$ENDIF}SrcSynCaretChanged);
@@ -1540,6 +1558,8 @@ begin
 
   FTopInfoMarkup := TSynSelectedColor.Create;
   FTopInfoMarkup.Clear;
+
+  // Markup for top info hint
   FExtraMarkupLine := TSynEditMarkupSpecialLine.Create(Self);
   FExtraMarkupLine.OnSpecialLineMarkup  := @GetTopInfoMarkupForLine;
   FExtraMarkupMgr := TSynEditMarkupManager.Create(Self);

@@ -529,11 +529,20 @@ begin
   inherited Create;
   FDict := TSynSearchDictionary.Create;
   FDict.Add('{$if',     1);
+  FDict.Add('{$ifc',    1);
   FDict.Add('{$ifdef',  1);
   FDict.Add('{$ifndef', 1);
   FDict.Add('{$ifopt',  1);
-  FDict.Add('{$endif',  3);
+
   FDict.Add('{$else',   2);
+  FDict.Add('{$elsec',  2);
+
+  //FDict.Add('{$elseif', 4);
+  //FDict.Add('{$elifc',  4);
+
+  FDict.Add('{$endif',  3);
+  FDict.Add('{$ifend',  3);
+  FDict.Add('{$endc',   3);
 end;
 
 destructor TSynRefCountedDict.Destroy;
@@ -2069,6 +2078,7 @@ begin
           assert(sfaClose in fn.FoldAction, 'sfaOpen in fn.FoldAction');
           NType := idnEndIf;
         end;
+//      4: // ElseIf
       else
         begin
           assert(false, 'not found ifdef');
@@ -2714,7 +2724,7 @@ begin
   FOuterLines := FIfDefTree.CreateOpeningList;
 
   MarkupInfo.Clear;
-  MarkupInfo.Background := clGray;
+  MarkupInfo.Background := clLtGray;
 end;
 
 destructor TSynEditMarkupIfDef.Destroy;

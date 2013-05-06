@@ -1387,6 +1387,14 @@ DebugLn('--------');FTestTree.DebugPrint(true);
   CheckNodes(n, 4, [ ExpN( 1,11, idnIfdef, idnDisabled), ExpN(13,21, idnEndIf, idnDisabled ) ]);
 
 
+  FNodeStateResponses.Clear;
+  FNodeStateRequests.Clear;
+  FTestTree.SetNodeState(2,1, idnNotInCode);
+DebugLn('--------');FTestTree.DebugPrint(true);
+  AssertEquals(n + 'Got NO reqest for 2/1' , '', FNodeStateRequests.Values['2/1']);
+  AssertEquals(n + 'Got NO reqest for 4/1' , '', FNodeStateRequests.Values['4/1']);
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, idnNotInCode), ExpN(13,21, idnEndIf ) ]);
+  CheckNodes(n, 4, [ ExpN( 1,11, idnIfdef, idnDisabled), ExpN(13,21, idnEndIf, idnDisabled ) ]);
 
 
 
