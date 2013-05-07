@@ -51,13 +51,13 @@ begin
       {$IFDEF VerboseTestSequence}
       DebugLn(['  add value ',Value]);
       {$ENDIF}
-      Tree.Add(Pointer(Value));
+      Tree.Add({%H-}Pointer(Value));
     end else begin
       Value:=-Value;
       {$IFDEF VerboseTestSequence}
       debugln(['  remove value ',Value]);
       {$ENDIF}
-      Tree.Remove(Pointer(Value));
+      Tree.Remove({%H-}Pointer(Value));
     end;
     {$IFDEF VerboseTestSequence}
     DebugLn(Tree.ReportAsString);
