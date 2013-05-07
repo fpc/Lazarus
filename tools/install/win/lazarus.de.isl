@@ -25,7 +25,7 @@ OldInDestFolder2=
 OldInDestFolder3=
 OldInDestFolder4=
 
-OldInOtherFolder1=Ein andere Installation von %1 wurde in %2 gefunden. Nutzen Sie den Button unten, um diese jetzt zu deinstallieren. Wenn Sie sie behalten wollen, dann kreuzen Sie die Checkbox an um fortzufahren.',
+OldInOtherFolder1=Ein andere Installation von %1 wurde in %2 gefunden. Nutzen Sie den Button unten, um diese jetzt zu deinstallieren. Wenn Sie sie behalten wollen, dann kreuzen Sie die Checkbox an um fortzufahren.
 OldInOtherFolder2=Anmerkung: Die Verwendung mehrfacher Kopien von Lazarus wird von diesem Installer nicht unterstützt.
 OldInOtherFolder3=Die Verwendung verschiedener Installationen von Lazarus kann zu Konflikten führen bei gemeinsam genutzten Dateien wie z.B. der IDE Konfiguration.
 OldInOtherFolder4=Wenn Sie mehr als eine Installation verwenden wollen, dann müssen Sie nach dieser Installation ein zusätzliches Setup ausführen. Auf der Lazarus-Homepage finden Sie Hinweise dazu sowie zur Verwendung von --primary-config-path

@@ -25,7 +25,7 @@ OldInDestFolder2=
 OldInDestFolder3=
 OldInDestFolder4=
 
-OldInOtherFolder1=Another installation of %1 was found at %2. Please use the button below to uninstall it now. If you wish to keep it, please tick the checkbox to continue.',
+OldInOtherFolder1=Another installation of %1 was found at %2. Please use the button below to uninstall it now. If you wish to keep it, please tick the checkbox to continue.
 OldInOtherFolder2=Note: Using multiple copies of Lazarus is not supported by this installer.
 OldInOtherFolder3=Using several installations of Lazarus can lead to conflicts in files shared by all of the installations, such as the IDE configuration.
 OldInOtherFolder4=If you wish to use more than one installation, then you must do additional setup after this installation finished. Please see the Lazarus web page for this, and how to use --primary-config-path

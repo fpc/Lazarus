@@ -25,7 +25,7 @@ OldInDestFolder2=
 OldInDestFolder3=
 OldInDestFolder4=
 
-OldInOtherFolder1=Une autre installation de %1 a été trouvée en %2. Utilisez le bouton ci-dessous pour la désinstaller maintenant s'il vous plaît. Si vous souhaitez la conserver, cochez la case pour continuer s'il vous plaît.',
+OldInOtherFolder1=Une autre installation de %1 a été trouvée en %2. Utilisez le bouton ci-dessous pour la désinstaller maintenant s'il vous plaît. Si vous souhaitez la conserver, cochez la case pour continuer s'il vous plaît.
 OldInOtherFolder2=Note: L'utilisation de copies multiples de Lazarus n'est pas supportée par ce programme d'installation.
 OldInOtherFolder3=Utiliser plusieurs installations de Lazarus peut conduire à des conflits au niveau des fichiers partagés par toutes les installations, tels que ceux pour la configuration de l'EDI.
 OldInOtherFolder4=Si vous souhaitez utiliser plus d'une installation, alors vous devrez procéder à des étapes supplémentaires une fois cette installation terminée. Consultez le site web de Lazarus pour cela s'il vous plaît, en particulier pour savoir comment utiliser l'option --primary-config-path
