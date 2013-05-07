@@ -85,6 +85,7 @@ procedure TTestLazUtils.TestSplitCmdLineParams;
   end;
 
 begin
+  // using | as separator for parameters
   AssertEquals('empty','',r(''));
   AssertEquals('simple','a',r('a'));
   AssertEquals('two simple','a|b',r('a b'));
