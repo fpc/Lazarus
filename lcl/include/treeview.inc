@@ -4496,7 +4496,7 @@ end;
 procedure TCustomTreeView.DoPaintNode(Node: TTreeNode);
 var
   NodeRect: TRect;
-  VertMid: integer;
+  VertMid, VertDelta: integer;
   NodeSelected, HasExpandSign: boolean;
 
   function InvertColor(AColor: TColor): TColor;
@@ -4522,6 +4522,7 @@ var
     if TreeLinePenStyle = psPattern then
     begin
       // TODO: implement psPattern support in the LCL
+      Y1 := Y1 + VertDelta;
       while Y1 < Y2 do
       begin
         Canvas.Pixels[X, Y1] := TreeLineColor;
@@ -4585,12 +4586,12 @@ var
             else
             begin
               DrawVertLine(CurMid, NodeRect.Top, Max(NodeRect.Top, VertMid - FExpandSignSize div 2));
-              DrawVertLine(CurMid, VertMid + FExpandSignSize div 2, NodeRect.Bottom - 1);
+              DrawVertLine(CurMid, VertMid + FExpandSignSize div 2 + VertDelta, NodeRect.Bottom);
             end;
           end
           else
           if (Node.Parent = nil) and (Node.GetPrevSibling = nil) then
-            DrawVertLine(CurMid, VertMid, NodeRect.Bottom)
+            DrawVertLine(CurMid, VertMid + VertDelta, NodeRect.Bottom)
           else
             DrawVertLine(CurMid, NodeRect.Top, NodeRect.Bottom);
         end else
@@ -4862,6 +4863,7 @@ begin
 
   VertMid := (NodeRect.Top + NodeRect.Bottom) div 2;
   HasExpandSign := ShowButtons and Node.HasChildren and ((tvoShowRoot in Options) or (Node.Parent <> nil));
+  VertDelta := Ord(FDefItemHeight and 3 = 2);
   //DebugLn(['[TCustomTreeView.DoPaintNode] Node=',DbgS(Node),' Node.Text=',Node.Text,' NodeRect=',NodeRect.Left,',',NodeRect.Top,',',NodeRect.Right,',',NodeRect.Bottom,' VertMid=',VertMid]);
   with Canvas do
   begin
