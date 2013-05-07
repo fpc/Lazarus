@@ -34,9 +34,13 @@ type
   TSynRefCountedDict = class(TRefCountedObject)
   private
     FDict: TSynSearchDictionary; // used to check for single line nodes (avoid using highlighter)
+    procedure CheckWordEnd(MatchEnd: PChar; MatchIdx: Integer; var IsMatch: Boolean;
+      var StopSeach: Boolean);
   public
     constructor Create;
     destructor Destroy; override;
+    function GetMatchAtChar(AText: PChar; ATextLen: Integer): Integer;
+
     property Dict: TSynSearchDictionary read FDict;
   end;
 
@@ -52,7 +56,10 @@ type
   );
   SynMarkupIfDefNodeFlags = set of TSynMarkupIfDefNodeFlag;
 
-  TSynMarkupIfdefNodeType = (idnIfdef, idnElse, idnEndIf); //idnCommentedIfdef, // Keep Ifdef if commented
+  TSynMarkupIfdefNodeType = (
+    idnIfdef, idnElseIf, idnElse, idnEndIf,
+    idnCommentedIfdef // Keep Ifdef if commented
+  );
 
   TSynMarkupIfdefNodeStateEx  = (idnEnabled, idnDisabled,
     idnNotInCode,  // in currently inactive outer IfDef
@@ -71,7 +78,7 @@ type
   private
     FLine: TSynMarkupHighIfDefLinesNode;
     FNodeType: TSynMarkupIfdefNodeType;
-    FNodeState: TSynMarkupIfdefNodeStateEx;
+    FNodeState, FOpeningPeerNodeState: TSynMarkupIfdefNodeStateEx;
     FNodeFlags: SynMarkupIfDefNodeFlags;
     FPeer1, FPeer2: TSynMarkupHighIfDefEntry;
     FStartColumn, FEndColumn: Integer;
@@ -80,17 +87,23 @@ type
     function GetIsRequested: Boolean;
     function GetNeedsRequesting: Boolean;
     function GetNodeState: TSynMarkupIfdefNodeStateEx;
-    function  GetPeerField(APeerType: TSynMarkupIfdefNodeType): PSynMarkupHighIfDefEntry;
-    function  GetOtherPeerField(APeer: PSynMarkupHighIfDefEntry): PSynMarkupHighIfDefEntry;
-    function  GetPeer(APeerType: TSynMarkupIfdefNodeType): TSynMarkupHighIfDefEntry;
     procedure SetLine(AValue: TSynMarkupHighIfDefLinesNode);
+
+    function  NodeStateForPeer(APeerType: TSynMarkupIfdefNodeType): TSynMarkupIfdefNodeStateEx;
+    procedure SetOpeningPeerNodeState(AValueOfPeer, AValue: TSynMarkupIfdefNodeStateEx);
     procedure SetNodeState(AValue: TSynMarkupIfdefNodeStateEx);
+
+    function  GetPeer(APeerType: TSynMarkupIfdefNodeType): TSynMarkupHighIfDefEntry;
     procedure SetPeer(APeerType: TSynMarkupIfdefNodeType; ANewPeer: TSynMarkupHighIfDefEntry);
     procedure ClearPeerField(APeer: PSynMarkupHighIfDefEntry);
     procedure RemoveForwardPeers;
-    procedure ApplyNodeStateToLine;
+
+    function  GetPeerField(APeerType: TSynMarkupIfdefNodeType): PSynMarkupHighIfDefEntry;
+    function  GetOtherPeerField(APeer: PSynMarkupHighIfDefEntry): PSynMarkupHighIfDefEntry;
+    function  IsForwardPeerField(APeer: PSynMarkupHighIfDefEntry): Boolean;
+
+    procedure ApplyNodeStateToLine(ARemove: Boolean = False);
     procedure RemoveNodeStateFromLine;
-    function  NodeStateForPeer(APeerType: TSynMarkupIfdefNodeType): TSynMarkupIfdefNodeStateEx;
   public
     constructor Create;
     destructor Destroy; override;
@@ -524,6 +537,12 @@ end;
 
 { TSynRefCountedDict }
 
+procedure TSynRefCountedDict.CheckWordEnd(MatchEnd: PChar; MatchIdx: Integer;
+  var IsMatch: Boolean; var StopSeach: Boolean);
+begin
+  IsMatch := not ((MatchEnd+1)^ in ['a'..'z', 'A'..'Z', '0'..'9', '_']);
+end;
+
 constructor TSynRefCountedDict.Create;
 begin
   inherited Create;
@@ -537,18 +556,24 @@ begin
   FDict.Add('{$else',   2);
   FDict.Add('{$elsec',  2);
 
-  //FDict.Add('{$elseif', 4);
-  //FDict.Add('{$elifc',  4);
+  FDict.Add('{$elseif', 4);
+  FDict.Add('{$elifc',  4);
 
   FDict.Add('{$endif',  3);
   FDict.Add('{$ifend',  3);
   FDict.Add('{$endc',   3);
+
 end;
 
 destructor TSynRefCountedDict.Destroy;
 begin
   FDict.Free;
   inherited Destroy;
+end;
+
+function TSynRefCountedDict.GetMatchAtChar(AText: PChar; ATextLen: Integer): Integer;
+begin
+  FDict.GetMatchAtChar(AText, ATextLen, @CheckWordEnd);
 end;
 
 { TSynMarkupHighIfDefEntry }
@@ -561,13 +586,14 @@ end;
 function TSynMarkupHighIfDefEntry.ClosingPeer: TSynMarkupHighIfDefEntry;
 begin
   case NodeType of
-    idnIfdef:
+    idnIfdef, idnElseIf:
       if ElsePeer <> nil then
         Result := ElsePeer
       else
         Result := EndIfPeer;
     idnElse:  Result := EndIfPeer;
     idnEndIf: assert(False, 'endif has no close peer');
+    idnCommentedIfdef: assert(false, 'ClosingPeer for idnCommentedIfdef not possible');
   end;
 end;
 
@@ -578,21 +604,28 @@ begin
     idnIfdef:
       case APeerType of
         idnIfdef: assert(false, 'Invalid node state for getting peer field');
-        idnElse:  Result := @FPeer1;
+        idnElse, idnElseIf:  Result := @FPeer1;
+        idnEndIf: Result := @FPeer2;
+      end;
+    idnElseIf:
+      case   APeerType of
+        idnIfdef: Result := @FPeer1;
+        idnElse, idnElseIf:  Result := @FPeer2;
         idnEndIf: Result := @FPeer2;
       end;
     idnElse:
       case   APeerType of
         idnIfdef: Result := @FPeer1;
-        idnElse:  assert(false, 'Invalid node state for getting peer field');
+        idnElse, idnElseIf:  assert(false, 'Invalid node state for getting peer field');
         idnEndIf: Result := @FPeer2;
       end;
     idnEndIf:
       case   APeerType of
         idnIfdef: Result := @FPeer1;
-        idnElse:  Result := @FPeer2;
+        idnElse, idnElseIf:  Result := @FPeer2;
         idnEndIf: assert(false, 'Invalid node state for getting peer field');
       end;
+    idnCommentedIfdef: assert(false, 'GetPeerField for idnCommentedIfdef not possible');
   end;
 end;
 
@@ -602,6 +635,18 @@ begin
     Result := @FPeer2
   else
     Result := @FPeer1;
+end;
+
+function TSynMarkupHighIfDefEntry.IsForwardPeerField(APeer: PSynMarkupHighIfDefEntry): Boolean;
+begin
+  Result := False;
+  case NodeType of
+    idnIfdef:   Result := True;
+    idnElseIf:  Result := APeer = @FPeer2;
+    idnElse:    Result := APeer = @FPeer2;
+    idnEndIf:   Result := False;
+    idnCommentedIfdef: assert(false, 'GetPeerField for idnCommentedIfdef not possible');
+  end;
 end;
 
 function TSynMarkupHighIfDefEntry.GetIsDisabled: Boolean;
@@ -621,7 +666,10 @@ end;
 
 function TSynMarkupHighIfDefEntry.GetNeedsRequesting: Boolean;
 begin
-  Result := not(FNodeState in [idnEnabled, idnDisabled, idnRequested, idnInvalid]);
+  Result := ( (NodeType = idnIfdef) or
+              ( (NodeType = idnElseIf) and (FOpeningPeerNodeState = idnEnabled) )
+            ) and
+            (not(FNodeState in [idnEnabled, idnDisabled, idnRequested, idnInvalid]));
 end;
 
 function TSynMarkupHighIfDefEntry.GetNodeState: TSynMarkupIfdefNodeStateEx;
@@ -643,6 +691,21 @@ begin
   ApplyNodeStateToLine;
 end;
 
+procedure TSynMarkupHighIfDefEntry.SetOpeningPeerNodeState(AValueOfPeer,
+  AValue: TSynMarkupIfdefNodeStateEx);
+begin
+  FOpeningPeerNodeState := AValueOfPeer;
+  if NodeType in [idnElse, idnEndIf] then
+    SetNodeState(AValueOfPeer)
+  else
+  if NodeType = idnElseIf then
+    case AValue of
+      idnEnabled:  MakeUnknown;
+      idnDisabled: SetNodeState(idnDisabled);
+      else         SetNodeState(idnUnknown);
+    end;
+end;
+
 procedure TSynMarkupHighIfDefEntry.SetNodeState(AValue: TSynMarkupIfdefNodeStateEx);
 begin
   RemoveNodeStateFromLine;
@@ -650,17 +713,18 @@ begin
   ApplyNodeStateToLine;
 
   case NodeType of
-    idnIfdef: begin
-        if ElsePeer <> nil then
-          ElsePeer.SetNodeState(NodeStateForPeer(idnElse))
+    idnIfdef, idnElseIf: begin
+        if (ElsePeer <> nil) and (ElsePeer.NodeType <> idnElseIf) then
+          ElsePeer.SetOpeningPeerNodeState(NodeState, NodeStateForPeer(idnElse))
         else
         if EndIfPeer <> nil then
-          EndIfPeer.SetNodeState(NodeStateForPeer(idnEndIf));
+          EndIfPeer.SetOpeningPeerNodeState(NodeState, NodeStateForPeer(idnEndIf));
       end;
     idnElse: begin
         if EndIfPeer <> nil then
-          EndIfPeer.SetNodeState(NodeStateForPeer(idnEndIf));
+          EndIfPeer.SetOpeningPeerNodeState(NodeState, NodeStateForPeer(idnEndIf));
       end;
+    idnCommentedIfdef: Assert(false, 'SetOpeningPeerNodeState for idnCommentedIfdef not possible');
   end;
 
 end;
@@ -687,14 +751,12 @@ end;
 
 function TSynMarkupHighIfDefEntry.IsDisabledOpening: Boolean;
 begin
-  Result := ( (NodeType = idnIfdef) and (NodeState = idnDisabled) ) or
-            ( (NodeType = idnElse) and (NodeState = idnDisabled) );
+  Result := (NodeType in [idnIfdef, idnElseIf, idnElse]) and (NodeState = idnDisabled);
 end;
 
 function TSynMarkupHighIfDefEntry.IsDisabledClosing: Boolean;
 begin
-  Result := ( (NodeType = idnElse) and (NodeState = idnEnabled) ) or
-            ( (NodeType = idnEndIf) and (NodeState = idnDisabled) );
+  Result := (NodeType in [idnElse, idnElseIf, idnEndIf]) and (FOpeningPeerNodeState = idnDisabled);
 end;
 
 procedure TSynMarkupHighIfDefEntry.SetPeer(APeerType: TSynMarkupIfdefNodeType;
@@ -702,7 +764,7 @@ procedure TSynMarkupHighIfDefEntry.SetPeer(APeerType: TSynMarkupIfdefNodeType;
 var
   OwnPeerField, OwnOtherPeerField, OthersPeerField: PSynMarkupHighIfDefEntry;
 begin
-  assert((ANewPeer=nil) or (APeerType = ANewPeer.NodeType), 'APeerType = ANewPeer.NodeType');
+  //assert((ANewPeer=nil) or (APeerType = ANewPeer.NodeType), 'APeerType = ANewPeer.NodeType'); // elseif can be set as ifdef
   OwnPeerField := GetPeerField(APeerType);
   if OwnPeerField^ = ANewPeer then begin
     assert((OwnPeerField^ = nil) or (OwnPeerField^.GetPeerField(NodeType)^ = self), 'Peer does not point back to self');
@@ -712,18 +774,16 @@ begin
 
   if OwnPeerField^ <> nil then begin
     // The PeerField in the old peer
-    OthersPeerField := OwnPeerField^.GetPeerField(NodeType);
-    assert(OthersPeerField^ = self, 'Peer does not point back to self');
-    OthersPeerField^ := nil;
-    if NodeType = idnIfdef then
-      OwnPeerField^.MakeUnknown;
+    assert(OwnPeerField^.GetPeerField(NodeType)^ = self, 'Peer does not point back to self');
+    ClearPeerField(OwnPeerField);
   end;
 
   if ANewPeer <> nil then begin
     // If new peer is part of another pair, disolve that pair. This may set OwnPeerField = nil, if new pair points to this node
     ANewPeer.SetPeer(NodeType, nil);
 
-    if (NodeType <> idnElse) and (ANewPeer <> nil) then begin
+    if (NodeType in [idnIfdef, idnEndIf]) and (ANewPeer <> nil) then begin
+      // idnIfdef, idnEndIf are only allowed either ONE peer
       OwnOtherPeerField := GetOtherPeerField(OwnPeerField);
       if OwnOtherPeerField^ <> nil then begin
         debugln(['Setting other peer to nil while setting ',dbgs(APeerType),' to ',dbgs(NodeType)]);
@@ -736,43 +796,18 @@ begin
   OwnPeerField^ := ANewPeer;
 
   if OwnPeerField^ = nil then begin
-    if NodeType <> idnIfdef then
-      MakeUnknown;
+    if not IsForwardPeerField(OwnPeerField) then
+      SetOpeningPeerNodeState(idnUnknown, idnUnknown);
   end
   else begin
     OthersPeerField := OwnPeerField^.GetPeerField(NodeType);
     assert(OthersPeerField^ = nil, 'Peer is not empty');
     OthersPeerField^ := self;
 
-    case NodeType of
-      idnIfdef:
-        case APeerType of
-          idnElse:  ANewPeer.SetNodeState(NodeStateForPeer(idnElse));
-          idnEndIf: ANewPeer.SetNodeState(NodeStateForPeer(idnEndIf));
-        end;
-      idnElse:
-        case APeerType of
-          idnIfdef: SetNodeState(ANewPeer.NodeStateForPeer(idnElse));
-          idnEndIf: ANewPeer.SetNodeState(NodeStateForPeer(idnEndIf));
-        end;
-      idnEndIf:
-        case APeerType of
-          idnIfdef: SetNodeState(ANewPeer.NodeStateForPeer(idnEndIf));
-          idnElse:  SetNodeState(ANewPeer.NodeStateForPeer(idnEndIf));
-        end;
-    end;
-
-    //if (NodeType = idnIfdef) and (APeerType = idnElse) then begin
-    //  if      IsEnabled  then ANewPeer.MakeEnabled
-    //  else if IsDisabled then ANewPeer.MakeDisabled
-    //  else ANewPeer.MakeUnknown;
-    //end
-    //else
-    //if (NodeType = idnElse) and (APeerType = idnIfdef) then begin
-    //  if      ANewPeer.IsEnabled  then MakeEnabled
-    //  else if ANewPeer.IsDisabled then MakeDisabled
-    //  else MakeUnknown;
-    //end;
+    if IsForwardPeerField(OwnPeerField) then
+      OwnPeerField^.SetOpeningPeerNodeState(NodeState, NodeStateForPeer(OwnPeerField^.NodeType))
+    else
+      SetOpeningPeerNodeState(OwnPeerField^.NodeState, OwnPeerField^.NodeStateForPeer(NodeType));
 
   end;
 
@@ -781,8 +816,10 @@ end;
 procedure TSynMarkupHighIfDefEntry.ClearPeerField(APeer: PSynMarkupHighIfDefEntry);
 begin
   if APeer^ = nil then exit;
-  if APeer^.NodeType <> idnIfdef then
-    APeer^.NodeState := idnUnknown;
+  if IsForwardPeerField(APeer) then
+    APeer^.SetOpeningPeerNodeState(idnUnknown, idnUnknown)
+  else
+    SetOpeningPeerNodeState(idnUnknown, idnUnknown);
 
   if APeer^.FPeer1 = self then
     APeer^.FPeer1  := nil
@@ -797,7 +834,7 @@ end;
 procedure TSynMarkupHighIfDefEntry.RemoveForwardPeers;
 begin
   case NodeType of
-    idnIfdef: begin
+    idnIfdef, idnElseIf: begin
         ElsePeer := nil;
         EndIfPeer := nil;
       end;
@@ -809,46 +846,43 @@ begin
   end;
 end;
 
-procedure TSynMarkupHighIfDefEntry.ApplyNodeStateToLine;
+procedure TSynMarkupHighIfDefEntry.ApplyNodeStateToLine(ARemove: Boolean = False);
+var
+  i: Integer;
 begin
   if (FLine <> nil) then begin
-    case NodeState of
-      idnDisabled:
-        case NodeType of
-          idnIfdef, idnElse:
-            FLine.DisabledEntryOpenCount := FLine.DisabledEntryOpenCount + 1;
-          idnEndIf:
-            FLine.DisabledEntryCloseCount := FLine.DisabledEntryCloseCount + 1;
+    i := 1;
+    if ARemove then i := -1;
+    case NodeType of
+      idnIfdef: begin
+        if NodeState = idnDisabled then
+          FLine.DisabledEntryOpenCount := FLine.DisabledEntryOpenCount + i;
         end;
-      idnEnabled:
-        if NodeType = idnElse then
-          FLine.DisabledEntryCloseCount := FLine.DisabledEntryCloseCount + 1;
+      idnElse, idnElseIf: begin
+          if FOpeningPeerNodeState = idnDisabled then
+            FLine.DisabledEntryCloseCount := FLine.DisabledEntryCloseCount + i;
+          if NodeState = idnDisabled then
+            FLine.DisabledEntryOpenCount := FLine.DisabledEntryOpenCount + i;
+        end;
+      idnEndIf: begin
+          if FOpeningPeerNodeState = idnDisabled then
+            FLine.DisabledEntryCloseCount := FLine.DisabledEntryCloseCount + i;
+        end;
     end;
   end;
 
-  if NodeState = idnNotInCode then
-    Include(FLine.FLineFlags, idlHasNodesNotInCode)
-  else
-  if NeedsRequesting then
-    Include(FLine.FLineFlags, idlHasUnknownNodes);
+  if not ARemove then begin
+    if NodeState = idnNotInCode then
+      Include(FLine.FLineFlags, idlHasNodesNotInCode)
+    else
+    if NeedsRequesting then
+      Include(FLine.FLineFlags, idlHasUnknownNodes);
+  end;
 end;
 
 procedure TSynMarkupHighIfDefEntry.RemoveNodeStateFromLine;
 begin
-  if (FLine <> nil) then begin
-    case NodeState of
-      idnDisabled:
-        case NodeType of
-          idnIfdef, idnElse:
-            FLine.DisabledEntryOpenCount := FLine.DisabledEntryOpenCount - 1;
-          idnEndIf:
-            FLine.DisabledEntryCloseCount := FLine.DisabledEntryCloseCount - 1;
-        end;
-      idnEnabled:
-        if NodeType = idnElse then
-          FLine.DisabledEntryCloseCount := FLine.DisabledEntryCloseCount - 1;
-    end;
-  end;
+  ApplyNodeStateToLine(True);
 end;
 
 function TSynMarkupHighIfDefEntry.NodeStateForPeer(APeerType: TSynMarkupIfdefNodeType): TSynMarkupIfdefNodeStateEx;
@@ -861,16 +895,18 @@ begin
   case NodeState of
     idnEnabled: begin
         case NodeType of
-          idnIfdef: Result := NodeStateMap[APeerType = idnEndIf]; // idnElse will be idnDisabled;
-          idnElse:  Result := NodeStateMap[APeerType = idnEndIf]; // idnIfdef will be idnDisabled;;
-          idnEndIf: Result := idnEnabled;
+          idnIfdef:  Result := NodeStateMap[APeerType = idnEndIf]; // idnElse[if] will be idnDisabled;
+          idnElseIf: Result := NodeStateMap[APeerType = idnEndIf]; // idnElse[if] will be idnDisabled;
+          idnElse:   Result := NodeStateMap[APeerType = idnEndIf]; // idnIfdef will be idnDisabled;;
+          idnEndIf:  Result := idnEnabled;
         end;
       end;
     idnDisabled: begin
         case NodeType of
-          idnIfdef: Result := NodeStateMap[APeerType <> idnEndIf];
-          idnElse:  Result := NodeStateMap[APeerType <> idnEndIf];
-          idnEndIf: Result := idnDisabled;
+          idnIfdef:  Result := NodeStateMap[APeerType <> idnEndIf];
+          idnElseIf: Result := NodeStateMap[APeerType <> idnEndIf];
+          idnElse:   Result := NodeStateMap[APeerType <> idnEndIf];
+          idnEndIf:  Result := idnDisabled;
         end;
       end;
   end;
@@ -893,8 +929,8 @@ procedure TSynMarkupHighIfDefEntry.ClearPeers;
 begin
   ClearPeerField(@FPeer1);
   ClearPeerField(@FPeer2);
-  if NodeType <> idnIfdef then
-    NodeState := idnUnknown;
+  //if NodeType <> idnIfdef then
+  //  NodeState := idnUnknown;
 end;
 
 { TSynMarkupHighIfDefLinesNode }
@@ -1293,7 +1329,7 @@ begin
     while i < ANode.EntryCount do begin
       // replace Sender in Markup object
       e := ANode.Entry[i];
-      if (e.NodeType = idnIfdef) and (e.NeedsRequesting) then begin
+      if e.NeedsRequesting then begin
         NewState := FOnNodeStateRequest(nil, ANode.StartLine, e.StartColumn);
         e.NodeState := NewState;
       end;
@@ -1414,7 +1450,7 @@ begin
           end;
           dec(NestDepth);
         end;
-      idnElse: begin
+      idnElse, idnElseIf: begin
           if (LowerNestDepth <= NestDepth)
           then begin
             if PeerList[NestDepth].NodeType = idnEndIf then begin
@@ -1469,7 +1505,7 @@ begin
       if OtherDepth = i then begin
         case OtherLine.Entry[j].NodeType of
           idnIfdef: begin
-              assert(PeerList[i].NodeType in [idnElse, idnEndIf], 'PeerList[i].NodeType in [idnElse, idnEndIf] for other ifdef');
+              assert(PeerList[i].NodeType in [idnElse, idnElseIf, idnEndIf], 'PeerList[i].NodeType in [idnElse, idnEndIf] for other ifdef');
               if PeerList[i].IfDefPeer <> OtherLine.Entry[j] then begin
                 Debugln(['New Peer for ',dbgs(PeerList[i].NodeType), ' to ifdef other line']);
                 PeerList[i].IfDefPeer := OtherLine.Entry[j];
@@ -1477,12 +1513,21 @@ begin
               j := -1;
               break;
             end;
-          idnElse: begin
-              assert(PeerList[i].NodeType in [idnElse, idnEndIf], 'PeerList[i].NodeType in [idnElse, idnEndIf] for other else');
-              if PeerList[i].NodeType = idnEndIf then begin
+          idnElse, idnElseIf: begin
+              assert(PeerList[i].NodeType in [idnElse, idnElseIf, idnEndIf], 'PeerList[i].NodeType in [idnElse, idnEndIf] for other else');
+              if (PeerList[i].NodeType = idnEndIf) then begin
                 if PeerList[i].ElsePeer <> OtherLine.Entry[j] then begin
                   Debugln(['New Peer for ',dbgs(PeerList[i].NodeType), ' to else other line']);
                   PeerList[i].ElsePeer := OtherLine.Entry[j];
+                end;
+                j := -1;
+              end
+              else
+              if (PeerList[i].NodeType in [idnElseIf, idnElse]) and (OtherLine.Entry[j].NodeType = idnElseIf)
+              then begin
+                if PeerList[i].IfDefPeer <> OtherLine.Entry[j] then begin
+                  Debugln(['New Peer for ',dbgs(PeerList[i].NodeType), ' to else other line']);
+                  PeerList[i].IfDefPeer := OtherLine.Entry[j];
                 end;
                 j := -1;
               end
@@ -1495,7 +1540,7 @@ begin
       end;
       case OtherLine.Entry[j].NodeType of
         idnIfdef: inc(OtherDepth);
-        idnElse:  ; //
+        idnElse, idnElseIf:  ; //
         idnEndIf: dec(OtherDepth);
       end;
     end;
@@ -1504,7 +1549,7 @@ begin
       // no peer found
       case PeerList[i].NodeType of
         idnIfdef: ;
-        idnElse:  begin
+        idnElse, idnElseIf:  begin
             Debugln(['CLEARING ifdef Peer for ',dbgs(PeerList[i].NodeType)]);
             PeerList[i].IfDefPeer := nil;
             //DoModified;
@@ -2057,7 +2102,7 @@ begin
 //    assert(LogStartX >= LogEndX, 'ifdef xpos found before end of previous ifdef');
 
     LogEndX := FindCloseCurlyBracket(LogStartX+1, LineOffs) + 1;
-    case TheDict.Dict.GetMatchAtChar(@LineTextLower[LogStartX], LineLen + 1 - LogStartX) of
+    case TheDict.GetMatchAtChar(@LineTextLower[LogStartX], LineLen + 1 - LogStartX) of
       1: // ifdef
         begin
           assert(sfaOpen in fn.FoldAction, 'sfaOpen in fn.FoldAction');
@@ -2078,7 +2123,16 @@ begin
           assert(sfaClose in fn.FoldAction, 'sfaOpen in fn.FoldAction');
           NType := idnEndIf;
         end;
-//      4: // ElseIf
+      4: // ElseIf
+        begin
+          assert(i < c, '$ELSE i < c');
+          inc(i);
+          fn2 := FoldNodeInfoList[i];
+          assert(sfaClose in fn.FoldAction, 'sfaClose in fn.FoldAction');
+          assert(sfaOpen in fn2.FoldAction, 'sfaOpen in fn2.FoldAction');
+          assert(fn.LogXStart = fn2.LogXStart, 'sfaOpen in fn2.FoldAction');
+          NType := idnElseIf;
+        end;
       else
         begin
           assert(false, 'not found ifdef');
@@ -2118,9 +2172,10 @@ var
 
   procedure FixNodePeers(var ANode: TSynMarkupHighIfDefLinesNodeInfo);
   begin
+    if ANode.EntryCount = 0 then
+      exit;
     ConnectPeers(ANode, NestList);
-    if ANode.EntryCount > 0 then
-      NestList.PushNodeLine(ANode);
+    NestList.PushNodeLine(ANode);
   end;
 
 var
@@ -2287,12 +2342,12 @@ begin
     if e2.StartColumn = AstartPos then
       e := e2
     else
-      LineNeedReq := LineNeedReq or ((e2.NodeType = idnIfdef) and e2.NeedsRequesting);
+      LineNeedReq := LineNeedReq or e2.NeedsRequesting;
   until (i = 0) or (e <> nil);
 
   assert(e <> nil, 'SetNodeState did not find a node (no matching entry)');
-  assert(e.NodeType = idnIfdef, 'SetNodeState did not find a node (e.NodeType <> idnIfdef)');
-  if (e = nil) or not(e.NodeType = idnIfdef) then
+  assert(e.NodeType in [idnIfdef, idnElseIf], 'SetNodeState did not find a node (e.NodeType <> idnIfdef)');
+  if (e = nil) or not(e.NodeType in [idnIfdef, idnElseIf]) then
     exit;
 
   e.NodeState := AState;
@@ -2300,7 +2355,7 @@ begin
   dec(i); // Assume the node, just set does not need requesting
   while (i >= 0) and (not LineNeedReq) do begin
     e2 := Node.Entry[i];
-    LineNeedReq := LineNeedReq or ((e2.NodeType = idnIfdef) and e2.NeedsRequesting);
+    LineNeedReq := LineNeedReq or e2.NeedsRequesting;
     dec(i);
   end;
 
@@ -2326,6 +2381,14 @@ procedure TSynMarkupHighIfDefLinesTree.DebugPrint(Flat: Boolean);
       idnElse: begin
           Result := '<<If:    ' + PeerLine(AEntry.IfDefPeer) +
                  '   >>EndIf: ' + PeerLine(AEntry.EndIfPeer);
+        end;
+      idnElseIf: begin
+          if AEntry.ElsePeer <> nil then
+            Result := '<<If:    ' + PeerLine(AEntry.IfDefPeer) +
+                   '   >>EndIf: ' + PeerLine(AEntry.EndIfPeer)
+          else
+            Result := '<<If:    ' + PeerLine(AEntry.IfDefPeer) +
+                   '   >>Else:  ' + PeerLine(AEntry.ElsePeer);
         end;
       idnEndIf: begin
           Result := '<<Else:  ' + PeerLine(AEntry.ElsePeer) +

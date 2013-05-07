@@ -223,7 +223,7 @@ type
     property  Terms[AIndex: Integer]: String read GetTerms write SetTerms;
 
     function Search(AText: PChar; ATextLen: Integer; AFoundEvent: TSynSearchDictFoundEvent): PChar;
-    function GetMatchAtChar(AText: PChar; ATextLen: Integer): Integer;
+    function GetMatchAtChar(AText: PChar; ATextLen: Integer; AFoundEvent: TSynSearchDictFoundEvent = nil): Integer;
 
     property BuildLowerCaseDict: Boolean read FBuildLowerCaseDict write FBuildLowerCaseDict;
   end;
@@ -1066,11 +1066,13 @@ begin
   end;
 end;
 
-function TSynSearchDictionary.GetMatchAtChar(AText: PChar; ATextLen: Integer): Integer;
+function TSynSearchDictionary.GetMatchAtChar(AText: PChar; ATextLen: Integer;
+  AFoundEvent: TSynSearchDictFoundEvent): Integer;
 var
   CurrentNode: PSynSearchDictionaryNode;
   b, m: Integer;
   TextEnd: PChar;
+  IsMatch, DoWork: Boolean;
 begin
   Result := -1;
   if FList.Count = 0 then
@@ -1078,6 +1080,7 @@ begin
   if FRootNode = nil then
     BuildDictionary;
 
+  DoWork := True;
   CurrentNode := FRootNode;
   TextEnd := AText + ATextLen;
   b := ord(AText^);
@@ -1088,7 +1091,13 @@ begin
     // b is for AText^
     if CurrentNode^.ItemIdx >= 0 then begin
       Result := CurrentNode^.ItemIdx;
-      exit;
+      IsMatch := True;
+      if Assigned(AFoundEvent) then
+        AFoundEvent(AText, CurrentNode^.ItemIdx, IsMatch, DoWork)
+      else
+        exit;
+      if (not DoWork) or (IsMatch) then
+        exit;
     end;
 
     m := CurrentNode^.NextCharMin;

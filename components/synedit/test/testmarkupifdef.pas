@@ -11,7 +11,7 @@ uses windows,
 
 type
 
-  TSynMarkupIfdefNodeTypeTest = (idnIfdef, idnElse, idnEndIf, idnNone);
+  TSynMarkupIfdefNodeTypeTest = (idnIfdef, idnElseIf, idnElseIfOpen, idnElseIfClose, idnElse, idnEndIf, idnCommentedIfdef, idnNone);
   TPeerExpect = record
     PeerType:  TSynMarkupIfdefNodeTypeTest;  // use idnDisabled as dummy
     PeerY, PeerX: Integer;
@@ -20,7 +20,7 @@ type
 
 const
   NodeTypeMap: array [TSynMarkupIfdefNodeType] of TSynMarkupIfdefNodeTypeTest =
-    (idnIfdef, idnElse, idnEndIf);
+    (idnIfdef, idnElseIf, idnElse, idnEndIf, idnCommentedIfdef);
 
 type
   TNodeExpect = record
@@ -45,6 +45,7 @@ type
     function TestText2: TStringArray;
     function TestText3: TStringArray;
     function TestText4: TStringArray;
+    function TestText5: TStringArray;
 
     procedure CheckNodes(AName: String; ALine: Integer;
       AExp: array of TNodeExpect);
@@ -90,6 +91,14 @@ end;
 function EpElse(PeerY, PeerX: Integer): PPeerExpect;
 begin
   Result := ExpP(idnElse, PeerY, PeerX);
+end;
+function EpElseIfO(PeerY, PeerX: Integer): PPeerExpect;
+begin
+  Result := ExpP(idnElseIfOpen, PeerY, PeerX);
+end;
+function EpElseIfC(PeerY, PeerX: Integer): PPeerExpect;
+begin
+  Result := ExpP(idnElseIfClose, PeerY, PeerX);
 end;
 function EpEnd(PeerY, PeerX: Integer): PPeerExpect;
 begin
@@ -170,11 +179,16 @@ var
     case ExpPeer.PeerType of
       idnIfdef: TestPeer := Node.IfDefPeer;
       idnElse:  TestPeer := Node.ElsePeer;
+      idnElseIfOpen: TestPeer := Node.IfDefPeer;
+      idnElseIfClose: TestPeer := Node.ElsePeer;
       idnEndIf: TestPeer := Node.EndIfPeer;
     end;
     if ExpPeer.PeerY = -99 then begin // special check for existence only
       AssertTrue(PName + 'Has Peer', TestPeer <> nil);
-      AssertTrue(PName+' PeerType', ExpPeer.PeerType = NodeTypeMap[TestPeer.NodeType]);
+      if ExpPeer.PeerType in [idnElseIfOpen, idnElseIfClose] then
+        AssertTrue(PName+' PeerType', idnElseIf = NodeTypeMap[TestPeer.NodeType])
+      else
+        AssertTrue(PName+' PeerType', ExpPeer.PeerType = NodeTypeMap[TestPeer.NodeType]);
     end
     else
     if ExpPeer.PeerY < 0 then begin
@@ -182,7 +196,10 @@ var
     end
     else begin
       AssertTrue(PName + 'Has Peer', TestPeer <> nil);
-      AssertTrue(PName+' PeerType', ExpPeer.PeerType = NodeTypeMap[TestPeer.NodeType]);
+      if ExpPeer.PeerType in [idnElseIfOpen, idnElseIfClose] then
+        AssertTrue(PName+' PeerType', idnElseIf = NodeTypeMap[TestPeer.NodeType])
+      else
+        AssertTrue(PName+' PeerType', ExpPeer.PeerType = NodeTypeMap[TestPeer.NodeType]);
       AssertEquals(PName + 'Peer.Y', ExpPeer.PeerY, TestPeer.Line.GetPosition);
       if ExpPeer.PeerX >= 0 then
         AssertEquals(PName + 'Peer.X', ExpPeer.PeerX, TestPeer.StartColumn);
@@ -442,6 +459,26 @@ begin
   AddLine(''                                                      );
   AddLine('{$IFDEF a}  {$Endif}'                                  );
   AddLine(''                                                      );
+  AddLine(''                                                      );
+end;
+
+function TTestMarkupIfDef.TestText5: TStringArray;
+  procedure AddLine(s: String);
+  begin
+    SetLength(Result, Length(Result)+1);
+    Result[Length(Result)-1] := s;
+  end;
+begin
+  // 1
+  AddLine('//'                                                    );
+  AddLine('{$IFDEF a}'                                            );
+  AddLine(''                                                      );
+  AddLine('{$elseif b}'                                           );
+  // 5
+  AddLine(''                                                      );
+  AddLine('{$else}'                                            );
+  AddLine(''                                                      );
+  AddLine('{$Endif}'                                              );
   AddLine(''                                                      );
 end;
 
@@ -1152,6 +1189,18 @@ DebugLn('--------');FTestTree.DebugPrint(true);
   FTestTree.ValidateRange(8, 9, FOpenings);
 DebugLn('--------');FTestTree.DebugPrint(true);
 
+
+
+
+
+  n := 'Peers, TestText5: elseif';
+  ReCreateEditForTreeTest(TestText5);
+  FTestTree.ValidateRange(1, 9, FOpenings);
+DebugLn('--------');FTestTree.DebugPrint(true);
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpElseIfC(4, 1)) ]);
+  CheckNodes(n, 4, [ ExpN( 1,12, idnElseIf,EpIf(2, 1),     EpElse(6, 1)) ]);
+  CheckNodes(n, 6, [ ExpN( 1, 8, idnElse,  EpElseIfO(4, 1), EpEnd(8, 1)) ]);
+  CheckNodes(n, 8, [ ExpN( 1, 9, idnEndIf, EpElse(6, 1)) ]);
 
   {%endregion peers}
 
