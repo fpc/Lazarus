@@ -272,7 +272,8 @@ end;
 
 procedure TfrBarCodeView.SetZoom(const AValue: Double);
 begin
-  if Param.cRatio<>AValue then
+  if (Param.cRatio<>AValue) and
+     ((AValue>=1.0)and(Avalue<=4.0)) then
   begin
     BeforeChange;
     Param.cRatio:=aValue;
