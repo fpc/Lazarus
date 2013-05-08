@@ -33,8 +33,10 @@ program addfpprofcalls;
 uses
   Classes, SysUtils, CodeCache, CodeToolManager, FileProcs, AVL_Tree, CodeAtom,
   BasicCodeTools, SourceChanger, CodeTree, FindDeclarationTool,
-  CodeToolsStructs;
+  CodeToolsStructs, PascalParserTool;
 
+type
+  TMode = (mList,mAdd,mRemove);
 const
   ConfigFilename = 'codetools.config';
   EnterCall = 'SendMethodEnter';
@@ -45,11 +47,12 @@ var
   Filename: String;
   Signatures: TStringToStringTree;
   Tool: TCodeTool;
-  Mode: String;
+  Mode: TMode;
   Code: TCodeBuffer;
   Node: CodeTree.TCodeTreeNode;
+  Signature: String;
 begin
-  Mode:='add';
+  Mode:=mList;
   Filename:='';
   Signatures:=TStringToStringTree.Create(false);
   for i:=1 to ParamCount do begin
@@ -57,15 +60,20 @@ begin
     if (Param='-h') or (Param='-?') then begin
       writeln('addfpprofcalls');
       writeln;
-      writeln('Add or remove fpprofiler calls to selected functions.');
+      writeln('List function signatures, or add or remove fpprofiler calls to selected functions.');
       writeln;
       writeln('Usage: <options> <unit file name> <function signature> <function signature> ...');
       writeln('  -h : write this help');
-      writeln('  -r : remove calls instead of add');
-      writeln('  -l : list function signatures of unit');
+      writeln('  -r : remove calls instead of list');
+      writeln('  -a : add calls instead of list');
       writeln;
       writeln('Example');
-      writeln(ParamStrUTF8(0),' unit1.pas TForm1.Button1Click(:TObject)');
+      writeln('  List all function signatures of unit1.pas');
+      writeln('    ',ParamStrUTF8(0),' unit1.pas');
+      writeln('  Add fpprofiler calls to TForm.Button1Click:');
+      writeln('    ',ParamStrUTF8(0),' -a unit1.pas TForm1.Button1Click(:TObject)');
+      writeln('  Remove fpprofiler calls from TForm.Button1Click:');
+      writeln('    ',ParamStrUTF8(0),' -r unit1.pas TForm1.Button1Click(:TObject)');
       writeln;
       writeln('Before:');
       writeln('=======');
@@ -84,9 +92,9 @@ begin
       writeln('end;');
       Halt;
     end else if Param='-r' then
-      Mode:='remove'
-    else if Param='-l' then
-      Mode:='list'
+      Mode:=mRemove
+    else if Param='-a' then
+      Mode:=mAdd
     else if (Param='') or (Param[1]='-') then begin
       writeln('ERROR: invalid parameter ',Param);
       Halt;
@@ -109,6 +117,7 @@ begin
   if not CodeToolBoss.Explore(Code,Tool,false) then
     raise Exception.Create('parser error');
 
+  writeln('-----------------------------------------------');
   Node:=Tool.FindImplementationNode;
   if Node=nil then
     Node:=Tool.Tree.Root;
@@ -119,17 +128,24 @@ begin
       if (Node.Desc=ctnBeginBlock) and (Node.Parent<>nil)
       and (Node.Parent.Desc=ctnProcedure) then begin
         // procedure body
+        Signature:=Tool.ExtractProcHead(Node.Parent,[phpWithoutSemicolon]);
+        if Mode=mList then begin
+          writeln('Signature: ',Signature);
+        end else if (Mode in [mAdd,mRemove]) and (Signatures[Signature]<>'')
+        then begin
 
+        end;
       end;
       Node:=Node.Next;
     end;
   end;
 
-
-  // write the new source:
-  writeln('-----------------------------------');
-  writeln('New source:');
-  writeln(Code.Source);
-  writeln('-----------------------------------');
+  if Mode in [mAdd,mRemove] then begin
+    // write the new source:
+    writeln('-----------------------------------');
+    writeln('New source:');
+    writeln(Code.Source);
+    writeln('-----------------------------------');
+  end;
 end.
 
