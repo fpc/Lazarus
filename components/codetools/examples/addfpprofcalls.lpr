@@ -239,6 +239,8 @@ begin
     writeln('New source:');
     writeln(Code.Source);
     writeln('-----------------------------------');
+
+    // save: if not Code.Save then ...
   end;
 end.
 
