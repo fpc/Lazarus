@@ -6839,6 +6839,7 @@ packager/globallinks/lr_extexp-0.lpl svneol=native#text/plain
 packager/globallinks/lr_sqldb-0.2.2.lpl svneol=native#text/plain
 packager/globallinks/lr_tdbf-0.1.1.lpl svneol=native#text/plain
 packager/globallinks/lr_zeosdb-0.2.2.lpl svneol=native#text/plain
+packager/globallinks/lrcairoexport-0.9.lpl svneol=native#text/plain
 packager/globallinks/macosfiles-0.lpl svneol=native#text/plain
 packager/globallinks/memdslaz-1.2.1.lpl svneol=native#text/plain
 packager/globallinks/messagecomposerpkg-0.lpl svneol=native#text/plain
