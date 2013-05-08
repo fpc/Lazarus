@@ -64,6 +64,7 @@ type
             can be automatically opened. The list is checked by the IDE from
             time to time and missing packages are first marked and after several
             months deleted from the list.
+            Relative files are expanded with the Lazarus directory.
   }
 
   TPkgLinkOrigin = (

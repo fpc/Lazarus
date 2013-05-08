@@ -1,4 +1,4 @@
-unit testfileproc;
+unit TestFileProc;
 
 {$mode objfpc}{$H+}
 
@@ -48,6 +48,7 @@ begin
   DoTest('c:\LazarusDir\..\dir\','c:\dir\');
 {$endif}
   DoTest('$(LazarusDir)\..\dir\','$(LazarusDir)\..\dir\');
+  DoTest(' a ','a');
 end;
 
 procedure TTestFileProc.TestCreateRelativePath;
