@@ -33,7 +33,7 @@ program addfpprofcalls;
 uses
   Classes, SysUtils, CodeCache, CodeToolManager, FileProcs, AVL_Tree, CodeAtom,
   BasicCodeTools, SourceChanger, CodeTree, FindDeclarationTool,
-  CodeToolsStructs, PascalParserTool;
+  CodeToolsStructs, PascalParserTool, KeywordFuncLists;
 
 type
   TMode = (mList,mAdd,mRemove);
@@ -49,8 +49,45 @@ var
   Tool: TCodeTool;
   Mode: TMode;
   Code: TCodeBuffer;
-  Node: CodeTree.TCodeTreeNode;
+  Node: TCodeTreeNode;
   Signature: String;
+  ProcNode: TCodeTreeNode;
+  Changer: TSourceChangeCache;
+  Beauty: TBeautifyCodeOptions;
+  Indent: integer;
+  HasEnterCall: Boolean;
+  HasExitCall: Boolean;
+  EnterInsertPos: Integer;
+  ExitInsertPos: Integer;
+  FromPos: objpas.Integer;
+  ToPos: objpas.Integer;
+
+procedure RemoveCall;
+begin
+  FromPos:=Tool.CurPos.StartPos;
+  // read parameters
+  Tool.ReadNextAtom;
+  if Tool.CurPos.Flag<>cafRoundBracketOpen then
+    Tool.RaiseException('( expected, but '+Tool.GetAtom+' found');
+  Tool.ReadTilBracketClose(true);
+  ToPos:=Tool.CurPos.EndPos;
+  // read semicolon
+  Tool.ReadNextAtom;
+  if Tool.CurPos.Flag=cafSemicolon then
+    ToPos:=Tool.CurPos.EndPos;
+  // delete space and line break in front
+  while Tool.Src[FromPos-1] in [' ',#9] do dec(FromPos);
+  if Tool.Src[FromPos-1] in [#10,#13] then begin
+    dec(FromPos);
+    if (Tool.Src[FromPos-1] in [#10,#13]) and (Tool.Src[FromPos]<>Tool.Src[FromPos-1]) then
+      dec(FromPos);
+  end;
+  // delete space behind
+  while Tool.Src[ToPos] in [' ',#9] do inc(ToPos);
+  if not Changer.Replace(gtNone,gtNone,FromPos,ToPos,'') then
+    Exception.Create('source not writable');
+end;
+
 begin
   Mode:=mList;
   Filename:='';
@@ -118,6 +155,16 @@ begin
     raise Exception.Create('parser error');
 
   writeln('-----------------------------------------------');
+
+  Changer:=CodeToolBoss.SourceChangeCache;
+  Beauty:=Changer.BeautifyCodeOptions;
+  Changer.MainScanner:=Tool.Scanner;
+
+  // guess indent
+  Indent:=Beauty.Indent;
+  GuessIndentSize(Code.Source,Indent,Beauty.TabWidth);
+  Beauty.Indent:=Indent;
+
   Node:=Tool.FindImplementationNode;
   if Node=nil then
     Node:=Tool.Tree.Root;
@@ -128,12 +175,55 @@ begin
       if (Node.Desc=ctnBeginBlock) and (Node.Parent<>nil)
       and (Node.Parent.Desc=ctnProcedure) then begin
         // procedure body
-        Signature:=Tool.ExtractProcHead(Node.Parent,[phpWithoutSemicolon]);
+        ProcNode:=Node.Parent;
+        Signature:=Tool.ExtractProcHead(ProcNode,[phpWithoutSemicolon]);
         if Mode=mList then begin
           writeln('Signature: ',Signature);
         end else if (Mode in [mAdd,mRemove]) and (Signatures[Signature]<>'')
         then begin
-
+          Tool.MoveCursorToNodeStart(Node);
+          Tool.ReadNextAtom; // read 'begin'
+          EnterInsertPos:=Tool.CurPos.EndPos;
+          ExitInsertPos:=0;
+          HasEnterCall:=false;
+          HasExitCall:=false;
+          while Tool.CurPos.StartPos<Node.EndPos do begin
+            if Tool.AtomIs(EnterCall) then begin
+              HasEnterCall:=true;
+              if (Mode=mRemove) then begin
+                // remove Enter call
+                RemoveCall;
+              end;
+            end;
+            if Tool.AtomIs(ExitCall) then begin
+              HasExitCall:=true;
+              if (Mode=mRemove) then begin
+                // remove Exit call
+                RemoveCall;
+              end;
+            end;
+            if Tool.CurPos.Flag=cafEnd then
+              ExitInsertPos:=Tool.CurPos.StartPos;
+            Tool.ReadNextAtom;
+          end;
+          if (Mode=mAdd) then begin
+            if (not HasEnterCall) then begin
+              // add Enter call
+              if not Changer.Replace(gtNewLine,gtNewLine,
+                EnterInsertPos,EnterInsertPos,
+                Beauty.GetIndentStr(Beauty.GetLineIndent(Tool.Src,Node.StartPos)+Indent)+EnterCall+'('''+Signature+''');')
+              then
+                Exception.Create('source not writable');
+            end;
+            if (not HasExitCall) then begin
+              // add Exit call
+              if not Changer.Replace(gtNewLine,gtNewLine,
+                ExitInsertPos,ExitInsertPos,
+                Beauty.GetIndentStr(Beauty.GetLineIndent(Tool.Src,Node.StartPos)+Indent)+ExitCall+'('''+Signature+''');')
+              then
+                Exception.Create('source not writable');
+            end;
+          end;
         end;
       end;
       Node:=Node.Next;
@@ -141,6 +231,9 @@ begin
   end;
 
   if Mode in [mAdd,mRemove] then begin
+    if not Changer.Apply then
+      raise Exception.Create('source not writable');
+
     // write the new source:
     writeln('-----------------------------------');
     writeln('New source:');
