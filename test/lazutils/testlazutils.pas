@@ -5,6 +5,7 @@
  Test specific with:
      ./runtests --format=plain --suite=TestReplaceSubstring
      ./runtests --format=plain --suite=TestSplitCmdLineParams
+     ./runtests --format=plain --suite=TestExpandFilename
 }
 unit TestLazUtils;
 
@@ -24,6 +25,7 @@ type
   published
     procedure TestReplaceSubstring;
     procedure TestSplitCmdLineParams;
+    procedure TestExpandFilename;
   end;
 
 implementation
@@ -98,6 +100,13 @@ begin
   AssertEquals('two with backslashed backslash','a\b',r('"a\\b"',true));
   AssertEquals('quoted quote','''|"',r('"''" ''"''',true));
   AssertEquals('empty params','|',r('"" '''''));
+end;
+
+procedure TTestLazUtils.TestExpandFilename;
+begin
+  AssertEquals('basedir','/opt/ide',ExpandFileNameUTF8('ide','/opt/'));
+  AssertEquals('basedir','/opt/ide',ExpandFileNameUTF8('ide','/opt'));
+  AssertEquals('basedir','/ide',ExpandFileNameUTF8('/ide','/opt'));
 end;
 
 initialization
