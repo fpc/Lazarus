@@ -38,7 +38,6 @@ uses
 type
   TMode = (mList,mAdd,mRemove);
 const
-  ConfigFilename = 'codetools.config';
   EnterCall = 'SendMethodEnter';
   ExitCall = 'SendMethodExit';
 var
@@ -142,8 +141,6 @@ begin
         Signatures[Param]:='1';
     end;
   end;
-
-  CodeToolBoss.SimpleInit(ConfigFilename);
 
   // load the file
   Code:=CodeToolBoss.LoadFile(Filename,false,false);
