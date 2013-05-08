@@ -5,8 +5,6 @@ begin
   Result:=FilenameIsUnixAbsolute(TheFilename);
 end;
 
-
-
 function ExpandFileNameUtf8(const FileName: string; {const} BaseDir: String = ''): String;
 var
   IsAbs: Boolean;
