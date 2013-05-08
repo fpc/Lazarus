@@ -1754,6 +1754,10 @@ begin
         SaveRaiseCharExpectedButAtomFound(':');
       ReadNextAtom;
       ReadConstant(true,false,[]);
+    end else if UpAtomIs('SYSCALL') then begin
+      ReadNextAtom;
+      AtomIsIdentifierSaveE;
+      ReadNextAtom;
     end else if CurPos.Flag=cafEdgedBracketOpen then begin
       // read assembler alias   [public,alias: 'alternative name'],
       // internproc, internconst, external
