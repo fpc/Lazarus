@@ -9117,7 +9117,7 @@ begin
   {$IfDef DbgGrid} DebugLn('TStringCellEditor.Change INIT text=',Text);{$ENDIF}
   inherited Change;
   if (FGrid<>nil) and Visible then begin
-    FGrid.SetEditText(FCol, FRow, Text);
+    FGrid.EditorTextChanged(FCol, FRow, Text);
   end;
   {$IfDef DbgGrid} DebugLn('TStringCellEditor.Change END');{$ENDIF}
 end;
