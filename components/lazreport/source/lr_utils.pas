@@ -67,6 +67,7 @@ function lrValidFieldReference(s: string):boolean;
 function lrDateTimeToStr(ADate:TDateTime):string;
 function lrStrToDateTime(AValue: string): TDateTime;
 function lrExpandVariables(const S:string):string;
+procedure lrNormalizeLocaleFloats(DisableLocale: boolean);
 
 // utf8 tools
 function UTF8Desc(S:string; var Desc: string): Integer;
@@ -81,6 +82,9 @@ function UTF8CountWords(const str:string; out WordCount,SpcCount,SpcSize:Integer
 implementation
 
 uses LR_Class, LR_Const, LR_Pars;
+
+var
+  PreviousFormatSettings: TFormatSettings;
 
 procedure frInitFont(aFont : TFont; aColor : TColor; aSize : Integer; aStyle : TFontStyles);
 begin
@@ -725,6 +729,16 @@ begin
   end;
   if K<i then
     Result:=Result + Copy(S, K, I-K);
+end;
+
+procedure lrNormalizeLocaleFloats(DisableLocale: boolean);
+begin
+  if DisableLocale then
+  begin
+    PreviousFormatSettings := DefaultFormatSettings;
+    DefaultFormatSettings.DecimalSeparator := '.';
+  end else
+    DefaultFormatSettings := PreviousFormatSettings;
 end;
 
 function UTF8Desc(S: string; var Desc: string): Integer;

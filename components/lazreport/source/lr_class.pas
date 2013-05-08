@@ -11634,7 +11634,6 @@ end;
 function TfrObject.GetSaveProperty(const Prop: String; aObj : TPersistent=nil): string;
 Var PropInfo  : PPropInfo;
     Obj       : TObject;
-    OldSep    : char;
 begin
   Result:='';
 
@@ -11657,10 +11656,9 @@ begin
                                       end;
         tkSet                       : Result:=GetSetProp(aObj,Prop);
         tkFloat                     : begin
-                                        OldSep := DecimalSeparator;
-                                        DecimalSeparator := '.';
+                                        lrNormalizeLocaleFloats(True);
                                         Result := FloatToStr(GetFloatProp(aObj,Prop));
-                                        DecimalSeparator := OldSep;
+                                        lrNormalizeLocaleFloats(false);
                                       end;
         tkEnumeration               : Result:=GetEnumProp(aObj,Prop);
         tkClass                     : Begin
@@ -11700,7 +11698,11 @@ begin
                                           SetOrdProp(aObj,PropInfo,StrToInt(aValue))
                                       end;
         tkSet                       : SetSetProp(aObj,Prop,aValue);
-        tkFloat                     : SetFloatProp(aObj,Prop,StrToFloat(aValue));
+        tkFloat                     : begin
+                                        lrNormalizeLocaleFloats(true);
+                                        SetFloatProp(aObj,Prop,StrToFloat(aValue));
+                                        lrNormalizeLocaleFloats(false);
+                                      end;
         tkEnumeration               : SetEnumProp(aObj,Prop,aValue);
         tkClass                     : Begin
                                         Obj:=GetObjectProp(aObj,Prop);
