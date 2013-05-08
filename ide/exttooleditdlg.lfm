@@ -295,6 +295,7 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     BorderSpacing.Right = 6
     ScrollBars = ssAutoBoth
     TabOrder = 8
+    WordWrap = False
   end
   object OpenDialog: TOpenDialog
     Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
