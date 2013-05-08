@@ -529,7 +529,11 @@ If there is no relative path it returns Filename.
 If BaseDirectory and Filename are the same and UsePointDirectory is false it returns the empty string. If UsePointDirectory is true it returns '.'.
 Duplicate path delimiters are treated as one.
 In other words if it returns a relative file name then the following is true:
-TrimFilename(Filename) = TrimFilename(BaseDirectory+PathDelim+Result).</descr>
+TrimFilename(Filename) = TrimFilename(BaseDirectory+PathDelim+Result).
+
+This function is thread safe and therefore does not support current directories
+as needed by Windows file names like D:test.
+</descr>
 <errors>
 </errors>
 <seealso>

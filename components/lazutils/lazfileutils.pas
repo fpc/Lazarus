@@ -659,6 +659,9 @@ Duplicate path delimiters are treated as one.
 In other words if it returns a relative file name then the following is true:
 TrimFilename(Filename) = TrimFilename(BaseDirectory+PathDelim+Result).
 
+This function is thread safe and therefore does not support current directories
+as needed by Windows file names like D:test.
+
 Filename='/a' BaseDir='/a' Result=''
 Filename='/a' BaseDir='/a' UsePointDirectory=true Result='.'
 Filename='/a' BaseDir='/a/' Result=''
