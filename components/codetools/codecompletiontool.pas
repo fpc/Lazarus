@@ -1607,7 +1607,7 @@ begin
       Params.ContextNode := CursorNode;
       Params.Flags := [fdfSearchInAncestors..fdfIgnoreCurContextNode];
       if FindIdentifierInContext(Params)
-        and (Params.NewNode <> ExprType.Context.Node.Parent) then
+        and (Params.NewCodeTool <> ExprType.Context.Tool) then
           NewType := ExprType.Context.Tool.ExtractSourceName + '.' + NewType;
     end;
   finally
