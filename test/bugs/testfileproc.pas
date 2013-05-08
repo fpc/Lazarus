@@ -66,6 +66,7 @@ procedure TTestFileProc.TestCreateRelativePath;
 
 begin
   DoTest('/a','/a','');
+  DoTest('/a','/a','.',true);
   DoTest('/a','/a/','');
   DoTest('/a/b','/a/b','');
   DoTest('/a/b','/a/b/','');
