@@ -46,7 +46,8 @@ var
   Signatures: TStringToStringTree;
   Tool: TCodeTool;
   Mode: String;
-  Code: CodeCache.TCodeBuffer;
+  Code: TCodeBuffer;
+  Node: CodeTree.TCodeTreeNode;
 begin
   Mode:='add';
   Filename:='';
@@ -108,7 +109,21 @@ begin
   if not CodeToolBoss.Explore(Code,Tool,false) then
     raise Exception.Create('parser error');
 
-  //Tool.GatherProcNodes();
+  Node:=Tool.FindImplementationNode;
+  if Node=nil then
+    Node:=Tool.Tree.Root;
+  while Node<>nil do begin
+    if Node.Desc in (AllDefinitionSections+AllIdentifierDefinitions+[ctnInterface]) then
+      Node:=Node.NextSkipChilds
+    else begin
+      if (Node.Desc=ctnBeginBlock) and (Node.Parent<>nil)
+      and (Node.Parent.Desc=ctnProcedure) then begin
+        // procedure body
+
+      end;
+      Node:=Node.Next;
+    end;
+  end;
 
 
   // write the new source:
