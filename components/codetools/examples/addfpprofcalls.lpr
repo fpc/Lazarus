@@ -31,9 +31,9 @@ program addfpprofcalls;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, FileProcs, AVL_Tree, CodeAtom,
-  BasicCodeTools, SourceChanger, CodeTree, FindDeclarationTool,
-  CodeToolsStructs, PascalParserTool, KeywordFuncLists;
+  Classes, SysUtils, CodeCache, CodeToolManager, FileProcs, CodeAtom,
+  BasicCodeTools, SourceChanger, CodeTree,
+  CodeToolsStructs, PascalParserTool;
 
 type
   TMode = (mList,mAdd,mRemove);
