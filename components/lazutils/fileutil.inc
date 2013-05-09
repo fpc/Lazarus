@@ -1311,6 +1311,7 @@ end;
 
 constructor TFileSearcher.Create;
 begin
+  inherited Create;
   FMaskSeparator := ';';
   FFollowSymLink := True;
   FFileAttribute := faAnyFile;
