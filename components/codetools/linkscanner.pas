@@ -220,6 +220,20 @@ type
     lssdTillEndIf
     );
 
+  TLSDirectiveState = (
+    lsdsNone,
+    lsdsActive,  // e.g. an IfDef with active code inside
+    lsdsInactive,// e.g. an IfDef which code was skipped
+    lsdsSkipped // has inactive parent
+    );
+  TLSDirectiveStates = set of TLSDirectiveState;
+  TLSDirective = record
+    CleanPos: integer;
+    Level: integer;
+    State: TLSDirectiveState;
+  end;
+  PLSDirective = ^TLSDirective;
+
   { TMissingIncludeFile is a missing include file together with all
     params involved in the search }
   TMissingIncludeFile = class
@@ -244,7 +258,7 @@ type
     property Items[Index: Integer]: TMissingIncludeFile
       read GetIncFile write SetIncFile; default;
   end;
-  
+
   { LinkScanner Token Types }
   TLSTokenType = (
     lsttNone,
@@ -321,13 +335,14 @@ type
     FGlobalSourcesChangeStep: int64;
     FGlobalFilesChangeStep: int64;
     FGlobalInitValuesChangeStep: integer;
-    function GetLinks(Index: integer): TSourceLink;
+    function GetLinks(Index: integer): TSourceLink; inline;
+    function GetLinkP(Index: integer): PSourceLink; inline;
     procedure SetLinks(Index: integer; const Value: TSourceLink);
     procedure SetSource(ACode: Pointer); // set current source
     procedure AddSourceChangeStep(ACode: pointer; AChangeStep: integer);
     procedure AddLink(ASrcPos: integer; ACode: Pointer;
                       AKind: TSourceLinkKind = slkCode);
-    procedure IncreaseChangeStep;
+    procedure IncreaseChangeStep; inline;
     procedure SetMainCode(const Value: pointer);
     procedure SetScanTill(const Value: TLinkScannerRange);
     function GetIgnoreMissingIncludeFiles: boolean;
@@ -348,29 +363,32 @@ type
     function ReturnFromIncludeFileAndIsEnd: boolean;
     function ReadIdentifier: string;
     function ReadUpperIdentifier: string;
-    procedure ReadSpace; {$IFDEF UseInline}inline;{$ENDIF}
+    procedure ReadSpace; inline;
     procedure ReadCurlyComment;
     procedure ReadLineComment;
     procedure ReadRoundComment;
     procedure CommentEndNotFound;
-    procedure EndComment; {$IFDEF UseInline}inline;{$ENDIF}
-    procedure IncCommentLevel; {$IFDEF UseInline}inline;{$ENDIF}
-    procedure DecCommentLevel; {$IFDEF UseInline}inline;{$ENDIF}
+    procedure EndComment; inline;
+    procedure IncCommentLevel; inline;
+    procedure DecCommentLevel; inline;
     procedure HandleDirective;
     procedure UpdateCleanedSource(NewCopiedSrcPos: integer);
     function ReturnFromIncludeFile: boolean;
     function ParseKeyWord(StartPos, WordLen: integer; LastTokenType: TLSTokenType
                           ): boolean;
-    function DoEndToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
-    function DoSourceTypeToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
-    function DoInterfaceToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
-    function DoImplementationToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
-    function DoFinalizationToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
-    function DoInitializationToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
-    function DoUsesToken: boolean; {$IFDEF UseInline}inline;{$ENDIF}
-    function TokenIsWord(p: PChar): boolean; {$IFDEF UseInline}inline;{$ENDIF}
+    function DoEndToken: boolean; inline;
+    function DoSourceTypeToken: boolean; inline;
+    function DoInterfaceToken: boolean; inline;
+    function DoImplementationToken: boolean; inline;
+    function DoFinalizationToken: boolean; inline;
+    function DoInitializationToken: boolean; inline;
+    function DoUsesToken: boolean; inline;
+    function TokenIsWord(p: PChar): boolean; inline;
   private
     // directives
+    FDirectives: PLSDirective;
+    FDirectivesCount: integer;
+    FDirectivesCapacity: integer;
     FDirectiveName: shortstring;
     FMacrosOn: boolean;
     FMissingIncludeFiles: TMissingIncludeFiles;
@@ -378,12 +396,15 @@ type
     FOnGetGlobalChangeSteps: TLSOnGetGlobalChangeSteps;
     FSkippingDirectives: TLSSkippingDirective;
     FSkipIfLevel: integer;
+    FStoreDirectives: boolean;
     FCompilerMode: TCompilerMode;
     FCompilerModeSwitches: TCompilerModeSwitches;
     FPascalCompiler: TPascalCompiler;
     FMacros: PSourceLinkMacro;
     FMacroCount, fMacroCapacity: integer;
+    function GetDirectives(Index: integer): PLSDirective;
     procedure SetCompilerMode(const AValue: TCompilerMode);
+    procedure SetStoreDirectives(AValue: boolean);
     procedure SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
     function InternalIfDirective: boolean;
     procedure EndSkipping;
@@ -472,6 +493,7 @@ type
 
     // links
     property Links[Index: integer]: TSourceLink read GetLinks write SetLinks;
+    property LinkP[Index: integer]: PSourceLink read GetLinkP;
     property LinkCount: integer read FLinkCount;
     function LinkIndexAtCleanPos(ACleanPos: integer): integer;
     function LinkIndexAtCursorPos(ACursorPos: integer; ACode: Pointer): integer;
@@ -485,6 +507,12 @@ type
     function LinkIndexNearCursorPos(ACursorPos: integer; ACode: Pointer;
                                     var CursorInLink: boolean): integer;
     function CreateTreeOfSourceCodes: TAVLTree;
+
+    // directives
+    property Directives[Index: integer]: PLSDirective read GetDirectives;
+    property DirectiveCount: integer read FDirectivesCount;
+    procedure ClearDirectives;
+    property StoreDirectives: boolean read FStoreDirectives write SetStoreDirectives;
 
     // source mapping (Cleaned <-> Original)
     function CleanedSrc: string;
@@ -759,6 +787,177 @@ end;
 
 { TLinkScanner }
 
+// inline
+function TLinkScanner.GetLinks(Index: integer): TSourceLink;
+begin
+  Result:=FLinks[Index];
+end;
+
+// inline
+function TLinkScanner.GetLinkP(Index: integer): PSourceLink;
+begin
+  Result:=@FLinks[Index];
+end;
+
+// inline
+procedure TLinkScanner.IncreaseChangeStep;
+begin
+  if FChangeStep=$7fffffff then FChangeStep:=-$7fffffff
+  else inc(FChangeStep);
+end;
+
+// inline
+procedure TLinkScanner.ReadSpace;
+begin
+  while (SrcPos<=SrcLen) and (IsSpaceChar[Src[SrcPos]]) do inc(SrcPos);
+end;
+
+// inline
+procedure TLinkScanner.EndComment;
+begin
+  CommentStyle:=CommentNone;
+end;
+
+// inline
+procedure TLinkScanner.IncCommentLevel;
+begin
+  if FNestedComments then inc(CommentLevel)
+  else CommentLevel:=1;
+end;
+
+// inline
+procedure TLinkScanner.DecCommentLevel;
+begin
+  if FNestedComments then dec(CommentLevel)
+  else CommentLevel:=0;
+end;
+
+// inline
+function TLinkScanner.DoEndToken: boolean;
+begin
+  TokenType:=lsttEnd;
+  Result:=true;
+end;
+
+// inline
+function TLinkScanner.DoSourceTypeToken: boolean;
+// program, unit, library, package
+// unit unit1;
+// unit a.b.unit1 platform;
+// unit unit1 unimplemented;
+begin
+  if ScannedRange<>lsrInit then exit(false);
+  Result:=true;
+  ScannedRange:=lsrSourceType;
+  IsUnit:=TokenIsWord('UNIT');
+  if ScannedRange=ScanTill then exit;
+  repeat
+    ReadNextToken; // read identifier
+    if TokenType=lsttWord then begin
+      if SourceName<>'' then
+        SourceName:=SourceName+'.';
+      SourceName:=SourceName+GetIdentifier(@Src[TokenStart]);
+      ReadNextToken; // read ';' or '.' or hint modifier
+    end;
+  until TokenType<>lsttPoint;
+  ScannedRange:=lsrSourceName;
+  if ScannedRange=ScanTill then exit;
+end;
+
+// inline
+function TLinkScanner.DoInterfaceToken: boolean;
+begin
+  if ord(ScannedRange)>=ord(lsrInterfaceStart) then exit(false);
+  ScannedRange:=lsrInterfaceStart;
+  Result:=true;
+end;
+
+// inline
+function TLinkScanner.DoFinalizationToken: boolean;
+begin
+  if ord(ScannedRange)>=ord(lsrFinalizationStart) then exit(false);
+  ScannedRange:=lsrFinalizationStart;
+  Result:=true;
+end;
+
+// inline
+function TLinkScanner.DoInitializationToken: boolean;
+begin
+  if ord(ScannedRange)>=ord(lsrInitializationStart) then exit(false);
+  ScannedRange:=lsrInitializationStart;
+  Result:=true;
+end;
+
+function TLinkScanner.DoUsesToken: boolean;
+// uses name, name in 'string';
+begin
+  if ord(ScannedRange)<=ord(lsrInterfaceStart) then
+    ScannedRange:=lsrMainUsesSectionStart
+  else if ScannedRange=lsrImplementationStart then
+    ScannedRange:=lsrImplementationUsesSectionStart
+  else
+    exit(false);
+  repeat
+    // read unit name
+    ReadNextToken;
+    if (TokenType<>lsttWord)
+    or WordIsKeyWord.DoItCaseInsensitive(@Src[SrcPos]) then exit(false);
+    ReadNextToken;
+    if TokenIs('in') then begin
+      // read "in" filename
+      ReadNextToken;
+      if TokenType=lsttStringConstant then
+        ReadNextToken;
+    end;
+    if TokenType=lsttSemicolon then break;
+    if TokenType<>lsttComma then begin
+      // syntax error -> this token does not belong to the uses section
+      SrcPos:=TokenStart;
+      break;
+    end;
+  until false;
+  ScannedRange:=succ(ScannedRange);   // lsrMainUsesSectionEnd, lsrImplementationUsesSectionEnd;
+  Result:=true;
+end;
+
+// inline
+function TLinkScanner.DoImplementationToken: boolean;
+begin
+  if ord(ScannedRange)>=ord(lsrImplementationStart) then exit(false);
+  ScannedRange:=lsrImplementationStart;
+  Result:=true;
+end;
+
+// inline
+function TLinkScanner.TokenIsWord(p: PChar): boolean;
+begin
+  Result:=(TokenType=lsttWord) and (CompareIdentifiers(p,@Src[TokenStart])=0);
+end;
+
+// inline
+function TLinkScanner.LinkSize_Inline(Index: integer): integer;
+var
+  Link: PSourceLink;
+begin
+  Link:=@FLinks[Index];
+  if Index+1<LinkCount then
+    Result:=Link[1].CleanedPos-Link^.CleanedPos
+  else
+    Result:=CleanedLen-Link^.CleanedPos+1;
+end;
+
+// inline
+function TLinkScanner.LinkCleanedEndPos_Inline(Index: integer): integer;
+var
+  Link: PSourceLink;
+begin
+  Link:=@FLinks[Index];
+  if Index+1<LinkCount then
+    Result:=Link[1].CleanedPos
+  else
+    Result:=CleanedLen+1;
+end;
+
 procedure TLinkScanner.AddLink(ASrcPos: integer; ACode: Pointer;
   AKind: TSourceLinkKind);
 var
@@ -807,6 +1006,7 @@ begin
   FHiddenUsedUnits:='';
   ClearMacros;
   ClearLastError;
+  ClearDirectives;
   ClearMissingIncludeFiles;
   for i:=0 to FIncludeStack.Count-1 do begin
     PLink:=PSourceLink(FIncludeStack[i]);
@@ -839,26 +1039,17 @@ begin
   FNestedComments:=cmsNested_comment in CompilerModeSwitches;
 end;
 
-procedure TLinkScanner.DecCommentLevel;
-begin
-  if FNestedComments then dec(CommentLevel)
-  else CommentLevel:=0;
-end;
-
 destructor TLinkScanner.Destroy;
 begin
   Clear;
+  ReAllocMem(FDirectives,0);
+  ReAllocMem(FMacros,0);
   FreeAndNil(FIncludeStack);
   FreeAndNil(FSourceChangeSteps);
   FreeAndNil(Values);
   FreeAndNil(FInitValues);
   ReAllocMem(FLinks,0);
   inherited Destroy;
-end;
-
-function TLinkScanner.GetLinks(Index: integer): TSourceLink;
-begin
-  Result:=FLinks[Index];
 end;
 
 function TLinkScanner.LinkSize(Index: integer): integer;
@@ -875,31 +1066,9 @@ begin
   Result:=LinkSize_Inline(Index);
 end;
 
-function TLinkScanner.LinkSize_Inline(Index: integer): integer;
-var
-  Link: PSourceLink;
-begin
-  Link:=@FLinks[Index];
-  if Index+1<LinkCount then
-    Result:=Link[1].CleanedPos-Link^.CleanedPos
-  else
-    Result:=CleanedLen-Link^.CleanedPos+1;
-end;
-
 function TLinkScanner.LinkCleanedEndPos(Index: integer): integer;
 begin
   Result:=LinkSize(Index)+FLinks[Index].CleanedPos;
-end;
-
-function TLinkScanner.LinkCleanedEndPos_Inline(Index: integer): integer;
-var
-  Link: PSourceLink;
-begin
-  Link:=@FLinks[Index];
-  if Index+1<LinkCount then
-    Result:=Link[1].CleanedPos
-  else
-    Result:=CleanedLen+1;
 end;
 
 function TLinkScanner.LinkSourceLog(Index: integer): TSourceLog;
@@ -994,6 +1163,11 @@ begin
   end;
 end;
 
+procedure TLinkScanner.ClearDirectives;
+begin
+  FDirectivesCount:=0;
+end;
+
 function TLinkScanner.LinkIndexAtCleanPos(ACleanPos: integer): integer;
 
   procedure ConsistencyError1;
@@ -1055,7 +1229,7 @@ begin
   Result:=-1;
 end;
 
-procedure TLinkScanner.SetSource(ACode: pointer);
+procedure TLinkScanner.SetSource(ACode: Pointer);
 
   procedure RaiseUnableToGetCode;
   begin
@@ -1084,7 +1258,22 @@ end;
 
 procedure TLinkScanner.HandleDirective;
 var DirStart, DirLen: integer;
+  CurDirective: PLSDirective;
 begin
+  if StoreDirectives then begin
+    if FDirectivesCount=FDirectivesCapacity then begin
+      // grow
+      if FDirectivesCapacity=0 then
+        FDirectivesCapacity:=16
+      else
+        FDirectivesCapacity:=FDirectivesCapacity*2;
+      ReAllocMem(FDirectives,FDirectivesCapacity*SizeOf(FDirectivesCapacity));
+    end;
+    CurDirective:=@FDirectives[FDirectivesCount];
+    CurDirective^.State:=lsdsNone;
+    CurDirective^.CleanPos:=CommentStartPos-CopiedSrcPos+CleanedLen;
+    inc(FDirectivesCount);
+  end;
   SrcPos:=CommentInnerStartPos+1;
   DirStart:=SrcPos;
   while (SrcPos<=SrcLen) and (IsIdentStartChar[Src[SrcPos]]) do
@@ -1094,18 +1283,6 @@ begin
   FDirectiveName:=copy(Src,DirStart,DirLen);
   DoDirective(DirStart,DirLen);
   SrcPos:=CommentEndPos;
-end;
-
-procedure TLinkScanner.IncCommentLevel;
-begin
-  if FNestedComments then inc(CommentLevel)
-  else CommentLevel:=1;
-end;
-
-procedure TLinkScanner.IncreaseChangeStep;
-begin
-  if FChangeStep=$7fffffff then FChangeStep:=-$7fffffff
-  else inc(FChangeStep);
 end;
 
 function TLinkScanner.ReturnFromIncludeFileAndIsEnd: boolean;
@@ -2798,11 +2975,6 @@ begin
   Result:=InternalIfDirective;
 end;
 
-procedure TLinkScanner.ReadSpace;
-begin
-  while (SrcPos<=SrcLen) and (IsSpaceChar[Src[SrcPos]]) do inc(SrcPos);
-end;
-
 function TLinkScanner.ReadIdentifier: string;
 var StartPos: integer;
 begin
@@ -2827,11 +2999,6 @@ begin
     Result:=UpperCaseStr(copy(Src,StartPos,SrcPos-StartPos));
   end else
     Result:='';
-end;
-
-procedure TLinkScanner.EndComment;
-begin
-  CommentStyle:=CommentNone;
 end;
 
 function TLinkScanner.IfndefDirective: boolean;
@@ -3387,7 +3554,7 @@ begin
 end;
 
 procedure TLinkScanner.PushIncludeLink(ACleanedPos, ASrcPos: integer;
-  ACode: pointer);
+  ACode: Pointer);
   
   procedure RaiseIncludeCircleDetected;
   begin
@@ -3491,9 +3658,7 @@ begin
       SrcFilename:='';
     end;
   end;
-  ReAllocMem(FMacros,0);
   FMacroCount:=0;
-  fMacroCapacity:=0;
 end;
 
 function TLinkScanner.IndexOfMacro(MacroName: PChar; InsertPos: boolean): integer;
@@ -3661,101 +3826,6 @@ begin
   Result:=false;
 end;
 
-function TLinkScanner.DoEndToken: boolean;
-begin
-  TokenType:=lsttEnd;
-  Result:=true;
-end;
-
-function TLinkScanner.DoSourceTypeToken: boolean;
-// program, unit, library, package
-// unit unit1;
-// unit a.b.unit1 platform;
-// unit unit1 unimplemented;
-begin
-  if ScannedRange<>lsrInit then exit(false);
-  Result:=true;
-  ScannedRange:=lsrSourceType;
-  IsUnit:=TokenIsWord('UNIT');
-  if ScannedRange=ScanTill then exit;
-  repeat
-    ReadNextToken; // read identifier
-    if TokenType=lsttWord then begin
-      if SourceName<>'' then
-        SourceName:=SourceName+'.';
-      SourceName:=SourceName+GetIdentifier(@Src[TokenStart]);
-      ReadNextToken; // read ';' or '.' or hint modifier
-    end;
-  until TokenType<>lsttPoint;
-  ScannedRange:=lsrSourceName;
-  if ScannedRange=ScanTill then exit;
-end;
-
-function TLinkScanner.DoInterfaceToken: boolean;
-begin
-  if ord(ScannedRange)>=ord(lsrInterfaceStart) then exit(false);
-  ScannedRange:=lsrInterfaceStart;
-  Result:=true;
-end;
-
-function TLinkScanner.DoFinalizationToken: boolean;
-begin
-  if ord(ScannedRange)>=ord(lsrFinalizationStart) then exit(false);
-  ScannedRange:=lsrFinalizationStart;
-  Result:=true;
-end;
-
-function TLinkScanner.DoInitializationToken: boolean;
-begin
-  if ord(ScannedRange)>=ord(lsrInitializationStart) then exit(false);
-  ScannedRange:=lsrInitializationStart;
-  Result:=true;
-end;
-
-function TLinkScanner.DoUsesToken: boolean;
-// uses name, name in 'string';
-begin
-  if ord(ScannedRange)<=ord(lsrInterfaceStart) then
-    ScannedRange:=lsrMainUsesSectionStart
-  else if ScannedRange=lsrImplementationStart then
-    ScannedRange:=lsrImplementationUsesSectionStart
-  else
-    exit(false);
-  repeat
-    // read unit name
-    ReadNextToken;
-    if (TokenType<>lsttWord)
-    or WordIsKeyWord.DoItCaseInsensitive(@Src[SrcPos]) then exit(false);
-    ReadNextToken;
-    if TokenIs('in') then begin
-      // read "in" filename
-      ReadNextToken;
-      if TokenType=lsttStringConstant then
-        ReadNextToken;
-    end;
-    if TokenType=lsttSemicolon then break;
-    if TokenType<>lsttComma then begin
-      // syntax error -> this token does not belong to the uses section
-      SrcPos:=TokenStart;
-      break;
-    end;
-  until false;
-  ScannedRange:=succ(ScannedRange);   // lsrMainUsesSectionEnd, lsrImplementationUsesSectionEnd;
-  Result:=true;
-end;
-
-function TLinkScanner.TokenIsWord(p: PChar): boolean;
-begin
-  Result:=(TokenType=lsttWord) and (CompareIdentifiers(p,@Src[TokenStart])=0);
-end;
-
-function TLinkScanner.DoImplementationToken: boolean;
-begin
-  if ord(ScannedRange)>=ord(lsrImplementationStart) then exit(false);
-  ScannedRange:=lsrImplementationStart;
-  Result:=true;
-end;
-
 procedure TLinkScanner.SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
 
   procedure RaiseAlreadySkipping;
@@ -3854,6 +3924,19 @@ begin
   FCompilerMode:=AValue;
   FCompilerModeSwitches:=DefaultCompilerModeSwitches[CompilerMode];
   FNestedComments:=cmsNested_comment in CompilerModeSwitches;
+end;
+
+procedure TLinkScanner.SetStoreDirectives(AValue: boolean);
+begin
+  if FStoreDirectives=AValue then Exit;
+  FStoreDirectives:=AValue;
+  if not StoreDirectives then
+    ClearDirectives;
+end;
+
+function TLinkScanner.GetDirectives(Index: integer): PLSDirective;
+begin
+  Result:=@FDirectives[Index];
 end;
 
 function TLinkScanner.GetIgnoreMissingIncludeFiles: boolean;
@@ -4193,7 +4276,7 @@ begin
 end;
 
 procedure TLinkScanner.RaiseExceptionFmt(const AMessage: string;
-  args: array of const);
+  Args: array of const);
 begin
   RaiseException(Format(AMessage,args));
 end;

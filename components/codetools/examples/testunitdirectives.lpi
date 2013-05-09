@@ -4,11 +4,15 @@
     <Version Value="9"/>
     <General>
       <Flags>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
-      <SessionStorage Value="InProjectDir"/>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
-      <Title Value="codecompletion"/>
+      <Title Value="testunitdirectives"/>
+      <UseAppBundle Value="False"/>
+      <ResourceType Value="res"/>
     </General>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
@@ -29,12 +33,17 @@
         <PackageName Value="CodeTools"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="1">
+    <Units Count="2">
       <Unit0>
-        <Filename Value="codecompletion.lpr"/>
+        <Filename Value="testunitdirectives.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="CodeCompletion"/>
+        <UnitName Value="testunitdirectives"/>
       </Unit0>
+      <Unit1>
+        <Filename Value="scanexamples/directives1.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Directives1"/>
+      </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -44,7 +53,7 @@
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
-        <UseAnsiStrings Value="False"/>
+        <AllowLabel Value="False"/>
       </SyntaxOptions>
     </Parsing>
     <Other>

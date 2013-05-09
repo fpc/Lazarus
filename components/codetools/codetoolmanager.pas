@@ -349,6 +349,8 @@ type
           out NewX, NewY, NewTopLine: integer; out ErrorMsg: string): boolean;
     function ExploreDirectives(Code: TCodeBuffer;
           out ADirectivesTool: TDirectivesTool): boolean;
+    function ExploreUnitDirectives(Code: TCodeBuffer;
+          out aScanner: TLinkScanner): boolean;
 
     // compiler directives
     function GuessMisplacedIfdefEndif(Code: TCodeBuffer; X,Y: integer;
@@ -1847,6 +1849,25 @@ begin
   except
     on e: Exception do Result:=HandleException(e);
   end;
+end;
+
+function TCodeToolManager.ExploreUnitDirectives(Code: TCodeBuffer; out
+  aScanner: TLinkScanner): boolean;
+begin
+  if not InitCurCodeTool(Code) then exit;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.ExploreUnitDirectives A ',dbgs(FCurCodeTool.Scanner<>nil));
+  {$ENDIF}
+  try
+    aScanner:=FCurCodeTool.Scanner;
+    aScanner.StoreDirectives:=true;
+    aScanner.Scan(lsrEnd,true);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.ExploreUnitDirectives END ');
+  {$ENDIF}
 end;
 
 function TCodeToolManager.JumpToMethod(Code: TCodeBuffer; X,Y: integer;
