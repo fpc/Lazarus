@@ -209,6 +209,7 @@ type
     FTemplateEdit: TSynPluginTemplateEdit;
     FMarkupForGutterMark: TSynEditMarkupGutterMark;
     {$IFDEF WithSynMarkupIfDef}
+    FOnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest;
     FMarkupIfDef: TSynEditMarkupIfDef;
     {$ENDIF}
     FTopInfoDisplay: TSourceLazSynTopInfoView;
@@ -218,6 +219,10 @@ type
     FTopInfoMarkup: TSynSelectedColor;
     FUserWordsList: TList;
 
+    {$IFDEF WithSynMarkupIfDef}
+    function DoIfDefNodeStateRequest(Sender: TObject; LinePos,
+      XStartPos: Integer): TSynMarkupIfdefNodeState;
+    {$ENDIF}
     function GetHighlightUserWordCount: Integer;
     function GetHighlightUserWords(AIndex: Integer): TSourceSynEditMarkupHighlightAllMulti;
     function GetIDEGutterMarks: TIDESynGutterMarks;
@@ -252,6 +257,11 @@ type
     property HighlightUserWordCount: Integer read GetHighlightUserWordCount write SetHighlightUserWordCount;
     property HighlightUserWords[AIndex: Integer]: TSourceSynEditMarkupHighlightAllMulti read GetHighlightUserWords;
     property MarkupMgr;
+    {$IFDEF WithSynMarkupIfDef}
+    procedure InvalidateAllIfdefNodes;
+    procedure SetIfdefNodeState(ALinePos, AstartPos: Integer; AState: TSynMarkupIfdefNodeState);
+    property OnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest read FOnIfdefNodeStateRequest write FOnIfdefNodeStateRequest;
+    {$ENDIF}
   end;
 
   TIDESynHighlighterPasRangeList = class(TSynHighlighterPasRangeList)
@@ -1487,6 +1497,29 @@ begin
   Result := TIDESynGutterMarks(Gutter.Parts.ByClass[TIDESynGutterMarks, 0]);
 end;
 
+{$IFDEF WithSynMarkupIfDef}
+function TIDESynEditor.DoIfDefNodeStateRequest(Sender: TObject; LinePos,
+  XStartPos: Integer): TSynMarkupIfdefNodeState;
+begin
+  if FOnIfdefNodeStateRequest <> nil then
+    Result := FOnIfdefNodeStateRequest(Self, LinePos, XStartPos)
+  else
+    Result := idnInvalid;
+end;
+
+procedure TIDESynEditor.InvalidateAllIfdefNodes;
+begin
+  FMarkupIfDef.InvalidateAll;
+end;
+
+procedure TIDESynEditor.SetIfdefNodeState(ALinePos, AstartPos: Integer;
+  AState: TSynMarkupIfdefNodeState);
+begin
+  FMarkupIfDef.SetNodeState(ALinePos, AstartPos, AState);
+end;
+
+{$ENDIF}
+
 function TIDESynEditor.GetHighlightUserWordCount: Integer;
 begin
   Result := FUserWordsList.Count;
@@ -1544,6 +1577,7 @@ begin
   {$IFDEF WithSynMarkupIfDef}
   FMarkupIfDef := TSynEditMarkupIfDef.Create(Self);
   FMarkupIfDef.FoldView := TSynEditFoldedView(FoldedTextBuffer);
+  FMarkupIfDef.OnNodeStateRequest := @DoIfDefNodeStateRequest;
   TSynEditMarkupManager(MarkupMgr).AddMarkUp(FMarkupIfDef);
   {$ENDIF}
 
@@ -1613,6 +1647,7 @@ begin
   Ime.InvalidateLinesMethod := @InvalidateLines;
   ImeHandler := Ime;
 end;
+
 {$ENDIF}
 
 { TIDESynPasSyn }

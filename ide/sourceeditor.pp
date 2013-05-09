@@ -54,7 +54,7 @@ uses
   SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
   SynBeautifier, LazSynEditText,
   SynPluginSyncronizedEditBase, SourceSynEditor, SynMacroRecorder,
-  SynExportHTML, SynHighlighterPas, SynEditMarkup,
+  SynExportHTML, SynHighlighterPas, SynEditMarkup, SynEditMarkupIfDef,
   // Intf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf, MacroDefIntf,
@@ -237,6 +237,9 @@ type
     FTempTopLine: Integer;
     FEditPlugin: TSynEditPlugin1;  // used to get the LinesInserted and
                                    //   LinesDeleted messages
+    {$IFDEF WithSynMarkupIfDef}
+    FOnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest;
+    {$ENDIF}
     FSyncroLockCount: Integer;
     FPageName: string;
 
@@ -298,6 +301,11 @@ type
     procedure UpdateNoteBook(const ANewNoteBook: TSourceNotebook; ANewPage: TTabSheet);
     procedure SetVisible(Value: boolean);
     procedure UnbindEditor;
+
+    {$IFDEF WithSynMarkupIfDef}
+    function DoIfDefNodeStateRequest(Sender: TObject; LinePos,
+      XStartPos: Integer): TSynMarkupIfdefNodeState;
+    {$ENDIF}
   protected
     ErrorMsgs: TStrings;
 
@@ -491,6 +499,12 @@ type
     procedure LineInfoNotificationChange(const ASender: TObject; const ASource: String);
     function  SourceToDebugLine(aLinePos: Integer): Integer;
     function  DebugToSourceLine(aLinePos: Integer): Integer;
+
+    {$IFDEF WithSynMarkupIfDef}
+    procedure InvalidateAllIfdefNodes;
+    procedure SetIfdefNodeState(ALinePos, AstartPos: Integer; AState: TSynMarkupIfdefNodeState);
+    property OnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest read FOnIfdefNodeStateRequest write FOnIfdefNodeStateRequest;
+    {$ENDIF}
   public
     // properties
     property CodeBuffer: TCodeBuffer read GetCodeBuffer write SetCodeBuffer;
@@ -2647,7 +2661,7 @@ begin
 end;
 
 {------------------------------G O T O   L I N E  -----------------------------}
-Function TSourceEditor.GotoLine(Value: Integer): Integer;
+function TSourceEditor.GotoLine(Value: Integer): Integer;
 Var
   P: TPoint;
   NewTopLine: integer;
@@ -2874,7 +2888,7 @@ begin
 end;
 
 function TSourceEditor.DoFindAndReplace(aFindText, aReplaceText: String;
-  anOptions: TSynSearchOptions): integer;
+  anOptions: TSynSearchOptions): Integer;
 var
   AText, ACaption: String;
   OldEntireScope, Again: Boolean;
@@ -2962,7 +2976,7 @@ end;
 
 //-----------------------------------------------------------------------------
 
-Procedure TSourceEditor.FocusEditor;
+procedure TSourceEditor.FocusEditor;
 Begin
   DebugLnEnter(SRCED_PAGES, ['>> TSourceEditor.FocusEditor A ',PageName,' ',FEditor.Name]);
   IDEWindowCreators.ShowForm(SourceNotebook,true);
@@ -2976,7 +2990,7 @@ Begin
   DebugLnExit(SRCED_PAGES, ['<< TSourceEditor.FocusEditor END ',PageName,' ',FEditor.Name]);
 end;
 
-Function TSourceEditor.GetReadOnly: Boolean;
+function TSourceEditor.GetReadOnly: Boolean;
 Begin
   Result:=FEditor.ReadOnly;
 End;
@@ -4073,7 +4087,7 @@ begin
   UpdateExecutionSourceMark;
 end;
 
-Function TSourceEditor.RefreshEditorSettings: Boolean;
+function TSourceEditor.RefreshEditorSettings: Boolean;
 var
   SimilarEditor: TSynEdit;
 Begin
@@ -4089,7 +4103,7 @@ Begin
   SourceNotebook.UpdateActiveEditColors(FEditor);
 end;
 
-Procedure TSourceEditor.ccAddMessage(Texts: String);
+procedure TSourceEditor.ccAddMessage(Texts: String);
 Begin
   ErrorMsgs.Add(Texts);
 End;
@@ -4271,7 +4285,7 @@ end;
 
 { AOwner is the TSourceNotebook
   AParent is a page of the TPageControl }
-Procedure TSourceEditor.CreateEditor(AOwner: TComponent; AParent: TWinControl);
+procedure TSourceEditor.CreateEditor(AOwner: TComponent; AParent: TWinControl);
 var
   NewName: string;
   i: integer;
@@ -4323,6 +4337,9 @@ Begin
       RegisterMouseActionExecHandler(@EditorHandleMouseAction);
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
       Parent := AParent;
+      {$IFDEF WithSynMarkupIfDef}
+      OnIfdefNodeStateRequest := @DoIfDefNodeStateRequest;;
+      {$ENDIF}
     end;
     Manager.CodeTemplateModul.AddEditor(FEditor);
     Manager.FMacroRecorder.AddEditor(FEditor);
@@ -4439,7 +4456,7 @@ begin
   Result := FSharedValues.NeedsUpdateCodeBuffer;
 end;
 
-Function TSourceEditor.GetSource: TStrings;
+function TSourceEditor.GetSource: TStrings;
 Begin
   //return synedit's source.
   Result := FEditor.Lines;
@@ -4484,32 +4501,32 @@ begin
   end;
 end;
 
-Procedure TSourceEditor.SetSource(value: TStrings);
+procedure TSourceEditor.SetSource(Value: TStrings);
 Begin
   FEditor.Lines.Assign(Value);
 end;
 
-Function TSourceEditor.GetCurrentCursorXLine: Integer;
+function TSourceEditor.GetCurrentCursorXLine: Integer;
 Begin
   Result := FEditor.CaretX
 end;
 
-Procedure TSourceEditor.SetCurrentCursorXLine(num: Integer);
+procedure TSourceEditor.SetCurrentCursorXLine(num: Integer);
 Begin
   FEditor.CaretX := Num;
 end;
 
-Function TSourceEditor.GetCurrentCursorYLine: Integer;
+function TSourceEditor.GetCurrentCursorYLine: Integer;
 Begin
   Result := FEditor.CaretY;
 end;
 
-Procedure TSourceEditor.SetCurrentCursorYLine(num: Integer);
+procedure TSourceEditor.SetCurrentCursorYLine(num: Integer);
 Begin
   FEditor.CaretY := Num;
 end;
 
-Procedure TSourceEditor.SelectText(const StartPos, EndPos: TPoint);
+procedure TSourceEditor.SelectText(const StartPos, EndPos: TPoint);
 Begin
   FEditor.BlockBegin := StartPos;
   FEditor.BlockEnd := EndPos;
@@ -4566,7 +4583,7 @@ begin
   FEditor.LogicalCaretXY:=NewCaretXY;
 end;
 
-Function TSourceEditor.GetModified: Boolean;
+function TSourceEditor.GetModified: Boolean;
 Begin
   Result := FSharedValues.Modified;
 end;
@@ -4576,12 +4593,12 @@ begin
   FSharedValues.SetModified(NewValue);
 end;
 
-Function TSourceEditor.GetInsertMode: Boolean;
+function TSourceEditor.GetInsertMode: Boolean;
 Begin
   Result := FEditor.Insertmode;
 end;
 
-Function TSourceEditor.Close: Boolean;
+function TSourceEditor.Close: Boolean;
 Begin
   DebugLnEnter(SRCED_CLOSE, ['TSourceEditor.Close ShareCount=', FSharedValues.SharedEditorCount]);
   Result := True;
@@ -4842,7 +4859,7 @@ begin
     OnMouseWheel(Self, Shift, WheelDelta, MousePos, Handled)
 end;
 
-Procedure TSourceEditor.EditorMouseDown(Sender: TObject; Button: TMouseButton;
+procedure TSourceEditor.EditorMouseDown(Sender: TObject; Button: TMouseButton;
    Shift: TShiftState; X, Y: Integer);
 begin
   CheckActiveWindow;
@@ -5242,6 +5259,29 @@ function TSourceEditor.DebugToSourceLine(aLinePos: Integer): Integer;
 begin
   Result := FEditor.IDEGutterMarks.DebugLineToSourceLine(aLinePos);
 end;
+
+{$IFDEF WithSynMarkupIfDef}
+procedure TSourceEditor.InvalidateAllIfdefNodes;
+begin
+  FEditor.InvalidateAllIfdefNodes;
+end;
+
+procedure TSourceEditor.SetIfdefNodeState(ALinePos, AstartPos: Integer;
+  AState: TSynMarkupIfdefNodeState);
+begin
+  FEditor.SetIfdefNodeState(ALinePos, AstartPos, AState);
+end;
+
+function TSourceEditor.DoIfDefNodeStateRequest(Sender: TObject; LinePos,
+  XStartPos: Integer): TSynMarkupIfdefNodeState;
+begin
+  if FOnIfdefNodeStateRequest <> nil then
+    Result := FOnIfdefNodeStateRequest(Self, LinePos, XStartPos)
+  else
+    Result := idnInvalid;
+end;
+
+{$ENDIF}
 
 function TSourceEditor.SharedEditorCount: Integer;
 begin

@@ -330,6 +330,7 @@ type
     FFoldView: TSynEditFoldedView;
     FHighlighter: TSynPasSyn;
     FIfDefTree: TSynMarkupHighIfDefLinesTree;
+    FOnNodeStateRequest: TSynMarkupIfdefStateRequest;
     FOuterLines: TLazSynEditNestedFoldsList;
     FNeedValidate: Boolean;
 
@@ -353,6 +354,9 @@ type
     procedure IncPaintLock; override;
     procedure DecPaintLock; override;
 
+    procedure InvalidateAll;
+    procedure SetNodeState(ALinePos, AstartPos: Integer; AState: TSynMarkupIfdefNodeState);
+
     // AFirst/ ALast are 1 based
     //Procedure Invalidate(SkipPaint: Boolean = False);
     //Procedure InvalidateLines(AFirstLine: Integer = 0; ALastLine: Integer = 0; SkipPaint: Boolean = False);
@@ -360,6 +364,7 @@ type
 
     property FoldView: TSynEditFoldedView read FFoldView write SetFoldView;
     property Highlighter: TSynPasSyn read FHighlighter write SetHighlighter;
+    property OnNodeStateRequest: TSynMarkupIfdefStateRequest read FOnNodeStateRequest write FOnNodeStateRequest;
   end;
 
 function dbgs(AFlag: SynMarkupIfDefLineFlag): String; overload;
@@ -1567,20 +1572,8 @@ begin
           idnIfdef: begin
               assert(PeerList[i].NodeType in [idnElse, idnElseIf, idnEndIf], 'PeerList[i].NodeType in [idnElse, idnEndIf] for other ifdef');
               if PeerList[i].IfDefPeer <> OtherLine.Entry[j] then begin
-                if OtherLine.Entry[j].GetPeer(PeerList[i].NodeType) <> nil then begin
-                  debugln(['COMPARING MaxPeerdepth for ',dbgs(PeerList[i].NodeType), ' to ifdef other line']);
-                  if (OtherLine.NestDepthAtNodeStart + OtherLine.Entry[j].RelativeNestDepth + 1 = i
-//                     ANode.NestDepthAtNodeStart + PeerList[i].RelativeNestDepth
-)
-                  then begin
-                    Debugln(['New Peer (REPLACE) for ',dbgs(PeerList[i].NodeType), ' to ifdef other line']);
-                    PeerList[i].IfDefPeer := OtherLine.Entry[j];
-                  end;
-                end
-                else begin
-                  Debugln(['New Peer for ',dbgs(PeerList[i].NodeType), ' to ifdef other line']);
-                  PeerList[i].IfDefPeer := OtherLine.Entry[j];
-                end;
+                Debugln(['New Peer for ',dbgs(PeerList[i].NodeType), ' to ifdef other line']);
+                PeerList[i].IfDefPeer := OtherLine.Entry[j];
               end;
               j := -1;
               break;
@@ -1589,20 +1582,8 @@ begin
               assert(PeerList[i].NodeType in [idnElse, idnElseIf, idnEndIf], 'PeerList[i].NodeType in [idnElse, idnEndIf] for other else');
               if (PeerList[i].NodeType = idnEndIf) then begin
                 if PeerList[i].ElsePeer <> OtherLine.Entry[j] then begin
-
-                  if OtherLine.Entry[j].GetPeer(PeerList[i].NodeType) <> nil then begin
-                    debugln(['COMPARING MaxPeerdepth for ',dbgs(PeerList[i].NodeType), ' to else other line']);
-                    if OtherLine.NestDepthAtNodeStart + OtherLine.Entry[j].RelativeNestDepth = i
-//                       ANode.NestDepthAtNodeStart + PeerList[i].RelativeNestDepth
-                    then begin
-                      Debugln(['New Peer (REPLACE) for ',dbgs(PeerList[i].NodeType), ' to else other line']);
-                      PeerList[i].ElsePeer := OtherLine.Entry[j];
-                    end;
-                  end
-                  else begin
-                    Debugln(['New Peer for ',dbgs(PeerList[i].NodeType), ' to else other line']);
-                    PeerList[i].ElsePeer := OtherLine.Entry[j];
-                  end;
+                  Debugln(['New Peer for ',dbgs(PeerList[i].NodeType), ' to else other line']);
+                  PeerList[i].ElsePeer := OtherLine.Entry[j];
                 end;
                 j := -1;
               end
@@ -1610,19 +1591,8 @@ begin
               if (PeerList[i].NodeType in [idnElseIf, idnElse]) and (OtherLine.Entry[j].NodeType = idnElseIf)
               then begin
                 if PeerList[i].IfDefPeer <> OtherLine.Entry[j] then begin
-                  if OtherLine.Entry[j].GetPeer(PeerList[i].NodeType) <> nil then begin
-                    debugln(['COMPARING MaxPeerdepth for ',dbgs(PeerList[i].NodeType), ' to else other line']);
-                    if OtherLine.NestDepthAtNodeStart + OtherLine.Entry[j].RelativeNestDepth = i
-//                       ANode.NestDepthAtNodeStart + PeerList[i].RelativeNestDepth
-                    then begin
-                      Debugln(['New Peer (REPLACE) for ',dbgs(PeerList[i].NodeType), ' to else other line']);
-                      PeerList[i].IfDefPeer := OtherLine.Entry[j];
-                    end;
-                  end
-                  else begin
-                    Debugln(['New Peer for ',dbgs(PeerList[i].NodeType), ' to else other line']);
-                    PeerList[i].IfDefPeer := OtherLine.Entry[j];
-                  end;
+                  Debugln(['New Peer for ',dbgs(PeerList[i].NodeType), ' to else other line']);
+                  PeerList[i].IfDefPeer := OtherLine.Entry[j];
                 end;
                 j := -1;
               end
@@ -2863,7 +2833,12 @@ end;
 function TSynEditMarkupIfDef.DoNodeStateRequest(Sender: TObject; LinePos,
   XStartPos: Integer): TSynMarkupIfdefNodeState;
 begin
-  Result := idnEnabled;
+  if FOnNodeStateRequest <> nil then
+    Result := FOnNodeStateRequest(Self, LinePos, XStartPos)
+  else
+    Result := idnInvalid;
+
+  //Result := idnEnabled;
   if pos('y', copy(SynEdit.Lines[LinePos-1], XStartPos, 100)) > 1 then
     Result := idnDisabled;
   DebugLn(['STATE REQUEST ', LinePos, ' ', XStartPos, ' : ', dbgs(Result)]);
@@ -2918,6 +2893,17 @@ begin
   inherited DecPaintLock;
   if (FPaintLock = 0) and FNeedValidate then
     ValidateMatches;
+end;
+
+procedure TSynEditMarkupIfDef.InvalidateAll;
+begin
+  FIfDefTree.Clear;
+end;
+
+procedure TSynEditMarkupIfDef.SetNodeState(ALinePos, AstartPos: Integer;
+  AState: TSynMarkupIfdefNodeState);
+begin
+  FIfDefTree.SetNodeState(ALinePos, AstartPos, AState);
 end;
 
 
