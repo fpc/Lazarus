@@ -226,12 +226,16 @@ type
     lsdsSkipped // has inactive parent
     );
   TLSDirectiveStates = set of TLSDirectiveState;
+
   TLSDirective = record
     CleanPos: integer;
     Level: integer;
     State: TLSDirectiveState;
+    Code: Pointer; // TCodeBuffer
+    SrcPos: integer; // 1-based position in Code
   end;
   PLSDirective = ^TLSDirective;
+  PPLSDirective = ^PLSDirective;
 
   { TMissingIncludeFile is a missing include file together with all
     params involved in the search }
@@ -388,6 +392,7 @@ type
     FDirectives: PLSDirective;
     FDirectivesCount: integer;
     FDirectivesCapacity: integer;
+    FDirectivesSorted: PPLSDirective; // array of PLSDirective to items of FDirectives
     FDirectiveName: shortstring;
     FMacrosOn: boolean;
     FMissingIncludeFiles: TMissingIncludeFiles;
@@ -401,10 +406,12 @@ type
     FPascalCompiler: TPascalCompiler;
     FMacros: PSourceLinkMacro;
     FMacroCount, fMacroCapacity: integer;
-    function GetDirectives(Index: integer): PLSDirective;
+    function GetDirectives(Index: integer): PLSDirective; inline;
+    function GetDirectivesSorted(Index: integer): PLSDirective; inline;
     procedure SetCompilerMode(const AValue: TCompilerMode);
     procedure SetStoreDirectives(AValue: boolean);
     procedure SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
+    procedure SortDirectives;
     function InternalIfDirective: boolean;
     procedure EndSkipping;
     procedure AddSkipComment(IsStart: boolean);
@@ -474,14 +481,14 @@ type
   public
     // current values, positions, source, flags
     CleanedLen: integer;
-    Src: string;     // current parsed source
-    SrcPos: integer; // current position
+    Src: string;     // current parsed source (= TCodeBuffer(Code).Source)
+    SrcPos: integer; // current position (1-based in Src)
     TokenStart: integer; // start position of current token
     TokenType: TLSTokenType;
     SrcLen: integer; // length of current source
-    Code: pointer;   // current code object
+    Code: pointer;   // current code object (TCodeBuffer)
     Values: TExpressionEvaluator;
-    SrcFilename: string;// current parsed filename
+    SrcFilename: string;// current parsed filename (= TCodeBuffer(Code).Filename)
     IsUnit: boolean;
     SourceName: string;
 
@@ -509,6 +516,7 @@ type
 
     // directives
     property Directives[Index: integer]: PLSDirective read GetDirectives;
+    property DirectivesSorted[Index: integer]: PLSDirective read GetDirectivesSorted; // sorted for Code and SrcPos
     property DirectiveCount: integer read FDirectivesCount;
     procedure ClearDirectives;
     property StoreDirectives: boolean read FStoreDirectives write SetStoreDirectives;
@@ -794,6 +802,16 @@ begin
   Result:=true;
 end;
 
+function CompareLSDirective(Item1, Item2: Pointer): Integer;
+var
+  Dir1: PLSDirective absolute Item1;
+  Dir2: PLSDirective absolute Item2;
+begin
+  Result:=ComparePointers(Dir1^.Code,Dir2^.Code);
+  if Result<>0 then exit;
+  Result:=Dir1^.SrcPos-Dir2^.SrcPos;
+end;
+
 { TLinkScanner }
 
 // inline
@@ -944,6 +962,18 @@ begin
 end;
 
 // inline
+function TLinkScanner.GetDirectives(Index: integer): PLSDirective;
+begin
+  Result:=@FDirectives[Index];
+end;
+
+// inline
+function TLinkScanner.GetDirectivesSorted(Index: integer): PLSDirective;
+begin
+  Result:=FDirectivesSorted[Index];
+end;
+
+// inline
 function TLinkScanner.LinkSize_Inline(Index: integer): integer;
 var
   Link: PSourceLink;
@@ -965,6 +995,19 @@ begin
     Result:=Link[1].CleanedPos
   else
     Result:=CleanedLen+1;
+end;
+
+procedure TLinkScanner.SortDirectives;
+var
+  i: Integer;
+begin
+  // try to keep memory allocated
+  ReAllocMem(FDirectivesSorted,SizeOf(Pointer)*FDirectivesCapacity);
+  for i:=0 to FDirectivesCount-1 do
+    FDirectivesSorted[i]:=@FDirectives[i];
+  for i:=FDirectivesCount to FDirectivesCapacity-1 do
+    FDirectivesSorted[i]:=nil;
+  MergeSort(PPointer(FDirectivesSorted),FDirectivesCount,@CompareLSDirective);
 end;
 
 procedure TLinkScanner.AddLink(ASrcPos: integer; ACode: Pointer;
@@ -1051,6 +1094,7 @@ end;
 destructor TLinkScanner.Destroy;
 begin
   Clear;
+  ReAllocMem(FDirectivesSorted,0);
   ReAllocMem(FDirectives,0);
   ReAllocMem(FMacros,0);
   FreeAndNil(FIncludeStack);
@@ -1174,7 +1218,10 @@ end;
 
 procedure TLinkScanner.ClearDirectives;
 begin
+  // keep memory allocated, it will probably be needed on next rescan
   FDirectivesCount:=0;
+  if FDirectivesSorted<>nil then
+    FDirectivesSorted[0]:=nil;
 end;
 
 function TLinkScanner.LinkIndexAtCleanPos(ACleanPos: integer): integer;
@@ -1284,6 +1331,8 @@ begin
     else
       CurDirective^.State:=lsdsSkipped;
     CurDirective^.CleanPos:=CommentStartPos-CopiedSrcPos+CleanedLen;
+    CurDirective^.Code:=Code;
+    CurDirective^.SrcPos:=SrcPos;
     inc(FDirectivesCount);
   end;
   SrcPos:=CommentInnerStartPos+1;
@@ -1632,6 +1681,8 @@ begin
       {$ENDIF}
       if (SrcPos>CopiedSrcPos) then
         UpdateCleanedSource(SrcPos-1);
+      if FDirectivesCount>0 then
+        SortDirectives;
       if FSkippingDirectives<>lssdNone then begin
         {$IFDEF ShowUpdateCleanedSrc}
         DebugLn(['TLinkScanner.Scan missing $ENDIF']);
@@ -3946,11 +3997,6 @@ begin
   FStoreDirectives:=AValue;
   if not StoreDirectives then
     ClearDirectives;
-end;
-
-function TLinkScanner.GetDirectives(Index: integer): PLSDirective;
-begin
-  Result:=@FDirectives[Index];
 end;
 
 function TLinkScanner.GetIgnoreMissingIncludeFiles: boolean;

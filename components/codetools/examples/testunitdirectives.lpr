@@ -55,9 +55,23 @@ begin
   if not CodeToolBoss.ExploreUnitDirectives(Code,Scanner) then
     raise Exception.Create('parser error');
 
+  writeln('-----------------------------------------------');
   writeln(Scanner.CleanedSrc);
+  writeln('-----------------------------------------------');
+  writeln('Directives in compile order:');
   for i:=0 to Scanner.DirectiveCount-1 do begin
     Dir:=Scanner.Directives[i];
+    write(i,'/',Scanner.DirectiveCount,
+      ' CleanPos=',Dir^.CleanPos,'=',Scanner.CleanedPosToStr(Dir^.CleanPos),
+      ' Level=',Dir^.Level,' ',dbgs(Dir^.State),
+      ' "',ExtractCommentContent(Scanner.CleanedSrc,Dir^.CleanPos,Scanner.NestedComments),'"'
+      );
+    writeln;
+  end;
+  writeln('-----------------------------------------------');
+  writeln('Directives sorted for Code and SrcPos:');
+  for i:=0 to Scanner.DirectiveCount-1 do begin
+    Dir:=Scanner.DirectivesSorted[i];
     write(i,'/',Scanner.DirectiveCount,
       ' CleanPos=',Dir^.CleanPos,'=',Scanner.CleanedPosToStr(Dir^.CleanPos),
       ' Level=',Dir^.Level,' ',dbgs(Dir^.State),
