@@ -2636,7 +2636,7 @@ begin
         CleanList:=CleanList+';';
       end;
       Result:=Result+ParamName+':'+ParamType;
-      CleanList:=CleanList+':'+ParamType;
+      CleanList:=CleanList+ParamType;
       // next
       MoveCursorToCleanPos(ExprEndPos);
       ReadNextAtom;
@@ -2777,7 +2777,7 @@ const
 
   function CreatePathForNewProc(InsertPos: integer;
     const CleanProcHead: string;
-    var NewProcPath: TStrings): boolean;
+    out NewProcPath: TStrings): boolean;
   var
     ContextNode: TCodeTreeNode;
   begin
@@ -2807,14 +2807,15 @@ const
     // reparse code and find jump point into new proc
     BuildTree(lsrEnd);
     NewProcNode:=FindSubProcPath(SubProcPath,ShortProcFormat,true);
-    {$IFDEF CTDebug}
-    DebugLn('TCodeCompletionCodeTool.CompleteProcByCall A found=',dbgs(NewProcNode<>nil));
-    {$ENDIF}
-    if NewProcNode=nil then exit;
+    if NewProcNode=nil then begin
+      debugln(['FindJumpPointToNewProc FindSubProcPath failed, SubProcPath="',SubProcPath.Text,'"']);
+      exit;
+    end;
     Result:=FindJumpPointInProcNode(NewProcNode,NewPos,NewTopLine);
-    {$IFDEF CTDebug}
-    DebugLn('TCodeCompletionCodeTool.CompleteProcByCall END ',NewProcNode.DescAsString,' ',dbgs(Result),' ',dbgs(NewPos.X),',',dbgs(NewPos.Y),' ',dbgs(NewTopLine));
-    {$ENDIF}
+    { $IFDEF CTDebug}
+    if Result then
+      DebugLn('TCodeCompletionCodeTool.CompleteProcByCall END ',NewProcNode.DescAsString,' ',dbgs(Result),' ',dbgs(NewPos.X),',',dbgs(NewPos.Y),' ',dbgs(NewTopLine));
+    { $ENDIF}
   end;
 
 var
@@ -2832,7 +2833,7 @@ var
   IsFunction: Boolean;
   FuncType: String;
   CleanProcHead: string;
-  NewProcPath: TStringList;
+  NewProcPath: TStrings;
   Beauty: TBeautifyCodeOptions;
 begin
   Result:=false;
@@ -2848,44 +2849,50 @@ begin
   try
     if not CheckFunctionType(ProcNameAtom,IsFunction,FuncType,ProcExprStartPos)
     then exit;
-    DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall ',copy(Src,ProcNameAtom.StartPos,BracketClosePos+1-ProcNameAtom.StartPos)]);
+    DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall Call="',copy(Src,ProcNameAtom.StartPos,BracketClosePos+1-ProcNameAtom.StartPos),'"']);
     if not CheckProcDoesNotExist(Params,ProcNameAtom) then exit;
 
     // find context (e.g. Button1.|)
     Params.Clear;
     Params.ContextNode:=CursorNode;
     ExprType:=FindExpressionTypeOfTerm(-1,ProcNameAtom.StartPos,Params,false);
-    DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall ',ExprTypeToString(ExprType)]);
+    DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall Context: ',ExprTypeToString(ExprType)]);
     
     if ExprType.Desc=xtNone then begin
       // default context
       if NodeIsInAMethod(CursorNode) then begin
         // eventually: create a new method
-        DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall eventually: create a new method']);
+        DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall ToDo: create a new method']);
         exit;
       end else begin
         ProcNode:=CursorNode.GetNodeOfType(ctnProcedure);
         if ProcNode<>nil then begin
-          // this is a normal proc or sub proc
+          // this is a normal proc or nested proc
           // insert new proc in front
           InsertPos:=FindLineEndOrCodeInFrontOfPosition(ProcNode.StartPos);
           Indent:=Beauty.GetLineIndent(Src,ProcNode.StartPos);
+          debugln(['TCodeCompletionCodeTool.CompleteProcByCall insert as new proc in front of proc']);
         end else begin
           // this is a begin..end without proc (e.g. program or unit code)
           // insert new proc in front
           InsertPos:=FindLineEndOrCodeInFrontOfPosition(BeginNode.StartPos);
           Indent:=Beauty.GetLineIndent(Src,BeginNode.StartPos);
+          debugln(['TCodeCompletionCodeTool.CompleteProcByCall insert as new proc in front of begin']);
         end;
       end;
     end else begin
       // eventually: create a new method in another class
-      DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall eventually: create a new method in another class']);
+      DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall ToDo: create a new method in another class']);
       exit;
     end;
 
     if not CreateProcCode(CursorNode,ProcNameAtom,
       IsFunction,FuncType,BracketOpenPos,Indent,
-      CleanProcHead,ProcCode) then exit;
+      CleanProcHead,ProcCode)
+    then begin
+      debugln(['TCodeCompletionCodeTool.CompleteProcByCall CreateProcCode failed']);
+      exit;
+    end;
 
   finally
     DeactivateGlobalWriteLock;
@@ -2894,17 +2901,28 @@ begin
   end;
   
   // insert proc body
+  //debugln(['TCodeCompletionCodeTool.CompleteProcByCall InsertPos=',CleanPosToStr(InsertPos),' ProcCode="',ProcCode,'"']);
   if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
     InsertPos,InsertPos,ProcCode)
   then
     exit;
-    
+
   // remember old path
   NewProcPath:=nil;
   try
-    if not CreatePathForNewProc(InsertPos,CleanProcHead,TStrings(NewProcPath)) then exit;
-    if not SourceChangeCache.Apply then exit;
-    if not FindJumpPointToNewProc(NewProcPath) then exit;
+    if not CreatePathForNewProc(InsertPos,CleanProcHead,NewProcPath) then begin
+      debugln(['TCodeCompletionCodeTool.CompleteProcByCall CreatePathForNewProc failed']);
+      exit;
+    end;
+    if not SourceChangeCache.Apply then begin
+      debugln(['TCodeCompletionCodeTool.CompleteProcByCall SourceChangeCache.Apply failed']);
+      exit;
+    end;
+    //debugln(['TCodeCompletionCodeTool.CompleteProcByCall ',TCodeBuffer(Scanner.MainCode).Source]);
+    if not FindJumpPointToNewProc(NewProcPath) then begin
+      debugln(['TCodeCompletionCodeTool.CompleteProcByCall FindJumpPointToNewProc(',NewProcPath.Text,') failed']);
+      exit;
+    end;
     Result:=true;
   finally
     NewProcPath.Free;

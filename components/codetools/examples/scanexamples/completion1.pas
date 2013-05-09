@@ -39,10 +39,13 @@ begin
   // add DoSomething to the interface
   
   Str:='Path'+PathDelim; // put the cursor on 'Str' and code completion will
-            // insert a local variable var Str: String in front of the 'begin'
+            // insert a local variable 'var Str: String' in front of the 'begin'
 
-  NewProcedure(12345,LineEnding,PathDelim); // put the cursor on 'NewProcedure' and code completion
-            // will create a new procedure
+  NewProcedure(12345,LineEnding,PathDelim); // put the cursor on 'NewProcedure'
+                             // and code completion will create a new procedure
+
+  TimeToStr(aTime); // put cursor on 'aTime' and code completion will insert
+     // insert a local variable 'var aTime: TDateTime' in front of the 'begin'
 end;
 
 end.

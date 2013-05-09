@@ -53,7 +53,7 @@ begin
     CodeToolBoss.SimpleInit(ConfigFilename);
     
     // Example: complete identifier s,
-    //          by adding a local variable declaration (var s: string)
+    //          by adding a local variable declaration 'var s: string'
     X:=3;
     Y:=41;
     TopLine:=20;

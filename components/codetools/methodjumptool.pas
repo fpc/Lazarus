@@ -945,7 +945,7 @@ begin
     end;
     StartNode:=StartNode.Parent;
   end;
-  DebugLn('TMethodJumpingCodeTool.CreateSubProcPath END "',Result.Text,'"');
+  //DebugLn('TMethodJumpingCodeTool.CreateSubProcPath END "',Result.Text,'"');
 end;
 
 function TMethodJumpingCodeTool.FindSubProcPath(SubProcPath: TStrings;
@@ -979,6 +979,7 @@ begin
     StartNode:=FindImplementationNode;
     if StartNode<>nil then StartNode:=StartNode.FirstChild;
   end;
+  //debugln(['TMethodJumpingCodeTool.FindSubProcPath ',StartNode.DescAsString]);
   Result:=SearchSubProcPath(StartNode,0);
 end;
 
