@@ -45,11 +45,12 @@ type
     function GetPoint(const Index : Integer) : TPoint;
     function GetPointCount : Integer;
     function GetStartPoint(const Index : Integer) : TPoint;
-    procedure SetCount(const AValue : Integer); override;
     function  GetMatch(const Index : Integer) : TSynMarkupHighAllMatch;
     procedure SetEndPoint(const Index : Integer; const AValue : TPoint);
     procedure SetMatch(const Index : Integer; const AValue : TSynMarkupHighAllMatch);
     procedure SetStartPoint(const Index : Integer; const AValue : TPoint);
+  protected
+    procedure SetCount(const AValue : Integer); override;
   public
     constructor Create;
     Function MaybeReduceCapacity : Boolean;

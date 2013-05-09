@@ -46,6 +46,7 @@ type
     function TestText3: TStringArray;
     function TestText4: TStringArray;
     function TestText5: TStringArray;
+    function TestText6: TStringArray;
 
     procedure CheckNodes(AName: String; ALine: Integer;
       AExp: array of TNodeExpect);
@@ -422,6 +423,15 @@ begin
   AddLine('{$Endif}'                                              );
   AddLine(''                                                      );
   AddLine(''                                                      );
+  AddLine(''                                                      );
+  // 20
+  AddLine('{$IFDEF a}'                                            );
+  AddLine(''                                                      );
+  //       1 - 9     11 - 21    22 - 29 30 - 37 38 - 46   48 - 56   58 - 68    69 - 77
+  AddLine('{$EndIf}  {$IFDEF a} {$ELSE} {$ELSE} {$ENDIF}  {$endif}  {$IFDEF a} {$ENDIF} ');
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
 end;
 
 function TTestMarkupIfDef.TestText3: TStringArray;
@@ -480,6 +490,42 @@ begin
   AddLine(''                                                      );
   AddLine('{$Endif}'                                              );
   AddLine(''                                                      );
+end;
+
+function TTestMarkupIfDef.TestText6: TStringArray;
+  procedure AddLine(s: String);
+  begin
+    SetLength(Result, Length(Result)+1);
+    Result[Length(Result)-1] := s;
+  end;
+begin
+  // 1
+  AddLine('//'                                                    );
+  AddLine('{$IFDEF a}'                                            );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  // 5
+  AddLine(''                                                      );
+  AddLine(' {$IFDEF b}'                                           );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  // 10
+  AddLine('  {$IFDEF c}'                                          );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine('  {$Endif}'                                            );
+  // 15
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(' {$Endif}'                                             );
+  AddLine(''                                                      );
+  // 20
+  AddLine(''                                                      );
+
+
 end;
 
 function TTestMarkupIfDef.CreateTheHighLighter: TSynCustomFoldHighlighter;
@@ -927,6 +973,15 @@ FTestTree.DebugPrint(true);DebugLn;
   CheckNodesXY('', 6, [3, 14], 0);
 
 
+  // Insert IFDEF into empty text
+  ReCreateEditForTreeTest(TestTextNoIfDef);
+  FTestTree.ValidateRange(1, 5, FOpenings);
+  SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '{$IFDEF a}';
+  FTestTree.ValidateRange(1, 5, FOpenings);
+FTestTree.DebugPrint(true);DebugLn;
+  CheckNodesXY('Insert IFDEF into empty text', 3, [1,11], 0);
+
+
   FTestTree.DiscardOpeningList(FOpenings);
   FOpenings := nil;;
   FTestTree.Free;
@@ -1128,16 +1183,9 @@ DebugLn('--------');FTestTree.DebugPrint(true);
   FTestTree.ValidateRange(1, 18, FOpenings);
 DebugLn('--------');FTestTree.DebugPrint(true);
   // ONe and only one of the 2 ends should have a peer
-  nd := FTestTree.FindNodeAtPosition(33, afmNil);
-  if nd.HasNode and (nd.EntryCount > 0) and (nd.Entry[0].EndIfPeer.Line.GetPosition = 4) then begin
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd(4, 1)) ]);
-    CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
-    CheckNodes(n, 6, [ ExpN( 1, 9, idnEndIf, EpIf(-1, -1)) ]); // must not have a peer
-  end else begin
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd(6, 1)) ]);
-    CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(-1, -1)) ]); // must not have a peer
-    CheckNodes(n, 6, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
-  end;
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd(4, 1)) ]);
+  CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
+  CheckNodes(n, 6, [ ExpN( 1, 9, idnEndIf, EpIf(-1, -1)) ]); // must not have a peer
   // One and only one else may be connected to if and one (but maybe the other) to endif
   CheckNodes(n,10, [ ExpN( 1,11, idnIfdef) ]); // EpElse(12, 1) // or 14
   CheckNodes(n,12, [ ExpN( 1, 8, idnElse) ]);
@@ -1354,6 +1402,78 @@ DebugLn('--------');FTestTree.DebugPrint(true);
 
 
 
+  {%region  Insert If/end to create invalid peering, that must be resolved }
+    n := 'Peers, TestText6: Resolve left-over binding: ' +
+         'Insert Ifdef in visible part, with node inbetween';
+    ReCreateEditForTreeTest(TestText6);
+    FTestTree.ValidateRange(1, 20, FOpenings);
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef ) ]);
+    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpEnd(18, 2)) ]);
+    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpEnd(14, 3)) ]);
+    CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
+    CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
+
+    SynEdit.TextBetweenPoints[point(1, 8),point(1, 8)] := '   {$IfDef X}';
+    FTestTree.ValidateRange(1, 20, FOpenings);
+  DebugLn('--------');FTestTree.DebugPrint(true);
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef ) ]);
+    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef ) ]);
+    CheckNodes(n, 8, [ ExpN( 4,14, idnIfdef, EpEnd(18, 2)) ]);
+    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpEnd(14, 3)) ]);
+    CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
+    CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 8, 4)) ]);
+
+    n := n + ' Remove again';
+    SynEdit.TextBetweenPoints[point(1, 8),point(14, 8)] := '';
+    FTestTree.ValidateRange(1, 20, FOpenings);
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef ) ]);
+    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpEnd(18, 2)) ]);
+    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpEnd(14, 3)) ]);
+    CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
+    CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
+  {%endregion  Insert If/end to create invalid peering, that must be resolved }
+
+
+  {%region  Insert If/end to create invalid peering, that must be resolved }
+    n := 'Peers, TestText6: Relosve left-over binding: ' +
+         'Insert Ifdef in visible part, with node inbetween AT end of outer ifdef';
+    ReCreateEditForTreeTest(TestText6);
+    FTestTree.ValidateRange(1, 20, FOpenings);
+
+    SynEdit.TextBetweenPoints[point(12, 6),point(12, 6)] := '   {$IfDef X}';
+    FTestTree.ValidateRange(1, 20, FOpenings);
+  DebugLn('--------');FTestTree.DebugPrint(true);
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef ) ]);
+    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef ),
+                       ExpN(15,25, idnIfdef, EpEnd(18, 2))
+                     ]);
+    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpEnd(14, 3)) ]);
+    CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
+    CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 15)) ]);
+
+    n := n + ' Remove again';
+    SynEdit.TextBetweenPoints[point(12, 6),point(25, 6)] := '';
+    FTestTree.ValidateRange(1, 20, FOpenings);
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef ) ]);
+    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpEnd(18, 2)) ]);
+    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpEnd(14, 3)) ]);
+    CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
+    CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
+  {%endregion  Insert If/end to create invalid peering, that must be resolved }
+
+
+  {%region  }
+    n := 'P';
+    ReCreateEditForTreeTest(TestText2);
+    FTestTree.ValidateRange(1, 24, FOpenings);
+    FTestTree.ValidateRange(1, 24, FOpenings);
+
+  {%endregion   }
+
+
+
+
+
   {%endregion peers}
 
 
@@ -1430,6 +1550,7 @@ DebugLn('--------');FTestTree.DebugPrint(true);
 
   FTestTree.ValidateRange(1, 6, FOpenings);
 DebugLn('--------');FTestTree.DebugPrint(true);
+  AssertEquals(n + '2 requests ' , 2, FNodeStateRequests.Count);
   AssertEquals(n + 'Got reqest for 2/1' , '1', FNodeStateRequests.Values['2/1']);
   AssertEquals(n + 'Got reqest for 4/1' , '1', FNodeStateRequests.Values['4/1']);
   CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, idnEnabled), ExpN(13,21, idnEndIf, idnEnabled ) ]);
@@ -1440,11 +1561,31 @@ DebugLn('--------');FTestTree.DebugPrint(true);
   FNodeStateRequests.Clear;
   FTestTree.SetNodeState(2,1, idnNotInCode);
 DebugLn('--------');FTestTree.DebugPrint(true);
-  AssertEquals(n + 'Got NO reqest for 2/1' , '', FNodeStateRequests.Values['2/1']);
-  AssertEquals(n + 'Got NO reqest for 4/1' , '', FNodeStateRequests.Values['4/1']);
+  AssertEquals(n + 'NO requests ' , 0, FNodeStateRequests.Count);
+  //AssertEquals(n + 'Got NO reqest for 2/1' , '', FNodeStateRequests.Values['2/1']);
+  //AssertEquals(n + 'Got NO reqest for 4/1' , '', FNodeStateRequests.Values['4/1']);
   CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, idnNotInCode), ExpN(13,21, idnEndIf ) ]);
   CheckNodes(n, 4, [ ExpN( 1,11, idnIfdef, idnDisabled), ExpN(13,21, idnEndIf, idnDisabled ) ]);
 
+
+  {%region  Insert IFDEF into empty text }
+    FNodeStateResponses.Clear;
+    FNodeStateRequests.Clear;
+    ReCreateEditForTreeTest(TestTextNoIfDef);
+    FTestTree.OnNodeStateRequest := @TesTNodeStateHandler;
+
+    FTestTree.ValidateRange(1, 5, FOpenings);
+FTestTree.DebugPrint(true);DebugLn;
+    AssertEquals(n + 'NO requests ' , 0, FNodeStateRequests.Count);
+
+    SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '{$IFDEF a}';
+FTestTree.DebugPrint(true);DebugLn;
+    FTestTree.ValidateRange(1, 5, FOpenings);
+FTestTree.DebugPrint(true);DebugLn;
+    AssertEquals(n + 'one requests ' , 1, FNodeStateRequests.Count);
+    AssertEquals(n + 'Got reqest for 3/1' , '1', FNodeStateRequests.Values['3/1']);
+    CheckNodesXY('Insert IFDEF into empty text', 3, [1,11], 0);
+  {%endregion  Insert IFDEF into empty text }
 
 
   FTestTree.DiscardOpeningList(FOpenings);
