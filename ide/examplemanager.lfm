@@ -1,9 +1,9 @@
-object ManageExamplesForm: TManageExamplesForm
+object ExampleManagerForm: TExampleManagerForm
   Left = 356
   Height = 491
   Top = 130
   Width = 837
-  Caption = 'ManageExamplesForm'
+  Caption = 'ExampleManagerForm'
   ClientHeight = 491
   ClientWidth = 837
   OnClose = FormClose
@@ -12,14 +12,14 @@ object ManageExamplesForm: TManageExamplesForm
   LCLVersion = '1.1'
   object ProjectsGroupBox: TGroupBox
     Left = 0
-    Height = 334
+    Height = 338
     Top = 107
     Width = 424
     Align = alClient
     BorderSpacing.Top = 3
     Caption = 'Projects'
-    ClientHeight = 315
-    ClientWidth = 420
+    ClientHeight = 309
+    ClientWidth = 418
     TabOrder = 0
     object ProjectsListBox: TListBox
       AnchorSideLeft.Control = ProjectsGroupBox
@@ -30,22 +30,20 @@ object ManageExamplesForm: TManageExamplesForm
       AnchorSideBottom.Control = ProjectsGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 284
-      Top = 31
-      Width = 420
+      Height = 280
+      Top = 29
+      Width = 418
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 5
       ItemHeight = 0
       MultiSelect = True
       OnSelectionChange = ProjectsListBoxSelectionChange
-      ScrollWidth = 416
       TabOrder = 0
-      TopIndex = -1
     end
     object ProjectFilter: TListFilterEdit
       AnchorSideLeft.Control = ProjectsListBox
       Left = 0
-      Height = 25
+      Height = 23
       Top = 1
       Width = 221
       ButtonWidth = 23
@@ -61,8 +59,8 @@ object ManageExamplesForm: TManageExamplesForm
       AnchorSideTop.Side = asrCenter
       Left = 271
       Height = 21
-      Top = 3
-      Width = 112
+      Top = 2
+      Width = 113
       BorderSpacing.Left = 50
       Caption = 'Relative paths'
       OnClick = RelativeCheckBoxClick
@@ -72,8 +70,8 @@ object ManageExamplesForm: TManageExamplesForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 38
-    Top = 447
+    Height = 34
+    Top = 451
     Width = 825
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -89,7 +87,7 @@ object ManageExamplesForm: TManageExamplesForm
   object ActionGroupBox: TGroupBox
     AnchorSideLeft.Side = asrBottom
     Left = 432
-    Height = 334
+    Height = 338
     Top = 107
     Width = 405
     Align = alRight
@@ -97,16 +95,16 @@ object ManageExamplesForm: TManageExamplesForm
     BorderSpacing.Left = 3
     BorderSpacing.Top = 3
     Caption = 'Action'
-    ClientHeight = 315
-    ClientWidth = 401
+    ClientHeight = 309
+    ClientWidth = 399
     TabOrder = 2
     object Label1: TLabel
       AnchorSideTop.Control = BuildAllSelectedButton
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BuildAllSelectedButton
       AnchorSideRight.Side = asrBottom
-      Left = 258
-      Height = 17
+      Left = 256
+      Height = 15
       Top = 31
       Width = 130
       Anchors = [akTop, akRight]
@@ -140,7 +138,7 @@ object ManageExamplesForm: TManageExamplesForm
       Left = 208
       Height = 25
       Top = 6
-      Width = 187
+      Width = 185
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Right = 6
       Caption = 'Build All Selected'
@@ -173,7 +171,7 @@ object ManageExamplesForm: TManageExamplesForm
       Left = 208
       Height = 25
       Top = 48
-      Width = 187
+      Width = 185
       Anchors = [akTop, akLeft, akRight]
       Caption = 'Select None'
       Enabled = False
@@ -189,9 +187,9 @@ object ManageExamplesForm: TManageExamplesForm
       AnchorSideBottom.Control = ActionGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 2
-      Height = 235
+      Height = 229
       Top = 78
-      Width = 397
+      Width = 395
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 3
       BorderSpacing.Around = 2
@@ -214,10 +212,10 @@ object ManageExamplesForm: TManageExamplesForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ExamplesCheckBox
       AnchorSideTop.Side = asrCenter
-      Left = 420
+      Left = 419
       Height = 21
       Top = 5
-      Width = 134
+      Width = 136
       BorderSpacing.Left = 33
       Caption = 'Include Testcases'
       OnChange = ExamplesCheckBoxChange
@@ -229,7 +227,7 @@ object ManageExamplesForm: TManageExamplesForm
       Left = 253
       Height = 21
       Top = 5
-      Width = 134
+      Width = 133
       BorderSpacing.Top = 3
       Caption = 'Include Examples'
       Checked = True
@@ -262,8 +260,8 @@ object ManageExamplesForm: TManageExamplesForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
       Left = 253
-      Height = 25
-      Top = 61
+      Height = 23
+      Top = 57
       Width = 542
       ShowHidden = False
       ButtonWidth = 23
@@ -281,7 +279,7 @@ object ManageExamplesForm: TManageExamplesForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
       Left = 253
-      Height = 27
+      Height = 23
       Top = 27
       Width = 566
       Anchors = [akTop, akLeft, akRight]
@@ -294,7 +292,7 @@ object ManageExamplesForm: TManageExamplesForm
   end
   object Splitter1: TSplitter
     Left = 424
-    Height = 337
+    Height = 341
     Top = 104
     Width = 5
     Align = alRight

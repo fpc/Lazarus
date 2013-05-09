@@ -11,9 +11,9 @@ uses
 
 type
 
-  { TManageExamplesForm }
+  { TExampleManagerForm }
 
-  TManageExamplesForm = class(TForm)
+  TExampleManagerForm = class(TForm)
     BuildAllSelectedButton: TBitBtn;
     SelectPanel: TPanel;
     RelativeCheckBox: TCheckBox;
@@ -63,19 +63,19 @@ type
     property IdleConnected: boolean read fIdleConnected write SetIdleConnected;
   end;
 
-function ShowManageExamplesDlg: TModalResult;
+function ShowExampleManagerDlg: TModalResult;
 
 
 implementation
 
 {$R *.lfm}
 
-function ShowManageExamplesDlg: TModalResult;
+function ShowExampleManagerDlg: TModalResult;
 var
-  theForm: TManageExamplesForm;
+  theForm: TExampleManagerForm;
 begin
   Result:=mrCancel;
-  theForm:=TManageExamplesForm.Create(Nil);
+  theForm:=TExampleManagerForm.Create(Nil);
   try
     Result:=theForm.ShowModal;
     if Result=mrYes then
@@ -93,11 +93,11 @@ type
 
   TListFileSearcher = class(TFileSearcher)
   private
-    fForm: TManageExamplesForm;
+    fForm: TExampleManagerForm;
   protected
     procedure DoFileFound; override;
   public
-    constructor Create(aForm: TManageExamplesForm);
+    constructor Create(aForm: TExampleManagerForm);
   end;
 
 { TListFileSearcher }
@@ -107,15 +107,15 @@ begin
   fForm.ProjectFilter.Items.Add(FileName);
 end;
 
-constructor TListFileSearcher.Create(aForm: TManageExamplesForm);
+constructor TListFileSearcher.Create(aForm: TExampleManagerForm);
 begin
   inherited Create;
   fForm := aForm;
 end;
 
-{ TManageExamplesForm }
+{ TExampleManagerForm }
 
-constructor TManageExamplesForm.Create(AnOwner: TComponent);
+constructor TExampleManagerForm.Create(AnOwner: TComponent);
 begin
   inherited Create(AnOwner);
   fFirstSelectedIndex:=-1;
@@ -152,34 +152,34 @@ begin
   FillProjectsPending;
 end;
 
-destructor TManageExamplesForm.Destroy;
+destructor TExampleManagerForm.Destroy;
 begin
   inherited Destroy;
 end;
 
-procedure TManageExamplesForm.FormCreate(Sender: TObject);
+procedure TExampleManagerForm.FormCreate(Sender: TObject);
 begin
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
-procedure TManageExamplesForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+procedure TExampleManagerForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
-procedure TManageExamplesForm.FillDirectoriesPending;
+procedure TExampleManagerForm.FillDirectoriesPending;
 begin
   fNeedsFindDirectories:=True;
   IdleConnected:=True;
 end;
 
-procedure TManageExamplesForm.FillProjectsPending;
+procedure TExampleManagerForm.FillProjectsPending;
 begin
   fNeedsFindProjects:=True;
   IdleConnected:=True;
 end;
 
-procedure TManageExamplesForm.SetIdleConnected(const AValue: boolean);
+procedure TExampleManagerForm.SetIdleConnected(const AValue: boolean);
 begin
   if fIdleConnected=AValue then exit;
   fIdleConnected:=AValue;
@@ -189,7 +189,7 @@ begin
     Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
-procedure TManageExamplesForm.OnIdle(Sender: TObject; var Done: Boolean);
+procedure TExampleManagerForm.OnIdle(Sender: TObject; var Done: Boolean);
 var
   Searcher: TListFileSearcher;
   AllDirs: TStringList;
@@ -241,7 +241,7 @@ begin
   fUpdating:=False;
 end;
 
-procedure TManageExamplesForm.RootRadioGroupClick(Sender: TObject);
+procedure TExampleManagerForm.RootRadioGroupClick(Sender: TObject);
 var
   LazSrc: Boolean;
 begin
@@ -252,7 +252,7 @@ begin
   RootDirectoryEdit.Enabled:=not LazSrc;
 end;
 
-procedure TManageExamplesForm.DirectoryComboBoxChange(Sender: TObject);
+procedure TExampleManagerForm.DirectoryComboBoxChange(Sender: TObject);
 begin
   if DirectoryExists(DirectoryComboBox.Text) then begin
     RootDirectoryEdit.Text:=DirectoryComboBox.Text;
@@ -260,17 +260,17 @@ begin
   end;
 end;
 
-procedure TManageExamplesForm.RootDirectoryEditChange(Sender: TObject);
+procedure TExampleManagerForm.RootDirectoryEditChange(Sender: TObject);
 begin
   FillProjectsPending;
 end;
 
-procedure TManageExamplesForm.ExamplesCheckBoxChange(Sender: TObject);
+procedure TExampleManagerForm.ExamplesCheckBoxChange(Sender: TObject);
 begin
   FillDirectoriesPending;
 end;
 
-procedure TManageExamplesForm.OpenSelectedButtonClick(Sender: TObject);
+procedure TExampleManagerForm.OpenSelectedButtonClick(Sender: TObject);
 begin
   if fFirstSelectedIndex <> -1 then begin
     if FileExistsUTF8(ProjectsListBox.Items[fFirstSelectedIndex]) then begin
@@ -282,7 +282,7 @@ begin
   end;
 end;
 
-procedure TManageExamplesForm.BuildAllSelectedButtonClick(Sender: TObject);
+procedure TExampleManagerForm.BuildAllSelectedButtonClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -293,7 +293,7 @@ begin
   end;
 end;
 
-procedure TManageExamplesForm.SelectAllButtonClick(Sender: TObject);
+procedure TExampleManagerForm.SelectAllButtonClick(Sender: TObject);
 begin
   fChangingSelections:=True;
   ProjectsListBox.SelectAll;
@@ -301,7 +301,7 @@ begin
   ProjectsListBoxSelectionChange(ProjectsListBox, False); // In the end update buttons
 end;
 
-procedure TManageExamplesForm.SelectNoneButtonClick(Sender: TObject);
+procedure TExampleManagerForm.SelectNoneButtonClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -312,13 +312,13 @@ begin
   ProjectsListBoxSelectionChange(ProjectsListBox, False);
 end;
 
-procedure TManageExamplesForm.RelativeCheckBoxClick(Sender: TObject);
+procedure TExampleManagerForm.RelativeCheckBoxClick(Sender: TObject);
 begin
   ;
 end;
 
 // Project list selection changes. Adjust buttons.
-procedure TManageExamplesForm.ProjectsListBoxSelectionChange(Sender: TObject; User: boolean);
+procedure TExampleManagerForm.ProjectsListBoxSelectionChange(Sender: TObject; User: boolean);
 var
   HasSelected: Boolean;
   ReadMe, RealReadMe: String;

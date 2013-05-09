@@ -835,7 +835,7 @@ type
     function OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
     function DoRunExternalTool(Index: integer; ShowAbort: Boolean): TModalResult;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; override;
-    function DoManageExamples(): TModalResult; override;
+    function DoExampleManager: TModalResult; override;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoBuildAdvancedLazarus(ProfileNames: TStringList): TModalResult;
     function DoBuildFile(ShowAbort: Boolean): TModalResult;
@@ -4506,7 +4506,7 @@ end;
 
 procedure TMainIDE.mnuToolManageExamplesClicked(Sender: TObject);
 begin
-  DoManageExamples();
+  DoExampleManager();
 end;
 
 procedure TMainIDE.mnuToolBuildLazarusClicked(Sender: TObject);
@@ -7485,9 +7485,9 @@ begin
   if Result<>mrOk then exit;
 end;
 
-function TMainIDE.DoManageExamples: TModalResult;
+function TMainIDE.DoExampleManager: TModalResult;
 begin
-  Result:=ShowManageExamplesDlg;
+  Result:=ShowExampleManagerDlg;
 end;
 
 function TMainIDE.DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
