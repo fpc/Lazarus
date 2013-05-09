@@ -37,6 +37,7 @@ var
   Filename: String;
   Code: TCodeBuffer;
   i: Integer;
+  Dir: PLSDirective;
 begin
   if (ParamCount>=1) and (Paramcount<>1) then begin
     writeln('Usage:');
@@ -54,9 +55,15 @@ begin
   if not CodeToolBoss.ExploreUnitDirectives(Code,Scanner) then
     raise Exception.Create('parser error');
 
+  writeln(Scanner.CleanedSrc);
   for i:=0 to Scanner.DirectiveCount-1 do begin
     Dir:=Scanner.Directives[i];
-
+    write(i,'/',Scanner.DirectiveCount,
+      ' CleanPos=',Dir^.CleanPos,'=',Scanner.CleanedPosToStr(Dir^.CleanPos),
+      ' Level=',Dir^.Level,' ',dbgs(Dir^.State),
+      ' "',ExtractCommentContent(Scanner.CleanedSrc,Dir^.CleanPos,Scanner.NestedComments),'"'
+      );
+    writeln;
   end;
 
   writeln('-----------------------------------------------');

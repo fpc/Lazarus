@@ -221,8 +221,7 @@ type
     );
 
   TLSDirectiveState = (
-    lsdsNone,
-    lsdsActive,  // e.g. an IfDef with active code inside
+    lsdsActive,
     lsdsInactive,// e.g. an IfDef which code was skipped
     lsdsSkipped // has inactive parent
     );
@@ -656,6 +655,7 @@ function IndexOfCodeInUniqueList(ACode: Pointer;
 function dbgs(r: TLinkScannerRange): string; overload;
 function dbgs(const ModeSwitches: TCompilerModeSwitches): string; overload;
 function dbgs(k: TSourceLinkKind): string; overload;
+function dbgs(s: TLSDirectiveState): string; overload;
 
 implementation
 
@@ -730,6 +730,15 @@ begin
   slkSkipStart: Result:='SkipStart';
   slkSkipEnd: Result:='SkipEnd';
   else Result:='?';
+  end;
+end;
+
+function dbgs(s: TLSDirectiveState): string;
+begin
+  case s of
+  lsdsActive: Result:='Active';
+  lsdsInactive: Result:='Inactive';
+  lsdsSkipped: Result:='Skipped';
   end;
 end;
 
@@ -1267,10 +1276,13 @@ begin
         FDirectivesCapacity:=16
       else
         FDirectivesCapacity:=FDirectivesCapacity*2;
-      ReAllocMem(FDirectives,FDirectivesCapacity*SizeOf(FDirectivesCapacity));
+      ReAllocMem(FDirectives,FDirectivesCapacity*SizeOf(TLSDirective));
     end;
     CurDirective:=@FDirectives[FDirectivesCount];
-    CurDirective^.State:=lsdsNone;
+    if FSkippingDirectives=lssdNone then
+      CurDirective^.State:=lsdsActive
+    else
+      CurDirective^.State:=lsdsSkipped;
     CurDirective^.CleanPos:=CommentStartPos-CopiedSrcPos+CleanedLen;
     inc(FDirectivesCount);
   end;
@@ -3843,6 +3855,8 @@ begin
     exit;
   end;
   FSkippingDirectives:=SkippingUntil;
+  if FDirectivesCount>0 then
+    FDirectives[FDirectivesCount-1].State:=lsdsInactive;
 
   SrcPos:=CommentEndPos;
   {$IFDEF ShowUpdateCleanedSrc}
@@ -3987,6 +4001,8 @@ procedure TLinkScanner.EndSkipping;
     CTDumpStack;
   end;
 
+var
+  Dir: PLSDirective;
 begin
   if FSkippingDirectives=lssdNone then begin
     ErrorNotSkipping;
@@ -3996,6 +4012,12 @@ begin
   UpdateCleanedSource(CommentStartPos-1);
   AddSkipComment(false);
   AddLink(CommentStartPos,Code);
+  if StoreDirectives then begin
+    // update cleaned position of directive
+    Dir:=@FDirectives[FDirectivesCount-1];
+    Dir^.CleanPos:=CleanedLen+1;
+    Dir^.State:=lsdsActive;
+  end;
   FSkipIfLevel:=-1;
 end;
 

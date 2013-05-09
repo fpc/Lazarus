@@ -8,7 +8,7 @@ uses
   Classes, SysUtils;
 
 {$IfDef FPC}
-
+  {$Define SkippedMacro}
 {$Else}
   {$Define NotFPC}
 {$EndIf}
