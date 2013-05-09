@@ -45,7 +45,7 @@ function FileIsText(const AFilename: string; out FileReadable: boolean): boolean
 function FilenameIsTrimmed(const TheFilename: string): boolean;
 function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
 function TrimFilename(const AFilename: string): string;
-function ExpandDots(const AFilename: string): string;
+function ResolveDots(const AFilename: string): string;
 function CleanAndExpandFilename(const Filename: string): string; // empty string returns current directory
 function CleanAndExpandDirectory(const Filename: string): string; // empty string returns current directory
 function TrimAndExpandFilename(const Filename: string; const BaseDir: string = ''): string; // empty string returns empty string
@@ -598,7 +598,7 @@ end;
 
 function TrimFilename(const AFilename: string): string;
 //Trim leading and trailing spaces
-//then call ExpandDots to trim double path delims and expand special dirs like .. and .
+//then call ResolveDots to trim double path delims and expand special dirs like .. and .
 
 var
   Len, Start: Integer;
@@ -612,7 +612,7 @@ begin
     while (Start <= Len) and (AFilename[Start] = #32) do Inc(Start);
     if Start > 1 then System.Delete(Result,1,Start-1);
     SetLength(Result, Len - (Start - 1));
-    Result := ExpandDots(Result);
+    Result := ResolveDots(Result);
   end;
 end;
 

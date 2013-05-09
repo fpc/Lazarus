@@ -115,7 +115,7 @@ begin
   if IsAbs then
   begin
     //writeln('IsAbs = True -> Exit');
-    Result := ExpandDots(Fn);
+    Result := ResolveDots(Fn);
   end
   else
   begin
@@ -127,7 +127,7 @@ begin
       Fn := IncludeTrailingPathDelimiter(BaseDir) + Fn;
     end;
 
-    Fn := ExpandDots(Fn);
+    Fn := ResolveDots(Fn);
     //if BaseDir is something like 'z:foo\' or '\' then this needs to be expanded as well
     if not FileNameIsAbsolute(Fn) then
       Fn := ExpandFileNameUtf8(Fn, '');
