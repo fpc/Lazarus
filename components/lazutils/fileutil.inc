@@ -1247,6 +1247,7 @@ type
 
 constructor TListDirectoriesSearcher.Create(AList: TStrings);
 begin
+  inherited Create;
   FDirectoriesList := AList;
 end;
 

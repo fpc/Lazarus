@@ -829,7 +829,6 @@ end;
 constructor TLazFileSearcher.Create(AParent: TSearchProgressForm);
 begin
   inherited Create;
-  
   FParent := AParent;
 end;
 

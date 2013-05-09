@@ -401,6 +401,7 @@ type
 
 constructor TUnitsSearcher.Create(aConverter: TConvertDelphiPBase);
 begin
+  inherited Create;
   fConverter := aConverter;
 end;
 

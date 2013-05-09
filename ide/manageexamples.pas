@@ -109,6 +109,7 @@ end;
 
 constructor TListFileSearcher.Create(aForm: TManageExamplesForm);
 begin
+  inherited Create;
   fForm := aForm;
 end;
 
