@@ -1464,8 +1464,7 @@ begin
   // if this is the main unit, it is already
   // loaded and needs only to be shown in the sourceeditor/formeditor
   if (not (ofRevert in Flags))
-  and (CompareFilenames(Project1.MainFilename,AFilename,
-       not (ofVirtualFile in Flags))=0)
+  and (CompareFilenames(Project1.MainFilename,AFilename, not (ofVirtualFile in Flags))=0)
   then begin
     Result:=OpenMainUnit(PageIndex,WindowIndex,Flags,UseWindowID);
     exit;
