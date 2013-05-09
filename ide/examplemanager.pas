@@ -1,4 +1,4 @@
-unit ManageExamples;
+unit ExampleManager;
 
 {$mode objfpc}{$H+}
 
