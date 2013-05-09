@@ -28,7 +28,7 @@ begin
   end;
   if IsAbs then
   begin
-    Result := ExpandDots(Fn);
+    Result := ResolveDots(Fn);
   end
   else
   begin
@@ -36,7 +36,7 @@ begin
       Fn := IncludeTrailingPathDelimiter(CurDir) + Fn
     else
       Fn := IncludeTrailingPathDelimiter(BaseDir) + Fn;
-    Fn := ExpandDots(Fn);
+    Fn := ResolveDots(Fn);
     //if BaseDir is not absolute then this needs to be expanded as well
     if not FileNameIsUnixAbsolute(Fn) then
       Fn := ExpandFileNameUtf8(Fn, '');
