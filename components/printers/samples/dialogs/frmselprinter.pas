@@ -41,6 +41,12 @@ type
     Button7: TButton;
     chkOutputFile: TCheckBox;
     chkTestImgs: TCheckBox;
+    txtPageSetupDlgTitle: TEdit;
+    txtPrinterSetupDlgTitle: TEdit;
+    txtPrintDialogTitle: TEdit;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
     txtOutputFile: TFileNameEdit;
     Label1: TLABEL;
     PAGED: TPageSetupDialog;
@@ -81,6 +87,8 @@ var
 implementation
 uses
   Printers,OsPrinters,LCLType,LClProc;
+
+{$R *.lfm}
 
 { TForm1 }
 
@@ -280,6 +288,7 @@ end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
+  PSD.Title := txtPrinterSetupDlgTitle.Text;
   if PSD.Execute then
     UpdatePrinterInfo;
 end;
@@ -314,6 +323,7 @@ procedure TForm1.Button7Click(Sender: TObject);
 var
  s : String;
 begin
+  PageD.Title:= txtPageSetupDlgTitle.Text;
   if PAGED.Execute then
   begin
     UpdatePrinterInfo;
@@ -354,6 +364,7 @@ procedure TForm1.Button1Click(Sender: TObject);
 var
  s,x : String;
 begin
+  PD.Title := txtPrintDialogTitle.Text;
   if PD.Execute then
   begin
    UpdatePrinterInfo;
@@ -367,8 +378,5 @@ begin
    Application.MessageBox(pChar(s),'Info',mb_iconinformation);
   end;
 end;
-
-initialization
-  {$I frmselprinter.lrs}
 
 end.

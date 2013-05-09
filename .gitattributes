@@ -2605,7 +2605,6 @@ components/printers/qt/qtprinters_h.inc svneol=native#text/pascal
 components/printers/qt/qtprndialogs.inc svneol=native#text/pascal
 components/printers/readme.txt svneol=native#text/plain
 components/printers/samples/dialogs/frmselprinter.lfm svneol=native#text/plain
-components/printers/samples/dialogs/frmselprinter.lrs svneol=native#text/pascal
 components/printers/samples/dialogs/frmselprinter.pas svneol=native#text/pascal
 components/printers/samples/dialogs/selectprinter.lpi svneol=native#text/plain
 components/printers/samples/dialogs/selectprinter.lpr svneol=native#text/pascal

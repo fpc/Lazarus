@@ -1,20 +1,20 @@
 object Form1: TForm1
-  Left = 335
-  Height = 504
-  Top = 141
-  Width = 340
+  Left = 606
+  Height = 574
+  Top = 122
+  Width = 338
   ActiveControl = Button7
   Caption = 'Form1'
-  ClientHeight = 504
-  ClientWidth = 340
+  ClientHeight = 574
+  ClientWidth = 338
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.1'
   object Label1: TLabel
     Left = 12
-    Height = 14
+    Height = 13
     Top = 4
-    Width = 230
+    Width = 229
     Caption = 'This sample show how to use the printer dialogs'
     ParentColor = False
   end
@@ -40,9 +40,9 @@ object Form1: TForm1
   end
   object SGrid: TStringGrid
     Left = 8
-    Height = 304
-    Top = 192
-    Width = 320
+    Height = 302
+    Top = 264
+    Width = 318
     AlternateColor = clCream
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoFillColumns = True
@@ -59,7 +59,7 @@ object Form1: TForm1
         MaxSize = 350
         ReadOnly = True
         Title.Caption = 'Value'
-        Width = 196
+        Width = 177
       end>
     DefaultColWidth = 120
     FixedCols = 0
@@ -71,7 +71,7 @@ object Form1: TForm1
     OnSelectCell = SGridSelectCell
     ColWidths = (
       120
-      196
+      177
     )
   end
   object Button3: TButton
@@ -142,42 +142,94 @@ object Form1: TForm1
   end
   object txtOutputFile: TFileNameEdit
     Left = 195
-    Height = 23
+    Height = 21
     Top = 48
-    Width = 109
+    Width = 113
     DialogKind = dkSave
     DialogOptions = []
     FilterIndex = 0
     HideDirectories = False
     ButtonWidth = 23
-    NumGlyphs = 0
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    MaxLength = 0
     TabOrder = 10
+  end
+  object Label2: TLabel
+    Left = 20
+    Height = 13
+    Top = 188
+    Width = 94
+    Caption = 'PageSetupDlg Title:'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 12
+    Height = 13
+    Top = 212
+    Width = 102
+    Caption = 'PrinterSetupDlg Title:'
+    ParentColor = False
+  end
+  object txtPageSetupDlgTitle: TEdit
+    Left = 128
+    Height = 21
+    Top = 188
+    Width = 198
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 11
+    Text = 'Printer Dialogs Tests: PageSetupDialog'
+  end
+  object txtPrinterSetupDlgTitle: TEdit
+    Left = 128
+    Height = 21
+    Top = 212
+    Width = 198
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 12
+    Text = 'Printer Dialogs Tests: PrinterSetupDialog'
+  end
+  object Label4: TLabel
+    Left = 36
+    Height = 13
+    Top = 236
+    Width = 78
+    Caption = 'PrintDialog Title:'
+    ParentColor = False
+  end
+  object txtPrintDialogTitle: TEdit
+    Left = 128
+    Height = 21
+    Top = 236
+    Width = 198
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 13
+    Text = 'Printer Dialogs Tests: PrinterDialog'
   end
   object PSD: TPrinterSetupDialog
     Title = 'Testing dialog title'
-    left = 176
-    top = 240
+    left = 172
+    top = 452
   end
   object PD: TPrintDialog
     Title = 'Testing title'
     Collate = True
-    Copies = 1
     FromPage = 2
     MinPage = 2
     MaxPage = 5
     Options = [poPrintToFile, poPageNums, poSelection, poWarning, poHelp]
     PrintToFile = True
     ToPage = 3
-    left = 176
-    top = 272
+    left = 172
+    top = 484
   end
   object PopupMenu1: TPopupMenu
-    left = 216
-    top = 240
+    left = 212
+    top = 452
   end
   object PAGED: TPageSetupDialog
     Title = 'Ustawienie strony raportu'
-    left = 176
-    top = 304
+    left = 172
+    top = 516
   end
 end
