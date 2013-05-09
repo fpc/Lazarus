@@ -1326,6 +1326,7 @@ begin
     CurDirective^.CleanPos:=CommentStartPos-CopiedSrcPos+CleanedLen;
     CurDirective^.Code:=Code;
     CurDirective^.SrcPos:=SrcPos;
+    CurDirective^.Level:=IfLevel;
     inc(FDirectivesCount);
   end;
   SrcPos:=CommentInnerStartPos+1;
@@ -3087,6 +3088,9 @@ begin
     debugln(['TLinkScanner.EndifDirective end skip']);
     {$ENDIF}
     EndSkipping;
+  end;
+  if StoreDirectives then begin
+    FDirectives[FDirectivesCount-1].Level:=IfLevel;
   end;
   Result:=true;
 end;
