@@ -41,16 +41,20 @@ procedure ConvertFormToText(Stream: TMemoryStream);
 var TextStream: TMemoryStream;
 begin
   try
-    TextStream:=TMemoryStream.Create;
-    FormDataToText(Stream,TextStream);
-    TextStream.Position:=0;
-    Stream.Clear;
-    Stream.CopyFrom(TextStream,TextStream.Size);
-    Stream.Position:=0;
-  except
-    on E: Exception do begin
-      debugln('ERROR: unable to convert Delphi form to text: '+E.Message);
+    try
+      TextStream:=TMemoryStream.Create;
+      FormDataToText(Stream,TextStream);
+      TextStream.Position:=0;
+      Stream.Clear;
+      Stream.CopyFrom(TextStream,TextStream.Size);
+      Stream.Position:=0;
+    except
+      on E: Exception do begin
+        debugln('ERROR: unable to convert Delphi form to text: '+E.Message);
+      end;
     end;
+  finally
+    TextStream.Free;
   end;
 end;
 
