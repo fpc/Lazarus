@@ -1,39 +1,68 @@
 {%MainUnit ../printersdlgs.pp}
 
-function PrintHookProc(hdlg: HWND; uiMsg: UINT; wParam: WPARAM; lParam: LPARAM): UINT_PTR; stdcall;
+// update from win32wsdialogs.pp
+procedure Reposition(ADialogWnd: Handle);
+var
+  Left, Top: Integer;
+  ABounds, DialogRect: TRect;
+begin
+  // Btw, setting width and height of dialog doesnot reposition child controls :(
+  // So no way to set another height and width at least here
 
-  // update from win32wsdialogs.pp
-  procedure Reposition(ADialogWnd: Handle);
-  var
-    Left, Top: Integer;
-    ABounds, DialogRect: TRect;
+  if (GetParent(ADialogWnd) = Widgetset.AppHandle) then
   begin
-    // Btw, setting width and height of dialog doesnot reposition child controls :(
-    // So no way to set another height and width at least here
-
-    if (GetParent(ADialogWnd) = Widgetset.AppHandle) then
-    begin
-      if Screen.ActiveCustomForm <> nil then
-        ABounds := Screen.ActiveCustomForm.Monitor.BoundsRect
-      else
-      if Application.MainForm <> nil then
-        ABounds := Application.MainForm.Monitor.BoundsRect
-      else
-        ABounds := Screen.PrimaryMonitor.BoundsRect;
-    end
+    if Screen.ActiveCustomForm <> nil then
+      ABounds := Screen.ActiveCustomForm.Monitor.BoundsRect
     else
-      ABounds := Screen.MonitorFromWindow(GetParent(ADialogWnd)).BoundsRect;
-    GetWindowRect(ADialogWnd, DialogRect);
-    Left := (ABounds.Right - DialogRect.Right + DialogRect.Left) div 2;
-    Top := (ABounds.Bottom - DialogRect.Bottom + DialogRect.Top) div 2;
-    SetWindowPos(ADialogWnd, HWND_TOP, Left, Top, 0, 0, SWP_NOSIZE);
-  end;
+    if Application.MainForm <> nil then
+      ABounds := Application.MainForm.Monitor.BoundsRect
+    else
+      ABounds := Screen.PrimaryMonitor.BoundsRect;
+  end
+  else
+    ABounds := Screen.MonitorFromWindow(GetParent(ADialogWnd)).BoundsRect;
+  GetWindowRect(ADialogWnd, DialogRect);
+  Left := (ABounds.Right - DialogRect.Right + DialogRect.Left) div 2;
+  Top := (ABounds.Bottom - DialogRect.Bottom + DialogRect.Top) div 2;
+  SetWindowPos(ADialogWnd, HWND_TOP, Left, Top, 0, 0, SWP_NOSIZE);
+end;
 
+function PrintHookProc(hdlg: HWND; uiMsg: UINT; wParam: WPARAM; lParam: LPARAM): UINT_PTR; stdcall;
+var
+  lpp: PtagPD;
 begin
   if uiMsg = WM_INITDIALOG then
+  begin
+    lpp := PtagPD(lParam);
+    if (lParam<>0) and (lpp^.lCustData<>0) then
+      {$IFDEF USEUNICODE}
+      SetWindowTextW(hdlg, pwidechar(lpp^.lCustData));
+      {$ELSE}
+      SetWindowText(hdlg,pChar(lpp^.lCustData));
+      {$ENDIF}
     Reposition(hdlg);
+  end;
   Result := 0;
 end;
+
+function PageSetupHookProc(hdlg: HWND; uiMsg: UINT; wParam: WPARAM; lParam: LPARAM): PtrUInt; stdcall;
+var
+ lpp : PtagPSD;
+begin
+  if uiMsg = WM_INITDIALOG then
+  begin
+    lpp := PtagPSD(lParam);
+    if (lParam<>0) and (lpp^.lCustData<>0) then
+      {$IFDEF USEUNICODE}
+      SetWindowTextW(hdlg, pwidechar(lpp^.lCustData));
+      {$ELSE}
+      SetWindowText(hdlg,pChar(lpp^.lCustData));
+      {$ENDIF}
+    Reposition(hdlg);
+  end;
+  Result := 0;
+end;
+
 
 { TPageSetupDialog }
 
@@ -60,7 +89,15 @@ begin
     begin
       lStructSize := SizeOf(lpp);
       hInstance := System.HInstance;
-      lpfnPageSetupHook := @PrintHookProc;
+      lpfnPageSetupHook := @PageSetupHookProc;
+      if Title<>'' then
+        {$IFDEF USEUNICODE}
+        lCustData := LPARAM(pWideChar(UTF8Decode(Title)))
+        {$ELSE}
+        lCustData := LPARAM(pChar(Utf8ToAnsi(Title)))
+        {$ENDIF}
+      else
+        lCustData := 0;
       Flags := PSD_MARGINS or PSD_ENABLEPAGESETUPHOOK;
       hWndOwner := Widgetset.AppHandle;
       rtMargin := fMargins;
@@ -152,6 +189,14 @@ begin
       lStructSize := SizeOf(lpp);
       hInstance := System.HInstance;
       lpfnSetupHook := @PrintHookProc;
+      if Title<>'' then
+        {$IFDEF USEUNICODE}
+        lCustData := LPARAM(pWideChar(UTF8Decode(Title)))
+        {$ELSE}
+        lCustData := LPARAM(pChar(Utf8ToAnsi(Title)))
+        {$ENDIF}
+      else
+        lCustData := 0;
       Flags := PD_PRINTSETUP or PD_RETURNDC or PD_ENABLESETUPHOOK;
       hWndOwner := Widgetset.AppHandle;
       PDev := TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
@@ -240,6 +285,14 @@ begin
       hInstance := System.HInstance;
       lpfnPrintHook := @PrintHookProc;
       lpfnSetupHook := @PrintHookProc;
+      if Title<>'' then
+        {$IFDEF USEUNICODE}
+        lCustData := LPARAM(pWideChar(UTF8Decode(Title)))
+        {$ELSE}
+        lCustData := LPARAM(pChar(Utf8ToAnsi(Title)))
+        {$ENDIF}
+      else
+        lCustData := 0;
       Flags := PD_ENABLEPRINTHOOK or PD_ENABLESETUPHOOK;
       if not Printer.RawMode then
         Flags := Flags or PD_RETURNDC;
