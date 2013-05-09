@@ -38,6 +38,8 @@ var
   Code: TCodeBuffer;
   i: Integer;
   Dir: PLSDirective;
+  FirstSortedIndex: integer;
+  LastSortedIndex: integer;
 begin
   if (ParamCount>=1) and (Paramcount<>1) then begin
     writeln('Usage:');
@@ -61,12 +63,11 @@ begin
   writeln('Directives in compile order:');
   for i:=0 to Scanner.DirectiveCount-1 do begin
     Dir:=Scanner.Directives[i];
-    write(i,'/',Scanner.DirectiveCount,
+    writeln(i,'/',Scanner.DirectiveCount,
       ' CleanPos=',Dir^.CleanPos,'=',Scanner.CleanedPosToStr(Dir^.CleanPos),
       ' Level=',Dir^.Level,' ',dbgs(Dir^.State),
       ' "',ExtractCommentContent(Scanner.CleanedSrc,Dir^.CleanPos,Scanner.NestedComments),'"'
       );
-    writeln;
   end;
   writeln('-----------------------------------------------');
   writeln('Directives sorted for Code and SrcPos:');
@@ -77,6 +78,13 @@ begin
       ' Level=',Dir^.Level,' ',dbgs(Dir^.State),
       ' "',ExtractCommentContent(Scanner.CleanedSrc,Dir^.CleanPos,Scanner.NestedComments),'"'
       );
+    if Scanner.FindDirective(Code,Dir^.SrcPos,FirstSortedIndex,LastSortedIndex)
+    then begin
+      if FirstSortedIndex<LastSortedIndex then
+        write(' MULTIPLE: ',FirstSortedIndex,'-',LastSortedIndex);
+    end else begin
+      raise Exception.Create('inconsistency: Scanner.FindDirective failed');
+    end;
     writeln;
   end;
 

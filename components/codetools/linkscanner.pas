@@ -513,6 +513,8 @@ type
     property DirectiveCount: integer read FDirectivesCount;
     procedure ClearDirectives;
     property StoreDirectives: boolean read FStoreDirectives write SetStoreDirectives;
+    function FindDirective(aCode: Pointer; aSrcPos: integer;
+      out FirstSortedIndex, LastSortedIndex: integer): boolean;
 
     // source mapping (Cleaned <-> Original)
     function CleanedSrc: string;
@@ -1215,6 +1217,45 @@ begin
   FDirectivesCount:=0;
   if FDirectivesSorted<>nil then
     FDirectivesSorted[0]:=nil;
+end;
+
+function TLinkScanner.FindDirective(aCode: Pointer; aSrcPos: integer; out
+  FirstSortedIndex, LastSortedIndex: integer): boolean;
+var
+  l: Integer;
+  r: Integer;
+  m: Integer;
+  Dir: TLSDirective;
+  cmp: Integer;
+begin
+  Dir.Code:=aCode;
+  Dir.SrcPos:=aSrcPos;
+  l:=0;
+  r:=FDirectivesCount;
+  while l<=r do begin
+    m:=(l+r) div 2;
+    cmp:=CompareLSDirective(@Dir,DirectivesSorted[m]);
+    if cmp<0 then
+      r:=m-1
+    else if cmp>0 then
+      l:=m+1
+    else begin
+      // found
+      FirstSortedIndex:=m;
+      LastSortedIndex:=m;
+      while (FirstSortedIndex>0)
+      and (CompareLSDirective(@Dir,DirectivesSorted[FirstSortedIndex-1])=0) do
+        dec(FirstSortedIndex);
+      while (LastSortedIndex+1<FDirectivesCount)
+      and (CompareLSDirective(@Dir,DirectivesSorted[LastSortedIndex+1])=0) do
+        inc(LastSortedIndex);
+      Result:=true;
+      exit;
+    end;
+  end;
+  Result:=false;
+  FirstSortedIndex:=-1;
+  LastSortedIndex:=-1;
 end;
 
 function TLinkScanner.LinkIndexAtCleanPos(ACleanPos: integer): integer;
