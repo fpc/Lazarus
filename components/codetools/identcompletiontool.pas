@@ -719,7 +719,13 @@ var
 begin
   FIdentSearchItem.Identifier:=Identifier;
   // ignore ParamList (for checking function overloading)
-  AVLNode:=FIdentView.FindKey(FIdentSearchItem,@CompareIdentListSearchWithItemsWithoutParams);
+  AVLNode:=FIdentView.FindLeftMostKey(FIdentSearchItem,
+                                @CompareIdentListSearchWithItemsWithoutParams);
+  while (AVLNode<>nil)
+  and not (TIdentifierListItem(AVLNode.Data).Node.Desc in [ctnProcedure,ctnProcedureHead])
+  and (CompareIdentifiers(Identifier,PChar(TIdentifierListItem(AVLNode.Data).Identifier))=0)
+  do
+    AVLNode:=FIdentView.FindSuccessor(AVLNode);
   if AVLNode<>nil then
     Result:=TIdentifierListItem(AVLNode.Data)
   else
