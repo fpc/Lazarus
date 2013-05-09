@@ -9987,6 +9987,7 @@ begin
     end;
   end;
 
+  // check if TermPos is @Name and a pointer (= ^Name) can be found
   if IsTermNamedPointer(TermPos,ExprType) then begin
     // pointer type
   end else begin
@@ -10703,6 +10704,8 @@ begin
 
         // ToDo: PPU, DCU
 
+        if FindContext.Node.Parent.Desc=ctnTypeDefinition then
+          FindContext.Node:=FindContext.Node.Parent;
         case FindContext.Node.Desc of
 
         ctnTypeDefinition:
@@ -10752,6 +10755,7 @@ begin
             Result:=GetIdentifier(
                               @FindContext.Tool.Src[FindContext.Node.StartPos]);
           end;
+
         end;
 
         if Result='' then begin
