@@ -1518,8 +1518,8 @@ begin
             if OpenList[OpenIdx(CurDepth)].EndIfPeer <> ANode.Entry[i] then begin
               Debugln(['New Peer for ',dbgs(OpenList[OpenIdx(CurDepth)].NodeType), ' to endif same line']);
               OpenList[OpenIdx(CurDepth)].EndIfPeer := ANode.Entry[i];
-              dec(MaxOpenDepth);
             end;
+            dec(MaxOpenDepth);
           end
           else begin
             // Opening Node in previous line
@@ -2628,8 +2628,12 @@ var
     else
       Match.EndPoint := point(1, LastLine+1);
 
-    inc(LastMatchIdx);
 debugln(['MATCH AT ', dbgs(Match.StartPoint), ' ', dbgs(Match.EndPoint)]);
+    // empty match does not highlight
+    if ComparePoints(Match.StartPoint, Match.EndPoint) = 0 then
+      exit;
+
+    inc(LastMatchIdx);
 
     if LastMatchIdx >= Matches.Count then begin
       Matches.Match[LastMatchIdx] := Match;
