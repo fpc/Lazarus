@@ -2539,7 +2539,7 @@ end;
 function TSynMarkupHighIfDefLinesTree.FindNodeAtPosition(ALine: Integer;
   AMode: TSynSizedDiffAVLFindMode): TSynMarkupHighIfDefLinesNodeInfo;
 begin
-  Result.ClearInfo;
+  Result{%H-}.ClearInfo;
   Result.FTree := Self;
   Result.FNode :=
     TSynMarkupHighIfDefLinesNode(FindNodeAtPosition(ALine, AMode,
