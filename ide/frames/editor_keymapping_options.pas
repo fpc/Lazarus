@@ -348,6 +348,7 @@ begin
   ClearMenuItem.Caption := lisClear;
 
   TreeView.Images := IDEImages.Images_16;
+  ConflictsTreeView.Images := IDEImages.Images_16;
   imgKeyCategory := IDEImages.LoadImage(16, 'item_keyboard');
   imgKeyItem := IDEImages.LoadImage(16, 'item_character');
   ChooseSchemeButton.LoadGlyphFromLazarusResource('item_keyboard'); // keymapcategory
@@ -594,14 +595,16 @@ var
       // conflict found
       inc(ConflictCount);
       ConflictNode:=ConflictsTreeView.Items.Add(nil,srkmConflic+IntToStr(ConflictCount));
+      ConflictNode.ImageIndex:=imgKeyItem;
+      ConflictNode.StateIndex:=imgKeyItem;
       KeyNode:=ConflictsTreeView.Items.AddChild(ConflictNode,
                                           KeyShortCutToCaption(Key1,ShortCut1));
       KeyNode.ImageIndex := imgKeyItem;
-      KeyNode.SelectedIndex := KeyNode.ImageIndex;
+      KeyNode.SelectedIndex := imgKeyItem;
       KeyNode:=ConflictsTreeView.Items.AddChild(ConflictNode,
                                           KeyShortCutToCaption(Key2,ShortCut2));
       KeyNode.ImageIndex := imgKeyItem;
-      KeyNode.SelectedIndex := KeyNode.ImageIndex;
+      KeyNode.SelectedIndex := imgKeyItem;
       ConflictNode.Expanded:=true;
     end;
   end;
