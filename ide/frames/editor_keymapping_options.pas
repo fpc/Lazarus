@@ -29,7 +29,7 @@ uses
   Controls, Dialogs, LCLType, LCLProc, Menus, Buttons, Clipbrd, EditorOptions,
   LazarusIDEStrConsts, IDEOptionsIntf, IDEImagesIntf, editor_general_options,
   KeymapSchemeDlg, KeyMapping, IDECommands, KeyMapShortCutDlg, SrcEditorIntf,
-  EditBtn;
+  EditBtn, ExtCtrls;
 
 type
 
@@ -43,6 +43,9 @@ type
     FilterEdit: TTreeFilterEdit;
     FindKeyButton: TBitBtn;
     CommandLabel: TLabel;
+    ConflictsTreeView: TTreeView;
+    KeyMapSplitter: TSplitter;
+    KeyMapTreePanel: TPanel;
     SchemeLabel: TLabel;
     ResetKeyFilterBtn: TSpeedButton;
     TreeView: TTreeView;
@@ -50,6 +53,8 @@ type
     ClearMenuItem: TMenuItem;
     PopupMenu1: TPopupMenu;
     procedure ClearMenuItemClick(Sender: TObject);
+    procedure ConflictsTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure EditButtonClick(Sender: TObject);
     procedure EditMenuItemClick(Sender: TObject);
     procedure ChooseSchemeButtonClick(Sender: TObject);
@@ -58,6 +63,7 @@ type
     function FilterEditFilterItem(Item: TObject; out Done: Boolean): Boolean;
     procedure FilterEditKeyPress(Sender: TObject; var Key: char);
     procedure FindKeyButtonClick(Sender: TObject);
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure ResetKeyFilterBtnClick(Sender: TObject);
     procedure TreeViewDblClick(Sender: TObject);
     procedure TreeViewKeyPress(Sender: TObject; var Key: char);
@@ -66,14 +72,22 @@ type
   private
     FDialog: TAbstractOptionsEditorDialog;
     FEditingKeyMap: TKeyCommandRelationList;
+    FIdleConnected: boolean;
     KeyMapKeyFilter: TIDEShortCut;
     fModified: Boolean;
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
     procedure FillKeyMappingTreeView;
     procedure EditCommandMapping(ANode: TTreeNode);
+    procedure EditConflict(ANode: TTreeNode);
+    procedure EditCommandRelation(ARelation: TKeyCommandRelation);
     procedure ClearCommandMapping(ANode: TTreeNode);
-    function KeyMappingRelationToString(Index: Integer): String;
-    function KeyMappingRelationToString(KeyRelation: TKeyCommandRelation): String;
+    procedure ClearCommandRelation(ARelation: TKeyCommandRelation);
+    function KeyMappingRelationToCaption(Index: Integer): String;
+    function KeyMappingRelationToCaption(KeyRelation: TKeyCommandRelation): String;
+    function KeyShortCutToCaption(const aKey: TKeyCommandRelation;
+      const aShortCut: TIDEShortCut): string;
+    function CaptionToKeyMappingRelation(aCaption: string): TKeyCommandRelation;
+    procedure SetIdleConnected(AValue: boolean);
     procedure UpdateKeyFilterButton;
     procedure UpdateSchemeLabel;
   public
@@ -87,7 +101,9 @@ type
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
     procedure SelectByIdeCommand(ACmd: word);
     procedure UpdateTree;
+    procedure UpdateConflictTree;
     property EditingKeyMap: TKeyCommandRelationList read FEditingKeyMap;
+    property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
 
 implementation
@@ -174,6 +190,7 @@ end;
 
 destructor TEditorKeymappingOptionsFrame.Destroy;
 begin
+  IdleConnected:=false;
   FEditingKeyMap.Free;
   inherited Destroy;
 end;
@@ -189,6 +206,7 @@ begin
     FillKeyMappingTreeView;
     fModified:=False;
     UpdateSchemeLabel;
+    UpdateConflictTree;
   end;
 end;
 
@@ -268,6 +286,13 @@ begin
   end;
 end;
 
+procedure TEditorKeymappingOptionsFrame.OnIdle(Sender: TObject;
+  var Done: Boolean);
+begin
+  IdleConnected:=false;
+  UpdateConflictTree;
+end;
+
 procedure TEditorKeymappingOptionsFrame.ResetKeyFilterBtnClick(Sender: TObject);
 begin
   KeyMapKeyFilter.Key1 := VK_UNKNOWN;
@@ -323,6 +348,17 @@ begin
   ClearCommandMapping(TreeView.Selected);
 end;
 
+procedure TEditorKeymappingOptionsFrame.ConflictsTreeViewMouseDown(
+  Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  Node: TTreeNode;
+begin
+  if (Button=mbLeft) and (ssDouble in Shift) then begin
+    Node:=ConflictsTreeView.GetNodeAt(X,Y);
+    EditConflict(Node);
+  end;
+end;
+
 function TEditorKeymappingOptionsFrame.GeneralPage: TEditorGeneralOptionsFrame; inline;
 begin
   Result := TEditorGeneralOptionsFrame(FDialog.FindEditor(TEditorGeneralOptionsFrame));
@@ -376,6 +412,7 @@ begin
     for i := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[i] <> nil then
         FEditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
+  IdleConnected:=true;
 end;
 
 procedure TEditorKeymappingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -420,7 +457,7 @@ begin
       for j := 0 to CurCategory.Count - 1 do
       begin
         CurKeyRelation := TKeyCommandRelation(CurCategory[j]);
-        ItemCaption:=KeyMappingRelationToString(CurKeyRelation);
+        ItemCaption:=KeyMappingRelationToCaption(CurKeyRelation);
         if NewCategoryNode.Count > ChildNodeIndex then
         begin
           NewKeyNode := NewCategoryNode.Items[ChildNodeIndex];
@@ -445,12 +482,12 @@ begin
   end;
 end;
 
-function TEditorKeymappingOptionsFrame.KeyMappingRelationToString(Index: Integer): String;
+function TEditorKeymappingOptionsFrame.KeyMappingRelationToCaption(Index: Integer): String;
 begin
-  Result := KeyMappingRelationToString(FEditingKeyMap.Relations[Index]);
+  Result := KeyMappingRelationToCaption(FEditingKeyMap.Relations[Index]);
 end;
 
-function TEditorKeymappingOptionsFrame.KeyMappingRelationToString(
+function TEditorKeymappingOptionsFrame.KeyMappingRelationToCaption(
   KeyRelation: TKeyCommandRelation): String;
 const
   MaxLength = 60;
@@ -481,6 +518,49 @@ begin
                        + '  '+lisOr+'  ' +
                          AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutB));
   end;
+end;
+
+function TEditorKeymappingOptionsFrame.KeyShortCutToCaption(
+  const aKey: TKeyCommandRelation; const aShortCut: TIDEShortCut): string;
+begin
+  Result:=aKey.Category.Description+'/'
+        +EditorCommandToDescriptionString(aKey.Command)
+        +'->'+KeyAndShiftStateToEditorKeyString(aShortCut);
+end;
+
+function TEditorKeymappingOptionsFrame.CaptionToKeyMappingRelation(
+  aCaption: string): TKeyCommandRelation;
+var
+  c: Integer;
+  aCategory: TIDECommandCategory;
+  CatStr: String;
+  i: Integer;
+  aKey: TKeyCommandRelation;
+  s: String;
+begin
+  for c:=0 to FEditingKeyMap.CategoryCount-1 do begin
+    aCategory:=FEditingKeyMap.Categories[c];
+    CatStr:=aCategory.Description+'/';
+    if LeftStr(aCaption,length(CatStr))<>CatStr then continue;
+    for i:=0 to aCategory.Count-1 do begin
+      aKey:=TObject(aCategory[i]) as TKeyCommandRelation;
+      s:=CatStr+EditorCommandToDescriptionString(aKey.Command);
+      if LeftStr(aCaption,length(s))<>s then continue;
+      Result:=aKey;
+      exit;
+    end;
+  end;
+  Result:=nil;
+end;
+
+procedure TEditorKeymappingOptionsFrame.SetIdleConnected(AValue: boolean);
+begin
+  if FIdleConnected=AValue then Exit;
+  FIdleConnected:=AValue;
+  if IdleConnected then
+    Application.AddOnIdleHandler(@OnIdle)
+  else
+    Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
 procedure TEditorKeymappingOptionsFrame.UpdateKeyFilterButton;
@@ -526,44 +606,125 @@ begin
   FillKeyMappingTreeView;
 end;
 
-procedure TEditorKeymappingOptionsFrame.EditCommandMapping(ANode: TTreeNode);
+procedure TEditorKeymappingOptionsFrame.UpdateConflictTree;
 var
-  i: integer;
+  ConflictCount: integer;
+  Key1: TKeyCommandRelation;
+  Key2: TKeyCommandRelation;
+
+  procedure Check(const ShortCut1, ShortCut2: TIDEShortCut);
+  // check if ShortCut1 hides ShortCut2
+  var
+    ConflictNode: TTreeNode;
+    KeyNode: TTreeNode;
+  begin
+    if (ShortCut1.Key1=VK_UNKNOWN)
+    or (ShortCut1.Key1<>ShortCut2.Key1)
+    or (ShortCut1.Shift1<>ShortCut2.Shift1) then
+      exit;    // first keys differ
+
+    if (ShortCut1.Key2=VK_UNKNOWN) or (ShortCut2.Key2=VK_UNKNOWN)
+    or ((ShortCut1.Key2=ShortCut2.Key2) and (ShortCut1.Shift2=ShortCut2.Shift2))
+    then begin
+      // conflict found
+      inc(ConflictCount);
+      ConflictNode:=ConflictsTreeView.Items.Add(nil,srkmConflic+IntToStr(ConflictCount));
+      KeyNode:=ConflictsTreeView.Items.AddChild(ConflictNode,
+                                          KeyShortCutToCaption(Key1,ShortCut1));
+      KeyNode.ImageIndex := imgKeyItem;
+      KeyNode.SelectedIndex := KeyNode.ImageIndex;
+      KeyNode:=ConflictsTreeView.Items.AddChild(ConflictNode,
+                                          KeyShortCutToCaption(Key2,ShortCut2));
+      KeyNode.ImageIndex := imgKeyItem;
+      KeyNode.SelectedIndex := KeyNode.ImageIndex;
+      ConflictNode.Expanded:=true;
+    end;
+  end;
+
+var
+  i: Integer;
+  j: Integer;
+begin
+  ConflictsTreeView.BeginUpdate;
+  ConflictsTreeView.Items.Clear;
+
+  ConflictCount:=0;
+  for i:=0 to FEditingKeyMap.Count-1 do begin
+    Key1:=FEditingKeyMap[i];
+    for j:=i+1 to FEditingKeyMap.Count-1 do begin
+      Key2:=FEditingKeyMap[j];
+      if (not Key1.Category.ScopeIntersects(Key2.Category.Scope)) then
+        continue;
+      Check(Key1.ShortcutA,Key2.ShortcutA);
+      Check(Key1.ShortcutA,Key2.ShortcutB);
+      Check(Key1.ShortcutB,Key2.ShortcutA);
+      Check(Key1.ShortcutB,Key2.ShortcutB);
+    end;
+  end;
+
+  if ConflictsTreeView.Items.Count=0 then
+    ConflictsTreeView.Items.Add(nil,'There are no conflicting keys.');
+
+  ConflictsTreeView.EndUpdate;
+end;
+
+procedure TEditorKeymappingOptionsFrame.EditCommandMapping(ANode: TTreeNode);
+begin
+  if ANode=nil then exit;
+  EditCommandRelation(TKeyCommandRelation(ANode.Data));
+end;
+
+procedure TEditorKeymappingOptionsFrame.EditConflict(ANode: TTreeNode);
+var
   ARelation: TKeyCommandRelation;
 begin
-  ARelation := TKeyCommandRelation(ANode.Data);
+  if ANode=nil then exit;
+  ARelation:=CaptionToKeyMappingRelation(ANode.Text);
+  EditCommandRelation(ARelation);
+end;
+
+procedure TEditorKeymappingOptionsFrame.EditCommandRelation(
+  ARelation: TKeyCommandRelation);
+var
+  i: Integer;
+begin
+  if ARelation=nil then exit;
   i := FEditingKeyMap.IndexOf(ARelation);
-  if (i >= 0) and (ShowKeyMappingEditForm(i, FEditingKeyMap) = mrOk) then
-  begin
-    FillKeyMappingTreeView;
-    fModified:=True;
-    UpdateSchemeLabel;
-    with GeneralPage do
-      for i := Low(PreviewEdits) to High(PreviewEdits) do
-        if PreviewEdits[i] <> nil then
-          FEditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
-  end;
+  if (i < 0) or (ShowKeyMappingEditForm(i, FEditingKeyMap) <> mrOk) then exit;
+  FillKeyMappingTreeView;
+  fModified:=True;
+  UpdateSchemeLabel;
+  with GeneralPage do
+    for i := Low(PreviewEdits) to High(PreviewEdits) do
+      if PreviewEdits[i] <> nil then
+        FEditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
+  UpdateConflictTree;
 end;
 
 procedure TEditorKeymappingOptionsFrame.ClearCommandMapping(ANode: TTreeNode);
-var
-  i: integer;
-  ARelation: TKeyCommandRelation;
 begin
-  ARelation := TKeyCommandRelation(ANode.Data);
+  if ANode=nil then exit;
+  ClearCommandRelation(TKeyCommandRelation(ANode.Data));
+end;
+
+procedure TEditorKeymappingOptionsFrame.ClearCommandRelation(
+  ARelation: TKeyCommandRelation);
+var
+  i: Integer;
+begin
+  if ARelation=nil then exit;
   i := FEditingKeyMap.IndexOf(ARelation);
-  if (i >= 0) {and (ShowKeyMappingEditForm(i, FEditingKeyMap) = mrOk)} then
-  begin
-    ARelation.ShortcutA := IDEShortCut(VK_UNKNOWN, []);
-    ARelation.ShortcutB := IDEShortCut(VK_UNKNOWN, []);
-    FillKeyMappingTreeView;
-    fModified:=True;
-    UpdateSchemeLabel;
-    with GeneralPage do
-      for i := Low(PreviewEdits) to High(PreviewEdits) do
-        if PreviewEdits[i] <> nil then
-          FEditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
-  end;
+  if (i < 0) then exit;
+  ARelation.ShortcutA := IDEShortCut(VK_UNKNOWN, []);
+  ARelation.ShortcutB := IDEShortCut(VK_UNKNOWN, []);
+  FillKeyMappingTreeView;
+  fModified:=True;
+  UpdateSchemeLabel;
+  with GeneralPage do
+    for i := Low(PreviewEdits) to High(PreviewEdits) do
+      if PreviewEdits[i] <> nil then
+        FEditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes, TSourceEditorWindowInterface);
+  UpdateConflictTree;
 end;
 
 initialization

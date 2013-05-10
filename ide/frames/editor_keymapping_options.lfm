@@ -1,52 +1,29 @@
 object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
   Left = 0
-  Height = 510
+  Height = 437
   Top = 0
-  Width = 461
-  ClientHeight = 510
-  ClientWidth = 461
+  Width = 475
+  ClientHeight = 437
+  ClientWidth = 475
   TabOrder = 0
   Visible = False
-  DesignLeft = 303
-  DesignTop = 99
-  object TreeView: TTreeView
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = FilterEdit
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 0
-    Height = 418
-    Top = 32
-    Width = 461
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Top = 3
-    DefaultItemHeight = 18
-    PopupMenu = PopupMenu1
-    ReadOnly = True
-    RightClickSelect = True
-    RowSelect = True
-    ScrollBars = ssAutoBoth
-    TabOrder = 1
-    OnDblClick = TreeViewDblClick
-    OnKeyPress = TreeViewKeyPress
-    OnSelectionChanged = TreeViewSelectionChanged
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
-  end
+  DesignLeft = 312
+  DesignTop = 191
   object FilterEdit: TTreeFilterEdit
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = FindKeyButton
     Left = 0
-    Height = 23
+    Height = 25
     Top = 6
-    Width = 250
+    Width = 273
     OnFilterItem = FilterEditFilterItem
     ButtonWidth = 23
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     MaxLength = 0
+    ParentFont = False
     TabOrder = 0
     OnKeyPress = FilterEditKeyPress
     FilteredTreeview = TreeView
@@ -54,16 +31,16 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
   end
   object ClearButton: TBitBtn
     AnchorSideRight.Side = asrBottom
-    Left = 372
-    Height = 25
-    Top = 455
-    Width = 89
+    Left = 396
+    Height = 27
+    Top = 380
+    Width = 79
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Bottom = 6
     Caption = 'ClearButton'
     OnClick = ClearButtonClick
-    TabOrder = 3
+    TabOrder = 2
   end
   object FindKeyButton: TBitBtn
     AnchorSideLeft.Control = FilterEdit
@@ -71,56 +48,56 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideTop.Control = FilterEdit
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = ResetKeyFilterBtn
-    Left = 320
-    Height = 25
+    Left = 343
+    Height = 27
     Top = 5
-    Width = 104
+    Width = 95
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Left = 70
     BorderSpacing.Right = 2
     Caption = 'FindKeyButton'
     OnClick = FindKeyButtonClick
-    TabOrder = 2
+    TabOrder = 1
   end
   object ConsistencyCheckButton: TBitBtn
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 302
-    Height = 25
-    Top = 485
-    Width = 159
+    Left = 326
+    Height = 27
+    Top = 410
+    Width = 149
     Anchors = [akRight, akBottom]
     AutoSize = True
     Caption = 'ConsistencyCheckButton'
     OnClick = ConsistencyCheckButtonClick
-    TabOrder = 5
+    TabOrder = 4
   end
   object ChooseSchemeButton: TBitBtn
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 25
-    Top = 485
-    Width = 144
+    Height = 27
+    Top = 410
+    Width = 134
     Anchors = [akLeft, akBottom]
     AutoSize = True
     Caption = 'ChooseSchemeButton'
     OnClick = ChooseSchemeButtonClick
-    TabOrder = 4
+    TabOrder = 3
   end
   object SchemeLabel: TLabel
     AnchorSideLeft.Control = ChooseSchemeButton
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = ChooseSchemeButton
     AnchorSideTop.Side = asrCenter
-    Left = 150
+    Left = 140
     Height = 15
-    Top = 490
-    Width = 70
+    Top = 416
+    Width = 72
     BorderSpacing.Around = 6
     Caption = 'SchemeLabel'
     ParentColor = False
@@ -129,26 +106,26 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideTop.Control = ClearButton
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = ClearButton
-    Left = 284
-    Height = 25
-    Top = 455
-    Width = 82
+    Left = 317
+    Height = 27
+    Top = 380
+    Width = 73
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     Caption = 'EditButton'
     OnClick = EditButtonClick
-    TabOrder = 6
+    TabOrder = 5
   end
   object CommandLabel: TLabel
     AnchorSideTop.Control = EditButton
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = EditButton
-    Left = 193
+    Left = 228
     Height = 15
-    Top = 460
-    Width = 85
+    Top = 386
+    Width = 83
     Anchors = [akTop, akRight]
     BorderSpacing.Right = 6
     Caption = 'CommandLabel'
@@ -156,16 +133,81 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
   end
   object ResetKeyFilterBtn: TSpeedButton
     AnchorSideTop.Control = FindKeyButton
-    AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 426
-    Height = 22
-    Top = 6
+    AnchorSideBottom.Control = FindKeyButton
+    AnchorSideBottom.Side = asrBottom
+    Left = 440
+    Height = 27
+    Top = 5
     Width = 29
-    Anchors = [akTop, akRight]
+    Anchors = [akTop, akRight, akBottom]
     BorderSpacing.Right = 6
     OnClick = ResetKeyFilterBtnClick
+  end
+  object KeyMapTreePanel: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FindKeyButton
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = EditButton
+    Left = 0
+    Height = 346
+    Top = 32
+    Width = 475
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Bottom = 2
+    BevelOuter = bvNone
+    ClientHeight = 346
+    ClientWidth = 475
+    TabOrder = 6
+    object ConflictsTreeView: TTreeView
+      AnchorSideTop.Control = KeyMapSplitter
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 93
+      Top = 253
+      Width = 475
+      Align = alBottom
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      DefaultItemHeight = 18
+      ReadOnly = True
+      RightClickSelect = True
+      RowSelect = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+      OnMouseDown = ConflictsTreeViewMouseDown
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    end
+    object KeyMapSplitter: TSplitter
+      Cursor = crVSplit
+      Left = 0
+      Height = 5
+      Top = 248
+      Width = 475
+      Align = alBottom
+      ResizeAnchor = akBottom
+    end
+    object TreeView: TTreeView
+      Left = 0
+      Height = 245
+      Top = 3
+      Width = 475
+      Align = alClient
+      BorderSpacing.Top = 3
+      DefaultItemHeight = 18
+      PopupMenu = PopupMenu1
+      ReadOnly = True
+      RightClickSelect = True
+      RowSelect = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 2
+      OnDblClick = TreeViewDblClick
+      OnKeyPress = TreeViewKeyPress
+      OnSelectionChanged = TreeViewSelectionChanged
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    end
   end
   object PopupMenu1: TPopupMenu
     OnPopup = PopupMenu1Popup
