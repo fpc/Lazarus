@@ -118,6 +118,7 @@ type
     property  IsDisabled:  Boolean read GetIsDisabled;
     property  IsRequested: Boolean read GetIsRequested;
     property  NeedsRequesting: Boolean read GetNeedsRequesting;
+    function  HasKnownState: Boolean; // Opposite of NeedsRequesting (except idnRequested) / BUT ignore NodeType
     function  IsDisabledOpening: Boolean;
     function  IsDisabledClosing: Boolean;
     function  NodeType: TSynMarkupIfdefNodeType;
@@ -652,7 +653,7 @@ begin
         if (ClosingPeer <> nil) then
           ClosingPeer.SetOpeningPeerNodeState(NodeState, NodeStateForPeer(ClosingPeer.NodeType))
       end;
-    idnCommentedIfdef: Assert(false, 'SetOpeningPeerNodeState for idnCommentedIfdef not possible');
+    idnCommentedIfdef: Assert(AValue = idnUnknown, 'SetOpeningPeerNodeState for idnCommentedIfdef not possible');
   end;
 end;
 
@@ -716,6 +717,11 @@ end;
 procedure TSynMarkupHighIfDefEntry.MakeUnknown;
 begin
   NodeState := idnUnknown;
+end;
+
+function TSynMarkupHighIfDefEntry.HasKnownState: Boolean;
+begin
+  Result := FNodeState in [idnEnabled, idnDisabled, idnInvalid];
 end;
 
 function TSynMarkupHighIfDefEntry.IsDisabledOpening: Boolean;
@@ -1891,7 +1897,7 @@ procedure TSynMarkupHighIfDefLinesTree.ScanLine(ALine: Integer;
 var
   FoldNodeInfoList: TLazSynFoldNodeInfoList;
   LineTextLower: String;
-  NodesAddedCnt: Integer;
+  LineLen, NodesAddedCnt: Integer;
   LineNeedsReq: Boolean;
 
   function FindCloseCurlyBracket(StartX: Integer; out ALineOffs: Integer): Integer;
@@ -1937,10 +1943,33 @@ var
     Result := -1;
   end;
 
+  function IsCommentedIfDef(AEntry: TSynMarkupHighIfDefEntry): Boolean;
+  var
+    i, o: Integer;
+  begin
+    i := AEntry.StartColumn;
+    Result :=
+       (i <= length(LineTextLower)) and
+       (LineTextLower[i] = '{') and
+       (AEntry.NodeType in [idnIfdef, idnElseIf, idnCommentedIfdef]) and
+       (AEntry.HasKnownState) and
+       ( ( (not (idnMultiLineTag in AEntry.NodeFlags)) and (LineTextLower[AEntry.EndColumn-1] = '}') ) or
+         ( (idnMultiLineTag in AEntry.NodeFlags) and
+           (Lines[ToIdx(ALine+AEntry.Line.LastEntryEndLineOffs)][AEntry.EndColumn-1] = '}') )
+       ) and
+       (TheDict.GetMatchAtChar(@LineTextLower[i], LineLen + 1 - i) in [1, 4]) and
+       (AEntry.EndColumn = FindCloseCurlyBracket(i+1, o)+1);
+    if Result then // o is evaluated
+      Result :=
+       ((not (idnMultiLineTag in AEntry.NodeFlags)) and (o = 0)) or
+       ((idnMultiLineTag in AEntry.NodeFlags) and (o = AEntry.Line.LastEntryEndLineOffs));
+  end;
+
   function GetEntry(ALogStart, ALogEnd, ALineOffs: Integer;
     AType: TSynMarkupIfdefNodeType): TSynMarkupHighIfDefEntry;
   var
-    i: Integer;
+    i, j, k: Integer;
+    e: TSynMarkupHighIfDefEntry;
   begin
     if ANodeForLine = nil then begin
       if ACheckOverlapOnCreateLine then
@@ -1955,16 +1984,32 @@ var
       LineNeedsReq := True;
     end
     else begin
-      // TODO: check for commented notes, maybe keep
-      i := NodesAddedCnt;
       Result := nil;
 
       // Check if existing node matches
-      while (i < ANodeForLine.EntryCount-1) and (ANodeForLine.Entry[i].StartColumn < ALogStart) do
+      i := NodesAddedCnt;
+      j := ANodeForLine.Entry[i].StartColumn;
+      while (i < ANodeForLine.EntryCount-1) do begin
+        e := ANodeForLine.Entry[i];
+        if e.StartColumn >= ALogStart then
+          break;
+        if IsCommentedIfDef(e) then begin      // commented Ifdef or ElseIf
+          debugln('Found commented node');
+          while i-1 >= NodesAddedCnt do begin
+            ANodeForLine.DeletEntry(i-1, True);
+            dec(i);
+          end;
+          inc(NodesAddedCnt);
+          e.FNodeType := idnCommentedIfdef;
+        end;
         inc(i);
+      end;
+
       if i < ANodeForLine.EntryCount then begin
         Result := ANodeForLine.Entry[i];
-        if (Result.NodeType = AType) and
+        if ( (Result.NodeType = AType) or
+             ( (Result.NodeType = idnCommentedIfdef) and (AType in [idnIfdef, idnElseIf]) )
+           ) and
            (Result.StartColumn = ALogStart) and
            (Result.EndColumn = ALogEnd) and
            ((idnMultiLineTag in Result.NodeFlags) = (ALineOffs > 0)) and
@@ -2007,7 +2052,7 @@ var
 
 var
   fn, fn2: TSynFoldNodeInfo;
-  LogStartX, LogEndX, LineLen, LineOffs: Integer;
+  LogStartX, LogEndX, LineOffs: Integer;
   Entry: TSynMarkupHighIfDefEntry;
   i, c: Integer;
   //RelNestDepth, RelNestDepthNext: Integer;
@@ -2105,6 +2150,17 @@ begin
     Include(ANodeForLine.FLineFlags, idlValid);
     if (NodesAddedCnt > 0) and LineNeedsReq then
       Include(ANodeForLine.FLineFlags, idlHasUnknownNodes);
+    // Check for commented ifdef
+    i := ANodeForLine.EntryCount - 1;
+    while i >= NodesAddedCnt do begin
+      if IsCommentedIfDef(ANodeForLine.Entry[i]) then begin
+        ANodeForLine.Entry[i].FNodeType := idnCommentedIfdef;
+        inc(NodesAddedCnt);
+      end
+      else
+        ANodeForLine.DeletEntry(i);
+      dec(i);
+    end;
     ANodeForLine.EntryCount := NodesAddedCnt;
     ANodeForLine.ReduceCapacity;
     ANodeForLine.ScanEndOffs := Max(0, LineOffs-1);

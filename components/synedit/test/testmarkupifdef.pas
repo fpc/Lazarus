@@ -1579,6 +1579,36 @@ begin
     CheckReq(n, []);
     CheckNodes(n, 2, [ ExpN( 1,12, idnIfdef, idnDisabled) ]);
     CheckNodes(n, 3, [ ExpN( 1, 8, idnElse, idnEnabled) ]);
+
+    n := 'Comment entire text';
+    ClearData;
+    SynEdit.TextBetweenPoints[point(1, 1),point(1, 1)] := '(*';
+    FTestTree.ValidateRange(1, 10, FOpenings);
+FTestTree.DebugPrint(true);DebugLn;
+    CheckReq(n, []);
+    CheckNodes(n, 2, [ ExpN( 1,12, idnCommentedIfdef, idnDisabled) ]);
+    CheckNodes(n, 3, []);
+    CheckNodes(n, 4, []);
+
+    n := 'Edit Commented-ifdef line (append)';
+    ClearData;
+    SynEdit.TextBetweenPoints[point(2, 12),point(2, 12)] := '//';
+    FTestTree.ValidateRange(1, 10, FOpenings);
+FTestTree.DebugPrint(true);DebugLn;
+    CheckReq(n, []);
+    CheckNodes(n, 2, [ ExpN( 1,12, idnCommentedIfdef, idnDisabled) ]);
+    CheckNodes(n, 3, []);
+    CheckNodes(n, 4, []);
+
+    n := 'UN-Comment entire text';
+    ClearData;
+    SynEdit.TextBetweenPoints[point(1, 1),point(3, 1)] := '';
+    FTestTree.ValidateRange(1, 10, FOpenings);
+FTestTree.DebugPrint(true);DebugLn;
+    CheckReq(n, []);
+    CheckNodes(n, 2, [ ExpN( 1,12, idnIfdef, idnDisabled) ]);
+    CheckNodes(n, 3, [ ExpN( 1, 8, idnElse, idnEnabled) ]);
+
   {%endregion  Simple Ifdef + edit: get node request }
 
 
