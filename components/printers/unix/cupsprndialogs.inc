@@ -63,6 +63,7 @@ begin
   Dlg.Options := Self.Options;
   Dlg.PrintRange := Self.PrintRange;
   Dlg.cbCollate.Checked := Self.Collate;
+  Dlg.Caption := Self.Title;
   if FromPage<1 then FromPage:=1;
   if ToPage<FromPage then ToPage:=FromPage;
   Dlg.edRange.Text := IntToStr(Self.FromPage) +'-'+ IntToStr(Self.ToPage);
@@ -112,6 +113,7 @@ var
   Dlg: TDlgPageSetup;
 begin
   Dlg:=TdlgPageSetup.Create(nil);
+  Dlg.Caption:=Title;
   try
     Result:=(Dlg.ShowModal=mrOk);
     if Result then begin
