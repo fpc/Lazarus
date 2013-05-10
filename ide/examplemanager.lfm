@@ -53,7 +53,7 @@ object ExampleManagerForm: TExampleManagerForm
       TabOrder = 1
       FilteredListbox = ProjectsListBox
     end
-    object RelativeCheckBox: TCheckBox
+    object cbRelativePath: TCheckBox
       AnchorSideLeft.Control = ProjectFilter
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ProjectFilter
@@ -64,9 +64,8 @@ object ExampleManagerForm: TExampleManagerForm
       Width = 113
       BorderSpacing.Left = 50
       Caption = 'Relative paths'
-      OnClick = RelativeCheckBoxClick
+      OnClick = cbRelativePathClick
       TabOrder = 2
-      Visible = False
     end
   end
   object ButtonPanel1: TButtonPanel

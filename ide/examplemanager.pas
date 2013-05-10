@@ -19,7 +19,7 @@ type
     lbProjectCount: TLabel;
     lbRootDirectory: TLabel;
     SelectPanel: TPanel;
-    RelativeCheckBox: TCheckBox;
+    cbRelativePath: TCheckBox;
     DescriptionMemo: TMemo;
     Splitter1: TSplitter;
     cbIncludeAllDirs: TCheckBox;
@@ -41,7 +41,7 @@ type
     procedure OpenSelectedButtonClick(Sender: TObject);
     procedure ProjectFilterAfterFilter(Sender: TObject);
     procedure ProjectsListBoxSelectionChange(Sender: TObject; User: boolean);
-    procedure RelativeCheckBoxClick(Sender: TObject);
+    procedure cbRelativePathClick(Sender: TObject);
     procedure edRootDirectoryChange(Sender: TObject);
     procedure SelectAllButtonClick(Sender: TObject);
     procedure SelectNoneButtonClick(Sender: TObject);
@@ -111,8 +111,13 @@ type
 { TListFileSearcher }
 
 procedure TListFileSearcher.DoFileFound;
+var
+  s: String;
 begin
-  fForm.ProjectFilter.Items.Add(FileName);
+  s:=FileName;
+  if fForm.cbRelativePath.Checked then
+    s:=CreateRelativePath(s, fForm.edRootDirectory.Text);
+  fForm.ProjectFilter.Items.Add(s);
 end;
 
 constructor TListFileSearcher.Create(aForm: TExampleManagerForm);
@@ -149,7 +154,7 @@ begin
   ProjectsGroupBox.Caption:=lisMEProjects;
   ActionGroupBox.Caption:=lisMEAction;
 
-  RelativeCheckBox.Caption:=lisRelativePaths;
+  cbRelativePath.Caption:=lisRelativePaths;
   OpenSelectedButton.Caption:=lisExamplesOpenFirstSelected;
   BuildAllSelectedButton.Caption:=lisExamplesBuildAllSelected;
   SelectAllButton.Caption:=lisMenuSelectAll;
@@ -206,26 +211,28 @@ begin
   IncludedDirs:=TStringList.Create;
   AllDirs:=Nil;
   try
-    // Collect each matching directory name to a list.
-    if (edRootDirectory.Text<>'') and not cbIncludeAllDirs.Checked then
+    if edRootDirectory.Text<>'' then
     begin
-      AllDirs:=FindAllDirectories(edRootDirectory.Text);
-      for i:=0 to AllDirs.Count-1 do
-      begin
-        LastDir:=ExtractFileName(AllDirs[i]);
-        for j:=Low(DirectoryChoices) to High(DirectoryChoices) do
+      if cbIncludeAllDirs.Checked then
+        // Add only the root directory name to list. Will find all projects in one go.
+        IncludedDirs.Add(edRootDirectory.Text)
+      else begin
+        // Collect each matching directory name to a list.
+        AllDirs:=FindAllDirectories(edRootDirectory.Text);
+        for i:=0 to AllDirs.Count-1 do
         begin
-          if cgIncludedDirs.Checked[j] and (LastDir=DirectoryChoices[j]) then
+          LastDir:=ExtractFileName(AllDirs[i]);
+          for j:=Low(DirectoryChoices) to High(DirectoryChoices) do
           begin
-            IncludedDirs.Add(AllDirs[i]);
-            Break;
+            if cgIncludedDirs.Checked[j] and (LastDir=DirectoryChoices[j]) then
+            begin
+              IncludedDirs.Add(AllDirs[i]);
+              Break;
+            end;
           end;
         end;
       end;
-    end
-    // Add only the root directory name to list. Will find all projects in one go.
-    else if cbIncludeAllDirs.Checked then
-      IncludedDirs.Add(edRootDirectory.Text);
+    end;
     ProjectFilter.Items.Clear;
     // Find projects in all included directories.
     for i:=0 to IncludedDirs.Count-1 do
@@ -258,16 +265,21 @@ begin
 end;
 
 procedure TExampleManagerForm.OpenSelectedButtonClick(Sender: TObject);
+var
+  s: String;
 begin
   if fFirstSelectedIndex <> -1 then
   begin
-    if FileExistsUTF8(ProjectsListBox.Items[fFirstSelectedIndex]) then
+    s:=ProjectsListBox.Items[fFirstSelectedIndex];
+    if cbRelativePath.Checked then
+      s:=CreateAbsolutePath(s, edRootDirectory.Text);
+    if FileExistsUTF8(s) then
     begin
-      fSelectedFilename:=ProjectsListBox.Items[fFirstSelectedIndex];
+      fSelectedFilename:=s;
       ModalResult:=mrYes;      // mrYes means the selected file will be opened.
     end
     else begin
-      ShowMessage(Format(lisFileNotFound3, [ProjectsListBox.Items[fFirstSelectedIndex]]));
+      ShowMessage(Format(lisFileNotFound3, [s]));
     end;
   end;
 end;
@@ -308,9 +320,23 @@ begin
   ProjectsListBoxSelectionChange(ProjectsListBox, False);
 end;
 
-procedure TExampleManagerForm.RelativeCheckBoxClick(Sender: TObject);
+procedure TExampleManagerForm.cbRelativePathClick(Sender: TObject);
+var
+  IsRelative: Boolean;
+  i: Integer;
+  s: String;
 begin
-  ;
+  IsRelative:=(Sender as TCheckBox).Checked;
+  for i:=0 to ProjectFilter.Items.Count-1 do
+  begin
+    s:=ProjectFilter.Items[i];
+    if IsRelative then
+      s:=CreateRelativePath(s, edRootDirectory.Text)
+    else
+      s:=CreateAbsolutePath(s, edRootDirectory.Text);
+    ProjectFilter.Items[i]:=s;
+  end;
+  ProjectFilter.InvalidateFilter;
 end;
 
 // Project list selection changes. Adjust buttons.
