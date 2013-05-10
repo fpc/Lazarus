@@ -91,7 +91,7 @@ type
     procedure SetLine(AValue: TSynMarkupHighIfDefLinesNode);
 
     function  NodeStateForPeer(APeerType: TSynMarkupIfdefNodeType): TSynMarkupIfdefNodeStateEx;
-    procedure SetOpeningPeerNodeState(AValueOfPeer, AValue: TSynMarkupIfdefNodeStateEx);
+    procedure SetOpeningPeerNodeState(AValueOfPeer, AValueForNode: TSynMarkupIfdefNodeStateEx);
     procedure SetNodeState(AValue: TSynMarkupIfdefNodeStateEx);
 
     function  GetPeer(APeerType: TSynMarkupIfdefNodeType): TSynMarkupHighIfDefEntry;
@@ -701,15 +701,15 @@ begin
 end;
 
 procedure TSynMarkupHighIfDefEntry.SetOpeningPeerNodeState(AValueOfPeer,
-  AValue: TSynMarkupIfdefNodeStateEx);
+  AValueForNode: TSynMarkupIfdefNodeStateEx);
 begin
   FOpeningPeerNodeState := AValueOfPeer;
   if NodeType in [idnElse, idnEndIf] then
-    SetNodeState(AValueOfPeer)
+    SetNodeState(AValueForNode)
   else
   if NodeType = idnElseIf then
-    case AValue of
-      idnEnabled:  MakeUnknown;
+    case AValueForNode of
+      idnEnabled:  MakeUnknown; // Maybe keep?
       idnDisabled: SetNodeState(idnDisabled);
       else         SetNodeState(idnUnknown);
     end;
