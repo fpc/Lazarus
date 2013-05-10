@@ -15,45 +15,41 @@ type
 
   TExampleManagerForm = class(TForm)
     BuildAllSelectedButton: TBitBtn;
+    cgIncludedDirs: TCheckGroup;
+    lbProjectCount: TLabel;
+    lbRootDirectory: TLabel;
     SelectPanel: TPanel;
     RelativeCheckBox: TCheckBox;
     DescriptionMemo: TMemo;
     Splitter1: TSplitter;
-    TestCaseCheckBox: TCheckBox;
-    ExamplesCheckBox: TCheckBox;
-    DirectoryComboBox: TComboBox;
+    cbIncludeAllDirs: TCheckBox;
     ProjectFilter: TListFilterEdit;
     OpenSelectedButton: TBitBtn;
-    Label1: TLabel;
+    lbConstruction: TLabel;
     ProjectsListBox: TListBox;
-    RootRadioGroup: TRadioGroup;
     SelectAllButton: TBitBtn;
     ButtonPanel1: TButtonPanel;
-    RootDirectoryEdit: TDirectoryEdit;
+    edRootDirectory: TDirectoryEdit;
     ActionGroupBox: TGroupBox;
     SelectNoneButton: TBitBtn;
     ProjectsGroupBox: TGroupBox;
+    procedure cbIncludeAllDirsClick(Sender: TObject);
+    procedure cgIncludedDirsItemClick(Sender: TObject; Index: integer);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure BuildAllSelectedButtonClick(Sender: TObject);
     procedure OpenSelectedButtonClick(Sender: TObject);
+    procedure ProjectFilterAfterFilter(Sender: TObject);
     procedure ProjectsListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure RelativeCheckBoxClick(Sender: TObject);
-    procedure RootRadioGroupClick(Sender: TObject);
-    procedure DirectoryComboBoxChange(Sender: TObject);
-    procedure RootDirectoryEditChange(Sender: TObject);
+    procedure edRootDirectoryChange(Sender: TObject);
     procedure SelectAllButtonClick(Sender: TObject);
     procedure SelectNoneButtonClick(Sender: TObject);
-    procedure ExamplesCheckBoxChange(Sender: TObject);
   private
     fSelectedFilename: string;
     fFirstSelectedIndex: Integer;
     fChangingSelections: Boolean;
-    fNeedsFindDirectories: Boolean;
-    fNeedsFindProjects: Boolean;
-    fUpdating: Boolean;
     fIdleConnected: boolean;
-    procedure FillDirectoriesPending;
     procedure FillProjectsPending;
     procedure SetIdleConnected(const AValue: boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
@@ -69,6 +65,18 @@ function ShowExampleManagerDlg: TModalResult;
 implementation
 
 {$R *.lfm}
+
+const
+  DirectoryChoices: array[0..7] of string = (
+    'example',   // 1st row
+    'sample',
+    'demo',
+    'test',
+    'examples',  // 2nd row
+    'samples',
+    'demos',
+    'tests'
+  );
 
 function ShowExampleManagerDlg: TModalResult;
 var
@@ -110,30 +118,34 @@ end;
 constructor TListFileSearcher.Create(aForm: TExampleManagerForm);
 begin
   inherited Create;
-  fForm := aForm;
+  fForm:=aForm;
 end;
 
 { TExampleManagerForm }
 
 constructor TExampleManagerForm.Create(AnOwner: TComponent);
+var
+  i: Integer;
 begin
   inherited Create(AnOwner);
   fFirstSelectedIndex:=-1;
   fChangingSelections:=False;
-  fUpdating:=False;
-  fNeedsFindDirectories:=False;
-  fNeedsFindProjects:=False;
 
   Caption:=lisKMExampleProjects;
-  ExamplesCheckBox.Caption:=lisIncludeExamples;
-  TestCaseCheckBox.Caption:=lisIncludeTestcases;
+  cbIncludeAllDirs.Caption:=lisIncludeAllSubDirectories;
+  cgIncludedDirs.Caption:=lisIncludeSubDirectories;
 
-  RootRadioGroup.Caption:=lisSearchProjectsFrom;
-  RootRadioGroup.Items.Add(lisLazarusSource);
-  RootRadioGroup.Items.Add(lisCEOtherGroup);
-  RootRadioGroup.ItemIndex:=0;
-  RootRadioGroupClick(RootRadioGroup);
+  // Add potential included directories to CheckGroup
+  cgIncludedDirs.Items.Clear;
+  for i := Low(DirectoryChoices) to High(DirectoryChoices) do
+  begin
+    cgIncludedDirs.Items.Add(DirectoryChoices[i]);
+    cgIncludedDirs.Checked[i]:=True;
+  end;
+  cbIncludeAllDirsClick(cbIncludeAllDirs);
+  lbProjectCount.Caption:='';
 
+  // Projects and their Actions
   ProjectsGroupBox.Caption:=lisMEProjects;
   ActionGroupBox.Caption:=lisMEAction;
 
@@ -148,7 +160,7 @@ begin
   SelectAllButton.LoadGlyphFromLazarusResource('menu_select_all');
   SelectNoneButton.LoadGlyphFromLazarusResource('ce_default');
 
-  FillDirectoriesPending;
+  edRootDirectory.Text:=EnvironmentOptions.GetParsedLazarusDirectory;
   FillProjectsPending;
 end;
 
@@ -167,15 +179,8 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
-procedure TExampleManagerForm.FillDirectoriesPending;
-begin
-  fNeedsFindDirectories:=True;
-  IdleConnected:=True;
-end;
-
 procedure TExampleManagerForm.FillProjectsPending;
 begin
-  fNeedsFindProjects:=True;
   IdleConnected:=True;
 end;
 
@@ -192,101 +197,92 @@ end;
 procedure TExampleManagerForm.OnIdle(Sender: TObject; var Done: Boolean);
 var
   Searcher: TListFileSearcher;
-  AllDirs: TStringList;
-  i: Integer;
+  AllDirs, IncludedDirs: TStringList;
+  i, j: Integer;
   LastDir: String;
 begin
-  IdleConnected:=false;
-  if fUpdating then Exit;
-  fUpdating:=True;
-  if fNeedsFindDirectories then begin
-    Screen.Cursor:=crHourGlass;
-    Application.ProcessMessages;
-    DirectoryComboBox.Items.Clear;
-    DirectoryComboBox.Text:='';
-    RootDirectoryEdit.Text:='';
-    AllDirs:=FindAllDirectories(EnvironmentOptions.GetParsedLazarusDirectory);
-    try
-      for i:=0 to AllDirs.Count-1 do begin
-        LastDir:=ExtractFileName(AllDirs[i]);
-        if (ExamplesCheckBox.Checked and ((LastDir='examples') or (LastDir='samples')))
-        or (TestCaseCheckBox.Checked and (LastDir='tests')) then
-          DirectoryComboBox.Items.Add(AllDirs[i]);
-      end;
-      // Add something to combobox to prevent crash with GTK2.
-      if DirectoryComboBox.Items.Count = 0 then
-        DirectoryComboBox.Items.Add('[empty]');
-      DirectoryComboBox.ItemIndex:=0;
-      DirectoryComboBoxChange(DirectoryComboBox);
-    finally
-      AllDirs.Free;
-      fNeedsFindDirectories:=False;
-      Screen.Cursor:=crDefault;
-    end;
-  end;
-  if fNeedsFindProjects and (RootDirectoryEdit.Text<>'') then
+  Screen.Cursor:=crHourGlass;
+  Searcher:=TListFileSearcher.Create(Self);
+  IncludedDirs:=TStringList.Create;
+  AllDirs:=Nil;
   try
-    Screen.Cursor:=crHourGlass;
-    Application.ProcessMessages;
+    // Collect each matching directory name to a list.
+    if (edRootDirectory.Text<>'') and not cbIncludeAllDirs.Checked then
+    begin
+      AllDirs:=FindAllDirectories(edRootDirectory.Text);
+      for i:=0 to AllDirs.Count-1 do
+      begin
+        LastDir:=ExtractFileName(AllDirs[i]);
+        for j:=Low(DirectoryChoices) to High(DirectoryChoices) do
+        begin
+          if cgIncludedDirs.Checked[j] and (LastDir=DirectoryChoices[j]) then
+          begin
+            IncludedDirs.Add(AllDirs[i]);
+            Break;
+          end;
+        end;
+      end;
+    end
+    // Add only the root directory name to list. Will find all projects in one go.
+    else if cbIncludeAllDirs.Checked then
+      IncludedDirs.Add(edRootDirectory.Text);
     ProjectFilter.Items.Clear;
-    Searcher:=TListFileSearcher.Create(Self);
-    Searcher.Search(RootDirectoryEdit.Text, '*.lpi');
+    // Find projects in all included directories.
+    for i:=0 to IncludedDirs.Count-1 do
+      Searcher.Search(IncludedDirs[i], '*.lpi');
     ProjectFilter.InvalidateFilter;
     DescriptionMemo.Clear;
+    IdleConnected:=false;
   finally
+    AllDirs.Free;
+    IncludedDirs.Free;
     Searcher.Free;
-    fNeedsFindProjects:=False;
     Screen.Cursor:=crDefault;
   end;
-  fUpdating:=False;
 end;
 
-procedure TExampleManagerForm.RootRadioGroupClick(Sender: TObject);
-var
-  LazSrc: Boolean;
-begin
-  LazSrc:=RootRadioGroup.ItemIndex=0;
-  ExamplesCheckBox.Enabled:=LazSrc;
-  TestCaseCheckBox.Enabled:=LazSrc;
-  DirectoryComboBox.Enabled:=LazSrc;
-  RootDirectoryEdit.Enabled:=not LazSrc;
-end;
-
-procedure TExampleManagerForm.DirectoryComboBoxChange(Sender: TObject);
-begin
-  if DirectoryExists(DirectoryComboBox.Text) then begin
-    RootDirectoryEdit.Text:=DirectoryComboBox.Text;
-    FillProjectsPending;
-  end;
-end;
-
-procedure TExampleManagerForm.RootDirectoryEditChange(Sender: TObject);
+procedure TExampleManagerForm.edRootDirectoryChange(Sender: TObject);
 begin
   FillProjectsPending;
 end;
 
-procedure TExampleManagerForm.ExamplesCheckBoxChange(Sender: TObject);
+procedure TExampleManagerForm.cbIncludeAllDirsClick(Sender: TObject);
 begin
-  FillDirectoriesPending;
+  cgIncludedDirs.Enabled:=not (Sender as TCheckBox).Checked;
+  FillProjectsPending;
+end;
+
+procedure TExampleManagerForm.cgIncludedDirsItemClick(Sender: TObject; Index: integer);
+begin
+  FillProjectsPending;
 end;
 
 procedure TExampleManagerForm.OpenSelectedButtonClick(Sender: TObject);
 begin
-  if fFirstSelectedIndex <> -1 then begin
-    if FileExistsUTF8(ProjectsListBox.Items[fFirstSelectedIndex]) then begin
+  if fFirstSelectedIndex <> -1 then
+  begin
+    if FileExistsUTF8(ProjectsListBox.Items[fFirstSelectedIndex]) then
+    begin
       fSelectedFilename:=ProjectsListBox.Items[fFirstSelectedIndex];
       ModalResult:=mrYes;      // mrYes means the selected file will be opened.
-    end else begin
+    end
+    else begin
       ShowMessage(Format(lisFileNotFound3, [ProjectsListBox.Items[fFirstSelectedIndex]]));
     end;
   end;
+end;
+
+procedure TExampleManagerForm.ProjectFilterAfterFilter(Sender: TObject);
+begin
+  lbProjectCount.Caption:=IntToStr(ProjectsListBox.Count)+lisProjectCount;
 end;
 
 procedure TExampleManagerForm.BuildAllSelectedButtonClick(Sender: TObject);
 var
   i: Integer;
 begin
-  for i:=0 to ProjectsListBox.Items.Count-1 do begin
+  for i:=0 to ProjectsListBox.Items.Count-1 do
+  begin
     if ProjectsListBox.Selected[i] then begin
        ; // ToDo
     end;
@@ -324,7 +320,8 @@ var
   ReadMe, RealReadMe: String;
   i: Integer;
 begin
-  if not fChangingSelections then begin
+  if not fChangingSelections then
+  begin
     HasSelected := ProjectsListBox.SelCount > 0;
     OpenSelectedButton.Enabled := HasSelected;
 //    BuildAllSelectedButton.Enabled := HasSelected;
@@ -332,7 +329,8 @@ begin
     // Find the first selected item and show README.txt contents.
     if HasSelected then
       for i:=0 to ProjectsListBox.Items.Count-1 do
-        if ProjectsListBox.Selected[i] then begin
+        if ProjectsListBox.Selected[i] then
+        begin
           fFirstSelectedIndex:=i;
           ReadMe:=ExtractFilePath(ProjectsListBox.Items[i])+'README.txt';
           RealReadMe:=FindDiskFileCaseInsensitive(ReadMe);

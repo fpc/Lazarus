@@ -1,25 +1,25 @@
 object ExampleManagerForm: TExampleManagerForm
   Left = 356
-  Height = 491
+  Height = 495
   Top = 130
-  Width = 837
+  Width = 870
   Caption = 'ExampleManagerForm'
-  ClientHeight = 491
-  ClientWidth = 837
+  ClientHeight = 495
+  ClientWidth = 870
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poDesktopCenter
   LCLVersion = '1.1'
   object ProjectsGroupBox: TGroupBox
     Left = 0
-    Height = 338
-    Top = 107
-    Width = 424
+    Height = 326
+    Top = 123
+    Width = 457
     Align = alClient
     BorderSpacing.Top = 3
     Caption = 'Projects'
-    ClientHeight = 309
-    ClientWidth = 418
+    ClientHeight = 297
+    ClientWidth = 451
     TabOrder = 0
     object ProjectsListBox: TListBox
       AnchorSideLeft.Control = ProjectsGroupBox
@@ -30,9 +30,9 @@ object ExampleManagerForm: TExampleManagerForm
       AnchorSideBottom.Control = ProjectsGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 280
+      Height = 268
       Top = 29
-      Width = 418
+      Width = 451
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 5
       ItemHeight = 0
@@ -46,6 +46,7 @@ object ExampleManagerForm: TExampleManagerForm
       Height = 23
       Top = 1
       Width = 221
+      OnAfterFilter = ProjectFilterAfterFilter
       ButtonWidth = 23
       NumGlyphs = 1
       MaxLength = 0
@@ -71,8 +72,8 @@ object ExampleManagerForm: TExampleManagerForm
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 34
-    Top = 451
-    Width = 825
+    Top = 455
+    Width = 858
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -86,19 +87,19 @@ object ExampleManagerForm: TExampleManagerForm
   end
   object ActionGroupBox: TGroupBox
     AnchorSideLeft.Side = asrBottom
-    Left = 432
-    Height = 338
-    Top = 107
+    Left = 465
+    Height = 326
+    Top = 123
     Width = 405
     Align = alRight
     Anchors = []
     BorderSpacing.Left = 3
     BorderSpacing.Top = 3
     Caption = 'Action'
-    ClientHeight = 309
+    ClientHeight = 297
     ClientWidth = 399
     TabOrder = 2
-    object Label1: TLabel
+    object lbConstruction: TLabel
       AnchorSideTop.Control = BuildAllSelectedButton
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BuildAllSelectedButton
@@ -187,7 +188,7 @@ object ExampleManagerForm: TExampleManagerForm
       AnchorSideBottom.Control = ActionGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 2
-      Height = 229
+      Height = 217
       Top = 78
       Width = 395
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -200,49 +201,54 @@ object ExampleManagerForm: TExampleManagerForm
   end
   object SelectPanel: TPanel
     Left = 0
-    Height = 104
+    Height = 120
     Top = 0
-    Width = 837
+    Width = 870
     Align = alTop
-    ClientHeight = 104
-    ClientWidth = 837
+    ClientHeight = 120
+    ClientWidth = 870
     TabOrder = 3
-    object TestCaseCheckBox: TCheckBox
-      AnchorSideLeft.Control = ExamplesCheckBox
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = ExamplesCheckBox
-      AnchorSideTop.Side = asrCenter
-      Left = 419
+    object cbIncludeAllDirs: TCheckBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = edRootDirectory
+      AnchorSideRight.Side = asrBottom
+      Left = 282
       Height = 21
-      Top = 5
-      Width = 136
-      BorderSpacing.Left = 33
-      Caption = 'Include Testcases'
-      OnChange = ExamplesCheckBoxChange
+      Top = 56
+      Width = 182
+      Anchors = [akTop, akRight]
+      BorderSpacing.Top = 3
+      Caption = 'Include all subdirectories'
+      OnClick = cbIncludeAllDirsClick
       TabOrder = 0
     end
-    object ExamplesCheckBox: TCheckBox
-      AnchorSideLeft.Control = DirectoryComboBox
+    object edRootDirectory: TDirectoryEdit
+      AnchorSideLeft.Control = lbRootDirectory
       AnchorSideTop.Side = asrBottom
-      Left = 253
-      Height = 21
-      Top = 5
-      Width = 133
-      BorderSpacing.Top = 3
-      Caption = 'Include Examples'
-      Checked = True
-      OnChange = ExamplesCheckBoxChange
-      State = cbChecked
+      AnchorSideRight.Side = asrBottom
+      Left = 8
+      Height = 23
+      Top = 24
+      Width = 456
+      ShowHidden = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 7
+      MaxLength = 0
       TabOrder = 1
+      OnChange = edRootDirectoryChange
     end
-    object RootRadioGroup: TRadioGroup
-      Left = 64
-      Height = 99
+    object cgIncludedDirs: TCheckGroup
+      AnchorSideBottom.Control = SelectPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 496
+      Height = 114
       Top = 5
-      Width = 184
+      Width = 369
+      Anchors = [akTop, akRight, akBottom]
       AutoFill = True
-      BorderSpacing.Top = 5
-      Caption = 'Search projects from'
+      Caption = 'Include subdirectories'
       ChildSizing.LeftRightSpacing = 6
       ChildSizing.TopBottomSpacing = 6
       ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
@@ -250,50 +256,52 @@ object ExampleManagerForm: TExampleManagerForm
       ChildSizing.ShrinkHorizontal = crsScaleChilds
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 1
-      OnClick = RootRadioGroupClick
+      ChildSizing.ControlsPerLine = 4
+      ClientHeight = 85
+      ClientWidth = 363
+      Columns = 4
+      Items.Strings = (
+        'example'
+        'sample'
+        'demo'
+        'test'
+        'examples'
+        'samples'
+        'demos'
+        'tests'
+      )
+      OnItemClick = cgIncludedDirsItemClick
       TabOrder = 2
+      Data = {
+        080000000202020202020202
+      }
     end
-    object RootDirectoryEdit: TDirectoryEdit
-      AnchorSideLeft.Control = DirectoryComboBox
-      AnchorSideTop.Control = DirectoryComboBox
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Side = asrBottom
-      Left = 253
-      Height = 23
-      Top = 57
-      Width = 542
-      ShowHidden = False
-      ButtonWidth = 23
-      NumGlyphs = 1
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Top = 7
-      MaxLength = 0
-      TabOrder = 3
-      OnChange = RootDirectoryEditChange
+    object lbRootDirectory: TLabel
+      Left = 8
+      Height = 15
+      Top = 8
+      Width = 89
+      Caption = 'Root Directory'
+      ParentColor = False
     end
-    object DirectoryComboBox: TComboBox
-      AnchorSideLeft.Control = RootRadioGroup
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = ExamplesCheckBox
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Side = asrBottom
-      Left = 253
-      Height = 23
-      Top = 27
-      Width = 566
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 5
-      BorderSpacing.Top = 1
-      ItemHeight = 0
-      OnChange = DirectoryComboBoxChange
-      TabOrder = 4
+    object lbProjectCount: TLabel
+      AnchorSideLeft.Control = edRootDirectory
+      AnchorSideBottom.Control = SelectPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 8
+      Height = 15
+      Top = 93
+      Width = 92
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Bottom = 11
+      Caption = 'lbProjectCount'
+      ParentColor = False
     end
   end
   object Splitter1: TSplitter
-    Left = 424
-    Height = 341
-    Top = 104
+    Left = 457
+    Height = 329
+    Top = 120
     Width = 5
     Align = alRight
     ResizeAnchor = akRight

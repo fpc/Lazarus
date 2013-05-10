@@ -485,13 +485,12 @@ resourcestring
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus" ...';
   lisDlgEditorWindowManager = 'Editor Window Manager ...';
   lisEditorWindowManager = 'Editor Window Manager';
-
-  lisSearchProjectsFrom = 'Search projects from';
+  lisProjectCount = ' projects';
+  lisIncludeSubDirectories = 'Include subdirectories';
+  lisIncludeAllSubDirectories = 'Include all subdirectories';
   lisMEOther = 'Other tabs';
   lisTabsFor = 'Tabs for %s';
   lisRecentTabs = 'Recent tabs';
-  lisIncludeExamples = 'Include Examples';
-  lisIncludeTestcases = 'Include Testcases';
   lisMEProjects = 'Projects';
   lisMEAction = 'Action';
   lisMenuGeneralOptions = 'Options ...';
@@ -3063,7 +3062,6 @@ resourcestring
   lisConfirmBuildAllProfiles = 'Lazarus will be rebuilt with the following profiles:%sContinue?';
   lisNoBuildProfilesSelected = 'No profiles are selected to be built.';
   lisCleanLazarusSource = 'Clean Lazarus Source';
-  lisLazarusSource = 'Lazarus Source';
   lisMakeNotFound = 'Make not found';
   lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa = 'The program %smake%'
     +'s was not found.%sThis tool is needed to build lazarus.%s';
