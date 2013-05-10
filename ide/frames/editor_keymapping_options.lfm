@@ -60,21 +60,6 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     OnClick = FindKeyButtonClick
     TabOrder = 1
   end
-  object ConsistencyCheckButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 326
-    Height = 27
-    Top = 410
-    Width = 149
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    Caption = 'ConsistencyCheckButton'
-    OnClick = ConsistencyCheckButtonClick
-    TabOrder = 4
-  end
   object ChooseSchemeButton: TBitBtn
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = Owner
@@ -116,7 +101,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     BorderSpacing.Bottom = 6
     Caption = 'EditButton'
     OnClick = EditButtonClick
-    TabOrder = 5
+    TabOrder = 4
   end
   object CommandLabel: TLabel
     AnchorSideTop.Control = EditButton
@@ -161,7 +146,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     BevelOuter = bvNone
     ClientHeight = 346
     ClientWidth = 475
-    TabOrder = 6
+    TabOrder = 5
     object ConflictsTreeView: TTreeView
       AnchorSideTop.Control = KeyMapSplitter
       AnchorSideTop.Side = asrBottom

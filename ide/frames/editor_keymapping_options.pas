@@ -39,7 +39,6 @@ type
     ChooseSchemeButton: TBitBtn;
     ClearButton: TBitBtn;
     EditButton: TBitBtn;
-    ConsistencyCheckButton: TBitBtn;
     FilterEdit: TTreeFilterEdit;
     FindKeyButton: TBitBtn;
     CommandLabel: TLabel;
@@ -59,7 +58,6 @@ type
     procedure EditMenuItemClick(Sender: TObject);
     procedure ChooseSchemeButtonClick(Sender: TObject);
     procedure ClearButtonClick(Sender: TObject);
-    procedure ConsistencyCheckButtonClick(Sender: TObject);
     function FilterEditFilterItem(Item: TObject; out Done: Boolean): Boolean;
     procedure FilterEditKeyPress(Sender: TObject; var Key: char);
     procedure FindKeyButtonClick(Sender: TObject);
@@ -220,37 +218,6 @@ begin
   ClearCommandMapping(TreeView.Selected);
 end;
 
-procedure TEditorKeymappingOptionsFrame.ConsistencyCheckButtonClick(Sender: TObject);
-var
-  Protocol: TStringList;
-  ErrorCount, Index1, Index2: Integer;
-  ACaption, AText: String;
-  KeyMapErrorsForm: TKeyMapErrorsForm;
-begin
-  Protocol := TStringList.Create;
-  try
-    ErrorCount := FindKeymapConflicts(FEditingKeyMap, Protocol, Index1, Index2);
-    if ErrorCount > 0 then
-    begin
-      KeyMapErrorsForm := TKeyMapErrorsForm.Create(nil);
-      try
-        KeyMapErrorsForm.ListBox.Items.Assign(Protocol);
-        KeyMapErrorsForm.ShowModal;
-      finally
-        KeyMapErrorsForm.Free;
-      end;
-    end
-    else
-    begin
-      ACaption := dlgReport;
-      AText    := dlgEdNoErr;
-      MessageDlg(ACaption, AText, mtInformation, [mbOk], 0);
-    end;
-  finally
-    Protocol.Free;
-  end;
-end;
-
 function TEditorKeymappingOptionsFrame.FilterEditFilterItem(Item: TObject; out Done: Boolean): Boolean;
 var
   KeyRel: TKeyCommandRelation;
@@ -373,7 +340,6 @@ procedure TEditorKeymappingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDia
 begin
   FDialog := ADialog;
   ChooseSchemeButton.Caption := lisEdOptsLoadAScheme;
-  ConsistencyCheckButton.Caption := dlgCheckConsistency;
   FindKeyButton.Caption := lisFindKeyCombination;
   CommandLabel.Caption := lisSelectedCommandsMapping;
   EditButton.Caption := lisEdit;
@@ -385,7 +351,6 @@ begin
   imgKeyCategory := IDEImages.LoadImage(16, 'item_keyboard');
   imgKeyItem := IDEImages.LoadImage(16, 'item_character');
   ChooseSchemeButton.LoadGlyphFromLazarusResource('item_keyboard'); // keymapcategory
-  ConsistencyCheckButton.LoadGlyphFromLazarusResource('menu_tool_check_lfm');
   FindKeyButton.LoadGlyphFromLazarusResource('menu_search_find');
   EditButton.LoadGlyphFromLazarusResource('laz_edit');
   ClearButton.LoadGlyphFromLazarusResource('menu_clean');

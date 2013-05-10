@@ -193,8 +193,6 @@ type
 
 function IDEShortCutEmpty(const Key: TIDEShortCut): boolean;
 function KeyAndShiftStateToEditorKeyString(const Key: TIDEShortCut): String;
-function FindKeymapConflicts(Keymap: TKeyCommandRelationList;
-                      Protocol: TStrings; out Index1, Index2: integer): integer;
 function EditorCommandToDescriptionString(cmd: word): String;
 
 function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
@@ -730,71 +728,6 @@ begin
         Result:= srkmecunknown;
 
       end;
-  end;
-end;
-
-function FindKeymapConflicts(Keymap: TKeyCommandRelationList;
-   Protocol: TStrings; out Index1,Index2: integer): integer;
-// 0 = ok, no errors
-// >0 number of errors found
-var
-  a,b: integer;
-  Key1,Key2: TKeyCommandRelation;
-
-  procedure Add(const s: string);
-  begin
-    debugln(s);
-    Protocol.Add(s);
-  end;
-
-  procedure Check(const ShortCut1, ShortCut2: TIDEShortCut);
-  // check if ShortCut1 hides ShortCut2
-  begin
-    if (ShortCut1.Key1=VK_UNKNOWN)
-    or (ShortCut1.Key1<>ShortCut2.Key1)
-    or (ShortCut1.Shift1<>ShortCut2.Shift1) then exit;    // first keys differ
-
-    if (ShortCut1.Key2=VK_UNKNOWN) or (ShortCut2.Key2=VK_UNKNOWN)
-    or ((ShortCut1.Key2=ShortCut2.Key2) and (ShortCut1.Shift2=ShortCut2.Shift2))
-    then begin
-      // conflict found
-      if Result=0 then begin
-        Index1:=a;
-        Index2:=b;
-      end;
-      inc(Result);
-      if Protocol<>nil then
-      begin
-        Add(srkmConflic+IntToStr(Result));
-        Add(srkmCommand1+Key1.Category.Description+'/'
-          +EditorCommandToDescriptionString(Key1.Command)+'"'
-          +'->'+KeyAndShiftStateToEditorKeyString(ShortCut1));
-        Add(srkmConflicW);
-        Add(srkmCommand2+Key2.Category.Description+'/'
-          +EditorCommandToDescriptionString(Key2.Command)+'"'
-          +'->'+KeyAndShiftStateToEditorKeyString(ShortCut2));
-        Add('');
-        Key1.Category.WriteScopeDebugReport;
-        Key2.Category.WriteScopeDebugReport;
-      end;
-    end;
-  end;
-
-begin
-  Result:=0;
-  Index1:=0;
-  Index2:=0;
-  for a:=0 to Keymap.Count-1 do begin
-    Key1:=Keymap[a];
-    for b:=a+1 to Keymap.Count-1 do begin
-      Key2:=Keymap[b];
-      if (not Key1.Category.ScopeIntersects(Key2.Category.Scope)) then
-        continue;
-      Check(Key1.ShortcutA,Key2.ShortcutA);
-      Check(Key1.ShortcutA,Key2.ShortcutB);
-      Check(Key1.ShortcutB,Key2.ShortcutA);
-      Check(Key1.ShortcutB,Key2.ShortcutB);
-    end;
   end;
 end;
 
