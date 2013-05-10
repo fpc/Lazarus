@@ -23,8 +23,7 @@
   Abstract:
     TCodeCache is an AVL Tree of TCodeBuffer. It can load and save files.
     
-    TCodeBuffer is an descendent of TSourceLog and manages a single file.
-    
+    TCodeBuffer is a descendent of TSourceLog and manages a single file.
 }
 unit CodeCache;
 
