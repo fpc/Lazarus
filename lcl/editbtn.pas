@@ -342,7 +342,7 @@ type
     fIsFirstSetFormActivate: Boolean;
     fJustActivated: Boolean;
     fParentForm: TForm;
-    fAfterFilter: TNotifyEvent;
+    fOnAfterFilter: TNotifyEvent;
     procedure SetFilter(const AValue: string);
     procedure SetIdleConnected(const AValue: Boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
@@ -379,7 +379,7 @@ type
     property SortData: Boolean read fSortData write fSortData;
     property SelectedPart: TObject read fSelectedPart write fSelectedPart;
   published
-    property AfterFilter: TNotifyEvent read fAfterFilter write fAfterFilter;
+    property OnAfterFilter: TNotifyEvent read fOnAfterFilter write fOnAfterFilter;
     property OnFilterItem: TFilterItemEvent read fOnFilterItem write fOnFilterItem;
     property OnCheckItem: TCheckItemEvent read fOnCheckItem write fOnCheckItem;
     property UseFormActivate: Boolean read fUseFormActivate write SetUseFormActivate default False;
@@ -1685,8 +1685,8 @@ begin
   if fNeedUpdate then
     ApplyFilter(true);
   IdleConnected:=false;
-  if Assigned(fAfterFilter) then
-    fAfterFilter(Self);
+  if Assigned(fOnAfterFilter) then
+    fOnAfterFilter(Self);
 end;
 
 procedure TCustomControlFilterEdit.SetUseFormActivate(AValue: Boolean);
