@@ -592,7 +592,7 @@ var
     if (ShortCut1.Key2=VK_UNKNOWN) or (ShortCut2.Key2=VK_UNKNOWN)
     or ((ShortCut1.Key2=ShortCut2.Key2) and (ShortCut1.Shift2=ShortCut2.Shift2))
     then begin
-      // conflict found
+      // conflict found, add node with a sub node for each key
       inc(ConflictCount);
       ConflictNode:=ConflictsTreeView.Items.Add(nil,srkmConflic+IntToStr(ConflictCount));
       ConflictNode.ImageIndex:=imgKeyItem;

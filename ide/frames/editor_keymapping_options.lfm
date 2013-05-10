@@ -148,8 +148,6 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     ClientWidth = 475
     TabOrder = 5
     object ConflictsTreeView: TTreeView
-      AnchorSideTop.Control = KeyMapSplitter
-      AnchorSideTop.Side = asrBottom
       Left = 0
       Height = 93
       Top = 253
