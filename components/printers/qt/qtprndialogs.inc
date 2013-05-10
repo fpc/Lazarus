@@ -6,6 +6,7 @@
 function TPageSetupDialog.Execute: Boolean;
 var
   PgDlg: QPageSetupDialogH;
+  Str: WideString;
   {$IFDEF HASX11}
   AWND: HWND;
   {$ENDIF}
@@ -14,6 +15,12 @@ begin
   if not Assigned(Printer) then Exit;
   if Printer.Printers.Count <= 0 then Exit;
   PgDlg := QPageSetupDialog_create(QtDefaultPrinter.Handle, nil);
+  if Title <> '' then
+    Str := UTF8Decode(Title)
+  else
+    Str := UTF8Decode(DefaultTitle);
+
+  QWidget_setWindowTitle(PgDlg, @Str);
   try
     Result := QPageSetupDialog_exec(PgDlg) = Ord(QDialogAccepted);
   finally
@@ -34,6 +41,7 @@ end;
 function TPrinterSetupDialog.Execute: Boolean;
 var
   PgDlg: QPageSetupDialogH;
+  Str: WideString;
   {$IFDEF HASX11}
   AWND: HWND;
   {$ENDIF}
@@ -44,6 +52,11 @@ begin
   {There's no special dialog for printer setup under Qt,
    so we'll use QPageSetupDialog here.}
   PgDlg := QPageSetupDialog_create(QtDefaultPrinter.Handle, nil);
+  if Title <> '' then
+    Str := UTF8Decode(Title)
+  else
+    Str := UTF8Decode(DefaultTitle);
+  QWidget_setWindowTitle(PgDlg, @Str);
   try
     Result := QPageSetupDialog_exec(PgDlg) = Ord(QDialogAccepted);
   finally
