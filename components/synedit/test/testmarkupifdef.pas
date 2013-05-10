@@ -4,16 +4,19 @@ unit TestMarkupIfDef;
 
 interface
 
-uses windows,
-  Classes, SysUtils, math, testregistry, TestBase, TestHighlightFoldBase, LCLProc,
+uses
+  Classes, SysUtils, testregistry, TestBase, TestHighlightFoldBase, LCLProc,
   SynEdit, SynEditMarkupIfDef, SynHighlighterPas, SynEditHighlighterFoldBase,
   SynEditMiscClasses, SynEditFoldedView;
 
 type
 
-  TSynMarkupIfdefNodeTypeTest = (idnIfdef, idnElseIf, idnElseIfOpen, idnElseIfClose, idnElse, idnEndIf, idnCommentedIfdef, idnNone);
+  TSynMarkupIfdefNodeTypeTest =
+    (idnIfdef, idnElseIf, idnElse, idnEndIf, idnCommentedIfdef,
+     idnMustBeNil, idnSkipTest);
+
   TPeerExpect = record
-    PeerType:  TSynMarkupIfdefNodeTypeTest;  // use idnDisabled as dummy
+    PeerType:  TSynMarkupIfdefNodeTypeTest;
     PeerY, PeerX: Integer;
   end;
   PPeerExpect = ^TPeerExpect;
@@ -25,10 +28,10 @@ const
 type
   TNodeExpect = record
     ExpStart, ExpEnd, ExpEndLineOffs: Integer;
-    ExpType:  TSynMarkupIfdefNodeTypeTest;  // use idnDisabled as dummy
+    ExpType:  TSynMarkupIfdefNodeTypeTest;
     ExpState:  TSynMarkupIfdefNodeStateEx;
     TestExpState: Boolean;
-    Peer1, Peer2: TPeerExpect;
+    OpenPeer, ClosePeer: TPeerExpect;
   end;
 
   { TTestMarkupIfDef }
@@ -53,8 +56,8 @@ type
     procedure CheckNodesXY(AName: String; ALine: Integer;
       AExp: array of Integer; // [Start, end,  start, end, ....]
       AExpEndOffs: Integer);
-    procedure CheckPeer(AName: String; ALine, ACol: Integer;
-      AType: TSynMarkupIfdefNodeTypeTest; ExpLine, ExpCol: Integer);
+    //procedure CheckPeer(AName: String; ALine, ACol: Integer;
+    //  AType: TSynMarkupIfdefNodeTypeTest; ExpLine, ExpCol: Integer);
 
     function TesTNodeStateHandler(Sender: TObject; LinePos,
       XStartPos: Integer): TSynMarkupIfdefNodeState;
@@ -93,17 +96,21 @@ function EpElse(PeerY, PeerX: Integer): PPeerExpect;
 begin
   Result := ExpP(idnElse, PeerY, PeerX);
 end;
-function EpElseIfO(PeerY, PeerX: Integer): PPeerExpect;
+function EpElseIf(PeerY, PeerX: Integer): PPeerExpect;
 begin
-  Result := ExpP(idnElseIfOpen, PeerY, PeerX);
-end;
-function EpElseIfC(PeerY, PeerX: Integer): PPeerExpect;
-begin
-  Result := ExpP(idnElseIfClose, PeerY, PeerX);
+  Result := ExpP(idnElseIf, PeerY, PeerX);
 end;
 function EpEnd(PeerY, PeerX: Integer): PPeerExpect;
 begin
   Result := ExpP(idnEndIf, PeerY, PeerX);
+end;
+function EpNil: PPeerExpect;
+begin
+  Result := ExpP(idnMustBeNil, -1, -1);
+end;
+function EpSkip: PPeerExpect;
+begin
+  Result := ExpP(idnSkipTest, -1, -1);
 end;
 
 function ExpN(ExpStart: Integer; ExpEnd: Integer;
@@ -116,10 +123,10 @@ begin
   Result.ExpEnd         := ExpEnd;
   Result.ExpEndLineOffs := ExpEndLineOffs;
   Result.ExpType        := ExpType;
-  if Peer1 = nil then Peer1 := ExpP(idnNone, -1 , -1);
-  if Peer2 = nil then Peer2 := ExpP(idnNone, -1 , -1);
-  Result.Peer1          := Peer1^;
-  Result.Peer2          := Peer2^;
+  if Peer1 = nil then Peer1 := ExpP(idnSkipTest, -1 , -1);
+  if Peer2 = nil then Peer2 := ExpP(idnSkipTest, -1 , -1);
+  Result.OpenPeer          := Peer1^;
+  Result.ClosePeer          := Peer2^;
   Result.ExpState     := ExpState;
   Result.TestExpState := True;
   Dispose(Peer1);
@@ -151,17 +158,17 @@ end;
 function ExpN(ExpStart, ExpEnd: Integer; ExpEndLineOffs: Integer;
   Peer1: PPeerExpect; Peer2: PPeerExpect = nil): TNodeExpect;
 begin
-  Result := ExpN(ExpStart, ExpEnd, ExpEndLineOffs, idnNone, Peer1, Peer2);
+  Result := ExpN(ExpStart, ExpEnd, ExpEndLineOffs, idnSkipTest, Peer1, Peer2);
 end;
 
 function ExpN(ExpStart, ExpEnd: Integer; Peer1: PPeerExpect; Peer2: PPeerExpect = nil): TNodeExpect;
 begin
-  Result := ExpN(ExpStart, ExpEnd, 0, idnNone, Peer1, Peer2);
+  Result := ExpN(ExpStart, ExpEnd, 0, idnSkipTest, Peer1, Peer2);
 end;
 
 function ExpN(ExpStart: Integer; Peer1: PPeerExpect; Peer2: PPeerExpect = nil): TNodeExpect;
 begin
-  Result := ExpN(ExpStart, -1, 0, idnNone, Peer1, Peer2);
+  Result := ExpN(ExpStart, -1, 0, idnSkipTest, Peer1, Peer2);
 end;
 
 
@@ -170,26 +177,26 @@ procedure TTestMarkupIfDef.CheckNodes(AName: String; ALine: Integer;
 var
   Node: TSynMarkupHighIfDefEntry;
 
-  procedure CheckPeerNode(ExpPeer: TPeerExpect);
+  procedure CheckPeerNode(ExpPeer: TPeerExpect; APeerType: TSynMarkupIfdefPeerType);
   var
-    TestPeer: TSynMarkupHighIfDefEntry;
     PName: String;
+    TestPeer: TSynMarkupHighIfDefEntry;
   begin
+    if ExpPeer.PeerType = idnSkipTest then
+      exit;
     PName := '';
     WriteStr(PName, AName, ' ', ExpPeer.PeerType);
-    case ExpPeer.PeerType of
-      idnIfdef: TestPeer := Node.IfDefPeer;
-      idnElse:  TestPeer := Node.ElsePeer;
-      idnElseIfOpen: TestPeer := Node.IfDefPeer;
-      idnElseIfClose: TestPeer := Node.ElsePeer;
-      idnEndIf: TestPeer := Node.EndIfPeer;
+    case APeerType of
+      idpOpeningPeer: TestPeer := Node.OpeningPeer;
+      idpClosingPeer: TestPeer := Node.ClosingPeer;
+    end;
+    if ExpPeer.PeerType = idnMustBeNil then begin
+      AssertTrue(PName + 'NO Peer', TestPeer = nil);
+      exit;
     end;
     if ExpPeer.PeerY = -99 then begin // special check for existence only
       AssertTrue(PName + 'Has Peer', TestPeer <> nil);
-      if ExpPeer.PeerType in [idnElseIfOpen, idnElseIfClose] then
-        AssertTrue(PName+' PeerType', idnElseIf = NodeTypeMap[TestPeer.NodeType])
-      else
-        AssertTrue(PName+' PeerType', ExpPeer.PeerType = NodeTypeMap[TestPeer.NodeType]);
+      AssertTrue(PName+' PeerType', ExpPeer.PeerType = NodeTypeMap[TestPeer.NodeType]);
     end
     else
     if ExpPeer.PeerY < 0 then begin
@@ -197,10 +204,7 @@ var
     end
     else begin
       AssertTrue(PName + 'Has Peer', TestPeer <> nil);
-      if ExpPeer.PeerType in [idnElseIfOpen, idnElseIfClose] then
-        AssertTrue(PName+' PeerType', idnElseIf = NodeTypeMap[TestPeer.NodeType])
-      else
-        AssertTrue(PName+' PeerType', ExpPeer.PeerType = NodeTypeMap[TestPeer.NodeType]);
+      AssertTrue(PName+' PeerType', ExpPeer.PeerType = NodeTypeMap[TestPeer.NodeType]);
       AssertEquals(PName + 'Peer.Y', ExpPeer.PeerY, TestPeer.Line.GetPosition);
       if ExpPeer.PeerX >= 0 then
         AssertEquals(PName + 'Peer.X', ExpPeer.PeerX, TestPeer.StartColumn);
@@ -229,14 +233,14 @@ begin
       AssertEquals(AName+'EndLineOffs', ExpNode.ExpEndLineOffs, LineNode.LastEntryEndLineOffs);
 //        AssertTrue(AName+'EndLineOffs flag', idnMultiLineTag in Node.NodeFlags);
     end;
-    if ExpNode.ExpType <> idnNone then
+    if ExpNode.ExpType <> idnSkipTest then
       AssertTrue(AName+'NodeTypeflag', NodeTypeMap[Node.NodeType] = ExpNode.ExpType);
     if ExpNode.TestExpState then
       AssertTrue(AName+'NodeState', Node.NodeState = ExpNode.ExpState);
-    if ExpNode.Peer1.PeerType <> idnNone then
-      CheckPeerNode(ExpNode.Peer1);
-    if ExpNode.Peer2.PeerType <> idnNone then
-      CheckPeerNode(ExpNode.Peer2);
+    if ExpNode.OpenPeer.PeerType <> idnSkipTest then
+      CheckPeerNode(ExpNode.OpenPeer, idpOpeningPeer);
+    if ExpNode.ClosePeer.PeerType <> idnSkipTest then
+      CheckPeerNode(ExpNode.ClosePeer, idpClosingPeer);
   end;
 
 end;
@@ -263,26 +267,26 @@ begin
   AssertEquals(AName+'EndLine', AExpEndOffs, n1.LastEntryEndLineOffs);
 end;
 
-procedure TTestMarkupIfDef.CheckPeer(AName: String; ALine, ACol: Integer;
-  AType: TSynMarkupIfdefNodeTypeTest; ExpLine, ExpCol: Integer);
-var
-  n1: TSynMarkupHighIfDefLinesNodeInfo;
-  p: TSynMarkupHighIfDefEntry;
-begin
-  AName := Format('%s - %s L=%d Col=%d %s <=> %d, %d', [BaseTestName, AName, ALine, ACol, dbgs(AType), ExpLine, ExpCol]);
-  n1 := FTestTree.FindNodeAtPosition(ALine, afmNil);
-  AssertTrue(AName + 'HasNode', n1.HasNode);
-  AssertTrue(AName + 'HasEntry', n1.EntryCount > ACol);
-  case AType of
-    idnIfdef: p := n1.Entry[ACol].IfDefPeer;
-    idnElse:  p := n1.Entry[ACol].ElsePeer;
-    idnEndIf: p := n1.Entry[ACol].EndIfPeer;
-  end;
-  AssertTrue(AName + 'Peer', p <> nil);
-  AssertEquals(AName + 'Peer.Y', ExpLine, p.Line.GetPosition);
-  AssertTrue(AName + 'Peer.X (1)', p.Line.EntryCount > ExpCol);
-  AssertTrue(AName + 'Peer.X (2)', p.Line.Entry[ExpCol] = p);
-end;
+//procedure TTestMarkupIfDef.CheckPeer(AName: String; ALine, ACol: Integer;
+//  AType: TSynMarkupIfdefNodeTypeTest; ExpLine, ExpCol: Integer);
+//var
+//  n1: TSynMarkupHighIfDefLinesNodeInfo;
+//  p: TSynMarkupHighIfDefEntry;
+//begin
+//  AName := Format('%s - %s L=%d Col=%d %s <=> %d, %d', [BaseTestName, AName, ALine, ACol, dbgs(AType), ExpLine, ExpCol]);
+//  n1 := FTestTree.FindNodeAtPosition(ALine, afmNil);
+//  AssertTrue(AName + 'HasNode', n1.HasNode);
+//  AssertTrue(AName + 'HasEntry', n1.EntryCount > ACol);
+//  case AType of
+//    idnIfdef: p := n1.Entry[ACol].IfDefPeer;
+//    idnElse:  p := n1.Entry[ACol].ElsePeer;
+//    idnEndIf: p := n1.Entry[ACol].EndIfPeer;
+//  end;
+//  AssertTrue(AName + 'Peer', p <> nil);
+//  AssertEquals(AName + 'Peer.Y', ExpLine, p.Line.GetPosition);
+//  AssertTrue(AName + 'Peer.X (1)', p.Line.EntryCount > ExpCol);
+//  AssertTrue(AName + 'Peer.X (2)', p.Line.Entry[ExpCol] = p);
+//end;
 
 
 { TTestMarkupIfDef }
@@ -553,7 +557,6 @@ end;
 procedure TTestMarkupIfDef.TestIfDefTreeMoveOnEdit;
 var
   n: String;
-  nd: TSynMarkupHighIfDefLinesNodeInfo;
 begin
   FTestTree := nil;
 
@@ -960,7 +963,6 @@ end;
 procedure TTestMarkupIfDef.TestIfDefTreePeerConnect;
 var
   n: String;
-  nd: TSynMarkupHighIfDefLinesNodeInfo;
 begin
   FTestTree := nil;
 
@@ -969,32 +971,32 @@ begin
   n := 'Peers, TestText1: Validate all';
   ReCreateEditForTreeTest(TestText1);
   FTestTree.ValidateRange(1, 36, FOpenings);
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpElse(29, 1)) ]);
-  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpEnd(17, 3)) ]);
-  CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpElse(7, 20)),
-                     ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
+  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
+  CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
+                     ExpN(20,27, idnElse,  EpIf(7, 5),  EpEnd(7, 32)),
                      ExpN(32,40, idnEndIf, EpElse(7, 20)),
-                     ExpN(43,53, idnIfdef, EpEnd(11, 5))  ]);
-  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpEnd(10, 7)),
-                     ExpN(19,29, idnIfdef, EpElse(8, 34)),
+                     ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 5))  ]);
+  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(10, 7)),
+                     ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
                      ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
                      ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
   CheckNodes(n,10, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
   CheckNodes(n,11, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
-  CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpEnd(14, 5)) ]);
+  CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(14, 5)) ]);
   CheckNodes(n,14, [ ExpN( 5,13, idnEndIf, EpIf(13, 5)) ]);
-  CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpEnd(15, 16)),
+  CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(15, 16)),
                      ExpN(16,24, idnEndIf, EpIf(15, 5))  ]);
   CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
-  CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpElse(21, 3)) ]);
+  CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(21, 3)) ]);
   CheckNodes(n,21, [ ExpN( 3,10, idnElse,  EpIf(19, 3), EpEnd(27, 3)) ]);
-  CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpEnd(25, 5)) ]);
+  CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(25, 5)) ]);
   CheckNodes(n,25, [ ExpN( 5,13, idnEndIf, EpIf(23, 5)) ]);
-  CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpEnd(26, 16)),
+  CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 16)),
                      ExpN(16,24, idnEndIf, EpIf(26, 5))  ]);
   CheckNodes(n,27, [ ExpN( 3,11, idnEndIf, EpElse(21, 3)) ]);
-  CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(36,1)) ]);
-  CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpElse(32, 3)) ]);
+  CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1),  EpEnd(36,1)) ]);
+  CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
   CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
   CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
   CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
@@ -1004,32 +1006,32 @@ begin
   n := 'Peers, TestText1: Validate 8 - 36';
   ReCreateEditForTreeTest(TestText1);
   FTestTree.ValidateRange(8, 36, FOpenings);
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpElse(29, 1)) ]);
-  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpEnd(17, 3)) ]);
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
+  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
   CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef ),
                      ExpN(20,27, idnElse  ),
                      ExpN(32,40, idnEndIf ),
-                     ExpN(43,53, idnIfdef, EpEnd(11, 5))  ]);
-  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpEnd(10, 7)),
-                     ExpN(19,29, idnIfdef, EpElse(8, 34)),
+                     ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 5))  ]);
+  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(10, 7)),
+                     ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
                      ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
                      ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
   CheckNodes(n,10, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
   CheckNodes(n,11, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
-  CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpEnd(14, 5)) ]);
+  CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(14, 5)) ]);
   CheckNodes(n,14, [ ExpN( 5,13, idnEndIf, EpIf(13, 5)) ]);
-  CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpEnd(15, 16)),
+  CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(15, 16)),
                      ExpN(16,24, idnEndIf, EpIf(15, 5))  ]);
   CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
-  CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpElse(21, 3)) ]);
+  CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(21, 3)) ]);
   CheckNodes(n,21, [ ExpN( 3,10, idnElse,  EpIf(19, 3), EpEnd(27, 3)) ]);
-  CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpEnd(25, 5)) ]);
+  CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(25, 5)) ]);
   CheckNodes(n,25, [ ExpN( 5,13, idnEndIf, EpIf(23, 5)) ]);
-  CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpEnd(26, 16)),
+  CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 16)),
                      ExpN(16,24, idnEndIf, EpIf(26, 5))  ]);
   CheckNodes(n,27, [ ExpN( 3,11, idnEndIf, EpElse(21, 3)) ]);
-  CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(36,1)) ]);
-  CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpElse(32, 3)) ]);
+  CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1),  EpEnd(36,1)) ]);
+  CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
   CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
   CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
   CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
@@ -1042,9 +1044,9 @@ begin
   FTestTree.ValidateRange(33, 36, FOpenings);
   AssertTrue('Scan start node Node at empty line', FTestTree.FindNodeAtPosition(33, afmNil).HasNode);
   CheckNodes(n,33, [ ]);
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpElse(29, 1)) ]);
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
   CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(36,1)) ]);
-  CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpElse(32, 3)) ]);
+  CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
   CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
   CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
   CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
@@ -1052,32 +1054,32 @@ begin
   n := 'Peers, TestText1: Validate all  AFTER 33-36';
   FTestTree.ValidateRange(1, 36, FOpenings);
   AssertFalse('Scan start node Node at empty line gone', FTestTree.FindNodeAtPosition(33, afmNil).HasNode);
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpElse(29, 1)) ]);
-  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpEnd(17, 3)) ]);
-  CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpElse(7, 20)),
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
+  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
+  CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
                      ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
                      ExpN(32,40, idnEndIf, EpElse(7, 20)),
-                     ExpN(43,53, idnIfdef, EpEnd(11, 5))  ]);
-  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpEnd(10, 7)),
-                     ExpN(19,29, idnIfdef, EpElse(8, 34)),
+                     ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 5))  ]);
+  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(10, 7)),
+                     ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
                      ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
                      ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
   CheckNodes(n,10, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
   CheckNodes(n,11, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
-  CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpEnd(14, 5)) ]);
+  CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(14, 5)) ]);
   CheckNodes(n,14, [ ExpN( 5,13, idnEndIf, EpIf(13, 5)) ]);
-  CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpEnd(15, 16)),
+  CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(15, 16)),
                      ExpN(16,24, idnEndIf, EpIf(15, 5))  ]);
   CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
-  CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpElse(21, 3)) ]);
+  CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(21, 3)) ]);
   CheckNodes(n,21, [ ExpN( 3,10, idnElse,  EpIf(19, 3), EpEnd(27, 3)) ]);
-  CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpEnd(25, 5)) ]);
+  CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(25, 5)) ]);
   CheckNodes(n,25, [ ExpN( 5,13, idnEndIf, EpIf(23, 5)) ]);
-  CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpEnd(26, 16)),
+  CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 16)),
                      ExpN(16,24, idnEndIf, EpIf(26, 5))  ]);
   CheckNodes(n,27, [ ExpN( 3,11, idnEndIf, EpElse(21, 3)) ]);
-  CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(36,1)) ]);
-  CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpElse(32, 3)) ]);
+  CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1),  EpEnd(36,1)) ]);
+  CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
   CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
   CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
   CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
@@ -1088,53 +1090,53 @@ begin
   n := 'Peers, TestText1: 32-36';
   ReCreateEditForTreeTest(TestText1);
   FTestTree.ValidateRange(32, 36, FOpenings);
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpElse(29, 1)) ]);
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
   CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(36,1)) ]);
-  CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpElse(32, 3)) ]);
+  CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
   CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
   CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
   CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
   //
   n := 'Peers, TestText1: 16-20 AFTER 32-36';
   FTestTree.ValidateRange(16, 20, FOpenings);
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpElse(29, 1)) ]);
-  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpEnd(17, 3)) ]);
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
+  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
   CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
   CheckNodes(n,19, [ ExpN( 3,14, idnIfdef) ]);
   CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(36,1)) ]);
-  CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpElse(32, 3)) ]);
+  CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
   CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
   CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
   CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
   //
   n := 'Peers, TestText1: all AFTER 16-20 AFTER 32-36';
   FTestTree.ValidateRange(1, 36, FOpenings);
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpElse(29, 1)) ]);
-  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpEnd(17, 3)) ]);
-  CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpElse(7, 20)),
-                     ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
+  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
+  CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
+                     ExpN(20,27, idnElse,  EpIf(7, 5),  EpEnd(7, 32)),
                      ExpN(32,40, idnEndIf, EpElse(7, 20)),
-                     ExpN(43,53, idnIfdef, EpEnd(11, 5))  ]);
-  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpEnd(10, 7)),
-                     ExpN(19,29, idnIfdef, EpElse(8, 34)),
+                     ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 5))  ]);
+  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(10, 7)),
+                     ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
                      ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
                      ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
   CheckNodes(n,10, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
   CheckNodes(n,11, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
-  CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpEnd(14, 5)) ]);
+  CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(14, 5)) ]);
   CheckNodes(n,14, [ ExpN( 5,13, idnEndIf, EpIf(13, 5)) ]);
-  CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpEnd(15, 16)),
+  CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(15, 16)),
                      ExpN(16,24, idnEndIf, EpIf(15, 5))  ]);
   CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
-  CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpElse(21, 3)) ]);
+  CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(21, 3)) ]);
   CheckNodes(n,21, [ ExpN( 3,10, idnElse,  EpIf(19, 3), EpEnd(27, 3)) ]);
-  CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpEnd(25, 5)) ]);
+  CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(25, 5)) ]);
   CheckNodes(n,25, [ ExpN( 5,13, idnEndIf, EpIf(23, 5)) ]);
-  CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpEnd(26, 16)),
+  CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 16)),
                      ExpN(16,24, idnEndIf, EpIf(26, 5))  ]);
   CheckNodes(n,27, [ ExpN( 3,11, idnEndIf, EpElse(21, 3)) ]);
-  CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(36,1)) ]);
-  CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpElse(32, 3)) ]);
+  CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1),  EpEnd(36,1)) ]);
+  CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
   CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
   CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
   CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
@@ -1145,9 +1147,9 @@ begin
   ReCreateEditForTreeTest(TestText2);
   FTestTree.ValidateRange(1, 18, FOpenings);
   // ONe and only one of the 2 ends should have a peer
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd(4, 1)) ]);
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
   CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
-  CheckNodes(n, 6, [ ExpN( 1, 9, idnEndIf, EpIf(-1, -1)) ]); // must not have a peer
+  CheckNodes(n, 6, [ ExpN( 1, 9, idnEndIf, EpNil) ]); // must not have a peer
   // One and only one else may be connected to if and one (but maybe the other) to endif
   CheckNodes(n,10, [ ExpN( 1,11, idnIfdef) ]); // EpElse(12, 1) // or 14
   CheckNodes(n,12, [ ExpN( 1, 8, idnElse) ]);
@@ -1160,12 +1162,12 @@ begin
   n := 'scan plain text, after closed node: step 1: node';
   ReCreateEditForTreeTest(TestText3);
   FTestTree.ValidateRange(3, 5, FOpenings);
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd(4, 1)) ]);
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
   CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
 
   n := 'scan plain text, after closed node: step 2: empty';
   FTestTree.ValidateRange(8, 9, FOpenings);
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd(4, 1)) ]);
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
   CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
 
 
@@ -1174,12 +1176,12 @@ begin
   n := 'scan plain text, after closed node (overlap): step 1: node';
   ReCreateEditForTreeTest(TestText3);
   FTestTree.ValidateRange(3, 8, FOpenings); // ensure node is valid to begin-of-plain-line-scan
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd(4, 1)) ]);
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
   CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
 
   n := 'scan plain text, after closed node (overlap): step 2: empty';
   FTestTree.ValidateRange(7, 9, FOpenings);
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd(4, 1)) ]);
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
   CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
 
 
@@ -1200,9 +1202,9 @@ begin
   n := 'Peers, TestText5: elseif';
   ReCreateEditForTreeTest(TestText5);
   FTestTree.ValidateRange(1, 9, FOpenings);
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpElseIfC(4, 1)) ]);
-  CheckNodes(n, 4, [ ExpN( 1,12, idnElseIf,EpIf(2, 1),     EpElse(6, 1)) ]);
-  CheckNodes(n, 6, [ ExpN( 1, 8, idnElse,  EpElseIfO(4, 1), EpEnd(8, 1)) ]);
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElseIf(4, 1)) ]);
+  CheckNodes(n, 4, [ ExpN( 1,12, idnElseIf,EpIf(2, 1),  EpElse(6, 1)) ]);
+  CheckNodes(n, 6, [ ExpN( 1, 8, idnElse,  EpElseIf(4, 1), EpEnd(8, 1)) ]);
   CheckNodes(n, 8, [ ExpN( 1, 9, idnEndIf, EpElse(6, 1)) ]);
 
   {%endregion peers}
@@ -1214,32 +1216,32 @@ begin
   n := 'Peers, TestText1: Before Edit';
   ReCreateEditForTreeTest(TestText1);
   FTestTree.ValidateRange(1, 36, FOpenings);
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpElse(29, 1)) ]);
-  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpEnd(17, 3)) ]);
-  CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpElse(7, 20)),
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
+  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
+  CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
                      ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
                      ExpN(32,40, idnEndIf, EpElse(7, 20)),
-                     ExpN(43,53, idnIfdef, EpEnd(11, 5))  ]);
-  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpEnd(10, 7)),
-                     ExpN(19,29, idnIfdef, EpElse(8, 34)),
+                     ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 5))  ]);
+  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(10, 7)),
+                     ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
                      ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
                      ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
   CheckNodes(n,10, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
   CheckNodes(n,11, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
-  CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpEnd(14, 5)) ]);
+  CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(14, 5)) ]);
   CheckNodes(n,14, [ ExpN( 5,13, idnEndIf, EpIf(13, 5)) ]);
-  CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpEnd(15, 16)),
+  CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(15, 16)),
                      ExpN(16,24, idnEndIf, EpIf(15, 5))  ]);
   CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
-  CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpElse(21, 3)) ]);
+  CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(21, 3)) ]);
   CheckNodes(n,21, [ ExpN( 3,10, idnElse,  EpIf(19, 3), EpEnd(27, 3)) ]);
-  CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpEnd(25, 5)) ]);
+  CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(25, 5)) ]);
   CheckNodes(n,25, [ ExpN( 5,13, idnEndIf, EpIf(23, 5)) ]);
-  CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpEnd(26, 16)),
+  CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 16)),
                      ExpN(16,24, idnEndIf, EpIf(26, 5))  ]);
   CheckNodes(n,27, [ ExpN( 3,11, idnEndIf, EpElse(21, 3)) ]);
   CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(36,1)) ]);
-  CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpElse(32, 3)) ]);
+  CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
   CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
   CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
   CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
@@ -1248,32 +1250,32 @@ begin
 
   n := 'Peers, TestText1: Line inserted at 9';
   FTestTree.ValidateRange(1, 37, FOpenings);
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpElse(30, 1)) ]);
-  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpEnd(18, 3)) ]);
-  CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpElse(7, 20)),
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(30, 1)) ]);
+  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(18, 3)) ]);
+  CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
                      ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
                      ExpN(32,40, idnEndIf, EpElse(7, 20)),
-                     ExpN(43,53, idnIfdef, EpEnd(12, 5))  ]);
-  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpEnd(11, 7)),
-                     ExpN(19,29, idnIfdef, EpElse(8, 34)),
+                     ExpN(43,53, idnIfdef, EpSkip,      EpEnd(12, 5))  ]);
+  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(11, 7)),
+                     ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
                      ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
                      ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
   CheckNodes(n,11, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
   CheckNodes(n,12, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
-  CheckNodes(n,14, [ ExpN( 5,16, idnIfdef, EpEnd(15, 5)) ]);
+  CheckNodes(n,14, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(15, 5)) ]);
   CheckNodes(n,15, [ ExpN( 5,13, idnEndIf, EpIf(14, 5)) ]);
-  CheckNodes(n,16, [ ExpN( 5,15, idnIfdef, EpEnd(16, 16)),
+  CheckNodes(n,16, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(16, 16)),
                      ExpN(16,24, idnEndIf, EpIf(16, 5))  ]);
   CheckNodes(n,18, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
-  CheckNodes(n,20, [ ExpN( 3,14, idnIfdef, EpElse(22, 3)) ]);
+  CheckNodes(n,20, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(22, 3)) ]);
   CheckNodes(n,22, [ ExpN( 3,10, idnElse,  EpIf(20, 3), EpEnd(28, 3)) ]);
-  CheckNodes(n,24, [ ExpN( 5,15, idnIfdef, EpEnd(26, 5)) ]);
+  CheckNodes(n,24, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 5)) ]);
   CheckNodes(n,26, [ ExpN( 5,13, idnEndIf, EpIf(24, 5)) ]);
-  CheckNodes(n,27, [ ExpN( 5,15, idnIfdef, EpEnd(27, 16)),
+  CheckNodes(n,27, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(27, 16)),
                      ExpN(16,24, idnEndIf, EpIf(27, 5))  ]);
   CheckNodes(n,28, [ ExpN( 3,11, idnEndIf, EpElse(22, 3)) ]);
   CheckNodes(n,30, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(37,1)) ]);
-  CheckNodes(n,32, [ ExpN( 3,13, idnIfdef, EpElse(33, 3)) ]);
+  CheckNodes(n,32, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(33, 3)) ]);
   CheckNodes(n,33, [ ExpN( 3,10, idnElse,  EpIf(32, 3), EpEnd(35,3)) ]);
   CheckNodes(n,35, [ ExpN( 3,11, idnEndIf, EpElse(33, 3)) ]);
   CheckNodes(n,37, [ ExpN( 1, 9, idnEndIf, EpElse(30, 1)) ]);
@@ -1282,32 +1284,32 @@ begin
 
   n := 'Peers, TestText1: ENDIF inserted at 9';
   FTestTree.ValidateRange(1, 37, FOpenings);
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd(18, 3)) ]);
-  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpEnd(12, 5)) ]);
-  CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpElse(7, 20)),
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(18, 3)) ]);
+  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(12, 5)) ]);
+  CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
                      ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
                      ExpN(32,40, idnEndIf, EpElse(7, 20)),
-                     ExpN(43,53, idnIfdef, EpEnd(11, 7))  ]);
-  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpEnd(9, 1)),
-                     ExpN(19,29, idnIfdef, EpElse(8, 34)),
+                     ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 7))  ]);
+  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(9, 1)),
+                     ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
                      ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
                      ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
   CheckNodes(n,11, [ ExpN( 7,15, idnEndIf, EpIf(7, 43)) ]);
   CheckNodes(n,12, [ ExpN( 5,13, idnEndIf, EpIf(5, 3)) ]);
-  CheckNodes(n,14, [ ExpN( 5,16, idnIfdef, EpEnd(15, 5)) ]);
+  CheckNodes(n,14, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(15, 5)) ]);
   CheckNodes(n,15, [ ExpN( 5,13, idnEndIf, EpIf(14, 5)) ]);
-  CheckNodes(n,16, [ ExpN( 5,15, idnIfdef, EpEnd(16, 16)),
+  CheckNodes(n,16, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(16, 16)),
                      ExpN(16,24, idnEndIf, EpIf(16, 5))  ]);
   CheckNodes(n,18, [ ExpN( 3,11, idnEndIf, EpIf(2, 1)) ]);
-  CheckNodes(n,20, [ ExpN( 3,14, idnIfdef, EpElse(22, 3)) ]);
+  CheckNodes(n,20, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(22, 3)) ]);
   CheckNodes(n,22, [ ExpN( 3,10, idnElse,  EpIf(20, 3), EpEnd(28, 3)) ]);
-  CheckNodes(n,24, [ ExpN( 5,15, idnIfdef, EpEnd(26, 5)) ]);
+  CheckNodes(n,24, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 5)) ]);
   CheckNodes(n,26, [ ExpN( 5,13, idnEndIf, EpIf(24, 5)) ]);
-  CheckNodes(n,27, [ ExpN( 5,15, idnIfdef, EpEnd(27, 16)),
+  CheckNodes(n,27, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(27, 16)),
                      ExpN(16,24, idnEndIf, EpIf(27, 5))  ]);
   CheckNodes(n,28, [ ExpN( 3,11, idnEndIf, EpElse(22, 3)) ]);
-  CheckNodes(n,30, [ ExpN( 1, 8, idnElse,  EpIf(-1, 1), EpEnd(37,1)) ]);
-  CheckNodes(n,32, [ ExpN( 3,13, idnIfdef, EpElse(33, 3)) ]);
+  CheckNodes(n,30, [ ExpN( 1, 8, idnElse,  EpNil,       EpEnd(37,1)) ]);
+  CheckNodes(n,32, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(33, 3)) ]);
   CheckNodes(n,33, [ ExpN( 3,10, idnElse,  EpIf(32, 3), EpEnd(35,3)) ]);
   CheckNodes(n,35, [ ExpN( 3,11, idnEndIf, EpElse(33, 3)) ]);
   CheckNodes(n,37, [ ExpN( 1, 9, idnEndIf, EpElse(30, 1)) ]);
@@ -1319,32 +1321,32 @@ begin
   //SynEdit.TextBetweenPoints[point(1, 3),point(1, 8)] := '';
   SynEdit.TextBetweenPoints[point(1, 3),point(8, 3)] := '';
   FTestTree.ValidateRange(1, 37, FOpenings);
-  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd(18, 3)) ]);
-  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpEnd(12, 5)) ]);
-  CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpElse(7, 20)),
+  CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(18, 3)) ]);
+  CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(12, 5)) ]);
+  CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
                      ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
                      ExpN(32,40, idnEndIf, EpElse(7, 20)),
-                     ExpN(43,53, idnIfdef, EpEnd(11, 7))  ]);
-  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpEnd(9, 1)),
-                     ExpN(19,29, idnIfdef, EpElse(8, 34)),
+                     ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 7))  ]);
+  CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(9, 1)),
+                     ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
                      ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
                      ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
   CheckNodes(n,11, [ ExpN( 7,15, idnEndIf, EpIf(7, 43)) ]);
   CheckNodes(n,12, [ ExpN( 5,13, idnEndIf, EpIf(5, 3)) ]);
-  CheckNodes(n,14, [ ExpN( 5,16, idnIfdef, EpEnd(15, 5)) ]);
+  CheckNodes(n,14, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(15, 5)) ]);
   CheckNodes(n,15, [ ExpN( 5,13, idnEndIf, EpIf(14, 5)) ]);
-  CheckNodes(n,16, [ ExpN( 5,15, idnIfdef, EpEnd(16, 16)),
+  CheckNodes(n,16, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(16, 16)),
                      ExpN(16,24, idnEndIf, EpIf(16, 5))  ]);
   CheckNodes(n,18, [ ExpN( 3,11, idnEndIf, EpIf(2, 1)) ]);
-  CheckNodes(n,20, [ ExpN( 3,14, idnIfdef, EpElse(22, 3)) ]);
+  CheckNodes(n,20, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(22, 3)) ]);
   CheckNodes(n,22, [ ExpN( 3,10, idnElse,  EpIf(20, 3), EpEnd(28, 3)) ]);
-  CheckNodes(n,24, [ ExpN( 5,15, idnIfdef, EpEnd(26, 5)) ]);
+  CheckNodes(n,24, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 5)) ]);
   CheckNodes(n,26, [ ExpN( 5,13, idnEndIf, EpIf(24, 5)) ]);
-  CheckNodes(n,27, [ ExpN( 5,15, idnIfdef, EpEnd(27, 16)),
+  CheckNodes(n,27, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(27, 16)),
                      ExpN(16,24, idnEndIf, EpIf(27, 5))  ]);
   CheckNodes(n,28, [ ExpN( 3,11, idnEndIf, EpElse(22, 3)) ]);
-  CheckNodes(n,30, [ ExpN( 1, 8, idnElse,  EpIf(-1, 1), EpEnd(37,1)) ]);
-  CheckNodes(n,32, [ ExpN( 3,13, idnIfdef, EpElse(33, 3)) ]);
+  CheckNodes(n,30, [ ExpN( 1, 8, idnElse,  EpNil,       EpEnd(37,1)) ]);
+  CheckNodes(n,32, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(33, 3)) ]);
   CheckNodes(n,33, [ ExpN( 3,10, idnElse,  EpIf(32, 3), EpEnd(35,3)) ]);
   CheckNodes(n,35, [ ExpN( 3,11, idnEndIf, EpElse(33, 3)) ]);
   CheckNodes(n,37, [ ExpN( 1, 9, idnEndIf, EpElse(30, 1)) ]);
@@ -1356,27 +1358,27 @@ begin
          'Insert Ifdef in visible part, with node inbetween';
     ReCreateEditForTreeTest(TestText6);
     FTestTree.ValidateRange(1, 20, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd( -1, -1) ) ]);
-    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpEnd(18, 2)) ]);
-    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpEnd(14, 3)) ]);
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
+    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
+    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
     CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
     CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
 
     SynEdit.TextBetweenPoints[point(1, 8),point(1, 8)] := '   {$IfDef X}';
     FTestTree.ValidateRange(1, 20, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd( -1, -1) ) ]);
-    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpEnd( -1, -1) ) ]);
-    CheckNodes(n, 8, [ ExpN( 4,14, idnIfdef, EpEnd(18, 2)) ]);
-    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpEnd(14, 3)) ]);
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
+    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpNil ) ]);
+    CheckNodes(n, 8, [ ExpN( 4,14, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
+    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
     CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
     CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 8, 4)) ]);
 
     n := n + ' Remove again';
     SynEdit.TextBetweenPoints[point(1, 8),point(14, 8)] := '';
     FTestTree.ValidateRange(1, 20, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd( -1, -1) ) ]);
-    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpEnd(18, 2)) ]);
-    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpEnd(14, 3)) ]);
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
+    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
+    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
     CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
     CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
   {%endregion  Insert If/end to create invalid peering, that must be resolved }
@@ -1386,27 +1388,27 @@ begin
          'Insert EndIf in visible part, with node inbetween';
     ReCreateEditForTreeTest(TestText6);
     FTestTree.ValidateRange(1, 20, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd( -1, -1) ) ]);
-    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpEnd(18, 2)) ]);
-    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpEnd(14, 3)) ]);
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
+    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
+    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
     CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
     CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
 
     SynEdit.TextBetweenPoints[point(1, 8),point(1, 8)] := '   {$Endif}';
     FTestTree.ValidateRange(1, 20, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd(18, 2)) ]);
-    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpEnd( 8, 4)) ]);
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
+    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd( 8, 4)) ]);
     CheckNodes(n, 8, [ ExpN( 4,12, idnEndIf, EpIf( 6, 2)) ]);
-    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpEnd(14, 3)) ]);
+    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
     CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
     CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 2, 1)) ]);
 
     n := n + ' Remove again';
     SynEdit.TextBetweenPoints[point(1, 8),point(14, 8)] := '';
     FTestTree.ValidateRange(1, 20, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd( -1, -1) ) ]);
-    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpEnd(18, 2)) ]);
-    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpEnd(14, 3)) ]);
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
+    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
+    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
     CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
     CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
   {%endregion  Insert If/end to create invalid peering, that must be resolved }
@@ -1419,20 +1421,20 @@ begin
 
     SynEdit.TextBetweenPoints[point(12, 6),point(12, 6)] := '   {$IfDef X}';
     FTestTree.ValidateRange(1, 20, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd( -1, -1) ) ]);
-    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpEnd( -1, -1) ),
-                       ExpN(15,25, idnIfdef, EpEnd(18, 2))
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
+    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpNil ),
+                       ExpN(15,25, idnIfdef, EpSkip,      EpEnd(18, 2))
                      ]);
-    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpEnd(14, 3)) ]);
+    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
     CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
     CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 15)) ]);
 
     n := n + ' Remove again';
     SynEdit.TextBetweenPoints[point(12, 6),point(25, 6)] := '';
     FTestTree.ValidateRange(1, 20, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd( -1, -1) ) ]);
-    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpEnd(18, 2)) ]);
-    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpEnd(14, 3)) ]);
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
+    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
+    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
     CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
     CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
   {%endregion  Insert If/end to create invalid peering, that must be resolved }
@@ -1445,20 +1447,20 @@ begin
 
     SynEdit.TextBetweenPoints[point(12, 6),point(12, 6)] := '   {$EndIf}';
     FTestTree.ValidateRange(1, 20, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd(18, 2) ) ]);
-    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpEnd( 6,15) ),
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(18, 2) ) ]);
+    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd( 6,15) ),
                        ExpN(15,23, idnEndIf, EpIf( 6, 2))
                      ]);
-    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpEnd(14, 3)) ]);
+    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
     CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
     CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 2, 1)) ]);
 
     n := n + ' Remove again';
     SynEdit.TextBetweenPoints[point(12, 6),point(25, 6)] := '';
     FTestTree.ValidateRange(1, 20, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpEnd( -1, -1) ) ]);
-    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpEnd(18, 2)) ]);
-    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpEnd(14, 3)) ]);
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
+    CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
+    CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
     CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
     CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
   {%endregion  Insert If/end to create invalid peering, that must be resolved }
@@ -1541,7 +1543,6 @@ procedure TTestMarkupIfDef.TestIfDefTreeNodeState;
 
 var
   n: String;
-  nd: TSynMarkupHighIfDefLinesNodeInfo;
 begin
   FTestTree := nil;
   FNodeStateResponses := TStringList.Create;
