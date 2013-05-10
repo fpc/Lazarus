@@ -512,20 +512,6 @@ begin
     FNestOpenNodes[i] := AValue;
 end;
 
-//procedure TSynMarkupHighIfDefLinesNodeInfoList.FixOuterLineForNode(var ANode: TSynMarkupHighIfDefLinesNodeInfo);
-//var
-//  j: Integer;
-//begin
-//  j := ANode.NestDepthAtNodeStart;
-//  if j = 0 then
-//    exit;
-//  ANode.OuterNestingNode := Node[j];
-//  if (not Node[j].HighestValidNestedNode.HasNode) or
-//     (Node[j].HighestValidNestedNode.StartLine < ANode.StartLine)
-//  then
-//    Node[j].HighestValidNestedNode := ANode;
-//end;
-
 procedure TSynMarkupHighIfDefLinesNodeInfoList.PushNodeLine(var ANode: TSynMarkupHighIfDefLinesNodeInfo);
 begin
   Nodes[ANode.NestMinimumDepthAtNode+1, ANode.NestDepthAtNodeEnd] := ANode;
@@ -1243,9 +1229,9 @@ end;
 procedure TSynMarkupHighIfDefLinesTree.MaybeValidateNode(var ANode: TSynMarkupHighIfDefLinesNodeInfo);
 begin
   Assert(ANode.HasNode, 'ANode.HasNode in MaybeValidateNode');
-// TODO: search first
+  // TODO: search first
   if (not ANode.IsValid) then begin
-    debugln(['Validating existing node ', ANode.StartLine, ' - ', ANode.ScanEndLine]);
+    //debugln(['Validating existing node ', ANode.StartLine, ' - ', ANode.ScanEndLine]);
     ScanLine(ANode.StartLine, ANode.FNode);
   end;
   MaybeRequestNodeStates(ANode);
@@ -1272,7 +1258,7 @@ begin
       end;
     end;
     if ANode.StartLine <> Line then begin
-      debugln(['EXTEND BACK node ', ANode.StartLine, ' - ', ANode.ScanEndLine, ' TO ', Line]);
+      //debugln(['EXTEND BACK node ', ANode.StartLine, ' - ', ANode.ScanEndLine, ' TO ', Line]);
       ANode.StartLine := Line;
     end;
   end;
@@ -1302,7 +1288,7 @@ begin
     end;
     // Line is empty, include in offs
     if ANode.ScanEndLine <> Line then begin
-      debugln(['EXTEND FORWARD node ', ANode.StartLine, ' - ', ANode.ScanEndLine, ' TO ', Line]);
+      //debugln(['EXTEND FORWARD node ', ANode.StartLine, ' - ', ANode.ScanEndLine, ' TO ', Line]);
       ANode.ScanEndLine := Line;
     end;
 end;
@@ -1365,7 +1351,7 @@ begin
         end;
       idnElse, idnElseIf: begin
           If CurDepth <= 0 then begin
-            debugln(['Ignoring node with has no opening at all in line ', ANode.StartLine]);
+            //debugln(['Ignoring node with has no opening at all in line ', ANode.StartLine]);
           end;
 
           if (CurDepth >= MinOpenDepth) and (CurDepth <= MaxOpenDepth) then begin
@@ -1374,11 +1360,11 @@ begin
             case OpenList[OpenIdx(CurDepth)].NodeType of
               idnIfdef, idnElseIf:
                 if OpenList[OpenIdx(CurDepth)].ClosingPeer <> ANode.Entry[i] then begin
-                  Debugln(['New Peer for ',dbgs(OpenList[OpenIdx(CurDepth)].NodeType), ' to else same line']);
+                  //Debugln(['New Peer for ',dbgs(OpenList[OpenIdx(CurDepth)].NodeType), ' to else same line']);
                   OpenList[OpenIdx(CurDepth)].ClosingPeer := ANode.Entry[i];
                   //dec(MaxOpenDepth); // Will be set with the current entry
                 end;
-              idnElse: DebugLn('Ignoring invalid double else (on same line)');
+              idnElse: ;//DebugLn('Ignoring invalid double else (on same line)');
             end;
           end
           else
@@ -1396,7 +1382,7 @@ begin
         end;
       idnEndIf: begin
           If CurDepth <= 0 then begin
-            debugln(['Ignoring node with has no opening at all in line', ANode.StartLine]);
+            //debugln(['Ignoring node with has no opening at all in line', ANode.StartLine]);
             dec(CurDepth);
             continue;  // This node has no opening node
           end;
@@ -1405,7 +1391,7 @@ begin
             // Opening Node on this line
             assert(CurDepth = MaxOpenDepth, 'ConnectPeers: Same line peer skips opening node(s)');
             if OpenList[OpenIdx(CurDepth)].ClosingPeer <> ANode.Entry[i] then begin
-              Debugln(['New Peer for ',dbgs(OpenList[OpenIdx(CurDepth)].NodeType), ' to endif same line']);
+              //Debugln(['New Peer for ',dbgs(OpenList[OpenIdx(CurDepth)].NodeType), ' to endif same line']);
               OpenList[OpenIdx(CurDepth)].ClosingPeer := ANode.Entry[i];
             end;
             dec(MaxOpenDepth);
@@ -1438,7 +1424,7 @@ begin
       // scanning outer lines
       j := ToPos(AOuterLines.NodeLineEx[i-1, 1]);
       if j < 0 then begin
-        debugln(['Skipping peer for ELSE with NO IFDEF at depth ', i-1, ' before line ', ANode.StartLine]);
+        //debugln(['Skipping peer for ELSE with NO IFDEF at depth ', i-1, ' before line ', ANode.StartLine]);
         continue;
       end;
       OtherLine := GetOrInsertNodeAtLine(j);
@@ -1456,7 +1442,7 @@ begin
           idnIfdef: begin
               assert(PeerList[i].NodeType in [idnElse, idnElseIf, idnEndIf], 'PeerList[i].NodeType in [idnElse, idnEndIf] for other ifdef');
               if PeerList[i].OpeningPeer <> OtherLine.Entry[j] then begin
-                Debugln(['New Peer for ',dbgs(PeerList[i].NodeType), ' to ifdef other line']);
+                //Debugln(['New Peer for ',dbgs(PeerList[i].NodeType), ' to ifdef other line']);
                 PeerList[i].OpeningPeer := OtherLine.Entry[j];
               end;
               j := -1;
@@ -1469,13 +1455,13 @@ begin
                    (OtherLine.Entry[j].NodeType = idnElseIf) )
               then begin
                 if PeerList[i].OpeningPeer <> OtherLine.Entry[j] then begin
-                  Debugln(['New Peer for ',dbgs(PeerList[i].NodeType), ' to else other line']);
+                  //Debugln(['New Peer for ',dbgs(PeerList[i].NodeType), ' to else other line']);
                   PeerList[i].OpeningPeer := OtherLine.Entry[j];
                 end;
                 j := -1;
               end
               else begin
-                DebugLn('Ignoring invalid double else');
+                //DebugLn('Ignoring invalid double else');
               end;
               break;
             end;
@@ -1493,12 +1479,12 @@ begin
       case PeerList[i].NodeType of
         idnIfdef: ;
         idnElse, idnElseIf:  begin
-            Debugln(['CLEARING ifdef Peer for ',dbgs(PeerList[i].NodeType)]);
+            //Debugln(['CLEARING ifdef Peer for ',dbgs(PeerList[i].NodeType)]);
             PeerList[i].OpeningPeer := nil;
             //DoModified;
           end;
         idnEndIf: begin
-            Debugln(['CLEARING BOTH Peer for ',dbgs(PeerList[i].NodeType)]);
+            //Debugln(['CLEARING BOTH Peer for ',dbgs(PeerList[i].NodeType)]);
             PeerList[i].ClearPeers;
             //DoModified;
           end;
@@ -1657,7 +1643,6 @@ begin
         end;
       end;
     end;
-//DebugLn('---INS');DebugPrint(true);
   end
 
   else
@@ -1700,7 +1685,6 @@ begin
     while (WorkNode.HasNode) and (WorkNode.StartLine < LineAfterDelete) do begin
       NextNode := WorkNode.Successor;
       RemoveLine(WorkNode.FNode);
-DebugLn(['RemoveLine ', WorkNode.StartLine]);
       WorkNode := NextNode;
     end;
 
@@ -1716,20 +1700,16 @@ DebugLn(['RemoveLine ', WorkNode.StartLine]);
     if (WorkNode.StartLine = LineAfterDelete) then begin
       if LinePosNode.HasNode then begin
         AdjustEntryXPos(WorkNode.Node, aBytePos - 1, 0, LinePosNode.Node);
-DebugLn(['RemoveLine XX ', WorkNode.StartLine]);
         RemoveLine(WorkNode.FNode);
         WorkNode.ClearInfo;
       end
       else begin
         AdjustEntryXPos(WorkNode.Node, aBytePos - 1);
-DebugLn(['change startline ', WorkNode.StartLine ,' to ', aLinePos]);
         WorkNode.StartLine := aLinePos;
       end;
     end;
 
-//DebugPrint(true);
     AdjustForLinesDeleted(aLinePos + 1, aLineBrkCnt);
-//DebugLn('---DEL');DebugPrint(true);
   end
 
   else begin
@@ -1760,7 +1740,6 @@ DebugLn(['change startline ', WorkNode.StartLine ,' to ', aLinePos]);
           end;
         end;
       end;
-//DebugLn('---MOV');DebugPrint(true);
 
       WorkNode := WorkNode.Precessor;
       if (not WorkNode.HasNode) then
@@ -1979,7 +1958,6 @@ var
       ANodeForLine.EntryCapacity := FoldNodeInfoList.Count;
     end;
     if NodesAddedCnt >= ANodeForLine.EntryCount then begin
-      DebugLn(['Add Entry at end ', dbgs(AType)]);
       Result := ANodeForLine.AddEntry;
       LineNeedsReq := True;
     end
@@ -1994,7 +1972,7 @@ var
         if e.StartColumn >= ALogStart then
           break;
         if IsCommentedIfDef(e) then begin      // commented Ifdef or ElseIf
-          debugln('Found commented node');
+          //debugln('Found commented node');
           while i-1 >= NodesAddedCnt do begin
             ANodeForLine.DeletEntry(i-1, True);
             dec(i);
@@ -2016,7 +1994,7 @@ var
            ( (ALineOffs = 0) or (ALineOffs = ANodeForLine.LastEntryEndLineOffs) )
         then begin
           // Does match exactly, keep as is
-          DebugLn(['++++ KEEPING NODE ++++ ', ALine, ' ', dbgs(AType), ': ', ALogStart, ' - ', ALogEnd]);
+          //DebugLn(['++++ KEEPING NODE ++++ ', ALine, ' ', dbgs(AType), ': ', ALogStart, ' - ', ALogEnd]);
           if not LineNeedsReq then
             LineNeedsReq := Result.NeedsRequesting;
           if i > NodesAddedCnt then begin
@@ -2033,7 +2011,6 @@ var
       end;
 
       If Result = nil then begin
-        DebugLn(['Add Entry ', dbgs(AType), ' at idx ', NodesAddedCnt, ' of ', ANodeForLine.EntryCount]);
         // No matching node found
         if ANodeForLine.Entry[NodesAddedCnt].StartColumn < ALogEnd then
           Result := ANodeForLine.Entry[NodesAddedCnt]
@@ -2058,7 +2035,6 @@ var
   //RelNestDepth, RelNestDepthNext: Integer;
   NType: TSynMarkupIfdefNodeType;
 begin
-  DebugLnEnter(['>> ScanLine ', ALine, ' ', dbgs(ANodeForLine), ' ', dbgs(ACheckOverlapOnCreateLine)]);
   LineNeedsReq := False;
   FoldNodeInfoList := GetHighLighterWithLines.FoldNodeInfo[ToIdx(ALine)];
   FoldNodeInfoList.AddReference;
@@ -2165,7 +2141,6 @@ begin
     ANodeForLine.ReduceCapacity;
     ANodeForLine.ScanEndOffs := Max(0, LineOffs-1);
   end;
-  DebugLnExit(['<< ScanLine']);
 end;
 
 procedure TSynMarkupHighIfDefLinesTree.ValidateRange(AStartLine, AEndLine: Integer;
@@ -2204,7 +2179,7 @@ XXXCurTree := self; try
   (*** Find or create a node for StartLine ***)
 
   Node := FindNodeAtPosition(AStartLine, afmPrev); // might be multiline
-//debugln(['Validate RANGE ', AStartLine, ' - ', AEndLine,' -- 1st node ', Node.StartLine, ' - ', Node.ScanEndLine]);
+  //debugln(['Validate RANGE ', AStartLine, ' - ', AEndLine,' -- 1st node ', Node.StartLine, ' - ', Node.ScanEndLine]);
   NextNode := Node.Successor;
   assert((not NextNode.HasNode) or (AStartLine < NextNode.StartLine), 'AStartLine < NextNode.StartLine');
 
@@ -2244,7 +2219,6 @@ XXXCurTree := self; try
         (NextNode.StartLine <= AEndLine)
   do begin
     Assert(Node.IsValid, 'Node.IsValid while "Scan to Endline"');
-//DebugLn('#L==='); DebugPrint(true);NestList.dbg;DebugLn('#L');
 
     if not SkipPeers then
       FixNodePeers(Node);
@@ -2295,7 +2269,6 @@ XXXCurTree := self; try
   end;
 
   assert(Node.HasNode);
-//DebugLn('#F==='); DebugPrint(true);NestList.dbg;DebugLn('#F');
   if not SkipPeers then
     FixNodePeers(Node);
 
