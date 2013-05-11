@@ -1860,7 +1860,8 @@ begin
   {$ENDIF}
   try
     aScanner:=FCurCodeTool.Scanner;
-    aScanner.StoreDirectives:=true;
+    if not aScanner.StoreDirectives then
+      aScanner.DemandStoreDirectives;
     aScanner.Scan(lsrEnd,true);
   except
     on e: Exception do Result:=HandleException(e);

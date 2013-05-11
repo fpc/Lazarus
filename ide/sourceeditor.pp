@@ -5280,7 +5280,6 @@ begin
   else
     Result := idnInvalid;
 end;
-
 {$ENDIF}
 
 function TSourceEditor.SharedEditorCount: Integer;

@@ -1517,7 +1517,6 @@ procedure TIDESynEditor.SetIfdefNodeState(ALinePos, AstartPos: Integer;
 begin
   FMarkupIfDef.SetNodeState(ALinePos, AstartPos, AState);
 end;
-
 {$ENDIF}
 
 function TIDESynEditor.GetHighlightUserWordCount: Integer;

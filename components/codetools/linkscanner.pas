@@ -408,7 +408,7 @@ type
     FOnGetGlobalChangeSteps: TLSOnGetGlobalChangeSteps;
     FSkippingDirectives: TLSSkippingDirective;
     FSkipIfLevel: integer;
-    FStoreDirectives: boolean;
+    FStoreDirectives: integer;
     FCompilerMode: TCompilerMode;
     FCompilerModeSwitches: TCompilerModeSwitches;
     FPascalCompiler: TPascalCompiler;
@@ -417,7 +417,6 @@ type
     function GetDirectives(Index: integer): PLSDirective; inline;
     function GetDirectivesSorted(Index: integer): PLSDirective; inline;
     procedure SetCompilerMode(const AValue: TCompilerMode);
-    procedure SetStoreDirectives(AValue: boolean);
     procedure SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
     procedure SortDirectives;
     function InternalIfDirective: boolean;
@@ -527,7 +526,9 @@ type
     property DirectivesSorted[Index: integer]: PLSDirective read GetDirectivesSorted; // sorted for Code and SrcPos
     property DirectiveCount: integer read FDirectivesCount;
     procedure ClearDirectives(FreeMemory: boolean);
-    property StoreDirectives: boolean read FStoreDirectives write SetStoreDirectives; // store directives on next Scan
+    function StoreDirectives: boolean; inline; // store directives on next Scan
+    procedure DemandStoreDirectives; // increase internal counter to StoreDirectives
+    procedure ReleaseStoreDirectives; // decrease internal counter to StoreDirectives
     property DirectivesStored: boolean read FDirectivesStored; // directives were stored on last scan
     function FindDirective(aCode: Pointer; aSrcPos: integer;
       out FirstSortedIndex, LastSortedIndex: integer): boolean;
@@ -1030,6 +1031,12 @@ begin
     Result:=CleanedLen+1;
 end;
 
+// inline
+function TLinkScanner.StoreDirectives: boolean;
+begin
+  Result:=FStoreDirectives>0;
+end;
+
 procedure TLinkScanner.SortDirectives;
 var
   i: Integer;
@@ -1259,6 +1266,20 @@ begin
     if FDirectivesSorted<>nil then
       FDirectivesSorted[0]:=nil;
   end;
+end;
+
+procedure TLinkScanner.DemandStoreDirectives;
+begin
+  inc(FStoreDirectives);
+end;
+
+procedure TLinkScanner.ReleaseStoreDirectives;
+begin
+  if FStoreDirectives=0 then
+    raise Exception.Create('');
+  dec(FStoreDirectives);
+  if FStoreDirectives=0 then
+    ClearDirectives(true);
 end;
 
 function TLinkScanner.FindDirective(aCode: Pointer; aSrcPos: integer; out
@@ -4073,14 +4094,6 @@ begin
   FCompilerMode:=AValue;
   FCompilerModeSwitches:=DefaultCompilerModeSwitches[CompilerMode];
   FNestedComments:=cmsNested_comment in CompilerModeSwitches;
-end;
-
-procedure TLinkScanner.SetStoreDirectives(AValue: boolean);
-begin
-  if FStoreDirectives=AValue then Exit;
-  FStoreDirectives:=AValue;
-  if not StoreDirectives then
-    ClearDirectives(true);
 end;
 
 function TLinkScanner.GetIgnoreMissingIncludeFiles: boolean;
