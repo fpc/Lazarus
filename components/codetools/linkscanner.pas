@@ -74,7 +74,7 @@ type
                     of object;
   TOnGetFileName = function(Sender: TObject; Code: Pointer): string of object;
   TOnCheckFileOnDisk = function(Code: Pointer): boolean of object;
-  TOnGetInitValues = function(Code: Pointer;
+  TOnGetInitValues = function(Scanner: TLinkScanner; Code: Pointer;
                        out ChangeStep: integer): TExpressionEvaluator of object;
   TOnIncludeCode = procedure(ParentCode, IncludeCode: Pointer) of object;
   TOnSetWriteLock = procedure(Lock: boolean) of object;
@@ -1711,7 +1711,7 @@ begin
 
   // initialize Defines
   if Assigned(FOnGetInitValues) then
-    FInitValues.Assign(FOnGetInitValues(FMainCode,FInitValuesChangeStep));
+    FInitValues.Assign(FOnGetInitValues(Self,FMainCode,FInitValuesChangeStep));
   Values.Assign(FInitValues);
 
   // compiler
@@ -2161,7 +2161,7 @@ begin
 
   // check initvalues
   if Assigned(FOnGetInitValues) then begin
-    NewInitValues:=FOnGetInitValues(Code,NewInitValuesChangeStep);
+    NewInitValues:=FOnGetInitValues(Self,Code,NewInitValuesChangeStep);
     if (NewInitValues<>nil)
     and (NewInitValuesChangeStep<>FInitValuesChangeStep)
     and (not FInitValues.Equals(NewInitValues)) then begin

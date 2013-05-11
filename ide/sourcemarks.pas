@@ -52,6 +52,7 @@ type
   protected
     function GetSharedEditorsBase(Index: Integer): TSourceEditorBase; virtual abstract;
     function SharedEditorCount: Integer; virtual; abstract;
+    function Filename: string; virtual; abstract;
   end;
 
   { TSourceEditorBase }

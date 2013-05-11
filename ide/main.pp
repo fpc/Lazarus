@@ -620,6 +620,8 @@ type
                 );
     function CTMacroFunctionProject(Data: Pointer): boolean;
     procedure OnCompilerParseStampIncreased;
+    procedure CodeToolBossScannerInit(Self: TCodeToolManager;
+      Scanner: TLinkScanner);
 
     // MessagesView events
     procedure MessagesViewSelectionChanged(sender: TObject);
@@ -9872,6 +9874,7 @@ begin
     OnFindDefineProperty:=@OnCodeToolBossFindDefineProperty;
     OnGetMethodName:=@OnCodeToolBossGetMethodName;
     OnGetIndenterExamples:=@OnCodeToolBossGetIndenterExamples;
+    OnScannerInit:=@CodeToolBossScannerInit;
   end;
 
   CodeToolsOpts.AssignGlobalDefineTemplatesToTree(CodeToolBoss.DefineTree);
@@ -10166,6 +10169,18 @@ begin
   {$ENDIF}
   FIDECodeToolsDefines:=ctdNeedUpdate;
   CodeToolBoss.DefineTree.ClearCache;
+end;
+
+procedure TMainIDE.CodeToolBossScannerInit(Self: TCodeToolManager;
+  Scanner: TLinkScanner);
+var
+  SrcEdit: TSourceEditor;
+begin
+  if SourceEditorManager=nil then exit;
+  SrcEdit:=SourceEditorManager.SourceEditorIntfWithFilename(Scanner.MainFilename);
+  //debugln(['TMainIDE.CodeToolBossScannerInit ',Scanner.MainFilename,' ',DbgSName(SrcEdit)]);
+  if SrcEdit=nil then exit;
+  SrcEdit.ConnectScanner(Scanner);
 end;
 
 function TMainIDE.CTMacroFunctionProject(Data: Pointer): boolean;

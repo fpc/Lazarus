@@ -48,6 +48,7 @@ uses
   LConvEncoding, Messages, LazLoggerBase, lazutf8classes,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
+  LinkScanner,
   // synedit
   SynEditLines, SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr,
   SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
@@ -202,6 +203,7 @@ type
     FIgnoreCodeBufferLock: integer;
     FEditorStampCommitedToCodetools: int64;
     FCodeBuffer: TCodeBuffer;
+    FLinkScanners: TFPList; // list of TLinkScanner
     function GetModified: Boolean;
     procedure SetCodeBuffer(const AValue: TCodeBuffer);
     procedure SetModified(const AValue: Boolean);
@@ -216,6 +218,8 @@ type
     function NeedsUpdateCodeBuffer: boolean;
     procedure UpdateCodeBuffer;
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
+    procedure ConnectScanner(Scanner: TLinkScanner);
+    function Filename: string; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -370,6 +374,7 @@ type
     procedure DecreaseIgnoreCodeBufferLock; override;
     procedure UpdateCodeBuffer; override;// copy the source from EditorComponent
     function NeedsUpdateCodeBuffer: boolean; override;
+    procedure ConnectScanner(Scanner: TLinkScanner);
 
     // find
     procedure StartFindAndReplace(Replace:boolean);
@@ -534,6 +539,7 @@ type
     property SyncroLockCount: Integer read FSyncroLockCount;
     function SharedEditorCount: Integer;
     property SharedEditors[Index: Integer]: TSourceEditor read GetSharedEditors;
+    property SharedValues: TSourceEditorSharedValues read FSharedValues;
     property IsNewSharedEditor: Boolean read FIsNewSharedEditor write FIsNewSharedEditor;
     property IsLocked: Boolean read FIsLocked write SetIsLocked;
   end;
@@ -970,6 +976,7 @@ type
     FOnCurrentCodeBufferChanged: TNotifyEvent;
     procedure DoMacroRecorderState(Sender: TObject);
   public
+    // codetools
     property OnCurrentCodeBufferChanged: TNotifyEvent
              read FOnCurrentCodeBufferChanged write FOnCurrentCodeBufferChanged;
   end;
@@ -2562,19 +2569,40 @@ begin
   end;
 end;
 
+procedure TSourceEditorSharedValues.ConnectScanner(Scanner: TLinkScanner);
+begin
+  if FLinkScanners.IndexOf(Scanner)>=0 then exit;
+  //debugln(['TSourceEditorSharedValues.ConnectScanner ',Filename,' ',Scanner.MainFilename]);
+  FLinkScanners.Add(Scanner);
+  Scanner.DemandStoreDirectives;
+end;
+
+function TSourceEditorSharedValues.Filename: string;
+begin
+  Result:=FCodeBuffer.Filename;
+end;
+
 constructor TSourceEditorSharedValues.Create;
 begin
   FSharedEditorList := TFPList.Create;
   FExecutionMark := nil;
   FMarksRequested := False;
   FInGlobalUpdate := 0;
+  FLinkScanners := TFPList.Create;
 end;
 
 destructor TSourceEditorSharedValues.Destroy;
+var
+  i: integer;
 begin
   SourceEditorMarks.DeleteAllForEditorID(Self);
   CodeBuffer := nil;
   FreeAndNil(FSharedEditorList);
+  if FLinkScanners<>nil then begin
+    for i:=0 to FLinkScanners.Count-1 do
+      TLinkScanner(FLinkScanners[i]).ReleaseStoreDirectives;
+    FreeAndNil(FLinkScanners);
+  end;
   // no need to care about ExecutionMark, it is removed with all other marks,
   // if the last SynEdit is destroyed (TSynEditMark.Destroy will free the SourceMark)
   inherited Destroy;
@@ -3034,7 +3062,7 @@ begin
   FEditor.CaretXY := FTempCaret;
 end;
 
-Procedure TSourceEditor.ProcessCommand(Sender: TObject;
+procedure TSourceEditor.ProcessCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
 // these are normal commands for synedit (lower than ecUserFirst),
 // define extra actions here
@@ -3187,7 +3215,7 @@ begin
   //debugln('TSourceEditor.ProcessCommand B IdentCompletionTimer.AutoEnabled=',dbgs(SourceCompletionTimer.AutoEnabled));
 end;
 
-Procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
+procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
 // these are the keys above ecUserFirst
 // define all extra keys here, that should not be handled by synedit
@@ -3386,7 +3414,7 @@ Begin
   if Handled then Command:=ecNone;
 end;
 
-Procedure TSourceEditor.UserCommandProcessed(Sender: TObject;
+procedure TSourceEditor.UserCommandProcessed(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
 // called after the source editor processed a key
 var Handled: boolean;
@@ -3413,7 +3441,7 @@ begin
   if Handled then Command:=ecNone;
 end;
 
-Procedure TSourceEditor.EditorStatusChanged(Sender: TObject;
+procedure TSourceEditor.EditorStatusChanged(Sender: TObject;
   Changes: TSynStatusChanges);
 Begin
   If Assigned(OnEditorChange) then
@@ -4456,6 +4484,11 @@ begin
   Result := FSharedValues.NeedsUpdateCodeBuffer;
 end;
 
+procedure TSourceEditor.ConnectScanner(Scanner: TLinkScanner);
+begin
+  FSharedValues.ConnectScanner(Scanner);
+end;
+
 function TSourceEditor.GetSource: TStrings;
 Begin
   //return synedit's source.
@@ -4843,8 +4876,8 @@ begin
   end;
 end;
 
-Procedure TSourceEditor.EditorMouseMoved(Sender: TObject;
-  Shift: TShiftState; X,Y: Integer);
+procedure TSourceEditor.EditorMouseMoved(Sender: TObject; Shift: TShiftState;
+  X, Y: Integer);
 begin
 //  debugln('MouseMove in Editor',X,',',Y);
   if Assigned(OnMouseMove) then
@@ -4867,8 +4900,8 @@ begin
     OnMouseDown(Sender, Button, Shift, X,Y);
 end;
 
-Procedure TSourceEditor.EditorKeyDown(Sender: TObject; var Key: Word; Shift :
-  TShiftState);
+procedure TSourceEditor.EditorKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 begin
   //DebugLn(['TSourceEditor.EditorKeyDown A ',dbgsName(Sender),' Key=',IntToStr(Key),' File=',ExtractFileName(Filename),' Wnd=',dbgSourceNoteBook(SourceNotebook)]);
   CheckActiveWindow;
@@ -5324,8 +5357,8 @@ begin
   Result := FEditor.GetWordAtRowCol(ACaretPos);
 end;
 
-procedure TSourceEditor.LinesDeleted(Sender: TObject; FirstLine,
-  Count: Integer);
+procedure TSourceEditor.LinesDeleted(sender: TObject; FirstLine, Count: Integer
+  );
 begin
   // notify the notebook that lines were deleted.
   // marks will use this to update themselves
@@ -5333,8 +5366,8 @@ begin
     MessagesView.SrcEditLinesInsertedDeleted(Filename,FirstLine,-Count);
 end;
 
-procedure TSourceEditor.LinesInserted(Sender: TObject; FirstLine,
-  Count: Integer);
+procedure TSourceEditor.LinesInserted(sender: TObject; FirstLine, Count: Integer
+  );
 begin
   // notify the notebook that lines were Inserted.
   // marks will use this to update themselves
@@ -8572,6 +8605,7 @@ function TSourceEditorManagerBase.SourceEditorIntfWithFilename(
 var
   i: Integer;
 begin
+  {$Note ToDo: TSourceEditorManagerBase.SourceEditorIntfWithFilename use tree}
   for i := SourceEditorCount - 1 downto 0 do begin
     Result := SourceEditors[i];
     if CompareFilenames(Result.Filename, Filename) = 0 then exit;

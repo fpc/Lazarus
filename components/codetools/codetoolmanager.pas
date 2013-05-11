@@ -76,6 +76,7 @@ type
     );
   TCodeToolManagerHandlers = set of TCodeToolManagerHandler;
   TOnToolTreeChanging = TCodeTreeChangeEvent;
+  TOnScannerInit = procedure(Self: TCodeToolManager; Scanner: TLinkScanner) of object;
 
   { TCodeToolManager }
 
@@ -110,6 +111,7 @@ type
     FOnFindDefineProperty: TOnFindDefineProperty;
     FOnGetIndenterExamples: TOnGetFABExamples;
     FOnGetMethodName: TOnGetMethodname;
+    FOnScannerInit: TOnScannerInit;
     FOnSearchUsedUnit: TOnSearchUsedUnit;
     FResourceTool: TResourceCodeTool;
     FSetPropertyVariablename: string;
@@ -123,16 +125,16 @@ type
     FWriteLockStep: integer; // current write lock ID
     FHandlers: array[TCodeToolManagerHandler] of TMethodList;
     function GetBeautifier: TBeautifyCodeOptions; inline;
-    function OnScannerGetInitValues(Code: Pointer;
+    function DoOnScannerGetInitValues(Scanner: TLinkScanner; Code: Pointer;
       out AChangeStep: integer): TExpressionEvaluator;
-    procedure OnDefineTreeReadValue(Sender: TObject; const VariableName: string;
+    procedure DoOnDefineTreeReadValue(Sender: TObject; const VariableName: string;
                                     var Value: string; var Handled: boolean);
-    procedure OnGlobalValuesChanged;
+    procedure DoOnGlobalValuesChanged;
     function DoOnFindUsedUnit(SrcTool: TFindDeclarationTool; const TheUnitName,
           TheUnitInFilename: string): TCodeBuffer;
     function DoOnGetSrcPathForCompiledUnit(Sender: TObject;
           const AFilename: string): string;
-    function OnInternalGetMethodName(const AMethod: TMethod;
+    function DoOnInternalGetMethodName(const AMethod: TMethod;
                                      CheckOwner: TObject): string;
     function FindCodeOfMainUnitHint(Code: TCodeBuffer): TCodeBuffer;
     procedure CreateScanner(Code: TCodeBuffer);
@@ -150,21 +152,21 @@ type
     procedure AfterApplyingChanges;
     procedure AdjustErrorTopLine;
     procedure WriteError;
-    procedure OnFABGetNestedComments(Sender: TObject; Code: TCodeBuffer; out
+    procedure DoOnFABGetNestedComments(Sender: TObject; Code: TCodeBuffer; out
                                      NestedComments: boolean);
-    procedure OnFABGetExamples(Sender: TObject; Code: TCodeBuffer;
+    procedure DoOnFABGetExamples(Sender: TObject; Code: TCodeBuffer;
       Step: integer; var CodeBuffers: TFPList; var ExpandedFilenames: TStrings);
-    procedure OnLoadFileForTool(Sender: TObject; const ExpandedFilename: string;
+    procedure DoOnLoadFileForTool(Sender: TObject; const ExpandedFilename: string;
                                 out Code: TCodeBuffer; var Abort: boolean);
-    function OnGetCodeToolForBuffer(Sender: TObject;
+    function DoOnGetCodeToolForBuffer(Sender: TObject;
       Code: TCodeBuffer; GoToMainCode: boolean): TFindDeclarationTool;
-    function OnGetDirectoryCache(const ADirectory: string): TCTDirectoryCache;
-    procedure OnToolSetWriteLock(Lock: boolean);
-    procedure OnToolGetChangeSteps(out SourcesChangeStep, FilesChangeStep: int64;
+    function DoOnGetDirectoryCache(const ADirectory: string): TCTDirectoryCache;
+    procedure DoOnToolSetWriteLock(Lock: boolean);
+    procedure DoOnToolGetChangeSteps(out SourcesChangeStep, FilesChangeStep: int64;
                                    out InitValuesChangeStep: integer);
-    function OnParserProgress(Tool: TCustomCodeTool): boolean;
-    procedure OnToolTreeChange(Tool: TCustomCodeTool; NodesDeleting: boolean);
-    function OnScannerProgress(Sender: TLinkScanner): boolean;
+    function DoOnParserProgress(Tool: TCustomCodeTool): boolean;
+    procedure DoOnToolTreeChange(Tool: TCustomCodeTool; NodesDeleting: boolean);
+    function DoOnScannerProgress(Sender: TLinkScanner): boolean;
     function GetResourceTool: TResourceCodeTool;
     function GetOwnerForCodeTreeNode(ANode: TCodeTreeNode): TObject;
     function DirectoryCachePoolGetString(const ADirectory: string;
@@ -227,6 +229,9 @@ type
                                  out ListOfCodeBuffer: TFPList): boolean;
     property OnSearchUsedUnit: TOnSearchUsedUnit
                                  read FOnSearchUsedUnit write FOnSearchUsedUnit;
+
+    // initializing single scanner
+    property OnScannerInit: TOnScannerInit read FOnScannerInit write FOnScannerInit;
 
     // initializing single codetool
     function GetCodeToolForSource(Code: TCodeBuffer;
@@ -920,7 +925,7 @@ begin
   DirectoryCachePool.OnGetCompiledUnitFromSet:=@DirectoryCachePoolGetCompiledUnitFromSet;
   DirectoryCachePool.OnIterateFPCUnitsFromSet:=@DirectoryCachePoolIterateFPCUnitsFromSet;
   DefineTree:=TDefineTree.Create;
-  DefineTree.OnReadValue:=@OnDefineTreeReadValue;
+  DefineTree.OnReadValue:=@DoOnDefineTreeReadValue;
   DefinePool:=TDefinePool.Create;
   SourceCache:=TCodeCache.Create;
   SourceCache.DirectoryCachePool:=DirectoryCachePool;
@@ -930,9 +935,9 @@ begin
   SourceChangeCache.OnBeforeApplyChanges:=@BeforeApplyingChanges;
   SourceChangeCache.OnAfterApplyChanges:=@AfterApplyingChanges;
   Indenter:=TFullyAutomaticBeautifier.Create;
-  Indenter.OnGetNestedComments:=@OnFABGetNestedComments;
-  Indenter.OnGetExamples:=@OnFABGetExamples;
-  Indenter.OnLoadFile:=@OnLoadFileForTool;
+  Indenter.OnGetNestedComments:=@DoOnFABGetNestedComments;
+  Indenter.OnGetExamples:=@DoOnFABGetExamples;
+  Indenter.OnLoadFile:=@DoOnLoadFileForTool;
   GlobalValues:=TExpressionEvaluator.Create;
   OnFileExistsCached:=@DirectoryCachePool.FileExists;
   OnFileAgeCached:=@DirectoryCachePool.FileAge;
@@ -1339,10 +1344,10 @@ begin
   if FilenameHasSourceExt(Code.Filename) and (Code.Scanner=nil) then begin
     // create a scanner for the unit/program
     Code.Scanner:=TLinkScanner.Create;
-    Code.Scanner.OnGetInitValues:=@OnScannerGetInitValues;
-    Code.Scanner.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
-    Code.Scanner.OnGetGlobalChangeSteps:=@OnToolGetChangeSteps;
-    Code.Scanner.OnProgress:=@OnScannerProgress;
+    Code.Scanner.OnGetInitValues:=@DoOnScannerGetInitValues;
+    Code.Scanner.OnSetGlobalWriteLock:=@DoOnToolSetWriteLock;
+    Code.Scanner.OnGetGlobalChangeSteps:=@DoOnToolGetChangeSteps;
+    Code.Scanner.OnProgress:=@DoOnScannerProgress;
   end;
 end;
 
@@ -2406,7 +2411,7 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Graph:=TDeclarationOverloadsGraph.Create;
-    Graph.OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
+    Graph.OnGetCodeToolForBuffer:=@DoOnGetCodeToolForBuffer;
     Result:=Graph.Init(NewCode,NewX,NewY);
   except
     on e: Exception do Result:=HandleException(e);
@@ -4761,8 +4766,8 @@ function TCodeToolManager.CreateUsesGraph: TUsesGraph;
 begin
   Result:=TUsesGraph.Create;
   Result.DirectoryCachePool:=DirectoryCachePool;
-  Result.OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
-  Result.OnLoadFile:=@OnLoadFileForTool;
+  Result.OnGetCodeToolForBuffer:=@DoOnGetCodeToolForBuffer;
+  Result.OnLoadFile:=@DoOnLoadFileForTool;
 end;
 
 function TCodeToolManager.FindLFMFileName(Code: TCodeBuffer): string;
@@ -5318,7 +5323,7 @@ begin
     Result:=GetCompiledSrcPathForDirectory(ExtractFilePath(AFilename));
 end;
 
-function TCodeToolManager.OnInternalGetMethodName(const AMethod: TMethod;
+function TCodeToolManager.DoOnInternalGetMethodName(const AMethod: TMethod;
   CheckOwner: TObject): string;
 begin
   if Assigned(OnGetMethodName) then
@@ -5331,7 +5336,7 @@ begin
     Result:=TObject(AMethod.Data).MethodName(AMethod.Code);
 end;
 
-function TCodeToolManager.OnParserProgress(Tool: TCustomCodeTool): boolean;
+function TCodeToolManager.DoOnParserProgress(Tool: TCustomCodeTool): boolean;
 begin
   Result:=true;
   if not FAbortable then exit;
@@ -5339,7 +5344,7 @@ begin
   Result:=not OnCheckAbort();
 end;
 
-procedure TCodeToolManager.OnToolTreeChange(Tool: TCustomCodeTool;
+procedure TCodeToolManager.DoOnToolTreeChange(Tool: TCustomCodeTool;
   NodesDeleting: boolean);
 var
   i: Integer;
@@ -5356,7 +5361,7 @@ begin
     TOnToolTreeChanging(FHandlers[ctmOnToolTreeChanging][i])(Tool,NodesDeleting);
 end;
 
-function TCodeToolManager.OnScannerProgress(Sender: TLinkScanner): boolean;
+function TCodeToolManager.DoOnScannerProgress(Sender: TLinkScanner): boolean;
 begin
   Result:=true;
   if not FAbortable then exit;
@@ -5364,27 +5369,27 @@ begin
   Result:=not OnCheckAbort();
 end;
 
-procedure TCodeToolManager.OnFABGetNestedComments(Sender: TObject;
+procedure TCodeToolManager.DoOnFABGetNestedComments(Sender: TObject;
   Code: TCodeBuffer; out NestedComments: boolean);
 begin
   NestedComments:=GetNestedCommentsFlagForFile(Code.Filename);
 end;
 
-procedure TCodeToolManager.OnFABGetExamples(Sender: TObject; Code: TCodeBuffer;
+procedure TCodeToolManager.DoOnFABGetExamples(Sender: TObject; Code: TCodeBuffer;
   Step: integer; var CodeBuffers: TFPList; var ExpandedFilenames: TStrings);
 begin
   if Assigned(OnGetIndenterExamples) then
     OnGetIndenterExamples(Sender,Code,Step,CodeBuffers,ExpandedFilenames);
 end;
 
-procedure TCodeToolManager.OnLoadFileForTool(Sender: TObject;
+procedure TCodeToolManager.DoOnLoadFileForTool(Sender: TObject;
   const ExpandedFilename: string; out Code: TCodeBuffer; var Abort: boolean);
 begin
   Code:=LoadFile(ExpandedFilename,true,false);
 end;
 
-function TCodeToolManager.OnScannerGetInitValues(Code: Pointer;
-  out AChangeStep: integer): TExpressionEvaluator;
+function TCodeToolManager.DoOnScannerGetInitValues(Scanner: TLinkScanner;
+  Code: Pointer; out AChangeStep: integer): TExpressionEvaluator;
 begin
   Result:=nil;
   AChangeStep:=DefineTree.ChangeStep;
@@ -5395,9 +5400,11 @@ begin
       ExtractFilePath(TCodeBuffer(Code).Filename),false)
   else
     Result:=DefineTree.GetDefinesForVirtualDirectory;
+  if Assigned(OnScannerInit) then
+    OnScannerInit(Self,Scanner);
 end;
 
-procedure TCodeToolManager.OnDefineTreeReadValue(Sender: TObject;
+procedure TCodeToolManager.DoOnDefineTreeReadValue(Sender: TObject;
   const VariableName: string; var Value: string; var Handled: boolean);
 begin
   Handled:=GlobalValues.IsDefined(VariableName);
@@ -5406,7 +5413,7 @@ begin
   //DebugLn('[TCodeToolManager.OnDefineTreeReadValue] Name="',VariableName,'" = "',Value,'"');
 end;
 
-procedure TCodeToolManager.OnGlobalValuesChanged;
+procedure TCodeToolManager.DoOnGlobalValuesChanged;
 begin
   DefineTree.ClearCache;
 end;
@@ -5552,14 +5559,14 @@ begin
     Result.Scanner:=Code.Scanner;
     FPascalTools.Add(Result);
     TCodeTool(Result).Beautifier:=SourceChangeCache.BeautifyCodeOptions;
-    TCodeTool(Result).OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
-    TCodeTool(Result).OnGetDirectoryCache:=@OnGetDirectoryCache;
+    TCodeTool(Result).OnGetCodeToolForBuffer:=@DoOnGetCodeToolForBuffer;
+    TCodeTool(Result).OnGetDirectoryCache:=@DoOnGetDirectoryCache;
     TCodeTool(Result).OnFindUsedUnit:=@DoOnFindUsedUnit;
     TCodeTool(Result).OnGetSrcPathForCompiledUnit:=@DoOnGetSrcPathForCompiledUnit;
-    TCodeTool(Result).OnGetMethodName:=@OnInternalGetMethodName;
-    Result.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
-    Result.OnTreeChange:=@OnToolTreeChange;
-    TCodeTool(Result).OnParserProgress:=@OnParserProgress;
+    TCodeTool(Result).OnGetMethodName:=@DoOnInternalGetMethodName;
+    Result.OnSetGlobalWriteLock:=@DoOnToolSetWriteLock;
+    Result.OnTreeChange:=@DoOnToolTreeChange;
+    TCodeTool(Result).OnParserProgress:=@DoOnParserProgress;
   end;
   with TCodeTool(Result) do begin
     AdjustTopLineDueToComment:=Self.AdjustTopLineDueToComment;
@@ -5640,7 +5647,7 @@ begin
     FCurCodeTool.AddInheritedCodeToOverrideMethod:=AValue;
 end;
 
-function TCodeToolManager.OnGetCodeToolForBuffer(Sender: TObject;
+function TCodeToolManager.DoOnGetCodeToolForBuffer(Sender: TObject;
   Code: TCodeBuffer; GoToMainCode: boolean): TFindDeclarationTool;
 begin
   {$IFDEF CTDEBUG}
@@ -5652,7 +5659,7 @@ begin
   Result:=TFindDeclarationTool(GetCodeToolForSource(Code,GoToMainCode,true));
 end;
 
-function TCodeToolManager.OnGetDirectoryCache(const ADirectory: string
+function TCodeToolManager.DoOnGetDirectoryCache(const ADirectory: string
   ): TCTDirectoryCache;
 begin
   Result:=DirectoryCachePool.GetCache(ADirectory,true,true);
@@ -5871,12 +5878,12 @@ begin
   FHandlers[HandlerType].Remove(Handler);
 end;
 
-procedure TCodeToolManager.OnToolSetWriteLock(Lock: boolean);
+procedure TCodeToolManager.DoOnToolSetWriteLock(Lock: boolean);
 begin
   if Lock then ActivateWriteLock else DeactivateWriteLock;
 end;
 
-procedure TCodeToolManager.OnToolGetChangeSteps(out SourcesChangeStep,
+procedure TCodeToolManager.DoOnToolGetChangeSteps(out SourcesChangeStep,
   FilesChangeStep: int64; out InitValuesChangeStep: integer);
 begin
   SourcesChangeStep:=SourceCache.ChangeStamp;
