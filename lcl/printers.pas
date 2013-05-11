@@ -198,7 +198,7 @@ type
     fPaperSize   : TPaperSize;
     fRawMode     : Boolean;
     fCanvasClass : TPrinterCanvasRef;
-    
+
     function GetCanvas: TCanvas;
     procedure CheckPrinting(Value: Boolean);
     function GetCanvasClass: TPrinterCanvasRef;
@@ -208,6 +208,7 @@ type
     function GetPageHeight: Integer;
     function GetPageWidth: Integer;
     function GetPaperSize: TPaperSize;
+    Function GetBinName: string;
     function GetPrinterIndex: integer;
     function GetPrinterName: string;
     function GetPrinters: TStrings;
@@ -216,7 +217,9 @@ type
     procedure SetOrientation(const AValue: TPrinterOrientation);
     procedure SetPrinterIndex(AValue: integer);
     procedure SetRawMode(const AValue: boolean);
+    procedure SetBinName(const aName: string);
   protected
+     fBins        : TStringList;
      procedure SelectCurrentPrinterOrDefault;
      
      procedure DoBeginDoc; virtual;
@@ -229,6 +232,7 @@ type
      procedure DoEnumPrinters(Lst : TStrings); virtual;
      procedure DoEnumFonts(Lst : TStrings); virtual;
      procedure DoEnumPapers(Lst : TStrings); virtual;
+     procedure DoEnumBins(Lst : TStrings); virtual;
      procedure DoInitialization; virtual;
      function DoSetPrinter(aName : string): Integer; virtual;
      function DoGetCopies : Integer; virtual;
@@ -238,6 +242,9 @@ type
      function DoGetDefaultPaperName: string; virtual;
      function DoGetPaperName: string; virtual;
      procedure DoSetPaperName(aName : string); virtual;
+     function DoGetDefaultBinName: string; virtual;
+     function DoGetBinName: string; virtual;
+     procedure DoSetBinName(aName: string); virtual;
      function DoGetPaperRect(aName : string; Var aPaperRc : TPaperRect) : Integer; virtual;
      function DoGetPrinterState: TPrinterState; virtual;
      function GetPrinterType : TPrinterType; virtual;
@@ -245,6 +252,7 @@ type
      function GetCanRenderCopies : Boolean; virtual;
      function GetXDPI: Integer; virtual;
      function GetYDPI: Integer; virtual;
+     function GetBins: TStrings; virtual;
      procedure CheckRawMode(const Value: boolean; Msg:string='');
      procedure RawModeChanging; virtual;
      procedure PrinterSelected; virtual;
@@ -259,8 +267,8 @@ type
      procedure NewPage;
      procedure Refresh;
      procedure SetPrinter(aName : String);
+     Procedure RestoreDefaultBin; virtual;
      function  Write(const Buffer; Count:Integer; var Written: Integer): Boolean; virtual;
-
 
      property PrinterIndex : integer read GetPrinterIndex write SetPrinterIndex;
      property PrinterName: string read GetPrinterName;
@@ -285,6 +293,8 @@ type
      property XDPI : Integer read GetXDPI;
      property YDPI : Integer read GetYDPI;
      property RawMode: boolean read FRawMode write SetRawMode;
+     property BinName: string read GetBinName write SetBinName;
+     property SupportedBins: TStrings read GetBins;
   end;
   
 // TPrinter it's an basic object. If you override this object,
@@ -305,6 +315,7 @@ begin
   fPrinterIndex:=-1;  //By default, use the default printer
   fCanvas:=nil;
   fPaperSize:=nil;
+  fBins:=nil;
   fTitle:='';
 end;
 
@@ -475,6 +486,11 @@ begin
   PrinterSelected;
 end;
 
+Procedure TPrinter.RestoreDefaultBin;
+begin
+  // override this function
+end;
+
 function TPrinter.Write(const Buffer; Count:Integer; var Written: Integer): Boolean;
 begin
   result := False;
@@ -601,6 +617,10 @@ begin
   Result:=fPaperSize;
 end;
 
+Function TPrinter.GetBinName: string;
+begin
+  result := doGetBinName;
+end;
 //Return the current selected printer
 function TPrinter.GetPrinterIndex: integer;
 begin
@@ -651,6 +671,11 @@ begin
   Result:=1;
 end;
 
+function TPrinter.GetBins: TStrings;
+begin
+    result := nil;
+end;
+
 //Set copies number
 procedure TPrinter.SetCopies(AValue: Integer);
 begin
@@ -696,6 +721,12 @@ begin
     RawModeChanging;
     FRawMode := AValue;
   end;
+end;
+
+procedure TPrinter.SetBinName(const aName: string);
+begin
+  CheckPrinting(False);
+  DoSetBinName(aName);
 end;
 
 //If not Printer selected, Select the default printer
@@ -758,6 +789,13 @@ begin
  //Override this method
 end;
 
+procedure TPrinter.DoEnumBins(Lst : TStrings);
+begin
+  //DebugLn(['TPrinter.DoEnumBins ',dbgsName(Self)]);
+
+ //Override this method
+end;
+
 // This method is called once after the printer list
 // is obtained for the first time.
 procedure TPrinter.DoInitialization;
@@ -816,6 +854,22 @@ begin
 end;
 
 procedure TPrinter.DoSetPaperName(aName: string);
+begin
+  //Override this method
+end;
+
+function TPrinter.DoGetDefaultBinName: string;
+begin
+  Result:='';
+  //Override this method
+end;
+
+function TPrinter.DoGetBinName: string;
+begin
+  //Override this method
+end;
+
+procedure TPrinter.DoSetBinName(aName: string);
 begin
   //Override this method
 end;

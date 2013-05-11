@@ -45,7 +45,14 @@ begin
   if fPrinterHandle <> 0 then
     ClosePrinter(fPrinterHandle);
 
+  if fBins<>nil then
+    fBins.Destroy;
   inherited Destroy;
+end;
+
+Procedure TWinPrinter.RestoreDefaultBin;
+begin
+  DoSetBinName(DoGetDefaultBinName);
 end;
 
 function TWinPrinter.Write(const Buffer; Count: Integer;
@@ -226,6 +233,14 @@ begin
   fLastHandleType:=htNone;
 end;
 
+Procedure TWinPrinter.CheckfBins;
+begin
+  if fbins<>nil then exit;
+  fbins := TStringList.Create;
+  DoEnumBins(fBins);
+  if fBins=nil then
+    EPrinter.Create('checkfBins error : can not create list of bins');
+end;
 
 // Based on MS Article Q167345
 function TWinPrinter.UpdateDevMode(APrinterIndex:Integer): boolean;
@@ -549,10 +564,12 @@ begin
               PDev.Device := PChar(PByte(TmpDevMode^.dmDeviceName));
               {$ENDIF}
               PDev.DefaultPaper := TmpDevMode^.dmPaperSize;
+              PDev.DefaultBin   := TmpDevMode^.dmDefaultSource;
             end
             else begin
               PDev.Device:='';
               PDev.DefaultPaper:=0;
+              PDev.DefaultBin  := 0
             end;
             {$IFDEF USEUNICODE}
             PrtStr := PDev.Name;
@@ -591,7 +608,7 @@ begin
 end;
 
 procedure TWinPrinter.DoEnumPapers(Lst: TStrings);
-var
+var 
     {$IFDEF USEUNICODE}
     Buffer   : PWideChar;
     {$ELSE}
@@ -732,7 +749,7 @@ begin
   end;
 end;
 
-function TWinPrinter.DoGetPaperRect(aName: string;
+function TWinPrinter.DoGetPaperRect(aName: string; 
   var aPaperRc: TPaperRect): Integer;
 var NSize, i : Integer;
     PDev     : TPrinterDevice;
@@ -815,7 +832,12 @@ begin
       raise EPrinter.CreateFmt('OpenPrinter exception : %s',
                                    [SysErrorMessage(GetlastError)]);
     end;
-    
+
+    if fbins<>nil then begin
+      fbins.Free;
+      fbins:=nil;
+    end;
+
     if UpdateDevMode(i) then
       Result := i
     else
@@ -1008,6 +1030,159 @@ begin
     {$ENDIF}
     //PrinterProperties(Widgetset.AppHandle,fPrinterHandle)
   end;
+end;
+
+procedure TWinPrinter.DoEnumBins(Lst : TStrings);
+var
+    {$IFDEF USEUNICODE}
+    Buffer   : PWideChar;
+    {$ELSE}
+    Buffer   : PChar;
+    {$ENDIF}
+    BinN   : String;
+    BinC,i : Integer;
+    Count  : Integer;
+    PDev   : TPrinterDevice;
+    arBins : Array[0..255] of Word;
+begin
+  inherited DoEnumBins(Lst);
+
+  if (Printers.Count>0) then
+  begin
+    PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
+
+    if fPrinterHandle=0 then
+      SetPrinter(Printers.Strings[PrinterIndex]);
+
+    if fPrinterHandle=0 then
+      raise EPrinter.Create('Printer handle not defined');
+
+    //Retreive the supported bins
+    BinC:=0;
+    {$IFDEF USEUNICODE}
+    Count := DeviceCapabilitiesW(
+      PWidechar(UTF8Decode(Pdev.Name)),
+      PWidechar(UTF8Decode(PDev.Port)), DC_BINNAMES, nil, nil);
+    {$ELSE}
+    Count := DeviceCapabilities(PChar(Pdev.Name), PCHar(PDev.Port), DC_BINNAMES, nil, nil);
+    {$ENDIF}
+    if Count<=0 then
+      raise EPrinter.CreateFmt('DoEnumBins<DC_BINNAMES> error : %d, (%s)',
+          [GetLastError,SysErrorMessage(GetLastError)]);
+
+    try
+      {$IFDEF USEUNICODE}
+      GetMem(Buffer,24*SizeOf(Widechar)*Count);
+      BinC := DeviceCapabilitiesW(
+        PWidechar(UTF8Decode(Pdev.Name)),
+        PWidechar(UTF8Decode(PDev.Port)),
+        DC_BINNAMES,
+        Buffer,
+        nil);
+      for i:=0 to BinC-1 do
+      begin
+        BinN:=UTF8Encode(Widestring(Buffer+i*24));
+        Lst.Add(BinN);
+      end;
+      {$ELSE}
+      GetMem(Buffer,24*Count);
+      BinC:=DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),
+          DC_BINNAMES,Buffer,nil);
+      for i:=0 to BinC-1 do
+      begin
+        BinN:=StrPas(Buffer+i*24);
+        Lst.Add(BinN);
+      end;
+      {$ENDIF}
+    finally
+      FreeMem(Buffer);
+    end;
+
+    //Retreive the code of bins
+    FillChar(arBins,SizeOf(arBins),0);
+    {$IFDEF USEUNICODE}
+    BinC:=DeviceCapabilitiesW(
+      PWidechar(UTF8Decode(Pdev.Name)),
+      PWidechar(UTF8Decode(PDev.Port)),
+      DC_BINS,
+      PWidechar(@ArBins[0]),
+      nil);
+    {$ELSE}
+    BinC:=DeviceCapabilities(PChar(Pdev.Name),PChar(PDev.Port),
+          DC_BINS,PChar(@ArBins[0]),nil);
+    {$ENDIF}
+    if BinC<=0 then
+      raise EPrinter.CreateFmt('DoEnumBinss<DC_BINS> error : %d, (%s)',
+          [GetLastError,SysErrorMessage(GetLastError)])
+    else if BinC>Lst.Count then
+      BinC := Lst.Count;
+
+    for i:=0 to BinC-1 do
+      Lst.Objects[i]:=TObject(ptrint(arBins[i]));
+  end;
+end;
+
+function TWinPrinter.DoGetDefaultBinName: string;
+var i    : Integer;
+    PDev : TPrinterDevice;
+begin
+  CheckfBins;
+  Result:=inherited DoGetDefaultBinName;
+
+  if (Printers.Count>0) then
+  begin
+    PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
+    with fBins do begin
+      i:=IndexOfObject(TObject(ptrint(PDev.DefaultBin)));
+      if i<>-1 then
+        Result:= Strings[i];
+    end;
+  end;
+end;
+
+function TWinPrinter.DoGetBinName: string;
+var
+  i    : Integer;
+  {$IFDEF USEUNICODE}
+  dm: PDeviceModeW;
+  {$ELSE}
+  dm: PDeviceMode;
+  {$ENDIF}
+begin
+  CheckfBins;
+  Result:=inherited DoGetBinName;
+  if GetCurrentDevMode(dm) then
+    with fBins do begin
+      i := IndexOfObject(TObject(ptrInt(dm^.dmDefaultSource)));
+      if i>=0 then
+        result := fBins[i];
+    end;
+end;
+
+procedure TWinPrinter.DoSetBinName(aName: string);
+var
+  i    : Integer;
+  {$IFDEF USEUNICODE}
+  dm: PDeviceModeW;
+  {$ELSE}
+  dm: PDeviceMode;
+  {$ENDIF}
+begin
+  CheckfBins;
+  inherited DoSetBinName(aName);
+  if GetCurrentDevMode(dm) then begin
+    i:=fBins.IndexOf(aName);
+    if i<>-1 then begin
+      ClearDC;
+      dm^.dmDefaultSource := SHORT(ptrint(fBins.Objects[i]));
+    end;
+  end;
+end;
+
+function TWinPrinter.GetBins: TStrings;
+begin
+  CheckfBins;
+  result := fbins;
 end;
 
 initialization

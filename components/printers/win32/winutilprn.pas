@@ -175,6 +175,7 @@ type
     Port: string;
 
     DefaultPaper: Short;
+    DefaultBin: short;
     {$IFDEF USEUNICODE}
     DevMode: PDeviceModeW;
     {$ELSE}
