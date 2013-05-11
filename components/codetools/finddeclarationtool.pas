@@ -1504,6 +1504,15 @@ begin
           else
             NewNode:=CursorNode;
         end;
+        if (CursorNode.Desc=ctnProcedureHead)
+        and (NodeIsMethodBody(CursorNode.Parent)) then begin
+          // if this is a procedure body, try to find the corresponding declaration
+          NewNode:=FindCorrespondingProcNode(CursorNode.Parent);
+          if (NewNode<>nil) and (NewNode.StartPos<CursorNode.StartPos) then
+            CleanCursorPos:=NewNode.StartPos
+          else
+            NewNode:=CursorNode;
+        end;
 
         Result:=JumpToCleanPos(CleanCursorPos,CleanCursorPos,CleanCursorPos,
                                NewPos,NewTopLine,false);
