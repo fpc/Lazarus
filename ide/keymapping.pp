@@ -2412,6 +2412,12 @@ end;
 
 procedure TKeyCommandRelationList.DefineCommandCategories;
 // Define a category for each command
+
+  function n(const s: string): string;
+  begin
+    Result:=StringReplace(s,'&','',[]);
+  end;
+
 var
   C: TIDECommandCategory;
 begin
@@ -2822,15 +2828,15 @@ begin
   AddDefault(C, 'Abort building', lisKMAbortBuilding, ecAbortBuild);
   AddDefault(C, 'Run program', lisKMRunProgram, ecRun);
   AddDefault(C, 'Pause program', lisKMPauseProgram, ecPause);
-  AddDefault(C, 'Show execution point', lisMenuShowExecutionPoint, ecShowExecutionPoint);
-  AddDefault(C, 'Step into', lisMenuStepInto, ecStepInto);
-  AddDefault(C, 'Step over', lisMenuStepOver, ecStepOver);
+  AddDefault(C, 'Show execution point', n(lisMenuShowExecutionPoint), ecShowExecutionPoint);
+  AddDefault(C, 'Step into', n(lisMenuStepInto), ecStepInto);
+  AddDefault(C, 'Step over', n(lisMenuStepOver), ecStepOver);
   AddDefault(C, 'Step into instr', lisMenuStepIntoInstr, ecStepIntoInstr);
   AddDefault(C, 'Step over instr', lisMenuStepOverInstr, ecStepOverInstr);
   AddDefault(C, 'Step into context', lisMenuStepIntoContext, ecStepIntoContext);
   AddDefault(C, 'Step over context', lisMenuStepOverContext, ecStepOverContext);
-  AddDefault(C, 'Step out', lisMenuStepOut, ecStepOut);
-  AddDefault(C, 'Run to cursor', lisMenuRunToCursor, ecRunToCursor);
+  AddDefault(C, 'Step out', n(lisMenuStepOut), ecStepOut);
+  AddDefault(C, 'Run to cursor', n(lisMenuRunToCursor), ecRunToCursor);
   AddDefault(C, 'Stop program', lisKMStopProgram, ecStopProgram);
   AddDefault(C, 'Reset debugger', lisMenuResetDebugger, ecResetDebugger);
   AddDefault(C, 'Run parameters', dlgRunParameters, ecRunParameters);
