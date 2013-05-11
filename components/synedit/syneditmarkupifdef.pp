@@ -65,7 +65,7 @@ type
     idnNotInCode,  // in currently inactive outer IfDef
     idnInvalid,    // not known for other reasons. Will not ask again
     idnUnknown,    // needs requesting
-    idnRequested
+    idnRequested   // not used
     );
   TSynMarkupIfdefNodeState    = idnEnabled..idnInvalid;
 
@@ -140,6 +140,8 @@ type
     idlValid,            // X start/stop positions are ok
     idlHasUnknownNodes,  // need requesting
     idlHasNodesNotInCode,
+    idlNotInCodeToUnknown,    // treat all idnNotInCode nodes as unknown
+    idlNotInCodeToUnknownReq, // Request to set all nested lines to ... during next validate
     idlDisposed,          // Node is disposed, may be re-used
     idlInGlobalClear      // Skip unlinking Peers
   );
@@ -596,7 +598,9 @@ begin
   Result := ( (NodeType = idnIfdef) or
               ( (NodeType = idnElseIf) and (FOpeningPeerNodeState = idnEnabled) )
             ) and
-            (not(FNodeState in [idnEnabled, idnDisabled, idnRequested, idnInvalid]));
+            ( (FNodeState in [idnUnknown, idnRequested]) or
+              ( (FNodeState = idnNotInCode) and (idlNotInCodeToUnknown in Line.LineFlags) )
+            );
 end;
 
 function TSynMarkupHighIfDefEntry.GetNodeState: TSynMarkupIfdefNodeStateEx;
@@ -633,6 +637,9 @@ begin
   RemoveNodeStateFromLine;
   FNodeState := AValue;
   ApplyNodeStateToLine;
+
+  if AValue = idnEnabled then
+    Line.FLineFlags := Line.FLineFlags + [idlNotInCodeToUnknownReq, idlNotInCodeToUnknown];
 
   case NodeType of
     idnIfdef, idnElse, idnElseIf: begin
@@ -1947,7 +1954,7 @@ var
   function GetEntry(ALogStart, ALogEnd, ALineOffs: Integer;
     AType: TSynMarkupIfdefNodeType): TSynMarkupHighIfDefEntry;
   var
-    i, j, k: Integer;
+    i: Integer;
     e: TSynMarkupHighIfDefEntry;
   begin
     if ANodeForLine = nil then begin
@@ -1966,7 +1973,6 @@ var
 
       // Check if existing node matches
       i := NodesAddedCnt;
-      j := ANodeForLine.Entry[i].StartColumn;
       while (i < ANodeForLine.EntryCount-1) do begin
         e := ANodeForLine.Entry[i];
         if e.StartColumn >= ALogStart then
@@ -2147,6 +2153,7 @@ procedure TSynMarkupHighIfDefLinesTree.ValidateRange(AStartLine, AEndLine: Integ
   OuterLines: TLazSynEditNestedFoldsList);
 var
   NestList: TSynMarkupHighIfDefLinesNodeInfoList;
+  NotInCodeLowLevel: Integer;
 
   procedure FixNodePeers(var ANode: TSynMarkupHighIfDefLinesNodeInfo);
   begin
@@ -2154,6 +2161,29 @@ var
       exit;
     ConnectPeers(ANode, NestList);
     NestList.PushNodeLine(ANode);
+  end;
+
+  procedure ApplyNotInCodeFlagToNode(var ANode: TSynMarkupHighIfDefLinesNodeInfo);
+  begin
+    if Anode.HasNode and (ANode.NestDepthAtNodeStart >= NotInCodeLowLevel) then
+      Include(ANode.Node.FLineFlags, idlNotInCodeToUnknown);
+  end;
+
+  procedure CheckNodeForAppNotInCodeFlag(var ANode: TSynMarkupHighIfDefLinesNodeInfo);
+  begin
+    if not ANode.HasNode then
+      exit;
+    if idlNotInCodeToUnknownReq in ANode.LineFlags then
+      NotInCodeLowLevel := Min(NotInCodeLowLevel, ANode.NestMinimumDepthAtNode);
+  end;
+
+  procedure FinishNodeForAppNotInCodeFlag(var ANode: TSynMarkupHighIfDefLinesNodeInfo);
+  begin
+    if not ANode.HasNode then
+      exit;
+    if idlNotInCodeToUnknownReq in ANode.LineFlags then
+      NotInCodeLowLevel := Min(NotInCodeLowLevel, ANode.NestMinimumDepthAtNode);
+    ANode.Node.FLineFlags := ANode.Node.FLineFlags - [idlNotInCodeToUnknown, idlNotInCodeToUnknownReq];
   end;
 
 var
@@ -2164,15 +2194,18 @@ begin
 XXXCurTree := self; try
   TmpNode.FTree := Self;
 
+  NotInCodeLowLevel := MaxInt;
   (*** Outer Nesting ***)
   OuterLines.Line := ToIdx(AStartLine);
   For i := 0 to OuterLines.Count - 1 do begin
     j := ToPos(OuterLines.NodeLine[i]);
     Node := GetOrInsertNodeAtLine(j);
+    ApplyNotInCodeFlagToNode(Node);
     Assert(CheckLineForNodes(j), 'CheckLineForNodes(j) : in Outer Nesting');
     MaybeValidateNode(Node);
 //    FixNodePeers(Node);
     ConnectPeers(Node, NestList, OuterLines);
+    FinishNodeForAppNotInCodeFlag(Node);
     NestList.PushNodeLine(Node);
   end;
 
@@ -2194,7 +2227,10 @@ XXXCurTree := self; try
       end
       else
       if (NextNode.StartLine <= AEndLine) then begin
+        CheckNodeForAppNotInCodeFlag(Node);
+        ApplyNotInCodeFlagToNode(NextNode);
         MaybeExtendNodeBackward(NextNode, AStartLine);
+        FinishNodeForAppNotInCodeFlag(NextNode);
         if NextNode.StartLine = AStartLine then begin
           Node := NextNode;
           NextNode := Node.Successor;
@@ -2209,6 +2245,7 @@ XXXCurTree := self; try
   end;
 
   SkipPeers := Node.StartLine < AStartLine; // NO peer info available, if node starts before startline
+  ApplyNotInCodeFlagToNode(Node);
   MaybeValidateNode(Node);
   assert((AStartLine >= Node.StartLine) and (AStartLine <= Node.StartLine + Node.ScanEndLine), 'AStartLine is in Node');
 
@@ -2219,10 +2256,12 @@ XXXCurTree := self; try
         (NextNode.StartLine <= AEndLine)
   do begin
     Assert(Node.IsValid, 'Node.IsValid while "Scan to Endline"');
-
     if not SkipPeers then
       FixNodePeers(Node);
     SkipPeers := False;
+    FinishNodeForAppNotInCodeFlag(Node);
+    ApplyNotInCodeFlagToNode(NextNode);
+
     MaybeValidateNode(NextNode);
     NodeValidTo := Node.ValidToLine(NextNode);
     MaybeExtendNodeBackward(NextNode, NodeValidTo + 1);
@@ -2271,6 +2310,7 @@ XXXCurTree := self; try
   assert(Node.HasNode);
   if not SkipPeers then
     FixNodePeers(Node);
+  FinishNodeForAppNotInCodeFlag(Node);
 
 
   while Node.ScanEndLine < AEndLine do begin
@@ -2284,6 +2324,19 @@ XXXCurTree := self; try
     FixNodePeers(Node);
   end;
   assert(Node.ScanEndLine >= AEndLine, 'Scan gap has reached AEndLine');
+
+  // Check for existing nodes nested in NotInCodeLowLevel
+  if NotInCodeLowLevel < MaxInt then begin
+    Node := Node.Successor;
+    while Node.HasNode do begin
+      if Node.NestDepthAtNodeStart >= NotInCodeLowLevel then begin
+        ApplyNotInCodeFlagToNode(Node);
+        MaybeValidateNode(Node);
+        FinishNodeForAppNotInCodeFlag(Node);
+      end;
+      Node := Node.Successor;
+    end;
+  end;
 
 finally XXXCurTree := nil; end;
 end;
