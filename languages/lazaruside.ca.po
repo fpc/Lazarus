@@ -9288,8 +9288,8 @@ msgstr ""
 msgid "In a source directory of the project. Check for duplicates."
 msgstr ""
 
-#: lazarusidestrconsts.lisincludeexamples
-msgid "Include Examples"
+#: lazarusidestrconsts.lisincludeallsubdirectories
+msgid "Include all subdirectories"
 msgstr ""
 
 #: lazarusidestrconsts.lisincludefilter
@@ -9304,8 +9304,8 @@ msgstr "trajectòria dels fitxers inclosos"
 msgid "Include paths"
 msgstr ""
 
-#: lazarusidestrconsts.lisincludetestcases
-msgid "Include Testcases"
+#: lazarusidestrconsts.lisincludesubdirectories
+msgid "Include subdirectories"
 msgstr ""
 
 #: lazarusidestrconsts.lisindentation
@@ -10304,10 +10304,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazarusprojectsource
 msgid "Lazarus project source"
 msgstr "Font de projecte Lazarus"
-
-#: lazarusidestrconsts.lislazarussource
-msgid "Lazarus Source"
-msgstr ""
 
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
@@ -14266,6 +14262,10 @@ msgstr "El projecte ha canviat"
 msgid "Project changed on disk"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectcount
+msgid "%d projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
@@ -15044,10 +15044,6 @@ msgstr "Cerca"
 
 #: lazarusidestrconsts.lissearchpaths2
 msgid "Search paths"
-msgstr ""
-
-#: lazarusidestrconsts.lissearchprojectsfrom
-msgid "Search projects from"
 msgstr ""
 
 #: lazarusidestrconsts.lissearchunit

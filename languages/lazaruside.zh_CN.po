@@ -9395,8 +9395,8 @@ msgstr ""
 msgid "In a source directory of the project. Check for duplicates."
 msgstr ""
 
-#: lazarusidestrconsts.lisincludeexamples
-msgid "Include Examples"
+#: lazarusidestrconsts.lisincludeallsubdirectories
+msgid "Include all subdirectories"
 msgstr ""
 
 #: lazarusidestrconsts.lisincludefilter
@@ -9413,8 +9413,8 @@ msgstr "包含路径"
 msgid "Include paths"
 msgstr "包含路径"
 
-#: lazarusidestrconsts.lisincludetestcases
-msgid "Include Testcases"
+#: lazarusidestrconsts.lisincludesubdirectories
+msgid "Include subdirectories"
 msgstr ""
 
 #: lazarusidestrconsts.lisindentation
@@ -10465,10 +10465,6 @@ msgstr "Lazarus 工程信息文件"
 #: lazarusidestrconsts.lislazarusprojectsource
 msgid "Lazarus project source"
 msgstr "Lazarus 工程文件"
-
-#: lazarusidestrconsts.lislazarussource
-msgid "Lazarus Source"
-msgstr ""
 
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
@@ -14469,6 +14465,10 @@ msgstr "工程已经更改"
 msgid "Project changed on disk"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectcount
+msgid "%d projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
@@ -15263,10 +15263,6 @@ msgstr "查找"
 
 #: lazarusidestrconsts.lissearchpaths2
 msgid "Search paths"
-msgstr ""
-
-#: lazarusidestrconsts.lissearchprojectsfrom
-msgid "Search projects from"
 msgstr ""
 
 #: lazarusidestrconsts.lissearchunit

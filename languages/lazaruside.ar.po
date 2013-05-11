@@ -9093,9 +9093,9 @@ msgstr "في دليل مصدر الحزمة \"%s\"."
 msgid "In a source directory of the project. Check for duplicates."
 msgstr "في دليل مصدر المشروع. تحقّق من التكرار."
 
-#: lazarusidestrconsts.lisincludeexamples
-msgid "Include Examples"
-msgstr "تضمين الأمثلة"
+#: lazarusidestrconsts.lisincludeallsubdirectories
+msgid "Include all subdirectories"
+msgstr ""
 
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include filter"
@@ -9109,9 +9109,9 @@ msgstr "مسار التضمين"
 msgid "Include paths"
 msgstr "مسارات التضمين"
 
-#: lazarusidestrconsts.lisincludetestcases
-msgid "Include Testcases"
-msgstr "تضمين حالات اختبار"
+#: lazarusidestrconsts.lisincludesubdirectories
+msgid "Include subdirectories"
+msgstr ""
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -10107,10 +10107,6 @@ msgstr "ملف معلومات مشروع لازروس"
 #: lazarusidestrconsts.lislazarusprojectsource
 msgid "Lazarus project source"
 msgstr "مصدر مشروع لازروس"
-
-#: lazarusidestrconsts.lislazarussource
-msgid "Lazarus Source"
-msgstr "مصدر لازروس"
 
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
@@ -13827,6 +13823,10 @@ msgstr "تغيير في المشروع"
 msgid "Project changed on disk"
 msgstr "تغيير في المشروع على القرص"
 
+#: lazarusidestrconsts.lisprojectcount
+msgid "%d projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
@@ -14588,10 +14588,6 @@ msgstr "البحث عن "
 #: lazarusidestrconsts.lissearchpaths2
 msgid "Search paths"
 msgstr "مسارات البحث:"
-
-#: lazarusidestrconsts.lissearchprojectsfrom
-msgid "Search projects from"
-msgstr "البحث عن المشروعات من"
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"

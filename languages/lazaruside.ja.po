@@ -9467,9 +9467,9 @@ msgstr "そのパッケージ \"%s\"のソースディレクトリ内"
 msgid "In a source directory of the project. Check for duplicates."
 msgstr "プロジェクトのソースディレクトリ内。重複をチェックせよ"
 
-#: lazarusidestrconsts.lisincludeexamples
-msgid "Include Examples"
-msgstr "インクルード例"
+#: lazarusidestrconsts.lisincludeallsubdirectories
+msgid "Include all subdirectories"
+msgstr ""
 
 #: lazarusidestrconsts.lisincludefilter
 #, fuzzy
@@ -9485,9 +9485,9 @@ msgstr "インクルードパス"
 msgid "Include paths"
 msgstr "インクルードパス"
 
-#: lazarusidestrconsts.lisincludetestcases
-msgid "Include Testcases"
-msgstr "包含テストケース"
+#: lazarusidestrconsts.lisincludesubdirectories
+msgid "Include subdirectories"
+msgstr ""
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -10551,10 +10551,6 @@ msgstr "Lazarusプロジェクト情報ファイル"
 #: lazarusidestrconsts.lislazarusprojectsource
 msgid "Lazarus project source"
 msgstr "Lazarusプロジェクトソース"
-
-#: lazarusidestrconsts.lislazarussource
-msgid "Lazarus Source"
-msgstr "Lazarusソース"
 
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
@@ -14587,6 +14583,10 @@ msgstr "プロジェクトが変更されました。"
 msgid "Project changed on disk"
 msgstr "ディスク上のプロジェクトが変更されました"
 
+#: lazarusidestrconsts.lisprojectcount
+msgid "%d projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
@@ -15388,10 +15388,6 @@ msgstr "次を検索"
 #: lazarusidestrconsts.lissearchpaths2
 msgid "Search paths"
 msgstr "検索パス"
-
-#: lazarusidestrconsts.lissearchprojectsfrom
-msgid "Search projects from"
-msgstr "以下からプロジェクトを検索"
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"

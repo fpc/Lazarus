@@ -9059,8 +9059,8 @@ msgstr "Paketin \"%s\" lähdekoodihakemistossa."
 msgid "In a source directory of the project. Check for duplicates."
 msgstr "Projektin lähdekoodihakemistossa. Tarkista kaksoiskappaleet."
 
-#: lazarusidestrconsts.lisincludeexamples
-msgid "Include Examples"
+#: lazarusidestrconsts.lisincludeallsubdirectories
+msgid "Include all subdirectories"
 msgstr ""
 
 #: lazarusidestrconsts.lisincludefilter
@@ -9075,8 +9075,8 @@ msgstr ""
 msgid "Include paths"
 msgstr ""
 
-#: lazarusidestrconsts.lisincludetestcases
-msgid "Include Testcases"
+#: lazarusidestrconsts.lisincludesubdirectories
+msgid "Include subdirectories"
 msgstr ""
 
 #: lazarusidestrconsts.lisindentation
@@ -10071,10 +10071,6 @@ msgstr "Lazarus projektin tietoja"
 #: lazarusidestrconsts.lislazarusprojectsource
 msgid "Lazarus project source"
 msgstr "Lazarus projektin lähdekoodi"
-
-#: lazarusidestrconsts.lislazarussource
-msgid "Lazarus Source"
-msgstr ""
 
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
@@ -13773,6 +13769,10 @@ msgstr "Projekti on muuttunut"
 msgid "Project changed on disk"
 msgstr "Projektin tallennus on muuttunut"
 
+#: lazarusidestrconsts.lisprojectcount
+msgid "%d projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
@@ -14533,10 +14533,6 @@ msgstr "Etsi "
 #: lazarusidestrconsts.lissearchpaths2
 msgid "Search paths"
 msgstr "Etsi polkuja"
-
-#: lazarusidestrconsts.lissearchprojectsfrom
-msgid "Search projects from"
-msgstr "Etsi projekteja täältä"
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"

@@ -9443,9 +9443,9 @@ msgstr "En un directorio de fuentes del paquete \"%s\"."
 msgid "In a source directory of the project. Check for duplicates."
 msgstr "En un directorio de fuentes del proyecto. Comprobar si hay duplicados."
 
-#: lazarusidestrconsts.lisincludeexamples
-msgid "Include Examples"
-msgstr "Incluir Ejemplos"
+#: lazarusidestrconsts.lisincludeallsubdirectories
+msgid "Include all subdirectories"
+msgstr ""
 
 #: lazarusidestrconsts.lisincludefilter
 #, fuzzy
@@ -9461,9 +9461,9 @@ msgstr "ruta incluida"
 msgid "Include paths"
 msgstr "Rutas de archivos include"
 
-#: lazarusidestrconsts.lisincludetestcases
-msgid "Include Testcases"
-msgstr "Incluye Casos de prueba (Testcases)"
+#: lazarusidestrconsts.lisincludesubdirectories
+msgid "Include subdirectories"
+msgstr ""
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -10520,10 +10520,6 @@ msgstr "Fichero de información de proyecto de Lazarus"
 #: lazarusidestrconsts.lislazarusprojectsource
 msgid "Lazarus project source"
 msgstr "Fuente de proyecto de Lazarus"
-
-#: lazarusidestrconsts.lislazarussource
-msgid "Lazarus Source"
-msgstr "Lazarus Fuente"
 
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
@@ -14538,6 +14534,10 @@ msgstr "Proyecto cambiado"
 msgid "Project changed on disk"
 msgstr "El proyecto ha cambiado en el disco-"
 
+#: lazarusidestrconsts.lisprojectcount
+msgid "%d projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
@@ -15334,10 +15334,6 @@ msgstr "Buscar por "
 #: lazarusidestrconsts.lissearchpaths2
 msgid "Search paths"
 msgstr "Rutas de busqueda"
-
-#: lazarusidestrconsts.lissearchprojectsfrom
-msgid "Search projects from"
-msgstr "Busqueda de proyectos desde"
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"

@@ -9312,8 +9312,8 @@ msgstr ""
 msgid "In a source directory of the project. Check for duplicates."
 msgstr ""
 
-#: lazarusidestrconsts.lisincludeexamples
-msgid "Include Examples"
+#: lazarusidestrconsts.lisincludeallsubdirectories
+msgid "Include all subdirectories"
 msgstr ""
 
 #: lazarusidestrconsts.lisincludefilter
@@ -9330,8 +9330,8 @@ msgstr "pad gebruiken"
 msgid "Include paths"
 msgstr "Include pad"
 
-#: lazarusidestrconsts.lisincludetestcases
-msgid "Include Testcases"
+#: lazarusidestrconsts.lisincludesubdirectories
+msgid "Include subdirectories"
 msgstr ""
 
 #: lazarusidestrconsts.lisindentation
@@ -10340,10 +10340,6 @@ msgstr "Lazarus Project informatie bestand"
 #: lazarusidestrconsts.lislazarusprojectsource
 msgid "Lazarus project source"
 msgstr "Lazarus project broncode"
-
-#: lazarusidestrconsts.lislazarussource
-msgid "Lazarus Source"
-msgstr ""
 
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
@@ -14308,6 +14304,10 @@ msgstr "Project is gewijzigd"
 msgid "Project changed on disk"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectcount
+msgid "%d projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
@@ -15090,10 +15090,6 @@ msgstr "Zoek naar "
 
 #: lazarusidestrconsts.lissearchpaths2
 msgid "Search paths"
-msgstr ""
-
-#: lazarusidestrconsts.lissearchprojectsfrom
-msgid "Search projects from"
 msgstr ""
 
 #: lazarusidestrconsts.lissearchunit

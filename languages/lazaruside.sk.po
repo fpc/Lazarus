@@ -9371,8 +9371,8 @@ msgstr ""
 msgid "In a source directory of the project. Check for duplicates."
 msgstr ""
 
-#: lazarusidestrconsts.lisincludeexamples
-msgid "Include Examples"
+#: lazarusidestrconsts.lisincludeallsubdirectories
+msgid "Include all subdirectories"
 msgstr ""
 
 #: lazarusidestrconsts.lisincludefilter
@@ -9389,8 +9389,8 @@ msgstr "cesta include"
 msgid "Include paths"
 msgstr "Cesty Include"
 
-#: lazarusidestrconsts.lisincludetestcases
-msgid "Include Testcases"
+#: lazarusidestrconsts.lisincludesubdirectories
+msgid "Include subdirectories"
 msgstr ""
 
 #: lazarusidestrconsts.lisindentation
@@ -10441,10 +10441,6 @@ msgstr "Informačný súbor projektu Lazarus"
 #: lazarusidestrconsts.lislazarusprojectsource
 msgid "Lazarus project source"
 msgstr "Zdrojový kód Lazarus"
-
-#: lazarusidestrconsts.lislazarussource
-msgid "Lazarus Source"
-msgstr ""
 
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
@@ -14437,6 +14433,10 @@ msgstr "Projekt zmenený"
 msgid "Project changed on disk"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectcount
+msgid "%d projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
@@ -15231,10 +15231,6 @@ msgstr "Hľadať"
 
 #: lazarusidestrconsts.lissearchpaths2
 msgid "Search paths"
-msgstr ""
-
-#: lazarusidestrconsts.lissearchprojectsfrom
-msgid "Search projects from"
 msgstr ""
 
 #: lazarusidestrconsts.lissearchunit

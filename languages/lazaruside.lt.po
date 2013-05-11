@@ -9274,9 +9274,9 @@ msgstr "Paketo „%s“ pirminio kodo aplanke."
 msgid "In a source directory of the project. Check for duplicates."
 msgstr "Projekto pirminio kodo aplanke. Reikia patikrinti ar nėra besidubliuojančių."
 
-#: lazarusidestrconsts.lisincludeexamples
-msgid "Include Examples"
-msgstr "Įtraukti pavyzdžius"
+#: lazarusidestrconsts.lisincludeallsubdirectories
+msgid "Include all subdirectories"
+msgstr ""
 
 #: lazarusidestrconsts.lisincludefilter
 #| msgid "Include Filter"
@@ -9291,9 +9291,9 @@ msgstr "kelias iki įterpinių"
 msgid "Include paths"
 msgstr "Įterpimo keliai"
 
-#: lazarusidestrconsts.lisincludetestcases
-msgid "Include Testcases"
-msgstr "Įtraukti testavimus"
+#: lazarusidestrconsts.lisincludesubdirectories
+msgid "Include subdirectories"
+msgstr ""
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -10318,10 +10318,6 @@ msgstr "Lazarus projekto informacinis failas"
 #: lazarusidestrconsts.lislazarusprojectsource
 msgid "Lazarus project source"
 msgstr "Lazarus projekto pirminis kodas"
-
-#: lazarusidestrconsts.lislazarussource
-msgid "Lazarus Source"
-msgstr "Lazarus pirminis kodas"
 
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
@@ -14189,6 +14185,10 @@ msgstr "Projektas pakeistas"
 msgid "Project changed on disk"
 msgstr "Projektas diske pakito"
 
+#: lazarusidestrconsts.lisprojectcount
+msgid "%d projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
@@ -14973,10 +14973,6 @@ msgstr "Ko ieškoti"
 #: lazarusidestrconsts.lissearchpaths2
 msgid "Search paths"
 msgstr "Paieškos keliai"
-
-#: lazarusidestrconsts.lissearchprojectsfrom
-msgid "Search projects from"
-msgstr "Projektų ieškoti pradedant"
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"

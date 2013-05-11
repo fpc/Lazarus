@@ -9234,9 +9234,9 @@ msgstr "В джерельній теці пакунку \"%s\"."
 msgid "In a source directory of the project. Check for duplicates."
 msgstr "В теці початкових кодів проекту. Перевірте на дублікати."
 
-#: lazarusidestrconsts.lisincludeexamples
-msgid "Include Examples"
-msgstr "Включити Приклади"
+#: lazarusidestrconsts.lisincludeallsubdirectories
+msgid "Include all subdirectories"
+msgstr ""
 
 #: lazarusidestrconsts.lisincludefilter
 #| msgid "Include Filter"
@@ -9251,9 +9251,9 @@ msgstr "шлях доданих файлів"
 msgid "Include paths"
 msgstr "Шляхи до під'єднуваних файлів"
 
-#: lazarusidestrconsts.lisincludetestcases
-msgid "Include Testcases"
-msgstr "Включити Тести"
+#: lazarusidestrconsts.lisincludesubdirectories
+msgid "Include subdirectories"
+msgstr ""
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -10278,10 +10278,6 @@ msgstr "Файл Info проекту Lazarus"
 #: lazarusidestrconsts.lislazarusprojectsource
 msgid "Lazarus project source"
 msgstr "Текст проекту Lazarus"
-
-#: lazarusidestrconsts.lislazarussource
-msgid "Lazarus Source"
-msgstr "Джерела Lazarus "
 
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
@@ -14117,6 +14113,10 @@ msgstr "Проект змінено"
 msgid "Project changed on disk"
 msgstr "Проект змінився на диску"
 
+#: lazarusidestrconsts.lisprojectcount
+msgid "%d projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
@@ -14892,10 +14892,6 @@ msgstr "Шукати "
 #: lazarusidestrconsts.lissearchpaths2
 msgid "Search paths"
 msgstr "Шляхи пошуку"
-
-#: lazarusidestrconsts.lissearchprojectsfrom
-msgid "Search projects from"
-msgstr "Шукати проекти з"
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"

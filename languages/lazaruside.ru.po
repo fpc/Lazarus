@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-05-03 20:42+0400\n"
+"PO-Revision-Date: 2013-05-12 00:44+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9315,9 +9315,9 @@ msgstr "В каталоге исходного кода пакета \"%s\"."
 msgid "In a source directory of the project. Check for duplicates."
 msgstr "В каталоге исходного кода проекта. Проверьте наличие дублирующихся файлов."
 
-#: lazarusidestrconsts.lisincludeexamples
-msgid "Include Examples"
-msgstr "Включая примеры"
+#: lazarusidestrconsts.lisincludeallsubdirectories
+msgid "Include all subdirectories"
+msgstr "Искать во всех подкаталогах"
 
 #: lazarusidestrconsts.lisincludefilter
 #| msgid "Include Filter"
@@ -9332,9 +9332,9 @@ msgstr "пути к включаемым файлам"
 msgid "Include paths"
 msgstr "Пути к включаемым файлам"
 
-#: lazarusidestrconsts.lisincludetestcases
-msgid "Include Testcases"
-msgstr "Включая тесты"
+#: lazarusidestrconsts.lisincludesubdirectories
+msgid "Include subdirectories"
+msgstr "Искать в подкаталогах"
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -10369,10 +10369,6 @@ msgstr "Файл сведений о проекте Lazarus"
 #: lazarusidestrconsts.lislazarusprojectsource
 msgid "Lazarus project source"
 msgstr "Исходный код проекта Lazarus"
-
-#: lazarusidestrconsts.lislazarussource
-msgid "Lazarus Source"
-msgstr "Исходный код Lazarus"
 
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
@@ -14261,6 +14257,10 @@ msgstr "Проект изменен"
 msgid "Project changed on disk"
 msgstr "Проект изменён на диске"
 
+#: lazarusidestrconsts.lisprojectcount
+msgid "%d projects"
+msgstr "Проектов: %d"
+
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
@@ -15044,10 +15044,6 @@ msgstr "Искать "
 #: lazarusidestrconsts.lissearchpaths2
 msgid "Search paths"
 msgstr "Пути поиска"
-
-#: lazarusidestrconsts.lissearchprojectsfrom
-msgid "Search projects from"
-msgstr "Место поиска проектов"
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"
