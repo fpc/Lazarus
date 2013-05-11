@@ -387,6 +387,7 @@ type
     FDirectivesCapacity: integer;
     FDirectivesSorted: PPLSDirective; // array of PLSDirective to items of FDirectives
     FDirectiveName: shortstring;
+    FDirectivesStored: boolean;
     FMacrosOn: boolean;
     FMissingIncludeFiles: TMissingIncludeFiles;
     FIncludeStack: TFPList; // list of TSourceLink
@@ -512,7 +513,8 @@ type
     property DirectivesSorted[Index: integer]: PLSDirective read GetDirectivesSorted; // sorted for Code and SrcPos
     property DirectiveCount: integer read FDirectivesCount;
     procedure ClearDirectives(FreeMemory: boolean);
-    property StoreDirectives: boolean read FStoreDirectives write SetStoreDirectives;
+    property StoreDirectives: boolean read FStoreDirectives write SetStoreDirectives; // store directives on next Scan
+    property DirectivesStored: boolean read FDirectivesStored; // directives were stored on last scan
     function FindDirective(aCode: Pointer; aSrcPos: integer;
       out FirstSortedIndex, LastSortedIndex: integer): boolean;
 
@@ -1647,6 +1649,7 @@ begin
   FNestedComments:=cmsNested_comment in DefaultCompilerModeSwitches[CompilerMode];
   IfLevel:=0;
   FSkippingDirectives:=lssdNone;
+  FDirectivesStored:=StoreDirectives;
   //DebugLn('TLinkScanner.Scan D --------');
 
   // initialize Defines
@@ -2095,6 +2098,9 @@ begin
     FGlobalInitValuesChangeStep:=CurInitValuesChangeStep;
     if CheckFilesOnDisk then FGlobalSourcesChangeStep:=CurFilesChangeStep;
   end;
+
+  // check options
+  if StoreDirectives and (not DirectivesStored) then exit;
 
   // check initvalues
   if Assigned(FOnGetInitValues) then begin
