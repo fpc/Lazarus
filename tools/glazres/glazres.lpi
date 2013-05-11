@@ -1,0 +1,501 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <PathDelim Value="\"/>
+    <General>
+      <MainUnit Value="0"/>
+      <Title Value="glazres"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
+      <ActiveWindowIndexAtStart Value="0"/>
+    </General>
+    <i18n>
+      <EnableI18N LFM="False"/>
+    </i18n>
+    <VersionInfo>
+      <StringTable ProductVersion=""/>
+    </VersionInfo>
+    <BuildModes Count="2" Active="Release">
+      <Item1 Name="Debug" Default="True"/>
+      <Item2 Name="Release">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="glazres"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <CodeGeneration>
+            <SmartLinkUnit Value="True"/>
+            <Optimizations>
+              <VariablesInRegisters Value="True"/>
+            </Optimizations>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <GenerateDebugInfo Value="False"/>
+              <DebugInfoType Value="dsStabs"/>
+              <UseLineInfoUnit Value="False"/>
+            </Debugging>
+            <LinkSmart Value="True"/>
+            <Options>
+              <Win32>
+                <GraphicApplication Value="True"/>
+              </Win32>
+            </Options>
+          </Linking>
+          <Other>
+            <CompilerMessages>
+              <UseMsgFile Value="True"/>
+            </CompilerMessages>
+            <CompilerPath Value="$(CompPath)"/>
+          </Other>
+        </CompilerOptions>
+      </Item2>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="33">
+      <Unit0>
+        <Filename Value="glazres.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="glazres"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="39"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="glazresmain.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="GLazResForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="glazresmain"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="508"/>
+        <CursorPos X="6" Y="431"/>
+        <UsageCount Value="39"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="C:\Documents and Settings\AndyK\My Documents\lazprojects\Addons\TabbedHeader.pas"/>
+        <UnitName Value="TabbedHeader"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="3" Y="7"/>
+        <UsageCount Value="14"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\lcl\include\canvas.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="916"/>
+        <CursorPos X="1" Y="932"/>
+        <UsageCount Value="8"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\lcl\buttons.pp"/>
+        <UnitName Value="Buttons"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="506"/>
+        <CursorPos X="21" Y="382"/>
+        <UsageCount Value="8"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\lcl\chart.pp"/>
+        <UnitName Value="Chart"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="332"/>
+        <CursorPos X="32" Y="249"/>
+        <UsageCount Value="8"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="..\lcl\comctrls.pp"/>
+        <UnitName Value="ComCtrls"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="93" Y="3"/>
+        <UsageCount Value="8"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="..\lcl\controls.pp"/>
+        <UnitName Value="Controls"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="3864"/>
+        <CursorPos X="29" Y="3884"/>
+        <UsageCount Value="8"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\lcl\editbtn.pas"/>
+        <UnitName Value="EditBtn"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="8"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\lcl\grids.pas"/>
+        <UnitName Value="Grids"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="595"/>
+        <CursorPos X="28" Y="3253"/>
+        <UsageCount Value="8"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="..\lcl\include\customcontrol.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="114"/>
+        <CursorPos X="1" Y="134"/>
+        <UsageCount Value="8"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\lcl\include\control.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="3460"/>
+        <CursorPos X="1" Y="3480"/>
+        <UsageCount Value="8"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\lcl\include\rasterimage.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="293"/>
+        <CursorPos X="1" Y="308"/>
+        <UsageCount Value="8"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="..\lcl\include\custombitmap.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="335"/>
+        <CursorPos X="1" Y="354"/>
+        <UsageCount Value="8"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="..\lcl\graphics.pp"/>
+        <UnitName Value="Graphics"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="986"/>
+        <CursorPos X="34" Y="984"/>
+        <UsageCount Value="8"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="..\lcl\include\brush.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="181"/>
+        <CursorPos X="1" Y="197"/>
+        <UsageCount Value="8"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="..\lcl\include\winapi.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="276"/>
+        <CursorPos X="1" Y="289"/>
+        <UsageCount Value="8"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="..\lcl\interfaces\win32\win32winapi.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1444"/>
+        <CursorPos X="1" Y="1460"/>
+        <UsageCount Value="8"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="lazres.pp"/>
+        <UnitName Value="LazRes"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="22"/>
+        <CursorPos X="1" Y="34"/>
+        <UsageCount Value="18"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="..\lcl\lresources.pp"/>
+        <UnitName Value="LResources"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1197"/>
+        <CursorPos X="1" Y="1211"/>
+        <UsageCount Value="14"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="C:\Documents and Settings\AndyK\My Documents\lazprojects\Addons\smithchart.pas"/>
+        <UnitName Value="Smithchart"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="52" Y="15"/>
+        <UsageCount Value="14"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="C:\Documents and Settings\AndyK\My Documents\lazprojects\Addons\Smithchart.lrs"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="17" Y="1"/>
+        <UsageCount Value="14"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="C:\devel\lazarus\tools\lazres.pp"/>
+        <UnitName Value="LazRes"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="31"/>
+        <CursorPos X="1" Y="56"/>
+        <UsageCount Value="10"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="C:\devel\lazarus\lcl\stdctrls.pp"/>
+        <UnitName Value="StdCtrls"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1538"/>
+        <CursorPos X="46" Y="1549"/>
+        <UsageCount Value="13"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="C:\devel\lazarus\lcl\include\customlistbox.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="459"/>
+        <CursorPos X="3" Y="462"/>
+        <UsageCount Value="13"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="C:\devel\lazarus\lcl\lcltype.pp"/>
+        <UnitName Value="LCLType"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1127"/>
+        <CursorPos X="5" Y="1141"/>
+        <UsageCount Value="13"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="glazresmain.lfm"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="217"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="C:\devel\lazarus\lcl\lresources.pp"/>
+        <UnitName Value="LResources"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="3038"/>
+        <CursorPos X="3" Y="3040"/>
+        <UsageCount Value="12"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="C:\devel\lazarus\lcl\forms.pp"/>
+        <UnitName Value="Forms"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1356"/>
+        <CursorPos X="15" Y="1369"/>
+        <UsageCount Value="10"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="C:\devel\fpc\source\rtl\objpas\sysutils\osutilsh.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="25"/>
+        <CursorPos X="10" Y="39"/>
+        <UsageCount Value="11"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="C:\devel\fpc\source\rtl\win\sysutils.pp"/>
+        <UnitName Value="sysutils"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1089"/>
+        <CursorPos X="3" Y="1091"/>
+        <UsageCount Value="11"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="C:\devel\fpc\source\rtl\objpas\sysutils\osutil.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="67"/>
+        <CursorPos X="30" Y="84"/>
+        <UsageCount Value="11"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="C:\devel\fpc\source\packages\fcl-base\src\inifiles.pp"/>
+        <UnitName Value="IniFiles"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="608"/>
+        <CursorPos X="3" Y="612"/>
+        <UsageCount Value="11"/>
+      </Unit32>
+    </Units>
+    <JumpHistory Count="28" HistoryIndex="27">
+      <Position1>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="423" Column="20" TopLine="409"/>
+      </Position1>
+      <Position2>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="85" Column="34" TopLine="61"/>
+      </Position2>
+      <Position3>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="319" Column="3" TopLine="283"/>
+      </Position3>
+      <Position4>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="425" Column="20" TopLine="414"/>
+      </Position4>
+      <Position5>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="75" Column="26" TopLine="52"/>
+      </Position5>
+      <Position6>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="114" Column="72" TopLine="97"/>
+      </Position6>
+      <Position7>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="449" Column="22" TopLine="442"/>
+      </Position7>
+      <Position8>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="455" Column="1" TopLine="441"/>
+      </Position8>
+      <Position9>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="341" Column="6" TopLine="330"/>
+      </Position9>
+      <Position10>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="351" Column="14" TopLine="330"/>
+      </Position10>
+      <Position11>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="379" Column="1" TopLine="378"/>
+      </Position11>
+      <Position12>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="510" Column="16" TopLine="487"/>
+      </Position12>
+      <Position13>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="160" Column="1" TopLine="132"/>
+      </Position13>
+      <Position14>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="132" Column="14" TopLine="119"/>
+      </Position14>
+      <Position15>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="536" Column="1" TopLine="521"/>
+      </Position15>
+      <Position16>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="150" Column="1" TopLine="134"/>
+      </Position16>
+      <Position17>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="525" Column="1" TopLine="525"/>
+      </Position17>
+      <Position18>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="155" Column="1" TopLine="134"/>
+      </Position18>
+      <Position19>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="535" Column="1" TopLine="516"/>
+      </Position19>
+      <Position20>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="163" Column="6" TopLine="150"/>
+      </Position20>
+      <Position21>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="474" Column="1" TopLine="474"/>
+      </Position21>
+      <Position22>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="453" Column="1" TopLine="332"/>
+      </Position22>
+      <Position23>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="356" Column="1" TopLine="342"/>
+      </Position23>
+      <Position24>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="66" Column="51" TopLine="52"/>
+      </Position24>
+      <Position25>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="188" Column="8" TopLine="160"/>
+      </Position25>
+      <Position26>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="193" Column="3" TopLine="191"/>
+      </Position26>
+      <Position27>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="500" Column="37" TopLine="497"/>
+      </Position27>
+      <Position28>
+        <Filename Value="glazresmain.pp"/>
+        <Caret Line="469" Column="34" TopLine="453"/>
+      </Position28>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="glazres"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Checks>
+        <IOChecks Value="True"/>
+        <RangeChecks Value="True"/>
+        <OverflowChecks Value="True"/>
+        <StackChecks Value="True"/>
+      </Checks>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <UseHeaptrc Value="True"/>
+      </Debugging>
+    </Linking>
+    <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+  <EditorMacros Count="0"/>
+</CONFIG>
