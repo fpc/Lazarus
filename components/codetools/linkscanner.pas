@@ -181,30 +181,41 @@ type
     cmsFinalFields,        { allows declaring fields as "final", which means they must be initialised
                              in the (class) constructor and are constant from then on (same as final
                              fields in Java) }
-    cmsUnicodeStrings      { ? see http://wiki.freepascal.org/FPC_JVM/Language }
+    cmsDefault_unicodestring { ? see http://wiki.freepascal.org/FPC_JVM/Language }
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
 const
+  // see fpc/compiler/globals.pp
   DefaultCompilerModeSwitches: array[TCompilerMode] of TCompilerModeSwitches = (
     // cmFPC
-    [cmsResult,cmsProperty,cmsNested_comment,cmsCvar_support],
+    [cmsString_pchar,cmsNested_comment,cmsRepeat_forward,cmsCvar_support,
+     cmsInitfinal,cmsHintdirective,cmsProperty,cmsDefault_inline,
+     cmsResult],
     // cmDELPHI
-    [cmsDefault_ansistring,cmsResult,cmsAdvancedRecords,cmsProperty,
-     cmsCvar_support,cmsOut,cmsObjpas,cmsAutoderef],
+    [cmsClass,cmsObjpas,cmsResult,cmsString_pchar,
+     cmsPointer_2_procedure,cmsAutoderef,cmsTp_procvar,cmsInitfinal,cmsDefault_ansistring,
+     cmsOut,cmsDefault_para,cmsDuplicate_names,cmsHintdirective,
+     cmsProperty,cmsDefault_inline,cmsExcept,cmsAdvancedRecords],
     // cmDELPHIUNICODE
-    [cmsDefault_ansistring,cmsResult,cmsAdvancedRecords,cmsProperty,
-     cmsCvar_support,cmsOut,cmsObjpas,cmsSystemCodepage],
+    [cmsClass,cmsObjpas,cmsResult,cmsString_pchar,
+     cmsPointer_2_procedure,cmsAutoderef,cmsTp_procvar,cmsInitfinal,cmsDefault_ansistring,
+     cmsOut,cmsDefault_para,cmsDuplicate_names,cmsHintdirective,
+     cmsProperty,cmsDefault_inline,cmsExcept,cmsAdvancedRecords,
+     cmsSystemcodepage,cmsDefault_unicodestring],
     // cmGPC
-    [],
+    [cmsTp_procvar],
     // cmTP
-    [cmsResult,cmsTp_procvar],
+    [cmsResult,cmsTp_procvar,cmsDuplicate_names],
     // cmOBJFPC
-    [cmsDefault_ansistring,cmsResult,cmsProperty,cmsNested_comment,
-     cmsCvar_support,cmsOut,cmsObjpas],
+    [cmsClass,cmsObjpas,cmsResult,cmsString_pchar,cmsNested_comment,
+     cmsRepeat_forward,cmsCvar_support,cmsInitfinal,cmsOut,cmsDefault_para,
+     cmsHintdirective,cmsProperty,cmsDefault_inline,cmsExcept],
     // cmMacPas
-    [cmsMac_procvar,cmsProperty],
+    [cmsCvar_support,cmsMac_procvar,cmsNestedProcVars,cmsNonLocalGoto,
+     cmsISOLike_unary_minus,cmsDefault_inline],
     // cmISO
-    []
+    [cmsTp_procvar,cmsDuplicate_names,cmsNestedProcVars,cmsNonLocalGoto,
+     cmsISOLike_unary_minus]
     );
 
 type
