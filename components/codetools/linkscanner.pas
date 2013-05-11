@@ -511,7 +511,7 @@ type
     property Directives[Index: integer]: PLSDirective read GetDirectives;
     property DirectivesSorted[Index: integer]: PLSDirective read GetDirectivesSorted; // sorted for Code and SrcPos
     property DirectiveCount: integer read FDirectivesCount;
-    procedure ClearDirectives;
+    procedure ClearDirectives(FreeMemory: boolean);
     property StoreDirectives: boolean read FStoreDirectives write SetStoreDirectives;
     function FindDirective(aCode: Pointer; aSrcPos: integer;
       out FirstSortedIndex, LastSortedIndex: integer): boolean;
@@ -1053,7 +1053,7 @@ begin
   FHiddenUsedUnits:='';
   ClearMacros;
   ClearLastError;
-  ClearDirectives;
+  ClearDirectives(false);
   ClearMissingIncludeFiles;
   for i:=0 to FIncludeStack.Count-1 do begin
     PLink:=PSourceLink(FIncludeStack[i]);
@@ -1089,8 +1089,7 @@ end;
 destructor TLinkScanner.Destroy;
 begin
   Clear;
-  ReAllocMem(FDirectivesSorted,0);
-  ReAllocMem(FDirectives,0);
+  ClearDirectives(true);
   ReAllocMem(FMacros,0);
   FreeAndNil(FIncludeStack);
   FreeAndNil(FSourceChangeSteps);
@@ -1211,12 +1210,17 @@ begin
   end;
 end;
 
-procedure TLinkScanner.ClearDirectives;
+procedure TLinkScanner.ClearDirectives(FreeMemory: boolean);
 begin
-  // keep memory allocated, it will probably be needed on next rescan
   FDirectivesCount:=0;
-  if FDirectivesSorted<>nil then
-    FDirectivesSorted[0]:=nil;
+  if FreeMemory then begin
+    ReAllocMem(FDirectives,0);
+    ReAllocMem(FDirectivesSorted,0);
+    FDirectivesCapacity:=0;
+  end else begin
+    if FDirectivesSorted<>nil then
+      FDirectivesSorted[0]:=nil;
+  end;
 end;
 
 function TLinkScanner.FindDirective(aCode: Pointer; aSrcPos: integer; out
@@ -4034,7 +4038,7 @@ begin
   if FStoreDirectives=AValue then Exit;
   FStoreDirectives:=AValue;
   if not StoreDirectives then
-    ClearDirectives;
+    ClearDirectives(true);
 end;
 
 function TLinkScanner.GetIgnoreMissingIncludeFiles: boolean;
