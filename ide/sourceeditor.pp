@@ -4381,11 +4381,11 @@ Begin
       OnClearBookmark := @EditorClearBookmark;
       OnChangeUpdating  := @EditorChangeUpdating;
       RegisterMouseActionExecHandler(@EditorHandleMouseAction);
-      // IMPORTANT: when you change above, don't forget updating UnbindEditor
-      Parent := AParent;
       {$IFDEF WithSynMarkupIfDef}
       OnIfdefNodeStateRequest := @DoIfDefNodeStateRequest;;
       {$ENDIF}
+      // IMPORTANT: when you change above, don't forget updating UnbindEditor
+      Parent := AParent;
     end;
     Manager.CodeTemplateModul.AddEditor(FEditor);
     Manager.FMacroRecorder.AddEditor(FEditor);
@@ -5423,6 +5423,9 @@ begin
     OnPlaceBookmark := nil;
     OnClearBookmark := nil;
     OnChangeUpdating := nil;
+    {$IFDEF WithSynMarkupIfDef}
+    OnIfdefNodeStateRequest := nil;
+    {$ENDIF}
     UnregisterMouseActionExecHandler(@EditorHandleMouseAction);
   end;
   for i := 0 to EditorComponent.PluginCount - 1 do
