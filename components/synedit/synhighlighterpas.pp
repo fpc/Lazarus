@@ -1003,9 +1003,24 @@ end;
 
 function TSynPasSyn.Func32: TtkTokenKind;
 begin
-  if KeyComp('Label') then Result := tkKey else
-    if KeyComp('Mod') then Result := tkKey else
-      if KeyComp('File') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Label') then begin
+    if (TopPascalCodeFoldBlockType in  [cfbtVarType, cfbtLocalVarType, cfbtNone,
+        cfbtProcedure, cfbtProgram, cfbtUnit, cfbtUnitSection])
+    then begin
+      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+        EndPascalCodeFoldBlockLastLine;
+      if TopPascalCodeFoldBlockType in [cfbtProcedure]
+      then StartPascalCodeFoldBlock(cfbtLocalVarType)
+      else StartPascalCodeFoldBlock(cfbtVarType);
+    end;
+    Result := tkKey;
+  end
+  else
+  if KeyComp('Mod') then Result := tkKey
+  else
+  if KeyComp('File') then Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func33: TtkTokenKind;
