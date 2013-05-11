@@ -148,8 +148,9 @@ type
     cmOBJFPC,
     cmMacPas,
     cmISO);
-  { TCompilerModeSwitch - see fpc/compiler/globtype.pas  }
+  { TCompilerModeSwitch - see fpc/compiler/globtype.pas  tmodeswitch }
   TCompilerModeSwitch = (
+    cmsAdd_pointer,        { ? }
     cmsClass,              { delphi class model }
     cmsObjpas,             { load objpas unit }
     cmsResult,             { result in functions }
@@ -162,7 +163,6 @@ type
     cmsPointer_2_procedure,{ allows the assignement of pointers to  procedure variables }
     cmsAutoderef,          { does auto dereferencing of struct. vars, e.g. a.b -> a^.b }
     cmsInitfinal,          { initialization/finalization for units }
-    cmsAdd_pointer,        { ? }
     cmsDefault_ansistring, { ansistring turned on by default }
     cmsOut,                { support the calling convention OUT }
     cmsDefault_para,       { support default parameters }
@@ -178,6 +178,9 @@ type
     cmsAdvancedRecords,    { advanced record syntax with visibility sections, methods and properties }
     cmsISOLike_unary_minus,{ unary minus like in iso pascal: same precedence level as binary minus/plus }
     cmsSystemcodepage,     { use system codepage as compiler codepage by default, emit ansistrings with system codepage }
+    cmsFinalFields,        { allows declaring fields as "final", which means they must be initialised
+                             in the (class) constructor and are constant from then on (same as final
+                             fields in Java) }
     cmsUnicodeStrings      { ? see http://wiki.freepascal.org/FPC_JVM/Language }
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
@@ -630,16 +633,38 @@ const
         'FPC', 'DELPHI', 'DELPHIUNICODE', 'GPC', 'TP', 'OBJFPC', 'MACPAS', 'ISO'
      );
 
-  // upper case
+  // upper case (see fpc/compiler/globtype.pas  modeswitchstr )
   CompilerModeSwitchNames: array[TCompilerModeSwitch] of shortstring=(
-        'CLASS', 'OBJPAS', 'RESULT', 'PCHARTOSTRING', 'CVAR',
-        'NESTEDCOMMENTS', 'CLASSICPROCVARS', 'MACPROCVARS', 'REPEATFORWARD',
-        'POINTERTOPROCVAR', 'AUTODEREF', 'INITFINAL', 'POINTERARITHMETICS',
-        'ANSISTRINGS', 'OUT', 'DEFAULTPARAMETERS', 'HINTDIRECTIVE',
-        'DUPLICATELOCALS', 'PROPERTIES', 'ALLOWINLINE', 'EXCEPTIONS',
-        'OBJECTIVEC1', 'OBJECTIVEC2', 'NESTEDPROCVARS', 'NONLOCALGOTO',
-        'ADVANCEDRECORDS', 'ISOLIKE_UNARY_MINUS', 'SYSTEMCODEPAGE',
-        'UNICODESTRINGS');
+    'POINTERARITHMETICS',
+    'CLASS',
+    'OBJPAS',
+    'RESULT',
+    'PCHARTOSTRING',
+    'CVAR',
+    'NESTEDCOMMENTS',
+    'CLASSICPROCVARS',
+    'MACPROCVARS',
+    'REPEATFORWARD',
+    'POINTERTOPROCVAR',
+    'AUTODEREF',
+    'INITFINAL',
+    'ANSISTRINGS',
+    'OUT',
+    'DEFAULTPARAMETERS',
+    'HINTDIRECTIVE',
+    'DUPLICATELOCALS',
+    'PROPERTIES',
+    'ALLOWINLINE',
+    'EXCEPTIONS',
+    'OBJECTIVEC1',
+    'OBJECTIVEC2',
+    'NESTEDPROCVARS',
+    'NONLOCALGOTO',
+    'ADVANCEDRECORDS',
+    'ISOUNARYMINUS',
+    'SYSTEMCODEPAGE',
+    'FINALFIELDS',
+    'UNICODESTRINGS');
 
   // upper case
   PascalCompilerNames: array[TPascalCompiler] of shortstring=(
