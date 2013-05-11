@@ -219,6 +219,7 @@ type
     procedure UpdateCodeBuffer;
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
     procedure ConnectScanner(Scanner: TLinkScanner);
+    procedure DisconnectScanner(Scanner: TLinkScanner);
     function Filename: string; override;
   public
     constructor Create;
@@ -2268,8 +2269,11 @@ var
   i: Integer;
 begin
   if FCodeBuffer = AValue then exit;
-  if FCodeBuffer<>nil then
+  if FCodeBuffer<>nil then begin
     FCodeBuffer.RemoveChangeHook(@OnCodeBufferChanged);
+    if FCodeBuffer.Scanner<>nil then
+      DisconnectScanner(FCodeBuffer.Scanner);
+  end;
   FCodeBuffer := AValue;
   if FCodeBuffer <> nil then
   begin
@@ -2281,6 +2285,8 @@ begin
         SharedEditors[i].ClearExecutionMarks;
       end;
       FCodeBuffer.AddChangeHook(@OnCodeBufferChanged);
+      if FCodeBuffer.Scanner<>nil then
+        ConnectScanner(FCodeBuffer.Scanner);
       if (FIgnoreCodeBufferLock <= 0) and (not FCodeBuffer.IsEqual(SynEditor.Lines))
       then begin
         {$IFDEF IDE_DEBUG}
@@ -2571,10 +2577,22 @@ end;
 
 procedure TSourceEditorSharedValues.ConnectScanner(Scanner: TLinkScanner);
 begin
+  if Scanner=nil then exit;
   if FLinkScanners.IndexOf(Scanner)>=0 then exit;
   //debugln(['TSourceEditorSharedValues.ConnectScanner ',Filename,' ',Scanner.MainFilename]);
   FLinkScanners.Add(Scanner);
   Scanner.DemandStoreDirectives;
+end;
+
+procedure TSourceEditorSharedValues.DisconnectScanner(Scanner: TLinkScanner);
+var
+  i: Integer;
+begin
+  if Scanner=nil then exit;
+  i:=FLinkScanners.IndexOf(Scanner);
+  if i<0 then exit;
+  FLinkScanners.Delete(i);
+  Scanner.ReleaseStoreDirectives;
 end;
 
 function TSourceEditorSharedValues.Filename: string;
