@@ -2593,6 +2593,7 @@ begin
 
   LastMatchIdx := -1;
   EntryFound := nil;
+  Peer := nil;
 
   // *** Check outerlines, for node that goes into visible area
   NestLvl := -1;
@@ -2646,18 +2647,23 @@ begin
     if (d >= TopLine)  //or ( (idnMultiLineTag in Peer.NodeFlags) and (d + Peer.Line.LastEntryEndLineOffs) )
     then
       break;
+    // Should not reach here
+    assert(False, 'outernode finish early');
+    EntryFound := nil;
+    Peer := nil;
   end;
   // *** END Check outerlines, for node that goes into visible area
   // *** if found, then it is in EntryFound and Peer
 
-  if EntryFound <> nil then begin
+  if EntryFound <> nil then
     AddMatch(EntryFound, CurLine, Peer, d);
+
+  if Peer <> nil then begin
     NodeInfo.InitForNode(Peer.Line, d);
     Node := NodeInfo.Node;
     FirstEntryIdx := Node.IndexOf(Peer) + 1;
   end
   else begin
-//    Peer := nil;
     NodeInfo := FIfDefTree.FindNodeAtPosition(TopLine, afmNext);
     Node := NodeInfo.Node;
     FirstEntryIdx := 0;
