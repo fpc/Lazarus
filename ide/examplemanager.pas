@@ -286,7 +286,7 @@ end;
 
 procedure TExampleManagerForm.ProjectFilterAfterFilter(Sender: TObject);
 begin
-  lbProjectCount.Caption:=IntToStr(ProjectsListBox.Count)+lisProjectCount;
+  lbProjectCount.Caption:=Format(lisProjectCount, [ProjectsListBox.Count]);
 end;
 
 procedure TExampleManagerForm.BuildAllSelectedButtonClick(Sender: TObject);
