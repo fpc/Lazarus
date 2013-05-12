@@ -362,10 +362,15 @@ begin
      and (AValue <> '')
      and not DirectoryExistsUtf8(ExpandFilename(AValue)) then
      Raise Exception.CreateFmt(SShellCtrlsInvalidRoot,[ExpandFileName(AValue)]);
-  FRoot:=AValue;
+  if (AValue = '') then
+    FRoot := GetBasePath
+  else
+    FRoot:=AValue;
   Items.Clear;
   if FRoot = '' then
+  begin
     PopulateWithBaseFiles()
+  end
   else
   begin
     //Add a node for Root and expand it (issue #0024230)
@@ -383,14 +388,33 @@ end;
 // ToDo: Optimize, now the tree is populated in constructor, SetRoot and SetFileSortType.
 // For some reason it does not show in performance really.
 procedure TCustomShellTreeView.SetFileSortType(const AValue: TFileSortType);
+var
+  RootNode: TTreeNode;
+  CurrPath: String;
 begin
   if FFileSortType=AValue then exit;
   FFileSortType:=AValue;
-  Items.Clear;
-  if FRoot = '' then
-    PopulateWithBaseFiles()
-  else
-    PopulateTreeNodeWithFiles(nil, FRoot);
+  CurrPath := GetPath;
+  try
+    BeginUpdate;
+    Items.Clear;
+    if FRoot = '' then
+      PopulateWithBaseFiles()
+    else
+    begin
+      RootNode := Items.AddChild(nil, FRoot);
+      RootNode.HasChildren := True;
+      RootNode.Expand(False);
+      try
+       SetPath(CurrPath);
+      except
+        // CurrPath may have been removed in the mean time by another process, just ignore
+        on E: EInvalidPath do ;//
+      end;
+    end;
+  finally
+    EndUpdate;
+  end;
 end;
 
 function TCustomShellTreeView.CanExpand(Node: TTreeNode): Boolean;
