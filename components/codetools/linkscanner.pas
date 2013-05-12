@@ -2129,6 +2129,9 @@ begin
   if [lssSourcesChanged,lssInitValuesChanged]*FStates<>[] then exit;
   if CheckFilesOnDisk and (lssFilesChanged in FStates) then exit;
 
+  // check options
+  if StoreDirectives and (not DirectivesStored) then exit;
+
   // check if range increased
   // Note: if there was an error, then a range increase will raise the same error
   // and no update is needed
@@ -2151,16 +2154,16 @@ begin
       Result:=false;
       exit;
     end;
-    FGlobalSourcesChangeStep:=CurSourcesChangeStep;
-    FGlobalInitValuesChangeStep:=CurInitValuesChangeStep;
-    if CheckFilesOnDisk then FGlobalSourcesChangeStep:=CurFilesChangeStep;
+  end else begin
+    CurSourcesChangeStep:=0;
+    CurFilesChangeStep:=0;
+    CurInitValuesChangeStep:=0;
   end;
 
-  // check options
-  if StoreDirectives and (not DirectivesStored) then exit;
-
   // check initvalues
-  if Assigned(FOnGetInitValues) then begin
+  if Assigned(FOnGetInitValues) and (FGlobalInitValuesChangeStep<>CurInitValuesChangeStep)
+  then begin
+    FGlobalInitValuesChangeStep:=CurInitValuesChangeStep;
     NewInitValues:=FOnGetInitValues(Self,Code,NewInitValuesChangeStep);
     if (NewInitValues<>nil)
     and (NewInitValuesChangeStep<>FInitValuesChangeStep)
@@ -2173,8 +2176,10 @@ begin
     end;
   end;
 
-  // check all used files
-  if Assigned(FOnGetSource) then begin
+  // check all used codebuffers
+  if Assigned(FOnGetSource) and (FGlobalSourcesChangeStep<>CurSourcesChangeStep)
+  then begin
+    FGlobalSourcesChangeStep:=CurSourcesChangeStep;
     for i:=0 to FSourceChangeSteps.Count-1 do begin
       SrcChange:=PSourceChangeStep(FSourceChangeSteps[i]);
       SrcLog:=FOnGetSource(Self,SrcChange^.Code);
@@ -2187,18 +2192,22 @@ begin
         exit;
       end;
     end;
-    if CheckFilesOnDisk then begin
-      // if files changed on disk, reload them
-      for i:=0 to FSourceChangeSteps.Count-1 do begin
-        SrcChange:=PSourceChangeStep(FSourceChangeSteps[i]);
-        SrcLog:=FOnGetSource(Self,SrcChange^.Code);
-        if FOnCheckFileOnDisk(SrcLog) then begin
-          {$IFDEF VerboseUpdateNeeded}
-          DebugLn(['TLinkScanner.UpdateNeeded because file on disk changed: ',OnGetFileName(Self,SrcLog),' MainFilename=',MainFilename]);
-          {$ENDIF}
-          Include(FStates,lssFilesChanged);
-          exit;
-        end;
+  end;
+
+  // check all file dates
+  if CheckFilesOnDisk and Assigned(FOnGetSource)
+  and (FGlobalFilesChangeStep<>CurFilesChangeStep) then begin
+    // if files changed on disk, reload them
+    FGlobalFilesChangeStep:=CurFilesChangeStep;
+    for i:=0 to FSourceChangeSteps.Count-1 do begin
+      SrcChange:=PSourceChangeStep(FSourceChangeSteps[i]);
+      SrcLog:=FOnGetSource(Self,SrcChange^.Code);
+      if FOnCheckFileOnDisk(SrcLog) then begin
+        {$IFDEF VerboseUpdateNeeded}
+        DebugLn(['TLinkScanner.UpdateNeeded because file on disk changed: ',OnGetFileName(Self,SrcLog),' MainFilename=',MainFilename]);
+        {$ENDIF}
+        Include(FStates,lssFilesChanged);
+        exit;
       end;
     end;
   end;
