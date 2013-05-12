@@ -1582,11 +1582,19 @@ begin
     else
       FValidationFailed := False;
     Modified := False;
+    if (AutoSelect and not (csLButtonDown in ControlState)) then
+    begin
+      SelectAll;
+      FCursorPos := GetSelStart;
+    end
+    else
+    begin
     if ((FCursorPos = 0) and (IsLiteral(FMask[1]))) then
       //On entering select first editable char
       SelectNextChar
     else
       SetCursorPos;
+    end;
   end;
 end;
 
