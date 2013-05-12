@@ -2279,7 +2279,7 @@ begin
     if FCodeBuffer.Scanner<>nil then
       DisconnectScanner(FCodeBuffer.Scanner);
     if FMainLinkScanner<>nil then begin
-      FMainLinkScanner.ReleaseStoreDirectives;
+      DisconnectScanner(FMainLinkScanner);
       FMainLinkScanner:=nil;
     end;
   end;
@@ -2609,6 +2609,8 @@ begin
   if i<0 then exit;
   FLinkScanners.Delete(i);
   Scanner.ReleaseStoreDirectives;
+  if Scanner=FMainLinkScanner then
+    FMainLinkScanner:=nil;
 end;
 
 function TSourceEditorSharedValues.GetIfDefNodeState(x, y: integer
