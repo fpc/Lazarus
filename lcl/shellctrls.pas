@@ -761,12 +761,20 @@ begin
   Result := GetPathFromNode(Selected);
 end;
 
+{
+SetPath: Path can be
+- Absolute like '/usr/lib'
+- Relative like 'foo/bar'
+  This can be relative to:
+  - Self.Root (which takes precedence over)
+  - Current directory
+}
 procedure TCustomShellTreeView.SetPath(AValue: string);
 var
   sl: TStringList;
   Node: TTreeNode;
   i: integer;
-  FQPath, FQRootPath: String;
+  FQRootPath, RelPath: String;
   RootIsAbsolute: Boolean;
 
   function GetAdjustedNodeText(ANode: TTreeNode): String;
@@ -781,52 +789,86 @@ var
     else Result := ANode.Text;
   end;
 begin
-  writeln('SetPath: FRoot = "',FRoot,'" GetRootPath = "',getrootpath,'"',' AValue=',AValue);
+  RelPath := '';
+
+  //writeln('SetPath: GetRootPath = "',getrootpath,'"',' AValue=',AValue);
+
   if (GetRootPath <> '') then
-    FQRootPath := IncludeTrailingPathDelimiter(ExpandFileNameUtf8(GetRootPath))
+    //FRoot is already Expanded in SetRoot, just add PathDelim if needed
+    FQRootPath := IncludeTrailingPathDelimiter(GetRootPath)
   else
     FQRootPath := '';
   RootIsAbsolute := (FQRootPath = '') or (FQRootPath = PathDelim)
                     or ((Length(FQRootPath) = 3) and (FQRootPath[2] = ':') and (FQRootPath[3] = PathDelim));
+
   //writeln('SetPath: FQRootPath = ',fqrootpath);
   //writeln('SetPath: RootIsAbsolute = ',RootIsAbsolute);
 
-  if not RootIsAbsolute and not FileNameIsAbsolute(AValue) then
+  //IsRelPath := not FileNameIsAbsolute(AValue);
+
+  //writeln('SetPath: IsRelPath = ',not FileNameIsAbsolute(AValue));
+
+  if not FileNameIsAbsolute(AValue) then
   begin
-    //FileName must be relative to Root in this case
-    FQPath := FQRootPath + AValue;
+    if DirectoryExistsUtf8(FQRootPath + AValue) then
+    begin
+      //Expand it, since it may be in the form of ../../foo
+      AValue := ExpandFileNameUtf8(FQRootPath + AValue);
+    end
+    else
+    begin
+      if not DirectoryExistsUtf8(ExpandFileNameUtf8(AValue)) then
+        Raise EInvalidPath.CreateFmt(SShellCtrlsInvalidPath,[ExpandFileNameUtf8(FQRootPath + AValue)]);
+      //Directory Exists
+      //Make it fully qualified
+      AValue := ExpandFileNameUtf8(AValue);
+    end;
   end
   else
-    FQPath := ExcludeTrailingPathDelimiter(ExpandFileNameUtf8(AValue));
-  if not DirectoryExistsUTF8(FQPath) then
   begin
-    //writeln('SetPath: InvalidPath: ',AValue);
-    if not RootIsAbsolute then
-      Raise EInvalidPath.CreateFmt(SShellCtrlsInvalidPathRelative,[AValue, FQRootPath])
-    else
-      Raise EInvalidPath.CreateFmt(SShellCtrlsInvalidPath,[FQPath]);
+    //AValue is an absoulte path to begin with
+    if not DirectoryExistsUtf8(AValue) then
+      Raise EInvalidPath.CreateFmt(SShellCtrlsInvalidPath,[AValue]);
   end;
-  //writeln('SetPath: FQPath = ',fqpath);
-  AValue := FQPath;
+
+  //AValue now is a fully qualified path and it exists
+  //Now check if it is a subdirectory of FQRootPath
+  RelPath := CreateRelativePath(AValue, FQRootPath, False);
+
+  //writeln('SetPath: CreaterealtivePath = ',RelPath);
+
+  if (RelPath <> '') and (RelPath[1] = '.') then
+  begin
+    // CreateRelativePath retruns a string beginning with ..
+    // so AValue is not a subdirectory of FRoot
+    Raise EInvalidPath.CreateFmt(SShellCtrlsInvalidPathRelative,[AValue, FQRootPath]);
+  end;
+
 
   sl := TStringList.Create;
   sl.Delimiter := PathDelim;
   sl.StrictDelimiter := True;
-  sl.DelimitedText := TrimFilename(AValue);  // Clean the path and then split it
-  if sl[0] = '' then                    // This happens when root dir is empty
-    sl[0] := PathDelim;                 //  and PathDelim was the first char
+  sl.DelimitedText := RelPath;
+  if (sl.Count > 0) and (sl[0] = '') then  // This happens when root dir is empty
+    sl[0] := PathDelim;                    //  and PathDelim was the first char
 
-  //C: -> C:\ on Windows
-  if RootIsAbsolute and (FQRootPath <> '') and (sl.Count > 0) then sl[0] := IncludeTrailingPathDelimiter(sl[0]);
+  //for i := 0 to sl.Count - 1 do writeln('sl[',i:2,']="',sl[i],'"');
 
 
   BeginUpdate;
   try
     Node := Items.GetFirstVisibleNode;
-    //Skip first node if not RootIsAbsolute, because we deleted that part form AValue
-    if (not RootIsAbsolute) and Assigned(Node) then Node := Node.GetFirstVisibleChild;
+    //Root node doesn't have Siblings, we need one level deeper
+    if Assigned(Node) then Node := Node.GetFirstVisibleChild;
+
     for i := 0 to sl.Count-1 do
     begin
+      {
+      write('i=',i,' sl[',i,']=',sl[i],' ');
+      if Node <> nil then write('GetAdjustedNodeText = ',GetAdjustedNodeText(Node))
+      else  write('GetAdjustedNodeText = NIL');
+      writeln;
+      }
       while (Node <> Nil) and
             {$IF defined(CaseInsensitiveFilenames) or defined(NotLiteralFilenames)}
             (Utf8LowerCase(GetAdjustedNodeText(Node)) <> Utf8LowerCase(sl[i]))
@@ -834,7 +876,15 @@ begin
             (GetAdjustedNodeText(Node) <> sl[i])
             {$ENDIF}
             do
-        Node := Node.GetNextVisibleSibling;
+            begin
+              Node := Node.GetNextVisibleSibling;
+              {
+              write('i=',i,' sl[',i,']=',sl[i],' ');
+              if Node <> nil then write('GetAdjustedNodeText = ',GetAdjustedNodeText(Node))
+              else  write('GetAdjustedNodeText = NIL');
+              writeln;
+              }
+            end;
       if Node <> Nil then
       begin
         Node.Expanded := True;
