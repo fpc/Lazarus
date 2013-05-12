@@ -916,7 +916,7 @@ begin
   assert(FEntries[c]=nil, 'FEntries[c]=nil');
   Result := TSynMarkupHighIfDefEntry.Create;
   Result.Line := Self;
-  if (AIndex > 0) then begin
+  if (AIndex >= 0) then begin
     Assert(AIndex <= c, 'Add node index <= count');
     while c > AIndex do begin
       FEntries[c] := FEntries[c - 1];
@@ -1971,7 +1971,7 @@ var
     else begin
       Result := nil;
 
-      // Check if existing node matches
+      // Check for comments
       i := NodesAddedCnt;
       while (i < ANodeForLine.EntryCount-1) do begin
         e := ANodeForLine.Entry[i];
@@ -1988,7 +1988,7 @@ var
         end;
         inc(i);
       end;
-
+      // Check if existing node matches
       if i < ANodeForLine.EntryCount then begin
         Result := ANodeForLine.Entry[i];
         if ( (Result.NodeType = AType) or
@@ -2210,7 +2210,7 @@ XXXCurTree := self; try
   end;
 
   (*** Find or create a node for StartLine ***)
-
+// TODO: check if we have node from outerline, and if it is usable
   Node := FindNodeAtPosition(AStartLine, afmPrev); // might be multiline
   //debugln(['Validate RANGE ', AStartLine, ' - ', AEndLine,' -- 1st node ', Node.StartLine, ' - ', Node.ScanEndLine]);
   NextNode := Node.Successor;
@@ -2227,10 +2227,10 @@ XXXCurTree := self; try
       end
       else
       if (NextNode.StartLine <= AEndLine) then begin
-        CheckNodeForAppNotInCodeFlag(Node);
-        ApplyNotInCodeFlagToNode(NextNode);
+        //CheckNodeForAppNotInCodeFlag(Node);
+        //ApplyNotInCodeFlagToNode(NextNode);
         MaybeExtendNodeBackward(NextNode, AStartLine);
-        FinishNodeForAppNotInCodeFlag(NextNode);
+        //FinishNodeForAppNotInCodeFlag(NextNode);
         if NextNode.StartLine = AStartLine then begin
           Node := NextNode;
           NextNode := Node.Successor;
@@ -2243,7 +2243,7 @@ XXXCurTree := self; try
       NextNode := Node.Successor;
     end;
   end;
-
+// If node starts before AStartLine, then it must be in the OuterNodes
   SkipPeers := Node.StartLine < AStartLine; // NO peer info available, if node starts before startline
   ApplyNotInCodeFlagToNode(Node);
   MaybeValidateNode(Node);
@@ -2303,7 +2303,9 @@ XXXCurTree := self; try
       TmpNode.ClearInfo;
     end;
     assert(Node.ScanEndLine + 1 = NextNode.StartLine, 'Scan gap has reached next node');
-    NextNode := Node.Successor;
+    assert(NextNode.Node = Node.Successor.Node, 'NextNode = Node.Successor');
+    assert(NextNode.StartLine = Node.Successor.StartLine, 'NextNode = Node.Successor / start');
+    NextNode := Node.Successor; // TODO: not needed
 
   end;
 
@@ -2591,6 +2593,7 @@ begin
   LastLine := ScreenRowToRow(LinesInWindow+1);
   FIfDefTree.ValidateRange(TopLine, LastLine, FOuterLines);
 
+XXXCurTree := FIfDefTree; try
   LastMatchIdx := -1;
   EntryFound := nil;
   Peer := nil;
@@ -2720,6 +2723,7 @@ begin
     Matches.Delete(Matches.Count - 1);
   end;
 
+finally XXXCurTree := nil; end;
 end;
 
 procedure TSynEditMarkupIfDef.DoFoldChanged(aLine: Integer);
