@@ -722,7 +722,7 @@ begin
   AVLNode:=FIdentView.FindLeftMostKey(FIdentSearchItem,
                                 @CompareIdentListSearchWithItemsWithoutParams);
   while (AVLNode<>nil)
-  and not (TIdentifierListItem(AVLNode.Data).Node.Desc in [ctnProcedure,ctnProcedureHead])
+  and not (TIdentifierListItem(AVLNode.Data).GetDesc in [ctnProcedure,ctnProcedureHead])
   and (CompareIdentifiers(Identifier,PChar(TIdentifierListItem(AVLNode.Data).Identifier))=0)
   do
     AVLNode:=FIdentView.FindSuccessor(AVLNode);
