@@ -360,8 +360,8 @@ begin
   //Delphi raises an unspecified exception in this case, but don't crash the IDE at designtime
   if not (csDesigning in ComponentState)
      and (AValue <> '')
-     and not DirectoryExistsUtf8(ExpandFilename(AValue)) then
-     Raise Exception.CreateFmt(SShellCtrlsInvalidRoot,[ExpandFileName(AValue)]);
+     and not DirectoryExistsUtf8(ExpandFilenameUtf8(AValue)) then
+     Raise Exception.CreateFmt(SShellCtrlsInvalidRoot,[ExpandFileNameUtf8(AValue)]);
   if (AValue = '') then
     FRoot := GetBasePath
   else
@@ -375,7 +375,7 @@ begin
   begin
     //Add a node for Root and expand it (issue #0024230)
     //Make FRoot contain fully qualified pathname, we need it later in GetPathFromNode()
-    FRoot := ExpandFileName(FRoot);
+    FRoot := ExpandFileNameUtf8(FRoot);
     //Set RootNode.Text to AValue so user can choose if text is fully qualified path or not
     RootNode := Items.AddChild(nil, AValue);
     RootNode.HasChildren := True;
@@ -781,9 +781,9 @@ var
     else Result := ANode.Text;
   end;
 begin
-  //writeln('SetPath: FRoot = "',FRoot,'" GetRootPath = "',getrootpath,'"');
+  writeln('SetPath: FRoot = "',FRoot,'" GetRootPath = "',getrootpath,'"',' AValue=',AValue);
   if (GetRootPath <> '') then
-    FQRootPath := IncludeTrailingPathDelimiter(ExpandFileName(GetRootPath))
+    FQRootPath := IncludeTrailingPathDelimiter(ExpandFileNameUtf8(GetRootPath))
   else
     FQRootPath := '';
   RootIsAbsolute := (FQRootPath = '') or (FQRootPath = PathDelim)
@@ -797,7 +797,7 @@ begin
     FQPath := FQRootPath + AValue;
   end
   else
-    FQPath := ExcludeTrailingPathDelimiter(ExpandFileName(AValue));
+    FQPath := ExcludeTrailingPathDelimiter(ExpandFileNameUtf8(AValue));
   if not DirectoryExistsUTF8(FQPath) then
   begin
     //writeln('SetPath: InvalidPath: ',AValue);
@@ -900,7 +900,7 @@ begin
     //Delphi raises an unspecified exception in this case, but don't crash the IDE at designtime
     if not (csDesigning in ComponentState)
        and (Value <> '')
-       and not DirectoryExistsUtf8(ExpandFilename(Value)) then
+       and not DirectoryExistsUtf8(ExpandFilenameUtf8(Value)) then
        Raise Exception.CreateFmt(SShellCtrlsInvalidRoot,[Value]);
     FRoot := Value;
     Clear;
