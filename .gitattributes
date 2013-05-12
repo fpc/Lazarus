@@ -6612,6 +6612,7 @@ tools/install/win/lazarus-cross.iss svneol=native#text/plain
 tools/install/win/lazarus.de.isl svneol=native#text/plain
 tools/install/win/lazarus.def.isl svneol=native#text/plain
 tools/install/win/lazarus.es.isl svneol=native#text/plain
+tools/install/win/lazarus.fr.isl svneol=native#text/plain
 tools/install/win/lazarus.pt_BR.isl svneol=native#text/plain
 tools/install/win/lazarus.ru.isl svneol=native#text/plain
 tools/install/win/lazarus_install_cheetah.bmp -text svneol=unset#image/bmp

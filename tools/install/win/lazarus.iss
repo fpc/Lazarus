@@ -248,7 +248,7 @@ Name: cs; MessagesFile: compiler:Languages\Czech.isl
 Name: de; MessagesFile: lazarus.de.isl
 Name: es; MessagesFile: lazarus.es.isl
 Name: fi; MessagesFile: compiler:Languages\Finnish.isl
-Name: fr; MessagesFile: compiler:Languages\French.isl
+Name: fr; MessagesFile: lazarus.fr.isl
 Name: hu; MessagesFile: compiler:Languages\Hungarian.isl
 Name: it; MessagesFile: compiler:Languages\Italian.isl
 Name: nl; MessagesFile: compiler:Languages\Dutch.isl
