@@ -134,6 +134,7 @@ var
   ClipR: TRect; // fix branch indicators (treeviews)
   {$ENDIF}
   dx, dy: integer;
+  APalette: QPaletteH;
 begin
   if (Context <> nil) then
   begin
@@ -178,6 +179,21 @@ begin
             if Details.Element = teToolBar then
               Features := Features or QStyleOptionButtonFlat;
             QStyleOptionButton_setFeatures(QStyleOptionButtonH(opt), Features);
+
+            // workaround for qt QStyle bug. QStyle does not set disable flag (palette).
+            // see issue #24413
+            if Details.State in [TS_DISABLED] then
+            begin
+              APalette := QPalette_create();
+              try
+                QStyleOption_palette(opt, APalette);
+                QPalette_setCurrentColorGroup(APalette, QPaletteDisabled);
+                QStyleOption_setPalette(opt, APalette);
+              finally
+                QPalette_destroy(APalette);
+              end;
+            end;
+
           end
           else
           if (Element.ControlElement = QStyleCE_HeaderSection) then
