@@ -3335,6 +3335,25 @@ end;
 procedure TKeyCommandRelationList.AssignTo(ASynEditKeyStrokes: TSynEditKeyStrokes;
   IDEWindowClass: TCustomFormClass; ACommandOffsetOffset: Integer = 0);
 
+  function ShiftConflict(aKey: TSynEditKeyStroke): Boolean;
+  // This is called when first part of combo has Ctrl and 2nd part has Ctrl or nothing.
+  //  Check if ignoring Ctrl in second part would create a conflict.
+  var
+    ConflictShift: TShiftState;
+    x: integer;
+  begin
+    Result := False;
+    if aKey.Shift2 = [ssCtrl] then
+      ConflictShift := []
+    else
+      ConflictShift := [ssCtrl];
+    for x := 0 to ASynEditKeyStrokes.Count-1 do
+      with ASynEditKeyStrokes.Items[x] do
+        if (Key = aKey.Key) and (Key2 = aKey.Key2)
+        and (Shift = aKey.Shift) and (Shift2 = ConflictShift) then
+          Exit(True);        // Found
+  end;
+
   procedure SetKeyCombo(aKey: TSynEditKeyStroke; aShortcut: PIDEShortCut);
   // Define a key for a command
   begin
@@ -3344,8 +3363,10 @@ procedure TKeyCommandRelationList.AssignTo(ASynEditKeyStrokes: TSynEditKeyStroke
     aKey.Shift2:=aShortcut^.Shift2;
     // Ignore the second Ctrl key in sequential combos.
     // For example "Ctrl-X, Y" and "Ctrl-X, Ctrl-Y" are then treated the same.
-    if aKey.Shift=[ssCtrl] then
-      aKey.ShiftMask2:=[ssCtrl];
+    if (aKey.Shift=[ssCtrl]) and (aKey.Shift2-[ssCtrl]=[]) and not ShiftConflict(aKey) then
+      aKey.ShiftMask2:=[ssCtrl]
+    else
+      aKey.ShiftMask2:=[];
   end;
 
 var
