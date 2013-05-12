@@ -744,7 +744,11 @@ begin
     while (ANode.Parent <> nil) do
     begin
       ANode := ANode.Parent;
-      Result := IncludeTrailingPathDelimiter(ANode.Text) + Result;
+      if (ANode.Parent = nil) and (GetRootPath <> '') then
+        //Node.Text of rootnode may not be fully qualified
+        Result := GetRootPath + Result
+      else
+        Result := IncludeTrailingPathDelimiter(ANode.Text) + Result;
     end;
   end;
   if not FilenameIsAbsolute(Result) then
