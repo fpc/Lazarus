@@ -360,7 +360,7 @@ begin
   //Delphi raises an unspecified exception in this case, but don't crash the IDE at designtime
   if not (csDesigning in ComponentState)
      and (AValue <> '')
-     and not DirectoryExistsUtf8(ExcludeTrailingPathDelimiter(ExpandFilename(AValue))) then
+     and not DirectoryExistsUtf8(ExpandFilename(AValue)) then
      Raise Exception.CreateFmt(SShellCtrlsInvalidRoot,[ExpandFileName(AValue)]);
   FRoot:=AValue;
   Items.Clear;
@@ -876,7 +876,7 @@ begin
     //Delphi raises an unspecified exception in this case, but don't crash the IDE at designtime
     if not (csDesigning in ComponentState)
        and (Value <> '')
-       and not DirectoryExistsUtf8(ExcludeTrailingPathDelimiter(ExpandFilename(Value))) then
+       and not DirectoryExistsUtf8(ExpandFilename(Value)) then
        Raise Exception.CreateFmt(SShellCtrlsInvalidRoot,[Value]);
     FRoot := Value;
     Clear;
