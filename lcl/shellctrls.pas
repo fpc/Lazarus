@@ -858,8 +858,8 @@ begin
   BeginUpdate;
   try
     Node := Items.GetFirstVisibleNode;
-    //Root node doesn't have Siblings, we need one level deeper
-    if Assigned(Node) then Node := Node.GetFirstVisibleChild;
+    //Root node doesn't have Siblings in this case, we need one level deeper
+    if (GetRootPath <> '') and Assigned(Node) then Node := Node.GetFirstVisibleChild;
 
     for i := 0 to sl.Count-1 do
     begin
