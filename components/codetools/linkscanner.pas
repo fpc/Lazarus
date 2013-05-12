@@ -2155,59 +2155,64 @@ begin
       exit;
     end;
   end else begin
-    CurSourcesChangeStep:=0;
-    CurFilesChangeStep:=0;
-    CurInitValuesChangeStep:=0;
+    CurSourcesChangeStep:=1;
+    CurFilesChangeStep:=1;
+    CurInitValuesChangeStep:=1;
   end;
 
   // check initvalues
-  if Assigned(FOnGetInitValues) and (FGlobalInitValuesChangeStep<>CurInitValuesChangeStep)
-  then begin
+  if FGlobalInitValuesChangeStep<>CurInitValuesChangeStep then begin
     FGlobalInitValuesChangeStep:=CurInitValuesChangeStep;
-    NewInitValues:=FOnGetInitValues(Self,Code,NewInitValuesChangeStep);
-    if (NewInitValues<>nil)
-    and (NewInitValuesChangeStep<>FInitValuesChangeStep)
-    and (not FInitValues.Equals(NewInitValues)) then begin
-      {$IFDEF VerboseUpdateNeeded}
-      DebugLn(['TLinkScanner.UpdateNeeded because InitValues changed ',MainFilename]);
-      {$ENDIF}
-      Include(FStates,lssInitValuesChanged);
-      exit;
-    end;
-  end;
-
-  // check all used codebuffers
-  if Assigned(FOnGetSource) and (FGlobalSourcesChangeStep<>CurSourcesChangeStep)
-  then begin
-    FGlobalSourcesChangeStep:=CurSourcesChangeStep;
-    for i:=0 to FSourceChangeSteps.Count-1 do begin
-      SrcChange:=PSourceChangeStep(FSourceChangeSteps[i]);
-      SrcLog:=FOnGetSource(Self,SrcChange^.Code);
-      //debugln(['TLinkScanner.UpdateNeeded ',ExtractFilename(MainFilename),' i=',i,' File=',FOnGetFileName(Self,SrcLog),' Last=',SrcChange^.ChangeStep,' Now=',SrcLog.ChangeStep]);
-      if SrcChange^.ChangeStep<>SrcLog.ChangeStep then begin
+    if Assigned(FOnGetInitValues) then begin
+      NewInitValues:=FOnGetInitValues(Self,Code,NewInitValuesChangeStep);
+      if (NewInitValues<>nil)
+      and (NewInitValuesChangeStep<>FInitValuesChangeStep)
+      and (not FInitValues.Equals(NewInitValues)) then begin
         {$IFDEF VerboseUpdateNeeded}
-        DebugLn(['TLinkScanner.UpdateNeeded because source buffer changed: ',OnGetFileName(Self,SrcLog),' MainFilename=',MainFilename]);
+        DebugLn(['TLinkScanner.UpdateNeeded because InitValues changed ',MainFilename]);
         {$ENDIF}
-        Include(FStates,lssSourcesChanged);
+        Include(FStates,lssInitValuesChanged);
         exit;
       end;
     end;
   end;
 
+  // check all used codebuffers
+  if FGlobalSourcesChangeStep<>CurSourcesChangeStep then begin
+    FGlobalSourcesChangeStep:=CurSourcesChangeStep;
+    if Assigned(FOnGetSource) then begin
+      for i:=0 to FSourceChangeSteps.Count-1 do begin
+        SrcChange:=PSourceChangeStep(FSourceChangeSteps[i]);
+        SrcLog:=FOnGetSource(Self,SrcChange^.Code);
+        //debugln(['TLinkScanner.UpdateNeeded ',ExtractFilename(MainFilename),' i=',i,' File=',FOnGetFileName(Self,SrcLog),' Last=',SrcChange^.ChangeStep,' Now=',SrcLog.ChangeStep]);
+        if SrcChange^.ChangeStep<>SrcLog.ChangeStep then begin
+          {$IFDEF VerboseUpdateNeeded}
+          DebugLn(['TLinkScanner.UpdateNeeded because source buffer changed: ',OnGetFileName(Self,SrcLog),' MainFilename=',MainFilename]);
+          {$ENDIF}
+          Include(FStates,lssSourcesChanged);
+          exit;
+        end;
+      end;
+    end;
+  end;
+
   // check all file dates
-  if CheckFilesOnDisk and Assigned(FOnGetSource)
-  and (FGlobalFilesChangeStep<>CurFilesChangeStep) then begin
-    // if files changed on disk, reload them
-    FGlobalFilesChangeStep:=CurFilesChangeStep;
-    for i:=0 to FSourceChangeSteps.Count-1 do begin
-      SrcChange:=PSourceChangeStep(FSourceChangeSteps[i]);
-      SrcLog:=FOnGetSource(Self,SrcChange^.Code);
-      if FOnCheckFileOnDisk(SrcLog) then begin
-        {$IFDEF VerboseUpdateNeeded}
-        DebugLn(['TLinkScanner.UpdateNeeded because file on disk changed: ',OnGetFileName(Self,SrcLog),' MainFilename=',MainFilename]);
-        {$ENDIF}
-        Include(FStates,lssFilesChanged);
-        exit;
+  if CheckFilesOnDisk then begin
+    if FGlobalFilesChangeStep<>CurFilesChangeStep then begin
+      FGlobalFilesChangeStep:=CurFilesChangeStep;
+      if Assigned(FOnGetSource) then begin
+        // if files changed on disk, reload them
+        for i:=0 to FSourceChangeSteps.Count-1 do begin
+          SrcChange:=PSourceChangeStep(FSourceChangeSteps[i]);
+          SrcLog:=FOnGetSource(Self,SrcChange^.Code);
+          if FOnCheckFileOnDisk(SrcLog) then begin
+            {$IFDEF VerboseUpdateNeeded}
+            DebugLn(['TLinkScanner.UpdateNeeded because file on disk changed: ',OnGetFileName(Self,SrcLog),' MainFilename=',MainFilename]);
+            {$ENDIF}
+            Include(FStates,lssFilesChanged);
+            exit;
+          end;
+        end;
       end;
     end;
   end;
