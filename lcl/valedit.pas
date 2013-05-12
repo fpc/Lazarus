@@ -167,6 +167,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure Clear;
     procedure DeleteColRow(IsColumn: Boolean; index: Integer);
     procedure DeleteRow(Index: Integer); override;
     procedure DeleteCol(Index: Integer); override;
@@ -759,6 +761,11 @@ begin
   FTitleCaptions.Free;
   FStrings.Free;
   inherited Destroy;
+end;
+
+procedure TValueListEditor.Clear;
+begin
+  Strings.Clear;
 end;
 
 procedure TValueListEditor.DeleteColRow(IsColumn: Boolean; index: Integer);
