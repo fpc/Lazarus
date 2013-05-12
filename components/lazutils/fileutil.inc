@@ -666,7 +666,7 @@ begin
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
         continue;
       CurFilename:=CurSrcDir+FileInfo.Name;
-      if (FileInfo.Attr and faDirectory)>0
+      if ((FileInfo.Attr and faDirectory)>0)
          {$ifdef unix} and ((FileInfo.Attr and faSymLink)=0) {$endif unix} then begin
         if not DeleteDirectory(CurFilename,false) then exit;
       end else begin
