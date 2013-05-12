@@ -3205,7 +3205,7 @@ begin
 end;
 
 function TKeyCommandRelationList.SaveToXMLConfig(
-  XMLConfig:TXMLConfig; const Path: String):boolean;
+  XMLConfig:TXMLConfig; const Path: String): boolean;
 
   procedure Store(const SubPath: string; Key, DefaultKey: TIDEShortCut);
   var
@@ -3321,15 +3321,14 @@ begin
   Result:=FindByCommand(ACommand);
 end;
 
-function TKeyCommandRelationList.FindByCommand(ACommand: word):TKeyCommandRelation;
+function TKeyCommandRelationList.FindByCommand(ACommand: word): TKeyCommandRelation;
 var i:integer;
 begin
   Result:=nil;
-  for i:=0 to FRelations.Count-1 do with Relations[i] do
-    if (Command=ACommand) then begin
-      Result:=Relations[i];
-      exit;
-    end;
+  for i:=0 to FRelations.Count-1 do
+    with Relations[i] do
+      if (Command=ACommand) then
+        Exit(Relations[i]);
 end;
 
 procedure TKeyCommandRelationList.AssignTo(ASynEditKeyStrokes: TSynEditKeyStrokes;
@@ -3370,7 +3369,7 @@ procedure TKeyCommandRelationList.AssignTo(ASynEditKeyStrokes: TSynEditKeyStroke
   end;
 
 var
-  i,j,MaxKeyCnt,KeyCnt:integer;
+  i, j, MaxKeyCnt, KeyCnt: integer;
   Key: TSynEditKeyStroke;
   CurRelation: TKeyCommandRelation;
   ccid: Word;
@@ -3597,27 +3596,21 @@ begin
                           TheScope));
 end;
 
-function TKeyCommandRelationList.FindCategoryByName(const CategoryName: string
-  ): TIDECommandCategory;
+function TKeyCommandRelationList.FindCategoryByName(const CategoryName: string): TIDECommandCategory;
 var i: integer;
 begin
   for i:=0 to CategoryCount-1 do
-    if CategoryName=Categories[i].Name then begin
-      Result:=Categories[i];
-      exit;
-    end;
+    if CategoryName=Categories[i].Name then
+      Exit(Categories[i]);
   Result:=nil;
 end;
 
-function TKeyCommandRelationList.FindCommandByName(const CommandName: string
-  ): TIDECommand;
+function TKeyCommandRelationList.FindCommandByName(const CommandName: string): TIDECommand;
 var i: integer;
 begin
   for i:=0 to RelationCount-1 do
-    if CompareText(CommandName,Relations[i].Name)=0 then begin
-      Result:=Relations[i];
-      exit;
-    end;
+    if CompareText(CommandName,Relations[i].Name)=0 then
+      Exit(Relations[i]);
   Result:=nil;
 end;
 
