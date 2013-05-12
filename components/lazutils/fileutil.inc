@@ -650,6 +650,9 @@ end;
  ------------------------------------------------------------------------------}
 function DeleteDirectory(const DirectoryName: string;
   OnlyChildren: boolean): boolean;
+const
+  //Don't follow symlinks on *nix, just delete them
+  DeleteMask = faAnyFile {$ifdef unix} or faSymLink {$endif unix};
 var
   FileInfo: TSearchRec;
   CurSrcDir: String;
@@ -657,13 +660,14 @@ var
 begin
   Result:=false;
   CurSrcDir:=CleanAndExpandDirectory(DirectoryName);
-  if FindFirstUTF8(CurSrcDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+  if FindFirstUTF8(CurSrcDir+GetAllFilesMask,DeleteMask,FileInfo)=0 then begin
     repeat
       // check if special file
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
         continue;
       CurFilename:=CurSrcDir+FileInfo.Name;
-      if (FileInfo.Attr and faDirectory)>0 then begin
+      if (FileInfo.Attr and faDirectory)>0
+         {$ifdef unix} and ((FileInfo.Attr and faSymLink)=0) {$endif unix} then begin
         if not DeleteDirectory(CurFilename,false) then exit;
       end else begin
         if not DeleteFileUTF8(CurFilename) then exit;
@@ -671,7 +675,7 @@ begin
     until FindNextUTF8(FileInfo)<>0;
   end;
   FindCloseUTF8(FileInfo);
-  if (not OnlyChildren) and (not RemoveDirUTF8(DirectoryName)) then exit;
+  if (not OnlyChildren) and (not RemoveDirUTF8(CurSrcDir)) then exit;
   Result:=true;
 end;
 
