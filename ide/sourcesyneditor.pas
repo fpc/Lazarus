@@ -1501,6 +1501,7 @@ end;
 function TIDESynEditor.DoIfDefNodeStateRequest(Sender: TObject; LinePos,
   XStartPos: Integer): TSynMarkupIfdefNodeState;
 begin
+  //debugln(['TIDESynEditor.DoIfDefNodeStateRequest x=',XStartPos,' y=',LinePos,' ',DbgSName(Sender)]);
   if FOnIfdefNodeStateRequest <> nil then
     Result := FOnIfdefNodeStateRequest(Self, LinePos, XStartPos)
   else

@@ -203,7 +203,7 @@ type
 
     procedure ActivateWriteLock;
     procedure DeactivateWriteLock;
-    property ChangeStep: integer read FChangeStep;
+    property ChangeStep: integer read FChangeStep; // code changes
     procedure IncreaseChangeStep;
     property CodeNodeTreeChangeStep: integer read FCodeNodeTreeChangeStep;// nodes altered, added, deleted
     property CodeTreeNodesDeletedStep: integer read FCodeTreeNodesDeletedStep;// nodes deleted
