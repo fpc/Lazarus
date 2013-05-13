@@ -1294,7 +1294,7 @@ begin
   Dir.Code:=aCode;
   Dir.SrcPos:=aSrcPos;
   l:=0;
-  r:=FDirectivesCount;
+  r:=FDirectivesCount-1;
   while l<=r do begin
     m:=(l+r) div 2;
     cmp:=CompareLSDirective(@Dir,DirectivesSorted[m]);
