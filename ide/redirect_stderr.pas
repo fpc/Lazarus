@@ -28,8 +28,10 @@ unit redirect_stderr;
 interface
 
 {$IFDEF Windows}
+{$IF FPC_FULLVERSION>=20701}
 uses
   heaptrc, SysUtils, raw_window;
+{$ENDIF}
 {$ENDIF Windows}
 
 Var
@@ -38,6 +40,7 @@ Var
 implementation
 
 {$IFDEF Windows}
+{$IF FPC_FULLVERSION>=20701}
 const
   ErrorBufferLength = 2 * 1024;
 
@@ -128,8 +131,7 @@ initialization
   AssignError(MyStdErr);
   SetHeapTraceOutput(MyStdErr);
 
-{$ELSE Windows}
-  // If some action is needed in non-Windows systems, add it here.
+{$ENDIF}
 {$ENDIF Windows}
 
 end.

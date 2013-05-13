@@ -28,15 +28,18 @@ unit raw_window;
 interface
 
 {$IFDEF Windows}
+{$IF FPC_FULLVERSION>=20701}
 uses
   SysUtils, Windows, Messages;
 
 procedure ShowWindow(AStr : String);
+{$ENDIF}
 {$ENDIF Windows}
 
 implementation
 
 {$IFDEF Windows}
+{$IF FPC_FULLVERSION>=20701}
 Var
   WndHandle,
   ButtonHandle,
@@ -183,8 +186,7 @@ Begin
 
   UnregisterClass(WndClass.lpszClassName, WndClass.hInstance);
 end;
-{$ELSE Windows}
-  // If some action is needed in non-Windows systems, add it here.
+{$ENDIF}
 {$ENDIF Windows}
 
 end.
