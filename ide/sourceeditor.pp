@@ -5945,7 +5945,7 @@ begin
   i:=0;
   for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do begin
     CurName:='Highlighter'+IntToStr(i);
-    CurCaption:=LazSyntaxHighlighterNames[h];
+    CurCaption:=GetSyntaxHighlighterCaption(h);
     if SrcEditSubMenuHighlighter.Count=i then begin
       // add new item
       IDEMenuItem:=RegisterIDEMenuCommand(SrcEditSubMenuHighlighter,

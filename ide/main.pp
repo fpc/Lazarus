@@ -10422,7 +10422,7 @@ begin
   end;
 
   DlgResult:=ShowUnitInfoDlg(ShortUnitName,
-    LazSyntaxHighlighterNames[ActiveUnitInfo.DefaultSyntaxHighlighter],
+    GetSyntaxHighlighterCaption(ActiveUnitInfo.DefaultSyntaxHighlighter),
     ActiveUnitInfo.IsPartOfProject,
     SizeInBytes,UnitSizeWithIncludeFiles,UnitSizeParsed,
     LineCount,UnitLineCountWithIncludes,UnitLineCountParsed,

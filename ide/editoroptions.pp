@@ -1480,6 +1480,8 @@ function ExtensionToLazSyntaxHighlighter(Ext: String): TLazSyntaxHighlighter;
 function FilenameToLazSyntaxHighlighter(Filename: String): TLazSyntaxHighlighter;
 procedure RepairEditorFontSize(var FontSize: integer);
 
+function GetSyntaxHighlighterCaption(h: TLazSyntaxHighlighter): string;
+
 function BuildBorlandDCIFile(ACustomSynAutoComplete: TCustomSynAutoComplete): Boolean;
 function ColorSchemeFactory: TColorSchemeFactory;
 function UserSchemeDirectory(CreateIfNotExists: Boolean = False): String;
@@ -1614,6 +1616,13 @@ end;
 const
   EditOptsConfFileName = 'editoroptions.xml';
 
+function GetSyntaxHighlighterCaption(h: TLazSyntaxHighlighter): string;
+begin
+  if h=lshFreePascal then
+    Result:='Free Pascal'
+  else
+    Result:=LazSyntaxHighlighterNames[h];
+end;
 
 function BuildBorlandDCIFile(
   ACustomSynAutoComplete: TCustomSynAutoComplete): Boolean;
