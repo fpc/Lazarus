@@ -146,7 +146,7 @@ end;
 
 function ExpN(ExpStart: Integer; ExpEnd: Integer = -1;
   ExpEndLineOffs: Integer = 0; // Default to check for same line end
-  ExpType: TSynMarkupIfdefNodeTypeTest = idnDisabled;
+  ExpType: TSynMarkupIfdefNodeTypeTest = idnSkipTest;
   Peer1: PPeerExpect = nil; Peer2: PPeerExpect = nil): TNodeExpect;
 begin
   Result := ExpN(ExpStart, ExpEnd, ExpEndLineOffs, ExpType, idnUnknown, Peer1, Peer2);
