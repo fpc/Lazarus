@@ -31,9 +31,7 @@ program StartLazarus;
 {$mode objfpc}{$H+}
 
 uses
-  {$IFDEF HEAPTRC_WINDOW}
   redirect_stderr,
-  {$ENDIF HEAPTRC_WINDOW}
   Interfaces, SysUtils,
   Forms,
   LazarusManager;
@@ -44,9 +42,7 @@ var
   ALazarusManager: TLazarusManager;
   
 begin
-  {$IFDEF HEAPTRC_WINDOW}
   redirect_stderr.DoShowWindow := False;
-  {$ENDIF HEAPTRC_WINDOW}
   Application.Initialize;
   ALazarusManager := TLazarusManager.Create(nil);
   ALazarusManager.Initialize;

@@ -38,9 +38,7 @@ program Lazarus;
 {off $DEFINE IDE_MEM_CHECK}
 
 uses
-  {$IFDEF HEAPTRC_WINDOW}
   redirect_stderr,
-  {$ENDIF HEAPTRC_WINDOW}
   {$IF defined(UNIX) and not defined(DisableMultiThreading)}
   cthreads,
   {$ENDIF}

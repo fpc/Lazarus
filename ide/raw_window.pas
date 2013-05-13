@@ -1,16 +1,42 @@
+{
+ ***************************************************************************
+ *                                                                         *
+ *   This source is free software; you can redistribute it and/or modify   *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This code is distributed in the hope that it will be useful, but      *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   General Public License for more details.                              *
+ *                                                                         *
+ *   A copy of the GNU General Public License is available on the World    *
+ *   Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also      *
+ *   obtain it by writing to the Free Software Foundation,                 *
+ *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
+ *                                                                         *
+ ***************************************************************************
+
+  Abstract:
+    ToDo...
+}
 unit raw_window;
 
 {$mode objfpc}{$H+}
 
 interface
 
+{$IFDEF Windows}
 uses
   SysUtils, Windows, Messages;
 
 procedure ShowWindow(AStr : String);
+{$ENDIF Windows}
 
 implementation
 
+{$IFDEF Windows}
 Var
   WndHandle,
   ButtonHandle,
@@ -30,13 +56,13 @@ begin
   Case uMsg  Of
     WM_DESTROY : PostQuitMessage(0);
     WM_COMMAND : Begin
-                   ControlCode := HiWord(wParam);
-                   ControlID := LoWord(wParam);
-                   Case ControlCode Of
-                     BN_CLICKED : If lParam = ButtonHandle Then
-                                    PostMessage(WndHandle, WM_CLOSE, 0, 0);
-                   end;
-                 end;
+      ControlCode := HiWord(wParam);
+      ControlID := LoWord(wParam);
+      Case ControlCode Of
+        BN_CLICKED : If lParam = ButtonHandle Then
+                       PostMessage(WndHandle, WM_CLOSE, 0, 0);
+      end;
+    end;
     WM_SETFOCUS:  SetFocus(EditHandle);
     Else
       Result := Windows.DefWindowProc(ahwnd, uMsg, wParam, lParam);
@@ -50,21 +76,20 @@ Var
 Begin
   Case uMsg of
     WM_KEYDOWN : Begin
-                   GetKeyboardState(AKeyboardState);
-                   If isset(AKeyboardState[VK_CONTROL], 8) And isset(AKeyboardState[VK_A], 8) Then Begin
-                     SendMessage(EditHandle, EM_SETSEL, 0, -1);
-                     Exit(0);
-                   end;
-                   If isset(AKeyboardState[VK_CONTROL], 8) And isset(AKeyboardState[VK_C], 8) Then Begin
-                     PostMessage(EditHandle, WM_COPY, 0, 0);
-                     Exit(0);
-                   End;
-                   If isset(AKeyboardState[VK_RETURN], 8) Or isset(AKeyboardState[VK_ESCAPE], 8)  Then Begin
-                     PostMessage(ButtonHandle, BM_CLICK, 0, 0);
-                     Exit(0);
-                   end;
-
-                 end;
+      GetKeyboardState(AKeyboardState);
+      If isset(AKeyboardState[VK_CONTROL], 8) And isset(AKeyboardState[VK_A], 8) Then Begin
+        SendMessage(EditHandle, EM_SETSEL, 0, -1);
+        Exit(0);
+      end;
+      If isset(AKeyboardState[VK_CONTROL], 8) And isset(AKeyboardState[VK_C], 8) Then Begin
+        PostMessage(EditHandle, WM_COPY, 0, 0);
+        Exit(0);
+      End;
+      If isset(AKeyboardState[VK_RETURN], 8) Or isset(AKeyboardState[VK_ESCAPE], 8)  Then Begin
+        PostMessage(ButtonHandle, BM_CLICK, 0, 0);
+        Exit(0);
+      end;
+    end;
   End;
   Result := CallWindowProc(OldSubProc, Ahwnd, uMsg, wParam, lParam);
 end;
@@ -158,6 +183,9 @@ Begin
 
   UnregisterClass(WndClass.lpszClassName, WndClass.hInstance);
 end;
+{$ELSE Windows}
+  // If some action is needed in non-Windows systems, add it here.
+{$ENDIF Windows}
 
 end.
 
