@@ -36,6 +36,7 @@ type
   { TEditorKeymappingOptionsFrame }
 
   TEditorKeymappingOptionsFrame = class(TAbstractIDEOptionsEditor)
+    BtnPanel: TPanel;
     ChooseSchemeButton: TBitBtn;
     ClearButton: TBitBtn;
     EditButton: TBitBtn;
