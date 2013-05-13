@@ -1102,9 +1102,24 @@ end;
 
 function TSynPasSyn.Func32: TtkTokenKind;
 begin
-  if KeyComp('Label') then Result := tkKey else
-    if KeyComp('Mod') then Result := tkKey else
-      if KeyComp('File') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Label') then begin
+    if (TopPascalCodeFoldBlockType in  [cfbtVarType, cfbtLocalVarType, cfbtNone,
+        cfbtProcedure, cfbtProgram, cfbtUnit, cfbtUnitSection])
+    then begin
+      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+        EndPascalCodeFoldBlockLastLine;
+      if TopPascalCodeFoldBlockType in [cfbtProcedure]
+      then StartPascalCodeFoldBlock(cfbtLocalVarType)
+      else StartPascalCodeFoldBlock(cfbtVarType);
+    end;
+    Result := tkKey;
+  end
+  else
+  if KeyComp('Mod') then Result := tkKey
+  else
+  if KeyComp('File') then Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func33: TtkTokenKind;
@@ -1607,8 +1622,16 @@ begin
     if TopPascalCodeFoldBlockType = cfbtProcedure then begin
       EndPascalCodeFoldBlock(True);
     end;
-  end else
-    if KeyComp('Library') then Result := tkKey else Result := tkIdentifier;
+  end
+  else
+  if KeyComp('Library') then begin
+    fRange := fRange - [rsInterface] + [rsImplementation];
+    if TopPascalCodeFoldBlockType=cfbtNone then
+      StartPascalCodeFoldBlock(cfbtProgram);
+    Result := tkKey
+  end
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func86: TtkTokenKind;
@@ -1628,7 +1651,8 @@ function TSynPasSyn.Func88: TtkTokenKind;
 begin
   if KeyComp('Program') then begin
     fRange := fRange - [rsInterface] + [rsImplementation];
-    if TopPascalCodeFoldBlockType=cfbtNone then StartPascalCodeFoldBlock(cfbtProgram);
+    if TopPascalCodeFoldBlockType=cfbtNone then
+      StartPascalCodeFoldBlock(cfbtProgram);
     Result := tkKey;
   end
   else if KeyComp('Mwpascal') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
@@ -2610,15 +2634,25 @@ begin
     inc(Run,2);
     fToIdent := Run;
     KeyHash;
-    if KeyComp('ifdef') or KeyComp('ifndef') or KeyComp('if') then
+    if (fLine[Run] in ['i', 'I']) and
+       ( KeyComp('if') or KeyComp('ifc') or KeyComp('ifdef') or KeyComp('ifndef') or
+         KeyComp('ifopt') )
+    then
       StartCustomCodeFoldBlock(cfbtIfDef)
-    else if KeyComp('endif') then
+    else
+    if ( (fLine[Run] in ['e', 'E']) and ( KeyComp('endif') or KeyComp('endc') ) ) or
+       KeyComp('ifend')
+    then
       EndCustomCodeFoldBlock(cfbtIfDef)
-    else if KeyComp('else') then begin
+    else
+    if (fLine[Run] in ['e', 'E']) and
+       ( KeyComp('else') or KeyComp('elsec') or KeyComp('elseif') or KeyComp('elifc') )
+    then begin
       EndCustomCodeFoldBlock(cfbtIfDef);
       StartCustomCodeFoldBlock(cfbtIfDef);
     end
-    else if KeyComp('region') then begin
+    else
+    if KeyComp('region') then begin
       StartCustomCodeFoldBlock(cfbtRegion);
       if FCatchNodeInfo then
         // Scan ahead
