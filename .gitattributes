@@ -1566,6 +1566,7 @@ components/instantfpc/instantfpclaz.pas svneol=native#text/plain
 components/instantfpc/instantfpcregisterlaz.pas svneol=native#text/plain
 components/instantfpc/languages/instantfpcregisterlaz.ar.po svneol=native#text/plain
 components/instantfpc/languages/instantfpcregisterlaz.cs.po svneol=native#text/plain
+components/instantfpc/languages/instantfpcregisterlaz.es.po svneol=native#text/plain
 components/instantfpc/languages/instantfpcregisterlaz.lt.po svneol=native#text/plain
 components/instantfpc/languages/instantfpcregisterlaz.po svneol=native#text/plain
 components/instantfpc/languages/instantfpcregisterlaz.pt_BR.po svneol=native#text/plain

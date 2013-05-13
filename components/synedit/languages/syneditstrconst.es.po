@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Lucas Martín <codedeep@hotmail.com>\n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2013-05-12 21:00+0100\n"
 "Project-Id-Version: synedit\n"
 "Language-Team: Español\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -195,19 +195,19 @@ msgstr "Etiqueta"
 
 #: syneditstrconst.syns_attrlineadded
 msgid "Diff Added line"
-msgstr ""
+msgstr "Diferencia Añadio Linea"
 
 #: syneditstrconst.syns_attrlinechanged
 msgid "Diff Changed Line"
-msgstr ""
+msgstr "Diferencia Cambio Linea"
 
 #: syneditstrconst.syns_attrlinecontext
 msgid "Diff Context Line"
-msgstr ""
+msgstr "Diferencia Contexto Linea"
 
 #: syneditstrconst.syns_attrlineremoved
 msgid "Diff Removed Line"
-msgstr ""
+msgstr "Diferencia Removio Linea"
 
 #: syneditstrconst.syns_attrmacro
 msgid "Macro"
@@ -239,7 +239,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrnewfile
 msgid "Diff New File"
-msgstr ""
+msgstr "Diferencia Nuevo Archivo"
 
 #: syneditstrconst.syns_attrnonreservedkeyword
 msgid "Non-reserved keyword"
@@ -263,7 +263,7 @@ msgstr "Operador"
 
 #: syneditstrconst.syns_attrorigfile
 msgid "Diff Original File"
-msgstr ""
+msgstr "Diferencia archivo Original"
 
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
@@ -283,15 +283,15 @@ msgstr "Valor anterior"
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
-msgstr ""
+msgstr "Procesando Instrución"
 
 #: syneditstrconst.syns_attrqualifier
 msgid "Qualifier"
-msgstr ""
+msgstr "Calificador"
 
 #: syneditstrconst.syns_attrregister
 msgid "Register"
-msgstr ""
+msgstr "Registro"
 
 #: syneditstrconst.syns_attrreservedword
 msgid "Reserved word"
@@ -299,7 +299,7 @@ msgstr "Palabra reservada"
 
 #: syneditstrconst.syns_attrroundbracket
 msgid "Round Bracket"
-msgstr ""
+msgstr "Corchete Redondeado"
 
 #: syneditstrconst.syns_attrrpl
 msgid "Rpl"
@@ -347,11 +347,11 @@ msgstr "Palabra clave SQL"
 
 #: syneditstrconst.syns_attrsqlplus
 msgid "SQL*Plus command"
-msgstr ""
+msgstr "SQL*Plus comando"
 
 #: syneditstrconst.syns_attrsquarebracket
 msgid "Square Bracket"
-msgstr ""
+msgstr "Corchete Cuadrado"
 
 #: syneditstrconst.syns_attrstring
 msgid "String"
@@ -379,7 +379,7 @@ msgstr "Nombre de Tabla"
 
 #: syneditstrconst.syns_attrterminator
 msgid "Terminator"
-msgstr ""
+msgstr "Terminador"
 
 #: syneditstrconst.syns_attrtexcommand
 msgid "TeX Command"
@@ -419,7 +419,7 @@ msgstr "Espacio en blanco"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
-msgstr ""
+msgstr "La pulsación de tecla \"%s\" ya está asignada a otro comando del editor. (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
 msgid "Mouse-Shortcut already exists"
@@ -431,7 +431,7 @@ msgstr ""
 
 #: syneditstrconst.syns_emccodefoldcollaps
 msgid "Fold Code"
-msgstr ""
+msgstr "Plegar Código"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
@@ -439,11 +439,11 @@ msgstr ""
 
 #: syneditstrconst.syns_emccodefoldcontextmenu
 msgid "Fold Menu"
-msgstr ""
+msgstr "Plegar Menu"
 
 #: syneditstrconst.syns_emccodefoldexpand
 msgid "Unfold Code"
-msgstr ""
+msgstr "Desplagar Código"
 
 #: syneditstrconst.syns_emccodefoldexpand_opt
 msgid "Nodes,One,All"
@@ -463,15 +463,15 @@ msgstr ""
 
 #: syneditstrconst.syns_emcmouselink_opt
 msgid "Underline,yes, no"
-msgstr ""
+msgstr "Subrayar, sí, no"
 
 #: syneditstrconst.syns_emcnone
 msgid "No Action"
-msgstr ""
+msgstr "Ninguna acción"
 
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
-msgstr ""
+msgstr "Pegado Rapido de Selección"
 
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
@@ -479,31 +479,31 @@ msgstr ""
 
 #: syneditstrconst.syns_emcselectline
 msgid "Select Line"
-msgstr ""
+msgstr "Seleccione la línea"
 
 #: syneditstrconst.syns_emcselectline_opt
 msgid "\"Include spaces\",no,yes"
-msgstr ""
+msgstr "\"Incluir espacios\", no, sí"
 
 #: syneditstrconst.syns_emcselectpara
 msgid "Select Paragraph"
-msgstr ""
+msgstr "Seleccionar párrafo"
 
 #: syneditstrconst.syns_emcselectword
 msgid "Select Word"
-msgstr ""
+msgstr "Seleccione la palabra"
 
 #: syneditstrconst.syns_emcstartcolumnselections
 msgid "Column Selection"
-msgstr ""
+msgstr "Selección de columna"
 
 #: syneditstrconst.syns_emcstartdragmove
 msgid "Drag Selection"
-msgstr ""
+msgstr "Arrastre la selección"
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
-msgstr ""
+msgstr "Selección de línea"
 
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
@@ -511,23 +511,23 @@ msgstr "Selección"
 
 #: syneditstrconst.syns_emcsyneditcommand
 msgid "IDE Command"
-msgstr ""
+msgstr "Comando IDE"
 
 #: syneditstrconst.syns_emcwheelhorizscrolldown
 msgid "Wheel scroll down (Horizontal)"
-msgstr ""
+msgstr "Rueda de desplazamiento hacia abajo (Horizontal)"
 
 #: syneditstrconst.syns_emcwheelhorizscrollup
 msgid "Wheel scroll up (Horizontal)"
-msgstr ""
+msgstr "Rueda de desplazamiento hacia arriba (Horizontal)"
 
 #: syneditstrconst.syns_emcwheelscrolldown
 msgid "Wheel scroll down"
-msgstr ""
+msgstr "Rueda de desplazamiento hacia abajo"
 
 #: syneditstrconst.syns_emcwheelscrollup
 msgid "Wheel scroll up"
-msgstr ""
+msgstr "Rueda de desplazamiento hacia arriba"
 
 #: syneditstrconst.syns_emcwheelscroll_opt
 msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
@@ -535,23 +535,23 @@ msgstr ""
 
 #: syneditstrconst.syns_emcwheelvertscrolldown
 msgid "Wheel scroll down (Vertical)"
-msgstr ""
+msgstr "Rueda de desplazamiento hacia abajo (Vertical)"
 
 #: syneditstrconst.syns_emcwheelvertscrollup
 msgid "Wheel scroll up (Vertical)"
-msgstr ""
+msgstr "Rueda de desplazamiento hacia arriba (Vertical)"
 
 #: syneditstrconst.syns_emcwheelzoomin
 msgid "Wheel zoom in"
-msgstr ""
+msgstr "Rueda de desplazamiento zoom acercar"
 
 #: syneditstrconst.syns_emcwheelzoomnorm
 msgid "Wheel zoom default"
-msgstr ""
+msgstr "Rueda de desplazamiento zoom por defecto"
 
 #: syneditstrconst.syns_emcwheelzoomout
 msgid "Wheel zoom out"
-msgstr ""
+msgstr "Rueda de desplazamiento zoom alejar"
 
 #: syneditstrconst.syns_exporterformathtml
 msgid "HTML"
@@ -563,11 +563,11 @@ msgstr "RTF"
 
 #: syneditstrconst.syns_filteradsp21xx
 msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
-msgstr ""
+msgstr "DSP Archivos (*.dsp,*.inc)|*.DSP;*.INC"
 
 #: syneditstrconst.syns_filterasm68hc11
 msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
-msgstr ""
+msgstr "68HC11 Assembler Archivos (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
 
 #: syneditstrconst.syns_filterawk
 msgid "AWK Script (*.awk)|*.awk"
@@ -575,19 +575,19 @@ msgstr ""
 
 #: syneditstrconst.syns_filterbaan
 msgid "Baan 4GL Files (*.cln)|*.cln"
-msgstr ""
+msgstr "Baan 4GL Archivos (*.cln)|*.cln"
 
 #: syneditstrconst.syns_filterbatch
 msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
-msgstr ""
+msgstr "MS-DOS Batch Archivos (*.bat;*.cmd)|*.bat;*.cmd"
 
 #: syneditstrconst.syns_filtercache
 msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
-msgstr ""
+msgstr "Cache Archivos (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
 
 #: syneditstrconst.syns_filtercaclipper
 msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
-msgstr ""
+msgstr "CA-Clipper Archivos (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
 
 #: syneditstrconst.syns_filtercorbaidl
 msgid "CORBA IDL files (*.idl)|*.idl"

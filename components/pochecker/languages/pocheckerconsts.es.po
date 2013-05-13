@@ -1,7 +1,7 @@
 ﻿msgid ""
 msgstr ""
 "Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
-"PO-Revision-Date: 2012-10-04 16:30+0100\n"
+"PO-Revision-Date: 2013-05-12 21:00+0100\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -181,7 +181,7 @@ msgstr ""
 
 #: pocheckerconsts.sselectbasictests
 msgid "Select basic tests"
-msgstr ""
+msgstr "Seleccione pruebas básicas"
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"

@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: lazutils\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-1-13 18:21+0100\n"
+"PO-Revision-Date: 2013-05-12 21:00+0100\n"
 "Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgstr "un directorio de componente en %s no es un directorio"
 
 #: lazutilsstrconsts.lrsboolean
 msgid "boolean"
-msgstr ""
+msgstr "boleano"
 
 #: lazutilsstrconsts.lrscannotexecute
 msgid "can not execute %s"
@@ -39,15 +39,15 @@ msgstr "no se puede ejecutar %s"
 
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"
-msgstr ""
+msgstr "Número de argumentos de función no válido"
 
 #: lazutilsstrconsts.lrsevalunknownfunction
 msgid "Unknown function: \"%s\""
-msgstr ""
+msgstr "Función desconocida: \"%s\""
 
 #: lazutilsstrconsts.lrsevalunknownvariable
 msgid "Unknown variable: \"%s\""
-msgstr ""
+msgstr "Variable desconocida: \"%s\""
 
 #: lazutilsstrconsts.lrsfiledoesnotexist
 msgid "file \"%s\" does not exist"
@@ -85,43 +85,43 @@ msgstr "  por última vez "
 
 #: lazutilsstrconsts.lrsnodeset
 msgid "node set"
-msgstr ""
+msgstr "definición de nodos"
 
 #: lazutilsstrconsts.lrsnumber
 msgid "number"
-msgstr ""
+msgstr "número"
 
 #: lazutilsstrconsts.lrsparserbadaxisname
 msgid "Invalid axis name"
-msgstr ""
+msgstr "Nombre del eje no válido"
 
 #: lazutilsstrconsts.lrsparserbadnodetype
 msgid "Invalid node type"
-msgstr ""
+msgstr "Tipo de nodo inválido"
 
 #: lazutilsstrconsts.lrsparserexpectedleftbracket
 msgid "Expected \"(\""
-msgstr ""
+msgstr "Esperado \"(\""
 
 #: lazutilsstrconsts.lrsparserexpectedrightbracket
 msgid "Expected \")\""
-msgstr ""
+msgstr "Esperado \")\""
 
 #: lazutilsstrconsts.lrsparserexpectedrightsquarebracket
 msgid "Expected \"]\" after predicate"
-msgstr ""
+msgstr "Esperado \"]\" después de predicado"
 
 #: lazutilsstrconsts.lrsparsergarbageafterexpression
 msgid "Unrecognized input after expression"
-msgstr ""
+msgstr "Entrada desconocida después de una expresión"
 
 #: lazutilsstrconsts.lrsparserinvalidnodetest
 msgid "Invalid node test (syntax error)"
-msgstr ""
+msgstr "Prueba de nodo inválido (error de sintaxis)"
 
 #: lazutilsstrconsts.lrsparserinvalidprimexpr
 msgid "Invalid primary expression"
-msgstr ""
+msgstr "Expresión primaria inválida"
 
 #: lazutilsstrconsts.lrsprogramfilenotfound
 msgid "program file not found %s"
@@ -133,19 +133,19 @@ msgstr "acceso lectura denegado para %s"
 
 #: lazutilsstrconsts.lrsscannerexpectedvarname
 msgid "Expected variable name after \"$\""
-msgstr ""
+msgstr "Nombre de la variable esperada después de \"$\""
 
 #: lazutilsstrconsts.lrsscannerinvalidchar
 msgid "Invalid character"
-msgstr ""
+msgstr "Carácter no válido"
 
 #: lazutilsstrconsts.lrsscannermalformedqname
 msgid "Expected \"*\" or local part after colon"
-msgstr ""
+msgstr "Esperado \"*\" o parte local después de coma"
 
 #: lazutilsstrconsts.lrsscannerunclosedstring
 msgid "String literal was not closed"
-msgstr ""
+msgstr "Cadena literal no se cerró"
 
 #: lazutilsstrconsts.lrssize
 msgctxt "lazutilsstrconsts.lrssize"
@@ -154,7 +154,7 @@ msgstr "  tamaño "
 
 #: lazutilsstrconsts.lrsstring
 msgid "string"
-msgstr ""
+msgstr "cadena"
 
 #: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
 msgid "Unable to create config directory \"%s\""
@@ -162,5 +162,5 @@ msgstr "No se puede crear el directorio de configuración \"%s\""
 
 #: lazutilsstrconsts.lrsvarnoconversion
 msgid "Conversion from %s to %s not possible"
-msgstr ""
+msgstr "Conversión de %s a %s no es posible"
 

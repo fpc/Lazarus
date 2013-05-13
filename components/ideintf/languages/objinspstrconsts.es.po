@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: ideintf\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-10-02 20:21+0100\n"
+"PO-Revision-Date: 2013-05-12 21:00+0100\n"
 "Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -377,11 +377,11 @@ msgstr "Booleano"
 
 #: objinspstrconsts.oisbtncomponents
 msgid "Co&mponents"
-msgstr ""
+msgstr "Co&mponentes"
 
 #: objinspstrconsts.oisbtnproperties
 msgid "&Properties"
-msgstr ""
+msgstr "&Propiedades"
 
 #: objinspstrconsts.oiscadd
 msgid "&Add"
@@ -725,7 +725,7 @@ msgstr "Seleccionar todos los campos"
 
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
-msgstr ""
+msgstr "Propiedades &Seleccionadas"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -733,23 +733,23 @@ msgstr "Selecciona atajo de teclado"
 
 #: objinspstrconsts.oisset
 msgid "Set"
-msgstr "Conjunto"
+msgstr "Establecer"
 
 #: objinspstrconsts.oissetmaxconstraints
 msgid "Set MaxHeight=%d, MaxWidth=%d"
-msgstr ""
+msgstr "Establecer MaxHeight=%d, MaxWidth=%d"
 
 #: objinspstrconsts.oissetmaxconstraintshint
 msgid "Use current size as Max Constraints"
-msgstr ""
+msgstr "Usar Tamaño actual como Restricciones Maximas"
 
 #: objinspstrconsts.oissetminconstraints
 msgid "Set MinHeight=%d, MinWidth=%d"
-msgstr ""
+msgstr "Establecer MinHeight=%d, MinWidth=%d"
 
 #: objinspstrconsts.oissetminconstraintshint
 msgid "Use current size as Min Constraints"
-msgstr ""
+msgstr "Usar tamaño actual como Restricciones Minimas"
 
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
@@ -757,7 +757,7 @@ msgstr "Establecer por defecto: %s"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr ""
+msgstr "Establecer valor de la propiedad como predeterminado"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"

@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-3-07 20:21+0100\n"
+"PO-Revision-Date: 2013-05-12 21:00+0100\n"
 "Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -3403,19 +3403,19 @@ msgstr "Parar después de número de errores:"
 
 #: lazarusidestrconsts.dlgstringautoappend
 msgid "Append text to close string"
-msgstr ""
+msgstr "Anexar texto para cerrar la cadena"
 
 #: lazarusidestrconsts.dlgstringautoprefix
 msgid "Prefix string on new line"
-msgstr ""
+msgstr "Cadena de prefijo en nueva línea"
 
 #: lazarusidestrconsts.dlgstringbreakindenttab
 msgid "String ''"
-msgstr ""
+msgstr "Cadena ''"
 
 #: lazarusidestrconsts.dlgstringenableautocontinue
 msgid "Extend strings on linebreak"
-msgstr ""
+msgstr "Extender cadenas en rupturas de linea"
 
 #: lazarusidestrconsts.dlgsubpropcolor
 msgid "SubProperties"
@@ -3603,7 +3603,7 @@ msgstr "Usar archivo de mensajes"
 
 #: lazarusidestrconsts.dlguserschemeerror
 msgid "Failed to load user-scheme file %s"
-msgstr "Falló al cargar el archivo de combinaciones del usuario"
+msgstr "Falló al cargar el archivo de combinaciones del usuario %s"
 
 #: lazarusidestrconsts.dlguseschemedefaults
 msgid "Use (and edit) global scheme settings"
@@ -4370,7 +4370,7 @@ msgstr "Todos los bloques parecen correctos."
 
 #: lazarusidestrconsts.lisallbuildmodes
 msgid "<All build modes>"
-msgstr ""
+msgstr "<Todos los modos de construcción>"
 
 #: lazarusidestrconsts.lisallfiles
 msgid "All Files"
@@ -4825,7 +4825,7 @@ msgstr "Construir"
 
 #: lazarusidestrconsts.lisbusy
 msgid "Busy"
-msgstr ""
+msgstr "Ocupado"
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
@@ -4870,7 +4870,7 @@ msgstr "No puedo encontrar el iniciador de Lazarus:%s%s"
 
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
-msgstr ""
+msgstr "No puede probar el compilador mientras esta en depuración o compilación."
 
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
@@ -5645,7 +5645,7 @@ msgstr "Clic para ver los usos posibles"
 
 #: lazarusidestrconsts.lisclone
 msgid "Clone"
-msgstr ""
+msgstr "Clonar"
 
 #: lazarusidestrconsts.lisclose
 #, fuzzy
@@ -7675,7 +7675,7 @@ msgstr "Unidad Delphi"
 
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
-msgstr ""
+msgstr "Los paquetes \"Tiempo diseño\" pueden agregar componentes y elementos de menú del IDE. Puede ser utilizados por proyectos, pero no se compilan en el proyecto. El compilador no encontrará unidades de este paquete al compilar el proyecto."
 
 #: lazarusidestrconsts.lisdesthereisalreadyanothercomponentwiththename
 msgid "There is already another component with the name %s%s%s."
@@ -9009,7 +9009,7 @@ msgstr "Free Pascal"
 
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
-msgstr ""
+msgstr "Mensajes del Compilador Free Pascal"
 
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
@@ -9445,7 +9445,7 @@ msgstr "En un directorio de fuentes del proyecto. Comprobar si hay duplicados."
 
 #: lazarusidestrconsts.lisincludeallsubdirectories
 msgid "Include all subdirectories"
-msgstr ""
+msgstr "Incluir todos los subdirectorios"
 
 #: lazarusidestrconsts.lisincludefilter
 #, fuzzy
@@ -9463,7 +9463,7 @@ msgstr "Rutas de archivos include"
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"
-msgstr ""
+msgstr "Incluir subdirectorios"
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -10686,7 +10686,7 @@ msgstr "Mostrar dialogo de confirmación cuando se construya directamente desde 
 
 #: lazarusidestrconsts.lislazbuildshowoptionsanddefinesforcommandline
 msgid "Show options and defines for command line"
-msgstr ""
+msgstr "Mostrar opciones y definiciones para línea de comandos"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -10788,7 +10788,7 @@ msgstr "archivo LFM"
 
 #: lazarusidestrconsts.lislfmfilecontainsinvalidproperties
 msgid "The LFM file contains unknown properties/classes which do not exist in LCL. They can be replaced or removed."
-msgstr ""
+msgstr "El archivo LFM contiene propiedades/clases desconocidas que no existen en LCL. Puede ser reemplazados o eliminados."
 
 #: lazarusidestrconsts.lislfmfilecorrupt
 msgid "LFM file corrupt"
@@ -10895,7 +10895,7 @@ msgstr "cadena dada como parámetro en minúsculas"
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 msgid "lpk has vanished on disk. Using as alternative%s"
-msgstr ""
+msgstr "lpk ha desaparecido en disco. Utilizando como alternativa %s"
 
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "lrs include files"
@@ -12309,7 +12309,7 @@ msgstr "Conflicto de nombre"
 
 #: lazarusidestrconsts.lisnameofactivebuildmode
 msgid "Name of active build mode"
-msgstr ""
+msgstr "Nombre del modo de construcción activa"
 
 #: lazarusidestrconsts.lisnameofnewprocedure
 msgid "Name of new procedure"
@@ -13055,7 +13055,7 @@ msgstr "Llamar %sRegistro%s procedimiento de la unidad seleccionada"
 
 #: lazarusidestrconsts.lispckeditcleanupdependencies
 msgid "Clean up dependencies ..."
-msgstr ""
+msgstr "Limpiar las dependencias ..."
 
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
@@ -13439,7 +13439,7 @@ msgstr "Path de búsqueda para archivos fpdoc XML. Varios path deben estar separ
 
 #: lazarusidestrconsts.lispckshowunneededdependencies
 msgid "Show unneeded dependencies"
-msgstr ""
+msgstr "Mostrar las dependencias innecesarias"
 
 #: lazarusidestrconsts.lispckwhentheformissavedtheidecanstoreallttranslatestring
 msgid "When the form is saved, the IDE can store all TTranslateString properties to the package po file. For this you must enable I18N for this package, provide a po output directory and leave this option unchecked."
@@ -13589,11 +13589,11 @@ msgstr "No usar ninguna unidad dentro del directorio"
 
 #: lazarusidestrconsts.lispkgcleanuppackagedependencies
 msgid "Clean up package dependencies"
-msgstr ""
+msgstr "Limpieza de dependencias de paquetes"
 
 #: lazarusidestrconsts.lispkgclearselection
 msgid "Clear Selection"
-msgstr ""
+msgstr "Limpiar selección"
 
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
@@ -13613,7 +13613,7 @@ msgstr "Ruta de Unidad"
 
 #: lazarusidestrconsts.lispkgdeletedependencies
 msgid "Delete dependencies"
-msgstr ""
+msgstr "Eliminar dependencias"
 
 #: lazarusidestrconsts.lispkgeditdoyoureallywanttoforgetallchangestopackageand
 msgid "Do you really want to forget all changes to package %s and reload it from file?"
@@ -14229,7 +14229,7 @@ msgstr "Unidad \"%s\" ha sido removida del paquete (lpk)"
 
 #: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
 msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
-msgstr ""
+msgstr "No se necesitan las siguientes dependencias, debido a la transitividad automática entre dependencias de paquetes."
 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
@@ -14237,7 +14237,7 @@ msgstr "Este archivo no está en ningún paquete cargado."
 
 #: lazarusidestrconsts.lispkgtransitivity
 msgid "Transitivity"
-msgstr ""
+msgstr "Transitividad"
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
 msgid "Unable to read package file %s%s%s.%sError: %s"
@@ -14536,7 +14536,7 @@ msgstr "El proyecto ha cambiado en el disco-"
 
 #: lazarusidestrconsts.lisprojectcount
 msgid "%d projects"
-msgstr ""
+msgstr "%d proyectos"
 
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
@@ -15114,7 +15114,7 @@ msgstr "Ejecutar"
 
 #: lazarusidestrconsts.lisrunanddesigntimepackageshavenolimitations
 msgid "\"Run and Design time\" packages have no limitations."
-msgstr ""
+msgstr "Los paquetes \"tiempo ejecución y diseño\"  no tienen limitaciones."
 
 #: lazarusidestrconsts.lisrunbuttonhint
 msgctxt "lazarusidestrconsts.lisrunbuttonhint"
@@ -15144,11 +15144,11 @@ msgstr "Tiempo de ejecución solo, no puede ser instalado en el IDE"
 
 #: lazarusidestrconsts.lisruntimeonlypackagesareonlyforprojectstheycannotbei
 msgid "\"Run time only\" packages are only for projects. They can not be installed in the IDE, not even indirectly."
-msgstr ""
+msgstr "Los paquetes \"solo tiempo ejecución\" son solamente para proyectos. No pueden ser instalados en el IDE, ni siquiera indirectamente."
 
 #: lazarusidestrconsts.lisruntimepackagescanbeusedbyprojectstheycannotbeinst
 msgid "\"Run time\" packages can be used by projects. They can not be installed in the IDE, unless some design time package requires them."
-msgstr ""
+msgstr "Los paquetes \"tiempo ejecución\" pueden ser utilizados por proyectos. No pueden ser instalados en el IDE, añ menos requiere algún paquete de tiempo de diseño."
 
 #: lazarusidestrconsts.lisruntofailed
 msgid "Run-to failed"
@@ -15799,7 +15799,7 @@ msgstr "Mover el control seleccionado hacia abajo en el orden de tabulación"
 #, fuzzy
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
-msgstr "Orden de tabulación de"
+msgstr "Orden de tabulación de %s"
 
 #: lazarusidestrconsts.listabordersorthint
 msgid "Calculate tab order for controls by their X- and Y- positions"
@@ -17633,43 +17633,43 @@ msgstr "Incluir Información de la Versión en el ejecutable"
 
 #: lazarusidestrconsts.rsiwpcolumnnameshint
 msgid "Column Names"
-msgstr ""
+msgstr "Nombres de columna"
 
 #: lazarusidestrconsts.rsiwpcolumnstrategyhint
 msgid "Strategy for saving Columns"
-msgstr ""
+msgstr "Estrategia para el ahorro de columnas"
 
 #: lazarusidestrconsts.rsiwpcolumnwidthhint
 msgid "Column Width"
-msgstr ""
+msgstr "Ancho de columna"
 
 #: lazarusidestrconsts.rsiwpcustomgeometry
 msgid "Custom geometry"
-msgstr ""
+msgstr "Geometría personalizada"
 
 #: lazarusidestrconsts.rsiwpcustomgeometryhint
 msgid "User can define window's position and size"
-msgstr ""
+msgstr "Usuario puede definir la posición y el tamaño de la ventana"
 
 #: lazarusidestrconsts.rsiwpfixeddefaultgeometry
 msgid "Fixed default geometry"
-msgstr ""
+msgstr "Geometría fija predeterminada"
 
 #: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
 msgid "Always the same fixed position and size"
-msgstr ""
+msgstr "Siempre la misma posición y tamaño fija"
 
 #: lazarusidestrconsts.rsiwpletwindowmanagerdecide
 msgid "Let windowmanager decide"
-msgstr ""
+msgstr "Dejó administrador de ventanas decidir"
 
 #: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
 msgid "System windowmanagers have different strategies for positioning windows"
-msgstr ""
+msgstr "Sistema administrador de ventanas tienen diferentes estrategias para el posicionamiento de ventanas"
 
 #: lazarusidestrconsts.rsiwppositionwindowlisthint
 msgid "Windows that have been open. They may be closed now."
-msgstr ""
+msgstr "Ventanas que han sido abiertas. Pueden ser cerradas ahora."
 
 #: lazarusidestrconsts.rsiwprestorewindowgeometry
 msgid "Restore window geometry"
@@ -17677,7 +17677,7 @@ msgstr "Restaurar geometría de ventana"
 
 #: lazarusidestrconsts.rsiwprestorewindowgeometryhint
 msgid "Use previous position and size"
-msgstr ""
+msgstr "Utilice el tamaño y la posición anterior"
 
 #: lazarusidestrconsts.rsiwpsplittercustomposition
 msgid "Custom Size"
