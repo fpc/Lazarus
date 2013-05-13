@@ -1251,7 +1251,7 @@ var
 begin
   if (FImageIndex = AValue) then
     Exit;
-  //debugln('TMenuItem.SetImageIndex A ',Name,' Old=',FImageIndex,' New=',Value);
+  //debugln(['TMenuItem.SetImageIndex A ',Name,' Old=',FImageIndex,' New=',AValue]);
   AImageList := GetImageList;
   FImageIndex := AValue;
   if AImageList = nil then
