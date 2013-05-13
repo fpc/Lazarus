@@ -425,7 +425,7 @@ type
   private
     FFoldView: TSynEditFoldedView;
     FLineState: integer;
-    FTokenAttr: TSynHighlighterAttributes;
+    FTokenAttr: TSynHighlighterAttributesModifier;
   public
     constructor Create(AFoldView: TSynEditFoldedView);
     destructor Destroy; override;
@@ -783,7 +783,7 @@ constructor TLazSynDisplayFold.Create(AFoldView: TSynEditFoldedView);
 begin
   inherited Create;
   FFoldView := AFoldView;
-  FTokenAttr := TSynHighlighterAttributes.Create('');
+  FTokenAttr := TSynHighlighterAttributesModifier.Create('');
 end;
 
 destructor TLazSynDisplayFold.Destroy;

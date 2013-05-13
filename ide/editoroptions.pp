@@ -218,7 +218,7 @@ type
 
   { TColorSchemeAttribute }
 
-  TColorSchemeAttribute = class(TSynHighlighterAttributes)
+  TColorSchemeAttribute = class(TSynHighlighterAttributesModifier)
   private
     FGroup: TAhaGroupName;
     FOwner: TColorSchemeLanguage;
@@ -227,8 +227,7 @@ type
     function OldAdditionalAttributeName(NewAha: String): string;
   public
     constructor Create(ASchemeLang: TColorSchemeLanguage; attribName: string; aStoredName: String = '');
-    procedure ApplyTo(aDest: TSynHighlighterAttributes; aDefault: TColorSchemeAttribute);
-    procedure ApplyTo(aDest: TSynSelectedColor);
+    procedure ApplyTo(aDest: TSynHighlighterAttributes; aDefault: TColorSchemeAttribute = nil);
     procedure Assign(Src: TPersistent); override;
     function Equals(Other: TColorSchemeAttribute): Boolean; reintroduce;
     function GetSchemeGlobal: TColorSchemeAttribute;
@@ -5583,47 +5582,37 @@ begin
     aDest.FrameEdges := Src.FrameEdges;
     aDest.FrameStyle := Src.FrameStyle;
     aDest.Style      := Src.Style;
-    aDest.StyleMask  := Src.StyleMask;
-    aDest.Features   := Src.Features;
-    if aDefault <> nil then begin
-      if aDefault.IsUsingSchemeGlobals then
-        aDefault := aDefault.GetSchemeGlobal;
-      if Background = clDefault then
-        aDest.Background := aDefault.Background;
-      if Foreground = clDefault then
-        aDest.Foreground := aDefault.Foreground;
-      if FrameColor = clDefault then begin
-        aDest.FrameColor := aDefault.FrameColor;
-        aDest.FrameEdges := aDefault.FrameEdges;
-        aDest.FrameStyle := aDefault.FrameStyle;
+    if hafStyleMask in Src.Features then
+      aDest.StyleMask  := Src.StyleMask
+    else
+      aDest.StyleMask  := [low(TFontStyle)..high(TFontStyle)];
+
+    if not (aDest is TSynSelectedColor) then begin
+      aDest.Features   := Src.Features;
+
+      if aDefault <> nil then begin
+        if aDefault.IsUsingSchemeGlobals then
+          aDefault := aDefault.GetSchemeGlobal;
+        if Background = clDefault then
+          aDest.Background := aDefault.Background;
+        if Foreground = clDefault then
+          aDest.Foreground := aDefault.Foreground;
+        if FrameColor = clDefault then begin
+          aDest.FrameColor := aDefault.FrameColor;
+          aDest.FrameEdges := aDefault.FrameEdges;
+          aDest.FrameStyle := aDefault.FrameStyle;
+        end;
       end;
+
+      //if aDest is TSynHighlighterAttributesModifier then begin
+      //end
+
+      if aDest is TColorSchemeAttribute then
+        TColorSchemeAttribute(aDest).Group := Src.Group;
     end;
-    if aDest is TColorSchemeAttribute then
-      TColorSchemeAttribute(aDest).Group := Src.Group;
   finally
     aDest.EndUpdate;
   end;
-end;
-
-procedure TColorSchemeAttribute.ApplyTo(aDest: TSynSelectedColor);
-var
-  Src: TColorSchemeAttribute;
-begin
-  Src := Self;
-  if IsUsingSchemeGlobals then
-    Src := GetSchemeGlobal;
-  aDest.BeginUpdate;
-  aDest.Foreground := Src.Foreground;
-  aDest.Background := Src.Background;
-  aDest.FrameColor := Src.FrameColor;
-  aDest.FrameEdges := Src.FrameEdges;
-  aDest.FrameStyle := Src.FrameStyle;
-  aDest.Style      := Src.Style;
-  if hafStyleMask in Src.Features then
-    aDest.StyleMask  := Src.StyleMask
-  else
-    aDest.StyleMask  := [low(TFontStyle)..high(TFontStyle)];
-  aDest.EndUpdate;
 end;
 
 procedure TColorSchemeAttribute.Assign(Src: TPersistent);

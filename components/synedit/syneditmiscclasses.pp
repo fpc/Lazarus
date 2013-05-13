@@ -209,7 +209,7 @@ type
 
   { TSynSelectedColor }
 
-  TSynSelectedColor = class(TLazSynCustomTextAttributes)
+  TSynSelectedColor = class(TSynHighlighterAttributesModifier)
   private
     FCurrentStartX: TLazSynDisplayTokenBound;
     FCurrentEndX: TLazSynDisplayTokenBound;
@@ -228,6 +228,7 @@ type
     function IsMatching(ABound1, ABound2: TLazSynDisplayTokenBound): Boolean;
   protected
     procedure DoChange; override;
+    procedure DoClear; override;
     procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
     property FrameSidePriority[Side: TLazSynBorderSide]: integer read GetFrameSidePriority;
     property FrameSideOrigin[Side: TLazSynBorderSide]: TSynFrameEdges read GetFrameSideOrigin;
@@ -250,7 +251,6 @@ type
     property CurrentEndX: TLazSynDisplayTokenBound read FCurrentEndX write FCurrentEndX;
   public
     constructor Create;
-    procedure Clear; override;
     function IsEnabled: boolean;
     function GetModifiedStyle(aStyle: TFontStyles): TFontStyles;
     procedure ModifyColors(var AForeground, ABackground, AFrameColor: TColor;
@@ -624,7 +624,7 @@ end;
 
 constructor TSynSelectedColor.Create;
 begin
-  inherited Create;
+  inherited Create('', '');
   Clear;
   MergeFinalStyle := False;
   Background := clHighLight;
@@ -724,6 +724,31 @@ procedure TSynSelectedColor.DoChange;
 begin
   if Assigned(FOnChange) then
     OnChange(Self);
+end;
+
+procedure TSynSelectedColor.DoClear;
+var
+  i: TLazSynBorderSide;
+begin
+  inherited DoClear;
+  FFrameSidesInitialized := False;
+  for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do begin
+    FFrameSideColors[i] := clNone;
+    FFrameSideStyles[i] := slsSolid;
+    FFrameSideOrigin[i] := sfeNone;
+  end;
+  FStartX.Physical := -1;
+  FEndX.Physical   := -1;
+  FStartX.Logical  := -1;
+  FEndX.Logical    := -1;
+  FStartX.Offset   := 0;
+  FEndX.Offset     := 0;
+  FCurrentStartX.Physical := -1;
+  FCurrentEndX.Physical   := -1;
+  FCurrentStartX.Logical  := -1;
+  FCurrentEndX.Logical    := -1;
+  FCurrentStartX.Offset   := 0;
+  FCurrentEndX.Offset     := 0;
 end;
 
 procedure TSynSelectedColor.AssignFrom(Src: TLazSynCustomTextAttributes);
@@ -879,33 +904,6 @@ begin
   FEndX.Logical    := AEnd;
   FStartX.Offset   := AStartOffs;
   FEndX.Offset     := AEndOffs;
-end;
-
-procedure TSynSelectedColor.Clear;
-var
-  i: TLazSynBorderSide;
-begin
-  BeginUpdate;
-  inherited Clear;
-  FFrameSidesInitialized := False;
-  for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do begin
-    FFrameSideColors[i] := clNone;
-    FFrameSideStyles[i] := slsSolid;
-    FFrameSideOrigin[i] := sfeNone;
-  end;
-  FStartX.Physical := -1;
-  FEndX.Physical   := -1;
-  FStartX.Logical  := -1;
-  FEndX.Logical    := -1;
-  FStartX.Offset   := 0;
-  FEndX.Offset     := 0;
-  FCurrentStartX.Physical := -1;
-  FCurrentEndX.Physical   := -1;
-  FCurrentStartX.Logical  := -1;
-  FCurrentEndX.Logical    := -1;
-  FCurrentStartX.Offset   := 0;
-  FCurrentEndX.Offset     := 0;
-  EndUpdate;
 end;
 
 function TSynSelectedColor.IsEnabled: boolean;
