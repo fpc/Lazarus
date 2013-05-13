@@ -39,6 +39,8 @@ type
     Button5: TButton;
     Button6: TButton;
     Button7: TButton;
+    btnRotateBin: TButton;
+    btnRestoreDefaultBin: TButton;
     chkOutputFile: TCheckBox;
     chkTestImgs: TCheckBox;
     txtPageSetupDlgTitle: TEdit;
@@ -61,6 +63,8 @@ type
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
+    procedure btnRotateBinClick(Sender: TObject);
+    procedure btnRestoreDefaultBinClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure SGridSelectCell(Sender: TObject; aCol, aRow: Integer;
       var CanSelect: Boolean);
@@ -92,14 +96,14 @@ uses
 
 { TForm1 }
 
-procedure TForm1.AddInfo(const Desc : String; Const Info : String);
+procedure TForm1.AddInfo(const Desc: String; const Info: String);
 begin
   SGrid.Cells[0,ck] := Desc;
   SGrid.Cells[1,ck] := Info;
   Inc(ck);
 end;
 
-procedure TForm1.DrawGraphic(X, Y, AWidth, Aheight: Integer; Graphic: TGraphic);
+procedure TForm1.DrawGraphic(X, Y, AWidth, AHeight: Integer; Graphic: TGraphic);
 var
   Ratio: Double;
 begin
@@ -234,6 +238,9 @@ begin
 end;
 
 procedure TForm1.UpdatePrinterInfo;
+var
+  i: Integer;
+  s: string;
 begin
   try
     ck := SGrid.FixedRows;
@@ -276,6 +283,12 @@ begin
         AddInfo('CanRenderCopies','true')
       else
         AddInfo('CanRenderCopies','false');
+      AddInfo('Default Bin', DefaultBinName);
+      i := SupportedBins.IndexOf(BinName);
+      s := BinName; // <- workaround for ugly FPC 2.7.1 string encoding conversion
+      s := BinName + format(' (%d of %d)',[i+1, SupportedBins.Count]); // ditto
+      //AddInfo('Current Bin', BinName + ' ');
+      AddInfo('Current Bin', s);
 
       if not CanPrint then
         Application.MessageBox('Selected printer cannot print currently!',
@@ -345,6 +358,38 @@ begin
       AddInfo('Margins',s);
     end;
   end;
+end;
+
+procedure TForm1.btnRotateBinClick(Sender: TObject);
+var
+  i,j: Integer;
+  cur,def: String;
+  Lst: TStrings;
+begin
+
+  // get list of bins
+  Lst := Printer.SupportedBins;
+  cur := Printer.BinName;
+
+  // get current bin index and find next bin in list
+  if Lst.Count>0 then begin
+    i := Lst.IndexOf(cur);
+    inc(i);
+    if i>Lst.Count-1 then
+      i := 0;
+    cur := Lst[i];
+  end else
+    cur := '';
+
+  // select next bin
+  Printer.BinName:=cur;
+  UpdatePrinterInfo;
+end;
+
+procedure TForm1.btnRestoreDefaultBinClick(Sender: TObject);
+begin
+  Printer.RestoreDefaultBin;
+  UpdatePrinterInfo;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

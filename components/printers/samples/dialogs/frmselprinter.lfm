@@ -1,12 +1,12 @@
 object Form1: TForm1
-  Left = 606
-  Height = 574
-  Top = 122
-  Width = 338
+  Left = 367
+  Height = 683
+  Top = 31
+  Width = 489
   ActiveControl = Button7
   Caption = 'Form1'
-  ClientHeight = 574
-  ClientWidth = 338
+  ClientHeight = 683
+  ClientWidth = 489
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '1.1'
@@ -40,9 +40,9 @@ object Form1: TForm1
   end
   object SGrid: TStringGrid
     Left = 8
-    Height = 302
+    Height = 411
     Top = 264
-    Width = 318
+    Width = 469
     AlternateColor = clCream
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoFillColumns = True
@@ -59,7 +59,7 @@ object Form1: TForm1
         MaxSize = 350
         ReadOnly = True
         Title.Caption = 'Value'
-        Width = 177
+        Width = 345
       end>
     DefaultColWidth = 120
     FixedCols = 0
@@ -71,7 +71,7 @@ object Form1: TForm1
     OnSelectCell = SGridSelectCell
     ColWidths = (
       120
-      177
+      345
     )
   end
   object Button3: TButton
@@ -144,7 +144,7 @@ object Form1: TForm1
     Left = 195
     Height = 21
     Top = 48
-    Width = 113
+    Width = 264
     DialogKind = dkSave
     DialogOptions = []
     FilterIndex = 0
@@ -160,51 +160,74 @@ object Form1: TForm1
     Height = 13
     Top = 188
     Width = 94
+    Alignment = taRightJustify
     Caption = 'PageSetupDlg Title:'
     ParentColor = False
   end
   object Label3: TLabel
-    Left = 12
+    Left = 5
     Height = 13
     Top = 212
     Width = 102
+    Alignment = taRightJustify
     Caption = 'PrinterSetupDlg Title:'
     ParentColor = False
   end
   object txtPageSetupDlgTitle: TEdit
-    Left = 128
+    Left = 184
     Height = 21
     Top = 188
-    Width = 198
+    Width = 293
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 11
     Text = 'Printer Dialogs Tests: PageSetupDialog'
   end
   object txtPrinterSetupDlgTitle: TEdit
-    Left = 128
+    Left = 184
     Height = 21
     Top = 212
-    Width = 198
+    Width = 293
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 12
     Text = 'Printer Dialogs Tests: PrinterSetupDialog'
   end
   object Label4: TLabel
-    Left = 36
+    Left = 38
     Height = 13
     Top = 236
     Width = 78
+    Alignment = taRightJustify
     Caption = 'PrintDialog Title:'
     ParentColor = False
   end
   object txtPrintDialogTitle: TEdit
-    Left = 128
+    Left = 184
     Height = 21
     Top = 236
-    Width = 198
+    Width = 293
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 13
     Text = 'Printer Dialogs Tests: PrinterDialog'
+  end
+  object btnRotateBin: TButton
+    Left = 319
+    Height = 25
+    Top = 120
+    Width = 164
+    Anchors = [akTop, akRight]
+    Caption = 'Rotate Bin'
+    OnClick = btnRotateBinClick
+    TabOrder = 14
+  end
+  object btnRestoreDefaultBin: TButton
+    Left = 319
+    Height = 25
+    Top = 91
+    Width = 164
+    Anchors = [akTop, akRight]
+    Caption = 'Restore Default Bin'
+    OnClick = btnRestoreDefaultBinClick
+    TabOrder = 15
   end
   object PSD: TPrinterSetupDialog
     Title = 'Testing dialog title'
