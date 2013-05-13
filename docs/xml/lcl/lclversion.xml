@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
 <package name="lcl">
 
@@ -14,12 +14,11 @@
 They can be used at runtime to determine the LCL version, so LCL application 
 writers and component writers can offer different functionality or workarounds 
 for bugs and take the LCL version into account while choosing their algorithms
-at run-time.</p>
-<p>Likewise, these version constants can be used at compile time in an conditional
-expressions, such as <i>{$IFDEF lcl_major&gt;0}</i>. Currently these kinds of
-epressions are only support in <i>{$mode delphi}</i>. Recently fpc 2.3.1 added
+at run-time.</p><p>Likewise, these version constants can be used at compile time in an conditional
+expressions, such as <i>{$IF lcl_major&gt;0}</i>. These kinds of
+epressions are support in <i>{$mode delphi}</i>. fpc 2.3.1 added
 support for these kind of expressions in <i>{$mode objfpc}</i>.</p>
-</descr>
+      </descr>
 
 <!-- constant Visibility: default -->
 <element name="lcl_major">
