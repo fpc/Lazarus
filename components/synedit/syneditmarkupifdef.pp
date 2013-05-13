@@ -336,6 +336,7 @@ type
 
     procedure SetFoldView(AValue: TSynEditFoldedView);
     procedure SetHighlighter(AValue: TSynPasSyn);
+    procedure DoBufferChanging(Sender: TObject);
     procedure DoBufferChanged(Sender: TObject);
     function  DoNodeStateRequest(Sender: TObject; LinePos, XStartPos: Integer): TSynMarkupIfdefNodeState;
 
@@ -2000,7 +2001,7 @@ var
            ( (ALineOffs = 0) or (ALineOffs = ANodeForLine.LastEntryEndLineOffs) )
         then begin
           // Does match exactly, keep as is
-          //DebugLn(['++++ KEEPING NODE ++++ ', ALine, ' ', dbgs(AType), ': ', ALogStart, ' - ', ALogEnd]);
+          DebugLn(['++++ KEEPING NODE ++++ ', ALine, ' ', dbgs(AType), ': ', ALogStart, ' - ', ALogEnd]);
           if not LineNeedsReq then
             LineNeedsReq := Result.NeedsRequesting;
           if i > NodesAddedCnt then begin
@@ -2501,6 +2502,12 @@ begin
   FIfDefTree.Highlighter := AValue;
 end;
 
+procedure TSynEditMarkupIfDef.DoBufferChanging(Sender: TObject);
+begin
+  FIfDefTree.Clear;
+  FIfDefTree.Lines := nil;
+end;
+
 procedure TSynEditMarkupIfDef.ValidateMatches;
 var
   LastMatchIdx: Integer;
@@ -2771,6 +2778,7 @@ begin
 
   //FIfDefTree.Lines  pointing to view => so still valid
   FIfDefTree.Clear;
+  FIfDefTree.Lines := Lines;
   ValidateMatches;
 end;
 
@@ -2792,6 +2800,7 @@ procedure TSynEditMarkupIfDef.SetLines(const AValue: TSynEditStrings);
 begin
   if Lines <> nil then begin
     Lines.RemoveGenericHandler(senrTextBufferChanged, TMethod(@DoBufferChanged));
+    Lines.RemoveGenericHandler(senrTextBufferChanging, TMethod(@DoBufferChanging));
     //FLines.RemoveEditHandler(@DoLinesEdited);
 //    FLines.RemoveChangeHandler(senrHighlightChanged, @DoHighlightChanged);
   end;
@@ -2801,6 +2810,7 @@ begin
 
   if Lines <> nil then begin
     Lines.AddGenericHandler(senrTextBufferChanged, TMethod(@DoBufferChanged));
+    Lines.AddGenericHandler(senrTextBufferChanging, TMethod(@DoBufferChanging));
     //FLines.AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);
 //    FLines.AddEditHandler(@DoLinesEdited);
   end;
