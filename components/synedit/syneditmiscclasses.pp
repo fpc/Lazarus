@@ -228,24 +228,6 @@ type
     function GetModifiedStyle(aStyle: TFontStyles): TFontStyles; // deprecated;
     procedure ModifyColors(var AForeground, ABackground, AFrameColor: TColor;
       var AStyle: TFontStyles; var AFrameStyle: TSynLineStyle); deprecated;
-  published
-    property Background default clHighLight;
-    property Foreground default clHighLightText;
-    property FrameColor default clNone;
-    property FrameStyle default slsSolid;
-    property FrameEdges default sfeAround;
-    // FStyle = [],       FStyleMask = []        ==> no modification
-    // FStyle = [fsBold], FStyleMask = []        ==> invert fsBold
-    // FStyle = [],       FStyleMask = [fsBold]  ==> clear  fsBold
-    // FStyle = [fsBold], FStyleMask = [fsBold]  ==> set    fsBold
-    property Style default [];
-    property StyleMask default [];
-    property BackPriority default 0;
-    property ForePriority default 0;
-    property FramePriority default 0;
-    property BoldPriority default 0;
-    property ItalicPriority default 0;
-    property UnderlinePriority default 0;
   end;
 
   { TSynSelectedColorMergeResult }
@@ -922,6 +904,10 @@ begin
   inherited Init;
   Background := clHighLight;
   Foreground := clHighLightText;
+  FrameColor := clNone;
+  FrameStyle := slsSolid;
+  FrameEdges := sfeAround;
+  InternalSaveDefaultValues;
 end;
 
 procedure TSynSelectedColor.SetFrameBoundsPhys(AStart, AEnd: Integer);

@@ -2263,7 +2263,6 @@ begin
   fCommentAttri.Style:= [fsItalic];
   AddAttribute(fCommentAttri);
   FIDEDirectiveAttri := TSynHighlighterAttributesModifier.Create(SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective);
-  FIDEDirectiveAttri.Features := FIDEDirectiveAttri.Features + [hafStyleMask];
   AddAttribute(FIDEDirectiveAttri);
   // FCurIDEDirectiveAttri, FCurCaseLabelAttri
   // They are not available through the "Attribute" property (not added via AddAttribute
@@ -2283,7 +2282,6 @@ begin
   fSymbolAttri := TSynHighlighterAttributes.Create(SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   AddAttribute(fSymbolAttri);
   FCaseLabelAttri := TSynHighlighterAttributesModifier.Create(SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
-  FCaseLabelAttri.Features := FCaseLabelAttri.Features + [hafStyleMask];
   AddAttribute(FCaseLabelAttri);
   FCurCaseLabelAttri := TSynSelectedColorMergeResult.Create(SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
   fDirectiveAttri := TSynHighlighterAttributes.Create(SYNS_AttrDirective, SYNS_XML_AttrDirective);

@@ -103,6 +103,13 @@ type
 
   TAhaGroupName = (agnDefault, agnLanguage, agnText, agnLine, agnGutter, agnTemplateMode, agnSyncronMode);
 
+  TColorSchemeAttributeFeature =
+    ( hafBackColor, hafForeColor, hafFrameColor,
+      hafStyle, hafStyleMask,
+      hafFrameStyle, hafFrameEdges
+    );
+  TColorSchemeAttributeFeatures = set of TColorSchemeAttributeFeature;
+
 const
   SynEditPreviewIncludeOptions = [eoNoCaret, eoNoSelection];
   SynEditPreviewExcludeOptions = [eoDragDropEditing, eoDropFiles,
@@ -164,7 +171,7 @@ const
     { ahaSpecialVisibleChars } agnText,
     { ahaTopInfoHint }    agnLine
   );
-  ahaSupportedFeatures: array[TAdditionalHilightAttribute] of TSynHighlighterAttrFeatures =
+  ahaSupportedFeatures: array[TAdditionalHilightAttribute] of TColorSchemeAttributeFeatures =
   (
     { ahaNone }               [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaTextBlock }          [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
@@ -220,11 +227,14 @@ type
 
   TColorSchemeAttribute = class(TSynHighlighterAttributesModifier)
   private
+    FFeatures: TColorSchemeAttributeFeatures;
     FGroup: TAhaGroupName;
     FOwner: TColorSchemeLanguage;
     FUseSchemeGlobals: Boolean;
     function GetIsUsingSchemeGlobals: Boolean;
     function OldAdditionalAttributeName(NewAha: String): string;
+  protected
+    procedure Init; override;
   public
     constructor Create(ASchemeLang: TColorSchemeLanguage; attribName: string; aStoredName: String = '');
     procedure ApplyTo(aDest: TSynHighlighterAttributes; aDefault: TColorSchemeAttribute = nil);
@@ -239,6 +249,7 @@ type
                         Defaults: TColorSchemeAttribute);
     property Group: TAhaGroupName read FGroup write FGroup;
     property IsUsingSchemeGlobals: Boolean read GetIsUsingSchemeGlobals;
+    property Features: TColorSchemeAttributeFeatures read FFeatures write FFeatures;
   published
     property UseSchemeGlobals: Boolean read FUseSchemeGlobals write FUseSchemeGlobals;
   end;
@@ -5541,6 +5552,12 @@ begin
     else Result := ahaXmlNames[TAdditionalHilightAttribute(AttriIdx)];
 end;
 
+procedure TColorSchemeAttribute.Init;
+begin
+  inherited Init;
+  FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle, hafFrameEdges];
+end;
+
 function TColorSchemeAttribute.GetIsUsingSchemeGlobals: Boolean;
 begin
   Result := FUseSchemeGlobals and (GetSchemeGlobal <> nil);
@@ -5588,8 +5605,6 @@ begin
       aDest.StyleMask  := [low(TFontStyle)..high(TFontStyle)];
 
     if not (aDest is TSynSelectedColor) then begin
-      aDest.Features   := Src.Features;
-
       if aDefault <> nil then begin
         if aDefault.IsUsingSchemeGlobals then
           aDefault := aDefault.GetSchemeGlobal;
@@ -5618,10 +5633,17 @@ end;
 procedure TColorSchemeAttribute.Assign(Src: TPersistent);
 begin
   inherited Assign(Src);
+
+  FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle, hafFrameEdges];
+  if Src is TSynHighlighterAttributesModifier then
+    FFeatures := FFeatures + [hafStyleMask];
+
   if Src is TColorSchemeAttribute then begin
     FGroup := TColorSchemeAttribute(Src).FGroup;
     FUseSchemeGlobals := TColorSchemeAttribute(Src).FUseSchemeGlobals;
+    FFeatures := TColorSchemeAttribute(Src).FFeatures;
   end;
+
 end;
 
 function TColorSchemeAttribute.Equals(Other: TColorSchemeAttribute): Boolean;
