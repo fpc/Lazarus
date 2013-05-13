@@ -305,7 +305,7 @@ begin
             end
             else begin
               // Add IFDEF for .lfm and .dfm allowing Delphi to use .dfm.
-              s:='{$IFNDEF FPC}'+LineEnding+
+              s:='{$IFnDEF FPC}'+LineEnding+
                  '  {$R *.dfm}'+LineEnding+
                  '{$ELSE}'+LineEnding+
                  '  {$R *.lfm}'+LineEnding+

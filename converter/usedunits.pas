@@ -403,7 +403,7 @@ begin
         InsPos:=FindLineEndOrCodeAfterPosition(CurPos.EndPos,false);
       end;
     end;
-    s:=s+'{$IFNDEF FPC}'+LineEnding;
+    s:=s+'{$IFnDEF FPC}'+LineEnding;
     if DelphiOnlyUnits.Count>0 then begin
       if UsesNode=Nil then
         s:=s+'uses'+LineEnding;
