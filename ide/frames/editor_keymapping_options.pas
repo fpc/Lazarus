@@ -80,6 +80,7 @@ type
     procedure EditConflict(ANode: TTreeNode);
     procedure EditCommandRelation(ARelation: TKeyCommandRelation);
     procedure ClearCommandMapping(ANode: TTreeNode);
+    procedure ClearConflict(ANode: TTreeNode);
     procedure ClearCommandRelation(ARelation: TKeyCommandRelation);
     function KeyMappingRelationToCaption(Index: Integer): String;
     function KeyMappingRelationToCaption(KeyRelation: TKeyCommandRelation): String;
@@ -211,12 +212,12 @@ end;
 
 procedure TEditorKeymappingOptionsFrame.EditButtonClick(Sender: TObject);
 begin
-  EditCommandMapping(TreeView.Selected);
+  EditCommandMapping(TreeView.Selected)
 end;
 
 procedure TEditorKeymappingOptionsFrame.ClearButtonClick(Sender: TObject);
 begin
-  ClearCommandMapping(TreeView.Selected);
+  ClearCommandMapping(TreeView.Selected)
 end;
 
 function TEditorKeymappingOptionsFrame.FilterEditFilterItem(Item: TObject; out Done: Boolean): Boolean;
@@ -300,20 +301,33 @@ procedure TEditorKeymappingOptionsFrame.PopupMenu1Popup(Sender: TObject);
 var
   ANode: TTreeNode;
 begin
-  ANode := TreeView.Selected;
-  EditMenuItem.Enabled:=
-    (ANode<>nil) and (ANode.Data<>nil) and (TObject(ANode.Data) is TKeyCommandRelation);
+  if Sender=TreeView then begin
+    ANode := TreeView.Selected;
+    EditMenuItem.Enabled:=
+      (ANode<>nil) and (ANode.Data<>nil) and (TObject(ANode.Data) is TKeyCommandRelation);
+  end else if Sender=ConflictsTreeView then begin
+    ANode:=ConflictsTreeView.Selected;
+    EditMenuItem.Enabled := (ANode<>nil) and (CaptionToKeyMappingRelation(ANode.Text)<>nil);
+  end else begin
+    EditMenuItem.Enabled := false;
+  end;
   ClearMenuItem.Enabled := EditMenuItem.Enabled;
 end;
 
 procedure TEditorKeymappingOptionsFrame.EditMenuItemClick(Sender: TObject);
 begin
-  EditCommandMapping(TreeView.Selected);
+  if PopupMenu1.PopupComponent=TreeView then
+    EditCommandMapping(TreeView.Selected)
+  else
+    EditConflict(ConflictsTreeView.Selected);
 end;
 
 procedure TEditorKeymappingOptionsFrame.ClearMenuItemClick(Sender: TObject);
 begin
-  ClearCommandMapping(TreeView.Selected);
+  if PopupMenu1.PopupComponent=TreeView then
+    ClearCommandMapping(TreeView.Selected)
+  else
+    ClearConflict(ConflictsTreeView.Selected);
 end;
 
 procedure TEditorKeymappingOptionsFrame.ConflictsTreeViewMouseDown(
@@ -674,6 +688,15 @@ procedure TEditorKeymappingOptionsFrame.ClearCommandMapping(ANode: TTreeNode);
 begin
   if ANode=nil then exit;
   ClearCommandRelation(TKeyCommandRelation(ANode.Data));
+end;
+
+procedure TEditorKeymappingOptionsFrame.ClearConflict(ANode: TTreeNode);
+var
+  ARelation: TKeyCommandRelation;
+begin
+  if ANode=nil then exit;
+  ARelation:=CaptionToKeyMappingRelation(ANode.Text);
+  ClearCommandRelation(ARelation);
 end;
 
 procedure TEditorKeymappingOptionsFrame.ClearCommandRelation(

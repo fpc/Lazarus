@@ -87,6 +87,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderWidth = 1
       DefaultItemHeight = 18
+      PopupMenu = PopupMenu1
       ReadOnly = True
       RightClickSelect = True
       RowSelect = True
