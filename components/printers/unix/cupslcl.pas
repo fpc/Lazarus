@@ -5,7 +5,11 @@ unit cupslcl;
 interface
 
 uses
-  Classes, SysUtils, StdCtrls, OsPrinters, Printers, CupsDyn;
+  Classes, SysUtils,
+  {$ifdef DebugCUPS}
+  LCLProc,
+  {$endif}
+  StdCtrls, OsPrinters, Printers, CupsDyn;
 
 const
   C_SPACE       = 6;

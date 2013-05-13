@@ -140,6 +140,11 @@ type
      function GetXDPI: Integer; override;
      function GetYDPI: Integer; override;
 
+     procedure DoEnumBins(Lst : TStrings); override;
+     function DoGetDefaultBinName: string; override;
+     function DoGetBinName: string; override;
+     procedure DoSetBinName(aName: string); override;
+
      {-------------------------------------------------
          SPECIFIC CUPS METHODS OR PROPERTIES
      --------------------------------------------------}
@@ -156,7 +161,8 @@ type
 
      procedure cupsAddOption(aName,aValue: string);
      function GetResolutionOption: string;
-      function IsOptionValueValid(AKeyword,AValue: pchar): boolean;
+     function IsOptionValueValid(AKeyword,AValue: pchar): boolean;
+     function PPDOptionChoiceFrom(OptionStr, aKeyOrValue: string; IsKey:boolean): pppd_choice_t;
   public
     constructor Create; override;
     destructor Destroy; override;

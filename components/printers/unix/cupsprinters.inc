@@ -19,6 +19,78 @@ begin
   Result:=InternalGetResolution(False);
 end;
 
+procedure TCUPSPrinter.DoEnumBins(Lst: TStrings);
+var
+  choice: Pppd_choice_t;
+  Option: Pppd_option_t;
+  c: Integer;
+begin
+  Lst.Clear;
+  if CupsPPD<>nil then
+  begin
+    Option := ppdFindOption(CupsPPD, PChar('InputSlot'));
+    if Option<>nil then
+    begin
+      Choice := Option^.choices;
+      c := 0;
+      while (Choice<>nil) and (c<Option^.num_choices) do
+      begin
+        lst.AddObject(Choice^.text, TObject(Choice));
+        inc(choice);
+        inc(c);
+      end;
+    end;
+  end;
+end;
+
+function TCUPSPrinter.DoGetDefaultBinName: string;
+var
+  Option: Pppd_option_t;
+  Choice: pppd_choice_t;
+begin
+  Result:=inherited DoGetDefaultBinName;
+
+  if CupsPPD<>nil then
+  begin
+    Option := ppdFindOption(CupsPPD, 'InputSlot');
+    if Option<>nil then
+    begin
+      choice := PPDOptionChoiceFrom('InputSlot', Option^.defchoice, true);
+      if choice<>nil then
+        result := choice^.text;
+    end;
+  end;
+end;
+
+function TCUPSPrinter.DoGetBinName: string;
+var
+  Choice: pppd_choice_t;
+begin
+  result := cupsGetOption('InputSlot');
+  if result<>'' then
+  begin
+    Choice := PPDOptionChoiceFrom('InputSlot', result, true);
+    if Choice<>nil then
+      result := Choice^.text
+    else
+      result := '';
+  end;
+
+  if result='' then
+    result := doGetDefaultBinName
+end;
+
+procedure TCUPSPrinter.DoSetBinName(aName: string);
+var
+  Choice: pppd_choice_t;
+begin
+  Choice := PPDOptionChoiceFrom('InputSlot', aName, false);
+  if Choice<>nil then
+    cupsAddOption('InputSlot', choice^.choice)
+  else
+    inherited doSetBinName(aName); // handle input slot not found
+end;
+
 //write count bytes from buffer to raw mode stream
 function TCUPSPrinter.Write(const Buffer; Count: Integer; var Written: Integer
   ): Boolean;
@@ -46,7 +118,7 @@ begin
   FCupsPapersCount := -1;
 end;
 
-destructor TCUPSPrinter.destroy;
+destructor TCUPSPrinter.Destroy;
 begin
   if assigned(fRawModeStream) then
     fRawModeStream.Free;
@@ -406,6 +478,36 @@ begin
     inc(i);
   end;
 
+end;
+
+function TCUPSPrinter.PPDOptionChoiceFrom(OptionStr, aKeyOrValue: string;
+  IsKey:boolean): pppd_choice_t;
+var
+  i: Integer;
+  option: pppd_option_t;
+  p: pchar;
+begin
+  result := nil;
+
+  if (fcupsPrinter=nil) or (fcupsppd=nil) or (option=nil) then
+    exit;
+
+  option := ppdFindOption(fcupsppd, pchar(OptionStr));
+  if option=nil then
+    exit;
+
+  for i:=0 to option^.num_choices-1 do
+  begin
+    if IsKey then
+      p := @option^.choices[i].choice
+    else
+      p := @option^.choices[i].text;
+    if strcomp(p, pchar(aKeyOrValue))=0 then
+    begin
+      result := @option^.choices[i];
+      break;
+    end;
+  end;
 end;
 
 

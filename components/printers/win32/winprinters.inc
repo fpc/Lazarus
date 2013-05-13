@@ -45,14 +45,7 @@ begin
   if fPrinterHandle <> 0 then
     ClosePrinter(fPrinterHandle);
 
-  if fBins<>nil then
-    fBins.Destroy;
   inherited Destroy;
-end;
-
-Procedure TWinPrinter.RestoreDefaultBin;
-begin
-  DoSetBinName(DoGetDefaultBinName);
 end;
 
 function TWinPrinter.Write(const Buffer; Count: Integer;
@@ -231,15 +224,6 @@ begin
   end;
 
   fLastHandleType:=htNone;
-end;
-
-Procedure TWinPrinter.CheckfBins;
-begin
-  if fbins<>nil then exit;
-  fbins := TStringList.Create;
-  DoEnumBins(fBins);
-  if fBins=nil then
-    EPrinter.Create('checkfBins error : can not create list of bins');
 end;
 
 // Based on MS Article Q167345
@@ -833,11 +817,6 @@ begin
                                    [SysErrorMessage(GetlastError)]);
     end;
 
-    if fbins<>nil then begin
-      fbins.Free;
-      fbins:=nil;
-    end;
-
     if UpdateDevMode(i) then
       Result := i
     else
@@ -1045,7 +1024,11 @@ var
     PDev   : TPrinterDevice;
     arBins : Array[0..255] of Word;
 begin
-  inherited DoEnumBins(Lst);
+
+  if Lst=nil then
+    exit;
+
+  Lst.Clear;
 
   if (Printers.Count>0) then
   begin
@@ -1126,18 +1109,16 @@ function TWinPrinter.DoGetDefaultBinName: string;
 var i    : Integer;
     PDev : TPrinterDevice;
 begin
-  CheckfBins;
   Result:=inherited DoGetDefaultBinName;
 
-  if (Printers.Count>0) then
-  begin
-    PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-    with fBins do begin
+  with SupportedBins do
+    if (Printers.Count>0) then
+    begin
+      PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
       i:=IndexOfObject(TObject(ptrint(PDev.DefaultBin)));
       if i<>-1 then
         Result:= Strings[i];
     end;
-  end;
 end;
 
 function TWinPrinter.DoGetBinName: string;
@@ -1149,13 +1130,12 @@ var
   dm: PDeviceMode;
   {$ENDIF}
 begin
-  CheckfBins;
   Result:=inherited DoGetBinName;
   if GetCurrentDevMode(dm) then
-    with fBins do begin
+    with SupportedBins do begin
       i := IndexOfObject(TObject(ptrInt(dm^.dmDefaultSource)));
       if i>=0 then
-        result := fBins[i];
+        result := Strings[i];
     end;
 end;
 
@@ -1168,21 +1148,19 @@ var
   dm: PDeviceMode;
   {$ENDIF}
 begin
-  CheckfBins;
-  inherited DoSetBinName(aName);
-  if GetCurrentDevMode(dm) then begin
-    i:=fBins.IndexOf(aName);
-    if i<>-1 then begin
-      ClearDC;
-      dm^.dmDefaultSource := SHORT(ptrint(fBins.Objects[i]));
-    end;
-  end;
-end;
+  with SupportedBins do begin
 
-function TWinPrinter.GetBins: TStrings;
-begin
-  CheckfBins;
-  result := fbins;
+    if not GetCurrentDevMode(dm) then
+      raise EPrinter.Create('DoSetBinName error : unable to get current DevMode');
+
+    i := IndexOf(aName);
+    if (i>=0) then begin
+      ClearDC;
+      dm^.dmDefaultSource := SHORT(ptrint(Objects[i]));
+    end else
+      inherited DoSetBinName(aName); // handle uknown bin name
+
+  end;
 end;
 
 initialization

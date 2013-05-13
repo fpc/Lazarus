@@ -45,7 +45,6 @@ Type
     procedure ClearDC;
     procedure FreeDC;
     function UpdateDevMode(APrinterIndex:Integer): boolean;
-    Procedure CheckfBins;
 
   protected
     function GetDefaultPrinter: string;
@@ -67,7 +66,6 @@ Type
     function DoGetDefaultBinName: string; override;
     function DoGetBinName: string; override;
     procedure DoSetBinName(aName: string); override;
-    function GetBins: TStrings; override;
 
     function DoSetPrinter(aName : string): Integer; override;
     
@@ -90,7 +88,6 @@ Type
     constructor Create; override;
     destructor Destroy; override;
     
-    Procedure RestoreDefaultBin; override;
     function Write(const Buffer; Count:Integer; var Written: Integer): Boolean; override;
 
     //Warning not portable functions here
