@@ -53,7 +53,7 @@ interface
 uses
   SysUtils, LCLProc,
   Classes, Registry, Graphics, SynEditHighlighterFoldBase, SynEditMiscProcs,
-  SynEditTypes, SynEditHighlighter, SynEditTextBase, SynEditStrConst;
+  SynEditTypes, SynEditHighlighter, SynEditTextBase, SynEditStrConst, SynEditMiscClasses;
 
 type
   TSynPasStringMode = (spsmDefault, spsmStringOnly, spsmNone);
@@ -315,12 +315,12 @@ type
     fSymbolAttri: TSynHighlighterAttributes;
     fAsmAttri: TSynHighlighterAttributes;
     fCommentAttri: TSynHighlighterAttributes;
-    FIDEDirectiveAttri: TSynHighlighterAttributes;
-    FCurIDEDirectiveAttri: TSynHighlighterAttributes;
+    FIDEDirectiveAttri: TSynHighlighterAttributesModifier;
+    FCurIDEDirectiveAttri: TSynSelectedColorMergeResult;
     fIdentifierAttri: TSynHighlighterAttributes;
     fSpaceAttri: TSynHighlighterAttributes;
-    FCaseLabelAttri: TSynHighlighterAttributes;
-    FCurCaseLabelAttri: TSynHighlighterAttributes;
+    FCaseLabelAttri: TSynHighlighterAttributesModifier;
+    FCurCaseLabelAttri: TSynSelectedColorMergeResult;
     fDirectiveAttri: TSynHighlighterAttributes;
     FCompilerMode: TPascalCompilerMode;
     fD4syntax: boolean;
@@ -553,7 +553,7 @@ type
     property AsmAttri: TSynHighlighterAttributes read fAsmAttri write fAsmAttri;
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
       write fCommentAttri;
-    property IDEDirectiveAttri: TSynHighlighterAttributes read FIDEDirectiveAttri
+    property IDEDirectiveAttri: TSynHighlighterAttributesModifier read FIDEDirectiveAttri
       write FIDEDirectiveAttri;
     property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
       write fIdentifierAttri;
@@ -566,7 +566,7 @@ type
       write fStringAttri;
     property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
       write fSymbolAttri;
-    property CaseLabelAttri: TSynHighlighterAttributes read FCaseLabelAttri
+    property CaseLabelAttri: TSynHighlighterAttributesModifier read FCaseLabelAttri
       write FCaseLabelAttri;
     property DirectiveAttri: TSynHighlighterAttributes read fDirectiveAttri
       write fDirectiveAttri;
@@ -2262,10 +2262,13 @@ begin
   fCommentAttri := TSynHighlighterAttributes.Create(SYNS_AttrComment, SYNS_XML_AttrComment);
   fCommentAttri.Style:= [fsItalic];
   AddAttribute(fCommentAttri);
-  FIDEDirectiveAttri := TSynHighlighterAttributes.Create(SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective);
+  FIDEDirectiveAttri := TSynHighlighterAttributesModifier.Create(SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective);
   FIDEDirectiveAttri.Features := FIDEDirectiveAttri.Features + [hafStyleMask];
   AddAttribute(FIDEDirectiveAttri);
-  FCurIDEDirectiveAttri := TSynHighlighterAttributes.Create(SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective);
+  // FCurIDEDirectiveAttri, FCurCaseLabelAttri
+  // They are not available through the "Attribute" property (not added via AddAttribute
+  // But they are returned via GetTokenAttribute, so they should have a name.
+  FCurIDEDirectiveAttri := TSynSelectedColorMergeResult.Create(SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective);
   fIdentifierAttri := TSynHighlighterAttributes.Create(SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
   AddAttribute(fIdentifierAttri);
   fKeyAttri := TSynHighlighterAttributes.Create(SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
@@ -2279,10 +2282,10 @@ begin
   AddAttribute(fStringAttri);
   fSymbolAttri := TSynHighlighterAttributes.Create(SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   AddAttribute(fSymbolAttri);
-  FCaseLabelAttri := TSynHighlighterAttributes.Create(SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
+  FCaseLabelAttri := TSynHighlighterAttributesModifier.Create(SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
   FCaseLabelAttri.Features := FCaseLabelAttri.Features + [hafStyleMask];
   AddAttribute(FCaseLabelAttri);
-  FCurCaseLabelAttri := TSynHighlighterAttributes.Create(SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
+  FCurCaseLabelAttri := TSynSelectedColorMergeResult.Create(SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
   fDirectiveAttri := TSynHighlighterAttributes.Create(SYNS_AttrDirective, SYNS_XML_AttrDirective);
   fDirectiveAttri.Style:= [fsItalic];
   AddAttribute(fDirectiveAttri);
@@ -3042,21 +3045,14 @@ begin
 end;
 
 function TSynPasSyn.GetTokenAttribute: TSynHighlighterAttributes;
-var
-  sMask: TFontStyles;
 begin
   case GetTokenID of
     tkAsm: Result := fAsmAttri;
     tkComment: Result := fCommentAttri;
     tkIDEDirective: begin
+      FCurIDEDirectiveAttri.Assign(FCommentAttri);
+      FCurIDEDirectiveAttri.Merge(FIDEDirectiveAttri);
       Result := FCurIDEDirectiveAttri;
-      Result.Assign(FCommentAttri);
-      if FIDEDirectiveAttri.Background <> clNone then Result.Background := FIDEDirectiveAttri.Background;
-      if FIDEDirectiveAttri.Foreground <> clNone then Result.Foreground := FIDEDirectiveAttri.Foreground;
-      if FIDEDirectiveAttri.FrameColor <> clNone then Result.FrameColor := FIDEDirectiveAttri.FrameColor;
-      sMask := FIDEDirectiveAttri.StyleMask + (fsNot(FIDEDirectiveAttri.StyleMask) * FIDEDirectiveAttri.Style); // Styles to be taken from FIDEDirectiveAttri
-      Result.Style:= (Result.Style * fsNot(sMask)) + (FIDEDirectiveAttri.Style * sMask);
-      Result.StyleMask:= (Result.StyleMask * fsNot(sMask)) + (FIDEDirectiveAttri.StyleMask * sMask);
     end;
     tkIdentifier: Result := fIdentifierAttri;
     tkKey: Result := fKeyAttri;
@@ -3069,17 +3065,12 @@ begin
   else
     Result := nil;
   end;
-  if FTokenIsCaseLabel and
-     (GetTokenID in [tkIdentifier, tkKey, tkNumber, tkString])
+
+  if FTokenIsCaseLabel and (GetTokenID in [tkIdentifier, tkKey, tkNumber, tkString])
   then begin
     FCurCaseLabelAttri.Assign(Result);
+    FCurCaseLabelAttri.Merge(FCaseLabelAttri);
     Result := FCurCaseLabelAttri;
-    if FCaseLabelAttri.Background <> clNone then Result.Background := FCaseLabelAttri.Background;
-    if FCaseLabelAttri.Foreground <> clNone then Result.Foreground := FCaseLabelAttri.Foreground;
-    if FCaseLabelAttri.FrameColor <> clNone then Result.FrameColor := FCaseLabelAttri.FrameColor;
-    sMask := FCaseLabelAttri.StyleMask + (fsNot(FCaseLabelAttri.StyleMask) * FCaseLabelAttri.Style); // Styles to be taken from FCaseLabelAttri
-    Result.Style:= (Result.Style * fsNot(sMask)) + (FCaseLabelAttri.Style * sMask);
-    Result.StyleMask:= (Result.StyleMask * fsNot(sMask)) + (FCaseLabelAttri.StyleMask * sMask);
   end;
 end;
 

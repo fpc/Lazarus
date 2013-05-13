@@ -14,7 +14,7 @@ uses
 type
   TLazSynDisplayTokenInfoEx = record
     Tk: TLazSynDisplayTokenInfo;
-    Attr: TSynSelectedColor;
+    Attr: TSynSelectedColorMergeResult;
     StartPos: TLazSynDisplayTokenBound;  // Start according to Logical flow. Left for LTR, or Right for RTL
     EndPos: TLazSynDisplayTokenBound;    // End according to Logical flow.
     // SreenRect Bounds. Ltr/RTL independent. Start is always left. End Always right
@@ -57,7 +57,7 @@ type
     // Info about the token (from highlighter)
     FCurViewToken: TLazSynDisplayTokenInfo;
     FCurViewCurTokenStartPos: TLazSynDisplayTokenBound; // Start bound of the HL token
-    FCurViewAttr: TSynSelectedColor;
+    FCurViewAttr: TSynSelectedColorMergeResult;
     // Scanner Pos
     FCurViewScannerPos: TLazSynDisplayTokenBound;  // Start according to Logical flow. Left for LTR, or Right for RTL
     FCurViewScannerPhysCharPos: Integer;           // 1 based - Full char bound (Before FCurViewScannerPos.Physical (PaintStart))
@@ -73,7 +73,7 @@ type
     FCurMarkupNextStart: TLazSynDisplayTokenBound;
     FCurMarkupNextRtlInfo: TLazSynDisplayRtlInfo;
     FCurMarkupState: (cmPreInit, cmLine, cmPastEOL);
-    FMarkupTokenAttr: TSynSelectedColor;
+    FMarkupTokenAttr: TSynSelectedColorMergeResult;
     procedure InitCurMarkup;
   public
     constructor Create;
@@ -264,8 +264,8 @@ end;
 
 constructor TLazSynPaintTokenBreaker.Create;
 begin
-  FCurViewAttr := TSynSelectedColor.Create;
-  FMarkupTokenAttr := TSynSelectedColor.Create;
+  FCurViewAttr := TSynSelectedColorMergeResult.Create;
+  FMarkupTokenAttr := TSynSelectedColorMergeResult.Create;
   FTabExtraByteCount := 0;
   FSpaceExtraByteCount := 0;
 end;
@@ -424,7 +424,7 @@ end;
 function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
   ATokenInfo: TLazSynDisplayTokenInfoEx; APhysEnd: Integer; ALogEnd: Integer): Boolean;
 
-  procedure InitSynAttr(var ATarget: TSynSelectedColor; const ASource: TSynHighlighterAttributes;
+  procedure InitSynAttr(var ATarget: TSynSelectedColorMergeResult; const ASource: TLazSynCustomTextAttributes;
     const AnAttrStartX: TLazSynDisplayTokenBound);
   const
     NoEnd: TLazSynDisplayTokenBound = (Physical: -1; Logical: -1; Offset: 0);
@@ -442,7 +442,7 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
       ATarget.Background := BackgroundColor;
       ATarget.Style :=  []; // Font.Style; // currently always cleared
     end;
-    ATarget.MergeFinalStyle := True;
+//    ATarget.MergeFinalStyle := True;
     ATarget.StyleMask  := [];
     ATarget.StartX := AnAttrStartX;
     ATarget.EndX   := NoEnd;
@@ -1396,7 +1396,7 @@ var
   var
     HasFrame: Boolean;
     s: TLazSynBorderSide;
-    Attr: TSynSelectedColor;
+    Attr: TSynSelectedColorMergeResult;
     TxtFlags: Integer;
     tok: TRect;
     c, i, j, k, e, Len, CWLen: Integer;

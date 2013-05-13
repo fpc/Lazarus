@@ -99,6 +99,7 @@ type
     procedure DoClear; virtual;
     procedure Changed;
     procedure DoChange; virtual;
+    procedure Init; virtual;
   public
     constructor Create;
     procedure Clear;
@@ -144,7 +145,9 @@ type
   protected
     procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
     procedure DoChange; override;
+    procedure Init; override;
   public
+    constructor Create;
     constructor Create(attribName: string; aStoredName: String = '');
     procedure InternalSaveDefaultValues;
     function  LoadFromBorlandRegistry(rootKey: HKEY; attrKey, attrName: string;
@@ -692,12 +695,18 @@ begin
   //
 end;
 
+procedure TLazSynCustomTextAttributes.Init;
+begin
+  // called by create
+  Clear;
+end;
+
 constructor TLazSynCustomTextAttributes.Create;
 begin
   inherited;
-  Clear;
   FUpdateCount := 0;
   FWasChanged := False;
+  Init;
 end;
 
 procedure TLazSynCustomTextAttributes.Clear;
@@ -745,18 +754,7 @@ end;
 
 constructor TSynHighlighterAttributes.Create(attribName: string; aStoredName: String = '');
 begin
-  inherited Create;
-  Background := clNone;
-  Foreground := clNone;
-  FrameColor := clNone;
-  FrameStyle := slsSolid;
-  FrameEdges := sfeAround;
-  FBackgroundDefault := clNone;
-  FForegroundDefault := clNone;
-  FFrameColorDefault := clNone;
-  FFrameStyleDefault := slsSolid;
-  FFrameEdgesDefault := sfeAround;
-  FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle, hafFrameEdges];
+  Create;
   fName := attribName;
   if aStoredName = '' then
     FStoredName := attribName
@@ -1111,6 +1109,22 @@ begin
     fOnChange(Self);
 end;
 
+procedure TSynHighlighterAttributes.Init;
+begin
+  inherited Init;
+  FBackgroundDefault := clNone;
+  FForegroundDefault := clNone;
+  FFrameColorDefault := clNone;
+  FFrameStyleDefault := slsSolid;
+  FFrameEdgesDefault := sfeAround;
+  FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle, hafFrameEdges];
+end;
+
+constructor TSynHighlighterAttributes.Create;
+begin
+  inherited Create;
+end;
+
 { TSynEditLinesList }
 
 function TSynEditLinesList.GetSynString(Index: Integer): TSynEditStringsBase;
@@ -1298,7 +1312,7 @@ begin
 end;
 
 function TSynCustomHighlighter.AddSpecialAttribute(const AttribName: string;
-  const aStoredName: string):TSynHighlighterAttributes;
+  const aStoredName: String): TSynHighlighterAttributes;
 begin
   result := TSynHighlighterAttributes.Create(AttribName,aStoredName);
   AddAttribute(result);
@@ -1360,7 +1374,7 @@ begin
   Result := '<Unknown>';
 end;
 
-function TSynCustomHighlighter.GetRange: pointer;
+function TSynCustomHighlighter.GetRange: Pointer;
 begin
   Result := nil;
 end;
