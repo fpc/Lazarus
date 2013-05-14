@@ -733,7 +733,7 @@ const
    L1     := pEC^.code^[pEC^.IP]; inc(pEC^.IP);
    L0     := pEC^.code^[pEC^.IP]; inc(pEC^.IP);
    if L1 >= 128 then
-     result := -32768 + ((L1 and 127) shl 8) + L0
+     result := Short(-32768) + (Short(L1 and 127) shl 8) + L0
    else
      result := (L1 shl 8) + L0;
  end;
