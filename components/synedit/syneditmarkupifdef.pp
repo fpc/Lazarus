@@ -1439,7 +1439,7 @@ begin
       MaybeValidateNode(OtherLine);
     end
     else
-      OtherLine := ANestList.Node[i];
+      OtherLine := ANestList.Node[i]; // Todo: keep if same al last loop, and continue at OtherDepth / j
 
     OtherDepth := OtherLine.NestDepthAtNodeEnd;
     j := OtherLine.EntryCount;
@@ -1476,9 +1476,9 @@ begin
         end;
       end;
       case OtherLine.Entry[j].NodeType of
-        idnIfdef: inc(OtherDepth);
+        idnIfdef: dec(OtherDepth);
         idnElse, idnElseIf:  ; //
-        idnEndIf: dec(OtherDepth);
+        idnEndIf: inc(OtherDepth);
       end;
     end;
 
@@ -2141,7 +2141,7 @@ begin
         inc(NodesAddedCnt);
       end
       else
-        ANodeForLine.DeletEntry(i);
+        ANodeForLine.DeletEntry(i, True);
       dec(i);
     end;
     ANodeForLine.EntryCount := NodesAddedCnt;

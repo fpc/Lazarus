@@ -48,6 +48,7 @@ type
     function TestText1: TStringArray;
     function TestText2: TStringArray;
     function TestText3: TStringArray;
+    function TestText3a: TStringArray;
     function TestText4: TStringArray;
     function TestText5: TStringArray;
     function TestText6: TStringArray;
@@ -459,6 +460,28 @@ begin
   AddLine('{$IFDEF a}'                                            );
   AddLine(''                                                      );
   AddLine('{$Endif}'                                              );
+  // 5
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+end;
+
+function TTestMarkupIfDef.TestText3a: TStringArray;
+  procedure AddLine(s: String);
+  begin
+    SetLength(Result, Length(Result)+1);
+    Result[Length(Result)-1] := s;
+  end;
+begin
+  // 1
+  AddLine('//'                                                    );
+  AddLine('{$IFDEF a} {$IFDEF a}'                                 );
+  AddLine(''                                                      );
+  AddLine('{$Endif} {$Endif}'                                     );
   // 5
   AddLine(''                                                      );
   AddLine(''                                                      );
@@ -1346,6 +1369,57 @@ begin
     CheckNodes(n,33, [ ExpN( 3,10, idnElse,  EpIf(32, 3), EpEnd(35,3)) ]);
     CheckNodes(n,35, [ ExpN( 3,11, idnEndIf, EpElse(33, 3)) ]);
     CheckNodes(n,37, [ ExpN( 1, 9, idnEndIf, EpElse(30, 1)) ]);
+
+
+
+    {%region remove endif by edit // Test nodes delete => resolve peer}
+      n := 'remove endif by edit / edit endif (one endif in line)';
+      ReCreateEditForTreeTest(TestText3);
+      FTestTree.ValidateRange(1, 8, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
+
+      SynEdit.TextBetweenPoints[point(3, 4),point(3, 4)] := ' ';
+      FTestTree.ValidateRange(1, 8, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil) ]);
+      CheckNodes(n, 4, [ ]);
+
+
+      n := 'remove endif by edit / edit endif (two endif in line, edit first)';
+      ReCreateEditForTreeTest(TestText3a);
+      FTestTree.ValidateRange(1, 8, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4,10)),
+                         ExpN(12,22, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2,12)),
+                         ExpN(10,18, idnEndIf, EpIf(2, 1)) ]);
+
+      SynEdit.TextBetweenPoints[point(3, 4),point(3, 4)] := ' ';
+      FTestTree.ValidateRange(1, 8, FOpenings);
+      //FTestTree.DebugPrint(true);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil),
+                         ExpN(12,22, idnIfdef, EpSkip,      EpEnd(4,11)) ]);
+      CheckNodes(n, 4, [ ExpN(11,19, idnEndIf, EpIf(2, 12)) ]);
+
+
+      n := 'remove endif by edit / edit endif (two endif in line, edit 2nd)';
+      ReCreateEditForTreeTest(TestText3a);
+      FTestTree.ValidateRange(1, 8, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4,10)),
+                         ExpN(12,22, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2,12)),
+                         ExpN(10,18, idnEndIf, EpIf(2, 1)) ]);
+
+      SynEdit.TextBetweenPoints[point(13,4),point(13,4)] := ' ';
+      FTestTree.ValidateRange(1, 8, FOpenings);
+      FTestTree.DebugPrint(true);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil),
+                         ExpN(12,22, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2,12)) ]);
+
+
+    {%endregion}
+
+
 
   {%endregion peers + edit}
 
