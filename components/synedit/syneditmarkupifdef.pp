@@ -2001,7 +2001,7 @@ var
            ( (ALineOffs = 0) or (ALineOffs = ANodeForLine.LastEntryEndLineOffs) )
         then begin
           // Does match exactly, keep as is
-          DebugLn(['++++ KEEPING NODE ++++ ', ALine, ' ', dbgs(AType), ': ', ALogStart, ' - ', ALogEnd]);
+          //DebugLn(['++++ KEEPING NODE ++++ ', ALine, ' ', dbgs(AType), ': ', ALogStart, ' - ', ALogEnd]);
           if not LineNeedsReq then
             LineNeedsReq := Result.NeedsRequesting;
           if i > NodesAddedCnt then begin
@@ -2543,7 +2543,6 @@ var
     else
       Match.EndPoint := point(1, LastLine+1);
 
-debugln(['MATCH AT ', dbgs(Match.StartPoint), ' ', dbgs(Match.EndPoint)]);
     // empty match does not highlight
     if ComparePoints(Match.StartPoint, Match.EndPoint) = 0 then
       exit;
@@ -2552,7 +2551,6 @@ debugln(['MATCH AT ', dbgs(Match.StartPoint), ' ', dbgs(Match.EndPoint)]);
 
     if LastMatchIdx >= Matches.Count then begin
       Matches.Match[LastMatchIdx] := Match;
-      DebugLn(['!!!!!!! Invalidate  ', Match.StartPoint.y, ' - ', Match.EndPoint.y]);
       InvalidateSynLines(Match.StartPoint.y, Match.EndPoint.y);
       exit;
     end;
@@ -2570,13 +2568,9 @@ debugln(['MATCH AT ', dbgs(Match.StartPoint), ' ', dbgs(Match.EndPoint)]);
     if ComparePoints(OldMatch.StartPoint, Match.EndPoint) >= 0 then
       Matches.Insert(LastMatchIdx, 1)
     else
-begin
       InvalidateSynLines(OldMatch.StartPoint.y, OldMatch.EndPoint.y);;
-      DebugLn(['!!!!!!! Invalidate  ', Match.StartPoint.y, ' - ', Match.EndPoint.y]);
-end;
 
     Matches.Match[LastMatchIdx] := Match;
-    DebugLn(['!!!!!!! Invalidate  ', Match.StartPoint.y, ' - ', Match.EndPoint.y]);
     InvalidateSynLines(Match.StartPoint.y, Match.EndPoint.y);
   end;
 
@@ -2726,7 +2720,6 @@ XXXCurTree := FIfDefTree; try
   // delete remaining matchdata
   while Matches.Count - 1 > LastMatchIdx do begin
     m := Matches.Match[Matches.Count - 1];
-    DebugLn(['!!!!!!! Invalidate  ', m.StartPoint.y, ' - ', m.EndPoint.y]);
     if (m.EndPoint.y >= TopLine) and (m.StartPoint.y <= LastLine) then
       InvalidateSynLines(m.StartPoint.y, m.EndPoint.y);
     Matches.Delete(Matches.Count - 1);
