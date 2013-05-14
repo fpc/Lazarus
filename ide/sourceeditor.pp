@@ -2678,11 +2678,11 @@ begin
   if Result=nil then
   begin
     // create main scanner
-    debugln(['TSourceEditorSharedValues.GetMainLinkScanner fetching unit codebuffer ...']);
+    //debugln(['TSourceEditorSharedValues.GetMainLinkScanner fetching unit codebuffer ...']);
     if CodeBuffer=nil then exit;
     if not CodeToolBoss.InitCurCodeTool(CodeBuffer) then
     begin
-      debugln(['TSourceEditorSharedValues.GetMainLinkScanner failed to find the unit codebuffer']);
+      debugln(['TSourceEditorSharedValues.GetMainLinkScanner failed to find the unit of ',Filename]);
       exit;
     end;
     Result:=CodeToolBoss.CurCodeTool.Scanner;
@@ -5445,11 +5445,11 @@ var
   X: integer;
   SynState: TSynMarkupIfdefNodeStateEx;
 begin
-  debugln(['TSourceEditor.UpdateIfDefNodeStates CHECK ',Filename]);
+  //debugln(['TSourceEditor.UpdateIfDefNodeStates CHECK ',Filename]);
   Scanner:=SharedValues.GetMainLinkScanner(true);
   if Scanner=nil then exit;
   if Scanner.ChangeStep=FLastIfDefNodeScannerStep then exit;
-  debugln(['TSourceEditor.UpdateIfDefNodeStates UPDATING ',Filename]);
+  //debugln(['TSourceEditor.UpdateIfDefNodeStates UPDATING ',Filename]);
   FLastIfDefNodeScannerStep:=Scanner.ChangeStep;
   EditorComponent.BeginUpdate;
   try
@@ -5467,7 +5467,7 @@ begin
       lsdsActive: SynState:=idnEnabled;
       lsdsInactive: SynState:=idnDisabled;
       end;
-      debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' ',dbgs(aDirective^.State)]);
+      //debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' ',dbgs(aDirective^.State)]);
       EditorComponent.SetIfdefNodeState(Y,X,SynState);
     end;
   finally
