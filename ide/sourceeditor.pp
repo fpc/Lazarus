@@ -5459,6 +5459,7 @@ begin
     begin
       aDirective:=Scanner.DirectivesSorted[i];
       if TCodeBuffer(aDirective^.Code)<>Code then continue;
+      if not (aDirective^.Kind in (lsdkAllIf+[lsdkElIfC])) then continue;
       Code.AbsoluteToLineCol(aDirective^.SrcPos,Y,X);
       if Y<1 then continue;
       SynState:=idnInvalid;
