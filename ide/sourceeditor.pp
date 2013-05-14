@@ -223,7 +223,7 @@ type
     procedure ConnectScanner(Scanner: TLinkScanner);
     procedure DisconnectScanner(Scanner: TLinkScanner);
     function GetIfDefNodeState(x, y: integer): TSynMarkupIfdefNodeState;
-    function GetMainLinkScanner: TLinkScanner;
+    function GetMainLinkScanner(Scan: boolean): TLinkScanner;
   public
     constructor Create;
     destructor Destroy; override;
@@ -248,6 +248,7 @@ type
                                    //   LinesDeleted messages
     {$IFDEF WithSynMarkupIfDef}
     FOnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest;
+    FLastIfDefNodeScannerStep: integer;
     {$ENDIF}
     FSyncroLockCount: Integer;
     FPageName: string;
@@ -2629,7 +2630,7 @@ begin
     debugln(['TSourceEditorSharedValues.GetIfDefNodeState out of code x=',x,' y=',y,' ',Filename]);
     exit;
   end;
-  Scanner:=GetMainLinkScanner;
+  Scanner:=GetMainLinkScanner(true);
   if not Scanner.FindDirective(CodeBuffer,p,FirstSortedIndex,LastSortedIndex)
   then begin
     debugln(['TSourceEditorSharedValues.GetIfDefNodeState no directive at x=',x,' y=',y,' ',Filename]);
@@ -2651,10 +2652,9 @@ begin
   end;
 end;
 
-function TSourceEditorSharedValues.GetMainLinkScanner: TLinkScanner;
+function TSourceEditorSharedValues.GetMainLinkScanner(Scan: boolean
+  ): TLinkScanner;
 // Note: if this is an include file, the main scanner may change
-var
-  NeedScan: Boolean;
 begin
   Result:=FMainLinkScanner;
   if Result=nil then
@@ -2670,12 +2670,8 @@ begin
     Result:=CodeToolBoss.CurCodeTool.Scanner;
     ConnectScanner(Result);
     FMainLinkScanner:=Result;
-    NeedScan:=true;
-  end else begin
-    NeedScan:=false;
-    // ToDo: check stamps
   end;
-  if NeedScan then
+  if Scan and (FMainLinkScanner<>nil) then
   begin
     try
       FMainLinkScanner.Scan(lsrEnd,false);
@@ -5431,26 +5427,27 @@ var
   X: integer;
   SynState: TSynMarkupIfdefNodeStateEx;
 begin
-  debugln(['TSourceEditor.UpdateIfDefNodeStates ']);
-  Scanner:=SharedValues.GetMainLinkScanner;
+  debugln(['TSourceEditor.UpdateIfDefNodeStates CHECK ',Filename]);
+  Scanner:=SharedValues.GetMainLinkScanner(true);
+  if Scanner=nil then exit;
+  if Scanner.ChangeStep=FLastIfDefNodeScannerStep then exit;
+  debugln(['TSourceEditor.UpdateIfDefNodeStates UPDATING ',Filename]);
+  FLastIfDefNodeScannerStep:=Scanner.ChangeStep;
   EditorComponent.InvalidateAllIfdefNodes;
-  if Scanner<>nil then
+  Code:=CodeBuffer;
+  for i:=0 to Scanner.DirectiveCount-1 do
   begin
-    Code:=CodeBuffer;
-    for i:=0 to Scanner.DirectiveCount-1 do
-    begin
-      aDirective:=Scanner.DirectivesSorted[i];
-      if TCodeBuffer(aDirective^.Code)<>Code then continue;
-      Code.AbsoluteToLineCol(aDirective^.SrcPos,Y,X);
-      if Y<1 then continue;
-      SynState:=idnInvalid;
-      case aDirective^.State of
-      lsdsActive: SynState:=idnEnabled;
-      lsdsInactive: SynState:=idnDisabled;
-      lsdsSkipped: SynState:=idnInvalid;
-      end;
-      EditorComponent.SetIfdefNodeState(Y,X,SynState);
+    aDirective:=Scanner.DirectivesSorted[i];
+    if TCodeBuffer(aDirective^.Code)<>Code then continue;
+    Code.AbsoluteToLineCol(aDirective^.SrcPos,Y,X);
+    if Y<1 then continue;
+    SynState:=idnInvalid;
+    case aDirective^.State of
+    lsdsActive: SynState:=idnEnabled;
+    lsdsInactive: SynState:=idnDisabled;
+    lsdsSkipped: SynState:=idnInvalid;
     end;
+    EditorComponent.SetIfdefNodeState(Y,X,SynState);
   end;
 end;
 {$ENDIF}
