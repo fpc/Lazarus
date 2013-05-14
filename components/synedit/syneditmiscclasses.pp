@@ -230,6 +230,23 @@ type
       var AStyle: TFontStyles; var AFrameStyle: TSynLineStyle); deprecated;
   end;
 
+  TSynSelectedColorAlphaEntry = record
+    Color: TColor;
+    Alpha: Integer;
+    Priority: Integer
+  end;
+
+  TSynSelectedColorMergeInfo = record
+    BaseColor: TColor;
+    BasePriority: Integer;
+    AlphaCount: Integer;
+    AlphaStack: Array of TSynSelectedColorAlphaEntry;
+  end;
+
+  TSynSelectedColorEnum = (
+    sscBack, sscFore, sscFrameLeft, sscFrameRight, sscFrameTop, sscFrameBottom
+  );
+
   { TSynSelectedColorMergeResult }
 
   TSynSelectedColorMergeResult = class(TSynSelectedColor)
@@ -237,6 +254,7 @@ type
     // TSynSelectedColor.Style and StyleMask describe how to modify a style,
     // but PaintLines creates an instance that contains an actual style (without mask)
     MergeFinalStyle: Boolean; // always true
+    FMergeInfoInitialized: Boolean;
 
     FCurrentEndX: TLazSynDisplayTokenBound;
     FCurrentStartX: TLazSynDisplayTokenBound;
@@ -245,6 +263,8 @@ type
     FFrameSideStyles: array[TLazSynBorderSide] of TSynLineStyle;
     FFrameSidePriority: array[TLazSynBorderSide] of Integer;
     FFrameSideOrigin: array[TLazSynBorderSide] of TSynFrameEdges;
+
+    FMergeInfos: array [TSynSelectedColorEnum] of TSynSelectedColorMergeInfo;
 
     function IsMatching(ABound1, ABound2: TLazSynDisplayTokenBound): Boolean;
     function GetFrameSideColors(Side: TLazSynBorderSide): TColor;
@@ -255,9 +275,15 @@ type
     procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
     procedure DoClear; override;
     procedure Init; override;
+
+    procedure MaybeInitFrameSides;
+    procedure MergeToInfo(var AnInfo: TSynSelectedColorMergeInfo;
+      AColor: TColor; APriority, AnAlpha: Integer);
+    function  CalculateInfo(var AnInfo: TSynSelectedColorMergeInfo; ANoneColor: TColor): TColor;
     property FrameSidePriority[Side: TLazSynBorderSide]: integer read GetFrameSidePriority;
     property FrameSideOrigin[Side: TLazSynBorderSide]: TSynFrameEdges read GetFrameSideOrigin;
   public
+    destructor Destroy; override;
 
     property FrameSideColors[Side: TLazSynBorderSide]: TColor read GetFrameSideColors;
     property FrameSideStyles[Side: TLazSynBorderSide]: TSynLineStyle read GetFrameSideStyles;
@@ -265,6 +291,9 @@ type
     property CurrentStartX: TLazSynDisplayTokenBound read FCurrentStartX write FCurrentStartX;
     property CurrentEndX: TLazSynDisplayTokenBound read FCurrentEndX write FCurrentEndX;
   public
+    procedure InitMergeInfo;    // (called automatically) Set all MergeInfo to the start values. After this was called, ay Changes to the color properties are ignored
+    procedure ProcessMergeInfo; // copy the merge result, to the actual color properties
+    procedure CleanupMergeInfo; // free the alpha arrays
     procedure Merge(Other: TSynHighlighterAttributesModifier);
     procedure Merge(Other: TSynHighlighterAttributesModifier; LeftCol, RightCol: TLazSynDisplayTokenBound);
     procedure MergeFrames(Other: TSynHighlighterAttributesModifier; LeftCol, RightCol: TLazSynDisplayTokenBound);
@@ -628,14 +657,16 @@ end;
 
 function TSynSelectedColorMergeResult.GetFrameSideColors(Side: TLazSynBorderSide): TColor;
 begin
+  if FFrameSidesInitialized then begin
+    Result := FFrameSideColors[Side];
+    exit
+  end;
+
   case Side of
     bsLeft:  if not IsMatching(FCurrentStartX, FStartX) then exit(clNone);
     bsRight: if not IsMatching(FCurrentEndX,   FEndX)   then exit(clNone);
   end;
 
-  if FFrameSidesInitialized
-  then Result := FFrameSideColors[Side]
-  else
   if (Side in SynFrameEdgeToSides[FrameEdges])
   then Result := FrameColor
   else Result := clNone;
@@ -652,14 +683,16 @@ end;
 
 function TSynSelectedColorMergeResult.GetFrameSidePriority(Side: TLazSynBorderSide): integer;
 begin
+  if FFrameSidesInitialized then begin
+    Result := FFrameSidePriority[Side];
+    exit
+  end;
+
   case Side of
     bsLeft:  if not IsMatching(FCurrentStartX, FStartX) then exit(0);
     bsRight: if not IsMatching(FCurrentEndX,   FEndX)   then exit(0);
   end;
 
-  if FFrameSidesInitialized
-  then Result := FFrameSidePriority[Side]
-  else
   if (Side in SynFrameEdgeToSides[FrameEdges])
   then Result := FramePriority
   else Result := 0;
@@ -678,9 +711,12 @@ end;
 procedure TSynSelectedColorMergeResult.AssignFrom(Src: TLazSynCustomTextAttributes);
 var
   i: TLazSynBorderSide;
+  j: TSynSelectedColorEnum;
+  c: Integer;
 begin
   //DoClear;
   FFrameSidesInitialized := False;
+  FMergeInfoInitialized := False;
   for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do begin
     FFrameSideColors[i] := clNone;
     FFrameSideStyles[i] := slsSolid;
@@ -695,7 +731,8 @@ begin
 
   inherited AssignFrom(Src);
 
-  if not (Src is TSynSelectedColorMergeResult) then exit;
+  if not (Src is TSynSelectedColorMergeResult) then
+    exit;
 
   FCurrentStartX := TSynSelectedColorMergeResult(Src).FCurrentStartX;
   FCurrentEndX   := TSynSelectedColorMergeResult(Src).FCurrentEndX;
@@ -704,6 +741,25 @@ begin
   for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do begin
     FFrameSideColors[i] := TSynSelectedColorMergeResult(Src).FFrameSideColors[i];
     FFrameSideStyles[i] := TSynSelectedColorMergeResult(Src).FFrameSideStyles[i];
+    FFrameSideOrigin[i] := TSynSelectedColorMergeResult(Src).FFrameSideOrigin[i];
+    FFrameSidePriority[i] := TSynSelectedColorMergeResult(Src).FFrameSidePriority[i];
+  end;
+
+  FMergeInfoInitialized := TSynSelectedColorMergeResult(Src).FMergeInfoInitialized;
+
+  if FMergeInfoInitialized then begin
+    for j := low(TSynSelectedColorEnum) to high(TSynSelectedColorEnum) do begin
+      FMergeInfos[j].BaseColor    := TSynSelectedColorMergeResult(Src).FMergeInfos[j].BaseColor;
+      FMergeInfos[j].BasePriority := TSynSelectedColorMergeResult(Src).FMergeInfos[j].BasePriority;
+      c := TSynSelectedColorMergeResult(Src).FMergeInfos[j].AlphaCount;
+      FMergeInfos[j].AlphaCount   := c;
+      if Length(FMergeInfos[j].AlphaStack) < c then
+        SetLength(FMergeInfos[j].AlphaStack, c + 3);
+      if c > 0 then
+        move(TSynSelectedColorMergeResult(Src).FMergeInfos[j].AlphaStack[0],
+             FMergeInfos[j].AlphaStack[0],
+             c * SizeOf(TSynSelectedColorAlphaEntry) );
+    end;
   end;
 
   Changed; {TODO: only if really changed}
@@ -726,12 +782,178 @@ begin
   FCurrentEndX.Logical    := -1;
   FCurrentStartX.Offset   := 0;
   FCurrentEndX.Offset     := 0;
+  CleanupMergeInfo;
 end;
 
 procedure TSynSelectedColorMergeResult.Init;
 begin
   inherited Init;
   MergeFinalStyle := True;
+  FMergeInfoInitialized := False;
+end;
+
+procedure TSynSelectedColorMergeResult.MaybeInitFrameSides;
+var
+  i: TLazSynBorderSide;
+begin
+  if FFrameSidesInitialized then
+    exit;
+
+  for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do begin
+    FFrameSideColors[i]   := FrameSideColors[i];
+    FFrameSideStyles[i]   := FrameSideStyles[i];
+    FFrameSidePriority[i] := FrameSidePriority[i];
+    FFrameSideOrigin[i]   := FrameSideOrigin[i];
+  end;
+  FFrameSidesInitialized := True;
+end;
+
+procedure TSynSelectedColorMergeResult.MergeToInfo(var AnInfo: TSynSelectedColorMergeInfo;
+  AColor: TColor; APriority, AnAlpha: Integer);
+begin
+  if (APriority < AnInfo.BasePriority) or (AColor = clNone) then
+    exit;
+
+  if AnAlpha = 0 then begin // solid
+    AnInfo.BaseColor := AColor;
+    AnInfo.BasePriority := APriority;
+  end
+  else begin // remember alpha for later
+    if Length(AnInfo.AlphaStack) <= AnInfo.AlphaCount then
+      SetLength(AnInfo.AlphaStack, AnInfo.AlphaCount + 5);
+    AnInfo.AlphaStack[AnInfo.AlphaCount].Color    := AColor;
+    AnInfo.AlphaStack[AnInfo.AlphaCount].Alpha    := AnAlpha;
+    AnInfo.AlphaStack[AnInfo.AlphaCount].Priority := APriority;
+    inc(AnInfo.AlphaCount);
+  end;
+end;
+
+function TSynSelectedColorMergeResult.CalculateInfo(var AnInfo: TSynSelectedColorMergeInfo;
+  ANoneColor: TColor): TColor;
+var
+  i, j, c, p: Integer;
+  tmp: TSynSelectedColorAlphaEntry;
+  C1, C2, C3, M1, M2, M3, Alpha: Integer;
+  Col: TColor;
+begin
+  p := AnInfo.BasePriority;
+  c := AnInfo.AlphaCount - 1;
+
+  //if c >= 0 then begin
+    while (c >= 0) and (AnInfo.AlphaStack[c].Priority < p) do
+      dec(c);
+    i := 1;
+    while i <= c do begin
+      if AnInfo.AlphaStack[i].Priority < p then begin
+        AnInfo.AlphaStack[i] := AnInfo.AlphaStack[c];
+        dec(c);
+        while (c >= 0) and (AnInfo.AlphaStack[c].Priority < p) do
+          dec(c);
+        Continue;
+      end;
+
+      j := i - 1;
+      if AnInfo.AlphaStack[j].Priority > AnInfo.AlphaStack[i].Priority then begin
+        tmp := AnInfo.AlphaStack[i];
+        AnInfo.AlphaStack[i] := AnInfo.AlphaStack[j];
+        while (j > 0) and (AnInfo.AlphaStack[j-1].Priority > AnInfo.AlphaStack[j].Priority) do begin
+          AnInfo.AlphaStack[j] := AnInfo.AlphaStack[j-1];
+          dec(j);
+        end;
+        AnInfo.AlphaStack[j] := tmp;
+      end;
+
+      inc(i);
+    end;
+  //end;
+
+  Result := AnInfo.BaseColor;
+
+  // The highlighter may have merged, before defaults where set in
+  // TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView / InitSynAttr
+  if Result = clNone then
+    Result := ANoneColor;
+
+  if (c >= 0) and (AnInfo.AlphaStack[0].Priority >= p) then begin
+    Result := ColorToRGB(Result);  // no system color.
+    C1 := Red(Result);
+    C2 := Green(Result);
+    C3 := Blue(Result);
+    for i := 0 to c do begin
+      Col := AnInfo.AlphaStack[i].Color;
+      Alpha := AnInfo.AlphaStack[i].Alpha;
+      M1 := Red(Col);
+      M2 := Green(Col);
+      M3 := Blue(Col);
+      C1 := C1 + (M1 - C1) * Alpha div 256;
+      C2 := C2 + (M2 - C2) * Alpha div 256;
+      C3 := C3 + (M3 - C3) * Alpha div 256;
+
+    end;
+    Result := RGBToColor(C1, C2, C3);
+  end;
+end;
+
+destructor TSynSelectedColorMergeResult.Destroy;
+begin
+  CleanupMergeInfo;
+  inherited Destroy;
+end;
+
+procedure TSynSelectedColorMergeResult.InitMergeInfo;
+begin
+  MaybeInitFrameSides;
+
+  FMergeInfos[sscBack].AlphaCount   := 0;
+  FMergeInfos[sscBack].BaseColor    := Background;
+  FMergeInfos[sscBack].BasePriority := BackPriority;
+
+  FMergeInfos[sscFore].AlphaCount   := 0;
+  FMergeInfos[sscFore].BaseColor    := Foreground;
+  FMergeInfos[sscFore].BasePriority := ForePriority;
+
+  FMergeInfos[sscFrameLeft].AlphaCount   := 0;
+  FMergeInfos[sscFrameLeft].BaseColor    := FrameSideColors[bsLeft];
+  FMergeInfos[sscFrameLeft].BasePriority := FrameSidePriority[bsLeft];
+
+  FMergeInfos[sscFrameRight].AlphaCount   := 0;
+  FMergeInfos[sscFrameRight].BaseColor    := FrameSideColors[bsRight];
+  FMergeInfos[sscFrameRight].BasePriority := FrameSidePriority[bsRight];
+
+  FMergeInfos[sscFrameTop].AlphaCount   := 0;
+  FMergeInfos[sscFrameTop].BaseColor    := FrameSideColors[bsTop];
+  FMergeInfos[sscFrameTop].BasePriority := FrameSidePriority[bsTop];
+
+  FMergeInfos[sscFrameBottom].AlphaCount   := 0;
+  FMergeInfos[sscFrameBottom].BaseColor    := FrameSideColors[bsBottom];
+  FMergeInfos[sscFrameBottom].BasePriority := FrameSidePriority[bsBottom];
+
+  FMergeInfoInitialized := True;
+end;
+
+procedure TSynSelectedColorMergeResult.ProcessMergeInfo;
+begin
+  if not FMergeInfoInitialized then
+    exit;
+  BeginUpdate;
+  Background := CalculateInfo(FMergeInfos[sscBack], Background);
+  Foreground := CalculateInfo(FMergeInfos[sscFore], Foreground);
+  // if the frame is clNone, and alpha is aplied, use the background as base
+  FFrameSideColors[bsLeft]   := CalculateInfo(FMergeInfos[sscFrameLeft], Background);
+  FFrameSideColors[bsRight]  := CalculateInfo(FMergeInfos[sscFrameRight], Background);
+  FFrameSideColors[bsTop]    := CalculateInfo(FMergeInfos[sscFrameTop], Background);
+  FFrameSideColors[bsBottom] := CalculateInfo(FMergeInfos[sscFrameBottom], Background);
+  EndUpdate;
+  FMergeInfoInitialized := False;
+end;
+
+procedure TSynSelectedColorMergeResult.CleanupMergeInfo;
+var
+  i: TSynSelectedColorEnum;
+begin
+  for i := low(TSynSelectedColorEnum) to high(TSynSelectedColorEnum) do
+    SetLength(FMergeInfos[i].AlphaStack, 0);
+  FMergeInfoInitialized := False;
 end;
 
 procedure TSynSelectedColorMergeResult.Merge(Other: TSynHighlighterAttributesModifier);
@@ -746,15 +968,11 @@ var
   j: TFontStyle;
 begin
   BeginUpdate;
+  if not FMergeInfoInitialized then
+    InitMergeInfo;
 
-  if (Other.Background <> clNone) and (Other.BackPriority >= BackPriority) then begin
-    Background := Other.Background;
-    BackPriority := Other.BackPriority;
-  end;
-  if (Other.Foreground <> clNone) and (Other.ForePriority >= ForePriority) then begin
-    Foreground := Other.Foreground;
-    ForePriority := Other.ForePriority;
-  end;
+  MergeToInfo(FMergeInfos[sscBack], Other.Background, Other.BackPriority, Other.BackAlpha);
+  MergeToInfo(FMergeInfos[sscFore], Other.Foreground, Other.ForePriority, Other.ForeAlpha);
 
   MergeFrames(Other, LeftCol, RightCol);
 
@@ -794,45 +1012,61 @@ end;
 procedure TSynSelectedColorMergeResult.MergeFrames(Other: TSynHighlighterAttributesModifier; LeftCol,
   RightCol: TLazSynDisplayTokenBound);
 
-  procedure SetSide(ASide: TLazSynBorderSide; ASrc: TSynHighlighterAttributesModifier);
-  begin
-  (*
-    if (FrameSideColors[ASide] <> clNone) and
-       ( (ASrc.FramePriority < FrameSidePriority[ASide]) or
-         ( (ASrc.FramePriority = FrameSidePriority[ASide]) and
-           (SynFrameEdgePriorities[ASrc.FrameEdges] < SynFrameEdgePriorities[FrameSideOrigin[ASide]]) )
-       )
+  //procedure SetSide(ASide: TLazSynBorderSide; ASrc: TSynHighlighterAttributesModifier);
+  //begin
+  //(*
+  //  if (FrameSideColors[ASide] <> clNone) and
+  //     ( (ASrc.FramePriority < FrameSidePriority[ASide]) or
+  //       ( (ASrc.FramePriority = FrameSidePriority[ASide]) and
+  //         (SynFrameEdgePriorities[ASrc.FrameEdges] < SynFrameEdgePriorities[FrameSideOrigin[ASide]]) )
+  //     )
+  //
+  //*)
+  //  if (FrameSideColors[ASide] <> clNone) and
+  //     ( (ASrc.FramePriority < FrameSidePriority[ASide]) or
+  //       ( (ASrc.FramePriority = FrameSidePriority[ASide]) and
+  //         (SynFrameEdgePriorities[ASrc.FrameEdges] < SynFrameEdgePriorities[FrameSideOrigin[ASide]]) )
+  //     )
+  //  then
+  //    exit;
+  //  FFrameSideColors[ASide] := ASrc.FrameColor;
+  //  FFrameSideStyles[ASide] := ASrc.FrameStyle;
+  //  FFrameSidePriority[ASide] := ASrc.FramePriority;
+  //  FFrameSideOrigin[ASide]   := ASrc.FrameEdges;
+  //  if ASide = bsLeft then
+  //    FStartX := LeftCol; // LeftCol has Phys and log ; // ASrc.FStartX;
+  //  if ASide = bsRight then
+  //    FEndX := RightCol; // ASrc.FEndX;
+  //end;
 
-  *)
-    if (FrameSideColors[ASide] <> clNone) and
-       ( (ASrc.FramePriority < FrameSidePriority[ASide]) or
-         ( (ASrc.FramePriority = FrameSidePriority[ASide]) and
+  procedure SetSide(AInfoSide: TSynSelectedColorEnum; ASide: TLazSynBorderSide;
+    ASrc: TSynHighlighterAttributesModifier);
+  begin
+    if (FMergeInfos[AInfoSide].BaseColor <> clNone) and
+       ( (ASrc.FramePriority < FMergeInfos[AInfoSide].BasePriority) or
+         ( (ASrc.FramePriority = FMergeInfos[AInfoSide].BasePriority) and
            (SynFrameEdgePriorities[ASrc.FrameEdges] < SynFrameEdgePriorities[FrameSideOrigin[ASide]]) )
        )
     then
       exit;
-    FFrameSideColors[ASide] := ASrc.FrameColor;
-    FFrameSideStyles[ASide] := ASrc.FrameStyle;
-    FFrameSidePriority[ASide] := ASrc.FramePriority;
-    FFrameSideOrigin[ASide]   := ASrc.FrameEdges;
-    if ASide = bsLeft then
-      FStartX := LeftCol; // LeftCol has Phys and log ; // ASrc.FStartX;
-    if ASide = bsRight then
-      FEndX := RightCol; // ASrc.FEndX;
+
+    MergeToInfo(FMergeInfos[AInfoSide], ASrc.FrameColor, ASrc.FramePriority, ASrc.FrameAlpha);
+
+    FFrameSidePriority[ASide] := ASrc.FramePriority; // used for style (style may be taken, from an alpha frame
+    if ( (ASrc.FramePriority > FFrameSidePriority[ASide]) or
+         ( (ASrc.FramePriority = FFrameSidePriority[ASide]) and
+           (SynFrameEdgePriorities[ASrc.FrameEdges] >= SynFrameEdgePriorities[FrameSideOrigin[ASide]]) )
+       )
+    then
+      FFrameSideStyles[ASide] := ASrc.FrameStyle;
+
+    if ASrc.FrameAlpha = 0 then
+      FFrameSideOrigin[ASide] := ASrc.FrameEdges;
   end;
 
-var
-  i: TLazSynBorderSide;
 begin
-  if not FFrameSidesInitialized then begin
-    for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do begin
-      FFrameSideColors[i]   := FrameSideColors[i];
-      FFrameSideStyles[i]   := FrameSideStyles[i];
-      FFrameSidePriority[i] := FrameSidePriority[i];
-      FFrameSideOrigin[i]   := FrameSideOrigin[i];
-    end;
-    FFrameSidesInitialized := True;
-  end;
+  if not FFrameSidesInitialized then
+    MaybeInitFrameSides;
 
   If (Other = nil) or (Other.FrameColor = clNone) then
     exit;
@@ -844,23 +1078,23 @@ begin
         if (not (Other is TSynSelectedColor)) or  // always merge, if it has no startx
            IsMatching(TSynSelectedColor(Other).StartX, LeftCol)
         then
-          SetSide(bsLeft, Other);
+          SetSide(sscFrameLeft, bsLeft, Other);
         if  (not (Other is TSynSelectedColor)) or
            IsMatching(TSynSelectedColor(Other).EndX, RightCol)
         then
-          SetSide(bsRight, Other);
-        SetSide(bsBottom, Other);
-        SetSide(bsTop, Other);
+          SetSide(sscFrameRight, bsRight, Other);
+        SetSide(sscFrameBottom, bsBottom, Other);
+        SetSide(sscFrameTop, bsTop, Other);
         //FrameColor := Other.FrameColor;
         //FrameStyle := Other.FrameStyle;
         //FrameEdges := Other.FrameEdges;
       end;
     sfeBottom: begin
-        SetSide(bsBottom, Other);
+        SetSide(sscFrameBottom, bsBottom, Other);
       end;
     sfeLeft: begin
        // startX ?
-        SetSide(bsLeft, Other);
+        SetSide(sscFrameLeft, bsLeft, Other);
       end;
   end;
 end;

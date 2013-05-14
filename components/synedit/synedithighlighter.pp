@@ -137,7 +137,6 @@ type
   protected
     procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
     procedure DoChange; override;
-    procedure Init; override;
   public
     constructor Create;
     constructor Create(attribName: string; aStoredName: String = '');
@@ -173,24 +172,36 @@ type
 
   TSynHighlighterAttributesModifier = class(TSynHighlighterAttributes)
   private
+    FBackAlpha: byte;
+    FForeAlpha: byte;
+    FFrameAlpha: byte;
     FBackPriority: integer;
     FForePriority: integer;
     FFramePriority: integer;
     FStylePriority: Array [TFontStyle] of integer;
 
+    FBackAlphaDefault: byte;
+    FForeAlphaDefault: byte;
+    FFrameAlphaDefault: byte;
     FBackPriorityDefault: integer;
     FForePriorityDefault: integer;
     FFramePriorityDefault: integer;
     FStylePriorityDefault: Array [TFontStyle] of integer;
 
+    function GetBackAlphaStored: Boolean;
     function GetBackPriorityStored: Boolean;
+    function GetForeAlphaStored: Boolean;
     function GetForePriorityStored: Boolean;
+    function GetFrameAlphaStored: Boolean;
     function GetFramePriorityStored: Boolean;
     function GetStylePriorityStored(Index: TFontStyle): Boolean;
 
     function GetStylePriority(Index: TFontStyle): integer;
+    procedure SetBackAlpha(AValue: byte);
     procedure SetBackPriority(AValue: integer);
+    procedure SetForeAlpha(AValue: byte);
     procedure SetForePriority(AValue: integer);
+    procedure SetFrameAlpha(AValue: byte);
     procedure SetFramePriority(AValue: integer);
     procedure SetStylePriority(Index: TFontStyle; AValue: integer);
   protected
@@ -208,6 +219,11 @@ type
     property BoldPriority: integer index fsBold read GetStylePriority write SetStylePriority stored GetStylePriorityStored;
     property ItalicPriority: integer index fsItalic read GetStylePriority write SetStylePriority  stored GetStylePriorityStored;
     property UnderlinePriority: integer index fsUnderline read GetStylePriority write SetStylePriority  stored GetStylePriorityStored;
+    property StrikeOutPriority: integer index fsStrikeOut read GetStylePriority write SetStylePriority  stored GetStylePriorityStored;
+    // Alpha = 0 means solid // 1..255 means n of 256
+    property BackAlpha: byte read FBackAlpha write SetBackAlpha stored GetBackAlphaStored;
+    property ForeAlpha: byte read FForeAlpha write SetForeAlpha stored GetForeAlphaStored;
+    property FrameAlpha: byte read FFrameAlpha write SetFrameAlpha stored GetFrameAlphaStored;
   end;
 
   TSynHighlighterCapability = (
@@ -451,14 +467,36 @@ begin
   Result := FStylePriority[Index];
 end;
 
+procedure TSynHighlighterAttributesModifier.SetBackAlpha(AValue: byte);
+begin
+  if FBackAlpha = AValue then Exit;
+  FBackAlpha := AValue;
+  Changed;
+end;
+
 function TSynHighlighterAttributesModifier.GetBackPriorityStored: Boolean;
 begin
   Result := FBackPriority <> FBackPriorityDefault;
 end;
 
+function TSynHighlighterAttributesModifier.GetBackAlphaStored: Boolean;
+begin
+  Result := FBackAlpha <> FBackAlphaDefault;
+end;
+
+function TSynHighlighterAttributesModifier.GetForeAlphaStored: Boolean;
+begin
+  Result := FForeAlpha <> FForeAlphaDefault;
+end;
+
 function TSynHighlighterAttributesModifier.GetForePriorityStored: Boolean;
 begin
   Result := FForePriority <> FForePriorityDefault;
+end;
+
+function TSynHighlighterAttributesModifier.GetFrameAlphaStored: Boolean;
+begin
+  Result := FFrameAlpha <> FForeAlphaDefault;
 end;
 
 function TSynHighlighterAttributesModifier.GetFramePriorityStored: Boolean;
@@ -478,10 +516,24 @@ begin
   Changed;
 end;
 
+procedure TSynHighlighterAttributesModifier.SetForeAlpha(AValue: byte);
+begin
+  if FForeAlpha = AValue then Exit;
+  FForeAlpha := AValue;
+  Changed;
+end;
+
 procedure TSynHighlighterAttributesModifier.SetForePriority(AValue: integer);
 begin
   if FForePriority = AValue then Exit;
   FForePriority := AValue;
+  Changed;
+end;
+
+procedure TSynHighlighterAttributesModifier.SetFrameAlpha(AValue: byte);
+begin
+  if FFrameAlpha = AValue then Exit;
+  FFrameAlpha := AValue;
   Changed;
 end;
 
@@ -514,15 +566,25 @@ begin
     FramePriority := Source.FramePriority;
     for j := Low(TFontStyle) to High(TFontStyle) do
       StylePriority[j] := Source.StylePriority[j];
+    FBackAlpha  := Source.BackAlpha;
+    FForeAlpha  := Source.ForeAlpha;
+    FFrameAlpha := Source.FrameAlpha;
   end
-  else
+  else begin
     InitPriorities;
+    FBackAlpha  := 0;
+    FForeAlpha  := 0;
+    FFrameAlpha := 0;
+  end;
 end;
 
 procedure TSynHighlighterAttributesModifier.DoClear;
 begin
   inherited DoClear;
   InitPriorities;
+  FBackAlpha  := 0;
+  FForeAlpha  := 0;
+  FFrameAlpha := 0;
 end;
 
 procedure TSynHighlighterAttributesModifier.InitPriorities;
@@ -546,6 +608,9 @@ begin
   FBackPriorityDefault  := FBackPriority;
   FForePriorityDefault  := FForePriority;
   FFramePriorityDefault := FFramePriority;
+  FForeAlphaDefault     := FForeAlpha;
+  FBackAlphaDefault     := FBackAlpha;
+  FFrameAlphaDefault    := FFrameAlpha;
   for i := Low(TFontStyle) to High(TFontStyle) do
     FStylePriorityDefault[i] := FStylePriority[i];
 end;
@@ -1148,19 +1213,10 @@ begin
     fOnChange(Self);
 end;
 
-procedure TSynHighlighterAttributes.Init;
-begin
-  inherited Init;
-  FBackgroundDefault := clNone;
-  FForegroundDefault := clNone;
-  FFrameColorDefault := clNone;
-  FFrameStyleDefault := slsSolid;
-  FFrameEdgesDefault := sfeAround;
-end;
-
 constructor TSynHighlighterAttributes.Create;
 begin
   inherited Create;
+  InternalSaveDefaultValues;
 end;
 
 { TSynEditLinesList }

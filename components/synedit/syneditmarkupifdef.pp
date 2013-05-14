@@ -2359,13 +2359,15 @@ begin
       Node.FStartLine := ALinePos;  // directly to field
     end
     else begin
-      assert(false, 'SetNodeState did not find a node (ScanLine)');
+      DebugLn( 'SetNodeState did not find a node (ScanLine)');
+      //assert(false, 'SetNodeState did not find a node (ScanLine)');
       exit;
     end;
   end;
 
   i := Node.EntryCount;
-  assert(i > 0, 'SetNodeState did not find a node (zero entries)');
+  if i = 0 then begin DebugLn('SetNodeState did not find a node (zero entries)'); exit; end;
+  //assert(i > 0, 'SetNodeState did not find a node (zero entries)');
   e := nil;
   LineNeedReq := False;
   repeat
@@ -2377,8 +2379,8 @@ begin
       LineNeedReq := LineNeedReq or e2.NeedsRequesting;
   until (i = 0) or (e <> nil);
 
-  assert(e <> nil, 'SetNodeState did not find a node (no matching entry)');
-  assert(e.NodeType in [idnIfdef, idnElseIf], 'SetNodeState did not find a node (e.NodeType <> idnIfdef)');
+  //assert(e <> nil, 'SetNodeState did not find a node (no matching entry)');
+  //assert(e.NodeType in [idnIfdef, idnElseIf], 'SetNodeState did not find a node (e.NodeType <> idnIfdef)');
   if (e = nil) or not(e.NodeType in [idnIfdef, idnElseIf]) then
     exit;
 
@@ -2791,8 +2793,8 @@ begin
     Result := idnInvalid;
 
   //Result := idnEnabled;
-  if pos('y', copy(SynEdit.Lines[LinePos-1], XStartPos, 100)) > 1 then
-    Result := idnDisabled;
+  //if pos('y', copy(SynEdit.Lines[LinePos-1], XStartPos, 100)) > 1 then
+  //  Result := idnDisabled;
   DebugLn(['STATE REQUEST ', LinePos, ' ', XStartPos, ' : ', dbgs(Result)]);
 end;
 
@@ -2824,7 +2826,10 @@ begin
   FOuterLines := FIfDefTree.CreateOpeningList;
 
   MarkupInfo.Clear;
-  MarkupInfo.Background := clLtGray;
+  //MarkupInfo.Background := clLtGray;
+  MarkupInfo.Foreground := clLtGray;
+  MarkupInfo.ForeAlpha := 180;
+  MarkupInfo.ForePriority := 99999;
 end;
 
 destructor TSynEditMarkupIfDef.Destroy;

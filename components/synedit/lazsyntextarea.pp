@@ -405,6 +405,7 @@ begin
 
   fMarkupManager.MergeMarkupAttributeAtRowCol(FCurTxtLineIdx + 1,
     ATokenInfo.StartPos, ATokenInfo.EndPos, ATokenInfo.RtlInfo, FMarkupTokenAttr);
+  FMarkupTokenAttr.ProcessMergeInfo;
 
 
   ATokenInfo.Attr := FMarkupTokenAttr;
