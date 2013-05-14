@@ -5451,7 +5451,7 @@ begin
   if Scanner.ChangeStep=FLastIfDefNodeScannerStep then exit;
   debugln(['TSourceEditor.UpdateIfDefNodeStates UPDATING ',Filename]);
   FLastIfDefNodeScannerStep:=Scanner.ChangeStep;
-  EditorComponent.InvalidateAllIfdefNodes;
+  //EditorComponent.InvalidateAllIfdefNodes;
   Code:=CodeBuffer;
   for i:=0 to Scanner.DirectiveCount-1 do
   begin
