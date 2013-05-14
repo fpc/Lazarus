@@ -883,14 +883,14 @@ begin
     C2 := Green(Result);
     C3 := Blue(Result);
     for i := 0 to c do begin
-      Col := AnInfo.AlphaStack[i].Color;
+      Col := ColorToRGB(AnInfo.AlphaStack[i].Color);
       Alpha := AnInfo.AlphaStack[i].Alpha;
       M1 := Red(Col);
       M2 := Green(Col);
       M3 := Blue(Col);
-      C1 := C1 + (M1 - C1) * Alpha div 256;
-      C2 := C2 + (M2 - C2) * Alpha div 256;
-      C3 := C3 + (M3 - C3) * Alpha div 256;
+      C1 := MinMax(C1 + (M1 - C1) * Alpha div 256, 0, 255);
+      C2 := MinMax(C2 + (M2 - C2) * Alpha div 256, 0, 255);
+      C3 := MinMax(C3 + (M3 - C3) * Alpha div 256, 0, 255);
 
     end;
     Result := RGBToColor(C1, C2, C3);
