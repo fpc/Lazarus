@@ -5451,21 +5451,26 @@ begin
   if Scanner.ChangeStep=FLastIfDefNodeScannerStep then exit;
   debugln(['TSourceEditor.UpdateIfDefNodeStates UPDATING ',Filename]);
   FLastIfDefNodeScannerStep:=Scanner.ChangeStep;
-  //EditorComponent.InvalidateAllIfdefNodes;
-  Code:=CodeBuffer;
-  for i:=0 to Scanner.DirectiveCount-1 do
-  begin
-    aDirective:=Scanner.DirectivesSorted[i];
-    if TCodeBuffer(aDirective^.Code)<>Code then continue;
-    Code.AbsoluteToLineCol(aDirective^.SrcPos,Y,X);
-    if Y<1 then continue;
-    SynState:=idnInvalid;
-    case aDirective^.State of
-    lsdsActive: SynState:=idnEnabled;
-    lsdsInactive: SynState:=idnDisabled;
+  EditorComponent.BeginUpdate;
+  try
+    //EditorComponent.InvalidateAllIfdefNodes;
+    Code:=CodeBuffer;
+    for i:=0 to Scanner.DirectiveCount-1 do
+    begin
+      aDirective:=Scanner.DirectivesSorted[i];
+      if TCodeBuffer(aDirective^.Code)<>Code then continue;
+      Code.AbsoluteToLineCol(aDirective^.SrcPos,Y,X);
+      if Y<1 then continue;
+      SynState:=idnInvalid;
+      case aDirective^.State of
+      lsdsActive: SynState:=idnEnabled;
+      lsdsInactive: SynState:=idnDisabled;
+      end;
+      debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' ',dbgs(aDirective^.State)]);
+      EditorComponent.SetIfdefNodeState(Y,X,SynState);
     end;
-    debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' ',dbgs(aDirective^.State)]);
-    EditorComponent.SetIfdefNodeState(Y,X,SynState);
+  finally
+    EditorComponent.EndUpdate;
   end;
 end;
 {$ENDIF}

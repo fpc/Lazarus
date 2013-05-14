@@ -2856,6 +2856,7 @@ procedure TSynEditMarkupIfDef.SetNodeState(ALinePos, AstartPos: Integer;
   AState: TSynMarkupIfdefNodeState);
 begin
   FIfDefTree.SetNodeState(ALinePos, AstartPos, AState);
+  ValidateMatches;
 end;
 
 
