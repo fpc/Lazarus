@@ -45,7 +45,7 @@
         <PackageName Value="FCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="20">
+    <Units Count="21">
       <Unit0>
         <Filename Value="SynTest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -146,6 +146,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestMarkupIfDef"/>
       </Unit19>
+      <Unit20>
+        <Filename Value="testpaintcolormerging.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestPaintColorMerging"/>
+      </Unit20>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -166,9 +171,6 @@
         <OverflowChecks Value="True"/>
         <StackChecks Value="True"/>
       </Checks>
-      <Optimizations>
-        <OptimizationLevel Value="0"/>
-      </Optimizations>
     </CodeGeneration>
     <Linking>
       <Debugging>

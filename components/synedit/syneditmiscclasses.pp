@@ -279,7 +279,8 @@ type
     procedure MaybeInitFrameSides;
     procedure MergeToInfo(var AnInfo: TSynSelectedColorMergeInfo;
       AColor: TColor; APriority, AnAlpha: Integer);
-    function  CalculateInfo(var AnInfo: TSynSelectedColorMergeInfo; ANoneColor: TColor): TColor;
+    function  CalculateInfo(var AnInfo: TSynSelectedColorMergeInfo;
+              ANoneColor: TColor; IsFrame: Boolean = False): TColor;
     property FrameSidePriority[Side: TLazSynBorderSide]: integer read GetFrameSidePriority;
     property FrameSideOrigin[Side: TLazSynBorderSide]: TSynFrameEdges read GetFrameSideOrigin;
   public
@@ -829,7 +830,7 @@ begin
 end;
 
 function TSynSelectedColorMergeResult.CalculateInfo(var AnInfo: TSynSelectedColorMergeInfo;
-  ANoneColor: TColor): TColor;
+  ANoneColor: TColor; IsFrame: Boolean): TColor;
 var
   i, j, c, p: Integer;
   tmp: TSynSelectedColorAlphaEntry;
@@ -871,10 +872,12 @@ begin
 
   // The highlighter may have merged, before defaults where set in
   // TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView / InitSynAttr
-  if Result = clNone then
+  if (Result = clNone) and (not IsFrame) then
     Result := ANoneColor;
 
   if (c >= 0) and (AnInfo.AlphaStack[0].Priority >= p) then begin
+    if (Result = clNone) then
+      Result := ANoneColor;
     Result := ColorToRGB(Result);  // no system color.
     C1 := Red(Result);
     C2 := Green(Result);
@@ -939,10 +942,10 @@ begin
   Background := CalculateInfo(FMergeInfos[sscBack], Background);
   Foreground := CalculateInfo(FMergeInfos[sscFore], Foreground);
   // if the frame is clNone, and alpha is aplied, use the background as base
-  FFrameSideColors[bsLeft]   := CalculateInfo(FMergeInfos[sscFrameLeft], Background);
-  FFrameSideColors[bsRight]  := CalculateInfo(FMergeInfos[sscFrameRight], Background);
-  FFrameSideColors[bsTop]    := CalculateInfo(FMergeInfos[sscFrameTop], Background);
-  FFrameSideColors[bsBottom] := CalculateInfo(FMergeInfos[sscFrameBottom], Background);
+  FFrameSideColors[bsLeft]   := CalculateInfo(FMergeInfos[sscFrameLeft],   Background, True);
+  FFrameSideColors[bsRight]  := CalculateInfo(FMergeInfos[sscFrameRight],  Background, True);
+  FFrameSideColors[bsTop]    := CalculateInfo(FMergeInfos[sscFrameTop],    Background, True);
+  FFrameSideColors[bsBottom] := CalculateInfo(FMergeInfos[sscFrameBottom], Background, True);
   EndUpdate;
   FMergeInfoInitialized := False;
 end;

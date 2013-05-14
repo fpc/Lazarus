@@ -3072,6 +3072,7 @@ components/synedit/test/testmarkuphighall.pas svneol=native#text/pascal
 components/synedit/test/testmarkupifdef.pas svneol=native#text/pascal
 components/synedit/test/testmarkupwordgroup.pas svneol=native#text/pascal
 components/synedit/test/testnavigation.pas svneol=native#text/pascal
+components/synedit/test/testpaintcolormerging.pas svneol=native#text/pascal
 components/synedit/test/testsearch.pas svneol=native#text/pascal
 components/synedit/test/testsynbeautifier.pas svneol=native#text/pascal
 components/synedit/test/testsyncroedit.pas svneol=native#text/pascal
