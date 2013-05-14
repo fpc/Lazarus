@@ -377,14 +377,15 @@ begin
     inc(AUnitName);
     inc(Filename);
   end;
-  if (AUnitName^=#0) then begin
-    // the unit name fits the start of the file name
-    if (Filename^='.') then
-      Result:=0
-    else
-      Result:=ord('.')-ord(FPUpChars[Filename^]);
-  end else
+  if (AUnitName^<>#0) then begin
     Result:=ord(FPUpChars[AUnitName^])-ord(FPUpChars[Filename^]);
+  end else begin
+    // the unit name fits the start of the file name
+    if (Filename^<>'.') then
+      Result:=ord('.')-ord(FPUpChars[Filename^])
+    else
+      Result:=0;
+  end;
 end;
 
 function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
@@ -997,6 +998,8 @@ var
   CurFilename: PChar;
   CurFilenameLen: LongInt;
   Files: PChar;
+  p: PChar;
+  ExtStartPos: PChar;
 begin
   Result:='';
   //if (CompareText(AUnitName,'AddFileToAPackageDlg')=0) {and (System.Pos('packager',directory)>0)} then
@@ -1043,22 +1046,20 @@ begin
 
       // check if the filename fits
       CurFilenameLen:=strlen(CurFilename);
-      if FilenameIsPascalUnit(CurFilename,CurFilenameLen,false) then
-      begin
+      ExtStartPos:=CurFilename+length(AUnitname)+1;
+      if IsPascalUnitExt(ExtStartPos) then begin
         // the extension is ok
         Result:=CurFilename;
         if AnyCase then begin
-          if SysUtils.CompareText(ExtractFileNameOnly(Result),AUnitName)=0 then
-            exit;
+          exit;
         end else begin
           // check case platform dependent
           {$IFDEF CaseInsensitiveFilenames}
-          if SysUtils.CompareText(ExtractFileNameOnly(Result),AUnitName)=0 then
-            exit;
+          exit;
           {$ELSE}
-          if (Result=lowercase(Result))
-          or (Result=uppercase(Result))
-          or (ExtractFileNameOnly(Result)=AUnitName) then
+          if (ExtractFileNameOnly(Result)=AUnitName)
+          or (Result=lowercase(Result))
+          or (Result=uppercase(Result)) then
             exit;
           {$ENDIF}
         end;
