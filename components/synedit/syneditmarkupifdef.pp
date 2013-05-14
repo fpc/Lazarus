@@ -2051,6 +2051,7 @@ begin
   if (ANodeForLine <> nil) and (ANodeForLine.EntryCapacity < FoldNodeInfoList.Count) then
     ANodeForLine.EntryCapacity := FoldNodeInfoList.Count;
   NodesAddedCnt := 0;
+  LineOffs := 0;
   //RelNestDepthNext := 0;
 
   LineTextLower := LowerCase(Lines[ToIdx(ALine)]);
@@ -2594,6 +2595,7 @@ begin
   end;
 
   LastLine := ScreenRowToRow(LinesInWindow+1);
+  FOuterLines.Clear; // TODO: invalidate acording to actual lines edited
   FIfDefTree.ValidateRange(TopLine, LastLine, FOuterLines);
 
 XXXCurTree := FIfDefTree; try
