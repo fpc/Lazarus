@@ -52,6 +52,7 @@ type
     function TestText4: TStringArray;
     function TestText5: TStringArray;
     function TestText6: TStringArray;
+    function TestText7: TStringArray;
 
     procedure CheckNodes(AName: String; ALine: Integer;
       AExp: array of TNodeExpect);
@@ -561,6 +562,36 @@ begin
   // 20
   AddLine(''                                                      );
 
+
+end;
+
+function TTestMarkupIfDef.TestText7: TStringArray;
+  procedure AddLine(s: String);
+  begin
+    SetLength(Result, Length(Result)+1);
+    Result[Length(Result)-1] := s;
+  end;
+begin
+  // 1
+  AddLine('//'                                                    );
+  AddLine('{$IFDEF a}'                                            );
+  AddLine(''                                                      );
+  AddLine('{$Endif}'                                              );
+  // 5
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  // 10
+  AddLine(' {$IFDEF a}'                                           );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(' {$Endif}'                                             );
+  // 15
+  AddLine(''                                                      );
+  AddLine(''                                                      );
 
 end;
 
@@ -1419,6 +1450,54 @@ begin
 
     {%endregion}
 
+    {%region Add outer lines by removing endif}
+      // No outer lines to begin
+
+      n := 'Extend outer lines by removing endif - BUT new peer for new outer ifdef is PAST visible (not scanned)';
+      ReCreateEditForTreeTest(TestText7);
+      FTestTree.ValidateRange(1, 16, FOpenings); // scan all, so the nodes to exist
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
+      CheckNodes(n,10, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(14, 2)) ]);
+      CheckNodes(n,14, [ ExpN( 2,10, idnEndIf, EpIf(10, 2)) ]);
+
+      SynEdit.TextBetweenPoints[point(4,4),point(4,4)] := ' '; // remove ifdef (leaving invalid node)
+      FOpenings.Clear;
+      FTestTree.ValidateRange(6, 8, FOpenings); // scan empty text
+      // Expect outer node to be changed
+// This is siped by markup
+      //CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil) ]);
+
+
+
+      n := 'Extend outer lines by removing endif - new endif in visible range';
+      ReCreateEditForTreeTest(TestText7);
+      FTestTree.ValidateRange(1, 16, FOpenings); // scan all, so the nodes to exist
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
+      CheckNodes(n,10, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(14, 2)) ]);
+      CheckNodes(n,14, [ ExpN( 2,10, idnEndIf, EpIf(10, 2)) ]);
+
+      SynEdit.TextBetweenPoints[point(4,10),point(4,10)] := ' '; // remove ifdef so we have an extra endif
+      FOpenings.Clear;
+      FTestTree.ValidateRange(1, 16, FOpenings); // scan all, so the nodes to exist
+FTestTree.DebugPrint(true);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
+      CheckNodes(n,10, [ ]);
+      CheckNodes(n,14, [ ExpN( 2,10, idnEndIf, EpNil) ]);
+
+      SynEdit.TextBetweenPoints[point(4,4),point(4,4)] := ' '; // remove ifdef (leaving invalid node)
+      FOpenings.Clear;
+      FTestTree.ValidateRange(6, 16, FOpenings); // scan empty text
+FTestTree.DebugPrint(true);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(14, 2)) ]);
+//      CheckNodes(n, 4, [ ]);
+      CheckNodes(n,10, [ ]);
+      CheckNodes(n,14, [ ExpN( 2,10, idnEndIf, EpIf(2, 1)) ]);
+
+
+    {%endregion}
 
 
   {%endregion peers + edit}

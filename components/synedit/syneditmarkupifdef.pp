@@ -2649,8 +2649,11 @@ XXXCurTree := FIfDefTree; try
       Continue;
 
     Peer := EntryFound.ClosingPeer;
-    If Peer = nil then
+    // if the peer line is not valid, then it ends after the visible area (otherwise it would have a valid line)
+    If (Peer = nil) or not(idlValid in Peer.Line.LineFlags) then begin
+      Peer := nil;
       break;      // Disabled to end of display or beyond (end of validated)
+    end;
     d := Peer.Line.GetPosition;
     if (d >= TopLine)  //or ( (idnMultiLineTag in Peer.NodeFlags) and (d + Peer.Line.LastEntryEndLineOffs) )
     then
