@@ -230,19 +230,23 @@ type
 
   TLSDirectiveKind = (
     lsdkNone,
-    lsdkDefine,
+    // if
+    lsdkIf,
+    lsdkIfC,
+    lsdkIfdef,
+    lsdkIfndef,
+    lsdkIfOpt,
+    // else
     lsdkElIfC,
     lsdkElse,
     lsdkElseC,
     lsdkElseIf,
+    // end
     lsdkEndC,
     lsdkEndif,
-    lsdkIf,
-    lsdkIfC,
-    lsdkIfdef,
     lsdkIfEnd,
-    lsdkIfndef,
-    lsdkIfOpt,
+    // misc
+    lsdkDefine,
     lsdkInclude,
     lsdkIncludePath,
     lsdkLongSwitch,
@@ -256,9 +260,9 @@ type
     );
   TLSDirectiveKinds = set of TLSDirectiveKind;
 const
-  lsdkAllIf = [lsdkIf,lsdkIfC,lsdkIfdef,lsdkIfEnd,lsdkIfndef,lsdkIfOpt];
+  lsdkAllIf = [lsdkIf,lsdkIfC,lsdkIfdef,lsdkIfndef,lsdkIfOpt];
   lsdkAllElse = [lsdkElIfC,lsdkElse,lsdkElseC];
-  lsdkAllEnd = [lsdkEndC,lsdkEndif];
+  lsdkAllEnd = [lsdkEndC,lsdkEndif,lsdkIfEnd];
 
 type
   TLSDirectiveState = (
