@@ -45,7 +45,7 @@ uses
   SynEditMouseCmds, Classes, SysUtils, Math, Controls, ExtendedNotebook,
   LCLProc, LCLType, LResources, LCLIntf, FileUtil, Forms, ComCtrls, Dialogs,
   StdCtrls, Graphics, Translations, ClipBrd, types, Extctrls, Menus, HelpIntfs,
-  LConvEncoding, Messages, LazLoggerBase, lazutf8classes,
+  LConvEncoding, Messages, LazLoggerBase, lazutf8classes, LazLogger,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   LinkScanner,
@@ -2622,18 +2622,36 @@ var
   LastSortedIndex: integer;
   aDirective: PLSDirective;
   Scanner: TLinkScanner;
+  CleanPos: integer;
 begin
   Result:=idnInvalid;
-  debugln(['TSourceEditorSharedValues.GetIfDefNodeState x=',x,' y=',y,' ',Filename]);
+  //debugln(['TSourceEditorSharedValues.GetIfDefNodeState x=',x,' y=',y,' ',Filename]);
   CodeBuffer.LineColToPosition(y,x,p);
   if p<1 then begin
     debugln(['TSourceEditorSharedValues.GetIfDefNodeState out of code x=',x,' y=',y,' ',Filename]);
     exit;
   end;
   Scanner:=GetMainLinkScanner(true);
+  case Scanner.CursorToCleanPos(p,CodeBuffer,CleanPos) of
+  -1:
+    begin
+      // CursorPos was skipped, CleanPos between two links
+      exit;
+    end;
+  1:
+    begin
+      // CursorPos beyond scanned code
+      exit;
+    end;
+  end;
   if not Scanner.FindDirective(CodeBuffer,p,FirstSortedIndex,LastSortedIndex)
   then begin
-    debugln(['TSourceEditorSharedValues.GetIfDefNodeState no directive at x=',x,' y=',y,' ',Filename]);
+    debugln(['TSourceEditorSharedValues.GetIfDefNodeState no directive at x=',x,' y=',y,' SrcPos=',p,' ',Filename,' Line="',CodeBuffer.GetLine(y-1),'" CleanSrc="',DbgStr(Scanner.CleanedSrc,CleanPos-15,15),'|',dbgstr(Scanner.CleanedSrc,CleanPos,15),'"']);
+    {for i:=0 to Scanner.DirectiveCount-1 do begin
+      aDirective:=Scanner.DirectivesSorted[i];
+      if TCodeBuffer(aDirective^.Code)<>CodeBuffer then continue;
+      debugln(['TSourceEditorSharedValues.GetIfDefNodeState CleanPos=',aDirective^.CleanPos,' SrcPos=',aDirective^.SrcPos,' Src="',dbgstr(CodeBuffer.Source,aDirective^.SrcPos,30),'"']);
+    end;}
     exit;
   end;
   if FirstSortedIndex<LastSortedIndex then begin
@@ -5445,8 +5463,8 @@ begin
     case aDirective^.State of
     lsdsActive: SynState:=idnEnabled;
     lsdsInactive: SynState:=idnDisabled;
-    lsdsSkipped: SynState:=idnInvalid;
     end;
+    debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' ',dbgs(aDirective^.State)]);
     EditorComponent.SetIfdefNodeState(Y,X,SynState);
   end;
 end;
@@ -7903,7 +7921,7 @@ end;
 
 procedure TSourceNotebook.NotebookPageChanged(Sender: TObject);
 var
-  TempEditor:TSourceEditor;
+  SrcEdit:TSourceEditor;
   CaretXY: TPoint;
   TopLine: Integer;
 Begin
@@ -7916,41 +7934,44 @@ Begin
   DebugBoss.LockCommandProcessing;
   try
     Exclude(States, snNotbookPageChangedNeeded);
-    TempEditor:=GetActiveSE;
+    SrcEdit:=GetActiveSE;
     if (FHintWindow <> nil) and FHintWindow.Visible then
       HideHint;
 
-    DebugLn(SRCED_PAGES, ['TSourceNotebook.NotebookPageChanged TempEdit=', DbgSName(TempEditor)]);
-    if TempEditor <> nil then
+    DebugLn(SRCED_PAGES, ['TSourceNotebook.NotebookPageChanged TempEdit=', DbgSName(SrcEdit)]);
+    if SrcEdit <> nil then
     begin
-      if not TempEditor.Visible then begin
+      if not SrcEdit.Visible then begin
         // As long as SynEdit had no Handle, it had kept all those Values untouched
-        CaretXY := TempEditor.EditorComponent.CaretXY;
-        TopLine := TempEditor.EditorComponent.TopLine;
-        TSynEditMarkupManager(TempEditor.EditorComponent.MarkupMgr).IncPaintLock;
-        TempEditor.BeginUpdate;
-        TempEditor.Visible := True;
-        TempEditor.EndUpdate;
+        CaretXY := SrcEdit.EditorComponent.CaretXY;
+        TopLine := SrcEdit.EditorComponent.TopLine;
+        TSynEditMarkupManager(SrcEdit.EditorComponent.MarkupMgr).IncPaintLock;
+        SrcEdit.BeginUpdate;
+        {$IFDEF WithSynMarkupIfDef}
+        SrcEdit.UpdateIfDefNodeStates;
+        {$ENDIF}
+        SrcEdit.Visible := True;
+        SrcEdit.EndUpdate;
         // Restore the intial Positions, must be after lock
-        TempEditor.EditorComponent.LeftChar := 1;
-        TempEditor.EditorComponent.CaretXY := CaretXY;
-        TempEditor.EditorComponent.TopLine := TopLine;
-        TSynEditMarkupManager(TempEditor.EditorComponent.MarkupMgr).DecPaintLock;
+        SrcEdit.EditorComponent.LeftChar := 1;
+        SrcEdit.EditorComponent.CaretXY := CaretXY;
+        SrcEdit.EditorComponent.TopLine := TopLine;
+        TSynEditMarkupManager(SrcEdit.EditorComponent.MarkupMgr).DecPaintLock;
       end;
       if (fAutoFocusLock=0) and (Screen.ActiveCustomForm=GetParentForm(Self)) and
          not(Manager.HasAutoFocusLock)
       then
       begin
-        DebugLnEnter(SRCED_PAGES, ['TSourceNotebook.NotebookPageChanged BEFORE SetFocus ', DbgSName(TempEditor.EditorComponent),' Page=',   FindPageWithEditor(TempEditor), ' ', TempEditor.FileName]);
-        TempEditor.FocusEditor; // recursively calls NotebookPageChanged, via EditorEnter
-        DebugLnExit(SRCED_PAGES, ['TSourceNotebook.NotebookPageChanged AFTER SetFocus ', DbgSName(TempEditor.EditorComponent),' Page=',   FindPageWithEditor(TempEditor)]);
+        DebugLnEnter(SRCED_PAGES, ['TSourceNotebook.NotebookPageChanged BEFORE SetFocus ', DbgSName(SrcEdit.EditorComponent),' Page=',   FindPageWithEditor(SrcEdit), ' ', SrcEdit.FileName]);
+        SrcEdit.FocusEditor; // recursively calls NotebookPageChanged, via EditorEnter
+        DebugLnExit(SRCED_PAGES, ['TSourceNotebook.NotebookPageChanged AFTER SetFocus ', DbgSName(SrcEdit.EditorComponent),' Page=',   FindPageWithEditor(SrcEdit)]);
       end;
       UpdateStatusBar;
-      UpdateActiveEditColors(TempEditor.EditorComponent);
+      UpdateActiveEditColors(SrcEdit.EditorComponent);
       if (DebugBoss.State in [dsPause, dsRun]) and
-         not TempEditor.HasExecutionMarks and
-         (TempEditor.FileName <> '') then
-        TempEditor.FillExecutionMarks;
+         not SrcEdit.HasExecutionMarks and
+         (SrcEdit.FileName <> '') then
+        SrcEdit.FillExecutionMarks;
       DoActiveEditorChanged;
     end;
 

@@ -1429,7 +1429,7 @@ begin
       CurDirective^.State:=lsdsSkipped;
     CurDirective^.CleanPos:=CommentStartPos-CopiedSrcPos+CleanedLen;
     CurDirective^.Code:=Code;
-    CurDirective^.SrcPos:=SrcPos;
+    CurDirective^.SrcPos:=CommentStartPos;
     CurDirective^.Level:=IfLevel;
     inc(FDirectivesCount);
   end;
