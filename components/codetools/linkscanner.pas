@@ -221,12 +221,46 @@ const
 type
   TPascalCompiler = (pcFPC, pcDelphi);
   
+type
   TLSSkippingDirective = (
     lssdNone,
     lssdTillElse,
     lssdTillEndIf
     );
 
+  TLSDirectiveKind = (
+    lsdkNone,
+    lsdkDefine,
+    lsdkElIfC,
+    lsdkElse,
+    lsdkElseC,
+    lsdkElseIf,
+    lsdkEndC,
+    lsdkEndif,
+    lsdkIf,
+    lsdkIfC,
+    lsdkIfdef,
+    lsdkIfEnd,
+    lsdkIfndef,
+    lsdkIfOpt,
+    lsdkInclude,
+    lsdkIncludePath,
+    lsdkLongSwitch,
+    lsdkMacro,
+    lsdkMode,
+    lsdkModeSwitch,
+    lsdkSetC,
+    lsdkShortSwitch,
+    lsdkThreading,
+    lsdkUndef
+    );
+  TLSDirectiveKinds = set of TLSDirectiveKind;
+const
+  lsdkAllIf = [lsdkIf,lsdkIfC,lsdkIfdef,lsdkIfEnd,lsdkIfndef,lsdkIfOpt];
+  lsdkAllElse = [lsdkElIfC,lsdkElse,lsdkElseC];
+  lsdkAllEnd = [lsdkEndC,lsdkEndif];
+
+type
   TLSDirectiveState = (
     lsdsActive,
     lsdsInactive,// e.g. an IfDef which code was skipped
@@ -240,10 +274,12 @@ type
     State: TLSDirectiveState;
     Code: Pointer; // TCodeBuffer
     SrcPos: integer; // 1-based position in Code
+    Kind: TLSDirectiveKind;
   end;
   PLSDirective = ^TLSDirective;
   PPLSDirective = ^PLSDirective;
 
+type
   { TMissingIncludeFile is a missing include file together with all
     params involved in the search }
   TMissingIncludeFile = class
@@ -1423,13 +1459,14 @@ begin
       ReAllocMem(FDirectives,FDirectivesCapacity*SizeOf(TLSDirective));
     end;
     CurDirective:=@FDirectives[FDirectivesCount];
+    CurDirective^.Kind:=lsdkNone;
+    CurDirective^.Code:=Code;
+    CurDirective^.SrcPos:=CommentStartPos;
+    CurDirective^.CleanPos:=CommentStartPos-CopiedSrcPos+CleanedLen;
     if FSkippingDirectives=lssdNone then
       CurDirective^.State:=lsdsActive
     else
       CurDirective^.State:=lsdsSkipped;
-    CurDirective^.CleanPos:=CommentStartPos-CopiedSrcPos+CleanedLen;
-    CurDirective^.Code:=Code;
-    CurDirective^.SrcPos:=CommentStartPos;
     CurDirective^.Level:=IfLevel;
     inc(FDirectivesCount);
   end;
@@ -2837,6 +2874,8 @@ function TLinkScanner.ShortSwitchDirective: boolean;
 var
   c: Char;
 begin
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkShortSwitch;
   c:=UpChars[FDirectiveName[1]];
   FDirectiveName:=CompilerSwitchesNames[c];
   if FDirectiveName<>'' then begin
@@ -2987,6 +3026,8 @@ function TLinkScanner.LongSwitchDirective: boolean;
 // example: {$ASSERTIONS ON comment}
 var ValStart: integer;
 begin
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkLongSwitch;
   ReadSpace;
   ValStart:=SrcPos;
   while (SrcPos<=SrcLen) and IsWordChar[Src[SrcPos]] do
@@ -3015,6 +3056,8 @@ function TLinkScanner.MacroDirective: boolean;
 var
   ValStart: LongInt;
 begin
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkMacro;
   ReadSpace;
   ValStart:=SrcPos;
   while (SrcPos<=SrcLen) and (IsWordChar[Src[SrcPos]]) do
@@ -3035,6 +3078,8 @@ var ValStart: integer;
   AMode: TCompilerMode;
   ModeValid: boolean;
 begin
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkMode;
   ReadSpace;
   ValStart:=SrcPos;
   while (SrcPos<=SrcLen) and (IsWordChar[Src[SrcPos]]) do
@@ -3074,6 +3119,8 @@ var
   ModeSwitch: TCompilerModeSwitch;
   s: TCompilerModeSwitches;
 begin
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkModeSwitch;
   ReadSpace;
   ValStart:=SrcPos;
   while (SrcPos<=SrcLen) and (IsIdentChar[Src[SrcPos]]) do
@@ -3101,6 +3148,8 @@ function TLinkScanner.ThreadingDirective: boolean;
 var
   ValStart: integer;
 begin
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkThreading;
   ReadSpace;
   ValStart:=SrcPos;
   while (SrcPos<=SrcLen) and (IsWordChar[Src[SrcPos]]) do
@@ -3137,6 +3186,8 @@ function TLinkScanner.IfdefDirective: boolean;
 var VariableName: string;
 begin
   inc(IfLevel);
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkIfdef;
   if FSkippingDirectives<>lssdNone then exit(true);
   ReadSpace;
   VariableName:=ReadUpperIdentifier;
@@ -3150,6 +3201,8 @@ function TLinkScanner.IfCDirective: boolean;
 begin
   //DebugLn(['TLinkScanner.IfCDirective  FSkippingDirectives=',ord(FSkippingDirectives),' IfLevel=',IfLevel]);
   inc(IfLevel);
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkIfC;
   if FSkippingDirectives<>lssdNone then exit(true);
   Result:=InternalIfDirective;
 end;
@@ -3185,6 +3238,8 @@ function TLinkScanner.IfndefDirective: boolean;
 var VariableName: string;
 begin
   inc(IfLevel);
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkIfndef;
   if FSkippingDirectives<>lssdNone then exit(true);
   ReadSpace;
   VariableName:=ReadUpperIdentifier;
@@ -3202,6 +3257,8 @@ function TLinkScanner.EndifDirective: boolean;
   end;
   
 begin
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkEndif;
   if IfLevel<=0 then
     RaiseAWithoutB;
   dec(IfLevel);
@@ -3227,6 +3284,8 @@ function TLinkScanner.EndCDirective: boolean;
 
 begin
   //DebugLn(['TLinkScanner.EndCDirective  FSkippingDirectives=',ord(FSkippingDirectives),' IfLevel=',IfLevel]);
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkEndC;
   if IfLevel<=0 then
     RaiseAWithoutB;
   dec(IfLevel);
@@ -3248,6 +3307,8 @@ function TLinkScanner.IfEndDirective: boolean;
   end;
 
 begin
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkIfEnd;
   if IfLevel<=0 then
     RaiseAWithoutB;
   dec(IfLevel);
@@ -3269,6 +3330,8 @@ function TLinkScanner.ElseDirective: boolean;
   end;
 
 begin
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkElse;
   if IfLevel=0 then
     RaiseAWithoutB;
   case FSkippingDirectives of
@@ -3296,6 +3359,8 @@ function TLinkScanner.ElseCDirective: boolean;
 
 begin
   //DebugLn(['TLinkScanner.ElseCDirective FSkippingDirectives=',ord(FSkippingDirectives),' IfLevel=',IfLevel]);
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkElseC;
   if IfLevel=0 then
     RaiseAWithoutB;
   case FSkippingDirectives of
@@ -3322,6 +3387,8 @@ function TLinkScanner.ElseIfDirective: boolean;
   end;
 
 begin
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkElseIf;
   if IfLevel=0 then
     RaiseAWithoutB;
   case FSkippingDirectives of
@@ -3345,6 +3412,8 @@ function TLinkScanner.ElIfCDirective: boolean;
 
 begin
   //DebugLn(['TLinkScanner.ElIfCDirective  FSkippingDirectives=',ord(FSkippingDirectives),' IfLevel=',IfLevel]);
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkElseC;
   if IfLevel=0 then
     RaiseAWithoutB;
   case FSkippingDirectives of
@@ -3363,6 +3432,8 @@ function TLinkScanner.DefineDirective: boolean;
 var VariableName, NewValue: string;
   NamePos: LongInt;
 begin
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkDefine;
   ReadSpace;
   NamePos:=SrcPos;
   VariableName:=ReadUpperIdentifier;
@@ -3393,6 +3464,8 @@ function TLinkScanner.UndefDirective: boolean;
 // {$undefine name}
 var VariableName: string;
 begin
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkUndef;
   ReadSpace;
   VariableName:=ReadUpperIdentifier;
   if (VariableName<>'') then
@@ -3404,6 +3477,8 @@ function TLinkScanner.SetCDirective: boolean;
 // {$setc name} or {$setc name:=value}
 var VariableName, NewValue: string;
 begin
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkSetC;
   ReadSpace;
   VariableName:=ReadUpperIdentifier;
   if (VariableName<>'') then begin
@@ -3432,6 +3507,8 @@ function TLinkScanner.IncludeDirective: boolean;
 var IncFilename: string;
   DynamicExtension: Boolean;
 begin
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkInclude;
   inc(SrcPos);
   if (Src[SrcPos]='%') then begin
     // ToDo: insert string constant: %date%, %fpcversion%
@@ -3490,6 +3567,8 @@ function TLinkScanner.IncludePathDirective: boolean;
 // {$includepath path_addition}
 var AddPath, PathDivider: string;
 begin
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkIncludePath;
   inc(SrcPos);
   AddPath:=Trim(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
   PathDivider:=':';
@@ -3698,6 +3777,8 @@ function TLinkScanner.IfDirective: boolean;
 // {$if expression} or indirectly called by {$elseif expression}
 begin
   inc(IfLevel);
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkIf;
   if FSkippingDirectives<>lssdNone then exit(true);
   Result:=InternalIfDirective;
 end;
@@ -3707,6 +3788,8 @@ function TLinkScanner.IfOptDirective: boolean;
 var Option, c: char;
 begin
   inc(IfLevel);
+  if StoreDirectives then
+    FDirectives[FDirectivesCount-1].Kind:=lsdkIfOpt;
   if FSkippingDirectives<>lssdNone then exit(true);
   Result:=true;
   inc(SrcPos);
