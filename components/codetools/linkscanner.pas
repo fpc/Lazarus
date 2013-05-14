@@ -261,7 +261,7 @@ type
   TLSDirectiveKinds = set of TLSDirectiveKind;
 const
   lsdkAllIf = [lsdkIf,lsdkIfC,lsdkIfdef,lsdkIfndef,lsdkIfOpt];
-  lsdkAllElse = [lsdkElIfC,lsdkElse,lsdkElseC];
+  lsdkAllElse = [lsdkElIfC,lsdkElse,lsdkElseC,lsdkElseIf];
   lsdkAllEnd = [lsdkEndC,lsdkEndif,lsdkIfEnd];
 
 type
