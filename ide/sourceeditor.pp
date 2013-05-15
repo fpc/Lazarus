@@ -2626,6 +2626,7 @@ var
 begin
   Result:=idnInvalid;
   //debugln(['TSourceEditorSharedValues.GetIfDefNodeState x=',x,' y=',y,' ',Filename]);
+  UpdateCodeBuffer;
   CodeBuffer.LineColToPosition(y,x,p);
   if p<1 then begin
     debugln(['TSourceEditorSharedValues.GetIfDefNodeState out of code x=',x,' y=',y,' ',Filename]);
@@ -5446,6 +5447,7 @@ var
   SynState: TSynMarkupIfdefNodeStateEx;
 begin
   //debugln(['TSourceEditor.UpdateIfDefNodeStates CHECK ',Filename]);
+  UpdateCodeBuffer;
   Scanner:=SharedValues.GetMainLinkScanner(true);
   if Scanner=nil then exit;
   if Scanner.ChangeStep=FLastIfDefNodeScannerStep then exit;
