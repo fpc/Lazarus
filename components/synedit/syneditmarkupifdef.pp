@@ -19,7 +19,7 @@
 unit SynEditMarkupIfDef;
 
 {$mode objfpc}{$H+}
-
+{$ASSERTIONS on}
 interface
 
 uses
