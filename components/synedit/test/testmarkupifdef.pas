@@ -63,7 +63,7 @@ type
     //  AType: TSynMarkupIfdefNodeTypeTest; ExpLine, ExpCol: Integer);
 
     function TesTNodeStateHandler(Sender: TObject; LinePos,
-      XStartPos: Integer): TSynMarkupIfdefNodeState;
+      XStartPos: Integer; CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
   protected
     function CreateTheHighLighter: TSynCustomFoldHighlighter; override;
     //procedure SetUp; override;
@@ -1783,8 +1783,8 @@ FTestTree.DebugPrint(true);
   FTestTree.Free;
 end;
 
-function TTestMarkupIfDef.TesTNodeStateHandler(Sender: TObject; LinePos,
-  XStartPos: Integer): TSynMarkupIfdefNodeState;
+function TTestMarkupIfDef.TesTNodeStateHandler(Sender: TObject; LinePos, XStartPos: Integer;
+  CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
 var
   n, v: String;
 begin
