@@ -76,7 +76,8 @@ const
 
 type
   TSynMarkupIfdefStateRequest = function(Sender: TObject; // SynEdit
-    LinePos, XStartPos: Integer // pos of the "{"
+    LinePos, XStartPos: Integer; // pos of the "{"
+    CurrentState: TSynMarkupIfdefNodeStateEx
     ): TSynMarkupIfdefNodeState of object;
 
   TSynMarkupHighIfDefEntry = class
@@ -338,7 +339,8 @@ type
     procedure SetHighlighter(AValue: TSynPasSyn);
     procedure DoBufferChanging(Sender: TObject);
     procedure DoBufferChanged(Sender: TObject);
-    function  DoNodeStateRequest(Sender: TObject; LinePos, XStartPos: Integer): TSynMarkupIfdefNodeState;
+    function  DoNodeStateRequest(Sender: TObject; LinePos, XStartPos: Integer;
+      CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
 
     Procedure ValidateMatches;
   protected
@@ -1224,7 +1226,7 @@ begin
       // replace Sender in Markup object
       e := ANode.Entry[i];
       if e.NeedsRequesting then begin
-        NewState := FOnNodeStateRequest(nil, ANode.StartLine, e.StartColumn);
+        NewState := FOnNodeStateRequest(nil, ANode.StartLine, e.StartColumn, e.NodeState);
         e.NodeState := NewState;
       end;
       inc(i);
@@ -2360,14 +2362,14 @@ begin
       Node.FStartLine := ALinePos;  // directly to field
     end
     else begin
-      DebugLn( 'SetNodeState did not find a node (ScanLine)');
+      DebugLn([ 'SetNodeState did not find a node (ScanLine) ', ALinePos, '/', 'AstartPos', ' ', dbgs(AState)]);
       //assert(false, 'SetNodeState did not find a node (ScanLine)');
       exit;
     end;
   end;
 
   i := Node.EntryCount;
-  if i = 0 then begin DebugLn('SetNodeState did not find a node (zero entries)'); exit; end;
+  if i = 0 then begin DebugLn(['SetNodeState did not find a node (zero entries)', ALinePos, '/', 'AstartPos', ' ', dbgs(AState)]); exit; end;
   //assert(i > 0, 'SetNodeState did not find a node (zero entries)');
   e := nil;
   LineNeedReq := False;
@@ -2383,7 +2385,9 @@ begin
   //assert(e <> nil, 'SetNodeState did not find a node (no matching entry)');
   //assert(e.NodeType in [idnIfdef, idnElseIf], 'SetNodeState did not find a node (e.NodeType <> idnIfdef)');
   if (e = nil) or not(e.NodeType in [idnIfdef, idnElseIf]) then
+begin  DebugLn([ 'SetNodeState did not find a matching node  ', ALinePos, '/', 'AstartPos', ' ', dbgs(AState)]);
     exit;
+end;
 
   e.NodeState := AState;
 
@@ -2783,16 +2787,17 @@ begin
 end;
 
 function TSynEditMarkupIfDef.DoNodeStateRequest(Sender: TObject; LinePos,
-  XStartPos: Integer): TSynMarkupIfdefNodeState;
+  XStartPos: Integer; CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
 begin
   if FOnNodeStateRequest <> nil then
-    Result := FOnNodeStateRequest(Self, LinePos, XStartPos)
+    Result := FOnNodeStateRequest(Self, LinePos, XStartPos, CurrentState)
+  else
+  if CurrentState in [low(TSynMarkupIfdefNodeState)..high(TSynMarkupIfdefNodeState)]
+  then
+    Result := CurrentState
   else
     Result := idnInvalid;
 
-  //Result := idnEnabled;
-  //if pos('y', copy(SynEdit.Lines[LinePos-1], XStartPos, 100)) > 1 then
-  //  Result := idnDisabled;
   DebugLn(['STATE REQUEST ', LinePos, ' ', XStartPos, ' : ', dbgs(Result)]);
 end;
 

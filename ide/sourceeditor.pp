@@ -314,7 +314,7 @@ type
 
     {$IFDEF WithSynMarkupIfDef}
     function DoIfDefNodeStateRequest(Sender: TObject; LinePos,
-      XStartPos: Integer): TSynMarkupIfdefNodeState;
+      XStartPos: Integer; CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
     procedure UpdateIfDefNodeStates;
     {$ENDIF}
   protected
@@ -4488,7 +4488,7 @@ Begin
       OnChangeUpdating  := @EditorChangeUpdating;
       RegisterMouseActionExecHandler(@EditorHandleMouseAction);
       {$IFDEF WithSynMarkupIfDef}
-      OnIfdefNodeStateRequest := @DoIfDefNodeStateRequest;;
+      OnIfdefNodeStateRequest := @Self.DoIfDefNodeStateRequest;
       {$ENDIF}
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
       Parent := AParent;
@@ -5430,11 +5430,12 @@ begin
 end;
 
 function TSourceEditor.DoIfDefNodeStateRequest(Sender: TObject; LinePos,
-  XStartPos: Integer): TSynMarkupIfdefNodeState;
+  XStartPos: Integer; CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
 begin
+  // Not currently called
   debugln(['TSourceEditor.DoIfDefNodeStateRequest ']);
   if FOnIfdefNodeStateRequest <> nil then
-    Result := FOnIfdefNodeStateRequest(Self, LinePos, XStartPos)
+    Result := FOnIfdefNodeStateRequest(Self, LinePos, XStartPos, CurrentState)
   else begin
     Result := SharedValues.GetIfDefNodeState(XStartPos,LinePos);
   end;

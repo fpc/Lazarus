@@ -221,7 +221,7 @@ type
 
     {$IFDEF WithSynMarkupIfDef}
     function DoIfDefNodeStateRequest(Sender: TObject; LinePos,
-      XStartPos: Integer): TSynMarkupIfdefNodeState;
+      XStartPos: Integer; CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
     {$ENDIF}
     function GetHighlightUserWordCount: Integer;
     function GetHighlightUserWords(AIndex: Integer): TSourceSynEditMarkupHighlightAllMulti;
@@ -1499,11 +1499,11 @@ end;
 
 {$IFDEF WithSynMarkupIfDef}
 function TIDESynEditor.DoIfDefNodeStateRequest(Sender: TObject; LinePos,
-  XStartPos: Integer): TSynMarkupIfdefNodeState;
+  XStartPos: Integer; CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
 begin
   //debugln(['TIDESynEditor.DoIfDefNodeStateRequest x=',XStartPos,' y=',LinePos,' ',DbgSName(Sender)]);
   if FOnIfdefNodeStateRequest <> nil then
-    Result := FOnIfdefNodeStateRequest(Self, LinePos, XStartPos)
+    Result := FOnIfdefNodeStateRequest(Self, LinePos, XStartPos, CurrentState)
   else
     Result := idnInvalid;
 end;
@@ -1577,7 +1577,7 @@ begin
   {$IFDEF WithSynMarkupIfDef}
   FMarkupIfDef := TSynEditMarkupIfDef.Create(Self);
   FMarkupIfDef.FoldView := TSynEditFoldedView(FoldedTextBuffer);
-  FMarkupIfDef.OnNodeStateRequest := @DoIfDefNodeStateRequest;
+  //FMarkupIfDef.OnNodeStateRequest := @DoIfDefNodeStateRequest;
   TSynEditMarkupManager(MarkupMgr).AddMarkUp(FMarkupIfDef);
   {$ENDIF}
 
