@@ -92,6 +92,22 @@ begin
   Result:=SysUtils.ExpandUNCFileName(Filename);
 end;
 
+
+function FileOpenUTF8(Const FileName : string; Mode : Integer) : THandle;
+begin
+  Result := LazFileUtils.FileOpenUtf8(FileName, Mode);
+end;
+
+function FileCreateUTF8(Const FileName : string) : THandle;
+begin
+  Result := LazFileUtils.FileCreateUtf8(FileName);
+end;
+
+function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle;
+begin
+  Result := LazFileUtils.FileCreateUtf8(FileName, Rights);
+end;
+
 function ParamStrUTF8(Param: Integer): string;
 begin
   Result:=SysToUTF8(ObjPas.ParamStr(Param));

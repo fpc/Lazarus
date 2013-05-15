@@ -698,51 +698,7 @@ begin
     Result:=False;
 end;
 
-function FileOpenUTF8(Const FileName : string; Mode : Integer) : THandle;
-const
-  AccessMode: array[0..2] of Cardinal  = (
-    GENERIC_READ,
-    GENERIC_WRITE,
-    GENERIC_READ or GENERIC_WRITE);
-  ShareMode: array[0..4] of Integer = (
-               0,
-               0,
-               FILE_SHARE_READ,
-               FILE_SHARE_WRITE,
-               FILE_SHARE_READ or FILE_SHARE_WRITE);
-begin
-{$ifndef WinCE}
-  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
-    Result := FileOpen(UTF8ToSys(FileName), Mode)
-  else
-{$endif}
-    Result := CreateFileW(PWideChar(UTF8Decode(FileName)), dword(AccessMode[Mode and 3]),
-                         dword(ShareMode[(Mode and $F0) shr 4]), nil, OPEN_EXISTING,
-                         FILE_ATTRIBUTE_NORMAL, 0);
-  //if fail api return feInvalidHandle (INVALIDE_HANDLE=feInvalidHandle=-1)
-end;
 
-function FileCreateUTF8(Const FileName : string) : THandle;
-begin
-{$ifndef WinCE}
-  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
-    Result := FileCreate(Utf8ToSys(FileName))
-  else
-{$endif}
-    Result := CreateFileW(PWideChar(UTF8Decode(FileName)), GENERIC_READ or GENERIC_WRITE,
-                          0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-end;
-
-function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle;
-begin
-{$ifndef WinCE}
-  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
-    Result := FileCreate(Utf8ToSys(FileName), Rights)
-  else
-{$endif}
-    Result := CreateFileW(PWideChar(UTF8Decode(FileName)), GENERIC_READ or GENERIC_WRITE,
-                       0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-end;
 
 function ExtractShortPathNameUTF8(const FileName: String): String;
 var

@@ -411,20 +411,6 @@ begin
   Result:=SysUtils.DirectoryExists(UTF8ToSys(Directory));
 end;
 
-function FileOpenUTF8(Const FileName : string; Mode : Integer) : THandle;
-begin
-  Result := SysUtils.FileOpen(FileName, Mode);
-end;
-
-function FileCreateUTF8(Const FileName : string) : THandle;
-begin
-  Result := SysUtils.FileCreate(FileName);
-end;
-
-function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle;
-begin
-  Result := SysUtils.FileCreate(FileName, Rights);
-end;
 
 function ExtractShortPathNameUTF8(const FileName: String): String;
 begin
