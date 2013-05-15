@@ -1097,8 +1097,7 @@ begin
   inherited Destroy;
 end;
 
-function TIDECommandCategory.ScopeIntersects(AScope: TIDECommandScope
-  ): boolean;
+function TIDECommandCategory.ScopeIntersects(AScope: TIDECommandScope): boolean;
 begin
   if (Scope=nil) or (AScope=nil) then
     Result:=true
@@ -1172,8 +1171,7 @@ begin
   Result:=FCategories.Count;
 end;
 
-function TIDECommandScope.HasIDEWindowClass(AWindowClass: TCustomFormClass
-  ): boolean;
+function TIDECommandScope.HasIDEWindowClass(AWindowClass: TCustomFormClass): boolean;
 var
   i: Integer;
 begin
