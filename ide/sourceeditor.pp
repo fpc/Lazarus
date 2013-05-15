@@ -1316,9 +1316,9 @@ var
   SRCED_LOCK, SRCED_OPEN, SRCED_CLOSE, SRCED_PAGES: PLazLoggerLogGroup;
 
 const
-  (* SoftCenter are th visible Lines in the Editor where the caret can be locateted,
+  (* SoftCenter are the visible Lines in the Editor where the caret can be located,
      without CenterCursor adjusting the topline.
-     SoftCenter is defined by the amount of lines on the top/bottom of fthe editor,
+     SoftCenter is defined by the amount of lines on the top/bottom of the editor,
      which are *not* part of it.
   *)
   SoftCenterFactor  = 5;  // One fifth of the "LinesInWindow"on each side (top/bottom)
