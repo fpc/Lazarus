@@ -178,8 +178,7 @@ function FilenameIsPascalUnit(const Filename: string;
                               CaseSensitive: boolean = false): boolean;
 function FilenameIsPascalUnit(Filename: PChar; FilenameLen: integer;
                               CaseSensitive: boolean = false): boolean;
-function IsPascalUnitExt(FileExt: PChar;
-                              CaseSensitive: boolean = false): boolean;
+function IsPascalUnitExt(FileExt: PChar; CaseSensitive: boolean = false): boolean;
 function SearchPascalUnitInDir(const AnUnitName, BaseDirectory: string;
                                SearchCase: TCTSearchFileCase): string;
 function SearchPascalUnitInPath(const AnUnitName, BasePath, SearchPath,
@@ -1025,44 +1024,36 @@ begin
 end;
 
 function IsPascalUnitExt(FileExt: PChar; CaseSensitive: boolean): boolean;
-// check if asciiz FileExt is a CTPascalExtension
+// check if asciiz FileExt is a CTPascalExtension '.pp', '.pas'
 var
   ExtLen: Integer;
   p: PChar;
   e: TCTPascalExtType;
-  i: Integer;
   f: PChar;
 begin
   Result:=false;
   if (FileExt=nil) then exit;
-  ExtLen:=0;
-  p:=FileExt;
-  while p^<>#0 do begin
-    inc(ExtLen);
-    inc(p);
-  end;
+  ExtLen:=strlen(FileExt);
   if ExtLen=0 then exit;
   for e:=Low(CTPascalExtension) to High(CTPascalExtension) do begin
     if length(CTPascalExtension[e])<>ExtLen then
       continue;
-    i:=0;
     p:=PChar(Pointer(CTPascalExtension[e]));// pointer type cast avoids #0 check
     f:=FileExt;
+    //debugln(['IsPascalUnitExt p="',dbgstr(p),'" f="',dbgstr(f),'"']);
     if CaseSensitive then begin
-      while (i<ExtLen) and (p^=f^) do begin
-        inc(i);
+      while (p^=f^) and (p^<>#0) do begin
         inc(p);
         inc(f);
       end;
     end else begin
-      while (i<ExtLen) and (FPUpChars[p^]=FPUpChars[f^]) do
+      while (FPUpChars[p^]=FPUpChars[f^]) and (p^<>#0) do
       begin
-        inc(i);
         inc(p);
         inc(f);
       end;
     end;
-    if (i=ExtLen) and (f^=#0) then
+    if p^=#0 then
       exit(true);
   end;
 end;

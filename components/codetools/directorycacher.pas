@@ -41,6 +41,7 @@ uses
 { $DEFINE CTDEBUG}
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedUnits}
+{ $DEFINE DebugDirCacheFindUnitSource}
 
 {$ifdef Windows}
 {$define CaseInsensitiveFilenames}
@@ -372,20 +373,28 @@ function ComparePCharUnitNameWithFilename(UnitNameP, FilenameP: Pointer): intege
 var
   AUnitName: PChar absolute UnitNameP;
   Filename: PChar absolute FilenameP;
+  cu: Char;
+  cf: Char;
 begin
-  while (FPUpChars[AUnitName^]=FPUpChars[Filename^]) and (AUnitName^<>#0) do begin
-    inc(AUnitName);
-    inc(Filename);
-  end;
-  if (AUnitName^<>#0) then begin
-    Result:=ord(FPUpChars[AUnitName^])-ord(FPUpChars[Filename^]);
-  end else begin
-    // the unit name fits the start of the file name
-    if (Filename^<>'.') then
-      Result:=ord('.')-ord(FPUpChars[Filename^])
-    else
-      Result:=0;
-  end;
+  repeat
+    cu:=FPUpChars[AUnitName^];
+    cf:=FPUpChars[Filename^];
+    if cu=#0 then begin
+      // the unit name fits the start of the file name
+      if (cf<>'.') then
+        Result:=ord('.')-ord(cf)
+      else
+        Result:=0;
+      exit;
+    end;
+    if cu=cf then begin
+      inc(AUnitName);
+      inc(Filename);
+    end else begin
+      Result:=ord(cu)-ord(cf);
+      exit;
+    end;
+  until false;
 end;
 
 function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
@@ -990,28 +999,35 @@ end;
 
 function TCTDirectoryCache.FindUnitSource(const AUnitName: string;
   AnyCase: boolean): string;
+{$IFDEF DebugDirCacheFindUnitSource}
+const
+  DebugUnitName = 'IDEDialogs';
+  DebugDirPart = 'ideintf';
+{$ENDIF}
 var
   l: Integer;
   r: Integer;
   m: Integer;
   cmp: LongInt;
   CurFilename: PChar;
-  CurFilenameLen: LongInt;
   Files: PChar;
-  p: PChar;
   ExtStartPos: PChar;
 begin
   Result:='';
-  //if (CompareText(AUnitName,'AddFileToAPackageDlg')=0) {and (System.Pos('packager',directory)>0)} then
-  //  DebugLn('TCTDirectoryCache.FindUnitSource AUnitName="',AUnitName,'" AnyCase=',dbgs(AnyCase),' Directory=',Directory);
+  {$IFDEF DebugDirCacheFindUnitSource}
+  if (CompareText(AUnitName,DebugUnitName)=0) and (System.Pos(DebugDirPart,directory)>0) then
+    DebugLn('TCTDirectoryCache.FindUnitSource AUnitName="',AUnitName,'" AnyCase=',dbgs(AnyCase),' Directory=',Directory);
+  {$ENDIF}
   if AUnitName='' then exit;
   if Directory<>'' then begin
     UpdateListing;
     Files:=FListing.Files;
     if Files=nil then exit;
     // binary search the nearest filename
-    //if (CompareText(AUnitName,'AddFileToAPackageDlg')=0) and (System.Pos('packager',directory)>0) then
-    //  WriteListing;
+    {$IFDEF DebugDirCacheFindUnitSource}
+    if (CompareText(AUnitName,DebugUnitName)=0) and (System.Pos(DebugDirPart,directory)>0) then
+      WriteListing;
+    {$ENDIF}
     
     l:=0;
     r:=FListing.Count-1;
@@ -1041,15 +1057,20 @@ begin
       if (ComparePCharUnitNameWithFilename(Pointer(AUnitName),CurFilename)<>0)
       then
         break;
-      //if (CompareText(AUnitName,'AddFileToAPackageDlg')=0) {and (System.Pos('packager',directory)>0)} then
-      //  DebugLn('TCTDirectoryCache.FindUnitSource NEXT ',CurFilename);
 
       // check if the filename fits
-      CurFilenameLen:=strlen(CurFilename);
-      ExtStartPos:=CurFilename+length(AUnitname)+1;
+      ExtStartPos:=CurFilename+length(AUnitname);
+      {$IFDEF DebugDirCacheFindUnitSource}
+      if (CompareText(AUnitName,DebugUnitName)=0) and (System.Pos(DebugDirPart,directory)>0) then
+        DebugLn('TCTDirectoryCache.FindUnitSource NEXT "',CurFilename,'" ExtStart=',dbgstr(ExtStartPos^));
+      {$ENDIF}
       if IsPascalUnitExt(ExtStartPos) then begin
         // the extension is ok
         Result:=CurFilename;
+        {$IFDEF DebugDirCacheFindUnitSource}
+        if (CompareText(AUnitName,DebugUnitName)=0) and (System.Pos(DebugDirPart,directory)>0) then
+          DebugLn('TCTDirectoryCache.FindUnitSource CHECKING CASE "',CurFilename,'"');
+        {$ENDIF}
         if AnyCase then begin
           exit;
         end else begin
@@ -1066,9 +1087,11 @@ begin
       end;
       inc(m);
     end;
-    //if m<FListing.NameCount then
-    //  if (CompareText(AUnitName,'AddFileToAPackageDlg')=0) and (System.Pos('packager',directory)>0) then
-    //    DebugLn('TCTDirectoryCache.FindUnitSource LAST ',CurFilename);
+    {$IFDEF DebugDirCacheFindUnitSource}
+    if m<FListing.Count then
+      if (CompareText(AUnitName,DebugUnitName)=0) and (System.Pos(DebugDirPart,directory)>0) then
+        DebugLn('TCTDirectoryCache.FindUnitSource LAST ',CurFilename);
+    {$ENDIF}
   end else begin
     // this is a virtual directory
     Result:=Pool.FindVirtualUnit(AUnitName);
