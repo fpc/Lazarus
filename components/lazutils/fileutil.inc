@@ -519,77 +519,13 @@ begin
 end;
 
 function FileIsText(const AFilename: string): boolean;
-var
-  FileReadable: Boolean;
 begin
-  Result:=FileIsText(AFilename,FileReadable);
-  if FileReadable then ;
+  Result := LazFileUtils.FileIsText(AFilename);
 end;
 
 function FileIsText(const AFilename: string; out FileReadable: boolean): boolean;
-const
-  BufLen = 1024;
-var
-  fs: TFileStream;
-  Buf: string;
-  Len: integer;
-  NewLine: boolean;
-  p: PChar;
-  ZeroAllowed: Boolean;
 begin
-  Result:=false;
-  FileReadable:=true;
-  try
-    fs := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead or fmShareDenyNone);
-    try
-      // read the first 1024 bytes
-      Len:=BufLen;
-      SetLength(Buf,BufLen+1);
-      Len:=fs.Read(Buf[1],BufLen);
-      if Len>0 then begin
-        Buf[Len+1]:=#0;
-        p:=PChar(Buf);
-        ZeroAllowed:=false;
-        if (p[0]=#$EF) and (p[1]=#$BB) and (p[2]=#$BF) then begin
-          // UTF-8 BOM (Byte Order Mark)
-          inc(p,3);
-        end else if (p[0]=#$FF) and (p[1]=#$FE) then begin
-          // ucs-2le BOM FF FE
-          inc(p,2);
-          ZeroAllowed:=true;
-        end else if (p[0]=#$FE) and (p[1]=#$FF) then begin
-          // ucs-2be BOM FE FF
-          inc(p,2);
-          ZeroAllowed:=true;
-        end;
-        NewLine:=false;
-        while true do begin
-          case p^ of
-          #0:
-            if p-PChar(Buf)>=Len then
-              break
-            else if not ZeroAllowed then
-              exit;
-          // #10,#13: new line
-          // #12: form feed
-          // #26: end of file
-          #1..#8,#11,#14..#25,#27..#31: exit;
-          #10,#13: NewLine:=true;
-          end;
-          inc(p);
-        end;
-        if NewLine or (Len<1024) then
-          Result:=true;
-      end else
-        Result:=true;
-    finally
-      fs.Free;
-    end;
-  except
-    on E: Exception do begin
-      FileReadable:=false;
-    end;
-  end;
+  Result := LazFileUtils.FileIsText(AFileName, FileReadable);
 end;
 
 function TryReadAllLinks(const Filename: string): string;
