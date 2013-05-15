@@ -28,11 +28,13 @@ unit redirect_stderr;
 interface
 
 {$IFDEF Windows}
+{$IFDEF HEAPTRC_WINDOW}
 {$IF FPC_FULLVERSION>=20701}
 uses
   heaptrc, SysUtils, raw_window;
 {$ENDIF}
-{$ENDIF Windows}
+{$ENDIF}
+{$ENDIF}
 
 Var
   DoShowWindow : Boolean = True;
@@ -40,6 +42,7 @@ Var
 implementation
 
 {$IFDEF Windows}
+{$IFDEF HEAPTRC_WINDOW}
 {$IF FPC_FULLVERSION>=20701}
 const
   ErrorBufferLength = 2 * 1024;
@@ -132,7 +135,8 @@ initialization
   SetHeapTraceOutput(MyStdErr);
 
 {$ENDIF}
-{$ENDIF Windows}
+{$ENDIF}
+{$ENDIF}
 
 end.
 
