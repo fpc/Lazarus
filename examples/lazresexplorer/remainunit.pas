@@ -193,9 +193,6 @@ begin
   if (Ext = '.res')then
     Reader:=TResResourceReader.Create
   else
-  if (Ext = '.res')then
-    Reader:=TResResourceReader.Create
-    else
   if (Ext = '.o')then
     Reader:=TResResourceReader.Create
   else
