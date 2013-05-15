@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Controls, StdCtrls, sysutils, ExtCtrls, Graphics, GraphUtil,
-  ColorBox, ComCtrls, LCLProc, LCLType, LCLIntf, Dialogs, Menus, Forms, SynEdit,
+  ColorBox, ComCtrls, LCLProc, LCLType, LCLIntf, Dialogs, Menus, Forms, Spin, SynEdit,
   SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber, SynEditTypes,
   SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynTextDrawer,
   DividerBevel, Laz2_XMLCfg, EditorOptions, IDEOptionsIntf,
@@ -27,9 +27,15 @@ type
     BackGroundUseDefaultCheckBox: TCheckBox;
     FrameColorUseDefaultCheckBox: TCheckBox;
     ForegroundColorBox: TColorBox;
+    ForeAlphaLabel: TLabel;
+    BackAlphaLabel: TLabel;
+    FrameAlphaLabel: TLabel;
     pnlUnderline: TPanel;
     pnlBold: TPanel;
     pnlItalic: TPanel;
+    ForeAlphaSpin: TSpinEdit;
+    BackAlphaSpin: TSpinEdit;
+    FrameAlphaSpin: TSpinEdit;
     TextBoldCheckBox: TCheckBox;
     TextBoldRadioInvert: TRadioButton;
     TextBoldRadioOff: TRadioButton;
@@ -47,6 +53,7 @@ type
     TextUnderlineRadioPanel: TPanel;
     ForeGroundLabel: TLabel;
     ForeGroundUseDefaultCheckBox: TCheckBox;
+    procedure ForeAlphaSpinChange(Sender: TObject);
     procedure ForegroundColorBoxChange(Sender: TObject);
     procedure ForegroundColorBoxGetColors(Sender: TCustomColorBox; Items: TStrings);
     procedure FrameEdgesBoxDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
@@ -130,6 +137,33 @@ begin
   end;
 
   UpdatingColor := False;
+  DoChanged;
+end;
+
+procedure TSynColorAttrEditor.ForeAlphaSpinChange(Sender: TObject);
+var
+  v: Integer;
+begin
+  if UpdatingColor then
+    exit;
+
+  UpdatingColor := True;
+  v := TSpinEdit(Sender).Value;
+  if (v = 256) and (Caption <> dlgEdOff) then TSpinEdit(Sender).Caption := dlgEdOff;
+  UpdatingColor := False;
+
+  if (FCurHighlightElement = nil) then
+    exit;
+
+  if v = 256 then v := 0;
+
+  if Sender = ForeAlphaSpin then
+    FCurHighlightElement.ForeAlpha := v;
+  if Sender = BackAlphaSpin then
+    FCurHighlightElement.BackAlpha := v;
+  if Sender = FrameAlphaSpin then
+    FCurHighlightElement.FrameAlpha := v;
+
   DoChanged;
 end;
 
@@ -438,6 +472,17 @@ begin
       ForegroundColorBox.Tag := ForegroundColorBox.Selected;
     ForeGroundUseDefaultCheckBox.Checked := ForegroundColorBox.Selected <> clDefault;
 
+    ForeAlphaSpin.Visible  := ForegroundColorBox.Visible and
+                             (hafAlpha in FCurHighlightElement.Features);
+    ForeAlphaLabel.Visible := ForeAlphaSpin.Visible;
+    if FCurHighlightElement.ForeAlpha = 0 then begin
+      ForeAlphaSpin.Value    := 256; // Off
+      Application.ProcessMessages;
+      ForeAlphaSpin.Caption  := dlgEdOff;
+    end
+    else
+      ForeAlphaSpin.Value    := FCurHighlightElement.ForeAlpha;
+
     // BackGround
     BackGroundLabel.Visible              := (hafBackColor in FCurHighlightElement.Features) and
                                             (FCurHighlightElement.Group = agnDefault);
@@ -451,6 +496,16 @@ begin
     else
       BackGroundColorBox.Tag := BackGroundColorBox.Selected;
     BackGroundUseDefaultCheckBox.Checked := BackGroundColorBox.Selected <> clDefault;
+
+    BackAlphaSpin.Visible := BackGroundColorBox.Visible and
+                             (hafAlpha in FCurHighlightElement.Features);
+    BackAlphaLabel.Visible := BackAlphaSpin.Visible;
+    if FCurHighlightElement.BackAlpha = 0 then begin
+      BackAlphaSpin.Value    := 256; // Off
+      BackAlphaSpin.Caption  := dlgEdOff;
+    end
+    else
+      BackAlphaSpin.Value    := FCurHighlightElement.BackAlpha;
 
     // Frame
     FrameColorUseDefaultCheckBox.Visible := hafFrameColor in FCurHighlightElement.Features;
@@ -468,6 +523,16 @@ begin
     FrameStyleBox.ItemIndex := integer(FCurHighlightElement.FrameStyle);
     FrameEdgesBox.Enabled := FrameColorUseDefaultCheckBox.Checked;
     FrameStyleBox.Enabled := FrameColorUseDefaultCheckBox.Checked;
+
+    FrameAlphaSpin.Visible := FrameColorBox.Visible and
+                             (hafAlpha in FCurHighlightElement.Features);
+    FrameAlphaLabel.Visible := FrameAlphaSpin.Visible;
+    if FCurHighlightElement.FrameAlpha = 0 then begin
+      FrameAlphaSpin.Value    := 256; // Off
+      FrameAlphaSpin.Caption  := dlgEdOff;
+    end
+    else
+      FrameAlphaSpin.Value    := FCurHighlightElement.FrameAlpha;
 
     // Styles
     TextBoldCheckBox.Visible      := hafStyle in FCurHighlightElement.Features;
@@ -551,6 +616,9 @@ begin
   ForeGroundUseDefaultCheckBox.Caption := dlgForecolor;
   BackGroundUseDefaultCheckBox.Caption := dlgBackColor;
   FrameColorUseDefaultCheckBox.Caption := dlgFrameColor;
+  ForeAlphaLabel.Caption := lisAlpha;
+  BackAlphaLabel.Caption := lisAlpha;
+  FrameAlphaLabel.Caption := lisAlpha;
 
   TextBoldCheckBox.Caption := dlgEdBold;
   TextBoldRadioOn.Caption := dlgEdOn;

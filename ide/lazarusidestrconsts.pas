@@ -5675,6 +5675,7 @@ resourcestring
     +'between package dependencies.';
   lisPkgDeleteDependencies = 'Delete dependencies';
   lisPkgClearSelection = 'Clear Selection';
+  lisAlpha = 'Alpha';
 
 implementation
 
