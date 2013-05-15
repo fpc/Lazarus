@@ -2587,7 +2587,7 @@ var
   Entry, EntryFound, Peer: TSynMarkupHighIfDefEntry;
   m: TSynMarkupHighAllMatch;
 begin
-  if (FPaintLock > 0) or (not SynEdit.IsVisible) then begin
+  if (FPaintLock > 0) or (not SynEdit.IsVisible) or (not MarkupInfo.IsEnabled) then begin
     FNeedValidate := True;
     exit;
   end;
@@ -2755,6 +2755,7 @@ end;
 procedure TSynEditMarkupIfDef.DoMarkupChanged(AMarkup: TSynSelectedColor);
 begin
   ValidateMatches;
+  SynEdit.Invalidate;
 end;
 
 procedure TSynEditMarkupIfDef.DoTextChanged(StartLine, EndLine, ACountDiff: Integer);

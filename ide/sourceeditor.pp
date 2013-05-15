@@ -4252,6 +4252,10 @@ Begin
   EditorOpts.GetSynEditSettings(FEditor,SimilarEditor);
 
   SourceNotebook.UpdateActiveEditColors(FEditor);
+  {$IFDEF WithSynMarkupIfDef}
+  if Visible then
+    UpdateIfDefNodeStates;
+  {$ENDIF}
 end;
 
 procedure TSourceEditor.ccAddMessage(Texts: String);
@@ -5450,6 +5454,8 @@ var
   X: integer;
   SynState: TSynMarkupIfdefNodeStateEx;
 begin
+  if not EditorComponent.IsIfdefMarkupActive then
+    exit;
   //debugln(['TSourceEditor.UpdateIfDefNodeStates CHECK ',Filename]);
   UpdateCodeBuffer;
   Scanner:=SharedValues.GetMainLinkScanner(true);

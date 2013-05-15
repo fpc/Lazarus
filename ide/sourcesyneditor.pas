@@ -258,6 +258,7 @@ type
     property HighlightUserWords[AIndex: Integer]: TSourceSynEditMarkupHighlightAllMulti read GetHighlightUserWords;
     property MarkupMgr;
     {$IFDEF WithSynMarkupIfDef}
+    function  IsIfdefMarkupActive: Boolean;
     procedure InvalidateAllIfdefNodes;
     procedure SetIfdefNodeState(ALinePos, AstartPos: Integer; AState: TSynMarkupIfdefNodeState);
     property OnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest read FOnIfdefNodeStateRequest write FOnIfdefNodeStateRequest;
@@ -1498,6 +1499,11 @@ begin
 end;
 
 {$IFDEF WithSynMarkupIfDef}
+function TIDESynEditor.IsIfdefMarkupActive: Boolean;
+begin
+  Result := FMarkupIfDef.MarkupInfo.IsEnabled;
+end;
+
 function TIDESynEditor.DoIfDefNodeStateRequest(Sender: TObject; LinePos,
   XStartPos: Integer; CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
 begin
