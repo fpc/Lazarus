@@ -1090,6 +1090,7 @@ type
     function SomethingModified(Verbose: boolean = false): boolean;
     procedure HideHint;
     procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnUserInput(Sender: TObject; Msg: Cardinal);
     procedure LockAllEditorsInSourceChangeCache;
     procedure UnlockAllEditorsInSourceChangeCache;
     procedure BeginGlobalUpdate;
@@ -1107,6 +1108,8 @@ type
                                        ASynAutoComplete: TCustomSynAutoComplete;
                                        Index: integer);
   protected
+    CodeToolsToSrcEditTimer: TTimer;
+    procedure CodeToolsToSrcEditTimerTimer(Sender: TObject);
     procedure OnWordCompletionGetSource(var Source: TStrings; SourceIndex: integer);
     procedure OnSourceCompletionTimer(Sender: TObject);
     // marks
@@ -1326,7 +1329,7 @@ const
   SoftCenterMaximum = 8;
 
 var
-  SourceCompletionTimer: TIdleTimer = nil;
+  AutoStartCompletionBoxTimer: TIdleTimer = nil;
   SourceCompletionCaretXY: TPoint;
   AWordCompletion: TWordCompletion = nil;
   PasBeautifier: TSynBeautifierPascal;
@@ -1335,6 +1338,7 @@ function dbgs(AFlag: TSourceNotebookUpdateFlag): string; overload;
 begin
   WriteStr(Result, AFlag);
 end;
+
 function dbgs(AFlags: TSourceNotebookUpdateFlags): string; overload;
 var i: TSourceNotebookUpdateFlag;
 begin
@@ -1886,7 +1890,7 @@ Begin
   if (KeyChar='.') and (OldCompletionType=ctIdentCompletion) then
   begin
     SourceCompletionCaretXY:=Editor.CaretXY;
-    SourceCompletionTimer.AutoEnabled:=true;
+    AutoStartCompletionBoxTimer.AutoEnabled:=true;
   end;
   {$IFDEF VerboseIDECompletionBox}
   finally
@@ -3194,7 +3198,7 @@ var
 begin
   //DebugLn('TSourceEditor.ProcessCommand Command=',dbgs(Command));
   FSharedValues.SetActiveSharedEditor(Self);
-  SourceCompletionTimer.AutoEnabled:=false;
+  AutoStartCompletionBoxTimer.AutoEnabled:=false;
 
   if (Command=ecChar) and (AChar=#27) then begin
     // close hint windows
@@ -3280,7 +3284,7 @@ begin
   ecChar:
     begin
       AddChar:=true;
-      //debugln(['TSourceEditor.ProcessCommand AChar="',AChar,'" AutoIdentifierCompletion=',dbgs(EditorOpts.AutoIdentifierCompletion),' Interval=',SourceCompletionTimer.Interval,' ',Dbgs(FEditor.CaretXY),' ',FEditor.IsIdentChar(aChar)]);
+      //debugln(['TSourceEditor.ProcessCommand AChar="',AChar,'" AutoIdentifierCompletion=',dbgs(EditorOpts.AutoIdentifierCompletion),' Interval=',AutoStartCompletionBoxTimer.Interval,' ',Dbgs(FEditor.CaretXY),' ',FEditor.IsIdentChar(aChar)]);
       if (aChar=' ') and AutoCompleteChar(aChar,AddChar,acoSpace) then begin
         // completed
       end
@@ -3292,7 +3296,7 @@ begin
         SourceCompletionCaretXY:=FEditor.CaretXY;
         // add the char
         inc(SourceCompletionCaretXY.x,length(AChar));
-        SourceCompletionTimer.AutoEnabled:=true;
+        AutoStartCompletionBoxTimer.AutoEnabled:=true;
       end;
       //DebugLn(['TSourceEditor.ProcessCommand ecChar AddChar=',AddChar]);
       if not AddChar then Command:=ecNone;
@@ -3332,7 +3336,7 @@ begin
     Manager.AddJumpPointClicked(Self);
 
   end;
-  //debugln('TSourceEditor.ProcessCommand B IdentCompletionTimer.AutoEnabled=',dbgs(SourceCompletionTimer.AutoEnabled));
+  //debugln('TSourceEditor.ProcessCommand B IdentCompletionTimer.AutoEnabled=',dbgs(AutoStartCompletionBoxTimer.AutoEnabled));
 end;
 
 procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
@@ -7217,8 +7221,8 @@ begin
   end;
   if FMouseHideHintTimer <> nil then
     FMouseHideHintTimer.Enabled := False;
-  if SourceCompletionTimer<>nil then
-    SourceCompletionTimer.Enabled:=false;
+  if AutoStartCompletionBoxTimer<>nil then
+    AutoStartCompletionBoxTimer.Enabled:=false;
   if FHintWindow<>nil then begin
     FHintWindow.Visible:=false;
     FHintWindow.DisableAutoSizing;
@@ -9495,7 +9499,7 @@ begin
   for i := FSourceWindowList.Count - 1 downto 0 do
     SourceWindows[i].ReloadEditorOptions;
 
-  SourceCompletionTimer.Interval:=EditorOpts.AutoDelayInMSec;
+  AutoStartCompletionBoxTimer.Interval:=EditorOpts.AutoDelayInMSec;
   // reload code templates
   with CodeTemplateModul do begin
     if FileExistsUTF8(EditorOpts.CodeTemplateFilename) then
@@ -9875,6 +9879,8 @@ var
   j: Integer;
   Markling: TSourceMarkling;
 begin
+  CodeToolsToSrcEditTimer.Enabled:=true;
+
   SrcEdit:=ActiveEditor;
   if (SrcEdit<>nil)
   and (not SrcEdit.FSharedValues.FMarklingsValid) then
@@ -9902,6 +9908,11 @@ begin
     SrcEdit.EditorComponent.EndUpdate;
     SrcEdit.FSharedValues.FMarklingsValid:=true;
   end;
+end;
+
+procedure TSourceEditorManager.OnUserInput(Sender: TObject; Msg: Cardinal);
+begin
+  CodeToolsToSrcEditTimer.Enabled:=false;
 end;
 
 procedure TSourceEditorManager.LockAllEditorsInSourceChangeCache;
@@ -10025,6 +10036,24 @@ begin
                       ASynAutoComplete.IndentToTokenStart);
 end;
 
+procedure TSourceEditorManager.CodeToolsToSrcEditTimerTimer(Sender: TObject);
+{$IFDEF WithSynMarkupIfDef}
+var
+  i: Integer;
+  SrcEdit: TSourceEditor;
+{$ENDIF}
+begin
+  CodeToolsToSrcEditTimer.Enabled:=false;
+
+  {$IFDEF WithSynMarkupIfDef}
+  for i:=0 to SourceEditorCount-1 do begin
+    SrcEdit:=SourceEditors[i];
+    if not SrcEdit.EditorComponent.IsVisible then continue;
+    SrcEdit.UpdateIfDefNodeStates;
+  end;
+  {$ENDIF}
+end;
+
 procedure TSourceEditorManager.OnWordCompletionGetSource(var Source: TStrings;
   SourceIndex: integer);
 var TempEditor: TSourceEditor;
@@ -10110,8 +10139,8 @@ procedure TSourceEditorManager.OnSourceCompletionTimer(Sender: TObject);
 var
   TempEditor: TSourceEditor;
 begin
-  SourceCompletionTimer.Enabled:=false;
-  SourceCompletionTimer.AutoEnabled:=false;
+  AutoStartCompletionBoxTimer.Enabled:=false;
+  AutoStartCompletionBoxTimer.AutoEnabled:=false;
   TempEditor := ActiveEditor;
   if (TempEditor <> nil) and TempEditor.EditorComponent.Focused and
      (ComparePoints(TempEditor.EditorComponent.CaretXY, SourceCompletionCaretXY) = 0)
@@ -10171,13 +10200,26 @@ begin
     end;
   end;
 
-  // identifier completion
-  SourceCompletionTimer := TIdleTimer.Create(Self);
-  with SourceCompletionTimer do begin
+  // timer for auto start identifier completion
+  AutoStartCompletionBoxTimer := TIdleTimer.Create(Self);
+  with AutoStartCompletionBoxTimer do begin
+    Name:='AutoStartCompletionBoxTimer';
     AutoEnabled := False;
     Enabled := false;
     Interval := EditorOpts.AutoDelayInMSec;
     OnTimer := @OnSourceCompletionTimer;
+  end;
+
+  // timer for syncing codetools changes to synedit
+  // started on idle
+  // ended on user input
+  // when triggered updates ifdef node states
+  CodeToolsToSrcEditTimer:=TTimer.Create(Self);
+  with CodeToolsToSrcEditTimer do begin
+    Name:='CodeToolsToSrcEditTimer';
+    Interval:=1000; // one second without user input
+    Enabled:=false;
+    OnTimer:=@CodeToolsToSrcEditTimerTimer;
   end;
 
   // marks
@@ -10209,6 +10251,7 @@ begin
     true,@GetDefaultLayout);
 
   Application.AddOnIdleHandler(@OnIdle);
+  Application.AddOnUserInputHandler(@OnUserInput);
 end;
 
 destructor TSourceEditorManager.Destroy;
