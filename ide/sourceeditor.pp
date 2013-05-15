@@ -943,6 +943,7 @@ type
     procedure  FreeCompletionPlugins;
     function  GetScreenRectForToken(AnEditor: TCustomSynEdit; PhysColumn, PhysRow, EndColumn: Integer): TRect;
   protected
+    CodeToolsToSrcEditTimer: TTimer;
     function  GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
     function  GetCompletionBoxPosition: integer; override;
     function  GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
@@ -1090,7 +1091,6 @@ type
     function SomethingModified(Verbose: boolean = false): boolean;
     procedure HideHint;
     procedure OnIdle(Sender: TObject; var Done: Boolean);
-    procedure OnUserInput(Sender: TObject; Msg: Cardinal);
     procedure LockAllEditorsInSourceChangeCache;
     procedure UnlockAllEditorsInSourceChangeCache;
     procedure BeginGlobalUpdate;
@@ -1108,7 +1108,6 @@ type
                                        ASynAutoComplete: TCustomSynAutoComplete;
                                        Index: integer);
   protected
-    CodeToolsToSrcEditTimer: TTimer;
     procedure CodeToolsToSrcEditTimerTimer(Sender: TObject);
     procedure OnWordCompletionGetSource(var Source: TStrings; SourceIndex: integer);
     procedure OnSourceCompletionTimer(Sender: TObject);
@@ -8702,6 +8701,7 @@ end;
 
 procedure TSourceEditorManagerBase.DoEditorStatusChanged(AEditor: TSourceEditor);
 begin
+  CodeToolsToSrcEditTimer.Enabled:=false;
   FChangeNotifyLists[semEditorStatus].CallNotifyEvents(AEditor);
 end;
 
@@ -9911,11 +9911,6 @@ begin
   end;
 end;
 
-procedure TSourceEditorManager.OnUserInput(Sender: TObject; Msg: Cardinal);
-begin
-  CodeToolsToSrcEditTimer.Enabled:=false;
-end;
-
 procedure TSourceEditorManager.LockAllEditorsInSourceChangeCache;
 // lock all sourceeditors that are to be modified by the CodeToolBoss
 var
@@ -10252,7 +10247,6 @@ begin
     true,@GetDefaultLayout);
 
   Application.AddOnIdleHandler(@OnIdle);
-  Application.AddOnUserInputHandler(@OnUserInput);
 end;
 
 destructor TSourceEditorManager.Destroy;
