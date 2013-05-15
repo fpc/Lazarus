@@ -106,6 +106,7 @@ type
 
     procedure ApplyNodeStateToLine(ARemove: Boolean = False);
     procedure RemoveNodeStateFromLine;
+    procedure SetStartColumn(AValue: Integer);
   public
     constructor Create;
     destructor Destroy; override;
@@ -126,10 +127,10 @@ type
     property  NodeState: TSynMarkupIfdefNodeStateEx read GetNodeState write SetNodeState;
     property  NodeFlags: SynMarkupIfDefNodeFlags read FNodeFlags write FNodeFlags;
     property  Line: TSynMarkupHighIfDefLinesNode read FLine write SetLine;
-    property  StartColumn: Integer read FStartColumn write FStartColumn;
+    property  StartColumn: Integer read FStartColumn write SetStartColumn;// FStartColumn;
     property  EndColumn:   Integer read FEndColumn write FEndColumn;
     // RelativeNestDepth (opening depth)) First node is always 0 // nodes in line can be negative
-    //property  RelativeNestDepth: Integer read FRelativeNestDepth;
+    ////property  RelativeNestDepth: Integer read FRelativeNestDepth;
 // COMMENT  BEFORE  AUTO  COMPLETE !!!!!
     property OpeningPeer: TSynMarkupHighIfDefEntry index idpOpeningPeer read GetPeer write SetPeer;
     property ClosingPeer: TSynMarkupHighIfDefEntry index idpClosingPeer read GetPeer write SetPeer;
@@ -170,7 +171,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure MakeDisposed;
+    procedure MakeDisposed; // Also called to clear, on real destroy
     property LineFlags: SynMarkupIfDefLineFlags read FLineFlags;
     // LastEntryEndLineOffs: For last Entry only, if entry closing "}" is on a diff line. (can go one OVER ScanEndOffs)
     property LastEntryEndLineOffs: Integer read FLastEntryEndLineOffs write FLastEntryEndLineOffs;
@@ -783,6 +784,13 @@ begin
   ApplyNodeStateToLine(True);
 end;
 
+procedure TSynMarkupHighIfDefEntry.SetStartColumn(AValue: Integer);
+begin
+  if FStartColumn = AValue then Exit;
+  FStartColumn := AValue;
+  Assert(AValue>0, 'Startcol negative');
+end;
+
 function TSynMarkupHighIfDefEntry.NodeStateForPeer(APeerType: TSynMarkupIfdefNodeType): TSynMarkupIfdefNodeStateEx;
 const
   NodeStateMap: array [Boolean] of TSynMarkupIfdefNodeStateEx =
@@ -817,9 +825,10 @@ end;
 
 destructor TSynMarkupHighIfDefEntry.Destroy;
 begin
-  NodeState := idnUnknown; //  RemoveNodeStateFromLine;
-  if (FLine <> nil) and not(idlInGlobalClear in FLine.LineFlags) then
+  if (FLine <> nil) and not(idlInGlobalClear in FLine.LineFlags) then begin
+    NodeState := idnUnknown; //  RemoveNodeStateFromLine;
     ClearPeers;
+  end;
   inherited Destroy;
 end;
 
@@ -900,12 +909,12 @@ begin
   MakeDisposed;
 end;
 
-procedure TSynMarkupHighIfDefLinesNode.MakeDisposed;
+procedure TSynMarkupHighIfDefLinesNode.MakeDisposed; // Also called to clear, on real destroy
 begin
   FLineFlags := [idlDisposed] + FLineFlags * [idlInGlobalClear];
   while EntryCount > 0 do
     DeletEntry(EntryCount-1, True);
-  assert((FDisabledEntryOpenCount =0) and (FDisabledEntryCloseCount = 0), 'no close count left over');
+  assert((idlInGlobalClear in LineFlags) or ((FDisabledEntryOpenCount =0) and (FDisabledEntryCloseCount = 0)), 'no close count left over');
   FDisabledEntryOpenCount := 0;
   FDisabledEntryCloseCount := 0;
 end;
@@ -1522,7 +1531,8 @@ procedure TSynMarkupHighIfDefLinesTree.DoLinesEdited(Sender: TSynEditStrings; aL
   end;
 
   procedure AdjustEntryXPos(ANode: TSynMarkupHighIfDefLinesNode; ADiffX: Integer;
-    AStartIdx: Integer = 0; ADestNode: TSynMarkupHighIfDefLinesNode = nil);
+    AStartIdx: Integer = 0; ADestNode: TSynMarkupHighIfDefLinesNode = nil;
+    AMinXPos : Integer = 1);
   var
     Cnt, SkipEndIdx, DestPos, j: Integer;
     CurEntry: TSynMarkupHighIfDefEntry;
@@ -1538,9 +1548,10 @@ procedure TSynMarkupHighIfDefLinesTree.DoLinesEdited(Sender: TSynEditStrings; aL
     if ADestNode = nil then begin
       for j := AStartIdx to Cnt - 1 do begin
         CurEntry := aNode.Entry[j];
-        CurEntry.StartColumn := CurEntry.StartColumn + ADiffX;
+        assert(CurEntry.StartColumn >= AMinXPos, 'DoLinesEdited: CurEntry.StartColumn >= AMinXPos');
+        CurEntry.StartColumn := Max(AMinXPos, CurEntry.StartColumn + ADiffX);
         if (j <> SkipEndIdx) then
-          CurEntry.EndColumn   := CurEntry.EndColumn + ADiffX;
+          CurEntry.EndColumn := Max(CurEntry.StartColumn, CurEntry.EndColumn + ADiffX);
       end;
     end
     else begin
@@ -1549,9 +1560,10 @@ procedure TSynMarkupHighIfDefLinesTree.DoLinesEdited(Sender: TSynEditStrings; aL
       for j := AStartIdx to Cnt - 1 do begin
         CurEntry := aNode.Entry[j];
         aNode.Entry[j] := nil;
-        CurEntry.StartColumn := CurEntry.StartColumn + ADiffX;
+        assert(CurEntry.StartColumn >= AMinXPos, 'DoLinesEdited: CurEntry.StartColumn >= AMinXPos');
+        CurEntry.StartColumn := Max(AMinXPos, CurEntry.StartColumn + ADiffX);
         if (j <> SkipEndIdx) then
-          CurEntry.EndColumn   := CurEntry.EndColumn + ADiffX;
+          CurEntry.EndColumn := Max(CurEntry.StartColumn, CurEntry.EndColumn + ADiffX);
         ADestNode.Entry[DestPos] := CurEntry;
         inc(DestPos);
       end;
@@ -1605,9 +1617,9 @@ begin
     then begin
       // Move Entire Line
       AdjustForLinesInserted(aLinePos, aLineBrkCnt);
-      // Adjust the FIELD directly
+      // Adjust the FIELD directly (the real node already moved)
       WorkNode.FStartLine := WorkNode.FStartLine + aLineBrkCnt;
-      if aBytePos > 1 then
+      if (aBytePos > 1) and (WorkLine = aLinePos) then
         AdjustEntryXPos(WorkNode.Node, (-aBytePos) + 1);
     end
     else begin
@@ -1731,7 +1743,7 @@ begin
     if aLinePos = WorkLine then begin
       i := IndexOfEntryAfter(WorkNode.Node, aBytePos);
       if i >= 0 then begin
-        AdjustEntryXPos(WorkNode.Node, aCount, i);
+        AdjustEntryXPos(WorkNode.Node, aCount, i, nil, aBytePos);
         if (i > 0) and (WorkNode.Entry[i-1].EndColumn > aBytePos) then begin
           WorkNode.Entry[i-1].EndColumn := Max(aBytePos, WorkNode.Entry[i-1].EndColumn + aCount);
           WorkNode.Entry[i-1].MakeUnknown;
@@ -1739,7 +1751,7 @@ begin
         if aCount < 0 then begin
           c := WorkNode.EntryCount - 1;
           while ( (i < c) or ((i = c) and (WorkNode.LastEntryEndLineOffs=0)) ) and
-                (WorkNode.Entry[i].EndColumn < aBytePos)
+                (WorkNode.Entry[i].EndColumn <= WorkNode.Entry[i].StartColumn)
           do begin
             WorkNode.Node.DeletEntry(i, True);
             dec(c);
@@ -2362,14 +2374,14 @@ begin
       Node.FStartLine := ALinePos;  // directly to field
     end
     else begin
-      DebugLn([ 'SetNodeState did not find a node (ScanLine) ', ALinePos, '/', 'AstartPos', ' ', dbgs(AState)]);
+      DebugLn([ 'SetNodeState did not find a node (ScanLine) ', ALinePos, '/', 'AstartPos', AstartPos, ' ', dbgs(AState)]);
       //assert(false, 'SetNodeState did not find a node (ScanLine)');
       exit;
     end;
   end;
 
   i := Node.EntryCount;
-  if i = 0 then begin DebugLn(['SetNodeState did not find a node (zero entries)', ALinePos, '/', 'AstartPos', ' ', dbgs(AState)]); exit; end;
+  if i = 0 then begin DebugLn(['SetNodeState did not find a node (zero entries)', ALinePos, '/', 'AstartPos', AstartPos, ' ', dbgs(AState)]); exit; end;
   //assert(i > 0, 'SetNodeState did not find a node (zero entries)');
   e := nil;
   LineNeedReq := False;
@@ -2383,11 +2395,11 @@ begin
   until (i = 0) or (e <> nil);
 
   //assert(e <> nil, 'SetNodeState did not find a node (no matching entry)');
+if (e = nil) then DebugLn([ 'SetNodeState did not find a matching node  ', ALinePos, '/', 'AstartPos',AstartPos, ' ', dbgs(AState)]);
   //assert(e.NodeType in [idnIfdef, idnElseIf], 'SetNodeState did not find a node (e.NodeType <> idnIfdef)');
+if (e<> nil) and not(e.NodeType in [idnIfdef, idnElseIf]) then DebugLn([ 'SetNodeState did not find a node of useful type  ', ALinePos, '/', 'AstartPos',AstartPos, ' ', dbgs(AState), ' ', dbgs(e.NodeType )]);
   if (e = nil) or not(e.NodeType in [idnIfdef, idnElseIf]) then
-begin  DebugLn([ 'SetNodeState did not find a matching node  ', ALinePos, '/', 'AstartPos', ' ', dbgs(AState)]);
     exit;
-end;
 
   e.NodeState := AState;
 
@@ -2598,6 +2610,7 @@ begin
     exit;
   end;
 
+try
   LastLine := ScreenRowToRow(LinesInWindow+1);
   FOuterLines.Clear; // TODO: invalidate acording to actual lines edited
   FIfDefTree.ValidateRange(TopLine, LastLine, FOuterLines);
@@ -2735,6 +2748,9 @@ XXXCurTree := FIfDefTree; try
   end;
 
 finally XXXCurTree := nil; end;
+except
+FIfDefTree.DebugPrint(true);
+end;
 end;
 
 procedure TSynEditMarkupIfDef.DoFoldChanged(aLine: Integer);

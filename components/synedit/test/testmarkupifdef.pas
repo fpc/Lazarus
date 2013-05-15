@@ -752,6 +752,7 @@ begin
 // delete an entire node
   n := 'Delete full node';
   SynEdit.TextBetweenPoints[point(10, 7),point(27, 7)] := '';
+FTestTree.DebugPrint(true);
   CheckNodesXY(n+'', 7, [2,10,   10,20], 0);
 
   {%endregion one line}
@@ -1008,6 +1009,39 @@ begin
   CheckNodesXY('', 4, [], 0);
   CheckNodesXY('', 5, [2, 12], 0);
   CheckNodesXY('', 6, [3, 14], 0);
+
+
+  {%region  Delete line with node}
+    ReCreateEditForTreeTest(TestText7);
+    FTestTree.ValidateRange( 1,  5, FOpenings);
+    FTestTree.ValidateRange(10, 10, FOpenings);
+    FTestTree.ValidateRange(14, 14, FOpenings);
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef ) ]);
+    CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf ) ]);
+    CheckNodes(n,10, [ ExpN( 2,12, idnIfdef ) ]);
+    CheckNodes(n,14, [ ExpN( 2,10, idnEndIf ) ]);
+
+    SynEdit.TextBetweenPoints[point(1, 4),point(1, 5)] := '';
+    FOpenings.Clear;
+    FTestTree.ValidateRange(3, 5, FOpenings); // only validate deleted line
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef) ]);
+    CheckNodes(n, 3, [  ]);
+    CheckNodes(n, 4, [  ]);
+    CheckNodes(n, 5, [  ]);
+    CheckNodes(n, 9, [ ExpN( 2,12, idnIfdef) ]);
+    CheckNodes(n,13, [ ExpN( 2,10, idnEndIf) ]);
+
+    SynEdit.TextBetweenPoints[point(1, 4),point(1, 4)] := '{$ENDIF}' + LineEnding;
+    FTestTree.ValidateRange(3, 5, FOpenings); // only validate deleted line
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef ) ]);
+    CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf ) ]);
+    CheckNodes(n,10, [ ExpN( 2,12, idnIfdef ) ]);
+    CheckNodes(n,14, [ ExpN( 2,10, idnEndIf ) ]);
+
+  {%endregion   }
+
+
+
 
 
   // Insert IFDEF into empty text
