@@ -5,7 +5,7 @@ unit LazFileUtils;
 interface
 
 uses
-  Classes, SysUtils, LazUTF8, LUResStrings;
+  Classes, SysUtils, LazUTF8, LazUtf8Classes, LUResStrings;
 
 {$IFDEF Windows}
   {$define CaseInsensitiveFilenames}
@@ -83,6 +83,10 @@ function SetCurrentDirUTF8(const NewDir: String): Boolean;
 function CreateDirUTF8(const NewDir: String): Boolean;
 function RemoveDirUTF8(const Dir: String): Boolean;
 function ForceDirectoriesUTF8(const Dir: string): Boolean;
+
+function FileOpenUTF8(Const FileName : string; Mode : Integer) : THandle;
+function FileCreateUTF8(Const FileName : string) : THandle; overload;
+function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle; overload;
 
 // UNC paths
 function IsUNCPath(const {%H-}Path: String): Boolean;
@@ -487,7 +491,7 @@ end;
 
 function FileIsText(const AFilename: string; out FileReadable: boolean): boolean;
 var
-  fs: TFileStream;
+  fs: TFileStreamUtf8;
   Buf: string;
   Len: integer;
   NewLine: boolean;
@@ -497,7 +501,7 @@ begin
   Result:=false;
   FileReadable:=true;
   try
-    fs := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead or fmShareDenyNone);
+    fs := TFileStreamUtf8.Create(AFilename, fmOpenRead or fmShareDenyNone);
     try
       // read the first 1024 bytes
       Len:=1024;

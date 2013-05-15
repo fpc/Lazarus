@@ -5,7 +5,7 @@ unit lazutf8classes;
 interface
 
 uses
-  Classes, SysUtils, fileutil, lazutf8;
+  Classes, SysUtils, lazutf8;
 
 type
   TFileStreamUTF8 = class(THandleStream)
@@ -32,6 +32,9 @@ procedure SaveStringsToFileUTF8(List: TStrings; const FileName: string);
 function CompareStringListItemsUTF8LowerCase(List: TStringList; Index1, Index2: Integer): Integer;
 
 implementation
+
+uses
+  LazFileUtils; //avoid circular reference with LazFileUtils
 
 procedure LoadStringsFromFileUTF8(List: TStrings; const FileName: string);
 var

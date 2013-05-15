@@ -5,6 +5,21 @@ begin
   Result:=FilenameIsUnixAbsolute(TheFilename);
 end;
 
+function FileOpenUTF8(Const FileName : string; Mode : Integer) : THandle;
+begin
+  Result := SysUtils.FileOpen(FileName, Mode);
+end;
+
+function FileCreateUTF8(Const FileName : string) : THandle;
+begin
+  Result := SysUtils.FileCreate(FileName);
+end;
+
+function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle;
+begin
+  Result := SysUtils.FileCreate(FileName, Rights);
+end;
+
 function ExpandFileNameUtf8(const FileName: string; {const} BaseDir: String = ''): String;
 var
   IsAbs: Boolean;
