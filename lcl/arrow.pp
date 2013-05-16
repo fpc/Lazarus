@@ -39,46 +39,46 @@ type
 
   TArrow = class(TGraphicControl)
   private
-     FArrowColor: TColor;
-     FArrowType: TArrowType;
-     FR: TRect;
-     FShadowType: TShadowType;
-     FT: TTrianglePoints;
-     procedure CalcTrianglePoints;
-     procedure GraphicChanged(Sender: TObject);
-     procedure SetArrowColor(AValue: TColor);
-     procedure SetArrowType(AValue: TArrowType);
-     procedure SetShadowType(AValue: TShadowType);
-   protected
-     class function GetControlClassDefaultSize: TSize; override;
-     procedure Paint; override;
-   public
-     constructor Create(aOwner: TComponent); override;
-   published
-     property Align;
-     property Anchors;
-     property ArrowColor: TColor read FArrowColor write SetArrowColor default clBlack;
-     property ArrowType: TArrowType read FArrowType write SetArrowType default atLeft;
-     property BorderSpacing;
-     property Color;
-     property Constraints;
-     property OnChangeBounds;
-     property OnClick;
-     property OnContextPopup;
-     property OnDblClick;
-     //property OnDragDrop;
-     //property OnDragOver;
-     //property OnEndDrag;
-     property OnMouseDown;
-     property OnMouseMove;
-     property OnMouseUp;
-     property OnPaint;
-     property OnResize;
-     //property OnStartDrag;
-     property ParentShowHint;
-     property PopupMenu;
-     property ShadowType: TShadowType read FShadowType write SetShadowType default stEtchedIn;
-     property Visible;
+    FArrowColor: TColor;
+    FArrowType: TArrowType;
+    FR: TRect;
+    FShadowType: TShadowType;
+    FT: TTrianglePoints;
+    procedure CalcTrianglePoints;
+    procedure GraphicChanged(Sender: TObject);
+    procedure SetArrowColor(AValue: TColor);
+    procedure SetArrowType(AValue: TArrowType);
+    procedure SetShadowType(AValue: TShadowType);
+  protected
+    class function GetControlClassDefaultSize: TSize; override;
+    procedure Paint; override;
+  public
+    constructor Create(aOwner: TComponent); override;
+  published
+    property Align;
+    property Anchors;
+    property ArrowColor: TColor read FArrowColor write SetArrowColor default clBlack;
+    property ArrowType: TArrowType read FArrowType write SetArrowType default atLeft;
+    property BorderSpacing;
+    property Color;
+    property Constraints;
+    property OnChangeBounds;
+    property OnClick;
+    property OnContextPopup;
+    property OnDblClick;
+    //property OnDragDrop;
+    //property OnDragOver;
+    //property OnEndDrag;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnPaint;
+    property OnResize;
+    //property OnStartDrag;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShadowType: TShadowType read FShadowType write SetShadowType default stEtchedIn;
+    property Visible;
   end;
 
 procedure Register;
@@ -93,9 +93,10 @@ end;
 { TArrow }
 
 procedure TArrow.CalcTrianglePoints;
-var midY, midX, half: integer;
-    sz: TSize;
-    square, tall: boolean;
+var
+  midY, midX, half: integer;
+  sz: TSize;
+  square, tall: boolean;
 begin
   FR:= ClientRect;
   InflateRect(FR, -2, -2);
