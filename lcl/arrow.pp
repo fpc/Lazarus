@@ -39,6 +39,7 @@ type
 
   TArrow = class(TGraphicControl)
   private
+    FAntiAliasingMode: TAntialiasingMode;
     FArrowColor: TColor;
     FArrowType: TArrowType;
     FR: TRect;
@@ -46,6 +47,7 @@ type
     FT: TTrianglePoints;
     procedure CalcTrianglePoints;
     procedure GraphicChanged(Sender: TObject);
+    procedure SetAntiAliasingMode(AValue: TAntialiasingMode);
     procedure SetArrowColor(AValue: TColor);
     procedure SetArrowType(AValue: TArrowType);
     procedure SetShadowType(AValue: TShadowType);
@@ -57,11 +59,13 @@ type
   published
     property Align;
     property Anchors;
+    property AntiAliasingMode: TAntialiasingMode read FAntiAliasingMode write SetAntiAliasingMode default amDontCare;
     property ArrowColor: TColor read FArrowColor write SetArrowColor default clBlack;
     property ArrowType: TArrowType read FArrowType write SetArrowType default atLeft;
     property BorderSpacing;
     property Color;
     property Constraints;
+    property Hint;
     property OnChangeBounds;
     property OnClick;
     property OnContextPopup;
@@ -75,9 +79,11 @@ type
     property OnPaint;
     property OnResize;
     //property OnStartDrag;
+    property ParentColor;
     property ParentShowHint;
     property PopupMenu;
     property ShadowType: TShadowType read FShadowType write SetShadowType default stEtchedIn;
+    property ShowHint;
     property Visible;
   end;
 
@@ -145,6 +151,13 @@ begin
    then Invalidate;
 end;
 
+procedure TArrow.SetAntiAliasingMode(AValue: TAntialiasingMode);
+begin
+  if FAntiAliasingMode=AValue then Exit;
+  FAntiAliasingMode:=AValue;
+  GraphicChanged(nil);
+end;
+
 procedure TArrow.SetArrowColor(AValue: TColor);
 begin
   if FArrowColor=AValue then Exit;
@@ -205,6 +218,7 @@ const
   end;
 
 begin
+  Canvas.AntialiasingMode := FAntiAliasingMode;
   Canvas.Brush.Color := Color;
   Canvas.FillRect(ClientRect);
 
@@ -222,6 +236,7 @@ end;
 constructor TArrow.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
+  FAntiAliasingMode := amDontCare;
   Constraints.MinHeight:= ArrowMinHeight;
   Constraints.MinWidth:= ArrowMinHeight;
   with GetControlClassDefaultSize do
@@ -230,11 +245,6 @@ begin
   FArrowType:= atLeft;      // set defaults to match TArrow component
   FShadowType:= stEtchedIn;
   FArrowColor:= clBlack;
-  Canvas.Pen.Color := clBlack;
-  if Assigned(Parent)
-    then Color:= Parent.Color
-  else Color:= clBtnFace;
-  Canvas.Brush.Color := Color;
 end;
 
 end.
