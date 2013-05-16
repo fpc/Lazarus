@@ -445,7 +445,7 @@ begin
        (TSynEditUndoTrimInsert(L).FPosY = APosY)
     then begin
       {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- MaybeAddUndoForget - removing last undo']);{$ENDIF}
-      CurUndoList.PopLastChange;
+      CurUndoList.PopLastChange.Free;
       exit;
     end;
   end;
