@@ -70,6 +70,7 @@ type
     FTempLineStringForPChar: String; // experimental; used by GetPChar;
     FViewChangeStamp: int64;
     FDisplayView: TLazSynDisplayTrim;
+    procedure MaybeAddUndoForget(APosY: Integer; AText: String);
     procedure DoCaretChanged(Sender : TObject);
     procedure ListCleared(Sender: TObject);
     Procedure LinesChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
@@ -117,7 +118,7 @@ type
     procedure UnLock;
     procedure ForceTrim; // for redo; redo can not wait for UnLock
     property Enabled : Boolean read fEnabled write SetEnabled;
-    property UndoTrimmedSpaces: Boolean read FUndoTrimmedSpaces write FUndoTrimmedSpaces; deprecated 'not implemented';
+    property UndoTrimmedSpaces: Boolean read FUndoTrimmedSpaces write FUndoTrimmedSpaces; // deprecated 'not implemented';
 
     property IsTrimming: Boolean read FIsTrimming;
     property TrimType: TSynEditStringTrimmingType read FTrimType write SetTrimType;
@@ -434,6 +435,24 @@ begin
   inherited Destroy;
 end;
 
+procedure TSynEditStringTrimmingList.MaybeAddUndoForget(APosY: Integer; AText: String);
+var
+  L: TSynEditUndoItem;
+begin
+  if (FTrimType = settIgnoreAll) then begin
+    L := CurUndoList.GetLastChange;
+    if (L <> nil) and (L is TSynEditUndoTrimInsert) and
+       (TSynEditUndoTrimInsert(L).FPosY = APosY)
+    then begin
+      {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- MaybeAddUndoForget - removing last undo']);{$ENDIF}
+      CurUndoList.PopLastChange;
+      exit;
+    end;
+  end;
+
+  CurUndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(APosY, AText));
+end;
+
 procedure TSynEditStringTrimmingList.DoCaretChanged(Sender : TObject);
 var
   s: String;
@@ -447,7 +466,7 @@ begin
          ((FTrimType in [settEditLine]) and not FLineEdited) ))
   then begin
     if (fLineIndex <> TSynEditCaret(Sender).LinePos - 1) then begin
-    {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- CarteChnaged - Clearing 1 ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), 'newCaretYPos=',TSynEditCaret(Sender).LinePos]);{$ENDIF}
+    {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- CaretChnaged - Clearing 1 ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), 'newCaretYPos=',TSynEditCaret(Sender).LinePos]);{$ENDIF}
       if fSpaces <> '' then IncViewChangeStamp;
       fLineIndex := TSynEditCaret(Sender).LinePos - 1;
       fSpaces := '';
@@ -460,8 +479,8 @@ begin
   if (fLineIndex <> TSynEditCaret(Sender).LinePos - 1) or
      (FTrimType = settIgnoreAll) then
   begin
-    {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- CarteChnaged - Trimming,clear 1 ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), 'newCaretYPos=',TSynEditCaret(Sender).LinePos]);{$ENDIF}
-    CurUndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(FLineIndex+1, FSpaces));
+    {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- CaretChnaged - Trimming,clear 1 ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), 'newCaretYPos=',TSynEditCaret(Sender).LinePos]);{$ENDIF}
+    MaybeAddUndoForget(FLineIndex+1, FSpaces);
     i := length(FSpaces);
     fSpaces := '';
     TSynEditCaret(Sender).InvalidateBytePos; // tabs at EOL may now be spaces
@@ -480,7 +499,7 @@ begin
     {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- CarteChnaged - Trimming,part to ',length(s),' ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), 'newCaretYPos=',TSynEditCaret(Sender).LinePos]);{$ENDIF}
     FSpaces := copy(FSpaces, 1, j);
     i := length(s);
-    CurUndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(FLineIndex+1, s));
+    MaybeAddUndoForget(FLineIndex+1, s);
     SendNotification(senrLineChange, self, fLineIndex, 1);
     SendNotification(senrEditAction, self, FLineIndex+1, 0,
                      1+length(fSynStrings[FLineIndex]) + length(FSpaces), -i, '');
@@ -630,7 +649,7 @@ begin
     fLineText:='';
   end;
   Result:= fSpaces;
-  {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- Spaces (for line / not locked)', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  Index=', Index, ' Result=',length(Result)]);{$ENDIF}
+  {$IFDEF SynTrimDebug}if length(Result) > 0 then debugln(['--- Trimmer -- Spaces (for line / not locked)', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  Index=', Index, ' Result=',length(Result)]);{$ENDIF}
 end;
 
 procedure TSynEditStringTrimmingList.Lock;
@@ -680,7 +699,7 @@ begin
       if (slen > 0) and (index >= 0) and (index < fSynStrings.Count) then begin
         ltext := fSynStrings[index];
         fSynStrings[index] := ltext;                                            // trigger OnPutted, so the line gets repainted
-        CurUndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(Index+1, fLockList[i]));
+        MaybeAddUndoForget(Index+1, fLockList[i]);
       end;
     end;
   finally
@@ -999,7 +1018,7 @@ begin
   DecIsInEditAction;
 end;
 
-Function TSynEditStringTrimmingList.EditDelete(LogX, LogY, ByteLen: Integer): String;
+function TSynEditStringTrimmingList.EditDelete(LogX, LogY, ByteLen: Integer): String;
 var
   t: String;
   Len: Integer;
