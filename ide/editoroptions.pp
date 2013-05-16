@@ -59,7 +59,7 @@ uses
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
   SynHighlighterJScript, SynHighlighterDiff, SynHighlighterBat, SynHighlighterIni,
-  SynHighlighterPo,
+  SynHighlighterPo, SynEditMarkupIfDef,
   // codetools
   LinkScanner, CodeToolManager,
   // IDEIntf
@@ -99,7 +99,11 @@ type
      ahaTemplateEditOther, ahaSyncroEditCur,      ahaSyncroEditSync,
      ahaSyncroEditOther,   ahaSyncroEditArea,     ahaGutterSeparator,
      ahaGutter,            ahaRightMargin,        ahaSpecialVisibleChars,
-     ahaTopInfoHint);
+     ahaTopInfoHint
+{$IFDEF WithSynMarkupIfDef}
+     ,       ahaIfDefBlockInactive
+{$ENDIF}
+     );
 
   TAhaGroupName = (agnDefault, agnLanguage, agnText, agnLine, agnGutter, agnTemplateMode, agnSyncronMode);
 
@@ -135,7 +139,10 @@ const
     '', // ahaGutter
     '',  // ahaRightMargin
     '',  // ahaSpecialVisibleChars
-    ''   // ahaTopInfoHint
+    ''  // ahaTopInfoHint
+{$IFDEF WithSynMarkupIfDef}
+,    ''
+{$ENDIF}
   );
 
   ahaGroupMap: array[TAdditionalHilightAttribute] of TAhaGroupName = (
@@ -169,7 +176,11 @@ const
     { ahaGutter }              agnGutter,
     { ahaRightMargin}          agnGutter,
     { ahaSpecialVisibleChars } agnText,
-    { ahaTopInfoHint }    agnLine
+    { ahaTopInfoHint }         agnLine
+{$IFDEF WithSynMarkupIfDef}
+    ,
+    { ahaIfDefBlockInactive }  agnText
+{$ENDIF}
   );
   ahaSupportedFeatures: array[TAdditionalHilightAttribute] of TColorSchemeAttributeFeatures =
   (
@@ -203,7 +214,11 @@ const
     { ahaGutter }             [hafBackColor],
     { ahaRightMargin}         [hafForeColor],
     { ahaSpecialVisibleChars }[hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaTopInfoHint }   [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
+    { ahaTopInfoHint }        [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
+{$IFDEF WithSynMarkupIfDef}
+    ,
+    { ahaIfDefBlockInactive } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
+{$ENDIF}
   );
 
 
@@ -2471,6 +2486,9 @@ begin
   AdditionalHighlightAttributes[ahaRightMargin]         := dlgRightMargin;
   AdditionalHighlightAttributes[ahaSpecialVisibleChars] := dlgAddHiSpecialVisibleChars;
   AdditionalHighlightAttributes[ahaTopInfoHint]         := dlgTopInfoHint;
+{$IFDEF WithSynMarkupIfDef}
+  AdditionalHighlightAttributes[ahaIfDefBlockInactive]  := dlgIfDefBlockInactive;
+{$ENDIF}
 
   AdditionalHighlightGroupNames[agnDefault]      := dlgAddHiAttrGroupDefault;
   AdditionalHighlightGroupNames[agnText]         := dlgAddHiAttrGroupText;
@@ -6139,10 +6157,14 @@ begin
     SetMarkupColorByClass(ahaHighlightWord, TSynEditMarkupHighlightAllCaret);
     SetMarkupColorByClass(ahaWordGroup,     TSynEditMarkupWordGroup);
     SetMarkupColorByClass(ahaSpecialVisibleChars, TSynEditMarkupSpecialChar);
+{$IFDEF WithSynMarkupIfDef}
+    SetMarkupColorByClass(ahaIfDefBlockInactive, TSynEditMarkupIfDef);
+{$ENDIF}
     SetGutterColorByClass(ahaLineNumber,      TSynGutterLineNumber);
     SetGutterColorByClass(ahaModifiedLine,    TSynGutterChanges);
     SetGutterColorByClass(ahaCodeFoldingTree, TSynGutterCodeFolding);
     SetGutterColorByClass(ahaGutterSeparator, TSynGutterSeparator);
+
 
     i := aSynEdit.PluginCount - 1;
     while (i >= 0) and not(aSynEdit.Plugin[i] is TSynPluginTemplateEdit) do

@@ -1831,6 +1831,7 @@ resourcestring
   dlgAddHiAttrGutterSeparator     = 'Gutter Separator';
   dlgAddHiSpecialVisibleChars     = 'Visualized Special Chars';
   dlgTopInfoHint                  = 'Current Class/Proc Hint';
+  dlgIfDefBlockInactive           = 'Inactive $IFDEF code';
 
   dlgAddHiAttrGroupDefault  = 'Global';
   dlgAddHiAttrGroupText     = 'Text';
