@@ -93,7 +93,6 @@ uses
 // uncomment only those units with implementation
 ////////////////////////////////////////////////////
 // Gtk1WSActnList,
-// Gtk1WSArrow,
 // Gtk1WSButtons,
 // Gtk1WSCalendar,
 // Gtk1WSCheckLst,

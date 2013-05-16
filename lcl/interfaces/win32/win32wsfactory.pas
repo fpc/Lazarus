@@ -4,7 +4,7 @@ unit Win32WSFactory;
 
 interface
 uses
-  Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Arrow, Spin,
+  Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Spin,
   Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus,
   WSLCLClasses;
 
@@ -77,8 +77,6 @@ function RegisterCalendarDialog: Boolean;
 // Buttons
 function RegisterCustomBitBtn: Boolean;
 function RegisterCustomSpeedButton: Boolean;
-// Arrow
-function RegisterArrow: Boolean;
 // CheckLst
 function RegisterCustomCheckListBox: Boolean;
 // Forms
@@ -101,7 +99,6 @@ function RegisterLazDeviceAPIs: Boolean;
 
 implementation
 uses
-  Win32WSArrow,
   Win32WSButtons,
   Win32WSCalendar,
   Win32WSCheckLst,
@@ -469,13 +466,6 @@ end;
 function RegisterCustomSpeedButton: Boolean; alias : 'WSRegisterCustomSpeedButton';
 begin
   Result := False;
-end;
-
-// Arrow
-function RegisterArrow: Boolean; alias : 'WSRegisterArrow';
-begin
-  RegisterWSComponent(TArrow, TWin32WSArrow);
-  Result := True;
 end;
 
 // CheckLst

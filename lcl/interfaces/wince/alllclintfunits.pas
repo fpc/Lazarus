@@ -8,7 +8,6 @@ uses
   winceextra,
   winceint,
   winceproc,
-  wincewsarrow,
   wincewsbuttons,
   wincewscalendar,
   wincewschecklst,

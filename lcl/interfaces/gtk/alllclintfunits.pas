@@ -21,7 +21,6 @@ uses
   gtk1int,
   gtkwsbuttons,
   gtkwsdialogs,
-  gtkwsarrow,
   gtkfontcache,
   gtkwsimglist,
   gtkthemes,

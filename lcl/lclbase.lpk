@@ -30,7 +30,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="291">
+    <Files Count="290">
       <Item1>
         <Filename Value="barchart.pp"/>
         <UnitName Value="BarChart"/>
@@ -1007,199 +1007,195 @@
         <UnitName Value="Messages"/>
       </Item243>
       <Item244>
-        <Filename Value="widgetset/wsarrow.pp"/>
-        <UnitName Value="WSArrow"/>
-      </Item244>
-      <Item245>
         <Filename Value="widgetset/wsbuttons.pp"/>
         <UnitName Value="WSButtons"/>
-      </Item245>
-      <Item246>
+      </Item244>
+      <Item245>
         <Filename Value="widgetset/wscalendar.pp"/>
         <UnitName Value="WSCalendar"/>
-      </Item246>
-      <Item247>
+      </Item245>
+      <Item246>
         <Filename Value="widgetset/wschecklst.pp"/>
         <UnitName Value="WSCheckLst"/>
-      </Item247>
-      <Item248>
+      </Item246>
+      <Item247>
         <Filename Value="widgetset/wscomctrls.pp"/>
         <UnitName Value="WSComCtrls"/>
-      </Item248>
-      <Item249>
+      </Item247>
+      <Item248>
         <Filename Value="widgetset/wscontrols.pp"/>
         <UnitName Value="WSControls"/>
-      </Item249>
-      <Item250>
+      </Item248>
+      <Item249>
         <Filename Value="widgetset/wsdesigner.pp"/>
         <UnitName Value="WSDesigner"/>
-      </Item250>
-      <Item251>
+      </Item249>
+      <Item250>
         <Filename Value="widgetset/wsdialogs.pp"/>
         <UnitName Value="WSDialogs"/>
-      </Item251>
-      <Item252>
+      </Item250>
+      <Item251>
         <Filename Value="widgetset/wsextctrls.pp"/>
         <UnitName Value="WSExtCtrls"/>
-      </Item252>
-      <Item253>
+      </Item251>
+      <Item252>
         <Filename Value="widgetset/wsextdlgs.pp"/>
         <UnitName Value="WSExtDlgs"/>
-      </Item253>
-      <Item254>
+      </Item252>
+      <Item253>
         <Filename Value="widgetset/wsfactory.pas"/>
         <UnitName Value="WSFactory"/>
-      </Item254>
-      <Item255>
+      </Item253>
+      <Item254>
         <Filename Value="widgetset/wsforms.pp"/>
         <UnitName Value="WSForms"/>
-      </Item255>
-      <Item256>
+      </Item254>
+      <Item255>
         <Filename Value="widgetset/wsgrids.pp"/>
         <UnitName Value="WSGrids"/>
-      </Item256>
-      <Item257>
+      </Item255>
+      <Item256>
         <Filename Value="widgetset/wsimglist.pp"/>
         <UnitName Value="WSImgList"/>
-      </Item257>
-      <Item258>
+      </Item256>
+      <Item257>
         <Filename Value="widgetset/wslclclasses.pp"/>
         <UnitName Value="WSLCLClasses"/>
-      </Item258>
-      <Item259>
+      </Item257>
+      <Item258>
         <Filename Value="widgetset/wsmenus.pp"/>
         <UnitName Value="WSMenus"/>
-      </Item259>
-      <Item260>
+      </Item258>
+      <Item259>
         <Filename Value="widgetset/wspairsplitter.pp"/>
         <UnitName Value="WSPairSplitter"/>
-      </Item260>
-      <Item261>
+      </Item259>
+      <Item260>
         <Filename Value="widgetset/wsproc.pp"/>
         <UnitName Value="WSProc"/>
-      </Item261>
-      <Item262>
+      </Item260>
+      <Item261>
         <Filename Value="widgetset/wsreferences.pp"/>
         <UnitName Value="WSReferences"/>
-      </Item262>
-      <Item263>
+      </Item261>
+      <Item262>
         <Filename Value="widgetset/wsspin.pp"/>
         <UnitName Value="WSSpin"/>
-      </Item263>
-      <Item264>
+      </Item262>
+      <Item263>
         <Filename Value="widgetset/wsstdctrls.pp"/>
         <UnitName Value="WSStdCtrls"/>
-      </Item264>
-      <Item265>
+      </Item263>
+      <Item264>
         <Filename Value="widgetset/wstoolwin.pp"/>
         <UnitName Value="WSToolwin"/>
-      </Item265>
-      <Item266>
+      </Item264>
+      <Item265>
         <Filename Value="alllclunits.pp"/>
         <Type Value="Main Unit"/>
         <UnitName Value="AllLCLUnits"/>
-      </Item266>
-      <Item267>
+      </Item265>
+      <Item266>
         <Filename Value="actnlist.pas"/>
         <UnitName Value="ActnList"/>
-      </Item267>
-      <Item268>
-        <Filename Value="arrow.pp"/>
-        <UnitName Value="Arrow"/>
-      </Item268>
-      <Item269>
+      </Item266>
+      <Item267>
         <Filename Value="asyncprocess.pp"/>
         <UnitName Value="AsyncProcess"/>
-      </Item269>
-      <Item270>
+      </Item267>
+      <Item268>
         <Filename Value="buttonpanel.pas"/>
         <UnitName Value="ButtonPanel"/>
-      </Item270>
-      <Item271>
+      </Item268>
+      <Item269>
         <Filename Value="buttons.pp"/>
         <UnitName Value="Buttons"/>
-      </Item271>
-      <Item272>
+      </Item269>
+      <Item270>
         <Filename Value="calendar.pp"/>
         <UnitName Value="Calendar"/>
-      </Item272>
-      <Item273>
+      </Item270>
+      <Item271>
         <Filename Value="registerlcl.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="RegisterLCL"/>
-      </Item273>
-      <Item274>
+      </Item271>
+      <Item272>
         <Filename Value="include/lclcolordialog.inc"/>
         <Type Value="Include"/>
-      </Item274>
-      <Item275>
+      </Item272>
+      <Item273>
         <Filename Value="valedit.pas"/>
         <UnitName Value="ValEdit"/>
-      </Item275>
-      <Item276>
+      </Item273>
+      <Item274>
         <Filename Value="lazcanvas.pas"/>
         <UnitName Value="lazcanvas"/>
-      </Item276>
-      <Item277>
+      </Item274>
+      <Item275>
         <Filename Value="lazdialogs.pas"/>
         <UnitName Value="lazdialogs"/>
-      </Item277>
-      <Item278>
+      </Item275>
+      <Item276>
         <Filename Value="lazregions.pas"/>
         <UnitName Value="lazregions"/>
-      </Item278>
-      <Item279>
+      </Item276>
+      <Item277>
         <Filename Value="customdrawn_common.pas"/>
         <UnitName Value="customdrawn_common"/>
-      </Item279>
-      <Item280>
+      </Item277>
+      <Item278>
         <Filename Value="customdrawncontrols.pas"/>
         <UnitName Value="customdrawncontrols"/>
-      </Item280>
-      <Item281>
+      </Item278>
+      <Item279>
         <Filename Value="customdrawndrawers.pas"/>
         <UnitName Value="customdrawndrawers"/>
-      </Item281>
-      <Item282>
+      </Item279>
+      <Item280>
         <Filename Value="lazdeviceapis.pas"/>
         <UnitName Value="lazdeviceapis"/>
-      </Item282>
-      <Item283>
+      </Item280>
+      <Item281>
         <Filename Value="ldocktree.pas"/>
         <UnitName Value="LDockTree"/>
-      </Item283>
-      <Item284>
+      </Item281>
+      <Item282>
         <Filename Value="lazfreetypeintfdrawer.pas"/>
         <UnitName Value="LazFreeTypeIntfDrawer"/>
-      </Item284>
-      <Item285>
+      </Item282>
+      <Item283>
         <Filename Value="customdrawn_winxp.pas"/>
         <UnitName Value="customdrawn_winxp"/>
-      </Item285>
-      <Item286>
+      </Item283>
+      <Item284>
         <Filename Value="customdrawn_android.pas"/>
         <UnitName Value="customdrawn_android"/>
+      </Item284>
+      <Item285>
+        <Filename Value="include/sysenvapis_win.inc"/>
+        <Type Value="Include"/>
+      </Item285>
+      <Item286>
+        <Filename Value="include/sysenvapis.inc"/>
+        <Type Value="Include"/>
       </Item286>
       <Item287>
-        <Filename Value="include/sysenvapis_win.inc"/>
+        <Filename Value="include/sysenvapis_mac.inc"/>
         <Type Value="Include"/>
       </Item287>
       <Item288>
-        <Filename Value="include/sysenvapis.inc"/>
+        <Filename Value="include/sysenvapis_unix.inc"/>
         <Type Value="Include"/>
       </Item288>
       <Item289>
-        <Filename Value="include/sysenvapis_mac.inc"/>
+        <Filename Value="include/lcl_defines.inc"/>
         <Type Value="Include"/>
       </Item289>
       <Item290>
-        <Filename Value="include/sysenvapis_unix.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="arrow.pp"/>
+        <UnitName Value="Arrow"/>
       </Item290>
-      <Item291>
-        <Filename Value="include/lcl_defines.inc"/>
-        <Type Value="Include"/>
-      </Item291>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>

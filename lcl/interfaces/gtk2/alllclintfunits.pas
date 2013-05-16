@@ -14,7 +14,6 @@ uses
   {%H-}gtk2proc{%H-},
   {%H-}gtk2themes{%H-},
   {%H-}gtk2winapiwindow{%H-},
-  {%H-}gtk2wsarrow{%H-},
   {%H-}gtk2wsbuttons{%H-},
   {%H-}gtk2wscalendar{%H-},
   {%H-}gtk2wschecklst{%H-},

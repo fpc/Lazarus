@@ -19,7 +19,6 @@ uses
   fpguiint,
   fpguiwsgrids,
   fpguiwsimglist,
-  fpguiwsarrow,
   //fpguiwscalendar,
   fpguiwsmenus;
 implementation

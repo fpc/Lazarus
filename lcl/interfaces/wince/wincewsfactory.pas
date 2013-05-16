@@ -4,7 +4,7 @@ unit WinCEWSFactory;
 
 interface
 uses
-  Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Arrow, Spin,
+  Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Spin,
   Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, Grids,
   WSLCLClasses;
 
@@ -77,8 +77,6 @@ function RegisterCalendarDialog: Boolean;
 // Buttons
 function RegisterCustomBitBtn: Boolean;
 function RegisterCustomSpeedButton: Boolean;
-// Arrow
-function RegisterArrow: Boolean;
 // CheckLst
 function RegisterCustomCheckListBox: Boolean;
 // Forms
@@ -101,7 +99,6 @@ function RegisterLazDeviceAPIs: Boolean;
 
 implementation
 uses
- WinCEWSArrow,
  WinCEWSButtons,
  WinCEWSCalendar,
  WinCEWSCheckLst,
@@ -456,13 +453,6 @@ end;
 function RegisterCustomSpeedButton: Boolean; alias : 'WSRegisterCustomSpeedButton';
 begin
   Result := False;
-end;
-
-// Arrow
-function RegisterArrow: Boolean; alias : 'WSRegisterArrow';
-begin
-  RegisterWSComponent(TArrow, TWinCEWSArrow);
-  Result := True;
 end;
 
 // CheckLst

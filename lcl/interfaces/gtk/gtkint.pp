@@ -335,7 +335,6 @@ uses
 // uncomment only those units with implementation
 ////////////////////////////////////////////////////
 // GtkWSActnList,
- GtkWSArrow,
  GtkWSButtons,
  GtkWSCalendar,
  GtkWSCheckLst,
@@ -361,7 +360,7 @@ uses
   GtkWSPrivate,
   GtkThemes,
   Buttons, StdCtrls, PairSplitter,
-  GTKWinApiWindow, ComCtrls, Calendar, Arrow, Spin,
+  GTKWinApiWindow, ComCtrls, Calendar, Spin,
   ExtCtrls, FileCtrl, LResources, gtkglobals;
 
 {$I gtklistsl.inc}

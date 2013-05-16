@@ -123,7 +123,6 @@ begin
     t.Dependencies.AddUnit('utrace');
     t.Dependencies.AddUnit('xmlpropstorage');
     t.Dependencies.AddUnit('messages');
-    t.Dependencies.AddUnit('wsarrow');
     t.Dependencies.AddUnit('wsbuttons');
     t.Dependencies.AddUnit('wscalendar');
     t.Dependencies.AddUnit('wschecklst');
@@ -247,7 +246,6 @@ begin
     P.Sources.AddSrc('forms/replacedlgunit.pas');
     P.Targets.AddUnit('calendarpopup.pas');
     T:=P.Targets.AddUnit('nonwin32/messages.pp');
-    T:=P.Targets.AddUnit('widgetset/wsarrow.pp');
     T:=P.Targets.AddUnit('widgetset/wsbuttons.pp');
     T:=P.Targets.AddUnit('widgetset/wscalendar.pp');
     T:=P.Targets.AddUnit('widgetset/wschecklst.pp');

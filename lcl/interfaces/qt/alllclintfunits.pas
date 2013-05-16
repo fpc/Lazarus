@@ -24,7 +24,6 @@ uses
   qtwsmenus{%H-},
   qtwscalendar{%H-},
   qtwsdialogs{%H-},
-  qtwsarrow{%H-},
   qtobjects{%H-},
   qtwschecklst{%H-},
   qtwsstdctrls{%H-};

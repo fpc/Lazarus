@@ -4,12 +4,12 @@ unit CarbonWSFactory;
 
 interface
 uses
-  Classes, Controls, ComCtrls, StdCtrls, Arrow, Spin, PairSplitter,
+  Classes, Controls, ComCtrls, StdCtrls, Spin, PairSplitter,
   Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, Calendar,
   WSLCLClasses,
 
   // Carbon units
-  CarbonWSArrow, CarbonWSButtons, CarbonWSCheckLst, CarbonWSComCtrls, CarbonWSControls,
+  CarbonWSButtons, CarbonWSCheckLst, CarbonWSComCtrls, CarbonWSControls,
   CarbonWSDialogs, CarbonWSExtCtrls, CarbonWSForms, CarbonWSMenus, CarbonWSPairSplitter,
   CarbonWSSpin, CarbonWSStdCtrls, CarbonWSCalendar;
 
@@ -82,8 +82,6 @@ function RegisterCalendarDialog: Boolean;
 // Buttons
 function RegisterCustomBitBtn: Boolean;
 function RegisterCustomSpeedButton: Boolean;
-// Arrow
-function RegisterArrow: Boolean;
 // CheckLst
 function RegisterCustomCheckListBox: Boolean;
 // Forms
@@ -447,13 +445,6 @@ end;
 function RegisterCustomSpeedButton: Boolean; alias : 'WSRegisterCustomSpeedButton';
 begin
   RegisterWSComponent(TCustomSpeedButton, TCarbonWSSpeedButton);
-  Result := True;
-end;
-
-// Arrow
-function RegisterArrow: Boolean; alias : 'WSRegisterArrow';
-begin
-  RegisterWSComponent(TArrow, TCarbonWSArrow);
   Result := True;
 end;
 

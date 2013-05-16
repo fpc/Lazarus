@@ -4,7 +4,7 @@ unit QtWSFactory;
 
 interface
 uses
-  Classes, Controls, ComCtrls, Calendar, StdCtrls, Arrow, Spin,
+  Classes, Controls, ComCtrls, Calendar, StdCtrls, Spin,
   Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, RubberBand, PairSplitter,
   WSLCLClasses;
 
@@ -77,8 +77,6 @@ function RegisterCalendarDialog: Boolean;
 // Buttons
 function RegisterCustomBitBtn: Boolean;
 function RegisterCustomSpeedButton: Boolean;
-// Arrow
-function RegisterArrow: Boolean;
 // CheckLst
 function RegisterCustomCheckListBox: Boolean;
 // Forms
@@ -101,7 +99,6 @@ function RegisterLazDeviceAPIs: Boolean;
 
 implementation
 uses
- QtWSArrow,
  QtWSButtons,
  QtWSCalendar,
  QtWSCheckLst,
@@ -462,13 +459,6 @@ end;
 function RegisterCustomSpeedButton: Boolean; alias : 'WSRegisterCustomSpeedButton';
 begin
   Result := False;
-end;
-
-// Arrow
-function RegisterArrow: Boolean; alias : 'WSRegisterArrow';
-begin
-  RegisterWSComponent(TArrow, TQtWSArrow);
-  Result := True;
 end;
 
 // CheckLst

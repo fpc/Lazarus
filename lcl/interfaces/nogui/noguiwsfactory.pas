@@ -76,8 +76,6 @@ function RegisterCalendarDialog: Boolean;
 // Buttons
 function RegisterCustomBitBtn: Boolean;
 function RegisterCustomSpeedButton: Boolean;
-// Arrow
-function RegisterArrow: Boolean;
 // CheckLst
 function RegisterCustomCheckListBox: Boolean;
 // Forms
@@ -405,12 +403,6 @@ begin
 end;
 
 function RegisterCustomSpeedButton: Boolean; alias : 'WSRegisterCustomSpeedButton';
-begin
-  Result := False;
-end;
-
-// Arrow
-function RegisterArrow: Boolean; alias : 'WSRegisterArrow';
 begin
   Result := False;
 end;

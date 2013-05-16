@@ -5,7 +5,7 @@ unit CustomDrawnWSFactory;
 interface
 
 uses
-  Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Arrow, Spin,
+  Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Spin,
   Dialogs, ExtCtrls, Buttons, Forms, Menus,
   WSLCLClasses;
 
@@ -78,8 +78,6 @@ function RegisterCalendarDialog: Boolean;
 // Buttons
 function RegisterCustomBitBtn: Boolean;
 function RegisterCustomSpeedButton: Boolean;
-// Arrow
-function RegisterArrow: Boolean;
 // CheckLst
 function RegisterCustomCheckListBox: Boolean;
 // Forms
@@ -102,7 +100,6 @@ function RegisterLazDeviceAPIs: Boolean;
 
 implementation
 uses
- CustomDrawnWSArrow,
  CustomDrawnWSButtons,
 { WinCEWSCalendar,
  WinCEWSCheckLst,}
@@ -461,13 +458,6 @@ end;
 function RegisterCustomSpeedButton: Boolean; alias : 'WSRegisterCustomSpeedButton';
 begin
   Result := False;
-end;
-
-// Arrow
-function RegisterArrow: Boolean; alias : 'WSRegisterArrow';
-begin
-  RegisterWSComponent(TArrow, TCDWSArrow);
-  Result := True;
 end;
 
 // CheckLst

@@ -72,9 +72,6 @@ procedure RegisterLazDeviceAPIs;
 
 implementation
 
-{ TWSArrow }
-
-
 { WidgetSetRegistration }
 
 procedure RegisterLazDeviceAPIs;

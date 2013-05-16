@@ -19,14 +19,14 @@ uses
   PostScriptCanvas, PostScriptPrinter, postscriptunicode, Printers, 
   PropertyStorage, RubberBand, ShellCtrls, Spin, StdActns, StdCtrls, 
   StringHashList, TextStrings, Themes, TmSchema, Toolwin, Translations, 
-  UTrace, XMLPropStorage, Messages, WSArrow, WSButtons, WSCalendar, 
-  WSCheckLst, WSComCtrls, WSControls, WSDesigner, WSDialogs, WSExtCtrls, 
-  WSExtDlgs, WSFactory, WSForms, WSGrids, WSImgList, WSLCLClasses, WSMenus, 
+  UTrace, XMLPropStorage, Messages, WSButtons, WSCalendar, WSCheckLst, 
+  WSComCtrls, WSControls, WSDesigner, WSDialogs, WSExtCtrls, WSExtDlgs, 
+  WSFactory, WSForms, WSGrids, WSImgList, WSLCLClasses, WSMenus, 
   WSPairSplitter, WSProc, WSReferences, WSSpin, WSStdCtrls, WSToolwin, 
-  ActnList, Arrow, AsyncProcess, ButtonPanel, Buttons, Calendar, RegisterLCL, 
+  ActnList, AsyncProcess, ButtonPanel, Buttons, Calendar, RegisterLCL, 
   ValEdit, lazcanvas, lazdialogs, lazregions, customdrawn_common, 
   customdrawncontrols, customdrawndrawers, lazdeviceapis, LDockTree, 
-  LazFreeTypeIntfDrawer, customdrawn_winxp, customdrawn_android, 
+  LazFreeTypeIntfDrawer, customdrawn_winxp, customdrawn_android, Arrow, 
   LazarusPackageIntf;
 
 implementation

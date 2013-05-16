@@ -4,7 +4,7 @@ unit GtkWSFactory;
 
 interface
 uses
-  Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Arrow, Spin,
+  Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Spin,
   Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus,
   PairSplitter, WSLCLClasses;
 
@@ -78,8 +78,6 @@ function RegisterCalendarDialog: Boolean;
 // Buttons
 function RegisterCustomBitBtn: Boolean;
 function RegisterCustomSpeedButton: Boolean;
-// Arrow
-function RegisterArrow: Boolean;
 // CheckLst
 function RegisterCustomCheckListBox: Boolean;
 // Forms
@@ -102,7 +100,6 @@ function RegisterLazDeviceAPIs: Boolean;
 
 implementation
 uses
-  GtkWSArrow,
   GtkWSButtons,
   GtkWSCalendar,
   GtkWSCheckLst,
@@ -520,13 +517,6 @@ end;
 function RegisterCustomSpeedButton: Boolean; alias : 'WSRegisterCustomSpeedButton';
 begin
   Result := False;
-end;
-
-// Arrow
-function RegisterArrow: Boolean; alias : 'WSRegisterArrow';
-begin
-  RegisterWSComponent(TArrow, TGtkWSArrow);
-  Result := True;
 end;
 
 // CheckLst

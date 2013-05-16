@@ -101,7 +101,6 @@ begin
     P.Targets.AddUnit('carbontabs.pp');
     P.Targets.AddUnit('carbonthemes.pas');
     P.Targets.AddUnit('carbonutils.pas');
-    P.Targets.AddUnit('carbonwsarrow.pp');
     P.Targets.AddUnit('carbonwsbuttons.pp');
     P.Targets.AddUnit('carbonwscalendar.pp');
     P.Targets.AddUnit('carbonwschecklst.pp');
@@ -146,7 +145,6 @@ begin
     P.Sources.AddSrc('carbon/carbontabs.pp');
     P.Sources.AddSrc('carbon/carbonthemes.pas');
     P.Sources.AddSrc('carbon/carbonutils.pas');
-    P.Sources.AddSrc('carbon/carbonwsarrow.pp');
     P.Sources.AddSrc('carbon/carbonwsbuttons.pp');
     P.Sources.AddSrc('carbon/carbonwscalendar.pp');
     P.Sources.AddSrc('carbon/carbonwschecklst.pp');
@@ -182,7 +180,6 @@ begin
     P.Sources.AddSrc('fpgui/fpguiint.pp');
     P.Sources.AddSrc('fpgui/fpguiobjects.pas');
     P.Sources.AddSrc('fpgui/fpguiproc.pas');
-    P.Sources.AddSrc('fpgui/fpguiwsarrow.pp');
     P.Sources.AddSrc('fpgui/fpguiwsbuttons.pp');
     P.Sources.AddSrc('fpgui/fpguiwscalendar.pp');
     P.Sources.AddSrc('fpgui/fpguiwscomctrls.pp');
@@ -213,7 +210,6 @@ begin
     P.Sources.AddSrc('gtk/gtkproc.pp');
     P.Sources.AddSrc('gtk/gtkthemes.pas');
     P.Sources.AddSrc('gtk/gtkwinapiwindow.pp');
-    P.Sources.AddSrc('gtk/gtkwsarrow.pp');
     P.Sources.AddSrc('gtk/gtkwsbuttons.pp');
     P.Sources.AddSrc('gtk/gtkwscalendar.pp');
     P.Sources.AddSrc('gtk/gtkwschecklst.pp');
@@ -246,7 +242,6 @@ begin
     P.Sources.AddSrc('gtk2/gtk2themes.pas');
     P.Sources.AddSrc('gtk2/gtk2winapiwindow.pp');
     P.Sources.AddSrc('gtk2/gtk2windows.pas');
-    P.Sources.AddSrc('gtk2/gtk2wsarrow.pp');
     P.Sources.AddSrc('gtk2/gtk2wsbuttons.pp');
     P.Sources.AddSrc('gtk2/gtk2wscalendar.pp');
     P.Sources.AddSrc('gtk2/gtk2wschecklst.pp');
@@ -273,7 +268,6 @@ begin
     P.Sources.AddSrc('win32/win32int.pp');
     P.Sources.AddSrc('win32/win32proc.pp');
     P.Sources.AddSrc('win32/win32themes.pas');
-    P.Sources.AddSrc('win32/win32wsarrow.pp');
     P.Sources.AddSrc('win32/win32wsbuttons.pp');
     P.Sources.AddSrc('win32/win32wscalendar.pp');
     P.Sources.AddSrc('win32/win32wschecklst.pp');
@@ -297,7 +291,6 @@ begin
     P.Sources.AddSrc('wince/winceextra.pp');
     P.Sources.AddSrc('wince/winceint.pp');
     P.Sources.AddSrc('wince/winceproc.pp');
-    P.Sources.AddSrc('wince/wincewsarrow.pp');
     P.Sources.AddSrc('wince/wincewsbuttons.pp');
     P.Sources.AddSrc('wince/wincewscalendar.pp');
     P.Sources.AddSrc('wince/wincewschecklst.pp');
@@ -325,7 +318,6 @@ begin
     P.Sources.AddSrc('qt/qtproc.pp');
     P.Sources.AddSrc('qt/qtthemes.pas');
     P.Sources.AddSrc('qt/qtwidgets.pas');
-    P.Sources.AddSrc('qt/qtwsarrow.pp');
     P.Sources.AddSrc('qt/qtwsbuttons.pp');
     P.Sources.AddSrc('qt/qtwscalendar.pp');
     P.Sources.AddSrc('qt/qtwschecklst.pp');
@@ -373,7 +365,6 @@ begin
     P.Sources.AddSrc('customdrawn/android/native_activity.pas');
     P.Sources.AddSrc('customdrawn/android/native_window.pas');
     P.Sources.AddSrc('customdrawn/android/rect.pas');
-    P.Sources.AddSrc('customdrawn/customdrawnwsarrow.pas');
     P.Sources.AddSrc('customdrawn/android/bitmap.pas');
     P.Sources.AddSrc('customdrawn/customdrawnwsstdctrls.pas');
     P.Sources.AddSrc('customdrawn/customdrawnwscomctrls.pas');

@@ -2,7 +2,6 @@
 unit AllLCLIntfUnits;
 interface
 uses
-  {%H-}carbonwsarrow,
   {%H-}carbonprivate,
   {%H-}carbonbars,
   {%H-}carbongdiobjects,

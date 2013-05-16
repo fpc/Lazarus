@@ -5,11 +5,10 @@ unit CocoaWSFactory;
 interface
 
 uses
-  Classes, Controls, ComCtrls, StdCtrls, Arrow, Spin, PairSplitter,
+  Classes, Controls, ComCtrls, StdCtrls, Spin, PairSplitter,
   Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus,
   WSLCLClasses,
   CocoaWSCommon,
-  CocoaWSArrow,
   CocoaWSButtons,
   CocoaWSExtCtrls,
   CocoaWSForms,
@@ -85,8 +84,6 @@ function RegisterCalendarDialog: Boolean;
 // Buttons
 function RegisterCustomBitBtn: Boolean;
 function RegisterCustomSpeedButton: Boolean;
-// Arrow
-function RegisterArrow: Boolean;
 // CheckLst
 function RegisterCustomCheckListBox: Boolean;
 // Forms
@@ -440,13 +437,6 @@ end;
 function RegisterCustomSpeedButton: Boolean; alias : 'WSRegisterCustomSpeedButton';
 begin
   Result := False;
-end;
-
-// Arrow
-function RegisterArrow: Boolean; alias : 'WSRegisterArrow';
-begin
-  RegisterWSComponent(TArrow, TCocoaWSArrow);
-  Result := True;
 end;
 
 // CheckLst
