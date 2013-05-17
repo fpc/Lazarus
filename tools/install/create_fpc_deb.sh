@@ -196,7 +196,7 @@ ReplaceScript=replace_in_files.pl
 
 # set version numbers in all Makefiles
 echo "set version numbers in all Makefiles ..."
-perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile(.fpc)?' $FPCSrcDir/*
+perl replace_in_files.pl -sR -f 'version=\d.\d.\d' -r version=$CompilerVersionStr -m 'Makefile(.fpc)?' $FPCSrcDir/*
 
 
 #------------------------------------------------------------------------------

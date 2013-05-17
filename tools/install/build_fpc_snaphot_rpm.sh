@@ -71,7 +71,7 @@ CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 LazVersion="$CompilerVersion.$CompilerRelease.$CompilerPatch$CompilerMinorPatch"
 
 # set version numbers in all Makefiles
-perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$LazVersion -m 'Makefile(.fpc)?' $TmpFPCDir/*
+perl replace_in_files.pl -sR -f 'version=\d.\d.\d' -r version=$LazVersion -m 'Makefile(.fpc)?' $TmpFPCDir/*
 
 # create a source tar.gz
 cd $TmpDir
