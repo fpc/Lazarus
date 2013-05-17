@@ -1677,7 +1677,7 @@ var
     begin
       InLogWarning := True;
       Delete(Warning, 1, Length(LogWarning));
-      Warning := Trim(Warning);
+      Warning := MakePrintable(UnEscapeBackslashed(Trim(Warning), [uefOctal, uefTab, uefNewLine]));
       DoDbgEvent(ecOutput, etOutputDebugString, Warning);
     end;
     if InLogWarning then
@@ -11189,58 +11189,6 @@ end;
 function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
 var
   TypeInfoFlags: TGDBTypeCreationFlags;
-
-  function MakePrintable(const AString: String): String; // Todo: Check invalid utf8
-  // Astring should not have quotes
-  var
-    n, l, u: Integer;
-    InString: Boolean;
-
-    procedure ToggleInString;
-    begin
-      InString := not InString;
-      Result := Result + '''';
-    end;
-
-  begin
-    Result := '';
-    InString := False;
-    n := 1;
-    l := Length(AString);
-    while n <= l do
-    //for n := 1 to Length(AString) do
-    begin
-      case AString[n] of
-        ' '..#127: begin
-          if not InString then
-            ToggleInString;
-          Result := Result + AString[n];
-          //if AString[n] = '''' then Result := Result + '''';
-        end;
-      #192..#255: begin // Maybe utf8
-          u := UTF8CharacterLength(@AString[n]);
-          if (u > 0) and (n+u-1 <= l) then begin
-            if not InString then
-              ToggleInString;
-            Result := Result + copy(AString, n, u);
-            n := n + u - 1;
-          end
-          else begin
-            if InString then
-              ToggleInString;
-            Result := Result + Format('#%d', [Ord(AString[n])]);
-          end;
-        end;
-      else
-        if InString then
-          ToggleInString;
-        Result := Result + Format('#%d', [Ord(AString[n])]);
-      end;
-      inc(n);
-    end;
-    if InString
-    then Result := Result + '''';
-  end;
 
   function FormatResult(const AInput: String): String;
   const

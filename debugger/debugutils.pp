@@ -69,6 +69,7 @@ function GetLine(var ABuffer: String): String;
 function ConvertToCString(const AText: String): String;
 function ConvertPathDelims(const AFileName: String): String;
 function DeleteEscapeChars(const AValue: String; const AEscapeChar: Char = '\'): String;
+function MakePrintable(const AString: String): String; // Make a pascal like string
 function UnEscapeBackslashed(const AValue: String; AFlags: TGdbUnEscapeFlags = [uefOctal]; ATabWidth: Integer = 0): String;
 function UnQuote(const AValue: String): String;
 function Quote(const AValue: String; AForce: Boolean=False): String;
@@ -196,6 +197,58 @@ begin
   for i := 1 to length(Result) do
     if Result[i] in ['/','\'] then
       Result[i] := PathDelim;
+end;
+
+function MakePrintable(const AString: String): String; // Todo: Check invalid utf8
+// Astring should not have quotes
+var
+  n, l, u: Integer;
+  InString: Boolean;
+
+  procedure ToggleInString;
+  begin
+    InString := not InString;
+    Result := Result + '''';
+  end;
+
+begin
+  Result := '';
+  InString := False;
+  n := 1;
+  l := Length(AString);
+  while n <= l do
+  //for n := 1 to Length(AString) do
+  begin
+    case AString[n] of
+      ' '..#127: begin
+        if not InString then
+          ToggleInString;
+        Result := Result + AString[n];
+        //if AString[n] = '''' then Result := Result + '''';
+      end;
+    #192..#255: begin // Maybe utf8
+        u := UTF8CharacterLength(@AString[n]);
+        if (u > 0) and (n+u-1 <= l) then begin
+          if not InString then
+            ToggleInString;
+          Result := Result + copy(AString, n, u);
+          n := n + u - 1;
+        end
+        else begin
+          if InString then
+            ToggleInString;
+          Result := Result + Format('#%d', [Ord(AString[n])]);
+        end;
+      end;
+    else
+      if InString then
+        ToggleInString;
+      Result := Result + Format('#%d', [Ord(AString[n])]);
+    end;
+    inc(n);
+  end;
+  if InString
+  then Result := Result + '''';
 end;
 
 function UnEscapeBackslashed(const AValue: String; AFlags: TGdbUnEscapeFlags = [uefOctal]; ATabWidth: Integer = 0): String;
