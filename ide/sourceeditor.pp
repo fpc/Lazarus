@@ -205,6 +205,7 @@ type
     FCodeBuffer: TCodeBuffer;
     FLinkScanners: TFPList; // list of TLinkScanner
     FMainLinkScanner: TLinkScanner;
+    FLastWarnedMainLinkFilename: string;
     function GetModified: Boolean;
     procedure SetCodeBuffer(const AValue: TCodeBuffer);
     procedure SetModified(const AValue: Boolean);
@@ -2684,9 +2685,12 @@ begin
     // create main scanner
     //debugln(['TSourceEditorSharedValues.GetMainLinkScanner fetching unit codebuffer ...']);
     if CodeBuffer=nil then exit;
+    if not FilenameIsPascalSource(Filename) then exit;
     if not CodeToolBoss.InitCurCodeTool(CodeBuffer) then
     begin
-      debugln(['TSourceEditorSharedValues.GetMainLinkScanner failed to find the unit of ',Filename]);
+      if Filename<>FLastWarnedMainLinkFilename then
+        debugln(['TSourceEditorSharedValues.GetMainLinkScanner failed to find the unit of ',Filename]);
+      FLastWarnedMainLinkFilename:=CodeBuffer.Filename;
       exit;
     end;
     Result:=CodeToolBoss.CurCodeTool.Scanner;
