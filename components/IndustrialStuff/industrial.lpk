@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="industrial"/>
+    <Author Value="Jurassic Pork"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="source"/>
+        <OtherUnitFiles Value="source"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <SmartLinkUnit Value="True"/>
+        <Optimizations>
+          <OptimizationLevel Value="2"/>
+        </Optimizations>
+      </CodeGeneration>
+      <Linking>
+        <Debugging>
+          <GenerateDebugInfo Value="False"/>
+        </Debugging>
+      </Linking>
+      <Other>
+        <CompilerMessages>
+          <MsgFileName Value=""/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <License Value="MPL  + GPL "/>
+    <Version Minor="1"/>
+    <Files Count="12">
+      <Item2>
+        <Filename Value="source\indadvled.pas"/>
+        <UnitName Value="indadvled"/>
+      </Item2>
+      <Item3>
+        <Filename Value="source\indled.pas"/>
+        <UnitName Value="indled"/>
+      </Item3>
+      <Item4>
+        <Filename Value="source\sensors.pas"/>
+        <UnitName Value="Sensors"/>
+      </Item4>
+      <Item5>
+        <Filename Value="source\AllIndustrialRegister.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="AllIndustrialRegister"/>
+      </Item5>
+      <Item6>
+        <Filename Value="source\cyBaseLed.pas"/>
+        <UnitName Value="cyBaseLed"/>
+      </Item6>
+      <Item7>
+        <Filename Value="source\cyBevel.pas"/>
+        <UnitName Value="cyBevel"/>
+      </Item7>
+      <Item8>
+        <Filename Value="source\cyClasses.pas"/>
+        <UnitName Value="cyClasses"/>
+      </Item8>
+      <Item9>
+        <Filename Value="source\cyGraphics.pas"/>
+        <UnitName Value="cyGraphics"/>
+      </Item9>
+      <Item10>
+        <Filename Value="source\cyTypes.pas"/>
+        <UnitName Value="cyTypes"/>
+      </Item10>
+      <Item11>
+        <Filename Value="source\lednumber.pas"/>
+        <UnitName Value="LedNumber"/>
+      </Item11>
+      <Item12>
+        <Filename Value="source\indgnoumeter.pas"/>
+        <UnitName Value="indGnouMeter"/>
+      </Item12>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
+  </Package>
+</CONFIG>
