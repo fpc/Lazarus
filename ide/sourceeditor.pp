@@ -5453,6 +5453,7 @@ var
   Y: integer;
   X: integer;
   SynState: TSynMarkupIfdefNodeStateEx;
+  SrcPos: Integer;
 begin
   if not EditorComponent.IsIfdefMarkupActive then
     exit;
@@ -5467,18 +5468,35 @@ begin
   try
     //EditorComponent.InvalidateAllIfdefNodes;
     Code:=CodeBuffer;
-    for i:=0 to Scanner.DirectiveCount-1 do
+    i:=0;
+    while i<Scanner.DirectiveCount do
     begin
       aDirective:=Scanner.DirectivesSorted[i];
+      inc(i);
       if TCodeBuffer(aDirective^.Code)<>Code then continue;
       if not (aDirective^.Kind in (lsdkAllIf+[lsdkElIfC,lsdkElseIf])) then continue;
       Code.AbsoluteToLineCol(aDirective^.SrcPos,Y,X);
       if Y<1 then continue;
       SynState:=idnInvalid;
-      case aDirective^.State of
-      lsdsActive: SynState:=idnEnabled;
-      lsdsInactive: SynState:=idnDisabled;
-      end;
+      // a directive can be scanned multiple times (multi included include files)
+      // => show it enabled if it was active at least once
+      //if Pos('gtkbin.inc',Code.Filename)>0 then
+      //  debugln(['TSourceEditor.UpdateIfDefNodeStates ',i,'/',Scanner.DirectiveCount,' ',dbgs(Pointer(Code)),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
+      SrcPos:=aDirective^.SrcPos;
+      repeat
+        case aDirective^.State of
+        lsdsActive:
+          SynState:=idnEnabled;
+        lsdsInactive:
+          if SynState=idnInvalid then
+            SynState:=idnDisabled;
+        end;
+        if i=Scanner.DirectiveCount then break;
+        ADirective:=Scanner.DirectivesSorted[i];
+        inc(i);
+        //if (Pos('gtkbin.inc',Code.Filename)>0) {and (ADirective^.SrcPos=SrcPos) and (TCodeBuffer(ADirective^.Code)=Code)} then
+        //  debugln(['TSourceEditor.UpdateIfDefNodeStates ',i,'/',Scanner.DirectiveCount,' MERGING ',dbgs(ADirective^.Code),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
+      until (ADirective^.SrcPos<>SrcPos) or (TCodeBuffer(ADirective^.Code)<>Code);
       //debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' ',dbgs(aDirective^.State)]);
       EditorComponent.SetIfdefNodeState(Y,X,SynState);
     end;
