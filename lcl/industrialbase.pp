@@ -17,7 +17,6 @@ type
     procedure SetAntiAliasingMode(AValue: TAntialiasingMode);
   protected
     procedure GraphicChanged;
-    procedure Paint; override;
   public
     constructor Create(aOwner: TComponent); override;
   published
@@ -40,12 +39,6 @@ procedure TIndustrialBase.GraphicChanged;
 begin
   if Assigned(Parent) and (Visible or (csDesigning in ComponentState))
    then Invalidate;
-end;
-
-procedure TIndustrialBase.Paint;
-begin
-  Canvas.AntialiasingMode := FAntiAliasingMode;
-  inherited Paint;
 end;
 
 procedure TIndustrialBase.SetAntiAliasingMode(AValue: TAntialiasingMode);

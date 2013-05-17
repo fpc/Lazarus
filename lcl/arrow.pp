@@ -208,6 +208,7 @@ const
   end;
 
 begin
+  Canvas.AntialiasingMode := AntiAliasingMode;
   // Paint background
   Canvas.Brush.Color := Color;
   Canvas.FillRect(ClientRect);
