@@ -6071,6 +6071,7 @@ lcl/include/treeview.inc svneol=native#text/pascal
 lcl/include/winapi.inc svneol=native#text/pascal
 lcl/include/winapih.inc svneol=native#text/pascal
 lcl/include/wincontrol.inc svneol=native#text/pascal
+lcl/industrialbase.pp svneol=native#text/pascal
 lcl/inipropstorage.pas svneol=native#text/pascal
 lcl/interfacebase.pp svneol=native#text/pascal
 lcl/interfaces/LAYOUT.txt svneol=native#text/plain
