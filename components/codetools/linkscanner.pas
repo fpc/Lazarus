@@ -876,7 +876,7 @@ begin
   Result:=true;
 end;
 
-function CompareLSDirective(Item1, Item2: Pointer): Integer;
+function CompareLSDirectiveCodeSrcPos(Item1, Item2: Pointer): Integer;
 var
   Dir1: PLSDirective absolute Item1;
   Dir2: PLSDirective absolute Item2;
@@ -884,6 +884,18 @@ begin
   Result:=ComparePointers(Dir1^.Code,Dir2^.Code);
   if Result<>0 then exit;
   Result:=Dir1^.SrcPos-Dir2^.SrcPos;
+end;
+
+function CompareLSDirectiveCodeSrcPosCleanPos(Item1, Item2: Pointer): Integer;
+var
+  Dir1: PLSDirective absolute Item1;
+  Dir2: PLSDirective absolute Item2;
+begin
+  Result:=ComparePointers(Dir1^.Code,Dir2^.Code);
+  if Result<>0 then exit;
+  Result:=Dir1^.SrcPos-Dir2^.SrcPos;
+  if Result<>0 then exit;
+  Result:=Dir1^.CleanPos-Dir2^.CleanPos;
 end;
 
 { TLinkScanner }
@@ -1087,7 +1099,7 @@ begin
     FDirectivesSorted[i]:=@FDirectives[i];
   for i:=FDirectivesCount to FDirectivesCapacity-1 do
     FDirectivesSorted[i]:=nil;
-  MergeSort(PPointer(FDirectivesSorted),FDirectivesCount,@CompareLSDirective);
+  MergeSort(PPointer(FDirectivesSorted),FDirectivesCount,@CompareLSDirectiveCodeSrcPosCleanPos);
 end;
 
 procedure TLinkScanner.AddLink(ASrcPos: integer; ACode: Pointer;
@@ -1337,7 +1349,7 @@ begin
   r:=FDirectivesCount-1;
   while l<=r do begin
     m:=(l+r) div 2;
-    cmp:=CompareLSDirective(@Dir,DirectivesSorted[m]);
+    cmp:=CompareLSDirectiveCodeSrcPos(@Dir,DirectivesSorted[m]);
     if cmp<0 then
       r:=m-1
     else if cmp>0 then
@@ -1347,10 +1359,10 @@ begin
       FirstSortedIndex:=m;
       LastSortedIndex:=m;
       while (FirstSortedIndex>0)
-      and (CompareLSDirective(@Dir,DirectivesSorted[FirstSortedIndex-1])=0) do
+      and (CompareLSDirectiveCodeSrcPos(@Dir,DirectivesSorted[FirstSortedIndex-1])=0) do
         dec(FirstSortedIndex);
       while (LastSortedIndex+1<FDirectivesCount)
-      and (CompareLSDirective(@Dir,DirectivesSorted[LastSortedIndex+1])=0) do
+      and (CompareLSDirectiveCodeSrcPos(@Dir,DirectivesSorted[LastSortedIndex+1])=0) do
         inc(LastSortedIndex);
       Result:=true;
       exit;
