@@ -410,6 +410,26 @@
       VarTStringHolderObj: TStringHolderObj;
       VarTStringHolderRec: TStringHolderRec;
 
+    const
+      ConstUtf8TextAnsi: AnsiString = 'a üü1'' \\t 2 \t 3'#9'4'#13'5\n6';
+      ConstUtf8TextShortStr: ShortString = 'a üü1'' \\t 2 \t 3'#9'4'#13'5\n6';
+      ConstUtf8TextShort: String[40] = 'a üü1'' \\t 2 \t 3'#9'4'#13'5\n6';
+
+      ConstUtf8TextAnsi2: AnsiString = 'üü1';  // start with utf8
+      ConstUtf8TextShortStr2: ShortString = 'üü1';
+      ConstUtf8TextShort2: String[40] = 'üü1';
+
+      ConstUtf8TextAnsiBad: AnsiString = 'a '#170'b';
+      ConstUtf8TextShortStrBad: ShortString = 'a '#170'b';
+      ConstUtf8TextShortBad: String[40] = 'a '#170'b';
+    var
+      VarUtf8TextAnsi, VarUtf8TextAnsi2: AnsiString;
+      VarUtf8TextShort, VarUtf8TextShort2: String[40];
+      VarUtf8TextShortStr, VarUtf8TextShortStr2: ShortString;
+      VarUtf8TextAnsiBad: AnsiString;
+      VarUtf8TextShortBad: String[40];
+      VarUtf8TextShortStrBad: ShortString;
+
     {$ENDIF}
 
     {$IFDEF Global_Var}
@@ -531,6 +551,17 @@
       VarACharArray10B0[1] := 'a';
       VarACharArray10B1[1] := 'b';
 
+      VarUtf8TextAnsi := ConstUtf8TextAnsi;
+      VarUtf8TextShort := ConstUtf8TextShort;
+      VarUtf8TextShortStr := ConstUtf8TextShortStr;
+
+      VarUtf8TextAnsi2 := ConstUtf8TextAnsi2;
+      VarUtf8TextShort2 := ConstUtf8TextShort2;
+      VarUtf8TextShortStr2 := ConstUtf8TextShortStr2;
+
+      VarUtf8TextAnsiBad := ConstUtf8TextAnsiBad;
+      VarUtf8TextShortBad := ConstUtf8TextShortBad;
+      VarUtf8TextShortStrBad := ConstUtf8TextShortStrBad;
     {$ENDIF}
 
     {$IFDEF Global_Body}

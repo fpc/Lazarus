@@ -9324,7 +9324,8 @@ var
   Format: gint;
   nitems: gulong;
   bytes_after: gulong;
-  current_desktop: pguint;
+  current_desktop: pclong; // format=32 returns an array of "c" longs which in 64-bit app
+                           // will be 64-bit values that are padded in the upper 4 bytes
   res   : Integer;
 begin
   Result := -1;

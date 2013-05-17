@@ -1068,6 +1068,30 @@ begin
 
   Add('ArgTMyAnsiString',      wdfMemDump,  ': 4d 79 41 6e 73 69 00',      skPOINTER,      '^(TMy)?AnsiString$', [fTpMtch]);
 
+  // Utf8
+  // a single ', must appear double ''
+  // reg ex needs \\ for \
+  r:=AddStringFmtDef  ('ConstUtf8TextAnsi',     'a üü1'''' \\\\t 2 \\t 3''#9''4''#13''5\\n6',         'AnsiString', []);
+  r:=AddShortStrFmtDef('ConstUtf8TextShort',    'a üü1'''' \\\\t 2 \\t 3''#9''4''#13''5\\n6',         'ShortString', []);
+  r:=AddShortStrFmtDef('ConstUtf8TextShortStr', 'a üü1'''' \\\\t 2 \\t 3''#9''4''#13''5\\n6',         'ShortString', []);
+  r:=AddStringFmtDef  ('VarUtf8TextAnsi',       'a üü1'''' \\\\t 2 \\t 3''#9''4''#13''5\\n6',         'AnsiString', []);
+  r:=AddShortStrFmtDef('VarUtf8TextShort',      'a üü1'''' \\\\t 2 \\t 3''#9''4''#13''5\\n6',         'ShortString', []);
+  r:=AddShortStrFmtDef('VarUtf8TextShortStr',   'a üü1'''' \\\\t 2 \\t 3''#9''4''#13''5\\n6',         'ShortString', []);
+
+  r:=AddStringFmtDef  ('ConstUtf8TextAnsi2',     'üü1',         'AnsiString', []);
+  r:=AddShortStrFmtDef('ConstUtf8TextShort2', 'üü1',         'ShortString', []);
+  r:=AddShortStrFmtDef('ConstUtf8TextShortStr2', 'üü1',         'ShortString', []);
+  r:=AddStringFmtDef  ('VarUtf8TextAnsi2',       'üü1',         'AnsiString', []);
+  r:=AddShortStrFmtDef('VarUtf8TextShort2',   'üü1',         'ShortString', []);
+  r:=AddShortStrFmtDef('VarUtf8TextShortStr2',   'üü1',         'ShortString', []);
+
+  r:=AddStringFmtDef  ('ConstUtf8TextAnsiBad',     'a ''#170''b',         'AnsiString', []);
+  r:=AddShortStrFmtDef('ConstUtf8TextShortBad', 'a ''#170''b',         'ShortString', []);
+  r:=AddShortStrFmtDef('ConstUtf8TextShortStrBad', 'a ''#170''b',         'ShortString', []);
+  r:=AddStringFmtDef  ('VarUtf8TextAnsiBad',       'a ''#170''b',         'AnsiString', []);
+  r:=AddShortStrFmtDef('VarUtf8TextShortBad',   'a ''#170''b',         'ShortString', []);
+  r:=AddShortStrFmtDef('VarUtf8TextShortStrBad',   'a ''#170''b',         'ShortString', []);
+
   {%endregion    * Strings * }
 
   {%region    * Simple * }

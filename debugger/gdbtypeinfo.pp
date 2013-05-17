@@ -343,6 +343,7 @@ type
     FExpression, FOrigExpression: string;
     FHasStringExprEvaluatedAsText: Boolean;
     FCreationFlags: TGDBTypeCreationFlags;
+    FMaybeShortString: Boolean;
 
     // Value-Eval
     FExprEvaluatedAsText: String;
@@ -2022,6 +2023,7 @@ begin
   inherited Init;
   FProcessState := gtpsFinished;
   FParsedExpression := nil;
+  FMaybeShortString := False;
 end;
 
 constructor TGDBType.CreateForExpression(const AnExpression: string;
@@ -2163,17 +2165,6 @@ var
     S, S1, S2: String;
     Field: TDBGField;
   begin
-    if (FTypeName = 'Variant') or
-       (FTypeName = 'VARIANT') then
-      FKind := skVariant
-    else
-    if (FTypeName = 'ShortString') or
-       (FTypeName = 'SHORTSTRING') or
-       (FTypeName = '&ShortString') then
-      FKind := skSimple
-    else
-      FKind := skRecord;
-
     FFields := TDBGFields.Create;
     InitLinesFrom(FReqResults[gptrPTypeExpr]);
 
@@ -2189,6 +2180,28 @@ var
       );
       FFields.Add(Field);
     end;
+
+    FMaybeShortString := (FFields.Count = 2) and // shortstring have 2 fields: length and st
+       (lowercase(FFields[0].Name) = 'length') and
+       (lowercase(FFields[1].Name) = 'st');
+
+    if (FTypeName = 'Variant') or
+       (FTypeName = 'VARIANT') then
+      FKind := skVariant
+    else
+    if (FTypeName = 'ShortString') or
+       (FTypeName = 'SHORTSTRING') or
+       (FTypeName = '&ShortString')
+    then begin
+      if (gtcfExprEvaluate in FCreationFlags) then
+        FMaybeShortString := True // will be checked later
+       else
+        FKind := skSimple
+     end
+    else
+      FKind := skRecord;
+
+
   end;
   {%endregion    * Record * }
 
@@ -2529,7 +2542,7 @@ var
   var
     ResultList: TGDBMINameValueList;
   begin
-    ResultList := TGDBMINameValueList.Create(AGdbDesc);
+    ResultList := TGDBMINameValueList.Create(AGdbDesc); // TODO: this removes \\ to single \. BUt does not deal with gdb \r\n stuff
     Result := ResultList.Values[AField];
     //FTextValue := DeleteEscapeChars(FTextValue);
     ResultList.Free;
@@ -3072,7 +3085,17 @@ begin
   end;
 
   if Result
-  then FProcessState := gtpsFinished;
+  then begin
+    if FHasExprEvaluatedAsText and FMaybeShortString and
+       (length(FExprEvaluatedAsText) > 0) and
+       (FExprEvaluatedAsText[1] in ['''', '#']) // not a record struct
+    then begin
+      FTypeName := 'ShortString';
+      FKind := skSimple;
+    end;
+
+    FProcessState := gtpsFinished;
+  end;
 
   if FFirstProcessingSubType <> nil then
     MergeSubProcessRequests

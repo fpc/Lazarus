@@ -248,7 +248,8 @@ type
                             ): Boolean; overload;
     procedure DoTimeoutFeedback;
     function  ProcessResult(var AResult: TGDBMIExecResult; ATimeOut: Integer = -1): Boolean;
-    function  ProcessGDBResultText(S: String): String;
+    function  ProcessGDBResultText(S: String; NoLeadingTab: Boolean = False;
+                                   NoBackSlashRemove: Boolean = False): String;
     function  GetStackDepth(MaxDepth: integer): Integer;
     function  FindStackFrame(FP: TDBGPtr; StartAt, MaxDepth: Integer): Integer;
     function  GetFrame(const AIndex: Integer): String;
@@ -10171,7 +10172,8 @@ begin
   until not FTheDebugger.DebugProcessRunning;
 end;
 
-function TGDBMIDebuggerCommand.ProcessGDBResultText(S: String): String;
+function TGDBMIDebuggerCommand.ProcessGDBResultText(S: String;
+  NoLeadingTab: Boolean = False; NoBackSlashRemove: Boolean = False): String;
 var
   Trailor: String;
   n, len, idx: Integer;
@@ -10180,7 +10182,11 @@ begin
 
   // don't use ' as end terminator, there might be one as part of the text
   // since ' will be the last char, simply strip it.
-  S := GetPart(['\t '], [], S);
+  if (not NoLeadingTab) then begin
+    S := GetPart(['\t'], [], S);
+    if (length(S) > 0) and (S[1] = ' ') then
+      delete(S,1,1);
+  end;
 
   // Scan the string
   len := Length(S);
@@ -10202,8 +10208,10 @@ begin
               Inc(idx);
               if idx > len then Break;
               if S[idx] <> '''' then Break;
+              inc(n);
+              Result[n] := ''''; // must keep both quotes
             end;
-            '\' : begin
+            '\' : if not NoBackSlashRemove then begin
               Inc(idx);
               if idx > len then Break;
               case S[idx] of
@@ -10256,7 +10264,7 @@ begin
           Dec(v);
         end;
       end;
-    else
+    else // Should not get here
       // Debugger has returned something we don't know of
       // Append the remainder to our parsed result
       Delete(S, 1, idx - 1);
@@ -11182,33 +11190,53 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
 var
   TypeInfoFlags: TGDBTypeCreationFlags;
 
-  function MakePrintable(const AString: String): String;
+  function MakePrintable(const AString: String): String; // Todo: Check invalid utf8
+  // Astring should not have quotes
   var
-    n: Integer;
+    n, l, u: Integer;
     InString: Boolean;
+
+    procedure ToggleInString;
+    begin
+      InString := not InString;
+      Result := Result + '''';
+    end;
+
   begin
     Result := '';
     InString := False;
-    for n := 1 to Length(AString) do
+    n := 1;
+    l := Length(AString);
+    while n <= l do
+    //for n := 1 to Length(AString) do
     begin
       case AString[n] of
-        ' '..#127, #128..#255: begin
-          if not InString
-          then begin
-            InString := True;
-            Result := Result + '''';
-          end;
+        ' '..#127: begin
+          if not InString then
+            ToggleInString;
           Result := Result + AString[n];
           //if AString[n] = '''' then Result := Result + '''';
         end;
-      else
-        if InString
-        then begin
-          InString := False;
-          Result := Result + '''';
+      #192..#255: begin // Maybe utf8
+          u := UTF8CharacterLength(@AString[n]);
+          if (u > 0) and (n+u-1 <= l) then begin
+            if not InString then
+              ToggleInString;
+            Result := Result + copy(AString, n, u);
+            n := n + u - 1;
+          end
+          else begin
+            if InString then
+              ToggleInString;
+            Result := Result + Format('#%d', [Ord(AString[n])]);
+          end;
         end;
+      else
+        if InString then
+          ToggleInString;
         Result := Result + Format('#%d', [Ord(AString[n])]);
       end;
+      inc(n);
     end;
     if InString
     then Result := Result + '''';
@@ -11958,11 +11986,14 @@ var
         of
           0, 1, 2: begin // 'char', 'character', 'ansistring'
             // check for addr 'text' / 0x1234 'abc'
-            i := length(addrtxt);
-            if (i+3 <= length(FTextValue)) and (FTextValue[i+2] ='''')
-            and (FTextValue[length(FTextValue)] ='''')
+            i := length(addrtxt)+1;
+            if (i <= length(FTextValue)) and (FTextValue[i] = ' ') then inc(i); // skip 1 or 2 spaces after addr
+            if (i <= length(FTextValue)) and (FTextValue[i] = ' ') then inc(i);
+
+            if (i <= length(FTextValue)) and (FTextValue[i] in ['''', '#'])
             then
-              FTextValue := copy(FTextValue, i+2, length(FTextValue) - i - 1)
+              FTextValue := MakePrintable(ProcessGDBResultText(
+                copy(FTextValue, i, length(FTextValue) - i + 1), True, True))
             else
             if Addr = 0
             then
@@ -12043,7 +12074,10 @@ var
         if ResultInfo.TypeName = 'CURRENCY' then
           FTextValue := FormatCurrency(FTextValue)
         else
-        if (ResultInfo.TypeName = '&ShortString') then
+        if ResultInfo.TypeName = 'ShortString' then
+          FTextValue := MakePrintable(ProcessGDBResultText(FTextValue, True, True))
+        else
+        if (ResultInfo.TypeName = '&ShortString') then // should no longer happen
           FTextValue := GetStrValue('ShortString(%s)', [AnExpression]) // we have an address here, so we need to typecast
         else
         if saDynArray in ResultInfo.Attributes then  // may also be a string
