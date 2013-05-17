@@ -8,7 +8,7 @@ object Form1: TForm1
   ClientWidth = 568
   LCLVersion = '1.1'
   object indAdvLed1: TindAdvLed
-    Left = 95
+    Left = 144
     Height = 36
     Top = 32
     Width = 36
@@ -75,7 +75,7 @@ object Form1: TForm1
     }
   end
   object indLed1: TindLed
-    Left = 175
+    Left = 200
     Height = 35
     Top = 33
     Width = 34
@@ -103,7 +103,7 @@ object Form1: TForm1
     ShapeLedColorDisabled = 13416
   end
   object StopLightSensor1: TStopLightSensor
-    Left = 32
+    Left = 104
     Height = 59
     Top = 24
     Width = 25
@@ -131,7 +131,7 @@ object Form1: TForm1
     OnColor = clLime
   end
   object AnalogSensor1: TAnalogSensor
-    Left = 240
+    Left = 256
     Height = 136
     Top = 8
     Width = 153
@@ -177,5 +177,13 @@ object Form1: TForm1
     BarThickness = 5
     MarkerColor = clBlue
     ShowMarker = True
+  end
+  object Arrow1: TArrow
+    Left = 39
+    Height = 20
+    Top = 41
+    Width = 20
+    Constraints.MinHeight = 8
+    Constraints.MinWidth = 8
   end
 end

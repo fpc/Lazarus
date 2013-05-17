@@ -5,8 +5,8 @@ unit u_industrial;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, indAdvLed, IndLed, grArrow, Sensors, LedNumber,
-  indGnouMeter, Forms, Controls, Graphics, Dialogs;
+  Classes, SysUtils, FileUtil, indAdvLed, IndLed, Sensors, LedNumber,
+  indGnouMeter, Forms, Controls, Graphics, Dialogs, Arrow;
 
 type
 
@@ -14,6 +14,7 @@ type
 
   TForm1 = class(TForm)
     AnalogSensor1: TAnalogSensor;
+    Arrow1: TArrow;
     indAdvLed1: TindAdvLed;
     indGnouMeter1: TindGnouMeter;
     indLed1: TindLed;

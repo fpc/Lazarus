@@ -91,7 +91,7 @@ procedure Register;
 implementation
 
 const
-  Default_Height_Width = 10;
+  Default_Height_Width = 20;
   ArrowMinHeight = 8;
 
 
