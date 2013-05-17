@@ -5677,6 +5677,36 @@ resourcestring
   lisPkgDeleteDependencies = 'Delete dependencies';
   lisPkgClearSelection = 'Clear Selection';
   lisAlpha = 'Alpha';
+  lisMMAppendArbitraryFpcOptionsEGO1GhtlDFlag = 'Append arbitrary fpc options,'
+    +' e.g. -O1 -ghtl -dFlag';
+  lisMMOverrideOutputDirectoryFUOfTarget = 'Override output directory -FU of '
+    +'target';
+  lisMMSetAnIDEMacroEGLCLWidgetTypeWin32 = 'Set an IDE macro, e.g.: '
+    +'LCLWidgetType:=win32';
+  lisMMMissingMacroName = 'missing macro name';
+  lisMMExpectedMacroNameButFound = 'expected macro name, but found %s';
+  lisMMExpectedButFound = 'expected :, but found %s';
+  lisMMExpectedButFound2 = 'expected =, but found %s';
+  lisMMInvalidCharacterInMacroValue = 'invalid character in macro value %s';
+  lisMMApplyToAllPackages = 'Apply to all packages.';
+  lisMMApplyToAllPackagesAndProjects = 'Apply to all packages and projects.';
+  lisMMApplyToProject = 'Apply to project.';
+  lisMMApplyToAllPackagesMatching = 'Apply to all packages matching %s';
+  lisMMExcludeAllPackagesMatching = 'Exclude all packages matching %s';
+  lisMMStoredInIDEEnvironmentoptionsXml = 'Stored in IDE (environmentoptions.'
+    +'xml)';
+  lisMMStoredInProjectLpi = 'Stored in project (.lpi)';
+  lisMMStoredInSessionOfProjectLps = 'Stored in session of project (.lps)';
+  lisMMModeMatrix = 'Mode Matrix';
+  lisMMMoveSelectedItemUp = 'Move selected item up';
+  lisMMMoveSelectedItemDown = 'Move selected item down';
+  lisMMNewTarget = 'New Target';
+  lisMMNewOption = 'New Option';
+  lisMMUndoLastChangeToThisGrid = 'Undo last change to this grid';
+  lisMMRedoLastUndoToThisGrid = 'Redo last undo to this grid';
+  lisMMCreateANewGroupOfOptions = 'Create a new group of options';
+  lisMMCreateANewOption = 'Create a new option';
+  lisMMDeleteTheSelectedTargetOrOption = 'Delete the selected target or option';
 
 implementation
 

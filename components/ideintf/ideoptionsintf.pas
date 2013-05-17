@@ -302,6 +302,7 @@ const
     CompilerOptionsMacroValues    = 1000;
     CompilerOptionsInherited      = 1100;
     CompilerOptionsCompilation    = 1200;
+    CompilerOptionsModeMatrix     = 1300;
 
   GroupPkgCompiler  = 200200;
 

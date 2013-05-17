@@ -19,25 +19,16 @@
  ***************************************************************************
 
  ToDo:
-   - add frame
    - follow active mode
-   - read options: global
-   - read options: shared
-   - read options: session
    - write options: global, save envopt.xml
-   - write options: shared
-   - write options: session
-   - restore options: global
-   - restore options: shared
-   - restore options: session
-   - resourcestrings
+   - restore options: global, save xml
    - rename build mode => update matrix modes and title
    - delete build mode => delete column
    - add build mode => add column
-   - pkg custom options
-   - show added custom options in package inherited tree
    - project custom options
    - show added custom options in project inherited tree
+   - pkg custom options
+   - show added custom options in package inherited tree
    - pkg out dir
    - show OutDir in package inherited tree
    - project outdir
@@ -56,15 +47,15 @@ unit Compiler_ModeMatrix;
 interface
 
 uses
-  Classes, SysUtils, LazFileUtils, LazLogger, KeywordFuncLists, LResources,
-  Forms, Controls, Graphics, ComCtrls,
-  ModeMatrixCtrl;
+  Classes, SysUtils, LazFileUtils, LazLogger, KeywordFuncLists, IDEOptionsIntf,
+  IDEImagesIntf, LResources, Forms, Controls, Graphics, ComCtrls,
+  ModeMatrixCtrl, EnvironmentOpts, ModeMatrixOpts, Project, LazarusIDEStrConsts;
 
 type
 
-  { TFrame1 }
+  { TCompOptModeMatrix }
 
-  TFrame1 = class(TFrame)
+  TCompOptModeMatrix = class(TAbstractIDEOptionsEditor)
     BMMatrixToolBar: TToolBar;
     BMMMoveUpToolButton: TToolButton;
     BMMMoveDownToolButton: TToolButton;
@@ -88,18 +79,38 @@ type
     procedure GridShowHint(Sender: TObject; HintInfo: PHintInfo);
   private
     FGrid: TGroupedMatrixControl;
+    FGroupIDE: TGroupedMatrixGroup;
+    FGroupProject: TGroupedMatrixGroup;
+    FGroupSession: TGroupedMatrixGroup;
     FIDEColor: TColor;
+    FProject: TProject;
     FProjectColor: TColor;
     FSessionColor: TColor;
+    fOldIDEOptions: TBuildMatrixOptions;
+    fOldSharedOptions: TBuildMatrixOptions;
+    fOldSessionOptions: TBuildMatrixOptions;
     procedure MoveRow(Direction: integer);
     procedure UpdateButtons;
     function AddTarget(StorageGroup: TGroupedMatrixGroup): TGroupedMatrixGroup;
+    procedure UpdateModes(UpdateGrid: boolean);
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    procedure RestoreSettings(AOptions: TAbstractIDEOptions); override;
+  public
     property Grid: TGroupedMatrixControl read FGrid;
+    property GroupIDE: TGroupedMatrixGroup read FGroupIDE;
+    property GroupProject: TGroupedMatrixGroup read FGroupProject;
+    property GroupSession: TGroupedMatrixGroup read FGroupSession;
     property IDEColor: TColor read FIDEColor write FIDEColor;
     property ProjectColor: TColor read FProjectColor write FProjectColor;
     property SessionColor: TColor read FSessionColor write FSessionColor;
+    property LazProject: TProject read FProject;
   end;
 
 function BuildMatrixOptionTypeCaption(Typ: TBuildMatrixOptionType): string;
@@ -137,9 +148,9 @@ end;
 function BuildMatrixOptionTypeHint(Typ: TBuildMatrixOptionType): string;
 begin
   case Typ of
-  bmotCustom: Result:='Append arbitrary fpc options, e.g. -O1 -ghtl -dFlag';
-  bmotOutDir: Result:='Override output directory -FU of target';
-  bmotIDEMacro: Result:='Set an IDE macro, e.g.: LCLWidgetType:=win32';
+  bmotCustom: Result:=lisMMAppendArbitraryFpcOptionsEGO1GhtlDFlag;
+  bmotOutDir: Result:=lisMMOverrideOutputDirectoryFUOfTarget;
+  bmotIDEMacro: Result:=lisMMSetAnIDEMacroEGLCLWidgetTypeWin32;
   else Result:='?';
   end;
 end;
@@ -281,13 +292,13 @@ begin
   MacroValue:='';
   if MacroAssignment='' then begin
     if ExceptionOnError then
-      E('missing macro name');
+      E(lisMMMissingMacroName);
     exit;
   end;
   p:=PChar(MacroAssignment);
   if not IsIdentStartChar[p^] then begin
     if ExceptionOnError then
-      E('expected macro name, but found '+dbgstr(p^));
+      E(Format(lisMMExpectedMacroNameButFound, [dbgstr(p^)]));
     exit;
   end;
   StartP:=p;
@@ -297,20 +308,20 @@ begin
   MacroName:=copy(MacroAssignment,1,p-StartP);
   if p^<>':' then begin
     if ExceptionOnError then
-      E('expected :, but found '+dbgstr(p^));
+      E(Format(lisMMExpectedButFound, [dbgstr(p^)]));
     exit;
   end;
   inc(p);
   if p^<>'=' then begin
     if ExceptionOnError then
-      E('expected =, but found '+dbgstr(p^));
+      E(Format(lisMMExpectedButFound2, [dbgstr(p^)]));
     exit;
   end;
   repeat
     if (p^=#0) and (p-PChar(MacroAssignment)=length(MacroAssignment)) then break;
     if p^ in [#0..#31,#127] then begin
       if ExceptionOnError then
-        E('invalid character in macro value '+dbgstr(p^));
+        E(Format(lisMMInvalidCharacterInMacroValue, [dbgstr(p^)]));
       exit;
     end;
   until false;
@@ -320,14 +331,14 @@ end;
 
 {$R *.lfm}
 
-{ TFrame1 }
+{ TCompOptModeMatrix }
 
-procedure TFrame1.GridSelection(Sender: TObject; aCol, aRow: Integer);
+procedure TCompOptModeMatrix.GridSelection(Sender: TObject; aCol, aRow: Integer);
 begin
   UpdateButtons;
 end;
 
-procedure TFrame1.GridShowHint(Sender: TObject; HintInfo: PHintInfo);
+procedure TCompOptModeMatrix.GridShowHint(Sender: TObject; HintInfo: PHintInfo);
 var
   aCol: Longint;
   aRow: Longint;
@@ -393,47 +404,47 @@ begin
         IncludeProject:=false;
       if All then begin
         if ExcludeProject then
-          h+='Apply to all packages.'+LineEnding
+          h+=lisMMApplyToAllPackages+LineEnding
         else
-          h+='Apply to all packages and projects.'+LineEnding;
+          h+=lisMMApplyToAllPackagesAndProjects+LineEnding;
       end
       else begin
         if IncludeProject then
-          h+='Apply to project.'+LineEnding;
+          h+=lisMMApplyToProject+LineEnding;
         if Includes<>'' then
-          h+='Apply to all packages matching '+Includes+LineEnding;
+          h+=Format(lisMMApplyToAllPackagesMatching, [Includes])+LineEnding;
       end;
       if Excludes<>'' then
-        h+='Exclude all packages matching '+Excludes+LineEnding;
+        h+=Format(lisMMExcludeAllPackagesMatching, [Excludes])+LineEnding;
     end;
   end;
   HintInfo^.HintStr:=h;
 end;
 
-procedure TFrame1.BMMUndoToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrix.BMMUndoToolButtonClick(Sender: TObject);
 begin
   Grid.Undo;
   UpdateButtons;
 end;
 
-procedure TFrame1.GridEditingDone(Sender: TObject);
+procedure TCompOptModeMatrix.GridEditingDone(Sender: TObject);
 begin
   //DebugLn(['TFrame1.GridEditingDone ']);
   UpdateButtons;
 end;
 
-procedure TFrame1.BMMRedoToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrix.BMMRedoToolButtonClick(Sender: TObject);
 begin
   Grid.Redo;
   UpdateButtons;
 end;
 
-procedure TFrame1.BMMMoveUpToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrix.BMMMoveUpToolButtonClick(Sender: TObject);
 begin
   MoveRow(-1);
 end;
 
-procedure TFrame1.BMMNewOptionToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrix.BMMNewOptionToolButtonClick(Sender: TObject);
 var
   aRow: Integer;
   MatRow: TGroupedMatrixRow;
@@ -478,7 +489,7 @@ begin
   UpdateButtons;
 end;
 
-procedure TFrame1.BMMNewTargetToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrix.BMMNewTargetToolButtonClick(Sender: TObject);
 var
   aRow: Integer;
   MatRow: TGroupedMatrixRow;
@@ -516,12 +527,12 @@ begin
   UpdateButtons;
 end;
 
-procedure TFrame1.BMMMoveDownToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrix.BMMMoveDownToolButtonClick(Sender: TObject);
 begin
   MoveRow(1);
 end;
 
-procedure TFrame1.BMMDeleteToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrix.BMMDeleteToolButtonClick(Sender: TObject);
 var
   aRow: Integer;
   MatRow: TGroupedMatrixRow;
@@ -537,7 +548,7 @@ begin
   UpdateButtons;
 end;
 
-procedure TFrame1.UpdateButtons;
+procedure TCompOptModeMatrix.UpdateButtons;
 var
   aRow: Integer;
   MatRow: TGroupedMatrixRow;
@@ -561,13 +572,50 @@ begin
                         and  (MatRow.GetNextSkipChildren<>nil);
 end;
 
-function TFrame1.AddTarget(StorageGroup: TGroupedMatrixGroup
+function TCompOptModeMatrix.AddTarget(StorageGroup: TGroupedMatrixGroup
   ): TGroupedMatrixGroup;
 begin
   Result:=AddMatrixTarget(Grid.Matrix,StorageGroup);
 end;
 
-procedure TFrame1.MoveRow(Direction: integer);
+procedure TCompOptModeMatrix.UpdateModes(UpdateGrid: boolean);
+var
+  i: Integer;
+  BuildMode: TProjectBuildMode;
+  aColor: TColor;
+  GridHasChanged: Boolean;
+  aMode: TGroupedMatrixMode;
+  BuildModes: TProjectBuildModes;
+begin
+  GridHasChanged:=false;
+  // add/update build modes
+  BuildModes:=LazProject.BuildModes;
+  for i:=0 to BuildModes.Count-1 do begin
+    BuildMode:=BuildModes[i];
+    aColor:=clDefault;
+    if BuildMode.InSession then aColor:=SessionColor;
+    if i=Grid.Modes.Count then begin
+      Grid.Modes.Add(BuildMode.Identifier,aColor);
+      GridHasChanged:=true;
+    end
+    else begin
+      aMode:=Grid.Modes[i];
+      if aMode.Caption<>BuildMode.Identifier then begin
+        aMode.Caption:=BuildMode.Identifier;
+        GridHasChanged:=true;
+      end;
+      aMode.Color:=aColor;
+    end;
+  end;
+
+  // set active mode
+  Grid.ActiveMode:=BuildModes.IndexOf(LazProject.ActiveBuildMode);
+
+  if UpdateGrid and GridHasChanged then
+    Grid.MatrixChanged;
+end;
+
+procedure TCompOptModeMatrix.MoveRow(Direction: integer);
 var
   MatRow: TGroupedMatrixRow;
   aRow: Integer;
@@ -665,11 +713,15 @@ begin
   UpdateButtons;
 end;
 
-constructor TFrame1.Create(TheOwner: TComponent);
+constructor TCompOptModeMatrix.Create(TheOwner: TComponent);
 var
   t: TBuildMatrixOptionType;
 begin
   inherited Create(TheOwner);
+
+  fOldIDEOptions:=TBuildMatrixOptions.Create;
+  fOldSharedOptions:=TBuildMatrixOptions.Create;
+  fOldSessionOptions:=TBuildMatrixOptions.Create;
 
   IDEColor:=RGBToColor(200,255,255);
   ProjectColor:=RGBToColor(255,255,255);
@@ -688,8 +740,136 @@ begin
     OnShowHint:=@GridShowHint;
   end;
 
+  fGroupIDE:=Grid.Matrix.AddGroup(nil, lisMMStoredInIDEEnvironmentoptionsXml);
+  GroupIDE.Color:=IDEColor;
+
+  fGroupProject:=Grid.Matrix.AddGroup(nil, lisMMStoredInProjectLpi);
+  GroupProject.Color:=ProjectColor;
+
+  fGroupSession:=Grid.Matrix.AddGroup(nil, lisMMStoredInSessionOfProjectLps);
+  GroupSession.Color:=SessionColor;
+
+  BMMatrixToolBar.Images:=IDEImages.Images_16;
+
+  BMMMoveUpToolButton.ShowCaption:=false;
+  BMMMoveUpToolButton.ImageIndex:=IDEImages.LoadImage(16,'arrow_up');
+  BMMMoveUpToolButton.Hint:=lisMMMoveSelectedItemUp;
+
+  BMMMoveDownToolButton.ShowCaption:=false;
+  BMMMoveDownToolButton.ImageIndex:=IDEImages.LoadImage(16,'arrow_down');
+  BMMMoveDownToolButton.Hint:=lisMMMoveSelectedItemDown;
+
+  BMMUndoToolButton.Caption:=lisUndo;
+  BMMUndoToolButton.Hint:=lisMMUndoLastChangeToThisGrid;
+
+  BMMRedoToolButton.Caption:=lisRedo;
+  BMMRedoToolButton.Hint:=lisMMRedoLastUndoToThisGrid;
+
+  BMMNewTargetToolButton.Caption:=lisMMNewTarget;
+  BMMNewTargetToolButton.Hint:=lisMMCreateANewGroupOfOptions;
+
+  BMMNewOptionToolButton.Caption:=lisMMNewOption;
+  BMMNewOptionToolButton.Hint:=lisMMCreateANewOption;
+
+  BMMDeleteToolButton.Caption:=lisDelete;
+  BMMDeleteToolButton.Hint:=lisMMDeleteTheSelectedTargetOrOption;
+
   UpdateButtons;
 end;
+
+destructor TCompOptModeMatrix.Destroy;
+begin
+  FreeAndNil(fOldIDEOptions);
+  FreeAndNil(fOldSharedOptions);
+  FreeAndNil(fOldSessionOptions);
+  inherited Destroy;
+end;
+
+function TCompOptModeMatrix.GetTitle: String;
+begin
+  Result:=lisMMModeMatrix;
+end;
+
+procedure TCompOptModeMatrix.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  //debugln(['TCompOptModeMatrix.Setup ',DbgSName(ADialog)]);
+
+end;
+
+class function TCompOptModeMatrix.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TProjectCompilerOptions;
+end;
+
+procedure TCompOptModeMatrix.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  CompOptions: TProjectCompilerOptions;
+begin
+  //debugln(['TCompOptModeMatrix.ReadSettings ',DbgSName(AOptions)]);
+  if not (AOptions is TProjectCompilerOptions) then exit;
+  CompOptions:=TProjectCompilerOptions(AOptions);
+  fProject:=CompOptions.LazProject;
+
+  UpdateModes(false);
+
+  // read IDE options
+  AssignBuildMatrixOptionsToGroup(EnvironmentOptions.BuildMatrixOptions,
+    Grid.Matrix,GroupIDE);
+  fOldIDEOptions.Assign(EnvironmentOptions.BuildMatrixOptions);
+  // read Project options
+  AssignBuildMatrixOptionsToGroup(LazProject.BuildModes.SharedMatrixOptions,
+    Grid.Matrix,GroupProject);
+  fOldSharedOptions.Assign(LazProject.BuildModes.SharedMatrixOptions);
+  // read Session options
+  AssignBuildMatrixOptionsToGroup(LazProject.BuildModes.SessionMatrixOptions,
+    Grid.Matrix,GroupSession);
+  fOldSessionOptions.Assign(LazProject.BuildModes.SessionMatrixOptions);
+
+  // update Grid
+  Grid.MatrixChanged;
+
+  // select project
+  Grid.Row:=Grid.Matrix.IndexOfRow(GroupProject)+1;
+  Grid.Col:=Grid.FixedCols;
+end;
+
+procedure TCompOptModeMatrix.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  CompOptions: TProjectCompilerOptions;
+begin
+  if not (AOptions is TProjectCompilerOptions) then exit;
+  CompOptions:=TProjectCompilerOptions(AOptions);
+  fProject:=CompOptions.LazProject;
+
+  // write IDE options
+  AssignBuildMatrixGroupToOptions(GroupIDE,EnvironmentOptions.BuildMatrixOptions);
+  // write Project options
+  AssignBuildMatrixGroupToOptions(GroupProject,LazProject.BuildModes.SharedMatrixOptions);
+  // write Session options
+  AssignBuildMatrixGroupToOptions(GroupSession,LazProject.BuildModes.SessionMatrixOptions);
+end;
+
+procedure TCompOptModeMatrix.RestoreSettings(AOptions: TAbstractIDEOptions);
+var
+  CompOptions: TProjectCompilerOptions;
+begin
+  if not (AOptions is TProjectCompilerOptions) then exit;
+  CompOptions:=TProjectCompilerOptions(AOptions);
+  fProject:=CompOptions.LazProject;
+
+  // write IDE options
+  EnvironmentOptions.BuildMatrixOptions.Assign(fOldIDEOptions);
+  // write Project options
+  LazProject.BuildModes.SharedMatrixOptions.Assign(fOldSharedOptions);
+  // write Session options
+  LazProject.BuildModes.SessionMatrixOptions.Assign(fOldSessionOptions);
+end;
+
+initialization
+  {$IFDEF EnableModeMatrix}
+  RegisterIDEOptionsEditor(GroupCompiler, TCompOptModeMatrix,
+    CompilerOptionsModeMatrix);
+  {$ENDIF}
 
 end.
 

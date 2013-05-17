@@ -1,4 +1,4 @@
-object Frame1: TFrame1
+object CompOptModeMatrix: TCompOptModeMatrix
   Left = 0
   Height = 429
   Top = 0
@@ -14,6 +14,7 @@ object Frame1: TFrame1
     Top = 0
     Width = 550
     Caption = 'BMMatrixToolBar'
+    List = True
     ShowCaptions = True
     TabOrder = 0
     object BMMMoveUpToolButton: TToolButton
@@ -21,42 +22,56 @@ object Frame1: TFrame1
       Top = 2
       Caption = 'Up'
       OnClick = BMMMoveUpToolButtonClick
+      ParentShowHint = False
+      ShowHint = True
     end
     object BMMMoveDownToolButton: TToolButton
       Left = 26
       Top = 2
       Caption = 'Down'
       OnClick = BMMMoveDownToolButtonClick
+      ParentShowHint = False
+      ShowHint = True
     end
     object BMMUndoToolButton: TToolButton
       Left = 80
       Top = 2
       Caption = 'Undo'
       OnClick = BMMUndoToolButtonClick
+      ParentShowHint = False
+      ShowHint = True
     end
     object BMMRedoToolButton: TToolButton
       Left = 121
       Top = 2
       Caption = 'Redo'
       OnClick = BMMRedoToolButtonClick
+      ParentShowHint = False
+      ShowHint = True
     end
     object BMMNewTargetToolButton: TToolButton
       Left = 171
       Top = 2
       Caption = 'New Target'
       OnClick = BMMNewTargetToolButtonClick
+      ParentShowHint = False
+      ShowHint = True
     end
     object BMMNewOptionToolButton: TToolButton
       Left = 251
       Top = 2
       Caption = 'New Option'
       OnClick = BMMNewOptionToolButtonClick
+      ParentShowHint = False
+      ShowHint = True
     end
     object BMMDeleteToolButton: TToolButton
       Left = 343
       Top = 2
       Caption = 'Delete'
       OnClick = BMMDeleteToolButtonClick
+      ParentShowHint = False
+      ShowHint = True
     end
     object ToolButton1: TToolButton
       Left = 70
