@@ -1590,7 +1590,7 @@ begin
 
     // load the source
     if UnknownFile then begin
-      // open unknown file // Never happens if ofRevert
+      // open unknown file, Never happens if ofRevert
       Handled:=false;
       Result:=OpenUnknownFile(AFilename,Flags,NewUnitInfo,Handled);
       if (Result<>mrOk) or Handled then exit;
@@ -3738,8 +3738,8 @@ begin
   if ([ofProjectLoading,ofRegularFile]*Flags=[]) and (MainIDE.ToolStatus=itNone)
   and (Ext='.lpi') then begin
     // this is a project info file -> load whole project
-    Result:=InitOpenedProjectFile(AFilename,[ofAddToRecent]);
     Handled:=true;
+    Result:=MainIDE.DoOpenProjectFile(AFilename,[ofAddToRecent]);
     exit;
   end;
 
@@ -3768,8 +3768,8 @@ begin
                    [AFilename]), mtConfirmation,
               [mrOk, lisOpenProject2, mrCancel, lisOpenTheFileAsNormalSource])=mrOk then
           begin
-            Result:=InitOpenedProjectFile(LPIFilename,[]);
             Handled:=true;
+            Result:=MainIDE.DoOpenProjectFile(LPIFilename,[ofAddToRecent]);
             exit;
           end;
         end else begin
@@ -3779,8 +3779,8 @@ begin
           if IDEMessageDialog(ACaption, AText, mtConfirmation,
               [mbYes, mbNo])=mrYes then
           begin
-            Result:=CreateProjectForProgram(PreReadBuf);
             Handled:=true;
+            Result:=CreateProjectForProgram(PreReadBuf);
             exit;
           end;
         end;
