@@ -13,7 +13,7 @@ interface
  uses
   Classes,lresources,
   //...........................
-  indAdvLed, indLed, GrArrow, LedNumber, Sensors,indGnouMeter;
+  indAdvLed, indLed, LedNumber, Sensors, indGnouMeter;
 
 procedure Register;
 
