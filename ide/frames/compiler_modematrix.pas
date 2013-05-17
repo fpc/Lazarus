@@ -93,6 +93,7 @@ type
     procedure UpdateButtons;
     function AddTarget(StorageGroup: TGroupedMatrixGroup): TGroupedMatrixGroup;
     procedure UpdateModes(UpdateGrid: boolean);
+    procedure UpdateActiveMode;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -608,11 +609,20 @@ begin
     end;
   end;
 
-  // set active mode
-  Grid.ActiveMode:=BuildModes.IndexOf(LazProject.ActiveBuildMode);
+  UpdateActiveMode;
 
   if UpdateGrid and GridHasChanged then
     Grid.MatrixChanged;
+end;
+
+procedure TCompOptModeMatrix.UpdateActiveMode;
+var
+  i: Integer;
+begin
+  if LazProject=nil then exit;
+  i:=LazProject.BuildModes.IndexOf(LazProject.ActiveBuildMode);
+  if (i<0) or (i>=Grid.Modes.Count) then exit;
+  Grid.ActiveMode:=i;
 end;
 
 procedure TCompOptModeMatrix.MoveRow(Direction: integer);
@@ -808,6 +818,12 @@ begin
   //debugln(['TCompOptModeMatrix.ReadSettings ',DbgSName(AOptions)]);
   if not (AOptions is TProjectCompilerOptions) then exit;
   CompOptions:=TProjectCompilerOptions(AOptions);
+  if FProject=CompOptions.LazProject then begin
+    // options already loaded, only active compiler options are reloaded
+    UpdateActiveMode;
+    exit;
+  end;
+
   fProject:=CompOptions.LazProject;
 
   UpdateModes(false);
