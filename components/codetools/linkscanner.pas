@@ -3171,11 +3171,11 @@ begin
   while (SrcPos<=SrcLen) and (IsWordChar[Src[SrcPos]]) do
     inc(SrcPos);
   if CompareUpToken('ON',Src,ValStart,SrcPos) then begin
-    // define THREADING
-    Values.Variables[ExternalMacroStart+'UseSysThrds']:='1';
+    // define
+    Values.Variables[MacroUseSysThrds]:='1';
   end else begin
-    // undefine THREADING
-    Values.Undefine(ExternalMacroStart+'UseSysThrds');
+    // undefine
+    Values.Undefine(MacroUseSysThrds);
   end;
   Result:=true;
 end;
