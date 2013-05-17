@@ -47,7 +47,7 @@ uses
   EditDefineTree, ProjectResources, MiscOptions, LazConf, EnvironmentOpts,
   TransferMacros, CompilerOptions, OutputFilter, Compiler, FPCSrcScan,
   PackageDefs, PackageSystem, Project, ProjectIcon,
-  BaseBuildManager, ApplicationBundle;
+  ModeMatrixOpts, BaseBuildManager, ApplicationBundle;
   
 type
   { TBuildManager }
@@ -148,6 +148,11 @@ type
       override;
     function OnGetBuildMacroValues(Options: TBaseCompilerOptions;
                                    IncludeSelf: boolean): TCTCfgScriptVariables;
+    procedure AppendMatrixCustomOption(Sender: TObject;
+      var Options: string; Types: TBuildMatrixGroupTypes);
+    procedure GetMatrixOutputDirectoryOverride(Sender: TObject;
+      var OutDir: string; Types: TBuildMatrixGroupTypes);
+    function GetModeMatrixTarget(Sender: TObject): string;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -298,14 +303,20 @@ begin
   RunCompilerWithOptions:=@OnRunCompilerWithOptions;
 
   GetBuildMacroValues:=@OnGetBuildMacroValues;
+  OnAppendCustomOption:=@AppendMatrixCustomOption;
+  OnGetOutputDirectoryOverride:=@GetMatrixOutputDirectoryOverride;
 end;
 
 destructor TBuildManager.Destroy;
 begin
+  GetBuildMacroValues:=nil;
+  OnAppendCustomOption:=nil;
+  OnBackupFileInteractive:=nil;
+  RunCompilerWithOptions:=nil;
+
   FreeAndNil(FFPCSrcScans);
 
   LazConfMacroFunc:=nil;
-  OnBackupFileInteractive:=nil;
   FreeAndNil(InputHistories);
   FreeAndNil(DefaultCfgVars);
 
@@ -2326,6 +2337,59 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TBuildManager.AppendMatrixCustomOption(Sender: TObject;
+  var Options: string; Types: TBuildMatrixGroupTypes);
+var
+  Target: String;
+  ActiveMode: String;
+begin
+  if Project1=nil then exit;
+  Target:=GetModeMatrixTarget(Sender);
+  ActiveMode:=Project1.ActiveBuildMode.Identifier;
+  if bmgtEnvironment in Types then
+    EnvironmentOptions.BuildMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
+  if bmgtProject in Types then
+    Project1.BuildModes.SharedMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
+  if bmgtSession in Types then
+    Project1.BuildModes.SessionMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
+end;
+
+procedure TBuildManager.GetMatrixOutputDirectoryOverride(Sender: TObject;
+  var OutDir: string; Types: TBuildMatrixGroupTypes);
+var
+  Target: String;
+  ActiveMode: String;
+begin
+  if Project1=nil then exit;
+  Target:=GetModeMatrixTarget(Sender);
+  ActiveMode:=Project1.ActiveBuildMode.Identifier;
+  if bmgtEnvironment in Types then
+    EnvironmentOptions.BuildMatrixOptions.GetOutputDirectory(Target,ActiveMode,OutDir);
+  if bmgtProject in Types then
+    Project1.BuildModes.SharedMatrixOptions.GetOutputDirectory(Target,ActiveMode,OutDir);
+  if bmgtSession in Types then
+    Project1.BuildModes.SessionMatrixOptions.GetOutputDirectory(Target,ActiveMode,OutDir);
+end;
+
+function TBuildManager.GetModeMatrixTarget(Sender: TObject): string;
+begin
+  Result:='';
+  if Sender is TParsedCompilerOptions then
+    Sender:=TParsedCompilerOptions(Sender).Owner;
+  if Sender is TPkgAdditionalCompilerOptions then
+    exit; // matrix options are added only to normal options
+  if Sender is TPkgCompilerOptions then
+    Sender:=TPkgCompilerOptions(Sender).Owner
+  else if Sender is TProjectCompilerOptions then
+    Sender:=TProjectCompilerOptions(Sender).Owner;
+  if Sender is TProject then begin
+    Result:=BuildMatrixProjectName;
+  end else if Sender is TLazPackage then begin
+    Result:=TLazPackage(Sender).Name;
+  end;
+  //debugln(['TBuildManager.GetModeMatrixTarget ',DbgSName(Sender),' Target="',Result,'"']);
 end;
 
 procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU,

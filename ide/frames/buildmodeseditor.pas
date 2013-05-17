@@ -36,7 +36,7 @@ uses
   ProjectIntf, IDEImagesIntf, IDEOptionsIntf, CompOptsIntf,
   PackageDefs, compiler_inherited_options, TransferMacros,
   PathEditorDlg, Project, PackageSystem, LazarusIDEStrConsts, CompilerOptions,
-  IDEProcs, BuildModeDiffDlg;
+  IDEProcs, BuildModeDiffDlg, Compiler_ModeMatrix;
 
 type
 
@@ -78,6 +78,7 @@ type
     procedure DoShowSession;
     procedure UpdateDialogCaption;
     function GetDialogCaption: string;
+    procedure ModesChanged;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -154,6 +155,8 @@ begin
   BuildModesStringGrid.Col:=fModeNameCol;
   BuildModesStringGrid.Row:=BuildModesStringGrid.RowCount-1;
   BuildModesStringGrid.EditorMode:=true;
+
+  ModesChanged;
 end;
 
 procedure TBuildModesEditorFrame.BuildModeDeleteSpeedButtonClick(Sender: TObject);
@@ -192,6 +195,8 @@ begin
     Grid.Row:=Grid.RowCount-1
   else
     Grid.Row:=i;
+
+  ModesChanged;
 end;
 
 procedure TBuildModesEditorFrame.BuildModeMoveDownSpeedButtonClick(Sender: TObject);
@@ -205,6 +210,8 @@ begin
   inc(i);
   FillBuildModesGrid;
   BuildModesStringGrid.Row:=i+1;
+
+  ModesChanged;
 end;
 
 procedure TBuildModesEditorFrame.BuildModeMoveUpSpeedButtonClick(Sender: TObject);
@@ -218,6 +225,8 @@ begin
   AProject.BuildModes[0].InSession:=false;
   FillBuildModesGrid;
   BuildModesStringGrid.Row:=i+1;
+
+  ModesChanged;
 end;
 
 procedure TBuildModesEditorFrame.BuildModesStringGridCheckboxToggled(
@@ -255,6 +264,7 @@ begin
       exit;
     end;
     CurMode.InSession:=b;
+    ModesChanged;
   end;
 end;
 
@@ -273,7 +283,7 @@ var
   b: Boolean;
   i: Integer;
 begin
-  debugln(['TBuildModesForm.BuildModesStringGridValidateEntry Row=',aRow,' Col=',aCol]);
+  //debugln(['TBuildModesForm.BuildModesStringGridValidateEntry Row=',aRow,' Col=',aCol]);
   i:=aRow-1;
   if (i<0) or (i>=AProject.BuildModes.Count) then exit;
   CurMode:=AProject.BuildModes[i];
@@ -290,6 +300,7 @@ begin
       exit;
     end;
     CurMode.InSession:=b;
+    ModesChanged;
   end
   else if aCol=fModeNameCol then
   begin
@@ -301,6 +312,7 @@ begin
     CurMode.Identifier:=s;
     NewValue:=s;
     UpdateDialogCaption;
+    ModesChanged;
   end;
 end;
 
@@ -365,6 +377,12 @@ begin
       Result:=Result+', '+copy(AProject.ActiveBuildMode.GetCaption,1,12);
   end else
     Result:='TBuildModesEditorFrame.GetDialogCaption: no project';
+end;
+
+procedure TBuildModesEditorFrame.ModesChanged;
+begin
+  if ModeMatrixFrame<>nil then
+    ModeMatrixFrame.UpdateModes;
 end;
 
 procedure TBuildModesEditorFrame.UpdateInheritedOptions;
@@ -450,6 +468,7 @@ begin
   finally
     FSwitchingMode:=false;
   end;
+  ModesChanged;
 end;
 
 procedure TBuildModesEditorFrame.UpdateShowSession;

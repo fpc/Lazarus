@@ -47,6 +47,16 @@ const
     );
 
 type
+  TBuildMatrixGroupType = (
+    bmgtEnvironment,
+    bmgtProject,
+    bmgtSession
+    );
+  TBuildMatrixGroupTypes = set of TBuildMatrixGroupType;
+const
+  bmgtAll = [low(TBuildMatrixGroupType)..high(TBuildMatrixGroupType)];
+
+type
   TBuildMatrixOptions = class;
 
   { TBuildMatrixOption }
@@ -68,9 +78,11 @@ type
     procedure Assign(Source: TPersistent); override;
     constructor Create(aList: TBuildMatrixOptions);
     destructor Destroy; override;
+    function FitsTarget(const Target: string): boolean;
+    function FitsMode(const Mode: string): boolean;
     property List: TBuildMatrixOptions read FList;
     property Targets: string read FTargets write SetTargets;
-    property Modes: string read FModes write SetModes; // modes separated by line breaks
+    property Modes: string read FModes write SetModes; // modes separated by line breaks, case insensitive
     property Typ: TBuildMatrixOptionType read FTyp write SetTyp;
     property MacroName: string read FMacroName write SetMacroName;
     property Value: string read FValue write SetValue;
@@ -106,19 +118,28 @@ type
     function IndexOf(Option: TBuildMatrixOption): integer;
     function Add(Typ: TBuildMatrixOptionType = bmotCustom; Targets: string = '*'): TBuildMatrixOption;
     procedure Delete(Index: integer);
+
+    // equals, modified
     property ChangeStep: int64 read FChangeStep;
     procedure IncreaseChangeStep;
     function Equals(Obj: TObject): boolean; override;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChangesd;
+    property Modified: boolean read GetModified write SetModified;
+
+    // load, save
     procedure LoadFromConfig(Cfg: TConfigStorage);
     procedure SaveToConfig(Cfg: TConfigStorage);
     procedure LoadFromXMLConfig(Cfg: TXMLConfig; const aPath: string);
     procedure SaveToXMLConfig(Cfg: TXMLConfig; const aPath: string);
-    property OnChanged: TNotifyEvent read FOnChanged write FOnChangesd;
-    property Modified: boolean read GetModified write SetModified;
+
+    // queries
+    procedure AppendCustomOptions(Target, ActiveMode: string; var Options: string);
+    procedure GetOutputDirectory(Target, ActiveMode: string; var OutDir: string);
   end;
 
 function BuildMatrixTargetFits(Target, Targets: string): boolean;
 function BuildMatrixTargetFitsPattern(Target, Pattern: PChar): boolean;
+function BuildMatrixModeFits(Mode, ModesSeparatedByLineBreaks: string): boolean;
 function Str2BuildMatrixOptionType(const s: string): TBuildMatrixOptionType;
 
 implementation
@@ -217,6 +238,28 @@ begin
       inc(Target);
     end;
   until false;
+end;
+
+function BuildMatrixModeFits(Mode, ModesSeparatedByLineBreaks: string): boolean;
+var
+  p: PChar;
+  m: PChar;
+begin
+  Result:=false;
+  if Mode='' then exit;
+  if ModesSeparatedByLineBreaks='' then exit;
+  p:=PChar(ModesSeparatedByLineBreaks);
+  while p^<>#0 do begin
+    while p^ in [#1..#31] do inc(p);
+    m:=PChar(Mode);
+    while (UpChars[p^]=UpChars[m^]) and (p^>=' ') do begin
+      inc(p);
+      inc(m);
+    end;
+    if (m^=#0) and (p^ in [#10,#13,#0]) then
+      exit(true);
+    while p^>=' ' do inc(p);
+  end;
 end;
 
 function Str2BuildMatrixOptionType(const s: string): TBuildMatrixOptionType;
@@ -384,6 +427,40 @@ begin
     Items[i].SaveToXMLConfig(Cfg,aPath+'item'+IntToStr(i+1)+'/');
 end;
 
+procedure TBuildMatrixOptions.AppendCustomOptions(Target, ActiveMode: string;
+  var Options: string);
+var
+  i: Integer;
+  Option: TBuildMatrixOption;
+  Value: String;
+begin
+  for i:=0 to Count-1 do begin
+    Option:=Items[i];
+    if Option.Typ<>bmotCustom then continue;
+    Value:=Trim(Option.Value);
+    if Value='' then continue;
+    if not Option.FitsTarget(Target) then continue;
+    if not Option.FitsMode(ActiveMode) then continue;
+    if Options<>'' then Options+=' ';
+    Options+=Value;
+  end;
+end;
+
+procedure TBuildMatrixOptions.GetOutputDirectory(Target, ActiveMode: string;
+  var OutDir: string);
+var
+  i: Integer;
+  Option: TBuildMatrixOption;
+begin
+  for i:=0 to Count-1 do begin
+    Option:=Items[i];
+    if Option.Typ<>bmotOutDir then continue;
+    if not Option.FitsTarget(Target) then continue;
+    if not Option.FitsMode(ActiveMode) then continue;
+    OutDir:=Option.Value;
+  end;
+end;
+
 { TBuildMatrixOption }
 
 procedure TBuildMatrixOption.SetMacroName(AValue: string);
@@ -449,6 +526,16 @@ begin
   List.fItems.Remove(Self);
   FList:=nil;
   inherited Destroy;
+end;
+
+function TBuildMatrixOption.FitsTarget(const Target: string): boolean;
+begin
+  Result:=BuildMatrixTargetFits(Target,Targets);
+end;
+
+function TBuildMatrixOption.FitsMode(const Mode: string): boolean;
+begin
+  Result:=BuildMatrixModeFits(Mode,Modes);
 end;
 
 function TBuildMatrixOption.Equals(Obj: TObject): boolean;

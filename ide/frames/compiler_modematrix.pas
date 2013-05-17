@@ -19,26 +19,14 @@
  ***************************************************************************
 
  ToDo:
-   - follow active mode
-   - write options: global, save envopt.xml
-   - restore options: global, save xml
-   - rename build mode => update matrix modes and title
-   - delete build mode => delete column
-   - add build mode => add column
-   - project custom options
-   - show added custom options in project inherited tree
-   - pkg custom options
-   - show added custom options in package inherited tree
-   - pkg out dir
-   - show OutDir in package inherited tree
-   - project outdir
-   - show OutDir in project inherited tree
-   - ide macro
    - warn for syntax errors in ide macro
-   - wiki
+   - ide macro
    - load old build macro values into matrix
    - save matrix options for old build macro values
+   - easy way to change LCLWidgetType
+   - wiki
    - remove old frame
+   - remove old macro value classes
 }
 unit Compiler_ModeMatrix;
 
@@ -49,7 +37,8 @@ interface
 uses
   Classes, SysUtils, LazFileUtils, LazLogger, KeywordFuncLists, IDEOptionsIntf,
   IDEImagesIntf, LResources, Forms, Controls, Graphics, ComCtrls,
-  ModeMatrixCtrl, EnvironmentOpts, ModeMatrixOpts, Project, LazarusIDEStrConsts;
+  ModeMatrixCtrl, EnvironmentOpts, ModeMatrixOpts, Project, LazarusIDEStrConsts,
+  TransferMacros;
 
 type
 
@@ -89,11 +78,12 @@ type
     fOldIDEOptions: TBuildMatrixOptions;
     fOldSharedOptions: TBuildMatrixOptions;
     fOldSessionOptions: TBuildMatrixOptions;
+    procedure DoWriteSettings;
     procedure MoveRow(Direction: integer);
     procedure UpdateButtons;
     function AddTarget(StorageGroup: TGroupedMatrixGroup): TGroupedMatrixGroup;
-    procedure UpdateModes(UpdateGrid: boolean);
-    procedure UpdateActiveMode;
+  protected
+    procedure VisibleChanged; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -103,6 +93,8 @@ type
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     procedure RestoreSettings(AOptions: TAbstractIDEOptions); override;
+    procedure UpdateModes(UpdateGrid: boolean = true);
+    procedure UpdateActiveMode;
   public
     property Grid: TGroupedMatrixControl read FGrid;
     property GroupIDE: TGroupedMatrixGroup read FGroupIDE;
@@ -121,11 +113,14 @@ function IsEqual(Options: TBuildMatrixOptions; StorageGroup: TGroupedMatrixGroup
 procedure AssignBuildMatrixOptionsToGroup(Options: TBuildMatrixOptions;
   Matrix: TGroupedMatrix; StorageGroup: TGroupedMatrixGroup);
 procedure AssignBuildMatrixGroupToOptions(StorageGroup: TGroupedMatrixGroup;
-  Options: TBuildMatrixOptions);
+  Options: TBuildMatrixOptions; InvalidateCompOpts: boolean);
 function TargetsPrefix: string;
 function AddMatrixTarget(Matrix: TGroupedMatrix; StorageGroup: TGroupedMatrixGroup): TGroupedMatrixGroup;
 function SplitMatrixMacro(MacroAssignment: string;
   out MacroName, MacroValue: string; ExceptionOnError: boolean): boolean;
+
+var
+  ModeMatrixFrame: TCompOptModeMatrix = nil;
 
 implementation
 
@@ -226,7 +221,7 @@ begin
 end;
 
 procedure AssignBuildMatrixGroupToOptions(StorageGroup: TGroupedMatrixGroup;
-  Options: TBuildMatrixOptions);
+  Options: TBuildMatrixOptions; InvalidateCompOpts: boolean);
 var
   GrpIndex: Integer;
   Target: TGroupedMatrixGroup;
@@ -262,6 +257,8 @@ begin
       end;
     end;
   end;
+  if InvalidateCompOpts then
+    IncreaseCompilerParseStamp;
 end;
 
 function TargetsPrefix: string;
@@ -579,6 +576,13 @@ begin
   Result:=AddMatrixTarget(Grid.Matrix,StorageGroup);
 end;
 
+procedure TCompOptModeMatrix.VisibleChanged;
+begin
+  inherited VisibleChanged;
+  if (not Visible) and (LazProject<>nil) then
+    DoWriteSettings;
+end;
+
 procedure TCompOptModeMatrix.UpdateModes(UpdateGrid: boolean);
 var
   i: Integer;
@@ -723,11 +727,25 @@ begin
   UpdateButtons;
 end;
 
+procedure TCompOptModeMatrix.DoWriteSettings;
+begin
+  // write IDE options
+  AssignBuildMatrixGroupToOptions(GroupIDE,
+    EnvironmentOptions.BuildMatrixOptions, true);
+  // write Project options
+  AssignBuildMatrixGroupToOptions(GroupProject,
+    LazProject.BuildModes.SharedMatrixOptions, true);
+  // write Session options
+  AssignBuildMatrixGroupToOptions(GroupSession,
+    LazProject.BuildModes.SessionMatrixOptions, true);
+end;
+
 constructor TCompOptModeMatrix.Create(TheOwner: TComponent);
 var
   t: TBuildMatrixOptionType;
 begin
   inherited Create(TheOwner);
+  ModeMatrixFrame:=Self;
 
   fOldIDEOptions:=TBuildMatrixOptions.Create;
   fOldSharedOptions:=TBuildMatrixOptions.Create;
@@ -789,6 +807,7 @@ end;
 
 destructor TCompOptModeMatrix.Destroy;
 begin
+  ModeMatrixFrame:=nil;
   FreeAndNil(fOldIDEOptions);
   FreeAndNil(fOldSharedOptions);
   FreeAndNil(fOldSessionOptions);
@@ -857,12 +876,7 @@ begin
   CompOptions:=TProjectCompilerOptions(AOptions);
   fProject:=CompOptions.LazProject;
 
-  // write IDE options
-  AssignBuildMatrixGroupToOptions(GroupIDE,EnvironmentOptions.BuildMatrixOptions);
-  // write Project options
-  AssignBuildMatrixGroupToOptions(GroupProject,LazProject.BuildModes.SharedMatrixOptions);
-  // write Session options
-  AssignBuildMatrixGroupToOptions(GroupSession,LazProject.BuildModes.SessionMatrixOptions);
+  DoWriteSettings;
 end;
 
 procedure TCompOptModeMatrix.RestoreSettings(AOptions: TAbstractIDEOptions);
@@ -879,6 +893,8 @@ begin
   LazProject.BuildModes.SharedMatrixOptions.Assign(fOldSharedOptions);
   // write Session options
   LazProject.BuildModes.SessionMatrixOptions.Assign(fOldSessionOptions);
+
+  IncreaseCompilerParseStamp;
 end;
 
 initialization

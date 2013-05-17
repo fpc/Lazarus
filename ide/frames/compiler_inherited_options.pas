@@ -39,7 +39,8 @@ uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ComCtrls, ExtCtrls,
   CodeToolsCfgScript, IDEOptionsIntf, IDEImagesIntf, ProjectIntf, CompOptsIntf,
-  Project, PackageDefs, CompilerOptions, LazarusIDEStrConsts, IDEProcs;
+  Project, PackageDefs, ModeMatrixOpts, CompilerOptions,
+  LazarusIDEStrConsts, IDEProcs;
 
 type
 
@@ -52,11 +53,14 @@ type
     InhTreeView: TTreeView;
     procedure InhTreeViewSelectionChanged(Sender: TObject);
   private
+    FLastOptions: TBaseCompilerOptions;
     ImageIndexInherited: Integer;
     ImageIndexRequired: Integer;
     ImageIndexPackage: Integer;
     InheritedChildDatas: TList; // list of PInheritedNodeData
     procedure ClearInheritedTree;
+  protected
+    procedure VisibleChanged; override;
   public
     destructor Destroy; override;
     function GetTitle: string; override;
@@ -65,6 +69,7 @@ type
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     procedure UpdateInheritedTree(CompilerOpts: TBaseCompilerOptions);
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
+    property LastOptions: TBaseCompilerOptions read FLastOptions;
   end;
 
 implementation
@@ -154,7 +159,46 @@ var
   SkippedPkgList: TFPList;
   AProject: TProject;
   Pkg: TLazPackage;
+  t: TBuildMatrixGroupType;
+
+  procedure AddMatrixGroupNode(Grp: TBuildMatrixGroupType);
+  begin
+    AncestorNode := InhTreeView.Items.Add(nil, '');
+    case Grp of
+    bmgtEnvironment: AncestorNode.Text:='Environment';
+    bmgtProject: AncestorNode.Text:='Project';
+    bmgtSession: AncestorNode.Text:='Project Session';
+    end;
+    AncestorNode.ImageIndex := ImageIndexPackage;
+    AncestorNode.SelectedIndex := AncestorNode.ImageIndex;
+  end;
+
+  procedure AddMatrixGroup(Grp: TBuildMatrixGroupType);
+  var
+    CustomOptions: String;
+    OutDir: String;
+  begin
+    AncestorNode := nil;
+    CustomOptions:='';
+    OnAppendCustomOption(CompilerOpts,CustomOptions,[Grp]);
+    if CustomOptions<>'' then begin
+      AddMatrixGroupNode(Grp);
+      AddChildNode(liscustomOptions, CustomOptions, icoCustomOptions);
+    end;
+    OutDir:='.*';
+    OnGetOutputDirectoryOverride(CompilerOpts,OutDir,[Grp]);
+    if OutDir<>'.*' then begin
+      AddMatrixGroupNode(Grp);
+      AddChildNode('Output directory', OutDir, icoNone);
+    end;
+    if AncestorNode<>nil then
+      AncestorNode.Expand(true);
+  end;
+
 begin
+  FLastOptions:=CompilerOpts;
+  if not Visible then exit;
+
   OptionsList := nil;
   //debugln(['TCompilerInheritedOptionsFrame.UpdateInheritedTree START CompilerOpts=',DbgSName(CompilerOpts)]);
   CompilerOpts.GetInheritedCompilerOptions(OptionsList);
@@ -235,8 +279,7 @@ begin
         AncestorNode.Expanded := True;
       end;
       OptionsList.Free;
-    end
-    else
+    end else
     begin
       InhTreeView.Items.Add(nil, lisNoCompilerOptionsInherited);
     end;
@@ -249,6 +292,11 @@ begin
         AncestorNode.SelectedIndex := AncestorNode.ImageIndex;
       end;
     end;
+
+    // add matrix options
+    for t:=low(TBuildMatrixGroupType) to high(TBuildMatrixGroupType) do
+      AddMatrixGroup(t);
+
     InhTreeView.EndUpdate;
   finally
     SkippedPkgList.Free;
@@ -284,6 +332,12 @@ begin
   InhTreeView.EndUpdate;
 end;
 
+procedure TCompilerInheritedOptionsFrame.VisibleChanged;
+begin
+  inherited VisibleChanged;
+  if IsVisible and (LastOptions<>nil) then
+    UpdateInheritedTree(LastOptions);
+end;
 
 procedure TCompilerInheritedOptionsFrame.InhTreeViewSelectionChanged(Sender: TObject);
 var

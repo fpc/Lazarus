@@ -28,7 +28,8 @@ interface
 uses
   Classes, SysUtils, math, types, contnrs, Controls, LCLType, LCLIntf, Grids,
   Graphics, StdCtrls, Menus, LazLogger, LazConfigStorage, Laz2_XMLCfg,
-  FileProcs, KeywordFuncLists, ModeMatrixOpts;
+  FileProcs, KeywordFuncLists,
+  IDEProcs, ModeMatrixOpts;
 
 const
   DefaultModeMatrixMaxUndo = 100;
@@ -1178,7 +1179,7 @@ begin
     MatRow:=Matrix.Rows[aRow-1];
     if MatRow is TGroupedMatrixValue then begin
       //debugln(['TGroupedMatrixControl.GetCheckBoxState ',aCol,' ',aRow,' "',Modes[aCol-1],'" ',TGroupedMatrixValue(MatRow).Modes.Text]);
-      if TGroupedMatrixValue(MatRow).Modes.IndexOf(Modes[aCol-1].Caption)>=0
+      if IndexInStringList(TGroupedMatrixValue(MatRow).Modes,cstCaseInsensitive,Modes[aCol-1].Caption)>=0
       then begin
         aState:=cbChecked;
         //debugln(['TGroupedMatrixControl.GetCheckBoxState ',aCol,' ',aRow,' "',Modes[aCol-1],'" ',TGroupedMatrixValue(MatRow).Modes.Text]);
@@ -1205,7 +1206,7 @@ begin
       if assigned(OnSetCheckboxState) then
         OnSetCheckboxState(Self, aCol, aRow, aState);
       ModeName:=Modes[aCol-1].Caption;
-      i:=ValueRow.Modes.IndexOf(ModeName);
+      i:=IndexInStringList(ValueRow.Modes,cstCaseInsensitive,ModeName);
       if (i<0) = (aState=cbUnchecked) then exit;
       StoreUndo;
       if i>=0 then begin
@@ -1443,7 +1444,7 @@ procedure TGroupedMatrixControl.DefaultDrawCell(aCol, aRow: Integer; var aRect: 
   procedure DrawActiveModeRow(ValueRow: TGroupedMatrixValue);
   begin
     if ActiveMode<0 then exit;
-    if ValueRow.Modes.IndexOf(Modes[ActiveMode].Caption)<0 then exit;
+    if IndexInStringList(ValueRow.Modes,cstCaseInsensitive,Modes[ActiveMode].Caption)<0 then exit;
     Canvas.GradientFill(Rect(aRect.Left,(aRect.Top+aRect.Bottom) div 2,aRect.Right,aRect.Bottom),
       Color,ActiveModeColor,gdVertical);
   end;

@@ -29,18 +29,6 @@
  *                                                                         *
  ***************************************************************************
 
-  ToDo:
-  - when adding/removing search path: do it for all build modes
-    - add unit to project
-    - remove unit from project
-    - move unit in project
-  - make lazbuild lcl independent, independent of packages except one
-    - license gpl2
-    - create package lazbuildsystem with some units
-    - move
-  - i18n for descriptions
-  - keyword help for a build macro
-
 }
 unit CompilerOptions;
 
@@ -61,7 +49,8 @@ uses
   ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, CompOptsIntf,
   IDEOptionsIntf,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, IDEMsgIntf, LazConf, TransferMacros, CompOptsModes;
+  LazarusIDEStrConsts, IDEProcs, IDEMsgIntf, LazConf, TransferMacros,
+  ModeMatrixOpts, CompOptsModes;
 
 type
 
@@ -686,8 +675,14 @@ function ConvertOptionsToCmdLine(const Switch, OptionStr: string): string;
 type
   TGetBuildMacroValues = function(Options: TBaseCompilerOptions;
              IncludeSelf: boolean): TCTCfgScriptVariables of object;
+  TOnAppendCustomOptions = procedure(Sender: TObject;
+             var CustomOptions: string; Types: TBuildMatrixGroupTypes) of object;
+  TOnGetOutputDirectoryOverride = procedure(Sender: TObject;
+             var OutDir: string; Types: TBuildMatrixGroupTypes) of object;
 var
   GetBuildMacroValues: TGetBuildMacroValues = nil; // set by TPkgManager, do not change or free the variables
+  OnAppendCustomOption: TOnAppendCustomOptions = nil; // set by MainBuildBoss
+  OnGetOutputDirectoryOverride: TOnGetOutputDirectoryOverride = nil; // set by MainBuildBoss
 
 function LoadXMLCompileReasons(const AConfig: TXMLConfig;
   const APath: String; const DefaultReasons: TCompileReasons): TCompileReasons;
@@ -3866,6 +3861,15 @@ var
   BaseDirectory: String;
 begin
   s:=OptionText;
+
+  // apply overrides
+  if Option=pcosCustomOptions then begin
+    if Assigned(OnAppendCustomOption) then
+      OnAppendCustomOption(Self,s,bmgtAll);
+  end else if Option=pcosOutputDir then begin
+    if Assigned(OnGetOutputDirectoryOverride) then
+      OnGetOutputDirectoryOverride(Self,s,bmgtAll);
+  end;
 
   // parse locally (macros depending on owner, like pkgdir and build macros)
   if Assigned(OnLocalSubstitute) then

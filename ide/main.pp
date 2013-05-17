@@ -4676,7 +4676,8 @@ begin
       else
         Application.TaskBarBehavior := tbDefault;
     end else begin
-      IDEOptionsDialog.WriteAll(true);           // restore
+      // restore
+      IDEOptionsDialog.WriteAll(true);
     end;
   finally
     IDEOptionsDialog.Free;
