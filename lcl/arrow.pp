@@ -51,7 +51,7 @@ type
     FShadowType: TShadowType;
     FT: TTrianglePoints;
     procedure CalcTrianglePoints;
-    procedure GraphicChanged(Sender: TObject);
+    procedure GraphicChanged;
     procedure SetAntiAliasingMode(AValue: TAntialiasingMode);
     procedure SetArrowColor(AValue: TColor);
     procedure SetArrowType(AValue: TArrowType);
@@ -149,10 +149,9 @@ begin
   end;
 end;
 
-procedure TArrow.GraphicChanged(Sender: TObject);
+procedure TArrow.GraphicChanged;
 begin
-  if Assigned(Parent) and
-   (Visible or (csDesigning in ComponentState))
+  if Assigned(Parent) and (Visible or (csDesigning in ComponentState))
    then Invalidate;
 end;
 
@@ -160,28 +159,28 @@ procedure TArrow.SetAntiAliasingMode(AValue: TAntialiasingMode);
 begin
   if FAntiAliasingMode=AValue then Exit;
   FAntiAliasingMode:=AValue;
-  GraphicChanged(nil);
+  GraphicChanged;
 end;
 
 procedure TArrow.SetArrowColor(AValue: TColor);
 begin
   if FArrowColor=AValue then Exit;
   FArrowColor:=AValue;
-  GraphicChanged(nil);
+  GraphicChanged;
 end;
 
 procedure TArrow.SetArrowType(AValue: TArrowType);
 begin
   if FArrowType=AValue then Exit;
   FArrowType:=AValue;
-  GraphicChanged(nil);
+  GraphicChanged;
 end;
 
 procedure TArrow.SetShadowType(AValue: TShadowType);
 begin
   if FShadowType=AValue then Exit;
   FShadowType:=AValue;
-  GraphicChanged(nil);
+  GraphicChanged;
 end;
 
 class function TArrow.GetControlClassDefaultSize: TSize;
