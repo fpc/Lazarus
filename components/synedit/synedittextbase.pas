@@ -146,6 +146,8 @@ type
   protected
     Function HasUndoInfo: Boolean;
     procedure Append(AnUndoGroup: TSynEditUndoItem);
+    function  GetLast: TSynEditUndoItem;  // Excludes caret // does not POP
+    function  PopLast: TSynEditUndoItem;  // Excludes caret
     procedure TranferTo(AnUndoGroup: TSynEditUndoGroup);
     function CanMergeWith(AnUndoGroup: TSynEditUndoGroup): Boolean;
     procedure MergeWith(AnUndoGroup: TSynEditUndoGroup);
@@ -157,6 +159,7 @@ type
     procedure Add(AnItem: TSynEditUndoItem);
     procedure Clear;
     procedure Insert(AIndex: Integer; AnItem: TSynEditUndoItem);
+    procedure Delete(AIndex: Integer);
     function  Pop: TSynEditUndoItem;
     property Count: Integer read FCount;
     property Items [Index: Integer]: TSynEditUndoItem read GetItem;
@@ -195,7 +198,10 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure AddChange(AChange: TSynEditUndoItem);
+    // "LastChange: Either in current Group, or in last Group, if no current
     procedure AppendToLastChange(AChange: TSynEditUndoItem);
+    function  GetLastChange: TSynEditUndoItem;  // Excludes caret
+    function  PopLastChange: TSynEditUndoItem;  // Excludes caret
     procedure BeginBlock;
     procedure EndBlock;
     procedure Clear;
@@ -317,6 +323,36 @@ begin
 
   // Do not callback to synedit, or Redo Info is lost
   EnsureMaxEntries;
+end;
+
+function TSynEditUndoList.GetLastChange: TSynEditUndoItem;
+var
+  cur: Boolean;
+begin
+  Result := nil;
+  cur := FUndoGroup.HasUndoInfo;
+  if (fItems.Count = 0) and (not cur) then
+    exit;
+
+  if cur then
+    Result :=  FUndoGroup.GetLast
+  else
+    Result :=  TSynEditUndoGroup(fItems[fItems.Count-1]).GetLast;
+end;
+
+function TSynEditUndoList.PopLastChange: TSynEditUndoItem;
+var
+  cur: Boolean;
+begin
+  Result := nil;
+  cur := FUndoGroup.HasUndoInfo;
+  if (fItems.Count = 0) and (not cur) then
+    exit;
+
+  if cur then
+    Result :=  FUndoGroup.PopLast
+  else
+    Result :=  TSynEditUndoGroup(fItems[fItems.Count-1]).PopLast;
 end;
 
 procedure TSynEditUndoList.BeginBlock;
@@ -564,6 +600,32 @@ begin
   Insert(i, AnUndoGroup);
 end;
 
+function TSynEditUndoGroup.GetLast: TSynEditUndoItem;
+var
+  i: Integer;
+begin
+  Result := nil;
+  i := FCount - 1;
+  while (i >= 0) and FItems[i].IsCaretInfo do
+    dec(i);
+   if i >= 0 then
+     Result := FItems[i];
+end;
+
+function TSynEditUndoGroup.PopLast: TSynEditUndoItem;
+var
+  i: Integer;
+begin
+  Result := nil;
+  i := FCount - 1;
+  while (i >= 0) and FItems[i].IsCaretInfo do
+    dec(i);
+   if i >= 0 then begin
+     Result := FItems[i];
+     Delete(i);
+   end;
+end;
+
 procedure TSynEditUndoGroup.TranferTo(AnUndoGroup: TSynEditUndoGroup);
 begin
   AnUndoGroup.Assign(self);
@@ -658,6 +720,18 @@ begin
                 (FCount - AIndex) * SizeOf(TSynEditUndoItem));
   FItems[AIndex] := AnItem;
   inc (FCount);
+end;
+
+procedure TSynEditUndoGroup.Delete(AIndex: Integer);
+begin
+  {$IFDEF AssertSynMemIndex}
+  if (AIndex < 0) or (AIndex >= FCount) then
+    raise Exception.Create(Format('Bad AIndex cnt= %d cap= %d idx= %d',[FCount, FCapacity, AIndex]));
+  {$ENDIF}
+  If AIndex < FCount - 1 then
+    System.Move(FItems[AIndex+1], FItems[AIndex],
+                (FCount - AIndex - 1) * SizeOf(TSynEditUndoItem));
+  dec (FCount);
 end;
 
 function TSynEditUndoGroup.Pop: TSynEditUndoItem;

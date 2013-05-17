@@ -186,6 +186,11 @@ begin
       delete(Input, 1, 1);
       Continue;
     end;
+    if Input[1] = #9 then begin
+      CommandProcessor(ecTab, '', nil);
+      delete(Input, 1, 1);
+      Continue;
+    end;
     l := UTF8CharacterLength(@Input[1]);
     if l < 1 then Break;
     CommandProcessor(ecChar, copy(Input, 1, l), nil);
