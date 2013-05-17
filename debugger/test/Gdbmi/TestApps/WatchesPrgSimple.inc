@@ -128,7 +128,7 @@
     VarLongWord := ArgLongWord + 100;
     VarQWord := ArgQWord + 100;
 
-    VarShortInt := ArgShortInt + 100;
+    VarShortInt := ArgShortInt + 10;
     VarSmallInt := ArgSmallInt + 100;
     VarInt := ArgInt + 100;
     VarInt64 := ArgInt64 + 100;
