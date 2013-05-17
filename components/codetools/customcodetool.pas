@@ -2205,7 +2205,7 @@ begin
             NearestScanPos:=Link.SrcPos+Scanner.LinkSize(i);
           end;
           if NearestScanPos=0 then
-            Msg:='file was not reached by scanned'
+            Msg:='file was not reached by scanner'
           else begin
             if r=-1 then
               Msg:='cursor position was skipped by scanner'
