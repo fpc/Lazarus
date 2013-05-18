@@ -316,7 +316,13 @@ begin
     // draw button
     if (Style in [tbsButton, tbsDropDown, tbsCheck]) then
     begin
-      // if toolbar is not flat then normal and disabled state is drawn as hot
+      // non-Flat toolbars come from old windows where you was able to set how
+      // to draw it by adjusting toolbar window options
+      // with current windows toolbars should be drawn using Theme
+      // so let's treat flat toolbars as starndard toolbars and draw them using ThemeManager
+      // and to draw a non-Flat toolbars we need to somehow mimic always raised state
+      // of their buttons - a good way is to draw them using Hot style also for
+      // normal and disables states
       TempDetails := Details;
       if ((FToolBar <> nil) and not FToolBar.Flat) and (TempDetails.State in [1, 4]) then
         TempDetails.State := 2;
