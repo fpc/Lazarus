@@ -1133,11 +1133,10 @@ begin
     begin
       Ident:=FoundContext.Tool.GetProcNameIdentifier(FoundContext.Node);
       NewItem := CurrentIdentifierList.FindIdentifier(Ident);
-      if Assigned(NewItem) then
-      begin
+      if (NewItem<>nil) and (NewItem.Tool<>nil) then begin
         if (Lvl > NewItem.Level + 1)
-        or (Lvl <> NewItem.Level) and not NewItem.Tool.ProcNodeHasSpecifier(NewItem.Node, psOVERLOAD)
-        then Ident := nil; // there is previous declaration whitout 'overload'
+        or ((Lvl <> NewItem.Level) and not NewItem.Tool.ProcNodeHasSpecifier(NewItem.Node, psOVERLOAD))
+        then Ident := nil; // there is a previous declaration without 'overload'
       end;
     end;
     
