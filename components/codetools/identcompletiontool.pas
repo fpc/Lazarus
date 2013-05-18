@@ -1846,7 +1846,6 @@ begin
   // Check the atom in front
   ReadPriorAtomSafe(CleanCursorPos);
   if (CurPos.Flag<>cafNone) then begin
-    ContextPos:=CurPos.EndPos;
     if (CurPos.Flag in [cafPoint,cafRoundBracketOpen,cafEdgedBracketOpen])
     or UpAtomIs('INHERITED') then
       ContextPos:=CurPos.StartPos;
