@@ -3301,6 +3301,7 @@ begin
     then begin
       FTypeName := 'ShortString';
       FKind := skSimple;
+      FreeAndNil(FFields);
     end;
 
     FProcessState := gtpsFinished;
