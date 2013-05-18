@@ -76,7 +76,9 @@ begin
     dbg.Run;
     TestEquals(TstName+' Got no more exception', 2, FGotExceptCount);
     TestEquals(TstName+' Got class', 'MyESome', FGotExceptClass);
-    TestEquals(TstName+' Got msg',   'abc', FGotExceptMsg, 050300);
+    // not yet MakePrintable
+    //TestEquals(TstName+' Got msg',   'abc üü {[''''[{ \n\t''#13#9''#', FGotExceptMsg, 050300);
+    TestEquals(TstName+' Got msg',   'abc üü {[''[{ \n\t'#13#9'#', FGotExceptMsg, 050300);
     dbg.Stop;
   finally
     dbg.Done;
@@ -201,7 +203,9 @@ begin
     dbg.Run;
     TestEquals(TstName+' Got no more exception', 2, FGotExceptCount);
     TestEquals(TstName+' Got class', 'MyESome', FGotExceptClass);
-    TestEquals(TstName+' Got msg',   'abc', FGotExceptMsg, 050300);
+    //TestEquals(TstName+' Got msg',   'abc üü {[''''[{ \n\t''#13#9''#', FGotExceptMsg, 050300);
+    TestEquals(TstName+' Got msg',   'abc üü {[''[{ \n\t'#13#9'#', FGotExceptMsg, 050300);
+
     dbg.Stop;
   finally
     dbg.Done;

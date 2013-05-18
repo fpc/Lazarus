@@ -30,7 +30,7 @@ var
   procedure foo;
     var a: string;
   begin
-    a:= 'abc';
+    a:= 'abc üü {[''[{ \n\t'#13#9'#';
     raise MyESome.create(a);
   end;
   {$ENDIF}
