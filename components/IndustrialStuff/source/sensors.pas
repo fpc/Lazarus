@@ -10,11 +10,11 @@
 }
 unit Sensors;
 
-{$MODE Delphi}
+{$mode objfpc}{$H+}
 
 interface
 
-uses LCLIntf, LCLType,LResources, Classes, Controls, Graphics, Stdctrls, Extctrls;
+uses LCLIntf, LCLType, LResources, Classes, Controls, Graphics, Stdctrls, Extctrls;
 
 type
   TStopLights = (slUNKNOWN, slRED, slYELLOW, slGREEN);
@@ -74,7 +74,7 @@ type
   end;
 
   TAnalogKind = (akAnalog, akHorizontal, akVertical);
-  TAnalogSensor = class({TGraphicControl } TSensorPanel)
+  TAnalogSensor = class(TSensorPanel)
   private
     FAnalogKind: TAnalogKind;
 
@@ -105,7 +105,7 @@ type
 
 implementation
 
-uses  SysUtils;
+uses SysUtils;
 
 { TSensorPanel }
 
@@ -197,9 +197,7 @@ end;
 procedure TSensorPanel.SetCaption(AValue: TCaption);
 begin
   FlblShowText.Hint := AValue;
-
   inherited Caption := '';
-
   Invalidate;
 end;
 
@@ -290,7 +288,6 @@ end;
 constructor TAnalogSensor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
   Value := 20;
   AnalogKind := akAnalog;
 end;

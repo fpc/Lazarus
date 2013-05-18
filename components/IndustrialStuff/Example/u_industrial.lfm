@@ -103,7 +103,7 @@ object Form1: TForm1
     ShapeLedColorDisabled = 13416
   end
   object StopLightSensor1: TStopLightSensor
-    Left = 104
+    Left = 96
     Height = 59
     Top = 24
     Width = 25
@@ -163,8 +163,10 @@ object Form1: TForm1
     Width = 120
     Caption = 'indGnouMeter1'
     Value = 70
+    Color = clPurple
+    ParentColor = False
     ColorFore = clRed
-    ColorBack = clBtnFace
+    ColorBack = clInactiveCaption
     SignalUnit = 'Units'
     ValueMin = 0
     ValueMax = 100
@@ -179,7 +181,7 @@ object Form1: TForm1
     ShowMarker = True
   end
   object Arrow1: TArrow
-    Left = 39
+    Left = 48
     Height = 20
     Top = 41
     Width = 20

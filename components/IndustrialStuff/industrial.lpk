@@ -32,14 +32,14 @@
     </CompilerOptions>
     <License Value="MPL  + GPL "/>
     <Version Minor="1"/>
-    <Files Count="12">
+    <Files Count="11">
       <Item2>
         <Filename Value="source\indadvled.pas"/>
-        <UnitName Value="indadvled"/>
+        <UnitName Value="IndAdvLed"/>
       </Item2>
       <Item3>
         <Filename Value="source\indled.pas"/>
-        <UnitName Value="indled"/>
+        <UnitName Value="IndLed"/>
       </Item3>
       <Item4>
         <Filename Value="source\sensors.pas"/>
@@ -55,29 +55,25 @@
         <UnitName Value="cyBaseLed"/>
       </Item6>
       <Item7>
-        <Filename Value="source\cyBevel.pas"/>
-        <UnitName Value="cyBevel"/>
-      </Item7>
-      <Item8>
         <Filename Value="source\cyClasses.pas"/>
         <UnitName Value="cyClasses"/>
-      </Item8>
-      <Item9>
+      </Item7>
+      <Item8>
         <Filename Value="source\cyGraphics.pas"/>
         <UnitName Value="cyGraphics"/>
-      </Item9>
-      <Item10>
+      </Item8>
+      <Item9>
         <Filename Value="source\cyTypes.pas"/>
         <UnitName Value="cyTypes"/>
-      </Item10>
-      <Item11>
+      </Item9>
+      <Item10>
         <Filename Value="source\lednumber.pas"/>
         <UnitName Value="LedNumber"/>
-      </Item11>
-      <Item12>
+      </Item10>
+      <Item11>
         <Filename Value="source\indgnoumeter.pas"/>
-        <UnitName Value="indGnouMeter"/>
-      </Item12>
+        <UnitName Value="IndGnouMeter"/>
+      </Item11>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">

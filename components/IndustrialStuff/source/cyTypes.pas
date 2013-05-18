@@ -41,7 +41,7 @@
 
 unit cyTypes;
 
-{$MODE Delphi}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -70,8 +70,8 @@ type
     BottomCoord, TopCoord: TPoint;
   end;
 
-var
-  CaptionOrientationWarning: Boolean = true;
+//var
+//  CaptionOrientationWarning: Boolean = true;
 
 const
   DT_PATH_ELLIPSIS = $8000;

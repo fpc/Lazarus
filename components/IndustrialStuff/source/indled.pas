@@ -45,7 +45,7 @@ Modified by Jurassic Pork 2013 for package Industrial of Lazarus}
 
 unit IndLed;
 
-{$MODE Delphi}
+{$mode objfpc}{$H+}
 
 interface
 

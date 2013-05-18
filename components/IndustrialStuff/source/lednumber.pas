@@ -28,13 +28,13 @@
 {* ***** END LICENSE BLOCK *****                                              *}
 
 unit LedNumber;
- {-           }
+
+{$mode objfpc}{$H+}
 
 interface
 
 uses
-  LMessages,LCLProc,LCLType,LCLIntf,LResources,
-  Classes, Controls, Graphics, SysUtils;
+  LMessages, Classes, Controls, Graphics;
 
 type
   TSegmentSize = 2..10;
@@ -48,7 +48,7 @@ type
     FRows      : Integer;
     FSize      : TSegmentSize;
     lbDrawBmp  : TBitmap;
-    procedure CMTextChanged(var Message: {$IFDEF LCL}TLMessage{$ELSE}TMessage{$ENDIF}); message CM_TEXTCHANGED;
+    procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
     procedure Initialize(var Points: array of TPoint);
     function  NewOffset(xOry: char; OldOffset: Integer): Integer;
     procedure ProcessCaption(Points: array of TPoint);
@@ -269,7 +269,7 @@ begin
 end;
 {=====}
 
-procedure TCustomLEDNumber.CMTextChanged(var Message: {$IFDEF LCL}TLMessage{$ELSE}TMessage{$ENDIF});
+procedure TCustomLEDNumber.CMTextChanged(var Message: TLMessage);
 begin
   inherited;
   Invalidate;

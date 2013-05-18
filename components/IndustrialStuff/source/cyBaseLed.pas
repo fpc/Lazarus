@@ -41,11 +41,11 @@
 
 unit cyBaseLed;
 
-{$MODE Delphi}
+{$mode objfpc}{$H+}
 
 interface
 
-uses LCLIntf, LCLType, LMessages,Classes, Types, Controls, Graphics,  Messages;
+uses LCLIntf, LCLType, LMessages, Messages, Classes, Types, Controls, Graphics;
 
 type
   TLedStatus = (lsOn, lsOff, lsDisabled);
@@ -203,7 +203,7 @@ begin
   then begin
     Msg.Msg := CM_BUTTONPRESSED;
     Msg.WParam := FGroupIndex;
-    Msg.LParam := Longint(Self);
+    Msg.LParam := PtrInt(Self);
     Msg.Result := 0;
     Parent.Broadcast(Msg);
   end;
@@ -212,7 +212,7 @@ end;
 procedure TcyBaseLed.CMButtonPressed(var Message: TLMessage);
 var Sender: TcyBaseLed;
 begin
- if (csLoading in ComponentState) then exit;   // 9999 
+ if (csLoading in ComponentState) then exit;
 
   if Message.WParam = FGroupIndex        // Same group?
   then begin

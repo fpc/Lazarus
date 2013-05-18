@@ -11,9 +11,7 @@ interface
 
 
  uses
-  Classes,lresources,
-  //...........................
-  indAdvLed, indLed, LedNumber, Sensors, indGnouMeter;
+  Classes, LResources, IndAdvLed, IndLed, LedNumber, Sensors, IndGnouMeter;
 
 procedure Register;
 

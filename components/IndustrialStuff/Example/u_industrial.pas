@@ -5,8 +5,8 @@ unit u_industrial;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, indAdvLed, IndLed, Sensors, LedNumber,
-  indGnouMeter, Forms, Controls, Graphics, Dialogs, Arrow;
+  Classes, SysUtils, FileUtil, IndAdvLed, IndLed, Sensors, LedNumber,
+  IndGnouMeter, Forms, Controls, Graphics, Dialogs, Arrow;
 
 type
 
@@ -32,6 +32,8 @@ var
 implementation
 
 {$R *.lfm}
+
+{ TForm1 }
 
 end.
 

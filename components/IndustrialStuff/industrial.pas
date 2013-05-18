@@ -7,8 +7,8 @@ unit industrial;
 interface
 
 uses
-  indAdvLed, IndLed, Sensors, AllIndustrialRegister, cyBaseLed, cyBevel, 
-  cyClasses, cyGraphics, cyTypes, LedNumber, indGnouMeter, LazarusPackageIntf;
+  IndAdvLed, IndLed, Sensors, AllIndustrialRegister, cyBaseLed, cyClasses,
+  cyGraphics, cyTypes, LedNumber, IndGnouMeter, LazarusPackageIntf;
 
 implementation
 

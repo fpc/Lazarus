@@ -39,9 +39,9 @@
 ***********************************************************************
 Modified by Jurassic Pork 2013 for package Industrial of Lazarus}
 
-unit indAdvLed;
+unit IndAdvLed;
 
-{$MODE Delphi}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -218,7 +218,6 @@ procedure TcyCustomAdvLed.SetPictureOn(Value: TPicture);
 begin
   try
     FPictureOn.Assign(Value);
-
     if GetLedStatus = lsOn
     then begin
       AdjustSize;
@@ -232,7 +231,6 @@ procedure TcyCustomAdvLed.SetPictureOff(Value: TPicture);
 begin
   try
     FPictureOff.Assign(Value);
-
     if GetLedStatus = lsOff
     then begin
       AdjustSize;
@@ -246,7 +244,6 @@ procedure TcyCustomAdvLed.SetPictureDisabled(Value: TPicture);
 begin
   try
     FPictureDisabled.Assign(Value);
-
     if GetLedStatus = lsDisabled
     then begin
       AdjustSize;
