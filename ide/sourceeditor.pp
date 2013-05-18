@@ -316,7 +316,7 @@ type
     {$IFDEF WithSynMarkupIfDef}
     function DoIfDefNodeStateRequest(Sender: TObject; LinePos,
       XStartPos: Integer; CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
-    procedure UpdateIfDefNodeStates;
+    procedure UpdateIfDefNodeStates(Force: Boolean = False);
     {$ENDIF}
   protected
     ErrorMsgs: TStrings;
@@ -5448,7 +5448,7 @@ begin
   end;
 end;
 
-procedure TSourceEditor.UpdateIfDefNodeStates;
+procedure TSourceEditor.UpdateIfDefNodeStates(Force: Boolean = False);
 var
   Scanner: TLinkScanner;
   i: Integer;
@@ -5465,7 +5465,7 @@ begin
   UpdateCodeBuffer;
   Scanner:=SharedValues.GetMainLinkScanner(true);
   if Scanner=nil then exit;
-  if Scanner.ChangeStep=FLastIfDefNodeScannerStep then exit;
+  if (Scanner.ChangeStep=FLastIfDefNodeScannerStep) and (not Force) then exit;
   //debugln(['TSourceEditor.UpdateIfDefNodeStates UPDATING ',Filename]);
   FLastIfDefNodeScannerStep:=Scanner.ChangeStep;
   EditorComponent.BeginUpdate;
@@ -7190,6 +7190,9 @@ procedure TSourceNotebook.CopyEditor(OldPageIndex, NewWindowIndex,
 var
   DestWin: TSourceNotebook;
   SrcEdit, NewEdit: TSourceEditor;
+  {$IFDEF WithSynMarkupIfDef}
+  i: Integer;
+  {$ENDIF}
 begin
   if (NewWindowIndex < 0) or (NewWindowIndex >= Manager.SourceWindowCount) then
     exit;
@@ -7213,6 +7216,11 @@ begin
   UpdatePageNames;
   UpdateProjectFiles;
   DestWin.UpdateProjectFiles(NewEdit);
+  {$IFDEF WithSynMarkupIfDef}
+  // Creating a shared edit invalidates the tree in SynMarkup. Force setting it for all editors
+  for i := 0 to SrcEdit.SharedEditorCount - 1 do
+    SrcEdit.SharedEditors[i].UpdateIfDefNodeStates(True);
+  {$ENDIF}
   // Update IsVisibleTab; needs UnitEditorInfo created in DestWin.UpdateProjectFiles
   if Focus then begin
     Manager.ActiveEditor := NewEdit;
