@@ -419,12 +419,9 @@ const
 
 function CompareIdentListItems(Data1, Data2: Pointer): integer;
 var
-  Item1: TIdentifierListItem;
-  Item2: TIdentifierListItem;
+  Item1: TIdentifierListItem absolute Data1;
+  Item2: TIdentifierListItem absolute Data2;
 begin
-  Item1:=TIdentifierListItem(Data1);
-  Item2:=TIdentifierListItem(Data2);
-  
   // first sort for Compatibility  (lower is better)
   if ord(Item1.Compatibility)<ord(Item2.Compatibility) then begin
     Result:=-1;
@@ -462,12 +459,9 @@ end;
 
 function CompareIdentListItemsForIdents(Data1, Data2: Pointer): integer;
 var
-  Item1: TIdentifierListItem;
-  Item2: TIdentifierListItem;
+  Item1: TIdentifierListItem absolute Data1;
+  Item2: TIdentifierListItem absolute Data2;
 begin
-  Item1:=TIdentifierListItem(Data1);
-  Item2:=TIdentifierListItem(Data2);
-
   // sort alpabetically (lower is better)
   Result:=CompareIdentifierPtrs(Pointer(Item2.Identifier),Pointer(Item1.Identifier));
   if Result<>0 then exit;
@@ -478,12 +472,9 @@ end;
 
 function CompareIdentListSearchWithItems(SearchItem, Item: Pointer): integer;
 var
-  TheSearchItem: TIdentifierListSearchItem;
-  TheItem: TIdentifierListItem;
+  TheSearchItem: TIdentifierListSearchItem absolute SearchItem;
+  TheItem: TIdentifierListItem absolute Item;
 begin
-  TheSearchItem:=TIdentifierListSearchItem(SearchItem);
-  TheItem:=TIdentifierListItem(Item);
-
   // sort alpabetically (lower is better)
   Result:=CompareIdentifierPtrs(Pointer(TheItem.Identifier),TheSearchItem.Identifier);
   if Result<>0 then exit;
@@ -494,24 +485,18 @@ end;
 
 function CompareIdentListSearchWithItemsWithoutParams(SearchItem, Item: Pointer): integer;
 var
-  TheSearchItem: TIdentifierListSearchItem;
-  TheItem: TIdentifierListItem;
+  TheSearchItem: TIdentifierListSearchItem absolute SearchItem;
+  TheItem: TIdentifierListItem absolute Item;
 begin
-  TheSearchItem:=TIdentifierListSearchItem(SearchItem);
-  TheItem:=TIdentifierListItem(Item);
-
   // sort alpabetically (lower is better)
   Result:=CompareIdentifierPtrs(Pointer(TheItem.Identifier),TheSearchItem.Identifier);
 end;
 
 function CompareIdentHistListItem(Data1, Data2: Pointer): integer;
 var
-  Item1: TIdentHistListItem;
-  Item2: TIdentHistListItem;
+  Item1: TIdentHistListItem absolute Data1;
+  Item2: TIdentHistListItem absolute Data2;
 begin
-  Item1:=TIdentHistListItem(Data1);
-  Item2:=TIdentHistListItem(Data2);
-
   Result:=CompareIdentifiers(PChar(Pointer(Item2.Identifier)),
                              PChar(Pointer(Item1.Identifier)));
   if Result<>0 then exit;
@@ -523,12 +508,9 @@ end;
 
 function CompareIdentItemWithHistListItem(Data1, Data2: Pointer): integer;
 var
-  IdentItem: TIdentifierListItem;
-  HistItem: TIdentHistListItem;
+  IdentItem: TIdentifierListItem absolute Data1;
+  HistItem: TIdentHistListItem absolute Data2;
 begin
-  IdentItem:=TIdentifierListItem(Data1);
-  HistItem:=TIdentHistListItem(Data2);
-
   Result:=CompareIdentifierPtrs(Pointer(HistItem.Identifier),
                                 Pointer(IdentItem.Identifier));
   if Result<>0 then exit;
