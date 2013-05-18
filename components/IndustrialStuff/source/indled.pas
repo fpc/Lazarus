@@ -255,7 +255,7 @@ begin
   RESULT := false;
 
   if FTransparent and (Bevels.Count = 0) and (FShapeType = stEllipse)
-  then RESULT := not PointInEllispe(Point, ClientRect);
+  then RESULT := not PointInEllipse(Point, ClientRect);
 end; 
 
 procedure TcyCustomLed.SetTransparent(const Value: boolean);

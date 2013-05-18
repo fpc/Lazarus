@@ -33,13 +33,13 @@ type
     fBarThickness: Word;
     fMarkerColor: TColor;
     fShowMarker: Boolean;
-    //Variables used internallly
+    //Variables used internally
     TopTextHeight: Word;
     LeftMeter: Word;
     DisplayValue: String;
     DrawStyle: integer;
     TheRect: TRect;
-    //End of variables used internallly
+    //End of variables used internally
     procedure SetValue(val: Double);
     procedure SetColorBack(val: TColor);
     procedure SetColorFore(val: TColor);
