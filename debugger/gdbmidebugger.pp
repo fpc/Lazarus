@@ -10827,8 +10827,6 @@ begin
               Inc(idx);
               if idx > len then Break;
               if S[idx] <> '''' then Break;
-              inc(n);
-              Result[n] := ''''; // must keep both quotes
             end;
             '\' : if not NoBackSlashRemove then begin
               Inc(idx);

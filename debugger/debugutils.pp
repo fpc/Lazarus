@@ -224,7 +224,7 @@ begin
         if not InString then
           ToggleInString;
         Result := Result + AString[n];
-        //if AString[n] = '''' then Result := Result + '''';
+        if AString[n] = '''' then Result := Result + '''';
       end;
     #192..#255: begin // Maybe utf8
         u := UTF8CharacterLength(@AString[n]);
