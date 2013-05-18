@@ -53,7 +53,10 @@ type
     function TestText5: TStringArray;
     function TestText6: TStringArray;
     function TestText7: TStringArray;
+    function TestText8: TStringArray;
 
+    procedure CheckOpenCloseCount(AName: String; ALine: Integer;
+      AExpOpenCnt, AExpCloseCnt: Integer);
     procedure CheckNodes(AName: String; ALine: Integer;
       AExp: array of TNodeExpect);
     procedure CheckNodesXY(AName: String; ALine: Integer;
@@ -595,6 +598,38 @@ begin
 
 end;
 
+function TTestMarkupIfDef.TestText8: TStringArray;
+  procedure AddLine(s: String);
+  begin
+    SetLength(Result, Length(Result)+1);
+    Result[Length(Result)-1] := s;
+  end;
+begin
+  // 1
+  AddLine('//'                                                    );
+  AddLine('{$IFDEF A} {$IFDEF B}    {$ENDIF} {$ENDIF}');
+  AddLine(' {$IFDEF XX}'                                           );
+  AddLine(''                                                      );
+  // 5
+  AddLine('{$ENDIF}');
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+end;
+
+procedure TTestMarkupIfDef.CheckOpenCloseCount(AName: String; ALine: Integer; AExpOpenCnt,
+  AExpCloseCnt: Integer);
+var
+  LineNode: TSynMarkupHighIfDefLinesNodeInfo;
+begin
+  AName := Format('%s - %s L=%d', [BaseTestName, AName, ALine]);
+  LineNode := FTestTree.FindNodeAtPosition(ALine, afmNil);
+  AssertTrue(AName + 'HasNode', LineNode.HasNode);
+  AssertEquals(AName + ' DisabledEntryOpenCount', AExpOpenCnt, LineNode.Node.DisabledEntryOpenCount);
+  AssertEquals(AName + ' DisabledEntryCloseCount', AExpCloseCnt, LineNode.Node.DisabledEntryCloseCount);
+
+end;
+
 function TTestMarkupIfDef.CreateTheHighLighter: TSynCustomFoldHighlighter;
 begin
   Result := TSynPasSyn.Create(nil);
@@ -1039,7 +1074,6 @@ FTestTree.DebugPrint(true);
     CheckNodes(n,14, [ ExpN( 2,10, idnEndIf ) ]);
 
   {%endregion   }
-
 
 
 
@@ -1915,7 +1949,6 @@ begin
     ClearData;
     SynEdit.TextBetweenPoints[point(1, 1),point(1, 1)] := '(*';
     FTestTree.ValidateRange(1, 10, FOpenings);
-FTestTree.DebugPrint(true);DebugLn;
     CheckReq(n, []);
     CheckNodes(n, 2, [ ExpN( 1,12, idnCommentedIfdef, idnDisabled) ]);
     CheckNodes(n, 3, []);
@@ -1925,7 +1958,6 @@ FTestTree.DebugPrint(true);DebugLn;
     ClearData;
     SynEdit.TextBetweenPoints[point(2, 12),point(2, 12)] := '//';
     FTestTree.ValidateRange(1, 10, FOpenings);
-FTestTree.DebugPrint(true);DebugLn;
     CheckReq(n, []);
     CheckNodes(n, 2, [ ExpN( 1,12, idnCommentedIfdef, idnDisabled) ]);
     CheckNodes(n, 3, []);
@@ -1935,7 +1967,6 @@ FTestTree.DebugPrint(true);DebugLn;
     ClearData;
     SynEdit.TextBetweenPoints[point(1, 1),point(3, 1)] := '';
     FTestTree.ValidateRange(1, 10, FOpenings);
-FTestTree.DebugPrint(true);DebugLn;
     CheckReq(n, []);
     CheckNodes(n, 2, [ ExpN( 1,12, idnIfdef, idnDisabled) ]);
     CheckNodes(n, 3, [ ExpN( 1, 8, idnElse, idnEnabled) ]);
@@ -1974,10 +2005,51 @@ FTestTree.DebugPrint(true);DebugLn;
 
     SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '{$IFDEF a}';
     FTestTree.ValidateRange(1, 5, FOpenings);
-FTestTree.DebugPrint(true);DebugLn;
+//FTestTree.DebugPrint(true);DebugLn;
     CheckReq(n, [ 3, 1, 1 ]);
     CheckNodesXY('Insert IFDEF into empty text', 3, [1,11], 0);
   {%endregion  Insert IFDEF into empty text }
+
+
+  {%region  }
+    n := '';
+    ReCreateEditForTreeTest(TestText8);
+    FTestTree.SetNodeState( 2, 1,idnDisabled);
+    FTestTree.SetNodeState( 2,12,idnInvalid);
+    FTestTree.SetNodeState( 3, 2,idnEnabled);
+FTestTree.DebugPrint(true);DebugLn('-----');
+
+    FTestTree.ValidateRange( 1, 11, FOpenings);
+FTestTree.DebugPrint(true);DebugLn('-----');
+    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, idnDisabled, EpNil, EpEnd(2, 35)),
+                       ExpN(12,22, idnIfdef, idnInvalid, EpNil, EpEnd(2, 26)),
+                       ExpN(26,34, idnEndIf, idnUnknown, EpIf(2,12), EpNil),
+                       ExpN(35,43, idnEndIf, idnDisabled, EpIf(2, 1), EpNil)
+                     ]);
+    CheckOpenCloseCount(n, 2, 1, 1);
+    CheckNodes(n, 3, [ ExpN( 2,13, idnIfdef, idnEnabled, EpNil, EpEnd( 5, 1)) ]);
+    CheckOpenCloseCount(n, 3, 0, 0);
+    CheckNodes(n, 5, [ ExpN( 1, 9, idnEndIf, idnEnabled, EpIf( 3, 2)) ]);
+    CheckOpenCloseCount(n, 5, 0, 0);
+
+
+    SynEdit.TextBetweenPoints[point(10,2),point(10,2)] := LineEnding;
+FTestTree.DebugPrint(true);DebugLn('-----');
+    CheckNodes(n, 2, [ ExpN( 1, 2, 1, idnIfdef, idnUnknown, EpNil, EpEnd(3, 26)) ]);
+    CheckNodes(n, 3, [ ExpN( 3,13, idnIfdef, idnInvalid, EpNil, EpEnd(3, 17)),
+                       ExpN(17,25, idnEndIf, idnUnknown, EpIf(3, 3), EpNil),
+                       ExpN(26,34, idnEndIf, idnUnknown, EpIf(2, 1), EpNil)
+                     ]);
+    CheckOpenCloseCount(n, 2, 0, 0);
+    CheckOpenCloseCount(n, 3, 0, 0);
+
+
+    SynEdit.TextBetweenPoints[point(14,2),point(1, 3)] := '';
+
+  {%endregion   }
+
+
+
 
 
   FTestTree.DiscardOpeningList(FOpenings);

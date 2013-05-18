@@ -98,6 +98,7 @@ type
 
     function  NodeStateForPeer(APeerType: TSynMarkupIfdefNodeType): TSynMarkupIfdefNodeStateEx;
     procedure SetOpeningPeerNodeState(AValueOfPeer, AValueForNode: TSynMarkupIfdefNodeStateEx);
+    procedure SetNodeState(AValue: TSynMarkupIfdefNodeStateEx; ASkipLineState: Boolean);
     procedure SetNodeState(AValue: TSynMarkupIfdefNodeStateEx);
 
     function  GetPeer(APeerType: TSynMarkupIfdefPeerType): TSynMarkupHighIfDefEntry;
@@ -363,8 +364,8 @@ type
       CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
 
     Procedure ValidateMatches;
-    procedure DoTreeUnlocked(Sender: TObject);
     procedure DoTreeUnlocking(Sender: TObject);
+    procedure DoTreeUnlocked(Sender: TObject);
     procedure DoTreeChanged(Sender: TObject);
   protected
     procedure DoFoldChanged(aLine: Integer);
@@ -638,6 +639,11 @@ procedure TSynMarkupHighIfDefEntry.SetLine(AValue: TSynMarkupHighIfDefLinesNode)
 begin
   if FLine = AValue then Exit;
 
+  if (FNodeState = idnNotInCode) and (FLine <> nil) and
+     (idlNotInCodeToUnknown in FLine.LineFlags)
+  then
+    SetNodeState(idnUnknown);
+
   RemoveNodeStateFromLine;
   FLine := AValue;
   ApplyNodeStateToLine;
@@ -646,25 +652,35 @@ end;
 procedure TSynMarkupHighIfDefEntry.SetOpeningPeerNodeState(AValueOfPeer,
   AValueForNode: TSynMarkupIfdefNodeStateEx);
 begin
+  RemoveNodeStateFromLine;
   FOpeningPeerNodeState := AValueOfPeer;
   if NodeType in [idnElse, idnEndIf] then
-    SetNodeState(AValueForNode)
+    SetNodeState(AValueForNode, True)
   else
   if NodeType = idnElseIf then
     case AValueForNode of
-      idnEnabled:  MakeUnknown; // Maybe keep?
-      idnDisabled: SetNodeState(idnDisabled);
-      else         SetNodeState(idnUnknown);
+      idnEnabled:  SetNodeState(idnUnknown, True); // Maybe keep?
+      idnDisabled: SetNodeState(idnDisabled, True);
+      else         SetNodeState(idnUnknown, True);
     end;
+  ApplyNodeStateToLine;
 end;
 
 procedure TSynMarkupHighIfDefEntry.SetNodeState(AValue: TSynMarkupIfdefNodeStateEx);
 begin
-  RemoveNodeStateFromLine;
-  FNodeState := AValue;
-  ApplyNodeStateToLine;
+  SetNodeState(AValue, False);
+end;
 
-  if AValue = idnEnabled then
+procedure TSynMarkupHighIfDefEntry.SetNodeState(AValue: TSynMarkupIfdefNodeStateEx;
+  ASkipLineState: Boolean);
+begin
+  if not ASkipLineState then
+    RemoveNodeStateFromLine;
+  FNodeState := AValue;
+  if not ASkipLineState then
+    ApplyNodeStateToLine;
+
+  if FNodeState = idnEnabled then
     Line.FLineFlags := Line.FLineFlags + [idlNotInCodeToUnknownReq, idlNotInCodeToUnknown];
 
   case NodeType of
@@ -2475,6 +2491,7 @@ if (e<> nil) and not(e.NodeType in [idnIfdef, idnElseIf]) then DebugLn([ 'SetNod
     IncChangeStep;
     if FLockTreeCount = 0 then
       FNotifyLists[itnChanged].CallNotifyEvents(Self);
+      //DebugLn([ 'SetNodeState ', ALinePos, '/', 'AstartPos', AstartPos, ' ', dbgs(AState)]);
   end;
   e.NodeState := AState;
 
@@ -2957,7 +2974,7 @@ begin
   else
     Result := idnInvalid;
 
-  DebugLn(['STATE REQUEST ', LinePos, ' ', XStartPos, ' : ', dbgs(Result)]);
+  //DebugLn(['STATE REQUEST ', LinePos, ' ', XStartPos, ' : ', dbgs(Result)]);
 end;
 
 procedure TSynEditMarkupIfDef.SetLines(const AValue: TSynEditStrings);
