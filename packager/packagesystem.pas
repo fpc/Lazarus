@@ -4482,7 +4482,9 @@ begin
     APackage:=TLazPackage(FItems[i]);
     if (not (lpfNeeded in APackage.Flags))
     or APackage.Modified
-    or APackage.IsVirtual then
+    or APackage.IsVirtual
+    or (APackage.LPKSource=nil)
+    then
       continue;
     NewFilename:=APackage.Filename;
     if FileExistsCached(APackage.Filename) then begin
