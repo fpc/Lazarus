@@ -23,7 +23,7 @@ unit SynEditMarkupIfDef;
 interface
 
 uses
-  SysUtils, types, SynEditMiscClasses, SynHighlighterPas,
+  SysUtils, types, Classes, SynEditMiscClasses, SynHighlighterPas,
   SynEditMarkupHighAll, SynEditHighlighterFoldBase, SynEditFoldedView, LazSynEditText,
   SynEditMiscProcs, LazClasses, LazLoggerBase, Graphics, LCLProc;
 
@@ -265,6 +265,12 @@ type
     procedure dbg;
   end;
 
+  TSynMarkupHighIfDefTreeNotifications = (
+    itnUnlocking,  // About to unlock, Markup should validate it's range
+    itnUnlocked,   // Unlocked, markup should update it's matches
+    itnChanged     // A node was changed, while NOT locked / SetNodeState
+  );
+
   { TSynMarkupHighIfDefLinesTree }
 
   TSynMarkupHighIfDefLinesTree = class(TSynSizedDifferentialAVLTree)
@@ -275,7 +281,11 @@ type
     FDisposedNodes: TSynSizedDifferentialAVLNode;
     FOnNodeStateRequest: TSynMarkupIfdefStateRequest;
     FRequestingNodeState: Boolean;
+    FLockTreeCount: Integer;
+    FNotifyLists: Array [TSynMarkupHighIfDefTreeNotifications] of TMethodList;
+    FChangeStep: Integer;
 
+    procedure IncChangeStep;
     procedure SetHighlighter(AValue: TSynPasSyn);
     procedure SetLines(AValue: TSynEditStrings);
     function GetHighLighterWithLines: TSynCustomFoldHighlighter;
@@ -309,6 +319,13 @@ type
     procedure Clear; override;
     procedure DebugPrint(Flat: Boolean = False);
 
+    procedure RegisterNotification(AReason: TSynMarkupHighIfDefTreeNotifications;
+                                   AHandler: TNotifyEvent);
+    procedure UnRegisterNotification(AReason: TSynMarkupHighIfDefTreeNotifications;
+                                     AHandler: TNotifyEvent);
+    procedure LockTree;
+    procedure UnLockTree;
+
     function FindNodeAtPosition(ALine: Integer;
                                 AMode: TSynSizedDiffAVLFindMode): TSynMarkupHighIfDefLinesNodeInfo;
                                 overload;
@@ -323,6 +340,7 @@ type
     property OnNodeStateRequest: TSynMarkupIfdefStateRequest read FOnNodeStateRequest write FOnNodeStateRequest;
     property Highlighter: TSynPasSyn read FHighlighter write SetHighlighter;
     property Lines : TSynEditStrings read FLines write SetLines;
+    property ChangeStep: Integer read FChangeStep;
   end;
 
   { TSynEditMarkupIfDef }
@@ -334,7 +352,8 @@ type
     FIfDefTree: TSynMarkupHighIfDefLinesTree;
     FOnNodeStateRequest: TSynMarkupIfdefStateRequest;
     FOuterLines: TLazSynEditNestedFoldsList;
-    FNeedValidate: Boolean;
+    FLastValidTopLine, FLastValidLastLine: Integer;
+    FLastValidTreeStep: Integer;
 
     procedure SetFoldView(AValue: TSynEditFoldedView);
     procedure SetHighlighter(AValue: TSynPasSyn);
@@ -344,6 +363,9 @@ type
       CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
 
     Procedure ValidateMatches;
+    procedure DoTreeUnlocked(Sender: TObject);
+    procedure DoTreeUnlocking(Sender: TObject);
+    procedure DoTreeChanged(Sender: TObject);
   protected
     procedure DoFoldChanged(aLine: Integer);
     procedure DoTopLineChanged(OldTopLine : Integer); override;
@@ -1191,6 +1213,14 @@ end;
 
 { TSynMarkupHighIfDefLinesTree }
 
+procedure TSynMarkupHighIfDefLinesTree.IncChangeStep;
+begin
+  if FChangeStep = high(FChangeStep) then
+    FChangeStep := low(FChangeStep)
+   else
+    inc(FChangeStep);
+end;
+
 procedure TSynMarkupHighIfDefLinesTree.SetHighlighter(AValue: TSynPasSyn);
 begin
   if FHighlighter = AValue then Exit;
@@ -1236,6 +1266,8 @@ begin
       e := ANode.Entry[i];
       if e.NeedsRequesting then begin
         NewState := FOnNodeStateRequest(nil, ANode.StartLine, e.StartColumn, e.NodeState);
+        if e.NodeState <> NewState then
+          IncChangeStep;
         e.NodeState := NewState;
       end;
       inc(i);
@@ -1340,6 +1372,7 @@ var
   CurDepth, MaxListIdx, MinOpenDepth, MaxOpenDepth, MaxPeerDepth, MinPeerDepth: Integer;
   i, j, OtherDepth: Integer;
   OtherLine: TSynMarkupHighIfDefLinesNodeInfo;
+  PeerChanged: Boolean;
 
   function OpenIdx(AIdx: Integer): Integer; // correct negative idx
   begin
@@ -1350,6 +1383,7 @@ var
 
 begin
   /// Scan for onel line blocks
+  PeerChanged := False;
   CurDepth := ANode.NestDepthAtNodeStart;
   MinOpenDepth := MaxInt;
   MaxOpenDepth := -1;
@@ -1381,6 +1415,7 @@ begin
                 if OpenList[OpenIdx(CurDepth)].ClosingPeer <> ANode.Entry[i] then begin
                   //Debugln(['New Peer for ',dbgs(OpenList[OpenIdx(CurDepth)].NodeType), ' to else same line']);
                   OpenList[OpenIdx(CurDepth)].ClosingPeer := ANode.Entry[i];
+                  PeerChanged := True;
                   //dec(MaxOpenDepth); // Will be set with the current entry
                 end;
               idnElse: ;//DebugLn('Ignoring invalid double else (on same line)');
@@ -1412,6 +1447,7 @@ begin
             if OpenList[OpenIdx(CurDepth)].ClosingPeer <> ANode.Entry[i] then begin
               //Debugln(['New Peer for ',dbgs(OpenList[OpenIdx(CurDepth)].NodeType), ' to endif same line']);
               OpenList[OpenIdx(CurDepth)].ClosingPeer := ANode.Entry[i];
+              PeerChanged := True;
             end;
             dec(MaxOpenDepth);
           end
@@ -1463,6 +1499,7 @@ begin
               if PeerList[i].OpeningPeer <> OtherLine.Entry[j] then begin
                 //Debugln(['New Peer for ',dbgs(PeerList[i].NodeType), ' to ifdef other line']);
                 PeerList[i].OpeningPeer := OtherLine.Entry[j];
+                PeerChanged := True;
               end;
               j := -1;
               break;
@@ -1476,6 +1513,7 @@ begin
                 if PeerList[i].OpeningPeer <> OtherLine.Entry[j] then begin
                   //Debugln(['New Peer for ',dbgs(PeerList[i].NodeType), ' to else other line']);
                   PeerList[i].OpeningPeer := OtherLine.Entry[j];
+                  PeerChanged := True;
                 end;
                 j := -1;
               end
@@ -1500,18 +1538,22 @@ begin
         idnElse, idnElseIf:  begin
             //Debugln(['CLEARING ifdef Peer for ',dbgs(PeerList[i].NodeType)]);
             PeerList[i].OpeningPeer := nil;
+            PeerChanged := True;
             //DoModified;
           end;
         idnEndIf: begin
             //Debugln(['CLEARING BOTH Peer for ',dbgs(PeerList[i].NodeType)]);
             PeerList[i].ClearPeers;
+            PeerChanged := True;
             //DoModified;
           end;
       end;
-
     end;
 
   end;
+
+  if PeerChanged then
+    IncChangeStep;
 end;
 
 procedure TSynMarkupHighIfDefLinesTree.DoLinesEdited(Sender: TSynEditStrings; aLinePos,
@@ -1580,6 +1622,7 @@ var
 
 begin
   // Line nodes vill be invalidated in DoHighlightChanged
+  IncChangeStep;
 
   if aLineBrkCnt > 0 then begin
     WorkNode := FindNodeAtPosition(aLinePos - 1, afmPrev);
@@ -1791,6 +1834,7 @@ var
   LinePos: Integer;
   WorkNode: TSynMarkupHighIfDefLinesNodeInfo;
 begin
+  IncChangeStep;
   // Invalidate. The highlighter should only run once, so no need to collect multply calls
   LinePos := ToPos(AIndex);
   WorkNode := FindNodeAtPosition(LinePos, afmPrev);
@@ -1814,6 +1858,7 @@ end;
 
 function TSynMarkupHighIfDefLinesTree.CreateNode(APosition: Integer): TSynSizedDifferentialAVLNode;
 begin
+  IncChangeStep;
   if FDisposedNodes <> nil then begin
     Result := FDisposedNodes;
     FDisposedNodes := TSynMarkupHighIfDefLinesNode(Result).NextDispose;
@@ -1825,6 +1870,7 @@ end;
 
 procedure TSynMarkupHighIfDefLinesTree.DisposeNode(var ANode: TSynSizedDifferentialAVLNode);
 begin
+  IncChangeStep;
   if FClearing then begin
     Include(TSynMarkupHighIfDefLinesNode(ANode).FLineFlags, idlInGlobalClear);
     inherited DisposeNode(ANode);
@@ -1843,18 +1889,28 @@ begin
 end;
 
 constructor TSynMarkupHighIfDefLinesTree.Create;
+var
+  i: TSynMarkupHighIfDefTreeNotifications;
 begin
   inherited Create;
+  for i := low(TSynMarkupHighIfDefTreeNotifications) to high(TSynMarkupHighIfDefTreeNotifications) do
+    FNotifyLists[i] := TMethodList.Create;
+
   FRequestingNodeState := False;
   MaybeCreateDict;
   TheDict.AddReference;
+  FChangeStep := 0;
 end;
 
 destructor TSynMarkupHighIfDefLinesTree.Destroy;
+var
+  i: TSynMarkupHighIfDefTreeNotifications;
 begin
   Lines := nil;
   inherited Destroy;
   TheDict.ReleaseReference;
+  for i := low(TSynMarkupHighIfDefTreeNotifications) to high(TSynMarkupHighIfDefTreeNotifications) do
+    FreeAndNil(FNotifyLists[i]);
 end;
 
 function TSynMarkupHighIfDefLinesTree.CreateOpeningList: TLazSynEditNestedFoldsList;
@@ -1899,7 +1955,7 @@ var
   FoldNodeInfoList: TLazSynFoldNodeInfoList;
   LineTextLower: String;
   LineLen, NodesAddedCnt: Integer;
-  LineNeedsReq: Boolean;
+  LineNeedsReq, LineChanged: Boolean;
 
   function FindCloseCurlyBracket(StartX: Integer; out ALineOffs: Integer): Integer;
   var
@@ -1978,10 +2034,12 @@ var
       else
         ANodeForLine := FindNodeAtPosition(ALine, afmCreate).FNode;
       ANodeForLine.EntryCapacity := FoldNodeInfoList.Count;
+      LineChanged := True;
     end;
     if NodesAddedCnt >= ANodeForLine.EntryCount then begin
       Result := ANodeForLine.AddEntry;
       LineNeedsReq := True;
+      LineChanged := True;
     end
     else begin
       Result := nil;
@@ -1994,6 +2052,7 @@ var
           break;
         if IsCommentedIfDef(e) then begin      // commented Ifdef or ElseIf
           //debugln('Found commented node');
+          LineChanged := LineChanged or (i-1 >= NodesAddedCnt);
           while i-1 >= NodesAddedCnt do begin
             ANodeForLine.DeletEntry(i-1, True);
             dec(i);
@@ -2021,6 +2080,7 @@ var
           if i > NodesAddedCnt then begin
             // Delete the skipped notes
             dec(i);
+            LineChanged := LineChanged or (i >= NodesAddedCnt);
             while i >= NodesAddedCnt do begin
               ANodeForLine.DeletEntry(i, True);
               dec(i);
@@ -2033,6 +2093,7 @@ var
 
       If Result = nil then begin
         // No matching node found
+        LineChanged := True;
         if ANodeForLine.Entry[NodesAddedCnt].StartColumn < ALogEnd then
           Result := ANodeForLine.Entry[NodesAddedCnt]
         else
@@ -2057,6 +2118,7 @@ var
   NType: TSynMarkupIfdefNodeType;
 begin
   LineNeedsReq := False;
+  LineChanged := False;
   FoldNodeInfoList := GetHighLighterWithLines.FoldNodeInfo[ToIdx(ALine)];
   FoldNodeInfoList.AddReference;
   FoldNodeInfoList.ActionFilter := []; //[sfaOpen, sfaClose];
@@ -2132,15 +2194,19 @@ begin
     Entry := GetEntry(LogStartX, LogEndX, LineOffs, NType);
     //Entry.FRelativeNestDepth := RelNestDepth;
 
-    if LineOffs > 0 then begin
-      if ANodeForLine.LastEntryEndLineOffs <> LineOffs then begin
-        LineNeedsReq := True;
-      end;
-      ANodeForLine.LastEntryEndLineOffs := LineOffs;
-      Include(Entry.FNodeFlags, idnMultiLineTag);
+    if LineOffs > 0 then
       break;
-    end;
+  end;
 
+  // LineOffs now has the value of the last node / or zero, if there is no node
+  if (ANodeForLine <> nil) and (ANodeForLine.LastEntryEndLineOffs <> LineOffs) then begin
+    LineNeedsReq := True;
+    LineChanged := True;
+    ANodeForLine.LastEntryEndLineOffs := LineOffs;
+    if LineOffs > 0 then
+      Include(Entry.FNodeFlags, idnMultiLineTag)
+     else
+      Exclude(Entry.FNodeFlags, idnMultiLineTag);
   end;
 
   FoldNodeInfoList.ReleaseReference;
@@ -2155,14 +2221,18 @@ begin
         ANodeForLine.Entry[i].FNodeType := idnCommentedIfdef;
         inc(NodesAddedCnt);
       end
-      else
+      else begin
         ANodeForLine.DeletEntry(i, True);
+        LineChanged := True;
+       end;
       dec(i);
     end;
     ANodeForLine.EntryCount := NodesAddedCnt;
     ANodeForLine.ReduceCapacity;
     ANodeForLine.ScanEndOffs := Max(0, LineOffs-1);
   end;
+  if LineChanged then
+    IncChangeStep;
 end;
 
 procedure TSynMarkupHighIfDefLinesTree.ValidateRange(AStartLine, AEndLine: Integer;
@@ -2401,6 +2471,11 @@ if (e<> nil) and not(e.NodeType in [idnIfdef, idnElseIf]) then DebugLn([ 'SetNod
   if (e = nil) or not(e.NodeType in [idnIfdef, idnElseIf]) then
     exit;
 
+  if e.NodeState <> AState then begin
+    IncChangeStep;
+    if FLockTreeCount = 0 then
+      FNotifyLists[itnChanged].CallNotifyEvents(Self);
+  end;
   e.NodeState := AState;
 
   dec(i); // Assume the node, just set does not need requesting
@@ -2478,6 +2553,33 @@ begin
     DebugPrintNode(TSynMarkupHighIfDefLinesNode(FRoot), '', '');
 end;
 
+procedure TSynMarkupHighIfDefLinesTree.RegisterNotification(AReason: TSynMarkupHighIfDefTreeNotifications;
+  AHandler: TNotifyEvent);
+begin
+  FNotifyLists[AReason].Add(TMethod(AHandler));
+end;
+
+procedure TSynMarkupHighIfDefLinesTree.UnRegisterNotification(AReason: TSynMarkupHighIfDefTreeNotifications;
+  AHandler: TNotifyEvent);
+begin
+  FNotifyLists[AReason].Remove(TMethod(AHandler));
+end;
+
+procedure TSynMarkupHighIfDefLinesTree.LockTree;
+begin
+  inc(FLockTreeCount);
+end;
+
+procedure TSynMarkupHighIfDefLinesTree.UnLockTree;
+begin
+  assert(FLockTreeCount > 0, 'UnLockTree < 0');
+  if FLockTreeCount = 1 then
+    FNotifyLists[itnUnlocking].CallNotifyEvents(Self);
+  dec(FLockTreeCount);
+  if FLockTreeCount = 0 then
+    FNotifyLists[itnUnlocked].CallNotifyEvents(Self);
+end;
+
 procedure TSynMarkupHighIfDefLinesTree.Clear;
 var
   n: TSynSizedDifferentialAVLNode;
@@ -2508,26 +2610,29 @@ end;
 
 { TSynEditMarkupIfDef }
 
-procedure TSynEditMarkupIfDef.SetFoldView(AValue: TSynEditFoldedView);
+procedure TSynEditMarkupIfDef.DoTreeUnlocking(Sender: TObject);
+var
+  LastLine: Integer;
 begin
-  if FFoldView = AValue then Exit;
-  FFoldView := AValue;
+  Assert(FPaintLock = 0, 'DoTreeUnlocked in paintlock');
+
+  if (not SynEdit.IsVisible) or (not MarkupInfo.IsEnabled) or (Highlighter = nil) then
+    exit;
+
+  LastLine := ScreenRowToRow(LinesInWindow+1);
+
+  if (FLastValidTopLine  <= TopLine) and (FLastValidLastLine >= LastLine) and
+     (FLastValidTreeStep = FIfDefTree.ChangeStep)
+  then
+    exit;
+
+// TODO: assert synedit does not change
+//DebugLn(['TSynEditMarkupIfDef.DoTreeUnlocking', TopLine, ' - ', LastLine]);
+  FOuterLines.Clear; // TODO: invalidate acording to actual lines edited
+  FIfDefTree.ValidateRange(TopLine, LastLine, FOuterLines);
 end;
 
-procedure TSynEditMarkupIfDef.SetHighlighter(AValue: TSynPasSyn);
-begin
-  if FHighlighter = AValue then Exit;
-  FHighlighter := AValue;
-  FIfDefTree.Highlighter := AValue;
-end;
-
-procedure TSynEditMarkupIfDef.DoBufferChanging(Sender: TObject);
-begin
-  FIfDefTree.Clear;
-  FIfDefTree.Lines := nil;
-end;
-
-procedure TSynEditMarkupIfDef.ValidateMatches;
+procedure TSynEditMarkupIfDef.DoTreeUnlocked(Sender: TObject);
 var
   LastMatchIdx: Integer;
   LastLine: Integer;
@@ -2599,22 +2704,30 @@ var
   Entry, EntryFound, Peer: TSynMarkupHighIfDefEntry;
   m: TSynMarkupHighAllMatch;
 begin
-  if (FPaintLock > 0) or (not SynEdit.IsVisible) or (not MarkupInfo.IsEnabled) then begin
-    FNeedValidate := True;
-    exit;
-  end;
-  FNeedValidate := False;
+  Assert(FPaintLock = 0, 'DoTreeUnlocked in paintlock');
 
+  if (not SynEdit.IsVisible) or (not MarkupInfo.IsEnabled) then
+    exit;
   if Highlighter = nil then begin
     FIfDefTree.Clear;
+    if Matches.Count > 0 then
+      InvalidateSynLines(TopLine, ScreenRowToRow(LinesInWindow+1));
+    Matches.Count := 0;
     exit;
   end;
 
-try
   LastLine := ScreenRowToRow(LinesInWindow+1);
-  FOuterLines.Clear; // TODO: invalidate acording to actual lines edited
-  FIfDefTree.ValidateRange(TopLine, LastLine, FOuterLines);
+  if (FLastValidTopLine  <= TopLine) and (FLastValidLastLine >= LastLine) and
+     (FLastValidTreeStep = FIfDefTree.ChangeStep)
+  then
+    exit;
 
+  FLastValidTopLine  := TopLine;
+  FLastValidLastLine := LastLine;
+  FLastValidTreeStep := FIfDefTree.ChangeStep;
+
+try
+//debugln(['TSynEditMarkupIfDef.DoTreeUnlocked ', TopLine, ' - ', LastLine]);
 XXXCurTree := FIfDefTree; try
   LastMatchIdx := -1;
   EntryFound := nil;
@@ -2748,14 +2861,47 @@ XXXCurTree := FIfDefTree; try
   end;
 
 finally XXXCurTree := nil; end;
-except
-FIfDefTree.DebugPrint(true);
+except FIfDefTree.DebugPrint(true); end;
 end;
+
+procedure TSynEditMarkupIfDef.DoTreeChanged(Sender: TObject);
+begin
+  DebugLn('TSynEditMarkupIfDef.DoTreeChanged');
+  ValidateMatches;
+end;
+
+procedure TSynEditMarkupIfDef.SetFoldView(AValue: TSynEditFoldedView);
+begin
+  if FFoldView = AValue then Exit;
+  FFoldView := AValue;
+end;
+
+procedure TSynEditMarkupIfDef.SetHighlighter(AValue: TSynPasSyn);
+begin
+  if FHighlighter = AValue then Exit;
+  FHighlighter := AValue;
+  FIfDefTree.Highlighter := AValue;
+end;
+
+procedure TSynEditMarkupIfDef.DoBufferChanging(Sender: TObject);
+begin
+  FIfDefTree.Clear;
+  FIfDefTree.Lines := nil;
+end;
+
+procedure TSynEditMarkupIfDef.ValidateMatches;
+begin
+  if (FPaintLock > 0) or (not SynEdit.IsVisible) or (not MarkupInfo.IsEnabled) then
+    exit;
+
+  //debugln(['Validate without lock']);
+  DoTreeUnlocking(FIfDefTree);
+  DoTreeUnlocked(FIfDefTree);
 end;
 
 procedure TSynEditMarkupIfDef.DoFoldChanged(aLine: Integer);
 begin
-  ValidateMatches;
+  DoTopLineChanged(-1);
 end;
 
 procedure TSynEditMarkupIfDef.DoTopLineChanged(OldTopLine: Integer);
@@ -2765,7 +2911,7 @@ end;
 
 procedure TSynEditMarkupIfDef.DoLinesInWindoChanged(OldLinesInWindow: Integer);
 begin
-  ValidateMatches;
+  DoTopLineChanged(-1);
 end;
 
 procedure TSynEditMarkupIfDef.DoMarkupChanged(AMarkup: TSynSelectedColor);
@@ -2781,25 +2927,21 @@ end;
 
 procedure TSynEditMarkupIfDef.DoVisibleChanged(AVisible: Boolean);
 begin
+  FLastValidTopLine  := 0;
+  FLastValidLastLine := 0;
+  FLastValidTreeStep := 0;
   ValidateMatches;
 end;
 
 procedure TSynEditMarkupIfDef.DoBufferChanged(Sender: TObject);
-//var
-//  m: TSynEditMarkup;
 begin
-//TODO: get ifdeftree from other.
-  //// The owning SynEdit is not yet in the list of edits
-  //if TSynEditStringList(Sender).AttachedSynEditCount = 0 then begin
-  //  // Recreate Tree
-  //end
-  //else begin
-  //  m :=  TCustomSynEdit(TSynEditStringList(Sender).AttachedSynEdits[0]).MarkupByClass[TSynEditMarkupIfDef];
-  //end;
-
   //FIfDefTree.Lines  pointing to view => so still valid
   FIfDefTree.Clear;
   FIfDefTree.Lines := Lines;
+
+  FLastValidTopLine  := 0;
+  FLastValidLastLine := 0;
+  FLastValidTreeStep := 0;
   ValidateMatches;
 end;
 
@@ -2843,35 +2985,48 @@ begin
   inherited Create(ASynEdit);
   FIfDefTree := TSynMarkupHighIfDefLinesTree.Create;
   FIfDefTree.OnNodeStateRequest := @DoNodeStateRequest;
+  FIfDefTree.RegisterNotification(itnUnlocking, @DoTreeUnlocking);
+  FIfDefTree.RegisterNotification(itnUnlocked, @DoTreeUnlocked);
+  FIfDefTree.RegisterNotification(itnChanged, @DoTreeChanged);
+
   FOuterLines := FIfDefTree.CreateOpeningList;
+
+  FLastValidTopLine  := 0;
+  FLastValidLastLine := 0;
+  FLastValidTreeStep := 0;
+
+  IncPaintLock;
 
   MarkupInfo.Clear;
   //MarkupInfo.Background := clLtGray;
   MarkupInfo.Foreground := clLtGray;
   MarkupInfo.ForeAlpha := 180;
   MarkupInfo.ForePriority := 99999;
+
+  DecPaintLock;
 end;
 
 destructor TSynEditMarkupIfDef.Destroy;
 begin
   inherited Destroy;
   FIfDefTree.DiscardOpeningList(FOuterLines);
+
+  FIfDefTree.UnRegisterNotification(itnUnlocking, @DoTreeUnlocking);
+  FIfDefTree.UnRegisterNotification(itnUnlocked, @DoTreeUnlocked);
+  FIfDefTree.UnRegisterNotification(itnChanged, @DoTreeChanged);
   FreeAndNil(FIfDefTree);
 end;
 
 procedure TSynEditMarkupIfDef.IncPaintLock;
 begin
-  if FPaintLock = 0 then begin
-    FNeedValidate := False;
-  end;
   inherited IncPaintLock;
+  FIfDefTree.LockTree;
 end;
 
 procedure TSynEditMarkupIfDef.DecPaintLock;
 begin
   inherited DecPaintLock;
-  if (FPaintLock = 0) and FNeedValidate then
-    ValidateMatches;
+  FIfDefTree.UnLockTree;
 end;
 
 procedure TSynEditMarkupIfDef.InvalidateAll;
@@ -2883,7 +3038,6 @@ procedure TSynEditMarkupIfDef.SetNodeState(ALinePos, AstartPos: Integer;
   AState: TSynMarkupIfdefNodeState);
 begin
   FIfDefTree.SetNodeState(ALinePos, AstartPos, AState);
-  ValidateMatches;
 end;
 
 
