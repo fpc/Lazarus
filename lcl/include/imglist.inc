@@ -378,6 +378,7 @@ begin
   FAllocCount := 0;
   ClearOverlays;
 
+  FChanged := True;
   FCount := 0;
   Change;
 end;
