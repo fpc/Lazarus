@@ -245,6 +245,7 @@ begin
   if (Operation=opRemove) then begin
     if (FDataLink<>nil) and (AComponent=DataSource) then
       DataSource:=nil;
+    if (AComponent = FImages) then Images := nil;
   end;
 end;
 
