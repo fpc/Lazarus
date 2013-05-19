@@ -949,8 +949,7 @@ begin
       APackage:=PackageGraph.FindPackageWithID(DelPackageID);
       if APackage<>nil then begin
         // check if package is a base package
-        if APackage.AutoCreated
-        or PackageGraph.IsStaticBasePackage(APackage.Name) then begin
+        if PackageGraph.IsStaticBasePackage(APackage.Name) then begin
           TVNode.Selected:=false;
           MessageDlg(lisUninstallImpossible,
             Format(lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh, [
