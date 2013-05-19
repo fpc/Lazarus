@@ -87,6 +87,8 @@ function ForceDirectoriesUTF8(const Dir: string): Boolean;
 function FileOpenUTF8(Const FileName : string; Mode : Integer) : THandle;
 function FileCreateUTF8(Const FileName : string) : THandle; overload;
 function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle; overload;
+Function FileCreateUtf8(Const FileName : String; ShareMode : Integer; Rights : Cardinal) : THandle; overload;
+
 
 // UNC paths
 function IsUNCPath(const {%H-}Path: String): Boolean;

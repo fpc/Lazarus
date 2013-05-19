@@ -15,8 +15,10 @@ var
   //FileSetAttr_     : function (const Filename: String; Attr: longint): Longint;
   //DeleteFile_      : function (const FileName: String): Boolean;
   //RenameFile_      : function (const OldName, NewName: String): Boolean;
-  _GetCurrentDirUtf8   : function : String ;
-  _GetDirUtf8          : procedure (DriveNr: Byte; var Dir: String);
+  _GetCurrentDirUtf8  : function: String ;
+  _GetDirUtf8         : procedure(DriveNr: Byte; var Dir: String);
+  _FileOpenUtf8       : function(Const FileName : string; Mode : Integer) : THandle;
+  _FileCreateUtf8     : function(Const FileName : String; ShareMode : Integer; Rights: Integer) : THandle;
   //SetCurrentDir_   : function (const NewDir: String): Boolean;
   //CreateDir_       : function (const NewDir: String): Boolean;
   //RemoveDir_       : function (const Dir: String): Boolean ;
@@ -26,51 +28,7 @@ begin
   Result:=FilenameIsWinAbsolute(TheFilename);
 end;
 
-function FileOpenUTF8(Const FileName : string; Mode : Integer) : THandle;
-const
-  AccessMode: array[0..2] of Cardinal  = (
-    GENERIC_READ,
-    GENERIC_WRITE,
-    GENERIC_READ or GENERIC_WRITE);
-  ShareMode: array[0..4] of Integer = (
-               0,
-               0,
-               FILE_SHARE_READ,
-               FILE_SHARE_WRITE,
-               FILE_SHARE_READ or FILE_SHARE_WRITE);
-begin
-{$ifndef WinCE}
-  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
-    Result := FileOpen(UTF8ToSys(FileName), Mode)
-  else
-{$endif}
-    Result := CreateFileW(PWideChar(UTF8Decode(FileName)), dword(AccessMode[Mode and 3]),
-                         dword(ShareMode[(Mode and $F0) shr 4]), nil, OPEN_EXISTING,
-                         FILE_ATTRIBUTE_NORMAL, 0);
-  //if fail api return feInvalidHandle (INVALIDE_HANDLE=feInvalidHandle=-1)
-end;
 
-function FileCreateUTF8(Const FileName : string) : THandle;
-begin
-{$ifndef WinCE}
-  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
-    Result := FileCreate(Utf8ToSys(FileName))
-  else
-{$endif}
-    Result := CreateFileW(PWideChar(UTF8Decode(FileName)), GENERIC_READ or GENERIC_WRITE,
-                          0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-end;
-
-function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle;
-begin
-{$ifndef WinCE}
-  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
-    Result := FileCreate(Utf8ToSys(FileName), Rights)
-  else
-{$endif}
-    Result := CreateFileW(PWideChar(UTF8Decode(FileName)), GENERIC_READ or GENERIC_WRITE,
-                       0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-end;
 
 
 function ExpandFileNameUtf8(const FileName: string; {const} BaseDir: String = ''): String;
@@ -192,6 +150,30 @@ begin
   _GetDirUtf8(DriveNr, Dir);
 end;
 
+function FileOpenUTF8(Const FileName : string; Mode : Integer) : THandle;
+begin
+  Result := _FileOpenUtf8(FileName, Mode);
+end;
+
+function FileCreateUTF8(Const FileName : string) : THandle;
+begin
+  Result := _FileCreateUtf8(FileName, fmShareExclusive, 0);
+end;
+
+function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle;
+begin
+  Result := _FileCreateUtf8(FileName, fmShareExclusive, Rights);
+end;
+
+Function FileCreateUtf8(Const FileName : String; ShareMode : Integer; Rights : Cardinal) : THandle;
+begin
+  Result := _FileCreateUtf8(FileName, ShareMode, Rights);
+end;
+
+
+
+
+{******* ANSI functions *******}
 
 {$ifndef WinCE}
 //No ANSII functions on WinCE
@@ -205,9 +187,42 @@ begin
   GetDir(DriveNr, Dir);
   Dir := SysToUtf8(Dir);
 end;
+
+
+function FileOpenAnsi(Const FileName : string; Mode : Integer) : THandle;
+begin
+  Result := FileOpen(UTF8ToSys(FileName), Mode);
+  //if fail api return feInvalidHandle (INVALIDE_HANDLE=feInvalidHandle=-1)
+end;
+
+
+function FileCreateAnsi(Const FileName : string; ShareMode: Integer; Rights: Integer) : THandle;
+begin
+  Result := FileCreate(Utf8ToSys(FileName), Sharemode, Rights);
+end;
+
+
+
+
 {$endif WinCE}
 
-//WideString functions
+
+
+
+{******* Wide functions *******}
+const
+  ShareModes: array[0..4] of Integer = (
+               0,
+               0,
+               FILE_SHARE_READ,
+               FILE_SHARE_WRITE,
+               FILE_SHARE_READ or FILE_SHARE_WRITE);
+
+  AccessModes: array[0..2] of Cardinal  = (
+    GENERIC_READ,
+    GENERIC_WRITE,
+    GENERIC_READ or GENERIC_WRITE);
+
 function GetCurrentDirWide: String;
 var
   w   : WideString;
@@ -267,6 +282,21 @@ begin
 end;
 
 
+function FileOpenWide(Const FileName : string; Mode : Integer) : THandle;
+
+begin
+  Result := CreateFileW(PWideChar(UTF8Decode(FileName)), dword(AccessModes[Mode and 3]),
+                         dword(ShareModes[(Mode and $F0) shr 4]), nil, OPEN_EXISTING,
+                         FILE_ATTRIBUTE_NORMAL, 0);
+  //if fail api return feInvalidHandle (INVALIDE_HANDLE=feInvalidHandle=-1)
+end;
+
+
+function FileCreateWide(Const FileName : string;  ShareMode: Integer; Rights: Integer) : THandle;
+begin
+  Result := CreateFileW(PWideChar(UTF8Decode(FileName)), GENERIC_READ or GENERIC_WRITE,
+                       dword(ShareModes[(ShareMode and $F0) shr 4]), nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+end;
 
 
 
@@ -285,6 +315,8 @@ begin
     //SetCurrentDir_ := @SetCurrentDirAnsi;
     _GetCurrentDirUtf8 := @GetCurrentDirAnsi;
     _GetDirUtf8 := @GetDirAnsi;
+    _FileOpenUtf8 := @FileOpenAnsi;
+    _FileCreateUtf8 := @FileCreateAnsi;
     //CreateDir_ := @CreateDirAnsi;
     //RemoveDir_ := @RemoveDirAnsi;
     //FindFirst_ := @FindFirstAnsi;
@@ -304,6 +336,8 @@ begin
     //SetCurrentDir_ := @SetCurrentDirWide;
     _GetCurrentDirUtf8 :=@ GetCurrentDirWide;
     _GetDirUtf8 := @GetDirWide;
+    _FileOpenUtf8 := @FileOpenWide;
+    _FileCreateUtf8 := @FileCreateWide;
     //CreateDir_ := @CreateDirWide;
     //RemoveDir_ := @RemoveDirWide;
     //FindFirst_ := @FindFirstWide;

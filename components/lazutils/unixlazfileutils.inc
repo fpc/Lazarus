@@ -12,12 +12,17 @@ end;
 
 function FileCreateUTF8(Const FileName : string) : THandle;
 begin
-  Result := SysUtils.FileCreate(FileName);
+  Result := SysUtils.FileCreate(UTF8ToSys(FileName));
 end;
 
 function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle;
 begin
-  Result := SysUtils.FileCreate(FileName, Rights);
+  Result := SysUtils.FileCreate(UTF8ToSys(FileName), Rights);
+end;
+
+Function FileCreateUtf8(Const FileName : String; ShareMode : Integer; Rights : Cardinal) : THandle;
+begin
+  Result := SysUtils.FileCreate(UTF8ToSys(FileName), ShareMode, Rights);
 end;
 
 function ExpandFileNameUtf8(const FileName: string; {const} BaseDir: String = ''): String;
