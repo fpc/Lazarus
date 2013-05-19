@@ -223,8 +223,8 @@ function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec):
 function FindNextUTF8(var Rslt: TSearchRec): Longint;
 procedure FindCloseUTF8(var F: TSearchrec);
 function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
-function FileGetAttrUTF8(const FileName: String): Longint;
-function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
+function FileGetAttrUTF8(const FileName: String): Longint; inline;
+function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint; inline;
 function DeleteFileUTF8(const FileName: String): Boolean;
 function RenameFileUTF8(const OldName, NewName: String): Boolean;
 function FileSearchUTF8(const Name, DirList : String; ImplicitCurrentDir : Boolean = True): String;

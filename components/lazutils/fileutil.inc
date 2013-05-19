@@ -39,6 +39,16 @@ begin
   Result := LazUtf8.SysToUTF8(s);
 end;
 
+function FileGetAttrUTF8(const FileName: String): Longint;
+begin
+  Result := LazFileUtils.FileGetAttrUtf8(FileName);
+end;
+
+function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
+begin
+  Result := LazFileUtils.FileSetAttrUtf8(Filename, Attr);
+end;
+
 {$IFDEF darwin}
 function GetDarwinSystemFilename(Filename: string): string;
 var

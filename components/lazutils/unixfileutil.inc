@@ -338,15 +338,7 @@ begin
   SysUtils.FindClose(F);
 end;
 
-function FileGetAttrUTF8(const FileName: String): Longint;
-begin
-  Result:=SysUtils.FileGetAttr(UTF8ToSys(Filename));
-end;
 
-function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
-begin
-  Result:=SysUtils.FileSetAttr(UTF8ToSys(Filename),Attr);
-end;
 
 function DeleteFileUTF8(const FileName: String): Boolean;
 begin

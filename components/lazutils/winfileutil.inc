@@ -435,38 +435,6 @@ begin
 end;
 
 
-{------------------------------------------------------------------------------
-  FileGetAttrUTF8
- ------------------------------------------------------------------------------}
-{$ifndef WinCE}
-function FileGetAttrAnsi(const FileName: String): Longint;
-begin
-  Result:=SysUtils.FileGetAttr(UTF8ToSys(Filename));
-end;
-{$endif}
-
-function FileGetAttrWide(const FileName: String): Longint;
-begin
-  Result:=Integer(Windows.GetFileAttributesW(PWideChar(UTF8Decode(FileName))));
-end;
-
-{------------------------------------------------------------------------------
-  FileSetAttrUTF8
- ------------------------------------------------------------------------------}
-{$ifndef WinCE}
-function FileSetAttrAnsi(const Filename: String; Attr: longint): Longint;
-begin
-  Result:=SysUtils.FileSetAttr(UTF8ToSys(Filename),Attr);
-end;
-{$endif}
-
-function FileSetAttrWide(const Filename: String; Attr: longint): Longint;
-begin
-  if Windows.SetFileAttributesW(PWideChar(UTF8Decode(FileName)), Attr) then
-    Result:=0
-  else
-    Result := Integer(Windows.GetLastError);
-end;
 
 {------------------------------------------------------------------------------
   DeleteFileUTF8
@@ -584,8 +552,6 @@ var
                        out Rslt: TSearchRec): Longint = @FindFirstWide;
   FindNext_        : function (var Rslt: TSearchRec): Longint = @FindNextWide;
   FindClose_       : procedure (var F: TSearchrec) = @FindCloseWide;
-  FileGetAttr_     : function (const FileName: String): Longint = @FileGetAttrWide;
-  FileSetAttr_     : function (const Filename: String; Attr: longint): Longint = @FileSetAttrWide;
   DeleteFile_      : function (const FileName: String): Boolean = @DeleteFileWide;
   RenameFile_      : function (const OldName, NewName: String): Boolean = @RenameFileWide;
   GetCurrentDir_   : function : String = @GetCurrentDirWide;
@@ -654,15 +620,7 @@ begin
   Result:=RemoveDir_(Dir);
 end;
 
-function FileGetAttrUTF8(const FileName: String): Longint;
-begin
-  Result:=FileGetAttr_(FileName);
-end;
 
-function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
-begin
-  Result:=FileSetAttr_(Filename, Attr);
-end;
 
 function FileExistsUTF8(const Filename: string): boolean;
 var
@@ -718,8 +676,6 @@ begin
     FileAge_:=@FileAgeAnsi;
     FileSize_:=@FileSizeAnsi;
     FileSetDate_:=@FileSetDateAnsi;
-    FileGetAttr_:=@FileGetAttrAnsi;
-    FileSetAttr_:=@FileSetAttrAnsi;
     DeleteFile_:=@DeleteFileAnsi;
     RenameFile_:=@RenameFileAnsi;
     SetCurrentDir_:=@SetCurrentDirAnsi;
