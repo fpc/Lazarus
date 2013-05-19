@@ -89,6 +89,8 @@ function FileCreateUTF8(Const FileName : string) : THandle; overload;
 function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle; overload;
 Function FileCreateUtf8(Const FileName : String; ShareMode : Integer; Rights : Cardinal) : THandle; overload;
 
+function FileSizeUtf8(const Filename: string): int64;
+
 
 // UNC paths
 function IsUNCPath(const {%H-}Path: String): Boolean;

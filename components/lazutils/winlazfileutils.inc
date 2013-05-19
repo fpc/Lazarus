@@ -5,7 +5,7 @@ var
 //procedural variables for procedures that are implemented different on Win9x and NT or WinCE platform
 //They are intialized in InitLazFileUtils
   _FileAgeUtf8         : function (const Filename:string):Longint;
-  //FileSize_        : function (const Filename: string): int64;
+  _FileSizeUtf8        : function (const Filename: string): int64;
   _FileSetDateUtf8   : function (const FileName: String; Age: Longint): Longint;
   //FindFirst_       : function (const Path: string; Attr: Longint;
   //                     out Rslt: TSearchRec): Longint;
@@ -214,6 +214,11 @@ begin
   InvalidateFileStateCache(Filename);
 end;
 
+function FileSizeUtf8(const Filename: string): int64;
+begin
+  Result := _FileSizeUtf8(FileName);
+end;
+
 
 {******* ANSI functions *******}
 
@@ -264,7 +269,22 @@ begin
  Result := SysUtils.FileSetDate(UTF8ToSys(Filename), Age);
 end;
 
-
+function FileSizeAnsi(const Filename: string): int64;
+var
+  FindData: TWIN32FindDataA;
+  FindHandle: THandle;
+  Str: AnsiString;
+begin
+  Str := Utf8ToAnsi(Filename);
+  FindHandle := Windows.FindFirstFileA(PAnsiChar(Str), FindData);
+  if FindHandle = Windows.Invalid_Handle_value then
+  begin
+    Result := -1;
+    exit;
+  end;
+  Result := (int64(FindData.nFileSizeHigh) shl 32) + FindData.nFileSizeLow;
+  Windows.FindClose(FindHandle);
+end;
 
 
 
@@ -434,6 +454,28 @@ begin
 end;
 
 
+function FileSizeWide(const Filename: string): int64;
+var
+  FindData: TWIN32FindDataW;
+  FindHandle: THandle;
+  Str: WideString;
+begin
+  // Fix for the bug 14360:
+  // Don't assign the widestring to TSearchRec.name because it is of type
+  // string, which will generate a conversion to the system encoding
+  Str := UTF8Decode(Filename);
+  FindHandle := Windows.FindFirstFileW(PWideChar(Str), FindData);
+  if FindHandle = Windows.Invalid_Handle_value then
+  begin
+    Result := -1;
+    exit;
+  end;
+  Result := (int64(FindData.nFileSizeHigh) shl 32) + FindData.nFileSizeLow;
+  Windows.FindClose(FindHandle);
+end;
+
+
+
 
 procedure InitLazFileUtils;
 begin
@@ -441,7 +483,7 @@ begin
   if Win32MajorVersion <= 4 then
   begin
     _FileAgeUtf8 := @FileAgeAnsi;
-    //FileSize_ := @FileSizeAnsi;
+    _FileSizeUtf8 := @FileSizeAnsi;
     _FileSetDateUtf8 := @FileSetDateAnsi;
     _FileGetAttrUtf8 := @FileGetAttrAnsi;
     _FileSetAttrUtf8 := @FileSetAttrAnsi;
@@ -462,7 +504,7 @@ begin
   {$endif}
   begin
     _FileAgeUtf8 := @FileAgeWide;
-    //FileSize_ := @FileSizeWide;
+    _FileSizeUtf8 := @FileSizeWide;
     _FileSetDateUtf8 := @FileSetDateWide;
     _FileGetAttrUtf8 := @FileGetAttrWide;
     _FileSetAttrUtf8 := @FileSetAttrWide;

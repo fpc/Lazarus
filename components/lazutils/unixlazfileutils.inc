@@ -57,6 +57,17 @@ begin
   InvalidateFileStateCache(Filename);
 end;
 
+function FileSizeUtf8(const Filename: string): int64;
+var
+  st: baseunix.stat;
+  SysFileName: String;
+begin
+  SysFileName := Utf8ToSys(FileName);
+  if not fpstat(pointer(SysFileName),st{%H-})>=0 then
+    exit(-1);
+  Result := st.st_size;
+end;
+
 function ExpandFileNameUtf8(const FileName: string; {const} BaseDir: String = ''): String;
 var
   IsAbs: Boolean;
