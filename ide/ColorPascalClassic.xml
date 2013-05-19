@@ -34,6 +34,7 @@
           <ahaGutter Background="clBtnFace"/>
           <ahaRightMargin Foreground="clSilver"/>
           <ahaTopInfoHint Background="clPurple" Foreground="clYellow" FrameColor="clOlive" FrameStyle="slsDashed"/>
+          <ahaIfDefBlockInactive Foreground="clBlack" ForeAlpha="150"/>
         </SchemePascal_Classic>
       </Globals>
       <LangObjectPascal Version="6">

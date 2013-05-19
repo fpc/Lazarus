@@ -36,6 +36,7 @@
           <ahaGutter Background="clBtnFace"/>
           <ahaRightMargin Foreground="clSilver"/>
           <ahaTopInfoHint Background="clActiveCaption" Foreground="clBlack" FrameColor="clMaroon" FrameStyle="slsDashed" FrameEdges="sfeBottom"/>
+          <ahaIfDefBlockInactive Foreground="clSilver" ForeAlpha="165"/>
         </SchemeDelphi>
       </Globals>
       <LangObjectPascal Version="6">

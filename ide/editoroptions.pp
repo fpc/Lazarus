@@ -141,7 +141,7 @@ const
     '',  // ahaSpecialVisibleChars
     ''  // ahaTopInfoHint
 {$IFDEF WithSynMarkupIfDef}
-,    ''
+,    ''  // ahaIfDefBlockInactive
 {$ENDIF}
   );
 
