@@ -413,21 +413,21 @@
     const
       ConstUtf8TextAnsi: AnsiString = 'a üü1'' \\t 2 \t 3'#9'4'#13'5\n6';
       ConstUtf8TextShortStr: ShortString = 'a üü1'' \\t 2 \t 3'#9'4'#13'5\n6';
-      ConstUtf8TextShort: String[40] = 'a üü1'' \\t 2 \t 3'#9'4'#13'5\n6';
+      ConstUtf8TextShort: String[80] = 'a üü1'' \\t 2 \t 3'#9'4'#13'5\n6';
 
       ConstUtf8TextAnsi2: AnsiString = 'üü''1';  // start with utf8
       ConstUtf8TextShortStr2: ShortString = 'üü''1';
-      ConstUtf8TextShort2: String[40] = 'üü''1';
+      ConstUtf8TextShort2: String[80] = 'üü''1';
 
       ConstUtf8TextAnsiBad: AnsiString = 'a '#170'b';
       ConstUtf8TextShortStrBad: ShortString = 'a '#170'b';
-      ConstUtf8TextShortBad: String[40] = 'a '#170'b';
+      ConstUtf8TextShortBad: String[80] = 'a '#170'b';
     var
       VarUtf8TextAnsi, VarUtf8TextAnsi2: AnsiString;
-      VarUtf8TextShort, VarUtf8TextShort2: String[40];
+      VarUtf8TextShort, VarUtf8TextShort2: String[80];
       VarUtf8TextShortStr, VarUtf8TextShortStr2: ShortString;
       VarUtf8TextAnsiBad: AnsiString;
-      VarUtf8TextShortBad: String[40];
+      VarUtf8TextShortBad: String[80];
       VarUtf8TextShortStrBad: ShortString;
 
     {$ENDIF}
