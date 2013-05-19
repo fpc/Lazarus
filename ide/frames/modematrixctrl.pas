@@ -1027,6 +1027,8 @@ begin
     NewType:=TypeColumn.PickList.Names[Item.MenuIndex];
     if NewType=ValueRow.Typ then exit;
     StoreUndo;
+    if Assigned(OnSetEditText) then
+      OnSetEditText(Sender,TypeCol,fTypePopupMenuRow,NewType);
     ValueRow.Typ:=NewType;
     InvalidateCell(TypeCol,fTypePopupMenuRow);
     EditingDone;

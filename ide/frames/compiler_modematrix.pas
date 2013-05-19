@@ -19,11 +19,10 @@
  ***************************************************************************
 
  ToDo:
-   - warn for syntax errors in ide macro
+   - easy way to change LCLWidgetType
    - ide macro
    - load old build macro values into matrix
    - save matrix options for old build macro values
-   - easy way to change LCLWidgetType
    - wiki
    - remove old frame
    - remove old macro value classes
@@ -67,6 +66,8 @@ type
     procedure GridGetCellHightlightColor(Sender: TObject; aCol, aRow: integer;
       var aColor: TColor);
     procedure GridSelection(Sender: TObject; {%H-}aCol, {%H-}aRow: Integer);
+    procedure GridSetEditText(Sender: TObject; ACol, ARow: Integer;
+      const Value: string);
     procedure GridShowHint(Sender: TObject; HintInfo: PHintInfo);
   private
     FErrorColor: TColor;
@@ -110,16 +111,24 @@ type
     property LazProject: TProject read FProject;
   end;
 
-function BuildMatrixOptionTypeCaption(Typ: TBuildMatrixOptionType): string;
-function CaptionToBuildMatrixOptionType(s: string): TBuildMatrixOptionType;
-function BuildMatrixOptionTypeHint(Typ: TBuildMatrixOptionType): string;
+// assign
 function IsEqual(Options: TBuildMatrixOptions; StorageGroup: TGroupedMatrixGroup): boolean;
 procedure AssignBuildMatrixOptionsToGroup(Options: TBuildMatrixOptions;
   Matrix: TGroupedMatrix; StorageGroup: TGroupedMatrixGroup);
 procedure AssignBuildMatrixGroupToOptions(StorageGroup: TGroupedMatrixGroup;
   Options: TBuildMatrixOptions; InvalidateCompOpts: boolean);
+
+// target
 function TargetsPrefix: string;
 function AddMatrixTarget(Matrix: TGroupedMatrix; StorageGroup: TGroupedMatrixGroup): TGroupedMatrixGroup;
+
+// type
+function BuildMatrixOptionTypeCaption(Typ: TBuildMatrixOptionType): string;
+function CaptionToBuildMatrixOptionType(s: string): TBuildMatrixOptionType;
+function BuildMatrixOptionTypeHint(Typ: TBuildMatrixOptionType): string;
+function BuildMatrixDefaultValue(Typ: TBuildMatrixOptionType): string;
+
+// macro
 function SplitMatrixMacro(MacroAssignment: string;
   out MacroName, MacroValue: string; ExceptionOnError: boolean): boolean;
 
@@ -152,6 +161,15 @@ begin
   bmotOutDir: Result:=lisMMOverrideOutputDirectoryFUOfTarget;
   bmotIDEMacro: Result:=lisMMSetAnIDEMacroEGLCLWidgetTypeWin32;
   else Result:='?';
+  end;
+end;
+
+function BuildMatrixDefaultValue(Typ: TBuildMatrixOptionType): string;
+begin
+  Result:='';
+  case Typ of
+  bmotIDEMacro: Result:='MacroName:=Value';
+  bmotOutDir: Result:='lib/$(TargetCPU)-$(TargetOS)/$(BuildMode)';
   end;
 end;
 
@@ -341,6 +359,32 @@ begin
   UpdateButtons;
 end;
 
+procedure TCompOptModeMatrix.GridSetEditText(Sender: TObject; ACol,
+  ARow: Integer; const Value: string);
+var
+  MatRow: TGroupedMatrixRow;
+  ValueRow: TGroupedMatrixValue;
+  NewValue: String;
+  Typ: TBuildMatrixOptionType;
+  OldTyp: TBuildMatrixOptionType;
+begin
+  if ACol=Grid.TypeCol then begin
+    if ARow<Grid.FixedRows then exit;
+    MatRow:=Grid.Matrix[ARow-Grid.FixedRows];
+    if MatRow is TGroupedMatrixValue then begin
+      ValueRow:=TGroupedMatrixValue(MatRow);
+      OldTyp:=CaptionToBuildMatrixOptionType(ValueRow.Typ);
+      if ValueRow.Value=BuildMatrixDefaultValue(OldTyp) then begin
+        // change default value
+        Typ:=CaptionToBuildMatrixOptionType(Value);
+        NewValue:=BuildMatrixDefaultValue(Typ);
+        ValueRow.Value:=NewValue;
+        Grid.InvalidateCell(Grid.ValueCol,ARow);
+      end;
+    end;
+  end;
+end;
+
 procedure TCompOptModeMatrix.GridShowHint(Sender: TObject; HintInfo: PHintInfo);
 var
   aCol: Longint;
@@ -362,7 +406,7 @@ begin
   aRow:=0;
   Grid.MouseToCell(HintInfo^.CursorPos.X,HintInfo^.CursorPos.Y,aCol,aRow);
   if aRow<Grid.FixedCols then exit;
-  MatRow:=Grid.Matrix[aRow-1];
+  MatRow:=Grid.Matrix[aRow-Grid.FixedRows];
   h:='';
   if MatRow is TGroupedMatrixGroup then begin
     GroupRow:=TGroupedMatrixGroup(MatRow);
@@ -794,6 +838,7 @@ begin
     ShowHint:=true;
     OnShowHint:=@GridShowHint;
     OnGetCellHightlightColor:=@GridGetCellHightlightColor;
+    OnSetEditText:=@GridSetEditText;
   end;
 
   fGroupIDE:=Grid.Matrix.AddGroup(nil, lisMMStoredInIDEEnvironmentoptionsXml);
