@@ -173,9 +173,6 @@ begin
   {$endif}
 end;
 
-{-------------------------------------------------------------------------------
-function FileAgeUTF8(const FileName: String): Longint;
--------------------------------------------------------------------------------}
 
 function WinToDosTime (Var Wtime : TFileTime;var DTime:longint):longbool;
 var
@@ -197,29 +194,6 @@ begin
    DosDateTimeToFileTime(longrec(DosTime).hi,longrec(DosTime).lo,@lft) and
    {$endif}
    LocalFileTimeToFileTime(lft,Wintime);                                        ;
-end;
-
-{$ifndef WinCE}
-function FileAgeAnsi(const FileName: String): Longint;
-begin
-  Result:=SysUtils.FileAge(UTF8ToSys(Filename));
-end;
-{$endif}
-
-function FileAgeWide(const FileName: String): Longint;
-var
-  Hnd: THandle;
-  FindData: TWin32FindDataW;
-begin
-  Hnd := FindFirstFileW(PWideChar(UTF8ToUTF16(FileName)), FindData);
-   if Hnd <> INVALID_HANDLE_VALUE then
-    begin
-      Windows.FindClose(Hnd);
-      if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) = 0 then
-        If WinToDosTime(FindData.ftLastWriteTime,Result) then
-          exit;
-    end;
-   Result := -1;
 end;
 
 
@@ -545,7 +519,6 @@ begin
 end;
 
 var
-  FileAge_         : function (const Filename:string):Longint = @FileAgeWide;
   FileSize_        : function (const Filename: string): int64 = @FileSizeWide;
   FileSetDate_     : function (const FileName: String; Age: Longint): Longint = @FileSetDateWide;
   FindFirst_       : function (const Path: string; Attr: Longint;
@@ -560,10 +533,7 @@ var
   RemoveDir_       : function (const Dir: String): Boolean = @RemoveDirWide;
 
   
-function FileAgeUTF8(const FileName: String): Longint;
-begin
-  Result:=FileAge_(FileName);
-end;
+
   
 function FileSize(const Filename: string): int64;
 begin
@@ -655,7 +625,6 @@ begin
   {$ifndef WinCE}
   if Win32MajorVersion <= 4 then
   begin
-    FileAge_:=@FileAgeAnsi;
     FileSize_:=@FileSizeAnsi;
     FileSetDate_:=@FileSetDateAnsi;
     DeleteFile_:=@DeleteFileAnsi;

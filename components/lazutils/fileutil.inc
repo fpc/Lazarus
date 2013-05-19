@@ -59,6 +59,11 @@ begin
   Result := LazFileUtils.DirectoryExistsUTF8(Directory);
 end;
 
+function FileAgeUTF8(const FileName: string): Longint;
+begin
+  Result := LazFileUtils.FileAgeUTF8(FileName);
+end;
+
 {$IFDEF darwin}
 function GetDarwinSystemFilename(Filename: string): string;
 var
