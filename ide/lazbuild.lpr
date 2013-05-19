@@ -631,8 +631,8 @@ end;
 procedure TLazBuildApplication.CompilePackage(APackage: TLazPackage;
   Flags: TPkgCompileFlags);
 begin
-  if APackage.AutoCreated then
-    Error(ErrorBuildFailed,APackage.IDAsString+' is an auto created package');
+  if APackage.Missing then
+    Error(ErrorBuildFailed,APackage.IDAsString+' lpk file missing');
 
   // check graph for circles and broken dependencies
   if not (pcfDoNotCompileDependencies in Flags) then begin
