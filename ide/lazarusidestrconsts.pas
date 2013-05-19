@@ -4161,7 +4161,6 @@ resourcestring
   lisCurrentState = 'Current state: ';
   lisInstalled = 'installed';
   lisNotInstalled = 'not installed';
-  lisOIPThisPackageWasAutomaticallyCreated = '%sThis package was automatically created';
   lisOIPThisPackageIsInstalledButTheLpkFileWasNotFound = '%sThis package is '
     +'installed, but the lpk file was not found';
   lisOIPDescriptionDescription = '%sDescription:  %s';
@@ -4321,7 +4320,6 @@ resourcestring
   lisPckShowUnneededDependencies = 'Show unneeded dependencies';
   lisPckExplPackageNotFound = 'Package %s not found';
   lisPckExplState = '%sState: ';
-  lisPckExplAutoCreated = 'AutoCreated';
   lisPckExplInstalled = 'Installed';
   lisLpkIsMissing = 'lpk is missing';
   lisPckExplInstallOnNextStart = 'Install on next start';

@@ -107,8 +107,6 @@ begin
   if Assigned(LI) then begin
     CurPkg:=TLazPackage(LI.Data);
     HintStr:=Format(lisOIPFilename, [CurPkg.Filename]);
-    if CurPkg.AutoCreated then
-      HintStr:=Format(lisOIPThisPackageWasAutomaticallyCreated,[HintStr+LineEnding]);
     if CurPkg.Missing then
       HintStr:=Format(lisOIPThisPackageIsInstalledButTheLpkFileWasNotFound,[HintStr+LineEnding]);
     HintStr:=Format(lisOIPDescriptionDescription, [HintStr+LineEnding,

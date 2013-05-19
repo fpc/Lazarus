@@ -542,8 +542,6 @@ begin
     InfoStr:=Format(lisOIPFilename, [Pkg.Filename]);
     // state
     InfoStr:=Format(lisPckExplState, [InfoStr+LineEnding]);
-    if Pkg.AutoCreated then
-      AddState(lisPckExplAutoCreated);
     if Pkg.Missing then
       AddState(lisLpkIsMissing);
     if Pkg.Installed<>pitNope then

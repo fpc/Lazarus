@@ -561,7 +561,6 @@ type
   private
     FAddToProjectUsesSection: boolean;
     FAuthor: string;
-    FAutoCreated: boolean;
     FAutoUpdate: TPackageUpdatePolicy;
     FFPDocPackageName: string;
     FOptionsBackup: TLazPackage;
@@ -616,7 +615,6 @@ type
     function GetFiles(Index: integer): TPkgFile;
     procedure SetAddToProjectUsesSection(const AValue: boolean);
     procedure SetAuthor(const AValue: string);
-    procedure SetAutoCreated(const AValue: boolean);
     procedure SetAutoIncrementVersionOnBuild(const AValue: boolean);
     procedure SetAutoUpdate(const AValue: TPackageUpdatePolicy);
     procedure SetDescription(const AValue: string);
@@ -777,7 +775,6 @@ type
     property AddToProjectUsesSection: boolean read FAddToProjectUsesSection
                                               write SetAddToProjectUsesSection;
     property Author: string read FAuthor write SetAuthor;
-    property AutoCreated: boolean read FAutoCreated write SetAutoCreated; // do not save
     property AutoIncrementVersionOnBuild: boolean
                                            read GetAutoIncrementVersionOnBuild
                                            write SetAutoIncrementVersionOnBuild;
@@ -2343,16 +2340,6 @@ begin
   Modified:=true;
 end;
 
-procedure TLazPackage.SetAutoCreated(const AValue: boolean);
-begin
-  if FAutoCreated=AValue then exit;
-  FAutoCreated:=AValue;
-  if AutoCreated then begin
-    UserReadOnly:=true;
-    Missing:=true;
-  end;
-end;
-
 procedure TLazPackage.SetAutoIncrementVersionOnBuild(const AValue: boolean);
 begin
   if AutoIncrementVersionOnBuild=AValue then exit;
@@ -2367,8 +2354,6 @@ procedure TLazPackage.SetAutoInstall(AValue: TPackageInstallType);
 begin
   if FAutoInstall=AValue then exit;
   FAutoInstall:=AValue;
-  if AutoCreated and (FAutoInstall<>pitStatic) then
-    DumpStack;
 end;
 
 procedure TLazPackage.SetAutoUpdate(const AValue: TPackageUpdatePolicy);
@@ -3746,7 +3731,7 @@ end;
 
 function TLazPackage.NeedsDefineTemplates: boolean;
 begin
-  if IsVirtual or AutoCreated or (lpfDestroying in Flags) or (Name='') then
+  if IsVirtual or (lpfDestroying in Flags) or (Name='') then
     Result:=false
   else
     Result:=true;

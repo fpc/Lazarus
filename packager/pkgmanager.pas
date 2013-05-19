@@ -1392,9 +1392,8 @@ begin
   Dependency:=PackageGraph.FirstAutoInstallDependency;
   while Dependency<>nil do begin
     if (Dependency.LoadPackageResult=lprSuccess)
-    and (not Dependency.RequiredPackage.AutoCreated)
-    and (not PackageGraph.IsStaticBasePackage(Dependency.PackageName))
     and (not Dependency.RequiredPackage.Missing)
+    and (not PackageGraph.IsStaticBasePackage(Dependency.PackageName))
     and (not (Dependency.RequiredPackage.PackageType in [lptRunTime,lptRunTimeOnly]))
     then begin
       if sl.IndexOf(Dependency.PackageName)<0 then begin
@@ -4024,7 +4023,7 @@ begin
     // try save all modified packages
     for i:=0 to PkgList.Count-1 do begin
       APackage:=TLazPackage(PkgList[i]);
-      if (not APackage.AutoCreated)
+      if (not APackage.UserReadOnly)
       and (APackage.IsVirtual or APackage.Modified) then begin
         SaveFlags:=[];
         if DoSavePackage(APackage,SaveFlags)<>mrOk then exit;
@@ -4664,7 +4663,7 @@ begin
   Project1.ReaddRemovedDependency(ADependency);
   PackageGraph.OpenDependency(ADependency,false);
   if (ADependency.RequiredPackage<>nil)
-  and (not ADependency.RequiredPackage.AutoCreated) then begin
+  and (not ADependency.RequiredPackage.Missing) then begin
     AddUnitToProjectMainUsesSection(Project1,ADependency.PackageName,'');
   end;
 end;

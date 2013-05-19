@@ -1503,9 +1503,10 @@ function TLazPackageGraph.CreateDefaultPackage: TLazPackage;
 begin
   Result:=TLazPackage.Create;
   with Result do begin
-    AutoCreated:=true;
+    Missing:=true;
+    UserReadOnly:=true;
     Name:='DefaultPackage';
-    Filename:=SetDirSeparators('$(LazarusDir)/components/custom/');
+    Filename:=SetDirSeparators('$(LazarusDir)/components/custom/customdummy.lpk');
     Version.SetValues(1,0,1,1);
     Author:='Anonymous';
     AutoInstall:=pitStatic;
@@ -1517,7 +1518,7 @@ begin
     Translated:=SystemLanguageID1;
 
     // add unit paths
-    UsageOptions.UnitPath:=SetDirSeparators('$(LazarusDir)/components/custom');
+    UsageOptions.UnitPath:=SetDirSeparators('$(PkgOutDir)');
 
     // add requirements
     AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));
@@ -5046,7 +5047,7 @@ begin
     with BrokenPackage do begin
       BeginUpdate;
       Missing:=true;
-      AutoCreated:=true;
+      UserReadOnly:=true;
       Name:=Dependency.PackageName;
       Filename:='';
       Version.SetValues(0,0,0,0);

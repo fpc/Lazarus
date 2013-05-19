@@ -687,11 +687,11 @@ begin
 
     // under section PkgEditMenuSectionSave
     SetItem(PkgEditMenuSave,@SaveBitBtnClick,true,SaveBitBtn.Enabled);
-    SetItem(PkgEditMenuSaveAs,@SaveAsClick,true,not LazPackage.AutoCreated);
+    SetItem(PkgEditMenuSaveAs,@SaveAsClick,true,true);
     SetItem(PkgEditMenuRevert,@RevertClick,true,
             (not LazPackage.IsVirtual) and FileExistsUTF8(LazPackage.Filename));
     SetItem(PkgEditMenuPublish,@PublishClick,true,
-            (not LazPackage.AutoCreated) and LazPackage.HasDirectory);
+            (not LazPackage.Missing) and LazPackage.HasDirectory);
 
     // under section PkgEditMenuSectionCompile
     SetItem(PkgEditMenuCompile,@CompileBitBtnClick,true,CompileBitBtn.Enabled);
@@ -2436,7 +2436,7 @@ end;
 
 function TPackageEditors.ShouldNotBeInstalled(APackage: TLazPackage): boolean;
 begin
-  Result:=APackage.AutoCreated
+  Result:=APackage.Missing
      or ((APackage.FindUnitWithRegister=nil) and (APackage.Provides.Count=0));
 end;
 
