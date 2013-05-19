@@ -45,8 +45,7 @@ The SynHighlighterGeneral unit provides a customizable highlighter for SynEdit.
 Notes: March 21, 2006
 
  -SynHighlighterAny.pas converted for use with Lazarus by Lars (L505)
- -See $IFDEF FPC and $IFDEF SYN_LAZARUS defines for changes and additions.
- 
+
 }
 
 

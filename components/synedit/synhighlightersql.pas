@@ -1711,21 +1711,21 @@ begin
   case fDialect of
     sqlPostgres:
       begin
-        EnumerateKeywords(Ord(tkKey), PostgresKW, IdentChars, {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+        EnumerateKeywords(Ord(tkKey), PostgresKW, IdentChars, @DoAddKeyword);
         EnumerateKeywords(Ord(tkDatatype), PostgresTypes, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
         EnumerateKeywords(Ord(tkFunction), PostgresFunctions, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
         EnumerateKeywords(Ord(tkException), PostgresExceptions, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
       end;
     sqlSqlite:
       begin
         EnumerateKeywords(Ord(tkDatatype), SQLiteTypes, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
         EnumerateKeywords(Ord(tkFunction), SQLiteFunctions, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
-        EnumerateKeywords(Ord(tkKey), SQLiteKW, IdentChars, {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
+        EnumerateKeywords(Ord(tkKey), SQLiteKW, IdentChars, @DoAddKeyword);
       end;
     sqlIngres:
       begin

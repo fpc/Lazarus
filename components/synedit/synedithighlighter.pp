@@ -1328,21 +1328,19 @@ function TSynCustomHighlighter.LoadFromRegistry(RootKey: HKEY;
   Key: string): boolean;
 var
   r: TRegistry;
-  {$IFNDEF FPC}
-  i: integer;
-  {$ENDIF}
+{  i: integer; }
 begin
   r := TRegistry.Create;
   try
     r.RootKey := RootKey;
-    {$IFNDEF FPC}
+    {TODO:
     if r.OpenKeyReadOnly(Key) then begin
       Result := true;
       for i := 0 to AttrCount-1 do
         Result := Result and Attribute[i].LoadFromRegistry(r);
     end
     else
-    {$ENDIF}
+    }
       Result := false;
 
   finally r.Free; end;

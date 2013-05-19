@@ -48,9 +48,7 @@ type
   PIntArray = ^TIntArray;
   TIntArray = array[0..MaxListSize - 1] of integer;
 
-{$IFDEF FPC}
 function MulDiv(Factor1,Factor2,Divisor:integer):integer;{$IFDEF HasInline}inline;{$ENDIF}
-{$ENDIF}
 function Max(x, y: integer): integer;{$IFDEF HasInline}inline;{$ENDIF}
 function Min(x, y: integer): integer;{$IFDEF HasInline}inline;{$ENDIF}
 function MinMax(x, mi, ma: integer): integer;{$IFDEF HasInline}inline;{$ENDIF}
@@ -110,12 +108,10 @@ end;
 
 {***}
 
-{$IFDEF FPC}
 function MulDiv(Factor1,Factor2,Divisor:integer):integer;
 begin
   Result:=(int64(Factor1)*int64(Factor2)) div Divisor;
 end;
-{$ENDIF}
 
 function Max(x, y: integer): integer;
 begin
