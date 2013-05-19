@@ -6,7 +6,7 @@ var
 //They are intialized in InitLazFileUtils
   _FileAgeUtf8         : function (const Filename:string):Longint;
   //FileSize_        : function (const Filename: string): int64;
-  //FileSetDate_     : function (const FileName: String; Age: Longint): Longint;
+  _FileSetDateUtf8   : function (const FileName: String; Age: Longint): Longint;
   //FindFirst_       : function (const Path: string; Attr: Longint;
   //                     out Rslt: TSearchRec): Longint;
   //FindNext_        : function (var Rslt: TSearchRec): Longint;
@@ -208,6 +208,12 @@ begin
   Result := _FileAgeUtf8(FileName);
 end;
 
+function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
+begin
+  Result := _FileSetDateUtf8(Filename, Age);
+  InvalidateFileStateCache(Filename);
+end;
+
 
 {******* ANSI functions *******}
 
@@ -252,6 +258,13 @@ function FileAgeAnsi(const FileName: String): Longint;
 begin
   Result := SysUtils.FileAge(UTF8ToSys(Filename));
 end;
+
+function FileSetDateAnsi(const FileName: String; Age: Longint): Longint;
+begin
+ Result := SysUtils.FileSetDate(UTF8ToSys(Filename), Age);
+end;
+
+
 
 
 
@@ -401,6 +414,25 @@ begin
    Result := -1;
 end;
 
+function FileSetDateWide(const FileName: String; Age: Longint): Longint;
+var
+ FT:TFileTime;
+ fh: HANDLE;
+begin
+   try
+     fh := CreateFileW(PWideChar(UTF8ToUTF16(FileName)),
+                       FILE_WRITE_ATTRIBUTES,
+                       0, nil, OPEN_EXISTING,
+                       FILE_ATTRIBUTE_NORMAL, 0);
+     if (fh <> feInvalidHandle) and (DosToWinTime(Age,FT) and SetFileTime(fh, nil, nil, @FT)) then
+       Result := 0
+     else
+       Result := GetLastError;
+   finally
+     if (fh <> feInvalidHandle) then FileClose(fh);
+   end;
+end;
+
 
 
 procedure InitLazFileUtils;
@@ -410,7 +442,7 @@ begin
   begin
     _FileAgeUtf8 := @FileAgeAnsi;
     //FileSize_ := @FileSizeAnsi;
-    //FileSetDate_ := @FileSetDateAnsi;
+    _FileSetDateUtf8 := @FileSetDateAnsi;
     _FileGetAttrUtf8 := @FileGetAttrAnsi;
     _FileSetAttrUtf8 := @FileSetAttrAnsi;
     //DeleteFile_ := @DeleteFileAnsi;
@@ -431,7 +463,7 @@ begin
   begin
     _FileAgeUtf8 := @FileAgeWide;
     //FileSize_ := @FileSizeWide;
-    //FileSetDate_ := @FileSetDateWide;
+    _FileSetDateUtf8 := @FileSetDateWide;
     _FileGetAttrUtf8 := @FileGetAttrWide;
     _FileSetAttrUtf8 := @FileSetAttrWide;
     //DeleteFile_ := @DeleteFileWide;

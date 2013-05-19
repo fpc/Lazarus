@@ -1088,11 +1088,7 @@ begin
   SysUtils.FindClose(F);
 end;
 
-function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
-begin
-  Result:=SysUtils.FileSetDate(UTF8ToSys(Filename),Age);
-  InvalidateFileStateCache(Filename);
-end;
+
 
 function DeleteFileUTF8(const FileName: String): Boolean;
 begin

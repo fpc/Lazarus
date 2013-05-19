@@ -51,6 +51,12 @@ begin
   Result:=SysUtils.FileAge(UTF8ToSys(Filename));
 end;
 
+function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
+begin
+  Result := SysUtils.FileSetDate(UTF8ToSys(Filename), Age);
+  InvalidateFileStateCache(Filename);
+end;
+
 function ExpandFileNameUtf8(const FileName: string; {const} BaseDir: String = ''): String;
 var
   IsAbs: Boolean;
