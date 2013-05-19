@@ -46,6 +46,11 @@ begin
   Result:=SysUtils.DirectoryExists(UTF8ToSys(Directory));
 end;
 
+function FileAgeUTF8(const FileName: String): Longint;
+begin
+  Result:=SysUtils.FileAge(UTF8ToSys(Filename));
+end;
+
 function ExpandFileNameUtf8(const FileName: string; {const} BaseDir: String = ''): String;
 var
   IsAbs: Boolean;

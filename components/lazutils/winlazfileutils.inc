@@ -4,7 +4,7 @@
 var
 //procedural variables for procedures that are implemented different on Win9x and NT or WinCE platform
 //They are intialized in InitLazFileUtils
-  //FileAge_         : function (const Filename:string):Longint;
+  _FileAgeUtf8         : function (const Filename:string):Longint;
   //FileSize_        : function (const Filename: string): int64;
   //FileSetDate_     : function (const FileName: String; Age: Longint): Longint;
   //FindFirst_       : function (const Path: string; Attr: Longint;
@@ -203,6 +203,11 @@ begin
     Result := False;
 end;
 
+function FileAgeUTF8(const FileName: String): Longint;
+begin
+  Result := _FileAgeUtf8(FileName);
+end;
+
 
 {******* ANSI functions *******}
 
@@ -243,6 +248,13 @@ begin
 end;
 
 
+function FileAgeAnsi(const FileName: String): Longint;
+begin
+  Result := SysUtils.FileAge(UTF8ToSys(Filename));
+end;
+
+
+
 {$endif WinCE}
 
 
@@ -261,6 +273,28 @@ const
     GENERIC_READ,
     GENERIC_WRITE,
     GENERIC_READ or GENERIC_WRITE);
+
+function WinToDosTime(Var Wtime : TFileTime; var DTime:longint):longbool;
+var
+  lft : TFileTime;
+begin
+  WinToDosTime:=FileTimeToLocalFileTime(WTime,lft)
+    {$ifndef WinCE}
+    and FileTimeToDosDateTime(lft,Longrec(Dtime).Hi,LongRec(DTIME).lo)
+    {$endif}
+    ;
+end;
+
+Function DosToWinTime(DosTime:longint; Var Wintime : TFileTime):longbool;
+var
+ lft : TFileTime;
+begin
+ DosToWinTime:=
+   {$ifndef wince}
+   DosDateTimeToFileTime(longrec(DosTime).hi,longrec(DosTime).lo,@lft) and
+   {$endif}
+   LocalFileTimeToFileTime(lft,Wintime);                                        ;
+end;
 
 function GetCurrentDirWide: String;
 var
@@ -351,6 +385,22 @@ begin
     Result := Integer(Windows.GetLastError);
 end;
 
+function FileAgeWide(const FileName: String): Longint;
+var
+  Hnd: THandle;
+  FindData: TWin32FindDataW;
+begin
+  Hnd := FindFirstFileW(PWideChar(UTF8ToUTF16(FileName)), FindData);
+   if Hnd <> INVALID_HANDLE_VALUE then
+    begin
+      Windows.FindClose(Hnd);
+      if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) = 0 then
+        If WinToDosTime(FindData.ftLastWriteTime,Result) then
+          exit;
+    end;
+   Result := -1;
+end;
+
 
 
 procedure InitLazFileUtils;
@@ -358,7 +408,7 @@ begin
   {$ifndef WinCE}
   if Win32MajorVersion <= 4 then
   begin
-    //FileAge_ := @FileAgeAnsi;
+    _FileAgeUtf8 := @FileAgeAnsi;
     //FileSize_ := @FileSizeAnsi;
     //FileSetDate_ := @FileSetDateAnsi;
     _FileGetAttrUtf8 := @FileGetAttrAnsi;
@@ -379,7 +429,7 @@ begin
   else
   {$endif}
   begin
-    //FileAge_ := @FileAgeWide;
+    _FileAgeUtf8 := @FileAgeWide;
     //FileSize_ := @FileSizeWide;
     //FileSetDate_ := @FileSetDateWide;
     _FileGetAttrUtf8 := @FileGetAttrWide;

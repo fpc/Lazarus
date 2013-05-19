@@ -1064,10 +1064,7 @@ end;
 
 
 
-function FileAgeUTF8(const FileName: String): Longint;
-begin
-  Result:=SysUtils.FileAge(UTF8ToSys(Filename));
-end;
+
 
 
 
