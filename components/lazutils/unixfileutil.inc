@@ -314,11 +314,6 @@ begin
 end;
 
 
-function FileExistsUTF8(const Filename: string): boolean;
-begin
-  Result:=SysUtils.FileExists(UTF8ToSys(Filename));
-end;
-
 function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec
   ): Longint;
 begin

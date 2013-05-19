@@ -213,7 +213,7 @@ function ConsoleToUTF8(const s: string): string;// converts OEM encoded string t
 function UTF8ToConsole(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
 
 // file operations
-function FileExistsUTF8(const Filename: string): boolean;
+function FileExistsUTF8(const Filename: string): boolean; inline;
 function FileAgeUTF8(const FileName: string): Longint;
 function DirectoryExistsUTF8(const Directory: string): Boolean;
 function ExpandFileNameUTF8(const FileName: string): string; inline;
