@@ -194,6 +194,9 @@ type
     property Control: TGroupedMatrixControl read FControl;
   end;
 
+  TOnGetCellHightlightColor = procedure(Sender: TObject; aCol,aRow: integer;
+    var aColor: TColor) of object;
+
   { TGroupedMatrixControl }
 
   TGroupedMatrixControl = class(TCustomDrawGrid)
@@ -203,6 +206,7 @@ type
     FIndent: integer;
     FMatrix: TGroupedMatrix;
     FMaxUndo: integer;
+    FOnGetCellHightlightColor: TOnGetCellHightlightColor;
     FTypeColumn: TGridColumn;
     FValueColumn: TGridColumn;
     fTypePopupMenu: TPopupMenu;
@@ -234,8 +238,6 @@ type
       const aState: TCheckboxState); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer
       ); override;
-    procedure PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState);
-      override;
     procedure PrepareGridCanvas;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
   public
@@ -271,6 +273,8 @@ type
   public
     property Options default DefaultModeMatrixOptions;
     property TitleStyle default tsNative;
+    property OnGetCellHightlightColor: TOnGetCellHightlightColor
+                 read FOnGetCellHightlightColor write FOnGetCellHightlightColor;
   end;
 
 function VerticalIntersect(const aRect,bRect: TRect): boolean;
@@ -1075,12 +1079,6 @@ begin
   end;
 end;
 
-procedure TGroupedMatrixControl.PrepareCanvas(aCol, aRow: Integer;
-  aState: TGridDrawState);
-begin
-  inherited PrepareCanvas(aCol, aRow, aState);
-end;
-
 procedure TGroupedMatrixControl.DrawRow(aRow: Integer);
 var
   aRect: TRect;
@@ -1444,7 +1442,9 @@ procedure TGroupedMatrixControl.DefaultDrawCell(aCol, aRow: Integer; var aRect: 
   procedure DrawActiveModeRow(ValueRow: TGroupedMatrixValue);
   begin
     if ActiveMode<0 then exit;
-    if IndexInStringList(ValueRow.Modes,cstCaseInsensitive,Modes[ActiveMode].Caption)<0 then exit;
+    if IndexInStringList(ValueRow.Modes,cstCaseInsensitive,Modes[ActiveMode].Caption)<0
+    then
+      exit;
     Canvas.GradientFill(Rect(aRect.Left,(aRect.Top+aRect.Bottom) div 2,aRect.Right,aRect.Bottom),
       Color,ActiveModeColor,gdVertical);
   end;
@@ -1457,6 +1457,7 @@ var
   ValueRow: TGroupedMatrixValue;
   ModeColor: TColor;
   StateColor: TColor;
+  aHighlightColor: TColor;
 begin
   //DebugLn(['TModeMatrixControl.DefaultDrawCell ']);
   if aRow=0 then begin
@@ -1498,6 +1499,14 @@ begin
         DrawActiveModeRow(ValueRow);
         DrawCellText(aCol,aRow,aRect,aState,ValueRow.Typ);
       end else if Column=ValueColumn then begin
+        if Assigned(OnGetCellHightlightColor) then begin
+          aHighlightColor:=clDefault;
+          OnGetCellHightlightColor(Self,aCol,aRow,aHighlightColor);
+          if aHighlightColor<>clDefault then
+            Canvas.GradientFill(
+              Rect(aRect.Left,aRect.Top,aRect.Right,(aRect.Top+aRect.Bottom) div 2),
+              aHighlightColor,Color,gdVertical);
+        end;
         DrawActiveModeRow(ValueRow);
         DrawCellText(aCol,aRow,aRect,aState,ValueRow.Value);
       end;

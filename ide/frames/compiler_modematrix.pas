@@ -64,9 +64,12 @@ type
     procedure BMMRedoToolButtonClick(Sender: TObject);
     procedure BMMUndoToolButtonClick(Sender: TObject);
     procedure GridEditingDone(Sender: TObject);
+    procedure GridGetCellHightlightColor(Sender: TObject; aCol, aRow: integer;
+      var aColor: TColor);
     procedure GridSelection(Sender: TObject; {%H-}aCol, {%H-}aRow: Integer);
     procedure GridShowHint(Sender: TObject; HintInfo: PHintInfo);
   private
+    FErrorColor: TColor;
     FGrid: TGroupedMatrixControl;
     FGroupIDE: TGroupedMatrixGroup;
     FGroupProject: TGroupedMatrixGroup;
@@ -103,6 +106,7 @@ type
     property IDEColor: TColor read FIDEColor write FIDEColor;
     property ProjectColor: TColor read FProjectColor write FProjectColor;
     property SessionColor: TColor read FSessionColor write FSessionColor;
+    property ErrorColor: TColor read FErrorColor write FErrorColor;
     property LazProject: TProject read FProject;
   end;
 
@@ -322,6 +326,7 @@ begin
         E(Format(lisMMInvalidCharacterInMacroValue, [dbgstr(p^)]));
       exit;
     end;
+    inc(p);
   until false;
   MacroValue:=copy(MacroAssignment,StartP-PChar(MacroAssignment)+1,p-StartP);
   Result:=true;
@@ -429,6 +434,27 @@ procedure TCompOptModeMatrix.GridEditingDone(Sender: TObject);
 begin
   //DebugLn(['TFrame1.GridEditingDone ']);
   UpdateButtons;
+end;
+
+procedure TCompOptModeMatrix.GridGetCellHightlightColor(Sender: TObject; aCol,
+  aRow: integer; var aColor: TColor);
+var
+  MatRow: TGroupedMatrixRow;
+  ValueRow: TGroupedMatrixValue;
+  MacroName: string;
+  MacroValue: string;
+begin
+  if aCol=Grid.ValueCol then begin
+    if aRow<Grid.FixedRows then exit;
+    MatRow:=Grid.Matrix[aRow-1];
+    if MatRow is TGroupedMatrixValue then begin
+      ValueRow:=TGroupedMatrixValue(MatRow);
+      if ValueRow.Typ=BuildMatrixOptionTypeCaption(bmotIDEMacro) then begin
+        if not SplitMatrixMacro(ValueRow.Value,MacroName,MacroValue,false) then
+          aColor:=ErrorColor;
+      end;
+    end;
+  end;
 end;
 
 procedure TCompOptModeMatrix.BMMRedoToolButtonClick(Sender: TObject);
@@ -754,6 +780,7 @@ begin
   IDEColor:=RGBToColor(200,255,255);
   ProjectColor:=RGBToColor(255,255,255);
   SessionColor:=RGBToColor(255,255,200);
+  ErrorColor:=RGBToColor(255,128,128);
 
   FGrid:=TGroupedMatrixControl.Create(Self);
   with Grid do begin
@@ -766,6 +793,7 @@ begin
     OnEditingDone:=@GridEditingDone;
     ShowHint:=true;
     OnShowHint:=@GridShowHint;
+    OnGetCellHightlightColor:=@GridGetCellHightlightColor;
   end;
 
   fGroupIDE:=Grid.Matrix.AddGroup(nil, lisMMStoredInIDEEnvironmentoptionsXml);
