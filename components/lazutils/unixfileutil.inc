@@ -366,11 +366,6 @@ begin
   Result:=SysUtils.RemoveDir(UTF8ToSys(Dir));
 end;
 
-function DirectoryExistsUTF8(const Directory: string): Boolean;
-begin
-  Result:=SysUtils.DirectoryExists(UTF8ToSys(Directory));
-end;
-
 
 function ExtractShortPathNameUTF8(const FileName: String): String;
 begin

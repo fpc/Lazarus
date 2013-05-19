@@ -54,6 +54,11 @@ begin
   Result := LazFileUtils.FileExistsUTF8(FileName);
 end;
 
+function DirectoryExistsUTF8(const Directory: string): Boolean; inline;
+begin
+  Result := LazFileUtils.DirectoryExistsUTF8(Directory);
+end;
+
 {$IFDEF darwin}
 function GetDarwinSystemFilename(Filename: string): string;
 var

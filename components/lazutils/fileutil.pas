@@ -215,7 +215,7 @@ function UTF8ToConsole(const s: string): string;// converts UTF8 string to conso
 // file operations
 function FileExistsUTF8(const Filename: string): boolean; inline;
 function FileAgeUTF8(const FileName: string): Longint;
-function DirectoryExistsUTF8(const Directory: string): Boolean;
+function DirectoryExistsUTF8(const Directory: string): Boolean; inline;
 function ExpandFileNameUTF8(const FileName: string): string; inline;
 function ExpandUNCFileNameUTF8(const FileName: string): string;
 function ExtractShortPathNameUTF8(Const FileName : String) : String;
