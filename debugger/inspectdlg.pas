@@ -179,6 +179,9 @@ begin
   DataPage.TabVisible:=true;
   PropertiesPage.TabVisible:=false;
   MethodsPage.TabVisible:=true;
+  if not (PageControl.ActivePage = MethodsPage) then
+    PageControl.ActivePage := DataPage;
+
 
   if not Assigned(FDBGInfo) then exit;
   if not Assigned(FDBGInfo.Fields) then exit;
@@ -198,6 +201,8 @@ begin
   DataPage.TabVisible:=true;
   PropertiesPage.TabVisible:=false;
   MethodsPage.TabVisible:=false;
+  PageControl.ActivePage := DataPage;
+
   if not Assigned(FDBGInfo) then exit;
   StatusBar1.SimpleText:=FExpression+' : Variant';
   GridDataSetup;
@@ -212,6 +217,7 @@ begin
   DataPage.TabVisible:=true;
   PropertiesPage.TabVisible:=false;
   MethodsPage.TabVisible:=false;
+  PageControl.ActivePage := DataPage;
 
   if not Assigned(FDBGInfo) then exit;
   if not Assigned(FDBGInfo.Fields) then exit;
@@ -226,6 +232,8 @@ begin
   DataPage.TabVisible:=true;
   PropertiesPage.TabVisible:=false;
   MethodsPage.TabVisible:=false;
+  PageControl.ActivePage := DataPage;
+
   if not Assigned(FDBGInfo) then exit;
   StatusBar1.SimpleText:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
   GridDataSetup;
@@ -240,6 +248,8 @@ begin
   DataPage.TabVisible:=true;
   PropertiesPage.TabVisible:=false;
   MethodsPage.TabVisible:=false;
+  PageControl.ActivePage := DataPage;
+
   if not Assigned(FDBGInfo) then exit;
   StatusBar1.SimpleText:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
   GridDataSetup;
@@ -257,6 +267,8 @@ begin
   DataPage.TabVisible:=true;
   PropertiesPage.TabVisible:=false;
   MethodsPage.TabVisible:=false;
+  PageControl.ActivePage := DataPage;
+
   if not Assigned(FDBGInfo) then exit;
   StatusBar1.SimpleText:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
   GridDataSetup;
@@ -274,6 +286,8 @@ begin
   DataPage.TabVisible:=true;
   PropertiesPage.TabVisible:=false;
   MethodsPage.TabVisible:=false;
+  PageControl.ActivePage := DataPage;
+
   if not Assigned(FDBGInfo) then exit;
   StatusBar1.SimpleText:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
   GridDataSetup;
@@ -352,7 +366,7 @@ begin
   k:=0;
   for j := 0 to FDBGInfo.Fields.Count-1 do begin
     case FDBGInfo.Fields[j].DBGType.Kind of
-      skSimple,skRecord,skPointer: inc(k);
+      skSimple,skRecord,skVariant,skPointer: inc(k);
     end;
   end;
   k:=k+1;
