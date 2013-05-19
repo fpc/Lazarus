@@ -210,7 +210,7 @@ type
 
   TGDBMIProcessResultOpt = (
     prNoLeadingTab,      // Do not require/strip the leading #9
-    prKeepBackSlash     // Workaround, because TGDBMINameValueList does already do this
+    prKeepBackSlash     // Workaround, backslash may have been removed already
   );
   TGDBMIProcessResultOpts = set of TGDBMIProcessResultOpt;
 
@@ -8851,11 +8851,11 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
 
   procedure AddLocals(const AParams: String);
   var
-    n, e: Integer;
+    n: Integer;
     addr: TDbgPtr;
     LocList, List: TGDBMINameValueList;
     Item: PGDBMINameValue;
-    S, Name, Value: String;
+    Name, Value: String;
   begin
     LocList := TGDBMINameValueList.Create(AParams);
     List := TGDBMINameValueList.Create('');
@@ -8895,7 +8895,7 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
       begin
         // AnsiString
         if (length(Value) > 0) and (Value[1] in ['''', '#']) then begin
-          Value := MakePrintable(ProcessGDBResultText(Value, [prNoLeadingTab, prKeepBackSlash]));
+          Value := MakePrintable(ProcessGDBResultText(Value, [prNoLeadingTab]));
         end
         else
           Value := DeleteEscapeChars(List.Values['value']);
@@ -8903,7 +8903,7 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
       else
       // ShortString
       if (length(Value) > 0) and (Value[1] in ['''', '#']) then begin
-        Value := MakePrintable(ProcessGDBResultText(Value, [prNoLeadingTab, prKeepBackSlash]));
+        Value := MakePrintable(ProcessGDBResultText(Value, [prNoLeadingTab]));
       end
       else
         Value := DeleteEscapeChars(Value);
