@@ -208,6 +208,12 @@ type
 
   TGDBMIBreakpointReason = (gbrBreak, gbrWatchTrigger, gbrWatchScope);
 
+  TGDBMIProcessResultOpt = (
+    prNoLeadingTab,      // Do not require/strip the leading #9
+    prKeepBackShlash     // Workaround, because TGDBMINameValueList does already do this
+  );
+  TGDBMIProcessResultOpts = set of TGDBMIProcessResultOpt;
+
   TGDBMIDebuggerCommand = class(TRefCountedObject)
   private
     FDefaultTimeOut: Integer;
@@ -269,8 +275,7 @@ type
                             ): Boolean; overload;
     procedure DoTimeoutFeedback;
     function  ProcessResult(var AResult: TGDBMIExecResult; ATimeOut: Integer = -1): Boolean;
-    function  ProcessGDBResultText(S: String; NoLeadingTab: Boolean = False;
-                                   NoBackSlashRemove: Boolean = False): String;
+    function  ProcessGDBResultText(S: String; Opts: TGDBMIProcessResultOpts = []): String;
     function  GetStackDepth(MaxDepth: integer): Integer;
     function  FindStackFrame(FP: TDBGPtr; StartAt, MaxDepth: Integer): Integer;
     function  GetFrame(const AIndex: Integer): String;
@@ -8890,7 +8895,7 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
       begin
         // AnsiString
         if (length(Value) > 0) and (Value[1] in ['''', '#']) then begin
-          Value := MakePrintable(ProcessGDBResultText(Value, True, True));
+          Value := MakePrintable(ProcessGDBResultText(Value, [prNoLeadingTab, prKeepBackShlash]));
         end
         else
           Value := DeleteEscapeChars(List.Values['value']);
@@ -8898,7 +8903,7 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
       else
       // ShortString
       if (length(Value) > 0) and (Value[1] in ['''', '#']) then begin
-        Value := MakePrintable(ProcessGDBResultText(Value, True, True));
+        Value := MakePrintable(ProcessGDBResultText(Value, [prNoLeadingTab, prKeepBackShlash]));
       end
       else
         Value := DeleteEscapeChars(Value);
@@ -10820,7 +10825,7 @@ begin
 end;
 
 function TGDBMIDebuggerCommand.ProcessGDBResultText(S: String;
-  NoLeadingTab: Boolean = False; NoBackSlashRemove: Boolean = False): String;
+  Opts: TGDBMIProcessResultOpts = []): String;
 var
   Trailor: String;
   n, len, idx: Integer;
@@ -10829,7 +10834,7 @@ begin
 
   // don't use ' as end terminator, there might be one as part of the text
   // since ' will be the last char, simply strip it.
-  if (not NoLeadingTab) then begin
+  if not (prNOLeadingTab in Opts) then begin
     S := GetPart(['\t'], [], S);
     if (length(S) > 0) and (S[1] = ' ') then
       delete(S,1,1);
@@ -10856,7 +10861,7 @@ begin
               if idx > len then Break;
               if S[idx] <> '''' then Break;
             end;
-            '\' : if not NoBackSlashRemove then begin
+            '\' : if not (prKeepBackShlash in Opts) then begin
               Inc(idx);
               if idx > len then Break;
               case S[idx] of
@@ -12609,7 +12614,7 @@ var
             if (i <= length(FTextValue)) and (FTextValue[i] in ['''', '#'])
             then
               FTextValue := MakePrintable(ProcessGDBResultText(
-                copy(FTextValue, i, length(FTextValue) - i + 1), True, True))
+                copy(FTextValue, i, length(FTextValue) - i + 1), [prNoLeadingTab, prKeepBackShlash]))
             else
             if Addr = 0
             then
@@ -12691,7 +12696,7 @@ var
           FTextValue := FormatCurrency(FTextValue)
         else
         if ResultInfo.TypeName = 'ShortString' then
-          FTextValue := MakePrintable(ProcessGDBResultText(FTextValue, True, True))
+          FTextValue := MakePrintable(ProcessGDBResultText(FTextValue, [prNoLeadingTab, prKeepBackShlash]))
         else
         if (ResultInfo.TypeName = '&ShortString') then // should no longer happen
           FTextValue := GetStrValue('ShortString(%s)', [AnExpression]) // we have an address here, so we need to typecast
