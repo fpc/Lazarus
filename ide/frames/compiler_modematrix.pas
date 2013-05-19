@@ -35,9 +35,9 @@ interface
 
 uses
   Classes, SysUtils, types, LazFileUtils, LazLogger, KeywordFuncLists,
-  IDEOptionsIntf, IDEImagesIntf, LResources, Forms, Controls, Graphics,
-  ComCtrls, Menus, ModeMatrixCtrl, EnvironmentOpts, ModeMatrixOpts, Project,
-  LazarusIDEStrConsts, TransferMacros;
+  IDEOptionsIntf, IDEImagesIntf, CompOptsIntf, LResources, Forms, Controls,
+  Graphics, ComCtrls, Menus, ModeMatrixCtrl, EnvironmentOpts, ModeMatrixOpts,
+  Project, LazarusIDEStrConsts, TransferMacros, PackageSystem, PackageDefs;
 
 type
 
@@ -60,6 +60,7 @@ type
     procedure BMMDeleteToolButtonClick(Sender: TObject);
     procedure BMMMoveDownToolButtonClick(Sender: TObject);
     procedure BMMMoveUpToolButtonClick(Sender: TObject);
+    procedure BMMNewPopupMenuPopup(Sender: TObject);
     procedure BMMRedoToolButtonClick(Sender: TObject);
     procedure BMMUndoToolButtonClick(Sender: TObject);
     procedure BMMNewOptionMenuItemClick(Sender: TObject);
@@ -533,6 +534,52 @@ end;
 procedure TCompOptModeMatrix.BMMMoveUpToolButtonClick(Sender: TObject);
 begin
   MoveRow(-1);
+end;
+
+procedure TCompOptModeMatrix.BMMNewPopupMenuPopup(Sender: TObject);
+var
+  i: Integer;
+  Pkg: TLazPackage;
+  Macros: TLazBuildMacros;
+  j: Integer;
+  Macro: TLazBuildMacro;
+  List: TStringList;
+  MenuIndex: Integer;
+  MacroMenuItem: TMenuItem;
+  ValueMenuItem: TMenuItem;
+begin
+  List:=TStringList.Create;
+  try
+    for i:=0 to PackageGraph.Count-1 do begin
+      Pkg:=PackageGraph[i];
+      Macros:=Pkg.CompilerOptions.BuildMacros;
+      for j:=0 to Macros.Count-1 do begin
+        Macro:=Macros[j];
+        if not IsValidIdent(Macro.Identifier) then continue;
+        List.AddObject(Macro.Identifier,Macro);
+      end;
+    end;
+    List.Sort;
+    MenuIndex:=2;
+    for i:=0 to List.Count-1 do begin
+      Macro:=TLazBuildMacro(List.Objects[i]);
+      if BMMNewPopupMenu.Items.Count=MenuIndex then
+        BMMNewPopupMenu.Items.Add(TMenuItem.Create(Self));
+      MacroMenuItem:=BMMNewPopupMenu.Items[MenuIndex];
+      MacroMenuItem.Caption:='Set "'+Macro.Identifier+'"';
+      if Macro.Values<>nil then begin
+        for j:=0 to Macro.Values.Count-1 do begin
+          if j=MacroMenuItem.Count then
+            MacroMenuItem.Add(TMenuItem.Create(Self));
+          ValueMenuItem:=MacroMenuItem.Items[j];
+          ValueMenuItem.Caption:='Value "'+Macro.Values[j]+'"';
+        end;
+      end;
+      inc(MenuIndex);
+    end;
+  finally
+    List.Free;
+  end;
 end;
 
 procedure TCompOptModeMatrix.BMMMoveDownToolButtonClick(Sender: TObject);

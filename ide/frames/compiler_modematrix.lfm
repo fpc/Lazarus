@@ -88,6 +88,7 @@ object CompOptModeMatrix: TCompOptModeMatrix
     end
   end
   object BMMNewPopupMenu: TPopupMenu
+    OnPopup = BMMNewPopupMenuPopup
     left = 232
     top = 93
     object BMMNewOptionMenuItem: TMenuItem
