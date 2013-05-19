@@ -2534,12 +2534,8 @@ begin
   if lineWidth > 1 then
     q_DrawWinPanel(Widget, x, y, w, h, Palette, Sunken, FillBrush)
   else
-  begin
-    if FillBrush = nil then
-      q_DrawShadePanel(Widget, x, y, w, h, Palette, Sunken, 1, QPalette_background(Palette))
-    else
-      q_DrawShadePanel(Widget, x, y, w, h, Palette, Sunken, 1, FillBrush);
-  end;
+    q_DrawShadePanel(Widget, x, y, w, h, Palette, Sunken, 1, FillBrush);
+
   if AppPalette <> nil then
   begin
     QPalette_destroy(AppPalette);
