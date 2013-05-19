@@ -17,39 +17,26 @@
  *****************************************************************************
 }
  
-var
-  FNeedRTLAnsi: boolean = false;
-  FNeedRTLAnsiValid: boolean = false;
 
+function NeedRTLAnsi: boolean;
+begin
+  Result := LazUtf8.NeedRTLAnsi;
+end;
 
 procedure SetNeedRTLAnsi(NewValue: boolean);
 begin
-  FNeedRTLAnsi:=NewValue;
-  FNeedRTLAnsiValid:=true;
+  LazUtf8.SetNeedRTLAnsi(NewValue);
 end;
 
-function IsASCII(const s: string): boolean; inline;
-var
-  i: Integer;
-begin
-  for i:=1 to length(s) do if ord(s[i])>127 then exit(false);
-  Result:=true;
-end;
 
 function UTF8ToSys(const s: string): string;
 begin
-  if NeedRTLAnsi and (not IsASCII(s)) then
-    Result := UTF8ToAnsi(s)
-  else
-    Result := s;
+  Result := LazUtf8.UTF8ToSys(s);
 end;
 
 function SysToUTF8(const s: string): string;
 begin
-  if NeedRTLAnsi and (not IsASCII(s)) then
-    Result:=AnsiToUTF8(s)
-  else
-    Result:=s;
+  Result := LazUtf8.SysToUTF8(s);
 end;
 
 {$IFDEF darwin}
