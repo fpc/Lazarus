@@ -39,6 +39,8 @@ uses
 
 type
 
+  TDBGPtr = type QWord;
+
   { TDelayedUdateItem }
 
   TDelayedUdateItem = class(TCollectionItem)
@@ -75,6 +77,7 @@ function UnQuote(const AValue: String): String;
 function Quote(const AValue: String; AForce: Boolean=False): String;
 function ConvertGdbPathAndFile(const AValue: String): String; // fix path, delim, unescape, and to utf8
 function ParseGDBString(const AValue: String): String; // remove quotes(') and convert #dd chars: #9'ab'#9'x'
+function GetLeadingAddr(var AValue: String; out AnAddr: TDBGPtr; ARemoveFromValue: Boolean = False): Boolean;
 
 procedure SmartWriteln(const s: string);
 
@@ -224,7 +227,7 @@ begin
         if not InString then
           ToggleInString;
         Result := Result + AString[n];
-        //if AString[n] = '''' then Result := Result + '''';
+        if AString[n] = '''' then Result := Result + '''';
       end;
     #192..#255: begin // Maybe utf8
         u := UTF8CharacterLength(@AString[n]);
@@ -405,6 +408,31 @@ begin
     Result[j] := chr(v and 255);
   end;
   SetLength(Result, j);
+end;
+
+function GetLeadingAddr(var AValue: String; out AnAddr: TDBGPtr;
+  ARemoveFromValue: Boolean): Boolean;
+var
+  i, e: Integer;
+begin
+  AnAddr := 0;
+  Result := (length(AValue) >= 2) and (AValue[1] = '0') and (AValue[2] = 'x');
+
+  if not Result then exit;
+
+  i := 2;
+  while (i < length(AValue)) and (AValue[i+1] in ['0'..'9', 'a'..'f', 'A'..'F']) do inc(i);
+  Result := i > 2;
+  if not Result then exit;
+
+  Val(copy(AValue,1 , i), AnAddr, e);
+  Result := e = 0;
+  if not Result then exit;
+
+  if ARemoveFromValue then begin
+    if (i < length(AValue)) and (AValue[i+1] in [' ']) then inc(i);
+    delete(AValue, 1, i);
+  end;
 end;
 
 function DeleteEscapeChars(const AValue: String; const AEscapeChar: Char): String;

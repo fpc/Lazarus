@@ -43,7 +43,7 @@ uses
 
 type
   // datatype pointing to data on the target
-  TDBGPtr = type QWord;
+  TDBGPtr = DebugUtils.TDBGPtr;
 
   TDBGLocationRec = record
     Address: TDBGPtr;
