@@ -210,7 +210,7 @@ type
 
   TGDBMIProcessResultOpt = (
     prNoLeadingTab,      // Do not require/strip the leading #9
-    prKeepBackShlash     // Workaround, because TGDBMINameValueList does already do this
+    prKeepBackSlash     // Workaround, because TGDBMINameValueList does already do this
   );
   TGDBMIProcessResultOpts = set of TGDBMIProcessResultOpt;
 
@@ -8895,7 +8895,7 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
       begin
         // AnsiString
         if (length(Value) > 0) and (Value[1] in ['''', '#']) then begin
-          Value := MakePrintable(ProcessGDBResultText(Value, [prNoLeadingTab, prKeepBackShlash]));
+          Value := MakePrintable(ProcessGDBResultText(Value, [prNoLeadingTab, prKeepBackSlash]));
         end
         else
           Value := DeleteEscapeChars(List.Values['value']);
@@ -8903,7 +8903,7 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
       else
       // ShortString
       if (length(Value) > 0) and (Value[1] in ['''', '#']) then begin
-        Value := MakePrintable(ProcessGDBResultText(Value, [prNoLeadingTab, prKeepBackShlash]));
+        Value := MakePrintable(ProcessGDBResultText(Value, [prNoLeadingTab, prKeepBackSlash]));
       end
       else
         Value := DeleteEscapeChars(Value);
@@ -10861,7 +10861,7 @@ begin
               if idx > len then Break;
               if S[idx] <> '''' then Break;
             end;
-            '\' : if not (prKeepBackShlash in Opts) then begin
+            '\' : if not (prKeepBackSlash in Opts) then begin
               Inc(idx);
               if idx > len then Break;
               case S[idx] of
@@ -12614,7 +12614,7 @@ var
             if (i <= length(FTextValue)) and (FTextValue[i] in ['''', '#'])
             then
               FTextValue := MakePrintable(ProcessGDBResultText(
-                copy(FTextValue, i, length(FTextValue) - i + 1), [prNoLeadingTab, prKeepBackShlash]))
+                copy(FTextValue, i, length(FTextValue) - i + 1), [prNoLeadingTab, prKeepBackSlash]))
             else
             if Addr = 0
             then
@@ -12696,7 +12696,7 @@ var
           FTextValue := FormatCurrency(FTextValue)
         else
         if ResultInfo.TypeName = 'ShortString' then
-          FTextValue := MakePrintable(ProcessGDBResultText(FTextValue, [prNoLeadingTab, prKeepBackShlash]))
+          FTextValue := MakePrintable(ProcessGDBResultText(FTextValue, [prNoLeadingTab, prKeepBackSlash]))
         else
         if (ResultInfo.TypeName = '&ShortString') then // should no longer happen
           FTextValue := GetStrValue('ShortString(%s)', [AnExpression]) // we have an address here, so we need to typecast
