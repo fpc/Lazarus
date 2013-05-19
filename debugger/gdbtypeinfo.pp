@@ -2642,7 +2642,7 @@ var
   var
     ResultList: TGDBMINameValueList;
   begin
-    ResultList := TGDBMINameValueList.Create(AGdbDesc); // TODO: this removes \\ to single \. BUt does not deal with gdb \r\n stuff
+    ResultList := TGDBMINameValueList.Create(AGdbDesc);
     Result := ResultList.Values[AField];
     //FTextValue := DeleteEscapeChars(FTextValue);
     ResultList.Free;

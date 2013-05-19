@@ -210,7 +210,11 @@ type
 
   TGDBMIProcessResultOpt = (
     prNoLeadingTab,      // Do not require/strip the leading #9
-    prKeepBackSlash     // Workaround, backslash may have been removed already
+    prKeepBackSlash,    // Workaround, backslash may have been removed already
+
+    // for structures
+    prStripAddressFromString,
+    prMakePrintAble
   );
   TGDBMIProcessResultOpts = set of TGDBMIProcessResultOpt;
 
@@ -275,6 +279,7 @@ type
                             ): Boolean; overload;
     procedure DoTimeoutFeedback;
     function  ProcessResult(var AResult: TGDBMIExecResult; ATimeOut: Integer = -1): Boolean;
+    function  ProcessGDBResultStruct(S: String; Opts: TGDBMIProcessResultOpts = []): String; // Must have at least one flag for structs
     function  ProcessGDBResultText(S: String; Opts: TGDBMIProcessResultOpts = []): String;
     function  GetStackDepth(MaxDepth: integer): Integer;
     function  FindStackFrame(FP: TDBGPtr; StartAt, MaxDepth: Integer): Integer;
@@ -8887,7 +8892,7 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
         if GetLeadingAddr(Value, addr) then begin
           if addr = 0
           then Value := ''''''
-          else Value := MakePrintable(GetText(addr)); // TODO: NoBackSlashRemove for ProcessGDBResultText
+          else Value := MakePrintable(GetText(addr));
         end;
       end
       else
@@ -8898,7 +8903,7 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
           Value := MakePrintable(ProcessGDBResultText(Value, [prNoLeadingTab]));
         end
         else
-          Value := DeleteEscapeChars(List.Values['value']);
+          Value := ProcessGDBResultStruct(List.Values['value'], [prNoLeadingTab, prMakePrintAble, prStripAddressFromString]);
       end
       else
       // ShortString
@@ -8906,7 +8911,7 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
         Value := MakePrintable(ProcessGDBResultText(Value, [prNoLeadingTab]));
       end
       else
-        Value := DeleteEscapeChars(Value);
+        Value := ProcessGDBResultStruct(Value, [prNoLeadingTab, prMakePrintAble, prStripAddressFromString]);
 
       FLocals.Add(Name, Value);
     end;
@@ -10822,6 +10827,108 @@ begin
       break;
     end;
   until not FTheDebugger.DebugProcessRunning;
+end;
+
+function TGDBMIDebuggerCommand.ProcessGDBResultStruct(S: String;
+  Opts: TGDBMIProcessResultOpts): String;
+
+  function ProcessData(AData: String): String;
+  var
+    addr: TDBGPtr;
+  begin
+    Result := AData;
+    if (prStripAddressFromString in Opts) and GetLeadingAddr(Result, addr, True) then
+      if (Result = '') or not(Result[1] in ['''', '#']) then
+        Result := AData; // Restore address, not a string
+
+    if (Result <> '') and (Result[1] in ['''', '#']) and (prMakePrintAble in Opts) then
+      Result := MakePrintable(ProcessGDBResultText(Result, Opts + [prNoLeadingTab]));
+  end;
+
+var
+  start, idx, len: Integer;
+  InQuote, InSingle, InValue: Boolean;
+  InStruct: Integer;
+begin
+  Result := '';
+  InQuote := False;  // "
+  InSingle := False; // '
+  InValue := False;  // after "="
+  InStruct := 0;
+  len := Length(S);
+  start := 1;
+  idx := 1;
+  while idx <= len do begin
+    case S[idx] of
+      '"': begin // will be escaped if in single quotes
+          inc(idx);
+          InValue := False; // should never happen
+          if not InQuote then
+            Result := Result + copy(s, start, idx - start)
+          else
+            Result := Result + ProcessData(copy(s, start, idx - start - 1)) + '"';
+          InQuote := not InQuote;
+          start := idx;
+        end;
+      '\': begin
+          inc(idx,2);
+        end;
+      '''': begin
+          InSingle := not InSingle;
+          inc(idx);
+        end;
+      '=': begin
+          if (not (InQuote or InSingle)) and (InStruct > 0) and (idx > 1) and (idx < len) and
+             (S[idx-1] = ' ') and (S[idx+1] = ' ') then
+          begin
+            inc(idx, 2);
+            Result := Result + copy(s, start, idx - start);
+            start := idx;
+            InValue := True;
+          end
+          else
+            inc(idx);
+        end;
+      ',': begin
+          if (not (InQuote or InSingle)) and InValue and (idx < len) and
+             (S[idx+1] = ' ')
+          then begin
+            Result := Result + ProcessData(copy(s, start, idx - start));
+            start := idx;
+            InValue := False;
+          end
+          else
+            inc(idx);
+        end;
+      '}': begin
+          if (not (InQuote or InSingle)) then begin
+            if InStruct > 0 then
+              dec(InStruct);
+            if InValue then begin
+              Result := Result + ProcessData(copy(s, start, idx - start));
+              start := idx;
+            end;
+            InValue := False;
+          end;
+          inc(idx);
+        end;
+      '{': begin
+          if (not (InQuote or InSingle)) then begin
+            inc(InStruct);
+            InValue := False;
+           end;
+          inc(idx);
+        end;
+      else begin
+          inc(idx);
+        end;
+    end;
+  end;
+  if idx > len then idx := len + 1;
+  if not InQuote then
+    Result := Result + copy(s, start, idx - start)
+  else
+    Result := Result + ProcessData(copy(s, start, idx - start - 1)) + '"';
 end;
 
 function TGDBMIDebuggerCommand.ProcessGDBResultText(S: String;
@@ -12941,7 +13048,7 @@ var
           end;
           if FTypeInfo.HasExprEvaluatedAsText then begin
             FTextValue := FTypeInfo.ExprEvaluatedAsText;
-            FTextValue := DeleteEscapeChars(FTextValue);
+            FTextValue := DeleteEscapeChars(FTextValue); // TODO: move to FixUpResult / only if really needed
             FValidity := ddsValid;
             Result := True;
             FixUpResult(AnExpression, FTypeInfo);
@@ -12949,7 +13056,7 @@ var
             if FTypeInfo.HasStringExprEvaluatedAsText then begin
               s := FTextValue;
               FTextValue := FTypeInfo.StringExprEvaluatedAsText;
-              FTextValue := DeleteEscapeChars(FTextValue);
+              FTextValue := DeleteEscapeChars(FTextValue); // TODO: move to FixUpResult / only if really needed
               FixUpResult(AnExpression, FTypeInfo);
               FTextValue := 'PCHAR: ' + s + LineEnding + 'STRING: ' + FTextValue;
             end;
