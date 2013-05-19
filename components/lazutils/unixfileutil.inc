@@ -135,13 +135,7 @@ begin
   Result:=st.st_size;
 end;
 
-{------------------------------------------------------------------------------
-FileSetDateUTF8
-------------------------------------------------------------------------------}
-function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
-begin
- Result:=SysUtils.FileSetDate(UTF8ToSys(Filename),Age);
-end;         
+
 
 {------------------------------------------------------------------------------
   GetFileDescription

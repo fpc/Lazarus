@@ -64,6 +64,11 @@ begin
   Result := LazFileUtils.FileAgeUTF8(FileName);
 end;
 
+function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
+begin
+  Result := LazFileUtils.FileSetDateUTF8(FileName, Age);
+end;
+
 {$IFDEF darwin}
 function GetDarwinSystemFilename(Filename: string): string;
 var

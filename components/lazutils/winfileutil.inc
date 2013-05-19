@@ -242,35 +242,6 @@ begin
   Windows.FindClose(FindHandle);
 end;
 
-{-------------------------------------------------------------------------------
-FileSetDateUTF8
--------------------------------------------------------------------------------}
-{$ifndef WinCE}
-function FileSetDateAnsi(const FileName: String; Age: Longint): Longint;
-begin
- Result:=SysUtils.FileSetDate(UTF8ToSys(Filename),Age);
-end;
-{$endif}
-
-function FileSetDateWide(const FileName: String; Age: Longint): Longint;
-var
- FT:TFileTime;
- fh: HANDLE;
-begin
-   try
-     fh := CreateFileW(PWideChar(UTF8ToUTF16(FileName)),
-                       FILE_WRITE_ATTRIBUTES,
-                       0, nil, OPEN_EXISTING,
-                       FILE_ATTRIBUTE_NORMAL, 0);
-     if (fh <> feInvalidHandle) and (DosToWinTime(Age,FT) and SetFileTime(fh, nil, nil, @FT)) then
-       Result := 0
-     else
-       Result := GetLastError;
-   finally
-     if (fh <> feInvalidHandle) then FileClose(fh);
-   end;
-end;
-
 
 {------------------------------------------------------------------------------
   FindFirstUTF8
@@ -520,7 +491,6 @@ end;
 
 var
   FileSize_        : function (const Filename: string): int64 = @FileSizeWide;
-  FileSetDate_     : function (const FileName: String; Age: Longint): Longint = @FileSetDateWide;
   FindFirst_       : function (const Path: string; Attr: Longint;
                        out Rslt: TSearchRec): Longint = @FindFirstWide;
   FindNext_        : function (var Rslt: TSearchRec): Longint = @FindNextWide;
@@ -540,10 +510,6 @@ begin
   Result:=FileSize_(FileName);
 end;
 
-function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
-begin
-  Result:=FileSetDate_(FileName, Age);
-end;               
 
 function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
 begin
@@ -626,7 +592,6 @@ begin
   if Win32MajorVersion <= 4 then
   begin
     FileSize_:=@FileSizeAnsi;
-    FileSetDate_:=@FileSetDateAnsi;
     DeleteFile_:=@DeleteFileAnsi;
     RenameFile_:=@RenameFileAnsi;
     SetCurrentDir_:=@SetCurrentDirAnsi;

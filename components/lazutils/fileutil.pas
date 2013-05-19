@@ -222,7 +222,7 @@ function ExtractShortPathNameUTF8(Const FileName : String) : String;
 function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
 function FindNextUTF8(var Rslt: TSearchRec): Longint;
 procedure FindCloseUTF8(var F: TSearchrec);
-function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
+function FileSetDateUTF8(const FileName: String; Age: Longint): Longint; inline;
 function FileGetAttrUTF8(const FileName: String): Longint; inline;
 function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint; inline;
 function DeleteFileUTF8(const FileName: String): Boolean;
