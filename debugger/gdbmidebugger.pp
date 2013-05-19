@@ -8862,18 +8862,46 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
       if Name = 'this'
       then Name := 'Self';
 
-      Value := DeleteEscapeChars(List.Values['value']);
-      // try to deref. strings
-      S := GetPart(['(pchar) ', '(ansistring) '], [], Value, True, False);
-      if S <> ''
-      then begin
-        addr := 0;
-        Val(S, addr, e);
-        if e=0 then ;
-        if addr = 0
-        then Value := ''''''
-        else Value := '''' + GetText(addr) + '''';
-      end;
+      Value := List.Values['value'];
+      (* GDB up to about 6.6 (stabs only) may return:
+         {name="ARGANSISTRING",value="(ANSISTRING) 0x43cc84"}
+       * newer GDB may return AnsiString/PChar prefixed with an address (shortstring have no address)
+         {name="ARGANSISTRING",value="0x43cc84 'Ansi'"}
+      *)
+      if (lowercase(copy(Value, 1, 8)) = '(pchar) ') then begin
+        delete(Value, 1, 8);
+        if GetLeadingAddr(Value, addr) then begin
+          if addr = 0
+          then Value := ''''''
+          else Value := MakePrintable(GetText(addr));
+        end;
+      end
+      else
+      if (lowercase(copy(Value, 1, 13)) = '(ansistring) ') then begin
+        delete(Value, 1, 13);
+        if GetLeadingAddr(Value, addr) then begin
+          if addr = 0
+          then Value := ''''''
+          else Value := MakePrintable(GetText(addr)); // TODO: NoBackSlashRemove for ProcessGDBResultText
+        end;
+      end
+      else
+      if GetLeadingAddr(Value, addr, True) then
+      begin
+        // AnsiString
+        if (length(Value) > 0) and (Value[1] in ['''', '#']) then begin
+          Value := MakePrintable(ProcessGDBResultText(Value, True, True));
+        end
+        else
+          Value := DeleteEscapeChars(List.Values['value']);
+      end
+      else
+      // ShortString
+      if (length(Value) > 0) and (Value[1] in ['''', '#']) then begin
+        Value := MakePrintable(ProcessGDBResultText(Value, True, True));
+      end
+      else
+        Value := DeleteEscapeChars(Value);
 
       FLocals.Add(Name, Value);
     end;
