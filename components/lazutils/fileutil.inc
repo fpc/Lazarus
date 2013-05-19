@@ -69,6 +69,11 @@ begin
   Result := LazFileUtils.FileSetDateUTF8(FileName, Age);
 end;
 
+function FileSize(const Filename: string): int64;
+begin
+  Result := LazFileUtils.FileSizeUtf8(FileName);
+end;
+
 {$IFDEF darwin}
 function GetDarwinSystemFilename(Filename: string): string;
 var

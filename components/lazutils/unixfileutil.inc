@@ -124,20 +124,6 @@ end;
 
 
 {------------------------------------------------------------------------------
-  FileSize
- ------------------------------------------------------------------------------}
-function FileSize(const Filename: string): int64;
-var
-  st: baseunix.stat;
-begin
-  if not fpstat(pointer(Filename),st{%H-})>=0 then
-    exit(-1);
-  Result:=st.st_size;
-end;
-
-
-
-{------------------------------------------------------------------------------
   GetFileDescription
  ------------------------------------------------------------------------------}
 function GetFileDescription(const AFilename: string): string;

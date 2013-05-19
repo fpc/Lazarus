@@ -197,50 +197,6 @@ begin
 end;
 
 
-{------------------------------------------------------------------------------
-  FileSize
- ------------------------------------------------------------------------------}
-{$ifndef WinCE}
-function FileSizeAnsi(const Filename: string): int64;
-var
-  FindData: TWIN32FindDataA;
-  FindHandle: THandle;
-  Str: AnsiString;
-begin
-  // Fix for the bug 14360:
-  // Don't assign the widestring to TSearchRec.name because it is of type
-  // string, which will generate a conversion to the system encoding
-  Str := Utf8ToAnsi(Filename);
-  FindHandle:=Windows.FindFirstFileA(PAnsiChar(Str), FindData);
-  if FindHandle=Windows.Invalid_Handle_value then
-  begin
-    Result:=-1;
-    exit;
-  end;
-  Result:=(int64(FindData.nFileSizeHigh) shl 32)+FindData.nFileSizeLow;
-  Windows.FindClose(FindHandle);
-end;
-{$endif}
-
-function FileSizeWide(const Filename: string): int64;
-var
-  FindData: TWIN32FindDataW;
-  FindHandle: THandle;
-  Str: WideString;
-begin
-  // Fix for the bug 14360:
-  // Don't assign the widestring to TSearchRec.name because it is of type
-  // string, which will generate a conversion to the system encoding
-  Str := UTF8Decode(Filename);
-  FindHandle:=Windows.FindFirstFileW(PWideChar(Str), FindData);
-  if FindHandle=Windows.Invalid_Handle_value then
-  begin
-    Result:=-1;
-    exit;
-  end;
-  Result:=(int64(FindData.nFileSizeHigh) shl 32)+FindData.nFileSizeLow;
-  Windows.FindClose(FindHandle);
-end;
 
 
 {------------------------------------------------------------------------------
@@ -490,7 +446,6 @@ begin
 end;
 
 var
-  FileSize_        : function (const Filename: string): int64 = @FileSizeWide;
   FindFirst_       : function (const Path: string; Attr: Longint;
                        out Rslt: TSearchRec): Longint = @FindFirstWide;
   FindNext_        : function (var Rslt: TSearchRec): Longint = @FindNextWide;
@@ -505,11 +460,6 @@ var
   
 
   
-function FileSize(const Filename: string): int64;
-begin
-  Result:=FileSize_(FileName);
-end;
-
 
 function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
 begin
@@ -591,7 +541,6 @@ begin
   {$ifndef WinCE}
   if Win32MajorVersion <= 4 then
   begin
-    FileSize_:=@FileSizeAnsi;
     DeleteFile_:=@DeleteFileAnsi;
     RenameFile_:=@RenameFileAnsi;
     SetCurrentDir_:=@SetCurrentDirAnsi;
