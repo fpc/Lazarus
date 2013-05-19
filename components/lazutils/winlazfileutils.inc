@@ -192,6 +192,17 @@ begin
     Result:=False;
 end;
 
+function DirectoryExistsUTF8(const Directory: string): boolean;
+var
+  Attr: Longint;
+begin
+  Attr := _FileGetAttrUTF8(Directory);
+  if Attr <> -1 then
+    Result := (Attr and FILE_ATTRIBUTE_DIRECTORY) > 0
+  else
+    Result := False;
+end;
+
 
 {******* ANSI functions *******}
 

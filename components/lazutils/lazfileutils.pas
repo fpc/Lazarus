@@ -1069,10 +1069,7 @@ begin
   Result:=SysUtils.FileAge(UTF8ToSys(Filename));
 end;
 
-function DirectoryExistsUTF8(const Directory: string): Boolean;
-begin
-  Result:=SysUtils.DirectoryExists(UTF8ToSys(Directory));
-end;
+
 
 
 function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec

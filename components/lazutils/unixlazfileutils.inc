@@ -41,6 +41,11 @@ begin
   Result:=SysUtils.FileExists(UTF8ToSys(Filename));
 end;
 
+function DirectoryExistsUTF8(const Directory: string): Boolean;
+begin
+  Result:=SysUtils.DirectoryExists(UTF8ToSys(Directory));
+end;
+
 function ExpandFileNameUtf8(const FileName: string; {const} BaseDir: String = ''): String;
 var
   IsAbs: Boolean;
