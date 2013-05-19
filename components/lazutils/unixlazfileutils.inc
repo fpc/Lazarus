@@ -36,6 +36,11 @@ begin
   InvalidateFileStateCache(Filename);
 end;
 
+function FileExistsUTF8(const Filename: string): boolean;
+begin
+  Result:=SysUtils.FileExists(UTF8ToSys(Filename));
+end;
+
 function ExpandFileNameUtf8(const FileName: string; {const} BaseDir: String = ''): String;
 var
   IsAbs: Boolean;

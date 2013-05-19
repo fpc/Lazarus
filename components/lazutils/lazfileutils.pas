@@ -1062,10 +1062,7 @@ begin
   end;
 end;
 
-function FileExistsUTF8(const Filename: string): boolean;
-begin
-  Result:=SysUtils.FileExists(UTF8ToSys(Filename));
-end;
+
 
 function FileAgeUTF8(const FileName: String): Longint;
 begin
