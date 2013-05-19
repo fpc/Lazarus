@@ -4323,6 +4323,7 @@ resourcestring
   lisPckExplState = '%sState: ';
   lisPckExplAutoCreated = 'AutoCreated';
   lisPckExplInstalled = 'Installed';
+  lisLpkIsMissing = 'lpk is missing';
   lisPckExplInstallOnNextStart = 'Install on next start';
   lisPckExplUninstallOnNextStart = 'Uninstall on next start (unless needed by an installed package)';
   lisPckExplBase = 'Base, can not be uninstalled';

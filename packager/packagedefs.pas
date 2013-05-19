@@ -629,7 +629,6 @@ type
     procedure SetFPDocPaths(const AValue: string);
     procedure SetLicense(const AValue: string);
     procedure SetLPKSource(const AValue: TCodeBuffer);
-    procedure SetLPKSourceChangeStep(const AValue: integer);
     procedure SetOutputStateFile(const AValue: string);
     procedure SetProvides(const AValue: TStrings);
     procedure SetPOOutputDirectory(const AValue: string);
@@ -809,11 +808,11 @@ type
     property FPDocPaths: string read FFPDocPaths write SetFPDocPaths;
     property FPDocPackageName: string read FFPDocPackageName write SetFPDocPackageName;
     property License: string read FLicense write SetLicense;
-    property LPKSource: TCodeBuffer read FLPKSource write SetLPKSource;// can be nil when file on disk was removed
-    property LPKSourceChangeStep: integer read FLPKSourceChangeStep write SetLPKSourceChangeStep;
+    property LPKSource: TCodeBuffer read FLPKSource write SetLPKSource;// see Missing, can be nil when file on disk was removed or point to a different codebuffer during rename
+    property LPKSourceChangeStep: integer read FLPKSourceChangeStep write FLPKSourceChangeStep;
     property Macros: TTransferMacroList read FMacros;
     property MainUnit: TPkgFile read FMainUnit;
-    property Missing: boolean read FMissing write FMissing;
+    property Missing: boolean read FMissing write FMissing; // lpk is missing, Note: virtual packages can have Missing=false
     property OptionsBackup: TLazPackage read FOptionsBackup;
     property OutputStateFile: string read FOutputStateFile write SetOutputStateFile;
     property PackageType: TLazPackageType read FPackageType
@@ -2348,7 +2347,10 @@ procedure TLazPackage.SetAutoCreated(const AValue: boolean);
 begin
   if FAutoCreated=AValue then exit;
   FAutoCreated:=AValue;
-  if AutoCreated then UserReadOnly:=true;
+  if AutoCreated then begin
+    UserReadOnly:=true;
+    Missing:=true;
+  end;
 end;
 
 procedure TLazPackage.SetAutoIncrementVersionOnBuild(const AValue: boolean);
@@ -2468,18 +2470,12 @@ procedure TLazPackage.SetLPKSource(const AValue: TCodeBuffer);
 begin
   if FLPKSource=AValue then exit;
   FLPKSource:=AValue;
-  if FLPKSource<>nil then
-    FLPKSourceChangeStep:=FLPKSource.ChangeStep;
+  if LPKSource<>nil then
+    FLPKSourceChangeStep:=LPKSource.ChangeStep;
   // do not change Filename here.
   // See TPkgManager.DoSavePackage and TPkgManager.DoOpenPackageFile
   // the LPKSource is the codebuffer last used during load/save, so it is not valid
   // for packages that were not yet loaded/saved or during renaming/loading/saving.
-end;
-
-procedure TLazPackage.SetLPKSourceChangeStep(const AValue: integer);
-begin
-  if FLPKSourceChangeStep=AValue then exit;
-  FLPKSourceChangeStep:=AValue;
 end;
 
 procedure TLazPackage.SetOutputStateFile(const AValue: string);

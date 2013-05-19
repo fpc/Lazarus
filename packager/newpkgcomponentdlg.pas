@@ -93,7 +93,7 @@ begin
     for i:=0 to PackageGraph.Count-1 do begin
       Pkg:=PackageGraph[i];
       if (not (Pkg.PackageType in [lptRunAndDesignTime,lptDesignTime]))
-      or Pkg.ReadOnly or Pkg.AutoCreated
+      or Pkg.ReadOnly or Pkg.UserReadOnly
       then continue;
       sl.Add(Pkg.Name);
     end;

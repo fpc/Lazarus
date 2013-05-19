@@ -1247,7 +1247,7 @@ begin
   SrcDir:=ExtractFilePath(TheFilename);
   for i:=0 to Cnt-1 do begin
     APackage:=Packages[i];
-    if APackage.IsVirtual and (not APackage.AutoCreated) then continue;
+    if APackage.IsVirtual then continue;
     // source directories + unit path without inherited paths + base directory + output directory
     if SrcDirInPath(APackage.CompilerOptions.GetParsedPath(pcosUnitPath,icoNone,false))
     or SrcDirInPath(APackage.SourceDirectories.CreateSearchPathFromAllFiles)
@@ -1468,7 +1468,7 @@ begin
     ErrorMsg:=lisPkgSysRegisterUnitWasCalledButNoPackageIsRegistering;
   end else begin
     ErrorMsg:='Package: "'+FRegistrationPackage.IDAsString+'"';
-    if FRegistrationPackage.AutoCreated then
+    if FRegistrationPackage.Missing then
       ErrorMsg:=Format(lisPkgSysTheLpkFileWasNotFound, [ErrorMsg, LineEnding])
     else
       ErrorMsg:=Format(lisPkgSysLPKFilename, [ErrorMsg, LineEnding, '"',
@@ -1789,7 +1789,8 @@ begin
     if PkgList<>nil then begin
       for i:=0 to PkgList.Count-1 do begin
         APackage:=TLazPackage(PkgList[i]);
-        if (APackage=nil) or APackage.AutoCreated
+        if (APackage=nil)
+        or APackage.Missing
         or IsStaticBasePackage(APackage.Name)
         or (APackage.PackageType in [lptRunTime,lptRunTimeOnly])
         then continue;
@@ -2823,7 +2824,8 @@ begin
         // skip
       end else begin
         // check compile state file of required package
-        if not RequiredPackage.AutoCreated then begin
+        if (not RequiredPackage.IsVirtual) and (not RequiredPackage.Missing)
+        then begin
           Result:=LoadPackageCompiledState(RequiredPackage,false,true);
           if Result<>mrOk then begin
             // file broken, user was told that file is broken and user had a
@@ -2851,26 +2853,26 @@ begin
               +'  '+GetOwnerID+'='+FileAgeToStr(StateFileAge)+LineEnding;
             exit;
           end;
-        end;
-        // check output state file of required package
-        if RequiredPackage.OutputStateFile<>'' then begin
-          OtherStateFile:=RequiredPackage.OutputStateFile;
-          GlobalMacroList.SubstituteStr(OtherStateFile);
-          if not FilenameIsAbsolute(OtherStateFile) then
-            OtherStateFile:=AppendPathDelim(RequiredPackage.Directory)+OtherStateFile;
-          if FilenameIsAbsolute(OtherStateFile)
-          and FileExistsCached(OtherStateFile)
-          and (FileAgeCached(OtherStateFile)>StateFileAge) then begin
-            DebugLn('TPkgManager.CheckCompileNeedDueToDependencies ',
-              ' State file of ',RequiredPackage.IDAsString,' "',OtherStateFile,'" (',
-                FileAgeToStr(FileAgeCached(OtherStateFile)),')'
-              ,' is newer than state file ',GetOwnerID,'(',FileAgeToStr(StateFileAge),')');
-            Note+='State file of used package is newer than state file:'+LineEnding
-              +'  Used package '+RequiredPackage.IDAsString+', file="'+OtherStateFile+'", '
-              +' age='+FileAgeToStr(FileAgeCached(OtherStateFile))+LineEnding
-              +'  package '+GetOwnerID+', age='+FileAgeToStr(StateFileAge)+LineEnding;
-            Result:=mrYes;
-            exit;
+          // check output state file of required package
+          if RequiredPackage.OutputStateFile<>'' then begin
+            OtherStateFile:=RequiredPackage.OutputStateFile;
+            GlobalMacroList.SubstituteStr(OtherStateFile);
+            if not FilenameIsAbsolute(OtherStateFile) then
+              OtherStateFile:=AppendPathDelim(RequiredPackage.Directory)+OtherStateFile;
+            if FilenameIsAbsolute(OtherStateFile)
+            and FileExistsCached(OtherStateFile)
+            and (FileAgeCached(OtherStateFile)>StateFileAge) then begin
+              DebugLn('TPkgManager.CheckCompileNeedDueToDependencies ',
+                ' State file of ',RequiredPackage.IDAsString,' "',OtherStateFile,'" (',
+                  FileAgeToStr(FileAgeCached(OtherStateFile)),')'
+                ,' is newer than state file ',GetOwnerID,'(',FileAgeToStr(StateFileAge),')');
+              Note+='State file of used package is newer than state file:'+LineEnding
+                +'  Used package '+RequiredPackage.IDAsString+', file="'+OtherStateFile+'", '
+                +' age='+FileAgeToStr(FileAgeCached(OtherStateFile))+LineEnding
+                +'  package '+GetOwnerID+', age='+FileAgeToStr(StateFileAge)+LineEnding;
+              Result:=mrYes;
+              exit;
+            end;
           end;
         end;
       end;
@@ -3295,8 +3297,8 @@ begin
 
   //DebugLn('TLazPackageGraph.CompilePackage A ',APackage.IDAsString,' Flags=',PkgCompileFlagsToString(Flags));
 
-  if APackage.AutoCreated then begin
-    DebugLn(['TLazPackageGraph.CompilePackage failed because autocreated: ',APackage.IDAsString]);
+  if APackage.IsVirtual then begin
+    DebugLn(['TLazPackageGraph.CompilePackage failed because virtual: ',APackage.Filename]);
     exit;
   end;
 
@@ -4483,12 +4485,12 @@ begin
     if (not (lpfNeeded in APackage.Flags))
     or APackage.Modified
     or APackage.IsVirtual
-    or (APackage.LPKSource=nil)
     then
       continue;
     NewFilename:=APackage.Filename;
     if FileExistsCached(APackage.Filename) then begin
-      if (not APackage.LPKSource.FileNeedsUpdate) then
+      if (APackage.LPKSource<>nil)
+      and (not APackage.LPKSource.FileNeedsUpdate) then
         continue;
       // a lpk has changed, this might include dependencies => reload lpl files
       UpdateGlobalLinks;
@@ -4496,6 +4498,8 @@ begin
       // lpk has vanished -> search alternative => reload lpl files
       UpdateGlobalLinks;
       NewFilename:=PackageGraph.FindAlternativeLPK(APackage);
+      if (NewFilename='') and (APackage.Missing or (APackage.LPKSource=nil)) then
+        continue; // no lpk found again => do not show again
     end;
     if ListOfPackages=nil then
       ListOfPackages:=TStringList.Create;
@@ -4897,9 +4901,9 @@ begin
             debugln(['  The lpl directory is missing. Check that the Lazarus (--lazarusdir) directory is correct.']);
           end;
         end;
-        if APackage.AutoCreated then
+        if APackage.Missing then
         begin
-          debugln(['  The lpk is missing for dependency=',Dependency.AsString])
+          debugln(['  The lpk (',APackage.Filename,') is missing for dependency=',Dependency.AsString])
         end else begin
           debugln(['  Another package with wrong version is already open: Dependency=',Dependency.AsString,' Pkg=',APackage.IDAsString])
         end;

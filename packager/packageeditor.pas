@@ -689,7 +689,7 @@ begin
     SetItem(PkgEditMenuSave,@SaveBitBtnClick,true,SaveBitBtn.Enabled);
     SetItem(PkgEditMenuSaveAs,@SaveAsClick,true,not LazPackage.AutoCreated);
     SetItem(PkgEditMenuRevert,@RevertClick,true,
-            (not LazPackage.AutoCreated) and FileExistsUTF8(LazPackage.Filename));
+            (not LazPackage.IsVirtual) and FileExistsUTF8(LazPackage.Filename));
     SetItem(PkgEditMenuPublish,@PublishClick,true,
             (not LazPackage.AutoCreated) and LazPackage.HasDirectory);
 
@@ -737,7 +737,7 @@ begin
 
   AddPopupMenuItem(lisPckEditAddToProject, @AddToProjectClick,
                    CanBeAddedToProject);
-  AddPopupMenuItem(lisPckEditInstall, @InstallClick,(not LazPackage.AutoCreated)
+  AddPopupMenuItem(lisPckEditInstall, @InstallClick,(not LazPackage.Missing)
            and (LazPackage.PackageType in [lptDesignTime,lptRunAndDesignTime]));
   AddPopupMenuItem(lisPckEditUninstall, @UninstallClick,
           (LazPackage.Installed<>pitNope) or (LazPackage.AutoInstall<>pitNope));

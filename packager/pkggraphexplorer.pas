@@ -544,6 +544,8 @@ begin
     InfoStr:=Format(lisPckExplState, [InfoStr+LineEnding]);
     if Pkg.AutoCreated then
       AddState(lisPckExplAutoCreated);
+    if Pkg.Missing then
+      AddState(lisLpkIsMissing);
     if Pkg.Installed<>pitNope then
       AddState(lisPckExplInstalled);
     if (Pkg.AutoInstall<>pitNope) and (Pkg.Installed=pitNope) then

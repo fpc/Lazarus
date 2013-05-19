@@ -780,7 +780,7 @@ end;
 function TPkgManager.OnPackageEditorRevertPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
-  if APackage.AutoCreated or (not FilenameIsAbsolute(APackage.Filename))
+  if (not FilenameIsAbsolute(APackage.Filename))
   or (not FileExistsUTF8(APackage.Filename)) then
     exit(mrCancel);
   Result:=DoOpenPackageFile(APackage.Filename,[pofRevert],false);
@@ -1661,7 +1661,7 @@ begin
   PkgFile:=PackageGraph.FindFileInAllPackages(Filename,true,true);
   if PkgFile=nil then exit;
   APackage:=PkgFile.LazPackage;
-  if APackage.AutoCreated or (not APackage.HasDirectory) then exit;
+  if APackage.IsVirtual or (not APackage.HasDirectory) then exit;
   Result:=APackage.Directory;
 end;
 
@@ -1972,7 +1972,7 @@ begin
   AProject.AddRequiredDependency(ADependency);
   PackageGraph.OpenDependency(ADependency,false);
   if (ADependency.RequiredPackage<>nil)
-  and (not ADependency.RequiredPackage.AutoCreated)
+  and (not ADependency.RequiredPackage.Missing)
   and ADependency.RequiredPackage.AddToProjectUsesSection
   and ((ADependency.RequiredPackage.PackageType<>lptDesignTime)
        or (pfUseDesignTimePackages in AProject.Flags))
@@ -2637,7 +2637,7 @@ begin
   
   DebugLn('TPkgManager.DoCompilePackage A ',APackage.IDAsString,' Flags=',PkgCompileFlagsToString(Flags));
   
-  if APackage.AutoCreated then exit;
+  if APackage.IsVirtual then exit;
 
   Result:=MainIDE.PrepareForCompile;
   if Result<>mrOk then exit;
@@ -3456,8 +3456,10 @@ begin
     debugln(['TPkgManager.RevertPackages BEFORE Old=',APackage.Filename,' New=',Filename,' ',FileExistsCached(Filename)]);
     if FileExistsCached(Filename) then
       Result:=DoOpenPackageFile(Filename,[pofRevert],true)
-    else
+    else begin
       APackage.LPKSource:=nil;
+      APackage.Missing:=true;
+    end;
     debugln(['TPkgManager.RevertPackages AFTER ',PackageGraph.FindPackageWithFilename(Filename)<>nil]);
     if Result=mrAbort then exit;
   end;
@@ -4172,7 +4174,6 @@ begin
       CurDependency:=PackageGraph.FirstAutoInstallDependency;
       while CurDependency<>nil do begin
         if (CurDependency.RequiredPackage<>nil)
-        and (not CurDependency.RequiredPackage.AutoCreated)
         and (not PackageGraph.IsStaticBasePackage(CurDependency.PackageName)) then
           CurDependency.RequiredPackage.AutoInstall:=pitNope;
         CurDependency:=CurDependency.NextRequiresDependency;
