@@ -11,8 +11,8 @@ var
   //                     out Rslt: TSearchRec): Longint;
   //FindNext_        : function (var Rslt: TSearchRec): Longint;
   //FindClose_       : procedure (var F: TSearchrec);
-  //FileGetAttr_     : function (const FileName: String): Longint;
-  //FileSetAttr_     : function (const Filename: String; Attr: longint): Longint;
+  _FileGetAttrUtf8   : function (const FileName: String): Longint;
+  _FileSetAttrUtf8   : function (const Filename: String; Attr: longint): Longint;
   //DeleteFile_      : function (const FileName: String): Boolean;
   //RenameFile_      : function (const OldName, NewName: String): Boolean;
   _GetCurrentDirUtf8  : function: String ;
@@ -170,7 +170,16 @@ begin
   Result := _FileCreateUtf8(FileName, ShareMode, Rights);
 end;
 
+function FileGetAttrUTF8(const FileName: String): Longint;
+begin
+  Result := _FileGetAttrUtf8(FileName);
+end;
 
+function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
+begin
+  Result := _FileSetAttrUtf8(Filename, Attr);
+  InvalidateFileStateCache(Filename);
+end;
 
 
 {******* ANSI functions *******}
@@ -201,7 +210,15 @@ begin
   Result := FileCreate(Utf8ToSys(FileName), Sharemode, Rights);
 end;
 
+function FileGetAttrAnsi(const FileName: String): Longint;
+begin
+  Result:=SysUtils.FileGetAttr(UTF8ToSys(Filename));
+end;
 
+function FileSetAttrAnsi(const Filename: String; Attr: longint): Longint;
+begin
+  Result:=SysUtils.FileSetAttr(UTF8ToSys(Filename),Attr);
+end;
 
 
 {$endif WinCE}
@@ -299,6 +316,20 @@ begin
 end;
 
 
+function FileGetAttrWide(const FileName: String): Longint;
+begin
+  Result:=Integer(Windows.GetFileAttributesW(PWideChar(UTF8Decode(FileName))));
+end;
+
+function FileSetAttrWide(const Filename: String; Attr: longint): Longint;
+begin
+  if Windows.SetFileAttributesW(PWideChar(UTF8Decode(FileName)), Attr) then
+    Result:=0
+  else
+    Result := Integer(Windows.GetLastError);
+end;
+
+
 
 procedure InitLazFileUtils;
 begin
@@ -308,8 +339,8 @@ begin
     //FileAge_ := @FileAgeAnsi;
     //FileSize_ := @FileSizeAnsi;
     //FileSetDate_ := @FileSetDateAnsi;
-    //FileGetAttr_ := @FileGetAttrAnsi;
-    //FileSetAttr_ := @FileSetAttrAnsi;
+    _FileGetAttrUtf8 := @FileGetAttrAnsi;
+    _FileSetAttrUtf8 := @FileSetAttrAnsi;
     //DeleteFile_ := @DeleteFileAnsi;
     //RenameFile_ := @RenameFileAnsi;
     //SetCurrentDir_ := @SetCurrentDirAnsi;
@@ -329,8 +360,8 @@ begin
     //FileAge_ := @FileAgeWide;
     //FileSize_ := @FileSizeWide;
     //FileSetDate_ := @FileSetDateWide;
-    //FileGetAttr_ := @FileGetAttrWide;
-    //FileSetAttr_ := @FileSetAttrWide;
+    _FileGetAttrUtf8 := @FileGetAttrWide;
+    _FileSetAttrUtf8 := @FileSetAttrWide;
     //DeleteFile_ := @DeleteFileWide;
     //RenameFile_ := @RenameFileWide;
     //SetCurrentDir_ := @SetCurrentDirWide;

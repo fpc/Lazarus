@@ -25,6 +25,17 @@ begin
   Result := SysUtils.FileCreate(UTF8ToSys(FileName), ShareMode, Rights);
 end;
 
+function FileGetAttrUTF8(const FileName: String): Longint;
+begin
+  Result:=SysUtils.FileGetAttr(UTF8ToSys(Filename));
+end;
+
+function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
+begin
+  Result:=SysUtils.FileSetAttr(UTF8ToSys(Filename),Attr);
+  InvalidateFileStateCache(Filename);
+end;
+
 function ExpandFileNameUtf8(const FileName: string; {const} BaseDir: String = ''): String;
 var
   IsAbs: Boolean;
