@@ -49,24 +49,8 @@ object CompOptModeMatrix: TCompOptModeMatrix
       ParentShowHint = False
       ShowHint = True
     end
-    object BMMNewTargetToolButton: TToolButton
-      Left = 171
-      Top = 2
-      Caption = 'New Target'
-      OnClick = BMMNewTargetToolButtonClick
-      ParentShowHint = False
-      ShowHint = True
-    end
-    object BMMNewOptionToolButton: TToolButton
-      Left = 251
-      Top = 2
-      Caption = 'New Option'
-      OnClick = BMMNewOptionToolButtonClick
-      ParentShowHint = False
-      ShowHint = True
-    end
     object BMMDeleteToolButton: TToolButton
-      Left = 343
+      Left = 228
       Top = 2
       Caption = 'Delete'
       OnClick = BMMDeleteToolButtonClick
@@ -88,11 +72,31 @@ object CompOptModeMatrix: TCompOptModeMatrix
       Style = tbsSeparator
     end
     object ToolButton3: TToolButton
-      Left = 333
+      Left = 218
       Top = 2
       Width = 10
       Caption = 'ToolButton3'
       Style = tbsSeparator
+    end
+    object BMMNewToolButton: TToolButton
+      Left = 171
+      Top = 2
+      Caption = 'New'
+      DropdownMenu = BMMNewPopupMenu
+      OnClick = BMMNewToolButtonClick
+      Style = tbsDropDown
+    end
+  end
+  object BMMNewPopupMenu: TPopupMenu
+    left = 232
+    top = 93
+    object BMMNewOptionMenuItem: TMenuItem
+      Caption = 'New Option'
+      OnClick = BMMNewOptionMenuItemClick
+    end
+    object BMMNewTargetMenuItem: TMenuItem
+      Caption = 'New Target'
+      OnClick = BMMNewTargetMenuItemClick
     end
   end
 end

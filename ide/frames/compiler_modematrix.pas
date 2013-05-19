@@ -34,10 +34,10 @@ unit Compiler_ModeMatrix;
 interface
 
 uses
-  Classes, SysUtils, LazFileUtils, LazLogger, KeywordFuncLists, IDEOptionsIntf,
-  IDEImagesIntf, LResources, Forms, Controls, Graphics, ComCtrls,
-  ModeMatrixCtrl, EnvironmentOpts, ModeMatrixOpts, Project, LazarusIDEStrConsts,
-  TransferMacros;
+  Classes, SysUtils, types, LazFileUtils, LazLogger, KeywordFuncLists,
+  IDEOptionsIntf, IDEImagesIntf, LResources, Forms, Controls, Graphics,
+  ComCtrls, Menus, ModeMatrixCtrl, EnvironmentOpts, ModeMatrixOpts, Project,
+  LazarusIDEStrConsts, TransferMacros;
 
 type
 
@@ -45,23 +45,26 @@ type
 
   TCompOptModeMatrix = class(TAbstractIDEOptionsEditor)
     BMMatrixToolBar: TToolBar;
-    BMMMoveUpToolButton: TToolButton;
-    BMMMoveDownToolButton: TToolButton;
-    BMMUndoToolButton: TToolButton;
-    BMMRedoToolButton: TToolButton;
-    BMMNewTargetToolButton: TToolButton;
-    BMMNewOptionToolButton: TToolButton;
     BMMDeleteToolButton: TToolButton;
+    BMMMoveDownToolButton: TToolButton;
+    BMMMoveUpToolButton: TToolButton;
+    BMMRedoToolButton: TToolButton;
+    BMMUndoToolButton: TToolButton;
+    BMMNewOptionMenuItem: TMenuItem;
+    BMMNewPopupMenu: TPopupMenu;
+    BMMNewTargetMenuItem: TMenuItem;
+    BMMNewToolButton: TToolButton;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     procedure BMMDeleteToolButtonClick(Sender: TObject);
     procedure BMMMoveDownToolButtonClick(Sender: TObject);
     procedure BMMMoveUpToolButtonClick(Sender: TObject);
-    procedure BMMNewOptionToolButtonClick(Sender: TObject);
-    procedure BMMNewTargetToolButtonClick(Sender: TObject);
     procedure BMMRedoToolButtonClick(Sender: TObject);
     procedure BMMUndoToolButtonClick(Sender: TObject);
+    procedure BMMNewOptionMenuItemClick(Sender: TObject);
+    procedure BMMNewTargetMenuItemClick(Sender: TObject);
+    procedure BMMNewToolButtonClick(Sender: TObject);
     procedure GridEditingDone(Sender: TObject);
     procedure GridGetCellHightlightColor(Sender: TObject; aCol, aRow: integer;
       var aColor: TColor);
@@ -86,6 +89,8 @@ type
     procedure MoveRow(Direction: integer);
     procedure UpdateButtons;
     function AddTarget(StorageGroup: TGroupedMatrixGroup): TGroupedMatrixGroup;
+    procedure CreateNewOption;
+    procedure CreateNewTarget;
   protected
     procedure VisibleChanged; override;
   public
@@ -468,10 +473,28 @@ begin
   HintInfo^.HintStr:=h;
 end;
 
+procedure TCompOptModeMatrix.BMMNewOptionMenuItemClick(Sender: TObject);
+begin
+  CreateNewOption;
+end;
+
 procedure TCompOptModeMatrix.BMMUndoToolButtonClick(Sender: TObject);
 begin
   Grid.Undo;
   UpdateButtons;
+end;
+
+procedure TCompOptModeMatrix.BMMNewTargetMenuItemClick(Sender: TObject);
+begin
+  CreateNewTarget;
+end;
+
+procedure TCompOptModeMatrix.BMMNewToolButtonClick(Sender: TObject);
+var
+  p: TPoint;
+begin
+  p:=BMMNewToolButton.ClientToScreen(Point(0,BMMNewToolButton.Height));
+  BMMNewPopupMenu.PopUp(p.x,p.y);
 end;
 
 procedure TCompOptModeMatrix.GridEditingDone(Sender: TObject);
@@ -510,89 +533,6 @@ end;
 procedure TCompOptModeMatrix.BMMMoveUpToolButtonClick(Sender: TObject);
 begin
   MoveRow(-1);
-end;
-
-procedure TCompOptModeMatrix.BMMNewOptionToolButtonClick(Sender: TObject);
-var
-  aRow: Integer;
-  MatRow: TGroupedMatrixRow;
-  Group: TGroupedMatrixGroup;
-  NewRow: TGroupedMatrixValue;
-
-  procedure CreateOption;
-  begin
-    NewRow:=Grid.Matrix.AddValue(Group,Grid.Modes[Grid.ActiveMode].Caption,Grid.TypeColumn.PickList.Names[0],'');
-  end;
-
-begin
-  aRow:=Grid.Row;
-  if aRow<Grid.FixedRows then aRow:=Grid.FixedRows;
-  NewRow:=nil;
-  Grid.MatrixChanging;
-  try
-    Grid.StoreUndo;
-    MatRow:=Grid.Matrix[aRow-1];
-    if MatRow is TGroupedMatrixGroup then begin
-      Group:=TGroupedMatrixGroup(MatRow);
-      if Group.Group=nil then begin
-        if Group.Count=0 then begin
-          // storage group without target => add a target
-          Group:=AddTarget(Group);
-        end;
-      end;
-      // add option as first item of Group
-      CreateOption;
-    end else begin
-      // add behind current value
-      Group:=MatRow.Group;
-      CreateOption;
-      Group.Move(Group.Count-1,MatRow.GetGroupIndex+1);
-    end;
-    Grid.Matrix.RebuildRows;
-  finally
-    Grid.MatrixChanged;
-  end;
-  if NewRow<>nil then
-    Grid.Row:=Grid.Matrix.IndexOfRow(NewRow)+1;
-  UpdateButtons;
-end;
-
-procedure TCompOptModeMatrix.BMMNewTargetToolButtonClick(Sender: TObject);
-var
-  aRow: Integer;
-  MatRow: TGroupedMatrixRow;
-  Group: TGroupedMatrixGroup;
-  NewRow: TGroupedMatrixGroup;
-begin
-  aRow:=Grid.Row;
-  if aRow<Grid.FixedRows then aRow:=Grid.FixedRows;
-  NewRow:=nil;
-  Grid.MatrixChanging;
-  try
-    Grid.StoreUndo;
-    MatRow:=Grid.Matrix[aRow-1];
-    if MatRow is TGroupedMatrixGroup then
-      Group:=TGroupedMatrixGroup(MatRow)
-    else
-      Group:=MatRow.Group;
-    if Group.Group=nil then begin
-      // Group is a storage group
-      // => add as first target of storage group
-      NewRow:=AddTarget(Group);
-      Group.Move(Group.Count-1,0);
-    end else begin
-      // Group is a target
-      // => add target behind current target
-      NewRow:=AddTarget(Group.Group);
-      Group.Group.Move(Group.Group.Count-1,Group.GetGroupIndex+1);
-    end;
-    Grid.Matrix.RebuildRows;
-  finally
-    Grid.MatrixChanged;
-  end;
-  if NewRow<>nil then
-    Grid.Row:=Grid.Matrix.IndexOfRow(NewRow)+1;
-  UpdateButtons;
 end;
 
 procedure TCompOptModeMatrix.BMMMoveDownToolButtonClick(Sender: TObject);
@@ -644,6 +584,89 @@ function TCompOptModeMatrix.AddTarget(StorageGroup: TGroupedMatrixGroup
   ): TGroupedMatrixGroup;
 begin
   Result:=AddMatrixTarget(Grid.Matrix,StorageGroup);
+end;
+
+procedure TCompOptModeMatrix.CreateNewOption;
+var
+  aRow: Integer;
+  MatRow: TGroupedMatrixRow;
+  Group: TGroupedMatrixGroup;
+  NewRow: TGroupedMatrixValue;
+
+  procedure CreateOption;
+  begin
+    NewRow:=Grid.Matrix.AddValue(Group,Grid.Modes[Grid.ActiveMode].Caption,Grid.TypeColumn.PickList.Names[0],'');
+  end;
+
+begin
+  aRow:=Grid.Row;
+  if aRow<Grid.FixedRows then aRow:=Grid.FixedRows;
+  NewRow:=nil;
+  Grid.MatrixChanging;
+  try
+    Grid.StoreUndo;
+    MatRow:=Grid.Matrix[aRow-1];
+    if MatRow is TGroupedMatrixGroup then begin
+      Group:=TGroupedMatrixGroup(MatRow);
+      if Group.Group=nil then begin
+        if Group.Count=0 then begin
+          // storage group without target => add a target
+          Group:=AddTarget(Group);
+        end;
+      end;
+      // add option as first item of Group
+      CreateOption;
+    end else begin
+      // add behind current value
+      Group:=MatRow.Group;
+      CreateOption;
+      Group.Move(Group.Count-1,MatRow.GetGroupIndex+1);
+    end;
+    Grid.Matrix.RebuildRows;
+  finally
+    Grid.MatrixChanged;
+  end;
+  if NewRow<>nil then
+    Grid.Row:=Grid.Matrix.IndexOfRow(NewRow)+1;
+  UpdateButtons;
+end;
+
+procedure TCompOptModeMatrix.CreateNewTarget;
+var
+  aRow: Integer;
+  MatRow: TGroupedMatrixRow;
+  Group: TGroupedMatrixGroup;
+  NewRow: TGroupedMatrixGroup;
+begin
+  aRow:=Grid.Row;
+  if aRow<Grid.FixedRows then aRow:=Grid.FixedRows;
+  NewRow:=nil;
+  Grid.MatrixChanging;
+  try
+    Grid.StoreUndo;
+    MatRow:=Grid.Matrix[aRow-1];
+    if MatRow is TGroupedMatrixGroup then
+      Group:=TGroupedMatrixGroup(MatRow)
+    else
+      Group:=MatRow.Group;
+    if Group.Group=nil then begin
+      // Group is a storage group
+      // => add as first target of storage group
+      NewRow:=AddTarget(Group);
+      Group.Move(Group.Count-1,0);
+    end else begin
+      // Group is a target
+      // => add target behind current target
+      NewRow:=AddTarget(Group.Group);
+      Group.Group.Move(Group.Group.Count-1,Group.GetGroupIndex+1);
+    end;
+    Grid.Matrix.RebuildRows;
+  finally
+    Grid.MatrixChanged;
+  end;
+  if NewRow<>nil then
+    Grid.Row:=Grid.Matrix.IndexOfRow(NewRow)+1;
+  UpdateButtons;
 end;
 
 procedure TCompOptModeMatrix.VisibleChanged;
@@ -866,11 +889,11 @@ begin
   BMMRedoToolButton.Caption:=lisRedo;
   BMMRedoToolButton.Hint:=lisMMRedoLastUndoToThisGrid;
 
-  BMMNewTargetToolButton.Caption:=lisMMNewTarget;
-  BMMNewTargetToolButton.Hint:=lisMMCreateANewGroupOfOptions;
+  BMMNewTargetMenuItem.Caption:=lisMMNewTarget;
+  BMMNewTargetMenuItem.Hint:=lisMMCreateANewGroupOfOptions;
 
-  BMMNewOptionToolButton.Caption:=lisMMNewOption;
-  BMMNewOptionToolButton.Hint:=lisMMCreateANewOption;
+  BMMNewOptionMenuItem.Caption:=lisMMNewOption;
+  BMMNewOptionMenuItem.Hint:=lisMMCreateANewOption;
 
   BMMDeleteToolButton.Caption:=lisDelete;
   BMMDeleteToolButton.Hint:=lisMMDeleteTheSelectedTargetOrOption;
