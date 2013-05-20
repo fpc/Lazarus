@@ -20,6 +20,12 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="This package is NOT for general use.
+
+This package is internally used in the development of the IDE. 
+
+It should net be used by any other package or project. This package may change in none compatible ways at any time and without notice. It may also cease to exist."/>
+    <License Value="GPL"/>
     <Files Count="421">
       <Item1>
         <Filename Value="aboutfrm.lfm"/>
