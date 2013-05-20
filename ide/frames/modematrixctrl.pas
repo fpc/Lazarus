@@ -34,7 +34,7 @@ uses
 const
   DefaultModeMatrixMaxUndo = 100;
   DefaultModeMatrixIndent = 10;
-  DefaultModeMatrixOptions = DefaultGridOptions+[goEditing];
+  DefaultModeMatrixOptions = DefaultGridOptions+[goEditing]-[goRangeSelect];
 type
   TGroupedMatrix = class;
   TGroupedMatrixGroup = class;
@@ -215,30 +215,33 @@ type
     fRedoItems: TObjectList; // list of TGroupedMatrix, 0=oldest
     function GetModeColumns(Index: integer): TGridColumn;
     function GetModes: TGroupedMatrixModes;
+    procedure InvalidateGroupedCells(aCol, aRow: Integer);
     procedure SetActiveMode(AValue: integer);
     procedure SetActiveModeColor(AValue: TColor);
     procedure SetIndent(AValue: integer);
     procedure SetMaxUndo(AValue: integer);
-    procedure ToggleModeValue(aRow, aCol: integer);
+    procedure ToggleModeValue(aCol, aRow: integer);
     procedure PopupTypes(aRow: integer);
     procedure OnTypePopupMenuClick(Sender: TObject);
   protected
+    function EditingAllowed(ACol: Integer=-1): Boolean; override;
     function GetCells(ACol, ARow: Integer): string; override;
     function GetEditText(aCol, aRow: Longint): string; override;
     procedure AutoLayout; virtual;
+    procedure BeforeMoveSelection(const DCol, DRow: Integer); override;
     procedure CreateWnd; override;
     procedure DrawCellGrid(aCol, aRow: Integer; aRect: TRect;
       aState: TGridDrawState); override;
     procedure DrawIndent(aRow: integer; aRect: TRect);
     procedure DrawRow(aRow: Integer); override;
-    function EditingAllowed(ACol: Integer=-1): Boolean; override;
     procedure GetCheckBoxState(const aCol, aRow: Integer;
       var aState: TCheckboxState); override;
-    procedure SetCheckboxState(const aCol, aRow: Integer;
-      const aState: TCheckboxState); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer
       ); override;
+    procedure MoveSelection; override;
     procedure PrepareGridCanvas; // prepare canvas for drawing the lines of the grid
+    procedure SetCheckboxState(const aCol, aRow: Integer;
+      const aState: TCheckboxState); override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -971,7 +974,7 @@ end;
 
 { TGroupedMatrixControl }
 
-procedure TGroupedMatrixControl.ToggleModeValue(aRow, aCol: integer);
+procedure TGroupedMatrixControl.ToggleModeValue(aCol, aRow: integer);
 var
   aState: TCheckboxState;
 begin
@@ -1035,6 +1038,20 @@ begin
   end;
 end;
 
+procedure TGroupedMatrixControl.BeforeMoveSelection(const DCol, DRow: Integer);
+begin
+  // invalidate old cells
+  InvalidateGroupedCells(Col,Row);
+  inherited BeforeMoveSelection(DCol, DRow);
+end;
+
+procedure TGroupedMatrixControl.MoveSelection;
+begin
+  // invalidate new cells
+  InvalidateGroupedCells(Col,Row);
+  inherited MoveSelection;
+end;
+
 function TGroupedMatrixControl.GetModeColumns(Index: integer): TGridColumn;
 begin
   if (Index<0) or (Index>=Modes.Count) then
@@ -1045,6 +1062,18 @@ end;
 function TGroupedMatrixControl.GetModes: TGroupedMatrixModes;
 begin
   Result:=Matrix.Modes;
+end;
+
+procedure TGroupedMatrixControl.InvalidateGroupedCells(aCol, aRow: Integer);
+var
+  MatRow: TGroupedMatrixRow;
+begin
+  if Matrix=nil then exit;
+  if (aRow>=FixedRows) and (aRow<=Matrix.RowCount) then begin
+    MatRow:=Matrix[aRow-FixedRows];
+    if MatRow is TGroupedMatrixGroup then
+      InvalidateRow(aRow);
+  end;
 end;
 
 procedure TGroupedMatrixControl.SetActiveMode(AValue: integer);
@@ -1295,7 +1324,7 @@ begin
     if MatRow is TGroupedMatrixValue then begin
       if (aCol>=ModeColFirst) and (aCol<=ModeColLast) then begin
         if Shift*[ssCtrl,ssShift,ssLeft]=[ssLeft] then begin
-          ToggleModeValue(aRow, aCol);
+          ToggleModeValue(aCol, aRow);
         end;
       end else if aCol=TypeCol then begin
         if Shift*[ssCtrl,ssShift,ssLeft]=[ssLeft] then begin
@@ -1330,7 +1359,7 @@ begin
   Group:=Matrix[aRow-1].Group;
   while Group<>nil do begin
     x:=Indent*Group.Level;
-    Canvas.GradientFill(Rect(x,aRect.Top-2,x+Indent,aRect.Bottom),
+    Canvas.GradientFill(Rect(x,aRect.Top-1,x+Indent,aRect.Bottom),
       Group.GetEffectiveColor,Color,gdHorizontal);
     PrepareGridCanvas;
     inc(x,Indent-1);
