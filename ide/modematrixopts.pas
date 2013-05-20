@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, contnrs, LazConfigStorage, Laz2_XMLCfg, LazLogger,
-  FileProcs, KeywordFuncLists, LazarusIDEStrConsts;
+  FileProcs, KeywordFuncLists, CodeToolsCfgScript, LazarusIDEStrConsts;
 
 const
   BuildMatrixProjectName = '#project';
@@ -137,11 +137,20 @@ type
     procedure GetOutputDirectory(Target, ActiveMode: string; var OutDir: string);
   end;
 
+  EMMMacroSyntaxException = class(Exception)
+  end;
+
+
 function BuildMatrixTargetFits(Target, Targets: string): boolean;
 function BuildMatrixTargetFitsPattern(Target, Pattern: PChar): boolean;
 function CheckBuildMatrixTargetsSyntax(const Targets: String): String;
 function BuildMatrixModeFits(Mode, ModesSeparatedByLineBreaks: string): boolean;
 function Str2BuildMatrixOptionType(const s: string): TBuildMatrixOptionType;
+
+function SplitMatrixMacro(MacroAssignment: string;
+  out MacroName, MacroValue: string; ExceptionOnError: boolean): boolean;
+procedure ApplyBuildMatrixMacros(Options: TBuildMatrixOptions; Target: string;
+  CfgVars: TCTCfgScriptVariables);
 
 implementation
 
@@ -301,6 +310,73 @@ begin
   for Result:=low(TBuildMatrixOptionType) to high(TBuildMatrixOptionType) do
     if SysUtils.CompareText(BuildMatrixOptionTypeNames[Result],s)=0 then exit;
   Result:=bmotCustom;
+end;
+
+function SplitMatrixMacro(MacroAssignment: string; out MacroName,
+  MacroValue: string; ExceptionOnError: boolean): boolean;
+
+  procedure E(Msg: string);
+  begin
+    raise EMMMacroSyntaxException.Create(Msg);
+  end;
+
+var
+  p: PChar;
+  StartP: PChar;
+begin
+  Result:=false;
+  MacroName:='';
+  MacroValue:='';
+  if MacroAssignment='' then begin
+    if ExceptionOnError then
+      E(lisMMMissingMacroName);
+    exit;
+  end;
+  p:=PChar(MacroAssignment);
+  if not IsIdentStartChar[p^] then begin
+    if ExceptionOnError then
+      E(Format(lisMMExpectedMacroNameButFound, [dbgstr(p^)]));
+    exit;
+  end;
+  StartP:=p;
+  repeat
+    inc(p);
+  until not IsIdentChar[p^];
+  MacroName:=copy(MacroAssignment,1,p-StartP);
+  if (p^<>':') or (p[1]<>'=') then begin
+    if ExceptionOnError then
+      E(Format(lisMMExpectedAfterMacroNameButFound, [dbgstr(p^)]));
+    exit;
+  end;
+  inc(p,2);
+  StartP:=p;
+  repeat
+    if (p^=#0) and (p-PChar(MacroAssignment)=length(MacroAssignment)) then break;
+    if p^ in [#0..#31,#127] then begin
+      if ExceptionOnError then
+        E(Format(lisMMInvalidCharacterInMacroValue, [dbgstr(p^)]));
+      exit;
+    end;
+    inc(p);
+  until false;
+  MacroValue:=copy(MacroAssignment,StartP-PChar(MacroAssignment)+1,p-StartP);
+  Result:=true;
+end;
+
+procedure ApplyBuildMatrixMacros(Options: TBuildMatrixOptions; Target: string;
+  CfgVars: TCTCfgScriptVariables);
+var
+  i: Integer;
+  Option: TBuildMatrixOption;
+begin
+  if (Options=nil) or (CfgVars=nil) then exit;
+  for i:=0 to Options.Count-1 do begin
+    Option:=Options[i];
+    if Option.Typ<>bmotIDEMacro then continue;
+    if not Option.FitsTarget(Target) then continue;
+    //debugln(['ApplyBuildMatrixMacros Option.MacroName="',Option.MacroName,'" Value="',Option.Value,'"']);
+    CfgVars.Values[Option.MacroName]:=Option.Value;
+  end;
 end;
 
 { TBuildMatrixOptions }

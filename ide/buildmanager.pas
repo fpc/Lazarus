@@ -2248,15 +2248,34 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
 
   procedure SetProjectMacroValues(Vars: TCTCfgScriptVariables);
   var
+    {$IFDEF EnableModeMatrix}
+    Target: String;
+    {$ELSE}
     Values: TCTCfgScriptVariables;
-  begin
-    Values:=GetProjectMacroValues;
-    if Values=nil then exit;
-
-    {$IFDEF VerboseBuildMacros}
-    Values.WriteDebugReport('OnGetBuildMacroValues project values');
     {$ENDIF}
-    Vars.AddOverrides(Values);
+  begin
+    {$IFDEF EnableModeMatrix}
+      Target:=GetModeMatrixTarget(Options);
+      if EnvironmentOptions<>nil then
+        ApplyBuildMatrixMacros(EnvironmentOptions.BuildMatrixOptions,Target,Vars);
+      if (Project1<>nil) and (Project1.BuildModes<>nil) then
+      begin
+        ApplyBuildMatrixMacros(Project1.BuildModes.SharedMatrixOptions,Target,Vars);
+        ApplyBuildMatrixMacros(Project1.BuildModes.SessionMatrixOptions,Target,Vars);
+      end;
+      SetCmdLineOverrides(Vars);
+      SetDefaults(Vars);
+      {$IFDEF VerboseBuildMacros}
+      Vars.WriteDebugReport('OnGetBuildMacroValues after applying project values');
+      {$ENDIF}
+    {$ELSE}
+      Values:=GetProjectMacroValues;
+      if Values=nil then exit;
+      {$IFDEF VerboseBuildMacros}
+      Values.WriteDebugReport('OnGetBuildMacroValues project values');
+      {$ENDIF}
+      Vars.AddOverrides(Values);
+    {$ENDIF}
   end;
 
 var

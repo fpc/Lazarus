@@ -19,7 +19,7 @@
  ***************************************************************************
 
  ToDo:
-   - ide macro
+   - replace new option with the three option types
    - load old build macro values into matrix
    - save matrix options for old build macro values
    - ifdef old frame
@@ -127,9 +127,6 @@ type
     property LazProject: TProject read FProject;
   end;
 
-  EMMMacroSyntaxException = class(Exception)
-  end;
-
 // assign
 function IsEqual(Options: TBuildMatrixOptions; StorageGroup: TGroupedMatrixGroup): boolean;
 procedure AssignBuildMatrixOptionsToGroup(Options: TBuildMatrixOptions;
@@ -147,10 +144,6 @@ function BuildMatrixOptionTypeCaption(Typ: TBuildMatrixOptionType): string;
 function CaptionToBuildMatrixOptionType(s: string): TBuildMatrixOptionType;
 function BuildMatrixOptionTypeHint(Typ: TBuildMatrixOptionType): string;
 function BuildMatrixDefaultValue(Typ: TBuildMatrixOptionType): string;
-
-// macro
-function SplitMatrixMacro(MacroAssignment: string;
-  out MacroName, MacroValue: string; ExceptionOnError: boolean): boolean;
 
 var
   ModeMatrixFrame: TCompOptModeMatrix = nil;
@@ -294,6 +287,7 @@ begin
         SplitMatrixMacro(ValueRow.Value,MacroName,MacroValue,false);
         Option.MacroName:=MacroName;
         Option.Value:=MacroValue;
+        //debugln(['AssignBuildMatrixGroupToOptions Name="',MacroName,'" Value="',MacroValue,'"']);
       end else begin
         Option.Value:=ValueRow.Value;
       end;
@@ -381,56 +375,6 @@ begin
   end;
   if Excludes<>'' then
     Result+=Format(lisMMExcludeAllPackagesMatching, [Excludes])+LineEnding;
-end;
-
-function SplitMatrixMacro(MacroAssignment: string; out MacroName,
-  MacroValue: string; ExceptionOnError: boolean): boolean;
-
-  procedure E(Msg: string);
-  begin
-    raise EMMMacroSyntaxException.Create(Msg);
-  end;
-
-var
-  p: PChar;
-  StartP: PChar;
-begin
-  Result:=false;
-  MacroName:='';
-  MacroValue:='';
-  if MacroAssignment='' then begin
-    if ExceptionOnError then
-      E(lisMMMissingMacroName);
-    exit;
-  end;
-  p:=PChar(MacroAssignment);
-  if not IsIdentStartChar[p^] then begin
-    if ExceptionOnError then
-      E(Format(lisMMExpectedMacroNameButFound, [dbgstr(p^)]));
-    exit;
-  end;
-  StartP:=p;
-  repeat
-    inc(p);
-  until not IsIdentChar[p^];
-  MacroName:=copy(MacroAssignment,1,p-StartP);
-  if (p^<>':') or (p[1]<>'=') then begin
-    if ExceptionOnError then
-      E(Format(lisMMExpectedAfterMacroNameButFound, [dbgstr(p^)]));
-    exit;
-  end;
-  inc(p,2);
-  repeat
-    if (p^=#0) and (p-PChar(MacroAssignment)=length(MacroAssignment)) then break;
-    if p^ in [#0..#31,#127] then begin
-      if ExceptionOnError then
-        E(Format(lisMMInvalidCharacterInMacroValue, [dbgstr(p^)]));
-      exit;
-    end;
-    inc(p);
-  until false;
-  MacroValue:=copy(MacroAssignment,StartP-PChar(MacroAssignment)+1,p-StartP);
-  Result:=true;
 end;
 
 {$R *.lfm}
