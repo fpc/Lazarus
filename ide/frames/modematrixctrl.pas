@@ -44,6 +44,7 @@ type
 
   TGroupedMatrixRow = class(TPersistent)
   private
+    FLastDrawValueX: integer;
     FMatrix: TGroupedMatrix;
     FGroup: TGroupedMatrixGroup;
     FRowInGrid: integer;
@@ -58,6 +59,7 @@ type
     property Group: TGroupedMatrixGroup read FGroup write SetGroup;
     function GetGroupIndex: integer;
     property RowInGrid: integer read FRowInGrid; // in Grid, not in Group
+    property LastDrawValueX: integer read FLastDrawValueX write FLastDrawValueX;
     function Level: integer;
     function GetNextSibling: TGroupedMatrixRow;
     function GetNext: TGroupedMatrixRow; virtual;
@@ -230,6 +232,7 @@ type
     procedure AutoLayout; virtual;
     procedure BeforeMoveSelection(const DCol, DRow: Integer); override;
     procedure CreateWnd; override;
+    procedure DoEditorShow; override;
     procedure DrawCellGrid(aCol, aRow: Integer; aRect: TRect;
       aState: TGridDrawState); override;
     procedure DrawIndent(aRow: integer; aRect: TRect);
@@ -1147,9 +1150,12 @@ begin
       Canvas.GradientFill(Rect(x,aRect.Top-1,x+2*Indent,aRect.Bottom),GroupRow.GetEffectiveColor,Color,gdHorizontal);
       Canvas.FillRect(x+2*Indent,aRect.Top-1,aRect.Right,aRect.Bottom);
       // draw group caption
-      s:=GroupRow.Caption+GroupRow.Value;
+      s:=GroupRow.Caption;
+      if (aRow<>Row) or (not EditorMode) then
+        s+=GroupRow.Value;
       h:=Canvas.TextHeight(s);
       Canvas.TextRect(aRect,constCellPadding+x,(aRect.Top+aRect.Bottom-h) div 2,s);
+      GroupRow.LastDrawValueX:=constCellPadding+x+Canvas.TextWidth(GroupRow.Caption);
       // draw focus rect
       if aRow=Row then
         DrawFocusRect(0,aRow,Rect(x,aRect.Top,aRect.Right,aRect.Bottom));
@@ -1336,7 +1342,8 @@ begin
       end;
     end else if MatRow is TGroupedMatrixGroup then begin
       GroupRow:=TGroupedMatrixGroup(MatRow);
-      if (aCol=ValueCol) and (GroupRow.Writable) then begin
+      if GroupRow.Writable and (X>GroupRow.LastDrawValueX) then begin
+        Col:=ValueCol;
         SelectEditor;
         EditorShow(False);
       end;
@@ -1412,6 +1419,12 @@ begin
     end;
   end;
   inherited SetEditText(ACol, ARow, Value);
+end;
+
+procedure TGroupedMatrixControl.DoEditorShow;
+begin
+  inherited DoEditorShow;
+  InvalidateGroupedCells(Col,Row);
 end;
 
 function TGroupedMatrixControl.GetCells(ACol, ARow: Integer): string;
