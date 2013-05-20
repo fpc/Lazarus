@@ -2263,78 +2263,76 @@ begin
 
   if IncludeSelf then begin
     Result:=ParseOpts.MacroValues.Variables;
+    if ParseOpts.MacroValuesStamp=BuildMacroChangeStamp then exit;
 
-    if ParseOpts.MacroValuesStamp<>BuildMacroChangeStamp then begin
-      // compute macro values
+    // compute macro values
 
-      if ParseOpts.MacroValuesParsing then begin
-        if ConsoleVerbosity>=-1 then
-          debugln(['TBuildManager.OnGetBuildMacroValues cycle computing macros of ',dbgsname(Options.Owner)]);
-        exit;
+    if ParseOpts.MacroValuesParsing then begin
+      if ConsoleVerbosity>=-1 then
+        debugln(['TBuildManager.OnGetBuildMacroValues cycle computing macros of ',dbgsname(Options.Owner)]);
+      exit;
+    end;
+
+    ParseOpts.MacroValuesParsing:=true;
+    try
+      Result.Clear;
+
+      // use inherited as default
+      Values:=OnGetBuildMacroValues(Options,false);
+
+      // add macro values of self
+      if Values<>nil then
+        Result.Assign(Values);
+      {$IFDEF VerboseBuildMacros}
+      if (Options.Owner is TLazPackage) and (TLazPackage(Options.Owner).Name='LCL') then
+        Result.WriteDebugReport('TPkgManager.OnGetBuildMacroValues before execute: '+dbgstr(Options.Conditionals),'  ');
+      {$ENDIF}
+      if not ParseOpts.MacroValues.Execute(Options.Conditionals) then begin
+        if ConsoleVerbosity>=0 then
+          debugln(['TPkgManager.OnGetBuildMacroValues Error: ',ParseOpts.MacroValues.GetErrorStr(0)]);
+        debugln(Options.Conditionals);
       end;
 
-      ParseOpts.MacroValuesParsing:=true;
-      try
-        Result.Clear;
+      {$IFDEF VerboseBuildMacros}
+      if (Options.Owner is TLazPackage) and (TLazPackage(Options.Owner).Name='LCL') then
+        Result.WriteDebugReport('TPkgManager.OnGetBuildMacroValues executed: '+dbgstr(Options.Conditionals),'  ');
+      {$ENDIF}
 
-        // use inherited as default
-        Values:=OnGetBuildMacroValues(Options,false);
+      // the macro values of the active project take precedence
+      SetProjectMacroValues;
 
-        // add macro values of self
-        if Values<>nil then
-          Result.Assign(Values);
-        {$IFDEF VerboseBuildMacros}
-        if (Options.Owner is TLazPackage) and (TLazPackage(Options.Owner).Name='LCL') then
-          Result.WriteDebugReport('TPkgManager.OnGetBuildMacroValues before execute: '+dbgstr(Options.Conditionals),'  ');
-        {$ENDIF}
-        if not ParseOpts.MacroValues.Execute(Options.Conditionals) then begin
-          if ConsoleVerbosity>=0 then
-            debugln(['TPkgManager.OnGetBuildMacroValues Error: ',ParseOpts.MacroValues.GetErrorStr(0)]);
-          debugln(Options.Conditionals);
-        end;
-
-        {$IFDEF VerboseBuildMacros}
-        if (Options.Owner is TLazPackage) and (TLazPackage(Options.Owner).Name='LCL') then
-          Result.WriteDebugReport('TPkgManager.OnGetBuildMacroValues executed: '+dbgstr(Options.Conditionals),'  ');
-        {$ENDIF}
-
-        // the macro values of the active project take precedence
-        SetProjectMacroValues;
-
-        ParseOpts.MacroValuesStamp:=BuildMacroChangeStamp;
-      finally
-        ParseOpts.MacroValuesParsing:=false;
-      end;
+      ParseOpts.MacroValuesStamp:=BuildMacroChangeStamp;
+    finally
+      ParseOpts.MacroValuesParsing:=false;
     end;
   end else begin
     Result:=ParseOpts.InheritedMacroValues;
+    if ParseOpts.InheritedMacroValuesStamp=BuildMacroChangeStamp then exit;
 
-    if ParseOpts.InheritedMacroValuesStamp<>BuildMacroChangeStamp then begin
-      // compute inherited values
-      if ParseOpts.InheritedMacroValuesParsing then begin
-        if ConsoleVerbosity>=0 then
-          debugln(['TPkgManager.OnGetBuildMacroValues circle computing inherited macros of ',dbgsname(Options.Owner)]);
-        exit;
+    // compute inherited values
+    if ParseOpts.InheritedMacroValuesParsing then begin
+      if ConsoleVerbosity>=0 then
+        debugln(['TPkgManager.OnGetBuildMacroValues circle computing inherited macros of ',dbgsname(Options.Owner)]);
+      exit;
+    end;
+    ParseOpts.InheritedMacroValuesParsing:=true;
+    try
+      Result.Clear;
+
+      // add inherited
+      if (PackageGraph<>nil) then begin
+        if Options.Owner is TProject then
+          AddAllInherited(TProject(Options.Owner).FirstRequiredDependency,Result)
+        else if Options.Owner is TLazPackage then
+          AddAllInherited(TLazPackage(Options.Owner).FirstRequiredDependency,Result);
       end;
-      ParseOpts.InheritedMacroValuesParsing:=true;
-      try
-        Result.Clear;
 
-        // add inherited
-        if (PackageGraph<>nil) then begin
-          if Options.Owner is TProject then
-            AddAllInherited(TProject(Options.Owner).FirstRequiredDependency,Result)
-          else if Options.Owner is TLazPackage then
-            AddAllInherited(TLazPackage(Options.Owner).FirstRequiredDependency,Result);
-        end;
+      // the macro values of the active project take precedence
+      SetProjectMacroValues;
 
-        // the macro values of the active project take precedence
-        SetProjectMacroValues;
-
-        ParseOpts.InheritedMacroValuesStamp:=BuildMacroChangeStamp;
-      finally
-        ParseOpts.InheritedMacroValuesParsing:=false;
-      end;
+      ParseOpts.InheritedMacroValuesStamp:=BuildMacroChangeStamp;
+    finally
+      ParseOpts.InheritedMacroValuesParsing:=false;
     end;
   end;
 end;
