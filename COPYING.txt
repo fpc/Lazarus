@@ -29,12 +29,9 @@ The license directory tree:
     |
     +- codetools    (GPL 2)
     |
-    +- gtk
-    |  |
-    |  +- gtkglarea (modified LGPL, with one exception: nvgl.pp)
-    |
     +- xxx There are various packages under various licenses. Mostly the
            modified LGPL. See the license in the package files for details.
+           Some are not free for commercial use.
            
 
 The IDE files are the files in the <lazarus>, designer, packager and debugger
@@ -42,5 +39,3 @@ directory. They are under the GPL 2, with the following exceptions:
 transfermacros.pp, wordcompletion.pp, patheditordlg.pas, outputfilter.pas,
 inputfiledialog.pas, findreplacedialog.pp, findinfilesdlg.pas
 These files are under the modified LGPL as described in COPYING.modifiedLGPL.
-
-

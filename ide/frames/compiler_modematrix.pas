@@ -19,6 +19,10 @@
  ***************************************************************************
 
  ToDo:
+   - click on target value: edit mode
+   - show ide macro errors in hint
+   - mark target errors red
+   - show target errors in hint
    - ide macro
    - load old build macro values into matrix
    - save matrix options for old build macro values
