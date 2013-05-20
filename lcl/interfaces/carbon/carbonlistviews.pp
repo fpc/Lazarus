@@ -1971,6 +1971,8 @@ procedure TCarbonListBox.DrawItem(AIndex: Integer; AState: DataBrowserItemState)
 var
   DrawStruct: TDrawListItemStruct;
 begin
+  if AIndex >= TCustomListBox(LCLObject).Items.Count then exit;
+
   DrawStruct.Area := GetItemRect(AIndex);
   DrawStruct.DC := HDC(Context);
   DrawStruct.ItemID := AIndex;
