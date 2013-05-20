@@ -2153,45 +2153,11 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
     end;
   end;
 
-  procedure SetProjectMacroValues(Vars: TCTCfgScriptVariables);
+  procedure SetCmdLineOverrides(Values: TCTCfgScriptVariables);
   var
-    Values: TCTCfgScriptVariables;
-    MainMacroValues: TProjectBuildMacros;
-    i: Integer;
-    aName: String;
-    aValue: String;
     Overrides: TStrings;
-    s: String;
+    i: Integer;
   begin
-    // return the values of the active project
-    if (Project1<>nil) and (Project1.MacroValues<>nil) then begin
-      MainMacroValues:=Project1.MacroValues;
-      Values:=MainMacroValues.CfgVars;
-      if MainMacroValues.CfgVarsBuildMacroStamp=BuildMacroChangeStamp then
-        exit;
-      // rebuild main macros
-      Values.Clear;
-      for i:=0 to MainMacroValues.Count-1 do begin
-        aName:=MainMacroValues.Names[i];
-        aValue:=MainMacroValues.ValueFromIndex(i);
-        //debugln(['TBuildManager.OnGetBuildMacroValues project override: ',aName,'="',aValue,'"']);
-        Values.Define(PChar(aName),aValue);
-      end;
-      {$IFDEF VerboseBuildMacros}
-      Values.WriteDebugReport('OnGetBuildMacroValues project overrides');
-      {$ENDIF}
-      MainMacroValues.CfgVarsBuildMacroStamp:=BuildMacroChangeStamp;
-    end else if DefaultCfgVars<>nil then begin
-      // there is no project => use defaults
-      Values:=DefaultCfgVars;
-      if DefaultCfgVarsBuildMacroStamp=BuildMacroChangeStamp then
-        exit;
-      // rebuild main macros
-      Values.Clear;
-      DefaultCfgVarsBuildMacroStamp:=BuildMacroChangeStamp;
-    end else
-      exit;
-
     // set overrides (e.g. command line parameters)
     Overrides:=GetBuildMacroOverrides;
     try
@@ -2203,7 +2169,12 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
     finally
       Overrides.Free;
     end;
+  end;
 
+  procedure SetDefaults(Values: TCTCfgScriptVariables);
+  var
+    s: String;
+  begin
     // add the defaults
     // Note: see also ide/frames/compiler_buildmacro_options.pas procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewEdited
     // TargetOS
@@ -2234,6 +2205,53 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
         s:=GetDefaultTargetCPU;
       Values.Values['TargetCPU']:=s;
     end;
+  end;
+
+  function GetProjectMacroValues: TCTCfgScriptVariables;
+  var
+    MainMacroValues: TProjectBuildMacros;
+    i: Integer;
+    aName: String;
+    aValue: String;
+  begin
+    // return the values of the active project
+    if (Project1<>nil) and (Project1.MacroValues<>nil) then begin
+      MainMacroValues:=Project1.MacroValues;
+      Result:=MainMacroValues.CfgVars;
+      if MainMacroValues.CfgVarsBuildMacroStamp=BuildMacroChangeStamp then
+        exit;
+      // rebuild main macros
+      Result.Clear;
+      for i:=0 to MainMacroValues.Count-1 do begin
+        aName:=MainMacroValues.Names[i];
+        aValue:=MainMacroValues.ValueFromIndex(i);
+        //debugln(['TBuildManager.OnGetBuildMacroValues project override: ',aName,'="',aValue,'"']);
+        Result.Define(PChar(aName),aValue);
+      end;
+      {$IFDEF VerboseBuildMacros}
+      Values.WriteDebugReport('OnGetBuildMacroValues project overrides');
+      {$ENDIF}
+      MainMacroValues.CfgVarsBuildMacroStamp:=BuildMacroChangeStamp;
+    end else if DefaultCfgVars<>nil then begin
+      // there is no project => use defaults
+      Result:=DefaultCfgVars;
+      if DefaultCfgVarsBuildMacroStamp=BuildMacroChangeStamp then
+        exit;
+      // rebuild main macros
+      Result.Clear;
+      DefaultCfgVarsBuildMacroStamp:=BuildMacroChangeStamp;
+    end else
+      exit(nil);
+    SetCmdLineOverrides(Result);
+    SetDefaults(Result);
+  end;
+
+  procedure SetProjectMacroValues(Vars: TCTCfgScriptVariables);
+  var
+    Values: TCTCfgScriptVariables;
+  begin
+    Values:=GetProjectMacroValues;
+    if Values=nil then exit;
 
     {$IFDEF VerboseBuildMacros}
     Values.WriteDebugReport('OnGetBuildMacroValues project values');
