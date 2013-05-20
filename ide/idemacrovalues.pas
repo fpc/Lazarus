@@ -53,16 +53,13 @@ type
       aRow: Integer);
   private
     FLoadShowSessionFromProject: boolean;
-//    FMacroValues: TProjectBuildMacros;
     FProject: TProject;
-    FShowSession: boolean;
     FSwitchingMode: boolean;
     procedure UpdateMacrosControls;
     function GetAllIdeMacros: TStrings;
     procedure CleanMacrosGrid;
     procedure SaveMacros(UpdateControls: boolean);
     procedure UpdateInheritedOptions;
-    procedure UpdateShowSession;
     procedure UpdateDialogCaption;
     function GetDialogCaption: string;
   public
@@ -74,11 +71,7 @@ type
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
     property AProject: TProject read FProject;
-//    property MacroValues: TProjectBuildMacros read FMacroValues;
     property SwitchingMode: boolean read FSwitchingMode; // the active mode is currently switched
-    property ShowSession: boolean read FShowSession write FShowSession;
-    property LoadShowSessionFromProjects: boolean read FLoadShowSessionFromProject
-                                              write FLoadShowSessionFromProject;
   end;
 
 implementation
@@ -98,7 +91,6 @@ var
   i: LongInt;
   Macro: TLazBuildMacro;
 begin
-//  if MacroValues=nil then exit;
   Grid:=IdeMacroValuesStringGrid;
   if aCol=0 then begin
     // list all build MacroValues
@@ -274,7 +266,6 @@ var
   Values: TStringList;
   Value: string;
 begin
-//  if MacroValues=nil then exit;
   Grid:=IdeMacroValuesStringGrid;
   Values:=TStringList.Create;
   try
@@ -305,13 +296,6 @@ begin
                                FindOptionControl(TCompilerInheritedOptionsFrame));
   if InhOptionCtrl=nil then exit;
   InhOptionCtrl.UpdateInheritedTree(AProject.CompilerOptions);
-end;
-
-procedure TIdeMacroValuesFrame.UpdateShowSession;
-begin
-  if LoadShowSessionFromProjects then
-    ShowSession:=(AProject<>nil)
-      and (AProject.SessionStorage in [pssInProjectDir,pssInIDEConfig]);
 end;
 
 constructor TIdeMacroValuesFrame.Create(TheOwner: TComponent);
@@ -352,11 +336,7 @@ begin
     PCOptions:=TProjectCompilerOptions(AOptions);
     FProject:=PCOptions.LazProject;
     Assert(FProject=Project1, 'TIdeMacroValuesFrame.ReadSettings: FProject<>Project1');
-//    FMacroValues:=FProject.ActiveBuildMode.MacroValues;
-    // modes
-    UpdateShowSession;
     // macros
-//    MacroValues.Assign(FProject.MacroValues);
     UpdateMacrosControls;
     // options dialog
     UpdateDialogCaption;
