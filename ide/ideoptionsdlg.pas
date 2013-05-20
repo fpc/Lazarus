@@ -35,7 +35,7 @@ uses
   IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf, ProjectIntf,
   EnvironmentOpts, LazarusIDEStrConsts, CompOptsIntf, EditorOptions,
   {$IFDEF NewBuildModeWindow}
-  BuildModesManager, project_save_options;
+  BuildModesManager, project_save_options, Project;
   {$ELSE}
   BuildModesEditor;
   {$ENDIF}
@@ -250,9 +250,10 @@ var
 begin
   {$IFDEF NewBuildModeWindow}
   ProjectSaveOptions:=TProjectSaveOptionsFrame(FindEditor(TProjectSaveOptionsFrame));
-  Assert(Assigned(ProjectSaveOptions),
-    'TIDEOptionsDialog.BuildModeManageButtonClick: ProjectSaveOptions is not assigned');
-  ShowSes:=ProjectSaveOptions.GetSessionLocation in [pssInIDEConfig,pssInProjectDir];
+  if Assigned(ProjectSaveOptions) then
+    ShowSes:=ProjectSaveOptions.GetSessionLocation in [pssInIDEConfig,pssInProjectDir]
+  else
+    ShowSes:=Project1.SessionStorage in [pssInProjectDir,pssInIDEConfig];
   if ShowBuildModesDlg(ShowSes) = mrOK then
     UpdateBuildModeCombo(BuildModeComboBox);
   {$ENDIF}
