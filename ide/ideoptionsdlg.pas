@@ -31,11 +31,11 @@ interface
 
 uses
   Classes, SysUtils, Controls, Forms, ComCtrls, LCLProc, LCLType,
-  Buttons, ButtonPanel, ExtCtrls, EditBtn, StdCtrls, Dialogs,
-  TreeFilterEdit, IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf,
+  Buttons, ButtonPanel, ExtCtrls, EditBtn, StdCtrls, Dialogs, TreeFilterEdit,
+  IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf, ProjectIntf,
   EnvironmentOpts, LazarusIDEStrConsts, CompOptsIntf, EditorOptions,
   {$IFDEF NewBuildModeWindow}
-  BuildModesManager; //project_save_options;
+  BuildModesManager, project_save_options;
   {$ELSE}
   BuildModesEditor;
   {$ENDIF}
@@ -242,9 +242,18 @@ begin
 end;
 
 procedure TIDEOptionsDialog.BuildModeManageButtonClick(Sender: TObject);
+{$IFDEF NewBuildModeWindow}
+var
+  ProjectSaveOptions: TProjectSaveOptionsFrame;
+  ShowSes: Boolean;
+{$ENDIF}
 begin
   {$IFDEF NewBuildModeWindow}
-  if ShowBuildModesDlg = mrOK then
+  ProjectSaveOptions:=TProjectSaveOptionsFrame(FindEditor(TProjectSaveOptionsFrame));
+  Assert(Assigned(ProjectSaveOptions),
+    'TIDEOptionsDialog.BuildModeManageButtonClick: ProjectSaveOptions is not assigned');
+  ShowSes:=ProjectSaveOptions.GetSessionLocation in [pssInIDEConfig,pssInProjectDir];
+  if ShowBuildModesDlg(ShowSes) = mrOK then
     UpdateBuildModeCombo(BuildModeComboBox);
   {$ENDIF}
 end;

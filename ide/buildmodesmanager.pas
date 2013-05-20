@@ -70,7 +70,7 @@ var
   OnLoadIDEOptionsHook: TOnLoadIDEOptions;
   OnSaveIDEOptionsHook: TOnSaveIDEOptions;
 
-function ShowBuildModesDlg: TModalResult;
+function ShowBuildModesDlg(aShowSession: Boolean): TModalResult;
 procedure SwitchBuildMode(aBuildModeID: string);
 procedure UpdateBuildModeCombo(aCombo: TComboBox);
 
@@ -79,7 +79,7 @@ implementation
 
 {$R *.lfm}
 
-function ShowBuildModesDlg: TModalResult;
+function ShowBuildModesDlg(aShowSession: Boolean): TModalResult;
 var
   frm: TBuildModesForm;
 begin
@@ -91,7 +91,7 @@ begin
     // Copy to dialog
     frm.fBuildModes.Assign(Project1.BuildModes, True);
     frm.SetActiveBuildModeByID(Project1.ActiveBuildMode);
-    frm.fShowSession:=Project1.SessionStorage in [pssInProjectDir,pssInIDEConfig];
+    frm.fShowSession:=aShowSession;
     // Show the form. Let user add / edit / delete.
     Result := frm.ShowModal;
     if Result = mrOk then
