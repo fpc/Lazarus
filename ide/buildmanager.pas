@@ -2264,7 +2264,6 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
         ApplyBuildMatrixMacros(Project1.BuildModes.SessionMatrixOptions,Target,Vars);
       end;
       SetCmdLineOverrides(Vars);
-      SetDefaults(Vars);
       {$IFDEF VerboseBuildMacros}
       Vars.WriteDebugReport('OnGetBuildMacroValues after applying project values');
       {$ENDIF}
@@ -2276,6 +2275,7 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
       {$ENDIF}
       Vars.AddOverrides(Values);
     {$ENDIF}
+    SetDefaults(Vars);
   end;
 
 var
