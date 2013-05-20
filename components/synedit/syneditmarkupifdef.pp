@@ -89,6 +89,7 @@ type
     FPeers: Array [TSynMarkupIfdefPeerType] of TSynMarkupHighIfDefEntry;
     //FRelativeNestDepth: Integer;
     FStartColumn, FEndColumn: Integer;
+
     function GetIsDisabled: Boolean;
     function GetIsEnabled: Boolean;
     function GetIsRequested: Boolean;
@@ -108,6 +109,8 @@ type
     procedure ApplyNodeStateToLine(ARemove: Boolean = False);
     procedure RemoveNodeStateFromLine;
     procedure SetStartColumn(AValue: Integer);
+  protected
+    procedure SetNodeType(ANodeType: TSynMarkupIfdefNodeType);
   public
     constructor Create;
     destructor Destroy; override;
@@ -827,6 +830,14 @@ begin
   if FStartColumn = AValue then Exit;
   FStartColumn := AValue;
   Assert(AValue>0, 'Startcol negative');
+end;
+
+procedure TSynMarkupHighIfDefEntry.SetNodeType(
+  ANodeType: TSynMarkupIfdefNodeType);
+begin
+  RemoveNodeStateFromLine;
+  FNodeType := ANodeType;
+  ApplyNodeStateToLine;
 end;
 
 function TSynMarkupHighIfDefEntry.NodeStateForPeer(APeerType: TSynMarkupIfdefNodeType): TSynMarkupIfdefNodeStateEx;
@@ -2074,7 +2085,7 @@ var
             dec(i);
           end;
           inc(NodesAddedCnt);
-          e.FNodeType := idnCommentedIfdef;
+          e.SetNodeType(idnCommentedIfdef);
         end;
         inc(i);
       end;
@@ -2115,14 +2126,14 @@ var
         else
           Result := ANodeForLine.AddEntry(NodesAddedCnt);
         Result.ClearPeers;
-        Result.FNodeType := AType;
+        Result.SetNodeType(AType);
         LineNeedsReq := True;
       end;
     end;
     inc(NodesAddedCnt);
     Result.StartColumn := ALogStart;
     Result.EndColumn   := ALogEnd;
-    Result.FNodeType := AType;
+    Result.SetNodeType(AType);
   end;
 
 var
@@ -2234,7 +2245,7 @@ begin
     i := ANodeForLine.EntryCount - 1;
     while i >= NodesAddedCnt do begin
       if IsCommentedIfDef(ANodeForLine.Entry[i]) then begin
-        ANodeForLine.Entry[i].FNodeType := idnCommentedIfdef;
+        ANodeForLine.Entry[i].SetNodeType(idnCommentedIfdef);
         inc(NodesAddedCnt);
       end
       else begin
@@ -2510,7 +2521,7 @@ procedure TSynMarkupHighIfDefLinesTree.DebugPrint(Flat: Boolean);
   function PeerLine(AEntry: TSynMarkupHighIfDefEntry): string;
   begin
     if AEntry = nil then exit('-                 ');
-    Result := Format('%2d/%2d (%10s)', [AEntry.FLine.GetPosition, AEntry.StartColumn, dbgs(PtrUInt(AEntry))]);
+    Result := Format('%2d/%2d (%10s)', [AEntry.Line.GetPosition, AEntry.StartColumn, dbgs(PtrUInt(AEntry))]);
   end;
 
   function PeerLines(AEntry: TSynMarkupHighIfDefEntry): string;
