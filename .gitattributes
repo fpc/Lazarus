@@ -28,7 +28,6 @@ components/aggpas/alpha_gradient.dpr svneol=native#text/plain
 components/aggpas/alpha_mask.dpr svneol=native#text/plain
 components/aggpas/alpha_mask2.dpr svneol=native#text/plain
 components/aggpas/alpha_mask3.dpr svneol=native#text/plain
-components/aggpas/arial.ttf -text
 components/aggpas/bezier_div.dpr svneol=native#text/plain
 components/aggpas/blend_color.dpr svneol=native#text/plain
 components/aggpas/blur.dpr svneol=native#text/plain
@@ -341,15 +340,12 @@ components/aggpas/src/util/agg_color_conv.pas svneol=native#text/plain
 components/aggpas/svg/agg@pas.svg -text svneol=unset#image/svn
 components/aggpas/svg/tiger.svg -text svneol=unset#image/svn
 components/aggpas/svg_test.dpr svneol=native#text/plain
-components/aggpas/times.ttf -text
-components/aggpas/timesi.ttf -text
 components/aggpas/trans_curve1.dpr svneol=native#text/plain
 components/aggpas/trans_curve1_ft.dpr svneol=native#text/plain
 components/aggpas/trans_curve2.dpr svneol=native#text/plain
 components/aggpas/trans_curve2_ft.dpr svneol=native#text/plain
 components/aggpas/trans_polar.dpr svneol=native#text/plain
 components/aggpas/truetype_test.dpr svneol=native#text/plain
-components/aggpas/verdana.ttf -text
 components/anchordocking/README.txt svneol=native#text/plain
 components/anchordocking/anchordocking.lpk svneol=native#text/plain
 components/anchordocking/anchordocking.pas svneol=native#text/plain
