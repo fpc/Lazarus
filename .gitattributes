@@ -234,6 +234,9 @@ components/activex/importtypelib.lfm svneol=native#text/plain
 components/activex/importtypelib.pas svneol=native#text/plain
 components/activex/lazactivexreg.pas svneol=native#text/plain
 components/aggpas/Agg2DDemo.dpr svneol=native#text/plain
+components/aggpas/FreeMono.ttf -text
+components/aggpas/FreeSans.ttf -text
+components/aggpas/FreeSerif.ttf -text
 components/aggpas/aa_demo.dpr svneol=native#text/plain
 components/aggpas/aa_test.dpr svneol=native#text/plain
 components/aggpas/alpha_gradient.dpr svneol=native#text/plain
