@@ -139,6 +139,7 @@ type
 
 function BuildMatrixTargetFits(Target, Targets: string): boolean;
 function BuildMatrixTargetFitsPattern(Target, Pattern: PChar): boolean;
+function CheckBuildMatrixTargetsSyntax(const Targets: String): String;
 function BuildMatrixModeFits(Mode, ModesSeparatedByLineBreaks: string): boolean;
 function Str2BuildMatrixOptionType(const s: string): TBuildMatrixOptionType;
 
@@ -237,6 +238,38 @@ begin
       inc(Pattern);
       inc(Target);
     end;
+  until false;
+end;
+
+function CheckBuildMatrixTargetsSyntax(const Targets: String): String;
+var
+  p: PChar;
+
+  procedure WarnInvalidChar;
+  begin
+    Result:='invalid character "'+dbgstr(p^)+'" at '+IntToStr(p-PChar(Targets)+1);
+  end;
+
+begin
+  Result:='';
+  if Targets='' then exit;
+  p:=PChar(Targets);
+  repeat
+    case p^ of
+    #0:
+      if p-PChar(Targets)=length(Targets) then
+        break
+      else begin
+        WarnInvalidChar;
+        exit;
+      end;
+    #1..#32,#127:
+      begin
+        WarnInvalidChar;
+        exit;
+      end;
+    end;
+    inc(p);
   until false;
 end;
 

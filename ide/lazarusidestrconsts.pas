@@ -5683,15 +5683,15 @@ resourcestring
   lisMMSetAnIDEMacroEGLCLWidgetTypeWin32 = 'Set an IDE macro, e.g.: '
     +'LCLWidgetType:=win32';
   lisMMMissingMacroName = 'missing macro name';
-  lisMMExpectedMacroNameButFound = 'expected macro name, but found %s';
-  lisMMExpectedButFound = 'expected :, but found %s';
-  lisMMExpectedButFound2 = 'expected =, but found %s';
-  lisMMInvalidCharacterInMacroValue = 'invalid character in macro value %s';
+  lisMMExpectedMacroNameButFound = 'expected macro name, but found "%s"';
+  lisMMInvalidCharacterInMacroValue = 'invalid character in macro value "%s"';
+  lisMMExpectedAfterMacroNameButFound = 'expected ":=" after macro name, but '
+    +'found "%s"';
   lisMMApplyToAllPackages = 'Apply to all packages.';
   lisMMApplyToAllPackagesAndProjects = 'Apply to all packages and projects.';
   lisMMApplyToProject = 'Apply to project.';
-  lisMMApplyToAllPackagesMatching = 'Apply to all packages matching %s';
-  lisMMExcludeAllPackagesMatching = 'Exclude all packages matching %s';
+  lisMMApplyToAllPackagesMatching = 'Apply to all packages matching name "%s"';
+  lisMMExcludeAllPackagesMatching = 'Exclude all packages matching name "%s"';
   lisMMStoredInIDEEnvironmentoptionsXml = 'Stored in IDE (environmentoptions.'
     +'xml)';
   lisMMStoredInProjectLpi = 'Stored in project (.lpi)';

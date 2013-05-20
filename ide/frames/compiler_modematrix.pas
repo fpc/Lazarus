@@ -19,13 +19,13 @@
  ***************************************************************************
 
  ToDo:
-   - show ide macro errors in hint
    - mark target errors red
    - show target errors in hint
    - ide macro
    - load old build macro values into matrix
    - save matrix options for old build macro values
    - wiki
+   - undo: combine changes while editing a cell
    - remove old frame
    - remove old macro value classes
    - resourcestring for value types?
@@ -127,6 +127,9 @@ type
     property LazProject: TProject read FProject;
   end;
 
+  EMMMacroSyntaxException = class(Exception)
+  end;
+
 // assign
 function IsEqual(Options: TBuildMatrixOptions; StorageGroup: TGroupedMatrixGroup): boolean;
 procedure AssignBuildMatrixOptionsToGroup(Options: TBuildMatrixOptions;
@@ -134,9 +137,10 @@ procedure AssignBuildMatrixOptionsToGroup(Options: TBuildMatrixOptions;
 procedure AssignBuildMatrixGroupToOptions(StorageGroup: TGroupedMatrixGroup;
   Options: TBuildMatrixOptions; InvalidateCompOpts: boolean);
 
-// target
+// targets, see BuildMatrixTargetFits
 function TargetsPrefix: string;
 function AddMatrixTarget(Matrix: TGroupedMatrix; StorageGroup: TGroupedMatrixGroup): TGroupedMatrixGroup;
+function BuildMatrixTargetsAsHint(const Targets: String): String;
 
 // type
 function BuildMatrixOptionTypeCaption(Typ: TBuildMatrixOptionType): string;
@@ -311,12 +315,80 @@ begin
   Result.Writable:=true;
 end;
 
+function BuildMatrixTargetsAsHint(const Targets: String): String;
+var
+  ExcludeProject: Boolean;
+  IncludeProject: Boolean;
+  All: Boolean;
+  Includes: String;
+  Excludes: String;
+  Target: String;
+  StartP: Integer;
+  p: Integer;
+begin
+  Result:=CheckBuildMatrixTargetsSyntax(Targets);
+  if Result<>'' then begin
+    Result:='Warning: '+Result;
+    exit;
+  end;
+  p:=1;
+  Excludes:='';
+  Includes:='';
+  All:=false;
+  IncludeProject:=false;
+  ExcludeProject:=false;
+  while (p<=length(Targets)) do begin
+    StartP:=p;
+    while (p<=length(Targets)) and (Targets[p]<>',') do inc(p);
+    Target:=copy(Targets,StartP,p-StartP);
+    if Target<>'' then begin
+      if Target[1]='-' then begin
+        system.Delete(Target,1,1);
+        if Target<>'' then begin
+          if Target=BuildMatrixProjectName then
+            ExcludeProject:=true
+          else begin
+            if Excludes<>'' then Excludes+=',';
+            Excludes+=Target;
+          end;
+        end;
+      end else begin
+        if Target='*' then
+          All:=true
+        else if Target=BuildMatrixProjectName then
+          IncludeProject:=true
+        else begin
+          if Includes<>'' then Includes+=',';
+          Includes+=Target;
+        end;
+      end;
+    end;
+    inc(p);
+  end;
+  if ExcludeProject then
+    IncludeProject:=false;
+  if All then begin
+    if ExcludeProject then
+      Result+=lisMMApplyToAllPackages+LineEnding
+    else
+      Result+=lisMMApplyToAllPackagesAndProjects+LineEnding;
+  end
+  else begin
+    if IncludeProject then
+      Result+=lisMMApplyToProject+LineEnding;
+    if Includes<>'' then
+      Result+=Format(lisMMApplyToAllPackagesMatching, [Includes])+LineEnding;
+  end;
+  if Excludes<>'' then
+    Result+=Format(lisMMExcludeAllPackagesMatching, [Excludes])+LineEnding;
+end;
+
 function SplitMatrixMacro(MacroAssignment: string; out MacroName,
   MacroValue: string; ExceptionOnError: boolean): boolean;
 
   procedure E(Msg: string);
   begin
-    raise Exception.Create(Msg);
+    raise EMMMacroSyntaxException.Create(Msg);
   end;
 
 var
@@ -342,17 +414,12 @@ begin
     inc(p);
   until not IsIdentChar[p^];
   MacroName:=copy(MacroAssignment,1,p-StartP);
-  if p^<>':' then begin
+  if (p^<>':') or (p[1]<>'=') then begin
     if ExceptionOnError then
-      E(Format(lisMMExpectedButFound, [dbgstr(p^)]));
+      E(Format(lisMMExpectedAfterMacroNameButFound, [dbgstr(p^)]));
     exit;
   end;
-  inc(p);
-  if p^<>'=' then begin
-    if ExceptionOnError then
-      E(Format(lisMMExpectedButFound2, [dbgstr(p^)]));
-    exit;
-  end;
+  inc(p,2);
   repeat
     if (p^=#0) and (p-PChar(MacroAssignment)=length(MacroAssignment)) then break;
     if p^ in [#0..#31,#127] then begin
@@ -407,16 +474,11 @@ var
   aRow: Longint;
   MatRow: TGroupedMatrixRow;
   h: String;
-  p: Integer;
   GroupRow: TGroupedMatrixGroup;
   Targets: String;
-  StartP: Integer;
-  Target: String;
-  Excludes: String;
-  Includes: String;
-  All: Boolean;
-  IncludeProject: Boolean;
-  ExcludeProject: Boolean;
+  ValueRow: TGroupedMatrixValue;
+  MacroName: string;
+  MacroValue: string;
 begin
   aCol:=0;
   aRow:=0;
@@ -429,56 +491,19 @@ begin
     if GroupRow.Group<>nil then begin
       // a target group
       Targets:=GroupRow.Value;
-      p:=1;
-      Excludes:='';
-      Includes:='';
-      All:=false;
-      IncludeProject:=false;
-      ExcludeProject:=false;
-      while (p<=length(Targets)) do begin
-        StartP:=p;
-        while (p<=length(Targets)) and (Targets[p]<>',') do inc(p);
-        Target:=copy(Targets,StartP,p-StartP);
-        if Target<>'' then begin
-          if Target[1]='-' then begin
-            system.Delete(Target,1,1);
-            if Target<>'' then begin
-              if Target=BuildMatrixProjectName then
-                ExcludeProject:=true
-              else begin
-                if Excludes<>'' then Excludes+=',';
-                Excludes+=Target;
-              end;
-            end;
-          end else begin
-            if Target='*' then
-              All:=true
-            else if Target=BuildMatrixProjectName then
-              IncludeProject:=true
-            else begin
-              if Includes<>'' then Includes+=',';
-              Includes+=Target;
-            end;
-          end;
+      h:=BuildMatrixTargetsAsHint(Targets);
+    end;
+  end else if MatRow is TGroupedMatrixValue then begin
+    ValueRow:=TGroupedMatrixValue(MatRow);
+    if ValueRow.Typ=BuildMatrixOptionTypeCaption(bmotIDEMacro) then begin
+      h:='';
+      try
+        SplitMatrixMacro(ValueRow.Value,MacroName,MacroValue,true);
+      except
+        on E: EMMMacroSyntaxException do begin
+          h:='Error: '+E.Message;
         end;
-        inc(p);
       end;
-      if ExcludeProject then
-        IncludeProject:=false;
-      if All then begin
-        if ExcludeProject then
-          h+=lisMMApplyToAllPackages+LineEnding
-        else
-          h+=lisMMApplyToAllPackagesAndProjects+LineEnding;
-      end
-      else begin
-        if IncludeProject then
-          h+=lisMMApplyToProject+LineEnding;
-        if Includes<>'' then
-          h+=Format(lisMMApplyToAllPackagesMatching, [Includes])+LineEnding;
-      end;
-      if Excludes<>'' then
-        h+=Format(lisMMExcludeAllPackagesMatching, [Excludes])+LineEnding;
     end;
   end;
   HintInfo^.HintStr:=h;
