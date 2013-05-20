@@ -19,13 +19,13 @@
  ***************************************************************************
 
  ToDo:
-   - easy way to change LCLWidgetType
    - ide macro
    - load old build macro values into matrix
    - save matrix options for old build macro values
    - wiki
    - remove old frame
    - remove old macro value classes
+   - resourcestring for value types?
 }
 unit Compiler_ModeMatrix;
 
@@ -51,21 +51,21 @@ type
     BMMRedoToolButton: TToolButton;
     BMMUndoToolButton: TToolButton;
     BMMNewOptionMenuItem: TMenuItem;
-    BMMNewPopupMenu: TPopupMenu;
+    BMMAddPopupMenu: TPopupMenu;
     BMMNewTargetMenuItem: TMenuItem;
-    BMMNewToolButton: TToolButton;
+    BMMAddToolButton: TToolButton;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     procedure BMMDeleteToolButtonClick(Sender: TObject);
     procedure BMMMoveDownToolButtonClick(Sender: TObject);
     procedure BMMMoveUpToolButtonClick(Sender: TObject);
-    procedure BMMNewPopupMenuPopup(Sender: TObject);
+    procedure BMMAddPopupMenuPopup(Sender: TObject);
     procedure BMMRedoToolButtonClick(Sender: TObject);
     procedure BMMUndoToolButtonClick(Sender: TObject);
     procedure BMMNewOptionMenuItemClick(Sender: TObject);
     procedure BMMNewTargetMenuItemClick(Sender: TObject);
-    procedure BMMNewToolButtonClick(Sender: TObject);
+    procedure BMMAddToolButtonClick(Sender: TObject);
     procedure GridEditingDone(Sender: TObject);
     procedure GridGetCellHightlightColor(Sender: TObject; aCol, aRow: integer;
       var aColor: TColor);
@@ -73,6 +73,7 @@ type
     procedure GridSetEditText(Sender: TObject; ACol, ARow: Integer;
       const Value: string);
     procedure GridShowHint(Sender: TObject; HintInfo: PHintInfo);
+    procedure OnAddMacroMenuItemClick(Sender: TObject);
   private
     FErrorColor: TColor;
     FGrid: TGroupedMatrixControl;
@@ -86,12 +87,15 @@ type
     fOldIDEOptions: TBuildMatrixOptions;
     fOldSharedOptions: TBuildMatrixOptions;
     fOldSessionOptions: TBuildMatrixOptions;
+    fCaptionPatternMacroName: string;
+    fCaptionPatternMacroValue: string;
     procedure DoWriteSettings;
     procedure MoveRow(Direction: integer);
     procedure UpdateButtons;
     function AddTarget(StorageGroup: TGroupedMatrixGroup): TGroupedMatrixGroup;
-    procedure CreateNewOption;
+    procedure CreateNewOption(aTyp, aValue: string);
     procedure CreateNewTarget;
+    function GetCaptionValue(aCaption, aPattern: string): string;
   protected
     procedure VisibleChanged; override;
   public
@@ -474,9 +478,23 @@ begin
   HintInfo^.HintStr:=h;
 end;
 
+procedure TCompOptModeMatrix.OnAddMacroMenuItemClick(Sender: TObject);
+var
+  ValueMenuItem: TMenuItem;
+  MacroMenuItem: TMenuItem;
+  MacroName: String;
+  Value: String;
+begin
+  ValueMenuItem:=Sender as TMenuItem;
+  MacroMenuItem:=ValueMenuItem.Parent;
+  MacroName:=GetCaptionValue(MacroMenuItem.Caption,fCaptionPatternMacroName);
+  Value:=GetCaptionValue(ValueMenuItem.Caption,fCaptionPatternMacroValue);
+  CreateNewOption(BuildMatrixOptionTypeCaption(bmotIDEMacro),MacroName+':='+Value);
+end;
+
 procedure TCompOptModeMatrix.BMMNewOptionMenuItemClick(Sender: TObject);
 begin
-  CreateNewOption;
+  CreateNewOption('','');
 end;
 
 procedure TCompOptModeMatrix.BMMUndoToolButtonClick(Sender: TObject);
@@ -490,12 +508,12 @@ begin
   CreateNewTarget;
 end;
 
-procedure TCompOptModeMatrix.BMMNewToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrix.BMMAddToolButtonClick(Sender: TObject);
 var
   p: TPoint;
 begin
-  p:=BMMNewToolButton.ClientToScreen(Point(0,BMMNewToolButton.Height));
-  BMMNewPopupMenu.PopUp(p.x,p.y);
+  p:=BMMAddToolButton.ClientToScreen(Point(0,BMMAddToolButton.Height));
+  BMMAddPopupMenu.PopUp(p.x,p.y);
 end;
 
 procedure TCompOptModeMatrix.GridEditingDone(Sender: TObject);
@@ -536,7 +554,7 @@ begin
   MoveRow(-1);
 end;
 
-procedure TCompOptModeMatrix.BMMNewPopupMenuPopup(Sender: TObject);
+procedure TCompOptModeMatrix.BMMAddPopupMenuPopup(Sender: TObject);
 var
   i: Integer;
   Pkg: TLazPackage;
@@ -563,16 +581,17 @@ begin
     MenuIndex:=2;
     for i:=0 to List.Count-1 do begin
       Macro:=TLazBuildMacro(List.Objects[i]);
-      if BMMNewPopupMenu.Items.Count=MenuIndex then
-        BMMNewPopupMenu.Items.Add(TMenuItem.Create(Self));
-      MacroMenuItem:=BMMNewPopupMenu.Items[MenuIndex];
-      MacroMenuItem.Caption:='Set "'+Macro.Identifier+'"';
+      if BMMAddPopupMenu.Items.Count=MenuIndex then
+        BMMAddPopupMenu.Items.Add(TMenuItem.Create(Self));
+      MacroMenuItem:=BMMAddPopupMenu.Items[MenuIndex];
+      MacroMenuItem.Caption:=Format(fCaptionPatternMacroName,[Macro.Identifier]);
       if Macro.Values<>nil then begin
         for j:=0 to Macro.Values.Count-1 do begin
           if j=MacroMenuItem.Count then
             MacroMenuItem.Add(TMenuItem.Create(Self));
           ValueMenuItem:=MacroMenuItem.Items[j];
-          ValueMenuItem.Caption:='Value "'+Macro.Values[j]+'"';
+          ValueMenuItem.Caption:=Format(fCaptionPatternMacroValue,[Macro.Values[j]]);
+          ValueMenuItem.OnClick:=@OnAddMacroMenuItemClick;
         end;
       end;
       inc(MenuIndex);
@@ -633,7 +652,7 @@ begin
   Result:=AddMatrixTarget(Grid.Matrix,StorageGroup);
 end;
 
-procedure TCompOptModeMatrix.CreateNewOption;
+procedure TCompOptModeMatrix.CreateNewOption(aTyp, aValue: string);
 var
   aRow: Integer;
   MatRow: TGroupedMatrixRow;
@@ -642,7 +661,9 @@ var
 
   procedure CreateOption;
   begin
-    NewRow:=Grid.Matrix.AddValue(Group,Grid.Modes[Grid.ActiveMode].Caption,Grid.TypeColumn.PickList.Names[0],'');
+    if aTyp='' then
+      aTyp:=Grid.TypeColumn.PickList.Names[0];
+    NewRow:=Grid.Matrix.AddValue(Group,Grid.Modes[Grid.ActiveMode].Caption,aTyp,aValue);
   end;
 
 begin
@@ -714,6 +735,16 @@ begin
   if NewRow<>nil then
     Grid.Row:=Grid.Matrix.IndexOfRow(NewRow)+1;
   UpdateButtons;
+end;
+
+function TCompOptModeMatrix.GetCaptionValue(aCaption, aPattern: string): string;
+var
+  p: SizeInt;
+begin
+  Result:='';
+  p:=Pos('%s',aPattern);
+  if p<1 then exit;
+  Result:=copy(aCaption,p,length(aCaption)-length(aPattern)+2);
 end;
 
 procedure TCompOptModeMatrix.VisibleChanged;
@@ -944,6 +975,9 @@ begin
 
   BMMDeleteToolButton.Caption:=lisDelete;
   BMMDeleteToolButton.Hint:=lisMMDeleteTheSelectedTargetOrOption;
+
+  fCaptionPatternMacroName:=lisMMSetS;
+  fCaptionPatternMacroValue:=lisMMValueS;
 
   UpdateButtons;
 end;

@@ -26,7 +26,7 @@ object CompOptModeMatrix: TCompOptModeMatrix
       ShowHint = True
     end
     object BMMMoveDownToolButton: TToolButton
-      Left = 26
+      Left = 24
       Top = 2
       Caption = 'Down'
       OnClick = BMMMoveDownToolButtonClick
@@ -34,7 +34,7 @@ object CompOptModeMatrix: TCompOptModeMatrix
       ShowHint = True
     end
     object BMMUndoToolButton: TToolButton
-      Left = 80
+      Left = 74
       Top = 2
       Caption = 'Undo'
       OnClick = BMMUndoToolButtonClick
@@ -42,7 +42,7 @@ object CompOptModeMatrix: TCompOptModeMatrix
       ShowHint = True
     end
     object BMMRedoToolButton: TToolButton
-      Left = 121
+      Left = 111
       Top = 2
       Caption = 'Redo'
       OnClick = BMMRedoToolButtonClick
@@ -50,7 +50,7 @@ object CompOptModeMatrix: TCompOptModeMatrix
       ShowHint = True
     end
     object BMMDeleteToolButton: TToolButton
-      Left = 228
+      Left = 210
       Top = 2
       Caption = 'Delete'
       OnClick = BMMDeleteToolButtonClick
@@ -58,37 +58,37 @@ object CompOptModeMatrix: TCompOptModeMatrix
       ShowHint = True
     end
     object ToolButton1: TToolButton
-      Left = 70
+      Left = 64
       Top = 2
       Width = 10
       Caption = 'ToolButton1'
       Style = tbsSeparator
     end
     object ToolButton2: TToolButton
-      Left = 161
+      Left = 148
       Top = 2
       Width = 10
       Caption = 'ToolButton2'
       Style = tbsSeparator
     end
     object ToolButton3: TToolButton
-      Left = 218
+      Left = 200
       Top = 2
       Width = 10
       Caption = 'ToolButton3'
       Style = tbsSeparator
     end
-    object BMMNewToolButton: TToolButton
-      Left = 171
+    object BMMAddToolButton: TToolButton
+      Left = 158
       Top = 2
-      Caption = 'New'
-      DropdownMenu = BMMNewPopupMenu
-      OnClick = BMMNewToolButtonClick
+      Caption = 'Add'
+      DropdownMenu = BMMAddPopupMenu
+      OnClick = BMMAddToolButtonClick
       Style = tbsDropDown
     end
   end
-  object BMMNewPopupMenu: TPopupMenu
-    OnPopup = BMMNewPopupMenuPopup
+  object BMMAddPopupMenu: TPopupMenu
+    OnPopup = BMMAddPopupMenuPopup
     left = 232
     top = 93
     object BMMNewOptionMenuItem: TMenuItem

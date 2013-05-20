@@ -5706,6 +5706,8 @@ resourcestring
   lisMMCreateANewGroupOfOptions = 'Create a new group of options';
   lisMMCreateANewOption = 'Create a new option';
   lisMMDeleteTheSelectedTargetOrOption = 'Delete the selected target or option';
+  lisMMSetS = 'Set "%s"';
+  lisMMValueS = 'Value "%s"';
 
 implementation
 
