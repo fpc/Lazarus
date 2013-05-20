@@ -379,10 +379,7 @@ end;
 
 function ChompPathDelim(const Path: string): string;
 begin
-  if (Path<>'') and (Path[length(Path)]=PathDelim) then
-    Result:=LeftStr(Path,length(Path)-1)
-  else
-    Result:=Path;
+  Result := LazFileUtils.ChompPathDelim(Path);
 end;
 
 function FileIsText(const AFilename: string): boolean;
