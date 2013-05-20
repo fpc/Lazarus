@@ -238,7 +238,7 @@ type
       const aState: TCheckboxState); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer
       ); override;
-    procedure PrepareGridCanvas;
+    procedure PrepareGridCanvas; // prepare canvas for drawing the lines of the grid
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1091,6 +1091,8 @@ var
   i: Integer;
   GroupRow: TGroupedMatrixGroup;
   x: Integer;
+  s: String;
+  h: Integer;
 begin
   aRect:=Rect(0,0,0,0);
   // Upper and Lower bounds for this row
@@ -1114,8 +1116,11 @@ begin
       // background
       //Canvas.Brush.Color:=GroupRow.GetEffectiveColor;
       Canvas.GradientFill(Rect(x,aRect.Top-1,x+2*Indent,aRect.Bottom),GroupRow.GetEffectiveColor,Color,gdHorizontal);
+      Canvas.FillRect(x+2*Indent,aRect.Top-1,aRect.Right,aRect.Bottom);
       // draw group caption
-      Canvas.TextRect(aRect,constCellPadding+x,aRect.Top,GroupRow.Caption+GroupRow.Value);
+      s:=GroupRow.Caption+GroupRow.Value;
+      h:=Canvas.TextHeight(s);
+      Canvas.TextRect(aRect,constCellPadding+x,(aRect.Top+aRect.Bottom-h) div 2,s);
       // draw focus rect
       if aRow=Row then
         DrawFocusRect(0,aRow,Rect(x,aRect.Top,aRect.Right,aRect.Bottom));
@@ -1484,6 +1489,7 @@ begin
     Column:=Columns[aCol-1];
     MatRow:=Matrix.Rows[aRow-1];
     if MatRow is TGroupedMatrixValue then begin
+      Canvas.FillRect(aRect);
       ValueRow:=TGroupedMatrixValue(MatRow);
       if aCol<=ModeColLast then begin
         ModeColor:=Modes[aCol-ModeColFirst].Color;

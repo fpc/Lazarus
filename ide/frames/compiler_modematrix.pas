@@ -34,10 +34,13 @@ unit Compiler_ModeMatrix;
 interface
 
 uses
-  Classes, SysUtils, types, LazFileUtils, LazLogger, KeywordFuncLists,
-  IDEOptionsIntf, IDEImagesIntf, CompOptsIntf, LResources, Forms, Controls,
-  Graphics, ComCtrls, Menus, ModeMatrixCtrl, EnvironmentOpts, ModeMatrixOpts,
-  Project, LazarusIDEStrConsts, TransferMacros, PackageSystem, PackageDefs;
+  Classes, SysUtils, types, LazFileUtils, LazLogger,
+  LResources, Forms, Controls, Graphics, ComCtrls, Menus,
+  KeywordFuncLists,
+  IDEOptionsIntf, IDEImagesIntf, CompOptsIntf,
+  EnvironmentOpts,
+  PackageSystem, PackageDefs, Project, LazarusIDEStrConsts, TransferMacros,
+  ModeMatrixOpts, ModeMatrixCtrl;
 
 type
 
