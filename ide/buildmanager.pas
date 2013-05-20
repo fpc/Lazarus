@@ -2153,52 +2153,41 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
     end;
   end;
 
-  procedure SetProjectMacroValues;
+  procedure SetProjectMacroValues(Vars: TCTCfgScriptVariables);
   var
     Values: TCTCfgScriptVariables;
+    MainMacroValues: TProjectBuildMacros;
+    i: Integer;
+    aName: String;
+    aValue: String;
+    Overrides: TStrings;
+    s: String;
   begin
-    Values:=OnGetBuildMacroValues(nil,false);
-    if Values<>nil then
-      OnGetBuildMacroValues.AddOverrides(Values);
-  end;
-
-var
-  ParseOpts: TParsedCompilerOptions;
-  Values: TCTCfgScriptVariables;
-  Overrides: TStrings;
-  i: Integer;
-  s: String;
-  aName: string;
-  aValue: String;
-  MainMacroValues: TProjectBuildMacros;
-begin
-  Result:=nil;
-  if Options=nil then begin
     // return the values of the active project
     if (Project1<>nil) and (Project1.MacroValues<>nil) then begin
       MainMacroValues:=Project1.MacroValues;
-      Result:=MainMacroValues.CfgVars;
+      Values:=MainMacroValues.CfgVars;
       if MainMacroValues.CfgVarsBuildMacroStamp=BuildMacroChangeStamp then
         exit;
       // rebuild main macros
-      Result.Clear;
+      Values.Clear;
       for i:=0 to MainMacroValues.Count-1 do begin
         aName:=MainMacroValues.Names[i];
         aValue:=MainMacroValues.ValueFromIndex(i);
         //debugln(['TBuildManager.OnGetBuildMacroValues project override: ',aName,'="',aValue,'"']);
-        Result.Define(PChar(aName),aValue);
+        Values.Define(PChar(aName),aValue);
       end;
       {$IFDEF VerboseBuildMacros}
-      Result.WriteDebugReport('OnGetBuildMacroValues project overrides');
+      Values.WriteDebugReport('OnGetBuildMacroValues project overrides');
       {$ENDIF}
       MainMacroValues.CfgVarsBuildMacroStamp:=BuildMacroChangeStamp;
     end else if DefaultCfgVars<>nil then begin
       // there is no project => use defaults
-      Result:=DefaultCfgVars;
+      Values:=DefaultCfgVars;
       if DefaultCfgVarsBuildMacroStamp=BuildMacroChangeStamp then
         exit;
       // rebuild main macros
-      Result.Clear;
+      Values.Clear;
       DefaultCfgVarsBuildMacroStamp:=BuildMacroChangeStamp;
     end else
       exit;
@@ -2207,7 +2196,7 @@ begin
     Overrides:=GetBuildMacroOverrides;
     try
       for i:=0 to Overrides.Count-1 do
-        Result.Values[Overrides.Names[i]]:=Overrides.ValueFromIndex[i];
+        Values.Values[Overrides.Names[i]]:=Overrides.ValueFromIndex[i];
       {$IFDEF VerboseBuildMacros}
       debugln(['TBuildManager.OnGetBuildMacroValues cmd line overrides=',dbgstr(Overrides.Text)]);
       {$ENDIF}
@@ -2218,45 +2207,45 @@ begin
     // add the defaults
     // Note: see also ide/frames/compiler_buildmacro_options.pas procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewEdited
     // TargetOS
-    if not Result.IsDefined('TargetOS') then begin
+    if not Values.IsDefined('TargetOS') then begin
       s:='';
       if Project1<>nil then
         s:=Project1.CompilerOptions.TargetOS;
       if s='' then
         s:=GetDefaultTargetOS;
-      Result.Values['TargetOS']:=s;
+      Values.Values['TargetOS']:=s;
     end;
     // SrcOS
-    if not Result.IsDefined('SrcOS') then begin
+    if not Values.IsDefined('SrcOS') then begin
       s:=GetDefaultSrcOSForTargetOS(Result.Values['TargetOS']);
-      Result.Values['SrcOS']:=s;
+      Values.Values['SrcOS']:=s;
     end;
     // SrcOS2
     if not Result.IsDefined('SrcOS2') then begin
       s:=GetDefaultSrcOS2ForTargetOS(Result.Values['TargetOS']);
-      Result.Values['SrcOS2']:=s;
+      Values.Values['SrcOS2']:=s;
     end;
     // TargetCPU
-    if not Result.IsDefined('TargetCPU') then begin
+    if not Values.IsDefined('TargetCPU') then begin
       s:='';
       if Project1<>nil then
         s:=Project1.CompilerOptions.TargetCPU;
       if s='' then
         s:=GetDefaultTargetCPU;
-      Result.Values['TargetCPU']:=s;
+      Values.Values['TargetCPU']:=s;
     end;
-    // IDE values
-    {Result.Values['IDEOS']:=GetCompiledTargetOS;
-    Result.Values['IDESrcOS']:=GetDefaultSrcOSForTargetOS(GetCompiledTargetOS);
-    Result.Values['IDESrcOS2']:=GetDefaultSrcOS2ForTargetOS(GetCompiledTargetOS);
-    Result.Values['IDECPU']:=GetCompiledTargetCPU;
-    Result.Values['IDELCLWidgetType']:=LCLPlatformDirNames(GetDefaultLCLWidgetType);}
 
     {$IFDEF VerboseBuildMacros}
-    Result.WriteDebugReport('OnGetBuildMacroValues project values');
+    Values.WriteDebugReport('OnGetBuildMacroValues project values');
     {$ENDIF}
-    exit;
+    Vars.AddOverrides(Values);
   end;
+
+var
+  ParseOpts: TParsedCompilerOptions;
+  Values: TCTCfgScriptVariables;
+begin
+  Result:=nil;
 
   ParseOpts:=Options.ParsedOpts;
   if ParseOpts=nil then exit;
@@ -2299,7 +2288,7 @@ begin
       {$ENDIF}
 
       // the macro values of the active project take precedence
-      SetProjectMacroValues;
+      SetProjectMacroValues(Result);
 
       ParseOpts.MacroValuesStamp:=BuildMacroChangeStamp;
     finally
@@ -2328,7 +2317,7 @@ begin
       end;
 
       // the macro values of the active project take precedence
-      SetProjectMacroValues;
+      SetProjectMacroValues(Result);
 
       ParseOpts.InheritedMacroValuesStamp:=BuildMacroChangeStamp;
     finally

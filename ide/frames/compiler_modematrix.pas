@@ -22,6 +22,8 @@
    - ide macro
    - load old build macro values into matrix
    - save matrix options for old build macro values
+   - ifdef old frame
+   - ifdef old macro value classes
    - wiki
    - undo: combine changes while editing a cell
    - remove old frame
@@ -133,7 +135,7 @@ function IsEqual(Options: TBuildMatrixOptions; StorageGroup: TGroupedMatrixGroup
 procedure AssignBuildMatrixOptionsToGroup(Options: TBuildMatrixOptions;
   Matrix: TGroupedMatrix; StorageGroup: TGroupedMatrixGroup);
 procedure AssignBuildMatrixGroupToOptions(StorageGroup: TGroupedMatrixGroup;
-  Options: TBuildMatrixOptions; InvalidateCompOpts: boolean);
+  Options: TBuildMatrixOptions; InvalidateBuildMacros: boolean);
 
 // targets, see BuildMatrixTargetFits
 function TargetsPrefix: string;
@@ -261,7 +263,7 @@ begin
 end;
 
 procedure AssignBuildMatrixGroupToOptions(StorageGroup: TGroupedMatrixGroup;
-  Options: TBuildMatrixOptions; InvalidateCompOpts: boolean);
+  Options: TBuildMatrixOptions; InvalidateBuildMacros: boolean);
 var
   GrpIndex: Integer;
   Target: TGroupedMatrixGroup;
@@ -297,8 +299,8 @@ begin
       end;
     end;
   end;
-  if InvalidateCompOpts then
-    IncreaseCompilerParseStamp;
+  if InvalidateBuildMacros then
+    IncreaseBuildMacroChangeStamp;
 end;
 
 function TargetsPrefix: string;
