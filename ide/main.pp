@@ -133,9 +133,6 @@ uses
   compiler_linking_options, compiler_verbosity_options, compiler_messages_options,
   compiler_other_options, compiler_inherited_options, compiler_compilation_options,
   compiler_buildmacro_options, IdeMacroValues,
-  {$IFnDEF NewBuildModeWindow}
-  BuildModesEditor,
-  {$ENDIF}
   {$IFDEF EnableModeMatrix}
   Compiler_ModeMatrix,
   {$ENDIF}
@@ -3547,11 +3544,7 @@ end;
 
 procedure TMainIDE.mnuChgBuildModeClicked(Sender: TObject);
 begin
-{$IFDEF NewBuildModeWindow}
   DoOpenIDEOptions(TCompilerPathOptionsFrame, '', [TProjectCompilerOptions], []);
-{$ELSE}
-  DoOpenIDEOptions(TBuildModesEditorFrame, '', [TProjectCompilerOptions], []);
-{$ENDIF}
 end;
 
 procedure TMainIDE.mnuSetBuildModeClick(Sender: TObject);

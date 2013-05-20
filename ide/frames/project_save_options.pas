@@ -7,9 +7,6 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ExtCtrls, Project, IDEOptionsIntf, ProjectIntf, LCLProc, IDEProcs,
-  {$IFnDEF NewBuildModeWindow}
-  BuildModesEditor,
-  {$ENDIF}
   LazarusIDEStrConsts;
 
 type
@@ -61,19 +58,8 @@ end;
 { TProjectSaveOptionsFrame }
 
 procedure TProjectSaveOptionsFrame.SaveSessionLocationRadioGroupClick(Sender: TObject);
-{$IFnDEF NewBuildModeWindow}
-var
-  BuildModesEditor: TBuildModesEditorFrame;
-{$ENDIF}
 begin
-  {$IFnDEF NewBuildModeWindow}
-  BuildModesEditor:=TBuildModesEditorFrame(FindOptionControl(TBuildModesEditorFrame));
-  if BuildModesEditor<>nil then
-  begin
-    BuildModesEditor.LoadShowSessionFromProjects:=false;
-    BuildModesEditor.ShowSession:=GetSessionLocation in [pssInIDEConfig,pssInProjectDir];
-  end;
-  {$ENDIF}
+  ;
 end;
 
 function TProjectSaveOptionsFrame.GetSessionLocation: TProjectSessionStorage;

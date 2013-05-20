@@ -34,11 +34,7 @@ uses
   Buttons, ButtonPanel, ExtCtrls, EditBtn, StdCtrls, Dialogs, TreeFilterEdit,
   IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf, ProjectIntf,
   EnvironmentOpts, LazarusIDEStrConsts, CompOptsIntf, EditorOptions,
-  {$IFDEF NewBuildModeWindow}
   BuildModesManager, project_save_options, Project;
-  {$ELSE}
-  BuildModesEditor;
-  {$ENDIF}
 
 type
   TIDEOptsDlgAction = (
@@ -153,11 +149,9 @@ begin
   // make the category visible in the treeview
   if (CategoryTree.Selected<>nil) and (CategoryTree.Selected.Parent<>nil) then
     CategoryTree.TopItem:=CategoryTree.Selected.Parent;
-  {$IFDEF NewBuildModeWindow}
   BuildModesManager.OnLoadIDEOptionsHook := @LoadIDEOptions;
   BuildModesManager.OnSaveIDEOptionsHook := @SaveIDEOptions;
   UpdateBuildModeCombo(BuildModeComboBox);
-  {$ENDIF}
 end;
 
 procedure TIDEOptionsDialog.HelpButtonClick(Sender: TObject);
@@ -175,9 +169,7 @@ end;
 
 procedure TIDEOptionsDialog.CategoryTreeChange(Sender: TObject; Node: TTreeNode);
 var
-  {$IFDEF NewBuildModeWindow}
   GroupClass: TAbstractIDEOptionsClass;
-  {$ENDIF}
   AEditor: TAbstractIDEOptionsEditor;
 begin
   if Assigned(Node) then begin
@@ -189,25 +181,19 @@ begin
       Node := Node.GetFirstVisibleChild;
   end;
   AEditor := nil;
-  {$IFDEF NewBuildModeWindow}
   GroupClass := nil;
-  {$ENDIF}
   if Assigned(Node) and Assigned(Node.Data) then begin
     Assert(TObject(Node.Data) is TAbstractIDEOptionsEditor,
       'TIDEOptionsDialog.CategoryTreeChange: Node.Data is not TAbstractIDEOptionsEditor');
     if CategoryTree.Selected = nil then
       Node.Selected := True;
     AEditor := TAbstractIDEOptionsEditor(Node.Data);
-    {$IFDEF NewBuildModeWindow}
     GroupClass := FindGroupClass(Node);
-    {$ENDIF}
   end;
   // Show the Build Mode panel for Compiler Options
-  {$IFDEF NewBuildModeWindow}
   if (GroupClass <> nil) and (GroupClass.InheritsFrom(TLazCompilerOptions)) then
     BuildModeSelectPanel.Height:=40
   else
-  {$ENDIF}
     BuildModeSelectPanel.Height:=0;
   // Hide the old and show the new editor frame
   if Assigned(AEditor) then
@@ -231,24 +217,19 @@ end;
 
 procedure TIDEOptionsDialog.BuildModeComboBoxSelect(Sender: TObject);
 begin
-  {$IFDEF NewBuildModeWindow}
   if BuildModeComboBox.Text = lisAllBuildModes then begin
     ShowMessage('This will allow changing all build modes at once. Not implemented yet.');
     BuildModeComboBox.ItemIndex := PrevComboIndex;
   end
   else
     SwitchBuildMode(BuildModeComboBox.Text);
-  {$ENDIF}
 end;
 
 procedure TIDEOptionsDialog.BuildModeManageButtonClick(Sender: TObject);
-{$IFDEF NewBuildModeWindow}
 var
   ProjectSaveOptions: TProjectSaveOptionsFrame;
   ShowSes: Boolean;
-{$ENDIF}
 begin
-  {$IFDEF NewBuildModeWindow}
   ProjectSaveOptions:=TProjectSaveOptionsFrame(FindEditor(TProjectSaveOptionsFrame));
   if Assigned(ProjectSaveOptions) then
     ShowSes:=ProjectSaveOptions.GetSessionLocation in [pssInIDEConfig,pssInProjectDir]
@@ -256,7 +237,6 @@ begin
     ShowSes:=Project1.SessionStorage in [pssInProjectDir,pssInIDEConfig];
   if ShowBuildModesDlg(ShowSes) = mrOK then
     UpdateBuildModeCombo(BuildModeComboBox);
-  {$ENDIF}
 end;
 
 procedure TIDEOptionsDialog.CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
