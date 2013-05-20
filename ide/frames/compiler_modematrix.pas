@@ -19,8 +19,6 @@
  ***************************************************************************
 
  ToDo:
-   - mark target errors red
-   - show target errors in hint
    - ide macro
    - load old build macro values into matrix
    - save matrix options for old build macro values
@@ -560,11 +558,21 @@ var
   ValueRow: TGroupedMatrixValue;
   MacroName: string;
   MacroValue: string;
+  GroupRow: TGroupedMatrixGroup;
+  Targets: String;
 begin
   if aCol=Grid.ValueCol then begin
     if aRow<Grid.FixedRows then exit;
     MatRow:=Grid.Matrix[aRow-1];
-    if MatRow is TGroupedMatrixValue then begin
+    if MatRow is TGroupedMatrixGroup then begin
+      GroupRow:=TGroupedMatrixGroup(MatRow);
+      if GroupRow.Group<>nil then begin
+        // a target group
+        Targets:=GroupRow.Value;
+        if CheckBuildMatrixTargetsSyntax(Targets)<>'' then
+          aColor:=ErrorColor;
+      end;
+    end else if MatRow is TGroupedMatrixValue then begin
       ValueRow:=TGroupedMatrixValue(MatRow);
       if ValueRow.Typ=BuildMatrixOptionTypeCaption(bmotIDEMacro) then begin
         if not SplitMatrixMacro(ValueRow.Value,MacroName,MacroValue,false) then
