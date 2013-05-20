@@ -489,7 +489,7 @@ var
 begin
   result := nil;
 
-  if (fcupsPrinter=nil) or (fcupsppd=nil) or (option=nil) then
+  if (fcupsPrinter=nil) or (fcupsppd=nil) then
     exit;
 
   option := ppdFindOption(fcupsppd, pchar(OptionStr));
