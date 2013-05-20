@@ -19,7 +19,6 @@
  ***************************************************************************
 
  ToDo:
-   - replace new option with the three option types
    - load old build macro values into matrix
    - save matrix options for old build macro values
    - ifdef old frame
@@ -56,10 +55,12 @@ type
     BMMMoveUpToolButton: TToolButton;
     BMMRedoToolButton: TToolButton;
     BMMUndoToolButton: TToolButton;
-    BMMNewOptionMenuItem: TMenuItem;
+    BMMNewCustomOptionMenuItem: TMenuItem;
     BMMAddPopupMenu: TPopupMenu;
     BMMNewTargetMenuItem: TMenuItem;
     BMMAddToolButton: TToolButton;
+    BMMNewIDEMacroMenuItem: TMenuItem;
+    BMMNewOutDirMenuItem: TMenuItem;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
@@ -67,9 +68,11 @@ type
     procedure BMMMoveDownToolButtonClick(Sender: TObject);
     procedure BMMMoveUpToolButtonClick(Sender: TObject);
     procedure BMMAddPopupMenuPopup(Sender: TObject);
+    procedure BMMNewIDEMacroMenuItemClick(Sender: TObject);
+    procedure BMMNewOutDirMenuItemClick(Sender: TObject);
     procedure BMMRedoToolButtonClick(Sender: TObject);
     procedure BMMUndoToolButtonClick(Sender: TObject);
-    procedure BMMNewOptionMenuItemClick(Sender: TObject);
+    procedure BMMNewCustomOptionMenuItemClick(Sender: TObject);
     procedure BMMNewTargetMenuItemClick(Sender: TObject);
     procedure BMMAddToolButtonClick(Sender: TObject);
     procedure GridEditingDone(Sender: TObject);
@@ -467,9 +470,9 @@ begin
   CreateNewOption(BuildMatrixOptionTypeCaption(bmotIDEMacro),MacroName+':='+Value);
 end;
 
-procedure TCompOptModeMatrix.BMMNewOptionMenuItemClick(Sender: TObject);
+procedure TCompOptModeMatrix.BMMNewCustomOptionMenuItemClick(Sender: TObject);
 begin
-  CreateNewOption('','');
+  CreateNewOption(BuildMatrixOptionTypeCaption(bmotCustom),BuildMatrixDefaultValue(bmotCustom));
 end;
 
 procedure TCompOptModeMatrix.BMMUndoToolButtonClick(Sender: TObject);
@@ -563,8 +566,9 @@ begin
       end;
     end;
     List.Sort;
-    MenuIndex:=2;
+    MenuIndex:=BMMNewTargetMenuItem.MenuIndex;
     for i:=0 to List.Count-1 do begin
+      inc(MenuIndex);
       Macro:=TLazBuildMacro(List.Objects[i]);
       if BMMAddPopupMenu.Items.Count=MenuIndex then
         BMMAddPopupMenu.Items.Add(TMenuItem.Create(Self));
@@ -579,11 +583,20 @@ begin
           ValueMenuItem.OnClick:=@OnAddMacroMenuItemClick;
         end;
       end;
-      inc(MenuIndex);
     end;
   finally
     List.Free;
   end;
+end;
+
+procedure TCompOptModeMatrix.BMMNewIDEMacroMenuItemClick(Sender: TObject);
+begin
+  CreateNewOption(BuildMatrixOptionTypeCaption(bmotIDEMacro),BuildMatrixDefaultValue(bmotIDEMacro));
+end;
+
+procedure TCompOptModeMatrix.BMMNewOutDirMenuItemClick(Sender: TObject);
+begin
+  CreateNewOption(BuildMatrixOptionTypeCaption(bmotOutDir),BuildMatrixDefaultValue(bmotOutDir));
 end;
 
 procedure TCompOptModeMatrix.BMMMoveDownToolButtonClick(Sender: TObject);
@@ -952,14 +965,17 @@ begin
   BMMRedoToolButton.Caption:=lisRedo;
   BMMRedoToolButton.Hint:=lisMMRedoLastUndoToThisGrid;
 
-  BMMNewTargetMenuItem.Caption:=lisMMNewTarget;
-  BMMNewTargetMenuItem.Hint:=lisMMCreateANewGroupOfOptions;
-
-  BMMNewOptionMenuItem.Caption:=lisMMNewOption;
-  BMMNewOptionMenuItem.Hint:=lisMMCreateANewOption;
+  BMMAddToolButton.Caption:=lisAdd;
 
   BMMDeleteToolButton.Caption:=lisDelete;
   BMMDeleteToolButton.Hint:=lisMMDeleteTheSelectedTargetOrOption;
+
+  BMMNewTargetMenuItem.Caption:=lisMMNewTarget;
+  BMMNewTargetMenuItem.Hint:=lisMMCreateANewGroupOfOptions;
+
+  BMMNewCustomOptionMenuItem.Caption:=lisMMCustomOption;
+  BMMNewIDEMacroMenuItem.Caption:=lisMMIDEMacro;
+  BMMNewOutDirMenuItem.Caption:=lisMMOutputDirectory;
 
   fCaptionPatternMacroName:=lisMMSetS;
   fCaptionPatternMacroValue:=lisMMValueS;

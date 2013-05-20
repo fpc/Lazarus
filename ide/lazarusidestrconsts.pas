@@ -5701,15 +5701,16 @@ resourcestring
   lisMMMoveSelectedItemUp = 'Move selected item up';
   lisMMMoveSelectedItemDown = 'Move selected item down';
   lisMMNewTarget = 'New Target';
-  lisMMNewOption = 'New Option';
   lisMMUndoLastChangeToThisGrid = 'Undo last change to this grid';
   lisMMRedoLastUndoToThisGrid = 'Redo last undo to this grid';
   lisMMCreateANewGroupOfOptions = 'Create a new group of options';
-  lisMMCreateANewOption = 'Create a new option';
   lisMMDeleteTheSelectedTargetOrOption = 'Delete the selected target or option';
   lisMMSetS = 'Set "%s"';
   lisMMValueS = 'Value "%s"';
   lisMMInvalidCharacterAt = 'invalid character "%s" at %s';
+  lisMMCustomOption = 'Custom Option';
+  lisMMIDEMacro = 'IDE Macro';
+  lisMMOutputDirectory = 'Output Directory';
 
 implementation
 

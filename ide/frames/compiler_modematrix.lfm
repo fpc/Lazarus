@@ -26,7 +26,7 @@ object CompOptModeMatrix: TCompOptModeMatrix
       ShowHint = True
     end
     object BMMMoveDownToolButton: TToolButton
-      Left = 24
+      Left = 26
       Top = 2
       Caption = 'Down'
       OnClick = BMMMoveDownToolButtonClick
@@ -34,7 +34,7 @@ object CompOptModeMatrix: TCompOptModeMatrix
       ShowHint = True
     end
     object BMMUndoToolButton: TToolButton
-      Left = 74
+      Left = 80
       Top = 2
       Caption = 'Undo'
       OnClick = BMMUndoToolButtonClick
@@ -42,7 +42,7 @@ object CompOptModeMatrix: TCompOptModeMatrix
       ShowHint = True
     end
     object BMMRedoToolButton: TToolButton
-      Left = 111
+      Left = 121
       Top = 2
       Caption = 'Redo'
       OnClick = BMMRedoToolButtonClick
@@ -50,7 +50,7 @@ object CompOptModeMatrix: TCompOptModeMatrix
       ShowHint = True
     end
     object BMMDeleteToolButton: TToolButton
-      Left = 210
+      Left = 226
       Top = 2
       Caption = 'Delete'
       OnClick = BMMDeleteToolButtonClick
@@ -58,28 +58,28 @@ object CompOptModeMatrix: TCompOptModeMatrix
       ShowHint = True
     end
     object ToolButton1: TToolButton
-      Left = 64
+      Left = 70
       Top = 2
       Width = 10
       Caption = 'ToolButton1'
       Style = tbsSeparator
     end
     object ToolButton2: TToolButton
-      Left = 148
+      Left = 161
       Top = 2
       Width = 10
       Caption = 'ToolButton2'
       Style = tbsSeparator
     end
     object ToolButton3: TToolButton
-      Left = 200
+      Left = 216
       Top = 2
       Width = 10
       Caption = 'ToolButton3'
       Style = tbsSeparator
     end
     object BMMAddToolButton: TToolButton
-      Left = 158
+      Left = 171
       Top = 2
       Caption = 'Add'
       DropdownMenu = BMMAddPopupMenu
@@ -91,9 +91,17 @@ object CompOptModeMatrix: TCompOptModeMatrix
     OnPopup = BMMAddPopupMenuPopup
     left = 232
     top = 93
-    object BMMNewOptionMenuItem: TMenuItem
-      Caption = 'New Option'
-      OnClick = BMMNewOptionMenuItemClick
+    object BMMNewCustomOptionMenuItem: TMenuItem
+      Caption = 'New Custom Option'
+      OnClick = BMMNewCustomOptionMenuItemClick
+    end
+    object BMMNewIDEMacroMenuItem: TMenuItem
+      Caption = 'New IDE Macro'
+      OnClick = BMMNewIDEMacroMenuItemClick
+    end
+    object BMMNewOutDirMenuItem: TMenuItem
+      Caption = 'New Output Directory'
+      OnClick = BMMNewOutDirMenuItemClick
     end
     object BMMNewTargetMenuItem: TMenuItem
       Caption = 'New Target'
