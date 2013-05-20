@@ -79,24 +79,8 @@ begin
 end;
 
 constructor TFileStreamUTF8.Create(const AFileName: utf8string; Mode: Word);
-var
-  lHandle: THandle;
 begin
-  FFileName:= AFileName;
-  if Mode = fmcreate then
-    lHandle:= FileCreateUTF8(AFileName)
-  else
-    lHandle:= FileOpenUTF8(AFileName, Mode);
-
-  If (THandle(lHandle)=feInvalidHandle) then
-  begin
-    if Mode = fmCreate then
-      raise EFCreateError.createfmt({SFCreateError}'Unable to create file "%s"', [AFileName])
-    else
-      raise EFOpenError.Createfmt({SFOpenError}'Unable to open file "%s"', [AFilename]);
-  end
-  else
-    inherited Create(lHandle);
+  Create(AFileName,Mode,438);
 end;
 
 constructor TFileStreamUTF8.Create(const AFileName: utf8string; Mode: Word; Rights: Cardinal);
@@ -104,8 +88,8 @@ var
   lHandle: THandle;
 begin
   FFileName:=AFileName;
-  if Mode=fmcreate then
-    lHandle:=FileCreateUTF8(AFileName,Rights)
+  if (Mode and fmCreate) > 0 then
+    lHandle:=FileCreateUTF8(AFileName,Mode,Rights)
   else
     lHandle:=FileOpenUTF8(AFileName,Mode);
 
