@@ -303,7 +303,7 @@ end;
 
 function TargetsPrefix: string;
 begin
-  Result:='Targets: ';
+  Result:=lisMMTargets;
 end;
 
 function AddMatrixTarget(Matrix: TGroupedMatrix; StorageGroup: TGroupedMatrixGroup
@@ -326,7 +326,7 @@ var
 begin
   Result:=CheckBuildMatrixTargetsSyntax(Targets);
   if Result<>'' then begin
-    Result:='Warning: '+Result;
+    Result:=lisWarning+Result;
     exit;
   end;
   p:=1;
@@ -499,7 +499,7 @@ begin
         SplitMatrixMacro(ValueRow.Value,MacroName,MacroValue,true);
       except
         on E: EMMMacroSyntaxException do begin
-          h:='Error: '+E.Message;
+          h:=lisError+E.Message;
         end;
       end;
     end;

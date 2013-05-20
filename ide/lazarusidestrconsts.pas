@@ -5688,6 +5688,7 @@ resourcestring
   lisMMExpectedAfterMacroNameButFound = 'expected ":=" after macro name, but '
     +'found "%s"';
   lisMMApplyToAllPackages = 'Apply to all packages.';
+  lisMMTargets = 'Targets: ';
   lisMMApplyToAllPackagesAndProjects = 'Apply to all packages and projects.';
   lisMMApplyToProject = 'Apply to project.';
   lisMMApplyToAllPackagesMatching = 'Apply to all packages matching name "%s"';
@@ -5708,6 +5709,7 @@ resourcestring
   lisMMDeleteTheSelectedTargetOrOption = 'Delete the selected target or option';
   lisMMSetS = 'Set "%s"';
   lisMMValueS = 'Value "%s"';
+  lisMMInvalidCharacterAt = 'invalid character "%s" at %s';
 
 implementation
 

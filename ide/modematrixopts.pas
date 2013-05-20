@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, contnrs, LazConfigStorage, Laz2_XMLCfg, LazLogger,
-  FileProcs, KeywordFuncLists;
+  FileProcs, KeywordFuncLists, LazarusIDEStrConsts;
 
 const
   BuildMatrixProjectName = '#project';
@@ -247,7 +247,8 @@ var
 
   procedure WarnInvalidChar;
   begin
-    Result:='invalid character "'+dbgstr(p^)+'" at '+IntToStr(p-PChar(Targets)+1);
+    Result:=Format(lisMMInvalidCharacterAt, [dbgstr(p^), IntToStr(p-PChar(
+      Targets)+1)]);
   end;
 
 begin
