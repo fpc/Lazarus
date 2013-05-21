@@ -2243,7 +2243,6 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
     end else
       exit(nil);
     SetCmdLineOverrides(Result);
-    SetDefaults(Result);
   end;
 
   procedure SetProjectMacroValues(Vars: TCTCfgScriptVariables);
