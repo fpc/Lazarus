@@ -2028,6 +2028,10 @@ msgstr "Regra para Identificadores"
 msgid "IDE Options"
 msgstr "Opções IDE"
 
+#: lazarusidestrconsts.dlgifdefblockinactive
+msgid "Inactive $IFDEF code"
+msgstr ""
+
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
 msgstr "Ignorar"
@@ -4304,6 +4308,10 @@ msgstr "Todos os parâmetros desta função já foram definidos nesta chamada. N
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
 msgstr "Todas as modificações para %s%s%s%sserão perdidas e o arquivo reaberto."
+
+#: lazarusidestrconsts.lisalpha
+msgid "Alpha"
+msgstr ""
 
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
@@ -10729,6 +10737,10 @@ msgstr "Seq.caracteres minúsculas dada como parâmetro"
 msgid "lpk has vanished on disk. Using as alternative%s"
 msgstr ""
 
+#: lazarusidestrconsts.lislpkismissing
+msgid "lpk is missing"
+msgstr ""
+
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "lrs include files"
 msgstr "Arquivos inclusão lrs"
@@ -11979,6 +11991,126 @@ msgstr "Saltar esta Unidade"
 msgid "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 msgstr "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 
+#: lazarusidestrconsts.lismmappendarbitraryfpcoptionsego1ghtldflag
+msgid "Append arbitrary fpc options, e.g. -O1 -ghtl -dFlag"
+msgstr ""
+
+#: lazarusidestrconsts.lismmapplytoallpackages
+msgid "Apply to all packages."
+msgstr ""
+
+#: lazarusidestrconsts.lismmapplytoallpackagesandprojects
+msgid "Apply to all packages and projects."
+msgstr ""
+
+#: lazarusidestrconsts.lismmapplytoallpackagesmatching
+msgid "Apply to all packages matching name \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lismmapplytoproject
+msgid "Apply to project."
+msgstr ""
+
+#: lazarusidestrconsts.lismmcreateanewgroupofoptions
+msgid "Create a new group of options"
+msgstr ""
+
+#: lazarusidestrconsts.lismmcustomoption
+msgid "Custom Option"
+msgstr ""
+
+#: lazarusidestrconsts.lismmdeletetheselectedtargetoroption
+msgid "Delete the selected target or option"
+msgstr ""
+
+#: lazarusidestrconsts.lismmexcludeallpackagesmatching
+msgid "Exclude all packages matching name \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lismmexpectedaftermacronamebutfound
+msgid "expected \":=\" after macro name, but found \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lismmexpectedmacronamebutfound
+msgid "expected macro name, but found \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lismmidemacro
+msgid "IDE Macro"
+msgstr ""
+
+#: lazarusidestrconsts.lismminvalidcharacterat
+msgid "invalid character \"%s\" at %s"
+msgstr ""
+
+#: lazarusidestrconsts.lismminvalidcharacterinmacrovalue
+msgid "invalid character in macro value \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lismmmissingmacroname
+msgid "missing macro name"
+msgstr ""
+
+#: lazarusidestrconsts.lismmmodematrix
+msgid "Mode Matrix"
+msgstr ""
+
+#: lazarusidestrconsts.lismmmoveselecteditemdown
+msgid "Move selected item down"
+msgstr ""
+
+#: lazarusidestrconsts.lismmmoveselecteditemup
+msgid "Move selected item up"
+msgstr ""
+
+#: lazarusidestrconsts.lismmnewtarget
+msgid "New Target"
+msgstr ""
+
+#: lazarusidestrconsts.lismmoutputdirectory
+msgid "Output Directory"
+msgstr ""
+
+#: lazarusidestrconsts.lismmoverrideoutputdirectoryfuoftarget
+msgid "Override output directory -FU of target"
+msgstr ""
+
+#: lazarusidestrconsts.lismmredolastundotothisgrid
+msgid "Redo last undo to this grid"
+msgstr ""
+
+#: lazarusidestrconsts.lismmsetanidemacroeglclwidgettypewin32
+msgid "Set an IDE macro, e.g.: LCLWidgetType:=win32"
+msgstr ""
+
+#: lazarusidestrconsts.lismmsets
+msgid "Set \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lismmstoredinideenvironmentoptionsxml
+msgid "Stored in IDE (environmentoptions.xml)"
+msgstr ""
+
+#: lazarusidestrconsts.lismmstoredinprojectlpi
+msgid "Stored in project (.lpi)"
+msgstr ""
+
+#: lazarusidestrconsts.lismmstoredinsessionofprojectlps
+msgid "Stored in session of project (.lps)"
+msgstr ""
+
+#: lazarusidestrconsts.lismmtargets
+msgid "Targets: "
+msgstr ""
+
+#: lazarusidestrconsts.lismmundolastchangetothisgrid
+msgid "Undo last change to this grid"
+msgstr ""
+
+#: lazarusidestrconsts.lismmvalues
+msgid "Value \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca é software livre; você pode redistribuí-la e/ou moficá-la sob os termos da licença GNU Library General Public License como publicada pela Free Software Foundation; ou a versão 2 da Licença, ou (a sua escolha) qualquer versão posterior com as seguintes modificações:%sComo uma exceção especial, os detentores do copyright desta biblioteca dão permissão para usá-la com módulos independentes para produzir um executável, independentemente dos termos de licença destes módulos independentes, e copiar e distribuir o executável resultante sob os termos de sua escolha, desde que você encontre, para cada módulo independente vinculado, os termos e condições da licença daquele módulo. Um módulo independente e um módulo que não é derivado ou baseado nesta biblioteca. Se você modificar esta biblioteca você deve estender esta exceção a sua versão da biblioteca, mas não é obrigado a fazer isto. Se você não quiser fazer isto, elimine o estatuto desta exceção da sua versão.%sEste programa é distribuido na esperança de que seja útil, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE ou ADEQUAÇÃO A UMA FINALIDADE PARTICULAR. Veja a licença GNU General Public License para maiores detalhes.%sVocê deve ter recebido uma cópia da licença GNU Library General Public License juntamente com esta biblioteca; senão, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -12437,10 +12569,6 @@ msgstr "Estado"
 #: lazarusidestrconsts.lisoipthispackageisinstalledbutthelpkfilewasnotfound
 msgid "%sThis package is installed, but the lpk file was not found"
 msgstr "%sEste pacote está instalado, mas o arquivo LPK não foi encontrado"
-
-#: lazarusidestrconsts.lisoipthispackagewasautomaticallycreated
-msgid "%sThis package was automatically created"
-msgstr "%sEste pacote foi criado automaticamente"
 
 #: lazarusidestrconsts.lisok
 msgctxt "lazarusidestrconsts.lisok"
@@ -12982,10 +13110,6 @@ msgstr "Desinstalar"
 msgctxt "lazarusidestrconsts.lispckeditviewpackagesource"
 msgid "View Package Source"
 msgstr "Exibir Fonte do Pacote"
-
-#: lazarusidestrconsts.lispckexplautocreated
-msgid "AutoCreated"
-msgstr "Auto criado"
 
 #: lazarusidestrconsts.lispckexplbase
 msgid "Base, can not be uninstalled"

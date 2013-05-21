@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-05-12 00:44+0400\n"
+"PO-Revision-Date: 2013-05-22 01:16+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2037,6 +2037,10 @@ msgstr "Политика идентификаторов"
 #: lazarusidestrconsts.dlgideoptions
 msgid "IDE Options"
 msgstr "Параметры IDE"
+
+#: lazarusidestrconsts.dlgifdefblockinactive
+msgid "Inactive $IFDEF code"
+msgstr "Неактивный код внутри $IFDEF"
 
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
@@ -4315,6 +4319,10 @@ msgstr "Все параметры в вызове данной функции у
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
 msgstr "Все ваши изменения в %s%s%s%sбудут утеряны и файл откроется повторно."
+
+#: lazarusidestrconsts.lisalpha
+msgid "Alpha"
+msgstr "Прозрачность"
 
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
@@ -10743,6 +10751,10 @@ msgstr "Преобразовать регистр строки, переданн
 msgid "lpk has vanished on disk. Using as alternative%s"
 msgstr "LPK исчез с диска. Вместо него используется%s"
 
+#: lazarusidestrconsts.lislpkismissing
+msgid "lpk is missing"
+msgstr "LPK отсутствует"
+
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "lrs include files"
 msgstr "Файлы LRS"
@@ -11997,6 +12009,126 @@ msgstr "Пропустить этот модуль"
 msgid "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 msgstr "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 
+#: lazarusidestrconsts.lismmappendarbitraryfpcoptionsego1ghtldflag
+msgid "Append arbitrary fpc options, e.g. -O1 -ghtl -dFlag"
+msgstr "Добавить произвольные параметры FPC, например, -O1 -ghtl -dFlag"
+
+#: lazarusidestrconsts.lismmapplytoallpackages
+msgid "Apply to all packages."
+msgstr "Применить ко всем пакетам."
+
+#: lazarusidestrconsts.lismmapplytoallpackagesandprojects
+msgid "Apply to all packages and projects."
+msgstr "Применить ко всем пакетам и проектам."
+
+#: lazarusidestrconsts.lismmapplytoallpackagesmatching
+msgid "Apply to all packages matching name \"%s\""
+msgstr "Применить ко всем пакетам, содержащим в имени \"%s\""
+
+#: lazarusidestrconsts.lismmapplytoproject
+msgid "Apply to project."
+msgstr "Применить к проекту."
+
+#: lazarusidestrconsts.lismmcreateanewgroupofoptions
+msgid "Create a new group of options"
+msgstr "Создать новую группу параметров"
+
+#: lazarusidestrconsts.lismmcustomoption
+msgid "Custom Option"
+msgstr "Пользовательский параметр"
+
+#: lazarusidestrconsts.lismmdeletetheselectedtargetoroption
+msgid "Delete the selected target or option"
+msgstr "Удалить выбранную цель либо параметр"
+
+#: lazarusidestrconsts.lismmexcludeallpackagesmatching
+msgid "Exclude all packages matching name \"%s\""
+msgstr "Исключить все пакеты, содержащие в имени \"%s\""
+
+#: lazarusidestrconsts.lismmexpectedaftermacronamebutfound
+msgid "expected \":=\" after macro name, but found \"%s\""
+msgstr "после имени макроса ожидается \":=\", но найдено \"%s\""
+
+#: lazarusidestrconsts.lismmexpectedmacronamebutfound
+msgid "expected macro name, but found \"%s\""
+msgstr "ожидается имя макроса, но найдено \"%s\""
+
+#: lazarusidestrconsts.lismmidemacro
+msgid "IDE Macro"
+msgstr "Макрос IDE"
+
+#: lazarusidestrconsts.lismminvalidcharacterat
+msgid "invalid character \"%s\" at %s"
+msgstr "неверный символ \"%s\", смещение %s"
+
+#: lazarusidestrconsts.lismminvalidcharacterinmacrovalue
+msgid "invalid character in macro value \"%s\""
+msgstr "неверный символ в значении макроса \"%s\""
+
+#: lazarusidestrconsts.lismmmissingmacroname
+msgid "missing macro name"
+msgstr "отсутствует имя макроса"
+
+#: lazarusidestrconsts.lismmmodematrix
+msgid "Mode Matrix"
+msgstr "Матрица режимов"
+
+#: lazarusidestrconsts.lismmmoveselecteditemdown
+msgid "Move selected item down"
+msgstr "Переместить выбранный элемент вниз"
+
+#: lazarusidestrconsts.lismmmoveselecteditemup
+msgid "Move selected item up"
+msgstr "Переместить выбранный элемент вверх"
+
+#: lazarusidestrconsts.lismmnewtarget
+msgid "New Target"
+msgstr "Новая цель"
+
+#: lazarusidestrconsts.lismmoutputdirectory
+msgid "Output Directory"
+msgstr "Каталог вывода"
+
+#: lazarusidestrconsts.lismmoverrideoutputdirectoryfuoftarget
+msgid "Override output directory -FU of target"
+msgstr "Переопределить каталог вывода -FU цели"
+
+#: lazarusidestrconsts.lismmredolastundotothisgrid
+msgid "Redo last undo to this grid"
+msgstr "Вернуть последнюю отменённую правку в данной таблице"
+
+#: lazarusidestrconsts.lismmsetanidemacroeglclwidgettypewin32
+msgid "Set an IDE macro, e.g.: LCLWidgetType:=win32"
+msgstr "Установить значение макроса IDE, например, LCLWidgetType:=win32"
+
+#: lazarusidestrconsts.lismmsets
+msgid "Set \"%s\""
+msgstr "Присвоить \"%s\""
+
+#: lazarusidestrconsts.lismmstoredinideenvironmentoptionsxml
+msgid "Stored in IDE (environmentoptions.xml)"
+msgstr "Хранящиеся в IDE (environmentoptions.xml)"
+
+#: lazarusidestrconsts.lismmstoredinprojectlpi
+msgid "Stored in project (.lpi)"
+msgstr "Хранящиеся в проекте (.lpi)"
+
+#: lazarusidestrconsts.lismmstoredinsessionofprojectlps
+msgid "Stored in session of project (.lps)"
+msgstr "Хранящиеся в сеансе работы с проектом (.lps)"
+
+#: lazarusidestrconsts.lismmtargets
+msgid "Targets: "
+msgstr "Цели: "
+
+#: lazarusidestrconsts.lismmundolastchangetothisgrid
+msgid "Undo last change to this grid"
+msgstr "Отменить последнюю правку в данной таблице"
+
+#: lazarusidestrconsts.lismmvalues
+msgid "Value \"%s\""
+msgstr "Значение \"%s\""
+
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -12455,10 +12587,6 @@ msgstr "Состояние"
 #: lazarusidestrconsts.lisoipthispackageisinstalledbutthelpkfilewasnotfound
 msgid "%sThis package is installed, but the lpk file was not found"
 msgstr "%sЭтот пакет установлен, но файл lpk не найден"
-
-#: lazarusidestrconsts.lisoipthispackagewasautomaticallycreated
-msgid "%sThis package was automatically created"
-msgstr "%sЭтот пакет был создан автоматически"
 
 #: lazarusidestrconsts.lisok
 msgctxt "lazarusidestrconsts.lisok"
@@ -13000,10 +13128,6 @@ msgstr "Удалить"
 msgctxt "lazarusidestrconsts.lispckeditviewpackagesource"
 msgid "View Package Source"
 msgstr "Показать исходный код пакета"
-
-#: lazarusidestrconsts.lispckexplautocreated
-msgid "AutoCreated"
-msgstr "Автосоздан"
 
 #: lazarusidestrconsts.lispckexplbase
 msgid "Base, can not be uninstalled"
