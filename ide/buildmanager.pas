@@ -2308,9 +2308,9 @@ begin
       // add macro values of self
       if Values<>nil then
         Result.Assign(Values);
-      {$IFDEF VerboseBuildMacros}
-      if (Options.Owner is TLazPackage) and (TLazPackage(Options.Owner).Name='LCL') then
-        Result.WriteDebugReport('TPkgManager.OnGetBuildMacroValues before execute: '+dbgstr(Options.Conditionals),'  ');
+      {$IF defined(VerboseBuildMacros) or defined(DebugLCLBaseConditionals)}
+      if (Options.Owner is TLazPackage) and (TLazPackage(Options.Owner).Name='LCLBase') then
+        Result.WriteDebugReport('TPkgManager.OnGetBuildMacroValues before execute: Conditionals="'+dbgstr(Options.Conditionals),'"');
       {$ENDIF}
       if not ParseOpts.MacroValues.Execute(Options.Conditionals) then begin
         if ConsoleVerbosity>=0 then
