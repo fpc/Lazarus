@@ -107,6 +107,9 @@ begin
     ((QtVersionMajor = 4) and (QtVersionMinor < 6)) or IsOldKDEInstallation then
       QtX11InitializePalettes;
   FWindowManagerName := LowerCase(GetWindowManager);
+  // metacity wm forks. marco = mint mate wm, gnome shell = gnome 3 wm
+  if (FWindowManagerName = 'marco') or (FWindowManagerName = 'gnome shell') then
+    FWindowManagerName := 'metacity';
   {$ENDIF}
   {$IFDEF DARWIN}
   // do not swap meta and ctrl keys, issue #20897

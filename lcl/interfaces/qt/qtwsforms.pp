@@ -422,8 +422,7 @@ begin
       {$ifdef HASX11}
       if ((QtWidgetSet.WindowManagerName = 'kwin') and IsOldKDEInstallation) or
         (QtWidgetSet.WindowManagerName = 'xfwm4') or
-        (QtWidgetSet.WindowManagerName = 'metacity') or
-        (QtWidgetSet.WindowManagerName = 'marco') then
+        (QtWidgetSet.WindowManagerName = 'metacity') then
       begin
         W := nil;
         ActiveWin := GetActiveWindow;
@@ -538,7 +537,7 @@ begin
         SetSkipX11Taskbar(Widget.Widget, True);
         Widget.setShowInTaskBar(False);
       end;
-      if (QtWidgetSet.WindowManagerName = 'metacity') or (QtWidgetSet.WindowManagerName = 'marco') then
+      if (QtWidgetSet.WindowManagerName = 'metacity') then
         X11Raise(QWidget_winID(Widget.Widget));
     end else
     if (TForm(AWinControl).FormStyle = fsSplash) then
