@@ -5498,7 +5498,7 @@ begin
       SynState:=idnInvalid;
       // a directive can be scanned multiple times (multi included include files)
       // => show it enabled if it was active at least once
-      if Pos('synedit.inc',Code.Filename)>0 then
+      if (Pos('synedit.inc',Code.Filename)>0) and (Y<65) then
         debugln(['TSourceEditor.UpdateIfDefNodeStates ',i,'/',Scanner.DirectiveCount,' ',dbgs(Pointer(Code)),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
       SrcPos:=aDirective^.SrcPos;
       repeat
@@ -5512,11 +5512,11 @@ begin
         if i=Scanner.DirectiveCount then break;
         ADirective:=Scanner.DirectivesSorted[i];
         inc(i);
-        if (Pos('synedit.inc',Code.Filename)>0) {and (ADirective^.SrcPos=SrcPos) and (TCodeBuffer(ADirective^.Code)=Code)} then
+        if (Pos('synedit.inc',Code.Filename)>0) and (Y<65) {and (ADirective^.SrcPos=SrcPos) and (TCodeBuffer(ADirective^.Code)=Code)} then
           debugln(['TSourceEditor.UpdateIfDefNodeStates ',i,'/',Scanner.DirectiveCount,' MERGING ',dbgs(ADirective^.Code),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
       until (ADirective^.SrcPos<>SrcPos) or (TCodeBuffer(ADirective^.Code)<>Code);
-      if (Pos('synedit.inc',Code.Filename)>0) then
-        debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' ',dbgs(aDirective^.State)]);
+      if (Pos('synedit.inc',Code.Filename)>0) and (Y<65) then
+        debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' ',dbgs(SynState)]);
       EditorComponent.SetIfdefNodeState(Y,X,SynState);
     end;
   finally
