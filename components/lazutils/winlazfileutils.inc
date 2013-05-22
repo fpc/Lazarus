@@ -4,140 +4,28 @@
 var
 //procedural variables for procedures that are implemented different on Win9x and NT or WinCE platform
 //They are intialized in InitLazFileUtils
-  _FileAgeUtf8         : function (const Filename:string):Longint;
-  _FileSizeUtf8        : function (const Filename: string): int64;
-  _FileSetDateUtf8   : function (const FileName: String; Age: Longint): Longint;
-  _FindFirstUtf8       : function (const Path: string; Attr: Longint;
-                       out Rslt: TSearchRec): Longint;
-  _FindNextUtf8        : function (var Rslt: TSearchRec): Longint;
-  _FindCloseUtf8       : procedure (var F: TSearchrec);
-  _FileGetAttrUtf8   : function (const FileName: String): Longint;
-  _FileSetAttrUtf8   : function (const Filename: String; Attr: longint): Longint;
-  _DeleteFileUtf8      : function (const FileName: String): Boolean;
-  _RenameFileUtf8      : function (const OldName, NewName: String): Boolean;
-  _GetCurrentDirUtf8  : function: String ;
-  _GetDirUtf8         : procedure(DriveNr: Byte; var Dir: String);
-  _FileOpenUtf8       : function(Const FileName : string; Mode : Integer) : THandle;
-  _FileCreateUtf8     : function(Const FileName : String; ShareMode : Integer; Rights: Integer) : THandle;
-  _SetCurrentDirUtf8   : function (const NewDir: String): Boolean;
-  _CreateDirUtf8       : function (const NewDir: String): Boolean;
-  _RemoveDirUtf8       : function (const Dir: String): Boolean ;
-
-function FilenameIsAbsolute(const TheFilename: string):boolean;
-begin
-  Result:=FilenameIsWinAbsolute(TheFilename);
-end;
+  _FileAgeUtf8         : function(const Filename:string):Longint;
+  _FileSizeUtf8        : function(const Filename: string): int64;
+  _FileSetDateUtf8     : function(const FileName: String; Age: Longint): Longint;
+  _FindFirstUtf8       : function(const Path: string; Attr: Longint;
+                                  out Rslt: TSearchRec): Longint;
+  _FindNextUtf8        : function(var Rslt: TSearchRec): Longint;
+  _FindCloseUtf8       : procedure(var F: TSearchrec);
+  _FileGetAttrUtf8     : function(const FileName: String): Longint;
+  _FileSetAttrUtf8     : function(const Filename: String; Attr: longint): Longint;
+  _DeleteFileUtf8      : function(const FileName: String): Boolean;
+  _RenameFileUtf8      : function(const OldName, NewName: String): Boolean;
+  _GetCurrentDirUtf8   : function: String ;
+  _GetDirUtf8          : procedure(DriveNr: Byte; var Dir: String);
+  _FileOpenUtf8        : function(Const FileName : string; Mode : Integer) : THandle;
+  _FileCreateUtf8      : function(Const FileName : String; ShareMode : Integer; Rights: Integer) : THandle;
+  _SetCurrentDirUtf8   : function(const NewDir: String): Boolean;
+  _CreateDirUtf8       : function(const NewDir: String): Boolean;
+  _RemoveDirUtf8       : function(const Dir: String): Boolean ;
 
 
 
-
-function ExpandFileNameUtf8(const FileName: string; {const} BaseDir: String = ''): String;
-var
-  IsAbs, StartsWithRoot, CanUseBaseDir : Boolean;
-  {$ifndef WinCE}
-  HasDrive: Boolean;
-  FnDrive, CurDrive, BaseDirDrive: Char;
-  {$endif}
-  CurDir, Fn: String;
-begin
-  //writeln('LazFileUtils.ExpandFileNameUtf8');
-  //writeln('FileName = "',FileName,'"');
-  //writeln('BaseDir  = "',BaseDir,'"');
-
-  //{$ifndef WinCE}
-  //if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
-  //  Result := SysToUtf8(SysUtils.ExpandFileName(Utf8ToSys(FileName)))
-  //else
-  //{$endif}
-  Fn := FileName;
-  DoDirSeparators(Fn);
-  IsAbs := FileNameIsWinAbsolute(Fn);
-  if not IsAbs then
-  begin
-    StartsWithRoot := (Fn = '\') or
-                      ((Length(Fn) > 1) and
-                      (Fn[1] = DirectorySeparator) and
-                      (Fn[2] <> DirectorySeparator));
-    {$ifndef WinCE}
-    HasDrive := (Length(Fn) > 1) and
-                (Fn[2] = ':') and
-                (UpCase(Fn[1]) in ['A'..'Z']);
-
-    if HasDrive then
-    begin
-      FnDrive := UpCase(Fn[1]);
-      _GetDirUtf8(Byte(FnDrive)-64, CurDir);
-      CurDrive := UpCase(GetCurrentDirUtf8[1]);
-    end
-    else
-    begin
-      CurDir := GetCurrentDirUtf8;
-      FnDrive := UpCase(CurDir[1]);
-      CurDrive := FnDrive;
-    end;
-
-    //writeln('HasDrive = ',HasDrive,' Fn = ',Fn);
-    //writeln('CurDir = ',CurDir);
-    //writeln('CurDrive = ',CurDrive);
-    //writeln('FnDrive  = ',FnDrive);
-
-    if (Length(BaseDir) > 1) and (UpCase(BaseDir[1]) in ['A'..'Z']) and (BaseDir[2] = ':') then
-    begin
-      BaseDirDrive := BaseDir[1]
-    end
-    else
-    begin
-      if HasDrive then
-        BaseDirDrive := CurDrive
-      else
-        BaseDirDrive := #0;
-    end;
-
-    //You cannot use BaseDir if both FileName and BaseDir includes a drive and they are not the same
-    CanUseBaseDir := ((BaseDirDrive = #0) or
-                     (not HasDrive) or
-                     (HasDrive and (FnDrive = BaseDirDrive)))
-                     and (BaseDir <> '');
-
-    //writeln('CanUseBaseDir = ',CanUseBaseDir);
-
-    if not HasDrive and StartsWithRoot and not CanUseBaseDir then
-    begin
-      //writeln('HasDrive and StartsWithRoot');
-      Fn := Copy(CurDir,1,2) + Fn;
-      HasDrive := True;
-      IsAbs := True;
-    end;
-    //FileNames like C:foo, strip Driveletter + colon
-    if HasDrive and not IsAbs then Delete(Fn,1,2);
-
-    //writeln('HasDrive = ',Hasdrive,' Fn = ',Fn);
-    {$else}
-    CanUseBaseDir := True;
-    {$endif WinCE}
-  end;
-  if IsAbs then
-  begin
-    //writeln('IsAbs = True -> Exit');
-    Result := ResolveDots(Fn);
-  end
-  else
-  begin
-    if not CanUseBaseDir or (BaseDir = '') then
-      Fn := IncludeTrailingPathDelimiter(CurDir) + Fn
-    else
-    begin
-      if (Fn[1] = DirectorySeparator) then Delete(Fn,1,1);
-      Fn := IncludeTrailingPathDelimiter(BaseDir) + Fn;
-    end;
-
-    Fn := ResolveDots(Fn);
-    //if BaseDir is something like 'z:foo\' or '\' then this needs to be expanded as well
-    if not FileNameIsAbsolute(Fn) then
-      Fn := ExpandFileNameUtf8(Fn, '');
-    Result := Fn;
-  end;
-end;
+// ************* "Stubs" that just call Ansi or WideString routines ***********************
 
 
 function GetCurrentDirUTF8: String;
@@ -179,28 +67,6 @@ function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
 begin
   Result := _FileSetAttrUtf8(Filename, Attr);
   InvalidateFileStateCache(Filename);
-end;
-
-function FileExistsUTF8(const Filename: string): boolean;
-var
-  Attr: Longint;
-begin
-  Attr := _FileGetAttrUTF8(FileName);
-  if Attr <> -1 then
-    Result:= (Attr and FILE_ATTRIBUTE_DIRECTORY) = 0
-  else
-    Result:=False;
-end;
-
-function DirectoryExistsUTF8(const Directory: string): boolean;
-var
-  Attr: Longint;
-begin
-  Attr := _FileGetAttrUTF8(Directory);
-  if Attr <> -1 then
-    Result := (Attr and FILE_ATTRIBUTE_DIRECTORY) > 0
-  else
-    Result := False;
 end;
 
 function FileAgeUTF8(const FileName: String): Longint;
@@ -265,7 +131,9 @@ begin
 end;
 
 
-{******* ANSI functions *******}
+
+
+// ******** Start of AnsiString specific implementations ************
 
 {$ifndef WinCE}
 //No ANSII functions on WinCE
@@ -375,17 +243,13 @@ begin
 end;
 
 
-
-
-
-
-
 {$endif WinCE}
 
+// ******** End of AnsiString specific implementations ************
 
 
+// ******** Start of WideString specific implementations ************
 
-{******* Wide functions *******}
 const
   ShareModes: array[0..4] of Integer = (
                0,
@@ -697,6 +561,151 @@ end;
 procedure FindCloseWide(var F: TSearchrec);
 begin
   Windows.FindClose(f.FindHandle);
+end;
+
+// ******** End of WideString specific implementations ************
+
+
+
+
+function FilenameIsAbsolute(const TheFilename: string):boolean;
+begin
+  Result:=FilenameIsWinAbsolute(TheFilename);
+end;
+
+
+
+
+function ExpandFileNameUtf8(const FileName: string; {const} BaseDir: String = ''): String;
+var
+  IsAbs, StartsWithRoot, CanUseBaseDir : Boolean;
+  {$ifndef WinCE}
+  HasDrive: Boolean;
+  FnDrive, CurDrive, BaseDirDrive: Char;
+  {$endif}
+  CurDir, Fn: String;
+begin
+  //writeln('LazFileUtils.ExpandFileNameUtf8');
+  //writeln('FileName = "',FileName,'"');
+  //writeln('BaseDir  = "',BaseDir,'"');
+
+  //{$ifndef WinCE}
+  //if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
+  //  Result := SysToUtf8(SysUtils.ExpandFileName(Utf8ToSys(FileName)))
+  //else
+  //{$endif}
+  Fn := FileName;
+  DoDirSeparators(Fn);
+  IsAbs := FileNameIsWinAbsolute(Fn);
+  if not IsAbs then
+  begin
+    StartsWithRoot := (Fn = '\') or
+                      ((Length(Fn) > 1) and
+                      (Fn[1] = DirectorySeparator) and
+                      (Fn[2] <> DirectorySeparator));
+    {$ifndef WinCE}
+    HasDrive := (Length(Fn) > 1) and
+                (Fn[2] = ':') and
+                (UpCase(Fn[1]) in ['A'..'Z']);
+
+    if HasDrive then
+    begin
+      FnDrive := UpCase(Fn[1]);
+      _GetDirUtf8(Byte(FnDrive)-64, CurDir);
+      CurDrive := UpCase(GetCurrentDirUtf8[1]);
+    end
+    else
+    begin
+      CurDir := GetCurrentDirUtf8;
+      FnDrive := UpCase(CurDir[1]);
+      CurDrive := FnDrive;
+    end;
+
+    //writeln('HasDrive = ',HasDrive,' Fn = ',Fn);
+    //writeln('CurDir = ',CurDir);
+    //writeln('CurDrive = ',CurDrive);
+    //writeln('FnDrive  = ',FnDrive);
+
+    if (Length(BaseDir) > 1) and (UpCase(BaseDir[1]) in ['A'..'Z']) and (BaseDir[2] = ':') then
+    begin
+      BaseDirDrive := BaseDir[1]
+    end
+    else
+    begin
+      if HasDrive then
+        BaseDirDrive := CurDrive
+      else
+        BaseDirDrive := #0;
+    end;
+
+    //You cannot use BaseDir if both FileName and BaseDir includes a drive and they are not the same
+    CanUseBaseDir := ((BaseDirDrive = #0) or
+                     (not HasDrive) or
+                     (HasDrive and (FnDrive = BaseDirDrive)))
+                     and (BaseDir <> '');
+
+    //writeln('CanUseBaseDir = ',CanUseBaseDir);
+
+    if not HasDrive and StartsWithRoot and not CanUseBaseDir then
+    begin
+      //writeln('HasDrive and StartsWithRoot');
+      Fn := Copy(CurDir,1,2) + Fn;
+      HasDrive := True;
+      IsAbs := True;
+    end;
+    //FileNames like C:foo, strip Driveletter + colon
+    if HasDrive and not IsAbs then Delete(Fn,1,2);
+
+    //writeln('HasDrive = ',Hasdrive,' Fn = ',Fn);
+    {$else}
+    CanUseBaseDir := True;
+    {$endif WinCE}
+  end;
+  if IsAbs then
+  begin
+    //writeln('IsAbs = True -> Exit');
+    Result := ResolveDots(Fn);
+  end
+  else
+  begin
+    if not CanUseBaseDir or (BaseDir = '') then
+      Fn := IncludeTrailingPathDelimiter(CurDir) + Fn
+    else
+    begin
+      if (Fn[1] = DirectorySeparator) then Delete(Fn,1,1);
+      Fn := IncludeTrailingPathDelimiter(BaseDir) + Fn;
+    end;
+
+    Fn := ResolveDots(Fn);
+    //if BaseDir is something like 'z:foo\' or '\' then this needs to be expanded as well
+    if not FileNameIsAbsolute(Fn) then
+      Fn := ExpandFileNameUtf8(Fn, '');
+    Result := Fn;
+  end;
+end;
+
+
+
+function FileExistsUTF8(const Filename: string): boolean;
+var
+  Attr: Longint;
+begin
+  Attr := _FileGetAttrUTF8(FileName);
+  if Attr <> -1 then
+    Result:= (Attr and FILE_ATTRIBUTE_DIRECTORY) = 0
+  else
+    Result:=False;
+end;
+
+function DirectoryExistsUTF8(const Directory: string): boolean;
+var
+  Attr: Longint;
+begin
+  Attr := _FileGetAttrUTF8(Directory);
+  if Attr <> -1 then
+    Result := (Attr and FILE_ATTRIBUTE_DIRECTORY) > 0
+  else
+    Result := False;
 end;
 
 
