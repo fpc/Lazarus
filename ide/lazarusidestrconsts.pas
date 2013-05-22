@@ -1832,6 +1832,9 @@ resourcestring
   dlgAddHiSpecialVisibleChars     = 'Visualized Special Chars';
   dlgTopInfoHint                  = 'Current Class/Proc Hint';
   dlgIfDefBlockInactive           = 'Inactive $IFDEF code';
+  dlgIfDefBlockActive             = 'Active $IFDEF code';
+  dlgIfDefNodeInactive            = 'Inactive $IFDEF node';
+  dlgIfDefNodeActive              = 'Active $IFDEF node';
 
   dlgAddHiAttrGroupDefault  = 'Global';
   dlgAddHiAttrGroupText     = 'Text';
@@ -1839,6 +1842,7 @@ resourcestring
   dlgAddHiAttrGroupGutter   = 'Gutter';
   dlgAddHiAttrGroupSyncroEdit    = 'Syncron Edit';
   dlgAddHiAttrGroupTemplateEdit  = 'Template Edit';
+  dlgAddHiAttrGroupIfDef    = 'IfDef';
 
   dlgEditAccessCaptionLockedInView            = 'Locked, if text in view';
   dlgEditAccessCaptionUnLockedInSoftView      = 'Unlocked, if text in centered view';

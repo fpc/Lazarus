@@ -101,11 +101,18 @@ type
      ahaGutter,            ahaRightMargin,        ahaSpecialVisibleChars,
      ahaTopInfoHint
 {$IFDEF WithSynMarkupIfDef}
-     ,       ahaIfDefBlockInactive
+     ,       ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefNodeInactive,
+     ahaIfDefNodeActive
 {$ENDIF}
      );
 
-  TAhaGroupName = (agnDefault, agnLanguage, agnText, agnLine, agnGutter, agnTemplateMode, agnSyncronMode);
+  TAhaGroupName = (
+    agnDefault, agnLanguage, agnText, agnLine, agnGutter, agnTemplateMode, agnSyncronMode
+{$IFDEF WithSynMarkupIfDef}
+    , agnIfDef
+{$ENDIF}
+
+  );
 
   TColorSchemeAttributeFeature =
     ( hafBackColor, hafForeColor, hafFrameColor, hafAlpha,
@@ -141,7 +148,8 @@ const
     '',  // ahaSpecialVisibleChars
     ''  // ahaTopInfoHint
 {$IFDEF WithSynMarkupIfDef}
-,    ''  // ahaIfDefBlockInactive
+,    '', '', '',  // ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefNodeInactive,
+     '' //ahaIfDefNodeActive
 {$ENDIF}
   );
 
@@ -179,7 +187,10 @@ const
     { ahaTopInfoHint }         agnLine
 {$IFDEF WithSynMarkupIfDef}
     ,
-    { ahaIfDefBlockInactive }  agnText
+    { ahaIfDefBlockInactive }  agnIfDef,
+    { ahaIfDefBlockActive }    agnIfDef,
+    { ahaIfDefNodeInactive }   agnIfDef,
+    { ahaIfDefNodeActive }     agnIfDef
 {$ENDIF}
   );
   ahaSupportedFeatures: array[TAdditionalHilightAttribute] of TColorSchemeAttributeFeatures =
@@ -217,7 +228,10 @@ const
     { ahaTopInfoHint }        [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
 {$IFDEF WithSynMarkupIfDef}
     ,
-    { ahaIfDefBlockInactive } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
+    { ahaIfDefBlockInactive } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaIfDefBlockActive }   [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaIfDefNodeInactive }  [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaIfDefNodeActive }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
 {$ENDIF}
   );
 
@@ -2488,6 +2502,10 @@ begin
   AdditionalHighlightAttributes[ahaTopInfoHint]         := dlgTopInfoHint;
 {$IFDEF WithSynMarkupIfDef}
   AdditionalHighlightAttributes[ahaIfDefBlockInactive]  := dlgIfDefBlockInactive;
+  AdditionalHighlightAttributes[ahaIfDefBlockActive]    := dlgIfDefBlockActive;
+  AdditionalHighlightAttributes[ahaIfDefNodeInactive]   := dlgIfDefNodeInactive;
+  AdditionalHighlightAttributes[ahaIfDefNodeActive]     := dlgIfDefNodeActive;
+  AdditionalHighlightGroupNames[agnIfDef]        := dlgAddHiAttrGroupIfDef;
 {$ENDIF}
 
   AdditionalHighlightGroupNames[agnDefault]      := dlgAddHiAttrGroupDefault;
@@ -6158,7 +6176,22 @@ begin
     SetMarkupColorByClass(ahaWordGroup,     TSynEditMarkupWordGroup);
     SetMarkupColorByClass(ahaSpecialVisibleChars, TSynEditMarkupSpecialChar);
 {$IFDEF WithSynMarkupIfDef}
-    SetMarkupColorByClass(ahaIfDefBlockInactive, TSynEditMarkupIfDef);
+    if ASynEdit is TIDESynEditor then begin
+      with TIDESynEditor(ASynEdit) do begin
+        if AttributeByEnum[ahaIfDefBlockInactive] <> nil
+          then AttributeByEnum[ahaIfDefBlockInactive].ApplyTo(MarkupIfDef.MarkupInfoDisabled )
+          else MarkupIfDef.MarkupInfoDisabled.Clear;
+        if AttributeByEnum[ahaIfDefBlockActive] <> nil
+          then AttributeByEnum[ahaIfDefBlockActive].ApplyTo(MarkupIfDef.MarkupInfoEnabled )
+          else MarkupIfDef.MarkupInfoEnabled.Clear;
+        if AttributeByEnum[ahaIfDefNodeInactive] <> nil
+          then AttributeByEnum[ahaIfDefNodeInactive].ApplyTo(MarkupIfDef.MarkupInfoNodeDisabled )
+          else MarkupIfDef.MarkupInfoNodeDisabled.Clear;
+        if AttributeByEnum[ahaIfDefNodeActive] <> nil
+          then AttributeByEnum[ahaIfDefNodeActive].ApplyTo(MarkupIfDef.MarkupInfoNodeEnabled )
+          else MarkupIfDef.MarkupInfoNodeEnabled.Clear;
+      end;
+    end;
 {$ENDIF}
     SetGutterColorByClass(ahaLineNumber,      TSynGutterLineNumber);
     SetGutterColorByClass(ahaModifiedLine,    TSynGutterChanges);
