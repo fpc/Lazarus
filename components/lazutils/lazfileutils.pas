@@ -171,62 +171,37 @@ begin
   {$ENDIF}
 end;
 
-function CompareFileExt(const Filename, Ext: string;
-  CaseSensitive: boolean): integer;
+function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean): integer;
+// Ext can contain a point or not
 var
+  n, e : AnsiString;
   FileLen, FilePos, ExtLen, ExtPos: integer;
-  FileChar, ExtChar: char;
 begin
-  FileLen:=length(Filename);
-  ExtLen:=length(Ext);
-  FilePos:=FileLen;
+  FileLen := length(Filename);
+  ExtLen := length(Ext);
+  FilePos := FileLen;
   while (FilePos>=1) and (Filename[FilePos]<>'.') do dec(FilePos);
-  if FilePos<1 then begin
+  if FilePos < 1 then begin
     // no extension in filename
     Result:=1;
     exit;
   end;
   // skip point
   inc(FilePos);
-  ExtPos:=1;
-  if (ExtPos<=ExtLen) and (Ext[1]='.') then inc(ExtPos);
+  ExtPos := 1;
+  if (ExtPos <= ExtLen) and (Ext[1] = '.') then inc(ExtPos);
+
   // compare extensions
-  while true do begin
-    if FilePos<=FileLen then begin
-      if ExtPos<=ExtLen then begin
-        FileChar:=Filename[FilePos];
-        ExtChar:=Ext[ExtPos];
-        if not CaseSensitive then begin
-          FileChar:=FPUpChars[FileChar];
-          ExtChar:=FPUpChars[ExtChar];
-        end;
-        if FileChar=ExtChar then begin
-          inc(FilePos);
-          inc(ExtPos);
-        end else if FileChar>ExtChar then begin
-          Result:=1;
-          exit;
-        end else begin
-          Result:=-1;
-          exit;
-        end;
-      end else begin
-        // fileext longer than ext
-        Result:=1;
-        exit;
-      end;
-    end else begin
-      if ExtPos<=ExtLen then begin
-        // fileext shorter than ext
-        Result:=-1;
-        exit;
-      end else begin
-        // equal
-        Result:=0;
-        exit;
-      end;
-    end;
-  end;
+  n := Copy(Filename, FilePos, length(FileName));
+  e := Copy(Ext, ExtPos, length(Ext));
+  if CaseSensitive then
+    Result := CompareStr(n, e)
+  else
+    Result := UTF8CompareText(n, e);
+  if Result < 0
+    then Result := -1
+  else
+    if Result > 0 then Result := 1;
 end;
 
 function FileIsExecutable(const AFilename: string): boolean;
