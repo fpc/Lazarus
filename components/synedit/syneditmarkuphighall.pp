@@ -39,6 +39,7 @@ type
   PSynMarkupHighAllMatch = ^TSynMarkupHighAllMatch;
 
   { TSynMarkupHighAllMatchList }
+
   TSynMarkupHighAllMatchList = class(TSynEditStorageMem)
   private
     function GetEndPoint(const Index : Integer) : TPoint;
@@ -50,6 +51,7 @@ type
     procedure SetMatch(const Index : Integer; const AValue : TSynMarkupHighAllMatch);
     procedure SetStartPoint(const Index : Integer; const AValue : TPoint);
   protected
+    function  GetInintialForItemSize: Integer; override;
     procedure SetCount(const AValue : Integer); override;
   public
     constructor Create;
@@ -65,8 +67,20 @@ type
     property PointCount : Integer read GetPointCount;
     property Point      [const Index : Integer] : TPoint read GetPoint;
   end;
-  
-  
+
+  { TSynMarkupHighAllMultiMatchList - Allow matches with different markup / no overlap }
+
+  TSynMarkupHighAllMultiMatchList = class(TSynMarkupHighAllMatchList)
+  private
+    FParentItemSize: Integer;
+    function GetMarkupId(Index: Integer): Integer;
+    procedure SetMarkupId(Index: Integer; AValue: Integer);
+  protected
+    function GetInintialForItemSize: Integer; override;
+  public
+    property MarkupId[Index: Integer]: Integer read GetMarkupId write SetMarkupId;
+  end;
+
   { TSynEditMarkupHighlightMatches }
 
   TSynEditMarkupHighlightMatches = class(TSynEditMarkup)
@@ -76,21 +90,27 @@ type
   protected
     function  HasDisplayAbleMatches: Boolean; virtual;
     function  CreateMatchList: TSynMarkupHighAllMatchList; virtual;
+    function  MarkupIdForMatch(Idx: Integer): Integer; virtual;
+    function  MarkupInfoForId(Idx: Integer): TSynSelectedColor; virtual;
     property  Matches: TSynMarkupHighAllMatchList read FMatches;
+
+    function  GetMarkupAttrIdAtRowCol(const aRow: Integer; const aStartCol: TLazSynDisplayTokenBound;
+                                      out AStartPos, AnEndPos: Integer): Integer;
   public
     constructor Create(ASynEdit : TSynEditBase);
     destructor Destroy; override;
 
     procedure PrepareMarkupForRow(aRow: Integer); override;
     procedure EndMarkup; override;
-    function GetMarkupAttributeAtRowCol(const aRow: Integer;
-                                        const aStartCol: TLazSynDisplayTokenBound;
-                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
+    function  GetMarkupAttributeAtRowCol(const aRow: Integer;
+                                         const aStartCol: TLazSynDisplayTokenBound;
+                                         const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
     procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
                                          out   ANextPhys, ANextLog: Integer); override;
   end;
+
 
   { TSynEditMarkupHighlightAllBase }
 
@@ -435,9 +455,19 @@ begin
   Result := TSynMarkupHighAllMatchList.Create;
 end;
 
+function TSynEditMarkupHighlightMatches.MarkupIdForMatch(Idx: Integer): Integer;
+begin
+  Result := 0;
+end;
+
+function TSynEditMarkupHighlightMatches.MarkupInfoForId(Idx: Integer): TSynSelectedColor;
+begin
+  Result := MarkupInfo;
+end;
+
 constructor TSynEditMarkupHighlightMatches.Create(ASynEdit: TSynEditBase);
 begin
-  FMatches := TSynMarkupHighAllMatchList.Create;
+  FMatches := CreateMatchList;
   inherited Create(ASynEdit);
 end;
 
@@ -449,6 +479,7 @@ end;
 
 procedure TSynEditMarkupHighlightMatches.PrepareMarkupForRow(aRow: Integer);
 begin
+  FNextPosRow := -1;
   if not HasDisplayAbleMatches then
     exit;
 
@@ -478,15 +509,12 @@ begin
   FNextPosRow := -1;
 end;
 
-function TSynEditMarkupHighlightMatches.GetMarkupAttributeAtRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound;
-  const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
+function TSynEditMarkupHighlightMatches.GetMarkupAttrIdAtRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; out AStartPos, AnEndPos: Integer): Integer;
 var
-  pos, s, e: Integer;
+  pos: Integer;
 begin
-  result := nil;
-  if not HasDisplayAbleMatches then
-    exit;
+  Result := -1;
   if (aRow <> FNextPosRow) or (FNextPosIdx < 0) then
     exit;
 
@@ -513,15 +541,32 @@ begin
   then exit;
 
   if fMatches.Point[pos].y < aRow then
-    s := -1
+    AStartPos := -1
   else
-    s := fMatches.Point[pos].x;
+    AStartPos := fMatches.Point[pos].x;
   if (pos = FMatches.PointCount) or (fMatches.Point[pos+1].y > aRow) then
-    e := -1
+    AnEndPos := -1
   else
-    e := fMatches.Point[pos+1].x;
-  MarkupInfo.SetFrameBoundsLog(s, e);
-  Result := MarkupInfo;
+    AnEndPos := fMatches.Point[pos+1].x;
+
+  Result := MarkupIdForMatch(pos div 2);
+end;
+
+function TSynEditMarkupHighlightMatches.GetMarkupAttributeAtRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound;
+  const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
+var
+  i, s, e: Integer;
+begin
+  result := nil;
+  if not HasDisplayAbleMatches then
+    exit;
+
+  i := GetMarkupAttrIdAtRowCol(aRow, aStartCol, s, e);
+  if i < 0 then
+    exit;
+  Result := MarkupInfoForId(i);
+  Result.SetFrameBoundsLog(s, e);
 end;
 
 procedure TSynEditMarkupHighlightMatches.GetNextMarkupColAfterRowCol(const aRow: Integer;
@@ -1625,7 +1670,7 @@ end;
 
 constructor TSynMarkupHighAllMatchList.Create;
 begin
-  ItemSize := SizeOf(TSynMarkupHighAllMatch);
+  inherited Create;
   Count := 0;
   Capacity := 256;
 end;
@@ -1740,6 +1785,11 @@ begin
   PSynMarkupHighAllMatch(ItemPointer[Index])^.StartPoint := AValue;
 end;
 
+function TSynMarkupHighAllMatchList.GetInintialForItemSize: Integer;
+begin
+  Result := SizeOf(TSynMarkupHighAllMatch);
+end;
+
 function TSynMarkupHighAllMatchList.GetEndPoint(const Index : Integer) : TPoint;
 begin
   Result := PSynMarkupHighAllMatch(ItemPointer[Index])^.EndPoint;
@@ -1752,18 +1802,37 @@ begin
   PSynMarkupHighAllMatch(ItemPointer[Index])^.EndPoint := AValue;
 end;
 
-function TSynMarkupHighAllMatchList.GetMatch(const index : Integer) : TSynMarkupHighAllMatch;
+function TSynMarkupHighAllMatchList.GetMatch(const Index: Integer): TSynMarkupHighAllMatch;
 begin
   Result := PSynMarkupHighAllMatch(ItemPointer[Index])^;
 end;
 
-procedure TSynMarkupHighAllMatchList.SetMatch(const index : Integer; const AValue : TSynMarkupHighAllMatch);
+procedure TSynMarkupHighAllMatchList.SetMatch(const Index: Integer;
+  const AValue: TSynMarkupHighAllMatch);
 begin
   if Index = Count
   then Count := Count + 1; // AutoIncrease
   PSynMarkupHighAllMatch(ItemPointer[Index])^ := AValue;
 end;
 
+{ TSynMarkupHighAllMultiMatchList }
+
+function TSynMarkupHighAllMultiMatchList.GetMarkupId(Index: Integer): Integer;
+begin
+  Result := PInteger(ItemPointer[Index]+FParentItemSize)^;
+end;
+
+procedure TSynMarkupHighAllMultiMatchList.SetMarkupId(Index: Integer; AValue: Integer);
+begin
+  PInteger(ItemPointer[Index]+FParentItemSize)^ := AValue;
+end;
+
+function TSynMarkupHighAllMultiMatchList.GetInintialForItemSize: Integer;
+begin
+  Result := inherited GetInintialForItemSize;
+  FParentItemSize := Result;
+  Result := FParentItemSize + SizeOf(Integer);
+end;
 
 { TSynEditMarkupHighlightAllBase }
 

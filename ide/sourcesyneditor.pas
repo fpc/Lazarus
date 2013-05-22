@@ -261,7 +261,8 @@ type
     function  IsIfdefMarkupActive: Boolean;
     procedure InvalidateAllIfdefNodes;
     procedure SetIfdefNodeState(ALinePos, AstartPos: Integer; AState: TSynMarkupIfdefNodeState);
-    property OnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest read FOnIfdefNodeStateRequest write FOnIfdefNodeStateRequest;
+    property  OnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest read FOnIfdefNodeStateRequest write FOnIfdefNodeStateRequest;
+    property  MarkupIfDef: TSynEditMarkupIfDef read FMarkupIfDef;
     {$ENDIF}
   end;
 
@@ -1501,7 +1502,7 @@ end;
 {$IFDEF WithSynMarkupIfDef}
 function TIDESynEditor.IsIfdefMarkupActive: Boolean;
 begin
-  Result := FMarkupIfDef.MarkupInfo.IsEnabled;
+  Result := FMarkupIfDef.RealEnabled;
 end;
 
 function TIDESynEditor.DoIfDefNodeStateRequest(Sender: TObject; LinePos,

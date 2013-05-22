@@ -535,6 +535,7 @@ type
     function UseUserSettings(settingIndex: integer): boolean; override;
     procedure EnumUserSettings(settings: TStrings); override;
 
+    function IsLineStartingInDirective(ALineIndex: TLineIdx): Boolean;
     // Info about Folds
     //function FoldBlockOpeningCount(ALineIndex: TLineIdx; const AFilter: TSynFoldBlockFilter): integer; override; overload;
     //function FoldBlockClosingCount(ALineIndex: TLineIdx; const AFilter: TSynFoldBlockFilter): integer; override; overload;
@@ -3144,6 +3145,17 @@ begin
   end;
 end;
 
+function TSynPasSyn.IsLineStartingInDirective(ALineIndex: TLineIdx): Boolean;
+var
+  r: Pointer;
+begin
+  Result := False;
+  if ALineIndex < 1 then exit;
+  r := CurrentRanges[ALineIndex-1];
+  if (r <> nil) and (r <> NullRange) then
+    Result := rsDirective in TRangeStates(Integer(PtrUInt(TSynPasSynRange(r).RangeType)));
+end;
+
 function TSynPasSyn.FoldBlockEndLevel(ALineIndex: TLineIdx;
   const AFilter: TSynFoldBlockFilter): integer;
 var
@@ -3211,7 +3223,7 @@ begin
 
   if AFilter.FoldGroup  in [0, FOLDGROUP_PASCAL] then begin
     // All or Pascal
-    (* Range.EndLevel can be smaller. because it Range.MinLevel does not know the LastLiineFix
+    (* Range.EndLevel can be smaller. because Range.MinLevel does not know the LastLineFix
        Using a copy of FoldBlockEndLevel *)
     r := CurrentRanges[ALineIndex];
     if (r <> nil) and (r <> NullRange) then begin

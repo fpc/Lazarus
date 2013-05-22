@@ -89,6 +89,12 @@ type
     function Highlighter: TSynCustomHighlighter;
     function OwnedByMgr: Boolean; virtual; // overwrite, do prevent destruction by mgr
 
+    // Merge with results from others
+    procedure GetNextMarkupColAfterRowColEx(const aRow: Integer;
+                                            const aStartCol: TLazSynDisplayTokenBound;
+                                            const AnRtlInfo: TLazSynDisplayRtlInfo;
+                                            var   ANextPhys, ANextLog: Integer);
+
     property SynEdit : TSynEditBase read fSynEdit;
   public
     constructor Create(ASynEdit : TSynEditBase);
@@ -114,6 +120,7 @@ type
     Procedure TempEnable;
     procedure IncPaintLock; virtual;
     procedure DecPaintLock; virtual;
+    function  RealEnabled: Boolean; virtual;
 
     property MarkupInfo : TSynSelectedColor read fMarkupInfo;
     property FGColor : TColor read GetFGColor;
@@ -360,6 +367,39 @@ begin
   Result := True;
 end;
 
+procedure TSynEditMarkup.GetNextMarkupColAfterRowColEx(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo;
+  var ANextPhys, ANextLog: Integer);
+var
+  p, l : integer;
+begin
+  if not RealEnabled then
+    exit;
+  GetNextMarkupColAfterRowCol(aRow, aStartCol, AnRtlInfo, p, l);
+
+  if p > 0 then begin
+    if AnRtlInfo.IsRtl then begin
+      if p >= aStartCol.Physical then begin
+        debugln(['Bad Next phys pos in GetNextMarkupColAfterRowCol ',p,' wanted < ',aStartCol.Physical, ' from ',ClassName]);
+      end
+      else
+        if (p > ANextPhys) or (ANextPhys<0) then ANextPhys := p;
+    end else begin
+      if p <= aStartCol.Physical then begin
+        debugln(['Bad Next phys pos in GetNextMarkupColAfterRowCol ',p,' wanted > ',aStartCol.Physical, ' from ',ClassName]);
+      end
+      else
+        if (p < ANextPhys) or (ANextPhys<0) then ANextPhys := p;
+    end;
+  end;
+
+  if (l > 0) and (l <= aStartCol.Logical) then begin
+    debugln(['Bad Next logic pos in GetNextMarkupColAfterRowCol ',p,' wanted > ',aStartCol.Physical, ' from ',ClassName]);
+  end
+  else
+    if ((l>0) and (l < ANextLog)) or (ANextLog<0) then ANextLog := l;
+end;
+
 constructor TSynEditMarkup.Create(ASynEdit : TSynEditBase);
 begin
   inherited Create();
@@ -422,6 +462,11 @@ procedure TSynEditMarkup.DecPaintLock;
 begin
   if FPaintLock > 0 then
     dec(FPaintLock);
+end;
+
+function TSynEditMarkup.RealEnabled: Boolean;
+begin
+  Result := Enabled and MarkupInfo.IsEnabled;
 end;
 
 procedure TSynEditMarkup.PrepareMarkupForRow(aRow: Integer);
@@ -500,7 +545,7 @@ var
   i : integer;
 begin
   for i := 0 to fMarkUpList.Count-1 do
-    if TSynEditMarkup(fMarkUpList[i]).Enabled then
+    if TSynEditMarkup(fMarkUpList[i]).RealEnabled then
       TSynEditMarkup(fMarkUpList[i]).FinishMarkupForRow(aRow);
 end;
 
@@ -509,7 +554,7 @@ var
   i : integer;
 begin
   for i := 0 to fMarkUpList.Count-1 do
-    if TSynEditMarkup(fMarkUpList[i]).Enabled then
+    if TSynEditMarkup(fMarkUpList[i]).RealEnabled then
       TSynEditMarkup(fMarkUpList[i]).EndMarkup;
 end;
 
@@ -518,7 +563,7 @@ var
   i : integer;
 begin
   for i := 0 to fMarkUpList.Count-1 do
-    if TSynEditMarkup(fMarkUpList[i]).Enabled then
+    if TSynEditMarkup(fMarkUpList[i]).RealEnabled then
       TSynEditMarkup(fMarkUpList[i]).PrepareMarkupForRow(aRow);
 end;
 
@@ -529,7 +574,7 @@ var
   i : integer;
 begin
   for i := 0 to fMarkUpList.Count-1 do begin
-    if TSynEditMarkup(fMarkUpList[i]).Enabled then
+    if TSynEditMarkup(fMarkUpList[i]).RealEnabled then
       TSynEditMarkup(fMarkUpList[i]).MergeMarkupAttributeAtRowCol
         (aRow, aStartCol, AEndCol, AnRtlInfo, AMarkup);
   end;
@@ -549,40 +594,15 @@ procedure TSynEditMarkupManager.GetNextMarkupColAfterRowCol(const aRow: Integer;
   const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo; out ANextPhys,
   ANextLog: Integer);
 var
-  i, p, l : integer;
+  i : integer;
 begin
   ANextLog := -1;
   ANextPhys := -1;
   if fMarkUpList.Count = 0
   then exit;
   TSynEditMarkup(fMarkUpList[0]).GetNextMarkupColAfterRowCol(aRow, aStartCol, AnRtlInfo, ANextPhys, ANextLog);
-  for i := 1 to fMarkUpList.Count-1 do begin
-    if not TSynEditMarkup(fMarkUpList[i]).Enabled then
-      continue;
-    TSynEditMarkup(fMarkUpList[i]).GetNextMarkupColAfterRowCol(aRow, aStartCol, AnRtlInfo, p, l);
-
-    if p > 0 then begin
-      if AnRtlInfo.IsRtl then begin
-        if p >= aStartCol.Physical then begin
-          debugln(['Bad Next phys pos in GetNextMarkupColAfterRowCol ',p,' wanted < ',aStartCol.Physical, ' from ',TSynEditMarkup(fMarkUpList[i]).ClassName]);
-        end
-        else
-          if (p > ANextPhys) or (ANextPhys<0) then ANextPhys := p;
-      end else begin
-        if p <= aStartCol.Physical then begin
-          debugln(['Bad Next phys pos in GetNextMarkupColAfterRowCol ',p,' wanted > ',aStartCol.Physical, ' from ',TSynEditMarkup(fMarkUpList[i]).ClassName]);
-        end
-        else
-          if (p < ANextPhys) or (ANextPhys<0) then ANextPhys := p;
-      end;
-    end;
-
-    if (l > 0) and (l <= aStartCol.Logical) then begin
-      debugln(['Bad Next logic pos in GetNextMarkupColAfterRowCol ',p,' wanted > ',aStartCol.Physical, ' from ',TSynEditMarkup(fMarkUpList[i]).ClassName]);
-    end
-    else
-      if ((l>0) and (l < ANextLog)) or (ANextLog<0) then ANextLog := l;
-  end;
+  for i := 1 to fMarkUpList.Count-1 do
+    TSynEditMarkup(fMarkUpList[i]).GetNextMarkupColAfterRowColEx(aRow, aStartCol, AnRtlInfo, ANextPhys, ANextLog);
 end;
 
 procedure TSynEditMarkupManager.TextChanged(aFirstCodeLine, aLastCodeLine,

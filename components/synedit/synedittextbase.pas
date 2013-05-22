@@ -56,6 +56,7 @@ type
     function GetItemPointer(Index: Integer): Pointer; inline;
     procedure SetItemSize(const AValue: Integer);
   protected
+    function  GetInintialForItemSize: Integer; virtual;
     procedure SetCapacity(const AValue: Integer); virtual;
     procedure SetCount(const AValue: Integer); virtual;
     procedure Move(AFrom, ATo, ALen: Integer); virtual;
@@ -752,6 +753,11 @@ begin
   FItemSize := AValue;
 end;
 
+function TSynEditStorageMem.GetInintialForItemSize: Integer;
+begin
+  Result := 0;
+end;
+
 procedure TSynEditStorageMem.SetCapacity(const AValue: Integer);
 begin
   {$IFDEF AssertSynMemIndex}
@@ -774,6 +780,7 @@ end;
 
 constructor TSynEditStorageMem.Create;
 begin
+  FItemSize := GetInintialForItemSize;
   FCapacity := 0;
   FCount := 0;
 end;

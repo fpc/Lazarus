@@ -534,6 +534,7 @@ var
   s, e: Integer;
 begin
   Result := nil;
+  if not RealEnabled then exit;
   for i := FPreparedCellFrom to FPreparedCellTo do begin
     if ( ((Cells[i].LogStart.y = aRow) and (Cells[i].LogStart.x <= aStartCol.Logical)) or
          (Cells[i].LogStart.y < aRow) ) and
@@ -569,6 +570,7 @@ var
 begin
   ANextLog := -1;
   ANextPhys := -1;
+  if not RealEnabled then exit;
   for i := FPreparedCellFrom to FPreparedCellTo do begin
     if Cells[i].Group < 0 then continue;
     if (Cells[i].LogStart.y = aRow) and (Cells[i].LogStart.x > aStartCol.Logical) and
@@ -586,6 +588,7 @@ procedure TSynPluginSyncronizedEditMarkup.PrepareMarkupForRow(aRow: Integer);
 var
   i, j, t, b: Integer;
 begin
+  if not RealEnabled then exit;
   inherited PrepareMarkupForRow(aRow);
   if FPreparedRow < 0 then begin
     i := 0;
@@ -618,6 +621,7 @@ end;
 
 procedure TSynPluginSyncronizedEditMarkup.EndMarkup;
 begin
+  if not RealEnabled then exit;
   inherited EndMarkup;
   FPreparedRow := -1;
 end;
