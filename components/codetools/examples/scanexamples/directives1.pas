@@ -10,6 +10,9 @@ uses
 {$IfDef FPC}
   {$Define SkippedMacro}
   const SkippedConst = 1;
+  {$IFDEF Bla}
+  const BlaConst = 1;
+  {$ENDIF}
 {$Else}
   {$Define NotFPC}
   const UsedConst = 2;
