@@ -11,8 +11,8 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   LCLVersion = '1.1'
   object StatusBar: TStatusBar
     Left = 0
-    Height = 20
-    Top = 649
+    Height = 22
+    Top = 647
     Width = 300
     Panels = <    
       item
@@ -25,7 +25,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   end
   object AvailPersistentComboBox: TComboBox
     Left = 0
-    Height = 24
+    Height = 25
     Top = 0
     Width = 300
     Align = alTop
@@ -37,7 +37,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   object ComponentPanel: TPanel
     Left = 0
     Height = 184
-    Top = 24
+    Top = 25
     Width = 300
     Align = alTop
     ClientHeight = 184
@@ -49,8 +49,8 @@ object ObjectInspectorDlg: TObjectInspectorDlg
       AnchorSideTop.Control = FilterLabel
       AnchorSideTop.Side = asrCenter
       Left = 87
-      Height = 23
-      Top = 3
+      Height = 25
+      Top = 2
       Width = 184
       UseFormActivate = True
       ButtonWidth = 23

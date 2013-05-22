@@ -3615,7 +3615,7 @@ begin
   FDrawGridLines := True;
   FShowGutter := True;
   FShowStatusBar := True;
-  FShowInfoBox := False;
+  FShowInfoBox := True;
 end;
 
 function TOIOptions.Load: boolean;
@@ -3696,7 +3696,7 @@ begin
     FShowStatusBar := ConfigStore.GetValue(
          Path+'ShowStatusBar',true);
     FShowInfoBox := ConfigStore.GetValue(
-         Path+'ShowInfoBox',false);
+         Path+'ShowInfoBox',true);
     FInfoBoxHeight := ConfigStore.GetValue(
        Path+'InfoBoxHeight',80);
   except
@@ -3770,7 +3770,7 @@ begin
     ConfigStore.SetDeleteValue(Path+'DrawGridLines',FDrawGridLines, True);
     ConfigStore.SetDeleteValue(Path+'ShowGutter',FShowGutter, True);
     ConfigStore.SetDeleteValue(Path+'ShowStatusBar',FShowStatusBar, True);
-    ConfigStore.SetDeleteValue(Path+'ShowInfoBox',FShowInfoBox, False);
+    ConfigStore.SetDeleteValue(Path+'ShowInfoBox',FShowInfoBox, True);
     ConfigStore.SetDeleteValue(Path+'InfoBoxHeight',FInfoBoxHeight,80);
   except
     on E: Exception do begin
@@ -3931,7 +3931,7 @@ begin
   FShowRestricted := False;
   FShowStatusBar := True;
   FInfoBoxHeight := 80;
-  FShowInfoBox := False;
+  FShowInfoBox := True;
   FComponentEditor := nil;
 
   Caption := oisObjectInspector;
