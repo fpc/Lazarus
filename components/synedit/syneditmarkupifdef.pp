@@ -2833,7 +2833,7 @@ if (e<> nil) and not(e.NodeType in [idnIfdef, idnElseIf]) then DebugLn([ 'SetNod
     IncChangeStep;
     if FLockTreeCount = 0 then
       FNotifyLists[itnChanged].CallNotifyEvents(Self);
-      //DebugLn([ 'SetNodeState ', ALinePos, '/', 'AstartPos', AstartPos, ' ', dbgs(AState)]);
+      DebugLn([ 'SetNodeState ', ALinePos, '/', 'AstartPos', AstartPos, ' ', dbgs(AState)]);
   end;
   e.NodeState := AState;
 
@@ -3692,6 +3692,11 @@ begin
   MarkupInfo.Foreground := clLtGray;
   MarkupInfo.ForeAlpha := 180;
   MarkupInfo.ForePriority := 99999;
+
+  MarkupInfoTempDisabled.Clear;
+  MarkupInfoTempDisabled.Foreground := clLtGray;
+  MarkupInfoTempDisabled.ForeAlpha := 140;
+  MarkupInfoTempDisabled.ForePriority := 99999;
 
   //MarkupInfoEnabled.FrameColor := clGreen;
   //MarkupInfoEnabled.FrameEdges := sfeBottom;
