@@ -2467,21 +2467,8 @@ var
   OldCTTool: TFindDeclarationTool;
   OldCTNode: TCodeTreeNode;
   n: Integer;
-  LastOwner: TObject;
   s: String;
   Cmd: TKeyCommandRelation;
-
-  procedure AddLinkToOwner(CurOwner: TObject);
-  var
-    s: String;
-  begin
-    if (CurOwner=nil) or (CurOwner=LastOwner) then exit;
-    s:=OwnerToFPDocHint(CurOwner);
-    if s='' then exit;
-    HTMLHint:=HTMLHint+s+'<br>'+LineEnding;
-    LastOwner:=AnOwner;
-  end;
-
 begin
   Result:=chprFailed;
   BaseURL:='lazdoc://';
@@ -2496,7 +2483,6 @@ begin
       if chhoDeclarationHeader in Options then
         HTMLHint:=HTMLHint+GetHTMLDeclarationHeader(CTTool,CTNode,XYPos);
 
-      LastOwner:=nil;
       for n:=1 to 30 do begin
         ElementName:=CodeNodeToElementName(CTTool,CTNode);
         i:=ElementNames.Count-1;
@@ -2511,11 +2497,8 @@ begin
           // add fpdoc entry
           FPDocFilename:=GetFPDocFilenameForSource(CTTool.MainFilename,
                                                    false,CacheWasUsed,AnOwner);
-          //DebugLn(['TCodeHelpManager.GetHTMLHint FPDocFilename=',FPDocFilename,' ElementName="',ElementName,'"']);
+          //DebugLn(['TCodeHelpManager.GetHTMLHintForNode: FPDocFilename=',FPDocFilename,' ElementName="',ElementName,'"']);
           if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
-
-          if n=1 then
-            AddLinkToOwner(AnOwner); // add link to owner of declaration, even if there is no fpdoc entry
 
           if FPDocFilename<>'' then begin
             // load FPDoc file
@@ -2524,14 +2507,13 @@ begin
 
             ElementNode:=FPDocFile.GetElementWithName(ElementName);
             if ElementNode<>nil then begin
-              //debugln(['TCodeHelpManager.GetHTMLHint fpdoc element found "',ElementName,'"']);
-              AddLinkToOwner(AnOwner);
-
+              //DebugLn(['TCodeHelpManager.GetHTMLHintForNode: fpdoc element found "',ElementName,'"']);
               s:=AppendLineEnding(GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiShort])));
               s:=s+AppendLineEnding(GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiDescription])));
               if s<>'' then begin
-                s:='<br>'+LineEnding
-                   +'<div class="title">Description</div>'+LineEnding+s;
+                // Leave also Description header out to save space when header is not requested
+                if chhoDeclarationHeader in Options then
+                  s:='<br>'+LineEnding+'<div class="title">Description</div>'+LineEnding+s;
                 HTMLHint:=HTMLHint+s;
               end;
               HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiErrors]));
@@ -2553,7 +2535,7 @@ begin
             and (CTTool.ProcNodeHasSpecifier(CTNode,psOVERRIDE)))
         then begin
           {$ifdef VerboseCodeHelp}
-          debugln(['TCodeHelpManager.GetHTMLHint searching for inherited of ',CTNode.DescAsString,' ',dbgs(XYPos)]);
+          debugln(['TCodeHelpManager.GetHTMLHintForNode: searching for inherited of ',CTNode.DescAsString,' ',dbgs(XYPos)]);
           {$endif}
           OldXYPos:=XYPos;
           OldCTTool:=CTTool;
@@ -2564,13 +2546,13 @@ begin
           or (CTNode=nil)
           then begin
             {$ifdef VerboseCodeHelp}
-            debugln(['TCodeHelpManager.GetHTMLHint inherited not found: ',dbgs(OldXYPos)]);
+            debugln(['TCodeHelpManager.GetHTMLHintForNode: inherited not found: ',dbgs(OldXYPos)]);
             {$endif}
             break;
           end;
         end else begin
           {$ifdef VerboseCodeHelp}
-          debugln(['TCodeHelpManager.GetHTMLHint not searching inherited for ',CTNode.DescAsString]);
+          debugln(['TCodeHelpManager.GetHTMLHintForNode: not searching inherited for ',CTNode.DescAsString]);
           {$endif}
           break;
         end;
@@ -2579,10 +2561,10 @@ begin
 
     except
       on E: ECodeToolError do begin
-        //debugln(['TCodeHelpManager.GetHTMLHint ECodeToolError: ',E.Message]);
+        //debugln(['TCodeHelpManager.GetHTMLHintForNode: ECodeToolError: ',E.Message]);
       end;
       on E: Exception do begin
-        debugln(['TCodeHelpManager.GetHTMLHint Exception: ',E.Message]);
+        debugln(['TCodeHelpManager.GetHTMLHintForNode: Exception: ',E.Message]);
         //DumpExceptionBackTrace;
       end;
     end;
@@ -2590,6 +2572,11 @@ begin
   finally
     ElementNames.Free;
     FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+    // Add package name
+    s:=OwnerToFPDocHint(AnOwner);
+    if s<>'' then
+      HTMLHint:=HTMLHint+s;
+
     if HTMLHint<>'' then begin
       if (chhoShowFocusHint in Options) then begin
         Cmd:=EditorOpts.KeyMap.FindByCommand(ecFocusHint);
@@ -2606,7 +2593,7 @@ begin
       Result:=chprFailed;
   end;
   {$ifdef VerboseCodeHelp}
-  debugln(['TCodeHelpManager.GetHTMLHint ',HTMLHint]);
+  debugln(['TCodeHelpManager.GetHTMLHintForNode: ',HTMLHint]);
   {$endif}
 end;
 
@@ -2969,12 +2956,16 @@ begin
 end;
 
 function TCodeHelpManager.OwnerToFPDocHint(AnOwner: TObject): string;
+var
+  PackName: string;
 begin
   Result:='';
   if AnOwner=nil then exit;
-  if AnOwner is TLazPackage then
-    Result:='<span class="seealso">Package <a href="openpackage://'+TLazPackage(AnOwner).Name+'">'
-                                   +TLazPackage(AnOwner).Name+'</a></span>';
+  if AnOwner is TLazPackage then begin
+    PackName:=TLazPackage(AnOwner).Name;
+    Result:='<br>'+LineEnding+'<div class="title">Package</div>'+LineEnding
+           +'<a href="openpackage://'+PackName+'">'+PackName+'</a>';
+  end;
 end;
 
 function TCodeHelpManager.FPDocLinkToURL(FPDocFile: TLazFPDocFile;
