@@ -3143,7 +3143,8 @@ var
   end;
   function NeedEnableOpen: Boolean;
   begin
-    Result := ScanEnaRange and (EnableOpenEntry = nil);
+    Result := ScanEnaRange and (EnableOpenEntry = nil) and
+              (DisableOpenEntry = nil) and (TmpDisableOpenEntry = nil); // Do not show enblade, intside a disabled
   end;
   function NeedTmpDisableOpen: Boolean;
   begin
@@ -3151,7 +3152,8 @@ var
   end;
   function NeedTmpEnableOpen: Boolean;
   begin
-    Result := ScanTmpEnaRange and (TmpEnableOpenEntry = nil);
+    Result := ScanTmpEnaRange and (TmpEnableOpenEntry = nil) and
+              (DisableOpenEntry = nil) and (TmpDisableOpenEntry = nil);
   end;
 
   procedure SetNil(var AOpenEntry, ACloseEntry: TSynMarkupHighIfDefEntry;
