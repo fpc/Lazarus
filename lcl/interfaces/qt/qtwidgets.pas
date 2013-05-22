@@ -6108,8 +6108,10 @@ begin
   end else
   if not QWidget_isModal(Widget) then
   begin
-    if (QtWidgetSet.WindowManagerName = 'metacity') and not IsMDIChild then
-      X11Raise(QWidget_winID(Widget))
+    if ((QtWidgetSet.WindowManagerName = 'metacity') or
+      (QtWidgetSet.WindowManagerName = 'marco')) and
+      not IsMDIChild then
+        X11Raise(QWidget_winID(Widget))
     else
       QWidget_raise(Widget);
   end;
@@ -17025,7 +17027,7 @@ begin
   QWidget_show(Widget);
 
   {$IFDEF HASX11}
-  if (QtWidgetSet.WindowManagerName = 'metacity') then
+  if (QtWidgetSet.WindowManagerName = 'metacity') or (QtWidgetSet.WindowManagerName = 'marco') then
       X11Raise(QWidget_winID(Widget));
   {$ENDIF}
 
