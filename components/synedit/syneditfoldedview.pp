@@ -3840,7 +3840,9 @@ var
   NewClassifications :TFoldNodeClassifications;
 begin
   if fLinesInWindow < 0 then exit;
-  if fLockCount > 0 then begin
+  if (fLockCount > 0) and
+     ((not FInTopLineChanged) or (fvfNeedCalcMaps in FFlags)) // TODO: Scan now, to avoid invalidate later
+  then begin
     Include(FFlags, fvfNeedCalcMaps);
     exit;
   end;
