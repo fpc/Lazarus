@@ -68,8 +68,8 @@ const
   FilenamesLiteral = {$IFDEF NotLiteralFilenames}false{$ELSE}true{$ENDIF};// file names can be compared using = string operator
 
 // file attributes and states
-function CompareFilenames(const Filename1, Filename2: string): integer;
-function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer;
+function CompareFilenames(const Filename1, Filename2: string): integer; inline;
+function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer; inline;
 function CompareFilenames(const Filename1, Filename2: string;
                           ResolveLinks: boolean): integer;
 function CompareFilenames(Filename1: PChar; Len1: integer;
@@ -93,7 +93,7 @@ function ReadAllLinks(const Filename: string;
 function TryReadAllLinks(const Filename: string): string; // if a link is broken returns Filename
 
 // directories
-function DirPathExists(const FileName: String): Boolean;
+function DirPathExists(const FileName: String): Boolean; inline;
 function ForceDirectory(DirectoryName: string): boolean;
 function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean): boolean;
 function ProgramDirectory: string;

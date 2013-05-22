@@ -225,62 +225,18 @@ begin
 end;
 
 function DirPathExists(const FileName: String): Boolean;
-var
-  F: Longint;
-  dirExist: Boolean;
 begin
-  dirExist := false;
-
-  F := FileGetAttrUTF8(ChompPathDelim(FileName));
-  if F <> -1 then
-    if (F and faDirectory) <> 0 then
-      dirExist := true;
-  Result := dirExist;
+  Result := LazFileUtils.DirPathExists(FileName);
 end;
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
-{$IFDEF darwin}
-var
-  F1: CFStringRef;
-  F2: CFStringRef;
-{$ENDIF}
 begin
-  {$IFDEF darwin}
-  if Filename1=Filename2 then exit(0);
-  if (Filename1='') or (Filename2='') then
-    exit(length(Filename2)-length(Filename1));
-  F1:=CFStringCreateWithCString(nil,Pointer(Filename1),kCFStringEncodingUTF8);
-  F2:=CFStringCreateWithCString(nil,Pointer(Filename2),kCFStringEncodingUTF8);
-  Result:=CFStringCompare(F1,F2,kCFCompareNonliteral
-        {$IFDEF CaseInsensitiveFilenames}+kCFCompareCaseInsensitive{$ENDIF});
-  CFRelease(F1);
-  CFRelease(F2);
-  {$ELSE}
-    {$IFDEF CaseInsensitiveFilenames}
-    Result:=UTF8CompareText(Filename1, Filename2);
-    {$ELSE}
-    Result:=CompareStr(Filename1, Filename2);
-    {$ENDIF}
-  {$ENDIF}
+  Result := LazFileUtils.CompareFilenames(Filename1, Filename2);
 end;
 
 function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer;
-{$IFDEF darwin}
-var
-  F1: CFStringRef;
-  F2: CFStringRef;
-{$ENDIF}
 begin
-  {$IFDEF darwin}
-  if Filename1=Filename2 then exit(0);
-  F1:=CFStringCreateWithCString(nil,Pointer(Filename1),kCFStringEncodingUTF8);
-  F2:=CFStringCreateWithCString(nil,Pointer(Filename2),kCFStringEncodingUTF8);
-  Result:=CFStringCompare(F1,F2,kCFCompareNonliteral+kCFCompareCaseInsensitive);
-  CFRelease(F1);
-  CFRelease(F2);
-  {$ELSE}
-  Result:=UTF8CompareText(Filename1, Filename2);
-  {$ENDIF}
+  Result := LazFileUtils.CompareFilenamesIgnoreCase(Filename1, Filename2);
 end;
 
 function CompareFilenames(const Filename1, Filename2: string;
