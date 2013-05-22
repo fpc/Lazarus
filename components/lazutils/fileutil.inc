@@ -430,23 +430,8 @@ end;
   function ForceDirectory(DirectoryName: string): boolean;
  ------------------------------------------------------------------------------}
 function ForceDirectory(DirectoryName: string): boolean;
-var i: integer;
-  Dir: string;
 begin
-  DoDirSeparators(DirectoryName);
-  DirectoryName := AppendPathDelim(DirectoryName);
-  i:=1;
-  while i<=length(DirectoryName) do begin
-    if DirectoryName[i]=PathDelim then begin
-      Dir:=copy(DirectoryName,1,i-1);
-      if not DirPathExists(Dir) then begin
-        Result:=CreateDirUTF8(Dir);
-        if not Result then exit;
-      end;
-    end;
-    inc(i);
-  end;
-  Result:=true;
+  Result := LazFileUtils.ForceDirectory(DirectoryName);
 end;
 
 {------------------------------------------------------------------------------
@@ -508,22 +493,8 @@ begin
 end;
 
 function DirectoryIsWritable(const DirectoryName: string): boolean;
-var
-  TempFilename: String;
-  fs: TFileStream;
-  s: String;
 begin
-  TempFilename:=GetTempFilename(DirectoryName,'tstperm');
-  Result:=false;
-  try
-    fs:=TFileStream.Create(UTF8ToSys(TempFilename),fmCreate);
-    s:='WriteTest';
-    fs.Write(s[1],length(s));
-    fs.Free;
-    DeleteFileUTF8(TempFilename);
-    Result:=true;
-  except
-  end;
+  Result := LazFileUtils.DirectoryIsWritable(DirectoryName);
 end;
 
 {------------------------------------------------------------------------------

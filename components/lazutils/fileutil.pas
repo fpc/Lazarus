@@ -94,10 +94,10 @@ function TryReadAllLinks(const Filename: string): string; // if a link is broken
 
 // directories
 function DirPathExists(const FileName: String): Boolean; inline;
-function ForceDirectory(DirectoryName: string): boolean;
+function ForceDirectory(DirectoryName: string): boolean; inline;
 function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean): boolean;
 function ProgramDirectory: string;
-function DirectoryIsWritable(const DirectoryName: string): boolean;
+function DirectoryIsWritable(const DirectoryName: string): boolean; inline;
 
 // filename parts
 const

@@ -430,13 +430,13 @@ end;
 function DirectoryIsWritable(const DirectoryName: string): boolean;
 var
   TempFilename: String;
-  fs: TFileStream;
+  fs: TFileStreamUtf8;
   s: String;
 begin
   TempFilename:=SysUtils.GetTempFilename(AppendPathDelim(DirectoryName),'tstperm');
   Result:=false;
   try
-    fs:=TFileStream.Create(UTF8ToSys(TempFilename),fmCreate);
+    fs:=TFileStreamUtf8.Create(TempFilename, fmCreate);
     s:='WriteTest';
     fs.Write(s[1],length(s));
     fs.Free;
