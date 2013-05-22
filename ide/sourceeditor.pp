@@ -2678,14 +2678,27 @@ end;
 function TSourceEditorSharedValues.GetMainLinkScanner(Scan: boolean
   ): TLinkScanner;
 // Note: if this is an include file, the main scanner may change
+var
+  SrcEdit: TIDESynEditor;
 begin
   Result:=FMainLinkScanner;
   if Result=nil then
   begin
     // create main scanner
     //debugln(['TSourceEditorSharedValues.GetMainLinkScanner fetching unit codebuffer ...']);
-    if CodeBuffer=nil then exit;
-    if not FilenameIsPascalSource(Filename) then exit;
+    if CodeBuffer=nil then begin
+      debugln(['TSourceEditorSharedValues.GetMainLinkScanner CodeBuffer=nil']);
+      exit;
+    end;
+    if SharedEditorCount=0 then exit;
+    SrcEdit:=SharedEditors[0].EditorComponent;
+    if SrcEdit=nil then exit;
+    if not (SrcEdit.Highlighter is TSynPasSyn) then begin
+      if Filename<>FLastWarnedMainLinkFilename then
+        debugln(['TSourceEditorSharedValues.GetMainLinkScanner not a pascal source: ',Filename]);
+      FLastWarnedMainLinkFilename:=CodeBuffer.Filename;
+      exit;
+    end;
     if not CodeToolBoss.InitCurCodeTool(CodeBuffer) then
     begin
       if Filename<>FLastWarnedMainLinkFilename then
@@ -5459,6 +5472,7 @@ var
   SynState: TSynMarkupIfdefNodeStateEx;
   SrcPos: Integer;
 begin
+  //debugln(['TSourceEditor.UpdateIfDefNodeStates START ',Filename]);
   if not EditorComponent.IsIfdefMarkupActive then
     exit;
   //debugln(['TSourceEditor.UpdateIfDefNodeStates CHECK ',Filename]);
@@ -5484,8 +5498,8 @@ begin
       SynState:=idnInvalid;
       // a directive can be scanned multiple times (multi included include files)
       // => show it enabled if it was active at least once
-      //if Pos('gtkbin.inc',Code.Filename)>0 then
-      //  debugln(['TSourceEditor.UpdateIfDefNodeStates ',i,'/',Scanner.DirectiveCount,' ',dbgs(Pointer(Code)),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
+      if Pos('synedit.inc',Code.Filename)>0 then
+        debugln(['TSourceEditor.UpdateIfDefNodeStates ',i,'/',Scanner.DirectiveCount,' ',dbgs(Pointer(Code)),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
       SrcPos:=aDirective^.SrcPos;
       repeat
         case aDirective^.State of
@@ -5498,10 +5512,11 @@ begin
         if i=Scanner.DirectiveCount then break;
         ADirective:=Scanner.DirectivesSorted[i];
         inc(i);
-        //if (Pos('gtkbin.inc',Code.Filename)>0) {and (ADirective^.SrcPos=SrcPos) and (TCodeBuffer(ADirective^.Code)=Code)} then
-        //  debugln(['TSourceEditor.UpdateIfDefNodeStates ',i,'/',Scanner.DirectiveCount,' MERGING ',dbgs(ADirective^.Code),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
+        if (Pos('synedit.inc',Code.Filename)>0) {and (ADirective^.SrcPos=SrcPos) and (TCodeBuffer(ADirective^.Code)=Code)} then
+          debugln(['TSourceEditor.UpdateIfDefNodeStates ',i,'/',Scanner.DirectiveCount,' MERGING ',dbgs(ADirective^.Code),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
       until (ADirective^.SrcPos<>SrcPos) or (TCodeBuffer(ADirective^.Code)<>Code);
-      //debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' ',dbgs(aDirective^.State)]);
+      if (Pos('synedit.inc',Code.Filename)>0) then
+        debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' ',dbgs(aDirective^.State)]);
       EditorComponent.SetIfdefNodeState(Y,X,SynState);
     end;
   finally
