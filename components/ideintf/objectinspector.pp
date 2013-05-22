@@ -3624,88 +3624,62 @@ var
   FileVersion: integer;
   Page: TObjectInspectorPage;
 begin
-  Result:=false;
+  Result:=False;
   if ConfigStore=nil then exit;
   try
     Path:='ObjectInspectorOptions/';
     FileVersion:=ConfigStore.GetValue(Path+'Version/Value',0);
-
-    FSaveBounds:=ConfigStore.GetValue(Path+'Bounds/Valid'
-                                      ,false);
+    FSaveBounds:=ConfigStore.GetValue(Path+'Bounds/Valid',False);
     if FSaveBounds then begin
       FLeft:=ConfigStore.GetValue(Path+'Bounds/Left',0);
       FTop:=ConfigStore.GetValue(Path+'Bounds/Top',0);
       FWidth:=ConfigStore.GetValue(Path+'Bounds/Width',250);
       FHeight:=ConfigStore.GetValue(Path+'Bounds/Height',400);
     end;
-
     if FileVersion>=2 then begin
       for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
         FGridSplitterX[Page]:=ConfigStore.GetValue(
            Path+'Bounds/'+DefaultOIPageNames[Page]+'/SplitterX',110);
     end else begin
-      FGridSplitterX[oipgpProperties]:=ConfigStore.GetValue(
-         Path+'Bounds/PropertyGridSplitterX',110);
-      FGridSplitterX[oipgpEvents]:=ConfigStore.GetValue(
-         Path+'Bounds/EventGridSplitterX',110);
+      FGridSplitterX[oipgpProperties]:=ConfigStore.GetValue(Path+'Bounds/PropertyGridSplitterX',110);
+      FGridSplitterX[oipgpEvents]:=ConfigStore.GetValue(Path+'Bounds/EventGridSplitterX',110);
     end;
     for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
-      if FGridSplitterX[Page]<10 then FGridSplitterX[Page]:=10;
+      if FGridSplitterX[Page]<10 then
+        FGridSplitterX[Page]:=10;
 
-    FDefaultItemHeight:=ConfigStore.GetValue(
-       Path+'Bounds/DefaultItemHeight',20);
+    FDefaultItemHeight:=ConfigStore.GetValue(Path+'Bounds/DefaultItemHeight',20);
     if FDefaultItemHeight<0 then FDefaultItemHeight:=20;
-    FShowComponentTree:=ConfigStore.GetValue(
-       Path+'ComponentTree/Show/Value',true);
-    FComponentTreeHeight:=ConfigStore.GetValue(
-       Path+'ComponentTree/Height/Value',160);
+    FShowComponentTree:=ConfigStore.GetValue(Path+'ComponentTree/Show/Value',True);
+    FComponentTreeHeight:=ConfigStore.GetValue(Path+'ComponentTree/Height/Value',160);
 
-    FGridBackgroundColor:=ConfigStore.GetValue(
-         Path+'Color/GridBackground',DefBackgroundColor);
-    FDefaultValueColor:=ConfigStore.GetValue(
-         Path+'Color/DefaultValue', DefDefaultValueColor);
-    FSubPropertiesColor:=ConfigStore.GetValue(
-         Path+'Color/SubProperties', DefSubPropertiesColor);
-    FValueColor:=ConfigStore.GetValue(
-         Path+'Color/Value', DefValueColor);
-    FReadOnlyColor:=ConfigStore.GetValue(
-         Path+'Color/ReadOnly', DefReadOnlyColor);
-    FReferencesColor:=ConfigStore.GetValue(
-         Path+'Color/References',DefReferencesColor);
-    FPropertyNameColor:=ConfigStore.GetValue(
-         Path+'Color/PropertyName',DefNameColor);
-    FHighlightColor:=ConfigStore.GetValue(
-         Path+'Color/Highlight',DefHighlightColor);
-    FHighlightFontColor:=ConfigStore.GetValue(
-         Path+'Color/HighlightFont',DefHighlightFontColor);
-    FGutterColor:=ConfigStore.GetValue(
-         Path+'Color/Gutter',DefGutterColor);
-    FGutterEdgeColor:=ConfigStore.GetValue(
-         Path+'Color/GutterEdge',DefGutterEdgeColor);
+    FGridBackgroundColor:=ConfigStore.GetValue(Path+'Color/GridBackground',DefBackgroundColor);
+    FDefaultValueColor:=ConfigStore.GetValue(Path+'Color/DefaultValue',DefDefaultValueColor);
+    FSubPropertiesColor:=ConfigStore.GetValue(Path+'Color/SubProperties',DefSubPropertiesColor);
+    FValueColor:=ConfigStore.GetValue(Path+'Color/Value',DefValueColor);
+    FReadOnlyColor:=ConfigStore.GetValue(Path+'Color/ReadOnly',DefReadOnlyColor);
+    FReferencesColor:=ConfigStore.GetValue(Path+'Color/References',DefReferencesColor);
+    FPropertyNameColor:=ConfigStore.GetValue(Path+'Color/PropertyName',DefNameColor);
+    FHighlightColor:=ConfigStore.GetValue(Path+'Color/Highlight',DefHighlightColor);
+    FHighlightFontColor:=ConfigStore.GetValue(Path+'Color/HighlightFont',DefHighlightFontColor);
+    FGutterColor:=ConfigStore.GetValue(Path+'Color/Gutter',DefGutterColor);
+    FGutterEdgeColor:=ConfigStore.GetValue(Path+'Color/GutterEdge',DefGutterEdgeColor);
 
-    FShowHints:=ConfigStore.GetValue(
-         Path+'ShowHints',FileVersion>=3);
-    FAutoShow := ConfigStore.GetValue(
-         Path+'AutoShow',true);
-    FBoldNonDefaultValues := ConfigStore.GetValue(
-         Path+'BoldNonDefaultValues',true);
-    FDrawGridLines := ConfigStore.GetValue(
-         Path+'DrawGridLines',true);
-    FShowGutter := ConfigStore.GetValue(
-         Path+'ShowGutter',true);
-    FShowStatusBar := ConfigStore.GetValue(
-         Path+'ShowStatusBar',true);
-    FShowInfoBox := ConfigStore.GetValue(
-         Path+'ShowInfoBox',true);
-    FInfoBoxHeight := ConfigStore.GetValue(
-       Path+'InfoBoxHeight',80);
+    FShowHints:=ConfigStore.GetValue(Path+'ShowHints',FileVersion>=3);
+    FAutoShow := ConfigStore.GetValue(Path+'AutoShow',True);
+    FBoldNonDefaultValues := ConfigStore.GetValue(Path+'BoldNonDefaultValues',True);
+    FDrawGridLines := ConfigStore.GetValue(Path+'DrawGridLines',True);
+    FShowGutter := ConfigStore.GetValue(Path+'ShowGutter',True);
+    FShowStatusBar := ConfigStore.GetValue(Path+'ShowStatusBar',True);
+    FShowInfoBox := ConfigStore.GetValue(Path+'ShowInfoBox',True);
+    FInfoBoxHeight := ConfigStore.GetValue(Path+'InfoBoxHeight',80);
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Load: ',E.Message);
       exit;
     end;
   end;
-  Result:=true;
+  Result:=True;
 end;
 
 function TOIOptions.Save: boolean;
@@ -3713,17 +3687,12 @@ var
   Page: TObjectInspectorPage;
   Path: String;
 begin
-  Result:=false;
+  Result:=False;
   if ConfigStore=nil then exit;
   try
     Path:='ObjectInspectorOptions/';
     ConfigStore.SetValue(Path+'Version/Value',OIOptionsFileVersion);
-
-    ConfigStore.SetDeleteValue(Path+'Bounds/Valid',FSaveBounds,
-                             false);
-
-    ConfigStore.SetDeleteValue(Path+'Bounds/Valid',FSaveBounds,
-                             false);
+    ConfigStore.SetDeleteValue(Path+'Bounds/Valid',FSaveBounds,False);
     if FSaveBounds then begin
       ConfigStore.SetValue(Path+'Bounds/Left',FLeft);
       ConfigStore.SetValue(Path+'Bounds/Top',FTop);
@@ -3731,38 +3700,23 @@ begin
       ConfigStore.SetValue(Path+'Bounds/Height',FHeight);
     end;
     for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
-      ConfigStore.SetDeleteValue(
-         Path+'Bounds/'+DefaultOIPageNames[Page]+'/SplitterX',
-         FGridSplitterX[Page],110);
-    ConfigStore.SetDeleteValue(Path+'Bounds/DefaultItemHeight',
-                             FDefaultItemHeight,20);
-    ConfigStore.SetDeleteValue(Path+'ComponentTree/Show/Value',
-                             FShowComponentTree,true);
-    ConfigStore.SetDeleteValue(Path+'ComponentTree/Height/Value',
-                             FComponentTreeHeight,160);
+      ConfigStore.SetDeleteValue(Path+'Bounds/'+DefaultOIPageNames[Page]+'/SplitterX',
+                                 FGridSplitterX[Page],110);
+    ConfigStore.SetDeleteValue(Path+'Bounds/DefaultItemHeight',FDefaultItemHeight,20);
+    ConfigStore.SetDeleteValue(Path+'ComponentTree/Show/Value',FShowComponentTree,True);
+    ConfigStore.SetDeleteValue(Path+'ComponentTree/Height/Value',FComponentTreeHeight,160);
 
-    ConfigStore.SetDeleteValue(Path+'Color/GridBackground',
-                             FGridBackgroundColor,DefBackgroundColor);
-    ConfigStore.SetDeleteValue(Path+'Color/DefaultValue',
-                             FDefaultValueColor,DefDefaultValueColor);
-    ConfigStore.SetDeleteValue(Path+'Color/SubProperties',
-                             FSubPropertiesColor,DefSubPropertiesColor);
-    ConfigStore.SetDeleteValue(Path+'Color/Value',
-                             FValueColor,DefValueColor);
-    ConfigStore.SetDeleteValue(Path+'Color/ReadOnly',
-                             FReadOnlyColor,DefReadOnlyColor);
-    ConfigStore.SetDeleteValue(Path+'Color/References',
-                             FReferencesColor,DefReferencesColor);
-    ConfigStore.SetDeleteValue(Path+'Color/PropertyName',
-                              FPropertyNameColor,DefNameColor);
-    ConfigStore.SetDeleteValue(Path+'Color/Highlight',
-                              FHighlightColor,DefHighlightColor);
-    ConfigStore.SetDeleteValue(Path+'Color/HighlightFont',
-                              FHighlightFontColor,DefHighlightFontColor);
-    ConfigStore.SetDeleteValue(Path+'Color/Gutter',
-                              FGutterColor,DefGutterColor);
-    ConfigStore.SetDeleteValue(Path+'Color/GutterEdge',
-                              FGutterEdgeColor,DefGutterEdgeColor);
+    ConfigStore.SetDeleteValue(Path+'Color/GridBackground',FGridBackgroundColor,DefBackgroundColor);
+    ConfigStore.SetDeleteValue(Path+'Color/DefaultValue',FDefaultValueColor,DefDefaultValueColor);
+    ConfigStore.SetDeleteValue(Path+'Color/SubProperties',FSubPropertiesColor,DefSubPropertiesColor);
+    ConfigStore.SetDeleteValue(Path+'Color/Value',FValueColor,DefValueColor);
+    ConfigStore.SetDeleteValue(Path+'Color/ReadOnly',FReadOnlyColor,DefReadOnlyColor);
+    ConfigStore.SetDeleteValue(Path+'Color/References',FReferencesColor,DefReferencesColor);
+    ConfigStore.SetDeleteValue(Path+'Color/PropertyName',FPropertyNameColor,DefNameColor);
+    ConfigStore.SetDeleteValue(Path+'Color/Highlight',FHighlightColor,DefHighlightColor);
+    ConfigStore.SetDeleteValue(Path+'Color/HighlightFont',FHighlightFontColor,DefHighlightFontColor);
+    ConfigStore.SetDeleteValue(Path+'Color/Gutter',FGutterColor,DefGutterColor);
+    ConfigStore.SetDeleteValue(Path+'Color/GutterEdge',FGutterEdgeColor,DefGutterEdgeColor);
 
     ConfigStore.SetDeleteValue(Path+'ShowHints',FShowHints, True);
     ConfigStore.SetDeleteValue(Path+'AutoShow',FAutoShow, True);
