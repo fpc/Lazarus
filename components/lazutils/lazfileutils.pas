@@ -1071,40 +1071,13 @@ end;
 
 
 
-function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec
-  ): Longint;
-begin
-  Result:=SysUtils.FindFirst(UTF8ToSys(Path),Attr,Rslt);
-  Rslt.Name:=SysToUTF8(Rslt.Name);
-end;
-
-function FindNextUTF8(var Rslt: TSearchRec): Longint;
-begin
-  Rslt.Name:=UTF8ToSys(Rslt.Name);
-  Result:=SysUtils.FindNext(Rslt);
-  Rslt.Name:=SysToUTF8(Rslt.Name);
-end;
-
-procedure FindCloseUTF8(var F: TSearchrec);
-begin
-  SysUtils.FindClose(F);
-end;
 
 
 
-function DeleteFileUTF8(const FileName: String): Boolean;
-begin
-  Result:=SysUtils.DeleteFile(UTF8ToSys(Filename));
-  if Result then
-    InvalidateFileStateCache;
-end;
 
-function RenameFileUTF8(const OldName, NewName: String): Boolean;
-begin
-  Result:=SysUtils.RenameFile(UTF8ToSys(OldName),UTF8ToSys(NewName));
-  if Result then
-    InvalidateFileStateCache;
-end;
+
+
+
 
 function FileSearchUTF8(const Name, DirList: String): String;
 begin
@@ -1116,20 +1089,11 @@ begin
   Result:=SysUtils.FileIsReadOnly(UTF8ToSys(Filename));
 end;
 
-function SetCurrentDirUTF8(const NewDir: String): Boolean;
-begin
-  Result:=SysUtils.SetCurrentDir(UTF8ToSys(NewDir));
-end;
 
-function CreateDirUTF8(const NewDir: String): Boolean;
-begin
-  Result:=SysUtils.CreateDir(UTF8ToSys(NewDir));
-end;
 
-function RemoveDirUTF8(const Dir: String): Boolean;
-begin
-  Result:=SysUtils.RemoveDir(UTF8ToSys(Dir));
-end;
+
+
+
 
 function ForceDirectoriesUTF8(const Dir: string): Boolean;
 begin

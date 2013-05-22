@@ -267,14 +267,6 @@ begin
     Result:='';
 end;
 
-{------------------------------------------------------------------------------
-  function FilenameIsAbsolute(const TheFilename: string):boolean;
- ------------------------------------------------------------------------------}
-function FilenameIsAbsolute(const TheFilename: string):boolean;
-begin
-  Result:=FilenameIsUnixAbsolute(TheFilename);
-end;
-
 
 function ConsoleToUTF8(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
 begin
@@ -287,65 +279,10 @@ begin
 end;
 
 
-function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec
-  ): Longint;
-begin
-  Result:=SysUtils.FindFirst(UTF8ToSys(Path),Attr,Rslt);
-  Rslt.Name:=SysToUTF8(Rslt.Name);
-end;
-
-function FindNextUTF8(var Rslt: TSearchRec): Longint;
-begin
-  Rslt.Name:=UTF8ToSys(Rslt.Name);
-  Result:=SysUtils.FindNext(Rslt);
-  Rslt.Name:=SysToUTF8(Rslt.Name);
-end;
-
-procedure FindCloseUTF8(var F: TSearchrec);
-begin
-  SysUtils.FindClose(F);
-end;
-
-
-
-function DeleteFileUTF8(const FileName: String): Boolean;
-begin
-  Result:=SysUtils.DeleteFile(UTF8ToSys(Filename));
-end;
-
-function RenameFileUTF8(const OldName, NewName: String): Boolean;
-begin
-  Result:=SysUtils.RenameFile(UTF8ToSys(OldName),UTF8ToSys(NewName));
-end;
-
-
-function GetCurrentDirUTF8: String;
-begin
-  Result:=SysToUTF8(SysUtils.GetCurrentDir);
-end;
-
-function SetCurrentDirUTF8(const NewDir: String): Boolean;
-begin
-  Result:=SysUtils.SetCurrentDir(UTF8ToSys(NewDir));
-end;
-
-function CreateDirUTF8(const NewDir: String): Boolean;
-begin
-  Result:=SysUtils.CreateDir(UTF8ToSys(NewDir));
-end;
-
-function RemoveDirUTF8(const Dir: String): Boolean;
-begin
-  Result:=SysUtils.RemoveDir(UTF8ToSys(Dir));
-end;
-
-
 function ExtractShortPathNameUTF8(const FileName: String): String;
 begin
   Result:=SysToUTF8(SysUtils.ExtractShortPathName(UTF8ToSys(FileName)));
 end;
 
-procedure InitFileUtils;
-begin
-end;
+
 

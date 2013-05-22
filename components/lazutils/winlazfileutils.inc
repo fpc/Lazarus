@@ -7,21 +7,21 @@ var
   _FileAgeUtf8         : function (const Filename:string):Longint;
   _FileSizeUtf8        : function (const Filename: string): int64;
   _FileSetDateUtf8   : function (const FileName: String; Age: Longint): Longint;
-  //FindFirst_       : function (const Path: string; Attr: Longint;
-  //                     out Rslt: TSearchRec): Longint;
-  //FindNext_        : function (var Rslt: TSearchRec): Longint;
-  //FindClose_       : procedure (var F: TSearchrec);
+  _FindFirstUtf8       : function (const Path: string; Attr: Longint;
+                       out Rslt: TSearchRec): Longint;
+  _FindNextUtf8        : function (var Rslt: TSearchRec): Longint;
+  _FindCloseUtf8       : procedure (var F: TSearchrec);
   _FileGetAttrUtf8   : function (const FileName: String): Longint;
   _FileSetAttrUtf8   : function (const Filename: String; Attr: longint): Longint;
-  //DeleteFile_      : function (const FileName: String): Boolean;
-  //RenameFile_      : function (const OldName, NewName: String): Boolean;
+  _DeleteFileUtf8      : function (const FileName: String): Boolean;
+  _RenameFileUtf8      : function (const OldName, NewName: String): Boolean;
   _GetCurrentDirUtf8  : function: String ;
   _GetDirUtf8         : procedure(DriveNr: Byte; var Dir: String);
   _FileOpenUtf8       : function(Const FileName : string; Mode : Integer) : THandle;
   _FileCreateUtf8     : function(Const FileName : String; ShareMode : Integer; Rights: Integer) : THandle;
-  //SetCurrentDir_   : function (const NewDir: String): Boolean;
-  //CreateDir_       : function (const NewDir: String): Boolean;
-  //RemoveDir_       : function (const Dir: String): Boolean ;
+  _SetCurrentDirUtf8   : function (const NewDir: String): Boolean;
+  _CreateDirUtf8       : function (const NewDir: String): Boolean;
+  _RemoveDirUtf8       : function (const Dir: String): Boolean ;
 
 function FilenameIsAbsolute(const TheFilename: string):boolean;
 begin
@@ -219,6 +219,51 @@ begin
   Result := _FileSizeUtf8(FileName);
 end;
 
+function CreateDirUTF8(const NewDir: String): Boolean;
+begin
+  Result := _CreateDirUTF8(NewDir);
+end;
+
+function RemoveDirUTF8(const Dir: String): Boolean;
+begin
+  Result := _RemoveDirUtf8(Dir);
+end;
+
+function DeleteFileUTF8(const FileName: String): Boolean;
+begin
+  Result := _DeleteFileUtf8(Filename);
+  if Result then
+    InvalidateFileStateCache;
+end;
+
+function RenameFileUTF8(const OldName, NewName: String): Boolean;
+begin
+  Result := _RenameFileUtf8(OldName,NewName);
+  if Result then
+    InvalidateFileStateCache;
+end;
+
+function SetCurrentDirUTF8(const NewDir: String): Boolean;
+begin
+  Result := _SetCurrentDirUtf8(NewDir);
+end;
+
+function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec
+  ): Longint;
+begin
+  Result := _FindFirstUtf8(Path, Attr, Rslt);
+end;
+
+function FindNextUTF8(var Rslt: TSearchRec): Longint;
+begin
+  Result := _FindNextUtf8(Rslt);
+end;
+
+procedure FindCloseUTF8(var F: TSearchrec);
+begin
+  SysUtils.FindClose(F);
+end;
+
 
 {******* ANSI functions *******}
 
@@ -285,6 +330,53 @@ begin
   Result := (int64(FindData.nFileSizeHigh) shl 32) + FindData.nFileSizeLow;
   Windows.FindClose(FindHandle);
 end;
+
+function CreateDirAnsi(const NewDir: String): Boolean;
+begin
+  Result:=SysUtils.CreateDir(UTF8ToSys(NewDir));
+end;
+
+function RemoveDirAnsi(const Dir: String): Boolean;
+begin
+  Result:=SysUtils.RemoveDir(UTF8ToSys(Dir));
+end;
+
+function DeleteFileAnsi(const FileName: String): Boolean;
+begin
+  Result:=SysUtils.DeleteFile(UTF8ToSys(Filename));
+end;
+
+function RenameFileAnsi(const OldName, NewName: String): Boolean;
+begin
+  Result:=SysUtils.RenameFile(UTF8ToSys(OldName),UTF8ToSys(NewName));
+end;
+
+function SetCurrentDirAnsi(const NewDir: String): Boolean;
+begin
+  Result:=SysUtils.SetCurrentDir(UTF8ToSys(NewDir));
+end;
+
+function FindFirstAnsi(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
+begin
+  Result:=SysUtils.FindFirst(UTF8ToSys(Path),Attr,Rslt);
+  Rslt.Name:=SysToUTF8(Rslt.Name);
+end;
+
+function FindNextAnsi(var Rslt: TSearchRec): Longint;
+begin
+  Rslt.Name:=UTF8ToSys(Rslt.Name);
+  Result:=SysUtils.FindNext(Rslt);
+  Rslt.Name:=SysToUTF8(Rslt.Name);
+end;
+
+procedure FindCloseAnsi(var F: TSearchrec);
+begin
+  SysUtils.FindClose(F);
+end;
+
+
+
+
 
 
 
@@ -474,6 +566,139 @@ begin
   Windows.FindClose(FindHandle);
 end;
 
+function CreateDirWide(const NewDir: String): Boolean;
+begin
+  Result:=Windows.CreateDirectoryW(PWideChar(UTF8Decode(NewDir)), nil);
+end;
+
+function RemoveDirWide(const Dir: String): Boolean;
+begin
+  Result:=Windows.RemoveDirectoryW(PWideChar(UTF8Decode(Dir)));
+end;
+
+function DeleteFileWide(const FileName: String): Boolean;
+begin
+  Result:=Windows.DeleteFileW(PWideChar(UTF8Decode(FileName)));
+end;
+
+function RenameFileWide(const OldName, NewName: String): Boolean;
+begin
+  Result:=MoveFileW(PWideChar(UTF8Decode(OldName)), PWideChar(UTF8Decode(NewName)));
+end;
+
+function SetCurrentDirWide(const NewDir: String): Boolean;
+begin
+  {$ifdef WinCE}
+  raise Exception.Create('[SetCurrentDirWide] The concept of the current directory doesn''t exist in Windows CE');
+  {$else}
+  Result:=Windows.SetCurrentDirectoryW(PWidechar(UTF8Decode(NewDir)));
+  {$endif}
+end;
+
+
+
+function FindMatch(var f: TSearchRec) : Longint;
+begin
+  { Find file with correct attribute }
+  While (F.FindData.dwFileAttributes and cardinal(F.ExcludeAttr))<>0 do
+   begin
+     if FindNextUTF8(F)<>0 then
+      begin
+        Result:=GetLastError;
+        exit;
+      end;
+   end;
+  { Convert some attributes back }
+  WinToDosTime(F.FindData.ftLastWriteTime,F.Time);
+  f.size:=F.FindData.NFileSizeLow+(qword(maxdword)+1)*F.FindData.NFileSizeHigh;
+  f.attr:=F.FindData.dwFileAttributes;
+  { The structures are different at this point
+    in win32 it is the ansi structure with a utf-8 string
+    in wince it is a wide structure }
+  {$ifdef WinCE}
+  f.Name:=UTF8Encode(F.FindData.cFileName);
+  {$else}
+  f.Name:=F.FindData.cFileName;
+  {$endif}
+  Result:=0;
+end;
+
+{ This function does not really convert from wide to ansi, but from wide to
+  a utf-8 encoded ansi version of the data structures in win32 and does
+  nothing in wince
+
+  See FindMatch also }
+procedure FindWideToAnsi(const wide: TWIN32FINDDATAW; var ansi: TWIN32FINDDATA);
+var
+  ws: WideString;
+  an: AnsiString;
+begin
+  {$ifdef WinCE}
+  ansi := wide;
+  {$else}
+  SetLength(ws, length(wide.cAlternateFileName));
+  Move(wide.cAlternateFileName[0], ws[1], length(ws)*2);
+  an := AnsiString(ws); // no need to utf8 for cAlternateFileName (it's always ansi encoded)
+  Move(an[1], ansi.cAlternateFileName, sizeof(ansi.cAlternateFileName));
+
+  ws := PWideChar(@wide.cFileName[0]);
+  an := UTF8Encode(ws);
+  ansi.cFileName := an;
+  if length(an)<length(ansi.cFileName) then ansi.cFileName[ length(an)]:=#0;
+
+  with ansi do
+  begin
+    dwFileAttributes := wide.dwFileAttributes;
+    ftCreationTime := wide.ftCreationTime;
+    ftLastAccessTime := wide.ftLastAccessTime;
+    ftLastWriteTime := wide.ftLastWriteTime;
+    nFileSizeHigh := wide.nFileSizeHigh;
+    nFileSizeLow := wide.nFileSizeLow;
+    dwReserved0 := wide.dwReserved0;
+    dwReserved1 := wide.dwReserved1;
+  end;
+  {$endif}
+end;
+
+function FindFirstWide(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
+var
+  find  : TWIN32FINDDATAW;
+begin
+  Rslt.Name:=Path;
+  Rslt.Attr:=attr;
+  Rslt.ExcludeAttr:=(not Attr) and ($1e);
+                 { $1e = faHidden or faSysFile or faVolumeID or faDirectory }
+  { FindFirstFile is a Win32 Call }
+  Rslt.FindHandle:=Windows.FindFirstFileW( PWideChar(UTF8Decode(Path)),find);
+  If Rslt.FindHandle=Invalid_Handle_value then
+  begin
+    Result:=GetLastError;
+    Exit;
+  end;
+  { Find file with correct attribute }
+  FindWideToAnsi(find, Rslt.FindData);
+  Result:=FindMatch(Rslt);
+end;
+
+
+function FindNextWide(var Rslt: TSearchRec): Longint;
+var
+  wide  : TWIN32FINDDATAW;
+begin
+  if FindNextFileW(Rslt.FindHandle, wide) then
+  begin
+    FindWideToAnsi(wide, Rslt.FindData);
+    Result := FindMatch(Rslt);
+  end
+  else
+    Result := Integer(GetLastError);
+end;
+
+procedure FindCloseWide(var F: TSearchrec);
+begin
+  Windows.FindClose(f.FindHandle);
+end;
+
 
 
 
@@ -487,18 +712,18 @@ begin
     _FileSetDateUtf8 := @FileSetDateAnsi;
     _FileGetAttrUtf8 := @FileGetAttrAnsi;
     _FileSetAttrUtf8 := @FileSetAttrAnsi;
-    //DeleteFile_ := @DeleteFileAnsi;
-    //RenameFile_ := @RenameFileAnsi;
-    //SetCurrentDir_ := @SetCurrentDirAnsi;
+    _DeleteFileUtf8 := @DeleteFileAnsi;
+    _RenameFileUtf8 := @RenameFileAnsi;
+    _SetCurrentDirUtf8 := @SetCurrentDirAnsi;
     _GetCurrentDirUtf8 := @GetCurrentDirAnsi;
     _GetDirUtf8 := @GetDirAnsi;
     _FileOpenUtf8 := @FileOpenAnsi;
     _FileCreateUtf8 := @FileCreateAnsi;
-    //CreateDir_ := @CreateDirAnsi;
-    //RemoveDir_ := @RemoveDirAnsi;
-    //FindFirst_ := @FindFirstAnsi;
-    //FindNext_ := @FindNextAnsi;
-    //FindClose_ := @FindCloseAnsi;
+    _CreateDirUtf8 := @CreateDirAnsi;
+    _RemoveDirUtf8 := @RemoveDirAnsi;
+    _FindFirstUtf8 := @FindFirstAnsi;
+    _FindNextUtf8 := @FindNextAnsi;
+    _FindCloseUtf8 := @FindCloseAnsi;
   end
   else
   {$endif}
@@ -508,17 +733,17 @@ begin
     _FileSetDateUtf8 := @FileSetDateWide;
     _FileGetAttrUtf8 := @FileGetAttrWide;
     _FileSetAttrUtf8 := @FileSetAttrWide;
-    //DeleteFile_ := @DeleteFileWide;
-    //RenameFile_ := @RenameFileWide;
-    //SetCurrentDir_ := @SetCurrentDirWide;
+    _DeleteFileUtf8 := @DeleteFileWide;
+    _RenameFileUtf8 := @RenameFileWide;
+    _SetCurrentDirUtf8 := @SetCurrentDirWide;
     _GetCurrentDirUtf8 :=@ GetCurrentDirWide;
     _GetDirUtf8 := @GetDirWide;
     _FileOpenUtf8 := @FileOpenWide;
     _FileCreateUtf8 := @FileCreateWide;
-    //CreateDir_ := @CreateDirWide;
-    //RemoveDir_ := @RemoveDirWide;
-    //FindFirst_ := @FindFirstWide;
-    //FindNext_ := @FindNextWide;
-    //FindClose_ := @FindCloseWide;
+    _CreateDirUtf8 := @CreateDirWide;
+    _RemoveDirUtf8 := @RemoveDirWide;
+    _FindFirstUtf8 := @FindFirstWide;
+    _FindNextUtf8 := @FindNextWide;
+    _FindCloseUtf8 := @FindCloseWide;
   end;
 end;

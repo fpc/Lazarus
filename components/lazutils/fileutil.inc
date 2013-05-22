@@ -130,10 +130,57 @@ begin
   Result := LazFileUtils.FileCreateUtf8(FileName, Rights);
 end;
 
+function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
+begin
+  Result := LazFileUtils.FindFirstUtf8(Path, Attr, Rslt);
+end;
+
+function FindNextUTF8(var Rslt: TSearchRec): Longint;
+begin
+  Result := LazFileUtils.FindNextUTF8(Rslt);
+end;
+
+procedure FindCloseUTF8(var F: TSearchrec);
+begin
+  LazFileUtils.FindCloseUtf8(F);
+end;
+
+function DeleteFileUTF8(const FileName: String): Boolean;
+begin
+  Result := LazFileUtils.DeleteFileUtf8(FileName);
+end;
+
+function RenameFileUTF8(const OldName, NewName: String): Boolean;
+begin
+  Result := LazFileUtils.RenameFileUtf8(OldName, NewName);
+end;
+
+function GetCurrentDirUTF8: String;
+begin
+  Result := LazFileUtils.GetCurrentDirUtf8();
+end;
+
+function SetCurrentDirUTF8(const NewDir: String): Boolean;
+begin
+  Result := LazFileUtils.SetCurrentDirUtf8(NewDir);
+end;
+
+function CreateDirUTF8(const NewDir: String): Boolean;
+begin
+  Result := LazFileUtils.CreateDirUtf8(NewDir);
+end;
+
+function RemoveDirUTF8(const Dir: String): Boolean;
+begin
+  Result := LazFileUtils.RemoveDirUtf8(Dir);
+end;
+
 function ParamStrUTF8(Param: Integer): string;
 begin
   Result:=SysToUTF8(ObjPas.ParamStr(Param));
 end;
+
+
 
 function GetEnvironmentStringUTF8(Index: Integer): String;
 begin
@@ -293,17 +340,19 @@ begin
   end;
 end;
 
+function FilenameIsAbsolute(const TheFilename: string):boolean;
+begin
+  Result := LazFileUtils.FilenameIsAbsolute(TheFileName);
+end;
+
 function FilenameIsWinAbsolute(const TheFilename: string): boolean;
 begin
-  Result:=((length(TheFilename)>=3) and
-           (TheFilename[1] in ['A'..'Z','a'..'z']) and (TheFilename[2]=':')  and (TheFilename[3]='\'))
-      or ((length(TheFilename)>=2) and (TheFilename[1]='\') and (TheFilename[2]='\'))
-      ;
+  Result := LazFileUtils.FilenameIsWinAbsolute(TheFileName);
 end;
 
 function FilenameIsUnixAbsolute(const TheFilename: string): boolean;
 begin
-  Result:=(TheFilename<>'') and (TheFilename[1]='/');
+  Result := LazFileUtils.FilenameIsUnixAbsolute(TheFileName);
 end;
 
 function FilenameIsPascalUnit(const Filename: string): boolean;

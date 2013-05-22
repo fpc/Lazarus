@@ -74,9 +74,9 @@ function CompareFilenames(const Filename1, Filename2: string;
                           ResolveLinks: boolean): integer;
 function CompareFilenames(Filename1: PChar; Len1: integer;
   Filename2: PChar; Len2: integer; ResolveLinks: boolean): integer;
-function FilenameIsAbsolute(const TheFilename: string):boolean;
-function FilenameIsWinAbsolute(const TheFilename: string):boolean;
-function FilenameIsUnixAbsolute(const TheFilename: string):boolean;
+function FilenameIsAbsolute(const TheFilename: string):boolean; inline;
+function FilenameIsWinAbsolute(const TheFilename: string):boolean; inline;
+function FilenameIsUnixAbsolute(const TheFilename: string):boolean; inline;
 procedure CheckIfFileIsExecutable(const AFilename: string);
 procedure CheckIfFileIsSymlink(const AFilename: string);
 function FileIsReadable(const AFilename: string): boolean;
@@ -247,20 +247,20 @@ function DirectoryExistsUTF8(const Directory: string): Boolean; inline;
 function ExpandFileNameUTF8(const FileName: string): string; inline;
 function ExpandUNCFileNameUTF8(const FileName: string): string;
 function ExtractShortPathNameUTF8(Const FileName : String) : String;
-function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
-function FindNextUTF8(var Rslt: TSearchRec): Longint;
-procedure FindCloseUTF8(var F: TSearchrec);
+function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint; inline;
+function FindNextUTF8(var Rslt: TSearchRec): Longint; inline;
+procedure FindCloseUTF8(var F: TSearchrec); inline;
 function FileSetDateUTF8(const FileName: String; Age: Longint): Longint; inline;
 function FileGetAttrUTF8(const FileName: String): Longint; inline;
 function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint; inline;
-function DeleteFileUTF8(const FileName: String): Boolean;
-function RenameFileUTF8(const OldName, NewName: String): Boolean;
+function DeleteFileUTF8(const FileName: String): Boolean; inline;
+function RenameFileUTF8(const OldName, NewName: String): Boolean; inline;
 function FileSearchUTF8(const Name, DirList : String; ImplicitCurrentDir : Boolean = True): String;
 function FileIsReadOnlyUTF8(const FileName: String): Boolean;
-function GetCurrentDirUTF8: String;
-function SetCurrentDirUTF8(const NewDir: String): Boolean;
-function CreateDirUTF8(const NewDir: String): Boolean;
-function RemoveDirUTF8(const Dir: String): Boolean;
+function GetCurrentDirUTF8: String; inline;
+function SetCurrentDirUTF8(const NewDir: String): Boolean; inline;
+function CreateDirUTF8(const NewDir: String): Boolean; inline;
+function RemoveDirUTF8(const Dir: String): Boolean; inline;
 function ForceDirectoriesUTF8(const Dir: string): Boolean;
 function FileOpenUTF8(Const FileName : string; Mode : Integer) : THandle; inline;
 function FileCreateUTF8(Const FileName : string) : THandle; overload; inline;
@@ -296,7 +296,6 @@ uses
   {$i unixfileutil.inc}
 {$ENDIF}
 
-initialization
-  InitFileUtils;
+
 end.
 
