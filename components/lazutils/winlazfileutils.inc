@@ -708,6 +708,94 @@ begin
     Result := False;
 end;
 
+function FileIsExecutable(const AFilename: string): boolean;
+begin
+  Result:=FileExistsUTF8(AFilename);
+end;
+
+procedure CheckIfFileIsExecutable(const AFilename: string);
+var AText: string;
+begin
+  // TProcess does not report, if a program can not be executed
+  // to get good error messages consider the OS
+  if not FileExistsUTF8(AFilename) then begin
+    raise Exception.Create(Format(lrsFileDoesNotExist, [AFilename]));
+  end;
+  if DirPathExists(AFilename) then begin
+    raise Exception.Create(Format(lrsFileIsADirectoryAndNotAnExecutable, [
+      AFilename]));
+  end;
+end;
+
+function FileIsSymlink(const AFilename: string): boolean;
+{$ifndef wince}
+const
+  IO_REPARSE_TAG_MOUNT_POINT = $A0000003;
+  IO_REPARSE_TAG_SYMLINK     = $A000000C;
+var
+  Attr: Longint;
+  Rec: TSearchRec;
+{$endif}
+begin
+{$ifndef wince}
+  Attr := FileGetAttrUTF8(AFilename);
+  if (Attr <> -1) and (Attr and FILE_ATTRIBUTE_REPARSE_POINT <> 0) then
+  begin
+    FindFirstUTF8(AFilename, Attr, Rec);
+    if Rec.FindHandle <> feInvalidHandle then
+    begin
+      Windows.FindClose(Rec.FindHandle);
+      Result := (Rec.FindData.dwReserved0 = IO_REPARSE_TAG_SYMLINK) or (Rec.FindData.dwReserved0 = IO_REPARSE_TAG_MOUNT_POINT);
+    end
+    else
+      Result := False;
+  end
+  else
+{$endif}
+    Result := False;
+end;
+
+procedure CheckIfFileIsSymlink(const AFilename: string);
+begin
+  // to get good error messages consider the OS
+  if not FileExistsUTF8(AFilename) then begin
+    raise Exception.Create(Format(lrsFileDoesNotExist, [AFilename]));
+  end;
+  if not FileIsSymLink(AFilename) then
+    raise Exception.Create(Format(lrsIsNotASymbolicLink, [AFilename]));
+end;
+
+
+function FileIsHardLink(const AFilename: string): boolean;
+var
+  H: THandle;
+  FileInfo: BY_HANDLE_FILE_INFORMATION;
+begin
+  Result := false;
+  {$ifndef wince}
+  //HardLinks are not supported in Win9x platform
+  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then Exit;
+  H := FileOpenUtf8(aFilename, fmOpenRead);
+  if (H <> feInvalidHandle) then
+  begin
+    FillChar(FileInfo, SizeOf(BY_HANDLE_FILE_INFORMATION),0);
+    if GetFileInformationByHandle(H, FileInfo) then
+      Result := (FileInfo.nNumberOfLinks > 1);
+    FileClose(H);
+  end;
+  {$endif}
+end;
+
+function FileIsReadable(const AFilename: string): boolean;
+begin
+  Result:=true;
+end;
+
+function FileIsWritable(const AFilename: string): boolean;
+begin
+  Result := ((FileGetAttrUTF8(AFilename) and faReadOnly) = 0);
+end;
+
 
 
 

@@ -347,39 +347,13 @@ begin
 end;
 
 function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean): integer;
-// Ext can contain a point or not
-var
-  n, e : AnsiString;
-  FileLen, FilePos, ExtLen, ExtPos: integer;
 begin
-  FileLen:=length(Filename);
-  ExtLen:=length(Ext);
-  FilePos:=FileLen;
-  while (FilePos>=1) and (Filename[FilePos]<>'.') do dec(FilePos);
-  if FilePos<1 then begin
-    // no extension in filename
-    Result:=1;
-    exit;
-  end;
-  // skip point
-  inc(FilePos);
-  ExtPos:=1;
-  if (ExtPos<=ExtLen) and (Ext[1]='.') then inc(ExtPos);
-
-  // compare extensions
-  n:=Copy(Filename, FilePos, length(FileName));
-  e:=Copy(Ext, ExtPos, length(Ext));
-  if CaseSensitive then
-    Result:=CompareStr(n, e)
-  else
-    Result:=UTF8CompareText(n, e);
-  if Result<0 then Result:=1
-  else if Result>0 then Result:=1;
+  Result := LazFileUtils.CompareFileExt(Filename, Ext, CaseSensitive);
 end;
 
 function CompareFileExt(const Filename, Ext: string): integer;
 begin
-  Result:=CompareFileExt(Filename,Ext,false);
+  Result := LazFileUtils.CompareFileExt(Filename, Ext);
 end;
 
 function ChompPathDelim(const Path: string): string;
@@ -395,6 +369,41 @@ end;
 function FileIsText(const AFilename: string; out FileReadable: boolean): boolean;
 begin
   Result := LazFileUtils.FileIsText(AFileName, FileReadable);
+end;
+
+function FileIsExecutable(const AFilename: string): boolean;
+begin
+  Result := LazFileUtils.FileIsExecutable(AFileName);
+end;
+
+procedure CheckIfFileIsExecutable(const AFilename: string);
+begin
+  LazFileUtils.CheckIfFileIsExecutable(AFileName);
+end;
+
+function FileIsSymlink(const AFilename: string): boolean;
+begin
+  Result := LazFileUtils.FileIsSymlink(AFilename);
+end;
+
+procedure CheckIfFileIsSymlink(const AFilename: string);
+begin
+  LazFileUtils.CheckIfFileIsSymlink(AFilename);
+end;
+
+function FileIsHardLink(const AFilename: string): boolean;
+begin
+  Result := LazFileUtils.FileIsHardLink(AFilename);
+end;
+
+function FileIsReadable(const AFilename: string): boolean;
+begin
+  Result:= LazFileUtils.FileIsReadable(AFilename);
+end;
+
+function FileIsWritable(const AFilename: string): boolean;
+begin
+  Result := LazFileUtils.FileIsWritable(AFilename);
 end;
 
 function TryReadAllLinks(const Filename: string): string;

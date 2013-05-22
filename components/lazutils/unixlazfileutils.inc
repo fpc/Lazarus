@@ -160,6 +160,108 @@ begin
   Result:=SysToUTF8(SysUtils.GetCurrentDir);
 end;
 
+function FileIsExecutable(const AFilename: string): boolean;
+var
+  Info : Stat;
+begin
+  // first check AFilename is not a directory and then check if executable
+  Result:= (FpStat(AFilename,info{%H-})<>-1) and FPS_ISREG(info.st_mode) and
+           (BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0);
+end;
+
+procedure CheckIfFileIsExecutable(const AFilename: string);
+begin
+  // TProcess does not report, if a program can not be executed
+  // to get good error messages consider the OS
+  if not FileExistsUTF8(AFilename) then begin
+    raise Exception.Create(Format(lrsFileDoesNotExist, [AFilename]));
+  end;
+  if DirPathExists(AFilename) then begin
+    raise Exception.Create(Format(lrsFileIsADirectoryAndNotAnExecutable, [
+      AFilename]));
+  end;
+  if not(BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0) then
+  begin
+    AText:='"'+AFilename+'"';
+    case fpGetErrno() of
+    ESysEAcces:
+      AText:=Format(lrsReadAccessDeniedFor, [AText]);
+    ESysENoEnt:
+      AText:=Format(lrsADirectoryComponentInDoesNotExistOrIsADanglingSyml, [
+        AText]);
+    ESysENotDir:
+      AText:=Format(lrsADirectoryComponentInIsNotADirectory, [Atext]);
+    ESysENoMem:
+      AText:=lrsInsufficientMemory;
+    ESysELoop:
+      AText:=Format(lrsHasACircularSymbolicLink, [AText]);
+    else
+      AText:=Format(lrsIsNotExecutable, [AText]);
+    end;
+    raise Exception.Create(AText);
+  end;
+  // ToDo: xxxbsd
+end;
+
+function FileIsSymlink(const AFilename: string): boolean;
+begin
+  Result := FpReadLink(AFilename) <> '';
+end;
+
+procedure CheckIfFileIsSymlink(const AFilename: string);
+var
+  AText: string;
+begin
+  // to get good error messages consider the OS
+  if not FileExistsUTF8(AFilename) then begin
+    raise Exception.Create(Format(lrsFileDoesNotExist, [AFilename]));
+  end;
+  if FpReadLink(AFilename)='' then begin
+    AText:='"'+AFilename+'"';
+    case fpGetErrno() of
+    ESysEAcces:
+      AText:=Format(lrsReadAccessDeniedFor, [AText]);
+    ESysENoEnt:
+      AText:=Format(lrsADirectoryComponentInDoesNotExistOrIsADanglingSyml2, [
+        AText]);
+    ESysENotDir:
+      AText:=Format(lrsADirectoryComponentInIsNotADirectory2, [Atext]);
+    ESysENoMem:
+      AText:=lrsInsufficientMemory;
+    ESysELoop:
+      AText:=Format(lrsHasACircularSymbolicLink, [AText]);
+    else
+      AText:=Format(lrsIsNotASymbolicLink, [AText]);
+    end;
+    raise Exception.Create(AText);
+  end;
+end;
+
+function FileIsHardLink(const AFilename: string): boolean;
+var
+  H: THandle;
+  FileInfo: stat;
+begin
+  Result := false;
+  H := FileOpenUtf8(aFilename, fmOpenRead);
+  if H <> feInvalidHandle then
+  begin
+    if FPFStat(H, FileInfo{%H-}) = 0 then
+      Result := (FileInfo.st_nlink > 1);
+    FileClose(H);
+  end;
+end;
+
+function FileIsReadable(const AFilename: string): boolean;
+begin
+  Result:= BaseUnix.FpAccess(AFilename,BaseUnix.R_OK)=0;
+end;
+
+function FileIsWritable(const AFilename: string): boolean;
+begin
+  Result := (BaseUnix.FpAccess(AFilename, BaseUnix.W_OK) = 0);
+end;
+
 
 procedure InitLazFileUtils;
 begin

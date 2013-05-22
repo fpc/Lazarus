@@ -5,7 +5,7 @@ unit LazFileUtils;
 interface
 
 uses
-  Classes, SysUtils, LazUTF8, LazUtf8Classes, LUResStrings;
+  Classes, SysUtils, LazUTF8, LazUtf8Classes, LUResStrings, LazUtilsStrConsts;
 
 {$IFDEF Windows}
   {$define CaseInsensitiveFilenames}
@@ -21,7 +21,9 @@ uses
 function CompareFilenames(const Filename1, Filename2: string): integer;
 function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer;
 function CompareFileExt(const Filename, Ext: string;
-                        CaseSensitive: boolean): integer;
+                        CaseSensitive: boolean): integer; overload;
+function CompareFileExt(const Filename, Ext: string): integer; overload;
+
 function CompareFilenameStarts(const Filename1, Filename2: string): integer;
 function CompareFilenames(Filename1: PChar; Len1: integer;
   Filename2: PChar; Len2: integer): integer;
@@ -37,7 +39,10 @@ function FilenameIsWinAbsolute(const TheFilename: string):boolean;
 function FilenameIsUnixAbsolute(const TheFilename: string):boolean;
 function ForceDirectory(DirectoryName: string): boolean;
 procedure CheckIfFileIsExecutable(const AFilename: string);
+procedure CheckIfFileIsSymlink(const AFilename: string);
 function FileIsExecutable(const AFilename: string): boolean;
+function FileIsSymlink(const AFilename: string): boolean;
+function FileIsHardLink(const AFilename: string): boolean;
 function FileIsReadable(const AFilename: string): boolean;
 function FileIsWritable(const AFilename: string): boolean;
 function FileIsText(const AFilename: string): boolean;
@@ -204,56 +209,13 @@ begin
     if Result > 0 then Result := 1;
 end;
 
-function FileIsExecutable(const AFilename: string): boolean;
-{$IFNDEF WINDOWS}
-var
-  Info : Stat;
-{$ENDIF}
+function CompareFileExt(const Filename, Ext: string): integer;
 begin
-  {$IFDEF WINDOWS}
-  Result:=FileExistsUTF8(AFilename);
-  {$ELSE}
-  // first check AFilename is not a directory and then check if executable
-  Result:= (FpStat(AFilename,info{%H-})<>-1) and FPS_ISREG(info.st_mode) and
-           (BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0);
-  {$ENDIF}
+  Result := CompareFileExt(Filename, Ext, False);
 end;
 
-procedure CheckIfFileIsExecutable(const AFilename: string);
-{$IFNDEF Windows}
-var AText: string;
-{$ENDIF}
-begin
-  // TProcess does not report, if a program can not be executed
-  // to get good error messages consider the OS
-  if not FileExistsUTF8(AFilename) then begin
-    raise Exception.CreateFmt(ctsFileDoesNotExist,[AFilename]);
-  end;
-  {$IFNDEF Windows}
-  if not(BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0) then
-  begin
-    AText:='"'+AFilename+'"';
-    case fpGetErrno of
-    ESysEAcces:
-      AText:='read access denied for '+AText;
-    ESysENoEnt:
-      AText:='a directory component in '+AText
-                          +' does not exist or is a dangling symlink';
-    ESysENotDir:
-      AText:='a directory component in '+Atext+' is not a directory';
-    ESysENoMem:
-      AText:='insufficient memory';
-    ESysELoop:
-      AText:=AText+' has a circular symbolic link';
-    else
-      AText:=Format(ctsFileIsNotExecutable,[AText]);
-    end;
-    raise Exception.Create(AText);
-  end;
-  {$ENDIF}
 
-  // ToDo: windows and xxxbsd
-end;
+
 
 function ExtractFileNameOnly(const AFilename: string): string;
 var ExtLen: integer;
@@ -442,23 +404,6 @@ begin
   Result:=true;
 end;
 
-function FileIsReadable(const AFilename: string): boolean;
-begin
-  {$IFDEF Windows}
-  Result:=true;
-  {$ELSE}
-  Result:= BaseUnix.FpAccess(AFilename,BaseUnix.R_OK)=0;
-  {$ENDIF}
-end;
-
-function FileIsWritable(const AFilename: string): boolean;
-begin
-  {$IFDEF Windows}
-  Result:=((FileGetAttrUTF8(AFilename) and faReadOnly)=0);
-  {$ELSE}
-  Result:= BaseUnix.FpAccess(AFilename,BaseUnix.W_OK)=0;
-  {$ENDIF}
-end;
 
 function FileIsText(const AFilename: string): boolean;
 var
