@@ -318,13 +318,13 @@ end;
 
 procedure TCairoPrinterCanvas.SetHandle(NewHandle: HDC);
 begin
-  if NewHandle = HDC(cr) then
+  if NewHandle = {%H-}HDC(cr) then
     exit;
 
   if (NewHandle=0) and (cr<>nil) then
     DestroyHandle;
 
-  cr := Pcairo_t(NewHandle);
+  cr := {%H-}Pcairo_t(NewHandle);
 
   // update state
   inherited SetHandle(NewHandle);
@@ -361,8 +361,6 @@ begin
 end;
 
 procedure TCairoPrinterCanvas.CreateHandle;
-var
-  aHandle: HDC;
 begin
   ScaleX := SurfaceXDPI/XDPI;
   ScaleY := SurfaceYDPI/YDPI;
@@ -1398,7 +1396,7 @@ begin
     sf := cairo_pdf_surface_create_for_stream(@WriteToStream, fStream, PaperWidth*ScaleX, PaperHeight*ScaleY)
   else
     sf := cairo_pdf_surface_create(PChar(FOutputFileName), PaperWidth*ScaleX, PaperHeight*ScaleY);
-  result := HDC(cairo_create(sf));
+  result := {%H-}HDC(cairo_create(sf));
 end;
 
 procedure TCairoPdfCanvas.UpdatePageSize;
@@ -1440,7 +1438,7 @@ begin
     cairo_rotate(acr, -PI/2);
   end;
 
-  result := HDC(acr);
+  result := {%H-}HDC(acr);
 end;
 
 procedure TCairoPsCanvas.UpdatePageSize;
@@ -1459,7 +1457,7 @@ function TCairoSvgCanvas.CreateCairoHandle: HDC;
 begin
   //Sizes are in Points, 72DPI (1pt = 1/72")
   sf := cairo_svg_surface_create(PChar(FOutputFileName), PaperWidth*ScaleX, PaperHeight*ScaleY);
-  result := HDC(cairo_create(sf));
+  result := {%H-}HDC(cairo_create(sf));
 end;
 
 
@@ -1478,7 +1476,7 @@ begin
   sf := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, PaperWidth, PaperHeight);
   acr := cairo_create(sf);
   cairo_scale(acr, 1/ScaleX, 1/ScaleY);
-  result := HDC(acr);
+  result := {%H-}HDC(acr);
 end;
 
 procedure TCairoPngCanvas.DestroyCairoHandle;
