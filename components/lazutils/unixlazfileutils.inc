@@ -170,6 +170,8 @@ begin
 end;
 
 procedure CheckIfFileIsExecutable(const AFilename: string);
+var
+  AText: String;
 begin
   // TProcess does not report, if a program can not be executed
   // to get good error messages consider the OS
@@ -180,7 +182,7 @@ begin
     raise Exception.Create(Format(lrsFileIsADirectoryAndNotAnExecutable, [
       AFilename]));
   end;
-  if not(BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0) then
+  if BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)<>0 then
   begin
     AText:='"'+AFilename+'"';
     case fpGetErrno() of
