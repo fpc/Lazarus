@@ -32,48 +32,48 @@
     </CompilerOptions>
     <License Value="MPL  + GPL "/>
     <Version Minor="1"/>
-    <Files Count="11">
-      <Item2>
-        <Filename Value="source\indadvled.pas"/>
-        <UnitName Value="IndAdvLed"/>
-      </Item2>
-      <Item3>
+    <Files Count="10">
+      <Item1>
         <Filename Value="source\indled.pas"/>
         <UnitName Value="IndLed"/>
-      </Item3>
-      <Item4>
+      </Item1>
+      <Item2>
         <Filename Value="source\sensors.pas"/>
         <UnitName Value="Sensors"/>
-      </Item4>
-      <Item5>
+      </Item2>
+      <Item3>
         <Filename Value="source\AllIndustrialRegister.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="AllIndustrialRegister"/>
-      </Item5>
-      <Item6>
-        <Filename Value="source\cyBaseLed.pas"/>
-        <UnitName Value="cyBaseLed"/>
-      </Item6>
-      <Item7>
-        <Filename Value="source\cyClasses.pas"/>
-        <UnitName Value="cyClasses"/>
-      </Item7>
-      <Item8>
-        <Filename Value="source\cyGraphics.pas"/>
-        <UnitName Value="cyGraphics"/>
-      </Item8>
-      <Item9>
-        <Filename Value="source\cyTypes.pas"/>
-        <UnitName Value="cyTypes"/>
-      </Item9>
-      <Item10>
+      </Item3>
+      <Item4>
         <Filename Value="source\lednumber.pas"/>
         <UnitName Value="LedNumber"/>
-      </Item10>
-      <Item11>
+      </Item4>
+      <Item5>
         <Filename Value="source\indgnoumeter.pas"/>
         <UnitName Value="IndGnouMeter"/>
-      </Item11>
+      </Item5>
+      <Item6>
+        <Filename Value="source\AdvLed.pas"/>
+        <UnitName Value="AdvLed"/>
+      </Item6>
+      <Item7>
+        <Filename Value="source\indcyBaseLed.pas"/>
+        <UnitName Value="indcyBaseLed"/>
+      </Item7>
+      <Item8>
+        <Filename Value="source\indcyClasses.pas"/>
+        <UnitName Value="indcyClasses"/>
+      </Item8>
+      <Item9>
+        <Filename Value="source\indcyGraphics.pas"/>
+        <UnitName Value="indcyGraphics"/>
+      </Item9>
+      <Item10>
+        <Filename Value="source\indcyTypes.pas"/>
+        <UnitName Value="indcyTypes"/>
+      </Item10>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">

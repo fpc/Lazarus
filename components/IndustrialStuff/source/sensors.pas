@@ -7,6 +7,7 @@
   tel: 380-/44/-552-10-29
 
   TStopLightSensor and TAnalogSensor sensor components
+  Modified by Jurassic Pork for Lazarus "Industrial" package
 }
 unit Sensors;
 
@@ -56,7 +57,7 @@ type
     function GetStatus: TStopLights;
     procedure SetColorState(slStopLight: TStopLights); virtual;
   published
-    property Caption read GetCaption write SetCaption;
+   property Caption read GetCaption write SetCaption;
 
     property ShowText: Boolean read FShowText write SetShowText;
     property ShowLevel: Boolean read FShowLevel write SetShowLevel;
@@ -184,20 +185,23 @@ begin
   if (FValue <> AValue) then
   begin
     FValue := AValue;
-    FlblShowText.Caption := Caption + FloatToStr(FValue);
+    FlblShowText.Caption := FlblShowText.Hint + FloatToStr(FValue);
     Invalidate;
   end;
 end;
 
 function TSensorPanel.GetCaption: TCaption;
 begin
+  // Modif J.P 05/2013  Caption replace Hint
   Result := FlblShowText.Hint;
 end;
 
 procedure TSensorPanel.SetCaption(AValue: TCaption);
 begin
+  // Modif J.P 05/2013  Caption replace Hint
   FlblShowText.Hint := AValue;
   inherited Caption := '';
+   FlblShowText.Caption := FlblShowText.Hint + FloatToStr(FValue);
   Invalidate;
 end;
 

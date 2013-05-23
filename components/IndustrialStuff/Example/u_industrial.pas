@@ -6,16 +6,16 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, IndAdvLed, IndLed, Sensors, LedNumber,
-  IndGnouMeter, Forms, Controls, Graphics, Dialogs, Arrow;
+  IndGnouMeter, AdvLed, Forms, Controls, Graphics, Dialogs, Arrow;
 
 type
 
   { TForm1 }
 
   TForm1 = class(TForm)
+    AdvLed1: TAdvLed;
     AnalogSensor1: TAnalogSensor;
     Arrow1: TArrow;
-    indAdvLed1: TindAdvLed;
     indGnouMeter1: TindGnouMeter;
     indLed1: TindLed;
     LEDNumber1: TLEDNumber;

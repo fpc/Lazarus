@@ -11,7 +11,7 @@ interface
 
 
  uses
-  Classes, LResources, IndAdvLed, IndLed, LedNumber, Sensors, IndGnouMeter;
+  Classes, LResources, AdvLed, IndLed, LedNumber, Sensors, IndGnouMeter;
 
 procedure Register;
 
@@ -22,7 +22,7 @@ implementation
 procedure Register;
 begin
   RegisterComponents ('Industrial',[
-    TindAdvLed, TIndLed, TLedNumber, TStopLightSensor, TAnalogSensor, TindGnouMeter]);
+    TAdvLed, TIndLed, TLedNumber, TStopLightSensor, TAnalogSensor, TindGnouMeter]);
 
 end;
 

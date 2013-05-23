@@ -7,7 +7,7 @@
  used by Lazarus for Industrial package
 ***********************************************************************}
 
-unit IndGnouMeter;
+unit indGnouMeter;
 
 {$mode objfpc}{$H+}
 
@@ -73,6 +73,7 @@ type
     property Align;
     property Caption;
     property Visible;
+    property ShowHint;
     property Value: Double read fValue write SetValue;
     property Color;
     property Font;

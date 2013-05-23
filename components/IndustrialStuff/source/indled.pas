@@ -49,7 +49,7 @@ unit IndLed;
 
 interface
 
-uses Classes, Types, Controls, Graphics, cyBaseLed, cyTypes, cyClasses, cyGraphics;
+uses Classes, Types, Controls, Graphics, indcyBaseLed, indcyTypes, indcyClasses, indcyGraphics;
 
 type
   TShapeType = (stRectangle, stRoundRect, stEllipse);
@@ -118,6 +118,7 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property ShowHint;
     // Herited from TcyBaseLed :
     property AllowAllOff;
     property GroupIndex;
