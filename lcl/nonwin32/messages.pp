@@ -24,6 +24,9 @@
   to make porting easy.
   It is not used by the LCL itself.
 }
+{$ifdef WINDOWS}
+  {$Error This unit is not for MS Windows. Windows has unit windows for that. }
+{$ENDIF}
 
 unit Messages;
 
