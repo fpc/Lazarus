@@ -5462,6 +5462,13 @@ begin
 end;
 
 procedure TSourceEditor.UpdateIfDefNodeStates(Force: Boolean = False);
+{off $DEFINE VerboseUpdateIfDefNodeStates}
+{$IFDEF VerboseUpdateIfDefNodeStates}
+const
+  VFilePattern='directives';
+  VMinY=1;
+  VMaxY=70;
+{$ENDIF}
 var
   Scanner: TLinkScanner;
   i: Integer;
@@ -5490,6 +5497,8 @@ begin
     while i<Scanner.DirectiveCount do
     begin
       aDirective:=Scanner.DirectivesSorted[i];
+      //if (Pos(VFilePattern,Code.Filename)>0) then
+      //  debugln(['TSourceEditor.UpdateIfDefNodeStates ',i+1,'/',Scanner.DirectiveCount,' ',dbgs(aDirective^.Kind)]);
       inc(i);
       if TCodeBuffer(aDirective^.Code)<>Code then continue;
       if not (aDirective^.Kind in (lsdkAllIf+[lsdkElIfC,lsdkElseIf])) then continue;
@@ -5498,8 +5507,10 @@ begin
       SynState:=idnInvalid;
       // a directive can be scanned multiple times (multi included include files)
       // => show it enabled if it was active at least once
-      if (Pos('synedit.inc',Code.Filename)>0) and (Y<65) then
+      {$IFDEF VerboseUpdateIfDefNodeStates}
+      if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) then
         debugln(['TSourceEditor.UpdateIfDefNodeStates ',i,'/',Scanner.DirectiveCount,' ',dbgs(Pointer(Code)),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
+      {$ENDIF}
       SrcPos:=aDirective^.SrcPos;
       repeat
         case aDirective^.State of
@@ -5512,11 +5523,16 @@ begin
         if i=Scanner.DirectiveCount then break;
         ADirective:=Scanner.DirectivesSorted[i];
         inc(i);
-        if (Pos('synedit.inc',Code.Filename)>0) and (Y<65) {and (ADirective^.SrcPos=SrcPos) and (TCodeBuffer(ADirective^.Code)=Code)} then
+        {$IFDEF VerboseUpdateIfDefNodeStates}
+        if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) and (ADirective^.SrcPos=SrcPos) then
           debugln(['TSourceEditor.UpdateIfDefNodeStates ',i,'/',Scanner.DirectiveCount,' MERGING ',dbgs(ADirective^.Code),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
+        {$ENDIF}
       until (ADirective^.SrcPos<>SrcPos) or (TCodeBuffer(ADirective^.Code)<>Code);
-      if (Pos('synedit.inc',Code.Filename)>0) and (Y<65) then
-        debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' ',dbgs(SynState)]);
+      dec(i);
+      {$IFDEF VerboseUpdateIfDefNodeStates}
+      if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) then
+        debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' SET SynState=',dbgs(SynState)]);
+      {$ENDIF}
       EditorComponent.SetIfdefNodeState(Y,X,SynState);
     end;
   finally
