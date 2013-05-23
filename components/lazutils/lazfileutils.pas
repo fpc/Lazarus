@@ -5,7 +5,11 @@ unit LazFileUtils;
 interface
 
 uses
-  Classes, SysUtils, LazUTF8, LazUtf8Classes, LUResStrings, LazUtilsStrConsts;
+  Classes, SysUtils, LazUTF8, LazUtf8Classes,
+  {$IFDEF Windows}
+  LUResStrings,
+  {$ENDIF}
+  LazUtilsStrConsts;
 
 {$IFDEF Windows}
   {$define CaseInsensitiveFilenames}
