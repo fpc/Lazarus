@@ -6,11 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LazUTF8, LazUtf8Classes,
-  SysConst,
-  {$IFDEF Windows}
-  LUResStrings,
-  {$ENDIF}
-  LazUtilsStrConsts;
+  SysConst, LazUtilsStrConsts;
 
 {$IFDEF Windows}
   {$define CaseInsensitiveFilenames}
