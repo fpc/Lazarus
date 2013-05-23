@@ -770,6 +770,14 @@ msgstr "コンポーネントツリーを表示"
 msgid "Show Hints"
 msgstr "ヒントを表示"
 
+#: objinspstrconsts.oisshowinfobox
+msgid "Show Information Box"
+msgstr ""
+
+#: objinspstrconsts.oisshowstatusbar
+msgid "Show StatusBar"
+msgstr ""
+
 #: objinspstrconsts.oissort
 msgid "Sort"
 msgstr "ソート"

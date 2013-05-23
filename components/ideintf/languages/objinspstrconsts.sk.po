@@ -772,6 +772,14 @@ msgstr "Zobraziť Strom komponentov"
 msgid "Show Hints"
 msgstr "Zobariť rady"
 
+#: objinspstrconsts.oisshowinfobox
+msgid "Show Information Box"
+msgstr ""
+
+#: objinspstrconsts.oisshowstatusbar
+msgid "Show StatusBar"
+msgstr ""
+
 #: objinspstrconsts.oissort
 msgid "Sort"
 msgstr "Zoradiť"

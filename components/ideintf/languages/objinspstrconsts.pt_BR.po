@@ -757,6 +757,14 @@ msgstr "Exibir árvore componentes"
 msgid "Show Hints"
 msgstr "Exibir Dicas"
 
+#: objinspstrconsts.oisshowinfobox
+msgid "Show Information Box"
+msgstr ""
+
+#: objinspstrconsts.oisshowstatusbar
+msgid "Show StatusBar"
+msgstr ""
+
 #: objinspstrconsts.oissort
 msgid "Sort"
 msgstr "Ordenar"

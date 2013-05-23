@@ -759,6 +759,14 @@ msgstr "Näytä komponenttipuu"
 msgid "Show Hints"
 msgstr "Näytä vihjeet"
 
+#: objinspstrconsts.oisshowinfobox
+msgid "Show Information Box"
+msgstr ""
+
+#: objinspstrconsts.oisshowstatusbar
+msgid "Show StatusBar"
+msgstr ""
+
 #: objinspstrconsts.oissort
 msgid "Sort"
 msgstr "Lajittele"

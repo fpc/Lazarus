@@ -776,6 +776,14 @@ msgstr "Komponentenbaum anzeigen"
 msgid "Show Hints"
 msgstr "Hinweise anzeigen"
 
+#: objinspstrconsts.oisshowinfobox
+msgid "Show Information Box"
+msgstr ""
+
+#: objinspstrconsts.oisshowstatusbar
+msgid "Show StatusBar"
+msgstr ""
+
 #: objinspstrconsts.oissort
 msgid "Sort"
 msgstr "Sortieren"

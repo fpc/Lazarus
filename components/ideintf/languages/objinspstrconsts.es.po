@@ -767,6 +767,14 @@ msgstr "Mostar Árbol de Componentes"
 msgid "Show Hints"
 msgstr "Mostrar Descripciones"
 
+#: objinspstrconsts.oisshowinfobox
+msgid "Show Information Box"
+msgstr ""
+
+#: objinspstrconsts.oisshowstatusbar
+msgid "Show StatusBar"
+msgstr ""
+
 #: objinspstrconsts.oissort
 msgid "Sort"
 msgstr "Ordenar"

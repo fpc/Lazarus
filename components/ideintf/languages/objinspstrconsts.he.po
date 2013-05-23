@@ -760,6 +760,14 @@ msgstr "הראה את עץ הרכיבים"
 msgid "Show Hints"
 msgstr "הראה טיפים"
 
+#: objinspstrconsts.oisshowinfobox
+msgid "Show Information Box"
+msgstr ""
+
+#: objinspstrconsts.oisshowstatusbar
+msgid "Show StatusBar"
+msgstr ""
+
 #: objinspstrconsts.oissort
 msgid "Sort"
 msgstr "סדר"

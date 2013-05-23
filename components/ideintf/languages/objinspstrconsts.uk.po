@@ -753,6 +753,14 @@ msgstr "Показати Дерево Компонентів"
 msgid "Show Hints"
 msgstr "Показати Поради"
 
+#: objinspstrconsts.oisshowinfobox
+msgid "Show Information Box"
+msgstr ""
+
+#: objinspstrconsts.oisshowstatusbar
+msgid "Show StatusBar"
+msgstr ""
+
 #: objinspstrconsts.oissort
 msgid "Sort"
 msgstr "Впорядкування"

@@ -773,6 +773,14 @@ msgstr "显示组件树"
 msgid "Show Hints"
 msgstr "显示提示"
 
+#: objinspstrconsts.oisshowinfobox
+msgid "Show Information Box"
+msgstr ""
+
+#: objinspstrconsts.oisshowstatusbar
+msgid "Show StatusBar"
+msgstr ""
+
 #: objinspstrconsts.oissort
 msgid "Sort"
 msgstr "排序"

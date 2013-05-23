@@ -766,6 +766,14 @@ msgstr "Tampilkan Susunan Komponen"
 msgid "Show Hints"
 msgstr "Tampilkan Petunjuk"
 
+#: objinspstrconsts.oisshowinfobox
+msgid "Show Information Box"
+msgstr ""
+
+#: objinspstrconsts.oisshowstatusbar
+msgid "Show StatusBar"
+msgstr ""
+
 #: objinspstrconsts.oissort
 msgid "Sort"
 msgstr "Urut"
