@@ -665,13 +665,13 @@ type
     FOnAddAvailablePersistent: TOnAddAvailablePersistent;
     FOnSelectPersistentsInOI: TNotifyEvent;
     FOnModified: TNotifyEvent;
-    FShowComponentTree: boolean;
+    FShowComponentTree: Boolean;
     FShowFavorites: Boolean;
     FShowInfoBox: Boolean;
     FShowRestricted: Boolean;
     FShowStatusBar: Boolean;
     FUpdateLock: integer;
-    FUpdatingAvailComboBox: boolean;
+    FUpdatingAvailComboBox: Boolean;
     FComponentEditor: TBaseComponentEditor;
     function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
     procedure SetComponentEditor(const AValue: TBaseComponentEditor);
@@ -735,7 +735,7 @@ type
     procedure EndUpdate;
     function GetActivePropertyGrid: TOICustomPropertyGrid;
     function GetActivePropertyRow: TOIPropertyGridRow;
-    function GetCurRowDefaultValue(var DefaultStr: string): boolean;
+    function GetCurRowDefaultValue(var DefaultStr: string): Boolean;
     procedure HookRefreshPropertyValues;
     procedure ActivateGrid(Grid: TOICustomPropertyGrid);
     procedure FocusGrid(Grid: TOICustomPropertyGrid = nil);
@@ -745,7 +745,7 @@ type
                                           write SetComponentTreeHeight;
     property DefaultItemHeight: integer read FDefaultItemHeight
                                         write SetDefaultItemHeight;
-    property EnableHookGetSelection: boolean read FEnableHookGetSelection
+    property EnableHookGetSelection: Boolean read FEnableHookGetSelection
                                              write SetEnableHookGetSelection;
     property Favorites: TOIFavoriteProperties read FFavorites write SetFavorites;
     property GridControl[Page: TObjectInspectorPage]: TOICustomPropertyGrid
@@ -780,7 +780,7 @@ type
     property RestrictedProps: TOIRestrictedProperties read FRestricted write SetRestricted;
     property Selection: TPersistentSelectionList
                                         read FSelection write SetSelection;
-    property ShowComponentTree: boolean read FShowComponentTree
+    property ShowComponentTree: Boolean read FShowComponentTree
                                         write SetShowComponentTree;
     property ShowFavorites: Boolean read FShowFavorites write SetShowFavorites;
     property ShowInfoBox: Boolean read FShowInfoBox write SetShowInfoBox;
@@ -3911,6 +3911,7 @@ begin
      oisFinddeclaration,'Jump to declaration of property', '',
      @OnFindDeclarationPopupmenuItemClick,false,true,false);
   OptionsSeparatorMenuItem := AddSeparatorMenuItem(nil, 'OptionsSeparatorMenuItem', true);
+
   AddPopupMenuItem(CutPopupMenuItem,nil,'CutPopupMenuItem',
      oisCutComponents,'Cut selected item', 'laz_cut',
      @OnCutPopupmenuItemClick,false,true,true);
@@ -3924,16 +3925,29 @@ begin
      oisDeleteComponents,'Delete selected item', 'delete_selection',
      @OnDeletePopupmenuItemClick,false,true,true);
   OptionsSeparatorMenuItem2 := AddSeparatorMenuItem(nil, 'OptionsSeparatorMenuItem2', true);
+
   AddPopupMenuItem(ShowHintsPopupMenuItem,nil
      ,'ShowHintPopupMenuItem',oisShowHints,'Grid hints', ''
      ,@OnShowHintPopupMenuItemClick,false,true,true);
   ShowHintsPopupMenuItem.ShowAlwaysCheckable:=true;
+
   AddPopupMenuItem(ShowComponentTreePopupMenuItem,nil
      ,'ShowComponentTreePopupMenuItem',oisShowComponentTree, '', ''
      ,@OnShowComponentTreePopupMenuItemClick,FShowComponentTree,true,true);
   ShowComponentTreePopupMenuItem.ShowAlwaysCheckable:=true;
+
+  AddPopupMenuItem(ShowInfoBoxPopupMenuItem,nil
+     ,'ShowInfoBoxPopupMenuItem',oisShowInfoBox, '', ''
+     ,@OnShowInfoBoxPopupMenuItemClick,FShowInfoBox,true,true);
+  ShowInfoBoxPopupMenuItem.ShowAlwaysCheckable:=true;
+
+  AddPopupMenuItem(ShowStatusBarPopupMenuItem,nil
+     ,'ShowStatusBarPopupMenuItem',oisShowStatusBar, '', ''
+     ,@OnShowStatusBarPopupMenuItemClick,FShowStatusBar,true,true);
+  ShowStatusBarPopupMenuItem.ShowAlwaysCheckable:=true;
+
   AddPopupMenuItem(ShowOptionsPopupMenuItem,nil
-     ,'ShowOptionsPopupMenuItem',oisOptions,'', 'oi_options'
+     ,'ShowOptionsPopupMenuItem',oisOptions, '', 'oi_options'
      ,@OnShowOptionsPopupMenuItemClick,false,true,FOnShowOptions<>nil);
 
   // combobox at top (filled with available persistents)

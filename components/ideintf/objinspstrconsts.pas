@@ -86,6 +86,8 @@ resourcestring
   rscdOK = 'OK';
   oisShowHints = 'Show Hints';
   oisShowComponentTree = 'Show Component Tree';
+  oisShowInfoBox = 'Show Information Box';
+  oisShowStatusBar = 'Show StatusBar';
   oisOptions = 'Options';
 
   
