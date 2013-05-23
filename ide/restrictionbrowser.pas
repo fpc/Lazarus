@@ -53,7 +53,7 @@ type
   private
     FIssueList: TRestrictedList;
     FClasses: TClassList;
-    FCanUpdate: Boolean;
+    procedure SelectFirstVisible(Sender: TObject);
     procedure GetComponentClass(const AClass: TComponentClass);
     procedure UpdateIssueList;
   public
@@ -107,21 +107,32 @@ begin
       Inc(X, Width);
     end;
   end;
-  FCanUpdate := True;
+  FilterEdit.OnAfterFilter := @SelectFirstVisible;
   UpdateIssueList;
+end;
+
+procedure TRestrictionBrowserView.SelectFirstVisible(Sender: TObject);
+var
+  nd: TTreeNode;
+begin
+  nd := IssueTreeView.Items.GetFirstVisibleNode;
+  if Assigned(nd) then
+    IssueTreeView.Selected := nd
+  else
+    IssueMemo.Clear;
 end;
 
 procedure TRestrictionBrowserView.IssueTreeViewSelectionChanged(Sender: TObject);
 var
   Issue: TRestriction;
 begin
-  if IssueTreeView.Selected = nil then
+  if Assigned(IssueTreeView.Selected) then
   begin
+    Issue := PRestriction(IssueTreeView.Selected.Data)^;
+    IssueMemo.Text := Issue.Short + LineEnding + LineEnding + Issue.Description;
+  end
+  else
     IssueMemo.Clear;
-    Exit;
-  end;
-  Issue := PRestriction(IssueTreeView.Selected.Data)^;
-  IssueMemo.Text := Issue.Short + LineEnding + LineEnding + Issue.Description;
 end;
 
 procedure TRestrictionBrowserView.NameFilterEditChange(Sender: TObject);
@@ -142,7 +153,6 @@ var
   WidgetSetFilter: TLCLPlatforms;
   Component: TComponent;
 begin
-  if not FCanUpdate then Exit;
   WidgetSetFilter := [];
   for P := Low(TLCLPlatform) to High(TLCLPlatform) do
   begin
@@ -178,13 +188,7 @@ begin
   finally
     Issues.Free;
   end;
-  if IssueTreeView.Items.Count > 0 then
-  begin
-    if IssueTreeView.Selected = nil then
-      IssueTreeView.Selected := IssueTreeView.Items[0];
-  end
-  else
-    IssueMemo.Clear;
+  FilterEdit.InvalidateFilter;
 end;
 
 procedure TRestrictionBrowserView.SetIssueName(const AIssueName: String);
@@ -192,22 +196,17 @@ var
   P: TLCLPlatform;
   Component: TComponent;
 begin
-  FCanUpdate := False;
-  try
-    FilterEdit.Text := AIssueName;
-    if AIssueName <> '' then
+  FilterEdit.Text := AIssueName;
+  if AIssueName <> '' then
+  begin
+    for P := Low(TLCLPlatform) to High(TLCLPlatform) do
     begin
-      for P := Low(TLCLPlatform) to High(TLCLPlatform) do
-      begin
-        Component := FindComponent('SpeedButton' + LCLPlatformDirNames[P]);
-        Assert(Component is TSpeedButton, 'Component '+Component.Name+' is not TSpeedButton');
-        (Component as TSpeedButton).Down := True;
-      end;
+      Component := FindComponent('SpeedButton' + LCLPlatformDirNames[P]);
+      Assert(Component is TSpeedButton, 'Component '+Component.Name+' is not TSpeedButton');
+      (Component as TSpeedButton).Down := True;
     end;
-  finally
-    FCanUpdate := True;
-    UpdateIssueList;
   end;
+  UpdateIssueList;
 end;
 
 end.
