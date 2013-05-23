@@ -5,7 +5,7 @@ unit u_industrial;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, IndAdvLed, IndLed, Sensors, LedNumber,
+  Classes, SysUtils, FileUtil, IndLed, Sensors, LedNumber,
   IndGnouMeter, AdvLed, Forms, Controls, Graphics, Dialogs, Arrow;
 
 type
