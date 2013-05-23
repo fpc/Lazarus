@@ -6,6 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LazUTF8, LazUtf8Classes,
+  SysConst,
   {$IFDEF Windows}
   LUResStrings,
   {$ENDIF}
@@ -1020,9 +1021,51 @@ end;
 
 
 function ForceDirectoriesUTF8(const Dir: string): Boolean;
+var
+  E: EInOutError;
+  ADrv : String;
+
+  function DoForceDirectories(Const Dir: string): Boolean;
+  var
+    ADir : String;
+    APath: String;
+  begin
+    Result:=True;
+    ADir:=ExcludeTrailingPathDelimiter(Dir);
+    if (ADir='') then Exit;
+    if Not DirectoryExistsUTF8(ADir) then
+      begin
+        APath := ExtractFilePath(ADir);
+        //this can happen on Windows if user specifies Dir like \user\name/test/
+        //and would, if not checked for, cause an infinite recusrsion and a stack overflow
+        if (APath = ADir) then
+          Result := False
+        else
+          Result:=DoForceDirectories(APath);
+        if Result then
+          Result := CreateDirUTF8(ADir);
+      end;
+  end;
+
+  function IsUncDrive(const Drv: String): Boolean;
+  begin
+    Result := (Length(Drv) > 2) and (Drv[1] = PathDelim) and (Drv[2] = PathDelim);
+  end;
+
 begin
-  Result:=SysUtils.ForceDirectories(UTF8ToSys(Dir));
+  Result := False;
+  ADrv := ExtractFileDrive(Dir);
+  if (ADrv<>'') and (not DirectoryExistsUTF8(ADrv))
+  {$IFNDEF FORCEDIR_NO_UNC_SUPPORT} and (not IsUncDrive(ADrv)){$ENDIF} then Exit;
+  if Dir='' then
+    begin
+      E:=EInOutError.Create(SCannotCreateEmptyDir);
+      E.ErrorCode:=3;
+      Raise E;
+    end;
+  Result := DoForceDirectories(SetDirSeparators(Dir));
 end;
+
 
 procedure InvalidateFileStateCache(const Filename: string);
 begin

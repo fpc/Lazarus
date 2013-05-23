@@ -261,7 +261,7 @@ function GetCurrentDirUTF8: String; inline;
 function SetCurrentDirUTF8(const NewDir: String): Boolean; inline;
 function CreateDirUTF8(const NewDir: String): Boolean; inline;
 function RemoveDirUTF8(const Dir: String): Boolean; inline;
-function ForceDirectoriesUTF8(const Dir: string): Boolean;
+function ForceDirectoriesUTF8(const Dir: string): Boolean; inline;
 function FileOpenUTF8(Const FileName : string; Mode : Integer) : THandle; inline;
 function FileCreateUTF8(Const FileName : string) : THandle; overload; inline;
 function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle; overload; inline;
