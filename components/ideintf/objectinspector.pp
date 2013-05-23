@@ -596,6 +596,8 @@ type
     RemoveFromFavoritesPopupMenuItem: TMenuItem;
     ShowComponentTreePopupMenuItem: TMenuItem;
     ShowHintsPopupMenuItem: TMenuItem;
+    ShowInfoBoxPopupMenuItem: TMenuItem;
+    ShowStatusBarPopupMenuItem: TMenuItem;
     ShowOptionsPopupMenuItem: TMenuItem;
     UndoPropertyPopupMenuItem: TMenuItem;
     AvailPersistentComboBox: TComboBox;
@@ -632,9 +634,11 @@ type
     procedure OnCopyPopupmenuItemClick(Sender: TObject);
     procedure OnPastePopupmenuItemClick(Sender: TObject);
     procedure OnDeletePopupmenuItemClick(Sender: TObject);
-    procedure OnShowHintPopupMenuItemClick(Sender: TObject);
-    procedure OnShowOptionsPopupMenuItemClick(Sender: TObject);
     procedure OnShowComponentTreePopupMenuItemClick(Sender: TObject);
+    procedure OnShowHintPopupMenuItemClick(Sender: TObject);
+    procedure OnShowInfoBoxPopupMenuItemClick(Sender: TObject);
+    procedure OnShowStatusBarPopupMenuItemClick(Sender: TObject);
+    procedure OnShowOptionsPopupMenuItemClick(Sender: TObject);
     procedure OnMainPopupMenuPopup(Sender: TObject);
     procedure RestrictedPageShow(Sender: TObject);
     procedure WidgetSetRestrictedPaint(Sender: TObject);
@@ -3926,15 +3930,15 @@ begin
      @OnDeletePopupmenuItemClick,false,true,true);
   OptionsSeparatorMenuItem2 := AddSeparatorMenuItem(nil, 'OptionsSeparatorMenuItem2', true);
 
-  AddPopupMenuItem(ShowHintsPopupMenuItem,nil
-     ,'ShowHintPopupMenuItem',oisShowHints,'Grid hints', ''
-     ,@OnShowHintPopupMenuItemClick,false,true,true);
-  ShowHintsPopupMenuItem.ShowAlwaysCheckable:=true;
-
   AddPopupMenuItem(ShowComponentTreePopupMenuItem,nil
      ,'ShowComponentTreePopupMenuItem',oisShowComponentTree, '', ''
      ,@OnShowComponentTreePopupMenuItemClick,FShowComponentTree,true,true);
   ShowComponentTreePopupMenuItem.ShowAlwaysCheckable:=true;
+
+  AddPopupMenuItem(ShowHintsPopupMenuItem,nil
+     ,'ShowHintPopupMenuItem',oisShowHints,'Grid hints', ''
+     ,@OnShowHintPopupMenuItemClick,false,true,true);
+  ShowHintsPopupMenuItem.ShowAlwaysCheckable:=true;
 
   AddPopupMenuItem(ShowInfoBoxPopupMenuItem,nil
      ,'ShowInfoBoxPopupMenuItem',oisShowInfoBox, '', ''
@@ -4238,7 +4242,8 @@ begin
   Result:=CurGrid.GetActiveRow;
 end;
 
-function TObjectInspectorDlg.GetCurRowDefaultValue(var DefaultStr: string): boolean;
+function TObjectInspectorDlg.GetCurRowDefaultValue(var DefaultStr: string
+  ): Boolean;
 var
   CurRow: TOIPropertyGridRow;
 begin
@@ -4693,6 +4698,7 @@ procedure TObjectInspectorDlg.SetShowInfoBox(const AValue: Boolean);
 begin
   if FShowInfoBox = AValue then exit;
   FShowInfoBox := AValue;
+  ShowInfoBoxPopupMenuItem.Checked := AValue;
   InfoPanel.Visible := AValue;
   if AValue then
     CreateSplitter(False)
@@ -4711,6 +4717,7 @@ procedure TObjectInspectorDlg.SetShowStatusBar(const AValue: Boolean);
 begin
   if FShowStatusBar = AValue then exit;
   FShowStatusBar := AValue;
+  ShowStatusBarPopupMenuItem.Checked := AValue;
   StatusBar.Visible := AValue;
 end;
 
@@ -5015,6 +5022,12 @@ begin
     Result := nil;
 end;
 
+// --- Boolean settings ---
+procedure TObjectInspectorDlg.OnShowComponentTreePopupMenuItemClick(Sender: TObject);
+begin
+  ShowComponentTree:=not ShowComponentTree;
+end;
+
 procedure TObjectInspectorDlg.OnShowHintPopupMenuItemClick(Sender : TObject);
 var
   Page: TObjectInspectorPage;
@@ -5024,15 +5037,21 @@ begin
       GridControl[Page].ShowHint := not GridControl[Page].ShowHint;
 end;
 
+procedure TObjectInspectorDlg.OnShowInfoBoxPopupMenuItemClick(Sender: TObject);
+begin
+  ShowInfoBox:=not ShowInfoBox;
+end;
+
+procedure TObjectInspectorDlg.OnShowStatusBarPopupMenuItemClick(Sender: TObject);
+begin
+  ShowStatusBar:=not ShowStatusBar;
+end;
+
 procedure TObjectInspectorDlg.OnShowOptionsPopupMenuItemClick(Sender: TObject);
 begin
   if Assigned(FOnShowOptions) then FOnShowOptions(Sender);
 end;
-
-procedure TObjectInspectorDlg.OnShowComponentTreePopupMenuItemClick(Sender: TObject);
-begin
-  ShowComponentTree:=not ShowComponentTree;
-end;
+// ---
 
 procedure TObjectInspectorDlg.OnMainPopupMenuPopup(Sender: TObject);
 const

@@ -45,6 +45,7 @@ type
   );
 
   TOIOption = (
+    ooShowComponentTree,
     ooShowHints,
     ooAutoShow,
     ooBoldNonDefault,
@@ -77,6 +78,7 @@ type
     OIBoldNonDefaultCheckBox: TCheckBox;
     OIDrawGridLinesCheckBox: TCheckBox;
     OIOptionsGroupBox: TGroupBox;
+    OIShowComponentTreeCheckBox: TCheckBox;
     OIShowStatusBarCheckBox: TCheckBox;
     OIShowHintCheckBox: TCheckBox;
     OIShowInfoBoxCheckBox: TCheckBox;
@@ -119,6 +121,7 @@ const
       { ocReadOnly      } DefReadOnlyColor
       );
     Options: (
+      { ooShowComponentTree } True,
       { ooShowHints      } False,
       { ooAutoShow       } True,
       { ooBoldNonDefault } True,
@@ -145,6 +148,7 @@ const
       { ocReadOnly      } clGrayText
       );
     Options: (
+      { ooShowComponentTree } True,
       { ooShowHints      } False,
       { ooAutoShow       } True,
       { ooBoldNonDefault } True,
@@ -164,13 +168,16 @@ begin
   OIOptionsGroupBox.Caption := dlgOIOptions;
   ObjectInspectorSpeedSettingsGroupBox.Caption := dlgOISpeedSettings;
   OIDefaultItemHeightLabel.Caption := dlgOIItemHeight;
+
+  OIShowComponentTreeCheckBox.Caption := lisShowComponentTreeInObjectInspector;
   OIShowHintCheckBox.Caption := lisShowHintsInObjectInspector;
+  OIShowInfoBoxCheckBox.Caption := lisShowInfoBoxInObjectInspector;
+  OIShowStatusBarCheckBox.Caption := lisShowStatusBarInObjectInspector;
+
   OIAutoShowCheckBox.Caption := lisAutoShowObjectInspector;
   OIBoldNonDefaultCheckBox.Caption := lisBoldNonDefaultObjectInspector;
-  OIDrawGridLinesCheckBox.Caption := lisDrawGridLinesObjectInspector;
   OIShowGutterCheckBox.Caption := lisShowGutterInObjectInspector;
-  OIShowStatusBarCheckBox.Caption := lisShowStatusBarInObjectInspector;
-  OIShowInfoBoxCheckBox.Caption := lisShowInfoBoxInObjectInspector;
+  OIDrawGridLinesCheckBox.Caption := lisDrawGridLinesObjectInspector;
 
   BtnUseDefaultLazarusSettings.Caption := dlgOIUseDefaultLazarusSettings;
   BtnUseDefaultDelphiSettings.Caption := dlgOIUseDefaultDelphiSettings;
@@ -207,6 +214,7 @@ begin
     ColorsListBox.Items.Objects[Ord(OIColor)] := TObject(PtrInt(ASettings.Colors[OIColor]));
   ColorsListBox.Invalidate;
 
+  OIShowComponentTreeCheckBox.Checked := ASettings.Options[ooShowComponentTree];
   OIShowHintCheckBox.Checked := ASettings.Options[ooShowHints];
   OIAutoShowCheckBox.Checked := ASettings.Options[ooAutoShow];
   OIBoldNonDefaultCheckBox.Checked := ASettings.Options[ooBoldNonDefault];
@@ -265,6 +273,7 @@ begin
   ASettings.Colors[ocReference] := o.ReferencesColor;
   ASettings.Colors[ocReadOnly] := o.ReadOnlyColor;
 
+  ASettings.Options[ooShowComponentTree] := o.ShowComponentTree;
   ASettings.Options[ooShowHints] := o.ShowHints;
   ASettings.Options[ooAutoShow] := o.AutoShow;
   ASettings.Options[ooBoldNonDefault] := o.BoldNonDefaultValues;
@@ -294,6 +303,7 @@ begin
   o.ReferencesColor := ColorsListBox.Colors[Ord(ocReference)];
   o.ReadOnlyColor := ColorsListBox.Colors[Ord(ocReadOnly)];
 
+  o.ShowComponentTree := OIShowComponentTreeCheckBox.Checked;
   o.ShowHints := OIShowHintCheckBox.Checked;
   o.AutoShow := OIAutoShowCheckBox.Checked;
   o.BoldNonDefaultValues := OIBoldNonDefaultCheckBox.Checked;

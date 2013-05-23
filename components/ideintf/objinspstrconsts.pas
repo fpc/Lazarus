@@ -84,8 +84,8 @@ resourcestring
   rscdMoveUp = 'Move up';
   rscdMoveDown = 'Move down';
   rscdOK = 'OK';
-  oisShowHints = 'Show Hints';
   oisShowComponentTree = 'Show Component Tree';
+  oisShowHints = 'Show Hints';
   oisShowInfoBox = 'Show Information Box';
   oisShowStatusBar = 'Show StatusBar';
   oisOptions = 'Options';

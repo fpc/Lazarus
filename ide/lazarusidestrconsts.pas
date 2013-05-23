@@ -1304,6 +1304,7 @@ resourcestring
   dlgOIItemHeight = 'Item height';
   dlgOIUseDefaultLazarusSettings = 'Use default Lazarus settings';
   dlgOIUseDefaultDelphiSettings = 'Use default Delphi settings';
+  lisShowComponentTreeInObjectInspector = 'Show component tree';
   lisShowHintsInObjectInspector = 'Show hints';
   lisAutoShowObjectInspector = 'Auto show';
   lisBoldNonDefaultObjectInspector = 'Bold non default values';
