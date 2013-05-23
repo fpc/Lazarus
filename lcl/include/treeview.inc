@@ -1354,10 +1354,13 @@ begin
     DbgOut(' ANode.Text=',ANode.Text);
   DebugLn('');
   {$ENDIF}
-  if TreeView<>nil then TreeView.BeginUpdate;
+  if TreeView<>nil then
+    TreeView.BeginUpdate;
   try
     WasSelected:=Selected;
     Unbind;
+    if Owner<>nil then
+      Owner.ClearCache;
     Include(FStates,nsBound);
     // set parent
     if AddMode in [taAdd, taAddFirst] then
