@@ -233,8 +233,8 @@ type
     // if
     lsdkIf,
     lsdkIfC,
-    lsdkIfdef,
-    lsdkIfndef,
+    lsdkIfDef,
+    lsdkIfNDef,
     lsdkIfOpt,
     // else
     lsdkElIfC,
@@ -260,7 +260,7 @@ type
     );
   TLSDirectiveKinds = set of TLSDirectiveKind;
 const
-  lsdkAllIf = [lsdkIf,lsdkIfC,lsdkIfdef,lsdkIfndef,lsdkIfOpt];
+  lsdkAllIf = [lsdkIf,lsdkIfC,lsdkIfDef,lsdkIfNDef,lsdkIfOpt];
   lsdkAllElse = [lsdkElIfC,lsdkElse,lsdkElseC,lsdkElseIf];
   lsdkAllEnd = [lsdkEndC,lsdkEndif,lsdkIfEnd];
 
@@ -738,6 +738,7 @@ function dbgs(r: TLinkScannerRange): string; overload;
 function dbgs(const ModeSwitches: TCompilerModeSwitches): string; overload;
 function dbgs(k: TSourceLinkKind): string; overload;
 function dbgs(s: TLSDirectiveState): string; overload;
+function dbgs(s: TLSDirectiveKind): string; overload;
 
 implementation
 
@@ -822,6 +823,11 @@ begin
   lsdsInactive: Result:='Inactive';
   lsdsSkipped: Result:='Skipped';
   end;
+end;
+
+function dbgs(s: TLSDirectiveKind): string;
+begin
+  WriteStr(Result,s);
 end;
 
 procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TFPList);

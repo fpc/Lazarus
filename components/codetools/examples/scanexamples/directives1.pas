@@ -4,6 +4,14 @@ unit Directives1;
 
 interface
 
+{$IFDEF WINCE} {$IFnDEF WinIME}   {$DEFINE WithoutWinIME}   {$ENDIF} {$ENDIF}
+{$IFNDEF Windows}
+  {$IFDEF WithoutWinIME}
+    {$DEFINE WinIME}
+    {$DEFINE WinIMEFull}
+  {$ENDIF}
+{$ENDIF}
+
 uses
   Classes, SysUtils;
 
