@@ -2443,9 +2443,6 @@ begin
       //DumpExceptionBackTrace;
     end;
   end;
-  {$ifdef VerboseCodeHelp}
-  debugln(['TCodeHelpManager.GetHTMLHint ',HTMLHint]);
-  {$endif}
 end;
 
 function TCodeHelpManager.GetHTMLHintForNode(CTTool: TFindDeclarationTool;

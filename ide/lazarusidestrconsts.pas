@@ -3660,15 +3660,13 @@ resourcestring
   lisLaunchingApplicationInvalid = 'Launching application invalid';
   lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta = 'The launching '
     +'application %s%s%'
-    +'s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> '
-    +'Local';
+    +'s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local';
   lisTheLaunchingApplicationBundleDoesNotExists = 'The Application Bundle %s'
     +'%sneeded for execution does not exist or is not executable.%sDo you want to create one?'
     +'%s%sSee Project -> Project Options -> Application for settings.';
   lisDebuggerInvalid = 'Debugger invalid';
   lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro = 'The debugger %s%s%'
-    +'s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger '
-    +'options';
+    +'s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options';
   lisUnableToRun = 'Unable to run';
   lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP = 'The destination '
     +'directory %s%s%s does not exist.%sPlease check the project target file '
