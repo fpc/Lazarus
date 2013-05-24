@@ -1674,6 +1674,7 @@ var
   Code: TCodeBuffer;
   CacheWasUsed: boolean;
   HintFlags: TCodeHelpHintOptions;
+  PropDetails: string;
 begin
   BaseURL:='';
   HTMLHint:='';
@@ -1684,7 +1685,7 @@ begin
   if ihmchAddFocusHint in Flags then
     Include(HintFlags,chhoShowFocusHint);
   if CodeHelpBoss.GetHTMLHint(Code,CodePos.X,CodePos.Y,
-    HintFlags,BaseURL,HTMLHint,CacheWasUsed)=chprSuccess
+    HintFlags,BaseURL,HTMLHint,PropDetails,CacheWasUsed)=chprSuccess
   then
     exit(shrSuccess);
   Result:=shrHelpNotFound;

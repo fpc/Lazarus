@@ -20,7 +20,6 @@ resourcestring
 
   // Object Inspector
   oisObjectInspector = 'Object Inspector';
-  oisAll = 'All';
   oisError = 'Error';
   oisItemsSelected = '%u items selected';
   

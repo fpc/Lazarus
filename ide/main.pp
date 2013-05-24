@@ -59,7 +59,7 @@ uses
   MemCheck,
 {$ENDIF}
   // fpc packages
-  Math, Classes, SysUtils, Process, AsyncProcess, TypInfo, types, AVL_Tree,
+  Math, Classes, SysUtils, Process, AsyncProcess, TypInfo, types, strutils, AVL_Tree,
   // lazutils
   LazUTF8, Laz2_XMLCfg, AvgLvlTree,
   // lcl
@@ -12591,8 +12591,8 @@ var
   ARow: TOIPropertyGridRow;
   Code: TCodeBuffer;
   Caret: TPoint;
-  NewTopLine: integer;
-  HtmlHint, BaseURL: string;
+  i: integer;
+  HtmlHint, BaseURL, PropDetails: string;
   CacheWasUsed: Boolean;
   Stream: TStringStream;
 begin
@@ -12607,17 +12607,19 @@ begin
 
   HtmlHint := '';
   BaseURL := '';
+  PropDetails := '';
 
   ARow := OI.GetActivePropertyRow;
 
   if (ARow <> nil)
-  and FindDeclarationOfOIProperty(OI, ARow, Code, Caret, NewTopLine) then
+  and FindDeclarationOfOIProperty(OI, ARow, Code, Caret, i) then
   begin
     if CodeHelpBoss.GetHTMLHint(Code, Caret.X, Caret.Y, [],
-      BaseURL, HtmlHint, CacheWasUsed) <> chprSuccess then
+      BaseURL, HtmlHint, PropDetails, CacheWasUsed) <> chprSuccess then
     begin
       HtmlHint := '';
       BaseURL := '';
+      PropDetails := '';
     end;
   end;
 
@@ -12633,6 +12635,14 @@ begin
       Stream.Free;
     end;
   end;
+  // Property details always starts with "published property". Get rid of it.
+  i:=Pos(' ', PropDetails);
+  if i>0 then begin
+    i:=PosEx(' ', PropDetails, i+1);
+    if i>0 then
+      PropDetails:=Copy(PropDetails, i+1, Length(PropDetails));
+  end;
+  OI.StatusBar.SimpleText:=PropDetails;  // Show in OI StatusBar
 end;
 
 procedure TMainIDE.mnuFileClicked(Sender: TObject);

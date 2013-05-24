@@ -3893,7 +3893,6 @@ begin
   FComponentEditor := nil;
 
   Caption := oisObjectInspector;
-  StatusBar.SimpleText := oisAll;
   FilterLabel.Caption := oisBtnComponents;
   MainPopupMenu.Images := IDEImages.Images_16;
 

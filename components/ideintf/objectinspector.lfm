@@ -21,7 +21,6 @@ object ObjectInspectorDlg: TObjectInspectorDlg
       item
         Width = 50
       end>
-    SimplePanel = False
   end
   object AvailPersistentComboBox: TComboBox
     Left = 0

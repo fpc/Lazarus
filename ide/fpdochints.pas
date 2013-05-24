@@ -96,7 +96,7 @@ var
   HelpResult: TCodeHelpParseResult;
   Caret: TCodeXYPosition;
   CleanPos: LongInt;
-  BaseDir: String;
+  BaseDir, PropDetails: String;
 begin
   FBaseURL:='';
   FHTMLHint:='';
@@ -159,7 +159,7 @@ begin
     //DebugLn(['TFPDocHintProvider.DoUpdateHint ',Item.Identifier,' ',Item.Tool.MainFilename,' ',Caret.Code.Filename,' ',Caret.X,',',Caret.Y]);
     HelpResult:=CodeHelpBoss.GetHTMLHint(Caret.Code,Caret.X,Caret.Y,
                                     [chhoDeclarationHeader],
-                                    FBaseURL,FHTMLHint,CacheWasUsed);
+                                    FBaseURL,FHTMLHint,PropDetails,CacheWasUsed);
     if HelpResult<>chprSuccess then begin
       DebugLn(['TFPDocHintProvider.DoUpdateHint FAILED Identifier=',Item.Identifier]);
       exit;

@@ -308,7 +308,7 @@ type
                              out Chain: TCodeHelpElementChain;
                              out CacheWasUsed: boolean): TCodeHelpParseResult;
     function GetHTMLHint(Code: TCodeBuffer; X, Y: integer; Options: TCodeHelpHintOptions;
-                     out BaseURL, HTMLHint: string;
+                     out BaseURL, HTMLHint, PropDetails: string;
                      out CacheWasUsed: boolean): TCodeHelpParseResult;
     function GetHTMLHintForNode(CTTool: TFindDeclarationTool; CTNode: TCodeTreeNode;
                      XYPos: TCodeXYPosition; Options: TCodeHelpHintOptions;
@@ -2401,18 +2401,20 @@ begin
 end;
 
 function TCodeHelpManager.GetHTMLHint(Code: TCodeBuffer; X, Y: integer;
-  Options: TCodeHelpHintOptions; out BaseURL, HTMLHint: string;
+  Options: TCodeHelpHintOptions;
+  out BaseURL, HTMLHint, PropDetails: string;
   out CacheWasUsed: boolean): TCodeHelpParseResult;
 var
   CursorPos: TCodeXYPosition;
   CTTool: TFindDeclarationTool;
   CTNode: TCodeTreeNode;
   XYPos: TCodeXYPosition;
-  aTopLine: integer;
+  TopLine: integer;
 begin
   Result:=chprFailed;
   BaseURL:='lazdoc://';
   HTMLHint:='';
+  PropDetails:='';
   CacheWasUsed:=true;
 
   CursorPos.X:=X;
@@ -2422,8 +2424,7 @@ begin
   try
     // find declaration
     if not CodeToolBoss.CurCodeTool.FindDeclaration(CursorPos,
-      DefaultFindSmartHintFlags+[fsfSearchSourceName],
-      CTTool,CTNode,XYPos,aTopLine)
+      DefaultFindSmartHintFlags+[fsfSearchSourceName],CTTool,CTNode,XYPos,TopLine)
     then
       exit;
     if (CTNode=nil) then begin
@@ -2431,9 +2432,9 @@ begin
       debugln(['TCodeHelpManager.GetHTMLHint not a declaration']);
       exit;
     end;
-
-    Result:=GetHTMLHintForNode(CTTool,CTNode,XYPos,Options,BaseURL,HTMLHint,
-                               CacheWasUsed);
+    Result:=GetHTMLHintForNode(CTTool,CTNode,XYPos,Options,BaseURL,HTMLHint,CacheWasUsed);
+    // Property details are like "published property TType.PropName:Integer"
+    PropDetails:=CTTool.GetSmartHint(CTNode,XYPos,false);
   except
     on E: ECodeToolError do begin
       //debugln(['TCodeHelpManager.GetHTMLHint ECodeToolError: ',E.Message]);
@@ -2447,8 +2448,7 @@ end;
 
 function TCodeHelpManager.GetHTMLHintForNode(CTTool: TFindDeclarationTool;
   CTNode: TCodeTreeNode; XYPos: TCodeXYPosition; Options: TCodeHelpHintOptions;
-  out BaseURL, HTMLHint: string; out CacheWasUsed: boolean
-  ): TCodeHelpParseResult;
+  out BaseURL, HTMLHint: string; out CacheWasUsed: boolean): TCodeHelpParseResult;
 var
   aTopLine: integer;
   ListOfPCodeXYPosition: TFPList;
