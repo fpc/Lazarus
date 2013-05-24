@@ -1346,6 +1346,13 @@ begin
     QWidget_setVisible(FDragImageList, NewVisible);
 end;
 
+{$IFDEF MSWINDOWS}
+function TQtWidgetSet.GetWinKeyState(AKeyState: LongInt): SHORT;
+begin
+  Result := Windows.GetKeyState(AKeyState);
+end;
+{$ENDIF}
+
 {------------------------------------------------------------------------------
   Function: CreateDefaultFont
   Params:  none

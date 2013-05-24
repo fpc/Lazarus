@@ -2799,15 +2799,27 @@ begin
   if QEvent_type(Event) = QEventKeyRelease then
     LCLModifiers := LCLModifiers or KF_UP;
 
-  KeyMsg.KeyData := PtrInt((AKeyCode shl 16) or (LCLModifiers shl 16) or $0001);
-
   {$ifdef windows}
-    ACharCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
-    KeyMsg.CharCode := ACharCode;
-  // todo: VK to Win_VK for other os too
-    //WriteLn(QKeyEvent_nativeVirtualKey(QKeyEventH(Event)));
-    //WriteLn(QKeyEvent_nativeScanCode(QKeyEventH(Event)));
+  ACharCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
+  KeyMsg.CharCode := ACharCode;
+  if (Modifiers = QtAltModifier or QtControlModifier) then
+  begin
+    if (QtWidgetSet.GetWinKeyState(VK_RMENU) < 0) and
+      (QtWidgetSet.GetWinKeyState(VK_LCONTROL) < 0) then
+    begin
+      IsSysKey := False;
+      LCLModifiers := 0;
+      Modifiers := QtGroupSwitchModifier;
+
+      if QKeyEvent_isAutoRepeat(QKeyEventH(Event)) then
+        LCLModifiers := LCLModifiers or KF_REPEAT;
+
+      if QEvent_type(Event) = QEventKeyRelease then
+        LCLModifiers := LCLModifiers or KF_UP;
+    end;
+  end;
   {$endif}
+  KeyMsg.KeyData := PtrInt((AKeyCode shl 16) or (LCLModifiers shl 16) or $0001);
 
   // Loads the UTF-8 character associated with the keypress, if any
   QKeyEvent_text(QKeyEventH(Event), @Text);

@@ -192,6 +192,9 @@ type
     FLastMinimizeEvent: DWord; // track mainform minimize events -> TQtMainWindow.EventFilter
     FMinimizedByPager: Boolean; // track if app is minimized via desktop pager or by us.
     {$ENDIF}
+    {$IFDEF MSWINDOWS}
+    function GetWinKeyState(AKeyState: LongInt): SHORT;
+    {$ENDIF}
     function CreateDefaultFont: HFONT; virtual;
     function GetDefaultAppFontName: WideString;
     function GetQtDefaultDC: HDC; virtual;

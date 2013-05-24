@@ -2975,6 +2975,16 @@ const
 begin
   Result := 0;
 
+  {$IFDEF MSWINDOWS}
+  if (nVirtKey = VK_CONTROL) or (nVirtKey = VK_MENU) or
+    (nVirtKey = VK_LCONTROL) or (nVirtKey = VK_LMENU) then
+  begin
+    if (GetWinKeyState(VK_RMENU) < 0) and
+      (GetWinKeyState(VK_LCONTROL) < 0) then
+      exit;
+  end;
+  {$ENDIF}
+
   case nVirtKey of
     VK_LSHIFT:   nVirtKey := VK_SHIFT;
     VK_LCONTROL: nVirtKey := VK_CONTROL;
@@ -2982,7 +2992,6 @@ begin
   end;
 
   // where to track toggle state?
-
   case nVirtKey of
     VK_LBUTTON:
       if (QApplication_mouseButtons and QtLeftButton) > 0 then
@@ -3014,7 +3023,7 @@ begin
     VK_LCL_CAPSLOCK, VK_NUMLOCK:
     begin
       {$IFDEF MSWINDOWS}
-      Result := Windows.GetKeyState(nVirtKey);
+      Result := GetWinKeyState(nVirtKey);
       {$ELSE}
       {$IFDEF HASX11}
       if GetKeyLockState(nVirtKey) then
