@@ -60,7 +60,6 @@ begin
     t.Dependencies.AddUnit('laz_xmlwrite');
     t.Dependencies.AddUnit('lazfileutils');
     t.Dependencies.AddUnit('lazfilecache');
-    t.Dependencies.AddUnit('luresstrings');
     t.Dependencies.AddUnit('lazdbglog');
     t.Dependencies.AddUnit('paswstring');
     t.Dependencies.AddUnit('fileutil');
@@ -104,7 +103,6 @@ begin
     T:=P.Targets.AddUnit('laz_xmlwrite.pas');
     T:=P.Targets.AddUnit('lazfileutils.pas');
     T:=P.Targets.AddUnit('lazfilecache.pas');
-    T:=P.Targets.AddUnit('luresstrings.pas');
     T:=P.Targets.AddUnit('lazutf8.pas');
     T:=P.Targets.AddUnit('lazdbglog.pas');
     T:=P.Targets.AddUnit('paswstring.pas');
