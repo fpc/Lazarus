@@ -5478,6 +5478,9 @@ var
   X: integer;
   SynState: TSynMarkupIfdefNodeStateEx;
   SrcPos: Integer;
+  ActiveCnt: Integer;
+  InactiveCnt: Integer;
+  SkippedCnt: Integer;
 begin
   //debugln(['TSourceEditor.UpdateIfDefNodeStates START ',Filename]);
   if not EditorComponent.IsIfdefMarkupActive then
@@ -5512,13 +5515,14 @@ begin
         debugln(['TSourceEditor.UpdateIfDefNodeStates ',i,'/',Scanner.DirectiveCount,' ',dbgs(Pointer(Code)),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
       {$ENDIF}
       SrcPos:=aDirective^.SrcPos;
+      ActiveCnt:=0;
+      InactiveCnt:=0;
+      SkippedCnt:=0;
       repeat
         case aDirective^.State of
-        lsdsActive:
-          SynState:=idnEnabled;
-        lsdsInactive:
-          if SynState=idnInvalid then
-            SynState:=idnDisabled;
+        lsdsActive: inc(ActiveCnt);
+        lsdsInactive: inc(InactiveCnt);
+        lsdsSkipped: inc(SkippedCnt);
         end;
         if i < Scanner.DirectiveCount then begin
           ADirective:=Scanner.DirectivesSorted[i];
@@ -5535,6 +5539,12 @@ begin
       if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) then
         debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' SET SynState=',dbgs(SynState)]);
       {$ENDIF}
+      if (ActiveCnt=1) and (InactiveCnt=0) and (SkippedCnt=0) then
+        SynState:=idnEnabled
+      else if (InactiveCnt=1) and (ActiveCnt=0) and (SkippedCnt=0) then
+        SynState:=idnDisabled
+      else
+        SynState:=idnInvalid;
       EditorComponent.SetIfdefNodeState(Y,X,SynState);
     end;
   finally

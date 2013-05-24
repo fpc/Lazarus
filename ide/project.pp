@@ -2896,7 +2896,7 @@ begin
                                  ProjectSessionStorageNames[SessionStorage],
                                  ProjectSessionStorageNames[DefaultProjectSessionStorage]);
 
-        // properties
+        // general properties
         xmlconfig.SetValue(Path+'General/MainUnit/Value', MainUnitID); // always write a value to support opening by older IDEs (<=0.9.28). This can be changed in a few released.
         xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
                                  AutoCreateForms,true);

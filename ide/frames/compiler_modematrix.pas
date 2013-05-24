@@ -19,6 +19,12 @@
  ***************************************************************************
 
  ToDo:
+   - save session modes in session
+     - for IDE
+     - for project
+   - load session modes
+     - for IDE
+     - for project
    - save matrix options for old build macro values
    - load old build macro values into matrix
    - ifdef old frame
