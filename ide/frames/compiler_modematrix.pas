@@ -19,8 +19,8 @@
  ***************************************************************************
 
  ToDo:
-   - load old build macro values into matrix
    - save matrix options for old build macro values
+   - load old build macro values into matrix
    - ifdef old frame
    - ifdef old macro value classes
    - wiki
@@ -975,7 +975,7 @@ begin
 
   BMMNewCustomOptionMenuItem.Caption:=lisMMCustomOption;
   BMMNewIDEMacroMenuItem.Caption:=lisMMIDEMacro;
-  BMMNewOutDirMenuItem.Caption:=lisMMOutputDirectory;
+  BMMNewOutDirMenuItem.Caption:=lisMMOverrideOutputDirectory;
 
   fCaptionPatternMacroName:=lisMMSetS;
   fCaptionPatternMacroValue:=lisMMValueS;

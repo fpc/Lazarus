@@ -5713,7 +5713,7 @@ resourcestring
   lisMMInvalidCharacterAt = 'invalid character "%s" at %s';
   lisMMCustomOption = 'Custom Option';
   lisMMIDEMacro = 'IDE Macro';
-  lisMMOutputDirectory = 'Output Directory';
+  lisMMOverrideOutputDirectory = 'Override output directory (-FU)';
 
 implementation
 
