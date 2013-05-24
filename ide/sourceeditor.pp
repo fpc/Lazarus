@@ -5520,14 +5520,16 @@ begin
           if SynState=idnInvalid then
             SynState:=idnDisabled;
         end;
-        if i=Scanner.DirectiveCount then break;
-        ADirective:=Scanner.DirectivesSorted[i];
+        if i < Scanner.DirectiveCount then begin
+          ADirective:=Scanner.DirectivesSorted[i];
+          {$IFDEF VerboseUpdateIfDefNodeStates}
+          if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) and (ADirective^.SrcPos=SrcPos) then
+            debugln(['TSourceEditor.UpdateIfDefNodeStates ',i,'/',Scanner.DirectiveCount,' MERGING ',dbgs(ADirective^.Code),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
+          {$ENDIF}
+        end;
         inc(i);
-        {$IFDEF VerboseUpdateIfDefNodeStates}
-        if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) and (ADirective^.SrcPos=SrcPos) then
-          debugln(['TSourceEditor.UpdateIfDefNodeStates ',i,'/',Scanner.DirectiveCount,' MERGING ',dbgs(ADirective^.Code),' ',Code.Filename,' X=',X,' Y=',Y,' SrcPos=',aDirective^.SrcPos,' State=',dbgs(aDirective^.State)]);
-        {$ENDIF}
-      until (ADirective^.SrcPos<>SrcPos) or (TCodeBuffer(ADirective^.Code)<>Code);
+      until (ADirective^.SrcPos<>SrcPos) or (TCodeBuffer(ADirective^.Code)<>Code)
+        or (i > Scanner.DirectiveCount);
       dec(i);
       {$IFDEF VerboseUpdateIfDefNodeStates}
       if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) then
