@@ -336,10 +336,6 @@ msgstr ""
 msgid "Add to Favorites"
 msgstr ""
 
-#: objinspstrconsts.oisall
-msgid "All"
-msgstr ""
-
 #: objinspstrconsts.oisallfiles
 msgid "All files"
 msgstr ""

@@ -357,10 +357,6 @@ msgstr ""
 msgid "Add to Favorites"
 msgstr "Tambahkan ke Favorit"
 
-#: objinspstrconsts.oisall
-msgid "All"
-msgstr "Semua"
-
 #: objinspstrconsts.oisallfiles
 msgid "All files"
 msgstr "Semua file"

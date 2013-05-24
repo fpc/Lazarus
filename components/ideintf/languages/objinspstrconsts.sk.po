@@ -361,10 +361,6 @@ msgstr ""
 msgid "Add to Favorites"
 msgstr "Pridať k Obľúbeným"
 
-#: objinspstrconsts.oisall
-msgid "All"
-msgstr "Všetky"
-
 #: objinspstrconsts.oisallfiles
 msgid "All files"
 msgstr "Všetky súbory"

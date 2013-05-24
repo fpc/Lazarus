@@ -351,10 +351,6 @@ msgstr "Adicionar campos de \"FieldDefs\""
 msgid "Add to Favorites"
 msgstr "Adicionar aos Favoritos"
 
-#: objinspstrconsts.oisall
-msgid "All"
-msgstr "Tudo"
-
 #: objinspstrconsts.oisallfiles
 msgid "All files"
 msgstr "Todos os arquivos"

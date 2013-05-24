@@ -354,10 +354,6 @@ msgstr "Lisää kenttiä määritellyistä"
 msgid "Add to Favorites"
 msgstr "Lisää suosikkeihin"
 
-#: objinspstrconsts.oisall
-msgid "All"
-msgstr "Kaikki"
-
 #: objinspstrconsts.oisallfiles
 msgid "All files"
 msgstr "Kaikki tiedostot"

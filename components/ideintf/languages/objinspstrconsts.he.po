@@ -355,10 +355,6 @@ msgstr "הוסף שדות מ FieldDefs"
 msgid "Add to Favorites"
 msgstr "הוסף למועדפים"
 
-#: objinspstrconsts.oisall
-msgid "All"
-msgstr "הכל"
-
 #: objinspstrconsts.oisallfiles
 msgid "All files"
 msgstr "כל הקבצים"

@@ -353,10 +353,6 @@ msgstr "Laukų pridėti iš FieldDefs"
 msgid "Add to Favorites"
 msgstr "Įdėti į mėgstamiausiųjų sąrašą"
 
-#: objinspstrconsts.oisall
-msgid "All"
-msgstr "Visus"
-
 #: objinspstrconsts.oisallfiles
 msgid "All files"
 msgstr "Visi failai"

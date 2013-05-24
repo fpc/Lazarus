@@ -357,10 +357,6 @@ msgstr "FieldDefsからフィールドを追加"
 msgid "Add to Favorites"
 msgstr "お気に入りに追加"
 
-#: objinspstrconsts.oisall
-msgid "All"
-msgstr "すべて"
-
 #: objinspstrconsts.oisallfiles
 msgid "All files"
 msgstr "すべてのファイル"
