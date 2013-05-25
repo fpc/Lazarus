@@ -79,7 +79,7 @@ type
     property Blink: Boolean read FBlink write SetBlink;
     property BlinkDuration: Integer read GetBlinkDuration write SetBlinkDuration default 1000;
     property Align;
-    property AutoSize;
+    property AutoSize default true;
     property Center;
     property Constraints;
 //  property Picture;
