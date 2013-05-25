@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-04-30 01:23+0400\n"
+"PO-Revision-Date: 2013-05-25 17:16+0400\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -761,11 +761,11 @@ msgstr "Показывать подсказки"
 
 #: objinspstrconsts.oisshowinfobox
 msgid "Show Information Box"
-msgstr ""
+msgstr "Показывать информационную панель"
 
 #: objinspstrconsts.oisshowstatusbar
-msgid "Show StatusBar"
-msgstr ""
+msgid "Show Status Bar"
+msgstr "Показывать строку состояния"
 
 #: objinspstrconsts.oissort
 msgid "Sort"

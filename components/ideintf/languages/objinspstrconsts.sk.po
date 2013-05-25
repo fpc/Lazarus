@@ -773,7 +773,7 @@ msgid "Show Information Box"
 msgstr ""
 
 #: objinspstrconsts.oisshowstatusbar
-msgid "Show StatusBar"
+msgid "Show Status Bar"
 msgstr ""
 
 #: objinspstrconsts.oissort
