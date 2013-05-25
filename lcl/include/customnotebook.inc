@@ -288,6 +288,16 @@ begin
     OnChange(Self);
 end;
 
+procedure TCustomTabControl.InitializeWnd;
+begin
+  inherited InitializeWnd;
+  if FLoadedPageIndex > -1 then
+    PageIndex := FindVisiblePage(FLoadedPageIndex);
+  FLoadedPageIndex := -1;
+  //DebugLn(['TCustomTabControl.InitializeWnd ',DbgSName(Self),' fPageIndex=',fPageIndex]);
+  FPageIndexOnLastChange := PageIndex;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomTabControl.Destroy
   Params:  None
@@ -779,7 +789,7 @@ end;
 {------------------------------------------------------------------------------
   TCustomTabControl GetPageCount
  ------------------------------------------------------------------------------}
-function TCustomTabControl.GetPageCount: Integer;
+function TCustomTabControl.GetPageCount: integer;
 begin
   if FUnPaged then
     Result := FAccess.Count
@@ -926,17 +936,6 @@ begin
   FPageIndexOnLastChange := FPageIndex;
   if ([csLoading,csDestroying]*ComponentState=[]) and (not FAddingPages) then
     DoChange;
-end;
-
-procedure TCustomTabControl.Loaded;
-begin
-  inherited Loaded;
-  if FLoadedPageIndex > -1 then
-    PageIndex := FindVisiblePage(FLoadedPageIndex);
-  FLoadedPageIndex := -1;
-  //DebugLn(['TCustomTabControl.Loaded ',DbgSName(Self),' fPageIndex=',fPageIndex]);
-  FPageIndexOnLastChange := PageIndex;
-  if HandleAllocated then DoCreateWnd;
 end;
 
 function TCustomTabControl.DialogChar(var Message: TLMKey): boolean;
