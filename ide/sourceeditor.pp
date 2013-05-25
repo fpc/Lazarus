@@ -5504,7 +5504,7 @@ begin
       //  debugln(['TSourceEditor.UpdateIfDefNodeStates ',i+1,'/',Scanner.DirectiveCount,' ',dbgs(aDirective^.Kind)]);
       inc(i);
       if TCodeBuffer(aDirective^.Code)<>Code then continue;
-      if not (aDirective^.Kind in (lsdkAllIf+[lsdkElIfC,lsdkElseIf])) then continue;
+      if not (aDirective^.Kind in (lsdkAllIf+[lsdkElIfC,lsdkElseIf, lsdkElse, lsdkElseC])) then continue;
       Code.AbsoluteToLineCol(aDirective^.SrcPos,Y,X);
       if Y<1 then continue;
       SynState:=idnInvalid;
@@ -5543,6 +5543,8 @@ begin
         SynState:=idnEnabled
       else if (InactiveCnt=1) and (ActiveCnt=0) and (SkippedCnt=0) then
         SynState:=idnDisabled
+      else if (InactiveCnt>0) or (ActiveCnt>0) then
+        SynState:=idnTempEnabled
       else
         SynState:=idnInvalid;
       EditorComponent.SetIfdefNodeState(Y,X,SynState);
