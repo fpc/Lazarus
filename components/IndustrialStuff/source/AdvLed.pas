@@ -1,21 +1,15 @@
 (******************************************************
- * AdvLed by Jurassic Pork 2013 for Lazarus           *
- * created from TComled of ComPort Library ver. 3.00  *
- * written by Dejan Crnila, 1998 - 2002               *
- * email: dejancrn@yahoo.com                          *
-  ****************************************************************************
- *                                                                           *
- *  This file is part of Lazarus which is distributed under the modified LGPL*                                                          *
- *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
- *  for details about the copyright.                                         *
- *                                                                           *
- *  This program is distributed in the hope that it will be useful,          *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
- *                                                                           *
- *****************************************************************************
- * Unit: AdvLed.pas                                   *
+  AdvLed by Jurassic Pork 2013 for Lazarus
+  created from TComled of ComPort Library ver. 3.00
+  written by Dejan Crnila, 1998 - 2002
+  email: dejancrn@yahoo.com
+ ****************************************************************************
+  This file is part of Lazarus
+
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
+ ****************************************************************************
+  Unit: AdvLed.pas
  ******************************************************)
 
 unit AdvLed;

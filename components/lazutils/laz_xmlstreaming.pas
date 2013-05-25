@@ -1,18 +1,14 @@
 {
+ **********************************************************************
     This file is part of the Free Component Library
 
-    XML serialisation driver
-    Copyright (c) 2000 by Sebastian Guenther, sg@freepascal.org
-
     See the file COPYING.FPC, included in this distribution,
-    for details about the copyright.
+    for details about the license.
+ **********************************************************************
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  XML serialisation driver
+  Copyright (c) 2000 by Sebastian Guenther, sg@freepascal.org
 
- **********************************************************************}
-{
   Extended by Mattias Gaertner:
     Reading/Writing children, all kinds of properties,
     custom properties (via DefineProperties).

@@ -1,28 +1,21 @@
 {
-
  *****************************************************************************
- *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
- *  for details about the copyright.                                         *
- *                                                                           *
- *  This program is distributed in the hope that it will be useful,          *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
- *                                                                           *
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
  *****************************************************************************
 
-Authors: Werner Pamler, Alexander Klenin
+  Authors: Werner Pamler, Alexander Klenin
 
-Usage:
-- Add the ChartListbox to a form with a TChart
-- Connect the chart to the listbox by setting the chart property of the
-  TChartlistbox. The ChartListbox will be populated with the series in the
-  chart and will automatically track changes of the series.
-- Check/uncheck series in the ChartListbox to show/hide them in the chart.
-  As usual, checking is done by mouse clicks or by pressing the space bar.
-- Play with the properties to modify the standard behavior, e.g. set
-  CheckStyle to cbsRadioButton in order to get a radiobutton behavior, i.e. to
-  allow only one visible series.
+  Usage:
+  - Add the ChartListbox to a form with a TChart
+  - Connect the chart to the listbox by setting the chart property of the
+    TChartlistbox. The ChartListbox will be populated with the series in the
+    chart and will automatically track changes of the series.
+  - Check/uncheck series in the ChartListbox to show/hide them in the chart.
+    As usual, checking is done by mouse clicks or by pressing the space bar.
+  - Play with the properties to modify the standard behavior, e.g. set
+    CheckStyle to cbsRadioButton in order to get a radiobutton behavior, i.e. to
+    allow only one visible series.
 }
 
 unit TAChartListbox;

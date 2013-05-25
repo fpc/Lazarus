@@ -3,14 +3,8 @@
   Date: 11.06.2005
 
  *****************************************************************************
- *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
- *  for details about the copyright.                                         *
- *                                                                           *
- *  This program is distributed in the hope that it will be useful,          *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
- *                                                                           *
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
  *****************************************************************************
 }
 { 2010-07-15 - New field type option (Data) Marcelo B. Paula

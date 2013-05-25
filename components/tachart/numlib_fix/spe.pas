@@ -13,7 +13,7 @@
             for extended)
 
     See the file COPYING.FPC, included in this distribution,
-    for details about the copyright.
+    for details about the license.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of

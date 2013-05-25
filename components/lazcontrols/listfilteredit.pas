@@ -6,7 +6,7 @@
   under the same terms as the Lazarus Component Library (LCL)
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
-  for details about the copyright.
+  for details about the license.
 
 }
 unit ListFilterEdit;

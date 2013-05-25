@@ -3,20 +3,18 @@
   Converted to use UTF8 instead of widestrings by Mattias Gaertner.
 }
 {
-    This file is part of the Free Component Library
+ **********************************************************************
+  This file is part of the Free Component Library
 
-    Implementation of DOM interfaces
-    Copyright (c) 1999-2000 by Sebastian Guenther, sg@freepascal.org
-    Modified in 2006 by Sergei Gorelkin, sergei_gorelkin@mail.ru    
+  See the file COPYING.FPC, included in this distribution,
+  for details about the license.
+ **********************************************************************
 
-    See the file COPYING.FPC, included in this distribution,
-    for details about the copyright.
+  Implementation of DOM interfaces
+  Copyright (c) 1999-2000 by Sebastian Guenther, sg@freepascal.org
+  Modified in 2006 by Sergei Gorelkin, sergei_gorelkin@mail.ru
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
- **********************************************************************}
+}
 
 {
   This unit provides classes which implement the interfaces defined in the

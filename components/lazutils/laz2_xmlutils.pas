@@ -1,17 +1,15 @@
 {
-    This file is part of the Free Component Library
+ **********************************************************************
+  This file is part of the Free Component Library
 
-    XML utility routines.
-    Copyright (c) 2006 by Sergei Gorelkin, sergei_gorelkin@mail.ru
+  See the file COPYING.FPC, included in this distribution,
+  for details about the license.
+ **********************************************************************
 
-    See the file COPYING.FPC, included in this distribution,
-    for details about the copyright.
+  XML utility routines.
+  Copyright (c) 2006 by Sergei Gorelkin, sergei_gorelkin@mail.ru
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
- **********************************************************************}
+}
 unit laz2_xmlutils;
 
 {$ifdef fpc}{$mode objfpc}{$endif}

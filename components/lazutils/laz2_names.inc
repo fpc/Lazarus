@@ -1,16 +1,14 @@
 {
-    This file is part of the Free Component Library
+ **********************************************************************
+  This file is part of the Free Component Library
 
-    XML naming character tables, built upon w3.org specifications
+  See the file COPYING.FPC, included in this distribution,
+  for details about the license.
+ **********************************************************************
 
-    See the file COPYING.FPC, included in this distribution,
-    for details about the copyright.
+  XML naming character tables, built upon w3.org specifications
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
- **********************************************************************}
+}
 
 type
   TSetOfByte = set of Byte;

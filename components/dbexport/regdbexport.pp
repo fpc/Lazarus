@@ -1,18 +1,16 @@
 {
-    This file is part of the Free Pascal run time library.
-    Copyright (c) 2007 by Michael Van Canneyt, member of the
-    Free Pascal development team
+ **********************************************************************
+  This file is part of the Free Pascal run time library.
 
-    Registration of components and property editors for dbexport package.
+  See the file COPYING.FPC, included in this distribution,
+  for details about the license.
+ **********************************************************************
 
-    See the file COPYING.FPC, included in this distribution,
-    for details about the copyright.
+ Registration of components and property editors for dbexport package.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ Copyright (c) 2007 by Michael Van Canneyt, member of the Free Pascal development team
 
- **********************************************************************}
+}
 unit regdbexport;
 
 {$mode objfpc}{$H+}

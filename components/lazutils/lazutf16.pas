@@ -4,26 +4,21 @@
  ***************************************************************************/
 
  *****************************************************************************
- *                                                                           *
- *  This file is part of LazUtils                                            *
- *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
- *  for details about the copyright.                                         *
- *                                                                           *
- *  This program is distributed in the hope that it will be useful,          *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
- *                                                                           *
+  This file is part of LazUtils
+
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
  *****************************************************************************
 
-This unit includes string routines which are based on UTF-16 implementations,
-although it might also include routines for other encodings.
+  This unit includes string routines which are based on UTF-16 implementations,
+  although it might also include routines for other encodings.
 
-A UTF-16 based implementation for LowerCase, for example, is faster in WideString
-and UnicodeString then the default UTF-8 implementation
+  A UTF-16 based implementation for LowerCase, for example, is faster in WideString
+  and UnicodeString then the default UTF-8 implementation
 
-Currently this unit includes only UTF8LowerCaseViaTables which is based on a
-UTF-16 table, but it might be extended to include various UTF-16 routines
+  Currently this unit includes only UTF8LowerCaseViaTables which is based on a
+  UTF-16 table, but it might be extended to include various UTF-16 routines
+
 }
 unit lazutf16;
 

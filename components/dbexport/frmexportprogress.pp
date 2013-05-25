@@ -1,18 +1,15 @@
 {
-    This file is part of the Free Pascal run time library.
-    Copyright (c) 2007 by Michael Van Canneyt, member of the
-    Free Pascal development team
+ **********************************************************************
+  This file is part of the Free Pascal run time library.
 
-    DataExport progress bar form.
+  See the file COPYING.FPC, included in this distribution,
+  for details about the license.
+ **********************************************************************
 
-    See the file COPYING.FPC, included in this distribution,
-    for details about the copyright.
+ DataExport progress bar form.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
- **********************************************************************}
+ Copyright (c) 2007 by Michael Van Canneyt, member of the Free Pascal development team
+}
 unit frmexportprogress;
 
 {$mode objfpc}{$H+}

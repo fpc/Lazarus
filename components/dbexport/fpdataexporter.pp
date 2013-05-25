@@ -1,18 +1,16 @@
 {
-    This file is part of the Free Pascal run time library.
-    Copyright (c) 2007 by Michael Van Canneyt, member of the
-    Free Pascal development team
+ **********************************************************************
+  This file is part of the Free Pascal run time library.
 
-    TFPDataExporter dialog component.
-    
-    See the file COPYING.FPC, included in this distribution,
-    for details about the copyright.
+  See the file COPYING.FPC, included in this distribution,
+  for details about the license.
+ **********************************************************************
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ TFPDataExporter dialog component.
 
- **********************************************************************}
+ Copyright (c) 2007 by Michael Van Canneyt, member of the Free Pascal development team
+
+}
 unit fpdataexporter;
 
 {$mode objfpc}{$H+}

@@ -1,28 +1,22 @@
 {
 
  *****************************************************************************
- *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
- *  for details about the copyright.                                         *
- *                                                                           *
- *  This program is distributed in the hope that it will be useful,          *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
- *                                                                           *
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
  *****************************************************************************
 
-An ImageList with TCustomChartSeries icons
+  An ImageList with TCustomChartSeries icons
 
-Authors: Werner Pamler, Alexander Klenin
+  Authors: Werner Pamler, Alexander Klenin
 
-Notes:
-- The image list can be used like any other image list.
-- Assigning the Chart property to a TChart adds the series icons of all
-  series to the image list. Series created at run-time will be added automatically
-  to the end of the list.
-- Make sure to populate toolbar icons etc. before assigning the chart since the
-  series images are added to the end of the list; otherwise image indices of
-  these icons will change.
+  Notes:
+  - The image list can be used like any other image list.
+  - Assigning the Chart property to a TChart adds the series icons of all
+    series to the image list. Series created at run-time will be added automatically
+    to the end of the list.
+  - Make sure to populate toolbar icons etc. before assigning the chart since the
+    series images are added to the end of the list; otherwise image indices of
+    these icons will change.
 }
 
 unit TAChartImageList;

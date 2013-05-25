@@ -1,20 +1,17 @@
 {
+ **********************************************************************
   This file is based on the FCL unit xmlwrite svn revision 15251.
+
+  See the file COPYING.FPC, included in this distribution,
+  for details about the license.
+ **********************************************************************
+
+  XML writing routines
+  Copyright (c) 1999-2000 by Sebastian Guenther, sg@freepascal.org
+  Modified in 2006 by Sergei Gorelkin, sergei_gorelkin@mail.ru
   Converted to use UTF8 instead of widestrings by Mattias Gaertner.
+
 }
-{
-    XML writing routines
-    Copyright (c) 1999-2000 by Sebastian Guenther, sg@freepascal.org
-    Modified in 2006 by Sergei Gorelkin, sergei_gorelkin@mail.ru
-
-    See the file COPYING.FPC, included in this distribution,
-    for details about the copyright.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
- **********************************************************************}
 
 
 unit laz2_XMLWrite;

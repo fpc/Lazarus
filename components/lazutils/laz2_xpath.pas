@@ -1,18 +1,16 @@
 {
-    This file is based on the xpath unit of the Free Component Library.
+ **********************************************************************
+  This file is based on the xpath unit of the Free Component Library.
 
-    Implementation of the XML Path Language (XPath) for Free Pascal
-    Copyright (c) 2000 - 2003 by
-      Areca Systems GmbH / Sebastian Guenther, sg@freepascal.org
+  See the file COPYING.FPC, included in this distribution,
+  for details about the license.
+ **********************************************************************
 
-    See the file COPYING.FPC, included in this distribution,
-    for details about the copyright.
+  Implementation of the XML Path Language (XPath) for Free Pascal
+  Copyright (c) 2000 - 2003 by
+    Areca Systems GmbH / Sebastian Guenther, sg@freepascal.org
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
- **********************************************************************}
+}
 
 {$mode objfpc}
 {$H+}
