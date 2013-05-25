@@ -66,6 +66,7 @@ type
   TOIOptionsFrame = class(TAbstractIDEOptionsEditor)
     BtnUseDefaultDelphiSettings: TButton;
     BtnUseDefaultLazarusSettings: TButton;
+    OIOptsCenterLabel: TLabel;
     OIMiscGroupBox: TGroupBox;
     ObjectInspectorSpeedSettingsGroupBox: TGroupBox;
     OIDefaultItemHeightLabel: TLabel;
