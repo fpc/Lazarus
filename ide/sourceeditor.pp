@@ -4271,7 +4271,7 @@ Begin
   SourceNotebook.UpdateActiveEditColors(FEditor);
   {$IFDEF WithSynMarkupIfDef}
   if Visible then
-    UpdateIfDefNodeStates;
+    UpdateIfDefNodeStates(True);
   {$ENDIF}
 end;
 
