@@ -80,7 +80,7 @@ resourcestring
   oisShowComponentTree = 'Show Component Tree';
   oisShowHints = 'Show Hints';
   oisShowInfoBox = 'Show Information Box';
-  oisShowStatusBar = 'Show StatusBar';
+  oisShowStatusBar = 'Show Status Bar';
   oisOptions = 'Options';
 
   
