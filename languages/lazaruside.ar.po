@@ -1972,12 +1972,20 @@ msgstr ""
 msgid "Inactive $IFDEF code"
 msgstr ""
 
+#: lazarusidestrconsts.dlgifdefblocktmpactive
+msgid "Included mixed state $IFDEF code"
+msgstr ""
+
 #: lazarusidestrconsts.dlgifdefnodeactive
 msgid "Active $IFDEF node"
 msgstr ""
 
 #: lazarusidestrconsts.dlgifdefnodeinactive
 msgid "Inactive $IFDEF node"
+msgstr ""
+
+#: lazarusidestrconsts.dlgifdefnodetmpactive
+msgid "Included mixed state $IFDEF node"
 msgstr ""
 
 #: lazarusidestrconsts.dlgignoreverb

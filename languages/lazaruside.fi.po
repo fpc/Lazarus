@@ -411,6 +411,11 @@ msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
 msgid "Gutter"
 msgstr "Reunapalkki"
 
+#: lazarusidestrconsts.dlgaddhiattrgroupifdef
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupifdef"
+msgid "IfDef"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrgroupline
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupline"
 msgid "Line"
@@ -1943,8 +1948,28 @@ msgstr "Tunnistekäytäntö"
 msgid "IDE Options"
 msgstr "IDEn asetukset"
 
+#: lazarusidestrconsts.dlgifdefblockactive
+msgid "Active $IFDEF code"
+msgstr ""
+
 #: lazarusidestrconsts.dlgifdefblockinactive
 msgid "Inactive $IFDEF code"
+msgstr ""
+
+#: lazarusidestrconsts.dlgifdefblocktmpactive
+msgid "Included mixed state $IFDEF code"
+msgstr ""
+
+#: lazarusidestrconsts.dlgifdefnodeactive
+msgid "Active $IFDEF node"
+msgstr ""
+
+#: lazarusidestrconsts.dlgifdefnodeinactive
+msgid "Inactive $IFDEF node"
+msgstr ""
+
+#: lazarusidestrconsts.dlgifdefnodetmpactive
+msgid "Included mixed state $IFDEF node"
 msgstr ""
 
 #: lazarusidestrconsts.dlgignoreverb
@@ -5746,6 +5771,7 @@ msgid "If"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsifdef
+msgctxt "lazarusidestrconsts.liscodetoolsdefsifdef"
 msgid "IfDef"
 msgstr ""
 
@@ -11643,8 +11669,8 @@ msgstr ""
 msgid "New Target"
 msgstr ""
 
-#: lazarusidestrconsts.lismmoutputdirectory
-msgid "Output Directory"
+#: lazarusidestrconsts.lismmoverrideoutputdirectory
+msgid "Override output directory (-FU)"
 msgstr ""
 
 #: lazarusidestrconsts.lismmoverrideoutputdirectoryfuoftarget
@@ -14769,6 +14795,10 @@ msgstr "Lyhyt:"
 #: lazarusidestrconsts.lisshow
 msgid "Show"
 msgstr "Näytä"
+
+#: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
+msgid "Show component tree"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"

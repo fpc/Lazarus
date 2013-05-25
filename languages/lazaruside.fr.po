@@ -424,6 +424,11 @@ msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
 msgid "Gutter"
 msgstr "Gouttière"
 
+#: lazarusidestrconsts.dlgaddhiattrgroupifdef
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupifdef"
+msgid "IfDef"
+msgstr "IfDef"
+
 #: lazarusidestrconsts.dlgaddhiattrgroupline
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupline"
 msgid "Line"
@@ -2019,8 +2024,28 @@ msgstr "Politique des identificateurs"
 msgid "IDE Options"
 msgstr "Options IDE"
 
+#: lazarusidestrconsts.dlgifdefblockactive
+msgid "Active $IFDEF code"
+msgstr ""
+
 #: lazarusidestrconsts.dlgifdefblockinactive
 msgid "Inactive $IFDEF code"
+msgstr ""
+
+#: lazarusidestrconsts.dlgifdefblocktmpactive
+msgid "Included mixed state $IFDEF code"
+msgstr ""
+
+#: lazarusidestrconsts.dlgifdefnodeactive
+msgid "Active $IFDEF node"
+msgstr ""
+
+#: lazarusidestrconsts.dlgifdefnodeinactive
+msgid "Inactive $IFDEF node"
+msgstr ""
+
+#: lazarusidestrconsts.dlgifdefnodetmpactive
+msgid "Included mixed state $IFDEF node"
 msgstr ""
 
 #: lazarusidestrconsts.dlgignoreverb
@@ -5989,6 +6014,7 @@ msgid "If"
 msgstr "Si"
 
 #: lazarusidestrconsts.liscodetoolsdefsifdef
+msgctxt "lazarusidestrconsts.liscodetoolsdefsifdef"
 msgid "IfDef"
 msgstr "IfDef"
 
@@ -12215,8 +12241,8 @@ msgstr ""
 msgid "New Target"
 msgstr ""
 
-#: lazarusidestrconsts.lismmoutputdirectory
-msgid "Output Directory"
+#: lazarusidestrconsts.lismmoverrideoutputdirectory
+msgid "Override output directory (-FU)"
 msgstr ""
 
 #: lazarusidestrconsts.lismmoverrideoutputdirectoryfuoftarget
@@ -15435,6 +15461,10 @@ msgstr "Court :"
 
 #: lazarusidestrconsts.lisshow
 msgid "Show"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
+msgid "Show component tree"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowdeclarationhints

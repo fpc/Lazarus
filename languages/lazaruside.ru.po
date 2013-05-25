@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-05-22 01:16+0400\n"
+"PO-Revision-Date: 2013-05-25 20:09+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -427,6 +427,11 @@ msgstr "Глобальные"
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
 msgid "Gutter"
 msgstr "Поле (лев)"
+
+#: lazarusidestrconsts.dlgaddhiattrgroupifdef
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupifdef"
+msgid "IfDef"
+msgstr "IfDef"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupline
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupline"
@@ -2038,9 +2043,29 @@ msgstr "Политика идентификаторов"
 msgid "IDE Options"
 msgstr "Параметры IDE"
 
+#: lazarusidestrconsts.dlgifdefblockactive
+msgid "Active $IFDEF code"
+msgstr "Активный код внутри $IFDEF"
+
 #: lazarusidestrconsts.dlgifdefblockinactive
 msgid "Inactive $IFDEF code"
 msgstr "Неактивный код внутри $IFDEF"
+
+#: lazarusidestrconsts.dlgifdefblocktmpactive
+msgid "Included mixed state $IFDEF code"
+msgstr "Подключаемый внутри $IFDEF условно активный код"
+
+#: lazarusidestrconsts.dlgifdefnodeactive
+msgid "Active $IFDEF node"
+msgstr "Активная директива $IFDEF"
+
+#: lazarusidestrconsts.dlgifdefnodeinactive
+msgid "Inactive $IFDEF node"
+msgstr "Неактивная директива $IFDEF"
+
+#: lazarusidestrconsts.dlgifdefnodetmpactive
+msgid "Included mixed state $IFDEF node"
+msgstr "Директива $IFDEF подключаемого условно активного кода"
 
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
@@ -5957,6 +5982,7 @@ msgid "If"
 msgstr "If"
 
 #: lazarusidestrconsts.liscodetoolsdefsifdef
+msgctxt "lazarusidestrconsts.liscodetoolsdefsifdef"
 msgid "IfDef"
 msgstr "IfDef"
 
@@ -12085,9 +12111,9 @@ msgstr "Переместить выбранный элемент вверх"
 msgid "New Target"
 msgstr "Новая цель"
 
-#: lazarusidestrconsts.lismmoutputdirectory
-msgid "Output Directory"
-msgstr "Каталог вывода"
+#: lazarusidestrconsts.lismmoverrideoutputdirectory
+msgid "Override output directory (-FU)"
+msgstr "Переопределить каталог вывода (-FU)"
 
 #: lazarusidestrconsts.lismmoverrideoutputdirectoryfuoftarget
 msgid "Override output directory -FU of target"
@@ -15281,6 +15307,10 @@ msgstr "Краткое:"
 #: lazarusidestrconsts.lisshow
 msgid "Show"
 msgstr "Отображать"
+
+#: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
+msgid "Show component tree"
+msgstr "Показывать дерево компонентов"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
