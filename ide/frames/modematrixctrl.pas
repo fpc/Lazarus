@@ -122,7 +122,7 @@ type
     property Value: string read FValue write SetValue;
     property Typ: string read FTyp write SetTyp;
     property Modes: TStrings read FModes write SetModes;
-    function GetNormalizedModes: string;
+    function GetNormalizedModes(IgnoreModes: TStrings = nil): string;
     function AsString: string; override;
   end;
 
@@ -673,7 +673,7 @@ begin
   Result:=true;
 end;
 
-function TGroupedMatrixValue.GetNormalizedModes: string;
+function TGroupedMatrixValue.GetNormalizedModes(IgnoreModes: TStrings): string;
 var
   i: Integer;
   m: String;
@@ -682,6 +682,9 @@ begin
   for i:=0 to Modes.Count-1 do begin
     m:=Modes[i];
     if m='' then continue;
+    if (IgnoreModes<>nil)
+    and (IndexInStringList(IgnoreModes,cstCaseInsensitive,m)>=0) then
+      continue;
     if Result<>'' then Result+=#10;
     Result+=m;
   end;

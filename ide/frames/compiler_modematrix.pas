@@ -137,11 +137,12 @@ type
   end;
 
 // assign
-function IsEqual(Options: TBuildMatrixOptions; StorageGroup: TGroupedMatrixGroup): boolean;
+function IsEqual(Options: TBuildMatrixOptions; StorageGroup: TGroupedMatrixGroup;
+  NotStoredModes: TStrings): boolean;
 procedure AssignBuildMatrixOptionsToGroup(Options: TBuildMatrixOptions;
-  Matrix: TGroupedMatrix; StorageGroup: TGroupedMatrixGroup);
+  Matrix: TGroupedMatrix; StorageGroup: TGroupedMatrixGroup; NotStoredModes: TStrings);
 procedure AssignBuildMatrixGroupToOptions(StorageGroup: TGroupedMatrixGroup;
-  Options: TBuildMatrixOptions; InvalidateBuildMacros: boolean);
+  Options: TBuildMatrixOptions; InvalidateBuildMacros: boolean; NotStoredModes: TStrings);
 
 // targets, see BuildMatrixTargetFits
 function TargetsPrefix: string;
@@ -195,8 +196,8 @@ begin
   end;
 end;
 
-function IsEqual(Options: TBuildMatrixOptions; StorageGroup: TGroupedMatrixGroup
-  ): boolean;
+function IsEqual(Options: TBuildMatrixOptions; StorageGroup: TGroupedMatrixGroup;
+  NotStoredModes: TStrings): boolean;
 // ignore empty targets
 var
   OptIndex: Integer;
@@ -226,7 +227,8 @@ begin
       // compare option
       Option:=Options[OptIndex];
       if Option.Targets<>Target.Value then exit;
-      if Option.Modes<>ValueRow.GetNormalizedModes then exit;
+      if Option.Modes[bmmtActive]<>ValueRow.GetNormalizedModes(nil) then exit;
+      if Option.Modes[bmmtStored]<>ValueRow.GetNormalizedModes(NotStoredModes) then exit;
       if Option.Typ<>CaptionToBuildMatrixOptionType(ValueRow.Typ) then exit;
       if Option.Typ=bmotIDEMacro then begin
         SplitMatrixMacro(ValueRow.Value,MacroName,MacroValue,false);
@@ -242,14 +244,15 @@ begin
 end;
 
 procedure AssignBuildMatrixOptionsToGroup(Options: TBuildMatrixOptions;
-  Matrix: TGroupedMatrix; StorageGroup: TGroupedMatrixGroup);
+  Matrix: TGroupedMatrix; StorageGroup: TGroupedMatrixGroup;
+  NotStoredModes: TStrings);
 var
   OptIndex: Integer;
   Option: TBuildMatrixOption;
   TargetGrp: TGroupedMatrixGroup;
   Value: String;
 begin
-  if IsEqual(Options,StorageGroup) then exit;
+  if IsEqual(Options,StorageGroup,NotStoredModes) then exit;
   StorageGroup.Clear;
   TargetGrp:=nil;
   for OptIndex:=0 to Options.Count-1 do begin
@@ -259,13 +262,14 @@ begin
     Value:=Option.Value;
     if Option.Typ=bmotIDEMacro then
       Value:=Option.MacroName+':='+Value;
-    Matrix.AddValue(TargetGrp,Option.Modes,
+    Matrix.AddValue(TargetGrp,Option.Modes[bmmtActive],
                     BuildMatrixOptionTypeCaption(Option.Typ),Value,Option.ID);
   end;
 end;
 
 procedure AssignBuildMatrixGroupToOptions(StorageGroup: TGroupedMatrixGroup;
-  Options: TBuildMatrixOptions; InvalidateBuildMacros: boolean);
+  Options: TBuildMatrixOptions; InvalidateBuildMacros: boolean;
+  NotStoredModes: TStrings);
 var
   GrpIndex: Integer;
   Target: TGroupedMatrixGroup;
@@ -275,7 +279,7 @@ var
   MacroName: string;
   MacroValue: string;
 begin
-  if IsEqual(Options,StorageGroup) then exit;
+  if IsEqual(Options,StorageGroup,NotStoredModes) then exit;
   Options.Clear;
   for GrpIndex:=0 to StorageGroup.Count-1 do begin
     Target:=TGroupedMatrixGroup(StorageGroup[GrpIndex]);
@@ -291,7 +295,8 @@ begin
       end;
       Option:=Options.Add(CaptionToBuildMatrixOptionType(ValueRow.Typ),
                           Target.Value);
-      Option.Modes:=ValueRow.GetNormalizedModes;
+      Option.Modes[bmmtActive]:=ValueRow.GetNormalizedModes(nil);
+      Option.Modes[bmmtStored]:=ValueRow.GetNormalizedModes(NotStoredModes);
       Option.ID:=ValueRow.ID;
       if Option.Typ=bmotIDEMacro then begin
         SplitMatrixMacro(ValueRow.Value,MacroName,MacroValue,false);
@@ -905,16 +910,23 @@ begin
 end;
 
 procedure TCompOptModeMatrix.DoWriteSettings;
+var
+  SessionModes: TStringList;
 begin
-  // write IDE options
-  AssignBuildMatrixGroupToOptions(GroupIDE,
-    EnvironmentOptions.BuildMatrixOptions, true);
-  // write Project options
-  AssignBuildMatrixGroupToOptions(GroupProject,
-    LazProject.BuildModes.SharedMatrixOptions, true);
-  // write Session options
-  AssignBuildMatrixGroupToOptions(GroupSession,
-    LazProject.BuildModes.SessionMatrixOptions, true);
+  SessionModes:=LazProject.BuildModes.GetSessionModes;
+  try
+    // write IDE options
+    AssignBuildMatrixGroupToOptions(GroupIDE,
+      EnvironmentOptions.BuildMatrixOptions,true,SessionModes);
+    // write Project options
+    AssignBuildMatrixGroupToOptions(GroupProject,
+      LazProject.BuildModes.SharedMatrixOptions,true,SessionModes);
+    // write Session options
+    AssignBuildMatrixGroupToOptions(GroupSession,
+      LazProject.BuildModes.SessionMatrixOptions,true,nil);
+  finally
+    SessionModes.Free;
+  end;
 end;
 
 constructor TCompOptModeMatrix.Create(TheOwner: TComponent);
@@ -1019,6 +1031,7 @@ end;
 procedure TCompOptModeMatrix.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   CompOptions: TProjectCompilerOptions;
+  SessionModes: TStringList;
 begin
   //debugln(['TCompOptModeMatrix.ReadSettings ',DbgSName(AOptions)]);
   if not (AOptions is TProjectCompilerOptions) then exit;
@@ -1033,18 +1046,23 @@ begin
 
   UpdateModes(false);
 
-  // read IDE options
-  AssignBuildMatrixOptionsToGroup(EnvironmentOptions.BuildMatrixOptions,
-    Grid.Matrix,GroupIDE);
-  fOldIDEOptions.Assign(EnvironmentOptions.BuildMatrixOptions);
-  // read Project options
-  AssignBuildMatrixOptionsToGroup(LazProject.BuildModes.SharedMatrixOptions,
-    Grid.Matrix,GroupProject);
-  fOldSharedOptions.Assign(LazProject.BuildModes.SharedMatrixOptions);
-  // read Session options
-  AssignBuildMatrixOptionsToGroup(LazProject.BuildModes.SessionMatrixOptions,
-    Grid.Matrix,GroupSession);
-  fOldSessionOptions.Assign(LazProject.BuildModes.SessionMatrixOptions);
+  SessionModes:=LazProject.BuildModes.GetSessionModes;
+  try
+    // read IDE options
+    AssignBuildMatrixOptionsToGroup(EnvironmentOptions.BuildMatrixOptions,
+      Grid.Matrix,GroupIDE,SessionModes);
+    fOldIDEOptions.Assign(EnvironmentOptions.BuildMatrixOptions);
+    // read Project options
+    AssignBuildMatrixOptionsToGroup(LazProject.BuildModes.SharedMatrixOptions,
+      Grid.Matrix,GroupProject,SessionModes);
+    fOldSharedOptions.Assign(LazProject.BuildModes.SharedMatrixOptions);
+    // read Session options
+    AssignBuildMatrixOptionsToGroup(LazProject.BuildModes.SessionMatrixOptions,
+      Grid.Matrix,GroupSession,nil);
+    fOldSessionOptions.Assign(LazProject.BuildModes.SessionMatrixOptions);
+  finally
+    SessionModes.Free;
+  end;
 
   // update Grid
   Grid.MatrixChanged;

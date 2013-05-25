@@ -734,6 +734,7 @@ type
     procedure AddOnChangedHandler(const Handler: TNotifyEvent);
     procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
     function IsModified(InSession: boolean): boolean;
+    function GetSessionModes: TStringList;
   public
     property Items[Index: integer]: TProjectBuildMode read GetItems; default;
     property ChangeStamp: integer read FChangeStamp;
@@ -7258,6 +7259,19 @@ begin
     if (Items[i].InSession=InSession) and Items[i].Modified then
       exit;
   Result:=false;
+end;
+
+function TProjectBuildModes.GetSessionModes: TStringList;
+var
+  i: Integer;
+  BuildMode: TProjectBuildMode;
+begin
+  Result:=TStringList.Create;
+  for i:=0 to Count-1 do begin
+    BuildMode:=Items[i];
+    if BuildMode.InSession then
+      Result.Add(BuildMode.Identifier);
+  end;
 end;
 
 initialization
