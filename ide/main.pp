@@ -12330,12 +12330,11 @@ begin
   ObjectInspector1.OnAutoShow:=@OIOnAutoShow;
   ObjectInspector1.EnableHookGetSelection:=false; // the selection is stored in TheControlSelection
 
-  // after OI changes the hints need to be updated
-  // do that after some idle time
+  // after OI changes the Info box must be updated. Do that after some idle time
   OIChangedTimer:=TIdleTimer.Create(OwningComponent);
   with OIChangedTimer do begin
     Name:='OIChangedTimer';
-    Interval:=400;
+    Interval:=50;                  // Info box can be updated with a short delay.
     OnTimer:=@OIChangedTimerTimer;
   end;
   EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
