@@ -20,11 +20,11 @@
 
  ToDo:
    - save session modes in session
-     - for IDE
-     - for project
+     - project
+     - IDE
    - load session modes
-     - for IDE
-     - for project
+     - project
+     - IDE
    - save matrix options for old build macro values
    - load old build macro values into matrix
    - ifdef old frame
@@ -260,7 +260,7 @@ begin
     if Option.Typ=bmotIDEMacro then
       Value:=Option.MacroName+':='+Value;
     Matrix.AddValue(TargetGrp,Option.Modes,
-                    BuildMatrixOptionTypeCaption(Option.Typ),Value);
+                    BuildMatrixOptionTypeCaption(Option.Typ),Value,Option.ID);
   end;
 end;
 
@@ -292,6 +292,7 @@ begin
       Option:=Options.Add(CaptionToBuildMatrixOptionType(ValueRow.Typ),
                           Target.Value);
       Option.Modes:=ValueRow.GetNormalizedModes;
+      Option.ID:=ValueRow.ID;
       if Option.Typ=bmotIDEMacro then begin
         SplitMatrixMacro(ValueRow.Value,MacroName,MacroValue,false);
         Option.MacroName:=MacroName;
@@ -667,7 +668,8 @@ var
   begin
     if aTyp='' then
       aTyp:=Grid.TypeColumn.PickList.Names[0];
-    NewRow:=Grid.Matrix.AddValue(Group,Grid.Modes[Grid.ActiveMode].Caption,aTyp,aValue);
+    NewRow:=Grid.Matrix.AddValue(Group,Grid.Modes[Grid.ActiveMode].Caption,aTyp,
+      aValue,CreateBuildMatrixOptionGUID);
   end;
 
 begin

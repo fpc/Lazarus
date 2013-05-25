@@ -114,6 +114,7 @@ type
     procedure SetTyp(AValue: string);
     procedure SetValue(AValue: string);
   public
+    ID: string;
     procedure Assign(Source: TPersistent); override;
     constructor Create(aControl: TGroupedMatrix); override;
     destructor Destroy; override;
@@ -191,7 +192,7 @@ type
     function AddGroup(ParentGroup: TGroupedMatrixGroup;
       aCaption: TCaption; aValue: string = ''): TGroupedMatrixGroup;
     function AddValue(ParentGroup: TGroupedMatrixGroup;
-      ModesAsText, aType, AValue: string): TGroupedMatrixValue;
+      ModesAsText, aType, AValue, aID: string): TGroupedMatrixValue;
     property Modes: TGroupedMatrixModes read FModes;
     property Control: TGroupedMatrixControl read FControl;
   end;
@@ -573,12 +574,13 @@ begin
 end;
 
 function TGroupedMatrix.AddValue(ParentGroup: TGroupedMatrixGroup; ModesAsText,
-  aType, AValue: string): TGroupedMatrixValue;
+  aType, AValue, aID: string): TGroupedMatrixValue;
 begin
   Result:=TGroupedMatrixValue.Create(Self);
   Result.Typ:=aType;
   Result.Value:=AValue;
   Result.Modes.Text:=ModesAsText;
+  Result.ID:=aID;
   InternalAdd(ParentGroup,Result);
 end;
 
