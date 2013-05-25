@@ -366,11 +366,10 @@ type
     procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
     class procedure WSRegisterClass; override;
     procedure CreateWnd; override;
-    procedure DoCreateWnd; virtual;
     procedure DoChange; virtual;
+    procedure InitializeWnd; override;
     procedure Change; virtual;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure Loaded; override;
     procedure ReadState(Reader: TReader); override;
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure ShowControl(APage: TControl); override;
@@ -1129,7 +1128,6 @@ type
     procedure WSCreateColumns;
     procedure SetItem(const AIndex: Integer; const AValue: TListColumn);
   protected
-    function GetOwner: TPersistent; override;
   public
     constructor Create(AOwner: TCustomListView);
     destructor Destroy; override;

@@ -240,34 +240,21 @@ end;
   Creates the interface object.
  ------------------------------------------------------------------------------}
 procedure TCustomTabControl.CreateWnd;
-begin
-  {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn(['TCustomTabControl.CreateWnd ',dbgsName(Self),' HandleAllocated=',HandleAllocated]);
-  {$ENDIF}
-  inherited CreateWnd;
-  DoCreateWnd;
-end;
-
-{------------------------------------------------------------------------------
-  procedure TCustomTabControl.DoCreateWnd;
-
-  Creates the handles for the pages and updates the notebook handle.
- ------------------------------------------------------------------------------}
-procedure TCustomTabControl.DoCreateWnd;
 var
   i: Integer;
   lPage: TCustomPage;
 begin
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn(['TCustomTabControl.DoCreateWnd ',dbgsName(Self),' HandleAllocated=',HandleAllocated]);
+  DebugLn(['TCustomTabControl.CreateWnd ',dbgsName(Self),' HandleAllocated=',HandleAllocated]);
   {$ENDIF}
+  inherited CreateWnd;
   DisableAlign;
   try
     FAddingPages := True;
     for i := 0 to PageCount -1 do
     begin
       {$IFDEF NOTEBOOK_DEBUG}
-      DebugLn(['TCustomTabControl.DoCreateWnd ',dbgsName(Self),' Page.Caption=',Page[i].Caption,' pfAdded=',pfAdded in Page[i].Flags]);
+      DebugLn(['TCustomTabControl.CreateWnd ',dbgsName(Self),' Page.Caption=',Page[i].Caption,' pfAdded=',pfAdded in Page[i].Flags]);
       {$ENDIF}
       lPage := Page[i];
       AddRemovePageHandle(lPage);
