@@ -3655,6 +3655,7 @@ begin
   if FIfDefTree = nil then
     exit;
 
+  FIfDefTree.IncChangeStep; // force all validation to run
   ValidateMatches;
   SynEdit.Invalidate;
 end;
