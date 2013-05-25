@@ -332,6 +332,9 @@ type
     FNewUnitTemplate: string;
     FFileDialogFilter: string;
 
+    // Prevent repopulating Recent project files menu with example projects if it was already cleared up.
+    FAlreadyPopulatedRecentFiles : Boolean;
+
     function GetCompilerFilename: string;
     function GetCompilerMessagesFilename: string;
     function GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
@@ -1254,13 +1257,16 @@ begin
       LoadRecentList(XMLConfig,FRecentPackageFiles,
         Path+'Recent/PackageFiles/',rltFile);
 
+      FAlreadyPopulatedRecentFiles := XMLConfig.GetValue(Path+'Recent/AlreadyPopulated', false);
+
       // Add example projects to an empty project list if examples have write access
-      if FRecentProjectFiles.count=0 then begin
+      if (FRecentProjectFiles.count=0) and (not FAlreadyPopulatedRecentFiles) then begin
         AddRecentProjectInitial('examples/jpeg/',          'jpegexample.lpi');
         AddRecentProjectInitial('examples/sprites/',       'spriteexample.lpi');
         AddRecentProjectInitial('examples/openglcontrol/', 'openglcontrol_demo.lpi');
         AddRecentProjectInitial('examples/barchart/',      'chartdemo.lpi');
         AddRecentProjectInitial('examples/',               'hello.lpi');
+        FAlreadyPopulatedRecentFiles := True;
       end;
 
       // external tools
@@ -1589,6 +1595,8 @@ begin
         Path+'Recent/PackageFiles/Max',FMaxRecentPackageFiles);
       SaveRecentList(XMLConfig,FRecentPackageFiles,
         Path+'Recent/PackageFiles/');
+
+      XMLConfig.SetValue(Path+'Recent/AlreadyPopulated', FAlreadyPopulatedRecentFiles);
 
       // external tools
       fExternalTools.Save(FConfigStore,Path+'ExternalTools/');

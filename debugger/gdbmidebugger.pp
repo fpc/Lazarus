@@ -12079,7 +12079,7 @@ var
             if (i <= length(FTextValue)) and (FTextValue[i] in ['''', '#'])
             then
               FTextValue := MakePrintable(ProcessGDBResultText(
-                copy(FTextValue, i, length(FTextValue) - i + 1), [prNoLeadingTab, prKeepBackSlash]))
+                copy(FTextValue, i, length(FTextValue) - i + 1), [prNoLeadingTab]))
             else
             if Addr = 0
             then
@@ -12094,7 +12094,7 @@ var
             else begin
               AnExpression := GetClassName(Addr);
               if AnExpression = '' then AnExpression := '???';
-              FTextValue := 'class of ' + AnExpression + ' ' + FTextValue;
+              FTextValue := 'class of ' + AnExpression + ' ' + UnEscapeBackslashed(FTextValue);
             end;
           end;
           4,5,6,7: begin // 'wchar', 'widechar'
@@ -12107,7 +12107,7 @@ var
           8: begin // pointer
             if Addr = 0
             then FTextValue := 'nil';
-            FTextValue := PascalizePointer(FTextValue);
+            FTextValue := PascalizePointer(UnEscapeBackslashed(FTextValue));
           end;
         else
           if Addr = 0
@@ -12119,7 +12119,7 @@ var
               AnExpression[1] := 'T';
               if Length(AnExpression) > 1 then AnExpression[2] := UpperCase(AnExpression[2])[1];
             end;
-            FTextValue := PascalizePointer(FTextValue, AnExpression);
+            FTextValue := PascalizePointer(UnEscapeBackslashed(FTextValue), AnExpression);
           end;
 
         end;
@@ -12138,38 +12138,41 @@ var
 
         if (FTextValue <> '') and (FTypeInfo <> nil)
         then begin
-          FTextValue := '<' + FTypeInfo.TypeName + '> = ' + FTextValue;
+          FTextValue := '<' + FTypeInfo.TypeName + '> = ' +
+            ProcessGDBResultStruct(FTextValue, [prNoLeadingTab, prMakePrintAble, prStripAddressFromString]);
         end
         else
         if (e = 0) and (addr <> 0)
         then begin //No error ?
           AnExpression := GetInstanceClassName(Addr);
           if AnExpression = '' then AnExpression := '???'; //No instanced class found
-          FTextValue := 'instance of ' + AnExpression + ' ' + FTextValue;
+          FTextValue := 'instance of ' + AnExpression + ' ' +
+            ProcessGDBResultStruct(FTextValue, [prNoLeadingTab, prMakePrintAble, prStripAddressFromString]);
         end;
       end;
 
       skVariant: begin
-        FTextValue := GetVariantValue(FTextValue);
+        FTextValue := UnEscapeBackslashed(GetVariantValue(FTextValue));
       end;
       skRecord: begin
-        FTextValue := 'record ' + ResultInfo.TypeName + ' '+ FTextValue;
+        FTextValue := 'record ' + ResultInfo.TypeName + ' '+
+          ProcessGDBResultStruct(FTextValue, [prNoLeadingTab, prMakePrintAble, prStripAddressFromString]);
       end;
 
       skSimple: begin
         if ResultInfo.TypeName = 'CURRENCY' then
-          FTextValue := FormatCurrency(FTextValue)
+          FTextValue := FormatCurrency(UnEscapeBackslashed(FTextValue))
         else
         if ResultInfo.TypeName = 'ShortString' then
-          FTextValue := MakePrintable(ProcessGDBResultText(FTextValue, [prNoLeadingTab, prKeepBackSlash]))
+          FTextValue := MakePrintable(ProcessGDBResultText(FTextValue, [prNoLeadingTab]))
         else
         if (ResultInfo.TypeName = '&ShortString') then // should no longer happen
           FTextValue := GetStrValue('ShortString(%s)', [AnExpression]) // we have an address here, so we need to typecast
         else
         if saDynArray in ResultInfo.Attributes then  // may also be a string
-          FTextValue := PascalizePointer(FTextValue)
+          FTextValue := PascalizePointer(UnEscapeBackslashed(FTextValue))
         else
-          FTextValue := FTextValue;
+          FTextValue := UnEscapeBackslashed(FTextValue); // TODO: Check for string
       end;
     end;
 
@@ -12404,7 +12407,7 @@ var
           end;
           if FTypeInfo.HasExprEvaluatedAsText then begin
             FTextValue := FTypeInfo.ExprEvaluatedAsText;
-            FTextValue := DeleteEscapeChars(FTextValue); // TODO: move to FixUpResult / only if really needed
+            //FTextValue := DeleteEscapeChars(FTextValue); // TODO: move to FixUpResult / only if really needed
             FValidity := ddsValid;
             Result := True;
             FixUpResult(AnExpression, FTypeInfo);
@@ -12412,7 +12415,7 @@ var
             if FTypeInfo.HasStringExprEvaluatedAsText then begin
               s := FTextValue;
               FTextValue := FTypeInfo.StringExprEvaluatedAsText;
-              FTextValue := DeleteEscapeChars(FTextValue); // TODO: move to FixUpResult / only if really needed
+              //FTextValue := DeleteEscapeChars(FTextValue); // TODO: move to FixUpResult / only if really needed
               FixUpResult(AnExpression, FTypeInfo);
               FTextValue := 'PCHAR: ' + s + LineEnding + 'STRING: ' + FTextValue;
             end;
