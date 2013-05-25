@@ -65,7 +65,8 @@ implementation
 
 procedure TEditorCodetoolsOptionsFrame.AutoDelayTrackBarChange(Sender: TObject);
 begin
-  AutoDelayLabel.Caption := Format(dlgEdDelayInSec, [FormatFloat('0.00', AutoDelayTrackBar.Position/1000)]);
+  AutoDelayLabel.Caption :=
+    Format(dlgEdDelayInSec, [FormatFloat('0.00', AutoDelayTrackBar.Position/1000)]);
   CompletionDropDownDelayLabel.Caption :=
     Format(dlgEdDelayInSec, [FormatFloat('0.00', CompletionDropDownHintTrackBar.Position/1000)]);
 end;
