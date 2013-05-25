@@ -23,9 +23,10 @@ unit SynEditMarkupIfDef;
 interface
 
 uses
-  SysUtils, Classes, SynEditMiscClasses, SynHighlighterPas,
-  SynEditMarkupHighAll, SynEditHighlighterFoldBase, SynEditFoldedView, LazSynEditText,
-  SynEditMiscProcs, SynEditMarkup, SynEditTypes, LazClasses, LazLoggerBase, Graphics, LCLProc;
+  SysUtils, Classes, SynEditMiscClasses, SynHighlighterPas, SynEditMarkupHighAll,
+  SynEditHighlighterFoldBase, SynEditFoldedView, LazSynEditText, SynEditMiscProcs,
+  SynEditMarkup, SynEditTypes, SynEditPointClasses, LazClasses, LazLoggerBase, Graphics,
+  LCLProc;
 
 type
 
@@ -51,14 +52,16 @@ type
   { TSynMarkupHighIfDefEntry - Information about a single $IfDef/$Else/$EndIf }
 
   TSynMarkupIfDefNodeFlag = (
-    idnMultiLineTag                 // The "{$IFDEF ... }" wraps across lines.
+    idnMultiLineTag,                // The "{$IFDEF ... }" wraps across lines.
                                     // Only allowed on last node AND if FLine.FEndLineOffs > 0
+    idnStateByUser,
+    idnCommented
   );
   SynMarkupIfDefNodeFlags = set of TSynMarkupIfDefNodeFlag;
 
   TSynMarkupIfdefNodeType = (
     idnIfdef, idnElseIf, idnElse, idnEndIf,
-    idnCommentedIfdef // Keep Ifdef if commented
+    idnCommentedNode // Keep Ifdef if commented
   );
 
   TSynMarkupIfdefNodeStateEx  = (
@@ -94,6 +97,7 @@ type
 
     function GetNeedsRequesting: Boolean;
     function GetNodeState: TSynMarkupIfdefNodeStateEx;
+    function GetStateByUser: Boolean;
     procedure SetLine(AValue: TSynMarkupHighIfDefLinesNode);
 
     function  NodeStateForPeer(APeerType: TSynMarkupIfdefNodeType): TSynMarkupIfdefNodeStateEx;
@@ -108,12 +112,14 @@ type
     procedure ApplyNodeStateToLine(ARemove: Boolean = False);
     procedure RemoveNodeStateFromLine;
     procedure SetStartColumn(AValue: Integer);
+    procedure SetStateByUser(AValue: Boolean);
   protected
     procedure SetNodeType(ANodeType: TSynMarkupIfdefNodeType);
   public
     constructor Create;
     destructor Destroy; override;
     procedure ClearPeers;
+    procedure ClearAll;
   public
     procedure MakeDisabled;
     procedure MakeEnabled;
@@ -123,6 +129,7 @@ type
     function  IsRequested: Boolean;
     function  HasKnownState: Boolean; // Opposite of NeedsRequesting (except idnRequested) / BUT ignore NodeType
     property  NeedsRequesting: Boolean read GetNeedsRequesting;
+    property  StateByUser: Boolean read GetStateByUser write SetStateByUser; // only else(if) keep state set by user
 
     function  IsDisabled: Boolean;
     function  HasDisabledOpening: Boolean;
@@ -141,6 +148,7 @@ type
     function  NodeType: TSynMarkupIfdefNodeType;
     property  NodeState: TSynMarkupIfdefNodeStateEx read GetNodeState write SetNodeState;
     property  NodeFlags: SynMarkupIfDefNodeFlags read FNodeFlags write FNodeFlags;
+    function  UncommentedNodeType: TSynMarkupIfdefNodeType;
     property  Line: TSynMarkupHighIfDefLinesNode read FLine write SetLine;
     property  StartColumn: Integer read FStartColumn write SetStartColumn;// FStartColumn;
     property  EndColumn:   Integer read FEndColumn write FEndColumn;
@@ -431,6 +439,7 @@ type
     procedure DoBufferChanged(Sender: TObject);
     function  DoNodeStateRequest(Sender: TObject; LinePos, XStartPos: Integer;
       CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
+    procedure SetMarkOnlyOpeningNodes(AValue: Boolean);
 
     Procedure ValidateMatches;
     procedure DoTreeUnlocking(Sender: TObject);
@@ -446,6 +455,7 @@ type
     procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override; // 1 based
     procedure DoVisibleChanged(AVisible: Boolean); override;
     procedure SetLines(const AValue: TSynEditStrings); override;
+    procedure SetInvalidateLinesMethod(const AValue: TInvalidateLines); override;
   public
     constructor Create(ASynEdit : TSynEditBase);
     destructor Destroy; override;
@@ -470,7 +480,7 @@ type
     property Highlighter: TSynPasSyn read FHighlighter write SetHighlighter;
     property OnNodeStateRequest: TSynMarkupIfdefStateRequest read FOnNodeStateRequest write FOnNodeStateRequest;
 
-    property MarkOnlyOpeningNodes: Boolean read FMarkOnlyOpeningNodes write FMarkOnlyOpeningNodes;
+    property MarkOnlyOpeningNodes: Boolean read FMarkOnlyOpeningNodes write SetMarkOnlyOpeningNodes;
 
     property MarkupInfoDisabled:  TSynSelectedColor read GetMarkupInfoDisabled; // alias for MarkupInfo
     property MarkupInfoEnabled:  TSynSelectedColor read GetMarkupInfoEnabled;
@@ -875,6 +885,13 @@ end;
 function TSynMarkupHighIfDefEntry.NodeType: TSynMarkupIfdefNodeType;
 begin
   Result := FNodeType;
+  if idnCommented in NodeFlags then
+    Result := idnCommentedNode;
+end;
+
+function TSynMarkupHighIfDefEntry.UncommentedNodeType: TSynMarkupIfdefNodeType;
+begin
+  Result := NodeType;
 end;
 
 function TSynMarkupHighIfDefEntry.IsDisabled: Boolean;
@@ -927,6 +944,11 @@ begin
   Result := FNodeState
 end;
 
+function TSynMarkupHighIfDefEntry.GetStateByUser: Boolean;
+begin
+  Result := idnStateByUser in FNodeFlags;
+end;
+
 procedure TSynMarkupHighIfDefEntry.SetLine(AValue: TSynMarkupHighIfDefLinesNode);
 begin
   if FLine = AValue then Exit;
@@ -947,15 +969,22 @@ procedure TSynMarkupHighIfDefEntry.SetOpeningPeerNodeState(AValueOfPeer,
 begin
   RemoveNodeStateFromLine;
   FOpeningPeerNodeState := AValueOfPeer;
-  if NodeType in [idnElse, idnEndIf] then
-    SetNodeState(AValueForNode, True)
-  else
-  if NodeType = idnElseIf then
-    case AValueForNode of
-      idnEnabled, idnTempEnabled:   SetNodeState(idnUnknown, True); // Maybe keep?
-      idnDisabled, idnTempDisabled: SetNodeState(AValueForNode, True);
-      else         SetNodeState(idnUnknown, True);
-    end;
+
+  // ignore invalidated by LineFlags If StateByUser. Keep old (invalid) state until set again
+  if (not StateByUser) or (AValueForNode = idnUnknown)
+  then begin
+
+    if NodeType in [idnElse, idnEndIf] then
+      SetNodeState(AValueForNode, True)
+    else
+    if NodeType = idnElseIf then
+      case AValueForNode of
+        idnEnabled, idnTempEnabled:   SetNodeState(idnUnknown, True); // Maybe keep?
+        idnDisabled, idnTempDisabled: SetNodeState(AValueForNode, True);
+        else         SetNodeState(idnUnknown, True);
+      end;
+  end;
+
   ApplyNodeStateToLine;
 end;
 
@@ -981,7 +1010,7 @@ begin
         if (ClosingPeer <> nil) then
           ClosingPeer.SetOpeningPeerNodeState(NodeState, NodeStateForPeer(ClosingPeer.NodeType))
       end;
-    idnCommentedIfdef: Assert(AValue = idnUnknown, 'SetOpeningPeerNodeState for idnCommentedIfdef not possible');
+    idnCommentedNode: Assert(AValue = idnUnknown, 'SetOpeningPeerNodeState for idnCommentedIfdef not possible');
   end;
 end;
 
@@ -1142,6 +1171,14 @@ begin
   Assert(AValue>0, 'Startcol negative');
 end;
 
+procedure TSynMarkupHighIfDefEntry.SetStateByUser(AValue: Boolean);
+begin
+  if AValue then
+    Include(FNodeFlags, idnStateByUser)
+  else
+    Exclude(FNodeFlags, idnStateByUser);
+end;
+
 procedure TSynMarkupHighIfDefEntry.SetNodeType(
   ANodeType: TSynMarkupIfdefNodeType);
 begin
@@ -1198,6 +1235,7 @@ end;
 constructor TSynMarkupHighIfDefEntry.Create;
 begin
   FNodeState := idnUnknown;
+  FNodeFlags := [];
 end;
 
 destructor TSynMarkupHighIfDefEntry.Destroy;
@@ -1213,6 +1251,12 @@ procedure TSynMarkupHighIfDefEntry.ClearPeers;
 begin
   ClearPeerField(idpOpeningPeer);
   ClearPeerField(idpClosingPeer);
+end;
+
+procedure TSynMarkupHighIfDefEntry.ClearAll;
+begin
+  ClearPeers;
+  FNodeFlags := [];
 end;
 
 { TSynMarkupHighIfDefLinesNode }
@@ -2363,7 +2407,9 @@ var
     Result :=
        (i <= length(LineTextLower)) and
        (LineTextLower[i] = '{') and
-       (AEntry.NodeType in [idnIfdef, idnElseIf, idnCommentedIfdef]) and
+       ( (AEntry.NodeType in [idnIfdef, idnElseIf, idnCommentedNode]) or
+         (AEntry.StateByUser)
+       ) and
        (AEntry.HasKnownState) and
        ( ( (not (idnMultiLineTag in AEntry.NodeFlags)) and (LineTextLower[AEntry.EndColumn-1] = '}') ) or
          ( (idnMultiLineTag in AEntry.NodeFlags) and
@@ -2413,7 +2459,7 @@ var
             dec(i);
           end;
           inc(NodesAddedCnt);
-          e.SetNodeType(idnCommentedIfdef);
+          Include(e.FNodeFlags, idnCommented);
         end;
         inc(i);
       end;
@@ -2421,7 +2467,7 @@ var
       if i < ANodeForLine.EntryCount then begin
         Result := ANodeForLine.Entry[i];
         if ( (Result.NodeType = AType) or
-             ( (Result.NodeType = idnCommentedIfdef) and (AType in [idnIfdef, idnElseIf]) )
+             ( (Result.NodeType = idnCommentedNode) and (Result.UncommentedNodeType = AType) )
            ) and
            (Result.StartColumn = ALogStart) and
            (Result.EndColumn = ALogEnd) and
@@ -2430,6 +2476,7 @@ var
         then begin
           // Does match exactly, keep as is
           //DebugLn(['++++ KEEPING NODE ++++ ', ALine, ' ', dbgs(AType), ': ', ALogStart, ' - ', ALogEnd]);
+          Exclude(Result.FNodeFlags, idnCommented);
           if not LineNeedsReq then
             LineNeedsReq := Result.NeedsRequesting;
           if i > NodesAddedCnt then begin
@@ -2453,7 +2500,7 @@ var
           Result := ANodeForLine.Entry[NodesAddedCnt]
         else
           Result := ANodeForLine.AddEntry(NodesAddedCnt);
-        Result.ClearPeers;
+        Result.ClearAll;
         Result.SetNodeType(AType);
         LineNeedsReq := True;
       end;
@@ -2573,7 +2620,7 @@ begin
     i := ANodeForLine.EntryCount - 1;
     while i >= NodesAddedCnt do begin
       if IsCommentedIfDef(ANodeForLine.Entry[i]) then begin
-        ANodeForLine.Entry[i].SetNodeType(idnCommentedIfdef);
+        Include(ANodeForLine.Entry[i].FNodeFlags, idnCommented);
         inc(NodesAddedCnt);
       end
       else begin
@@ -2823,19 +2870,20 @@ begin
   until (i = 0) or (e <> nil);
 
   //assert(e <> nil, 'SetNodeState did not find a node (no matching entry)');
-if (e = nil) then DebugLn([ 'SetNodeState did not find a matching node  ', ALinePos, '/', 'AstartPos',AstartPos, ' ', dbgs(AState)]);
+  if (e = nil) then DebugLn([ 'SetNodeState did not find a matching node  ', ALinePos, '/', 'AstartPos',AstartPos, ' ', dbgs(AState)]);
   //assert(e.NodeType in [idnIfdef, idnElseIf], 'SetNodeState did not find a node (e.NodeType <> idnIfdef)');
-if (e<> nil) and not(e.NodeType in [idnIfdef, idnElseIf]) then DebugLn([ 'SetNodeState did not find a node of useful type  ', ALinePos, '/', 'AstartPos',AstartPos, ' ', dbgs(AState), ' ', dbgs(e.NodeType )]);
-  if (e = nil) or not(e.NodeType in [idnIfdef, idnElseIf]) then
+  //if (e = nil) or not(e.NodeType in [idnIfdef, idnElseIf]) then
+  if (e = nil) then
     exit;
 
   if e.NodeState <> AState then begin
     IncChangeStep;
     if FLockTreeCount = 0 then
       FNotifyLists[itnChanged].CallNotifyEvents(Self);
-      DebugLn([ 'SetNodeState ', ALinePos, '/', 'AstartPos', AstartPos, ' ', dbgs(AState)]);
+      //DebugLn([ 'SetNodeState ', ALinePos, '/', 'AstartPos', AstartPos, ' ', dbgs(AState)]);
   end;
   e.NodeState := AState;
+  e.StateByUser := True; // ignored by ifdef
 
   dec(i); // Assume the node, just set does not need requesting
   while (i >= 0) and (not LineNeedReq) do begin
@@ -3008,14 +3056,19 @@ var
   function IndexOfLastNodeAtLevel(ALevel: Integer; ANode: TSynMarkupHighIfDefLinesNode;
     ADownFromIndex: Integer; var ADownFromLevel: Integer): Integer;
   begin
-    Result := ADownFromIndex + 1;
+    Result := ADownFromIndex;
     repeat
-      dec(Result);
       case ANode.Entry[Result].NodeType of
         idnIfdef: dec(ADownFromLevel);
         idnEndIf: inc(ADownFromLevel);
+        idnElse, idnElseIf:
+          if ADownFromLevel <= ALevel + 1 then
+            dec(ADownFromLevel);
       end;
-    until (Result < 0) or (ADownFromLevel <= ALevel);
+      if (ADownFromLevel <= ALevel) then
+        exit;
+      dec(Result);
+    until (Result < 0);
   end;
 
   function GetValidClosingPeer(AEntry: TSynMarkupHighIfDefEntry): TSynMarkupHighIfDefEntry;
@@ -3321,7 +3374,7 @@ XXXCurTree := FIfDefTree; try
   ScanDisNode    := MarkupInfoNodeDisabled.IsEnabled;
   ScanEnaNode    := MarkupInfoNodeEnabled.IsEnabled;
   ScanTmpDisNode := MarkupInfoTempNodeDisabled.IsEnabled;
-  ScanTmpEnaNode := MarkupInfoTempNodeDisabled.IsEnabled;
+  ScanTmpEnaNode := MarkupInfoTempNodeEnabled.IsEnabled;
   ScanNodes := ScanDisNode or ScanEnaNode or ScanTmpDisNode or ScanTmpEnaNode;
 
   StartMatchScan;
@@ -3646,6 +3699,14 @@ begin
   //DebugLn(['STATE REQUEST ', LinePos, ' ', XStartPos, ' : ', dbgs(Result)]);
 end;
 
+procedure TSynEditMarkupIfDef.SetMarkOnlyOpeningNodes(AValue: Boolean);
+begin
+  if FMarkOnlyOpeningNodes = AValue then Exit;
+  FMarkOnlyOpeningNodes := AValue;
+  if FMarkupNodes.HasEnabledMarkup then
+    DoMarkupChanged(nil);
+end;
+
 procedure TSynEditMarkupIfDef.SetLines(const AValue: TSynEditStrings);
 begin
   if Lines <> nil then begin
@@ -3664,6 +3725,16 @@ begin
     //FLines.AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);
 //    FLines.AddEditHandler(@DoLinesEdited);
   end;
+end;
+
+procedure TSynEditMarkupIfDef.SetInvalidateLinesMethod(const AValue: TInvalidateLines);
+begin
+  inherited SetInvalidateLinesMethod(AValue);
+  FMarkupNodes.InvalidateLinesMethod := AValue;
+  FMarkupEnabled.InvalidateLinesMethod := AValue;
+  FMarkupTemp.InvalidateLinesMethod := AValue;
+  FMarkupEnabledTemp.InvalidateLinesMethod := AValue;
+
 end;
 
 constructor TSynEditMarkupIfDef.Create(ASynEdit: TSynEditBase);
@@ -3688,6 +3759,8 @@ begin
 
   IncPaintLock;
 
+  FMarkOnlyOpeningNodes := False;
+
   MarkupInfo.Clear;
   MarkupInfo.Foreground := clLtGray;
   MarkupInfo.ForeAlpha := 180;
@@ -3697,18 +3770,6 @@ begin
   MarkupInfoTempDisabled.Foreground := clLtGray;
   MarkupInfoTempDisabled.ForeAlpha := 140;
   MarkupInfoTempDisabled.ForePriority := 99999;
-
-  //MarkupInfoEnabled.FrameColor := clGreen;
-  //MarkupInfoEnabled.FrameEdges := sfeBottom;
-  //MarkupInfoEnabled.FrameStyle := slsDotted;
-  //MarkupInfoEnabled.FrameAlpha := 140;
-  //MarkupInfoEnabled.FramePriority := 99999+1;
-  //
-  //MarkupInfoNodeEnabled.FrameColor := clGreen;
-  //MarkupInfoNodeEnabled.FramePriority := 99999+2;
-  //MarkupInfoNodeDisabled.FrameColor := clRed;
-  //MarkupInfoNodeDisabled.FramePriority := 99999+2;
-
 
   FMarkupEnabled.MarkupInfo.OnChange := @MarkupChanged;
   FMarkupTemp.MarkupInfo.OnChange := @MarkupChanged;
