@@ -101,8 +101,8 @@ type
      ahaGutter,            ahaRightMargin,        ahaSpecialVisibleChars,
      ahaTopInfoHint
 {$IFDEF WithSynMarkupIfDef}
-     ,       ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefNodeInactive,
-     ahaIfDefNodeActive
+     ,       ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive,
+     ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive
 {$ENDIF}
      );
 
@@ -115,7 +115,7 @@ type
   );
 
   TColorSchemeAttributeFeature =
-    ( hafBackColor, hafForeColor, hafFrameColor, hafAlpha,
+    ( hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior,
       hafStyle, hafStyleMask,
       hafFrameStyle, hafFrameEdges
     );
@@ -148,8 +148,8 @@ const
     '',  // ahaSpecialVisibleChars
     ''  // ahaTopInfoHint
 {$IFDEF WithSynMarkupIfDef}
-,    '', '', '',  // ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefNodeInactive,
-     '' //ahaIfDefNodeActive
+,    '', '', '',  // ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive
+     '', '', ''  // ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive
 {$ENDIF}
   );
 
@@ -189,49 +189,53 @@ const
     ,
     { ahaIfDefBlockInactive }  agnIfDef,
     { ahaIfDefBlockActive }    agnIfDef,
+    { ahaIfDefBlockTmpActive } agnIfDef,
     { ahaIfDefNodeInactive }   agnIfDef,
-    { ahaIfDefNodeActive }     agnIfDef
+    { ahaIfDefNodeActive }     agnIfDef,
+    { ahaIfDefNodeTmpActive }  agnIfDef
 {$ENDIF}
   );
   ahaSupportedFeatures: array[TAdditionalHilightAttribute] of TColorSchemeAttributeFeatures =
   (
-    { ahaNone }               [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaTextBlock }          [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaExecutionPoint }     [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaEnabledBreakpoint }  [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaDisabledBreakpoint } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaInvalidBreakpoint }  [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaUnknownBreakpoint }  [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaErrorLine }          [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaIncrementalSearch }  [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaHighlightAll }       [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaBracketMatch }       [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaMouseLink }          [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaNone }               [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaTextBlock }          [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaExecutionPoint }     [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaEnabledBreakpoint }  [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaDisabledBreakpoint } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaInvalidBreakpoint }  [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaUnknownBreakpoint }  [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaErrorLine }          [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaIncrementalSearch }  [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaHighlightAll }       [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaBracketMatch }       [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaMouseLink }          [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaLineNumber }         [hafBackColor, hafForeColor, hafFrameColor, hafStyle],
-    { ahaLineHighlight }      [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaLineHighlight }      [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaModifiedLine }       [hafBackColor, hafForeColor, hafFrameColor],
     { ahaCodeFoldingTree }    [hafBackColor, hafForeColor, hafFrameColor],
-    { ahaHighlightWord }      [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaFoldedCode }         [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaWordGroup }          [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaTemplateEditCur }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaTemplateEditSync }   [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaTemplateEditOther }  [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaSyncroEditCur }      [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaSyncroEditSync }     [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaSyncroEditOther }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaSyncroEditArea }     [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaHighlightWord }      [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaFoldedCode }         [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaWordGroup }          [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaTemplateEditCur }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaTemplateEditSync }   [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaTemplateEditOther }  [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaSyncroEditCur }      [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaSyncroEditSync }     [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaSyncroEditOther }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaSyncroEditArea }     [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaGutterSeparator }    [hafBackColor, hafForeColor],
     { ahaGutter }             [hafBackColor],
     { ahaRightMargin}         [hafForeColor],
-    { ahaSpecialVisibleChars }[hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaTopInfoHint }        [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
+    { ahaSpecialVisibleChars }[hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaTopInfoHint }        [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
 {$IFDEF WithSynMarkupIfDef}
     ,
-    { ahaIfDefBlockInactive } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaIfDefBlockActive }   [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaIfDefNodeInactive }  [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaIfDefNodeActive }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
+    { ahaIfDefBlockInactive } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaIfDefBlockActive }   [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaIfDefBlockTmpActive }[hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaIfDefNodeInactive }  [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaIfDefNodeActive }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaIfDefNodeTmpActive } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
 {$ENDIF}
   );
 
@@ -1987,7 +1991,7 @@ begin
 
   inherited Create;
   FColorAttr := TColorSchemeAttribute.Create(nil, '');
-  FColorAttr.Features := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask];
+  FColorAttr.Features := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior,hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask];
   FColorAttr.Group := agnText;
   FKeyAddSelectSmart := True;
 end;
@@ -2503,8 +2507,10 @@ begin
 {$IFDEF WithSynMarkupIfDef}
   AdditionalHighlightAttributes[ahaIfDefBlockInactive]  := dlgIfDefBlockInactive;
   AdditionalHighlightAttributes[ahaIfDefBlockActive]    := dlgIfDefBlockActive;
+  AdditionalHighlightAttributes[ahaIfDefBlockTmpActive] := dlgIfDefBlockTmpActive;
   AdditionalHighlightAttributes[ahaIfDefNodeInactive]   := dlgIfDefNodeInactive;
   AdditionalHighlightAttributes[ahaIfDefNodeActive]     := dlgIfDefNodeActive;
+  AdditionalHighlightAttributes[ahaIfDefNodeTmpActive]  := dlgIfDefNodeTmpActive;
   AdditionalHighlightGroupNames[agnIfDef]        := dlgAddHiAttrGroupIfDef;
 {$ENDIF}
 
@@ -5678,7 +5684,7 @@ begin
 
   FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle, hafFrameEdges];
   if Src is TSynHighlighterAttributesModifier then
-    FFeatures := FFeatures + [hafAlpha, hafStyleMask];
+    FFeatures := FFeatures + [hafAlpha, hafPrior,hafStyleMask];
 
   if Src is TColorSchemeAttribute then begin
     FGroup := TColorSchemeAttribute(Src).FGroup;
@@ -6184,12 +6190,18 @@ begin
         if AttributeByEnum[ahaIfDefBlockActive] <> nil
           then AttributeByEnum[ahaIfDefBlockActive].ApplyTo(MarkupIfDef.MarkupInfoEnabled )
           else MarkupIfDef.MarkupInfoEnabled.Clear;
+        if AttributeByEnum[ahaIfDefBlockTmpActive] <> nil
+          then AttributeByEnum[ahaIfDefBlockTmpActive].ApplyTo(MarkupIfDef.MarkupInfoTempEnabled )
+          else MarkupIfDef.MarkupInfoTempEnabled.Clear;
         if AttributeByEnum[ahaIfDefNodeInactive] <> nil
           then AttributeByEnum[ahaIfDefNodeInactive].ApplyTo(MarkupIfDef.MarkupInfoNodeDisabled )
           else MarkupIfDef.MarkupInfoNodeDisabled.Clear;
         if AttributeByEnum[ahaIfDefNodeActive] <> nil
           then AttributeByEnum[ahaIfDefNodeActive].ApplyTo(MarkupIfDef.MarkupInfoNodeEnabled )
           else MarkupIfDef.MarkupInfoNodeEnabled.Clear;
+        if AttributeByEnum[ahaIfDefNodeTmpActive] <> nil
+          then AttributeByEnum[ahaIfDefNodeTmpActive].ApplyTo(MarkupIfDef.MarkupInfoTempNodeEnabled )
+          else MarkupIfDef.MarkupInfoTempNodeEnabled.Clear;
       end;
     end;
 {$ENDIF}

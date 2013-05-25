@@ -1834,8 +1834,10 @@ resourcestring
   dlgTopInfoHint                  = 'Current Class/Proc Hint';
   dlgIfDefBlockInactive           = 'Inactive $IFDEF code';
   dlgIfDefBlockActive             = 'Active $IFDEF code';
+  dlgIfDefBlockTmpActive          = 'Included mixed state $IFDEF code';
   dlgIfDefNodeInactive            = 'Inactive $IFDEF node';
   dlgIfDefNodeActive              = 'Active $IFDEF node';
+  dlgIfDefNodeTmpActive           = 'Included mixed state $IFDEF node';
 
   dlgAddHiAttrGroupDefault  = 'Global';
   dlgAddHiAttrGroupText     = 'Text';
