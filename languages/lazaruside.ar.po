@@ -237,17 +237,17 @@ msgstr "الزّر الأوسط"
 #: lazarusidestrconsts.dlfmousesimpletextsectpagebtn
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagebtn"
 msgid "Middle"
-msgstr ""
+msgstr "الأوسط"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpageextra1
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageextra1"
 msgid "Extra 1"
-msgstr "إضافي 1"
+msgstr "الإضافي 1"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpageextra2
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageextra2"
 msgid "Extra 2"
-msgstr "إضافي 2"
+msgstr "الإضافي 2"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmod
 msgid "Left 1"
@@ -255,7 +255,7 @@ msgstr "الأيسر 1"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmulti
 msgid "Left 2"
-msgstr "الأيسر 2"
+msgstr "الﻷيسر 2"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpageright
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageright"
@@ -418,6 +418,11 @@ msgstr ""
 #: lazarusidestrconsts.dlgaddhiattrgroupgutter
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
 msgid "Gutter"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroupifdef
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupifdef"
+msgid "IfDef"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrgroupline
@@ -612,7 +617,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgautosave
 msgid "Auto Save"
-msgstr ""
+msgstr "حفظ تلقائيّ"
 
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
@@ -710,7 +715,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgccoresults
 msgid "Results"
-msgstr ""
+msgstr "النّتائج"
 
 #: lazarusidestrconsts.dlgccotest
 msgctxt "lazarusidestrconsts.dlgccotest"
@@ -719,15 +724,15 @@ msgstr "إختبار"
 
 #: lazarusidestrconsts.dlgccotestcheckingcompiler
 msgid "Test: Checking compiler ..."
-msgstr ""
+msgstr "إختبار التّحقّق من المترجم ..."
 
 #: lazarusidestrconsts.dlgccotestcheckingcompilerconfig
 msgid "Test: Checking compiler configuration ..."
-msgstr ""
+msgstr "إختبار التّحقّق من خيارات المترجم"
 
 #: lazarusidestrconsts.dlgccotestcheckingfpcconfigs
 msgid "Test: Checking fpc configs ..."
-msgstr ""
+msgstr "إختبار التّحقّق من خيارات المترجم"
 
 #: lazarusidestrconsts.dlgccotestcompilerdate
 msgid "Test: Checking compiler date ..."
@@ -822,6 +827,7 @@ msgid "C style macros (global)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcoansistr
+msgctxt "lazarusidestrconsts.dlgcoansistr"
 msgid "Use Ansistrings"
 msgstr ""
 
@@ -879,16 +885,16 @@ msgstr ""
 #: lazarusidestrconsts.dlgcodebugging
 msgctxt "lazarusidestrconsts.dlgcodebugging"
 msgid "Debugging info"
-msgstr ""
+msgstr "معلومات التّنقيح"
 
 #: lazarusidestrconsts.dlgcodebugging2
 msgctxt "lazarusidestrconsts.dlgcodebugging2"
 msgid "Debugging"
-msgstr ""
+msgstr "بصدد التّنقيح"
 
 #: lazarusidestrconsts.dlgcodebugpath
 msgid "Debugger path addition (none):"
-msgstr ""
+msgstr "إضافة لمسار المنقّح (لا شيئ):"
 
 #: lazarusidestrconsts.dlgcodecreation
 msgid "Code Creation"
@@ -925,7 +931,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcofast
 msgid "Faster code"
-msgstr ""
+msgstr "أوامر أسرع"
 
 #: lazarusidestrconsts.dlgcogdb
 msgid "Generate debugging info for GDB (slower / increases exe-size)"
@@ -954,7 +960,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcolinking
 msgid "Linking"
-msgstr ""
+msgstr "الرّبط"
 
 #: lazarusidestrconsts.dlgcoloadsave
 msgid "Load/Save"
@@ -970,7 +976,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcolornotmodified
 msgid "Not modified"
-msgstr ""
+msgstr "غير متغيّر"
 
 #: lazarusidestrconsts.dlgcolors
 msgctxt "lazarusidestrconsts.dlgcolors"
@@ -1076,7 +1082,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgconormal
 msgid "Normal code"
-msgstr ""
+msgstr "أوامر عاديّة"
 
 #: lazarusidestrconsts.dlgcoopts
 msgid "Options: "
@@ -1377,7 +1383,7 @@ msgstr "غيّر"
 
 #: lazarusidestrconsts.dlgedfiles
 msgid "Editor Files"
-msgstr ""
+msgstr "الجذاذات الّتي بصدد التّحرير"
 
 #: lazarusidestrconsts.dlgedidcomlet
 msgctxt "lazarusidestrconsts.dlgedidcomlet"
@@ -1466,16 +1472,16 @@ msgstr "مائل"
 
 #: lazarusidestrconsts.dlgeditorfont
 msgid "Editor font"
-msgstr ""
+msgstr "خطّ المحرّر"
 
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
-msgstr ""
+msgstr "حجم خطّ المحرّر"
 
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
 msgid "Editor options"
-msgstr ""
+msgstr "خيارات المحرّر"
 
 #: lazarusidestrconsts.dlgeditschemdefaults
 msgid "Scheme globals"
@@ -1483,7 +1489,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgedmisc
 msgid "Misc"
-msgstr ""
+msgstr "متفرّقات"
 
 #: lazarusidestrconsts.dlgednoerr
 msgid "No errors in key mapping found."
@@ -1527,16 +1533,16 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
-msgstr ""
+msgstr "الجذاذات"
 
 #: lazarusidestrconsts.dlgenvgrid
 msgid "Grid"
-msgstr ""
+msgstr "الشّبكة"
 
 #: lazarusidestrconsts.dlgenvlanguage
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
-msgstr ""
+msgstr "اللّغة"
 
 #: lazarusidestrconsts.dlgenvlguidelines
 msgid "Guide lines"
@@ -1545,7 +1551,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgenvmisc
 msgctxt "lazarusidestrconsts.dlgenvmisc"
 msgid "Miscellaneous"
-msgstr ""
+msgstr "متفرّقات"
 
 #: lazarusidestrconsts.dlgenvnone
 msgctxt "lazarusidestrconsts.dlgenvnone"
@@ -1554,7 +1560,7 @@ msgstr "لا شيء"
 
 #: lazarusidestrconsts.dlgenvotherfiles
 msgid "Other Files"
-msgstr "الجذاذات ت الأخرى"
+msgstr "الجذاذت الأخرى"
 
 #: lazarusidestrconsts.dlgenvproject
 msgid "Tabs for project"
@@ -1770,7 +1776,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgfrmeditor
 msgid "Form Editor"
-msgstr ""
+msgstr "محرّر الأشكال"
 
 #: lazarusidestrconsts.dlgfrombeginning
 msgid "From b&eginning"
@@ -1828,25 +1834,25 @@ msgstr ""
 #: lazarusidestrconsts.dlggroupcodeexplorer
 msgctxt "lazarusidestrconsts.dlggroupcodeexplorer"
 msgid "Code Explorer"
-msgstr ""
+msgstr "كاشف الأوامر"
 
 #: lazarusidestrconsts.dlggroupcodetools
 msgid "Codetools"
-msgstr ""
+msgstr "أدوات الأوامر"
 
 #: lazarusidestrconsts.dlggroupdebugger
 msgctxt "lazarusidestrconsts.dlggroupdebugger"
 msgid "Debugger"
-msgstr ""
+msgstr "المنقّح"
 
 #: lazarusidestrconsts.dlggroupeditor
 msgid "Editor"
-msgstr ""
+msgstr "المحرّر"
 
 #: lazarusidestrconsts.dlggroupenvironment
 msgctxt "lazarusidestrconsts.dlggroupenvironment"
 msgid "Environment"
-msgstr ""
+msgstr "البيئة"
 
 #: lazarusidestrconsts.dlggroupundo
 msgid "Group Undo"
@@ -1958,8 +1964,20 @@ msgstr ""
 msgid "IDE Options"
 msgstr ""
 
+#: lazarusidestrconsts.dlgifdefblockactive
+msgid "Active $IFDEF code"
+msgstr ""
+
 #: lazarusidestrconsts.dlgifdefblockinactive
 msgid "Inactive $IFDEF code"
+msgstr ""
+
+#: lazarusidestrconsts.dlgifdefnodeactive
+msgid "Active $IFDEF node"
+msgstr ""
+
+#: lazarusidestrconsts.dlgifdefnodeinactive
+msgid "Inactive $IFDEF node"
 msgstr ""
 
 #: lazarusidestrconsts.dlgignoreverb
@@ -2057,7 +2075,7 @@ msgstr ""
 #: lazarusidestrconsts.dlglang
 msgctxt "lazarusidestrconsts.dlglang"
 msgid "Language"
-msgstr ""
+msgstr "اللّغة"
 
 #: lazarusidestrconsts.dlglast
 msgid "Last (i.e. at end of source)"
@@ -2295,7 +2313,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgmousefoldbuttonmiddle
 msgctxt "lazarusidestrconsts.dlgmousefoldbuttonmiddle"
 msgid "Middle"
-msgstr ""
+msgstr "الأوسط"
 
 #: lazarusidestrconsts.dlgmousefoldbuttonright
 msgctxt "lazarusidestrconsts.dlgmousefoldbuttonright"
@@ -2394,7 +2412,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptbtnmiddle
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnmiddle"
 msgid "Middle"
-msgstr ""
+msgstr "الأوسط"
 
 #: lazarusidestrconsts.dlgmouseoptbtnmoddef
 msgid "Make Fallback"
@@ -2683,7 +2701,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgoimiscellaneous
 msgctxt "lazarusidestrconsts.dlgoimiscellaneous"
 msgid "Miscellaneous"
-msgstr ""
+msgstr "متفرّقات"
 
 #: lazarusidestrconsts.dlgoioptions
 msgctxt "lazarusidestrconsts.dlgoioptions"
@@ -2816,7 +2834,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"
-msgstr ""
+msgstr "متفرّقات"
 
 #: lazarusidestrconsts.dlgpooutputsettings
 msgid "Output settings"
@@ -2965,7 +2983,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgrunoenvironment
 msgctxt "lazarusidestrconsts.dlgrunoenvironment"
 msgid "Environment"
-msgstr ""
+msgstr "البيئة"
 
 #: lazarusidestrconsts.dlgrunolocal
 msgid "Local"
@@ -3196,7 +3214,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgsrcedit
 msgctxt "lazarusidestrconsts.dlgsrcedit"
 msgid "Source Editor"
-msgstr ""
+msgstr "محرّر الأوامر"
 
 #: lazarusidestrconsts.dlgsrorigin
 msgid "Origin"
@@ -3341,11 +3359,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgundoaftersave
 msgid "Undo after save"
-msgstr ""
+msgstr "تراجع بعد الحفظ"
 
 #: lazarusidestrconsts.dlgundogroupoptions
 msgid "Undo / Redo"
-msgstr ""
+msgstr "تراجع / كرّر"
 
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
@@ -3370,7 +3388,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgusecodefolding
 msgid "Code Folding"
-msgstr ""
+msgstr "طيّ الأوامر"
 
 #: lazarusidestrconsts.dlgusecustomconfig
 msgid "Use additional compiler config file"
@@ -4499,7 +4517,7 @@ msgstr "إمسح"
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
-msgstr ""
+msgstr "أبدل ..."
 
 #: lazarusidestrconsts.lisbtnenabled
 msgctxt "lazarusidestrconsts.lisbtnenabled"
@@ -4508,7 +4526,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
-msgstr ""
+msgstr "إبحث ..."
 
 #: lazarusidestrconsts.lisbtnquit
 #, fuzzy
@@ -4524,7 +4542,7 @@ msgstr "إمح"
 
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
-msgstr ""
+msgstr "أبدل"
 
 #: lazarusidestrconsts.lisbuild
 msgctxt "lazarusidestrconsts.lisbuild"
@@ -5136,7 +5154,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lischangeswerenotsaved
 msgid "Changes were not saved"
-msgstr ""
+msgstr "لم يقع حفظ التّغييرات"
 
 #: lazarusidestrconsts.lischangetounix
 msgid "Change to Unix /"
@@ -5312,11 +5330,11 @@ msgstr "نضّف"
 
 #: lazarusidestrconsts.liscldircleandirectory
 msgid "Clean Directory"
-msgstr "نضّف الملفّ"
+msgstr "نظّف الملفّ"
 
 #: lazarusidestrconsts.liscldircleansubdirectories
 msgid "Clean sub directories"
-msgstr "نضّف الملفّات الفرعيّة"
+msgstr "نظّف الملفّات الفرعيّة"
 
 #: lazarusidestrconsts.liscldirkeepalltextfiles
 msgid "Keep all text files"
@@ -5463,17 +5481,17 @@ msgstr ""
 
 #: lazarusidestrconsts.liscode
 msgid "Code"
-msgstr ""
+msgstr "الأوامر"
 
 #: lazarusidestrconsts.liscodebrowser
 msgctxt "lazarusidestrconsts.liscodebrowser"
 msgid "Code Browser"
-msgstr ""
+msgstr "عارض الأوامر"
 
 #: lazarusidestrconsts.liscodeexplorer
 msgctxt "lazarusidestrconsts.liscodeexplorer"
 msgid "Code Explorer"
-msgstr ""
+msgstr "كاشف الأوامر"
 
 #: lazarusidestrconsts.liscodefault
 msgid "default (%s)"
@@ -5489,12 +5507,12 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodehelpaddpathbutton
 msgid "Add path"
-msgstr ""
+msgstr "أضف مسارا"
 
 #: lazarusidestrconsts.liscodehelpbrowseexamplebutton
 msgctxt "lazarusidestrconsts.liscodehelpbrowseexamplebutton"
 msgid "Browse"
-msgstr ""
+msgstr "إعرض"
 
 #: lazarusidestrconsts.liscodehelpconfirmreplace
 msgid "Confirm replace"
@@ -5510,21 +5528,21 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodehelpdeletepathbutton
 msgid "Remove path"
-msgstr ""
+msgstr "إحذف مسارا"
 
 #: lazarusidestrconsts.liscodehelpdescrtag
 msgctxt "lazarusidestrconsts.liscodehelpdescrtag"
 msgid "Description"
-msgstr ""
+msgstr "الوصف"
 
 #: lazarusidestrconsts.liscodehelperrorstag
 msgctxt "lazarusidestrconsts.liscodehelperrorstag"
 msgid "Errors"
-msgstr ""
+msgstr "الأخطاء"
 
 #: lazarusidestrconsts.liscodehelpexampletag
 msgid "Example"
-msgstr ""
+msgstr "مثال"
 
 #: lazarusidestrconsts.liscodehelpgroupbox
 msgid "FPDoc settings"
@@ -5570,7 +5588,7 @@ msgstr ""
 #: lazarusidestrconsts.liscodehelpmainformcaption
 msgctxt "lazarusidestrconsts.liscodehelpmainformcaption"
 msgid "FPDoc Editor"
-msgstr ""
+msgstr "محرّر أوامر FPDoc"
 
 #: lazarusidestrconsts.liscodehelpnodocumentation
 msgctxt "lazarusidestrconsts.liscodehelpnodocumentation"
@@ -5769,7 +5787,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsexitwithoutsave
 msgid "Exit without Save"
-msgstr ""
+msgstr "أخرج من البرنامج دون حفظ"
 
 #: lazarusidestrconsts.liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
@@ -5780,6 +5798,7 @@ msgid "If"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsifdef
+msgctxt "lazarusidestrconsts.liscodetoolsdefsifdef"
 msgid "IfDef"
 msgstr ""
 
@@ -5955,7 +5974,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefssaveandexit
 msgid "Save and Exit"
-msgstr ""
+msgstr "إحفظ ثمّ أخرج من البرنامج"
 
 #: lazarusidestrconsts.liscodetoolsdefsselectednode
 msgid "Selected Node:"
@@ -7036,7 +7055,7 @@ msgstr ""
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
-msgstr ""
+msgstr "المنقّح"
 
 #: lazarusidestrconsts.lisdebuggererror
 msgid "Debugger error"
@@ -7089,7 +7108,7 @@ msgstr ""
 #: lazarusidestrconsts.lisdebugoptionsfrmdebugger
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmdebugger"
 msgid "Debugger"
-msgstr ""
+msgstr "المنقّح"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
@@ -7414,7 +7433,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
-msgstr ""
+msgstr "إفتح الفروق في المحرّر"
 
 #: lazarusidestrconsts.lisdiffdlgtext1
 msgid "Text1"
@@ -7574,11 +7593,11 @@ msgstr ""
 #: lazarusidestrconsts.lisdlgsave
 msgctxt "lazarusidestrconsts.lisdlgsave"
 msgid "Save ..."
-msgstr ""
+msgstr "إحفظ ..."
 
 #: lazarusidestrconsts.lisdocumentationeditor
 msgid "Documentation Editor"
-msgstr ""
+msgstr "محرّر المعونة"
 
 #: lazarusidestrconsts.lisdoesnotexists
 msgid "%s does not exists: %s"
@@ -7586,19 +7605,19 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdonotchange
 msgid "Do not change"
-msgstr ""
+msgstr "لا تغيّر"
 
 #: lazarusidestrconsts.lisdonotclosetheide
 msgid "Do not close the IDE"
-msgstr ""
+msgstr "لا تخرج من البرنامج"
 
 #: lazarusidestrconsts.lisdonotclosetheproject
 msgid "Do not close the project"
-msgstr ""
+msgstr "لا تغلق المشروع"
 
 #: lazarusidestrconsts.lisdonotcompiledependencies
 msgid "do not compile dependencies"
-msgstr ""
+msgstr "ولا تترجم الوحدات المعتمدة"
 
 #: lazarusidestrconsts.lisdonotinstall
 msgid "Do not install"
@@ -8143,7 +8162,7 @@ msgstr ""
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
-msgstr ""
+msgstr "الأخطاء"
 
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
@@ -8290,7 +8309,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
-msgstr ""
+msgstr "حوّل إلى HTML"
 
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
@@ -8310,20 +8329,20 @@ msgstr ""
 
 #: lazarusidestrconsts.lisextract
 msgid "Extract"
-msgstr ""
+msgstr "إستخرج"
 
 #: lazarusidestrconsts.lisextractprocedure
 msgctxt "lazarusidestrconsts.lisextractprocedure"
 msgid "Extract Procedure"
-msgstr ""
+msgstr "إستخرج الطّريقة"
 
 #: lazarusidestrconsts.lisexttoolexternaltools
 msgid "External Tools"
-msgstr ""
+msgstr "الﻷدوات الخارجيّة"
 
 #: lazarusidestrconsts.lisexttoolfailedtoruntool
 msgid "Failed to run tool"
-msgstr ""
+msgstr "تشغيل الأداة أخفق"
 
 #: lazarusidestrconsts.lisexttoolmaximumtoolsreached
 msgid "Maximum Tools reached"
@@ -8351,7 +8370,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
-msgstr ""
+msgstr "لا يمكن حفظ الجذاذة"
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
@@ -8364,11 +8383,11 @@ msgstr ""
 #: lazarusidestrconsts.lisfile
 msgctxt "lazarusidestrconsts.lisfile"
 msgid "File"
-msgstr ""
+msgstr "جذاذة"
 
 #: lazarusidestrconsts.lisfile2
 msgid "File: "
-msgstr ""
+msgstr "الجذاذة: "
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -8418,7 +8437,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
 msgid "File %s%s%s has changed. Save?"
-msgstr ""
+msgstr "الجذاذة %s%s%s تغيّرت هل تريد حفظها؟"
 
 #: lazarusidestrconsts.lisfilehasnoproject
 msgid "File has no project"
@@ -8639,7 +8658,7 @@ msgstr ""
 #: lazarusidestrconsts.lisfpdoceditor
 msgctxt "lazarusidestrconsts.lisfpdoceditor"
 msgid "FPDoc Editor"
-msgstr ""
+msgstr "محرّر أوامر FPDoc"
 
 #: lazarusidestrconsts.lisfpdocerrorwriting
 msgid "Error writing \"%s\"%s%s"
@@ -8765,12 +8784,12 @@ msgstr ""
 
 #: lazarusidestrconsts.lisgotoline
 msgid "Goto Line"
-msgstr ""
+msgstr "إذهب إلى السّطر "
 
 #: lazarusidestrconsts.lisgotoselectedsourceline
 msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
 msgid "Goto selected source line"
-msgstr ""
+msgstr "إذهب إلى سطر الأوامر المعيّن"
 
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -8867,7 +8886,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lishintsaveall
 msgid "Save all"
-msgstr ""
+msgstr "إحفظ الكلّ"
 
 #: lazarusidestrconsts.lishintstepinto
 msgid "Step Into"
@@ -9032,11 +9051,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisiecosavetofile
 msgid "Save to file"
-msgstr ""
+msgstr "إحفظ في الجذاذة"
 
 #: lazarusidestrconsts.lisiecosavetorecent
 msgid "Save to recent"
-msgstr ""
+msgstr "إحفظ في جذاذة استعملت حديثا"
 
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
@@ -9800,19 +9819,19 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmsaveall
 msgid "SaveAll"
-msgstr ""
+msgstr "إحفظ الكلّ"
 
 #: lazarusidestrconsts.liskmsaveas
 msgid "SaveAs"
-msgstr ""
+msgstr "إحفظ نسخة جديدة"
 
 #: lazarusidestrconsts.liskmsaveproject
 msgid "Save project"
-msgstr ""
+msgstr "إحفظ المشروع"
 
 #: lazarusidestrconsts.liskmsaveprojectas
 msgid "Save project as"
-msgstr ""
+msgstr "إحفظ نسخة جديدة من المشروع"
 
 #: lazarusidestrconsts.liskmselectlineend
 msgctxt "lazarusidestrconsts.liskmselectlineend"
@@ -10257,7 +10276,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
 msgid "Restart after building IDE"
-msgstr ""
+msgstr "أعد التّشغيل بعد بناء بيئة التّطوير المدمجة"
 
 #: lazarusidestrconsts.lislazbuildrestartlazarusautomatically
 msgctxt "lazarusidestrconsts.lislazbuildrestartlazarusautomatically"
@@ -10646,7 +10665,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuaddtoproject
 msgid "Add Editor File to Project"
-msgstr ""
+msgstr "أضف الجذاذة للمشروع"
 
 #: lazarusidestrconsts.lismenuaddwatch
 msgid "Add &Watch ..."
@@ -10658,7 +10677,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
-msgstr ""
+msgstr "ترجم الجذاذة"
 
 #: lazarusidestrconsts.lismenubuildlazarus
 msgid "Build Lazarus with Current Profile"
@@ -10674,15 +10693,17 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenucleandirectory
 msgid "Clean Directory ..."
-msgstr ""
+msgstr "نظّف الملفّ ..."
 
 #: lazarusidestrconsts.lismenucleanupcompiled
 msgid "Clean up Build Files ..."
-msgstr ""
+msgstr "إمح منتجات عمليّة البناء ..."
 
 #: lazarusidestrconsts.lismenucloseall
+#, fuzzy
+#| msgid "Close A&ll Editor Files"
 msgid "Close A&ll"
-msgstr ""
+msgstr "أغلق كلّ الجذاذات المفتوحة في المحرّر"
 
 #: lazarusidestrconsts.lismenucloseeditorfile
 msgid "&Close Editor File"
@@ -10919,7 +10940,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenugotoline
 msgid "Goto Line ..."
-msgstr ""
+msgstr "إذهب إلى السّطر ..."
 
 #: lazarusidestrconsts.lismenuguessmisplacedifdef
 msgid "Guess Misplaced IFDEF/ENDIF"
@@ -11198,7 +11219,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenurevert
 msgid "Revert"
-msgstr "إلغي"
+msgstr "ألغ التّغييرات"
 
 #: lazarusidestrconsts.lismenurun
 msgctxt "lazarusidestrconsts.lismenurun"
@@ -11224,15 +11245,15 @@ msgstr "إحفظ"
 
 #: lazarusidestrconsts.lismenusaveas
 msgid "Save &As ..."
-msgstr "إحفظ باسم ..."
+msgstr "إحفظ في نسخة جديدة ..."
 
 #: lazarusidestrconsts.lismenusaveproject
 msgid "Save Project"
-msgstr "إحفظ المشروع"
+msgstr "إخفظ المشروع"
 
 #: lazarusidestrconsts.lismenusaveprojectas
 msgid "Save Project As ..."
-msgstr "إحفظ المشروع باسم ..."
+msgstr "إحفظ نسخة جديدة من المشروع"
 
 #: lazarusidestrconsts.lismenusearch
 msgid "&Search"
@@ -11282,15 +11303,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenusource
 msgid "S&ource"
-msgstr ""
+msgstr "أمر"
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step In&to"
-msgstr ""
+msgstr "أدخل"
 
 #: lazarusidestrconsts.lismenustepintocontext
 msgid "Step Into (Context)"
-msgstr ""
+msgstr "خطوة في السّياق"
 
 #: lazarusidestrconsts.lismenustepintoinstr
 msgctxt "lazarusidestrconsts.lismenustepintoinstr"
@@ -11304,11 +11325,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenustepout
 msgid "Step O&ut"
-msgstr ""
+msgstr "أخرج"
 
 #: lazarusidestrconsts.lismenustepover
 msgid "&Step Over"
-msgstr ""
+msgstr "تعدّ"
 
 #: lazarusidestrconsts.lismenustepovercontext
 msgid "Step Over (Context)"
@@ -11338,7 +11359,7 @@ msgstr "بطاقة التعريف"
 
 #: lazarusidestrconsts.lismenutemplatecontents
 msgid "Contents"
-msgstr ""
+msgstr "المحتويات"
 
 #: lazarusidestrconsts.lismenutemplatedescriptionstandardeditmenu
 msgid "Standard Edit Menu"
@@ -11420,12 +11441,12 @@ msgstr ""
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
 msgid "Code Browser"
-msgstr ""
+msgstr "عارض الأوامر"
 
 #: lazarusidestrconsts.lismenuviewcodeexplorer
 msgctxt "lazarusidestrconsts.lismenuviewcodeexplorer"
 msgid "Code Explorer"
-msgstr ""
+msgstr "كاشف الأوامر"
 
 #: lazarusidestrconsts.lismenuviewcomponentpalette
 msgid "Component Palette"
@@ -11501,7 +11522,7 @@ msgstr ""
 #: lazarusidestrconsts.lismenuviewsourceeditor
 msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
 msgid "Source Editor"
-msgstr ""
+msgstr "محرّر الأوامر"
 
 #: lazarusidestrconsts.lismenuviewtaborder
 msgid "Tab Order"
@@ -11694,8 +11715,8 @@ msgstr ""
 msgid "New Target"
 msgstr ""
 
-#: lazarusidestrconsts.lismmoutputdirectory
-msgid "Output Directory"
+#: lazarusidestrconsts.lismmoverrideoutputdirectory
+msgid "Override output directory (-FU)"
 msgstr ""
 
 #: lazarusidestrconsts.lismmoverrideoutputdirectoryfuoftarget
@@ -12426,7 +12447,7 @@ msgstr ""
 #: lazarusidestrconsts.lispatheditbrowse
 msgctxt "lazarusidestrconsts.lispatheditbrowse"
 msgid "Browse"
-msgstr ""
+msgstr "إعرض"
 
 #: lazarusidestrconsts.lispatheditdeleteinvalidpaths
 msgid "Delete Invalid Paths"
@@ -13851,7 +13872,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprojaddeditorfile
 msgid "Add Editor Files"
-msgstr ""
+msgstr "أضف الجذاذات المفتوحة في المحرّر"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -14454,7 +14475,7 @@ msgstr ""
 #: lazarusidestrconsts.lisrestart
 msgctxt "lazarusidestrconsts.lisrestart"
 msgid "Restart"
-msgstr ""
+msgstr "أعد التّشغيل"
 
 #: lazarusidestrconsts.lisresult
 msgid "Result :="
@@ -14603,12 +14624,12 @@ msgstr ""
 #: lazarusidestrconsts.lissave
 msgctxt "lazarusidestrconsts.lissave"
 msgid "Save"
-msgstr ""
+msgstr "إحفظ"
 
 #: lazarusidestrconsts.lissaveall
 msgctxt "lazarusidestrconsts.lissaveall"
 msgid "Save All"
-msgstr ""
+msgstr "إحفظ الكلّ"
 
 #: lazarusidestrconsts.lissaveallchecked
 msgid "Save All Checked"
@@ -14620,7 +14641,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lissaveallmodified
 msgid "Save all modified files"
-msgstr ""
+msgstr "إحفظ كلّ الجذاذات المتغيّرة"
 
 #: lazarusidestrconsts.lissaveandexitdialog
 msgid "Save and exit dialog"
@@ -14633,15 +14654,15 @@ msgstr ""
 #: lazarusidestrconsts.lissaveas
 msgctxt "lazarusidestrconsts.lissaveas"
 msgid "Save As"
-msgstr ""
+msgstr "إحفظ نسخة جديدة"
 
 #: lazarusidestrconsts.lissavechangedfiles
 msgid "Save changed files?"
-msgstr ""
+msgstr "هل تريد حفظ الجذاذات المتغيّرة؟"
 
 #: lazarusidestrconsts.lissavechanges
 msgid "Save changes?"
-msgstr ""
+msgstr "هل تريد حفظ التّغييرات؟"
 
 #: lazarusidestrconsts.lissavechangestoproject
 msgid "Save changes to project %s?"
@@ -14669,7 +14690,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
-msgstr ""
+msgstr "إحفظ نسحة جديدة من الجذاذة"
 
 #: lazarusidestrconsts.lissavefilebeforeclosingform
 msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
@@ -14685,7 +14706,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"
-msgstr ""
+msgstr "إحفظ البرنامج %s (*%s)"
 
 #: lazarusidestrconsts.lissavesessionchangestoproject
 msgid "Save session changes to project %s?"
@@ -14693,11 +14714,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
-msgstr ""
+msgstr "إحفظ الخيارات"
 
 #: lazarusidestrconsts.lissavespace
 msgid "Save "
-msgstr ""
+msgstr "إحفظ"
 
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
@@ -14830,6 +14851,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshow
 msgid "Show"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
+msgid "Show component tree"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowdeclarationhints
@@ -15909,7 +15934,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisuegotoline
 msgid "Goto line:"
-msgstr ""
+msgstr "إذهب إاى السّطر:"
 
 #: lazarusidestrconsts.lisuemodeseparator
 msgid "/"
@@ -16278,7 +16303,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunabletosavefile
 msgid "Unable to save file %s%s%s"
-msgstr ""
+msgstr "غير قادر على حفظ الجذاذة %s%s%s"
 
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
@@ -16371,7 +16396,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunithaschangedsave
 msgid "Unit %s%s%s has changed. Save?"
-msgstr ""
+msgstr "الوحدة %s%s%s تغيّرت هل تريد حفظها؟"
 
 #: lazarusidestrconsts.lisunitidentifierexists
 msgid "Unit identifier exists"
@@ -16455,6 +16480,7 @@ msgid "Usage message (-h option)"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseansistrings
+msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr ""
 
@@ -16821,7 +16847,7 @@ msgstr ""
 #: lazarusidestrconsts.locwndsrceditor
 msgctxt "lazarusidestrconsts.locwndsrceditor"
 msgid "Source Editor"
-msgstr ""
+msgstr "محرّر الأوامر"
 
 #: lazarusidestrconsts.lrsplddeleteselected
 msgid "Delete selected"
@@ -17562,7 +17588,7 @@ msgstr ""
 #: lazarusidestrconsts.srkmecextractproc
 msgctxt "lazarusidestrconsts.srkmecextractproc"
 msgid "Extract Procedure"
-msgstr ""
+msgstr "إستخرج الطّريقة"
 
 #: lazarusidestrconsts.srkmecexttool
 msgid "External tool %d"
@@ -17930,7 +17956,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecreplace
 msgid "Replace Text"
-msgstr ""
+msgstr "بدّل نصّا"
 
 #: lazarusidestrconsts.srkmecreportingbug
 msgctxt "lazarusidestrconsts.srkmecreportingbug"
@@ -18358,7 +18384,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmectogglesourceeditor
 msgid "View Source Editor"
-msgstr ""
+msgstr "أظهر محرّر الأوامر"
 
 #: lazarusidestrconsts.srkmectogglewatches
 msgid "View watches"
