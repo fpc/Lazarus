@@ -30,6 +30,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Industrial-themed (IPV/PCV) components and gauges (e.g. LEDs)."/>
     <License Value="MPL  + GPL "/>
     <Version Minor="1"/>
     <Files Count="10">
