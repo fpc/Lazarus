@@ -84,7 +84,8 @@ end;
 
 procedure TControlActionLink.SetOnExecute(Value: TNotifyEvent);
 begin
-  if IsOnExecuteLinked then FClient.OnClick := Value;
+  // Note: formerly this changed FClient.OnClick, but that is unneeded, because
+  //       TControl.Click executes Action
 end;
 
 function TControlActionLink.IsHelpLinked: Boolean;

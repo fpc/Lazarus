@@ -899,11 +899,6 @@ begin
   Result := (ActionLink = nil) or not ActionLink.IsHelpLinked;
 end;
 
-function TControl.IsOnClickStored: Boolean;
-begin
-  Result := (ActionLink = nil) or not ActionLink.IsOnExecuteLinked;
-end;
-
 function TControl.IsShowHintStored: Boolean;
 begin
   Result := not ParentShowHint;
@@ -1855,8 +1850,6 @@ begin
       Hint := NewAction.Hint;
     if not CheckDefaults or Visible then
       Visible := NewAction.Visible;
-    if not CheckDefaults or not Assigned(OnClick) then
-      OnClick := NewAction.OnExecute;
     if not CheckDefaults or (Self.HelpContext = 0) then
       Self.HelpContext := HelpContext;
     if not CheckDefaults or (Self.HelpKeyword = '') then
@@ -2702,14 +2695,12 @@ end;
 procedure TControl.Click;
 begin
   //DebugLn(['TControl.Click ',DbgSName(Self)]);
-  if Assigned(FOnClick) and (Action<>nil)
-  and (not CompareMethods(TMethod(Action.OnExecute),TMethod(FOnClick))) then
-    // the OnClick is set and differs from the Action => call the OnClick
-    FOnClick(Self)
-  else if (not (csDesigning in ComponentState)) and (ActionLink <> nil) then
-    ActionLink.Execute(Self)
-  else if Assigned(FOnClick) then
+  // first call our own OnClick
+  if Assigned(FOnClick) then
     FOnClick(Self);
+  // then trigger the Action
+  if (not (csDesigning in ComponentState)) and (ActionLink <> nil) then
+    ActionLink.Execute(Self);
 end;
 
 {------------------------------------------------------------------------------

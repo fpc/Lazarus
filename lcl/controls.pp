@@ -1145,7 +1145,6 @@ type
     function IsHintStored: Boolean;
     function IsHelpContextStored: Boolean;
     function IsHelpKeyWordStored: boolean;
-    function IsOnClickStored: Boolean;
     function IsShowHintStored: Boolean;
     function IsVisibleStored: Boolean;
     procedure DoBeforeMouseMessage;
@@ -1595,7 +1594,7 @@ type
     property IsControl: Boolean read FIsControl write FIsControl;
     property MouseEntered: Boolean read FMouseEntered;
     property OnChangeBounds: TNotifyEvent read FOnChangeBounds write FOnChangeBounds;
-    property OnClick: TNotifyEvent read FOnClick write FOnClick stored IsOnClickStored;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick;
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnShowHint: TControlShowHintEvent read FOnShowHint write FOnShowHint;
     property Parent: TWinControl read FParent write SetParent;
