@@ -5539,7 +5539,7 @@ begin
       //  debugln(['TSourceEditor.UpdateIfDefNodeStates ',i+1,'/',Scanner.DirectiveCount,' ',dbgs(aDirective^.Kind)]);
       inc(i);
       if TCodeBuffer(aDirective^.Code)<>Code then continue;
-      if not (aDirective^.Kind in (lsdkAllIf+[lsdkElIfC,lsdkElseIf, lsdkElse, lsdkElseC])) then continue;
+      if not (aDirective^.Kind in (lsdkAllIf+lsdkAllElse)) then continue;
       Code.AbsoluteToLineCol(aDirective^.SrcPos,Y,X);
       if Y<1 then continue;
       SynState:=idnInvalid;
