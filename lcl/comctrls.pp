@@ -1128,6 +1128,7 @@ type
     procedure WSCreateColumns;
     procedure SetItem(const AIndex: Integer; const AValue: TListColumn);
   protected
+    function GetOwner: TPersistent; override;
   public
     constructor Create(AOwner: TCustomListView);
     destructor Destroy; override;
