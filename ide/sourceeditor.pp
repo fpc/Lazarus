@@ -223,7 +223,6 @@ type
     // IfDef nodes
     procedure ConnectScanner(Scanner: TLinkScanner);
     procedure DisconnectScanner(Scanner: TLinkScanner);
-    function GetIfDefNodeState(x, y: integer): TSynMarkupIfdefNodeState;
     function GetMainLinkScanner(Scan: boolean): TLinkScanner;
   public
     constructor Create;
@@ -314,8 +313,6 @@ type
     procedure UnbindEditor;
 
     {$IFDEF WithSynMarkupIfDef}
-    function DoIfDefNodeStateRequest(Sender: TObject; LinePos,
-      XStartPos: Integer; CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
     procedure UpdateIfDefNodeStates(Force: Boolean = False);
     {$ENDIF}
   protected
@@ -2653,63 +2650,6 @@ begin
     FMainLinkScanner:=nil;
 end;
 
-function TSourceEditorSharedValues.GetIfDefNodeState(x, y: integer
-  ): TSynMarkupIfdefNodeState;
-var
-  p: integer;
-  FirstSortedIndex: integer;
-  LastSortedIndex: integer;
-  aDirective: PLSDirective;
-  Scanner: TLinkScanner;
-  CleanPos: integer;
-begin
-  Result:=idnInvalid;
-  //debugln(['TSourceEditorSharedValues.GetIfDefNodeState x=',x,' y=',y,' ',Filename]);
-  UpdateCodeBuffer;
-  CodeBuffer.LineColToPosition(y,x,p);
-  if p<1 then begin
-    debugln(['TSourceEditorSharedValues.GetIfDefNodeState out of code x=',x,' y=',y,' ',Filename]);
-    exit;
-  end;
-  Scanner:=GetMainLinkScanner(true);
-  case Scanner.CursorToCleanPos(p,CodeBuffer,CleanPos) of
-  -1:
-    begin
-      // CursorPos was skipped, CleanPos between two links
-      exit;
-    end;
-  1:
-    begin
-      // CursorPos beyond scanned code
-      exit;
-    end;
-  end;
-  if not Scanner.FindDirective(CodeBuffer,p,FirstSortedIndex,LastSortedIndex)
-  then begin
-    debugln(['TSourceEditorSharedValues.GetIfDefNodeState no directive at x=',x,' y=',y,' SrcPos=',p,' ',Filename,' Line="',CodeBuffer.GetLine(y-1),'" CleanSrc="',DbgStr(Scanner.CleanedSrc,CleanPos-15,15),'|',dbgstr(Scanner.CleanedSrc,CleanPos,15),'"']);
-    {for i:=0 to Scanner.DirectiveCount-1 do begin
-      aDirective:=Scanner.DirectivesSorted[i];
-      if TCodeBuffer(aDirective^.Code)<>CodeBuffer then continue;
-      debugln(['TSourceEditorSharedValues.GetIfDefNodeState CleanPos=',aDirective^.CleanPos,' SrcPos=',aDirective^.SrcPos,' Src="',dbgstr(CodeBuffer.Source,aDirective^.SrcPos,30),'"']);
-    end;}
-    exit;
-  end;
-  if FirstSortedIndex<LastSortedIndex then begin
-    // this directive was parsed multiple times, because of an include file
-    // included multiple times with different defines
-    // => return idnInvalid
-    debugln(['TSourceEditorSharedValues.GetIfDefNodeState multi valued directive at x=',x,' y=',y,' ',Filename]);
-    exit;
-  end;
-  aDirective:=Scanner.DirectivesSorted[FirstSortedIndex];
-  debugln(['TSourceEditorSharedValues.GetIfDefNodeState ',dbgs(aDirective^.State),' at  x=',x,' y=',y,' ',Filename]);
-  case aDirective^.State of
-  lsdsActive: Result:=idnEnabled;
-  lsdsInactive: Result:=idnDisabled;
-  lsdsSkipped: Result:=idnNotInCode;
-  end;
-end;
-
 function TSourceEditorSharedValues.GetMainLinkScanner(Scan: boolean
   ): TLinkScanner;
 // Note: if this is an include file, the main scanner may change
@@ -4542,9 +4482,6 @@ Begin
       OnClearBookmark := @EditorClearBookmark;
       OnChangeUpdating  := @EditorChangeUpdating;
       RegisterMouseActionExecHandler(@EditorHandleMouseAction);
-      {$IFDEF WithSynMarkupIfDef}
-      OnIfdefNodeStateRequest := @Self.DoIfDefNodeStateRequest;
-      {$ENDIF}
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
       Parent := AParent;
     end;
@@ -5482,18 +5419,6 @@ procedure TSourceEditor.SetIfdefNodeState(ALinePos, AstartPos: Integer;
   AState: TSynMarkupIfdefNodeState);
 begin
   FEditor.SetIfdefNodeState(ALinePos, AstartPos, AState);
-end;
-
-function TSourceEditor.DoIfDefNodeStateRequest(Sender: TObject; LinePos,
-  XStartPos: Integer; CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
-begin
-  // Not currently called
-  debugln(['TSourceEditor.DoIfDefNodeStateRequest ']);
-  if FOnIfdefNodeStateRequest <> nil then
-    Result := FOnIfdefNodeStateRequest(Self, LinePos, XStartPos, CurrentState)
-  else begin
-    Result := SharedValues.GetIfDefNodeState(XStartPos,LinePos);
-  end;
 end;
 
 procedure TSourceEditor.UpdateIfDefNodeStates(Force: Boolean = False);
