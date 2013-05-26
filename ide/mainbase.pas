@@ -352,7 +352,7 @@ begin
   end;
   if (not (ctfSourceEditorNotNeeded in Flags)) and (SourceEditorManager.SourceEditorCount=0)
   then begin
-    DebugLn('TMainIDEBase.BeginCodeTool no source editor');
+    //DebugLn('TMainIDEBase.BeginCodeTool no source editor');
     exit;
   end;
 
