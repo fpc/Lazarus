@@ -1476,7 +1476,9 @@ end;
 function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
   FixCase: boolean; SearchImplementation: boolean;
   SourceChangeCache: TSourceChangeCache): boolean;
-  
+const
+  FPCSrcSearchRequiresPPU = true;
+
   function CheckUsesSection(UsesNode: TCodeTreeNode): boolean;
   var
     OldUnitName: String;
@@ -1500,7 +1502,7 @@ function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
       NewUnitName:=OldUnitName;
       NewInFilename:=OldInFilename;
       AFilename:=DirectoryCache.FindUnitSourceInCompletePath(
-                                                NewUnitName,NewInFilename,true);
+                        NewUnitName,NewInFilename,true,FPCSrcSearchRequiresPPU);
       s:=NewUnitName;
       if NewInFilename<>'' then
         s:=s+' in '''+NewInFilename+'''';

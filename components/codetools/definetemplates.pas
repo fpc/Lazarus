@@ -861,7 +861,7 @@ type
     function GetUnitToSourceTree(AutoUpdate: boolean): TStringToStringTree; // unit name to file name (maybe relative)
     function GetSourceDuplicates(AutoUpdate: boolean): TStringToStringTree; // unit to semicolon separated list of files
     function GetUnitSrcFile(const AnUnitName: string;
-                            MustHavePPU: boolean = true;
+                            SrcSearchRequiresPPU: boolean = true;
                             SkipPPUCheckIfTargetIsSourceOnly: boolean = true): string;
     function GetCompiledUnitFile(const AUnitName: string): string;
     property ChangeStamp: integer read FChangeStamp;
@@ -8421,9 +8421,9 @@ begin
 end;
 
 function TFPCUnitSetCache.GetUnitSrcFile(const AnUnitName: string;
-  MustHavePPU: boolean; SkipPPUCheckIfTargetIsSourceOnly: boolean): string;
+  SrcSearchRequiresPPU: boolean; SkipPPUCheckIfTargetIsSourceOnly: boolean): string;
 { Searches the unit in the FPC search path and sources.
-  MustHavePPU: only search the sources if there is a ppu in the search path
+  SrcSearchRequiresPPU: only search the sources if there is a ppu in the search path
 }
 var
   Tree: TStringToStringTree;
@@ -8442,11 +8442,14 @@ begin
       // there is a ppu
     end else if UnitInFPCPath<>'' then begin
       // there is a pp or pas in the FPC search path
+      {$IFDEF ShowTriedUnits}
+      debugln(['TFPCUnitSetCache.GetUnitSrcFile Unit="',AnUnitName,'" source in FPC search path: "',Result,'"']);
+      {$ENDIF}
       Result:=UnitInFPCPath;
       exit;
     end else begin
       // unit has no ppu in the FPC ppu search path
-      if MustHavePPU then begin
+      if SrcSearchRequiresPPU then begin
         if ConfigCache.HasPPUs then begin
           // but there are other ppu files
           {$IFDEF ShowTriedUnits}
@@ -8467,6 +8470,7 @@ begin
       end;
     end;
   end;
+  // search the sources
   if Tree<>nil then begin
     Result:=Tree[AnUnitName];
     if (Result<>'') and (not FilenameIsAbsolute(Result)) then

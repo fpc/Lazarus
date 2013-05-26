@@ -172,8 +172,8 @@ type
     function DirectoryCachePoolGetString(const ADirectory: string;
                                   const AStringType: TCTDirCacheString): string;
     function DirectoryCachePoolFindVirtualFile(const Filename: string): string;
-    function DirectoryCachePoolGetUnitFromSet(const UnitSet, AnUnitName: string
-                                              ): string;
+    function DirectoryCachePoolGetUnitFromSet(const UnitSet, AnUnitName: string;
+                                              SrcSearchRequiresPPU: boolean): string;
     function DirectoryCachePoolGetCompiledUnitFromSet(
                                      const UnitSet, AnUnitName: string): string;
     procedure DirectoryCachePoolIterateFPCUnitsFromSet(const UnitSet: string;
@@ -5798,7 +5798,7 @@ begin
 end;
 
 function TCodeToolManager.DirectoryCachePoolGetUnitFromSet(const UnitSet,
-  AnUnitName: string): string;
+  AnUnitName: string; SrcSearchRequiresPPU: boolean): string;
 var
   Changed: boolean;
   UnitSetCache: TFPCUnitSetCache;
@@ -5813,7 +5813,7 @@ begin
     debugln(['TCodeToolManager.DirectoryCachePoolGetUnitFromSet outdated UnitSet="',dbgstr(UnitSet),'"']);
     exit;
   end;
-  Result:=UnitSetCache.GetUnitSrcFile(AnUnitName,false);
+  Result:=UnitSetCache.GetUnitSrcFile(AnUnitName,SrcSearchRequiresPPU);
 end;
 
 function TCodeToolManager.DirectoryCachePoolGetCompiledUnitFromSet(

@@ -169,7 +169,8 @@ type
     function IndexOfFileCaseInsensitive(ShortFilename: PChar): integer;
     function IndexOfFileCaseSensitive(ShortFilename: PChar): integer;
     function FindUnitLink(const AUnitName: string): string;
-    function FindUnitInUnitSet(const AUnitName: string): string;
+    function FindUnitInUnitSet(const AUnitName: string;
+                               SrcSearchRequiresPPU: boolean = true): string;
     function FindCompiledUnitInUnitSet(const AUnitName: string): string;
     function FindFile(const ShortFilename: string;
                       const FileCase: TCTSearchFileCase): string;
@@ -180,7 +181,7 @@ type
     function FindUnitSourceInCleanSearchPath(const AUnitName,
                                   SearchPath: string; AnyCase: boolean): string;
     function FindUnitSourceInCompletePath(var AUnitName, InFilename: string;
-                                          AnyCase: boolean): string;
+               AnyCase: boolean; FPCSrcSearchRequiresPPU: boolean = false): string;
     function FindCompiledUnitInCompletePath(const AnUnitname: string;
                                             AnyCase: boolean): string;
     procedure IterateFPCUnitsInSet(const Iterate: TCTOnIterateFile);
@@ -202,7 +203,8 @@ type
                                   const AStringType: TCTDirCacheString
                                   ): string of object;
   TCTDirCacheFindVirtualFile = function(const Filename: string): string of object;
-  TCTGetUnitFromSet = function(const UnitSet, AnUnitName: string): string of object;
+  TCTGetUnitFromSet = function(const UnitSet, AnUnitName: string;
+                               SrcSearchRequiresPPU: boolean): string of object;
   TCTGetCompiledUnitFromSet = function(const UnitSet, AnUnitName: string): string of object;
   TCTIterateFPCUnitsFromSet = procedure(const UnitSet: string;
                                      const Iterate: TCTOnIterateFile) of object;
@@ -877,13 +879,14 @@ begin
   Result:='';
 end;
 
-function TCTDirectoryCache.FindUnitInUnitSet(const AUnitName: string): string;
+function TCTDirectoryCache.FindUnitInUnitSet(const AUnitName: string;
+  SrcSearchRequiresPPU: boolean): string;
 var
   UnitSet: string;
 begin
   UnitSet:=Strings[ctdcsUnitSet];
   //debugln(['TCTDirectoryCache.FindUnitInUnitSet Directory="',Directory,'" UnitSet="',UnitSet,'" AUnitName="',AUnitName,'"']);
-  Result:=Pool.OnGetUnitFromSet(UnitSet,AUnitName);
+  Result:=Pool.OnGetUnitFromSet(UnitSet,AUnitName,SrcSearchRequiresPPU);
   //debugln(['TCTDirectoryCache.FindUnitInUnitSet Directory="',Directory,'" UnitSet="',dbgstr(UnitSet),'" AUnitName="',AUnitName,'" Result="',Result,'"']);
 end;
 
@@ -1135,8 +1138,9 @@ begin
   Result:='';
 end;
 
-function TCTDirectoryCache.FindUnitSourceInCompletePath(
-  var AUnitName, InFilename: string; AnyCase: boolean): string;
+function TCTDirectoryCache.FindUnitSourceInCompletePath(var AUnitName,
+  InFilename: string; AnyCase: boolean; FPCSrcSearchRequiresPPU: boolean
+  ): string;
 
   function FindInFilenameLowUp(aFilename: string): string;
   begin
@@ -1252,7 +1256,7 @@ begin
         {$IFDEF ShowTriedUnits}
         DebugLn(['TCTDirectoryCache.FindUnitSourceInCompletePath unit ',AUnitName,' not found in SrcPath="',SrcPath,'"  Directory="',Directory,'" searchin in unitset ...']);
         {$ENDIF}
-        Result:=FindUnitInUnitSet(AUnitName);
+        Result:=FindUnitInUnitSet(AUnitName,FPCSrcSearchRequiresPPU);
         {$IFDEF ShowTriedUnits}
         if Result='' then begin
           DebugLn(['TCTDirectoryCache.FindUnitSourceInCompletePath unit ',AUnitName,' not found in unitlinks. Directory="',Directory,'"']);
