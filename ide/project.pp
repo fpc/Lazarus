@@ -2739,6 +2739,10 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
           CurMode.MacroValues.SaveToXMLConfig(XMLConfig,SubPath+'MacroValues/');
           CurMode.CompilerOptions.SaveToXMLConfig(XMLConfig,SubPath+'CompilerOptions/');
         end;
+        if SaveSession then
+        begin
+
+        end;
       end;
     end;
     XMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);

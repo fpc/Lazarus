@@ -208,8 +208,7 @@ type
     function GetItems(Index: integer): TSourceEditorInterface; virtual; abstract;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); virtual; abstract;
   public
-    function SourceEditorIntfWithFilename(const Filename: string): TSourceEditorInterface;
-             deprecated 'use SourceEditorManagerIntf';   // deprecated in 0.9.29 March 2010
+    function SourceEditorIntfWithFilename(const Filename: string): TSourceEditorInterface; virtual; abstract;
     property ActiveEditor: TSourceEditorInterface
              read GetActiveEditor write SetActiveEditor;
     function Count: integer; virtual; abstract;
@@ -293,7 +292,7 @@ type
              read GetActiveSourceWindow write SetActiveSourceWindow;
     // List of SourceEditors (accross all Windows)
     function SourceEditorIntfWithFilename(const Filename: string): TSourceEditorInterface;
-             virtual; abstract;
+             virtual; abstract; // first hit, there might be more
     function SourceEditorCount: integer; virtual; abstract;
     property SourceEditors[Index: integer]: TSourceEditorInterface
              read GetSourceEditors;
@@ -780,20 +779,6 @@ begin
                                TemplateParser)
   else
     Result:=true;
-end;
-
-{ TSourceEditorWindowInterface }
-
-function TSourceEditorWindowInterface.SourceEditorIntfWithFilename(
-  const Filename: string): TSourceEditorInterface;
-var
-  i: Integer;
-begin
-  for i:=Count-1 downto 0 do begin
-    Result:=Items[i];
-    if CompareFilenames(Result.Filename,Filename)=0 then exit;
-  end;
-  Result:=nil;
 end;
 
 { TIDESearchInTextProgress }

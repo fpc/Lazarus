@@ -45,7 +45,7 @@ uses
   SynEditMouseCmds, Classes, SysUtils, Math, Controls, ExtendedNotebook,
   LCLProc, LCLType, LResources, LCLIntf, FileUtil, Forms, ComCtrls, Dialogs,
   StdCtrls, Graphics, Translations, ClipBrd, types, Extctrls, Menus, HelpIntfs,
-  LConvEncoding, Messages, LazLoggerBase, lazutf8classes, LazLogger,
+  LConvEncoding, Messages, LazLoggerBase, lazutf8classes, LazLogger, AvgLvlTree,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   LinkScanner,
@@ -608,6 +608,7 @@ type
     FNotebook: TExtendedNotebook;
     FBaseCaption: String;
     FIsClosing: Boolean;
+    FSrcEditsSortedForFilenames: TAvgLvlTree; // TSourceEditorInterface sorted for Filename
     TabPopUpMenu, SrcPopUpMenu, DbgPopUpMenu: TPopupMenu;
     procedure ExecuteEditorItemClick(Sender: TObject);
   protected
@@ -654,8 +655,8 @@ type
     FIncrementalSearchEditor: TSourceEditor; // editor with active search (MWE:shouldnt all FIncrementalSearch vars go to that editor ?)
     FLastCodeBuffer: TCodeBuffer;
     FProcessingCommand: boolean;
-    FSourceEditorList: TList; // list of TSourceEditor
-    FHistoryList: TList; // list of TSourceEditor page order for when a window closes
+    FSourceEditorList: TFPList; // list of TSourceEditor
+    FHistoryList: TFPList; // list of TSourceEditor page order for when a window closes
     FStopBtnIdx: Integer;
   private
     FUpdateTabAndPageTimer: TTimer;
@@ -829,6 +830,8 @@ type
     function IndexOfEditor(aEditor: TSourceEditorInterface): integer;
     function Count: integer; override;
 
+    function SourceEditorIntfWithFilename(const Filename: string
+      ): TSourceEditorInterface; override;
     function FindSourceEditorWithPageIndex(APageIndex:integer):TSourceEditor;
     function FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
     function FindSourceEditorWithEditorComponent(EditorComp: TComponent): TSourceEditor;
@@ -1311,6 +1314,10 @@ function dbgSourceNoteBook(snb: TSourceNotebook): string;
 var
   Highlighters: array[TLazSyntaxHighlighter] of TSynCustomHighlighter;
 
+function CompareSrcEditIntfWithFilename(SrcEdit1, SrcEdit2: Pointer): integer;
+function CompareFilenameWithSrcEditIntf(FilenameStr, SrcEdit: Pointer): integer;
+
+
 implementation
 
 {$R *.lfm}
@@ -1652,6 +1659,21 @@ begin
   end;
   if RightStr(Result,1)=',' then Result:=LeftStr(Result,length(Result)-1);
   Result:='['+Result+']';
+end;
+
+function CompareSrcEditIntfWithFilename(SrcEdit1, SrcEdit2: Pointer): integer;
+var
+  SE1: TSourceEditorInterface absolute SrcEdit1;
+  SE2: TSourceEditorInterface absolute SrcEdit2;
+begin
+  Result:=CompareFilenames(SE1.FileName,SE2.FileName);
+end;
+
+function CompareFilenameWithSrcEditIntf(FilenameStr, SrcEdit: Pointer): integer;
+var
+  SE1: TSourceEditorInterface absolute SrcEdit;
+begin
+  Result:=CompareFilenames(AnsiString(FileNameStr),SE1.FileName);
 end;
 
 
@@ -2277,6 +2299,7 @@ end;
 procedure TSourceEditorSharedValues.SetCodeBuffer(const AValue: TCodeBuffer);
 var
   i: Integer;
+  SrcEdit: TSourceEditor;
 begin
   if FCodeBuffer = AValue then exit;
   if FCodeBuffer<>nil then begin
@@ -2288,7 +2311,19 @@ begin
       FMainLinkScanner:=nil;
     end;
   end;
+
+  for i := 0 to FSharedEditorList.Count - 1 do begin
+    SrcEdit:=SharedEditors[i];
+    SrcEdit.SourceNotebook.FSrcEditsSortedForFilenames.RemovePointer(SrcEdit);
+  end;
+
   FCodeBuffer := AValue;
+
+  for i := 0 to FSharedEditorList.Count - 1 do begin
+    SrcEdit:=SharedEditors[i];
+    SrcEdit.SourceNotebook.FSrcEditsSortedForFilenames.Add(SrcEdit);
+  end;
+
   if FCodeBuffer <> nil then
   begin
     DebugBoss.LockCommandProcessing;
@@ -5706,8 +5741,9 @@ begin
   KeyPreview:=true;
   FProcessingCommand := false;
 
-  FSourceEditorList := TList.Create;
-  FHistoryList := TList.create;
+  FSourceEditorList := TFPList.Create;
+  FHistoryList := TFPList.Create;
+  FSrcEditsSortedForFilenames := TAvgLvlTree.Create(@CompareSrcEditIntfWithFilename);
 
   // popup menu
   BuildPopupMenu;
@@ -5764,8 +5800,9 @@ begin
 
   for i:=FSourceEditorList.Count-1 downto 0 do
     Editors[i].Free;
-  FSourceEditorList.Free;
-  FHistoryList.Free;
+  FreeAndNil(FSourceEditorList);
+  FreeAndNil(FHistoryList);
+  FreeAndNil(FSrcEditsSortedForFilenames);
 
   Application.RemoveOnUserInputHandler(@OnApplicationUserInput);
   FreeThenNil(FMouseHintTimer);
@@ -6750,6 +6787,7 @@ end;
 procedure TSourceNotebook.AcceptEditor(AnEditor: TSourceEditor; SendEvent: Boolean);
 begin
   FSourceEditorList.Add(AnEditor);
+  FSrcEditsSortedForFilenames.Add(AnEditor);
 
   AnEditor.EditorComponent.BeginUpdate;
   AnEditor.PopupMenu := SrcPopupMenu;
@@ -6768,6 +6806,7 @@ end;
 procedure TSourceNotebook.ReleaseEditor(AnEditor: TSourceEditor; SendEvent: Boolean);
 begin
   FSourceEditorList.Remove(AnEditor);
+  FSrcEditsSortedForFilenames.RemovePointer(AnEditor);
   if SendEvent then
     Manager.SendEditorDestroyed(AnEditor);
 end;
@@ -7699,6 +7738,18 @@ end;
 function TSourceNotebook.Count: integer;
 begin
   Result:=FSourceEditorList.Count;
+end;
+
+function TSourceNotebook.SourceEditorIntfWithFilename(const Filename: string
+  ): TSourceEditorInterface;
+var
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FSrcEditsSortedForFilenames.FindKey(Pointer(Filename),@CompareFilenameWithSrcEditIntf);
+  if Node<>nil then
+    Result:=TSourceEditorInterface(Node.Data)
+  else
+    Result:=nil;
 end;
 
 procedure TSourceNotebook.CloseClicked(Sender: TObject; CloseOthers: Boolean);
@@ -8860,10 +8911,10 @@ function TSourceEditorManagerBase.SourceEditorIntfWithFilename(
 var
   i: Integer;
 begin
-  {$Note ToDo: TSourceEditorManagerBase.SourceEditorIntfWithFilename use tree}
-  for i := SourceEditorCount - 1 downto 0 do begin
-    Result := SourceEditors[i];
-    if CompareFilenames(Result.Filename, Filename) = 0 then exit;
+  for i:=0 to SourceWindowCount-1 do
+  begin
+    Result:=SourceWindows[i].SourceEditorIntfWithFilename(Filename);
+    if Result<>nil then exit;
   end;
   Result:=nil;
 end;
@@ -9228,19 +9279,15 @@ procedure TSourceEditorManagerBase.InvalidateMarklings(
 var
   SrcWnd: TSourceEditorWindowInterface;
   i: Integer;
-  j: Integer;
   SrcEdit: TSourceEditor;
 begin
   if aProducer=nil then exit;
   for i := 0 to SourceWindowCount - 1 do
   begin
     SrcWnd:=SourceWindows[i];
-    for j:=0 to SrcWnd.Count-1 do
-    begin
-      SrcEdit:=TSourceEditor(SrcWnd[j]);
-      if CompareFilenames(SrcEdit.FileName,aFilename)=0 then
-        SrcEdit.FSharedValues.FMarklingsValid:=false;
-    end;
+    SrcEdit:=TSourceEditor(SrcWnd.SourceEditorIntfWithFilename(aFilename));
+    if SrcEdit<>nil then
+      SrcEdit.FSharedValues.FMarklingsValid:=false;
   end;
 end;
 
