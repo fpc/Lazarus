@@ -218,7 +218,9 @@ type
     FFirst: TPropertyEditor;
     FBest: TPropertyEditor;
     FContinue: Boolean;
-    FPropEditCandidates: TList; // list of TPropertyEditor
+    FPropEditCandidates: TFPList; // list of TPropertyEditor
+    procedure AddPropEdit(Prop: TPropertyEditor);
+    procedure CheckActionExecute(Prop: TPropertyEditor);
     procedure CheckEdit(Prop: TPropertyEditor);
   protected
     procedure EditProperty(const Prop: TPropertyEditor;
@@ -617,13 +619,26 @@ end;
 
 { TDefaultComponentEditor }
 
+procedure TDefaultComponentEditor.AddPropEdit(Prop: TPropertyEditor);
+begin
+  if FPropEditCandidates=nil then
+    FPropEditCandidates:=TFPList.Create;
+  FPropEditCandidates.Add(Prop);
+end;
+
+procedure TDefaultComponentEditor.CheckActionExecute(Prop: TPropertyEditor);
+begin
+  AddPropEdit(Prop);
+  if (CompareText(Prop.GetName,'OnExecute')=0)
+  and (Prop is TMethodPropertyEditor) then
+    FBest:=Prop;
+end;
+
 procedure TDefaultComponentEditor.CheckEdit(Prop: TPropertyEditor);
 begin
+  AddPropEdit(Prop);
   if FContinue then
     EditProperty(Prop, FContinue);
-  if FPropEditCandidates=nil then
-    FPropEditCandidates:=TList.Create;
-  FPropEditCandidates.Add(Prop);
 end;
 
 procedure TDefaultComponentEditor.EditProperty(const Prop: TPropertyEditor;
@@ -647,7 +662,7 @@ begin
   if Assigned(FBest) then
     BestName := FBest.GetName;
   // event priority is hardcoded:
-  // first priority has OnCreate, then OnClick and OnChange is the last
+  // first priority has FBestEditEvent (default: OnCreate), then OnClick and OnChange is the last
   if CompareText(PropName, FBestEditEvent) = 0 then
     ReplaceBest
   else
@@ -688,24 +703,39 @@ procedure TDefaultComponentEditor.Edit;
 var
   PropertyEditorHook: TPropertyEditorHook;
   NewLookupRoot: TPersistent;
+
+  function TryAction(Action: TBasicAction): boolean;
+  begin
+    Result:=false;
+    if Action=nil then exit;
+    GetPersistentProperties(Action,tkMethods,PropertyEditorHook,@CheckActionExecute,nil);
+    if FBest=nil then exit;
+    FBest.Edit;
+    Result:=true;
+  end;
+
 begin
   PropertyEditorHook:=nil;
   if not GetHook(PropertyEditorHook) then exit;
   NewLookupRoot:=GetLookupRootForComponent(Component);
   if not (NewLookupRoot is TComponent) then exit;
-  GetDesigner.SelectOnlyThisComponent(Component);
-  FContinue := True;
   FFirst := nil;
   FBest := nil;
   try
-    GetPersistentProperties(Component,tkAny,PropertyEditorHook,@CheckEdit,nil);
-    if FContinue
-    then begin
-      if Assigned(FBest) then
-        FBest.Edit
-      else if Assigned(FFirst) then
-        FFirst.Edit;
-    end;
+    GetDesigner.SelectOnlyThisComponent(Component);
+    if (Component is TControl)
+    and TryAction(TControl(Component).Action) then
+      exit;
+    if (Component is TMenuItem)
+    and TryAction(TMenuItem(Component).Action) then
+      exit;
+    FContinue := True;
+    GetPersistentProperties(Component,tkMethods,PropertyEditorHook,@CheckEdit,nil);
+    if not FContinue then exit;
+    if Assigned(FBest) then
+      FBest.Edit
+    else if Assigned(FFirst) then
+      FFirst.Edit;
   finally
     FFirst := nil;
     FBest := nil;
