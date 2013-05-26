@@ -8422,37 +8422,48 @@ end;
 
 function TFPCUnitSetCache.GetUnitSrcFile(const AnUnitName: string;
   MustHavePPU: boolean; SkipPPUCheckIfTargetIsSourceOnly: boolean): string;
+{ Searches the unit in the FPC search path and sources.
+  MustHavePPU: only search the sources if there is a ppu in the search path
+}
 var
   Tree: TStringToStringTree;
   ConfigCache: TFPCTargetConfigCache;
+  UnitInFPCPath: String;
 begin
   Result:='';
   {$IFDEF ShowTriedUnits}
   debugln(['TFPCUnitSetCache.GetUnitSrcFile Unit="',AnUnitName,'" MustHavePPU=',MustHavePPU,' SkipPPUCheckIfNoneExists=',SkipPPUCheckIfNoneExists]);
   {$ENDIF}
   Tree:=GetUnitToSourceTree(false);
-  if MustHavePPU then begin
-    ConfigCache:=GetConfigCache(false);
-    if (ConfigCache.Units<>nil)
-      and (CompareFileExt(ConfigCache.Units[AnUnitName],'ppu',false)<>0)
-    then begin
+  ConfigCache:=GetConfigCache(false);
+  if (ConfigCache.Units<>nil) then begin
+    UnitInFPCPath:=ConfigCache.Units[AnUnitName];
+    if (CompareFileExt(UnitInFPCPath,'ppu',false)=0) then begin
+      // there is a ppu
+    end else if UnitInFPCPath<>'' then begin
+      // there is a pp or pas in the FPC search path
+      Result:=UnitInFPCPath;
+      exit;
+    end else begin
       // unit has no ppu in the FPC ppu search path
-      if ConfigCache.HasPPUs then begin
-        // but there are other ppu files
-        {$IFDEF ShowTriedUnits}
-        debugln(['TFPCUnitSetCache.GetUnitSrcFile Unit="',AnUnitName,'" unit has no ppu file in FPC path, but there are other ppu']);
-        {$ENDIF}
-        exit;
-      end else begin
-        // no ppu exists at all
-        // => the fpc is not installed properly for this target
-        {$IFDEF ShowTriedUnits}
-        debugln(['TFPCUnitSetCache.GetUnitSrcFile Unit="',AnUnitName,'" there are no ppu files for this target']);
-        {$ENDIF}
-        if not SkipPPUCheckIfTargetIsSourceOnly then
+      if MustHavePPU then begin
+        if ConfigCache.HasPPUs then begin
+          // but there are other ppu files
+          {$IFDEF ShowTriedUnits}
+          debugln(['TFPCUnitSetCache.GetUnitSrcFile Unit="',AnUnitName,'" unit has no ppu file in FPC path, but there are other ppu']);
+          {$ENDIF}
           exit;
-        // => search directly in the sources
-        // this allows cross editing even if FPC is not installed for this target
+        end else begin
+          // no ppu exists at all
+          // => the fpc is not installed properly for this target
+          {$IFDEF ShowTriedUnits}
+          debugln(['TFPCUnitSetCache.GetUnitSrcFile Unit="',AnUnitName,'" there are no ppu files for this target']);
+          {$ENDIF}
+          if (not SkipPPUCheckIfTargetIsSourceOnly) then
+            exit;
+          // => search directly in the sources
+          // this allows cross editing even if FPC is not installed for this target
+        end;
       end;
     end;
   end;
@@ -8460,17 +8471,6 @@ begin
     Result:=Tree[AnUnitName];
     if (Result<>'') and (not FilenameIsAbsolute(Result)) then
       Result:=FPCSourceDirectory+Result;
-    if (Result='') then begin
-      // maybe the source is in the fpc search path
-      ConfigCache:=GetConfigCache(false);
-      if ConfigCache<>nil then begin
-        Result:=ConfigCache.Units[AnUnitName];
-        if (CompareFileExt(Result,'ppu',false)=0) then begin
-          Result:='';
-          exit;
-        end;
-      end;
-    end;
     {$IFDEF ShowTriedUnits}
     debugln(['TFPCUnitSetCache.GetUnitSrcFile Unit="',AnUnitName,'" Result=',Result]);
     {$ENDIF}
