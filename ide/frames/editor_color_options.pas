@@ -25,13 +25,17 @@ unit editor_color_options;
 interface
 
 uses
-  Classes, windows, Controls, StdCtrls, sysutils, ExtCtrls, Graphics, GraphUtil,
-  ColorBox, ComCtrls, LCLProc, LCLType, LCLIntf, Dialogs, Menus, Spin, maskedit, SynEdit,
-  SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber, SynEditTypes,
-  SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynTextDrawer,
-  DividerBevel, Laz2_XMLCfg, EditorOptions, IDEOptionsIntf,
-  editor_general_options, IDEImagesIntf, LazarusIDEStrConsts, IDEProcs, typinfo,
-  LazConf, SynColorAttribEditor, types;
+  Classes, Controls, math, types, typinfo,sysutils,
+  Laz2_XMLCfg,
+  LCLProc, LCLType, LCLIntf,
+  StdCtrls, ExtCtrls, Graphics, GraphUtil, ColorBox, ComCtrls, Dialogs, Menus,
+  Spin, maskedit,
+  SynEdit, SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber,
+  SynEditTypes, SynGutterChanges, SynEditMouseCmds, SynEditHighlighter,
+  SynTextDrawer, SynColorAttribEditor,
+  DividerBevel,
+  IDEOptionsIntf, IDEImagesIntf,
+  EditorOptions, editor_general_options, LazarusIDEStrConsts, IDEProcs, LazConf;
 
 type
 
