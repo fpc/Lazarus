@@ -6330,7 +6330,7 @@ end;
 
 function TColorScheme.GetStoredValuesForScheme: TColorScheme;
 begin
-  ColorSchemeFactory.ColorSchemeGroup[Name];
+  Result:=ColorSchemeFactory.ColorSchemeGroup[Name];
 end;
 
 constructor TColorScheme.Create(AName: String);
