@@ -2693,13 +2693,24 @@ end;
        TControl Click
 ------------------------------------------------------------------------------}
 procedure TControl.Click;
+
+  function OnClickIsActionExecute: boolean;
+  begin
+    Result:=false;
+    if Action=nil then exit;
+    if not Assigned(Action.OnExecute) then exit;
+    if not Assigned(FOnClick) then exit;
+    Result:=CompareMethods(TMethod(FOnClick),TMethod(Action.OnExecute));
+  end;
+
 begin
   //DebugLn(['TControl.Click ',DbgSName(Self)]);
   // first call our own OnClick
   if Assigned(FOnClick) then
     FOnClick(Self);
   // then trigger the Action
-  if (not (csDesigning in ComponentState)) and (ActionLink <> nil) then
+  if (not (csDesigning in ComponentState)) and (ActionLink <> nil)
+  and (not OnClickIsActionExecute) then
     ActionLink.Execute(Self);
 end;
 

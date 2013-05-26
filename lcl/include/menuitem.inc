@@ -50,13 +50,24 @@ end;
   Call hooks and actions.
  ------------------------------------------------------------------------------}
 procedure TMenuItem.Click;
+
+  function OnClickIsActionExecute: boolean;
+  begin
+    Result:=false;
+    if Action=nil then exit;
+    if not Assigned(Action.OnExecute) then exit;
+    if not Assigned(FOnClick) then exit;
+    Result:=CompareMethods(TMethod(FOnClick),TMethod(Action.OnExecute));
+  end;
+
 begin
   if Enabled then
   begin
     if Assigned(OnMenuPopupHandler) then OnMenuPopupHandler(Self);
 
-    if (not Assigned(ActionLink) and AutoCheck) or (Assigned(ActionLink) and
-        not (ActionLink.IsAutoCheckLinked) and AutoCheck) then
+    if AutoCheck
+    and ((not Assigned(ActionLink))
+         or (Assigned(ActionLink) and not ActionLink.IsAutoCheckLinked)) then
     begin
       // Break a little Delphi compatibility
       // It makes no sense to uncheck a checked RadioItem (besides, GTK can't handle it)
@@ -64,17 +75,13 @@ begin
         Checked := not Checked;
     end;
 
-    { Call OnClick if assigned and not equal to associated action's OnExecute.
-      If associated action's OnExecute assigned then call it, otherwise, call
-      OnClick. }
-    if Assigned(FOnClick) and (Action <> nil) and (FOnClick <> Action.OnExecute) then
-      FOnClick(Self)
-    else
-    if not (csDesigning in ComponentState) and (ActionLink <> nil) then
-      FActionLink.Execute(Self)
-    else
+    // first call our OnClick
     if Assigned(FOnClick) then
       FOnClick(Self);
+    // then trigger the Action
+    if not (csDesigning in ComponentState) and (ActionLink <> nil)
+    and not OnClickIsActionExecute then
+      FActionLink.Execute(Self);
   end;
 end;
 
@@ -388,8 +395,6 @@ begin
       ShortCut := NewAction.ShortCut;
     if (not CheckDefaults) or (Visible = True) then
       Visible := NewAction.Visible;
-    if (not CheckDefaults) or not Assigned(OnClick) then
-      OnClick := NewAction.OnExecute;
   end;
 end;
 
@@ -535,11 +540,6 @@ end;
 function TMenuItem.IsImageIndexStored: Boolean;
 begin
   Result := (ActionLink = nil) or not FActionLink.IsImageIndexLinked;
-end;
-
-function TMenuItem.IsOnClickStored: Boolean;
-begin
-  Result := (ActionLink = nil) or not FActionLink.IsOnExecuteLinked;
 end;
 
 {------------------------------------------------------------------------------
@@ -1497,7 +1497,6 @@ begin
       HelpContext := Self.HelpContext;
       Hint := Self.Hint;
       ImageIndex := Self.ImageIndex;
-      OnExecute := Self.OnClick;
       Visible := Self.Visible;
     end
   end else

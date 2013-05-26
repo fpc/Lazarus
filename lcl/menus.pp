@@ -153,7 +153,6 @@ type
     function IsHelpContextStored: boolean;
     function IsHintStored: Boolean;
     function IsImageIndexStored: Boolean;
-    function IsOnClickStored: Boolean;
     function IsShortCutStored: boolean;
     function IsVisibleStored: boolean;
     procedure SetAutoCheck(const AValue: boolean);
@@ -284,7 +283,7 @@ type
     property SubMenuImages: TCustomImageList read FSubMenuImages write SetSubMenuImages;
     property Visible: Boolean read FVisible write SetVisible
                               stored IsVisibleStored default True;
-    property OnClick: TNotifyEvent read FOnClick write FOnClick stored IsOnClickStored;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
   TMenuItemClass = class of TMenuItem;
 

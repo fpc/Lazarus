@@ -76,8 +76,7 @@ end;
 
 function TMenuActionLink.IsOnExecuteLinked: Boolean;
 begin
-  Result := inherited IsOnExecuteLinked
-    and CompareMethods(TMethod(FClient.OnClick),TMethod(Action.OnExecute));
+  Result := inherited IsOnExecuteLinked;
 end;
 
 procedure TMenuActionLink.SetAutoCheck(Value: Boolean);
@@ -127,7 +126,8 @@ end;
 
 procedure TMenuActionLink.SetOnExecute(Value: TNotifyEvent);
 begin
-  if IsOnExecuteLinked then FClient.OnClick := Value;
+  // Note: formerly this changed FClient.OnClick, but that is unneeded, because
+  //       TMenuItem.Click executes Action
 end;
 
 
