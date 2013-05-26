@@ -728,10 +728,10 @@ type
       out ParameterAtom, ProcNameAtom: TAtomPosition;
       out ParameterIndex: integer): boolean;
   protected
-    function CheckDirectoryCache: boolean;
   public
     constructor Create;
     destructor Destroy; override;
+    function CheckDirectoryCache: boolean;
     procedure ConsistencyCheck; override;
     procedure CalcMemSize(Stats: TCTMemStats); override;
 
