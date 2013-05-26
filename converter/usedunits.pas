@@ -216,6 +216,7 @@ begin
   UsesNode:=UsesSectionNode;
   if UsesNode=nil then exit(true);
   with fCTLink do begin
+    if not CodeTool.CheckDirectoryCache then exit(false);
     CodeTool.MoveCursorToUsesStart(UsesNode);
     repeat
       // read next unit name
@@ -230,7 +231,8 @@ begin
       NewUnitName:=OldUnitName;
       LowFileN:=LowerCase(NewUnitName);
       NewInFilename:=OldInFilename;
-      FullFileN:=CodeTool.FindUnitCaseInsensitive(NewUnitName,NewInFilename);
+      FullFileN:=CodeTool.DirectoryCache.FindUnitSourceInCompletePath(
+                                            NewUnitName,NewInFilename,True,True);
       if FullFileN<>'' then begin                         // * Unit found *
         OmitUnit := Settings.OmitProjUnits.Contains(NewUnitName);
         // Report omitted units as missing, pretend they don't exist here,
@@ -288,7 +290,8 @@ begin
                                     [AOldName, ANewName]), '', -1);
     // If the unit is not found, open the package containing it.
     UnitInFileName:='';
-    if fCTLink.CodeTool.FindUnitCaseInsensitive(ANewName,UnitInFileName) = '' then
+    if fCTLink.CodeTool.DirectoryCache.FindUnitSourceInCompletePath(
+                                    ANewName,UnitInFileName,True,False) = '' then
       if Assigned(fOwnerTool.OnCheckPackageDependency) then
         if not fOwnerTool.OnCheckPackageDependency(ANewName) then
           ;
@@ -710,7 +713,8 @@ begin
     IDEMessagesWindow.AddMsg('Added unit '+AUnitName+ ' to uses section', '', -1);
     // If the unit is not found, open the package containing it.
     UnitInFileName:='';
-    if fCTLink.CodeTool.FindUnitCaseInsensitive(AUnitName,UnitInFileName) = '' then
+    if fCTLink.CodeTool.DirectoryCache.FindUnitSourceInCompletePath(
+                                   AUnitName,UnitInFileName,True,False) = '' then
       if Assigned(fOnCheckPackageDependency) then
         if not fOnCheckPackageDependency(AUnitName) then
           ;

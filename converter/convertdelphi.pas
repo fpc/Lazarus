@@ -999,8 +999,8 @@ begin
 
   RemoveNonExistingFiles(false);
   CleanUpCompilerOptionsSearchPaths(CompOpts);
-  // LCL dependency is added automatically later for GUI applications.
-//  AddPackageDependency('LCL');
+  // LCL dependency should be added automatically later for GUI applications
+  AddPackageDependency('LCL');            // but in some special cases it is not.
   // ToDo: make an option to add NoGUI to Project.CompilerOptions.LCLWidgetType.
   if fProjPack is TProject then
     PkgBoss.OpenProjectDependencies(fProjPack as TProject, true);
