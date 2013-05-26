@@ -281,7 +281,7 @@ function TBuildManager.MacroFuncBuildMode(const Param: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
   if Project1<>nil then
-    Result:=Project1.ActiveBuildMode.Name
+    Result:=Project1.ActiveBuildMode.Identifier
   else
     Result:='';
 end;
