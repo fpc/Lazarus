@@ -7,8 +7,8 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
   ClientWidth = 640
   TabOrder = 0
   Visible = False
-  DesignLeft = 420
-  DesignTop = 200
+  DesignLeft = 401
+  DesignTop = 103
   object pnlElementAttributes: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = PnlTop2
@@ -18,13 +18,13 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 200
-    Top = 243
+    Height = 192
+    Top = 251
     Width = 640
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 200
+    ClientHeight = 192
     ClientWidth = 640
     Constraints.MinHeight = 192
     TabOrder = 1
@@ -65,7 +65,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       end
       object tbtnLocal: TToolButton
         Tag = 1
-        Left = 74
+        Left = 65
         Top = 0
         AutoSize = True
         Caption = 'tbtnLocal'
@@ -74,17 +74,43 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         Style = tbsCheck
       end
       object SetAttributeToDefaultButton: TToolButton
-        Left = 150
+        Left = 249
         Top = 0
         OnClick = SetAttributeToDefaultButtonClick
         ShowCaption = False
       end
       object ToolButton3: TToolButton
-        Left = 140
+        Left = 239
         Top = 0
         Width = 10
         Caption = 'ToolButton3'
         Style = tbsSeparator
+      end
+      object ToolButton1: TToolButton
+        Left = 123
+        Top = 0
+        Width = 10
+        Caption = 'ToolButton1'
+        Style = tbsSeparator
+      end
+      object tbnColor: TToolButton
+        Left = 133
+        Top = 0
+        AutoSize = True
+        Caption = 'tbnColor'
+        Down = True
+        Grouped = True
+        OnClick = tbnColorClick
+        Style = tbsCheck
+      end
+      object tbnPrior: TToolButton
+        Left = 188
+        Top = 0
+        AutoSize = True
+        Caption = 'tbnPrior'
+        Grouped = True
+        OnClick = tbnColorClick
+        Style = tbsCheck
       end
     end
     inline SynColorAttrEditor1: TSynColorAttrEditor
@@ -95,165 +121,342 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = pnlElementAttributes
       AnchorSideBottom.Side = asrBottom
-      Height = 159
+      Height = 151
       Top = 41
       Width = 640
       Anchors = [akTop, akLeft, akRight, akBottom]
-      ClientHeight = 159
+      ClientHeight = 151
       ClientWidth = 640
       TabOrder = 1
-      inherited ForeGroundLabel: TLabel
-        Top = 8
-        Width = 107
-      end
-      inherited BackGroundLabel: TLabel
-        Top = 35
-        Width = 109
-      end
       inherited ForeGroundUseDefaultCheckBox: TCheckBox
         AnchorSideLeft.Control = SynColorAttrEditor1
-        Height = 21
-        Width = 228
       end
       inherited ForegroundColorBox: TColorBox
         AnchorSideTop.Control = SynColorAttrEditor1
         AnchorSideRight.Control = SynColorAttrEditor1
-        Left = 240
-        Height = 24
+        Width = 200
       end
       inherited BackGroundColorBox: TColorBox
         AnchorSideRight.Control = SynColorAttrEditor1
-        Left = 240
-        Height = 24
-        Top = 30
+        Width = 200
       end
       inherited BackGroundUseDefaultCheckBox: TCheckBox
-        Height = 21
-        Top = 32
-        Width = 230
+        AnchorSideLeft.Control = SynColorAttrEditor1
       end
       inherited FrameColorBox: TColorBox
         AnchorSideRight.Control = SynColorAttrEditor1
-        Left = 240
-        Height = 24
-        Top = 57
+        Width = 200
       end
       inherited FrameColorUseDefaultCheckBox: TCheckBox
-        Height = 21
-        Top = 59
-        Width = 224
+        AnchorSideLeft.Control = SynColorAttrEditor1
       end
       inherited pnlUnderline: TPanel
-        Height = 44
-        Top = 111
-        Width = 169
-        ClientHeight = 44
-        ClientWidth = 169
-        inherited TextUnderlineRadioPanel: TPanel
+        AnchorSideLeft.Control = SynColorAttrEditor1
+      end
+      inherited ForeAlphaLabel: TLabel
+        Left = 414
+      end
+      inherited BackAlphaLabel: TLabel
+        Left = 414
+      end
+      inherited FrameAlphaLabel: TLabel
+        Left = 414
+      end
+      inherited ForeAlphaSpin: TSpinEdit
+        Left = 502
+      end
+      inherited BackAlphaSpin: TSpinEdit
+        Left = 504
+      end
+      inherited FrameAlphaSpin: TSpinEdit
+        Left = 512
+      end
+      inherited ForePriorLabel: TLabel
+        Left = 567
+      end
+      inherited BackPriorLabel: TLabel
+        Left = 569
+      end
+      inherited FramePriorLabel: TLabel
+        Left = 577
+      end
+      inherited ForePriorSpin: TSpinEdit
+        Left = 649
+      end
+      inherited BackPriorSpin: TSpinEdit
+        Left = 653
+      end
+      inherited FramePriorSpin: TSpinEdit
+        Left = 669
+      end
+    end
+    object PriorityEditor: TPanel
+      AnchorSideLeft.Control = pnlElementAttributes
+      AnchorSideTop.Control = ToolBar1
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = pnlElementAttributes
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = pnlElementAttributes
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 151
+      Top = 41
+      Width = 640
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      ClientHeight = 151
+      ClientWidth = 640
+      Constraints.MinHeight = 140
+      TabOrder = 2
+      object ForePriorPanel: TPanel
+        Left = 1
+        Height = 149
+        Top = 1
+        Width = 170
+        Align = alLeft
+        ClientHeight = 149
+        ClientWidth = 170
+        TabOrder = 0
+        object ForePriorLabel: TLabel
+          Left = 1
+          Height = 15
+          Top = 1
+          Width = 168
+          Align = alTop
+          Caption = 'ForePriorLabel'
+          ParentColor = False
+        end
+        object ForePriorList: TTreeView
+          Left = 1
+          Height = 108
+          Top = 16
+          Width = 168
+          Align = alClient
+          AutoExpand = True
+          DefaultItemHeight = 18
+          ReadOnly = True
+          ScrollBars = ssAutoVertical
+          ShowButtons = False
+          ShowLines = False
+          ShowRoot = False
+          SortType = stData
+          TabOrder = 0
+          OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
+          OnClick = ForePriorListClick
+          OnCompare = ForePriorListCompare
+          Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+          TreeLinePenStyle = psClear
+        end
+        object ForePriorValPanel: TPanel
+          Left = 1
           Height = 23
-          Top = 21
-          Width = 155
+          Top = 125
+          Width = 168
+          Align = alBottom
+          AutoSize = True
+          BorderSpacing.Top = 1
+          BevelOuter = bvNone
           ClientHeight = 23
-          ClientWidth = 155
-          inherited TextUnderlineRadioOn: TRadioButton
-            Height = 21
-            Width = 42
+          ClientWidth = 168
+          TabOrder = 1
+          object ForePriorEdit: TEdit
+            AnchorSideRight.Control = ForePriorUpDown
+            Left = 1
+            Height = 23
+            Top = 1
+            Width = 147
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Right = 3
+            OnEditingDone = ForePriorEditChange
+            OnKeyPress = ForePriorEditKeyPress
+            TabOrder = 0
+            Text = '0'
           end
-          inherited TextUnderlineRadioOff: TRadioButton
-            Left = 49
-            Height = 21
-            Width = 42
+          object ForePriorUpDown: TUpDown
+            AnchorSideTop.Control = ForePriorValPanel
+            AnchorSideRight.Control = ForePriorValPanel
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Control = ForePriorValPanel
+            AnchorSideBottom.Side = asrBottom
+            Left = 151
+            Height = 23
+            Top = 0
+            Width = 17
+            Anchors = [akTop, akRight, akBottom]
+            Min = 0
+            Position = 0
+            TabOrder = 1
+            Wrap = False
+            OnClick = ForePriorUpDownClick
           end
-          inherited TextUnderlineRadioInvert: TRadioButton
-            Left = 94
-            Height = 21
-            Width = 60
-          end
-        end
-        inherited TextUnderlineCheckBox: TCheckBox
-          Height = 21
-          Width = 169
         end
       end
-      inherited pnlBold: TPanel
-        Left = 181
-        Height = 44
-        Top = 111
-        Width = 155
-        ClientHeight = 44
-        ClientWidth = 155
-        inherited TextBoldRadioPanel: TPanel
+      object BackPriorPanel: TPanel
+        Left = 177
+        Height = 149
+        Top = 1
+        Width = 170
+        Align = alLeft
+        BorderSpacing.Left = 6
+        ClientHeight = 149
+        ClientWidth = 170
+        TabOrder = 1
+        object BackPriorLabel: TLabel
+          Left = 1
+          Height = 15
+          Top = 1
+          Width = 168
+          Align = alTop
+          Caption = 'Label1'
+          ParentColor = False
+        end
+        object BackPriorList: TTreeView
+          Left = 1
+          Height = 108
+          Top = 16
+          Width = 168
+          Align = alClient
+          AutoExpand = True
+          DefaultItemHeight = 18
+          ReadOnly = True
+          ScrollBars = ssAutoVertical
+          ShowButtons = False
+          ShowLines = False
+          ShowRoot = False
+          SortType = stData
+          TabOrder = 0
+          OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
+          OnClick = ForePriorListClick
+          OnCompare = ForePriorListCompare
+          Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+          TreeLinePenStyle = psClear
+        end
+        object BackPriorValPanel: TPanel
+          Left = 1
           Height = 23
-          Top = 21
-          Width = 155
+          Top = 125
+          Width = 168
+          Align = alBottom
+          AutoSize = True
+          BorderSpacing.Top = 1
+          BevelOuter = bvNone
           ClientHeight = 23
-          ClientWidth = 155
-          inherited TextBoldRadioInvert: TRadioButton
-            Left = 94
-            Height = 21
-            Width = 60
+          ClientWidth = 168
+          TabOrder = 1
+          object BackPriorEdit: TEdit
+            AnchorSideRight.Control = BackPriorUpDown
+            Left = 0
+            Height = 23
+            Top = 0
+            Width = 148
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Right = 3
+            OnEditingDone = ForePriorEditChange
+            OnKeyPress = ForePriorEditKeyPress
+            TabOrder = 0
+            Text = '0'
           end
-          inherited TextBoldRadioOn: TRadioButton
-            Height = 21
-            Width = 42
+          object BackPriorUpDown: TUpDown
+            AnchorSideTop.Control = BackPriorValPanel
+            AnchorSideRight.Control = BackPriorValPanel
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Control = BackPriorValPanel
+            AnchorSideBottom.Side = asrBottom
+            Left = 151
+            Height = 23
+            Top = 0
+            Width = 17
+            Anchors = [akTop, akRight, akBottom]
+            Min = 0
+            Position = 0
+            TabOrder = 1
+            Wrap = False
+            OnClick = ForePriorUpDownClick
           end
-          inherited TextBoldRadioOff: TRadioButton
-            Left = 49
-            Height = 21
-            Width = 42
-          end
-        end
-        inherited TextBoldCheckBox: TCheckBox
-          Height = 21
-          Width = 136
         end
       end
-      inherited pnlItalic: TPanel
-        Left = 342
-        Height = 44
-        Top = 111
-        Width = 155
-        ClientHeight = 44
-        ClientWidth = 155
-        inherited TextItalicRadioPanel: TPanel
+      object FramePriorPanel: TPanel
+        Left = 353
+        Height = 149
+        Top = 1
+        Width = 170
+        Align = alLeft
+        BorderSpacing.Left = 6
+        ClientHeight = 149
+        ClientWidth = 170
+        TabOrder = 2
+        object FramePriorLabel: TLabel
+          Left = 1
+          Height = 15
+          Top = 1
+          Width = 168
+          Align = alTop
+          Caption = 'Label1'
+          ParentColor = False
+        end
+        object FramePriorList: TTreeView
+          Left = 1
+          Height = 108
+          Top = 16
+          Width = 168
+          Align = alClient
+          AutoExpand = True
+          DefaultItemHeight = 18
+          ReadOnly = True
+          ScrollBars = ssAutoVertical
+          ShowButtons = False
+          ShowLines = False
+          ShowRoot = False
+          SortType = stData
+          TabOrder = 0
+          OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
+          OnClick = ForePriorListClick
+          OnCompare = ForePriorListCompare
+          Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+          TreeLinePenStyle = psClear
+        end
+        object FramePriorValPanel: TPanel
+          Left = 1
           Height = 23
-          Top = 21
-          Width = 155
+          Top = 125
+          Width = 168
+          Align = alBottom
+          AutoSize = True
+          BorderSpacing.Top = 1
+          BevelOuter = bvNone
           ClientHeight = 23
-          ClientWidth = 155
-          inherited TextItalicRadioInvert: TRadioButton
-            Left = 94
-            Height = 21
-            Width = 60
+          ClientWidth = 168
+          TabOrder = 1
+          object FramePriorEdit: TEdit
+            AnchorSideRight.Control = FramePriorUpDown
+            Left = 0
+            Height = 23
+            Top = 0
+            Width = 148
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Right = 3
+            OnEditingDone = ForePriorEditChange
+            OnKeyPress = ForePriorEditKeyPress
+            TabOrder = 0
+            Text = '0'
           end
-          inherited TextItalicRadioOn: TRadioButton
-            Height = 21
-            Width = 42
-          end
-          inherited TextItalicRadioOff: TRadioButton
-            Left = 49
-            Height = 21
-            Width = 42
+          object FramePriorUpDown: TUpDown
+            AnchorSideTop.Control = FramePriorValPanel
+            AnchorSideRight.Control = FramePriorValPanel
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Control = FramePriorValPanel
+            AnchorSideBottom.Side = asrBottom
+            Left = 151
+            Height = 23
+            Top = 0
+            Width = 17
+            Anchors = [akTop, akRight, akBottom]
+            Min = 0
+            Position = 0
+            TabOrder = 1
+            Wrap = False
+            OnClick = ForePriorUpDownClick
           end
         end
-        inherited TextItalicCheckBox: TCheckBox
-          Height = 21
-          Width = 138
-        end
-      end
-      inherited FrameStyleBox: TComboBox
-        Left = 343
-        Height = 24
-        Top = 84
-      end
-      inherited FrameEdgesBox: TComboBox
-        Left = 240
-        Height = 24
-        Top = 84
-      end
-      inherited ColumnPosBevel: TPanel
-        Left = 240
-        Top = 158
       end
     end
   end
@@ -283,17 +486,17 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = pnlElementAttributes
     Left = 0
-    Height = 218
+    Height = 226
     Top = 25
     Width = 640
     Anchors = [akTop, akLeft, akRight, akBottom]
     BevelOuter = bvNone
-    ClientHeight = 218
+    ClientHeight = 226
     ClientWidth = 640
     TabOrder = 2
     object ColorElementTree: TTreeView
       Left = 0
-      Height = 212
+      Height = 220
       Top = 6
       Width = 200
       Align = alLeft
@@ -322,7 +525,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideBottom.Control = ColorElementTree
       AnchorSideBottom.Side = asrBottom
       Left = 207
-      Height = 212
+      Height = 220
       Top = 6
       Width = 433
       BorderSpacing.Left = 1
@@ -338,7 +541,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       TabStop = False
       OnMouseUp = ColorPreviewMouseUp
       BookMarkOptions.Xoffset = 30
-      Gutter.Width = 61
+      Gutter.Width = 59
       Gutter.MouseActions = <      
         item
           ClickCount = ccAny
@@ -753,33 +956,42 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         'ColorPreview'
       )
       VisibleSpecialChars = [vscSpace, vscTabAtLast]
+      SelectedColor.FrameEdges = sfeAround
       SelectedColor.BackPriority = 50
       SelectedColor.ForePriority = 50
       SelectedColor.FramePriority = 50
       SelectedColor.BoldPriority = 50
       SelectedColor.ItalicPriority = 50
       SelectedColor.UnderlinePriority = 50
+      SelectedColor.StrikeOutPriority = 50
+      IncrementColor.FrameEdges = sfeAround
+      HighlightAllColor.FrameEdges = sfeAround
       BracketHighlightStyle = sbhsBoth
       BracketMatchColor.Background = clNone
       BracketMatchColor.Foreground = clNone
+      BracketMatchColor.FrameEdges = sfeAround
       BracketMatchColor.Style = [fsBold]
       FoldedCodeColor.Background = clNone
       FoldedCodeColor.Foreground = clGray
       FoldedCodeColor.FrameColor = clGray
+      FoldedCodeColor.FrameEdges = sfeAround
       MouseLinkColor.Background = clNone
       MouseLinkColor.Foreground = clBlue
+      MouseLinkColor.FrameEdges = sfeAround
       LineHighlightColor.Background = clNone
       LineHighlightColor.Foreground = clNone
+      LineHighlightColor.FrameEdges = sfeAround
       inline TSynGutterPartList
         object TSynGutterMarks
           Width = 24
           MouseActions = <>
         end
         object TSynGutterLineNumber
-          Width = 21
+          Width = 19
           MouseActions = <>
           MarkupInfo.Background = clBtnFace
           MarkupInfo.Foreground = clNone
+          MarkupInfo.FrameEdges = sfeAround
           DigitCount = 2
           ShowOnlyLineNumbersMultiplesOf = 1
           ZeroStart = False
@@ -796,6 +1008,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           MouseActions = <>
           MarkupInfo.Background = clWhite
           MarkupInfo.Foreground = clGray
+          MarkupInfo.FrameEdges = sfeAround
         end
         object TSynGutterCodeFolding
           MouseActions = <          
@@ -826,6 +1039,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
             end>
           MarkupInfo.Background = clNone
           MarkupInfo.Foreground = clGray
+          MarkupInfo.FrameEdges = sfeAround
           MouseActionsExpanded = <          
             item
               ClickCount = ccAny
@@ -852,7 +1066,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     end
     object Splitter1: TSplitter
       Left = 201
-      Height = 218
+      Height = 226
       Top = 0
       Width = 5
     end
@@ -904,7 +1118,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       Top = 0
       Width = 139
       BorderSpacing.Top = 3
-      ItemHeight = 0
+      ItemHeight = 15
       Items.Strings = (
         'pp;pas;inc;lpr;lrs;dpr;dpk'
         'pp;pas;inc;lpr;lrs'

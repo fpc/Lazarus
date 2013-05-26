@@ -2,10 +2,11 @@ object SynColorAttrEditor: TSynColorAttrEditor
   Left = 0
   Height = 145
   Top = 0
-  Width = 517
+  Width = 690
   ClientHeight = 145
-  ClientWidth = 517
+  ClientWidth = 690
   Constraints.MinHeight = 140
+  LCLVersion = '1.1'
   OnResize = pnlElementAttributesResize
   TabOrder = 0
   DesignLeft = 399
@@ -54,7 +55,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     Left = 204
     Height = 22
     Top = 3
-    Width = 141
+    Width = 160
     DefaultColorColor = clWhite
     Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
     OnGetColors = ForegroundColorBoxGetColors
@@ -74,7 +75,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     Left = 204
     Height = 22
     Top = 28
-    Width = 141
+    Width = 160
     DefaultColorColor = clWhite
     Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
     OnGetColors = ForegroundColorBoxGetColors
@@ -108,7 +109,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     Left = 204
     Height = 22
     Top = 53
-    Width = 141
+    Width = 160
     DefaultColorColor = clWhite
     Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
     OnGetColors = ForegroundColorBoxGetColors
@@ -478,7 +479,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = ForegroundColorBox
     AnchorSideTop.Side = asrCenter
-    Left = 355
+    Left = 374
     Height = 15
     Top = 7
     Width = 82
@@ -491,7 +492,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = BackGroundColorBox
     AnchorSideTop.Side = asrCenter
-    Left = 355
+    Left = 374
     Height = 15
     Top = 32
     Width = 84
@@ -504,7 +505,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = FrameColorBox
     AnchorSideTop.Side = asrCenter
-    Left = 355
+    Left = 374
     Height = 15
     Top = 57
     Width = 92
@@ -517,7 +518,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = ForeAlphaLabel
     AnchorSideTop.Side = asrCenter
-    Left = 443
+    Left = 462
     Height = 23
     Top = 3
     Width = 55
@@ -526,6 +527,8 @@ object SynColorAttrEditor: TSynColorAttrEditor
     MinValue = 1
     OnChange = ForeAlphaSpinChange
     OnEditingDone = ForeAlphaSpinChange
+    OnEnter = ForeAlphaSpinEnter
+    OnExit = ForeAlphaSpinChange
     OnResize = ForeAlphaSpinChange
     TabOrder = 2
     Value = 256
@@ -535,7 +538,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = BackAlphaLabel
     AnchorSideTop.Side = asrCenter
-    Left = 445
+    Left = 464
     Height = 23
     Top = 28
     Width = 55
@@ -544,6 +547,8 @@ object SynColorAttrEditor: TSynColorAttrEditor
     MinValue = 1
     OnChange = ForeAlphaSpinChange
     OnEditingDone = ForeAlphaSpinChange
+    OnEnter = ForeAlphaSpinEnter
+    OnExit = ForeAlphaSpinChange
     OnResize = ForeAlphaSpinChange
     TabOrder = 5
     Value = 256
@@ -553,7 +558,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = FrameAlphaLabel
     AnchorSideTop.Side = asrCenter
-    Left = 453
+    Left = 472
     Height = 23
     Top = 53
     Width = 55
@@ -562,8 +567,100 @@ object SynColorAttrEditor: TSynColorAttrEditor
     MinValue = 1
     OnChange = ForeAlphaSpinChange
     OnEditingDone = ForeAlphaSpinChange
+    OnEnter = ForeAlphaSpinEnter
+    OnExit = ForeAlphaSpinChange
     OnResize = ForeAlphaSpinChange
     TabOrder = 8
     Value = 256
+  end
+  object ForePriorLabel: TLabel
+    AnchorSideLeft.Control = ForeAlphaSpin
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ForegroundColorBox
+    AnchorSideTop.Side = asrCenter
+    Left = 527
+    Height = 15
+    Top = 7
+    Width = 76
+    BorderSpacing.Left = 10
+    Caption = 'ForePriorLabel'
+    ParentColor = False
+  end
+  object BackPriorLabel: TLabel
+    AnchorSideLeft.Control = BackAlphaSpin
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = BackGroundColorBox
+    AnchorSideTop.Side = asrCenter
+    Left = 529
+    Height = 15
+    Top = 32
+    Width = 78
+    BorderSpacing.Left = 10
+    Caption = 'BackPriorLabel'
+    ParentColor = False
+  end
+  object FramePriorLabel: TLabel
+    AnchorSideLeft.Control = FrameAlphaSpin
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = FrameColorBox
+    AnchorSideTop.Side = asrCenter
+    Left = 537
+    Height = 15
+    Top = 57
+    Width = 86
+    BorderSpacing.Left = 10
+    Caption = 'FramePriorLabel'
+    ParentColor = False
+  end
+  object ForePriorSpin: TSpinEdit
+    AnchorSideLeft.Control = ForePriorLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ForePriorLabel
+    AnchorSideTop.Side = asrCenter
+    Left = 609
+    Height = 23
+    Top = 3
+    Width = 55
+    BorderSpacing.Left = 6
+    MaxValue = 9999
+    OnChange = ForePriorSpinChange
+    OnEditingDone = ForePriorSpinChange
+    OnExit = ForePriorSpinChange
+    TabOrder = 15
+    Value = 1
+  end
+  object BackPriorSpin: TSpinEdit
+    AnchorSideLeft.Control = BackPriorLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = BackPriorLabel
+    AnchorSideTop.Side = asrCenter
+    Left = 613
+    Height = 23
+    Top = 28
+    Width = 55
+    BorderSpacing.Left = 6
+    MaxValue = 9999
+    OnChange = ForePriorSpinChange
+    OnEditingDone = ForePriorSpinChange
+    OnExit = ForePriorSpinChange
+    TabOrder = 16
+    Value = 1
+  end
+  object FramePriorSpin: TSpinEdit
+    AnchorSideLeft.Control = FramePriorLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = FrameAlphaLabel
+    AnchorSideTop.Side = asrCenter
+    Left = 629
+    Height = 23
+    Top = 53
+    Width = 55
+    BorderSpacing.Left = 6
+    MaxValue = 9999
+    OnChange = ForePriorSpinChange
+    OnEditingDone = ForePriorSpinChange
+    OnExit = ForePriorSpinChange
+    TabOrder = 17
+    Value = 1
   end
 end

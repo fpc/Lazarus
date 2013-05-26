@@ -18,9 +18,15 @@ type
   { TSynColorAttrEditor }
 
   TSynColorAttrEditor = class(TFrame)
+    BackPriorLabel: TLabel;
+    BackPriorSpin: TSpinEdit;
     BackGroundColorBox: TColorBox;
     BackGroundLabel: TLabel;
     ColumnPosBevel: TPanel;
+    ForePriorLabel: TLabel;
+    ForePriorSpin: TSpinEdit;
+    FramePriorSpin: TSpinEdit;
+    FramePriorLabel: TLabel;
     FrameStyleBox: TComboBox;
     FrameEdgesBox: TComboBox;
     FrameColorBox: TColorBox;
@@ -54,8 +60,10 @@ type
     ForeGroundLabel: TLabel;
     ForeGroundUseDefaultCheckBox: TCheckBox;
     procedure ForeAlphaSpinChange(Sender: TObject);
+    procedure ForeAlphaSpinEnter(Sender: TObject);
     procedure ForegroundColorBoxChange(Sender: TObject);
     procedure ForegroundColorBoxGetColors(Sender: TCustomColorBox; Items: TStrings);
+    procedure ForePriorSpinChange(Sender: TObject);
     procedure FrameEdgesBoxDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
       State: TOwnerDrawState);
     procedure FrameStyleBoxDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
@@ -68,18 +76,22 @@ type
     FCurHighlightElement: TColorSchemeAttribute;
     FCurrentColorScheme: TColorSchemeLanguage;
     FOnChanged: TNotifyEvent;
+    FShowPrior: Boolean;
     UpdatingColor: Boolean;
 
     procedure SetCurHighlightElement(AValue: TColorSchemeAttribute);
     procedure DoChanged;
+    procedure SetShowPrior(AValue: Boolean);
   public
     { public declarations }
+    constructor Create(TheOwner: TComponent); override;
     procedure Setup;
     procedure UpdateAll;
     // CurrentColorScheme must be set before CurHighlightElement
     property CurHighlightElement: TColorSchemeAttribute read FCurHighlightElement write SetCurHighlightElement;
     property CurrentColorScheme: TColorSchemeLanguage read FCurrentColorScheme write FCurrentColorScheme;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
+    property ShowPrior: Boolean read FShowPrior write SetShowPrior;
   end;
 
 implementation
@@ -167,6 +179,14 @@ begin
   DoChanged;
 end;
 
+procedure TSynColorAttrEditor.ForeAlphaSpinEnter(Sender: TObject);
+begin
+  UpdatingColor := True;
+  If TSpinEdit(Sender).Value = 256 then
+    TSpinEdit(Sender).Caption := '256';
+  UpdatingColor := False;
+end;
+
 procedure TSynColorAttrEditor.ForegroundColorBoxGetColors(Sender: TCustomColorBox; Items: TStrings);
 var
   i: longint;
@@ -176,6 +196,25 @@ begin
     Items[i] := dlgColorNotModified;
     Items.Move(i, 1);
   end;
+end;
+
+procedure TSynColorAttrEditor.ForePriorSpinChange(Sender: TObject);
+var
+  v: Integer;
+begin
+  if (FCurHighlightElement = nil) then
+    exit;
+
+  v := TSpinEdit(Sender).Value;
+
+  if Sender = ForePriorSpin then
+    FCurHighlightElement.ForePriority := v;
+  if Sender = BackPriorSpin then
+    FCurHighlightElement.BackPriority := v;
+  if Sender = FramePriorLabel then
+    FCurHighlightElement.FramePriority := v;
+
+  DoChanged;
 end;
 
 procedure TSynColorAttrEditor.FrameEdgesBoxDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
@@ -483,6 +522,12 @@ begin
     else
       ForeAlphaSpin.Value    := FCurHighlightElement.ForeAlpha;
 
+    ForePriorSpin.Visible  := ForegroundColorBox.Visible and FShowPrior and
+                             (hafPrior in FCurHighlightElement.Features);
+    ForePriorLabel.Visible := ForePriorSpin.Visible;
+    ForePriorSpin.Value    := FCurHighlightElement.ForePriority;
+
+
     // BackGround
     BackGroundLabel.Visible              := (hafBackColor in FCurHighlightElement.Features) and
                                             (FCurHighlightElement.Group = agnDefault);
@@ -506,6 +551,11 @@ begin
     end
     else
       BackAlphaSpin.Value    := FCurHighlightElement.BackAlpha;
+
+    BackPriorSpin.Visible  := ForegroundColorBox.Visible and FShowPrior and
+                             (hafPrior in FCurHighlightElement.Features);
+    BackPriorLabel.Visible := BackPriorSpin.Visible;
+    BackPriorSpin.Value    := FCurHighlightElement.BackPriority;
 
     // Frame
     FrameColorUseDefaultCheckBox.Visible := hafFrameColor in FCurHighlightElement.Features;
@@ -533,6 +583,11 @@ begin
     end
     else
       FrameAlphaSpin.Value    := FCurHighlightElement.FrameAlpha;
+
+    FramePriorSpin.Visible  := ForegroundColorBox.Visible and FShowPrior and
+                             (hafPrior in FCurHighlightElement.Features);
+    FramePriorLabel.Visible := FramePriorSpin.Visible;
+    FramePriorSpin.Value    := FCurHighlightElement.FramePriority;
 
     // Styles
     TextBoldCheckBox.Visible      := hafStyle in FCurHighlightElement.Features;
@@ -607,6 +662,19 @@ begin
     FOnChanged(Self);
 end;
 
+procedure TSynColorAttrEditor.SetShowPrior(AValue: Boolean);
+begin
+  if FShowPrior = AValue then Exit;
+  FShowPrior := AValue;
+  UpdateAll;
+end;
+
+constructor TSynColorAttrEditor.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FShowPrior := False;
+end;
+
 procedure TSynColorAttrEditor.Setup;
 begin
   UpdatingColor := False;
@@ -619,6 +687,9 @@ begin
   ForeAlphaLabel.Caption := lisAlpha;
   BackAlphaLabel.Caption := lisAlpha;
   FrameAlphaLabel.Caption := lisAlpha;
+  ForePriorLabel.Caption := lisPriority;
+  BackPriorLabel.Caption := lisPriority;
+  FramePriorLabel.Caption := lisPriority;
 
   TextBoldCheckBox.Caption := dlgEdBold;
   TextBoldRadioOn.Caption := dlgEdOn;

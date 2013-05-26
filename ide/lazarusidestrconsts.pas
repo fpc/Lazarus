@@ -1640,6 +1640,7 @@ resourcestring
   dlgColor = 'Color';
   dlgColors = 'Colors';
   dlgColorNotModified = 'Not modified';
+  dlgPriorities = 'Priorities';
 
   dlgForecolor = 'Foreground';
   dlgFrameColor = 'Text-mark';
@@ -5716,6 +5717,7 @@ resourcestring
   lisMMCustomOption = 'Custom Option';
   lisMMIDEMacro = 'IDE Macro';
   lisMMOverrideOutputDirectory = 'Override output directory (-FU)';
+  lisPriority = 'Priority';
 
 implementation
 

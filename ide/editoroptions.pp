@@ -273,6 +273,7 @@ type
     procedure ApplyTo(aDest: TSynHighlighterAttributes; aDefault: TColorSchemeAttribute = nil);
     procedure Assign(Src: TPersistent); override;
     function Equals(Other: TColorSchemeAttribute): Boolean; reintroduce;
+    function GetStoredValuesForAttrib: TColorSchemeAttribute; // The IDE default colors from the resources
     function GetSchemeGlobal: TColorSchemeAttribute;
     procedure LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String;
                           Defaults: TColorSchemeAttribute; Version: Integer);
@@ -313,6 +314,7 @@ type
     procedure Clear;
     procedure Assign(Src: TColorSchemeLanguage); reintroduce;
     function Equals(Other: TColorSchemeLanguage): Boolean; reintroduce;
+    function GetStoredValuesForLanguage: TColorSchemeLanguage; // The IDE default colors from the resources
     function IndexOfAttr(AnAttr: TColorSchemeAttribute): Integer;
     procedure LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String; Defaults: TColorSchemeLanguage;
               ColorVersion: Integer; aOldPath: String = '');
@@ -345,6 +347,7 @@ type
     constructor CreateFromXml(aXMLConfig: TRttiXMLConfig; const AName, aPath: String);
     destructor  Destroy; override;
     procedure Assign(Src: TColorScheme); reintroduce;
+    function GetStoredValuesForScheme: TColorScheme; // The IDE default colors from the resources
     procedure LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String;
                           Defaults: TColorScheme; aOldPath: String = '');
     procedure SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String; Defaults: TColorScheme);
@@ -1207,6 +1210,8 @@ type
 
 const
   EditorUserDefinedWordsKeyCatName = 'User defined word markup';
+  MARKUP_USER_DEF_PRIOR = 3500;
+
 var
   EditorUserDefinedWordsGlobalId: string = 'a';
 
@@ -1993,6 +1998,7 @@ begin
   FColorAttr := TColorSchemeAttribute.Create(nil, '');
   FColorAttr.Features := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior,hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask];
   FColorAttr.Group := agnText;
+  FColorAttr.SetAllPriorities(MARKUP_USER_DEF_PRIOR);
   FKeyAddSelectSmart := True;
 end;
 
@@ -2047,6 +2053,7 @@ begin
   def.Free;
 
   ColorDef := TColorSchemeAttribute.Create(nil, '');
+  ColorDef.SetAllPriorities(MARKUP_USER_DEF_PRIOR);
   FColorAttr.StoredName := 'c1';
   FColorAttr.LoadFromXml(XMLConfig, Path + 'Color/', ColorDef, EditorOptsFormatVersion);
   ColorDef.Free;
@@ -2128,6 +2135,7 @@ begin
   def.Free;
 
   ColorDef := TColorSchemeAttribute.Create(nil, '');
+  ColorDef.SetAllPriorities(MARKUP_USER_DEF_PRIOR);
   FColorAttr.StoredName := 'c1';
   FColorAttr.SaveToXml(XMLConfig, Path + 'Color/', ColorDef);
   ColorDef.Free;
@@ -2648,6 +2656,21 @@ begin
       '      mrCancel, mrIgnore: dec(X);'#13+
       '    end;'#13+
       '    ListBox1.Items.Add(IntToStr(X));'#13 +
+//{$IFDEF WithSynMarkupIfDef}
+//      '    {$IFDEF Foo}' +
+//      '      X := X + 1.0; {$R-} { Error line }'#13 +
+//      '      {$DEFINE a}' +
+//      '      case ModalResult of'#13+
+//      '        mrOK: inc(X);'#13+
+//      '        mrCancel, mrIgnore: dec(X);'#13+
+//      '      end;'#13+
+//      '    {$ELSE}' +
+//      '      {%region teset}'#13 +
+//      '      {%endregion}'#13 +
+//      '      with self do'#13 +
+//      '        X := 10;'#13 +
+//      '    {$ENDIF}' +
+//{$ENDIF}
       '  end;'#13 +
       'end;'#13 + #13;
     AddAttrSampleLines[ahaDisabledBreakpoint] := 20;
@@ -5650,6 +5673,15 @@ begin
       TSynHighlighterAttributesModifier(aDest).ForeAlpha := Src.ForeAlpha;
       TSynHighlighterAttributesModifier(aDest).BackAlpha := Src.BackAlpha;
       TSynHighlighterAttributesModifier(aDest).FrameAlpha := Src.FrameAlpha;
+
+      if hafPrior in Src.Features then begin
+        TSynHighlighterAttributesModifier(aDest).ForePriority      := Src.ForePriority;
+        TSynHighlighterAttributesModifier(aDest).BackPriority      := Src.BackPriority;
+        TSynHighlighterAttributesModifier(aDest).FramePriority     := Src.FramePriority;
+        TSynHighlighterAttributesModifier(aDest).BoldPriority      := Src.BoldPriority;
+        TSynHighlighterAttributesModifier(aDest).ItalicPriority    := Src.ItalicPriority;
+        TSynHighlighterAttributesModifier(aDest).UnderlinePriority := Src.UnderlinePriority;
+      end;
     end;
 
     if not (aDest is TSynSelectedColor) then begin
@@ -5713,6 +5745,13 @@ begin
             (Features   = Other.Features);
   end;
 
+function TColorSchemeAttribute.GetStoredValuesForAttrib: TColorSchemeAttribute;
+begin
+  Result := nil;
+  if (FOwner <> nil) and (FOwner.GetStoredValuesForLanguage <> nil) then
+    Result := FOwner.GetStoredValuesForLanguage.Attribute[StoredName];
+end;
+
 procedure TColorSchemeAttribute.LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String;
   Defaults: TColorSchemeAttribute; Version: Integer);
 var
@@ -5775,6 +5814,12 @@ begin
       Style      := Defaults.Style;
       StyleMask  := Defaults.StyleMask;
       UseSchemeGlobals := Defaults.UseSchemeGlobals;
+      ForePriority      := Defaults.ForePriority;
+      BackPriority      := Defaults.BackPriority;
+      FramePriority     := Defaults.FramePriority;
+      BoldPriority      := Defaults.BoldPriority;
+      ItalicPriority    := Defaults.ItalicPriority;
+      UnderlinePriority := Defaults.UnderlinePriority;
     end;
     if (Version <= 5) and (Defaults = Self) then     // Data was loaded above (Vers < 5)
       UseSchemeGlobals := False;
@@ -5853,6 +5898,13 @@ begin
   Result := GetEnumName(TypeInfo(TAdditionalHilightAttribute), ord(aha));
 end;
 
+function TColorSchemeLanguage.GetStoredValuesForLanguage: TColorSchemeLanguage;
+begin
+  Result := nil;
+  if (FOwner <> nil) and (FOwner.GetStoredValuesForScheme <> nil) then
+    Result := FOwner.GetStoredValuesForScheme.ColorScheme[FLanguage];
+end;
+
 constructor TColorSchemeLanguage.Create(const AGroup: TColorScheme;
   const ALang: TLazSyntaxHighlighter; IsSchemeDefault: Boolean = False);
 begin
@@ -5875,7 +5927,7 @@ end;
 
 constructor TColorSchemeLanguage.CreateFromXml(const AGroup: TColorScheme;
   const ALang: TLazSyntaxHighlighter; aXMLConfig: TRttiXMLConfig; aPath: String;
-  IsSchemeDefault: Boolean = False);
+  IsSchemeDefault: Boolean);
 var
   csa: TColorSchemeAttribute;
   i: Integer;
@@ -5910,7 +5962,7 @@ begin
   FormatVersion := aXMLConfig.GetValue(aPath + 'Version', 0);
   LoadFromXml(aXMLConfig, aPath, nil, FormatVersion);
 
-  AttributeByEnum[ahaMouseLink].FramePriority := 9999;
+
 end;
 
 destructor TColorSchemeLanguage.Destroy;
@@ -5999,10 +6051,14 @@ begin
     TmpPath := aPath + 'Lang' + StrToValidXMLName(FLanguageName) + '/'
   else
     TmpPath := aPath;
-  FormatVersion := aXMLConfig.GetValue(TmpPath + 'Version', 0);
-  if FormatVersion > ColorVersion then
-    FormatVersion := ColorVersion;
-  if FIsSchemeDefault and (FormatVersion < 6) then
+  if aXMLConfig.HasChildPaths(TmpPath) then begin
+    FormatVersion := aXMLConfig.GetValue(TmpPath + 'Version', 0);
+    if FormatVersion > ColorVersion then
+      FormatVersion := ColorVersion;
+    if FIsSchemeDefault and (FormatVersion < 6) then
+      FormatVersion := 6;
+  end
+  else
     FormatVersion := 6;
   TmpPath := TmpPath + 'Scheme' + StrToValidXMLName(Name) + '/';
 
@@ -6272,23 +6328,29 @@ begin
   Result := nil;
 end;
 
+function TColorScheme.GetStoredValuesForScheme: TColorScheme;
+begin
+  ColorSchemeFactory.ColorSchemeGroup[Name];
+end;
+
 constructor TColorScheme.Create(AName: String);
 begin
   inherited Create;
   FName := AName;
 end;
 
-constructor TColorScheme.CreateFromXml(aXMLConfig: TRttiXMLConfig; const AName,
-  aPath: String);
+constructor TColorScheme.CreateFromXml(aXMLConfig: TRttiXMLConfig; const AName, aPath: String);
 var
   i: TLazSyntaxHighlighter;
 begin
   Create(AName);
-  FDefaultColors := TColorSchemeLanguage.CreateFromXml(Self, lshNone, aXMLConfig, aPath  + 'Globals/', True);
+  FDefaultColors := TColorSchemeLanguage.CreateFromXml(Self, lshNone, aXMLConfig,
+    aPath  + 'Globals/', True);
   for i := low(TLazSyntaxHighlighter) to high(TLazSyntaxHighlighter) do
     // do not create duplicates
     if CompatibleLazSyntaxHilighter[i] = i then
-      FColorSchemes[i] := TColorSchemeLanguage.CreateFromXml(Self, i, aXMLConfig, aPath)
+      FColorSchemes[i] := TColorSchemeLanguage.CreateFromXml(Self, i, aXMLConfig,
+        aPath)
     else
       FColorSchemes[i] := nil;
 end;
@@ -6467,8 +6529,7 @@ begin
   end
 end;
 
-procedure TColorSchemeFactory.RegisterScheme(aXMLConfig: TRttiXMLConfig; AName,
-  aPath: String);
+procedure TColorSchemeFactory.RegisterScheme(aXMLConfig: TRttiXMLConfig; AName, aPath: String);
 var
   i, j: integer;
   lMapping: TColorScheme;

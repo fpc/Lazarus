@@ -674,6 +674,7 @@ end;
 procedure TEditorMarkupUserDefinedFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   SynColorAttrEditor1.Setup;
+  SynColorAttrEditor1.ShowPrior := True;
   tbNewList.Caption          := dlgMarkupUserDefinedListNew;
   tbDeleteList.Caption       := dlgMarkupUserDefinedListDel;
   lbListName.Caption         := dlgMarkupUserDefinedListName;

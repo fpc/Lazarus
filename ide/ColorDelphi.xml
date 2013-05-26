@@ -7,36 +7,42 @@
       </Names>
       <Globals Version="6">
         <SchemeDelphi>
-          <ahaTextBlock Background="10841427" Foreground="clWhite"/>
-          <ahaExecutionPoint Background="10066380" Foreground="clBlack"/>
-          <ahaEnabledBreakpoint Background="16762823" Foreground="clBlack"/>
-          <ahaDisabledBreakpoint Background="16762823" Foreground="clGray"/>
-          <ahaInvalidBreakpoint Background="clGreen" Foreground="clWhite"/>
-          <ahaUnknownBreakpoint Background="16762823" Foreground="clBlack"/>
-          <ahaErrorLine Background="clRed" Foreground="clWhite"/>
-          <ahaIncrementalSearch Background="clBlack" Foreground="16580045"/>
-          <ahaHighlightAll Background="clYellow"/>
-          <ahaBracketMatch Background="clAqua" FrameColor="13421782"/>
-          <ahaMouseLink Foreground="clBlue"/>
+          <ahaExecutionPoint Background="10066380" Foreground="clBlack" ForePriority="500" BackPriority="500" FramePriority="500"/>
+          <ahaEnabledBreakpoint Background="16762823" Foreground="clBlack" ForePriority="500" BackPriority="500" FramePriority="500"/>
+          <ahaDisabledBreakpoint Background="16762823" Foreground="clGray" ForePriority="500" BackPriority="500" FramePriority="500"/>
+          <ahaInvalidBreakpoint Background="clGreen" Foreground="clWhite" ForePriority="500" BackPriority="500" FramePriority="500"/>
+          <ahaUnknownBreakpoint Background="16762823" Foreground="clBlack" ForePriority="500" BackPriority="500" FramePriority="500"/>
+          <ahaErrorLine Background="clRed" Foreground="clWhite" ForePriority="500" BackPriority="500" FramePriority="500"/>
+          <ahaLineHighlight Background="15138810" ForePriority="500" BackPriority="500" FramePriority="500"/>
+          <ahaWordGroup FrameColor="clRed" ForePriority="3000" BackPriority="3000" FramePriority="3000"/>
+          <ahaBracketMatch Background="clAqua" FrameColor="13421782" ForePriority="3000" BackPriority="3000" FramePriority="3000"/>
+          <ahaHighlightWord FrameColor="13421782" ForePriority="3000" BackPriority="3000" FramePriority="3000"/>
+          <ahaIncrementalSearch Background="clBlack" Foreground="16580045" ForePriority="4000" BackPriority="4000" FramePriority="4000"/>
+          <ahaHighlightAll Background="clYellow" ForePriority="4000" BackPriority="4000" FramePriority="4000"/>
+          <ahaTemplateEditCur FrameColor="clAqua" ForePriority="6000" BackPriority="6000" FramePriority="6000"/>
+          <ahaTemplateEditSync FrameColor="clFuchsia" ForePriority="6000" BackPriority="6000" FramePriority="6000"/>
+          <ahaTemplateEditOther FrameColor="clMaroon" ForePriority="6000" BackPriority="6000" FramePriority="6000"/>
+          <ahaSyncroEditCur FrameColor="clFuchsia" ForePriority="6000" BackPriority="6000" FramePriority="6000"/>
+          <ahaSyncroEditSync FrameColor="clRed" ForePriority="6000" BackPriority="6000" FramePriority="6000"/>
+          <ahaSyncroEditOther FrameColor="clBlue" ForePriority="6000" BackPriority="6000" FramePriority="6000"/>
+          <ahaSyncroEditArea Background="16449510" ForePriority="2000" BackPriority="2000" FramePriority="2000"/>
+          <ahaTextBlock Background="10841427" Foreground="clWhite" ForePriority="7000" BackPriority="7000" FramePriority="7000"/>
+          <ahaMouseLink Foreground="clBlue" ForePriority="7500" BackPriority="7500" FramePriority="7500"/>
+          <ahaFoldedCode Foreground="13408665" FrameColor="13408665" ForePriority="8000" BackPriority="8000" FramePriority="8000"/>
+		  <ahaSpecialVisibleChars  ForePriority="8100" BackPriority="8100" FramePriority="8100"/>
+          <ahaTopInfoHint Background="clActiveCaption" Foreground="clBlack" FrameColor="clMaroon" FrameStyle="slsDashed" FrameEdges="sfeBottom" ForePriority="8500" BackPriority="8500" FramePriority="8500"/>
+          <ahaIfDefBlockInactive Foreground="clSilver" ForeAlpha="165" ForePriority="9050" BackPriority="9050" FramePriority="9050"/>
+          <ahaIfDefBlockActive  ForePriority="9000" BackPriority="9000" FramePriority="9000"/>
+          <ahaIfDefBlockTmpActive  ForePriority="9000" BackPriority="9000" FramePriority="9000"/>
+          <ahaIfDefNodeActive  ForePriority="9050" BackPriority="9050" FramePriority="9050"/>
+          <ahaIfDefNodeInactive ForePriority="9150" BackPriority="9150" FramePriority="9150"/>
+          <ahaIfDefNodeTmpActive  ForePriority="9050" BackPriority="9050" FramePriority="9050"/>
           <ahaLineNumber Background="16053492" Foreground="13408665"/>
-          <ahaLineHighlight Background="15138810"/>
           <ahaModifiedLine Background="16053492" Foreground="clLime" FrameColor="clYellow"/>
           <ahaCodeFoldingTree Background="16053492" Foreground="13408665"/>
-          <ahaHighlightWord FrameColor="13421782"/>
-          <ahaFoldedCode Foreground="13408665" FrameColor="13408665"/>
-          <ahaWordGroup FrameColor="clRed"/>
-          <ahaTemplateEditCur FrameColor="clAqua"/>
-          <ahaTemplateEditSync FrameColor="clFuchsia"/>
-          <ahaTemplateEditOther FrameColor="clMaroon"/>
-          <ahaSyncroEditCur FrameColor="clFuchsia"/>
-          <ahaSyncroEditSync FrameColor="clRed"/>
-          <ahaSyncroEditOther FrameColor="clBlue"/>
-          <ahaSyncroEditArea Background="16449510"/>
           <ahaGutterSeparator Background="clWhite" Foreground="clGray"/>
           <ahaGutter Background="clBtnFace"/>
           <ahaRightMargin Foreground="clSilver"/>
-          <ahaTopInfoHint Background="clActiveCaption" Foreground="clBlack" FrameColor="clMaroon" FrameStyle="slsDashed" FrameEdges="sfeBottom"/>
-          <ahaIfDefBlockInactive Foreground="clSilver" ForeAlpha="165"/>
         </SchemeDelphi>
       </Globals>
       <LangObjectPascal Version="6">

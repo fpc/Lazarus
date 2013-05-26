@@ -25,8 +25,8 @@ unit editor_color_options;
 interface
 
 uses
-  Classes, Controls, StdCtrls, sysutils, ExtCtrls, Graphics, GraphUtil,
-  ColorBox, ComCtrls, LCLProc, LCLType, LCLIntf, Dialogs, Menus, SynEdit,
+  Classes, windows, Controls, StdCtrls, sysutils, ExtCtrls, Graphics, GraphUtil,
+  ColorBox, ComCtrls, LCLProc, LCLType, LCLIntf, Dialogs, Menus, Spin, maskedit, SynEdit,
   SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber, SynEditTypes,
   SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynTextDrawer,
   DividerBevel, Laz2_XMLCfg, EditorOptions, IDEOptionsIntf,
@@ -35,12 +35,31 @@ uses
 
 type
 
+  // for priority
+  TMarkupField = (mfForeGround, mfBackGround, mfFrame, mfUnknown);
+
   { TEditorColorOptionsFrame }
 
   TEditorColorOptionsFrame = class(TAbstractIDEOptionsEditor)
+    BackPriorList: TTreeView;
+    BackPriorValPanel: TPanel;
     bvlAttributeSection: TDividerBevel;
+    BackPriorEdit: TEdit;
+    FramePriorEdit: TEdit;
+    ForePriorEdit: TEdit;
     FileExtensionsComboBox: TComboBox;
     ExportSaveDialog: TSaveDialog;
+    ForePriorLabel: TLabel;
+    BackPriorLabel: TLabel;
+    ForePriorList: TTreeView;
+    ForePriorValPanel: TPanel;
+    FramePriorLabel: TLabel;
+    ForePriorPanel: TPanel;
+    BackPriorPanel: TPanel;
+    FramePriorList: TTreeView;
+    FramePriorPanel: TPanel;
+    FramePriorValPanel: TPanel;
+    PriorityEditor: TPanel;
     PnlTop2: TPanel;
     pnlTop: TPanel;
     LanguageMenu: TPopupMenu;
@@ -52,7 +71,13 @@ type
     ToolBar1: TToolBar;
     tbtnGlobal: TToolButton;
     tbtnLocal: TToolButton;
+    ToolButton1: TToolButton;
     ToolButton3: TToolButton;
+    tbnColor: TToolButton;
+    tbnPrior: TToolButton;
+    ForePriorUpDown: TUpDown;
+    BackPriorUpDown: TUpDown;
+    FramePriorUpDown: TUpDown;
     UseSyntaxHighlightCheckBox: TToolButton;
     ToolButton2: TToolButton;
     LanguageButton: TToolButton;
@@ -73,6 +98,12 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure ColorSchemeButtonClick(Sender: TObject);
     procedure DoColorChanged(Sender: TObject);
+    procedure ForePriorEditKeyPress(Sender: TObject; var Key: char);
+    procedure ForePriorListClick(Sender: TObject);
+    procedure ForePriorListCompare(Sender: TObject; Node1, Node2: TTreeNode;
+      var Compare: Integer);
+    procedure ForePriorEditChange(Sender: TObject);
+    procedure ForePriorUpDownClick(Sender: TObject; Button: TUDBtnType);
     procedure GeneralCheckBoxOnChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
     procedure LanguageButtonClick(Sender: TObject);
@@ -80,6 +111,7 @@ type
     procedure SetAttributeToDefaultButtonClick(Sender: TObject);
     procedure ComboBoxOnChange(Sender: TObject);
     procedure ComboBoxOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure tbnColorClick(Sender: TObject);
     procedure tglGlobalChange(Sender: TObject);
   private
     FTempColorSchemeSettings: TColorSchemeFactory;
@@ -92,8 +124,20 @@ type
 
     FCurrentHighlighter: TSrcIDEHighlighter;
     FCurrentColorScheme: TColorSchemeLanguage;
-    FIsEditingDefaults: Boolean;
+    FIsEditingDefaults, FInPriorUpdating: Boolean;
     CurLanguageID: Integer;
+
+    procedure FillPriorEditor;
+    procedure SelectCurInPriorEditor;
+
+    function AttrForNode(ANode: TTreeNode): TColorSchemeAttribute;
+    function  PriorSenderToField(ASender: TObject): TMarkupField;
+    function  PriorEditForField(AField: TMarkupField): TEdit;
+    function  PriorListForField(AField: TMarkupField): TTreeView;
+    procedure SetAttrPriorVal(AnAttr: TColorSchemeAttribute; AField: TMarkupField; AValue: Integer);
+    function  GetAttrPriorVal(AnAttr: TColorSchemeAttribute; AField: TMarkupField): Integer;
+    procedure SetPriorEditVal(AnEdit: TEdit; AValue: Integer);
+    function  GetPriorEditVal(AnEdit: TEdit): Integer;
 
     function  GetCurFileExtensions(const LanguageName: String): String;
     procedure SetCurFileExtensions(const LanguageName, FileExtensions: String);
@@ -137,6 +181,8 @@ implementation
 
 const
   COLOR_NODE_PREFIX = ' abc  ';
+  MAX_PRIOR = 9999;
+  MIN_PRIOR = 0;
 
 function DefaultToNone(AColor: TColor): TColor;
 begin
@@ -172,9 +218,12 @@ var
   AttriIdx: LongInt;
   c: TColor;
   s: String;
+  TheTree: TCustomTreeView;
 begin
   DefaultDraw := (node.Data = nil) or not (stage=cdPostPaint);
   if DefaultDraw  then exit;
+
+  TheTree := TCustomTreeView(Sender);
 
   Attri := TColorSchemeAttribute(node.Data);
   if Attri.IsUsingSchemeGlobals then
@@ -186,17 +235,17 @@ begin
 
   // Draw node background and name
   if cdsSelected in State then begin
-    ColorElementTree.Canvas.Brush.Color := ColorElementTree.SelectionColor;
-    ColorElementTree.Canvas.Font.Color := InvertColor(ColorElementTree.SelectionColor);
+    TheTree.Canvas.Brush.Color := TheTree.SelectionColor;
+    TheTree.Canvas.Font.Color := InvertColor(TheTree.SelectionColor);
   end else begin
-    ColorElementTree.Canvas.Brush.Color := ColorElementTree.BackgroundColor;
-    ColorElementTree.Canvas.Font.Color := Font.Color;
+    TheTree.Canvas.Brush.Color := TheTree.BackgroundColor;
+    TheTree.Canvas.Font.Color := Font.Color;
   end;
   NodeRect := Node.DisplayRect(true);
-  FullAbcWidth := ColorElementTree.Canvas.TextExtent(COLOR_NODE_PREFIX).cx;
-  TextY := (NodeRect.Top + NodeRect.Bottom - ColorElementTree.Canvas.TextHeight(Node.Text)) div 2;
-  ColorElementTree.Canvas.FillRect(NodeRect);
-  ColorElementTree.Canvas.TextOut(NodeRect.Left+FullAbcWidth, TextY, Attri.Name);
+  FullAbcWidth := TheTree.Canvas.TextExtent(COLOR_NODE_PREFIX).cx;
+  TextY := (NodeRect.Top + NodeRect.Bottom - TheTree.Canvas.TextHeight(Node.Text)) div 2;
+  TheTree.Canvas.FillRect(NodeRect);
+  TheTree.Canvas.TextOut(NodeRect.Left+FullAbcWidth, TextY, copy(Node.Text, 1+length(COLOR_NODE_PREFIX), MaxInt)); // Attri.Name);
 
   // Draw preview box - Background
   c := clNone;
@@ -214,25 +263,25 @@ begin
     c := FCurrentColorScheme.DefaultAttribute.Background;
   if (c = clNone) or (c = clDefault) then
     c := ColorPreview.Color;
-  ColorElementTree.Canvas.Brush.Color := c;
-  ColorElementTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2, NodeRect.Left+FullAbcWidth-2, NodeRect.Bottom-2);
+  TheTree.Canvas.Brush.Color := c;
+  TheTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2, NodeRect.Left+FullAbcWidth-2, NodeRect.Bottom-2);
 
   // Special draw Modified line gutter
   if AttriIdx = ord(ahaModifiedLine) then begin
     TextY := NodeRect.Bottom - NodeRect.Top - 4;
-    ColorElementTree.Canvas.Brush.Color := Attri.Foreground;
-    ColorElementTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2, NodeRect.Left+5, NodeRect.Bottom-2);
-    ColorElementTree.Canvas.Brush.Color := Attri.FrameColor;
-    ColorElementTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2+ (TextY div 2), NodeRect.Left+5, NodeRect.Bottom-2);
+    TheTree.Canvas.Brush.Color := Attri.Foreground;
+    TheTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2, NodeRect.Left+5, NodeRect.Bottom-2);
+    TheTree.Canvas.Brush.Color := Attri.FrameColor;
+    TheTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2+ (TextY div 2), NodeRect.Left+5, NodeRect.Bottom-2);
     exit;
   end;
 
   // Draw preview Frame
-  ColorElementTree.Canvas.Pen.Color := Attri.FrameColor;
+  TheTree.Canvas.Pen.Color := Attri.FrameColor;
   if (hafFrameColor in Attri.Features) and (AttriIdx <> ord(ahaCodeFoldingTree)) and
      (Attri.FrameColor <> clDefault) and (Attri.FrameColor <> clNone)
   then
-    ColorElementTree.Canvas.Rectangle(NodeRect.Left+2, NodeRect.Top+2,
+    TheTree.Canvas.Rectangle(NodeRect.Left+2, NodeRect.Top+2,
                                       NodeRect.Left+FullAbcWidth-2, NodeRect.Bottom-2);
 
   // Draw preview ForeGround
@@ -250,37 +299,37 @@ begin
       TextY := NodeRect.Bottom - NodeRect.Top - 8;
 
       // [-]
-      ColorElementTree.Canvas.Pen.Color := c;
-      ColorElementTree.Canvas.Rectangle(NodeRect.Left+4, NodeRect.Top+4,
+      TheTree.Canvas.Pen.Color := c;
+      TheTree.Canvas.Rectangle(NodeRect.Left+4, NodeRect.Top+4,
                                         NodeRect.Left+4+TextY, NodeRect.Bottom-4);
-      ColorElementTree.Canvas.MoveTo(NodeRect.Left+6, NodeRect.Top+4+(TextY div 2));
-      ColorElementTree.Canvas.LineTo(NodeRect.Left+4+TextY-2, NodeRect.Top+4+(TextY div 2));
-      ColorElementTree.Canvas.MoveTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-4);
-      ColorElementTree.Canvas.LineTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-2);
+      TheTree.Canvas.MoveTo(NodeRect.Left+6, NodeRect.Top+4+(TextY div 2));
+      TheTree.Canvas.LineTo(NodeRect.Left+4+TextY-2, NodeRect.Top+4+(TextY div 2));
+      TheTree.Canvas.MoveTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-4);
+      TheTree.Canvas.LineTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-2);
 
       // [+]
       inc(NodeRect.Left, TextY+2);
-      ColorElementTree.Canvas.MoveTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-4);
-      ColorElementTree.Canvas.LineTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-2);
+      TheTree.Canvas.MoveTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-4);
+      TheTree.Canvas.LineTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-2);
       if (Attri.FrameColor <> clNone) and (Attri.FrameColor <> clDefault) then
-        ColorElementTree.Canvas.Pen.Color := Attri.FrameColor;
-      ColorElementTree.Canvas.Rectangle(NodeRect.Left+4, NodeRect.Top+4,
+        TheTree.Canvas.Pen.Color := Attri.FrameColor;
+      TheTree.Canvas.Rectangle(NodeRect.Left+4, NodeRect.Top+4,
                                         NodeRect.Left+4+TextY, NodeRect.Bottom-4);
-      ColorElementTree.Canvas.MoveTo(NodeRect.Left+6, NodeRect.Top+4+(TextY div 2));
-      ColorElementTree.Canvas.LineTo(NodeRect.Left+4+TextY-2, NodeRect.Top+4+(TextY div 2));
-      ColorElementTree.Canvas.MoveTo(NodeRect.Left+4+(TextY div 2), NodeRect.Top+6);
-      ColorElementTree.Canvas.LineTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-6);
-      ColorElementTree.Canvas.Brush.Style := bsSolid;
+      TheTree.Canvas.MoveTo(NodeRect.Left+6, NodeRect.Top+4+(TextY div 2));
+      TheTree.Canvas.LineTo(NodeRect.Left+4+TextY-2, NodeRect.Top+4+(TextY div 2));
+      TheTree.Canvas.MoveTo(NodeRect.Left+4+(TextY div 2), NodeRect.Top+6);
+      TheTree.Canvas.LineTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-6);
+      TheTree.Canvas.Brush.Style := bsSolid;
     end
     else if AttriIdx = ord(ahaGutterSeparator) then begin
-      ColorElementTree.Canvas.Pen.Color := c;
-      ColorElementTree.Canvas.MoveTo(NodeRect.Left+6, NodeRect.Top+2);
-      ColorElementTree.Canvas.LineTo(NodeRect.Left+6, NodeRect.Bottom-2);
+      TheTree.Canvas.Pen.Color := c;
+      TheTree.Canvas.MoveTo(NodeRect.Left+6, NodeRect.Top+2);
+      TheTree.Canvas.LineTo(NodeRect.Left+6, NodeRect.Bottom-2);
     end
     else if AttriIdx = ord(ahaRightMargin) then begin
-      ColorElementTree.Canvas.Pen.Color := c;
-      ColorElementTree.Canvas.MoveTo(NodeRect.Left+FullAbcWidth-6, NodeRect.Top+2);
-      ColorElementTree.Canvas.LineTo(NodeRect.Left+FullAbcWidth-6, NodeRect.Bottom-2);
+      TheTree.Canvas.Pen.Color := c;
+      TheTree.Canvas.MoveTo(NodeRect.Left+FullAbcWidth-6, NodeRect.Top+2);
+      TheTree.Canvas.LineTo(NodeRect.Left+FullAbcWidth-6, NodeRect.Bottom-2);
     end
     else begin
       s := 'abc';
@@ -288,17 +337,17 @@ begin
         s:= '...';
       if AttriIdx = ord(ahaLineNumber) then
         s:= '123';
-      ColorElementTree.Canvas.Font.Color := c;
-      ColorElementTree.Canvas.Font.Style := Attri.Style;
-      ColorElementTree.Canvas.Font.Height := -(NodeRect.Bottom - NodeRect.Top - 7);
+      TheTree.Canvas.Font.Color := c;
+      TheTree.Canvas.Font.Style := Attri.Style;
+      TheTree.Canvas.Font.Height := -(NodeRect.Bottom - NodeRect.Top - 7);
       TextY := (NodeRect.Top + NodeRect.Bottom - canvas.TextHeight(s)) div 2;
-      AbcWidth := ColorElementTree.Canvas.TextExtent(s).cx;
-      SetBkMode(ColorElementTree.Canvas.Handle, TRANSPARENT);
-      ColorElementTree.Canvas.TextOut(NodeRect.Left+(FullAbcWidth - AbcWidth) div 2, TextY, s);
-      SetBkMode(ColorElementTree.Canvas.Handle, OPAQUE);
+      AbcWidth := TheTree.Canvas.TextExtent(s).cx;
+      SetBkMode(TheTree.Canvas.Handle, TRANSPARENT);
+      TheTree.Canvas.TextOut(NodeRect.Left+(FullAbcWidth - AbcWidth) div 2, TextY, s);
+      SetBkMode(TheTree.Canvas.Handle, OPAQUE);
 
-      ColorElementTree.Canvas.Font.Height := Font.Height;
-      ColorElementTree.Canvas.Font.Style := [];
+      TheTree.Canvas.Font.Height := Font.Height;
+      TheTree.Canvas.Font.Style := [];
     end;
   end;
 end;
@@ -446,6 +495,269 @@ begin
   UpdateCurrentScheme;
 end;
 
+procedure TEditorColorOptionsFrame.ForePriorEditKeyPress(Sender: TObject; var Key: char);
+begin
+  if not (Key in ['0'..'9', #8 ,#9, #10, #13]) then Key := #0;
+  if key = #13 then ForePriorEditChange(Sender);
+end;
+
+procedure TEditorColorOptionsFrame.ForePriorListClick(Sender: TObject);
+var
+  Node, N2: TTreeNode;
+begin
+  Node := TTreeView(Sender).Selected;
+  if Node = nil then
+    exit;
+  FCurHighlightElement := TColorSchemeAttribute(Node.Data);
+
+  N2 := ColorElementTree.Items.FindNodeWithData(FCurHighlightElement);
+  if N2 <> nil then
+    N2.Selected := True;
+
+  //i := (Node.Index - TTreeView(Sender).TopItem.Index);
+  //if (i < 0) or (i >= TTreeView(Sender).Height div Node.Height) then
+  //  i := Max(0, (TTreeView(Sender).Height div Node.Height div 2) - 1);
+
+  FInPriorUpdating := True;
+  ShowCurAttribute;
+  SelectCurInPriorEditor;
+  FInPriorUpdating := False;
+
+  //TTreeView(Sender).TopItem := TTreeView(Sender).Items[Max(0, Node.Index - i)];
+end;
+
+procedure TEditorColorOptionsFrame.ForePriorListCompare(Sender: TObject; Node1,
+  Node2: TTreeNode; var Compare: Integer);
+var
+  a1, a2: TColorSchemeAttribute;
+  p1, p2: Integer;
+  f: TMarkupField;
+begin
+  a1 := TColorSchemeAttribute(Node1.Data);
+  a2 := TColorSchemeAttribute(Node2.Data);
+  f := PriorSenderToField(Sender);
+  p1 := GetAttrPriorVal(a1, f);
+  p2 := GetAttrPriorVal(a2, f);
+
+  Compare := p2 - p1;
+  if (Compare = 0) and (FCurrentColorScheme <> nil) then
+    Compare := FCurrentColorScheme.IndexOfAttr(a1) - FCurrentColorScheme.IndexOfAttr(a2);
+end;
+
+procedure TEditorColorOptionsFrame.ForePriorEditChange(Sender: TObject);
+var
+  List: TTreeView;
+  Node: TTreeNode;
+  Attr: TColorSchemeAttribute;
+  i: Integer;
+  f: TMarkupField;
+begin
+  if FInPriorUpdating then
+    exit;
+
+  f := PriorSenderToField(Sender);
+  List := PriorListForField(f);
+
+  if List = nil then
+    exit;
+
+  Node := List.Selected;
+  Attr := AttrForNode(Node);
+  if Attr = nil then
+    exit;
+
+  i := GetPriorEditVal(Sender as TEdit);
+  if i < MIN_PRIOR    then begin
+    i := MIN_PRIOR;
+    SetPriorEditVal(Sender as TEdit, i);
+  end;
+  if i > MAX_PRIOR then begin
+    i := MAX_PRIOR;
+    SetPriorEditVal(Sender as TEdit, i);
+  end;
+
+  SetAttrPriorVal(Attr, f, i);
+  Node.Text := Format('%s%-3d %s', [COLOR_NODE_PREFIX, i, Attr.Name]);
+
+  i := (Node.Index - List.TopItem.Index);
+  if (i < 0) or (i >= List.Height div Node.Height) then
+    i := Max(0, (List.Height div Node.Height div 2) - 1);
+  List.AlphaSort;
+  // Update SynColorAttrEditor1;
+  DoColorChanged(nil);
+  List.TopItem := List.Items[Max(0, Node.Index - i)];
+end;
+
+procedure TEditorColorOptionsFrame.ForePriorUpDownClick(Sender: TObject; Button: TUDBtnType);
+  procedure ShiftUpNodes(ANode: TTreeNode; AField: TMarkupField);
+  var
+    Attr: TColorSchemeAttribute;
+    Prior, NextPrior: Integer;
+  begin
+    Attr := AttrForNode(ANode);
+    if Attr = nil then exit;
+    NextPrior := GetAttrPriorVal(Attr, AField);
+    Prior := NextPrior;
+    while Prior >= NextPrior do begin
+      Prior := NextPrior + 1;
+      if Prior > MAX_PRIOR then exit;
+      SetAttrPriorVal(Attr, AField, Prior);
+      ANode.Text := Format('%s%-3d %s', [COLOR_NODE_PREFIX, Prior, Attr.Name]);
+
+      ANode := ANode.GetPrev;
+      Attr := AttrForNode(ANode);
+      if Attr = nil then exit;
+      NextPrior := GetAttrPriorVal(Attr, AField);
+    end;
+  end;
+
+  procedure ShiftDownNodes(ANode: TTreeNode; AField: TMarkupField);
+  var
+    Attr: TColorSchemeAttribute;
+    Prior, NextPrior: Integer;
+  begin
+    Attr := AttrForNode(ANode);
+    if Attr = nil then exit;
+    NextPrior := GetAttrPriorVal(Attr, AField);
+    Prior := NextPrior;
+    while Prior <= NextPrior do begin
+      Prior := NextPrior - 1;
+      if Prior < MIN_PRIOR then exit;
+      SetAttrPriorVal(Attr, AField, Prior);
+      ANode.Text := Format('%s%-3d %s', [COLOR_NODE_PREFIX, Prior, Attr.Name]);
+
+      ANode := ANode.GetNext;
+      Attr := AttrForNode(ANode);
+      if Attr = nil then exit;
+      NextPrior := GetAttrPriorVal(Attr, AField);
+    end;
+  end;
+
+  function CanShiftUp(ANode: TTreeNode; AField: TMarkupField): Boolean;
+  var
+    Attr: TColorSchemeAttribute;
+  begin
+    Result := False;
+    Attr := AttrForNode(ANode);
+    if Attr = nil then
+      exit;
+    Result := GetAttrPriorVal(Attr, AField) + ANode.Index < MAX_PRIOR
+  end;
+
+  function CanShiftDown(ANode: TTreeNode; AField: TMarkupField): Boolean;
+  var
+    Attr: TColorSchemeAttribute;
+  begin
+    Result := False;
+    Attr := AttrForNode(ANode);
+    if Attr = nil then
+      exit;
+    Result := GetAttrPriorVal(Attr, AField) - (ANode.TreeView.Items.Count - ANode.Index - 1) > MIN_PRIOR;
+  end;
+
+var
+  TheEdit: TEdit;
+  List: TTreeView;
+  Node, Node2, Node3: TTreeNode;
+  CurPrior, NewPrior, d, i, j: Integer;
+  Attr, Attr2, Attr3, Attr3s: TColorSchemeAttribute;
+  f: TMarkupField;
+begin
+  f := PriorSenderToField(Sender);
+  List := PriorListForField(f);
+  TheEdit := PriorEditForField(f);
+  if List = nil then
+    exit;
+
+  CurPrior := GetPriorEditVal(TheEdit);
+  //if CurPrior = 0 then
+  //  exit;
+
+  case Button of
+    btNext: d := 1;
+    btPrev: d := -1;
+  end;
+
+  NewPrior := CurPrior + d;
+  try
+
+    Node := List.Selected;
+    Attr := AttrForNode(Node);
+    if Attr = nil then
+      exit;
+
+    case Button of
+      btNext: Node2 := Node.GetPrev;
+      btPrev: Node2 := Node.GetNext;
+    end;
+
+    Attr2 := AttrForNode(Node2);
+    if Attr2 = nil then
+      exit;
+    NewPrior := GetAttrPriorVal(Attr2, f) + d;
+    Node.Index := Node.Index - d; // must be possible, or node2 would be nil
+
+    if NewPrior < MIN_PRIOR then begin // btPrev;
+      NewPrior := MIN_PRIOR;
+      if CanShiftUp(Node2, f) then
+        ShiftUpNodes(Node2, f);
+      exit;
+    end;
+    if NewPrior > MAX_PRIOR then begin // btNext;
+      NewPrior := MAX_PRIOR;
+      if CanShiftDown(Node2, f) then
+        ShiftDownNodes(Node2, f);
+      exit;
+    end;
+
+    case Button of
+      btNext: Node3 := Node.GetPrev; // Since Node was shifted, NOde2 is now Node.GetNext
+      btPrev: Node3 := Node.GetNext; // Since Node was shifted, NOde2 is now Node.GetPrev
+    end;
+
+    Attr3 := AttrForNode(Node3);
+    if Attr3 = nil then
+      exit;
+    i := GetAttrPriorVal(Attr3, f);
+    if NewPrior <> i then
+      exit;
+
+    Attr3s := Attr3.GetStoredValuesForAttrib;
+    j := -1;
+    if (Attr3s<> nil) then
+      j := GetAttrPriorVal(Attr3s, f);
+    case Button of
+      btNext: begin
+          if ((j = i) or not CanShiftUp(Node3, f)) and CanShiftDown(Node2, f)
+          then begin
+            NewPrior := NewPrior - d;
+            ShiftDownNodes(Node2, f);
+          end
+          else
+          if CanShiftUp(Node3, f) then
+            ShiftUpNodes(Node3, f);
+        end;
+      btPrev: begin
+          if ((j = i) or not CanShiftDown(Node3, f)) and CanShiftUp(Node2, f)
+          then begin
+            NewPrior := NewPrior - d;
+            ShiftUpNodes(Node2, f);
+          end
+          else
+          if CanShiftDown(Node3, f) then
+            ShiftDownNodes(Node3, f);
+        end;
+    end;
+
+
+  finally
+    if NewPrior < MIN_PRIOR then NewPrior := MIN_PRIOR;
+    if NewPrior > MAX_PRIOR then NewPrior := MAX_PRIOR;
+    SetPriorEditVal(TheEdit, NewPrior);
+    ForePriorEditChange(TheEdit);
+  end;
+end;
+
 procedure TEditorColorOptionsFrame.GeneralCheckBoxOnChange(Sender: TObject);
 begin
   if Sender = UseSyntaxHighlightCheckBox then
@@ -513,8 +825,210 @@ begin
     else
       SynColorAttrEditor1.CurHighlightElement := FCurHighlightElement;
     //SynColorAttrEditor1.UpdateAll;
+    FillPriorEditor;
   finally
     EnableAlign;
+  end;
+end;
+
+procedure TEditorColorOptionsFrame.FillPriorEditor;
+
+  function IsEnabled(AnAttr: TColorSchemeAttribute; AnSelector: TMarkupField): Boolean;
+  begin
+    Result := False;
+    if AnAttr.IsUsingSchemeGlobals then
+      AnAttr := AnAttr.GetSchemeGlobal;
+    //if AnAttr.StoredName = 'ahaDefault' then
+    //  exit;
+    if not (hafPrior in AnAttr.Features) then
+      exit;
+    case AnSelector of
+        mfForeGround: Result := (hafForeColor in AnAttr.Features) and
+                     (AnAttr.Foreground <> clNone) and
+                     (AnAttr.Foreground <> clDefault);
+        mfBackGround: Result := (hafBackColor in AnAttr.Features) and
+                     (AnAttr.Background <> clNone) and
+                     (AnAttr.Background <> clDefault);
+        mfFrame:     Result := (hafFrameColor in AnAttr.Features) and
+                     (AnAttr.FrameColor <> clNone) and
+                     (AnAttr.FrameColor <> clDefault);
+    end
+  end;
+
+  procedure FillList(AList: TTreeView; ASelector: TMarkupField);
+  var
+    i, p: Integer;
+    Attr: TColorSchemeAttribute;
+  begin
+    AList.BeginUpdate;
+    AList.Items.Clear;
+    for i := 0 to FCurrentColorScheme.AttributeCount - 1 do begin
+      Attr := FCurrentColorScheme.AttributeAtPos[i];
+      if IsEnabled(Attr, ASelector) then begin
+        p := GetAttrPriorVal(Attr, ASelector);
+        AList.Items.Add(nil, Format('%s%-3d %s', [COLOR_NODE_PREFIX, p, Attr.Name])).Data := Attr;
+      end;
+    end;
+    AList.EndUpdate;
+    AList.AlphaSort;
+  end;
+begin
+  if (not PriorityEditor.Visible) or (FCurHighlightElement = nil) or FInPriorUpdating
+  then
+    exit;
+
+  FInPriorUpdating := True;
+
+  FillList(ForePriorList, mfForeGround);
+  FillList(BackPriorList, mfBackGround);
+  FillList(FramePriorList, mfFrame);
+
+  SelectCurInPriorEditor;
+
+  FInPriorUpdating := False;
+end;
+
+procedure TEditorColorOptionsFrame.SelectCurInPriorEditor;
+var
+  n: TTreeNode;
+  i: Integer;
+begin
+  n := ForePriorList.Items.FindNodeWithData(FCurHighlightElement);
+  ForePriorValPanel.Enabled := n <> nil;
+  if (n <> nil) and not(n.Selected) then begin
+    n.Selected := True;
+    i := Max(0, n.Index - Max(0, (ForePriorList.Height div n.Height div 2) -1 ));
+    ForePriorList.TopItem := ForePriorList.Items[i];
+  end
+  else
+  if n = nil then
+    ForePriorList.Selected := nil;
+  SetPriorEditVal(ForePriorEdit, GetAttrPriorVal(FCurHighlightElement, mfForeGround));
+
+  n := BackPriorList.Items.FindNodeWithData(FCurHighlightElement);
+  BackPriorValPanel.Enabled := n <> nil;
+  if (n <> nil) and not(n.Selected) then begin
+    n.Selected := True;
+    i := Max(0, n.Index - Max(0, (BackPriorList.Height div n.Height div 2) - 1));
+    BackPriorList.TopItem := BackPriorList.Items[i];
+  end
+  else
+  if n = nil then
+    BackPriorList.Selected := nil;
+  SetPriorEditVal(BackPriorEdit, GetAttrPriorVal(FCurHighlightElement, mfBackGround));
+
+  n := FramePriorList.Items.FindNodeWithData(FCurHighlightElement);
+  FramePriorValPanel.Enabled := n <> nil;
+  if (n <> nil) and not(n.Selected) then begin
+    n.Selected := True;
+    i := Max(0, n.Index - Max(0, (FramePriorList.Height div n.Height div 2) - 1));
+    FramePriorList.TopItem := FramePriorList.Items[i];
+  end
+  else
+  if n = nil then
+    FramePriorList.Selected := nil;
+  SetPriorEditVal(FramePriorEdit, GetAttrPriorVal(FCurHighlightElement, mfFrame));
+end;
+
+function TEditorColorOptionsFrame.AttrForNode(ANode: TTreeNode): TColorSchemeAttribute;
+begin
+  Result := nil;
+  if ANode = nil then exit;
+  Result := TColorSchemeAttribute(ANode.Data);
+  if (Result <> nil) and Result.IsUsingSchemeGlobals then
+    Result := Result.GetSchemeGlobal;
+end;
+
+function TEditorColorOptionsFrame.PriorSenderToField(ASender: TObject): TMarkupField;
+begin
+  If ASender = ForePriorEdit then
+    Result := mfForeGround
+  else
+  If ASender = BackPriorEdit then
+    Result := mfBackGround
+  else
+  If ASender = FramePriorEdit then
+    Result := mfFrame
+  else
+  if ASender = ForePriorUpDown then
+    Result := mfForeGround
+  else
+  if ASender = BackPriorUpDown then
+    Result := mfBackGround
+  else
+  if ASender = FramePriorUpDown then
+    Result := mfFrame
+  else
+  if ASender = ForePriorList then
+    Result := mfForeGround
+  else
+  if ASender = BackPriorList then
+    Result := mfBackGround
+  else
+  if ASender = FramePriorList then
+    Result := mfFrame
+  else
+    Result := mfUnknown;
+end;
+
+function TEditorColorOptionsFrame.PriorEditForField(AField: TMarkupField): TEdit;
+begin
+  Result := nil;
+  case AField of
+    mfForeGround: Result := ForePriorEdit;
+    mfBackGround: Result := BackPriorEdit;
+    mfFrame:      Result := FramePriorEdit;
+  end;
+end;
+
+function TEditorColorOptionsFrame.PriorListForField(AField: TMarkupField): TTreeView;
+begin
+  Result := nil;
+  case AField of
+    mfForeGround: Result := ForePriorList;
+    mfBackGround: Result := BackPriorList;
+    mfFrame:      Result := FramePriorList;
+  end;
+end;
+
+procedure TEditorColorOptionsFrame.SetAttrPriorVal(AnAttr: TColorSchemeAttribute;
+  AField: TMarkupField; AValue: Integer);
+begin
+  if AnAttr.IsUsingSchemeGlobals then
+    AnAttr := AnAttr.GetSchemeGlobal;
+  case AField of
+    mfForeGround: AnAttr.ForePriority := AValue;
+    mfBackGround: AnAttr.BackPriority := AValue;
+    mfFrame:      AnAttr.FramePriority := AValue
+  end;
+end;
+
+function TEditorColorOptionsFrame.GetAttrPriorVal(AnAttr: TColorSchemeAttribute;
+  AField: TMarkupField): Integer;
+begin
+  Result := 0;
+  if AnAttr = nil then exit;
+  if AnAttr.IsUsingSchemeGlobals then
+    AnAttr := AnAttr.GetSchemeGlobal;
+  case AField of
+    mfForeGround: Result := AnAttr.ForePriority;
+    mfBackGround: Result := AnAttr.BackPriority;
+    mfFrame:      Result := AnAttr.FramePriority
+  end;
+end;
+
+procedure TEditorColorOptionsFrame.SetPriorEditVal(AnEdit: TEdit; AValue: Integer);
+begin
+  AnEdit.Tag := AValue;
+  AnEdit.Text := IntToStr(AValue);
+end;
+
+function TEditorColorOptionsFrame.GetPriorEditVal(AnEdit: TEdit): Integer;
+begin
+  Result := StrToIntDef(AnEdit.Text, -1);
+  if Result = -1 then begin
+    Result := AnEdit.Tag;
+    AnEdit.Text := IntToStr(Result);
   end;
 end;
 
@@ -675,6 +1189,7 @@ begin
   if not FIsEditingDefaults then begin
     FCurrentHighlighter := FCurrentColorScheme.Highlighter;
     SynColorAttrEditor1.CurrentColorScheme := FCurrentColorScheme;
+    FillPriorEditor;
   end;
   ApplyCurrentScheme;
   FillColorElementListBox;
@@ -888,9 +1403,17 @@ begin
   tbtnGlobal.Caption := dlgUseSchemeDefaults;
   tbtnLocal.Caption := dlgUseSchemeLocal;
 
+  tbnColor.Caption := dlgColors;
+  tbnPrior.Caption := dlgPriorities;
+
+  ForePriorLabel.Caption := dlgForecolor;
+  BackPriorLabel.Caption := dlgBackColor;
+  FramePriorLabel.Caption := dlgFrameColor;
+
   bvlAttributeSection.Caption := dlgElementAttributes;
   SynColorAttrEditor1.Setup;
   SynColorAttrEditor1.OnChanged := @DoColorChanged;
+  SynColorAttrEditor1.ShowPrior := False;
 
   with GeneralPage do
     AddPreviewEdit(ColorPreview);
@@ -940,6 +1463,7 @@ begin
     SetLanguageItem(FCurrentHighlighter.LanguageName);
     SetColorSchemeItem(GetColorSchemeForLang(FCurrentHighlighter.LanguageName));
 
+    tbnColorClick(nil);
     ShowCurAttribute;
     UpdateCurrentScheme;
   end;
@@ -1004,6 +1528,13 @@ procedure TEditorColorOptionsFrame.ComboBoxOnKeyDown(Sender: TObject; var Key: W
 begin
   if (ssCtrl in Shift) and (Key = VK_S) then
     ComboBoxOnExit(Sender);
+end;
+
+procedure TEditorColorOptionsFrame.tbnColorClick(Sender: TObject);
+begin
+  PriorityEditor.Visible      := tbnPrior.Down;
+  SynColorAttrEditor1.Visible := not tbnPrior.Down;
+  FillPriorEditor;
 end;
 
 procedure TEditorColorOptionsFrame.tglGlobalChange(Sender: TObject);
