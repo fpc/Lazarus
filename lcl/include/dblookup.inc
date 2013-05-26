@@ -208,9 +208,17 @@ begin
   end;
 end;
 
-procedure TDBLookup.FetchLookupData;
+procedure SlideKeyList(var KeyList: array of Variant; Index, ListCount: Integer);
 var
   i: Integer;
+begin
+  for i := ListCount - 1 downto Index do
+    KeyList[i + 1] := KeyList[i];
+end;
+
+procedure TDBLookup.FetchLookupData;
+var
+  KeyIndex, KeyListCount: Integer;
   ListLinkDataSet: TDataSet;
 begin
   if not Assigned(FControlItems) then
@@ -228,14 +236,21 @@ begin
     ListLinkDataSet.Last;
     ListLinkDataSet.First;
     SetLength(FListKeys, ListLinkDataSet.RecordCount);
-    i := 0;
+    KeyListCount := 0;
     while not ListLinkDataSet.EOF do
     begin
-      FListKeys[i] := ListLinkDataSet.FieldValues[FKeyFieldNames];
-      Inc(i);
-      FControlItems.Add(FListField.DisplayText);
+      KeyIndex := FControlItems.Add(FListField.DisplayText);
+      //check if item was really added (in sorted list duplicate values are not added)
+      if FControlItems.Count > KeyListCount then
+      begin
+        if KeyIndex < KeyListCount then
+          SlideKeyList(FListKeys, KeyIndex, KeyListCount);
+        FListKeys[KeyIndex] := ListLinkDataSet.FieldValues[FKeyFieldNames];
+        Inc(KeyListCount);
+      end;
       ListLinkDataSet.Next;
     end;
+    SetLength(FListKeys, KeyListCount);
   finally
     LinkGotoBookMark;
   end;
