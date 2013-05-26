@@ -2867,6 +2867,10 @@ msgstr ""
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Käytä manifest-tiedostoa teemoja varten (vain Windows)"
 
+#: lazarusidestrconsts.dlgpriorities
+msgid "Priorities"
+msgstr ""
+
 #: lazarusidestrconsts.dlgproject
 msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
@@ -13768,6 +13772,11 @@ msgstr "Ensisijainen config-hakemisto"
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
 msgstr "ennen %s"
+
+#: lazarusidestrconsts.lispriority
+msgctxt "lazarusidestrconsts.lispriority"
+msgid "Priority"
+msgstr "Ensisijaisuus"
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"

@@ -3022,6 +3022,10 @@ msgstr "用程序包运行或调试(仅darwin)"
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "使用 manifest 文件启用主题 (仅windows)"
 
+#: lazarusidestrconsts.dlgpriorities
+msgid "Priorities"
+msgstr ""
+
 #: lazarusidestrconsts.dlgproject
 msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
@@ -14458,6 +14462,11 @@ msgstr ""
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
 msgstr ""
+
+#: lazarusidestrconsts.lispriority
+msgctxt "lazarusidestrconsts.lispriority"
+msgid "Priority"
+msgstr "优先级"
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"

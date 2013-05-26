@@ -2986,6 +2986,10 @@ msgstr "Usar aplicação encartada para execução e depuração (somente Darwin
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Usar arquivo de manifesto para ativar temas (somente windows)"
 
+#: lazarusidestrconsts.dlgpriorities
+msgid "Priorities"
+msgstr ""
+
 #: lazarusidestrconsts.dlgproject
 msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
@@ -14231,6 +14235,11 @@ msgstr "Caminho primário configuração"
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
 msgstr "anterior a %s"
+
+#: lazarusidestrconsts.lispriority
+msgctxt "lazarusidestrconsts.lispriority"
+msgid "Priority"
+msgstr "Prioridade"
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"

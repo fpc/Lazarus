@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-05-25 20:09+0400\n"
+"PO-Revision-Date: 2013-05-26 19:18+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2997,6 +2997,10 @@ msgstr "Использовать Application Bundle для запуска и о�
 #| msgid "Use manifest file to enable themes (windows only)"
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Использовать manifest-файл для включения поддержки тем (только Windows)"
+
+#: lazarusidestrconsts.dlgpriorities
+msgid "Priorities"
+msgstr "Приоритеты"
 
 #: lazarusidestrconsts.dlgproject
 msgctxt "lazarusidestrconsts.dlgproject"
@@ -14252,6 +14256,11 @@ msgstr "Путь к первичному каталогу настройки"
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
 msgstr "до %s"
+
+#: lazarusidestrconsts.lispriority
+msgctxt "lazarusidestrconsts.lispriority"
+msgid "Priority"
+msgstr "Приоритет"
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"

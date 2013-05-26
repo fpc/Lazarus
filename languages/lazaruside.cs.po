@@ -2882,6 +2882,10 @@ msgstr "Použít aplikační balík pro spuštění a ladění (pouze Darwin)"
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Použít soubor manifest k povolení grafických stylů (pouze Windows)"
 
+#: lazarusidestrconsts.dlgpriorities
+msgid "Priorities"
+msgstr ""
+
 #: lazarusidestrconsts.dlgproject
 msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
@@ -13817,6 +13821,11 @@ msgstr "Primární konfigurační cesta"
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
 msgstr "před %s"
+
+#: lazarusidestrconsts.lispriority
+msgctxt "lazarusidestrconsts.lispriority"
+msgid "Priority"
+msgstr "Priorita"
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"

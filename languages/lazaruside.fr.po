@@ -2982,6 +2982,10 @@ msgstr "Utiliser le paquet d'application  pour exécuter et corriger  (Darwin se
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Utiliser le fichier manifest pourautoriser les thèmes (Windows seulement)"
 
+#: lazarusidestrconsts.dlgpriorities
+msgid "Priorities"
+msgstr ""
+
 #: lazarusidestrconsts.dlgproject
 msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
@@ -14400,6 +14404,11 @@ msgstr "chemin de configuration principal"
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
 msgstr ""
+
+#: lazarusidestrconsts.lispriority
+msgctxt "lazarusidestrconsts.lispriority"
+msgid "Priority"
+msgstr "Priorité"
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"

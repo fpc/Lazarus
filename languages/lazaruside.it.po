@@ -3047,6 +3047,10 @@ msgstr "Usa Application Bundle per esecuzione e debug (solo darwin)"
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Usa il file manifest per abilitare i temi (solo Windows)"
 
+#: lazarusidestrconsts.dlgpriorities
+msgid "Priorities"
+msgstr ""
+
 #: lazarusidestrconsts.dlgproject
 msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
@@ -14551,6 +14555,11 @@ msgstr ""
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
 msgstr ""
+
+#: lazarusidestrconsts.lispriority
+msgctxt "lazarusidestrconsts.lispriority"
+msgid "Priority"
+msgstr "Priorità"
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"

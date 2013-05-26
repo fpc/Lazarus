@@ -2956,6 +2956,10 @@ msgstr "Використовувати Пакет Програм для запу
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Використовувати manifest-файл для ввімкнення тем (лише Windows)"
 
+#: lazarusidestrconsts.dlgpriorities
+msgid "Priorities"
+msgstr ""
+
 #: lazarusidestrconsts.dlgproject
 msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
@@ -14109,6 +14113,11 @@ msgstr "Основний шлях конфігурації"
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
 msgstr "перед %s"
+
+#: lazarusidestrconsts.lispriority
+msgctxt "lazarusidestrconsts.lispriority"
+msgid "Priority"
+msgstr "Пріоритет"
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"

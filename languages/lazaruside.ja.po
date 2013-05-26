@@ -3049,6 +3049,10 @@ msgstr "アプリケーションバンドルを実行およびデバッグに用
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "テーマを使用可能とするためマニフェストファイルを用いる（Windowsのみ）"
 
+#: lazarusidestrconsts.dlgpriorities
+msgid "Priorities"
+msgstr ""
+
 #: lazarusidestrconsts.dlgproject
 #, fuzzy
 #| msgid "Project"
@@ -14574,6 +14578,11 @@ msgstr "第１設定パス"
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
 msgstr "以前 %s"
+
+#: lazarusidestrconsts.lispriority
+msgctxt "lazarusidestrconsts.lispriority"
+msgid "Priority"
+msgstr "優先"
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"

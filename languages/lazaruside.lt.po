@@ -2965,6 +2965,10 @@ msgstr "Startui ir derinimui naudoti programą-ryšulį (tik dėl Darwin)"
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Naudoti manifest failą temų įgalinimui (tik dėl Windows)"
 
+#: lazarusidestrconsts.dlgpriorities
+msgid "Priorities"
+msgstr ""
+
 #: lazarusidestrconsts.dlgproject
 msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
@@ -14180,6 +14184,11 @@ msgstr "Pirminis kelias iki konfigūracijos"
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
 msgstr "ankstesnis %s"
+
+#: lazarusidestrconsts.lispriority
+msgctxt "lazarusidestrconsts.lispriority"
+msgid "Priority"
+msgstr "Prioritetas"
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"

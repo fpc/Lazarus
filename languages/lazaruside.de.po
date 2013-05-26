@@ -2992,6 +2992,10 @@ msgstr "Anwendungs-Bundle für Start und Debug verwenden (nur Darwin)"
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Themen mit Manifest-Datei einschalten (nur in Windows)"
 
+#: lazarusidestrconsts.dlgpriorities
+msgid "Priorities"
+msgstr ""
+
 #: lazarusidestrconsts.dlgproject
 msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
@@ -14270,6 +14274,11 @@ msgstr "Primärer Konfigurationspfad"
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
 msgstr "vor %s"
+
+#: lazarusidestrconsts.lispriority
+msgctxt "lazarusidestrconsts.lispriority"
+msgid "Priority"
+msgstr "Priorität"
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"

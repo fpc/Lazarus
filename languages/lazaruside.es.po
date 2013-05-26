@@ -3042,6 +3042,10 @@ msgstr "Use el envoltorio de la aplicación para ejecución y depuración (sólo
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Usar el archivo de manifiesto para activar temas (sólo Windows)"
 
+#: lazarusidestrconsts.dlgpriorities
+msgid "Priorities"
+msgstr ""
+
 #: lazarusidestrconsts.dlgproject
 msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
@@ -14526,6 +14530,11 @@ msgstr "Ruta de configuración primaria"
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
 msgstr "anterior %s"
+
+#: lazarusidestrconsts.lispriority
+msgctxt "lazarusidestrconsts.lispriority"
+msgid "Priority"
+msgstr "Prioridad"
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"

@@ -3008,6 +3008,10 @@ msgstr "Použiť zväzok aplikácií pre spustenie a ladenie (lem darwin)"
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Použiť súbor manifestu, pre zapnutie tém (len Windows)"
 
+#: lazarusidestrconsts.dlgpriorities
+msgid "Priorities"
+msgstr ""
+
 #: lazarusidestrconsts.dlgproject
 msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
@@ -14426,6 +14430,11 @@ msgstr ""
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
 msgstr ""
+
+#: lazarusidestrconsts.lispriority
+msgctxt "lazarusidestrconsts.lispriority"
+msgid "Priority"
+msgstr "Priorita"
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"

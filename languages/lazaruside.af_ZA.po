@@ -2877,6 +2877,10 @@ msgstr ""
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgpriorities
+msgid "Priorities"
+msgstr ""
+
 #: lazarusidestrconsts.dlgproject
 msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
@@ -13892,6 +13896,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
+msgstr ""
+
+#: lazarusidestrconsts.lispriority
+msgctxt "lazarusidestrconsts.lispriority"
+msgid "Priority"
 msgstr ""
 
 #: lazarusidestrconsts.lisprivate

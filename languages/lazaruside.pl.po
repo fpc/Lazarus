@@ -3053,6 +3053,10 @@ msgstr "Użyj Zestawu Aplikacji do uruchomienia i odpluskiwania (dot. systemu Da
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Użyj pliku manifest aby odblokować kompozycje"
 
+#: lazarusidestrconsts.dlgpriorities
+msgid "Priorities"
+msgstr ""
+
 #: lazarusidestrconsts.dlgproject
 msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
@@ -14392,6 +14396,11 @@ msgstr ""
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
 msgstr ""
+
+#: lazarusidestrconsts.lispriority
+msgctxt "lazarusidestrconsts.lispriority"
+msgid "Priority"
+msgstr "Priorytet"
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"
