@@ -3028,6 +3028,9 @@ begin
 
   LastLine := ScreenRowToRow(LinesInWindow+1);
   FAdjustedTop := ToIdx(TopLine);
+  Highlighter.CurrentLines := Lines;
+  if Highlighter.NeedScan then DebugLn('******** Highlighter.NeedScan ************');
+  Highlighter.ScanRanges;
 
   if FMarkupNodes.HasEnabledMarkup then
     while (FAdjustedTop > 0) and Highlighter.IsLineStartingInDirective(FAdjustedTop) and
@@ -3350,6 +3353,7 @@ begin
     exit;
   end;
 
+  Highlighter.CurrentLines := Lines;
   LastLine := ScreenRowToRow(LinesInWindow+1);
   if (FLastValidTopLine  <= TopLine) and (FLastValidLastLine >= LastLine) and
      (FLastValidTreeStep = FIfDefTree.ChangeStep)
