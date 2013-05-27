@@ -12,8 +12,11 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, SynEdit, SynEditTypes, Clipbrd, Dialogs, Controls, uPSCompiler,
-  uPSRuntime, uPSUtils;
+  Classes, SysUtils, SynEdit, SynEditTypes, LazLoggerBase, Clipbrd, Dialogs, Controls,
+  uPSCompiler, uPSRuntime, uPSUtils;
+
+type
+  TEMScriptBadParamException = Exception;
 
 procedure CompRegisterBasics(AComp: TPSPascalCompiler);
 procedure ExecRegisterBasics(AExec: TPSExec);
@@ -76,7 +79,7 @@ begin
 end;
 
 const
-  DeclMessageDlg        = 'Function MessageDlg(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint): Integer';                                                                     //
+  DeclMessageDlg        = 'Function MessageDlg(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint): Integer';
   DeclMessageDlgPos     = 'Function MessageDlgPos(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer';
   DeclMessageDlgPosHelp = 'Function MessageDlgPosHelp(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer; HelpFileName: string): Integer';
   DeclShowMessage       = 'Procedure ShowMessage(Msg: string)';
@@ -138,21 +141,148 @@ begin
   AComp.AddDelphiFunction(Decltest_ord_mt);
 end;
 
+function ExecBasicHandler(Caller: TPSExec; p: TPSExternalProcRec; Global, Stack: TPSStack): Boolean;
+  function GetSetFromStack(Idx: Integer): Cardinal;
+  var
+    val: PPSVariant;
+    dat: Pointer;
+  begin
+    if Idx < 0 then Idx := Idx + Stack.Count;
+    val := Stack[Idx];
+    if val^.FType.BaseType <> btSet then raise TEMScriptBadParamException.Create('Invalid set');
+    dat := @PPSVariantData(val)^.Data;
+    Result := tbtu32(dat^);
+  end;
+  function GetEnumFromStack(Idx: Integer): Cardinal;
+  var
+    val: PPSVariant;
+    dat: Pointer;
+  begin
+    if Idx < 0 then Idx := Idx + Stack.Count;
+    val := Stack[Idx];
+    if val^.FType.BaseType <> btEnum then raise TEMScriptBadParamException.Create('Invalid set');
+    dat := @PPSVariantData(val)^.Data;
+    Result := tbtu32(dat^);
+  end;
+var
+  res: PPSVariant;
+  data: Pointer;
+  temp: TPSVariantIFC;
+  s: String;
+  typerec: TPSTypeRec;
+begin
+  Result := True;
+  case Longint(p.Ext1) of
+    0: begin // POINT()
+        if Stack.Count < 3 then raise TEMScriptBadParamException.Create('Invalid param count for "Point"');;
+        res := Stack[Stack.Count-1];
+        typerec := res^.FType;
+
+        if typerec.BaseType = btPointer then begin
+          typerec := PPSVariantPointer(res)^.DestType;
+          data := PPSVariantPointer(res)^.DataDest;
+        end
+        else
+          data := @(PPSVariantRecord(res)^.data);
+
+        if typerec.BaseType <> btRecord then raise TEMScriptBadParamException.Create('Invalid result type for "point(x,y)"');
+        if typerec.RealSize <> SizeOf(TPoint) then raise TEMScriptBadParamException.Create('Invalid result size for "point(x,y)"');
+        if data = nil then raise TEMScriptBadParamException.Create('Invalid result data for "point(x,y)"');
+        TPoint(data^) := Point(Stack.GetInt(-2), Stack.GetInt(-3));
+      end;
+    50: begin // MessageDlg(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint): Integer';
+        if Stack.Count < 5 then raise TEMScriptBadParamException.Create('Invalid param count for "MessageDlg"');;
+        Stack.SetInt(-1,
+          MessageDlg(Stack.GetAnsiString(-2), TMsgDlgType(Stack.GetUInt(-3)),
+            TMsgDlgButtons(GetSetFromStack(-4)), Stack.GetInt(-5))
+        );
+      end;
+    51: begin // MessageDlgPos(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer
+        if Stack.Count < 7 then raise TEMScriptBadParamException.Create('Invalid param count for "MessageDlgPos"');;
+        Stack.SetInt(-1,
+          MessageDlgPos(Stack.GetAnsiString(-2), TMsgDlgType(Stack.GetUInt(-3)),
+            TMsgDlgButtons(GetSetFromStack(-4)), Stack.GetInt(-5),
+            Stack.GetInt(-6), Stack.GetInt(-7) )
+        );
+      end;
+    52: begin // MessageDlgPosHelp(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer; HelpFileName: string): Integer
+        if Stack.Count < 8 then raise TEMScriptBadParamException.Create('Invalid param count for "MessageDlgPosHelp"');;
+        Stack.SetInt(-1,
+          MessageDlgPosHelp(Stack.GetAnsiString(-2), TMsgDlgType(Stack.GetUInt(-3)),
+            TMsgDlgButtons(GetSetFromStack(-4)), Stack.GetInt(-5),
+            Stack.GetInt(-6), Stack.GetInt(-7), Stack.GetAnsiString(-8))
+        );
+      end;
+    53: begin // ShowMessage(Msg: string)
+        if Stack.Count < 1 then raise TEMScriptBadParamException.Create('Invalid param count for "ShowMessage"');;
+        ShowMessage(Stack.GetAnsiString(-1));
+      end;
+    54: begin // ShowMessagePos(Msg: string; X, Y :Integer)
+        if Stack.Count < 3 then raise TEMScriptBadParamException.Create('Invalid param count for "ShowMessagePos"');;
+        ShowMessagePos(Stack.GetAnsiString(-1), Stack.GetInt(-2), Stack.GetInt(-3));
+      end;
+    55: begin // InputBox(ACaption, APrompt, ADefault: string): string
+        if Stack.Count < 4 then raise TEMScriptBadParamException.Create('Invalid param count for "InputBox"');;
+        Stack.SetAnsiString(-1,
+          InputBox(Stack.GetAnsiString(-2), Stack.GetAnsiString(-3), Stack.GetAnsiString(-4))
+        );
+      end;
+    56: begin // InputQuery(ACaption, APrompt: string; var Value: string): Boolean
+        if Stack.Count < 4 then raise TEMScriptBadParamException.Create('Invalid param count for "InputQuery"');
+        temp := NewTPSVariantIFC(Stack[Stack.Count-4], True);
+        if (temp.aType.BaseType <> btString) then raise TEMScriptBadParamException.Create('Invalid param type for "InputQuery"');
+        if (temp.Dta = nil) then raise TEMScriptBadParamException.Create('Invalid param data for "InputQuery"');
+        s := tbtstring(temp.Dta^);
+        Stack.SetBool(-1,
+          InputQuery(Stack.GetAnsiString(-2), Stack.GetAnsiString(-3), s)
+        );
+        tbtstring(temp.Dta^) := s;
+      end;
+    900: begin // test_ord_mb(ABtn: TMsgDlgBtn): Integer;
+        if Stack.Count < 2 then raise TEMScriptBadParamException.Create('Invalid param count for "test_ord_mb"');
+        Stack.SetInt(-1, test_ord_mb(TMsgDlgBtn(Stack.GetUInt(-2))) );
+      end;
+    901: begin // test_ord_mt(AType: TMsgDlgType): Integer;
+        if Stack.Count < 2 then raise TEMScriptBadParamException.Create('Invalid param count for "test_ord_mt"');
+        //  Stack[Stack.Count-2]^.FType.ExportName = 'TMSGDLGTYPE'
+        Stack.SetInt(-1, test_ord_mt(TMsgDlgType(Stack.GetUInt(-2))) );
+      end;
+    else
+      Result := False;
+  end;
+end;
+
 procedure ExecRegisterBasics(AExec: TPSExec);
 begin
+  {$IFnDEF PasMacroNoNativeCalls}
   AExec.RegisterDelphiFunction(FuncPoint, 'POINT', cdRegister);
 
- AExec.RegisterDelphiFunction(FuncMessageDlg, 'MessageDlg', cdRegister);
- AExec.RegisterDelphiFunction(FuncMessageDlgPos, 'MessageDlgPos', cdRegister);
- AExec.RegisterDelphiFunction(FuncMessageDlgPosHelp, 'MessageDlgPosHelp', cdRegister);
- AExec.RegisterDelphiFunction(FuncShowMessage, 'ShowMessage', cdRegister);
- AExec.RegisterDelphiFunction(FuncShowMessagePos, 'ShowMessagePos', cdRegister);
- AExec.RegisterDelphiFunction(FuncInputBox, 'InputBox', cdRegister);
- AExec.RegisterDelphiFunction(FuncInputQuery, 'InputQuery', cdRegister);
+  AExec.RegisterDelphiFunction(FuncMessageDlg, 'MessageDlg', cdRegister);
+  AExec.RegisterDelphiFunction(FuncMessageDlgPos, 'MessageDlgPos', cdRegister);
+  AExec.RegisterDelphiFunction(FuncMessageDlgPosHelp, 'MessageDlgPosHelp', cdRegister);
+  AExec.RegisterDelphiFunction(FuncShowMessage, 'ShowMessage', cdRegister);
+  AExec.RegisterDelphiFunction(FuncShowMessagePos, 'ShowMessagePos', cdRegister);
+  AExec.RegisterDelphiFunction(FuncInputBox, 'InputBox', cdRegister);
+  AExec.RegisterDelphiFunction(FuncInputQuery, 'InputQuery', cdRegister);
 
   // for tests
   AExec.RegisterDelphiFunction(Functest_ord_mb, 'test_ord_mb', cdRegister);
   AExec.RegisterDelphiFunction(Functest_ord_mt, 'test_ord_mt', cdRegister);
+  {$ELSE}
+  AExec.RegisterFunctionName('POINT',             @ExecBasicHandler, Pointer(0), nil);
+
+  AExec.RegisterFunctionName('MessageDlg',        @ExecBasicHandler, Pointer(50), nil);
+  AExec.RegisterFunctionName('MessageDlgPos',     @ExecBasicHandler, Pointer(51), nil);
+  AExec.RegisterFunctionName('MessageDlgPosHelp', @ExecBasicHandler, Pointer(52), nil);
+  AExec.RegisterFunctionName('ShowMessage',       @ExecBasicHandler, Pointer(53), nil);
+  AExec.RegisterFunctionName('ShowMessagePos',    @ExecBasicHandler, Pointer(54), nil);
+  AExec.RegisterFunctionName('InputBox',          @ExecBasicHandler, Pointer(55), nil);
+  AExec.RegisterFunctionName('InputQuery',        @ExecBasicHandler, Pointer(56), nil);
+
+  // for tests
+  AExec.RegisterFunctionName('test_ord_mb',       @ExecBasicHandler, Pointer(900), nil);
+  AExec.RegisterFunctionName('test_ord_mt',       @ExecBasicHandler, Pointer(901), nil);
+  {$ENDIF}
 end;
 
 {   SynEdit   }
@@ -495,4 +625,3 @@ end;
 
 
 end.
-

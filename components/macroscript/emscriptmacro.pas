@@ -5,9 +5,9 @@ unit EMScriptMacro;
 interface
 
 uses
-  Classes, SysUtils, SrcEditorIntf, IDECommands, Controls, SynEdit, SynEditKeyCmds,
-  EMScriptClasses, Laz2_XMLCfg, LazLoggerBase, uPSCompiler, uPSRuntime, uPSUtils, uPSC_std,
-  uPSR_std;
+  Classes, SysUtils, SrcEditorIntf, IDECommands, IDEMsgIntf, Controls, SynEdit,
+  SynEditKeyCmds, EMScriptClasses, Laz2_XMLCfg, LazLoggerBase, uPSCompiler, uPSRuntime,
+  uPSUtils, uPSC_std, uPSR_std, uPSDebugger;
 
 type
 
@@ -56,7 +56,7 @@ type
 
   { TEMSTPSExec }
 
-  TEMSTPSExec = class(TPSExec)
+  TEMSTPSExec = class(TPSDebugExec)
   public
     SynEdit: TCustomSynEdit;
     procedure AddECFuncToExecEnum(const s: String);
@@ -147,6 +147,7 @@ procedure CreateCompiler;
 begin
   TheCompiler := TEMSPSPascalCompiler.Create;
   TheCompiler.OnUses := @CompilerOnUses;
+  TheCompiler.BooleanShortCircuit := True;
 end;
 
 procedure CreateExec;
@@ -226,7 +227,9 @@ end;
 
 procedure TEMSEditorMacro.DoPlaybackMacro(aEditor: TWinControl);
 var
-  s: tbtString;
+  s, s2: tbtString;
+  ExObj: TObject;
+  i, x, y: Cardinal;
 begin
   if IsEmpty or IsInvalid then exit;
 
@@ -241,9 +244,30 @@ begin
     TheCompiler.GetOutput({%H-}s);
     if not TheExec.LoadData(s) then // Load the data from the Data string.
       exit;
+    TheCompiler.GetDebugOutput({%H-}s2);
+    TheExec.LoadDebugData(s2);
 
     TheExec.SynEdit := aEditor as TCustomSynEdit;
-    TheExec.RunScript
+    try
+      TheExec.RunScript;
+    except
+      on e: Exception do
+        IDEMessagesWindow.AddMsg(Format('%s: %s', [e.ClassName, e.Message]), '', -1);
+    end;
+    if TheExec.ExceptionCode <> erNoError then begin
+      ExObj := TheExec.ExceptionObject;
+      if ExObj <> nil then
+        s := ExObj.ClassName
+      else
+        s := '<nil>';
+      s2 := '';
+      i := 0;
+      x := 0;
+      y := 0;
+      TheExec.TranslatePositionEx(TheExec.ExceptionProcNo, TheExec.ExceptionPos, i, x, y, s2);
+      if IDEMessagesWindow <> nil then
+        IDEMessagesWindow.AddMsg(Format('%s: "%s" at %d/%d', [s, TheExec.ExceptionString, x,y]), '', -1);
+    end;
 
   finally
     FState := emStopped;

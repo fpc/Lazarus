@@ -635,6 +635,14 @@ begin
                  'end.',
                  'do NOT replace me');
 
+    DoTestSimple('InputQuery Cancel',   '',
+                 'var s: string; begin '+ LineEnding +
+                 's := '''';' + LineEnding +
+                 'if InputQuery(''Need Input'', ''enter 123 / press OK'', s)' + LineEnding +
+                 'then Caller.InsertTextAtCaret(s, scamEnd);' + LineEnding +
+                 'end.',
+                 '123');
+
 
   finally
     FTestMacro.Free;
