@@ -2739,8 +2739,9 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
           CurMode.MacroValues.SaveToXMLConfig(XMLConfig,SubPath+'MacroValues/');
           CurMode.CompilerOptions.SaveToXMLConfig(XMLConfig,SubPath+'CompilerOptions/');
         end;
-        if SaveSession then
+        if SaveSession and (not CurMode.InSession) then
         begin
+          // save which matrix options are enabled in this build mode
 
         end;
       end;
