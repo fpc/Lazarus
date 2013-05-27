@@ -4945,7 +4945,8 @@ begin
   if (not Restore) and AProject.UseAsDefault then
   begin
     aFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectOptionsFilename;
-    AProject.WriteProject([pwfSkipSeparateSessionInfo,pwfIgnoreModified],aFilename);
+    AProject.WriteProject([pwfSkipSeparateSessionInfo,pwfIgnoreModified],
+      aFilename,EnvironmentOptions.BuildMatrixOptions);
   end;
   if Restore then
     AProject.RestoreSession;
@@ -8511,7 +8512,7 @@ begin
     DeleteFileUTF8(NewProjectFilename);
     Result:=CurProject.WriteProject(CurProject.PublishOptions.WriteFlags
            +pwfSkipSessionInfo+[pwfIgnoreModified],
-           NewProjectFilename);
+           NewProjectFilename,nil);
     if Result<>mrOk then begin
       debugln('TMainIDE.DoPublishModule CurProject.WriteProject failed');
       exit;

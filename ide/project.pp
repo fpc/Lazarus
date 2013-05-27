@@ -692,6 +692,7 @@ type
     function GetCaption: string;
     function GetIndex: integer;
   public
+    property Name; // See Identifier for the name of the buildmode
     property InSession: boolean read FInSession write SetInSession;
     property Identifier: string read FIdentifier write SetIdentifier;// arbitrary string
     property Modified: boolean read GetModified write SetModified;
@@ -913,7 +914,8 @@ type
     function ReadProject(const NewProjectInfoFile: string;
                          ReadFlags: TProjectReadFlags = []): TModalResult;
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
-                          const OverrideProjectInfoFile: string): TModalResult;
+                          const OverrideProjectInfoFile: string;
+                        GlobalMatrixOptions: TBuildMatrixOptions): TModalResult;
     procedure UpdateExecutableType; override;
     procedure BackupSession;
     procedure RestoreSession;
@@ -2652,7 +2654,8 @@ end;
   TProject WriteProject
  ------------------------------------------------------------------------------}
 function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
-  const OverrideProjectInfoFile: string): TModalResult;
+  const OverrideProjectInfoFile: string;
+  GlobalMatrixOptions: TBuildMatrixOptions): TModalResult;
 
   procedure SaveFlags(XMLConfig: TXMLConfig; const Path: string);
   var f: TProjectFlag;
@@ -2702,6 +2705,30 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
     Result:=true;
   end;
 
+  procedure SaveSessionEnabledNonSessionMatrixOptions(XMLConfig: TXMLConfig;
+    const Path: string; MatrixOptions: TBuildMatrixOptions; var Cnt: integer);
+  var
+    i: Integer;
+    MatrixOption: TBuildMatrixOption;
+    j: Integer;
+    CurMode: TProjectBuildMode;
+    SubPath: String;
+  begin
+    if MatrixOptions=nil then exit;
+    for i:=0 to MatrixOptions.Count-1 do begin
+      MatrixOption:=MatrixOptions[i];
+      for j:=0 to BuildModes.Count-1 do begin
+        CurMode:=BuildModes[j];
+        if not CurMode.InSession then continue;
+        if not MatrixOption.FitsMode(CurMode.Identifier,bmmtActive) then continue;
+        inc(Cnt);
+        SubPath:=Path+'Item'+IntToStr(Cnt)+'/';
+        XMLConfig.SetDeleteValue(SubPath+'Mode',CurMode.Identifier,'');
+        XMLConfig.SetDeleteValue(SubPath+'Option',MatrixOption.ID,'');
+      end;
+    end;
+  end;
+
   procedure SaveBuildModes(XMLConfig: TXMLConfig; const Path: string;
     SaveData, SaveSession: boolean);
   var
@@ -2739,11 +2766,6 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
           CurMode.MacroValues.SaveToXMLConfig(XMLConfig,SubPath+'MacroValues/');
           CurMode.CompilerOptions.SaveToXMLConfig(XMLConfig,SubPath+'CompilerOptions/');
         end;
-        if SaveSession and (not CurMode.InSession) then
-        begin
-          // save which matrix options are enabled in this build mode
-
-        end;
       end;
     end;
     XMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
@@ -2751,11 +2773,20 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
     if SaveData then
       BuildModes.SharedMatrixOptions.SaveToXMLConfig(XMLConfig,Path+'BuildModes/SharedMatrixOptions/');
 
-    // save what mode is currently active in the session
     //debugln(['SaveBuildModes SaveSession=',SaveSession,' ActiveBuildMode.Identifier=',ActiveBuildMode.Identifier]);
     if SaveSession then begin
+      // save what mode is currently active in the session
       XMLConfig.SetDeleteValue(Path+'BuildModes/Active',ActiveBuildMode.Identifier,'default');
+      // save matrix options of session
       BuildModes.SessionMatrixOptions.SaveToXMLConfig(XMLConfig,Path+'BuildModes/SessionMatrixOptions/');
+      // save what matrix options are enabled in session build modes
+      Cnt:=0;
+      SubPath:=Path+'BuildModes/SessionMatrixOptions/';
+      SaveSessionEnabledNonSessionMatrixOptions(XMLConfig,
+        SubPath,BuildModes.SharedMatrixOptions,Cnt);
+      SaveSessionEnabledNonSessionMatrixOptions(XMLConfig,
+        SubPath,GlobalMatrixOptions,Cnt);
+      XMLConfig.SetDeleteValue(SubPath+'Count',Cnt,0);
     end;
   end;
 

@@ -5679,7 +5679,7 @@ begin
   // save project info file
   if (not (sfSaveToTestDir in Flags))
   and (not Project1.IsVirtual) then begin
-    Result:=Project1.WriteProject([],'');
+    Result:=Project1.WriteProject([],'',EnvironmentOptions.BuildMatrixOptions);
     if Result=mrAbort then exit;
     EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
     IDEProtocolOpts.LastProjectLoadingCrashed := False;
