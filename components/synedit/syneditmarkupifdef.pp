@@ -3680,7 +3680,6 @@ begin
   FLastValidTopLine  := 0;
   FLastValidLastLine := 0;
   FLastValidTreeStep := 0;
-  ValidateMatches;
 end;
 
 function TSynEditMarkupIfDef.DoNodeStateRequest(Sender: TObject; LinePos,
