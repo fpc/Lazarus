@@ -52,6 +52,7 @@ type
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    function RealEnabled: Boolean; override;
   public
     constructor Create(ASynEdit: TSynEditBase);
     destructor Destroy; override;
@@ -119,6 +120,12 @@ end;
 procedure TSynEditMarkupSpecialLine.DoMarkupChanged(AMarkup: TSynSelectedColor);
 begin
   InvalidateLineHighlight;
+end;
+
+function TSynEditMarkupSpecialLine.RealEnabled: Boolean;
+begin
+  Result := Enabled and
+    (Assigned(FOnSpecialLineMarkup) or Assigned(FOnSpecialLineColors));
 end;
 
 constructor TSynEditMarkupSpecialLine.Create(ASynEdit: TSynEditBase);
