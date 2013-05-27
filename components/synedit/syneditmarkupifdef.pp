@@ -25,7 +25,7 @@ interface
 uses
   SysUtils, Classes, SynEditMiscClasses, SynHighlighterPas, SynEditMarkupHighAll,
   SynEditHighlighterFoldBase, SynEditFoldedView, LazSynEditText, SynEditMiscProcs,
-  SynEditMarkup, SynEditTypes, SynEditPointClasses, LazClasses, LazLoggerBase, Graphics,
+  SynEditMarkup, SynEditPointClasses, LazClasses, LazLoggerBase, Graphics,
   LCLProc;
 
 type
@@ -3255,8 +3255,6 @@ var
     var AFirstIdx: Integer);
   var
     CurFoundLine: Integer;
-    CloseNode: TSynMarkupHighIfDefEntry;
-
     procedure SetResultFor(AEntry: TSynMarkupHighIfDefEntry; ALine: Integer);
     begin
       CurFoundLine := ALine;
