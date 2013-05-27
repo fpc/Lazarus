@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
@@ -1280,22 +1280,21 @@ execution will end up at the <var>TPersistent</var> implementation of
       </element>
       <!-- property Visibility: published -->
       <element name="TAction.OnExecute" link="#rtl.Classes.TBasicAction.OnExecute">
-        <descr>
-          <p>
-            <var>OnExecute</var> is the event triggered when the action is activated
+        <descr><p><var>OnExecute</var> is the event triggered when the action is activated
 (executed). The event is triggered e.g. when the user clicks e.g. on a menu
 item or a button associated to the action. The application programmer 
 should provide a <var>OnExecute</var> event handler to execute whatever code
 is necessary when the button is pressed or the menu item is chosen.
-</p>
-          <p>Note that assigning an <var>OnExecute</var> handler will result in the
+</p><p>Note that assigning an <var>OnExecute</var> handler will result in the
 <link id="TBasicAction.Execute">Execute</link> method returning a
 <var>True</var> value. Predefined actions (such as dataset actions)
 will check the result of <var>Execute</var> and will not perform their 
 normal task if the <var>OnExecute</var> handler was called.
+</p><p>Since version 1.1 setting OnExecute no longer sets the owner's OnClick. You can now specify an event for the action and a more specific OnClick for control and both are called. OnClick is called before OnExecute.
 </p>
         </descr>
         <seealso/>
+      <short>Event called when action is executed</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TAction.OnHint" link="#LCL.ActnList.TCustomAction.OnHint">
