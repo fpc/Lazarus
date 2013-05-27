@@ -584,7 +584,7 @@ type
   end;
 
 function GetCCPaletteRGB(Cnt: integer; Shuffled: boolean): TLazCtrlPalette;
-procedure ShuffleCCPalette(Palette: TLazCtrlPalette);
+procedure ShuffleCCPalette({%H-}Palette: TLazCtrlPalette);
 function Darker(const c: TColor): TColor; overload;
 
 function GetManhattanDistancePointLine(X,Y, LineX1, LineY1, LineX2, LineY2: integer): integer;
