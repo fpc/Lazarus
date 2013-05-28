@@ -2777,8 +2777,10 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
     if SaveSession then begin
       // save what mode is currently active in the session
       XMLConfig.SetDeleteValue(Path+'BuildModes/Active',ActiveBuildMode.Identifier,'default');
+
       // save matrix options of session
       BuildModes.SessionMatrixOptions.SaveToXMLConfig(XMLConfig,Path+'BuildModes/SessionMatrixOptions/');
+
       // save what matrix options are enabled in session build modes
       Cnt:=0;
       SubPath:=Path+'BuildModes/SessionMatrixOptions/';
@@ -3257,10 +3259,22 @@ var
       CurMode.CompilerOptions.LoadFromXMLConfig(XMLConfig,CompOptsPath);
     end;
 
-    if LoadData then
+    if LoadData then begin
+      // load matrix options of project (not session)
       BuildModes.SharedMatrixOptions.LoadFromXMLConfig(XMLConfig,Path+'BuildModes/SharedMatrixOptions/');
-    if (not LoadData) and (not LoadParts) then
+    end;
+    if (not LoadData) and (not LoadParts) then begin
+      // load matrix options of session
       BuildModes.SessionMatrixOptions.LoadFromXMLConfig(XMLConfig,Path+'BuildModes/SessionMatrixOptions/');
+
+      // disable matrix options in session build modes
+      // ToDo:
+
+      // load what matrix options are enabled in session build modes
+      // ToDo:
+      //Cnt:=0;
+      //SubPath:=Path+'BuildModes/SessionMatrixOptions/';
+    end;
 
     // set active mode
     ActiveIdentifier:=XMLConfig.GetValue(Path+'BuildModes/Active','default');
