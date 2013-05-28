@@ -313,11 +313,9 @@ type
     function GetDisplayName: string; override;
   public
     procedure Assign(Source: TPersistent); override;
-{begin}                                                                         //ac 2000-07-05
     // TODO: add ShiftMask optional
     procedure LoadFromStream(AStream: TStream);
     procedure SaveToStream(AStream: TStream);
-{end}                                                                           //ac 2000-07-05
     // No duplicate checking is done if assignment made via these properties!
     property Key: word read FKey write SetKey;
     property Key2: word read FKey2 write SetKey2;
@@ -328,10 +326,8 @@ type
     property ShiftMask2: TShiftState read FShiftMask2 write FShiftMask2;
   published
     property Command: TSynEditorCommand read GetCommand write SetCommand;
-    property ShortCut: TShortCut read GetShortCut write SetShortCut
-      default 0;                                                                //mh 2000-11-07
-    property ShortCut2: TShortCut read GetShortCut2 write SetShortCut2
-      default 0;                                                                //mh 2000-11-07
+    property ShortCut: TShortCut read GetShortCut write SetShortCut default 0;
+    property ShortCut2: TShortCut read GetShortCut2 write SetShortCut2 default 0;
   end;
 
   { TSynEditKeyStrokes }
@@ -363,9 +359,9 @@ type
     procedure ResetKeyCombo;
     function FindShortcut(SC: TShortcut): integer;
     function FindShortcut2(SC, SC2: TShortcut): integer;
-    procedure LoadFromStream(AStream: TStream);                                 //ac 2000-07-05
+    procedure LoadFromStream(AStream: TStream);
     procedure ResetDefaults; virtual;
-    procedure SaveToStream(AStream: TStream);                                   //ac 2000-07-05
+    procedure SaveToStream(AStream: TStream);
   public
     property Items[Index: Integer]: TSynEditKeyStroke read GetItem
       write SetItem; default;
