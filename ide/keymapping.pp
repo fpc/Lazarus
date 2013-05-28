@@ -33,7 +33,7 @@ interface
 
 uses
   LCLIntf, LCLType, LCLProc, AvgLvlTree, Laz2_XMLCfg,
-  Forms, Classes, SysUtils, Buttons, LResources, Controls,
+  Forms, Classes, SysUtils, Buttons, LResources, Controls, contnrs,
   Dialogs, StringHashList, ExtCtrls,
   SynEditKeyCmds, SynPluginTemplateEdit, SynPluginSyncroEdit,
   PropEdits, IDECommands, LazarusIDEStrConsts, Debugger;
@@ -106,6 +106,24 @@ type
     function GetLocalizedName: string; override;
     property SkipSaving: Boolean read FSkipSaving write FSkipSaving;
   end;
+
+
+  { TKeyStrokeList
+    Specialized and optimized container for max. 3 TSynEditKeyStrokes }
+
+  TKeyStrokeList = class
+  private
+    KeyStroke1: TSynEditKeyStroke;
+    KeyStroke2: TSynEditKeyStroke;
+    KeyStroke3: TSynEditKeyStroke;
+    Count: Integer;    // Can be max. 3.
+    function GetItem(Index: Integer): TSynEditKeyStroke;
+    procedure PutItem(Index: Integer; AValue: TSynEditKeyStroke);
+  public
+    function Add(aKeyStroke: TSynEditKeyStroke): Integer;
+    property Items[Index: Integer]: TSynEditKeyStroke read GetItem write PutItem; default;
+  end;
+
 
   { TLoadedKeyCommand
     Used to keep shortcuts for unknown commands.
@@ -741,6 +759,40 @@ begin
   Result := KeyAndShiftStateToKeyString(Key.Key1, Key.Shift1);
   if (Key.Key2 <> VK_UNKNOWN) then
     Result := Result + ', ' + KeyAndShiftStateToKeyString(Key.Key2, Key.Shift2);
+end;
+
+{ TKeyStrokeList }
+
+function TKeyStrokeList.Add(aKeyStroke: TSynEditKeyStroke): Integer;
+begin
+  case Count of
+    0: begin KeyStroke1 := aKeyStroke; Inc(Count); end;
+    1: begin KeyStroke2 := aKeyStroke; Inc(Count); end;
+    2: begin KeyStroke3 := aKeyStroke; Inc(Count); end;
+    3: raise Exception.Create('TKeyStrokePair supports only 3 items');
+  end;
+end;
+
+function TKeyStrokeList.GetItem(Index: Integer): TSynEditKeyStroke;
+begin
+  if Index >= Count then
+    raise Exception.Create('TKeyStrokePair: Index out of bounds!');
+  case Index of
+    0: Result := KeyStroke1;
+    1: Result := KeyStroke2;
+    2: Result := KeyStroke3;
+  end;
+end;
+
+procedure TKeyStrokeList.PutItem(Index: Integer; AValue: TSynEditKeyStroke);
+begin
+  if Index >= Count then
+    raise Exception.Create('TKeyStrokePair: Index out of bounds!');
+  case Index of
+    0: KeyStroke1 := AValue;
+    1: KeyStroke2 := AValue;
+    2: KeyStroke3 := AValue;
+  end;
 end;
 
 { TKeyCommandRelation }
@@ -3331,8 +3383,41 @@ begin
         Exit(Relations[i]);
 end;
 
+// Command compare functions for AvgLvlTree for fast lookup.
+function CompareCmd(Data1, Data2: Pointer): integer;
+var
+  List1: TKeyStrokeList absolute Data1;
+  List2: TKeyStrokeList absolute Data2;
+  Cmd1, Cmd2: TSynEditorCommand;
+begin
+  Cmd1 := List1.KeyStroke1.Command;
+  Cmd2 := List2.KeyStroke1.Command;
+  if      Cmd1 > Cmd2 then Result:=-1
+  else if Cmd1 < Cmd2 then Result:=1
+  else Result:=0;
+end;
+
+function CompareKeyCmd(Data1, Data2: Pointer): integer;
+var
+  Cmd: PtrUInt absolute Data1;
+  List2: TKeyStrokeList absolute Data2;
+  Cmd1, Cmd2: TSynEditorCommand;
+begin
+  Cmd1 := Cmd;
+  Cmd2 := List2.KeyStroke1.Command;
+  if      Cmd1 > Cmd2 then Result:=-1
+  else if Cmd1 < Cmd2 then Result:=1
+  else Result:=0;
+end;
+
 procedure TKeyCommandRelationList.AssignTo(ASynEditKeyStrokes: TSynEditKeyStrokes;
   IDEWindowClass: TCustomFormClass; ACommandOffsetOffset: Integer = 0);
+
+var
+  Node: TAvgLvlTreeNode;
+  ccid: Word;
+  CategoryMatches: Boolean;
+  ToBeFreedKeys: TObjectList;
 
   function ShiftConflict(aKey: TSynEditKeyStroke): Boolean;
   // This is called when first part of combo has Ctrl and 2nd part has Ctrl or nothing.
@@ -3348,8 +3433,8 @@ procedure TKeyCommandRelationList.AssignTo(ASynEditKeyStrokes: TSynEditKeyStroke
       ConflictShift := [ssCtrl];
     for x := 0 to ASynEditKeyStrokes.Count-1 do
       with ASynEditKeyStrokes.Items[x] do
-        if (Key = aKey.Key) and (Key2 = aKey.Key2)
-        and (Shift = aKey.Shift) and (Shift2 = ConflictShift) then
+        if (Key2 = aKey.Key2) and (Key = aKey.Key)
+        and (Shift2 = ConflictShift) and (Shift = aKey.Shift) then
           Exit(True);        // Found
   end;
 
@@ -3362,17 +3447,41 @@ procedure TKeyCommandRelationList.AssignTo(ASynEditKeyStrokes: TSynEditKeyStroke
     aKey.Shift2:=aShortcut^.Shift2;
     // Ignore the second Ctrl key in sequential combos.
     // For example "Ctrl-X, Y" and "Ctrl-X, Ctrl-Y" are then treated the same.
-    if (aKey.Shift=[ssCtrl]) and (aKey.Shift2-[ssCtrl]=[]) and not ShiftConflict(aKey) then
+    if (aKey.Key2<>VK_UNKNOWN) and (aKey.Shift=[ssCtrl]) and (aKey.Shift2-[ssCtrl]=[])
+    and not ShiftConflict(aKey) then
       aKey.ShiftMask2:=[ssCtrl]
     else
       aKey.ShiftMask2:=[];
   end;
 
+  procedure UpdateOrAddKeyStroke(aOffset: integer; aShortcut: PIDEShortCut);
+  // Update an existing KeyStroke or add a new one
+  var
+    Key: TSynEditKeyStroke;
+    KeyList: TKeyStrokeList;
+  begin
+    if Assigned(Node) then
+      KeyList:=TKeyStrokeList(Node.Data);
+    if Assigned(Node) and (KeyList.Count>aOffset) then begin
+      Key:=TSynEditKeyStroke(KeyList[aOffset]);   // Already defined -> update
+      if CategoryMatches and (aShortcut^.Key1<>VK_UNKNOWN) then
+        SetKeyCombo(Key, aShortcut)
+      else
+        ToBeFreedKeys.Add(Key);    // No shortcut -> delete from the collection
+    end
+    else if CategoryMatches and (aShortcut^.Key1<>VK_UNKNOWN) then begin
+      Key:=ASynEditKeyStrokes.Add;                // Add a new key
+      Key.Command:=ccid;
+      SetKeyCombo(Key, aShortcut);
+    end;
+  end;
+
 var
-  i, j, MaxKeyCnt, KeyCnt: integer;
+  i, j: integer;
   Key: TSynEditKeyStroke;
+  KeyStrokesByCmds: TAvgLvlTree;
+  KeyList: TKeyStrokeList;
   CurRelation: TKeyCommandRelation;
-  ccid: Word;
   POUsed: Boolean;
 begin
   (* ACommandOffsetOffset
@@ -3383,55 +3492,48 @@ begin
      But the IDE requires unique values.
      The unique values in the plugin (+ KeyOffset) can not be used, a they are not at fixed numbers
   *)
-  POUsed := ASynEditKeyStrokes.UsePluginOffset;
+  KeyStrokesByCmds:=TAvgLvlTree.Create(@CompareCmd);
+  ToBeFreedKeys:=TObjectList.Create;
+  POUsed:=ASynEditKeyStrokes.UsePluginOffset;
   try
     ASynEditKeyStrokes.UsePluginOffset := False;
-    for i:=0 to FRelations.Count-1 do begin
-      CurRelation:=Relations[i];
-      if (CurRelation.ShortcutA.Key1=VK_UNKNOWN)
-      or ( (IDEWindowClass<>nil) and (CurRelation.Category.Scope<>nil)
-          and not CurRelation.Category.Scope.HasIDEWindowClass(IDEWindowClass) )
-      then
-        MaxKeyCnt:=0
-      else if CurRelation.ShortcutB.Key1=VK_UNKNOWN then
-        MaxKeyCnt:=1
-      else
-        MaxKeyCnt:=2;
-      KeyCnt:=1;
-      j:=ASynEditKeyStrokes.Count-1;
-      // replace keys
-      while j>=0 do begin
-        Key:=ASynEditKeyStrokes[j];
-        ccid := CurRelation.Command;
-        if (ccid >= ecFirstPlugin) and (ccid < ecLastPlugin) then
-          ccid := ccid + ACommandOffsetOffset;
-        if Key.Command=ccid then begin
-          if KeyCnt>MaxKeyCnt then
-            Key.Free // All keys with this command are already defined -> delete this one
-          else if KeyCnt=1 then
-            SetKeyCombo(Key, @CurRelation.ShortcutA)  // Key1 for this command
-          else if KeyCnt=2 then
-            SetKeyCombo(Key, @CurRelation.ShortcutB); // Key2 for this command
-          inc(KeyCnt);
-        end;
-        dec(j);
-      end;
-      // add missing keys
-      while KeyCnt<=MaxKeyCnt do begin
-        Key:=ASynEditKeyStrokes.Add;
-        ccid := CurRelation.Command;
-        if (ccid >= ecFirstPlugin) and (ccid < ecLastPlugin) then
-          ccid := ccid + ACommandOffsetOffset;
-        Key.Command:=ccid;
-        if KeyCnt=1 then
-          SetKeyCombo(Key, @CurRelation.ShortcutA)
+    // Save all SynEditKeyStrokes into a tree map for fast lookup, sorted by command.
+    for i:=ASynEditKeyStrokes.Count-1 downto 0 do begin
+      Key:=ASynEditKeyStrokes[i];
+      Node:=KeyStrokesByCmds.FindKey(Pointer(Key.Command), @CompareKeyCmd);
+      if Assigned(Node) then begin // Another key already defined for this command
+        KeyList:=TKeyStrokeList(Node.Data);
+        if KeyList.Count < 3 then
+          KeyList.Add(Key)
         else
-          SetKeyCombo(Key, @CurRelation.ShortcutB);
-        inc(KeyCnt);
+          DebugLn(['TKeyCommandRelationList.AssignTo: KeyList.Count=', KeyList.Count]);
+      end
+      else begin
+        KeyList:=TKeyStrokeList.Create;
+        KeyList.Add(Key);
+        KeyStrokesByCmds.Add(KeyList);
       end;
     end;
+    // Iterate all KeyCommandRelations and copy / update them to SynEditKeyStrokes.
+    for i:=0 to FRelations.Count-1 do begin
+      CurRelation:=Relations[i];
+      CategoryMatches:=(IDEWindowClass=nil)
+                   or (CurRelation.Category.Scope=nil)
+                    or CurRelation.Category.Scope.HasIDEWindowClass(IDEWindowClass);
+      ccid:=CurRelation.Command;
+      if (ccid >= ecFirstPlugin) and (ccid < ecLastPlugin) then
+        ccid:=ccid+ACommandOffsetOffset;
+      // Get SynEditKeyStrokes from the lookup tree
+      Node:=KeyStrokesByCmds.FindKey(Pointer(ccid), @CompareKeyCmd);
+      // First and second shortcuts for this command
+      UpdateOrAddKeyStroke(0, @CurRelation.ShortcutA);
+      UpdateOrAddKeyStroke(1, @CurRelation.ShortcutB);
+    end;
   finally
-    ASynEditKeyStrokes.UsePluginOffset := POUsed;
+    ToBeFreedKeys.Free;              // Free also Key objects.
+    KeyStrokesByCmds.FreeAndClear;   // Free also KeyLists.
+    KeyStrokesByCmds.Free;
+    ASynEditKeyStrokes.UsePluginOffset:=POUsed;
   end;
 end;
 
