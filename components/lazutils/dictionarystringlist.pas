@@ -10,8 +10,8 @@
 
   Abstract:
     This is an unsorted StringList with a fast lookup feature.
-     Internally it uses a string map container to store the string again.
-     It is then used for Contains, IndexOf and Find methods.
+     Internally it uses a map container to store the strings again
+      which is then used for Contains, IndexOf and Find methods.
 
     The extra container does not reserve too much memory because the strings are
      reference counted and not really copied.

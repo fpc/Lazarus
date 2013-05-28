@@ -1106,8 +1106,7 @@ begin
   Init;
 end;
 
-constructor TAvgLvlTree.CreateObjectCompare(
-  OnCompareMethod: TObjectSortCompare);
+constructor TAvgLvlTree.CreateObjectCompare(OnCompareMethod: TObjectSortCompare);
 begin
   inherited Create;
   FOnObjectCompare:=OnCompareMethod;

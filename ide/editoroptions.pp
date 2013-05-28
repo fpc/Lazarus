@@ -5054,8 +5054,7 @@ begin
   end;
 end;
 
-function TEditorOptions.CreateSyn(LazSynHilighter: TLazSyntaxHighlighter):
-TSrcIDEHighlighter;
+function TEditorOptions.CreateSyn(LazSynHilighter: TLazSyntaxHighlighter): TSrcIDEHighlighter;
 begin
   if LazSyntaxHighlighterClasses[LazSynHilighter] <> Nil then
   begin
