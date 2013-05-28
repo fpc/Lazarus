@@ -3413,26 +3413,6 @@ begin
           else if KeyCnt=2 then
             SetKeyCombo(Key, @CurRelation.ShortcutB); // Key2 for this command
           inc(KeyCnt);
-        end
-        else
-        if MaxKeyCnt > 0 then begin
-          // Key with i different ecCommand => Remove if it has i conflicting keystroke(s)
-          if ( (CurRelation.ShortcutA.Key1 <> VK_UNKNOWN) and
-               (Key.Key = CurRelation.ShortcutA.Key1)     and
-               (Key.Shift = CurRelation.ShortcutA.Shift1) and
-               ( (CurRelation.ShortcutA.Key2 = VK_UNKNOWN) or
-                 ( (Key.Key2 = CurRelation.ShortcutA.Key2) and
-                   (Key.Shift2 = CurRelation.ShortcutA.Shift2) )
-               ) )
-          OR ( (CurRelation.ShortcutB.Key1 <> VK_UNKNOWN) and
-               (Key.Key = CurRelation.ShortcutB.Key1)     and
-               (Key.Shift = CurRelation.ShortcutB.Shift1) and
-               ( (CurRelation.ShortcutB.Key2 = VK_UNKNOWN) or
-                 ( (Key.Key2 = CurRelation.ShortcutB.Key2) and
-                   (Key.Shift2 = CurRelation.ShortcutB.Shift2) )
-               ) )
-          then
-            Key.Free;
         end;
         dec(j);
       end;
