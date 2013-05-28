@@ -120,7 +120,7 @@ type
     function GetItem(Index: Integer): TSynEditKeyStroke;
     procedure PutItem(Index: Integer; AValue: TSynEditKeyStroke);
   public
-    function Add(aKeyStroke: TSynEditKeyStroke): Integer;
+    procedure Add(aKeyStroke: TSynEditKeyStroke);
     property Items[Index: Integer]: TSynEditKeyStroke read GetItem write PutItem; default;
   end;
 
@@ -763,7 +763,7 @@ end;
 
 { TKeyStrokeList }
 
-function TKeyStrokeList.Add(aKeyStroke: TSynEditKeyStroke): Integer;
+procedure TKeyStrokeList.Add(aKeyStroke: TSynEditKeyStroke);
 begin
   case Count of
     0: begin KeyStroke1 := aKeyStroke; Inc(Count); end;
@@ -3477,7 +3477,7 @@ var
   end;
 
 var
-  i, j: integer;
+  i: integer;
   Key: TSynEditKeyStroke;
   KeyStrokesByCmds: TAvgLvlTree;
   KeyList: TKeyStrokeList;
@@ -3500,7 +3500,7 @@ begin
     // Save all SynEditKeyStrokes into a tree map for fast lookup, sorted by command.
     for i:=ASynEditKeyStrokes.Count-1 downto 0 do begin
       Key:=ASynEditKeyStrokes[i];
-      Node:=KeyStrokesByCmds.FindKey(Pointer(Key.Command), @CompareKeyCmd);
+      Node:=KeyStrokesByCmds.FindKey({%H-}Pointer(Key.Command), @CompareKeyCmd);
       if Assigned(Node) then begin // Another key already defined for this command
         KeyList:=TKeyStrokeList(Node.Data);
         if KeyList.Count < 3 then
@@ -3524,7 +3524,7 @@ begin
       if (ccid >= ecFirstPlugin) and (ccid < ecLastPlugin) then
         ccid:=ccid+ACommandOffsetOffset;
       // Get SynEditKeyStrokes from the lookup tree
-      Node:=KeyStrokesByCmds.FindKey(Pointer(ccid), @CompareKeyCmd);
+      Node:=KeyStrokesByCmds.FindKey({%H-}Pointer(ccid), @CompareKeyCmd);
       // First and second shortcuts for this command
       UpdateOrAddKeyStroke(0, @CurRelation.ShortcutA);
       UpdateOrAddKeyStroke(1, @CurRelation.ShortcutB);
