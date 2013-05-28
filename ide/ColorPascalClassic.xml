@@ -27,7 +27,7 @@
           <ahaSyncroEditOther FrameColor="9744532" ForePriority="6000" BackPriority="6000" FramePriority="6000"/>
           <ahaSyncroEditArea Background="clMoneyGreen" ForePriority="2000" BackPriority="2000" FramePriority="2000"/>
           <ahaTextBlock Background="clBlue" Foreground="clWhite" ForePriority="7000" BackPriority="7000" FramePriority="7000"/>
-          <ahaMouseLink Foreground="clBlue" ForePriority="7500" BackPriority="7500" FramePriority="7500"/>
+          <ahaMouseLink Foreground="clBlue" ForePriority="1500" BackPriority="2500" FramePriority="7500"/>
           <ahaFoldedCode Foreground="clSilver" FrameColor="clSilver" ForePriority="8000" BackPriority="8000" FramePriority="8000"/>
 		  <ahaSpecialVisibleChars  ForePriority="8100" BackPriority="8100" FramePriority="8100"/>
           <ahaTopInfoHint Background="clPurple" Foreground="clYellow" FrameColor="clOlive" FrameStyle="slsDashed" ForePriority="8500" BackPriority="8500" FramePriority="8500"/>
