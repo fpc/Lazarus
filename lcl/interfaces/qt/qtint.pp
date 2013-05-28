@@ -87,6 +87,7 @@ type
     FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
 
     {$IFDEF HASX11}
+    SavedHintHandlesList: TFPList;
     FWindowManagerName: String; // Track various incompatibilities between WM. Initialized at WS start.
     {$ENDIF}
 
@@ -159,6 +160,15 @@ type
     procedure RemoveHandle(AHandle: TObject);
     function IsValidHandle(AHandle: HWND): Boolean;
 
+    {$IFDEF HASX11}
+    // qt hints handles map (needed on X11 only)
+    procedure AddHintHandle(AHandle: TObject);
+    procedure RemoveHintHandle(AHandle: TObject);
+    function IsValidHintHandle(AHandle: TObject): Boolean;
+    procedure HideAllHints;
+    procedure RestoreAllHints;
+    {$ENDIF}
+
     // application global actions (mainform mainmenu mnemonics Alt+XX)
     procedure ClearGlobalActions;
     procedure AddGlobalAction(AnAction: QActionH);
@@ -182,6 +192,9 @@ type
     {$IFDEF HASX11}
     FLastMinimizeEvent: DWord; // track mainform minimize events -> TQtMainWindow.EventFilter
     FMinimizedByPager: Boolean; // track if app is minimized via desktop pager or by us.
+    {$ENDIF}
+    {$IFDEF MSWINDOWS}
+    function GetWinKeyState(AKeyState: LongInt): SHORT;
     {$ENDIF}
     function CreateDefaultFont: HFONT; virtual;
     function GetDefaultAppFontName: WideString;

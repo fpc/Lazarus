@@ -420,7 +420,9 @@ begin
       {$endif}
 
       {$ifdef HASX11}
-      if (GetWindowManager = 'kwin') and IsOldKDEInstallation then
+      if ((QtWidgetSet.WindowManagerName = 'kwin') and IsOldKDEInstallation) or
+        (QtWidgetSet.WindowManagerName = 'xfwm4') or
+        (QtWidgetSet.WindowManagerName = 'metacity') then
       begin
         W := nil;
         ActiveWin := GetActiveWindow;

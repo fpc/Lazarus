@@ -347,6 +347,7 @@ type
     function numRects: Integer;
     procedure translate(dx, dy: Integer);
     property IsPolyRegion: Boolean read GetIsPolyRegion;
+    property Polygon: QPolygonH read FPolygon;
   end;
 
   // NOTE: PQtDCData was a pointer to a structure with QPainter information

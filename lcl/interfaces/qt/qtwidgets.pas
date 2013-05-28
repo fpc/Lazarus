@@ -175,7 +175,7 @@ type
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual; overload;
     constructor CreateFrom(const AWinControl: TWinControl; AWidget: QWidgetH); virtual;
     procedure InitializeWidget; virtual;
-    procedure DeInitializeWidget;
+    procedure DeInitializeWidget; virtual;
     procedure RecreateWidget;
     procedure DestroyNotify(AWidget: TQtWidget); virtual;
     
@@ -642,11 +642,16 @@ type
   { TQtHintWindow }
 
   TQtHintWindow = class(TQtMainWindow)
+  private
+    FNeedRestoreVisible: Boolean;
   protected
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
+    procedure InitializeWidget; override;
+    procedure DeInitializeWidget; override;
     procedure SetDefaultColorRoles; override;
     procedure setVisible(AVisible: Boolean); override;
+    property NeedRestoreVisible: Boolean read FNeedRestoreVisible write FNeedRestoreVisible;
   end;
 
   { TQtStaticText }
@@ -2794,15 +2799,27 @@ begin
   if QEvent_type(Event) = QEventKeyRelease then
     LCLModifiers := LCLModifiers or KF_UP;
 
-  KeyMsg.KeyData := PtrInt((AKeyCode shl 16) or (LCLModifiers shl 16) or $0001);
-
   {$ifdef windows}
-    ACharCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
-    KeyMsg.CharCode := ACharCode;
-  // todo: VK to Win_VK for other os too
-    //WriteLn(QKeyEvent_nativeVirtualKey(QKeyEventH(Event)));
-    //WriteLn(QKeyEvent_nativeScanCode(QKeyEventH(Event)));
+  ACharCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
+  KeyMsg.CharCode := ACharCode;
+  if (Modifiers = QtAltModifier or QtControlModifier) then
+  begin
+    if (QtWidgetSet.GetWinKeyState(VK_RMENU) < 0) and
+      (QtWidgetSet.GetWinKeyState(VK_LCONTROL) < 0) then
+    begin
+      IsSysKey := False;
+      LCLModifiers := 0;
+      Modifiers := QtGroupSwitchModifier;
+
+      if QKeyEvent_isAutoRepeat(QKeyEventH(Event)) then
+        LCLModifiers := LCLModifiers or KF_REPEAT;
+
+      if QEvent_type(Event) = QEventKeyRelease then
+        LCLModifiers := LCLModifiers or KF_UP;
+    end;
+  end;
   {$endif}
+  KeyMsg.KeyData := PtrInt((AKeyCode shl 16) or (LCLModifiers shl 16) or $0001);
 
   // Loads the UTF-8 character associated with the keypress, if any
   QKeyEvent_text(QKeyEventH(Event), @Text);
@@ -6098,10 +6115,16 @@ begin
   else
     inherited Activate;
   {$IFDEF HASX11}
+  if (QtWidgetSet.WindowManagerName = 'xfwm4') and not IsMDIChild and
+    QWidget_isModal(Widget) then
+  begin
+    if X11GetActivewindow <> Widget then
+      X11Raise(QWidget_winID(Widget));
+  end else
   if not QWidget_isModal(Widget) then
   begin
     if (QtWidgetSet.WindowManagerName = 'metacity') and not IsMDIChild then
-      X11Raise(QWidget_winID(Widget))
+        X11Raise(QWidget_winID(Widget))
     else
       QWidget_raise(Widget);
   end;
@@ -6217,11 +6240,14 @@ begin
       {$IFDEF HASX11}
       // for X11 we must ask state of each modified window.
       AState := getWindowState;
+
       IsMinimizeEvent := AState and QtWindowMinimized <> 0;
       if IsMinimizeEvent then
       begin
         CanSendEvent := IsCurrentDesktop(Widget);
         QtWidgetSet.FMinimizedByPager := not CanSendEvent;
+        if IsMainForm and QtWidgetSet.FMinimizedByPager then
+          QtWidgetSet.HideAllHints;
       end;
       {$ENDIF}
       if IsMainForm and CanSendEvent then
@@ -6289,8 +6315,10 @@ begin
           // pager switch !
           if (AOldState and QtWindowMinimized <> 0) and
             QtWidgetSet.FMinimizedByPager then
-              QtWidgetSet.FMinimizedByPager := False
-          else
+          begin
+            QtWidgetSet.FMinimizedByPager := False;
+            QtWidgetSet.RestoreAllHints;
+          end else
           {$ENDIF}
             Application.IntfAppRestore;
           {$ENDIF}
@@ -7460,6 +7488,10 @@ var
   LMScroll: TLMScroll;
   SliderAction: QAbstractSliderSliderAction;
 begin
+
+  if InUpdate then
+    exit;
+
   {$ifdef VerboseQt}
   writeln('TQtAbstractSlider.SlotActionTriggered() action = ',action,' inUpdate ',inUpdate);
   {$endif}
@@ -14293,6 +14325,10 @@ begin
 end;
 
 function TQtDialog.exec: Integer;
+{$IFDEF HASX11}
+var
+  AWND: HWND;
+{$ENDIF}
 begin
   {$IF DEFINED(DARWIN) OR DEFINED(QT_DIALOGS_USE_QT_LOOP)}
   Result := QDialog_exec(QDialogH(Widget));
@@ -14308,6 +14344,14 @@ begin
       Application.Idle(true);
     until not QWidget_isVisible(Widget) or Application.Terminated;
     Result := QDialog_result(QDialogH(Widget));
+  end;
+  {$ENDIF}
+  {$IFDEF HASX11}
+  if (QtWidgetSet.WindowManagerName = 'xfwm4') and (QApplication_activeModalWidget() <> nil) then
+  begin
+    AWND := HwndFromWidgetH(QApplication_activeModalWidget());
+    if (AWND <> 0) and (X11GetActivewindow <> TQtWidget(AWND).Widget) then
+      X11Raise(QWidget_winID(TQtWidget(AWND).Widget));
   end;
   {$ENDIF}
 end;
@@ -15467,6 +15511,7 @@ var
   Parent: QWidgetH;
 begin
   FHasPaint := True;
+  FNeedRestoreVisible := False;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -15474,6 +15519,22 @@ begin
   Result := QWidget_create(Parent, QtToolTip);
   FDeleteLater := True;
   MenuBar := nil;
+end;
+
+procedure TQtHintWindow.InitializeWidget;
+begin
+  inherited InitializeWidget;
+  {$IFDEF HASX11}
+  QtWidgetSet.AddHintHandle(Self);
+  {$ENDIF}
+end;
+
+procedure TQtHintWindow.DeInitializeWidget;
+begin
+  {$IFDEF HASX11}
+  QtWidgetSet.RemoveHintHandle(Self);
+  {$ENDIF}
+  inherited DeInitializeWidget;
 end;
 
 procedure TQtHintWindow.SetDefaultColorRoles;

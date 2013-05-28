@@ -104,7 +104,7 @@ begin
   XClient.message_type := WMATom;
   XClient.format := 32;
   XClient.data.l[0] := 1;
-  XClient.data.l[1] := 0;
+  XClient.data.l[1] := CurrentTime; // _NET_WM_USER_TIME
   XClient.data.l[2] := 0;
   Result := XSendEvent(Display, RootWin, False,
 	      SubstructureRedirectMask or SubstructureNotifyMask,
@@ -254,5 +254,31 @@ begin
   XSendEvent (Display, RootWin, False,
 	      SubstructureRedirectMask or SubstructureNotifyMask,
 	      @Xclient);
+end;
+
+{$warning xkblib is not included because of codetools errors. When codetools
+  are fixed remove this and include xkblib.}
+function XkbGetIndicatorState (dpy : PDisplay; deviceSpec : Word; pStateRtrn : PWord) : TStatus;
+        cdecl; external libX11 name 'XkbGetIndicatorState';
+
+function GetKeyLockState(const AKey: Byte): Boolean;
+var
+  Display: PDisplay;
+  n: Cardinal;
+begin
+  Result := False;
+  Display := QX11Info_display();
+
+  if (Display = nil) then
+    exit;
+  // to avoid XKB unit inclusion XkbUseCoreKbd   = $0100;
+  if (XkbGetIndicatorState(Display, $0100, @n) = Success) then
+  begin
+    if (AKey = VK_LCL_CAPSLOCK) then
+      Result := (n and $01) = 1
+    else
+    if (AKey = VK_NUMLOCK) then
+      Result := (n and $02) = 2;
+  end;
 end;
 
