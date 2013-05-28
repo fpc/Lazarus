@@ -37,7 +37,7 @@ ToDo:
  - Any other functions/procedures that are needed in LazFileUtils too, should be moved
    to LazFileUtils, and in Fileutil inlined to use LazileUtils counterparts
 
-PLEASE DO NOT ADD MORE UTF8 RELATED (FILE) ROUTINES TO THIS UNIT !
+DO NOT ADD MORE UTF8 RELATED (FILE) ROUTINES TO THIS UNIT !
 
 ***************************************************************************** }
 unit FileUtil;
@@ -47,7 +47,7 @@ unit FileUtil;
 interface
 
 uses
-  SysConst, Classes, SysUtils, Masks, LazUtilsStrConsts, lazutf8, LazFileUtils;
+  Classes, SysUtils, Masks, LazUtilsStrConsts, LazUTF8, LazFileUtils;
   
 {$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}

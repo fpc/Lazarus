@@ -1,7 +1,5 @@
 {%MainUnit fileutil.pas}
 
-
-
 {------------------------------------------------------------------------------
   GetFileDescription
  ------------------------------------------------------------------------------}
@@ -26,8 +24,6 @@ function ReadAllLinks(const Filename: string;
 begin
   Result:=Filename;
 end;
-
-
 
 function ConsoleToUTF8(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
 var
