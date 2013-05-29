@@ -140,3 +140,203 @@ function FilenameIsUnixAbsolute(const TheFilename: string): boolean;
 begin
   Result:=(TheFilename<>'') and (TheFilename[1]='/');
 end;
+
+
+{
+  Returns True if it is possible to create a relative path from Source to Dest
+  Function must be thread safe, so no expanding of filenames is done, since this
+  is not threadsafe (at least on Windows platform)
+
+  - Dest and Source must either be both absolute filenames, or relative
+  - Dest and Source cannot contain '..' since no expanding is done by design
+  - Dest and Source must be on same drive or UNC path (Windows)
+  - if both Dest and Source are relative they must at least share their base directory
+  - Double PathDelims are ignored (unless they are part of the UNC convention)
+
+  Examples:
+  - Dest = /foo/bar Source = /foo Result = True RelPath = bar
+  - Dest = /foo///bar Source = /foo// Result = True RelPath = bar
+  - Dest = /foo Source = /foo/bar Result = True RelPath = ../
+  - Dest = /foo/bar Source = /bar Result = True RelPath = ../foo/bar
+  - Dest = foo/bar Source = foo/foo Result = True RelPath = ../bar
+  - Dest = foo/bar Source = bar/foo Result = False (no shared base directory)
+  - Dest = /foo Source = bar Result = False (mixed absolute and relative)
+  - Dest = c:foo Source = c:bar Result = False (no expanding)
+  - Dest = c:\foo Source = d:\bar Result is False (different drives)
+  - Dest = \foo Source = foo (Windows) Result is False (too ambiguous to guess what this should mean)
+}
+
+function TryCreateRelativePath(const Dest, Source: String; UsePointDirectory: boolean; out RelPath: String): Boolean;
+Const
+  MaxDirs = 129;
+Type
+  TDirArr =  Array[1..MaxDirs] of String;
+
+  function SplitDirs(Dir: String; out Dirs: TDirArr): Integer;
+  var
+    Start, Stop, Len: Integer;
+    S: String;
+  begin
+    Result := 0;
+    Len := Length(Dir);
+    if (Len = 0) then Exit;
+    Start := 1;
+    Stop := 1;
+
+    While Start <= Len do
+    begin
+      if (Dir[Start] = PathDelim) then
+      begin
+        S := Copy(Dir,Stop,Start-Stop);
+        //ignore empty strings, they are caused by double PathDelims, which we just ignore
+        if (S <> '') then
+        begin
+          Inc(Result);
+          Dirs[Result] := S;
+        end;
+        Stop := Start + 1;
+      end;
+      Inc(Start);
+    end;
+    //If (Len > 0) then
+
+    S := Copy(Dir,Stop,Start-Stop);
+    if (S <> '') then
+    begin
+      Inc(Result);
+      Dirs[Result] := S;
+    end;
+
+  end;
+
+
+var
+  CompareFunc: function(const Item1, Item2: String): Integer;
+  SourceRoot, DestRoot, CmpDest, CmpSource: String;
+  CmpDestLen, CmpSourceLen, DestCount, SourceCount, i,
+  SharedFolders, LevelsBack, LevelsUp: Integer;
+  SourceDirs, DestDirs: Array[1..MaxDirs] of String;
+  IsAbs: Boolean;
+begin
+  Result := False;
+  if (Dest = '') or (Source = '') then Exit;
+  if (Pos('..',Dest) > 0) or (Pos('..',Source) > 0) then Exit;
+  SourceRoot := ExtractFileRoot(Source);
+  DestRoot := ExtractFileRoot(Dest);
+  //debugln('TryCreaterelativePath: DestRoot = "',DestRoot,'"');
+  //debugln('TryCreaterelativePath: SourceRoot = "',SourceRoot,'"');
+  //Root must be same: either both absolute filenames or both relative (and on same drive in Windows)
+  if (CompareFileNames(SourceRoot, DestRoot) <> 0) then Exit;
+  IsAbs := (DestRoot <> '');
+  {$if defined(windows) and not defined(wince)}
+  if not IsAbs then  // relative paths
+  begin
+    //we cannot handle files like c:foo
+    if ((Length(Dest) > 1) and (UpCase(Dest[1]) in ['A'..'Z']) and (Dest[2] = ':')) or
+       ((Length(Source) > 1) and (UpCase(Source[1]) in ['A'..'Z']) and (Source[2] = ':')) then Exit;
+    //we cannot handle combinations like dest=foo source=\bar or the other way around
+    if ((Dest[1] = PathDelim) and (Source[1] <> PathDelim)) or
+       ((Dest[1] <> PathDelim) and (Source[1] = PathDelim)) then Exit;
+  end;
+  {$endif}
+
+  {$IFDEF CaseInsensitiveFilenames}
+  CompareFunc := @UTF8CompareText;
+  {$else CaseInsensitiveFilenames}
+  CompareFunc := @Utf8CompareStr;
+  {$endif CaseInsensitiveFilenames}
+
+  CmpSource := Source;
+  CmpDest := Dest;
+  {$IFDEF darwin}
+  CmpSource := GetDarwinSystemFilename(CmpSource);
+  CmpDest := GetDarwinSystemFilename(CmpDest);
+  {$ENDIF}
+
+
+  CmpDest := ChompPathDelim(Dest);
+  CmpSource := ChompPathDelim(Source);
+  if IsAbs then
+  begin
+    System.Delete(CmpSource,1,Length(SourceRoot));
+    System.Delete(CmpDest,1,Length(DestRoot));
+  end;
+
+  //Get rid of excessive trailing PathDelims now after (!) we stripped Root
+  while (Length(CmpDest) > 0) and (CmpDest[Length(CmpDest)] = PathDelim) do System.Delete(CmpDest,Length(CmpDest),1);
+  while (Length(CmpSource) > 0) and (CmpSource[Length(CmpSource)] = PathDelim) do System.Delete(CmpSource,Length(CmpSource),1);
+
+  //debugln('TryCreaterelativePath: CmpDest   = "',cmpdest,'"');
+  //debugln('TryCreaterelativePath: CmpSource = "',cmpsource,'"');
+  CmpDestLen := Length(CmpDest);
+  CmpSourceLen := Length(CmpSource);
+
+  DestCount := SplitDirs(CmpDest, DestDirs);
+  SourceCount :=  SplitDirs(CmpSource, SourceDirs);
+
+  //debugln('TryCreaterelativePath: DestDirs:');
+  //for i := 1 to DestCount do debugln(DbgS(i),' "',DestDirs[i],'"'); debugln;
+  //debugln('TryCreaterelativePath:');
+  //for i := 1 to SourceCount do debugln(DbgS(i),' "',SourceDirs[i],'"'); debugln;
+
+
+  i := 1;
+  SharedFolders := 0;
+  while (i <= DestCount) and (i <= SourceCount) do
+  begin
+    if (CompareFunc(DestDirs[i], SourceDirs[i]) = 0) then
+    begin
+      Inc(SharedFolders);
+      Inc(i);
+    end
+    else
+    begin
+      Break;
+    end;
+  end;
+
+  //debugln('TryCreaterelativePath: SharedFolders = ',DbgS(SharedFolders));
+  if not IsAbs and (SharedFolders = 0) and not ((CmpDestLen = 0) and (CmpSourceLen = 0)) then
+  begin
+    //debguln('TryCreaterelativePath: FAIL: IsAbs = FALSE, SharedFolders = 0, CmpDestLen = ',cmpdestlen,' CmpSourceLen = ',CmpSourceLen);
+    Exit;
+  end;
+  LevelsBack := SourceCount - SharedFolders;
+  LevelsUp := DestCount - SharedFolders;
+  //debugln('TryCreaterelativePath: LevelsBack = ',DbgS(Levelsback));
+  //debugln('TryCreaterelativePath: LevelsUp   = ',DbgS(LevelsUp));
+  if (LevelsBack > 0) then
+  begin
+    RelPath := '';
+    for i := 1 to LevelsBack do RelPath := '..' + PathDelim + Relpath;
+
+    for i := LevelsUp downto 1 do
+    begin
+      if (RelPath <> '') and (RelPath[Length(RelPath)] <> PathDelim) then RelPath := RelPath + PathDelim;
+      RelPath := RelPath + DestDirs[DestCount + 1 - i];
+    end;
+    RelPath := ChompPathDelim(RelPath);
+  end
+  else
+  begin
+    RelPath := '';
+    for i := LevelsUp downto 1 do
+    begin
+      if (RelPath <> '') then RelPath := RelPath + PathDelim;
+      RelPath := RelPath + DestDirs[DestCount + 1 - i];
+    end;
+  end;
+  if UsePointDirectory and (RelPath = '') then
+    RelPath := '.'; // Dest = Source
+  Result := True;
+end;
+
+function CreateRelativePath(const Filename, BaseDirectory: string;
+  UsePointDirectory: boolean): string;
+var
+  RelPath: String;
+begin
+  Result:=Filename;
+  if TryCreateRelativePath(FileName, Basedirectory, UsePointDirectory, RelPath) then
+    Result := RelPath;
+end;

@@ -56,6 +56,7 @@ function CleanAndExpandFilename(const Filename: string): string; // empty string
 function CleanAndExpandDirectory(const Filename: string): string; // empty string returns current directory
 function TrimAndExpandFilename(const Filename: string; const BaseDir: string = ''): string; // empty string returns empty string
 function TrimAndExpandDirectory(const Filename: string; const BaseDir: string = ''): string; // empty string returns empty string
+function TryCreateRelativePath(const Dest, Source: String; UsePointDirectory: boolean; out RelPath: String): Boolean;
 function CreateRelativePath(const Filename, BaseDirectory: string;
                             UsePointDirectory: boolean = false): string;
 function FileIsInPath(const Filename, Path: string): boolean;
@@ -101,6 +102,8 @@ function FileSizeUtf8(const Filename: string): int64;
 // UNC paths
 function IsUNCPath(const {%H-}Path: String): Boolean;
 function ExtractUNCVolume(const {%H-}Path: String): String;
+function ExtractFileRoot(FileName: String): String;
+
 
 procedure SplitCmdLineParams(const Params: string; ParamList: TStrings;
                              ReadBackslash: boolean = false);
@@ -575,165 +578,7 @@ begin
   Result:=TrimFilename(AppendPathDelim(ExpandFileNameUTF8(Result,BaseDir)));
 end;
 
-function CreateRelativePath(const Filename, BaseDirectory: string;
-  UsePointDirectory: boolean): string;
-{
-Creates a relative path from BaseDirectory to Filename.
-A trailing path delimiter of BaseDirectory is ignored.
-If there is no relative path it returns Filename.
-If BaseDirectory and Filename are the same and UsePointDirectory is false it
-returns the empty string. If UsePointDirectory is true it returns '.'.
-Duplicate path delimiters are treated as one.
 
-In other words if it returns a relative file name then the following is true:
-TrimFilename(Filename) = TrimFilename(BaseDirectory+PathDelim+Result).
-
-This function is thread safe and therefore does not support current directories
-as needed by Windows file names like D:test.
-
-Filename='/a' BaseDir='/a' Result=''
-Filename='/a' BaseDir='/a' UsePointDirectory=true Result='.'
-Filename='/a' BaseDir='/a/' Result=''
-Filename='/a/b' BaseDir='/a/b' Result=''
-Filename='/a/b' BaseDir='/a/b/' Result=''
-Filename='/a' BaseDir='/a/' Result=''
-Filename='/a' BaseDir='' Result='/a'
-Filename='/a/b' BaseDir='/a' Result='b'
-Filename='/a/b' BaseDir='/a/' Result='b'
-Filename='/a/b' BaseDir='/a//' Result='b'
-Filename='/a' BaseDir='/a/b' Result='../'
-Filename='/a' BaseDir='/a/b/' Result='../'
-Filename='/a' BaseDir='/a/b//' Result='../'
-Filename='/a/' BaseDir='/a/b' Result='../'
-Filename='/a' BaseDir='/a/b/c' Result='../../'
-Filename='/a' BaseDir='/a/b//c' Result='../../'
-Filename='/a' BaseDir='/a//b/c' Result='../../'
-Filename='/a' BaseDir='/a//b/c/' Result='../../'
-Filename='/a' BaseDir='/b' Result='/a'
-
-}
-var
-  FileNameLength: Integer;
-  BaseDirLen: Integer;
-  SamePos: Integer;
-  UpDirCount: Integer;
-  BaseDirPos: Integer;
-  ResultPos: Integer;
-  i: Integer;
-  FileNameRestLen: Integer;
-  CmpBaseDirectory: String;
-  CmpFilename: String;
-  p: Integer;
-  DirCount: Integer;
-begin
-  Result:=Filename;
-  if (BaseDirectory='') or (Filename='') then exit;
-
-  {$IFDEF Windows}
-  // check for different windows file drives
-  if (CompareText(ExtractFileDrive(Filename),
-                  ExtractFileDrive(BaseDirectory))<>0)
-  then
-    exit;
-  {$ENDIF}
-  CmpBaseDirectory:=BaseDirectory;
-  CmpFilename:=Filename;
-  {$IFDEF darwin}
-  CmpBaseDirectory:=GetDarwinSystemFilename(CmpBaseDirectory);
-  CmpFilename:=GetDarwinSystemFilename(CmpFilename);
-  {$ENDIF}
-  {$IFDEF CaseInsensitiveFilenames}
-  CmpBaseDirectory:=AnsiUpperCaseFileName(CmpBaseDirectory);
-  CmpFilename:=AnsiUpperCaseFileName(CmpFilename);
-  {$ENDIF}
-
-  FileNameLength:=length(CmpFilename);
-  while (FileNameLength>0) and (CmpFilename[FileNameLength]=PathDelim) do
-    dec(FileNameLength);
-  BaseDirLen:=length(CmpBaseDirectory);
-  while (BaseDirLen>0) and (CmpBaseDirectory[BaseDirLen]=PathDelim) do
-    dec(BaseDirLen);
-  if BaseDirLen=0 then exit;
-
-  //DebugLn(['CreateRelativePath START ',copy(CmpBaseDirectory,1,BaseDirLen),' ',copy(CmpFilename,1,FileNameLength)]);
-
-  // count shared directories
-  p:=1;
-  DirCount:=0;
-  BaseDirPos:=p;
-  while (p<=FileNameLength) and (BaseDirPos<=BaseDirLen)
-  and (CmpFileName[p]=CmpBaseDirectory[BaseDirPos]) do
-  begin
-    if CmpFilename[p]=PathDelim then
-    begin
-      inc(DirCount);
-      repeat
-        inc(p);
-      until (p>FileNameLength) or (CmpFilename[p]<>PathDelim);
-      repeat
-        inc(BaseDirPos);
-      until (BaseDirPos>BaseDirLen) or (CmpBaseDirectory[BaseDirPos]<>PathDelim);
-    end else begin
-      inc(p);
-      inc(BaseDirPos);
-    end;
-  end;
-  UpDirCount:=0;
-  if ((BaseDirPos>BaseDirLen) or (CmpBaseDirectory[BaseDirPos]=PathDelim))
-  and ((p>FileNameLength) or (CmpFilename[p]=PathDelim)) then
-  begin
-    // for example File=/a BaseDir=/a/b
-    inc(DirCount);
-  end else begin
-    // for example File=/aa BaseDir=/ab
-    inc(UpDirCount);
-  end;
-  if DirCount=0 then exit;
-  if FilenameIsAbsolute(BaseDirectory) and (DirCount=1) then exit;
-
-  // calculate needed up directories
-  while (BaseDirPos<=BaseDirLen) do begin
-    if (CmpBaseDirectory[BaseDirPos]=PathDelim) then
-    begin
-      inc(UpDirCount);
-      repeat
-        inc(BaseDirPos);
-      until (BaseDirPos>BaseDirLen) or (CmpBaseDirectory[BaseDirPos]<>PathDelim);
-    end else
-      inc(BaseDirPos);
-  end;
-
-  // create relative filename
-  SamePos:=1;
-  p:=0;
-  FileNameLength:=length(Filename);
-  while (SamePos<=FileNameLength) do begin
-    if (Filename[SamePos]=PathDelim) then begin
-      repeat
-        inc(SamePos);
-      until (SamePos>FileNameLength) or (Filename[SamePos]<>PathDelim);
-      inc(p);
-      if p>=DirCount then
-        break;
-    end else
-      inc(SamePos);
-  end;
-  FileNameRestLen:=FileNameLength-SamePos+1;
-  //writeln('DirCount=',DirCount,' UpDirCount=',UpDirCount,' FileNameRestLen=',FileNameRestLen,' SamePos=',SamePos);
-  SetLength(Result,3*UpDirCount+FileNameRestLen);
-  ResultPos:=1;
-  for i:=1 to UpDirCount do begin
-    Result[ResultPos]:='.';
-    Result[ResultPos+1]:='.';
-    Result[ResultPos+2]:=PathDelim;
-    inc(ResultPos,3);
-  end;
-  if FileNameRestLen>0 then
-    System.Move(Filename[SamePos],Result[ResultPos],FileNameRestLen);
-
-  if UsePointDirectory and (Result='') and (Filename<>'') then
-    Result:='.'; // Filename is the BaseDirectory
-end;
 
 {------------------------------------------------------------------------------
   function FileIsInPath(const Filename, Path: string): boolean;
@@ -1214,6 +1059,41 @@ begin
   Result := '';
 end;
 {$ENDIF}
+
+{
+  Returns
+  - DriveLetter + : + PathDelim on Windows (if present) or
+  - UNC Share on Windows if present or
+  - PathDelim if FileName starts with PathDelim on Unix or Wince or
+  - Empty string of non eof the above applies
+}
+function ExtractFileRoot(FileName: String): String;
+var
+  Len: Integer;
+begin
+  Result := '';
+  Len := Length(FileName);
+  if (Len > 0) then
+  begin
+    if IsUncPath(FileName) then
+    begin
+      Result := ExtractUNCVolume(FileName);
+      // is it like \\?\C:\Directory?  then also include the "C:\" part
+      if (Result = '\\?\') and (Length(FileName) > 6) and
+         (UpCase(FileName[5]) in ['A'..'Z']) and (FileName[6] = ':') and (FileName[7] = PathDelim) then
+        Result := Copy(FileName, 1, 7);
+    end
+    else
+    begin
+      {$if defined(unix) or defined(wince)}
+      if (FileName[1] = PathDelim) then Result := PathDelim;
+      {$else}
+      if (Len > 2) and (UpCase(FileName[1]) in ['A'..'Z']) and (FileName[2] = ':') and (FileName[3] = PathDelim) then
+        Result := UpperCase(Copy(FileName,1,3));
+      {$endif}
+    end;
+  end;
+end;
 
 initialization
   InitLazFileUtils;

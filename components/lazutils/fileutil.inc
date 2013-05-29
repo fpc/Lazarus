@@ -559,10 +559,7 @@ end;
 function CreateRelativePath(const Filename, BaseDirectory: string;
   UsePointDirectory: boolean): string;
 begin
-  if (BaseDirectory='') or (Filename='') then Exit(FileName);
-  Result := SysUtils.ExtractRelativePath(ExpandFileNameUtf8(IncludetrailingPathDelimiter(BaseDirectory)),FileName);
-  if UsePointDirectory and (Result='') and (Filename<>'') then
-    Result:='.'; // Filename is the BaseDirectory
+  Result := LazFileUtils.CreateRelativePath(FileName, BaseDirectory, UsePointDirectory);
 end;
 
 function CreateAbsolutePath(const Filename, BaseDirectory: string): string;
