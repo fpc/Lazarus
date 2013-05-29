@@ -1552,6 +1552,10 @@ begin
     exit
   end;
 
+  {$IFDEF WithSynMarkupIfDef}
+  FMarkupIfDef.Highlighter := nil;
+  {$ENDIF}
+
   inherited SetHighlighter(Value);
 
   {$IFDEF WithSynMarkupIfDef}
@@ -1620,6 +1624,7 @@ end;
 destructor TIDESynEditor.Destroy;
 begin
   HighlightUserWordCount := 0;
+  Highlighter := nil;
   FreeAndNil(FUserWordsList);
   FExtraMarkupMgr.RemoveMarkUp(TSynEditMarkup(MarkupMgr));
   FreeAndNil(FTopInfoDisplay);
