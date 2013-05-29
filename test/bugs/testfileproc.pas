@@ -1,3 +1,12 @@
+{
+ Test all with:
+     ./runtests --format=plain --suite=TTestFileProc
+
+ Test specific with:
+     ./runtests --format=plain --suite=TestFileIsExecutable
+     ./runtests --format=plain --suite=TestTrimFileName
+     ./runtests --format=plain --suite=TestCreateRelativePath
+}
 unit TestFileProc;
 
 {$mode objfpc}{$H+}
@@ -9,8 +18,6 @@ uses
   FileProcs;
 
 type
-
-  { TTestFileUtil }
 
   { TTestFileProc }
 
