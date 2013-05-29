@@ -797,6 +797,55 @@ begin
 end;
 
 
+function IsUNCPath(const Path: String): Boolean;
+begin
+  Result := (Length(Path) > 2) and (Path[1] = PathDelim) and (Path[2] = PathDelim);
+end;
+
+function ExtractUNCVolume(const Path: String): String;
+var
+  I, Len: Integer;
+
+  // the next function reuses Len variable
+  function NextPathDelim(const Start: Integer): Integer;// inline;
+  begin
+    Result := Start;
+    while (Result <= Len) and (Path[Result] <> PathDelim) do
+      inc(Result);
+  end;
+
+begin
+  if not IsUNCPath(Path) then
+    Exit('');
+  I := 3;
+  Len := Length(Path);
+  if Path[I] = '?' then
+  begin
+    // Long UNC path form like:
+    // \\?\UNC\ComputerName\SharedFolder\Resource or
+    // \\?\C:\Directory
+    inc(I);
+    if Path[I] <> PathDelim then
+      Exit('');
+    if UpperCase(Copy(Path, I + 1, 3)) = 'UNC' then
+    begin
+      inc(I, 4);
+      if I < Len then
+        I := NextPathDelim(I + 1);
+      if I < Len then
+        I := NextPathDelim(I + 1);
+    end;
+  end
+  else
+  begin
+    I := NextPathDelim(I);
+    if I < Len then
+      I := NextPathDelim(I + 1);
+  end;
+  Result := Copy(Path, 1, I);
+end;
+
+
 
 
 procedure InitLazFileUtils;

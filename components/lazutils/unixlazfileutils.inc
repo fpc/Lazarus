@@ -265,6 +265,18 @@ begin
 end;
 
 
+function IsUNCPath(const Path: String): Boolean;
+begin
+  Result := false;
+end;
+
+function ExtractUNCVolume(const Path: String): String;
+begin
+  Result := '';
+end;
+
+
+
 procedure InitLazFileUtils;
 begin
   //dummy
