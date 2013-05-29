@@ -109,7 +109,7 @@ function CleanAndExpandFilename(const Filename: string): string; inline;
 function CleanAndExpandDirectory(const Filename: string): string; inline;
 function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
 function CreateRelativePath(const Filename, BaseDirectory: string;
-                            UsePointDirectory: boolean = false): string; inline;
+                            UsePointDirectory: boolean = false; AlwaysRequireSharedBaseFolder: Boolean = True): string; inline;
 function CreateAbsolutePath(const Filename, BaseDirectory: string): string;
 function FileIsInPath(const Filename, Path: string): boolean;
 function FileIsInDirectory(const Filename, Directory: string): boolean;

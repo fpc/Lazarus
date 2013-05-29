@@ -557,9 +557,9 @@ begin
 end;
 
 function CreateRelativePath(const Filename, BaseDirectory: string;
-  UsePointDirectory: boolean): string;
+                            UsePointDirectory: boolean; AlwaysRequireSharedBaseFolder: Boolean): string;
 begin
-  Result := LazFileUtils.CreateRelativePath(FileName, BaseDirectory, UsePointDirectory);
+  Result := LazFileUtils.CreateRelativePath(FileName, BaseDirectory, UsePointDirectory, AlwaysRequireSharedBaseFolder);
 end;
 
 function CreateAbsolutePath(const Filename, BaseDirectory: string): string;

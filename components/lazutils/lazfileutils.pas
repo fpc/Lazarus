@@ -56,9 +56,10 @@ function CleanAndExpandFilename(const Filename: string): string; // empty string
 function CleanAndExpandDirectory(const Filename: string): string; // empty string returns current directory
 function TrimAndExpandFilename(const Filename: string; const BaseDir: string = ''): string; // empty string returns empty string
 function TrimAndExpandDirectory(const Filename: string; const BaseDir: string = ''): string; // empty string returns empty string
-function TryCreateRelativePath(const Dest, Source: String; UsePointDirectory: boolean; out RelPath: String): Boolean;
+function TryCreateRelativePath(const Dest, Source: String; UsePointDirectory: boolean;
+                               AlwaysRequireSharedBaseFolder: Boolean; out RelPath: String): Boolean;
 function CreateRelativePath(const Filename, BaseDirectory: string;
-                            UsePointDirectory: boolean = false): string;
+                            UsePointDirectory: boolean = false; AlwaysRequireSharedBaseFolder: Boolean = True): string;
 function FileIsInPath(const Filename, Path: string): boolean;
 function AppendPathDelim(const Path: string): string;
 function ChompPathDelim(const Path: string): string;

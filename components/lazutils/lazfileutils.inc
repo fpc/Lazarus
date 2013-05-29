@@ -153,6 +153,9 @@ end;
   - if both Dest and Source are relative they must at least share their base directory
   - Double PathDelims are ignored (unless they are part of the UNC convention)
 
+  - if UsePointDirectory is True and Result is True then if RelPath is Empty string, RelPath becomes '.'
+  - if AlwaysRequireSharedBaseFolder is False then Absolute filenames need not share a basefolder
+
   Examples:
   - Dest = /foo/bar Source = /foo Result = True RelPath = bar
   - Dest = /foo///bar Source = /foo// Result = True RelPath = bar
@@ -164,9 +167,12 @@ end;
   - Dest = c:foo Source = c:bar Result = False (no expanding)
   - Dest = c:\foo Source = d:\bar Result is False (different drives)
   - Dest = \foo Source = foo (Windows) Result is False (too ambiguous to guess what this should mean)
+  - Dest = /foo Source = /bar AlwaysRequireSharedBaseFolder = True Result = False
+  - Dest = /foo Source = /bar AlwaysRequireSharedBaseFolder = False Result = True RelPath = ../foo
 }
 
-function TryCreateRelativePath(const Dest, Source: String; UsePointDirectory: boolean; out RelPath: String): Boolean;
+function TryCreateRelativePath(const Dest, Source: String; UsePointDirectory: boolean;
+                               AlwaysRequireSharedBaseFolder: Boolean; out RelPath: String): Boolean;
 Const
   MaxDirs = 129;
 Type
@@ -296,9 +302,10 @@ begin
   end;
 
   //debugln('TryCreaterelativePath: SharedFolders = ',DbgS(SharedFolders));
-  if not IsAbs and (SharedFolders = 0) and not ((CmpDestLen = 0) and (CmpSourceLen = 0)) then
+  if (SharedFolders = 0) and ((not IsAbs) or AlwaysRequireSharedBaseFolder) and not ((CmpDestLen = 0) and (CmpSourceLen = 0)) then
   begin
-    //debguln('TryCreaterelativePath: FAIL: IsAbs = FALSE, SharedFolders = 0, CmpDestLen = ',cmpdestlen,' CmpSourceLen = ',CmpSourceLen);
+    //debguln('TryCreaterelativePath: FAIL: IsAbs = ',DbgS(IsAs),' AlwaysRequireSharedBaseFolder = ',DbgS(AlwaysRequireSharedBaseFolder),
+    //' SharedFolders = 0, CmpDestLen = ',DbgS(cmpdestlen),' CmpSourceLen = ',DbgS(CmpSourceLen));
     Exit;
   end;
   LevelsBack := SourceCount - SharedFolders;
@@ -326,17 +333,30 @@ begin
       RelPath := RelPath + DestDirs[DestCount + 1 - i];
     end;
   end;
+  {
+  // This is a lame way to pass the tests in our testsuite,
+  // however it is internally inconsistent: why add a PathDelim only if RelPath ends in dots?
+  if (RelPath = '') then
+  begin
+    if UsePointDirectory then RelPath := '.'
+  end
+  else
+  begin
+    if (RelPath[Length(RelPath)] = '.') then RelPath := AppendPathDelim(RelPath);
+  end;
+  }
   if UsePointDirectory and (RelPath = '') then
     RelPath := '.'; // Dest = Source
+
   Result := True;
 end;
 
 function CreateRelativePath(const Filename, BaseDirectory: string;
-  UsePointDirectory: boolean): string;
+  UsePointDirectory: boolean;  AlwaysRequireSharedBaseFolder: Boolean): string;
 var
   RelPath: String;
 begin
   Result:=Filename;
-  if TryCreateRelativePath(FileName, Basedirectory, UsePointDirectory, RelPath) then
+  if TryCreateRelativePath(FileName, Basedirectory, UsePointDirectory, AlwaysRequireSharedBaseFolder, RelPath) then
     Result := RelPath;
 end;
