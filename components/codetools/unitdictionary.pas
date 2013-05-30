@@ -1209,7 +1209,7 @@ begin
       //debugln(['TUnitDictionary.ParseUnit ',GetIdentifier(SrcItem^.Identifier)]);
       if (SrcItem^.Node<>nil) and (SrcItem^.Identifier<>nil) then begin
         while (CurItem<>nil)
-        and (CompareDottedIdentifiers(PChar(CurItem.Name),SrcItem^.Identifier)<0)
+        and (CompareDottedIdentifiers(PChar(Pointer(CurItem.Name)),SrcItem^.Identifier)<0)
         do begin
           // delete old item
           //debugln(['TUnitDictionary.ParseUnit delete old item '+CurItem.Name+' in '+Result.Name]);
@@ -1226,7 +1226,7 @@ begin
           CurItem:=NextItem;
         end;
         if (CurItem=nil)
-        or (CompareDottedIdentifiers(PChar(CurItem.Name),SrcItem^.Identifier)>0)
+        or (CompareDottedIdentifiers(PChar(Pointer(CurItem.Name)),SrcItem^.Identifier)>0)
         then begin
           // new item
           //debugln(['TUnitDictionary.ParseUnit inserting new item '+GetIdentifier(SrcItem^.Identifier)+' in '+Result.Name]);
