@@ -3037,7 +3037,7 @@ begin
   inherited Create;
   FElements := TFPList.Create;
   SpacingBetweenElementsX := 5;
-  SpacingBetweenElementsY := 5;
+  SpacingBetweenElementsY := 1; // elements already give a fair amount of vertical spacing in their own area
 end;
 
 destructor TvFormula.Destroy;
