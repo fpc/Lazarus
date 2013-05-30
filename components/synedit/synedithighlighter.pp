@@ -461,8 +461,7 @@ const
 
 { TSynHighlighterAttributesModifier }
 
-function TSynHighlighterAttributesModifier.GetStylePriority(Index: TFontStyle
-  ): integer;
+function TSynHighlighterAttributesModifier.GetStylePriority(Index: TFontStyle): integer;
 begin
   Result := FStylePriority[Index];
 end;
@@ -552,20 +551,17 @@ begin
   Changed;
 end;
 
-procedure TSynHighlighterAttributesModifier.AssignFrom(
-  Src: TLazSynCustomTextAttributes);
+procedure TSynHighlighterAttributesModifier.AssignFrom(Src: TLazSynCustomTextAttributes);
 var
   Source: TSynHighlighterAttributesModifier;
-  j: TFontStyle;
 begin
   inherited AssignFrom(Src);
   if Src is TSynHighlighterAttributesModifier then begin
     Source := TSynHighlighterAttributesModifier(Src);
-    ForePriority  := Source.ForePriority;
-    BackPriority  := Source.BackPriority;
-    FramePriority := Source.FramePriority;
-    for j := Low(TFontStyle) to High(TFontStyle) do
-      StylePriority[j] := Source.StylePriority[j];
+    ForePriority   := Source.ForePriority;
+    BackPriority   := Source.BackPriority;
+    FramePriority  := Source.FramePriority;
+    FStylePriority := Source.FStylePriority;
     FBackAlpha  := Source.BackAlpha;
     FForeAlpha  := Source.ForeAlpha;
     FFrameAlpha := Source.FrameAlpha;
@@ -596,13 +592,11 @@ begin
   BackPriority := 0;
   FramePriority := 0;
   for i := Low(TFontStyle) to High(TFontStyle) do
-    StylePriority[i] := 0;
+    FStylePriority[i] := 0;
   EndUpdate;
 end;
 
 procedure TSynHighlighterAttributesModifier.InternalSaveDefaultValues;
-var
-  i: TFontStyle;
 begin
   inherited InternalSaveDefaultValues;
   FBackPriorityDefault  := FBackPriority;
@@ -611,8 +605,7 @@ begin
   FForeAlphaDefault     := FForeAlpha;
   FBackAlphaDefault     := FBackAlpha;
   FFrameAlphaDefault    := FFrameAlpha;
-  for i := Low(TFontStyle) to High(TFontStyle) do
-    FStylePriorityDefault[i] := FStylePriority[i];
+  FStylePriorityDefault := FStylePriority;
 end;
 
 procedure TSynHighlighterAttributesModifier.SetAllPriorities(APriority: integer);
@@ -624,7 +617,7 @@ begin
   BackPriority := APriority;
   FramePriority := APriority;
   for i := Low(TFontStyle) to High(TFontStyle) do
-    StylePriority[i] := APriority;
+    FStylePriority[i] := APriority;
   EndUpdate;
 end;
 
