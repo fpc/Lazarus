@@ -19,8 +19,6 @@
  ***************************************************************************
 
  ToDo:
-   - save matrix options for old build macro values
-   - load old build macro values into matrix
    - when rename build mode, update option modes
    - ifdef old frame
    - ifdef old macro value classes

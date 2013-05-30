@@ -479,6 +479,7 @@ begin
 end;
 
 initialization
+  Randomize;
   InternalInit;
 
 end.

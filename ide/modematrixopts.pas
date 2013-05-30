@@ -522,7 +522,7 @@ begin
   Cnt:=Cfg.GetValue('Count',0);
   for i:=1 to Cnt do begin
     Option:=TBuildMatrixOption.Create(Self);
-    Cfg.AppendBasePath('item'+IntToStr(i));
+    Cfg.AppendBasePath('Item'+IntToStr(i));
     Option.LoadFromConfig(Cfg);
     Cfg.UndoAppendBasePath;
   end;
@@ -535,7 +535,7 @@ var
 begin
   Cfg.SetDeleteValue('Count',Count,0);
   for i:=0 to Count-1 do begin
-    Cfg.AppendBasePath('item'+IntToStr(i+1));
+    Cfg.AppendBasePath('Item'+IntToStr(i+1));
     Items[i].SaveToConfig(Cfg,SkipMode);
     Cfg.UndoAppendBasePath;
   end;
@@ -553,7 +553,7 @@ begin
   //debugln(['TBuildMatrixOptions.LoadFromXMLConfig Cnt=',Cnt]);
   for i:=1 to Cnt do begin
     Option:=TBuildMatrixOption.Create(Self);
-    Option.LoadFromXMLConfig(Cfg,aPath+'item'+IntToStr(i)+'/');
+    Option.LoadFromXMLConfig(Cfg,aPath+'Item'+IntToStr(i)+'/');
   end;
   //debugln(['TBuildMatrixOptions.LoadFromXMLConfig Count=',Count]);
 end;
@@ -566,7 +566,7 @@ begin
   //debugln(['TBuildMatrixOptions.SaveToXMLConfig ',aPath]);
   Cfg.SetDeleteValue(aPath+'Count',Count,0);
   for i:=0 to Count-1 do
-    Items[i].SaveToXMLConfig(Cfg,aPath+'item'+IntToStr(i+1)+'/',SkipMode);
+    Items[i].SaveToXMLConfig(Cfg,aPath+'Item'+IntToStr(i+1)+'/',SkipMode);
 end;
 
 procedure TBuildMatrixOptions.AppendCustomOptions(Target, ActiveMode: string;
@@ -658,6 +658,7 @@ begin
   if Source is TBuildMatrixOption then
   begin
     aSource:=TBuildMatrixOption(Source);
+    ID:=aSource.ID;
     Targets:=aSource.Targets;
     Modes:=aSource.Modes;
     Typ:=aSource.Typ;
@@ -669,6 +670,7 @@ end;
 
 constructor TBuildMatrixOption.Create(aList: TBuildMatrixOptions);
 begin
+  FID:=CreateBuildMatrixOptionGUID;
   FList:=aList;
   if List<>nil then
     List.fItems.Add(Self);
@@ -793,6 +795,7 @@ end;
 procedure TBuildMatrixOption.LoadFromConfig(Cfg: TConfigStorage);
 begin
   ID:=Cfg.GetValue('ID','');
+  if ID='' then ID:=CreateBuildMatrixOptionGUID;
   Targets:=Cfg.GetValue('Targets','*');
   SetModesFromCommaSeparatedList(Cfg.GetValue('Modes',''));
   Typ:=Str2BuildMatrixOptionType(Cfg.GetValue('Type',''));
@@ -815,6 +818,7 @@ procedure TBuildMatrixOption.LoadFromXMLConfig(Cfg: TXMLConfig;
   const aPath: string);
 begin
   ID:=Cfg.GetValue(aPath+'ID','');
+  if ID='' then ID:=CreateBuildMatrixOptionGUID;
   Targets:=Cfg.GetValue(aPath+'Targets','*');
   SetModesFromCommaSeparatedList(Cfg.GetValue(aPath+'Modes',''));
   Typ:=Str2BuildMatrixOptionType(Cfg.GetValue(aPath+'Type',''));
