@@ -3514,6 +3514,7 @@ begin
             debugln(['  ',j,'/',KeyList.FCount,' ',KeyAndShiftStateToKeyString(SameCmdKey.Key,SameCmdKey.Shift)]);
           end;
           debugln(['  ',4,'/',KeyList.FCount,' ',KeyAndShiftStateToKeyString(Key.Key,Key.Shift)]);
+          Key.Free; // This deletes the key from TSynEditKeyStrokes container as well.
         end;
       end
       else begin
