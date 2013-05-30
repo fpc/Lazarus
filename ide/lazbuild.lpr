@@ -919,7 +919,7 @@ begin
   Result.BeginUpdate(true);
   try
     // read project info file
-    if Result.ReadProject(AFilename)<>mrOk then
+    if Result.ReadProject(AFilename,EnvironmentOptions.BuildMatrixOptions)<>mrOk then
       Error(ErrorLoadProjectFailed,'Project '+AFilename);
     //BuildBoss.RescanCompilerDefines(true);
 
