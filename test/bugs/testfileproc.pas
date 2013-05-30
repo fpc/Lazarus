@@ -91,6 +91,8 @@ begin
   DoTest('/a','/a//b/c','../../');
   DoTest('/a','/a//b/c/','../../');
   DoTest('/a','/b','/a');
+  DoTest('~/bin','/','~/bin');
+  DoTest('$(HOME)/bin','/','$(HOME)/bin');
 end;
 
 initialization
