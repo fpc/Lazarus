@@ -6125,7 +6125,9 @@ procedure TProjectCompilerOptions.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
   const Path: string);
 var
   FileVersion: Integer;
+  {$IFNDEF EnableModeMatrix}
   s: String;
+  {$ENDIF}
 begin
   inherited LoadFromXMLConfig(AXMLConfig,Path);
   
