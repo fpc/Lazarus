@@ -19,13 +19,13 @@
  ***************************************************************************
 
  ToDo:
+   - read old LCLWidgetType
    - when rename build mode, update option modes
-   - ifdef old frame
-   - ifdef old macro value classes
+   - check modified
    - wiki
    - undo: combine changes while editing a cell
-   - remove old frame
-   - remove old macro value classes
+   - remove old frame (idemacrovalues.pas,lfm)
+   - remove ifdefs
    - resourcestring for value types?
 }
 unit Compiler_ModeMatrix;

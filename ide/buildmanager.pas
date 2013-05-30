@@ -2209,6 +2209,7 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
     end;
   end;
 
+  {$IFNDEF EnableModeMatrix}
   function GetProjectMacroValues: TCTCfgScriptVariables;
   var
     MainMacroValues: TProjectBuildMacros;
@@ -2246,6 +2247,7 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
       exit(nil);
     SetCmdLineOverrides(Result);
   end;
+  {$ENDIF}
 
   procedure SetProjectMacroValues(Vars: TCTCfgScriptVariables);
   var

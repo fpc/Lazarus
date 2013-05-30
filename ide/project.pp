@@ -611,6 +611,7 @@ type
     property Active: boolean read FActive write SetActive;
   end;
 
+  {$IFNDEF EnableModeMatrix}
   { TProjectBuildMacros }
 
   TProjectBuildMacros = class
@@ -656,6 +657,7 @@ type
     property CfgVarsBuildMacroStamp: integer read FCfgVarsBuildMacroStamp
                                              write FCfgVarsBuildMacroStamp;
   end;
+  {$ENDIF}
 
   { TProjectBuildMode }
 
@@ -664,7 +666,9 @@ type
     FChangeStamp: int64;
     fSavedChangeStamp: int64;
     FCompilerOptions: TProjectCompilerOptions;
+    {$IFNDEF EnableModeMatrix}
     FMacroValues: TProjectBuildMacros;
+    {$ENDIF}
     FIdentifier: string;
     FInSession: boolean;
     fOnChanged: TMethodList;
@@ -699,7 +703,9 @@ type
 
     // copied by Assign, compared by Equals, cleared by Clear
     property CompilerOptions: TProjectCompilerOptions read FCompilerOptions;
+    {$IFNDEF EnableModeMatrix}
     property MacroValues: TProjectBuildMacros read FMacroValues;
+    {$ENDIF}
   end;
 
   { TProjectBuildModes }
@@ -772,7 +778,9 @@ type
     FEnableI18NForLFM: boolean;
     FLastCompileComplete: boolean;
     FMacroEngine: TTransferMacroList;
+    {$IFNDEF EnableModeMatrix}
     FMacroValues: TProjectBuildMacros;
+    {$ENDIF}
     FTmpAutoCreatedForms: TStrings; // temporary, used to apply auto create forms changes
     FAutoOpenDesignerFormsDisabled: boolean;
     FBookmarks: TProjectBookmarkList;
@@ -1098,7 +1106,9 @@ type
                                         write FLastCompilerParams;
     property LastCompileComplete: boolean read FLastCompileComplete write FLastCompileComplete;
     property MacroEngine: TTransferMacroList read FMacroEngine;
+    {$IFNDEF EnableModeMatrix}
     property MacroValues: TProjectBuildMacros read FMacroValues;
+    {$ENDIF}
     property MainFilename: String read GetMainFilename;
     property MainProject: boolean read FMainProject write SetMainProject;
     property MainUnitID: Integer read FMainUnitID write SetMainUnitID;
@@ -5415,11 +5425,15 @@ begin
   FActiveBuildMode:=AValue;
   if FActiveBuildMode<>nil then
   begin
+    {$IFNDEF EnableModeMatrix}
     FMacroValues:=FActiveBuildMode.MacroValues;
+    {$ENDIF}
     FCompilerOptions:=FActiveBuildMode.CompilerOptions;
     FLazCompilerOptions:=FCompilerOptions;
   end else begin
+    {$IFNDEF EnableModeMatrix}
     FMacroValues:=nil;
+    {$ENDIF}
     FCompilerOptions:=nil;
     FLazCompilerOptions:=nil;
   end;
@@ -6120,19 +6134,20 @@ begin
   if FileVersion<10 then
   begin
     if BuildMode<>nil then begin
+      {$IFNDEF EnableModeMatrix}
       // LCLWidgetType was not a macro but a property of its own
       s := aXMLConfig.GetValue(Path+'LCLWidgetType/Value', '');
       if (s<>'') and (SysUtils.CompareText(s,'default')<>0) then
         BuildMode.MacroValues.Values['LCLWidgetType']:=s;
+      {$ENDIF}
     end;
   end;
 
-  // old compatability
-  if AXMLConfig.GetValue(Path+'SkipCompiler/Value',false)
-  then FCompileReasons := []
-  else FCompileReasons :=
-                   LoadXMLCompileReasons(AXMLConfig,Path+'CompileReasons/',
-                                         crAll);
+  // old compatibility
+  if AXMLConfig.GetValue(Path+'SkipCompiler/Value',false) then
+    FCompileReasons := []
+  else
+    FCompileReasons := LoadXMLCompileReasons(AXMLConfig,Path+'CompileReasons/',crAll);
   //debugln(['TProjectCompilerOptions.LoadFromXMLConfig ',Path+'CompileReasons/ ',crCompile in FCompileReasons]);
 end;
 
@@ -6143,10 +6158,12 @@ begin
   
   SaveXMLCompileReasons(AXMLConfig, Path+'CompileReasons/', FCompileReasons,
                         crAll);
+  {$IFNDEF EnableModeMatrix}
   // write the LCLWidgetType value to let older IDEs read the value
   if BuildMode<>nil then
     aXMLConfig.SetDeleteValue(Path+'LCLWidgetType/Value',
              BuildMode.MacroValues.Values['LCLWidgetType'],'');
+  {$ENDIF}
 
   //debugln(['TProjectCompilerOptions.SaveToXMLConfig ',Path+'CompileReasons/ ',crCompile in FCompileReasons]);
 end;
@@ -6903,6 +6920,7 @@ begin
   RequiresPropPath:=DestPath;
 end;
 
+{$IFNDEF EnableModeMatrix}
 { TProjectBuildMacros }
 
 function TProjectBuildMacros.GetMacros(const Name: string): string;
@@ -7144,6 +7162,7 @@ procedure TProjectBuildMacros.RemoveOnChangedHandler(const Handler: TNotifyEvent
 begin
   fOnChanged.Remove(TMethod(Handler));
 end;
+{$ENDIF}
 
 { TProjectBuildMode }
 
@@ -7184,8 +7203,10 @@ begin
   fOnChanged:=TMethodList.Create;
   FChangeStamp:=CTInvalidChangeStamp64;
   fSavedChangeStamp:=FChangeStamp;
+  {$IFNDEF EnableModeMatrix}
   FMacroValues:=TProjectBuildMacros.Create;
   FMacroValues.AddOnChangedHandler(@OnItemChanged);
+  {$ENDIF}
   FCompilerOptions:=TProjectCompilerOptions.Create(LazProject);
   FCompilerOptions.AddOnChangedHandler(@OnItemChanged);
   FCompilerOptions.FBuildMode:=Self;
@@ -7195,7 +7216,9 @@ destructor TProjectBuildMode.Destroy;
 begin
   FreeAndNil(fOnChanged);
   FreeAndNil(FCompilerOptions);
+  {$IFNDEF EnableModeMatrix}
   FreeAndNil(FMacroValues);
+  {$ENDIF}
   inherited Destroy;
 end;
 
@@ -7210,13 +7233,18 @@ end;
 procedure TProjectBuildMode.Clear;
 begin
   CompilerOptions.Clear;
+  {$IFNDEF EnableModeMatrix}
   MacroValues.Clear;
+  {$ENDIF}
 end;
 
 function TProjectBuildMode.Equals(Src: TProjectBuildMode): boolean;
 begin
   Result:=CompilerOptions.IsEqual(Src.CompilerOptions)
-          and MacroValues.Equals(Src.MacroValues);
+          {$IFNDEF EnableModeMatrix}
+          and MacroValues.Equals(Src.MacroValues)
+          {$ENDIF}
+          ;
 end;
 
 function TProjectBuildMode.CreateDiff(Other: TProjectBuildMode;
@@ -7226,7 +7254,9 @@ begin
   //if Tool<>nil then debugln(['TProjectBuildMode.CreateDiff ']);
   Result:=CompilerOptions.CreateDiff(Other.CompilerOptions,Tool);
   if (Tool=nil) and Result then exit;
+  {$IFNDEF EnableModeMatrix}
   if MacroValues.CreateDiff(Other.MacroValues,Tool) then Result:=true;
+  {$ENDIF}
 end;
 
 procedure TProjectBuildMode.Assign(Src: TProjectBuildMode);
@@ -7234,14 +7264,18 @@ begin
   if Equals(Src) then exit;
   InSession:=Src.InSession;
   CompilerOptions.Assign(Src.CompilerOptions);
+  {$IFNDEF EnableModeMatrix}
   MacroValues.Assign(Src.MacroValues);
+  {$ENDIF}
 end;
 
 procedure TProjectBuildMode.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
   FIdentifier:=XMLConfig.GetValue('Identifier','');
+  {$IFNDEF EnableModeMatrix}
   FMacroValues.LoadFromXMLConfig(XMLConfig,Path+'BuildMacros/');
+  {$ENDIF}
   FCompilerOptions.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
 end;
 
@@ -7249,7 +7283,9 @@ procedure TProjectBuildMode.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; ClearModified: boolean);
 begin
   XMLConfig.SetDeleteValue('Identifier',Identifier,'');
+  {$IFNDEF EnableModeMatrix}
   FMacroValues.SaveToXMLConfig(XMLConfig,Path+'BuildMacros/',ClearModified);
+  {$ENDIF}
   FCompilerOptions.SaveToXMLConfig(XMLConfig,Path+'CompilerOptions/');
 end;
 
