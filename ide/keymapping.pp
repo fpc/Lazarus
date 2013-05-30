@@ -3490,7 +3490,7 @@ begin
      - ecIdePTmplEdOutNextCell and ecIdePTmplEdNextCell both map to ecSynPTmplEdNextCell
      - which maps to "ecPluginFirst + n", as many others.
      But the IDE requires unique values.
-     The unique values in the plugin (+ KeyOffset) can not be used, a they are not at fixed numbers
+     The unique values in the plugin (+ KeyOffset) can not be used, as they are not at fixed numbers
   *)
   KeyStrokesByCmds:=TAvgLvlTree.Create(@CompareCmd);
   ToBeFreedKeys:=TObjectList.Create;
@@ -3501,7 +3501,7 @@ begin
     for i:=ASynEditKeyStrokes.Count-1 downto 0 do begin
       Key:=ASynEditKeyStrokes[i];
       Node:=KeyStrokesByCmds.FindKey({%H-}Pointer(Key.Command), @CompareKeyCmd);
-      if Assigned(Node) then begin // Another key already defined for this command
+      if Assigned(Node) then begin // Another key is already defined for this command
         KeyList:=TKeyStrokeList(Node.Data);
         if KeyList.Count < 3 then
           KeyList.Add(Key)
