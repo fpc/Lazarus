@@ -189,10 +189,22 @@ begin
     lMFracRow := lMFracRow.NextSibling;
     AddNodeToFormula(lMFracRow, APage, lFormElem.AdjacentFormula);
   end
-  // mrow may appear where unnecessary, in this cases just keep reading further
-  else if lNodeName = 'mrow' then
+  // mrow and msrow are horizontal formulas
+  // <msrow> <mo>+</mo> <none/> <mn>33</mn> </msrow>
+  else if (lNodeName = 'mrow') or (lNodeName = 'msrow') then
   begin
-    ReadFormulaFromNodeChildren(ANode, APage, AFormula);
+    lFormElem := AFormula.AddElementWithKind(fekFormula);
+
+    lFormula := TvFormula.Create;
+    // Read all elements
+    ReadFormulaFromNodeChildren(ANode, APage, lFormula);
+    lFormElem.Formula := lFormula;
+  end
+  // msline is a horizontal line
+  // <msline/>
+  else if lNodeName = 'msline' then
+  begin
+    lFormElem := AFormula.AddElementWithKind(fekHorizontalLine);
   end
   // mstyle can be ignored
   else if lNodeName = 'mstyle' then
@@ -279,8 +291,14 @@ begin
         ReadFormulaFromNodeChildren(lCurNode, lPage, lFormula);
         lPage.AddEntity(lFormula);
       end
+      else if lStr = 'mstack' then
+      begin
+        lFormula := TvVerticalFormulaStack.Create;
+        ReadFormulaFromNodeChildren(lCurNode, lPage, lFormula);
+        lPage.AddEntity(lFormula);
+      end
       else
-        raise Exception.Create(Format('[TvMathMLVectorialReader.ReadFromStream] Expected mrow, got %s', [lStr]));
+        raise Exception.Create(Format('[TvMathMLVectorialReader.ReadFromStream] Expected mrow or mstack, got %s', [lStr]));
 
       lCurNode := lCurNode.NextSibling;
     end;

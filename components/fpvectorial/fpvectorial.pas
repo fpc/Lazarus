@@ -565,12 +565,14 @@ type
     fekLessOrEqualThan, // The <= symbol
     fekGreaterThan, // The > symbol
     fekGreaterOrEqualThan, // The >= symbol
+    fekHorizontalLine,
     // More complex elements
     fekFraction,  // a division with Formula on the top and AdjacentFormula in the bottom
     fekRoot,      // A root. For example sqrt(something). Number gives the root, usually 2, and inside it goes a Formula
     fekPower,     // A Formula elevated to a AdjacentFormula, example: 2^5
     fekSubscript, // A Formula with a subscripted element AdjacentFormula, example: Xi
-    fekSummation   // Sum of a variable given by Text set by Formula in the bottom and going up to AdjacentFormula in the top
+    fekSummation, // Sum of a variable given by Text set by Formula in the bottom and going up to AdjacentFormula in the top
+    fekFormula    // A formula, stored in Formula
     );
 
   { TvFormulaElement }
@@ -587,6 +589,7 @@ type
     function CalculateHeight(ADest: TFPCustomCanvas): Double; // in milimeters
     function CalculateWidth(ADest: TFPCustomCanvas): Double; // in milimeters
     function AsText: string;
+    procedure PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double);
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); virtual;
@@ -597,10 +600,10 @@ type
   TvFormula = class(TvEntityWithPenBrushAndFont)
   private
     FCurIndex: Integer;
-    SpacingBetweenElementsX: Integer;
     procedure CallbackDeleteElement(data,arg:pointer);
   protected
     FElements: TFPList; // of TvFormulaElement
+    SpacingBetweenElementsX, SpacingBetweenElementsY: Integer;
   public
     Top, Left, Width, Height: Double;
     constructor Create; override;
@@ -613,13 +616,26 @@ type
     function  AddElementWithKindAndText(AKind: TvFormulaElementKind; AText: string): TvFormulaElement;
     procedure Clear; override;
     //
-    function CalculateHeight(ADest: TFPCustomCanvas): Double; // in milimeters
-    function CalculateWidth(ADest: TFPCustomCanvas): Double; // in milimeters
+    function CalculateHeight(ADest: TFPCustomCanvas): Double; virtual; // in milimeters
+    function CalculateWidth(ADest: TFPCustomCanvas): Double; virtual; // in milimeters
     procedure PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double); override;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+  end;
+
+  { TvVerticalFormulaStack }
+
+  TvVerticalFormulaStack = class(TvFormula)
+  public
+    function CalculateHeight(ADest: TFPCustomCanvas): Double; override; // in milimeters
+    function CalculateWidth(ADest: TFPCustomCanvas): Double; override; // in milimeters
+    procedure PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double); override;
+    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    //function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   {@@
@@ -974,6 +990,81 @@ begin
   Result.X := AX;
   Result.Y := AY;
   Result.Z := 0;
+end;
+
+{ TvVerticalFormulaStack }
+
+function TvVerticalFormulaStack.CalculateHeight(ADest: TFPCustomCanvas): Double;
+var
+  lElement: TvFormulaElement;
+begin
+  Result := 0;
+  lElement := GetFirstElement();
+  while lElement <> nil do
+  begin
+    Result := Result + lElement.CalculateHeight(ADest) + SpacingBetweenElementsY;
+    lElement := GetNextElement;
+  end;
+  // Remove an extra spacing, since it is added even to the last item
+  Result := Result - SpacingBetweenElementsY;
+  // Cache the result
+  Height := Result;
+end;
+
+function TvVerticalFormulaStack.CalculateWidth(ADest: TFPCustomCanvas): Double;
+var
+  lElement: TvFormulaElement;
+begin
+  Result := 0;
+
+  lElement := GetFirstElement();
+  while lElement <> nil do
+  begin
+    Result := Max(Result, lElement.CalculateWidth(ADest));
+    lElement := GetNextElement;
+  end;
+
+  // Cache the result
+  Width := Result;
+end;
+
+procedure TvVerticalFormulaStack.PositionSubparts(ADest: TFPCustomCanvas;
+  ABaseX, ABaseY: Double);
+var
+  lElement: TvFormulaElement;
+  lPosX: Double = 0;
+  lPosY: Double = 0;
+begin
+  CalculateHeight(ADest);
+  CalculateWidth(ADest);
+  Left := ABaseX;
+  Top := ABaseY;
+
+  // Then calculate the position of each element
+  lElement := GetFirstElement();
+  while lElement <> nil do
+  begin
+    lElement.Left := Left;
+    lElement.Top := Top - lPosY;
+    lPosY := lPosY + lElement.Height + SpacingBetweenElementsY;
+
+    lElement.PositionSubparts(ADest, ABaseX, ABaseY);
+
+    lElement := GetNextElement();
+  end;
+end;
+
+procedure TvVerticalFormulaStack.CalculateBoundingBox(ADest: TFPCustomCanvas;
+  var ALeft, ATop, ARight, ABottom: Double);
+begin
+  inherited CalculateBoundingBox(ADest, ALeft, ATop, ARight, ABottom);
+end;
+
+procedure TvVerticalFormulaStack.Render(ADest: TFPCustomCanvas;
+  ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double;
+  AMulY: Double);
+begin
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
 end;
 
 { TPathSegment }
@@ -2664,6 +2755,7 @@ begin
     //fekMultiplication, // either a point . or a small x
     //fekSum,       // + symbol
     //fekPlusMinus, // The +/- symbol
+    fekHorizontalLine: Result := 5;
     fekFraction:
     begin
       Formula.CalculateHeight(ADest);
@@ -2673,6 +2765,7 @@ begin
     fekRoot: Result := Formula.CalculateHeight(ADest) * 1.2;
     fekPower: Result := lLineHeight * 1.2;
     fekSummation: Result := lLineHeight * 1.5;
+    fekFormula: Result := Formula.CalculateHeight(ADest);
   else
     Result := lLineHeight;
   end;
@@ -2695,6 +2788,7 @@ begin
 
   case Kind of
     fekMultiplication: Result := 0;
+    fekHorizontalLine: Result := 25;
     //
     fekFraction:
     begin
@@ -2709,6 +2803,7 @@ begin
         AdjacentFormula.CalculateWidth(ADest) / 2;
     end;
     fekSummation: Result := 8;
+    fekFormula: Result := Formula.CalculateWidth(ADest);
   else
   end;
 
@@ -2728,9 +2823,65 @@ begin
     fekLessOrEqualThan: Result := '<=';
     fekGreaterThan: Result := '>';
     fekGreaterOrEqualThan: Result := '>=';
+    fekHorizontalLine: Result := '=';
   // More complex elements
   else
     Result := Format('[%s]', [GetEnumName(TypeInfo(TvFormulaElementKind), integer(Kind))]);
+  end;
+end;
+
+procedure TvFormulaElement.PositionSubparts(ADest: TFPCustomCanvas; ABaseX,
+  ABaseY: Double);
+var
+  lCentralizeFactor: Double = 0;
+  lCentralizeFactorAdj: Double = 0;
+begin
+  case Self.Kind of
+    fekFraction:
+    begin
+      // Check which fraction is the largest and centralize the other one
+      Self.Formula.CalculateWidth(ADest);
+      Self.AdjacentFormula.CalculateWidth(ADest);
+      if Self.Formula.Width > Self.AdjacentFormula.Width then
+      begin
+        lCentralizeFactor := 0;
+        lCentralizeFactorAdj := Self.Formula.Width / 2 - Self.AdjacentFormula.Width / 2;
+      end
+      else
+      begin
+        lCentralizeFactor := Self.AdjacentFormula.Width / 2 - Self.Formula.Width / 2;
+        lCentralizeFactorAdj := 0;
+      end;
+
+      Self.Formula.PositionSubparts(ADest, Self.Left + lCentralizeFactor, Self.Top);
+      Self.AdjacentFormula.PositionSubparts(ADest, Self.Left + lCentralizeFactorAdj, Self.Top - Self.Formula.Height - 3);
+    end;
+    fekRoot:
+    begin
+      // Give a factor for the root drawing
+      Self.Formula.PositionSubparts(ADest, Self.Left + 10, Self.Top);
+    end;
+    fekPower:
+    begin
+      Self.Formula.PositionSubparts(ADest, Self.Left, Self.Top);
+      Self.AdjacentFormula.PositionSubparts(ADest, Self.Left + Self.Formula.Width, Self.Top);
+    end;
+    fekSubscript:
+    begin
+      Self.Formula.PositionSubparts(ADest, Self.Left, Self.Top);
+      Self.AdjacentFormula.PositionSubparts(ADest, Self.Left + Self.Formula.Width, Self.Top - Self.Formula.Height / 2);
+    end;
+    fekSummation:
+    begin
+      // main/bottom formula
+      Self.Formula.PositionSubparts(ADest, Self.Left, Self.Top - 30);
+      // top formula
+      Self.AdjacentFormula.PositionSubparts(ADest, Self.Left, Self.Top);
+    end;
+    fekFormula:
+    begin
+      Self.Formula.PositionSubparts(ADest, Self.Left, Self.Top);
+    end;
   end;
 end;
 
@@ -2771,6 +2922,8 @@ begin
     fekLessOrEqualThan: ADest.TextOut(LeftC, TopC, '≤');
     fekGreaterThan: ADest.TextOut(LeftC, TopC, '>');
     fekGreaterOrEqualThan: ADest.TextOut(LeftC, TopC, '≥');
+    fekHorizontalLine: ADest.Line(LeftC, TopC, CoordToCanvasX(Left+Width), TopC);
+    // Complex ones
     fekFraction:
     begin
       Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
@@ -2837,6 +2990,11 @@ begin
       // Draw the top formula
       AdjacentFormula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
     end;
+    fekFormula:
+    begin
+      // Draw the formula
+      Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+    end;
   end;
 end;
 
@@ -2863,6 +3021,7 @@ begin
     end;
     fekRoot: Formula.GenerateDebugTree(ADestRoutine, lDBGItem);
     //fekSomatory: Result := 1.5;
+    fekFormula: Formula.GenerateDebugTree(ADestRoutine, lDBGItem);
   end;
 end;
 
@@ -2878,6 +3037,7 @@ begin
   inherited Create;
   FElements := TFPList.Create;
   SpacingBetweenElementsX := 5;
+  SpacingBetweenElementsY := 5;
 end;
 
 destructor TvFormula.Destroy;
@@ -2981,8 +3141,6 @@ var
   lElement: TvFormulaElement;
   lPosX: Double = 0;
   lPosY: Double = 0;
-  lCentralizeFactor: Double = 0;
-  lCentralizeFactorAdj: Double = 0;
   lMaxHeight: Double = 0;
 begin
   CalculateHeight(ADest);
@@ -3000,49 +3158,7 @@ begin
     lElement.Top := Top;
     lMaxHeight := Max(lMaxHeight, lElement.Height);
 
-    case lElement.Kind of
-      fekFraction:
-      begin
-        // Check which fraction is the largest and centralize the other one
-        lElement.Formula.CalculateWidth(ADest);
-        lElement.AdjacentFormula.CalculateWidth(ADest);
-        if lElement.Formula.Width > lElement.AdjacentFormula.Width then
-        begin
-          lCentralizeFactor := 0;
-          lCentralizeFactorAdj := lElement.Formula.Width / 2 - lElement.AdjacentFormula.Width / 2;
-        end
-        else
-        begin
-          lCentralizeFactor := lElement.AdjacentFormula.Width / 2 - lElement.Formula.Width / 2;
-          lCentralizeFactorAdj := 0;
-        end;
-
-        lElement.Formula.PositionSubparts(ADest, lElement.Left + lCentralizeFactor, lElement.Top);
-        lElement.AdjacentFormula.PositionSubparts(ADest, lElement.Left + lCentralizeFactorAdj, lElement.Top - lElement.Formula.Height - 3);
-      end;
-      fekRoot:
-      begin
-        // Give a factor for the root drawing
-        lElement.Formula.PositionSubparts(ADest, lElement.Left + 10, lElement.Top);
-      end;
-      fekPower:
-      begin
-        lElement.Formula.PositionSubparts(ADest, lElement.Left, lElement.Top);
-        lElement.AdjacentFormula.PositionSubparts(ADest, lElement.Left + lElement.Formula.Width, lElement.Top);
-      end;
-      fekSubscript:
-      begin
-        lElement.Formula.PositionSubparts(ADest, lElement.Left, lElement.Top);
-        lElement.AdjacentFormula.PositionSubparts(ADest, lElement.Left + lElement.Formula.Width, lElement.Top - lElement.Formula.Height / 2);
-      end;
-      fekSummation:
-      begin
-        // main/bottom formula
-        lElement.Formula.PositionSubparts(ADest, lElement.Left, lElement.Top - 30);
-        // top formula
-        lElement.AdjacentFormula.PositionSubparts(ADest, lElement.Left, lElement.Top);
-      end;
-    end;
+    lElement.PositionSubparts(ADest, ABaseX, ABaseY);
 
     lElement := GetNextElement();
   end;
