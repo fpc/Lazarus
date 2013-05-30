@@ -153,6 +153,7 @@ type
     procedure GetMatrixOutputDirectoryOverride(Sender: TObject;
       var OutDir: string; Types: TBuildMatrixGroupTypes);
     function GetModeMatrixTarget(Sender: TObject): string;
+    function EnvironmentOptionsIsSessionMode(const Identifier: string): boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -289,6 +290,7 @@ end;
 constructor TBuildManager.Create(AOwner: TComponent);
 begin
   EnvironmentOptions := TEnvironmentOptions.Create;
+  EnvironmentOptions.IsSessionMode:=@EnvironmentOptionsIsSessionMode;
   DefaultCfgVars:=TCTCfgScriptVariables.Create;
   DefaultCfgVarsBuildMacroStamp:=CTInvalidChangeStamp;
   FFPCVerChangeStamp:=CTInvalidChangeStamp;
@@ -2413,6 +2415,15 @@ begin
     Result:=TLazPackage(Sender).Name;
   end;
   //debugln(['TBuildManager.GetModeMatrixTarget ',DbgSName(Sender),' Target="',Result,'"']);
+end;
+
+function TBuildManager.EnvironmentOptionsIsSessionMode(const Identifier: string
+  ): boolean;
+begin
+  Result:=false;
+  if Project1=nil then exit;
+  if Project1.BuildModes=nil then exit;
+  Result:=Project1.BuildModes.IsSessionMode(Identifier);
 end;
 
 procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU,

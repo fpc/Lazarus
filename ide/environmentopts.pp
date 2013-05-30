@@ -203,19 +203,23 @@ type
 
   TEnvironmentOptions = class(TAbstractIDEEnvironmentOptions)
   private
+    // config file
     FFilename: string;
     FFileAge: longint;
     FFileHasChangedOnDisk: boolean;
-
-    FIDESpeedButtonsVisible: boolean;
-    FIDETitleStartsWithProject: boolean;
-    FIDEProjectDirectoryInIdeTitle: boolean;
     FOldLazarusVersion: string;
-    FShowButtonGlyphs: TApplicationShowGlyphs;
-    FShowMenuGlyphs: TApplicationShowGlyphs;
     FXMLCfg: TRttiXMLConfig;
     FConfigStore: TXMLOptionsStorage;
     FDbgConfigStore: TXMLOptionsStorage; // for debugger
+
+    // title
+    FIDETitleStartsWithProject: boolean;
+    FIDEProjectDirectoryInIdeTitle: boolean;
+
+    // main buttons
+    FIDESpeedButtonsVisible: boolean;
+    FShowButtonGlyphs: TApplicationShowGlyphs;
+    FShowMenuGlyphs: TApplicationShowGlyphs;
 
     // auto save
     FAutoSaveEditorFiles: boolean;
@@ -279,6 +283,7 @@ type
     FMakeFileHistory: TStringList;
     FCompilerMessagesFileHistory: TStringList;
     FBuildMatrixOptions: TBuildMatrixOptions;
+    FIsSessionMode: TStrToBoolEvent;
 
    // TODO: store per debuggerclass options
     // Maybe these should go to a new TDebuggerOptions class
@@ -375,6 +380,7 @@ type
     destructor Destroy; override;
     procedure Load(OnlyDesktop: boolean);
     procedure Save(OnlyDesktop: boolean);
+    property IsSessionMode: TStrToBoolEvent read FIsSessionMode write FIsSessionMode;
     property Filename: string read FFilename write SetFilename;
     function GetDefaultConfigFilename: string;
     procedure CreateConfig;
@@ -1524,7 +1530,7 @@ begin
 
         // global buid options
         Cfg.AppendBasePath('BuildMatrix');
-        FBuildMatrixOptions.SaveToConfig(Cfg);
+        FBuildMatrixOptions.SaveToConfig(Cfg,IsSessionMode);
         Cfg.UndoAppendBasePath;
 
         // backup

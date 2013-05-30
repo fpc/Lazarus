@@ -2719,13 +2719,14 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
     if MatrixOptions=nil then exit;
     for i:=0 to MatrixOptions.Count-1 do begin
       MatrixOption:=MatrixOptions[i];
+      //debugln(['SaveSessionEnabledNonSessionMatrixOptions ',MatrixOption.AsString]);
       for j:=0 to BuildModes.Count-1 do begin
         CurMode:=BuildModes[j];
         if not CurMode.InSession then continue;
-        if not MatrixOption.FitsMode(CurMode.Identifier,bmmtActive) then continue;
+        if not MatrixOption.FitsMode(CurMode.Identifier) then continue;
         inc(Cnt);
         SubPath:=Path+'Item'+IntToStr(Cnt)+'/';
-        //debugln(['SaveSessionEnabledNonSessionMatrixOptions ModeID="',CurMode.Identifier,'" OptionID="',MatrixOption.ID,'"']);
+        //debugln(['SaveSessionEnabledNonSessionMatrixOptions ModeID="',CurMode.Identifier,'" OptionID="',MatrixOption.ID,'" ',MatrixOption.AsString]);
         XMLConfig.SetDeleteValue(SubPath+'Mode',CurMode.Identifier,'');
         XMLConfig.SetDeleteValue(SubPath+'Option',MatrixOption.ID,'');
       end;
@@ -2774,15 +2775,18 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
     XMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
 
     if SaveData then
-      BuildModes.SharedMatrixOptions.SaveToXMLConfig(XMLConfig,Path+'BuildModes/SharedMatrixOptions/');
+      BuildModes.SharedMatrixOptions.SaveToXMLConfig(XMLConfig,
+        Path+'BuildModes/SharedMatrixOptions/',@BuildModes.IsSessionMode);
 
     //debugln(['SaveBuildModes SaveSession=',SaveSession,' ActiveBuildMode.Identifier=',ActiveBuildMode.Identifier]);
     if SaveSession then begin
       // save what mode is currently active in the session
-      XMLConfig.SetDeleteValue(Path+'BuildModes/Active',ActiveBuildMode.Identifier,'default');
+      XMLConfig.SetDeleteValue(Path+'BuildModes/Active',
+        ActiveBuildMode.Identifier,'default');
 
       // save matrix options of session
-      BuildModes.SessionMatrixOptions.SaveToXMLConfig(XMLConfig,Path+'BuildModes/SessionMatrixOptions/');
+      BuildModes.SessionMatrixOptions.SaveToXMLConfig(XMLConfig,
+        Path+'BuildModes/SessionMatrixOptions/',nil);
 
       // save what matrix options are enabled in session build modes
       Cnt:=0;
@@ -3207,8 +3211,8 @@ var
     if MatrixOptions=nil then exit;
     MatrixOption:=MatrixOptions.FindOption(OptionID);
     if MatrixOption=nil then exit;
-    //debugln(['EnableMatrixMode OptionID=',OptionID,' ModeID=',ModeID]);
-    MatrixOption.EnableMode(ModeID,bmmtActive);
+    //debugln(['EnableMatrixMode OptionID=',OptionID,' ModeID=',ModeID,' ',MatrixOption.AsString]);
+    MatrixOption.EnableMode(ModeID);
   end;
 
   procedure LoadSessionEnabledNonSessionMatrixOptions(XMLConfig: TXMLConfig;
@@ -3222,8 +3226,8 @@ var
   begin
     // disable all matrix options in session modes
     if GlobalMatrixOptions<>nil then
-      GlobalMatrixOptions.DisableModes(@BuildModes.IsSessionMode,bmmtActive);
-    BuildModes.SharedMatrixOptions.DisableModes(@BuildModes.IsSessionMode,bmmtActive);
+      GlobalMatrixOptions.DisableModes(@BuildModes.IsSessionMode);
+    BuildModes.SharedMatrixOptions.DisableModes(@BuildModes.IsSessionMode);
     // load
     Cnt:=XMLConfig.GetValue(Path+'Count',0);
     for i:=1 to Cnt do begin
