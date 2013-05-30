@@ -116,12 +116,13 @@ type
     KeyStroke1: TSynEditKeyStroke;
     KeyStroke2: TSynEditKeyStroke;
     KeyStroke3: TSynEditKeyStroke;
-    Count: Integer;    // Can be max. 3.
+    FCount: Integer;    // Can be max. 3.
     function GetItem(Index: Integer): TSynEditKeyStroke;
     procedure PutItem(Index: Integer; AValue: TSynEditKeyStroke);
   public
     procedure Add(aKeyStroke: TSynEditKeyStroke);
     property Items[Index: Integer]: TSynEditKeyStroke read GetItem write PutItem; default;
+    property Count: integer read FCount;
   end;
 
 
@@ -765,17 +766,17 @@ end;
 
 procedure TKeyStrokeList.Add(aKeyStroke: TSynEditKeyStroke);
 begin
-  case Count of
-    0: begin KeyStroke1 := aKeyStroke; Inc(Count); end;
-    1: begin KeyStroke2 := aKeyStroke; Inc(Count); end;
-    2: begin KeyStroke3 := aKeyStroke; Inc(Count); end;
+  case FCount of
+    0: begin KeyStroke1 := aKeyStroke; Inc(FCount); end;
+    1: begin KeyStroke2 := aKeyStroke; Inc(FCount); end;
+    2: begin KeyStroke3 := aKeyStroke; Inc(FCount); end;
     3: raise Exception.Create('TKeyStrokePair supports only 3 items');
   end;
 end;
 
 function TKeyStrokeList.GetItem(Index: Integer): TSynEditKeyStroke;
 begin
-  if Index >= Count then
+  if Index >= FCount then
     raise Exception.Create('TKeyStrokePair: Index out of bounds!');
   case Index of
     0: Result := KeyStroke1;
@@ -786,7 +787,7 @@ end;
 
 procedure TKeyStrokeList.PutItem(Index: Integer; AValue: TSynEditKeyStroke);
 begin
-  if Index >= Count then
+  if Index >= FCount then
     raise Exception.Create('TKeyStrokePair: Index out of bounds!');
   case Index of
     0: KeyStroke1 := AValue;
@@ -3462,7 +3463,7 @@ var
   begin
     if Assigned(Node) then
       KeyList:=TKeyStrokeList(Node.Data);
-    if Assigned(Node) and (KeyList.Count>aOffset) then begin
+    if Assigned(Node) and (KeyList.FCount>aOffset) then begin
       Key:=KeyList[aOffset];       // Already defined -> update
       if CategoryMatches and (aShortcut^.Key1<>VK_UNKNOWN) then
         SetKeyCombo(Key, aShortcut)
@@ -3477,12 +3478,13 @@ var
   end;
 
 var
-  i: integer;
+  i, j: integer;
   Key: TSynEditKeyStroke;
   KeyStrokesByCmds: TAvgLvlTree;
   KeyList: TKeyStrokeList;
   CurRelation: TKeyCommandRelation;
   POUsed: Boolean;
+  SameCmdKey: TSynEditKeyStroke;
 begin
   (* ACommandOffsetOffset
      The IDE defines int's own fixed value command-id for plugins.
@@ -3503,10 +3505,16 @@ begin
       Node:=KeyStrokesByCmds.FindKey({%H-}Pointer(Key.Command), @CompareKeyCmd);
       if Assigned(Node) then begin // Another key is already defined for this command
         KeyList:=TKeyStrokeList(Node.Data);
-        if KeyList.Count < 3 then
+        if KeyList.FCount < 3 then
           KeyList.Add(Key)
-        else
-          DebugLn(['TKeyCommandRelationList.AssignTo: KeyList.Count=', KeyList.Count]);
+        else begin
+          DebugLn(['TKeyCommandRelationList.AssignTo: WARNING: fourth key for command ',EditorCommandToDescriptionString(Key.Command),':']);
+          for j:=0 to KeyList.FCount-1 do begin
+            SameCmdKey:=KeyList[j];
+            debugln(['  ',j,'/',KeyList.FCount,' ',KeyAndShiftStateToKeyString(SameCmdKey.Key,SameCmdKey.Shift)]);
+          end;
+          debugln(['  ',4,'/',KeyList.FCount,' ',KeyAndShiftStateToKeyString(Key.Key,Key.Shift)]);
+        end;
       end
       else begin
         KeyList:=TKeyStrokeList.Create;
