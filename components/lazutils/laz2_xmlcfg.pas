@@ -492,6 +492,7 @@ var
   StartPos, EndPos: integer;
   PathIndex: Integer;
   Parent: TDOMNode;
+  NdName: DOMString;
   NameLen: Integer;
 begin
   //debugln(['TXMLConfig.InternalFindNode APath="',copy(APath,1,PathLen),'" CreateNodes=',CreateNodes]);
@@ -510,11 +511,14 @@ begin
     if NameLen=0 then break;
     inc(PathIndex);
     Parent:=Result;
-    Result:=GetPathNodeCache(PathIndex);
-    if (Result<>nil) and (length(Result.NodeName)=NameLen)
-    and CompareMem(PChar(Result.NodeName),@APath[StartPos],NameLen) then begin
-      // cache valid
-    end else begin
+    if PathIndex<length(fPathNodeCache) then   // GetPathNodeCache inlined
+      Result:=fPathNodeCache[PathIndex]
+    else
+      Result:=nil;
+    if Result<>nil then
+      NdName:=Result.NodeName;
+    if (Result=nil) or (length(NdName)<>NameLen)
+    or not CompareMem(PChar(NdName),@APath[StartPos],NameLen) then begin
       // different path => search
       InvalidateCacheTilEnd(PathIndex);
       NodePath:=copy(APath,StartPos,NameLen);
@@ -522,7 +526,7 @@ begin
       if Result=nil then begin
         if not CreateNodes then exit;
         // create missing node
-        Result := Doc.CreateElement(NodePath);
+        Result:=Doc.CreateElement(NodePath);
         Parent.AppendChild(Result);
         if EndPos>PathLen then exit;
       end;
