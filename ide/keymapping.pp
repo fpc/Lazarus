@@ -3374,13 +3374,13 @@ begin
 end;
 
 function TKeyCommandRelationList.FindByCommand(ACommand: word): TKeyCommandRelation;
-var i:integer;
+var
+  i: integer;
 begin
   Result:=nil;
   for i:=0 to FRelations.Count-1 do
-    with Relations[i] do
-      if (Command=ACommand) then
-        Exit(Relations[i]);
+    if (Relations[i].Command=ACommand) then
+      Exit(Relations[i]);
 end;
 
 // Command compare functions for AvgLvlTree for fast lookup.
@@ -3463,7 +3463,7 @@ var
     if Assigned(Node) then
       KeyList:=TKeyStrokeList(Node.Data);
     if Assigned(Node) and (KeyList.Count>aOffset) then begin
-      Key:=TSynEditKeyStroke(KeyList[aOffset]);   // Already defined -> update
+      Key:=KeyList[aOffset];       // Already defined -> update
       if CategoryMatches and (aShortcut^.Key1<>VK_UNKNOWN) then
         SetKeyCombo(Key, aShortcut)
       else
@@ -3629,7 +3629,8 @@ end;
 function TKeyCommandRelationList.CreateNewCommandID: word;
 begin
   Result:=ecLazarusLast;
-  while FindByCommand(Result)<>nil do inc(Result);
+  while FindByCommand(Result)<>nil do
+    inc(Result);
 end;
 
 function TKeyCommandRelationList.CreateCategory(Parent: TIDECommandCategory;
@@ -3781,7 +3782,8 @@ begin
 end;
 
 function TKeyCommandRelationList.CommandToShortCut(ACommand: word): TShortCut;
-var ARelation: TKeyCommandRelation;
+var
+  ARelation: TKeyCommandRelation;
 begin
   ARelation:=FindByCommand(ACommand);
   if ARelation<>nil then
