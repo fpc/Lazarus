@@ -156,6 +156,9 @@ end;
   - if UsePointDirectory is True and Result is True then if RelPath is Empty string, RelPath becomes '.'
   - if AlwaysRequireSharedBaseFolder is False then Absolute filenames need not share a basefolder
 
+  - if the function succeeds RelPath contains the relative path from Source to Dest,
+    no PathDelimiter is appended to the end of RelPath
+
   Examples:
   - Dest = /foo/bar Source = /foo Result = True RelPath = bar
   - Dest = /foo///bar Source = /foo// Result = True RelPath = bar
