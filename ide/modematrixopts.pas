@@ -57,6 +57,8 @@ const
   bmgtAll = [low(TBuildMatrixGroupType)..high(TBuildMatrixGroupType)];
 
 type
+  TIsModeEvent = function(const ModeIdentifier: string): boolean of object;
+
   TBuildMatrixOptions = class;
 
   TBMModesType = (
@@ -98,10 +100,13 @@ type
     function Equals(Obj: TObject): boolean; override;
     function GetModesSeparatedByComma(aTyp: TBMModesType): string;
     procedure SetModesFromCommaSeparatedList(aList: string; aTyp: TBMModesType);
+    procedure DisableModes(const DisableModeEvent: TIsModeEvent; aTyp: TBMModesType);
+    procedure EnableMode(const aMode: string; aTyp: TBMModesType);
     procedure LoadFromConfig(Cfg: TConfigStorage);
     procedure SaveToConfig(Cfg: TConfigStorage);
     procedure LoadFromXMLConfig(Cfg: TXMLConfig; const aPath: string);
     procedure SaveToXMLConfig(Cfg: TXMLConfig; const aPath: string);
+    function AsString: string;
   end;
 
   { TBuildMatrixOptions }
@@ -122,6 +127,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure DisableModes(const IsModeEvent: TIsModeEvent; aTyp: TBMModesType);
     function Count: integer;
     property Items[Index: integer]: TBuildMatrixOption read GetItems; default;
     function IndexOf(Option: TBuildMatrixOption): integer;
@@ -144,6 +150,7 @@ type
     // queries
     procedure AppendCustomOptions(Target, ActiveMode: string; var Options: string);
     procedure GetOutputDirectory(Target, ActiveMode: string; var OutDir: string);
+    function FindOption(const ID: string): TBuildMatrixOption;
   end;
 
   EMMMacroSyntaxException = class(Exception)
@@ -458,6 +465,15 @@ begin
   IncreaseChangeStep;
 end;
 
+procedure TBuildMatrixOptions.DisableModes(const IsModeEvent: TIsModeEvent;
+  aTyp: TBMModesType);
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do
+    Items[i].DisableModes(IsModeEvent,aTyp);
+end;
+
 function TBuildMatrixOptions.Count: integer;
 begin
   Result:=fItems.Count;
@@ -539,11 +555,13 @@ var
   Option: TBuildMatrixOption;
 begin
   Clear;
-  Cnt:=Cfg.GetValue('Count',0);
+  Cnt:=Cfg.GetValue(aPath+'Count',0);
+  //debugln(['TBuildMatrixOptions.LoadFromXMLConfig Cnt=',Cnt]);
   for i:=1 to Cnt do begin
     Option:=TBuildMatrixOption.Create(Self);
     Option.LoadFromXMLConfig(Cfg,aPath+'item'+IntToStr(i)+'/');
   end;
+  //debugln(['TBuildMatrixOptions.LoadFromXMLConfig Count=',Count]);
 end;
 
 procedure TBuildMatrixOptions.SaveToXMLConfig(Cfg: TXMLConfig;
@@ -551,6 +569,7 @@ procedure TBuildMatrixOptions.SaveToXMLConfig(Cfg: TXMLConfig;
 var
   i: Integer;
 begin
+  //debugln(['TBuildMatrixOptions.SaveToXMLConfig ',aPath]);
   Cfg.SetDeleteValue(aPath+'Count',Count,0);
   for i:=0 to Count-1 do
     Items[i].SaveToXMLConfig(Cfg,aPath+'item'+IntToStr(i+1)+'/');
@@ -588,6 +607,17 @@ begin
     if not Option.FitsMode(ActiveMode,bmmtActive) then continue;
     OutDir:=Option.Value;
   end;
+end;
+
+function TBuildMatrixOptions.FindOption(const ID: string): TBuildMatrixOption;
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do begin
+    Result:=Items[i];
+    if Result.ID=ID then exit;
+  end;
+  Result:=nil;
 end;
 
 { TBuildMatrixOption }
@@ -740,6 +770,38 @@ begin
   Modes[aTyp]:=aList;
 end;
 
+procedure TBuildMatrixOption.DisableModes(const DisableModeEvent: TIsModeEvent;
+  aTyp: TBMModesType);
+var
+  CurModes: String;
+  p: PChar;
+  StartP: PChar;
+  CurMode: String;
+  StartPos: integer;
+begin
+  CurModes:=Modes[aTyp];
+  p:=PChar(CurModes);
+  while p^<>#0 do begin
+    StartP:=p;
+    while not (p^ in [#0,#10,#13]) do inc(p);
+    StartPos:=StartP-PChar(CurModes)+1;
+    CurMode:=copy(CurModes,StartPos,p-StartP);
+    while p^ in [#10,#13] do inc(p);
+    if DisableModeEvent(CurMode) then begin
+      System.Delete(CurModes,StartPos,p-StartP);
+      p:=Pointer(CurModes)+StartPos-1;
+    end;
+  end;
+  Modes[aTyp]:=CurModes;
+end;
+
+procedure TBuildMatrixOption.EnableMode(const aMode: string; aTyp: TBMModesType
+  );
+begin
+  if FitsMode(aMode,aTyp) then exit;
+  Modes[aTyp]:=Modes[aTyp]+aMode+LineEnding;
+end;
+
 procedure TBuildMatrixOption.LoadFromConfig(Cfg: TConfigStorage);
 begin
   ID:=Cfg.GetValue('ID','');
@@ -766,6 +828,7 @@ begin
   ID:=Cfg.GetValue(aPath+'ID','');
   Targets:=Cfg.GetValue(aPath+'Targets','*');
   SetModesFromCommaSeparatedList(Cfg.GetValue(aPath+'Modes','*'),bmmtStored);
+  Modes[bmmtActive]:=Modes[bmmtStored];
   Typ:=Str2BuildMatrixOptionType(Cfg.GetValue(aPath+'Type',''));
   MacroName:=Cfg.GetValue(aPath+'MacroName','');
   Value:=Cfg.GetValue(aPath+'Value','');
@@ -780,6 +843,11 @@ begin
   Cfg.SetDeleteValue(aPath+'Type',BuildMatrixOptionTypeNames[Typ],BuildMatrixOptionTypeNames[bmotCustom]);
   Cfg.SetDeleteValue(aPath+'MacroName',MacroName,'');
   Cfg.SetDeleteValue(aPath+'Value',Value,'');
+end;
+
+function TBuildMatrixOption.AsString: string;
+begin
+  Result:='ID="'+ID+'" '+BuildMatrixOptionTypeNames[Typ]+' Value="'+Value+'" ActiveModes="'+dbgstr(Modes[bmmtActive])+'"';
 end;
 
 end.

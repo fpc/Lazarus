@@ -1935,7 +1935,7 @@ begin
 
       // read project info file
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenProjectFile B3');{$ENDIF}
-      Project1.ReadProject(AFilename);
+      Project1.ReadProject(AFilename,EnvironmentOptions.BuildMatrixOptions);
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenProjectFile B4');{$ENDIF}
       Result:=CompleteLoadingProjectInfo;
     finally

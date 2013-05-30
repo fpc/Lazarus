@@ -736,6 +736,7 @@ type
     procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
     function IsModified(InSession: boolean): boolean;
     function GetSessionModes: TStringList;
+    function IsSessionMode(const ModeIdentifier: string): boolean;
   public
     property Items[Index: integer]: TProjectBuildMode read GetItems; default;
     property ChangeStamp: integer read FChangeStamp;
@@ -912,6 +913,7 @@ type
     function HasProjectInfoFileChangedOnDisk: boolean;
     procedure IgnoreProjectInfoFileOnDisk;
     function ReadProject(const NewProjectInfoFile: string;
+                         GlobalMatrixOptions: TBuildMatrixOptions;
                          ReadFlags: TProjectReadFlags = []): TModalResult;
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
                           const OverrideProjectInfoFile: string;
@@ -2723,6 +2725,7 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
         if not MatrixOption.FitsMode(CurMode.Identifier,bmmtActive) then continue;
         inc(Cnt);
         SubPath:=Path+'Item'+IntToStr(Cnt)+'/';
+        //debugln(['SaveSessionEnabledNonSessionMatrixOptions ModeID="',CurMode.Identifier,'" OptionID="',MatrixOption.ID,'"']);
         XMLConfig.SetDeleteValue(SubPath+'Mode',CurMode.Identifier,'');
         XMLConfig.SetDeleteValue(SubPath+'Option',MatrixOption.ID,'');
       end;
@@ -3183,7 +3186,8 @@ end;
   TProject ReadProject
  ------------------------------------------------------------------------------}
 function TProject.ReadProject(const NewProjectInfoFile: string;
-  ReadFlags: TProjectReadFlags): TModalResult;
+  GlobalMatrixOptions: TBuildMatrixOptions; ReadFlags: TProjectReadFlags
+  ): TModalResult;
 type
   TOldProjectType = (ptApplication, ptProgram, ptCustomProgram);
 const
@@ -3194,6 +3198,50 @@ var
   LoadParts: boolean;
   FileVersion: Integer;
   NewMainUnitID: LongInt;
+
+  procedure EnableMatrixMode(MatrixOptions: TBuildMatrixOptions;
+    OptionID, ModeID: string);
+  var
+    MatrixOption: TBuildMatrixOption;
+  begin
+    if MatrixOptions=nil then exit;
+    MatrixOption:=MatrixOptions.FindOption(OptionID);
+    if MatrixOption=nil then exit;
+    //debugln(['EnableMatrixMode OptionID=',OptionID,' ModeID=',ModeID]);
+    MatrixOption.EnableMode(ModeID,bmmtActive);
+  end;
+
+  procedure LoadSessionEnabledNonSessionMatrixOptions(XMLConfig: TXMLConfig;
+    const Path: string);
+  var
+    Cnt: integer;
+    i: Integer;
+    SubPath: String;
+    ModeID: String;
+    OptionID: String;
+  begin
+    // disable all matrix options in session modes
+    if GlobalMatrixOptions<>nil then
+      GlobalMatrixOptions.DisableModes(@BuildModes.IsSessionMode,bmmtActive);
+    BuildModes.SharedMatrixOptions.DisableModes(@BuildModes.IsSessionMode,bmmtActive);
+    // load
+    Cnt:=XMLConfig.GetValue(Path+'Count',0);
+    for i:=1 to Cnt do begin
+      SubPath:=Path+'Item'+IntToStr(i)+'/';
+      ModeID:=XMLConfig.GetValue(SubPath+'Mode','');
+      if (ModeID='') or (not BuildModes.IsSessionMode(ModeID)) then begin
+        debugln(['LoadSessionEnabledNonSessionMatrixOptions not a session Mode="',dbgstr(ModeID),'" at ',SubPath]);
+        continue;
+      end;
+      OptionID:=XMLConfig.GetValue(SubPath+'Option','');
+      if OptionID='' then begin
+        debugln(['LoadSessionEnabledNonSessionMatrixOptions invalid option at ',SubPath]);
+        continue;
+      end;
+      EnableMatrixMode(GlobalMatrixOptions,OptionID,ModeID);
+      EnableMatrixMode(BuildModes.SharedMatrixOptions,OptionID,ModeID);
+    end;
+  end;
 
   procedure LoadBuildModes(XMLConfig: TXMLConfig; const Path: string;
     LoadData: boolean);
@@ -3249,7 +3297,7 @@ var
     end else if LoadData then begin
       // no build modes => an old file format
       CompOptsPath:='CompilerOptions/';
-      // due to an old bug, the XML path can be 'CompilerOptions/' or ''
+      // due to a bug in an old version, the XML path can be 'CompilerOptions/' or ''
       if (FileVersion<3)
       and (XMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
         CompOptsPath:='';
@@ -3262,18 +3310,17 @@ var
     if LoadData then begin
       // load matrix options of project (not session)
       BuildModes.SharedMatrixOptions.LoadFromXMLConfig(XMLConfig,Path+'BuildModes/SharedMatrixOptions/');
+      //debugln(['LoadBuildModes BuildModes.SharedMatrixOptions.Count=',BuildModes.SharedMatrixOptions.Count]);
+      //for i:=0 to BuildModes.SharedMatrixOptions.Count-1 do
+      //  debugln(['  ',BuildModes.SharedMatrixOptions[i].AsString]);
     end;
     if (not LoadData) and (not LoadParts) then begin
       // load matrix options of session
       BuildModes.SessionMatrixOptions.LoadFromXMLConfig(XMLConfig,Path+'BuildModes/SessionMatrixOptions/');
 
-      // disable matrix options in session build modes
-      // ToDo:
-
       // load what matrix options are enabled in session build modes
-      // ToDo:
-      //Cnt:=0;
-      //SubPath:=Path+'BuildModes/SessionMatrixOptions/';
+      SubPath:=Path+'BuildModes/SessionMatrixOptions/';
+      LoadSessionEnabledNonSessionMatrixOptions(XMLConfig,SubPath);
     end;
 
     // set active mode
@@ -7322,6 +7369,20 @@ begin
     if BuildMode.InSession then
       Result.Add(BuildMode.Identifier);
   end;
+end;
+
+function TProjectBuildModes.IsSessionMode(const ModeIdentifier: string
+  ): boolean;
+var
+  i: Integer;
+  BuildMode: TProjectBuildMode;
+begin
+  for i:=0 to Count-1 do begin
+    BuildMode:=Items[i];
+    if SysUtils.CompareText(BuildMode.Identifier,ModeIdentifier)=0 then
+      exit(BuildMode.InSession);
+  end;
+  Result:=false;
 end;
 
 initialization
