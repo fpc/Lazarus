@@ -105,6 +105,10 @@ function IsUNCPath(const {%H-}Path: String): Boolean;
 function ExtractUNCVolume(const {%H-}Path: String): String;
 function ExtractFileRoot(FileName: String): String;
 
+// darwin paths
+{$IFDEF darwin}
+function GetDarwinSystemFilename(Filename: string): string;
+{$ENDIF}
 
 procedure SplitCmdLineParams(const Params: string; ParamList: TStrings;
                              ReadBackslash: boolean = false);
@@ -219,9 +223,6 @@ begin
   Result := CompareFileExt(Filename, Ext, False);
 end;
 
-
-
-
 function ExtractFileNameOnly(const AFilename: string): string;
 var ExtLen: integer;
 begin
@@ -230,8 +231,6 @@ begin
   ExtLen:=length(ExtractFileExt(Result));
   Result:=copy(Result,1,length(Result)-ExtLen);
 end;
-
-
 
 {$IFDEF darwin}
 function GetDarwinSystemFilename(Filename: string): string;
