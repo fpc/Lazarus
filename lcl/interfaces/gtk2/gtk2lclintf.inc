@@ -889,28 +889,34 @@ begin
 end;
 
 function TGtk2WidgetSet.AskUser(const DialogCaption, DialogMessage: string; DialogType:
-   LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
+  LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
 
 const
   ButtonResults : array[mrNone..mrYesToAll] of Longint = (
     -1, idButtonOK, idButtonCancel, idButtonAbort, idButtonRetry,
-    idButtonIgnore, idButtonYes,idButtonNo, idButtonAll, idButtonNoToAll,
+    idButtonIgnore, idButtonYes, idButtonNo, idButtonAll, idButtonNoToAll,
     idButtonYesToAll);
 
 var
-  Btn: PGtkButton;
-  BtnId: Longint;
   Dialog: PGtkWidget;
-  ADialogResult: Integer;
-  GtkDialogType: TGtkMessageType;
-  Btns: TGtkButtonsType;
-  BtnIdx: Integer;
-  DefaultID: Integer;
-  X: Integer;
-  MainList,ChildList: PGList;
-  Title: String;
-  ActiveWindow: HWND;
-  BtnResult: LongInt;
+
+  function ResponseID(const AnID: Integer): Integer;
+  begin
+    case AnID of
+      idButtonOK       : Result := GTK_RESPONSE_OK;
+      idButtonCancel   : Result := GTK_RESPONSE_CANCEL;
+      idButtonHelp     : Result := GTK_RESPONSE_HELP;
+      idButtonYes      : Result := GTK_RESPONSE_YES;
+      idButtonNo       : Result := GTK_RESPONSE_NO;
+      idButtonClose    : Result := GTK_RESPONSE_CLOSE;
+      idButtonAbort    : Result := GTK_RESPONSE_REJECT;
+      idButtonRetry    : Result := GTK_RESPONSE_LCL_RETRY;
+      idButtonIgnore   : Result := GTK_RESPONSE_LCL_IGNORE;
+      idButtonAll      : Result := GTK_RESPONSE_LCL_ALL;
+      idButtonNoToAll  : Result := GTK_RESPONSE_LCL_NOTOALL;
+      idButtonYesToAll : Result := GTK_RESPONSE_LCL_YESTOALL;
+    end;
+  end;
 
   procedure CreateButton(const ALabel : String; const AResponse: Integer;
       const AImageHint: Integer = -1);
@@ -952,23 +958,20 @@ var
     end;
   end;
 
-  function ResponseID(const AnID: Integer): Integer;
-  begin
-    case AnID of
-      idButtonOK       : Result := GTK_RESPONSE_OK;
-      idButtonCancel   : Result := GTK_RESPONSE_CANCEL;
-      idButtonHelp     : Result := GTK_RESPONSE_HELP;
-      idButtonYes      : Result := GTK_RESPONSE_YES;
-      idButtonNo       : Result := GTK_RESPONSE_NO;
-      idButtonClose    : Result := GTK_RESPONSE_CLOSE;
-      idButtonAbort    : Result := GTK_RESPONSE_REJECT;
-      idButtonRetry    : Result := GTK_RESPONSE_LCL_RETRY;
-      idButtonIgnore   : Result := GTK_RESPONSE_LCL_IGNORE;
-      idButtonAll      : Result := GTK_RESPONSE_LCL_ALL;
-      idButtonNoToAll  : Result := GTK_RESPONSE_LCL_NOTOALL;
-      idButtonYesToAll : Result := GTK_RESPONSE_LCL_YESTOALL;
-    end;
-  end;
+var
+  Btn: PGtkButton;
+  BtnId: Longint;
+  GtkDialogType: TGtkMessageType;
+  BtnIdx: Integer;
+  DefaultID, CancelID: Integer;
+  X: Integer;
+  MainList,ChildList: PGList;
+  Title: String;
+  ActiveWindow: HWND;
+  BtnResult: LongInt;
+  DlgBtn: TDialogButton;
+  ADialogResult: Integer;
+  Btns: TGtkButtonsType;
 begin
   Result := mrNone;
   ReleaseCapture;
@@ -984,14 +987,23 @@ begin
 
   Btns := GTK_BUTTONS_NONE;
   DefaultId := 0;
+  CancelId := -1;
   for X := 0 to Buttons.Count - 1 do
   begin
-    if Buttons[X].Default then
+    DlgBtn:=Buttons[X];
+    if (Buttons.DefaultButton=DlgBtn)
+    or ((Buttons.DefaultButton=nil) and DlgBtn.Default) then
       DefaultID := X;
+    if (Buttons.CancelButton=DlgBtn)
+    or ((Buttons.CancelButton=nil) and DlgBtn.Cancel)
+    then begin
+      CancelID := X;
+      ADialogResult := DlgBtn.ModalResult;
+    end;
 
     if (ADialogResult = mrNone) and
-      (Buttons[X].ModalResult in [mrCancel, mrAbort, mrIgnore,
-        mrNo, mrNoToAll]) then
+      (Buttons[X].ModalResult in [mrCancel, mrAbort, mrIgnore, mrNo, mrNoToAll])
+    then
       ADialogResult := Buttons[X].ModalResult;
   end;
 
@@ -1036,7 +1048,6 @@ begin
   MainList := gtk_container_children(PGtkContainer(PGtkDialog(Dialog)^.action_area));
   ChildList := MainList;
   BtnIdx := 0;
-
   while ChildList <> nil do
   begin
     if (ChildList^.Data <> nil) then
@@ -1044,16 +1055,17 @@ begin
       if GTK_IS_BUTTON(ChildList^.Data) then
       begin
         Btn := PGtkButton(ChildList^.Data);
+        DlgBtn := Buttons[BtnIdx];
 
         BtnID := -1;
-        BtnResult:=Buttons[BtnIdx].ModalResult;
+        BtnResult:=DlgBtn.ModalResult;
         if (BtnResult>=Low(ButtonResults)) and (BtnResult<=High(ButtonResults)) then
-        BtnID := ButtonResults[Buttons[BtnIdx].ModalResult];
-        if BtnID = idButtonCancel then
-           gtk_object_set_data(PGtkObject(Dialog), 'modal_result', Pointer(idButtonCancel));
+          BtnID := ButtonResults[DlgBtn.ModalResult];
+        if (BtnIdx=CancelID) then
+          g_object_set_data(PGObject(Dialog), 'modal_result', Pointer(PtrInt(DlgBtn.ModalResult)));
 
-        X := Buttons[BtnIdx].ModalResult;
-        gtk_object_set_data(PGtkObject(Btn), 'modal_result',
+        X := DlgBtn.ModalResult;
+        g_object_set_data(PGObject(Btn), 'modal_result',
           {%H-}Pointer(PtrInt(X)));
 
         g_signal_connect(PGtkObject(Btn), 'clicked',
@@ -1062,9 +1074,10 @@ begin
         if DefaultID = BtnIdx then
         begin
           gtk_dialog_set_default_response(PGtkDialog(Dialog), ResponseID(BtnID));
-          X := Buttons[BtnIdx].ModalResult;
-          gtk_object_set_data(PGtkObject(Dialog), 'modal_result',
-            {%H-}Pointer(PtrInt(X)));
+          X := DlgBtn.ModalResult;
+          if CancelID<0 then
+            g_object_set_data(PGObject(Dialog), 'modal_result',
+              {%H-}Pointer(PtrInt(X)));
         end;
 
         inc(BtnIdx);
