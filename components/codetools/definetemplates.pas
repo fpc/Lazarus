@@ -1906,31 +1906,6 @@ var
     Result:=SetDirSeparators(Filenames);
   end;
 
-  procedure AddProcessorTypeDefine(ParentDefTempl: TDefineTemplate);
-  // some FPC source files expects defines 'i386' instead of 'CPUi386'
-  // define them automatically with IF..THEN constructs
-  var
-    i: Integer;
-    CPUName: String;
-    IfTemplate: TDefineTemplate;
-  begin
-    // FPC defines CPUxxx defines (e.g. CPUI386, CPUPOWERPC).
-    // These defines are created by the compiler depending
-    // on xxx defines (i386, powerpc).
-    // Create:
-    //   IF CPUi386 then define i386
-    //   IF CPUpowerpc then define powerpc
-    //   ...
-    for i:=Low(FPCProcessorNames) to high(FPCProcessorNames) do begin
-      CPUName:=FPCProcessorNames[i];
-      IfTemplate:=TDefineTemplate.Create('IFDEF CPU'+CPUName,
-        'IFDEF CPU'+CPUName,'CPU'+CPUName,'',da_IfDef);
-      IfTemplate.AddChild(TDefineTemplate.Create('DEFINE '+CPUName,
-        'DEFINE '+CPUName,CPUName,'',da_DefineRecurse));
-      ParentDefTempl.AddChild(IfTemplate);
-    end;
-  end;
-
   procedure AddSrcOSDefines(ParentDefTempl: TDefineTemplate);
   var
     IfTargetOSIsNotSrcOS: TDefineTemplate;
@@ -2079,7 +2054,6 @@ begin
     RTLDir.AddChild(IFTempl);
 
     // add processor and SrcOS alias defines for the RTL
-    AddProcessorTypeDefine(RTLDir);
     AddSrcOSDefines(RTLDir);
 
     // rtl/$(#TargetOS)
@@ -2243,7 +2217,6 @@ begin
     // compiler
     CompilerDir:=TDefineTemplate.Create('Compiler',ctsCompiler,'','compiler',
        da_Directory);
-    AddProcessorTypeDefine(CompilerDir);
     CompilerDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',
       ExternalMacroStart+'SrcPath',
       SrcPathMacro+';'+Dir+TargetProcessor,da_Define));
