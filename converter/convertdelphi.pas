@@ -768,8 +768,10 @@ begin
   MissingIncludeFilesCodeXYPos:=Nil;
   OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
   LazarusIDE.OpenEditorsOnCodeToolChange:=False;
+  with fCTLink do
   try
-    with fCTLink do
+    CodeTool.CheckDirectoryCache;
+    if CodeTool.DirectoryCache=nil then exit;
     if CodeTool.FixIncludeFilenames(Code,SrcCache,FoundIncludeFiles,MissingIncludeFilesCodeXYPos)
     then begin
       if Assigned(FoundIncludeFiles) then begin
