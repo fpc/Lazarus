@@ -5410,6 +5410,8 @@ resourcestring
   lisConvDelphiError = 'Error="%s"';
   lisConvDelphiFailedConvertingUnit = 'Failed converting unit';
   lisConvDelphiFailedToConvertUnit = 'Failed to convert unit%s%s%s';
+  lisConvDelphiExceptionDuringConversion = 'Exception happened during unit conversion.'
+    +' Continuing with form files of already converted units...';
   lisConvDelphiUnitnameExistsTwice = 'Unitname exists twice';
   lisConvDelphiThereAreTwoUnitsWithTheSameUnitname = 'There are two units '
     +'with the same unitname:%s%s%s%s%s';

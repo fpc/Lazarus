@@ -953,6 +953,7 @@ begin
   CacheUnitsThread:=TCacheUnitsThread.Create(Self,
                        TrimFilename(fSettings.MainPath+'..'+DirectorySeparator));
   try
+  try
     Result:=fSettings.RunForm(CacheUnitsThread); // Get settings from user.
     if Result=mrOK then begin
       StartTime:=Now;
@@ -970,10 +971,6 @@ begin
 
       // Actual conversion.
       Result:=ConvertSub;
-      EndTime:=Now;
-      s:=FormatDateTime('hh:nn:ss', EndTime-StartTime);
-      if s<>'00:00:00' then
-        IDEMessagesWindow.AddMsg(Format(lisConvDelphiConversionTook, [s]), '', -1)
     end;
   except
     on e: EDelphiConverterError do begin
@@ -984,7 +981,13 @@ begin
     end;
     Result:=mrAbort;
   end;
-  ShowEndingMessage(Result);
+  finally
+    EndTime:=Now;
+    s:=FormatDateTime('hh:nn:ss', EndTime-StartTime);
+    if s<>'00:00:00' then
+      IDEMessagesWindow.AddMsg(Format(lisConvDelphiConversionTook, [s]), '', -1);
+    ShowEndingMessage(Result);
+  end;
 end;
 
 function TConvertDelphiProjPack.ConvertSub: TModalResult;
@@ -1589,6 +1592,7 @@ begin
   Result:=mrOk;
   ConvUnits:=TObjectList.Create;
   try
+  try
     // convert all units and fix .lfm files
     IDEMessagesWindow.AddMsg('', '', -1);
     IDEMessagesWindow.AddMsg(lisConvDelphiConvertingUnitFiles, '', -1);
@@ -1618,12 +1622,20 @@ begin
         Result:=fMainUnitConverter.fUsedUnitsTool.AddThreadSupport;
         if Result<>mrOK then exit;
       end;
-      Result:=ConvertAllFormFiles(ConvUnits);
     end;
-    // Finally save project once more
-    Result:=LazarusIDE.DoSaveProject([sfQuietUnitCheck]);
-    if Result<>mrOk then exit;
+  except
+    IDEMessagesWindow.AddMsg('', '', -1);
+    IDEMessagesWindow.AddMsg('- '+lisConvDelphiExceptionDuringConversion, '', -1);
+    raise;
+  end;
   finally
+    if Result=mrOk then begin
+      // Try to convert FormFiles also in case of exception.
+      // Unit name replacements etc. are implmented there.
+      Result:=ConvertAllFormFiles(ConvUnits);
+      // Finally save project once more
+      Result:=LazarusIDE.DoSaveProject([sfQuietUnitCheck]);
+    end;
     ConvUnits.Free;  // Owns and frees converter objects.
   end;
 end;
