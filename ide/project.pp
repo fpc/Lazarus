@@ -3300,9 +3300,9 @@ var
     end;
   end;
 
-  procedure LoadOldMacroValues(XMLConfig: TXMLConfig; const Path: string;
-    CurMode: TProjectBuildMode);
   {$IFDEF EnableModeMatrix}
+  procedure AddMatrixMacro(const MacroName, MacroValue, ModeIdentifier: string;
+    InSession: boolean);
 
     function FindMacro(MatrixOptions: TBuildMatrixOptions;
       const MacroName, MacroValue: string): TBuildMatrixOption;
@@ -3325,42 +3325,51 @@ var
     end;
 
   var
+    MatrixOptions: TBuildMatrixOptions;
+    MatrixOption: TBuildMatrixOption;
+  begin
+    MatrixOption:=FindMacro(BuildModes.SharedMatrixOptions,MacroName,MacroValue);
+    if MatrixOption=nil then
+      MatrixOption:=FindMacro(BuildModes.SessionMatrixOptions,MacroName,MacroValue);
+    if MatrixOption<>nil then begin
+      // Macro already exists => enable mode for this macro
+      MatrixOption.EnableMode(ModeIdentifier);
+    end else begin
+      // Macro does not yet exist => create
+      if InSession then
+        MatrixOptions:=BuildModes.SessionMatrixOptions
+      else
+        MatrixOptions:=BuildModes.SharedMatrixOptions;
+      MatrixOption:=MatrixOptions.Add(bmotIDEMacro,'*');
+      MatrixOption.MacroName:=MacroName;
+      MatrixOption.Value:=MacroValue;
+      MatrixOption.Modes:=ModeIdentifier;
+    end;
+  end;
+  {$ENDIF}
+
+  procedure LoadOldMacroValues(XMLConfig: TXMLConfig; const Path: string;
+    CurMode: TProjectBuildMode);
+  {$IFDEF EnableModeMatrix}
+  var
     Cnt: Integer;
     i: Integer;
     SubPath: String;
     MacroName: String;
     MacroValue: String;
-    MatrixOptions: TBuildMatrixOptions;
-    MatrixOption: TBuildMatrixOption;
   {$ENDIF}
   begin
     {$IFDEF EnableModeMatrix}
     // load macro values of old IDE (<1.1)
     Cnt:=XMLConfig.GetValue(Path+'Count',0);
-    debugln(['LoadOldMacroValues Cnt=',Cnt]);
+    //debugln(['LoadOldMacroValues Cnt=',Cnt]);
     for i:=1 to Cnt do begin
       SubPath:=Path+'Macro'+IntToStr(i)+'/';
       MacroName:=XMLConfig.GetValue(SubPath+'Name','');
       if (MacroName='') or not IsValidIdent(MacroName) then continue;
       MacroValue:=XMLConfig.GetValue(SubPath+'Value','');
-      debugln(['LoadOldMacroValues Mode="',CurMode.Identifier,'" ',MacroName,'="',MacroValue,'" session=',CurMode.InSession]);
-      MatrixOption:=FindMacro(BuildModes.SharedMatrixOptions,MacroName,MacroValue);
-      if MatrixOption=nil then
-        MatrixOption:=FindMacro(BuildModes.SessionMatrixOptions,MacroName,MacroValue);
-      if MatrixOption<>nil then begin
-        // Macro already exists => enable mode for this macro
-        MatrixOption.EnableMode(CurMode.Identifier);
-      end else begin
-        // Macro does not yet exist => create
-        if CurMode.InSession then
-          MatrixOptions:=BuildModes.SessionMatrixOptions
-        else
-          MatrixOptions:=BuildModes.SharedMatrixOptions;
-        MatrixOption:=MatrixOptions.Add(bmotIDEMacro,'*');
-        MatrixOption.MacroName:=MacroName;
-        MatrixOption.Value:=MacroValue;
-        MatrixOption.Modes:=CurMode.Identifier;
-      end;
+      //debugln(['LoadOldMacroValues Mode="',CurMode.Identifier,'" ',MacroName,'="',MacroValue,'" session=',CurMode.InSession]);
+      AddMatrixMacro(MacroName,MacroValue,CurMode.Identifier,CurMode.InSession);
     end;
     {$ELSE}
     CurMode.MacroValues.LoadFromXMLConfig(XMLConfig,Path);
@@ -3378,6 +3387,9 @@ var
     CurMode: TProjectBuildMode;
     MacroValsPath: String;
     ActiveIdentifier: String;
+    {$IFDEF EnableModeMatrix}
+    s: String;
+    {$ENDIF}
   begin
     if LoadParts then begin
       if not (prfLoadPartBuildModes in ReadFlags) then exit;
@@ -3444,6 +3456,14 @@ var
       MacroValsPath:=Path+'MacroValues/';
       CurMode:=BuildModes[0];
       LoadOldMacroValues(XMLConfig,MacroValsPath,CurMode);
+      {$IFDEF EnableModeMatrix}
+      if XMLConfig.GetValue(CompOptsPath+'Version/Value', 0)<10 then begin
+        // LCLWidgetType was not a macro but a property of its own
+        s := XMLConfig.GetValue(CompOptsPath+'LCLWidgetType/Value', '');
+        if (s<>'') and (SysUtils.CompareText(s,'default')<>0) then
+          AddMatrixMacro('LCLWidgetType',s,'default',false);
+      end;
+      {$ENDIF}
       CurMode.CompilerOptions.LoadFromXMLConfig(XMLConfig,CompOptsPath);
     end;
 

@@ -19,7 +19,6 @@
  ***************************************************************************
 
  ToDo:
-   - read old LCLWidgetType
    - when rename build mode, update option modes
    - check modified
    - wiki
