@@ -169,10 +169,7 @@ begin
   Result := LazFileUtils.RemoveDirUtf8(Dir);
 end;
 
-function ParamStrUTF8(Param: Integer): string;
-begin
-  Result:=SysToUTF8(ObjPas.ParamStr(Param));
-end;
+
 
 
 
@@ -1284,4 +1281,5 @@ function FileIsReadOnlyUTF8(const FileName: String): Boolean;
 begin
   Result:=FileGetAttrUTF8(FileName) and faReadOnly > 0;
 end;
+
 

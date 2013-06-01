@@ -162,5 +162,14 @@ begin
   Result:=SysToUTF8(SysUtils.ExtractShortPathName(UTF8ToSys(FileName)));
 end;
 
+function ParamStrUTF8(Param: Integer): string;
+begin
+  Result:=SysToUTF8(ObjPas.ParamStr(Param));
+end;
 
 
+
+procedure InitFileUtil;
+begin
+  //dummy procedure
+end;

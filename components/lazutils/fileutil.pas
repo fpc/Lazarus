@@ -290,6 +290,7 @@ uses
   {$i unixfileutil.inc}
 {$ENDIF}
 
-
+initialization
+  InitFileUtil;
 end.
 
