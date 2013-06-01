@@ -125,10 +125,10 @@ type
     constructor Create(ACTLink: TCodeToolLink; AFilename: string);
     destructor Destroy; override;
     function Prepare: TModalResult;
-    function Convert: TModalResult;
-    function Remove(AUnit: string): TModalResult;
-    procedure MoveMissingToComment(AAllCommentedUnits: TStrings);
-    procedure AddUnitIfNeeded(AUnitName: string);
+    function ConvertUsed: TModalResult;
+    function Remove(aUnit: string): TModalResult;
+    procedure MoveMissingToComment(aAllCommentedUnits: TStrings);
+    procedure AddUnitIfNeeded(aUnitName: string);
     function AddThreadSupport: TModalResult;
   public
     property IsMainFile: Boolean read fIsMainFile write fIsMainFile;
@@ -601,7 +601,7 @@ begin
   end;
 end;
 
-function TUsedUnitsTool.Convert: TModalResult;
+function TUsedUnitsTool.ConvertUsed: TModalResult;
 // Add, remove, rename and comment out unit names that were marked earlier.
 var
   i: Integer;
@@ -656,27 +656,27 @@ begin
   Result:=mrOK;
 end;
 
-function TUsedUnitsTool.Remove(AUnit: string): TModalResult;
+function TUsedUnitsTool.Remove(aUnit: string): TModalResult;
 var
   x: Integer;
 begin
   Result:=mrIgnore;
-  if fMainUsedUnits.fExistingUnits.Find(AUnit, x) then begin
-    fMainUsedUnits.UnitsToRemove.Add(AUnit);
+  if fMainUsedUnits.fExistingUnits.Find(aUnit, x) then begin
+    fMainUsedUnits.UnitsToRemove.Add(aUnit);
     Result:=mrOK;
   end
-  else if fImplUsedUnits.fExistingUnits.Find(AUnit, x) then begin
-    fImplUsedUnits.UnitsToRemove.Add(AUnit);
+  else if fImplUsedUnits.fExistingUnits.Find(aUnit, x) then begin
+    fImplUsedUnits.UnitsToRemove.Add(aUnit);
     Result:=mrOK;
   end;
 end;
 
-procedure TUsedUnitsTool.MoveMissingToComment(AAllCommentedUnits: TStrings);
+procedure TUsedUnitsTool.MoveMissingToComment(aAllCommentedUnits: TStrings);
 begin
   // These units will be commented automatically in one project/package.
-  if Assigned(AAllCommentedUnits) then begin
-    AAllCommentedUnits.AddStrings(fMainUsedUnits.fMissingUnits);
-    AAllCommentedUnits.AddStrings(fImplUsedUnits.fMissingUnits);
+  if Assigned(aAllCommentedUnits) then begin
+    aAllCommentedUnits.AddStrings(fMainUsedUnits.fMissingUnits);
+    aAllCommentedUnits.AddStrings(fImplUsedUnits.fMissingUnits);
   end;
   // Move all to be commented.
   fMainUsedUnits.fUnitsToComment.AddStrings(fMainUsedUnits.fMissingUnits);
@@ -685,9 +685,9 @@ begin
   fImplUsedUnits.fMissingUnits.Clear;
 end;
 
-procedure TUsedUnitsTool.AddUnitIfNeeded(AUnitName: string);
+procedure TUsedUnitsTool.AddUnitIfNeeded(aUnitName: string);
 
-  // Return True if the rename (target) value contains AUnitName.
+  // Return True if the rename (target) value contains aUnitName.
   // The rename value can have many comma separated unit names.
   function RenameValHasUnit(aUsedUnits: TUsedUnits): Boolean;
   var
@@ -695,7 +695,7 @@ procedure TUsedUnitsTool.AddUnitIfNeeded(AUnitName: string);
   begin
     Result := False;
     for i := 0 to aUsedUnits.fUnitsToRenameVals.Count-1 do
-      if Pos(AUnitName, aUsedUnits.fUnitsToRenameVals[i]) > 0 then
+      if Pos(aUnitName, aUsedUnits.fUnitsToRenameVals[i]) > 0 then
         Exit(True);
   end;
 
@@ -703,20 +703,20 @@ var
   UnitInFileName: String;
   x: Integer;
 begin
-  if not ( fMainUsedUnits.fExistingUnits.Find(AUnitName, x)
-        or fImplUsedUnits.fExistingUnits.Find(AUnitName, x)
-        or (fMainUsedUnits.fUnitsToAdd.IndexOf(AUnitName) > -1)
+  if not ( fMainUsedUnits.fExistingUnits.Find(aUnitName, x)
+        or fImplUsedUnits.fExistingUnits.Find(aUnitName, x)
+        or (fMainUsedUnits.fUnitsToAdd.IndexOf(aUnitName) > -1)
         or RenameValHasUnit(fMainUsedUnits)
         or RenameValHasUnit(fImplUsedUnits) ) then
   begin
-    fMainUsedUnits.fUnitsToAdd.Add(AUnitName);
-    IDEMessagesWindow.AddMsg('Added unit '+AUnitName+ ' to uses section', '', -1);
+    fMainUsedUnits.fUnitsToAdd.Add(aUnitName);
+    IDEMessagesWindow.AddMsg('Added unit '+aUnitName+ ' to uses section', '', -1);
     // If the unit is not found, open the package containing it.
     UnitInFileName:='';
     if fCTLink.CodeTool.DirectoryCache.FindUnitSourceInCompletePath(
-                                   AUnitName,UnitInFileName,True,False) = '' then
+                                   aUnitName,UnitInFileName,True,False) = '' then
       if Assigned(fOnCheckPackageDependency) then
-        if not fOnCheckPackageDependency(AUnitName) then
+        if not fOnCheckPackageDependency(aUnitName) then
           ;
   end;
 end;

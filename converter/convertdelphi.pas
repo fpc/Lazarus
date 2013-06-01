@@ -693,7 +693,7 @@ begin
   // After other changes: add, remove, fix and comment out units in uses sections.
   IDEMessagesWindow.AddMsg(Format(lisConvDelphiFixingUsedUnits,
                                   [fOrigUnitFilename]), '', -1);
-  Result:=fUsedUnitsTool.Convert;
+  Result:=fUsedUnitsTool.ConvertUsed;
   if Result<>mrOk then exit;
   Result:=mrOk;
 end;
