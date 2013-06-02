@@ -919,7 +919,7 @@ begin
   fOldSharedOptions:=TBuildMatrixOptions.Create;
   fOldSessionOptions:=TBuildMatrixOptions.Create;
 
-  IDEColor:=RGBToColor(200,255,255);
+  IDEColor:=RGBToColor(255,255,255);
   ProjectColor:=RGBToColor(255,255,255);
   SessionColor:=RGBToColor(255,255,200);
   ErrorColor:=RGBToColor(255,128,128);
