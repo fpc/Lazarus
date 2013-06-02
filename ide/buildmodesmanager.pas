@@ -126,7 +126,9 @@ begin
   ActiveIndex := 0;
   sl:=TStringList.Create;
   try
+    {$IFDEF EnableOptionsAllBuildModes}
     sl.Add(lisAllBuildModes);
+    {$ENDIF}
     for i := 0 to Project1.BuildModes.Count-1 do
     begin
       CurMode := Project1.BuildModes[i];
