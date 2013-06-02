@@ -5365,6 +5365,9 @@ resourcestring
   lisThereMustBeAtLeastOneBuildMode = 'There must be at least one build mode.';
   lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn = 'The first build '
     +'mode is the default mode and must be stored in the project, not in the session.';
+  lisDuplicateEntry = 'Duplicate entry';
+  lisThereIsAlreadyABuildModeWithThisName = 'There is already a build mode '
+    +'with this name.';
   lisAddNewBuildModeCopyingSettingsFrom = 'Add new build mode, copying '
     +'settings from "%s"';
   lisDeleteMode = 'Delete mode "%s"';

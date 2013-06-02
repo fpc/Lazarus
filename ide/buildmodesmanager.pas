@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Grids, Buttons, Menus, ButtonPanel, LCLProc,
-  ProjectIntf, IDEImagesIntf, IDEOptionsIntf, CompOptsIntf,
+  ProjectIntf, IDEImagesIntf, IDEOptionsIntf, CompOptsIntf, IDEDialogs,
   PackageDefs, TransferMacros, PathEditorDlg, Project, LazarusIDEStrConsts,
   CompilerOptions, IDEProcs, BuildModeDiffDlg;
 
@@ -355,8 +355,8 @@ begin
     if b and (i=0) then
     begin
       NewValue:=OldValue;
-      MessageDlg(lisCCOErrorCaption,lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn,
-                 mtError,[mbCancel],0);
+      IDEMessageDialog(lisCCOErrorCaption,lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn,
+                 mtError,[mbCancel]);
       exit;
     end;
     CurMode.InSession:=b;
@@ -368,8 +368,18 @@ begin
     for i:=1 to length(s) do
       if s[i]<' ' then
         s[i]:=' ';
-    CurMode.Identifier:=s;
     NewValue:=s;
+    if CurMode.Identifier<>s then begin
+      for i:=0 to fBuildModes.Count-1 do begin
+        if (fBuildModes[i]<>CurMode)
+        and (Comparetext(fBuildModes[i].Identifier,NewValue)=0) then begin
+          IDEMessageDialog(lisDuplicateEntry,
+            lisThereIsAlreadyABuildModeWithThisName, mtError, [mbCancel]);
+          NewValue:=CurMode.Identifier;
+        end;
+      end;
+      CurMode.Identifier:=s;
+    end;
   end;
   UpdateDialogCaption;
 end;
