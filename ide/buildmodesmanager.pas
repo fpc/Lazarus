@@ -59,7 +59,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetSelectedBuildMode: TProjectBuildMode;
-    procedure SetActiveBuildModeByID(const Identifier: string);
+    procedure SetActiveBuildModeByID(const Identifier: string; SelectInGrid: boolean);
   public
     property ActiveBuildMode: TProjectBuildMode read GetActiveBuildMode write SetActiveBuildMode;
     property BuildModes: TProjectBuildModes read fBuildModes;
@@ -90,7 +90,7 @@ begin
     OnSaveIDEOptionsHook(Nil, Project1.CompilerOptions);
     // Copy to dialog
     frm.fBuildModes.Assign(Project1.BuildModes, True);
-    frm.SetActiveBuildModeByID(Project1.ActiveBuildMode.Identifier);
+    frm.SetActiveBuildModeByID(Project1.ActiveBuildMode.Identifier,true);
     frm.fShowSession:=aShowSession;
     // Show the form. Let user add / edit / delete.
     Result := frm.ShowModal;
@@ -518,7 +518,8 @@ begin
   fActiveBuildMode := AValue;
 end;
 
-procedure TBuildModesForm.SetActiveBuildModeByID(const Identifier: string);
+procedure TBuildModesForm.SetActiveBuildModeByID(const Identifier: string;
+  SelectInGrid: boolean);
 var
   i: Integer;
 begin
@@ -527,6 +528,8 @@ begin
     if fBuildModes[i].Identifier=Identifier then
     begin
       ActiveBuildMode:=fBuildModes[i];
+      if SelectInGrid then
+        BuildModesStringGrid.Row:=i+1;
       Break;
     end;
   end;
