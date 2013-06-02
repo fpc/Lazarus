@@ -37,7 +37,7 @@ uses
   // synedit, codetools
   SynRegExpr, SourceLog, KeywordFuncLists, BasicCodeTools,
   // IDEIntf
-  IDEWindowIntf, LazIDEIntf, SrcEditorIntf, MainIntf,
+  IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs, MainIntf,
   // ide
   LazarusIDEStrConsts, InputHistory, SearchResultView, Project;
 
@@ -957,8 +957,8 @@ begin
       Cnt:= DoSearch;
     except
       on E: ERegExpr do
-        MessageDlg(lisUEErrorInRegularExpression, E.Message,mtError,
-                   [mbCancel],0);
+        IDEMessageDialog(lisUEErrorInRegularExpression, E.Message,mtError,
+                   [mbCancel]);
     end;
   finally
     ListPage.Caption:= Format('%s (%d)',[ListPage.Caption,Cnt]);

@@ -1218,9 +1218,9 @@ begin
           FPDocPackageName:='rtl';
       end else begin
         // no package/project found
-        MessageDlg(lisProjAddPackageNotFound,
+        IDEMessageDialog(lisProjAddPackageNotFound,
           Format(lisLDTheUnitIsNotOwnedBeAnyPackageOrProjectPleaseAddThe, [
-            SrcFilename, #13, #13]), mtError, [mbCancel], 0);
+            SrcFilename, #13, #13]), mtError, [mbCancel]);
         exit;
       end;
     end else begin
@@ -1261,15 +1261,15 @@ begin
       // no valid directory found
       DebugLn(['TCodeHelpManager.DoCreateFPDocFileForSource FPDocPackageName="',FPDocPackageName,'" FPDocPaths="',FPDocPaths,'" ']);
       if IsInFPCSrc then
-        MessageDlg(lisLDNoValidFPDocPath,
+        IDEMessageDialog(lisLDNoValidFPDocPath,
           Format(lisTheUnitIsPartOfTheFPCSourcesButTheCorrespondingFpd, [
             SrcFilename, #13, #13, FPCDocsRepositoryURL, #13, #13])
-            , mtError, [mbCancel], 0)
+            , mtError, [mbCancel])
       else
-        MessageDlg(lisLDNoValidFPDocPath,
+        IDEMessageDialog(lisLDNoValidFPDocPath,
           Format(lisLDDoesNotHaveAnyValidFPDocPathUnableToCreateTheFpdo,
                  [FPDocPackageName, LineEnding, SrcFilename]),
-          mtError, [mbCancel], 0);
+          mtError, [mbCancel]);
       exit;
     end;
     // fpdoc directory found
@@ -1309,8 +1309,8 @@ begin
   end;
   Result:=CodeToolBoss.CreateFile(ExpandedFilename);
   if Result=nil then begin
-    MessageDlg('Unable to create file',
-      'Unable to create file '+ExpandedFilename,mtError,[mbCancel],0);
+    IDEMessageDialog(lisUnableToCreateFile,
+      Format(lisUnableToCreateFile4, [ExpandedFilename]), mtError, [mbCancel]);
     exit;
   end;
   
@@ -1459,9 +1459,9 @@ begin
         ADocFile.DocErrorMsg:='Error reading xml file "'+CurFilename+'" '+E.Message;
         DebugLn(['TCodeHelpManager.LoadFPDocFile '+ADocFile.DocErrorMsg]);
         if not (chofQuiet in Flags) then begin
-          MessageDlg(lisErrorReadingXML,
+          IDEMessageDialog(lisErrorReadingXML,
             Format(lisErrorReadingXmlFile, ['"', CurFilename, '"', LineEnding, E.Message]),
-            mtError, [mbCancel], 0);
+            mtError, [mbCancel]);
         end;
       end;
     end;

@@ -3831,7 +3831,7 @@ procedure TEditorMouseOptions.LoadFromXml(aXMLConfig: TRttiXMLConfig;
       except
         MActions.Delete(MActions.Count-1);
         //if not ErrShown then
-        //  MessageDlg(dlgMouseOptErrorDup, dlgMouseOptErrorDupText, mtError, [mbOk], 0);
+        //  IDEMessageDialog(dlgMouseOptErrorDup, dlgMouseOptErrorDupText, mtError, [mbOk]);
         //ErrShown := True;
       end;
     end;

@@ -663,10 +663,10 @@ begin
   and AskUserIfNotFound
   then begin
 
-    if MessageDlg(lisFileNotFound,
+    if IDEMessageDialog(lisFileNotFound,
       Format(lisTheFileWasNotFoundDoYouWantToLocateItYourself,
              ['"', SrcFile, '"', LineEnding, LineEnding, LineEnding])
-      ,mtConfirmation, [mbYes, mbNo], 0) <> mrYes
+      ,mtConfirmation, [mbYes, mbNo]) <> mrYes
     then Exit;
 
     repeat
@@ -967,7 +967,7 @@ begin
     end;
   end
   else begin
-    MessageDlg(lisCCOErrorCaption, msg, mtError, [mbOk], 0)
+    IDEMessageDialog(lisCCOErrorCaption, msg, mtError, [mbOk]);
   end;
 end;
 

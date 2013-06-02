@@ -36,7 +36,7 @@ uses
   Dialogs, ExtCtrls, StdCtrls, ButtonPanel, SynEdit, SynHighlighterPas,
   CodeToolsStructs, CodeAtom, CodeCache, CodeToolManager, PascalParserTool,
   CodeTree,
-  SrcEditorIntf, LazIDEIntf, PropEdits, CustomFormEditor, JitForms,
+  SrcEditorIntf, LazIDEIntf, PropEdits, IDEDialogs, CustomFormEditor, JitForms,
   Project, LazarusIDEStrConsts, EditorOptions;
 
 type
@@ -120,10 +120,10 @@ begin
         ErrMsg:='';
         LazarusIDE.DoJumpToCodeToolBossError;
       end else begin
-        MessageDlg(lisEMDNoClass,
+        IDEMessageDialog(lisEMDNoClass,
           Format(lisEMDNoClassAt, [Code.Filename, IntToStr(Caret.Y), IntToStr(
             Caret.X)]),
-          mtError,[mbCancel],0);
+          mtError,[mbCancel]);
       end;
       exit;
     end;
@@ -141,9 +141,9 @@ begin
   finally
     CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
     if ErrMsg<>'' then begin
-      MessageDlg(lisCCOErrorCaption,
+      IDEMessageDialog(lisCCOErrorCaption,
         Format(lisEMDUnableToShowEmptyMethodsOfTheCurrentClassBecause,
-               [LineEnding, ErrMsg]), mtError, [mbCancel], 0);
+               [LineEnding, ErrMsg]), mtError, [mbCancel]);
     end;
   end;
 end;

@@ -601,10 +601,10 @@ procedure TExternalToolDialog.AddButtonClick(Sender: TObject);
 var NewTool: TExternalToolOptions;
 begin
   if fExtToolList.Count>=MaxExtTools then begin
-    MessageDlg(lisExtToolMaximumToolsReached,
+    IDEMessageDialog(lisExtToolMaximumToolsReached,
                   Format(lisExtToolThereIsAMaximumOfTools, [IntToStr(MaxExtTools
                     )]),
-                  mtInformation,[mbCancel],0);
+                  mtInformation,[mbCancel]);
     exit;
   end;
   NewTool:=TExternalToolOptions.Create;

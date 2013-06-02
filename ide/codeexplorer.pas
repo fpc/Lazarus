@@ -46,7 +46,7 @@ uses
   CodeCache, CodeTree, KeywordFuncLists, FindDeclarationTool, DirectivesTree,
   PascalParserTool,
   // IDE Intf
-  LazIDEIntf, IDECommands, MenuIntf, SrcEditorIntf,
+  LazIDEIntf, IDECommands, MenuIntf, SrcEditorIntf, IDEDialogs,
   // IDE
   KeyMapping, LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory,
   IDEProcs, CodeExplOpts;
@@ -670,7 +670,7 @@ end;
 procedure TCodeExplorerView.RenameMenuItemClick(Sender: TObject);
 begin
   if not JumpToSelection then begin
-    MessageDlg(lisCCOErrorCaption, lisTreeNeedsRefresh, mtError, [mbOk], 0);
+    IDEMessageDialog(lisCCOErrorCaption, lisTreeNeedsRefresh, mtError, [mbOk]);
     Refresh(true);
     exit;
   end;

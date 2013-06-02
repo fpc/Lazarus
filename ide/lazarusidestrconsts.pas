@@ -3542,6 +3542,7 @@ resourcestring
 
   // file checks
   lisUnableToCreateFile = 'Unable to create file';
+  lisUnableToCreateFile4 = 'Unable to create file %s';
   lisCanNotCreateFile = 'Can not create file %s%s%s';
   lisExtendUnitPath = 'Extend unit path?';
   lisTheDirectoryIsNotYetInTheUnitPathAddIt = 'The directory %s%s%s is not '

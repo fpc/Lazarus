@@ -3051,7 +3051,7 @@ begin
       Result:=EditorComponent.SearchReplace(aFindText, aReplaceText, anOptions);
     except
       on E: ERegExpr do begin
-        MessageDlg(lisUEErrorInRegularExpression, E.Message,mtError,[mbCancel],0);
+        IDEMessageDialog(lisUEErrorInRegularExpression, E.Message,mtError,[mbCancel]);
         exit;
       end;
     end;
@@ -3068,7 +3068,7 @@ begin
       end
       else begin
         Again := False;
-        MessageDlg(ACaption, AText, mtInformation, [mbOK], 0);
+        IDEMessageDialog(ACaption, AText, mtInformation, [mbOK]);
       end;
       if not Again then
         Manager.DeleteLastJumpPointClicked(Self);
@@ -10395,9 +10395,9 @@ begin
   if ActEdit.ReadOnly and (ActEdit.CodeBuffer<>nil)
   and (not ActEdit.CodeBuffer.IsVirtual)
   and (not FileIsWritable(ActEdit.CodeBuffer.Filename)) then begin
-    MessageDlg(ueFileROCap,
+    IDEMessageDialog(ueFileROCap,
       ueFileROText1+ActEdit.CodeBuffer.Filename+ueFileROText2,
-      mtError,[mbCancel],0);
+      mtError,[mbCancel]);
     exit;
   end;
   ActEdit.EditorComponent.ReadOnly := not(ActEdit.EditorComponent.ReadOnly);

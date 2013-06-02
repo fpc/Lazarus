@@ -30,9 +30,9 @@ unit CleanDirDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, FileUtil, Laz2_XMLCfg, LCLProc, SynRegExpr, ButtonPanel,
-  IDEWindowIntf, IDEHelpIntf, LazarusIDEStrConsts, LazConf, IDEProcs,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls,
+  FileUtil, Laz2_XMLCfg, LCLProc, SynRegExpr, ButtonPanel, IDEWindowIntf,
+  IDEHelpIntf, IDEDialogs, LazarusIDEStrConsts, LazConf, IDEProcs,
   TransferMacros, InputHistory, ShowDeletingFilesDlg;
 
 type
@@ -359,7 +359,7 @@ var
           s:=Format(lisTheFileMaskIsInvalid, [FilterAsText])
         else
           s:=Format(lisTheFileMaskIsNotAValidRegularExpression, [FilterAsText]);
-        MessageDlg(lisInvalidMask, s, mtError, [mbCancel], 0);
+        IDEMessageDialog(lisInvalidMask, s, mtError, [mbCancel]);
       end;
     end;
   end;
