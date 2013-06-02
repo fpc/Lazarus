@@ -1666,9 +1666,8 @@ var
       AutoFreePersistent:=true;
     except
       on E: Exception do begin
-        debugln('TCustomFormEditor.GetDefineProperties Error creating ',
-          APersistentClass.Classname,
-          ': ',E.Message);
+        debugln('TCustomFormEditor.FindDefineProperty Error creating ',
+                APersistentClass.Classname, ': ', E.Message);
       end;
     end;
   end;
@@ -1685,7 +1684,7 @@ var
       CacheItem.RegisteredComponent:=IDEComponentPalette.FindComponent(AClassname);
       if (CacheItem.RegisteredComponent<>nil)
       and (CacheItem.RegisteredComponent.ComponentClass<>nil) then begin
-        debugln('TCustomFormEditor.GetDefineProperties ComponentClass ',AClassName,' is registered');
+        //debugln('TCustomFormEditor.FindDefineProperty ComponentClass ',AClassName,' is registered');
         if not CreateTempPersistent(CacheItem.RegisteredComponent.ComponentClass)
         then exit;
       end;
@@ -1695,7 +1694,7 @@ var
     if APersistent=nil then begin
       APersistentClass:=Classes.GetClass(AClassName);
       if APersistentClass<>nil then begin
-        debugln('TCustomFormEditor.GetDefineProperties PersistentClass ',AClassName,' is registered');
+        //debugln('TCustomFormEditor.FindDefineProperty PersistentClass ',AClassName,' is registered');
         if not CreateTempPersistent(APersistentClass) then exit;
       end;
     end;
@@ -1704,7 +1703,7 @@ var
       // try to find the AClassName in the open forms/datamodules
       APersistent:=FindJITComponentByClassName(AClassName);
       if APersistent<>nil then
-        debugln('TCustomFormEditor.GetDefineProperties ComponentClass ',
+        debugln('TCustomFormEditor.FindDefineProperty ComponentClass ',
           AClassName,' is a resource,'
           +' but inheriting design properties is not yet implemented');
     end;
@@ -1733,7 +1732,7 @@ begin
     CacheItem:=TDefinePropertiesCacheItem.Create;
     CacheItem.PersistentClassname:=APersistentClassName;
     FDefineProperties.Add(CacheItem);
-    debugln('TCustomFormEditor.GetDefineProperties APersistentClassName="',APersistentClassName,'" AncestorClassName="',AncestorClassName,'"');
+    //debugln('TCustomFormEditor.FindDefineProperty APersistentClassName="',APersistentClassName,'" AncestorClassName="',AncestorClassName,'"');
 
     APersistent:=nil;
     AutoFreePersistent:=false;
@@ -1744,7 +1743,7 @@ begin
     end;
 
     if APersistent<>nil then begin
-      debugln('TCustomFormEditor.GetDefineProperties Getting define properties for ',APersistent.ClassName);
+      //debugln('TCustomFormEditor.FindDefineProperty Getting define properties for ',APersistent.ClassName);
 
       // try creating a component class and call DefineProperties
       DefinePropertiesReader:=nil;
@@ -1758,7 +1757,7 @@ begin
                                                         DefinePropertiesReader);
         except
           on E: Exception do begin
-            DbgOut('TCustomFormEditor.GetDefineProperties Error calling DefineProperties for ');
+            DbgOut('TCustomFormEditor.FindDefineProperty Error calling DefineProperties for ');
             if (CacheItem.RegisteredComponent<>nil) then begin
               DbgOut(CacheItem.RegisteredComponent.ComponentClass.Classname);
             end;
@@ -1772,7 +1771,7 @@ begin
             APersistent.Free;
           except
             on E: Exception do begin
-              debugln('TCustomFormEditor.GetDefineProperties Error freeing ',
+              debugln('TCustomFormEditor.FindDefineProperty Error freeing ',
                 OldClassName,': ',E.Message);
             end;
           end;
@@ -1784,16 +1783,16 @@ begin
           CacheItem.DefineProperties:=TStringList.Create;
           CacheItem.DefineProperties.Assign(
                                     DefinePropertiesReader.DefinePropertyNames);
-          debugln('TCustomFormEditor.GetDefineProperties Class=',APersistentClassName,
+          debugln('TCustomFormEditor.FindDefineProperty Class=',APersistentClassName,
             ' DefineProps="',CacheItem.DefineProperties.Text,'"');
         end;
         DefinePropertiesReader.Free;
         DefinePropertiesPersistent.Free;
       end;
     end else begin
-      debugln('TCustomFormEditor.GetDefineProperties Persistent is NOT registered');
+      debugln('TCustomFormEditor.FindDefineProperty Persistent is NOT registered');
     end;
-    //debugln('TCustomFormEditor.GetDefineProperties END APersistentClassName="',APersistentClassName,'" AncestorClassName="',AncestorClassName,'"');
+    //debugln('TCustomFormEditor.FindDefineProperty END APersistentClassName="',APersistentClassName,'" AncestorClassName="',AncestorClassName,'"');
   end else begin
     CacheItem:=TDefinePropertiesCacheItem(ANode.Data);
   end;
@@ -2384,12 +2383,12 @@ end;
 
 procedure TDefinePropertiesPersistent.PublicDefineProperties(Filer: TFiler);
 begin
-  debugln('TDefinePropertiesPersistent.PublicDefineProperties START ',ClassName,' ',dbgsName(FTarget));
+  //debugln('TDefinePropertiesPersistent.PublicDefineProperties START ',ClassName,' ',dbgsName(FTarget));
   {$IFOPT R+}{$DEFINE RangeCheckOn}{$ENDIF}
   {$R-}
   TDefinePropertiesPersistent(Target).DefineProperties(Filer);
   {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
-  debugln('TDefinePropertiesPersistent.PublicDefineProperties END ',ClassName,' ',dbgsName(FTarget));
+  //debugln('TDefinePropertiesPersistent.PublicDefineProperties END ',ClassName,' ',dbgsName(FTarget));
 end;
 
 initialization

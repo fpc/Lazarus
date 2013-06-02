@@ -1633,6 +1633,7 @@ begin
   except
     IDEMessagesWindow.AddMsg('', '', -1);
     IDEMessagesWindow.AddMsg('- '+lisConvDelphiExceptionDuringConversion, '', -1);
+    DebugLn('- '+lisConvDelphiExceptionDuringConversion);
     raise;
   end;
   finally

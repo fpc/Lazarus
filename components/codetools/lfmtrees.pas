@@ -458,8 +458,7 @@ begin
   NewError.Source:=LFMBuffer;
   NewError.Position:=ErrorPosition;
   NewError.Caret:=PositionToCaret(NewError.Position);
-  DebugLn('TLFMTree.AddError ',NewError.AsString,
-          ' NodePath=',NewError.GetNodePath);
+  //DebugLn('TLFMTree.AddError ',NewError.AsString, ' NodePath=',NewError.GetNodePath);
   NewError.AddToTree(Self);
 end;
 
