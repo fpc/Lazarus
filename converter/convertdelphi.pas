@@ -1576,13 +1576,20 @@ var
     Converter: TDelphiUnit;
   begin
     Converter:=TDelphiUnit.Create(Self, AUnitInfo.Filename,[]);
-    Converter.fUnitInfo:=AUnitInfo;
-    ConvUnits.Add(Converter);
-    Result:=Converter.CopyAndLoadFile;
-    if Result<>mrOK then exit;
-    Result:=Converter.CheckFailed(Result);
-    if Result<>mrOK then exit;
-    Result:=Converter.ConvertUnitFile;
+    try
+      Converter.fUnitInfo:=AUnitInfo;
+      ConvUnits.Add(Converter);
+      Result:=Converter.CopyAndLoadFile;
+      if Result<>mrOK then exit;
+      Result:=Converter.CheckFailed(Result);
+      if Result<>mrOK then exit;
+      Result:=Converter.ConvertUnitFile;
+    except
+      DebugLn(['TConvertDelphiProject.ConvertAllUnits: Exception happened while converting ',
+               Converter.fLazUnitFilename]);
+      ConvUnits.Remove(Converter);
+      raise;
+    end;
   end;
 
 var
@@ -1630,8 +1637,8 @@ begin
   end;
   finally
     if Result=mrOk then begin
-      // Try to convert FormFiles also in case of exception.
-      // Unit name replacements etc. are implmented there.
+      // Try to convert form files also in case of an exception.
+      // Unit name replacements etc. are implemented there.
       Result:=ConvertAllFormFiles(ConvUnits);
       // Finally save project once more
       Result:=LazarusIDE.DoSaveProject([sfQuietUnitCheck]);
