@@ -784,7 +784,9 @@ begin
   UpdateActiveMode;
 
   if UpdateGrid and GridHasChanged then
-    Grid.MatrixChanged;
+    Grid.MatrixChanged
+  else
+    Grid.Invalidate;
 end;
 
 procedure TCompOptModeMatrix.UpdateActiveMode;

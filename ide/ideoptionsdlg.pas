@@ -30,11 +30,13 @@ unit IdeOptionsDlg;
 interface
 
 uses
-  Classes, SysUtils, Controls, Forms, ComCtrls, LCLProc, LCLType,
+  Classes, SysUtils,
+  LCLProc, LCLType, Controls, Forms, ComCtrls,
   Buttons, ButtonPanel, ExtCtrls, EditBtn, StdCtrls, Dialogs, TreeFilterEdit,
   IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf, ProjectIntf,
-  EnvironmentOpts, LazarusIDEStrConsts, CompOptsIntf, EditorOptions,
-  BuildModesManager, project_save_options, Project;
+  CompOptsIntf,
+  EnvironmentOpts, LazarusIDEStrConsts, EditorOptions,
+  BuildModesManager, project_save_options, Project, Compiler_ModeMatrix;
 
 type
   TIDEOptsDlgAction = (
@@ -81,7 +83,6 @@ type
     FOnLoadOptionsHook: TOnLoadIDEOptions;
     FOnSaveOptionsHook: TOnSaveIDEOptions;
     FOptionsFilter: TIDEOptionsEditorFilter;
-    FPrevComboIndex: integer;
     FPrevEditor: TAbstractIDEOptionsEditor;
     FSelectNode: TTreeNode;
     FSettings: TIDEOptionsEditorSettings;
@@ -219,14 +220,13 @@ end;
 
 procedure TIDEOptionsDialog.BuildModeComboBoxClick(Sender: TObject);
 begin
-  FPrevComboIndex := BuildModeComboBox.ItemIndex;
+
 end;
 
 procedure TIDEOptionsDialog.BuildModeComboBoxSelect(Sender: TObject);
 begin
   if AllBuildModes then begin
     ShowMessage('This will allow changing all build modes at once. Not implemented yet.');
-    BuildModeComboBox.ItemIndex := FPrevComboIndex;
     BuildModeInSessionCheckBox.Enabled:=false;
   end
   else begin
@@ -245,14 +245,18 @@ begin
       lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn,
       mtError,[mbCancel],0);
     BuildModeInSessionCheckBox.Checked:=false;
-  end else
+  end else begin
     Project1.ActiveBuildMode.InSession:=BuildModeInSessionCheckBox.Checked;
+    if ModeMatrixFrame<>nil then
+      ModeMatrixFrame.UpdateModes;
+  end;
 end;
 
 procedure TIDEOptionsDialog.BuildModeManageButtonClick(Sender: TObject);
 begin
-  if ShowBuildModesDlg(Project1.SessionStorage in pssHasSeparateSession) = mrOK then
-    UpdateBuildModeCombo(BuildModeComboBox);
+  if ShowBuildModesDlg(Project1.SessionStorage in pssHasSeparateSession) <> mrOK then
+    exit;
+  UpdateBuildModeCombo(BuildModeComboBox);
 end;
 
 procedure TIDEOptionsDialog.CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
@@ -536,7 +540,7 @@ begin
         Instance.Tag := Rec^.Items[j]^.Index;
         Instance.Visible := False;
         Instance.Parent := EditorsPanel;
-        instance.Rec := Rec^.Items[j];
+        Instance.Rec := Rec^.Items[j];
 
         ItemParent := GroupNode;
         if Rec^.Items[j]^.Parent <> NoParent then begin
