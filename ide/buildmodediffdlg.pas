@@ -29,8 +29,8 @@ unit BuildModeDiffDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazUTF8, Forms, Controls, Graphics, Dialogs,
-  ButtonPanel, StdCtrls, ComCtrls, LazarusIDEStrConsts, Project,
+  Classes, SysUtils, FileUtil, LazUTF8, LazLogger, Forms, Controls, Graphics,
+  Dialogs, ButtonPanel, StdCtrls, ComCtrls, LazarusIDEStrConsts, Project,
   CompilerOptions, CompOptsModes;
 
 type
@@ -52,22 +52,23 @@ type
     procedure FillDiffTreeView;
   public
     procedure SetBuildMode(aMode: TProjectBuildMode);
-    property aProject: TProject read fProject;
+    property LazProject: TProject read fProject;
     property BaseMode: TProjectBuildMode read FBaseMode;
   end;
 
-function ShowBuildModeDiffDialog(aMode: TProjectBuildMode): TModalResult;
+function ShowBuildModeDiffDialog(AProject: TProject; aMode: TProjectBuildMode): TModalResult;
 
 
 implementation
 
 
-function ShowBuildModeDiffDialog(aMode: TProjectBuildMode): TModalResult;
+function ShowBuildModeDiffDialog(AProject: TProject; aMode: TProjectBuildMode): TModalResult;
 var
   BuildModeDiffDialog: TBuildModeDiffDialog;
 begin
   BuildModeDiffDialog:=TBuildModeDiffDialog.Create(nil);
   try
+    BuildModeDiffDialog.fProject:=AProject;
     BuildModeDiffDialog.SetBuildMode(aMode);
     Result:=BuildModeDiffDialog.ShowModal;
   finally
@@ -113,8 +114,10 @@ begin
       for i:=0 to fProject.BuildModes.Count-1 do
         sl.Add(fProject.BuildModes[i].GetCaption);
     ModeComboBox.Items.Assign(sl);
-    if BaseMode<>nil then
-      ModeComboBox.ItemIndex:=BaseMode.GetIndex
+    if BaseMode<>nil then begin
+      ModeComboBox.Text:=BaseMode.GetCaption;
+      ModeComboBox.ItemIndex:=sl.IndexOf(BaseMode.GetCaption);
+    end
     else
       ModeComboBox.Text:='(none)';
   finally
@@ -157,11 +160,11 @@ procedure TBuildModeDiffDialog.SetBuildMode(aMode: TProjectBuildMode);
 begin
   if aMode<>nil then
   begin
-    fProject:=aMode.LazProject;
+    if aMode.LazProject<>nil then
+      fProject:=aMode.LazProject;
     FBaseMode:=aMode;
   end else
   begin
-    fProject:=nil;
     FBaseMode:=nil;
   end;
   FillModeComboBox;

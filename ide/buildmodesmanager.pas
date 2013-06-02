@@ -59,7 +59,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetSelectedBuildMode: TProjectBuildMode;
-    procedure SetActiveBuildModeByID(AValue: TProjectBuildMode);
+    procedure SetActiveBuildModeByID(const Identifier: string);
   public
     property ActiveBuildMode: TProjectBuildMode read GetActiveBuildMode write SetActiveBuildMode;
     property BuildModes: TProjectBuildModes read fBuildModes;
@@ -90,7 +90,7 @@ begin
     OnSaveIDEOptionsHook(Nil, Project1.CompilerOptions);
     // Copy to dialog
     frm.fBuildModes.Assign(Project1.BuildModes, True);
-    frm.SetActiveBuildModeByID(Project1.ActiveBuildMode);
+    frm.SetActiveBuildModeByID(Project1.ActiveBuildMode.Identifier);
     frm.fShowSession:=aShowSession;
     // Show the form. Let user add / edit / delete.
     Result := frm.ShowModal;
@@ -187,8 +187,7 @@ end;
 procedure TBuildModesForm.BuildModeDiffSpeedButtonClick(Sender: TObject);
 begin
   // show diff dialog
-  ShowBuildModeDiffDialog(GetSelectedBuildMode);
-  IncreaseBuildMacroChangeStamp;
+  ShowBuildModeDiffDialog(Project1,GetSelectedBuildMode);
 end;
 
 procedure TBuildModesForm.BuildModeAddSpeedButtonClick(Sender: TObject);
@@ -519,13 +518,13 @@ begin
   fActiveBuildMode := AValue;
 end;
 
-procedure TBuildModesForm.SetActiveBuildModeByID(AValue: TProjectBuildMode);
+procedure TBuildModesForm.SetActiveBuildModeByID(const Identifier: string);
 var
   i: Integer;
 begin
   for i:=0 to fBuildModes.Count-1 do
   begin
-    if fBuildModes[i].Identifier=AValue.Identifier then
+    if fBuildModes[i].Identifier=Identifier then
     begin
       ActiveBuildMode:=fBuildModes[i];
       Break;

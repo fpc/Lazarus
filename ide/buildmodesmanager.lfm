@@ -9,6 +9,7 @@ object BuildModesForm: TBuildModesForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
+  Position = poScreenCenter
   LCLVersion = '1.1'
   object BuildModesGroupBox: TGroupBox
     Left = 6
@@ -19,16 +20,16 @@ object BuildModesForm: TBuildModesForm
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'BuildModesGroupBox'
-    ClientHeight = 276
-    ClientWidth = 594
+    ClientHeight = 288
+    ClientWidth = 596
     TabOrder = 0
     object BuildModesStringGrid: TStringGrid
       AnchorSideTop.Control = BuildModeAddSpeedButton
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 254
+      Height = 266
       Top = 22
-      Width = 594
+      Width = 596
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       AutoFillColumns = True
@@ -38,19 +39,19 @@ object BuildModesForm: TBuildModesForm
           ButtonStyle = cbsCheckboxColumn
           MaxSize = 50
           Title.Caption = 'Active'
-          Width = 196
+          Width = 198
         end      
         item
           ButtonStyle = cbsCheckboxColumn
           MaxSize = 50
           Title.Caption = 'InSession'
-          Width = 196
+          Width = 198
         end      
         item
           MaxSize = 500
           SizePriority = 100
           Title.Caption = 'Title'
-          Width = 196
+          Width = 198
         end>
       FixedCols = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
@@ -59,9 +60,9 @@ object BuildModesForm: TBuildModesForm
       OnSelection = BuildModesStringGridSelection
       OnValidateEntry = BuildModesStringGridValidateEntry
       ColWidths = (
-        196
-        196
-        196
+        198
+        198
+        198
       )
     end
     object BuildModeAddSpeedButton: TSpeedButton
@@ -127,8 +128,8 @@ object BuildModesForm: TBuildModesForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 326
+    Height = 36
+    Top = 324
     Width = 600
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
