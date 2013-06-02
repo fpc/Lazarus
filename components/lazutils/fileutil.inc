@@ -1259,7 +1259,7 @@ begin
         Temp:='';
       end;
     If Result<>'' then
-      Result:=IncludeTrailingPathDelimiter(Result)+name;
+      Result:=AppendPathDelim(Result)+Name;
     If (Result <> '') and FileExistsUTF8(Result) Then
       exit;
   end;
