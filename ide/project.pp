@@ -2916,7 +2916,7 @@ begin
 
   CurSessionFilename := '';
   if (not (pwfSkipSeparateSessionInfo in ProjectWriteFlags))
-  and (SessionStorage in [pssInProjectDir,pssInIDEConfig]) then begin
+  and (SessionStorage in pssHasSeparateSession) then begin
     // save session in separate file .lps
 
     if OverrideProjectInfoFile<>'' then
@@ -3809,7 +3809,7 @@ begin
 
     // load session file (if available)
     if (not LoadParts)
-    and (SessionStorage in [pssInProjectDir,pssInIDEConfig])
+    and (SessionStorage in pssHasSeparateSession)
     and (CompareFilenames(ProjectInfoFile,ProjectSessionFile)<>0) then begin
       if FileExistsUTF8(ProjectSessionFile) then begin
         //DebugLn('TProject.ReadProject loading Session ProjectSessionFile=',ProjectSessionFile);
@@ -7192,6 +7192,7 @@ procedure TProjectBuildMode.SetInSession(const AValue: boolean);
 begin
   if FInSession=AValue then exit;
   FInSession:=AValue;
+  IncreaseChangeStamp;
 end;
 
 procedure TProjectBuildMode.OnItemChanged(Sender: TObject);
@@ -7202,7 +7203,7 @@ end;
 procedure TProjectBuildMode.SetModified(const AValue: boolean);
 begin
   if AValue then
-    fSavedChangeStamp:=CTInvalidChangeStamp64
+    IncreaseChangeStamp
   else
     fSavedChangeStamp:=FChangeStamp;
 end;

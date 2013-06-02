@@ -49,18 +49,20 @@ type
 
   TIDEOptionsDialog = class(TAbstractOptionsEditorDialog)
     BuildModeComboBox: TComboBox;
-    BuildModeManageButton: TButton;
+    BuildModeInSessionCheckBox: TCheckBox;
     BuildModeLabel: TLabel;
+    BuildModeManageButton: TButton;
+    BuildModeSelectPanel: TPanel;
     ButtonPanel: TButtonPanel;
+    CategoryPanel: TPanel;
     CategoryTree: TTreeView;
     CatTVSplitter: TSplitter;
-    CategoryPanel: TPanel;
     EditorsPanel: TScrollBox;
     FilterEdit: TTreeFilterEdit;
-    BuildModeSelectPanel: TPanel;
     SettingsPanel: TPanel;
     procedure BuildModeComboBoxClick(Sender: TObject);
     procedure BuildModeComboBoxSelect(Sender: TObject);
+    procedure BuildModeInSessionCheckBoxChange(Sender: TObject);
     procedure BuildModeManageButtonClick(Sender: TObject);
     procedure CategoryTreeChange(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
@@ -73,17 +75,16 @@ type
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
   private
+    FEditorsCreated: Boolean;
+    FEditorToOpen: TAbstractIDEOptionsEditorClass;
+    FNewLastSelected: PIDEOptionsEditorRec;
     FOnLoadOptionsHook: TOnLoadIDEOptions;
     FOnSaveOptionsHook: TOnSaveIDEOptions;
     FOptionsFilter: TIDEOptionsEditorFilter;
-    FEditorToOpen: TAbstractIDEOptionsEditorClass;
+    FPrevComboIndex: integer;
+    FPrevEditor: TAbstractIDEOptionsEditor;
+    FSelectNode: TTreeNode;
     FSettings: TIDEOptionsEditorSettings;
-    PrevEditor: TAbstractIDEOptionsEditor;
-    FEditorsCreated: Boolean;
-    SelectNode: TTreeNode;
-    NewLastSelected: PIDEOptionsEditorRec;
-    PrevComboIndex: integer;
-
     function FindGroupClass(Node: TTreeNode): TAbstractIDEOptionsClass;
     procedure TraverseSettings(AOptions: TAbstractIDEOptions; anAction: TIDEOptsDlgAction);
     function CheckValues: boolean;
@@ -94,6 +95,8 @@ type
     function SearchEditorNode(AEditor: TAbstractIDEOptionsEditorClass): TTreeNode;
     function PassesFilter(ARec: PIDEOptionsGroupRec): Boolean;
     procedure SetSettings(const AValue: TIDEOptionsEditorSettings);
+    function AllBuildModes: boolean;
+    procedure UpdateBuildModeButtons;
   public
     constructor Create(AOwner: TComponent); override;
     function ShowModal: Integer; override;
@@ -125,11 +128,14 @@ uses
 constructor TIDEOptionsDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  PrevEditor := nil;
+  FPrevEditor := nil;
   FEditorsCreated := False;
   FEditorToOpen := nil;
   SettingsPanel.Constraints.MinHeight:=0;
   BuildModeSelectPanel.Height:=0;
+  BuildModeInSessionCheckBox.Caption:=lisInSession;
+  BuildModeInSessionCheckBox.Hint:=
+    lisEnableThisToStoreTheBuildModeInYourSessionLpsInste;
 
   IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
   Caption := dlgIDEOptions;
@@ -152,12 +158,13 @@ begin
   BuildModesManager.OnLoadIDEOptionsHook := @LoadIDEOptions;
   BuildModesManager.OnSaveIDEOptionsHook := @SaveIDEOptions;
   UpdateBuildModeCombo(BuildModeComboBox);
+  UpdateBuildModeButtons;
 end;
 
 procedure TIDEOptionsDialog.HelpButtonClick(Sender: TObject);
 begin
-  if PrevEditor<>nil then
-    LazarusHelp.ShowHelpForIDEControl(PrevEditor)
+  if FPrevEditor<>nil then
+    LazarusHelp.ShowHelpForIDEControl(FPrevEditor)
   else
     LazarusHelp.ShowHelpForIDEControl(Self);
 end;
@@ -197,45 +204,54 @@ begin
     BuildModeSelectPanel.Height:=0;
   // Hide the old and show the new editor frame
   if Assigned(AEditor) then
-    NewLastSelected := AEditor.Rec;
-  if (AEditor <> PrevEditor) then begin
-    if Assigned(PrevEditor) then
-      PrevEditor.Visible := False;
+    FNewLastSelected := AEditor.Rec;
+  if (AEditor <> FPrevEditor) then begin
+    if Assigned(FPrevEditor) then
+      FPrevEditor.Visible := False;
     if Assigned(AEditor) then begin
       AEditor.Align := alClient;
       AEditor.BorderSpacing.Around := 6;
       AEditor.Visible := True;
     end;
-    PrevEditor := AEditor;
+    FPrevEditor := AEditor;
   end;
 end;
 
 procedure TIDEOptionsDialog.BuildModeComboBoxClick(Sender: TObject);
 begin
-  PrevComboIndex := BuildModeComboBox.ItemIndex;
+  FPrevComboIndex := BuildModeComboBox.ItemIndex;
 end;
 
 procedure TIDEOptionsDialog.BuildModeComboBoxSelect(Sender: TObject);
 begin
-  if BuildModeComboBox.Text = lisAllBuildModes then begin
+  if AllBuildModes then begin
     ShowMessage('This will allow changing all build modes at once. Not implemented yet.');
-    BuildModeComboBox.ItemIndex := PrevComboIndex;
+    BuildModeComboBox.ItemIndex := FPrevComboIndex;
+    BuildModeInSessionCheckBox.Enabled:=false;
   end
-  else
+  else begin
     SwitchBuildMode(BuildModeComboBox.Text);
+  end;
+end;
+
+procedure TIDEOptionsDialog.BuildModeInSessionCheckBoxChange(Sender: TObject);
+var
+  NewInSession: Boolean;
+begin
+  NewInSession:=BuildModeInSessionCheckBox.Checked;
+  if NewInSession and (Project1.ActiveBuildMode=Project1.BuildModes[0]) then
+  begin
+    MessageDlg(lisCCOErrorCaption,
+      lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn,
+      mtError,[mbCancel],0);
+    BuildModeInSessionCheckBox.Checked:=false;
+  end else
+    Project1.ActiveBuildMode.InSession:=BuildModeInSessionCheckBox.Checked;
 end;
 
 procedure TIDEOptionsDialog.BuildModeManageButtonClick(Sender: TObject);
-var
-  ProjectSaveOptions: TProjectSaveOptionsFrame;
-  ShowSes: Boolean;
 begin
-  ProjectSaveOptions:=TProjectSaveOptionsFrame(FindEditor(TProjectSaveOptionsFrame));
-  if Assigned(ProjectSaveOptions) then
-    ShowSes:=ProjectSaveOptions.GetSessionLocation in [pssInIDEConfig,pssInProjectDir]
-  else
-    ShowSes:=Project1.SessionStorage in [pssInProjectDir,pssInIDEConfig];
-  if ShowBuildModesDlg(ShowSes) = mrOK then
+  if ShowBuildModesDlg(Project1.SessionStorage in pssHasSeparateSession) = mrOK then
     UpdateBuildModeCombo(BuildModeComboBox);
 end;
 
@@ -265,9 +281,9 @@ var
   Command: Word;
 begin
   Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,nil);
-  if (Command=ecContextHelp) and (PrevEditor <> nil) then begin
+  if (Command=ecContextHelp) and (FPrevEditor <> nil) then begin
     Key:=VK_UNKNOWN;
-    LazarusHelp.ShowHelpForIDEControl(PrevEditor);
+    LazarusHelp.ShowHelpForIDEControl(FPrevEditor);
   end;
 end;
 
@@ -285,7 +301,7 @@ end;
 
 procedure TIDEOptionsDialog.OkButtonClick(Sender: TObject);
 begin
-  IDEEditorGroups.LastSelected := NewLastSelected;
+  IDEEditorGroups.LastSelected := FNewLastSelected;
   if not CheckValues then
     Exit;
   IDEDialogLayoutList.SaveLayout(Self);
@@ -459,6 +475,8 @@ begin
   if Assigned(OnLoadIDEOptionsHook) then
     OnLoadIDEOptionsHook(Self, AOptions);
   TraverseSettings(AOptions,iodaRead);
+  if AOptions is TProjectCompilerOptions then
+    UpdateBuildModeButtons;
 end;
 
 procedure TIDEOptionsDialog.SaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
@@ -496,7 +514,7 @@ begin
     Exit;
   FEditorsCreated := True;
   IDEEditorGroups.Resort;
-  SelectNode := nil;
+  FSelectNode := nil;
 
   for i := 0 to IDEEditorGroups.Count - 1 do
   begin
@@ -535,15 +553,15 @@ begin
           ItemParent.Expanded := not Instance.Rec^.Collapsed;
         end;
         if IDEEditorGroups.LastSelected = Rec^.Items[j] then
-          SelectNode := ItemNode;
+          FSelectNode := ItemNode;
       end;
       if (GroupNode.GetFirstChild <> nil) and (GroupNode.GetFirstChild.Data <> nil) then
         TAbstractIDEOptionsEditor(GroupNode.GetFirstChild.Data).GroupRec := Rec;
       GroupNode.Expanded := not Rec^.Collapsed;
     end;
   end;
-  if SelectNode <> nil then
-    SelectNode.Selected := True;
+  if FSelectNode <> nil then
+    FSelectNode.Selected := True;
 end;
 
 function TIDEOptionsDialog.SearchEditorNode(AEditor: TAbstractIDEOptionsEditorClass): TTreeNode;
@@ -592,14 +610,26 @@ begin
   end;
 end;
 
+function TIDEOptionsDialog.AllBuildModes: boolean;
+begin
+  Result:=BuildModeComboBox.Text = lisAllBuildModes;
+end;
+
+procedure TIDEOptionsDialog.UpdateBuildModeButtons;
+begin
+  BuildModeInSessionCheckBox.Visible:=Project1.SessionStorage in pssHasSeparateSession;
+  BuildModeInSessionCheckBox.Enabled:=not AllBuildModes;
+  BuildModeInSessionCheckBox.Checked:=Project1.ActiveBuildMode.InSession;
+end;
+
 procedure TIDEOptionsDialog.DoOpenEditor(EditorToOpen: TAbstractIDEOptionsEditorClass);
 var
   Node: TTreeNode;
 begin
   if EditorToOpen = nil then
   begin
-    if SelectNode <> nil then
-      Node := SelectNode
+    if FSelectNode <> nil then
+      Node := FSelectNode
     else
       Node := CategoryTree.Items.GetFirstNode
   end
@@ -607,7 +637,7 @@ begin
     Node := SearchEditorNode(EditorToOpen);
   if Node <> nil then
     CategoryTree.Selected := Node;
-  SelectNode := nil;
+  FSelectNode := nil;
 end;
 
 function TIDEOptionsDialog.ShowModal: Integer;

@@ -1,7 +1,7 @@
 object IDEOptionsDialog: TIDEOptionsDialog
-  Left = 121
+  Left = 308
   Height = 404
-  Top = 96
+  Top = 206
   Width = 689
   ActiveControl = FilterEdit
   BorderIcons = [biSystemMenu]
@@ -19,8 +19,8 @@ object IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     Left = 6
-    Height = 34
-    Top = 364
+    Height = 36
+    Top = 362
     Width = 677
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -40,18 +40,18 @@ object IDEOptionsDialog: TIDEOptionsDialog
   end
   object CatTVSplitter: TSplitter
     Left = 255
-    Height = 364
+    Height = 362
     Top = 0
     Width = 4
   end
   object CategoryPanel: TPanel
     Left = 0
-    Height = 364
+    Height = 362
     Top = 0
     Width = 255
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 364
+    ClientHeight = 362
     ClientWidth = 255
     Constraints.MinWidth = 150
     TabOrder = 2
@@ -63,8 +63,8 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = SettingsPanel
       Left = 6
-      Height = 308
-      Top = 36
+      Height = 304
+      Top = 38
       Width = 249
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 5
@@ -81,7 +81,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideLeft.Control = CategoryPanel
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 23
+      Height = 25
       Top = 8
       Width = 200
       OnFilterItem = FilterEditFilterItem
@@ -90,6 +90,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
+      Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
       TabOrder = 1
@@ -98,7 +99,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
     object SettingsPanel: TPanel
       Left = 0
       Height = 20
-      Top = 344
+      Top = 342
       Width = 255
       Align = alBottom
       AutoSize = True
@@ -123,7 +124,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
       Left = 12
       Height = 15
       Top = 10
-      Width = 68
+      Width = 62
       Caption = 'Build Mode'
       ParentColor = False
     end
@@ -132,9 +133,9 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BuildModeLabel
       AnchorSideTop.Side = asrCenter
-      Left = 87
-      Height = 24
-      Top = 5
+      Left = 81
+      Height = 29
+      Top = 3
       Width = 154
       BorderSpacing.Left = 7
       ItemHeight = 0
@@ -148,7 +149,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BuildModeComboBox
       AnchorSideTop.Side = asrCenter
-      Left = 248
+      Left = 242
       Height = 25
       Top = 5
       Width = 27
@@ -156,6 +157,22 @@ object IDEOptionsDialog: TIDEOptionsDialog
       Caption = '...'
       OnClick = BuildModeManageButtonClick
       TabOrder = 1
+    end
+    object BuildModeInSessionCheckBox: TCheckBox
+      AnchorSideLeft.Control = BuildModeManageButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BuildModeComboBox
+      AnchorSideTop.Side = asrCenter
+      Left = 275
+      Height = 24
+      Top = 5
+      Width = 78
+      BorderSpacing.Left = 6
+      Caption = 'In session'
+      OnChange = BuildModeInSessionCheckBoxChange
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
     end
   end
   object EditorsPanel: TScrollBox
@@ -165,12 +182,12 @@ object IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 259
-    Height = 324
+    Height = 322
     Top = 40
     Width = 427
-    HorzScrollBar.Page = 421
+    HorzScrollBar.Page = 425
     HorzScrollBar.Tracking = True
-    VertScrollBar.Page = 318
+    VertScrollBar.Page = 320
     VertScrollBar.Tracking = True
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabOrder = 4

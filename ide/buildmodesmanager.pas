@@ -121,19 +121,24 @@ procedure UpdateBuildModeCombo(aCombo: TComboBox);
 var
   i, ActiveIndex: Integer;
   CurMode: TProjectBuildMode;
+  sl: TStringList;
 begin
   ActiveIndex := 0;
-  aCombo.Clear;
-  aCombo.Items.Add(lisAllBuildModes);
-  for i := 0 to Project1.BuildModes.Count-1 do
-  begin
-    CurMode := Project1.BuildModes[i];
-    aCombo.Items.Add(CurMode.Identifier);
-    if CurMode = Project1.ActiveBuildMode then
-      ActiveIndex := i+1;  // Will be set as ItemIndex in Combo.
+  sl:=TStringList.Create;
+  try
+    sl.Add(lisAllBuildModes);
+    for i := 0 to Project1.BuildModes.Count-1 do
+    begin
+      CurMode := Project1.BuildModes[i];
+      sl.Add(CurMode.Identifier);
+      if CurMode = Project1.ActiveBuildMode then
+        ActiveIndex := sl.Count-1;  // Will be set as ItemIndex in Combo.
+    end;
+    aCombo.Items.Assign(sl);
+    aCombo.ItemIndex := ActiveIndex;
+  finally
+    sl.Free;
   end;
-  Assert(ActiveIndex > 0, 'UpdateBuildModeCombo: ActiveIndex = 0');
-  aCombo.ItemIndex := ActiveIndex;
 end;
 
 { TBuildModesForm }

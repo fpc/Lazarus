@@ -260,6 +260,7 @@ type
   TProjectSessionStorages = set of TProjectSessionStorage;
 
 const
+  pssHasSeparateSession = [pssInProjectDir,pssInIDEConfig];
   DefaultProjectCleanOutputFileMask = '*';
   DefaultProjectCleanSourcesFileMask = '*.ppu;*.ppl;*.o;*.or';
   DefaultProjectSessionStorage = pssInProjectInfo; // this value is not saved to the lpi file
