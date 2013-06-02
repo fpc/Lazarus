@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Buttons,
   StdCtrls, Dialogs, LCLType,
-  IDEWindowIntf, IDEHelpIntf,
+  IDEWindowIntf, IDEHelpIntf, IDEDialogs,
   ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,
   LazarusIDEStrConsts, IDEProcs, ExtCtrls, ButtonPanel;
 
@@ -284,14 +284,16 @@ begin
   Result:=false;
   if Options<>nil then begin
     if not Options.IncludeFilterValid then begin
-      if MessageDlg(lisPublProjInvalidIncludeFilter, mtError, [mbIgnore,
-        mbCancel], 0)
+      if IDEMessageDialog(lisCCOErrorCaption, lisPublProjInvalidIncludeFilter,
+        mtError, [mbIgnore,
+        mbCancel])
         =mrCancel
       then exit;
     end;
     if not Options.ExcludeFilterValid then begin
-      if MessageDlg(lisPublProjInvalidExcludeFilter, mtError, [mbIgnore,
-        mbCancel], 0)
+      if IDEMessageDialog(lisCCOErrorCaption, lisPublProjInvalidExcludeFilter,
+        mtError, [mbIgnore,
+        mbCancel])
         =mrCancel
       then exit;
     end;

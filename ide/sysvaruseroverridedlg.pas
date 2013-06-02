@@ -37,7 +37,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, Dialogs,
-  LazarusIDEStrConsts, ButtonPanel;
+  LazarusIDEStrConsts, ButtonPanel, IDEDialogs;
 
 type
   { TSysVarUserOverrideDialog }
@@ -85,9 +85,9 @@ var v: string;
 begin
   v:=Trim(VariableEdit.Text);
   if not IsValidIdent(v) then begin
-    if MessageDlg(lisSVUOInvalidVariableName,
+    if IDEMessageDialog(lisSVUOInvalidVariableName,
       Format(lisSVUOisNotAValidIdentifier, ['"', v, '"']),
-      mtWarning,[mbCancel,mbIgnore],0)=mrCancel
+      mtWarning,[mbCancel,mbIgnore])=mrCancel
     then ModalResult := mrNone; //cancel close
   end;
 end;

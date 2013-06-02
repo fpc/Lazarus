@@ -28,7 +28,7 @@ uses
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, sysutils, StdCtrls,
   ExtCtrls, Classes, Controls, LCLProc, Grids, ComCtrls, Dialogs,
   SynEditMouseCmds, Laz2_XMLCfg, MouseActionDialog, math, KeyMapping,
-  IDEImagesIntf;
+  IDEImagesIntf, IDEDialogs;
 
 type
 
@@ -471,7 +471,7 @@ begin
       FCurActions.AssertNoConflict(MAct);
     except
       FCurActions.Delete(FCurActions.Count - 1);
-      MessageDlg(dlgMouseOptErrorDup, dlgMouseOptErrorDupText, mtError, [mbOk], 0);
+      IDEMessageDialog(dlgMouseOptErrorDup, dlgMouseOptErrorDupText, mtError, [mbOk]);
     end;
     ContextTreeChange(nil, FCurNode);
     SelectRow(MAct);
@@ -511,7 +511,7 @@ begin
     try
       FCurActions.AssertNoConflict(MAct);
     except
-      MessageDlg(dlgMouseOptErrorDup, dlgMouseOptErrorDupText, mtError, [mbOk], 0);
+      IDEMessageDialog(dlgMouseOptErrorDup, dlgMouseOptErrorDupText, mtError, [mbOk]);
       MAct.Assign(MOld);
     end;
     MOld.Free;

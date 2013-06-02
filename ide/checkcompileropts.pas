@@ -312,18 +312,18 @@ begin
   // get Test directory
   TestDir:=AppendPathDelim(LazarusIDE.GetTestBuildDirectory);
   if not DirPathExists(TestDir) then begin
-    MessageDlg(lisCCOInvalidTestDir,
+    IDEMessageDialog(lisCCOInvalidTestDir,
       Format(lisCCOCheckTestDir,[LineEnding]),
-      mtError,[mbCancel],0);
+      mtError,[mbCancel]);
     Result:=mrCancel;
     exit;
   end;
   // create bogus file
   BogusFilename:=CreateNonExistingFilename(TestDir+'testcompileroptions.pas');
   if not CreateEmptyFile(BogusFilename) then begin
-    MessageDlg(lisCCOUnableToCreateTestFile,
+    IDEMessageDialog(lisCCOUnableToCreateTestFile,
       Format(lisCCOUnableToCreateTestPascalFile,[BogusFilename]),
-      mtError,[mbCancel],0);
+      mtError,[mbCancel]);
     Result:=mrCancel;
     exit;
   end;
@@ -494,9 +494,9 @@ function TCheckCompilerOptsDlg.CheckMissingFPCPPUs(
     AddMsg(Severity,Format(lisCCOMsgPPUNotFound,[TheUnitname]));
     Result:=ord(Severity)>=ord(ccmlError);
     if not Result then begin
-      if MessageDlg(lisCCOMissingUnit,
+      if IDEMessageDialog(lisCCOMissingUnit,
         Format(lisCCOPPUNotFoundDetailed,[TheUnitname, LineEnding]),
-        mtError,[mbIgnore,mbAbort],0)=mrIgnore then
+        mtError,[mbIgnore,mbAbort])=mrIgnore then
           Result:=true;
     end;
   end;

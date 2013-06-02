@@ -1273,9 +1273,9 @@ begin
     if NewSource = nil
     then begin
       if not (dlfLoadError in CurrentSourceUnitInfo.Flags) then begin
-        MessageDlg(lisDebugUnableToLoadFile,
+        IDEMessageDialog(lisDebugUnableToLoadFile,
                    Format(lisDebugUnableToLoadFile2, ['"', SrcFullName, '"']),
-                   mtError,[mbCancel],0);
+                   mtError,[mbCancel]);
         CurrentSourceUnitInfo.Flags := CurrentSourceUnitInfo.Flags + [dlfLoadError];
       end;
       SrcLine := -1;
@@ -2072,10 +2072,10 @@ begin
         if not PromptOnError then
           ClearPathAndExe
         else
-          if MessageDlg(lisLaunchingApplicationInvalid,
+          if IDEMessageDialog(lisLaunchingApplicationInvalid,
             Format(lisTheLaunchingApplicationBundleDoesNotExists,
               [LaunchingCmdLine, LineEnding, LineEnding, LineEnding, LineEnding]),
-            mtError, [mbYes, mbNo, mbCancel], 0) = mrYes then
+            mtError, [mbYes, mbNo, mbCancel]) = mrYes then
           begin
             if not BuildBoss.CreateProjectApplicationBundle then Exit;
           end
@@ -2095,10 +2095,10 @@ begin
         if not PromptOnError then
           ClearPathAndExe
         else begin
-          MessageDlg(lisLaunchingApplicationInvalid,
+          IDEMessageDialog(lisLaunchingApplicationInvalid,
             Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta,
                    ['"', LaunchingCmdLine, '"', LineEnding, LineEnding, LineEnding]),
-            mtError, [mbOK],0);
+            mtError, [mbOK]);
           Exit;
         end;
       end;
@@ -2110,10 +2110,10 @@ begin
       if not PromptOnError then
         ClearPathAndExe
       else begin
-        MessageDlg(lisDebuggerInvalid,
+        IDEMessageDialog(lisDebuggerInvalid,
           Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro, ['"',
             EnvironmentOptions.DebuggerFilename, '"', LineEnding, LineEnding, LineEnding]),
-          mtError,[mbOK],0);
+          mtError,[mbOK]);
         Exit;
       end;
     end;
@@ -2218,10 +2218,10 @@ begin
       if NewDebuggerClass.RequiresLocalExecutable  and     (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
          (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir))
       then begin
-        MessageDlg(lisUnableToRun,
+        IDEMessageDialog(lisUnableToRun,
           Format(lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki,
                  ['"', NewWorkingDir, '"', LineEnding]),
-          mtError,[mbCancel],0);
+          mtError,[mbCancel]);
         exit;
       end;
       if NewWorkingDir='' then begin
@@ -2229,10 +2229,10 @@ begin
         if NewDebuggerClass.RequiresLocalExecutable  and     (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
            (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir))
         then begin
-          MessageDlg(lisUnableToRun,
+          IDEMessageDialog(lisUnableToRun,
             Format(lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP,
                    ['"', NewWorkingDir, '"', LineEnding]),
-            mtError,[mbCancel],0);
+            mtError,[mbCancel]);
           exit;
         end;
       end;
@@ -2749,8 +2749,8 @@ begin
   MainIDE.GetCurrentUnitInfo(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil)
   then begin
-    MessageDlg(lisRunToFailed, lisPleaseOpenAUnitBeforeRun, mtError,
-      [mbCancel],0);
+    IDEMessageDialog(lisRunToFailed, lisPleaseOpenAUnitBeforeRun, mtError,
+      [mbCancel]);
     Result := mrCancel;
     Exit;
   end;

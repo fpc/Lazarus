@@ -1084,7 +1084,7 @@ var
   begin
     if TextRec(Output).Mode = fmClosed then
       // Note: do not use IDEMessageDialog here:
-      MessageDlg(lisInformation, AText, mtInformation, [mbOk],0)
+      {}MessageDlg(lisInformation, AText, mtInformation, [mbOk],0)
     else
       WriteLn(UTF8ToConsole(AText));
     Application.Terminate;
@@ -2963,7 +2963,8 @@ begin
   try
     SrcEdit.ExportAsHtml(Filename);
   except
-    MessageDlg(lisFailedToSaveFile, mtError, [mbOK], 0);
+    IDEMessageDialog(lisCodeToolsDefsWriteError, lisFailedToSaveFile, mtError, [
+      mbOK]);
   end;
 end;
 

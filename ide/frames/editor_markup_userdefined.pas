@@ -5,12 +5,13 @@ unit editor_markup_userdefined;
 interface
 
 uses
-  Classes, StdCtrls, ComCtrls, Graphics, sysutils, math, EditorOptions, LazarusIDEStrConsts,
-  SynColorAttribEditor, KeyMapping, KeyMapShortCutDlg, IDEOptionsIntf, IDECommands, Spin,
-  ExtCtrls, SynEditMarkupBracket, editor_color_options, editor_general_options,
-  editor_keymapping_options, SynEdit, SynCompletion, SynHighlighterPas, SynEditKeyCmds,
-  SynEditMarkupHighAll, DividerBevel, LazLoggerBase, LCLType, Menus, Grids, Controls, Dialogs,
-  Buttons;
+  Classes, StdCtrls, ComCtrls, Graphics, sysutils, math, EditorOptions,
+  LazarusIDEStrConsts, SynColorAttribEditor, KeyMapping, KeyMapShortCutDlg,
+  IDEOptionsIntf, IDECommands, IDEDialogs, Spin, ExtCtrls, SynEditMarkupBracket,
+  editor_color_options, editor_general_options, editor_keymapping_options,
+  SynEdit, SynCompletion, SynHighlighterPas, SynEditKeyCmds,
+  SynEditMarkupHighAll, DividerBevel, LazLoggerBase, LCLType, Menus, Grids,
+  Controls, Dialogs, Buttons;
 
 type
 
@@ -230,10 +231,9 @@ begin
   if WordList.EditorMode then
     WordList.EditingDone;
 
-  if MessageDlg(dlgMarkupUserDefinedDelCaption,
+  if IDEMessageDialog(dlgMarkupUserDefinedDelCaption,
                 Format(dlgMarkupUserDefinedDelPrompt, [FUserWords.Name]),
-                mtConfirmation, mbYesNo, 0
-               ) = mrNo
+                mtConfirmation, mbYesNo) = mrNo
   then
     exit;
 
@@ -439,10 +439,9 @@ begin
   if (j >= 0) then begin
     if WordList.RowFontColor[FSelectedRow] <> clRed then begin
       UpdateDupErrors;
-      MessageDlg(dlgMarkupUserDefinedDuplicate,
+      IDEMessageDialog(dlgMarkupUserDefinedDuplicate,
                  Format(dlgMarkupUserDefinedDuplicateMsg, [FUserWords[AnIndex].SearchTerm]),
-                 mtConfirmation, [mbOK], 0
-                );
+                 mtConfirmation, [mbOK]);
     end;
   end
   else

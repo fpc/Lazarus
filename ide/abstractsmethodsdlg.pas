@@ -36,7 +36,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   CheckLst, StdCtrls, ExtCtrls, Buttons,
   CodeAtom, CodeTree, PascalParserTool, CodeCache, CodeToolManager,
-  LazIDEIntf, SrcEditorIntf,
+  LazIDEIntf, SrcEditorIntf, IDEDialogs,
   LazarusIDEStrConsts;
 
 type
@@ -130,9 +130,9 @@ begin
     // check if there are abstract methods left to override
     if (ListOfPCodeXYPosition=nil) or (ListOfPCodeXYPosition.Count=0) then begin
       ErrMsg:='';
-      MessageDlg(lisSAMNoAbstractMethodsFound,
+      IDEMessageDialog(lisSAMNoAbstractMethodsFound,
         lisSAMThereAreNoAbstractMethodsLeftToOverride
-        ,mtConfirmation,[mbOk],0);
+        ,mtConfirmation,[mbOk]);
       Result:=mrOk;
       exit;
     end;
@@ -145,9 +145,9 @@ begin
   finally
     CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
     if ErrMsg<>'' then begin
-      MessageDlg(lisCCOErrorCaption,
+      IDEMessageDialog(lisCCOErrorCaption,
         lisSAMUnableToShowAbstractMethodsOfTheCurrentClassBecaus+LineEnding
-        +ErrMsg,mtError,[mbCancel],0);
+        +ErrMsg,mtError,[mbCancel]);
     end;
   end;
 end;
@@ -240,9 +240,9 @@ begin
       Item:=TAbstractMethodDlgItem(FItems[i]);
       if MethodsCheckListBox.Checked[i] and Item.BelongsToStartClass then begin
         if Result then begin
-          MessageDlg(lisCCOErrorCaption,
+          IDEMessageDialog(lisCCOErrorCaption,
             lisSAMThisMethodCanNotBeOverriddenBecauseItIsDefinedInTh,
-            mtError,[mbCancel],0);
+            mtError,[mbCancel]);
           Result:=false;
         end;
         MethodsCheckListBox.Checked[i]:=false;

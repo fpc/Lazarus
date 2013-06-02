@@ -36,7 +36,7 @@ uses
   Dialogs, ExtCtrls, Buttons, StdCtrls,
   BasicCodeTools, CodeTree, CodeAtom, CodeCache, CodeToolManager,
   ExtractProcTool,
-  IDEHelpIntf,
+  IDEHelpIntf, IDEDialogs,
   LazarusIDEStrConsts, IDEProcs, MiscOptions;
 
 type
@@ -113,9 +113,9 @@ var
 begin
   Result:=mrCancel;
   if CompareCaret(BlockBegin,BlockEnd)<=0 then begin
-    MessageDlg(lisNoCodeSelected,
+    IDEMessageDialog(lisNoCodeSelected,
       lisPleaseSelectSomeCodeToExtractANewProcedureMethod,
-      mtInformation,[mbCancel],0);
+      mtInformation,[mbCancel]);
     exit;
   end;
   
@@ -128,9 +128,9 @@ begin
       SubProcPossible,SubProcSameLvlPossible,MissingIdentifiers,VarTree)
     then begin
       if CodeToolBoss.ErrorMessage='' then begin
-        MessageDlg(lisInvalidSelection,
+        IDEMessageDialog(lisInvalidSelection,
           Format(lisThisStatementCanNotBeExtractedPleaseSelectSomeCode, [LineEnding]),
-        mtInformation,[mbCancel],0);
+        mtInformation,[mbCancel]);
       end;
       exit;
     end;
@@ -211,9 +211,9 @@ var
 begin
   ProcName:=GetProcName;
   if (ProcName='') or (not IsValidIdent(ProcName)) then begin
-    MessageDlg(lisInvalidProcName,
+    IDEMessageDialog(lisInvalidProcName,
       Format(lisSVUOisNotAValidIdentifier, ['"', ProcName, '"']),
-      mtError,[mbCancel],0);
+      mtError,[mbCancel]);
     ModalResult:=mrNone;
     exit;
   end;

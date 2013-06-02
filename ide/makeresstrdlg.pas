@@ -43,7 +43,7 @@ uses
   Dialogs, ExtCtrls, IDEWindowIntf,
   SynHighlighterPas, SynEdit,
   CodeToolManager, CodeAtom, CodeToolsStructs, CodeCache,
-  IDEHelpIntf,
+  IDEHelpIntf, IDEDialogs,
   LazarusIDEStrConsts,
   EditorOptions, InputHistory, MiscOptions, IDEProcs;
 
@@ -239,17 +239,17 @@ var
 begin
   Index:=ResStrSectionComboBox.ItemIndex;
   if (Index<0) or (Index>=Positions.Count) then begin
-    MessageDlg(lisMakeResStrInvalidResourcestringSect,
+    IDEMessageDialog(lisMakeResStrInvalidResourcestringSect,
       lisMakeResStrPleaseChooseAResourcestring,
-      mtError,[mbCancel],0);
+      mtError,[mbCancel]);
     exit;
   end;
   if ResStrExistsInAnySection(IdentifierEdit.Text)
   and (not ResStrExistsWithSameValue(IdentifierEdit.Text)) then begin
-    if MessageDlg(lisMakeResStrResourcestringAlreadyExis,
+    if IDEMessageDialog(lisMakeResStrResourcestringAlreadyExis,
       Format(lisMakeResStrChooseAnotherName, ['"', IdentifierEdit.Text, '"',
         #13, #13]),
-      mtWarning,[mbOk,mbIgnore],0)
+      mtWarning,[mbOk,mbIgnore])
       =mrOk
     then
       exit;

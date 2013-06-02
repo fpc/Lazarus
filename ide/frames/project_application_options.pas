@@ -7,8 +7,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, Buttons, ComCtrls, ExtDlgs, Math, LCLType, IDEOptionsIntf,
-  LazIDEIntf, Project, LazarusIDEStrConsts, EnvironmentOpts, ApplicationBundle,
-  ProjectIcon, W32Manifest, CompilerOptions;
+  LazIDEIntf, IDEDialogs, Project, LazarusIDEStrConsts, EnvironmentOpts,
+  ApplicationBundle, ProjectIcon, W32Manifest, CompilerOptions;
 
 type
 
@@ -73,8 +73,8 @@ begin
   Result := '';
   if AProject.MainUnitInfo = nil then
   begin
-    MessageDlg(lisCCOErrorCaption, lisThisProjectHasNoMainSourceFile,
-      mtError, [mbCancel], 0);
+    IDEMessageDialog(lisCCOErrorCaption, lisThisProjectHasNoMainSourceFile,
+      mtError, [mbCancel]);
     Exit;
   end;
   if AProject.IsVirtual then
@@ -87,9 +87,9 @@ begin
   if not (CreateApplicationBundle(TargetExeName, AProject.GetTitle, True) in
     [mrOk, mrIgnore]) then
   begin
-    MessageDlg(lisCCOErrorCaption, Format(
+    IDEMessageDialog(lisCCOErrorCaption, Format(
       lisFailedToCreateApplicationBundleFor, [TargetExeName]), mtError, [
-      mbCancel], 0);
+      mbCancel]);
     Exit;
   end;
   if not (CreateAppBundleSymbolicLink(TargetExeName, True) in [mrOk, mrIgnore]) then
@@ -97,8 +97,8 @@ begin
     // no error message needed
     Exit;
   end;
-  MessageDlg(lisSuccess, Format(lisTheApplicationBundleWasCreatedFor, [
-    TargetExeName]), mtInformation, [mbOk], 0);
+  IDEMessageDialog(lisSuccess, Format(lisTheApplicationBundleWasCreatedFor, [
+    TargetExeName]), mtInformation, [mbOk]);
   Result := TargetExeName;
 end;
 
@@ -148,7 +148,7 @@ begin
       IconImage.Picture.LoadFromFile(OpenPictureDialog1.FileName)
     except
       on E: Exception do
-        MessageDlg(E.Message, mtError, [mbOK], 0);
+        IDEMessageDialog(lisCCOErrorCaption, E.Message, mtError, [mbOK]);
     end;
 end;
 
@@ -174,7 +174,7 @@ begin
       IconImage.Picture.Icon.LoadFromStream(Value);
     except
       on E: Exception do
-        MessageDlg(E.Message, mtError, [mbOK], 0);
+        IDEMessageDialog(lisCodeToolsDefsReadError, E.Message, mtError, [mbOK]);
     end;
 end;
 

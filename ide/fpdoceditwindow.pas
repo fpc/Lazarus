@@ -1409,8 +1409,8 @@ var
         CurName:=Element.FPDocFile.Filename
       else
         CurName:=Element.ElementName;
-      MessageDlg(lisCodeToolsDefsWriteError,
-        Format(lisFPDocErrorWriting, [CurName, LineEnding, Msg]), mtError, [mbCancel], 0);
+      IDEMessageDialog(lisCodeToolsDefsWriteError,
+        Format(lisFPDocErrorWriting, [CurName, LineEnding, Msg]), mtError, [mbCancel]);
     end;
   end;
 
@@ -1430,7 +1430,7 @@ var
       on E: EXMLReadError do begin
         DebugLn(['SetValue ',dbgs(E.LineCol),' Name=',FPDocItemNames[Item]]);
         JumpToError(Item,E.LineCol);
-        MessageDlg(lisFPDocFPDocSyntaxError,
+        IDEMessageDialog(lisFPDocFPDocSyntaxError,
           Format(lisFPDocThereIsASyntaxErrorInTheFpdocElement, [FPDocItemNames
             [Item], LineEnding+LineEnding, E.Message]), mtError, [mbOk], '');
       end;

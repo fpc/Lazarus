@@ -189,9 +189,9 @@ begin
   Dir:=GetResolvedDirectory;
   if (WhereRadioGroup.ItemIndex=ItemIndDirectories) and not DirectoryExistsUTF8(Dir) then
   begin
-    MessageDlg(lisEnvOptDlgDirectoryNotFound,
+    IDEMessageDialog(lisEnvOptDlgDirectoryNotFound,
                Format(dlgSeachDirectoryNotFound,[Dir]),
-               mtWarning, [mbOk],0);
+               mtWarning, [mbOk]);
     ModalResult:=mrNone;
   end
 end;

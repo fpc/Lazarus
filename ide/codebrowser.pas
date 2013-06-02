@@ -947,10 +947,10 @@ begin
   if SelectedUnit.UnitList=nil then begin
     DebugLn(['TCodeBrowserView.UseUnitInSrcEditor not implemented: '
       +'SelectedUnit.UnitList=nil']);
-    MessageDlg('Implement me',
+    IDEMessageDialog('Implement me',
       'TCodeBrowserView.UseUnitInSrcEditor not implemented: '
         +'SelectedUnit.UnitList=nil',
-      mtInformation, [mbOk], 0);
+      mtInformation, [mbOk]);
     exit;
   end;
   SelectedOwner:=nil;
@@ -984,18 +984,18 @@ begin
   and (not (TargetOwner is TLazPackage)) then begin
     DebugLn(['TCodeBrowserView.UseUnitInSrcEditor not implemented: '
       +'TargetOwner=', DbgSName(TargetOwner)]);
-    MessageDlg('Implement me',
+    IDEMessageDialog('Implement me',
       'TCodeBrowserView.UseUnitInSrcEditor not implemented: '
         +'TargetOwner='+DbgSName(TargetOwner),
-      mtInformation, [mbOk], 0);
+      mtInformation, [mbOk]);
     exit;
   end;
 
   if (SelectedOwner is TProject) and (TargetOwner<>SelectedOwner) then begin
     // unit of project can not be used by other packages/projects
-    MessageDlg(lisImpossible,
+    IDEMessageDialog(lisImpossible,
       lisAProjectUnitCanNotBeUsedByOtherPackagesProjects,
-      mtError, [mbCancel], 0);
+      mtError, [mbCancel]);
     exit;
   end;
 

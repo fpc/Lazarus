@@ -365,9 +365,9 @@ begin
       try
         // check syntax
         if (S='') or (not IsValidIdent(S)) then begin
-          MessageDlg(lisCCOErrorCaption,
+          IDEMessageDialog(lisCCOErrorCaption,
             Format(lisInvalidMacroTheMacroMustBeAPascalIdentifie, ['"', S, '"']),
-            mtError,[mbCancel],0);
+            mtError,[mbCancel]);
           exit;
         end;
 
@@ -390,17 +390,17 @@ begin
 
         // check for keyword
         if WordIsKeyWord.DoItCaseInsensitive(S) then begin
-          MessageDlg(lisCCOErrorCaption,
+          IDEMessageDialog(lisCCOErrorCaption,
             Format(lisInvalidMacroTheNameIsAKeyword, [S]),
-            mtError,[mbCancel],0);
+            mtError,[mbCancel]);
           exit;
         end;
 
         // check for conflicts with built-in macros
         if IDEMacros.IsMacro(s) then begin
-          MessageDlg(lisCCOErrorCaption,
+          IDEMessageDialog(lisCCOErrorCaption,
             Format(lisThereIsAlreadyAnIDEMacroWithTheName, [S]),
-            mtError,[mbCancel],0);
+            mtError,[mbCancel]);
           exit;
         end;
 
@@ -413,9 +413,9 @@ begin
         or (SysUtils.CompareText('TargetCPU',S)=0)
         or (SysUtils.CompareText('LCLWidgetType',S)=0)
         then begin
-          MessageDlg(lisCCOErrorCaption,
+          IDEMessageDialog(lisCCOErrorCaption,
             Format(lisThereIsAlreadyAMacroWithTheName, ['"', S, '"']),
-            mtError,[mbCancel],0);
+            mtError,[mbCancel]);
           exit;
         end;
 
@@ -447,9 +447,9 @@ begin
       Index:=Node.Index;
       Index:=BuildMacro.Values.IndexOf(S);
       if (Index>=0) and (Index<>Node.Index) then begin
-        MessageDlg(lisCCOErrorCaption,
+        IDEMessageDialog(lisCCOErrorCaption,
           Format(lisDuplicateFoundOfValue, ['"', S, '"']),
-          mtError,[mbCancel],0);
+          mtError,[mbCancel]);
         S:=BuildMacro.Values[Node.Index];
         exit;
       end;
@@ -520,16 +520,16 @@ begin
   if NodeType=cbmntValue then
   begin
     aValue:=SelTVNode.Text;
-    if MessageDlg(lisConfirmDelete,
+    if IDEMessageDialog(lisConfirmDelete,
       Format(lisDeleteValue, ['"', aValue, '"']),
-      mtConfirmation,[mbYes,mbCancel],0)<>mrYes
+      mtConfirmation,[mbYes,mbCancel])<>mrYes
     then exit;
     i:=aBuildMacro.Values.IndexOf(aValue);
     if i>=0 then aBuildMacro.Values.Delete(i);
   end else begin
-    if MessageDlg(lisConfirmDelete,
+    if IDEMessageDialog(lisConfirmDelete,
       Format(lisDeleteMacro, ['"', aBuildMacro.Identifier, '"']),
-      mtConfirmation,[mbYes,mbCancel],0)<>mrYes
+      mtConfirmation,[mbYes,mbCancel])<>mrYes
     then exit;
     i:=BuildMacros.IndexOfIdentifier(aBuildMacro.Identifier);
     BuildMacros.Delete(i);

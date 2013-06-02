@@ -5,8 +5,9 @@ unit compiler_other_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, LCLProc, IDEOptionsIntf, Project, CompilerOptions, LazarusIDEStrConsts;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  LCLProc, IDEOptionsIntf, IDEDialogs, Project, CompilerOptions,
+  LazarusIDEStrConsts;
 
 type
 
@@ -76,10 +77,10 @@ begin
     if (CompareFileNames(AdditionalConfig, 'fpc.cfg') = 0) or
       (CompareFileNames(AdditionalConfig, 'ppc386.cfg') = 0) then
     begin
-      if MessageDlg(lisCOAmbiguousAdditionalCompilerConfigFile,
+      if IDEMessageDialog(lisCOAmbiguousAdditionalCompilerConfigFile,
         Format(lisCOClickOKIfAreSureToDoThat,
         [BreakString(lisCOWarningTheAdditionalCompilerConfigFileHasTheSameNa,
-        60, 0), LineEnding+LineEnding]), mtWarning, [mbOK, mbCancel], 0) <> mrOk then
+        60, 0), LineEnding+LineEnding]), mtWarning, [mbOK, mbCancel]) <> mrOk then
       begin
         Result := False;
         exit;

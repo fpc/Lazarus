@@ -34,7 +34,7 @@ uses
   LCLProc, LCLType, Controls, Forms, ComCtrls,
   Buttons, ButtonPanel, ExtCtrls, EditBtn, StdCtrls, Dialogs, TreeFilterEdit,
   IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf, ProjectIntf,
-  CompOptsIntf,
+  CompOptsIntf, IDEDialogs,
   EnvironmentOpts, LazarusIDEStrConsts, EditorOptions,
   BuildModesManager, project_save_options, Project, Compiler_ModeMatrix;
 
@@ -241,9 +241,9 @@ begin
   NewInSession:=BuildModeInSessionCheckBox.Checked;
   if NewInSession and (Project1.ActiveBuildMode=Project1.BuildModes[0]) then
   begin
-    MessageDlg(lisCCOErrorCaption,
+    IDEMessageDialog(lisCCOErrorCaption,
       lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn,
-      mtError,[mbCancel],0);
+      mtError,[mbCancel]);
     BuildModeInSessionCheckBox.Checked:=false;
   end else begin
     Project1.ActiveBuildMode.InSession:=BuildModeInSessionCheckBox.Checked;

@@ -38,7 +38,7 @@ uses
   CodeToolManager,
   // IDE
   LazarusIDEStrConsts, IDEProcs, IDEWindowIntf, MiscOptions, DialogProcs,
-  LazIDEIntf, InputHistory, SearchResultView, CodeHelp, ButtonPanel;
+  LazIDEIntf, IDEDialogs, InputHistory, SearchResultView, CodeHelp, ButtonPanel;
 
 type
 
@@ -587,9 +587,9 @@ var
 begin
   NewIdentifier:=NewEdit.Text;
   if (NewIdentifier='') or (not IsValidIdent(NewIdentifier)) then begin
-    MessageDlg(lisFRIInvalidIdentifier,
+    IDEMessageDialog(lisFRIInvalidIdentifier,
       Format(lisSVUOisNotAValidIdentifier, ['"', NewIdentifier, '"']), mtError,
-        [mbCancel], 0);
+        [mbCancel]);
     ModalResult:=mrNone;
     exit;
   end;

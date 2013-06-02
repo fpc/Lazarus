@@ -36,7 +36,7 @@ uses
   // codetools
   CodeToolManager, CodeCache,
   // IDEIntf
-  PropEdits, LazIDEIntf, IDEWindowIntf,
+  PropEdits, LazIDEIntf, IDEWindowIntf, IDEDialogs,
   // IDE
   IDEWindowHelp, LazarusIDEStrConsts, ExtCtrls;
 
@@ -306,15 +306,15 @@ var
 begin
   AControl:=GetCurrentControl;
   if AControl=nil then begin
-    MessageDlg('Error','Please select a control first',mtError,[mbCancel],0);
+    IDEMessageDialog('Error','Please select a control first',mtError,[mbCancel]);
     exit;
   end;
   if not FindDeclarationOfIDEControl(AControl,Filename,X,Y) then begin
-    MessageDlg('Error','No declaration found for '+DbgSName(AControl),mtError,[mbCancel],0);
+    IDEMessageDialog('Error','No declaration found for '+DbgSName(AControl),mtError,[mbCancel]);
     exit;
   end;
-  if MessageDlg('Close dialogs?','This will close all currently open modal forms and open the file '+Filename+' in the editor.',
-    mtConfirmation,[mbOk,mbCancel],0)<>mrOk then exit;
+  if IDEMessageDialog('Close dialogs?','This will close all currently open modal forms and open the file '+Filename+' in the editor.',
+    mtConfirmation,[mbOk,mbCancel])<>mrOk then exit;
   Closer:=TOpenIDEFileOnIdle.Create(LazarusIDE.OwningComponent);
   Closer.Filename:=Filename;
   Closer.X:=X;

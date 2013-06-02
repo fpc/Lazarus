@@ -35,7 +35,7 @@ uses
   Classes, Math, SysUtils, LCLProc, LCLType, Controls, StdCtrls, Forms, Buttons,
   ExtCtrls, Dialogs, Graphics,
   SynEditTypes, SynRegExpr, SynEdit,
-  IDEHelpIntf, IDEImagesIntf, IDEWindowIntf,
+  IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
   LazarusIdeStrConsts, InputHistory;
 
 type
@@ -372,8 +372,8 @@ begin
       RegExpr.Exec('test');
     except
       on E: ERegExpr do begin
-        MessageDlg(lisUEErrorInRegularExpression,
-          E.Message,mtError,[mbCancel],0);
+        IDEMessageDialog(lisUEErrorInRegularExpression,
+          E.Message,mtError,[mbCancel]);
         exit;
       end;
     end;
@@ -382,8 +382,8 @@ begin
         RegExpr.Substitute(ReplaceText);
       except
         on E: ERegExpr do begin
-          MessageDlg(lisUEErrorInRegularExpression,
-            E.Message,mtError,[mbCancel],0);
+          IDEMessageDialog(lisUEErrorInRegularExpression,
+            E.Message,mtError,[mbCancel]);
           exit;
         end;
       end;

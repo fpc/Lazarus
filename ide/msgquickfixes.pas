@@ -51,7 +51,8 @@ uses
   Classes, SysUtils, LCLProc, Controls, Dialogs, FileUtil, KeywordFuncLists,
   BasicCodeTools, CodeTree, CodeAtom, CodeCache, CodeToolManager,
   DirectoryCacher, FileProcs, IDEMsgIntf, TextTools, ProjectIntf, LazIDEIntf,
-  PackageIntf, AbstractsMethodsDlg, LazarusIDEStrConsts, EnvironmentOpts;
+  PackageIntf, IDEDialogs, AbstractsMethodsDlg, LazarusIDEStrConsts,
+  EnvironmentOpts;
   
 type
 
@@ -144,7 +145,7 @@ implementation
 
 procedure ShowError(Msg: string);
 begin
-  MessageDlg('QuickFix error',Msg,mtError,[mbCancel],0);
+  IDEMessageDialog('QuickFix error',Msg,mtError,[mbCancel]);
 end;
 
 function IsIdentifierInCode(Code: TCodeBuffer; X,Y: integer;
@@ -226,9 +227,9 @@ begin
   if Msg.Parts=nil then begin
     DebugLn('GetMsgLineFilename Msg.Parts=nil');
     if not Quiet then begin
-      MessageDlg(lisCCOErrorCaption,
+      IDEMessageDialog(lisCCOErrorCaption,
         Format(lisMessageContainsNoFilePositionInformation, [LineEnding, Msg.Msg]),
-          mtError, [mbCancel], 0);
+          mtError, [mbCancel]);
     end;
     exit;
   end;
@@ -245,8 +246,8 @@ begin
   if CodeBuf=nil then begin
     DebugLn('GetMsgLineFilename Filename "',Filename,'" not found.');
     if not Quiet then begin
-      MessageDlg(lisCCOErrorCaption,
-        Format(lisUnableToLoadFile, [LineEnding, Filename]), mtError, [mbCancel], 0);
+      IDEMessageDialog(lisCCOErrorCaption,
+        Format(lisUnableToLoadFile, [LineEnding, Filename]), mtError, [mbCancel]);
     end;
     exit;
   end;
@@ -855,10 +856,10 @@ begin
       if CodeToolBoss.ErrorMessage<>'' then begin
         LazarusIDE.DoJumpToCodeToolBossError
       end else begin
-        MessageDlg('Class not found',
+        IDEMessageDialog('Class not found',
           'Class '+CurClassName+' not found at '
           +CodeBuf.Filename+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')',
-          mtError,[mbCancel],0);
+          mtError,[mbCancel]);
       end;
       exit;
     end;
@@ -1185,9 +1186,9 @@ begin
     CodeBuf.LineColToPosition(Caret.Y,Caret.X,p);
     if p<1 then begin
       DebugLn(['TQuickFixHint_Hide.Execute failed because invalid line, column']);
-      MessageDlg(lisCCOErrorCaption,
+      IDEMessageDialog(lisCCOErrorCaption,
         Format(lisInvalidLineColumnInMessage, [LineEnding, Msg.Msg]),
-        mtError, [mbCancel], 0);
+        mtError, [mbCancel]);
       exit;
     end;
 

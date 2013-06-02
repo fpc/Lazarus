@@ -31,7 +31,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Controls, FileUtil, Dialogs, HelpIntfs,
-  LazConfigStorage, EnvironmentOpts, IDEOptionDefs;
+  LazConfigStorage, IDEDialogs, EnvironmentOpts, IDEOptionDefs,
+  LazarusIDEStrConsts;
   
 type
 
@@ -133,8 +134,8 @@ begin
     end;
   except
     on E: Exception do begin
-      MessageDlg('Read error','Error reading file '+Filename+LineEnding+E.Message,
-        mtError,[mbOk],0);
+      IDEMessageDialog('Read error','Error reading file '+Filename+LineEnding+E.Message,
+        mtError,[mbOk]);
     end;
   end;
 end;
@@ -157,8 +158,9 @@ begin
     end;
   except
     on E: Exception do begin
-      MessageDlg('Write error','Error writing file '+Filename+LineEnding+E.Message,
-        mtError,[mbOk],0);
+      IDEMessageDialog(lisCodeToolsDefsWriteError, Format(lisErrorWritingFile2,
+        [Filename+LineEnding+E.Message]),
+        mtError,[mbOk]);
     end;
   end;
 end;

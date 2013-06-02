@@ -161,14 +161,14 @@ begin
     begin
       if FileExistsUTF8(BackupFileName) then
         if not DeleteFileUTF8(BackupFileName) then begin
-          MessageDlg(format('Can''t delete "%s"'+LineEnding+'%s',
+          IDEMessageDialog(format('Can''t delete "%s"'+LineEnding+'%s',
             [BackupFileName, SysErrorMessageUTF8(GetLastOSError)]),
             mtError, [mbOK], 0);
           Result := mrAbort;
           exit;
         end;
       if not FileProcs.RenameFileUTF8(CurFilename, BackupFileName) then begin
-        MessageDlg(format('Can''t rename "%s" to "%s"'+LineEnding+'%s',
+        IDEMessageDialog(format('Can''t rename "%s" to "%s"'+LineEnding+'%s',
           [CurFilename, BackupFileName, SysErrorMessageUTF8(GetLastOSError)]),
           mtError, [mbOK], 0);
         Result := mrAbort;
@@ -177,7 +177,7 @@ begin
       InvalidateFileStateCache;
     end;
     if not FileProcs.RenameFileUTF8(NewFileName, CurFilename) then begin
-      MessageDlg(format('Can''t rename "%s" to "%s"'+LineEnding+'%s',
+      IDEMessageDialog(format('Can''t rename "%s" to "%s"'+LineEnding+'%s',
         [NewFileName, CurFilename, SysErrorMessageUTF8(GetLastOSError)]),
         mtError, [mbOK], 0);
       Result := mrAbort;
@@ -282,7 +282,7 @@ begin
       DefaultDir:=ReadAllLinks(DefaultDir,true);
   except
     on E: Exception do begin
-      MessageDlg('Error',E.Message,mtError,[mbCancel],0);
+      IDEMessageDialog('Error',E.Message,mtError,[mbCancel],0);
       exit;
     end;
   end;
@@ -341,7 +341,7 @@ begin
       end else begin
         if FileExistsUTF8(CustomExe) then begin
           // only the custom exists => warn user
-          MessageDlg('System default is missing',
+          IDEMessageDialog('System default is missing',
             'The system default lazarus executable "'+DefaultExe+'" is missing, but your custom'
             +'executable is still there:'+LineEnding
             +CustomExe+LineEnding
@@ -350,7 +350,7 @@ begin
           FLazarusPath:=CustomExe;
         end else begin
           // no exe exists
-          MessageDlg('File not found','Can''t find the lazarus executable '+DefaultExe,
+          IDEMessageDialog('File not found','Can''t find the lazarus executable '+DefaultExe,
             mtError,[mbAbort],0);
           break;
         end;

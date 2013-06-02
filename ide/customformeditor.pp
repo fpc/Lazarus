@@ -353,10 +353,10 @@ Begin
       DebugLn('TryFreeComponent ERROR:',
         ' "'+OldName+':'+OldClassName+'" ',E.Message);
       DumpExceptionBackTrace;
-      MessageDlg(lisCCOErrorCaption,
+      IDEMessageDialog(lisCCOErrorCaption,
         Format(lisCFEAnExceptionOccuredDuringDeletionOf,
                [LineEnding, OldName, OldClassName, LineEnding, E.Message]),
-        mtError,[mbOk],0);
+        mtError,[mbOk]);
     end;
   end;
   {$ENDIF}
@@ -592,9 +592,9 @@ begin
     Selection:=ASelection;
   except
     on E: Exception do begin
-      MessageDlg(lisCCOErrorCaption,
+      IDEMessageDialog(lisCCOErrorCaption,
         Format(lisCFEUnableToClearTheFormEditingSelection, [LineEnding, E.Message]),
-        mtError, [mbCancel], 0);
+        mtError, [mbCancel]);
     end;
   end;
   ASelection.Free;
@@ -617,9 +617,9 @@ begin
   end;
   Result:=Selection.Count=0;
   if Selection.Count>0 then begin
-    MessageDlg(lisCCOErrorCaption,
+    IDEMessageDialog(lisCCOErrorCaption,
       lisCFEDoNotKnowHowToDeleteThisFormEditingSelection,
-      mtError,[mbCancel],0);
+      mtError,[mbCancel]);
   end;
 end;
 
@@ -639,9 +639,9 @@ begin
   end;
   Result:=Selection.Count=0;
   if Selection.Count>0 then begin
-    MessageDlg(lisCCOErrorCaption,
+    IDEMessageDialog(lisCCOErrorCaption,
       lisCFEDoNotKnowHowToCopyThisFormEditingSelection,
-      mtError,[mbCancel],0);
+      mtError,[mbCancel]);
   end;
 end;
 
@@ -661,9 +661,9 @@ begin
   end;
   Result:=Selection.Count=0;
   if Selection.Count>0 then begin
-    MessageDlg(lisCCOErrorCaption,
+    IDEMessageDialog(lisCCOErrorCaption,
       lisCFEDoNotKnowHowToCutThisFormEditingSelection,
-      mtError,[mbCancel],0);
+      mtError,[mbCancel]);
   end;
 end;
 
@@ -1190,19 +1190,19 @@ begin
       except
         on e: Exception do begin
           DumpExceptionBackTrace;
-          MessageDlg(lisCFEErrorCreatingComponent,
+          IDEMessageDialog(lisCFEErrorCreatingComponent,
             Format(lisCFEErrorCreatingComponent2,
                    [TypeClass.ClassName, LineEnding, E.Message]),
-            mtError,[mbCancel],0);
+            mtError,[mbCancel]);
           exit;
         end;
       end;
       // check if Owner was properly set
       if NewComponent.Owner <> OwnerComponent then begin
-        MessageDlg(lisCFEInvalidComponentOwner,
+        IDEMessageDialog(lisCFEInvalidComponentOwner,
           Format(lisCFETheComponentOfTypeFailedToSetItsOwnerTo, [NewComponent.
             ClassName, OwnerComponent.Name, OwnerComponent.ClassName]),
-          mtError,[mbCancel],0);
+          mtError,[mbCancel]);
         exit;
       end;
       
@@ -1251,10 +1251,10 @@ begin
       NewComponent.Name := NewComponentName;
     except
       on e: Exception do begin
-        MessageDlg(lisErrorNamingComponent,
+        IDEMessageDialog(lisErrorNamingComponent,
           Format(lisErrorSettingTheNameOfAComponentTo, [dbgsName(NewComponent),
             NewComponentName]),
-          mtError,[mbCancel],0);
+          mtError,[mbCancel]);
         exit;
       end;
     end;
@@ -1356,10 +1356,10 @@ begin
       on e: Exception do begin
         DebugLn(e.Message);
         DumpExceptionBackTrace;
-        MessageDlg(lisErrorMovingComponent,
+        IDEMessageDialog(lisErrorMovingComponent,
           Format(lisErrorMovingComponent2, [NewComponent.Name,
             NewComponent.ClassName]),
-          mtError,[mbCancel],0);
+          mtError,[mbCancel]);
         exit;
       end;
     end;
@@ -1379,7 +1379,7 @@ begin
                     [Mediator.ClassName, AUnitName, LineEnding, E.Message]);
           DebugLn(['TCustomFormEditor.CreateComponent ',UTF8ToConsole(s)]);
           DumpExceptionBackTrace;
-          MessageDlg(lisCFEErrorDestroyingMediator, s, mtError, [mbCancel], 0);
+          IDEMessageDialog(lisCFEErrorDestroyingMediator, s, mtError, [mbCancel]);
         end;
       end;
     end;
@@ -1394,8 +1394,7 @@ begin
                       [TypeClass.ClassName, AUnitName, LineEnding, E.Message]);
             DebugLn(['TCustomFormEditor.CreateComponent ',UTF8ToConsole(s)]);
             DumpExceptionBackTrace;
-            MessageDlg(lisCFEErrorDestroyingComponent, s, mtError, [mbCancel], 0
-              );
+            IDEMessageDialog(lisCFEErrorDestroyingComponent, s, mtError, [mbCancel]);
           end;
         end;
       end;
@@ -1946,7 +1945,7 @@ begin
   if List.CurReadErrorMsg<>'' then
     Msg:=Msg+List.CurReadErrorMsg+LineEnding;
   if E is EReadError then;
-  MessageDlg(lisCodeToolsDefsReadError, Msg, mtError, [mbCancel], 0);
+  IDEMessageDialog(lisCodeToolsDefsReadError, Msg, mtError, [mbCancel]);
 end;
 
 procedure TCustomFormEditor.OnDesignerMenuItemClick(Sender: TObject);
@@ -1967,10 +1966,10 @@ begin
   except
     on E: Exception do begin
       DebugLn('TCustomFormEditor.OnDesignerMenuItemClick ERROR on CompEditor.Edit: ',E.Message);
-      MessageDlg(Format(lisErrorIn, [CompClassName]),
+      IDEMessageDialog(Format(lisErrorIn, [CompClassName]),
         Format(lisCFETheComponentEditorOfClassHasCreatedTheError,
                [CompClassName, LineEnding, E.Message]),
-        mtError,[mbOk],0);
+        mtError,[mbOk]);
     end;
   end;
   try
@@ -1978,10 +1977,10 @@ begin
   except
     on E: Exception do begin
       DebugLn('TCustomFormEditor.OnDesignerMenuItemClick ERROR on CompEditor.Free: ',E.Message);
-      MessageDlg(Format(lisErrorIn, [CompClassName]),
+      IDEMessageDialog(Format(lisErrorIn, [CompClassName]),
         Format(lisCFETheComponentEditorOfClassHasCreatedTheError,
                [CompClassName, LineEnding, E.Message]),
-        mtError,[mbOk],0);
+        mtError,[mbOk]);
     end;
   end;
 end;

@@ -42,7 +42,7 @@ uses
   Buttons, SysUtils, Classes, LCLProc, ComCtrls, Controls, Dialogs,
   Forms, StdCtrls, ExtCtrls, FileProcs, ButtonPanel,
   IDEWindowIntf, IDEImagesIntf, NewItemIntf, PackageIntf, ProjectIntf,
-  LazIDEIntf, IDEHelpIntf,
+  LazIDEIntf, IDEHelpIntf, IDEDialogs,
   InputHistory, LazarusIDEStrConsts, Project, MainIntf;
 
 type
@@ -183,8 +183,8 @@ begin
   begin
     // don't show message, when double clicking in treeview
     if not (Sender is TTreeView) then
-      MessageDlg(lisNewDlgNoItemSelected,
-        lisNewDlgPleaseSelectAnItemFirst, mtInformation, [mbOK], 0);
+      IDEMessageDialog(lisNewDlgNoItemSelected,
+        lisNewDlgPleaseSelectAnItemFirst, mtInformation, [mbOK]);
     FNewItem := nil;
     ModalResult:=mrNone;
     exit;
@@ -214,8 +214,8 @@ begin
             [ofOnlyIfExists,ofQuiet,ofLoadHiddenResource,ofUseCache],[],
             AncestorComponent)<>mrOk then
           begin
-            MessageDlg(lisErrorOpeningComponent,
-              lisUnableToOpenAncestorComponent, mtError, [mbCancel], 0);
+            IDEMessageDialog(lisErrorOpeningComponent,
+              lisUnableToOpenAncestorComponent, mtError, [mbCancel]);
             exit;
           end;
           // Set the resource class of the file descriptor
@@ -227,8 +227,8 @@ begin
       end
       else
       begin
-        MessageDlg(lisNewDlgNoItemSelected,
-          lisNewDlgPleaseSelectAnItemFirst, mtInformation, [mbOK], 0);
+        IDEMessageDialog(lisNewDlgNoItemSelected,
+          lisNewDlgPleaseSelectAnItemFirst, mtInformation, [mbOK]);
         FNewItem := nil;
         Exit;
       end

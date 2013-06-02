@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Grids, Dialogs, Controls,
   LCLProc, LCLType, Menus, StdCtrls, LazConfigStorage,
-  IDEOptionsIntf, BaseIDEIntf,
+  IDEOptionsIntf, BaseIDEIntf, IDEDialogs,
   EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts;
 
 const
@@ -264,8 +264,8 @@ end;
 
 procedure TFileFiltersOptionsFrame.SetDefaultMenuItemClick(Sender: TObject);
 begin
-  if MessageDlg(lisConfirm,
-    lisResetAllFileFiltersToDefaults, mtConfirmation, [mbCancel, mbOK], 0)<>mrOk
+  if IDEMessageDialog(lisConfirm,
+    lisResetAllFileFiltersToDefaults, mtConfirmation, [mbCancel, mbOK])<>mrOk
   then exit;
   LoadGridFromFileDialogFilter(grdFileFilters,GetDefaultFileDialogFilter,false);
 end;

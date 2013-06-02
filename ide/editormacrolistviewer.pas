@@ -5,10 +5,12 @@ unit EditorMacroListViewer;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Laz2_XMLCfg, LazUTF8, SynMacroRecorder, SynEdit, SynEditKeyCmds,
-  FileProcs, Forms, Controls, Dialogs, StdCtrls, ButtonPanel, ComCtrls, ExtCtrls, Spin, Menus,
-  LCLType, IDEWindowIntf, IDEImagesIntf, LazarusIDEStrConsts, ProjectDefs, LazConf, Project,
-  KeyMapping, KeyMapShortCutDlg, MainIntf, SrcEditorIntf, IDEHelpIntf, IDECommands, LazIDEIntf;
+  Classes, SysUtils, FileUtil, Laz2_XMLCfg, LazUTF8, SynMacroRecorder, SynEdit,
+  SynEditKeyCmds, FileProcs, Forms, Controls, Dialogs, StdCtrls, ButtonPanel,
+  ComCtrls, ExtCtrls, Spin, Menus, LCLType, IDEWindowIntf, IDEImagesIntf,
+  LazarusIDEStrConsts, ProjectDefs, LazConf, Project, KeyMapping,
+  KeyMapShortCutDlg, MainIntf, SrcEditorIntf, IDEHelpIntf, IDECommands,
+  LazIDEIntf, IDEDialogs;
 
 type
   TSynEditorMacro = class(TSynMacroRecorder) end;
@@ -996,8 +998,8 @@ begin
   if InputQuery(lisNewMacroname2, Format(lisEnterNewNameForMacroS, [m.MacroName]), s)
   then begin
     while (s <> '') and (CurrentEditorMacroList.IndexOfName(s) >= 0) do begin
-      case MessageDlg(lisDuplicateName, lisAMacroWithThisNameAlreadyExists, mtWarning,
-        mbOKCancel, 0) of
+      case IDEMessageDialog(lisDuplicateName, lisAMacroWithThisNameAlreadyExists, mtWarning,
+        mbOKCancel) of
         mrOK:
           if not InputQuery(lisNewMacroname2, Format(lisEnterNewNameForMacroS, [m.MacroName]), s)
           then s := '';
@@ -1045,7 +1047,8 @@ var
   m: TEditorMacro;
 begin
   if lbRecordedView.ItemIndex < 0 then exit;
-  if MessageDlg(lisDeleteSelectedMacro, mtConfirmation, [mbYes, mbNo], 0) = mrYes
+  if IDEMessageDialog(lisReallyDelete, lisDeleteSelectedMacro, mtConfirmation, [
+    mbYes, mbNo]) = mrYes
   then begin
     if SelectedEditorMacro = CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex] then begin
       SelectedEditorMacro := nil;

@@ -187,8 +187,8 @@ begin
       inc(i);
     if i>High(FPCSyntaxModes) then
     begin
-      MessageDlg(lisCCOErrorCaption, Format(lisInvalidMode, [NewMode]),
-        mtError, [mbCancel], 0);
+      IDEMessageDialog(lisCCOErrorCaption, Format(lisInvalidMode, [NewMode]),
+        mtError, [mbCancel]);
       exit;
     end;
   end;

@@ -317,9 +317,9 @@ begin
   begin
     if System.Pos('*', ExpandedPath) > 0 then
     begin
-      if MessageDlg(lisHint, Format(
+      if IDEMessageDialog(lisHint, Format(
         lisTheContainsAStarCharacterLazarusUsesThisAsNormalCh, [Context, LineEnding]),
-        mtWarning, [mbOK, mbCancel], 0) <> mrOk then
+        mtWarning, [mbOK, mbCancel]) <> mrOk then
         exit;
     end;
   end;
@@ -336,9 +336,9 @@ begin
       begin
         if not DirPathExistsCached(CurPath) then
         begin
-          if MessageDlg(lisCCOWarningCaption, Format(
+          if IDEMessageDialog(lisCCOWarningCaption, Format(
             lisTheContainsANotExistingDirectory, [Context, LineEnding, CurPath]),
-            mtWarning, [mbIgnore, mbCancel], 0) <> mrIgnore then
+            mtWarning, [mbIgnore, mbCancel]) <> mrIgnore then
             Exit;
         end;
       end;
@@ -357,8 +357,8 @@ begin
         ErrorMsg := SpecialCharsToStr(HasChars);
       if ErrorMsg <> '' then
       begin
-        if MessageDlg(lisCCOWarningCaption, Context + LineEnding + ErrorMsg,
-          mtWarning, [mbOK, mbCancel], 0) <> mrOk then
+        if IDEMessageDialog(lisCCOWarningCaption, Context + LineEnding + ErrorMsg,
+          mtWarning, [mbOK, mbCancel]) <> mrOk then
           exit;
       end;
     end;

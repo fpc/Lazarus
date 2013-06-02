@@ -59,7 +59,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLType, AvgLvlTree, Forms, Controls, Buttons,
   ComCtrls, StdCtrls, Menus, Dialogs, Graphics, FileUtil, ExtCtrls,
-  LazIDEIntf, IDEHelpIntf, IDECommands,
+  LazIDEIntf, IDEHelpIntf, IDECommands, IDEDialogs,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
   Project, AddToProjectDlg, PackageSystem, PackageDefs, TreeFilterEdit;
   
@@ -442,9 +442,9 @@ var
 begin
   CurDependency:=GetSelectedDependency;
   if (CurDependency<>nil) and (not CurDependency.Removed) then begin
-    if MessageDlg(lisProjInspConfirmDeletingDependency,
+    if IDEMessageDialog(lisProjInspConfirmDeletingDependency,
       Format(lisProjInspDeleteDependencyFor, [CurDependency.AsString]),
-      mtConfirmation,[mbYes,mbNo],0)<>mrYes
+      mtConfirmation,[mbYes,mbNo])<>mrYes
     then exit;
     if Assigned(OnRemoveDependency) then OnRemoveDependency(Self,CurDependency);
     exit;
@@ -454,9 +454,9 @@ begin
   if CurFile<>nil then begin
     if (not CurFile.IsPartOfProject) or (CurFile=LazProject.MainUnitInfo)
     then exit;
-    if MessageDlg(lisProjInspConfirmRemovingFile,
+    if IDEMessageDialog(lisProjInspConfirmRemovingFile,
       Format(lisProjInspRemoveFileFromProject, [CurFile.Filename]),
-      mtConfirmation,[mbYes,mbNo],0)<>mrYes
+      mtConfirmation,[mbYes,mbNo])<>mrYes
     then exit;
     if Assigned(OnRemoveFile) then OnRemoveFile(Self,CurFile);
   end;

@@ -237,8 +237,8 @@ begin
   if i<0 then exit;
   if fBuildModes.Count=1 then
   begin
-    MessageDlg(lisCCOErrorCaption, lisThereMustBeAtLeastOneBuildMode,
-      mtError,[mbCancel],0);
+    IDEMessageDialog(lisCCOErrorCaption, lisThereMustBeAtLeastOneBuildMode,
+      mtError,[mbCancel]);
     exit;
   end;
   CurMode:=fBuildModes[i];
@@ -321,9 +321,9 @@ begin
     if (aState=cbChecked) and (i=0) then
     begin
       Grid.Cells[aCol,aRow]:=Grid.Columns[aCol].ValueUnchecked;
-      MessageDlg(lisCCOErrorCaption,
+      IDEMessageDialog(lisCCOErrorCaption,
         lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn,
-        mtError,[mbCancel],0);
+        mtError,[mbCancel]);
       exit;
     end;
     CurMode.InSession:=aState=cbChecked;

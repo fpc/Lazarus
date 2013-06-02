@@ -3184,6 +3184,7 @@ resourcestring
   // codetools defines
   lisCodeToolsDefsCodeToolsDefinesPreview = 'CodeTools Defines Preview';
   lisCodeToolsDefsWriteError = 'Write error';
+  lisErrorWritingFile2 = 'Error writing file %s';
   lisErrorWritingFile = 'Error writing file "%s"';
   lisFPDocErrorWriting = 'Error writing "%s"%s%s';
   lisFPDocFPDocSyntaxError = 'FPDoc syntax error';
@@ -5653,6 +5654,7 @@ resourcestring
   lisRecord = 'Record';
   lisRepeat = 'Repeat';
   lisDeleteSelectedMacro = 'Delete selected macro?';
+  lisReallyDelete = 'Really delete?';
   lisSaveMacroAs = 'Save macro as';
   lisLoadMacroFrom = 'Load macro from';
   lisProjectMacro = 'Project';
