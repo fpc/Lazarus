@@ -1260,6 +1260,14 @@ function TPascalReaderTool.ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
 begin
   Result:=false;
   if ProcNode=nil then exit;
+  {$IFDEF CheckNodeTool}
+  if ProcNode.Desc<>ctnProcedure then begin
+    DebugLn(['TPascalReaderTool.ProcNodeHasSpecifier Desc=',ProcNode.DescAsString]);
+    CTDumpStack;
+    RaiseException('[TPascalReaderTool.ProcNodeHasSpecifier] '
+      +'internal error: invalid ProcNode');
+  end;
+  {$ENDIF}
   if (ProcNode.FirstChild=nil)
   or ((ProcNode.SubDesc and ctnsNeedJITParsing)>0) then
     BuildSubTreeForProcHead(ProcNode);
