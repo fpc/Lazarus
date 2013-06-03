@@ -39,8 +39,7 @@ interface
 
 uses
   Classes, SysUtils, types, LazLogger, Controls, Graphics, ComCtrls, Menus,
-  IDEOptionsIntf, IDEImagesIntf, CompOptsIntf,
-  EnvironmentOpts,
+  LCLProc, IDEOptionsIntf, IDEImagesIntf, CompOptsIntf, EnvironmentOpts,
   PackageSystem, PackageDefs, Project, LazarusIDEStrConsts, TransferMacros,
   ModeMatrixOpts, ModeMatrixCtrl;
 
@@ -107,6 +106,7 @@ type
     function GetCaptionValue(aCaption, aPattern: string): string;
     procedure UpdateEnabledModesInGrid(Options: TBuildMatrixOptions;
                        StorageGroup: TGroupedMatrixGroup; var HasChanged: boolean);
+    procedure UpdateGridStorageGroups;
   protected
     procedure VisibleChanged; override;
   public
@@ -480,6 +480,7 @@ end;
 procedure TCompOptModeMatrix.BMMUndoToolButtonClick(Sender: TObject);
 begin
   Grid.Undo;
+  UpdateGridStorageGroups;
   UpdateButtons;
 end;
 
@@ -536,6 +537,7 @@ end;
 procedure TCompOptModeMatrix.BMMRedoToolButtonClick(Sender: TObject);
 begin
   Grid.Redo;
+  UpdateGridStorageGroups;
   UpdateButtons;
 end;
 
@@ -781,6 +783,33 @@ begin
       inc(OptionIndex);
     end;
   end;
+end;
+
+procedure TCompOptModeMatrix.UpdateGridStorageGroups;
+var
+  i: Integer;
+  MatRow: TGroupedMatrixRow;
+  GroupRow: TGroupedMatrixGroup;
+  j: Integer;
+begin
+  fGroupIDE:=nil;
+  fGroupProject:=nil;
+  fGroupSession:=nil;
+  j:=0;
+  for i:=0 to Grid.Matrix.RowCount-1 do begin
+    MatRow:=Grid.Matrix.Rows[i];
+    if (MatRow.Group=nil) and (MatRow is TGroupedMatrixGroup) then begin
+      GroupRow:=TGroupedMatrixGroup(MatRow);
+      inc(j);
+      case j of
+      1: fGroupIDE:=GroupRow;
+      2: fGroupProject:=GroupRow;
+      3: fGroupSession:=GroupRow;
+      end;
+    end;
+  end;
+  if fGroupSession=nil then
+    raise Exception.Create('grid lost the session storage group');
 end;
 
 procedure TCompOptModeMatrix.VisibleChanged;
