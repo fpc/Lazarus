@@ -380,7 +380,7 @@ var
   FindData: TWin32FindDataW;
 begin
   Hnd := FindFirstFileW(PWideChar(UTF8ToUTF16(FileName)), FindData);
-   if Hnd <> INVALID_HANDLE_VALUE then
+   if Hnd <> Windows.INVALID_HANDLE_VALUE then
     begin
       Windows.FindClose(Hnd);
       if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) = 0 then
@@ -534,7 +534,7 @@ begin
                  { $1e = faHidden or faSysFile or faVolumeID or faDirectory }
   { FindFirstFile is a Win32 Call }
   Rslt.FindHandle:=Windows.FindFirstFileW( PWideChar(UTF8Decode(Path)),find);
-  If Rslt.FindHandle=Invalid_Handle_value then
+  If Rslt.FindHandle=Windows.Invalid_Handle_value then
   begin
     Result:=GetLastError;
     Exit;

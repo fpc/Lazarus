@@ -152,7 +152,7 @@ type
   PHKEY = ^HKEY;
 
 const
-  INVALID_HANDLE_VALUE  = 0;
+  INVALID_HANDLE_VALUE  = HANDLE(-1); // prior to 1.1 it was 0, see for example FileOpen
 
   MAXBYTE  = Byte($FF);
   MAXWORD  = Word($FFFF);

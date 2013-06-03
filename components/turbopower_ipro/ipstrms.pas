@@ -55,6 +55,9 @@ uses
   IpUtils,
   IpConst;
 
+const
+  IpFileOpenFailed = -1;
+
 { TIpMemMapStream  }
 type
   TIpMemMapStream = class(TStream)
@@ -1580,12 +1583,12 @@ end;
 
 constructor TIpDownloadFileStream.Create(const aPath : string);
 begin
-  FHandle := INVALID_HANDLE_VALUE;
+  FHandle := IpFileOpenFailed;
   inherited Create;
   dfsMakeTempFile(aPath);
 
   FHandle := THandle(FileOpen(FFileName, fmShareDenyNone + fmOpenReadWrite));
-  if (Handle = INVALID_HANDLE_VALUE) then
+  if (Handle = IpFileOpenFailed) then
 {$IFDEF Version6OrHigher}
     RaiseLastOSError; 
 {$ELSE}
@@ -1651,7 +1654,7 @@ begin
   {$IFNDEF IP_LAZARUS}
   CloseHandle(Handle);
   {$ENDIF}
-  FHandle := INVALID_HANDLE_VALUE;
+  FHandle := IpFileOpenFailed;
   {calculate the full new name}
   NewFullName := FPath + '\' + aNewName;
   {rename the file}
@@ -1671,7 +1674,7 @@ begin
     { do nothing }
   end;
 
-  if (Handle = INVALID_HANDLE_VALUE) then
+  if (Handle = IpFileOpenFailed) then
 {$IFDEF Version6OrHigher}
     RaiseLastOSError;
 {$ELSE}
@@ -1690,7 +1693,7 @@ begin
   {$IFNDEF IP_LAZARUS}
   CloseHandle(Handle);
   {$ENDIF}
-  FHandle := INVALID_HANDLE_VALUE;
+  FHandle := IpFileOpenFailed;
   {copy the file}                                                      {!!.01}
 {$IFDEF Version6OrHigher}
   {$IFNDEF IP_LAZARUS}
@@ -1710,7 +1713,7 @@ begin
     { do nothing }
   end;
 
-  if (Handle = INVALID_HANDLE_VALUE) then
+  if (Handle = IpFileOpenFailed) then
 {$IFDEF Version6OrHigher}
     RaiseLastOSError;
 {$ELSE}
