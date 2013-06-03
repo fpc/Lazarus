@@ -20,7 +20,6 @@
 
  Abstract:
    Modal dialog to show the differences between build modes.
-
 }
 unit BuildModeDiffDlg;
 
@@ -29,9 +28,9 @@ unit BuildModeDiffDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazUTF8, LazLogger, Forms, Controls, Graphics,
-  Dialogs, ButtonPanel, StdCtrls, ComCtrls, LazarusIDEStrConsts, Project,
-  CompilerOptions, CompOptsModes;
+  Classes, LazUTF8, LazLogger, Forms, ButtonPanel, StdCtrls, ComCtrls,
+  LazarusIDEStrConsts, EnvironmentOpts, Project,
+  ModeMatrixOpts, CompOptsModes;
 
 type
 
@@ -57,7 +56,7 @@ type
   end;
 
 function ShowBuildModeDiffDialog(AProject: TProject; aMode: TProjectBuildMode): TModalResult;
-
+procedure AddDiff(MatrixOptions: TBuildMatrixOptions; OldMode, NewMode: string; Diff: TStrings);
 
 implementation
 
@@ -73,6 +72,33 @@ begin
     Result:=BuildModeDiffDialog.ShowModal;
   finally
     BuildModeDiffDialog.Free;
+  end;
+end;
+
+procedure AddDiff(MatrixOptions: TBuildMatrixOptions; OldMode, NewMode: string;
+  Diff: TStrings);
+var
+  i: Integer;
+  Option: TBuildMatrixOption;
+  HasOldMode: Boolean;
+  HasNewMode: Boolean;
+  s: String;
+begin
+  if MatrixOptions=nil then exit;
+  for i:=0 to MatrixOptions.Count-1 do begin
+    Option:=MatrixOptions[i];
+    HasOldMode:=Option.FitsMode(OldMode);
+    HasNewMode:=Option.FitsMode(NewMode);
+    if HasOldMode=HasNewMode then continue;
+    if HasOldMode then
+      s:=lisDoesNotHaveMatrixOption
+    else
+      s:=lisHasMatrixOption;
+    s+=BuildMatrixOptionTypeNames[Option.Typ]+':';
+    if Option.Typ=bmotIDEMacro then
+      s+=dbgstr(Option.MacroName)+':=';
+    s+=dbgstr(Option.Value);
+    Diff.Add(s);
   end;
 end;
 
@@ -146,6 +172,12 @@ begin
       Diff:=TStringList.Create;
       DiffTool:=TCompilerDiffTool.Create(Diff);
       BaseMode.CreateDiff(CurMode,DiffTool);
+      AddDiff(EnvironmentOptions.BuildMatrixOptions,
+              CurMode.Identifier,BaseMode.Identifier,Diff);
+      AddDiff(fProject.BuildModes.SharedMatrixOptions,
+              CurMode.Identifier,BaseMode.Identifier,Diff);
+      AddDiff(fProject.BuildModes.SessionMatrixOptions,
+              CurMode.Identifier,BaseMode.Identifier,Diff);
       for j:=0 to Diff.Count-1 do
         DiffTreeView.Items.AddChild(ModeNode,Diff[j]);
       DiffTool.Free;

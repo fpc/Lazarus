@@ -145,25 +145,25 @@ object IDEOptionsDialog: TIDEOptionsDialog
       TabOrder = 0
     end
     object BuildModeManageButton: TButton
-      AnchorSideLeft.Control = BuildModeComboBox
+      AnchorSideLeft.Control = BuildModeInSessionCheckBox
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BuildModeComboBox
       AnchorSideTop.Side = asrCenter
-      Left = 242
+      Left = 334
       Height = 25
       Top = 5
-      Width = 27
-      BorderSpacing.Left = 7
+      Width = 25
+      BorderSpacing.Left = 15
       Caption = '...'
       OnClick = BuildModeManageButtonClick
       TabOrder = 1
     end
     object BuildModeInSessionCheckBox: TCheckBox
-      AnchorSideLeft.Control = BuildModeManageButton
+      AnchorSideLeft.Control = BuildModeComboBox
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BuildModeComboBox
       AnchorSideTop.Side = asrCenter
-      Left = 275
+      Left = 241
       Height = 24
       Top = 5
       Width = 78

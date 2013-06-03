@@ -21,7 +21,7 @@
  Author: Mattias Gaertner
 
  Abstract:
-   Dialog for editing build modes: add, delete, reorder, rename
+   Modal dialog for editing build modes: add, delete, reorder, rename, diff.
 }
 unit BuildModesManager;
 

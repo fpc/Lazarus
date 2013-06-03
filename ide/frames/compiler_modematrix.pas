@@ -25,9 +25,6 @@
 
  ToDo:
    - check modified
-   - build modes diff
-     - add button to ideoptionsdlg
-     - add diffs for matrix options
    - wiki
    - undo: combine changes while editing a cell
    - remove old frame (idemacrovalues.pas,lfm)

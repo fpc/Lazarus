@@ -5386,6 +5386,8 @@ resourcestring
 
   //Build mode differences dialog
   lisBuildModeDiffDifferencesBetweenBuildModes = 'Differences between build modes';
+  lisDoesNotHaveMatrixOption = 'Does not have matrix option ';
+  lisHasMatrixOption = 'Has matrix option ';
   lisBuildModeDiffMode = 'Mode:';
   lisBuildModeDiffDifferencesToOtherBuildModes = 'Differences to other build modes';
 
