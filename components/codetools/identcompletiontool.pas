@@ -1140,14 +1140,18 @@ begin
       Ident:=FoundContext.Tool.GetProcNameIdentifier(FoundContext.Node);
       NewItem := CurrentIdentifierList.FindIdentifier(Ident,true);
       if (NewItem<>nil) and (NewItem.Tool<>nil) then begin
-        if (Lvl > NewItem.Level + 1) then
-          Ident := nil // there is a previous declaration which can not be overloaded
-        else if (Lvl <> NewItem.Level) then begin
-          // there is a previous declaration on same level
-          if (NewItem.Node.Desc<>ctnProcedure)
-          or (not NewItem.Tool.ProcNodeHasSpecifier(NewItem.Node, psOVERLOAD))
+        if (NewItem.GetNode<>nil) then begin
+          if (FoundContext.Node.Parent.Desc in AllClassBaseSections)
+            <> (NewItem.Node.Parent.Desc in AllClassBaseSections)
           then
-            Ident := nil; // there is a previous declaration without 'overload'
+            exit; // class members hide normal procs and nested procs hide class members
+          if (Lvl <> NewItem.Level) then begin
+            // there is a previous declaration on a different level
+            if (NewItem.Node.Desc<>ctnProcedure)
+            or (not NewItem.Tool.ProcNodeHasSpecifier(NewItem.Node, psOVERLOAD))
+            then
+              exit; // there is a previous declaration without 'overload'
+          end;
         end;
       end;
     end;
