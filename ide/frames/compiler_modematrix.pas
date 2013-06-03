@@ -24,7 +24,6 @@
    Options frame for build mode matrix options.
 
  ToDo:
-   - check modified
    - wiki
    - undo: combine changes while editing a cell
    - remove old frame (idemacrovalues.pas,lfm)
