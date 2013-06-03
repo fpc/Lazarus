@@ -1,3 +1,28 @@
+{
+ ***************************************************************************
+ *                                                                         *
+ *   This source is free software; you can redistribute it and/or modify   *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This code is distributed in the hope that it will be useful, but      *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   General Public License for more details.                              *
+ *                                                                         *
+ *   A copy of the GNU General Public License is available on the World    *
+ *   Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also      *
+ *   obtain it by writing to the Free Software Foundation,                 *
+ *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
+ *                                                                         *
+ ***************************************************************************
+
+ Author: Mattias Gaertner
+
+ Abstract:
+   Dialog for editing build modes: add, delete, reorder, rename
+}
 unit BuildModesManager;
 
 {$mode objfpc}{$H+}
@@ -9,7 +34,7 @@ uses
   Grids, Buttons, Menus, ButtonPanel, LCLProc,
   ProjectIntf, IDEImagesIntf, IDEOptionsIntf, CompOptsIntf, IDEDialogs,
   PackageDefs, TransferMacros, PathEditorDlg, Project, LazarusIDEStrConsts,
-  CompilerOptions, IDEProcs, BuildModeDiffDlg;
+  CompilerOptions, IDEProcs, Compiler_ModeMatrix, BuildModeDiffDlg;
 
 type
 
@@ -102,6 +127,8 @@ begin
       Project1.ActiveBuildModeID:=frm.fActiveBuildMode.Identifier;
       IncreaseBuildMacroChangeStamp;
       // Load options
+      if ModeMatrixFrame<>nil then
+        ModeMatrixFrame.UpdateModes(true);
       OnLoadIDEOptionsHook(Nil, Project1.CompilerOptions);
     end;
   finally
@@ -344,7 +371,7 @@ var
   i: Integer;
   b: Boolean;
 begin
-  debugln(['TBuildModesForm.BuildModesStringGridValidateEntry Row=',aRow,' Col=',aCol]);
+  //debugln(['TBuildModesForm.BuildModesStringGridValidateEntry Row=',aRow,' Col=',aCol]);
   i:=aRow-1;
   if (i<0) or (i>=fBuildModes.Count) then exit;
   CurMode:=fBuildModes[i];
@@ -378,6 +405,7 @@ begin
           NewValue:=CurMode.Identifier;
         end;
       end;
+      Project1.BuildModes.RenameMatrixMode(CurMode.Identifier,s);
       CurMode.Identifier:=s;
     end;
   end;

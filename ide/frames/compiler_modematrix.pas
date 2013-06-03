@@ -18,9 +18,17 @@
  *                                                                         *
  ***************************************************************************
 
+ Author: Mattias Gaertner
+
+ Abstract:
+   Options frame for build mode matrix options.
+
  ToDo:
-   - when rename build mode, update option modes
+   - when rename build mode, update grid checkboxes
    - check modified
+   - build modes diff
+     - add button to ideoptionsdlg
+     - add diffs for matrix options
    - wiki
    - undo: combine changes while editing a cell
    - remove old frame (idemacrovalues.pas,lfm)
@@ -759,8 +767,11 @@ var
   GridHasChanged: Boolean;
   aMode: TGroupedMatrixMode;
   BuildModes: TProjectBuildModes;
+  ValuesHaveChanged: Boolean;
 begin
   GridHasChanged:=false;
+  ValuesHaveChanged:=false;
+
   // add/update build modes
   BuildModes:=LazProject.BuildModes;
   for i:=0 to BuildModes.Count-1 do begin
@@ -773,19 +784,24 @@ begin
     end
     else begin
       aMode:=Grid.Modes[i];
+      //debugln(['TCompOptModeMatrix.UpdateModes aMode.Caption=',aMode.Caption,' BuildMode.Identifier=',BuildMode.Identifier]);
       if aMode.Caption<>BuildMode.Identifier then begin
         aMode.Caption:=BuildMode.Identifier;
         GridHasChanged:=true;
       end;
-      aMode.Color:=aColor;
+      if aMode.Color<>aColor then begin
+        ValuesHaveChanged:=true;
+        aMode.Color:=aColor;
+      end;
     end;
   end;
 
   UpdateActiveMode;
 
+  //debugln(['TCompOptModeMatrix.UpdateModes UpdateGrid=',UpdateGrid,' GridHasChanged=',GridHasChanged]);
   if UpdateGrid and GridHasChanged then
     Grid.MatrixChanged
-  else
+  else if GridHasChanged or ValuesHaveChanged then
     Grid.Invalidate;
 end;
 

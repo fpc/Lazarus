@@ -371,7 +371,7 @@ const
  begin
    if stream.z = nil then exit;
    {$IF FPC_FULLVERSION<20701}
-   {$HINT workaround for bug 23868 when compiling with -O2}
+   {$HINT workaround for fpc bug 23868 when compiling with -O2}
    p:=stream.z;
    TFreeTypeStream(p).FUsed := false;
    {$ELSE}

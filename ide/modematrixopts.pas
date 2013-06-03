@@ -95,6 +95,7 @@ type
     procedure SetModesFromCommaSeparatedList(aList: string);
     procedure DisableModes(const DisableModeEvent: TStrToBoolEvent);
     procedure EnableMode(const aMode: string);
+    procedure RenameMode(const OldMode, NewMode: string);
     procedure LoadFromConfig(Cfg: TConfigStorage);
     procedure SaveToConfig(Cfg: TConfigStorage; const SkipModes: TStrToBoolEvent);
     procedure LoadFromXMLConfig(Cfg: TXMLConfig; const aPath: string);
@@ -120,12 +121,13 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure DisableModes(const IsModeEvent: TStrToBoolEvent);
     function Count: integer;
     property Items[Index: integer]: TBuildMatrixOption read GetItems; default;
     function IndexOf(Option: TBuildMatrixOption): integer;
     function Add(Typ: TBuildMatrixOptionType = bmotCustom; Targets: string = '*'): TBuildMatrixOption;
     procedure Delete(Index: integer);
+    procedure DisableModes(const IsModeEvent: TStrToBoolEvent);
+    procedure RenameMode(const OldMode, NewMode: string);
 
     // equals, modified
     property ChangeStep: int64 read FChangeStep;
@@ -467,6 +469,14 @@ begin
     Items[i].DisableModes(IsModeEvent);
 end;
 
+procedure TBuildMatrixOptions.RenameMode(const OldMode, NewMode: string);
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do
+    Items[i].RenameMode(OldMode,NewMode);
+end;
+
 function TBuildMatrixOptions.Count: integer;
 begin
   Result:=fItems.Count;
@@ -790,6 +800,30 @@ procedure TBuildMatrixOption.EnableMode(const aMode: string);
 begin
   if FitsMode(aMode) then exit;
   Modes:=Modes+aMode+LineEnding;
+end;
+
+procedure TBuildMatrixOption.RenameMode(const OldMode, NewMode: string);
+var
+  CurModes: String;
+  p: PChar;
+  StartP: PChar;
+  StartPos: SizeInt;
+  CurMode: String;
+begin
+  CurModes:=Modes;
+  p:=PChar(CurModes);
+  while p^<>#0 do begin
+    StartP:=p;
+    while not (p^ in [#0,#10,#13]) do inc(p);
+    StartPos:=StartP-PChar(CurModes)+1;
+    CurMode:=copy(CurModes,StartPos,p-StartP);
+    if CompareText(CurMode,OldMode)=0 then begin
+      ReplaceSubstring(CurModes,StartPos,p-StartP,NewMode);
+      p:=Pointer(CurModes)+StartPos-1+length(NewMode);
+    end;
+    while p^ in [#10,#13] do inc(p);
+  end;
+  Modes:=CurModes;
 end;
 
 procedure TBuildMatrixOption.LoadFromConfig(Cfg: TConfigStorage);

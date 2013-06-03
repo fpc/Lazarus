@@ -23,7 +23,7 @@
   Abstract:
     This unit defines a dialog for the lazarus options.
 }
-unit IdeOptionsDlg;
+unit IDEOptionsDlg;
 
 {$mode objfpc}{$H+}
 

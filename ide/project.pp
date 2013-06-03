@@ -743,6 +743,7 @@ type
     function IsModified(InSession: boolean): boolean;
     function GetSessionModes: TStringList;
     function IsSessionMode(const ModeIdentifier: string): boolean;
+    procedure RenameMatrixMode(const OldName, NewName: string);
   public
     property Items[Index: integer]: TProjectBuildMode read GetItems; default;
     property ChangeStamp: integer read FChangeStamp;
@@ -7562,6 +7563,12 @@ begin
       exit(BuildMode.InSession);
   end;
   Result:=false;
+end;
+
+procedure TProjectBuildModes.RenameMatrixMode(const OldName, NewName: string);
+begin
+  SharedMatrixOptions.RenameMode(OldName,NewName);
+  SessionMatrixOptions.RenameMode(OldName,NewName);
 end;
 
 initialization
