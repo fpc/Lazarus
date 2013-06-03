@@ -13,7 +13,6 @@
           <MsgFileName Value=""/>
         </CompilerMessages>
         <CompilerPath Value="$(CompPath)"/>
-        <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
     <Description Value="TCairoPrinterCanvas using the Cairo library."/>
@@ -31,7 +30,7 @@
       </Item2>
       <Item3>
         <Filename Value="cairocanvasall.pas"/>
-        <UnitName Value="cairocanvasall"/>
+        <UnitName Value="CairoCanvasAll"/>
       </Item3>
     </Files>
     <RequiredPkgs Count="1">
