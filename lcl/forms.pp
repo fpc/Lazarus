@@ -846,6 +846,7 @@ type
     procedure WMNCHitTest(var Message: TLMessage); message LM_NCHITTEST;
     procedure DoShowWindow; override;
     procedure UpdateRegion;
+    procedure SetColor(Value: TColor); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

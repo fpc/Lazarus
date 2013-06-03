@@ -90,7 +90,15 @@ begin
     ARect := ClientRect;
     Rgn := ThemeServices.GetDetailRegion(Canvas.Handle, Details, ARect);
     SetWindowRgn(Handle, Rgn, False);
-  end;
+  end
+  else
+    SetWindowRgn(Handle, 0, False);
+end;
+
+procedure THintWindow.SetColor(Value: TColor);
+begin
+  inherited SetColor(Value);
+  UpdateRegion;
 end;
 
 function THintWindow.GetDrawTextFlags: Cardinal;
