@@ -42,6 +42,8 @@ type
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
+    class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); virtual;
+    class procedure SetSpacing(const ABitBtn: TCustomBitBtn; const AValue: Integer); virtual;
   end;
 
   { TQtWSSpeedButton }
@@ -126,6 +128,24 @@ begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetLayout') then
     Exit;
   TQtBitBtn(ABitBtn.Handle).GlyphLayout := Ord(ABitBtn.Layout);
+  if TQtBitBtn(ABitBtn.Handle).getVisible then
+    TQtBitBtn(ABitBtn.Handle).Update(nil);
+end;
+
+class procedure TQtWSBitBtn.SetMargin(const ABitBtn: TCustomBitBtn;
+  const AValue: Integer);
+begin
+  if not WSCheckHandleAllocated(ABitBtn, 'SetMargin') then
+    Exit;
+  if TQtBitBtn(ABitBtn.Handle).getVisible then
+    TQtBitBtn(ABitBtn.Handle).Update(nil);
+end;
+
+class procedure TQtWSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
+  const AValue: Integer);
+begin
+  if not WSCheckHandleAllocated(ABitBtn, 'SetSpacing') then
+    Exit;
   if TQtBitBtn(ABitBtn.Handle).getVisible then
     TQtBitBtn(ABitBtn.Handle).Update(nil);
 end;

@@ -1818,6 +1818,7 @@ const
 implementation
 
 uses
+  Buttons,
   qtCaret,
   qtproc,
   qtprivate,
@@ -5509,8 +5510,6 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   end;
 
   function PaintBtn: Boolean;
-  const
-    IconDistance = 4; // hardcoded in qt libs (distance between icon and text)
   var
     APainter: QPainterH;
     R: TRect;
@@ -5524,6 +5523,8 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
     AText: WideString;
     DTFLAGS: DWord;
     ContentSize: TSize;
+    IconDistance: Integer;
+    IconMargin: Integer;
   begin
     Result := False;
     if (FIcon = nil) then
@@ -5531,6 +5532,12 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 
     // paint button
     QObject_event(Widget, Event);
+
+    IconDistance := TCustomBitBtn(LCLObject).Spacing;
+    if IconDistance < 0 then
+      IconDistance := 4; {qt default}
+
+    IconMargin := TCustomBitBtn(LCLObject).Margin;
 
     // now we paint icon & text
     APainter := QPainter_create(QWidget_to_QPaintDevice(Widget));
@@ -5631,6 +5638,9 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
         end else
           CenterOffset := ((R.Bottom - R.Top) div 2) - (ContentSize.cy div 2);
 
+        if IconMargin >= 0 then
+          CenterOffset := IconMargin;
+
         if FText <> '' then
         begin
           if FGlyphLayout = 0 then
@@ -5650,11 +5660,18 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 
         R := R2;
         if FGlyphLayout = 0 then
-          inc(R.Left, CenterOffset)
+          inc(R.Left, CenterOffset + IconDistance)
         else
         if FGlyphLayout = 1 then
-          dec(R.Right, CenterOffset);
+          dec(R.Right, CenterOffset + IconDistance)
+        else
+        if FGlyphLayout = 2 then
+          inc(R.Top, CenterOffset + IconDistance)
+        else
+        if FGlyphLayout = 3 then
+          dec(R.Bottom, CenterOffset + IconDistance);
       end;
+
       if AText <> '' then
         QPainter_drawText(APainter, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
           DTFlagsToQtFlags(DTFLAGS), @AText);
