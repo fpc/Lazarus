@@ -98,7 +98,8 @@ end;
 procedure THintWindow.SetColor(Value: TColor);
 begin
   inherited SetColor(Value);
-  UpdateRegion;
+  if HandleAllocated then
+    UpdateRegion;
 end;
 
 function THintWindow.GetDrawTextFlags: Cardinal;
