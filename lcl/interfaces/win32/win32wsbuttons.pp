@@ -298,15 +298,24 @@ var
 var
   RGBA: PRGBAQuad;
   AlphaDraw: Boolean;
+  ASpacing: Integer;
 begin
   // gather info about bitbtn
   BitBtnHandle := BitBtn.Handle;
+  ASpacing := BitBtn.Spacing;
+
+  {set spacing to LCL's default if bitbtn does not have glyph.issue #23255}
+  if not BitBtn.CanShowGlyph then
+    ASpacing := -1;
+
   if BitBtn.CanShowGlyph then
   begin
     srcWidth := BitBtn.Glyph.Width;
     srcHeight := BitBtn.Glyph.Height;
     if BitBtn.NumGlyphs > 1 then
       srcWidth := srcWidth div BitBtn.NumGlyphs;
+    if (srcWidth = 0) or (srcHeight = 0) then
+      ASpacing := -1;
   end else
   begin
     srcWidth := 0;
@@ -320,10 +329,10 @@ begin
   case BitBtnLayout of
     blGlyphLeft, blGlyphRight:
     begin
-      if BitBtn.Spacing = -1 then
+      if ASpacing = -1 then
         newWidth := BitBtn.Width - 10
       else
-        newWidth := TextSize.cx + srcWidth + BitBtn.Spacing;
+        newWidth := TextSize.cx + srcWidth + ASpacing;
       newHeight := TextSize.cy;
       if newHeight < srcHeight then
         newHeight := srcHeight;
@@ -334,19 +343,19 @@ begin
         begin
           XDestBitmap := 0;
           XDestText := srcWidth;
-          if BitBtn.Spacing = -1 then
+          if ASpacing = -1 then
             inc(XDestText, (newWidth - srcWidth - TextSize.cx) div 2)
           else
-            inc(XDestText, BitBtn.Spacing);
+            inc(XDestText, ASpacing);
         end;
         blGlyphRight:
         begin
           XDestBitmap := newWidth - srcWidth;
           XDestText := XDestBitmap - TextSize.cx;
-          if BitBtn.Spacing = -1 then
+          if ASpacing = -1 then
             dec(XDestText, (newWidth - srcWidth - TextSize.cx) div 2)
           else
-            dec(XDestText, BitBtn.Spacing);
+            dec(XDestText, ASpacing);
         end;
       end;
     end;
@@ -355,10 +364,10 @@ begin
       newWidth := TextSize.cx;
       if newWidth < srcWidth then
         newWidth := srcWidth;
-      if BitBtn.Spacing = -1 then
+      if ASpacing = -1 then
         newHeight := BitBtn.Height - 10
       else
-        newHeight := TextSize.cy + srcHeight + BitBtn.Spacing;
+        newHeight := TextSize.cy + srcHeight + ASpacing;
       XDestBitmap := (newWidth - srcWidth) shr 1;
       XDestText := (newWidth - TextSize.cx) shr 1;
       case BitBtnLayout of
@@ -366,19 +375,19 @@ begin
         begin
           YDestBitmap := 0;
           YDestText := srcHeight;
-          if BitBtn.Spacing = -1 then
+          if ASpacing = -1 then
             inc(YDestText, (newHeight - srcHeight - TextSize.cy) div 2)
           else
-            inc(YDestText, BitBtn.Spacing);
+            inc(YDestText, ASpacing);
         end;
         blGlyphBottom:
         begin
           YDestBitmap := newHeight - srcHeight;
           YDestText := YDestBitmap - TextSize.cy;
-          if BitBtn.Spacing = -1 then
+          if ASpacing = -1 then
             dec(YDestText, (newHeight - srcHeight - TextSize.cy) div 2)
           else
-            dec(YDestText, BitBtn.Spacing);
+            dec(YDestText, ASpacing);
         end;
       end;
     end;
