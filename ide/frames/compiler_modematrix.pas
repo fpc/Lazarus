@@ -24,7 +24,6 @@
    Options frame for build mode matrix options.
 
  ToDo:
-   - when rename build mode, update grid checkboxes
    - check modified
    - build modes diff
      - add button to ideoptionsdlg
@@ -42,9 +41,7 @@ unit Compiler_ModeMatrix;
 interface
 
 uses
-  Classes, SysUtils, types, LazFileUtils, LazLogger,
-  LResources, Forms, Controls, Graphics, ComCtrls, Menus,
-  KeywordFuncLists,
+  Classes, SysUtils, types, LazLogger, Controls, Graphics, ComCtrls, Menus,
   IDEOptionsIntf, IDEImagesIntf, CompOptsIntf,
   EnvironmentOpts,
   PackageSystem, PackageDefs, Project, LazarusIDEStrConsts, TransferMacros,
@@ -111,6 +108,8 @@ type
     procedure CreateNewOption(aTyp, aValue: string);
     procedure CreateNewTarget;
     function GetCaptionValue(aCaption, aPattern: string): string;
+    procedure UpdateEnabledModesInGrid(Options: TBuildMatrixOptions;
+                       StorageGroup: TGroupedMatrixGroup; var HasChanged: boolean);
   protected
     procedure VisibleChanged; override;
   public
@@ -752,6 +751,41 @@ begin
   Result:=copy(aCaption,p,length(aCaption)-length(aPattern)+2);
 end;
 
+procedure TCompOptModeMatrix.UpdateEnabledModesInGrid(
+  Options: TBuildMatrixOptions; StorageGroup: TGroupedMatrixGroup;
+  var HasChanged: boolean);
+// update enabled modes in grid
+var
+  GrpIndex: Integer;
+  Target: TGroupedMatrixGroup;
+  i: Integer;
+  ValueRow: TGroupedMatrixValue;
+  OptionIndex: Integer;
+  Option: TBuildMatrixOption;
+begin
+  OptionIndex:=0;
+  for GrpIndex:=0 to StorageGroup.Count-1 do begin
+    Target:=TGroupedMatrixGroup(StorageGroup[GrpIndex]);
+    if not (Target is TGroupedMatrixGroup) then
+      exit;
+    //debugln(['TCompOptModeMatrix.UpdateEnabledModesInGrid Target=',Target.AsString]);
+    for i:=0 to Target.Count-1 do begin
+      ValueRow:=TGroupedMatrixValue(Target[i]);
+      if not (ValueRow is TGroupedMatrixValue) then
+        exit;
+      //debugln(['TCompOptModeMatrix.UpdateEnabledModesInGrid ValueRow=',ValueRow.AsString]);
+      if OptionIndex>=Options.Count then exit;
+      Option:=Options[OptionIndex];
+      //debugln(['TCompOptModeMatrix.UpdateEnabledModesInGrid Option.Modes="',dbgstr(Option.Modes),'" ValueRow.GetNormalizedModes="',dbgstr(ValueRow.GetNormalizedModes),'"']);
+      if Option.Modes<>ValueRow.GetNormalizedModes then begin
+        HasChanged:=true;
+        ValueRow.Modes.Text:=Option.Modes;
+      end;
+      inc(OptionIndex);
+    end;
+  end;
+end;
+
 procedure TCompOptModeMatrix.VisibleChanged;
 begin
   inherited VisibleChanged;
@@ -795,6 +829,10 @@ begin
       end;
     end;
   end;
+
+  UpdateEnabledModesInGrid(EnvironmentOptions.BuildMatrixOptions,GroupIDE,ValuesHaveChanged);
+  UpdateEnabledModesInGrid(LazProject.BuildModes.SharedMatrixOptions,GroupProject,ValuesHaveChanged);
+  UpdateEnabledModesInGrid(LazProject.BuildModes.SessionMatrixOptions,GroupSession,ValuesHaveChanged);
 
   UpdateActiveMode;
 

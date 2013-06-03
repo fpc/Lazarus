@@ -27,9 +27,9 @@ interface
 
 uses
   Classes, SysUtils, math, types, contnrs, Controls, LCLType, LCLIntf, Grids,
-  Graphics, StdCtrls, Menus, LazLogger, LazConfigStorage, Laz2_XMLCfg,
-  FileProcs, KeywordFuncLists,
-  IDEProcs, ModeMatrixOpts;
+  Graphics, StdCtrls, Menus, LazLogger,
+  FileProcs,
+  IDEProcs;
 
 const
   DefaultModeMatrixMaxUndo = 100;

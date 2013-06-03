@@ -30,11 +30,10 @@ unit BuildModesManager;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Grids, Buttons, Menus, ButtonPanel, LCLProc,
-  ProjectIntf, IDEImagesIntf, IDEOptionsIntf, CompOptsIntf, IDEDialogs,
-  PackageDefs, TransferMacros, PathEditorDlg, Project, LazarusIDEStrConsts,
-  CompilerOptions, IDEProcs, Compiler_ModeMatrix, BuildModeDiffDlg;
+  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls,
+  Grids, Buttons, Menus, ButtonPanel, LCLProc, IDEOptionsIntf, IDEDialogs,
+  TransferMacros, Project, LazarusIDEStrConsts,
+  CompilerOptions, Compiler_ModeMatrix, BuildModeDiffDlg;
 
 type
 
@@ -114,7 +113,7 @@ begin
     // Save changes
     OnSaveIDEOptionsHook(Nil, Project1.CompilerOptions);
     // Copy to dialog
-    frm.fBuildModes.Assign(Project1.BuildModes, True);
+    frm.BuildModes.Assign(Project1.BuildModes, True);
     frm.SetActiveBuildModeByID(Project1.ActiveBuildMode.Identifier,true);
     frm.fShowSession:=aShowSession;
     // Show the form. Let user add / edit / delete.
@@ -122,7 +121,7 @@ begin
     if Result = mrOk then
     begin
       // Copy back from dialog
-      Project1.BuildModes.Assign(frm.fBuildModes, True);
+      Project1.BuildModes.Assign(frm.BuildModes, True);
       // Switch
       Project1.ActiveBuildModeID:=frm.fActiveBuildMode.Identifier;
       IncreaseBuildMacroChangeStamp;
@@ -180,7 +179,7 @@ end;
 
 destructor TBuildModesForm.Destroy;
 begin
-  fBuildModes.Free;
+  FreeAndNil(fBuildModes);
   inherited Destroy;
 end;
 
@@ -324,7 +323,7 @@ var
   i: Integer;
   Grid: TStringGrid;
 begin
-  debugln(['TBuildModesForm.BuildModesCheckboxToggled Row=',aRow,' Col=',aCol,' ',ord(aState)]);
+  //debugln(['TBuildModesForm.BuildModesCheckboxToggled Row=',aRow,' Col=',aCol,' ',ord(aState)]);
   i:=aRow-1;
   if (i<0) or (i>=fBuildModes.Count) then exit;
   CurMode:=fBuildModes[i];
@@ -333,12 +332,12 @@ begin
   begin
     // activate
     if CurMode=fActiveBuildMode then begin
-      debugln(['TBuildModesForm.BuildModesCheckboxToggled, is ActiveBuildMode',i]);
+      //debugln(['TBuildModesForm.BuildModesCheckboxToggled, is ActiveBuildMode',i]);
       // Switch back to Checked state. There must always be an active mode
       Grid.Cells[aCol,aRow]:=Grid.Columns[aCol].ValueChecked;
     end
     else begin
-      debugln(['TBuildModesForm.BuildModesCheckboxToggled, another Mode',i]);
+      //debugln(['TBuildModesForm.BuildModesCheckboxToggled, another Mode',i]);
       fActiveBuildMode:=CurMode;
       FillBuildModesGrid(True);
     end;
@@ -405,7 +404,7 @@ begin
           NewValue:=CurMode.Identifier;
         end;
       end;
-      Project1.BuildModes.RenameMatrixMode(CurMode.Identifier,s);
+      BuildModes.RenameMatrixMode(CurMode.Identifier,s);
       CurMode.Identifier:=s;
     end;
   end;
