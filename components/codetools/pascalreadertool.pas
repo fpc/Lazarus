@@ -1260,6 +1260,8 @@ function TPascalReaderTool.ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
 begin
   Result:=false;
   if ProcNode=nil then exit;
+  if ProcNode.Desc=ctnProcedureHead then
+    ProcNode:=ProcNode.Parent;
   {$IFDEF CheckNodeTool}
   if ProcNode.Desc<>ctnProcedure then begin
     DebugLn(['TPascalReaderTool.ProcNodeHasSpecifier Desc=',ProcNode.DescAsString]);
