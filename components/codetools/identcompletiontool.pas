@@ -229,7 +229,7 @@ type
     function GetFilteredCount: integer;
     function HasIdentifier(Identifier: PChar; const ParamList: string): boolean;
     function FindIdentifier(Identifier: PChar; const ParamList: string): TIdentifierListItem;
-    function FindIdentifier(Identifier: PChar): TIdentifierListItem;
+    function FindIdentifier(Identifier: PChar; PreferProc: boolean): TIdentifierListItem;
     function FindCreatedIdentifier(const Ident: string): integer;
     function CreateIdentifier(const Ident: string): PChar;
     function StartUpAtomInFrontIs(const s: string): boolean;
@@ -695,7 +695,8 @@ begin
     Result:=nil;
 end;
 
-function TIdentifierList.FindIdentifier(Identifier: PChar): TIdentifierListItem;
+function TIdentifierList.FindIdentifier(Identifier: PChar; PreferProc: boolean
+  ): TIdentifierListItem;
 var
   AVLNode: TAVLTreeNode;
   StartNode: TAVLTreeNode;
@@ -705,27 +706,32 @@ begin
   // ignore ParamList (for checking function overloading)
   StartNode:=FIdentView.FindKey(FIdentSearchItem,@CompareIdentListSearchWithItemsWithoutParams);
   if StartNode=nil then exit;
-  if not (TIdentifierListItem(StartNode.Data).GetDesc in [ctnProcedure,ctnProcedureHead])
+  // identifier found, check preference
+  if (TIdentifierListItem(StartNode.Data).GetDesc in [ctnProcedure,ctnProcedureHead])=PreferProc
   then
     exit(TIdentifierListItem(StartNode.Data));
-  // identifier is a proc, find the same identifier that is not a proc
+
+  // identifier is a (not) proc, find the same identifier that fits PreferProc
+
+  // search in next nodes
   AVLNode:=StartNode;
   repeat
     AVLNode:=FIdentView.FindSuccessor(AVLNode);
     if (AVLNode=nil)
     or (CompareIdentifiers(Identifier,PChar(TIdentifierListItem(AVLNode.Data).Identifier))<>0)
     then break;
-    if not (TIdentifierListItem(AVLNode.Data).GetDesc in [ctnProcedure,ctnProcedureHead])
+    if (TIdentifierListItem(AVLNode.Data).GetDesc in [ctnProcedure,ctnProcedureHead])=PreferProc
     then
       exit(TIdentifierListItem(AVLNode.Data));
   until false;
+  // search in previous nodes
   AVLNode:=StartNode;
   repeat
     AVLNode:=FIdentView.FindPrecessor(AVLNode);
     if (AVLNode=nil)
     or (CompareIdentifiers(Identifier,PChar(TIdentifierListItem(AVLNode.Data).Identifier))<>0)
     then break;
-    if not (TIdentifierListItem(AVLNode.Data).GetDesc in [ctnProcedure,ctnProcedureHead])
+    if (TIdentifierListItem(AVLNode.Data).GetDesc in [ctnProcedure,ctnProcedureHead])=PreferProc
     then
       exit(TIdentifierListItem(AVLNode.Data));
   until false;
@@ -1132,7 +1138,7 @@ begin
   ctnProcedure,ctnProcedureHead:
     begin
       Ident:=FoundContext.Tool.GetProcNameIdentifier(FoundContext.Node);
-      NewItem := CurrentIdentifierList.FindIdentifier(Ident);
+      NewItem := CurrentIdentifierList.FindIdentifier(Ident,true);
       if (NewItem<>nil) and (NewItem.Tool<>nil) then begin
         if (Lvl > NewItem.Level + 1) then
           Ident := nil // there is a previous declaration which can not be overloaded
