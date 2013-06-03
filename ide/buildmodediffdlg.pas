@@ -46,28 +46,29 @@ type
     procedure ModeComboBoxChange(Sender: TObject);
   private
     FBaseMode: TProjectBuildMode;
-    fProject: TProject;
+    FBuildModes: TProjectBuildModes;
     procedure FillModeComboBox;
     procedure FillDiffTreeView;
   public
     procedure SetBuildMode(aMode: TProjectBuildMode);
-    property LazProject: TProject read fProject;
+    property BuildModes: TProjectBuildModes read FBuildModes write FBuildModes;
     property BaseMode: TProjectBuildMode read FBaseMode;
   end;
 
-function ShowBuildModeDiffDialog(AProject: TProject; aMode: TProjectBuildMode): TModalResult;
+function ShowBuildModeDiffDialog(BuildModes: TProjectBuildModes; aMode: TProjectBuildMode): TModalResult;
 procedure AddDiff(MatrixOptions: TBuildMatrixOptions; OldMode, NewMode: string; Diff: TStrings);
 
 implementation
 
 
-function ShowBuildModeDiffDialog(AProject: TProject; aMode: TProjectBuildMode): TModalResult;
+function ShowBuildModeDiffDialog(BuildModes: TProjectBuildModes;
+  aMode: TProjectBuildMode): TModalResult;
 var
   BuildModeDiffDialog: TBuildModeDiffDialog;
 begin
   BuildModeDiffDialog:=TBuildModeDiffDialog.Create(nil);
   try
-    BuildModeDiffDialog.fProject:=AProject;
+    BuildModeDiffDialog.BuildModes:=BuildModes;
     BuildModeDiffDialog.SetBuildMode(aMode);
     Result:=BuildModeDiffDialog.ShowModal;
   finally
@@ -119,14 +120,14 @@ procedure TBuildModeDiffDialog.ModeComboBoxChange(Sender: TObject);
 var
   i: Integer;
 begin
-  if fProject<>nil then
-    for i:=0 to fProject.BuildModes.Count-1 do
-      if UTF8CompareText(fProject.BuildModes[i].GetCaption,ModeComboBox.Text)=0
-      then begin
-        fBaseMode:=fProject.BuildModes[i];
-        FillDiffTreeView;
-        break;
-      end;
+  if BuildModes=nil then exit;
+  for i:=0 to BuildModes.Count-1 do
+    if UTF8CompareText(BuildModes[i].GetCaption,ModeComboBox.Text)=0
+    then begin
+      fBaseMode:=BuildModes[i];
+      FillDiffTreeView;
+      break;
+    end;
 end;
 
 procedure TBuildModeDiffDialog.FillModeComboBox;
@@ -136,9 +137,9 @@ var
 begin
   sl:=TStringList.Create;
   try
-    if fProject<>nil then
-      for i:=0 to fProject.BuildModes.Count-1 do
-        sl.Add(fProject.BuildModes[i].GetCaption);
+    if BuildModes<>nil then
+      for i:=0 to BuildModes.Count-1 do
+        sl.Add(BuildModes[i].GetCaption);
     ModeComboBox.Items.Assign(sl);
     if BaseMode<>nil then begin
       ModeComboBox.Text:=BaseMode.GetCaption;
@@ -162,11 +163,11 @@ var
 begin
   DiffTreeView.BeginUpdate;
   DiffTreeView.Items.Clear;
-  if fProject<>nil then
+  if BuildModes<>nil then
   begin
-    for i := 0 to fProject.BuildModes.Count - 1 do
+    for i := 0 to BuildModes.Count - 1 do
     begin
-      CurMode:=fProject.BuildModes[i];
+      CurMode:=BuildModes[i];
       if CurMode=BaseMode then continue;
       ModeNode:=DiffTreeView.Items.Add(nil,CurMode.GetCaption);
       Diff:=TStringList.Create;
@@ -174,9 +175,9 @@ begin
       BaseMode.CreateDiff(CurMode,DiffTool);
       AddDiff(EnvironmentOptions.BuildMatrixOptions,
               CurMode.Identifier,BaseMode.Identifier,Diff);
-      AddDiff(fProject.BuildModes.SharedMatrixOptions,
+      AddDiff(BuildModes.SharedMatrixOptions,
               CurMode.Identifier,BaseMode.Identifier,Diff);
-      AddDiff(fProject.BuildModes.SessionMatrixOptions,
+      AddDiff(BuildModes.SessionMatrixOptions,
               CurMode.Identifier,BaseMode.Identifier,Diff);
       for j:=0 to Diff.Count-1 do
         DiffTreeView.Items.AddChild(ModeNode,Diff[j]);
@@ -193,7 +194,7 @@ begin
   if aMode<>nil then
   begin
     if aMode.LazProject<>nil then
-      fProject:=aMode.LazProject;
+      BuildModes:=aMode.LazProject.BuildModes;
     FBaseMode:=aMode;
   end else
   begin

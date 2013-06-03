@@ -213,7 +213,7 @@ end;
 procedure TBuildModesForm.BuildModeDiffSpeedButtonClick(Sender: TObject);
 begin
   // show diff dialog
-  ShowBuildModeDiffDialog(Project1,GetSelectedBuildMode);
+  ShowBuildModeDiffDialog(BuildModes,GetSelectedBuildMode);
 end;
 
 procedure TBuildModesForm.BuildModeAddSpeedButtonClick(Sender: TObject);
