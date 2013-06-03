@@ -41,6 +41,7 @@ function CoordToCanvasX(ACoord: Double; ADestX: Integer; AMulX: Double): Integer
 function CoordToCanvasY(ACoord: Double; ADestY: Integer; AMulY: Double): Integer; inline;
 // Other routines
 function SeparateString(AString: string; ASeparator: char): T10Strings;
+function Make3DPoint(AX, AY, AZ: Double): T3DPoint;
 // Mathematical routines
 procedure EllipticalArcToBezier(Xc, Yc, Rx, Ry, startAngle, endAngle: Double; var P1, P2, P3, P4: T3DPoint);
 procedure CircularArcToBezier(Xc, Yc, R, startAngle, endAngle: Double; var P1, P2, P3, P4: T3DPoint);
@@ -139,6 +140,13 @@ begin
     else
       Result[CurrentPart] := Result[CurrentPart] + Copy(AString, i, 1);
   end;
+end;
+
+function Make3DPoint(AX, AY, AZ: Double): T3DPoint;
+begin
+  Result.X := AX;
+  Result.Y := AY;
+  Result.Z := AZ;
 end;
 
 { Considering a counter-clockwise arc, elliptical and alligned to the axises
@@ -288,6 +296,7 @@ begin
 end;
 
 // Rotates a point P around RotCenter
+// alpha angle in radians
 function Rotate3DPointInXY(P, RotCenter: T3DPoint; alpha:double): T3DPoint;
 var
   sinus, cosinus : Extended;

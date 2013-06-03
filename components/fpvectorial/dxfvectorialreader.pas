@@ -1622,7 +1622,7 @@ var
   lName: string;
   lBlock: TvBlock;
   PosX, PosY, PosZ: Double;
-  lRotationAngle: Double;
+  lRotationAngle: Double = 0.0;
 begin
   PosX := 0.0;
   PosY := 0.0;
@@ -1645,7 +1645,7 @@ begin
       10: PosX := CurToken.FloatValue;
       20: PosY := CurToken.FloatValue;
       30: PosZ := CurToken.FloatValue;
-      50: lRotationAngle := CurToken.FloatValue;
+      50: lRotationAngle := -1 * CurToken.FloatValue * Pi / 180;
     end;
   end;
 
@@ -1744,6 +1744,24 @@ begin
 end;
 
 {.$define FPVECTORIALDEBUG_LWPOLYLINE}
+{
+100 Subclass marker (AcDbPolyline)
+90  Number of vertices
+70  Polyline flag (bit-coded); default is 0:
+    1 = Closed; 128 = Plinegen
+43  Constant width (optional; default = 0). Not used if variable width (codes 40 and/or 41) is set
+38  Elevation (optional; default = 0)
+39  Thickness (optional; default = 0)
+10  Vertex coordinates (in OCS), multiple entries; one entry for each vertex
+    DXF: X value; APP: 2D point
+20  DXF: Y value of vertex coordinates (in OCS), multiple entries; one entry for each vertex
+40  Starting width (multiple entries; one entry for each vertex) (optional; default = 0; multiple entries). Not used if constant width (code 43) is set
+41  End width (multiple entries; one entry for each vertex) (optional; default = 0; multiple entries). Not used if constant width (code 43) is set
+42  Bulge (multiple entries; one entry for each vertex) (optional; default = 0)
+210 Extrusion direction (optional; default = 0, 0, 1)
+    DXF: X value; APP: 3D vector
+220, 230 DXF: Y and Z values of extrusion direction (optional)
+}
 function TvDXFVectorialReader.ReadENTITIES_LWPOLYLINE(ATokens: TDXFTokens;
   AData: TvVectorialPage; ADoc: TvVectorialDocument; AOnlyCreate: Boolean = False): TPath;
 var
@@ -1751,6 +1769,7 @@ var
   i, curPoint: Integer;
   // LINE
   LWPolyline: array of TLWPOLYLINEElement;
+  LWFlags: Integer = 0;
 begin
   curPoint := -1;
   Result := nil;
@@ -1761,7 +1780,7 @@ begin
     CurToken := TDXFToken(ATokens.Items[i]);
 
     // Avoid an exception by previously checking if the conversion can be made
-    if CurToken.GroupCode in [10, 20, 30, 11, 21, 31] then
+    if CurToken.GroupCode in [10, 20, 30, 11, 21, 31, 70] then
     begin
       CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
     end;
@@ -1778,7 +1797,17 @@ begin
         LWPolyline[curPoint].X := CurToken.FloatValue - DOC_OFFSET.X;
       end;
       20: LWPolyline[curPoint].Y := CurToken.FloatValue - DOC_OFFSET.Y;
+      70: LWFlags := Round(CurToken.FloatValue);
     end;
+  end;
+
+  // In case of a Flag="Closed" then we need to close the line
+  if LWFlags = 1 then
+  begin
+    Inc(curPoint);
+    SetLength(LWPolyline, curPoint+1);
+    LWPolyline[curPoint].X := LWPolyline[0].X;
+    LWPolyline[curPoint].Y := LWPolyline[0].Y;
   end;
 
   // And now write it

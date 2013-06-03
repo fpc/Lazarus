@@ -151,6 +151,7 @@ type
     Previous: TPathSegment;
     Next: TPathSegment;
     procedure Move(ADeltaX, ADeltaY: Double); virtual;
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); virtual; // Angle in radians
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
   end;
 
@@ -168,6 +169,7 @@ type
   public
     X, Y: Double;
     procedure Move(ADeltaX, ADeltaY: Double); override;
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
@@ -246,7 +248,7 @@ type
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); virtual;
     function  GetSubpartCount: Integer; virtual;
     procedure PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double); virtual;
-    procedure Rotate(AAngle: Double); virtual;
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); virtual; // Angle in radians
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
     function AdjustColorToBackground(AColor: TFPColor; ARenderInfo: TvRenderInfo): TFPColor;
@@ -260,6 +262,8 @@ type
   { TvNamedEntity }
 
   TvNamedEntity = class(TvEntity)
+  protected
+    FExtraDebugStr: string;
   public
     Name: string;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
@@ -336,6 +340,7 @@ type
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); override;
     function  MoveToSubpart(ASubpart: Cardinal): TPathSegment;
     function  GetSubpartCount: Integer; override;
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
@@ -661,7 +666,7 @@ type
     function GetFirstEntity: TvEntity;
     function GetNextEntity: TvEntity;
     procedure AddEntity(AEntity: TvEntity);
-    procedure Rotate(AAngle: Double);
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); override;
     procedure Clear; override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -691,9 +696,10 @@ type
   TvInsert = class(TvNamedEntity)
   public
     InsertEntity: TvEntity; // The entity to be inserted
-    RotationAngle: Double; // in degrees, normal is zero
+    RotationAngle: Double; // in angles, normal is zero
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   {@@
@@ -1077,6 +1083,11 @@ begin
 
 end;
 
+procedure TPathSegment.Rotate(AAngle: Double; ABase: T3DPoint);
+begin
+
+end;
+
 function TPathSegment.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
   APageItem: Pointer): Pointer;
 var
@@ -1092,6 +1103,16 @@ procedure T2DSegment.Move(ADeltaX, ADeltaY: Double);
 begin
   X := X + ADeltaX;
   Y := Y + ADeltaY;
+end;
+
+procedure T2DSegment.Rotate(AAngle: Double; ABase: T3DPoint);
+var
+  lRes: T3DPoint;
+begin
+  inherited Rotate(AAngle, ABase);
+  lRes := fpvutils.Rotate3DPointInXY(Make3DPoint(X, Y, 0), ABase, AAngle);
+  X := lRes.X;
+  Y := lRes.Y;
 end;
 
 function T2DSegment.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -1192,7 +1213,7 @@ begin
 
 end;
 
-procedure TvEntity.Rotate(AAngle: Double);
+procedure TvEntity.Rotate(AAngle: Double; ABase: T3DPoint);
 begin
 
 end;
@@ -1249,7 +1270,7 @@ function TvNamedEntity.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
 var
   lStr: string;
 begin
-  lStr := Format('[%s] Name=%s X=%f Y=%f', [Self.ClassName, Name, X, Y]);
+  lStr := Format('[%s] Name="%s" X=%f Y=%f' + FExtraDebugStr, [Self.ClassName, Name, X, Y]);
   Result := ADestRoutine(lStr, APageItem);
 end;
 
@@ -1620,6 +1641,21 @@ end;
 function TPath.GetSubpartCount: Integer;
 begin
   Result := Len;
+end;
+
+procedure TPath.Rotate(AAngle: Double; ABase: T3DPoint);
+var
+  i: Integer;
+  lCurPart: TPathSegment;
+begin
+  inherited Rotate(AAngle, ABase);
+  for i := 0 to GetSubpartCount()-1 do
+  begin
+    // Move to the subpart
+    lCurPart := MoveToSubpart(i);
+    // Rotate it
+    lCurPart.Rotate(AAngle, ABase);
+  end;
 end;
 
 procedure TPath.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
@@ -3278,13 +3314,13 @@ begin
   FElements.Add(AEntity);
 end;
 
-procedure TvEntityWithSubEntities.Rotate(AAngle: Double);
+procedure TvEntityWithSubEntities.Rotate(AAngle: Double; ABase: T3DPoint);
 var
   i: Integer;
 begin
   for i := 0 to FElements.Count-1 do
   begin
-    TvEntity(FElements.Items[i]).Rotate(AAngle);
+    TvEntity(FElements.Items[i]).Rotate(AAngle, ABase);
   end;
 end;
 
@@ -3322,7 +3358,7 @@ var
   lStr: string;
   lCurEntity: TvEntity;
 begin
-  lStr := Format('[%s] Name="%s"', [Self.ClassName, Self.Name]);
+  lStr := Format('[%s] Name="%s"' + FExtraDebugStr, [Self.ClassName, Self.Name]);
 
   // Add styles
   // Pen
@@ -3367,23 +3403,32 @@ begin
   // If we are inserting a block, make sure it will render its contents
   OldForceRenderBlock := ARenderInfo.ForceRenderBlock;
   ARenderInfo.ForceRenderBlock := True;
-  // Alter the position of the elements to consider the positioning of the BLOCK and of the INSERT
-  InsertEntity.Move(X, Y);
   // If necessary rotate the canvas
   if RotationAngle <> 0 then
   begin
-
+    InsertEntity.Rotate(RotationAngle, Make3DPoint(0, 0, 0));
   end;
+  // Alter the position of the elements to consider the positioning of the BLOCK and of the INSERT
+  InsertEntity.Move(X, Y);
   // Render
   InsertEntity.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly);
+  // Change them back
+  InsertEntity.Move(-X, -Y);
   // And unrotate it back again
   if RotationAngle <> 0 then
   begin
-
+    InsertEntity.Rotate(-1 * RotationAngle, Make3DPoint(0, 0, 0));
   end;
-  // Change them back
-  InsertEntity.Move(-X, -Y);
   ARenderInfo.ForceRenderBlock := OldForceRenderBlock;
+end;
+
+function TvInsert.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+begin
+  FExtraDebugStr := Format(' RotationAngle(degrees)=%f', [RotationAngle * 180 / Pi]);
+  if (InsertEntity <> nil) and (InsertEntity is TvNamedEntity) then
+    FExtraDebugStr := FExtraDebugStr + Format(' InsertEntity="%s"', [TvNamedEntity(InsertEntity).Name]);
+  Result:=inherited GenerateDebugTree(ADestRoutine, APageItem);
 end;
 
 { TvBlock }
