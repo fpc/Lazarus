@@ -9,9 +9,9 @@ name=cairocanvas_pkg
 version=0.0
 
 [compiler]
-unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/EnableFurball
-unitdir=../../packager/registration/lib/$(CPU_TARGET)-$(OS_TARGET)/EnableFurball ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)/EnableFurball ../../lcl/lib/$(CPU_TARGET)-$(OS_TARGET)/EnableFurball ../../lcl/interfaces/lib/$(CPU_TARGET)-$(OS_TARGET)/EnableFurball .
-options= -MObjFPC -Scghi -O1 -g -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM) -dEnableFurBall
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
+unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
+options= -MObjFPC -Scghi -O1 -g -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
 units=cairocanvas_pkg.pas
