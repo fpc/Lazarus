@@ -179,7 +179,7 @@ type
     property Kind: TBitBtnKind read FKind write SetKind default bkCustom;
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
     property Margin: integer read FMargin write SetMargin default -1;
-    property Spacing: Integer read FSpacing write SetSpacing default 3;
+    property Spacing: Integer read FSpacing write SetSpacing default 4;
     property GlyphShowMode: TGlyphShowMode read GetGlyphShowMode write SetGlyphShowMode default gsmApplication;
   end;
 

@@ -19,7 +19,7 @@ begin
   FDefaultCaption := False;
   FKind := bkCustom;
   FLayout := blGlyphLeft;
-  FSpacing := 3;
+  FSpacing := 4;
   FMargin := -1;
   FButtonGlyph := TButtonGlyph.Create;
   FButtonGlyph.NumGlyphs := 1;
