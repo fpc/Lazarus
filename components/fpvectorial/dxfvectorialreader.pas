@@ -1622,6 +1622,7 @@ var
   lName: string;
   lBlock: TvBlock;
   PosX, PosY, PosZ: Double;
+  lRotationAngle: Double;
 begin
   PosX := 0.0;
   PosY := 0.0;
@@ -1634,7 +1635,7 @@ begin
     CurToken := TDXFToken(ATokens.Items[i]);
 
     // Avoid an exception by previously checking if the conversion can be made
-    if CurToken.GroupCode in [10, 20, 30] then
+    if CurToken.GroupCode in [10, 20, 30, 50] then
     begin
       CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
     end;
@@ -1644,6 +1645,7 @@ begin
       10: PosX := CurToken.FloatValue;
       20: PosY := CurToken.FloatValue;
       30: PosZ := CurToken.FloatValue;
+      50: lRotationAngle := CurToken.FloatValue;
     end;
   end;
 
@@ -1657,6 +1659,7 @@ begin
   Result.Y := PosY;
   Result.Z := PosZ;
   Result.InsertEntity := lBlock;
+  Result.RotationAngle := lRotationAngle;
   if not AOnlyCreate then AData.AddEntity(Result);
 end;
 

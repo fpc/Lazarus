@@ -246,6 +246,7 @@ type
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); virtual;
     function  GetSubpartCount: Integer; virtual;
     procedure PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double); virtual;
+    procedure Rotate(AAngle: Double); virtual;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
     function AdjustColorToBackground(AColor: TFPColor; ARenderInfo: TvRenderInfo): TFPColor;
@@ -660,6 +661,7 @@ type
     function GetFirstEntity: TvEntity;
     function GetNextEntity: TvEntity;
     procedure AddEntity(AEntity: TvEntity);
+    procedure Rotate(AAngle: Double);
     procedure Clear; override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -689,6 +691,7 @@ type
   TvInsert = class(TvNamedEntity)
   public
     InsertEntity: TvEntity; // The entity to be inserted
+    RotationAngle: Double; // in degrees, normal is zero
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
@@ -1185,6 +1188,11 @@ end;
 
 procedure TvEntity.PositionSubparts(ADest: TFPCustomCanvas; ABaseX,
   ABaseY: Double);
+begin
+
+end;
+
+procedure TvEntity.Rotate(AAngle: Double);
 begin
 
 end;
@@ -3270,6 +3278,16 @@ begin
   FElements.Add(AEntity);
 end;
 
+procedure TvEntityWithSubEntities.Rotate(AAngle: Double);
+var
+  i: Integer;
+begin
+  for i := 0 to FElements.Count-1 do
+  begin
+    TvEntity(FElements.Items[i]).Rotate(AAngle);
+  end;
+end;
+
 procedure TvEntityWithSubEntities.Clear;
 begin
   inherited Clear;
@@ -3351,8 +3369,18 @@ begin
   ARenderInfo.ForceRenderBlock := True;
   // Alter the position of the elements to consider the positioning of the BLOCK and of the INSERT
   InsertEntity.Move(X, Y);
+  // If necessary rotate the canvas
+  if RotationAngle <> 0 then
+  begin
+
+  end;
   // Render
   InsertEntity.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly);
+  // And unrotate it back again
+  if RotationAngle <> 0 then
+  begin
+
+  end;
   // Change them back
   InsertEntity.Move(-X, -Y);
   ARenderInfo.ForceRenderBlock := OldForceRenderBlock;
