@@ -6754,6 +6754,10 @@ msgstr "エラー：\"%s\""
 msgid "%s(%s,%s) Error: Can't find unit %s"
 msgstr "%s(%s,%s) エラー：ユニット%sが見つかりません。"
 
+#: lazarusidestrconsts.lisconvdelphiexceptionduringconversion
+msgid "Exception happened during unit conversion. Continuing with form files of already converted units..."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphifailedconvertingunit
 msgid "Failed converting unit"
 msgstr "変換に失敗したユニット"
@@ -7968,6 +7972,10 @@ msgstr "ドキュメントエディタ"
 msgid "%s does not exists: %s"
 msgstr "%s は存在しません: %s"
 
+#: lazarusidestrconsts.lisdoesnothavematrixoption
+msgid "Does not have matrix option "
+msgstr ""
+
 #: lazarusidestrconsts.lisdonotchange
 msgid "Do not change"
 msgstr "変更しない"
@@ -8064,6 +8072,10 @@ msgstr "親コンポーネントを選択"
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "重複"
+
+#: lazarusidestrconsts.lisduplicateentry
+msgid "Duplicate entry"
+msgstr ""
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value %s%s%s."
@@ -8337,6 +8349,10 @@ msgstr "マクロを有効にする"
 msgid "Enable = replace whole identifier, Disable = replace prefix"
 msgstr "有効 = 識別子全体を置換、無効 = 接頭語を置換"
 
+#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
+msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
+msgstr ""
+
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
 msgstr "囲む"
@@ -8540,6 +8556,10 @@ msgstr "コンポーネントの名前を %s から %sに変更中にエラー"
 #: lazarusidestrconsts.liserrorwritingfile
 msgid "Error writing file \"%s\""
 msgstr "ファイル\"%s\"への書き込み中にエラー"
+
+#: lazarusidestrconsts.liserrorwritingfile2
+msgid "Error writing file %s"
+msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
@@ -9227,6 +9247,10 @@ msgstr "最大に成長"
 #: lazarusidestrconsts.lishashelp
 msgid "Has Help"
 msgstr "Helpあり"
+
+#: lazarusidestrconsts.lishasmatrixoption
+msgid "Has matrix option "
+msgstr ""
 
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
@@ -15061,6 +15085,10 @@ msgstr "Lazarusを終了"
 msgid "Read Error"
 msgstr "読み取りエラー"
 
+#: lazarusidestrconsts.lisreallydelete
+msgid "Really delete?"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecenttabs
 msgid "Recent tabs"
 msgstr "最近のタブ"
@@ -16476,6 +16504,10 @@ msgstr "ディレクトリに大文字小文字だけが異なる同じ名前を
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "ディスクに同じ名前で類似した拡張子をもつファイルがあります。%sファイル： %s%s紛らわしいファイル: %s%s%s紛らわしいファイルを削除しますか？"
 
+#: lazarusidestrconsts.listhereisalreadyabuildmodewiththisname
+msgid "There is already a build mode with this name."
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
 msgstr "既にこの名前のコンポーネントがあります"
@@ -16972,6 +17004,10 @@ msgstr "ファイル%s%s%sを作成できません。"
 #: lazarusidestrconsts.lisunabletocreatefile3
 msgid "Unable to create file%s%s%s%s"
 msgstr "ファイル%s%s%sを作成できません。"
+
+#: lazarusidestrconsts.lisunabletocreatefile4
+msgid "Unable to create file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatefilename
 msgid "Unable to create file %s%s%s."

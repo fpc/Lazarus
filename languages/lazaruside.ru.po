@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-05-26 19:18+0400\n"
+"PO-Revision-Date: 2013-06-04 03:22+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -6626,6 +6626,10 @@ msgstr "Ошибка=\"%s\""
 msgid "%s(%s,%s) Error: Can't find unit %s"
 msgstr "%s(%s,%s) Ошибка: невозможно найти модуль %s"
 
+#: lazarusidestrconsts.lisconvdelphiexceptionduringconversion
+msgid "Exception happened during unit conversion. Continuing with form files of already converted units..."
+msgstr "Во время преобразования модулей возникло исключение. Работа продолжается с файлами форм уже преобразованных модулей..."
+
 #: lazarusidestrconsts.lisconvdelphifailedconvertingunit
 msgid "Failed converting unit"
 msgstr "Не удалось преобразовать модуль"
@@ -7823,6 +7827,10 @@ msgstr "Редактор документации"
 msgid "%s does not exists: %s"
 msgstr "%s не существует: %s"
 
+#: lazarusidestrconsts.lisdoesnothavematrixoption
+msgid "Does not have matrix option "
+msgstr "Не имеет параметра матрицы режимов "
+
 #: lazarusidestrconsts.lisdonotchange
 msgid "Do not change"
 msgstr "В неизменном виде"
@@ -7919,6 +7927,10 @@ msgstr "Выбрать родительский компонент"
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Дубликат"
+
+#: lazarusidestrconsts.lisduplicateentry
+msgid "Duplicate entry"
+msgstr "Дублирующийся элемент"
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value %s%s%s."
@@ -8192,6 +8204,10 @@ msgstr "Включить макросы"
 msgid "Enable = replace whole identifier, Disable = replace prefix"
 msgstr "Включено = заменять идентификатор целиком; выключено = заменять префикс"
 
+#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
+msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
+msgstr "Включите для сохранения режима сборки в файле сеанса работы (.lps) вместо файла проекта (.lpi)"
+
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
 msgstr "Заключить"
@@ -8395,6 +8411,10 @@ msgstr "Ошибка установки имени компонента %s в %s
 #: lazarusidestrconsts.liserrorwritingfile
 msgid "Error writing file \"%s\""
 msgstr "Ошибка записи файла \"%s\""
+
+#: lazarusidestrconsts.liserrorwritingfile2
+msgid "Error writing file %s"
+msgstr "Ошибка записи файла %s"
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
@@ -9075,6 +9095,10 @@ msgstr "Увеличить до наибольшего"
 #: lazarusidestrconsts.lishashelp
 msgid "Has Help"
 msgstr "Имеет справку"
+
+#: lazarusidestrconsts.lishasmatrixoption
+msgid "Has matrix option "
+msgstr "Имеет параметр матрицы режимов "
 
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
@@ -14723,6 +14747,10 @@ msgstr "В&ыход из Lazarus"
 msgid "Read Error"
 msgstr "Ошибка чтения"
 
+#: lazarusidestrconsts.lisreallydelete
+msgid "Really delete?"
+msgstr "Действительно удалить?"
+
 #: lazarusidestrconsts.lisrecenttabs
 msgid "Recent tabs"
 msgstr "Недавние вкладки"
@@ -16119,6 +16147,10 @@ msgstr "В каталоге есть и другие файлы с таким ж
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "На диске есть файл с таким же именем и похожим расширением%sФайл: %s%sФайл с дублирующимся именем: %s%s%sУдалить второй файл?"
 
+#: lazarusidestrconsts.listhereisalreadyabuildmodewiththisname
+msgid "There is already a build mode with this name."
+msgstr "Режим сборки с таким именем уже имеется."
+
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
 msgstr "Компонент с таким именем уже имеется"
@@ -16614,6 +16646,10 @@ msgstr "Невозможно создать файл %s%s%s"
 #: lazarusidestrconsts.lisunabletocreatefile3
 msgid "Unable to create file%s%s%s%s"
 msgstr "Невозможно создать файл%s%s%s%s"
+
+#: lazarusidestrconsts.lisunabletocreatefile4
+msgid "Unable to create file %s"
+msgstr "Невозможно создать файл %s"
 
 #: lazarusidestrconsts.lisunabletocreatefilename
 msgid "Unable to create file %s%s%s."

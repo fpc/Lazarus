@@ -6724,6 +6724,10 @@ msgstr "שגיאה=\"%s\""
 msgid "%s(%s,%s) Error: Can't find unit %s"
 msgstr "שגיאה%s(%s,%s): לא מוצא יחידה %s"
 
+#: lazarusidestrconsts.lisconvdelphiexceptionduringconversion
+msgid "Exception happened during unit conversion. Continuing with form files of already converted units..."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphifailedconvertingunit
 msgid "Failed converting unit"
 msgstr "לא הצליח להמיר יחידה "
@@ -7941,6 +7945,10 @@ msgstr "עורך תיעוד"
 msgid "%s does not exists: %s"
 msgstr "%s לא קיים: %s"
 
+#: lazarusidestrconsts.lisdoesnothavematrixoption
+msgid "Does not have matrix option "
+msgstr ""
+
 #: lazarusidestrconsts.lisdonotchange
 msgid "Do not change"
 msgstr ""
@@ -8036,6 +8044,10 @@ msgstr "בחר רכיב הורה"
 
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
+msgstr ""
+
+#: lazarusidestrconsts.lisduplicateentry
+msgid "Duplicate entry"
 msgstr ""
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
@@ -8310,6 +8322,10 @@ msgstr "אפשר מאקרו"
 msgid "Enable = replace whole identifier, Disable = replace prefix"
 msgstr ""
 
+#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
+msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
+msgstr ""
+
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
 msgstr "צרף "
@@ -8513,6 +8529,10 @@ msgstr "שגיאה בהגדרת שם ברכיב s% ל s%"
 #: lazarusidestrconsts.liserrorwritingfile
 msgid "Error writing file \"%s\""
 msgstr "שגיאה בקריאת קובץ  \"%s\""
+
+#: lazarusidestrconsts.liserrorwritingfile2
+msgid "Error writing file %s"
+msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
@@ -9198,6 +9218,10 @@ msgstr "הגדל לגדול ביותר"
 #: lazarusidestrconsts.lishashelp
 msgid "Has Help"
 msgstr "יש לו עזרה"
+
+#: lazarusidestrconsts.lishasmatrixoption
+msgid "Has matrix option "
+msgstr ""
 
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
@@ -15027,6 +15051,10 @@ msgstr "צא מלזרוס"
 msgid "Read Error"
 msgstr "שגיאת קריאה"
 
+#: lazarusidestrconsts.lisreallydelete
+msgid "Really delete?"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecenttabs
 msgid "Recent tabs"
 msgstr ""
@@ -16445,6 +16473,10 @@ msgstr "יש קבצים נוספים בתיקייה בעלי אותו שם, אש
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "יש קובץ בעל אותו שם וסיומת דומה בדיסק קובץ: %s%s קובץ רב משמעי:  %s%s%s , האם למחוק את הבעייתי?"
 
+#: lazarusidestrconsts.listhereisalreadyabuildmodewiththisname
+msgid "There is already a build mode with this name."
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
 msgstr "יש כבר רכיב עם שם זה. "
@@ -16939,6 +16971,10 @@ msgstr "לא ניתן ליצור את הקובץ %s%s%s"
 #: lazarusidestrconsts.lisunabletocreatefile3
 msgid "Unable to create file%s%s%s%s"
 msgstr "לא יכול ליצור את הקובץ %s%s%s%s"
+
+#: lazarusidestrconsts.lisunabletocreatefile4
+msgid "Unable to create file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatefilename
 msgid "Unable to create file %s%s%s."

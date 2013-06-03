@@ -6430,6 +6430,10 @@ msgstr "Chyba=\"%s\""
 msgid "%s(%s,%s) Error: Can't find unit %s"
 msgstr "%s(%s,%s) Chyba: Nelze najít jednotku %s"
 
+#: lazarusidestrconsts.lisconvdelphiexceptionduringconversion
+msgid "Exception happened during unit conversion. Continuing with form files of already converted units..."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphifailedconvertingunit
 msgid "Failed converting unit"
 msgstr "Převod jednotky selhal"
@@ -7609,6 +7613,10 @@ msgstr "Editor dokumentace"
 msgid "%s does not exists: %s"
 msgstr "%s neexistuje: %s"
 
+#: lazarusidestrconsts.lisdoesnothavematrixoption
+msgid "Does not have matrix option "
+msgstr ""
+
 #: lazarusidestrconsts.lisdonotchange
 msgid "Do not change"
 msgstr "Neměnit"
@@ -7705,6 +7713,10 @@ msgstr "Vybrat rodičovskou komponentu"
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Duplicitní"
+
+#: lazarusidestrconsts.lisduplicateentry
+msgid "Duplicate entry"
+msgstr ""
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value %s%s%s."
@@ -7978,6 +7990,10 @@ msgstr "Povolit makra"
 msgid "Enable = replace whole identifier, Disable = replace prefix"
 msgstr "Povolit = nahrazení celého identifikátoru, Zakázat = nahrazení prefixu"
 
+#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
+msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
+msgstr ""
+
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
 msgstr "Ohraničit"
@@ -8181,6 +8197,10 @@ msgstr "Chyba nastavení jména komponenty %s na %s"
 #: lazarusidestrconsts.liserrorwritingfile
 msgid "Error writing file \"%s\""
 msgstr "Chyba zápisu do souboru \"%s\""
+
+#: lazarusidestrconsts.liserrorwritingfile2
+msgid "Error writing file %s"
+msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
@@ -8850,6 +8870,10 @@ msgstr "Narůst na největší"
 #: lazarusidestrconsts.lishashelp
 msgid "Has Help"
 msgstr "Má nápovědu"
+
+#: lazarusidestrconsts.lishasmatrixoption
+msgid "Has matrix option "
+msgstr ""
 
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
@@ -14272,6 +14296,10 @@ msgstr "Ukončit Lazarus"
 msgid "Read Error"
 msgstr "Chyba čtení"
 
+#: lazarusidestrconsts.lisreallydelete
+msgid "Really delete?"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecenttabs
 msgid "Recent tabs"
 msgstr "Poslední listy"
@@ -15641,6 +15669,10 @@ msgstr "V adresáři jsou další soubory se stejným jménem, %skteré se liš�
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "Na disku už je soubor se stejným jménem a podobnou koncovkou%sSoubor: %s%sNeplatný soubor: %s%s%sSmazat neplatný soubor?"
 
+#: lazarusidestrconsts.listhereisalreadyabuildmodewiththisname
+msgid "There is already a build mode with this name."
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
 msgstr "Již existuje komponenta se tímto jménem"
@@ -16133,6 +16165,10 @@ msgstr "Nelze vytvořit soubor %s%s%s"
 #: lazarusidestrconsts.lisunabletocreatefile3
 msgid "Unable to create file%s%s%s%s"
 msgstr "Nelze vytvořit soubor %s%s%s%s"
+
+#: lazarusidestrconsts.lisunabletocreatefile4
+msgid "Unable to create file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatefilename
 msgid "Unable to create file %s%s%s."

@@ -6595,6 +6595,10 @@ msgstr "Klaida = „%s“"
 msgid "%s(%s,%s) Error: Can't find unit %s"
 msgstr "%s(%s,%s) Klaida: nepavyksta rasti modulio „%s“"
 
+#: lazarusidestrconsts.lisconvdelphiexceptionduringconversion
+msgid "Exception happened during unit conversion. Continuing with form files of already converted units..."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphifailedconvertingunit
 msgid "Failed converting unit"
 msgstr "Modulio konvertuoti nepavyko"
@@ -7784,6 +7788,10 @@ msgstr "Dokumentacijos rengyklė"
 msgid "%s does not exists: %s"
 msgstr "%s neegzistuoja: %s"
 
+#: lazarusidestrconsts.lisdoesnothavematrixoption
+msgid "Does not have matrix option "
+msgstr ""
+
 #: lazarusidestrconsts.lisdonotchange
 msgid "Do not change"
 msgstr "Nekeisti"
@@ -7880,6 +7888,10 @@ msgstr "Pažymėti tėvinę komponentę"
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Dublikatas"
+
+#: lazarusidestrconsts.lisduplicateentry
+msgid "Duplicate entry"
+msgstr ""
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value %s%s%s."
@@ -8153,6 +8165,10 @@ msgstr "Įgalinti makrokomandas"
 msgid "Enable = replace whole identifier, Disable = replace prefix"
 msgstr "Įgalinti - reiškią pakeisti visą identifikatorių, o pasyvinti - pakeisti pefiksą"
 
+#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
+msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
+msgstr ""
+
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
 msgstr "Apgaubti"
@@ -8356,6 +8372,10 @@ msgstr "Įvyko klaida komponentei „%s“ suteikiant pavadinimą „%s“"
 #: lazarusidestrconsts.liserrorwritingfile
 msgid "Error writing file \"%s\""
 msgstr "Rašant į failą „%s“ įvyko klaida"
+
+#: lazarusidestrconsts.liserrorwritingfile2
+msgid "Error writing file %s"
+msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
@@ -9033,6 +9053,10 @@ msgstr "Išplėsti iki didžiausio"
 #: lazarusidestrconsts.lishashelp
 msgid "Has Help"
 msgstr "Turi žinyną"
+
+#: lazarusidestrconsts.lishasmatrixoption
+msgid "Has matrix option "
+msgstr ""
 
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
@@ -14649,6 +14673,10 @@ msgstr "&Baigti Lazarus darbą"
 msgid "Read Error"
 msgstr "Skaitymo klaida"
 
+#: lazarusidestrconsts.lisreallydelete
+msgid "Really delete?"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecenttabs
 msgid "Recent tabs"
 msgstr "Paskutinės naudotos kortelės"
@@ -16047,6 +16075,10 @@ msgstr "Aplanke yra failų, kurių pavadinimai%sskiriasi tik raidžių lygiais:%
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "Rastas kitas failas tokiu pat pavadinimu bei panašiu plėtiniu.%sFailas: %s%sNeaiškusis failas: %s%s%sPašalinti neaiškųjį failą?"
 
+#: lazarusidestrconsts.listhereisalreadyabuildmodewiththisname
+msgid "There is already a build mode with this name."
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
 msgstr "Komponentė tokiu pavadinimu jau yra."
@@ -16545,6 +16577,10 @@ msgstr "Nepavyko sukurti failą %s%s%s"
 #: lazarusidestrconsts.lisunabletocreatefile3
 msgid "Unable to create file%s%s%s%s"
 msgstr "Nepavyko sukurti failą%s%s%s%s"
+
+#: lazarusidestrconsts.lisunabletocreatefile4
+msgid "Unable to create file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatefilename
 msgid "Unable to create file %s%s%s."

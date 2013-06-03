@@ -6638,6 +6638,10 @@ msgstr ""
 msgid "%s(%s,%s) Error: Can't find unit %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisconvdelphiexceptionduringconversion
+msgid "Exception happened during unit conversion. Continuing with form files of already converted units..."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphifailedconvertingunit
 msgid "Failed converting unit"
 msgstr ""
@@ -7823,6 +7827,10 @@ msgstr "Documentatie bewerker"
 msgid "%s does not exists: %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisdoesnothavematrixoption
+msgid "Does not have matrix option "
+msgstr ""
+
 #: lazarusidestrconsts.lisdonotchange
 msgid "Do not change"
 msgstr ""
@@ -7918,6 +7926,10 @@ msgstr "Selecteer het parent component"
 
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
+msgstr ""
+
+#: lazarusidestrconsts.lisduplicateentry
+msgid "Duplicate entry"
 msgstr ""
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
@@ -8192,6 +8204,10 @@ msgstr "Schakel Macro's in"
 msgid "Enable = replace whole identifier, Disable = replace prefix"
 msgstr ""
 
+#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
+msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
+msgstr ""
+
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
 msgstr "Omsluit"
@@ -8394,6 +8410,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingfile
 msgid "Error writing file \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.liserrorwritingfile2
+msgid "Error writing file %s"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
@@ -9073,6 +9093,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lishashelp
 msgid "Has Help"
+msgstr ""
+
+#: lazarusidestrconsts.lishasmatrixoption
+msgid "Has matrix option "
 msgstr ""
 
 #: lazarusidestrconsts.lisheadercommentforclass
@@ -14770,6 +14794,10 @@ msgstr "Verlaat Lazarus"
 msgid "Read Error"
 msgstr "Leesfout"
 
+#: lazarusidestrconsts.lisreallydelete
+msgid "Really delete?"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecenttabs
 msgid "Recent tabs"
 msgstr ""
@@ -16173,6 +16201,10 @@ msgstr "Er zijn andere bestanden in de directory met dezelfde naam,%salleen met 
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "Er is een bestand met dezelfde naam en een gelijke extensie op disk%sBestand%s%sDubbel bestand %s%s%s verwijderen?"
 
+#: lazarusidestrconsts.listhereisalreadyabuildmodewiththisname
+msgid "There is already a build mode with this name."
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
 msgstr ""
@@ -16666,6 +16698,10 @@ msgstr "Kan het bestand %s%s%s niet maken"
 
 #: lazarusidestrconsts.lisunabletocreatefile3
 msgid "Unable to create file%s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.lisunabletocreatefile4
+msgid "Unable to create file %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatefilename
