@@ -161,9 +161,11 @@ procedure TCustomBitBtn.SetMargin(const AValue: integer);
 begin
   if FMargin = AValue then Exit;
   FMargin := AValue;
-  if HandleAllocated 
-  then TWSBitBtnClass(WidgetSetClass).SetMargin(Self, FMargin);
+  if HandleAllocated  then
+    TWSBitBtnClass(WidgetSetClass).SetMargin(Self, FMargin);
   AdjustSize;
+  if csDesigning in ComponentState then
+    Invalidate;
 end;
 
 procedure TCustomBitBtn.SetNumGlyphs(AValue: Integer);
@@ -182,9 +184,11 @@ procedure TCustomBitBtn.SetSpacing(AValue: Integer);
 begin
   if (FSpacing = AValue) or (AValue < -1) then Exit;
   FSpacing := AValue;
-  if HandleAllocated 
-  then TWSBitBtnClass(WidgetSetClass).SetSpacing(Self, FSpacing);
+  if HandleAllocated then
+    TWSBitBtnClass(WidgetSetClass).SetSpacing(Self, FSpacing);
   AdjustSize;
+  if csDesigning in ComponentState then
+    Invalidate;
 end;
 
 procedure TCustomBitBtn.RealizeKind;
