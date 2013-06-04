@@ -716,7 +716,9 @@ var
   Note: String;
   NeedBuildAllFlag: Boolean;
   SubResult: TModalResult;
+  {$IFDEF EnableModeMatrix}
   MatrixOption: TBuildMatrixOption;
+  {$ENDIF}
 begin
   Result:=false;
   CloseProject(Project1);
