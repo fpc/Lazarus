@@ -56,10 +56,10 @@ type
   end;
 
 function ShowBuildModeDiffDialog(BuildModes: TProjectBuildModes; aMode: TProjectBuildMode): TModalResult;
-procedure AddDiff(MatrixOptions: TBuildMatrixOptions; OldMode, NewMode: string; Diff: TStrings);
+procedure AddDiff(MatrixOptions: TBuildMatrixOptions; OldMode, NewMode: string;
+  Diff: TStrings; var OldOutputDir, NewOutputDir: string);
 
 implementation
-
 
 function ShowBuildModeDiffDialog(BuildModes: TProjectBuildModes;
   aMode: TProjectBuildMode): TModalResult;
@@ -77,7 +77,7 @@ begin
 end;
 
 procedure AddDiff(MatrixOptions: TBuildMatrixOptions; OldMode, NewMode: string;
-  Diff: TStrings);
+  Diff: TStrings; var OldOutputDir, NewOutputDir: string);
 var
   i: Integer;
   Option: TBuildMatrixOption;
@@ -86,8 +86,10 @@ var
   s: String;
 begin
   if MatrixOptions=nil then exit;
+
   for i:=0 to MatrixOptions.Count-1 do begin
     Option:=MatrixOptions[i];
+    if not (Option.Typ in [bmotCustom,bmotIDEMacro]) then continue;
     HasOldMode:=Option.FitsMode(OldMode);
     HasNewMode:=Option.FitsMode(NewMode);
     if HasOldMode=HasNewMode then continue;
@@ -101,9 +103,11 @@ begin
     s+=dbgstr(Option.Value);
     Diff.Add(s);
   end;
+
+  MatrixOptions.GetOutputDirectory(BuildMatrixProjectName,OldMode,OldOutputDir);
+  MatrixOptions.GetOutputDirectory(BuildMatrixProjectName,NewMode,NewOutputDir);
 end;
 
-{$R *.lfm}
 
 { TBuildModeDiffDialog }
 
@@ -160,6 +164,8 @@ var
   Diff: TStringList;
   DiffTool: TCompilerDiffTool;
   j: Integer;
+  OldOutDir: String;
+  NewOutDir: String;
 begin
   DiffTreeView.BeginUpdate;
   DiffTreeView.Items.Clear;
@@ -173,12 +179,23 @@ begin
       Diff:=TStringList.Create;
       DiffTool:=TCompilerDiffTool.Create(Diff);
       BaseMode.CreateDiff(CurMode,DiffTool);
+
+      // add diffs for matrix options
+      OldOutDir:='';
+      NewOutDir:='';
       AddDiff(EnvironmentOptions.BuildMatrixOptions,
-              CurMode.Identifier,BaseMode.Identifier,Diff);
+              CurMode.Identifier,BaseMode.Identifier,Diff,OldOutDir,NewOutDir);
       AddDiff(BuildModes.SharedMatrixOptions,
-              CurMode.Identifier,BaseMode.Identifier,Diff);
+              CurMode.Identifier,BaseMode.Identifier,Diff,OldOutDir,NewOutDir);
       AddDiff(BuildModes.SessionMatrixOptions,
-              CurMode.Identifier,BaseMode.Identifier,Diff);
+              CurMode.Identifier,BaseMode.Identifier,Diff,OldOutDir,NewOutDir);
+      if OldOutDir<>NewOutDir then begin
+        if OldOutDir<>'' then
+          Diff.Add('Matrix OutDir "'+CurMode.GetCaption+'":'+OldOutDir);
+        if NewOutDir<>'' then
+          Diff.Add('Matrix OutDir "'+BaseMode.GetCaption+'":'+NewOutDir);
+      end;
+
       for j:=0 to Diff.Count-1 do
         DiffTreeView.Items.AddChild(ModeNode,Diff[j]);
       DiffTool.Free;
@@ -203,6 +220,8 @@ begin
   FillModeComboBox;
   FillDiffTreeView;
 end;
+
+{$R *.lfm}
 
 end.
 

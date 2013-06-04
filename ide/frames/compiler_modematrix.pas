@@ -277,7 +277,7 @@ begin
   for GrpIndex:=0 to StorageGroup.Count-1 do begin
     Target:=TGroupedMatrixGroup(StorageGroup[GrpIndex]);
     if not (Target is TGroupedMatrixGroup) then begin
-      debugln(['AssignBuildMatrixGroupToOptions StorageGroup expected group, but found ',DbgSName(Target)]);
+      debugln(['AssignBuildMatrixGroupToOptions StorageGroup "',StorageGroup.AsString,'", expected group, but found ',DbgSName(Target)]);
       exit;
     end;
     for i:=0 to Target.Count-1 do begin
@@ -679,12 +679,16 @@ begin
   try
     Grid.StoreUndo;
     MatRow:=Grid.Matrix[aRow-1];
+    debugln(['TCompOptModeMatrix.CreateNewOption ',DbgSName(MatRow),' ',MatRow.AsString]);
     if MatRow is TGroupedMatrixGroup then begin
       Group:=TGroupedMatrixGroup(MatRow);
       if Group.Group=nil then begin
         if Group.Count=0 then begin
           // storage group without target => add a target
           Group:=AddTarget(Group);
+        end else begin
+          // add to first target
+          Group:=Group[0] as TGroupedMatrixGroup;
         end;
       end;
       // add option as first item of Group
@@ -696,6 +700,7 @@ begin
       Group.Move(Group.Count-1,MatRow.GetGroupIndex+1);
     end;
     Grid.Matrix.RebuildRows;
+    //Grid.Matrix.WriteDebugReport;
   finally
     Grid.MatrixChanged;
   end;

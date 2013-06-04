@@ -195,6 +195,7 @@ type
       ModesAsText, aType, AValue, aID: string): TGroupedMatrixValue;
     property Modes: TGroupedMatrixModes read FModes;
     property Control: TGroupedMatrixControl read FControl;
+    procedure WriteDebugReport;
   end;
 
   TOnGetCellHightlightColor = procedure(Sender: TObject; aCol,aRow: integer;
@@ -582,6 +583,17 @@ begin
   Result.Modes.Text:=ModesAsText;
   Result.ID:=aID;
   InternalAdd(ParentGroup,Result);
+end;
+
+procedure TGroupedMatrix.WriteDebugReport;
+var
+  i: Integer;
+  MatRow: TGroupedMatrixRow;
+begin
+  for i:=0 to RowCount-1 do begin
+    MatRow:=Rows[i];
+    debugln(Space(MatRow.Level*2),MatRow.AsString);
+  end;
 end;
 
 function TGroupedMatrix.IndexOfTopLvlGroup(aCaption: TCaption): integer;
