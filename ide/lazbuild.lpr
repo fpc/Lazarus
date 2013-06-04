@@ -38,9 +38,9 @@ uses
   // IDE
   IDEProcs, InitialSetupDlgs, OutputFilter, CompilerOptions, ApplicationBundle,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
-  IDECmdLine, ExtToolDialog,
-  MiscOptions, Project, LazConf, PackageDefs, PackageLinks, PackageSystem,
-  BuildLazDialog, BuildProfileManager, BuildManager, BaseBuildManager;
+  IDECmdLine, ExtToolDialog, MiscOptions, Project, LazConf, PackageDefs,
+  PackageLinks, PackageSystem, BuildLazDialog, BuildProfileManager,
+  BuildManager, BaseBuildManager, ModeMatrixOpts;
   
 type
 
@@ -716,6 +716,7 @@ var
   Note: String;
   NeedBuildAllFlag: Boolean;
   SubResult: TModalResult;
+  MatrixOption: TBuildMatrixOption;
 begin
   Result:=false;
   CloseProject(Project1);
@@ -761,7 +762,11 @@ begin
   if (CPUOverride<>'') then
     Project1.CompilerOptions.TargetCPU:=CPUOverride;
   if (WidgetSetOverride<>'') then begin
-    {$IFDEF EnableModeMacro}
+    {$IFDEF EnableModeMatrix}
+    MatrixOption:=Project1.BuildModes.SessionMatrixOptions.Add(bmotIDEMacro);
+    MatrixOption.Modes:=Project1.ActiveBuildMode.Identifier;
+    MatrixOption.MacroName:='LCLWidgetType';
+    MatrixOption.Value:=WidgetSetOverride;
     {$ELSE}
     Project1.ActiveBuildMode.MacroValues.Values['LCLWidgetType']:=WidgetSetOverride;
     {$ENDIF}
