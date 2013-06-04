@@ -122,7 +122,7 @@ type
   end;
 
 // check and repair lfm files
-function QuickCheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
+function QuickCheckLFMBuffer({%H-}PascalBuffer, LFMBuffer: TCodeBuffer;
   out LFMType, LFMComponentName, LFMClassName: string;
   out LCLVersion: string;
   out MissingClasses: TStrings// e.g. MyFrame2:TMyFrame
