@@ -306,7 +306,7 @@ begin
 
   {set spacing to LCL's default if bitbtn does not have glyph.issue #23255}
   if not BitBtn.CanShowGlyph then
-    ASpacing := -1;
+    ASpacing := 0;
 
   if BitBtn.CanShowGlyph then
   begin
@@ -315,7 +315,7 @@ begin
     if BitBtn.NumGlyphs > 1 then
       srcWidth := srcWidth div BitBtn.NumGlyphs;
     if (srcWidth = 0) or (srcHeight = 0) then
-      ASpacing := -1;
+      ASpacing := 0;
   end else
   begin
     srcWidth := 0;
