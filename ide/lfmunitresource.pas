@@ -126,7 +126,7 @@ class function TLFMUnitResourcefileFormat.QuickCheckResourceBuffer(PascalBuffer,
   LFMBuffer: TObject; out LFMType, LFMComponentName, LFMClassName: string; out
   LCLVersion: string; out MissingClasses: TStrings): TModalResult;
 begin
-  result := QuickCheckLFMBuffer(PascalBuffer as TCodeBuffer, LFMBuffer as TCodeBuffer, LFMType, LFMComponentName, LFMClassName,
+  Result := QuickCheckLFMBuffer(PascalBuffer as TCodeBuffer, LFMBuffer as TCodeBuffer, LFMType, LFMComponentName, LFMClassName,
     LCLVersion, MissingClasses);
 end;
 

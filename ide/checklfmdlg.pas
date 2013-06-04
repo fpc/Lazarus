@@ -132,11 +132,6 @@ function RepairLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
   const OnOutput: TOnAddFilteredLine;
   RootMustBeClassInUnit, RootMustBeClassInIntf,
   ObjectsMustExist: boolean): TModalResult;
-// Not use anywhere.
-{function RepairLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;
-  const OnOutput: TOnAddFilteredLine;
-  RootMustBeClassInIntf, ObjectsMustExist: boolean): TModalResult;
-}
 // dangling events
 function RemoveDanglingEvents(RootComponent: TComponent;
   PascalBuffer: TCodeBuffer; OkOnCodeErrors: boolean;
@@ -269,26 +264,6 @@ begin
     LFMChecker.Free;
   end;
 end;
-
-{
-function RepairLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;
-  const OnOutput: TOnAddFilteredLine;
-  RootMustBeClassInIntf, ObjectsMustExist: boolean): TModalResult;
-var
-  LFMBuf: TCodeBuffer;
-begin
-  Result:=mrCancel;
-  LFMBuf:=CodeToolBoss.CreateTempFile('temp.lfm');
-  try
-    LFMBuf.Source:=LFMText;
-    Result:=RepairLFMBuffer(PascalBuffer,LFMBuf,OnOutput,RootMustBeClassInIntf,
-                            ObjectsMustExist);
-    LFMText:=LFMBuf.Source;
-  finally
-    CodeToolBoss.ReleaseTempFile(LFMBuf);
-  end;
-end;
-}
 
 function RemoveDanglingEvents(RootComponent: TComponent;
   PascalBuffer: TCodeBuffer; OkOnCodeErrors: boolean; out
