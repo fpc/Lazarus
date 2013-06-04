@@ -91,7 +91,7 @@ type
     function ReadPolyFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadRectFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadTextFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
-    procedure ReadUseFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    function ReadUseFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     //
     function  StringWithUnitToFloat(AStr: string): Double;
     function  StringFloatZeroToOneToWord(AStr: string): Word;
@@ -947,7 +947,7 @@ begin
     'polygon', 'polyline': Result := ReadPolyFromNode(ANode, AData, ADoc);
     'rect': Result := ReadRectFromNode(ANode, AData, ADoc);
     'text': Result := ReadTextFromNode(ANode, AData, ADoc);
-    'use': ReadUseFromNode(ANode, AData, ADoc);
+    'use': Result := ReadUseFromNode(ANode, AData, ADoc);
   end;
 end;
 
@@ -1265,6 +1265,7 @@ procedure TvSVGVectorialReader.ReadNextPathCommand(ACurTokenType: TSVGTokenType;
   ADoc: TvVectorialDocument);
 var
   X, Y, X2, Y2, X3, Y3: Double;
+  Flag1, Flag2: Boolean;
   lCurTokenType: TSVGTokenType;
   lDebugStr: String;
 begin
@@ -1442,16 +1443,21 @@ begin
   end
   // --------------
   // Elliptical arcs
+  // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
+  // (rx ry x-axis-rotation large-arc-flag sweep-flag x y)+
   // --------------
   else if lCurTokenType in [sttEllipticArcTo, sttRelativeEllipticArcTo] then
   begin
-    {X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-    Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
-    X := FSVGPathTokenizer.Tokens.Items[i+3].Value;
-    Y := FSVGPathTokenizer.Tokens.Items[i+4].Value;
+    X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value; // RX
+    Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value; // RY
+    X3 := FSVGPathTokenizer.Tokens.Items[i+3].Value; // RotationX
+    //Flag1 := FSVGPathTokenizer.Tokens.Items[i+4].Value;
+    //Flag2 := FSVGPathTokenizer.Tokens.Items[i+5].Value;
+    X := FSVGPathTokenizer.Tokens.Items[i+6].Value;  // X
+    Y := FSVGPathTokenizer.Tokens.Items[i+7].Value;  // Y
 
     // Careful that absolute coordinates require using ConvertSVGCoordinatesToFPVCoordinates
-    if lCurTokenType in [sttRelativeQuadraticBezierTo] then
+    if lCurTokenType in [sttRelativeEllipticArcTo] then
     begin
       ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
       ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
@@ -1462,18 +1468,18 @@ begin
       ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
     end;
 
-    if lCurTokenType = sttRelativeQuadraticBezierTo then
+    if lCurTokenType = sttRelativeEllipticArcTo then
     begin
-      AData.AddBezierToPath(X2 + CurX, Y2 + CurY, X2 + CurX, Y2 + CurY, X + CurX, Y + CurY);
+      AData.AddEllipticalArcToPath(X2, Y2, X3, X + CurX, Y + CurY, Flag1, Flag2);
       CurX := CurX + X;
       CurY := CurY + Y;
     end
     else
     begin
-      AData.AddBezierToPath(X2, Y2, X2, Y2, X, Y);
+      AData.AddEllipticalArcToPath(X2, Y2, X3, X, Y, Flag1, Flag2);
       CurX := X;
       CurY := Y;
-    end; }
+    end;
 
     Inc(i, 8);
   end
@@ -1690,10 +1696,38 @@ end;
 
 // <use xlink:href="#svgbar" transform="rotate(45)"/>
 // It might use another entity or use something from Defs
-procedure TvSVGVectorialReader.ReadUseFromNode(ANode: TDOMNode;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+function TvSVGVectorialReader.ReadUseFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+var
+  lInsert: TvInsert;
+  lXLink: DOMString = '';
+  lInsertedEntity: TvEntity;
+  i: Integer;
+  lNodeName: DOMString;
 begin
+  Result := nil;
 
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if lNodeName = 'xlink:href' then
+    begin
+      lXLink := ANode.Attributes.Item[i].NodeValue;
+      lXLink := Copy(lXLink, 2, Length(lXLink));
+    end;
+{    else if lNodeName = 'y' then
+      ly := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)}
+  end;
+
+  if lXLink = '' then Exit; // nothing to insert, so give up
+
+  lInsertedEntity := AData.FindEntityWithNameAndType(lXLink, TvEntity, True);
+  if lInsertedEntity = nil then Exit; // nothing to insert, give up!
+
+  lInsert := TvInsert.Create;
+  lInsert.InsertEntity := lInsertedEntity;
+  Result := lInsert;
 end;
 
 function TvSVGVectorialReader.StringWithUnitToFloat(AStr: string): Double;

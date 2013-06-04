@@ -143,7 +143,8 @@ type
 
   TSegmentType = (
     st2DLine, st2DLineWithPen, st2DBezier,
-    st3DLine, st3DBezier, stMoveTo);
+    st3DLine, st3DBezier, stMoveTo,
+    st2DEllipticalArc);
 
   {@@
     The coordinates in fpvectorial are given in millimiters and
@@ -160,6 +161,7 @@ type
     Next: TPathSegment;
     procedure Move(ADeltaX, ADeltaY: Double); virtual;
     procedure Rotate(AAngle: Double; ABase: T3DPoint); virtual; // Angle in radians
+    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); virtual;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
   end;
 
@@ -221,6 +223,21 @@ type
     X3, Y3, Z3: Double;
     procedure Move(ADeltaX, ADeltaY: Double); override;
   end;
+
+  // Elliptical Arc
+  // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
+
+  { T2DEllipticalArcSegment }
+
+  T2DEllipticalArcSegment = class(T2DSegment)
+  public
+    RX, RY, XRotation: Double;
+    LargeArcFlag, SweepFlag: Boolean;
+    CX, CY: Double;
+    procedure CalculateCenter;
+    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
+  end;
+
 
   TvFindEntityResult = (vfrNotFound, vfrFound, vfrSubpartFound);
 
@@ -679,6 +696,7 @@ type
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+    function FindEntityWithNameAndType(AName: string; AType: TvEntityClass {= TvEntity}; ARecursively: Boolean = False): TvEntity;
   end;
 
   {@@
@@ -802,7 +820,7 @@ type
     function  GetEntitiesCount: Integer;
     function  GetLastEntity(): TvEntity;
     function  FindAndSelectEntity(Pos: TPoint): TvFindEntityResult;
-    function  FindEntityWithNameAndType(AName: string; AType: TvEntityClass): TvEntity;
+    function  FindEntityWithNameAndType(AName: string; AType: TvEntityClass {= TvEntity}; ARecursively: Boolean = False): TvEntity;
     { Data removing methods }
     procedure Clear; virtual;
     function  DeleteEntity(AIndex: Cardinal): Boolean;
@@ -820,6 +838,7 @@ type
     procedure GetTmpPathStartPos(var AX, AY: Double);
     procedure AddBezierToPath(AX1, AY1, AX2, AY2, AX3, AY3: Double); overload;
     procedure AddBezierToPath(AX1, AY1, AZ1, AX2, AY2, AZ2, AX3, AY3, AZ3: Double); overload;
+    procedure AddEllipticalArcToPath(ARadX, ARadY, AXAxisRotation, ADestX, ADestY: Double; ALargeArcFlag, ASweepFlag: Boolean); // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
     procedure SetBrushColor(AColor: TFPColor);
     procedure SetBrushStyle(AStyle: TFPBrushStyle);
     procedure SetPenColor(AColor: TFPColor);
@@ -1009,6 +1028,86 @@ begin
   Result.Z := 0;
 end;
 
+{ T2DEllipticalArcSegment }
+
+procedure T2DEllipticalArcSegment.CalculateCenter;
+begin
+  // Rotated Ellipse equation:
+  // (xcosθ+ysinθ)^2 / RX^2 + (ycosθ−xsinθ)^2 / RY^2 = 1
+  //
+  // parametrized:
+  // x = Cx + a*cos(t)*cos(phi) - b*sin(t)*sin(phi)  [1]
+  // y = Cy + b*sin(t)*cos(phi) + a*cos(t)*sin(phi)  [2]
+  // ...where ellipse has centre (h,k) semimajor axis a and semiminor axis b, and is rotated through angle phi.
+
+  CX := X - RX*Cos(0)*Cos(XRotation) + RY*Sin(0)*Sin(XRotation);
+  CY := Y - RY*Sin(0)*Cos(XRotation) - RX*Cos(0)*Sin(XRotation);
+end;
+
+procedure T2DEllipticalArcSegment.CalculateBoundingBox(ADest: TFPCustomCanvas;
+  var ALeft, ATop, ARight, ABottom: Double);
+var
+  MajorAxis, MinorAxis: Double;
+  CX, CY: Double;
+  t1, t2, t3: Double;
+  x1, x2, x3: Double;
+  y1, y2, y3: Double;
+begin
+  ALeft := 0;
+  ATop := 0;
+  ARight := 0;
+  ABottom := 0;
+  if Previous = nil then Exit;
+
+  // Alligned Ellipse equation:
+  // x^2 / RX^2 + Y^2 / RY^2 = 1
+  //
+  // Rotated Ellipse equation:
+  // (xcosθ+ysinθ)^2 / RX^2 + (ycosθ−xsinθ)^2 / RY^2 = 1
+  //
+  // parametrized:
+  // x = Cx + a*cos(t)*cos(phi) - b*sin(t)*sin(phi)  [1]
+  // y = Cy + b*sin(t)*cos(phi) + a*cos(t)*sin(phi)  [2]
+  // ...where ellipse has centre (h,k) semimajor axis a and semiminor axis b, and is rotated through angle phi.
+  //
+  // You can then differentiate and solve for gradient = 0:
+  // 0 = dx/dt = -a*sin(t)*cos(phi) - b*cos(t)*sin(phi)
+  // => tan(t) = -b*tan(phi)/a   [3]
+  // => t = arctan(-b*tan(phi)/a) + n*Pi   [4]
+  //
+  // calculate some values of t for n in -1, 0, 1 and see which are the smaller, bigger ones
+  // done!
+
+  CalculateCenter();
+
+  // Search for the minimum and maximum X
+  t1 := arctan(-RY*tan(XRotation)/RX) - Pi;
+  t2 := arctan(-RY*tan(XRotation)/RX);
+  t3 := arctan(-RY*tan(XRotation)/RX) + Pi;
+
+  x1 := Cx + RX*Sin(t1)*Cos(XRotation)-RY*Sin(t1)*Sin(XRotation);
+  x2 := Cx + RX*Sin(t2)*Cos(XRotation)-RY*Sin(t2)*Sin(XRotation);
+  x3 := Cx + RX*Sin(t3)*Cos(XRotation)-RY*Sin(t3)*Sin(XRotation);
+
+  ALeft := Min(x1, x2);
+  ALeft := Min(ALeft, x3);
+
+  ARight := Max(x1, x2);
+  ARight := Max(ARight, x3);
+
+  // Now the same for Y
+
+  y1 := CY + RY*Sin(t1)*Cos(XRotation)+RX*Cos(t1)*Sin(XRotation);
+  y2 := CY + RY*Sin(t2)*Cos(XRotation)+RX*Cos(t2)*Sin(XRotation);
+  y3 := CY + RY*Sin(t3)*Cos(XRotation)+RX*Cos(t3)*Sin(XRotation);
+
+  ATop := Min(y1, y2);
+  ATop := Min(ATop, y3);
+
+  ABottom := Max(y1, y2);
+  ABottom := Max(ABottom, y3);
+end;
+
 { TvVerticalFormulaStack }
 
 function TvVerticalFormulaStack.CalculateHeight(ADest: TFPCustomCanvas): Double;
@@ -1094,6 +1193,15 @@ end;
 procedure TPathSegment.Rotate(AAngle: Double; ABase: T3DPoint);
 begin
 
+end;
+
+procedure TPathSegment.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft,
+  ATop, ARight, ABottom: Double);
+begin
+  ALeft := 0;
+  ATop := 0;
+  ARight := 0;
+  ABottom := 0;
 end;
 
 function TPathSegment.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -1686,6 +1794,7 @@ var
   CurSegment: TPathSegment;
   Cur2DSegment: T2DSegment absolute CurSegment;
   Cur2DBSegment: T2DBezierSegment absolute CurSegment;
+  Cur2DArcSegment: T2DEllipticalArcSegment absolute CurSegment;
   // For bezier
   CurX, CurY: Integer; // Not modified by ADestX, etc
   CoordX2, CoordY2, CoordX3, CoordY3, CoordX4, CoordY4: Integer;
@@ -1693,7 +1802,9 @@ var
   t: Double;
   // For polygons
   Points: array of TPoint;
-  // Clipping Region
+  // for elliptical arcs
+  BoxLeft, BoxTop, BoxRight, BoxBottom: Double;
+   // Clipping Region
   {$ifdef USE_LCL_CANVAS}
   ClipRegion, OldClipRegion: HRGN;
   ACanvas: TCanvas absolute ADest;
@@ -1859,6 +1970,55 @@ begin
          CoordToCanvasX(Cur2DBSegment.X2), CoordToCanvasY(Cur2DBSegment.Y2),
          CoordToCanvasX(Cur2DBSegment.X3), CoordToCanvasY(Cur2DBSegment.Y3),
          CoordToCanvasX(Cur2DBSegment.X), CoordToCanvasY(Cur2DBSegment.Y)]));
+      {$endif}
+    end;
+    // Alligned Ellipse equation:
+    // x^2 / RX^2 + Y^2 / RY^2 = 1
+    //
+    // Rotated Ellipse equation:
+    // (xcosθ+ysinθ)^2 / RX^2 + (ycosθ−xsinθ)^2 / RY^2 = 1
+    //
+    // parametrized:
+    // x = Cx + a*cos(t)*cos(phi) - b*sin(t)*sin(phi)  [1]
+    // y = Cy + b*sin(t)*cos(phi) + a*cos(t)*sin(phi)  [2]
+    // ...where ellipse has centre (h,k) semimajor axis a and semiminor axis b, and is rotated through angle phi.
+    //
+    // You can then differentiate and solve for gradient = 0:
+    // 0 = dx/dt = -a*sin(t)*cos(phi) - b*cos(t)*sin(phi)
+    // => tan(t) = -b*tan(phi)/a   [3]
+    // => t = arctan(-b*tan(phi)/a) + n*Pi   [4]
+    //
+    // calculate some values of t for n in -2, -1, 0, 1, 2 and see which are the smaller, bigger ones
+    // done!
+    st2DEllipticalArc:
+    begin
+      CoordX := CoordToCanvasX(PosX);
+      CoordY := CoordToCanvasY(PosY);
+      CoordX2 := CoordToCanvasX(Cur2DArcSegment.RX);
+      CoordY2 := CoordToCanvasY(Cur2DArcSegment.RY);
+      CoordX3 := CoordToCanvasX(Cur2DArcSegment.XRotation);
+      CoordX4 := CoordToCanvasX(Cur2DArcSegment.X);
+      CoordY4 := CoordToCanvasY(Cur2DArcSegment.Y);
+      SetLength(Points, 0);
+
+      Cur2DArcSegment.CalculateBoundingBox(nil, BoxLeft, BoxTop, BoxRight, BoxBottom);
+
+      ADest.Brush.Style := Brush.Style;
+
+      ACanvas.Arc(
+        CoordToCanvasX(BoxLeft), CoordToCanvasY(BoxTop),
+        CoordToCanvasX(BoxRight), CoordToCanvasY(BoxBottom),
+        CoordX, CoordY, CoordX4, CoordY4);
+
+      PosX := Cur2DArcSegment.X;
+      PosY := Cur2DArcSegment.Y;
+
+      {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+      {Write(Format(' ***C%d,%d %d,%d %d,%d %d,%d',
+        [CoordToCanvasX(PosX), CoordToCanvasY(PosY),
+         CoordToCanvasX(Cur2DBSegment.X2), CoordToCanvasY(Cur2DBSegment.Y2),
+         CoordToCanvasX(Cur2DBSegment.X3), CoordToCanvasY(Cur2DBSegment.Y3),
+         CoordToCanvasX(Cur2DBSegment.X), CoordToCanvasY(Cur2DBSegment.Y)]));}
       {$endif}
     end;
     end;
@@ -3398,6 +3558,38 @@ begin
   end;
 end;
 
+function TvEntityWithSubEntities.FindEntityWithNameAndType(AName: string;
+  AType: TvEntityClass; ARecursively: Boolean): TvEntity;
+var
+  lCurEntity: TvEntity;
+  lCurName: String;
+begin
+  Result := nil;
+  lCurEntity := GetFirstEntity();
+  while lCurEntity <> nil do
+  begin
+    if (lCurEntity is TvNamedEntity) then
+      lCurName := TvNamedEntity(lCurEntity).Name
+    else
+      lCurName := '';
+
+    if (lCurEntity is AType) and
+      (lCurEntity is TvNamedEntity) and (lCurName = AName) then
+    begin
+      Result := lCurEntity;
+      Exit;
+    end;
+
+    if ARecursively and (lCurEntity is TvEntityWithSubEntities) then
+    begin
+      Result := TvEntityWithSubEntities(lCurEntity).FindEntityWithNameAndType(AName, AType, True);
+      if Result <> nil then Exit;
+    end;
+
+    lCurEntity := GetNextEntity();
+  end;
+end;
+
 { TvInsert }
 
 procedure TvInsert.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
@@ -3577,20 +3769,33 @@ begin
 end;
 
 function TvVectorialPage.FindEntityWithNameAndType(AName: string;
-  AType: TvEntityClass): TvEntity;
+  AType: TvEntityClass; ARecursively: Boolean): TvEntity;
 var
   i: Integer;
   lCurEntity: TvEntity;
+  lCurName: String;
 begin
   Result := nil;
   for i := 0 to GetEntitiesCount()-1 do
   begin
     lCurEntity := GetEntity(i);
+
+    if (lCurEntity is TvNamedEntity) then
+      lCurName := TvNamedEntity(lCurEntity).Name
+    else
+      lCurName := '';
+
     if (lCurEntity is AType) and
-      (lCurEntity is TvNamedEntity) and (TvNamedEntity(lCurEntity).Name = AName) then
+      (lCurEntity is TvNamedEntity) and (lCurName = AName) then
     begin
       Result := lCurEntity;
-      Break;
+      Exit;
+    end;
+
+    if ARecursively and (lCurEntity is TvEntityWithSubEntities) then
+    begin
+      Result := TvEntityWithSubEntities(lCurEntity).FindEntityWithNameAndType(AName, AType, True);
+      if Result <> nil then Exit;
     end;
   end;
 end;
@@ -3808,6 +4013,24 @@ begin
   segment.X3 := AX2;
   segment.Y3 := AY2;
   segment.Z3 := AZ2;
+
+  AppendSegmentToTmpPath(segment);
+end;
+
+procedure TvVectorialPage.AddEllipticalArcToPath(ARadX, ARadY, AXAxisRotation,
+  ADestX, ADestY: Double; ALargeArcFlag, ASweepFlag: Boolean);
+var
+  segment: T2DEllipticalArcSegment;
+begin
+  segment := T2DEllipticalArcSegment.Create;
+  segment.SegmentType := st2DEllipticalArc;
+  segment.X := ADestX;
+  segment.Y := ADestY;
+  segment.RX := ARadX;
+  segment.RY := ARadX;
+  segment.XRotation := AXAxisRotation;
+  segment.LargeArcFlag := ALargeArcFlag;
+  segment.SweepFlag := ASweepFlag;
 
   AppendSegmentToTmpPath(segment);
 end;
