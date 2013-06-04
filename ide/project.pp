@@ -743,6 +743,7 @@ type
     function IsModified(InSession: boolean): boolean;
     function GetSessionModes: TStringList;
     function IsSessionMode(const ModeIdentifier: string): boolean;
+    function IsSharedMode(const ModeIdentifier: string): boolean;
     procedure RenameMatrixMode(const OldName, NewName: string);
   public
     property Items[Index: integer]: TProjectBuildMode read GetItems; default;
@@ -2828,7 +2829,7 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
     if SaveData then
     begin
       BuildModes.SharedMatrixOptions.SaveToXMLConfig(XMLConfig,
-        Path+'BuildModes/SharedMatrixOptions/',@BuildModes.IsSessionMode);
+        Path+'BuildModes/SharedMatrixOptions/',@BuildModes.IsSharedMode);
     end;
 
     //debugln(['SaveBuildModes SaveSession=',SaveSession,' ActiveBuildMode.Identifier=',ActiveBuildMode.Identifier]);
@@ -7562,6 +7563,20 @@ begin
     BuildMode:=Items[i];
     if SysUtils.CompareText(BuildMode.Identifier,ModeIdentifier)=0 then
       exit(BuildMode.InSession);
+  end;
+  Result:=false;
+end;
+
+function TProjectBuildModes.IsSharedMode(const ModeIdentifier: string
+  ): boolean;
+var
+  i: Integer;
+  BuildMode: TProjectBuildMode;
+begin
+  for i:=0 to Count-1 do begin
+    BuildMode:=Items[i];
+    if SysUtils.CompareText(BuildMode.Identifier,ModeIdentifier)=0 then
+      exit(not BuildMode.InSession);
   end;
   Result:=false;
 end;

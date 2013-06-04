@@ -91,15 +91,15 @@ type
     property MacroName: string read FMacroName write SetMacroName;
     property Value: string read FValue write SetValue;
     function Equals(Obj: TObject): boolean; override;
-    function GetModesSeparatedByComma(const SkipModes: TStrToBoolEvent): string;
+    function GetModesSeparatedByComma(const SaveModes: TStrToBoolEvent): string;
     procedure SetModesFromCommaSeparatedList(aList: string);
     procedure DisableModes(const DisableModeEvent: TStrToBoolEvent);
-    procedure EnableMode(const aMode: string);
+    procedure EnableMode(aMode: string);
     procedure RenameMode(const OldMode, NewMode: string);
     procedure LoadFromConfig(Cfg: TConfigStorage);
-    procedure SaveToConfig(Cfg: TConfigStorage; const SkipModes: TStrToBoolEvent);
+    procedure SaveToConfig(Cfg: TConfigStorage; const SaveModes: TStrToBoolEvent);
     procedure LoadFromXMLConfig(Cfg: TXMLConfig; const aPath: string);
-    procedure SaveToXMLConfig(Cfg: TXMLConfig; const aPath: string; const SkipModes: TStrToBoolEvent);
+    procedure SaveToXMLConfig(Cfg: TXMLConfig; const aPath: string; const SaveModes: TStrToBoolEvent);
     function AsString: string;
   end;
 
@@ -138,10 +138,10 @@ type
 
     // load, save
     procedure LoadFromConfig(Cfg: TConfigStorage);
-    procedure SaveToConfig(Cfg: TConfigStorage; const SkipMode: TStrToBoolEvent);
+    procedure SaveToConfig(Cfg: TConfigStorage; const SaveMode: TStrToBoolEvent);
     procedure LoadFromXMLConfig(Cfg: TXMLConfig; const aPath: string);
     procedure SaveToXMLConfig(Cfg: TXMLConfig; const aPath: string;
-      const SkipMode: TStrToBoolEvent);
+      const SaveMode: TStrToBoolEvent);
 
     // queries
     procedure AppendCustomOptions(Target, ActiveMode: string; var Options: string);
@@ -539,14 +539,14 @@ begin
 end;
 
 procedure TBuildMatrixOptions.SaveToConfig(Cfg: TConfigStorage;
-  const SkipMode: TStrToBoolEvent);
+  const SaveMode: TStrToBoolEvent);
 var
   i: Integer;
 begin
   Cfg.SetDeleteValue('Count',Count,0);
   for i:=0 to Count-1 do begin
     Cfg.AppendBasePath('Item'+IntToStr(i+1));
-    Items[i].SaveToConfig(Cfg,SkipMode);
+    Items[i].SaveToConfig(Cfg,SaveMode);
     Cfg.UndoAppendBasePath;
   end;
 end;
@@ -569,14 +569,14 @@ begin
 end;
 
 procedure TBuildMatrixOptions.SaveToXMLConfig(Cfg: TXMLConfig;
-  const aPath: string; const SkipMode: TStrToBoolEvent);
+  const aPath: string; const SaveMode: TStrToBoolEvent);
 var
   i: Integer;
 begin
   //debugln(['TBuildMatrixOptions.SaveToXMLConfig ',aPath]);
   Cfg.SetDeleteValue(aPath+'Count',Count,0);
   for i:=0 to Count-1 do
-    Items[i].SaveToXMLConfig(Cfg,aPath+'Item'+IntToStr(i+1)+'/',SkipMode);
+    Items[i].SaveToXMLConfig(Cfg,aPath+'Item'+IntToStr(i+1)+'/',SaveMode);
 end;
 
 procedure TBuildMatrixOptions.AppendCustomOptions(Target, ActiveMode: string;
@@ -720,7 +720,7 @@ begin
 end;
 
 function TBuildMatrixOption.GetModesSeparatedByComma(
-  const SkipModes: TStrToBoolEvent): string;
+  const SaveModes: TStrToBoolEvent): string;
 var
   p, StartP: PChar;
   l: SizeInt;
@@ -738,7 +738,7 @@ begin
     if l=0 then continue; // skip empty strings
     SetLength(CurMode,l);
     System.Move(StartP^,CurMode[1],l);
-    if Assigned(SkipModes) and SkipModes(CurMode) then continue;
+    if Assigned(SaveModes) and not SaveModes(CurMode) then continue;
     // convert a single comma to double comma
     for i:=length(CurMode) downto 1 do
       if CurMode[i]=',' then
@@ -747,12 +747,14 @@ begin
       Result+=',';
     Result+=CurMode;
   end;
+  //debugln(['TBuildMatrixOption.GetModesSeparatedByComma ',dbgstr(Modes),' -> ',dbgstr(Result)]);
 end;
 
 procedure TBuildMatrixOption.SetModesFromCommaSeparatedList(aList: string);
 var
   p: Integer;
 begin
+  //debugln(['TBuildMatrixOption.SetModesFromCommaSeparatedList START aList=',aList]);
   p:=1;
   while p<=length(aList) do begin
     if aList[p]=',' then begin
@@ -770,6 +772,7 @@ begin
     end;
   end;
   Modes:=aList;
+  //debugln(['TBuildMatrixOption.SetModesFromCommaSeparatedList END Modes=',dbgstr(Modes)]);
 end;
 
 procedure TBuildMatrixOption.DisableModes(const DisableModeEvent: TStrToBoolEvent);
@@ -796,10 +799,12 @@ begin
   Modes:=CurModes;
 end;
 
-procedure TBuildMatrixOption.EnableMode(const aMode: string);
+procedure TBuildMatrixOption.EnableMode(aMode: string);
 begin
   if FitsMode(aMode) then exit;
-  Modes:=Modes+aMode+LineEnding;
+  if Modes<>'' then
+    aMode:=LineEnding+aMode;
+  Modes:=Modes+aMode;
 end;
 
 procedure TBuildMatrixOption.RenameMode(const OldMode, NewMode: string);
@@ -838,11 +843,11 @@ begin
 end;
 
 procedure TBuildMatrixOption.SaveToConfig(Cfg: TConfigStorage;
-  const SkipModes: TStrToBoolEvent);
+  const SaveModes: TStrToBoolEvent);
 begin
   Cfg.SetDeleteValue('ID',ID,'');
   Cfg.SetDeleteValue('Targets',Targets,'*');
-  Cfg.SetDeleteValue('Modes',GetModesSeparatedByComma(SkipModes),'');
+  Cfg.SetDeleteValue('Modes',GetModesSeparatedByComma(SaveModes),'');
   Cfg.SetDeleteValue('Type',BuildMatrixOptionTypeNames[Typ],BuildMatrixOptionTypeNames[bmotCustom]);
   Cfg.SetDeleteValue('MacroName',MacroName,'');
   Cfg.SetDeleteValue('Value',Value,'');
@@ -861,11 +866,11 @@ begin
 end;
 
 procedure TBuildMatrixOption.SaveToXMLConfig(Cfg: TXMLConfig;
-  const aPath: string; const SkipModes: TStrToBoolEvent);
+  const aPath: string; const SaveModes: TStrToBoolEvent);
 begin
   Cfg.SetDeleteValue(aPath+'ID',ID,'');
   Cfg.SetDeleteValue(aPath+'Targets',Targets,'*');
-  Cfg.SetDeleteValue(aPath+'Modes',GetModesSeparatedByComma(SkipModes),'');
+  Cfg.SetDeleteValue(aPath+'Modes',GetModesSeparatedByComma(SaveModes),'');
   Cfg.SetDeleteValue(aPath+'Type',BuildMatrixOptionTypeNames[Typ],BuildMatrixOptionTypeNames[bmotCustom]);
   Cfg.SetDeleteValue(aPath+'MacroName',MacroName,'');
   Cfg.SetDeleteValue(aPath+'Value',Value,'');

@@ -283,7 +283,7 @@ type
     FMakeFileHistory: TStringList;
     FCompilerMessagesFileHistory: TStringList;
     FBuildMatrixOptions: TBuildMatrixOptions;
-    FIsSessionMode: TStrToBoolEvent;
+    FIsGlobalMode: TStrToBoolEvent;
 
    // TODO: store per debuggerclass options
     // Maybe these should go to a new TDebuggerOptions class
@@ -380,7 +380,7 @@ type
     destructor Destroy; override;
     procedure Load(OnlyDesktop: boolean);
     procedure Save(OnlyDesktop: boolean);
-    property IsSessionMode: TStrToBoolEvent read FIsSessionMode write FIsSessionMode;
+    property IsGlobalMode: TStrToBoolEvent read FIsGlobalMode write FIsGlobalMode;
     property Filename: string read FFilename write SetFilename;
     function GetDefaultConfigFilename: string;
     procedure CreateConfig;
@@ -1530,7 +1530,7 @@ begin
 
         // global buid options
         Cfg.AppendBasePath('BuildMatrix');
-        FBuildMatrixOptions.SaveToConfig(Cfg,IsSessionMode);
+        FBuildMatrixOptions.SaveToConfig(Cfg,IsGlobalMode);
         Cfg.UndoAppendBasePath;
 
         // backup
