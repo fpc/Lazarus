@@ -52,7 +52,6 @@ type
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
-    function RealEnabled: Boolean; override;
   public
     constructor Create(ASynEdit: TSynEditBase);
     destructor Destroy; override;
@@ -65,6 +64,7 @@ type
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
                                          out   ANextPhys, ANextLog: Integer); override;
+    function RealEnabled: Boolean; override;
 
     procedure InvalidateLineHighlight;
 
