@@ -1240,6 +1240,7 @@ var
   SrcEditMenuPaste: TIDEMenuCommand;
   SrcEditMenuCopyFilename: TIDEMenuCommand;
   SrcEditMenuFindDeclaration: TIDEMenuCommand;
+  SrcEditMenuSelectAll: TIDEMenuCommand;
     // finding / jumping
     SrcEditMenuProcedureJump: TIDEMenuCommand;
     SrcEditMenuFindNextWordOccurrence: TIDEMenuCommand;
@@ -1505,6 +1506,7 @@ begin
     SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',lisCopy, nil, nil, nil, 'laz_copy');
     SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',lisPaste, nil, nil, nil, 'laz_paste');
     SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(AParent,'Copy filename', uemCopyFilename);
+    SrcEditMenuSelectAll:=RegisterIDEMenuCommand(AParent,'SelectAll',lisMenuSelectAll);
   {%endregion}
 
   {%region *** Files section ***}
@@ -6165,6 +6167,7 @@ begin
     SrcEditMenuCut.Enabled := ASrcEdit.SelectionAvailable and not ASrcEdit.ReadOnly;
     SrcEditMenuCopy.Enabled := ASrcEdit.SelectionAvailable;
     SrcEditMenuPaste.Enabled := not ASrcEdit.ReadOnly;
+    SrcEditMenuSelectAll.Enabled:= ASrcEdit.SourceText<>'';
 
     // Files section: Readonly, ShowLineNumbers
     SrcEditMenuReadOnly.Checked:=ASrcEdit.ReadOnly;
@@ -9817,6 +9820,7 @@ begin
     SrcEditMenuCopy.Command:=GetCommand(ecCopy);
     SrcEditMenuPaste.Command:=GetCommand(ecPaste);
     SrcEditMenuCopyFilename.OnClick:=@CopyFilenameClicked;
+    SrcEditMenuSelectAll.Command:=GetCommand(ecSelectAll);
   {%endregion}
 
   SrcEditMenuNextBookmark.Command:=GetCommand(ecNextBookmark);
