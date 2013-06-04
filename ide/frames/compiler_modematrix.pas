@@ -24,6 +24,8 @@
    Options frame for build mode matrix options.
 
  ToDo:
+   - diff: OutDir
+   - diff: IDEMacros
    - do not apply matrix options to makefile
    - wiki
    - undo: combine changes while editing a cell
