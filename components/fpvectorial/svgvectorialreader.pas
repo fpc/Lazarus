@@ -64,6 +64,8 @@ type
     FPointSeparator, FCommaSeparator: TFormatSettings;
     FSVGPathTokenizer: TSVGPathTokenizer;
     FLayerStylesKeys, FLayerStylesValues: TFPList; // of TStringList;
+    // Defs section
+    DefsBrushes: TFPList; // of TvBrush
     // debug symbols
     FPathNumber: Integer;
     function ReadSVGColor(AValue: string): TFPColor;
@@ -75,19 +77,22 @@ type
     function IsAttributeFromStyle(AStr: string): Boolean;
     procedure ApplyLayerStyles(ADestEntity: TvEntity);
     //
-    procedure ReadEntityFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    procedure ReadCircleFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    procedure ReadEllipseFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadDefsFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    //
+    function ReadEntityFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+    function ReadCircleFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+    function ReadEllipseFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     procedure ReadLayerFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    procedure ReadLineFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    procedure ReadPathFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    function ReadLineFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+    function ReadPathFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     procedure ReadPathFromString(AStr: string; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadNextPathCommand(ACurTokenType: TSVGTokenType; var i: Integer; var CurX, CurY: Double; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadPointsFromString(AStr: string; AData: TvVectorialPage; ADoc: TvVectorialDocument; AClosePath: Boolean);
-    procedure ReadPolyFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    procedure ReadRectFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    procedure ReadTextFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    function ReadPolyFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+    function ReadRectFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+    function ReadTextFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     procedure ReadUseFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    //
     function  StringWithUnitToFloat(AStr: string): Double;
     function  StringFloatZeroToOneToWord(AStr: string): Word;
     procedure ConvertSVGCoordinatesToFPVCoordinates(
@@ -267,6 +272,7 @@ function TSVGPathTokenizer.DebugOutTokensAsString: string;
 var
   i: Integer;
 begin
+  Result := '';
   for i := 0 to Tokens.Count-1 do
     Result := Result + GetEnumName(TypeInfo(TSVGTokenType), integer(Tokens.Items[i].TokenType))
       + Format('(%f) ', [Tokens.Items[i].Value]);
@@ -877,27 +883,76 @@ begin
   end;
 end;
 
-procedure TvSVGVectorialReader.ReadEntityFromNode(ANode: TDOMNode;
+procedure TvSVGVectorialReader.ReadDefsFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
   lEntityName: DOMString;
+  lBlock: TvBlock;
+  lPreviousLayer: TvEntityWithSubEntities;
+  lNodeName: DOMString;
+  lLayerName: String;
+  i: Integer;
+  lCurNode: TDOMNode;
 begin
+  lCurNode := ANode.FirstChild;
+  while Assigned(lCurNode) do
+  begin
+    lEntityName := LowerCase(lCurNode.NodeName);
+    case lEntityName of
+      //'RadialGradient':
+      // Sometime entities are also put in the defs
+      'circle', 'ellipse', 'g', 'line', 'path',
+      'polygon', 'polyline', 'rect', 'text', 'use':
+      begin
+        lBlock := TvBlock.Create;
+
+        // pre-load attribute reader, to get the block name
+        for i := 0 to lCurNode.Attributes.Length - 1 do
+        begin
+          lNodeName := lCurNode.Attributes.Item[i].NodeName;
+          if lNodeName = 'id' then
+          begin
+            lLayerName := UTF16ToUTF8(lCurNode.Attributes.Item[i].NodeValue);
+            lBlock.Name := lLayerName;
+          end;
+        end;
+
+        lPreviousLayer := AData.GetCurrentLayer();
+        AData.AddEntity(lBlock);
+        AData.SetCurrentLayer(lBlock);
+        //
+        ReadEntityFromNode(lCurNode, AData, ADoc);
+        //
+        AData.SetCurrentLayer(lPreviousLayer);
+      end;
+    end;
+
+    lCurNode := lCurNode.NextSibling;
+  end;
+end;
+
+function TvSVGVectorialReader.ReadEntityFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+var
+  lEntityName: DOMString;
+begin
+  Result := nil;
   lEntityName := LowerCase(ANode.NodeName);
   case lEntityName of
-    'circle': ReadCircleFromNode(ANode, AData, ADoc);
-    'ellipse': ReadEllipseFromNode(ANode, AData, ADoc);
+    'circle': Result := ReadCircleFromNode(ANode, AData, ADoc);
+    'ellipse': Result := ReadEllipseFromNode(ANode, AData, ADoc);
     'g': ReadLayerFromNode(ANode, AData, ADoc);
-    'line': ReadLineFromNode(ANode, AData, ADoc);
-    'path': ReadPathFromNode(ANode, AData, ADoc);
-    'polygon', 'polyline': ReadPolyFromNode(ANode, AData, ADoc);
-    'rect': ReadRectFromNode(ANode, AData, ADoc);
-    'text': ReadTextFromNode(ANode, AData, ADoc);
+    'line': Result := ReadLineFromNode(ANode, AData, ADoc);
+    'path': Result := ReadPathFromNode(ANode, AData, ADoc);
+    'polygon', 'polyline': Result := ReadPolyFromNode(ANode, AData, ADoc);
+    'rect': Result := ReadRectFromNode(ANode, AData, ADoc);
+    'text': Result := ReadTextFromNode(ANode, AData, ADoc);
     'use': ReadUseFromNode(ANode, AData, ADoc);
   end;
 end;
 
-procedure TvSVGVectorialReader.ReadCircleFromNode(ANode: TDOMNode;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+function TvSVGVectorialReader.ReadCircleFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
 var
   cx, cy, cr, dtmp: double;
   lCircle: TvCircle;
@@ -940,11 +995,11 @@ begin
   ConvertSVGDeltaToFPVDelta(
         AData, cr, 0, lCircle.Radius, dtmp);
 
-  AData.AddEntity(lCircle);
+  Result := lCircle;
 end;
 
-procedure TvSVGVectorialReader.ReadEllipseFromNode(ANode: TDOMNode;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+function TvSVGVectorialReader.ReadEllipseFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
 var
   cx, cy, crx, cry: double;
   lEllipse: TvEllipse;
@@ -990,7 +1045,7 @@ begin
   ConvertSVGDeltaToFPVDelta(
         AData, crx, cry, lEllipse.HorzHalfAxis, lEllipse.VertHalfAxis);
 
-  AData.AddEntity(lEllipse);
+  Result := lEllipse;
 end;
 
 procedure TvSVGVectorialReader.ReadLayerFromNode(ANode: TDOMNode;
@@ -999,10 +1054,12 @@ var
   lNodeName: DOMString;
   lLayerName: string = '';
   lCurNode, lLayerNameNode: TDOMNode;
-  lLayer, lParentLayer: TvLayer;
+  lLayer: TvLayer;
+  lParentLayer: TvEntityWithSubEntities;
   i: Integer;
   {$ifdef SVG_MERGE_LAYER_STYLES}
   lLayerStyleKeys, lLayerStyleValues: TStringList;
+  lCurEntity: TvEntity;
   {$endif}
 begin
   // Store the style of this layer in the list
@@ -1051,7 +1108,9 @@ begin
   lCurNode := ANode.FirstChild;
   while Assigned(lCurNode) do
   begin
-    ReadEntityFromNode(lCurNode, AData, ADoc);
+    lCurEntity := ReadEntityFromNode(lCurNode, AData, ADoc);
+    if lCurEntity <> nil then
+      AData.AddEntity(lCurEntity);
     lCurNode := lCurNode.NextSibling;
   end;
 
@@ -1068,8 +1127,8 @@ begin
   AData.SetCurrentLayer(lParentLayer);
 end;
 
-procedure TvSVGVectorialReader.ReadLineFromNode(ANode: TDOMNode;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+function TvSVGVectorialReader.ReadLineFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
 var
   x1, y1, x2, y2: double;
   vx1, vy1, vx2, vy2: double;
@@ -1111,15 +1170,17 @@ begin
   AData.StartPath();
   AData.AddMoveToPath(vx1, vy1);
   AData.AddLineToPath(vx2, vy2);
-  lPath := AData.EndPath();
+  lPath := AData.EndPath(True);
   // Add the pen/brush
   ReadSVGStyle(lStyleStr, lPath);
   ReadSVGStyle(lStrokeStr, lPath);
   ReadSVGStyle(lStrokeWidthStr, lPath);
+  //
+  Result := lPath;
 end;
 
-procedure TvSVGVectorialReader.ReadPathFromNode(ANode: TDOMNode;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+function TvSVGVectorialReader.ReadPathFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
 var
   lNodeName, lDStr: WideString;
   i: Integer;
@@ -1137,7 +1198,8 @@ begin
   FSVGPathTokenizer.ExtraDebugStr := Format(' [TvSVGVectorialReader.ReadPathFromNode] path#(1-based)=%d', [FPathNumber]);
   ReadPathFromString(UTF8Encode(lDStr), AData, ADoc);
   FSVGPathTokenizer.ExtraDebugStr := '';
-  lPath := AData.EndPath();
+  lPath := AData.EndPath(True);
+  Result := lPath;
   // Add default SVG pen/brush
   lPath.Pen.Style := psClear;
   lPath.Brush.Color := colBlack;
@@ -1462,8 +1524,8 @@ begin
 end;
 
 // polygon and polyline are very similar
-procedure TvSVGVectorialReader.ReadPolyFromNode(ANode: TDOMNode;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+function TvSVGVectorialReader.ReadPolyFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
 var
   lPointsStr: string = '';
   i: Integer;
@@ -1483,7 +1545,8 @@ begin
 
   AData.StartPath();
   ReadPointsFromString(lPointsStr, AData, ADoc, lIsPolygon);
-  lPath := AData.EndPath();
+  lPath := AData.EndPath(True);
+  Result := lPath;
 
   // now read the other attributes
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -1502,8 +1565,8 @@ begin
 end;
 
 //          <rect width="90" height="90" stroke="green" stroke-width="3" fill="yellow" filter="url(#f1)" />
-procedure TvSVGVectorialReader.ReadRectFromNode(ANode: TDOMNode;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+function TvSVGVectorialReader.ReadRectFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
 var
   lx, ly, cx, cy, lrx, lry: double;
   lRect: TvRectangle;
@@ -1559,11 +1622,11 @@ begin
   lRect.RX := Abs(lRect.RX) * 2;
   lRect.RY := Abs(lRect.RY) * 2;
 
-  AData.AddEntity(lRect);
+  Result := lRect;
 end;
 
-procedure TvSVGVectorialReader.ReadTextFromNode(ANode: TDOMNode;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+function TvSVGVectorialReader.ReadTextFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
 var
   lTextStr: string = '';
   lx, ly: double;
@@ -1622,9 +1685,11 @@ begin
   end;}
 
   // Finalization
-  AData.AddEntity(lText);
+  Result := lText;
 end;
 
+// <use xlink:href="#svgbar" transform="rotate(45)"/>
+// It might use another entity or use something from Defs
 procedure TvSVGVectorialReader.ReadUseFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 begin
@@ -1701,10 +1766,14 @@ begin
   FSVGPathTokenizer := TSVGPathTokenizer.Create;
   FLayerStylesKeys := TFPList.Create;
   FLayerStylesValues := TFPList.Create;
+
+  DefsBrushes := TFPList.Create;
 end;
 
 destructor TvSVGVectorialReader.Destroy;
 begin
+  DefsBrushes.Free;
+
   FLayerStylesKeys.Free;
   FLayerStylesValues.Free;
   FSVGPathTokenizer.Free;
@@ -1738,6 +1807,7 @@ var
   lNodeName: DOMString;
   ANode: TDOMElement;
   i: Integer;
+  lCurEntity: TvEntity;
 begin
   FPathNumber := 0;
 
@@ -1782,7 +1852,17 @@ begin
   lPage.Height := AData.Height;
   while Assigned(lCurNode) do
   begin
-    ReadEntityFromNode(lCurNode, lPage, AData);
+    lNodeName := lCurNode.NodeName;
+    if lNodeName = 'defs' then
+    begin
+      ReadDefsFromNode(lCurNode, lPage, AData);
+    end
+    else
+    begin
+      lCurEntity := ReadEntityFromNode(lCurNode, lPage, AData);
+      if lCurEntity <> nil then
+        lPage.AddEntity(lCurEntity);
+    end;
     lCurNode := lCurNode.NextSibling;
   end;
 

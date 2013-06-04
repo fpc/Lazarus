@@ -97,9 +97,17 @@ type
     Width: Integer;
   end;
 
+  TvBrushKind = (bkSimpleBrush, bkRadialGradient);
+  TvCoordinateUnit = (vcuDocumentUnit, vcuPercentage);
+
   TvBrush = record
     Color: TFPColor;
     Style: TFPBrushStyle;
+    // Gradient filling support
+    Kind: TvBrushKind;
+    Gradient_cx, Gradient_cy, Gradient_r, Gradient_fx, Gradient_fy: Double;
+    Gradient_cx_Unit, Gradient_cy_Unit, Gradient_r_Unit, Gradient_fx_Unit, Gradient_fy_Unit: TvCoordinateUnit;
+    Gradient_colors: array of TFPColor;
   end;
 
   TvFont = record
@@ -120,7 +128,7 @@ type
 
   TvSetPenBrushAndFontElement = (
     spbfPenColor, spbfPenStyle, spbfPenWidth,
-    spbfBrushColor, spbfBrushStyle,
+    spbfBrushColor, spbfBrushStyle, spbfBrushGradient,
     spbfFontColor, spbfFontSize
     );
   TvSetPenBrushAndFontElements = set of TvSetPenBrushAndFontElement;
@@ -770,7 +778,7 @@ type
     FEntities: TFPList; // of TvEntity
     FTmpPath: TPath;
     FTmpText: TvText;
-    FCurrentLayer: TvLayer;
+    FCurrentLayer: TvEntityWithSubEntities;
     //procedure RemoveCallback(data, arg: pointer);
     procedure ClearTmpPath();
     procedure AppendSegmentToTmpPath(ASegment: TPathSegment);
@@ -831,8 +839,8 @@ type
     function AddLayer(AName: string): TvLayer;
     function AddLayerAndSetAsCurrent(AName: string): TvLayer;
     procedure ClearLayerSelection();
-    function SetCurrentLayer(ALayer: TvLayer): Boolean;
-    function GetCurrentLayer: TvLayer;
+    function SetCurrentLayer(ALayer: TvEntityWithSubEntities): Boolean;
+    function GetCurrentLayer: TvEntityWithSubEntities;
     // Dimensions
     function AddAlignedDimension(BaseLeft, BaseRight, DimLeft, DimRight: T3DPoint; AOnlyCreate: Boolean = False): TvAlignedDimension;
     function AddRadialDimension(AIsDiameter: Boolean; ACenter, ADimLeft, ADimRight: T3DPoint; AOnlyCreate: Boolean = False): TvRadialDimension;
@@ -3533,7 +3541,7 @@ begin
 
   Result := TvEntity(FEntities.Items[ANum]);
 
-  if Result = nil then raise Exception.Create('TvVectorialDocument.GetEntity: Invalid Entity number');
+  if Result = nil then raise Exception.Create(Format('TvVectorialDocument.GetEntity: Invalid Entity number ANum=%d', [ANum]));
 end;
 
 function TvVectorialPage.GetEntitiesCount: Integer;
@@ -3963,13 +3971,13 @@ begin
   FCurrentLayer := nil;
 end;
 
-function TvVectorialPage.SetCurrentLayer(ALayer: TvLayer): Boolean;
+function TvVectorialPage.SetCurrentLayer(ALayer: TvEntityWithSubEntities): Boolean;
 begin
   Result := True;
   FCurrentLayer := ALayer;
 end;
 
-function TvVectorialPage.GetCurrentLayer: TvLayer;
+function TvVectorialPage.GetCurrentLayer: TvEntityWithSubEntities;
 begin
   Result := FCurrentLayer;
 end;
