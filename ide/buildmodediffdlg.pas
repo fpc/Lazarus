@@ -190,10 +190,7 @@ begin
       AddDiff(BuildModes.SessionMatrixOptions,
               CurMode.Identifier,BaseMode.Identifier,Diff,OldOutDir,NewOutDir);
       if OldOutDir<>NewOutDir then begin
-        if OldOutDir<>'' then
-          Diff.Add('Matrix OutDir "'+CurMode.GetCaption+'":'+OldOutDir);
-        if NewOutDir<>'' then
-          Diff.Add('Matrix OutDir "'+BaseMode.GetCaption+'":'+NewOutDir);
+        Diff.Add('Matrix override OutDir (-FU): '+NewOutDir);
       end;
 
       for j:=0 to Diff.Count-1 do
