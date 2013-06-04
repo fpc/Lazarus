@@ -4153,6 +4153,14 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Adicionar"
 
+#: lazarusidestrconsts.lisadddelphidefine
+msgid "Add defines simulating Delphi7"
+msgstr ""
+
+#: lazarusidestrconsts.lisadddelphidefinehint
+msgid "Useful when the code has checks for supported compiler versions"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilesindirectory
 msgid "Add Files in Directory"
 msgstr "Adicionar arquivos no diretório"
@@ -6545,6 +6553,10 @@ msgstr "Um deslocamento é adicionado à coordenada \"Topo\" dos controles dentr
 msgid "Coordinate offsets"
 msgstr "Deslocamentos coordenadas"
 
+#: lazarusidestrconsts.lisconvdelphiaddedcustomoptiondefines
+msgid "Added defines %s in custom options"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
 msgid "Added Package %s as a dependency."
 msgstr ""
@@ -6594,11 +6606,13 @@ msgstr "Converter unidade Delphi"
 msgid "* Converting file %s *"
 msgstr "* Convertendo arquivo %s *"
 
-#: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-#, fuzzy
-#| msgid "*** Converting unit files ... ***"
-msgid "*** Converting unit files ***"
-msgstr "*** Convertendo arquivos unidades ... ***"
+#: lazarusidestrconsts.lisconvdelphiconvertingfoundunits
+msgid "*** Converting unit files found during conversion ***"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvdelphiconvertingprojpackunits
+msgid "*** Converting unit files belonging to project/package ***"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
 msgid "Delphi package main source (.dpk) file not found for package%s%s"

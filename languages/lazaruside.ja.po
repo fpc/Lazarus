@@ -4257,6 +4257,14 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "追加"
 
+#: lazarusidestrconsts.lisadddelphidefine
+msgid "Add defines simulating Delphi7"
+msgstr ""
+
+#: lazarusidestrconsts.lisadddelphidefinehint
+msgid "Useful when the code has checks for supported compiler versions"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddfilesindirectory
 msgid "Add Files in Directory"
 msgstr "ディレクトリにファイルを追加"
@@ -6687,6 +6695,10 @@ msgstr "ビジュアルコンテナの内側のコントロールの上端座標
 msgid "Coordinate offsets"
 msgstr "座標オフセット"
 
+#: lazarusidestrconsts.lisconvdelphiaddedcustomoptiondefines
+msgid "Added defines %s in custom options"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiaddedpackagedependency
 msgid "Added Package %s as a dependency."
 msgstr ""
@@ -6736,11 +6748,13 @@ msgstr "Delphiユニットを変換"
 msgid "* Converting file %s *"
 msgstr "ファイル %s を変換中"
 
-#: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-#, fuzzy
-#| msgid "*** Converting unit files ... ***"
-msgid "*** Converting unit files ***"
-msgstr "*** ユニットファイルを変換中... ***"
+#: lazarusidestrconsts.lisconvdelphiconvertingfoundunits
+msgid "*** Converting unit files found during conversion ***"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvdelphiconvertingprojpackunits
+msgid "*** Converting unit files belonging to project/package ***"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
 msgid "Delphi package main source (.dpk) file not found for package%s%s"
