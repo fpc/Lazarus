@@ -6405,8 +6405,7 @@ var
     end;
   end;}
   
-  procedure Add(FilenameSrcPos: integer; const AFilename: string;
-    Found: boolean);
+  procedure Add(FilenameSrcPos: integer; const AFilename: string; Found: boolean);
   var
     NewFilename: String;
     p: PCodeXYPosition;
@@ -6429,8 +6428,7 @@ var
     end;
   end;
   
-  function SearchIncludeFilename(FilenameSrcPos: integer;
-    const AFilename: string): string;
+  function SearchIncludeFilename(FilenameSrcPos: integer; const AFilename: string): string;
   var
     AFilePath: String;
     BaseDir: String;
@@ -6453,7 +6451,7 @@ var
         if AFilePath<>'' then begin
           // search relative to unit
           CurFilename:=DirectoryCache.Pool.FindDiskFilename(BaseDir+Result,true);
-          Result:=copy(CurFilename,length(BaseDir)+1,length(CurFilename));
+          Result:=CreateRelativePath(CurFilename, BaseDir);
           if FileExistsCached(CurFilename) then
             Add(FilenameSrcPos,CurFilename,true)
           else
@@ -6468,8 +6466,7 @@ var
             if Scanner.Values.IsDefined('DELPHI') then
               PathDivider:=':'
           end;
-          CurFilename:=SearchFileInPath(Result,BaseDir,IncludePath,PathDivider,
-                                   ctsfcAllCase);
+          CurFilename:=SearchFileInPath(Result,BaseDir,IncludePath,PathDivider, ctsfcAllCase);
           if CurFilename<>'' then begin
             // found
             Result:=CreateRelativePath(CurFilename,BaseDir);
