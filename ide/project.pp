@@ -2844,7 +2844,7 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
 
       // save what matrix options are enabled in session build modes
       Cnt:=0;
-      SubPath:=Path+'BuildModes/SessionMatrixOptions/';
+      SubPath:=Path+'BuildModes/SessionEnabledMatrixOptions/';
       SaveSessionEnabledNonSessionMatrixOptions(XMLConfig,
         SubPath,BuildModes.SharedMatrixOptions,Cnt);
       SaveSessionEnabledNonSessionMatrixOptions(XMLConfig,
@@ -3392,6 +3392,7 @@ var
     s: String;
     {$ENDIF}
   begin
+    //debugln(['LoadBuildModes LoadData=',LoadData,' LoadParts=',LoadParts,' prfLoadPartBuildModes=',prfLoadPartBuildModes in ReadFlags]);
     if LoadParts then begin
       if not (prfLoadPartBuildModes in ReadFlags) then exit;
       if LoadData then
@@ -3470,7 +3471,7 @@ var
 
     if (not LoadData) and (not LoadParts) then begin
       // load what matrix options are enabled in session build modes
-      SubPath:=Path+'BuildModes/SessionMatrixOptions/';
+      SubPath:=Path+'BuildModes/SessionEnabledMatrixOptions/';
       LoadSessionEnabledNonSessionMatrixOptions(XMLConfig,SubPath);
     end;
 
