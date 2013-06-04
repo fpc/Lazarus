@@ -182,6 +182,7 @@ type
     function ExtractOptionsFromDOF(const DOFFilename: string): TModalResult;
     function ExtractOptionsFromCFG(const CFGFilename: string): TModalResult;
     function DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer; override;
+    function AddToProjectLater(AFileName: string): Boolean;
     function CheckPackageDep(AUnitName: string): Boolean;
     function TryAddPackageDep(AUnitName, ADefaultPkgName: string): Boolean;
   protected
@@ -916,11 +917,12 @@ begin
   fUnitSearchPaths:=TStringList.Create;
   fUnitSearchPaths.Delimiter:=';';
   fUnitSearchPaths.StrictDelimiter:=True;
-  fCachedUnitNames:=TStringToStringTree.Create(false);
-  fCachedRealFileNames:=TStringToStringTree.Create(true);
+  fCachedUnitNames:=TStringToStringTree.Create(False);
+  fCachedRealFileNames:=TStringToStringTree.Create(True);
   fAllCommentedUnits:=TStringList.Create;
-  fAllCommentedUnits.Sorted:=true;
+  fAllCommentedUnits.Sorted:=True;
   fUnitsToAddToProject:=TStringList.Create;
+  fUnitsToAddToProject.Sorted:=True;
 end;
 
 destructor TConvertDelphiProjPack.Destroy;
@@ -1227,7 +1229,7 @@ end;
 
 procedure TConvertDelphiProjPack.CleanUpCompilerOptionsSearchPaths(Options: TBaseCompilerOptions);
 var
-  BasePath: String;
+  BasePath, s: String;
 
   function CleanProjectSearchPath(const SearchPath: string): string;
   begin
@@ -1242,6 +1244,11 @@ begin
   Options.Libraries:=CleanProjectSearchPath(Options.Libraries);
   Options.ObjectPath:=CleanProjectSearchPath(Options.ObjectPath);
   Options.SrcPath:=CleanProjectSearchPath(Options.SrcPath);
+  if fSettings.DelphiDefine then begin
+    s:='-dDelphi7 -dVer150 -dCompiler6_Up';
+    Options.CustomOptions:=s;
+    IDEMessagesWindow.AddMsg(Format(lisConvDelphiAddedCustomOptionDefines, [s]), '', -1);
+  end;
 end;
 
 function TConvertDelphiProjPack.DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer;
@@ -1268,7 +1275,7 @@ function TConvertDelphiProjPack.DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): 
         if (RealUnitName<>'') and (RealUnitName<>mUnit) then
           AUsedUnits.UnitsToFixCase[mUnit]:=RealUnitName;
         // Will be added later to project.
-        fUnitsToAddToProject.Add(sUnitPath+RealFileName);
+        AddToProjectLater(sUnitPath+RealFileName);
         AUsedUnits.MissingUnits.Delete(i);      // No more missing, delete from list.
       end
       else if CheckPackageDep(mUnit) then
@@ -1280,6 +1287,15 @@ begin
   DoMissingSub(AUsedUnitsTool.MainUsedUnits);
   DoMissingSub(AUsedUnitsTool.ImplUsedUnits);
   Result:=AUsedUnitsTool.MissingUnitCount;
+end;
+
+function TConvertDelphiProjPack.AddToProjectLater(AFileName: string): Boolean;
+var
+  x: Integer;
+begin
+  Result:=not fUnitsToAddToProject.Find(AFileName,x);
+  if Result then
+    fUnitsToAddToProject.Add(AFileName);
 end;
 
 function TConvertDelphiProjPack.CheckPackageDep(AUnitName: string): Boolean;
@@ -1506,7 +1522,7 @@ begin
     UnitInfo:=LazProject.UnitInfoWithFilename(aFileName);
     Result:=Assigned(UnitInfo);
     if not Result then
-      fUnitsToAddToProject.Add(aFileName);  // Will be added later to project.
+      AddToProjectLater(aFileName);  // Will be added later to project.
   end;
 end;
 
@@ -1600,9 +1616,10 @@ begin
   ConvUnits:=TObjectList.Create;
   try
   try
+  try
     // convert all units and fix .lfm files
     IDEMessagesWindow.AddMsg('', '', -1);
-    IDEMessagesWindow.AddMsg(lisConvDelphiConvertingUnitFiles, '', -1);
+    IDEMessagesWindow.AddMsg(lisConvDelphiConvertingProjPackUnits, '', -1);
     Application.ProcessMessages;
     for i:=0 to LazProject.UnitCount-1 do begin
       CurUnitInfo:=LazProject.Units[i];
@@ -1614,6 +1631,9 @@ begin
       end;
     end;
     // During conversion there were more units added to be converted.
+    IDEMessagesWindow.AddMsg('', '', -1);
+    IDEMessagesWindow.AddMsg(lisConvDelphiConvertingFoundUnits, '', -1);
+    Application.ProcessMessages;
     for i:=0 to fUnitsToAddToProject.Count-1 do begin
       Result:=AddUnit(fUnitsToAddToProject[i], CurUnitInfo);
       if Result=mrNo then Continue;
@@ -1644,6 +1664,8 @@ begin
       // Finally save project once more
       Result:=LazarusIDE.DoSaveProject([sfQuietUnitCheck]);
     end;
+  end;
+  finally
     ConvUnits.Free;  // Owns and frees converter objects.
   end;
 end;
@@ -1886,7 +1908,7 @@ begin
   try
     // Convert all units and fix .lfm files
     IDEMessagesWindow.AddMsg('', '', -1);
-    IDEMessagesWindow.AddMsg(lisConvDelphiConvertingUnitFiles, '', -1);
+    IDEMessagesWindow.AddMsg(lisConvDelphiConvertingProjPackUnits, '', -1);
     Application.ProcessMessages;
     for i:=0 to LazPackage.FileCount-1 do begin
       PkgFile:=LazPackage.Files[i];

@@ -56,6 +56,7 @@ type
     fConfigStorage: TConfigStorage;
     fSettingsForm: TConvertSettingsForm;
     // Actual user settings.
+    fDelphiDefine: Boolean;
     fBackupFiles: Boolean;
     fKeepFileOpen: Boolean;
     fCrossPlatform: Boolean;
@@ -107,6 +108,7 @@ type
     property MainPath: String read fMainPath;
     property BackupPath: String read GetBackupPath;
     property Enabled: Boolean read fEnabled write SetEnabled;
+    property DelphiDefine: Boolean read fDelphiDefine;
     property BackupFiles: Boolean read fBackupFiles;
     property KeepFileOpen: Boolean read fKeepFileOpen;
     property CrossPlatform: Boolean read fCrossPlatform;
@@ -130,6 +132,7 @@ type
 
   TConvertSettingsForm = class(TForm)
     FuncReplaceCommentCB: TCheckBox;
+    DelphiDefineCheckBox: TCheckBox;
     StopScanButton: TBitBtn;
     CoordOffsComboBox: TComboBox;
     ScanLabel: TLabel;
@@ -392,6 +395,7 @@ begin
   fCoordOffsets:=TVisualOffsets.Create;
   // Load settings from ConfigStorage.
   fConfigStorage:=GetIDEConfigStorage('delphiconverter.xml', true);
+  fDelphiDefine                     :=fConfigStorage.GetValue('DelphiDefine', true);
   fBackupFiles                      :=fConfigStorage.GetValue('BackupFiles', true);
   fKeepFileOpen                     :=fConfigStorage.GetValue('KeepFileOpen', false);
   fCrossPlatform                    :=fConfigStorage.GetValue('CrossPlatform', true);
@@ -619,6 +623,7 @@ end;
 destructor TConvertSettings.Destroy;
 begin
   // Save possibly modified settings to ConfigStorage.
+  fConfigStorage.SetDeleteValue('DelphiDefine',      fDelphiDefine, true);
   fConfigStorage.SetDeleteValue('BackupFiles',       fBackupFiles, true);
   fConfigStorage.SetDeleteValue('KeepFileOpen',      fKeepFileOpen, false);
   fConfigStorage.SetDeleteValue('CrossPlatform',     fCrossPlatform, true);
@@ -661,6 +666,7 @@ begin
       Caption:=fTitle + ' - ' + ExtractFileName(fMainFilename);
       ProjectPathEdit.Text:=fMainPath;
       // Settings --> UI. Loaded from ConfigSettings earlier.
+      DelphiDefineCheckBox.Checked   :=fDelphiDefine;
       BackupCheckBox.Checked         :=fBackupFiles;
       KeepFileOpenCheckBox.Checked   :=fKeepFileOpen;
       CrossPlatformCheckBox.Checked  :=fCrossPlatform;
@@ -677,6 +683,7 @@ begin
       Result:=ShowModal;        // Let the user change settings in a form.
       if Result=mrOK then begin // The thread will finished before the form closes.
         // UI --> Settings. Will be saved to ConfigSettings later.
+        fDelphiDefine      :=DelphiDefineCheckBox.Checked;
         fBackupFiles       :=BackupCheckBox.Checked;
         fKeepFileOpen      :=KeepFileOpenCheckBox.Checked;
         fCrossPlatform     :=CrossPlatformCheckBox.Checked;
@@ -808,6 +815,8 @@ begin
   ProjectPathEdit.Text:='';
   ProjectPathEdit.EditLabel.Caption:=lisProjectPath;
   ProjectPathEdit.Hint:=lisProjectPathHint;
+  DelphiDefineCheckBox.Caption:=lisAddDelphiDefine;
+  DelphiDefineCheckBox.Hint:=lisAddDelphiDefineHint;
   BackupCheckBox.Caption:=lisBackupChangedFiles;
   BackupCheckBox.Hint:=lisBackupHint;
   KeepFileOpenCheckBox.Caption:=lisKeepFileOpen;

@@ -551,6 +551,8 @@ resourcestring
   lisUnableToConvertLfmToLrsAndWriteLrsFile = 'Unable to convert lfm to lrs and write lrs file.';
   lisProjectPath = 'Project Path:';
   lisProjectPathHint = 'Directory where project''s main file must be';
+  lisAddDelphiDefine = 'Add defines simulating Delphi7';
+  lisAddDelphiDefineHint = 'Useful when the code has checks for supported compiler versions';
   lisBackupChangedFiles = 'Make backup of changed files';
   lisBackupHint = 'Creates a Backup directory under project directory';
   lisStartConversion = 'Start Conversion';
@@ -5400,7 +5402,8 @@ resourcestring
   lisConvDelphiConvertDelphiPackage = 'Convert Delphi package';
   lisConvDelphiFindAllUnitFiles = '*** Find all unit files ***';
   lisConvDelphiRepairingFormFiles = '*** Fixing used units and Repairing form files ***';
-  lisConvDelphiConvertingUnitFiles = '*** Converting unit files ***';
+  lisConvDelphiConvertingProjPackUnits = '*** Converting unit files belonging to project/package ***';
+  lisConvDelphiConvertingFoundUnits = '*** Converting unit files found during conversion ***';
   lisConvDelphiRepairingFormFile = '* Repairing form file %s *';
   lisConvDelphiConvertingFile = '* Converting file %s *';
   lisConvDelphiFixingUsedUnits = '* Fixing used units for file %s *';
@@ -5411,6 +5414,7 @@ resourcestring
   lisConvDelphiFixedUnitCase = 'Fixed character case of unit "%s" to "%s".';
   lisConvDelphiReplacedUnitInUsesSection = 'Replaced unit "%s" with "%s" in uses section.';
   lisConvDelphiRemovedUnitInUsesSection = 'Removed unit "%s" in uses section.';
+  lisConvDelphiAddedCustomOptionDefines = 'Added defines %s in custom options';
   lisConvDelphiUnitsToReplaceIn = 'Units to replace in %s';
   lisConvDelphiConversionTook = 'Conversion took: %s';
   lisConvDelphiConversionReady = 'Conversion Ready.';
