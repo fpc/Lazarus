@@ -49,6 +49,7 @@ type
   public
     FPointSeparator, FCommaSeparator: TFormatSettings;
     Tokens: TSVGTokenList;
+    ExtraDebugStr: string;
     constructor Create;
     Destructor Destroy; override;
     procedure AddToken(AStr: string);
@@ -63,6 +64,8 @@ type
     FPointSeparator, FCommaSeparator: TFormatSettings;
     FSVGPathTokenizer: TSVGPathTokenizer;
     FLayerStylesKeys, FLayerStylesValues: TFPList; // of TStringList;
+    // debug symbols
+    FPathNumber: Integer;
     function ReadSVGColor(AValue: string): TFPColor;
     function ReadSVGStyle(AValue: string; ADestEntity: TvEntityWithPen; AUseFillAsPen: Boolean = False): TvSetPenBrushAndFontElements;
     function ReadSVGStyleToStyleLists(AValue: string; AStyleKeys, AStyleValues: TStringList): TvSetPenBrushAndFontElements;
@@ -86,6 +89,7 @@ type
     procedure ReadTextFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadUseFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     function  StringWithUnitToFloat(AStr: string): Double;
+    function  StringFloatZeroToOneToWord(AStr: string): Word;
     procedure ConvertSVGCoordinatesToFPVCoordinates(
       const AData: TvVectorialPage;
       const ASrcX, ASrcY: Double; var ADestX, ADestY: Double);
@@ -171,7 +175,15 @@ begin
   else
   begin
     lToken.TokenType := sttFloatValue;
+    try
     lToken.Value := StrToFloat(AStr, FPointSeparator);
+    except
+      on MyException: Exception do
+      begin
+        MyException.Message := MyException.Message + ExtraDebugStr;
+        raise MyException;
+      end;
+    end;
   end;
 
   // Sometimes we get a command glued to a value, for example M150
@@ -190,6 +202,7 @@ procedure TSVGPathTokenizer.TokenizePathString(AStr: string);
 const
   Str_Space: Char = ' ';
   Str_Comma: Char = ',';
+  ListOfCommandLetters: set of Char = ['a'..'d', 'f'..'z', 'A'..'D', 'F'..'Z'];
 var
   i: Integer;
   lTmpStr: string = '';
@@ -219,11 +232,13 @@ begin
       else
       begin
         // Check for a break, from letter to number
+        // But don't forget that we need to support 3.799e-4 !!
+        // So e is not a valid letter for commands here
         if (Length(lTmpStr) >= 1) then
         begin
           lFirstTmpStrChar := lTmpStr[1];
-          if ((lFirstTmpStrChar in ['a'..'z', 'A'..'Z']) and not (lCurChar  in ['a'..'z', 'A'..'Z'])) or
-             (not (lFirstTmpStrChar in ['a'..'z', 'A'..'Z']) and (lCurChar  in ['a'..'z', 'A'..'Z'])) then
+          if ((lFirstTmpStrChar in ListOfCommandLetters) and not (lCurChar  in ListOfCommandLetters)) or
+             (not (lFirstTmpStrChar in ListOfCommandLetters) and (lCurChar  in ListOfCommandLetters)) then
           begin
             AddToken(lTmpStr);
             lTmpStr := '';
@@ -792,7 +807,7 @@ begin
     Result := Result + [spbfBrushColor, spbfBrushStyle];
   end
   else if AKey = 'fill-opacity' then
-    ADestEntity.Brush.Color.Alpha := StrToInt(AValue)*$101;
+    ADestEntity.Brush.Color.Alpha := StringFloatZeroToOneToWord(AValue);
 end;
 
 function TvSVGVectorialReader.ReadSVGFontStyleWithKeyAndValue(AKey,
@@ -1118,7 +1133,10 @@ begin
   end;
 
   AData.StartPath();
+  Inc(FPathNumber);
+  FSVGPathTokenizer.ExtraDebugStr := Format(' [TvSVGVectorialReader.ReadPathFromNode] path#(1-based)=%d', [FPathNumber]);
   ReadPathFromString(UTF8Encode(lDStr), AData, ADoc);
+  FSVGPathTokenizer.ExtraDebugStr := '';
   lPath := AData.EndPath();
   // Add default SVG pen/brush
   lPath.Pen.Style := psClear;
@@ -1651,6 +1669,11 @@ begin
   end;
 end;
 
+function TvSVGVectorialReader.StringFloatZeroToOneToWord(AStr: string): Word;
+begin
+  Result := Round(StrToFloat(AStr, FPointSeparator) * $FFFF);
+end;
+
 procedure TvSVGVectorialReader.ConvertSVGCoordinatesToFPVCoordinates(
   const AData: TvVectorialPage; const ASrcX, ASrcY: Double;
   var ADestX,ADestY: Double);
@@ -1716,6 +1739,8 @@ var
   ANode: TDOMElement;
   i: Integer;
 begin
+  FPathNumber := 0;
+
   // ----------------
   // Read the properties of the <svg> tag
   // ----------------
