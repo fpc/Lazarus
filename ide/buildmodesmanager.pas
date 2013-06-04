@@ -402,6 +402,7 @@ begin
           IDEMessageDialog(lisDuplicateEntry,
             lisThereIsAlreadyABuildModeWithThisName, mtError, [mbCancel]);
           NewValue:=CurMode.Identifier;
+          exit;
         end;
       end;
       BuildModes.RenameMatrixMode(CurMode.Identifier,s);
