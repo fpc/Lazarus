@@ -760,8 +760,12 @@ begin
     Project1.CompilerOptions.TargetOS:=OSOverride;
   if (CPUOverride<>'') then
     Project1.CompilerOptions.TargetCPU:=CPUOverride;
-  if (WidgetSetOverride<>'') then
+  if (WidgetSetOverride<>'') then begin
+    {$IFDEF EnableModeMacro}
+    {$ELSE}
     Project1.ActiveBuildMode.MacroValues.Values['LCLWidgetType']:=WidgetSetOverride;
+    {$ENDIF}
+  end;
   // apply options
   MainBuildBoss.SetBuildTargetProject1(true,smsfsSkip);
 
