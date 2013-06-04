@@ -2422,7 +2422,7 @@ end;
 function TBuildManager.EnvironmentOptionsIsGlobalMode(const Identifier: string
   ): boolean;
 begin
-  Result:=false;
+  Result:=true;
   if Project1=nil then exit;
   if Project1.BuildModes=nil then exit;
   // do not save enabled states of session modes
