@@ -316,7 +316,6 @@ type
     FHotTrack: Boolean;
     FImages: TCustomImageList;
     FImageListChangeLink: TChangeLink;
-    FLoadedPageIndex: integer;
     FMultiSelect: Boolean;
     FOnChanging: TTabChangingEvent;
     FOnCloseTabClicked: TNotifyEvent;

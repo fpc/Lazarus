@@ -39,6 +39,7 @@ end;
 
 procedure TPageControl.SetActiveTabSheet(const AValue: TTabSheet);
 begin
+  //debugln(['TPageControl.SetActiveTabSheet ',DbgSName(Self),' ',DbgSName(AValue)]);
   ActivePageComponent := AValue;
 end;
 

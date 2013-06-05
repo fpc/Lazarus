@@ -219,7 +219,6 @@ begin
   FImageListChangeLink.OnChange := @DoImageListChange;
 
   FPageIndex := -1;
-  FLoadedPageIndex:=-1;
 
   ControlStyle := []; // do not add csAcceptsControls
   TabPosition := tpTop;
@@ -278,9 +277,6 @@ end;
 procedure TCustomTabControl.InitializeWnd;
 begin
   inherited InitializeWnd;
-  if FLoadedPageIndex > -1 then
-    PageIndex := FindVisiblePage(FLoadedPageIndex);
-  FLoadedPageIndex := -1;
   //DebugLn(['TCustomTabControl.InitializeWnd ',DbgSName(Self),' fPageIndex=',fPageIndex]);
   FPageIndexOnLastChange := PageIndex;
 end;
@@ -544,7 +540,6 @@ end;
 procedure TCustomTabControl.SetPageIndex(AValue: Integer);
 begin
   if (AValue < -1) or (AValue >= PageCount) then Exit;
-  if (csLoading in ComponentState) then FLoadedPageIndex := AValue;
   //debugln('TCustomTabControl.SetPageIndex A ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated),' ',dbgs(ComponentState));
   if FPageIndex = AValue then exit;
   if not CanChangePageIndex then exit;
