@@ -19,7 +19,7 @@ uses
   {$ENDIF};
 
 {$I BROKENincfiles.inc}// must be fixed to brokenincfiles.inc
-{$I ../ScanExamples/BROKENincfiles.inc}// must be fixed to ../scanexamples/brokenincfiles.inc
+{$I ../ScanInstances/BROKENincfile2.inc}// must be fixed to ../scaninstances/brokenincfiles.inc
 
 implementation
 

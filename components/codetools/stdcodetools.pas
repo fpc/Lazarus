@@ -6447,8 +6447,11 @@ var
         AFilePath:=ExtractFilePath(Result);
         if AFilePath<>'' then begin
           // search relative to unit
+          //debugln(['SearchIncludeFilename BaseDir+Result=',BaseDir+Result]);
           CurFilename:=DirectoryCache.Pool.FindDiskFilename(BaseDir+Result,true);
-          Result:=copy(CurFilename,length(BaseDir)+1,length(CurFilename));
+          //debugln(['SearchIncludeFilename DiskFilename=',CurFilename]);
+          Result:=CreateRelativePath(CurFilename,BaseDir);
+          //debugln(['SearchIncludeFilename RelativeDiskFilename=',Result]);
           if FileExistsCached(CurFilename) then
             Add(FilenameSrcPos,CurFilename,true)
           else
@@ -6504,7 +6507,7 @@ var
     end;
     AFilename:=SearchIncludeFilename(StartPos,AFilename);
     if OldFilename<>AFilename then begin
-      DebugLn('FixFilename replacing in '+Code.Filename+' include directive "',OldFilename,'" with "',AFilename,'"');
+      DebugLn('TStandardCodeTool.FixIncludeFilenames.FixFilename replacing in '+Code.Filename+' include directive "',OldFilename,'" with "',AFilename,'"');
       SourceChangeCache.ReplaceEx(gtNone,gtNone,0,0,Code,StartPos,EndPos,AFilename);
     end;
   end;

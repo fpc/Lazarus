@@ -1640,6 +1640,7 @@ var
 begin
   Result:=ChompPathDelim(TrimFilename(Filename));
   if Result='' then exit;
+  //debugln(['TCTDirectoryCachePool.FindDiskFilename Filename=',Result]);
   {$IF defined(NotLiteralFilenames) or defined(CaseInsensitiveFilenames)}
   {$ELSE}
   if (not SearchCaseInsensitive) then exit;
@@ -1647,9 +1648,14 @@ begin
   ADirectory:=ExtractFilePath(Result);
   if ADirectory=Result then
     exit; // e.g. / under Linux
+  if SearchCaseInsensitive then
+    // search recursively all directory parts
+    ADirectory:=AppendPathDelim(FindDiskFilename(ADirectory,true));
   Cache:=GetCache(ADirectory,true,false);
+  //debugln(['TCTDirectoryCachePool.FindDiskFilename Dir=',Cache.Directory]);
   Result:=ExtractFileName(Result);
   DiskShortFilename:=Cache.FindFile(Result,ctsfcAllCase);
+  //debugln(['TCTDirectoryCachePool.FindDiskFilename DiskShortFilename=',DiskShortFilename]);
   if DiskShortFilename<>'' then Result:=DiskShortFilename;
   Result:=Cache.Directory+Result;
 end;
