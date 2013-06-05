@@ -6451,7 +6451,7 @@ var
         if AFilePath<>'' then begin
           // search relative to unit
           CurFilename:=DirectoryCache.Pool.FindDiskFilename(BaseDir+Result,true);
-          Result:=CreateRelativePath(CurFilename, BaseDir);
+          Result:=copy(CurFilename,length(BaseDir)+1,length(CurFilename));
           if FileExistsCached(CurFilename) then
             Add(FilenameSrcPos,CurFilename,true)
           else
