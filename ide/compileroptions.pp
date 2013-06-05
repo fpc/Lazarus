@@ -3759,10 +3759,9 @@ begin
     Result:=MergeLinkerOptions(Result,Vars[VarName]);
   pcosCustomOptions:
     Result:=MergeCustomOptions(Result,Vars[VarName]);
-  pcosOutputDir:
-    if Vars.IsDefined(PChar(VarName)) then Result:=SetDirSeparators(Vars[VarName]);
-  pcosCompilerPath:
-    if Vars.IsDefined(PChar(VarName)) then Result:=SetDirSeparators(Vars[VarName]);
+  pcosOutputDir,pcosCompilerPath:
+    if Vars.IsDefined(PChar(VarName)) then
+      Result:=SetDirSeparators(Vars[VarName]);
   end
 end;
 
@@ -3863,12 +3862,14 @@ begin
   s:=OptionText;
 
   // apply overrides
-  if Option=pcosCustomOptions then begin
-    if Assigned(OnAppendCustomOption) then
-      OnAppendCustomOption(Self,s,bmgtAll);
-  end else if Option=pcosOutputDir then begin
-    if Assigned(OnGetOutputDirectoryOverride) then
-      OnGetOutputDirectoryOverride(Self,s,bmgtAll);
+  if not PlatformIndependent then begin
+    if Option=pcosCustomOptions then begin
+      if Assigned(OnAppendCustomOption) then
+        OnAppendCustomOption(Self,s,bmgtAll);
+    end else if Option=pcosOutputDir then begin
+      if Assigned(OnGetOutputDirectoryOverride) then
+        OnGetOutputDirectoryOverride(Self,s,bmgtAll);
+    end;
   end;
 
   // parse locally (macros depending on owner, like pkgdir and build macros)
