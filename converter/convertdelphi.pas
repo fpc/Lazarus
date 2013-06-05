@@ -1245,7 +1245,10 @@ begin
   Options.ObjectPath:=CleanProjectSearchPath(Options.ObjectPath);
   Options.SrcPath:=CleanProjectSearchPath(Options.SrcPath);
   if fSettings.DelphiDefine then begin
-    s:='-dDelphi7 -dVer150 -dCompiler6_Up';
+    // "Borland" and "Ver150" are defined by Delphi7.
+    // "Delphi7" and "Compiler6_Up" are defined by Jedi library based on other settings.
+    //  They are needed because Jedi.inc undefines "Borland" when "FPC" is defined. Nuts.
+    s:='-dBorland -dVer150 -dDelphi7 -dCompiler6_Up';
     Options.CustomOptions:=s;
     IDEMessagesWindow.AddMsg(Format(lisConvDelphiAddedCustomOptionDefines, [s]), '', -1);
   end;
