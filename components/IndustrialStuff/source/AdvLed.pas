@@ -162,7 +162,6 @@ begin
   ControlStyle := ControlStyle - [csSetCaption];
   Height := 25;
   Width := 25;
-  AutoSize := True;
   FGlyphs[lsOn] := TLedBitmap.Create;
   FGlyphs[lsOff] := TLedBitmap.Create;
   FGlyphs[lsDisabled] := TLedBitmap.Create;
