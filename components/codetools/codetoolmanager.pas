@@ -5564,6 +5564,9 @@ begin
     TCodeTool(Result).OnFindUsedUnit:=@DoOnFindUsedUnit;
     TCodeTool(Result).OnGetSrcPathForCompiledUnit:=@DoOnGetSrcPathForCompiledUnit;
     TCodeTool(Result).OnGetMethodName:=@DoOnInternalGetMethodName;
+    TCodeTool(Result).DirectoryCache:=
+      DirectoryCachePool.GetCache(ExtractFilePath(Code.Filename),
+                                  true,true);
     Result.OnSetGlobalWriteLock:=@DoOnToolSetWriteLock;
     Result.OnTreeChange:=@DoOnToolTreeChange;
     TCodeTool(Result).OnParserProgress:=@DoOnParserProgress;

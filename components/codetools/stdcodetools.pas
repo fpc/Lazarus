@@ -1201,8 +1201,6 @@ function TStandardCodeTool.FixUsedUnitCaseInUsesSection(
       CurDir:=ExtractFilePath(TCodeBuffer(Scanner.MainCode).Filename);
       AFilename:=CurDir+AFilename;
     end;
-    CheckDirectoryCache;
-    if DirectoryCache=nil then exit;
     Result:=DirectoryCache.Pool.FindDiskFilename(AFilename,true);
     if Result='' then exit;
     if MakeRelative then
@@ -1492,7 +1490,6 @@ const
     Node: TCodeTreeNode;
   begin
     if UsesNode=nil then exit(true);
-    if not CheckDirectoryCache then exit(false);
 
     Node:=UsesNode.FirstChild;
     while Node<>nil do begin

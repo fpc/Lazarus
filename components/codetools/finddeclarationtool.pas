@@ -731,7 +731,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function CheckDirectoryCache: boolean;
     procedure ConsistencyCheck; override;
     procedure CalcMemSize(Stats: TCTMemStats); override;
 
@@ -869,7 +868,7 @@ type
                                                write FOnGetMethodName;
     property AdjustTopLineDueToComment: boolean
                read FAdjustTopLineDueToComment write FAdjustTopLineDueToComment;
-    property DirectoryCache: TCTDirectoryCache read FDirectoryCache;
+    property DirectoryCache: TCTDirectoryCache read FDirectoryCache write FDirectoryCache;
   end;
 
 function ExprTypeToString(const ExprType: TExpressionType): string;
@@ -2179,8 +2178,7 @@ begin
   if (AnUnitName='') or (Scanner=nil) or (Scanner.MainCode=nil)
   or (not (TObject(Scanner.MainCode) is TCodeBuffer))
   or (Scanner.OnLoadSource=nil)
-  or (not CheckDirectoryCache) then
-  begin
+  then begin
     RaiseException('TFindDeclarationTool.FindUnitSource Invalid Data');
   end;
 
@@ -2232,7 +2230,6 @@ end;
 function TFindDeclarationTool.FindUnitCaseInsensitive(var AnUnitName,
   AnUnitInFilename: string): string;
 begin
-  if not CheckDirectoryCache then exit('');
   Result:=DirectoryCache.FindUnitSourceInCompletePath(
                                               AnUnitName,AnUnitInFilename,true);
 end;
@@ -2242,7 +2239,6 @@ procedure TFindDeclarationTool.GatherUnitAndSrcPath(var UnitPath,
 begin
   UnitPath:='';
   CompleteSrcPath:='';
-  if not CheckDirectoryCache then exit;
   UnitPath:=DirectoryCache.Strings[ctdcsUnitPath];
   CompleteSrcPath:=DirectoryCache.Strings[ctdcsCompleteSrcPath];
   //DebugLn('TFindDeclarationTool.GatherUnitAndSrcPath UnitPath="',UnitPath,'" CompleteSrcPath="',CompleteSrcPath,'"');
@@ -2251,16 +2247,12 @@ end;
 function TFindDeclarationTool.SearchUnitInUnitLinks(const TheUnitName: string
   ): string;
 begin
-  Result:='';
-  if not CheckDirectoryCache then exit;
   Result:=DirectoryCache.FindUnitLink(TheUnitName);
 end;
 
 function TFindDeclarationTool.SearchUnitInUnitSet(const TheUnitName: string
   ): string;
 begin
-  Result:='';
-  if not CheckDirectoryCache then exit;
   Result:=DirectoryCache.FindUnitInUnitSet(TheUnitName);
 end;
 
@@ -9423,14 +9415,6 @@ begin
     end;
     Result:=ParameterNode;
   end;
-end;
-
-function TFindDeclarationTool.CheckDirectoryCache: boolean;
-begin
-  if FDirectoryCache<>nil then exit(true);
-  if Assigned(OnGetDirectoryCache) then
-    FDirectoryCache:=OnGetDirectoryCache(ExtractFilePath(MainFilename));
-  Result:=FDirectoryCache<>nil;
 end;
 
 constructor TFindDeclarationTool.Create;
