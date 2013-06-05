@@ -216,7 +216,6 @@ begin
   UsesNode:=UsesSectionNode;
   if UsesNode=nil then exit(true);
   with fCTLink do begin
-    if not CodeTool.CheckDirectoryCache then exit(false);
     CodeTool.MoveCursorToUsesStart(UsesNode);
     repeat
       // read next unit name
