@@ -197,6 +197,7 @@ type
     function GetCompOpts: TBaseCompilerOptions; virtual; abstract;
     function GetCustomDefines: TDefineTemplate; virtual; abstract;
     procedure CustomDefinesChanged; virtual; abstract;
+    function GetMainDirectory: string; virtual; abstract;
     function GetMainName: string; virtual; abstract;
     function SaveAndMaybeClose(aFilename: string): TModalResult; virtual;
     procedure AddPackageDependency(const PackageName: string); virtual; abstract;
@@ -209,6 +210,7 @@ type
   public
     property CompOpts: TBaseCompilerOptions read GetCompOpts;
     property CustomDefines: TDefineTemplate read GetCustomDefines;
+    property MainDirectory: string read GetMainDirectory;
     property MainName: string read GetMainName;
   end;
 
@@ -235,6 +237,7 @@ type
     function GetCompOpts: TBaseCompilerOptions; override;
     function GetCustomDefines: TDefineTemplate; override;
     procedure CustomDefinesChanged; override;
+    function GetMainDirectory: string; override;
     function GetMainName: string; override;
     function SaveAndMaybeClose(Filename: string): TModalResult; override;
     procedure AddPackageDependency(const PackageName: string); override;
@@ -267,6 +270,7 @@ type
     function GetCompOpts: TBaseCompilerOptions; override;
     function GetCustomDefines: TDefineTemplate; override;
     procedure CustomDefinesChanged; override;
+    function GetMainDirectory: string; override;
     function GetMainName: string; override;
     procedure AddPackageDependency(const PackageName: string); override;
     function FindDependencyByName(const PackageName: string): TPkgDependency; override;
@@ -293,18 +297,19 @@ type
   public      // ToDo
     procedure InitPackage(APackage: TLazPackage); override;
   end;
-}
+
   // Some global functions from delphiunit2laz are not (yet) converted to class methods.
   function ConvertDelphiAbsoluteToRelativeFile(const Filename: string;
-                                               AProject: TProject): string;
-  function ExpandDelphiFilename(const Filename: string; AProject: TProject): string;
+                                               AProjPack: TConvertDelphiProjPack): string;
+  function ExpandDelphiFilename(const Filename: string; AProjPack: TConvertDelphiProjPack): string;
   function ExpandDelphiSearchPath(const SearchPath: string;
-                                  AProject: TProject): string;
-
+                                  AProjPack: TConvertDelphiProjPack): string;
+}
 
 implementation
 
-function ConvertDelphiAbsoluteToRelativeFile(const Filename: string; AProject: TProject): string;
+function ConvertDelphiAbsoluteToRelativeFile(const Filename: string;
+                                      AProjPack: TConvertDelphiProjPack): string;
 // often projects use paths near to their project directory. For example:
 //   A project /somewhere/MyProjects/project1.dpr
 // and a path C:\Delphi\MyProj\folder can mean, that the relative path is 'folder'
@@ -314,14 +319,14 @@ var
   p: LongInt;
 begin
   Result:='';       // Default: ignore absolute paths
-  ProjectDir:=AProject.ProjectDirectory;
+  ProjectDir:=AProjPack.MainDirectory;
   ShortProjectDir:=PathDelim+ExtractFileName(ChompPathDelim(ProjectDir))+PathDelim;
   p:=System.Pos(ShortProjectDir,Filename);
   if (p>0) then
     Result:=copy(Filename,p+length(ShortProjectDir),length(Filename));
 end;
 
-function ExpandDelphiFilename(const Filename: string; AProject: TProject): string;
+function ExpandDelphiFilename(const Filename: string; AProjPack: TConvertDelphiProjPack): string;
 var
   p: LongInt;
 begin
@@ -342,14 +347,14 @@ begin
   end;
   if FilenameIsWinAbsolute(Result) then begin
     // absolute filenames are not portable
-    Result:=ConvertDelphiAbsoluteToRelativeFile(Result,AProject);
+    Result:=ConvertDelphiAbsoluteToRelativeFile(Result, AProjPack);
   end;
   // change PathDelim
   Result:=TrimFilename(SetDirSeparators(Result));
 end;
 
 function ExpandDelphiSearchPath(const SearchPath: string;
-  AProject: TProject): string;
+                                AProjPack: TConvertDelphiProjPack): string;
 var
   Paths: TStrings;
   i: Integer;
@@ -362,7 +367,7 @@ begin
   try
     // expand Delphi paths
     for i:=0 to Paths.Count-1 do
-      Paths[i]:=ExpandDelphiFilename(Paths[i],AProject);
+      Paths[i]:=ExpandDelphiFilename(Paths[i], AProjPack);
     // remove doubles
     for i:=Paths.Count-1 downto 0 do begin
       CurPath:=Paths[i];
@@ -370,7 +375,8 @@ begin
         Paths.Delete(i)
       else begin
         j:=i-1;
-        while (j>=0) and (CompareText(CurPath,Paths[i])<>0) do dec(j);
+        while (j>=0) and (CompareText(CurPath, Paths[i])<>0) do
+          dec(j);
         if j>=0 then
           Paths.Delete(i);
       end;
@@ -1085,7 +1091,7 @@ var
   function ReadDirectory(const Section, Ident: string): string;
   begin
     Result:=IniFile.ReadString(Section,Ident,'');
-    Result:=ExpandDelphiFilename(Result,fProjPack as TProject);
+    Result:=ExpandDelphiFilename(Result, Self);
   end;
 
   function ReadSearchPath(const Section, Ident: string): string;
@@ -1093,7 +1099,7 @@ var
     SearchPath: String;
   begin
     SearchPath:=IniFile.ReadString(Section,Ident,'');
-    Result:=ExpandDelphiSearchPath(SearchPath,fProjPack as TProject);
+    Result:=ExpandDelphiSearchPath(SearchPath, Self);
   end;
 
   procedure AddPackDep(const DelphiPkgName, DelphiPkgNames, LazarusPkgName: string);
@@ -1194,7 +1200,7 @@ begin
         if (Line[1]<>'-') or (length(Line)<2) then continue;
         c:=Line[2];
         if (c='U') or (c='I') then begin
-          s:=ExpandDelphiSearchPath(copy(Line,4,length(Line)-4),fProjPack as TProject);
+          s:=ExpandDelphiSearchPath(copy(Line,4,length(Line)-4), Self);
           if s<>'' then
             case c of
               'U': CompOpts.OtherUnitFiles:=MergeSearchPaths(CompOpts.OtherUnitFiles,s);
@@ -1216,7 +1222,7 @@ end;
 procedure TConvertDelphiProjPack.SetCompilerModeForDefineTempl(DefTempl: TDefineTemplate);
 begin
   if DefTempl.FindChildByName(SettingDelphiModeTemplName)<>nil then exit;
-  DefTempl.ReplaceChild(CreateDefinesForFPCMode(SettingDelphiModeTemplName,cmDELPHI));
+  DefTempl.ReplaceChild(CreateDefinesForFPCMode(SettingDelphiModeTemplName, cmDELPHI));
   CodeToolBoss.DefineTree.ClearCache;
 end;
 
@@ -1414,7 +1420,7 @@ var
   ConvTool: TConvDelphiCodeTool;
 begin
   // Converter for main LPR file.
-  fMainUnitConverter:=TDelphiUnit.Create(Self,fOrigFilename,[]);
+  fMainUnitConverter:=TDelphiUnit.Create(Self, fOrigFilename,[]);
   if fSettings.SupportDelphi then
     fMainUnitConverter.LazFileExt:=ExtractFileExt(fOrigFilename)
   else
@@ -1709,6 +1715,15 @@ begin
   (fProjPack as TProject).DefineTemplates.CustomDefinesChanged;
 end;
 
+function TConvertDelphiProject.GetMainDirectory: string;
+var
+  s: String;
+begin
+  Result:=LazProject.ProjectDirectory;
+  s:=ExtractFilePath(fLazPFilename);
+  Assert(Result=s, Format('Project MainDirectory differs: %s, %s.', [Result, s]));
+end;
+
 function TConvertDelphiProject.GetMainName: string;
 begin
   Result:='';
@@ -1825,7 +1840,7 @@ begin
   MissingInUnits:=nil;
   NormalUnits:=nil;
   try
-    if not CodeToolBoss.FindDelphiPackageUnits(fDpkCode,FoundInUnits,
+    if not CodeToolBoss.FindDelphiPackageUnits(fDpkCode, FoundInUnits,
                                                MissingInUnits, NormalUnits) then
     begin
       LazarusIDE.DoJumpToCodeToolBossError;
@@ -1985,6 +2000,15 @@ end;
 procedure TConvertDelphiPackage.CustomDefinesChanged;
 begin
   (fProjPack as TLazPackage).DefineTemplates.CustomDefinesChanged;
+end;
+
+function TConvertDelphiPackage.GetMainDirectory: string;
+var
+  s: String;
+begin
+  Result:=LazPackage.Directory;
+  s:=ExtractFilePath(fLazPFilename);
+  Assert(Result=s, Format('Package MainDirectory differs: %s, %s.', [Result, s]));
 end;
 
 function TConvertDelphiPackage.GetMainName: string;
