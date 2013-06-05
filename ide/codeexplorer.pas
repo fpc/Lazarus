@@ -67,12 +67,6 @@ type
     );
   TCodeExplorerViewFlags = set of TCodeExplorerViewFlag;
   
-  TCodeExplorerPage = (
-    cepNone,
-    cepCode,
-    cepDirectives
-    );
-
   TCodeObsStackItemType = (
     cositNone,
     cositBegin,
@@ -153,6 +147,7 @@ type
     procedure IdleTimer1Timer(Sender: TObject);
     procedure JumpToMenuItemClick(Sender: TObject);
     procedure JumpToImplementationMenuItemClick(Sender: TObject);
+    procedure OnCloseIDE(Sender: TObject);
     procedure ShowSrcEditPosMenuItemClick(Sender: TObject);
     procedure MainNotebookPageChanged(Sender: TObject);
     procedure CodeModeSpeedButtonClick(Sender: TObject);
@@ -455,7 +450,7 @@ end;
 
 { TCodeExplorerView }
 
-procedure TCodeExplorerView.CodeExplorerViewCREATE(Sender: TObject);
+procedure TCodeExplorerView.CodeExplorerViewCreate(Sender: TObject);
 begin
   FMode := CodeExplorerOptions.Mode;
   UpdateMode;
@@ -463,7 +458,10 @@ begin
   Name:=NonModalIDEWindowNames[nmiwCodeExplorerName];
   Caption := lisMenuViewCodeExplorer;
 
-  MainNotebook.ActivePage:=CodePage;
+  case CodeExplorerOptions.Page of
+  cepDirectives: MainNotebook.ActivePage:=DirectivesPage;
+  else MainNotebook.ActivePage:=CodePage;
+  end;
 
   CodePage.Caption:=lisCode;
   CodeRefreshSpeedButton.Hint:=dlgUnitDepRefresh;
@@ -512,6 +510,7 @@ begin
   fNodesWithPath:=TAvgLvlTree.Create(@CompareViewNodePathsAndParams);
 
   Application.AddOnUserInputHandler(@OnUserInput);
+  LazarusIDE.AddHandlerOnIDEClose(@OnCloseIDE);
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewDestroy(Sender: TObject);
@@ -628,6 +627,11 @@ begin
   JumpToSelection(true);
 end;
 
+procedure TCodeExplorerView.OnCloseIDE(Sender: TObject);
+begin
+  CodeExplorerOptions.Save;
+end;
+
 procedure TCodeExplorerView.ShowSrcEditPosMenuItemClick(Sender: TObject);
 begin
   SelectSourceEditorNode;
@@ -635,6 +639,10 @@ end;
 
 procedure TCodeExplorerView.MainNotebookPageChanged(Sender: TObject);
 begin
+  if MainNotebook.ActivePage=DirectivesPage then
+    CodeExplorerOptions.Page:=cepDirectives
+  else
+    CodeExplorerOptions.Page:=cepCode;
   Refresh(true);
 end;
 
@@ -2348,8 +2356,8 @@ begin
   Result:=SelectCodePosition(TCodeBuffer(SrcEdit.CodeToolsBuffer),xy.x,xy.y);
 end;
 
-function TCodeExplorerView.SelectCodePosition(CodeBuf: TCodeBuffer;
-  X, Y: integer): Boolean;
+function TCodeExplorerView.SelectCodePosition(CodeBuf: TCodeBuffer; X,
+  Y: integer): boolean;
 var
   CodePos: TCodeXYPosition;
   CleanPos: integer;

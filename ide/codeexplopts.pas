@@ -43,6 +43,12 @@ uses
 type
   { TCodeExplorerOptions }
   
+  TCodeExplorerPage = (
+    cepNone,
+    cepCode,
+    cepDirectives
+    );
+
   TCodeExplorerRefresh = (
     cerManual,  // only via refresh button
     cerSwitchEditorPage,// everytime the source editor switches to another page
@@ -90,6 +96,7 @@ const
   DefaultCodeExplorerCategories = [cecUses,
                cecTypes,cecVariables,cecConstants,cecProcedures];
   cefcAll = [low(TCEObserverCategory)..high(TCEObserverCategory)];
+  DefaultCodeExplorerPage = cepCode;
   DefaultCodeObserverCategories = [
     cefcLongProcs,
     cefcEmptyProcs,
@@ -143,15 +150,20 @@ type
     FMode : TCodeExplorerMode;
     FObserverIgnoreConstants: TAvgLvlTree;// tree of AnsiString
     FOptionsFilename: string;
+    FPage: TCodeExplorerPage;
     FRefresh: TCodeExplorerRefresh;
+    FSavedChangeStep: integer;
+    function GetModified: boolean;
     procedure SetCategories(const AValue: TCodeExplorerCategories);
     procedure SetFollowCursor(const AValue: boolean);
     procedure SetLongParamListCount(const AValue: integer);
     procedure SetLongProcLineCount(const AValue: integer);
     procedure SetMode(const AValue: TCodeExplorerMode);
+    procedure SetModified(AValue: boolean);
     procedure SetNestedProcCount(const AValue: integer);
     procedure SetObserveCharConst(const AValue: boolean);
     procedure SetObserverCategories(const AValue: TCEObserverCategories);
+    procedure SetPage(AValue: TCodeExplorerPage);
     procedure SetRefresh(const AValue: TCodeExplorerRefresh);
   public
     class function GetGroupCaption:string; override;
@@ -167,6 +179,7 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure IncreaseChangeStep;
+    property Modified: boolean read GetModified write SetModified;
   public
     // observer: ignore constants
     function CreateListOfCOIgnoreConstants: TStrings;
@@ -193,6 +206,7 @@ type
     property OptionsFilename: string read FOptionsFilename write FOptionsFilename;
     property FollowCursor: boolean read FFollowCursor write SetFollowCursor default true;
     property Categories: TCodeExplorerCategories read FCategories write SetCategories default DefaultCodeExplorerCategories;
+    property Page: TCodeExplorerPage read FPage write SetPage default DefaultCodeExplorerPage;
     property ChangeStep: integer read FChangeStep write FChangeStep;
   public
     // Observer
@@ -210,6 +224,11 @@ const
 
   cerDefault = cerSwitchEditorPage;
 
+  CodeExplorerPageNames: array[TCodeExplorerPage] of string = (
+    '?',
+    'Code',
+    'Directives'
+    );
   CodeExplorerRefreshNames: array[TCodeExplorerRefresh] of string = (
     'Manual',
     'SwitchEditorPage',
@@ -248,6 +267,7 @@ const
 var
   CodeExplorerOptions: TCodeExplorerOptions = nil; // set by the IDE
 
+function CodeExplorerPageNameToEnum(const s: string): TCodeExplorerPage;
 function CodeExplorerRefreshNameToEnum(const s: string): TCodeExplorerRefresh;
 function CodeExplorerModeNameToEnum(const s: string): TCodeExplorerMode;
 function CodeExplorerCategoryNameToEnum(const s: string): TCodeExplorerCategory;
@@ -258,6 +278,12 @@ function dbgs(c: TCodeExplorerCategory): string; overload;
 
 implementation
 
+function CodeExplorerPageNameToEnum(const s: string): TCodeExplorerPage;
+begin
+  for Result:=Low(TCodeExplorerPage) to High(TCodeExplorerPage) do
+    if SysUtils.CompareText(CodeExplorerPageNames[Result],s)=0 then exit;
+  Result:=DefaultCodeExplorerPage;
+end;
 
 function CodeExplorerRefreshNameToEnum(const s: string): TCodeExplorerRefresh;
 begin
@@ -342,6 +368,14 @@ begin
   IncreaseChangeStep;
 end;
 
+procedure TCodeExplorerOptions.SetModified(AValue: boolean);
+begin
+  if AValue then
+    IncreaseChangeStep
+  else
+    FSavedChangeStep:=FChangeStep;
+end;
+
 procedure TCodeExplorerOptions.SetNestedProcCount(const AValue: integer);
 begin
   if FNestedProcCount=AValue then exit;
@@ -361,6 +395,13 @@ procedure TCodeExplorerOptions.SetObserverCategories(
 begin
   if FObserverCategories=AValue then exit;
   FObserverCategories:=AValue;
+  IncreaseChangeStep;
+end;
+
+procedure TCodeExplorerOptions.SetPage(AValue: TCodeExplorerPage);
+begin
+  if FPage=AValue then Exit;
+  FPage:=AValue;
   IncreaseChangeStep;
 end;
 
@@ -391,6 +432,11 @@ begin
   if FCategories=AValue then exit;
   FCategories:=AValue;
   IncreaseChangeStep;
+end;
+
+function TCodeExplorerOptions.GetModified: boolean;
+begin
+  Result:=FSavedChangeStep<>FChangeStep;
 end;
 
 constructor TCodeExplorerOptions.Create;
@@ -434,6 +480,7 @@ begin
   FMode:=cemCategory;
   FRefresh:=cerDefault;
   FFollowCursor:=true;
+  FPage:=DefaultCodeExplorerPage;
   FCategories:=DefaultCodeExplorerCategories;
   FObserverCategories:=DefaultCodeObserverCategories;
   FLongProcLineCount:=DefaultCOLongProcLineCount;
@@ -455,6 +502,7 @@ begin
     FRefresh:=Src.Refresh;
     FMode:=Src.Mode;
     FFollowCursor:=Src.FollowCursor;
+    FPage:=Src.Page;
     FCategories:=Src.Categories;
     FObserverCategories:=Src.ObserverCategories;
     FLongProcLineCount:=Src.LongProcLineCount;
@@ -505,6 +553,7 @@ procedure TCodeExplorerOptions.Save;
 var
   XMLConfig: TXMLConfig;
 begin
+  if FileExistsCached(FOptionsFilename) and not Modified then exit;
   try
     InvalidateFileStateCache;
     XMLConfig:=TXMLConfig.CreateClean(FOptionsFilename);
@@ -513,6 +562,7 @@ begin
     SaveToXMLConfig(XMLConfig,'CodeExplorer/');
     XMLConfig.Flush;
     XMLConfig.Free;
+    Modified:=false;
   except
     on E: Exception do begin
       DebugLn('[TCodeExplorerOptions.Save]  error writing "',FOptionsFilename,'" ',E.Message);
@@ -535,7 +585,8 @@ begin
   FMode:=CodeExplorerModeNameToEnum(
                                    XMLConfig.GetValue(Path+'Mode/Value',''));
   FFollowCursor:=XMLConfig.GetValue(Path+'FollowCursor',true);
-  
+  FPage:=CodeExplorerPageNameToEnum(XMLConfig.GetValue(Path+'Page/Value',''));
+
   FCategories:=[];
   for c:=FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
     if XMLConfig.GetValue(Path+'Categories/'+CodeExplorerCategoryNames[c],
@@ -606,7 +657,9 @@ begin
                            CodeExplorerModeNames[FMode],
                            CodeExplorerModeNames[cemCategory]);
   XMLConfig.SetDeleteValue(Path+'FollowCursor',FFollowCursor,true);
-  
+  XMLConfig.SetDeleteValue(Path+'Page/Value',CodeExplorerPageNames[FPage],
+                           CodeExplorerPageNames[DefaultCodeExplorerPage]);
+
   for c:=FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
     XMLConfig.SetDeleteValue(Path+'Categories/'+CodeExplorerCategoryNames[c],
       c in FCategories,c in DefaultCodeExplorerCategories);
@@ -660,7 +713,6 @@ begin
       end;
     end;
   end;
-
 end;
 
 procedure TCodeExplorerOptions.IncreaseChangeStep;
