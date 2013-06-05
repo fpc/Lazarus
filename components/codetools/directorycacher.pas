@@ -1145,7 +1145,7 @@ function TCTDirectoryCache.FindUnitSourceInCompletePath(var AUnitName,
   function FindInFilenameLowUp(aFilename: string): string;
   begin
     if AnyCase then
-      Result:=Pool.FindDiskFilename(aFilename)
+      Result:=Pool.FindDiskFilename(aFilename,true)
     else begin
       Result:=aFilename;
       if FileExistsCached(Result) then exit;

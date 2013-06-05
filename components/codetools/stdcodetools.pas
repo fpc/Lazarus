@@ -1512,7 +1512,7 @@ const
           FromPos:=Node.StartPos;
           ToPos:=Node.EndPos;
           SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,s);
-          DebugLn('CheckUsesSection fix case Unit Name(',OldUnitName,'->',NewUnitName,') InFile(',OldInFilename,'->',NewInFilename,')');
+          DebugLn('TStandardCodeTool.FindMissingUnits.CheckUsesSection fix case Unit Name(',OldUnitName,'->',NewUnitName,') InFile(',OldInFilename,'->',NewInFilename,')');
         end;
       end else begin
         // unit not found

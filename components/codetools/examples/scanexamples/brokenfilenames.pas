@@ -10,7 +10,7 @@ uses
   CustApp,
   biglettersunit, // must be fixed to BigLettersUnit
   biglettersunit in 'biglettersunit.pas',// -> BigLettersUnit.pas
-  biglettersunit in '..\ScanExamples\biglettersunit.pas',// -> ../scanexamples/BigLettersUnit
+  biglettersunit in '..\ScanExamples\biglettersunit.pas',// -> BigLettersUnit.pas
   NonExistingUnit1, NonExistingUnit2, SysUtils, NonExistingUnit3,
   {$IFDEF FPC}
   NonExistingUnit4
