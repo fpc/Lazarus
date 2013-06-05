@@ -44,7 +44,7 @@ begin
   ChildSizing.EnlargeHorizontal:=crsHomogenousChildResize;
   ChildSizing.EnlargeVertical:=crsHomogenousChildResize;
   ChildSizing.LeftRightSpacing:=6;
-  ChildSizing.TopBottomSpacing:=6;
+  ChildSizing.TopBottomSpacing:=0;
 end;
 
 
