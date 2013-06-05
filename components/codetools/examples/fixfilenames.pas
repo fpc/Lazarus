@@ -45,7 +45,11 @@ begin
   CodeToolBoss.SimpleInit(ConfigFilename);
 
   // load the example unit
-  Filename:=ExpandFileNameUTF8('scanexamples/brokenfilenames.pas');
+  Filename:='scanexamples/brokenfilenames.pas';
+  if ParamCount>0 then
+    Filename:=ParamStrUTF8(1);
+  Filename:=ExpandFileNameUTF8(Filename);
+  writeln('Filename="',Filename,'"');
   Code:=CodeToolBoss.LoadFile(Filename,false,false);
   if Code=nil then
     raise Exception.Create('unable to read '+Filename);

@@ -1960,17 +1960,23 @@ function TPascalParserTool.ReadUsesSection(
     uses name1, name2 in '', name3.dot;
 
 }
+var
+  IsUses: Boolean;
 begin
   Result:=false;
-  if CurNode.Desc<>ctnUsesSection then begin
+  IsUses:=CurNode.Desc=ctnUsesSection;
+  if (not IsUses) and (CurNode.Desc<>ctnContainsSection) then begin
     CreateChildNode;
     CurNode.Desc:=ctnUsesSection;
+    IsUses:=true;
   end;
-  if ord(ScannedRange)<ord(lsrMainUsesSectionStart) then
-    ScannedRange:=lsrMainUsesSectionStart
-  else if ord(ScannedRange)<ord(lsrImplementationUsesSectionStart) then
-    ScannedRange:=lsrImplementationUsesSectionStart;
-  if ord(ScanTill)<=ord(ScannedRange) then exit;
+  if IsUses then begin
+    if ord(ScannedRange)<ord(lsrMainUsesSectionStart) then
+      ScannedRange:=lsrMainUsesSectionStart
+    else if ord(ScannedRange)<ord(lsrImplementationUsesSectionStart) then
+      ScannedRange:=lsrImplementationUsesSectionStart;
+    if ord(ScanTill)<=ord(ScannedRange) then exit;
+  end;
   repeat
     ReadNextAtom;  // read name
     if CurPos.Flag=cafSemicolon then break;
@@ -2004,11 +2010,13 @@ begin
   EndChildNode;
   Result:=true;
 
-  if ScannedRange=lsrMainUsesSectionStart then
-    ScannedRange:=lsrMainUsesSectionEnd
-  else if ScannedRange=lsrImplementationUsesSectionStart then
-    ScannedRange:=lsrImplementationUsesSectionEnd;
-  if ord(ScanTill)<=ord(ScannedRange) then exit;
+  if IsUses then begin
+    if ScannedRange=lsrMainUsesSectionStart then
+      ScannedRange:=lsrMainUsesSectionEnd
+    else if ScannedRange=lsrImplementationUsesSectionStart then
+      ScannedRange:=lsrImplementationUsesSectionEnd;
+    if ord(ScanTill)<=ord(ScannedRange) then exit;
+  end;
 
   ReadNextAtom;
 end;
@@ -2044,37 +2052,15 @@ end;
 function TPascalParserTool.ReadContainsSection(ExceptionOnError: boolean
   ): boolean;
 { parse contains section
+  The uses section of a Delphi package
 
   examples:
     contains name1, name2 in '', name3;
-
 }
 begin
   CreateChildNode;
   CurNode.Desc:=ctnContainsSection;
-  repeat
-    ReadNextAtom;  // read name
-    if CurPos.Flag=cafSemicolon then break;
-    AtomIsIdentifierSaveE;
-    ReadNextAtom;
-    if UpAtomIs('IN') then begin
-      ReadNextAtom;
-      if not AtomIsStringConstant then
-        if ExceptionOnError then
-          SaveRaiseStringExpectedButAtomFound(ctsStringConstant)
-        else exit;
-      ReadNextAtom;
-    end;
-    if CurPos.Flag=cafSemicolon then break;
-    if CurPos.Flag<>cafComma then
-      if ExceptionOnError then
-        SaveRaiseCharExpectedButAtomFound(';')
-      else exit;
-  until (CurPos.StartPos>SrcLen);
-  CurNode.EndPos:=CurPos.EndPos;
-  EndChildNode;
-  ReadNextAtom;
-  Result:=true;
+  Result:=ReadUsesSection(ExceptionOnError);
 end;
 
 function TPascalParserTool.ReadSubRange(ExceptionOnError: boolean): boolean;

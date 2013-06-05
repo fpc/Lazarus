@@ -1498,6 +1498,7 @@ const
       // find unit file
       NewUnitName:=OldUnitName;
       NewInFilename:=OldInFilename;
+      //debugln(['CheckUsesSection NewUnitName="',NewUnitName,'" NewInFilename="',NewInFilename,'"']);
       AFilename:=DirectoryCache.FindUnitSourceInCompletePath(
                         NewUnitName,NewInFilename,true,FPCSrcSearchRequiresPPU);
       s:=NewUnitName;
@@ -1530,7 +1531,7 @@ begin
   if FixCase then
     SourceChangeCache.MainScanner:=Scanner;
   try
-    if not CheckUsesSection(FindMainUsesSection) then exit;
+    if not CheckUsesSection(FindMainUsesSection(true)) then exit;
     if SearchImplementation
     and not CheckUsesSection(FindImplementationUsesSection) then exit;
   except
