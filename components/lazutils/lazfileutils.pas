@@ -852,7 +852,7 @@ end;
 
 function FileIsReadOnlyUTF8(const FileName: String): Boolean;
 begin
-  Result:=SysUtils.FileIsReadOnly(UTF8ToSys(Filename));
+  Result:=FileGetAttrUTF8(FileName) and faReadOnly > 0;
 end;
 
 

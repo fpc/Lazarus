@@ -1279,7 +1279,7 @@ end;
  ------------------------------------------------------------------------------}
 function FileIsReadOnlyUTF8(const FileName: String): Boolean;
 begin
-  Result:=FileGetAttrUTF8(FileName) and faReadOnly > 0;
+  Result := LazFileUtils.FileIsReadOnlyUTF8(FileName);
 end;
 
 
