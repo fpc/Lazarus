@@ -1234,36 +1234,8 @@ end;
   function FileSearchUTF8(const Name, DirList: String): String;
  ------------------------------------------------------------------------------}
 function FileSearchUTF8(const Name, DirList: String; ImplicitCurrentDir : Boolean = True): String;
-Var
-  I : longint;
-  Temp : String;
-
 begin
-  Result:=Name;
-  temp:=SetDirSeparators(DirList);
-  // Start with checking the file in the current directory
-  If ImplicitCurrentDir and (Result <> '') and FileExistsUTF8(Result) Then
-    exit;
-  while True do begin
-    If Temp = '' then
-      Break; // No more directories to search - fail
-    I:=pos(PathSeparator,Temp);
-    If I<>0 then
-      begin
-        Result:=Copy (Temp,1,i-1);
-        system.Delete(Temp,1,I);
-      end
-    else
-      begin
-        Result:=Temp;
-        Temp:='';
-      end;
-    If Result<>'' then
-      Result:=AppendPathDelim(Result)+Name;
-    If (Result <> '') and FileExistsUTF8(Result) Then
-      exit;
-  end;
-  Result:='';
+  Result := LazFileUtils.FileSearchUTF8(Name, DirList, ImplicitCurrentDir);
 end;
 
 {------------------------------------------------------------------------------

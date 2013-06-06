@@ -249,7 +249,7 @@ function FileGetAttrUTF8(const FileName: String): Longint; inline;
 function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint; inline;
 function DeleteFileUTF8(const FileName: String): Boolean; inline;
 function RenameFileUTF8(const OldName, NewName: String): Boolean; inline;
-function FileSearchUTF8(const Name, DirList : String; ImplicitCurrentDir : Boolean = True): String;
+function FileSearchUTF8(const Name, DirList : String; ImplicitCurrentDir : Boolean = True): String; inline;
 function FileIsReadOnlyUTF8(const FileName: String): Boolean; inline;
 function GetCurrentDirUTF8: String; inline;
 function SetCurrentDirUTF8(const NewDir: String): Boolean; inline;
