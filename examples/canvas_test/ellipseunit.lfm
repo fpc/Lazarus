@@ -1,9 +1,9 @@
 object frmEllipse: TfrmEllipse
   Left = 290
-  Height = 240
+  Height = 307
   Top = 197
   Width = 433
   Caption = 'frmEllipse'
   OnPaint = FormPaint
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
 end

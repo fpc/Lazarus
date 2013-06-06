@@ -40,6 +40,7 @@
             </CompilerMessages>
             <CompilerPath Value="$(CompPath)"/>
           </Other>
+          <LCLWidgetType Value="customdrawn"/>
         </CompilerOptions>
       </Item2>
     </BuildModes>
@@ -70,6 +71,7 @@
         <Filename Value="canvastestunit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmCanvasTest"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="canvastestunit"/>
       </Unit1>
