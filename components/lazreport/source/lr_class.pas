@@ -6383,19 +6383,6 @@ begin
       Exit;
     end;
   end;
-{  if AnsiCompareText(Self.Name, aName) = 0 then
-    Result:=Self
-  else
-  begin
-    for i := 0 to Objects.Count - 1 do
-    begin
-      if AnsiCompareText(TfrObject(Objects[i]).Name, aName) = 0 then
-      begin
-        Result :=TfrObject(Objects[i]);
-        Exit;
-      end;
-    end;
-  end;}
 end;
 
 function TfrPage.FindRTObject(const aName: String): TfrObject;

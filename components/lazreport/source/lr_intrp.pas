@@ -214,7 +214,7 @@ end;
 
 procedure TfrInterpretator.SkipSpace;
 begin
-  while (Buf^[cur] = ' ') and (Cur < Len) do Inc(Cur);
+  while (Buf^[cur] <= ' ') and (Cur < Len) do Inc(Cur);
 end;
 
 function TfrInterpretator.GetToken: String;
@@ -792,7 +792,7 @@ begin
   len := 0;
   for i := 0 to MemoFrom.Count - 1 do
   begin
-    s := ' ' + MemoFrom[i];
+    s := ' ' + MemoFrom[i] + #13;
     while Pos(#9, s) <> 0 do
       s[Pos(#9, s)] := ' ';
     while Pos('  ', s) <> 0 do
