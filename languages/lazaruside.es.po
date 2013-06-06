@@ -12326,6 +12326,10 @@ msgstr "Omitir esta Unidad"
 msgid "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 msgstr "<description>%sCopyright (c) <year> <copyright holders>%sPermiso se concede por el presente, gratuitamente, a cualquier persona a obtener una copia de este software y archivos asociados de documentación (el \"Software\"), para tratar en el Software sin restricción, incluyendo sin limitación los derechos para utilizar, copia, modificar, combina, publica, distribuir, otorgar una sublicencia, y/o vender copias del Software y para permitir a las personas a quienes el Software se suministra para hacerlo, sujeto a la siguiente condiciones:%sEl sobre aviso de copyright y este aviso de permiso se incluirán en todas las copias o partes sustanciales de la Software.%sEL SOFTWARE ES PROPORCIONADO \"COMO ES\", SIN GARANTÍA DE CUALQUIER TIPO, EXPRESS O IMPLÍCITAS, INCLUYENDO PERO NO LIMITADO A LAS GARANTÍAS DE COMERCIABILIDAD, APTITUD PARA UN PARTICULAR PROPÓSITO Y NO INFRACCIÓN. EN NINGÚN CASO LOS AUTORES O LOS TITULARES DEL COPYRIGHT SERÁ RESPONSABLE DE CUALQUIER RECLAMACIÓN, DAÑOS U OTRA RESPONSABILIDAD, YA SEA EN UNA ACCIÓN DE RESPONSABILIDAD CONTRACTUAL, EXTRACONTRACTUAL O DE OTRO TIPO, QUE SE PRESENTA, DE O EN RELACIÓN CON EL SOFTWARE O EL USO U OTRAS OPERACIONES EN EL SOFTWARE."
 
+#: lazarusidestrconsts.lismmadditionsandoverrides
+msgid "Additions and Overrides"
+msgstr ""
+
 #: lazarusidestrconsts.lismmappendarbitraryfpcoptionsego1ghtldflag
 msgid "Append arbitrary fpc options, e.g. -O1 -ghtl -dFlag"
 msgstr ""
@@ -12384,10 +12388,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lismmmissingmacroname
 msgid "missing macro name"
-msgstr ""
-
-#: lazarusidestrconsts.lismmmodematrix
-msgid "Mode Matrix"
 msgstr ""
 
 #: lazarusidestrconsts.lismmmoveselecteditemdown

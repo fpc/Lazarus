@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-06-05 01:27+0400\n"
+"PO-Revision-Date: 2013-06-07 01:24+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -12078,6 +12078,10 @@ msgstr "Пропустить этот модуль"
 msgid "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 msgstr "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 
+#: lazarusidestrconsts.lismmadditionsandoverrides
+msgid "Additions and Overrides"
+msgstr "Дополнения и перекрытия"
+
 #: lazarusidestrconsts.lismmappendarbitraryfpcoptionsego1ghtldflag
 msgid "Append arbitrary fpc options, e.g. -O1 -ghtl -dFlag"
 msgstr "Добавить произвольные параметры FPC, например, -O1 -ghtl -dFlag"
@@ -12138,10 +12142,6 @@ msgstr "неверный символ в значении макроса \"%s\""
 msgid "missing macro name"
 msgstr "отсутствует имя макроса"
 
-#: lazarusidestrconsts.lismmmodematrix
-msgid "Mode Matrix"
-msgstr "Матрица режимов"
-
 #: lazarusidestrconsts.lismmmoveselecteditemdown
 msgid "Move selected item down"
 msgstr "Переместить выбранный элемент вниз"
@@ -12156,11 +12156,11 @@ msgstr "Новая цель"
 
 #: lazarusidestrconsts.lismmoverrideoutputdirectory
 msgid "Override output directory (-FU)"
-msgstr "Переопределить каталог вывода (-FU)"
+msgstr "Перекрытие каталога вывода (-FU)"
 
 #: lazarusidestrconsts.lismmoverrideoutputdirectoryfuoftarget
 msgid "Override output directory -FU of target"
-msgstr "Переопределить каталог вывода -FU цели"
+msgstr "Перекрыть каталог вывода -FU цели"
 
 #: lazarusidestrconsts.lismmredolastundotothisgrid
 msgid "Redo last undo to this grid"
