@@ -1078,13 +1078,12 @@ end;
 
 function TCompOptModeMatrix.GetTitle: String;
 begin
-  Result:=lisMMModeMatrix;
+  Result:=lisMMAdditionsAndOverrides;
 end;
 
 procedure TCompOptModeMatrix.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   //debugln(['TCompOptModeMatrix.Setup ',DbgSName(ADialog)]);
-
 end;
 
 class function TCompOptModeMatrix.SupportedOptionsClass: TAbstractIDEOptionsClass;
@@ -1162,7 +1161,7 @@ end;
 initialization
   {$IFDEF EnableModeMatrix}
   RegisterIDEOptionsEditor(GroupCompiler, TCompOptModeMatrix,
-    CompilerOptionsModeMatrix);
+    CompilerOptionsAdditionsAndOverrides);
   {$ENDIF}
 
 end.

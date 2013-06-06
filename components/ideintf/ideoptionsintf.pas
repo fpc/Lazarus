@@ -290,21 +290,21 @@ const
     PackageOptionsI18N         = 500;
 
   GroupCompiler     = 100200;
-    CompilerOptionsBuildModes     = 0100;
-    CompilerOptionsSearchPaths    = 0200;
-    CompilerOptionsParsing        = 0300;
-    CompilerOptionsCodeGeneration = 0400;
-    CompilerOptionsLinking        = 0500;
-    CompilerOptionsVerbosity      = 0600;
-    CompilerOptionsMessages       = 0700;
-    CompilerOptionsOther          = 0800;
-    CompilerOptionsConditional    = 0900;
-    CompilerOptionsModeMatrix     = 1000;
+    CompilerOptionsBuildModes            = 0100;
+    CompilerOptionsSearchPaths           = 0200;
+    CompilerOptionsParsing               = 0300;
+    CompilerOptionsCodeGeneration        = 0400;
+    CompilerOptionsLinking               = 0500;
+    CompilerOptionsVerbosity             = 0600;
+    CompilerOptionsMessages              = 0700;
+    CompilerOptionsOther                 = 0800;
+    CompilerOptionsConditional           = 0900; // IDE Macros
+    CompilerOptionsAdditionsAndOverrides = 1000;
     {$IFNDEF EnableModeMatrix}
-    CompilerOptionsMacroValues    = 1001;
+    CompilerOptionsMacroValues           = 1001;
     {$ENDIF}
-    CompilerOptionsInherited      = 1100;
-    CompilerOptionsCompilation    = 1200;
+    CompilerOptionsInherited             = 1100;
+    CompilerOptionsCompilation           = 1200;
 
   GroupPkgCompiler  = 200200;
 

@@ -5719,7 +5719,6 @@ resourcestring
     +'xml)';
   lisMMStoredInProjectLpi = 'Stored in project (.lpi)';
   lisMMStoredInSessionOfProjectLps = 'Stored in session of project (.lps)';
-  lisMMModeMatrix = 'Mode Matrix';
   lisMMMoveSelectedItemUp = 'Move selected item up';
   lisMMMoveSelectedItemDown = 'Move selected item down';
   lisMMNewTarget = 'New Target';
@@ -5729,6 +5728,7 @@ resourcestring
   lisMMDeleteTheSelectedTargetOrOption = 'Delete the selected target or option';
   lisMMSetS = 'Set "%s"';
   lisMMValueS = 'Value "%s"';
+  lisMMAdditionsAndOverrides = 'Additions and Overrides';
   lisMMInvalidCharacterAt = 'invalid character "%s" at %s';
   lisMMCustomOption = 'Custom Option';
   lisMMIDEMacro = 'IDE Macro';
