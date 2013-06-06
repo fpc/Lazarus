@@ -300,9 +300,6 @@ const
     CompilerOptionsOther                 = 0800;
     CompilerOptionsConditional           = 0900; // IDE Macros
     CompilerOptionsAdditionsAndOverrides = 1000;
-    {$IFNDEF EnableModeMatrix}
-    CompilerOptionsMacroValues           = 1001;
-    {$ENDIF}
     CompilerOptionsInherited             = 1100;
     CompilerOptionsCompilation           = 1200;
 

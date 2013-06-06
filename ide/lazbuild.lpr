@@ -716,9 +716,7 @@ var
   Note: String;
   NeedBuildAllFlag: Boolean;
   SubResult: TModalResult;
-  {$IFDEF EnableModeMatrix}
   MatrixOption: TBuildMatrixOption;
-  {$ENDIF}
 begin
   Result:=false;
   CloseProject(Project1);
@@ -764,14 +762,10 @@ begin
   if (CPUOverride<>'') then
     Project1.CompilerOptions.TargetCPU:=CPUOverride;
   if (WidgetSetOverride<>'') then begin
-    {$IFDEF EnableModeMatrix}
     MatrixOption:=Project1.BuildModes.SessionMatrixOptions.Add(bmotIDEMacro);
     MatrixOption.Modes:=Project1.ActiveBuildMode.Identifier;
     MatrixOption.MacroName:='LCLWidgetType';
     MatrixOption.Value:=WidgetSetOverride;
-    {$ELSE}
-    Project1.ActiveBuildMode.MacroValues.Values['LCLWidgetType']:=WidgetSetOverride;
-    {$ENDIF}
   end;
   // apply options
   MainBuildBoss.SetBuildTargetProject1(true,smsfsSkip);

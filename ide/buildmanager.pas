@@ -2209,74 +2209,21 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
     end;
   end;
 
-  {$IFNDEF EnableModeMatrix}
-  function GetProjectMacroValues: TCTCfgScriptVariables;
-  var
-    MainMacroValues: TProjectBuildMacros;
-    i: Integer;
-    aName: String;
-    aValue: String;
-  begin
-    // return the values of the active project
-    if (Project1<>nil) and (Project1.MacroValues<>nil) then begin
-      MainMacroValues:=Project1.MacroValues;
-      Result:=MainMacroValues.CfgVars;
-      if MainMacroValues.CfgVarsBuildMacroStamp=BuildMacroChangeStamp then
-        exit;
-      // rebuild main macros
-      Result.Clear;
-      for i:=0 to MainMacroValues.Count-1 do begin
-        aName:=MainMacroValues.Names[i];
-        aValue:=MainMacroValues.ValueFromIndex(i);
-        //debugln(['TBuildManager.OnGetBuildMacroValues project override: ',aName,'="',aValue,'"']);
-        Result.Define(PChar(aName),aValue);
-      end;
-      {$IFDEF VerboseBuildMacros}
-      Values.WriteDebugReport('OnGetBuildMacroValues project overrides');
-      {$ENDIF}
-      MainMacroValues.CfgVarsBuildMacroStamp:=BuildMacroChangeStamp;
-    end else if DefaultCfgVars<>nil then begin
-      // there is no project => use defaults
-      Result:=DefaultCfgVars;
-      if DefaultCfgVarsBuildMacroStamp=BuildMacroChangeStamp then
-        exit;
-      // rebuild main macros
-      Result.Clear;
-      DefaultCfgVarsBuildMacroStamp:=BuildMacroChangeStamp;
-    end else
-      exit(nil);
-    SetCmdLineOverrides(Result);
-  end;
-  {$ENDIF}
-
   procedure SetProjectMacroValues(Vars: TCTCfgScriptVariables);
   var
-    {$IFDEF EnableModeMatrix}
     Target: String;
-    {$ELSE}
-    Values: TCTCfgScriptVariables;
-    {$ENDIF}
   begin
-    {$IFDEF EnableModeMatrix}
-      Target:=GetModeMatrixTarget(Options);
-      if EnvironmentOptions<>nil then
-        ApplyBuildMatrixMacros(EnvironmentOptions.BuildMatrixOptions,Target,Vars);
-      if (Project1<>nil) and (Project1.BuildModes<>nil) then
-      begin
-        ApplyBuildMatrixMacros(Project1.BuildModes.SharedMatrixOptions,Target,Vars);
-        ApplyBuildMatrixMacros(Project1.BuildModes.SessionMatrixOptions,Target,Vars);
-      end;
-      SetCmdLineOverrides(Vars);
-      {$IFDEF VerboseBuildMacros}
-      Vars.WriteDebugReport('OnGetBuildMacroValues after applying project values');
-      {$ENDIF}
-    {$ELSE}
-      Values:=GetProjectMacroValues;
-      if Values=nil then exit;
-      {$IFDEF VerboseBuildMacros}
-      Values.WriteDebugReport('OnGetBuildMacroValues project values');
-      {$ENDIF}
-      Vars.AddOverrides(Values);
+    Target:=GetModeMatrixTarget(Options);
+    if EnvironmentOptions<>nil then
+      ApplyBuildMatrixMacros(EnvironmentOptions.BuildMatrixOptions,Target,Vars);
+    if (Project1<>nil) and (Project1.BuildModes<>nil) then
+    begin
+      ApplyBuildMatrixMacros(Project1.BuildModes.SharedMatrixOptions,Target,Vars);
+      ApplyBuildMatrixMacros(Project1.BuildModes.SessionMatrixOptions,Target,Vars);
+    end;
+    SetCmdLineOverrides(Vars);
+    {$IFDEF VerboseBuildMacros}
+    Vars.WriteDebugReport('OnGetBuildMacroValues after applying project values');
     {$ENDIF}
     SetDefaults(Vars);
   end;

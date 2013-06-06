@@ -287,7 +287,7 @@ end;
 
 procedure TCompilerPathOptionsFrame.LCLWidgetTypeLabelClick(Sender: TObject);
 begin
-  FDialog.OpenEditor(GroupCompiler,{$IFDEF EnableModeMatrix}CompilerOptionsAdditionsAndOverrides{$ELSE}CompilerOptionsMacroValues{$ENDIF});
+  FDialog.OpenEditor(GroupCompiler,CompilerOptionsAdditionsAndOverrides);
 end;
 
 procedure TCompilerPathOptionsFrame.LCLWidgetTypeLabelMouseEnter(Sender: TObject);

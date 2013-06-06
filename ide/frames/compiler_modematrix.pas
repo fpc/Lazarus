@@ -24,10 +24,7 @@
    Options frame for build mode matrix options.
 
  ToDo:
-   - wiki
    - undo: combine changes while editing a cell
-   - remove old frame (idemacrovalues.pas,lfm)
-   - remove ifdefs
 }
 unit Compiler_ModeMatrix;
 
@@ -43,9 +40,9 @@ uses
 
 type
 
-  { TCompOptModeMatrix }
+  { TCompOptModeMatrixFrame }
 
-  TCompOptModeMatrix = class(TAbstractIDEOptionsEditor)
+  TCompOptModeMatrixFrame = class(TAbstractIDEOptionsEditor)
     BMMatrixToolBar: TToolBar;
     BMMDeleteToolButton: TToolButton;
     BMMMoveDownToolButton: TToolButton;
@@ -149,7 +146,7 @@ function BuildMatrixOptionTypeHint(Typ: TBuildMatrixOptionType): string;
 function BuildMatrixDefaultValue(Typ: TBuildMatrixOptionType): string;
 
 var
-  ModeMatrixFrame: TCompOptModeMatrix = nil;
+  ModeMatrixFrame: TCompOptModeMatrixFrame = nil;
 
 implementation
 
@@ -382,14 +379,14 @@ end;
 
 {$R *.lfm}
 
-{ TCompOptModeMatrix }
+{ TCompOptModeMatrixFrame }
 
-procedure TCompOptModeMatrix.GridSelection(Sender: TObject; aCol, aRow: Integer);
+procedure TCompOptModeMatrixFrame.GridSelection(Sender: TObject; aCol, aRow: Integer);
 begin
   UpdateButtons;
 end;
 
-procedure TCompOptModeMatrix.GridSetEditText(Sender: TObject; ACol,
+procedure TCompOptModeMatrixFrame.GridSetEditText(Sender: TObject; ACol,
   ARow: Integer; const Value: string);
 var
   MatRow: TGroupedMatrixRow;
@@ -415,7 +412,7 @@ begin
   end;
 end;
 
-procedure TCompOptModeMatrix.GridShowHint(Sender: TObject; HintInfo: PHintInfo);
+procedure TCompOptModeMatrixFrame.GridShowHint(Sender: TObject; HintInfo: PHintInfo);
 var
   aCol: Longint;
   aRow: Longint;
@@ -456,7 +453,7 @@ begin
   HintInfo^.HintStr:=h;
 end;
 
-procedure TCompOptModeMatrix.OnAddMacroMenuItemClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.OnAddMacroMenuItemClick(Sender: TObject);
 var
   ValueMenuItem: TMenuItem;
   MacroMenuItem: TMenuItem;
@@ -470,24 +467,24 @@ begin
   CreateNewOption(BuildMatrixOptionTypeCaption(bmotIDEMacro),MacroName+':='+Value);
 end;
 
-procedure TCompOptModeMatrix.BMMNewCustomOptionMenuItemClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.BMMNewCustomOptionMenuItemClick(Sender: TObject);
 begin
   CreateNewOption(BuildMatrixOptionTypeCaption(bmotCustom),BuildMatrixDefaultValue(bmotCustom));
 end;
 
-procedure TCompOptModeMatrix.BMMUndoToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.BMMUndoToolButtonClick(Sender: TObject);
 begin
   Grid.Undo;
   UpdateGridStorageGroups;
   UpdateButtons;
 end;
 
-procedure TCompOptModeMatrix.BMMNewTargetMenuItemClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.BMMNewTargetMenuItemClick(Sender: TObject);
 begin
   CreateNewTarget;
 end;
 
-procedure TCompOptModeMatrix.BMMAddToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.BMMAddToolButtonClick(Sender: TObject);
 var
   p: TPoint;
 begin
@@ -495,13 +492,13 @@ begin
   BMMAddPopupMenu.PopUp(p.x,p.y);
 end;
 
-procedure TCompOptModeMatrix.GridEditingDone(Sender: TObject);
+procedure TCompOptModeMatrixFrame.GridEditingDone(Sender: TObject);
 begin
   //DebugLn(['TFrame1.GridEditingDone ']);
   UpdateButtons;
 end;
 
-procedure TCompOptModeMatrix.GridGetCellHightlightColor(Sender: TObject; aCol,
+procedure TCompOptModeMatrixFrame.GridGetCellHightlightColor(Sender: TObject; aCol,
   aRow: integer; var aColor: TColor);
 var
   MatRow: TGroupedMatrixRow;
@@ -532,19 +529,19 @@ begin
   end;
 end;
 
-procedure TCompOptModeMatrix.BMMRedoToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.BMMRedoToolButtonClick(Sender: TObject);
 begin
   Grid.Redo;
   UpdateGridStorageGroups;
   UpdateButtons;
 end;
 
-procedure TCompOptModeMatrix.BMMMoveUpToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.BMMMoveUpToolButtonClick(Sender: TObject);
 begin
   MoveRow(-1);
 end;
 
-procedure TCompOptModeMatrix.BMMAddPopupMenuPopup(Sender: TObject);
+procedure TCompOptModeMatrixFrame.BMMAddPopupMenuPopup(Sender: TObject);
 var
   i: Integer;
   Pkg: TLazPackage;
@@ -591,22 +588,22 @@ begin
   end;
 end;
 
-procedure TCompOptModeMatrix.BMMNewIDEMacroMenuItemClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.BMMNewIDEMacroMenuItemClick(Sender: TObject);
 begin
   CreateNewOption(BuildMatrixOptionTypeCaption(bmotIDEMacro),BuildMatrixDefaultValue(bmotIDEMacro));
 end;
 
-procedure TCompOptModeMatrix.BMMNewOutDirMenuItemClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.BMMNewOutDirMenuItemClick(Sender: TObject);
 begin
   CreateNewOption(BuildMatrixOptionTypeCaption(bmotOutDir),BuildMatrixDefaultValue(bmotOutDir));
 end;
 
-procedure TCompOptModeMatrix.BMMMoveDownToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.BMMMoveDownToolButtonClick(Sender: TObject);
 begin
   MoveRow(1);
 end;
 
-procedure TCompOptModeMatrix.BMMDeleteToolButtonClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.BMMDeleteToolButtonClick(Sender: TObject);
 var
   aRow: Integer;
   MatRow: TGroupedMatrixRow;
@@ -622,7 +619,7 @@ begin
   UpdateButtons;
 end;
 
-procedure TCompOptModeMatrix.UpdateButtons;
+procedure TCompOptModeMatrixFrame.UpdateButtons;
 var
   aRow: Integer;
   MatRow: TGroupedMatrixRow;
@@ -646,13 +643,13 @@ begin
                         and  (MatRow.GetNextSkipChildren<>nil);
 end;
 
-function TCompOptModeMatrix.AddTarget(StorageGroup: TGroupedMatrixGroup
+function TCompOptModeMatrixFrame.AddTarget(StorageGroup: TGroupedMatrixGroup
   ): TGroupedMatrixGroup;
 begin
   Result:=AddMatrixTarget(Grid.Matrix,StorageGroup);
 end;
 
-procedure TCompOptModeMatrix.CreateNewOption(aTyp, aValue: string);
+procedure TCompOptModeMatrixFrame.CreateNewOption(aTyp, aValue: string);
 var
   aRow: Integer;
   MatRow: TGroupedMatrixRow;
@@ -705,7 +702,7 @@ begin
   UpdateButtons;
 end;
 
-procedure TCompOptModeMatrix.CreateNewTarget;
+procedure TCompOptModeMatrixFrame.CreateNewTarget;
 var
   aRow: Integer;
   MatRow: TGroupedMatrixRow;
@@ -743,7 +740,7 @@ begin
   UpdateButtons;
 end;
 
-function TCompOptModeMatrix.GetCaptionValue(aCaption, aPattern: string): string;
+function TCompOptModeMatrixFrame.GetCaptionValue(aCaption, aPattern: string): string;
 var
   p: SizeInt;
 begin
@@ -753,7 +750,7 @@ begin
   Result:=copy(aCaption,p,length(aCaption)-length(aPattern)+2);
 end;
 
-procedure TCompOptModeMatrix.UpdateEnabledModesInGrid(
+procedure TCompOptModeMatrixFrame.UpdateEnabledModesInGrid(
   Options: TBuildMatrixOptions; StorageGroup: TGroupedMatrixGroup;
   var HasChanged: boolean);
 // update enabled modes in grid
@@ -788,7 +785,7 @@ begin
   end;
 end;
 
-procedure TCompOptModeMatrix.UpdateGridStorageGroups;
+procedure TCompOptModeMatrixFrame.UpdateGridStorageGroups;
 var
   i: Integer;
   MatRow: TGroupedMatrixRow;
@@ -815,14 +812,14 @@ begin
     raise Exception.Create('grid lost the session storage group');
 end;
 
-procedure TCompOptModeMatrix.VisibleChanged;
+procedure TCompOptModeMatrixFrame.VisibleChanged;
 begin
   inherited VisibleChanged;
   if (not Visible) and (LazProject<>nil) then
     DoWriteSettings;
 end;
 
-procedure TCompOptModeMatrix.UpdateModes(UpdateGrid: boolean);
+procedure TCompOptModeMatrixFrame.UpdateModes(UpdateGrid: boolean);
 var
   i: Integer;
   BuildMode: TProjectBuildMode;
@@ -872,7 +869,7 @@ begin
     Grid.Invalidate;
 end;
 
-procedure TCompOptModeMatrix.UpdateActiveMode;
+procedure TCompOptModeMatrixFrame.UpdateActiveMode;
 var
   i: Integer;
 begin
@@ -882,7 +879,7 @@ begin
   Grid.ActiveMode:=i;
 end;
 
-procedure TCompOptModeMatrix.MoveRow(Direction: integer);
+procedure TCompOptModeMatrixFrame.MoveRow(Direction: integer);
 var
   MatRow: TGroupedMatrixRow;
   aRow: Integer;
@@ -980,7 +977,7 @@ begin
   UpdateButtons;
 end;
 
-procedure TCompOptModeMatrix.DoWriteSettings;
+procedure TCompOptModeMatrixFrame.DoWriteSettings;
 begin
   // write IDE options
   AssignBuildMatrixGroupToOptions(GroupIDE,
@@ -993,7 +990,7 @@ begin
     LazProject.BuildModes.SessionMatrixOptions,true);
 end;
 
-constructor TCompOptModeMatrix.Create(TheOwner: TComponent);
+constructor TCompOptModeMatrixFrame.Create(TheOwner: TComponent);
 var
   t: TBuildMatrixOptionType;
 begin
@@ -1067,7 +1064,7 @@ begin
   UpdateButtons;
 end;
 
-destructor TCompOptModeMatrix.Destroy;
+destructor TCompOptModeMatrixFrame.Destroy;
 begin
   ModeMatrixFrame:=nil;
   FreeAndNil(fOldIDEOptions);
@@ -1076,22 +1073,22 @@ begin
   inherited Destroy;
 end;
 
-function TCompOptModeMatrix.GetTitle: String;
+function TCompOptModeMatrixFrame.GetTitle: String;
 begin
   Result:=lisMMAdditionsAndOverrides;
 end;
 
-procedure TCompOptModeMatrix.Setup(ADialog: TAbstractOptionsEditorDialog);
+procedure TCompOptModeMatrixFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   //debugln(['TCompOptModeMatrix.Setup ',DbgSName(ADialog)]);
 end;
 
-class function TCompOptModeMatrix.SupportedOptionsClass: TAbstractIDEOptionsClass;
+class function TCompOptModeMatrixFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result := TProjectCompilerOptions;
 end;
 
-procedure TCompOptModeMatrix.ReadSettings(AOptions: TAbstractIDEOptions);
+procedure TCompOptModeMatrixFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   CompOptions: TProjectCompilerOptions;
 begin
@@ -1129,7 +1126,7 @@ begin
   Grid.Col:=Grid.FixedCols;
 end;
 
-procedure TCompOptModeMatrix.WriteSettings(AOptions: TAbstractIDEOptions);
+procedure TCompOptModeMatrixFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   CompOptions: TProjectCompilerOptions;
 begin
@@ -1140,7 +1137,7 @@ begin
   DoWriteSettings;
 end;
 
-procedure TCompOptModeMatrix.RestoreSettings(AOptions: TAbstractIDEOptions);
+procedure TCompOptModeMatrixFrame.RestoreSettings(AOptions: TAbstractIDEOptions);
 var
   CompOptions: TProjectCompilerOptions;
 begin
@@ -1159,10 +1156,8 @@ begin
 end;
 
 initialization
-  {$IFDEF EnableModeMatrix}
-  RegisterIDEOptionsEditor(GroupCompiler, TCompOptModeMatrix,
+  RegisterIDEOptionsEditor(GroupCompiler, TCompOptModeMatrixFrame,
     CompilerOptionsAdditionsAndOverrides);
-  {$ENDIF}
 
 end.
 

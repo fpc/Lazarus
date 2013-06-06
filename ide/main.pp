@@ -133,11 +133,7 @@ uses
   compiler_linking_options, compiler_verbosity_options, compiler_messages_options,
   compiler_other_options, compiler_inherited_options, compiler_compilation_options,
   compiler_buildmacro_options,
-  {$IFDEF EnableModeMatrix}
   Compiler_ModeMatrix,
-  {$ELSE}
-  IdeMacroValues,
-  {$ENDIF}
   // package option frames
   package_usage_options, package_description_options, package_integration_options,
   package_provides_options, package_i18n_options,
