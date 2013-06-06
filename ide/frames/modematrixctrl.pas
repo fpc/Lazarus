@@ -29,7 +29,7 @@ uses
   Classes, SysUtils, math, types, contnrs, Controls, LCLType, LCLIntf, Grids,
   Graphics, StdCtrls, Menus, LazLogger,
   FileProcs,
-  IDEProcs;
+  IDEProcs, LazarusIDEStrConsts;
 
 const
   DefaultModeMatrixMaxUndo = 100;
@@ -1477,12 +1477,12 @@ begin
 
   // type column
   FTypeColumn:=Columns.Add;
-  FTypeColumn.Title.Caption:='Type';
+  FTypeColumn.Title.Caption:=dlgEnvType;
   FTypeColumn.SizePriority:=0;
 
   // value column
   FValueColumn:=Columns.Add;
-  FValueColumn.Title.Caption:='Value';
+  FValueColumn.Title.Caption:=lisValue;
   FValueColumn.SizePriority:=1;
 end;
 
