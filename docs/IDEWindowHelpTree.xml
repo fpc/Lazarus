@@ -148,8 +148,9 @@
     <Node48 Name="PackageI18NOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
     <Node49 Name="PackageDescriptionOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
     <Node50 Name="PackageIntegrationOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
-    <Node51 Name="EditorsPanel" Path="EditorsPanel" ChildCount="1">
+    <Node51 Name="EditorsPanel" Path="EditorsPanel" ChildCount="2">
       <Node1 Name="EditorMarkupUserDefinedFrame" Path="Editor_User_Defined_Words" HasHelp="True" IsRoot="True"/>
+      <Node2 Name="CompOptModeMatrixFrame" Path="_Compiler_Options#Additions_and_Overrides" HasHelp="True" IsRoot="True"/>
     </Node51>
   </Node55>
   <Node56 Name="UnusedUnitsDialog" Path="Find_Unused_Units" HasHelp="True"/>
