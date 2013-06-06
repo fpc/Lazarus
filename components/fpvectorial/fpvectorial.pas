@@ -232,10 +232,10 @@ type
   T2DEllipticalArcSegment = class(T2DSegment)
   public
     RX, RY, XRotation: Double;
-    LargeArcFlag, SweepFlag: Boolean;
+    LargeArcFlag, ClockwiseArcFlag: Boolean;
     CX, CY: Double;
     procedure CalculateCenter;
-    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
+    procedure CalculateEllipseBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
   end;
 
 
@@ -838,7 +838,7 @@ type
     procedure GetTmpPathStartPos(var AX, AY: Double);
     procedure AddBezierToPath(AX1, AY1, AX2, AY2, AX3, AY3: Double); overload;
     procedure AddBezierToPath(AX1, AY1, AZ1, AX2, AY2, AZ2, AX3, AY3, AZ3: Double); overload;
-    procedure AddEllipticalArcToPath(ARadX, ARadY, AXAxisRotation, ADestX, ADestY: Double; ALargeArcFlag, ASweepFlag: Boolean); // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
+    procedure AddEllipticalArcToPath(ARadX, ARadY, AXAxisRotation, ADestX, ADestY: Double; ALargeArcFlag, AClockwiseArcFlag: Boolean); // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
     procedure SetBrushColor(AColor: TFPColor);
     procedure SetBrushStyle(AStyle: TFPBrushStyle);
     procedure SetPenColor(AColor: TFPColor);
@@ -1044,11 +1044,10 @@ begin
   CY := Y - RY*Sin(0)*Cos(XRotation) - RX*Cos(0)*Sin(XRotation);
 end;
 
-procedure T2DEllipticalArcSegment.CalculateBoundingBox(ADest: TFPCustomCanvas;
+procedure T2DEllipticalArcSegment.CalculateEllipseBoundingBox(ADest: TFPCustomCanvas;
   var ALeft, ATop, ARight, ABottom: Double);
 var
   MajorAxis, MinorAxis: Double;
-  CX, CY: Double;
   t1, t2, t3: Double;
   x1, x2, x3: Double;
   y1, y2, y3: Double;
@@ -1075,6 +1074,12 @@ begin
   // => tan(t) = -b*tan(phi)/a   [3]
   // => t = arctan(-b*tan(phi)/a) + n*Pi   [4]
   //
+  // And the same for Y
+  // 0 = dy/dt = b*cos(t)*cos(phi) - a*sin(t)*sin(phi)
+  // a*sin(t)/cos(t) = b*cos(phi)/sin(phi)
+  // => tan(t) = b*cotan(phi)/a
+  // => t = arctan(b*cotan(phi)/a) + n*Pi   [5]
+  //
   // calculate some values of t for n in -1, 0, 1 and see which are the smaller, bigger ones
   // done!
 
@@ -1085,9 +1090,9 @@ begin
   t2 := arctan(-RY*tan(XRotation)/RX);
   t3 := arctan(-RY*tan(XRotation)/RX) + Pi;
 
-  x1 := Cx + RX*Sin(t1)*Cos(XRotation)-RY*Sin(t1)*Sin(XRotation);
-  x2 := Cx + RX*Sin(t2)*Cos(XRotation)-RY*Sin(t2)*Sin(XRotation);
-  x3 := Cx + RX*Sin(t3)*Cos(XRotation)-RY*Sin(t3)*Sin(XRotation);
+  x1 := Cx + RX*Cos(t1)*Cos(XRotation)-RY*Sin(t1)*Sin(XRotation);
+  x2 := Cx + RX*Cos(t2)*Cos(XRotation)-RY*Sin(t2)*Sin(XRotation);
+  x3 := Cx + RX*Cos(t3)*Cos(XRotation)-RY*Sin(t3)*Sin(XRotation);
 
   ALeft := Min(x1, x2);
   ALeft := Min(ALeft, x3);
@@ -1096,6 +1101,10 @@ begin
   ARight := Max(ARight, x3);
 
   // Now the same for Y
+
+  t1 := arctan(RY*cotan(XRotation)/RX) - Pi;
+  t2 := arctan(RY*cotan(XRotation)/RX);
+  t3 := arctan(RY*cotan(XRotation)/RX) + Pi;
 
   y1 := CY + RY*Sin(t1)*Cos(XRotation)+RX*Cos(t1)*Sin(XRotation);
   y2 := CY + RY*Sin(t2)*Cos(XRotation)+RX*Cos(t2)*Sin(XRotation);
@@ -1804,6 +1813,7 @@ var
   Points: array of TPoint;
   // for elliptical arcs
   BoxLeft, BoxTop, BoxRight, BoxBottom: Double;
+  EllipseRect: TRect;
    // Clipping Region
   {$ifdef USE_LCL_CANVAS}
   ClipRegion, OldClipRegion: HRGN;
@@ -2001,14 +2011,35 @@ begin
       CoordY4 := CoordToCanvasY(Cur2DArcSegment.Y);
       SetLength(Points, 0);
 
-      Cur2DArcSegment.CalculateBoundingBox(nil, BoxLeft, BoxTop, BoxRight, BoxBottom);
+      Cur2DArcSegment.CalculateEllipseBoundingBox(nil, BoxLeft, BoxTop, BoxRight, BoxBottom);
+
+      EllipseRect.Left := CoordToCanvasX(BoxLeft);
+      EllipseRect.Top := CoordToCanvasY(BoxTop);
+      EllipseRect.Right := CoordToCanvasX(BoxRight);
+      EllipseRect.Bottom := CoordToCanvasY(BoxBottom);
+
+      {$ifdef FPVECTORIAL_TOCANVAS_ELLIPSE_VISUALDEBUG}
+      ACanvas.Pen.Color := clRed;
+      ACanvas.Brush.Style := bsClear;
+      ACanvas.Rectangle(
+        EllipseRect.Left, EllipseRect.Top, EllipseRect.Right, EllipseRect.Bottom);
+      {$endif}
 
       ADest.Brush.Style := Brush.Style;
 
-      ACanvas.Arc(
-        CoordToCanvasX(BoxLeft), CoordToCanvasY(BoxTop),
-        CoordToCanvasX(BoxRight), CoordToCanvasY(BoxBottom),
-        CoordX, CoordY, CoordX4, CoordY4);
+      // Arc draws counterclockwise
+      if Cur2DArcSegment.ClockwiseArcFlag then
+      begin
+        ACanvas.Arc(
+          EllipseRect.Left, EllipseRect.Top, EllipseRect.Right, EllipseRect.Bottom,
+          CoordX4, CoordY4, CoordX, CoordY);
+      end
+      else
+      begin
+        ACanvas.Arc(
+          EllipseRect.Left, EllipseRect.Top, EllipseRect.Right, EllipseRect.Bottom,
+          CoordX, CoordY, CoordX4, CoordY4);
+      end;
 
       PosX := Cur2DArcSegment.X;
       PosY := Cur2DArcSegment.Y;
@@ -4018,7 +4049,7 @@ begin
 end;
 
 procedure TvVectorialPage.AddEllipticalArcToPath(ARadX, ARadY, AXAxisRotation,
-  ADestX, ADestY: Double; ALargeArcFlag, ASweepFlag: Boolean);
+  ADestX, ADestY: Double; ALargeArcFlag, AClockwiseArcFlag: Boolean);
 var
   segment: T2DEllipticalArcSegment;
 begin
@@ -4027,10 +4058,10 @@ begin
   segment.X := ADestX;
   segment.Y := ADestY;
   segment.RX := ARadX;
-  segment.RY := ARadX;
+  segment.RY := ARadY;
   segment.XRotation := AXAxisRotation;
   segment.LargeArcFlag := ALargeArcFlag;
-  segment.SweepFlag := ASweepFlag;
+  segment.ClockwiseArcFlag := AClockwiseArcFlag;
 
   AppendSegmentToTmpPath(segment);
 end;

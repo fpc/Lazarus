@@ -1265,7 +1265,7 @@ procedure TvSVGVectorialReader.ReadNextPathCommand(ACurTokenType: TSVGTokenType;
   ADoc: TvVectorialDocument);
 var
   X, Y, X2, Y2, X3, Y3: Double;
-  Flag1, Flag2: Boolean;
+  LargeArcFlag, SweepFlag: Boolean;
   lCurTokenType: TSVGTokenType;
   lDebugStr: String;
 begin
@@ -1451,32 +1451,34 @@ begin
     X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value; // RX
     Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value; // RY
     X3 := FSVGPathTokenizer.Tokens.Items[i+3].Value; // RotationX
-    //Flag1 := FSVGPathTokenizer.Tokens.Items[i+4].Value;
-    //Flag2 := FSVGPathTokenizer.Tokens.Items[i+5].Value;
+    X3 := X3 * Pi / 180; // degrees to radians conversion
+    LargeArcFlag := Round(FSVGPathTokenizer.Tokens.Items[i+4].Value) = 1;
+    SweepFlag := Round(FSVGPathTokenizer.Tokens.Items[i+5].Value) = 1;
     X := FSVGPathTokenizer.Tokens.Items[i+6].Value;  // X
     Y := FSVGPathTokenizer.Tokens.Items[i+7].Value;  // Y
+
+    // non-coordinate values
+    ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
 
     // Careful that absolute coordinates require using ConvertSVGCoordinatesToFPVCoordinates
     if lCurTokenType in [sttRelativeEllipticArcTo] then
     begin
-      ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
       ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
     end
     else
     begin
-      ConvertSVGCoordinatesToFPVCoordinates(AData, X2, Y2, X2, Y2);
       ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
     end;
 
     if lCurTokenType = sttRelativeEllipticArcTo then
     begin
-      AData.AddEllipticalArcToPath(X2, Y2, X3, X + CurX, Y + CurY, Flag1, Flag2);
+      AData.AddEllipticalArcToPath(X2, Y2, X3, X + CurX, Y + CurY, LargeArcFlag, SweepFlag);
       CurX := CurX + X;
       CurY := CurY + Y;
     end
     else
     begin
-      AData.AddEllipticalArcToPath(X2, Y2, X3, X, Y, Flag1, Flag2);
+      AData.AddEllipticalArcToPath(X2, Y2, X3, X, Y, LargeArcFlag, SweepFlag);
       CurX := X;
       CurY := Y;
     end;
