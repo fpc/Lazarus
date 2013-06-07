@@ -24,6 +24,7 @@
    Options frame for build mode matrix options.
 
  ToDo:
+   - bug: change type in last row does not work
    - undo: combine changes while editing a cell
 }
 unit Compiler_ModeMatrix;

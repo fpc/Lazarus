@@ -67,6 +67,8 @@ resourcestring
   lisNew = 'New';
   lisClose = 'Close';
   lisBtnClose = '&Close';
+  lisMMAddsCustomOptions = 'Adds custom options:';
+  lisMMDoesNotAddCustomOptions = 'Does not add custom options:';
   lisOk = 'OK';
   lisMenuOk = '&OK';
   lisCancel = 'Cancel';
@@ -5388,8 +5390,12 @@ resourcestring
 
   //Build mode differences dialog
   lisBuildModeDiffDifferencesBetweenBuildModes = 'Differences between build modes';
-  lisDoesNotHaveMatrixOption = 'Does not have matrix option ';
-  lisHasMatrixOption = 'Has matrix option ';
+  lisMMWas = '(was "%s")';
+  lisMMIDEMacro2 = 'IDE Macro %s:=%s';
+  lisMMFromTo = 'From %s to %s';
+  lisMMDoesNotHaveIDEMacro = 'Does not have IDE Macro %s:=%s';
+  lisMMDoesNotOverrideOutDirFU = 'Does not override OutDir (-FU)';
+  lisMMOverrideOutDirFU = 'Override OutDir (-FU): %s';
   lisBuildModeDiffMode = 'Mode:';
   lisBuildModeDiffDifferencesToOtherBuildModes = 'Differences to other build modes';
 

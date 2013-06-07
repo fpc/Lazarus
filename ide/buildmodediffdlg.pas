@@ -28,9 +28,10 @@ unit BuildModeDiffDlg;
 interface
 
 uses
-  Classes, LazUTF8, LazLogger, Forms, ButtonPanel, StdCtrls, ComCtrls,
-  LazarusIDEStrConsts, EnvironmentOpts, Project,
-  ModeMatrixOpts, CompOptsModes;
+  Classes, sysutils, LazUTF8, LazLogger, AvgLvlTree, Forms, ButtonPanel,
+  StdCtrls, ComCtrls,
+  LazarusIDEStrConsts, EnvironmentOpts, Project, ModeMatrixOpts,
+  CompOptsModes;
 
 type
 
@@ -56,8 +57,6 @@ type
   end;
 
 function ShowBuildModeDiffDialog(BuildModes: TProjectBuildModes; aMode: TProjectBuildMode): TModalResult;
-procedure AddDiff(MatrixOptions: TBuildMatrixOptions; OldMode, NewMode: string;
-  Diff: TStrings; var OldOutputDir, NewOutputDir: string);
 
 implementation
 
@@ -75,39 +74,6 @@ begin
     BuildModeDiffDialog.Free;
   end;
 end;
-
-procedure AddDiff(MatrixOptions: TBuildMatrixOptions; OldMode, NewMode: string;
-  Diff: TStrings; var OldOutputDir, NewOutputDir: string);
-var
-  i: Integer;
-  Option: TBuildMatrixOption;
-  HasOldMode: Boolean;
-  HasNewMode: Boolean;
-  s: String;
-begin
-  if MatrixOptions=nil then exit;
-
-  for i:=0 to MatrixOptions.Count-1 do begin
-    Option:=MatrixOptions[i];
-    if not (Option.Typ in [bmotCustom,bmotIDEMacro]) then continue;
-    HasOldMode:=Option.FitsMode(OldMode);
-    HasNewMode:=Option.FitsMode(NewMode);
-    if HasOldMode=HasNewMode then continue;
-    if HasOldMode then
-      s:=lisDoesNotHaveMatrixOption
-    else
-      s:=lisHasMatrixOption;
-    s+=BuildMatrixOptionTypeNames[Option.Typ]+':';
-    if Option.Typ=bmotIDEMacro then
-      s+=dbgstr(Option.MacroName)+':=';
-    s+=dbgstr(Option.Value);
-    Diff.Add(s);
-  end;
-
-  MatrixOptions.GetOutputDirectory(BuildMatrixProjectName,OldMode,OldOutputDir);
-  MatrixOptions.GetOutputDirectory(BuildMatrixProjectName,NewMode,NewOutputDir);
-end;
-
 
 { TBuildModeDiffDialog }
 
@@ -157,6 +123,55 @@ begin
 end;
 
 procedure TBuildModeDiffDialog.FillDiffTreeView;
+
+  procedure DiffsForMatrixCustomOptions(MatrixOptions: TBuildMatrixOptions;
+    OldMode, NewMode: string; Diff: TStringList);
+  var
+    i: Integer;
+    Option: TBuildMatrixOption;
+    HasOldMode: Boolean;
+    HasNewMode: Boolean;
+    s: String;
+  begin
+    for i:=0 to MatrixOptions.Count-1 do begin
+      Option:=MatrixOptions[i];
+      if Option.Typ<>bmotCustom then continue;
+      HasOldMode:=Option.FitsMode(OldMode);
+      HasNewMode:=Option.FitsMode(NewMode);
+      if HasOldMode=HasNewMode then continue;
+      if HasNewMode then
+        s:=lisMMAddsCustomOptions
+      else
+        s:=lisMMDoesNotAddCustomOptions;
+      s+=' '+dbgstr(Option.Value);
+      //debugln(['AddDiff OldMode="',OldMode,'" NewMode="',NewMode,'" Option="',Option.AsString,'" Diff="',s,'"']);
+      Diff.Add(s);
+    end;
+  end;
+
+  procedure DiffsForMatrixOutputDirectory(MatrixOptions: TBuildMatrixOptions;
+    OldMode, NewMode: string; var OldOutputDir, NewOutputDir: string);
+  begin
+    MatrixOptions.GetOutputDirectory(BuildMatrixProjectName,OldMode,OldOutputDir);
+    MatrixOptions.GetOutputDirectory(BuildMatrixProjectName,NewMode,NewOutputDir);
+  end;
+
+  procedure GetIDEMacros(MatrixOptions: TBuildMatrixOptions;
+    OldMode, NewMode: string; OldMacroValues, NewMacroValues: TStringToStringTree);
+  var
+    i: Integer;
+    Option: TBuildMatrixOption;
+  begin
+    for i:=0 to MatrixOptions.Count-1 do begin
+      Option:=MatrixOptions[i];
+      if Option.Typ<>bmotIDEMacro then continue;
+      if Option.FitsMode(OldMode) then
+        OldMacroValues.Values[Option.MacroName]:=Option.Value;
+      if Option.FitsMode(NewMode) then
+        NewMacroValues.Values[Option.MacroName]:=Option.Value;
+    end;
+  end;
+
 var
   i: Integer;
   CurMode: TProjectBuildMode;
@@ -166,6 +181,13 @@ var
   j: Integer;
   OldOutDir: String;
   NewOutDir: String;
+  OldMode: String;
+  NewMode: String;
+  OldMacroValues: TStringToStringTree;
+  NewMacroValues: TStringToStringTree;
+  OldValue: String;
+  S2SItem: PStringToStringItem;
+  s: String;
 begin
   DiffTreeView.BeginUpdate;
   DiffTreeView.Items.Clear;
@@ -175,24 +197,68 @@ begin
     begin
       CurMode:=BuildModes[i];
       if CurMode=BaseMode then continue;
-      ModeNode:=DiffTreeView.Items.Add(nil,CurMode.GetCaption);
+
+      // add differences from each CurMode to BaseMode
+      ModeNode:=DiffTreeView.Items.Add(nil, Format(lisMMFromTo, [CurMode.
+        GetCaption, BaseMode.GetCaption]));
       Diff:=TStringList.Create;
       DiffTool:=TCompilerDiffTool.Create(Diff);
       BaseMode.CreateDiff(CurMode,DiffTool);
 
-      // add diffs for matrix options
+      NewMode:=BaseMode.Identifier;
+      OldMode:=CurMode.Identifier;
+
+      // add diffs for matrix custom options
+      DiffsForMatrixCustomOptions(EnvironmentOptions.BuildMatrixOptions,
+        OldMode,NewMode,Diff);
+      DiffsForMatrixCustomOptions(BuildModes.SharedMatrixOptions,
+        OldMode,NewMode,Diff);
+      DiffsForMatrixCustomOptions(BuildModes.SessionMatrixOptions,
+        OldMode,NewMode,Diff);
+
+      // add diffs for matrix IDE macros
+      OldMacroValues:=TStringToStringTree.Create(false);
+      NewMacroValues:=TStringToStringTree.Create(false);
+      GetIDEMacros(EnvironmentOptions.BuildMatrixOptions,OldMode,NewMode,
+        OldMacroValues,NewMacroValues);
+      GetIDEMacros(BuildModes.SharedMatrixOptions,OldMode,NewMode,
+        OldMacroValues,NewMacroValues);
+      GetIDEMacros(BuildModes.SessionMatrixOptions,OldMode,NewMode,
+        OldMacroValues,NewMacroValues);
+      for S2SItem in NewMacroValues do begin
+        OldValue:=OldMacroValues.Values[S2SItem^.Name];
+        if OldValue=S2SItem^.Value then continue;
+        s:=Format(lisMMIDEMacro2, [S2SItem^.Name, S2SItem^.Value]);
+        if OldValue<>'' then
+          s+=' '+Format(lisMMWas, [OldValue]);
+        Diff.Add(s);
+      end;
+      for S2SItem in OldMacroValues do begin
+        if NewMacroValues.Contains(S2SItem^.Name) then continue;
+        s:=Format(lisMMDoesNotHaveIDEMacro, [S2SItem^.Name, S2SItem^.Value]);
+        Diff.Add(s);
+      end;
+      OldMacroValues.Free;
+      NewMacroValues.Free;
+
+      // add diffs for matrix output directory overrides
       OldOutDir:='';
       NewOutDir:='';
-      AddDiff(EnvironmentOptions.BuildMatrixOptions,
-              CurMode.Identifier,BaseMode.Identifier,Diff,OldOutDir,NewOutDir);
-      AddDiff(BuildModes.SharedMatrixOptions,
-              CurMode.Identifier,BaseMode.Identifier,Diff,OldOutDir,NewOutDir);
-      AddDiff(BuildModes.SessionMatrixOptions,
-              CurMode.Identifier,BaseMode.Identifier,Diff,OldOutDir,NewOutDir);
+      DiffsForMatrixOutputDirectory(EnvironmentOptions.BuildMatrixOptions,
+        OldMode,NewMode,OldOutDir,NewOutDir);
+      DiffsForMatrixOutputDirectory(BuildModes.SharedMatrixOptions,
+        OldMode,NewMode,OldOutDir,NewOutDir);
+      DiffsForMatrixOutputDirectory(BuildModes.SessionMatrixOptions,
+        OldMode,NewMode,OldOutDir,NewOutDir);
       if OldOutDir<>NewOutDir then begin
-        Diff.Add('Matrix override OutDir (-FU): '+NewOutDir);
+        if NewOutDir='' then
+          s:=lisMMDoesNotOverrideOutDirFU
+        else
+          s:=Format(lisMMOverrideOutDirFU, [NewOutDir]);
+        Diff.Add(s);
       end;
 
+      // create trre nodes
       for j:=0 to Diff.Count-1 do
         DiffTreeView.Items.AddChild(ModeNode,Diff[j]);
       DiffTool.Free;
