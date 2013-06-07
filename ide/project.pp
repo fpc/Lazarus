@@ -6855,8 +6855,10 @@ procedure TProjectBuildMode.SetModified(const AValue: boolean);
 begin
   if AValue then
     IncreaseChangeStamp
-  else
+  else begin
     fSavedChangeStamp:=FChangeStamp;
+    FCompilerOptions.Modified:=false;
+  end;
 end;
 
 procedure TProjectBuildMode.SetIdentifier(const AValue: string);
@@ -6935,6 +6937,8 @@ procedure TProjectBuildMode.SaveToXMLConfig(XMLConfig: TXMLConfig;
 begin
   XMLConfig.SetDeleteValue('Identifier',Identifier,'');
   FCompilerOptions.SaveToXMLConfig(XMLConfig,Path+'CompilerOptions/');
+  if ClearModified then
+    Modified:=false;
 end;
 
 procedure TProjectBuildMode.IncreaseChangeStamp;
