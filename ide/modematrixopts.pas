@@ -162,7 +162,7 @@ function CreateBuildMatrixOptionGUID: string;
 
 function SplitMatrixMacro(MacroAssignment: string;
   out MacroName, MacroValue: string; ExceptionOnError: boolean): boolean;
-procedure ApplyBuildMatrixMacros(Options: TBuildMatrixOptions; Target: string;
+procedure ApplyBuildMatrixMacros(Options: TBuildMatrixOptions; Target, ActiveMode: string;
   CfgVars: TCTCfgScriptVariables);
 
 implementation
@@ -385,8 +385,8 @@ begin
   Result:=true;
 end;
 
-procedure ApplyBuildMatrixMacros(Options: TBuildMatrixOptions; Target: string;
-  CfgVars: TCTCfgScriptVariables);
+procedure ApplyBuildMatrixMacros(Options: TBuildMatrixOptions;
+  Target, ActiveMode: string; CfgVars: TCTCfgScriptVariables);
 var
   i: Integer;
   Option: TBuildMatrixOption;
@@ -395,6 +395,7 @@ begin
   for i:=0 to Options.Count-1 do begin
     Option:=Options[i];
     if Option.Typ<>bmotIDEMacro then continue;
+    if not Option.FitsMode(ActiveMode) then continue;
     if not Option.FitsTarget(Target) then continue;
     //debugln(['ApplyBuildMatrixMacros Option.MacroName="',Option.MacroName,'" Value="',Option.Value,'"']);
     CfgVars.Values[Option.MacroName]:=Option.Value;
