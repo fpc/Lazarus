@@ -272,7 +272,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.DoClicked(var msg);
 begin
-//  CheckChildrenHandles;    <- This is already called when menuitem is created.
+  //  CheckChildrenHandles;    <- This is already called when menuitem is created.
   if not (csDesigning in ComponentState) then
   begin
     InitiateActions;

@@ -1044,7 +1044,7 @@ var
   NewType: String;
 begin
   Item:=Sender as TMenuItem;
-  if fTypePopupMenuRow>=Matrix.RowCount then exit;
+  if (fTypePopupMenuRow<=0) or (fTypePopupMenuRow>Matrix.RowCount) then exit;
   if Matrix.Rows[fTypePopupMenuRow-1] is TGroupedMatrixValue then begin
     ValueRow:=TGroupedMatrixValue(Matrix[fTypePopupMenuRow-1]);
     NewType:=TypeColumn.PickList.Names[Item.MenuIndex];
