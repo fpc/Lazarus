@@ -407,8 +407,8 @@ begin
         Typ:=CaptionToBuildMatrixOptionType(Value);
         NewValue:=BuildMatrixDefaultValue(Typ);
         ValueRow.Value:=NewValue;
-        Grid.InvalidateCell(Grid.ValueCol,ARow);
       end;
+      Grid.InvalidateCell(Grid.ValueCol,ARow);
     end;
   end;
 end;
