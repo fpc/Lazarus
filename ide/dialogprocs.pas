@@ -128,10 +128,8 @@ function RenameFileWithErrorDialogs(const SrcFilename, DestFilename: string;
 var
   DlgButtons: TMsgDlgButtons;
 begin
-  if SrcFilename=DestFilename then begin
-    Result:=mrOk;
-    exit;
-  end;
+  if SrcFilename=DestFilename then
+    exit(mrOk);
   repeat
     if FileProcs.RenameFileUTF8(SrcFilename,DestFilename) then begin
       InvalidateFileStateCache(SrcFilename);
