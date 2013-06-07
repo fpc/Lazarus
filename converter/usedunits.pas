@@ -492,8 +492,13 @@ begin
 end;
 
 function TMainUsedUnits.UsesSectionNode: TCodeTreeNode;
+var
+  s: String;
+  IsPackage: Boolean;
 begin
-  Result:=fCTLink.CodeTool.FindMainUsesSection;
+  s:=ExtractFileExt(fOwnerTool.fFilename);
+  IsPackage := (s='.dpk') or (s='.lpk');
+  Result:=fCTLink.CodeTool.FindMainUsesSection(IsPackage);
 end;
 
 { TImplUsedUnits }
