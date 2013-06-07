@@ -84,6 +84,9 @@ var
   Details: TThemedElementDetails;
   Rgn: HRGN;
 begin
+  if not HandleAllocated then
+    Exit;
+
   if (Color = clInfoBk) or (Color = clDefault) then
   begin
     Details := ThemeServices.GetElementDetails(tttStandardNormal);
@@ -98,8 +101,7 @@ end;
 procedure THintWindow.SetColor(Value: TColor);
 begin
   inherited SetColor(Value);
-  if HandleAllocated then
-    UpdateRegion;
+  UpdateRegion;
 end;
 
 function THintWindow.GetDrawTextFlags: Cardinal;
@@ -172,8 +174,7 @@ end;
 procedure THintWindow.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
-  if HandleAllocated then
-    UpdateRegion;
+  UpdateRegion;
 end;
 
 class function THintWindow.GetControlClassDefaultSize: TSize;
