@@ -1952,13 +1952,11 @@ begin
   Result:=true;
 end;
 
-function TPascalParserTool.ReadUsesSection(
-  ExceptionOnError: boolean): boolean;
+function TPascalParserTool.ReadUsesSection(ExceptionOnError: boolean): boolean;
 { parse uses section
 
   examples:
     uses name1, name2 in '', name3.dot;
-
 }
 var
   IsUses: Boolean;
@@ -2021,13 +2019,11 @@ begin
   ReadNextAtom;
 end;
 
-function TPascalParserTool.ReadRequiresSection(ExceptionOnError: boolean
-  ): boolean;
+function TPascalParserTool.ReadRequiresSection(ExceptionOnError: boolean): boolean;
 { parse requires section
 
   examples:
     requires name1, name2, name3;
-
 }
 begin
   CreateChildNode;
@@ -2049,8 +2045,7 @@ begin
   Result:=true;
 end;
 
-function TPascalParserTool.ReadContainsSection(ExceptionOnError: boolean
-  ): boolean;
+function TPascalParserTool.ReadContainsSection(ExceptionOnError: boolean): boolean;
 { parse contains section
   The uses section of a Delphi package
 
