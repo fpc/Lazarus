@@ -232,7 +232,7 @@ type
   T2DEllipticalArcSegment = class(T2DSegment)
   public
     RX, RY, XRotation: Double;
-    LargeArcFlag, ClockwiseArcFlag: Boolean;
+    LeftmostEllipse, ClockwiseArcFlag: Boolean;
     CX, CY: Double;
     procedure CalculateCenter;
     procedure CalculateEllipseBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
@@ -838,7 +838,7 @@ type
     procedure GetTmpPathStartPos(var AX, AY: Double);
     procedure AddBezierToPath(AX1, AY1, AX2, AY2, AX3, AY3: Double); overload;
     procedure AddBezierToPath(AX1, AY1, AZ1, AX2, AY2, AZ2, AX3, AY3, AZ3: Double); overload;
-    procedure AddEllipticalArcToPath(ARadX, ARadY, AXAxisRotation, ADestX, ADestY: Double; ALargeArcFlag, AClockwiseArcFlag: Boolean); // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
+    procedure AddEllipticalArcToPath(ARadX, ARadY, AXAxisRotation, ADestX, ADestY: Double; ALeftmostEllipse, AClockwiseArcFlag: Boolean); // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
     procedure SetBrushColor(AColor: TFPColor);
     procedure SetBrushStyle(AStyle: TFPBrushStyle);
     procedure SetPenColor(AColor: TFPColor);
@@ -1031,17 +1031,103 @@ end;
 { T2DEllipticalArcSegment }
 
 procedure T2DEllipticalArcSegment.CalculateCenter;
+var
+  XStart, YStart, t: Double;
+  CX1, CY1, CX2, CY2, LeftMostX, LeftMostY, RightMostX, RightMostY: Double;
 begin
   // Rotated Ellipse equation:
   // (xcosθ+ysinθ)^2 / RX^2 + (ycosθ−xsinθ)^2 / RY^2 = 1
   //
   // parametrized:
-  // x = Cx + a*cos(t)*cos(phi) - b*sin(t)*sin(phi)  [1]
-  // y = Cy + b*sin(t)*cos(phi) + a*cos(t)*sin(phi)  [2]
-  // ...where ellipse has centre (h,k) semimajor axis a and semiminor axis b, and is rotated through angle phi.
+  // x = Cx + RX*cos(t)*cos(phi) - RY*sin(t)*sin(phi)  [1]
+  // y = Cy + RY*sin(t)*cos(phi) + RX*cos(t)*sin(phi)  [2]
 
+  if Previous = nil then
+  begin
+    CX := X - RX*Cos(0)*Cos(XRotation) + RY*Sin(0)*Sin(XRotation);
+    CY := Y - RY*Sin(0)*Cos(XRotation) - RX*Cos(0)*Sin(XRotation);
+    Exit;
+  end;
+
+  XStart := T2DSegment(Previous).X;
+  YStart := T2DSegment(Previous).Y;
+
+  {
+    solve 4 equations and 4 unknown values (CX, CY, t1, t2)
+    X,Y has t=t2    // Xstart,Ystart has t=t1
+    CX := X - RX*Cos(t2)*Cos(XRotation) + RY*Sin(t2)*Sin(XRotation);
+    CX := XStart - RX*Cos(t1)*Cos(XRotation) + RY*Sin(t1)*Sin(XRotation);
+    CY := Y - RY*Sin(t2)*Cos(XRotation) - RX*Cos(t2)*Sin(XRotation);
+    CY := YStart - RY*Sin(t1)*Cos(XRotation) - RX*Cos(t1)*Sin(XRotation);
+
+    Substituting we get 2 equations and 2 unknown values (t1, t2)
+    X - RX*Cos(t2)*Cos(XRotation) + RY*Sin(t2)*Sin(XRotation) = XStart - RX*Cos(t1)*Cos(XRotation) + RY*Sin(t1)*Sin(XRotation)
+    Y - RY*Sin(t2)*Cos(XRotation) - RX*Cos(t2)*Sin(XRotation) = YStart - RY*Sin(t1)*Cos(XRotation) - RX*Cos(t1)*Sin(XRotation)
+
+   Simplify:
+
+    A = RX*Cos(XRotation)
+    B = RY*Cos(XRotation)
+    C = RY*Sin(XRotation)
+    D = RX*Sin(XRotation)
+
+    X - A*Cos(t2) + C*Sin(t2) = XStart - A*Cos(t1) + C*Sin(t1)
+    Y - B*Sin(t2) - D*Cos(t2) = YStart - B*Sin(t1) - D*Cos(t1)
+
+    Attempt to corner Sin(t1):
+
+    X - A*Cos(t2) + C*Sin(t2) = XStart - A*sqrt(1-Sin(t1)^2) + C*Sin(t1)
+    X - A*Cos(t2) + C*Sin(t2) - XStart - C*Sin(t1) = - A*sqrt(1-Sin^2(t1))
+    Mega = X - A*Cos(t2) + C*Sin(t2) - XStart
+    Mega^2 - 2*Mega*C*Sin(t1) + C^2*Sin^2(t1) = A^2*(1-Sin^2(t1))
+    Mega^2 - A^2 - 2*Mega*C*Sin(t1) + (C^2+A^2)*Sin^2(t1) = 0
+
+    Baskara!!!
+
+    AB = (C^2+A^2)
+    BB = -2*Mega*C
+    CB = Mega^2
+
+    DeltaB=BB^2-4*AB*CB
+    Sin(t1)=(-BB+/-sqrt(DeltaB))/(2*AB)
+
+    Now roll it back!
+
+    X - A*Cos(t2) + C*Sin(t2) = XStart - A*sqrt(1-Sin(t1)^2) + C*Sin(t1)
+
+  }
+  // errado!!!! Apagar quando achar o correto =(
   CX := X - RX*Cos(0)*Cos(XRotation) + RY*Sin(0)*Sin(XRotation);
   CY := Y - RY*Sin(0)*Cos(XRotation) - RX*Cos(0)*Sin(XRotation);
+
+
+  // ativar quando tiver codigo pra calcular CX1, etc
+  {
+  if CX1 < CX2 then
+  begin
+    LeftMostX := CX1;
+    LeftMostY := CY1;
+    RightMostX := CX2;
+    RightMostY := CY2;
+  end
+  else
+  begin
+    LeftMostX := CX2;
+    LeftMostY := CY2;
+    RightMostX := CX1;
+    RightMostY := CY1;
+  end;
+
+  if LeftmostEllipse then
+  begin
+    CX := LeftMostX;
+    CY := LeftMostY;
+  end
+  else
+  begin
+    CX := RightMostX;
+    CY := RightMostY;
+  end;}
 end;
 
 procedure T2DEllipticalArcSegment.CalculateEllipseBoundingBox(ADest: TFPCustomCanvas;
@@ -4049,7 +4135,7 @@ begin
 end;
 
 procedure TvVectorialPage.AddEllipticalArcToPath(ARadX, ARadY, AXAxisRotation,
-  ADestX, ADestY: Double; ALargeArcFlag, AClockwiseArcFlag: Boolean);
+  ADestX, ADestY: Double; ALeftmostEllipse, AClockwiseArcFlag: Boolean);
 var
   segment: T2DEllipticalArcSegment;
 begin
@@ -4060,7 +4146,7 @@ begin
   segment.RX := ARadX;
   segment.RY := ARadY;
   segment.XRotation := AXAxisRotation;
-  segment.LargeArcFlag := ALargeArcFlag;
+  segment.LeftmostEllipse := ALeftmostEllipse;
   segment.ClockwiseArcFlag := AClockwiseArcFlag;
 
   AppendSegmentToTmpPath(segment);

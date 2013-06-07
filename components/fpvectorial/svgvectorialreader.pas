@@ -1265,7 +1265,7 @@ procedure TvSVGVectorialReader.ReadNextPathCommand(ACurTokenType: TSVGTokenType;
   ADoc: TvVectorialDocument);
 var
   X, Y, X2, Y2, X3, Y3: Double;
-  LargeArcFlag, SweepFlag: Boolean;
+  LargeArcFlag, SweepFlag, LeftmostEllipse, ClockwiseArc: Boolean;
   lCurTokenType: TSVGTokenType;
   lDebugStr: String;
 begin
@@ -1470,15 +1470,20 @@ begin
       ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
     end;
 
+    // Convert SVG flags to fpvectorial flags
+    LeftmostEllipse := (LargeArcFlag and (not SweepFlag))
+      or ((not LargeArcFlag) and SweepFlag);
+    ClockwiseArc := SweepFlag;
+
     if lCurTokenType = sttRelativeEllipticArcTo then
     begin
-      AData.AddEllipticalArcToPath(X2, Y2, X3, X + CurX, Y + CurY, LargeArcFlag, SweepFlag);
+      AData.AddEllipticalArcToPath(X2, Y2, X3, X + CurX, Y + CurY, LeftmostEllipse, ClockwiseArc);
       CurX := CurX + X;
       CurY := CurY + Y;
     end
     else
     begin
-      AData.AddEllipticalArcToPath(X2, Y2, X3, X, Y, LargeArcFlag, SweepFlag);
+      AData.AddEllipticalArcToPath(X2, Y2, X3, X, Y, LeftmostEllipse, ClockwiseArc);
       CurX := X;
       CurY := Y;
     end;
