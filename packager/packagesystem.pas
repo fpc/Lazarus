@@ -4331,6 +4331,7 @@ begin
         NeedsRegisterProcCall:=CurFile.HasRegisterProc
           and (APackage.PackageType in [lptDesignTime,lptRunAndDesignTime]);
 
+        AFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(AFilename,true);
         CurUnitName:=ExtractFileNameOnly(AFilename);
 
         if not (NeedsRegisterProcCall or CurFile.AddToUsesPkgSection) then
