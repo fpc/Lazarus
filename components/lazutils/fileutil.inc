@@ -198,23 +198,13 @@ end;
 
 function GetAppConfigDirUTF8(Global: Boolean; Create: boolean = false): string;
 begin
-  Result:=SysToUTF8(SysUtils.GetAppConfigDir(Global));
-  if Result='' then exit;
-  if Create and not ForceDirectoriesUTF8(Result) then
-    raise EInOutError.Create(Format(lrsUnableToCreateConfigDirectoryS,[Result]));
+  Result := LazFileUtils.GetAppConfigDirUTF8(Global, Create);
 end;
 
 function GetAppConfigFileUTF8(Global: Boolean; SubDir: boolean;
   CreateDir: boolean): string;
-var
-  Dir: string;
 begin
-  Result:=SysToUTF8(SysUtils.GetAppConfigFile(Global,SubDir));
-  if not CreateDir then exit;
-  Dir:=ExtractFilePath(Result);
-  if Dir='' then exit;
-  if not ForceDirectoriesUTF8(Dir) then
-    raise EInOutError.Create(Format(lrsUnableToCreateConfigDirectoryS,[Dir]));
+  Result := LazFileUtils.GetAppConfigFileUTF8(Global, SubDir, CreateDir);
 end;
 
 function SysErrorMessageUTF8(ErrorCode: Integer): String;
