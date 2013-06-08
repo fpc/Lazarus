@@ -39,6 +39,8 @@ function ParamStrUTF8(Param: Integer): string;
 function GetEnvironmentStringUTF8(Index: Integer): string;
 function GetEnvironmentVariableUTF8(const EnvVar: string): String;
 
+function SysErrorMessageUTF8(ErrorCode: Integer): String;
+
 
 function UTF8CharacterLength(p: PChar): integer;
 function UTF8Length(const s: string): PtrInt;
@@ -230,6 +232,11 @@ begin
   // so ConsoleToUTF8 function should be used!
   // RTL issue: http://bugs.freepascal.org/view.php?id=15233
   Result:=ConsoleToUTF8(SysUtils.GetEnvironmentVariable(UTF8ToSys(EnvVar)));
+end;
+
+function SysErrorMessageUTF8(ErrorCode: Integer): String;
+begin
+  Result := SysToUTF8(SysUtils.SysErrorMessage(ErrorCode));
 end;
 
 

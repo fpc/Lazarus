@@ -219,7 +219,7 @@ end;
 
 function SysErrorMessageUTF8(ErrorCode: Integer): String;
 begin
-  Result:=SysToUTF8(SysUtils.SysErrorMessage(ErrorCode));
+  Result := LazUtf8.SysErrorMessageUTF8(ErrorCode);
 end;
 
 function DirPathExists(const FileName: String): Boolean;

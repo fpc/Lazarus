@@ -269,7 +269,7 @@ function GetAppConfigFileUTF8(Global: Boolean; SubDir: boolean = false;
   CreateDir: boolean = false): string;
 
 // other
-function SysErrorMessageUTF8(ErrorCode: Integer): String;
+function SysErrorMessageUTF8(ErrorCode: Integer): String; inline;
 
 implementation
 
