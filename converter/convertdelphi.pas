@@ -1746,8 +1746,8 @@ end;
 constructor TConvertDelphiPackage.Create(const aPackageFilename: string);
 begin
   inherited Create(aPackageFilename, lisConvDelphiConvertDelphiPackage);
-  fLazPMainSuffix:='.lpk';
-  fLazPSuffix:=''; //'.lpk';
+  fLazPMainSuffix:='.lpk'; // Main XML package file, not compatible with Delphi
+  fLazPSuffix:='';         // '.lpk' is reserved to the main XML file
   fDelphiPSuffix:='.dpk';
 end;
 
