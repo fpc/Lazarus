@@ -28,11 +28,14 @@ of this file under either the MPL or the GPL.
 -------------------------------------------------------------------------------}
 
 {$mode objfpc}{$H+}
+{$IFDEF Windows} {$IFnDEF WINCE}
+  {$DEFINE WindowsDesktop}
+{$ENDIF} {$ENDIF}
 
 interface
 
 uses
-  {$IFDEF Windows} windows,  {$endif}
+  {$IFDEF WindowsDesktop} windows,  {$endif}
   Classes, SysUtils, LazSynEditText, LazUTF8, Controls, Graphics, LazLoggerBase;
 
 type
@@ -67,7 +70,7 @@ end;
 
 procedure TSynEditStringSystemWidthChars.DoGetPhysicalCharWidths(Line: PChar; LineLen,
   Index: Integer; PWidths: PPhysicalCharWidth);
-  {$IFDEF Windows}
+  {$IFDEF WindowsDesktop}
 var
   //s: UnicodeString;// wideString;
   i: DWORD;
@@ -93,7 +96,7 @@ begin
   end;
 
 
-  {$IFDEF Windows}
+  {$IFDEF WindowsDesktop}
   SetLength(s, LineLen+1);  // wide chars of UTF-16 <= bytes of UTF-8 string
   if ConvertUTF8ToUTF16(PWideChar(S), LineLen+1, Line, LineLen, [toInvalidCharToSymbol], l) <> trNoError then
     exit;
