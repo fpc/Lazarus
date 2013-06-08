@@ -67,8 +67,19 @@ procedure TDBComboBox.Select;
 begin
   //avoid reseting text when calling select
   FDataLink.OnDataChange := nil;
-  FDataLink.Edit;
-  FDataLink.Modified;
-  FDataLink.OnDataChange := @DataChange;
-  inherited Select;
+  try
+    if FDataLink.Edit then
+    begin
+       FDataLink.Modified;
+       inherited Select;
+    end
+    else
+    begin
+       // if cannot modify, let it reset
+       FDatalink.Reset;
+       DataChange(Self);
+    end;
+  finally
+    FDataLink.OnDataChange := @DataChange;
+  end;
 end;
