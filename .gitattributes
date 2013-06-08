@@ -6529,6 +6529,7 @@ tools/install/patches/fpc-fixes_2_2.patch svneol=native#text/plain
 tools/install/patches/readme.txt svneol=native#text/plain
 tools/install/patches/windres-2.2.2.patch svneol=native#text/plain
 tools/install/replace_in_files.pl -text svneol=native#application/x-perl
+tools/install/rpm/convert_compression.sh svneol=native#text/plain
 tools/install/rpm/create_gtk1_links.sh svneol=native#text/plain
 tools/install/rpm/create_lazarus_rpm.sh svneol=native#text/plain
 tools/install/rpm/create_nonroot_rpmmacros.sh svneol=native#text/plain

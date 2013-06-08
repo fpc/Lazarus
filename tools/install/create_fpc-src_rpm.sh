@@ -61,8 +61,9 @@ cat rpm/fpc-src.spec | \
   
 # build rpm
 rpmbuild -ba $SpecFile || rpm -ba $SpecFile
+RPMFile=$(./rpm/get_rpm_source_dir.sh)/RPMS/$Arch/fpc-src-$LazVersion-$LazRelease.$Arch.rpm
 
-echo "The new rpm can be found in $(./rpm/get_rpm_source_dir.sh)/RPMS/$Arch/fpc-src-$LazVersion-$LazRelease.$Arch.rpm"
+echo "The new rpm can be found in $RPMFile"
 
 # end.
 
