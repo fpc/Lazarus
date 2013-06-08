@@ -520,7 +520,7 @@ begin
   Result:=LazarusIDE.DoCloseEditorFile(fOrigUnitFilename,[cfSaveFirst]);
   if Result<>mrOK then exit;
   // Copy/rename fLazUnitFilename based on fOrigUnitFilename.
-  Assert(Assigned(fOwnerConverter), 'TDelphiUnit.RenameToLazFile: fOwnerConverter not assigned.');
+  Assert(Assigned(fOwnerConverter), 'TDelphiUnit.CopyAndLoadFile: fOwnerConverter not assigned.');
   Result:=fOwnerConverter.fSettings.RenameDelphiToLazFile(fOrigUnitFilename,
                   fLazFileExt, fLazUnitFilename, cdtlufRenameLowercase in fFlags);
   if Result<>mrOK then exit;
@@ -1035,6 +1035,8 @@ begin
     // Convert .lpr/.lpk file. Main source file was loaded earlier. Now just convert.
     Result:=fMainUnitConverter.ConvertUnitFile;
     if Result<>mrOK then exit;
+    Result:=fMainUnitConverter.ConvertFormFile;
+    if Result<>mrOK then exit;
     Result:=ConvertAllUnits;           // convert all files.
   finally
     UnsetCompilerModeForDefineTempl(CustomDefines);
@@ -1435,7 +1437,7 @@ begin
   end;
   CompOpts.Win32GraphicApp := not fIsConsoleApp;
   fMainUnitConverter.fUsedUnitsTool.IsConsoleApp:=fIsConsoleApp;
-  Result:=LazarusIDE.DoOpenEditorFile(fLazPMainFilename,0,0,[ofQuiet]);
+  Result:=LazarusIDE.DoOpenEditorFile(fMainUnitConverter.fLazUnitFilename,0,0,[ofQuiet]);
   if Result<>mrOK then exit;
   Result:=mrOK;
 end;
