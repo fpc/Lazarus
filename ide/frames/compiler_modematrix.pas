@@ -37,8 +37,8 @@ unit Compiler_ModeMatrix;
 interface
 
 uses
-  Classes, SysUtils, types, LazLogger, Controls, Graphics, ComCtrls, Menus,
-  LCLProc, IDEOptionsIntf, IDEImagesIntf, CompOptsIntf, EnvironmentOpts,
+  Classes, SysUtils, types, LazLogger, LazUTF8, Controls, Graphics, ComCtrls,
+  Menus, LCLProc, IDEOptionsIntf, IDEImagesIntf, CompOptsIntf, EnvironmentOpts,
   PackageSystem, PackageDefs, Project, LazarusIDEStrConsts, TransferMacros,
   ModeMatrixOpts, ModeMatrixCtrl;
 
@@ -268,6 +268,7 @@ var
   Option: TBuildMatrixOption;
   MacroName: string;
   MacroValue: string;
+  Targets: String;
 begin
   if IsEqual(Options,StorageGroup) then exit;
   Options.Clear;
@@ -277,6 +278,7 @@ begin
       debugln(['AssignBuildMatrixGroupToOptions StorageGroup "',StorageGroup.AsString,'", expected group, but found ',DbgSName(Target)]);
       exit;
     end;
+    Targets:=UTF8Trim(Target.Value);
     for i:=0 to Target.Count-1 do begin
       ValueRow:=TGroupedMatrixValue(Target[i]);
       if not (ValueRow is TGroupedMatrixValue) then begin
@@ -284,16 +286,16 @@ begin
         exit;
       end;
       Option:=Options.Add(CaptionToBuildMatrixOptionType(ValueRow.Typ),
-                          Target.Value);
+                          Targets);
       Option.Modes:=ValueRow.GetNormalizedModes;
       Option.ID:=ValueRow.ID;
       if Option.Typ=bmotIDEMacro then begin
         SplitMatrixMacro(ValueRow.Value,MacroName,MacroValue,false);
         Option.MacroName:=MacroName;
-        Option.Value:=MacroValue;
+        Option.Value:=UTF8Trim(MacroValue);
         //debugln(['AssignBuildMatrixGroupToOptions Name="',MacroName,'" Value="',MacroValue,'"']);
       end else begin
-        Option.Value:=ValueRow.Value;
+        Option.Value:=UTF8Trim(ValueRow.Value);
       end;
     end;
   end;
