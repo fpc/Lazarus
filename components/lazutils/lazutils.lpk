@@ -19,7 +19,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="70">
+    <Files Count="72">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
         <UnitName Value="laz2_DOM"/>
@@ -299,8 +299,16 @@
       </Item69>
       <Item70>
         <Filename Value="dictionarystringlist.pas"/>
-        <UnitName Value="dictionarystringlist"/>
+        <UnitName Value="DictionaryStringList"/>
       </Item70>
+      <Item71>
+        <Filename Value="unixlazutf8.inc"/>
+        <Type Value="Include"/>
+      </Item71>
+      <Item72>
+        <Filename Value="winlazutf8.inc"/>
+        <Type Value="Include"/>
+      </Item72>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>

@@ -33,6 +33,31 @@ begin
   Result := LazUtf8.SysToUTF8(s);
 end;
 
+function ConsoleToUTF8(const s: string): string;// converts OEM encoded string to UTF8 (used with some Windows specific functions)
+begin
+  Result := LazUtf8.ConsoleToUTF8(s);
+end;
+
+function UTF8ToConsole(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
+begin
+  Result := LazUtf8.UTF8ToConsole(s);
+end;
+
+function ParamStrUTF8(Param: Integer): string;
+begin
+  Result := LazUtf8.ParamStrUTF8(Param);
+end;
+
+function GetEnvironmentStringUTF8(Index: Integer): string;
+begin
+  Result := LazUtf8.GetEnvironmentStringUTF8(Index);
+end;
+
+function GetEnvironmentVariableUTF8(const EnvVar: string): String;
+begin
+  Result := LazUtf8.GetEnvironmentVariableUTF8(EnvVar);
+end;
+
 function FileGetAttrUTF8(const FileName: String): Longint;
 begin
   Result := LazFileUtils.FileGetAttrUtf8(FileName);
@@ -170,24 +195,6 @@ begin
 end;
 
 
-
-
-
-function GetEnvironmentStringUTF8(Index: Integer): String;
-begin
-  // on Windows SysUtils.GetEnvironmentString returns OEM encoded string
-  // so ConsoleToUTF8 function should be used!
-  // RTL issue: http://bugs.freepascal.org/view.php?id=15233
-  Result:=ConsoleToUTF8(SysUtils.GetEnvironmentString(Index));
-end;
-
-function GetEnvironmentVariableUTF8(const EnvVar: String): String;
-begin
-  // on Windows SysUtils.GetEnvironmentString returns OEM encoded string
-  // so ConsoleToUTF8 function should be used!
-  // RTL issue: http://bugs.freepascal.org/view.php?id=15233
-  Result:=ConsoleToUTF8(SysUtils.GetEnvironmentVariable(UTF8ToSys(EnvVar)));
-end;
 
 function GetAppConfigDirUTF8(Global: Boolean; Create: boolean = false): string;
 begin

@@ -231,8 +231,8 @@ function NeedRTLAnsi: boolean; inline;// true if system encoding is not UTF-8
 procedure SetNeedRTLAnsi(NewValue: boolean); inline;
 function UTF8ToSys(const s: string): string; inline;// as UTF8ToAnsi but more independent of widestringmanager
 function SysToUTF8(const s: string): string; inline;// as AnsiToUTF8 but more independent of widestringmanager
-function ConsoleToUTF8(const s: string): string;// converts OEM encoded string to UTF8 (used with some Windows specific functions)
-function UTF8ToConsole(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
+function ConsoleToUTF8(const s: string): string; inline;// converts OEM encoded string to UTF8 (used with some Windows specific functions)
+function UTF8ToConsole(const s: string): string; inline;// converts UTF8 string to console encoding (used by Write, WriteLn)
 
 // file operations
 function FileExistsUTF8(const Filename: string): boolean; inline;
@@ -261,9 +261,9 @@ function FileCreateUTF8(Const FileName : string) : THandle; overload; inline;
 function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle; overload; inline;
 
 // environment
-function ParamStrUTF8(Param: Integer): string;
-function GetEnvironmentStringUTF8(Index: Integer): string;
-function GetEnvironmentVariableUTF8(const EnvVar: string): String;
+function ParamStrUTF8(Param: Integer): string; inline;
+function GetEnvironmentStringUTF8(Index: Integer): string; inline;
+function GetEnvironmentVariableUTF8(const EnvVar: string): String; inline;
 function GetAppConfigDirUTF8(Global: Boolean; Create: boolean = false): string;
 function GetAppConfigFileUTF8(Global: Boolean; SubDir: boolean = false;
   CreateDir: boolean = false): string;
@@ -290,7 +290,5 @@ uses
   {$i unixfileutil.inc}
 {$ENDIF}
 
-initialization
-  InitFileUtil;
 end.
 

@@ -146,30 +146,9 @@ begin
 end;
 
 
-function ConsoleToUTF8(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
-begin
-  Result := SysToUTF8(S);
-end;
-
-function UTF8ToConsole(const s: string): string;
-begin
-  Result := UTF8ToSys(s);
-end;
-
 
 function ExtractShortPathNameUTF8(const FileName: String): String;
 begin
   Result:=SysToUTF8(SysUtils.ExtractShortPathName(UTF8ToSys(FileName)));
 end;
 
-function ParamStrUTF8(Param: Integer): string;
-begin
-  Result:=SysToUTF8(ObjPas.ParamStr(Param));
-end;
-
-
-
-procedure InitFileUtil;
-begin
-  //dummy procedure
-end;

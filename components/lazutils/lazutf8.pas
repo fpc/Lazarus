@@ -31,6 +31,14 @@ function NeedRTLAnsi: boolean;// true if system encoding is not UTF-8
 procedure SetNeedRTLAnsi(NewValue: boolean);
 function UTF8ToSys(const s: string): string;// as UTF8ToAnsi but more independent of widestringmanager
 function SysToUTF8(const s: string): string;// as AnsiToUTF8 but more independent of widestringmanager
+function ConsoleToUTF8(const s: string): string;// converts OEM encoded string to UTF8 (used with some Windows specific functions)
+function UTF8ToConsole(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
+
+function ParamStrUTF8(Param: Integer): string;
+
+function GetEnvironmentStringUTF8(Index: Integer): string;
+function GetEnvironmentVariableUTF8(const EnvVar: string): String;
+
 
 function UTF8CharacterLength(p: PChar): integer;
 function UTF8Length(const s: string): PtrInt;
@@ -121,6 +129,12 @@ uses
 {$IFDEF Darwin}, MacOSAll{$ENDIF}
   ;
 
+{$ifdef windows}
+  {$i winlazutf8.inc}
+{$else}
+  {$i unixlazutf8.inc}
+{$endif}
+
 var
   FNeedRTLAnsi: boolean = false;
   FNeedRTLAnsiValid: boolean = false;
@@ -200,6 +214,24 @@ begin
   else
     Result:=s;
 end;
+
+
+function GetEnvironmentStringUTF8(Index: Integer): String;
+begin
+  // on Windows SysUtils.GetEnvironmentString returns OEM encoded string
+  // so ConsoleToUTF8 function should be used!
+  // RTL issue: http://bugs.freepascal.org/view.php?id=15233
+  Result:=ConsoleToUTF8(SysUtils.GetEnvironmentString(Index));
+end;
+
+function GetEnvironmentVariableUTF8(const EnvVar: String): String;
+begin
+  // on Windows SysUtils.GetEnvironmentString returns OEM encoded string
+  // so ConsoleToUTF8 function should be used!
+  // RTL issue: http://bugs.freepascal.org/view.php?id=15233
+  Result:=ConsoleToUTF8(SysUtils.GetEnvironmentVariable(UTF8ToSys(EnvVar)));
+end;
+
 
 function UTF8CharacterLength(p: PChar): integer;
 begin
@@ -3075,7 +3107,7 @@ begin
   if Length(Lang) > 2 then Lang := Lang[1] + Lang[2];
 end;
 
-procedure InternalInit;
+procedure InitFPUpchars;
 var
   c: Char;
 begin
@@ -3085,7 +3117,10 @@ begin
 end;
 
 initialization
-  InternalInit;
+begin
+  InitFPUpchars;
+  InitLazUtf8;
+end;
 
 end.
 
