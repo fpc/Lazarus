@@ -207,11 +207,11 @@ type
         Attr: TProcHeadAttributes): string;
 
     // module sections
+    function ExtractSourceName: string;
+    function GetSourceNamePos(var NamePos: TAtomPosition): boolean;
     function GetSourceName(DoBuildTree: boolean = true): string;
     function GetSourceType: TCodeTreeNodeDesc;
-    function GetSourceNamePos(var NamePos: TAtomPosition): boolean;
     function PositionInSourceName(CleanPos: integer): boolean;
-    function ExtractSourceName: string;
 
     // uses sections
     procedure MoveCursorToUsesStart(UsesNode: TCodeTreeNode);
@@ -2107,27 +2107,6 @@ begin
     Result:=ctnNone;
 end;
 
-function TPascalReaderTool.GetSourceNamePos(var NamePos: TAtomPosition): boolean;
-begin
-  Result:=false;
-  NamePos.StartPos:=-1;
-  if Tree.Root=nil then exit;
-  MoveCursorToNodeStart(Tree.Root);
-  ReadNextAtom; // read source type 'program', 'unit' ...
-  if (Tree.Root.Desc=ctnProgram) and (not UpAtomIs('PROGRAM')) then exit;
-  ReadNextAtom; // read name
-  if not AtomIsIdentifier then exit;
-  NamePos:=CurPos;
-  Result:=true;
-  ReadNextAtom;
-  while CurPos.Flag=cafPoint do begin
-    ReadNextAtom;
-    if not AtomIsIdentifier then exit;
-    NamePos.EndPos:=CurPos.EndPos;
-    ReadNextAtom;
-  end;
-end;
-
 function TPascalReaderTool.PositionInSourceName(CleanPos: integer): boolean;
 var
   NamePos: TAtomPosition;
@@ -2163,6 +2142,36 @@ begin
     Result:=ExtractFileNameOnly(MainFilename)
   else
     Result:='';
+end;
+
+function TPascalReaderTool.GetSourceNamePos(var NamePos: TAtomPosition): boolean;
+begin
+  Result:=false;
+  NamePos.StartPos:=-1;
+  if Tree.Root=nil then exit;
+  MoveCursorToNodeStart(Tree.Root);
+  ReadNextAtom; // read source type 'program', 'unit' ...
+  if (Tree.Root.Desc=ctnProgram) and (not UpAtomIs('PROGRAM')) then exit;
+  ReadNextAtom; // read name
+  if not AtomIsIdentifier then exit;
+  NamePos:=CurPos;
+  Result:=true;
+  ReadNextAtom;
+  while CurPos.Flag=cafPoint do begin
+    ReadNextAtom;
+    if not AtomIsIdentifier then exit;
+    NamePos.EndPos:=CurPos.EndPos;
+    ReadNextAtom;
+  end;
+end;
+
+function TPascalReaderTool.GetSourceName(DoBuildTree: boolean): string;
+begin
+  Result:='';
+  if DoBuildTree then
+    BuildTree(lsrSourceName);
+  CachedSourceName:=ExtractSourceName;
+  Result:=CachedSourceName;
 end;
 
 function TPascalReaderTool.NodeIsInAMethod(Node: TCodeTreeNode): boolean;
@@ -2572,15 +2581,6 @@ begin
   if not ReadNextUpAtomIs('ARRAY') then exit;
   if not ReadNextAtomIsChar('[') then exit;
   Result:=ExtractBrackets(CurPos.StartPos,Attr);
-end;
-
-function TPascalReaderTool.GetSourceName(DoBuildTree: boolean): string;
-begin
-  Result:='';
-  if DoBuildTree then
-    BuildTree(lsrSourceName);
-  CachedSourceName:=ExtractSourceName;
-  Result:=CachedSourceName;
 end;
 
 function TPascalReaderTool.PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
