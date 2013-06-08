@@ -43,6 +43,12 @@ type
     WidthEdit: TEdit;
     HeightEdit: TEdit;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure HeightEditChange(Sender: TObject);
+    procedure WidthEditChange(Sender: TObject);
+  private
+    IsAutoChangeWidth, IsAutoChangeHeight: boolean;
+    SaveItemIndexWidth, NumberItemWidth: Integer;
+    SaveItemIndexHeight, NumberItemHeight: Integer;
   public
     constructor Create(AOwner: TComponent);  override;
   end;
@@ -81,6 +87,36 @@ begin
   CloseAction := caFree;
 end;
 
+procedure TSizeComponentsDialog.HeightEditChange(Sender: TObject);
+begin
+  if HeightEdit.Text = '' then
+  begin
+    HeightRadioGroup.ItemIndex := SaveItemIndexHeight;
+    IsAutoChangeHeight := false;
+  end
+  else if not IsAutoChangeHeight then
+  begin
+    SaveItemIndexHeight := HeightRadioGroup.ItemIndex;
+    HeightRadioGroup.ItemIndex := NumberItemHeight;
+    IsAutoChangeHeight := true;
+  end;
+end;
+
+procedure TSizeComponentsDialog.WidthEditChange(Sender: TObject);
+begin
+  if WidthEdit.Text = '' then
+  begin
+    WidthRadioGroup.ItemIndex := SaveItemIndexWidth;
+    IsAutoChangeWidth := false;
+  end
+  else if not IsAutoChangeWidth then
+  begin
+    SaveItemIndexWidth := WidthRadioGroup.ItemIndex;
+    WidthRadioGroup.ItemIndex := NumberItemWidth;
+    IsAutoChangeWidth := true;
+  end;
+end;
+
 constructor TSizeComponentsDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -96,7 +132,7 @@ begin
       Add(lisNoChange);
       Add(lisShrinkToSmal);
       Add(lisGrowToLarges);
-      Add(dlgWidthPos);
+      NumberItemWidth := Add(dlgWidthPos);
       EndUpdate;
     end;
     ItemIndex:=0;
@@ -111,7 +147,7 @@ begin
       Add(lisNoChange);
       Add(lisShrinkToSmal);
       Add(lisGrowToLarges);
-      Add(DlgHeightPos);
+      NumberItemHeight := Add(DlgHeightPos);
       EndUpdate;
     end;
     ItemIndex:=0;
@@ -119,6 +155,11 @@ begin
 
   WidthEdit.Text:='';
   HeightEdit.Text:='';
+
+  IsAutoChangeWidth := false;
+  IsAutoChangeHeight := false;
+  SaveItemIndexWidth := WidthRadioGroup.ItemIndex;
+  SaveItemIndexHeight := HeightRadioGroup.ItemIndex;
 end;
 
 end.

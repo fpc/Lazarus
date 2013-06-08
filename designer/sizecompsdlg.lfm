@@ -9,13 +9,13 @@ object SizeComponentsDialog: TSizeComponentsDialog
   ClientWidth = 380
   OnClose = FormClose
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.1'
   object PosLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = Owner
     Left = 190
-    Height = 14
+    Height = 1
     Top = 0
     Width = 1
     ParentColor = False
@@ -27,7 +27,7 @@ object SizeComponentsDialog: TSizeComponentsDialog
     AnchorSideBottom.Control = HeightRadioGroup
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 146
+    Height = 141
     Top = 6
     Width = 181
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -44,18 +44,19 @@ object SizeComponentsDialog: TSizeComponentsDialog
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 128
-    ClientWidth = 177
+    ClientHeight = 122
+    ClientWidth = 173
     TabOrder = 0
     object WidthEdit: TEdit
       AnchorSideBottom.Control = WidthRadioGroup
       AnchorSideBottom.Side = asrBottom
-      Left = 86
+      Left = 82
       Height = 23
-      Top = 99
+      Top = 93
       Width = 80
       Anchors = [akRight, akBottom]
       BorderSpacing.Around = 6
+      OnChange = WidthEditChange
       TabOrder = 0
       Text = 'WidthEdit'
     end
@@ -67,7 +68,7 @@ object SizeComponentsDialog: TSizeComponentsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 193
-    Height = 146
+    Height = 141
     Top = 6
     Width = 181
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -84,27 +85,36 @@ object SizeComponentsDialog: TSizeComponentsDialog
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 128
-    ClientWidth = 177
+    ClientHeight = 122
+    ClientWidth = 173
     TabOrder = 1
     object HeightEdit: TEdit
       AnchorSideBottom.Control = HeightRadioGroup
       AnchorSideBottom.Side = asrBottom
-      Left = 87
+      Left = 83
       Height = 23
-      Top = 99
+      Top = 93
       Width = 80
       Anchors = [akRight, akBottom]
       BorderSpacing.Around = 6
+      OnChange = HeightEditChange
       TabOrder = 0
       Text = 'HeightEdit'
     end
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 158
+    Height = 31
+    Top = 153
     Width = 368
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
