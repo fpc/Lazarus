@@ -156,6 +156,7 @@ type
     property Items[Index: integer]: TGroupedMatrixMode read GetItems; default;
     function Count: integer;
     function Add(aCaption: string; aColor: TColor = clDefault): TGroupedMatrixMode;
+    procedure Delete(Index: integer);
   end;
   TGroupedMatrixModesClass = class of TGroupedMatrixModes;
 
@@ -409,6 +410,15 @@ begin
   Result.Caption:=aCaption;
   Result.Color:=aColor;
   fItems.Add(Result);
+end;
+
+procedure TGroupedMatrixModes.Delete(Index: integer);
+var
+  Item: TGroupedMatrixMode;
+begin
+  Item:=Items[Index];
+  fItems.Delete(Index);
+  Item.Free;
 end;
 
 { TGroupedMatrix }

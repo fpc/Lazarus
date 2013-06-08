@@ -26,8 +26,8 @@
  ToDo:
    - update matrix, when deleting build mode
    - move inherited to show options
-   - move conditionals to Other
    - move IDE macros only for package usage
+   - move conditionals to Other
    - undo: combine changes while editing a cell
 }
 unit Compiler_ModeMatrix;
@@ -858,6 +858,11 @@ begin
         aMode.Color:=aColor;
       end;
     end;
+  end;
+  // delete build modes
+  while Grid.Modes.Count>BuildModes.Count do begin
+    Grid.Modes.Delete(Grid.Modes.Count-1);
+    GridHasChanged:=true;
   end;
 
   UpdateEnabledModesInGrid(EnvironmentOptions.BuildMatrixOptions,GroupIDE,ValuesHaveChanged);
