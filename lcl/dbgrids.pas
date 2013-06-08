@@ -624,10 +624,10 @@ begin
   else begin
 
     aCharWidth := CalcCanvasCharWidth(Canvas);
-    if Field.DisplayWidth>Length(aTitle) then
+    if Field.DisplayWidth>UTF8Length(aTitle) then
       result := aCharWidth * Field.DisplayWidth
     else
-      result := aCharWidth * Length(aTitle);
+      result := aCharWidth * UTF8Length(aTitle);
 
     if HasTitle then begin
       UseTitleFont :=

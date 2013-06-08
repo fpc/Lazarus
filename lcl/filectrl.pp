@@ -150,6 +150,8 @@ Type
     procedure SetShellListView(const AValue: TShellListView);
   protected
     procedure Select; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
   public
     { Base methods }
     constructor Create(TheOwner: TComponent); override;
@@ -519,16 +521,29 @@ begin
 
   FShellListView:=AValue;
 
-  if FShellListView <> nil then
-   FShellListView.Mask := Mask;
+  if FShellListView <> nil then begin
+    FShellListView.Mask := Mask;
+    FreeNotification(FShellListView);
+  end;
 end;
 
 procedure TCustomFilterComboBox.Select;
 begin
   if FShellListView <> nil then
-   FShellListView.Mask := Mask;
+    FShellListView.Mask := Mask;
 
   inherited Select;
+end;
+
+procedure TCustomFilterComboBox.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then
+  begin
+    if FShellListView=AComponent then
+      FShellListView:=nil;
+  end;
 end;
 
 {------------------------------------------------------------------------------
