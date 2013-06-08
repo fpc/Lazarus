@@ -864,8 +864,7 @@ begin
 end;
 
 procedure TPkgManager.OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
-  const AFilename: string; var TheUnitName: string; var HasRegisterProc: boolean
-  );
+  const AFilename: string; var TheUnitName: string; var HasRegisterProc: boolean);
 begin
   DoGetUnitRegisterInfo(AFilename,TheUnitName,HasRegisterProc,true);
 end;
