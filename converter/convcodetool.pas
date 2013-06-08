@@ -95,6 +95,7 @@ type
     destructor Destroy; override;
     function Convert: TModalResult;
     function FindApptypeConsole: boolean;
+    function RenameUnitIfNeeded: boolean;
     function RenameResourceDirectives: boolean;
     function FixMainClassAncestor(const AClassName: string;
                                   AReplaceTypes: TStringToStringTree): boolean;
@@ -215,6 +216,7 @@ begin
   fCTLink.SrcCache.BeginUpdate;
   try
     // these changes can be applied together without rescan
+    if not RenameUnitIfNeeded then exit;
     if not AddModeDelphiDirective then exit;
     if not RenameResourceDirectives then exit;
     if fCTLink.Settings.FuncReplaceMode=rsEnabled then
@@ -241,6 +243,31 @@ begin
     if (ACleanPos>0) and (ACleanPos<=SrcLen) and (ParamPos>0) then
       Result:=LowerCase(copy(Src,ParamPos,7))='console';
   end;
+end;
+
+function TConvDelphiCodeTool.RenameUnitIfNeeded: boolean;
+// Change the unit name to match the disk name unless the disk name is all lowercase.
+var
+  NamePos: TAtomPosition;
+  DiskNm, UnitNm: String;
+begin
+  Result:=false;
+  //BuildTree(lsrSourceName);
+  with fCTLink do begin
+    DiskNm := ExtractFileNameOnly(Code.Filename);
+    if LowerCase(DiskNm)<>DiskNm then begin    // Lowercase name is found always.
+      if not CodeTool.GetSourceNamePos(NamePos) then exit;
+      UnitNm:=copy(CodeTool.Src, NamePos.StartPos, NamePos.EndPos-NamePos.StartPos);
+      if DiskNm<>UnitNm then begin
+        SrcCache.MainScanner:=CodeTool.Scanner;
+        SrcCache.Replace(gtNone, gtNone, NamePos.StartPos, NamePos.EndPos, DiskNm);
+        if not SrcCache.Apply then exit;
+        IDEMessagesWindow.AddMsg(Format('Fixed unit name from %s to %s.',
+                                        [UnitNm, DiskNm]), '', -1);
+      end;
+    end;
+  end;
+  Result:=true;
 end;
 
 function TConvDelphiCodeTool.AddModeDelphiDirective: boolean;
