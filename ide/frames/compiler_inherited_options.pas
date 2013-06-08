@@ -67,9 +67,9 @@ type
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
-    procedure UpdateInheritedTree(CompilerOpts: TBaseCompilerOptions);
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
     property LastOptions: TBaseCompilerOptions read FLastOptions;
+    procedure UpdateInheritedTree(CompilerOpts: TBaseCompilerOptions);
   end;
 
 implementation

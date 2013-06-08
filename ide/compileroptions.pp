@@ -503,7 +503,8 @@ type
     function CreateTargetFilename(const MainSourceFileName: string): string; virtual;
     function GetTargetFileExt: string; virtual;
     function GetTargetFilePrefix: string; virtual;
-    procedure GetInheritedCompilerOptions(var OptionsList: TFPList); virtual;
+    procedure GetInheritedCompilerOptions(var OptionsList: TFPList // list of TAdditionalCompilerOptions
+      ); virtual;
     function GetOwnerName: string; virtual;
     function GetInheritedOption(Option: TInheritedCompilerOption;
                                 RelativeToBaseDir: boolean;
@@ -1931,21 +1932,37 @@ function TBaseCompilerOptions.GetInheritedOption(
   Option: TInheritedCompilerOption; RelativeToBaseDir: boolean;
   Parsed: TCompilerOptionsParseType): string;
 var
-  OptionsList: TFPList;
+  AddOptionsList: TFPList; // list of TAdditionalCompilerOptions
   p: TCompilerOptionsParseType;
+  s: String;
 begin
   if (fInheritedOptParseStamps<>CompilerParseStamp)
   then begin
     // update inherited options
     ClearInheritedOptions;
-    OptionsList:=nil;
-    GetInheritedCompilerOptions(OptionsList);
-    if OptionsList<>nil then begin
+    AddOptionsList:=nil;
+    GetInheritedCompilerOptions(AddOptionsList);
+    if AddOptionsList<>nil then begin
       for p:=Low(TCompilerOptionsParseType) to High(TCompilerOptionsParseType)
       do begin
-        GatherInheritedOptions(OptionsList,p,fInheritedOptions[p]);
+        GatherInheritedOptions(AddOptionsList,p,fInheritedOptions[p]);
       end;
-      OptionsList.Free;
+      AddOptionsList.Free;
+    end;
+    // add project additions
+    if (Option=icoCustomOptions) and Assigned(OnAppendCustomOption)
+    and (Parsed<>coptParsedPlatformIndependent) // platform independent includes project independent
+    then begin
+      s:='';
+      OnAppendCustomOption(Self,s,bmgtAll);
+      if (Parsed=coptParsed) and Assigned(ParsedOpts.OnLocalSubstitute) then
+      begin
+        //DebugLn(['TParsedCompilerOptions.DoParseOption local "',s,'" ...']);
+        s:=ParsedOpts.OnLocalSubstitute(s,false);
+      end;
+      s:=SpecialCharsToSpaces(s,true);
+      fInheritedOptions[Parsed][Option]:=
+                        MergeCustomOptions(fInheritedOptions[Parsed][Option],s);
     end;
     fInheritedOptParseStamps:=CompilerParseStamp;
   end;
@@ -3863,10 +3880,7 @@ begin
 
   // apply overrides
   if not PlatformIndependent then begin
-    if Option=pcosCustomOptions then begin
-      if Assigned(OnAppendCustomOption) then
-        OnAppendCustomOption(Self,s,bmgtAll);
-    end else if Option=pcosOutputDir then begin
+    if Option=pcosOutputDir then begin
       if Assigned(OnGetOutputDirectoryOverride) then
         OnGetOutputDirectoryOverride(Self,s,bmgtAll);
     end;

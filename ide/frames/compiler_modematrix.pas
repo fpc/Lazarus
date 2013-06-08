@@ -24,7 +24,7 @@
    Options frame for build mode matrix options.
 
  ToDo:
-   - update matrix, when deleting build mode
+   - add checkbox Show build modes
    - move inherited to show options
    - move IDE macros only for package usage
    - move conditionals to Other
