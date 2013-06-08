@@ -199,7 +199,6 @@ type
     function GetCompOpts: TBaseCompilerOptions; virtual; abstract;
     function GetCustomDefines: TDefineTemplate; virtual; abstract;
     procedure CustomDefinesChanged; virtual; abstract;
-    function GetMainDirectory: string; virtual; abstract;
     function GetMainName: string; virtual; abstract;
     function SaveAndMaybeClose(aFilename: string): TModalResult; virtual;
     procedure AddPackageDependency(const PackageName: string); virtual; abstract;
@@ -212,7 +211,6 @@ type
   public
     property CompOpts: TBaseCompilerOptions read GetCompOpts;
     property CustomDefines: TDefineTemplate read GetCustomDefines;
-    property MainDirectory: string read GetMainDirectory;
     property MainName: string read GetMainName;
   end;
 
@@ -236,7 +234,6 @@ type
     function GetCompOpts: TBaseCompilerOptions; override;
     function GetCustomDefines: TDefineTemplate; override;
     procedure CustomDefinesChanged; override;
-    function GetMainDirectory: string; override;
     function GetMainName: string; override;
     function SaveAndMaybeClose(Filename: string): TModalResult; override;
     procedure AddPackageDependency(const PackageName: string); override;
@@ -268,7 +265,6 @@ type
     function GetCompOpts: TBaseCompilerOptions; override;
     function GetCustomDefines: TDefineTemplate; override;
     procedure CustomDefinesChanged; override;
-    function GetMainDirectory: string; override;
     function GetMainName: string; override;
     procedure AddPackageDependency(const PackageName: string); override;
     function FindDependencyByName(const PackageName: string): TPkgDependency; override;
@@ -317,7 +313,7 @@ var
   p: LongInt;
 begin
   Result:='';       // Default: ignore absolute paths
-  ProjectDir:=AProjPack.MainDirectory;
+  ProjectDir:=ExtractFilePath(AProjPack.fLazPMainFilename);
   ShortProjectDir:=PathDelim+ExtractFileName(ChompPathDelim(ProjectDir))+PathDelim;
   p:=System.Pos(ShortProjectDir,Filename);
   if (p>0) then
@@ -1693,15 +1689,6 @@ begin
   (fProjPack as TProject).DefineTemplates.CustomDefinesChanged;
 end;
 
-function TConvertDelphiProject.GetMainDirectory: string;
-var
-  s: String;
-begin
-  Result:=LazProject.ProjectDirectory;
-  s:=ExtractFilePath(fLazPMainFilename);
-  Assert(Result=s, Format('Project MainDirectory differs: %s, %s.', [Result, s]));
-end;
-
 function TConvertDelphiProject.GetMainName: string;
 begin
   Result:='';
@@ -1988,15 +1975,6 @@ end;
 procedure TConvertDelphiPackage.CustomDefinesChanged;
 begin
   (fProjPack as TLazPackage).DefineTemplates.CustomDefinesChanged;
-end;
-
-function TConvertDelphiPackage.GetMainDirectory: string;
-var
-  s: String;
-begin
-  Result:=LazPackage.Directory;
-  s:=ExtractFilePath(fLazPMainFilename);
-  Assert(Result=s, Format('Package MainDirectory differs: %s, %s.', [Result, s]));
 end;
 
 function TConvertDelphiPackage.GetMainName: string;
