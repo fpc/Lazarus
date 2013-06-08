@@ -219,8 +219,8 @@ begin
   radOptLevel1.Caption := dlgLevel1Opt + ' (-O1)';
   radOptLevel2.Caption := dlgLevel2Opt + ' (-O2)';
   radOptLevel3.Caption := dlgLevel3Opt + ' (-O3)';
-  chkOptVarsInReg.Caption := dlgCOKeepVarsReg + ' (-Or)';
-  chkOptUncertain.Caption := dlgUncertOpt + ' (-Ou)';
+  chkOptVarsInReg.Caption := dlgCOKeepVarsReg + ' (-OoREGVAR)';
+  chkOptUncertain.Caption := dlgUncertOpt + ' (-OoUNCERTAIN)';
   chkOptSmaller.Caption := lisSmallerRatherThanFaster + ' (-Os)';
 end;
 
