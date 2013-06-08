@@ -246,10 +246,9 @@ type
     FTempTopLine: Integer;
     FEditPlugin: TSynEditPlugin1;  // used to get the LinesInserted and
                                    //   LinesDeleted messages
-    {$IFDEF WithSynMarkupIfDef}
     FOnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest;
     FLastIfDefNodeScannerStep: integer;
-    {$ENDIF}
+
     FSyncroLockCount: Integer;
     FPageName: string;
 
@@ -312,9 +311,7 @@ type
     procedure SetVisible(Value: boolean);
     procedure UnbindEditor;
 
-    {$IFDEF WithSynMarkupIfDef}
     procedure UpdateIfDefNodeStates(Force: Boolean = False);
-    {$ENDIF}
   protected
     ErrorMsgs: TStrings;
 
@@ -510,11 +507,9 @@ type
     function  SourceToDebugLine(aLinePos: Integer): Integer;
     function  DebugToSourceLine(aLinePos: Integer): Integer;
 
-    {$IFDEF WithSynMarkupIfDef}
     procedure InvalidateAllIfdefNodes;
     procedure SetIfdefNodeState(ALinePos, AstartPos: Integer; AState: TSynMarkupIfdefNodeState);
     property OnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest read FOnIfdefNodeStateRequest write FOnIfdefNodeStateRequest;
-    {$ENDIF}
   public
     // properties
     property CodeBuffer: TCodeBuffer read GetCodeBuffer write SetCodeBuffer;
@@ -2344,19 +2339,15 @@ begin
           if assigned(SharedEditors[i].FEditPlugin) then
             SharedEditors[i].FEditPlugin.Enabled := False;
         SynEditor.BeginUpdate;
-        {$IFDEF WithSynMarkupIfDef}
         SynEditor.InvalidateAllIfdefNodes;
-        {$ENDIF}
         FCodeBuffer.AssignTo(SynEditor.Lines, false);
         FEditorStampCommitedToCodetools:=(SynEditor.Lines as TSynEditLines).TextChangeStamp;
         SynEditor.EndUpdate;
         for i := 0 to FSharedEditorList.Count - 1 do begin
           if assigned(SharedEditors[i].FEditPlugin) then
             SharedEditors[i].FEditPlugin.Enabled := True;
-          {$IFDEF WithSynMarkupIfDef}
           if SharedEditors[i].Visible then
             SharedEditors[i].UpdateIfDefNodeStates(True);
-          {$ENDIF}
         end;
       end;
       for i := 0 to FSharedEditorList.Count - 1 do begin
@@ -2480,9 +2471,7 @@ begin
       for i := 0 to SharedEditorCount-1 do
         SharedEditors[i].BeforeCodeBufferReplace;
 
-      {$IFDEF WithSynMarkupIfDef}
       SynEditor.InvalidateAllIfdefNodes;
-      {$ENDIF}
       Sender.AssignTo(SynEditor.Lines,false);
 
       for i := 0 to SharedEditorCount-1 do
@@ -2490,10 +2479,8 @@ begin
       // HasExecutionMarks is shared through synedit => this is only needed once // but HasExecutionMarks must be called on each synedit, so each synedit is notified
       for i := 0 to FSharedEditorList.Count - 1 do begin
         SharedEditors[i].FillExecutionMarks;
-        {$IFDEF WithSynMarkupIfDef}
         if SharedEditors[i].Visible then
           SharedEditors[i].UpdateIfDefNodeStates(True);
-        {$ENDIF}
       end;
     end;
     if CodeToolsInSync then begin
@@ -4262,10 +4249,8 @@ Begin
   EditorOpts.GetSynEditSettings(FEditor,SimilarEditor);
 
   SourceNotebook.UpdateActiveEditColors(FEditor);
-  {$IFDEF WithSynMarkupIfDef}
   if Visible then
     UpdateIfDefNodeStates(True);
-  {$ENDIF}
 end;
 
 procedure TSourceEditor.ccAddMessage(Texts: String);
@@ -5427,7 +5412,6 @@ begin
   Result := FEditor.IDEGutterMarks.DebugLineToSourceLine(aLinePos);
 end;
 
-{$IFDEF WithSynMarkupIfDef}
 procedure TSourceEditor.InvalidateAllIfdefNodes;
 begin
   FEditor.InvalidateAllIfdefNodes;
@@ -5531,7 +5515,6 @@ begin
     EditorComponent.EndUpdate;
   end;
 end;
-{$ENDIF}
 
 function TSourceEditor.SharedEditorCount: Integer;
 begin
@@ -5623,9 +5606,7 @@ begin
     OnPlaceBookmark := nil;
     OnClearBookmark := nil;
     OnChangeUpdating := nil;
-    {$IFDEF WithSynMarkupIfDef}
     OnIfdefNodeStateRequest := nil;
-    {$ENDIF}
     UnregisterMouseActionExecHandler(@EditorHandleMouseAction);
   end;
   for i := 0 to EditorComponent.PluginCount - 1 do
@@ -7218,9 +7199,7 @@ procedure TSourceNotebook.CopyEditor(OldPageIndex, NewWindowIndex,
 var
   DestWin: TSourceNotebook;
   SrcEdit, NewEdit: TSourceEditor;
-  {$IFDEF WithSynMarkupIfDef}
   i: Integer;
-  {$ENDIF}
 begin
   if (NewWindowIndex < 0) or (NewWindowIndex >= Manager.SourceWindowCount) then
     exit;
@@ -7244,11 +7223,9 @@ begin
   UpdatePageNames;
   UpdateProjectFiles;
   DestWin.UpdateProjectFiles(NewEdit);
-  {$IFDEF WithSynMarkupIfDef}
   // Creating a shared edit invalidates the tree in SynMarkup. Force setting it for all editors
   for i := 0 to SrcEdit.SharedEditorCount - 1 do
     SrcEdit.SharedEditors[i].UpdateIfDefNodeStates(True);
-  {$ENDIF}
   // Update IsVisibleTab; needs UnitEditorInfo created in DestWin.UpdateProjectFiles
   if Focus then begin
     Manager.ActiveEditor := NewEdit;
@@ -8035,9 +8012,7 @@ Begin
         TopLine := SrcEdit.EditorComponent.TopLine;
         TSynEditMarkupManager(SrcEdit.EditorComponent.MarkupMgr).IncPaintLock;
         SrcEdit.BeginUpdate;
-        {$IFDEF WithSynMarkupIfDef}
         SrcEdit.UpdateIfDefNodeStates;
-        {$ENDIF}
         SrcEdit.Visible := True;
         SrcEdit.EndUpdate;
         // Restore the intial Positions, must be after lock
@@ -10106,21 +10081,17 @@ begin
 end;
 
 procedure TSourceEditorManager.CodeToolsToSrcEditTimerTimer(Sender: TObject);
-{$IFDEF WithSynMarkupIfDef}
 var
   i: Integer;
   SrcEdit: TSourceEditor;
-{$ENDIF}
 begin
   CodeToolsToSrcEditTimer.Enabled:=false;
 
-  {$IFDEF WithSynMarkupIfDef}
   for i:=0 to SourceEditorCount-1 do begin
     SrcEdit:=SourceEditors[i];
     if not SrcEdit.EditorComponent.IsVisible then continue;
     SrcEdit.UpdateIfDefNodeStates;
   end;
-  {$ENDIF}
 end;
 
 procedure TSourceEditorManager.OnWordCompletionGetSource(var Source: TStrings;

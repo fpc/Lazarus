@@ -99,19 +99,14 @@ type
      ahaTemplateEditOther, ahaSyncroEditCur,      ahaSyncroEditSync,
      ahaSyncroEditOther,   ahaSyncroEditArea,     ahaGutterSeparator,
      ahaGutter,            ahaRightMargin,        ahaSpecialVisibleChars,
-     ahaTopInfoHint
-{$IFDEF WithSynMarkupIfDef}
-     ,       ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive,
+     ahaTopInfoHint,
+     ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive,
      ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive
-{$ENDIF}
      );
 
   TAhaGroupName = (
-    agnDefault, agnLanguage, agnText, agnLine, agnGutter, agnTemplateMode, agnSyncronMode
-{$IFDEF WithSynMarkupIfDef}
-    , agnIfDef
-{$ENDIF}
-
+    agnDefault, agnLanguage, agnText, agnLine, agnGutter, agnTemplateMode, agnSyncronMode,
+    agnIfDef
   );
 
   TColorSchemeAttributeFeature =
@@ -146,11 +141,9 @@ const
     '', // ahaGutter
     '',  // ahaRightMargin
     '',  // ahaSpecialVisibleChars
-    ''  // ahaTopInfoHint
-{$IFDEF WithSynMarkupIfDef}
-,    '', '', '',  // ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive
+    '',  // ahaTopInfoHint
+    '', '', '',  // ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive
      '', '', ''  // ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive
-{$ENDIF}
   );
 
   ahaGroupMap: array[TAdditionalHilightAttribute] of TAhaGroupName = (
@@ -184,16 +177,13 @@ const
     { ahaGutter }              agnGutter,
     { ahaRightMargin}          agnGutter,
     { ahaSpecialVisibleChars } agnText,
-    { ahaTopInfoHint }         agnLine
-{$IFDEF WithSynMarkupIfDef}
-    ,
+    { ahaTopInfoHint }         agnLine,
     { ahaIfDefBlockInactive }  agnIfDef,
     { ahaIfDefBlockActive }    agnIfDef,
     { ahaIfDefBlockTmpActive } agnIfDef,
     { ahaIfDefNodeInactive }   agnIfDef,
     { ahaIfDefNodeActive }     agnIfDef,
     { ahaIfDefNodeTmpActive }  agnIfDef
-{$ENDIF}
   );
   ahaSupportedFeatures: array[TAdditionalHilightAttribute] of TColorSchemeAttributeFeatures =
   (
@@ -227,16 +217,13 @@ const
     { ahaGutter }             [hafBackColor],
     { ahaRightMargin}         [hafForeColor],
     { ahaSpecialVisibleChars }[hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaTopInfoHint }        [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
-{$IFDEF WithSynMarkupIfDef}
-    ,
+    { ahaTopInfoHint }        [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaIfDefBlockInactive } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaIfDefBlockActive }   [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaIfDefBlockTmpActive }[hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaIfDefNodeInactive }  [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaIfDefNodeActive }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaIfDefNodeTmpActive } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
-{$ENDIF}
   );
 
 
@@ -2512,7 +2499,6 @@ begin
   AdditionalHighlightAttributes[ahaRightMargin]         := dlgRightMargin;
   AdditionalHighlightAttributes[ahaSpecialVisibleChars] := dlgAddHiSpecialVisibleChars;
   AdditionalHighlightAttributes[ahaTopInfoHint]         := dlgTopInfoHint;
-{$IFDEF WithSynMarkupIfDef}
   AdditionalHighlightAttributes[ahaIfDefBlockInactive]  := dlgIfDefBlockInactive;
   AdditionalHighlightAttributes[ahaIfDefBlockActive]    := dlgIfDefBlockActive;
   AdditionalHighlightAttributes[ahaIfDefBlockTmpActive] := dlgIfDefBlockTmpActive;
@@ -2520,7 +2506,6 @@ begin
   AdditionalHighlightAttributes[ahaIfDefNodeActive]     := dlgIfDefNodeActive;
   AdditionalHighlightAttributes[ahaIfDefNodeTmpActive]  := dlgIfDefNodeTmpActive;
   AdditionalHighlightGroupNames[agnIfDef]        := dlgAddHiAttrGroupIfDef;
-{$ENDIF}
 
   AdditionalHighlightGroupNames[agnDefault]      := dlgAddHiAttrGroupDefault;
   AdditionalHighlightGroupNames[agnText]         := dlgAddHiAttrGroupText;
@@ -6236,7 +6221,6 @@ begin
     SetMarkupColorByClass(ahaHighlightWord, TSynEditMarkupHighlightAllCaret);
     SetMarkupColorByClass(ahaWordGroup,     TSynEditMarkupWordGroup);
     SetMarkupColorByClass(ahaSpecialVisibleChars, TSynEditMarkupSpecialChar);
-{$IFDEF WithSynMarkupIfDef}
     if ASynEdit is TIDESynEditor then begin
       with TIDESynEditor(ASynEdit) do begin
         if AttributeByEnum[ahaIfDefBlockInactive] <> nil
@@ -6259,7 +6243,6 @@ begin
           else MarkupIfDef.MarkupInfoTempNodeEnabled.Clear;
       end;
     end;
-{$ENDIF}
     SetGutterColorByClass(ahaLineNumber,      TSynGutterLineNumber);
     SetGutterColorByClass(ahaModifiedLine,    TSynGutterChanges);
     SetGutterColorByClass(ahaCodeFoldingTree, TSynGutterCodeFolding);
