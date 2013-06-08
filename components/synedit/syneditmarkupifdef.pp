@@ -445,6 +445,7 @@ type
     procedure DoTreeUnlocking(Sender: TObject);
     procedure DoTreeUnlocked(Sender: TObject);
     procedure DoTreeChanged(Sender: TObject);
+    procedure PrepareHighlighter;
   protected
     function  HasEnabledMarkup: Boolean; override;
 
@@ -2401,7 +2402,8 @@ var
 
   function IsCommentedIfDef(AEntry: TSynMarkupHighIfDefEntry): Boolean;
   var
-    i, o: Integer;
+    i, j, o: Integer;
+    s: String;
   begin
     i := AEntry.StartColumn;
     Result :=
@@ -2410,13 +2412,20 @@ var
        ( (AEntry.NodeType in [idnIfdef, idnElseIf, idnCommentedNode]) or
          (AEntry.StateByUser)
        ) and
-       (AEntry.HasKnownState) and
-       ( ( (not (idnMultiLineTag in AEntry.NodeFlags)) and (LineTextLower[AEntry.EndColumn-1] = '}') ) or
-         ( (idnMultiLineTag in AEntry.NodeFlags) and
-           (Lines[ToIdx(ALine+AEntry.Line.LastEntryEndLineOffs)][AEntry.EndColumn-1] = '}') )
-       ) and
+       (AEntry.HasKnownState);
+    if not Result then
+      exit;
+
+    j := AEntry.EndColumn;
+    if (idnMultiLineTag in AEntry.NodeFlags) then
+      s := Lines[ToIdx(ALine+AEntry.Line.LastEntryEndLineOffs)]
+    else
+      s := LineTextLower;
+    Result :=
+       (j-1 <= length(s)) and (j > 1) and (s[j-1] = '}') and
        (TheDict.GetMatchAtChar(@LineTextLower[i], LineLen + 1 - i) in [1, 4]) and
-       (AEntry.EndColumn = FindCloseCurlyBracket(i+1, o)+1);
+       (j = FindCloseCurlyBracket(i+1, o)+1);
+
     if Result then // o is evaluated
       Result :=
        ((not (idnMultiLineTag in AEntry.NodeFlags)) and (o = 0)) or
@@ -2849,14 +2858,14 @@ begin
       Node.FStartLine := ALinePos;  // directly to field
     end
     else begin
-      DebugLn([ 'SetNodeState did not find a node (ScanLine) ', ALinePos, '/', 'AstartPos', AstartPos, ' ', dbgs(AState)]);
+      DebugLn([ 'SetNodeState did not find a node (ScanLine) ', ALinePos, '/', 'AstartPos', AstartPos, ' ', dbgs(AState), ' #',copy(Lines[ALinePos-1],1,20)]);
       //assert(false, 'SetNodeState did not find a node (ScanLine)');
       exit;
     end;
   end;
 
   i := Node.EntryCount;
-  if i = 0 then begin DebugLn(['SetNodeState did not find a node (zero entries)', ALinePos, '/', 'AstartPos', AstartPos, ' ', dbgs(AState)]); exit; end;
+  if i = 0 then begin DebugLn(['SetNodeState did not find a node (zero entries)', ALinePos, '/', 'AstartPos', AstartPos, ' ', dbgs(AState), ' #',copy(Lines[ALinePos-1],1,20)]); exit; end;
   //assert(i > 0, 'SetNodeState did not find a node (zero entries)');
   e := nil;
   LineNeedReq := False;
@@ -2870,7 +2879,7 @@ begin
   until (i = 0) or (e <> nil);
 
   //assert(e <> nil, 'SetNodeState did not find a node (no matching entry)');
-  if (e = nil) then DebugLn([ 'SetNodeState did not find a matching node  ', ALinePos, '/', 'AstartPos',AstartPos, ' ', dbgs(AState)]);
+  if (e = nil) then DebugLn([ 'SetNodeState did not find a matching node  ', ALinePos, '/', 'AstartPos',AstartPos, ' ', dbgs(AState), ' #',copy(Lines[ALinePos-1],1,20)]);
   //assert(e.NodeType in [idnIfdef, idnElseIf], 'SetNodeState did not find a node (e.NodeType <> idnIfdef)');
   //if (e = nil) or not(e.NodeType in [idnIfdef, idnElseIf]) then
   if (e = nil) then
@@ -3028,9 +3037,7 @@ begin
 
   LastLine := ScreenRowToRow(LinesInWindow+1);
   FAdjustedTop := ToIdx(TopLine);
-  Highlighter.CurrentLines := Lines;
-  if Highlighter.NeedScan then DebugLn('******** Highlighter.NeedScan ************');
-  Highlighter.ScanRanges;
+  PrepareHighlighter;
 
   if FMarkupNodes.HasEnabledMarkup then
     while (FAdjustedTop > 0) and Highlighter.IsLineStartingInDirective(FAdjustedTop) and
@@ -3353,7 +3360,7 @@ begin
     exit;
   end;
 
-  Highlighter.CurrentLines := Lines;
+  PrepareHighlighter;
   LastLine := ScreenRowToRow(LinesInWindow+1);
   if (FLastValidTopLine  <= TopLine) and (FLastValidLastLine >= LastLine) and
      (FLastValidTreeStep = FIfDefTree.ChangeStep)
@@ -3557,6 +3564,13 @@ procedure TSynEditMarkupIfDef.DoTreeChanged(Sender: TObject);
 begin
   DebugLn('TSynEditMarkupIfDef.DoTreeChanged');
   ValidateMatches;
+end;
+
+procedure TSynEditMarkupIfDef.PrepareHighlighter;
+begin
+  Highlighter.CurrentLines := Lines;
+  if Highlighter.NeedScan then DebugLn('******** Highlighter.NeedScan ************');
+  Highlighter.ScanRanges;
 end;
 
 function TSynEditMarkupIfDef.HasEnabledMarkup: Boolean;
@@ -3868,6 +3882,9 @@ end;
 procedure TSynEditMarkupIfDef.SetNodeState(ALinePos, AstartPos: Integer;
   AState: TSynMarkupIfdefNodeState);
 begin
+  if (Highlighter = nil) then
+    exit;
+  PrepareHighlighter;
   FIfDefTree.SetNodeState(ALinePos, AstartPos, AState);
 end;
 
