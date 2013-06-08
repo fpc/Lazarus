@@ -2852,7 +2852,7 @@ var
   i: Integer;
 begin
   Node := FindNodeAtPosition(ALinePos, afmNil);
-  if not Node.HasNode then begin
+  if not (Node.HasNode and Node.IsValid) then begin
     ScanLine(ALinePos, Node.FNode, True);
     if Node.HasNode then begin
       Node.FStartLine := ALinePos;  // directly to field
