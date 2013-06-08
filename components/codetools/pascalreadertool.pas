@@ -2117,27 +2117,13 @@ begin
 end;
 
 function TPascalReaderTool.ExtractSourceName: string;
+var
+  NamePos: TAtomPosition;
 begin
   Result:='';
-  if Tree.Root<>nil then begin
-    MoveCursorToNodeStart(Tree.Root);
-    ReadNextAtom; // read source type 'program', 'unit' ...
-    if (Tree.Root.Desc<>ctnProgram) or UpAtomIs('PROGRAM') then begin
-      ReadNextAtom; // read name
-      if AtomIsIdentifier then begin
-        Result:=copy(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
-        ReadNextAtom;
-        while CurPos.Flag=cafPoint do begin
-          ReadNextAtom;
-          if not AtomIsIdentifier then exit;
-          Result:=Result+'.'+copy(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
-          ReadNextAtom;
-        end;
-        exit;
-      end;
-    end;
-  end;
-  if (Tree.Root<>nil) and (Tree.Root.Desc=ctnProgram) then
+  if GetSourceNamePos(NamePos) then
+    Result:=copy(Src, NamePos.StartPos, NamePos.EndPos-NamePos.StartPos)
+  else if (Tree.Root<>nil) and (Tree.Root.Desc=ctnProgram) then
     // a program without the 'program' header uses the file name as name
     Result:=ExtractFileNameOnly(MainFilename)
   else
