@@ -16,6 +16,9 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:       glibc, binutils
 BuildRequires:  binutils, glibc-devel
 
+%define _source_payload w9.bzdio
+%define _binary_payload w9.bzdio
+
 %description
 
 Freepascal is a free 32/64bit Pascal Compiler. It comes with a run-time
