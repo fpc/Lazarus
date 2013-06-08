@@ -63,7 +63,7 @@ uses
   AddFileToAPackageDlg, LazarusPackageIntf, PublishProjectDlg, PkgLinksDlg,
   InstallPkgSetDlg, ConfirmPkgListDlg, NewPkgComponentDlg,
   // bosses
-  BaseBuildManager, BasePkgManager, MainBar, MainIntf, MainBase;
+  BaseBuildManager, BasePkgManager, MainBar, MainIntf, MainBase, ModeMatrixOpts;
 
 type
   { TPkgManager }
@@ -161,6 +161,7 @@ type
     procedure PackageFileLoaded(Sender: TObject);
     procedure OnCheckInstallPackageList(PkgIDList: TObjectList;
                                      RemoveConflicts: boolean; out Ok: boolean);
+    function DoBeforeCompilePackages(aPkgList: TFPList): TModalResult;
     function LoadDependencyList(FirstDependency: TPkgDependency;
                                 Quiet: boolean): TModalResult;
     procedure CreateIDEWindow(Sender: TObject; aFormName: string;
@@ -242,7 +243,7 @@ type
     function IsOwnerDependingOnPkg(AnOwner: TObject; const PkgName: string;
                                    out DependencyOwner: TObject): boolean; override;
     procedure GetRequiredPackages(AnOwner: TObject; out PkgList: TFPList;
-                                  Flags: TPkgIntfRequiredFlags = []) override;
+                                  Flags: TPkgIntfRequiredFlags = []); override;
     function AddDependencyToOwners(OwnerList: TFPList; APackage: TIDEPackage;
                    OnlyTestIfPossible: boolean = false): TModalResult; override;
     function AddDependencyToUnitOwners(const OwnedFilename,
@@ -495,6 +496,64 @@ procedure TPkgManager.OnCheckInstallPackageList(PkgIDList: TObjectList;
   RemoveConflicts: boolean; out Ok: boolean);
 begin
   Ok:=CheckInstallPackageList(PkgIDList);
+end;
+
+function TPkgManager.DoBeforeCompilePackages(aPkgList: TFPList): TModalResult;
+// called before a bunch of packages are compiled
+
+  function GetIgnorePkgOutDirID(CurPkg: TLazPackage): string;
+  begin
+    Result:='PkgOutDir#'+CurPkg.Filename+':'+CurPkg.GetOutputDirectory;
+  end;
+
+var
+  PkgWithProjOverriddenOutDirs: TFPList;
+  i: Integer;
+  CurPkg: TLazPackage;
+  OutDir: String;
+  IgnoreItem: TIgnoreIDEQuestionItem;
+  s: String;
+begin
+  Result:=mrOk;
+  if MainIDEBar=nil then exit; // not interactive
+  if InputHistories=nil then exit;
+
+  if not Assigned(OnGetOutputDirectoryOverride) then exit;
+  PkgWithProjOverriddenOutDirs:=TFPList.Create;
+  try
+    for i:=0 to aPkgList.Count-1 do
+    begin
+      CurPkg:=TLazPackage(aPkgList[i]);
+      OutDir:='';
+      OnGetOutputDirectoryOverride(CurPkg,OutDir,[bmgtProject,bmgtSession]);
+      if OutDir<>'' then begin
+        IgnoreItem:=InputHistories.Ignores.Find(GetIgnorePkgOutDirID(CurPkg));
+        if (IgnoreItem=nil) then
+          PkgWithProjOverriddenOutDirs.Add(CurPkg);
+      end;
+    end;
+    if PkgWithProjOverriddenOutDirs.Count>0 then
+    begin
+      s:='';
+      for i:=0 to PkgWithProjOverriddenOutDirs.Count-1 do begin
+        CurPkg:=TLazPackage(PkgWithProjOverriddenOutDirs[i]);
+        OutDir:=CreateRelativePath(CurPkg.GetOutputDirectory,CurPkg.Directory);
+        s+=CurPkg.Name+': '+OutDir+#13;
+      end;
+      if IDEMessageDialog(lisConfirmation,
+        Format(lisPkgTheProjectOverridesTheOutputDirectoryOfTheFollowin, [#13,
+          #13, #13, s]), mtWarning, [mbOk, mbCancel])<>mrOk
+      then
+        exit(mrCancel);
+      // remember the answer
+      for i:=0 to PkgWithProjOverriddenOutDirs.Count-1 do begin
+        CurPkg:=TLazPackage(PkgWithProjOverriddenOutDirs[i]);
+        InputHistories.Ignores.Add(GetIgnorePkgOutDirID(CurPkg),iiidForever);
+      end;
+    end;
+  finally
+    PkgWithProjOverriddenOutDirs.Free;
+  end;
 end;
 
 function TPkgManager.LoadDependencyList(FirstDependency: TPkgDependency;
@@ -1533,6 +1592,7 @@ begin
   PackageGraph.OnDeleteAmbiguousFiles:=@BuildBoss.DeleteAmbiguousFiles;
   PackageGraph.OnUninstallPackage:=@DoUninstallPackage;
   PackageGraph.OnTranslatePackage:=@DoTranslatePackage;
+  PackageGraph.OnBeforeCompilePackages:=@DoBeforeCompilePackages;
 
   // package editors
   PackageEditors:=TPackageEditors.Create;
@@ -2595,7 +2655,7 @@ function TPkgManager.DoCompileProjectDependencies(AProject: TProject;
 var
   CompilePolicy: TPackageUpdatePolicy;
 begin
-  // check graph for circles and broken dependencies
+  // check graph for cycles and broken dependencies
   if not (pcfDoNotCompileDependencies in Flags) then begin
     Result:=CheckPackageGraphForCompilation(nil,
                                             AProject.FirstRequiredDependency,

@@ -24,6 +24,10 @@
    Options frame for build mode matrix options.
 
  ToDo:
+   - update matrix, when deleting build mode
+   - move inherited to show options
+   - move conditionals to Other
+   - move IDE macros only for package usage
    - undo: combine changes while editing a cell
 }
 unit Compiler_ModeMatrix;

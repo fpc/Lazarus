@@ -93,10 +93,11 @@ type
                     Flags: TPkgUninstallFlags; ShowAbort: boolean): TModalResult of object;
   TPkgTranslate = procedure(APackage: TLazPackage) of object;
   TDependencyModifiedEvent = procedure(ADependency: TPkgDependency) of object;
-  TEndUpdateEvent = procedure(Sender: TObject; GraphChanged: boolean) of object;
+  TPkgGraphEndUpdateEvent = procedure(Sender: TObject; GraphChanged: boolean) of object;
   TFindFPCUnitEvent = procedure(const AUnitName, Directory: string;
                                 var Filename: string) of object;
   TPkgDeleteAmbiguousFiles = function(const Filename: string): TModalResult of object;
+  TOnBeforeCompilePackages = function(aPkgList: TFPList): TModalResult of object;
 
   { TLazPackageGraph }
 
@@ -115,12 +116,13 @@ type
     FLCLBasePackage: TLazPackage;
     FLCLPackage: TLazPackage;
     FOnAddPackage: TPkgAddedEvent;
+    FOnBeforeCompilePackages: TOnBeforeCompilePackages;
     FOnBeginUpdate: TNotifyEvent;
     FOnChangePackageName: TPkgChangeNameEvent;
     FOnDeleteAmbiguousFiles: TPkgDeleteAmbiguousFiles;
     FOnDeletePackage: TPkgDeleteEvent;
     FOnDependencyModified: TDependencyModifiedEvent;
-    FOnEndUpdate: TEndUpdateEvent;
+    FOnEndUpdate: TPkgGraphEndUpdateEvent;
     FOnTranslatePackage: TPkgTranslate;
     FOnUninstallPackage: TPkgUninstall;
     FQuietRegistration: boolean;
@@ -375,13 +377,15 @@ type
                          read FOnDependencyModified write FOnDependencyModified;
     property OnDeletePackage: TPkgDeleteEvent read FOnDeletePackage
                                               write FOnDeletePackage;
-    property OnEndUpdate: TEndUpdateEvent read FOnEndUpdate write FOnEndUpdate;
+    property OnEndUpdate: TPkgGraphEndUpdateEvent read FOnEndUpdate write FOnEndUpdate;
     property OnDeleteAmbiguousFiles: TPkgDeleteAmbiguousFiles
                      read FOnDeleteAmbiguousFiles write FOnDeleteAmbiguousFiles;
     property OnTranslatePackage: TPkgTranslate read FOnTranslatePackage
                                                    write FOnTranslatePackage;
     property OnUninstallPackage: TPkgUninstall read FOnUninstallPackage
                                                write FOnUninstallPackage;
+    property OnBeforeCompilePackages: TOnBeforeCompilePackages read
+                        FOnBeforeCompilePackages write FOnBeforeCompilePackages;
     property Packages[Index: integer]: TLazPackage read GetPackages; default; // see Count for the number
     property RegistrationFile: TPkgFile read FRegistrationFile;
     property RegistrationPackage: TLazPackage read FRegistrationPackage
@@ -3235,10 +3239,11 @@ function TLazPackageGraph.CompileRequiredPackages(APackage: TLazPackage;
   FirstDependency: TPkgDependency; SkipDesignTimePackages: boolean;
   Policy: TPackageUpdatePolicy): TModalResult;
 var
-  AutoPackages: TFPList;
+  PkgList: TFPList;
   i: Integer;
   Flags: TPkgCompileFlags;
   ReqFlags: TPkgIntfRequiredFlags;
+  CurPkg: TLazPackage;
 begin
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CompileRequiredPackages A MinPolicy=',dbgs(Policy),' SkipDesignTimePackages=',SkipDesignTimePackages);
@@ -3246,11 +3251,21 @@ begin
   ReqFlags:=[pirCompileOrder];
   if SkipDesignTimePackages then
     Include(ReqFlags,pirSkipDesignTimeOnly);
-  GetAllRequiredPackages(APackage,FirstDependency,AutoPackages,ReqFlags,Policy);
-  if AutoPackages<>nil then begin
-    //DebugLn('TLazPackageGraph.CompileRequiredPackages B Count=',IntToStr(AutoPackages.Count));
+  GetAllRequiredPackages(APackage,FirstDependency,PkgList,ReqFlags,Policy);
+  if PkgList<>nil then begin
+    //DebugLn('TLazPackageGraph.CompileRequiredPackages B Count=',IntToStr(PkgList.Count));
     try
       Flags:=[pcfDoNotCompileDependencies,pcfDoNotSaveEditorFiles];
+      for i:=PkgList.Count-1 downto 0 do begin
+        CurPkg:=TLazPackage(PkgList[i]);
+        if SkipDesignTimePackages and (CurPkg.PackageType=lptDesignTime) then
+          PkgList.Delete(i);
+      end;
+      if Assigned(OnBeforeCompilePackages) then
+      begin
+        Result:=OnBeforeCompilePackages(PkgList);
+        if Result<>mrOk then exit;
+      end;
       if Policy=pupAsNeeded then
         Include(Flags,pcfOnlyIfNeeded)
       else
@@ -3258,13 +3273,13 @@ begin
       if SkipDesignTimePackages then
         Include(Flags,pcfSkipDesignTimePackages);
       i:=0;
-      while i<AutoPackages.Count do begin
-        Result:=CompilePackage(TLazPackage(AutoPackages[i]),Flags,false);
+      while i<PkgList.Count do begin
+        Result:=CompilePackage(TLazPackage(PkgList[i]),Flags,false);
         if Result<>mrOk then exit;
         inc(i);
       end;
     finally
-      AutoPackages.Free;
+      PkgList.Free;
     end;
   end;
   {$IFDEF VerbosePkgCompile}

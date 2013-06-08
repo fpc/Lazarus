@@ -3072,6 +3072,9 @@ resourcestring
   // Build lazarus dialog
   lisConfirmLazarusRebuild = 'Do you want to rebuild Lazarus with profile: %s ?';
   lisConfirmation = 'Confirmation';
+  lisPkgTheProjectOverridesTheOutputDirectoryOfTheFollowin = 'The project '
+    +'overrides the output directory of the following packages.%sSee Project /'
+    +' Project Options / Additions and Overrides%s%s%s';
   lisConfirmBuildAllProfiles = 'Lazarus will be rebuilt with the following profiles:%sContinue?';
   lisNoBuildProfilesSelected = 'No profiles are selected to be built.';
   lisCleanLazarusSource = 'Clean Lazarus Source';

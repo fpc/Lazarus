@@ -6901,7 +6901,6 @@ begin
   // show messages
   IDEWindowCreators.ShowForm(MessagesView,EnvironmentOptions.MsgViewFocus);
   MessagesView.BeginBlock;
-
   try
     Result:=DoSaveForBuild(AReason);
     if Result<>mrOk then begin

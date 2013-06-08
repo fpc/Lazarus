@@ -387,7 +387,7 @@ type
   end;
 
 var
-  MainIDEBar: TMainIDEBar;
+  MainIDEBar: TMainIDEBar = nil;
 
 implementation
 
