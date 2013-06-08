@@ -1808,6 +1808,10 @@ end;
 function TConvertDelphiPackage.AddUnit(AFileName: string): TModalResult;
 var
   PkgFile, OffendingUnit: TPkgFile;
+  CodeBuffer: TCodeBuffer;
+  Flags: TPkgFileFlags;
+  HasRegisterProc: boolean;
+  UnitN: String;
 begin
   Result:=mrOK;
   if not FilenameIsAbsolute(AFileName) then
@@ -1835,9 +1839,20 @@ begin
         end;
       end;
     end;
+    UnitN:=ExtractFileNameOnly(AFileName);
+    Flags:=[pffAddToPkgUsesSection];
+    // Check if the unit has a Register procedure.
+    // ToDo: Optimize. The source is read again during unit conversion.
+    CodeBuffer:=CodeToolBoss.LoadFile(AFilename, true, false);
+    if CodeBuffer<>nil then
+      if CodeToolBoss.HasInterfaceRegisterProc(CodeBuffer, HasRegisterProc) then
+        if HasRegisterProc then begin
+          Include(Flags, pffHasRegisterProc);
+          IDEMessagesWindow.AddMsg(Format('Adding flag for "Register" procedure in unit %s.',
+                                          [UnitN]), '', -1);
+        end;
     // Add new unit to package
-    LazPackage.AddFile(AFileName,ExtractFileNameOnly(AFileName),
-                     pftUnit,[pffAddToPkgUsesSection],cpNormal);
+    LazPackage.AddFile(AFileName, UnitN, pftUnit, Flags, cpNormal);
   end;
 end;
 
