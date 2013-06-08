@@ -11,6 +11,8 @@ BuildRoot: %{_tmppath}/fpc-src-build%{version}
 
 %define fpcsrcdir %{_datadir}/fpcsrc
 %define destdir %{buildroot}%{fpcsrcdir}/%{version}
+%define _source_payload w9.bzdio
+%define _binary_payload w9.bzdio
 
 # The normal redhat rpm scripts tests every installed file for requirements.
 # We install only sources, so we don't need the requirements.
