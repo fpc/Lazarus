@@ -25,7 +25,6 @@
 
  ToDo:
    - add checkbox Show build modes
-   - move inherited to show options
    - move IDE macros only for package usage
    - move conditionals to Other
    - set default conditionals to comments with examples
