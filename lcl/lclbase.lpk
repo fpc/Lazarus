@@ -29,7 +29,7 @@
 "/>
     <License Value="modified LGPL-2
 "/>
-    <Version Major="1" Release="10"/>
+    <Version Major="1" Release="11"/>
     <Files Count="292">
       <Item1>
         <Filename Value="barchart.pp"/>
