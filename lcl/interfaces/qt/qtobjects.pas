@@ -2507,11 +2507,14 @@ begin
     q_DrawWinPanel(Widget, x, y, w, h, Palette, Sunken, FillBrush)
   else
   begin
-    if FillBrush = nil then
+    if (FillBrush = nil) and Assigned(Parent) and
+      QObject_inherits(Parent,'QFrame') then
       q_DrawShadePanel(Widget, x, y, w, h, Palette, Sunken, 1, QPalette_background(Palette))
     else
       q_DrawShadePanel(Widget, x, y, w, h, Palette, Sunken, 1, FillBrush);
   end;
+
+
   if AppPalette <> nil then
   begin
     QPalette_destroy(AppPalette);
