@@ -581,6 +581,7 @@ resourcestring
   lisConvDelphiCategories = 'Categories:';
   lisConvFuncReplacements = 'Function Replacements';
   lisConvFuncReplHint = 'Some Delphi functions can be replaced with LCL function';
+  lisConvAddCommentAfterReplacement = 'Add comment after replacement';
   lisConvDelphiName = 'Delphi Name';
   lisConvNewName = 'New Name';
   lisConvParentContainer = 'Parent Container';

@@ -860,6 +860,7 @@ begin
   FuncReplaceButton.Hint:=lisConvFuncReplHint;
   FuncReplaceComboBox.Items.Add(lisDisabled);
   FuncReplaceComboBox.Items.Add(lisEnabled);
+  FuncReplaceCommentCB.Caption:=lisConvAddCommentAfterReplacement;
   // Coordinate Offsets
   CoordOffsDivider.Caption:=lisConvCoordOffs;
   CoordOffsButton.Caption:=lisEdit;
