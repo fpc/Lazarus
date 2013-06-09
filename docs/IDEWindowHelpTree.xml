@@ -97,7 +97,7 @@
   <Node52 Name="TAddDirToPkgDialog" Path="Add_directory_to_package" HasHelp="True"/>
   <Node53 Name="TChgEncodingDialog" Path="Change_Encoding_Dialog" HasHelp="True"/>
   <Node54 Name="TChooseKeySchemeDlg" Path="Choose_Key_Scheme" HasHelp="True"/>
-  <Node55 Name="TIDEOptionsDialog" Path="IDE_Options_Dialog" HasHelp="True" ChildCount="51">
+  <Node55 Name="TIDEOptionsDialog" Path="IDE_Options_Dialog" HasHelp="True" ChildCount="52">
     <Node1 Name="EditorGeneralOptionsFrame" Path="Editor_Options_General" HasHelp="True" IsRoot="True"/>
     <Node2 Name="FilesOptionsFrame" Path="Environment_Options" HasHelp="True" IsRoot="True"/>
     <Node3 Name="DesktopOptionsFrame" Path="Environment_Options" HasHelp="True" IsRoot="True"/>
@@ -148,7 +148,7 @@
     <Node48 Name="PackageI18NOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
     <Node49 Name="PackageDescriptionOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
     <Node50 Name="PackageIntegrationOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
-    <Node51 Name="EditorsPanel" Path="EditorsPanel" ChildCount="10">
+    <Node51 Name="EditorsPanel" Path="EditorsPanel" ChildCount="17">
       <Node1 Name="EditorMarkupUserDefinedFrame" Path="Editor_User_Defined_Words" HasHelp="True" IsRoot="True"/>
       <Node2 Name="CompOptModeMatrixFrame" Path="_Compiler_Options#Additions_and_Overrides" HasHelp="True" IsRoot="True"/>
       <Node3 Name="CompilerOtherOptionsFrame" Path="_Compiler_Options#Other" HasHelp="True" IsRoot="True"/>
@@ -159,7 +159,15 @@
       <Node8 Name="CompilerCodegenOptionsFrame" Path="_Compiler_Options#Code" HasHelp="True" IsRoot="True"/>
       <Node9 Name="CompilerParsingOptionsFrame" Path="_Compiler_Options#Parsing" HasHelp="True" IsRoot="True"/>
       <Node10 Name="CompilerPathOptionsFrame" Path="_Compiler_Options#Paths" HasHelp="True" IsRoot="True"/>
+      <Node11 Name="ProjectApplicationOptionsFrame" Path="_Project_Options#Application" HasHelp="True" IsRoot="True"/>
+      <Node12 Name="ProjectFormsOptionsFrame" Path="_Project_Options#Forms" HasHelp="True" IsRoot="True"/>
+      <Node13 Name="ProjectFPDocOptionsFrame" Path="_Project_Options#FPDoc_editor" HasHelp="True" IsRoot="True"/>
+      <Node14 Name="ProjectSaveOptionsFrame" Path="_Project_Options#Session" HasHelp="True" IsRoot="True"/>
+      <Node15 Name="ProjectVersionInfoOptionsFrame" Path="_Project_Options#Version_Info" HasHelp="True" IsRoot="True"/>
+      <Node16 Name="ProjectI18NOptionsFrame" Path="_Project_Options#i18n" HasHelp="True" IsRoot="True"/>
+      <Node17 Name="ProjectMiscOptionsFrame" Path="_Project_Options#Miscellaneous" HasHelp="True" IsRoot="True"/>
     </Node51>
+    <Node52 Name="BuildModeSelectPanel" Path="_Project_Options#Build_modes" HasHelp="True" IsRoot="True"/>
   </Node55>
   <Node56 Name="UnusedUnitsDialog" Path="Find_Unused_Units" HasHelp="True"/>
   <Node57 Name="TUnusedUnitsDialog" Path="Find_Unused_Units" HasHelp="True"/>
