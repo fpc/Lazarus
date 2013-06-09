@@ -262,8 +262,8 @@ begin
         SrcCache.MainScanner:=CodeTool.Scanner;
         SrcCache.Replace(gtNone, gtNone, NamePos.StartPos, NamePos.EndPos, DiskNm);
         if not SrcCache.Apply then exit;
-        IDEMessagesWindow.AddMsg(Format('Fixed unit name from %s to %s.',
-                                        [UnitNm, DiskNm]), '', -1);
+        fSettings.AddLogLine(Format('Fixed unit name from %s to %s.',
+                                    [UnitNm, DiskNm]));
       end;
     end;
   end;
@@ -512,13 +512,14 @@ begin
           NewFunc:=NewFunc+' { ' +Comment+' }';
         // Old function call with params for IDE message output.
         s:=copy(fCTLink.CodeTool.Src, FuncInfo.StartPos, FuncInfo.EndPos-FuncInfo.StartPos);
-        s:=StringReplace(s, LineEnding, '', [rfReplaceAll]);
+        s:=StringReplace(s, #10, '', [rfReplaceAll]);
+        s:=StringReplace(s, #13, '', [rfReplaceAll]);
         // Now replace it.
         fCTLink.ResetMainScanner;
         if not fCTLink.SrcCache.Replace(gtNone, gtNone,
                             FuncInfo.StartPos, FuncInfo.EndPos, NewFunc) then exit;
-        IDEMessagesWindow.AddMsg('Replaced call '+s, '', -1);
-        IDEMessagesWindow.AddMsg('                  with '+NewFunc, '', -1);
+        fCTLink.fSettings.AddLogLine('Replaced call '+s);
+        fCTLink.fSettings.AddLogLine('                  with '+NewFunc);
         // Add the required unit name to uses section if needed.
         if Assigned(AddUnitEvent) and (FuncInfo.UnitName<>'') then
           AddUnitEvent(FuncInfo.UnitName);

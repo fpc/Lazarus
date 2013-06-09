@@ -5406,7 +5406,7 @@ resourcestring
   //IDE info dialog
   lisIDEInfoInformationAboutTheIDE = 'Information about the IDE';
 
-  //Delphi units and projects converter
+  //Delphi converter
   lisConvDelphiConvertDelphiUnit = 'Convert Delphi unit';
   lisConvDelphiConvertDelphiProject = 'Convert Delphi project';
   lisConvDelphiConvertDelphiPackage = 'Convert Delphi package';

@@ -54,15 +54,17 @@ type
   // Encapsulates some basic form file conversions.
   TDFMConverter = class
   private
+    fSettings: TConvertSettings;
     fOrigFormat: TLRSStreamOriginalFormat;
     fIDEMsgWindow: TIDEMessagesWindowInterface;
     function GetLFMFilename(const DfmFilename: string; KeepCase: boolean): string;
-
   public
-    constructor Create(aIDEMsgWindow: TIDEMessagesWindowInterface);
+    constructor Create;
     destructor Destroy; override;
     function ConvertDfmToLfm(const aFilename: string): TModalResult;
     function Convert(const DfmFilename: string): TModalResult;
+  public
+    property Settings: TConvertSettings read fSettings write fSettings;
   end;
 
   { TLfmFixer }
@@ -145,10 +147,9 @@ end;
 
 { TDFMConverter }
 
-constructor TDFMConverter.Create(aIDEMsgWindow: TIDEMessagesWindowInterface);
+constructor TDFMConverter.Create;
 begin
   inherited Create;
-  fIDEMsgWindow:=aIDEMsgWindow;
 end;
 
 destructor TDFMConverter.Destroy;
@@ -163,14 +164,13 @@ begin
   Result:=ConvertDfmToLfm(DfmFilename);
   if Result=mrOK then begin
     if fOrigFormat=sofBinary then
-      s:=Format('File %s is converted to text format.', [DfmFilename]);
-    if Assigned(fIDEMsgWindow) then
-      IDEMessagesWindow.AddMsg(s, '', -1)
-    else begin
-      if s='' then
-        s:=Format('File %s syntax is correct.', [DfmFilename]);
+      s:=Format('File %s is converted to text format.', [DfmFilename])
+    else
+      s:=Format('File %s syntax is correct.', [DfmFilename]);
+    if Assigned(fSettings) then
+      fSettings.AddLogLine(s)
+    else
       ShowMessage(s);
-    end;
   end;
 end;
 
@@ -309,8 +309,8 @@ begin
           if NewIdent<>'' then begin
             StartPos:=ObjNode.TypeNamePosition;
             EndPos:=StartPos+Length(OldIdent);
-            IDEMessagesWindow.AddMsg(Format(
-                      'Replaced type "%s" with "%s".',[OldIdent, NewIdent]),'',-1);
+            fSettings.AddLogLine(Format('Replaced type "%s" with "%s".',
+                                        [OldIdent, NewIdent]));
             AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
             Result:=mrRetry;
           end;
@@ -324,11 +324,11 @@ begin
             // Delete the whole property line if no replacement.
             if NewIdent='' then begin
               FindNiceNodeBounds(TheNode,StartPos,EndPos);
-              IDEMessagesWindow.AddMsg(Format('Removed property "%s".',[OldIdent]),'',-1);
+              fSettings.AddLogLine(Format('Removed property "%s".',[OldIdent]));
             end
             else
-              IDEMessagesWindow.AddMsg(Format(
-                      'Replaced property "%s" with "%s".',[OldIdent, NewIdent]),'',-1);
+              fSettings.AddLogLine(Format('Replaced property "%s" with "%s".',
+                                          [OldIdent, NewIdent]));
             AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
             Result:=mrRetry;
           end;
@@ -376,8 +376,8 @@ begin
       if NewNum<0 then
         NewNum:=0;
       fLFMBuffer.Replace(TopOffs.StartPos, Len, IntToStr(NewNum));
-      IDEMessagesWindow.AddMsg(Format('Changed %s coord of %s from "%d" to "%d" inside %s.',
-        [TopOffs.PropName, TopOffs.ChildType, OldNum, NewNum, TopOffs.ParentType]),'',-1);
+      fSettings.AddLogLine(Format('Changed %s coord of %s from "%d" to "%d" inside %s.',
+        [TopOffs.PropName, TopOffs.ChildType, OldNum, NewNum, TopOffs.ParentType]));
     end;
   end;
 end;
@@ -392,8 +392,8 @@ begin
   for i:=aNewProps.Count-1 downto 0 do begin
     Entry:=TAddPropEntry(aNewProps[i]);
     fLFMBuffer.Replace(Entry.StartPos, Entry.EndPos-Entry.StartPos,Entry.NewText);
-    IDEMessagesWindow.AddMsg(Format('Added property "%s" for %s.',
-                                   [Entry.NewText, Entry.ParentType]),'',-1);
+    fSettings.AddLogLine(Format('Added property "%s" for %s.',
+                                [Entry.NewText, Entry.ParentType]));
   end;
 end;
 

@@ -7961,7 +7961,7 @@ begin
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       For I := 0 to OpenDialog.Files.Count-1 do begin
         AFilename:=ExpandFileNameUTF8(OpenDialog.Files.Strings[i]);
-        DFMConverter:=TDFMConverter.Create(nil);
+        DFMConverter:=TDFMConverter.Create;
         try
           Result:=DFMConverter.Convert(AFilename);
         finally

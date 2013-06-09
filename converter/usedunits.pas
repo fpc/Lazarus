@@ -242,8 +242,8 @@ begin
           if NewUnitName<>OldUnitName then begin
             // Character case differs, fix it.
             fUnitsToFixCase[OldUnitName]:=NewUnitName;
-            IDEMessagesWindow.AddMsg(Format(lisConvDelphiFixedUnitCase,
-                                            [OldUnitName, NewUnitName]), '', -1);
+            Settings.AddLogLine(Format(lisConvDelphiFixedUnitCase,
+                                       [OldUnitName, NewUnitName]));
           end;
           // Report Windows specific units as missing if target is CrossPlatform.
           //  Needed if work-platform is Windows.
@@ -286,8 +286,8 @@ begin
     fUnitsToRename[AOldName]:=ANewName;
     fUnitsToRenameKeys.Add(AOldName);
     fUnitsToRenameVals.Add(ANewName);
-    IDEMessagesWindow.AddMsg(Format(lisConvDelphiReplacedUnitInUsesSection,
-                                    [AOldName, ANewName]), '', -1);
+    fCTLink.Settings.AddLogLine(Format(lisConvDelphiReplacedUnitInUsesSection,
+                                       [AOldName, ANewName]));
     // If the unit is not found, open the package containing it.
     UnitInFileName:='';
     if fCTLink.CodeTool.DirectoryCache.FindUnitSourceInCompletePath(
@@ -302,8 +302,8 @@ begin
       AOldName:=Copy(AOldName, 1, i-1);  // Strip the file name part.
     if fUnitsToRemove.IndexOf(AOldName)=-1 then
       fUnitsToRemove.Add(AOldName);
-    IDEMessagesWindow.AddMsg(Format(lisConvDelphiRemovedUnitInUsesSection,
-                                    [AOldName]), '', -1);
+    fCTLink.Settings.AddLogLine(Format(lisConvDelphiRemovedUnitInUsesSection,
+                                       [AOldName]));
   end;
 end;
 
@@ -724,7 +724,7 @@ begin
         or RenameValHasUnit(fImplUsedUnits) ) then
   begin
     fMainUsedUnits.fUnitsToAdd.Add(aUnitName);
-    IDEMessagesWindow.AddMsg('Added unit '+aUnitName+ ' to uses section', '', -1);
+    fCTLink.Settings.AddLogLine('Added unit '+aUnitName+ ' to uses section');
     // If the unit is not found, open the package containing it.
     UnitInFileName:='';
     if fCTLink.CodeTool.DirectoryCache.FindUnitSourceInCompletePath(

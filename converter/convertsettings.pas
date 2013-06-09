@@ -32,8 +32,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, IDEProcs,
   StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, ButtonPanel, ComCtrls,
-  LazarusIDEStrConsts, CodeToolsStructs, DividerBevel, AVL_Tree, BaseIDEIntf,
-  LazConfigStorage, ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
+  LazarusIDEStrConsts, CodeToolsStructs, DividerBevel, BaseIDEIntf, IDEMsgIntf,
+  AVL_Tree, LazConfigStorage, ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
 
 type
 
@@ -49,6 +49,7 @@ type
   private
     fEnabled: Boolean;
     fTitle: String;       // Used for form caption.
+    fLog: TStringList;
     // Unit, Project or Package top file and path.
     fMainFilename: String;
     fMainPath: String;
@@ -100,9 +101,11 @@ type
     // Create Lazarus file name and copy/rename from Delphi file with new suffix.
     function RenameDelphiToLazFile(const DelphiFilename, LazExt: string;
       out LazFilename: string; LowercaseFilename: Boolean): TModalResult; overload;
-
     function RenameFile(const SrcFilename, DestFilename: string): TModalResult;
     function BackupFile(const AFilename: string): TModalResult;
+    procedure ClearLog;
+    function AddLogLine(const ALine: string): integer;
+    function SaveLog: Boolean;
   public
     property MainFilename: String read fMainFilename write SetMainFilename;
     property MainPath: String read fMainPath;
@@ -384,6 +387,7 @@ var
 
 begin
   fTitle:=ATitle;
+  fLog:=TStringList.Create;
   fMainFilename:='';
   fMainPath:='';
   fEnabled:=True;
@@ -647,6 +651,7 @@ begin
   fReplaceTypes.Free;
   fReplaceUnits.Free;
   fOmitProjUnits.Free;
+  fLog.Free;
   inherited Destroy;
 end;
 
@@ -767,6 +772,27 @@ begin
   bp:=BackupPath;
   fn:=ExtractFileName(AFilename);
   Result:=CopyFileWithErrorDialogs(AFilename,bp+fn,[mbAbort]);
+end;
+
+procedure TConvertSettings.ClearLog;
+begin
+  IDEMessagesWindow.Clear;
+  fLog.Clear;
+end;
+
+function TConvertSettings.AddLogLine(const ALine: string): integer;
+begin
+  IDEMessagesWindow.AddMsg(ALine, '', -1);   // Show in message window
+  Result:=fLog.Add(ALine);                   // and store for log.
+end;
+
+function TConvertSettings.SaveLog: Boolean;
+var
+  s: String;
+begin
+  s:=fMainPath+'AutomaticConversion.log';
+  fLog.SaveToFile(s);
+  IDEMessagesWindow.AddMsg('This log was saved to '+s, '', -1);
 end;
 
 procedure TConvertSettings.SetMainFilename(const AValue: String);
