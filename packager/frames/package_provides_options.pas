@@ -1,4 +1,4 @@
-unit package_provides_options;
+unit Package_Provides_Options;
 
 {$mode objfpc}{$H+}
 

@@ -2596,12 +2596,13 @@ begin
         -WG        Specify graphic type application (EMX, OS/2, Windows)
         -Wi        Use internal resources (Darwin)
         -WI        Turn on/off the usage of import sections (Windows)
+        -WM<x>     Minimum Mac OS X deployment version: 10.4, 10.5.1, ... (Darwin)
         -WN        Do not generate relocation code, needed for debugging (Windows)
         -WR        Generate relocation code (Windows)
         -WX        Enable executable stack (Linux)
     -X     Executable options:
         -Xc        Pass --shared/-dynamic to the linker (BeOS, Darwin, FreeBSD, Linux)
-        -Xd        Do not use standard library search path (needed for cross compile)
+        -Xd        Do not search default library path (sometimes required for cross-compiling when not using -XR)
         -Xe        Use external linker
         -Xg        Create debuginfo in a separate file and add a debuglink section to executable
         -XD        Try to link units dynamically      (defines FPC_LINK_DYNAMIC)
@@ -2664,6 +2665,19 @@ begin
   }
 
 
+  CurTargetOS:='';
+  CurTargetCPU:='';
+  if not (ccloNoMacroParams in Flags) then
+  begin
+    Vars:=GetBuildMacroValues(Self,true);
+    if Vars<>nil then
+    begin
+      CurTargetOS:=GetFPCTargetOS(Vars.Values['TargetOS']);
+      CurTargetCPU:=GetFPCTargetCPU(Vars.Values['TargetCPU']);
+    end;
+  end;
+  CurSrcOS:=GetDefaultSrcOSForTargetOS(CurTargetOS);
+
   { --------------- Parsing Tab ------------------- }
 
   { Assembler reading style  -Ratt = AT&T    -Rintel = Intel  -Rdirect = direct }
@@ -2690,7 +2704,7 @@ begin
   { UnitStyle   '' = Static     'D' = Dynamic (not implemented)   'X' = smart linked }
   if SmartLinkUnit then
     switches := switches + ' -CX';
-  if RelocatableUnit then
+  if RelocatableUnit and (CurSrcOS='win') then
     switches := switches + ' -WR';
 
   { Checks }
@@ -2742,30 +2756,17 @@ begin
   if (VariablesInRegisters) then
     Switches := Switches + ' -OoREGVAR';
 
+  { Target OS }
+  if (CurTargetOS<>'')
+  and ((TargetOS<>'') or (CurTargetOS<>GetDefaultTargetOS)) then
+    switches := switches + ' -T' + CurTargetOS;
+  { Target CPU }
+  if (CurTargetCPU<>'')
+  and ((TargetCPU<>'') or (CurTargetCPU<>GetDefaultTargetCPU)) then
+    switches := switches + ' -P' + CurTargetCPU;
   { TargetProcessor }
   if TargetProcessor<>'' then
     Switches:=Switches+' -Op'+UpperCase(TargetProcessor);
-
-  CurTargetOS:='';
-  CurTargetCPU:='';
-  if not (ccloNoMacroParams in Flags) then
-  begin
-    Vars:=GetBuildMacroValues(Self,true);
-    if Vars<>nil then
-    begin
-      { Target OS }
-      CurTargetOS:=GetFPCTargetOS(Vars.Values['TargetOS']);
-      if (CurTargetOS<>'')
-      and ((TargetOS<>'') or (CurTargetOS<>GetDefaultTargetOS)) then
-        switches := switches + ' -T' + CurTargetOS;
-      { Target CPU }
-      CurTargetCPU:=GetFPCTargetCPU(Vars.Values['TargetCPU']);
-      if (CurTargetCPU<>'')
-      and ((TargetCPU<>'') or (CurTargetCPU<>GetDefaultTargetCPU)) then
-        switches := switches + ' -P' + CurTargetCPU;
-    end;
-  end;
-  CurSrcOS:=GetDefaultSrcOSForTargetOS(CurTargetOS);
 
   { --------------- Linking Tab ------------------- }
 
