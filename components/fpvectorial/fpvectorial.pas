@@ -230,6 +230,9 @@ type
   { T2DEllipticalArcSegment }
 
   T2DEllipticalArcSegment = class(T2DSegment)
+  private
+    E1, E2: T3DPoint;
+    function AlignedEllipseCenterEquationT1(AParam: Double): Double;
   public
     RX, RY, XRotation: Double;
     LeftmostEllipse, ClockwiseArcFlag: Boolean;
@@ -1030,10 +1033,24 @@ end;
 
 { T2DEllipticalArcSegment }
 
+function T2DEllipticalArcSegment.AlignedEllipseCenterEquationT1(
+  AParam: Double): Double;
+var
+  lLeftSide, lRightSide, lArg: Double;
+begin
+  // E1.Y - RY*sin(t1) = E2.Y - RY*sin(arccos((- E1.X + RX*cos(t1) + E2.X)/RX))
+  lLeftSide := E1.Y - RY*sin(AParam);
+  lArg := (- E1.X + RX*cos(AParam) + E2.X)/RX;
+  lRightSide := E2.Y - RY*sin(arccos(lArg));
+  Result := lLeftSide - lRightSide;
+  if Result < 0 then Result := -1* Result;
+end;
+
 procedure T2DEllipticalArcSegment.CalculateCenter;
 var
-  XStart, YStart, t: Double;
+  XStart, YStart, lT1, lT2: Double;
   CX1, CY1, CX2, CY2, LeftMostX, LeftMostY, RightMostX, RightMostY: Double;
+  RotatedCenter: T3DPoint;
 begin
   // Rotated Ellipse equation:
   // (xcosθ+ysinθ)^2 / RX^2 + (ycosθ−xsinθ)^2 / RY^2 = 1
@@ -1096,13 +1113,52 @@ begin
     X - A*Cos(t2) + C*Sin(t2) = XStart - A*sqrt(1-Sin(t1)^2) + C*Sin(t1)
 
   }
+
+  //  Solve by rotating everything to align the ellipse to the axises and then rotating back again
+  E1 := Rotate3DPointInXY(Make3DPoint(XStart,YStart,0), Make3DPoint(0,0,0),-1*XRotation);
+  E2 := Rotate3DPointInXY(Make3DPoint(X,Y,0), Make3DPoint(0,0,0),-1*XRotation);
+
+  // parametrized:
+  // CX = E1.X - RX*cos(t1)
+  // CY = E1.Y - RY*sin(t1)
+  // CX = E2.X - RX*cos(t2)
+  // CY = E2.Y - RY*sin(t2)
+  //
+  // E1.X - RX*cos(t1) = E2.X - RX*cos(t2)
+  // E1.Y - RY*sin(t1) = E2.Y - RY*sin(t2)
+  //
+  // (- E1.X + RX*cos(t1) + E2.X)/RX = cos(t2)
+  // arccos((- E1.X + RX*cos(t1) + E2.X)/RX) = t2
+  //
+  // E1.Y - RY*sin(t1) = E2.Y - RY*sin(arccos((- E1.X + RX*cos(t1) + E2.X)/RX))
+
+  // SolveNumerically
+
+  lT1 := SolveNumericallyAngle(AlignedEllipseCenterEquationT1, 0.0001, 20);
+
+  // CX = E1.X - RX*cos(t1)
+  // CY = E1.Y - RY*sin(t1)
+  CX1 := E1.X - RX*cos(lt1);
+  CY1 := E1.Y - RY*sin(lt1);
+  CX2 := E1.X - RX*cos(lt1+Pi);
+  CY2 := E1.Y - RY*sin(lt1+Pi);
+
+  // Rotate back!
+  RotatedCenter := Rotate3DPointInXY(Make3DPoint(CX1,CY1,0), Make3DPoint(0,0,0),XRotation);
+  CX1 := RotatedCenter.X;
+  CY1 := RotatedCenter.Y;
+  RotatedCenter := Rotate3DPointInXY(Make3DPoint(CX2,CY2,0), Make3DPoint(0,0,0),XRotation);
+  CX2 := RotatedCenter.X;
+  CY2 := RotatedCenter.Y;
+
   // errado!!!! Apagar quando achar o correto =(
+  {
   CX := X - RX*Cos(0)*Cos(XRotation) + RY*Sin(0)*Sin(XRotation);
   CY := Y - RY*Sin(0)*Cos(XRotation) - RX*Cos(0)*Sin(XRotation);
+  }
 
 
   // ativar quando tiver codigo pra calcular CX1, etc
-  {
   if CX1 < CX2 then
   begin
     LeftMostX := CX1;
@@ -1127,7 +1183,7 @@ begin
   begin
     CX := RightMostX;
     CY := RightMostY;
-  end;}
+  end;
 end;
 
 procedure T2DEllipticalArcSegment.CalculateEllipseBoundingBox(ADest: TFPCustomCanvas;

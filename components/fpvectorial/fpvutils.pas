@@ -31,6 +31,8 @@ type
   T10Strings = array[0..9] of shortstring;
   TPointsArray = array of TPoint;
 
+  TNumericalEquation = function (AParameter: Double): Double of object; // return the error
+
 // Color Conversion routines
 function FPColorToRGBHexString(AColor: TFPColor): string;
 function RGBToFPColor(AR, AG, AB: byte): TFPColor; inline;
@@ -49,6 +51,9 @@ procedure AddBezierToPoints(P1, P2, P3, P4: T3DPoint; var Points: TPointsArray);
 procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);
 function Rotate2DPoint(P, RotCenter: TPoint; alpha:double): TPoint;
 function Rotate3DPointInXY(P, RotCenter: T3DPoint; alpha:double): T3DPoint;
+// Numerical Calculus
+function SolveNumericallyAngle(ANumericalEquation: TNumericalEquation;
+  ADesiredMaxError: Double; ADesiredMaxIterations: Integer = 10): Double;
 // LCL-related routines
 {$ifdef USE_LCL_CANVAS}
 function ConvertPathToRegion(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double): HRGN;
@@ -309,6 +314,68 @@ begin
 end;
 
 {$ifdef USE_LCL_CANVAS}
+
+function SolveNumericallyAngle(ANumericalEquation: TNumericalEquation;
+  ADesiredMaxError: Double; ADesiredMaxIterations: Integer = 10): Double;
+var
+  lError, lErr1, lErr2, lErr3, lErr4: Double;
+  lParam1, lParam2: Double;
+  lIterations: Integer;
+  lCount: Integer;
+begin
+  lErr1 := ANumericalEquation(0);
+  lErr2 := ANumericalEquation(Pi/2);
+  lErr3 := ANumericalEquation(Pi);
+  lErr4 := ANumericalEquation(3*Pi/2);
+
+  // Choose the place to start
+  if (lErr1 < lErr2) and (lErr1 < lErr3) and (lErr1 < lErr4) then
+  begin
+    lParam1 := -Pi/2;
+    lParam2 := Pi/2;
+  end
+  else if (lErr2 < lErr3) and (lErr2 < lErr4) then
+  begin
+    lParam1 := 0;
+    lParam2 := Pi;
+  end
+  else if (lErr2 < lErr3) and (lErr2 < lErr4) then
+  begin
+    lParam1 := Pi/2;
+    lParam2 := 3*Pi/2;
+  end
+  else
+  begin
+    lParam1 := Pi;
+    lParam2 := 2*Pi;
+  end;
+
+  // Iterate as many times necessary to get the best answer!
+  lCount := 0;
+  lError := $FFFFFFFF;
+  while ((ADesiredMaxError < 0 ) or (lError > ADesiredMaxError))
+    and (lParam1 <> lParam2)
+    and ((ADesiredMaxIterations < 0) or (lCount < ADesiredMaxIterations)) do
+  begin
+    lErr1 := ANumericalEquation(lParam1);
+    lErr2 := ANumericalEquation(lParam2);
+
+    if lErr1 < lErr2 then
+      lParam2 := (lParam1+lParam2)/2
+    else
+      lParam1 := (lParam1+lParam2)/2;
+
+    lError := Min(lErr1, lErr2);
+    Inc(lCount);
+  end;
+
+  // Choose the best of the last two
+  if lErr1 < lErr2 then
+    Result := lParam1
+  else
+    Result := lParam2
+end;
+
 function ConvertPathToRegion(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double): HRGN;
 var
   WindingMode: Integer;
