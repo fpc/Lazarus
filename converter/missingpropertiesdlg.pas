@@ -504,6 +504,8 @@ begin
 end;
 
 function TLFMFixer.ConvertAndRepair: TModalResult;
+const
+  MaxLoopCount = 50;
 var
   ConvTool: TConvDelphiCodeTool;
   FormFileTool: TFormFileConverter;
@@ -532,7 +534,7 @@ begin
       else                     // Rename/remove properties and types interactively.
         Result:=ShowConvertLFMWizard;  // Can return mrRetry.
       Inc(LoopCount);                  // Increment counter in inner loop
-    until Result in [mrOK, mrCancel];
+    until (Result in [mrOK, mrCancel]) or (LoopCount>MaxLoopCount);
 
     // Check for missing object types and add units as needed.
     if not fLFMTree.ParseIfNeeded then
@@ -544,7 +546,7 @@ begin
       Result:=FindAndFixMissingComponentClasses; // Can return mrRetry.
     end;
     Inc(LoopCount);                    // Increment also in outer loop
-  until (Result in [mrOK, mrAbort]) or (LoopCount=30);
+  until (Result in [mrOK, mrAbort]) or (LoopCount>MaxLoopCount);
 
   // Fix top offsets of some components in visual containers
   if (Result=mrOK) and (fSettings.CoordOffsMode=rsEnabled) then begin
