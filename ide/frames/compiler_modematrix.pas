@@ -25,7 +25,6 @@
 
  ToDo:
    - add checkbox Show build modes
-   - move conditionals to Other
    - move IDE macros only for package usage
    - undo: combine changes while editing a cell
 }

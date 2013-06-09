@@ -353,7 +353,9 @@ var
   XY: TPoint;
   Line: String;
 begin
-  //debugln(['TCompOptBuildMacrosFrame.StartCompletion ']);
+  {$IFDEF VerboseCOCondSynCompletion}
+  debugln(['TCompOptBuildMacrosFrame.StartCompletion START']);
+  {$ENDIF}
   UpdateCompletionValues;
   fSynCompletion.ItemList.Assign(CompletionValues);
 
