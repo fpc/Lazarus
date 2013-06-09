@@ -90,7 +90,6 @@ type
     CompileButton: TBitBtn;
     CompileAdvancedButton: TBitBtn;
     InhTreeView: TTreeView;
-    InhNoteLabel: TLabel;
     LCLWidgetTypeLabel: TLabel;
     LCLWidgetTypeComboBox: TComboBox;
     OptionsLabel: TLabel;
@@ -1061,7 +1060,6 @@ begin
   fImageIndexPackage := IDEImages.LoadImage(16, 'item_package');
   fImageIndexRequired := IDEImages.LoadImage(16, 'pkg_required');
   fImageIndexInherited := IDEImages.LoadImage(16, 'pkg_inherited');
-  InhNoteLabel.Caption := lisAdditionalCompilerOptionsInheritedFromPackages;
   InhTreeView.Images := IDEImages.Images_16;
 
   UpdateInheritedTree;

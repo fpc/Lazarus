@@ -28,6 +28,7 @@
    - move inherited to show options
    - move IDE macros only for package usage
    - move conditionals to Other
+   - set default conditionals to comments with examples
    - undo: combine changes while editing a cell
 }
 unit Compiler_ModeMatrix;

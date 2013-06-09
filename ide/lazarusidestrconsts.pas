@@ -2111,8 +2111,6 @@ resourcestring
   dlgCOCreateMakefile = 'Create Makefile';
   lisCOExecuteAfter = 'Execute after';
   lisCOExecuteBefore = 'Execute before';
-  lisAdditionalCompilerOptionsInheritedFromPackages = 'Additional compiler '
-    +'options inherited from packages';
   lisCOCommand = 'Command:';
   lisCOScanForMessages = 'Scan for messages:';
   lisCOScanForFPCMessages = 'Scan for FPC messages';
@@ -2246,9 +2244,6 @@ resourcestring
   lisCCOHintMsg = 'HINT: ';
   lisCCOErrorMsg = 'ERROR: ';
   
-  // show compiler options dialog
-  dlgCommandLineParameters = 'Command line parameters';
-
   // custom messages
   dlgBrowseMsgFilter = 'Free Pascal Compiler messages file (*.msg)|*.msg|Any Files (*.*)|*.*';
   dlgCompilerMessage = 'Compiler messages';
@@ -4721,6 +4716,9 @@ resourcestring
   dlgDebugOptionsPathEditorDlgCaption = 'Path Editor';
   lisHFMHelpForFreePascalCompilerMessage = 'Help for Free Pascal Compiler message';
   lisRelativePaths = 'Relative paths';
+  lisInheritedParameters = 'Inherited parameters';
+  lisShowRelativePaths = 'Show relative paths';
+  lisCommandLineParameters = 'Command line parameters';
   rsFormDataFileDfm = 'Form data file (*.dfm)|*.dfm';
   liswlWatchList = 'Watch List';
   liswlExpression = 'Expression';

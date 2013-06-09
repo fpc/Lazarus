@@ -96,7 +96,6 @@ begin
   ImageIndexPackage := IDEImages.LoadImage(16, 'item_package');
   ImageIndexRequired := IDEImages.LoadImage(16, 'pkg_required');
   ImageIndexInherited := IDEImages.LoadImage(16, 'pkg_inherited');
-  InhNoteLabel.Caption := lisAdditionalCompilerOptionsInheritedFromPackages;
   InhTreeView.Images := IDEImages.Images_16;
   InhItemMemo.Text := lisSelectANode;
 end;
