@@ -109,7 +109,6 @@ type
     property AutoSize;
     property BorderSpacing;
     property Constraints;
-    property Date;
     property DateTime;
     property DisplaySettings;
     property Hint;
