@@ -1030,10 +1030,6 @@ msgctxt "lazarusidestrconsts.dlgcolors"
 msgid "Colors"
 msgstr "色"
 
-#: lazarusidestrconsts.dlgcommandlineparameters
-msgid "Command line parameters"
-msgstr "コマンドライン引数"
-
 #: lazarusidestrconsts.dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "コマンドライン引数（アプリケーション名なしで）"
@@ -4269,10 +4265,6 @@ msgstr ""
 msgid "Add Files in Directory"
 msgstr "ディレクトリにファイルを追加"
 
-#: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
-msgid "Additional compiler options inherited from packages"
-msgstr "パッケージから継承されたその他のコンパイラオプション"
-
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
 msgstr "キーワード\"do\"を追加"
@@ -4854,6 +4846,10 @@ msgstr "パッケージ付きのIDEを構築"
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
 msgstr "Lazarusの構築の失敗"
+
+#: lazarusidestrconsts.lisbuildmode
+msgid "Build Mode"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
@@ -6464,6 +6460,11 @@ msgstr "無効の後のコマンド"
 msgid "Command after publishing module"
 msgstr "モジュールの発行後のコマンド"
 
+#: lazarusidestrconsts.liscommandlineparameters
+msgctxt "lazarusidestrconsts.liscommandlineparameters"
+msgid "Command line parameters"
+msgstr "コマンドライン引数"
+
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
 msgstr "プログラムのコマンドライン引数"
@@ -6686,6 +6687,10 @@ msgstr "貢献者"
 #: lazarusidestrconsts.liscontrolneedsparent
 msgid "Control needs parent"
 msgstr "コントロールには親コントロールが必要です"
+
+#: lazarusidestrconsts.lisconvaddcommentafterreplacement
+msgid "Add comment after replacement"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvcoordhint
 msgid "An offset is added to Top coordinate of controls inside visual containers"
@@ -7986,10 +7991,6 @@ msgstr "ドキュメントエディタ"
 msgid "%s does not exists: %s"
 msgstr "%s は存在しません: %s"
 
-#: lazarusidestrconsts.lisdoesnothavematrixoption
-msgid "Does not have matrix option "
-msgstr ""
-
 #: lazarusidestrconsts.lisdonotchange
 msgid "Do not change"
 msgstr "変更しない"
@@ -9262,10 +9263,6 @@ msgstr "最大に成長"
 msgid "Has Help"
 msgstr "Helpあり"
 
-#: lazarusidestrconsts.lishasmatrixoption
-msgid "Has matrix option "
-msgstr ""
-
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "クラスのためのヘッダコメント"
@@ -9659,6 +9656,10 @@ msgstr "関連するものの前に"
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
 msgstr "継承された項目"
+
+#: lazarusidestrconsts.lisinheritedparameters
+msgid "Inherited parameters"
+msgstr ""
 
 #: lazarusidestrconsts.lisinheritedprojectcomponent
 msgid "Inherited project component"
@@ -12376,6 +12377,10 @@ msgstr ""
 msgid "Additions and Overrides"
 msgstr ""
 
+#: lazarusidestrconsts.lismmaddscustomoptions
+msgid "Adds custom options:"
+msgstr ""
+
 #: lazarusidestrconsts.lismmappendarbitraryfpcoptionsego1ghtldflag
 msgid "Append arbitrary fpc options, e.g. -O1 -ghtl -dFlag"
 msgstr ""
@@ -12408,6 +12413,18 @@ msgstr ""
 msgid "Delete the selected target or option"
 msgstr ""
 
+#: lazarusidestrconsts.lismmdoesnotaddcustomoptions
+msgid "Does not add custom options:"
+msgstr ""
+
+#: lazarusidestrconsts.lismmdoesnothaveidemacro
+msgid "Does not have IDE Macro %s:=%s"
+msgstr ""
+
+#: lazarusidestrconsts.lismmdoesnotoverrideoutdirfu
+msgid "Does not override OutDir (-FU)"
+msgstr ""
+
 #: lazarusidestrconsts.lismmexcludeallpackagesmatching
 msgid "Exclude all packages matching name \"%s\""
 msgstr ""
@@ -12420,8 +12437,16 @@ msgstr ""
 msgid "expected macro name, but found \"%s\""
 msgstr ""
 
+#: lazarusidestrconsts.lismmfromto
+msgid "From %s to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismmidemacro
 msgid "IDE Macro"
+msgstr ""
+
+#: lazarusidestrconsts.lismmidemacro2
+msgid "IDE Macro %s:=%s"
 msgstr ""
 
 #: lazarusidestrconsts.lismminvalidcharacterat
@@ -12446,6 +12471,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismmnewtarget
 msgid "New Target"
+msgstr ""
+
+#: lazarusidestrconsts.lismmoverrideoutdirfu
+msgid "Override OutDir (-FU): %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismmoverrideoutputdirectory
@@ -12490,6 +12519,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismmvalues
 msgid "Value \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lismmwas
+msgid "(was \"%s\")"
 msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
@@ -14471,6 +14504,10 @@ msgstr "ユニット \"%s\"はパッケージ(lpk)から削除されました"
 msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
 msgstr ""
 
+#: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
+msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
 msgstr "このファイルは読み込まれたどのパッケージにもありません。"
@@ -14845,6 +14882,10 @@ msgstr "プロジェクトパス："
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
 msgstr "プロジェクトの主なファイルがなければならないディレクトリ"
+
+#: lazarusidestrconsts.lisprojectsession
+msgid "Project Session"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojectsessionchanged
 msgid "Project session changed"
@@ -15755,6 +15796,10 @@ msgstr "パッケージを表示"
 #: lazarusidestrconsts.lisshowpositionofsourceeditor
 msgid "Show position of source editor"
 msgstr "ソースエディタの位置を表示"
+
+#: lazarusidestrconsts.lisshowrelativepaths
+msgid "Show relative paths"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
 msgid "Show setup dialog for most important settings"

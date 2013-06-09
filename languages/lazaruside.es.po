@@ -1030,10 +1030,6 @@ msgctxt "lazarusidestrconsts.dlgcolors"
 msgid "Colors"
 msgstr "Colores"
 
-#: lazarusidestrconsts.dlgcommandlineparameters
-msgid "Command line parameters"
-msgstr "Parámetros de la línea de comando"
-
 #: lazarusidestrconsts.dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "Parámetros de la línea de comandos (sin el nombre de la aplicación)"
@@ -4250,10 +4246,6 @@ msgstr ""
 msgid "Add Files in Directory"
 msgstr "Añadir Archivos en Directorio"
 
-#: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
-msgid "Additional compiler options inherited from packages"
-msgstr "Opciones adicionales del compilador heredadas de los paquetes"
-
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
 msgstr "Añadir palabra clave \"do\""
@@ -4832,6 +4824,10 @@ msgstr "Construir IDE con paquetes"
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
 msgstr "Ha fallado la construcción de Lazarus"
+
+#: lazarusidestrconsts.lisbuildmode
+msgid "Build Mode"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
@@ -6442,6 +6438,11 @@ msgstr "Comando después de inválido"
 msgid "Command after publishing module"
 msgstr "Comando después de módulo de publicación"
 
+#: lazarusidestrconsts.liscommandlineparameters
+msgctxt "lazarusidestrconsts.liscommandlineparameters"
+msgid "Command line parameters"
+msgstr "Parámetros de la línea de comando"
+
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
 msgstr "Parámetros de la línea de comandos del programa"
@@ -6662,6 +6663,10 @@ msgstr "Colaboradores"
 #: lazarusidestrconsts.liscontrolneedsparent
 msgid "Control needs parent"
 msgstr "El control necesita un padre"
+
+#: lazarusidestrconsts.lisconvaddcommentafterreplacement
+msgid "Add comment after replacement"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvcoordhint
 msgid "An offset is added to Top coordinate of controls inside visual containers"
@@ -7962,10 +7967,6 @@ msgstr "Editor de Documentación"
 msgid "%s does not exists: %s"
 msgstr "%s no existe: %s"
 
-#: lazarusidestrconsts.lisdoesnothavematrixoption
-msgid "Does not have matrix option "
-msgstr ""
-
 #: lazarusidestrconsts.lisdonotchange
 msgid "Do not change"
 msgstr "No cambiar"
@@ -9236,10 +9237,6 @@ msgstr "Crecer hacia el más largo"
 msgid "Has Help"
 msgstr "Tiene Ayuda"
 
-#: lazarusidestrconsts.lishasmatrixoption
-msgid "Has matrix option "
-msgstr ""
-
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "Comentario de cabecera para la clase"
@@ -9635,6 +9632,10 @@ msgstr "Delante de los relacionados"
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
 msgstr "Elemento heredado"
+
+#: lazarusidestrconsts.lisinheritedparameters
+msgid "Inherited parameters"
+msgstr ""
 
 #: lazarusidestrconsts.lisinheritedprojectcomponent
 msgid "Inherited project component"
@@ -12330,6 +12331,10 @@ msgstr "<description>%sCopyright (c) <year> <copyright holders>%sPermiso se conc
 msgid "Additions and Overrides"
 msgstr ""
 
+#: lazarusidestrconsts.lismmaddscustomoptions
+msgid "Adds custom options:"
+msgstr ""
+
 #: lazarusidestrconsts.lismmappendarbitraryfpcoptionsego1ghtldflag
 msgid "Append arbitrary fpc options, e.g. -O1 -ghtl -dFlag"
 msgstr ""
@@ -12362,6 +12367,18 @@ msgstr ""
 msgid "Delete the selected target or option"
 msgstr ""
 
+#: lazarusidestrconsts.lismmdoesnotaddcustomoptions
+msgid "Does not add custom options:"
+msgstr ""
+
+#: lazarusidestrconsts.lismmdoesnothaveidemacro
+msgid "Does not have IDE Macro %s:=%s"
+msgstr ""
+
+#: lazarusidestrconsts.lismmdoesnotoverrideoutdirfu
+msgid "Does not override OutDir (-FU)"
+msgstr ""
+
 #: lazarusidestrconsts.lismmexcludeallpackagesmatching
 msgid "Exclude all packages matching name \"%s\""
 msgstr ""
@@ -12374,8 +12391,16 @@ msgstr ""
 msgid "expected macro name, but found \"%s\""
 msgstr ""
 
+#: lazarusidestrconsts.lismmfromto
+msgid "From %s to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismmidemacro
 msgid "IDE Macro"
+msgstr ""
+
+#: lazarusidestrconsts.lismmidemacro2
+msgid "IDE Macro %s:=%s"
 msgstr ""
 
 #: lazarusidestrconsts.lismminvalidcharacterat
@@ -12400,6 +12425,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismmnewtarget
 msgid "New Target"
+msgstr ""
+
+#: lazarusidestrconsts.lismmoverrideoutdirfu
+msgid "Override OutDir (-FU): %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismmoverrideoutputdirectory
@@ -12444,6 +12473,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismmvalues
 msgid "Value \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lismmwas
+msgid "(was \"%s\")"
 msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
@@ -14423,6 +14456,10 @@ msgstr "Unidad \"%s\" ha sido removida del paquete (lpk)"
 msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
 msgstr "No se necesitan las siguientes dependencias, debido a la transitividad automática entre dependencias de paquetes."
 
+#: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
+msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
 msgstr "Este archivo no está en ningún paquete cargado."
@@ -14794,6 +14831,10 @@ msgstr "Ruta del Proyecto:"
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
 msgstr "Directorio donde el archivo principal del proyecto debe estar"
+
+#: lazarusidestrconsts.lisprojectsession
+msgid "Project Session"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojectsessionchanged
 msgid "Project session changed"
@@ -15701,6 +15742,10 @@ msgstr "Mostrar paquetes"
 #: lazarusidestrconsts.lisshowpositionofsourceeditor
 msgid "Show position of source editor"
 msgstr "Mostrar posicion de editor fuentes"
+
+#: lazarusidestrconsts.lisshowrelativepaths
+msgid "Show relative paths"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
 msgid "Show setup dialog for most important settings"

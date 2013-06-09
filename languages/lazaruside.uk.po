@@ -1006,10 +1006,6 @@ msgctxt "lazarusidestrconsts.dlgcolors"
 msgid "Colors"
 msgstr "Кольори"
 
-#: lazarusidestrconsts.dlgcommandlineparameters
-msgid "Command line parameters"
-msgstr "Параметри командного рядка"
-
 #: lazarusidestrconsts.dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "Параметри командного рядка (без назви програми)"
@@ -4121,10 +4117,6 @@ msgstr ""
 msgid "Add Files in Directory"
 msgstr "Додати Файли в Теку"
 
-#: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
-msgid "Additional compiler options inherited from packages"
-msgstr "Додаткові параметри компілятора, наслідувані від пакунків"
-
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
 msgstr ""
@@ -4691,6 +4683,10 @@ msgstr "будувати IDE з пакунками"
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
 msgstr "Побудова Lazarus не вдалась"
+
+#: lazarusidestrconsts.lisbuildmode
+msgid "Build Mode"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
@@ -6274,6 +6270,11 @@ msgstr "Некоректна команда \"після\" "
 msgid "Command after publishing module"
 msgstr "Команда після установки модуля"
 
+#: lazarusidestrconsts.liscommandlineparameters
+msgctxt "lazarusidestrconsts.liscommandlineparameters"
+msgid "Command line parameters"
+msgstr "Параметри командного рядка"
+
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
 msgstr "Параметри командного рядка програми"
@@ -6489,6 +6490,10 @@ msgstr "Учасники"
 #: lazarusidestrconsts.liscontrolneedsparent
 msgid "Control needs parent"
 msgstr "Елемент управління вимагає \"предка\""
+
+#: lazarusidestrconsts.lisconvaddcommentafterreplacement
+msgid "Add comment after replacement"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvcoordhint
 msgid "An offset is added to Top coordinate of controls inside visual containers"
@@ -7769,10 +7774,6 @@ msgstr "Редактор документації"
 msgid "%s does not exists: %s"
 msgstr "%s не існує: %s"
 
-#: lazarusidestrconsts.lisdoesnothavematrixoption
-msgid "Does not have matrix option "
-msgstr ""
-
 #: lazarusidestrconsts.lisdonotchange
 msgid "Do not change"
 msgstr "Не змінювати"
@@ -9031,10 +9032,6 @@ msgstr "Зростання до Найбільшого"
 msgid "Has Help"
 msgstr "Має Довідку"
 
-#: lazarusidestrconsts.lishasmatrixoption
-msgid "Has matrix option "
-msgstr ""
-
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "Коментар заголовка для класу"
@@ -9417,6 +9414,10 @@ msgstr "Перед пов'язаними"
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
 msgstr "Успадкований Елемент"
+
+#: lazarusidestrconsts.lisinheritedparameters
+msgid "Inherited parameters"
+msgstr ""
 
 #: lazarusidestrconsts.lisinheritedprojectcomponent
 msgid "Inherited project component"
@@ -11952,6 +11953,10 @@ msgstr ""
 msgid "Additions and Overrides"
 msgstr ""
 
+#: lazarusidestrconsts.lismmaddscustomoptions
+msgid "Adds custom options:"
+msgstr ""
+
 #: lazarusidestrconsts.lismmappendarbitraryfpcoptionsego1ghtldflag
 msgid "Append arbitrary fpc options, e.g. -O1 -ghtl -dFlag"
 msgstr ""
@@ -11984,6 +11989,18 @@ msgstr ""
 msgid "Delete the selected target or option"
 msgstr ""
 
+#: lazarusidestrconsts.lismmdoesnotaddcustomoptions
+msgid "Does not add custom options:"
+msgstr ""
+
+#: lazarusidestrconsts.lismmdoesnothaveidemacro
+msgid "Does not have IDE Macro %s:=%s"
+msgstr ""
+
+#: lazarusidestrconsts.lismmdoesnotoverrideoutdirfu
+msgid "Does not override OutDir (-FU)"
+msgstr ""
+
 #: lazarusidestrconsts.lismmexcludeallpackagesmatching
 msgid "Exclude all packages matching name \"%s\""
 msgstr ""
@@ -11996,8 +12013,16 @@ msgstr ""
 msgid "expected macro name, but found \"%s\""
 msgstr ""
 
+#: lazarusidestrconsts.lismmfromto
+msgid "From %s to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismmidemacro
 msgid "IDE Macro"
+msgstr ""
+
+#: lazarusidestrconsts.lismmidemacro2
+msgid "IDE Macro %s:=%s"
 msgstr ""
 
 #: lazarusidestrconsts.lismminvalidcharacterat
@@ -12022,6 +12047,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismmnewtarget
 msgid "New Target"
+msgstr ""
+
+#: lazarusidestrconsts.lismmoverrideoutdirfu
+msgid "Override OutDir (-FU): %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismmoverrideoutputdirectory
@@ -12066,6 +12095,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismmvalues
 msgid "Value \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lismmwas
+msgid "(was \"%s\")"
 msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
@@ -14006,6 +14039,10 @@ msgstr "Модуль \"%s\" був видалений з пакунку (lpk)"
 msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
 msgstr ""
 
+#: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
+msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
 msgstr "Цього файлу немає у всіх завантажених пакунках."
@@ -14372,6 +14409,10 @@ msgstr "Шлях Проекту:"
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
 msgstr "Тека з основним файлом проекту повинна бути"
+
+#: lazarusidestrconsts.lisprojectsession
+msgid "Project Session"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojectsessionchanged
 msgid "Project session changed"
@@ -15259,6 +15300,10 @@ msgstr "Показувати пакунки"
 #: lazarusidestrconsts.lisshowpositionofsourceeditor
 msgid "Show position of source editor"
 msgstr "Показати позицію редактора коду"
+
+#: lazarusidestrconsts.lisshowrelativepaths
+msgid "Show relative paths"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
 msgid "Show setup dialog for most important settings"

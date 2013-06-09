@@ -1024,10 +1024,6 @@ msgctxt "lazarusidestrconsts.dlgcolors"
 msgid "Colors"
 msgstr "Farby"
 
-#: lazarusidestrconsts.dlgcommandlineparameters
-msgid "Command line parameters"
-msgstr "Parametre príkazového riadka"
-
 #: lazarusidestrconsts.dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "Parametre príkazového riadka (bez mena aplikácie)"
@@ -4216,10 +4212,6 @@ msgstr ""
 msgid "Add Files in Directory"
 msgstr ""
 
-#: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
-msgid "Additional compiler options inherited from packages"
-msgstr "Ďalšie voľby prekladača, zdedené z balíčkov"
-
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
 msgstr ""
@@ -4800,6 +4792,10 @@ msgstr "vybudovať IDE aj s balíčkami"
 
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
+msgstr ""
+
+#: lazarusidestrconsts.lisbuildmode
+msgid "Build Mode"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
@@ -6403,6 +6399,11 @@ msgstr "Príkaz za neplatným"
 msgid "Command after publishing module"
 msgstr "Príkaz po publikovaní modulu"
 
+#: lazarusidestrconsts.liscommandlineparameters
+msgctxt "lazarusidestrconsts.liscommandlineparameters"
+msgid "Command line parameters"
+msgstr "Parametre príkazového riadka"
+
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
 msgstr "Parametre príkazového riadka programu"
@@ -6623,6 +6624,10 @@ msgstr "Spolupracovníci"
 #: lazarusidestrconsts.liscontrolneedsparent
 msgid "Control needs parent"
 msgstr "Ovládací prvok musí mať rodiča"
+
+#: lazarusidestrconsts.lisconvaddcommentafterreplacement
+msgid "Add comment after replacement"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvcoordhint
 msgid "An offset is added to Top coordinate of controls inside visual containers"
@@ -7896,10 +7901,6 @@ msgstr "Editor dokumentácie"
 msgid "%s does not exists: %s"
 msgstr "%s neexistuje: %s"
 
-#: lazarusidestrconsts.lisdoesnothavematrixoption
-msgid "Does not have matrix option "
-msgstr ""
-
 #: lazarusidestrconsts.lisdonotchange
 msgid "Do not change"
 msgstr ""
@@ -9168,10 +9169,6 @@ msgstr "Rozšíriť na najväčšie"
 msgid "Has Help"
 msgstr "Má pomoc"
 
-#: lazarusidestrconsts.lishasmatrixoption
-msgid "Has matrix option "
-msgstr ""
-
 #: lazarusidestrconsts.lisheadercommentforclass
 msgid "Header comment for class"
 msgstr "Hlavičkový komentár pre triedu"
@@ -9565,6 +9562,10 @@ msgstr ""
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
 msgstr "Zdedená položka"
+
+#: lazarusidestrconsts.lisinheritedparameters
+msgid "Inherited parameters"
+msgstr ""
 
 #: lazarusidestrconsts.lisinheritedprojectcomponent
 msgid "Inherited project component"
@@ -12236,6 +12237,10 @@ msgstr ""
 msgid "Additions and Overrides"
 msgstr ""
 
+#: lazarusidestrconsts.lismmaddscustomoptions
+msgid "Adds custom options:"
+msgstr ""
+
 #: lazarusidestrconsts.lismmappendarbitraryfpcoptionsego1ghtldflag
 msgid "Append arbitrary fpc options, e.g. -O1 -ghtl -dFlag"
 msgstr ""
@@ -12268,6 +12273,18 @@ msgstr ""
 msgid "Delete the selected target or option"
 msgstr ""
 
+#: lazarusidestrconsts.lismmdoesnotaddcustomoptions
+msgid "Does not add custom options:"
+msgstr ""
+
+#: lazarusidestrconsts.lismmdoesnothaveidemacro
+msgid "Does not have IDE Macro %s:=%s"
+msgstr ""
+
+#: lazarusidestrconsts.lismmdoesnotoverrideoutdirfu
+msgid "Does not override OutDir (-FU)"
+msgstr ""
+
 #: lazarusidestrconsts.lismmexcludeallpackagesmatching
 msgid "Exclude all packages matching name \"%s\""
 msgstr ""
@@ -12280,8 +12297,16 @@ msgstr ""
 msgid "expected macro name, but found \"%s\""
 msgstr ""
 
+#: lazarusidestrconsts.lismmfromto
+msgid "From %s to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismmidemacro
 msgid "IDE Macro"
+msgstr ""
+
+#: lazarusidestrconsts.lismmidemacro2
+msgid "IDE Macro %s:=%s"
 msgstr ""
 
 #: lazarusidestrconsts.lismminvalidcharacterat
@@ -12306,6 +12331,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismmnewtarget
 msgid "New Target"
+msgstr ""
+
+#: lazarusidestrconsts.lismmoverrideoutdirfu
+msgid "Override OutDir (-FU): %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismmoverrideoutputdirectory
@@ -12350,6 +12379,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismmvalues
 msgid "Value \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lismmwas
+msgid "(was \"%s\")"
 msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
@@ -14325,6 +14358,10 @@ msgstr ""
 msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
 msgstr ""
 
+#: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
+msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
 msgstr "Tento súbor nepatrí do žiadneho načítaneho balíčka."
@@ -14694,6 +14731,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsession
+msgid "Project Session"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectsessionchanged
@@ -15600,6 +15641,10 @@ msgstr "Zobraziť balíčky"
 
 #: lazarusidestrconsts.lisshowpositionofsourceeditor
 msgid "Show position of source editor"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowrelativepaths
+msgid "Show relative paths"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
