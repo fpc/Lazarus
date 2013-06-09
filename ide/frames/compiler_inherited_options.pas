@@ -166,9 +166,9 @@ var
     if AncestorNode<>nil then exit;
     AncestorNode := InhTreeView.Items.Add(nil, '');
     case Grp of
-    bmgtEnvironment: AncestorNode.Text:='Environment';
-    bmgtProject: AncestorNode.Text:='Project';
-    bmgtSession: AncestorNode.Text:='Project Session';
+    bmgtEnvironment: AncestorNode.Text:=dlgGroupEnvironment;
+    bmgtProject: AncestorNode.Text:=dlgProject;
+    bmgtSession: AncestorNode.Text:=lisProjectSession;
     end;
     AncestorNode.ImageIndex := ImageIndexPackage;
     AncestorNode.SelectedIndex := AncestorNode.ImageIndex;

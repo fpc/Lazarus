@@ -2374,6 +2374,7 @@ resourcestring
   dlgFromBeginning = 'From b&eginning';
   dlgScope = 'Scope';
   dlgProject = 'Project';
+  lisProjectSession = 'Project Session';
   lisWithRequiredPackages = 'With required packages';
   lisLevels = 'Levels';
   lisShowPackages = 'Show packages';
