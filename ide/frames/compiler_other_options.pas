@@ -25,6 +25,8 @@ unit Compiler_Other_Options;
 
 {$mode objfpc}{$H+}
 
+{$DEFINE VerboseCOCondSynCompletion}
+
 interface
 
 uses
@@ -59,18 +61,6 @@ type
       var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
     procedure CondSynEditStatusChange(Sender: TObject;
       Changes: TSynStatusChanges);
-    procedure fSynCompletionCancel(Sender: TObject);
-    procedure fSynCompletionExecute(Sender: TObject);
-    procedure fSynCompletionKeyCompletePrefix(Sender: TObject);
-    procedure fSynCompletionKeyDelete(Sender: TObject);
-    procedure fSynCompletionKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure fSynCompletionKeyNextChar(Sender: TObject);
-    procedure fSynCompletionKeyPrevChar(Sender: TObject);
-    procedure fSynCompletionSearchPosition(var Position: integer);
-    procedure fSynCompletionUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
-    procedure fSynCompletionValidate(Sender: TObject; KeyChar: TUTF8Char;
-      Shift: TShiftState);
   private
     FCompOptions: TBaseCompilerOptions;
     FIdleConnected: Boolean;
@@ -92,6 +82,18 @@ type
     procedure UpdateMessages;
     procedure UpdateStatusBar;
     procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnSynCompletionCancel(Sender: TObject);
+    procedure OnSynCompletionExecute(Sender: TObject);
+    procedure OnSynCompletionKeyCompletePrefix(Sender: TObject);
+    procedure OnSynCompletionKeyDelete(Sender: TObject);
+    procedure OnSynCompletionKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure OnSynCompletionKeyNextChar(Sender: TObject);
+    procedure OnSynCompletionKeyPrevChar(Sender: TObject);
+    procedure OnSynCompletionSearchPosition(var Position: integer);
+    procedure OnSynCompletionUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+    procedure OnSynCompletionValidate(Sender: TObject; KeyChar: TUTF8Char;
+      Shift: TShiftState);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -152,34 +154,44 @@ begin
   UpdateStatusBar;
 end;
 
-procedure TCompilerOtherOptionsFrame.fSynCompletionCancel(Sender: TObject);
+procedure TCompilerOtherOptionsFrame.OnSynCompletionCancel(Sender: TObject);
 begin
-  //debugln(['TCompilerOtherOptionsFrame.fSynCompletionCancel ',fSynCompletion.TheForm.Visible]);
+  {$IFDEF VerboseCOCondSynCompletion}
+  debugln(['TCompilerOtherOptionsFrame.OnSynCompletionCancel ',fSynCompletion.TheForm.Visible]);
+  {$ENDIF}
   if fSynCompletion.TheForm.Visible then
     fSynCompletion.Deactivate;
   fSynCompletion.RemoveEditor(CondSynEdit);
 end;
 
-procedure TCompilerOtherOptionsFrame.fSynCompletionExecute(Sender: TObject);
+procedure TCompilerOtherOptionsFrame.OnSynCompletionExecute(Sender: TObject);
 begin
-  //debugln(['TCompilerOtherOptionsFrame.fSynCompletionExecute ']);
+  {$IFDEF VerboseCOCondSynCompletion}
+  debugln(['TCompilerOtherOptionsFrame.OnSynCompletionExecute ']);
+  {$ENDIF}
 end;
 
-procedure TCompilerOtherOptionsFrame.fSynCompletionKeyCompletePrefix(
+procedure TCompilerOtherOptionsFrame.OnSynCompletionKeyCompletePrefix(
   Sender: TObject);
 begin
-  //debugln(['TCompilerOtherOptionsFrame.fSynCompletionKeyCompletePrefix ToDo']);
+  {$IFDEF VerboseCOCondSynCompletion}
+  debugln(['TCompilerOtherOptionsFrame.OnSynCompletionKeyCompletePrefix ToDo']);
+  {$ENDIF}
 end;
 
-procedure TCompilerOtherOptionsFrame.fSynCompletionKeyDelete(Sender: TObject);
+procedure TCompilerOtherOptionsFrame.OnSynCompletionKeyDelete(Sender: TObject);
 begin
-  //debugln(['TCompilerOtherOptionsFrame.fSynCompletionKeyDelete']);
+  {$IFDEF VerboseCOCondSynCompletion}
+  debugln(['TCompilerOtherOptionsFrame.OnSynCompletionKeyDelete']);
+  {$ENDIF}
 end;
 
-procedure TCompilerOtherOptionsFrame.fSynCompletionKeyDown(Sender: TObject;
+procedure TCompilerOtherOptionsFrame.OnSynCompletionKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
-  //debugln(['TCompilerOtherOptionsFrame.fSynCompletionKeyDown ']);
+  {$IFDEF VerboseCOCondSynCompletion}
+  debugln(['TCompilerOtherOptionsFrame.OnSynCompletionKeyDown ']);
+  {$ENDIF}
   if Key=VK_BACK then
   begin
     Key:=VK_UNKNOWN;
@@ -188,13 +200,16 @@ begin
   end;
 end;
 
-procedure TCompilerOtherOptionsFrame.fSynCompletionKeyNextChar(Sender: TObject);
+procedure TCompilerOtherOptionsFrame.OnSynCompletionKeyNextChar(Sender: TObject);
 var
   XY: TPoint;
   StartX: integer;
   EndX: integer;
   Line: string;
 begin
+  {$IFDEF VerboseCOCondSynCompletion}
+  debugln(['TCompilerOtherOptionsFrame.OnSynCompletionKeyNextChar ']);
+  {$ENDIF}
   XY:=CondSynEdit.LogicalCaretXY;
   if XY.Y>CondSynEdit.Lines.Count then exit;
   CondSynEdit.GetWordBoundsAtRowCol(XY,StartX,EndX);
@@ -204,13 +219,16 @@ begin
   CondSynEdit.LogicalCaretXY:=XY;
 end;
 
-procedure TCompilerOtherOptionsFrame.fSynCompletionKeyPrevChar(Sender: TObject);
+procedure TCompilerOtherOptionsFrame.OnSynCompletionKeyPrevChar(Sender: TObject);
 var
   XY: TPoint;
   StartX: integer;
   EndX: integer;
   Line: string;
 begin
+  {$IFDEF VerboseCOCondSynCompletion}
+  debugln(['TCompilerOtherOptionsFrame.OnSynCompletionKeyPrevChar ']);
+  {$ENDIF}
   XY:=CondSynEdit.LogicalCaretXY;
   if XY.Y>CondSynEdit.Lines.Count then exit;
   CondSynEdit.GetWordBoundsAtRowCol(XY,StartX,EndX);
@@ -220,7 +238,7 @@ begin
   CondSynEdit.LogicalCaretXY:=XY;
 end;
 
-procedure TCompilerOtherOptionsFrame.fSynCompletionSearchPosition(
+procedure TCompilerOtherOptionsFrame.OnSynCompletionSearchPosition(
   var Position: integer);
 var
   sl: TStringList;
@@ -228,7 +246,9 @@ var
   s: string;
   i: Integer;
 begin
-  //debugln(['TCompilerOtherOptionsFrame.fSynCompletionSearchPosition "',fSynCompletion.CurrentString,'"']);
+  {$IFDEF VerboseCOCondSynCompletion}
+  debugln(['TCompilerOtherOptionsFrame.OnSynCompletionSearchPosition "',fSynCompletion.CurrentString,'"']);
+  {$ENDIF}
   Prefix:=fSynCompletion.CurrentString;
   sl:=TStringList.Create;
   try
@@ -247,13 +267,15 @@ begin
   end;
 end;
 
-procedure TCompilerOtherOptionsFrame.fSynCompletionUTF8KeyPress(Sender: TObject;
+procedure TCompilerOtherOptionsFrame.OnSynCompletionUTF8KeyPress(Sender: TObject;
   var UTF8Key: TUTF8Char);
 begin
-  //debugln(['TCompilerOtherOptionsFrame.fSynCompletionUTF8KeyPress ']);
+  {$IFDEF VerboseCOCondSynCompletion}
+  debugln(['TCompilerOtherOptionsFrame.OnSynCompletionUTF8KeyPress ']);
+  {$ENDIF}
 end;
 
-procedure TCompilerOtherOptionsFrame.fSynCompletionValidate(Sender: TObject;
+procedure TCompilerOtherOptionsFrame.OnSynCompletionValidate(Sender: TObject;
   KeyChar: TUTF8Char; Shift: TShiftState);
 var
   i: LongInt;
@@ -263,7 +285,9 @@ var
   TxtStartX: integer;
   TxtEndX: integer;
 begin
-  //debugln(['TCompilerOtherOptionsFrame.fSynCompletionValidate ']);
+  {$IFDEF VerboseCOCondSynCompletion}
+  debugln(['TCompilerOtherOptionsFrame.OnSynCompletionValidate ']);
+  {$ENDIF}
   i:=fSynCompletion.Position;
   if (i>=0) and (i<fSynCompletion.ItemList.Count) then begin
     i:=PtrUInt(fSynCompletion.ItemList.Objects[i]);
@@ -273,13 +297,13 @@ begin
       if p>0 then s:=copy(s,1,p-1);
       TxtXY:=CondSynEdit.LogicalCaretXY;
       CondSynEdit.GetWordBoundsAtRowCol(TxtXY,TxtStartX,TxtEndX);
-      CondSynEdit.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TCompilerOtherOptionsFrame.fSynCompletionValidate'){$ENDIF};
+      CondSynEdit.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TCompilerOtherOptionsFrame.OnSynCompletionValidate'){$ENDIF};
       try
         CondSynEdit.BlockBegin:=Point(TxtStartX,TxtXY.Y);
         CondSynEdit.BlockEnd:=Point(TxtEndX,TxtXY.Y);
         CondSynEdit.SelText:=s;
       finally
-        CondSynEdit.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TCompilerOtherOptionsFrame.fSynCompletionValidate'){$ENDIF};
+        CondSynEdit.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TCompilerOtherOptionsFrame.OnSynCompletionValidate'){$ENDIF};
       end;
       FCompletionHistory.Insert(0,s);
       if FCompletionHistory.Count>100 then
@@ -565,16 +589,16 @@ begin
 
   fSynCompletion:=TSynCompletion.Create(Self);
   fSynCompletion.TheForm.Parent:=Self;
-  fSynCompletion.OnExecute:=@fSynCompletionExecute;
-  fSynCompletion.OnCancel:=@fSynCompletionCancel;
-  fSynCompletion.OnValidate:=@fSynCompletionValidate;
-  fSynCompletion.OnSearchPosition:=@fSynCompletionSearchPosition;
-  fSynCompletion.OnKeyCompletePrefix:=@fSynCompletionKeyCompletePrefix;
-  fSynCompletion.OnUTF8KeyPress:=@fSynCompletionUTF8KeyPress;
-  fSynCompletion.OnKeyNextChar:=@fSynCompletionKeyNextChar;
-  fSynCompletion.OnKeyPrevChar:=@fSynCompletionKeyPrevChar;
-  fSynCompletion.OnKeyDelete:=@fSynCompletionKeyDelete;
-  fSynCompletion.OnKeyDown:=@fSynCompletionKeyDown;
+  fSynCompletion.OnExecute:=@OnSynCompletionExecute;
+  fSynCompletion.OnCancel:=@OnSynCompletionCancel;
+  fSynCompletion.OnValidate:=@OnSynCompletionValidate;
+  fSynCompletion.OnSearchPosition:=@OnSynCompletionSearchPosition;
+  fSynCompletion.OnKeyCompletePrefix:=@OnSynCompletionKeyCompletePrefix;
+  fSynCompletion.OnUTF8KeyPress:=@OnSynCompletionUTF8KeyPress;
+  fSynCompletion.OnKeyNextChar:=@OnSynCompletionKeyNextChar;
+  fSynCompletion.OnKeyPrevChar:=@OnSynCompletionKeyPrevChar;
+  fSynCompletion.OnKeyDelete:=@OnSynCompletionKeyDelete;
+  fSynCompletion.OnKeyDown:=@OnSynCompletionKeyDown;
 end;
 
 destructor TCompilerOtherOptionsFrame.Destroy;
