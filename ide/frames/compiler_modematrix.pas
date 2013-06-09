@@ -27,7 +27,6 @@
    - add checkbox Show build modes
    - move conditionals to Other
    - move IDE macros only for package usage
-   - set default conditionals to comments with examples
    - undo: combine changes while editing a cell
 }
 unit Compiler_ModeMatrix;

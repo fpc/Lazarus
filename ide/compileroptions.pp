@@ -44,7 +44,7 @@ interface
 uses
   typinfo, Classes, SysUtils, FileProcs, FileUtil, Laz2_XMLCfg, InterfaceBase,
   LCLProc, Forms, Controls, ExprEval, DefineTemplates, CodeToolsCfgScript,
-  CodeToolManager, KeywordFuncLists,
+  CodeToolManager, KeywordFuncLists, BasicCodeTools,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, CompOptsIntf,
   IDEOptionsIntf,
@@ -115,6 +115,19 @@ type
                         Tool: TCompilerDiffTool = nil): boolean;
     procedure Assign(Source: TLazBuildMacros);
   end;
+
+const
+  DefaultConditionals =
+     '// example for adding linker options on Mac OS X'+LineEnding
+    +'//if TargetOS=''darwin'' then'+LineEnding
+    +'//  LinkerOptions := '' -framework OpenGL'';'+LineEnding
+    +LineEnding
+    +'// example for adding a unit and include path on Windows'+LineEnding
+    +'//if SrcOS=''win'' then begin'+LineEnding
+    +'//  UnitPath += '';win'';'+LineEnding
+    +'//  IncPath += '';win'';'+LineEnding
+    +'//end;'+LineEnding
+    ;
 
 type
 
@@ -1405,7 +1418,7 @@ begin
   SrcPath := sp(aXMLConfig.GetValue(p+'SrcPath/Value', ''));
 
   { Conditionals }
-  FConditionals:=aXMLConfig.GetValue(Path+'Conditionals/Value','');
+  FConditionals:=aXMLConfig.GetValue(Path+'Conditionals/Value',DefaultConditionals);
   TIDEBuildMacros(fBuildMacros).LoadFromXMLConfig(aXMLConfig,
                                        Path+'BuildMacros/',PathDelimChange);
 
@@ -1642,7 +1655,10 @@ begin
   aXMLConfig.SetDeleteValue(p+'SrcPath/Value', f(SrcPath),'');
 
   { Conditionals }
-  aXMLConfig.SetDeleteValue(Path+'Conditionals/Value',Conditionals,'');
+  s:=Conditionals;
+  if CompareTextIgnoringSpace(s,DefaultConditionals,true)=0 then
+    s:='';
+  aXMLConfig.SetDeleteValue(Path+'Conditionals/Value',s,'');
   TIDEBuildMacros(fBuildMacros).SaveToXMLConfig(aXMLConfig,
                                               Path+'BuildMacros/',UsePathDelim);
 
