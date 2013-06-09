@@ -1041,6 +1041,7 @@ begin
   // E1.Y - RY*sin(t1) = E2.Y - RY*sin(arccos((- E1.X + RX*cos(t1) + E2.X)/RX))
   lLeftSide := E1.Y - RY*sin(AParam);
   lArg := (- E1.X + RX*cos(AParam) + E2.X)/RX;
+  if (lArg > 1) or (lArg < -1) then Exit($FFFFFFFF);
   lRightSide := E2.Y - RY*sin(arccos(lArg));
   Result := lLeftSide - lRightSide;
   if Result < 0 then Result := -1* Result;
@@ -1136,18 +1137,23 @@ begin
 
   lT1 := SolveNumericallyAngle(AlignedEllipseCenterEquationT1, 0.0001, 20);
 
+  //lT2 := arccos((- E1.X + RX*cos(lt1) + E2.X)/RX);
+
   // CX = E1.X - RX*cos(t1)
   // CY = E1.Y - RY*sin(t1)
   CX1 := E1.X - RX*cos(lt1);
   CY1 := E1.Y - RY*sin(lt1);
-  CX2 := E1.X - RX*cos(lt1+Pi);
-  CY2 := E1.Y - RY*sin(lt1+Pi);
+  //CX2 := E2.X - RX*cos(lt2);
+  //CY2 := E2.Y - RY*sin(lt2);
 
   // Rotate back!
   RotatedCenter := Rotate3DPointInXY(Make3DPoint(CX1,CY1,0), Make3DPoint(0,0,0),XRotation);
   CX1 := RotatedCenter.X;
   CY1 := RotatedCenter.Y;
-  RotatedCenter := Rotate3DPointInXY(Make3DPoint(CX2,CY2,0), Make3DPoint(0,0,0),XRotation);
+
+  // The other ellipse is simetrically positioned
+  // so that the line between the two ellipse center is orthogonal to the line
+  // between (X,Y) and (Xstart,Ystart)
   CX2 := RotatedCenter.X;
   CY2 := RotatedCenter.Y;
 

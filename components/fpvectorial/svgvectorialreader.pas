@@ -1469,6 +1469,7 @@ begin
     begin
       ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
     end;
+    ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
 
     // Convert SVG flags to fpvectorial flags
     LeftmostEllipse := (LargeArcFlag and (not SweepFlag))
