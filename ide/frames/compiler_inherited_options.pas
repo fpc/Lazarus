@@ -163,6 +163,7 @@ var
 
   procedure AddMatrixGroupNode(Grp: TBuildMatrixGroupType);
   begin
+    if AncestorNode<>nil then exit;
     AncestorNode := InhTreeView.Items.Add(nil, '');
     case Grp of
     bmgtEnvironment: AncestorNode.Text:='Environment';
