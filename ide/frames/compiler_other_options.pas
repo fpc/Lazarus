@@ -162,6 +162,7 @@ begin
   if fSynCompletion.TheForm.Visible then
     fSynCompletion.Deactivate;
   fSynCompletion.RemoveEditor(CondSynEdit);
+  //fSynCompletion.Editor:=nil;
 end;
 
 procedure TCompilerOtherOptionsFrame.OnSynCompletionExecute(Sender: TObject);
@@ -373,9 +374,11 @@ begin
   end;
 
   // show completion box
-  fSynCompletion.AddEditor(CondSynEdit);
+  //fSynCompletion.AddEditor(CondSynEdit);
+  fSynCompletion.Editor:=CondSynEdit;
   Line:=CondSynEdit.LineText;
   fSynCompletion.Execute(copy(Line,LogStartX,LogEndX-LogStartX),XY.X,XY.Y);
+  debugln(['TCompilerOtherOptionsFrame.StartCompletion XY=',dbgs(XY),' fSynCompletion.TheForm.BoundsRect=',dbgs(fSynCompletion.TheForm.BoundsRect)]);
 end;
 
 procedure TCompilerOtherOptionsFrame.UpdateCompletionValues;
@@ -588,6 +591,7 @@ begin
   CondSynEdit.OnStatusChange:=@CondSynEditStatusChange;
 
   fSynCompletion:=TSynCompletion.Create(Self);
+  fSynCompletion.ShowSizeDrag:=true;
   fSynCompletion.TheForm.Parent:=Self;
   fSynCompletion.OnExecute:=@OnSynCompletionExecute;
   fSynCompletion.OnCancel:=@OnSynCompletionCancel;
