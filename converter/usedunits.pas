@@ -128,6 +128,7 @@ type
     function ConvertUsed: TModalResult;
     function Remove(aUnit: string): TModalResult;
     procedure MoveMissingToComment(aAllCommentedUnits: TStrings);
+    function AddUnitImmediately(aUnitName: string): Boolean;
     procedure AddUnitIfNeeded(aUnitName: string);
     function AddThreadSupport: TModalResult;
   public
@@ -687,6 +688,15 @@ begin
   fMainUsedUnits.fMissingUnits.Clear;
   fImplUsedUnits.fUnitsToComment.AddStrings(fImplUsedUnits.fMissingUnits);
   fImplUsedUnits.fMissingUnits.Clear;
+end;
+
+function TUsedUnitsTool.AddUnitImmediately(aUnitName: string): Boolean;
+begin
+  with fCTLink, fMainUsedUnits do begin
+    Result:=CodeTool.AddUnitToSpecificUsesSection(fUsesSection, aUnitName, '', SrcCache);
+    if not Result then exit;
+    Result:=SrcCache.Apply;
+  end;
 end;
 
 procedure TUsedUnitsTool.AddUnitIfNeeded(aUnitName: string);

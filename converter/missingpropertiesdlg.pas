@@ -490,8 +490,10 @@ begin
       if ClassUnitInfo<>nil then
         NeededUnitName:=ClassUnitInfo.Unit_Name;
     end;
-    if NeededUnitName<>'' then
-      fUsedUnitsTool.AddUnitIfNeeded(NeededUnitName);
+    if NeededUnitName<>'' then begin
+      fUsedUnitsTool.AddUnitImmediately(NeededUnitName);
+      Result:=mrRetry;  // Caller must check LFM validity again
+    end;
   end;
 end;
 
@@ -520,28 +522,29 @@ begin
   finally
     ConvTool.Free;
   end;
-  LoopCount:=0;
+  LoopCount:=0;    // Prevent possible eternal loops with a counter
   repeat
-    if not fLFMTree.ParseIfNeeded then exit;
+    repeat
+      if not fLFMTree.ParseIfNeeded then exit;
+      if CodeToolBoss.CheckLFM(fPascalBuffer, fLFMBuffer, fLFMTree,
+          fRootMustBeClassInUnit, fRootMustBeClassInIntf, fObjectsMustExist) then
+        Result:=mrOk
+      else                     // Rename/remove properties and types interactively.
+        Result:=ShowConvertLFMWizard;  // Can return mrRetry.
+      Inc(LoopCount);                  // Increment counter in inner loop
+    until Result in [mrOK, mrCancel];
+
+    // Check for missing object types and add units as needed.
+    if not fLFMTree.ParseIfNeeded then
+      Exit(mrCancel);
     if CodeToolBoss.CheckLFM(fPascalBuffer, fLFMBuffer, fLFMTree,
         fRootMustBeClassInUnit, fRootMustBeClassInIntf, fObjectsMustExist) then
       Result:=mrOk
-    else                     // Rename/remove properties and types interactively.
-      Result:=ShowConvertLFMWizard;  // Can return mrRetry.
-    Inc(LoopCount);
-  until (Result in [mrOK, mrCancel]) or (LoopCount=20);
-
-  // Check for missing object types and add units as needed.
-  if not fLFMTree.ParseIfNeeded then
-    Exit(mrCancel);
-  if CodeToolBoss.CheckLFM(fPascalBuffer, fLFMBuffer, fLFMTree,
-      fRootMustBeClassInUnit, fRootMustBeClassInIntf, fObjectsMustExist) then
-    Result:=mrOk
-  else begin
-    Result:=FindAndFixMissingComponentClasses;
-    if Result = mrCancel then  // Returns mrCancel when nothing was done.
-      Result := mrOK;
-  end;
+    else begin
+      Result:=FindAndFixMissingComponentClasses; // Can return mrRetry.
+    end;
+    Inc(LoopCount);                    // Increment also in outer loop
+  until (Result in [mrOK, mrAbort]) or (LoopCount=30);
 
   // Fix top offsets of some components in visual containers
   if (Result=mrOK) and (fSettings.CoordOffsMode=rsEnabled) then begin

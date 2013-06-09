@@ -396,12 +396,15 @@ begin
   if not CheckUnit then exit;
   if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
                fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExist)
-  then begin
-    Result:=mrOk;
-    exit;
-  end;
+  then
+    exit(mrOk);
   Result:=FindAndFixMissingComponentClasses;
-  if Result in [mrAbort,mrOk] then exit;
+  if Result=mrAbort then exit;
+  // check LFM again
+  if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
+             fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExist)
+  then
+    exit(mrOk);
   WriteLFMErrors;
   Result:=ShowRepairLFMWizard;
 end;
@@ -463,7 +466,7 @@ var
   RegComp: TRegisteredComponent;
   i: Integer;
 begin
-  Result:=mrCancel;
+  Result:=mrOK;
   MissingObjectTypes:=TStringList.Create;
   try
     // collect all missing object types
@@ -496,15 +499,6 @@ begin
   // add units for the missing object types with registered component classes
   Result:=PackageEditingInterface.AddUnitDependenciesForComponentClasses(
        fPascalBuffer.Filename, aMissingTypes);
-  if Result<>mrOk then exit;
-  // check LFM again
-  if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
-             fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExist)
-  then begin
-    Result:=mrOk;
-  end else begin
-    Result:=mrCancel;
-  end;
 end;
 
 function TLFMChecker.CheckUnit: boolean;
