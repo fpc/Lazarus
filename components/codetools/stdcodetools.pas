@@ -1013,16 +1013,14 @@ begin
           InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.EndPos,true);
         end;
       end;
-      NewUsesTerm:=NewUsesTerm
-           +Beauty.BeautifyKeyWord('uses')
-           +' '+NewUnitName;
+      NewUsesTerm:=NewUsesTerm+Beauty.BeautifyKeyWord('uses')+' '+NewUnitName;
       if NewUnitInFile<>'' then
         NewUsesTerm:=NewUsesTerm+' in '''+NewUnitInFile+''';'
       else
         NewUsesTerm:=NewUsesTerm+';';
       if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
         NewUsesTerm) then exit;
-      if not SourceChangeCache.Apply then exit;
+      //if not SourceChangeCache.Apply then exit; <- has no effect when FUpdateLock>0
     end;
     Result:=true;
   finally
