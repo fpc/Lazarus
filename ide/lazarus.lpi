@@ -515,8 +515,9 @@
         <Filename Value="frames/compiler_other_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CompilerOtherOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="compiler_other_options"/>
+        <UnitName Value="Compiler_Other_Options"/>
       </Unit64>
       <Unit65>
         <Filename Value="frames/compiler_inherited_options.pas"/>
@@ -762,7 +763,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="include"/>
-      <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames;../ide"/>
+      <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames;../ide;frames;frames"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
     <Other>
