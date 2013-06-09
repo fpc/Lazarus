@@ -5368,6 +5368,7 @@ resourcestring
   dlgIdeMacroValues = 'IDE Macro Values';
   lisBuildModes = 'Build modes';
   lisInSession = 'In session';
+  lisBuildMode = 'Build Mode';
   lisEnableThisToStoreTheBuildModeInYourSessionLpsInste = 'Enable this to '
     +'store the build mode in your session (.lps) instead of the lpi';
   lisThereMustBeAtLeastOneBuildMode = 'There must be at least one build mode.';

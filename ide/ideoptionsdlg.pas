@@ -62,7 +62,6 @@ type
     EditorsPanel: TScrollBox;
     FilterEdit: TTreeFilterEdit;
     SettingsPanel: TPanel;
-    procedure BuildModeComboBoxClick(Sender: TObject);
     procedure BuildModeComboBoxSelect(Sender: TObject);
     procedure BuildModeInSessionCheckBoxChange(Sender: TObject);
     procedure BuildModeManageButtonClick(Sender: TObject);
@@ -134,6 +133,7 @@ begin
   FEditorToOpen := nil;
   SettingsPanel.Constraints.MinHeight:=0;
   BuildModeSelectPanel.Height:=0;
+  BuildModeLabel.Caption:=lisBuildMode;
   BuildModeInSessionCheckBox.Caption:=lisInSession;
   BuildModeInSessionCheckBox.Hint:=
     lisEnableThisToStoreTheBuildModeInYourSessionLpsInste;
@@ -216,11 +216,6 @@ begin
     end;
     FPrevEditor := AEditor;
   end;
-end;
-
-procedure TIDEOptionsDialog.BuildModeComboBoxClick(Sender: TObject);
-begin
-
 end;
 
 procedure TIDEOptionsDialog.BuildModeComboBoxSelect(Sender: TObject);
