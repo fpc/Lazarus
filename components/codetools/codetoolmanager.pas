@@ -292,7 +292,7 @@ type
 
     // source changing
     procedure BeginUpdate;
-    procedure EndUpdate;
+    function EndUpdate: boolean;
     function GatherExternalChanges: boolean;
     property OnGatherExternalChanges: TOnGatherExternalChanges
                    read FOnGatherExternalChanges write FOnGatherExternalChanges;
@@ -1123,9 +1123,9 @@ begin
   SourceChangeCache.BeginUpdate;
 end;
 
-procedure TCodeToolManager.EndUpdate;
+function TCodeToolManager.EndUpdate: boolean;
 begin
-  SourceChangeCache.EndUpdate;
+  Result:=SourceChangeCache.EndUpdate;
 end;
 
 function TCodeToolManager.GatherExternalChanges: boolean;

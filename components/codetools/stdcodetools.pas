@@ -1020,13 +1020,13 @@ begin
         NewUsesTerm:=NewUsesTerm+';';
       if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
         NewUsesTerm) then exit;
-      //if not SourceChangeCache.Apply then exit; <- has no effect when FUpdateLock>0
     end;
     Result:=true;
   finally
     if not Result then
       SourceChangeCache.Clear;
-    SourceChangeCache.EndUpdate;
+    if not SourceChangeCache.EndUpdate then
+      Result:=false;
   end;
 end;
 

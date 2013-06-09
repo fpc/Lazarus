@@ -251,8 +251,8 @@ type
     procedure RaiseException(const AMessage: string);
   public
     BeautifyCodeOptions: TBeautifyCodeOptions;
-    procedure BeginUpdate;
-    function EndUpdate: boolean;
+    procedure BeginUpdate; // use this to delay Apply, must be balanced with EndUpdate
+    function EndUpdate: boolean; // calls Apply
     property MainScanner: TLinkScanner read FMainScanner write SetMainScanner;
     property MainScannerNeeded: boolean read FMainScannerNeeded;
     function Replace(FrontGap, AfterGap: TGapTyp; FromPos, ToPos: integer;
@@ -1166,7 +1166,7 @@ begin
   Result:=true;
   if FUpdateLock<=0 then exit;
   dec(FUpdateLock);
-  if FUpdateLock<=0 then
+  if (FUpdateLock<=0) then
     Result:=Apply;
 end;
     
