@@ -1547,6 +1547,7 @@ begin
       DrawThemedCell(aCol, aRow, aRect, aState);
       ts:=DefaultTextStyle;
       ts.Opaque:=false;
+      Canvas.Brush.Style:=bsClear;
       Canvas.TextStyle:=ts;
       Canvas.Font.Orientation:=900;
       Canvas.TextOut(aRect.Left+1,aRect.Bottom-2,Modes[aCol-1].Caption);
