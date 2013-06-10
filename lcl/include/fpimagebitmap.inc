@@ -52,13 +52,13 @@ var
   DefaultFileExt: String;
   i: Integer;
 begin
-  DefaultFileExt:=GetFileExtensions;
-  i:=1;
-  while (i<=length(DefaultFileExt)) and (DefaultFileExt[i]<>';') do
+  DefaultFileExt := GetFileExtensions;
+  i := 1;
+  while (i <= Length(DefaultFileExt)) and (DefaultFileExt[i] <> ';') do
     inc(i);
-  if i<=length(DefaultFileExt) then
-    DefaultFileExt:=copy(DefaultFileExt,1,i);
-  Result:='image/'+DefaultFileExt;
+  if i <= Length(DefaultFileExt) then
+    DefaultFileExt := copy(DefaultFileExt, 1, i - 1);
+  Result := 'image/' + DefaultFileExt;
 end;
 
 procedure TFPImageBitmap.InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader);

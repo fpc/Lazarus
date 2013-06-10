@@ -46,7 +46,7 @@ end;
 
 class function TJPEGImage.GetFileExtensions: string;
 begin
-  Result := 'jpg;jpeg;jpe;jfif';
+  Result := 'jpeg;jpg;jpe;jfif';
 end;
 
 class function TJPEGImage.GetReaderClass: TFPCustomImageReaderClass;
