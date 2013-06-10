@@ -18,9 +18,7 @@
  ***************************************************************************
 
   Abstract:
-    Frame to edit build macros and conditionals of compiler options
-    (project+packages).
-
+    Frame to edit build macros of package compiler options.
 }
 unit Compiler_BuildMacro_Options;
 
@@ -522,7 +520,7 @@ end;
 
 class function TCompOptBuildMacrosFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TBaseCompilerOptions;
+  Result := TPkgCompilerOptions;
 end;
 
 procedure TCompOptBuildMacrosFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -542,8 +540,6 @@ begin
 end;
 
 initialization
-  RegisterIDEOptionsEditor(GroupCompiler, TCompOptBuildMacrosFrame,
-    CompilerOptionsConditional);
   RegisterIDEOptionsEditor(GroupPkgCompiler, TCompOptBuildMacrosFrame,
     CompilerOptionsConditional);
 
