@@ -500,7 +500,13 @@ begin
     Exit;
   end;
   if ThemesEnabled then
-    DrawText(TCanvas(ACanvas).Handle, Details, S, R, Flags, Flags2)
+  begin
+    // windows does not paint disabled toolbar text properly - the only way is
+    // to fix it here with disabled button text
+    if (Details.Element = teToolBar) and (Details.State = TS_DISABLED) then
+      Details := GetElementDetails(tbPushButtonDisabled);
+    DrawText(TCanvas(ACanvas).Handle, Details, S, R, Flags, Flags2);
+  end
   else
     inherited;
 end;
