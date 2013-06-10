@@ -382,8 +382,14 @@ begin
 //@  AWidget^.Style := gtk_style_attach(AWidget^.Style, AWidget^.Window);
 //@  gtk_style_set_background(AWidget^.Style, AWidget^.Window, GTK_STATE_NORMAL);
   Info := GetWidgetInfo(AWidget);
-  if (Info = nil) or ([wwiNoEraseBkgnd] * Info^.Flags = []) then
+  if (Info = nil) or ([wwiNoEraseBkgnd] * Info^.Flags = []) then begin
     gdk_window_set_back_pixmap(AWidget^.Window, nil, GdkFalse);
+    if AWidget^.parent<>nil then begin
+      // clear parent window background pixmap too, just in case AWidget is a nowindow
+      // see note of gtk docs about gtk_widget_modify_bg
+      gdk_window_set_back_pixmap(AWidget^.parent^.Window, nil, GdkFalse);
+    end;
+  end;
 end;
 
 procedure GTKAPIWidgetClient_UnRealize(AWidget: PGTKWidget); cdecl;
