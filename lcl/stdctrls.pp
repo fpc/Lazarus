@@ -1049,6 +1049,7 @@ type
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
   protected
     class procedure WSRegisterClass; override;
+    function GetActionLinkClass: TControlActionLinkClass; override;
     function GetChecked: Boolean; virtual;
     procedure SetChecked(Value: Boolean); virtual;
     procedure DoOnChange; virtual;

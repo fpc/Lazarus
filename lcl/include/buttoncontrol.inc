@@ -26,6 +26,11 @@ begin
   RegisterButtonControl;
 end;
 
+function TButtonControl.GetActionLinkClass: TControlActionLinkClass;
+begin
+  Result := TButtonActionLink;
+end;
+
 function TButtonControl.GetChecked: Boolean;
 begin
   GetChecked := False;
@@ -73,7 +78,8 @@ end;
 
 procedure TButtonActionLink.SetChecked(Value: Boolean);
 begin
-  if IsCheckedLinked then begin
+  if IsCheckedLinked then
+  begin
     FClientButton.ClicksDisabled := True;
     try
       FClientButton.Checked := Value;
