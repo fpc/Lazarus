@@ -32,8 +32,9 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, IDEProcs,
   StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, ButtonPanel, ComCtrls,
-  LazarusIDEStrConsts, CodeToolsStructs, DividerBevel, BaseIDEIntf, IDEMsgIntf,
-  AVL_Tree, LazConfigStorage, ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
+  LazarusIDEStrConsts, CodeToolsStructs, CodeToolManager, CodeCache,
+  DividerBevel, BaseIDEIntf, IDEMsgIntf, AVL_Tree, LazConfigStorage,
+  ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
 
 type
 
@@ -788,11 +789,15 @@ end;
 
 function TConvertSettings.SaveLog: Boolean;
 var
-  s: String;
+  aFilename: String;
+  Code: TCodeBuffer;
 begin
-  s:=fMainPath+'AutomaticConversion.log';
-  fLog.SaveToFile(s);
-  IDEMessagesWindow.AddMsg('This log was saved to '+s, '', -1);
+  aFilename:=fMainPath+'AutomaticConversion.log';
+  Code:=CodeToolBoss.CreateFile(aFilename);
+  Code.Assign(fLog);
+  Result:=SaveCodeBuffer(Code)=mrOk;
+  if Result then
+    IDEMessagesWindow.AddMsg('This log was saved to '+aFilename, '', -1);
 end;
 
 procedure TConvertSettings.SetMainFilename(const AValue: String);

@@ -865,7 +865,7 @@ begin
     fSettings.AddLogLine(lisConvDelphiConversionAborted);
   end;
   // Save log messages to file.
-  fSettings.SaveLog;
+  Result:=fSettings.SaveLog;
 end;
 
 { TConvertDelphiUnit }
