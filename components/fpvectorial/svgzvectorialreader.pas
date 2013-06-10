@@ -56,6 +56,7 @@ begin
     InflateGZ(AFileName, DataStream);
     DataStream.Position := 0;
     ReadFromStream(DataStream, AData);
+    //DataStream.SaveToFile('/tmp/foo.svg');
   finally
     DataStream.Free;
   end;

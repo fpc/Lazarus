@@ -1262,12 +1262,15 @@ begin
       lLastCommandToken := lCurTokenType;
       ReadNextPathCommand(lCurTokenType, i, CurX, CurY, AData, ADoc);
     end
+    // In this case we are getting a command without a starting letter
+    // It is a copy of the last one, or something related to it
     else
     begin
       lTmpTokenType := lLastCommandToken;
       if lLastCommandToken = sttMoveTo then lTmpTokenType := sttLineTo;
       if lLastCommandToken = sttRelativeMoveTo then lTmpTokenType := sttRelativeLineTo;
-      Dec(i);// because there is command token
+      // For bezier I checked that a sttBezierTo upon repetition expects a sttBezierTo
+      Dec(i);// because there is no command token in this command
       ReadNextPathCommand(lTmpTokenType, i, CurX, CurY, AData, ADoc);
     end;
   end;
@@ -1292,16 +1295,19 @@ begin
   begin
     X := FSVGPathTokenizer.Tokens.Items[i+1].Value;
     Y := FSVGPathTokenizer.Tokens.Items[i+2].Value;
-    ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
 
     // take care of relative or absolute
-    if lCurTokenType = sttRelativeMoveTo then
+    // Idiotism in SVG: If the path starts with a relative move to,
+    // the coordinates are absolute =o source: http://www.w3.org/TR/SVG/paths.html#PathDataMovetoCommands
+    if (lCurTokenType = sttRelativeMoveTo) and (i > 0) then
     begin
+      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
       CurX := CurX + X;
       CurY := CurY + Y;
     end
     else
     begin
+      ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
       CurX := X;
       CurY := Y;
     end;
@@ -1397,8 +1403,16 @@ begin
       end;
       if (i >= 7) and (lCorrectPreviousToken) then
       begin
-        X2 := 2*FSVGPathTokenizer.Tokens.Items[i-2].Value - FSVGPathTokenizer.Tokens.Items[i-4].Value;
-        Y2 := 2*FSVGPathTokenizer.Tokens.Items[i-1].Value - FSVGPathTokenizer.Tokens.Items[i-3].Value;
+        if lCurTokenType = sttRelativeSmoothBezierTo then
+        begin
+          X2 := FSVGPathTokenizer.Tokens.Items[i-2].Value - FSVGPathTokenizer.Tokens.Items[i-4].Value;
+          Y2 := FSVGPathTokenizer.Tokens.Items[i-1].Value - FSVGPathTokenizer.Tokens.Items[i-3].Value;
+        end
+        else
+        begin
+          X2 := 2*FSVGPathTokenizer.Tokens.Items[i-2].Value - FSVGPathTokenizer.Tokens.Items[i-4].Value;
+          Y2 := 2*FSVGPathTokenizer.Tokens.Items[i-1].Value - FSVGPathTokenizer.Tokens.Items[i-3].Value;
+        end;
       end;
       // Now the non-missing items
       X3 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
@@ -1421,14 +1435,25 @@ begin
       ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
     end;
 
+    // Covers the case where there is no valid first control point in smooth bezier
+    // The code is here to be after the conversions
     if (lCurTokenType in [sttSmoothBezierTo, sttRelativeSmoothBezierTo]) and
       ((i < 7) or (not lCorrectPreviousToken)) then
     begin
-      X2 := CurX;
-      Y2 := CurY;
+      if lCurTokenType = sttRelativeSmoothBezierTo then
+      begin
+        X2 := CurX;
+        Y2 := CurY;
+      end
+      else
+      begin
+        X2 := 0;
+        Y2 := 0;
+      end;
     end;
 
-    if lCurTokenType = sttRelativeBezierTo then
+    // The final step
+    if lCurTokenType in [sttRelativeBezierTo, sttRelativeSmoothBezierTo] then
     begin
       AData.AddBezierToPath(X2 + CurX, Y2 + CurY, X3 + CurX, Y3 + CurY, X + CurX, Y + CurY);
       CurX := CurX + X;

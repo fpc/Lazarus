@@ -201,6 +201,7 @@ type
     X2, Y2: Double;
     X3, Y3: Double;
     procedure Move(ADeltaX, ADeltaY: Double); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   { T3DSegment }
@@ -1325,9 +1326,10 @@ end;
 function TPathSegment.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
   APageItem: Pointer): Pointer;
 var
-  lStr: string;
+  lStr, lTypeStr: string;
 begin
-  lStr := Format('[%s]', [Self.ClassName]);
+  lTypeStr := GetEnumName(TypeInfo(TSegmentType), integer(SegmentType));
+  lStr := Format('[%s] Type=%s', [Self.ClassName, lTypeStr]);
   Result := ADestRoutine(lStr, APageItem);
 end;
 
@@ -1352,9 +1354,10 @@ end;
 function T2DSegment.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
   APageItem: Pointer): Pointer;
 var
-  lStr: string;
+  lStr, lTypeStr: string;
 begin
-  lStr := Format('[%s] X=%f Y=%f', [Self.ClassName, X, Y]);
+  lTypeStr := GetEnumName(TypeInfo(TSegmentType), integer(SegmentType));
+  lStr := Format('[%s] Type=%s X=%f Y=%f', [Self.ClassName, lTypeStr, X, Y]);
   Result := ADestRoutine(lStr, APageItem);
 end;
 
@@ -1367,6 +1370,15 @@ begin
   Y2 := Y2 + ADeltaY;
   X3 := X3 + ADeltaX;
   Y3 := Y3 + ADeltaY;
+end;
+
+function T2DBezierSegment.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  lStr: string;
+begin
+  lStr := Format('[%s] X=%f Y=%f CX2=%f CY2=%f CX3=%f CY3=%f', [Self.ClassName, X, Y, X2, Y2, X3, Y3]);
+  Result := ADestRoutine(lStr, APageItem);
 end;
 
 { T3DSegment }
@@ -1920,6 +1932,8 @@ var
   t: Double;
   // For polygons
   Points: array of TPoint;
+  MultiPoints: array of array of TPoint;
+  lCurPoligon, lCurPoligonStartIndex: Integer;
   // for elliptical arcs
   BoxLeft, BoxTop, BoxRight, BoxBottom: Double;
   EllipseRect: TRect;
@@ -1964,6 +1978,9 @@ begin
   //
   // For solid paths, draw a polygon for the main internal area
   //
+  // If there is a move-to in the middle of the path, we should
+  // draw then multiple poligons
+  //
   if Brush.Style <> bsClear then
   begin
     PrepareForSequentialReading;
@@ -1974,25 +1991,43 @@ begin
     ADest.Brush.Style := Brush.Style;
     ADest.Pen.Style := psClear;
 
-    SetLength(Points, Len);
+    SetLength(MultiPoints, 1);
+    SetLength(MultiPoints[0], Len);
+    lCurPoligon := 0;
+    lCurPoligonStartIndex := 0;
 
     for j := 0 to Len - 1 do
     begin
       //WriteLn('j = ', j);
       CurSegment := TPathSegment(Next());
+      if (j > 0) and (CurSegment.SegmentType = stMoveTo) then
+      begin
+        SetLength(MultiPoints[lCurPoligon], j-lCurPoligonStartIndex);
+        Inc(lCurPoligon);
+        SetLength(MultiPoints, lCurPoligon+1);
+        SetLength(MultiPoints[lCurPoligon], Len);
+        lCurPoligonStartIndex := j;
+      end;
 
       CoordX := CoordToCanvasX(Cur2DSegment.X);
       CoordY := CoordToCanvasY(Cur2DSegment.Y);
 
-      Points[j].X := CoordX;
-      Points[j].Y := CoordY;
+      MultiPoints[lCurPoligon][j-lCurPoligonStartIndex].X := CoordX;
+      MultiPoints[lCurPoligon][j-lCurPoligonStartIndex].Y := CoordY;
 
       {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
       Write(Format(' P%d,%d', [CoordY, CoordY]));
       {$endif}
     end;
 
-    ADest.Polygon(Points);
+    // Cut off excess from the last poligon
+    SetLength(MultiPoints[lCurPoligon], Len-lCurPoligonStartIndex);
+
+    // Draw each polygon now
+    for j := 0 to lCurPoligon do
+    begin
+      ADest.Polygon(MultiPoints[j]);
+    end;
 
     {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
     Write(' Now the details ');
