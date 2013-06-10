@@ -137,7 +137,7 @@ type
     function DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer; virtual;
     function GetCachedUnitPath(const AUnitName: string): string;
   protected
-    procedure EndConvert(AStatus: TModalResult);
+    function EndConvert(AStatus: TModalResult): Boolean;
   public
     constructor Create(const AFilename, ADescription: string);
     destructor Destroy; override;
@@ -855,7 +855,7 @@ begin
   Result:=fCachedUnitNames[AUnitName];
 end;
 
-procedure TConvertDelphiPBase.EndConvert(AStatus: TModalResult);
+function TConvertDelphiPBase.EndConvert(AStatus: TModalResult): Boolean;
 begin
   // Show ending message
   if AStatus=mrOK then
