@@ -120,8 +120,8 @@ const
   // 90 inches per pixel = (1 / 90) * 25.4 = 0.2822
   // FLOAT_MILIMETERS_PER_PIXEL = 0.3528; // DPI 72 = 1 / 72 inches per pixel
 
-  FLOAT_MILIMETERS_PER_PIXEL = 0.2822; // DPI 90 = 1 / 90 inches per pixel
-  FLOAT_PIXELS_PER_MILIMETER = 3.5433; // DPI 90 = 1 / 90 inches per pixel
+  FLOAT_MILIMETERS_PER_PIXEL = 5*0.2822; // DPI 90 = 1 / 90 inches per pixel => Actually I changed the value by this factor! Because otherwise it looks ugly!
+  FLOAT_PIXELS_PER_MILIMETER = 1 / FLOAT_MILIMETERS_PER_PIXEL; // DPI 90 = 1 / 90 inches per pixel
 
 { TSVGPathTokenizer }
 
@@ -1003,7 +1003,7 @@ begin
     end;
   end;
 
-  ConvertSVGDeltaToFPVDelta(
+  ConvertSVGCoordinatesToFPVCoordinates(
         AData, cx, cy, lCircle.X, lCircle.Y);
   ConvertSVGDeltaToFPVDelta(
         AData, cr, 0, lCircle.Radius, dtmp);
@@ -1053,7 +1053,7 @@ begin
     end;
   end;
 
-  ConvertSVGDeltaToFPVDelta(
+  ConvertSVGCoordinatesToFPVCoordinates(
         AData, cx, cy, lEllipse.X, lEllipse.Y);
   ConvertSVGDeltaToFPVDelta(
         AData, crx, cry, lEllipse.HorzHalfAxis, lEllipse.VertHalfAxis);
@@ -1692,7 +1692,7 @@ begin
     end;
   end;
 
-  ConvertSVGDeltaToFPVDelta(
+  ConvertSVGCoordinatesToFPVCoordinates(
         AData, lx, ly, lRect.X, lRect.Y);
   ConvertSVGDeltaToFPVDelta(
         AData, cx, cy, lRect.CX, lRect.CY);
