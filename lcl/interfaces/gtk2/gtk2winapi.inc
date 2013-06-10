@@ -8536,6 +8536,8 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
   ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
+var
+  HasChanged: boolean;
 
   procedure SetRangeUpdatePolicy(Range: PGtkRange);
   var
@@ -8546,8 +8548,11 @@ function TGtk2WidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
       SB_POLICY_DELAYED:       UpdPolicy := GTK_UPDATE_DELAYED;
       else                     UpdPolicy := GTK_UPDATE_CONTINUOUS;
     end;
+    if gtk_range_get_update_policy(Range)=UpdPolicy then exit;
     gtk_range_set_update_policy(Range, UpdPolicy);
+    HasChanged:=true;
   end;
+
   procedure SetScrolledWindowUpdatePolicy(ScrolledWindow:PGTKScrolledWindow);
   var
     Range: PGtkRange;
@@ -8558,6 +8563,24 @@ function TGtk2WidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
       else exit;
     end;
     SetRangeUpdatePolicy(Range);
+  end;
+
+  procedure SetLayoutSize(layout:PGtkLayout; width:guint; height:guint);
+  var
+    OldWidth: guint;
+    OldHeight: guint;
+  begin
+    gtk_layout_get_size(layout,@OldWidth,@OldHeight);
+    if (OldWidth=width) and (OldHeight=height) then exit;
+    HasChanged:=true;
+    gtk_layout_set_size(layout,width,height);
+  end;
+
+  procedure SetGDouble(var v: gdouble; NewValue: gdouble);
+  begin
+    if v=NewValue then exit;
+    v:=NewValue;
+    HasChanged:=true;
   end;
 
 const
@@ -8571,6 +8594,7 @@ var
 begin
   Result := 0;
   if (Handle = 0) then exit;
+  HasChanged:=false;
 
   {DebugLn(['TGtk2WidgetSet.SetScrollInfo A Widget=',GetWidgetDebugReport(PGtkWidget(Handle)),' SBStyle=',SBStyle,
     ' ScrollInfo=[',
@@ -8627,8 +8651,8 @@ begin
         Adjustment := gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(Scroll));
         if Layout <> nil
         then begin
-          if (ScrollInfo.fMask and SIF_RANGE) <> 0
-          then gtk_layout_set_size(Layout, ScrollInfo.nMax - ScrollInfo.nMin, Layout^.height);
+          if (ScrollInfo.fMask and SIF_RANGE) <> 0 then
+            SetLayoutSize(Layout, ScrollInfo.nMax - ScrollInfo.nMin, Layout^.height);
           Result := round(Layout^.hadjustment^.value);
         end;
       end
@@ -8653,8 +8677,8 @@ begin
         Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(Scroll));
         if Layout <> nil
         then begin
-          if (ScrollInfo.fMask and SIF_RANGE) <> 0
-          then gtk_layout_set_size(Layout, Layout^.Width, ScrollInfo.nMax - ScrollInfo.nMin);
+          if (ScrollInfo.fMask and SIF_RANGE) <> 0 then
+            SetLayoutSize(Layout, Layout^.Width, ScrollInfo.nMax - ScrollInfo.nMin);
           Result := round(Layout^.vadjustment^.value);
         end;
       end
@@ -8691,24 +8715,24 @@ begin
 
   if (ScrollInfo.fMask and SIF_RANGE) <> 0
   then begin
-    Adjustment^.lower := ScrollInfo.nMin;
-    Adjustment^.upper := ScrollInfo.nMax;
+    SetGDouble(Adjustment^.lower,ScrollInfo.nMin);
+    SetGDouble(Adjustment^.upper,ScrollInfo.nMax);
   end;
   if (ScrollInfo.fMask and SIF_PAGE) <> 0
   then begin
     // 0 <= nPage <= nMax-nMin+1
-    Adjustment^.page_size := ScrollInfo.nPage;
-    Adjustment^.page_size := Min(Max(Adjustment^.page_size,0),
-                                 Adjustment^.upper-Adjustment^.lower+1);
-    Adjustment^.page_increment := (Adjustment^.page_size/6)+1;
+    SetGDouble(Adjustment^.page_size, ScrollInfo.nPage);
+    SetGDouble(Adjustment^.page_size, Min(Max(Adjustment^.page_size,0),
+                                 Adjustment^.upper-Adjustment^.lower+1));
+    SetGDouble(Adjustment^.page_increment, (Adjustment^.page_size/6)+1);
   end;
   if (ScrollInfo.fMask and SIF_POS) <> 0
   then begin
     // nMin <= nPos <= nMax - Max(nPage-1,0)
-    Adjustment^.value := ScrollInfo.nPos;
-    Adjustment^.value := Max(Adjustment^.value,Adjustment^.lower);
-    Adjustment^.value := Min(Adjustment^.value,
-                              Adjustment^.upper-Max(Adjustment^.page_size-1,0));
+    SetGDouble(Adjustment^.value, ScrollInfo.nPos);
+    SetGDouble(Adjustment^.value, Max(Adjustment^.value,Adjustment^.lower));
+    SetGDouble(Adjustment^.value, Min(Adjustment^.value,
+                              Adjustment^.upper-Max(Adjustment^.page_size-1,0)));
   end;
 
   // check if scrollbar should be hidden
@@ -8728,6 +8752,8 @@ begin
 
   Result := Round(Adjustment^.value);
 
+  if not HasChanged then exit;
+
   {DebugLn('');
   DebugLn('[TGtk2WidgetSet.SetScrollInfo] Result=',Result,
   ' Lower=',RoundToInt(Lower),
@@ -8742,6 +8768,8 @@ begin
   // why not change adjustment if we don't do a redraw ???
   if bRedraw then
   begin
+    // immediate draw
+
     if IsScrollWindow
     then begin
       case SBStyle of
