@@ -659,6 +659,7 @@ end;
 class procedure TWin32WSBitBtn.SetText(const AWinControl: TWinControl; const AText: string);
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetText') then Exit;
+  TWin32WSWinControl.SetText(AWinControl, AText);
   DrawBitBtnImage(TCustomBitBtn(AWinControl), AText);
 end;
 
