@@ -1062,7 +1062,7 @@ begin
         if (BtnResult>=Low(ButtonResults)) and (BtnResult<=High(ButtonResults)) then
           BtnID := ButtonResults[DlgBtn.ModalResult];
         if (BtnIdx=CancelID) then
-          g_object_set_data(PGObject(Dialog), 'modal_result', Pointer(PtrInt(DlgBtn.ModalResult)));
+          g_object_set_data(PGObject(Dialog), 'modal_result', {%H-}Pointer(PtrInt(DlgBtn.ModalResult)));
 
         X := DlgBtn.ModalResult;
         g_object_set_data(PGObject(Btn), 'modal_result',
