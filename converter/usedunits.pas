@@ -251,8 +251,9 @@ begin
             fMissingUnits.Add(OldUnitName);
         end;
         // Check if the unit is not part of project. It will be added and converted then.
-        if Assigned(fOwnerTool.OnCheckUnitForConversion) then
-          fOwnerTool.OnCheckUnitForConversion(FullFileN);
+        if not fOwnerTool.IsMainFile then
+          if Assigned(fOwnerTool.OnCheckUnitForConversion) then
+            fOwnerTool.OnCheckUnitForConversion(FullFileN);
       end
       else begin                                          // * Unit not found *
         // Add unit to fMissingUnits, but don't add Windows specific units if target
@@ -574,11 +575,9 @@ begin
       MapToEdit:=TStringToStringTree.Create(false);
     fCTLink.CodeTool.BuildTree(lsrEnd);
     if not (fMainUsedUnits.FindMissingUnits(UnitUpdater) and
-            fImplUsedUnits.FindMissingUnits(UnitUpdater)) then begin
-      Result:=mrCancel;
-      exit;
-    end;
-    if Result<>mrOK then exit;
+            fImplUsedUnits.FindMissingUnits(UnitUpdater)) then
+      exit(mrCancel);
+
     // Find replacements for missing units from settings.
     fMainUsedUnits.FindReplacement(UnitUpdater, MapToEdit);
     fImplUsedUnits.FindReplacement(UnitUpdater, MapToEdit);

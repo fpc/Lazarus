@@ -23,7 +23,7 @@
   Abstract:
     Convert Delphi projects/packages to lazarus projects/packages.
     This was refactored and cleaned from code in unit DelphiProject2Laz.
-    Now it is objects oriented and easier to maintain / improve.
+    Now it is object oriented and easier to maintain / improve.
 }
 unit ConvertDelphi;
 
@@ -41,7 +41,7 @@ uses
   // IDEIntf
   ComponentReg, IDEMsgIntf, MainIntf, LazIDEIntf, PackageIntf, ProjectIntf,
   // IDE
-  IDEProcs, Project, ProjectDefs, DialogProcs, EditorOptions, CompilerOptions,
+  IDEProcs, Project, ProjectDefs, DialogProcs, IDEDialogs, EditorOptions, CompilerOptions,
   PackageDefs, PackageSystem, PackageEditor, BasePkgManager, LazarusIDEStrConsts,
   // Converter
   ConverterTypes, ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg,
@@ -137,7 +137,7 @@ type
     function DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer; virtual;
     function GetCachedUnitPath(const AUnitName: string): string;
   protected
-    function EndConvert(AStatus: TModalResult): Boolean;
+    procedure EndConvert(AStatus: TModalResult);
   public
     constructor Create(const AFilename, ADescription: string);
     destructor Destroy; override;
@@ -174,8 +174,9 @@ type
     fMainUnitConverter: TDelphiUnit;
     // Unit search path for project settings.
     fUnitSearchPaths: TStringList;
-    // Units that are found and will be added to project and converted.
+    // Units that are found and will be added to project or package and converted.
     fUnitsToAddToProject: TStringList;
+    fFilesToDelete: TStringList;
     fUseThreads: boolean;              // The project/package uses TThread.
     function ConvertSub: TModalResult;
     procedure CleanUpCompilerOptionsSearchPaths(Options: TBaseCompilerOptions);
@@ -187,6 +188,7 @@ type
     function ExtractOptionsFromCFG(const CFGFilename: string): TModalResult;
     function DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer; override;
     function AddToProjectLater(AFileName: string): Boolean;
+    function MaybeDeleteFiles: TModalResult;
     function CheckPackageDep(AUnitName: string): Boolean;
     function TryAddPackageDep(AUnitName, ADefaultPkgName: string): Boolean;
   protected
@@ -471,7 +473,7 @@ end;
 { TDelphiUnit }
 
 constructor TDelphiUnit.Create(AOwnerConverter: TConvertDelphiPBase;
-                            const AFilename: string; AFlags: TConvertUnitFlags);
+  const AFilename: string; aFlags: TConvertUnitFlags);
 begin
   inherited Create;
   fOwnerConverter:=AOwnerConverter;
@@ -510,7 +512,8 @@ begin
   fOwnerConverter.fSettings.AddLogLine(Format(lisConvDelphiConvertingFile,
                                               [fOrigUnitFilename]));
   Application.ProcessMessages;
-  // ConvertUnit in place. File must be writable.
+
+  // Convert unit in place. File must be writable.
   Result:=CheckFileIsWritable(fOrigUnitFilename,[mbAbort]);
   if Result<>mrOK then exit;
   // close Delphi unit file in editor.
@@ -852,7 +855,7 @@ begin
   Result:=fCachedUnitNames[AUnitName];
 end;
 
-function TConvertDelphiPBase.EndConvert(AStatus: TModalResult): Boolean;
+procedure TConvertDelphiPBase.EndConvert(AStatus: TModalResult);
 begin
   // Show ending message
   if AStatus=mrOK then
@@ -931,12 +934,15 @@ begin
   fAllCommentedUnits.Sorted:=True;
   fUnitsToAddToProject:=TStringList.Create;
   fUnitsToAddToProject.Sorted:=True;
+  fFilesToDelete:=TStringList.Create;
+  fFilesToDelete.Sorted:=True;
   fMainUnitConverter:=nil;
 end;
 
 destructor TConvertDelphiProjPack.Destroy;
 begin
   fMainUnitConverter.Free;
+  fFilesToDelete.Free;
   fUnitsToAddToProject.Free;
   fAllCommentedUnits.Free;
   fCachedRealFileNames.Free;
@@ -1043,9 +1049,11 @@ begin
     Result:=fMainUnitConverter.ConvertFormFile;
     if Result<>mrOK then exit;
     Result:=ConvertAllUnits;           // convert all files.
+    if Result<>mrOK then exit;
   finally
     UnsetCompilerModeForDefineTempl(CustomDefines);
   end;
+  Result:=MaybeDeleteFiles;     // Delete files having same name with a LCL unit.
 end;
 
 function TConvertDelphiProjPack.ConvertAllFormFiles(ConverterList: TObjectList): TModalResult;
@@ -1315,8 +1323,31 @@ var
   x: Integer;
 begin
   Result:=not fUnitsToAddToProject.Find(AFileName,x);
-  if Result then
+  if Result then           // Add the file later to project if not already done.
     fUnitsToAddToProject.Add(AFileName);
+end;
+
+function TConvertDelphiProjPack.MaybeDeleteFiles: TModalResult;
+// Maybe delete files that are already in LCL. They are potentially copied from VCL.
+var
+  s: String;
+  i: Integer;
+begin
+  for i := fFilesToDelete.Count-1 downto 0 do begin
+    s:=fFilesToDelete[i];
+    // Ask confirmation from user.
+    if IDEMessageDialog(lisConvDelphiUnitnameExistsInLCL,
+                  Format(lisConvDelphiUnitWithNameExistsInLCL, [ExtractFileNameOnly(s)]),
+                  mtConfirmation, mbYesNo) = mrYes
+    then begin
+      // Delete from file system because compiler would find it otherwise.
+      if not DeleteFileUTF8(s) then
+        exit(mrCancel);
+      //fFilesToDelete.Delete(i);
+      fSettings.AddLogLine(Format('Deleted file %s',[s]));
+    end;
+  end;
+  Result:=mrOK;
 end;
 
 function TConvertDelphiProjPack.CheckPackageDep(AUnitName: string): Boolean;
@@ -1479,8 +1510,10 @@ begin
       if FilenameIsPascalUnit(AFileName) then begin
         CurUnitInfo:=LazProject.UnitWithUnitname(PureUnitName);
         if CurUnitInfo<>nil then begin
-          Result:=QuestionDlg(lisConvDelphiUnitnameExistsTwice,
-            Format(lisConvDelphiThereAreTwoUnitsWithTheSameUnitname,
+          raise Exception.CreateFmt('TConvertDelphiProject.AddUnit: Unitname %s exists twice',
+                                    [PureUnitName]);
+{          Result:=QuestionDlg(lisConvDelphiUnitnameExistsTwice,
+            Format(lisConvDelphiTwoUnitsWithSameName,
                    [LineEnding, CurUnitInfo.Filename, LineEnding, AFileName, LineEnding]),
             mtWarning, [mrYes,lisConvDelphiRemoveFirst,mrNo,lisConvDelphiRemoveSecond,
                         mrIgnore,lisConvDelphiKeepBoth,mrAbort], 0);
@@ -1493,6 +1526,7 @@ begin
               exit(mrAbort);
             end;
           end;
+}
         end;
       end;
       CurUnitInfo:=TUnitInfo.Create(nil);
@@ -1505,16 +1539,30 @@ begin
 end;
 
 function TConvertDelphiProject.CheckUnitForConversion(aFileName: string): Boolean;
+// Units in project directory but not part of the project are not reported
+//  as missing and would not be converted. Now add them to the project.
+// ToDo: move to TConvertDelphiProjPack and support packages, too.
 var
   UnitInfo: TUnitInfo;
+  PkgFile: TPkgFile;
+  PureUnitName: String;
+  x: Integer;
 begin
-  // Units in project directory but not part of the project are not reported
-  //  as missing and would not be converted. Now add them to the project.
   if ExtractFilePath(aFileName)=LazProject.ProjectDirectory then begin
     UnitInfo:=LazProject.UnitInfoWithFilename(aFileName);
-    Result:=Assigned(UnitInfo);
-    if not Result then
-      AddToProjectLater(aFileName);  // Will be added later to project.
+    Result:=not Assigned(UnitInfo);
+    if Result then begin
+      // Not in project.
+      // Check if unit with same name already exists in LCL, maybe copied from VCL.
+      PureUnitName:=ExtractFileNameOnly(AFileName);
+      PkgFile:=PackageGraph.LCLBasePackage.FindUnit(PureUnitName);
+      if Assigned(PkgFile) then begin
+        if not fFilesToDelete.Find(aFileName, x) then
+          fFilesToDelete.Add(AFileName);  // Found also in LCL, delete later.
+      end;
+      //else
+        AddToProjectLater(aFileName);     // Add to project later.
+    end;
   end;
 end;
 
@@ -1809,7 +1857,7 @@ var
   CodeBuffer: TCodeBuffer;
   Flags: TPkgFileFlags;
   HasRegisterProc: boolean;
-  UnitN: String;
+  PureUnitName: String;
 begin
   Result:=mrOK;
   if not FilenameIsAbsolute(AFileName) then
@@ -1819,12 +1867,15 @@ begin
     exit(mrNo);
   PkgFile:=LazPackage.FindPkgFile(AFileName,true,false);
   if PkgFile=nil then begin
+    PureUnitName:=ExtractFileNameOnly(AFileName);
     if FilenameIsPascalUnit(AFileName) then begin
       // Check unitname
-      OffendingUnit:=LazPackage.FindUnit(ExtractFileNameOnly(AFileName));
+      OffendingUnit:=LazPackage.FindUnit(PureUnitName);
       if OffendingUnit<>nil then begin
-        Result:=QuestionDlg(lisConvDelphiUnitnameExistsTwice,
-          Format(lisConvDelphiThereAreTwoUnitsWithTheSameUnitname,
+        raise Exception.CreateFmt('TConvertDelphiPackage.AddUnit: Unitname %s exists twice',
+                                  [PureUnitName]);
+{        Result:=QuestionDlg(lisConvDelphiUnitnameExistsTwice,
+          Format(lisConvDelphiTwoUnitsWithSameName,
                  [LineEnding, OffendingUnit.Filename, LineEnding, AFileName, LineEnding]),
           mtWarning, [mrNo, lisConvDelphiRemoveSecond, mrAbort], 0);
         case Result of
@@ -1835,9 +1886,9 @@ begin
             exit(mrAbort);
           end;
         end;
+}
       end;
     end;
-    UnitN:=ExtractFileNameOnly(AFileName);
     Flags:=[pffAddToPkgUsesSection];
     // Check if the unit has a Register procedure.
     // ToDo: Optimize. The source is read again during unit conversion.
@@ -1847,10 +1898,10 @@ begin
         if HasRegisterProc then begin
           Include(Flags, pffHasRegisterProc);
           fSettings.AddLogLine(Format('Adding flag for "Register" procedure in unit %s.',
-                                      [UnitN]));
+                                      [PureUnitName]));
         end;
     // Add new unit to package
-    LazPackage.AddFile(AFileName, UnitN, pftUnit, Flags, cpNormal);
+    LazPackage.AddFile(AFileName, PureUnitName, pftUnit, Flags, cpNormal);
   end;
 end;
 

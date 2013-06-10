@@ -106,7 +106,7 @@ type
     function BackupFile(const AFilename: string): TModalResult;
     procedure ClearLog;
     function AddLogLine(const ALine: string): integer;
-    function SaveLog: Boolean;
+    procedure SaveLog;
   public
     property MainFilename: String read fMainFilename write SetMainFilename;
     property MainPath: String read fMainPath;
@@ -787,7 +787,7 @@ begin
   Result:=fLog.Add(ALine);                   // and store for log.
 end;
 
-function TConvertSettings.SaveLog: Boolean;
+procedure TConvertSettings.SaveLog;
 var
   aFilename: String;
   Code: TCodeBuffer;
