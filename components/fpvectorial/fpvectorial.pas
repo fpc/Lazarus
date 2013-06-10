@@ -382,11 +382,14 @@ type
     It has the opposite direction of text in the LCL TCanvas.
   }
 
+  TvTextAnchor = (vtaStart, vtaMiddle, vtaEnd);
+
   { TvText }
 
   TvText = class(TvEntityWithPenBrushAndFont)
   public
     Value: TStringList;
+    TextAnchor: TvTextAnchor;
     constructor Create; override;
     destructor Destroy; override;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
@@ -1070,51 +1073,6 @@ begin
   XStart := T2DSegment(Previous).X;
   YStart := T2DSegment(Previous).Y;
 
-  {
-    solve 4 equations and 4 unknown values (CX, CY, t1, t2)
-    X,Y has t=t2    // Xstart,Ystart has t=t1
-    CX := X - RX*Cos(t2)*Cos(XRotation) + RY*Sin(t2)*Sin(XRotation);
-    CX := XStart - RX*Cos(t1)*Cos(XRotation) + RY*Sin(t1)*Sin(XRotation);
-    CY := Y - RY*Sin(t2)*Cos(XRotation) - RX*Cos(t2)*Sin(XRotation);
-    CY := YStart - RY*Sin(t1)*Cos(XRotation) - RX*Cos(t1)*Sin(XRotation);
-
-    Substituting we get 2 equations and 2 unknown values (t1, t2)
-    X - RX*Cos(t2)*Cos(XRotation) + RY*Sin(t2)*Sin(XRotation) = XStart - RX*Cos(t1)*Cos(XRotation) + RY*Sin(t1)*Sin(XRotation)
-    Y - RY*Sin(t2)*Cos(XRotation) - RX*Cos(t2)*Sin(XRotation) = YStart - RY*Sin(t1)*Cos(XRotation) - RX*Cos(t1)*Sin(XRotation)
-
-   Simplify:
-
-    A = RX*Cos(XRotation)
-    B = RY*Cos(XRotation)
-    C = RY*Sin(XRotation)
-    D = RX*Sin(XRotation)
-
-    X - A*Cos(t2) + C*Sin(t2) = XStart - A*Cos(t1) + C*Sin(t1)
-    Y - B*Sin(t2) - D*Cos(t2) = YStart - B*Sin(t1) - D*Cos(t1)
-
-    Attempt to corner Sin(t1):
-
-    X - A*Cos(t2) + C*Sin(t2) = XStart - A*sqrt(1-Sin(t1)^2) + C*Sin(t1)
-    X - A*Cos(t2) + C*Sin(t2) - XStart - C*Sin(t1) = - A*sqrt(1-Sin^2(t1))
-    Mega = X - A*Cos(t2) + C*Sin(t2) - XStart
-    Mega^2 - 2*Mega*C*Sin(t1) + C^2*Sin^2(t1) = A^2*(1-Sin^2(t1))
-    Mega^2 - A^2 - 2*Mega*C*Sin(t1) + (C^2+A^2)*Sin^2(t1) = 0
-
-    Baskara!!!
-
-    AB = (C^2+A^2)
-    BB = -2*Mega*C
-    CB = Mega^2
-
-    DeltaB=BB^2-4*AB*CB
-    Sin(t1)=(-BB+/-sqrt(DeltaB))/(2*AB)
-
-    Now roll it back!
-
-    X - A*Cos(t2) + C*Sin(t2) = XStart - A*sqrt(1-Sin(t1)^2) + C*Sin(t1)
-
-  }
-
   //  Solve by rotating everything to align the ellipse to the axises and then rotating back again
   E1 := Rotate3DPointInXY(Make3DPoint(XStart,YStart,0), Make3DPoint(0,0,0),-1*XRotation);
   E2 := Rotate3DPointInXY(Make3DPoint(X,Y,0), Make3DPoint(0,0,0),-1*XRotation);
@@ -1137,14 +1095,8 @@ begin
 
   lT1 := SolveNumericallyAngle(AlignedEllipseCenterEquationT1, 0.0001, 20);
 
-  //lT2 := arccos((- E1.X + RX*cos(lt1) + E2.X)/RX);
-
-  // CX = E1.X - RX*cos(t1)
-  // CY = E1.Y - RY*sin(t1)
   CX1 := E1.X - RX*cos(lt1);
   CY1 := E1.Y - RY*sin(lt1);
-  //CX2 := E2.X - RX*cos(lt2);
-  //CY2 := E2.Y - RY*sin(lt2);
 
   // Rotate back!
   RotatedCenter := Rotate3DPointInXY(Make3DPoint(CX1,CY1,0), Make3DPoint(0,0,0),XRotation);
@@ -1152,19 +1104,17 @@ begin
   CY1 := RotatedCenter.Y;
 
   // The other ellipse is simetrically positioned
-  // so that the line between the two ellipse center is orthogonal to the line
-  // between (X,Y) and (Xstart,Ystart)
-  CX2 := RotatedCenter.X;
-  CY2 := RotatedCenter.Y;
+  if (CX1 > Xstart) then
+    CX2 := X - (CX1-Xstart)
+  else
+    CX2 := Xstart - (CX1-X);
+  //
+  if (CY1 > Y) then
+    CY2 := Ystart - (CY1-Y)
+  else
+    CY2 := Y - (CY1-Ystart);
 
-  // errado!!!! Apagar quando achar o correto =(
-  {
-  CX := X - RX*Cos(0)*Cos(XRotation) + RY*Sin(0)*Sin(XRotation);
-  CY := Y - RY*Sin(0)*Cos(XRotation) - RX*Cos(0)*Sin(XRotation);
-  }
-
-
-  // ativar quando tiver codigo pra calcular CX1, etc
+  // Achar qual é a da esquerda e qual a da direita
   if CX1 < CX2 then
   begin
     LeftMostX := CX1;
@@ -1233,36 +1183,46 @@ begin
 
   CalculateCenter();
 
-  // Search for the minimum and maximum X
-  t1 := arctan(-RY*tan(XRotation)/RX) - Pi;
-  t2 := arctan(-RY*tan(XRotation)/RX);
-  t3 := arctan(-RY*tan(XRotation)/RX) + Pi;
+  if XRotation = 0 then
+  begin
+    ALeft := CX-RX;
+    ARight := CX+RX;
+    ATop := CY-RY;
+    ABottom := CY+RY;
+  end
+  else
+  begin
+    // Search for the minimum and maximum X
+    t1 := arctan(-RY*tan(XRotation)/RX);
+    t2 := arctan(-RY*tan(XRotation)/RX) + Pi/2;
+    t3 := arctan(-RY*tan(XRotation)/RX) + Pi;
 
-  x1 := Cx + RX*Cos(t1)*Cos(XRotation)-RY*Sin(t1)*Sin(XRotation);
-  x2 := Cx + RX*Cos(t2)*Cos(XRotation)-RY*Sin(t2)*Sin(XRotation);
-  x3 := Cx + RX*Cos(t3)*Cos(XRotation)-RY*Sin(t3)*Sin(XRotation);
+    x1 := Cx + RX*Cos(t1)*Cos(XRotation)-RY*Sin(t1)*Sin(XRotation);
+    x2 := Cx + RX*Cos(t2)*Cos(XRotation)-RY*Sin(t2)*Sin(XRotation);
+    x3 := Cx + RX*Cos(t3)*Cos(XRotation)-RY*Sin(t3)*Sin(XRotation);
 
-  ALeft := Min(x1, x2);
-  ALeft := Min(ALeft, x3);
+    ALeft := Min(x1, x2);
+    ALeft := Min(ALeft, x3);
 
-  ARight := Max(x1, x2);
-  ARight := Max(ARight, x3);
+    ARight := Max(x1, x2);
+    ARight := Max(ARight, x3);
 
-  // Now the same for Y
+    // Now the same for Y
 
-  t1 := arctan(RY*cotan(XRotation)/RX) - Pi;
-  t2 := arctan(RY*cotan(XRotation)/RX);
-  t3 := arctan(RY*cotan(XRotation)/RX) + Pi;
+    t1 := arctan(RY*cotan(XRotation)/RX);
+    t2 := arctan(RY*cotan(XRotation)/RX) + Pi/2;
+    t3 := arctan(RY*cotan(XRotation)/RX) + 3*Pi/2;
 
-  y1 := CY + RY*Sin(t1)*Cos(XRotation)+RX*Cos(t1)*Sin(XRotation);
-  y2 := CY + RY*Sin(t2)*Cos(XRotation)+RX*Cos(t2)*Sin(XRotation);
-  y3 := CY + RY*Sin(t3)*Cos(XRotation)+RX*Cos(t3)*Sin(XRotation);
+    y1 := CY + RY*Sin(t1)*Cos(XRotation)+RX*Cos(t1)*Sin(XRotation);
+    y2 := CY + RY*Sin(t2)*Cos(XRotation)+RX*Cos(t2)*Sin(XRotation);
+    y3 := CY + RY*Sin(t3)*Cos(XRotation)+RX*Cos(t3)*Sin(XRotation);
 
-  ATop := Min(y1, y2);
-  ATop := Min(ATop, y3);
+    ATop := Min(y1, y2);
+    ATop := Min(ATop, y3);
 
-  ABottom := Max(y1, y2);
-  ABottom := Max(ABottom, y3);
+    ABottom := Max(y1, y2);
+    ABottom := Max(ABottom, y3);
+  end;
 end;
 
 { TvVerticalFormulaStack }
@@ -2282,11 +2242,32 @@ var
   i: Integer;
   //
   LowerDim: T3DPoint;
+  XAnchorAdjustment: Integer;
+  lLongestLine, lLineWidth: Integer;
+  {$ifdef USE_LCL_CANVAS}
+  ACanvas: TCanvas absolute ADest;
+  {$endif}
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
 
   // Don't draw anything if we have alpha=zero
   if Font.Color.Alpha = 0 then Exit;
+
+  // if an anchor is set, use it
+  // to do this, first search for the longest line
+  lLongestLine := 0;
+  for i := 0 to Value.Count - 1 do
+  begin
+    lLineWidth := ACanvas.TextWidth(Value.Strings[i]);
+    if lLineWidth > lLongestLine then
+      lLongestLine := lLineWidth;
+  end;
+  case TextAnchor of
+  vtaMiddle: XAnchorAdjustment := -1 * lLongestLine div 2;
+  vtaEnd:    XAnchorAdjustment := -1 * lLongestLine;
+  else
+    XAnchorAdjustment := 0;
+  end;
 
   // TvText supports multiple lines
   for i := 0 to Value.Count - 1 do
@@ -2300,7 +2281,7 @@ begin
     end;
 
     ADest.Font.FPColor := AdjustColorToBackground(Font.Color, ARenderInfo);
-    ADest.TextOut(CoordToCanvasX(X), Round(LowerDim.Y), Value.Strings[i]);
+    ADest.TextOut(CoordToCanvasX(X)+XAnchorAdjustment, Round(LowerDim.Y), Value.Strings[i]);
   end;
 end;
 

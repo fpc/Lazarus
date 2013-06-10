@@ -912,7 +912,7 @@ begin
           lNodeName := lCurNode.Attributes.Item[i].NodeName;
           if lNodeName = 'id' then
           begin
-            lLayerName := UTF16ToUTF8(lCurNode.Attributes.Item[i].NodeValue);
+            lLayerName := lCurNode.Attributes.Item[i].NodeValue;
             lBlock.Name := lLayerName;
           end;
         end;
@@ -980,7 +980,7 @@ begin
     else if lNodeName = 'r' then
       cr := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'id' then
-      lCircle.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
+      lCircle.Name := ANode.Attributes.Item[i].NodeValue
     else if lNodeName = 'style' then
       ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lCircle)
     else if IsAttributeFromStyle(lNodeName) then
@@ -1030,7 +1030,7 @@ begin
     else if lNodeName = 'ry' then
       cry := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'id' then
-      lEllipse.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
+      lEllipse.Name := ANode.Attributes.Item[i].NodeValue
     else if lNodeName = 'style' then
       ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lEllipse)
     else if IsAttributeFromStyle(lNodeName) then
@@ -1075,7 +1075,7 @@ begin
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
     if lNodeName = 'id' then
-      lLayerName := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue);
+      lLayerName := ANode.Attributes.Item[i].NodeValue;
   end;
 
   lParentLayer := AData.GetCurrentLayer();
@@ -1097,7 +1097,7 @@ begin
     begin
       {$ifdef SVG_MERGE_LAYER_STYLES}
       lLayerStyleKeys.Add(lNodeName);
-      lLayerStyleValues.Add(UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue));
+      lLayerStyleValues.Add(ANode.Attributes.Item[i].NodeValue);
       {$else}
       lLayer.SetPenBrushAndFontElements += ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lLayer);
       lLayer.SetPenBrushAndFontElements += ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lLayer);
@@ -1211,7 +1211,7 @@ begin
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
     if lNodeName = 'id' then
-      lPath.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
+      lPath.Name := ANode.Attributes.Item[i].NodeValue
     else if lNodeName = 'style' then
       ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lPath)
     else if IsAttributeFromStyle(lNodeName) then
@@ -1469,7 +1469,6 @@ begin
     begin
       ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
     end;
-    ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
 
     // Convert SVG flags to fpvectorial flags
     LeftmostEllipse := (LargeArcFlag and (not SweepFlag))
@@ -1567,7 +1566,7 @@ begin
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
     if lNodeName = 'id' then
-      lPath.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
+      lPath.Name := ANode.Attributes.Item[i].NodeValue
     else if lNodeName = 'style' then
       ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lPath)
     else if IsAttributeFromStyle(lNodeName) then
@@ -1617,7 +1616,7 @@ begin
     else if lNodeName = 'height' then
       cy := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'id' then
-      lRect.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
+      lRect.Name := ANode.Attributes.Item[i].NodeValue
     else if lNodeName = 'style' then
       ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lRect)
     else if IsAttributeFromStyle(lNodeName) then
@@ -1648,6 +1647,7 @@ var
   i: Integer;
   lNodeName: DOMString;
   lCurNode: TDOMNode;
+  lTextAnchor: string = '';
 begin
   lx := 0.0;
   ly := 0.0;
@@ -1663,9 +1663,11 @@ begin
     else if lNodeName = 'y' then
       ly := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'id' then
-      lText.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
+      lText.Name := ANode.Attributes.Item[i].NodeValue
     else if lNodeName = 'style' then
-      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lText, True)
+      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lText)
+    else if lNodeName = 'text-anchor' then
+      lTextAnchor := ANode.Attributes.Item[i].NodeValue
     else if IsAttributeFromStyle(lNodeName) then
       ReadSVGFontStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lText);
   end;
@@ -1678,8 +1680,15 @@ begin
   lText.Value.Add(lTextStr);
 
   // Set the coordinates
-  ConvertSVGDeltaToFPVDelta(
+  ConvertSVGCoordinatesToFPVCoordinates(
         AData, lx, ly, lText.X, lText.Y);
+
+  // Adjust according to the text-anchor, if necessary
+  lTextAnchor := LowerCase(lTextAnchor);
+  case lTextAnchor of
+  'middle': lText.TextAnchor := vtaMiddle;
+  'end': lText.TextAnchor := vtaEnd;
+  end;
 
   // Now add other lines, which appear as <tspan ...>another line</tspan>
   // Example:
@@ -1880,7 +1889,7 @@ begin
     begin
       {$ifdef SVG_MERGE_LAYER_STYLES}
       lLayerStyleKeys.Add(lNodeName);
-      lLayerStyleValues.Add(UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue));
+      lLayerStyleValues.Add(ANode.Attributes.Item[i].NodeValue);
       {$endif}
     end;
   end;
