@@ -5438,7 +5438,8 @@ resourcestring
   lisConvDelphiUnitnameExistsTwice = 'Unitname exists twice';
   lisConvDelphiTwoUnitsWithSameName = 'There are two units with the same name:%s%s%s%s%s';
   lisConvDelphiUnitnameExistsInLCL = 'Unitname exists in LCL';
-  lisConvDelphiUnitWithNameExistsInLCL = 'LCL already has a unit with name %s. Delete it?';
+  lisConvDelphiUnitWithNameExistsInLCL = 'LCL already has a unit with name %s.'
+    +' Delete local file %s?';
   lisConvDelphiRemoveFirst = 'Remove first';
   lisConvDelphiRemoveSecond = 'Remove second';
   lisConvDelphiKeepBoth = 'Keep both';

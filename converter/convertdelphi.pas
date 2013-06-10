@@ -189,6 +189,7 @@ type
     function DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer; override;
     function AddToProjectLater(AFileName: string): Boolean;
     function MaybeDeleteFiles: TModalResult;
+    function CheckUnitForConversion(aFileName: string): Boolean;
     function CheckPackageDep(AUnitName: string): Boolean;
     function TryAddPackageDep(AUnitName, ADefaultPkgName: string): Boolean;
   protected
@@ -204,6 +205,7 @@ type
     procedure CustomDefinesChanged; virtual; abstract;
     function GetMainName: string; virtual; abstract;
     function SaveAndMaybeClose(aFilename: string): TModalResult; virtual;
+    function ContainsFile(aFileName: string): Boolean; virtual; abstract;
     procedure AddPackageDependency(const PackageName: string); virtual; abstract;
     function FindDependencyByName(const PackageName: string): TPkgDependency; virtual; abstract;
     procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean); virtual; abstract;
@@ -224,7 +226,6 @@ type
   TConvertDelphiProject = class(TConvertDelphiProjPack)
   private
     function AddUnit(AFileName: string; out OutUnitInfo: TUnitInfo): TModalResult;
-    function CheckUnitForConversion(aFileName: string): Boolean;
     function GetLazProject: TProject;
     procedure SetLazProject(const AValue: TProject);
   protected
@@ -239,6 +240,7 @@ type
     procedure CustomDefinesChanged; override;
     function GetMainName: string; override;
     function SaveAndMaybeClose(Filename: string): TModalResult; override;
+    function ContainsFile(aFileName: string): Boolean; override;
     procedure AddPackageDependency(const PackageName: string); override;
     function FindDependencyByName(const PackageName: string): TPkgDependency; override;
     procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean); override;
@@ -269,6 +271,7 @@ type
     function GetCustomDefines: TDefineTemplate; override;
     procedure CustomDefinesChanged; override;
     function GetMainName: string; override;
+    function ContainsFile(aFileName: string): Boolean; override;
     procedure AddPackageDependency(const PackageName: string); override;
     function FindDependencyByName(const PackageName: string): TPkgDependency; override;
     procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean); override;
@@ -548,10 +551,8 @@ begin
     with TConvertDelphiProjPack(fOwnerConverter) do begin
       fUsedUnitsTool.OnCheckPackageDependency:=@CheckPackageDep;
       fUsedUnitsTool.IsConsoleApp:=fIsConsoleApp;
-    end;
-  if fOwnerConverter is TConvertDelphiProject then
-    with TConvertDelphiProject(fOwnerConverter) do
       fUsedUnitsTool.OnCheckUnitForConversion:=@CheckUnitForConversion;
+    end;
 end;
 
 function TDelphiUnit.FixLfmFilenameAndLoad(ADfmFilename: string): TModalResult;
@@ -1337,7 +1338,7 @@ begin
     s:=fFilesToDelete[i];
     // Ask confirmation from user.
     if IDEMessageDialog(lisConvDelphiUnitnameExistsInLCL,
-                  Format(lisConvDelphiUnitWithNameExistsInLCL, [ExtractFileNameOnly(s)]),
+                  Format(lisConvDelphiUnitWithNameExistsInLCL,[ExtractFileNameOnly(s),s]),
                   mtConfirmation, mbYesNo) = mrYes
     then begin
       // Delete from file system because compiler would find it otherwise.
@@ -1348,6 +1349,28 @@ begin
     end;
   end;
   Result:=mrOK;
+end;
+
+function TConvertDelphiProjPack.CheckUnitForConversion(aFileName: string): Boolean;
+// Units in project directory but not part of the project are not reported
+//  as missing and would not be converted. Now add them to the project/package.
+var
+  UnitN: String;
+  x: Integer;
+begin
+  if ExtractFilePath(aFileName)=fSettings.MainPath then begin
+    Result:=not ContainsFile(aFileName);     // Process only files in projct dir.
+    if Result then begin                     // Not in project.
+      UnitN:=ExtractFileNameOnly(AFileName);
+      if Assigned(PackageGraph.LCLBasePackage.FindUnit(UnitN))
+      or Assigned(PackageGraph.LazUtilsPackage.FindUnit(UnitN)) then begin
+        if not fFilesToDelete.Find(aFileName, x) then
+          fFilesToDelete.Add(AFileName); // Found also in the package, delete later.
+      end
+      else
+        AddToProjectLater(aFileName);    // Add to project later.
+    end;
+  end;
 end;
 
 function TConvertDelphiProjPack.CheckPackageDep(AUnitName: string): Boolean;
@@ -1535,34 +1558,6 @@ begin
     end;
     CurUnitInfo.IsPartOfProject:=true;
     OutUnitInfo:=CurUnitInfo;
-  end;
-end;
-
-function TConvertDelphiProject.CheckUnitForConversion(aFileName: string): Boolean;
-// Units in project directory but not part of the project are not reported
-//  as missing and would not be converted. Now add them to the project.
-// ToDo: move to TConvertDelphiProjPack and support packages, too.
-var
-  UnitInfo: TUnitInfo;
-  PkgFile: TPkgFile;
-  PureUnitName: String;
-  x: Integer;
-begin
-  if ExtractFilePath(aFileName)=LazProject.ProjectDirectory then begin
-    UnitInfo:=LazProject.UnitInfoWithFilename(aFileName);
-    Result:=not Assigned(UnitInfo);
-    if Result then begin
-      // Not in project.
-      // Check if unit with same name already exists in LCL, maybe copied from VCL.
-      PureUnitName:=ExtractFileNameOnly(AFileName);
-      PkgFile:=PackageGraph.LCLBasePackage.FindUnit(PureUnitName);
-      if Assigned(PkgFile) then begin
-        if not fFilesToDelete.Find(aFileName, x) then
-          fFilesToDelete.Add(AFileName);  // Found also in LCL, delete later.
-      end;
-      //else
-        AddToProjectLater(aFileName);     // Add to project later.
-    end;
   end;
 end;
 
@@ -1769,6 +1764,11 @@ begin
   if not fSettings.KeepFileOpen then
     Result:=LazarusIDE.DoCloseEditorFile(AnUnitInfo.OpenEditorInfo[0].EditorComponent,
                                          [cfQuiet]);
+end;
+
+function TConvertDelphiProject.ContainsFile(aFileName: string): Boolean;
+begin
+  Result:=Assigned(LazProject.UnitInfoWithFilename(aFileName));
 end;
 
 procedure TConvertDelphiProject.AddPackageDependency(const PackageName: string);
@@ -2040,6 +2040,11 @@ end;
 function TConvertDelphiPackage.GetMainName: string;
 begin
   Result:=(fProjPack as TLazPackage).Filename;
+end;
+
+function TConvertDelphiPackage.ContainsFile(aFileName: string): Boolean;
+begin
+  Result:=Assigned((fProjPack as TLazPackage).FindPkgFile(aFileName, True, False));
 end;
 
 procedure TConvertDelphiPackage.AddPackageDependency(const PackageName: string);
