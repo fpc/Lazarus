@@ -65,8 +65,6 @@ type
     FCompOptions: TBaseCompilerOptions;
     FIdleConnected: Boolean;
     FIsPackage: boolean;
-    FOptions: TBaseCompilerOptions;
-    FHasProjectCompilerOpts: boolean;
     FCompletionHistory: TStrings;
     FCompletionValues: TStrings;
     FDefaultVariables: TCTCfgScriptVariables;
@@ -582,7 +580,6 @@ end;
 constructor TCompilerOtherOptionsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FOptions := nil;
   FCompletionValues:=TStringList.Create;
   FCompletionHistory:=TStringList.Create;
   fDefaultVariables:=TCTCfgScriptVariables.Create;
@@ -623,17 +620,15 @@ var
   NewConfigFilePath: String;
   AdditionalConfig: String;
 begin
-  // Project compiler options have changed if BuildMode was changed by user.
-  if FHasProjectCompilerOpts then
-    FOptions := Project1.CompilerOptions;
+  //debugln(['TCompilerOtherOptionsFrame.ReadSettings ',dbgs(Pointer(FCompOptions)),' ',FCompOptions=Project1.CompilerOptions]);
 
   NewDontUseConfigFile := not chkConfigFile.Checked;
   NewCustomConfigFile := chkCustomConfigFile.Checked;
   NewConfigFilePath := edtConfigPath.Text;
 
-  if ((NewDontUseConfigFile <> FOptions.DontUseConfigFile) or
-    (NewCustomConfigFile <> FOptions.CustomConfigFile) or
-    (NewConfigFilePath <> FOptions.ConfigFilePath)) and (not NewDontUseConfigFile) and
+  if ((NewDontUseConfigFile <> CompOptions.DontUseConfigFile) or
+    (NewCustomConfigFile <> CompOptions.CustomConfigFile) or
+    (NewConfigFilePath <> CompOptions.ConfigFilePath)) and (not NewDontUseConfigFile) and
     NewCustomConfigFile then
   begin
     // config file options changed
@@ -652,6 +647,7 @@ begin
       end;
     end;
   end;
+
   Result := True;
 end;
 
@@ -676,6 +672,7 @@ var
 begin
   FCompOptions:=AOptions as TBaseCompilerOptions;
   FIsPackage:=CompOptions is TPkgCompilerOptions;
+  //debugln(['TCompilerOtherOptionsFrame.ReadSettings ',dbgs(Pointer(FCompOptions)),' ',FCompOptions=Project1.CompilerOptions]);
 
   with CompOptions do
   begin
@@ -707,6 +704,7 @@ procedure TCompilerOtherOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions
 var
   CurOptions: TBaseCompilerOptions;
 begin
+  //debugln(['TCompilerOtherOptionsFrame.WriteSettings ',DbgSName(AOptions)]);
   CurOptions:=AOptions as TBaseCompilerOptions;
 
   with CurOptions do
@@ -715,9 +713,9 @@ begin
     CustomConfigFile := chkCustomConfigFile.Checked;
     ConfigFilePath := edtConfigPath.Text;
     CustomOptions := memCustomOptions.Text;
-  end;
 
-  CurOptions.Conditionals:=CondSynEdit.Lines.Text;
+    Conditionals:=CondSynEdit.Lines.Text;
+  end;
 end;
 
 class function TCompilerOtherOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
