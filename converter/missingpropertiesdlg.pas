@@ -56,7 +56,6 @@ type
   private
     fSettings: TConvertSettings;
     fOrigFormat: TLRSStreamOriginalFormat;
-    fIDEMsgWindow: TIDEMessagesWindowInterface;
     function GetLFMFilename(const DfmFilename: string; KeepCase: boolean): string;
   public
     constructor Create;

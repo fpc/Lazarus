@@ -25,8 +25,6 @@
 
  ToDo:
    - add checkbox Show build modes
-   - move Compiler.BuildMacros to package.BuildMacros
-   - move IDE macros only for package usage
    - undo: combine changes while editing a cell
 }
 unit Compiler_ModeMatrix;
