@@ -14,7 +14,7 @@ var
 begin
   {
     erase backgound of custom controls
-    use only for real custom controls for gtk1 - that are GTKAPIWidget
+    use only for real custom controls that are GTKAPIWidget
   }
 
   if (TObject(Target) is TCustomControl) then begin
