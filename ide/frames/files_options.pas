@@ -30,8 +30,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, CodeToolManager, DefineTemplates, Forms,
-  StdCtrls, Dialogs, Controls, EnvironmentOpts, MacroIntf, LazarusIDEStrConsts,
-  InputHistory, LazConf, IDEProcs, IDEOptionsIntf, IDEDialogs, InitialSetupDlgs;
+  StdCtrls, Dialogs, Controls, Spin, EnvironmentOpts, MacroIntf,
+  LazarusIDEStrConsts, InputHistory, LazConf, IDEProcs, IDEOptionsIntf,
+  IDEDialogs, InitialSetupDlgs;
 
 type
 
@@ -48,15 +49,16 @@ type
     FPCSourceDirButton:TButton;
     FPCSourceDirComboBox:TComboBox;
     FPCSourceDirLabel:TLabel;
+    lblCenter: TLabel;
     LazarusDirButton:TButton;
     LazarusDirComboBox:TComboBox;
     LazarusDirLabel:TLabel;
     MakePathButton:TButton;
     MakePathComboBox:TComboBox;
     MakePathLabel:TLabel;
-    MaxRecentOpenFilesComboBox: TComboBox;
+    MaxRecentOpenFilesSpin: TSpinEdit;
     MaxRecentOpenFilesLabel: TLabel;
-    MaxRecentProjectFilesComboBox: TComboBox;
+    MaxRecentProjectFilesSpin: TSpinEdit;
     MaxRecentProjectFilesLabel: TLabel;
     OpenLastProjectAtStartCheckBox: TCheckBox;
     ShowCompileDialogCheckBox: TCheckBox;
@@ -80,9 +82,9 @@ type
     FOldRealTestDir: string;
     fOldCompilerMessagesFilename: string;
     fOldRealCompilerMessagesFilename: string;
-    fOldMaxRecentOpenFiles: integer;
-    fOldMaxRecentProjectFiles: integer;
-    fOldOpenLastProjectAtStart: boolean;
+    FOldMaxRecentOpenFiles: integer;
+    FOldMaxRecentProjectFiles: integer;
+    FOldOpenLastProjectAtStart: boolean;
     fOldShowCompileDialog: boolean;
     fOldAutoCloseCompileDialog: boolean;
     function CheckLazarusDir(Buttons: TMsgDlgButtons): boolean;
@@ -333,11 +335,11 @@ begin
     SetComboBoxText(CompilerMessagesComboBox,CompilerMessagesFilename,cstFilename,MaxComboBoxCount);
 
     // recent files and directories
-    fOldMaxRecentOpenFiles:=MaxRecentOpenFiles;
-    SetComboBoxText(MaxRecentOpenFilesComboBox,IntToStr(MaxRecentOpenFiles),cstCaseInsensitive);
-    fOldMaxRecentProjectFiles:=MaxRecentProjectFiles;
-    SetComboBoxText(MaxRecentProjectFilesComboBox,IntToStr(MaxRecentProjectFiles),cstCaseInsensitive);
-    fOldOpenLastProjectAtStart:=OpenLastProjectAtStart;
+    FOldMaxRecentOpenFiles := MaxRecentOpenFiles;
+    MaxRecentOpenFilesSpin.Value := MaxRecentOpenFiles;
+    FOldMaxRecentProjectFiles := MaxRecentProjectFiles;
+    MaxRecentProjectFilesSpin.Value := MaxRecentProjectFiles;
+    FOldOpenLastProjectAtStart := OpenLastProjectAtStart;
 
     // open last project at start
     OpenLastProjectAtStartCheckBox.Checked:=OpenLastProjectAtStart;
@@ -369,10 +371,8 @@ begin
     CompilerMessagesFilename:=CompilerMessagesComboBox.Text;
 
     // recent files and directories
-    MaxRecentOpenFiles:=StrToIntDef(
-        MaxRecentOpenFilesComboBox.Text,MaxRecentOpenFiles);
-    MaxRecentProjectFiles:=StrToIntDef(
-        MaxRecentProjectFilesComboBox.Text,MaxRecentProjectFiles);
+    MaxRecentOpenFiles := MaxRecentOpenFilesSpin.Value;
+    MaxRecentProjectFiles := MaxRecentProjectFilesSpin.Value;
     OpenLastProjectAtStart:=OpenLastProjectAtStartCheckBox.Checked;
     ShowCompileDialog := ShowCompileDialogCheckBox.Checked;
     AutoCloseCompileDialog := AutoCloseCompileDialogCheckBox.Checked;
@@ -392,9 +392,9 @@ begin
     CompilerMessagesFilename:=fOldCompilerMessagesFilename;
 
     // recent files and directories
-    MaxRecentOpenFiles:=fOldMaxRecentOpenFiles;
-    MaxRecentProjectFiles:=fOldMaxRecentProjectFiles;
-    OpenLastProjectAtStart:=fOldOpenLastProjectAtStart;
+    MaxRecentOpenFiles := FOldMaxRecentOpenFiles;
+    MaxRecentProjectFiles := FOldMaxRecentProjectFiles;
+    OpenLastProjectAtStart := FOldOpenLastProjectAtStart;
     ShowCompileDialog := fOldShowCompileDialog;
     AutoCloseCompileDialog := fOldAutoCloseCompileDialog;
   end;
