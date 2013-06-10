@@ -58,7 +58,7 @@ type
 {$IFDEF USE_UTF8BIDI_LCL}
   TUTF8Char = UTF8BIDI.TUTF8Char;
 {$ELSE USE_UTF8BIDI_LCL}
-  TUTF8Char = String[7];
+  TUTF8Char = String[7]; // UTF-8 character is at most 6 bytes plus a #0
 {$ENDIF USE_UTF8BIDI_LCL}
   UINT = LongWord;
   UINT_PTR = PtrUInt;
