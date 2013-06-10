@@ -363,8 +363,6 @@ type
     );
   end;
 
-  { TLazSynKeyDownEventList }
-
   { TLazSynMouseDownEventList }
 
   TLazSynMouseDownEventList = Class(TMethodList)
