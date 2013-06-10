@@ -313,6 +313,8 @@ type
     function GetFloatValueAt(Index: Integer): Extended;
     function GetInt64Value: Int64;
     function GetInt64ValueAt(Index: Integer): Int64;
+    function GetIntfValue: IInterface;
+    function GetIntfValueAt(Index: Integer): IInterface;
     function GetMethodValue: TMethod;
     function GetMethodValueAt(Index: Integer): TMethod;
     function GetOrdValue: Longint;
@@ -341,6 +343,7 @@ type
     procedure SetFloatValue(const NewValue: Extended);
     procedure SetMethodValue(const NewValue: TMethod);
     procedure SetInt64Value(const NewValue: Int64);
+    procedure SetIntfValue(const NewValue: IInterface);
     procedure SetOrdValue(const NewValue: Longint);
     procedure SetPtrValue(const NewValue: Pointer);
     procedure SetStrValue(const NewValue: AnsiString);
@@ -660,14 +663,13 @@ type
   TInterfacePropertyEditor = class(TComponentAllPropertyEditor)
   private
   protected
-    procedure ReceiveComponentNames(const S: string);
-    function GetComponent(const AInterface: Pointer {IInterface}): TComponent;
+    function GetComponent(const AInterface: IInterface): TComponent;
     function GetComponentReference: TComponent; override;
-    function GetSelections: TPersistentSelectionList{IDesignerSelections}; override;
+    function GetSelections: TPersistentSelectionList; override;
   public
     function AllEqual: Boolean; override;
     procedure GetValues(Proc: TGetStrProc); override;
-    procedure SetValue(const Value: string); override;
+    procedure SetValue(const NewValue: string); override;
   end;
 
   { TNoteBookActiveControlPropertyEditor }
@@ -2687,6 +2689,23 @@ begin
   end;
 end;
 
+procedure TPropertyEditor.SetIntfValue(const NewValue: IInterface);
+var
+  I:Integer;
+  Changed: boolean;
+begin
+  Changed := False;
+  for I := 0 to FPropCount - 1 do
+    with FPropList^[I] do
+      Changed := Changed or (GetInterfaceProp(Instance, PropInfo) <> NewValue);
+  if Changed then
+  begin
+    for I := 0 to FPropCount - 1 do
+      with FPropList^[I] do SetInterfaceProp(Instance, PropInfo, NewValue);
+    Modified;
+  end;
+end;
+
 procedure TPropertyEditor.SetOrdValue(const NewValue: Longint);
 var
   I:Integer;
@@ -2811,18 +2830,28 @@ begin
   with FPropList^[Index] do Result:=GetInt64Prop(Instance,PropInfo);
 end;
 
+function TPropertyEditor.GetIntfValue: IInterface;
+begin
+  Result := GetIntfValueAt(0);
+end;
+
+function TPropertyEditor.GetIntfValueAt(Index: Integer): IInterface;
+begin
+  with FPropList^[Index] do Result := GetInterfaceProp(Instance, PropInfo);
+end;
+
 { these three procedures implement the default render behavior of the
   object inspector's drop down list editor. You don't need to
   override the two measure procedures if the default width or height don't
   need to be changed. }
-procedure TPropertyEditor.ListMeasureHeight(const AValue: AnsiString;
-  Index: Integer; ACanvas: TCanvas; var AHeight: Integer);
+procedure TPropertyEditor.ListMeasureHeight(const AValue: ansistring;
+  Index: integer; ACanvas: TCanvas; var AHeight: Integer);
 begin
   AHeight := ACanvas.TextHeight(AValue);
 end;
 
-procedure TPropertyEditor.ListMeasureWidth(const AValue: AnsiString;
-  Index: Integer; ACanvas: TCanvas; var AWidth: Integer);
+procedure TPropertyEditor.ListMeasureWidth(const AValue: ansistring;
+  Index: integer; ACanvas: TCanvas; var AWidth: Integer);
 begin
   //
 end;
@@ -4377,39 +4406,104 @@ end;
 { TInterfacePropertyEditor }
 
 function TInterfacePropertyEditor.AllEqual: Boolean;
+var
+  I: Integer;
+  Intf: IInterface;
 begin
   Result := False;
+  Intf := GetIntfValue;
+  if PropCount > 1 then
+    for I := 1 to PropCount - 1 do
+      if GetIntfValueAt(I) <> Intf then
+        Exit;
+  if not Assigned(Intf) then
+    Exit;
+  Result := csDesigning in GetComponent(Intf).ComponentState;
 end;
 
-function TInterfacePropertyEditor.GetComponent(
-  const AInterface: Pointer {IInterface}): TComponent;
+function TInterfacePropertyEditor.GetComponent(const AInterface: IInterface): TComponent;
+var
+  ComponentRef: IInterfaceComponentReference;
 begin
   Result := nil;
+  if not Assigned(AInterface) then
+    Exit;
+  if not Supports(AInterface, IInterfaceComponentReference, ComponentRef) then
+    Exit;
+  Result := ComponentRef.GetComponent;
 end;
 
 function TInterfacePropertyEditor.GetComponentReference: TComponent;
 begin
-  Result := nil; //GetComponent(GetIntfValue);
+  Result := GetComponent(GetIntfValue);
 end;
 
-function TInterfacePropertyEditor.GetSelections: TPersistentSelectionList{IDesignerSelections};
+function TInterfacePropertyEditor.GetSelections: TPersistentSelectionList;
+var
+  I: Integer;
+  SubItem: TPersistent;
 begin
-  Result := nil;
-end;
-
-procedure TInterfacePropertyEditor.ReceiveComponentNames(const S: string);
-begin
-
+  if AllEqual then
+  begin
+    Result := TPersistentSelectionList.Create;
+    try
+      for I := 0 to PropCount - 1 do
+      begin
+        SubItem := GetComponent(GetIntfValueAt(I));
+        if Assigned(SubItem) then
+          Result.Add(SubItem);
+      end;
+    except
+      Result.Free;
+      raise;
+    end;
+  end
+  else
+    Result := nil;
 end;
 
 procedure TInterfacePropertyEditor.GetValues(Proc: TGetStrProc);
-begin
 
+var
+  ID: TGUID;
+
+  procedure TraverseComponents(Root: TComponent);
+  var
+    i: integer;
+  begin
+    for i := 0 to Root.ComponentCount - 1 do
+      if Supports(Root.Components[i], ID) then
+        Proc(Root.Components[i].Name);
+  end;
+
+begin
+  ID := GetTypeData(GetPropType)^.GUID;
+  Proc(oisNone);
+  if Assigned(PropertyHook) and (PropertyHook.FLookupRoot is TComponent) then
+    TraverseComponents(TComponent(PropertyHook.FLookupRoot));
 end;
 
-procedure TInterfacePropertyEditor.SetValue(const Value: string);
+procedure TInterfacePropertyEditor.SetValue(const NewValue: string);
+var
+  Intf: IInterface;
+  Component: TComponent;
 begin
-
+  if NewValue = GetValue then
+    Exit;
+  if (NewValue = '') or (NewValue = oisNone) then
+    Intf := nil
+  else
+  begin
+    if Assigned(PropertyHook) then
+    begin
+      Component := PropertyHook.GetComponent(NewValue);
+      if not Assigned(Component) or not Supports(Component, GetTypeData(GetPropType)^.GUID) then
+        raise EPropertyError.Create(oisInvalidPropertyValue);
+    end
+    else
+      Intf := nil;
+  end;
+  SetIntfValue(Intf);
 end;
 
 { TComponentNamePropertyEditor }
@@ -6724,6 +6818,8 @@ begin
   RegisterPropertyEditor(TypeInfo(WordBool), nil, '', TBoolPropertyEditor);
   RegisterPropertyEditor(TypeInfo(LongBool), nil, '', TBoolPropertyEditor);
   RegisterPropertyEditor(TypeInfo(QWordBool), nil, '', TBoolPropertyEditor);
+
+  RegisterPropertyEditor(TypeInfo(IInterface), nil, '', TInterfacePropertyEditor);
 end;
 
 procedure FinalPropEdits;
