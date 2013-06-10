@@ -328,9 +328,12 @@ type
 
   { TvEntityWithPenBrushAndFont }
 
+  TvTextAnchor = (vtaStart, vtaMiddle, vtaEnd);
+
   TvEntityWithPenBrushAndFont = class(TvEntityWithPenAndBrush)
   public
     Font: TvFont;
+    TextAnchor: TvTextAnchor;
     constructor Create; override;
     procedure ApplyFontToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; AMulX: Double = 1.0);
     procedure AssignFont(AFont: TvFont);
@@ -382,14 +385,12 @@ type
     It has the opposite direction of text in the LCL TCanvas.
   }
 
-  TvTextAnchor = (vtaStart, vtaMiddle, vtaEnd);
 
   { TvText }
 
   TvText = class(TvEntityWithPenBrushAndFont)
   public
     Value: TStringList;
-    TextAnchor: TvTextAnchor;
     constructor Create; override;
     destructor Destroy; override;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;

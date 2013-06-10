@@ -818,8 +818,11 @@ end;
 
 function TvSVGVectorialReader.ReadSVGFontStyleWithKeyAndValue(AKey,
   AValue: string; ADestEntity: TvEntityWithPenBrushAndFont): TvSetPenBrushAndFontElements;
+var
+  lLowerValue: String;
 begin
   Result := [];
+  lLowerValue := LowerCase(AValue);
   // SVG text uses "fill" to indicate the pen color of the text, very unintuitive as
   // "fill" is usually for brush in other elements
   if AKey = 'fill' then
@@ -844,8 +847,18 @@ begin
     ADestEntity.Font.Name := AValue
   else if AKey = 'font-weight' then
   begin
-    case LowerCase(AValue) of
+    case lLowerValue of
     'bold': ADestEntity.Font.Bold := True;
+    end;
+  end
+  // Other text attributes, non-font ones
+  else if AKey = 'text-anchor' then
+  begin
+    // Adjust according to the text-anchor, if necessary
+    case lLowerValue of
+    'start': ADestEntity.TextAnchor := vtaStart;
+    'middle': ADestEntity.TextAnchor := vtaMiddle;
+    'end': ADestEntity.TextAnchor := vtaEnd;
     end;
   end;
 end;
@@ -859,7 +872,7 @@ begin
     (AStr = 'fill') or (AStr = 'fill-opacity') or
     // font
     (AStr = 'font-size') or (AStr = 'fill-family') or
-    (AStr = 'font-weight');
+    (AStr = 'font-weight') or (AStr = 'text-anchor');
 end;
 
 procedure TvSVGVectorialReader.ApplyLayerStyles(ADestEntity: TvEntity);
@@ -1268,6 +1281,8 @@ var
   LargeArcFlag, SweepFlag, LeftmostEllipse, ClockwiseArc: Boolean;
   lCurTokenType: TSVGTokenType;
   lDebugStr: String;
+  lToken5Before, lToken7Before: TSVGTokenType;
+  lCorrectPreviousToken: Boolean;
 begin
   lCurTokenType := ACurTokenType;
   // --------------
@@ -1365,8 +1380,27 @@ begin
     end
     else
     begin
-      X2 := CurX;
-      Y2 := CurY;
+      // Calculation found here: http://stackoverflow.com/questions/5287559/calculating-control-points-for-a-shorthand-smooth-svg-path-bezier-curve
+      // Description here: http://www.w3.org/TR/SVG/paths.html#PathDataCurveCommands
+      //
+      // M X0, Y0 C X1, Y1 X2, Y2 X3, Y3 S X4, Y4 X5, Y5
+      // Missing control points for S is:
+      // XR = 2*X3 - X2 and
+      // YR = 2*Y3 - Y2
+      if i >= 7 then
+      begin
+        lToken5Before := FSVGPathTokenizer.Tokens.Items[i-5].TokenType;
+        lToken7Before := FSVGPathTokenizer.Tokens.Items[i-7].TokenType;
+        lCorrectPreviousToken := lToken5Before in [sttSmoothBezierTo, sttRelativeSmoothBezierTo];
+        lCorrectPreviousToken := lCorrectPreviousToken or
+          (lToken7Before in [sttBezierTo, sttRelativeBezierTo]);
+      end;
+      if (i >= 7) and (lCorrectPreviousToken) then
+      begin
+        X2 := 2*FSVGPathTokenizer.Tokens.Items[i-2].Value - FSVGPathTokenizer.Tokens.Items[i-4].Value;
+        Y2 := 2*FSVGPathTokenizer.Tokens.Items[i-1].Value - FSVGPathTokenizer.Tokens.Items[i-3].Value;
+      end;
+      // Now the non-missing items
       X3 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
       Y3 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
       X := FSVGPathTokenizer.Tokens.Items[i+3].Value;
@@ -1385,6 +1419,13 @@ begin
       ConvertSVGCoordinatesToFPVCoordinates(AData, X2, Y2, X2, Y2);
       ConvertSVGCoordinatesToFPVCoordinates(AData, X3, Y3, X3, Y3);
       ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
+    end;
+
+    if (lCurTokenType in [sttSmoothBezierTo, sttRelativeSmoothBezierTo]) and
+      ((i < 7) or (not lCorrectPreviousToken)) then
+    begin
+      X2 := CurX;
+      Y2 := CurY;
     end;
 
     if lCurTokenType = sttRelativeBezierTo then
@@ -1647,7 +1688,6 @@ var
   i: Integer;
   lNodeName: DOMString;
   lCurNode: TDOMNode;
-  lTextAnchor: string = '';
 begin
   lx := 0.0;
   ly := 0.0;
@@ -1666,8 +1706,6 @@ begin
       lText.Name := ANode.Attributes.Item[i].NodeValue
     else if lNodeName = 'style' then
       ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lText)
-    else if lNodeName = 'text-anchor' then
-      lTextAnchor := ANode.Attributes.Item[i].NodeValue
     else if IsAttributeFromStyle(lNodeName) then
       ReadSVGFontStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lText);
   end;
@@ -1682,13 +1720,6 @@ begin
   // Set the coordinates
   ConvertSVGCoordinatesToFPVCoordinates(
         AData, lx, ly, lText.X, lText.Y);
-
-  // Adjust according to the text-anchor, if necessary
-  lTextAnchor := LowerCase(lTextAnchor);
-  case lTextAnchor of
-  'middle': lText.TextAnchor := vtaMiddle;
-  'end': lText.TextAnchor := vtaEnd;
-  end;
 
   // Now add other lines, which appear as <tspan ...>another line</tspan>
   // Example:
