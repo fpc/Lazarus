@@ -820,6 +820,7 @@ type
     procedure SetScrollBars(const Value: TScrollStyle);
     procedure Loaded; override;
     procedure CMWantSpecialKey(var Message: TCMWantSpecialKey); message CM_WANTSPECIALKEY;
+    procedure WMGetDlgCode(var Message: TLMNoParams); message LM_GETDLGCODE;
     class function GetControlClassDefaultSize: TSize; override;
   public
     constructor Create(AOwner: TComponent); override;

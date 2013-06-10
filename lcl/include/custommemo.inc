@@ -227,7 +227,7 @@ end;
 {------------------------------------------------------------------------------
   procedure TCustomMemo.SetScrollbars(const Value : TScrollStyle);
  ------------------------------------------------------------------------------}
-procedure TCustomMemo.SetScrollbars(const Value: TScrollStyle);
+procedure TCustomMemo.SetScrollBars(const Value: TScrollStyle);
 begin
   if Value <> FScrollbars then begin
     FScrollbars:= Value;
@@ -258,6 +258,16 @@ begin
   else
     inherited;
   end;
+end;
+
+procedure TCustomMemo.WMGetDlgCode(var Message: TLMNoParams);
+begin
+  inherited;
+  Message.Result := Message.Result and not (DLGC_WANTTAB or DLGC_WANTALLKEYS);
+  if WantTabs then
+    Message.Result := Message.Result or DLGC_WANTTAB;
+  if WantReturns then
+    Message.Result := Message.Result or DLGC_WANTALLKEYS;
 end;
 
 class function TCustomMemo.GetControlClassDefaultSize: TSize;
