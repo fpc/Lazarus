@@ -37,6 +37,7 @@ type
     function GetDetailRegion(DC: HDC; Details: TThemedElementDetails; const R: TRect): HRGN; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
     function GetOption(AOption: TThemeOption): Integer; override;
+    function GetTextExtent(DC: HDC; Details: TThemedElementDetails; const S: String; Flags: Cardinal; BoundingRect: PRect): TRect; override;
 
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect;
       ClipRect: PRect = nil); override;
@@ -278,6 +279,22 @@ begin
   else
     Result := inherited GetOption(AOption);
   end;
+end;
+
+function TWin32ThemeServices.GetTextExtent(DC: HDC; Details: TThemedElementDetails;
+  const S: String; Flags: Cardinal; BoundingRect: PRect): TRect;
+var
+  w: widestring;
+begin
+  if ThemesEnabled then
+    with Details do
+    begin
+      w := UTF8ToUTF16(S);
+      GetThemeTextExtent(Theme[Element], DC, Part, State, PWideChar(W), Length(W),
+        Flags, BoundingRect, Result);
+    end
+  else
+    Result := inherited GetTextExtent(DC, Details, S, Flags, BoundingRect);
 end;
 
 function TWin32ThemeServices.UseThemes: Boolean;

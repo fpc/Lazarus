@@ -87,7 +87,7 @@ begin
   if not HandleAllocated then
     Exit;
 
-  if (Color = clInfoBk) or (Color = clDefault) then
+  if UseThemes then
   begin
     Details := ThemeServices.GetElementDetails(tttStandardNormal);
     ARect := ClientRect;
@@ -102,6 +102,11 @@ procedure THintWindow.SetColor(Value: TColor);
 begin
   inherited SetColor(Value);
   UpdateRegion;
+end;
+
+function THintWindow.UseThemes: Boolean;
+begin
+  Result := (Color = clInfoBk) or (Color = clDefault);
 end;
 
 function THintWindow.GetDrawTextFlags: Cardinal;
@@ -150,7 +155,7 @@ var
   Details: TThemedElementDetails;
 begin
   ARect := ClientRect;
-  if (Color = clInfoBk) or (Color = clDefault) then
+  if UseThemes then
   begin
     // draw using themes
     Details := ThemeServices.GetElementDetails(tttStandardNormal);
@@ -240,15 +245,19 @@ end;
 function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String;
   AData: Pointer): TRect;
 begin
-  if AHint='' then
+  if AHint = '' then
   begin
-    Result:=Rect(0,0,0,0);
-    exit;
+    Result := Rect(0, 0, 0, 0);
+    Exit;
   end;
   if MaxWidth <= 0 then
     MaxWidth := Screen.Width - 4 * HintBorderWidth;
   Result := Rect(0, 0, MaxWidth, Screen.Height - 4 * HintBorderWidth);
-  DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(AHint), Length(AHint),
+  if UseThemes then
+    Result := ThemeServices.GetTextExtent(Canvas.GetUpdatedHandle([csFontValid]),
+      ThemeServices.GetElementDetails(tttStandardNormal), AHint, DT_NOPREFIX or DT_WORDBREAK, @Result)
+  else
+    DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(AHint), Length(AHint),
            Result, DT_CALCRECT or DT_NOPREFIX or DT_WORDBREAK);
   inc(Result.Right, 4 * HintBorderWidth);
   inc(Result.Bottom, 4 * HintBorderWidth);

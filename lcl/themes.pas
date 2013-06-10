@@ -479,6 +479,7 @@ type
     function GetDetailRegion(DC: HDC; Details: TThemedElementDetails; const R: TRect): HRGN; virtual;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; virtual;
     function GetOption(AOption: TThemeOption): Integer; virtual;
+    function GetTextExtent(DC: HDC; Details: TThemedElementDetails; const S: String; Flags: Cardinal; BoundingRect: PRect): TRect; virtual;
 
     function ColorToRGB(Color: LongInt; Details: PThemedElementDetails = nil): COLORREF;
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; virtual;
@@ -821,7 +822,8 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TThemeServices.GetElementDetails(Detail: TThemedListview): TThemedElementDetails;
+function TThemeServices.GetElementDetails(Detail: TThemedListView
+  ): TThemedElementDetails;
 var
   Base: Integer;
 begin
@@ -1909,6 +1911,16 @@ begin
   else
     Result := 0;
   end;
+end;
+
+function TThemeServices.GetTextExtent(DC: HDC; Details: TThemedElementDetails;
+  const S: String; Flags: Cardinal; BoundingRect: PRect): TRect;
+begin
+  if Assigned(BoundingRect) then
+    Result := BoundingRect^
+  else
+    Result := Rect(0, 0, 0, 0);
+  LCLIntf.DrawText(DC, PChar(S), Length(S), Result, DT_CALCRECT or Flags);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
