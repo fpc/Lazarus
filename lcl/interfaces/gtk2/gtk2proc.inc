@@ -6541,9 +6541,14 @@ begin
     if not MessageDelivered then exit;
   end;
 
+  {$IFDEF EnableGtk2WidgetDrawOnLCLSizeMessage}
   if GtkWidgetIsA(aWidget, GTKAPIWidget_Type) and
-     not (wwiNoEraseBkgnd in GetWidgetInfo(aWidget)^.Flags) then
+     not (wwiNoEraseBkgnd in GetWidgetInfo(aWidget)^.Flags)
+  then begin
+    //debugln(['SendSizeNotificationToLCL ',DbgSName(LCLControl)]);
     gtk_widget_queue_draw(aWidget);
+  end;
+  {$ENDIF}
 end;
 
 procedure SendCachedGtkResizeNotifications;
