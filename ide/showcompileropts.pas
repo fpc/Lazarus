@@ -57,6 +57,7 @@ type
     PageControl1: TPageControl;
     RelativePathsCheckBox: TCheckBox;
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure InhTreeViewSelectionChanged(Sender: TObject);
     procedure RelativePathsCheckBoxChange(Sender: TObject);
   private
@@ -64,7 +65,7 @@ type
     ImageIndexInherited: Integer;
     ImageIndexRequired: Integer;
     ImageIndexPackage: Integer;
-    InheritedChildDatas: TList; // list of PInheritedNodeData
+    InheritedChildDatas: TFPList; // list of PInheritedNodeData
     procedure ClearInheritedTree;
     procedure SetCompilerOpts(const AValue: TBaseCompilerOptions);
     procedure UpdateMemo;
@@ -177,6 +178,11 @@ begin
   CloseButton.Caption:=lisBtnClose;
 end;
 
+procedure TShowCompilerOptionsDlg.FormDestroy(Sender: TObject);
+begin
+  ClearInheritedTree;
+end;
+
 procedure TShowCompilerOptionsDlg.SetCompilerOpts(
   const AValue: TBaseCompilerOptions);
 begin
@@ -222,7 +228,7 @@ var
     ChildData^.FullText := Value;
     ChildData^.Option := Option;
     if InheritedChildDatas = nil then
-      InheritedChildDatas := TList.Create;
+      InheritedChildDatas := TFPList.Create;
     InheritedChildDatas.Add(ChildData);
 
     if UTF8Length(Value) > 100 then
