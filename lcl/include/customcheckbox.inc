@@ -49,8 +49,6 @@ end;
 procedure TCustomCheckBox.DoChange(var Msg);
 begin
   FState := RetrieveState;
-  if Action is TCustomAction then
-    TCustomAction(Action).Checked := FState = cbChecked;
   DoClickOnChange;
 end;
 
