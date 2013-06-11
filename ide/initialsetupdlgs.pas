@@ -1883,7 +1883,10 @@ begin
   then
     s:=lisDirectory+EnvironmentOptions.GetParsedFPCSourceDirectory+LineEnding+
       LineEnding+s;
-  FPCSrcDirMemo.Text:=s+Note;
+  s+=Note;
+  if Quality<>sddqCompatible then
+    s+=#13+lisYouCanDownloadFPCAndTheFPCSourcesFromHttpSourcefor;
+  FPCSrcDirMemo.Text:=s;
 
   ImageIndex:=QualityToImgIndex(Quality);
   TVNodeFPCSources.ImageIndex:=ImageIndex;

@@ -831,6 +831,9 @@ resourcestring
   lisWarning = 'Warning: ';
   lisFile2 = 'File: ';
   lisDirectory = 'Directory: ';
+  lisYouCanDownloadFPCAndTheFPCSourcesFromHttpSourcefor = 'You can download '
+    +'FPC and the FPC sources from http://sourceforge.net/projects/lazarus/?'
+    +'source=directory';
   lisSaveChanges = 'Save changes?';
   lisSaveFileBeforeClosingForm = 'Save file %s%s%s%sbefore closing form %s%s%s?';
   lisUnableToRenameFormInSource = 'Unable to rename form in source.';
