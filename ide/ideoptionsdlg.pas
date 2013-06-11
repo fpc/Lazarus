@@ -85,6 +85,7 @@ type
     FPrevEditor: TAbstractIDEOptionsEditor;
     FSelectNode: TTreeNode;
     FSettings: TIDEOptionsEditorSettings;
+    FShowBuildModes: boolean;
     function FindGroupClass(Node: TTreeNode): TAbstractIDEOptionsClass;
     procedure TraverseSettings(AOptions: TAbstractIDEOptions; anAction: TIDEOptsDlgAction);
     function CheckValues: boolean;
@@ -132,7 +133,7 @@ begin
   FEditorsCreated := False;
   FEditorToOpen := nil;
   SettingsPanel.Constraints.MinHeight:=0;
-  BuildModeSelectPanel.Height:=0;
+  BuildModeSelectPanel.Visible:=false;
   BuildModeLabel.Caption:=lisBuildMode;
   BuildModeInSessionCheckBox.Caption:=lisInSession;
   BuildModeInSessionCheckBox.Hint:=
@@ -198,11 +199,11 @@ begin
     AEditor := TAbstractIDEOptionsEditor(Node.Data);
     GroupClass := FindGroupClass(Node);
   end;
-  // Show the Build Mode panel for Compiler Options
-  if (GroupClass <> nil) and (GroupClass.InheritsFrom(TLazCompilerOptions)) then
-    BuildModeSelectPanel.Height:=40
+  // Show the Build Mode panel for project compiler options
+  if (GroupClass <> nil) and (GroupClass.InheritsFrom(TProjectCompilerOptions)) then
+    BuildModeSelectPanel.Visible:=true
   else
-    BuildModeSelectPanel.Height:=0;
+    BuildModeSelectPanel.Visible:=false;
   // Hide the old and show the new editor frame
   if Assigned(AEditor) then
     FNewLastSelected := AEditor.Rec;
@@ -225,7 +226,7 @@ begin
     BuildModeInSessionCheckBox.Enabled:=false;
   end
   else begin
-    SwitchBuildMode(BuildModeComboBox.Text);
+    SwitchBuildMode(BuildModeComboBox.Text,BuildModeSelectPanel.Visible);
   end;
 end;
 
