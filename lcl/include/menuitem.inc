@@ -60,6 +60,8 @@ procedure TMenuItem.Click;
     Result:=CompareMethods(TMethod(FOnClick),TMethod(Action.OnExecute));
   end;
 
+var
+  CallAction: Boolean;
 begin
   if Enabled then
   begin
@@ -75,13 +77,14 @@ begin
         Checked := not Checked;
     end;
 
-    // first call our OnClick
-    if Assigned(FOnClick) then
+    CallAction:=(not (csDesigning in ComponentState)) and (ActionLink <> nil);
+    // first call our own OnClick if it differs from Action.OnExecute
+    if Assigned(FOnClick)
+    and ((not CallAction) or (not OnClickIsActionExecute)) then
       FOnClick(Self);
     // then trigger the Action
-    if not (csDesigning in ComponentState) and (ActionLink <> nil)
-    and not OnClickIsActionExecute then
-      FActionLink.Execute(Self);
+    if CallAction then
+      ActionLink.Execute(Self);
   end;
 end;
 
