@@ -1196,7 +1196,7 @@ const
     (idnTempDisabled, idnTempEnabled); // False, True
 begin
   Result := idnUnknown;
-  Assert(NodeType <> APeerType, 'NodeStateForPeer: NodeType <> APeerType');
+  Assert((NodeType <> APeerType) or (NodeType = idnElseIf), 'NodeStateForPeer: NodeType <> APeerType');
   case NodeState of
     idnEnabled: begin
         case NodeType of
