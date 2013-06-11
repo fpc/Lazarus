@@ -46,7 +46,7 @@ begin
     writeln('  ',ParamStr(0));
     writeln('  ',ParamStr(0),' <filename>');
   end;
-  Filename:=ExpandFileName('scanexamples'+PathDelim+'directives1.pas');
+  Filename:=ExpandFileName(SetDirSeparators('scanexamples/directives1.pas'));
 
   // load the file
   Code:=CodeToolBoss.LoadFile(Filename,true,false);

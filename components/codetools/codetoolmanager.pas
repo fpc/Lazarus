@@ -1859,6 +1859,7 @@ end;
 function TCodeToolManager.ExploreUnitDirectives(Code: TCodeBuffer; out
   aScanner: TLinkScanner): boolean;
 begin
+  Result:=false;
   if not InitCurCodeTool(Code) then exit;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.ExploreUnitDirectives A ',dbgs(FCurCodeTool.Scanner<>nil));
@@ -1868,6 +1869,7 @@ begin
     if not aScanner.StoreDirectives then
       aScanner.DemandStoreDirectives;
     aScanner.Scan(lsrEnd,true);
+    Result:=true;
   except
     on e: Exception do Result:=HandleException(e);
   end;
