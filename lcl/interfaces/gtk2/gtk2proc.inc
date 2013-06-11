@@ -1923,6 +1923,19 @@ var
   KeyPressesChar: char;
   PassUTF8AsKeyPress: Boolean;
 
+  procedure ClearKey;
+  begin
+    //MWE: still need to skip on win32 ?
+    {MWE:.$IfNDef Win32}
+    if EventString <> nil
+    then begin
+      gdk_event_key_set_string(AEvent, #0);
+      AEvent^.length := 0;
+    end;
+    {MWE:.$EndIf}
+    AEvent^.KeyVal := 0;
+  end;
+
   procedure StopKeyEvent;
   begin
     {$IFDEF VerboseKeyboard}
@@ -1933,18 +1946,8 @@ var
       g_signal_stop_emission_by_name(PGtkObject(AWidget), AEventName);
       EventStopped := True;
     end;
-
-    //MWE: still need to skip on win32 ?
-    {MWE:.$IfNDef Win32}
-    if EventString <> nil
-    then begin
-      gdk_event_key_set_string(AEvent, #0);
-      AEvent^.length := 0;
-    end;
-    {MWE:.$EndIf}
+    ClearKey;
     ResetDefaultIMContext;
-
-    AEvent^.KeyVal := 0;
   end;
 
   function DeliverKeyMessage(const Target: Pointer; var AMessage): boolean;
@@ -2367,11 +2370,12 @@ begin
   end;
 
   // send keypresses
-  if not EventStopped and AHandleDown then begin
-
+  if not EventStopped and AHandleDown then
+  begin
     // send the UTF8 keypress
     PassUTF8AsKeyPress := False;
-    if ABeforeEvent then begin
+    if ABeforeEvent then
+    begin
       // try to get the UTF8 representation of the key
         if im_context_string <> '' then
         begin
@@ -2402,7 +2406,8 @@ begin
           // send the key after navigation keys were handled
           Result := TWinControl(LCLObject).IntfUTF8KeyPress(Character, 1, SysKey);
           if Result or (Character = '') then
-            StopKeyEvent
+            // dont' stop key event here, just clear it since we need a keyUp event
+            ClearKey
           else
           if (Character <> OldCharacter) then
           begin
@@ -2424,16 +2429,20 @@ begin
               end
               else
                 AEvent^.length := 1;
-            end else
-              StopKeyEvent;
+            end
+            else
+            begin
+              ClearKey;
+              Result := True;
+            end;
           end;
         end;
-        PassUTF8AsKeyPress := not EventStopped and not Result;
+        PassUTF8AsKeyPress := not Result;
       end;
     end;
 
     //  send a normal KeyPress Event for Delphi compatibility
-    if not EventStopped and (CanSendChar or PassUTF8AsKeyPress) then
+    if (CanSendChar or PassUTF8AsKeyPress) then
     begin
       {$IFDEF EventTrace}
       EventTrace('char', data);
@@ -2468,8 +2477,8 @@ begin
           // key was changed by lcl
           if (Msg.CharCode=0) or (Msg.CharCode>=128) then
           begin
-            // key set to invalid => just stop
-            StopKeyEvent;
+            // key set to invalid => just clear the key
+            ClearKey;
           end else
           begin
             // try to change the key
