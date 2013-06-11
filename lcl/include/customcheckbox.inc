@@ -49,6 +49,8 @@ end;
 procedure TCustomCheckBox.DoChange(var Msg);
 begin
   FState := RetrieveState;
+  if Action is TCustomAction then
+    TCustomAction(Action).Checked := FState = cbChecked;
   DoClickOnChange;
 end;
 
@@ -132,10 +134,10 @@ begin
     FState := cbChecked
   else
     FState := cbUnChecked;
-  //debugln('TCustomCheckBox.DoChange ',dbgsname(Self),' ',dbgs(ord(FState)));
+  //debugln('TCustomCheckBox.SetChecked ',dbgsname(Self),' ',dbgs(ord(FState)));
   if FState <> OldState then
   begin
-    if Assigned(Action) and (Action is TCustomAction) then
+    if Action is TCustomAction then
       TCustomAction(Action).Checked := FState = cbChecked;
     ApplyChanges;
     //some widgetsets (gtk*) does not allow to uncheck a radio button
