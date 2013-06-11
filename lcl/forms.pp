@@ -992,7 +992,6 @@ type
     procedure SetMenuFont(const AValue: TFont);
     procedure SetSystemFont(const AValue: TFont);
     procedure UpdateLastActive;
-    procedure UpdateMonitors;
     procedure RestoreLastActive;
     procedure AddHandler(HandlerType: TScreenNotification;
                          const Handler: TMethod; AsFirst: Boolean);
@@ -1027,6 +1026,7 @@ type
     function FindForm(const FormName: string): TCustomForm;
     function FindNonDesignerDataModule(const DataModuleName: string): TDataModule;
     function FindDataModule(const DataModuleName: string): TDataModule;
+    procedure UpdateMonitors;
     procedure UpdateScreen;
     // handler
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
