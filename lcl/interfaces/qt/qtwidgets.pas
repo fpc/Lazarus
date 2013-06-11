@@ -2737,7 +2737,12 @@ var
     // do not send UTF8KeyPress for control keys
     AQtKey := QKeyEvent_key(QKeyEventH(Event));
 
-    Result := ((AQtKey >= QtKey_Escape) and (AQtKey <= QtKey_Clear)) or
+    // Enter, Return and Backspace should be sent to LCL in UTF8KeyPress,
+    // so skip them here
+
+    Result :=
+      ((AQtKey >= QtKey_Escape) and (AQtKey <= QtKey_Backtab)) or
+      ((AQtKey >= QtKey_Insert) and (AQtKey <= QtKey_Clear)) or
       ((AQtKey >= QtKey_Home) and (AQtKey <= QtKey_PageDown)) or
       ((AQtKey >= QtKey_F1) and (AQtKey <= QtKey_Direction_L)) or
       (AQtKey = QtKey_Direction_R);
