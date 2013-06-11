@@ -276,6 +276,13 @@ begin
   Result.CY := 90;
 end;
 
+procedure TCustomMemo.UTF8KeyPress(var UTF8Key: TUTF8Char);
+begin
+  inherited UTF8KeyPress(UTF8Key);
+  if not WantReturns and (UTF8Key = #13) then
+    UTF8Key := '';
+end;
+
 procedure TCustomMemo.SetWantTabs(const NewWantTabs: boolean);
 begin
   if FWantTabs = NewWantTabs then exit;

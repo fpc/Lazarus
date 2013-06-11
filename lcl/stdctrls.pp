@@ -822,6 +822,7 @@ type
     procedure CMWantSpecialKey(var Message: TCMWantSpecialKey); message CM_WANTSPECIALKEY;
     procedure WMGetDlgCode(var Message: TLMNoParams); message LM_GETDLGCODE;
     class function GetControlClassDefaultSize: TSize; override;
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
