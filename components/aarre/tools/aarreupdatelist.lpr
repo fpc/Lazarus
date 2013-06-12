@@ -71,7 +71,7 @@ begin
     E(ErrorMsg);
 
   // parse parameters
-  if HasOption('h','help') then begin
+  if HasOption('h','help') or not HasOption('d','directory') then begin
     WriteHelp;
     Exit;
   end;
@@ -87,8 +87,7 @@ begin
     E('missing output directory: '+ExtractFilePath(OutputFile));
   if DirectoryExistsUTF8(OutputFile) then
     E('output file is directory: '+OutputFile);
-  if HasOption('d','directory') then
-    Directory:=GetOptionValue('d','directory');
+  Directory:=GetOptionValue('d','directory');
   if Directory='' then
     E('directory is empty');
   Directory:=TrimAndExpandFilename(Directory);
@@ -176,7 +175,7 @@ begin
   writeln('-h : write this help and exit');
   writeln('-v : be more verbose');
   writeln('-q : be quiet');
-  writeln('-d <repository>  : The directory to scan. Default: ',Directory);
+  writeln('-d <repository>  : The directory to scan.');
   writeln('-o <pkglistfile.gz> : The file to create. Default: ',OutputFile);
   Terminate;
 end;

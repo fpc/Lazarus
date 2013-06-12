@@ -246,7 +246,7 @@ procedure TAPkgDependencies.Save(XML: TXMLConfig; Path: string);
 var
   i: Integer;
 begin
-  XML.SetValue(Path+'Count',0);
+  XML.SetDeleteValue(Path+'Count',Count,0);
   for i:=0 to Count-1 do
     Items[i].Save(XML,Path+'Item'+IntToStr(i+1)+'/');
 end;
@@ -516,7 +516,7 @@ var
 begin
   xml:=TXMLConfig.Create(nil);
   try
-    Save(XML,'aarre/');
+    Save(XML,'');
     xml.WriteToStream(s);
   finally
     xml.Free;
@@ -530,7 +530,7 @@ begin
   xml:=TXMLConfig.Create(nil);
   try
     xml.ReadFromStream(s);
-    Load(XML,'aarre/');
+    Load(XML,'');
   finally
     xml.Free;
   end;
@@ -602,9 +602,9 @@ end;
 
 procedure TAPkgDependency.Load(XML: TXMLConfig; Path: string);
 begin
-  MaxVersion.Load(XML,Path+'MaxVersion');
+  MaxVersion.Load(XML,Path+'MaxVersion/');
   MaxVersionValid:=XML.GetValue(Path+'MaxVersion/Valid',false);
-  MinVersion.Load(XML,Path+'MinVersion');
+  MinVersion.Load(XML,Path+'MinVersion/');
   MinVersionValid:=XML.GetValue(Path+'MinVersion/Valid',false);
   DefaultFilename:=XML.GetValue(Path+'DefaultFilename/Value','');
   PreferDefaultFilename:=XML.GetValue(Path+'DefaultFilename/Prefer',false);
@@ -612,9 +612,9 @@ end;
 
 procedure TAPkgDependency.Save(XML: TXMLConfig; Path: string);
 begin
-  MaxVersion.Save(XML,Path+'MaxVersion');
+  MaxVersion.Save(XML,Path+'MaxVersion/');
   XML.SetDeleteValue(Path+'MaxVersion/Valid',MaxVersionValid,false);
-  MinVersion.Save(XML,Path+'MinVersion');
+  MinVersion.Save(XML,Path+'MinVersion/');
   XML.SetDeleteValue(Path+'MinVersion/Valid',MinVersionValid,false);
   XML.SetDeleteValue(Path+'DefaultFilename/Value',FDefaultFilename,'');
   XML.SetDeleteValue(Path+'DefaultFilename/Prefer',FPreferDefaultFilename,false);
