@@ -139,7 +139,6 @@ type
 
 function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions): TModalResult;
 
-
 implementation
 
 {$R *.lfm}
@@ -186,6 +185,17 @@ begin
   List.Free;
 end;
 
+var
+  DefaultLaunchingApplicationPathPlusParams: string;
+
+function GetDefaultLaunchingApplicationPathPlusParams: string;
+begin
+  Result:=DefaultLaunchingApplicationPathPlusParams;
+  if Result<>'' then exit;
+  Result:=FindTerminalInPath;
+  DefaultLaunchingApplicationPathPlusParams:=Result;
+end;
+
 function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions): TModalResult;
 var
   RunParamsOptsForm: TRunParamsOptsDlg;
@@ -216,16 +226,12 @@ begin
 end;
 
 procedure TRunParamsOptions.Clear;
-var
-  s: String;
 begin
   // local options
   fHostApplicationFilename := '';
   fCmdLineParams := '';
   fUseLaunchingApplication := False;
-  S := FindTerminalInPath;
-  if S <> '' then
-    fLaunchingApplicationPathPlusParams := S;
+  fLaunchingApplicationPathPlusParams := GetDefaultLaunchingApplicationPathPlusParams;
   // TODO: guess are we under gnome or kde so query for gnome-terminal or konsole.
   fWorkingDirectory := '';
   fUseDisplay := False;
@@ -238,8 +244,6 @@ end;
 
 function TRunParamsOptions.Load(XMLConfig: TXMLConfig; const Path: string;
   AdjustPathDelims: boolean): TModalResult;
-var
-  S: String;
 
   function f(const Filename: string): string;
   begin
@@ -270,13 +274,7 @@ begin
     Path + 'RunParams/local/LaunchingApplication/Use', fUseLaunchingApplication);
   fLaunchingApplicationPathPlusParams :=
     f(XMLConfig.GetValue(Path + 'RunParams/local/LaunchingApplication/PathPlusParams',
-    fLaunchingApplicationPathPlusParams));
-  if (fLaunchingApplicationPathPlusParams = '') then
-  begin
-    S := FindTerminalInPath;
-    if S <> '' then
-      fLaunchingApplicationPathPlusParams := S;
-  end;
+                         f(GetDefaultLaunchingApplicationPathPlusParams)));
   fWorkingDirectory := f(XMLConfig.GetValue(
     Path + 'RunParams/local/WorkingDirectory/Value', fWorkingDirectory));
   fUseDisplay := XMLConfig.GetValue(Path + 'RunParams/local/Display/Use',
@@ -327,7 +325,7 @@ begin
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/LaunchingApplication/Use',
     fUseLaunchingApplication, False);
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/LaunchingApplication/PathPlusParams',
-    f(fLaunchingApplicationPathPlusParams), '');
+    f(fLaunchingApplicationPathPlusParams), f(GetDefaultLaunchingApplicationPathPlusParams));
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/WorkingDirectory/Value',
     f(fWorkingDirectory), '');
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/Display/Use',
