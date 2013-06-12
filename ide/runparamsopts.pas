@@ -171,9 +171,9 @@ begin
   for i := 0 to List.Count - 1 do
   begin
     S := List.Strings[i] + PathDelim + Term;
-    if FileExistsUTF8(S) and FileIsExecutable(S) then
+    if FileExistsCached(S) and FileIsExecutableCached(S) then
     begin
-      // gnome-terminal is not compatibile to xterm params.
+      // gnome-terminal is not compatible to xterm params.
       if Term = 'gnome-terminal' then
         Result := S + ' -t ' + DefaultLauncherTitle + ' -e ' +
           '''' + DefaultLauncherApplication + ''''
