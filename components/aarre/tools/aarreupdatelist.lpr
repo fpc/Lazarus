@@ -3,7 +3,7 @@ program aarreupdatelist;
 {$mode objfpc}{$H+}
 
 uses
-  {$IFDEF UNIX}{$IFDEF UseCThreads}
+  {$IFDEF Unix}{$IFDEF UseCThreads}
   cthreads,
   {$ENDIF}{$ENDIF}
   Classes, SysUtils, LazFileUtils, LazLogger, Laz2_XMLCfg, CustApp, contnrs,
@@ -185,7 +185,7 @@ var
   Application: TAarreUpdateList;
 begin
   Application:=TAarreUpdateList.Create(nil);
-  Application.Title:='Aarre update list';
+  Application.Title:='Aarre Update List';
   Application.Run;
   Application.Free;
 end.
