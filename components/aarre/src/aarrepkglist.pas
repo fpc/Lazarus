@@ -615,6 +615,7 @@ end;
 
 procedure TAPkgDependency.Load(XML: TXMLConfig; Path: string);
 begin
+  Name:=XML.GetValue(Path+'PackageName/Value','');
   MaxVersion.Load(XML,Path+'MaxVersion/');
   MaxVersionValid:=XML.GetValue(Path+'MaxVersion/Valid',false);
   MinVersion.Load(XML,Path+'MinVersion/');
@@ -625,6 +626,7 @@ end;
 
 procedure TAPkgDependency.Save(XML: TXMLConfig; Path: string);
 begin
+  XML.SetDeleteValue(Path+'PackageName/Value',Name,'');
   MaxVersion.Save(XML,Path+'MaxVersion/');
   XML.SetDeleteValue(Path+'MaxVersion/Valid',MaxVersionValid,false);
   MinVersion.Save(XML,Path+'MinVersion/');
