@@ -85,7 +85,6 @@ type
     FPrevEditor: TAbstractIDEOptionsEditor;
     FSelectNode: TTreeNode;
     FSettings: TIDEOptionsEditorSettings;
-    FShowBuildModes: boolean;
     function FindGroupClass(Node: TTreeNode): TAbstractIDEOptionsClass;
     procedure TraverseSettings(AOptions: TAbstractIDEOptions; anAction: TIDEOptsDlgAction);
     function CheckValues: boolean;
