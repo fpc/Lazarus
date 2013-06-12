@@ -41,12 +41,16 @@ var
   FirstSortedIndex: integer;
   LastSortedIndex: integer;
 begin
-  if (ParamCount>=1) and (Paramcount<>1) then begin
+  if (ParamCount>1) then begin
     writeln('Usage:');
     writeln('  ',ParamStr(0));
     writeln('  ',ParamStr(0),' <filename>');
   end;
-  Filename:=ExpandFileName(SetDirSeparators('scanexamples/directives1.pas'));
+  if Paramcount=1 then
+    Filename:=ParamStrUTF8(1)
+  else
+    Filename:=SetDirSeparators('scanexamples/directives1.pas');
+  Filename:=ExpandFileName(Filename);
 
   // load the file
   Code:=CodeToolBoss.LoadFile(Filename,true,false);
