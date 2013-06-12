@@ -6503,13 +6503,17 @@ msgstr "*** Korjataan lomakkeita ... ***"
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
 msgstr "Korvattu käännösyksikkö \"%s\" \"%s\":lla uses-lauseessa."
 
-#: lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname
-msgid "There are two units with the same unitname:%s%s%s%s%s"
-msgstr "Löytyy 2 käännösyksikköä samalla nimellä:%s%s%s%s%s"
-
 #: lazarusidestrconsts.lisconvdelphithereisalreadyapackagewiththenamepleaseclosethispa
 msgid "There is already a package with the name \"%s\"%sPlease close this package first."
 msgstr "\"%s\" niminen paketti on jo olemassa.%sSulje se ensin."
+
+#: lazarusidestrconsts.lisconvdelphitwounitswithsamename
+msgid "There are two units with the same name:%s%s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvdelphiunitnameexistsinlcl
+msgid "Unitname exists in LCL"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiunitnameexiststwice
 msgid "Unitname exists twice"
@@ -6518,6 +6522,10 @@ msgstr "Samanniminen käännösyksikkö esiintyy kahdesti"
 #: lazarusidestrconsts.lisconvdelphiunitstoreplacein
 msgid "Units to replace in %s"
 msgstr "Nämä käännösyksiköt korvataan %s:ssa"
+
+#: lazarusidestrconsts.lisconvdelphiunitwithnameexistsinlcl
+msgid "LCL already has a unit with name %s. Delete local file %s?"
+msgstr ""
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -16884,6 +16892,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
 msgid "You can disable this for individual forms via the popup menu in the project inspector"
+msgstr ""
+
+#: lazarusidestrconsts.lisyoucandownloadfpcandthefpcsourcesfromhttpsourcefor
+msgid "You can download FPC and the FPC sources from http://sourceforge.net/projects/lazarus/?source=directory"
 msgstr ""
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling

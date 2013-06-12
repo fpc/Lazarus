@@ -6847,14 +6847,17 @@ msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
 msgstr "Sostituita unit \"%s\" con \"%s\" nella sezione uses."
 
-#: lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname
-msgctxt "lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname"
-msgid "There are two units with the same unitname:%s%s%s%s%s"
-msgstr "Ci sono due unit con lo stesso nome:%s%s%s%s%s"
-
 #: lazarusidestrconsts.lisconvdelphithereisalreadyapackagewiththenamepleaseclosethispa
 msgid "There is already a package with the name \"%s\"%sPlease close this package first."
 msgstr "C'è già un package di nome\"%s\"%sPer favore chiudere questo package prima."
+
+#: lazarusidestrconsts.lisconvdelphitwounitswithsamename
+msgid "There are two units with the same name:%s%s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvdelphiunitnameexistsinlcl
+msgid "Unitname exists in LCL"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiunitnameexiststwice
 msgid "Unitname exists twice"
@@ -6863,6 +6866,10 @@ msgstr "Nome di unit duplicato"
 #: lazarusidestrconsts.lisconvdelphiunitstoreplacein
 msgid "Units to replace in %s"
 msgstr "Unit da sostituire in %s"
+
+#: lazarusidestrconsts.lisconvdelphiunitwithnameexistsinlcl
+msgid "LCL already has a unit with name %s. Delete local file %s?"
+msgstr ""
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -17770,6 +17777,10 @@ msgstr ""
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
 msgid "You can disable this for individual forms via the popup menu in the project inspector"
 msgstr "Può essere disabilitato per singoli form per mezzo del menu popup dell'ispettore progetti"
+
+#: lazarusidestrconsts.lisyoucandownloadfpcandthefpcsourcesfromhttpsourcefor
+msgid "You can download FPC and the FPC sources from http://sourceforge.net/projects/lazarus/?source=directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."

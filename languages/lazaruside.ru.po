@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-06-09 17:36+0400\n"
+"PO-Revision-Date: 2013-06-12 15:19+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -6726,14 +6726,17 @@ msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
 msgstr "Модуль \"%s\" в выражении Uses заменён на \"%s\"."
 
-#: lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname
-msgctxt "lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname"
-msgid "There are two units with the same unitname:%s%s%s%s%s"
-msgstr "Имеется два модуля с одинаковыми именами:%s%s%s%s%s"
-
 #: lazarusidestrconsts.lisconvdelphithereisalreadyapackagewiththenamepleaseclosethispa
 msgid "There is already a package with the name \"%s\"%sPlease close this package first."
 msgstr "Пакет с именем \"%s\" уже имеется.%sСначала закройте его."
+
+#: lazarusidestrconsts.lisconvdelphitwounitswithsamename
+msgid "There are two units with the same name:%s%s%s%s%s"
+msgstr "Имеется два модуля с одинаковыми именами:%s%s%s%s%s"
+
+#: lazarusidestrconsts.lisconvdelphiunitnameexistsinlcl
+msgid "Unitname exists in LCL"
+msgstr "Модуль с таким именем имеется в LCL"
 
 #: lazarusidestrconsts.lisconvdelphiunitnameexiststwice
 msgid "Unitname exists twice"
@@ -6742,6 +6745,10 @@ msgstr "Имя модуля повторяется"
 #: lazarusidestrconsts.lisconvdelphiunitstoreplacein
 msgid "Units to replace in %s"
 msgstr "Модули для замены в %s"
+
+#: lazarusidestrconsts.lisconvdelphiunitwithnameexistsinlcl
+msgid "LCL already has a unit with name %s. Delete local file %s?"
+msgstr "В LCL уже имеется модуль с именем %s. Удалить локальный файл %s?"
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -17432,6 +17439,10 @@ msgstr "Это поведение можно отключить для отде�
 #| msgid "You can disable this for individual forms via the popup menu in the source editor, file settings, i18n for lfm strings"
 msgid "You can disable this for individual forms via the popup menu in the project inspector"
 msgstr "Вы можете отключить это поведение для отдельных форм через всплывающее меню инспектора проекта"
+
+#: lazarusidestrconsts.lisyoucandownloadfpcandthefpcsourcesfromhttpsourcefor
+msgid "You can download FPC and the FPC sources from http://sourceforge.net/projects/lazarus/?source=directory"
+msgstr "FPC и его исходный код можно загрузить с http://sourceforge.net/projects/lazarus/?source=directory"
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."

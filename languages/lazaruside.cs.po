@@ -6529,14 +6529,17 @@ msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
 msgstr "Nahrazena jednotka \"%s\" jednotkou \"%s\" v sekci používaných jednotek."
 
-#: lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname
-msgctxt "lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname"
-msgid "There are two units with the same unitname:%s%s%s%s%s"
-msgstr "Existují dvě jednotky se stejným jménem jednotky:%s%s%s%s%s"
-
 #: lazarusidestrconsts.lisconvdelphithereisalreadyapackagewiththenamepleaseclosethispa
 msgid "There is already a package with the name \"%s\"%sPlease close this package first."
 msgstr "Již existuje balíček se jménem \"%s\"%sProsím, zavřete nejdříve tento balíček."
+
+#: lazarusidestrconsts.lisconvdelphitwounitswithsamename
+msgid "There are two units with the same name:%s%s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvdelphiunitnameexistsinlcl
+msgid "Unitname exists in LCL"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiunitnameexiststwice
 msgid "Unitname exists twice"
@@ -6545,6 +6548,10 @@ msgstr "Jméno jednotky existuje dvakrát"
 #: lazarusidestrconsts.lisconvdelphiunitstoreplacein
 msgid "Units to replace in %s"
 msgstr "Jednotky k nahrazení v %s"
+
+#: lazarusidestrconsts.lisconvdelphiunitwithnameexistsinlcl
+msgid "LCL already has a unit with name %s. Delete local file %s?"
+msgstr ""
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -16939,6 +16946,10 @@ msgstr "Toto můžete zakázat pro jednotlivé formuláře v editoru balíčku"
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
 msgid "You can disable this for individual forms via the popup menu in the project inspector"
 msgstr "Můžete to vypnout pro jednotlivé formuláře pomocí kontextového menu v Inspektoru projektu"
+
+#: lazarusidestrconsts.lisyoucandownloadfpcandthefpcsourcesfromhttpsourcefor
+msgid "You can download FPC and the FPC sources from http://sourceforge.net/projects/lazarus/?source=directory"
+msgstr ""
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
