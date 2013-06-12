@@ -4250,9 +4250,12 @@ begin
       {$ENDIF}
       EndSkipping;
     end;
-  end else
+  end else begin
     // expression evaluates to false => skip this block
+    if StoreDirectives then
+      FDirectives[FDirectivesCount-1].State:=lsdsInactive;
     SkipTillEndifElse(lssdTillElse);
+  end;
 end;
 
 procedure TLinkScanner.EndSkipping;
@@ -4274,6 +4277,7 @@ begin
   UpdateCleanedSource(CommentStartPos-1);
   AddSkipComment(false);
   AddLink(CommentStartPos,Code);
+  //debugln(['TLinkScanner.EndSkipping ',StoreDirectives]);
   if StoreDirectives then begin
     // update cleaned position of directive
     Dir:=@FDirectives[FDirectivesCount-1];
