@@ -34,7 +34,8 @@ unit AarrePkgList;
 interface
 
 uses
-  Classes, SysUtils, Laz2_XMLCfg, laz2_DOM, LazLogger, FileProcs;
+  Classes, SysUtils, Laz2_XMLCfg, laz2_DOM, LazLogger, LazUTF8, LConvEncoding,
+  FileProcs;
 
 type
   TAPackageType = (
@@ -187,6 +188,7 @@ const
     'RunTime', 'DesignTime', 'RunAndDesignTime', 'RunTimeOnly');
 
 function APackageTypeIdentToType(const s: string): TAPackageType;
+function FixUTF8(const s: string): string;
 
 implementation
 
@@ -195,6 +197,17 @@ begin
   for Result:=Low(TAPackageType) to High(TAPackageType) do
     if SysUtils.CompareText(s,APackageTypeIdents[Result])=0 then exit;
   Result:=aptRunTime;
+end;
+
+function FixUTF8(const s: string): string;
+var
+  i: PtrInt;
+begin
+  Result:=s;
+  if Result='' then exit;
+  i:=FindInvalidUTF8Character(PChar(Result),length(Result),true);
+  if i<0 then exit;
+  Result:=ISO_8859_1ToUTF8(Result);
 end;
 
 { TAPkgDependencies }
@@ -384,9 +397,9 @@ begin
       raise Exception.Create('invalid name ');
     PackageType:=APackageTypeIdentToType(xml.GetValue(Path+'Type/Value',
                                             APackageTypeIdents[DefaultPackageType]));
-    Author:=xml.GetValue(Path+'Author/Value','');
-    Description:=xml.GetValue(Path+'Description/Value','');
-    License:=xml.GetValue(Path+'License/Value','');
+    Author:=FixUTF8(xml.GetValue(Path+'Author/Value',''));
+    Description:=FixUTF8(xml.GetValue(Path+'Description/Value',''));
+    License:=FixUTF8(xml.GetValue(Path+'License/Value',''));
     Version.Load(xml,Path+'Version/');
 
     NewCount:=xml.GetValue(Path+'RequiredPkgs/Count',0);
