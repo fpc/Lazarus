@@ -2930,7 +2930,7 @@ begin
     Layout := tlCenter;
     Opaque := False;
     Clipping := True;
-    ShowPrefix := True;
+    ShowPrefix := False;
     WordBreak := False;
     SingleLine := True;
     ExpandTabs := True;
