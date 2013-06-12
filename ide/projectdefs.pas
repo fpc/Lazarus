@@ -39,9 +39,9 @@ interface
 uses
   Classes, SysUtils,
   Controls, Forms, SynRegExpr, FileProcs, Laz2_XMLCfg, LCLProc,
-  CompOptsIntf, ProjectIntf, PublishModule, LazIDEIntf,
+  CompOptsIntf, ProjectIntf, LazIDEIntf,
   ProjectResourcesIntf,
-  frmCustomApplicationOptions, IDEProcs, LazarusIDEStrConsts;
+  frmCustomApplicationOptions, PublishModule, IDEProcs, LazarusIDEStrConsts;
 
 type
   TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;
@@ -385,13 +385,6 @@ type
   public
     constructor Create; override;
   end;
-
-
-  //---------------------------------------------------------------------------
-
-const
-  DefPublProjIncFilter = '*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)';
-  DefPublProjExcFilter = '*.(bak|ppu|o|so);*~;backup';
 
 
 implementation
@@ -859,10 +852,10 @@ begin
   CommandAfter:='';
   UseIncludeFileFilter:=true;
   IncludeFilterSimpleSyntax:=true;
-  IncludeFileFilter:=DefPublProjIncFilter;
+  IncludeFileFilter:=DefPublModIncFilter;
   UseExcludeFileFilter:=false;
   ExcludeFilterSimpleSyntax:=true;
-  ExcludeFileFilter:=DefPublProjExcFilter;
+  ExcludeFileFilter:=DefPublModExcFilter;
   SaveClosedEditorFilesInfo:=false;
   SaveEditorInfoOfNonProjectFiles:=false;
 end;

@@ -235,14 +235,14 @@ begin
   List:=InputHistories.HistoryLists.GetList(hlPublishProjectIncludeFileFilter,
                                             true,rltFile);
   if List.Count=0 then begin
-    List.Add(DefPublProjIncFilter);
+    List.Add(DefPublModIncFilter);
   end;
   IncludeFilterCombobox.Items.Assign(List);
 
   List:=InputHistories.HistoryLists.GetList(hlPublishProjectExcludeFileFilter,
                                             true,rltFile);
   if List.Count=0 then begin
-    List.Add(DefPublProjExcFilter);
+    List.Add(DefPublModExcFilter);
   end;
   ExcludeFilterCombobox.Items.Assign(List);
 end;
