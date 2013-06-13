@@ -77,7 +77,6 @@ procedure TFormFileConverter.AddStatusbarProp(ParentType: string);
 var
   SpaceCnt, StartPos: integer;
   s: string;
-  i: Integer;
 begin
   if fSBEndPos<>-1 then begin
     if fSBHasPanels and (not fSBHasSimpleText) and (not fSBHasSimplePanelProp) then begin
