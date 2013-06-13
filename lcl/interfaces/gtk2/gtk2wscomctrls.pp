@@ -494,6 +494,7 @@ begin
   WidgetInfo := CreateWidgetInfo({%H-}Pointer(Result), AWinControl, AParams);
   Set_RC_Name(AWinControl, Widget);
 
+  GTK_WIDGET_SET_FLAGS(Widget, GTK_CAN_FOCUS);
   InternalSetStyle(PGtkProgressBar(Widget), TCustomProgressBar(AWinControl).Style);
 
   TGtk2WSWinControl.SetCallbacks(PGtkObject(Widget), TComponent(WidgetInfo^.LCLObject));
