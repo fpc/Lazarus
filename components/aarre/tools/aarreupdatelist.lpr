@@ -98,7 +98,12 @@ begin
   end;
 
   ScanDirectory(Directory);
-  WriteLn(List.AsString);
+  if Verbose then
+    debugln(List.AsString);
+
+  if not Quiet then
+    debugln('writing "',OutputFile,'"');
+  List.SaveToFile(OutputFile);
 
   // stop program loop
   Terminate;
@@ -132,12 +137,26 @@ var
   Pkg: TAarrePkgListItem;
   ok: Boolean;
 begin
-  DebugLn(['TAarreUpdateList.AddLPK ',LPKFilename]);
+  if not Quiet then
+    DebugLn(['parsing LPK="',LPKFilename,'"']);
 
   Pkg:=TAarrePkgListItem.Create;
   ok:=false;
   try
     Pkg.LoadLPK(LPKFilename);
+
+    if Verbose then begin
+      with Pkg do
+        DebugLn(['TLPackage.Load Name="',Name,'"',
+          ' Type=',APackageTypeIdents[PackageType],
+          ' Author="',Author,'"',
+          ' Description="',Description,'"',
+          ' License="',License,'"',
+          ' Version="',Version.AsString,'"',
+          ' UnitPath="',UnitPath,'"',
+          ' IncPath="',IncPath,'"'
+          ]);
+    end;
     ok:=true;
   except
     on E: Exception do begin

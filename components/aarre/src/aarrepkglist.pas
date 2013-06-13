@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, Laz2_XMLCfg, laz2_DOM, LazLogger, LazUTF8, LConvEncoding,
-  FileProcs;
+  FileProcs, zstream;
 
 type
   TAPackageType = (
@@ -173,6 +173,7 @@ type
     procedure Save(XML: TXMLConfig; Path: string); virtual;
     procedure SaveToStream(s: TStream);
     procedure LoadFromStream(s: TStream);
+    procedure SaveToFile(const aFilename: string);
     function AsString: string;
     procedure Add(Item: TAarrePkgListItem);
     procedure Insert(Index: integer; Item: TAarrePkgListItem);
@@ -412,17 +413,6 @@ begin
 
     UnitPath:=xml.GetValue(Path+'CompilerOptions/SearchPaths/UnitPath/Value','');
     IncPath:=xml.GetValue(Path+'CompilerOptions/SearchPaths/IncludePath/Value','');
-
-    DebugLn(['TLPackage.Load Name="',Name,'"',
-      ' Type=',APackageTypeIdents[PackageType],
-      ' Author="',Author,'"',
-      ' Description="',Description,'"',
-      ' License="',License,'"',
-      ' Version="',Version.AsString,'"',
-      ' UnitPath="',UnitPath,'"',
-      ' IncPath="',IncPath,'"'
-      ]);
-
   finally
     xml.Free;
   end;
@@ -544,6 +534,19 @@ begin
   try
     xml.ReadFromStream(s);
     Load(XML,'');
+  finally
+    xml.Free;
+  end;
+end;
+
+procedure TAarrePkgList.SaveToFile(const aFilename: string);
+var
+  xml: TXMLConfig;
+begin
+  xml:=TXMLConfig.Create(aFilename);
+  try
+    Save(XML,'');
+    xml.Flush;
   finally
     xml.Free;
   end;
