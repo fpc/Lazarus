@@ -74,13 +74,16 @@ type
   private
     fStartPos: integer;
     fEndPos: integer;
+    fNewPrefix: string;
     fNewText: string;
     fParentType: string;
   public
-    constructor Create(aStartPos, aEndPos: Integer; const aNewText, aParentType: string);
+    constructor Create(aStartPos, aEndPos: Integer;
+      const aNewPrefix, aNewText, aParentType: string);
     destructor Destroy; override;
     property StartPos: integer read fStartPos;
     property EndPos: integer read fEndPos;
+    property NewPrefix: string read fNewPrefix;
     property NewText: string read fNewText;
     property ParentType: string read fParentType;
   end;
@@ -188,11 +191,13 @@ end;
 
 { TAddPropEntry }
 
-constructor TAddPropEntry.Create(aStartPos, aEndPos: Integer; const aNewText, aParentType: string);
+constructor TAddPropEntry.Create(aStartPos, aEndPos: Integer;
+  const aNewPrefix, aNewText, aParentType: string);
 begin
   inherited Create;
   fStartPos:=aStartPos;
   fEndPos:=aEndPos;
+  fNewPrefix:=aNewPrefix;
   fNewText:=aNewText;
   fParentType:=aParentType;
 end;

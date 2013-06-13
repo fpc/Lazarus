@@ -75,19 +75,18 @@ end;
 procedure TFormFileConverter.AddStatusbarProp(ParentType: string);
 // Add 'SimplePanel = False' property if it is needed.
 var
-  sp, StartPos: integer;
+  SpaceCnt, StartPos: integer;
   s: string;
   i: Integer;
 begin
   if fSBEndPos<>-1 then begin
     if fSBHasPanels and (not fSBHasSimpleText) and (not fSBHasSimplePanelProp) then begin
-      sp:=LeadingSpaceCount(fSBEndPos);
-      s:='  ';  // First 2 spaces indentation, then the spaces in front of 'end'.
-      for i:=1 to sp do
-        s:=s+' ';
+      SpaceCnt:=LeadingSpaceCount(fSBEndPos);
+      // 2 spaces for indentation, then spaces in front of 'end'.
+      s:=StringOfChar(' ', SpaceCnt+2);
       StartPos:=FindLineEndOrCodeInFrontOfPosition(fLFMBuf.Source,fSBEndPos,1,false);
-      fSrcNewProps.Add(TAddPropEntry.Create(StartPos,StartPos,
-                                      LineEnding+s+'SimplePanel = False',ParentType));
+      fSrcNewProps.Add(TAddPropEntry.Create(StartPos, StartPos, LineEnding+s,
+                                            'SimplePanel = False', ParentType));
     end;
     fSBHasPanels:=False;
     fSBHasSimplePanelProp:=False;

@@ -390,7 +390,8 @@ begin
   Result:=mrOK;
   for i:=aNewProps.Count-1 downto 0 do begin
     Entry:=TAddPropEntry(aNewProps[i]);
-    fLFMBuffer.Replace(Entry.StartPos, Entry.EndPos-Entry.StartPos,Entry.NewText);
+    fLFMBuffer.Replace(Entry.StartPos, Entry.EndPos-Entry.StartPos,
+                       Entry.NewPrefix+Entry.NewText);
     fSettings.AddLogLine(Format('Added property "%s" for %s.',
                                 [Entry.NewText, Entry.ParentType]));
   end;
