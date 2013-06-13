@@ -188,6 +188,8 @@ end;
 
 procedure TAarreUpdateList.WriteHelp;
 begin
+  writeln('Scans a directory for lpk files and writes a summary file.');
+  writeln;
   writeln('Usage: ',ExeName,' -h');
   writeln;
   writeln('-h : write this help and exit');

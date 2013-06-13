@@ -1,5 +1,4 @@
-aarreupdatelist
+aarreupdatelist is a command line utility to scan a directory for lpk files
+and write a summary. Compile and run to see the available parameters.
 
-This tool is under construction.
-The goal is to scan a directory and gather information of all lpk files.
 
