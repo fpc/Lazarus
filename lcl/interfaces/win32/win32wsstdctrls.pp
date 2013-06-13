@@ -92,7 +92,6 @@ type
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
@@ -189,7 +188,6 @@ type
 
     class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
   end;
 
@@ -1002,34 +1000,6 @@ begin
   RecreateWnd(ACustomComboBox);
 end;
 
-class procedure TWin32WSCustomComboBox.SetText(const AWinControl: TWinControl; const AText: string);
-var
-  Handle: HWND;
-  {$ifdef WindowsUnicodeSupport}
-  AnsiBuffer: ansistring;
-  WideBuffer: widestring;
-  {$endif}
-begin
-  // not necessary. Change is already done in TCustomComboBox.RealSetText
-  if TCustomComboBox(AWinControl).ReadOnly then
-    Exit;
-  Handle := AWinControl.Handle;
-  {$ifdef WindowsUnicodeSupport}
-  if UnicodeEnabledOS then
-  begin
-    WideBuffer := UTF8ToUTF16(AText);
-    Windows.SendMessageW(Handle, WM_SETTEXT, 0, LPARAM(PWideChar(WideBuffer)));
-  end
-  else
-  begin
-    AnsiBuffer := UTF8ToAnsi(AText);
-    Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(PChar(AnsiBuffer)));
-  end;
-  {$else}
-  Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(PChar(AText)));
-  {$endif}
-end;
-
 class function TWin32WSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
 var
   winhandle: HWND;
@@ -1357,18 +1327,6 @@ class procedure TWin32WSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo;
 begin
   // TODO: check if can be done without recreation
   RecreateWnd(ACustomMemo);
-end;
-
-class procedure TWin32WSCustomMemo.SetText(const AWinControl: TWinControl; const AText: string);
-begin
-  {$ifdef WindowsUnicodeSupport}
-    if UnicodeEnabledOS then
-      SendMessageW(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PWideChar(UTF8ToUTF16(AText))))
-    else
-      SendMessage(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PChar(Utf8ToAnsi(AText))));
-  {$else}
-    SendMessage(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PChar(AText)));
-  {$endif}
 end;
 
 class procedure TWin32WSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);

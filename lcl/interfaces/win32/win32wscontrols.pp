@@ -504,13 +504,13 @@ end;
 class procedure TWin32WSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText') then Exit;
-
 {$ifdef WindowsUnicodeSupport}
-  if UnicodeEnabledOS 
-  then Windows.SetWindowTextW(AWinControl.Handle, PWideChar(UTF8ToUTF16(AText)))
-  else Windows.SetWindowText(AWinControl.Handle, PChar(Utf8ToAnsi(AText)));
+  if UnicodeEnabledOS then
+    SendMessageW(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PWideChar(UTF8ToUTF16(AText))))
+  else
+    SendMessage(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PChar(Utf8ToAnsi(AText))));
 {$else}
-  Windows.SetWindowText(AWinControl.Handle, PChar(AText));
+  SendMessage(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PChar(AText)));
 {$endif}
 end;
 

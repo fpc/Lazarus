@@ -59,7 +59,6 @@ type
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
@@ -138,7 +137,7 @@ var
 begin
   newValueText := ASpinEdit.ValueToStr(ANewValue);
   if (newValueText <> ASpinEdit.Text) then
-    Windows.SendMessage(ASpinEdit.Handle, WM_SETTEXT, 0, Windows.LPARAM(PChar(newValueText)));
+    TWin32WSWinControl.SetText(ASpinEdit, newValueText);
 end;
 
 class function TWin32WSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinControl;
@@ -348,18 +347,6 @@ class procedure TWin32WSCustomFloatSpinEdit.SetSelLength(const ACustomEdit: TCus
   NewLength: integer);
 begin
   EditSetSelLength(ACustomEdit.Handle, NewLength);
-end;
-
-class procedure TWin32WSCustomFloatSpinEdit.SetText(const AWinControl: TWinControl;
-  const AText: string);
-begin
-  {$ifdef WindowsUnicodeSupport}
-    if UnicodeEnabledOS
-    then Windows.SetWindowTextW(AWinControl.Handle, PWideChar(UTF8ToUTF16(AText)))
-    else Windows.SetWindowText(AWinControl.Handle, PChar(Utf8ToAnsi(AText)));
-  {$else}
-    Windows.SetWindowText(AWinControl.Handle, PChar(AText));
-  {$endif}
 end;
 
 class procedure TWin32WSCustomFloatSpinEdit.ShowHide(
