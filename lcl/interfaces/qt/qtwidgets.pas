@@ -1558,6 +1558,7 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     procedure SignalValueChanged(Value: Integer); cdecl;
+    procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
   public
     procedure reset;
     procedure setRange(minimum: Integer; maximum: Integer);
@@ -14111,6 +14112,14 @@ begin
   Msg.Msg := LM_CHANGED;
   if not InUpdate then
     DeliverMessage(Msg);
+end;
+
+procedure TQtProgressBar.setFocusPolicy(const APolicy: QtFocusPolicy);
+begin
+  if APolicy = QtNoFocus then
+    QWidget_setFocusPolicy(Widget, APolicy)
+  else
+    QWidget_setFocusPolicy(Widget, QtTabFocus);
 end;
 
 procedure TQtProgressBar.reset;
