@@ -514,8 +514,6 @@ function TDelphiUnit.CopyAndLoadFile: TModalResult;
 begin
   fOwnerConverter.fSettings.AddLogLine(Format(lisConvDelphiConvertingFile,
                                               [fOrigUnitFilename]));
-  Application.ProcessMessages;
-
   // Convert unit in place. File must be writable.
   Result:=CheckFileIsWritable(fOrigUnitFilename,[mbAbort]);
   if Result<>mrOK then exit;
@@ -676,7 +674,6 @@ begin
   if fLFMBuffer<>nil then begin
     fOwnerConverter.fSettings.AddLogLine(Format(lisConvDelphiRepairingFormFile,
                                                 [fLFMBuffer.Filename]));
-    Application.ProcessMessages;
     LfmFixer:=TLFMFixer.Create(fCTLink,fLFMBuffer,Nil);
     try
       LfmFixer.Settings:=fOwnerConverter.fSettings;
@@ -800,7 +797,6 @@ begin
           fOwnerConverter.fSettings.AddLogLine(Msg);
         end;
       end;
-      Application.ProcessMessages;
       fOwnerConverter.fErrorMsg:='Problems when fixing include files in file '
                                 +fOrigUnitFilename;
       Result:=mrCancel;
@@ -1025,6 +1021,7 @@ begin
   fMainUnitConverter.fUsedUnitsTool.IsMainFile:=True;
   Result:=CreateMainSourceFile; // More actions for the main source file.
   if Result<>mrOK then exit;
+  Application.ProcessMessages;
   // read config files (they often contain clues about paths, switches and defines)
   Result:=ReadDelphiConfigFiles;
   if Result<>mrOK then exit;
@@ -1044,11 +1041,14 @@ begin
     if Result<>mrOK then exit;
     Result:=FindAllUnits;              // find all files and save the project.
     if Result<>mrOK then exit;
+    Application.ProcessMessages;
     // Convert .lpr/.lpk file. Main source file was loaded earlier. Now just convert.
     Result:=fMainUnitConverter.ConvertUnitFile;
     if Result<>mrOK then exit;
+    Application.ProcessMessages;
     Result:=fMainUnitConverter.ConvertFormFile;
     if Result<>mrOK then exit;
+    Application.ProcessMessages;
     Result:=ConvertAllUnits;           // convert all files.
     if Result<>mrOK then exit;
   finally
@@ -1067,11 +1067,11 @@ begin
     fSettings.AddLogLine('');
     fSettings.AddLogLine(lisConvDelphiRepairingFormFiles);
   end;
-  Application.ProcessMessages;
   Screen.Cursor:=crHourGlass;
   try
     for i:=0 to ConverterList.Count-1 do begin
       Converter:=TDelphiUnit(ConverterList[i]); // Converter created in cycle1.
+      Application.ProcessMessages;
       Result:=Converter.ConvertFormFile;
       Result:=Converter.CheckFailed(Result);
       if Result<>mrOK then exit;
@@ -1577,7 +1577,6 @@ begin
   try
     fSettings.AddLogLine('');
     fSettings.AddLogLine(lisConvDelphiFindAllUnitFiles);
-    Application.ProcessMessages;
     if not CodeToolBoss.FindDelphiProjectUnits(fMainUnitConverter.fPascalBuffer,
                                          FoundUnits, MisUnits, NormalUnits) then
     begin
@@ -1655,9 +1654,9 @@ begin
     // convert all units and fix .lfm files
     fSettings.AddLogLine('');
     fSettings.AddLogLine(lisConvDelphiConvertingProjPackUnits);
-    Application.ProcessMessages;
     for i:=0 to LazProject.UnitCount-1 do begin
       CurUnitInfo:=LazProject.Units[i];
+      Application.ProcessMessages;
       // Main LPR file was converted earlier.
       if CurUnitInfo.IsPartOfProject and (CurUnitInfo<>LazProject.MainUnitInfo) then begin
         Result:=ConvertOne(CurUnitInfo);
@@ -1666,10 +1665,12 @@ begin
       end;
     end;
     // During conversion there were more units added to be converted.
-    fSettings.AddLogLine('');
-    fSettings.AddLogLine(lisConvDelphiConvertingFoundUnits);
-    Application.ProcessMessages;
+    if fUnitsToAddToProject.Count > 0 then begin
+      fSettings.AddLogLine('');
+      fSettings.AddLogLine(lisConvDelphiConvertingFoundUnits);
+    end;
     for i:=0 to fUnitsToAddToProject.Count-1 do begin
+      Application.ProcessMessages;
       Result:=AddUnit(fUnitsToAddToProject[i], CurUnitInfo);
       if Result=mrNo then Continue;
       if Result=mrAbort then Exit;
@@ -1977,9 +1978,9 @@ begin
     // Convert all units and fix .lfm files
     fSettings.AddLogLine('');
     fSettings.AddLogLine(lisConvDelphiConvertingProjPackUnits);
-    Application.ProcessMessages;
     for i:=0 to LazPackage.FileCount-1 do begin
       PkgFile:=LazPackage.Files[i];
+      Application.ProcessMessages;
       Converter:=TDelphiUnit.Create(Self, PkgFile.Filename,[]);
       ConvUnits.Add(Converter);
       Result:=Converter.CopyAndLoadFile;
