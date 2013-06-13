@@ -1905,6 +1905,7 @@ begin
       TranslateWithFileMask(APackage,Directory,FallbackLang);
   finally
     TranslatedUnits.Free;
+    MainIDEInterface.PackageTranslated(APackage);
   end;
 end;
 

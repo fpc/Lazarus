@@ -1419,6 +1419,7 @@ type
     procedure Init;
     procedure Load;
     procedure Save;
+    procedure TranslateResourceStrings;
     function GetAdditionalAttributeName(aha:TAdditionalHilightAttribute): string;
     function GetSynEditOptionName(SynOption: TSynEditorOption): string;
     function GetSynBeautifierIndentName(IndentType: TSynBeautifierIndentType): string;
@@ -4465,7 +4466,6 @@ begin
   FStringBreakEnabled := False;
   FStringBreakAppend  := ' +';
   FStringBreakPrefix  := '';
-
 end;
 
 procedure TEditorOptions.Load;
@@ -4870,9 +4870,14 @@ begin
   end;
 end;
 
+procedure TEditorOptions.TranslateResourceStrings;
+begin
+
+end;
+
 function TEditorOptions.GetAdditionalAttributeName(aha:TAdditionalHilightAttribute): string;
 begin
-  result:=GetEnumName(TypeInfo(TAdditionalHilightAttribute), ord(aha));
+  Result:=GetEnumName(TypeInfo(TAdditionalHilightAttribute), ord(aha));
 end;
 
 class function TEditorOptions.GetGroupCaption: string;

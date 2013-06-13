@@ -992,6 +992,7 @@ type
     procedure SaveEnvironment(Immediately: boolean = false); override;
     procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
+    procedure PackageTranslated(APackage: TLazPackage); override;
   end;
 
 
@@ -4610,6 +4611,13 @@ begin
 
   if ObjectInspector1<>nil then
     TheEnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);
+end;
+
+procedure TMainIDE.PackageTranslated(APackage: TLazPackage);
+begin
+  if APackage=PackageGraph.SynEditPackage then begin
+    EditorOpts.TranslateResourceStrings;
+  end;
 end;
 
 procedure TMainIDE.LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);

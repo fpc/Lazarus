@@ -70,7 +70,7 @@ uses
   ProjectDefs, Project, PublishModule, BuildLazDialog,
   TransferMacros, IDEDefs, ProgressDlg,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
-  IDEOptionDefs;
+  IDEOptionDefs, PackageDefs;
 
 type
   // The IDE is at anytime in a specific state:
@@ -185,6 +185,7 @@ type
 
     procedure SaveEnvironment(Immediately: boolean = false); virtual; abstract;
     procedure UpdateHighlighters(Immediately: boolean = false); virtual; abstract;
+    procedure PackageTranslated(APackage: TLazPackage); virtual; abstract;
     procedure SetRecentSubMenu(Section: TIDEMenuSection; FileList: TStringList;
                                OnClickEvent: TNotifyEvent); virtual; abstract;
     function DoJumpToSourcePosition(const Filename: string;
