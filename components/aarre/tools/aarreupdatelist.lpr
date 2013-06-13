@@ -6,8 +6,7 @@ uses
   {$IFDEF Unix}{$IFDEF UseCThreads}
   cthreads,
   {$ENDIF}{$ENDIF}
-  Classes, SysUtils, LazFileUtils, LazLogger, Laz2_XMLCfg, CustApp, contnrs,
-  AarrePkgList;
+  Classes, SysUtils, LazFileUtils, LazLogger, CustApp, AarrePkgList;
 
 type
 
