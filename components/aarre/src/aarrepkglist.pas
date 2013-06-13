@@ -541,14 +541,23 @@ end;
 
 procedure TAarrePkgList.SaveToFile(const aFilename: string);
 var
-  xml: TXMLConfig;
+  fs: TGZFileStream;
+  ms: TMemoryStream;
+  Cnt: LongInt;
 begin
-  xml:=TXMLConfig.Create(aFilename);
+  fs:=TGZFileStream.create(aFilename,gzopenwrite);
   try
-    Save(XML,'');
-    xml.Flush;
+    ms:=TMemoryStream.Create;
+    try
+      SaveToStream(ms);
+      Cnt:=fs.write(ms.Memory^,ms.Size);
+      if Cnt<ms.Size then
+        raise Exception.Create('write error "'+aFilename+'"');
+    finally
+      ms.Free;
+    end;
   finally
-    xml.Free;
+    fs.Free;
   end;
 end;
 
