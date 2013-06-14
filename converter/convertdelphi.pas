@@ -1975,13 +1975,36 @@ end;
 
 function TConvertDelphiPackage.ConvertAllUnits: TModalResult;
 var
+  ConvUnits: TObjectList;       // List of ConvertDelphiUnits.
+
+  function ConvertOne(APkgFile: TPkgFile): TModalResult;
+  var
+    Converter: TDelphiUnit;
+  begin
+    Converter:=TDelphiUnit.Create(Self, APkgFile.Filename,[]);
+    try
+      ConvUnits.Add(Converter);
+      Result:=Converter.CopyAndLoadFile;
+      if Result<>mrOK then exit;
+      Result:=Converter.CheckFailed(Result);
+      if Result<>mrOK then exit;
+      Result:=Converter.ConvertUnitFile;
+    except
+      DebugLn(['TConvertDelphiProject.ConvertAllUnits: Exception happened while converting ',
+               Converter.fLazUnitFilename]);
+      ConvUnits.Remove(Converter);
+      raise;
+    end;
+  end;
+
+var
   i: Integer;
   PkgFile: TPkgFile;
-  Converter: TDelphiUnit;
-  ConvUnits: TObjectList;       // List of ConvertDelphiUnits.
 begin
   Result:=mrOK;
   ConvUnits:=TObjectList.Create;
+  try
+  try
   try
     // Convert all units and fix .lfm files
     fSettings.AddLogLine('');
@@ -1989,22 +2012,43 @@ begin
     for i:=0 to LazPackage.FileCount-1 do begin
       PkgFile:=LazPackage.Files[i];
       Application.ProcessMessages;
-      Converter:=TDelphiUnit.Create(Self, PkgFile.Filename,[]);
-      ConvUnits.Add(Converter);
-      Result:=Converter.CopyAndLoadFile;
-      if Result<>mrOK then exit;
-      //Result:=Converter.CheckFailed(Result);
-      //if Result<>mrOK then Break;
-      Result:=Converter.ConvertUnitFile;
-      if Result<>mrOK then exit;
-      Result:=Converter.CheckFailed(Result);
-      if Result<>mrOK then Break;
+      ConvertOne(PkgFile);
+      if Result=mrIgnore then Continue;
+      if Result=mrAbort then Exit;
     end;
-    if Result=mrOK then
+    // During conversion there were more units added to be converted.
+    if fUnitsToAddToProject.Count > 0 then begin
+      fSettings.AddLogLine('');
+      fSettings.AddLogLine(lisConvDelphiConvertingFoundUnits);
+    end;
+{ ToDo: add more units
+    for i:=0 to fUnitsToAddToProject.Count-1 do begin
+      Application.ProcessMessages;
+      Result:=AddUnit(fUnitsToAddToProject[i]);
+      if Result=mrNo then Continue;
+      if Result=mrAbort then Exit;
+      if Assigned(CurUnitInfo) then begin
+        Result:=ConvertOne(CurUnitInfo);
+        if Result=mrIgnore then Continue;
+        if Result=mrAbort then Exit;
+      end;
+    end;
+}
+  except
+    fSettings.AddLogLine('');
+    fSettings.AddLogLine('- '+lisConvDelphiExceptionDuringConversion);
+    DebugLn('- '+lisConvDelphiExceptionDuringConversion);
+    raise;
+  end;
+  finally
+    if Result=mrOK then begin
+      // Try to convert form files also in case of an exception.
+      // Unit name replacements etc. are implemented there.
       Result:=ConvertAllFormFiles(ConvUnits);
-    // Finally save the package one more time
-    Result:=PackageEditors.SavePackage(LazPackage,false);
-    if Result<>mrOK then exit;
+      // Finally save the package once more
+      Result:=PackageEditors.SavePackage(LazPackage,false);
+    end;
+  end;
   finally
     ConvUnits.Free;  // Owns and frees converter objects.
   end;
