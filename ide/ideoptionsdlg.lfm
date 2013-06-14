@@ -45,6 +45,8 @@ object IDEOptionsDialog: TIDEOptionsDialog
     Width = 4
   end
   object CategoryPanel: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
     Left = 0
     Height = 364
     Top = 0
@@ -63,11 +65,11 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = SettingsPanel
       Left = 6
-      Height = 308
-      Top = 36
+      Height = 309
+      Top = 35
       Width = 249
       Anchors = [akTop, akLeft, akRight, akBottom]
-      BorderSpacing.Top = 5
+      BorderSpacing.Top = 6
       DefaultItemHeight = 18
       ReadOnly = True
       TabOrder = 0
@@ -79,10 +81,11 @@ object IDEOptionsDialog: TIDEOptionsDialog
     end
     object FilterEdit: TTreeFilterEdit
       AnchorSideLeft.Control = CategoryPanel
+      AnchorSideTop.Control = CategoryPanel
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 23
-      Top = 8
+      Top = 6
       Width = 200
       OnFilterItem = FilterEditFilterItem
       UseFormActivate = True
@@ -90,6 +93,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
       Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
@@ -111,16 +115,17 @@ object IDEOptionsDialog: TIDEOptionsDialog
   object BuildModeSelectPanel: TPanel
     AnchorSideLeft.Control = CatTVSplitter
     AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
     AnchorSideRight.Control = EditorsPanel
     AnchorSideRight.Side = asrBottom
     Left = 259
     Height = 40
     Top = 0
-    Width = 427
+    Width = 424
     Anchors = [akTop, akLeft, akRight]
     BevelOuter = bvNone
     ClientHeight = 40
-    ClientWidth = 427
+    ClientWidth = 424
     TabOrder = 3
     object BuildModeLabel: TLabel
       Left = 12
@@ -181,16 +186,19 @@ object IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = BuildModeSelectPanel
     AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 259
     Height = 324
     Top = 40
-    Width = 427
-    HorzScrollBar.Page = 427
+    Width = 424
+    HorzScrollBar.Page = 424
     HorzScrollBar.Tracking = True
     VertScrollBar.Page = 324
     VertScrollBar.Tracking = True
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Right = 6
     BorderStyle = bsNone
     TabOrder = 4
   end

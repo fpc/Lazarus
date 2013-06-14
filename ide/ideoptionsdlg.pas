@@ -97,6 +97,7 @@ type
     procedure SetSettings(const AValue: TIDEOptionsEditorSettings);
     function AllBuildModes: boolean;
     procedure UpdateBuildModeButtons;
+    procedure SetBuldModeVisibility(AVisibility: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     function ShowModal: Integer; override;
@@ -132,7 +133,7 @@ begin
   FEditorsCreated := False;
   FEditorToOpen := nil;
   SettingsPanel.Constraints.MinHeight:=0;
-  BuildModeSelectPanel.Visible:=false;
+  SetBuldModeVisibility(False);
   BuildModeLabel.Caption:=lisBuildMode;
   BuildModeInSessionCheckBox.Caption:=lisInSession;
   BuildModeInSessionCheckBox.Hint:=
@@ -199,10 +200,7 @@ begin
     GroupClass := FindGroupClass(Node);
   end;
   // Show the Build Mode panel for project compiler options
-  if (GroupClass <> nil) and (GroupClass.InheritsFrom(TProjectCompilerOptions)) then
-    BuildModeSelectPanel.Visible:=true
-  else
-    BuildModeSelectPanel.Visible:=false;
+  SetBuldModeVisibility((GroupClass <> nil) and (GroupClass.InheritsFrom(TProjectCompilerOptions)));
   // Hide the old and show the new editor frame
   if Assigned(AEditor) then
     FNewLastSelected := AEditor.Rec;
@@ -619,6 +617,21 @@ begin
   BuildModeInSessionCheckBox.Visible:=Project1.SessionStorage in pssHasSeparateSession;
   BuildModeInSessionCheckBox.Enabled:=not AllBuildModes;
   BuildModeInSessionCheckBox.Checked:=Project1.ActiveBuildMode.InSession;
+end;
+
+procedure TIDEOptionsDialog.SetBuldModeVisibility(AVisibility: Boolean);
+begin
+  BuildModeSelectPanel.Visible := AVisibility;
+  if AVisibility then
+  begin
+    EditorsPanel.AnchorSide[akTop].Control := BuildModeSelectPanel;
+    EditorsPanel.AnchorSide[akTop].Side := asrBottom;
+  end
+  else
+  begin
+    EditorsPanel.AnchorSide[akTop].Control := Self;
+    EditorsPanel.AnchorSide[akTop].Side := asrTop;
+  end;
 end;
 
 procedure TIDEOptionsDialog.DoOpenEditor(EditorToOpen: TAbstractIDEOptionsEditorClass);
