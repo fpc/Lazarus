@@ -1066,6 +1066,8 @@ begin
   if not fSettings.SameDfmFile then begin
     fSettings.AddLogLine('');
     fSettings.AddLogLine(lisConvDelphiRepairingFormFiles);
+    DebugLn('');
+    DebugLn('TConvertDelphiProjPack.ConvertAllFormFiles: '+lisConvDelphiRepairingFormFiles);
   end;
   Screen.Cursor:=crHourGlass;
   try
@@ -1577,6 +1579,8 @@ begin
   try
     fSettings.AddLogLine('');
     fSettings.AddLogLine(lisConvDelphiFindAllUnitFiles);
+    DebugLn('');
+    DebugLn('TConvertDelphiProject.FindAllUnits: '+lisConvDelphiFindAllUnitFiles);
     if not CodeToolBoss.FindDelphiProjectUnits(fMainUnitConverter.fPascalBuffer,
                                          FoundUnits, MisUnits, NormalUnits) then
     begin
@@ -1918,6 +1922,10 @@ begin
   MisUnits:=nil;
   NormalUnits:=nil;
   try
+    fSettings.AddLogLine('');
+    fSettings.AddLogLine(lisConvDelphiFindAllUnitFiles);
+    DebugLn('');
+    DebugLn('TConvertDelphiPackage.FindAllUnits: '+lisConvDelphiFindAllUnitFiles);
     if not CodeToolBoss.FindDelphiPackageUnits(fMainUnitConverter.fPascalBuffer,
                                          FoundUnits, MisUnits, NormalUnits) then
     begin

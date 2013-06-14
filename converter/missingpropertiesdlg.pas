@@ -527,6 +527,7 @@ begin
   LoopCount:=0;    // Prevent possible eternal loops with a counter
   repeat
     repeat
+      DebugLn('TLFMFixer.ConvertAndRepair: Checking LFM for '+fPascalBuffer.Filename);
       if not fLFMTree.ParseIfNeeded then exit;
       if CodeToolBoss.CheckLFM(fPascalBuffer, fLFMBuffer, fLFMTree,
           fRootMustBeClassInUnit, fRootMustBeClassInIntf, fObjectsMustExist) then
@@ -544,6 +545,8 @@ begin
       Result:=mrOk
     else begin
       Result:=FindAndFixMissingComponentClasses; // Can return mrRetry.
+      if Result=mrRetry then
+        DebugLn('TLFMFixer.ConvertAndRepair: Added unit to uses section -> another loop');
     end;
     Inc(LoopCount);                    // Increment also in outer loop
   until (Result in [mrOK, mrAbort]) or (LoopCount>MaxLoopCount);
