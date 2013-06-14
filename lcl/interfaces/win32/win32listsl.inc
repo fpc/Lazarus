@@ -374,7 +374,7 @@ begin
     
     // restore text in edit box
     UpdateComboHeight;
-    TWin32WSCustomComboBox.SetText(FSender, EditText);
+    TWin32WSWinControl.SetText(FSender, EditText);
     if EditText = '' then
       lItemIndex := -1
     else

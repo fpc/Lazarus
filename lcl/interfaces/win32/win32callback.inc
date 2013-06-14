@@ -614,7 +614,7 @@ var
       Index := ItemIndex;
       // Index might be -1, if current text is not in the list.
       if (Index>=0) then
-        TWin32WSCustomComboBox.SetText(ComboBox, Items[Index]);
+        TWin32WSWinControl.SetText(ComboBox, Items[Index]);
     end;
   end;
 

@@ -243,6 +243,7 @@ uses
   WsControls,
   Win32Proc,
   Win32WSFactory,
+  Win32WSControls,
   Win32WSButtons,
   Win32WSMenus,
   Win32WSStdCtrls,
