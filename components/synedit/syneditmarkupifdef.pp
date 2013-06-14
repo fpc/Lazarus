@@ -2882,6 +2882,10 @@ begin
   if (e = nil) then DebugLn([ 'SetNodeState did not find a matching node  ', ALinePos, '/', 'AstartPos',AstartPos, ' ', dbgs(AState), ' #',copy(Lines[ALinePos-1],1,20)]);
   //assert(e.NodeType in [idnIfdef, idnElseIf], 'SetNodeState did not find a node (e.NodeType <> idnIfdef)');
   //if (e = nil) or not(e.NodeType in [idnIfdef, idnElseIf]) then
+  if (e <> nil) and (e.NodeType in [idnCommentedNode]) then begin
+    DebugLn([ 'SetNodeState did find a COMMENTED node  ', ALinePos, '/', 'AstartPos',AstartPos, ' ', dbgs(AState), ' #',copy(Lines[ALinePos-1],1,20)]);
+    exit;
+  end;
   if (e = nil) then
     exit;
 
