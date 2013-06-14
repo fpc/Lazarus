@@ -66,7 +66,7 @@
         <PackageName Value="SynEdit"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="100">
+    <Units Count="101">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -124,6 +124,7 @@
         <Filename Value="frames/naming_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="NamingOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="naming_options"/>
       </Unit8>
@@ -131,6 +132,7 @@
         <Filename Value="frames/fpdoc_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FpDocOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fpdoc_options"/>
       </Unit9>
@@ -218,7 +220,8 @@
       <Unit21>
         <Filename Value="frames/codetools_identifiercompletion_options.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="CodetoolsIndentifierComplietionOptionsFrame"/>
+        <ComponentName Value="CodetoolsIndentifierCompletionOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="codetools_identifiercompletion_options"/>
       </Unit21>
@@ -754,6 +757,14 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="ModeMatrixOpts"/>
       </Unit99>
+      <Unit100>
+        <Filename Value="frames/compiler_modematrix.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="CompOptModeMatrixFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="Compiler_ModeMatrix"/>
+      </Unit100>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

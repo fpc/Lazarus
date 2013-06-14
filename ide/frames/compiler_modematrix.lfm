@@ -14,12 +14,13 @@ object CompOptModeMatrixFrame: TCompOptModeMatrixFrame
     Top = 0
     Width = 550
     Caption = 'BMMatrixToolBar'
+    EdgeBorders = []
     List = True
     ShowCaptions = True
     TabOrder = 0
     object BMMMoveUpToolButton: TToolButton
       Left = 1
-      Top = 2
+      Top = 0
       Caption = 'Up'
       OnClick = BMMMoveUpToolButtonClick
       ParentShowHint = False
@@ -27,60 +28,60 @@ object CompOptModeMatrixFrame: TCompOptModeMatrixFrame
     end
     object BMMMoveDownToolButton: TToolButton
       Left = 24
-      Top = 2
+      Top = 0
       Caption = 'Down'
       OnClick = BMMMoveDownToolButtonClick
       ParentShowHint = False
       ShowHint = True
     end
     object BMMUndoToolButton: TToolButton
-      Left = 74
-      Top = 2
+      Left = 73
+      Top = 0
       Caption = 'Undo'
       OnClick = BMMUndoToolButtonClick
       ParentShowHint = False
       ShowHint = True
     end
     object BMMRedoToolButton: TToolButton
-      Left = 111
-      Top = 2
+      Left = 110
+      Top = 0
       Caption = 'Redo'
       OnClick = BMMRedoToolButtonClick
       ParentShowHint = False
       ShowHint = True
     end
     object BMMDeleteToolButton: TToolButton
-      Left = 210
-      Top = 2
+      Left = 207
+      Top = 0
       Caption = 'Delete'
       OnClick = BMMDeleteToolButtonClick
       ParentShowHint = False
       ShowHint = True
     end
     object ToolButton1: TToolButton
-      Left = 64
-      Top = 2
+      Left = 63
+      Top = 0
       Width = 10
       Caption = 'ToolButton1'
       Style = tbsSeparator
     end
     object ToolButton2: TToolButton
-      Left = 148
-      Top = 2
+      Left = 145
+      Top = 0
       Width = 10
       Caption = 'ToolButton2'
       Style = tbsSeparator
     end
     object ToolButton3: TToolButton
-      Left = 200
-      Top = 2
+      Left = 197
+      Top = 0
       Width = 10
       Caption = 'ToolButton3'
       Style = tbsSeparator
     end
     object BMMAddToolButton: TToolButton
-      Left = 158
-      Top = 2
+      Left = 155
+      Top = 0
       Caption = 'Add'
       DropdownMenu = BMMAddPopupMenu
       OnClick = BMMAddToolButtonClick
