@@ -482,55 +482,55 @@ constructor TSynDiffSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  FUnknownAttri := TSynHighlighterAttributes.Create(SYNS_AttrUnknownWord, SYNS_XML_AttrUnknownWord);
+  FUnknownAttri := TSynHighlighterAttributes.Create(@SYNS_AttrUnknownWord, SYNS_XML_AttrUnknownWord);
   FUnknownAttri.Style := [fsItalic];
   AddAttribute(FUnknownAttri);
 
-  FSpaceAttri := TSynHighlighterAttributes.Create(SYNS_AttrSpace, SYNS_XML_AttrSpace);
+  FSpaceAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSpace, SYNS_XML_AttrSpace);
   AddAttribute(FSpaceAttri);
 
-  FOrigFileAttri := TSynHighlighterAttributes.Create(SYNS_AttrOrigFile, SYNS_XML_AttrOrigFile);
+  FOrigFileAttri := TSynHighlighterAttributes.Create(@SYNS_AttrOrigFile, SYNS_XML_AttrOrigFile);
   FOrigFileAttri.Style := [fsBold];
   FOrigFileAttri.Background := clRed;
   AddAttribute(FOrigFileAttri);
 
-  FNewFileAttri := TSynHighlighterAttributes.Create(SYNS_AttrNewFile, SYNS_XML_AttrNewFile);
+  FNewFileAttri := TSynHighlighterAttributes.Create(@SYNS_AttrNewFile, SYNS_XML_AttrNewFile);
   FNewFileAttri.Style := [fsBold];
   FNewFileAttri.Background := clGreen;
   AddAttribute(FNewFileAttri);
 
-  FChunkMarkerAttri := TSynHighlighterAttributes.Create(SYNS_AttrChunkMarker, SYNS_XML_AttrChunkMarker);
+  FChunkMarkerAttri := TSynHighlighterAttributes.Create(@SYNS_AttrChunkMarker, SYNS_XML_AttrChunkMarker);
   FChunkMarkerAttri.Style := [fsBold];
   AddAttribute(FChunkMarkerAttri);
 
-  FChunkNewAttri := TSynHighlighterAttributes.Create(SYNS_AttrChunkNew, SYNS_XML_AttrChunkNew);
+  FChunkNewAttri := TSynHighlighterAttributes.Create(@SYNS_AttrChunkNew, SYNS_XML_AttrChunkNew);
   FChunkNewAttri.Style := [fsBold];
   FChunkNewAttri.Foreground := clGreen;
   AddAttribute(FChunkNewAttri);
 
-  FChunkOldAttri := TSynHighlighterAttributes.Create(SYNS_AttrChunkOrig, SYNS_XML_AttrChunkOrig);
+  FChunkOldAttri := TSynHighlighterAttributes.Create(@SYNS_AttrChunkOrig, SYNS_XML_AttrChunkOrig);
   FChunkOldAttri.Style := [fsBold];
   FChunkOldAttri.Foreground := clRed;
   AddAttribute(FChunkOldAttri);
 
-  FChunkMixedAttri := TSynHighlighterAttributes.Create(SYNS_AttrChunkMixed, SYNS_XML_AttrChunkMixed);
+  FChunkMixedAttri := TSynHighlighterAttributes.Create(@SYNS_AttrChunkMixed, SYNS_XML_AttrChunkMixed);
   FChunkMixedAttri.Style := [fsBold];
   FChunkMixedAttri.Foreground := clPurple;
   AddAttribute(FChunkMixedAttri);
 
-  FLineAddedAttri := TSynHighlighterAttributes.Create(SYNS_AttrLineAdded, SYNS_XML_AttrLineAdded);
+  FLineAddedAttri := TSynHighlighterAttributes.Create(@SYNS_AttrLineAdded, SYNS_XML_AttrLineAdded);
   FLineAddedAttri.Foreground := clGreen;
   AddAttribute(FLineAddedAttri);
 
-  FLineRemovedAttri := TSynHighlighterAttributes.Create(SYNS_AttrLineRemoved, SYNS_XML_AttrLineRemoved);
+  FLineRemovedAttri := TSynHighlighterAttributes.Create(@SYNS_AttrLineRemoved, SYNS_XML_AttrLineRemoved);
   FLineRemovedAttri.Foreground := clRed;
   AddAttribute(FLineRemovedAttri);
 
-  FLineChangedAttri := TSynHighlighterAttributes.Create(SYNS_AttrLineChanged, SYNS_XML_AttrLineChanged);
+  FLineChangedAttri := TSynHighlighterAttributes.Create(@SYNS_AttrLineChanged, SYNS_XML_AttrLineChanged);
   FLineChangedAttri.Foreground := clPurple;
   AddAttribute(FLineChangedAttri);
 
-  FLineContextAttri := TSynHighlighterAttributes.Create(SYNS_AttrLineContext, SYNS_XML_AttrLineContext);
+  FLineContextAttri := TSynHighlighterAttributes.Create(@SYNS_AttrLineContext, SYNS_XML_AttrLineContext);
   AddAttribute(FLineContextAttri);
 
   SetAttributesOnChange(@DefHighlightChange);

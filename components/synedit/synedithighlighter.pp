@@ -140,8 +140,8 @@ type
     procedure DoChange; override;
   public
     constructor Create;
-    constructor Create(attribName: string; aStoredName: String = '');
-    constructor Create(attribName: PString; aStoredName: String);
+    constructor Create(aCaption: string; aStoredName: String = '');
+    constructor Create(aCaption: PString; aStoredName: String = '');
     procedure InternalSaveDefaultValues; virtual;
     function  LoadFromBorlandRegistry(rootKey: HKEY; attrKey, attrName: string;
                                       oldStyle: boolean): boolean; virtual;
@@ -358,7 +358,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function AddSpecialAttribute(const AttribName: string;
+    function AddSpecialAttribute(const aCaption: string;
+                     const aStoredName: String = ''): TSynHighlighterAttributes;
+    function AddSpecialAttribute(const aCaption: PString;
                      const aStoredName: String = ''): TSynHighlighterAttributes;
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
@@ -853,24 +855,24 @@ end;
 
 { TSynHighlighterAttributes }
 
-constructor TSynHighlighterAttributes.Create(attribName: string;
+constructor TSynHighlighterAttributes.Create(aCaption: string;
   aStoredName: String = '');
 begin
   Create;
-  FConstName := attribName;
+  FConstName := aCaption;
   FCaption := @FConstName;
   if aStoredName = '' then
     aStoredName := FConstName;
   FStoredName := aStoredName;;
 end;
 
-constructor TSynHighlighterAttributes.Create(attribName: PString;
+constructor TSynHighlighterAttributes.Create(aCaption: PString;
   aStoredName: String);
 begin
   Create;
-  if attribName<>nil then begin
-    FConstName := attribName^;
-    FCaption := attribName;
+  if aCaption<>nil then begin
+    FConstName := aCaption^;
+    FCaption := aCaption;
   end
   else begin
     FConstName := '';
@@ -1417,10 +1419,17 @@ begin
   fAttributes.AddObject(AAttrib.StoredName, AAttrib);
 end;
 
-function TSynCustomHighlighter.AddSpecialAttribute(const AttribName: string;
+function TSynCustomHighlighter.AddSpecialAttribute(const aCaption: string;
   const aStoredName: String): TSynHighlighterAttributes;
 begin
-  result := TSynHighlighterAttributes.Create(AttribName,aStoredName);
+  result := TSynHighlighterAttributes.Create(aCaption,aStoredName);
+  AddAttribute(result);
+end;
+
+function TSynCustomHighlighter.AddSpecialAttribute(const aCaption: PString;
+  const aStoredName: String): TSynHighlighterAttributes;
+begin
+  Result := TSynHighlighterAttributes.Create(aCaption,aStoredName);
   AddAttribute(result);
 end;
 

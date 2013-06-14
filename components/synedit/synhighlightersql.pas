@@ -1166,50 +1166,50 @@ begin
   fKeywords := TSynHashEntryList.Create;
   fTableNames := TStringList.Create;
   TStringList(fTableNames).OnChange := @TableNamesChanged;
-  fCommentAttri := TSynHighlighterAttributes.Create(SYNS_AttrComment, SYNS_XML_AttrComment);
+  fCommentAttri := TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
   fCommentAttri.Style := [fsItalic];
   AddAttribute(fCommentAttri);
-  fDataTypeAttri := TSynHighlighterAttributes.Create(SYNS_AttrDataType, SYNS_XML_AttrDataType);
+  fDataTypeAttri := TSynHighlighterAttributes.Create(@SYNS_AttrDataType, SYNS_XML_AttrDataType);
   fDataTypeAttri.Style := [fsBold];
   AddAttribute(fDataTypeAttri);
 {begin}                                                                         // DJLP 2000-08-11
   fDefaultPackageAttri :=
-    TSynHighlighterAttributes.Create(SYNS_AttrDefaultPackage, SYNS_XML_AttrDefaultPackage);
+    TSynHighlighterAttributes.Create(@SYNS_AttrDefaultPackage, SYNS_XML_AttrDefaultPackage);
   fDefaultPackageAttri.Style := [fsBold];
   AddAttribute(fDefaultPackageAttri);
 {end}                                                                           // DJLP 2000-08-11
-  fExceptionAttri := TSynHighlighterAttributes.Create(SYNS_AttrException, SYNS_XML_AttrException);
+  fExceptionAttri := TSynHighlighterAttributes.Create(@SYNS_AttrException, SYNS_XML_AttrException);
   fExceptionAttri.Style := [fsItalic];
   AddAttribute(fExceptionAttri);
-  fFunctionAttri := TSynHighlighterAttributes.Create(SYNS_AttrFunction, SYNS_XML_AttrFunction);
+  fFunctionAttri := TSynHighlighterAttributes.Create(@SYNS_AttrFunction, SYNS_XML_AttrFunction);
   fFunctionAttri.Style := [fsBold];
   AddAttribute(fFunctionAttri);
-  fIdentifierAttri := TSynHighlighterAttributes.Create(SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
+  fIdentifierAttri := TSynHighlighterAttributes.Create(@SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
   AddAttribute(fIdentifierAttri);
-  fKeyAttri := TSynHighlighterAttributes.Create(SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
+  fKeyAttri := TSynHighlighterAttributes.Create(@SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
   fKeyAttri.Style := [fsBold];
   AddAttribute(fKeyAttri);
-  fNumberAttri := TSynHighlighterAttributes.Create(SYNS_AttrNumber, SYNS_XML_AttrNumber);
+  fNumberAttri := TSynHighlighterAttributes.Create(@SYNS_AttrNumber, SYNS_XML_AttrNumber);
   AddAttribute(fNumberAttri);
 {begin}                                                                         // DJLP 2000-08-11
-  fPLSQLAttri := TSynHighlighterAttributes.Create(SYNS_AttrPLSQL, SYNS_XML_AttrPLSQL);
+  fPLSQLAttri := TSynHighlighterAttributes.Create(@SYNS_AttrPLSQL, SYNS_XML_AttrPLSQL);
   fPLSQLAttri.Style := [fsBold];
   AddAttribute(fPLSQLAttri);
 {end}                                                                           // DJLP 2000-08-11
-  fSpaceAttri := TSynHighlighterAttributes.Create(SYNS_AttrSpace, SYNS_XML_AttrSpace);
+  fSpaceAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSpace, SYNS_XML_AttrSpace);
   AddAttribute(fSpaceAttri);
 {begin}                                                                         // DJLP 2000-09-05
-  fSQLPlusAttri:=TSynHighlighterAttributes.Create(SYNS_AttrSQLPlus, SYNS_XML_AttrSQLPlus);
+  fSQLPlusAttri:=TSynHighlighterAttributes.Create(@SYNS_AttrSQLPlus, SYNS_XML_AttrSQLPlus);
   fSQLPlusAttri.Style := [fsBold];
   AddAttribute(fSQLPlusAttri);
 {end}                                                                           // DJLP 2000-09-05
-  fStringAttri := TSynHighlighterAttributes.Create(SYNS_Attrstring, SYNS_XML_Attrstring);
+  fStringAttri := TSynHighlighterAttributes.Create(@SYNS_Attrstring, SYNS_XML_Attrstring);
   AddAttribute(fStringAttri);
-  fSymbolAttri := TSynHighlighterAttributes.Create(SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
+  fSymbolAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   AddAttribute(fSymbolAttri);
-  fTableNameAttri := TSynHighlighterAttributes.Create(SYNS_AttrTableName, SYNS_XML_AttrTableName);
+  fTableNameAttri := TSynHighlighterAttributes.Create(@SYNS_AttrTableName, SYNS_XML_AttrTableName);
   AddAttribute(fTableNameAttri);
-  fVariableAttri := TSynHighlighterAttributes.Create(SYNS_AttrVariable, SYNS_XML_AttrVariable);
+  fVariableAttri := TSynHighlighterAttributes.Create(@SYNS_AttrVariable, SYNS_XML_AttrVariable);
   AddAttribute(fVariableAttri);
   SetAttributesOnChange(@DefHighlightChange);
   MakeMethodTables;

@@ -225,19 +225,19 @@ constructor TSynXMLSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  fElementAttri:= TSynHighlighterAttributes.Create(SYNS_AttrElementName, SYNS_XML_AttrElementName);
-  fTextAttri:= TSynHighlighterAttributes.Create(SYNS_AttrText, SYNS_XML_AttrText);
-  fSpaceAttri:= TSynHighlighterAttributes.Create(SYNS_AttrWhitespace, SYNS_XML_AttrWhitespace);
-  fEntityRefAttri:= TSynHighlighterAttributes.Create(SYNS_AttrEntityReference, SYNS_XML_AttrEntityReference);
-  fProcessingInstructionAttri:= TSynHighlighterAttributes.Create(SYNS_AttrProcessingInstr, SYNS_XML_AttrProcessingInstr);
-  fCDATAAttri:= TSynHighlighterAttributes.Create(SYNS_AttrCDATASection, SYNS_XML_AttrCDATASection);
-  fCommentAttri:= TSynHighlighterAttributes.Create(SYNS_AttrComment, SYNS_XML_AttrComment);
-  fDocTypeAttri:= TSynHighlighterAttributes.Create(SYNS_AttrDOCTYPESection, SYNS_XML_AttrDOCTYPESection);
-  fAttributeAttri:= TSynHighlighterAttributes.Create(SYNS_AttrAttributeName, SYNS_XML_AttrAttributeName);
-  fnsAttributeAttri:= TSynHighlighterAttributes.Create(SYNS_AttrNamespaceAttrName, SYNS_XML_AttrNamespaceAttrName);
-  fAttributeValueAttri:= TSynHighlighterAttributes.Create(SYNS_AttrAttributeValue, SYNS_XML_AttrAttributeValue);
-  fnsAttributeValueAttri:= TSynHighlighterAttributes.Create(SYNS_AttrNamespaceAttrValue, SYNS_XML_AttrNamespaceAttrValue);
-  fSymbolAttri:= TSynHighlighterAttributes.Create(SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
+  fElementAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrElementName, SYNS_XML_AttrElementName);
+  fTextAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrText, SYNS_XML_AttrText);
+  fSpaceAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrWhitespace, SYNS_XML_AttrWhitespace);
+  fEntityRefAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrEntityReference, SYNS_XML_AttrEntityReference);
+  fProcessingInstructionAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrProcessingInstr, SYNS_XML_AttrProcessingInstr);
+  fCDATAAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrCDATASection, SYNS_XML_AttrCDATASection);
+  fCommentAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
+  fDocTypeAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrDOCTYPESection, SYNS_XML_AttrDOCTYPESection);
+  fAttributeAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrAttributeName, SYNS_XML_AttrAttributeName);
+  fnsAttributeAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrNamespaceAttrName, SYNS_XML_AttrNamespaceAttrName);
+  fAttributeValueAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrAttributeValue, SYNS_XML_AttrAttributeValue);
+  fnsAttributeValueAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrNamespaceAttrValue, SYNS_XML_AttrNamespaceAttrValue);
+  fSymbolAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
 
   fElementAttri.Foreground:= clMaroon;
   fElementAttri.Style:= [fsBold];

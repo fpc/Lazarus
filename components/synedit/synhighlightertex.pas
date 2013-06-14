@@ -69,7 +69,7 @@ type
     fBracketAttri:          TSynHighlighterAttributes;
     fBraceAttri:            TSynHighlighterAttributes;
 
-    function CreateHighlighterAttributes(AName:String; Foreground,
+    function CreateHighlighterAttributes(AName:PString; Foreground,
                                          Background: TColor;
                                          FontStyles: TFontStyles) :
                                          TSynHighlighterAttributes;
@@ -155,26 +155,26 @@ constructor TSynTeXSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  fCommentAttri:=CreateHighlighterAttributes(SYNS_AttrComment,clTeal,clNone,[]);
+  fCommentAttri:=CreateHighlighterAttributes(@SYNS_AttrComment,clTeal,clNone,[]);
   AddAttribute(fCommentAttri);
 
-  fTextAttri:= CreateHighlighterAttributes(SYNS_AttrText,clBlack,clNone,[]);
+  fTextAttri:= CreateHighlighterAttributes(@SYNS_AttrText,clBlack,clNone,[]);
   AddAttribute(fTextAttri);
 
-  fMathmodeAttri:=CreateHighlighterAttributes(SYNS_AttrMathmode,clOlive,clNone,[fsbold]);
+  fMathmodeAttri:=CreateHighlighterAttributes(@SYNS_AttrMathmode,clOlive,clNone,[fsbold]);
   AddAttribute(fMathmodeAttri);
 
-  fSpaceAttri:=CreateHighlighterAttributes(SYNS_AttrSpace,clNone,clWhite,[]);
+  fSpaceAttri:=CreateHighlighterAttributes(@SYNS_AttrSpace,clNone,clWhite,[]);
   AddAttribute(fSpaceAttri);
 
-  fControlSequenceAttri:=CreateHighlighterAttributes(SYNS_AttrTexCommand,clBlue,clWhite,[fsBold]);
+  fControlSequenceAttri:=CreateHighlighterAttributes(@SYNS_AttrTexCommand,clBlue,clWhite,[fsBold]);
   AddAttribute(fControlSequenceAttri);
 
-  fBracketAttri:=CreateHighlighterAttributes(SYNS_AttrSquareBracket,clPurple,clNone,[]);
+  fBracketAttri:=CreateHighlighterAttributes(@SYNS_AttrSquareBracket,clPurple,clNone,[]);
   AddAttribute(fBracketAttri);
 
   fBraceAttri:=
-  CreateHighlighterAttributes(SYNS_AttrRoundBracket,clRed,clNone,[fsBold]);
+  CreateHighlighterAttributes(@SYNS_AttrRoundBracket,clRed,clNone,[fsBold]);
   AddAttribute(fBraceAttri);
 
   //*************************
@@ -366,7 +366,7 @@ end;  { GetLanguageName }
 
 
 
-function TSynTeXSyn.CreateHighlighterAttributes(AName:String; Foreground,
+function TSynTeXSyn.CreateHighlighterAttributes(AName:PString; Foreground,
                                                 Background: TColor;
                                                 FontStyles: TFontStyles) :
 TSynHighlighterAttributes;

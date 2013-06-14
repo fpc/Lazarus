@@ -135,37 +135,37 @@ end;
 constructor TSynPoSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fCommentAttri            := TSynHighlighterAttributes.Create(SYNS_AttrComment);
+  fCommentAttri            := TSynHighlighterAttributes.Create(@SYNS_AttrComment);
   fCommentAttri.Style      := [fsItalic];
   fCommentAttri.Foreground := clGreen;
   AddAttribute(fCommentAttri);
 
-  fTextAttri               := TSynHighlighterAttributes.Create(SYNS_AttrText);
+  fTextAttri               := TSynHighlighterAttributes.Create(@SYNS_AttrText);
   AddAttribute(fTextAttri);
 
-  fKeyAttri                := TSynHighlighterAttributes.Create(SYNS_AttrKey);
+  fKeyAttri                := TSynHighlighterAttributes.Create(@SYNS_AttrKey);
   fKeyAttri.Foreground     := clBlue;
   fKeyAttri.Style          := [fsBold];
   AddAttribute(fKeyAttri);
 
-  fIdentAttri := TSynHighlighterAttributes.Create(SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
+  fIdentAttri := TSynHighlighterAttributes.Create(@SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
   fIdentAttri.Foreground   := clGreen;
   fIdentAttri.Style        := [fsBold];
   AddAttribute(fIdentAttri);
 
-  fPrevAttri  := TSynHighlighterAttributes.Create(SYNS_AttrPrevValue, SYNS_XML_AttrPrevValue);
+  fPrevAttri  := TSynHighlighterAttributes.Create(@SYNS_AttrPrevValue, SYNS_XML_AttrPrevValue);
   fPrevAttri.Foreground    := clOlive;
   fPrevAttri.Style         := [fsItalic];
   AddAttribute(fPrevAttri);
 
-  fFlagAttri  := TSynHighlighterAttributes.Create(SYNS_AttrFlags, SYNS_XML_AttrFlags);
+  fFlagAttri  := TSynHighlighterAttributes.Create(@SYNS_AttrFlags, SYNS_XML_AttrFlags);
   fFlagAttri.Foreground    := clTeal;
   AddAttribute(fFlagAttri);
 
-  fSpaceAttri              := TSynHighlighterAttributes.Create(SYNS_AttrSpace, SYNS_XML_AttrSpace);
+  fSpaceAttri              := TSynHighlighterAttributes.Create(@SYNS_AttrSpace, SYNS_XML_AttrSpace);
   AddAttribute(fSpaceAttri);
 
-  fStringAttri             := TSynHighlighterAttributes.Create(SYNS_AttrString, SYNS_XML_AttrString);
+  fStringAttri             := TSynHighlighterAttributes.Create(@SYNS_AttrString, SYNS_XML_AttrString);
   fStringAttri.Foreground  := clFuchsia;
   AddAttribute(fStringAttri);
 

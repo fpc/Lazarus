@@ -153,7 +153,7 @@ begin
   inherited Create(TheOwner);
   fTokens:=TList.Create;
   fCopiedAttributes:=TList.Create;
-  fTextAttri := TSynHighlighterAttributes.Create(SYNS_AttrText, SYNS_XML_AttrText);
+  fTextAttri := TSynHighlighterAttributes.Create(@SYNS_AttrText, SYNS_XML_AttrText);
   AddAttribute(fTextAttri);
   SetAttributesOnChange(@DefHighlightChange);
 
@@ -420,7 +420,7 @@ begin
     dec(i);
   end;
   // create new attribute
-  CurAttr:=TSynHighlighterAttributes.Create('');
+  CurAttr:=TSynHighlighterAttributes.Create(nil);
   CurAttr.Assign(Attr);
   fCopiedAttributes.Add(CurAttr);
   Result:= -fCopiedAttributes.Count;

@@ -783,7 +783,7 @@ constructor TLazSynDisplayFold.Create(AFoldView: TSynEditFoldedView);
 begin
   inherited Create;
   FFoldView := AFoldView;
-  FTokenAttr := TSynHighlighterAttributesModifier.Create('');
+  FTokenAttr := TSynHighlighterAttributesModifier.Create(nil);
 end;
 
 destructor TLazSynDisplayFold.Destroy;
