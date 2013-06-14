@@ -211,6 +211,7 @@ type
     FOnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest;
     FMarkupIfDef: TSynEditMarkupIfDef;
     FTopInfoDisplay: TSourceLazSynTopInfoView;
+    FTopInfoLastTopLine: Integer;
     FSrcSynCaretChangedLock: boolean;
     FExtraMarkupLine: TSynEditMarkupSpecialLine;
     FExtraMarkupMgr: TSynEditMarkupManager;
@@ -1393,6 +1394,9 @@ begin
       end;
     end;
 
+    if TopLine <> FTopInfoLastTopLine then
+      ListCnt := Min(ListCnt, Max(0, CaretY - TopLine));
+
     t := TopLine + ListCnt - TSourceLazSynSurfaceManager(FPaintArea).TopLineCount;
     if (CaretY >= TopLine) and (CaretY < t) then
       t := CaretY;
@@ -1426,6 +1430,7 @@ begin
 
   finally
     FSrcSynCaretChangedLock := False;
+    FTopInfoLastTopLine := TopLine;
   end;
 end;
 
