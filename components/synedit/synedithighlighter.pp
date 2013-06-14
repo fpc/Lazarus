@@ -121,7 +121,8 @@ type
     FStyleDefault: TFontStyles;
     FStyleMaskDefault: TFontStyles;
     FStoredName: string;
-    FName: string;
+    FConstName: string;
+    FCaption: PString;
     FOnChange: TNotifyEvent;
     function GetBackgroundColorStored: boolean;
     function GetFontStyleMaskStored : boolean;
@@ -140,6 +141,7 @@ type
   public
     constructor Create;
     constructor Create(attribName: string; aStoredName: String = '');
+    constructor Create(attribName: PString; aStoredName: String);
     procedure InternalSaveDefaultValues; virtual;
     function  LoadFromBorlandRegistry(rootKey: HKEY; attrKey, attrName: string;
                                       oldStyle: boolean): boolean; virtual;
@@ -150,8 +152,9 @@ type
   public
     property IntegerStyle: integer read GetStyleFromInt write SetStyleFromInt;
     property IntegerStyleMask: integer read GetStyleMaskFromInt write SetStyleMaskFromInt;
-    property Name: string read fName;
-    property StoredName: string read FStoredName write FStoredName;
+    property Name: string read FConstName; // value of Caption at creation, use Caption instead, kept for compatibility
+    property Caption: PString read FCaption; // is never nil
+    property StoredName: string read FStoredName write FStoredName; // the identifier
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
   published
     property Background stored GetBackgroundColorStored;
@@ -850,14 +853,32 @@ end;
 
 { TSynHighlighterAttributes }
 
-constructor TSynHighlighterAttributes.Create(attribName: string; aStoredName: String = '');
+constructor TSynHighlighterAttributes.Create(attribName: string;
+  aStoredName: String = '');
 begin
   Create;
-  fName := attribName;
+  FConstName := attribName;
+  FCaption := @FConstName;
   if aStoredName = '' then
-    FStoredName := attribName
-  else
-    FStoredName := aStoredName;;
+    aStoredName := FConstName;
+  FStoredName := aStoredName;;
+end;
+
+constructor TSynHighlighterAttributes.Create(attribName: PString;
+  aStoredName: String);
+begin
+  Create;
+  if attribName<>nil then begin
+    FConstName := attribName^;
+    FCaption := attribName;
+  end
+  else begin
+    FConstName := '';
+    FCaption := @FConstName;
+  end;
+  if aStoredName = '' then
+    aStoredName := FConstName;
+  FStoredName := aStoredName;;
 end;
 
 function TSynHighlighterAttributes.GetBackgroundColorStored: boolean;
@@ -1194,7 +1215,7 @@ procedure TSynHighlighterAttributes.AssignFrom(Src: TLazSynCustomTextAttributes)
 begin
   inherited AssignFrom(Src);
   if not (Src is TSynHighlighterAttributes) then exit;
-  FName      := TSynHighlighterAttributes(Src).FName;
+  FConstName      := TSynHighlighterAttributes(Src).FConstName;
   FStoredName:= TSynHighlighterAttributes(Src).FStoredName;
   Changed; {TODO: only if really changed}
 end;
@@ -1279,17 +1300,17 @@ procedure TSynCustomHighlighter.Assign(Source: TPersistent);
 var
   Src: TSynCustomHighlighter;
   i, j: integer;
-  AttriName: string;
   SrcAttri: TSynHighlighterAttributes;
+  StoredName: String;
 begin
   if (Source <> nil) and (Source is TSynCustomHighlighter) then begin
     Src := TSynCustomHighlighter(Source);
     for i := 0 to AttrCount - 1 do begin
       // assign first attribute with the same name
-      AttriName := Attribute[i].Name;
+      StoredName := Attribute[i].StoredName;
       for j := 0 to Src.AttrCount - 1 do begin
         SrcAttri := Src.Attribute[j];
-        if AttriName = SrcAttri.Name then begin
+        if StoredName = SrcAttri.StoredName then begin
           Attribute[i].Assign(SrcAttri);
           continue;
         end;

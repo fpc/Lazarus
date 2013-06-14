@@ -256,7 +256,7 @@ type
   protected
     procedure Init; override;
   public
-    constructor Create(ASchemeLang: TColorSchemeLanguage; attribName: string; aStoredName: String = '');
+    constructor Create(ASchemeLang: TColorSchemeLanguage; attribName: PString; aStoredName: String = '');
     procedure ApplyTo(aDest: TSynHighlighterAttributes; aDefault: TColorSchemeAttribute = nil);
     procedure Assign(Src: TPersistent); override;
     function Equals(Other: TColorSchemeAttribute): Boolean; reintroduce;
@@ -1983,7 +1983,7 @@ begin
     EditorUserDefinedWordsGlobalId := EditorUserDefinedWordsGlobalId + 'a';
 
   inherited Create;
-  FColorAttr := TColorSchemeAttribute.Create(nil, '');
+  FColorAttr := TColorSchemeAttribute.Create(nil, nil);
   FColorAttr.Features := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior,hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask];
   FColorAttr.Group := agnText;
   FColorAttr.SetAllPriorities(MARKUP_USER_DEF_PRIOR);
@@ -2040,7 +2040,7 @@ begin
   XMLConfig.ReadObject(Path + 'Main/', self, def);
   def.Free;
 
-  ColorDef := TColorSchemeAttribute.Create(nil, '');
+  ColorDef := TColorSchemeAttribute.Create(nil, nil);
   ColorDef.SetAllPriorities(MARKUP_USER_DEF_PRIOR);
   FColorAttr.StoredName := 'c1';
   FColorAttr.LoadFromXml(XMLConfig, Path + 'Color/', ColorDef, EditorOptsFormatVersion);
@@ -2122,7 +2122,7 @@ begin
   XMLConfig.WriteObject(Path + 'Main/', Self, def);
   def.Free;
 
-  ColorDef := TColorSchemeAttribute.Create(nil, '');
+  ColorDef := TColorSchemeAttribute.Create(nil, nil);
   ColorDef.SetAllPriorities(MARKUP_USER_DEF_PRIOR);
   FColorAttr.StoredName := 'c1';
   FColorAttr.SaveToXml(XMLConfig, Path + 'Color/', ColorDef);
@@ -5629,7 +5629,7 @@ begin
 end;
 
 constructor TColorSchemeAttribute.Create(ASchemeLang: TColorSchemeLanguage;
-  attribName: string; aStoredName: String = '');
+  attribName: PString; aStoredName: String = '');
 begin
   inherited Create(attribName, aStoredName);
   FOwner := ASchemeLang;
@@ -5719,7 +5719,7 @@ function TColorSchemeAttribute.Equals(Other: TColorSchemeAttribute): Boolean;
 begin
   Result := (FGroup      = Other.FGroup) and
             (FUseSchemeGlobals = Other.FUseSchemeGlobals) and
-            (Name       = Other.Name) and
+            // ignore resourcestring Name and Caption
             (StoredName = Other.StoredName) and
             (Background  = Other.Background) and
             (Foreground  = Other.Foreground) and
@@ -5823,8 +5823,8 @@ begin
   // FormatVersion = 1 (only pascal colors)
   if Defaults = nil then
     Defaults := Self;
-  if Name = '' then exit;
-  aPath := aPath + StrToValidXMLName(Name) + '/';
+  if StoredName = '' then exit;
+  aPath := aPath + StrToValidXMLName(StoredName) + '/';
   BackGround := aXMLConfig.GetValue(aPath + 'BackgroundColor', Defaults.Background);
   ForeGround := aXMLConfig.GetValue(aPath + 'ForegroundColor', Defaults.Foreground);
   FrameColor := aXMLConfig.GetValue(aPath + 'FrameColorColor', Defaults.FrameColor);
@@ -5907,7 +5907,7 @@ begin
     FHighlighter := LazSyntaxHighlighterClasses[ALang].Create(nil);
     FLanguageName := FHighlighter.LanguageName;
   end;
-  FDefaultAttribute := TColorSchemeAttribute.Create(Self, dlgAddHiAttrDefault, 'ahaDefault');
+  FDefaultAttribute := TColorSchemeAttribute.Create(Self, @dlgAddHiAttrDefault, 'ahaDefault');
   FDefaultAttribute.Features := [hafBackColor, hafForeColor];
   FDefaultAttribute.Group := agnDefault;
   FAttributes.AddObject(UpperCase(FDefaultAttribute.StoredName), FDefaultAttribute);
@@ -5928,9 +5928,10 @@ begin
   FAttributes.Sorted := False;
   if FHighlighter <> nil then begin
     for i := 0 to FHighlighter.AttrCount - 1 do begin
-      csa := TColorSchemeAttribute.Create(Self, FHighlighter.Attribute[i].Name,
-                                          FHighlighter.Attribute[i].StoredName
-                                         );
+      csa := TColorSchemeAttribute.Create(Self,
+                                   FHighlighter.Attribute[i].Caption,
+                                   FHighlighter.Attribute[i].StoredName
+                                   );
       csa.Assign(FHighlighter.Attribute[i]);
       csa.Group := agnLanguage;
       FAttributes.AddObject(UpperCase(csa.StoredName), csa);
@@ -5939,7 +5940,7 @@ begin
 
   for aha := Low(TAdditionalHilightAttribute) to High(TAdditionalHilightAttribute) do begin
     if aha = ahaNone then continue;
-    csa := TColorSchemeAttribute.Create(Self, AdditionalHighlightAttributes[aha],
+    csa := TColorSchemeAttribute.Create(Self, @AdditionalHighlightAttributes[aha],
                                         AhaToStoredName(aha)
                                        );
     csa.Features := ahaSupportedFeatures[aha];
@@ -5991,8 +5992,9 @@ begin
       FAttributes.Delete(j);
     end
     else
-      Attr := TColorSchemeAttribute.Create(Self, Src.AttributeAtPos[i].Name,
-                                           Src.AttributeAtPos[i].StoredName);
+      Attr := TColorSchemeAttribute.Create(Self,
+                                       Src.AttributeAtPos[i].Caption,
+                                       Src.AttributeAtPos[i].StoredName);
     Attr.Assign(Src.AttributeAtPos[i]);
     NewList.AddObject(UpperCase(Attr.StoredName), Attr);
     if Src.AttributeAtPos[i] = Src.DefaultAttribute then
@@ -6071,7 +6073,7 @@ begin
   //   Attribute hasn't SchemeDefault => Save diff to empty
   if (Defaults = nil) then
     // default all colors = clNone
-    EmptyDef := TColorSchemeAttribute.Create(Self, '', '')
+    EmptyDef := TColorSchemeAttribute.Create(Self, nil, '')
   else
     EmptyDef := nil;
 
@@ -6107,13 +6109,13 @@ begin
   FreeAndNil(EmptyDef);
 
   // Version 5 and before stored the global background on the Whitespace attribute.
-  // If a whiespace Attribute was loaded (UseSchemeGlobals=false) then copy it
+  // If a whitespace Attribute was loaded (UseSchemeGlobals=false) then copy it
   if (FormatVersion <= 5) and (DefaultAttribute <> nil) and
       (FHighlighter <> nil) and (FHighlighter.WhitespaceAttribute <> nil) and
-      (Attribute[Highlighter.WhitespaceAttribute.Name] <> nil) and
-      (not Attribute[Highlighter.WhitespaceAttribute.Name].UseSchemeGlobals)
+      (Attribute[Highlighter.WhitespaceAttribute.StoredName] <> nil) and
+      (not Attribute[Highlighter.WhitespaceAttribute.StoredName].UseSchemeGlobals)
   then
-    DefaultAttribute.Background := Attribute[Highlighter.WhitespaceAttribute.Name].Background;
+    DefaultAttribute.Background := Attribute[Highlighter.WhitespaceAttribute.StoredName].Background;
 end;
 
 procedure TColorSchemeLanguage.SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String;
@@ -6140,7 +6142,7 @@ begin
 
   if (Defaults = nil) then
     // default all colors = clNone
-    EmptyDef := TColorSchemeAttribute.Create(Self, '', '')
+    EmptyDef := TColorSchemeAttribute.Create(Self, nil, '')
   else
     EmptyDef := nil;
 

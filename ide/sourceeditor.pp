@@ -10159,7 +10159,7 @@ procedure TSourceEditorManager.OnSourceCompletionTimer(Sender: TObject);
     Attri:=nil;
     dec(LogCaret.X);
     if SrcEdit.EditorComponent.GetHighlighterAttriAtRowCol(LogCaret,Token,Attri)
-    and (Attri<>nil) and (Attri.Name=SYNS_AttrComment) then
+    and (Attri<>nil) and (Attri.StoredName=SYNS_XML_AttrComment) then
     begin
       exit;
     end;

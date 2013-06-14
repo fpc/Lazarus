@@ -233,9 +233,9 @@ begin
   if Attri.IsUsingSchemeGlobals then
     Attri := Attri.GetSchemeGlobal;
 
+  if FCurrentColorScheme = nil then exit;
 
   AttriIdx := GetEnumValue(TypeInfo(TAdditionalHilightAttribute), Attri.StoredName);
-  if FCurrentColorScheme = nil then exit;
 
   // Draw node background and name
   if cdsSelected in State then begin
@@ -478,7 +478,8 @@ begin
   if Attri <> nil then begin
     NewNode := ColorElementTree.Items.GetFirstNode;
     while Assigned(NewNode) do begin
-      if (NewNode.Data <> nil) and (TColorSchemeAttribute(NewNode.Data).StoredName = Attri.StoredName) then
+      if (NewNode.Data <> nil)
+      and (TColorSchemeAttribute(NewNode.Data).StoredName = Attri.StoredName) then
         break;
       NewNode := NewNode.GetNext;
     end;
@@ -581,7 +582,7 @@ begin
   end;
 
   SetAttrPriorVal(Attr, f, i);
-  Node.Text := Format('%s%-3d %s', [COLOR_NODE_PREFIX, i, Attr.Name]);
+  Node.Text := Format('%s%-3d %s', [COLOR_NODE_PREFIX, i, Attr.Caption^]);
 
   i := (Node.Index - List.TopItem.Index);
   if (i < 0) or (i >= List.Height div Node.Height) then
@@ -606,7 +607,7 @@ procedure TEditorColorOptionsFrame.ForePriorUpDownClick(Sender: TObject; Button:
       Prior := NextPrior + 1;
       if Prior > MAX_PRIOR then exit;
       SetAttrPriorVal(Attr, AField, Prior);
-      ANode.Text := Format('%s%-3d %s', [COLOR_NODE_PREFIX, Prior, Attr.Name]);
+      ANode.Text := Format('%s%-3d %s', [COLOR_NODE_PREFIX, Prior, Attr.Caption^]);
 
       ANode := ANode.GetPrev;
       Attr := AttrForNode(ANode);
@@ -628,7 +629,7 @@ procedure TEditorColorOptionsFrame.ForePriorUpDownClick(Sender: TObject; Button:
       Prior := NextPrior - 1;
       if Prior < MIN_PRIOR then exit;
       SetAttrPriorVal(Attr, AField, Prior);
-      ANode.Text := Format('%s%-3d %s', [COLOR_NODE_PREFIX, Prior, Attr.Name]);
+      ANode.Text := Format('%s%-3d %s', [COLOR_NODE_PREFIX, Prior, Attr.Caption^]);
 
       ANode := ANode.GetNext;
       Attr := AttrForNode(ANode);
@@ -870,7 +871,7 @@ procedure TEditorColorOptionsFrame.FillPriorEditor;
       Attr := FCurrentColorScheme.AttributeAtPos[i];
       if IsEnabled(Attr, ASelector) then begin
         p := GetAttrPriorVal(Attr, ASelector);
-        AList.Items.Add(nil, Format('%s%-3d %s', [COLOR_NODE_PREFIX, p, Attr.Name])).Data := Attr;
+        AList.Items.Add(nil, Format('%s%-3d %s', [COLOR_NODE_PREFIX, p, Attr.Caption^])).Data := Attr;
       end;
     end;
     AList.EndUpdate;
@@ -1077,7 +1078,7 @@ begin
   // Fill Attributes in
   for i := 0 to FCurrentColorScheme.AttributeCount - 1 do begin
     Attr := FCurrentColorScheme.AttributeAtPos[i];
-    if Attr.Name <> '' then begin
+    if Attr.StoredName <> '' then begin
       case Attr.Group of
         agnDefault, //  continue; // default is currently not shown
         agnLanguage:
@@ -1093,7 +1094,7 @@ begin
       ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
       if ParentNode = nil then
         ParentNode := ColorElementTree.Items.Add(nil, ParentName);
-      NewNode :=  ColorElementTree.Items.AddChild(ParentNode, COLOR_NODE_PREFIX + Attr.Name);
+      NewNode :=  ColorElementTree.Items.AddChild(ParentNode, COLOR_NODE_PREFIX + Attr.Caption^);
       NewNode.Data := Pointer(Attr);
       if Attr.Group = agnDefault then
         DefNode := NewNode;
