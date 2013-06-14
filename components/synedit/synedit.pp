@@ -2813,7 +2813,7 @@ end;
 function TCustomSynEdit.DoHandleMouseAction(AnActionList: TSynEditMouseActions;
   AnInfo: TSynEditMouseActionInfo): Boolean;
 var
-  CaretDone: Boolean;
+  CaretDone, ResetMouseCapture: Boolean;
   AnAction: TSynEditMouseAction;
 
   procedure MoveCaret;
@@ -2924,7 +2924,7 @@ begin
 
     Result := True;
     CaretDone := AnInfo.CaretDone;
-    MouseCapture := False;
+    ResetMouseCapture := True;
 
     if (ACommand = emcWheelScrollDown)
     then begin
@@ -2964,6 +2964,7 @@ begin
             Include(fStateFlags, sfMouseDoneSelecting);
           end;
           MouseCapture := True;
+          ResetMouseCapture := False;
           Include(fStateFlags, sfWaitForMouseSelecting);
         end;
       emcSelectWord:
@@ -2971,27 +2972,25 @@ begin
           if AnAction.MoveCaret then
             MoveCaret;
           SetWordBlock(AnInfo.NewCaret.LineBytePos);
-          MouseCapture := FALSE;
         end;
       emcSelectLine:
         begin
           if AnAction.MoveCaret then
             MoveCaret;
           SetLineBlock(AnInfo.NewCaret.LineBytePos, AnAction.Option = emcoSelectLineFull);
-          MouseCapture := FALSE;
         end;
       emcSelectPara:
         begin
           if AnAction.MoveCaret then
             MoveCaret;
           SetParagraphBlock(AnInfo.NewCaret.LineBytePos);
-          MouseCapture := FALSE;
         end;
       emcStartDragMove:
         begin
           if SelAvail and (SelectionMode = smNormal) then begin
             Include(fStateFlags, sfWaitForDragging);
             MouseCapture := True;
+            ResetMouseCapture := False;
           end
           else
             Result := False; // Currently only drags smNormal
@@ -3045,13 +3044,33 @@ begin
         begin
           i := GetWheelScrollAmount(CharsInWindow);
           if ACommand = emcWheelHorizScrollUp then i := -i;
-          if i <> 0 then LeftChar := LeftChar + i;
+          if i <> 0 then begin
+            LeftChar := LeftChar + i;
+            if fStateFlags * [sfMouseSelecting, sfWaitForMouseSelecting] <> [] then begin
+              FStateFlags := FStateFlags - [sfWaitForMouseSelecting] + [sfMouseSelecting, sfMouseDoneSelecting];
+              ResetMouseCapture := False;
+              AnInfo.NewCaret.LineCharPos := PixelsToRowColumn(Point(AnInfo.MouseX, AnInfo.MouseY));
+              FBlockSelection.AutoExtend := True;
+              MoveCaret;
+              FBlockSelection.ActiveSelectionMode := FMouseSelectionMode;
+            end;
+          end;
         end;
       emcWheelVertScrollDown, emcWheelVertScrollUp:
         begin
           i := GetWheelScrollAmount(LinesInWindow);
           if ACommand = emcWheelVertScrollUp then i := -i;
-          if i <> 0 then TopView := TopView + i;
+          if i <> 0 then begin
+            TopView := TopView + i;
+            if fStateFlags * [sfMouseSelecting, sfWaitForMouseSelecting] <> [] then begin
+              FStateFlags := FStateFlags - [sfWaitForMouseSelecting] + [sfMouseSelecting, sfMouseDoneSelecting];
+              ResetMouseCapture := False;
+              AnInfo.NewCaret.LineCharPos := PixelsToRowColumn(Point(AnInfo.MouseX, AnInfo.MouseY));
+              FBlockSelection.AutoExtend := True;
+              MoveCaret;
+              FBlockSelection.ActiveSelectionMode := FMouseSelectionMode;
+            end;
+          end;
         end;
       emcWheelZoomOut, emcWheelZoomIn:
         begin
@@ -3082,6 +3101,10 @@ begin
       MoveCaret;
     if Result and (AnAction.IgnoreUpClick) then
       AnInfo.IgnoreUpClick := True;
+    if ResetMouseCapture then
+      MouseCapture := False;
+    if FBlockSelection.AutoExtend and (FPaintLock = 0) then
+      FBlockSelection.AutoExtend := False;
   end;
 end;
 
