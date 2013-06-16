@@ -52,8 +52,7 @@ type
     fTitle: String;       // Used for form caption.
     fLog: TStringList;
     // Unit, Project or Package top file and path.
-    fMainFilename: String;
-    fMainPath: String;
+    fMainFilenames: TStringList;
     // Persistent storage in XML or some other format.
     fConfigStorage: TConfigStorage;
     fSettingsForm: TConvertSettingsForm;
@@ -83,8 +82,9 @@ type
     fCoordOffsets: TVisualOffsets;
     // Getter / setter:
     function GetBackupPath: String;
+    function GetMainFilename: String;
+    function GetMainPath: String;
     procedure SetEnabled(const AValue: Boolean);
-    procedure SetMainFilename(const AValue: String);
   public
     constructor Create(const ATitle: string);
     destructor Destroy; override;
@@ -108,8 +108,9 @@ type
     function AddLogLine(const ALine: string): integer;
     function SaveLog: Boolean;
   public
-    property MainFilename: String read fMainFilename write SetMainFilename;
-    property MainPath: String read fMainPath;
+    property MainFilenames: TStringlist read fMainFilenames;
+    property MainFilename: String read GetMainFilename;
+    property MainPath: String read GetMainPath;
     property BackupPath: String read GetBackupPath;
     property Enabled: Boolean read fEnabled write SetEnabled;
     property DelphiDefine: Boolean read fDelphiDefine;
@@ -137,6 +138,8 @@ type
   TConvertSettingsForm = class(TForm)
     FuncReplaceCommentCB: TCheckBox;
     DelphiDefineCheckBox: TCheckBox;
+    InputPathLabel: TLabel;
+    InputPathListBox: TListBox;
     StopScanButton: TBitBtn;
     CoordOffsComboBox: TComboBox;
     ScanLabel: TLabel;
@@ -160,7 +163,6 @@ type
     ButtonPanel1: TButtonPanel;
     TypeReplaceButton: TBitBtn;
     UnitReplaceButton: TBitBtn;
-    ProjectPathEdit: TLabeledEdit;
     CoordOffsButton: TBitBtn;
     procedure SameDfmCheckBoxChange(Sender: TObject);
     procedure StopScanButtonClick(Sender: TObject);
@@ -389,8 +391,7 @@ var
 begin
   fTitle:=ATitle;
   fLog:=TStringList.Create;
-  fMainFilename:='';
-  fMainPath:='';
+  fMainFilenames:=TStringList.Create;
   fEnabled:=True;
   fSettingsForm:=Nil;
   fOmitProjUnits:=TStringToStringTree.Create(false);
@@ -652,6 +653,7 @@ begin
   fReplaceTypes.Free;
   fReplaceUnits.Free;
   fOmitProjUnits.Free;
+  fMainFilenames.Free;
   fLog.Free;
   inherited Destroy;
 end;
@@ -669,8 +671,8 @@ begin
       end
       else
         ThreadTerminated(nil);        // Hide controls dealing with scanning
-      Caption:=fTitle + ' - ' + ExtractFileName(fMainFilename);
-      ProjectPathEdit.Text:=fMainPath;
+      Caption:=fTitle + ' - ' + ExtractFileName(MainFilename);
+      InputPathListBox.Items.Assign(fMainFilenames);
       // Settings --> UI. Loaded from ConfigSettings earlier.
       DelphiDefineCheckBox.Checked   :=fDelphiDefine;
       BackupCheckBox.Checked         :=fBackupFiles;
@@ -719,7 +721,7 @@ function TConvertSettings.DelphiToLazFilename(const DelphiFilename, LazExt: stri
 var
   RelPath, SubPath, fn: string;
 begin
-  RelPath:=FileUtil.CreateRelativePath(DelphiFilename, fMainPath);
+  RelPath:=FileUtil.CreateRelativePath(DelphiFilename, MainPath);
   SubPath:=ExtractFilePath(RelPath);
   if LazExt='' then                 // Include ext in filename if not defined.
     fn:=ExtractFileName(RelPath)
@@ -727,7 +729,7 @@ begin
     fn:=ExtractFileNameOnly(RelPath);
   if LowercaseFilename then
     fn:=LowerCase(fn);
-  Result:=fMainPath+SubPath+fn+LazExt;
+  Result:=MainPath+SubPath+fn+LazExt;
 end;
 
 function TConvertSettings.RenameDelphiToLazFile(const DelphiFilename: string;
@@ -741,7 +743,7 @@ function TConvertSettings.RenameDelphiToLazFile(const DelphiFilename, LazExt: st
 var
   RelPath, SubPath, fn: string;
 begin
-  RelPath:=FileUtil.CreateRelativePath(DelphiFilename, fMainPath);
+  RelPath:=FileUtil.CreateRelativePath(DelphiFilename, MainPath);
   SubPath:=ExtractFilePath(RelPath);
   if LazExt='' then                 // Include ext in filename if not defined.
     fn:=ExtractFileName(RelPath)
@@ -754,7 +756,7 @@ begin
     Result:=BackupFile(DelphiFilename); // Save before rename.
     if Result<>mrOK then exit;
   end;
-  LazFilename:=fMainPath+SubPath+fn+LazExt;
+  LazFilename:=MainPath+SubPath+fn+LazExt;
   Result:=RenameFileWithErrorDialogs(DelphiFilename,LazFilename,[mbAbort]);
 end;
 
@@ -792,18 +794,12 @@ var
   aFilename: String;
   Code: TCodeBuffer;
 begin
-  aFilename:=fMainPath+'AutomaticConversion.log';
+  aFilename:=MainPath+'AutomaticConversion.log';
   Code:=CodeToolBoss.CreateFile(aFilename);
   Code.Assign(fLog);
   Result:=SaveCodeBuffer(Code)=mrOk;
   if Result then
     IDEMessagesWindow.AddMsg('This log was saved to '+aFilename, '', -1);
-end;
-
-procedure TConvertSettings.SetMainFilename(const AValue: String);
-begin
-  fMainFilename:=AValue;
-  fMainPath:=ExtractFilePath(AValue);
 end;
 
 function TConvertSettings.GetBackupPath: String;
@@ -812,11 +808,21 @@ const
 begin
   Result:='';
   if fBackupFiles then begin
-    Result:=fMainPath+BackupPathName+PathDelim;
+    Result:=MainPath+BackupPathName+PathDelim;
     // Create backup path if needed.
     if not DirectoryExistsUTF8(Result) then
       CreateDirUTF8(Result);
   end;
+end;
+
+function TConvertSettings.GetMainFilename: String;
+begin
+  Result:=fMainFilenames[0];
+end;
+
+function TConvertSettings.GetMainPath: String;
+begin
+  Result:=ExtractFilePath(fMainFilenames[0]);
 end;
 
 procedure TConvertSettings.SetEnabled(const AValue: Boolean);
@@ -843,9 +849,9 @@ end;
 
 procedure TConvertSettingsForm.FormCreate(Sender: TObject);
 begin
-  ProjectPathEdit.Text:='';
-  ProjectPathEdit.EditLabel.Caption:=lisProjectPath;
-  ProjectPathEdit.Hint:=lisProjectPathHint;
+  InputPathLabel.Caption:=lisProjectPath;
+  InputPathListBox.Clear;
+  InputPathListBox.Hint:=lisProjectPathHint;
   DelphiDefineCheckBox.Caption:=lisAddDelphiDefine;
   DelphiDefineCheckBox.Hint:=lisAddDelphiDefineHint;
   BackupCheckBox.Caption:=lisBackupChangedFiles;
@@ -978,7 +984,6 @@ procedure TConvertSettingsForm.CoordOffsButtonClick(Sender: TObject);
 begin
   EditCoordOffsets(fSettings.CoordOffsets, lisConvCoordOffs);
 end;
-
 
 end.
 

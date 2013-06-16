@@ -952,7 +952,6 @@ type
 
     // conversion
     function DoConvertDFMtoLFM: TModalResult;
-    function DoConvertDelphiUnit(const DelphiFilename: string; CanAbort: boolean): TModalResult;
     function DoConvertDelphiProject(const DelphiFilename: string): TModalResult;
     function DoConvertDelphiPackage(const DelphiFilename: string): TModalResult;
 
@@ -4384,18 +4383,12 @@ begin
 end;
 
 procedure TMainIDE.mnuToolConvertDelphiUnitClicked(Sender: TObject);
-
-  procedure UpdateEnvironment;
-  begin
-    SetRecentFilesMenu;
-    SaveEnvironment;
-  end;
-
 var
   OpenDialog: TOpenDialog;
   AFilename: string;
   i: Integer;
-  MultiOpen: Boolean;
+  OldChange: Boolean;
+  Converter: TConvertDelphiUnit;
 begin
   OpenDialog:=TOpenDialog.Create(nil);
   try
@@ -4405,20 +4398,23 @@ begin
                        dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
     if InputHistories.LastConvertDelphiUnit<>'' then begin
-      OpenDialog.InitialDir:=
-                       ExtractFilePath(InputHistories.LastConvertDelphiUnit);
-      OpenDialog.Filename:=
-                       ExtractFileName(InputHistories.LastConvertDelphiUnit);
+      OpenDialog.InitialDir:=ExtractFilePath(InputHistories.LastConvertDelphiUnit);
+      OpenDialog.Filename  :=ExtractFileName(InputHistories.LastConvertDelphiUnit);
     end;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
-      MultiOpen:=OpenDialog.Files.Count>1;
-      for i := 0 to OpenDialog.Files.Count-1 do begin
-        AFilename:=CleanAndExpandFilename(OpenDialog.Files.Strings[i]);
-        if FileExistsUTF8(AFilename)
-        and (DoConvertDelphiUnit(AFilename,MultiOpen)=mrAbort) then
-          break;
+      InputHistories.LastConvertDelphiUnit:=OpenDialog.Files[0];
+      OldChange:=OpenEditorsOnCodeToolChange;
+      OpenEditorsOnCodeToolChange:=true;
+      Converter:=TConvertDelphiUnit.Create(OpenDialog.Files);
+      try
+        if Converter.Convert=mrOK then begin
+          SetRecentFilesMenu;
+          SaveEnvironment;
+        end;
+      finally
+        Converter.Free;
+        OpenEditorsOnCodeToolChange:=OldChange;
       end;
-      UpdateEnvironment;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
@@ -4427,13 +4423,6 @@ begin
 end;
 
 procedure TMainIDE.mnuToolConvertDelphiProjectClicked(Sender: TObject);
-
-  procedure UpdateEnvironment;
-  begin
-    SetRecentFilesMenu;
-    SaveEnvironment;
-  end;
-
 var
   OpenDialog: TOpenDialog;
   AFilename: string;
@@ -4446,16 +4435,15 @@ begin
                        lisLazarusProject+' (*.lpr)|*.lpr|'+
                        dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
     if InputHistories.LastConvertDelphiProject<>'' then begin
-      OpenDialog.InitialDir:=
-                       ExtractFilePath(InputHistories.LastConvertDelphiProject);
-      OpenDialog.Filename:=
-                       ExtractFileName(InputHistories.LastConvertDelphiProject);
+      OpenDialog.InitialDir:=ExtractFilePath(InputHistories.LastConvertDelphiProject);
+      OpenDialog.Filename  :=ExtractFileName(InputHistories.LastConvertDelphiProject);
     end;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       if FileExistsUTF8(AFilename) then
         DoConvertDelphiProject(AFilename);
-      UpdateEnvironment;
+      SetRecentFilesMenu;
+      SaveEnvironment;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
@@ -4464,13 +4452,6 @@ begin
 end;
 
 procedure TMainIDE.mnuToolConvertDelphiPackageClicked(Sender: TObject);
-
-  procedure UpdateEnvironment;
-  begin
-    SetRecentFilesMenu;
-    SaveEnvironment;
-  end;
-
 var
   OpenDialog: TOpenDialog;
   AFilename: string;
@@ -4483,14 +4464,15 @@ begin
                        dlgAllFiles+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
     if InputHistories.LastConvertDelphiPackage<>'' then begin
       OpenDialog.InitialDir:=ExtractFilePath(InputHistories.LastConvertDelphiPackage);
-      OpenDialog.Filename:=ExtractFileName(InputHistories.LastConvertDelphiPackage);
+      OpenDialog.Filename  :=ExtractFileName(InputHistories.LastConvertDelphiPackage);
     end;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       //debugln('TMainIDE.mnuToolConvertDelphiProjectClicked A ',AFilename);
       if FileExistsUTF8(AFilename) then
         DoConvertDelphiPackage(AFilename);
-      UpdateEnvironment;
+      SetRecentFilesMenu;
+      SaveEnvironment;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
@@ -7985,26 +7967,7 @@ begin
   DoCheckFilesOnDisk;
 end;
 
-function TMainIDE.DoConvertDelphiUnit(const DelphiFilename: string;
-  CanAbort: boolean): TModalResult;
-var
-  OldChange: Boolean;
-  Converter: TConvertDelphiUnit;
-begin
-  InputHistories.LastConvertDelphiUnit:=DelphiFilename;
-  OldChange:=OpenEditorsOnCodeToolChange;
-  OpenEditorsOnCodeToolChange:=true;
-  Converter := TConvertDelphiUnit.Create(DelphiFilename);
-  try
-    Result:=Converter.Convert;
-  finally
-    Converter.Free;
-    OpenEditorsOnCodeToolChange:=OldChange;
-  end;
-end;
-
-function TMainIDE.DoConvertDelphiProject(const DelphiFilename: string
-  ): TModalResult;
+function TMainIDE.DoConvertDelphiProject(const DelphiFilename: string): TModalResult;
 var
   OldChange: Boolean;
   Converter: TConvertDelphiProject;
@@ -8021,8 +7984,7 @@ begin
   end;
 end;
 
-function TMainIDE.DoConvertDelphiPackage(const DelphiFilename: string
-  ): TModalResult;
+function TMainIDE.DoConvertDelphiPackage(const DelphiFilename: string): TModalResult;
 var
   OldChange: Boolean;
   Converter: TConvertDelphiPackage;

@@ -120,8 +120,6 @@ type
   //  wrapping either one unit or whole project / package conversion.
   TConvertDelphiPBase = class
   private
-    // Original unit's, project's or package's file name, .pas .lpi .lpk .dpr .dpk
-    fOrigFilename: string;
     fSettings: TConvertSettings;
     fErrorMsg: string;
     // IsConsoleApp is only updated for TConvertDelphiProjPack.
@@ -139,6 +137,7 @@ type
   protected
     function EndConvert(AStatus: TModalResult): Boolean;
   public
+    constructor Create(const ADescription: string);
     constructor Create(const AFilename, ADescription: string);
     destructor Destroy; override;
   public
@@ -152,7 +151,7 @@ type
   private
     DirectoryTemplate: TDefineTemplate;
   public
-    constructor Create(const AFilename: string);
+    constructor Create(aFiles: TStrings);
     destructor Destroy; override;
     function Convert: TModalResult;
   end;
@@ -822,14 +821,18 @@ end;
 
 { TConvertDelphiPBase }
 
-constructor TConvertDelphiPBase.Create(const AFilename, ADescription: string);
+constructor TConvertDelphiPBase.Create(const ADescription: string);
 begin
   inherited Create;
-  fOrigFilename:=AFilename;
   fSettings:=TConvertSettings.Create(ADescription);
-  fSettings.MainFilename:=fOrigFilename;
   fIsConsoleApp:=False;                   // Default = GUI app.
-  fPrevSelectedPath:=fSettings.MainPath;
+end;
+
+constructor TConvertDelphiPBase.Create(const AFilename, ADescription: string);
+begin
+  Create(ADescription);
+  fSettings.MainFilenames.Add(AFilename);
+  fPrevSelectedPath:=AFilename;
 end;
 
 destructor TConvertDelphiPBase.Destroy;
@@ -866,12 +869,21 @@ end;
 
 { TConvertDelphiUnit }
 
-constructor TConvertDelphiUnit.Create(const AFilename: string);
+constructor TConvertDelphiUnit.Create(aFiles: TStrings);
 var
   MacroName, s: String;
+  i: Integer;
 begin
-  inherited Create(AFilename, lisConvDelphiConvertDelphiUnit);
-
+  inherited Create(lisConvDelphiConvertDelphiUnit);
+  // Add the list of files if they exist.
+  for i := 0 to aFiles.Count-1 do begin
+    s:=CleanAndExpandFilename(aFiles[i]);
+    if FileExistsUTF8(s) then begin
+      fSettings.MainFilenames.Add(s);
+      if (i=0) and (fPrevSelectedPath='') then
+        fPrevSelectedPath:=s;
+    end;
+  end;
   // use a template for compiler mode delphi for a single directory
   DirectoryTemplate:=TDefineTemplate.Create('Delphi unit conversion',
     'Mode Delphi for single unit conversion', '', fSettings.MainPath, da_Directory);
@@ -890,36 +902,45 @@ end;
 function TConvertDelphiUnit.Convert: TModalResult;
 var
   DelphiUnit: TDelphiUnit;
+  i: Integer;
 begin
-  DelphiUnit := TDelphiUnit.Create(Self, fOrigFilename, []);
-  try
-    Result:=fSettings.RunForm(Nil);
-    if Result=mrOK then begin
+  Result:=fSettings.RunForm(Nil);
+  if Result=mrOK then begin
+    try
+    try
       fSettings.ClearLog;
-      with DelphiUnit do
-      try
-        Result:=CopyAndLoadFile;
-        if Result<>mrOK then Exit;
-        Result:=ConvertUnitFile;
-        if Result<>mrOK then Exit;
-        Result:=SaveCodeBufferToFile(fPascalBuffer,fLazUnitFilename);
-        if Result<>mrOK then Exit;
-        Result:=ConvertFormFile;
-        if Result<>mrOK then Exit;
-        Result:=LazarusIDE.DoSaveEditorFile(fLazUnitFilename,[]);
-      except
-        on e: EDelphiConverterError do begin
-          fErrorMsg:=e.Message;
+      for i:=0 to fSettings.MainFilenames.Count-1 do begin
+        Application.ProcessMessages;
+        if i>0 then
+          fSettings.AddLogLine('');
+        DelphiUnit := TDelphiUnit.Create(Self, fSettings.MainFilenames[i], []);
+        with DelphiUnit do
+        try
+          Result:=CopyAndLoadFile;
+          if Result<>mrOK then Exit;
+          Result:=ConvertUnitFile;
+          if Result<>mrOK then Exit;
+          Result:=SaveCodeBufferToFile(fPascalBuffer,fLazUnitFilename);
+          if Result<>mrOK then Exit;
+          Result:=ConvertFormFile;
+          if Result<>mrOK then Exit;
+          Result:=LazarusIDE.DoSaveEditorFile(fLazUnitFilename,[]);
+        finally
+          DelphiUnit.Free;
         end;
-        else begin
-          fErrorMsg:=CodeToolBoss.ErrorMessage;
-        end;
-        Result:=mrAbort;
       end;
+    except
+      on e: EDelphiConverterError do begin
+        fErrorMsg:=e.Message;
+      end;
+      else begin
+        fErrorMsg:=CodeToolBoss.ErrorMessage;
+      end;
+      Result:=mrAbort;
     end;
-  finally
-    EndConvert(Result);
-    DelphiUnit.Free;
+    finally
+      EndConvert(Result);
+    end;
   end;
 end;
 
@@ -963,7 +984,7 @@ var
   StartTime, EndTime: TDateTime;
   s: string;
 begin
-  if CompareFileExt(fOrigFilename,'.dproj',false)=0 then begin
+  if CompareFileExt(fSettings.MainFilename,'.dproj',false)=0 then begin
     fErrorMsg:=
       '.dproj file is not supported yet. The file is used by Delphi 2007 and newer.'+
       ' Please select a .dpr file for projects or .dpk file for packages.';
@@ -980,15 +1001,15 @@ begin
       StartTime:=Now;
       fSettings.ClearLog;
       // create/open lazarus project or package file
-      fLazPMainFilename:=fSettings.DelphiToLazFilename(fOrigFilename, fLazPMainSuffix, false);
-
+      fLazPMainFilename:=fSettings.DelphiToLazFilename(fSettings.MainFilename,
+                                                       fLazPMainSuffix, false);
       // Find Delphi project / package file name
-      if CompareFileExt(fOrigFilename,fDelphiPSuffix,false)=0 then
-        fDelphiPFilename:=fOrigFilename
+      if CompareFileExt(fSettings.MainFilename,fDelphiPSuffix,false)=0 then
+        fDelphiPFilename:=fSettings.MainFilename
       else
-        fDelphiPFilename:=ChangeFileExt(fOrigFilename,fDelphiPSuffix);
+        fDelphiPFilename:=ChangeFileExt(fSettings.MainFilename,fDelphiPSuffix);
       if not FileExistsUTF8(fDelphiPFilename) then
-        fDelphiPFilename:=FindDiskFileCaseInsensitive(fOrigFilename);
+        fDelphiPFilename:=FindDiskFileCaseInsensitive(fSettings.MainFilename);
 // ? fDelphiPFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(fDelphiPFilename);
 
       // Actual conversion.
@@ -1018,9 +1039,9 @@ begin
   Result:=CreateInstance;
   if Result<>mrOK then exit;
   // Create main source file (.lpr/.lpk) (only copy, no conversion)
-  fMainUnitConverter:=TDelphiUnit.Create(Self, fOrigFilename,[]);
+  fMainUnitConverter:=TDelphiUnit.Create(Self, fSettings.MainFilename,[]);
   if fSettings.SupportDelphi then
-    fMainUnitConverter.LazFileExt:=ExtractFileExt(fOrigFilename)
+    fMainUnitConverter.LazFileExt:=ExtractFileExt(fSettings.MainFilename)
   else
     fMainUnitConverter.LazFileExt:=fLazPSuffix; // '.lpr' or ''
   Result:=fMainUnitConverter.CopyAndLoadFile;
@@ -1575,7 +1596,8 @@ begin
                                          FoundUnits, MisUnits, NormalUnits) then
     begin
       LazarusIDE.DoJumpToCodeToolBossError;
-      fErrorMsg:='Problems when trying to find all units from project file '+fOrigFilename;
+      fErrorMsg:='Problems when trying to find all units from project file '
+                +fSettings.MainFilename;
       exit(mrCancel);
     end;
     try        // Add all units to the project
@@ -1914,7 +1936,8 @@ begin
                                          FoundUnits, MisUnits, NormalUnits) then
     begin
       LazarusIDE.DoJumpToCodeToolBossError;
-      fErrorMsg:='Problems when trying to find all units from package file '+fOrigFilename;
+      fErrorMsg:='Problems when trying to find all units from package file '
+                +fSettings.MainFilename;
       exit(mrCancel);
     end;
     try
