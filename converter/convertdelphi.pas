@@ -1599,6 +1599,17 @@ begin
         if Result=mrAbort then
           exit;
       end;
+      for i:=0 to NormalUnits.Count-1 do begin
+        CurFilename:=NormalUnits[i];
+        //AllPath:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(
+        //                            fSettings.MainPath+CurFilename+'.pas', true);
+        AllPath:=FindDiskFileCaseInsensitive(fSettings.MainPath+CurFilename+'.pas');
+        if AllPath<>'' then begin
+          Result:=AddUnit(AllPath, ui);
+          if Result=mrAbort then
+            exit;
+        end;
+      end;
     finally
       AllPath:=fUnitSearchPaths.DelimitedText;
       // Set unit and include paths for project
@@ -1944,6 +1955,15 @@ begin
         Result:=AddUnit(SwitchPathDelims(CurFilename, True));
         if Result=mrAbort then
           exit;
+      end;
+      for i:=0 to NormalUnits.Count-1 do begin
+        CurFilename:=NormalUnits[i];
+        AllPath:=FindDiskFileCaseInsensitive(fSettings.MainPath+CurFilename+'.pas');
+        if AllPath<>'' then begin
+          Result:=AddUnit(AllPath);
+          if Result=mrAbort then
+            exit;
+        end;
       end;
     finally
       AllPath:=LazPackage.SourceDirectories.CreateSearchPathFromAllFiles;
