@@ -690,11 +690,18 @@ begin
 end;
 
 function TUsedUnitsTool.AddUnitImmediately(aUnitName: string): Boolean;
+// Add a unit to uses section and apply the change at once.
+// Returns True if the unit was actually added (did not exist yet).
+var
+  x: Integer;
 begin
-  with fCTLink, fMainUsedUnits do begin
-    Result:=CodeTool.AddUnitToSpecificUsesSection(fUsesSection, aUnitName, '', SrcCache);
-    if not Result then exit;
-    Result:=SrcCache.Apply;
+  Result:=not ( fMainUsedUnits.fExistingUnits.Find(aUnitName, x)
+             or fImplUsedUnits.fExistingUnits.Find(aUnitName, x) );
+  if Result then begin
+    Result:=fCTLink.CodeTool.AddUnitToSpecificUsesSection(
+                   fMainUsedUnits.fUsesSection, aUnitName, '', fCTLink.SrcCache);
+    if Result then
+      Result:=fCTLink.SrcCache.Apply;
   end;
 end;
 

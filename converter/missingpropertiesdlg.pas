@@ -73,7 +73,6 @@ type
     fCTLink: TCodeToolLink;
     fSettings: TConvertSettings;
     fUsedUnitsTool: TUsedUnitsTool;
-    fTryAddingUsedUnits: Boolean;
     // List of property values which need to be adjusted.
     fHasMissingProperties: Boolean;         // LFM file has unknown properties.
     fHasMissingObjectTypes: Boolean;        // LFM file has unknown object types.
@@ -97,7 +96,6 @@ type
   public
     property Settings: TConvertSettings read fSettings write fSettings;
     property UsedUnitsTool: TUsedUnitsTool read fUsedUnitsTool write fUsedUnitsTool;
-    property TryAddingUsedUnits: Boolean read fTryAddingUsedUnits write fTryAddingUsedUnits;
   end;
 
 
@@ -473,13 +471,12 @@ var
   RegComp: TRegisteredComponent;
   ClassUnitInfo: TUnitInfo;
   i: Integer;
-  CompClassName, NeededUnitName: String;
+  NeededUnitName: String;
 begin
   Result:=mrOK;
   if not Assigned(fUsedUnitsTool) then Exit;
   for i := 0 to aMissingTypes.Count-1 do begin
-    CompClassName := aMissingTypes[i];
-    RegComp:=IDEComponentPalette.FindComponent(CompClassName);
+    RegComp:=IDEComponentPalette.FindComponent(aMissingTypes[i]);
     NeededUnitName:='';
     if (RegComp<>nil) then begin
       if RegComp.ComponentClass<>nil then begin
@@ -488,13 +485,13 @@ begin
           NeededUnitName:=RegComp.GetUnitName;
       end;
     end else begin
-      ClassUnitInfo:=Project1.UnitWithComponentClassName(CompClassName);
+      ClassUnitInfo:=Project1.UnitWithComponentClassName(aMissingTypes[i]);
       if ClassUnitInfo<>nil then
         NeededUnitName:=ClassUnitInfo.Unit_Name;
     end;
     if NeededUnitName<>'' then begin
-      fUsedUnitsTool.AddUnitImmediately(NeededUnitName);
-      Result:=mrRetry;  // Caller must check LFM validity again
+      if fUsedUnitsTool.AddUnitImmediately(NeededUnitName) then
+        Result:=mrRetry;  // Caller must check LFM validity again
     end;
   end;
 end;
@@ -544,7 +541,6 @@ begin
       Exit(mrCancel);
     if CodeToolBoss.CheckLFM(fPascalBuffer, fLFMBuffer, fLFMTree,
                fRootMustBeClassInUnit, fRootMustBeClassInIntf, fObjectsMustExist)
-    or not fTryAddingUsedUnits
     then
       Result:=mrOk
     else begin
