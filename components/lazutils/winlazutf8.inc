@@ -36,7 +36,7 @@ end;
 //fpc 2.6.0 does not have StrLen for WideChar.
 //Remove this when we have 2.6.4 or higher
 {$if FPC_FULLVERSION < 20602}
-function StrLen(PW: PWideChar): SizeInt;
+function StrLen(PW: PWideChar): SizeInt; overload;
 var
   i: SizeInt;
 begin
