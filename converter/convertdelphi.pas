@@ -294,16 +294,9 @@ type
 {
   TConvertedDelphiPackageDescriptor = class(TPackageDescriptor)
   private
-  public      // ToDo
-    procedure InitPackage(APackage: TLazPackage); override;
+  public
+    procedure InitPackage(APackage: TLazPackage); override;    // ToDo
   end;
-
-  // Some global functions from delphiunit2laz are not (yet) converted to class methods.
-  function ConvertDelphiAbsoluteToRelativeFile(const Filename: string;
-                                               AProjPack: TConvertDelphiProjPack): string;
-  function ExpandDelphiFilename(const Filename: string; AProjPack: TConvertDelphiProjPack): string;
-  function ExpandDelphiSearchPath(const SearchPath: string;
-                                  AProjPack: TConvertDelphiProjPack): string;
 }
 
 implementation
@@ -421,7 +414,7 @@ begin
   fn:=ExtractFileName(RelPath);
   sUnitName:=ExtractFileNameOnly(fn);
   if (SubPath<>'') and (sUnitName<>'') then begin
-    //DebugLn(['RelPath=',RelPath,'SubPath=',SubPath,'fn=',fn,'sUnitName=',sUnitName]);
+    DebugLn(['RelPath=',RelPath,'SubPath=',SubPath,'fn=',fn,'sUnitName=',sUnitName]);
     // Map path by unit name.
     fConverter.fCachedUnitNames[sUnitName]:=SubPath;
     // Map real unit name by uppercase unit name.
@@ -1534,25 +1527,8 @@ begin
     if CurUnitInfo=nil then begin
       if FilenameIsPascalUnit(AFileName) then begin
         CurUnitInfo:=LazProject.UnitWithUnitname(PureUnitName);
-        if CurUnitInfo<>nil then begin
-          raise Exception.CreateFmt('TConvertDelphiProject.AddUnit: Unitname %s exists twice',
-                                    [PureUnitName]);
-{          Result:=QuestionDlg(lisConvDelphiUnitnameExistsTwice,
-            Format(lisConvDelphiTwoUnitsWithSameName,
-                   [LineEnding, CurUnitInfo.Filename, LineEnding, AFileName, LineEnding]),
-            mtWarning, [mrYes,lisConvDelphiRemoveFirst,mrNo,lisConvDelphiRemoveSecond,
-                        mrIgnore,lisConvDelphiKeepBoth,mrAbort], 0);
-          case Result of
-            mrYes: CurUnitInfo.IsPartOfProject:=false;
-            mrNo:  exit(mrNo);
-            mrIgnore: ;
-            else begin
-              fErrorMsg:='User selected to end conversion with file '+fOrigFilename;
-              exit(mrAbort);
-            end;
-          end;
-}
-        end;
+        Assert(CurUnitInfo=nil,
+          Format('TConvertDelphiProject.AddUnit: Unitname %s exists twice',[PureUnitName]));
       end;
       CurUnitInfo:=TUnitInfo.Create(nil);
       CurUnitInfo.Filename:=AFileName;
@@ -1601,8 +1577,6 @@ begin
       end;
       for i:=0 to NormalUnits.Count-1 do begin
         CurFilename:=NormalUnits[i];
-        //AllPath:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(
-        //                            fSettings.MainPath+CurFilename+'.pas', true);
         AllPath:=FindDiskFileCaseInsensitive(fSettings.MainPath+CurFilename+'.pas');
         if AllPath<>'' then begin
           Result:=AddUnit(AllPath, ui);
@@ -1887,23 +1861,8 @@ begin
     if FilenameIsPascalUnit(AFileName) then begin
       // Check unitname
       OffendingUnit:=LazPackage.FindUnit(PureUnitName);
-      if OffendingUnit<>nil then begin
-        raise Exception.CreateFmt('TConvertDelphiPackage.AddUnit: Unitname %s exists twice',
-                                  [PureUnitName]);
-{        Result:=QuestionDlg(lisConvDelphiUnitnameExistsTwice,
-          Format(lisConvDelphiTwoUnitsWithSameName,
-                 [LineEnding, OffendingUnit.Filename, LineEnding, AFileName, LineEnding]),
-          mtWarning, [mrNo, lisConvDelphiRemoveSecond, mrAbort], 0);
-        case Result of
-          mrNo:  exit(mrNo);
-          mrIgnore: ;
-          else begin
-            fErrorMsg:='User selected to end conversion with file '+fOrigFilename;
-            exit(mrAbort);
-          end;
-        end;
-}
-      end;
+      Assert(OffendingUnit=nil,
+        Format('TConvertDelphiPackage.AddUnit: Unitname %s exists twice',[PureUnitName]));
     end;
     Flags:=[pffAddToPkgUsesSection];
     // Check if the unit has a Register procedure.

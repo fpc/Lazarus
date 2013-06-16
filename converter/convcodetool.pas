@@ -54,19 +54,18 @@ type
     fCodeTool: TCodeTool;
     fCode: TCodeBuffer;
     fSrcCache: TSourceChangeCache;
-    fAskAboutError: Boolean;
+    fAskAboutError: boolean;
     fSettings: TConvertSettings;          // Conversion settings.
     procedure InitCodeTool;
   public
     constructor Create(ACode: TCodeBuffer);
     destructor Destroy; override;
     procedure ResetMainScanner;
-//    function HandleCodetoolError: TModalResult;
   public
     property CodeTool: TCodeTool read fCodeTool;
     property Code: TCodeBuffer read fCode;
     property SrcCache: TSourceChangeCache read fSrcCache;
-    property AskAboutError: Boolean read fAskAboutError write fAskAboutError;
+    property AskAboutError: boolean read fAskAboutError write fAskAboutError;
     property Settings: TConvertSettings read fSettings write fSettings;
   end;
 
@@ -76,7 +75,7 @@ type
   private
     fCTLink: TCodeToolLink;
     fCTLinkCreated: boolean;
-    fIsConsoleApp: Boolean;
+    fIsConsoleApp: boolean;
     fHasFormFile: boolean;
     fResAction: TResAction;
     fAddUnitEvent: TAddUnitEvent;
@@ -100,7 +99,7 @@ type
     function FixMainClassAncestor(const AClassName: string;
                                   AReplaceTypes: TStringToStringTree): boolean;
   public
-    property IsConsoleApp: Boolean read fIsConsoleApp write fIsConsoleApp;
+    property IsConsoleApp: boolean read fIsConsoleApp write fIsConsoleApp;
     property HasFormFile: boolean read fHasFormFile write fHasFormFile;
     property ResAction: TResAction read fResAction write fResAction;
     property AddUnitEvent: TAddUnitEvent read fAddUnitEvent write fAddUnitEvent;
@@ -130,41 +129,17 @@ begin
   fCodeTool:=nil;
   fSrcCache:=nil;
   if not CodeToolBoss.InitCurCodeTool(fCode) then exit;
-//  try
-    fCodeTool:=CodeToolBoss.CurCodeTool;
-    fSrcCache:=CodeToolBoss.SourceChangeCache;
-    ResetMainScanner;
-    fCodeTool.Scanner.IgnoreMissingIncludeFiles:=True;
-{  except
-    on e: Exception do
-      CodeToolBoss.HandleException(e);
-  end;  }
+  fCodeTool:=CodeToolBoss.CurCodeTool;
+  fSrcCache:=CodeToolBoss.SourceChangeCache;
+  ResetMainScanner;
+  fCodeTool.Scanner.IgnoreMissingIncludeFiles:=True;
 end;
 
 procedure TCodeToolLink.ResetMainScanner;
 begin
   fSrcCache.MainScanner:=fCodeTool.Scanner;
 end;
-{
-function TCodeToolLink.HandleCodetoolError: TModalResult;
-// returns mrOk or mrAbort
-const
-  CodetoolsFoundError='The codetools found an error in unit %s:%s%s%s';
-var
-  ErrMsg: String;
-begin
-  ErrMsg:=CodeToolBoss.ErrorMessage;
-  LazarusIDE.DoJumpToCodeToolBossError;
-  if fAskAboutError then begin
-    Result:=QuestionDlg(lisCCOErrorCaption,
-      Format(CodetoolsFoundError, [ExtractFileName(fCode.Filename), LineEnding, ErrMsg, LineEnding]),
-      mtWarning, [mrIgnore, lisIgnoreAndContinue, mrAbort], 0);
-    if Result=mrIgnore then Result:=mrOK;
-  end else begin
-    Result:=mrOK;
-  end;
-end;
-}
+
 { TConvDelphiCodeTool }
 
 constructor TConvDelphiCodeTool.Create(APascalBuffer: TCodeBuffer);
@@ -178,12 +153,7 @@ begin
   fIsConsoleApp:=False;
   fCTLinkCreated:=True;
   if Assigned(fCTLink.CodeTool) then
-//    try
     fCTLink.CodeTool.BuildTree(lsrInitializationStart);
-{    except
-      on e: Exception do
-        CodeToolBoss.HandleException(e);
-    end;  }
 end;
 
 constructor TConvDelphiCodeTool.Create(ACTLink: TCodeToolLink);
