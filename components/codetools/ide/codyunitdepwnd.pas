@@ -24,30 +24,16 @@
     IDE Window showing dependencies of units and packages.
 
   ToDo:
-    - change dialog to window
     - add refresh button to rescan
     - delay update pages when not visible
     - update pages when becoming visible
-    - scope:
-      - start units:
-        - list of project/packages
-        - flag for project, package: add all units in owner's source directories
-        - include units: semicolon separated list of file masks
-        - only those units with name fitting simple or regular expression
-        - exclude units with name fitting simple or regular expression
-        - button to use active unit as start
-      - used units:
-        - flag add units in packages used by owners
-        - only those packages with name fitting regular expression
-        - not packages with name fitting regular expression
-        - only those units with name fitting simple or regular expression
-        - exclude units with name fitting simple or regular expression
+    - additional files as start units
     - view:
       - flag show nodes for project/package
       - flag show nodes for directories
-      - text search with highlight, next, previous
-      - filter units simple or reg ex
       - flag allow multiselect
+      - filter units
+      - text search with highlight, next, previous
       - double click: open one unit
     - selected units
       - show owner units as tree structure
@@ -67,9 +53,9 @@ interface
 uses
   Classes, SysUtils, AVL_Tree, LazLogger, LazFileUtils,
   Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, LvlGraphCtrl,
-  LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf,
+  LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf,
   CodeToolManager, DefineTemplates, CodeToolsStructs,
-  CTUnitGraph, CTUnitGroupGraph;
+  CTUnitGraph, CTUnitGroupGraph, FileProcs;
 
 const
   GroupPrefixProject = '-Project-';
@@ -81,6 +67,7 @@ type
 
   TUnitDependenciesWindow = class(TForm)
     AllUnitsFilterEdit: TEdit;
+    AllUnitsMultiselectSpeedButton: TSpeedButton;
     AllUnitsSearchEdit: TEdit;
     AllUnitsSearchNextSpeedButton: TSpeedButton;
     AllUnitsSearchPrevSpeedButton: TSpeedButton;
@@ -89,50 +76,35 @@ type
     AllUnitsShowGroupNodesSpeedButton: TSpeedButton;
     AllUnitsTreeView: TTreeView;
     BtnPanel: TPanel;
-    ContinueExcludePkgCheckBox: TCheckBox;
-    ContinueExcludePkgEdit: TEdit;
-    ContinueExcludePkgRegExCheckBox: TCheckBox;
-    ContinueInUsedPackagesCheckBox: TCheckBox;
-    ContinueOnlyPkgWithNameCheckBox: TCheckBox;
-    ContinueOnlyPkgEdit: TEdit;
-    ContinueOnlyPkgWithNameRegExCheckBox: TCheckBox;
-    ContinueSearchingInGroupBox: TGroupBox;
     MainPageControl: TPageControl;
     ProgressBar1: TProgressBar;
     GroupsTabSheet: TTabSheet;
     GroupsSplitter: TSplitter;
-    ScopeStartGroupsButton: TButton;
     SelectedUnitsGroupBox: TGroupBox;
     SelUnitsSearchEdit: TEdit;
     SelUnitsSearchNextSpeedButton: TSpeedButton;
     SelUnitsSearchPrevSpeedButton: TSpeedButton;
     SelUnitsTreeView: TTreeView;
-    StartSearchingInGroupBox: TGroupBox;
     UnitScopeAddFilesButton: TButton;
     UnitScopeAddFilesCheckBox: TCheckBox;
-    UnitScopeAddFilesEdit: TEdit;
-    ScopeStartIncludeUnitsInGrpsSrcDirsCheckBox: TCheckBox;
     ScopePanel: TPanel;
-    ShowScopeCheckBox: TCheckBox;
-    UnitScopeNameExcludeFilterCheckBox: TCheckBox;
-    UnitScopeNameExcludeFilterEdit: TEdit;
-    UnitScopeNameExcludeFilterRegExCheckBox: TCheckBox;
-    UnitScopeNameOnlyFilterCheckBox: TCheckBox;
-    UnitScopeNameOnlyFilterEdit: TEdit;
-    UnitScopeNameOnlyFilterRegExCheckBox: TCheckBox;
+    UnitScopeAddFilesComboBox: TComboBox;
     UnitsSplitter: TSplitter;
     UnitsTabSheet: TTabSheet;
     Timer1: TTimer;
+    procedure AllUnitsMultiselectSpeedButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure GroupsLvlGraphSelectionChanged(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure Timer1Timer(Sender: TObject);
   private
+    FAllUnitsMultiSelect: boolean;
     FCurrentUnit: TUGUnit;
     FIdleConnected: boolean;
     FUsesGraph: TUsesGraph;
     FGroups: TUGGroups; // referenced by Nodes.Data of GroupsLvlGraph
+    procedure SetAllUnitsMultiSelect(AValue: boolean);
     procedure SetCurrentUnit(AValue: TUGUnit);
     procedure SetIdleConnected(AValue: boolean);
     procedure CreateGroups;
@@ -141,6 +113,9 @@ type
     procedure CreateFPCSrcGroups;
     procedure GuessGroupOfUnits;
     procedure AddStartAndTargetUnits;
+    procedure AddAdditionalFilesAsStartUnits;
+    procedure SetupGroupsTabSheet;
+    procedure SetupUnitsTabSheet;
     procedure UpdateAll;
     procedure UpdateGroupsLvlGraph;
     procedure UpdateUnitsLvlGraph;
@@ -156,6 +131,7 @@ type
     property UsesGraph: TUsesGraph read FUsesGraph;
     property Groups: TUGGroups read FGroups;
     property CurrentUnit: TUGUnit read FCurrentUnit write SetCurrentUnit;
+    property AllUnitsMultiSelect: boolean read FAllUnitsMultiSelect write SetAllUnitsMultiSelect;
   end;
 
 var
@@ -192,38 +168,18 @@ begin
 
   Caption:='Unit Dependencies';
 
-  IDEDialogLayoutList.ApplyLayout(Self,600,400);
+  MainPageControl.ActivePage:=UnitsTabSheet;
 
-  UnitsTabSheet.Caption:='Units';
-  GroupsTabSheet.Caption:='Projects and packages';
-
-  GroupsLvlGraph:=TLvlGraphControl.Create(Self);
-  with GroupsLvlGraph do
-  begin
-    Name:='GroupsLvlGraph';
-    Caption:='';
-    Align:=alTop;
-    Height:=200;
-    NodeStyle.GapBottom:=5;
-    Parent:=GroupsTabSheet;
-    OnSelectionChanged:=@GroupsLvlGraphSelectionChanged;
-  end;
-
-  GroupsSplitter.Top:=GroupsLvlGraph.Height;
-
-  UnitsLvlGraph:=TLvlGraphControl.Create(Self);
-  with UnitsLvlGraph do
-  begin
-    Name:='UnitsLvlGraph';
-    Caption:='';
-    Align:=alClient;
-    NodeStyle.GapBottom:=5;
-    Parent:=GroupsTabSheet;
-  end;
-
-  MainPageControl.ActivePage:=GroupsTabSheet;
+  SetupUnitsTabSheet;
+  SetupGroupsTabSheet;
 
   IdleConnected:=true;
+end;
+
+procedure TUnitDependenciesWindow.AllUnitsMultiselectSpeedButtonClick(
+  Sender: TObject);
+begin
+  AllUnitsMultiSelect:=AllUnitsMultiselectSpeedButton.Down;
 end;
 
 procedure TUnitDependenciesWindow.FormDestroy(Sender: TObject);
@@ -437,9 +393,20 @@ begin
   FCurrentUnit:=AValue;
 end;
 
+procedure TUnitDependenciesWindow.SetAllUnitsMultiSelect(AValue: boolean);
+begin
+  if FAllUnitsMultiSelect=AValue then Exit;
+  FAllUnitsMultiSelect:=AValue;
+  AllUnitsMultiselectSpeedButton.Down:=AllUnitsMultiSelect;
+  AllUnitsTreeView.MultiSelect:=AllUnitsMultiSelect;
+end;
+
 procedure TUnitDependenciesWindow.AddStartAndTargetUnits;
 var
   aProject: TLazProject;
+  i: Integer;
+  SrcEdit: TSourceEditorInterface;
+  AFilename: String;
 begin
   UsesGraph.TargetAll:=true;
 
@@ -450,6 +417,113 @@ begin
 
   // ToDo: add all open packages
 
+  // add all source editor files
+  for i:=0 to SourceEditorManagerIntf.SourceEditorCount-1 do begin
+    SrcEdit:=SourceEditorManagerIntf.SourceEditors[i];
+    AFilename:=SrcEdit.FileName;
+    if FilenameIsPascalUnit(AFilename) then
+      UsesGraph.AddStartUnit(AFilename);
+  end;
+
+  // additional units and directories
+  AddAdditionalFilesAsStartUnits;
+end;
+
+procedure TUnitDependenciesWindow.AddAdditionalFilesAsStartUnits;
+var
+  List: TCaption;
+  aFilename: String;
+  Files: TStrings;
+  i: Integer;
+  p: Integer;
+begin
+  List:=UnitScopeAddFilesComboBox.Text;
+  p:=1;
+  while p<=length(List) do begin
+    aFilename:=TrimAndExpandFilename(GetNextDelimitedItem(List,';',p));
+    if (AFilename='') then continue;
+    if not FileExistsCached(aFilename) then continue;
+    if DirPathExistsCached(aFilename) then begin
+      aFilename:=AppendPathDelim(aFilename);
+      // add all units in directory
+      Files:=nil;
+      try
+        CodeToolBoss.DirectoryCachePool.GetListing(aFilename,Files,false);
+        if Files<>nil then begin
+          for i:=0 to Files.Count-1 do begin
+            if FilenameIsPascalUnit(Files[i]) then
+              UsesGraph.AddStartUnit(aFilename+Files[i]);
+          end;
+        end;
+      finally
+        Files.Free;
+      end;
+    end else begin
+      // add a single file
+      UsesGraph.AddStartUnit(aFilename);
+    end;
+  end;
+end;
+
+procedure TUnitDependenciesWindow.SetupGroupsTabSheet;
+begin
+  GroupsTabSheet.Caption:='Projects and packages';
+
+  GroupsLvlGraph:=TLvlGraphControl.Create(Self);
+  with GroupsLvlGraph do
+  begin
+    Name:='GroupsLvlGraph';
+    Caption:='';
+    Align:=alTop;
+    Height:=200;
+    NodeStyle.GapBottom:=5;
+    Parent:=GroupsTabSheet;
+    OnSelectionChanged:=@GroupsLvlGraphSelectionChanged;
+  end;
+
+  GroupsSplitter.Top:=GroupsLvlGraph.Height;
+
+  UnitsLvlGraph:=TLvlGraphControl.Create(Self);
+  with UnitsLvlGraph do
+  begin
+    Name:='UnitsLvlGraph';
+    Caption:='';
+    Align:=alClient;
+    NodeStyle.GapBottom:=5;
+    Parent:=GroupsTabSheet;
+  end;
+end;
+
+procedure TUnitDependenciesWindow.SetupUnitsTabSheet;
+begin
+  UnitsTabSheet.Caption:='Units';
+
+  // start searching
+  UnitScopeAddFilesCheckBox.Caption:='Additional directories:';
+  UnitScopeAddFilesCheckBox.Hint:='By default only the project units and the source editor units are searched. Add here a list of directories separated by semicolon to search as well.';
+  UnitScopeAddFilesComboBox.Text:='';
+  UnitScopeAddFilesButton.Caption:='Browse';
+
+  // view all units
+  AllUnitsFilterEdit.Text:='(Filter)';
+  AllUnitsMultiselectSpeedButton.Hint:='Allow to select multiple units';
+  AllUnitsShowDirsSpeedButton.Hint:='Show nodes for directories';
+  AllUnitsShowDirsSpeedButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
+  AllUnitsShowGroupNodesSpeedButton.Hint:='Show nodes for project and packages';
+  AllUnitsShowGroupNodesSpeedButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
+
+  AllUnitsSearchEdit.Text:='(Filter)';
+  AllUnitsSearchNextSpeedButton.Hint:='Search next occurence of this phrase';
+  AllUnitsSearchNextSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
+  AllUnitsSearchPrevSpeedButton.Hint:='Search previous occurence of this phrase';
+  AllUnitsSearchPrevSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
+
+  // selected units
+  SelUnitsSearchEdit.Text:='(Filter)';
+  SelUnitsSearchNextSpeedButton.Hint:='Search next unit of this phrase';
+  SelUnitsSearchNextSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
+  SelUnitsSearchPrevSpeedButton.Hint:='Search previous unit of this phrase';
+  SelUnitsSearchPrevSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
 end;
 
 procedure TUnitDependenciesWindow.UpdateAll;
