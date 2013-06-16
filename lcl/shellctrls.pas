@@ -79,6 +79,7 @@ type
     { Other methods specific to Lazarus }
     function  GetPathFromNode(ANode: TTreeNode): string;
     function  GetSelectedNodePath: string;
+    procedure Refresh(ANode: TTreeNode); overload;
 
     { Properties }
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
@@ -752,6 +753,33 @@ end;
 function TCustomShellTreeView.GetSelectedNodePath: string;
 begin
   Result := GetPathFromNode(Selected);
+end;
+
+procedure TCustomShellTreeView.Refresh(ANode: TTreeNode);
+//nil will refresh root
+var
+  RootNodeText: String;
+  IsRoot: Boolean;
+begin
+  if (Items.Count = 0) then Exit;
+  //writeln('GetFirstVisibleNode.Text = "',Items.GetFirstVisibleNode.Text,'"');
+  IsRoot := (ANode = nil) or ((ANode = Items.GetFirstVisibleNode) and (GetRootPath <> ''));
+  //writeln('IsRoot = ',IsRoot);
+  if (ANode = nil) and (GetRootPath <> '') then ANode := Items.GetFirstVisibleNode;
+  if IsRoot then
+  begin
+    if Assigned(ANode) then
+      RootNodeText := ANode.Text  //this may differ from FRoot, so don't use FRoot here
+    else
+      RootNodeText := GetRootPath;
+    //writeln('IsRoot = TRUE, RootNodeText = "',RootNodeText,'"');
+    FRoot := #0; //invalidate FRoot
+    SetRoot(RootNodeText); //re-initialize the entire tree
+  end
+  else
+  begin
+    ANode.Expand(False);
+  end;
 end;
 
 function TCustomShellTreeView.GetPath: string;
