@@ -674,6 +674,8 @@ begin
       LfmFixer.RootMustBeClassInUnit:=true;
       LfmFixer.RootMustBeClassInIntf:=true;
       LfmFixer.ObjectsMustExist:=true;
+      // Package dependencies will be there only for projects and packages.
+      LfmFixer.TryAddingUsedUnits:=fOwnerConverter is TConvertDelphiProjPack;
       if LfmFixer.ConvertAndRepair<>mrOK then begin
         LazarusIDE.DoJumpToCompilerMessage(-1,true);
         fOwnerConverter.fErrorMsg:='Problems when repairing form file '

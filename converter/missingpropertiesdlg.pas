@@ -73,6 +73,7 @@ type
     fCTLink: TCodeToolLink;
     fSettings: TConvertSettings;
     fUsedUnitsTool: TUsedUnitsTool;
+    fTryAddingUsedUnits: Boolean;
     // List of property values which need to be adjusted.
     fHasMissingProperties: Boolean;         // LFM file has unknown properties.
     fHasMissingObjectTypes: Boolean;        // LFM file has unknown object types.
@@ -96,6 +97,7 @@ type
   public
     property Settings: TConvertSettings read fSettings write fSettings;
     property UsedUnitsTool: TUsedUnitsTool read fUsedUnitsTool write fUsedUnitsTool;
+    property TryAddingUsedUnits: Boolean read fTryAddingUsedUnits write fTryAddingUsedUnits;
   end;
 
 
@@ -541,7 +543,9 @@ begin
     if not fLFMTree.ParseIfNeeded then
       Exit(mrCancel);
     if CodeToolBoss.CheckLFM(fPascalBuffer, fLFMBuffer, fLFMTree,
-        fRootMustBeClassInUnit, fRootMustBeClassInIntf, fObjectsMustExist) then
+               fRootMustBeClassInUnit, fRootMustBeClassInIntf, fObjectsMustExist)
+    or not fTryAddingUsedUnits
+    then
       Result:=mrOk
     else begin
       Result:=FindAndFixMissingComponentClasses; // Can return mrRetry.
