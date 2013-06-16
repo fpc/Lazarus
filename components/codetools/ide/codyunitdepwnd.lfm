@@ -1,9 +1,9 @@
-object UnitDependenciesDialog: TUnitDependenciesDialog
-  Left = 235
+object UnitDependenciesWindow: TUnitDependenciesWindow
+  Left = 949
   Height = 477
-  Top = 232
+  Top = 246
   Width = 669
-  Caption = 'UnitDependenciesDialog'
+  Caption = 'UnitDependenciesWindow'
   ClientHeight = 477
   ClientWidth = 669
   OnClose = FormClose
@@ -13,60 +13,43 @@ object UnitDependenciesDialog: TUnitDependenciesDialog
   LCLVersion = '1.1'
   object BtnPanel: TPanel
     Left = 0
-    Height = 41
-    Top = 436
+    Height = 2
+    Top = 475
     Width = 669
     Align = alBottom
     AutoSize = True
-    ClientHeight = 41
-    ClientWidth = 669
     TabOrder = 0
-    object CloseBitBtn: TBitBtn
-      AnchorSideRight.Control = BtnPanel
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = BtnPanel
-      AnchorSideBottom.Side = asrBottom
-      Left = 585
-      Height = 27
-      Top = 7
-      Width = 77
-      Anchors = [akRight, akBottom]
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'CloseBitBtn'
-      OnClick = CloseBitBtnClick
-      TabOrder = 0
-    end
   end
   object ProgressBar1: TProgressBar
+    AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 20
-    Top = 416
+    Top = 455
     Width = 669
     Align = alBottom
     TabOrder = 1
   end
   object MainPageControl: TPageControl
     Left = 0
-    Height = 416
+    Height = 455
     Top = 0
     Width = 669
-    ActivePage = GroupsTabSheet
+    ActivePage = UnitsTabSheet
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 2
     object UnitsTabSheet: TTabSheet
       Caption = 'UnitsTabSheet'
-      ClientHeight = 387
+      ClientHeight = 426
       ClientWidth = 665
       object CurUnitPanel: TPanel
         Left = 0
-        Height = 387
+        Height = 426
         Top = 0
         Width = 155
         Align = alLeft
         Caption = 'CurUnitPanel'
-        ClientHeight = 387
+        ClientHeight = 426
         ClientWidth = 155
         TabOrder = 0
         object CurUnitTreeFilterEdit: TTreeFilterEdit
@@ -92,7 +75,7 @@ object UnitDependenciesDialog: TUnitDependenciesDialog
           AnchorSideBottom.Control = CurUnitPanel
           AnchorSideBottom.Side = asrBottom
           Left = 1
-          Height = 360
+          Height = 399
           Top = 26
           Width = 153
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -105,14 +88,14 @@ object UnitDependenciesDialog: TUnitDependenciesDialog
       end
       object CurUnitSplitter: TSplitter
         Left = 155
-        Height = 387
+        Height = 426
         Top = 0
         Width = 5
       end
     end
     object GroupsTabSheet: TTabSheet
       Caption = 'GroupsTabSheet'
-      ClientHeight = 387
+      ClientHeight = 426
       ClientWidth = 665
       object GroupsSplitter: TSplitter
         Cursor = crVSplit

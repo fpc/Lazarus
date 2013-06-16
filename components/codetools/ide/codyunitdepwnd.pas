@@ -21,7 +21,45 @@
   Author: Mattias Gaertner
 
   Abstract:
-    IDE Window showing dependecies of units and packages.
+    IDE Window showing dependencies of units and packages.
+
+  ToDo:
+    - change dialog to window
+    - add refresh button to rescan
+    - delay update pages when not visible
+    - update pages when becoming visible
+    - scope:
+      - start units:
+        - list of project/packages
+        - flag for project, package: add all units in owner's source directories
+        - include units: semicolon separated list of file masks
+        - only those units with name fitting simple or regular expression
+        - exclude units with name fitting simple or regular expression
+        - button to use active unit as start
+      - used units:
+        - flag add units in packages used by owners
+        - flag add units in packages' source directories, even those not used by start units (excluding FPC soures)
+        - only those packages with name fitting regular expression
+        - not packages with name fitting regular expression
+        - only those units with name fitting simple or regular expression
+        - exclude units with name fitting simple or regular expression
+    - view:
+      - flag show project/package as tree structure
+      - flag show directories as tree structure
+      - text search with highlight, next, previous
+      - only those with node text fitting filter, simple or regular expression
+      - exclude those with node text fitting filter, simple or regular expression
+      - flag allow multiselect
+      - double click: open one unit
+    - selected units
+      - show owner units as tree structure
+      - show connected units: used via interface, via implementation, used by interface, used by implementation
+      - expand node: show connected units
+      - text search with highlight, next, previous
+      - only those with node text fitting filter, simple or regular expression
+      - exclude those with node text fitting filter, simple or regular expression
+      - double click: open one unit
+    - resourcestrings
 }
 unit CodyUnitDepWnd;
 
@@ -34,29 +72,18 @@ uses
   LazLogger, TreeFilterEdit, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   Buttons, ComCtrls, LCLType, LazIDEIntf, ProjectIntf, IDEWindowIntf,
   PackageIntf, CTUnitGraph, CodeToolManager, DefineTemplates, CTUnitGroupGraph,
-  CodeToolsStructs, CodyCtrls, LvlGraphCtrl;
+  CodeToolsStructs, LvlGraphCtrl;
 
-const  // ToDo: make resourcestring
-  lisSelectAUnit = 'Select an unit';
-  lisClose = 'Close';
 const
   GroupPrefixProject = '-Project-';
   GroupPrefixFPCSrc = 'FPC:';
   GroupNone = '-None-';
 type
-  TUDDUsesType = (
-    uddutInterfaceUses,
-    uddutImplementationUses,
-    uddutUsedByInterface,
-    uddutUsedByImplementation
-    );
-  TUDDUsesTypes = set of TUDDUsesType;
 
-  { TUnitDependenciesDialog }
+  { TUnitDependenciesWindow }
 
-  TUnitDependenciesDialog = class(TForm)
+  TUnitDependenciesWindow = class(TForm)
     BtnPanel: TPanel;
-    CloseBitBtn: TBitBtn;
     CurUnitPanel: TPanel;
     CurUnitSplitter: TSplitter;
     CurUnitTreeView: TTreeView;
@@ -80,7 +107,6 @@ type
     FIdleConnected: boolean;
     FUsesGraph: TUsesGraph;
     FGroups: TUGGroups; // referenced by Nodes.Data of GroupsLvlGraph
-    fCircleCategories: array[TUDDUsesType] of TCircleDiagramCategory;
     procedure SetCurrentUnit(AValue: TUGUnit);
     procedure SetIdleConnected(AValue: boolean);
     procedure CreateGroups;
@@ -90,7 +116,6 @@ type
     procedure GuessGroupOfUnits;
     procedure AddStartAndTargetUnits;
     procedure UpdateAll;
-    procedure UpdateCurUnitDiagram;
     procedure UpdateCurUnitTreeView;
     procedure UpdateGroupsLvlGraph;
     procedure UpdateUnitsLvlGraph;
@@ -100,7 +125,6 @@ type
     function IsFPCSrcGroup(Group: TUGGroup): boolean;
     function IsProjectGroup(Group: TUGGroup): boolean;
   public
-    CurUnitDiagram: TCircleDiagramControl;
     GroupsLvlGraph: TLvlGraphControl; // Nodes.Data are TUGGroup of Groups
     UnitsLvlGraph: TLvlGraphControl; // Nodes.Data are Units in Groups
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -110,39 +134,36 @@ type
   end;
 
 var
-  UnitDependenciesDialog: TUnitDependenciesDialog;
+  UnitDependenciesWindow: TUnitDependenciesWindow;
 
-procedure ShowUnitDependenciesDialog(Sender: TObject);
-
-function dbgs(t: TUDDUsesType): string; overload;
+procedure ShowUnitDependenciesClicked(Sender: TObject);
+procedure ShowUnitDependencies(Show, BringToFront: boolean);
 
 implementation
 
-procedure ShowUnitDependenciesDialog(Sender: TObject);
-var
-  Dlg: TUnitDependenciesDialog;
+procedure ShowUnitDependenciesClicked(Sender: TObject);
 begin
-  Dlg:=TUnitDependenciesDialog.Create(nil);
-  try
-    Dlg.ShowModal;
-  finally
-    Dlg.Free;
+  ShowUnitDependencies(true,true);
+end;
+
+procedure ShowUnitDependencies(Show, BringToFront: boolean);
+begin
+  if UnitDependenciesWindow = Nil then
+    Application.CreateForm(TUnitDependenciesWindow, UnitDependenciesWindow);
+  if Show then
+  begin
+    IDEWindowCreators.ShowForm(UnitDependenciesWindow,BringToFront);
   end;
 end;
 
-function dbgs(t: TUDDUsesType): string;
-begin
-  Result:=GetEnumName(typeinfo(TUDDUsesType),ord(t));
-end;
+{ TUnitDependenciesWindow }
 
-{ TUnitDependenciesDialog }
-
-procedure TUnitDependenciesDialog.CloseBitBtnClick(Sender: TObject);
+procedure TUnitDependenciesWindow.CloseBitBtnClick(Sender: TObject);
 begin
   ModalResult:=mrCancel;
 end;
 
-procedure TUnitDependenciesDialog.CurUnitTreeViewSelectionChanged(
+procedure TUnitDependenciesWindow.CurUnitTreeViewSelectionChanged(
   Sender: TObject);
 var
   CurUnit: TUGUnit;
@@ -153,13 +174,13 @@ begin
   CurrentUnit:=CurUnit;
 end;
 
-procedure TUnitDependenciesDialog.FormClose(Sender: TObject;
+procedure TUnitDependenciesWindow.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
-procedure TUnitDependenciesDialog.FormCreate(Sender: TObject);
+procedure TUnitDependenciesWindow.FormCreate(Sender: TObject);
 begin
   FUsesGraph:=CodeToolBoss.CreateUsesGraph;
   FGroups:=TUGGroups.Create(FUsesGraph);
@@ -167,29 +188,11 @@ begin
   AddStartAndTargetUnits;
 
   Caption:='Unit Dependencies';
-  CloseBitBtn.Caption:=lisClose;
 
   IDEDialogLayoutList.ApplyLayout(Self,600,400);
 
   UnitsTabSheet.Caption:='Units';
   GroupsTabSheet.Caption:='Projects and packages';
-
-  CurUnitDiagram:=TCircleDiagramControl.Create(Self);
-  with CurUnitDiagram do begin
-    Name:='CurUnitDiagram';
-    Align:=alClient;
-    FirstCategoryDegree16:=90*16;
-    fCircleCategories[uddutUsedByInterface]:=AddCategory('Used by interfaces');
-    fCircleCategories[uddutUsedByInterface].Color:=clOlive;
-    fCircleCategories[uddutUsedByImplementation]:=AddCategory('Used by implementations');
-    fCircleCategories[uddutUsedByImplementation].Color:=clMaroon;
-    fCircleCategories[uddutImplementationUses]:=AddCategory('Implementation');
-    fCircleCategories[uddutImplementationUses].Color:=clRed;
-    fCircleCategories[uddutInterfaceUses]:=AddCategory('Interface');
-    fCircleCategories[uddutInterfaceUses].Color:=clGreen;
-    CenterCaption:=lisSelectAUnit;
-    Parent:=UnitsTabSheet;
-  end;
 
   GroupsLvlGraph:=TLvlGraphControl.Create(Self);
   with GroupsLvlGraph do
@@ -220,7 +223,7 @@ begin
   IdleConnected:=true;
 end;
 
-procedure TUnitDependenciesDialog.FormDestroy(Sender: TObject);
+procedure TUnitDependenciesWindow.FormDestroy(Sender: TObject);
 begin
   IdleConnected:=false;
   GroupsLvlGraph.Clear;
@@ -229,13 +232,13 @@ begin
   FreeAndNil(FUsesGraph);
 end;
 
-procedure TUnitDependenciesDialog.GroupsLvlGraphSelectionChanged(Sender: TObject
+procedure TUnitDependenciesWindow.GroupsLvlGraphSelectionChanged(Sender: TObject
   );
 begin
   UpdateUnitsLvlGraph;
 end;
 
-procedure TUnitDependenciesDialog.OnIdle(Sender: TObject; var Done: Boolean);
+procedure TUnitDependenciesWindow.OnIdle(Sender: TObject; var Done: Boolean);
 var
   Completed: boolean;
 begin
@@ -250,12 +253,12 @@ begin
   end;
 end;
 
-procedure TUnitDependenciesDialog.Timer1Timer(Sender: TObject);
+procedure TUnitDependenciesWindow.Timer1Timer(Sender: TObject);
 begin
   UpdateAll;
 end;
 
-procedure TUnitDependenciesDialog.SetIdleConnected(AValue: boolean);
+procedure TUnitDependenciesWindow.SetIdleConnected(AValue: boolean);
 begin
   if FIdleConnected=AValue then Exit;
   FIdleConnected:=AValue;
@@ -265,7 +268,7 @@ begin
     Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
-procedure TUnitDependenciesDialog.CreateGroups;
+procedure TUnitDependenciesWindow.CreateGroups;
 var
   i: Integer;
 begin
@@ -276,7 +279,7 @@ begin
   GuessGroupOfUnits;
 end;
 
-function TUnitDependenciesDialog.CreateProjectGroup(AProject: TLazProject
+function TUnitDependenciesWindow.CreateProjectGroup(AProject: TLazProject
   ): TUGGroup;
 var
   i: Integer;
@@ -302,7 +305,7 @@ begin
   end;
 end;
 
-function TUnitDependenciesDialog.CreatePackageGroup(APackage: TIDEPackage
+function TUnitDependenciesWindow.CreatePackageGroup(APackage: TIDEPackage
   ): TUGGroup;
 var
   i: Integer;
@@ -322,7 +325,7 @@ begin
   end;
 end;
 
-procedure TUnitDependenciesDialog.CreateFPCSrcGroups;
+procedure TUnitDependenciesWindow.CreateFPCSrcGroups;
 
   function ExtractFilePathStart(Filename: string; DirCount: integer): string;
   var
@@ -376,7 +379,7 @@ begin
   end;
 end;
 
-procedure TUnitDependenciesDialog.GuessGroupOfUnits;
+procedure TUnitDependenciesWindow.GuessGroupOfUnits;
 var
   Node: TAVLTreeNode;
   CurUnit: TUGGroupUnit;
@@ -425,14 +428,13 @@ begin
   FreeAndNil(Owners);
 end;
 
-procedure TUnitDependenciesDialog.SetCurrentUnit(AValue: TUGUnit);
+procedure TUnitDependenciesWindow.SetCurrentUnit(AValue: TUGUnit);
 begin
   if FCurrentUnit=AValue then Exit;
   FCurrentUnit:=AValue;
-  UpdateCurUnitDiagram;
 end;
 
-procedure TUnitDependenciesDialog.AddStartAndTargetUnits;
+procedure TUnitDependenciesWindow.AddStartAndTargetUnits;
 var
   aProject: TLazProject;
 begin
@@ -447,68 +449,14 @@ begin
 
 end;
 
-procedure TUnitDependenciesDialog.UpdateAll;
+procedure TUnitDependenciesWindow.UpdateAll;
 begin
   UpdateCurUnitTreeView;
   UpdateGroupsLvlGraph;
   UpdateUnitsLvlGraph;
 end;
 
-procedure TUnitDependenciesDialog.UpdateCurUnitDiagram;
-
-  procedure UpdateCircleCategory(List: TFPList; t: TUDDUsesType);
-  // List is CurrentUnit.UsesUnits or CurrentUnit.UsedByUnits
-  var
-    i: Integer;
-    CurUses: TUGUses;
-    Item: TCircleDiagramItem;
-    CurUnit: TUGUnit;
-    Cnt: Integer;
-    s: String;
-  begin
-    Cnt:=0;
-    if List<>nil then begin
-      for i:=0 to List.Count-1 do begin
-        CurUses:=TUGUses(List[i]);
-        if CurUses.InImplementation<>(t in [uddutImplementationUses,uddutUsedByImplementation])
-        then continue;
-        if t in [uddutInterfaceUses,uddutImplementationUses] then
-          CurUnit:=CurUses.Owner
-        else
-          CurUnit:=CurUses.UsesUnit;
-        s:=ExtractFileName(CurUnit.Filename);
-        debugln(['UpdateCircleCategory ',s,' ',dbgs(t)]);
-        if fCircleCategories[t].Count>Cnt then begin
-          Item:=fCircleCategories[t].Items[Cnt];
-          Item.Caption:=s
-        end else
-          Item:=fCircleCategories[t].AddItem(s);
-        inc(Cnt);
-      end;
-    end;
-    while fCircleCategories[t].Count>Cnt do
-      fCircleCategories[t].Items[Cnt].Free;
-  end;
-
-begin
-  CurUnitDiagram.BeginUpdate;
-  try
-    if CurrentUnit<>nil then begin
-      debugln(['TUnitDependenciesDialog.UpdateCurUnitDiagram ',CurrentUnit.Filename]);
-      CurUnitDiagram.CenterCaption:=ExtractFilename(CurrentUnit.Filename);
-      UpdateCircleCategory(CurrentUnit.UsesUnits,uddutInterfaceUses);
-      UpdateCircleCategory(CurrentUnit.UsesUnits,uddutImplementationUses);
-      UpdateCircleCategory(CurrentUnit.UsedByUnits,uddutUsedByInterface);
-      UpdateCircleCategory(CurrentUnit.UsedByUnits,uddutUsedByImplementation);
-    end else begin
-      CurUnitDiagram.CenterCaption:=lisSelectAUnit;
-    end;
-  finally
-    CurUnitDiagram.EndUpdate;
-  end;
-end;
-
-procedure TUnitDependenciesDialog.UpdateCurUnitTreeView;
+procedure TUnitDependenciesWindow.UpdateCurUnitTreeView;
 var
   AVLNode: TAVLTreeNode;
   CurUnit: TUGUnit;
@@ -537,7 +485,7 @@ begin
   end;
 end;
 
-procedure TUnitDependenciesDialog.UpdateGroupsLvlGraph;
+procedure TUnitDependenciesWindow.UpdateGroupsLvlGraph;
 var
   AVLNode: TAVLTreeNode;
   Group: TUGGroup;
@@ -603,7 +551,7 @@ begin
   GroupsLvlGraph.EndUpdate;
 end;
 
-procedure TUnitDependenciesDialog.UpdateUnitsLvlGraph;
+procedure TUnitDependenciesWindow.UpdateUnitsLvlGraph;
 
   function UnitToCaption(AnUnit: TUGUnit): string;
   begin
@@ -689,7 +637,7 @@ begin
   end;
 end;
 
-function TUnitDependenciesDialog.NodeTextToUnit(NodeText: string): TUGUnit;
+function TUnitDependenciesWindow.NodeTextToUnit(NodeText: string): TUGUnit;
 var
   AVLNode: TAVLTreeNode;
 begin
@@ -702,12 +650,12 @@ begin
   Result:=nil;
 end;
 
-function TUnitDependenciesDialog.UGUnitToNodeText(UGUnit: TUGUnit): string;
+function TUnitDependenciesWindow.UGUnitToNodeText(UGUnit: TUGUnit): string;
 begin
   Result:=ExtractFileName(UGUnit.Filename);
 end;
 
-function TUnitDependenciesDialog.GetFPCSrcDir: string;
+function TUnitDependenciesWindow.GetFPCSrcDir: string;
 var
   UnitSet: TFPCUnitSetCache;
 begin
@@ -715,12 +663,12 @@ begin
   Result:=UnitSet.FPCSourceDirectory;
 end;
 
-function TUnitDependenciesDialog.IsFPCSrcGroup(Group: TUGGroup): boolean;
+function TUnitDependenciesWindow.IsFPCSrcGroup(Group: TUGGroup): boolean;
 begin
   Result:=(Group<>nil) and (LeftStr(Group.Name,length(GroupPrefixFPCSrc))=GroupPrefixFPCSrc);
 end;
 
-function TUnitDependenciesDialog.IsProjectGroup(Group: TUGGroup): boolean;
+function TUnitDependenciesWindow.IsProjectGroup(Group: TUGGroup): boolean;
 begin
   Result:=(Group<>nil) and (Group.Name=GroupPrefixProject);
 end;

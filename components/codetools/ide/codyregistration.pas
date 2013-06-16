@@ -89,6 +89,7 @@ var
   CmdCatView: TIDECommandCategory;
   ViewCodyWindowCommand: TIDECommand;
   {$IFDEF EnableCodyExperiments}
+  ViewCodyUnitDependenciesWindowCommand: TIDECommand;
   {$ENDIF}
 begin
   CodyOptions:=TCodyMiscOptions.Create;
@@ -132,12 +133,6 @@ begin
   CreateSourceCommand(CmdCatCodeTools,'ShowUnitDictionary',
     crsShowUnitIdentifierDictionary,nil,@ShowUnitDictionaryDialog);
 
-  // Unit dependencies
-  {$IFDEF EnableCodyExperiments}
-  CreateSourceCommand(CmdCatCodeTools,'UnitDependencies',
-    'Cody Unit Dependencies',nil,@ShowUnitDependenciesDialog);
-  {$ENDIF}
-
   // Refactor menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // declare variable
@@ -178,6 +173,7 @@ begin
     crsShowCodeToolsNodeInfo, nil, nil, ShowCodeNodeInfoCommand);
 
   // View menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // Cody tool window
   ViewCodyWindowCommand:=RegisterIDECommand(CmdCatView, 'Cody',
     'Cody', CleanIDEShortCut, CleanIDEShortCut, nil, @ShowCodyWindow);
   RegisterIDEMenuCommand(itmViewMainWindows, 'ViewCody',
@@ -185,6 +181,14 @@ begin
   {$IFNDEF EnableCodyExperiments}
    .Visible:=false
   {$ENDIF};
+
+  // Unit dependencies
+  {$IFDEF EnableCodyExperiments}
+  ViewCodyUnitDependenciesWindowCommand:=RegisterIDECommand(CmdCatView, 'UnitDependencies',
+    'Cody Unit Dependencies', CleanIDEShortCut, CleanIDEShortCut, nil, @ShowUnitDependenciesClicked);
+  RegisterIDEMenuCommand(itmViewMainWindows, 'UnitDependencies',
+    'Cody Unit Dependencies', nil, nil, ViewCodyUnitDependenciesWindowCommand);
+  {$ENDIF}
 
   // Components - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   TVIconRes:=LazarusResources.Find('TTreeView');
