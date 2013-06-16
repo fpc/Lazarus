@@ -150,6 +150,7 @@ type
   // Delphi unit conversion.
   TConvertDelphiUnit = class(TConvertDelphiPBase)
   private
+    DirectoryTemplate: TDefineTemplate;
   public
     constructor Create(const AFilename: string);
     destructor Destroy; override;
@@ -866,12 +867,23 @@ end;
 { TConvertDelphiUnit }
 
 constructor TConvertDelphiUnit.Create(const AFilename: string);
+var
+  MacroName, s: String;
 begin
   inherited Create(AFilename, lisConvDelphiConvertDelphiUnit);
+
+  // use a template for compiler mode delphi for a single directory
+  DirectoryTemplate:=TDefineTemplate.Create('Delphi unit conversion',
+    'Mode Delphi for single unit conversion', '', fSettings.MainPath, da_Directory);
+  MacroName:=CompilerModeVars[cmDELPHI];
+  s:='Define'+MacroName;
+  DirectoryTemplate.AddChild(TDefineTemplate.Create(s, s, MacroName, '1', da_Define));
+  CodeToolBoss.DefineTree.Add(DirectoryTemplate); // add directory template to tree
 end;
 
 destructor TConvertDelphiUnit.Destroy;
 begin
+  CodeToolBoss.DefineTree.RemoveDefineTemplate(DirectoryTemplate);
   inherited Destroy;
 end;
 
