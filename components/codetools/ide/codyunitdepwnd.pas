@@ -80,15 +80,17 @@ type
     ProgressBar1: TProgressBar;
     GroupsTabSheet: TTabSheet;
     GroupsSplitter: TSplitter;
+    SearchPkgsCheckBox: TCheckBox;
+    SearchSrcEditCheckBox: TCheckBox;
     SelectedUnitsGroupBox: TGroupBox;
     SelUnitsSearchEdit: TEdit;
     SelUnitsSearchNextSpeedButton: TSpeedButton;
     SelUnitsSearchPrevSpeedButton: TSpeedButton;
     SelUnitsTreeView: TTreeView;
-    UnitScopeAddFilesButton: TButton;
-    UnitScopeAddFilesCheckBox: TCheckBox;
+    SearchCustomFilesBrowseButton: TButton;
+    SearchCustomFilesCheckBox: TCheckBox;
     ScopePanel: TPanel;
-    UnitScopeAddFilesComboBox: TComboBox;
+    SearchCustomFilesComboBox: TComboBox;
     UnitsSplitter: TSplitter;
     UnitsTabSheet: TTabSheet;
     Timer1: TTimer;
@@ -97,10 +99,12 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure GroupsLvlGraphSelectionChanged(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
+    procedure SearchPkgsCheckBoxChange(Sender: TObject);
+    procedure SearchSrcEditCheckBoxChange(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
-    procedure UnitScopeAddFilesButtonClick(Sender: TObject);
-    procedure UnitScopeAddFilesCheckBoxChange(Sender: TObject);
-    procedure UnitScopeAddFilesComboBoxChange(Sender: TObject);
+    procedure SearchCustomFilesBrowseButtonClick(Sender: TObject);
+    procedure SearchCustomFilesCheckBoxChange(Sender: TObject);
+    procedure SearchCustomFilesComboBoxChange(Sender: TObject);
   private
     FAllUnitsMultiSelect: boolean;
     FCurrentUnit: TUGUnit;
@@ -216,12 +220,22 @@ begin
   end;
 end;
 
+procedure TUnitDependenciesWindow.SearchPkgsCheckBoxChange(Sender: TObject);
+begin
+  IdleConnected:=true;
+end;
+
+procedure TUnitDependenciesWindow.SearchSrcEditCheckBoxChange(Sender: TObject);
+begin
+  IdleConnected:=true;
+end;
+
 procedure TUnitDependenciesWindow.Timer1Timer(Sender: TObject);
 begin
 
 end;
 
-procedure TUnitDependenciesWindow.UnitScopeAddFilesButtonClick(Sender: TObject);
+procedure TUnitDependenciesWindow.SearchCustomFilesBrowseButtonClick(Sender: TObject);
 var
   Dlg: TSelectDirectoryDialog;
   s: TCaption;
@@ -234,26 +248,26 @@ begin
     Dlg.Options:=Dlg.Options+[ofPathMustExist];
     if not Dlg.Execute then exit;
     aFilename:=TrimFilename(Dlg.FileName);
-    s:=UnitScopeAddFilesComboBox.Text;
+    s:=SearchCustomFilesComboBox.Text;
     p:=1;
     if FindNextDelimitedItem(s,';',p,aFilename)<>'' then exit;
     if s<>'' then s+=';';
     s+=aFilename;
-    UnitScopeAddFilesComboBox.Text:=s;
+    SearchCustomFilesComboBox.Text:=s;
     IdleConnected:=true;
   finally
     Dlg.Free;
   end;
 end;
 
-procedure TUnitDependenciesWindow.UnitScopeAddFilesCheckBoxChange(
+procedure TUnitDependenciesWindow.SearchCustomFilesCheckBoxChange(
   Sender: TObject);
 begin
   UpdateAddFiles;
   IdleConnected:=true;
 end;
 
-procedure TUnitDependenciesWindow.UnitScopeAddFilesComboBoxChange(
+procedure TUnitDependenciesWindow.SearchCustomFilesComboBoxChange(
   Sender: TObject);
 begin
   IdleConnected:=true;
@@ -460,29 +474,34 @@ begin
   if (aProject<>nil) and (aProject.MainFile<>nil) then
     UsesGraph.AddStartUnit(aProject.MainFile.Filename);
 
-  // ToDo: add all open packages
-  for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
-    Pkg:=PackageEditingInterface.GetPackages(i);
-    if not FilenameIsAbsolute(Pkg.Filename) then continue;
-    for j:=0 to Pkg.FileCount-1 do begin
-      PkgFile:=Pkg.Files[j];
-      if PkgFile.Removed then continue;
-      aFilename:=PkgFile.GetFullFilename;
+  // add all open packages
+  if SearchPkgsCheckBox.Checked then begin
+    for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
+      Pkg:=PackageEditingInterface.GetPackages(i);
+      if not FilenameIsAbsolute(Pkg.Filename) then continue;
+      for j:=0 to Pkg.FileCount-1 do begin
+        PkgFile:=Pkg.Files[j];
+        if PkgFile.Removed then continue;
+        aFilename:=PkgFile.GetFullFilename;
+        if FilenameIsPascalUnit(AFilename) then
+          UsesGraph.AddStartUnit(AFilename);
+      end;
+    end;
+  end;
+
+  // add all source editor files
+  if SearchSrcEditCheckBox.Checked then begin
+    for i:=0 to SourceEditorManagerIntf.SourceEditorCount-1 do begin
+      SrcEdit:=SourceEditorManagerIntf.SourceEditors[i];
+      AFilename:=SrcEdit.FileName;
       if FilenameIsPascalUnit(AFilename) then
         UsesGraph.AddStartUnit(AFilename);
     end;
   end;
 
-  // add all source editor files
-  for i:=0 to SourceEditorManagerIntf.SourceEditorCount-1 do begin
-    SrcEdit:=SourceEditorManagerIntf.SourceEditors[i];
-    AFilename:=SrcEdit.FileName;
-    if FilenameIsPascalUnit(AFilename) then
-      UsesGraph.AddStartUnit(AFilename);
-  end;
-
   // additional units and directories
-  AddAdditionalFilesAsStartUnits;
+  if SearchCustomFilesCheckBox.Checked then
+    AddAdditionalFilesAsStartUnits;
 end;
 
 procedure TUnitDependenciesWindow.AddAdditionalFilesAsStartUnits;
@@ -493,7 +512,7 @@ var
   i: Integer;
   p: Integer;
 begin
-  List:=UnitScopeAddFilesComboBox.Text;
+  List:=SearchCustomFilesComboBox.Text;
   p:=1;
   while p<=length(List) do begin
     aFilename:=TrimAndExpandFilename(GetNextDelimitedItem(List,';',p));
@@ -555,10 +574,13 @@ begin
   UnitsTabSheet.Caption:='Units';
 
   // start searching
-  UnitScopeAddFilesCheckBox.Caption:='Additional directories:';
-  UnitScopeAddFilesCheckBox.Hint:='By default only the project units and the source editor units are searched. Add here a list of directories separated by semicolon to search as well.';
-  UnitScopeAddFilesComboBox.Text:='';
-  UnitScopeAddFilesButton.Caption:='Browse';
+  SearchCustomFilesCheckBox.Caption:='Additional directories:';
+  SearchCustomFilesCheckBox.Hint:='By default only the project units and the source editor units are searched. Add here a list of directories separated by semicolon to search as well.';
+  SearchCustomFilesComboBox.Text:='';
+  SearchCustomFilesBrowseButton.Caption:='Browse';
+
+  SearchPkgsCheckBox.Caption:='All package units';
+  SearchSrcEditCheckBox.Caption:='All source editor units';
 
   // view all units
   AllUnitsGroupBox.Caption:='All units';
@@ -589,8 +611,8 @@ end;
 
 procedure TUnitDependenciesWindow.UpdateAddFiles;
 begin
-  UnitScopeAddFilesComboBox.Enabled:=UnitScopeAddFilesCheckBox.Checked;
-  UnitScopeAddFilesButton.Enabled:=UnitScopeAddFilesCheckBox.Checked;
+  SearchCustomFilesComboBox.Enabled:=SearchCustomFilesCheckBox.Checked;
+  SearchCustomFilesBrowseButton.Enabled:=SearchCustomFilesCheckBox.Checked;
 end;
 
 procedure TUnitDependenciesWindow.UpdateAll;

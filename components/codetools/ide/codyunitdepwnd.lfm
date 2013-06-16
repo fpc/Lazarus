@@ -43,17 +43,17 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
       ClientWidth = 616
       object ScopePanel: TPanel
         Left = 0
-        Height = 33
+        Height = 59
         Top = 0
         Width = 616
         Align = alTop
         AutoSize = True
-        ClientHeight = 33
+        ClientHeight = 59
         ClientWidth = 616
         TabOrder = 0
-        object UnitScopeAddFilesCheckBox: TCheckBox
+        object SearchCustomFilesCheckBox: TCheckBox
           AnchorSideLeft.Control = ScopePanel
-          AnchorSideTop.Control = UnitScopeAddFilesComboBox
+          AnchorSideTop.Control = SearchCustomFilesComboBox
           AnchorSideTop.Side = asrCenter
           Left = 3
           Height = 24
@@ -61,14 +61,14 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Width = 111
           BorderSpacing.Around = 2
           Caption = 'Additional files:'
-          OnChange = UnitScopeAddFilesCheckBoxChange
+          OnChange = SearchCustomFilesCheckBoxChange
           ParentShowHint = False
           ShowHint = True
           TabOrder = 0
         end
-        object UnitScopeAddFilesButton: TButton
+        object SearchCustomFilesBrowseButton: TButton
           AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = UnitScopeAddFilesComboBox
+          AnchorSideTop.Control = SearchCustomFilesComboBox
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = ScopePanel
           AnchorSideRight.Side = asrBottom
@@ -79,14 +79,14 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Anchors = [akTop, akRight]
           AutoSize = True
           Caption = 'Browse'
-          OnClick = UnitScopeAddFilesButtonClick
+          OnClick = SearchCustomFilesBrowseButtonClick
           TabOrder = 1
         end
-        object UnitScopeAddFilesComboBox: TComboBox
-          AnchorSideLeft.Control = UnitScopeAddFilesCheckBox
+        object SearchCustomFilesComboBox: TComboBox
+          AnchorSideLeft.Control = SearchCustomFilesCheckBox
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = ScopePanel
-          AnchorSideRight.Control = UnitScopeAddFilesButton
+          AnchorSideRight.Control = SearchCustomFilesBrowseButton
           Left = 116
           Height = 27
           Top = 3
@@ -94,19 +94,47 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 2
           ItemHeight = 0
-          OnChange = UnitScopeAddFilesComboBoxChange
+          OnChange = SearchCustomFilesComboBoxChange
           TabOrder = 2
-          Text = 'UnitScopeAddFilesComboBox'
+          Text = 'SearchCustomFilesComboBox'
+        end
+        object SearchPkgsCheckBox: TCheckBox
+          AnchorSideLeft.Control = ScopePanel
+          AnchorSideTop.Control = SearchCustomFilesComboBox
+          AnchorSideTop.Side = asrBottom
+          Left = 3
+          Height = 24
+          Top = 32
+          Width = 141
+          BorderSpacing.Around = 2
+          Caption = 'SearchPkgsCheckBox'
+          OnChange = SearchPkgsCheckBoxChange
+          TabOrder = 3
+        end
+        object SearchSrcEditCheckBox: TCheckBox
+          AnchorSideLeft.Control = SearchPkgsCheckBox
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = SearchPkgsCheckBox
+          AnchorSideTop.Side = asrCenter
+          Left = 161
+          Height = 24
+          Top = 32
+          Width = 156
+          BorderSpacing.Left = 15
+          BorderSpacing.Around = 2
+          Caption = 'SearchSrcEditCheckBox'
+          OnChange = SearchSrcEditCheckBoxChange
+          TabOrder = 4
         end
       end
       object AllUnitsGroupBox: TGroupBox
         Left = 0
-        Height = 356
-        Top = 33
+        Height = 330
+        Top = 59
         Width = 248
         Align = alLeft
         Caption = 'AllUnitsGroupBox'
-        ClientHeight = 339
+        ClientHeight = 313
         ClientWidth = 244
         TabOrder = 1
         object AllUnitsShowGroupNodesSpeedButton: TSpeedButton
@@ -158,7 +186,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           AnchorSideRight.Control = AllUnitsSearchPrevSpeedButton
           Left = 198
           Height = 22
-          Top = 315
+          Top = 289
           Width = 23
           Anchors = [akTop, akRight]
           ShowHint = True
@@ -171,7 +199,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           AnchorSideRight.Side = asrBottom
           Left = 221
           Height = 22
-          Top = 315
+          Top = 289
           Width = 23
           Anchors = [akTop, akRight]
           ShowHint = True
@@ -185,7 +213,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = AllUnitsSearchEdit
           Left = 0
-          Height = 289
+          Height = 263
           Top = 25
           Width = 244
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -201,7 +229,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           AnchorSideBottom.Side = asrBottom
           Left = 0
           Height = 25
-          Top = 314
+          Top = 288
           Width = 198
           Anchors = [akLeft, akRight, akBottom]
           TabOrder = 2
@@ -225,18 +253,18 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
       end
       object UnitsSplitter: TSplitter
         Left = 248
-        Height = 356
-        Top = 33
+        Height = 330
+        Top = 59
         Width = 5
       end
       object SelectedUnitsGroupBox: TGroupBox
         Left = 253
-        Height = 356
-        Top = 33
+        Height = 330
+        Top = 59
         Width = 363
         Align = alClient
         Caption = 'SelectedUnitsGroupBox'
-        ClientHeight = 339
+        ClientHeight = 313
         ClientWidth = 359
         TabOrder = 3
         object SelUnitsSearchNextSpeedButton: TSpeedButton
@@ -245,7 +273,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           AnchorSideRight.Control = SelUnitsSearchPrevSpeedButton
           Left = 313
           Height = 22
-          Top = 315
+          Top = 289
           Width = 23
           Anchors = [akTop, akRight]
           ShowHint = True
@@ -258,7 +286,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           AnchorSideRight.Side = asrBottom
           Left = 336
           Height = 22
-          Top = 315
+          Top = 289
           Width = 23
           Anchors = [akTop, akRight]
           ShowHint = True
@@ -271,7 +299,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           AnchorSideBottom.Side = asrBottom
           Left = 0
           Height = 25
-          Top = 314
+          Top = 288
           Width = 313
           Anchors = [akLeft, akRight, akBottom]
           TabOrder = 0
@@ -284,7 +312,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = SelUnitsSearchEdit
           Left = 0
-          Height = 314
+          Height = 288
           Top = 0
           Width = 359
           Anchors = [akTop, akLeft, akRight, akBottom]
