@@ -33,6 +33,20 @@ end;
 
 //*************** START WideString impementations
 
+//fpc 2.6.0 does not have StrLen for WideChar.
+//Remove this when we have 2.6.4 or higher
+{$if FPC_FULLVERSION < 20602}
+function StrLen(PW: PWideChar): SizeInt;
+var
+  i: SizeInt;
+begin
+  i:=0;
+  if assigned(PW) then
+    while (PW[i] <> #0) do inc(i);
+  Result := i;
+end;
+{$endif}
+
 
 procedure SetupCommandlineParametersWide;
 var
@@ -40,7 +54,7 @@ var
   argstart,
   Quote   : Boolean;
   Buf: array[0..259] of WChar;  // need MAX_PATH bytes, not 256!
-  PCmdLineW: PWChar;
+  PCmdLineW: PWideChar;
   CmdLineW: WideString;
 
   procedure AllocArg(Idx, Len:longint);
