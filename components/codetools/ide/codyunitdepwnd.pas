@@ -38,26 +38,23 @@
         - button to use active unit as start
       - used units:
         - flag add units in packages used by owners
-        - flag add units in packages' source directories, even those not used by start units (excluding FPC soures)
         - only those packages with name fitting regular expression
         - not packages with name fitting regular expression
         - only those units with name fitting simple or regular expression
         - exclude units with name fitting simple or regular expression
     - view:
-      - flag show project/package as tree structure
-      - flag show directories as tree structure
+      - flag show nodes for project/package
+      - flag show nodes for directories
       - text search with highlight, next, previous
-      - only those with node text fitting filter, simple or regular expression
-      - exclude those with node text fitting filter, simple or regular expression
+      - filter units simple or reg ex
       - flag allow multiselect
       - double click: open one unit
     - selected units
       - show owner units as tree structure
       - show connected units: used via interface, via implementation, used by interface, used by implementation
       - expand node: show connected units
+      - collapse node: free child nodes
       - text search with highlight, next, previous
-      - only those with node text fitting filter, simple or regular expression
-      - exclude those with node text fitting filter, simple or regular expression
       - double click: open one unit
     - resourcestrings
 }
@@ -68,11 +65,11 @@ unit CodyUnitDepWnd;
 interface
 
 uses
-  Classes, SysUtils, typinfo, AVL_Tree, FPCanvas, FileUtil, lazutf8classes,
-  LazLogger, TreeFilterEdit, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, ComCtrls, LCLType, LazIDEIntf, ProjectIntf, IDEWindowIntf,
-  PackageIntf, CTUnitGraph, CodeToolManager, DefineTemplates, CTUnitGroupGraph,
-  CodeToolsStructs, LvlGraphCtrl;
+  Classes, SysUtils, AVL_Tree, LazLogger, LazFileUtils,
+  Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, LvlGraphCtrl,
+  LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf,
+  CodeToolManager, DefineTemplates, CodeToolsStructs,
+  CTUnitGraph, CTUnitGroupGraph;
 
 const
   GroupPrefixProject = '-Project-';
@@ -83,20 +80,49 @@ type
   { TUnitDependenciesWindow }
 
   TUnitDependenciesWindow = class(TForm)
+    AllUnitsFilterEdit: TEdit;
+    AllUnitsSearchEdit: TEdit;
+    AllUnitsSearchNextSpeedButton: TSpeedButton;
+    AllUnitsSearchPrevSpeedButton: TSpeedButton;
+    AllUnitsGroupBox: TGroupBox;
+    AllUnitsShowDirsSpeedButton: TSpeedButton;
+    AllUnitsShowGroupNodesSpeedButton: TSpeedButton;
+    AllUnitsTreeView: TTreeView;
     BtnPanel: TPanel;
-    CurUnitPanel: TPanel;
-    CurUnitSplitter: TSplitter;
-    CurUnitTreeView: TTreeView;
+    ContinueExcludePkgCheckBox: TCheckBox;
+    ContinueExcludePkgEdit: TEdit;
+    ContinueExcludePkgRegExCheckBox: TCheckBox;
+    ContinueInUsedPackagesCheckBox: TCheckBox;
+    ContinueOnlyPkgWithNameCheckBox: TCheckBox;
+    ContinueOnlyPkgEdit: TEdit;
+    ContinueOnlyPkgWithNameRegExCheckBox: TCheckBox;
+    ContinueSearchingInGroupBox: TGroupBox;
     MainPageControl: TPageControl;
     ProgressBar1: TProgressBar;
     GroupsTabSheet: TTabSheet;
     GroupsSplitter: TSplitter;
+    ScopeStartGroupsButton: TButton;
+    SelectedUnitsGroupBox: TGroupBox;
+    SelUnitsSearchEdit: TEdit;
+    SelUnitsSearchNextSpeedButton: TSpeedButton;
+    SelUnitsSearchPrevSpeedButton: TSpeedButton;
+    SelUnitsTreeView: TTreeView;
+    StartSearchingInGroupBox: TGroupBox;
+    UnitScopeAddFilesButton: TButton;
+    UnitScopeAddFilesCheckBox: TCheckBox;
+    UnitScopeAddFilesEdit: TEdit;
+    ScopeStartIncludeUnitsInGrpsSrcDirsCheckBox: TCheckBox;
+    ScopePanel: TPanel;
+    ShowScopeCheckBox: TCheckBox;
+    UnitScopeNameExcludeFilterCheckBox: TCheckBox;
+    UnitScopeNameExcludeFilterEdit: TEdit;
+    UnitScopeNameExcludeFilterRegExCheckBox: TCheckBox;
+    UnitScopeNameOnlyFilterCheckBox: TCheckBox;
+    UnitScopeNameOnlyFilterEdit: TEdit;
+    UnitScopeNameOnlyFilterRegExCheckBox: TCheckBox;
+    UnitsSplitter: TSplitter;
     UnitsTabSheet: TTabSheet;
     Timer1: TTimer;
-    CurUnitTreeFilterEdit: TTreeFilterEdit;
-    procedure CloseBitBtnClick(Sender: TObject);
-    procedure CurUnitTreeViewSelectionChanged(Sender: TObject);
-    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure GroupsLvlGraphSelectionChanged(Sender: TObject);
@@ -116,7 +142,6 @@ type
     procedure GuessGroupOfUnits;
     procedure AddStartAndTargetUnits;
     procedure UpdateAll;
-    procedure UpdateCurUnitTreeView;
     procedure UpdateGroupsLvlGraph;
     procedure UpdateUnitsLvlGraph;
     function NodeTextToUnit(NodeText: string): TUGUnit;
@@ -157,28 +182,6 @@ begin
 end;
 
 { TUnitDependenciesWindow }
-
-procedure TUnitDependenciesWindow.CloseBitBtnClick(Sender: TObject);
-begin
-  ModalResult:=mrCancel;
-end;
-
-procedure TUnitDependenciesWindow.CurUnitTreeViewSelectionChanged(
-  Sender: TObject);
-var
-  CurUnit: TUGUnit;
-begin
-  if CurUnitTreeView.Selected=nil then exit;
-  CurUnit:=NodeTextToUnit(CurUnitTreeView.Selected.Text);
-  if CurUnit=nil then exit;
-  CurrentUnit:=CurUnit;
-end;
-
-procedure TUnitDependenciesWindow.FormClose(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-  IDEDialogLayoutList.SaveLayout(Self);
-end;
 
 procedure TUnitDependenciesWindow.FormCreate(Sender: TObject);
 begin
@@ -451,38 +454,8 @@ end;
 
 procedure TUnitDependenciesWindow.UpdateAll;
 begin
-  UpdateCurUnitTreeView;
   UpdateGroupsLvlGraph;
   UpdateUnitsLvlGraph;
-end;
-
-procedure TUnitDependenciesWindow.UpdateCurUnitTreeView;
-var
-  AVLNode: TAVLTreeNode;
-  CurUnit: TUGUnit;
-  sl: TStringListUTF8;
-  i: Integer;
-begin
-  CurUnitTreeView.BeginUpdate;
-  sl:=TStringListUTF8.Create;
-  try
-    CurUnitTreeView.Items.Clear;
-
-    AVLNode:=UsesGraph.FilesTree.FindLowest;
-    while AVLNode<>nil do begin
-      CurUnit:=TUGUnit(AVLNode.Data);
-      sl.Add(UGUnitToNodeText(CurUnit));
-      AVLNode:=UsesGraph.FilesTree.FindSuccessor(AVLNode);
-    end;
-
-    sl.CustomSort(@CompareStringListItemsUTF8LowerCase);
-    for i:=0 to sl.Count-1 do begin
-      CurUnitTreeView.Items.Add(nil,sl[i]);
-    end;
-  finally
-    sl.Free;
-    CurUnitTreeView.EndUpdate;
-  end;
 end;
 
 procedure TUnitDependenciesWindow.UpdateGroupsLvlGraph;

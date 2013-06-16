@@ -1,12 +1,11 @@
 object UnitDependenciesWindow: TUnitDependenciesWindow
   Left = 949
-  Height = 477
+  Height = 440
   Top = 246
-  Width = 669
+  Width = 620
   Caption = 'UnitDependenciesWindow'
-  ClientHeight = 477
-  ClientWidth = 669
-  OnClose = FormClose
+  ClientHeight = 440
+  ClientWidth = 620
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
@@ -14,8 +13,8 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
   object BtnPanel: TPanel
     Left = 0
     Height = 2
-    Top = 475
-    Width = 669
+    Top = 438
+    Width = 620
     Align = alBottom
     AutoSize = True
     TabOrder = 0
@@ -24,79 +23,483 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
     AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 20
-    Top = 455
-    Width = 669
+    Top = 418
+    Width = 620
     Align = alBottom
     TabOrder = 1
   end
   object MainPageControl: TPageControl
     Left = 0
-    Height = 455
+    Height = 418
     Top = 0
-    Width = 669
+    Width = 620
     ActivePage = UnitsTabSheet
     Align = alClient
     TabIndex = 0
     TabOrder = 2
     object UnitsTabSheet: TTabSheet
       Caption = 'UnitsTabSheet'
-      ClientHeight = 426
-      ClientWidth = 665
-      object CurUnitPanel: TPanel
+      ClientHeight = 389
+      ClientWidth = 616
+      object ScopePanel: TPanel
         Left = 0
-        Height = 426
+        Height = 280
         Top = 0
-        Width = 155
-        Align = alLeft
-        Caption = 'CurUnitPanel'
-        ClientHeight = 426
-        ClientWidth = 155
+        Width = 616
+        Align = alTop
+        AutoSize = True
+        ClientHeight = 280
+        ClientWidth = 616
         TabOrder = 0
-        object CurUnitTreeFilterEdit: TTreeFilterEdit
-          AnchorSideLeft.Control = CurUnitPanel
-          AnchorSideTop.Control = CurUnitPanel
-          AnchorSideRight.Side = asrBottom
-          Left = 1
-          Height = 25
+        object ShowScopeCheckBox: TCheckBox
+          AnchorSideLeft.Control = ScopePanel
+          AnchorSideTop.Control = ScopePanel
+          Left = 3
+          Height = 24
           Top = 1
-          Width = 109
-          ButtonWidth = 23
-          NumGlyphs = 1
-          MaxLength = 0
+          Width = 91
+          BorderSpacing.Left = 2
+          BorderSpacing.Right = 2
+          Caption = 'Show Scope'
           TabOrder = 0
-          FilteredTreeview = CurUnitTreeView
         end
-        object CurUnitTreeView: TTreeView
-          AnchorSideLeft.Control = CurUnitTreeFilterEdit
-          AnchorSideTop.Control = CurUnitTreeFilterEdit
+        object StartSearchingInGroupBox: TGroupBox
+          AnchorSideLeft.Control = ScopePanel
+          AnchorSideTop.Control = ShowScopeCheckBox
           AnchorSideTop.Side = asrBottom
-          AnchorSideRight.Control = CurUnitPanel
+          AnchorSideRight.Control = ScopePanel
           AnchorSideRight.Side = asrBottom
-          AnchorSideBottom.Control = CurUnitPanel
-          AnchorSideBottom.Side = asrBottom
           Left = 1
-          Height = 399
-          Top = 26
-          Width = 153
-          Anchors = [akTop, akLeft, akRight, akBottom]
-          DefaultItemHeight = 18
-          ReadOnly = True
+          Height = 155
+          Top = 25
+          Width = 614
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = True
+          Caption = 'StartSearchingInGroupBox'
+          ClientHeight = 138
+          ClientWidth = 610
           TabOrder = 1
-          OnSelectionChanged = CurUnitTreeViewSelectionChanged
-          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+          object ScopeStartIncludeUnitsInGrpsSrcDirsCheckBox: TCheckBox
+            AnchorSideLeft.Control = StartSearchingInGroupBox
+            AnchorSideTop.Control = ScopeStartGroupsButton
+            AnchorSideTop.Side = asrBottom
+            Left = 2
+            Height = 24
+            Top = 31
+            Width = 282
+            BorderSpacing.Around = 2
+            Caption = 'ScopeStartIncludeUnitsInGrpsSrcDirsCheckBox'
+            TabOrder = 0
+          end
+          object UnitScopeAddFilesCheckBox: TCheckBox
+            AnchorSideLeft.Control = StartSearchingInGroupBox
+            AnchorSideTop.Control = UnitScopeAddFilesEdit
+            AnchorSideTop.Side = asrCenter
+            Left = 2
+            Height = 24
+            Top = 57
+            Width = 111
+            BorderSpacing.Around = 2
+            Caption = 'Additional files:'
+            TabOrder = 1
+          end
+          object UnitScopeAddFilesEdit: TEdit
+            AnchorSideLeft.Control = UnitScopeAddFilesCheckBox
+            AnchorSideLeft.Side = asrBottom
+            AnchorSideTop.Control = ScopeStartIncludeUnitsInGrpsSrcDirsCheckBox
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = UnitScopeAddFilesButton
+            Left = 115
+            Height = 25
+            Top = 57
+            Width = 440
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Around = 2
+            TabOrder = 2
+            Text = 'UnitScopeAddFilesEdit'
+          end
+          object UnitScopeNameOnlyFilterCheckBox: TCheckBox
+            AnchorSideLeft.Control = StartSearchingInGroupBox
+            AnchorSideTop.Control = UnitScopeNameOnlyFilterEdit
+            AnchorSideTop.Side = asrCenter
+            Left = 2
+            Height = 24
+            Top = 84
+            Width = 149
+            BorderSpacing.Around = 2
+            Caption = 'Only units with names:'
+            TabOrder = 3
+          end
+          object UnitScopeNameOnlyFilterEdit: TEdit
+            AnchorSideLeft.Control = UnitScopeNameOnlyFilterCheckBox
+            AnchorSideLeft.Side = asrBottom
+            AnchorSideTop.Control = UnitScopeAddFilesEdit
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = UnitScopeNameOnlyFilterRegExCheckBox
+            Left = 153
+            Height = 25
+            Top = 84
+            Width = 322
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Around = 2
+            TabOrder = 4
+            Text = 'UnitScopeNameOnlyFilterEdit'
+          end
+          object UnitScopeNameOnlyFilterRegExCheckBox: TCheckBox
+            AnchorSideTop.Control = UnitScopeNameOnlyFilterEdit
+            AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = StartSearchingInGroupBox
+            AnchorSideRight.Side = asrBottom
+            Left = 477
+            Height = 24
+            Top = 84
+            Width = 131
+            Anchors = [akTop, akRight]
+            BorderSpacing.Around = 2
+            Caption = 'Regular Expression'
+            TabOrder = 5
+          end
+          object UnitScopeNameExcludeFilterCheckBox: TCheckBox
+            AnchorSideLeft.Control = StartSearchingInGroupBox
+            AnchorSideTop.Control = UnitScopeNameExcludeFilterEdit
+            AnchorSideTop.Side = asrCenter
+            Left = 2
+            Height = 24
+            Top = 111
+            Width = 167
+            BorderSpacing.Around = 2
+            Caption = 'Exclude units with names:'
+            TabOrder = 6
+          end
+          object UnitScopeNameExcludeFilterEdit: TEdit
+            AnchorSideLeft.Control = UnitScopeNameExcludeFilterCheckBox
+            AnchorSideLeft.Side = asrBottom
+            AnchorSideTop.Control = UnitScopeNameOnlyFilterEdit
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = UnitScopeNameExcludeFilterRegExCheckBox
+            Left = 171
+            Height = 25
+            Top = 111
+            Width = 304
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Around = 2
+            TabOrder = 7
+            Text = 'UnitScopeNameExcludeFilterEdit'
+          end
+          object UnitScopeNameExcludeFilterRegExCheckBox: TCheckBox
+            AnchorSideTop.Control = UnitScopeNameExcludeFilterEdit
+            AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = StartSearchingInGroupBox
+            AnchorSideRight.Side = asrBottom
+            Left = 477
+            Height = 24
+            Top = 111
+            Width = 131
+            Anchors = [akTop, akRight]
+            BorderSpacing.Around = 2
+            Caption = 'Regular Expression'
+            TabOrder = 8
+          end
+          object ScopeStartGroupsButton: TButton
+            AnchorSideLeft.Control = StartSearchingInGroupBox
+            AnchorSideTop.Control = StartSearchingInGroupBox
+            Left = 2
+            Height = 27
+            Top = 2
+            Width = 150
+            AutoSize = True
+            BorderSpacing.Around = 2
+            Caption = 'ScopeStartGroupsButton'
+            TabOrder = 9
+          end
+          object UnitScopeAddFilesButton: TButton
+            AnchorSideLeft.Side = asrBottom
+            AnchorSideTop.Control = UnitScopeAddFilesEdit
+            AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = StartSearchingInGroupBox
+            AnchorSideRight.Side = asrBottom
+            Left = 557
+            Height = 27
+            Top = 56
+            Width = 53
+            Anchors = [akTop, akRight]
+            AutoSize = True
+            Caption = 'Browse'
+            TabOrder = 10
+          end
+        end
+        object ContinueSearchingInGroupBox: TGroupBox
+          AnchorSideLeft.Control = ScopePanel
+          AnchorSideTop.Control = StartSearchingInGroupBox
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = ScopePanel
+          AnchorSideRight.Side = asrBottom
+          Left = 1
+          Height = 99
+          Top = 180
+          Width = 614
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = True
+          Caption = 'ContinueSearchingInGroupBox'
+          ClientHeight = 82
+          ClientWidth = 610
+          TabOrder = 2
+          object ContinueInUsedPackagesCheckBox: TCheckBox
+            AnchorSideLeft.Control = ContinueSearchingInGroupBox
+            AnchorSideTop.Control = ContinueSearchingInGroupBox
+            Left = 2
+            Height = 24
+            Top = 2
+            Width = 216
+            BorderSpacing.Around = 2
+            Caption = 'ContinueInUsedPackagesCheckBox'
+            TabOrder = 0
+          end
+          object ContinueOnlyPkgWithNameCheckBox: TCheckBox
+            AnchorSideLeft.Control = ContinueSearchingInGroupBox
+            AnchorSideTop.Control = ContinueOnlyPkgEdit
+            AnchorSideTop.Side = asrCenter
+            Left = 2
+            Height = 24
+            Top = 28
+            Width = 172
+            BorderSpacing.Around = 2
+            Caption = 'Only packages with names:'
+            TabOrder = 1
+          end
+          object ContinueOnlyPkgEdit: TEdit
+            AnchorSideLeft.Control = ContinueOnlyPkgWithNameCheckBox
+            AnchorSideLeft.Side = asrBottom
+            AnchorSideTop.Control = ContinueInUsedPackagesCheckBox
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ContinueOnlyPkgWithNameRegExCheckBox
+            Left = 176
+            Height = 25
+            Top = 28
+            Width = 299
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Around = 2
+            TabOrder = 2
+            Text = 'ContinueOnlyPkgEdit'
+          end
+          object ContinueOnlyPkgWithNameRegExCheckBox: TCheckBox
+            AnchorSideTop.Control = ContinueOnlyPkgEdit
+            AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = ContinueSearchingInGroupBox
+            AnchorSideRight.Side = asrBottom
+            Left = 477
+            Height = 24
+            Top = 28
+            Width = 131
+            Anchors = [akTop, akRight]
+            BorderSpacing.Around = 2
+            Caption = 'Regular Expression'
+            TabOrder = 3
+          end
+          object ContinueExcludePkgCheckBox: TCheckBox
+            AnchorSideLeft.Control = ContinueSearchingInGroupBox
+            AnchorSideTop.Control = ContinueExcludePkgEdit
+            AnchorSideTop.Side = asrCenter
+            Left = 2
+            Height = 24
+            Top = 55
+            Width = 190
+            BorderSpacing.Around = 2
+            Caption = 'Exclude packages with names:'
+            TabOrder = 4
+          end
+          object ContinueExcludePkgEdit: TEdit
+            AnchorSideLeft.Control = ContinueExcludePkgCheckBox
+            AnchorSideLeft.Side = asrBottom
+            AnchorSideTop.Control = ContinueOnlyPkgEdit
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ContinueExcludePkgRegExCheckBox
+            Left = 194
+            Height = 25
+            Top = 55
+            Width = 281
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Around = 2
+            TabOrder = 5
+            Text = 'ContinueExcludePkgEdit'
+          end
+          object ContinueExcludePkgRegExCheckBox: TCheckBox
+            AnchorSideTop.Control = ContinueExcludePkgEdit
+            AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = ContinueSearchingInGroupBox
+            AnchorSideRight.Side = asrBottom
+            Left = 477
+            Height = 24
+            Top = 55
+            Width = 131
+            Anchors = [akTop, akRight]
+            BorderSpacing.Around = 2
+            Caption = 'Regular Expression'
+            TabOrder = 6
+          end
         end
       end
-      object CurUnitSplitter: TSplitter
-        Left = 155
-        Height = 426
-        Top = 0
+      object AllUnitsGroupBox: TGroupBox
+        Left = 0
+        Height = 109
+        Top = 280
+        Width = 248
+        Align = alLeft
+        Caption = 'AllUnitsGroupBox'
+        ClientHeight = 92
+        ClientWidth = 244
+        TabOrder = 1
+        object AllUnitsShowGroupNodesSpeedButton: TSpeedButton
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = AllUnitsGroupBox
+          AnchorSideRight.Control = AllUnitsShowDirsSpeedButton
+          Left = 198
+          Height = 22
+          Top = 0
+          Width = 23
+          Anchors = [akTop, akRight]
+        end
+        object AllUnitsShowDirsSpeedButton: TSpeedButton
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = AllUnitsGroupBox
+          AnchorSideRight.Control = AllUnitsGroupBox
+          AnchorSideRight.Side = asrBottom
+          Left = 221
+          Height = 22
+          Top = 0
+          Width = 23
+          Anchors = [akTop, akRight]
+        end
+        object AllUnitsFilterEdit: TEdit
+          AnchorSideLeft.Control = AllUnitsGroupBox
+          AnchorSideTop.Control = AllUnitsGroupBox
+          AnchorSideRight.Control = AllUnitsShowGroupNodesSpeedButton
+          Left = 0
+          Height = 25
+          Top = 0
+          Width = 198
+          Anchors = [akTop, akLeft, akRight]
+          TabOrder = 0
+          Text = 'AllUnitsFilterEdit'
+        end
+        object AllUnitsSearchNextSpeedButton: TSpeedButton
+          AnchorSideTop.Control = AllUnitsSearchEdit
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = AllUnitsSearchPrevSpeedButton
+          Left = 198
+          Height = 22
+          Top = 68
+          Width = 23
+          Anchors = [akTop, akRight]
+        end
+        object AllUnitsSearchPrevSpeedButton: TSpeedButton
+          AnchorSideTop.Control = AllUnitsSearchEdit
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = AllUnitsGroupBox
+          AnchorSideRight.Side = asrBottom
+          Left = 221
+          Height = 22
+          Top = 68
+          Width = 23
+          Anchors = [akTop, akRight]
+        end
+        object AllUnitsTreeView: TTreeView
+          AnchorSideLeft.Control = AllUnitsGroupBox
+          AnchorSideTop.Control = AllUnitsFilterEdit
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = AllUnitsGroupBox
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = AllUnitsSearchEdit
+          Left = 0
+          Height = 42
+          Top = 25
+          Width = 244
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          DefaultItemHeight = 18
+          TabOrder = 1
+        end
+        object AllUnitsSearchEdit: TEdit
+          AnchorSideLeft.Control = AllUnitsGroupBox
+          AnchorSideRight.Control = AllUnitsSearchNextSpeedButton
+          AnchorSideBottom.Control = AllUnitsGroupBox
+          AnchorSideBottom.Side = asrBottom
+          Left = 0
+          Height = 25
+          Top = 67
+          Width = 198
+          Anchors = [akLeft, akRight, akBottom]
+          TabOrder = 2
+          Text = 'AllUnitsSearchEdit'
+        end
+      end
+      object UnitsSplitter: TSplitter
+        Left = 248
+        Height = 109
+        Top = 280
         Width = 5
+      end
+      object SelectedUnitsGroupBox: TGroupBox
+        Left = 253
+        Height = 109
+        Top = 280
+        Width = 363
+        Align = alClient
+        Caption = 'SelectedUnitsGroupBox'
+        ClientHeight = 92
+        ClientWidth = 359
+        TabOrder = 3
+        object SelUnitsSearchNextSpeedButton: TSpeedButton
+          AnchorSideTop.Control = SelUnitsSearchEdit
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = SelUnitsSearchPrevSpeedButton
+          Left = 313
+          Height = 22
+          Top = 69
+          Width = 23
+          Anchors = [akTop, akRight]
+        end
+        object SelUnitsSearchPrevSpeedButton: TSpeedButton
+          AnchorSideTop.Control = SelUnitsSearchEdit
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = SelectedUnitsGroupBox
+          AnchorSideRight.Side = asrBottom
+          Left = 336
+          Height = 22
+          Top = 69
+          Width = 23
+          Anchors = [akTop, akRight]
+        end
+        object SelUnitsSearchEdit: TEdit
+          AnchorSideLeft.Control = SelectedUnitsGroupBox
+          AnchorSideRight.Control = SelUnitsSearchNextSpeedButton
+          Left = 0
+          Height = 25
+          Top = 68
+          Width = 313
+          Anchors = [akTop, akLeft, akRight]
+          TabOrder = 0
+          Text = 'SelUnitsSearchEdit'
+        end
+        object SelUnitsTreeView: TTreeView
+          AnchorSideLeft.Control = SelectedUnitsGroupBox
+          AnchorSideTop.Control = SelectedUnitsGroupBox
+          AnchorSideRight.Control = SelectedUnitsGroupBox
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = SelUnitsSearchEdit
+          Left = 0
+          Height = 68
+          Top = 0
+          Width = 359
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          DefaultItemHeight = 18
+          TabOrder = 1
+        end
       end
     end
     object GroupsTabSheet: TTabSheet
       Caption = 'GroupsTabSheet'
-      ClientHeight = 426
-      ClientWidth = 665
+      ClientHeight = 389
+      ClientWidth = 616
       object GroupsSplitter: TSplitter
         Cursor = crVSplit
         Left = 0
@@ -110,7 +513,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
   end
   object Timer1: TTimer
     OnTimer = Timer1Timer
-    left = 230
-    top = 187
+    left = 345
+    top = 20
   end
 end
