@@ -51,11 +51,11 @@ unit CodyUnitDepWnd;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, LazLogger, LazFileUtils,
-  Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, LvlGraphCtrl,
-  LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf,
-  CodeToolManager, DefineTemplates, CodeToolsStructs,
-  CTUnitGraph, CTUnitGroupGraph, FileProcs;
+  Classes, SysUtils, AVL_Tree, LazLogger, LazFileUtils, Forms, Controls,
+  ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, LvlGraphCtrl, LazIDEIntf,
+  ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf, IDEDialogs,
+  CodeToolManager, DefineTemplates, CodeToolsStructs, CTUnitGraph,
+  CTUnitGroupGraph, FileProcs;
 
 const
   GroupPrefixProject = '-Project-';
@@ -98,6 +98,9 @@ type
     procedure GroupsLvlGraphSelectionChanged(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure Timer1Timer(Sender: TObject);
+    procedure UnitScopeAddFilesButtonClick(Sender: TObject);
+    procedure UnitScopeAddFilesCheckBoxChange(Sender: TObject);
+    procedure UnitScopeAddFilesComboBoxChange(Sender: TObject);
   private
     FAllUnitsMultiSelect: boolean;
     FCurrentUnit: TUGUnit;
@@ -116,6 +119,7 @@ type
     procedure AddAdditionalFilesAsStartUnits;
     procedure SetupGroupsTabSheet;
     procedure SetupUnitsTabSheet;
+    procedure UpdateAddFiles;
     procedure UpdateAll;
     procedure UpdateGroupsLvlGraph;
     procedure UpdateUnitsLvlGraph;
@@ -214,7 +218,45 @@ end;
 
 procedure TUnitDependenciesWindow.Timer1Timer(Sender: TObject);
 begin
-  UpdateAll;
+
+end;
+
+procedure TUnitDependenciesWindow.UnitScopeAddFilesButtonClick(Sender: TObject);
+var
+  Dlg: TSelectDirectoryDialog;
+  s: TCaption;
+  aFilename: String;
+  p: Integer;
+begin
+  Dlg:=TSelectDirectoryDialog.Create(nil);
+  try
+    InitIDEFileDialog(Dlg);
+    Dlg.Options:=Dlg.Options+[ofPathMustExist];
+    if not Dlg.Execute then exit;
+    aFilename:=TrimFilename(Dlg.FileName);
+    s:=UnitScopeAddFilesComboBox.Text;
+    p:=1;
+    if FindNextDelimitedItem(s,';',p,aFilename)<>'' then exit;
+    if s<>'' then s+=';';
+    s+=aFilename;
+    UnitScopeAddFilesComboBox.Text:=s;
+    IdleConnected:=true;
+  finally
+    Dlg.Free;
+  end;
+end;
+
+procedure TUnitDependenciesWindow.UnitScopeAddFilesCheckBoxChange(
+  Sender: TObject);
+begin
+  UpdateAddFiles;
+  IdleConnected:=true;
+end;
+
+procedure TUnitDependenciesWindow.UnitScopeAddFilesComboBoxChange(
+  Sender: TObject);
+begin
+  IdleConnected:=true;
 end;
 
 procedure TUnitDependenciesWindow.SetIdleConnected(AValue: boolean);
@@ -407,6 +449,9 @@ var
   i: Integer;
   SrcEdit: TSourceEditorInterface;
   AFilename: String;
+  Pkg: TIDEPackage;
+  j: Integer;
+  PkgFile: TLazPackageFile;
 begin
   UsesGraph.TargetAll:=true;
 
@@ -416,6 +461,17 @@ begin
     UsesGraph.AddStartUnit(aProject.MainFile.Filename);
 
   // ToDo: add all open packages
+  for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
+    Pkg:=PackageEditingInterface.GetPackages(i);
+    if not FilenameIsAbsolute(Pkg.Filename) then continue;
+    for j:=0 to Pkg.FileCount-1 do begin
+      PkgFile:=Pkg.Files[j];
+      if PkgFile.Removed then continue;
+      aFilename:=PkgFile.GetFullFilename;
+      if FilenameIsPascalUnit(AFilename) then
+        UsesGraph.AddStartUnit(AFilename);
+    end;
+  end;
 
   // add all source editor files
   for i:=0 to SourceEditorManagerIntf.SourceEditorCount-1 do begin
@@ -505,6 +561,8 @@ begin
   UnitScopeAddFilesButton.Caption:='Browse';
 
   // view all units
+  AllUnitsGroupBox.Caption:='All units';
+
   AllUnitsFilterEdit.Text:='(Filter)';
   AllUnitsMultiselectSpeedButton.Hint:='Allow to select multiple units';
   AllUnitsShowDirsSpeedButton.Hint:='Show nodes for directories';
@@ -519,15 +577,25 @@ begin
   AllUnitsSearchPrevSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
 
   // selected units
+  SelectedUnitsGroupBox.Caption:='Selected units';
   SelUnitsSearchEdit.Text:='(Filter)';
   SelUnitsSearchNextSpeedButton.Hint:='Search next unit of this phrase';
   SelUnitsSearchNextSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
   SelUnitsSearchPrevSpeedButton.Hint:='Search previous unit of this phrase';
   SelUnitsSearchPrevSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
+
+  UpdateAddFiles;
+end;
+
+procedure TUnitDependenciesWindow.UpdateAddFiles;
+begin
+  UnitScopeAddFilesComboBox.Enabled:=UnitScopeAddFilesCheckBox.Checked;
+  UnitScopeAddFilesButton.Enabled:=UnitScopeAddFilesCheckBox.Checked;
 end;
 
 procedure TUnitDependenciesWindow.UpdateAll;
 begin
+  UpdateAddFiles;
   UpdateGroupsLvlGraph;
   UpdateUnitsLvlGraph;
 end;

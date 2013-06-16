@@ -61,6 +61,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Width = 111
           BorderSpacing.Around = 2
           Caption = 'Additional files:'
+          OnChange = UnitScopeAddFilesCheckBoxChange
           ParentShowHint = False
           ShowHint = True
           TabOrder = 0
@@ -78,6 +79,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Anchors = [akTop, akRight]
           AutoSize = True
           Caption = 'Browse'
+          OnClick = UnitScopeAddFilesButtonClick
           TabOrder = 1
         end
         object UnitScopeAddFilesComboBox: TComboBox
@@ -92,6 +94,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 2
           ItemHeight = 0
+          OnChange = UnitScopeAddFilesComboBoxChange
           TabOrder = 2
           Text = 'UnitScopeAddFilesComboBox'
         end
