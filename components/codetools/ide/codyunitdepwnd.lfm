@@ -239,6 +239,9 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Top = 288
           Width = 198
           Anchors = [akLeft, akRight, akBottom]
+          OnChange = AllUnitsSearchEditChange
+          OnEnter = AllUnitsSearchEditEnter
+          OnExit = AllUnitsSearchEditExit
           TabOrder = 2
           Text = 'AllUnitsSearchEdit'
         end

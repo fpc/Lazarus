@@ -101,9 +101,10 @@ type
 
   TUDWFlag = (
     udwParsing,
-    udwNeedUpdateGroupsLvlGraph,
-    udwNeedUpdateUnitsLvlGraph,
-    udwNeedUpdateAllUnitsTreeView
+    udwNeedUpdateGroupsLvlGraph, // rebuild GroupsLvlGraph
+    udwNeedUpdateUnitsLvlGraph, // rebuild UnitsLvlGraph
+    udwNeedUpdateAllUnitsTreeView, // rebuild AllUnitsTreeView
+    udwNeedUpdateAllUnitsTVSearch // update search in AllUnitsTreeView
     );
   TUDWFlags = set of TUDWFlag;
 
@@ -142,6 +143,9 @@ type
     procedure AllUnitsFilterEditEnter(Sender: TObject);
     procedure AllUnitsFilterEditExit(Sender: TObject);
     procedure AllUnitsMultiselectSpeedButtonClick(Sender: TObject);
+    procedure AllUnitsSearchEditChange(Sender: TObject);
+    procedure AllUnitsSearchEditEnter(Sender: TObject);
+    procedure AllUnitsSearchEditExit(Sender: TObject);
     procedure AllUnitsShowDirsSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowGroupNodesSpeedButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -166,6 +170,7 @@ type
     fImgIndexUnit: integer;
     fImgIndexPackage: integer;
     fImgIndexDirectory: integer;
+    fAllUnitsTVSearchStartNode: TTreeNode;
     function CreateAllUnitsTree: TUDNode;
     procedure SetAllUnitsMultiSelect(AValue: boolean);
     procedure SetCurrentUnit(AValue: TUGUnit);
@@ -184,6 +189,7 @@ type
     procedure UpdateGroupsLvlGraph;
     procedure UpdateUnitsLvlGraph;
     procedure UpdateAllUnitsTreeView;
+    procedure UpdateAllUnitsTreeViewSearch;
     function GetImgIndex(Node: TUDNode): integer;
     function NodeTextToUnit(NodeText: string): TUGUnit;
     function UGUnitToNodeText(UGUnit: TUGUnit): string;
@@ -191,8 +197,10 @@ type
     function IsFPCSrcGroup(Group: TUGGroup): boolean;
     function IsProjectGroup(Group: TUGGroup): boolean;
     function GetAllUnitsFilter: string;
+    function GetAllUnitsSearch: string;
     function ResStrFilter: string;
     function ResStrSearch: string;
+    function NodeTextFitsFilter(const NodeText, LowerFilter: string): boolean;
   public
     GroupsLvlGraph: TLvlGraphControl; // Nodes.Data are TUGGroup of Groups
     UnitsLvlGraph: TLvlGraphControl; // Nodes.Data are Units in Groups
@@ -319,6 +327,24 @@ begin
   AllUnitsMultiSelect:=AllUnitsMultiselectSpeedButton.Down;
 end;
 
+procedure TUnitDependenciesWindow.AllUnitsSearchEditChange(Sender: TObject);
+begin
+  Include(FFlags,udwNeedUpdateAllUnitsTVSearch);
+  IdleConnected:=true;
+end;
+
+procedure TUnitDependenciesWindow.AllUnitsSearchEditEnter(Sender: TObject);
+begin
+  if AllUnitsSearchEdit.Text=ResStrSearch then
+    AllUnitsSearchEdit.Text:='';
+end;
+
+procedure TUnitDependenciesWindow.AllUnitsSearchEditExit(Sender: TObject);
+begin
+  if AllUnitsSearchEdit.Text='' then
+    AllUnitsSearchEdit.Text:=ResStrSearch;
+end;
+
 procedure TUnitDependenciesWindow.AllUnitsShowDirsSpeedButtonClick(
   Sender: TObject);
 begin
@@ -387,6 +413,8 @@ begin
     UpdateUnitsLvlGraph
   else if udwNeedUpdateAllUnitsTreeView in FFlags then
     UpdateAllUnitsTreeView
+  else if udwNeedUpdateAllUnitsTVSearch in FFlags then
+    UpdateAllUnitsTreeViewSearch
   else
     IdleConnected:=false;
 end;
@@ -1055,7 +1083,7 @@ procedure TUnitDependenciesWindow.UpdateAllUnitsTreeView;
       TVNode:=TV.Items.AddChild(ParentTVNode,UDNode.NodeText);
       TVNode.Data:=UDNode;
       TVNode.ImageIndex:=GetImgIndex(UDNode);
-      TVNode.StateIndex:=TVNode.ImageIndex;
+      TVNode.SelectedIndex:=TVNode.ImageIndex;
       CreateTVNodes(TV,TVNode,UDNode);
       TVNode.Expanded:=true;
       AVLNode:=ParentUDNode.ChildNodes.FindSuccessor(AVLNode);
@@ -1076,6 +1104,7 @@ begin
     OldExpanded:=nil;
   // clear
   FreeAndNil(FAllUnitsRootUDNode);
+  fAllUnitsTVSearchStartNode:=nil;
   TV.Items.Clear;
   // create nodes
   FAllUnitsRootUDNode:=CreateAllUnitsTree;
@@ -1085,7 +1114,30 @@ begin
     OldExpanded.Apply(TV);
     OldExpanded.Free;
   end;
+  // update search
+  UpdateAllUnitsTreeViewSearch;
   TV.EndUpdate;
+end;
+
+procedure TUnitDependenciesWindow.UpdateAllUnitsTreeViewSearch;
+var
+  Search: String;
+  TVNode: TTreeNode;
+begin
+  Exclude(FFlags,udwNeedUpdateAllUnitsTVSearch);
+  Search:=UTF8LowerCase(GetAllUnitsSearch);
+  TVNode:=fAllUnitsTVSearchStartNode;
+  if TVNode=nil then
+    TVNode:=AllUnitsTreeView.Items.GetFirstNode;
+  while TVNode<>nil do begin
+    if NodeTextFitsFilter(TVNode.Text,Search) then begin
+      AllUnitsTreeView.Selected:=TVNode;
+      AllUnitsTreeView.MakeSelectionVisible;
+      break;
+    end;
+    TVNode:=TVNode.GetNext;
+  end;
+  AllUnitsTreeView.Invalidate;
 end;
 
 function TUnitDependenciesWindow.GetImgIndex(Node: TUDNode): integer;
@@ -1151,6 +1203,13 @@ begin
     Result:='';
 end;
 
+function TUnitDependenciesWindow.GetAllUnitsSearch: string;
+begin
+  Result:=AllUnitsSearchEdit.Text;
+  if Result=ResStrSearch then
+    Result:='';
+end;
+
 function TUnitDependenciesWindow.ResStrFilter: string;
 begin
   Result:='(Filter)';
@@ -1159,6 +1218,12 @@ end;
 function TUnitDependenciesWindow.ResStrSearch: string;
 begin
   Result:='(Search)';
+end;
+
+function TUnitDependenciesWindow.NodeTextFitsFilter(const NodeText,
+  LowerFilter: string): boolean;
+begin
+  Result:=Pos(LowerFilter,UTF8LowerCase(NodeText))>0;
 end;
 
 {$R *.lfm}
