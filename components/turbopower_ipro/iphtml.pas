@@ -3088,7 +3088,7 @@ type
     function ControlSize(ControlSB, AssumeSB: Boolean): Integer;
     procedure DoSetRange(Value: Integer);
     function NeedsScrollBarVisible: Boolean;
-    procedure ScrollMessage(var Msg: TWMScroll);
+    procedure ScrollMessage(var Msg: {$IFDEF IP_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF});
     procedure Update(ControlSB, AssumeSB: Boolean);
   public
     constructor Create(AControl: TIpHtmlInternalPanel; AKind: TScrollBarKind);
@@ -3141,8 +3141,13 @@ type
     procedure ShowHintNow(const NewHint: string);                      {!!.12}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
+    {$IFDEF IP_LAZARUS}
+    procedure WMHScroll(var Message: TLMHScroll); message LM_HSCROLL;
+    procedure WMVScroll(var Message: TLMVScroll); message LM_VSCROLL;
+    {$ELSE}
     procedure WMHScroll(var Message: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Message: TWMVScroll); message WM_VSCROLL;
+    {$ENDIF}
     {$IFDEF IP_LAZARUS}
     procedure AsyncHotInvoke(data: ptrint);
     {$ENDIF}
@@ -17630,9 +17635,9 @@ begin
   Result:=inherited DoMouseWheel(Shift, WheelDelta, MousePos);
   for i := 0 to Mouse.WheelScrollLines-1 do
     if WheelDelta < 0 then
-      Perform(WM_VSCROLL, MAKELONG(SB_LINEDOWN, 0), 0)
+      Perform({$IFDEF IP_LAZARUS}LM_VSCROLL{$ELSE}WM_VSCROLL{$ENDIF}, MAKELONG(SB_LINEDOWN, 0), 0)
     else
-      Perform(WM_VSCROLL, MAKELONG(SB_LINEUP, 0), 0);
+      Perform({$IFDEF IP_LAZARUS}LM_VSCROLL{$ELSE}WM_VSCROLL{$ENDIF}, MAKELONG(SB_LINEUP, 0), 0);
 end;
 
 procedure TIpHtmlInternalPanel.Paint;
@@ -17982,7 +17987,7 @@ begin
     end;
 end;
 
-procedure TIpHtmlInternalPanel.WMHScroll(var Message: TWMHScroll);
+procedure TIpHtmlInternalPanel.WMHScroll(var Message: {$IFDEF IP_LAZARUS}TLMHScroll{$ELSE}TWMHScroll{$ENDIF});
 begin
   {$IFDEF IP_LAZARUS}
   if HScroll.Visible then
@@ -17994,7 +17999,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TIpHtmlInternalPanel.WMVScroll(var Message: TWMVScroll);
+procedure TIpHtmlInternalPanel.WMVScroll(var Message: {$IFDEF IP_LAZARUS}TLMVScroll{$ELSE}TWMVScroll{$ENDIF});
 begin
   {$IFDEF IP_LAZARUS}
   if VScroll.Visible then
@@ -18104,7 +18109,7 @@ begin
   Result := FRange > ControlSize(False, False);
 end;
 
-procedure TIpHtmlScrollBar.ScrollMessage(var Msg: TWMScroll);
+procedure TIpHtmlScrollBar.ScrollMessage(var Msg: {$IFDEF IP_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF});
 
   function GetRealScrollPosition: Integer;
   var
