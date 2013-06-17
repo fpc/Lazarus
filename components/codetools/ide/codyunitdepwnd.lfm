@@ -175,11 +175,11 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
         object AllUnitsFilterEdit: TEdit
           AnchorSideLeft.Control = AllUnitsGroupBox
           AnchorSideTop.Control = AllUnitsGroupBox
-          AnchorSideRight.Control = AllUnitsMultiselectSpeedButton
+          AnchorSideRight.Control = AllUnitsShowGroupNodesSpeedButton
           Left = 0
           Height = 25
           Top = 0
-          Width = 175
+          Width = 198
           Anchors = [akTop, akLeft, akRight]
           OnChange = AllUnitsFilterEditChange
           OnEnter = AllUnitsFilterEditEnter
@@ -228,6 +228,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Anchors = [akTop, akLeft, akRight, akBottom]
           DefaultItemHeight = 18
           HotTrack = True
+          MultiSelect = True
           ParentShowHint = False
           PopupMenu = UnitsTVPopupMenu
           ReadOnly = True
@@ -238,7 +239,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           OnMouseDown = UnitsTreeViewMouseDown
           OnSelectionChanged = AllUnitsTreeViewSelectionChanged
           OnShowHint = UnitsTreeViewShowHint
-          Options = [tvoAutoItemHeight, tvoHideSelection, tvoHotTrack, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoToolTips, tvoThemedDraw]
+          Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoHotTrack, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoToolTips, tvoThemedDraw]
         end
         object AllUnitsSearchEdit: TEdit
           AnchorSideLeft.Control = AllUnitsGroupBox
@@ -255,21 +256,6 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           OnExit = AllUnitsSearchEditExit
           TabOrder = 2
           Text = 'AllUnitsSearchEdit'
-        end
-        object AllUnitsMultiselectSpeedButton: TSpeedButton
-          AnchorSideTop.Control = AllUnitsFilterEdit
-          AnchorSideTop.Side = asrCenter
-          AnchorSideRight.Control = AllUnitsShowGroupNodesSpeedButton
-          Left = 175
-          Height = 22
-          Top = 1
-          Width = 23
-          AllowAllUp = True
-          Anchors = [akTop, akRight]
-          GroupIndex = 11
-          OnClick = AllUnitsMultiselectSpeedButtonClick
-          ShowHint = True
-          ParentShowHint = False
         end
       end
       object UnitsSplitter: TSplitter
