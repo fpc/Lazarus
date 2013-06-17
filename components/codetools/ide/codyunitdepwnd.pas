@@ -51,10 +51,10 @@ unit CodyUnitDepWnd;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, LazLogger, LazFileUtils, Forms, Controls,
-  ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, LvlGraphCtrl, LazIDEIntf,
-  ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf, IDEDialogs,
-  CodeToolManager, DefineTemplates, CodeToolsStructs, CTUnitGraph,
+  Classes, SysUtils, AVL_Tree, LazLogger, LazFileUtils, LazUTF8, Forms,
+  Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, LvlGraphCtrl,
+  LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf,
+  IDEDialogs, CodeToolManager, DefineTemplates, CodeToolsStructs, CTUnitGraph,
   CTUnitGroupGraph, FileProcs;
 
 const
@@ -62,6 +62,42 @@ const
   GroupPrefixFPCSrc = 'FPC:';
   GroupNone = '-None-';
 type
+  TUDNodeType = (
+    udnNone,
+    udnGroup,
+    udnDirectory,
+    udnInterface,
+    udnImplementation,
+    udnUsedByInterface,
+    udnUsedByImplementation,
+    udnUnit
+    );
+  TUDNodeTypes = set of TUDNodeType;
+
+  { TUDBaseNode }
+
+  TUDBaseNode = class
+  public
+    TVNode: TTreeNode;
+    NodeText: string;
+    Typ: TUDNodeType;
+    Identifier: string; // GroupName, Directory, Filename
+    Group: string;
+  end;
+
+  { TUDNode }
+
+  TUDNode = class(TUDBaseNode)
+  public
+    Parent: TUDNode;
+    ChildNodes: TAVLTree; // tree of TUDNode sorted for Typ and NodeText
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function GetNode(aTyp: TUDNodeType; const ANodeText: string;
+      CreateIfNotExists: boolean = false): TUDNode;
+    function Count: integer;
+  end;
 
   { TUnitDependenciesWindow }
 
@@ -74,7 +110,7 @@ type
     AllUnitsGroupBox: TGroupBox;
     AllUnitsShowDirsSpeedButton: TSpeedButton;
     AllUnitsShowGroupNodesSpeedButton: TSpeedButton;
-    AllUnitsTreeView: TTreeView;
+    AllUnitsTreeView: TTreeView; // Node.Data is TUDNode
     BtnPanel: TPanel;
     MainPageControl: TPageControl;
     ProgressBar1: TProgressBar;
@@ -111,6 +147,8 @@ type
     FIdleConnected: boolean;
     FUsesGraph: TUsesGraph;
     FGroups: TUGGroups; // referenced by Nodes.Data of GroupsLvlGraph
+    FAllUnitsRootUDNode: TUDNode;
+    function CreateAllUnitsTree: TUDNode;
     procedure SetAllUnitsMultiSelect(AValue: boolean);
     procedure SetCurrentUnit(AValue: TUGUnit);
     procedure SetIdleConnected(AValue: boolean);
@@ -127,11 +165,13 @@ type
     procedure UpdateAll;
     procedure UpdateGroupsLvlGraph;
     procedure UpdateUnitsLvlGraph;
+    procedure UpdateAllUnitsTreeView;
     function NodeTextToUnit(NodeText: string): TUGUnit;
     function UGUnitToNodeText(UGUnit: TUGUnit): string;
     function GetFPCSrcDir: string;
     function IsFPCSrcGroup(Group: TUGGroup): boolean;
     function IsProjectGroup(Group: TUGGroup): boolean;
+    function GetAllUnitsFilter: string;
   public
     GroupsLvlGraph: TLvlGraphControl; // Nodes.Data are TUGGroup of Groups
     UnitsLvlGraph: TLvlGraphControl; // Nodes.Data are Units in Groups
@@ -148,6 +188,8 @@ var
 procedure ShowUnitDependenciesClicked(Sender: TObject);
 procedure ShowUnitDependencies(Show, BringToFront: boolean);
 
+function CompareUDBaseNodes(UDNode1, UDNode2: Pointer): integer;
+
 implementation
 
 procedure ShowUnitDependenciesClicked(Sender: TObject);
@@ -163,6 +205,66 @@ begin
   begin
     IDEWindowCreators.ShowForm(UnitDependenciesWindow,BringToFront);
   end;
+end;
+
+function CompareUDBaseNodes(UDNode1, UDNode2: Pointer): integer;
+var
+  Node1: TUDBaseNode absolute UDNode1;
+  Node2: TUDBaseNode absolute UDNode2;
+begin
+  Result:=ord(Node1.Typ)-ord(Node2.Typ);
+  if Result<>0 then exit;
+  case Node1.Typ of
+  udnDirectory: Result:=CompareFilenames(Node1.NodeText,Node2.NodeText);
+  else Result:=SysUtils.CompareText(Node1.NodeText,Node2.NodeText);
+  end;
+end;
+
+{ TUDNode }
+
+constructor TUDNode.Create;
+begin
+  ChildNodes:=TAVLTree.Create(@CompareUDBaseNodes);
+end;
+
+destructor TUDNode.Destroy;
+begin
+  Clear;
+  FreeAndNil(ChildNodes);
+  inherited Destroy;
+end;
+
+procedure TUDNode.Clear;
+begin
+  ChildNodes.FreeAndClear;
+end;
+
+function TUDNode.GetNode(aTyp: TUDNodeType; const ANodeText: string;
+  CreateIfNotExists: boolean): TUDNode;
+var
+  Node: TUDBaseNode;
+  AVLNode: TAVLTreeNode;
+begin
+  Node:=TUDBaseNode.Create;
+  Node.Typ:=aTyp;
+  Node.NodeText:=ANodeText;
+  AVLNode:=ChildNodes.Find(Node);
+  Node.Free;
+  if AVLNode<>nil then begin
+    Result:=TUDNode(AVLNode.Data);
+  end else if CreateIfNotExists then begin
+    Result:=TUDNode.Create;
+    Result.Typ:=aTyp;
+    Result.NodeText:=ANodeText;
+    ChildNodes.Add(Result);
+    Result.Parent:=Self;
+  end else
+    Result:=nil;
+end;
+
+function TUDNode.Count: integer;
+begin
+  Result:=ChildNodes.Count;
 end;
 
 { TUnitDependenciesWindow }
@@ -196,6 +298,7 @@ begin
   GroupsLvlGraph.Clear;
   UnitsLvlGraph.Clear;
   FreeAndNil(FGroups);
+  FreeAndNil(FAllUnitsRootUDNode);
   FreeAndNil(FUsesGraph);
 end;
 
@@ -410,9 +513,9 @@ begin
   Node:=UsesGraph.FilesTree.FindLowest;
   while Node<>nil do begin
     CurUnit:=TUGGroupUnit(Node.Data);
-    if TUGGroupUnit(CurUnit).Group=nil then begin
+    if CurUnit.Group=nil then begin
       Filename:=CurUnit.Filename;
-      debugln(['TUnitDependenciesDialog.GuessGroupOfUnits no group for ',Filename]);
+      //debugln(['TUnitDependenciesDialog.GuessGroupOfUnits no group for ',Filename]);
       CurDirectory:=ExtractFilePath(Filename);
       if CompareFilenames(CurDirectory,LastDirectory)<>0 then begin
         FreeAndNil(Owners);
@@ -423,18 +526,18 @@ begin
         for i:=0 to Owners.Count-1 do begin
           if TObject(Owners[i]) is TLazProject then begin
             Group:=Groups.GetGroup(GroupPrefixProject,true);
-            debugln(['TUnitDependenciesDialog.GuessGroupOfUnits ',Group.Name]);
+            //debugln(['TUnitDependenciesDialog.GuessGroupOfUnits ',Group.Name]);
             break;
           end else if TObject(Owners[i]) is TIDEPackage then begin
             Group:=Groups.GetGroup(TIDEPackage(Owners[i]).Name,true);
-            debugln(['TUnitDependenciesDialog.GuessGroupOfUnits ',Group.Name]);
+            //debugln(['TUnitDependenciesDialog.GuessGroupOfUnits ',Group.Name]);
             break;
           end;
         end;
       end;
       if Group=nil then begin
         Group:=Groups.GetGroup(GroupNone,true);
-        debugln(['TUnitDependenciesDialog.GuessGroupOfUnits ',Group.Name]);
+        //debugln(['TUnitDependenciesDialog.GuessGroupOfUnits ',Group.Name]);
       end;
       Group.AddUnit(TUGGroupUnit(CurUnit));
     end;
@@ -455,6 +558,48 @@ begin
   FAllUnitsMultiSelect:=AValue;
   AllUnitsMultiselectSpeedButton.Down:=AllUnitsMultiSelect;
   AllUnitsTreeView.MultiSelect:=AllUnitsMultiSelect;
+end;
+
+function TUnitDependenciesWindow.CreateAllUnitsTree: TUDNode;
+var
+  Node: TUDNode;
+  ParentNode: TUDNode;
+  GroupName: String;
+  ShowDirectories: Boolean;
+  ShowGroups: Boolean;
+  NodeText: String;
+  RootNode: TUDNode;
+  Filter: String;
+  UGUnit: TUGGroupUnit;
+  AVLNode: TAVLTreeNode;
+  Group: TUGGroup;
+begin
+  Filter:=UTF8LowerCase(GetAllUnitsFilter);
+  RootNode:=TUDNode.Create;
+  ShowGroups:=AllUnitsShowGroupNodesSpeedButton.Down;
+  ShowDirectories:=AllUnitsShowDirsSpeedButton.Down;
+  for AVLNode in UsesGraph.FilesTree do begin
+    UGUnit:=TUGGroupUnit(AVLNode.Data);
+    NodeText:=ExtractFileName(UGUnit.Filename);
+    if (Filter<>'') and (Pos(Filter, UTF8LowerCase(NodeText))<1) then
+      continue;
+    Group:=UGUnit.Group;
+    if Group=nil then
+      GroupName:=GroupNone
+    else
+      GroupName:=Group.Name;
+    ParentNode:=RootNode;
+    if ShowGroups then begin
+
+    end;
+    if ShowDirectories then begin
+
+    end;
+    Node:=ParentNode.GetNode(udnUnit, NodeText, true);
+    Node.Identifier:=UGUnit.Filename;
+    Node.Group:=GroupName;
+  end;
+  Result:=RootNode;
 end;
 
 procedure TUnitDependenciesWindow.AddStartAndTargetUnits;
@@ -592,7 +737,7 @@ begin
   AllUnitsShowGroupNodesSpeedButton.Hint:='Show nodes for project and packages';
   AllUnitsShowGroupNodesSpeedButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
 
-  AllUnitsSearchEdit.Text:='(Filter)';
+  AllUnitsSearchEdit.Text:='(Search)';
   AllUnitsSearchNextSpeedButton.Hint:='Search next occurence of this phrase';
   AllUnitsSearchNextSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
   AllUnitsSearchPrevSpeedButton.Hint:='Search previous occurence of this phrase';
@@ -600,7 +745,7 @@ begin
 
   // selected units
   SelectedUnitsGroupBox.Caption:='Selected units';
-  SelUnitsSearchEdit.Text:='(Filter)';
+  SelUnitsSearchEdit.Text:='(Search)';
   SelUnitsSearchNextSpeedButton.Hint:='Search next unit of this phrase';
   SelUnitsSearchNextSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
   SelUnitsSearchPrevSpeedButton.Hint:='Search previous unit of this phrase';
@@ -620,6 +765,7 @@ begin
   UpdateAddFiles;
   UpdateGroupsLvlGraph;
   UpdateUnitsLvlGraph;
+  UpdateAllUnitsTreeView;
 end;
 
 procedure TUnitDependenciesWindow.UpdateGroupsLvlGraph;
@@ -774,6 +920,52 @@ begin
   end;
 end;
 
+procedure TUnitDependenciesWindow.UpdateAllUnitsTreeView;
+
+  procedure CreateTVNodes(TV: TTreeView; ParentTVNode: TTreeNode;
+    ParentUDNode: TUDNode);
+  var
+    AVLNode: TAVLTreeNode;
+    UDNode: TUDNode;
+    TVNode: TTreeNode;
+  begin
+    if ParentUDNode=nil then exit;
+    AVLNode:=ParentUDNode.ChildNodes.FindLowest;
+    while AVLNode<>nil do begin
+      UDNode:=TUDNode(AVLNode.Data);
+      TVNode:=TV.Items.AddChild(ParentTVNode,UDNode.NodeText);
+      TVNode.Data:=UDNode;
+      CreateTVNodes(TV,TVNode,UDNode);
+      TVNode.Expanded:=true;
+      AVLNode:=ParentUDNode.ChildNodes.FindSuccessor(AVLNode);
+    end;
+  end;
+
+var
+  TV: TTreeView;
+  OldExpanded: TTreeNodeExpandedState;
+begin
+  TV:=AllUnitsTreeView;
+  TV.BeginUpdate;
+  // save old expanded state
+  if TV.Items.Count>1 then
+    OldExpanded:=TTreeNodeExpandedState.Create(TV)
+  else
+    OldExpanded:=nil;
+  // clear
+  FreeAndNil(FAllUnitsRootUDNode);
+  TV.Items.Clear;
+  // create nodes
+  FAllUnitsRootUDNode:=CreateAllUnitsTree;
+  CreateTVNodes(TV,nil,FAllUnitsRootUDNode);
+  // restore old expanded state
+  if OldExpanded<>nil then begin
+    OldExpanded.Apply(TV);
+    OldExpanded.Free;
+  end;
+  TV.EndUpdate;
+end;
+
 function TUnitDependenciesWindow.NodeTextToUnit(NodeText: string): TUGUnit;
 var
   AVLNode: TAVLTreeNode;
@@ -808,6 +1000,13 @@ end;
 function TUnitDependenciesWindow.IsProjectGroup(Group: TUGGroup): boolean;
 begin
   Result:=(Group<>nil) and (Group.Name=GroupPrefixProject);
+end;
+
+function TUnitDependenciesWindow.GetAllUnitsFilter: string;
+begin
+  Result:=AllUnitsFilterEdit.Text;
+  if Result='(Filter)' then
+    Result:='';
 end;
 
 {$R *.lfm}

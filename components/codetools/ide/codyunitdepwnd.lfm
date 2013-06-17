@@ -1,7 +1,7 @@
 object UnitDependenciesWindow: TUnitDependenciesWindow
-  Left = 1165
+  Left = 347
   Height = 440
-  Top = 178
+  Top = 188
   Width = 620
   Caption = 'UnitDependenciesWindow'
   ClientHeight = 440
@@ -58,9 +58,9 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Left = 3
           Height = 24
           Top = 4
-          Width = 111
+          Width = 181
           BorderSpacing.Around = 2
-          Caption = 'Additional files:'
+          Caption = 'SearchCustomFilesCheckBox'
           OnChange = SearchCustomFilesCheckBoxChange
           ParentShowHint = False
           ShowHint = True
@@ -87,10 +87,10 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = ScopePanel
           AnchorSideRight.Control = SearchCustomFilesBrowseButton
-          Left = 116
+          Left = 186
           Height = 27
           Top = 3
-          Width = 444
+          Width = 374
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 2
           ItemHeight = 0
@@ -123,7 +123,9 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           BorderSpacing.Left = 15
           BorderSpacing.Around = 2
           Caption = 'SearchSrcEditCheckBox'
+          Checked = True
           OnChange = SearchSrcEditCheckBoxChange
+          State = cbChecked
           TabOrder = 4
         end
       end
