@@ -1,7 +1,7 @@
 object UnitDependenciesWindow: TUnitDependenciesWindow
-  Left = 319
+  Left = 1177
   Height = 440
-  Top = 174
+  Top = 154
   Width = 620
   Caption = 'UnitDependenciesWindow'
   ClientHeight = 440
@@ -182,6 +182,8 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Width = 175
           Anchors = [akTop, akLeft, akRight]
           OnChange = AllUnitsFilterEditChange
+          OnEnter = AllUnitsFilterEditEnter
+          OnExit = AllUnitsFilterEditExit
           TabOrder = 0
           Text = 'AllUnitsFilterEdit'
         end

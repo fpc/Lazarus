@@ -139,6 +139,8 @@ type
     UnitsTabSheet: TTabSheet;
     Timer1: TTimer;
     procedure AllUnitsFilterEditChange(Sender: TObject);
+    procedure AllUnitsFilterEditEnter(Sender: TObject);
+    procedure AllUnitsFilterEditExit(Sender: TObject);
     procedure AllUnitsMultiselectSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowDirsSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowGroupNodesSpeedButtonClick(Sender: TObject);
@@ -189,6 +191,8 @@ type
     function IsFPCSrcGroup(Group: TUGGroup): boolean;
     function IsProjectGroup(Group: TUGGroup): boolean;
     function GetAllUnitsFilter: string;
+    function ResStrFilter: string;
+    function ResStrSearch: string;
   public
     GroupsLvlGraph: TLvlGraphControl; // Nodes.Data are TUGGroup of Groups
     UnitsLvlGraph: TLvlGraphControl; // Nodes.Data are Units in Groups
@@ -333,6 +337,18 @@ procedure TUnitDependenciesWindow.AllUnitsFilterEditChange(Sender: TObject);
 begin
   Include(FFlags,udwNeedUpdateAllUnitsTreeView);
   IdleConnected:=true;
+end;
+
+procedure TUnitDependenciesWindow.AllUnitsFilterEditEnter(Sender: TObject);
+begin
+  if AllUnitsFilterEdit.Text=ResStrFilter then
+    AllUnitsFilterEdit.Text:='';
+end;
+
+procedure TUnitDependenciesWindow.AllUnitsFilterEditExit(Sender: TObject);
+begin
+  if AllUnitsFilterEdit.Text='' then
+    AllUnitsFilterEdit.Text:=ResStrSearch;
 end;
 
 procedure TUnitDependenciesWindow.FormDestroy(Sender: TObject);
@@ -831,14 +847,16 @@ begin
   // view all units
   AllUnitsGroupBox.Caption:='All units';
 
-  AllUnitsFilterEdit.Text:='(Filter)';
+  AllUnitsFilterEdit.Text:=ResStrFilter;
   AllUnitsMultiselectSpeedButton.Hint:='Allow to select multiple units';
   AllUnitsShowDirsSpeedButton.Hint:='Show nodes for directories';
   AllUnitsShowDirsSpeedButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
+  AllUnitsShowDirsSpeedButton.Down:=true;
   AllUnitsShowGroupNodesSpeedButton.Hint:='Show nodes for project and packages';
   AllUnitsShowGroupNodesSpeedButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
+  AllUnitsShowGroupNodesSpeedButton.Down:=true;
 
-  AllUnitsSearchEdit.Text:='(Search)';
+  AllUnitsSearchEdit.Text:=ResStrSearch;
   AllUnitsSearchNextSpeedButton.Hint:='Search next occurence of this phrase';
   AllUnitsSearchNextSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
   AllUnitsSearchPrevSpeedButton.Hint:='Search previous occurence of this phrase';
@@ -846,7 +864,7 @@ begin
 
   // selected units
   SelectedUnitsGroupBox.Caption:='Selected units';
-  SelUnitsSearchEdit.Text:='(Search)';
+  SelUnitsSearchEdit.Text:=ResStrSearch;
   SelUnitsSearchNextSpeedButton.Hint:='Search next unit of this phrase';
   SelUnitsSearchNextSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
   SelUnitsSearchPrevSpeedButton.Hint:='Search previous unit of this phrase';
@@ -1052,7 +1070,7 @@ begin
   TV:=AllUnitsTreeView;
   TV.BeginUpdate;
   // save old expanded state
-  if TV.Items.Count>1 then
+  if (TV.Items.Count>1) and (GetAllUnitsFilter='') then
     OldExpanded:=TTreeNodeExpandedState.Create(TV)
   else
     OldExpanded:=nil;
@@ -1129,8 +1147,18 @@ end;
 function TUnitDependenciesWindow.GetAllUnitsFilter: string;
 begin
   Result:=AllUnitsFilterEdit.Text;
-  if Result='(Filter)' then
+  if Result=ResStrFilter then
     Result:='';
+end;
+
+function TUnitDependenciesWindow.ResStrFilter: string;
+begin
+  Result:='(Filter)';
+end;
+
+function TUnitDependenciesWindow.ResStrSearch: string;
+begin
+  Result:='(Search)';
 end;
 
 {$R *.lfm}
