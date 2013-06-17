@@ -229,6 +229,8 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           DefaultItemHeight = 18
           ReadOnly = True
           TabOrder = 1
+          OnMouseDown = AllUnitsTreeViewMouseDown
+          OnSelectionChanged = AllUnitsTreeViewSelectionChanged
           Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
         end
         object AllUnitsSearchEdit: TEdit

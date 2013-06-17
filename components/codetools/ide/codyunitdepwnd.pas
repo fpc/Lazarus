@@ -29,19 +29,18 @@
     - update pages when becoming visible
     - additional files as start units
     - view:
-      - flag show nodes for project/package
-      - flag show nodes for directories
-      - flag allow multiselect
-      - filter units
-      - text search with highlight, next, previous
-      - double click: open one unit
+      - text search with highlight
+      - double click on project open project inspector
+      - double click on package open package editor
     - selected units
       - show owner units as tree structure
       - show connected units: used via interface, via implementation, used by interface, used by implementation
       - expand node: show connected units
       - collapse node: free child nodes
       - text search with highlight, next, previous
-      - double click: open one unit
+      - double click on unit open unit
+      - double click on project open project inspector
+      - double click on package open package editor
     - resourcestrings
 }
 unit CodyUnitDepWnd;
@@ -150,6 +149,9 @@ type
     procedure AllUnitsSearchPrevSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowDirsSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowGroupNodesSpeedButtonClick(Sender: TObject);
+    procedure AllUnitsTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure AllUnitsTreeViewSelectionChanged(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure GroupsLvlGraphSelectionChanged(Sender: TObject);
@@ -377,6 +379,29 @@ procedure TUnitDependenciesWindow.AllUnitsShowGroupNodesSpeedButtonClick(
 begin
   Include(FFlags,udwNeedUpdateAllUnitsTreeView);
   IdleConnected:=true;
+end;
+
+procedure TUnitDependenciesWindow.AllUnitsTreeViewMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  TVNode: TTreeNode;
+  UDNode: TUDNode;
+begin
+  TVNode:=AllUnitsTreeView.GetNodeAt(X,Y);
+  if TVNode=nil then exit;
+  UDNode:=nil;
+  if TObject(TVNode.Data) is TUDNode then
+    UDNode:=TUDNode(TVNode.Data);
+  if (Button=mbLeft) and (ssDouble in Shift) and (UDNode<>nil) then begin
+    if UDNode.Typ=udnUnit then
+      LazarusIDE.DoOpenEditorFile(UDNode.Identifier,-1,-1,[ofAddToRecent]);
+  end;
+end;
+
+procedure TUnitDependenciesWindow.AllUnitsTreeViewSelectionChanged(
+  Sender: TObject);
+begin
+
 end;
 
 procedure TUnitDependenciesWindow.AllUnitsFilterEditChange(Sender: TObject);
