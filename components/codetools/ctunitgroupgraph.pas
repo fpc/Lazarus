@@ -45,6 +45,7 @@ type
 
   TUGGroup = class
   private
+    FBaseDir: string;
     FGroups: TUGGroups;
     FName: string;
     FUnits: TAVLTree;
@@ -56,6 +57,7 @@ type
     procedure AddUnit(anUnit: TUGGroupUnit);
     procedure RemoveUnit(anUnit: TUGGroupUnit);
     property Name: string read FName write SetName;
+    property BaseDir: string read FBaseDir write FBaseDir;
     property Groups: TUGGroups read FGroups;
     property Units: TAVLTree read FUnits; // tree of TUGGroupUnit sorted for Filename
   end;

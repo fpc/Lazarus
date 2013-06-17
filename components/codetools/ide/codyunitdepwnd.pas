@@ -453,6 +453,9 @@ var
 begin
   if AProject=nil then exit;
   Result:=Groups.GetGroup(GroupPrefixProject,true);
+  Result.BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
+  if not FilenameIsAbsolute(Result.BaseDir) then
+    Result.BaseDir:='';
   //debugln(['TUnitDependenciesDialog.CreateProjectGroup ',Result.Name,' FileCount=',AProject.FileCount]);
   for i:=0 to AProject.FileCount-1 do begin
     ProjFile:=AProject.Files[i];
@@ -478,6 +481,9 @@ var
 begin
   if APackage=nil then exit;
   Result:=Groups.GetGroup(APackage.Name,true);
+  Result.BaseDir:=APackage.DirectoryExpanded;
+  if not FilenameIsAbsolute(Result.BaseDir) then
+    Result.BaseDir:='';
   //debugln(['TUnitDependenciesDialog.CreatePackageGroup ',Result.Name]);
   for i:=0 to APackage.FileCount-1 do begin
     Filename:=APackage.Files[i].GetFullFilename;
@@ -515,6 +521,7 @@ var
   CurUnit: TUGGroupUnit;
   Directory: String;
   Grp: TUGGroup;
+  BaseDir: String;
 begin
   FPCSrcDir:=AppendPathDelim(GetFPCSrcDir);
 
@@ -530,14 +537,16 @@ begin
     then
       continue;
     // a unit in the FPC sources
-    Directory:=ExtractFilePath(CurUnit.Filename);
-    Directory:=copy(Directory,length(FPCSrcDir)+1,length(Directory));
+    BaseDir:=ExtractFilePath(CurUnit.Filename);
+    Directory:=copy(BaseDir,length(FPCSrcDir)+1,length(BaseDir));
     Directory:=ExtractFilePathStart(Directory,2);
     if LeftStr(Directory,length('rtl'))='rtl' then
       Directory:='RTL'
     else if LeftStr(Directory,length('packages'))='packages' then
       System.Delete(Directory,1,length('packages'+PathDelim));
     Grp:=Groups.GetGroup(GroupPrefixFPCSrc+Directory,true);
+    if Grp.BaseDir='' then
+      Grp.BaseDir:=BaseDir;
     //debugln(['TUnitDependenciesDialog.CreateFPCSrcGroups ',Grp.Name]);
     Grp.AddUnit(TUGGroupUnit(CurUnit));
   end;
@@ -620,6 +629,12 @@ var
   AVLNode: TAVLTreeNode;
   Group: TUGGroup;
   GroupNode: TUDNode;
+  Filename: String;
+  p: Integer;
+  Dir: String;
+  DirNode: TUDNode;
+  BaseDir: String;
+  CurDir: String;
 begin
   Filter:=UTF8LowerCase(GetAllUnitsFilter);
   ShowGroups:=AllUnitsShowGroupNodesSpeedButton.Down;
@@ -627,25 +642,47 @@ begin
   RootNode:=TUDNode.Create;
   for AVLNode in UsesGraph.FilesTree do begin
     UGUnit:=TUGGroupUnit(AVLNode.Data);
-    NodeText:=ExtractFileName(UGUnit.Filename);
+    Filename:=UGUnit.Filename;
+    NodeText:=ExtractFileName(Filename);
     if (Filter<>'') and (Pos(Filter, UTF8LowerCase(NodeText))<1) then
       continue;
     Group:=UGUnit.Group;
-    if Group=nil then
+    BaseDir:='';
+    if Group=nil then begin
       GroupName:=GroupNone
-    else
+    end else begin
       GroupName:=Group.Name;
+      if FilenameIsAbsolute(Group.BaseDir) then
+        BaseDir:=ChompPathDelim(Group.BaseDir);
+    end;
     ParentNode:=RootNode;
     if ShowGroups then begin
       // create group nodes
       GroupNode:=ParentNode.GetNode(udnGroup,GroupName,true);
-      GroupNode.Identifier:=GroupName;
-      GroupNode.Group:=GroupName;
+      if GroupNode.Identifier='' then begin
+        GroupNode.Identifier:=GroupName;
+        GroupNode.Group:=GroupName;
+      end;
       ParentNode:=GroupNode;
+      if FilenameIsAbsolute(BaseDir) and FilenameIsAbsolute(Filename) then
+        Filename:=CreateRelativePath(Filename,BaseDir);
     end;
     if ShowDirectories then begin
       // create directory nodes
-
+      CurDir:=BaseDir;
+      p:=1;
+      repeat
+        Dir:=FindNextDirectoryInFilename(Filename,p);
+        if p>length(Filename) then break;
+        if Dir<>'' then begin
+          DirNode:=ParentNode.GetNode(udnDirectory,Dir,true);
+          CurDir+=PathDelim+Dir;
+          if DirNode.Identifier='' then begin
+            DirNode.Identifier:=CurDir;
+          end;
+          ParentNode:=DirNode;
+        end;
+      until false;
     end;
     Node:=ParentNode.GetNode(udnUnit, NodeText, true);
     Node.Identifier:=UGUnit.Filename;

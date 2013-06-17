@@ -114,6 +114,10 @@ function CreateRelativePath(const Filename, BaseDirectory: string;
 function FileIsInPath(const Filename, Path: string): boolean; inline;
 function AppendPathDelim(const Path: string): string; inline;
 function ChompPathDelim(const Path: string): string; inline;
+function FilenameIsMatching(const Mask, Filename: string;
+                            MatchExactly: boolean): boolean;
+function FindNextDirectoryInFilename(const Filename: string;
+                                     var Position: integer): string;
 
 // file operations
 function FileExistsUTF8(const Filename: string): boolean; inline;
@@ -143,8 +147,6 @@ function SearchFileInDir(const Filename, BaseDirectory: string;
                          SearchCase: TCTSearchFileCase): string;
 function SearchFileInPath(const Filename, BasePath, SearchPath,
                       Delimiter: string; SearchCase: TCTSearchFileCase): string;
-function FilenameIsMatching(const Mask, Filename: string;
-                            MatchExactly: boolean): boolean;
 function FindDiskFilename(const Filename: string): string;
 {$IFDEF darwin}
 function GetDarwinSystemFilename(Filename: string): string;
@@ -1644,6 +1646,45 @@ begin
     Result:=(Result and (DirStartFile>length(Filename)));
   end;
   //debugl('  [FilenameIsMatching] Result=',Result,' ',DirStartMask,',',length(Mask),'  ',DirStartFile,',',length(Filename));
+end;
+
+function FindNextDirectoryInFilename(const Filename: string;
+  var Position: integer): string;
+{ for example:
+ Unix:
+  '/a/b' -> returns first 'a', then 'b'
+  '/a/' -> returns 'a', then ''
+  '/a//' -> returns 'a', then '', then ''
+  'a/b.pas' -> returns first 'a', then 'b.pas'
+ Windows
+  'C:\a\b.pas' -> returns first 'C:\', then 'a', then 'b.pas'
+  'C:\a\' -> returns first 'C:\', then 'a', then ''
+  'C:\a\\' -> returns first 'C:\', then 'a', then '', then ''
+}
+var
+  StartPos: Integer;
+begin
+  if Position>length(Filename) then exit('');
+  {$IFDEF Windows}
+    if Position=1 then begin
+      Result := ExtractUNCVolume(Filename);
+      if Result<>'' then begin
+        // is it like \\?\C:\Directory?  then also include the "C:\" part
+        if (Result = '\\?\') and (Length(FileName) > 6) and
+           (FileName[5] in ['a'..'z','A'..'Z']) and (FileName[6] = ':') and (FileName[7] = PathDelim)
+        then
+          Result := Copy(FileName, 1, 7);
+        Position:=length(Result)+1;
+        exit;
+      end;
+    end;
+  {$ENDIF}
+  if Filename[Position]=PathDelim then
+    inc(Position);
+  StartPos:=Position;
+  while (Position<=length(Filename)) and (Filename[Position]<>PathDelim) do
+    inc(Position);
+  Result:=copy(Filename,StartPos,Position-StartPos);
 end;
 
 procedure InvalidateFileStateCache(const Filename: string = '');
