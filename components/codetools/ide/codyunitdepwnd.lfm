@@ -1,7 +1,7 @@
 object UnitDependenciesWindow: TUnitDependenciesWindow
-  Left = 347
+  Left = 319
   Height = 440
-  Top = 188
+  Top = 174
   Width = 620
   Caption = 'UnitDependenciesWindow'
   ClientHeight = 440
@@ -151,6 +151,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           AllowAllUp = True
           Anchors = [akTop, akRight]
           GroupIndex = 12
+          OnClick = AllUnitsShowGroupNodesSpeedButtonClick
           ShowHint = True
           ParentShowHint = False
         end
@@ -167,6 +168,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           AllowAllUp = True
           Anchors = [akTop, akRight]
           GroupIndex = 13
+          OnClick = AllUnitsShowDirsSpeedButtonClick
           ShowHint = True
           ParentShowHint = False
         end
@@ -179,6 +181,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Top = 0
           Width = 175
           Anchors = [akTop, akLeft, akRight]
+          OnChange = AllUnitsFilterEditChange
           TabOrder = 0
           Text = 'AllUnitsFilterEdit'
         end

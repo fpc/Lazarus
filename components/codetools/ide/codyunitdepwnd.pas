@@ -99,6 +99,14 @@ type
     function Count: integer;
   end;
 
+  TUDWFlag = (
+    udwParsing,
+    udwNeedUpdateGroupsLvlGraph,
+    udwNeedUpdateUnitsLvlGraph,
+    udwNeedUpdateAllUnitsTreeView
+    );
+  TUDWFlags = set of TUDWFlag;
+
   { TUnitDependenciesWindow }
 
   TUnitDependenciesWindow = class(TForm)
@@ -130,7 +138,10 @@ type
     UnitsSplitter: TSplitter;
     UnitsTabSheet: TTabSheet;
     Timer1: TTimer;
+    procedure AllUnitsFilterEditChange(Sender: TObject);
     procedure AllUnitsMultiselectSpeedButtonClick(Sender: TObject);
+    procedure AllUnitsShowDirsSpeedButtonClick(Sender: TObject);
+    procedure AllUnitsShowGroupNodesSpeedButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure GroupsLvlGraphSelectionChanged(Sender: TObject);
@@ -148,6 +159,7 @@ type
     FUsesGraph: TUsesGraph;
     FGroups: TUGGroups; // referenced by Nodes.Data of GroupsLvlGraph
     FAllUnitsRootUDNode: TUDNode;
+    FFlags: TUDWFlags;
     function CreateAllUnitsTree: TUDNode;
     procedure SetAllUnitsMultiSelect(AValue: boolean);
     procedure SetCurrentUnit(AValue: TUGUnit);
@@ -161,7 +173,7 @@ type
     procedure AddAdditionalFilesAsStartUnits;
     procedure SetupGroupsTabSheet;
     procedure SetupUnitsTabSheet;
-    procedure UpdateAddFiles;
+    procedure UpdateUnitsButtons;
     procedure UpdateAll;
     procedure UpdateGroupsLvlGraph;
     procedure UpdateUnitsLvlGraph;
@@ -292,6 +304,26 @@ begin
   AllUnitsMultiSelect:=AllUnitsMultiselectSpeedButton.Down;
 end;
 
+procedure TUnitDependenciesWindow.AllUnitsShowDirsSpeedButtonClick(
+  Sender: TObject);
+begin
+  Include(FFlags,udwNeedUpdateAllUnitsTreeView);
+  IdleConnected:=true;
+end;
+
+procedure TUnitDependenciesWindow.AllUnitsShowGroupNodesSpeedButtonClick(
+  Sender: TObject);
+begin
+  Include(FFlags,udwNeedUpdateAllUnitsTreeView);
+  IdleConnected:=true;
+end;
+
+procedure TUnitDependenciesWindow.AllUnitsFilterEditChange(Sender: TObject);
+begin
+  Include(FFlags,udwNeedUpdateAllUnitsTreeView);
+  IdleConnected:=true;
+end;
+
 procedure TUnitDependenciesWindow.FormDestroy(Sender: TObject);
 begin
   IdleConnected:=false;
@@ -312,24 +344,35 @@ procedure TUnitDependenciesWindow.OnIdle(Sender: TObject; var Done: Boolean);
 var
   Completed: boolean;
 begin
-  UsesGraph.Parse(true,Completed,200);
-  if Completed then begin
-    CreateGroups;
+  if udwParsing in FFlags then begin
+    UsesGraph.Parse(true,Completed,200);
+    if Completed then begin
+      Exclude(FFlags,udwParsing);
+      CreateGroups;
+      ProgressBar1.Visible:=false;
+      ProgressBar1.Style:=pbstNormal;
+      Timer1.Enabled:=false;
+      UpdateAll;
+    end;
+  end else if udwNeedUpdateGroupsLvlGraph in FFlags then
+    UpdateGroupsLvlGraph
+  else if udwNeedUpdateUnitsLvlGraph in FFlags then
+    UpdateUnitsLvlGraph
+  else if udwNeedUpdateAllUnitsTreeView in FFlags then
+    UpdateAllUnitsTreeView
+  else
     IdleConnected:=false;
-    ProgressBar1.Visible:=false;
-    ProgressBar1.Style:=pbstNormal;
-    Timer1.Enabled:=false;
-    UpdateAll;
-  end;
 end;
 
 procedure TUnitDependenciesWindow.SearchPkgsCheckBoxChange(Sender: TObject);
 begin
+  // ToDo: reparse
   IdleConnected:=true;
 end;
 
 procedure TUnitDependenciesWindow.SearchSrcEditCheckBoxChange(Sender: TObject);
 begin
+  // ToDo: reparse
   IdleConnected:=true;
 end;
 
@@ -357,6 +400,7 @@ begin
     if s<>'' then s+=';';
     s+=aFilename;
     SearchCustomFilesComboBox.Text:=s;
+    // ToDo: Reparse
     IdleConnected:=true;
   finally
     Dlg.Free;
@@ -366,13 +410,15 @@ end;
 procedure TUnitDependenciesWindow.SearchCustomFilesCheckBoxChange(
   Sender: TObject);
 begin
-  UpdateAddFiles;
+  UpdateUnitsButtons;
+  // ToDo: reparse
   IdleConnected:=true;
 end;
 
 procedure TUnitDependenciesWindow.SearchCustomFilesComboBoxChange(
   Sender: TObject);
 begin
+  // ToDo: reparse
   IdleConnected:=true;
 end;
 
@@ -573,11 +619,12 @@ var
   UGUnit: TUGGroupUnit;
   AVLNode: TAVLTreeNode;
   Group: TUGGroup;
+  GroupNode: TUDNode;
 begin
   Filter:=UTF8LowerCase(GetAllUnitsFilter);
-  RootNode:=TUDNode.Create;
   ShowGroups:=AllUnitsShowGroupNodesSpeedButton.Down;
   ShowDirectories:=AllUnitsShowDirsSpeedButton.Down;
+  RootNode:=TUDNode.Create;
   for AVLNode in UsesGraph.FilesTree do begin
     UGUnit:=TUGGroupUnit(AVLNode.Data);
     NodeText:=ExtractFileName(UGUnit.Filename);
@@ -590,9 +637,14 @@ begin
       GroupName:=Group.Name;
     ParentNode:=RootNode;
     if ShowGroups then begin
-
+      // create group nodes
+      GroupNode:=ParentNode.GetNode(udnGroup,GroupName,true);
+      GroupNode.Identifier:=GroupName;
+      GroupNode.Group:=GroupName;
+      ParentNode:=GroupNode;
     end;
     if ShowDirectories then begin
+      // create directory nodes
 
     end;
     Node:=ParentNode.GetNode(udnUnit, NodeText, true);
@@ -612,6 +664,7 @@ var
   j: Integer;
   PkgFile: TLazPackageFile;
 begin
+  Include(FFlags,udwParsing);
   UsesGraph.TargetAll:=true;
 
   // project lpr
@@ -751,10 +804,10 @@ begin
   SelUnitsSearchPrevSpeedButton.Hint:='Search previous unit of this phrase';
   SelUnitsSearchPrevSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
 
-  UpdateAddFiles;
+  UpdateUnitsButtons;
 end;
 
-procedure TUnitDependenciesWindow.UpdateAddFiles;
+procedure TUnitDependenciesWindow.UpdateUnitsButtons;
 begin
   SearchCustomFilesComboBox.Enabled:=SearchCustomFilesCheckBox.Checked;
   SearchCustomFilesBrowseButton.Enabled:=SearchCustomFilesCheckBox.Checked;
@@ -762,7 +815,6 @@ end;
 
 procedure TUnitDependenciesWindow.UpdateAll;
 begin
-  UpdateAddFiles;
   UpdateGroupsLvlGraph;
   UpdateUnitsLvlGraph;
   UpdateAllUnitsTreeView;
@@ -782,6 +834,7 @@ var
   GrpUnit: TUGGroupUnit;
   UsedUnit: TUGGroupUnit;
 begin
+  Exclude(FFlags,udwNeedUpdateGroupsLvlGraph);
   GroupsLvlGraph.BeginUpdate;
   Graph:=GroupsLvlGraph.Graph;
   Graph.Clear;
@@ -789,7 +842,6 @@ begin
   while AVLNode<>nil do begin
     Group:=TUGGroup(AVLNode.Data);
     AVLNode:=Groups.Groups.FindSuccessor(AVLNode);
-    // ToDo: IsFPCSrcGroup
     GraphGroup:=Graph.GetNode(Group.Name,true);
     GraphGroup.Data:=Group;
     GroupObj:=nil;
@@ -856,6 +908,7 @@ var
   NewGroups: TStringToPointerTree;
   UsedUnit: TUGGroupUnit;
 begin
+  Exclude(FFlags,udwNeedUpdateUnitsLvlGraph);
   NewGroups:=TStringToPointerTree.Create(false);
   NewUnits:=TFilenameToPointerTree.Create(false);
   try
@@ -945,6 +998,7 @@ var
   TV: TTreeView;
   OldExpanded: TTreeNodeExpandedState;
 begin
+  Exclude(FFlags,udwNeedUpdateAllUnitsTreeView);
   TV:=AllUnitsTreeView;
   TV.BeginUpdate;
   // save old expanded state
