@@ -407,6 +407,7 @@ var
   TVNode: TTreeNode;
   UDNode: TUDNode;
   UGGroup: TUGGroup;
+  Pkg: TIDEPackage;
 begin
   TVNode:=AllUnitsTreeView.GetNodeAt(X,Y);
   if TVNode=nil then exit;
@@ -415,6 +416,7 @@ begin
     UDNode:=TUDNode(TVNode.Data);
   if (Button=mbLeft) and (ssDouble in Shift) and (UDNode<>nil) then begin
     if UDNode.Typ=udnUnit then
+      // open unit in source editor
       LazarusIDE.DoOpenEditorFile(UDNode.Identifier,-1,-1,[ofAddToRecent])
     else if UDNode.Typ=udnGroup then begin
       UGGroup:=FGroups.GetGroup(UDNode.Group,false);
@@ -423,7 +425,8 @@ begin
         // open project inspector
         ExecuteIDECommand(Self,ecProjectInspector);
       end else begin
-
+        // open package editor
+        PackageEditingInterface.DoOpenPackageWithName(UGGroup.Name,[pofAddToRecent],false);
       end;
     end;
   end;
