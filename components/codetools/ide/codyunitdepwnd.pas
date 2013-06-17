@@ -30,12 +30,10 @@
     - additional files as start units
     - view:
       - text search with highlight
-      - hint for unit, project lpi, package lpk, directory: full filename
     - selected units
       - expand node: show connected units
       - collapse node: free child nodes
       - text search with highlight, next, previous
-      - hint for unit, project lpi, package lpk, directory: full filename
     - resourcestrings
 }
 unit CodyUnitDepWnd;
@@ -45,7 +43,7 @@ unit CodyUnitDepWnd;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, LazLogger, LazFileUtils, LazUTF8, Forms,
+  Classes, SysUtils, types, AVL_Tree, LazLogger, LazFileUtils, LazUTF8, Forms,
   Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus, Clipbrd,
   LvlGraphCtrl, LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf,
   SrcEditorIntf, IDEDialogs, IDEImagesIntf, IDECommands, CodeToolManager,
@@ -149,6 +147,7 @@ type
     procedure AllUnitsSearchPrevSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowDirsSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowGroupNodesSpeedButtonClick(Sender: TObject);
+    procedure UnitsTreeViewShowHint(Sender: TObject; HintInfo: PHintInfo);
     procedure UnitsTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure AllUnitsTreeViewSelectionChanged(Sender: TObject);
@@ -397,6 +396,27 @@ procedure TUnitDependenciesWindow.AllUnitsShowGroupNodesSpeedButtonClick(
 begin
   Include(FFlags,udwNeedUpdateAllUnitsTreeView);
   IdleConnected:=true;
+end;
+
+procedure TUnitDependenciesWindow.UnitsTreeViewShowHint(Sender: TObject;
+  HintInfo: PHintInfo);
+var
+  TV: TTreeView;
+  TVNode: TTreeNode;
+  p: types.TPoint;
+  UDNode: TUDNode;
+  Filename: String;
+  s: String;
+begin
+  TV:=Sender as TTreeView;
+  p:=HintInfo^.CursorPos;
+  TVNode:=TV.GetNodeAt(p.X,p.Y);
+  if (TVNode=nil) or not (TObject(TVNode.Data) is TUDNode) then exit;
+  UDNode:=TUDNode(TVNode.Data);
+  Filename:=GetFilename(UDNode);
+  if Filename='' then exit;
+  s:='File: '+Filename;
+  HintInfo^.HintStr:=s;
 end;
 
 procedure TUnitDependenciesWindow.UnitsTreeViewMouseDown(Sender: TObject;
@@ -1524,7 +1544,7 @@ var
   Pkg: TIDEPackage;
 begin
   Result:='';
-  if UDNode.Typ=udnUnit then
+  if UDNode.Typ in [udnUnit,udnDirectory] then
     Result:=UDNode.Identifier
   else if UDNode.Typ=udnGroup then begin
     if IsProjectGroup(UDNode.Group) then begin

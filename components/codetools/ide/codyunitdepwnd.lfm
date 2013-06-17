@@ -228,13 +228,16 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Anchors = [akTop, akLeft, akRight, akBottom]
           DefaultItemHeight = 18
           HotTrack = True
+          ParentShowHint = False
           PopupMenu = UnitsTVPopupMenu
           ReadOnly = True
           RightClickSelect = True
+          ShowHint = True
           ShowRoot = False
           TabOrder = 1
           OnMouseDown = UnitsTreeViewMouseDown
           OnSelectionChanged = AllUnitsTreeViewSelectionChanged
+          OnShowHint = UnitsTreeViewShowHint
           Options = [tvoAutoItemHeight, tvoHideSelection, tvoHotTrack, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoToolTips, tvoThemedDraw]
         end
         object AllUnitsSearchEdit: TEdit
@@ -341,12 +344,15 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Anchors = [akTop, akLeft, akRight, akBottom]
           DefaultItemHeight = 18
           HotTrack = True
+          ParentShowHint = False
           PopupMenu = UnitsTVPopupMenu
           ReadOnly = True
           RightClickSelect = True
+          ShowHint = True
           ShowRoot = False
           TabOrder = 1
           OnMouseDown = UnitsTreeViewMouseDown
+          OnShowHint = UnitsTreeViewShowHint
           Options = [tvoAutoItemHeight, tvoHideSelection, tvoHotTrack, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoToolTips, tvoThemedDraw]
         end
       end
