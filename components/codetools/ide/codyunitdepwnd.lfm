@@ -227,12 +227,15 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Width = 244
           Anchors = [akTop, akLeft, akRight, akBottom]
           DefaultItemHeight = 18
+          HotTrack = True
           PopupMenu = UnitsTVPopupMenu
           ReadOnly = True
+          RightClickSelect = True
+          ShowRoot = False
           TabOrder = 1
-          OnMouseDown = AllUnitsTreeViewMouseDown
+          OnMouseDown = UnitsTreeViewMouseDown
           OnSelectionChanged = AllUnitsTreeViewSelectionChanged
-          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+          Options = [tvoAutoItemHeight, tvoHideSelection, tvoHotTrack, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoToolTips, tvoThemedDraw]
         end
         object AllUnitsSearchEdit: TEdit
           AnchorSideLeft.Control = AllUnitsGroupBox
@@ -337,10 +340,14 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Width = 359
           Anchors = [akTop, akLeft, akRight, akBottom]
           DefaultItemHeight = 18
+          HotTrack = True
           PopupMenu = UnitsTVPopupMenu
           ReadOnly = True
+          RightClickSelect = True
+          ShowRoot = False
           TabOrder = 1
-          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+          OnMouseDown = UnitsTreeViewMouseDown
+          Options = [tvoAutoItemHeight, tvoHideSelection, tvoHotTrack, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoToolTips, tvoThemedDraw]
         end
       end
     end
@@ -362,6 +369,10 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
   object UnitsTVPopupMenu: TPopupMenu
     left = 120
     top = 193
+    object UnitsTVCopyFilenameMenuItem: TMenuItem
+      Caption = 'UnitsTVCopyFilenameMenuItem'
+      OnClick = UnitsTVCopyFilenameMenuItemClick
+    end
     object UnitsTVExpandAllMenuItem: TMenuItem
       Caption = 'UnitsTVExpandAllMenuItem'
       OnClick = UnitsTVExpandAllMenuItemClick

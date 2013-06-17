@@ -30,16 +30,11 @@
     - additional files as start units
     - view:
       - text search with highlight
-      - popup menu: copy file name of unit, project lpi, package lpk, directory
       - hint for unit, project lpi, package lpk, directory: full filename
     - selected units
       - expand node: show connected units
       - collapse node: free child nodes
       - text search with highlight, next, previous
-      - double click on unit open unit
-      - double click on project open project inspector
-      - double click on package open package editor
-      - popup menu: copy file name of unit, project lpi, package lpk, directory
       - hint for unit, project lpi, package lpk, directory: full filename
     - resourcestrings
 }
@@ -51,10 +46,10 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree, LazLogger, LazFileUtils, LazUTF8, Forms,
-  Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus, LvlGraphCtrl,
-  LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf,
-  IDEDialogs, IDEImagesIntf, IDECommands, CodeToolManager, DefineTemplates,
-  CodeToolsStructs, CTUnitGraph, CTUnitGroupGraph, FileProcs;
+  Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus, Clipbrd,
+  LvlGraphCtrl, LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf,
+  SrcEditorIntf, IDEDialogs, IDEImagesIntf, IDECommands, CodeToolManager,
+  DefineTemplates, CodeToolsStructs, CTUnitGraph, CTUnitGroupGraph, FileProcs;
 
 const
   GroupPrefixProject = '-Project-';
@@ -123,6 +118,7 @@ type
     AllUnitsTreeView: TTreeView; // Node.Data is TUDNode
     BtnPanel: TPanel;
     MainPageControl: TPageControl;
+    UnitsTVCopyFilenameMenuItem: TMenuItem;
     UnitsTVCollapseAllMenuItem: TMenuItem;
     UnitsTVExpandAllMenuItem: TMenuItem;
     ProgressBar1: TProgressBar;
@@ -153,7 +149,7 @@ type
     procedure AllUnitsSearchPrevSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowDirsSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowGroupNodesSpeedButtonClick(Sender: TObject);
-    procedure AllUnitsTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
+    procedure UnitsTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure AllUnitsTreeViewSelectionChanged(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -172,6 +168,7 @@ type
     procedure SearchCustomFilesCheckBoxChange(Sender: TObject);
     procedure SearchCustomFilesComboBoxChange(Sender: TObject);
     procedure UnitsTVCollapseAllMenuItemClick(Sender: TObject);
+    procedure UnitsTVCopyFilenameMenuItemClick(Sender: TObject);
     procedure UnitsTVExpandAllMenuItemClick(Sender: TObject);
   private
     FAllUnitsMultiSelect: boolean;
@@ -223,6 +220,7 @@ type
     function IsFPCSrcGroup(Group: TUGGroup): boolean;
     function IsProjectGroup(Group: TUGGroup): boolean;
     function IsProjectGroup(GroupName: string): boolean;
+    function GetFilename(UDNode: TUDNode): string;
     function GetAllUnitsFilter(Lower: boolean): string;
     function GetAllUnitsSearch(Lower: boolean): string;
     function GetSelUnitsSearch(Lower: boolean): string;
@@ -401,14 +399,16 @@ begin
   IdleConnected:=true;
 end;
 
-procedure TUnitDependenciesWindow.AllUnitsTreeViewMouseDown(Sender: TObject;
+procedure TUnitDependenciesWindow.UnitsTreeViewMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   TVNode: TTreeNode;
   UDNode: TUDNode;
   UGGroup: TUGGroup;
+  TV: TTreeView;
 begin
-  TVNode:=AllUnitsTreeView.GetNodeAt(X,Y);
+  TV:=Sender as TTreeView;
+  TVNode:=TV.GetNodeAt(X,Y);
   if TVNode=nil then exit;
   UDNode:=nil;
   if TObject(TVNode.Data) is TUDNode then
@@ -418,7 +418,7 @@ begin
       // open unit in source editor
       LazarusIDE.DoOpenEditorFile(UDNode.Identifier,-1,-1,[ofAddToRecent])
     else if UDNode.Typ=udnGroup then begin
-      UGGroup:=FGroups.GetGroup(UDNode.Group,false);
+      UGGroup:=Groups.GetGroup(UDNode.Group,false);
       if UGGroup=nil then exit;
       if IsProjectGroup(UGGroup) then begin
         // open project inspector
@@ -604,6 +604,19 @@ begin
   for i:=0 to TV.Items.TopLvlCount-1 do
     TV.Items.TopLvlItems[i].Collapse(true);
   TV.EndUpdate;
+end;
+
+procedure TUnitDependenciesWindow.UnitsTVCopyFilenameMenuItemClick(
+  Sender: TObject);
+var
+  TV: TTreeView;
+  TVNode: TTreeNode;
+begin
+  TV:=TTreeView(UnitsTVPopupMenu.PopupComponent);
+  if not (TV is TTreeView) then exit;
+  TVNode:=TV.Selected;
+  if (TVNode=nil) or not (TObject(TVNode.Data) is TUDNode) then exit;
+  Clipboard.AsText:=GetFilename(TUDNode(TVNode.Data));
 end;
 
 procedure TUnitDependenciesWindow.UnitsTVExpandAllMenuItemClick(Sender: TObject
@@ -897,12 +910,12 @@ function TUnitDependenciesWindow.CreateSelUnitsTree: TUDNode;
     i: Integer;
     UGUses: TUGUses;
     NodeText: String;
-    SectionUGNode: TUDNode;
+    SectionUDNode: TUDNode;
     InImplementation: Boolean;
     UsedBy: Boolean;
     OtherUnit: TUGGroupUnit;
     Filename: String;
-    UGNode: TUDNode;
+    UDNode: TUDNode;
     GroupName: String;
   begin
     if ParentUDNode=nil then exit;
@@ -911,11 +924,11 @@ function TUnitDependenciesWindow.CreateSelUnitsTree: TUDNode;
     then exit;
     InImplementation:=(NodeTyp in [udnImplementation,udnUsedByImplementation]);
     UsedBy:=(NodeTyp in [udnUsedByInterface,udnUsedByImplementation]);
-    SectionUGNode:=nil;
+    SectionUDNode:=nil;
     for i:=0 to UsesList.Count-1 do begin
       UGUses:=TUGUses(UsesList[i]);
       if UGUses.InImplementation<>InImplementation then continue;
-      if SectionUGNode=nil then begin
+      if SectionUDNode=nil then begin
         case NodeTyp of
         udnInterface: NodeText:='interface uses';
         udnImplementation: NodeText:='implementation uses';
@@ -923,7 +936,7 @@ function TUnitDependenciesWindow.CreateSelUnitsTree: TUDNode;
         udnUsedByImplementation: NodeText:='used by implementations';
         else NodeText:='';
         end;
-        SectionUGNode:=ParentUDNode.GetNode(NodeTyp,NodeText,true);
+        SectionUDNode:=ParentUDNode.GetNode(NodeTyp,NodeText,true);
       end;
       if UsedBy then
         OtherUnit:=TUGGroupUnit(UGUses.Owner)
@@ -931,13 +944,13 @@ function TUnitDependenciesWindow.CreateSelUnitsTree: TUDNode;
         OtherUnit:=TUGGroupUnit(UGUses.UsesUnit);
       Filename:=OtherUnit.Filename;
       NodeText:=ExtractFileName(Filename);
-      UGNode:=SectionUGNode.GetNode(NodeTyp,NodeText,true);
-      UGNode.Identifier:=Filename;
+      UDNode:=SectionUDNode.GetNode(udnUnit,NodeText,true);
+      UDNode.Identifier:=Filename;
       if OtherUnit.Group<>nil then
         GroupName:=OtherUnit.Group.Name
       else
         GroupName:=GroupNone;
-      UGNode.Group:=GroupName;
+      UDNode.Group:=GroupName;
     end;
   end;
 
@@ -1171,6 +1184,7 @@ begin
   SelUnitsSearchPrevSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
 
   // popup menu
+  UnitsTVCopyFilenameMenuItem.Caption:='Copy Filename';
   UnitsTVExpandAllMenuItem.Caption:='Expand all nodes';
   UnitsTVCollapseAllMenuItem.Caption:='Collapse all nodes';
 
@@ -1503,6 +1517,25 @@ end;
 function TUnitDependenciesWindow.IsProjectGroup(GroupName: string): boolean;
 begin
   Result:=(GroupName=GroupPrefixProject);
+end;
+
+function TUnitDependenciesWindow.GetFilename(UDNode: TUDNode): string;
+var
+  Pkg: TIDEPackage;
+begin
+  Result:='';
+  if UDNode.Typ=udnUnit then
+    Result:=UDNode.Identifier
+  else if UDNode.Typ=udnGroup then begin
+    if IsProjectGroup(UDNode.Group) then begin
+      if (LazarusIDE.ActiveProject<>nil) then
+        Result:=LazarusIDE.ActiveProject.ProjectInfoFile;
+    end else begin
+      Pkg:=PackageEditingInterface.FindPackageWithName(UDNode.Group);
+      if Pkg<>nil then
+        Result:=Pkg.Filename;
+    end;
+  end;
 end;
 
 function TUnitDependenciesWindow.GetAllUnitsFilter(Lower: boolean): string;
