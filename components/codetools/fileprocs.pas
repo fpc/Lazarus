@@ -215,9 +215,9 @@ function SysToUTF8(const s: string): string; inline;// as AnsiToUTF8 but more in
 function UTF8CharacterLength(p: PChar): integer; inline;
 
 // environment
-function ParamStrUTF8(Param: Integer): string;
-function GetEnvironmentStringUTF8(Index : Integer): String;
-function GetEnvironmentVariableUTF8(const EnvVar: String): String;
+function ParamStrUTF8(Param: Integer): string; inline;
+function GetEnvironmentStringUTF8(Index : Integer): String; inline;
+function GetEnvironmentVariableUTF8(const EnvVar: String): String; inline;
 
 procedure InvalidateFileStateCache(const Filename: string = ''); inline;
 
@@ -397,17 +397,17 @@ end;
 
 function ParamStrUTF8(Param: Integer): string;
 begin
-  Result:=SysToUTF8(ObjPas.ParamStr(Param));
+  Result:=LazUTF8.ParamStrUTF8(Param);
 end;
 
 function GetEnvironmentStringUTF8(Index: Integer): String;
 begin
-  Result:=SysToUTF8(SysUtils.GetEnvironmentString(Index));
+  Result:=LazUTF8.GetEnvironmentStringUTF8(Index);
 end;
 
 function GetEnvironmentVariableUTF8(const EnvVar: String): String;
 begin
-  Result:=SysToUTF8(SysUtils.GetEnvironmentVariable(UTF8ToSys(EnvVar)));
+  Result:=LazUTF8.GetEnvironmentVariableUTF8(EnvVar);
 end;
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
