@@ -4385,8 +4385,6 @@ end;
 procedure TMainIDE.mnuToolConvertDelphiUnitClicked(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
-  AFilename: string;
-  i: Integer;
   OldChange: Boolean;
   Converter: TConvertDelphiUnit;
 begin
