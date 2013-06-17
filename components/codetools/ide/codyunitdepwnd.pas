@@ -54,8 +54,8 @@ uses
   Classes, SysUtils, AVL_Tree, LazLogger, LazFileUtils, LazUTF8, Forms,
   Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, LvlGraphCtrl,
   LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf,
-  IDEDialogs, CodeToolManager, DefineTemplates, CodeToolsStructs, CTUnitGraph,
-  CTUnitGroupGraph, FileProcs;
+  IDEDialogs, IDEImagesIntf, CodeToolManager, DefineTemplates, CodeToolsStructs,
+  CTUnitGraph, CTUnitGroupGraph, FileProcs;
 
 const
   GroupPrefixProject = '-Project-';
@@ -160,6 +160,10 @@ type
     FGroups: TUGGroups; // referenced by Nodes.Data of GroupsLvlGraph
     FAllUnitsRootUDNode: TUDNode;
     FFlags: TUDWFlags;
+    fImgIndexProject: integer;
+    fImgIndexUnit: integer;
+    fImgIndexPackage: integer;
+    fImgIndexDirectory: integer;
     function CreateAllUnitsTree: TUDNode;
     procedure SetAllUnitsMultiSelect(AValue: boolean);
     procedure SetCurrentUnit(AValue: TUGUnit);
@@ -178,6 +182,7 @@ type
     procedure UpdateGroupsLvlGraph;
     procedure UpdateUnitsLvlGraph;
     procedure UpdateAllUnitsTreeView;
+    function GetImgIndex(Node: TUDNode): integer;
     function NodeTextToUnit(NodeText: string): TUGUnit;
     function UGUnitToNodeText(UGUnit: TUGUnit): string;
     function GetFPCSrcDir: string;
@@ -287,6 +292,12 @@ begin
   FGroups:=TUGGroups.Create(FUsesGraph);
   ProgressBar1.Style:=pbstMarquee;
   AddStartAndTargetUnits;
+
+  fImgIndexProject   := IDEImages.LoadImage(16, 'item_project');
+  fImgIndexUnit      := IDEImages.LoadImage(16, 'item_unit');
+  fImgIndexPackage   := IDEImages.LoadImage(16, 'pkg_required');
+  fImgIndexDirectory := IDEImages.LoadImage(16, 'pkg_files');
+  AllUnitsTreeView.Images:=IDEImages.Images_16;
 
   Caption:='Unit Dependencies';
 
@@ -1025,6 +1036,8 @@ procedure TUnitDependenciesWindow.UpdateAllUnitsTreeView;
       UDNode:=TUDNode(AVLNode.Data);
       TVNode:=TV.Items.AddChild(ParentTVNode,UDNode.NodeText);
       TVNode.Data:=UDNode;
+      TVNode.ImageIndex:=GetImgIndex(UDNode);
+      TVNode.StateIndex:=TVNode.ImageIndex;
       CreateTVNodes(TV,TVNode,UDNode);
       TVNode.Expanded:=true;
       AVLNode:=ParentUDNode.ChildNodes.FindSuccessor(AVLNode);
@@ -1055,6 +1068,26 @@ begin
     OldExpanded.Free;
   end;
   TV.EndUpdate;
+end;
+
+function TUnitDependenciesWindow.GetImgIndex(Node: TUDNode): integer;
+begin
+  case Node.Typ of
+  //udnNone: ;
+  udnGroup:
+    if Node.Group=GroupPrefixProject then
+      Result:=fImgIndexProject
+    else
+      Result:=fImgIndexPackage;
+  udnDirectory: Result:=fImgIndexDirectory;
+  //udnInterface: ;
+  //udnImplementation: ;
+  //udnUsedByInterface: ;
+  //udnUsedByImplementation: ;
+  udnUnit: Result:=fImgIndexUnit;
+  else
+    Result:=fImgIndexDirectory;
+  end;
 end;
 
 function TUnitDependenciesWindow.NodeTextToUnit(NodeText: string): TUGUnit;
