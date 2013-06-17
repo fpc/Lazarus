@@ -32,8 +32,11 @@
       - text search with highlight
       - double click on project open project inspector
       - double click on package open package editor
+      - popup menu: copy file name of unit, project lpi, package lpk, directory
+      - popup menu: expand all
+      - popup menu: collapse all
+      - hint for unit, project lpi, package lpk, directory: full filename
     - selected units
-      - show owner units as tree structure
       - show connected units: used via interface, via implementation, used by interface, used by implementation
       - expand node: show connected units
       - collapse node: free child nodes
@@ -41,6 +44,10 @@
       - double click on unit open unit
       - double click on project open project inspector
       - double click on package open package editor
+      - popup menu: copy file name of unit, project lpi, package lpk, directory
+      - popup menu: expand all
+      - popup menu: collapse all
+      - hint for unit, project lpi, package lpk, directory: full filename
     - resourcestrings
 }
 unit CodyUnitDepWnd;
@@ -103,7 +110,9 @@ type
     udwNeedUpdateGroupsLvlGraph, // rebuild GroupsLvlGraph
     udwNeedUpdateUnitsLvlGraph, // rebuild UnitsLvlGraph
     udwNeedUpdateAllUnitsTreeView, // rebuild AllUnitsTreeView
-    udwNeedUpdateAllUnitsTVSearch // update search in AllUnitsTreeView
+    udwNeedUpdateAllUnitsTVSearch, // update search in AllUnitsTreeView
+    udwNeedUpdateSelUnitsTreeView, // rebuild SelUnitsTreeView
+    udwNeedUpdateSelUnitsTVSearch // update search in SelUnitsTreeView
     );
   TUDWFlags = set of TUDWFlag;
 
@@ -158,6 +167,11 @@ type
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure SearchPkgsCheckBoxChange(Sender: TObject);
     procedure SearchSrcEditCheckBoxChange(Sender: TObject);
+    procedure SelUnitsSearchEditChange(Sender: TObject);
+    procedure SelUnitsSearchEditEnter(Sender: TObject);
+    procedure SelUnitsSearchEditExit(Sender: TObject);
+    procedure SelUnitsSearchNextSpeedButtonClick(Sender: TObject);
+    procedure SelUnitsSearchPrevSpeedButtonClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure SearchCustomFilesBrowseButtonClick(Sender: TObject);
     procedure SearchCustomFilesCheckBoxChange(Sender: TObject);
@@ -169,14 +183,20 @@ type
     FUsesGraph: TUsesGraph;
     FGroups: TUGGroups; // referenced by Nodes.Data of GroupsLvlGraph
     FAllUnitsRootUDNode: TUDNode;
+    FSelUnitsRootUDNode: TUDNode;
     FFlags: TUDWFlags;
     fImgIndexProject: integer;
     fImgIndexUnit: integer;
     fImgIndexPackage: integer;
     fImgIndexDirectory: integer;
     fAllUnitsTVSearchStartNode: TTreeNode;
+    fSelUnitsTVSearchStartNode: TTreeNode;
     function CreateAllUnitsTree: TUDNode;
-    procedure SelectNextSearchInAllUnitsTV(StartTVNode: TTreeNode; SearchNext, SkipStart: boolean);
+    function CreateSelUnitsTree: TUDNode;
+    procedure CreateTVNodes(TV: TTreeView;
+      ParentTVNode: TTreeNode; ParentUDNode: TUDNode);
+    procedure SelectNextSearchTV(TV: TTreeView; StartTVNode: TTreeNode;
+      SearchNext, SkipStart: boolean);
     procedure SetAllUnitsMultiSelect(AValue: boolean);
     procedure SetCurrentUnit(AValue: TUGUnit);
     procedure SetIdleConnected(AValue: boolean);
@@ -194,8 +214,10 @@ type
     procedure UpdateGroupsLvlGraph;
     procedure UpdateUnitsLvlGraph;
     procedure UpdateAllUnitsTreeView;
+    procedure UpdateSelUnitsTreeView;
     procedure UpdateAllUnitsTreeViewSearch;
-    function FindNextInAllUnits(StartNode: TTreeNode;
+    procedure UpdateSelUnitsTreeViewSearch;
+    function FindNextTVNode(StartNode: TTreeNode;
       LowerSearch: string; SearchNext, SkipStart: boolean): TTreeNode;
     function GetImgIndex(Node: TUDNode): integer;
     function NodeTextToUnit(NodeText: string): TUGUnit;
@@ -205,6 +227,7 @@ type
     function IsProjectGroup(Group: TUGGroup): boolean;
     function GetAllUnitsFilter(Lower: boolean): string;
     function GetAllUnitsSearch(Lower: boolean): string;
+    function GetSelUnitsSearch(Lower: boolean): string;
     function ResStrFilter: string;
     function ResStrSearch: string;
     function NodeTextFitsFilter(const NodeText, LowerFilter: string): boolean;
@@ -355,15 +378,14 @@ end;
 procedure TUnitDependenciesWindow.AllUnitsSearchNextSpeedButtonClick(
   Sender: TObject);
 begin
-  debugln(['TUnitDependenciesWindow.AllUnitsSearchNextSpeedButtonClick ']);
-  SelectNextSearchInAllUnitsTV(AllUnitsTreeView.Selected,true,true);
+  SelectNextSearchTV(AllUnitsTreeView,AllUnitsTreeView.Selected,true,true);
   fAllUnitsTVSearchStartNode:=AllUnitsTreeView.Selected;
 end;
 
 procedure TUnitDependenciesWindow.AllUnitsSearchPrevSpeedButtonClick(
   Sender: TObject);
 begin
-  SelectNextSearchInAllUnitsTV(AllUnitsTreeView.Selected,false,true);
+  SelectNextSearchTV(AllUnitsTreeView,AllUnitsTreeView.Selected,false,true);
   fAllUnitsTVSearchStartNode:=AllUnitsTreeView.Selected;
 end;
 
@@ -401,7 +423,8 @@ end;
 procedure TUnitDependenciesWindow.AllUnitsTreeViewSelectionChanged(
   Sender: TObject);
 begin
-
+  Include(FFlags,udwNeedUpdateSelUnitsTreeView);
+  IdleConnected:=true;
 end;
 
 procedure TUnitDependenciesWindow.AllUnitsFilterEditChange(Sender: TObject);
@@ -429,6 +452,7 @@ begin
   UnitsLvlGraph.Clear;
   FreeAndNil(FGroups);
   FreeAndNil(FAllUnitsRootUDNode);
+  FreeAndNil(FSelUnitsRootUDNode);
   FreeAndNil(FUsesGraph);
 end;
 
@@ -460,6 +484,10 @@ begin
     UpdateAllUnitsTreeView
   else if udwNeedUpdateAllUnitsTVSearch in FFlags then
     UpdateAllUnitsTreeViewSearch
+  else if udwNeedUpdateSelUnitsTreeView in FFlags then
+    UpdateSelUnitsTreeView
+  else if udwNeedUpdateSelUnitsTVSearch in FFlags then
+    UpdateSelUnitsTreeViewSearch
   else
     IdleConnected:=false;
 end;
@@ -474,6 +502,38 @@ procedure TUnitDependenciesWindow.SearchSrcEditCheckBoxChange(Sender: TObject);
 begin
   // ToDo: reparse
   IdleConnected:=true;
+end;
+
+procedure TUnitDependenciesWindow.SelUnitsSearchEditChange(Sender: TObject);
+begin
+  Include(FFlags,udwNeedUpdateSelUnitsTreeView);
+  IdleConnected:=true;
+end;
+
+procedure TUnitDependenciesWindow.SelUnitsSearchEditEnter(Sender: TObject);
+begin
+  if SelUnitsSearchEdit.Text=ResStrSearch then
+    SelUnitsSearchEdit.Text:='';
+end;
+
+procedure TUnitDependenciesWindow.SelUnitsSearchEditExit(Sender: TObject);
+begin
+  if SelUnitsSearchEdit.Text='' then
+    SelUnitsSearchEdit.Text:=ResStrSearch;
+end;
+
+procedure TUnitDependenciesWindow.SelUnitsSearchNextSpeedButtonClick(
+  Sender: TObject);
+begin
+  SelectNextSearchTV(SelUnitsTreeView,SelUnitsTreeView.Selected,true,true);
+  fSelUnitsTVSearchStartNode:=SelUnitsTreeView.Selected;
+end;
+
+procedure TUnitDependenciesWindow.SelUnitsSearchPrevSpeedButtonClick(
+  Sender: TObject);
+begin
+  SelectNextSearchTV(SelUnitsTreeView,SelUnitsTreeView.Selected,true,true);
+  fSelUnitsTVSearchStartNode:=SelUnitsTreeView.Selected;
 end;
 
 procedure TUnitDependenciesWindow.Timer1Timer(Sender: TObject);
@@ -791,7 +851,33 @@ begin
   Result:=RootNode;
 end;
 
-procedure TUnitDependenciesWindow.SelectNextSearchInAllUnitsTV(
+function TUnitDependenciesWindow.CreateSelUnitsTree: TUDNode;
+var
+  RootNode: TUDNode;
+  SelTVNode: TTreeNode;
+  SelUDNode: TUDNode;
+  UDNode: TUDNode;
+begin
+  RootNode:=TUDNode.Create;
+  SelTVNode:=AllUnitsTreeView.GetFirstMultiSelected;
+  if SelTVNode=nil then
+    SelTVNode:=AllUnitsTreeView.Selected;
+  //debugln(['TUnitDependenciesWindow.CreateSelUnitsTree SelTVNode=',SelTVNode<>nil]);
+  while SelTVNode<>nil do begin
+    if TObject(SelTVNode.Data) is TUDNode then begin
+      SelUDNode:=TUDNode(SelTVNode.Data);
+      if SelUDNode.Typ=udnUnit then begin
+        UDNode:=RootNode.GetNode(udnUnit,SelUDNode.NodeText,true);
+        UDNode.Identifier:=SelUDNode.Identifier;
+        UDNode.Group:=SelUDNode.Group;
+      end;
+    end;
+    SelTVNode:=SelTVNode.GetNextMultiSelected;
+  end;
+  Result:=RootNode;
+end;
+
+procedure TUnitDependenciesWindow.SelectNextSearchTV(TV: TTreeView;
   StartTVNode: TTreeNode; SearchNext, SkipStart: boolean);
 var
   TVNode: TTreeNode;
@@ -801,28 +887,32 @@ var
 begin
   //debugln(['TUnitDependenciesWindow.SelectNextSearchInAllUnitsTV START ',StartTVNode<>nil,' SearchNext=',SearchNext,' SkipStart=',SkipStart]);
   TVNode:=StartTVNode;
-  //if TVNode<>nil then debugln(['TUnitDependenciesWindow.SelectNextSearchInAllUnitsTV AAA1 TVNode=',TVNode.Text]);
   if TVNode=nil then begin
     if SearchNext then
-      TVNode:=AllUnitsTreeView.Items.GetFirstNode
+      TVNode:=TV.Items.GetFirstNode
     else
-      TVNode:=AllUnitsTreeView.Items.GetLastNode;
+      TVNode:=TV.Items.GetLastNode;
     SkipStart:=false;
   end;
   LowerSearch:=GetAllUnitsSearch(true);
   //if TVNode<>nil then debugln(['TUnitDependenciesWindow.SelectNextSearchInAllUnitsTV searching "',LowerSearch,'" TVNode=',TVNode.Text,' SearchNext=',SearchNext,' SkipStart=',SkipStart]);
-  TVNode:=FindNextInAllUnits(TVNode,LowerSearch,SearchNext,SkipStart);
+  TVNode:=FindNextTVNode(TVNode,LowerSearch,SearchNext,SkipStart);
   //if TVNode<>nil then debugln(['TUnitDependenciesWindow.SelectNextSearchInAllUnitsTV found TVNode=',TVNode.Text]);
   NextTVNode:=nil;
   PrevTVNode:=nil;
   if TVNode<>nil then begin
-    AllUnitsTreeView.Selected:=TVNode;
-    AllUnitsTreeView.MakeSelectionVisible;
-    NextTVNode:=FindNextInAllUnits(TVNode,LowerSearch,true,true);
-    PrevTVNode:=FindNextInAllUnits(TVNode,LowerSearch,false,true);
+    TV.Selected:=TVNode;
+    TV.MakeSelectionVisible;
+    NextTVNode:=FindNextTVNode(TVNode,LowerSearch,true,true);
+    PrevTVNode:=FindNextTVNode(TVNode,LowerSearch,false,true);
   end;
-  AllUnitsSearchNextSpeedButton.Enabled:=NextTVNode<>nil;
-  AllUnitsSearchPrevSpeedButton.Enabled:=PrevTVNode<>nil;
+  if TV=AllUnitsTreeView then begin
+    AllUnitsSearchNextSpeedButton.Enabled:=NextTVNode<>nil;
+    AllUnitsSearchPrevSpeedButton.Enabled:=PrevTVNode<>nil;
+  end else begin
+    SelUnitsSearchNextSpeedButton.Enabled:=NextTVNode<>nil;
+    SelUnitsSearchPrevSpeedButton.Enabled:=PrevTVNode<>nil;
+  end;
   //debugln(['TUnitDependenciesWindow.SelectNextSearchInAllUnitsTV END']);
 end;
 
@@ -957,6 +1047,7 @@ begin
 
   AllUnitsFilterEdit.Text:=ResStrFilter;
   AllUnitsMultiselectSpeedButton.Hint:='Allow to select multiple units';
+  AllUnitsMultiselectSpeedButton.Down:=true;
   AllUnitsShowDirsSpeedButton.Hint:='Show nodes for directories';
   AllUnitsShowDirsSpeedButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
   AllUnitsShowDirsSpeedButton.Down:=true;
@@ -1147,29 +1238,29 @@ begin
   end;
 end;
 
-procedure TUnitDependenciesWindow.UpdateAllUnitsTreeView;
-
-  procedure CreateTVNodes(TV: TTreeView; ParentTVNode: TTreeNode;
-    ParentUDNode: TUDNode);
-  var
-    AVLNode: TAVLTreeNode;
-    UDNode: TUDNode;
-    TVNode: TTreeNode;
-  begin
-    if ParentUDNode=nil then exit;
-    AVLNode:=ParentUDNode.ChildNodes.FindLowest;
-    while AVLNode<>nil do begin
-      UDNode:=TUDNode(AVLNode.Data);
-      TVNode:=TV.Items.AddChild(ParentTVNode,UDNode.NodeText);
-      TVNode.Data:=UDNode;
-      TVNode.ImageIndex:=GetImgIndex(UDNode);
-      TVNode.SelectedIndex:=TVNode.ImageIndex;
-      CreateTVNodes(TV,TVNode,UDNode);
-      TVNode.Expanded:=true;
-      AVLNode:=ParentUDNode.ChildNodes.FindSuccessor(AVLNode);
-    end;
+procedure TUnitDependenciesWindow.CreateTVNodes(TV: TTreeView;
+  ParentTVNode: TTreeNode; ParentUDNode: TUDNode);
+var
+  AVLNode: TAVLTreeNode;
+  UDNode: TUDNode;
+  TVNode: TTreeNode;
+begin
+  if ParentUDNode=nil then exit;
+  AVLNode:=ParentUDNode.ChildNodes.FindLowest;
+  while AVLNode<>nil do begin
+    UDNode:=TUDNode(AVLNode.Data);
+    TVNode:=TV.Items.AddChild(ParentTVNode,UDNode.NodeText);
+    UDNode.TVNode:=TVNode;
+    TVNode.Data:=UDNode;
+    TVNode.ImageIndex:=GetImgIndex(UDNode);
+    TVNode.SelectedIndex:=TVNode.ImageIndex;
+    CreateTVNodes(TV,TVNode,UDNode);
+    TVNode.Expanded:=true;
+    AVLNode:=ParentUDNode.ChildNodes.FindSuccessor(AVLNode);
   end;
+end;
 
+procedure TUnitDependenciesWindow.UpdateAllUnitsTreeView;
 var
   TV: TTreeView;
   OldExpanded: TTreeNodeExpandedState;
@@ -1199,14 +1290,41 @@ begin
   TV.EndUpdate;
 end;
 
+procedure TUnitDependenciesWindow.UpdateSelUnitsTreeView;
+var
+  TV: TTreeView;
+begin
+  //debugln(['TUnitDependenciesWindow.UpdateSelUnitsTreeView START']);
+  Exclude(FFlags,udwNeedUpdateSelUnitsTreeView);
+  TV:=SelUnitsTreeView;
+  TV.BeginUpdate;
+  // clear
+  FreeAndNil(FSelUnitsRootUDNode);
+  fSelUnitsTVSearchStartNode:=nil;
+  TV.Items.Clear;
+  // create nodes
+  FSelUnitsRootUDNode:=CreateSelUnitsTree;
+  CreateTVNodes(TV,nil,FSelUnitsRootUDNode);
+  // update search
+  UpdateSelUnitsTreeViewSearch;
+  TV.EndUpdate;
+end;
+
 procedure TUnitDependenciesWindow.UpdateAllUnitsTreeViewSearch;
 begin
   Exclude(FFlags,udwNeedUpdateAllUnitsTVSearch);
-  SelectNextSearchInAllUnitsTV(fAllUnitsTVSearchStartNode,true,false);
+  SelectNextSearchTV(AllUnitsTreeView,fAllUnitsTVSearchStartNode,true,false);
   AllUnitsTreeView.Invalidate;
 end;
 
-function TUnitDependenciesWindow.FindNextInAllUnits(StartNode: TTreeNode;
+procedure TUnitDependenciesWindow.UpdateSelUnitsTreeViewSearch;
+begin
+  Exclude(FFlags,udwNeedUpdateSelUnitsTVSearch);
+  SelectNextSearchTV(SelUnitsTreeView,fSelUnitsTVSearchStartNode,true,false);
+  SelUnitsTreeView.Invalidate;
+end;
+
+function TUnitDependenciesWindow.FindNextTVNode(StartNode: TTreeNode;
   LowerSearch: string; SearchNext, SkipStart: boolean): TTreeNode;
 begin
   Result:=StartNode;
@@ -1289,6 +1407,15 @@ end;
 function TUnitDependenciesWindow.GetAllUnitsSearch(Lower: boolean): string;
 begin
   Result:=AllUnitsSearchEdit.Text;
+  if Result=ResStrSearch then
+    Result:=''
+  else if Lower then
+    Result:=UTF8LowerCase(Result);
+end;
+
+function TUnitDependenciesWindow.GetSelUnitsSearch(Lower: boolean): string;
+begin
+  Result:=SelUnitsSearchEdit.Text;
   if Result=ResStrSearch then
     Result:=''
   else if Lower then

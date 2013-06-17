@@ -17187,7 +17187,7 @@ the comparision is case sensitive.
       <element name="TCustomTreeView.GetFirstMultiSelected">
         <short>
           <var>GetFirstMultiSelected</var> - returns the first node from a multiple selection</short>
-        <descr/>
+        <descr>This works only if tvoAllowMultiSelect is enabled. </descr>
         <errors/>
         <seealso/>
       </element>

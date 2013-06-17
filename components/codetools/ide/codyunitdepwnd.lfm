@@ -290,6 +290,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Top = 289
           Width = 23
           Anchors = [akTop, akRight]
+          OnClick = SelUnitsSearchNextSpeedButtonClick
           ShowHint = True
           ParentShowHint = False
         end
@@ -303,6 +304,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Top = 289
           Width = 23
           Anchors = [akTop, akRight]
+          OnClick = SelUnitsSearchPrevSpeedButtonClick
           ShowHint = True
           ParentShowHint = False
         end
@@ -316,6 +318,9 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Top = 288
           Width = 313
           Anchors = [akLeft, akRight, akBottom]
+          OnChange = SelUnitsSearchEditChange
+          OnEnter = SelUnitsSearchEditEnter
+          OnExit = SelUnitsSearchEditExit
           TabOrder = 0
           Text = 'SelUnitsSearchEdit'
         end
