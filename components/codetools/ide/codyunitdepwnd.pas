@@ -37,7 +37,6 @@
       - popup menu: collapse all
       - hint for unit, project lpi, package lpk, directory: full filename
     - selected units
-      - show connected units: used via interface, via implementation, used by interface, used by implementation
       - expand node: show connected units
       - collapse node: free child nodes
       - text search with highlight, next, previous
@@ -852,11 +851,64 @@ begin
 end;
 
 function TUnitDependenciesWindow.CreateSelUnitsTree: TUDNode;
+
+  procedure AddUses(ParentUDNode: TUDNode; UsesList: TFPList;
+    NodeTyp: TUDNodeType);
+  var
+    i: Integer;
+    UGUses: TUGUses;
+    NodeText: String;
+    SectionUGNode: TUDNode;
+    InImplementation: Boolean;
+    UsedBy: Boolean;
+    OtherUnit: TUGGroupUnit;
+    Filename: String;
+    UGNode: TUDNode;
+    GroupName: String;
+  begin
+    if ParentUDNode=nil then exit;
+    if UsesList=nil then exit;
+    if not (NodeTyp in [udnInterface,udnImplementation,udnUsedByInterface,udnUsedByImplementation])
+    then exit;
+    InImplementation:=(NodeTyp in [udnImplementation,udnUsedByImplementation]);
+    UsedBy:=(NodeTyp in [udnUsedByInterface,udnUsedByImplementation]);
+    SectionUGNode:=nil;
+    for i:=0 to UsesList.Count-1 do begin
+      UGUses:=TUGUses(UsesList[i]);
+      if UGUses.InImplementation<>InImplementation then continue;
+      if SectionUGNode=nil then begin
+        case NodeTyp of
+        udnInterface: NodeText:='interface uses';
+        udnImplementation: NodeText:='implementation uses';
+        udnUsedByInterface: NodeText:='used by interfaces';
+        udnUsedByImplementation: NodeText:='used by implementations';
+        else NodeText:='';
+        end;
+        SectionUGNode:=ParentUDNode.GetNode(NodeTyp,NodeText,true);
+      end;
+      if UsedBy then
+        OtherUnit:=TUGGroupUnit(UGUses.Owner)
+      else
+        OtherUnit:=TUGGroupUnit(UGUses.UsesUnit);
+      Filename:=OtherUnit.Filename;
+      NodeText:=ExtractFileName(Filename);
+      UGNode:=SectionUGNode.GetNode(NodeTyp,NodeText,true);
+      UGNode.Identifier:=Filename;
+      if OtherUnit.Group<>nil then
+        GroupName:=OtherUnit.Group.Name
+      else
+        GroupName:=GroupNone;
+      UGNode.Group:=GroupName;
+    end;
+  end;
+
 var
   RootNode: TUDNode;
   SelTVNode: TTreeNode;
   SelUDNode: TUDNode;
   UDNode: TUDNode;
+  Filename: String;
+  UGUnit: TUGGroupUnit;
 begin
   RootNode:=TUDNode.Create;
   SelTVNode:=AllUnitsTreeView.GetFirstMultiSelected;
@@ -870,6 +922,16 @@ begin
         UDNode:=RootNode.GetNode(udnUnit,SelUDNode.NodeText,true);
         UDNode.Identifier:=SelUDNode.Identifier;
         UDNode.Group:=SelUDNode.Group;
+
+        // add connected units
+        Filename:=UDNode.Identifier;
+        UGUnit:=TUGGroupUnit(UsesGraph.GetUnit(Filename,false));
+        if UGUnit<>nil then begin
+          AddUses(UDNode,UGUnit.UsesUnits,udnInterface);
+          AddUses(UDNode,UGUnit.UsesUnits,udnImplementation);
+          AddUses(UDNode,UGUnit.UsedByUnits,udnUsedByInterface);
+          AddUses(UDNode,UGUnit.UsedByUnits,udnUsedByImplementation);
+        end;
       end;
     end;
     SelTVNode:=SelTVNode.GetNextMultiSelected;
