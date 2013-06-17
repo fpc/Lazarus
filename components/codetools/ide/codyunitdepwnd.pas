@@ -30,7 +30,6 @@
     - additional files as start units
     - view:
       - text search with highlight
-      - double click on project open project inspector
       - double click on package open package editor
       - popup menu: copy file name of unit, project lpi, package lpk, directory
       - popup menu: expand all
@@ -59,8 +58,8 @@ uses
   Classes, SysUtils, AVL_Tree, LazLogger, LazFileUtils, LazUTF8, Forms,
   Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, LvlGraphCtrl,
   LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf,
-  IDEDialogs, IDEImagesIntf, CodeToolManager, DefineTemplates, CodeToolsStructs,
-  CTUnitGraph, CTUnitGroupGraph, FileProcs;
+  IDEDialogs, IDEImagesIntf, IDECommands, CodeToolManager, DefineTemplates,
+  CodeToolsStructs, CTUnitGraph, CTUnitGroupGraph, FileProcs;
 
 const
   GroupPrefixProject = '-Project-';
@@ -145,7 +144,6 @@ type
     SearchCustomFilesComboBox: TComboBox;
     UnitsSplitter: TSplitter;
     UnitsTabSheet: TTabSheet;
-    Timer1: TTimer;
     procedure AllUnitsFilterEditChange(Sender: TObject);
     procedure AllUnitsFilterEditEnter(Sender: TObject);
     procedure AllUnitsFilterEditExit(Sender: TObject);
@@ -224,6 +222,7 @@ type
     function GetFPCSrcDir: string;
     function IsFPCSrcGroup(Group: TUGGroup): boolean;
     function IsProjectGroup(Group: TUGGroup): boolean;
+    function IsProjectGroup(GroupName: string): boolean;
     function GetAllUnitsFilter(Lower: boolean): string;
     function GetAllUnitsSearch(Lower: boolean): string;
     function GetSelUnitsSearch(Lower: boolean): string;
@@ -407,6 +406,7 @@ procedure TUnitDependenciesWindow.AllUnitsTreeViewMouseDown(Sender: TObject;
 var
   TVNode: TTreeNode;
   UDNode: TUDNode;
+  UGGroup: TUGGroup;
 begin
   TVNode:=AllUnitsTreeView.GetNodeAt(X,Y);
   if TVNode=nil then exit;
@@ -415,7 +415,17 @@ begin
     UDNode:=TUDNode(TVNode.Data);
   if (Button=mbLeft) and (ssDouble in Shift) and (UDNode<>nil) then begin
     if UDNode.Typ=udnUnit then
-      LazarusIDE.DoOpenEditorFile(UDNode.Identifier,-1,-1,[ofAddToRecent]);
+      LazarusIDE.DoOpenEditorFile(UDNode.Identifier,-1,-1,[ofAddToRecent])
+    else if UDNode.Typ=udnGroup then begin
+      UGGroup:=FGroups.GetGroup(UDNode.Group,false);
+      if UGGroup=nil then exit;
+      if IsProjectGroup(UGGroup) then begin
+        // open project inspector
+        ExecuteIDECommand(Self,ecProjectInspector);
+      end else begin
+
+      end;
+    end;
   end;
 end;
 
@@ -472,7 +482,6 @@ begin
       CreateGroups;
       ProgressBar1.Visible:=false;
       ProgressBar1.Style:=pbstNormal;
-      Timer1.Enabled:=false;
       UpdateAll;
     end;
   end else if udwNeedUpdateGroupsLvlGraph in FFlags then
@@ -1406,7 +1415,7 @@ begin
   case Node.Typ of
   //udnNone: ;
   udnGroup:
-    if Node.Group=GroupPrefixProject then
+    if IsProjectGroup(Node.Group) then
       Result:=fImgIndexProject
     else
       Result:=fImgIndexPackage;
@@ -1454,7 +1463,12 @@ end;
 
 function TUnitDependenciesWindow.IsProjectGroup(Group: TUGGroup): boolean;
 begin
-  Result:=(Group<>nil) and (Group.Name=GroupPrefixProject);
+  Result:=(Group<>nil) and IsProjectGroup(Group.Name);
+end;
+
+function TUnitDependenciesWindow.IsProjectGroup(GroupName: string): boolean;
+begin
+  Result:=(GroupName=GroupPrefixProject);
 end;
 
 function TUnitDependenciesWindow.GetAllUnitsFilter(Lower: boolean): string;
