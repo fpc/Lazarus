@@ -196,6 +196,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Top = 289
           Width = 23
           Anchors = [akTop, akRight]
+          OnClick = AllUnitsSearchNextSpeedButtonClick
           ShowHint = True
           ParentShowHint = False
         end
@@ -209,6 +210,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Top = 289
           Width = 23
           Anchors = [akTop, akRight]
+          OnClick = AllUnitsSearchPrevSpeedButtonClick
           ShowHint = True
           ParentShowHint = False
         end
