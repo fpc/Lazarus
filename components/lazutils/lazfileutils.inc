@@ -201,6 +201,8 @@ Type
         if (S <> '') then
         begin
           Inc(Result);
+          if Result>High(Dirs) then
+            raise Exception.Create('too many sub directories');
           Dirs[Result] := S;
         end;
         Stop := Start + 1;
@@ -215,7 +217,6 @@ Type
       Inc(Result);
       Dirs[Result] := S;
     end;
-
   end;
 
 
@@ -336,18 +337,6 @@ begin
       RelPath := RelPath + DestDirs[DestCount + 1 - i];
     end;
   end;
-  {
-  // This is a lame way to pass the tests in our testsuite,
-  // however it is internally inconsistent: why add a PathDelim only if RelPath ends in dots?
-  if (RelPath = '') then
-  begin
-    if UsePointDirectory then RelPath := '.'
-  end
-  else
-  begin
-    if (RelPath[Length(RelPath)] = '.') then RelPath := AppendPathDelim(RelPath);
-  end;
-  }
   if UsePointDirectory and (RelPath = '') then
     RelPath := '.'; // Dest = Source
 

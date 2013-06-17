@@ -1074,7 +1074,8 @@ begin
       Result := ExtractUNCVolume(FileName);
       // is it like \\?\C:\Directory?  then also include the "C:\" part
       if (Result = '\\?\') and (Length(FileName) > 6) and
-         (UpCase(FileName[5]) in ['A'..'Z']) and (FileName[6] = ':') and (FileName[7] = PathDelim) then
+         (FileName[5] in ['a'..'z','A'..'Z']) and (FileName[6] = ':') and (FileName[7] = PathDelim)
+      then
         Result := Copy(FileName, 1, 7);
     end
     else
@@ -1082,7 +1083,7 @@ begin
       {$if defined(unix) or defined(wince)}
       if (FileName[1] = PathDelim) then Result := PathDelim;
       {$else}
-      if (Len > 2) and (UpCase(FileName[1]) in ['A'..'Z']) and (FileName[2] = ':') and (FileName[3] = PathDelim) then
+      if (Len > 2) and (FileName[1] in ['a'..'z','A'..'Z']) and (FileName[2] = ':') and (FileName[3] = PathDelim) then
         Result := UpperCase(Copy(FileName,1,3));
       {$endif}
     end;
