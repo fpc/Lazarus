@@ -227,6 +227,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Width = 244
           Anchors = [akTop, akLeft, akRight, akBottom]
           DefaultItemHeight = 18
+          PopupMenu = UnitsTVPopupMenu
           ReadOnly = True
           TabOrder = 1
           OnMouseDown = AllUnitsTreeViewMouseDown
@@ -336,6 +337,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Width = 359
           Anchors = [akTop, akLeft, akRight, akBottom]
           DefaultItemHeight = 18
+          PopupMenu = UnitsTVPopupMenu
           ReadOnly = True
           TabOrder = 1
           Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
@@ -355,6 +357,18 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
         Align = alTop
         ResizeAnchor = akTop
       end
+    end
+  end
+  object UnitsTVPopupMenu: TPopupMenu
+    left = 120
+    top = 193
+    object UnitsTVExpandAllMenuItem: TMenuItem
+      Caption = 'UnitsTVExpandAllMenuItem'
+      OnClick = UnitsTVExpandAllMenuItemClick
+    end
+    object UnitsTVCollapseAllMenuItem: TMenuItem
+      Caption = 'UnitsTVCollapseAllMenuItem'
+      OnClick = UnitsTVCollapseAllMenuItemClick
     end
   end
 end

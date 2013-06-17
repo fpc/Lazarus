@@ -30,10 +30,7 @@
     - additional files as start units
     - view:
       - text search with highlight
-      - double click on package open package editor
       - popup menu: copy file name of unit, project lpi, package lpk, directory
-      - popup menu: expand all
-      - popup menu: collapse all
       - hint for unit, project lpi, package lpk, directory: full filename
     - selected units
       - expand node: show connected units
@@ -43,8 +40,6 @@
       - double click on project open project inspector
       - double click on package open package editor
       - popup menu: copy file name of unit, project lpi, package lpk, directory
-      - popup menu: expand all
-      - popup menu: collapse all
       - hint for unit, project lpi, package lpk, directory: full filename
     - resourcestrings
 }
@@ -56,7 +51,7 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree, LazLogger, LazFileUtils, LazUTF8, Forms,
-  Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, LvlGraphCtrl,
+  Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus, LvlGraphCtrl,
   LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf,
   IDEDialogs, IDEImagesIntf, IDECommands, CodeToolManager, DefineTemplates,
   CodeToolsStructs, CTUnitGraph, CTUnitGroupGraph, FileProcs;
@@ -128,6 +123,8 @@ type
     AllUnitsTreeView: TTreeView; // Node.Data is TUDNode
     BtnPanel: TPanel;
     MainPageControl: TPageControl;
+    UnitsTVCollapseAllMenuItem: TMenuItem;
+    UnitsTVExpandAllMenuItem: TMenuItem;
     ProgressBar1: TProgressBar;
     GroupsTabSheet: TTabSheet;
     GroupsSplitter: TSplitter;
@@ -144,6 +141,7 @@ type
     SearchCustomFilesComboBox: TComboBox;
     UnitsSplitter: TSplitter;
     UnitsTabSheet: TTabSheet;
+    UnitsTVPopupMenu: TPopupMenu;
     procedure AllUnitsFilterEditChange(Sender: TObject);
     procedure AllUnitsFilterEditEnter(Sender: TObject);
     procedure AllUnitsFilterEditExit(Sender: TObject);
@@ -173,6 +171,8 @@ type
     procedure SearchCustomFilesBrowseButtonClick(Sender: TObject);
     procedure SearchCustomFilesCheckBoxChange(Sender: TObject);
     procedure SearchCustomFilesComboBoxChange(Sender: TObject);
+    procedure UnitsTVCollapseAllMenuItemClick(Sender: TObject);
+    procedure UnitsTVExpandAllMenuItemClick(Sender: TObject);
   private
     FAllUnitsMultiSelect: boolean;
     FCurrentUnit: TUGUnit;
@@ -407,7 +407,6 @@ var
   TVNode: TTreeNode;
   UDNode: TUDNode;
   UGGroup: TUGGroup;
-  Pkg: TIDEPackage;
 begin
   TVNode:=AllUnitsTreeView.GetNodeAt(X,Y);
   if TVNode=nil then exit;
@@ -591,6 +590,34 @@ procedure TUnitDependenciesWindow.SearchCustomFilesComboBoxChange(
 begin
   // ToDo: reparse
   IdleConnected:=true;
+end;
+
+procedure TUnitDependenciesWindow.UnitsTVCollapseAllMenuItemClick(
+  Sender: TObject);
+var
+  TV: TTreeView;
+  i: Integer;
+begin
+  TV:=TTreeView(UnitsTVPopupMenu.PopupComponent);
+  if not (TV is TTreeView) then exit;
+  TV.BeginUpdate;
+  for i:=0 to TV.Items.TopLvlCount-1 do
+    TV.Items.TopLvlItems[i].Collapse(true);
+  TV.EndUpdate;
+end;
+
+procedure TUnitDependenciesWindow.UnitsTVExpandAllMenuItemClick(Sender: TObject
+  );
+var
+  TV: TTreeView;
+  i: Integer;
+begin
+  TV:=TTreeView(UnitsTVPopupMenu.PopupComponent);
+  if not (TV is TTreeView) then exit;
+  TV.BeginUpdate;
+  for i:=0 to TV.Items.TopLvlCount-1 do
+    TV.Items.TopLvlItems[i].Expand(true);
+  TV.EndUpdate;
 end;
 
 procedure TUnitDependenciesWindow.SetIdleConnected(AValue: boolean);
@@ -1142,6 +1169,10 @@ begin
   SelUnitsSearchNextSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
   SelUnitsSearchPrevSpeedButton.Hint:='Search previous unit of this phrase';
   SelUnitsSearchPrevSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
+
+  // popup menu
+  UnitsTVExpandAllMenuItem.Caption:='Expand all nodes';
+  UnitsTVCollapseAllMenuItem.Caption:='Collapse all nodes';
 
   UpdateUnitsButtons;
 end;
