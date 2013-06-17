@@ -3239,6 +3239,8 @@ begin
 
   SrcDir:=ExtractFilePath(UnitFilename);
 
+  // ToDo: create a cache
+
   SearchInProject(Project1);
   
   // find all packages owning file
