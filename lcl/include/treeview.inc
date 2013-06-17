@@ -699,6 +699,15 @@ begin
   end;
 end;
 
+procedure TTreeNode.FreeAllNodeData;
+var
+  i: Integer;
+begin
+  FreeAndNil(FData);
+  for i:=0 to Count-1 do
+    Items[i].FreeAllNodeData;
+end;
+
 procedure TTreeNode.Collapse(Recurse: Boolean);
 begin
   ExpandItem(False, Recurse);
@@ -772,7 +781,7 @@ begin
   Update;
 end;
 
-function TTreeNode.GetCut: Boolean;
+function TTreeNode.GetCut: boolean;
 begin
   Result := GetState(nsCut);
 end;
@@ -2495,6 +2504,16 @@ procedure TTreeNodes.EndUpdate;
 begin
   Dec(FUpdateCount);
   if FUpdateCount = 0 then SetUpdateState(False);
+end;
+
+procedure TTreeNodes.FreeAllNodeData;
+var
+  i: Integer;
+begin
+  BeginUpdate;
+  for i:=0 to TopLvlCount-1 do
+    TopLvlItems[i].FreeAllNodeData;
+  EndUpdate;
 end;
 
 function TTreeNodes.GetEnumerator: TTreeNodesEnumerator;
