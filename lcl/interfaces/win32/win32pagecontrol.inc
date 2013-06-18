@@ -43,6 +43,8 @@ begin
   begin
     if ATabControl.ContainsControl(ParentForm.ActiveControl) and (ParentForm.ActiveControl <> ATabControl) then
     begin
+      // if ActiveControl is already on active page
+      if Page.GetControlIndex(ParentForm.ActiveControl) <> -1 then Exit;
       AWinControl := nil;
       if Page.CanFocus then
         AWinControl := TCustomPageAccess(Page).FindNextControl(nil, True, True, False);
