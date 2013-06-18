@@ -373,6 +373,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
       AutoSize = True
       BorderSpacing.Around = 2
       Caption = 'RefreshButton'
+      OnClick = RefreshButtonClick
       TabOrder = 1
     end
     object StatsLabel: TLabel

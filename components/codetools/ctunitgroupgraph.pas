@@ -102,12 +102,12 @@ end;
 
 constructor TUGGroups.Create(Graph: TUsesGraph);
 begin
-  FGroups:=TAVLTree.Create(@CompareUGGroupNames);
   if (not Graph.UnitClass.InheritsFrom(TUGGroup))
   and ((Graph.FilesTree.Count>0) or (Graph.QueuedFilesTree.Count>0)
      or (Graph.TargetFilesTree.Count>0))
   then
-    raise Exception.Create('TUGGroups.Create Create TUGGroups before adding units');
+    raise Exception.Create('TUGGroups.Create You must create TUGGroups before adding units');
+  FGroups:=TAVLTree.Create(@CompareUGGroupNames);
   Graph.UnitClass:=TUGGroupUnit;
 end;
 
@@ -120,6 +120,7 @@ end;
 
 procedure TUGGroups.Clear;
 begin
+  if FGroups=nil then exit;
   fClearing:=true;
   try
     FGroups.FreeAndClear;

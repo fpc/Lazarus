@@ -24,7 +24,6 @@
     IDE Window showing dependencies of units and packages.
 
   ToDo:
-    - add refresh button to rescan
     - delay update pages when not visible
     - update pages when becoming visible
     - additional files as start units
@@ -145,6 +144,7 @@ type
     procedure AllUnitsSearchPrevSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowDirsSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowGroupNodesSpeedButtonClick(Sender: TObject);
+    procedure RefreshButtonClick(Sender: TObject);
     procedure UnitsTreeViewShowHint(Sender: TObject; HintInfo: PHintInfo);
     procedure UnitsTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -172,6 +172,9 @@ type
     FIdleConnected: boolean;
     FUsesGraph: TUsesGraph;
     FGroups: TUGGroups; // referenced by Nodes.Data of GroupsLvlGraph
+    FNewUsesGraph: TUsesGraph; // on idle the units are scanned and this graph
+      // is filled up, when parsing is complete it becomes the new UsesGraph
+    FNewGroups: TUGGroups;
     FAllUnitsRootUDNode: TUDNode;
     FSelUnitsRootUDNode: TUDNode;
     FFlags: TUDWFlags;
@@ -185,6 +188,7 @@ type
     function CreateSelUnitsTree: TUDNode;
     procedure CreateTVNodes(TV: TTreeView;
       ParentTVNode: TTreeNode; ParentUDNode: TUDNode);
+    procedure FreeUsesGraph;
     procedure SelectNextSearchTV(TV: TTreeView; StartTVNode: TTreeNode;
       SearchNext, SkipStart: boolean);
     procedure SetCurrentUnit(AValue: TUGUnit);
@@ -194,6 +198,7 @@ type
     function CreatePackageGroup(APackage: TIDEPackage): TUGGroup;
     procedure CreateFPCSrcGroups;
     procedure GuessGroupOfUnits;
+    procedure StartParsing;
     procedure AddStartAndTargetUnits;
     procedure AddAdditionalFilesAsStartUnits;
     procedure SetupGroupsTabSheet;
@@ -322,8 +327,6 @@ procedure TUnitDependenciesWindow.FormCreate(Sender: TObject);
 begin
   FUsesGraph:=CodeToolBoss.CreateUsesGraph;
   FGroups:=TUGGroups.Create(FUsesGraph);
-  ProgressBar1.Style:=pbstMarquee;
-  AddStartAndTargetUnits;
 
   fImgIndexProject   := IDEImages.LoadImage(16, 'item_project');
   fImgIndexUnit      := IDEImages.LoadImage(16, 'item_unit');
@@ -332,15 +335,14 @@ begin
   AllUnitsTreeView.Images:=IDEImages.Images_16;
 
   Caption:='Unit Dependencies';
-
-  StatsLabel.Caption:='Scanning';
+  RefreshButton.Caption:='Refresh';
 
   MainPageControl.ActivePage:=UnitsTabSheet;
 
   SetupUnitsTabSheet;
   SetupGroupsTabSheet;
 
-  IdleConnected:=true;
+  StartParsing;
 end;
 
 procedure TUnitDependenciesWindow.AllUnitsSearchEditChange(Sender: TObject);
@@ -387,6 +389,12 @@ procedure TUnitDependenciesWindow.AllUnitsShowGroupNodesSpeedButtonClick(
 begin
   Include(FFlags,udwNeedUpdateAllUnitsTreeView);
   IdleConnected:=true;
+end;
+
+procedure TUnitDependenciesWindow.RefreshButtonClick(Sender: TObject);
+begin
+  if udwParsing in FFlags then exit;
+  StartParsing;
 end;
 
 procedure TUnitDependenciesWindow.UnitsTreeViewShowHint(Sender: TObject;
@@ -470,12 +478,10 @@ end;
 procedure TUnitDependenciesWindow.FormDestroy(Sender: TObject);
 begin
   IdleConnected:=false;
-  GroupsLvlGraph.Clear;
-  UnitsLvlGraph.Clear;
-  FreeAndNil(FGroups);
-  FreeAndNil(FAllUnitsRootUDNode);
-  FreeAndNil(FSelUnitsRootUDNode);
-  FreeAndNil(FUsesGraph);
+
+  FreeUsesGraph;
+  FreeAndNil(FNewGroups);
+  FreeAndNil(FNewUsesGraph);
 end;
 
 procedure TUnitDependenciesWindow.GroupsLvlGraphSelectionChanged(Sender: TObject
@@ -489,13 +495,24 @@ var
   Completed: boolean;
 begin
   if udwParsing in FFlags then begin
-    UsesGraph.Parse(true,Completed,200);
+    fNewUsesGraph.Parse(true,Completed,200);
     if Completed then begin
       Exclude(FFlags,udwParsing);
+      // free old uses graph
+      FreeUsesGraph;
+      // switch to new UsesGraph
+      FUsesGraph:=FNewUsesGraph;
+      FNewUsesGraph:=nil;
+      FGroups:=FNewGroups;
+      FNewGroups:=nil;
+      // create Groups
       CreateGroups;
+      // hide progress bar and update stats
       ProgressBar1.Visible:=false;
       ProgressBar1.Style:=pbstNormal;
       StatsLabel.Caption:='Units: '+IntToStr(UsesGraph.FilesTree.Count);
+      RefreshButton.Enabled:=true;
+      // update controls
       UpdateAll;
     end;
   end else if udwNeedUpdateGroupsLvlGraph in FFlags then
@@ -663,6 +680,8 @@ procedure TUnitDependenciesWindow.CreateGroups;
 var
   i: Integer;
 begin
+  if FGroups=nil then
+    RaiseCatchableException('');
   CreateProjectGroup(LazarusIDE.ActiveProject);
   for i:=0 to PackageEditingInterface.GetPackageCount-1 do
     CreatePackageGroup(PackageEditingInterface.GetPackages(i));
@@ -826,6 +845,25 @@ begin
     Node:=UsesGraph.FilesTree.FindSuccessor(Node);
   end;
   FreeAndNil(Owners);
+end;
+
+procedure TUnitDependenciesWindow.StartParsing;
+begin
+  if (FNewUsesGraph<>nil) or (udwParsing in FFlags) then
+    RaiseCatchableException('');
+  Include(FFlags,udwParsing);
+
+  ProgressBar1.Visible:=true;
+  ProgressBar1.Style:=pbstMarquee;
+  StatsLabel.Caption:='Scanning ...';
+  RefreshButton.Enabled:=false;
+
+  FNewUsesGraph:=CodeToolBoss.CreateUsesGraph;
+  FNewGroups:=TUGGroups.Create(FNewUsesGraph);
+
+  AddStartAndTargetUnits;
+
+  IdleConnected:=true;
 end;
 
 procedure TUnitDependenciesWindow.SetCurrentUnit(AValue: TUGUnit);
@@ -1057,13 +1095,12 @@ var
   j: Integer;
   PkgFile: TLazPackageFile;
 begin
-  Include(FFlags,udwParsing);
-  UsesGraph.TargetAll:=true;
+  FNewUsesGraph.TargetAll:=true;
 
   // project lpr
   aProject:=LazarusIDE.ActiveProject;
   if (aProject<>nil) and (aProject.MainFile<>nil) then
-    UsesGraph.AddStartUnit(aProject.MainFile.Filename);
+    FNewUsesGraph.AddStartUnit(aProject.MainFile.Filename);
 
   // add all open packages
   if SearchPkgsCheckBox.Checked then begin
@@ -1075,7 +1112,7 @@ begin
         if PkgFile.Removed then continue;
         aFilename:=PkgFile.GetFullFilename;
         if FilenameIsPascalUnit(AFilename) then
-          UsesGraph.AddStartUnit(AFilename);
+          FNewUsesGraph.AddStartUnit(AFilename);
       end;
     end;
   end;
@@ -1086,7 +1123,7 @@ begin
       SrcEdit:=SourceEditorManagerIntf.SourceEditors[i];
       AFilename:=SrcEdit.FileName;
       if FilenameIsPascalUnit(AFilename) then
-        UsesGraph.AddStartUnit(AFilename);
+        FNewUsesGraph.AddStartUnit(AFilename);
     end;
   end;
 
@@ -1118,7 +1155,7 @@ begin
         if Files<>nil then begin
           for i:=0 to Files.Count-1 do begin
             if FilenameIsPascalUnit(Files[i]) then
-              UsesGraph.AddStartUnit(aFilename+Files[i]);
+              fNewUsesGraph.AddStartUnit(aFilename+Files[i]);
           end;
         end;
       finally
@@ -1126,7 +1163,7 @@ begin
       end;
     end else begin
       // add a single file
-      UsesGraph.AddStartUnit(aFilename);
+      fNewUsesGraph.AddStartUnit(aFilename);
     end;
   end;
 end;
@@ -1392,6 +1429,16 @@ begin
     TVNode.Expanded:=true;
     AVLNode:=ParentUDNode.ChildNodes.FindSuccessor(AVLNode);
   end;
+end;
+
+procedure TUnitDependenciesWindow.FreeUsesGraph;
+begin
+  FreeAndNil(FAllUnitsRootUDNode);
+  FreeAndNil(FSelUnitsRootUDNode);
+  GroupsLvlGraph.Clear;
+  UnitsLvlGraph.Clear;
+  FreeAndNil(FGroups);
+  FreeAndNil(FUsesGraph);
 end;
 
 procedure TUnitDependenciesWindow.UpdateAllUnitsTreeView;
