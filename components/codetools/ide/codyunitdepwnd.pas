@@ -32,8 +32,6 @@
       - mark units with implementation uses section
     - selected units
       - expand node: show connected units
-      - collapse node: free child nodes
-      - text search with highlight, next, previous
     - resourcestrings
 }
 unit CodyUnitDepWnd;
@@ -166,6 +164,7 @@ type
     procedure UnitsTVCollapseAllMenuItemClick(Sender: TObject);
     procedure UnitsTVCopyFilenameMenuItemClick(Sender: TObject);
     procedure UnitsTVExpandAllMenuItemClick(Sender: TObject);
+    procedure UnitsTVPopupMenuPopup(Sender: TObject);
   private
     FCurrentUnit: TUGUnit;
     FIdleConnected: boolean;
@@ -635,6 +634,14 @@ begin
   for i:=0 to TV.Items.TopLvlCount-1 do
     TV.Items.TopLvlItems[i].Expand(true);
   TV.EndUpdate;
+end;
+
+procedure TUnitDependenciesWindow.UnitsTVPopupMenuPopup(Sender: TObject);
+var
+  TV: TTreeView;
+begin
+  TV:=Sender as TTreeView;
+  UnitsTVExpandAllMenuItem.Visible:=TV=AllUnitsTreeView;
 end;
 
 procedure TUnitDependenciesWindow.SetIdleConnected(AValue: boolean);

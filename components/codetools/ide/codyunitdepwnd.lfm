@@ -359,6 +359,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
     end
   end
   object UnitsTVPopupMenu: TPopupMenu
+    OnPopup = UnitsTVPopupMenuPopup
     left = 120
     top = 193
     object UnitsTVCopyFilenameMenuItem: TMenuItem
