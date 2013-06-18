@@ -149,9 +149,9 @@ type
   // Delphi unit conversion.
   TConvertDelphiUnit = class(TConvertDelphiPBase)
   private
-    DirectoryTemplate: TDefineTemplate;
+    fDirTemplate: TDefineTemplate;
   public
-    constructor Create(aFiles: TStrings);
+    constructor Create(aFileNames: TStrings);
     destructor Destroy; override;
     function Convert: TModalResult;
   end;
@@ -830,7 +830,7 @@ constructor TConvertDelphiPBase.Create(const AFilename, ADescription: string);
 begin
   Create(ADescription);
   fSettings.MainFilenames.Add(AFilename);
-  fPrevSelectedPath:=AFilename;
+  fPrevSelectedPath:=fSettings.MainPath;
 end;
 
 destructor TConvertDelphiPBase.Destroy;
@@ -867,33 +867,31 @@ end;
 
 { TConvertDelphiUnit }
 
-constructor TConvertDelphiUnit.Create(aFiles: TStrings);
+constructor TConvertDelphiUnit.Create(aFileNames: TStrings);
 var
   MacroName, s: String;
   i: Integer;
 begin
   inherited Create(lisConvDelphiConvertDelphiUnit);
   // Add the list of files if they exist.
-  for i := 0 to aFiles.Count-1 do begin
-    s:=CleanAndExpandFilename(aFiles[i]);
-    if FileExistsUTF8(s) then begin
+  for i:=0 to aFileNames.Count-1 do begin
+    s:=CleanAndExpandFilename(aFileNames[i]);
+    if FileExistsUTF8(s) then
       fSettings.MainFilenames.Add(s);
-      if (i=0) and (fPrevSelectedPath='') then
-        fPrevSelectedPath:=s;
-    end;
   end;
+  fPrevSelectedPath:=fSettings.MainPath;
   // use a template for compiler mode delphi for a single directory
-  DirectoryTemplate:=TDefineTemplate.Create('Delphi unit conversion',
+  fDirTemplate:=TDefineTemplate.Create('Delphi unit conversion',
     'Mode Delphi for single unit conversion', '', fSettings.MainPath, da_Directory);
   MacroName:=CompilerModeVars[cmDELPHI];
   s:='Define'+MacroName;
-  DirectoryTemplate.AddChild(TDefineTemplate.Create(s, s, MacroName, '1', da_Define));
-  CodeToolBoss.DefineTree.Add(DirectoryTemplate); // add directory template to tree
+  fDirTemplate.AddChild(TDefineTemplate.Create(s, s, MacroName, '1', da_Define));
+  CodeToolBoss.DefineTree.Add(fDirTemplate); // add directory template to tree
 end;
 
 destructor TConvertDelphiUnit.Destroy;
 begin
-  CodeToolBoss.DefineTree.RemoveDefineTemplate(DirectoryTemplate);
+  CodeToolBoss.DefineTree.RemoveDefineTemplate(fDirTemplate);
   inherited Destroy;
 end;
 
@@ -911,7 +909,7 @@ begin
         Application.ProcessMessages;
         if i>0 then
           fSettings.AddLogLine('');
-        DelphiUnit := TDelphiUnit.Create(Self, fSettings.MainFilenames[i], []);
+        DelphiUnit:=TDelphiUnit.Create(Self, fSettings.MainFilenames[i], []);
         with DelphiUnit do
         try
           Result:=CopyAndLoadFile;
