@@ -14,6 +14,9 @@ interface
 
 {$I LR_Vers.inc}
 
+const
+  IdentifySeparator = [' ', '+', '-', '*', '/', '>', '<', '=', '(', ')', #13];
+
 type
   TGetPValueEvent = procedure(const s: String; var v: Variant) of object;
   TFunctionEvent = procedure(const AName: String; p1, p2, p3: Variant;
@@ -292,7 +295,7 @@ begin
   repeat
     Inc(i);
     while (i <= Length(s)) and
-      not (s[i] in [' ', '+', '-', '*', '/', '>', '<', '=', '(', ')']) do
+      not (s[i] in IdentifySeparator) do
     begin
       if s[i] = '"' then Inc(n);
       Inc(i);
