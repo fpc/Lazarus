@@ -572,9 +572,7 @@ var
   NewCapacity: Integer;
   SortMap: PPWorkFileInfo;
 begin
-  if (FListing<>nil) and (FListing.FileTimeStamp=Pool.FileTimeStamp) then exit;
-  if FListing=nil then
-    FListing:=TCTDirectoryListing.Create;
+  if FListing.FileTimeStamp=Pool.FileTimeStamp then exit;
   FListing.Clear;
   FListing.FileTimeStamp:=Pool.FileTimeStamp;
   if Directory='' then exit;// virtual directory
@@ -711,6 +709,7 @@ begin
   if FDirectory='.' then FDirectory:='';
   if (FDirectory<>'') and not FilenameIsAbsolute(FDirectory) then
     RaiseDirNotAbsolute;
+  FListing:=TCTDirectoryListing.Create;
   FPool:=ThePool;
   FRefCount:=1;
 end;
