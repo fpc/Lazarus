@@ -111,8 +111,10 @@ type
     AllUnitsShowDirsSpeedButton: TSpeedButton;
     AllUnitsShowGroupNodesSpeedButton: TSpeedButton;
     AllUnitsTreeView: TTreeView; // Node.Data is TUDNode
-    BtnPanel: TPanel;
     MainPageControl: TPageControl;
+    RefreshButton: TButton;
+    StatsLabel: TLabel;
+    StatusPanel: TPanel;
     UnitsTVCopyFilenameMenuItem: TMenuItem;
     UnitsTVCollapseAllMenuItem: TMenuItem;
     UnitsTVExpandAllMenuItem: TMenuItem;
@@ -331,6 +333,8 @@ begin
 
   Caption:='Unit Dependencies';
 
+  StatsLabel.Caption:='Scanning';
+
   MainPageControl.ActivePage:=UnitsTabSheet;
 
   SetupUnitsTabSheet;
@@ -491,6 +495,7 @@ begin
       CreateGroups;
       ProgressBar1.Visible:=false;
       ProgressBar1.Style:=pbstNormal;
+      StatsLabel.Caption:='Units: '+IntToStr(UsesGraph.FilesTree.Count);
       UpdateAll;
     end;
   end else if udwNeedUpdateGroupsLvlGraph in FFlags then
