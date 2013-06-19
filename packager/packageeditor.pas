@@ -1947,7 +1947,6 @@ begin
   then begin
     Removed:=CurNode.Parent=FRemovedRequiredNode;
     Branch:=FilterEdit.GetExistingBranch(CurNode.Parent);
-    Assert(Assigned(Branch));
     Result:=Branch.GetData(CurNode.Index) as TPkgDependency;
   end;
 end;

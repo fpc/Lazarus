@@ -27,6 +27,7 @@
     - delay update pages when not visible
     - update pages when becoming visible
     - additional files as start units
+    - check if package unit is used
     - view:
       - mark units with implementation uses section
     - selected units
@@ -199,6 +200,7 @@ type
     procedure CreateFPCSrcGroups;
     procedure GuessGroupOfUnits;
     procedure StartParsing;
+    procedure ScopeChanged;
     procedure AddStartAndTargetUnits;
     procedure AddAdditionalFilesAsStartUnits;
     procedure SetupGroupsTabSheet;
@@ -533,19 +535,16 @@ end;
 
 procedure TUnitDependenciesWindow.SearchPkgsCheckBoxChange(Sender: TObject);
 begin
-  // ToDo: reparse
-  IdleConnected:=true;
+  ScopeChanged;
 end;
 
 procedure TUnitDependenciesWindow.SearchSrcEditCheckBoxChange(Sender: TObject);
 begin
-  // ToDo: reparse
-  IdleConnected:=true;
+  ScopeChanged;
 end;
 
 procedure TUnitDependenciesWindow.SelUnitsSearchEditChange(Sender: TObject);
 begin
-  debugln(['TUnitDependenciesWindow.SelUnitsSearchEditChange ',SelUnitsSearchEdit.Text]);
   Include(FFlags,udwNeedUpdateSelUnitsTVSearch);
   IdleConnected:=true;
 end;
@@ -595,8 +594,7 @@ begin
     if s<>'' then s+=';';
     s+=aFilename;
     SearchCustomFilesComboBox.Text:=s;
-    // ToDo: Reparse
-    IdleConnected:=true;
+    ScopeChanged;
   finally
     Dlg.Free;
   end;
@@ -606,15 +604,13 @@ procedure TUnitDependenciesWindow.SearchCustomFilesCheckBoxChange(
   Sender: TObject);
 begin
   UpdateUnitsButtons;
-  // ToDo: reparse
-  IdleConnected:=true;
+  ScopeChanged;
 end;
 
 procedure TUnitDependenciesWindow.SearchCustomFilesComboBoxChange(
   Sender: TObject);
 begin
-  // ToDo: reparse
-  IdleConnected:=true;
+  ScopeChanged;
 end;
 
 procedure TUnitDependenciesWindow.UnitsTVCollapseAllMenuItemClick(
@@ -866,6 +862,14 @@ begin
   IdleConnected:=true;
 end;
 
+procedure TUnitDependenciesWindow.ScopeChanged;
+begin
+  FreeAndNil(FNewGroups);
+  FreeAndNil(FNewUsesGraph);
+  Exclude(FFlags,udwParsing);
+  StartParsing;
+end;
+
 procedure TUnitDependenciesWindow.SetCurrentUnit(AValue: TUGUnit);
 begin
   if FCurrentUnit=AValue then Exit;
@@ -1110,8 +1114,10 @@ begin
       for j:=0 to Pkg.FileCount-1 do begin
         PkgFile:=Pkg.Files[j];
         if PkgFile.Removed then continue;
+        // ToDo: check if unit is used
         aFilename:=PkgFile.GetFullFilename;
-        if FilenameIsPascalUnit(AFilename) then
+        if FilenameIsAbsolute(AFilename)
+        and FilenameIsPascalUnit(AFilename) then
           FNewUsesGraph.AddStartUnit(AFilename);
       end;
     end;
