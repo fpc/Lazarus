@@ -39,7 +39,8 @@ type
     fImgIndex: Integer;
     // Full filename in node data is needed when showing the directory hierarchy.
     // It is stored automatically if AFullFilename is passed to contructor.
-    fFilenameMap: TStringToStringTree;
+    fNodeTextToFullFilenameMap: TStringToStringTree;
+    fNodeTextToDataMap: TStringToPointerTree;
     fTVNodeStack: TTreeNodeList;
     function CompareFNs(AFilename1,AFilename2: string): integer;
     procedure SortAndFilter;
@@ -102,8 +103,9 @@ type
 
   TFileNameItem = class
   public
+    Data: Pointer;
     Filename: string;
-    constructor Create(AFilename: string);
+    constructor Create(AFilename: string; aData: Pointer);
   end;
 
 var
@@ -128,13 +130,15 @@ begin
   fRootNode:=ARootNode; // RootNode can also be Nil. Then all items are at top level.
   fOriginalData:=TStringList.Create;
   fSortedData:=TStringList.Create;
-  fFilenameMap:=TStringToStringTree.Create(True);
+  fNodeTextToFullFilenameMap:=TStringToStringTree.Create(True);
+  fNodeTextToDataMap:=TStringToPointerTree.Create(True);
   fImgIndex:=-1;
 end;
 
 destructor TTreeFilterBranch.Destroy;
 begin
-  FreeAndNil(fFilenameMap);
+  FreeAndNil(fNodeTextToFullFilenameMap);
+  FreeAndNil(fNodeTextToDataMap);
   FreeAndNil(fSortedData);
   FreeAndNil(fOriginalData);
   FreeTVNodeData(fRootNode);
@@ -144,8 +148,9 @@ end;
 procedure TTreeFilterBranch.AddNodeData(ANodeText: string; AData: TObject; AFullFilename: string);
 begin
   fOriginalData.AddObject(ANodeText, AData);
+  fNodeTextToDataMap[ANodeText]:=AData;
   if AFullFilename <> '' then
-    fFilenameMap[ANodeText]:=AFullFilename;
+    fNodeTextToFullFilenameMap[ANodeText]:=AFullFilename;
 end;
 
 function TTreeFilterBranch.GetData(AIndex: integer): TObject;
@@ -193,7 +198,7 @@ var
   FileN, s: string;
   ena: Boolean;
 begin
-  if fFilenameMap.Count > 0 then  // FilenameMap stores short filename -> long filename
+  if fNodeTextToFullFilenameMap.Count > 0 then  // FilenameMap stores short filename -> long filename
     FreeTVNodeData(fRootNode);    // Free node data now, it will be filled later.
   if Assigned(fRootNode) then
     fRootNode.DeleteChildren      // Delete old tree nodes.
@@ -210,11 +215,11 @@ begin
     else
       TVNode:=fOwner.fFilteredTreeview.Items.AddChild(fRootNode,FileN);
     // Save the long filename to Node.Data
-    if fFilenameMap.Count > 0 then begin
+    if fNodeTextToFullFilenameMap.Count > 0 then begin
       s:=FileN;
-      if fFilenameMap.Contains(FileN) then
-        s:=fFilenameMap[FileN];           // Full file name.
-      TVNode.Data:=TFileNameItem.Create(s);
+      if fNodeTextToFullFilenameMap.Contains(FileN) then
+        s:=fNodeTextToFullFilenameMap[FileN];           // Full file name.
+      TVNode.Data:=TFileNameItem.Create(s,fNodeTextToDataMap[FileN]);
     end;
     // Get ImageIndex for Node
     ena := True;
@@ -326,9 +331,10 @@ end;
 
 { TFileNameItem }
 
-constructor TFileNameItem.Create(AFilename: string);
+constructor TFileNameItem.Create(AFilename: string; aData: Pointer);
 begin
   Filename:=AFilename;
+  Data:=aData;
 end;
 
 { TTreeFilterEdit }

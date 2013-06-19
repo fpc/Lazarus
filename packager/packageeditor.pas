@@ -129,6 +129,19 @@ type
              const Filename: string): TModalResult of object;
   TOnFreePkgEditor = procedure(APackage: TLazPackage) of object;
 
+  TPENodeType = (
+    penFile,
+    penDependency
+    );
+
+  TPENodeData = class
+  public
+    Typ: TPENodeType;
+    Name: string; // file or package name
+    Removed: boolean;
+    Next: TPENodeData;
+  end;
+
   { TPackageEditorForm }
 
   TPackageEditorForm = class(TBasePackageEditor)
@@ -242,11 +255,14 @@ type
     FDirSummaryLabel: TLabel;
     FSelectedFile: TPkgFile;
     FSelectedDependency: TPkgDependency;
+    FFirstNodeData: array[TPENodeType] of TPENodeData;
+    procedure FreeNodeData(Typ: TPENodeType);
+    function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
     procedure SetShowDirectoryHierarchy(const AValue: boolean);
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
-    function ChooseImageIndex(Str: String; Data: TObject; var AIsEnabled: Boolean): Integer;
+    function OnTreeViewGetImageIndex(Str: String; Data: TObject; var AIsEnabled: Boolean): Integer;
     procedure UpdateTitle;
     procedure UpdateButtons;
     procedure UpdateFiles;
@@ -256,6 +272,8 @@ type
     procedure UpdateStatusBar;
     function GetCurrentDependency(out Removed: boolean): TPkgDependency;
     function GetCurrentFile(out Removed: boolean): TPkgFile;
+    function GetNodeData(TVNode: TTreeNode): TPENodeData;
+    function GetNodeItem(NodeData: TPENodeData): TObject;
     function IsDirectoryNode(Node: TTreeNode): boolean;
     procedure GetDirectorySummary(DirNode: TTreeNode;
         out FileCount, HasRegisterProcCount, AddToUsesPkgSectionCount: integer);
@@ -956,7 +974,6 @@ end;
 procedure TPackageEditorForm.RemoveBitBtnClick(Sender: TObject);
 var
   ANode: TTreeNode;
-  NodeIndex: Integer;
   CurFile: TPkgFile;
   CurDependency: TPkgDependency;
   s: String;
@@ -968,41 +985,42 @@ begin
     UpdateButtons;
     exit;
   end;
-  NodeIndex:=ANode.Index;
-  if TObject(ANode.Data) is TFileNameItem then begin
-    // get current package file
-    CurFile:=GetCurrentFile(Removed);
-    if CurFile<>nil then begin
-      // confirm deletion
-      s:='';
-      mt:=mtConfirmation;
-      if CurFile.FileType=pftMainUnit then begin
-        s:=Format(lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas,
-                  [LineEnding+LineEnding, lowercase(LazPackage.Name)]);
-        mt:=mtWarning;
-      end;
-      if MessageDlg(lisPckEditRemoveFile2,
-        Format(lisPckEditRemoveFileFromPackage, ['"', CurFile.Filename, '"',
-          LineEnding, '"', LazPackage.IDAsString, '"'])+s,
-        mt,[mbYes,mbNo],0)=mrNo
-      then
-        exit;
-      LazPackage.RemoveFile(CurFile);
+
+  // get current package file
+  CurFile:=GetCurrentFile(Removed);
+  if CurFile<>nil then begin
+    if Removed then exit;
+    // confirm deletion
+    s:='';
+    mt:=mtConfirmation;
+    if CurFile.FileType=pftMainUnit then begin
+      s:=Format(lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas,
+                [LineEnding+LineEnding, lowercase(LazPackage.Name)]);
+      mt:=mtWarning;
     end;
+    if MessageDlg(lisPckEditRemoveFile2,
+      Format(lisPckEditRemoveFileFromPackage, ['"', CurFile.Filename, '"',
+        LineEnding, '"', LazPackage.IDAsString, '"'])+s,
+      mt,[mbYes,mbNo],0)=mrNo
+    then
+      exit;
+    LazPackage.RemoveFile(CurFile);
     UpdateAll(false);
-  end else if ANode.Parent=FRequiredPackagesNode then begin
-    // get current dependency
-    CurDependency:=LazPackage.RequiredDepByIndex(NodeIndex);
-    if CurDependency<>nil then begin
-      // confirm deletion
-      if MessageDlg(lisPckEditRemoveDependency2,
-        Format(lisPckEditRemoveDependencyFromPackage, ['"',
-          CurDependency.AsString, '"', LineEnding, '"', LazPackage.IDAsString, '"']),
-        mtConfirmation,[mbYes,mbNo],0)=mrNo
-      then
-        exit;
-      PackageGraph.RemoveDependencyFromPackage(LazPackage,CurDependency,true);
-    end;
+    exit;
+  end;
+
+  // get current dependency
+  CurDependency:=GetCurrentDependency(Removed);
+  if (CurDependency<>nil) then begin
+    if Removed then exit;
+    // confirm deletion
+    if MessageDlg(lisPckEditRemoveDependency2,
+      Format(lisPckEditRemoveDependencyFromPackage, ['"',
+        CurDependency.AsString, '"', LineEnding, '"', LazPackage.IDAsString, '"']),
+      mtConfirmation,[mbYes,mbNo],0)=mrNo
+    then
+      exit;
+    PackageGraph.RemoveDependencyFromPackage(LazPackage,CurDependency,true);
   end;
 end;
 
@@ -1064,6 +1082,31 @@ end;
 procedure TPackageEditorForm.ViewPkgTodosClick(Sender: TObject);
 begin
   PackageEditors.ViewPkgToDos(LazPackage);
+end;
+
+procedure TPackageEditorForm.FreeNodeData(Typ: TPENodeType);
+var
+  NodeData: TPENodeData;
+  n: TPENodeData;
+begin
+  NodeData:=FFirstNodeData[Typ];
+  while NodeData<>nil do begin
+    n:=NodeData;
+    NodeData:=NodeData.Next;
+    n.Free;
+  end;
+  FFirstNodeData[Typ]:=nil;
+end;
+
+function TPackageEditorForm.CreateNodeData(Typ: TPENodeType; aName: string;
+  aRemoved: boolean): TPENodeData;
+begin
+  Result:=TPENodeData.Create;
+  Result.Name:=aName;
+  Result.Typ:=Typ;
+  Result.Removed:=aRemoved;
+  Result.Next:=FFirstNodeData[Typ];
+  FFirstNodeData[Typ]:=Result;
 end;
 
 procedure TPackageEditorForm.UseMaxVersionCheckBoxChange(Sender: TObject);
@@ -1334,7 +1377,7 @@ begin
 
   FilesTreeView.Images := IDEImages.Images_16;
   ToolBar.Images := IDEImages.Images_16;
-  FilterEdit.OnGetImageIndex:=@ChooseImageIndex;
+  FilterEdit.OnGetImageIndex:=@OnTreeViewGetImageIndex;
 
   SaveBitBtn    := CreateToolButton('SaveBitBtn', lisMenuSave, lisPckEditSavePackage, 'laz_save', @SaveBitBtnClick);
   CompileBitBtn := CreateToolButton('CompileBitBtn', lisCompile, lisPckEditCompilePackage, 'pkg_compile', @CompileBitBtnClick);
@@ -1650,18 +1693,26 @@ begin
 end;
 
 procedure TPackageEditorForm.UpdateButtons;
+var
+  Removed: boolean;
+  CurFile: TPkgFile;
+  CurDependency: TPkgDependency;
 begin
   if LazPackage=nil then exit;
+  CurFile:=GetCurrentFile(Removed);
+  if CurFile=nil then
+    CurDependency:=GetCurrentDependency(Removed)
+  else
+    CurDependency:=nil;
+
   SaveBitBtn.Enabled:=(not LazPackage.ReadOnly)
                               and (LazPackage.IsVirtual or LazPackage.Modified);
   CompileBitBtn.Enabled:=(not LazPackage.IsVirtual);
   AddBitBtn.Enabled:=not LazPackage.ReadOnly;
   RemoveBitBtn.Enabled:=(not LazPackage.ReadOnly)
-     and (FilesTreeView.Selected<>nil)
-     and ((TObject(FilesTreeView.Selected.Data) is TFileNameItem)
-           or (FilesTreeView.Selected.Parent=FRequiredPackagesNode));
-  OpenButton.Enabled:=(FilesTreeView.Selected<>nil)
-     and (TObject(FilesTreeView.Selected.Data) is TFileNameItem);
+     and (not Removed)
+     and ((CurFile<>nil) or (CurDependency<>nil));
+  OpenButton.Enabled:=(CurFile<>nil) or (CurDependency<>nil);
   UseBitBtn.Caption:=lisUseSub;
   UseBitBtn.Hint:=lisClickToSeeThePossibleUses;
   UseBitBtn.OnClick:=nil;
@@ -1669,13 +1720,24 @@ begin
   OptionsBitBtn.Enabled:=true;
 end;
 
-function TPackageEditorForm.ChooseImageIndex(Str: String; Data: TObject;
+function TPackageEditorForm.OnTreeViewGetImageIndex(Str: String; Data: TObject;
                                              var AIsEnabled: Boolean): Integer;
+var
+  PkgFile: TPkgFile;
+  Item: TObject;
+  PkgDependency: TPkgDependency;
+  NodeData: TPENodeData;
 begin
-  if Data is TPkgFile then begin
-    case TPkgFile(Data).FileType of
+  Result:=-1;
+  if not (Data is TPENodeData) then exit;
+  NodeData:=TPENodeData(Data);
+  Item:=GetNodeItem(NodeData);
+  if Item=nil then exit;
+  if Item is TPkgFile then begin
+    PkgFile:=TPkgFile(Item);
+    case PkgFile.FileType of
       pftUnit,pftVirtualUnit,pftMainUnit:
-        if TPkgFile(Data).HasRegisterProc then
+        if PkgFile.HasRegisterProc then
           Result:=ImageIndexRegisterUnit
         else
           Result:=ImageIndexUnit;
@@ -1689,10 +1751,11 @@ begin
         Result:=-1;
     end;
   end
-  else if Data is TPkgDependency then begin
-    if TPkgDependency(Data).Removed then
+  else if Item is TPkgDependency then begin
+    PkgDependency:=TPkgDependency(Item);
+    if PkgDependency.Removed then
       Result:=ImageIndexRemovedRequired
-    else if TPkgDependency(Data).LoadPackageResult=lprSuccess then
+    else if PkgDependency.LoadPackageResult=lprSuccess then
       Result:=ImageIndexRequired
     else
       Result:=ImageIndexConflict;
@@ -1705,8 +1768,11 @@ var
   CurFile: TPkgFile;
   FilesBranch, RemovedBranch: TTreeFilterBranch;
   Filename: String;
+  NodeData: TPENodeData;
 begin
   if LazPackage=nil then exit;
+
+  FreeNodeData(penFile);
 
   // files belonging to package
   FilesBranch:=FilterEdit.GetBranch(FFilesNode);
@@ -1717,9 +1783,10 @@ begin
   // collect and sort files
   for i:=0 to LazPackage.FileCount-1 do begin
     CurFile:=LazPackage.Files[i];
+    NodeData:=CreateNodeData(penFile,CurFile.Filename,false);
     Filename:=CurFile.GetShortFilename(true);
     if Filename<>'' then
-      FilesBranch.AddNodeData(Filename, CurFile, CurFile.Filename);
+      FilesBranch.AddNodeData(Filename, NodeData, CurFile.Filename);
   end;
 
   // removed files
@@ -1734,7 +1801,8 @@ begin
     RemovedBranch:=FilterEdit.GetBranch(FRemovedFilesNode);
     for i:=0 to LazPackage.RemovedFilesCount-1 do begin
       CurFile:=LazPackage.RemovedFiles[i];
-      RemovedBranch.AddNodeData(CurFile.GetShortFilename(true), CurFile);
+      NodeData:=CreateNodeData(penFile,CurFile.Filename,true);
+      RemovedBranch.AddNodeData(CurFile.GetShortFilename(true), NodeData);
     end;
   end else begin
     // No removed dependencies -> delete the root node
@@ -1751,8 +1819,11 @@ var
   CurDependency: TPkgDependency;
   RequiredBranch, RemovedBranch: TTreeFilterBranch;
   CurNodeText, aFilename: String;
+  NodeData: TPENodeData;
 begin
   if LazPackage=nil then exit;
+
+  FreeNodeData(penDependency);
 
   // required packages
   RequiredBranch:=FilterEdit.GetBranch(FRequiredPackagesNode);
@@ -1767,7 +1838,8 @@ begin
       else
         CurNodeText:=Format(lisPckEditDefault, [CurNodeText, aFilename]);
     end;
-    RequiredBranch.AddNodeData(CurNodeText, CurDependency);
+    NodeData:=CreateNodeData(penDependency,CurDependency.PackageName,false);
+    RequiredBranch.AddNodeData(CurNodeText, NodeData);
     CurDependency:=CurDependency.NextRequiresDependency;
   end;
 
@@ -1781,7 +1853,8 @@ begin
     end;
     RemovedBranch:=FilterEdit.GetBranch(FRemovedRequiredNode);
     while CurDependency<>nil do begin
-      RemovedBranch.AddNodeData(CurDependency.AsString, CurDependency);
+      NodeData:=CreateNodeData(penDependency,CurDependency.PackageName,true);
+      RemovedBranch.AddNodeData(CurDependency.AsString, NodeData);
       CurDependency:=CurDependency.NextRequiresDependency;
     end;
   end else begin
@@ -1936,36 +2009,65 @@ end;
 
 function TPackageEditorForm.GetCurrentDependency(out Removed: boolean): TPkgDependency;
 var
-  CurNode: TTreeNode;
-  Branch: TTreeFilterBranch;
+  NodeData: TPENodeData;
 begin
   Result:=nil;
   Removed:=false;
-  CurNode:=FilesTreeView.Selected;
-  if Assigned(CurNode) and Assigned(CurNode.Parent)
-  and ((CurNode.Parent=FRequiredPackagesNode) or (CurNode.Parent=FRemovedRequiredNode))
-  then begin
-    Removed:=CurNode.Parent=FRemovedRequiredNode;
-    Branch:=FilterEdit.GetExistingBranch(CurNode.Parent);
-    Result:=Branch.GetData(CurNode.Index) as TPkgDependency;
-  end;
+  NodeData:=GetNodeData(FilesTreeView.Selected);
+  if NodeData=nil then exit;
+  if NodeData.Typ<>penDependency then exit;
+  Removed:=NodeData.Removed;
+  if Removed then
+    Result:=LazPackage.FindRemovedDependencyByName(NodeData.Name)
+  else
+    Result:=LazPackage.FindDependencyByName(NodeData.Name);
 end;
 
 function TPackageEditorForm.GetCurrentFile(out Removed: boolean): TPkgFile;
 var
-  CurNode: TTreeNode;
+  NodeData: TPENodeData;
 begin
   Result:=nil;
   Removed:=false;
-  CurNode:=FilesTreeView.Selected;
-  if (CurNode=nil) or (CurNode.Parent=nil) then exit;
-  if CurNode.Parent=FRemovedFilesNode then
-  begin
-    Result:=LazPackage.RemovedFiles[CurNode.Index];
-    Removed:=true;
-  end
-  else if TObject(CurNode.Data) is TFileNameItem then
-    Result:=LazPackage.FindPkgFile(TFileNameItem(CurNode.Data).Filename, False, True);
+  NodeData:=GetNodeData(FilesTreeView.Selected);
+  if NodeData=nil then exit;
+  if NodeData.Typ<>penFile then exit;
+  Removed:=NodeData.Removed;
+  if Removed then
+    Result:=LazPackage.FindRemovedPkgFile(NodeData.Name)
+  else
+    Result:=LazPackage.FindPkgFile(NodeData.Name,true,true);
+end;
+
+function TPackageEditorForm.GetNodeData(TVNode: TTreeNode): TPENodeData;
+var
+  o: TObject;
+begin
+  Result:=nil;
+  if (TVNode=nil) then exit;
+  o:=TObject(TVNode.Data);
+  if o is TFileNameItem then
+    o:=TObject(TFileNameItem(o).Data);
+  if o is TPENodeData then
+    Result:=TPENodeData(o);
+end;
+
+function TPackageEditorForm.GetNodeItem(NodeData: TPENodeData): TObject;
+begin
+  Result:=nil;
+  if LazPackage=nil then exit;
+  case NodeData.Typ of
+  penFile:
+    if NodeData.Removed then
+      Result:=LazPackage.FindRemovedPkgFile(NodeData.Name)
+    else
+      Result:=LazPackage.FindPkgFile(NodeData.Name,true,true);
+  penDependency:
+    if NodeData.Removed then
+      Result:=LazPackage.FindRemovedDependencyByName(NodeData.Name)
+    else
+      Result:=LazPackage.FindDependencyByName(NodeData.Name);
+  end;
 end;
 
 function TPackageEditorForm.IsDirectoryNode(Node: TTreeNode): boolean;
@@ -1978,16 +2080,18 @@ procedure TPackageEditorForm.GetDirectorySummary(DirNode: TTreeNode; out
 
   procedure Traverse(Node: TTreeNode);
   var
-    Item: TFileNameItem;
     CurFile: TPkgFile;
+    NodeData: TPENodeData;
   begin
-    if TObject(Node.Data) is TFileNameItem then begin
-      Item:=TFileNameItem(Node.Data);
-      CurFile:=LazPackage.FindPkgFile(Item.Filename,true,true);
-      if CurFile<>nil then begin
-        inc(FileCount);
-        if CurFile.HasRegisterProc then inc(HasRegisterProcCount);
-        if CurFile.AddToUsesPkgSection then inc(AddToUsesPkgSectionCount);
+    NodeData:=GetNodeData(Node);
+    if NodeData<>nil then begin
+      if NodeData.Typ=penFile then begin
+        CurFile:=LazPackage.FindPkgFile(NodeData.Name,true,true);
+        if CurFile<>nil then begin
+          inc(FileCount);
+          if CurFile.HasRegisterProc then inc(HasRegisterProcCount);
+          if CurFile.AddToUsesPkgSection then inc(AddToUsesPkgSectionCount);
+        end;
       end;
     end;
     Node:=Node.GetFirstChild;
@@ -2188,10 +2292,12 @@ procedure TPackageEditorForm.DoUseUnitsInDirectory(Use: boolean);
   procedure Traverse(Node: TTreeNode);
   var
     PkgFile: TPkgFile;
+    NodeData: TPENodeData;
   begin
-    if TObject(Node.Data) is TFileNameItem then
+    NodeData:=GetNodeData(Node);
+    if (NodeData<>nil) and (NodeData.Typ=penFile) then
     begin
-      PkgFile:=LazPackage.FindPkgFile(TFileNameItem(Node.Data).Filename,true,true);
+      PkgFile:=LazPackage.FindPkgFile(NodeData.Name,true,true);
       if (PkgFile<>nil) and (PkgFile.FileType in [pftUnit,pftVirtualUnit]) then
       begin
         if PkgFile.AddToUsesPkgSection<>Use then
@@ -2291,11 +2397,15 @@ begin
 end;
 
 destructor TPackageEditorForm.Destroy;
+var
+  nt: TPENodeType;
 begin
   if PackageEditorMenuRoot.MenuItem=FilesPopupMenu.Items then
     PackageEditorMenuRoot.MenuItem:=nil;
   PackageEditors.DoFreeEditor(LazPackage);
   FreeAndNil(FPlugins);
+  for nt:=Low(TPENodeType) to High(TPENodeType) do
+    FreeNodeData(nt);
   inherited Destroy;
 end;
 

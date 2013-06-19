@@ -734,6 +734,7 @@ type
     function MainUnitHasPkgName: boolean;
     // required dependencies (plus removed required dependencies)
     function FindDependencyByName(const PkgName: string): TPkgDependency;
+    function FindRemovedDependencyByName(const PkgName: string): TPkgDependency;
     function RequiredDepByIndex(Index: integer): TPkgDependency;
     function RemovedDepByIndex(Index: integer): TPkgDependency;
     procedure AddRequiredDependency(Dependency: TPkgDependency);
@@ -3170,6 +3171,13 @@ function TLazPackage.FindDependencyByName(const PkgName: string
   ): TPkgDependency;
 begin
   Result:=FindDependencyByNameInList(FFirstRequiredDependency,pdlRequires,
+                                     PkgName);
+end;
+
+function TLazPackage.FindRemovedDependencyByName(const PkgName: string
+  ): TPkgDependency;
+begin
+  Result:=FindDependencyByNameInList(FFirstRemovedDependency,pdlRequires,
                                      PkgName);
 end;
 
