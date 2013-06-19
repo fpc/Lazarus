@@ -280,7 +280,7 @@ procedure TSVGDrawer.Polyline(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
   WriteFmt(
-    '<polyline points="%s" style="stroke: %s;"/>',
+    '<polyline points="%s" style="fill: none; %s"/>',
     [PointsToStr(APoints, AStartIndex, ANumPts), StyleStroke]);
 end;
 
