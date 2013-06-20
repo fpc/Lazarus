@@ -57,6 +57,8 @@ type
 
   TChartDistance = 0..MaxInt;
 
+  TPercent = 0..100;
+
   TPointDistFunc = function (const A, B: TPoint): Integer;
 
   TTransformFunc = function (A: Double): Double of object;

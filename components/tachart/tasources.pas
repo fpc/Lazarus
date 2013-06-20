@@ -96,6 +96,7 @@ type
     FXMin: Double;
     FYMax: Double;
     FYMin: Double;
+    FYNanPercent: TPercent;
   strict private
     FCurIndex: Integer;
     FCurItem: TChartDataItem;
@@ -108,6 +109,7 @@ type
     procedure SetXMin(AValue: Double);
     procedure SetYMax(AValue: Double);
     procedure SetYMin(AValue: Double);
+    procedure SetYNanPercent(AValue: TPercent);
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
@@ -127,6 +129,7 @@ type
     property YCount;
     property YMax: Double read FYMax write SetYMax;
     property YMin: Double read FYMin write SetYMin;
+    property YNanPercent: TPercent read FYNanPercent write SetYNanPercent default 0;
   end;
 
   TUserDefinedChartSource = class;
@@ -740,7 +743,9 @@ function TRandomChartSource.GetItem(AIndex: Integer): PChartDataItem;
 
   function GetRandomY: Double;
   begin
-    if YMax <= YMin then
+    if (YNanPercent > 0) and (FRNG.GetInRange(0, 100) <= YNanPercent) then
+      Result := SafeNan
+    else if YMax <= YMin then
       Result := YMin
     else
       Result := FRNG.Get / High(LongWord) * (YMax - YMin) + YMin;
@@ -754,7 +759,7 @@ begin
     FCurIndex := -1;
   end;
   while FCurIndex < AIndex do begin
-    Inc(FCurIndex);
+    FCurIndex += 1;
     if XMax <= XMin then
       FCurItem.X := XMin
     else begin
@@ -841,6 +846,14 @@ procedure TRandomChartSource.SetYMin(AValue: Double);
 begin
   if FYMin = AValue then exit;
   FYMin := AValue;
+  InvalidateCaches;
+  Notify;
+end;
+
+procedure TRandomChartSource.SetYNanPercent(AValue: TPercent);
+begin
+  if FYNanPercent = AValue then exit;
+  FYNanPercent := AValue;
   InvalidateCaches;
   Notify;
 end;
