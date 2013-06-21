@@ -24,6 +24,24 @@ const
   PkgDescNameStandard = 'Standard Package';
 
 type
+  TPkgFileType = (
+    pftUnit,    // file is pascal unit
+    pftVirtualUnit,// file is virtual pascal unit
+    pftMainUnit, // file is the auto created main pascal unit
+    pftLFM,     // lazarus form text file
+    pftLRS,     // lazarus resource file
+    pftInclude, // include file
+    pftIssues,  // file is issues xml file
+    pftText,    // file is text (e.g. copyright or install notes)
+    pftBinary   // file is something else
+    );
+  TPkgFileTypes = set of TPkgFileType;
+
+const
+  PkgFileUnitTypes = [pftUnit,pftVirtualUnit,pftMainUnit];
+  PkgFileRealUnitTypes = [pftUnit,pftMainUnit];
+
+type
   { TPkgVersion }
 
   TPkgVersionValid = (
@@ -62,12 +80,16 @@ type
   private
     FDisableI18NForLFM: boolean;
     FFilename: string;
+    FFileType: TPkgFileType;
     FRemoved: boolean;
   protected
+    function GetInUses: boolean; virtual; abstract;
+    procedure SetInUses(AValue: boolean); virtual; abstract;
     procedure SetFilename(const AValue: string); virtual;
     function GetIDEPackage: TIDEPackage; virtual; abstract;
     procedure SetRemoved(const AValue: boolean); virtual;
     procedure SetDisableI18NForLFM(AValue: boolean); virtual;
+    procedure SetFileType(const AValue: TPkgFileType); virtual;
   public
     function GetFullFilename: string; virtual; abstract;
     function GetShortFilename(UseUp: boolean): string; virtual; abstract;
@@ -76,6 +98,8 @@ type
     property LazPackage: TIDEPackage read GetIDEPackage;
     property Removed: boolean read FRemoved write SetRemoved;
     property DisableI18NForLFM: boolean read FDisableI18NForLFM write SetDisableI18NForLFM;
+    property FileType: TPkgFileType read FFileType write SetFileType;
+    property InUses: boolean read GetInUses write SetInUses; // added to uses section of package
   end;
 
   { TLazPackageID }
@@ -769,6 +793,11 @@ end;
 procedure TLazPackageFile.SetDisableI18NForLFM(AValue: boolean);
 begin
   FDisableI18NForLFM:=AValue;
+end;
+
+procedure TLazPackageFile.SetFileType(const AValue: TPkgFileType);
+begin
+  FFileType:=AValue;
 end;
 
 procedure TLazPackageFile.SetFilename(const AValue: string);

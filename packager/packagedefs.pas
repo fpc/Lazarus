@@ -27,15 +27,8 @@
 
   Author: Mattias Gaertner
 
-  What is a package:
-  A lazarus package is a collection of units and components, containing
-  information how they can be compiled and how they can be used by projects or
-  other packages or the IDE. In contrary to Delphi, packages are not limited
-  to libraries and they can be OS independent.
-  (Delphi: a package is a specially compiled library used by applications,
-  the IDE or both. Delphi packages require compiler magic, which fpc is not
-  capable of at the moment and of course this magic is not OS independent.)
-
+  Abstract:
+    Classes for packages and dependencies.
 }
 unit PackageDefs;
 
@@ -107,23 +100,6 @@ type
 
   { TPkgFile }
 
-  TPkgFileType = (
-    pftUnit,    // file is pascal unit
-    pftVirtualUnit,// file is virtual pascal unit
-    pftMainUnit, // file is the auto created main pascal unit
-    pftLFM,     // lazarus form text file
-    pftLRS,     // lazarus resource file
-    pftInclude, // include file
-    pftIssues,  // file is issues xml file
-    pftText,    // file is text (e.g. copyright or install notes)
-    pftBinary   // file is something else
-    );
-  TPkgFileTypes = set of TPkgFileType;
-  
-const
-  PkgFileUnitTypes = [pftUnit,pftVirtualUnit,pftMainUnit];
-  PkgFileRealUnitTypes = [pftUnit,pftMainUnit];
-  
 type
   TPFComponentBaseClass = (
     pfcbcNone,      // unknown
@@ -159,7 +135,6 @@ type
     FComponentPriority: TComponentPriority;
     FComponents: TFPList; // list of TPkgComponent
     FDirectory: string;
-    FFileType: TPkgFileType;
     FFlags: TPkgFileFlags;
     fFullFilename: string;
     fFullFilenameStamp: integer;
@@ -173,16 +148,18 @@ type
     function GetHasRegisterProc: boolean;
     procedure SetAddToUsesPkgSection(const AValue: boolean);
     procedure SetAutoReferenceSourceDir(const AValue: boolean);
-    procedure SetFileType(const AValue: TPkgFileType);
     procedure SetFlags(const AValue: TPkgFileFlags);
     procedure SetHasRegisterProc(const AValue: boolean);
     procedure UpdateUnitName;
     function GetComponentList: TFPList;
   protected
+    function GetInUses: boolean; override;
+    procedure SetInUses(AValue: boolean); override;
     function GetIDEPackage: TIDEPackage; override;
     procedure SetFilename(const AValue: string); override;
     procedure SetRemoved(const AValue: boolean); override;
     procedure SetDisableI18NForLFM(AValue: boolean); override;
+    procedure SetFileType(const AValue: TPkgFileType); override;
   public
     constructor Create(ThePackage: TLazPackage);
     destructor Destroy; override;
@@ -212,7 +189,6 @@ type
                                                    write FComponentPriority;
     property Components[Index: integer]: TPkgComponent read GetComponents;// registered components
     property Directory: string read FDirectory;
-    property FileType: TPkgFileType read FFileType write SetFileType;
     property Flags: TPkgFileFlags read FFlags write SetFlags;
     property HasRegisterProc: boolean
                                read GetHasRegisterProc write SetHasRegisterProc;
@@ -1554,13 +1530,13 @@ end;
 
 procedure TPkgFile.SetFileType(const AValue: TPkgFileType);
 begin
-  if FFileType=AValue then exit;
+  if FileType=AValue then exit;
   if (LazPackage<>nil) and (LazPackage.MainUnit=Self) then
     LazPackage.FMainUnit:=nil;
-  FFileType:=AValue;
-  FSourceDirNeedReference:=(FFileType in PkgFileRealUnitTypes) and not Removed;
+  inherited SetFileType(AValue);
+  FSourceDirNeedReference:=(FileType in PkgFileRealUnitTypes) and not Removed;
   UpdateSourceDirectoryReference;
-  if (FFileType=pftMainUnit) and (LazPackage<>nil)
+  if (FileType=pftMainUnit) and (LazPackage<>nil)
   and (LazPackage.MainUnit<>Self) then begin
     if LazPackage.MainUnit<>nil then
       LazPackage.MainUnit.FileType:=pftUnit;
@@ -1599,6 +1575,20 @@ function TPkgFile.GetComponentList: TFPList;
 begin
   if FComponents=nil then FComponents:=TFPList.Create;
   Result:=FComponents;
+end;
+
+function TPkgFile.GetInUses: boolean;
+begin
+  Result:=pffAddToPkgUsesSection in FFlags;
+end;
+
+procedure TPkgFile.SetInUses(AValue: boolean);
+begin
+  if InUses=AValue then exit;
+  if AValue then
+    Include(FFlags,pffAddToPkgUsesSection)
+  else
+    Exclude(FFlags,pffAddToPkgUsesSection);
 end;
 
 function TPkgFile.GetIDEPackage: TIDEPackage;
@@ -1671,7 +1661,7 @@ begin
   inherited SetFilename('');
   FDirectory:='';
   FFlags:=[];
-  FFileType:=pftUnit;
+  inherited SetFileType(pftUnit);
   FSourceDirectoryReferenced:=false;
   FSourceDirNeedReference:=true;
   FreeThenNil(FComponents);
