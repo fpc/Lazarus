@@ -410,8 +410,7 @@ end;
 
 function TChartTextElement.IsMarginRequired: Boolean;
 begin
-  with GetFrame do
-    Result := (GetLabelBrush.Style <> bsClear) or (Style <> psClear) and Visible;
+  Result := (GetLabelBrush.Style <> bsClear) or GetFrame.EffVisible;
 end;
 
 function TChartTextElement.MeasureLabel(

@@ -424,7 +424,7 @@ var
 begin
   inherited Draw(ADrawer, ARect);
   with FFramePen do
-    pw := IfThen(Visible and (Style <> psClear), (Width + 1) div 2, 0);
+    pw := IfThen(EffVisible, (Width + 1) div 2, 0);
   w := ARect.Right - ARect.Left - 2 * pw;
   if w <= 0 then exit;
   for x := ARect.Left + pw to ARect.Right - pw do begin
@@ -1013,17 +1013,15 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
   end;
 
   procedure DrawSpline(ASpline: TSpline);
-  var
-    p: TChartPen;
   begin
     if ASpline.FIsUnorderedX then begin
       if not IsUnorderedVisible then exit;
-      p := BadDataPen;
+      ADrawer.Pen := BadDataPen;
     end
-    else
-      p := Pen;
-    if not p.Visible or (p.Style = psClear) then exit;
-    ADrawer.Pen := p;
+    else begin
+      if not Pen.EffVisible then exit;
+      ADrawer.Pen := Pen;
+    end;
     with TDrawFuncHelper.Create(Self, ASpline.FIntervals, @ASpline.Calculate, Step) do
       try
         DrawFunction(ADrawer);
@@ -1113,16 +1111,12 @@ end;
 
 function TCubicSplineSeries.IsFewPointsVisible: Boolean;
 begin
-  Result :=
-    (csoDrawFewPoints in Options) and
-    BadDataPen.Visible and (BadDataPen.Style <> psClear);
+  Result := (csoDrawFewPoints in Options) and BadDataPen.EffVisible;
 end;
 
 function TCubicSplineSeries.IsUnorderedVisible: Boolean;
 begin
-  Result :=
-    (csoDrawUnorderedX in Options) and
-    BadDataPen.Visible and (BadDataPen.Style <> psClear);
+  Result := (csoDrawUnorderedX in Options) and BadDataPen.EffVisible;
 end;
 
 procedure TCubicSplineSeries.PrepareCoeffs;

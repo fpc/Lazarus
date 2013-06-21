@@ -551,7 +551,7 @@ end;
 function TChart.ClipRectWithoutFrame(AZPosition: TChartDistance): TRect;
 begin
   Result := FClipRect;
-  if (AZPosition > 0) or not Frame.Visible or (Frame.Style = psClear) then exit;
+  if (AZPosition > 0) or not Frame.EffVisible then exit;
   Result.Left += (Frame.Width + 1) div 2;
   Result.Top += (Frame.Width + 1) div 2;
   Result.Bottom -= Frame.Width div 2;

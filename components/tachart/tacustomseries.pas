@@ -732,7 +732,7 @@ end;
 function TChartSeries.GetGraphPoint(AIndex: Integer): TDoublePoint;
 begin
   Result.X := GetGraphPointX(AIndex);
-  Result.Y := GetGraphPointY(AIndex);;
+  Result.Y := GetGraphPointY(AIndex);
   if IsRotated then
     Exchange(Result.X, Result.Y);
 end;

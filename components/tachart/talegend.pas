@@ -567,7 +567,7 @@ var
         FItems[i].Draw(drawer, r);
         OffsetRect(r, 0, FItemSize.Y + Spacing);
       end;
-      if GridHorizontal.Visible and (GridHorizontal.Style <> psClear) then begin
+      if GridHorizontal.EffVisible then begin
         drawer.Pen := GridHorizontal;
         drawer.SetBrushParams(bsClear, clTAColor);
         for i := 1 to FRowCount - 1 do begin
@@ -575,7 +575,7 @@ var
           drawer.Line(FBounds.Left, y, FBounds.Right, y);
         end;
       end;
-      if GridVertical.Visible and (GridVertical.Style <> psClear) then begin
+      if GridVertical.EffVisible then begin
         drawer.Pen := GridVertical;
         drawer.SetBrushParams(bsClear, clTAColor);
         for i := 1 to FColCount - 1 do begin

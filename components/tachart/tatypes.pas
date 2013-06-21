@@ -52,6 +52,7 @@ type
     constructor Create; override;
   public
     procedure Assign(ASource: TPersistent); override;
+    function EffVisible: Boolean; inline;
   published
     property Visible: Boolean read FVisible write SetVisible default true;
   end;
@@ -272,6 +273,11 @@ constructor TChartPen.Create;
 begin
   inherited Create;
   SetPropDefaults(Self, ['Color', 'Style', 'Visible']);
+end;
+
+function TChartPen.EffVisible: Boolean;
+begin
+  Result := Visible and (Style <> psClear);
 end;
 
 procedure TChartPen.SetVisible(AValue: Boolean);
