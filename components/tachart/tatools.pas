@@ -1782,12 +1782,13 @@ begin
     SetCursor;
   FPrevSeries := Series;
   FPrevPointIndex := PointIndex;
+  h := GetHintText;
   APoint := FChart.ClientToScreen(APoint);
   if Assigned(OnHintPosition) then
     OnHintPosition(Self, APoint);
 
   if UseApplicationHint then begin
-    FChart.Hint := GetHintText;
+    FChart.Hint := h;
     FChart.ShowHint := FChart.Hint <> '';
     if not FChart.ShowHint then exit;
     Application.HintPause := 0;
@@ -1796,7 +1797,6 @@ begin
   else begin
     if FHintWindow = nil then
       FHintWindow := THintWindow.Create(nil);
-    h := GetHintText;
     if h = '' then exit;
     r := FHintWindow.CalcHintRect(FChart.Width, h, nil);
     OffsetRect(r, APoint.X, APoint.Y);
