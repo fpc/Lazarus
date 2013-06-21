@@ -203,6 +203,8 @@ type
     FSplines: array of TSpline;
 
     procedure FreeSplines;
+    function IsUnorderedVisible: Boolean; inline;
+    function IsFewPointsVisible: Boolean; inline;
     procedure PrepareCoeffs;
     procedure SetBadDataPen(AValue: TBadDataChartPen);
     procedure SetOptions(AValue: TCubicSplineOptions);
@@ -999,10 +1001,7 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
     i, lb, ub: Integer;
   begin
     Result := ASpline.IsFewPoints;
-    if
-      not Result or not (csoDrawFewPoints in Options) or not BadDataPen.Visible
-    then
-      exit;
+    if not Result or not IsFewPointsVisible then exit;
     lb := Max(ASpline.FStartIndex, FLoBound);
     ub := Min(ASpline.FStartIndex + High(ASpline.FX), FUpBound);
     if lb > ub then exit;
@@ -1018,14 +1017,12 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
     p: TChartPen;
   begin
     if ASpline.FIsUnorderedX then begin
-      if csoDrawUnorderedX in Options then
-        p := BadDataPen
-      else
-        exit;
+      if not IsUnorderedVisible then exit;
+      p := BadDataPen;
     end
     else
       p := Pen;
-    if not p.Visible then exit;
+    if not p.Visible or (p.Style = psClear) then exit;
     ADrawer.Pen := p;
     with TDrawFuncHelper.Create(Self, ASpline.FIntervals, @ASpline.Calculate, Step) do
       try
@@ -1063,6 +1060,7 @@ begin
     PrepareCoeffs;
   if FSplines = nil then exit;
   for s in FSplines do begin
+    if s.IsFewPoints then continue;
     minv := Result.a.Y;
     maxv := Result.b.Y;
     ipfsmm(High(s.FCoeff), s.FX[0], s.FY[0], s.FCoeff[0], minv, maxv, r);
@@ -1094,10 +1092,10 @@ var
   s: TSpline;
   r: TNearestPointResults;
 begin
-  Result := false;
-  AResults.FIndex := -1;
+  Result := inherited GetNearestPoint(AParams, AResults);
   for s in FSplines do begin
-    if s.FIsUnorderedX and not (csoDrawUnorderedX in Options) then continue;
+    if s.IsFewPoints or (s.FIsUnorderedX and not IsUnorderedVisible) then
+      continue;
     with TDrawFuncHelper.Create(Self, s.FIntervals, @s.Calculate, Step) do
       try
         if
@@ -1111,6 +1109,20 @@ begin
         Free;
       end;
   end;
+end;
+
+function TCubicSplineSeries.IsFewPointsVisible: Boolean;
+begin
+  Result :=
+    (csoDrawFewPoints in Options) and
+    BadDataPen.Visible and (BadDataPen.Style <> psClear);
+end;
+
+function TCubicSplineSeries.IsUnorderedVisible: Boolean;
+begin
+  Result :=
+    (csoDrawUnorderedX in Options) and
+    BadDataPen.Visible and (BadDataPen.Style <> psClear);
 end;
 
 procedure TCubicSplineSeries.PrepareCoeffs;
