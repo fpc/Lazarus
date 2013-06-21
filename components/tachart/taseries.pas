@@ -431,13 +431,15 @@ var
     // the above-mentioned inefficiency for long ones.
     // First value was selected by some experiments as "optimal enough" for
     // both affected platforms.
+    {$IF defined(LCLWIN32) or defined(LCLGTK2)}
     MAX_LENGTH: array [Boolean] of Integer = (50000, 1000000);
+    {$ENDIF}
   begin
-    {$IF defined(WIN32)}
+    {$IF defined(LCLWIN32)}
     Result :=
       (breakCount > 0) and
       (pointCount - breaks[breakCount - 1] > MAX_LENGTH[LinePen.Width = 1]);
-    {$ELSEIF defined(GTK2)}
+    {$ELSEIF defined(LCLGTK2)}
     Result :=
       (LinePen.Width > 1) and (breakCount > 0) and
       (pointCount - breaks[breakCount - 1] > MAX_LENGTH[false]);
