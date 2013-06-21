@@ -24,14 +24,10 @@
     IDE Window showing dependencies of units and packages.
 
   ToDo:
-    - delay update pages when not visible
-    - update pages when becoming visible
-    - additional files as start units
-    - check if package unit is used
+    - check all OnIdle to set Done:=not IdleConnected
     - view:
       - mark units with implementation uses section
-    - selected units
-      - expand node: show connected units
+    - every second: write parsed units
     - resourcestrings
 }
 unit CodyUnitDepWnd;
@@ -73,6 +69,7 @@ type
     Typ: TUDNodeType;
     Identifier: string; // GroupName, Directory, Filename
     Group: string;
+    HasChildren: boolean;
   end;
 
   { TUDNode }
@@ -146,6 +143,8 @@ type
     procedure AllUnitsShowDirsSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowGroupNodesSpeedButtonClick(Sender: TObject);
     procedure RefreshButtonClick(Sender: TObject);
+    procedure SelUnitsTreeViewExpanding(Sender: TObject; Node: TTreeNode;
+      var AllowExpansion: Boolean);
     procedure UnitsTreeViewShowHint(Sender: TObject; HintInfo: PHintInfo);
     procedure UnitsTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -187,11 +186,15 @@ type
     fSelUnitsTVSearchStartNode: TTreeNode;
     function CreateAllUnitsTree: TUDNode;
     function CreateSelUnitsTree: TUDNode;
+    procedure AddUsesSubNodes(UDNode: TUDNode);
     procedure CreateTVNodes(TV: TTreeView;
-      ParentTVNode: TTreeNode; ParentUDNode: TUDNode);
+      ParentTVNode: TTreeNode; ParentUDNode: TUDNode; Expand: boolean);
     procedure FreeUsesGraph;
     procedure SelectNextSearchTV(TV: TTreeView; StartTVNode: TTreeNode;
       SearchNext, SkipStart: boolean);
+    function FindNextTVNode(StartNode: TTreeNode;
+      LowerSearch: string; SearchNext, SkipStart: boolean): TTreeNode;
+    function FindUnitTVNodeWithFilename(TV: TTreeView; aFilename: string): TTreeNode;
     procedure SetCurrentUnit(AValue: TUGUnit);
     procedure SetIdleConnected(AValue: boolean);
     procedure CreateGroups;
@@ -213,8 +216,6 @@ type
     procedure UpdateSelUnitsTreeView;
     procedure UpdateAllUnitsTreeViewSearch;
     procedure UpdateSelUnitsTreeViewSearch;
-    function FindNextTVNode(StartNode: TTreeNode;
-      LowerSearch: string; SearchNext, SkipStart: boolean): TTreeNode;
     function GetImgIndex(Node: TUDNode): integer;
     function NodeTextToUnit(NodeText: string): TUGUnit;
     function UGUnitToNodeText(UGUnit: TUGUnit): string;
@@ -335,6 +336,7 @@ begin
   fImgIndexPackage   := IDEImages.LoadImage(16, 'pkg_required');
   fImgIndexDirectory := IDEImages.LoadImage(16, 'pkg_files');
   AllUnitsTreeView.Images:=IDEImages.Images_16;
+  SelUnitsTreeView.Images:=IDEImages.Images_16;
 
   Caption:='Unit Dependencies';
   RefreshButton.Caption:='Refresh';
@@ -399,8 +401,38 @@ begin
   StartParsing;
 end;
 
+procedure TUnitDependenciesWindow.SelUnitsTreeViewExpanding(Sender: TObject;
+  Node: TTreeNode; var AllowExpansion: Boolean);
+var
+  UDNode: TUDNode;
+begin
+  if Node.Count>0 then exit;
+  if not (TObject(Node.Data) is TUDNode) then exit;
+  UDNode:=TUDNode(Node.Data);
+  if UDNode.Typ=udnUnit then begin
+    AddUsesSubNodes(UDNode);
+    CreateTVNodes(SelUnitsTreeView,Node,UDNode,false);
+    AllowExpansion:=true;
+  end;
+end;
+
 procedure TUnitDependenciesWindow.UnitsTreeViewShowHint(Sender: TObject;
   HintInfo: PHintInfo);
+
+  procedure CountUses(List: TFPList; out IntfCnt, ImplCnt: integer);
+  var
+    i: Integer;
+  begin
+    IntfCnt:=0;
+    ImplCnt:=0;
+    if List=nil then exit;
+    for i:=0 to List.Count-1 do
+      if TUGUses(List[i]).InImplementation then
+        inc(ImplCnt)
+      else
+        inc(IntfCnt);
+  end;
+
 var
   TV: TTreeView;
   TVNode: TTreeNode;
@@ -408,6 +440,11 @@ var
   UDNode: TUDNode;
   Filename: String;
   s: String;
+  UGUnit: TUGUnit;
+  UsedByIntf: Integer;
+  UsedByImpl: Integer;
+  UsesIntf: integer;
+  UsesImpl: integer;
 begin
   TV:=Sender as TTreeView;
   p:=HintInfo^.CursorPos;
@@ -417,6 +454,21 @@ begin
   Filename:=GetFilename(UDNode);
   if Filename='' then exit;
   s:='File: '+Filename;
+  if UDNode.Typ=udnUnit then begin
+    UGUnit:=UsesGraph.GetUnit(Filename,false);
+    if UGUnit<>nil then begin
+      CountUses(UGUnit.UsesUnits,UsesIntf,UsesImpl);
+      CountUses(UGUnit.UsedByUnits,UsedByIntf,UsedByImpl);
+      if UsesIntf>0 then
+        s+=LineEnding+'Interface Uses: '+IntToStr(UsesIntf);
+      if UsesImpl>0 then
+        s+=LineEnding+'Implementation Uses: '+IntToStr(UsesImpl);
+      if UsedByIntf>0 then
+        s+=LineEnding+'Used by Interfaces: '+IntToStr(UsedByIntf);
+      if UsedByImpl>0 then
+        s+=LineEnding+'Used by Implementations: '+IntToStr(UsedByImpl);
+    end;
+  end;
   HintInfo^.HintStr:=s;
 end;
 
@@ -531,6 +583,7 @@ begin
     UpdateSelUnitsTreeViewSearch
   else
     IdleConnected:=false;
+  Done:=not IdleConnected;
 end;
 
 procedure TUnitDependenciesWindow.SearchPkgsCheckBoxChange(Sender: TObject);
@@ -953,6 +1006,33 @@ begin
 end;
 
 function TUnitDependenciesWindow.CreateSelUnitsTree: TUDNode;
+var
+  RootNode: TUDNode;
+  SelTVNode: TTreeNode;
+  SelUDNode: TUDNode;
+  UDNode: TUDNode;
+begin
+  RootNode:=TUDNode.Create;
+  SelTVNode:=AllUnitsTreeView.GetFirstMultiSelected;
+  if SelTVNode=nil then
+    SelTVNode:=AllUnitsTreeView.Selected;
+  //debugln(['TUnitDependenciesWindow.CreateSelUnitsTree SelTVNode=',SelTVNode<>nil]);
+  while SelTVNode<>nil do begin
+    if TObject(SelTVNode.Data) is TUDNode then begin
+      SelUDNode:=TUDNode(SelTVNode.Data);
+      if SelUDNode.Typ=udnUnit then begin
+        UDNode:=RootNode.GetNode(udnUnit,SelUDNode.NodeText,true);
+        UDNode.Identifier:=SelUDNode.Identifier;
+        UDNode.Group:=SelUDNode.Group;
+        AddUsesSubNodes(UDNode);
+      end;
+    end;
+    SelTVNode:=SelTVNode.GetNextMultiSelected;
+  end;
+  Result:=RootNode;
+end;
+
+procedure TUnitDependenciesWindow.AddUsesSubNodes(UDNode: TUDNode);
 
   procedure AddUses(ParentUDNode: TUDNode; UsesList: TFPList;
     NodeTyp: TUDNodeType);
@@ -967,6 +1047,7 @@ function TUnitDependenciesWindow.CreateSelUnitsTree: TUDNode;
     Filename: String;
     UDNode: TUDNode;
     GroupName: String;
+    Cnt: Integer;
   begin
     if ParentUDNode=nil then exit;
     if UsesList=nil then exit;
@@ -974,20 +1055,31 @@ function TUnitDependenciesWindow.CreateSelUnitsTree: TUDNode;
     then exit;
     InImplementation:=(NodeTyp in [udnImplementation,udnUsedByImplementation]);
     UsedBy:=(NodeTyp in [udnUsedByInterface,udnUsedByImplementation]);
-    SectionUDNode:=nil;
+
+    // count the number of uses
+    Cnt:=0;
     for i:=0 to UsesList.Count-1 do begin
       UGUses:=TUGUses(UsesList[i]);
       if UGUses.InImplementation<>InImplementation then continue;
-      if SectionUDNode=nil then begin
-        case NodeTyp of
-        udnInterface: NodeText:='interface uses';
-        udnImplementation: NodeText:='implementation uses';
-        udnUsedByInterface: NodeText:='used by interfaces';
-        udnUsedByImplementation: NodeText:='used by implementations';
-        else NodeText:='';
-        end;
-        SectionUDNode:=ParentUDNode.GetNode(NodeTyp,NodeText,true);
-      end;
+      inc(Cnt);
+    end;
+    if Cnt=0 then exit;
+
+    // create a section node
+    NodeText:=IntToStr(Cnt);
+    case NodeTyp of
+    udnInterface: NodeText:=Format('interface uses: %s',[NodeText]);
+    udnImplementation: NodeText:=Format('implementation uses: %s',[NodeText]);
+    udnUsedByInterface: NodeText:=Format('used by interfaces: %s',[NodeText]);
+    udnUsedByImplementation: NodeText:=Format('used by implementations: %s',[NodeText]);
+    else exit;
+    end;
+    SectionUDNode:=ParentUDNode.GetNode(NodeTyp,NodeText,true);
+
+    // create unit nodes
+    for i:=0 to UsesList.Count-1 do begin
+      UGUses:=TUGUses(UsesList[i]);
+      if UGUses.InImplementation<>InImplementation then continue;
       if UsedBy then
         OtherUnit:=TUGGroupUnit(UGUses.Owner)
       else
@@ -1001,44 +1093,25 @@ function TUnitDependenciesWindow.CreateSelUnitsTree: TUDNode;
       else
         GroupName:=GroupNone;
       UDNode.Group:=GroupName;
+      UDNode.HasChildren:=
+         ((OtherUnit.UsedByUnits<>nil) and (OtherUnit.UsedByUnits.Count>0))
+         or ((OtherUnit.UsesUnits<>nil) and (OtherUnit.UsesUnits.Count>0));
     end;
   end;
 
 var
-  RootNode: TUDNode;
-  SelTVNode: TTreeNode;
-  SelUDNode: TUDNode;
-  UDNode: TUDNode;
   Filename: String;
   UGUnit: TUGGroupUnit;
 begin
-  RootNode:=TUDNode.Create;
-  SelTVNode:=AllUnitsTreeView.GetFirstMultiSelected;
-  if SelTVNode=nil then
-    SelTVNode:=AllUnitsTreeView.Selected;
-  //debugln(['TUnitDependenciesWindow.CreateSelUnitsTree SelTVNode=',SelTVNode<>nil]);
-  while SelTVNode<>nil do begin
-    if TObject(SelTVNode.Data) is TUDNode then begin
-      SelUDNode:=TUDNode(SelTVNode.Data);
-      if SelUDNode.Typ=udnUnit then begin
-        UDNode:=RootNode.GetNode(udnUnit,SelUDNode.NodeText,true);
-        UDNode.Identifier:=SelUDNode.Identifier;
-        UDNode.Group:=SelUDNode.Group;
-
-        // add connected units
-        Filename:=UDNode.Identifier;
-        UGUnit:=TUGGroupUnit(UsesGraph.GetUnit(Filename,false));
-        if UGUnit<>nil then begin
-          AddUses(UDNode,UGUnit.UsesUnits,udnInterface);
-          AddUses(UDNode,UGUnit.UsesUnits,udnImplementation);
-          AddUses(UDNode,UGUnit.UsedByUnits,udnUsedByInterface);
-          AddUses(UDNode,UGUnit.UsedByUnits,udnUsedByImplementation);
-        end;
-      end;
-    end;
-    SelTVNode:=SelTVNode.GetNextMultiSelected;
+  // add connected units
+  Filename:=UDNode.Identifier;
+  UGUnit:=TUGGroupUnit(UsesGraph.GetUnit(Filename,false));
+  if UGUnit<>nil then begin
+    AddUses(UDNode,UGUnit.UsesUnits,udnInterface);
+    AddUses(UDNode,UGUnit.UsesUnits,udnImplementation);
+    AddUses(UDNode,UGUnit.UsedByUnits,udnUsedByInterface);
+    AddUses(UDNode,UGUnit.UsedByUnits,udnUsedByImplementation);
   end;
-  Result:=RootNode;
 end;
 
 procedure TUnitDependenciesWindow.SelectNextSearchTV(TV: TTreeView;
@@ -1114,7 +1187,8 @@ begin
       for j:=0 to Pkg.FileCount-1 do begin
         PkgFile:=Pkg.Files[j];
         if PkgFile.Removed then continue;
-        // ToDo: check if unit is used
+        if not (PkgFile.FileType in PkgFileRealUnitTypes) then continue;
+        if not PkgFile.InUses then continue;
         aFilename:=PkgFile.GetFullFilename;
         if FilenameIsAbsolute(AFilename)
         and FilenameIsPascalUnit(AFilename) then
@@ -1416,7 +1490,7 @@ begin
 end;
 
 procedure TUnitDependenciesWindow.CreateTVNodes(TV: TTreeView;
-  ParentTVNode: TTreeNode; ParentUDNode: TUDNode);
+  ParentTVNode: TTreeNode; ParentUDNode: TUDNode; Expand: boolean);
 var
   AVLNode: TAVLTreeNode;
   UDNode: TUDNode;
@@ -1431,8 +1505,9 @@ begin
     TVNode.Data:=UDNode;
     TVNode.ImageIndex:=GetImgIndex(UDNode);
     TVNode.SelectedIndex:=TVNode.ImageIndex;
-    CreateTVNodes(TV,TVNode,UDNode);
-    TVNode.Expanded:=true;
+    TVNode.HasChildren:=UDNode.HasChildren;
+    CreateTVNodes(TV,TVNode,UDNode,Expand);
+    TVNode.Expanded:=Expand and (TVNode.Count>0);
     AVLNode:=ParentUDNode.ChildNodes.FindSuccessor(AVLNode);
   end;
 end;
@@ -1451,6 +1526,7 @@ procedure TUnitDependenciesWindow.UpdateAllUnitsTreeView;
 var
   TV: TTreeView;
   OldExpanded: TTreeNodeExpandedState;
+  SrcEdit: TSourceEditorInterface;
 begin
   Exclude(FFlags,udwNeedUpdateAllUnitsTreeView);
   TV:=AllUnitsTreeView;
@@ -1466,7 +1542,7 @@ begin
   TV.Items.Clear;
   // create nodes
   FAllUnitsRootUDNode:=CreateAllUnitsTree;
-  CreateTVNodes(TV,nil,FAllUnitsRootUDNode);
+  CreateTVNodes(TV,nil,FAllUnitsRootUDNode,true);
   // restore old expanded state
   if OldExpanded<>nil then begin
     OldExpanded.Apply(TV);
@@ -1474,6 +1550,16 @@ begin
   end;
   // update search
   UpdateAllUnitsTreeViewSearch;
+  // select a unit
+  if TV.Selected=nil then begin
+    SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
+    if SrcEdit<>nil then
+      TV.Selected:=FindUnitTVNodeWithFilename(TV,SrcEdit.FileName);
+  end;
+  if (TV.Selected=nil) and (LazarusIDE.ActiveProject<>nil)
+  and (LazarusIDE.ActiveProject.MainFile<>nil) then
+    TV.Selected:=FindUnitTVNodeWithFilename(TV,LazarusIDE.ActiveProject.MainFile.Filename);
+
   TV.EndUpdate;
 end;
 
@@ -1491,7 +1577,7 @@ begin
   TV.Items.Clear;
   // create nodes
   FSelUnitsRootUDNode:=CreateSelUnitsTree;
-  CreateTVNodes(TV,nil,FSelUnitsRootUDNode);
+  CreateTVNodes(TV,nil,FSelUnitsRootUDNode,true);
   // update search
   UpdateSelUnitsTreeViewSearch;
   TV.EndUpdate;
@@ -1524,6 +1610,24 @@ begin
     else
       Result:=Result.GetPrev;
   end;
+end;
+
+function TUnitDependenciesWindow.FindUnitTVNodeWithFilename(TV: TTreeView;
+  aFilename: string): TTreeNode;
+var
+  i: Integer;
+  UDNode: TUDNode;
+begin
+  for i:=0 to TV.Items.Count-1 do begin
+    Result:=TV.Items[i];
+    if TObject(Result.Data) is TUDNode then begin
+      UDNode:=TUDNode(Result.Data);
+      if (UDNode.Typ in [udnDirectory,udnUnit])
+      and (CompareFilenames(UDNode.Identifier,aFilename)=0) then
+        exit;
+    end;
+  end;
+  Result:=nil;
 end;
 
 function TUnitDependenciesWindow.GetImgIndex(Node: TUDNode): integer;
