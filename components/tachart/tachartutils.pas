@@ -495,7 +495,7 @@ begin
     Result := 0.0;
 end;
 
-{$HINTS OFF}
+{$PUSH}{$HINTS OFF}
 procedure Unused(const A1);
 begin
 end;
@@ -503,7 +503,7 @@ end;
 procedure Unused(const A1, A2);
 begin
 end;
-{$HINTS ON}
+{$POP}
 
 procedure UpdateMinMax(AValue: Double; var AMin, AMax: Double);
 begin
