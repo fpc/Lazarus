@@ -24,9 +24,6 @@
     IDE Window showing dependencies of units and packages.
 
   ToDo:
-    - check all OnIdle to set Done:=not IdleConnected
-    - view:
-      - mark units with implementation uses section
     - every second: write parsed units
     - resourcestrings
 }
@@ -142,6 +139,9 @@ type
     procedure AllUnitsSearchPrevSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowDirsSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowGroupNodesSpeedButtonClick(Sender: TObject);
+    procedure AllUnitsTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
+      Node: TTreeNode; {%H-}State: TCustomDrawState; Stage: TCustomDrawStage;
+      var {%H-}PaintImages, {%H-}DefaultDraw: Boolean);
     procedure RefreshButtonClick(Sender: TObject);
     procedure SelUnitsTreeViewExpanding(Sender: TObject; Node: TTreeNode;
       var AllowExpansion: Boolean);
@@ -182,6 +182,7 @@ type
     fImgIndexUnit: integer;
     fImgIndexPackage: integer;
     fImgIndexDirectory: integer;
+    fImgIndexOverlayImplUses: integer;
     fAllUnitsTVSearchStartNode: TTreeNode;
     fSelUnitsTVSearchStartNode: TTreeNode;
     function CreateAllUnitsTree: TUDNode;
@@ -335,6 +336,7 @@ begin
   fImgIndexUnit      := IDEImages.LoadImage(16, 'item_unit');
   fImgIndexPackage   := IDEImages.LoadImage(16, 'pkg_required');
   fImgIndexDirectory := IDEImages.LoadImage(16, 'pkg_files');
+  fImgIndexOverlayImplUses := IDEImages.LoadImage(16, 'pkg_core_overlay');
   AllUnitsTreeView.Images:=IDEImages.Images_16;
   SelUnitsTreeView.Images:=IDEImages.Images_16;
 
@@ -393,6 +395,40 @@ procedure TUnitDependenciesWindow.AllUnitsShowGroupNodesSpeedButtonClick(
 begin
   Include(FFlags,udwNeedUpdateAllUnitsTreeView);
   IdleConnected:=true;
+end;
+
+procedure TUnitDependenciesWindow.AllUnitsTreeViewAdvancedCustomDrawItem(
+  Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
+  Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
+var
+  TV: TTreeView;
+  NodeRect: Classes.TRect;
+  x: Integer;
+  UDNode: TUDNode;
+  UGUnit: TUGUnit;
+  UsesImplCnt: Integer;
+  i: Integer;
+  y: Integer;
+begin
+  if Stage<>cdPostPaint then exit;
+  TV:=Sender as TTreeView;
+  if not (TObject(Node.Data) is TUDNode) then exit;
+  UDNode:=TUDNode(Node.Data);
+  if UDNode.Typ<>udnUnit then exit;
+  UGUnit:=UsesGraph.GetUnit(UDNode.Identifier,false);
+  if UGUnit=nil then exit;
+  if (UGUnit.UsesUnits=nil) then exit;
+  UsesImplCnt:=0;
+  for i:=0 to UGUnit.UsesUnits.Count-1 do begin
+    if TUGUses(UGUnit.UsesUnits[i]).InImplementation then
+      inc(UsesImplCnt);
+  end;
+  if UsesImplCnt=0 then exit;
+
+  NodeRect:=Node.DisplayRect(False);
+  x:=Node.DisplayIconLeft+1;
+  y:=(NodeRect.Top+NodeRect.Bottom-TV.Images.Height) div 2;
+  TV.Images.Draw(TV.Canvas,x,y,fImgIndexOverlayImplUses);
 end;
 
 procedure TUnitDependenciesWindow.RefreshButtonClick(Sender: TObject);

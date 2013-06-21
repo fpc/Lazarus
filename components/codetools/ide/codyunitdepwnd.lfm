@@ -218,6 +218,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           ShowHint = True
           ShowRoot = False
           TabOrder = 1
+          OnAdvancedCustomDrawItem = AllUnitsTreeViewAdvancedCustomDrawItem
           OnMouseDown = UnitsTreeViewMouseDown
           OnSelectionChanged = AllUnitsTreeViewSelectionChanged
           OnShowHint = UnitsTreeViewShowHint
