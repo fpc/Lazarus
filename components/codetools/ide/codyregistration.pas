@@ -35,7 +35,7 @@ uses
   IDECommands, NewIDEWndDlg,
   CodeToolManager,
   CodyStrConsts, CodyUtils, CodyCtrls, CodyOpts,
-  PPUListDlg, CodyUnitDepWnd, AddAssignMethodDlg, AddWithBlockDlg,
+  PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg,
   CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyCopyDeclaration,
   CodyIdentifiersDlg, CodyMiscOptsFrame;
 
@@ -89,7 +89,6 @@ var
   CmdCatView: TIDECommandCategory;
   ViewCodyWindowCommand: TIDECommand;
   {$IFDEF EnableCodyExperiments}
-  ViewCodyUnitDependenciesWindowCommand: TIDECommand;
   {$ENDIF}
 begin
   CodyOptions:=TCodyMiscOptions.Create;
@@ -181,14 +180,6 @@ begin
   {$IFNDEF EnableCodyExperiments}
    .Visible:=false
   {$ENDIF};
-
-  // Unit dependencies
-  {$IFDEF EnableCodyExperiments}
-  ViewCodyUnitDependenciesWindowCommand:=RegisterIDECommand(CmdCatView, 'UnitDependencies',
-    'Cody Unit Dependencies', CleanIDEShortCut, CleanIDEShortCut, nil, @ShowUnitDependenciesClicked);
-  RegisterIDEMenuCommand(itmViewMainWindows, 'UnitDependencies',
-    'Cody Unit Dependencies', nil, nil, ViewCodyUnitDependenciesWindowCommand);
-  {$ENDIF}
 
   // Components - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   TVIconRes:=LazarusResources.Find('TTreeView');

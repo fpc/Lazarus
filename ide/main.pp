@@ -574,11 +574,6 @@ type
     procedure CheckDirIsInIncludeSearchPath(UnitInfo: TUnitInfo;
         AllowAddingDependencies: boolean; out DependencyAdded: boolean);
 
-    // unit dependencies events
-    procedure UnitDependenciesViewAccessingSources(Sender: TObject);
-    function UnitDependenciesViewGetProjectMainFilename(Sender: TObject): string;
-    procedure UnitDependenciesViewOpenFile(Sender: TObject; const Filename: string);
-
     // code explorer events
     procedure OnCodeExplorerGetDirectivesTree(Sender: TObject;
                                           var ADirectivesTool: TDirectivesTool);
@@ -5908,27 +5903,7 @@ end;
 
 procedure TMainIDE.DoViewUnitDependencies(Show: boolean);
 begin
-  if UnitDependenciesView=nil then begin
-    UnitDependenciesView:=TUnitDependenciesView.Create(OwningComponent);
-    UnitDependenciesView.OnAccessingSources:=
-      @UnitDependenciesViewAccessingSources;
-    UnitDependenciesView.OnGetProjectMainFilename:=
-      @UnitDependenciesViewGetProjectMainFilename;
-    UnitDependenciesView.OnOpenFile:=@UnitDependenciesViewOpenFile;
-  end;
-
-  if (Project1 <> nil) and (not UnitDependenciesView.RootValid) then begin
-    if Project1.MainUnitID>=0 then begin
-      UnitDependenciesView.BeginUpdate;
-      UnitDependenciesView.RootFilename:=Project1.MainUnitInfo.Filename;
-      UnitDependenciesView.RootShortFilename:=
-        ExtractFilename(Project1.MainUnitInfo.Filename);
-      UnitDependenciesView.EndUpdate;
-    end;
-  end;
-
-  if Show then
-    IDEWindowCreators.ShowForm(UnitDependenciesView,true);
+  ShowUnitDependencies(true,Show);
 end;
 
 procedure TMainIDE.DoViewJumpHistory(Show: boolean);
@@ -6101,7 +6076,7 @@ begin
   else if ItIs(NonModalIDEWindowNames[nmiwUnitDependenciesName]) then
   begin
     DoViewUnitDependencies(false);
-    AForm:=UnitDependenciesView;
+    AForm:=UnitDependenciesWindow;
   end
   else if ItIs(NonModalIDEWindowNames[nmiwCodeExplorerName]) then
   begin
@@ -9659,24 +9634,6 @@ begin
 end;
 
 // -----------------------------------------------------------------------------
-
-procedure TMainIDE.UnitDependenciesViewAccessingSources(Sender: TObject);
-begin
-  SaveSourceEditorChangesToCodeCache(nil);
-end;
-
-function TMainIDE.UnitDependenciesViewGetProjectMainFilename(Sender: TObject): string;
-begin
-  if (Project1<>nil) and (Project1.MainUnitID>=0) then
-    Result:=Project1.MainUnitInfo.Filename
-  else
-    Result:='';
-end;
-
-procedure TMainIDE.UnitDependenciesViewOpenFile(Sender: TObject; const Filename: string);
-begin
-  DoOpenEditorFile(Filename,-1,-1,[]);
-end;
 
 procedure TMainIDE.OnCodeExplorerGetDirectivesTree(Sender: TObject;
   var ADirectivesTool: TDirectivesTool);

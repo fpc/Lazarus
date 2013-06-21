@@ -221,10 +221,6 @@ type
     FFindInFilesMaskHistory: TStringList;
     FMaxFindHistory: Integer;
     
-    // Unit dependencies
-    FUnitDependenciesHistory: TStringList; // root files
-    FMaxUnitDependenciesHistory: integer;
-    
     // FPC config cache
     FFPCConfigCache: TFPCConfigCache;
 
@@ -250,9 +246,8 @@ type
     function AddToReplaceHistory(const AReplaceStr: String): boolean;
     function AddToFindInFilesPathHistory(const APathStr: String): boolean;
     function AddToFindInFilesMaskHistory(const AMaskStr: String): boolean;
-    // Unit dependencies
-    function AddToUnitDependenciesHistory(const ARootFilename: String): boolean;
 
+    // fpc units
     function LastFPCUnitLinksValid: boolean;
     function LastFPCUnitLinksNeedsUpdate(const Options, SearchPath,
                                          FPCSrcDir: string): boolean;
@@ -283,11 +278,6 @@ type
                read FFindInFilesSearchOptions write FFindInFilesSearchOptions;
     property FindAutoComplete: boolean read FFindAutoComplete
                                        write FFindAutoComplete;
-
-    // Unit dependencies
-    property UnitDependenciesHistory: TStringList read FUnitDependenciesHistory;
-    property MaxUnitDependenciesHistory: integer
-      read FMaxUnitDependenciesHistory write FMaxUnitDependenciesHistory;
 
     // FPC config cache
     property FPCConfigCache: TFPCConfigCache read FFPCConfigCache;
@@ -428,10 +418,6 @@ begin
   FFindInFilesSearchOptions:=LazFindInFileSearchOptionsDefault;
   FFindOptions:=LazFindSearchOptionsDefault;
 
-  // unit dependencies
-  FUnitDependenciesHistory:=TStringList.Create;
-  FMaxUnitDependenciesHistory:=20;
-  
   // file dialog
   FFileDialogSettings.HistoryList:=TStringList.Create;
   FFileDialogSettings.MaxHistory:=20;
@@ -455,7 +441,6 @@ begin
   FreeAndNil(FIgnores);
   FreeAndNil(FHistoryLists);
   FreeAndNil(FFileDialogSettings.HistoryList);
-  FreeAndNil(FUnitDependenciesHistory);
   FreeAndNil(FFindHistory);
   FreeAndNil(FReplaceHistory);
   FreeAndNil(FFindInFilesPathHistory);
@@ -527,8 +512,6 @@ begin
       Include(FFindOptions,FindOption);
   end;
 
-  // unit dependencies
-  LoadRecentList(XMLConfig,FUnitDependenciesHistory,Path+'UnitDependencies/History/',rltFile);
   // fpc config cache
   FFPCConfigCache.LoadFromXMLConfig(XMLConfig,'FPCConfigCache/');
   // file dialog
@@ -605,8 +588,6 @@ begin
       FindOption in LazFindSearchOptionsDefault);
   end;
 
-  // unit dependencies
-  SaveRecentList(XMLConfig,FUnitDependenciesHistory,Path+'UnitDependencies/History/');
   // fpc config cache
   FFPCConfigCache.SaveToXMLConfig(XMLConfig,'FPCConfigCache/');
   // file dialog
@@ -717,12 +698,6 @@ end;
 function TInputHistories.AddToFindInFilesMaskHistory(const AMaskStr: String): boolean;
 begin
   Result:= AddToRecentList(AMaskStr,FFindInFilesMaskHistory,FMaxFindHistory,rltFile);
-end;
-
-function TInputHistories.AddToUnitDependenciesHistory(const ARootFilename: String): boolean;
-begin
-  Result:=AddToRecentList(ARootFilename,FUnitDependenciesHistory,
-    FMaxUnitDependenciesHistory,rltFile);
 end;
 
 function TInputHistories.LastFPCUnitLinksValid: boolean;
