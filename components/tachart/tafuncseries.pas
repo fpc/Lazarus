@@ -173,8 +173,6 @@ type
     csoDrawFewPoints, csoDrawUnorderedX, csoExtrapolateLeft,
     csoExtrapolateRight);
 
-  { TCubicSplineSeries }
-
   TCubicSplineSeries = class(TBasicPointSeries)
   strict private
     FBadDataPen: TBadDataChartPen;
@@ -185,11 +183,27 @@ type
     procedure SetPen(AValue: TChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
   strict private
-    FUnorderedX: Boolean;
-    FX, FY, FCoeff: array of ArbFloat;
+  type
+    TSpline = class
+    public
+      FCoeff, FX, FY: array of ArbFloat;
+      FIntervals: TIntervalList;
+      FIsUnorderedX: Boolean;
+      FStartIndex: Integer;
 
+      destructor Destroy; override;
+      function Calculate(AX: Double): Double;
+      function IsFewPoints: Boolean; inline;
+      function PrepareCoeffs(
+        ASource: TCustomChartSource; var AIndex: Integer): Boolean;
+      procedure PrepareIntervals(AOptions: TCubicSplineOptions);
+    end;
+
+  var
+    FSplines: array of TSpline;
+
+    procedure FreeSplines;
     procedure PrepareCoeffs;
-    function PrepareIntervals: TIntervalList;
     procedure SetBadDataPen(AValue: TBadDataChartPen);
     procedure SetOptions(AValue: TCubicSplineOptions);
   protected
@@ -857,6 +871,79 @@ begin
   UpdateParentChart;
 end;
 
+{ TCubicSplineSeries.TSpline }
+
+function TCubicSplineSeries.TSpline.Calculate(AX: Double): Double;
+var
+  ok: Integer = 0;
+begin
+  if IsFewPoints then exit(SafeNaN);
+  Result := ipfspn(High(FCoeff), FX[0], FY[0], FCoeff[0], AX, ok);
+  if ok > 1 then
+    Result :=  SafeNaN;
+end;
+
+destructor TCubicSplineSeries.TSpline.Destroy;
+begin
+  FreeAndNil(FIntervals);
+  inherited;
+end;
+
+function TCubicSplineSeries.TSpline.IsFewPoints: Boolean;
+begin
+  Result := Length(FX) < 4;
+end;
+
+function TCubicSplineSeries.TSpline.PrepareCoeffs(
+  ASource: TCustomChartSource; var AIndex: Integer): Boolean;
+var
+  n, ok: Integer;
+begin
+  n := ASource.Count - AIndex;
+  SetLength(FX, n);
+  SetLength(FY, n);
+  SetLength(FCoeff, n);
+  FIsUnorderedX := false;
+  while (AIndex < ASource.Count) and IsNan(ASource[AIndex]^.Point) do
+    AIndex += 1;
+  FStartIndex := AIndex;
+  n := 0;
+  while (AIndex < ASource.Count) and not IsNan(ASource[AIndex]^.Point) do begin
+    with ASource[AIndex]^ do
+      if (n > 0) and (FX[n - 1] >= X) then
+        FIsUnorderedX := true
+      else begin
+        FX[n] := X;
+        FY[n] := Y;
+        n += 1;
+      end;
+    AIndex += 1;
+  end;
+  SetLength(FX, n);
+  SetLength(FY, n);
+  SetLength(FCoeff, n);
+  if n = 0 then exit(false);
+  if IsFewPoints then exit(true);
+  ok := 0;
+  ipfisn(n - 1, FX[0], FY[0], FCoeff[0], ok);
+  Result := ok = 1;
+end;
+
+procedure TCubicSplineSeries.TSpline.PrepareIntervals(
+  AOptions: TCubicSplineOptions);
+begin
+  FIntervals := TIntervalList.Create;
+  try
+    if not (csoExtrapolateLeft in AOptions) then
+      FIntervals.AddRange(NegInfinity, FX[0]);
+    if not (csoExtrapolateRight in AOptions) then
+      FIntervals.AddRange(FX[High(FX)], SafeInfinity);
+  except
+    FreeAndNil(FIntervals);
+    raise;
+  end;
+end;
+
 { TCubicSplineSeries }
 
 procedure TCubicSplineSeries.Assign(ASource: TPersistent);
@@ -871,11 +958,17 @@ end;
 
 function TCubicSplineSeries.Calculate(AX: Double): Double;
 var
-  ok: Integer = 0;
+  hint: Integer;
+  s: TSpline;
+  x: Double;
 begin
-  Result := ipfspn(High(FCoeff), FX[0], FY[0], FCoeff[0], AX, ok);
-  if ok > 1 then
-    Result := SafeNaN;
+  for s in FSplines do begin
+    hint := 0;
+    x := AX;
+    if not s.FIntervals.Intersect(x, x, hint) then
+      exit(s.Calculate(AX));
+  end;
+  Result := SafeNaN;
 end;
 
 constructor TCubicSplineSeries.Create(AOwner: TComponent);
@@ -892,6 +985,7 @@ end;
 
 destructor TCubicSplineSeries.Destroy;
 begin
+  FreeSplines;
   FreeAndNil(FBadDataPen);
   FreeAndNil(FPen);
   inherited;
@@ -899,32 +993,31 @@ end;
 
 procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
 
-  function DrawFewPoints: Boolean;
-  const
-    MIN_SPLINE_POINTS = 4;
+  function DrawFewPoints(ASpline: TSpline): Boolean;
   var
     pts: TPointArray;
-    i: Integer;
+    i, lb, ub: Integer;
   begin
-    Result := Length(FX) < MIN_SPLINE_POINTS;
+    Result := ASpline.IsFewPoints;
     if
       not Result or not (csoDrawFewPoints in Options) or not BadDataPen.Visible
     then
       exit;
-    SetLength(pts, Length(FGraphPoints));
-    for i := 0 to High(FGraphPoints) do
-      pts[i] := ParentChart.GraphToImage(FGraphPoints[i]);
+    lb := Max(ASpline.FStartIndex, FLoBound);
+    ub := Min(ASpline.FStartIndex + High(ASpline.FX), FUpBound);
+    if lb > ub then exit;
+    SetLength(pts, ub - lb + 1);
+    for i := lb to ub do
+      pts[i - lb] := ParentChart.GraphToImage(FGraphPoints[i - FLoBound]);
     ADrawer.Pen := BadDataPen;
     ADrawer.Polyline(pts, 0, Length(pts));
   end;
 
-  procedure DrawSpline;
+  procedure DrawSpline(ASpline: TSpline);
   var
-    de: TIntervalList;
     p: TChartPen;
   begin
-    if FCoeff = nil then exit;
-    if FUnorderedX then begin
+    if ASpline.FIsUnorderedX then begin
       if csoDrawUnorderedX in Options then
         p := BadDataPen
       else
@@ -934,27 +1027,25 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
       p := Pen;
     if not p.Visible then exit;
     ADrawer.Pen := p;
-    de := PrepareIntervals;
-    try
-      with TDrawFuncHelper.Create(Self, de, @Calculate, Step) do
-        try
-          DrawFunction(ADrawer);
-        finally
-          Free;
-        end;
-    finally
-      de.Free;
-    end;
+    with TDrawFuncHelper.Create(Self, ASpline.FIntervals, @ASpline.Calculate, Step) do
+      try
+        DrawFunction(ADrawer);
+      finally
+        Free;
+      end;
   end;
 
+var
+  s: TSpline;
 begin
   if IsEmpty then exit;
-  if FCoeff = nil then
+  if FSplines = nil then
     PrepareCoeffs;
 
   PrepareGraphPoints(FChart.CurrentExtent, true);
-  if not DrawFewPoints then
-    DrawSpline;
+  for s in FSplines do
+    if not DrawFewPoints(s) then
+      DrawSpline(s);
 
   DrawLabels(ADrawer);
   DrawPointers(ADrawer);
@@ -964,16 +1055,31 @@ function TCubicSplineSeries.Extent: TDoubleRect;
 var
   r: Integer = 0;
   minv, maxv: ArbFloat;
+  extY: TDoubleInterval = (FStart: Infinity; FEnd: NegInfinity);
+  s: TSpline;
 begin
   Result := inherited Extent;
-  if FCoeff = nil then
+  if FSplines = nil then
     PrepareCoeffs;
-  if FCoeff = nil then exit;
-  minv := Result.a.Y;
-  maxv := Result.b.Y;
-  ipfsmm(High(FCoeff), FX[0], FY[0], FCoeff[0], minv, maxv, r);
-  Result.a.Y := minv;
-  Result.b.Y := maxv;
+  if FSplines = nil then exit;
+  for s in FSplines do begin
+    minv := Result.a.Y;
+    maxv := Result.b.Y;
+    ipfsmm(High(s.FCoeff), s.FX[0], s.FY[0], s.FCoeff[0], minv, maxv, r);
+    extY.FStart := Min(minv, extY.FStart);
+    extY.FEnd := Max(maxv, extY.FEnd);
+  end;
+  Result.a.Y := extY.FStart;
+  Result.b.Y := extY.FEnd;
+end;
+
+procedure TCubicSplineSeries.FreeSplines;
+var
+  s: TSpline;
+begin
+  for s in FSplines do
+    s.Free;
+  FSplines := nil;
 end;
 
 procedure TCubicSplineSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -985,61 +1091,43 @@ function TCubicSplineSeries.GetNearestPoint(
   const AParams: TNearestPointParams;
   out AResults: TNearestPointResults): Boolean;
 var
-  de: TIntervalList;
+  s: TSpline;
+  r: TNearestPointResults;
 begin
-  if FUnorderedX and not (csoDrawUnorderedX in Options) then
-    exit(false);
-  de := PrepareIntervals;
-  try
-    with TDrawFuncHelper.Create(Self, de, @Calculate, Step) do
+  Result := false;
+  AResults.FIndex := -1;
+  for s in FSplines do begin
+    if s.FIsUnorderedX and not (csoDrawUnorderedX in Options) then continue;
+    with TDrawFuncHelper.Create(Self, s.FIntervals, @s.Calculate, Step) do
       try
-        Result := GetNearestPoint(AParams, AResults);
+        if
+          not GetNearestPoint(AParams, r) or
+          Result and (AResults.FDist <= r.FDist)
+        then
+          continue;
+        AResults := r;
+        Result := true;
       finally
         Free;
       end;
-  finally
-    de.Free;
   end;
 end;
 
 procedure TCubicSplineSeries.PrepareCoeffs;
 var
-  i, n: Integer;
+  i: Integer = 0;
+  s: TSpline;
 begin
-  n := Source.Count;
-  SetLength(FX, n);
-  SetLength(FY, n);
-  SetLength(FCoeff, n);
-  FUnorderedX := false;
-  n := 0;
-  for i := 0 to Source.Count - 1 do
-    with Source[i]^ do
-      if (i > 0) and (FX[n - 1] >= X) then
-        FUnorderedX := true
-      else begin
-        FX[n] := X;
-        FY[n] := Y;
-        n += 1;
-      end;
-  SetLength(FX, n);
-  SetLength(FY, n);
-  SetLength(FCoeff, n);
-  ipfisn(n - 1, FX[0], FY[0], FCoeff[0], i);
-  if i > 1 then
-    FCoeff := nil;
-end;
-
-function TCubicSplineSeries.PrepareIntervals: TIntervalList;
-begin
-  Result := TIntervalList.Create;
-  try
-    if not (csoExtrapolateLeft in Options) then
-      Result.AddRange(NegInfinity, FX[0]);
-    if not (csoExtrapolateRight in Options) then
-      Result.AddRange(FX[High(FX)], SafeInfinity);
-  except
-    Result.Free;
-    raise;
+  FreeSplines;
+  while i < Source.Count do begin
+    s := TSpline.Create;
+    if s.PrepareCoeffs(Source, i) then begin
+      s.PrepareIntervals(Options);
+      SetLength(FSplines, Length(FSplines) + 1);
+      FSplines[High(FSplines)] := s;
+    end
+    else
+      s.Free;
   end;
 end;
 
@@ -1054,7 +1142,7 @@ procedure TCubicSplineSeries.SetOptions(AValue: TCubicSplineOptions);
 begin
   if FOptions = AValue then exit;
   FOptions := AValue;
-  FCoeff := nil;
+  FreeSplines;
   UpdateParentChart;
 end;
 
@@ -1075,7 +1163,7 @@ end;
 procedure TCubicSplineSeries.SourceChanged(ASender: TObject);
 begin
   inherited SourceChanged(ASender);
-  FCoeff := nil;
+  FreeSplines;
 end;
 
 { TFitSeries }
