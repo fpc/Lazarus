@@ -102,6 +102,7 @@ type
     FCurItem: TChartDataItem;
     FRNG: TMWCRandomGenerator;
 
+    procedure Reset;
     procedure SetPointsNumber(AValue: Integer);
     procedure SetRandomX(AValue: Boolean);
     procedure SetRandSeed(AValue: Integer);
@@ -784,20 +785,25 @@ begin
   Result := not RandomX;
 end;
 
+procedure TRandomChartSource.Reset;
+begin
+  FCurIndex := -1;
+  InvalidateCaches;
+  Notify;
+end;
+
 procedure TRandomChartSource.SetPointsNumber(AValue: Integer);
 begin
   if FPointsNumber = AValue then exit;
   FPointsNumber := AValue;
-  InvalidateCaches;
-  Notify;
+  Reset;
 end;
 
 procedure TRandomChartSource.SetRandomX(AValue: Boolean);
 begin
   if FRandomX = AValue then exit;
   FRandomX := AValue;
-  InvalidateCaches;
-  Notify;
+  Reset;
 end;
 
 procedure TRandomChartSource.SetRandSeed(AValue: Integer);
@@ -805,33 +811,28 @@ begin
   if FRandSeed = AValue then exit;
   FRandSeed := AValue;
   FRNG.Seed := AValue;
-  FCurIndex := -1;
-  InvalidateCaches;
-  Notify;
+  Reset;
 end;
 
 procedure TRandomChartSource.SetXMax(AValue: Double);
 begin
   if FXMax = AValue then exit;
   FXMax := AValue;
-  InvalidateCaches;
-  Notify;
+  Reset;
 end;
 
 procedure TRandomChartSource.SetXMin(AValue: Double);
 begin
   if FXMin = AValue then exit;
   FXMin := AValue;
-  InvalidateCaches;
-  Notify;
+  Reset;
 end;
 
 procedure TRandomChartSource.SetYCount(AValue: Cardinal);
 begin
   if YCount = AValue then exit;
   FYCount := AValue;
-  InvalidateCaches;
-  Notify;
+  Reset;
 end;
 
 procedure TRandomChartSource.SetYMax(AValue: Double);
@@ -846,16 +847,14 @@ procedure TRandomChartSource.SetYMin(AValue: Double);
 begin
   if FYMin = AValue then exit;
   FYMin := AValue;
-  InvalidateCaches;
-  Notify;
+  Reset;
 end;
 
 procedure TRandomChartSource.SetYNanPercent(AValue: TPercent);
 begin
   if FYNanPercent = AValue then exit;
   FYNanPercent := AValue;
-  InvalidateCaches;
-  Notify;
+  Reset;
 end;
 
 { TUserDefinedChartSource }
