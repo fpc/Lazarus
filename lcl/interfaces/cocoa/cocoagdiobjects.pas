@@ -1449,7 +1449,7 @@ end;
 procedure TCocoaContext.LineTo(X, Y: Integer);
 var
   cg: CGContextRef;
-  p: array [0..1] of CGPoint;
+  //p: array [0..1] of CGPoint;
   deltaX, deltaY, absDeltaX, absDeltaY: Integer;
   clipDeltaX, clipDeltaY: Float32;
   tx,ty:Float32;
@@ -1486,13 +1486,15 @@ begin
     ty := Y + clipDeltaY + 0.5;
   end;
 
-  p[0].x:=PenPos.X+0.5;
+  {p[0].x:=PenPos.X+0.5;
   p[0].y:=PenPos.Y+0.5;
   p[1].x:=tx;
-  p[1].y:=ty;
+  p[1].y:=ty;}
 
   CGContextBeginPath(cg);
-  CGContextAddLines(cg, @p, 2);
+  //CGContextAddLines(cg, @p, 2);
+  CGContextMoveToPoint(cg, PenPos.x + 0.5, PenPos.y + 0.5);
+  CGContextAddLineToPoint(cg, tx, ty);
   CGContextStrokePath(cg);
 
   FPenPos.x := X;
@@ -1513,20 +1515,29 @@ begin
   CGContextAddLines(cg, @cp[0], NumPts);
 end;
 
-procedure CGContextAddLCLRect(cg: CGContextRef; x1, y1, x2, y2: Integer); overload;
+procedure CGContextAddLCLRect(cg: CGContextRef; x1, y1, x2, y2: Integer; HalfPixel: boolean); overload;
 var
   r: CGRect;
 begin
-  r.origin.x:=x1+0.5;
-  r.origin.y:=y1+0.5;
-  r.size.width:=x2-x1-1;
-  r.size.height:=y2-y1-1;
+  if HalfPixel then
+  begin
+    r.origin.x:=x1+0.5;
+    r.origin.y:=y1+0.5;
+    r.size.width:=x2-x1-1;
+    r.size.height:=y2-y1-1;
+  end else
+  begin
+    r.origin.x:=x1;
+    r.origin.y:=y1;
+    r.size.width:=x2-x1;
+    r.size.height:=y2-y1;
+  end;
   CGContextAddRect(cg, r);
 end;
 
-procedure CGContextAddLCLRect(cg: CGContextRef; const R: TRect); overload;
+procedure CGContextAddLCLRect(cg: CGContextRef; const R: TRect; HalfPixel: boolean); overload;
 begin
-  CGContextAddLCLRect(cg, r.Left, r.Top, r.Right, r.Bottom);
+  CGContextAddLCLRect(cg, r.Left, r.Top, r.Right, r.Bottom, HalfPixel);
 end;
 
 procedure TCocoaContext.Polygon(const Points:array of TPoint;NumPts:Integer;
@@ -1567,17 +1578,19 @@ begin
   if not Assigned(cg) then Exit;
 
   CGContextBeginPath(cg);
-  CGContextAddLCLRect(cg, X1, Y1, X2, Y2);
   if FillRect then
   begin
+    CGContextAddLCLRect(cg, X1, Y1, X2, Y2, false);
     //using the brush
     if Assigned(UseBrush) then UseBrush.Apply(Self);
     CGContextFillPath(cg);
     //restore the brush
     if Assigned(UseBrush) and Assigned(FBrush) then FBrush.Apply(Self);
   end
-  else
+  else begin
+    CGContextAddLCLRect(cg, X1, Y1, X2, Y2, true);
     CGContextStrokePath(cg);
+  end;
 end;
 
 procedure TCocoaContext.Ellipse(X1, Y1, X2, Y2:Integer);
@@ -1605,6 +1618,7 @@ begin
   if Assigned(Rect) then
   begin
     // fill background
+    //debugln(['TCocoaContext.TextOut ',UTF8Chars,' ',dbgs(Rect^)]);
     if (Options and ETO_OPAQUE) <> 0 then
     begin
       BrushSolid := BkBrush.Solid;
