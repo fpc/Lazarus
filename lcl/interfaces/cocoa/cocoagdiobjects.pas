@@ -1037,9 +1037,6 @@ var
   Indexes: array of NSUInteger;
   I, Count: NSUInteger;
 begin
-  // ToDo: empty text: draw background of given rect
-  if FText = '' then
-    Exit;
   if not ctx.isFlipped then
     Context := NSGraphicsContext.graphicsContextWithGraphicsPort_flipped(ctx.graphicsPort, True)
   else
@@ -1617,7 +1614,7 @@ begin
       BkBrush.Solid := BrushSolid;
     end;
 
-    if (Options and ETO_CLIPPED) <> 0 then
+    if ((Options and ETO_CLIPPED) <> 0) and (Count > 0) then
     begin
       CGContextBeginPath(CGContext);
       CGContextAddRect(CGContext, RectToCGrect(Rect^));
@@ -1625,11 +1622,14 @@ begin
     end;
   end;
 
-  FillBg := BkMode = OPAQUE;
-  if FillBg then
-    FText.BackgroundColor := BkBrush.ColorRef;
-  FText.SetText(UTF8Chars, Count);
-  FText.Draw(ctx, X, Y, FillBg, CharsDelta);
+  if (Count > 0) then
+  begin
+    FillBg := BkMode = OPAQUE;
+    if FillBg then
+      FText.BackgroundColor := BkBrush.ColorRef;
+    FText.SetText(UTF8Chars, Count);
+    FText.Draw(ctx, X, Y, FillBg, CharsDelta);
+  end;
 
   ctx.restoreGraphicsState;
 end;
