@@ -38,7 +38,7 @@ unit ProcessDebugger;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Process, Debugger, LCLProc,
+  Classes, SysUtils, FileUtil, UTF8Process, Process, Debugger, LCLProc,
   BaseDebugManager, Dialogs, ProcessList;
 
 type
@@ -68,7 +68,7 @@ type
 
   { TDBGProcess }
 
-  TDBGProcess = class(TProcess)
+  TDBGProcess = class(TProcessUTF8)
   private
     FOnDestroy: TNotifyEvent;
   protected
@@ -113,8 +113,8 @@ begin
 
   FProcess := TDBGProcess.Create(nil);
   try
-    FProcess.CommandLine := UTF8ToSys('"'+FileName + '" ' + Arguments);
-    FProcess.CurrentDirectory := UTF8ToSys(WorkingDir);
+    FProcess.CommandLine := '"'+FileName + '" ' + Arguments;
+    FProcess.CurrentDirectory := WorkingDir;
     FProcess.Environment.Assign(Environment);
     if ShowConsole
     then FProcess.Options:= [poNewConsole]
