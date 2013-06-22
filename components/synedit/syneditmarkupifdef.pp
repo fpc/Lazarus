@@ -2544,13 +2544,14 @@ begin
   LineTextLower := LowerCase(Lines[ToIdx(ALine)]);
   LineLen := Length(LineTextLower);
 
+  Entry := nil;
   i := -1;
   LogEndX := 0;
   c := FoldNodeInfoList.Count - 1;
   while i < c do begin
     inc(i);
     fn := FoldNodeInfoList[i];
-    if sfaInvalid in fn.FoldAction then
+    if fn.FoldAction * [sfaInvalid, sfaLastLineClose] <> [] then
       continue;
 
     LogStartX := ToPos(fn.LogXStart)-1;  // LogXStart is at "$", we need "{"
@@ -2614,10 +2615,12 @@ begin
     LineNeedsReq := True;
     LineChanged := True;
     ANodeForLine.LastEntryEndLineOffs := LineOffs;
-    if LineOffs > 0 then
-      Include(Entry.FNodeFlags, idnMultiLineTag)
-     else
-      Exclude(Entry.FNodeFlags, idnMultiLineTag);
+    if Entry <> nil then begin
+      if LineOffs > 0 then
+        Include(Entry.FNodeFlags, idnMultiLineTag)
+       else
+        Exclude(Entry.FNodeFlags, idnMultiLineTag);
+    end;
   end;
 
   FoldNodeInfoList.ReleaseReference;
