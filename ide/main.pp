@@ -12424,15 +12424,42 @@ procedure TMainIDE.OnApplicationKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   Command: Word;
+  aForm: TCustomForm;
+  aControl: TControl;
 begin
   //DebugLn('TMainIDE.OnApplicationKeyDown ',dbgs(Key),' ',dbgs(Shift));
   Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,nil);
+  //debugln(['TMainIDE.OnApplicationKeyDown ',dbgs(Command),' ',DbgSName(Screen.GetCurrentModalForm)]);
   if Command=ecEditContextHelp then begin
+    // show context help editor
     Key:=VK_UNKNOWN;
     ShowContextHelpEditor(Sender);
   end else if (Command=ecContextHelp) and (Sender is TControl) then begin
+    // show context help
     Key:=VK_UNKNOWN;
     LazarusHelp.ShowHelpForIDEControl(TControl(Sender));
+  end else if (Command=ecClose) then begin
+    if Screen.GetCurrentModalForm<>nil then begin
+      // close modal window
+      Key:=VK_UNKNOWN;
+      Screen.GetCurrentModalForm.ModalResult:=mrCancel;
+    end else if Sender is TControl then begin
+      // close current window
+      // Note: when docking: close only an inner window
+      // do not close MainIDEBar
+      // close only registered windows
+      aControl:=TControl(Sender);
+      while aControl<>nil do begin
+        if aControl is TCustomForm then begin
+          aForm:=TCustomForm(aControl);
+          if (aForm.Name<>'') and (aForm<>MainIDEBar)
+          and (IDEWindowCreators.FindWithName(aForm.Name)=nil) then begin
+            aForm.Close;
+          end;
+        end;
+        aControl:=aControl.Parent;
+      end;
+    end;
   end;
 end;
 
