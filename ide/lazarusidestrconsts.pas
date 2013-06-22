@@ -343,7 +343,7 @@ resourcestring
   lisMenuJumpToImplementation = 'Jump to Implementation';
   lisMenuViewUnits = 'Units ...';
   lisMenuViewForms = 'Forms ...';
-  lisMenuViewUnitDependencies = 'Unit Dependencies ...';
+  lisMenuViewUnitDependencies = 'Unit Dependencies';
   lisKMViewUnitInfo = 'View Unit Info';
   lisMenuViewUnitInfo = 'Unit Information ...';
   lisMenuViewToggleFormUnit = 'Toggle Form/Unit View';
@@ -5749,6 +5749,39 @@ resourcestring
   lisMMIDEMacro = 'IDE Macro';
   lisMMOverrideOutputDirectory = 'Override output directory (-FU)';
   lisPriority = 'Priority';
+  lisUDScanningUnits = 'Scanning: %s units ...';
+  lisUDFile = 'File: %s';
+  lisUDInterfaceUses = 'Interface Uses: %s';
+  lisUDImplementationUses = 'Implementation Uses: %s';
+  lisUDUsedByInterfaces = 'Used by Interfaces: %s';
+  lisUDUsedByImplementations = 'Used by Implementations: %s';
+  lisUDScanning = 'Scanning ...';
+  lisUDInterfaceUses2 = 'interface uses: %s';
+  lisUDImplementationUses2 = 'implementation uses: %s';
+  lisUDUsedByInterfaces2 = 'used by interfaces: %s';
+  lisUDUsedByImplementations2 = 'used by implementations: %s';
+  lisUDProjectsAndPackages = 'Projects and packages';
+  lisUDUnits = 'Units';
+  lisUDAdditionalDirectories = 'Additional directories:';
+  lisUDByDefaultOnlyTheProjectUnitsAndTheSourceEditorUnit = 'By default only '
+    +'the project units and the source editor units are searched. Add here a '
+    +'list of directories separated by semicolon to search as well.';
+  lisUDAllPackageUnits = 'All package units';
+  lisUDAllSourceEditorUnits = 'All source editor units';
+  lisUDAllUnits = 'All units';
+  lisUDShowNodesForDirectories = 'Show nodes for directories';
+  lisUDShowNodesForProjectAndPackages = 'Show nodes for project and packages';
+  lisUDSearchNextOccurenceOfThisPhrase = 'Search next occurence of this phrase';
+  lisUDSearchPreviousOccurenceOfThisPhrase = 'Search previous occurence of '
+    +'this phrase';
+  lisUDSelectedUnits = 'Selected units';
+  lisUDSearchNextUnitOfThisPhrase = 'Search next unit of this phrase';
+  lisUDSearchPreviousUnitOfThisPhrase = 'Search previous unit of this phrase';
+  lisUDExpandAllNodes = 'Expand all nodes';
+  lisUDCollapseAllNodes = 'Collapse all nodes';
+  lisUDFilter = '(Filter)';
+  lisUDSearch = '(Search)';
+  lisUDUnits2 = 'Units: %s';
 
 implementation
 

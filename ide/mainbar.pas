@@ -2,8 +2,8 @@
  /***************************************************************************
                           mainbar.pp  -  Toolbar
                           ----------------------
-  TMainIDEBar is main window of the IDE, containing the menu and the component
-  palette.
+  TMainIDEBar is the main window of the IDE, containing the menu and the
+  component palette.
 
  ***************************************************************************/
 
@@ -170,6 +170,7 @@ type
         itmViewCodeExplorer: TIDEMenuCommand;
         itmViewFPDocEditor: TIDEMenuCommand;
         itmViewCodeBrowser: TIDEMenuCommand;
+        itmSourceUnitDependencies: TIDEMenuCommand;
         itmViewRestrictionBrowser: TIDEMenuCommand;
         itmViewComponents: TIDEMenuCommand;
         itmJumpHistory: TIDEMenuCommand;
@@ -235,7 +236,6 @@ type
       itmSourceInsertFilename: TIDEMenuCommand;
     // itmSourceTools
       itmSourceUnitInfo: TIDEMenuCommand;
-      itmSourceUnitDependencies: TIDEMenuCommand;
 
     // refactor menu
     //mnuRefactor: TIDEMenuSection;

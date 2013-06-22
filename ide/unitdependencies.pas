@@ -34,11 +34,14 @@ unit UnitDependencies;
 interface
 
 uses
-  Classes, SysUtils, types, AVL_Tree, LazLogger, LazFileUtils, LazUTF8, Forms,
-  Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus, Clipbrd,
-  LvlGraphCtrl, LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf,
-  SrcEditorIntf, IDEDialogs, IDEImagesIntf, IDECommands, CodeToolManager,
-  DefineTemplates, CodeToolsStructs, CTUnitGraph, CTUnitGroupGraph, FileProcs;
+  Classes, SysUtils, types, AVL_Tree, LazLogger, LazFileUtils, LazUTF8,
+  Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus, Clipbrd,
+  LvlGraphCtrl,
+  LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf,
+  IDEImagesIntf, IDECommands, IDEDialogs,
+  CodeToolManager, DefineTemplates, CodeToolsStructs,
+  CTUnitGraph, CTUnitGroupGraph, FileProcs,
+  LazarusIDEStrConsts;
 
 const
   GroupPrefixProject = '-Project-';
@@ -109,6 +112,7 @@ type
     RefreshButton: TButton;
     StatsLabel: TLabel;
     StatusPanel: TPanel;
+    Timer1: TTimer;
     UnitsTVCopyFilenameMenuItem: TMenuItem;
     UnitsTVCollapseAllMenuItem: TMenuItem;
     UnitsTVExpandAllMenuItem: TMenuItem;
@@ -145,6 +149,7 @@ type
     procedure RefreshButtonClick(Sender: TObject);
     procedure SelUnitsTreeViewExpanding(Sender: TObject; Node: TTreeNode;
       var AllowExpansion: Boolean);
+    procedure Timer1Timer(Sender: TObject);
     procedure UnitsTreeViewShowHint(Sender: TObject; HintInfo: PHintInfo);
     procedure UnitsTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -340,8 +345,8 @@ begin
   AllUnitsTreeView.Images:=IDEImages.Images_16;
   SelUnitsTreeView.Images:=IDEImages.Images_16;
 
-  Caption:='Unit Dependencies';
-  RefreshButton.Caption:='Refresh';
+  Caption:=lisMenuViewUnitDependencies;
+  RefreshButton.Caption:=dlgUnitDepRefresh;
 
   MainPageControl.ActivePage:=UnitsTabSheet;
 
@@ -452,6 +457,17 @@ begin
   end;
 end;
 
+procedure TUnitDependenciesWindow.Timer1Timer(Sender: TObject);
+var
+  Cnt: Integer;
+begin
+  if (FNewUsesGraph=nil) then exit;
+  Cnt:=0;
+  if FNewUsesGraph.FilesTree<>nil then
+    Cnt:=FNewUsesGraph.FilesTree.Count;
+  StatsLabel.Caption:=Format(lisUDScanningUnits, [IntToStr(Cnt)]);
+end;
+
 procedure TUnitDependenciesWindow.UnitsTreeViewShowHint(Sender: TObject;
   HintInfo: PHintInfo);
 
@@ -489,20 +505,21 @@ begin
   UDNode:=TUDNode(TVNode.Data);
   Filename:=GetFilename(UDNode);
   if Filename='' then exit;
-  s:='File: '+Filename;
+  s:=Format(lisUDFile, [Filename]);
   if UDNode.Typ=udnUnit then begin
     UGUnit:=UsesGraph.GetUnit(Filename,false);
     if UGUnit<>nil then begin
       CountUses(UGUnit.UsesUnits,UsesIntf,UsesImpl);
       CountUses(UGUnit.UsedByUnits,UsedByIntf,UsedByImpl);
       if UsesIntf>0 then
-        s+=LineEnding+'Interface Uses: '+IntToStr(UsesIntf);
+        s+=LineEnding+Format(lisUDInterfaceUses, [IntToStr(UsesIntf)]);
       if UsesImpl>0 then
-        s+=LineEnding+'Implementation Uses: '+IntToStr(UsesImpl);
+        s+=LineEnding+Format(lisUDImplementationUses, [IntToStr(UsesImpl)]);
       if UsedByIntf>0 then
-        s+=LineEnding+'Used by Interfaces: '+IntToStr(UsedByIntf);
+        s+=LineEnding+Format(lisUDUsedByInterfaces, [IntToStr(UsedByIntf)]);
       if UsedByImpl>0 then
-        s+=LineEnding+'Used by Implementations: '+IntToStr(UsedByImpl);
+        s+=LineEnding+Format(lisUDUsedByImplementations, [IntToStr(UsedByImpl)]
+          );
     end;
   end;
   HintInfo^.HintStr:=s;
@@ -600,8 +617,10 @@ begin
       // hide progress bar and update stats
       ProgressBar1.Visible:=false;
       ProgressBar1.Style:=pbstNormal;
-      StatsLabel.Caption:='Units: '+IntToStr(UsesGraph.FilesTree.Count);
       RefreshButton.Enabled:=true;
+      Timer1.Enabled:=false;
+      StatsLabel.Caption:=Format(lisUDUnits2, [IntToStr(
+        FUsesGraph.FilesTree.Count)]);
       // update controls
       UpdateAll;
     end;
@@ -940,7 +959,8 @@ begin
 
   ProgressBar1.Visible:=true;
   ProgressBar1.Style:=pbstMarquee;
-  StatsLabel.Caption:='Scanning ...';
+  StatsLabel.Caption:=lisUDScanning;
+  Timer1.Enabled:=true;
   RefreshButton.Enabled:=false;
 
   FNewUsesGraph:=CodeToolBoss.CreateUsesGraph;
@@ -1105,10 +1125,11 @@ procedure TUnitDependenciesWindow.AddUsesSubNodes(UDNode: TUDNode);
     // create a section node
     NodeText:=IntToStr(Cnt);
     case NodeTyp of
-    udnInterface: NodeText:=Format('interface uses: %s',[NodeText]);
-    udnImplementation: NodeText:=Format('implementation uses: %s',[NodeText]);
-    udnUsedByInterface: NodeText:=Format('used by interfaces: %s',[NodeText]);
-    udnUsedByImplementation: NodeText:=Format('used by implementations: %s',[NodeText]);
+    udnInterface: NodeText:=Format(lisUDInterfaceUses2, [NodeText]);
+    udnImplementation: NodeText:=Format(lisUDImplementationUses2, [NodeText]);
+    udnUsedByInterface: NodeText:=Format(lisUDUsedByInterfaces2, [NodeText]);
+    udnUsedByImplementation: NodeText:=Format(lisUDUsedByImplementations2, [
+      NodeText]);
     else exit;
     end;
     SectionUDNode:=ParentUDNode.GetNode(NodeTyp,NodeText,true);
@@ -1287,7 +1308,7 @@ end;
 
 procedure TUnitDependenciesWindow.SetupGroupsTabSheet;
 begin
-  GroupsTabSheet.Caption:='Projects and packages';
+  GroupsTabSheet.Caption:=lisUDProjectsAndPackages;
 
   GroupsLvlGraph:=TLvlGraphControl.Create(Self);
   with GroupsLvlGraph do
@@ -1316,46 +1337,47 @@ end;
 
 procedure TUnitDependenciesWindow.SetupUnitsTabSheet;
 begin
-  UnitsTabSheet.Caption:='Units';
+  UnitsTabSheet.Caption:=lisUDUnits;
 
   // start searching
-  SearchCustomFilesCheckBox.Caption:='Additional directories:';
-  SearchCustomFilesCheckBox.Hint:='By default only the project units and the source editor units are searched. Add here a list of directories separated by semicolon to search as well.';
+  SearchCustomFilesCheckBox.Caption:=lisUDAdditionalDirectories;
+  SearchCustomFilesCheckBox.Hint:=
+    lisUDByDefaultOnlyTheProjectUnitsAndTheSourceEditorUnit;
   SearchCustomFilesComboBox.Text:='';
-  SearchCustomFilesBrowseButton.Caption:='Browse';
+  SearchCustomFilesBrowseButton.Caption:=lisPathEditBrowse;
 
-  SearchPkgsCheckBox.Caption:='All package units';
-  SearchSrcEditCheckBox.Caption:='All source editor units';
+  SearchPkgsCheckBox.Caption:=lisUDAllPackageUnits;
+  SearchSrcEditCheckBox.Caption:=lisUDAllSourceEditorUnits;
 
   // view all units
-  AllUnitsGroupBox.Caption:='All units';
+  AllUnitsGroupBox.Caption:=lisUDAllUnits;
 
   AllUnitsFilterEdit.Text:=ResStrFilter;
-  AllUnitsShowDirsSpeedButton.Hint:='Show nodes for directories';
+  AllUnitsShowDirsSpeedButton.Hint:=lisUDShowNodesForDirectories;
   AllUnitsShowDirsSpeedButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
   AllUnitsShowDirsSpeedButton.Down:=true;
-  AllUnitsShowGroupNodesSpeedButton.Hint:='Show nodes for project and packages';
+  AllUnitsShowGroupNodesSpeedButton.Hint:=lisUDShowNodesForProjectAndPackages;
   AllUnitsShowGroupNodesSpeedButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
   AllUnitsShowGroupNodesSpeedButton.Down:=true;
 
   AllUnitsSearchEdit.Text:=ResStrSearch;
-  AllUnitsSearchNextSpeedButton.Hint:='Search next occurence of this phrase';
+  AllUnitsSearchNextSpeedButton.Hint:=lisUDSearchNextOccurenceOfThisPhrase;
   AllUnitsSearchNextSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
-  AllUnitsSearchPrevSpeedButton.Hint:='Search previous occurence of this phrase';
+  AllUnitsSearchPrevSpeedButton.Hint:=lisUDSearchPreviousOccurenceOfThisPhrase;
   AllUnitsSearchPrevSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
 
   // selected units
-  SelectedUnitsGroupBox.Caption:='Selected units';
+  SelectedUnitsGroupBox.Caption:=lisUDSelectedUnits;
   SelUnitsSearchEdit.Text:=ResStrSearch;
-  SelUnitsSearchNextSpeedButton.Hint:='Search next unit of this phrase';
+  SelUnitsSearchNextSpeedButton.Hint:=lisUDSearchNextUnitOfThisPhrase;
   SelUnitsSearchNextSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
-  SelUnitsSearchPrevSpeedButton.Hint:='Search previous unit of this phrase';
+  SelUnitsSearchPrevSpeedButton.Hint:=lisUDSearchPreviousUnitOfThisPhrase;
   SelUnitsSearchPrevSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
 
   // popup menu
-  UnitsTVCopyFilenameMenuItem.Caption:='Copy Filename';
-  UnitsTVExpandAllMenuItem.Caption:='Expand all nodes';
-  UnitsTVCollapseAllMenuItem.Caption:='Collapse all nodes';
+  UnitsTVCopyFilenameMenuItem.Caption:=uemCopyFilename;
+  UnitsTVExpandAllMenuItem.Caption:=lisUDExpandAllNodes;
+  UnitsTVCollapseAllMenuItem.Caption:=lisUDCollapseAllNodes;
 
   UpdateUnitsButtons;
 end;
@@ -1776,12 +1798,12 @@ end;
 
 function TUnitDependenciesWindow.ResStrFilter: string;
 begin
-  Result:='(Filter)';
+  Result:=lisUDFilter;
 end;
 
 function TUnitDependenciesWindow.ResStrSearch: string;
 begin
-  Result:='(Search)';
+  Result:=lisUDSearch;
 end;
 
 function TUnitDependenciesWindow.NodeTextFitsFilter(const NodeText,

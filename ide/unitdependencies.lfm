@@ -409,4 +409,9 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
       OnClick = UnitsTVCollapseAllMenuItemClick
     end
   end
+  object Timer1: TTimer
+    OnTimer = Timer1Timer
+    left = 465
+    top = 175
+  end
 end
