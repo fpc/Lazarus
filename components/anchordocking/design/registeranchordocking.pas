@@ -189,6 +189,10 @@ begin
     DockSiblingName:=Creator.DockSibling;
     DockAlign:=Creator.DockAlign;
   end;
+  {$IFDEF darwin}
+  if (NewBounds.Top=0) and (NewBounds.Left=0) then
+    NewBounds.Top:=30;
+  {$ENDIF}
   NewBounds.Left:=Min(10000,Max(-10000,NewBounds.Left));
   NewBounds.Top:=Min(10000,Max(-10000,NewBounds.Top));
   NewBounds.Right:=Max(NewBounds.Left+100,NewBounds.Right);
