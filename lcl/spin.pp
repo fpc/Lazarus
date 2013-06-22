@@ -77,6 +77,7 @@ type
     property AutoSelected;
   published
     property Align;
+    property Alignment;
     property Anchors;
     property AutoSelect;
     property AutoSize;
@@ -145,6 +146,7 @@ type
     property AutoSelected;
   published
     property Align;
+    property Alignment;
     property Anchors;
     property AutoSelect;
     property AutoSize;
