@@ -108,8 +108,8 @@ var
   (
       kCGLPFAFullScreen,
       kCGLPFADisplayMask,
-      CGLPixelFormatAttribute(0),    { Display mask bit goes here }
-      CGLPixelFormatAttribute(0)
+      CGLPixelFormatAttribute(kCGLPFAAllRenderers),    { Display mask bit goes here }
+      CGLPixelFormatAttribute(1) // dummy value, workaround for fpc
   );
 begin
   cSpace := CGColorSpaceCreateWithName (kCGColorSpaceGenericRGB);
@@ -117,7 +117,8 @@ begin
   if ( display = kCGNullDirectDisplay ) then
         display := CGMainDisplayID();
   attribs[2] := CGLPixelFormatAttribute(CGDisplayIDToOpenGLDisplayMask(display));
-
+  // last value must be 0
+  PLongint(@attribs[3])^ := 0;
 
     { Build a full-screen GL context }
     CGLChoosePixelFormat( attribs, @pixelFormatObj, @numPixelFormats );
