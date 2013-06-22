@@ -3,12 +3,12 @@ object ConfirmPackageListDialog: TConfirmPackageListDialog
   Height = 240
   Top = 152
   Width = 450
-  ActiveControl = PackagesGrid
+  ActiveControl = OkButton
   Caption = 'ConfirmPackageListDialog'
   ClientHeight = 240
   ClientWidth = 450
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.1'
   object PackagesGrid: TStringGrid
     Left = 6
     Height = 190
@@ -35,10 +35,10 @@ object ConfirmPackageListDialog: TConfirmPackageListDialog
     object CancelButton: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 366
+      Left = 365
       Height = 26
       Top = 6
-      Width = 78
+      Width = 79
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -46,13 +46,12 @@ object ConfirmPackageListDialog: TConfirmPackageListDialog
       Constraints.MinWidth = 75
       Kind = bkCancel
       ModalResult = 2
-      NumGlyphs = 0
       TabOrder = 0
     end
     object OkButton: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 285
+      Left = 284
       Height = 26
       Top = 6
       Width = 75
@@ -64,7 +63,6 @@ object ConfirmPackageListDialog: TConfirmPackageListDialog
       Default = True
       Kind = bkOK
       ModalResult = 1
-      NumGlyphs = 0
       TabOrder = 1
     end
   end
