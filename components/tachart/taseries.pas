@@ -426,14 +426,14 @@ var
   // above approximately one million.
   // So, split long polylines into segments.
   function PolylineIsTooLong: Boolean; inline;
+  // There is a trade-off between the call overhead for short serment and
+  // the above-mentioned inefficiency for long ones.
+  // First value was selected by some experiments as "optimal enough" for
+  // both affected platforms.
+  {$IF defined(LCLWIN32) or defined(LCLGTK2)}
   const
-    // There is a trade-off between the call overhead for short serment and
-    // the above-mentioned inefficiency for long ones.
-    // First value was selected by some experiments as "optimal enough" for
-    // both affected platforms.
-    {$IF defined(LCLWIN32) or defined(LCLGTK2)}
     MAX_LENGTH: array [Boolean] of Integer = (50000, 1000000);
-    {$ENDIF}
+  {$ENDIF}
   begin
     {$IF defined(LCLWIN32)}
     Result :=
