@@ -849,7 +849,7 @@ end;
 
 procedure TConvertSettingsForm.FormCreate(Sender: TObject);
 begin
-  InputPathLabel.Caption:=lisProjectPath;
+  InputPathLabel.Caption:=lisToFPCPath; // Reuse a string form options page.
   InputPathListBox.Clear;
   InputPathListBox.Hint:=lisProjectPathHint;
   DelphiDefineCheckBox.Caption:=lisAddDelphiDefine;

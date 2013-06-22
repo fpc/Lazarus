@@ -551,7 +551,6 @@ resourcestring
   lisUnitNotFoundInProject = 'A unit not found in project %s';
   lisUnitsNotFoundInProject = 'Units not found in project %s';
   lisUnableToConvertLfmToLrsAndWriteLrsFile = 'Unable to convert lfm to lrs and write lrs file.';
-  lisProjectPath = 'Project Path:';
   lisProjectPathHint = 'Directory where project''s main file must be';
   lisAddDelphiDefine = 'Add defines simulating Delphi7';
   lisAddDelphiDefineHint = 'Useful when the code has checks for supported compiler versions';
