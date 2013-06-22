@@ -834,7 +834,7 @@ begin
   if ImageRep = nil then
     Result := nil
   else
-    Result := CGImageCreateWithImageInRect(ImageRep.CGImage, RectToCGRect(ARect));
+    Result := CGImageCreateWithImageInRect(MacOSAll.CGImageRef(ImageRep.CGImage), RectToCGRect(ARect));
 end;
 
 function TCocoaBitmap.GetColorSpace: NSString;
@@ -1037,6 +1037,9 @@ var
   Indexes: array of NSUInteger;
   I, Count: NSUInteger;
 begin
+  // ToDo: empty text: draw background of given rect
+  if FText = '' then
+    Exit;
   if not ctx.isFlipped then
     Context := NSGraphicsContext.graphicsContextWithGraphicsPort_flipped(ctx.graphicsPort, True)
   else
@@ -2370,7 +2373,7 @@ begin
     FillChar(ACallBacks, SizeOf(ACallBacks), 0);
     ACallBacks.drawPattern := @DrawBitmapPattern;
     FBitmap := TCocoaBitmap.Create(8, 8, 1, 1, cbaByte, cbtMask, @HATCH_DATA[AHatch]);
-    FImage := FBitmap.ImageRep.CGImageForProposedRect_context_hints(nil, nil, nil);
+    FImage := MacOSAll.CGImageRef( FBitmap.ImageRep.CGImageForProposedRect_context_hints(nil, nil, nil));
     FColored := False;
     FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, 8, 8),
       CGAffineTransformIdentity, 8, 8, kCGPatternTilingConstantSpacing,
@@ -2388,7 +2391,7 @@ begin
   FillChar(ACallBacks, SizeOf(ACallBacks), 0);
   ACallBacks.drawPattern := @DrawBitmapPattern;
   FBitmap := TCocoaBitmap.Create(ABitmap);
-  FImage := FBitmap.imageRep.CGImageForProposedRect_context_hints(nil, nil, nil);
+  FImage := MacOSAll.CGImageRef( FBitmap.imageRep.CGImageForProposedRect_context_hints(nil, nil, nil));
   FColored := True;
   FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, AWidth, AHeight),
     CGAffineTransformIdentity, AWidth, AHeight, kCGPatternTilingConstantSpacing,
@@ -2402,7 +2405,7 @@ var
 begin
   FillChar(ACallBacks, SizeOf(ACallBacks), 0);
   ACallBacks.drawPattern := @DrawBitmapPattern;
-  FImage := CGImageCreateCopy(AImage.CGImageForProposedRect_context_hints(nil, nil, nil));
+  FImage := CGImageCreateCopy(MacOSAll.CGImageRef( AImage.CGImageForProposedRect_context_hints(nil, nil, nil)));
   FColored := True;
   Rect.origin.x := 0;
   Rect.origin.y := 0;
