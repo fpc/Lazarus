@@ -38,7 +38,6 @@ components/IndustrialStuff/resources/stop_unknown.png -text svneol=unset#image/p
 components/IndustrialStuff/resources/stop_yellow.png -text svneol=unset#image/png
 components/IndustrialStuff/resources/tadvled.png -text svneol=unset#image/png
 components/IndustrialStuff/resources/tanalogsensor.png -text svneol=unset#image/png
-components/IndustrialStuff/resources/tgrarrow.png -text svneol=unset#image/png
 components/IndustrialStuff/resources/tindadvled.png -text svneol=unset#image/png
 components/IndustrialStuff/resources/tindgnoumeter.png -text svneol=unset#image/png
 components/IndustrialStuff/resources/tindled.png -text svneol=unset#image/png
