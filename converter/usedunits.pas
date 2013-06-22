@@ -692,17 +692,32 @@ end;
 function TUsedUnitsTool.AddUnitImmediately(aUnitName: string): Boolean;
 // Add a unit to uses section and apply the change at once.
 // Returns True if the unit was actually added (did not exist yet).
+
+  procedure RemoveFromAdded(aUnitList: TStrings);
+  var
+    i: Integer;
+  begin
+    i:=aUnitList.IndexOf(aUnitName);
+    if (i > -1) then
+      aUnitList.Delete(i);
+  end;
+
 var
   x: Integer;
 begin
   Result:=not ( fMainUsedUnits.fExistingUnits.Find(aUnitName, x)
              or fImplUsedUnits.fExistingUnits.Find(aUnitName, x) );
-  if Result then begin
-    Result:=fCTLink.CodeTool.AddUnitToSpecificUsesSection(
-                   fMainUsedUnits.fUsesSection, aUnitName, '', fCTLink.SrcCache);
-    if Result then
-      Result:=fCTLink.SrcCache.Apply;
-  end;
+  if not Result then Exit;
+  Result:=fCTLink.CodeTool.AddUnitToSpecificUsesSection(
+                 fMainUsedUnits.fUsesSection, aUnitName, '', fCTLink.SrcCache);
+  if not Result then Exit;
+  Result:=fCTLink.SrcCache.Apply;
+  if not Result then Exit;
+  // Make sure the same unit will not be added again later.
+  RemoveFromAdded(fMainUsedUnits.fUnitsToAdd);
+  RemoveFromAdded(fImplUsedUnits.fUnitsToAdd);
+  RemoveFromAdded(fMainUsedUnits.fUnitsToAddForLCL);
+  RemoveFromAdded(fImplUsedUnits.fUnitsToAddForLCL);
 end;
 
 procedure TUsedUnitsTool.AddUnitIfNeeded(aUnitName: string);
