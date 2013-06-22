@@ -269,6 +269,8 @@ type
       read FMarkPositions write SetMarkPositions default lmpOutside;
     property UseReticule: Boolean
       read FUseReticule write SetUseReticule default false;
+    property ExtentPointIndexFirst: Integer read FLoBound;
+    property ExtentPointIndexLast: Integer read FUpBound;
   end;
 
   function CreateLazIntfImage(
