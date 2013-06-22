@@ -1163,7 +1163,7 @@ var
 begin
   FindExtentInterval(AExtent, AFilterByExtent);
 
-  SetLength(FGraphPoints, FUpBound - FLoBound + 1);
+  SetLength(FGraphPoints, Max(FUpBound - FLoBound + 1, 0));
   if (AxisIndexX < 0) and (AxisIndexY < 0) then
     // Optimization: bypass transformations in the default case.
     for i := FLoBound to FUpBound do
