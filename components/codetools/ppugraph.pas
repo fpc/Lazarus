@@ -632,8 +632,10 @@ begin
   // search system.ppu
   SystemPPUFilename:=SearchFileInPath('system.ppu',BaseDirectory,FPCSearchPath,
                                       ';',ctsfcDefault);
-  if SystemPPUFilename='' then
+  if SystemPPUFilename='' then begin
+    debugln(['TPPUGroups.AddFPCGroupsForCurrentCompiler BaseDir="',BaseDirectory,'" FPCSearchPath="',FPCSearchPath,'"']);
     raise Exception.Create('TPPUGroups.AddFPCGroupsForCurrentCompiler: system.ppu is not in the FPC search paths');
+  end;
   RTLPPUDirectory:=ExtractFilePath(SystemPPUFilename);
   FPCPPUBaseDir:=ExtractFilePath(ChompPathDelim(RTLPPUDirectory));
   AddFPCGroups(FPCPPUBaseDir);

@@ -42,7 +42,7 @@ var
 begin
   if (Paramcount<1) then begin
     writeln('Usage:');
-    writeln('  ',ParamStr(0),' [fpc] <ppu filename1> ...');
+    writeln('  ',ParamStrUTF8(0),' [fpc] <ppu filename1> ...');
     writeln('  The "fpc" parameter auto generates groups for all fpc units.');
     Halt;
   end;
@@ -54,7 +54,7 @@ begin
   Group:=nil;
   try
     for i:=1 to Paramcount do begin
-      Filename:=ParamStr(i);
+      Filename:=ParamStrUTF8(i);
       if Filename='fpc' then
         Groups.AddFPCGroupsForCurrentCompiler(CleanAndExpandDirectory(GetCurrentDir))
       else begin
