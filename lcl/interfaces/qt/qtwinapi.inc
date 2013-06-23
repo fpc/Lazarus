@@ -4920,7 +4920,10 @@ begin
   Str := GetUtf8String('TQtWidgetSet.MessageBox - not implemented');
   TitleStr := GetUtf8String(lpCaption);
   OkStr := GetUtf8String('Ok');
-  Result := QMessageBox_information(TQtWidget(hWnd).Widget, @Str, @TitleStr, @OkStr);
+  if HWND <> 0 then
+    Result := QMessageBox_information(TQtWidget(hWnd).Widget, @Str, @TitleStr, @OkStr)
+  else
+    Result := QMessageBox_information(nil, @Str, @TitleStr, @OkStr);
 end;
 
 {------------------------------------------------------------------------------
