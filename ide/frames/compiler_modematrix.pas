@@ -24,7 +24,9 @@
    Options frame for build mode matrix options.
 
  ToDo:
-   - add checkbox Show build modes
+   - add checkbox "Show build modes" when there is only one build mode
+   - editor for targets
+   - show pick list icon for type column
    - undo: combine changes while editing a cell
 }
 unit Compiler_ModeMatrix;
