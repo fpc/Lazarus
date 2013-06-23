@@ -67,7 +67,7 @@ type
 
   TProcType = (ptFunction, ptProcedure);
 
-  TApiWidgetset = (awCarbon, awCocoa, awFpgui, awGtk, awGtk2, awNoGui, awQt, awWin32, awWinCE);
+  TApiWidgetset = (awCarbon, awCocoa, awFpgui, awGtk, awGtk2, awGtk3, awNoGui, awQt, awWin32, awWinCE);
   TApiWidgetsets = set of TApiWidgetset;
 
   TApiLine = class
@@ -87,7 +87,7 @@ const
   DECL_OFFSET: array[TProctype] of Integer = (9, 10);
 
   WS_NAME: array[TApiWidgetset] of string = (
-    'carbon', 'cocoa', 'fpgui', 'gtk', 'gtk2', 'nogui', 'qt', 'win32', 'wince'
+    'carbon', 'cocoa', 'fpgui', 'gtk', 'gtk2', 'gtk3', 'nogui', 'qt', 'win32', 'wince',
   );
 
 function GetName(const ADeclaration: String): String;

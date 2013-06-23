@@ -51,6 +51,7 @@ type
   TLCLPlatform = (
     lpGtk,
     lpGtk2,
+    lpGtk3,
     lpWin32,
     lpWinCE,
     lpCarbon,
@@ -185,6 +186,7 @@ const
   LCLPlatformDirNames: array[TLCLPlatform] of string = (
       'gtk',
       'gtk2',
+      'gtk3',
       'win32',
       'wince',
       'carbon',

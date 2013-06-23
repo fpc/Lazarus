@@ -29,6 +29,7 @@ begin
     WidgetSetVariant := P.AddPackageVariant('widgetset',true);
     WidgetSetVariant.Add('carbon');
     WidgetSetVariant.Add('gtk2');
+    WidgetSetVariant.Add('gtk3');
     WidgetSetVariant.Add('win');
 
 
