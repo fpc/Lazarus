@@ -47,6 +47,40 @@ type
 
   TDiaElement = class;
 
+  TDiaDecoratorList = class;
+
+  TDiaDecorator = class(TDiaObject)
+  private
+    FOwner: TDiaObject;
+  public
+    constructor Create(AOwner: TDiaDecoratorList);
+    property Owner: TDiaObject read FOwner;
+  end;
+
+  TDiaDecoratorEnumerator = class;
+
+  TDiaDecoratorList = class(TDiaObject)
+  private
+    FDecorators: array of TDiaDecorator;
+    FOwner: TDiaObject;
+    procedure Add(ADecorator: TDiaDecorator);
+  public
+    constructor Create(AOwner: TDiaObject);
+    destructor Destroy; override;
+    property Owner: TDiaObject read FOwner;
+    function GetEnumerator: TDiaDecoratorEnumerator;
+  end;
+
+  TDiaDecoratorEnumerator = class
+    FList: TDiaDecoratorList;
+    FPosition: Integer;
+  public
+    constructor Create(AList: TDiaDecoratorList);
+    function GetCurrent: TDiaDecorator;
+    function MoveNext: Boolean;
+    property Current: TDiaDecorator read GetCurrent;
+  end;
+
   TDiagram = class(TDiaObject)
   strict private
     FBounds: array [TDiaBoxSide] of TDiaCoordinate;
@@ -74,13 +108,17 @@ type
     FConnectors: array of TDiaConnector;
     FOwner: TDiagram;
   private
+    FDecorators: TDiaDecoratorList;
     procedure SetOwner(AValue: TDiagram);
   public
+    constructor Create;
+    destructor Destroy; override;
     procedure Add(AConnector: TDiaConnector);
     procedure Changed(ASender: TDiaObject); override;
     procedure Draw; virtual;
     procedure Notify(ASender: TDiaObject); override;
     property Owner: TDiagram read FOwner;
+    property Decorators: TDiaDecoratorList read FDecorators;
   end;
 
   TDiaPosition = class(TDiaObject)
@@ -216,6 +254,61 @@ function WeightedAverage(
 begin
   Result.X := WeightedAverage(AP1.X, AP2.X, ACoeff);
   Result.Y := WeightedAverage(AP1.Y, AP2.Y, ACoeff);
+end;
+
+{ TDiaDecoratorEnumerator }
+
+constructor TDiaDecoratorEnumerator.Create(AList: TDiaDecoratorList);
+begin
+  FList := AList;
+  FPosition := -1;
+end;
+
+function TDiaDecoratorEnumerator.GetCurrent: TDiaDecorator;
+begin
+  Result := FList.FDecorators[FPosition];
+end;
+
+function TDiaDecoratorEnumerator.MoveNext: Boolean;
+begin
+  FPosition += 1;
+  Result := FPosition < Length(FList.FDecorators);
+end;
+
+{ TDiaDecoratorList }
+
+procedure TDiaDecoratorList.Add(ADecorator: TDiaDecorator);
+begin
+  SetLength(FDecorators, Length(FDecorators) + 1);
+  FDecorators[High(FDecorators)] := ADecorator;
+  //Notify(ADecorator);
+end;
+
+constructor TDiaDecoratorList.Create(AOwner: TDiaObject);
+begin
+  FOwner := AOwner;
+end;
+
+destructor TDiaDecoratorList.Destroy;
+var
+  d: TDiaDecorator;
+begin
+  for d in FDecorators do
+    d.Free;
+  inherited;
+end;
+
+function TDiaDecoratorList.GetEnumerator: TDiaDecoratorEnumerator;
+begin
+  Result := TDiaDecoratorEnumerator.Create(Self);
+end;
+
+{ TDiaDecorator }
+
+constructor TDiaDecorator.Create(AOwner: TDiaDecoratorList);
+begin
+  if AOwner <> nil then
+    AOwner.Add(Self);
 end;
 
 { TDiaLink }
@@ -538,6 +631,17 @@ var
 begin
   for c in FConnectors do
     c.Changed(ASender);
+end;
+
+constructor TDiaElement.Create;
+begin
+  FDecorators := TDiaDecoratorList.Create(Self);
+end;
+
+destructor TDiaElement.Destroy;
+begin
+  FreeAndNil(FDecorators);
+  inherited;
 end;
 
 procedure TDiaElement.Draw;

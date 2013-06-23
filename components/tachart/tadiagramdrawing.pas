@@ -25,10 +25,19 @@ type
     property Drawer: IChartDrawer read FDrawer write FDrawer;
   end;
 
+  TDiaPenDecorator = class(TDiaDecorator)
+  private
+    FPen: TFPCustomPen;
+  public
+    constructor Create(AOwner: TDiaDecoratorList);
+    destructor Destroy; override;
+    property Pen: TFPCustomPen read FPen;
+  end;
+
 implementation
 
 uses
-  Math, Types,
+  Math, Types, SysUtils,
   TAGeometry;
 
 function ToImage(const AP: TDiaPoint): TPoint; inline;
@@ -62,18 +71,20 @@ var
   Length: Integer = 20;
   startPos, endPos: TPoint;
   AAngle: float;
+  d: TDiaDecorator;
 begin
   if (ASelf.Start = nil) or (ASelf.Finish = nil) then exit;
   id := (ASelf.Owner.Context as TDiaContextDrawer).Drawer;
   id.PrepareSimplePen($000000);
-  if ASelf.Dashes then
-    id.SetPenParams(psDash, $000000);
-  id.SetBrushColor($FFFFFF);
+  for d in ASelf.Decorators do
+    if d is TDiaPenDecorator then
+      id.Pen := (d as TDiaPenDecorator).Pen;
   startPos := ToImage(ASelf.Start.ActualPos);
   endPos := ToImage(ASelf.Finish.ActualPos);
   id.Line(startPos, endPos);
   if not ASelf.Arrow then exit;
   id.SetPenParams(psSolid, $000000);
+  id.SetBrushColor($FFFFFF);
   da := ArcTan2(Width, Length);
 
   endPos := ToImage(ASelf.Finish.ActualPos);
@@ -82,6 +93,21 @@ begin
   pt1 := endPos + RotatePointX(diag, AAngle - da);
   pt2 := endPos + RotatePointX(diag, AAngle + da);
   id.Polygon([pt1, endPos, pt2], 0, 3);
+end;
+
+{ TDiaPenDecorator }
+
+constructor TDiaPenDecorator.Create(AOwner: TDiaDecoratorList);
+begin
+  inherited Create(AOwner);
+  FPen := TFPCustomPen.Create;
+  FPen.Mode := pmCopy;
+end;
+
+destructor TDiaPenDecorator.Destroy;
+begin
+  FreeAndNil(FPen);
+  inherited;
 end;
 
 initialization
