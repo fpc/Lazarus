@@ -3069,7 +3069,7 @@ resourcestring
   lisDocumentationEditor = 'Documentation Editor';
    
   // Build lazarus dialog
-  lisConfirmLazarusRebuild = 'Do you want to rebuild Lazarus with profile: %s ?';
+  lisConfirmLazarusRebuild = 'Do you want to rebuild Lazarus with profile: %s?';
   lisConfirmation = 'Confirmation';
   lisPkgTheProjectOverridesTheOutputDirectoryOfTheFollowin = 'The project '
     +'overrides the output directory of the following packages.%sSee Project /'
