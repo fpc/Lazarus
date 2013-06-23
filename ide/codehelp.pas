@@ -2482,19 +2482,28 @@ begin
 
       for n:=1 to 30 do begin
         ElementName:=CodeNodeToElementName(CTTool,CTNode);
+        //debugln(['TCodeHelpManager.GetHTMLHintForNode ElementName=',ElementName]);
         i:=ElementNames.Count-1;
-        while (i>=0) and (ElementNames.Objects[i]<>CTTool)
-        and (SysUtils.CompareText(ElementNames[i],ElementName)<>0) do
+        while (i>=0) do begin
+          if (ElementNames.Objects[i]=CTTool)
+          and (SysUtils.CompareText(ElementNames[i],ElementName)=0) then
+            break;
           dec(i);
+        end;
         if i>=0 then begin
           // a loop or a forward definition
+          {$IFDEF VerboseCodeHelp}
+          debugln(['TCodeHelpManager.GetHTMLHintForNode already seen "',ElementName,'"']);
+          {$ENDIF}
         end else begin
           ElementNames.AddObject(ElementName,CTTool);
 
           // add fpdoc entry
           FPDocFilename:=GetFPDocFilenameForSource(CTTool.MainFilename,
                                                    false,CacheWasUsed,AnOwner);
-          //DebugLn(['TCodeHelpManager.GetHTMLHintForNode: FPDocFilename=',FPDocFilename,' ElementName="',ElementName,'"']);
+          {$IFDEF VerboseCodeHelp}
+          DebugLn(['TCodeHelpManager.GetHTMLHintForNode: FPDocFilename=',FPDocFilename,' ElementName="',ElementName,'"']);
+          {$ENDIF}
           if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
           if FPDocFilename<>'' then begin
