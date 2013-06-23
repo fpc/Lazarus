@@ -1297,6 +1297,7 @@ type
     procedure FreeCanvasContext;
     function  GetCanvas: TCanvas;
     function  GetRawImage: TRawImage;
+    function  GetScanline(ARow: Integer): Pointer;
     function  GetTransparentColor: TColor;
     procedure SetTransparentColor(AValue: TColor);
   protected
@@ -1379,7 +1380,7 @@ type
     property MaskHandle: HBITMAP read GetMaskHandle write SetMaskHandle;
     property PixelFormat: TPixelFormat read GetPixelFormat write SetPixelFormat default pfDevice;
     property RawImage: TRawImage read GetRawImage; // be carefull with this, modify only within a begin/endupdate
-    // property ScanLine[Row: Integer]: Pointer; -> Use TLazIntfImage for such things
+    property ScanLine[Row: Integer]: Pointer read GetScanLine; platform; // Use only when wrpped by a begin/endupdate
     property TransparentColor: TColor read GetTransparentColor
                                       write SetTransparentColor default clDefault;
     property TransparentMode: TTransparentMode read FTransparentMode

@@ -467,6 +467,14 @@ begin
   else Result := p^;
 end;
 
+function TRasterImage.GetScanline(ARow: Integer): Pointer;
+var
+  RI: TRawImage;
+begin
+  RI := GetRawImage;
+  Result := RI.GetLineStart(ARow);
+end;
+
 function TRasterImage.GetTransparentColor: TColor;
 begin
   if FTransparentColor = clDefault

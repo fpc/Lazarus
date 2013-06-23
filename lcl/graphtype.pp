@@ -209,6 +209,7 @@ type
     procedure ReleaseData;
     procedure ExtractRect(const ARect: TRect; out ADst: TRawImage);
 
+    function  GetLineStart(ALine: Cardinal): PByte;
     procedure PerformEffect(const ADrawEffect: TGraphicsDrawEffect; CreateNewData: Boolean = True; FreeOldData: boolean = false);
     function  ReadBits(const APosition: TRawImagePosition; APrec, AShift: Byte): Word;
     procedure ReadChannels(const APosition: TRawImagePosition; out ARed, AGreen, ABlue, AAlpha: Word);
@@ -1583,6 +1584,14 @@ begin
   //DebugLn'ExtractRawImageRect Mask SrcRawImage=',RawImageDescriptionAsString(@SrcMaskDesc));
   ExtractData(Mask, MaskSize, Description.MaskBitsPerPixel, Description.MaskBitOrder,
               Description.MaskLineEnd, ADst.Mask, ADst.MaskSize);
+end;
+
+function TRawImage.GetLineStart(ALine: Cardinal): PByte;
+begin
+  Result := Data;
+  if Result = nil then Exit;
+  if ALine = 0 then Exit;
+  Inc(Result, ALine * Description.BytesPerLine);
 end;
 
 procedure TRawImage.PerformEffect(const ADrawEffect: TGraphicsDrawEffect;
