@@ -97,6 +97,7 @@ operator div(const A: TPoint; ADivisor: Integer): TPoint; inline;
 operator *(const A: TPoint; AMultiplier: Integer): TPoint; inline;
 operator *(const A, B: TPoint): TPoint; inline;
 operator *(const A, B: TDoublePoint): TDoublePoint; overload; inline;
+operator * (const A: TDoublePoint; B: Double): TDoublePoint; overload; inline;
 operator /(const A, B: TDoublePoint): TDoublePoint; overload; inline;
 operator = (const A, B: TDoublePoint): Boolean; overload; inline;
 operator = (const A, B: TDoubleRect): Boolean; overload; inline;
@@ -717,6 +718,12 @@ operator * (const A, B: TDoublePoint): TDoublePoint;
 begin
   Result.X := A.X * B.X;
   Result.Y := A.Y * B.Y;
+end;
+
+operator * (const A: TDoublePoint; B: Double): TDoublePoint;
+begin
+  Result.X := A.X * B;
+  Result.Y := A.Y * B;
 end;
 
 operator / (const A, B: TDoublePoint): TDoublePoint;
