@@ -72,8 +72,8 @@ end;
   position.
 
 ------------------------------------------------------------------------------}
-function TWin32WidgetSet.AngleChord(DC: HDC; x1, y1, x2, y2, Angle1,
-  Angle2: Integer): Boolean;
+function TWin32WidgetSet.AngleChord(DC: HDC; x1, y1, x2, y2, angle1,
+  angle2: Integer): Boolean;
 var
   SX, SY, EX, EY : Longint;
 begin
@@ -111,7 +111,7 @@ end;
   The BeginPaint function prepares the specified window for painting and fills
   a PAINTSTRUCT structure with information about the painting.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.BeginPaint(Handle: HWND; var PS: TPaintStruct): HDC;
+function TWin32WidgetSet.BeginPaint(Handle: hwnd; var PS: TPaintStruct): hdc;
 begin
   Result := Windows.BeginPaint(Handle, @PS);
 end;
@@ -700,7 +700,8 @@ end;
                        type to register
   Returns: the registered Format identifier (TClipboardFormat)
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.ClipboardRegisterFormat(Const AMimeType: String): TClipboardFormat;
+function TWin32WidgetSet.ClipboardRegisterFormat(const AMimeType: String
+  ): TClipboardFormat;
 begin
   if AMimeType=PredefinedClipboardMimeTypes[pcfText] then
   {$IFDEF WindowsUnicodeSupport}
@@ -968,7 +969,7 @@ end;
   Creates a logical cosmetic pen that has the style, width, and color specified
   in a record.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.CreatePenIndirect(Const LogPen: TLogPen): HPEN;
+function TWin32WidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
 var
   LP: TLogPen;
 begin
@@ -1067,7 +1068,7 @@ end;
 
   Destroys the cursor
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.DestroyCursor(Handle: hCursor): Boolean;
+function TWin32WidgetSet.DestroyCursor(Handle: HCURSOR): Boolean;
 begin
   Result := Boolean(Windows.DestroyCursor(Handle));
 end;
@@ -1113,7 +1114,8 @@ end;
   Draws one or more edges of a rectangle, not including the
   right and bottom edge.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.DrawEdge(DC: HDC; Var Rect: TRect; Edge: Cardinal; GrfFlags: Cardinal): Boolean;
+function TWin32WidgetSet.DrawEdge(DC: HDC; var Rect: TRect; Edge: Cardinal;
+  GrfFlags: Cardinal): Boolean;
 begin
   Result := Boolean(Windows.DrawEdge(DC, @Rect, edge, grfFlags));
 end;
@@ -1210,7 +1212,7 @@ end;
   Enables or disables mouse and keyboard input to the specified window or
   control.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
+function TWin32WidgetSet.EnableWindow(HWnd: HWND; BEnable: Boolean): Boolean;
 begin
   Result := Boolean(Windows.EnableWindow(HWnd, BEnable));
 end;
@@ -1283,7 +1285,7 @@ end;
 {$endif}
 
 function TWin32WidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
-  Callback: FontEnumExProc; LParam: Lparam; flags: DWord): longint;
+  Callback: FontEnumExProc; LParam: Lparam; flags: dword): longint;
 {$ifdef WindowsUnicodeSupport}
 var
   FontName: String;
@@ -1377,7 +1379,8 @@ end;
 
   Draws a character string by using the currently selected font.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+function TWin32WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: LongInt;
+  Rect: PRect; Str: PChar; Count: LongInt; Dx: PInteger): Boolean;
 {$ifdef WindowsUnicodeSupport}
 var
   s: AnsiString;
@@ -1457,7 +1460,8 @@ end;
   This function includes the left and top borders, but excludes the right and
   bottom borders of the rectangle.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.FillRect(DC: HDC; Const Rect: TRect; Brush: HBRUSH): Boolean;
+function TWin32WidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH
+  ): Boolean;
 var
   R: TRect;
 begin
@@ -1558,7 +1562,7 @@ end;
 
   Gets the caret's position, in client coordinates.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetCaretPos(Var LPPoint: TPoint): Boolean;
+function TWin32WidgetSet.GetCaretPos(var LPPoint: TPoint): Boolean;
 begin
   Result := Boolean(Windows.GetCaretPos(@LPPoint));
 end;
@@ -1574,7 +1578,8 @@ end;
   Retrieves the widths, in logical units, of consecutive characters in a given
   range from the current TrueType font.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetCharABCWidths(DC: HDC; P2, P3: UINT; Const ABCStructs): Boolean;
+function TWin32WidgetSet.GetCharABCWidths(DC: HDC; P2, P3: UINT;
+  const ABCStructs): Boolean;
 begin
   Result := Boolean(Windows.GetCharABCWidths(DC, P2, P3, ABCStructs));
 end;
@@ -1677,7 +1682,7 @@ end;
 
   Gets the cursor position, in screen coordinates.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetCursorPos(Var LPPoint: TPoint): Boolean;
+function TWin32WidgetSet.GetCursorPos(var LPPoint: TPoint): Boolean;
 begin
   Result := Boolean(Windows.GetCursorPos(@LPPoint));
 end;
@@ -1865,7 +1870,7 @@ end;
 
   The GetKeyState function retrieves the status of the specified virtual key.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
+function TWin32WidgetSet.GetKeyState(NVirtKey: Integer): SmallInt;
 begin
   Result := Windows.GetKeyState(nVirtKey);
 end;
@@ -2151,7 +2156,7 @@ end;
 
   Fills the specified buffer with the metrics for the currently selected font.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetTextMetrics(DC: HDC; Var TM: TTextMetric): Boolean;
+function TWin32WidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 begin
   Result := Boolean(Windows.GetTextMetrics(DC, @TM));
 end;
@@ -2210,7 +2215,7 @@ end;
 
   Retrieves the dimensions of the bounding rectangle of the specified window.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetWindowRect(Handle: HWND; Var Rect: TRect): Integer;
+function TWin32WidgetSet.GetWindowRect(Handle: HWND; var Rect: TRect): Integer;
 begin
   Result := Integer(Windows.GetWindowRect(Handle, @Rect));
 end;
@@ -2223,8 +2228,8 @@ end;
   returns the current widget Left, Top, relative to the client origin of its
   parent
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetWindowRelativePosition(Handle: HWND;
-  var Left, Top: Integer): Boolean;
+function TWin32WidgetSet.GetWindowRelativePosition(Handle: HWND; var Left,
+  Top: integer): boolean;
 var
   LeftTop:TPoint;
   R: TRect;
@@ -2394,7 +2399,8 @@ end;
 
   Adds a rectangle to the specified window's update region.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.InvalidateRect(aHandle: HWND; Rect: PRect; BErase: Boolean): Boolean;
+function TWin32WidgetSet.InvalidateRect(AHandle: HWND; Rect: PRect;
+  BErase: Boolean): Boolean;
 var
   Flags: UINT;
   ORect: TRect;
@@ -2498,6 +2504,21 @@ end;
 function TWin32WidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 begin
   Result := Boolean(Windows.LineTo(DC, X, Y));
+end;
+
+function TWin32WidgetSet.LoadBitmap(hInstance: THandle; lpBitmapName: PChar): HBitmap;
+begin
+  Result := Windows.LoadBitmap(hInstance, lpBitmapName);
+end;
+
+function TWin32WidgetSet.LoadCursor(hInstance: THandle; lpCursorName: PChar): HCursor;
+begin
+  Result := Windows.LoadCursor(hInstance, lpCursorName);
+end;
+
+function TWin32WidgetSet.LoadIcon(hInstance: THandle; lpIconName: PChar): HIcon;
+begin
+  Result := Windows.LoadIcon(hInstance, lpIconName);
 end;
 
 function TWin32WidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
@@ -2625,7 +2646,8 @@ end;
 
   Checks a thread message queue for a message.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.PeekMessage(Var LPMsg: TMsg; Handle: HWND; WMsgFilterMin, WMsgFilterMax, WRemoveMsg: UINT): Boolean;
+function TWin32WidgetSet.PeekMessage(var LPMsg: TMsg; Handle: HWND;
+  WMsgFilterMin, WMsgFilterMax, WRemoveMsg: UINT): Boolean;
 begin
   {$IFDEF WindowsUnicodeSupport}
     if UnicodeEnabledOS then
@@ -2908,7 +2930,7 @@ end;
   Converts the screen coordinates of a specified point on the screen to client
   coordinates.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.ScreenToClient(Handle: HWND; Var P: TPoint): Integer;
+function TWin32WidgetSet.ScreenToClient(Handle: HWND; var P: TPoint): Integer;
 begin
   Result := Integer(Windows.ScreenToClient(Handle, @P));
 end;
@@ -3019,7 +3041,7 @@ end;
 
   Sets the current background color to the specified color value.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
+function TWin32WidgetSet.SetBkColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
   Result := TColorRef(Windows.SetBkColor(DC, ColorToRGB(TColor(Color))));
 end;
@@ -3081,7 +3103,7 @@ end;
 
   Moves the caret to the specified coordinates in the specified window.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.SetCaretPosEx(Handle: HWND; X, Y: Integer): Boolean;
+function TWin32WidgetSet.SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
 begin
 {$ifdef DEBUG_CARET}
   DebugLn('[SetCaretPosEx] for window ', IntToHex(Handle, 8));
@@ -3181,7 +3203,8 @@ end;
 
   MWE: that is not really needed anymore since the RemoveProp is now implemented
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.SetProp(Handle: HWND; Str: PChar; Data: Pointer): Boolean;
+function TWin32WidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer
+  ): Boolean;
 begin
   Result := Boolean(Windows.SetProp(Handle, Str, Windows.HANDLE(Data)));
 end;
@@ -3251,7 +3274,8 @@ end;
 
   The SetSysColors function sets the colors for one or more display elements.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.SetSysColors(CElements: Integer; Const LPAElements; Const LPARGBValues): Boolean;
+function TWin32WidgetSet.SetSysColors(CElements: Integer; const LPAElements;
+  const LPARgbValues): Boolean;
 begin
   Result := Boolean(Windows.SetSysColors(CElements, PInteger(@LPAElements)^, LPColorRef(@LPARGBValues)^));
 end;

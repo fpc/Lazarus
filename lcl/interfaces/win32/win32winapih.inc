@@ -148,6 +148,9 @@ function IsWindowVisible(handle: HWND): boolean; override;
 function IsZoomed(handle: HWND): boolean; override;
 
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
+function LoadBitmap(hInstance: THandle; lpBitmapName: PChar): HBitmap; override;
+function LoadCursor(hInstance: THandle; lpCursorName: PChar): HCursor; override;
+function LoadIcon(hInstance: THandle; lpIconName: PChar): HIcon; override;
 function LPtoDP(DC: HDC; var Points; Count: Integer): BOOL; override;
 
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; override;
