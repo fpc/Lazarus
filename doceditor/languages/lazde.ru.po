@@ -122,15 +122,15 @@ msgstr "Модуль для вставки элемента \"%s\" не найд
 
 #: lazdemsg.serrnonodeformodule
 msgid "No node found for module \"%s\""
-msgstr "Узел для модуля \"%s\" не найден"
+msgstr "Элемент для модуля \"%s\" не найден"
 
 #: lazdemsg.serrnonodeforpackage
 msgid "No node found for package \"%s\""
-msgstr "Узел для пакета \"%s\" не найден"
+msgstr "Элемент для пакета \"%s\" не найден"
 
 #: lazdemsg.serrnonodefortopic
 msgid "No parent node found to insert topic \"%s\""
-msgstr "Узел-родитель для вставки темы \"%s\" не найден"
+msgstr "Элемент-родитель для вставки темы \"%s\" не найден"
 
 #: lazdemsg.serrnopackageformodule
 msgid "No package found to insert module \"%s\""
@@ -496,7 +496,7 @@ msgstr "Переименовать"
 
 #: lazdemsg.smoduleelements
 msgid "Elements for selected node"
-msgstr "Элементы выбранного узла"
+msgstr "Части выбранного элемента"
 
 #: lazdemsg.snew
 msgid "New"
@@ -585,7 +585,7 @@ msgstr "Выводить всплывающие подсказки"
 
 #: lazdemsg.soptdlgskipemptynodes
 msgid "&Skip empty nodes when saving"
-msgstr "&Не сохранять пустые узлы"
+msgstr "&Не сохранять пустые элементы"
 
 #: lazdemsg.soptdlgstartmaximized
 msgid "Start maximized"
@@ -688,5 +688,5 @@ msgstr "Сборка документации с использованием к
 #: lazdemsg.swarnifnodocumentationnodefound
 msgctxt "lazdemsg.swarnifnodocumentationnodefound"
 msgid "Warn if no documentation node found"
-msgstr "Предупреждать, если не найдено узла документации"
+msgstr "Предупреждать, если не найдено элемента документации"
 

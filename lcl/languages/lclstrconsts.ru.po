@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-15 19:51+0400\n"
+"PO-Revision-Date: 2013-06-23 23:14+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -706,7 +706,7 @@ msgstr "Ключевое слово справки %s%s%s не найдено в
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
 msgid "Help node %s%s%s has no Help Database"
-msgstr "Узел справки %s%s%s не имеет соответствующей базы данных"
+msgstr "Элемент справки %s%s%s не имеет соответствующей базы данных"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."

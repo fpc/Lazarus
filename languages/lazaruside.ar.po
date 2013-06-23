@@ -3378,6 +3378,7 @@ msgid "Undo limit"
 msgstr "حد التراجع"
 
 #: lazarusidestrconsts.dlgunitdepcaption
+msgctxt "lazarusidestrconsts.dlgunitdepcaption"
 msgid "Unit Dependencies"
 msgstr ""
 
@@ -6310,7 +6311,7 @@ msgid "Confirm delete"
 msgstr ""
 
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
-msgid "Do you want to rebuild Lazarus with profile: %s ?"
+msgid "Do you want to rebuild Lazarus with profile: %s?"
 msgstr ""
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
@@ -11603,7 +11604,8 @@ msgid "Toggle Form/Unit View"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewunitdependencies
-msgid "Unit Dependencies ..."
+msgctxt "lazarusidestrconsts.lismenuviewunitdependencies"
+msgid "Unit Dependencies"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewunitinfo
@@ -14125,10 +14127,6 @@ msgstr ""
 msgid "Project output directory"
 msgstr ""
 
-#: lazarusidestrconsts.lisprojectpath
-msgid "Project Path:"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
 msgstr ""
@@ -16037,6 +16035,126 @@ msgstr ""
 msgid "Types (not removed if no replacement)"
 msgstr ""
 
+#: lazarusidestrconsts.lisudadditionaldirectories
+msgid "Additional directories:"
+msgstr ""
+
+#: lazarusidestrconsts.lisudallpackageunits
+msgid "All package units"
+msgstr ""
+
+#: lazarusidestrconsts.lisudallsourceeditorunits
+msgid "All source editor units"
+msgstr ""
+
+#: lazarusidestrconsts.lisudallunits
+msgid "All units"
+msgstr ""
+
+#: lazarusidestrconsts.lisudbydefaultonlytheprojectunitsandthesourceeditorunit
+msgid "By default only the project units and the source editor units are searched. Add here a list of directories separated by semicolon to search as well."
+msgstr ""
+
+#: lazarusidestrconsts.lisudcollapseallnodes
+msgid "Collapse all nodes"
+msgstr ""
+
+#: lazarusidestrconsts.lisudexpandallnodes
+msgid "Expand all nodes"
+msgstr ""
+
+#: lazarusidestrconsts.lisudfile
+msgid "File: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisudfilter
+msgid "(Filter)"
+msgstr ""
+
+#: lazarusidestrconsts.lisudimplementationuses
+msgid "Implementation Uses: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisudimplementationuses2
+msgid "implementation uses: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisudinterfaceuses
+msgid "Interface Uses: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisudinterfaceuses2
+msgid "interface uses: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisudprojectsandpackages
+msgid "Projects and packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisudscanning
+msgid "Scanning ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisudscanningunits
+msgid "Scanning: %s units ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisudsearch
+msgid "(Search)"
+msgstr ""
+
+#: lazarusidestrconsts.lisudsearchnextoccurrenceofthisphrase
+msgid "Search next occurrence of this phrase"
+msgstr ""
+
+#: lazarusidestrconsts.lisudsearchnextunitofthisphrase
+msgid "Search next unit of this phrase"
+msgstr ""
+
+#: lazarusidestrconsts.lisudsearchpreviousoccurrenceofthisphrase
+msgid "Search previous occurrence of this phrase"
+msgstr ""
+
+#: lazarusidestrconsts.lisudsearchpreviousunitofthisphrase
+msgid "Search previous unit of this phrase"
+msgstr ""
+
+#: lazarusidestrconsts.lisudselectedunits
+msgid "Selected units"
+msgstr ""
+
+#: lazarusidestrconsts.lisudshownodesfordirectories
+msgid "Show nodes for directories"
+msgstr ""
+
+#: lazarusidestrconsts.lisudshownodesforprojectandpackages
+msgid "Show nodes for project and packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisudunits
+msgid "Units"
+msgstr ""
+
+#: lazarusidestrconsts.lisudunits2
+msgid "Units: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisudusedbyimplementations
+msgid "Used by Implementations: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisudusedbyimplementations2
+msgid "used by implementations: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisudusedbyinterfaces
+msgid "Used by Interfaces: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisudusedbyinterfaces2
+msgid "used by interfaces: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisuedonotsho
 msgid "Do not show this message again."
 msgstr ""
@@ -16600,6 +16718,10 @@ msgstr ""
 msgid "Usage message (-h option)"
 msgstr ""
 
+#: lazarusidestrconsts.lisuseandclose
+msgid "Use and close"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
@@ -16667,10 +16789,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
-msgstr ""
-
-#: lazarusidestrconsts.lisuseselected
-msgid "Use Selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisusesub

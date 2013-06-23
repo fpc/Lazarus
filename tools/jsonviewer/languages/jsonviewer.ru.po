@@ -76,7 +76,7 @@ msgstr "Введите имя нового элемента (тип: %s)"
 
 #: msgjsonviewer.snomorematches
 msgid "No nodes match the criterium"
-msgstr "Узлы, отвечающие критерию, отсутствуют"
+msgstr "Элементы, отвечающие критерию, отсутствуют"
 
 #: msgjsonviewer.snull
 msgid "null"
@@ -96,7 +96,7 @@ msgstr "К&опировать"
 
 #: TMAINFORM.ACOPY.HINT
 msgid "Copy selected node to clipboard as JSON"
-msgstr "Копировать выбранный узел в буфер обмена как JSON"
+msgstr "Копировать выбранный элемент в буфер обмена как JSON"
 
 #: TMAINFORM.ACUT.CAPTION
 msgid "C&ut"
@@ -104,7 +104,7 @@ msgstr "&Вырезать"
 
 #: TMAINFORM.ACUT.HINT
 msgid "Cut selected node to clipboard as JSON"
-msgstr "Вырезать выбранный узел в буфер обмена как JSON"
+msgstr "Вырезать выбранный элемент в буфер обмена как JSON"
 
 #: TMAINFORM.ADELETEVALUE.CAPTION
 msgid "&Delete value"
@@ -116,11 +116,11 @@ msgstr "Удалить выбранное значение"
 
 #: TMAINFORM.AEXPANDALL.CAPTION
 msgid "E&xpand all nodes"
-msgstr "Р&азвернуть все узлы"
+msgstr "Р&азвернуть все элементы"
 
 #: TMAINFORM.AEXPANDALL.HINT
 msgid "Expand all nodes in the document"
-msgstr "Развернуть все узлы в документе"
+msgstr "Развернуть все элементы в документе"
 
 #: TMAINFORM.AEXPANDCURRENTCONTAINER.CAPTION
 msgid "Expand &current object/array"
@@ -128,7 +128,7 @@ msgstr "Развернуть &текущий объект/массив"
 
 #: TMAINFORM.AEXPANDCURRENTCONTAINER.HINT
 msgid "Expand all nodes in the current object/array"
-msgstr "Развернуть все узлы в текущем объекте/массиве"
+msgstr "Развернуть все элементы в текущем объекте/массиве"
 
 #: TMAINFORM.AFIND.CAPTION
 msgid "&Find"
@@ -136,7 +136,7 @@ msgstr "&Найти"
 
 #: TMAINFORM.AFINDNEXT.CAPTION
 msgid "Find &next occurrence"
-msgstr "Найти следующее в&хождение"
+msgstr "Найти следующий экземпл&яр"
 
 #: TMAINFORM.ANEW.CAPTION
 msgid "&New"

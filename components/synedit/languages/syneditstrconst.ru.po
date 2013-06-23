@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-12-19 01:22+0400\n"
+"PO-Revision-Date: 2013-06-23 23:21+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -436,7 +436,7 @@ msgstr "Сворачивание кода"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
-msgstr "Узлы,Один,Все,\"Под курсором\",\"Текущий узел\""
+msgstr "Элементы,Один,Все,\"Под курсором\",\"Текущий элемент\""
 
 #: syneditstrconst.syns_emccodefoldcontextmenu
 msgid "Fold Menu"
@@ -448,7 +448,7 @@ msgstr "Разворачивание кода"
 
 #: syneditstrconst.syns_emccodefoldexpand_opt
 msgid "Nodes,One,All"
-msgstr "Узлы,Один,Все"
+msgstr "Элементы,Один,Все"
 
 #: syneditstrconst.syns_emccontextmenu
 msgid "Popup Menu"
