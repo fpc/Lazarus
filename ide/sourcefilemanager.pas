@@ -1474,7 +1474,8 @@ begin
   if ([ofRegularFile,ofRevert,ofProjectLoading]*Flags=[])
   and FilenameIsAbsolute(AFilename) and FileExistsUTF8(AFilename) then begin
     // check if file is a lazarus project (.lpi)
-    if (CompareFileExt(AFilename,'.lpi',false)=0) then begin
+    if (CompareFileExt(AFilename,'.lpi',false)=0) then
+    begin
       case
         IDEQuestionDialog(
           lisOpenProject, Format(lisOpenTheProject, [AFilename]), mtConfirmation,
@@ -1487,10 +1488,11 @@ begin
         mrNoToAll: include(Flags, ofRegularFile);
         mrCancel: exit(mrCancel);
       end;
-
     end;
+
     // check if file is a lazarus package (.lpk)
-    if (CompareFileExt(AFilename,'.lpk',false)=0) then begin
+    if (CompareFileExt(AFilename,'.lpk',false)=0) then
+    begin
       case
         IDEQuestionDialog(
           lisOpenPackage, Format(lisOpenThePackage, [AFilename]), mtConfirmation,
@@ -2163,6 +2165,7 @@ begin
     MainUnitInfo:=Project1.MainUnitInfo;
     MainUnitInfo.Source:=ProgramBuf;
     Project1.ProjectInfoFile:=ChangeFileExt(ProgramBuf.Filename,'.lpi');
+    Project1.CompilerOptions.TargetFilename:=ExtractFileNameOnly(ProgramBuf.Filename);
     MainIDE.DoMergeDefaultProjectOptions(Project1);
     MainIDE.UpdateCaption;
     IncreaseCompilerParseStamp;
