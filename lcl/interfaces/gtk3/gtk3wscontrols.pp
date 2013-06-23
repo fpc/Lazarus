@@ -435,7 +435,7 @@ begin
     Exit;
   {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
   // quiet for now
-  DebugLn('TGtk3WSWinControl.SetCursor not implemented');
+  // DebugLn('TGtk3WSWinControl.SetCursor not implemented');
   {$ENDIF}
   TGtk3Widget(AWinControl.Handle).SetCursor(ACursor);
 end;

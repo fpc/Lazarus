@@ -566,15 +566,39 @@ begin
   {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
   DebugLn('WARNING: TGtk3WidgetSet.DrawFrameControl not implemented ...');
   {$ENDIF}
-  Result:=inherited DrawFrameControl(DC, Rect, uType, uState);
+  Result := False;
+  // inherited DrawFrameControl(DC, Rect, uType, uState);
 end;
 
 function TGtk3WidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
+var
+  Context: PGtkStyleContext;
+  AValue: TGValue;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.DrawFocusRect not implemented ...');
-  {$ENDIF}
-  Result:=inherited DrawFocusRect(DC, Rect);
+  Result := False;
+  if IsValidDC(DC) then
+  begin
+    if TGtk3DeviceContext(DC).Parent <> nil then
+      Context := TGtk3DeviceContext(DC).Parent^.get_style_context
+    else
+    if gtk_widget_get_default_style^.has_context then
+    begin
+      // Context := gtk_widget_get_default_style^.has_context
+      AValue.g_type := G_TYPE_POINTER;
+      AValue.set_pointer(nil);
+      g_object_get_property(gtk_widget_get_default_style,'context',@AValue);
+      Context := AValue.get_pointer;
+    end else
+      Context := nil;
+    if Context = nil then
+    begin
+      DebugLn('WARNING: TGtk3WidgetSet.DrawFocusRect drawing focus on non widget context isn''t implemented.');
+      exit;
+    end;
+    with Rect do
+      gtk_render_focus(Context ,TGtk3DeviceContext(DC).Widget, Left, Top, Right - Left, Bottom - Top);
+    Result := True;
+  end;
 end;
 
 function TGtk3WidgetSet.DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal;
