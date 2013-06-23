@@ -16,7 +16,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LCLProc, Forms, PropertyStorage, XMLConf, DOM,
-  XMLRead, XMLWrite, LazConfigStorage;
+  XMLRead, XMLWrite, LazConfigStorage, lazutf8classes;
 
 type
   { TPropStorageXMLConfig }
@@ -71,6 +71,7 @@ type
 
   TXMLConfigStorage = class(TConfigStorage)
   private
+    FFilename: string;
     FFreeXMLConfig: boolean;
     FXMLConfig: TXMLConfig;
   protected
@@ -299,16 +300,35 @@ end;
 
 constructor TXMLConfigStorage.Create(const Filename: string;
   LoadFromDisk: Boolean);
+var
+  ms: TMemoryStream;
+  fs: TFileStreamUTF8;
 begin
   FXMLConfig:=TPropStorageXMLConfig.Create(nil);
-  FXMLConfig.StartEmpty:=not LoadFromDisk;
-  FXMLConfig.Filename:=Filename;
+  FFilename:=Filename;
   FFreeXMLConfig:=true;
+  if LoadFromDisk then
+  begin
+    fs:=TFileStreamUTF8.Create(Filename,fmOpenRead+fmShareDenyWrite);
+    try
+      ms:=TMemoryStream.Create;
+      try
+        ms.CopyFrom(fs,fs.Size);
+        ms.Position:=0;
+        TPropStorageXMLConfig(FXMLConfig).LoadFromStream(ms);
+      finally
+        ms.Free;
+      end;
+    finally
+      fs.Free;
+    end;
+  end;
 end;
 
 constructor TXMLConfigStorage.Create(TheXMLConfig: TXMLConfig);
 begin
   FXMLConfig:=TheXMLConfig;
+  FFilename:=FXMLConfig.Filename;
   if FXMLConfig=nil then
     raise Exception.Create('');
 end;
@@ -336,13 +356,32 @@ begin
 end;
 
 procedure TXMLConfigStorage.WriteToDisk;
+var
+  ms: TMemoryStream;
+  fs: TFileStreamUTF8;
 begin
-  FXMLConfig.Flush;
+  if FXMLConfig is TPropStorageXMLConfig then
+  begin
+    ms:=TMemoryStream.Create;
+    try
+      TPropStorageXMLConfig(FXMLConfig).SaveToStream(ms);
+      ms.Position:=0;
+      fs:=TFileStreamUTF8.Create(GetFilename,fmCreate);
+      try
+        fs.CopyFrom(ms,ms.Size);
+      finally
+        fs.Free;
+      end;
+    finally
+      ms.Free;
+    end;
+  end else
+    FXMLConfig.Flush;
 end;
 
 function TXMLConfigStorage.GetFilename: string;
 begin
-  Result:=FXMLConfig.Filename;
+  Result:=FFilename;
 end;
 
 procedure TXMLConfigStorage.SaveToStream(s: TStream);
