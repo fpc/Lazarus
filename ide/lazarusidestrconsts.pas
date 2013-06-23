@@ -5770,8 +5770,8 @@ resourcestring
   lisUDAllUnits = 'All units';
   lisUDShowNodesForDirectories = 'Show nodes for directories';
   lisUDShowNodesForProjectAndPackages = 'Show nodes for project and packages';
-  lisUDSearchNextOccurenceOfThisPhrase = 'Search next occurence of this phrase';
-  lisUDSearchPreviousOccurenceOfThisPhrase = 'Search previous occurence of '
+  lisUDSearchNextOccurrenceOfThisPhrase = 'Search next occurrence of this phrase';
+  lisUDSearchPreviousOccurrenceOfThisPhrase = 'Search previous occurrence of '
     +'this phrase';
   lisUDSelectedUnits = 'Selected units';
   lisUDSearchNextUnitOfThisPhrase = 'Search next unit of this phrase';
