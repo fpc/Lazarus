@@ -55,6 +55,7 @@ type
   private
     function PkgStateToString(APackage: TLazPackage): string;
   public
+    Package: TLazPackage;
     procedure UpdateSelection;
     procedure UpdatePackageList;
   end;
@@ -72,10 +73,8 @@ begin
     UpdatePackageList;
     UpdateSelection;
     Result:=ShowModal;
-    if Result=mrOK then begin
-      Assert(Assigned(PkgListView.Selected), 'ShowOpenLoadedPkgDlg: Nothing selected');
-      OpenPackage:=TLazPackage(PkgListView.Selected.Data);
-    end
+    if Result=mrOK then
+      OpenPackage:=Package
     else
       OpenPackage:=nil;
   finally
@@ -105,22 +104,33 @@ begin
   LI:=PkgListView.Selected;
   ButtonPanel1.OKButton.Enabled:=Assigned(LI);
   if Assigned(LI) then begin
-    CurPkg:=TLazPackage(LI.Data);
-    HintStr:=Format(lisOIPFilename, [CurPkg.Filename]);
-    if CurPkg.Missing then
-      HintStr:=Format(lisOIPThisPackageIsInstalledButTheLpkFileWasNotFound,[HintStr+LineEnding]);
-    HintStr:=Format(lisOIPDescriptionDescription, [HintStr+LineEnding,
-                 BreakString(CurPkg.Description, 60, length(lisOIPDescription))]);
-    HintMemo.Text:=HintStr;
+    CurPkg:=PackageGraph.FindPackageWithName(LI.Caption,nil);
+    if CurPkg=nil then
+      HintMemo.Text:='Package "'+LI.Caption+'" was already closed'
+    else begin
+      HintStr:=Format(lisOIPFilename, [CurPkg.Filename]);
+      if CurPkg.Missing then
+        HintStr:=Format(lisOIPThisPackageIsInstalledButTheLpkFileWasNotFound,[HintStr+LineEnding]);
+      HintStr:=Format(lisOIPDescriptionDescription, [HintStr+LineEnding,
+                   BreakString(CurPkg.Description, 60, length(lisOIPDescription))]);
+      HintMemo.Text:=HintStr;
+    end;
   end else begin
     HintMemo.Text:=lisOIPPleaseSelectAPackage;
   end;
 end;
 
 procedure TOpenLoadedPackagesDlg.OpenButtonClick(Sender: TObject);
+var
+  PkgName: String;
 begin
-  Assert(Assigned(PkgListView.Selected), 'TOpenLoadedPackagesDlg.OpenButtonClick: Nothing selected');
-  ModalResult:=mrOk;
+  if PkgListView.Selected=nil then exit;
+  PkgName:=PkgListView.Selected.Caption;
+  Package:=PackageGraph.FindPackageWithName(PkgName,nil);
+  if Package=nil then
+    ModalResult:=mrCancel
+  else
+    ModalResult:=mrOk;
 end;
 
 procedure TOpenLoadedPackagesDlg.FormCreate(Sender: TObject);
@@ -202,7 +212,6 @@ begin
       CurListItem.SubItems.Add(PkgStateToString(CurPkg));
     end;
     CurListItem.Caption:=CurPkg.Name;
-    CurListItem.Data:=CurPkg;
   end;
   PkgListView.EndUpdate;
 end;
