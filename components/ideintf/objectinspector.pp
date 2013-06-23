@@ -1954,6 +1954,10 @@ begin
       or (FPropertyEditorHook = nil)
       or (FPropertyEditorHook.LookupRoot = FCurrentEditorLookupRoot));
   if Result then begin
+    if FindControl(GetFocus)<>FCurrentEdit then
+      Result:=false;
+  end;
+  if Result then begin
     {DebugLn(['TOICustomPropertyGrid.CanEditRowValue',
       ' pgsChangingItemIndex=',pgsChangingItemIndex in FStates,
       ' pgsApplyingValue=',pgsApplyingValue in FStates,
