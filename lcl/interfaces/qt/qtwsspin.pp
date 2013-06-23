@@ -27,7 +27,7 @@ uses
   qt4,
   qtwidgets,
   // LCL
-  Spin, SysUtils, Controls, Classes, LCLType, LCLProc, LCLIntf, Forms,
+  Spin, SysUtils, Controls, Classes, LCLType, LCLProc, LCLIntf, Forms, StdCtrls,
   // Widgetset
   WsProc, WSSpin, WSLCLClasses;
 
@@ -46,6 +46,7 @@ type
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
 
     class function GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double; override;
+    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
 
   (*TODO: seperation into properties instead of bulk update
     class procedure SetIncrement(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewIncrement: Double); virtual;
@@ -107,6 +108,14 @@ end;
 class function  TQtWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double;
 begin
   Result := TQtAbstractSpinBox(ACustomFloatSpinEdit.Handle).getValue;
+end;
+
+class procedure TQtWSCustomFloatSpinEdit.SetAlignment(
+  const ACustomEdit: TCustomEdit; const AAlignment: TAlignment);
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetAlignment') then
+    Exit;
+  TQtSpinBox(ACustomEdit.Handle).setAlignment(AlignmentMap[AAlignment]);
 end;
 
 class procedure TQtWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit);

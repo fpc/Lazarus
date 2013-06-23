@@ -1027,6 +1027,7 @@ type
     function getReadOnly: Boolean;
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
+    procedure setAlignment(const AAlignment: QtAlignment);
     procedure setBorder(const ABorder: Boolean);
     procedure setDefaultColorRoles; override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
@@ -10089,6 +10090,11 @@ end;
 function TQtAbstractSpinBox.getTextStatic: Boolean;
 begin
   Result := False;
+end;
+
+procedure TQtAbstractSpinBox.setAlignment(const AAlignment: QtAlignment);
+begin
+  QAbstractSpinBox_setAlignment(QSpinBoxH(Widget), AAlignment);
 end;
 
 procedure TQtAbstractSpinBox.setFocusPolicy(const APolicy: QtFocusPolicy);
