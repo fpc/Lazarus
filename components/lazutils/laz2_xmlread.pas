@@ -1355,7 +1355,7 @@ type
 
 destructor THandleOwnerStream.Destroy;
 begin
-  if Handle >= 0 then FileClose(Handle);
+  FileClose(Handle);
   inherited Destroy;
 end;
 

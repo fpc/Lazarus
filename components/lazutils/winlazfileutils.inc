@@ -714,7 +714,6 @@ begin
 end;
 
 procedure CheckIfFileIsExecutable(const AFilename: string);
-var AText: string;
 begin
   // TProcess does not report, if a program can not be executed
   // to get good error messages consider the OS

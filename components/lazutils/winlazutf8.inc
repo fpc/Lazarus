@@ -51,7 +51,6 @@ end;
 procedure SetupCommandlineParametersWide;
 var
   ArgLen, Start, CmdLen, i, j: SizeInt;
-  argstart,
   Quote   : Boolean;
   Buf: array[0..259] of WChar;  // need MAX_PATH bytes, not 256!
   PCmdLineW: PWideChar;
