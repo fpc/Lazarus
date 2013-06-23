@@ -284,6 +284,10 @@ function GtkAllocationFromRect(R: TRect): TGtkAllocation;
 function GdkKeyToLCLKey(AValue: Word): Word;
 function GdkModifierStateToLCL(AState: TGdkModifierType; const AIsKeyEvent: Boolean): PtrInt;
 
+procedure SetWindowCursor(AWindow: PGdkWindow; ACursor: HCursor;
+  ARecursive: Boolean; ASetDefault: Boolean);
+procedure SetGlobalCursor(Cursor: HCURSOR);
+
 type
   Charsetstr = string[15];
   PCharSetEncodingRec=^TCharSetEncodingRec;
@@ -1066,6 +1070,116 @@ begin
   Styles.Clear;
   for lgs:=Low(TLazGtkStyle) to High(TLazGtkStyle) do
     StandardStyles[lgs]:=nil;
+end;
+
+{------------------------------------------------------------------------------
+  procedure: SetWindowCursor
+  Params:  AWindow : PGDkWindow, ACursor: PGdkCursor, ASetDefault: Boolean
+  Returns: Nothing
+
+  Sets the cursor for a window.
+  Tries to avoid messing with the cursors of implicitly created
+  child windows (e.g. headers in TListView) with the following logic:
+  - If Cursor <> nil, saves the old cursor (if not already done or ASetDefault = true)
+    before setting the new one.
+  - If Cursor = nil, restores the old cursor (if not already done).
+  ------------------------------------------------------------------------------}
+procedure SetWindowCursor(AWindow: PGdkWindow; Cursor: PGdkCursor; ASetDefault: Boolean);
+var
+  OldCursor: PGdkCursor;
+  Data: gpointer;
+begin
+  if ASetDefault then //and ((Cursor <> nil) or ( <> nil)) then
+  begin
+    // Override any old default cursor
+    g_object_steal_data(PGObject(AWindow), 'havesavedcursor'); // OK?
+    g_object_steal_data(PGObject(AWindow), 'savedcursor');
+    gdk_window_set_cursor(AWindow, Cursor);
+    Exit;
+  end;
+  if Cursor <> nil then
+  begin
+    OldCursor := gdk_window_get_cursor(AWindow);
+    if ASetDefault or (g_object_get_data(PGObject(AWindow), 'havesavedcursor') = nil) then
+    begin
+      g_object_set_data(PGObject(AWindow), 'havesavedcursor', gpointer(1));
+      g_object_set_data(PGObject(AWindow), 'savedcursor', gpointer(OldCursor));
+    end;
+    gdk_pointer_grab(AWindow, False, 0, AWindow, Cursor, 1);
+    try
+      gdk_window_set_cursor(AWindow, Cursor);
+    finally
+      gdk_pointer_ungrab(0);
+    end;
+  end else
+  begin
+    if g_object_steal_data(PGObject(AWindow), 'havesavedcursor') <> nil then
+    begin
+      Cursor := g_object_steal_data(PGObject(AWindow), 'savedcursor');
+      gdk_window_set_cursor(AWindow, Cursor);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure: SetWindowCursor
+  Params:  AWindow : PGDkWindow, ACursor: HCursor, ARecursive: Boolean
+  Returns: Nothing
+
+  Sets the cursor for a window (or recursively for window with children)
+ ------------------------------------------------------------------------------}
+procedure SetWindowCursor(AWindow: PGdkWindow; ACursor: HCursor;
+  ARecursive: Boolean; ASetDefault: Boolean);
+var
+  Cursor: PGdkCursor;
+
+  procedure SetCursorRecursive(AWindow: PGdkWindow);
+  var
+    ChildWindows, ListEntry: PGList;
+  begin
+    SetWindowCursor(AWindow, Cursor, ASetDefault);
+
+    ChildWindows := gdk_window_get_children(AWindow);
+
+    ListEntry := ChildWindows;
+    while ListEntry <> nil do
+    begin
+      SetCursorRecursive(PGdkWindow(ListEntry^.Data));
+      ListEntry := ListEntry^.Next;
+    end;
+    g_list_free(ChildWindows);
+  end;
+begin
+  Cursor := {%H-}PGdkCursor(ACursor);
+  if ARecursive then
+    SetCursorRecursive(AWindow)
+  else
+    SetWindowCursor(AWindow, Cursor, ASetDefault);
+end;
+
+{------------------------------------------------------------------------------
+  procedure: SetGlobalCursor
+  Params:  ACursor: HCursor
+  Returns: Nothing
+
+  Sets the cursor for all toplevel windows. Also sets the cursor for all child
+  windows recursively provided gdk_get_window_cursor is available.
+ ------------------------------------------------------------------------------}
+procedure SetGlobalCursor(Cursor: HCURSOR);
+var
+  TopList: PGList;
+  i: Integer;
+begin
+  TopList := gdk_screen_get_toplevel_windows(gdk_screen_get_default);
+  if TopList = nil then
+    exit;
+  for i := 0 to g_list_length(TopList) - 1 do
+  begin
+    if (TopList^.Data <> nil) then
+      SetWindowCursor(PGDKWindow(TopList^.Data), Cursor,
+        True, False);
+  end;
+  g_list_free(TopList);
 end;
 
 end.

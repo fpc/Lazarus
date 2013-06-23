@@ -2761,7 +2761,14 @@ end;
 
 procedure TGtk3Widget.SetCursor(ACursor: HCURSOR);
 begin
-  //TODO
+  if IsWidgetOk then
+  begin
+    if GetContainerWidget^.get_has_window and Gtk3IsGdkWindow(GetContainerWidget^.window) then
+      SetWindowCursor(GetContainerWidget^.window, ACursor, False, True)
+    else
+    if Widget^.get_has_window and Gtk3IsGdkWindow(Widget^.window) then
+      SetWindowCursor(Widget^.window, ACursor, False, True);
+  end;
 end;
 
 procedure TGtk3Widget.SetFocus;

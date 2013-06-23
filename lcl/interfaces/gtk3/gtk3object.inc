@@ -337,6 +337,7 @@ begin
   AValue.set_boolean(True);
   g_object_set_property(gtk_settings_get_default,'gtk-button-images',@AValue);
 
+  FGlobalCursor := 0;
   FAppIcon := nil;
   FStockNullBrush := 0;
   FStockBlackBrush := 0;
@@ -500,6 +501,45 @@ function TGtk3WidgetSet.AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean
   ): Boolean;
 begin
   Result := inherited AppRestoreStayOnTopFlags(ASystemTopAlso);
+end;
+
+function TGtk3WidgetSet.CreateStandardCursor(ACursor: SmallInt): HCURSOR;
+var
+  CursorValue: Integer;
+begin
+  Result := 0;
+  if ACursor < crLow then Exit;
+  if ACursor > crHigh then Exit;
+  case TCursor(ACursor) of
+    crDefault:  CursorValue := GDK_LEFT_PTR;
+    crArrow:    CursorValue := GDK_Arrow;
+    crCross:    CursorValue := GDK_Cross;
+    crIBeam:    CursorValue := GDK_XTerm;
+    crSizeNESW: CursorValue := GDK_BOTTOM_LEFT_CORNER;
+    crSizeNS:   CursorValue := GDK_SB_V_DOUBLE_ARROW;
+    crSizeNWSE: CursorValue := GDK_TOP_LEFT_CORNER;
+    crSizeWE:   CursorValue := GDK_SB_H_DOUBLE_ARROW;
+    crSizeNW:   CursorValue := GDK_TOP_LEFT_CORNER;
+    crSizeN:    CursorValue := GDK_TOP_SIDE;
+    crSizeNE:   CursorValue := GDK_TOP_RIGHT_CORNER;
+    crSizeW:    CursorValue := GDK_LEFT_SIDE;
+    crSizeE:    CursorValue := GDK_RIGHT_SIDE;
+    crSizeSW:   CursorValue := GDK_BOTTOM_LEFT_CORNER;
+    crSizeS:    CursorValue := GDK_BOTTOM_SIDE;
+    crSizeSE:   CursorValue := GDK_BOTTOM_RIGHT_CORNER;
+    crUpArrow:  CursorValue := GDK_LEFT_PTR;
+    crHourGlass:CursorValue := GDK_WATCH;
+    crHSplit:   CursorValue := GDK_SB_H_DOUBLE_ARROW;
+    crVSplit:   CursorValue := GDK_SB_V_DOUBLE_ARROW;
+    crAppStart: CursorValue := GDK_LEFT_PTR;
+    crHelp:     CursorValue := GDK_QUESTION_ARROW;
+    crHandPoint:CursorValue := GDK_Hand2;
+    crSizeAll:  CursorValue := GDK_FLEUR;
+  else
+    CursorValue := -1;
+  end;
+  if CursorValue <> -1 then
+    Result := HCURSOR({%H-}PtrUInt(gdk_cursor_new(CursorValue)));
 end;
 
 function TGtk3WidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer

@@ -404,6 +404,10 @@ begin
 end;
 
 function TGtk3WidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
+var
+  PixBuf: PGdkPixBuf;
+  W: gint;
+  H: gint;
 begin
   Result := 0;
   if IsValidGDIObject(IconInfo^.hbmColor) then
@@ -411,6 +415,17 @@ begin
     if IconInfo^.fIcon then
     begin
       Result := HICON(TGtk3Image.Create(TGtk3Image(IconInfo^.hbmColor).Handle));
+    end else
+    begin
+      // create cursor from pixbuf
+      W := gdk_pixbuf_get_width(TGtk3Image(IconInfo^.hbmColor).Handle);
+      H := gdk_pixbuf_get_height(TGtk3Image(IconInfo^.hbmColor).Handle);
+      DebugLn('TGtk3WidgetSet.CreateIconIndirect W=',dbgs(W),' H=',dbgs(H));
+      PixBuf := gdk_pixbuf_new_subpixbuf(TGtk3Image(IconInfo^.hbmColor).Handle, 0, 0, W, H);
+      Result := HCURSOR({%H-}PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default,
+        pixbuf, IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
+      if pixbuf <> nil then
+        g_object_unref(PixBuf);
     end;
   end;
 end;
@@ -521,10 +536,10 @@ end;
 
 function TGtk3WidgetSet.DestroyCursor(Handle: HCURSOR): Boolean;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.DestroyCursor not implemented ...');
-  {$ENDIF}
-  Result:=inherited DestroyCursor(Handle);
+  Result := Handle <> 0;
+  if Result then
+    g_object_unref(PGdkCursor(Handle));
+   // gdk_cursor_destroy({%H-}PGdkCursor(Handle));
 end;
 
 function TGtk3WidgetSet.DestroyIcon(Handle: HICON): Boolean;
@@ -3409,7 +3424,12 @@ begin
   {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
   // DebugLn('WARNING: TGtk3WidgetSet.SetCursor not implemented ...');
   {$ENDIF}
-  Result:=inherited SetCursor(ACursor);
+  Result := FGlobalCursor;
+  if ACursor = FGlobalCursor then Exit;
+  if ACursor = Screen.Cursors[crDefault]
+  then SetGlobalCursor(0)
+  else SetGlobalCursor(ACursor);
+  FGlobalCursor := ACursor;
 end;
 
 function TGtk3WidgetSet.SetCursorPos(X, Y: Integer): Boolean;

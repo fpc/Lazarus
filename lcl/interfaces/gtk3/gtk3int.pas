@@ -78,6 +78,7 @@ type
     FStockSystemFont: HFONT;
     FStockDefaultDC: HDC;
     FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBRUSH;
+    FGlobalCursor: HCursor;
   public
     function CreateDCForWidget(AWidget: PGtkWidget; AWindow: PGdkWindow; cr: Pcairo_t): HDC;
     procedure AddWindow(AWindow: PGtkWindow);
@@ -109,6 +110,8 @@ type
     procedure AppSetTitle(const ATitle: string); override;
     function AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
     function AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
+
+    function CreateStandardCursor(ACursor: SmallInt): HCURSOR; override;
 
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
