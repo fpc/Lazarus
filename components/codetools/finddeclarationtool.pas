@@ -3150,6 +3150,9 @@ var
              will be searched:
                with ContextNode, StartContextNode do ;
           }
+        end else if ContextNode.Desc=ctnOnBlock then begin
+          // the ctnOnIdentifier is only valid within the ctnOnStatement
+          // => skip
         end else begin
           break;
         end;
