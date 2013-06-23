@@ -4758,6 +4758,10 @@ begin
   SetupHints;
   Application.ShowButtonGlyphs := EnvironmentOptions.ShowButtonGlyphs;
   Application.ShowMenuGlyphs := EnvironmentOptions.ShowMenuGlyphs;
+  if EnvironmentOptions.SingleTaskBarButton then
+    Application.TaskBarBehavior := tbSingleButton
+  else
+    Application.TaskBarBehavior := tbDefault;
 
   // reload lazarus packages
   if LazarusSrcDirChanged then
