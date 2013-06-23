@@ -149,6 +149,8 @@ type
     property  NodeState: TSynMarkupIfdefNodeStateEx read GetNodeState write SetNodeState;
     property  NodeFlags: SynMarkupIfDefNodeFlags read FNodeFlags write FNodeFlags;
     function  UncommentedNodeType: TSynMarkupIfdefNodeType;
+    procedure MakeCommented;
+    procedure MakeUnCommented;
     property  Line: TSynMarkupHighIfDefLinesNode read FLine write SetLine;
     property  StartColumn: Integer read FStartColumn write SetStartColumn;// FStartColumn;
     property  EndColumn:   Integer read FEndColumn write FEndColumn;
@@ -894,6 +896,20 @@ end;
 function TSynMarkupHighIfDefEntry.UncommentedNodeType: TSynMarkupIfdefNodeType;
 begin
   Result := NodeType;
+end;
+
+procedure TSynMarkupHighIfDefEntry.MakeCommented;
+begin
+  RemoveNodeStateFromLine;
+  Include(FNodeFlags, idnCommented);
+  ApplyNodeStateToLine;
+end;
+
+procedure TSynMarkupHighIfDefEntry.MakeUnCommented;
+begin
+  RemoveNodeStateFromLine;
+  Exclude(FNodeFlags, idnCommented);
+  ApplyNodeStateToLine;
 end;
 
 function TSynMarkupHighIfDefEntry.IsDisabled: Boolean;
@@ -2474,7 +2490,7 @@ var
             dec(i);
           end;
           inc(NodesAddedCnt);
-          Include(e.FNodeFlags, idnCommented);
+          e.MakeCommented;
         end;
         inc(i);
       end;
@@ -2491,7 +2507,7 @@ var
         then begin
           // Does match exactly, keep as is
           //DebugLn(['++++ KEEPING NODE ++++ ', ALine, ' ', dbgs(AType), ': ', ALogStart, ' - ', ALogEnd]);
-          Exclude(Result.FNodeFlags, idnCommented);
+          Result.MakeUnCommented;
           if not LineNeedsReq then
             LineNeedsReq := Result.NeedsRequesting;
           if i > NodesAddedCnt then begin
@@ -2646,7 +2662,7 @@ begin
     i := ANodeForLine.EntryCount - 1;
     while i >= NodesAddedCnt do begin
       if IsCommentedIfDef(ANodeForLine.Entry[i]) then begin
-        Include(ANodeForLine.Entry[i].FNodeFlags, idnCommented);
+        ANodeForLine.Entry[i].MakeCommented;
         inc(NodesAddedCnt);
       end
       else begin
@@ -2714,6 +2730,8 @@ var
     while (ANode.EntryCount = 0) or (idlAllNodesCommented in ANode.LineFlags) do begin
       n := ANode.Node;
       ANode := ANode.Successor;
+      while n.EntryCount > 0 do
+        n.DeletEntry(0, True);
       RemoveLine(n);
       if not ANode.HasNode then
         exit;
