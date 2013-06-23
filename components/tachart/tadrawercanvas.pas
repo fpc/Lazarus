@@ -308,7 +308,15 @@ begin
         Pen.Width := APen.Width;
     end
   else begin
-    GetCanvas.Pen.Assign(APen);
+    if APen is TPen then
+      GetCanvas.Pen.Assign(APen)
+    else
+      with GetCanvas.Pen do begin
+        Color := FPColorToChartColor(APen.FPColor);
+        Style := APen.Style;
+        Width := APen.Width;
+        Mode := APen.Mode;
+      end;
     if FMonochromeColor <> clTAColor then
       GetCanvas.Pen.Color := FMonochromeColor;
   end;
