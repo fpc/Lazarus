@@ -42,6 +42,7 @@ type
     FTestTree: TSynMarkupHighIfDefLinesTree;
     FNodeStateResponses, FNodeStateRequests: TStringList;
     FOpenings: TLazSynEditNestedFoldsList;
+    FUseNestedComments: Boolean;
     function TestTextEmpty: TStringArray;
     function TestTextNoIfDef: TStringArray;
     function TestTextIfDef: TStringArray;
@@ -643,6 +644,7 @@ begin
 
 
   ReCreateEdit;
+  TSynPasSyn(SynEdit.Highlighter).NestedComments := FUseNestedComments;
   SetLines(Lines);
 
   FTestTree := TSynMarkupHighIfDefLinesTree.Create;
@@ -653,1202 +655,1282 @@ begin
 end;
 
 procedure TTestMarkupIfDef.TestIfDefTreeMoveOnEdit;
-var
-  n: String;
-begin
-  FTestTree := nil;
-
-  n := 'No modification';
-  ReCreateEditForTreeTest(TestTextIfDef);
-  FTestTree.ValidateRange(1, 14, FOpenings);
-  CheckNodesXY(n+'', 1, [], 0);
-  CheckNodesXY(n+'', 2, [1, 11], 0);
-  CheckNodesXY(n+'', 3, [], 0);
-  CheckNodesXY(n+'', 4, [2, 12], 0);
-  CheckNodesXY(n+'', 5, [3, 14], 0);
-  CheckNodes(n+'', 5, [ExpN(3,14, idnIfdef)]);
-
-  {%region  one line edit}
-  ReCreateEditForTreeTest(TestTextIfDef);
-  FTestTree.ValidateRange(1, 10, FOpenings);
-
-  n := 'Remove Space AT line-start, Node after space';
-  CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
-  SynEdit.TextBetweenPoints[point(1, 7),point(2, 7)] := '';
-  CheckNodesXY(n+'', 7, [1,11,   11,23,   23,36], 0);
-
-  n := 'Insert Space AT line-start, Node after space';
-  SynEdit.TextBetweenPoints[point(1, 7),point(1, 7)] := ' ';
-  CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
-
-  n := 'Replace Space AT line-start, Node after space';
-  SynEdit.TextBetweenPoints[point(1, 7),point(2, 7)] := #9;
-  CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
-
-  n := 'Insert Space AT line-start, node later on line';
-  SynEdit.TextBetweenPoints[point(1, 7),point(1, 7)] := ' ';
-  CheckNodesXY(n+'', 7, [3,13,   13,25,   25,38], 0);
-
-  n := 'Insert Space before first node on line';
-  SynEdit.TextBetweenPoints[point(3, 7),point(3, 7)] := ' ';
-  CheckNodesXY(n+'', 7, [4,14,   14,26,   26,39], 0);
-
-  n := 'Remove Space before first node on line';
-  SynEdit.TextBetweenPoints[point(3, 7),point(4, 7)] := '';
-  CheckNodesXY(n+'', 7, [3,13,   13,25,   25,38], 0);
-
-  n := 'Insert Space between first and 2nd node on line';
-  SynEdit.TextBetweenPoints[point(13, 7),point(13, 7)] := ' ';
-  CheckNodesXY(n+'', 7, [3,13,   14,26,   26,39], 0);
-
-  n := 'Remove Space between first and 2nd node on line';
-  SynEdit.TextBetweenPoints[point(13, 7),point(14, 7)] := '';
-  CheckNodesXY(n+'', 7, [3,13,   13,25,   25,38], 0);
-
-  n := 'Insert Space after last node on line';
-  SynEdit.TextBetweenPoints[point(38, 7),point(38, 7)] := ' ';
-  CheckNodesXY(n+'', 7, [3,13,   13,25,   25,38], 0);
-
-  n := 'Remove Space after last node on line';
-  SynEdit.TextBetweenPoints[point(38, 7),point(39, 7)] := '';
-  CheckNodesXY(n+'', 7, [3,13,   13,25,   25,38], 0);
-
-  // Edit in node
-  ReCreateEditForTreeTest(TestTextIfDef);
-  FTestTree.ValidateRange(1, 19, FOpenings);
-  n := 'Insert Space INSIDE node (1st node on line)';
-  SynEdit.TextBetweenPoints[point(3, 7),point(3, 7)] := ' ';
-  CheckNodesXY(n+'', 7, [2,13,   13,25,   25,38], 0);
-
-  n := 'REMOVE Space INSIDE node (1st node on line)';
-  SynEdit.TextBetweenPoints[point(3, 7),point(4, 7)] := '';
-  CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
-
-  n := 'Insert Space INSIDE node end (1st node on line)';
-  SynEdit.TextBetweenPoints[point(11, 7),point(11, 7)] := ' ';
-  CheckNodesXY(n+'', 7, [2,13,   13,25,   25,38], 0);
-
-  n := 'REMOVE Space INSIDE node end (1st node on line)';
-  SynEdit.TextBetweenPoints[point(11, 7),point(12, 7)] := '';
-  CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
-
-  n := 'Insert Space INSIDE node (last node on line)';
-  SynEdit.TextBetweenPoints[point(26, 7),point(26, 7)] := ' ';
-  CheckNodesXY(n+'', 7, [2,12,   12,24,   24,38], 0);
-
-  n := 'REMOVE Space INSIDE node (last node on line)';
-  SynEdit.TextBetweenPoints[point(26, 7),point(27, 7)] := '';
-  CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
-
-  n := 'Insert Space INSIDE node (last node on line, multiline)';
-  SynEdit.TextBetweenPoints[point(3, 14),point(3, 14)] := ' ';
-  CheckNodesXY(n+'', 14, [1,6], 1);
-
-  n := 'REMOVE Space INSIDE node (last node on line, multiline)';
-  SynEdit.TextBetweenPoints[point(3, 14),point(4, 14)] := '';
-  CheckNodesXY(n+'', 14, [1,6], 1);
-
-
-  // test 1,12 modify previous node
-  n := 'Insert Space INSIDE node (last node on line, multiline, on end line)';
-  SynEdit.TextBetweenPoints[point(1, 12),point(1, 12)] := ' ';
-  CheckNodesXY(n+'', 10, [2,4], 2);
-
-  n := 'REMOVE Space INSIDE node (last node on line, multiline, on end line)';
-  SynEdit.TextBetweenPoints[point(1, 12),point(2, 12)] := '';
-  CheckNodesXY(n+'', 10, [2,3], 2);
-
-  // test 1,15 modify previous and current node
-  n := 'Insert Space INSIDE node (last node on line, multiline, on end line with NEXT open)';
-  SynEdit.TextBetweenPoints[point(2, 15),point(2, 15)] := ' ';
-  CheckNodesXY(n+'', 14, [1, 7], 1);
-  CheckNodesXY(n+'', 15, [7,13], 2);
-
-    n := 'REMOVE Space INSIDE node (last node on line, multiline, on end line with NEXT open)';
-  SynEdit.TextBetweenPoints[point(2, 15),point(3, 15)] := '';
-  CheckNodesXY(n+'', 14, [1, 6], 1);
-  CheckNodesXY(n+'', 15, [6,13], 2);
-
-  n := 'Insert Space Between node (last node on line, multiline, on end line with NEXT open)';
-  SynEdit.TextBetweenPoints[point(6, 15),point(6, 15)] := ' ';
-  CheckNodesXY(n+'', 14, [1, 6], 1);
-  CheckNodesXY(n+'', 15, [7,13], 2);
-
-  n := 'REMOVE Space Between node (last node on line, multiline, on end line with NEXT open)';
-  SynEdit.TextBetweenPoints[point(6, 15),point(7, 15)] := '';
-  CheckNodesXY(n+'', 14, [1, 6], 1);
-  CheckNodesXY(n+'', 15, [6,13], 2);
-
-  n := 'Insert Space at end of node (IN node) (last node on line, multiline, on end line with NEXT open)';
-  SynEdit.TextBetweenPoints[point(5, 15),point(5, 15)] := ' ';
-  CheckNodesXY(n+'', 14, [1, 7], 1);
-  CheckNodesXY(n+'', 15, [7,13], 2);
-
-// delete an entire node
-  n := 'Delete full node';
-  SynEdit.TextBetweenPoints[point(10, 7),point(27, 7)] := '';
-FTestTree.DebugPrint(true);
-  CheckNodesXY(n+'', 7, [2,10,   10,20], 0);
-
-  {%endregion one line}
-
-  {%region  Line Breaks }
-
-  n := 'not modified';
-  ReCreateEditForTreeTest(TestTextIfDef);
-  FTestTree.ValidateRange(1, 19, FOpenings);
-  CheckNodesXY(n+'', 6, [], 0);
-  CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
-  CheckNodesXY(n+'', 8, [], 0);
-  CheckNodesXY(n+'', 9, [1,2], 1);
-
-
-  n := 'Insert LineBreak at line start nodes';
-  SynEdit.TextBetweenPoints[point(1, 7),point(1, 7)] := LineEnding;
-  CheckNodesXY(n+'', 6, [], 0);
-  CheckNodesXY(n+'', 7, [], 0);
-  CheckNodesXY(n+'', 8, [2,12,   12,24,   24,37], 0);
-  CheckNodesXY(n+'', 9, [], 0);
-  CheckNodesXY(n+'',10, [1,2], 1);
-
-  n := 'Remove LineBreak at line start nodes';
-  SynEdit.TextBetweenPoints[point(1, 7),point(1, 8)] := '';
-  CheckNodesXY(n+'', 6, [], 0);
-  CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
-  CheckNodesXY(n+'', 8, [], 0);
-  CheckNodesXY(n+'', 9, [1,2], 1);
-
-
-  n := 'Insert LineBreak before nodes';
-  SynEdit.TextBetweenPoints[point(2, 7),point(2, 7)] := LineEnding;
-  CheckNodesXY(n+'', 6, [], 0);
-  CheckNodesXY(n+'', 7, [], 0);
-  CheckNodesXY(n+'', 8, [1,11,   11,23,   23,36], 0);
-  CheckNodesXY(n+'', 9, [], 0);
-  CheckNodesXY(n+'',10, [1,2], 1);
-
-  n := 'Remove LineBreak before nodes';
-  SynEdit.TextBetweenPoints[point(2, 7),point(1, 8)] := '';
-  CheckNodesXY(n+'', 6, [], 0);
-  CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
-  CheckNodesXY(n+'', 8, [], 0);
-  CheckNodesXY(n+'', 9, [1,2], 1);
-
-
-
-  n := 'Insert LineBreak between nodes';
-  SynEdit.TextBetweenPoints[point(24, 7),point(24, 7)] := LineEnding;
-  CheckNodesXY(n+'', 6, [], 0);
-  CheckNodesXY(n+'', 7, [2,12,   12,24], 0);
-  CheckNodesXY(n+'', 8, [1,14], 0);
-  CheckNodesXY(n+'', 9, [], 0);
-  CheckNodesXY(n+'',10, [1,2], 1);
-
-  n := 'Remove LineBreak between nodes';
-  SynEdit.TextBetweenPoints[point(24, 7),point(1, 8)] := '';
-  CheckNodesXY(n+'', 6, [], 0);
-  CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
-  CheckNodesXY(n+'', 8, [], 0);
-  CheckNodesXY(n+'', 9, [1,2], 1);
-
-
-
-  n := 'Insert LineBreak after nodes';
-  SynEdit.TextBetweenPoints[point(37, 7),point(37, 7)] := LineEnding;
-  CheckNodesXY(n+'', 6, [], 0);
-  CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
-  CheckNodesXY(n+'', 8, [], 0);
-  CheckNodesXY(n+'', 9, [], 0);
-  CheckNodesXY(n+'',10, [1,2], 1);
-
-  n := 'Remove LineBreak after nodes';
-  SynEdit.TextBetweenPoints[point(37, 7),point(1, 8)] := '';
-  CheckNodesXY(n+'', 6, [], 0);
-  CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
-  CheckNodesXY(n+'', 8, [], 0);
-  CheckNodesXY(n+'', 9, [1,2], 1);
-
-
-
-  n := 'Insert LineBreak INSIDE nodes';
-  SynEdit.TextBetweenPoints[point(13, 7),point(13, 7)] := LineEnding;
-  CheckNodesXY(n+'', 6, [], 0);
-  CheckNodesXY(n+'', 7, [2,12,   12,12], 1);
-  CheckNodesXY(n+'', 8, [12,25], 0);
-  CheckNodesXY(n+'', 9, [], 0);
-  CheckNodesXY(n+'',10, [1,2], 1);
-
-  n := 'Remove LineBreak INSIDE  nodes';
-  SynEdit.TextBetweenPoints[point(13, 7),point(1, 8)] := '';
-  CheckNodesXY(n+'', 6, [], 0);
-  CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
-  CheckNodesXY(n+'', 8, [], 0);
-  CheckNodesXY(n+'', 9, [1,2], 1);
-
-
-
-  n := 'Insert LineBreak INSIDE nodes (last node 1 line)';
-  SynEdit.TextBetweenPoints[point(23, 7),point(23, 7)] := LineEnding;
-  CheckNodesXY(n+'', 6, [], 0);
-  CheckNodesXY(n+'', 7, [2,12,   12,2], 1);
-  CheckNodesXY(n+'', 8, [2,15], 0);
-  CheckNodesXY(n+'', 9, [], 0);
-  CheckNodesXY(n+'',10, [1,2], 1);
-
-  n := 'Remove LineBreak INSIDE  nodes (last node 1 line)';
-  SynEdit.TextBetweenPoints[point(23, 7),point(1, 8)] := '';
-  CheckNodesXY(n+'', 6, [], 0);
-  CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
-  CheckNodesXY(n+'', 8, [], 0);
-  CheckNodesXY(n+'', 9, [1,2], 1);
-
-
-
-  n := 'Insert LineBreak INSIDE nodes (last node multi line)';
-  SynEdit.TextBetweenPoints[point(9, 10),point(9, 10)] := LineEnding;
-  CheckNodesXY(n+'',  9, [1,2], 1);
-  CheckNodesXY(n+'', 10, [2,3], 3);
-  CheckNodesXY(n+'', 14, [], 0);
-  CheckNodesXY(n+'', 15, [1,6], 1);
-
-  n := 'Remove LineBreak INSIDE  nodes (last node multi line)';
-  SynEdit.TextBetweenPoints[point(9, 10),point(1, 11)] := '';
-  CheckNodesXY(n+'',  9, [1,2], 1);
-  CheckNodesXY(n+'', 10, [2,3], 2);
-  CheckNodesXY(n+'', 13, [], 0);
-  CheckNodesXY(n+'', 14, [1,6], 1);
-
-
-  n := 'Insert LineBreak INSIDE nodes (last node multi line)';
-  SynEdit.TextBetweenPoints[point(2, 14),point(2, 14)] := LineEnding;
-  CheckNodesXY(n+'', 14, [1,6], 2);
-
-  n := 'Remove LineBreak INSIDE  nodes (last node multi line)';
-  SynEdit.TextBetweenPoints[point(2, 14),point(1, 15)] := '';
-  CheckNodesXY(n+'', 14, [1,6], 1);
-
-
-
-  n := 'Insert LineBreak INSIDE nodes (previous node multi line)';
-  SynEdit.TextBetweenPoints[point(1, 10),point(1, 10)] := LineEnding;
-  CheckNodesXY(n+'',  9, [1,2], 2);
-  CheckNodesXY(n+'', 10, [], 0);
-  CheckNodesXY(n+'', 11, [2,3], 2);
-
-  n := 'Remove LineBreak INSIDE  nodes (previous node multi line)';
-  SynEdit.TextBetweenPoints[point(1, 10),point(1, 11)] := '';
-  CheckNodesXY(n+'',  9, [1,2], 1);
-  CheckNodesXY(n+'', 10, [2,3], 2);
-
-
-
-  n := 'Insert LineBreak INSIDE nodes (last node multi line - no next)';
-  SynEdit.TextBetweenPoints[point(1, 17),point(1, 17)] := LineEnding;
-  CheckNodesXY(n+'', 14, [1, 6], 1);
-  CheckNodesXY(n+'', 15, [6,13], 3);
-  CheckNodesXY(n+'', 16, [], 0);
-  CheckNodesXY(n+'', 17, [], 0);
-  CheckNodesXY(n+'', 18, [], 0);
-
-  n := 'Remove LineBreak INSIDE  nodes (last node multi line - no next)';
-  SynEdit.TextBetweenPoints[point(1, 17),point(1, 18)] := '';
-  CheckNodesXY(n+'', 14, [1, 6], 1);
-  CheckNodesXY(n+'', 15, [6,13], 2);
-  CheckNodesXY(n+'', 16, [], 0);
-  CheckNodesXY(n+'', 17, [], 0);
-  CheckNodesXY(n+'', 18, [], 0);
-
-
-  n := 'Insert LineBreak INSIDE nodes (mid last node multi line - no next)';
-  SynEdit.TextBetweenPoints[point(7, 16),point(7, 16)] := LineEnding;
-  CheckNodesXY(n+'', 14, [1, 6], 1);
-  CheckNodesXY(n+'', 15, [6,13], 3);
-  CheckNodesXY(n+'', 16, [], 0);
-  CheckNodesXY(n+'', 17, [], 0);
-  CheckNodesXY(n+'', 18, [], 0);
-
-  n := 'Remove LineBreak INSIDE  nodes (mid last node multi line - no next)';
-  SynEdit.TextBetweenPoints[point(7, 16),point(1, 17)] := '';
-  CheckNodesXY(n+'', 14, [1, 6], 1);
-  CheckNodesXY(n+'', 15, [6,13], 2);
-  CheckNodesXY(n+'', 16, [], 0);
-  CheckNodesXY(n+'', 17, [], 0);
-  CheckNodesXY(n+'', 18, [], 0);
-
-
-
-
-
-  n := 'Remove LineBreak INSIDE  nodes EndOffs';
-  CheckNodesXY(n+'', 8, [], 0);
-  CheckNodesXY(n+'', 9, [1,2], 1);
-  CheckNodesXY(n+'',10, [2,3], 2);
-  CheckNodesXY(n+'',11, [], 0);
-  CheckNodesXY(n+'',12, [], 0);
-
-  SynEdit.TextBetweenPoints[point(10, 9),point(1, 10)] := '';
-  CheckNodesXY(n+'', 8, [], 0);
-  CheckNodesXY(n+'', 9, [1,11,  11,3], 2);
-  CheckNodesXY(n+'',10, [], 0);
-  CheckNodesXY(n+'',11, [], 0);
-  CheckNodesXY(n+'',12, [], 0);
-
-  n := 'Insert LineBreak INSIDE  nodes EndOffs';
-  SynEdit.TextBetweenPoints[point(10, 9),point(10, 9)] := LineEnding;
-  CheckNodesXY(n+'', 8, [], 0);
-  CheckNodesXY(n+'', 9, [1,2], 1);
-  CheckNodesXY(n+'',10, [2,3], 2);
-  CheckNodesXY(n+'',11, [], 0);
-  CheckNodesXY(n+'',12, [], 0);
-
-  {%endregion  Line Breaks }
-
-
-
-  ReCreateEditForTreeTest(TestTextIfDef);
-  FTestTree.ValidateRange(1, 14, FOpenings);
-  CheckNodesXY('', 1, [], 0);
-  CheckNodesXY('', 2, [1, 11], 0);
-  CheckNodesXY('', 3, [], 0);
-  CheckNodesXY('', 4, [2, 12], 0);
-  CheckNodesXY('', 5, [3, 14], 0);
-
-  // no modification
-  SynEdit.TextBetweenPoints[point(1,1),point(1,2)] := LineEnding;
-  CheckNodesXY('', 1, [], 0);
-  CheckNodesXY('', 2, [1, 11], 0);
-  CheckNodesXY('', 3, [], 0);
-  CheckNodesXY('', 4, [2, 12], 0);
-  CheckNodesXY('', 5, [3, 14], 0);
-
-  SynEdit.TextBetweenPoints[point(1,1),point(1,1)] := LineEnding;
-  CheckNodesXY('', 1, [], 0);
-  CheckNodesXY('', 2, [], 0);
-  CheckNodesXY('', 3, [1, 11], 0);
-  CheckNodesXY('', 4, [], 0);
-  CheckNodesXY('', 5, [2, 12], 0);
-  CheckNodesXY('', 6, [3, 14], 0);
-
-  SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := ' ';
-  CheckNodesXY('', 1, [], 0);
-  CheckNodesXY('', 2, [], 0);
-  CheckNodesXY('', 3, [2, 12], 0);
-  CheckNodesXY('', 4, [], 0);
-  CheckNodesXY('', 5, [2, 12], 0);
-  CheckNodesXY('', 6, [3, 14], 0);
-
-  SynEdit.TextBetweenPoints[point(1, 3),point(2, 3)] := '';
-  CheckNodesXY('', 1, [], 0);
-  CheckNodesXY('', 2, [], 0);
-  CheckNodesXY('', 3, [1, 11], 0);
-  CheckNodesXY('', 4, [], 0);
-  CheckNodesXY('', 5, [2, 12], 0);
-  CheckNodesXY('', 6, [3, 14], 0);
-
-
-  {%region  Delete line with node}
-    ReCreateEditForTreeTest(TestText7);
-    FTestTree.ValidateRange( 1,  5, FOpenings);
-    FTestTree.ValidateRange(10, 10, FOpenings);
-    FTestTree.ValidateRange(14, 14, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef ) ]);
-    CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf ) ]);
-    CheckNodes(n,10, [ ExpN( 2,12, idnIfdef ) ]);
-    CheckNodes(n,14, [ ExpN( 2,10, idnEndIf ) ]);
-
-    SynEdit.TextBetweenPoints[point(1, 4),point(1, 5)] := '';
-    FOpenings.Clear;
-    FTestTree.ValidateRange(3, 5, FOpenings); // only validate deleted line
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef) ]);
-    CheckNodes(n, 3, [  ]);
-    CheckNodes(n, 4, [  ]);
-    CheckNodes(n, 5, [  ]);
-    CheckNodes(n, 9, [ ExpN( 2,12, idnIfdef) ]);
-    CheckNodes(n,13, [ ExpN( 2,10, idnEndIf) ]);
-
-    SynEdit.TextBetweenPoints[point(1, 4),point(1, 4)] := '{$ENDIF}' + LineEnding;
-    FTestTree.ValidateRange(3, 5, FOpenings); // only validate deleted line
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef ) ]);
-    CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf ) ]);
-    CheckNodes(n,10, [ ExpN( 2,12, idnIfdef ) ]);
-    CheckNodes(n,14, [ ExpN( 2,10, idnEndIf ) ]);
-
-  {%endregion   }
-
-
-
-
-  // Insert IFDEF into empty text
-  ReCreateEditForTreeTest(TestTextNoIfDef);
-  FTestTree.ValidateRange(1, 5, FOpenings);
-  SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '{$IFDEF a}';
-  FTestTree.ValidateRange(1, 5, FOpenings);
-  CheckNodesXY('Insert IFDEF into empty text', 3, [1,11], 0);
-
-
-  FTestTree.DiscardOpeningList(FOpenings);
-  FOpenings := nil;;
-  FTestTree.Free;
-end;
-
-procedure TTestMarkupIfDef.TestIfDefTreePeerConnect;
-var
-  n: String;
-  i, i2, i3, i4: Integer;
-  epMaybeIf: PPeerExpect;
-begin
-  FTestTree := nil;
-
-
-  {%region peers}
-    n := 'Peers, TestText1: Validate all';
-    ReCreateEditForTreeTest(TestText1);
-    FTestTree.ValidateRange(1, 36, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
-    CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
-    CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
-                       ExpN(20,27, idnElse,  EpIf(7, 5),  EpEnd(7, 32)),
-                       ExpN(32,40, idnEndIf, EpElse(7, 20)),
-                       ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 5))  ]);
-    CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(10, 7)),
-                       ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
-                       ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
-                       ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
-    CheckNodes(n,10, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
-    CheckNodes(n,11, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
-    CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(14, 5)) ]);
-    CheckNodes(n,14, [ ExpN( 5,13, idnEndIf, EpIf(13, 5)) ]);
-    CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(15, 16)),
-                       ExpN(16,24, idnEndIf, EpIf(15, 5))  ]);
-    CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
-    CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(21, 3)) ]);
-    CheckNodes(n,21, [ ExpN( 3,10, idnElse,  EpIf(19, 3), EpEnd(27, 3)) ]);
-    CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(25, 5)) ]);
-    CheckNodes(n,25, [ ExpN( 5,13, idnEndIf, EpIf(23, 5)) ]);
-    CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 16)),
-                       ExpN(16,24, idnEndIf, EpIf(26, 5))  ]);
-    CheckNodes(n,27, [ ExpN( 3,11, idnEndIf, EpElse(21, 3)) ]);
-    CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1),  EpEnd(36,1)) ]);
-    CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
-    CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
-    CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
-    CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
-
-
-
-    n := 'Peers, TestText1: Validate 8 - 36';
-    ReCreateEditForTreeTest(TestText1);
-    FTestTree.ValidateRange(8, 36, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
-    CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
-    CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef ),
-                       ExpN(20,27, idnElse  ),
-                       ExpN(32,40, idnEndIf ),
-                       ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 5))  ]);
-    CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(10, 7)),
-                       ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
-                       ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
-                       ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
-    CheckNodes(n,10, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
-    CheckNodes(n,11, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
-    CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(14, 5)) ]);
-    CheckNodes(n,14, [ ExpN( 5,13, idnEndIf, EpIf(13, 5)) ]);
-    CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(15, 16)),
-                       ExpN(16,24, idnEndIf, EpIf(15, 5))  ]);
-    CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
-    CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(21, 3)) ]);
-    CheckNodes(n,21, [ ExpN( 3,10, idnElse,  EpIf(19, 3), EpEnd(27, 3)) ]);
-    CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(25, 5)) ]);
-    CheckNodes(n,25, [ ExpN( 5,13, idnEndIf, EpIf(23, 5)) ]);
-    CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 16)),
-                       ExpN(16,24, idnEndIf, EpIf(26, 5))  ]);
-    CheckNodes(n,27, [ ExpN( 3,11, idnEndIf, EpElse(21, 3)) ]);
-    CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1),  EpEnd(36,1)) ]);
-    CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
-    CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
-    CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
-    CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
-
-
-
-
-    n := 'Peers, TestText1: Validate 33 - 36';
-    ReCreateEditForTreeTest(TestText1);
-    FTestTree.ValidateRange(33, 36, FOpenings);
-    AssertTrue('Scan start node Node at empty line', FTestTree.FindNodeAtPosition(33, afmNil).HasNode);
-    CheckNodes(n,33, [ ]);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
-    CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(36,1)) ]);
-    CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
-    CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
-    CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
-    CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
-    //
-    n := 'Peers, TestText1: Validate all  AFTER 33-36';
-    FTestTree.ValidateRange(1, 36, FOpenings);
-    AssertFalse('Scan start node Node at empty line gone', FTestTree.FindNodeAtPosition(33, afmNil).HasNode);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
-    CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
-    CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
-                       ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
-                       ExpN(32,40, idnEndIf, EpElse(7, 20)),
-                       ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 5))  ]);
-    CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(10, 7)),
-                       ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
-                       ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
-                       ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
-    CheckNodes(n,10, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
-    CheckNodes(n,11, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
-    CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(14, 5)) ]);
-    CheckNodes(n,14, [ ExpN( 5,13, idnEndIf, EpIf(13, 5)) ]);
-    CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(15, 16)),
-                       ExpN(16,24, idnEndIf, EpIf(15, 5))  ]);
-    CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
-    CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(21, 3)) ]);
-    CheckNodes(n,21, [ ExpN( 3,10, idnElse,  EpIf(19, 3), EpEnd(27, 3)) ]);
-    CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(25, 5)) ]);
-    CheckNodes(n,25, [ ExpN( 5,13, idnEndIf, EpIf(23, 5)) ]);
-    CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 16)),
-                       ExpN(16,24, idnEndIf, EpIf(26, 5))  ]);
-    CheckNodes(n,27, [ ExpN( 3,11, idnEndIf, EpElse(21, 3)) ]);
-    CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1),  EpEnd(36,1)) ]);
-    CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
-    CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
-    CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
-    CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
-
-
-
-
-    n := 'Peers, TestText1: 32-36';
-    ReCreateEditForTreeTest(TestText1);
-    FTestTree.ValidateRange(32, 36, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
-    CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(36,1)) ]);
-    CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
-    CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
-    CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
-    CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
-    //
-    n := 'Peers, TestText1: 16-20 AFTER 32-36';
-    FTestTree.ValidateRange(16, 20, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
-    CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
-    CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
-    CheckNodes(n,19, [ ExpN( 3,14, idnIfdef) ]);
-    CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(36,1)) ]);
-    CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
-    CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
-    CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
-    CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
-    //
-    n := 'Peers, TestText1: all AFTER 16-20 AFTER 32-36';
-    FTestTree.ValidateRange(1, 36, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
-    CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
-    CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
-                       ExpN(20,27, idnElse,  EpIf(7, 5),  EpEnd(7, 32)),
-                       ExpN(32,40, idnEndIf, EpElse(7, 20)),
-                       ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 5))  ]);
-    CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(10, 7)),
-                       ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
-                       ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
-                       ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
-    CheckNodes(n,10, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
-    CheckNodes(n,11, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
-    CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(14, 5)) ]);
-    CheckNodes(n,14, [ ExpN( 5,13, idnEndIf, EpIf(13, 5)) ]);
-    CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(15, 16)),
-                       ExpN(16,24, idnEndIf, EpIf(15, 5))  ]);
-    CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
-    CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(21, 3)) ]);
-    CheckNodes(n,21, [ ExpN( 3,10, idnElse,  EpIf(19, 3), EpEnd(27, 3)) ]);
-    CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(25, 5)) ]);
-    CheckNodes(n,25, [ ExpN( 5,13, idnEndIf, EpIf(23, 5)) ]);
-    CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 16)),
-                       ExpN(16,24, idnEndIf, EpIf(26, 5))  ]);
-    CheckNodes(n,27, [ ExpN( 3,11, idnEndIf, EpElse(21, 3)) ]);
-    CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1),  EpEnd(36,1)) ]);
-    CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
-    CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
-    CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
-    CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
-
-
-
-
-    n := 'scan plain text, after closed node: step 1: node';
-    ReCreateEditForTreeTest(TestText3);
-    FTestTree.ValidateRange(3, 5, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
-    CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
-
-    n := 'scan plain text, after closed node: step 2: empty';
-    FTestTree.ValidateRange(8, 9, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
-    CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
-
-
-
-
-    n := 'scan plain text, after closed node (overlap): step 1: node';
-    ReCreateEditForTreeTest(TestText3);
-    FTestTree.ValidateRange(3, 8, FOpenings); // ensure node is valid to begin-of-plain-line-scan
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
-    CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
-
-    n := 'scan plain text, after closed node (overlap): step 2: empty';
-    FTestTree.ValidateRange(7, 9, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
-    CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
-
-
-
-
-    n := 'scan plain text, after closed node (not scanned end): step 1: node';
-    ReCreateEditForTreeTest(TestText3);
-    FTestTree.ValidateRange(3, 3, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef) ]);
-
-    n := 'scan plain text, after closed node (not scanned end): step 2: empty';
-    FTestTree.ValidateRange(8, 9, FOpenings);
-
-
-
-
-
-    n := 'Peers, TestText5: elseif';
-    ReCreateEditForTreeTest(TestText5);
-    FTestTree.ValidateRange(1, 9, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElseIf(4, 1)) ]);
-    CheckNodes(n, 4, [ ExpN( 1,12, idnElseIf,EpIf(2, 1),  EpElse(6, 1)) ]);
-    CheckNodes(n, 6, [ ExpN( 1, 8, idnElse,  EpElseIf(4, 1), EpEnd(8, 1)) ]);
-    CheckNodes(n, 8, [ ExpN( 1, 9, idnEndIf, EpElse(6, 1)) ]);
-
-  {%endregion peers}
-
-
-
-  {%region peers + editing}
-
-    n := 'Peers, TestText1: Before Edit';
-    ReCreateEditForTreeTest(TestText1);
-    FTestTree.ValidateRange(1, 36, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
-    CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
-    CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
-                       ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
-                       ExpN(32,40, idnEndIf, EpElse(7, 20)),
-                       ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 5))  ]);
-    CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(10, 7)),
-                       ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
-                       ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
-                       ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
-    CheckNodes(n,10, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
-    CheckNodes(n,11, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
-    CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(14, 5)) ]);
-    CheckNodes(n,14, [ ExpN( 5,13, idnEndIf, EpIf(13, 5)) ]);
-    CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(15, 16)),
-                       ExpN(16,24, idnEndIf, EpIf(15, 5))  ]);
-    CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
-    CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(21, 3)) ]);
-    CheckNodes(n,21, [ ExpN( 3,10, idnElse,  EpIf(19, 3), EpEnd(27, 3)) ]);
-    CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(25, 5)) ]);
-    CheckNodes(n,25, [ ExpN( 5,13, idnEndIf, EpIf(23, 5)) ]);
-    CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 16)),
-                       ExpN(16,24, idnEndIf, EpIf(26, 5))  ]);
-    CheckNodes(n,27, [ ExpN( 3,11, idnEndIf, EpElse(21, 3)) ]);
-    CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(36,1)) ]);
-    CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
-    CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
-    CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
-    CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
-
-    SynEdit.TextBetweenPoints[point(1, 9),point(1, 9)] := LineEnding;
-
-    n := 'Peers, TestText1: Line inserted at 9';
-    FTestTree.ValidateRange(1, 37, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(30, 1)) ]);
-    CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(18, 3)) ]);
-    CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
-                       ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
-                       ExpN(32,40, idnEndIf, EpElse(7, 20)),
-                       ExpN(43,53, idnIfdef, EpSkip,      EpEnd(12, 5))  ]);
-    CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(11, 7)),
-                       ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
-                       ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
-                       ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
-    CheckNodes(n,11, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
-    CheckNodes(n,12, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
-    CheckNodes(n,14, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(15, 5)) ]);
-    CheckNodes(n,15, [ ExpN( 5,13, idnEndIf, EpIf(14, 5)) ]);
-    CheckNodes(n,16, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(16, 16)),
-                       ExpN(16,24, idnEndIf, EpIf(16, 5))  ]);
-    CheckNodes(n,18, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
-    CheckNodes(n,20, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(22, 3)) ]);
-    CheckNodes(n,22, [ ExpN( 3,10, idnElse,  EpIf(20, 3), EpEnd(28, 3)) ]);
-    CheckNodes(n,24, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 5)) ]);
-    CheckNodes(n,26, [ ExpN( 5,13, idnEndIf, EpIf(24, 5)) ]);
-    CheckNodes(n,27, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(27, 16)),
-                       ExpN(16,24, idnEndIf, EpIf(27, 5))  ]);
-    CheckNodes(n,28, [ ExpN( 3,11, idnEndIf, EpElse(22, 3)) ]);
-    CheckNodes(n,30, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(37,1)) ]);
-    CheckNodes(n,32, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(33, 3)) ]);
-    CheckNodes(n,33, [ ExpN( 3,10, idnElse,  EpIf(32, 3), EpEnd(35,3)) ]);
-    CheckNodes(n,35, [ ExpN( 3,11, idnEndIf, EpElse(33, 3)) ]);
-    CheckNodes(n,37, [ ExpN( 1, 9, idnEndIf, EpElse(30, 1)) ]);
-
-    SynEdit.TextBetweenPoints[point(1, 9),point(1, 9)] := '{$EndIf}';
-
-    n := 'Peers, TestText1: ENDIF inserted at 9';
-    FTestTree.ValidateRange(1, 37, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(18, 3)) ]);
-    CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(12, 5)) ]);
-    CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
-                       ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
-                       ExpN(32,40, idnEndIf, EpElse(7, 20)),
-                       ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 7))  ]);
-    CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(9, 1)),
-                       ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
-                       ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
-                       ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
-    CheckNodes(n,11, [ ExpN( 7,15, idnEndIf, EpIf(7, 43)) ]);
-    CheckNodes(n,12, [ ExpN( 5,13, idnEndIf, EpIf(5, 3)) ]);
-    CheckNodes(n,14, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(15, 5)) ]);
-    CheckNodes(n,15, [ ExpN( 5,13, idnEndIf, EpIf(14, 5)) ]);
-    CheckNodes(n,16, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(16, 16)),
-                       ExpN(16,24, idnEndIf, EpIf(16, 5))  ]);
-    CheckNodes(n,18, [ ExpN( 3,11, idnEndIf, EpIf(2, 1)) ]);
-    CheckNodes(n,20, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(22, 3)) ]);
-    CheckNodes(n,22, [ ExpN( 3,10, idnElse,  EpIf(20, 3), EpEnd(28, 3)) ]);
-    CheckNodes(n,24, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 5)) ]);
-    CheckNodes(n,26, [ ExpN( 5,13, idnEndIf, EpIf(24, 5)) ]);
-    CheckNodes(n,27, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(27, 16)),
-                       ExpN(16,24, idnEndIf, EpIf(27, 5))  ]);
-    CheckNodes(n,28, [ ExpN( 3,11, idnEndIf, EpElse(22, 3)) ]);
-    CheckNodes(n,30, [ ExpN( 1, 8, idnElse,  EpNil,       EpEnd(37,1)) ]);
-    CheckNodes(n,32, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(33, 3)) ]);
-    CheckNodes(n,33, [ ExpN( 3,10, idnElse,  EpIf(32, 3), EpEnd(35,3)) ]);
-    CheckNodes(n,35, [ ExpN( 3,11, idnEndIf, EpElse(33, 3)) ]);
-    CheckNodes(n,37, [ ExpN( 1, 9, idnEndIf, EpElse(30, 1)) ]);
-
-
-    SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '{$Else}';
-    FTestTree.ValidateRange(1, 37, FOpenings);
-
-    //SynEdit.TextBetweenPoints[point(1, 3),point(1, 8)] := '';
-    SynEdit.TextBetweenPoints[point(1, 3),point(8, 3)] := '';
-    FTestTree.ValidateRange(1, 37, FOpenings);
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(18, 3)) ]);
-    CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(12, 5)) ]);
-    CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
-                       ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
-                       ExpN(32,40, idnEndIf, EpElse(7, 20)),
-                       ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 7))  ]);
-    CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(9, 1)),
-                       ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
-                       ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
-                       ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
-    CheckNodes(n,11, [ ExpN( 7,15, idnEndIf, EpIf(7, 43)) ]);
-    CheckNodes(n,12, [ ExpN( 5,13, idnEndIf, EpIf(5, 3)) ]);
-    CheckNodes(n,14, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(15, 5)) ]);
-    CheckNodes(n,15, [ ExpN( 5,13, idnEndIf, EpIf(14, 5)) ]);
-    CheckNodes(n,16, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(16, 16)),
-                       ExpN(16,24, idnEndIf, EpIf(16, 5))  ]);
-    CheckNodes(n,18, [ ExpN( 3,11, idnEndIf, EpIf(2, 1)) ]);
-    CheckNodes(n,20, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(22, 3)) ]);
-    CheckNodes(n,22, [ ExpN( 3,10, idnElse,  EpIf(20, 3), EpEnd(28, 3)) ]);
-    CheckNodes(n,24, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 5)) ]);
-    CheckNodes(n,26, [ ExpN( 5,13, idnEndIf, EpIf(24, 5)) ]);
-    CheckNodes(n,27, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(27, 16)),
-                       ExpN(16,24, idnEndIf, EpIf(27, 5))  ]);
-    CheckNodes(n,28, [ ExpN( 3,11, idnEndIf, EpElse(22, 3)) ]);
-    CheckNodes(n,30, [ ExpN( 1, 8, idnElse,  EpNil,       EpEnd(37,1)) ]);
-    CheckNodes(n,32, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(33, 3)) ]);
-    CheckNodes(n,33, [ ExpN( 3,10, idnElse,  EpIf(32, 3), EpEnd(35,3)) ]);
-    CheckNodes(n,35, [ ExpN( 3,11, idnEndIf, EpElse(33, 3)) ]);
-    CheckNodes(n,37, [ ExpN( 1, 9, idnEndIf, EpElse(30, 1)) ]);
-
-
-
-    {%region remove endif by edit // Test nodes delete => resolve peer}
-      n := 'remove endif by edit / edit endif (one endif in line)';
-      ReCreateEditForTreeTest(TestText3);
-      FTestTree.ValidateRange(1, 8, FOpenings);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
-      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
-
-      SynEdit.TextBetweenPoints[point(3, 4),point(3, 4)] := ' ';
-      FTestTree.ValidateRange(1, 8, FOpenings);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil) ]);
-      CheckNodes(n, 4, [ ]);
-
-
-      n := 'remove endif by edit / edit endif (two endif in line, edit first)';
-      ReCreateEditForTreeTest(TestText3a);
-      FTestTree.ValidateRange(1, 8, FOpenings);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4,10)),
-                         ExpN(12,22, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
-      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2,12)),
-                         ExpN(10,18, idnEndIf, EpIf(2, 1)) ]);
-
-      SynEdit.TextBetweenPoints[point(3, 4),point(3, 4)] := ' ';
-      FTestTree.ValidateRange(1, 8, FOpenings);
-      //FTestTree.DebugPrint(true);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil),
-                         ExpN(12,22, idnIfdef, EpSkip,      EpEnd(4,11)) ]);
-      CheckNodes(n, 4, [ ExpN(11,19, idnEndIf, EpIf(2, 12)) ]);
-
-
-      n := 'remove endif by edit / edit endif (two endif in line, edit 2nd)';
-      ReCreateEditForTreeTest(TestText3a);
-      FTestTree.ValidateRange(1, 8, FOpenings);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4,10)),
-                         ExpN(12,22, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
-      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2,12)),
-                         ExpN(10,18, idnEndIf, EpIf(2, 1)) ]);
-
-      SynEdit.TextBetweenPoints[point(13,4),point(13,4)] := ' ';
-      FTestTree.ValidateRange(1, 8, FOpenings);
-      FTestTree.DebugPrint(true);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil),
-                         ExpN(12,22, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
-      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2,12)) ]);
-
-
-    {%endregion}
-
-    {%region Add outer lines by removing endif}
-      // No outer lines to begin
-
-      n := 'Extend outer lines by removing endif - BUT new peer for new outer ifdef is PAST visible (not scanned)';
+  procedure DoTest;
+  var
+    n: String;
+  begin
+    FTestTree := nil;
+
+    n := 'No modification';
+    ReCreateEditForTreeTest(TestTextIfDef);
+    FTestTree.ValidateRange(1, 14, FOpenings);
+    CheckNodesXY(n+'', 1, [], 0);
+    CheckNodesXY(n+'', 2, [1, 11], 0);
+    CheckNodesXY(n+'', 3, [], 0);
+    CheckNodesXY(n+'', 4, [2, 12], 0);
+    CheckNodesXY(n+'', 5, [3, 14], 0);
+    CheckNodes(n+'', 5, [ExpN(3,14, idnIfdef)]);
+
+    {%region  one line edit}
+    ReCreateEditForTreeTest(TestTextIfDef);
+    FTestTree.ValidateRange(1, 10, FOpenings);
+
+    n := 'Remove Space AT line-start, Node after space';
+    CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
+    SynEdit.TextBetweenPoints[point(1, 7),point(2, 7)] := '';
+    CheckNodesXY(n+'', 7, [1,11,   11,23,   23,36], 0);
+
+    n := 'Insert Space AT line-start, Node after space';
+    SynEdit.TextBetweenPoints[point(1, 7),point(1, 7)] := ' ';
+    CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
+
+    n := 'Replace Space AT line-start, Node after space';
+    SynEdit.TextBetweenPoints[point(1, 7),point(2, 7)] := #9;
+    CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
+
+    n := 'Insert Space AT line-start, node later on line';
+    SynEdit.TextBetweenPoints[point(1, 7),point(1, 7)] := ' ';
+    CheckNodesXY(n+'', 7, [3,13,   13,25,   25,38], 0);
+
+    n := 'Insert Space before first node on line';
+    SynEdit.TextBetweenPoints[point(3, 7),point(3, 7)] := ' ';
+    CheckNodesXY(n+'', 7, [4,14,   14,26,   26,39], 0);
+
+    n := 'Remove Space before first node on line';
+    SynEdit.TextBetweenPoints[point(3, 7),point(4, 7)] := '';
+    CheckNodesXY(n+'', 7, [3,13,   13,25,   25,38], 0);
+
+    n := 'Insert Space between first and 2nd node on line';
+    SynEdit.TextBetweenPoints[point(13, 7),point(13, 7)] := ' ';
+    CheckNodesXY(n+'', 7, [3,13,   14,26,   26,39], 0);
+
+    n := 'Remove Space between first and 2nd node on line';
+    SynEdit.TextBetweenPoints[point(13, 7),point(14, 7)] := '';
+    CheckNodesXY(n+'', 7, [3,13,   13,25,   25,38], 0);
+
+    n := 'Insert Space after last node on line';
+    SynEdit.TextBetweenPoints[point(38, 7),point(38, 7)] := ' ';
+    CheckNodesXY(n+'', 7, [3,13,   13,25,   25,38], 0);
+
+    n := 'Remove Space after last node on line';
+    SynEdit.TextBetweenPoints[point(38, 7),point(39, 7)] := '';
+    CheckNodesXY(n+'', 7, [3,13,   13,25,   25,38], 0);
+
+    // Edit in node
+    ReCreateEditForTreeTest(TestTextIfDef);
+    FTestTree.ValidateRange(1, 19, FOpenings);
+    n := 'Insert Space INSIDE node (1st node on line)';
+    SynEdit.TextBetweenPoints[point(3, 7),point(3, 7)] := ' ';
+    CheckNodesXY(n+'', 7, [2,13,   13,25,   25,38], 0);
+
+    n := 'REMOVE Space INSIDE node (1st node on line)';
+    SynEdit.TextBetweenPoints[point(3, 7),point(4, 7)] := '';
+    CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
+
+    n := 'Insert Space INSIDE node end (1st node on line)';
+    SynEdit.TextBetweenPoints[point(11, 7),point(11, 7)] := ' ';
+    CheckNodesXY(n+'', 7, [2,13,   13,25,   25,38], 0);
+
+    n := 'REMOVE Space INSIDE node end (1st node on line)';
+    SynEdit.TextBetweenPoints[point(11, 7),point(12, 7)] := '';
+    CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
+
+    n := 'Insert Space INSIDE node (last node on line)';
+    SynEdit.TextBetweenPoints[point(26, 7),point(26, 7)] := ' ';
+    CheckNodesXY(n+'', 7, [2,12,   12,24,   24,38], 0);
+
+    n := 'REMOVE Space INSIDE node (last node on line)';
+    SynEdit.TextBetweenPoints[point(26, 7),point(27, 7)] := '';
+    CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
+
+    n := 'Insert Space INSIDE node (last node on line, multiline)';
+    SynEdit.TextBetweenPoints[point(3, 14),point(3, 14)] := ' ';
+    CheckNodesXY(n+'', 14, [1,6], 1);
+
+    n := 'REMOVE Space INSIDE node (last node on line, multiline)';
+    SynEdit.TextBetweenPoints[point(3, 14),point(4, 14)] := '';
+    CheckNodesXY(n+'', 14, [1,6], 1);
+
+
+    // test 1,12 modify previous node
+    n := 'Insert Space INSIDE node (last node on line, multiline, on end line)';
+    SynEdit.TextBetweenPoints[point(1, 12),point(1, 12)] := ' ';
+    CheckNodesXY(n+'', 10, [2,4], 2);
+
+    n := 'REMOVE Space INSIDE node (last node on line, multiline, on end line)';
+    SynEdit.TextBetweenPoints[point(1, 12),point(2, 12)] := '';
+    CheckNodesXY(n+'', 10, [2,3], 2);
+
+    // test 1,15 modify previous and current node
+    n := 'Insert Space INSIDE node (last node on line, multiline, on end line with NEXT open)';
+    SynEdit.TextBetweenPoints[point(2, 15),point(2, 15)] := ' ';
+    CheckNodesXY(n+'', 14, [1, 7], 1);
+    CheckNodesXY(n+'', 15, [7,13], 2);
+
+      n := 'REMOVE Space INSIDE node (last node on line, multiline, on end line with NEXT open)';
+    SynEdit.TextBetweenPoints[point(2, 15),point(3, 15)] := '';
+    CheckNodesXY(n+'', 14, [1, 6], 1);
+    CheckNodesXY(n+'', 15, [6,13], 2);
+
+    n := 'Insert Space Between node (last node on line, multiline, on end line with NEXT open)';
+    SynEdit.TextBetweenPoints[point(6, 15),point(6, 15)] := ' ';
+    CheckNodesXY(n+'', 14, [1, 6], 1);
+    CheckNodesXY(n+'', 15, [7,13], 2);
+
+    n := 'REMOVE Space Between node (last node on line, multiline, on end line with NEXT open)';
+    SynEdit.TextBetweenPoints[point(6, 15),point(7, 15)] := '';
+    CheckNodesXY(n+'', 14, [1, 6], 1);
+    CheckNodesXY(n+'', 15, [6,13], 2);
+
+    n := 'Insert Space at end of node (IN node) (last node on line, multiline, on end line with NEXT open)';
+    SynEdit.TextBetweenPoints[point(5, 15),point(5, 15)] := ' ';
+    CheckNodesXY(n+'', 14, [1, 7], 1);
+    CheckNodesXY(n+'', 15, [7,13], 2);
+
+  // delete an entire node
+    n := 'Delete full node';
+    SynEdit.TextBetweenPoints[point(10, 7),point(27, 7)] := '';
+  FTestTree.DebugPrint(true);
+    CheckNodesXY(n+'', 7, [2,10,   10,20], 0);
+
+    {%endregion one line}
+
+    {%region  Line Breaks }
+
+    n := 'not modified';
+    ReCreateEditForTreeTest(TestTextIfDef);
+    FTestTree.ValidateRange(1, 19, FOpenings);
+    CheckNodesXY(n+'', 6, [], 0);
+    CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
+    CheckNodesXY(n+'', 8, [], 0);
+    CheckNodesXY(n+'', 9, [1,2], 1);
+
+
+    n := 'Insert LineBreak at line start nodes';
+    SynEdit.TextBetweenPoints[point(1, 7),point(1, 7)] := LineEnding;
+    CheckNodesXY(n+'', 6, [], 0);
+    CheckNodesXY(n+'', 7, [], 0);
+    CheckNodesXY(n+'', 8, [2,12,   12,24,   24,37], 0);
+    CheckNodesXY(n+'', 9, [], 0);
+    CheckNodesXY(n+'',10, [1,2], 1);
+
+    n := 'Remove LineBreak at line start nodes';
+    SynEdit.TextBetweenPoints[point(1, 7),point(1, 8)] := '';
+    CheckNodesXY(n+'', 6, [], 0);
+    CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
+    CheckNodesXY(n+'', 8, [], 0);
+    CheckNodesXY(n+'', 9, [1,2], 1);
+
+
+    n := 'Insert LineBreak before nodes';
+    SynEdit.TextBetweenPoints[point(2, 7),point(2, 7)] := LineEnding;
+    CheckNodesXY(n+'', 6, [], 0);
+    CheckNodesXY(n+'', 7, [], 0);
+    CheckNodesXY(n+'', 8, [1,11,   11,23,   23,36], 0);
+    CheckNodesXY(n+'', 9, [], 0);
+    CheckNodesXY(n+'',10, [1,2], 1);
+
+    n := 'Remove LineBreak before nodes';
+    SynEdit.TextBetweenPoints[point(2, 7),point(1, 8)] := '';
+    CheckNodesXY(n+'', 6, [], 0);
+    CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
+    CheckNodesXY(n+'', 8, [], 0);
+    CheckNodesXY(n+'', 9, [1,2], 1);
+
+
+
+    n := 'Insert LineBreak between nodes';
+    SynEdit.TextBetweenPoints[point(24, 7),point(24, 7)] := LineEnding;
+    CheckNodesXY(n+'', 6, [], 0);
+    CheckNodesXY(n+'', 7, [2,12,   12,24], 0);
+    CheckNodesXY(n+'', 8, [1,14], 0);
+    CheckNodesXY(n+'', 9, [], 0);
+    CheckNodesXY(n+'',10, [1,2], 1);
+
+    n := 'Remove LineBreak between nodes';
+    SynEdit.TextBetweenPoints[point(24, 7),point(1, 8)] := '';
+    CheckNodesXY(n+'', 6, [], 0);
+    CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
+    CheckNodesXY(n+'', 8, [], 0);
+    CheckNodesXY(n+'', 9, [1,2], 1);
+
+
+
+    n := 'Insert LineBreak after nodes';
+    SynEdit.TextBetweenPoints[point(37, 7),point(37, 7)] := LineEnding;
+    CheckNodesXY(n+'', 6, [], 0);
+    CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
+    CheckNodesXY(n+'', 8, [], 0);
+    CheckNodesXY(n+'', 9, [], 0);
+    CheckNodesXY(n+'',10, [1,2], 1);
+
+    n := 'Remove LineBreak after nodes';
+    SynEdit.TextBetweenPoints[point(37, 7),point(1, 8)] := '';
+    CheckNodesXY(n+'', 6, [], 0);
+    CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
+    CheckNodesXY(n+'', 8, [], 0);
+    CheckNodesXY(n+'', 9, [1,2], 1);
+
+
+
+    n := 'Insert LineBreak INSIDE nodes';
+    SynEdit.TextBetweenPoints[point(13, 7),point(13, 7)] := LineEnding;
+    CheckNodesXY(n+'', 6, [], 0);
+    CheckNodesXY(n+'', 7, [2,12,   12,12], 1);
+    CheckNodesXY(n+'', 8, [12,25], 0);
+    CheckNodesXY(n+'', 9, [], 0);
+    CheckNodesXY(n+'',10, [1,2], 1);
+
+    n := 'Remove LineBreak INSIDE  nodes';
+    SynEdit.TextBetweenPoints[point(13, 7),point(1, 8)] := '';
+    CheckNodesXY(n+'', 6, [], 0);
+    CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
+    CheckNodesXY(n+'', 8, [], 0);
+    CheckNodesXY(n+'', 9, [1,2], 1);
+
+
+
+    n := 'Insert LineBreak INSIDE nodes (last node 1 line)';
+    SynEdit.TextBetweenPoints[point(23, 7),point(23, 7)] := LineEnding;
+    CheckNodesXY(n+'', 6, [], 0);
+    CheckNodesXY(n+'', 7, [2,12,   12,2], 1);
+    CheckNodesXY(n+'', 8, [2,15], 0);
+    CheckNodesXY(n+'', 9, [], 0);
+    CheckNodesXY(n+'',10, [1,2], 1);
+
+    n := 'Remove LineBreak INSIDE  nodes (last node 1 line)';
+    SynEdit.TextBetweenPoints[point(23, 7),point(1, 8)] := '';
+    CheckNodesXY(n+'', 6, [], 0);
+    CheckNodesXY(n+'', 7, [2,12,   12,24,   24,37], 0);
+    CheckNodesXY(n+'', 8, [], 0);
+    CheckNodesXY(n+'', 9, [1,2], 1);
+
+
+
+    n := 'Insert LineBreak INSIDE nodes (last node multi line)';
+    SynEdit.TextBetweenPoints[point(9, 10),point(9, 10)] := LineEnding;
+    CheckNodesXY(n+'',  9, [1,2], 1);
+    CheckNodesXY(n+'', 10, [2,3], 3);
+    CheckNodesXY(n+'', 14, [], 0);
+    CheckNodesXY(n+'', 15, [1,6], 1);
+
+    n := 'Remove LineBreak INSIDE  nodes (last node multi line)';
+    SynEdit.TextBetweenPoints[point(9, 10),point(1, 11)] := '';
+    CheckNodesXY(n+'',  9, [1,2], 1);
+    CheckNodesXY(n+'', 10, [2,3], 2);
+    CheckNodesXY(n+'', 13, [], 0);
+    CheckNodesXY(n+'', 14, [1,6], 1);
+
+
+    n := 'Insert LineBreak INSIDE nodes (last node multi line)';
+    SynEdit.TextBetweenPoints[point(2, 14),point(2, 14)] := LineEnding;
+    CheckNodesXY(n+'', 14, [1,6], 2);
+
+    n := 'Remove LineBreak INSIDE  nodes (last node multi line)';
+    SynEdit.TextBetweenPoints[point(2, 14),point(1, 15)] := '';
+    CheckNodesXY(n+'', 14, [1,6], 1);
+
+
+
+    n := 'Insert LineBreak INSIDE nodes (previous node multi line)';
+    SynEdit.TextBetweenPoints[point(1, 10),point(1, 10)] := LineEnding;
+    CheckNodesXY(n+'',  9, [1,2], 2);
+    CheckNodesXY(n+'', 10, [], 0);
+    CheckNodesXY(n+'', 11, [2,3], 2);
+
+    n := 'Remove LineBreak INSIDE  nodes (previous node multi line)';
+    SynEdit.TextBetweenPoints[point(1, 10),point(1, 11)] := '';
+    CheckNodesXY(n+'',  9, [1,2], 1);
+    CheckNodesXY(n+'', 10, [2,3], 2);
+
+
+
+    n := 'Insert LineBreak INSIDE nodes (last node multi line - no next)';
+    SynEdit.TextBetweenPoints[point(1, 17),point(1, 17)] := LineEnding;
+    CheckNodesXY(n+'', 14, [1, 6], 1);
+    CheckNodesXY(n+'', 15, [6,13], 3);
+    CheckNodesXY(n+'', 16, [], 0);
+    CheckNodesXY(n+'', 17, [], 0);
+    CheckNodesXY(n+'', 18, [], 0);
+
+    n := 'Remove LineBreak INSIDE  nodes (last node multi line - no next)';
+    SynEdit.TextBetweenPoints[point(1, 17),point(1, 18)] := '';
+    CheckNodesXY(n+'', 14, [1, 6], 1);
+    CheckNodesXY(n+'', 15, [6,13], 2);
+    CheckNodesXY(n+'', 16, [], 0);
+    CheckNodesXY(n+'', 17, [], 0);
+    CheckNodesXY(n+'', 18, [], 0);
+
+
+    n := 'Insert LineBreak INSIDE nodes (mid last node multi line - no next)';
+    SynEdit.TextBetweenPoints[point(7, 16),point(7, 16)] := LineEnding;
+    CheckNodesXY(n+'', 14, [1, 6], 1);
+    CheckNodesXY(n+'', 15, [6,13], 3);
+    CheckNodesXY(n+'', 16, [], 0);
+    CheckNodesXY(n+'', 17, [], 0);
+    CheckNodesXY(n+'', 18, [], 0);
+
+    n := 'Remove LineBreak INSIDE  nodes (mid last node multi line - no next)';
+    SynEdit.TextBetweenPoints[point(7, 16),point(1, 17)] := '';
+    CheckNodesXY(n+'', 14, [1, 6], 1);
+    CheckNodesXY(n+'', 15, [6,13], 2);
+    CheckNodesXY(n+'', 16, [], 0);
+    CheckNodesXY(n+'', 17, [], 0);
+    CheckNodesXY(n+'', 18, [], 0);
+
+
+
+
+
+    n := 'Remove LineBreak INSIDE  nodes EndOffs';
+    CheckNodesXY(n+'', 8, [], 0);
+    CheckNodesXY(n+'', 9, [1,2], 1);
+    CheckNodesXY(n+'',10, [2,3], 2);
+    CheckNodesXY(n+'',11, [], 0);
+    CheckNodesXY(n+'',12, [], 0);
+
+    SynEdit.TextBetweenPoints[point(10, 9),point(1, 10)] := '';
+    CheckNodesXY(n+'', 8, [], 0);
+    CheckNodesXY(n+'', 9, [1,11,  11,3], 2);
+    CheckNodesXY(n+'',10, [], 0);
+    CheckNodesXY(n+'',11, [], 0);
+    CheckNodesXY(n+'',12, [], 0);
+
+    n := 'Insert LineBreak INSIDE  nodes EndOffs';
+    SynEdit.TextBetweenPoints[point(10, 9),point(10, 9)] := LineEnding;
+    CheckNodesXY(n+'', 8, [], 0);
+    CheckNodesXY(n+'', 9, [1,2], 1);
+    CheckNodesXY(n+'',10, [2,3], 2);
+    CheckNodesXY(n+'',11, [], 0);
+    CheckNodesXY(n+'',12, [], 0);
+
+    {%endregion  Line Breaks }
+
+
+
+    ReCreateEditForTreeTest(TestTextIfDef);
+    FTestTree.ValidateRange(1, 14, FOpenings);
+    CheckNodesXY('', 1, [], 0);
+    CheckNodesXY('', 2, [1, 11], 0);
+    CheckNodesXY('', 3, [], 0);
+    CheckNodesXY('', 4, [2, 12], 0);
+    CheckNodesXY('', 5, [3, 14], 0);
+
+    // no modification
+    SynEdit.TextBetweenPoints[point(1,1),point(1,2)] := LineEnding;
+    CheckNodesXY('', 1, [], 0);
+    CheckNodesXY('', 2, [1, 11], 0);
+    CheckNodesXY('', 3, [], 0);
+    CheckNodesXY('', 4, [2, 12], 0);
+    CheckNodesXY('', 5, [3, 14], 0);
+
+    SynEdit.TextBetweenPoints[point(1,1),point(1,1)] := LineEnding;
+    CheckNodesXY('', 1, [], 0);
+    CheckNodesXY('', 2, [], 0);
+    CheckNodesXY('', 3, [1, 11], 0);
+    CheckNodesXY('', 4, [], 0);
+    CheckNodesXY('', 5, [2, 12], 0);
+    CheckNodesXY('', 6, [3, 14], 0);
+
+    SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := ' ';
+    CheckNodesXY('', 1, [], 0);
+    CheckNodesXY('', 2, [], 0);
+    CheckNodesXY('', 3, [2, 12], 0);
+    CheckNodesXY('', 4, [], 0);
+    CheckNodesXY('', 5, [2, 12], 0);
+    CheckNodesXY('', 6, [3, 14], 0);
+
+    SynEdit.TextBetweenPoints[point(1, 3),point(2, 3)] := '';
+    CheckNodesXY('', 1, [], 0);
+    CheckNodesXY('', 2, [], 0);
+    CheckNodesXY('', 3, [1, 11], 0);
+    CheckNodesXY('', 4, [], 0);
+    CheckNodesXY('', 5, [2, 12], 0);
+    CheckNodesXY('', 6, [3, 14], 0);
+
+
+    {%region  Delete line with node}
       ReCreateEditForTreeTest(TestText7);
-      FTestTree.ValidateRange(1, 16, FOpenings); // scan all, so the nodes to exist
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
-      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
-      CheckNodes(n,10, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(14, 2)) ]);
-      CheckNodes(n,14, [ ExpN( 2,10, idnEndIf, EpIf(10, 2)) ]);
+      FTestTree.ValidateRange( 1,  5, FOpenings);
+      FTestTree.ValidateRange(10, 10, FOpenings);
+      FTestTree.ValidateRange(14, 14, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef ) ]);
+      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf ) ]);
+      CheckNodes(n,10, [ ExpN( 2,12, idnIfdef ) ]);
+      CheckNodes(n,14, [ ExpN( 2,10, idnEndIf ) ]);
 
-      SynEdit.TextBetweenPoints[point(4,4),point(4,4)] := ' '; // remove ifdef (leaving invalid node)
+      SynEdit.TextBetweenPoints[point(1, 4),point(1, 5)] := '';
       FOpenings.Clear;
-      FTestTree.ValidateRange(6, 8, FOpenings); // scan empty text
-      // Expect outer node to be changed
-// This is siped by markup
-      //CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil) ]);
+      FTestTree.ValidateRange(3, 5, FOpenings); // only validate deleted line
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef) ]);
+      CheckNodes(n, 3, [  ]);
+      CheckNodes(n, 4, [  ]);
+      CheckNodes(n, 5, [  ]);
+      CheckNodes(n, 9, [ ExpN( 2,12, idnIfdef) ]);
+      CheckNodes(n,13, [ ExpN( 2,10, idnEndIf) ]);
 
-
-
-      n := 'Extend outer lines by removing endif - new endif in visible range';
-      ReCreateEditForTreeTest(TestText7);
-      FTestTree.ValidateRange(1, 16, FOpenings); // scan all, so the nodes to exist
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
-      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
-      CheckNodes(n,10, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(14, 2)) ]);
-      CheckNodes(n,14, [ ExpN( 2,10, idnEndIf, EpIf(10, 2)) ]);
-
-      SynEdit.TextBetweenPoints[point(4,10),point(4,10)] := ' '; // remove ifdef so we have an extra endif
-      FOpenings.Clear;
-      FTestTree.ValidateRange(1, 16, FOpenings); // scan all, so the nodes to exist
-FTestTree.DebugPrint(true);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
-      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
-      CheckNodes(n,10, [ ]);
-      CheckNodes(n,14, [ ExpN( 2,10, idnEndIf, EpNil) ]);
-
-      SynEdit.TextBetweenPoints[point(4,4),point(4,4)] := ' '; // remove ifdef (leaving invalid node)
-      FOpenings.Clear;
-      FTestTree.ValidateRange(6, 16, FOpenings); // scan empty text
-FTestTree.DebugPrint(true);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(14, 2)) ]);
-//      CheckNodes(n, 4, [ ]);
-      CheckNodes(n,10, [ ]);
-      CheckNodes(n,14, [ ExpN( 2,10, idnEndIf, EpIf(2, 1)) ]);
-
-
-    {%endregion}
-
-
-  {%endregion peers + edit}
-
-
-  {%region UNMATCHED PEERS}
-
-    // NO EDIT
-    n := 'Peers, TestText2: Bad nodes';
-    ReCreateEditForTreeTest(TestText2);
-    FTestTree.ValidateRange(1, 18, FOpenings);
-    // ONe and only one of the 2 ends should have a peer
-    CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
-    CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
-    CheckNodes(n, 6, [ ExpN( 1, 9, idnEndIf, EpNil) ]); // must not have a peer
-    // One and only one else may be connected to if and one (but maybe the other) to endif
-    CheckNodes(n,10, [ ExpN( 1,11, idnIfdef) ]); // EpElse(12, 1) // or 14
-    CheckNodes(n,12, [ ExpN( 1, 8, idnElse) ]);
-    CheckNodes(n,14, [ ExpN( 1, 8, idnElse) ]);
-    CheckNodes(n,16, [ ExpN( 1, 9, idnEndIf, EpElse(14, 1)) ]);
-
-
-    {%region  Insert If/end to create invalid peering, that must be resolved }
-      n := 'Peers, TestText6: Resolve left-over binding: ' +
-           'Insert Ifdef in visible part, with node inbetween';
-      ReCreateEditForTreeTest(TestText6);
-      FTestTree.ValidateRange(1, 20, FOpenings);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
-      CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
-      CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
-      CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
-      CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
-
-      SynEdit.TextBetweenPoints[point(1, 8),point(1, 8)] := '   {$IfDef X}';
-      FTestTree.ValidateRange(1, 20, FOpenings);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
-      CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpNil ) ]);
-      CheckNodes(n, 8, [ ExpN( 4,14, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
-      CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
-      CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
-      CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 8, 4)) ]);
-
-      n := n + ' Remove again';
-      SynEdit.TextBetweenPoints[point(1, 8),point(14, 8)] := '';
-      FTestTree.ValidateRange(1, 20, FOpenings);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
-      CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
-      CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
-      CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
-      CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
-    {%endregion  Insert If/end to create invalid peering, that must be resolved }
-
-    {%region  Insert If/end to create invalid peering, that must be resolved }
-      n := 'Peers, TestText6: Resolve left-over binding: ' +
-           'Insert EndIf in visible part, with node inbetween';
-      ReCreateEditForTreeTest(TestText6);
-      FTestTree.ValidateRange(1, 20, FOpenings);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
-      CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
-      CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
-      CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
-      CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
-
-      SynEdit.TextBetweenPoints[point(1, 8),point(1, 8)] := '   {$Endif}';
-      FTestTree.ValidateRange(1, 20, FOpenings);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
-      CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd( 8, 4)) ]);
-      CheckNodes(n, 8, [ ExpN( 4,12, idnEndIf, EpIf( 6, 2)) ]);
-      CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
-      CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
-      CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 2, 1)) ]);
-
-      n := n + ' Remove again';
-      SynEdit.TextBetweenPoints[point(1, 8),point(14, 8)] := '';
-      FTestTree.ValidateRange(1, 20, FOpenings);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
-      CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
-      CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
-      CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
-      CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
-    {%endregion  Insert If/end to create invalid peering, that must be resolved }
-
-    {%region  Insert If/end to create invalid peering, that must be resolved }
-      n := 'Peers, TestText6: Relosve left-over binding: ' +
-           'Insert Ifdef in visible part, with node inbetween AT end of outer ifdef';
-      ReCreateEditForTreeTest(TestText6);
-      FTestTree.ValidateRange(1, 20, FOpenings);
-
-      SynEdit.TextBetweenPoints[point(12, 6),point(12, 6)] := '   {$IfDef X}';
-      FTestTree.ValidateRange(1, 20, FOpenings);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
-      CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpNil ),
-                         ExpN(15,25, idnIfdef, EpSkip,      EpEnd(18, 2))
-                       ]);
-      CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
-      CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
-      CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 15)) ]);
-
-      n := n + ' Remove again';
-      SynEdit.TextBetweenPoints[point(12, 6),point(25, 6)] := '';
-      FTestTree.ValidateRange(1, 20, FOpenings);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
-      CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
-      CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
-      CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
-      CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
-    {%endregion  Insert If/end to create invalid peering, that must be resolved }
-
-    {%region  Insert If/end to create invalid peering, that must be resolved }
-      n := 'Peers, TestText6: Relosve left-over binding: ' +
-           'Insert EndIf in visible part, with node inbetween AT end of outer ifdef';
-      ReCreateEditForTreeTest(TestText6);
-      FTestTree.ValidateRange(1, 20, FOpenings);
-
-      SynEdit.TextBetweenPoints[point(12, 6),point(12, 6)] := '   {$EndIf}';
-      FTestTree.ValidateRange(1, 20, FOpenings);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(18, 2) ) ]);
-      CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd( 6,15) ),
-                         ExpN(15,23, idnEndIf, EpIf( 6, 2))
-                       ]);
-      CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
-      CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
-      CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 2, 1)) ]);
-
-      n := n + ' Remove again';
-      SynEdit.TextBetweenPoints[point(12, 6),point(25, 6)] := '';
-      FTestTree.ValidateRange(1, 20, FOpenings);
-      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
-      CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
-      CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
-      CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
-      CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
-    {%endregion  Insert If/end to create invalid peering, that must be resolved }
-
-
-    {%region ELSE WITHOUT IFDEF and DOUBLE ELSE }
-// TODO: Else and ifdef on same line
-      for i := 0 to 2 do begin
-        for i2 := 0 to 7 do
-        for i3 := 0 to 2 do // ifdef
-        for i4 := 0 to 1 do // endif TODO
-        begin
-          case i of
-            0: begin
-              PushBaseName('Scan empty, then add else at line 3 (after scan-start-marker)');
-              ReCreateEditForTreeTest(TestTextNoIfDef);
-              FTestTree.ValidateRange(1, 9, FOpenings);
-            end;
-            1: begin
-              PushBaseName('Scan empty (form 3), then add else at line 3 (AT scan-start-marker)');
-              ReCreateEditForTreeTest(TestTextNoIfDef);
-              FTestTree.ValidateRange(3, 9, FOpenings);
-            end;
-            2:begin
-              PushBaseName('Add else (before first scan) at line 3');
-              ReCreateEditForTreeTest(TestTextNoIfDef);
-            end;
-          end;
-
-          SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '                    {$ELSE}                      //';
-          FTestTree.ValidateRange(1, 9, FOpenings);
-          CheckNodes(n, 3, [ ExpN(21,28, idnElse, EpNil,      EpNil ) ]);
-
-          SynEdit.TextBetweenPoints[point(1, 3),point(28, 3)] := '';
-          FTestTree.ValidateRange(1, 9, FOpenings);
-          CheckNodes(n+'undone', 3, [ ]);
-
-          SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '                    {$ELSE}                      //';
-          FTestTree.ValidateRange(1, 9, FOpenings);
-          CheckNodes(n+'redone', 3, [ ExpN(21,28, idnElse, EpNil,      EpNil ) ]);
-
-          n := '['+IntToStr(i2)+']';
-
-          // Maybe ifdef
-          epMaybeIf := EpNil;
-          if i3 >= 1 then begin
-            n := n + 'Insert leading IFDEF';
-            SynEdit.TextBetweenPoints[point(1, 1),point(1, 1)] := '{$IFDEF a}';
-            if i4 = 2 then begin
-              n := n + '(scanned)';
-              FTestTree.ValidateRange(1, 9, FOpenings);
-              CheckNodes(n+'ifdef', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(3,21) ) ]);
-              CheckNodes(n+'ifdef', 3, [ ExpN(21,28, idnElse,  EpIf(1,1), EpNil ) ]);
-            end;
-            epMaybeIf := EpIf(1,1);
-          end;
-          epMaybeIf^.NoAutoFree := True;
-
-          if (i2 and 1) = 0 then begin
-            // 2nd before first
-            SynEdit.TextBetweenPoints[point(1, 2),point(1, 2)] := ' {$ELSE}';
-            FTestTree.ValidateRange(1, 9, FOpenings);
-            if i3 >= 1 then
-              CheckNodes(n+'2nd else before 1st', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(2,2) ) ]);
-            CheckNodes(n+'2nd else before 1st', 2, [ ExpN( 2, 9, idnElse, epMaybeIf,  EpNil ) ]);
-            CheckNodes(n+'2nd else before 1st', 3, [ ExpN(21,28, idnElse, EpNil,      EpNil ) ]);
-
-            SynEdit.TextBetweenPoints[point(1, 2),point(9, 2)] := '';
-            FTestTree.ValidateRange(1, 9, FOpenings);
-            if i3 >= 1 then
-              CheckNodes(n+'undone 2nd before 1st', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(3,21) ) ]);
-            CheckNodes(n+'undone 2nd before 1st', 2, [ ]);
-            CheckNodes(n+'undone 2nd before 1st', 3, [ ExpN(21,28, idnElse, epMaybeIf, EpNil ) ]);
-          end;
-
-          if (i2 and 2) = 0 then begin
-            // 2nd after first
-            SynEdit.TextBetweenPoints[point(1, 4),point(1, 4)] := ' {$ELSE}';
-            FTestTree.ValidateRange(1, 9, FOpenings);
-            if i3 >= 1 then
-              CheckNodes(n+'2nd after 1st', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(3,21) ) ]);
-            CheckNodes(n+'2nd else after 1st', 3, [ ExpN(21,28, idnElse, epMaybeIf,  EpNil ) ]);
-            CheckNodes(n+'2nd else after 1st', 4, [ ExpN( 2, 9, idnElse, EpNil,      EpNil ) ]);
-
-            SynEdit.TextBetweenPoints[point(1, 4),point(9, 4)] := '';
-            FTestTree.ValidateRange(1, 9, FOpenings);
-            if i3 >= 1 then
-              CheckNodes(n+'undone 2nd after 1st', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(3,21) ) ]);
-            CheckNodes(n+'undone 2nd after 1st', 3, [ ExpN(21,28, idnElse, epMaybeIf,  EpNil ) ]);
-            CheckNodes(n+'undone 2nd after 1st', 4, [ ]);
-          end;
-
-          if (i2 and 3) = 0 then begin
-            // 2nd before first (same line)
-            SynEdit.TextBetweenPoints[point(11, 3),point(18, 3)] := '{$ELSE}';
-            FTestTree.ValidateRange(1, 9, FOpenings);
-            if i3 >= 1 then
-              CheckNodes(n+'2nd before 1st (same line)', 1, [ ExpN( 1,11, idnIfdef, EpNil,   EpElse(3,11) ) ]);
-            CheckNodes(n+'2nd else before 1st (same line)', 3, [
-              ExpN(11,18, idnElse, epMaybeIf,  EpNil ),
-              ExpN(21,28, idnElse, EpNil,      EpNil )
-              ]);
-
-            SynEdit.TextBetweenPoints[point(11, 3),point(18, 3)] := '       ';
-            FTestTree.ValidateRange(1, 9, FOpenings);
-            if i3 >= 1 then
-              CheckNodes(n+'undone 2nd before 1st (same line)', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(3,21) ) ]);
-            CheckNodes(n+'undone 2nd before 1st (same line)', 3, [ ExpN(21,28, idnElse, epMaybeIf, EpNil ) ]);
-          end;
-
-          // 2nd after first (same line)
-          SynEdit.TextBetweenPoints[point(31, 3),point(38, 3)] := '{$ELSE}';
-          FTestTree.ValidateRange(1, 9, FOpenings);
-          if i3 >= 1 then
-            CheckNodes(n+'2nd after 1st (same line)', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(3,21) ) ]);
-          CheckNodes(n+'2nd else after 1st (same line)', 3, [
-            ExpN(21,28, idnElse, epMaybeIf,  EpNil ),
-            ExpN(31,38, idnElse, EpNil,      EpNil )
-            ]);
-
-          SynEdit.TextBetweenPoints[point(31, 3),point(38, 3)] := '       ';
-          FTestTree.ValidateRange(1, 9, FOpenings);
-          if i3 >= 1 then
-            CheckNodes(n+'undone 2nd after 1st (same line)', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(3,21) ) ]);
-          CheckNodes(n+'undone 2nd after 1st (same line)', 3, [ ExpN(21,28, idnElse, epMaybeIf,  EpNil ) ]);
-
-          Dispose(epMaybeIf);
-        end;
-        PopBaseName;
-      end;
-    {%endregion ELSE WITHOUT IFDEF and DOUBLE ELSE }
-
-
-
-
-    {%region  }
-      n := 'P';
-      ReCreateEditForTreeTest(TestText2);
-      FTestTree.ValidateRange(1, 24, FOpenings);
-      FTestTree.ValidateRange(1, 24, FOpenings);
+      SynEdit.TextBetweenPoints[point(1, 4),point(1, 4)] := '{$ENDIF}' + LineEnding;
+      FTestTree.ValidateRange(3, 5, FOpenings); // only validate deleted line
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef ) ]);
+      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf ) ]);
+      CheckNodes(n,10, [ ExpN( 2,12, idnIfdef ) ]);
+      CheckNodes(n,14, [ ExpN( 2,10, idnEndIf ) ]);
 
     {%endregion   }
 
 
-  {%endregion UNMATCHED PEERS}
+
+
+    // Insert IFDEF into empty text
+    ReCreateEditForTreeTest(TestTextNoIfDef);
+    FTestTree.ValidateRange(1, 5, FOpenings);
+    SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '{$IFDEF a}';
+    FTestTree.ValidateRange(1, 5, FOpenings);
+    CheckNodesXY('Insert IFDEF into empty text', 3, [1,11], 0);
+
+
+    FTestTree.DiscardOpeningList(FOpenings);
+    FOpenings := nil;;
+    FTestTree.Free;
+  end;
+begin
+  FUseNestedComments := False;
+  DoTest;
+  FUseNestedComments := True;
+  DoTest;
+end;
+
+procedure TTestMarkupIfDef.TestIfDefTreePeerConnect;
+  procedure DoTest;
+  var
+    n: String;
+    i, i2, i3, i4: Integer;
+    epMaybeIf: PPeerExpect;
+  begin
+    FTestTree := nil;
+
+
+    {%region peers}
+      n := 'Peers, TestText1: Validate all';
+      ReCreateEditForTreeTest(TestText1);
+      FTestTree.ValidateRange(1, 36, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
+      CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
+      CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
+                         ExpN(20,27, idnElse,  EpIf(7, 5),  EpEnd(7, 32)),
+                         ExpN(32,40, idnEndIf, EpElse(7, 20)),
+                         ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 5))  ]);
+      CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(10, 7)),
+                         ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
+                         ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
+                         ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
+      CheckNodes(n,10, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
+      CheckNodes(n,11, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
+      CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(14, 5)) ]);
+      CheckNodes(n,14, [ ExpN( 5,13, idnEndIf, EpIf(13, 5)) ]);
+      CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(15, 16)),
+                         ExpN(16,24, idnEndIf, EpIf(15, 5))  ]);
+      CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
+      CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(21, 3)) ]);
+      CheckNodes(n,21, [ ExpN( 3,10, idnElse,  EpIf(19, 3), EpEnd(27, 3)) ]);
+      CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(25, 5)) ]);
+      CheckNodes(n,25, [ ExpN( 5,13, idnEndIf, EpIf(23, 5)) ]);
+      CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 16)),
+                         ExpN(16,24, idnEndIf, EpIf(26, 5))  ]);
+      CheckNodes(n,27, [ ExpN( 3,11, idnEndIf, EpElse(21, 3)) ]);
+      CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1),  EpEnd(36,1)) ]);
+      CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
+      CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
+      CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
+      CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
+
+
+
+      n := 'Peers, TestText1: Validate 8 - 36';
+      ReCreateEditForTreeTest(TestText1);
+      FTestTree.ValidateRange(8, 36, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
+      CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
+      CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef ),
+                         ExpN(20,27, idnElse  ),
+                         ExpN(32,40, idnEndIf ),
+                         ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 5))  ]);
+      CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(10, 7)),
+                         ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
+                         ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
+                         ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
+      CheckNodes(n,10, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
+      CheckNodes(n,11, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
+      CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(14, 5)) ]);
+      CheckNodes(n,14, [ ExpN( 5,13, idnEndIf, EpIf(13, 5)) ]);
+      CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(15, 16)),
+                         ExpN(16,24, idnEndIf, EpIf(15, 5))  ]);
+      CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
+      CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(21, 3)) ]);
+      CheckNodes(n,21, [ ExpN( 3,10, idnElse,  EpIf(19, 3), EpEnd(27, 3)) ]);
+      CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(25, 5)) ]);
+      CheckNodes(n,25, [ ExpN( 5,13, idnEndIf, EpIf(23, 5)) ]);
+      CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 16)),
+                         ExpN(16,24, idnEndIf, EpIf(26, 5))  ]);
+      CheckNodes(n,27, [ ExpN( 3,11, idnEndIf, EpElse(21, 3)) ]);
+      CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1),  EpEnd(36,1)) ]);
+      CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
+      CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
+      CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
+      CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
+
+
+
+
+      n := 'Peers, TestText1: Validate 33 - 36';
+      ReCreateEditForTreeTest(TestText1);
+      FTestTree.ValidateRange(33, 36, FOpenings);
+      AssertTrue('Scan start node Node at empty line', FTestTree.FindNodeAtPosition(33, afmNil).HasNode);
+      CheckNodes(n,33, [ ]);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
+      CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(36,1)) ]);
+      CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
+      CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
+      CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
+      CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
+      //
+      n := 'Peers, TestText1: Validate all  AFTER 33-36';
+      FTestTree.ValidateRange(1, 36, FOpenings);
+      AssertFalse('Scan start node Node at empty line gone', FTestTree.FindNodeAtPosition(33, afmNil).HasNode);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
+      CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
+      CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
+                         ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
+                         ExpN(32,40, idnEndIf, EpElse(7, 20)),
+                         ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 5))  ]);
+      CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(10, 7)),
+                         ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
+                         ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
+                         ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
+      CheckNodes(n,10, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
+      CheckNodes(n,11, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
+      CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(14, 5)) ]);
+      CheckNodes(n,14, [ ExpN( 5,13, idnEndIf, EpIf(13, 5)) ]);
+      CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(15, 16)),
+                         ExpN(16,24, idnEndIf, EpIf(15, 5))  ]);
+      CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
+      CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(21, 3)) ]);
+      CheckNodes(n,21, [ ExpN( 3,10, idnElse,  EpIf(19, 3), EpEnd(27, 3)) ]);
+      CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(25, 5)) ]);
+      CheckNodes(n,25, [ ExpN( 5,13, idnEndIf, EpIf(23, 5)) ]);
+      CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 16)),
+                         ExpN(16,24, idnEndIf, EpIf(26, 5))  ]);
+      CheckNodes(n,27, [ ExpN( 3,11, idnEndIf, EpElse(21, 3)) ]);
+      CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1),  EpEnd(36,1)) ]);
+      CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
+      CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
+      CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
+      CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
+
+
+
+
+      n := 'Peers, TestText1: 32-36';
+      ReCreateEditForTreeTest(TestText1);
+      FTestTree.ValidateRange(32, 36, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
+      CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(36,1)) ]);
+      CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
+      CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
+      CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
+      CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
+      //
+      n := 'Peers, TestText1: 16-20 AFTER 32-36';
+      FTestTree.ValidateRange(16, 20, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
+      CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
+      CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
+      CheckNodes(n,19, [ ExpN( 3,14, idnIfdef) ]);
+      CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(36,1)) ]);
+      CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
+      CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
+      CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
+      CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
+      //
+      n := 'Peers, TestText1: all AFTER 16-20 AFTER 32-36';
+      FTestTree.ValidateRange(1, 36, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
+      CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
+      CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
+                         ExpN(20,27, idnElse,  EpIf(7, 5),  EpEnd(7, 32)),
+                         ExpN(32,40, idnEndIf, EpElse(7, 20)),
+                         ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 5))  ]);
+      CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(10, 7)),
+                         ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
+                         ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
+                         ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
+      CheckNodes(n,10, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
+      CheckNodes(n,11, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
+      CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(14, 5)) ]);
+      CheckNodes(n,14, [ ExpN( 5,13, idnEndIf, EpIf(13, 5)) ]);
+      CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(15, 16)),
+                         ExpN(16,24, idnEndIf, EpIf(15, 5))  ]);
+      CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
+      CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(21, 3)) ]);
+      CheckNodes(n,21, [ ExpN( 3,10, idnElse,  EpIf(19, 3), EpEnd(27, 3)) ]);
+      CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(25, 5)) ]);
+      CheckNodes(n,25, [ ExpN( 5,13, idnEndIf, EpIf(23, 5)) ]);
+      CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 16)),
+                         ExpN(16,24, idnEndIf, EpIf(26, 5))  ]);
+      CheckNodes(n,27, [ ExpN( 3,11, idnEndIf, EpElse(21, 3)) ]);
+      CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1),  EpEnd(36,1)) ]);
+      CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
+      CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
+      CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
+      CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
+
+
+
+
+      n := 'scan plain text, after closed node: step 1: node';
+      ReCreateEditForTreeTest(TestText3);
+      FTestTree.ValidateRange(3, 5, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
+
+      n := 'scan plain text, after closed node: step 2: empty';
+      FTestTree.ValidateRange(8, 9, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
+
+
+
+
+      n := 'scan plain text, after closed node (overlap): step 1: node';
+      ReCreateEditForTreeTest(TestText3);
+      FTestTree.ValidateRange(3, 8, FOpenings); // ensure node is valid to begin-of-plain-line-scan
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
+
+      n := 'scan plain text, after closed node (overlap): step 2: empty';
+      FTestTree.ValidateRange(7, 9, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
+
+
+
+
+      n := 'scan plain text, after closed node (not scanned end): step 1: node';
+      ReCreateEditForTreeTest(TestText3);
+      FTestTree.ValidateRange(3, 3, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef) ]);
+
+      n := 'scan plain text, after closed node (not scanned end): step 2: empty';
+      FTestTree.ValidateRange(8, 9, FOpenings);
 
 
 
 
 
-  FTestTree.DiscardOpeningList(FOpenings);
-  FOpenings := nil;
-  FTestTree.Free;
+      n := 'Peers, TestText5: elseif';
+      ReCreateEditForTreeTest(TestText5);
+      FTestTree.ValidateRange(1, 9, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElseIf(4, 1)) ]);
+      CheckNodes(n, 4, [ ExpN( 1,12, idnElseIf,EpIf(2, 1),  EpElse(6, 1)) ]);
+      CheckNodes(n, 6, [ ExpN( 1, 8, idnElse,  EpElseIf(4, 1), EpEnd(8, 1)) ]);
+      CheckNodes(n, 8, [ ExpN( 1, 9, idnEndIf, EpElse(6, 1)) ]);
+
+    {%endregion peers}
+
+
+
+    {%region peers + editing}
+
+      n := 'Peers, TestText1: Before Edit';
+      ReCreateEditForTreeTest(TestText1);
+      FTestTree.ValidateRange(1, 36, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(29, 1)) ]);
+      CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(17, 3)) ]);
+      CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
+                         ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
+                         ExpN(32,40, idnEndIf, EpElse(7, 20)),
+                         ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 5))  ]);
+      CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(10, 7)),
+                         ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
+                         ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
+                         ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
+      CheckNodes(n,10, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
+      CheckNodes(n,11, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
+      CheckNodes(n,13, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(14, 5)) ]);
+      CheckNodes(n,14, [ ExpN( 5,13, idnEndIf, EpIf(13, 5)) ]);
+      CheckNodes(n,15, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(15, 16)),
+                         ExpN(16,24, idnEndIf, EpIf(15, 5))  ]);
+      CheckNodes(n,17, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
+      CheckNodes(n,19, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(21, 3)) ]);
+      CheckNodes(n,21, [ ExpN( 3,10, idnElse,  EpIf(19, 3), EpEnd(27, 3)) ]);
+      CheckNodes(n,23, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(25, 5)) ]);
+      CheckNodes(n,25, [ ExpN( 5,13, idnEndIf, EpIf(23, 5)) ]);
+      CheckNodes(n,26, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 16)),
+                         ExpN(16,24, idnEndIf, EpIf(26, 5))  ]);
+      CheckNodes(n,27, [ ExpN( 3,11, idnEndIf, EpElse(21, 3)) ]);
+      CheckNodes(n,29, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(36,1)) ]);
+      CheckNodes(n,31, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(32, 3)) ]);
+      CheckNodes(n,32, [ ExpN( 3,10, idnElse,  EpIf(31, 3), EpEnd(34,3)) ]);
+      CheckNodes(n,34, [ ExpN( 3,11, idnEndIf, EpElse(32, 3)) ]);
+      CheckNodes(n,36, [ ExpN( 1, 9, idnEndIf, EpElse(29, 1)) ]);
+
+      SynEdit.TextBetweenPoints[point(1, 9),point(1, 9)] := LineEnding;
+
+      n := 'Peers, TestText1: Line inserted at 9';
+      FTestTree.ValidateRange(1, 37, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpElse(30, 1)) ]);
+      CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(18, 3)) ]);
+      CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
+                         ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
+                         ExpN(32,40, idnEndIf, EpElse(7, 20)),
+                         ExpN(43,53, idnIfdef, EpSkip,      EpEnd(12, 5))  ]);
+      CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(11, 7)),
+                         ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
+                         ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
+                         ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
+      CheckNodes(n,11, [ ExpN( 7,15, idnEndIf, EpIf(8, 7)) ]);
+      CheckNodes(n,12, [ ExpN( 5,13, idnEndIf, EpIf(7, 43)) ]);
+      CheckNodes(n,14, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(15, 5)) ]);
+      CheckNodes(n,15, [ ExpN( 5,13, idnEndIf, EpIf(14, 5)) ]);
+      CheckNodes(n,16, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(16, 16)),
+                         ExpN(16,24, idnEndIf, EpIf(16, 5))  ]);
+      CheckNodes(n,18, [ ExpN( 3,11, idnEndIf, EpIf(5, 3)) ]);
+      CheckNodes(n,20, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(22, 3)) ]);
+      CheckNodes(n,22, [ ExpN( 3,10, idnElse,  EpIf(20, 3), EpEnd(28, 3)) ]);
+      CheckNodes(n,24, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 5)) ]);
+      CheckNodes(n,26, [ ExpN( 5,13, idnEndIf, EpIf(24, 5)) ]);
+      CheckNodes(n,27, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(27, 16)),
+                         ExpN(16,24, idnEndIf, EpIf(27, 5))  ]);
+      CheckNodes(n,28, [ ExpN( 3,11, idnEndIf, EpElse(22, 3)) ]);
+      CheckNodes(n,30, [ ExpN( 1, 8, idnElse,  EpIf(2, 1), EpEnd(37,1)) ]);
+      CheckNodes(n,32, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(33, 3)) ]);
+      CheckNodes(n,33, [ ExpN( 3,10, idnElse,  EpIf(32, 3), EpEnd(35,3)) ]);
+      CheckNodes(n,35, [ ExpN( 3,11, idnEndIf, EpElse(33, 3)) ]);
+      CheckNodes(n,37, [ ExpN( 1, 9, idnEndIf, EpElse(30, 1)) ]);
+
+      SynEdit.TextBetweenPoints[point(1, 9),point(1, 9)] := '{$EndIf}';
+
+      n := 'Peers, TestText1: ENDIF inserted at 9';
+      FTestTree.ValidateRange(1, 37, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(18, 3)) ]);
+      CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(12, 5)) ]);
+      CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
+                         ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
+                         ExpN(32,40, idnEndIf, EpElse(7, 20)),
+                         ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 7))  ]);
+      CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(9, 1)),
+                         ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
+                         ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
+                         ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
+      CheckNodes(n,11, [ ExpN( 7,15, idnEndIf, EpIf(7, 43)) ]);
+      CheckNodes(n,12, [ ExpN( 5,13, idnEndIf, EpIf(5, 3)) ]);
+      CheckNodes(n,14, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(15, 5)) ]);
+      CheckNodes(n,15, [ ExpN( 5,13, idnEndIf, EpIf(14, 5)) ]);
+      CheckNodes(n,16, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(16, 16)),
+                         ExpN(16,24, idnEndIf, EpIf(16, 5))  ]);
+      CheckNodes(n,18, [ ExpN( 3,11, idnEndIf, EpIf(2, 1)) ]);
+      CheckNodes(n,20, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(22, 3)) ]);
+      CheckNodes(n,22, [ ExpN( 3,10, idnElse,  EpIf(20, 3), EpEnd(28, 3)) ]);
+      CheckNodes(n,24, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 5)) ]);
+      CheckNodes(n,26, [ ExpN( 5,13, idnEndIf, EpIf(24, 5)) ]);
+      CheckNodes(n,27, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(27, 16)),
+                         ExpN(16,24, idnEndIf, EpIf(27, 5))  ]);
+      CheckNodes(n,28, [ ExpN( 3,11, idnEndIf, EpElse(22, 3)) ]);
+      CheckNodes(n,30, [ ExpN( 1, 8, idnElse,  EpNil,       EpEnd(37,1)) ]);
+      CheckNodes(n,32, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(33, 3)) ]);
+      CheckNodes(n,33, [ ExpN( 3,10, idnElse,  EpIf(32, 3), EpEnd(35,3)) ]);
+      CheckNodes(n,35, [ ExpN( 3,11, idnEndIf, EpElse(33, 3)) ]);
+      CheckNodes(n,37, [ ExpN( 1, 9, idnEndIf, EpElse(30, 1)) ]);
+
+
+      SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '{$Else}';
+      FTestTree.ValidateRange(1, 37, FOpenings);
+
+      //SynEdit.TextBetweenPoints[point(1, 3),point(1, 8)] := '';
+      SynEdit.TextBetweenPoints[point(1, 3),point(8, 3)] := '';
+      FTestTree.ValidateRange(1, 37, FOpenings);
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(18, 3)) ]);
+      CheckNodes(n, 5, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(12, 5)) ]);
+      CheckNodes(n, 7, [ ExpN( 5,15, idnIfdef, EpSkip,      EpElse(7, 20)),
+                         ExpN(20,27, idnElse,  EpIf(7, 5), EpEnd(7, 32)),
+                         ExpN(32,40, idnEndIf, EpElse(7, 20)),
+                         ExpN(43,53, idnIfdef, EpSkip,      EpEnd(11, 7))  ]);
+      CheckNodes(n, 8, [ ExpN( 7,17, idnIfdef, EpSkip,      EpEnd(9, 1)),
+                         ExpN(19,29, idnIfdef, EpSkip,      EpElse(8, 34)),
+                         ExpN(34,41, idnElse,  EpIf(8, 19), EpEnd(8, 46)),
+                         ExpN(46,54, idnEndIf, EpElse(8, 34))  ]);
+      CheckNodes(n,11, [ ExpN( 7,15, idnEndIf, EpIf(7, 43)) ]);
+      CheckNodes(n,12, [ ExpN( 5,13, idnEndIf, EpIf(5, 3)) ]);
+      CheckNodes(n,14, [ ExpN( 5,16, idnIfdef, EpSkip,      EpEnd(15, 5)) ]);
+      CheckNodes(n,15, [ ExpN( 5,13, idnEndIf, EpIf(14, 5)) ]);
+      CheckNodes(n,16, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(16, 16)),
+                         ExpN(16,24, idnEndIf, EpIf(16, 5))  ]);
+      CheckNodes(n,18, [ ExpN( 3,11, idnEndIf, EpIf(2, 1)) ]);
+      CheckNodes(n,20, [ ExpN( 3,14, idnIfdef, EpSkip,      EpElse(22, 3)) ]);
+      CheckNodes(n,22, [ ExpN( 3,10, idnElse,  EpIf(20, 3), EpEnd(28, 3)) ]);
+      CheckNodes(n,24, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(26, 5)) ]);
+      CheckNodes(n,26, [ ExpN( 5,13, idnEndIf, EpIf(24, 5)) ]);
+      CheckNodes(n,27, [ ExpN( 5,15, idnIfdef, EpSkip,      EpEnd(27, 16)),
+                         ExpN(16,24, idnEndIf, EpIf(27, 5))  ]);
+      CheckNodes(n,28, [ ExpN( 3,11, idnEndIf, EpElse(22, 3)) ]);
+      CheckNodes(n,30, [ ExpN( 1, 8, idnElse,  EpNil,       EpEnd(37,1)) ]);
+      CheckNodes(n,32, [ ExpN( 3,13, idnIfdef, EpSkip,      EpElse(33, 3)) ]);
+      CheckNodes(n,33, [ ExpN( 3,10, idnElse,  EpIf(32, 3), EpEnd(35,3)) ]);
+      CheckNodes(n,35, [ ExpN( 3,11, idnEndIf, EpElse(33, 3)) ]);
+      CheckNodes(n,37, [ ExpN( 1, 9, idnEndIf, EpElse(30, 1)) ]);
+
+
+
+      {%region remove endif by edit // Test nodes delete => resolve peer}
+        n := 'remove endif by edit / edit endif (one endif in line)';
+        ReCreateEditForTreeTest(TestText3);
+        FTestTree.ValidateRange(1, 8, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+        CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
+
+        SynEdit.TextBetweenPoints[point(3, 4),point(3, 4)] := ' ';
+        FTestTree.ValidateRange(1, 8, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil) ]);
+        CheckNodes(n, 4, [ ]);
+
+
+        n := 'remove endif by edit / edit endif (two endif in line, edit first)';
+        ReCreateEditForTreeTest(TestText3a);
+        FTestTree.ValidateRange(1, 8, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4,10)),
+                           ExpN(12,22, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+        CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2,12)),
+                           ExpN(10,18, idnEndIf, EpIf(2, 1)) ]);
+
+        SynEdit.TextBetweenPoints[point(3, 4),point(3, 4)] := ' ';
+        FTestTree.ValidateRange(1, 8, FOpenings);
+        //FTestTree.DebugPrint(true);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil),
+                           ExpN(12,22, idnIfdef, EpSkip,      EpEnd(4,11)) ]);
+        CheckNodes(n, 4, [ ExpN(11,19, idnEndIf, EpIf(2, 12)) ]);
+
+
+        n := 'remove endif by edit / edit endif (two endif in line, edit 2nd)';
+        ReCreateEditForTreeTest(TestText3a);
+        FTestTree.ValidateRange(1, 8, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4,10)),
+                           ExpN(12,22, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+        CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2,12)),
+                           ExpN(10,18, idnEndIf, EpIf(2, 1)) ]);
+
+        SynEdit.TextBetweenPoints[point(13,4),point(13,4)] := ' ';
+        FTestTree.ValidateRange(1, 8, FOpenings);
+        FTestTree.DebugPrint(true);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil),
+                           ExpN(12,22, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+        CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2,12)) ]);
+
+
+      {%endregion}
+
+      {%region Add outer lines by removing endif}
+        // No outer lines to begin
+
+        n := 'Extend outer lines by removing endif - BUT new peer for new outer ifdef is PAST visible (not scanned)';
+        ReCreateEditForTreeTest(TestText7);
+        FTestTree.ValidateRange(1, 16, FOpenings); // scan all, so the nodes to exist
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+        CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
+        CheckNodes(n,10, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(14, 2)) ]);
+        CheckNodes(n,14, [ ExpN( 2,10, idnEndIf, EpIf(10, 2)) ]);
+
+        SynEdit.TextBetweenPoints[point(4,4),point(4,4)] := ' '; // remove ifdef (leaving invalid node)
+        FOpenings.Clear;
+        FTestTree.ValidateRange(6, 8, FOpenings); // scan empty text
+        // Expect outer node to be changed
+  // This is siped by markup
+        //CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil) ]);
+
+
+
+        n := 'Extend outer lines by removing endif - new endif in visible range';
+        ReCreateEditForTreeTest(TestText7);
+        FTestTree.ValidateRange(1, 16, FOpenings); // scan all, so the nodes to exist
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+        CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
+        CheckNodes(n,10, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(14, 2)) ]);
+        CheckNodes(n,14, [ ExpN( 2,10, idnEndIf, EpIf(10, 2)) ]);
+
+        SynEdit.TextBetweenPoints[point(4,10),point(4,10)] := ' '; // remove ifdef so we have an extra endif
+        FOpenings.Clear;
+        FTestTree.ValidateRange(1, 16, FOpenings); // scan all, so the nodes to exist
+  FTestTree.DebugPrint(true);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+        CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
+        CheckNodes(n,10, [ ]);
+        CheckNodes(n,14, [ ExpN( 2,10, idnEndIf, EpNil) ]);
+
+        SynEdit.TextBetweenPoints[point(4,4),point(4,4)] := ' '; // remove ifdef (leaving invalid node)
+        FOpenings.Clear;
+        FTestTree.ValidateRange(6, 16, FOpenings); // scan empty text
+  FTestTree.DebugPrint(true);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(14, 2)) ]);
+  //      CheckNodes(n, 4, [ ]);
+        CheckNodes(n,10, [ ]);
+        CheckNodes(n,14, [ ExpN( 2,10, idnEndIf, EpIf(2, 1)) ]);
+
+
+      {%endregion}
+
+
+    {%endregion peers + edit}
+
+
+    {%region UNMATCHED PEERS}
+
+      // NO EDIT
+      n := 'Peers, TestText2: Bad nodes';
+      ReCreateEditForTreeTest(TestText2);
+      FTestTree.ValidateRange(1, 18, FOpenings);
+      // ONe and only one of the 2 ends should have a peer
+      CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(4, 1)) ]);
+      CheckNodes(n, 4, [ ExpN( 1, 9, idnEndIf, EpIf(2, 1)) ]);
+      CheckNodes(n, 6, [ ExpN( 1, 9, idnEndIf, EpNil) ]); // must not have a peer
+      // One and only one else may be connected to if and one (but maybe the other) to endif
+      CheckNodes(n,10, [ ExpN( 1,11, idnIfdef) ]); // EpElse(12, 1) // or 14
+      CheckNodes(n,12, [ ExpN( 1, 8, idnElse) ]);
+      CheckNodes(n,14, [ ExpN( 1, 8, idnElse) ]);
+      CheckNodes(n,16, [ ExpN( 1, 9, idnEndIf, EpElse(14, 1)) ]);
+
+
+      {%region  Insert If/end to create invalid peering, that must be resolved }
+        n := 'Peers, TestText6: Resolve left-over binding: ' +
+             'Insert Ifdef in visible part, with node inbetween';
+        ReCreateEditForTreeTest(TestText6);
+        FTestTree.ValidateRange(1, 20, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
+        CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
+        CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
+        CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
+        CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
+
+        SynEdit.TextBetweenPoints[point(1, 8),point(1, 8)] := '   {$IfDef X}';
+        FTestTree.ValidateRange(1, 20, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
+        CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpNil ) ]);
+        CheckNodes(n, 8, [ ExpN( 4,14, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
+        CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
+        CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
+        CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 8, 4)) ]);
+
+        n := n + ' Remove again';
+        SynEdit.TextBetweenPoints[point(1, 8),point(14, 8)] := '';
+        FTestTree.ValidateRange(1, 20, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
+        CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
+        CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
+        CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
+        CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
+      {%endregion  Insert If/end to create invalid peering, that must be resolved }
+
+      {%region  Insert If/end to create invalid peering, that must be resolved }
+        n := 'Peers, TestText6: Resolve left-over binding: ' +
+             'Insert EndIf in visible part, with node inbetween';
+        ReCreateEditForTreeTest(TestText6);
+        FTestTree.ValidateRange(1, 20, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
+        CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
+        CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
+        CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
+        CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
+
+        SynEdit.TextBetweenPoints[point(1, 8),point(1, 8)] := '   {$Endif}';
+        FTestTree.ValidateRange(1, 20, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
+        CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd( 8, 4)) ]);
+        CheckNodes(n, 8, [ ExpN( 4,12, idnEndIf, EpIf( 6, 2)) ]);
+        CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
+        CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
+        CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 2, 1)) ]);
+
+        n := n + ' Remove again';
+        SynEdit.TextBetweenPoints[point(1, 8),point(14, 8)] := '';
+        FTestTree.ValidateRange(1, 20, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
+        CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
+        CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
+        CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
+        CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
+      {%endregion  Insert If/end to create invalid peering, that must be resolved }
+
+      {%region  Insert If/end to create invalid peering, that must be resolved }
+        n := 'Peers, TestText6: Relosve left-over binding: ' +
+             'Insert Ifdef in visible part, with node inbetween AT end of outer ifdef';
+        ReCreateEditForTreeTest(TestText6);
+        FTestTree.ValidateRange(1, 20, FOpenings);
+
+        SynEdit.TextBetweenPoints[point(12, 6),point(12, 6)] := '   {$IfDef X}';
+        FTestTree.ValidateRange(1, 20, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
+        CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpNil ),
+                           ExpN(15,25, idnIfdef, EpSkip,      EpEnd(18, 2))
+                         ]);
+        CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
+        CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
+        CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 15)) ]);
+
+        n := n + ' Remove again';
+        SynEdit.TextBetweenPoints[point(12, 6),point(25, 6)] := '';
+        FTestTree.ValidateRange(1, 20, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
+        CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
+        CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
+        CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
+        CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
+      {%endregion  Insert If/end to create invalid peering, that must be resolved }
+
+      {%region  Insert If/end to create invalid peering, that must be resolved }
+        n := 'Peers, TestText6: Relosve left-over binding: ' +
+             'Insert EndIf in visible part, with node inbetween AT end of outer ifdef';
+        ReCreateEditForTreeTest(TestText6);
+        FTestTree.ValidateRange(1, 20, FOpenings);
+
+        SynEdit.TextBetweenPoints[point(12, 6),point(12, 6)] := '   {$EndIf}';
+        FTestTree.ValidateRange(1, 20, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpEnd(18, 2) ) ]);
+        CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd( 6,15) ),
+                           ExpN(15,23, idnEndIf, EpIf( 6, 2))
+                         ]);
+        CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
+        CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
+        CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 2, 1)) ]);
+
+        n := n + ' Remove again';
+        SynEdit.TextBetweenPoints[point(12, 6),point(25, 6)] := '';
+        FTestTree.ValidateRange(1, 20, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef, EpSkip,      EpNil ) ]);
+        CheckNodes(n, 6, [ ExpN( 2,12, idnIfdef, EpSkip,      EpEnd(18, 2)) ]);
+        CheckNodes(n,10, [ ExpN( 3,13, idnIfdef, EpSkip,      EpEnd(14, 3)) ]);
+        CheckNodes(n,14, [ ExpN( 3,11, idnEndIf, EpIf(10, 3)) ]);
+        CheckNodes(n,18, [ ExpN( 2,10, idnEndIf, EpIf( 6, 2)) ]);
+      {%endregion  Insert If/end to create invalid peering, that must be resolved }
+
+
+      {%region ELSE WITHOUT IFDEF and DOUBLE ELSE }
+  // TODO: Else and ifdef on same line
+        for i := 0 to 2 do begin
+          for i2 := 0 to 7 do
+          for i3 := 0 to 2 do // ifdef
+          for i4 := 0 to 1 do // endif TODO
+          begin
+            case i of
+              0: begin
+                PushBaseName('Scan empty, then add else at line 3 (after scan-start-marker)');
+                ReCreateEditForTreeTest(TestTextNoIfDef);
+                FTestTree.ValidateRange(1, 9, FOpenings);
+              end;
+              1: begin
+                PushBaseName('Scan empty (form 3), then add else at line 3 (AT scan-start-marker)');
+                ReCreateEditForTreeTest(TestTextNoIfDef);
+                FTestTree.ValidateRange(3, 9, FOpenings);
+              end;
+              2:begin
+                PushBaseName('Add else (before first scan) at line 3');
+                ReCreateEditForTreeTest(TestTextNoIfDef);
+              end;
+            end;
+            //debugln(['# ', i, ' ', i2, ' ', i3, ' ', i4]);
+
+            SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '                    {$ELSE}                      //';
+            FTestTree.ValidateRange(1, 9, FOpenings);
+            CheckNodes(n, 3, [ ExpN(21,28, idnElse, EpNil,      EpNil ) ]);
+
+            SynEdit.TextBetweenPoints[point(1, 3),point(28, 3)] := '';
+            FTestTree.ValidateRange(1, 9, FOpenings);
+            CheckNodes(n+'undone', 3, [ ]);
+
+            SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '                    {$ELSE}                      //';
+            FTestTree.ValidateRange(1, 9, FOpenings);
+            CheckNodes(n+'redone', 3, [ ExpN(21,28, idnElse, EpNil,      EpNil ) ]);
+
+            n := '['+IntToStr(i2)+']';
+
+            // Maybe ifdef
+            epMaybeIf := EpNil;
+            if i3 >= 1 then begin
+              n := n + 'Insert leading IFDEF';
+              SynEdit.TextBetweenPoints[point(1, 1),point(1, 1)] := '{$IFDEF a}';
+              if i4 = 2 then begin
+                n := n + '(scanned)';
+                FTestTree.ValidateRange(1, 9, FOpenings);
+                CheckNodes(n+'ifdef', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(3,21) ) ]);
+                CheckNodes(n+'ifdef', 3, [ ExpN(21,28, idnElse,  EpIf(1,1), EpNil ) ]);
+              end;
+              epMaybeIf := EpIf(1,1);
+            end;
+            epMaybeIf^.NoAutoFree := True;
+
+            if (i2 and 1) = 0 then begin
+              // 2nd before first
+              SynEdit.TextBetweenPoints[point(1, 2),point(1, 2)] := ' {$ELSE}';
+              FTestTree.ValidateRange(1, 9, FOpenings);
+              if i3 >= 1 then
+                CheckNodes(n+'2nd else before 1st', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(2,2) ) ]);
+              CheckNodes(n+'2nd else before 1st', 2, [ ExpN( 2, 9, idnElse, epMaybeIf,  EpNil ) ]);
+              CheckNodes(n+'2nd else before 1st', 3, [ ExpN(21,28, idnElse, EpNil,      EpNil ) ]);
+
+              SynEdit.TextBetweenPoints[point(1, 2),point(9, 2)] := '';
+              FTestTree.ValidateRange(1, 9, FOpenings);
+              if i3 >= 1 then
+                CheckNodes(n+'undone 2nd before 1st', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(3,21) ) ]);
+              CheckNodes(n+'undone 2nd before 1st', 2, [ ]);
+              CheckNodes(n+'undone 2nd before 1st', 3, [ ExpN(21,28, idnElse, epMaybeIf, EpNil ) ]);
+            end;
+
+            if (i2 and 2) = 0 then begin
+              // 2nd after first
+              SynEdit.TextBetweenPoints[point(1, 4),point(1, 4)] := ' {$ELSE}';
+              FTestTree.ValidateRange(1, 9, FOpenings);
+              if i3 >= 1 then
+                CheckNodes(n+'2nd after 1st', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(3,21) ) ]);
+              CheckNodes(n+'2nd else after 1st', 3, [ ExpN(21,28, idnElse, epMaybeIf,  EpNil ) ]);
+              CheckNodes(n+'2nd else after 1st', 4, [ ExpN( 2, 9, idnElse, EpNil,      EpNil ) ]);
+
+              SynEdit.TextBetweenPoints[point(1, 4),point(9, 4)] := '';
+              FTestTree.ValidateRange(1, 9, FOpenings);
+              if i3 >= 1 then
+                CheckNodes(n+'undone 2nd after 1st', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(3,21) ) ]);
+              CheckNodes(n+'undone 2nd after 1st', 3, [ ExpN(21,28, idnElse, epMaybeIf,  EpNil ) ]);
+              CheckNodes(n+'undone 2nd after 1st', 4, [ ]);
+            end;
+
+            if (i2 and 3) = 0 then begin
+              // 2nd before first (same line)
+              SynEdit.TextBetweenPoints[point(11, 3),point(18, 3)] := '{$ELSE}';
+              FTestTree.ValidateRange(1, 9, FOpenings);
+              if i3 >= 1 then
+                CheckNodes(n+'2nd before 1st (same line)', 1, [ ExpN( 1,11, idnIfdef, EpNil,   EpElse(3,11) ) ]);
+              CheckNodes(n+'2nd else before 1st (same line)', 3, [
+                ExpN(11,18, idnElse, epMaybeIf,  EpNil ),
+                ExpN(21,28, idnElse, EpNil,      EpNil )
+                ]);
+
+              SynEdit.TextBetweenPoints[point(11, 3),point(18, 3)] := '       ';
+              FTestTree.ValidateRange(1, 9, FOpenings);
+              if i3 >= 1 then
+                CheckNodes(n+'undone 2nd before 1st (same line)', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(3,21) ) ]);
+              CheckNodes(n+'undone 2nd before 1st (same line)', 3, [ ExpN(21,28, idnElse, epMaybeIf, EpNil ) ]);
+            end;
+
+            // 2nd after first (same line)
+            SynEdit.TextBetweenPoints[point(31, 3),point(38, 3)] := '{$ELSE}';
+            FTestTree.ValidateRange(1, 9, FOpenings);
+            if i3 >= 1 then
+              CheckNodes(n+'2nd after 1st (same line)', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(3,21) ) ]);
+            CheckNodes(n+'2nd else after 1st (same line)', 3, [
+              ExpN(21,28, idnElse, epMaybeIf,  EpNil ),
+              ExpN(31,38, idnElse, EpNil,      EpNil )
+              ]);
+
+            SynEdit.TextBetweenPoints[point(31, 3),point(38, 3)] := '       ';
+            FTestTree.ValidateRange(1, 9, FOpenings);
+            if i3 >= 1 then
+              CheckNodes(n+'undone 2nd after 1st (same line)', 1, [ ExpN( 1,11, idnIfdef, EpNil,     EpElse(3,21) ) ]);
+            CheckNodes(n+'undone 2nd after 1st (same line)', 3, [ ExpN(21,28, idnElse, epMaybeIf,  EpNil ) ]);
+
+            Dispose(epMaybeIf);
+            PopBaseName;
+          end;
+        end;
+      {%endregion ELSE WITHOUT IFDEF and DOUBLE ELSE }
+
+
+
+
+      {%region  }
+        n := 'P';
+        ReCreateEditForTreeTest(TestText2);
+        FTestTree.ValidateRange(1, 24, FOpenings);
+        FTestTree.ValidateRange(1, 24, FOpenings);
+
+      {%endregion   }
+
+
+    {%endregion UNMATCHED PEERS}
+
+
+      {%region }
+        n := 'scan new unfinished node, next node will be comment';
+        ReCreateEditForTreeTest(TestText4);
+        SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := LineEnding;
+        FTestTree.ValidateRange(1, 6, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
+        CheckNodes(n, 5, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
+
+        SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '   {$IFDEF ';
+        FTestTree.ValidateRange(3, 4, FOpenings);
+
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
+        if FUseNestedComments
+        then CheckNodes(n, 3, [ ExpN( 4, 0, 4, idnIfdef) ]) // end-column does not exist
+        else CheckNodes(n, 3, [ ExpN( 4,11, 2, idnIfdef) ]); // end-column does not exist
+      {%endregion  }
+
+      {%region }
+        n := 'scan new unfinished node, next node will be comment';
+        ReCreateEditForTreeTest(TestText4);
+        SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := LineEnding;
+        FTestTree.ValidateRange(1, 6, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
+        CheckNodes(n, 5, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
+
+        SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '   {$IFDEF ';
+        FTestTree.ValidateRange(1, 4, FOpenings);
+
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
+        if FUseNestedComments
+        then CheckNodes(n, 3, [ ExpN( 4, 0, 4, idnIfdef) ]) // end-column does not exist
+        else CheckNodes(n, 3, [ ExpN( 4,11, 2, idnIfdef) ]); // end-column does not exist
+      {%endregion  }
+
+
+      {%region }
+        n := 'scan new unfinished node, next node will be comment';
+        ReCreateEditForTreeTest(TestText4);
+        FTestTree.ValidateRange(1, 6, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
+        CheckNodes(n, 4, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
+
+        SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '   {$IFDEF ';
+        FTestTree.ValidateRange(1, 3, FOpenings);
+
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
+        if FUseNestedComments
+        then CheckNodes(n, 3, [ ExpN( 4, 0, 3, idnIfdef) ]) // end-column does not exist
+        else CheckNodes(n, 3, [ ExpN( 4,11, 1, idnIfdef) ]); // end-column does not exist
+      {%endregion  }
+
+      {%region }
+        n := 'scan new unfinished node, next node will be comment';
+        ReCreateEditForTreeTest(TestText4);
+        FTestTree.ValidateRange(1, 6, FOpenings);
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
+        CheckNodes(n, 4, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
+
+        SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '   {$IFDEF ';
+        FTestTree.ValidateRange(1, 6, FOpenings);
+
+        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
+//        CheckNodes(n, 3, [ ExpN( 1,1, 3, idnIfdef) ]);
+      {%endregion  }
+
+
+
+
+    FTestTree.DiscardOpeningList(FOpenings);
+    FOpenings := nil;
+    FTestTree.Free;
+  end;
+begin
+  FUseNestedComments := False;
+  DoTest;
+  FUseNestedComments := True;
+  DoTest;
 end;
 
 function TTestMarkupIfDef.TesTNodeStateHandler(Sender: TObject; LinePos, XStartPos: Integer;

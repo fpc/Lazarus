@@ -163,6 +163,7 @@ type
 
   SynMarkupIfDefLineFlag = (
     idlValid,            // X start/stop positions are ok
+    idlAllNodesCommented, // all nodes are comments
     idlHasUnknownNodes,  // need requesting
     idlHasNodesNotInCode,
     idlNotInCodeToUnknown,    // treat all idnNotInCode nodes as unknown
@@ -1679,8 +1680,9 @@ end;
 
 procedure TSynMarkupHighIfDefLinesTree.MaybeValidateNode(var ANode: TSynMarkupHighIfDefLinesNodeInfo);
 begin
-  Assert(ANode.HasNode, 'ANode.HasNode in MaybeValidateNode');
   // TODO: search first
+  if not ANode.HasNode then
+    exit;
   if (not ANode.IsValid) then begin
     //debugln(['Validating existing node ', ANode.StartLine, ' - ', ANode.ScanEndLine]);
     ScanLine(ANode.StartLine, ANode.FNode);
@@ -2355,7 +2357,7 @@ var
   FoldNodeInfoList: TLazSynFoldNodeInfoList;
   LineTextLower: String;
   LineLen, NodesAddedCnt: Integer;
-  LineNeedsReq, LineChanged: Boolean;
+  LineNeedsReq, LineChanged, HasUncommentedNodes, NestComments: Boolean;
 
   function FindCloseCurlyBracket(StartX: Integer; out ALineOffs: Integer): Integer;
   var
@@ -2370,7 +2372,7 @@ var
     l := Length(LineTextLower);
     while Result <= l do begin
       case LineTextLower[Result] of
-        '{': inc(CurlyLvl);
+        '{': if NestComments then inc(CurlyLvl);
         '}': if CurlyLvl = 1 then exit
              else dec(CurlyLvl);
       end;
@@ -2387,7 +2389,7 @@ var
       Result := 1;
       while Result <= l do begin
         case s[Result] of
-          '{': inc(CurlyLvl);
+          '{': if NestComments then inc(CurlyLvl);
           '}': if CurlyLvl = 1 then exit
                else dec(CurlyLvl);
         end;
@@ -2514,6 +2516,8 @@ var
         LineNeedsReq := True;
       end;
     end;
+    if not(idnCommented in Result.FNodeFlags) then
+      HasUncommentedNodes := True;
     inc(NodesAddedCnt);
     Result.StartColumn := ALogStart;
     Result.EndColumn   := ALogEnd;
@@ -2528,8 +2532,10 @@ var
   //RelNestDepth, RelNestDepthNext: Integer;
   NType: TSynMarkupIfdefNodeType;
 begin
+  NestComments := Highlighter.NestedComments;
   LineNeedsReq := False;
   LineChanged := False;
+  HasUncommentedNodes := False;
   FoldNodeInfoList := GetHighLighterWithLines.FoldNodeInfo[ToIdx(ALine)];
   FoldNodeInfoList.AddReference;
   FoldNodeInfoList.ActionFilter := []; //[sfaOpen, sfaClose];
@@ -2628,6 +2634,10 @@ begin
     Include(ANodeForLine.FLineFlags, idlValid);
     if (NodesAddedCnt > 0) and LineNeedsReq then
       Include(ANodeForLine.FLineFlags, idlHasUnknownNodes);
+    if HasUncommentedNodes then
+      exclude(ANodeForLine.FLineFlags, idlAllNodesCommented)
+    else
+      include(ANodeForLine.FLineFlags, idlAllNodesCommented);
     // Check for commented ifdef
     i := ANodeForLine.EntryCount - 1;
     while i >= NodesAddedCnt do begin
@@ -2686,6 +2696,29 @@ var
     ANode.Node.FLineFlags := ANode.Node.FLineFlags - [idlNotInCodeToUnknown, idlNotInCodeToUnknownReq];
   end;
 
+  procedure CheckNextNodeForEmpty(var ANode: TSynMarkupHighIfDefLinesNodeInfo;
+    ABeforeLineOnly: integer = -1);
+  var
+    n: TSynMarkupHighIfDefLinesNode;
+  begin
+    (* TODO: keep state info on commented nodes.*)
+    if not ANode.HasNode then
+      exit;
+    if (ABeforeLineOnly > 0) and (ANode.StartLine >= ABeforeLineOnly) then
+      exit;
+    MaybeValidateNode(ANode); // maybe skip node states?
+    while (ANode.EntryCount = 0) or (idlAllNodesCommented in ANode.LineFlags) do begin
+      n := ANode.Node;
+      ANode := ANode.Successor;
+      RemoveLine(n);
+      if not ANode.HasNode then
+        exit;
+      if (ABeforeLineOnly > 0) and (ANode.StartLine >= ABeforeLineOnly) then
+        exit;
+      MaybeValidateNode(ANode);
+    end;
+  end;
+
 var
   NextNode, Node, TmpNode: TSynMarkupHighIfDefLinesNodeInfo;
   i, j, NodeValidTo: Integer;
@@ -2714,9 +2747,11 @@ XXXCurTree := self; try
   // Todo use node from outer, if possible
   //if (not node.HasNode) or (Node.StartLine + Node.ScanEndOffs < AStartLine) then
   Node := FindNodeAtPosition(AStartLine, afmPrev); // might be multiline
+  MaybeValidateNode(Node);
 
   //debugln(['Validate RANGE ', AStartLine, ' - ', AEndLine,' -- 1st node ', Node.StartLine, ' - ', Node.ScanEndLine]);
   NextNode := Node.Successor;
+  CheckNextNodeForEmpty(NextNode, Node.LastEntryEndLine);
   assert((not NextNode.HasNode) or (AStartLine < NextNode.StartLine), 'AStartLine < NextNode.StartLine');
 
   if (not Node.HasNode) or (AStartLine > Node.ValidToLine(NextNode)) then begin
@@ -2741,6 +2776,8 @@ XXXCurTree := self; try
       end;
     end;
 
+    MaybeValidateNode(Node);
+    CheckNextNodeForEmpty(NextNode, Node.LastEntryEndLine);
     if (not Node.HasNode) or (AStartLine > Node.ValidToLine(NextNode)) then begin
       Node := FindNodeAtPosition(AStartLine, afmCreate);
       NextNode := Node.Successor;
@@ -2754,6 +2791,7 @@ XXXCurTree := self; try
 
   (*** Node is at StartLine, NextNode is set --- Scan to Endline ***)
 
+  CheckNextNodeForEmpty(NextNode, Node.LastEntryEndLine);
   while (Node.HasNode) and (NextNode.HasNode) and
         (Node.ValidToLine(NextNode) < AEndLine) and
         (NextNode.StartLine <= AEndLine)
@@ -2788,6 +2826,7 @@ XXXCurTree := self; try
         Node := NextNode;
         NextNode := Node.Successor;
       end;
+      CheckNextNodeForEmpty(NextNode, Node.LastEntryEndLine);
       continue;
     end;
 
@@ -2809,6 +2848,7 @@ XXXCurTree := self; try
     assert(NextNode.Node = Node.Successor.Node, 'NextNode = Node.Successor');
     assert(NextNode.StartLine = Node.Successor.StartLine, 'NextNode = Node.Successor / start');
     NextNode := Node.Successor; // TODO: not needed
+    CheckNextNodeForEmpty(NextNode, Node.LastEntryEndLine);
 
   end;
 
