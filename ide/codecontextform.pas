@@ -85,13 +85,13 @@ type
     procedure CompleteParameters(DeclCode: string);
     procedure ClearHints;
     procedure SetIdleConnected(AValue: boolean);
+    procedure SetCodeContexts(const CodeContexts: TCodeContextInfo);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure SetCodeContexts(const CodeContexts: TCodeContextInfo);
     procedure UpdateHints;
     procedure Paint; override;
     property ProcNameCodeXYPos: TCodeXYPosition read FProcNameCodeXYPos;
@@ -376,6 +376,7 @@ procedure TCodeContextFrm.CreateHints(const CodeContexts: TCodeContextInfo);
     try
       try
         Expr:=Tool.ConvertNodeToExpressionType(Node,Params);
+        //debugln(['FindBaseType ',s,' ',ExprTypeToString(Expr)]);
         if (Expr.Desc=xtContext) and (Expr.Context.Node<>nil) then begin
           ExprTool:=Expr.Context.Tool;
           ExprNode:=Expr.Context.Node;
@@ -452,7 +453,8 @@ begin
                  phpWithResultType]);
           end else if not CodeTool.PropNodeIsTypeLess(CodeNode) then begin
             Code:=CodeTool.ExtractPropName(CodeNode,false);
-            FindBaseType(CodeTool,CodeNode,s);
+            if not FindBaseType(CodeTool,CodeNode,Code) then
+              continue;
           end else begin
             // ignore properties without type
             continue;

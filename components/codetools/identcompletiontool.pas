@@ -42,6 +42,7 @@ interface
 { $DEFINE ShowFoundIdents}
 { $DEFINE ShowFilteredIdents}
 { $DEFINE ShowHistory}
+{ $DEFINE VerboseCodeContext}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -1976,6 +1977,7 @@ begin
                                        Params,false);
     if (ExprType.Desc=xtContext) then begin
       GatherContext:=ExprType.Context;
+      debugln(['TIdentCompletionTool.FindCollectionContext ',ExprTypeToString(ExprType)]);
       StartInSubContext:=true;
     end;
   end;
@@ -2015,6 +2017,7 @@ begin
     end;
   ctnVarDefinition:
     begin
+      //debugln(['TIdentCompletionTool.CollectAllContexts ',FoundContext.Tool.ExtractNode(FoundContext.Node,[])]);
       if (CurrentIdentifierContexts.ProcName='') then exit;
       if not FoundContext.Tool.CompareSrcIdentifiers(
         FoundContext.Node.StartPos,
@@ -2024,7 +2027,9 @@ begin
   else
     exit;
   end;
-  //DebugLn(['TIdentCompletionTool.CollectAllContexts add ',FoundContext.Node.DescAsString]);
+  {$IFDEF VerboseCodeContext}
+  DebugLn(['TIdentCompletionTool.CollectAllContexts add ',FoundContext.Node.DescAsString]);
+  {$ENDIF}
   AddCollectionContext(FoundContext.Tool,FoundContext.Node);
 end;
 
@@ -2778,8 +2783,11 @@ var
 
     FindCollectionContext(Params,ProcNameAtom.StartPos,CursorNode,
                           GatherContext,ContextExprStartPos,StartInSubContext);
+
     if ContextExprStartPos=0 then ;
-    //DebugLn(['CheckContextIsParameter StartInSubContext=',StartInSubContext,' ',GatherContext.Node.DescAsString,' "',copy(GatherContext.Tool.Src,GatherContext.Node.StartPos-20,25),'"']);
+    {$IFDEF VerboseCodeContext}
+    DebugLn(['CheckContextIsParameter StartInSubContext=',StartInSubContext,' ',GatherContext.Node.DescAsString,' "',copy(GatherContext.Tool.Src,GatherContext.Node.StartPos-20,25),'"']);
+    {$ENDIF}
 
     // gather declarations of all parameter lists
     Params.ContextNode:=GatherContext.Node;
@@ -2788,9 +2796,13 @@ var
     if not StartInSubContext then
       Include(Params.Flags,fdfSearchInParentNodes);
     CurrentIdentifierList.Context:=GatherContext;
-    //DebugLn('CheckContextIsParameter searching procedures, properties and variables ...');
+    {$IFDEF VerboseCodeContext}
+    DebugLn('CheckContextIsParameter searching procedures, properties and variables ...');
+    {$ENDIF}
     GatherContext.Tool.FindIdentifierInContext(Params);
-    //DebugLn('CheckContextIsParameter END');
+    {$IFDEF VerboseCodeContext}
+    DebugLn('CheckContextIsParameter END');
+    {$ENDIF}
     Ok:=true;
   end;
 
