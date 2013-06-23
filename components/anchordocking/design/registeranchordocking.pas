@@ -35,9 +35,9 @@ interface
 
 uses
   Math, Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, LazFileCache,
-  Dialogs, LazConfigStorage, XMLConf, XMLPropStorage, StdCtrls, LCLIntf,
-  BaseIDEIntf, ProjectIntf, MacroIntf, IDEDialogs, MenuIntf, LazIDEIntf,
-  IDEWindowIntf, IDEOptionsIntf, AnchorDockStr, AnchorDocking,
+  Dialogs, LazConfigStorage, LazFileUtils, XMLConf, XMLPropStorage, StdCtrls,
+  LCLIntf, BaseIDEIntf, ProjectIntf, MacroIntf, IDEDialogs, MenuIntf,
+  LazIDEIntf, IDEWindowIntf, IDEOptionsIntf, AnchorDockStr, AnchorDocking,
   AnchorDockOptionsDlg;
 
 const
@@ -57,6 +57,7 @@ type
   TIDEAnchorDockMaster = class(TIDEDockMaster)
   private
     FChangeStamp: int64;
+    FCmdLineLayoutFile: string;
     FSavedChangeStamp: int64;
     FSavedDMChangeStamp: int64;
     FUserLayoutLoaded: boolean;
@@ -76,13 +77,14 @@ type
     procedure LoadOptions;
     procedure SaveOptions;
     // layouts
-    function GetDefaultLayoutFilename(Full: boolean): string;
+    function GetUserLayoutFilename(Full: boolean): string;
     procedure LoadDefaultLayout;
     procedure LoadUserLayout;
     procedure SaveUserLayout;
     procedure LoadLayoutFromFile(Filename: string);
     procedure SaveLayoutToFile(Filename: string);
     property UserLayoutLoaded: boolean read FUserLayoutLoaded write SetUserLayoutLoaded;
+    property CmdLineLayoutFile: string read FCmdLineLayoutFile write FCmdLineLayoutFile;
     // events
     procedure MakeIDEWindowDockSite(AForm: TCustomForm; ASides: TDockSides = [alBottom]); override;
     procedure MakeIDEWindowDockable(AControl: TWinControl); override;
@@ -231,6 +233,9 @@ begin
   DockMaster.OnShowOptions:=@ShowAnchorDockOptions;
   DockMaster.ShowMenuItemShowHeader:=true;
   FHideSimpleLayoutOptions:=true;
+  fCmdLineLayoutFile:=TrimAndExpandFilename(Application.GetOptionValue('anchordocklayout'));
+  if CmdLineLayoutFile<>'' then
+    debugln(['Hint: anchordocking layout file: "',CmdLineLayoutFile,'"']);
 end;
 
 destructor TIDEAnchorDockMaster.Destroy;
@@ -269,11 +274,15 @@ begin
   Result:=true;
 end;
 
-function TIDEAnchorDockMaster.GetDefaultLayoutFilename(Full: boolean): string;
+function TIDEAnchorDockMaster.GetUserLayoutFilename(Full: boolean): string;
 begin
-  Result:=DefaultLayoutFileName;
-  if Full then
-    Result:=AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+Result;
+  if CmdLineLayoutFile<>'' then begin
+    Result:=CmdLineLayoutFile;
+  end else begin
+    Result:=DefaultLayoutFileName;
+    if Full then
+      Result:=AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+Result;
+  end;
 end;
 
 procedure TIDEAnchorDockMaster.LoadDefaultLayout;
@@ -296,7 +305,7 @@ var
   Filename: String;
   Config: TConfigStorage;
 begin
-  Filename:=GetDefaultLayoutFilename(false);
+  Filename:=GetUserLayoutFilename(false);
   try
     debugln(['TIDEAnchorDockMaster.LoadUserLayout ',Filename]);
     Config:=GetIDEConfigStorage(Filename,true);
@@ -326,7 +335,7 @@ var
   Filename: String;
   Config: TConfigStorage;
 begin
-  Filename:=GetDefaultLayoutFilename(false);
+  Filename:=GetUserLayoutFilename(false);
   try
     debugln(['TIDEAnchorDockMaster.SaveDefaultLayout ',Filename]);
     Config:=GetIDEConfigStorage(Filename,false);
@@ -660,7 +669,7 @@ begin
   if not (AOptions is SupportedOptionsClass) then exit;
   OptionsFrame.SaveToSettings(FSettings);
   if (not DockMaster.SettingsAreEqual(FSettings))
-  or (not FileExistsUTF8(IDEAnchorDockMaster.GetDefaultLayoutFilename(true)))
+  or (not FileExistsCached(IDEAnchorDockMaster.GetUserLayoutFilename(true)))
   then begin
     DockMaster.LoadSettings(FSettings);
     IDEAnchorDockMaster.SaveUserLayout;
