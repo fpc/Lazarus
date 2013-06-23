@@ -1397,9 +1397,9 @@ begin
   AllUnitsShowGroupNodesSpeedButton.Down:=true;
 
   AllUnitsSearchEdit.Text:=ResStrSearch;
-  AllUnitsSearchNextSpeedButton.Hint:=lisUDSearchNextOccurenceOfThisPhrase;
+  AllUnitsSearchNextSpeedButton.Hint:=lisUDSearchNextOccurrenceOfThisPhrase;
   AllUnitsSearchNextSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
-  AllUnitsSearchPrevSpeedButton.Hint:=lisUDSearchPreviousOccurenceOfThisPhrase;
+  AllUnitsSearchPrevSpeedButton.Hint:=lisUDSearchPreviousOccurrenceOfThisPhrase;
   AllUnitsSearchPrevSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
 
   // selected units
