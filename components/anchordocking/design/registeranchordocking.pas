@@ -354,43 +354,26 @@ end;
 
 procedure TIDEAnchorDockMaster.LoadLayoutFromFile(Filename: string);
 var
-  XMLConfig: TXMLConfig;
   Config: TXMLConfigStorage;
 begin
-  //debugln(['TIDEAnchorDockMaster.LoadLayoutFromFile ',Filename]);
-  XMLConfig:=TXMLConfig.Create(nil);
+  Config:=TXMLConfigStorage.Create(FileName, true);
   try
-    XMLConfig.Filename:=Filename;
-    Config:=TXMLConfigStorage.Create(XMLConfig);
-    try
-      DockMaster.LoadLayoutFromConfig(Config,true);
-    finally
-      Config.Free;
-    end;
-    XMLConfig.Flush;
+    DockMaster.LoadLayoutFromConfig(Config,true);
   finally
-    XMLConfig.Free;
+    Config.Free;
   end;
 end;
 
 procedure TIDEAnchorDockMaster.SaveLayoutToFile(Filename: string);
 var
-  XMLConfig: TXMLConfig;
   Config: TXMLConfigStorage;
 begin
-  XMLConfig:=TXMLConfig.Create(nil);
+  Config:=TXMLConfigStorage.Create(FileName, false);
   try
-    XMLConfig.StartEmpty:=true;
-    XMLConfig.Filename:=Filename;
-    Config:=TXMLConfigStorage.Create(XMLConfig);
-    try
-      DockMaster.SaveLayoutToConfig(Config);
-    finally
-      Config.Free;
-    end;
-    XMLConfig.Flush;
+    DockMaster.SaveLayoutToConfig(Config);
+    Config.WriteToDisk;
   finally
-    XMLConfig.Free;
+    Config.Free;
   end;
 end;
 
