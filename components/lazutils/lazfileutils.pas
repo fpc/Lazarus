@@ -5,7 +5,7 @@ unit LazFileUtils;
 interface
 
 uses
-  Classes, SysUtils, LazUTF8, LazUtf8Classes,
+  Classes, SysUtils, LazUTF8,
   SysConst, LazUtilsStrConsts;
 
 {$IFDEF Windows}
@@ -375,20 +375,19 @@ end;
 function DirectoryIsWritable(const DirectoryName: string): boolean;
 var
   TempFilename: String;
-  fs: TFileStreamUtf8;
   s: String;
+  fHandle: THANDLE;
 begin
-  TempFilename:=GetTempFilenameUTF8(AppendPathDelim(DirectoryName),'tstperm');
+  TempFilename:=SysUtils.GetTempFilename(AppendPathDelim(DirectoryName),'tstperm');
   Result:=false;
-  try
-    fs:=TFileStreamUtf8.Create(TempFilename, fmCreate);
+  fHandle := FileCreateUtf8(TempFileName, fmCreate, 438);
+  if (THandle(fHandle) <> feInvalidHandle) then
+  begin
     s:='WriteTest';
-    fs.Write(s[1],length(s));
-    fs.Free;
+    if FileWrite(fHandle,S[1],Length(S)) > 0 then Result := True;
+    FileClose(fHandle);
     if not DeleteFileUTF8(TempFilename) then
       InvalidateFileStateCache(TempFilename);
-    Result:=true;
-  except
   end;
 end;
 
@@ -423,22 +422,23 @@ end;
 
 function FileIsText(const AFilename: string; out FileReadable: boolean): boolean;
 var
-  fs: TFileStreamUtf8;
   Buf: string;
   Len: integer;
   NewLine: boolean;
   p: PChar;
   ZeroAllowed: Boolean;
+  fHandle: THandle;
 begin
   Result:=false;
   FileReadable:=true;
-  try
-    fs := TFileStreamUtf8.Create(AFilename, fmOpenRead or fmShareDenyNone);
+  fHandle := FileOpenUtf8(AFileName, fmOpenRead or fmShareDenyNone);
+  if (THandle(fHandle) <> feInvalidHandle)  then
+  begin
     try
-      // read the first 1024 bytes
       Len:=1024;
       SetLength(Buf,Len+1);
-      Len:=fs.Read(Buf[1],Len);
+      Len := FileRead(fHandle,Buf[1],Len);
+
       if Len>0 then begin
         Buf[Len+1]:=#0;
         p:=PChar(Buf);
@@ -476,13 +476,11 @@ begin
       end else
         Result:=true;
     finally
-      fs.Free;
-    end;
-  except
-    on E: Exception do begin
-      FileReadable:=false;
-    end;
-  end;
+      FileClose(fHandle);
+    end
+  end
+  else
+    FileReadable := False;
 end;
 
 function FilenameIsTrimmed(const TheFilename: string): boolean;
