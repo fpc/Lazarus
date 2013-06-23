@@ -56,6 +56,7 @@ type
     function TestText7: TStringArray;
     function TestText8: TStringArray;
     function TestText9: TStringArray;
+    function TestText10: TStringArray;
 
     procedure CheckOpenCloseCount(AName: String; ALine: Integer;
       AExpOpenCnt, AExpCloseCnt: Integer);
@@ -651,6 +652,26 @@ begin
   AddLine(''                                                      );
 
 
+end;
+
+function TTestMarkupIfDef.TestText10: TStringArray;
+  procedure AddLine(s: String);
+  begin
+    SetLength(Result, Length(Result)+1);
+    Result[Length(Result)-1] := s;
+  end;
+begin
+  // 1
+  AddLine('//'                                                    );
+  AddLine('{$IFDEF a}'                                            );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  // 5
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine('{$IFDEF a}'                                            );
+  AddLine('//'                                                      );
+  AddLine(''                                                      );
 end;
 
 procedure TTestMarkupIfDef.CheckOpenCloseCount(AName: String; ALine: Integer; AExpOpenCnt,
@@ -1941,13 +1962,13 @@ procedure TTestMarkupIfDef.TestIfDefTreePeerConnect;
       {%endregion  }
 
       {%region }
-        n := 'scan new unfinished node, next node will be comment';
+        n := 'multi elseif open';
         ReCreateEditForTreeTest(TestText9);
         FTestTree.ValidateRange(1, 18, FOpenings);
         //CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
 
 
-        n := 'scan new unfinished node, next node will be comment';
+        //n := '';
         ReCreateEditForTreeTest(TestText9);
         FTestTree.ValidateRange(11, 18, FOpenings);
         //CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
@@ -1955,6 +1976,26 @@ procedure TTestMarkupIfDef.TestIfDefTreePeerConnect;
 
       {%endregion  }
 
+
+
+      {%region }
+        n := '';
+        ReCreateEditForTreeTest(TestText10);
+        FTestTree.ValidateRange(1, 9, FOpenings);
+        FTestTree.SetNodeState(7, 1, idnDisabled);
+        //CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
+
+        SynEdit.TextBetweenPoints[point(1, 4),point(1, 4)] := '{$endi';
+        FTestTree.ValidateRange(1, 9, FOpenings);
+
+        SynEdit.TextBetweenPoints[point(7, 4),point(7, 4)] := 'f';
+        FTestTree.ValidateRange(1, 9, FOpenings);
+
+        SynEdit.TextBetweenPoints[point(12, 4),point(12, 4)] := '} ';
+        FTestTree.ValidateRange(1, 9, FOpenings);
+
+
+      {%endregion  }
 
 
 

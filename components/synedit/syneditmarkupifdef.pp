@@ -2856,6 +2856,9 @@ XXXCurTree := self; try
     Assert(TmpNode.HasNode, 'TmpNode.HasNode');
     Assert(NextNode.EntryCount > 0, 'NextNode.EntryCount > 0');
     Node := TmpNode;
+    CheckNextNodeForEmpty(NextNode, Node.LastEntryEndLine);
+    if not NextNode.HasNode then
+      break;
     TmpNode.ClearInfo;
     while Node.ScanEndLine + 1 < NextNode.StartLine do begin
       MaybeExtendNodeForward(Node, TmpNode, NextNode.StartLine);
