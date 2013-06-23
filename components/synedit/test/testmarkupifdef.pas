@@ -55,6 +55,7 @@ type
     function TestText6: TStringArray;
     function TestText7: TStringArray;
     function TestText8: TStringArray;
+    function TestText9: TStringArray;
 
     procedure CheckOpenCloseCount(AName: String; ALine: Integer;
       AExpOpenCnt, AExpCloseCnt: Integer);
@@ -616,6 +617,40 @@ begin
   AddLine(''                                                      );
   AddLine(''                                                      );
   AddLine(''                                                      );
+end;
+
+function TTestMarkupIfDef.TestText9: TStringArray;
+  procedure AddLine(s: String);
+  begin
+    SetLength(Result, Length(Result)+1);
+    Result[Length(Result)-1] := s;
+  end;
+begin
+  // 1
+  AddLine('//'                                                    );
+  AddLine('{$IFDEF a}'                                            );
+  AddLine(''                                                      );
+  AddLine('{$Elseif}'                                              );
+  // 5
+  AddLine(''                                                      );
+  AddLine('{$Elseif}'                                              );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine('{$Elseif}'                                              );
+  // 10
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine(' {$IFDEF b}'                                            );
+  AddLine(''                                                      );
+  AddLine(' {$Endif}'                                              );
+  // 15
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+  AddLine('{$Endif}'                                              );
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+
+
 end;
 
 procedure TTestMarkupIfDef.CheckOpenCloseCount(AName: String; ALine: Integer; AExpOpenCnt,
@@ -1907,16 +1942,17 @@ procedure TTestMarkupIfDef.TestIfDefTreePeerConnect;
 
       {%region }
         n := 'scan new unfinished node, next node will be comment';
-        ReCreateEditForTreeTest(TestText4);
-        FTestTree.ValidateRange(1, 6, FOpenings);
-        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
-        CheckNodes(n, 4, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
+        ReCreateEditForTreeTest(TestText9);
+        FTestTree.ValidateRange(1, 18, FOpenings);
+        //CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
 
-        SynEdit.TextBetweenPoints[point(1, 3),point(1, 3)] := '   {$IFDEF ';
-        FTestTree.ValidateRange(1, 6, FOpenings);
 
-        CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
-//        CheckNodes(n, 3, [ ExpN( 1,1, 3, idnIfdef) ]);
+        n := 'scan new unfinished node, next node will be comment';
+        ReCreateEditForTreeTest(TestText9);
+        FTestTree.ValidateRange(11, 18, FOpenings);
+        //CheckNodes(n, 2, [ ExpN( 1,11, idnIfdef), ExpN(13,21, idnEndIf) ]);
+
+
       {%endregion  }
 
 

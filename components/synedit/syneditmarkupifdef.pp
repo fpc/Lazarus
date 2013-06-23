@@ -1877,7 +1877,11 @@ begin
     //  idnEndIf: if PeerList[i].ElsePeer  <> nil then continue;
     //end;
 
-    if (PeerList[i].NodeType = idnElse) and (AOuterLines <> nil) then begin
+    assert(not (PeerList[i].NodeType in [idnIfdef, idnCommentedNode]), 'multi-line peer valid');
+    //if (PeerList[i].NodeType = idnElse) and (AOuterLines <> nil) then begin
+    if (AOuterLines <> nil) then begin
+    // todo: find multiply elseif
+      assert((PeerList[i].NodeType in [idnElse, idnElseIf]), 'multi-line (opening) peer valid');
       // scanning outer lines
       j := ToPos(AOuterLines.NodeLineEx[i-1, 1]);
       if j < 0 then begin
