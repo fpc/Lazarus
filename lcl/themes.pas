@@ -1889,6 +1889,9 @@ begin
     teTreeView:
       if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
         Result := Size(9, 9);
+    teWindow:
+      if Details.Part in [WP_SMALLCLOSEBUTTON, WP_MDICLOSEBUTTON, WP_MDIHELPBUTTON, WP_MDIMINBUTTON, WP_MDIRESTOREBUTTON, WP_MDISYSBUTTON] then
+        Result := Size(9, 9);
   end;
 end;
 

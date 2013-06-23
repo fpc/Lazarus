@@ -425,13 +425,14 @@ begin
       end;
     teWindow:
       begin
-        if Details.Part in [WP_MDIMINBUTTON, WP_MDIRESTOREBUTTON, WP_MDICLOSEBUTTON] then
+        if Details.Part in [WP_SMALLCLOSEBUTTON, WP_MDIMINBUTTON, WP_MDIRESTOREBUTTON, WP_MDICLOSEBUTTON] then
         begin
           Result.State := GtkTitleButtonMap[Details.State];
           Result.Shadow := GTK_SHADOW_NONE;
           case Details.Part of
             WP_MDIMINBUTTON: Result.Detail := #1;
             WP_MDIRESTOREBUTTON: Result.Detail := #2;
+            WP_SMALLCLOSEBUTTON,
             WP_MDICLOSEBUTTON: Result.Detail := #3;
           end;
           Result.Painter := gptPixmap;

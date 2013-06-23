@@ -173,7 +173,8 @@ begin
     if (Details.Element = teToolBar) and (Details.Part = TP_SPLITBUTTONDROPDOWN) then
        Result.cx := 12
     else
-    if (Details.Element = teTreeview) and (Details.Part in [TVP_GLYPH, TVP_HOTGLYPH]) then
+    if ((Details.Element = teTreeview) and (Details.Part in [TVP_GLYPH, TVP_HOTGLYPH])) or
+       ((Details.Element = teWindow) and (Details.Part in [WP_SMALLCLOSEBUTTON])) then
     begin
       R := Rect(0, 0, 800, 800);
       GetThemePartSize(GetTheme(Details.Element), 0, Details.Part, Details.State, @R, TS_TRUE, Result);

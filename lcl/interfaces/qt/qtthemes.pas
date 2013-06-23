@@ -804,12 +804,17 @@ begin
             Result.DrawVariant := qdvPrimitive;
             exit;
           end;
+          WP_SMALLCLOSEBUTTON:
+          begin
+            Result.DrawVariant := qdvStandardPixmap;
+            Result.StandardPixmap := QStyleSP_TitleBarCloseButton;
+            exit;
+          end;
 
           WP_SYSBUTTON: Result.SubControls := QStyleSC_TitleBarSysMenu;
           WP_MINBUTTON: Result.SubControls := QStyleSC_TitleBarMinButton;
           WP_MAXBUTTON: Result.SubControls := QStyleSC_TitleBarMaxButton;
           WP_CLOSEBUTTON: Result.SubControls := QStyleSC_TitleBarCloseButton;
-          WP_SMALLCLOSEBUTTON: Result.SubControls := QStyleSC_TitleBarCloseButton;
           WP_RESTOREBUTTON: Result.SubControls := QStyleSC_TitleBarNormalButton;
           WP_HELPBUTTON: Result.SubControls := QStyleSC_TitleBarContextHelpButton;
           WP_MDIHELPBUTTON: Result.SubControls := QStyleSC_TitleBarContextHelpButton;
@@ -820,7 +825,7 @@ begin
           Result.SubControls := QStyleSC_None;
         end;
 
-        if Result.SubControls >= QStyleSC_MdiMinButton then
+        if Result.SubControls <= QStyleSC_MdiCloseButton then
           Result.ComplexControl := QStyleCC_MdiControls
         else
           Result.ComplexControl := QStyleCC_TitleBar;
