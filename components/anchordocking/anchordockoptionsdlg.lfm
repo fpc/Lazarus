@@ -6,15 +6,17 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
   ClientHeight = 482
   ClientWidth = 416
   TabOrder = 0
-  DesignLeft = 471
-  DesignTop = 220
+  DesignLeft = 647
+  DesignTop = 116
   object DragThresholdLabel: TLabel
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = HeaderStyleComboBox
     AnchorSideTop.Side = asrBottom
     Left = 10
-    Height = 17
-    Top = 41
-    Width = 136
+    Height = 15
+    Top = 35
+    Width = 106
+    BorderSpacing.Left = 10
     Caption = 'DragThresholdLabel'
     ParentColor = False
   end
@@ -23,9 +25,9 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Control = HideHeaderCaptionForFloatingCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 10
-    Height = 17
-    Top = 293
-    Width = 145
+    Height = 15
+    Top = 263
+    Width = 115
     BorderSpacing.Top = 10
     Caption = 'HeaderAlignTopLabel'
     ParentColor = False
@@ -35,9 +37,9 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Control = HeaderAlignTopTrackBar
     AnchorSideTop.Side = asrBottom
     Left = 10
-    Height = 17
-    Top = 366
-    Width = 148
+    Height = 15
+    Top = 334
+    Width = 114
     BorderSpacing.Top = 10
     Caption = 'HeaderAlignLeftLabel'
     ParentColor = False
@@ -47,9 +49,9 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Control = DragThresholdTrackBar
     AnchorSideTop.Side = asrBottom
     Left = 10
-    Height = 17
-    Top = 114
-    Width = 129
+    Height = 15
+    Top = 106
+    Width = 97
     BorderSpacing.Top = 10
     Caption = 'SplitterWidthLabel'
     ParentColor = False
@@ -59,9 +61,9 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Control = SplitterWidthTrackBar
     AnchorSideTop.Side = asrBottom
     Left = 10
-    Height = 24
-    Top = 187
-    Width = 189
+    Height = 19
+    Top = 177
+    Width = 147
     BorderSpacing.Top = 10
     Caption = 'ScaleOnResizeCheckBox'
     ParentShowHint = False
@@ -76,7 +78,7 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 10
     Height = 46
-    Top = 58
+    Top = 50
     Width = 396
     Max = 20
     OnChange = DragThresholdTrackBarChange
@@ -95,7 +97,7 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 10
     Height = 46
-    Top = 310
+    Top = 278
     Width = 396
     Frequency = 10
     Max = 150
@@ -115,7 +117,7 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 10
     Height = 46
-    Top = 383
+    Top = 349
     Width = 396
     Frequency = 10
     Max = 200
@@ -135,7 +137,7 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 10
     Height = 46
-    Top = 131
+    Top = 121
     Width = 396
     Min = 1
     OnChange = SplitterWidthTrackBarChange
@@ -150,9 +152,9 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Control = ShowHeaderCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 10
-    Height = 24
-    Top = 235
-    Width = 230
+    Height = 19
+    Top = 215
+    Width = 181
     Caption = 'ShowHeaderCaptionCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -163,9 +165,9 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Control = ShowHeaderCaptionCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 10
-    Height = 24
-    Top = 259
-    Width = 303
+    Height = 19
+    Top = 234
+    Width = 237
     Caption = 'HideHeaderCaptionForFloatingCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -176,9 +178,9 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Control = ScaleOnResizeCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 10
-    Height = 24
-    Top = 211
-    Width = 177
+    Height = 19
+    Top = 196
+    Width = 139
     Caption = 'ShowHeaderCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -188,23 +190,29 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideLeft.Control = HeaderStyleLabel
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
-    Left = 135
-    Height = 29
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 107
+    Height = 23
     Top = 6
-    Width = 146
+    Width = 299
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 4
     BorderSpacing.Around = 6
-    ItemHeight = 0
+    ItemHeight = 15
     OnDrawItem = HeaderStyleComboBoxDrawItem
     Style = csDropDownList
     TabOrder = 8
   end
   object HeaderStyleLabel: TLabel
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = HeaderStyleComboBox
     AnchorSideTop.Side = asrCenter
     Left = 10
-    Height = 17
-    Top = 12
-    Width = 119
+    Height = 15
+    Top = 10
+    Width = 91
+    BorderSpacing.Left = 10
     Caption = 'HeaderStyleLabel'
     ParentColor = False
   end
