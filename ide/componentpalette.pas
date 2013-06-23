@@ -276,13 +276,16 @@ end;
 procedure TComponentPalette.ComponentBtnMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if ssShift in Shift then
-    SelectionMode := csmMulty
-  else
-    SelectionMode := csmSingle;
-  SelectButton(TComponent(Sender));
-  if Assigned(OnClassSelected) then
-    OnClassSelected(Self);
+  if Button=mbLeft then
+  begin
+    if ssShift in Shift then
+      SelectionMode := csmMulty
+    else
+      SelectionMode := csmSingle;
+    SelectButton(TComponent(Sender));
+    if Assigned(OnClassSelected) then
+      OnClassSelected(Self);
+  end;
 end;
 
 procedure TComponentPalette.ComponentBtnMouseUp(Sender: TObject; Button: TMouseButton;
