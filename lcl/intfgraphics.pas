@@ -1209,7 +1209,7 @@ begin
   {$ifdef Endian_Little}
   EightBytes:=QWord(PDWord(P)^) or (QWord(PWord(P+4)^) shl 32);
   {$else}
-  EightBytes:=(QWord(PDWord(P)^) shl 16) or QWord(PWord((P+4)^));
+  EightBytes:=(QWord(PDWord(P)^) shl 16) or QWord(PWord(P+4)^);
   {$endif}
   Bits:=Word(cardinal(EightBytes shr Shift) and PrecMask);
 
@@ -1233,7 +1233,7 @@ begin
   P:=@(TheData[Position.Byte]);
 
   {$ifdef Endian_Little}
-  EightBytes:=(QWord(PDWord(P)^) shl 16) or QWord(PWord((P+4)^));
+  EightBytes:=(QWord(PDWord(P)^) shl 16) or QWord(PWord(P+4)^);
   {$else}
   EightBytes:=QWord(PDWord(P)^) or (QWord(PWord(P+4)^) shl 32);
   {$endif}
