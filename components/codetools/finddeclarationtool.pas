@@ -10025,6 +10025,7 @@ var
   TermExprType: TExpressionType;
   OperatorExprType: TExpressionType;
   AliasType: TFindContext;
+  Node: TCodeTreeNode;
 begin
   Result:='';
   AliasType:=CleanFindContext;
@@ -10063,6 +10064,12 @@ begin
             then
               RaiseTermHasNoIterator;
             Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params,@AliasType);
+          end;
+        ctnEnumerationType:
+          begin
+            Node:=TermExprType.Context.Node.Parent;
+            if Node.Desc=ctnTypeDefinition then
+              Result:=TermExprType.Context.Tool.ExtractIdentifier(Node.StartPos);
           end;
         ctnSetType:
           if TermExprType.Context.Tool.FindEnumerationTypeOfSetType(
