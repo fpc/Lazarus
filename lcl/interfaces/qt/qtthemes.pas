@@ -350,9 +350,17 @@ begin
         end;
         qdvStandardPixmap:
         begin
-          opt := QStyleOption_create(QStyleOptionVersion, QStyleOptionSO_Default);
           AIcon := QIcon_create();
-          QStyle_standardIcon(Style, AIcon, Element.StandardPixmap, opt);
+          if Element.StandardPixmap = QStyleSP_TitleBarCloseButton then
+          begin
+            opt := QStyleOptionDockWidget_create();
+            QStyle_standardIcon(Style, AIcon, Element.StandardPixmap, opt, Context.Parent);
+          end
+          else
+          begin
+            opt := QStyleOption_create(QStyleOptionVersion, QStyleOptionSO_Default);
+            QStyle_standardIcon(Style, AIcon, Element.StandardPixmap, opt);
+          end;
           QIcon_paint(AIcon, Context.Widget, ARect.Left, ARect.Top,
             ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
           QIcon_destroy(AIcon);
