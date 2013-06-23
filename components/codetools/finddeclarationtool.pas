@@ -9216,6 +9216,8 @@ function TFindDeclarationTool.CheckParameterSyntax(StartPos,
   function CheckIdentifierAndParameterList: boolean; forward;
 
   function CheckBrackets: boolean;
+  { check simple brackets (no identifier in front of brackets)
+  }
   var
     BracketAtom: TAtomPosition;
   begin
@@ -9250,6 +9252,8 @@ function TFindDeclarationTool.CheckParameterSyntax(StartPos,
   end;
 
   function CheckIdentifierAndParameterList: boolean;
+  { when called: CursorPos is at an identifier followed by a ( or [
+  }
   var
     BracketAtom: TAtomPosition;
     CurProcNameAtom: TAtomPosition;
@@ -9257,97 +9261,98 @@ function TFindDeclarationTool.CheckParameterSyntax(StartPos,
     ParameterStart: integer;
   begin
     Result:=false;
+    if CurPos.Flag<>cafWord then exit;
     CurProcNameAtom:=CurPos;
     CurParameterIndex:=0;
     {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList START "',GetAtom,'" ',dbgs(CurProcNameAtom));{$ENDIF}
     ReadNextAtom;
-    if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
-      BracketAtom:=CurPos;
-      ParameterStart:=CurPos.EndPos;
-      {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList Bracket="',GetAtom,'"');{$ENDIF}
-      repeat
-        ReadNextAtom;
-        {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList Atom="',GetAtom,'"');{$ENDIF}
-        if (CurPos.EndPos>CleanCursorPos)
-        or ((CurPos.EndPos=CleanCursorPos)
-          and ((CurPos.Flag=cafWord) or AtomIsChar('@')))
+    if not (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then exit;
+    BracketAtom:=CurPos;
+    ParameterStart:=CurPos.EndPos;
+    {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList Bracket="',GetAtom,'"');{$ENDIF}
+    repeat
+      ReadNextAtom;
+      {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList Atom="',GetAtom,'"');{$ENDIF}
+      if (CurPos.EndPos>CleanCursorPos)
+      or ((CurPos.EndPos=CleanCursorPos)
+        and ((CurPos.Flag=cafWord) or AtomIsChar('@')))
+      then begin
+        // parameter found => search parameter expression bounds e.g. ', parameter ,'
+        // important: this function should work, even if the code
+        //            behind CleanCursorPos has syntax errors
+        {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList Parameter found, search range ...');{$ENDIF}
+        ProcNameAtom:=CurProcNameAtom;
+        ParameterIndex:=CurParameterIndex;
+        ParameterAtom.StartPos:=ParameterStart;
+        ParameterAtom.EndPos:=ParameterStart;
+        MoveCursorToCleanPos(ParameterStart);
+        repeat
+          ReadNextAtom;
+          {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList parameter atom "',GetAtom,'"');{$ENDIF}
+          if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then
+          begin
+            // atom belongs to the parameter expression
+            if ParameterAtom.StartPos=ParameterAtom.EndPos then
+              ParameterAtom.StartPos:=CurPos.StartPos;
+            ReadTilBracketClose(false);
+            ParameterAtom.EndPos:=CurPos.EndPos;
+          end
+          else
+          if (CurPos.StartPos>SrcLen)
+          or (CurPos.Flag in [cafComma,cafSemicolon,cafEnd,
+              cafRoundBracketClose,cafEdgedBracketClose])
+          or ((CurPos.Flag=cafWord)
+              and (LastAtoms.GetValueAt(0).Flag=cafWord)
+              and (not LastUpAtomIs(0,'INHERITED'))) then
+          begin
+            // end of parameter expression found
+            {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList end of parameter found "',GetAtom,'" Parameter="',dbgstr(Src,ParameterAtom.StartPos,ParameterAtom.EndPos-ParameterAtom.StartPos),'"');{$ENDIF}
+            exit(true);
+          end else begin
+            // atom belongs to the parameter expression
+            if ParameterAtom.StartPos=ParameterAtom.EndPos then
+              ParameterAtom.StartPos:=CurPos.StartPos;
+            ParameterAtom.EndPos:=CurPos.EndPos;
+          end;
+        until false;
+      end;
+      if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then begin
+        if (LastAtoms.GetValueAt(0).Flag=cafWord) then begin
+          {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList check word+bracket open');{$ENDIF}
+          UndoReadNextAtom;
+          if CheckIdentifierAndParameterList() then exit(true);
+        end else begin
+          {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList check bracket open');{$ENDIF}
+          if CheckBrackets then exit(true);
+        end;
+      end
+      else if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then
+      begin
+        {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList check bracket close');{$ENDIF}
+        if (BracketAtom.Flag=cafRoundBracketOpen)
+        =(CurPos.Flag=cafRoundBracketClose)
         then begin
-          // parameter found => search parameter expression bounds e.g. ', parameter ,'
-          // important: this function should work, even if the code
-          //            behind CleanCursorPos has syntax errors
-          {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList Parameter found, search range ...');{$ENDIF}
-          ProcNameAtom:=CurProcNameAtom;
-          ParameterIndex:=CurParameterIndex;
-          ParameterAtom.StartPos:=ParameterStart;
-          ParameterAtom.EndPos:=ParameterStart;
-          MoveCursorToCleanPos(ParameterStart);
-          repeat
-            ReadNextAtom;
-            {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList parameter atom "',GetAtom,'"');{$ENDIF}
-            if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then
-            begin
-              // atom belongs to the parameter expression
-              if ParameterAtom.StartPos=ParameterAtom.EndPos then
-                ParameterAtom.StartPos:=CurPos.StartPos;
-              ReadTilBracketClose(false);
-              ParameterAtom.EndPos:=CurPos.EndPos;
-            end
-            else
-            if (CurPos.StartPos>SrcLen)
-            or (CurPos.Flag in [cafComma,cafSemicolon,cafEnd,
-                cafRoundBracketClose,cafEdgedBracketClose])
-            or ((CurPos.Flag=cafWord)
-                and (LastAtoms.GetValueAt(0).Flag=cafWord)
-                and (not LastUpAtomIs(0,'INHERITED'))) then
-            begin
-              // end of parameter expression found
-              {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList end of parameter found "',GetAtom,'" Parameter="',dbgstr(Src,ParameterAtom.StartPos,ParameterAtom.EndPos-ParameterAtom.StartPos),'"');{$ENDIF}
-              exit(true);
-            end else begin
-              // atom belongs to the parameter expression
-              if ParameterAtom.StartPos=ParameterAtom.EndPos then
-                ParameterAtom.StartPos:=CurPos.StartPos;
-              ParameterAtom.EndPos:=CurPos.EndPos;
-            end;
-          until false;
+          // parameter list ended in front of Variable => continue search
+          {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList parameter list ended in front of cursor');{$ENDIF}
+          exit;
+        end else begin
+          // invalid closing bracket found
+          RaiseBracketNotOpened;
         end;
-        if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then begin
-          if (LastAtoms.GetValueAt(0).Flag=cafWord) then begin
-            {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList check word+bracket open');{$ENDIF}
-            UndoReadNextAtom;
-            if CheckIdentifierAndParameterList() then exit(true);
-          end else begin
-            {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList check bracket open');{$ENDIF}
-            if CheckBrackets then exit(true);
-          end;
-        end
-        else if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then
-        begin
-          {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList check bracket close');{$ENDIF}
-          if (BracketAtom.Flag=cafRoundBracketOpen)
-          =(CurPos.Flag=cafRoundBracketClose)
-          then begin
-            // parameter list ended in front of Variable => continue search
-            {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList parameter list ended in front of cursor');{$ENDIF}
-            exit;
-          end else begin
-            // invalid closing bracket found
-            RaiseBracketNotOpened;
-          end;
-        end;
-        // finally after checking the expression: count commas
-        if CurPos.Flag=cafComma then begin
-          ParameterStart:=CurPos.EndPos;
-          inc(CurParameterIndex);
-        end;
-        {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList After parsing atom. atom="',GetAtom,'"');{$ENDIF}
-      until (CurPos.EndPos>CleanCursorPos);
-    end;
+      end;
+      // finally after checking the expression: count commas
+      if CurPos.Flag=cafComma then begin
+        ParameterStart:=CurPos.EndPos;
+        inc(CurParameterIndex);
+      end;
+      {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList After parsing atom. atom="',GetAtom,'"');{$ENDIF}
+    until (CurPos.EndPos>CleanCursorPos);
   end;
 
 var
   CommentStart: integer;
   CommentEnd: integer;
+  CleanPosInFront: Integer;
 begin
   Result:=false;
   ParameterAtom:=CleanAtomPosition;
@@ -9360,10 +9365,14 @@ begin
   MoveCursorToCleanPos(StartPos);
   repeat
     ReadNextAtom;
-    {$IFDEF VerboseCPS}DebugLn('TFindDeclarationTool.CheckParameterSyntax ',GetAtom,' at ',CleanPosToStr(CurPos.StartPos),' ',dbgs(CurPos.EndPos),'<',dbgs(CleanCursorPos));{$ENDIF}
+    {$IFDEF VerboseCPS}
+    DebugLn('TFindDeclarationTool.CheckParameterSyntax ',GetAtom,' at ',CleanPosToStr(CurPos.StartPos),' ',dbgs(CurPos.EndPos),'<',dbgs(CleanCursorPos));
+    {$ENDIF}
     if CurPos.EndPos>CleanCursorPos then begin
       if LastAtoms.Count=0 then exit;
-      if not CleanPosIsInComment(CleanCursorPos,LastAtoms.GetValueAt(0).EndPos,
+      CleanPosInFront:=LastAtoms.GetValueAt(0).EndPos;
+      //debugln(['TFindDeclarationTool.CheckParameterSyntax Cur="',GetAtom,'" Last="',GetAtom(LastAtoms.GetValueAt(0)),'"']);
+      if not CleanPosIsInComment(CleanCursorPos,CleanPosInFront,
         CommentStart,CommentEnd,false) then exit;
       // cursor in a comment
       // => parse within the comment
@@ -9372,10 +9381,9 @@ begin
     and (LastAtoms.GetValueAt(0).Flag=cafWord) then begin
       UndoReadNextAtom;
       if CheckIdentifierAndParameterList then exit(true);
+      if CurPos.EndPos>CleanCursorPos then exit;
     end;
   until false;
-
-  Result:=true;
 end;
 
 function TFindDeclarationTool.FindNthParameterNode(Node: TCodeTreeNode;
