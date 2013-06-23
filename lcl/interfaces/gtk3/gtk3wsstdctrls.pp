@@ -1045,7 +1045,9 @@ end;
 
 class procedure TGtk3WSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
 begin
-  //TODO:
+  if not WSCheckHandleAllocated(AButton, 'SetDefault') then
+    Exit;
+  TGtk3Button(AButton.Handle).SetDefault(ADefault);
 end;
 
 class procedure TGtk3WSButton.SetShortCut(const AButton: TCustomButton;

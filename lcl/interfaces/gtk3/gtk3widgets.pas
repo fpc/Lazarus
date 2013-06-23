@@ -634,6 +634,7 @@ type
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
   public
     function IsWidgetOk: Boolean; override;
+    procedure SetDefault(const ADefault: Boolean);
     property Layout: Integer read getLayout write SetLayout;
     property Margin: Integer read getMargin write SetMargin;
     property Spacing: Integer read FSpacing write SetSpacing;
@@ -5740,6 +5741,12 @@ end;
 function TGtk3Button.IsWidgetOk: Boolean;
 begin
   Result := (FWidget <> nil) and Gtk3IsButton(FWidget);
+end;
+
+procedure TGtk3Button.SetDefault(const ADefault: Boolean);
+begin
+  if IsWidgetOk then
+    GetContainerWidget^.set_can_default(ADefault);
 end;
 
 { TGtk3ToggleButton }
