@@ -150,6 +150,9 @@ type
     procedure SelUnitsTreeViewExpanding(Sender: TObject; Node: TTreeNode;
       var AllowExpansion: Boolean);
     procedure Timer1Timer(Sender: TObject);
+    procedure UnitsLvlGraphMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure UnitsLvlGraphSelectionChanged(Sender: TObject);
     procedure UnitsTreeViewShowHint(Sender: TObject; HintInfo: PHintInfo);
     procedure UnitsTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -466,6 +469,37 @@ begin
   if FNewUsesGraph.FilesTree<>nil then
     Cnt:=FNewUsesGraph.FilesTree.Count;
   StatsLabel.Caption:=Format(lisUDScanningUnits, [IntToStr(Cnt)]);
+end;
+
+procedure TUnitDependenciesWindow.UnitsLvlGraphMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  GraphNode: TLvlGraphNode;
+  UGUnit: TUGUnit;
+begin
+  GraphNode:=UnitsLvlGraph.GetNodeAt(X,Y);
+  if (Button=mbLeft) and (ssDouble in Shift) then begin
+    if (GraphNode<>nil) and (GraphNode.Data<>nil) then begin
+      UGUnit:=TUGUnit(GraphNode.Data);
+      LazarusIDE.DoOpenEditorFile(UGUnit.Filename,-1,-1,[ofAddToRecent]);
+    end;
+  end;
+end;
+
+procedure TUnitDependenciesWindow.UnitsLvlGraphSelectionChanged(Sender: TObject
+  );
+var
+  GraphNode: TLvlGraphNode;
+  UGUnit: TUGUnit;
+begin
+  GraphNode:=UnitsLvlGraph.Graph.FirstSelected;
+  while GraphNode<>nil do begin
+    UGUnit:=TUGUnit(GraphNode.Data);
+    if UGUnit<>nil then begin
+
+    end;
+    GraphNode:=GraphNode.NextSelected;
+  end;
 end;
 
 procedure TUnitDependenciesWindow.UnitsTreeViewShowHint(Sender: TObject;
@@ -1332,6 +1366,8 @@ begin
     Align:=alClient;
     NodeStyle.GapBottom:=5;
     Parent:=GroupsTabSheet;
+    OnSelectionChanged:=@UnitsLvlGraphSelectionChanged;
+    OnMouseDown:=@UnitsLvlGraphMouseDown;
   end;
 end;
 
@@ -1528,6 +1564,7 @@ begin
     while AVLNode<>nil do begin
       GroupUnit:=TUGGroupUnit(NewUnits.GetNodeData(AVLNode)^.Value);
       SourceGraphNode:=Graph.GetNode(UnitToCaption(GroupUnit),true);
+      SourceGraphNode.Data:=GroupUnit;
       if GroupUnit.UsesUnits<>nil then begin
         for i:=0 to GroupUnit.UsesUnits.Count-1 do begin
           CurUses:=TUGUses(GroupUnit.UsesUnits[i]);
@@ -1535,6 +1572,7 @@ begin
           if UsedUnit.Group=nil then continue;
           if not NewGroups.Contains(UsedUnit.Group.Name) then continue;
           TargetGraphNode:=Graph.GetNode(UnitToCaption(UsedUnit),true);
+          TargetGraphNode.Data:=UsedUnit;
           Graph.GetEdge(SourceGraphNode,TargetGraphNode,true);
         end;
       end;
