@@ -136,7 +136,7 @@ type
     function GetActiveProject: TLazProject; override;
 
   public
-    HiddenWindowsOnRun: TList; // list of forms, that were automatically hidden
+    HiddenWindowsOnRun: TFPList; // list of forms, that were automatically hidden
                                // and will be shown when debugged program stops
 
     property ToolStatus: TIDEToolStatus read GetToolStatus;

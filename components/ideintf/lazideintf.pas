@@ -164,7 +164,7 @@ type
   protected
     FLazarusIDEHandlers: array[TLazarusIDEHandlerType] of TMethodList;
     fOwningComponent: TComponent;
-    LastActivatedWindows: TList;
+    LastActivatedWindows: TFPList;
 
     function GetActiveProject: TLazProject; virtual; abstract;
     procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType);

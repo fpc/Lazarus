@@ -1382,9 +1382,9 @@ begin
   if IDEDockMaster<>nil then
     IDEDockMaster.MakeIDEWindowDockSite(MainIDEBar);
 
-  HiddenWindowsOnRun:=TList.Create;
+  HiddenWindowsOnRun:=TFPList.Create;
 
-  LastActivatedWindows:=TList.Create;
+  LastActivatedWindows:=TFPList.Create;
   // menu
   MainIDEBar.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Create'){$ENDIF};
   try
@@ -12405,8 +12405,6 @@ begin
       and not (fsModal in AForm.FormState) then
         inc(FormCount);
     end;
-    if FormCount<>LastActivatedWindows.Count then
-      LastActivatedWindows.Clear;
     while LastActivatedWindows.Count>0 do
     begin
       AForm:=TCustomForm(LastActivatedWindows[0]);
@@ -12524,6 +12522,7 @@ end;
 procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
 begin
   HiddenWindowsOnRun.Remove(AForm);
+  LastActivatedWindows.Remove(AForm);
 end;
 
 procedure TMainIDE.OnRemoteControlTimer(Sender: TObject);
