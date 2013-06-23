@@ -256,6 +256,8 @@ begin
   fHexLanguages.Add('0421');
   fLanguages.Add('Ukrainian');
   fHexLanguages.Add('0422');
+  fLanguages.Add('Slovenian');
+  fHexLanguages.Add('0424');
   fLanguages.Add('Lithuanian');
   fHexLanguages.Add('0427');
   fLanguages.Add('Chinese - People''s Republic of China');
