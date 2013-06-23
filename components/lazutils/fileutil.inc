@@ -723,17 +723,8 @@ begin
 end;
 
 function GetTempFilename(const Directory, Prefix: string): string;
-var
-  i: Integer;
-  CurPath: String;
 begin
-  CurPath:=AppendPathDelim(ExpandFileNameUTF8(Directory))+Prefix;
-  i:=1;
-  repeat
-    Result:=CurPath+IntToStr(i)+'.tmp';
-    if not (FileExistsUTF8(Result) or DirectoryExistsUTF8(Result)) then exit;
-    inc(i);
-  until false;
+  Result := LazFileUtils.GetTempFileNameUTF8(Directory, Prefix);
 end;
 
 function SearchFileInPath(const Filename, BasePath, SearchPath,

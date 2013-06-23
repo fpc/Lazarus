@@ -219,7 +219,7 @@ function CopyDirTree(const SourceDir, TargetDir: string; Flags: TCopyFileFlags=[
 
 // file actions
 function ReadFileToString(const Filename: string): string;
-function GetTempFilename(const Directory, Prefix: string): string;
+function GetTempFilename(const Directory, Prefix: string): string; inline;
 
 // basic functions similar to the RTL but working with UTF-8 instead of the
 // system encoding

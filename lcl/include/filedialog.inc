@@ -344,7 +344,7 @@ begin
       Dir := ExtractFileDir(AFilename);
       if Dir = '' then
         Dir := '.';
-      Result := FileIsWritable(Dir);
+      Result := DirectoryIsWritable(Dir);
     end;
     if not Result then begin
         MessageDlg(rsfdFileReadOnlyTitle,

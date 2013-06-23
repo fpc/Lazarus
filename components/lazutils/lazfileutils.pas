@@ -102,7 +102,7 @@ function FileSizeUtf8(const Filename: string): int64;
 function GetAppConfigDirUTF8(Global: Boolean; Create: boolean = false): string;
 function GetAppConfigFileUTF8(Global: Boolean; SubDir: boolean = false;
   CreateDir: boolean = false): string;
-
+function GetTempFileNameUTF8(const Dir, Prefix: String): String;
 
 // UNC paths
 function IsUNCPath(const {%H-}Path: String): Boolean;
@@ -378,7 +378,7 @@ var
   fs: TFileStreamUtf8;
   s: String;
 begin
-  TempFilename:=SysUtils.GetTempFilename(AppendPathDelim(DirectoryName),'tstperm');
+  TempFilename:=GetTempFilenameUTF8(AppendPathDelim(DirectoryName),'tstperm');
   Result:=false;
   try
     fs:=TFileStreamUtf8.Create(TempFilename, fmCreate);
@@ -909,8 +909,30 @@ begin
     raise EInOutError.Create(Format(lrsUnableToCreateConfigDirectoryS,[Dir]));
 end;
 
-
-
+function GetTempFileNameUTF8(const Dir, Prefix: String): String;
+var
+  I: Integer;
+  Start: String;
+begin
+  if Assigned(OnGetTempFile) then
+    Result:=OnGetTempFile(Dir,Prefix)
+  else
+  begin
+    if (Dir='') then
+      Start:=GetTempDir
+    else
+      Start:=IncludeTrailingPathDelimiter(Dir);
+    if (Prefix='') then
+      Start:=Start+'TMP'
+    else
+      Start:=Start+Prefix;
+    I:=0;
+    repeat
+      Result:=Format('%s%.5d.tmp',[Start,I]);
+      Inc(I);
+    until not FileExistsUTF8(Result);
+  end;
+end;
 
 function ForceDirectoriesUTF8(const Dir: string): Boolean;
 var
