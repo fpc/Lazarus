@@ -33,8 +33,8 @@ interface
 
 uses
   Classes, SysUtils, LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
-  ComCtrls, ButtonPanel, Dialogs, LazarusIDEStrConsts, ComponentReg,
-  PackageDefs, FormEditingIntf, PropEdits, ListFilterEdit, TreeFilterEdit, fgl;
+  ComCtrls, ButtonPanel, Dialogs, Buttons, LazarusIDEStrConsts, ComponentReg,
+  PackageDefs, FormEditingIntf, PropEdits, ListFilterEdit, TreeFilterEdit, fgl, LCLProc;
 
 type
 
@@ -43,7 +43,8 @@ type
   { TComponentListForm }
 
   TComponentListForm = class(TForm)
-    ButtonPanel: TButtonPanel;
+    UseAndCloseButton: TBitBtn;
+    ButtonPanel: TPanel;
     LabelSearch: TLabel;
     ComponentsListbox: TListBox;
     ListFilterEd: TListFilterEdit;
@@ -58,8 +59,8 @@ type
     InheritanceTree: TTreeView;
     PalletteTree: TTreeView;
     TreeFilterEd: TTreeFilterEdit;
-    procedure CancelButtonClick(Sender: TObject);
-    procedure OKButtonClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure UseAndCloseButtonClick(Sender: TObject);
     procedure ComponentsDblClick(Sender: TObject);
     procedure ComponentsClick(Sender: TObject);
     procedure ComponentsListboxDrawItem(Control: TWinControl; Index: Integer;
@@ -76,7 +77,10 @@ type
   private
     PrevPageIndex: Integer;
     FComponentList: TRegisteredCompList;
+    procedure ClearSelection;
+    procedure ComponentWasAdded;
     procedure FindAllLazarusComponents;
+    procedure UpdateButtonState;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -96,7 +100,7 @@ constructor TComponentListForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FComponentList := TRegisteredCompList.Create;
-  ButtonPanel.OKButton.Caption     := lisUseSelected;
+  UseAndCloseButton.Caption := lisUseAndClose;
   ComponentsListBox.ItemHeight     := ComponentPaletteImageHeight + 1;
   InheritanceTree.DefaultItemHeight:= ComponentPaletteImageHeight + 1;
   PalletteTree.DefaultItemHeight   := ComponentPaletteImageHeight + 1;
@@ -116,13 +120,31 @@ begin
   FindAllLazarusComponents;
   UpdateComponentSelection(nil);
   ListFilterEd.InvalidateFilter;
+  IDEComponentPalette.AddHandlerComponentAdded(@ComponentWasAdded);
 end;
 
 destructor TComponentListForm.Destroy;
 begin
+  if Assigned(IDEComponentPalette) then
+    IDEComponentPalette.RemoveHandlerComponentAdded(@ComponentWasAdded);
   ComponentListForm := nil;
   FreeAndNil(FComponentList);
   inherited Destroy;
+end;
+
+procedure TComponentListForm.FormShow(Sender: TObject);
+begin
+  UpdateButtonState;
+end;
+
+procedure TComponentListForm.ClearSelection;
+begin
+  if ComponentsListbox.IsVisible then
+    ComponentsListbox.ItemIndex := -1
+  else if PalletteTree.IsVisible then
+    PalletteTree.Selected := Nil
+  else if InheritanceTree.IsVisible then
+    InheritanceTree.Selected := Nil;
 end;
 
 function TComponentListForm.GetSelectedComponent: TRegisteredComponent;
@@ -133,8 +155,10 @@ begin
   if ComponentsListbox.IsVisible then
   begin
     i := ComponentsListbox.ItemIndex;
-    if i>=0 then
+    if i>=0 then begin
       Result := TRegisteredComponent(ComponentsListbox.Items.Objects[i]);
+      DebugLn(['*** Getting component ', Result.ComponentClass.ClassName, ' from index ', i]);
+    end;
   end
   else if PalletteTree.IsVisible then
   begin
@@ -146,6 +170,12 @@ begin
     if Assigned(InheritanceTree.Selected) then
       Result := TRegisteredComponent(InheritanceTree.Selected.Data);
   end;
+end;
+
+procedure TComponentListForm.ComponentWasAdded;
+begin
+  ClearSelection;
+  UpdateButtonState;
 end;
 
 procedure TComponentListForm.FindAllLazarusComponents;
@@ -169,6 +199,11 @@ begin
         end;
     end;
   end;
+end;
+
+procedure TComponentListForm.UpdateButtonState;
+begin
+  UseAndCloseButton.Enabled := Assigned(GetSelectedComponent);
 end;
 
 procedure TComponentListForm.UpdateComponentSelection(Sender: TObject);
@@ -351,7 +386,7 @@ end;
 procedure TComponentListForm.ComponentsDblClick(Sender: TObject);
 // This is used for all 3 lists / treeviews
 begin
-  OKButtonClick(nil);       // Select and close this form
+  UseAndCloseButtonClick(nil);       // Select and close this form
 end;
 
 procedure TComponentListForm.ComponentsClick(Sender: TObject);
@@ -362,6 +397,7 @@ begin
   AComponent:=GetSelectedComponent;
   if AComponent<>nil then
     IDEComponentPalette.Selected:=AComponent;
+  UpdateButtonState;
 end;
 
 procedure TComponentListForm.ComponentsListboxKeyDown(Sender: TObject;
@@ -444,10 +480,10 @@ procedure TComponentListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: 
 //Close the form on escape key like every other IDE dialog does
 begin
   if (Key=VK_ESCAPE) and (Parent=nil) then
-    CancelButtonClick(nil);
+    UseAndCloseButtonClick(nil);
 end;
 
-procedure TComponentListForm.OKButtonClick(Sender: TObject);
+procedure TComponentListForm.UseAndCloseButtonClick(Sender: TObject);
 // Select component from palette and close this form. User can insert the component.
 var
   AComponent: TRegisteredComponent;
@@ -455,14 +491,11 @@ begin
   AComponent := GetSelectedComponent;
   if AComponent<>nil then begin
     IDEComponentPalette.Selected := AComponent;
+    ClearSelection;
     Close;
   end;
-end;
-
-procedure TComponentListForm.CancelButtonClick(Sender: TObject);
-begin
-  IDEComponentPalette.Selected := nil; // Remove component selection from palette.
-  Close;
+//  IDEComponentPalette.Selected := nil; // Remove component selection from palette.
+//  Close;
 end;
 
 end.

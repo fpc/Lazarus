@@ -130,7 +130,8 @@ type
   { TBaseComponentPalette }
   
   TComponentPaletteHandlerType = (
-    cphtUpdateVisible // visibility of component palette icons is recomputed
+    cphtUpdateVisible, // visibility of component palette icons is recomputed
+    cphtComponentAdded // Typically selection is changed after component was added.
     );
 
   TEndUpdatePaletteEvent =
@@ -138,6 +139,7 @@ type
   TGetComponentClass = procedure(const AClass: TComponentClass) of object;
   TUpdateCompVisibleEvent = procedure(AComponent: TRegisteredComponent;
                       var VoteVisible: integer { Visible>0 }  ) of object;
+  TComponentAddedEvent = procedure of object;
   RegisterUnitComponentProc = procedure(const Page, UnitName: ShortString;
                                         ComponentClass: TComponentClass);
 
@@ -207,7 +209,11 @@ type
                         const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent;
                         AsLast: boolean = false);
     procedure RemoveHandlerUpdateVisible(
-                       const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent);
+                        const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent);
+    procedure AddHandlerComponentAdded(
+                        const OnComponentAddedEvent: TComponentAddedEvent);
+    procedure RemoveHandlerComponentAdded(
+                        const OnComponentAddedEvent: TComponentAddedEvent);
   public
     property Pages[Index: integer]: TBaseComponentPage read GetItems; default;
     property UpdateLock: integer read FUpdateLock;
@@ -652,8 +658,12 @@ begin
 end;
 
 procedure TBaseComponentPalette.DoAfterComponentAdded;
+var
+  i: Integer;
 begin
-
+  i:=FHandlers[cphtComponentAdded].Count;
+  while FHandlers[cphtComponentAdded].NextDownIndex(i) do
+    TComponentAddedEvent(FHandlers[cphtComponentAdded][i])();
 end;
 
 procedure TBaseComponentPalette.ConsistencyCheck;
@@ -818,6 +828,18 @@ procedure TBaseComponentPalette.RemoveHandlerUpdateVisible(
   const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent);
 begin
   RemoveHandler(cphtUpdateVisible,TMethod(OnUpdateCompVisibleEvent));
+end;
+
+procedure TBaseComponentPalette.AddHandlerComponentAdded(
+  const OnComponentAddedEvent: TComponentAddedEvent);
+begin
+  AddHandler(cphtComponentAdded,TMethod(OnComponentAddedEvent));
+end;
+
+procedure TBaseComponentPalette.RemoveHandlerComponentAdded(
+  const OnComponentAddedEvent: TComponentAddedEvent);
+begin
+  RemoveHandler(cphtComponentAdded,TMethod(OnComponentAddedEvent));
 end;
 
 end.

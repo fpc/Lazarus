@@ -1,15 +1,16 @@
 object ComponentListForm: TComponentListForm
-  Left = 390
-  Height = 472
-  Top = 158
+  Left = 281
+  Height = 467
+  Top = 40
   Width = 300
   ActiveControl = ListFilterEd
   Caption = 'Components'
-  ClientHeight = 472
+  ClientHeight = 467
   ClientWidth = 300
   KeyPreview = True
   OnClose = FormClose
   OnKeyDown = FormKeyDown
+  OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '1.1'
   object PageControl: TPageControl
@@ -18,9 +19,8 @@ object ComponentListForm: TComponentListForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = ButtonPanel
     Left = 1
-    Height = 401
+    Height = 396
     Top = 29
     Width = 298
     ActivePage = TabSheetListBox
@@ -31,56 +31,58 @@ object ComponentListForm: TComponentListForm
     OnChange = PageControlChange
     object TabSheetListBox: TTabSheet
       Caption = 'List'
-      ClientHeight = 362
-      ClientWidth = 292
+      ClientHeight = 366
+      ClientWidth = 294
       object Panel7: TPanel
         Left = 0
-        Height = 362
+        Height = 366
         Top = 0
-        Width = 292
+        Width = 294
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 2
-        ClientHeight = 362
-        ClientWidth = 292
+        ClientHeight = 366
+        ClientWidth = 294
         TabOrder = 0
         object ComponentsListbox: TListBox
           Left = 2
-          Height = 358
+          Height = 362
           Top = 2
-          Width = 288
+          Width = 290
           Align = alClient
           ItemHeight = 0
           OnClick = ComponentsClick
           OnDblClick = ComponentsDblClick
           OnDrawItem = ComponentsListboxDrawItem
           OnKeyDown = ComponentsListboxKeyDown
+          ScrollWidth = 286
           Sorted = True
           Style = lbOwnerDrawFixed
           TabOrder = 0
+          TopIndex = -1
         end
       end
     end
     object TabSheetPaletteTree: TTabSheet
       Caption = 'Palette'
-      ClientHeight = 442
-      ClientWidth = 332
+      ClientHeight = 366
+      ClientWidth = 294
       object Panel5: TPanel
         Left = 0
-        Height = 442
+        Height = 366
         Top = 0
-        Width = 332
+        Width = 294
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 5
-        ClientHeight = 442
-        ClientWidth = 332
+        ClientHeight = 366
+        ClientWidth = 294
         TabOrder = 0
         object PalletteTree: TTreeView
           Left = 5
-          Height = 432
+          Height = 356
           Top = 5
-          Width = 322
+          Width = 284
           Align = alClient
           ReadOnly = True
           ShowLines = False
@@ -94,24 +96,24 @@ object ComponentListForm: TComponentListForm
     end
     object TabSheetInheritance: TTabSheet
       Caption = 'Inheritance'
-      ClientHeight = 442
-      ClientWidth = 332
+      ClientHeight = 366
+      ClientWidth = 294
       object Panel6: TPanel
         Left = 0
-        Height = 442
+        Height = 366
         Top = 0
-        Width = 332
+        Width = 294
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 5
-        ClientHeight = 442
-        ClientWidth = 332
+        ClientHeight = 366
+        ClientWidth = 294
         TabOrder = 0
         object InheritanceTree: TTreeView
           Left = 5
-          Height = 432
+          Height = 356
           Top = 5
-          Width = 322
+          Width = 284
           Align = alClient
           ReadOnly = True
           TabOrder = 0
@@ -141,7 +143,7 @@ object ComponentListForm: TComponentListForm
       Left = 6
       Height = 16
       Top = 6
-      Width = 75
+      Width = 70
       BorderSpacing.Around = 6
       Caption = 'LabelSearch'
       ParentColor = False
@@ -151,14 +153,15 @@ object ComponentListForm: TComponentListForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = LabelSearch
       AnchorSideTop.Side = asrCenter
-      Left = 87
-      Height = 22
-      Top = 3
+      Left = 82
+      Height = 24
+      Top = 2
       Width = 169
       UseFormActivate = True
       ButtonWidth = 23
       NumGlyphs = 1
       BorderSpacing.Left = 5
+      Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
       TabOrder = 0
@@ -169,10 +172,10 @@ object ComponentListForm: TComponentListForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = LabelSearch
       AnchorSideTop.Side = asrCenter
-      Left = 87
-      Height = 22
-      Top = 3
-      Width = 186
+      Left = 82
+      Height = 24
+      Top = 2
+      Width = 191
       ButtonWidth = 23
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
@@ -181,22 +184,32 @@ object ComponentListForm: TComponentListForm
       TabOrder = 1
     end
   end
-  object ButtonPanel: TButtonPanel
+  object ButtonPanel: TPanel
     Left = 6
-    Height = 30
-    Top = 436
-    Width = 288
-    OKButton.Name = 'OKButton'
-    OKButton.DefaultCaption = True
-    OKButton.OnClick = OKButtonClick
-    HelpButton.Name = 'HelpButton'
-    HelpButton.DefaultCaption = True
-    CloseButton.Name = 'CloseButton'
-    CloseButton.DefaultCaption = True
-    CancelButton.Name = 'CancelButton'
-    CancelButton.DefaultCaption = True
-    CancelButton.OnClick = CancelButtonClick
+    Height = 34
+    Top = 428
+    Width = 290
+    Anchors = [akLeft, akRight, akBottom]
+    ClientHeight = 34
+    ClientWidth = 290
     TabOrder = 2
-    ShowButtons = [pbOK, pbCancel]
+    object UseAndCloseButton: TBitBtn
+      AnchorSideTop.Control = ButtonPanel
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = ButtonPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 165
+      Height = 30
+      Top = 2
+      Width = 115
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Right = 9
+      Caption = 'Use and &Close'
+      Kind = bkOK
+      ModalResult = 1
+      OnClick = UseAndCloseButtonClick
+      TabOrder = 0
+    end
   end
 end
