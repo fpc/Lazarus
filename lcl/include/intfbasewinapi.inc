@@ -54,7 +54,7 @@ begin
   Result := True;
 end;
 
-function TWidgetSet.BeginPaint(Handle: hWnd; Var PS: TPaintStruct): hdc;
+function TWidgetSet.BeginPaint(Handle: hwnd; var PS: TPaintStruct): hdc;
 begin
   Result:=GetDC(Handle);
 end;
@@ -341,7 +341,7 @@ begin
     Result := False;
 end;
 
-function TWidgetset.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
+function TWidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): Boolean;
 begin
   Result := false;
 end;
@@ -797,8 +797,8 @@ begin
   Result := 0;
 end;
 
-function TWidgetSet.EnumFontFamiliesEx(DC: HDC; LpLogFont:PLogFont;
-  Callback: FontEnumExProc; Lparam:LParam; Flags: dword): longint;
+function TWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
+  Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint;
 begin
   DebugLn('EnumFontFamiliesEx is not yet implemented for this widgetset');
   Result := 0;
@@ -1044,12 +1044,12 @@ begin
   Result := nil;
 end;
 
-function TWidgetSet.GetRGNBox(RGN : HRGN; lpRect : PRect) : Longint;
+function TWidgetSet.GetRgnBox(RGN: HRGN; lpRect: PRect): Longint;
 begin
   Result := SIMPLEREGION;
 end;
 
-function TWidgetSet.GetROP2(DC: HDC): Integer;
+function TWidgetSet.GetROP2(DC: HDC): integer;
 begin
   Result := 0;
 end;
@@ -1619,6 +1619,21 @@ begin
   Result := False;
 end;
 
+function TWidgetSet.LoadBitmap(hInstance: THandle; lpBitmapName: PChar): HBitmap;
+begin
+  Result := LoadBitmapFunction(hInstance, lpBitmapName);
+end;
+
+function TWidgetSet.LoadCursor(hInstance: THandle; lpCursorName: PChar): HCursor;
+begin
+  Result := LoadCursorFunction(hInstance, lpCursorName);
+end;
+
+function TWidgetSet.LoadIcon(hInstance: THandle; lpIconName: PChar): HIcon;
+begin
+  Result := LoadIconFunction(hInstance, lpIconName);
+end;
+
 function TWidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
 begin
   Result := False;
@@ -1647,7 +1662,7 @@ end;
 
 function TWidgetSet.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer;
-  ROp: DWORD): Boolean;
+  Rop: DWORD): Boolean;
 begin
   Result := StretchMaskBlt(DestDC,X,Y,Width,Height,SrcDC,XSrc,YSrc,Width,Height,
                            Mask,XMask,YMask,ROp);
@@ -1954,7 +1969,7 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
+function TWidgetSet.SetCaretPosEx(handle: HWnd; X, Y: Integer): Boolean;
 begin
   Result := False;
 end;

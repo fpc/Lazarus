@@ -217,11 +217,17 @@ type
     X, Y : Longint) : Longint;
   TQuestionDialogFunction = function(const aCaption, aMsg: string;
     DlgType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
+  TLoadBitmapFunction = function(hInstance: THandle; lpBitmapName: PChar): HBitmap;
+  TLoadCursorFunction = function(hInstance: THandle; lpCursorName: PChar): HCursor;
+  TLoadIconFunction= function(hInstance: THandle; lpIconName: PChar): HIcon;
 
 var
   InputDialogFunction: TInputDialogFunction = nil;
   PromptDialogFunction: TPromptDialogFunction = nil;
   QuestionDialogFunction: TQuestionDialogFunction = nil;
+  LoadBitmapFunction: TLoadBitmapFunction = nil;
+  LoadCursorFunction: TLoadCursorFunction = nil;
+  LoadIconFunction: TLoadIconFunction = nil;
 
 var
   WidgetSet: TWidgetSet = nil;

@@ -661,6 +661,21 @@ begin
   Result := WidgetSet.LineTo(DC, X, Y);
 end;
 
+function LoadBitmap(hInstance: THandle; lpBitmapName: PChar): HBitmap;
+begin
+  Result := Widgetset.LoadBitmap(hInstance, lpBitmapName);
+end;
+
+function LoadCursor(hInstance: THandle; lpCursorName: PChar): HCursor;
+begin
+  Result := Widgetset.LoadCursor(hInstance, lpCursorName);
+end;
+
+function LoadIcon(hInstance: THandle; lpIconName: PChar): HIcon;
+begin
+  Result := Widgetset.LoadIcon(hInstance, lpIconName);
+end;
+
 function LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
 begin
   Result := WidgetSet.LPtoDP(DC, Points, Count);

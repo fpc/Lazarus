@@ -183,6 +183,9 @@ function IsZoomed(handle: HWND): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF
 
 procedure LeaveCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function LineTo(DC: HDC; X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function LoadBitmap(hInstance: THandle; lpBitmapName: PChar): HBitmap; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function LoadCursor(hInstance: THandle; lpCursorName: PChar): HCursor; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function LoadIcon(hInstance: THandle; lpIconName: PChar): HIcon; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function LPtoDP(DC: HDC; var Points; Count: Integer): BOOL; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 //function MakeLong --> independent

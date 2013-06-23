@@ -2011,11 +2011,6 @@ function LazResourceXPMToPPChar(const ResourceName: string): PPChar;
 function ReadXPMFromStream(Stream: TStream; Size: integer): PPChar;
 function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer): boolean;
 function LoadCursorFromLazarusResource(ACursorName: String): HCursor;
-// for winapi compatibility
-function LoadBitmap(hInstance: THandle; lpBitmapName: PChar): HBitmap;
-function LoadCursor(hInstance: THandle; lpCursorName: PChar): HCursor;
-function LoadIcon(hInstance: THandle; lpIconName: PChar): HIcon;
-
 function LoadBitmapFromLazarusResource(const ResourceName: String): TBitmap; deprecated;
 function LoadBitmapFromLazarusResourceHandle(Handle: TLResource): TBitmap; deprecated;
 
@@ -2132,7 +2127,7 @@ begin
   end;
 end;
 
-function LoadBitmap(hInstance: THandle; lpBitmapName: PChar): HBitmap;
+function LocalLoadBitmap(hInstance: THandle; lpBitmapName: PChar): HBitmap;
 var
   Bmp: TBitmap;
 begin
@@ -2147,7 +2142,7 @@ begin
   end;
 end;
 
-function LoadCursor(hInstance: THandle; lpCursorName: PChar): HCursor;
+function LocalLoadCursor(hInstance: THandle; lpCursorName: PChar): HCursor;
 var
   Cur: TCursorImage;
 begin
@@ -2162,7 +2157,7 @@ begin
   end;
 end;
 
-function LoadIcon(hInstance: THandle; lpIconName: PChar): HIcon;
+function LocalLoadIcon(hInstance: THandle; lpIconName: PChar): HIcon;
 var
   Ico: TIcon;
 begin
@@ -2797,6 +2792,9 @@ end;
 initialization
   UpdateLock := TCriticalSection.Create;
   OnGetSystemFont := @LocalGetSystemFont;
+  LoadBitmapFunction := @LocalLoadBitmap;
+  LoadCursorFunction := @LocalLoadCursor;
+  LoadIconFunction := @LocalLoadIcon;
   RegisterIntegerConsts(TypeInfo(TColor), TIdentToInt(@IdentToColor), TIntToIdent(@ColorToIdent));
   RegisterIntegerConsts(TypeInfo(TFontCharset), TIdentToInt(@IdentToCharset), TIntToIdent(@CharsetToIdent));
   RegisterInterfaceInitializationHandler(@InterfaceInit);

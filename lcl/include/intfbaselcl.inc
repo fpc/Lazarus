@@ -339,7 +339,7 @@ begin
 end;
 
 function TWidgetSet.Frame3d(DC: HDC; var ARect: TRect;
-  const FrameWidth: integer; const Style: TGraphicsBevelCut): boolean;
+  const FrameWidth: integer; const Style: TGraphicsBevelCut): Boolean;
 begin
   Result:= false;
 end;
@@ -465,7 +465,7 @@ begin
   Result:=false;
 end;
 
-function TWidgetSet.IntfSendsUTF8KeyPress: boolean;
+function TWidgetSet.IntfSendsUTF8KeyPress: Boolean;
 begin
   Result := GetLCLCapability(lcSendsUTF8KeyPress) = LCL_CAPABILITY_YES;
 end;
@@ -637,8 +637,8 @@ procedure TWidgetSet.SendCachedLCLMessages;
 begin
 end;
 
-function TWidgetSet.SetCaretRespondToFocus(Handle: HWnd;
-  ShowHideOnFocus: Boolean): Boolean;
+function TWidgetSet.SetCaretRespondToFocus(handle: HWND;
+  ShowHideOnFocus: boolean): Boolean;
 begin
   Result := False;
 end;
