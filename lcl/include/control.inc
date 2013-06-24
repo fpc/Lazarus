@@ -883,7 +883,7 @@ end;
 {------------------------------------------------------------------------------
   function TControl.IsHelpContextStored: boolean;
 ------------------------------------------------------------------------------}
-function TControl.IsHelpContextStored: boolean;
+function TControl.IsHelpContextStored: Boolean;
 begin
   Result := (ActionLink = nil) or not ActionLink.IsHelpLinked;
 end;
@@ -1003,7 +1003,7 @@ end;
 {------------------------------------------------------------------------------
        TControl.LMCaptureChanged
 ------------------------------------------------------------------------------}
-procedure TControl.LMCaptureChanged(Var Message: TLMessage);
+procedure TControl.LMCaptureChanged(var Message: TLMessage);
 begin
   //DebugLn('[LMCaptureChanged for '+Name+':'+Classname+']');
   CaptureChanged;
@@ -1020,7 +1020,7 @@ end;
 {------------------------------------------------------------------------------
        TControl.CMHITTEST
 ------------------------------------------------------------------------------}
-procedure TControl.CMHITTEST(var Message : TCMHitTest);
+procedure TControl.CMHitTest(var Message: TCMHittest);
 begin
   Message.Result := 1;
 end;
@@ -1637,7 +1637,7 @@ end;
 {------------------------------------------------------------------------------
   TControl Method SetColor  "Sets the default color and tells the widget set"
 ------------------------------------------------------------------------------}
-procedure TControl.SetColor(value : TColor);
+procedure TControl.SetColor(Value: TColor);
 begin
   if FColor <> Value then
   begin
@@ -2335,7 +2335,7 @@ end;
 
   Mouse event handler
  ------------------------------------------------------------------------------}
-procedure TControl.WMLButtonDblClk(var Message: TLMLButtonDblClk);
+procedure TControl.WMLButtonDBLCLK(var Message: TLMLButtonDblClk);
 begin
   //TODO: SendCancelMode(self);
   if (csCaptureMouse in ControlStyle) and (mbLeft in CaptureMouseButtons) then
@@ -2358,7 +2358,7 @@ end;
 
   Mouse event handler
  ------------------------------------------------------------------------------}
-procedure TControl.WMRButtonDblClk(var Message: TLMRButtonDblClk);
+procedure TControl.WMRButtonDBLCLK(var Message: TLMRButtonDblClk);
 begin
   if (csCaptureMouse in ControlStyle) and (mbRight in CaptureMouseButtons) then
   begin
@@ -2377,7 +2377,7 @@ end;
 
   Mouse event handler
  ------------------------------------------------------------------------------}
-procedure TControl.WMMButtonDblClk(var Message: TLMMButtonDblClk);
+procedure TControl.WMMButtonDBLCLK(var Message: TLMMButtonDblClk);
 begin
   if (csCaptureMouse in ControlStyle) and (mbMiddle in CaptureMouseButtons) then
   begin
@@ -2416,7 +2416,7 @@ end;
 
   Mouse event handler
  ------------------------------------------------------------------------------}
-procedure TControl.WMLButtonTripleClk(var Message: TLMLButtonTripleClk);
+procedure TControl.WMLButtonTripleCLK(var Message: TLMLButtonTripleClk);
 begin
   //TODO: SendCancelMode(self);
   if (csCaptureMouse in ControlStyle) and (mbLeft in CaptureMouseButtons) then
@@ -2437,7 +2437,7 @@ end;
 
   Mouse event handler
  ------------------------------------------------------------------------------}
-procedure TControl.WMRButtonTripleClk(var Message: TLMRButtonTripleClk);
+procedure TControl.WMRButtonTripleCLK(var Message: TLMRButtonTripleClk);
 begin
   if (csCaptureMouse in ControlStyle) and (mbRight in CaptureMouseButtons) then
   begin
@@ -2456,7 +2456,7 @@ end;
 
   Mouse event handler
  ------------------------------------------------------------------------------}
-procedure TControl.WMMButtonTripleClk(var Message: TLMMButtonTripleClk);
+procedure TControl.WMMButtonTripleCLK(var Message: TLMMButtonTripleClk);
 begin
   if (csCaptureMouse in ControlStyle) and (mbMiddle in CaptureMouseButtons) then
   begin
@@ -2495,7 +2495,7 @@ end;
 
   Mouse event handler
  ------------------------------------------------------------------------------}
-procedure TControl.WMLButtonQuadClk(var Message: TLMLButtonQuadClk);
+procedure TControl.WMLButtonQuadCLK(var Message: TLMLButtonQuadClk);
 begin
   //TODO: SendCancelMode(self);
   if (csCaptureMouse in ControlStyle) and (mbLeft in CaptureMouseButtons) then
@@ -2516,7 +2516,7 @@ end;
 
   Mouse event handler
  ------------------------------------------------------------------------------}
-procedure TControl.WMRButtonQuadClk(var Message: TLMRButtonQuadClk);
+procedure TControl.WMRButtonQuadCLK(var Message: TLMRButtonQuadClk);
 begin
   if (csCaptureMouse in ControlStyle) and (mbRight in CaptureMouseButtons) then
   begin
@@ -2535,7 +2535,7 @@ end;
 
   Mouse event handler
  ------------------------------------------------------------------------------}
-procedure TControl.WMMButtonQuadClk(var Message: TLMMButtonQuadClk);
+procedure TControl.WMMButtonQuadCLK(var Message: TLMMButtonQuadClk);
 begin
   if (csCaptureMouse in ControlStyle) and (mbMiddle in CaptureMouseButtons) then
   begin
@@ -2761,7 +2761,7 @@ end;
 {------------------------------------------------------------------------------
        TControl SetAutoSize
 ------------------------------------------------------------------------------}
-procedure TControl.SetAutoSize(value : Boolean);
+procedure TControl.SetAutoSize(Value: Boolean);
 begin
   If AutoSize <> Value then begin
     FAutoSize := Value;
@@ -3284,12 +3284,12 @@ begin
   Result := TControlActionLink;
 end;
 
-function TControl.IsClientHeightStored: Boolean;
+function TControl.IsClientHeightStored: boolean;
 begin
   Result:=false;
 end;
 
-function TControl.IsClientWidthStored: Boolean;
+function TControl.IsClientWidthStored: boolean;
 begin
   Result:=false;
 end;
@@ -3649,7 +3649,7 @@ end;
 {------------------------------------------------------------------------------
   TControl SetBounds
 ------------------------------------------------------------------------------}
-procedure TControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
+procedure TControl.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
 begin
   ChangeBounds(ALeft, ATop, AWidth, AHeight, false);
 end;
@@ -4281,7 +4281,7 @@ end;
        TControl.SetZOrder
 
 ------------------------------------------------------------------------------}
-procedure TControl.SetZOrder(Topmost: Boolean);
+procedure TControl.SetZOrder(TopMost: Boolean);
 const
   POSITION: array[Boolean] of Integer = (0, MaxInt);
 begin
@@ -4912,7 +4912,7 @@ end;
 
   Get the devicecontext of the parent Wincontrol for this Control.
  ------------------------------------------------------------------------------}
-function TControl.GetDeviceContext(var WindowHandle: HWnd): HDC;
+function TControl.GetDeviceContext(var WindowHandle: HWND): HDC;
 begin
   if Parent = nil then
     raise EInvalidOperation.CreateFmt(rsControlHasNoParentWindow, [Name]);
@@ -5560,7 +5560,7 @@ end;
        assumes: FParent <> nil
 ------------------------------------------------------------------------------}
 
-procedure TControl.CMParentBidiModeChanged(var Message: TLMessage);
+procedure TControl.CMParentBiDiModeChanged(var Message: TLMessage);
 begin
   if csLoading in ComponentState then exit;
 
