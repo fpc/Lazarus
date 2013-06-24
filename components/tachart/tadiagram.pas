@@ -122,9 +122,8 @@ type
     property Decorators: TDiaDecoratorList read FDecorators;
   end;
 
-  TDiaPosition = class(TDiaObject)
-  private
-    FOwner: TDiaElement;
+  TDiaPosition = object
+  strict private
     FPercentage: Boolean;
     FReverse: Boolean;
     FUnits: TDiaUnits;
@@ -133,14 +132,17 @@ type
     procedure SetReverse(AValue: Boolean);
     procedure SetUnits(AValue: TDiaUnits);
     procedure SetValue(AValue: Double);
+    procedure Notify;
+  private
+    FOwner: TDiaElement;
   public
-    constructor Create(AOwner: TDiaElement);
-    procedure Changed(ASender: TDiaObject); override;
-    procedure Notify(ASender: TDiaObject); override;
+    constructor Init(AOwner: TDiaElement);
+    procedure Assign(const ASource: TDiaPosition);
+    class function Equals(const A, B: TDiaPosition): Boolean;
     function Calc(const A, B: TDiaPoint): TDiaPoint;
 
     property Owner: TDiaElement read FOwner;
-  published
+  public
     property Percentage: Boolean read FPercentage write SetPercentage;
     property Reverse: Boolean read FReverse write SetReverse;
     property Units: TDiaUnits read FUnits write SetUnits;
@@ -156,13 +158,13 @@ type
     FRight: TDiaPosition;
     FTop: TDiaPosition;
     FWidth: TDiaPosition;
-    procedure SetBottom(AValue: TDiaPosition);
+    procedure SetBottom(const AValue: TDiaPosition);
     procedure SetCaption(AValue: String);
-    procedure SetHeight(AValue: TDiaPosition);
-    procedure SetLeft(AValue: TDiaPosition);
-    procedure SetRight(AValue: TDiaPosition);
-    procedure SetTop(AValue: TDiaPosition);
-    procedure SetWidth(AValue: TDiaPosition);
+    procedure SetHeight(const AValue: TDiaPosition);
+    procedure SetLeft(const AValue: TDiaPosition);
+    procedure SetRight(const AValue: TDiaPosition);
+    procedure SetTop(const AValue: TDiaPosition);
+    procedure SetWidth(const AValue: TDiaPosition);
   public
     FBottomLeft: TDiaPoint;
     FBottomRight: TDiaPoint;
@@ -172,10 +174,9 @@ type
     FInternalDraw: procedure (ASelf: TDiaBox);
   public
     constructor Create;
-    destructor Destroy; override;
     procedure Draw; override;
     procedure Changed(ASender: TDiaObject); override;
-  published
+  public
     property Left: TDiaPosition read FLeft write SetLeft;
     property Top: TDiaPosition read FTop write SetTop;
     property Right: TDiaPosition read FRight write SetRight;
@@ -189,18 +190,16 @@ type
   strict private
     FElement: TDiaElement;
     FPosition: TDiaPosition;
-    procedure SetPosition(AValue: TDiaPosition);
+    procedure SetPosition(const AValue: TDiaPosition);
   private
     FActualPos: TDiaPoint;
     procedure SetElement(AValue: TDiaElement);
   public
     constructor Create;
-    destructor Destroy; override;
     procedure Changed(ASender: TDiaObject); override;
     procedure Notify(ASender: TDiaObject); override;
     property ActualPos: TDiaPoint read FActualPos;
     property Element: TDiaElement read FElement;
-  published
     property Position: TDiaPosition read FPosition write SetPosition;
   end;
 
@@ -223,12 +222,11 @@ type
     FShape: TDiaEndPointShape;
     FWidth: TDiaPosition;
     procedure SetConnector(AValue: TDiaConnector);
-    procedure SetLength(AValue: TDiaPosition);
+    procedure SetLength(const AValue: TDiaPosition);
     procedure SetShape(AValue: TDiaEndPointShape);
-    procedure SetWidth(AValue: TDiaPosition);
+    procedure SetWidth(const AValue: TDiaPosition);
   public
     constructor Create;
-    destructor Destroy; override;
     property Connector: TDiaConnector read FConnector write SetConnector;
     property Length: TDiaPosition read FLength write SetLength;
     property Shape: TDiaEndPointShape read FShape write SetShape;
@@ -254,6 +252,8 @@ type
     property Finish: TDiaEndPoint read FFinish write SetFinish;
   end;
 
+  operator =(const A, B: TDiaPosition): Boolean; overload; inline;
+
 implementation
 
 uses
@@ -276,20 +276,18 @@ begin
   Result.Y := WeightedAverage(AP1.Y, AP2.Y, ACoeff);
 end;
 
+operator = (const A, B: TDiaPosition): Boolean;
+begin
+  Result := TDiaPosition.Equals(A, B);
+end;
+
 { TDiaEndPoint }
 
 constructor TDiaEndPoint.Create;
 begin
   inherited;
-  FLength := TDiaPosition.Create(Self);
-  FWidth := TDiaPosition.Create(Self);
-end;
-
-destructor TDiaEndPoint.Destroy;
-begin
-  FreeAndNil(FLength);
-  FreeAndNil(FWidth);
-  inherited;
+  FLength.Init(Self);
+  FWidth.Init(Self);
 end;
 
 procedure TDiaEndPoint.SetConnector(AValue: TDiaConnector);
@@ -299,11 +297,10 @@ begin
   Notify(Self);
 end;
 
-procedure TDiaEndPoint.SetLength(AValue: TDiaPosition);
+procedure TDiaEndPoint.SetLength(const AValue: TDiaPosition);
 begin
   if FLength = AValue then exit;
-  FLength := AValue;
-  Notify(Self);
+  FLength.Assign(AValue);
 end;
 
 procedure TDiaEndPoint.SetShape(AValue: TDiaEndPointShape);
@@ -313,11 +310,10 @@ begin
   Notify(Self);
 end;
 
-procedure TDiaEndPoint.SetWidth(AValue: TDiaPosition);
+procedure TDiaEndPoint.SetWidth(const AValue: TDiaPosition);
 begin
   if FWidth = AValue then exit;
-  FWidth := AValue;
-  Notify(Self);
+  FWidth.Assign(AValue);
 end;
 
 { TDiaDecoratorEnumerator }
@@ -447,18 +443,12 @@ end;
 
 procedure TDiaConnector.Changed(ASender: TDiaObject);
 begin
-  FPosition.Changed(ASender);
+  //
 end;
 
 constructor TDiaConnector.Create;
 begin
-  FPosition := TDiaPosition.Create(Element);
-end;
-
-destructor TDiaConnector.Destroy;
-begin
-  FreeAndNil(FElement);
-  inherited;
+  FPosition.Init(Element);
 end;
 
 procedure TDiaConnector.Notify(ASender: TDiaObject);
@@ -469,18 +459,17 @@ end;
 
 procedure TDiaConnector.SetElement(AValue: TDiaElement);
 begin
-  if FElement = AValue then Exit;
+  if FElement = AValue then exit;
   Notify(Self);
   FElement := AValue;
   FPosition.FOwner := FElement;
   Notify(Self);
 end;
 
-procedure TDiaConnector.SetPosition(AValue: TDiaPosition);
+procedure TDiaConnector.SetPosition(const AValue: TDiaPosition);
 begin
-  if FPosition = AValue then Exit;
-  FPosition := AValue;
-  Notify(Self);
+  if FPosition = AValue then exit;
+  FPosition.Assign(AValue);
 end;
 
 { TDiaCoordConverter }
@@ -555,19 +544,10 @@ end;
 
 constructor TDiaBox.Create;
 begin
-  FLeft := TDiaPosition.Create(Self);
-  FRight := TDiaPosition.Create(Self);
-  FTop := TDiaPosition.Create(Self);
-  FBottom := TDiaPosition.Create(Self);
-end;
-
-destructor TDiaBox.Destroy;
-begin
-  FreeAndNil(FLeft);
-  FreeAndNil(FRight);
-  FreeAndNil(FTop);
-  FreeAndNil(FBottom);
-  inherited;
+  FLeft.Init(Self);
+  FRight.Init(Self);
+  FTop.Init(Self);
+  FBottom.Init(Self);
 end;
 
 procedure TDiaBox.Draw;
@@ -576,10 +556,10 @@ begin
     FInternalDraw(Self);
 end;
 
-procedure TDiaBox.SetBottom(AValue: TDiaPosition);
+procedure TDiaBox.SetBottom(const AValue: TDiaPosition);
 begin
-  if FBottom = AValue then Exit;
-  FBottom := AValue;
+  if FBottom = AValue then exit;
+  FBottom.Assign(AValue);
 end;
 
 procedure TDiaBox.SetCaption(AValue: String);
@@ -589,34 +569,34 @@ begin
   Notify(Self);
 end;
 
-procedure TDiaBox.SetHeight(AValue: TDiaPosition);
+procedure TDiaBox.SetHeight(const AValue: TDiaPosition);
 begin
-  if FHeight = AValue then Exit;
-  FHeight := AValue;
+  if FHeight = AValue then exit;
+  FHeight.Assign(AValue);
 end;
 
-procedure TDiaBox.SetLeft(AValue: TDiaPosition);
+procedure TDiaBox.SetLeft(const AValue: TDiaPosition);
 begin
-  if FLeft = AValue then Exit;
-  FLeft := AValue;
+  if FLeft = AValue then exit;
+  FLeft.Assign(AValue);
 end;
 
-procedure TDiaBox.SetRight(AValue: TDiaPosition);
+procedure TDiaBox.SetRight(const AValue: TDiaPosition);
 begin
-  if FRight = AValue then Exit;
-  FRight := AValue;
+  if FRight = AValue then exit;
+  FRight.Assign(AValue);
 end;
 
-procedure TDiaBox.SetTop(AValue: TDiaPosition);
+procedure TDiaBox.SetTop(const AValue: TDiaPosition);
 begin
-  if FTop = AValue then Exit;
-  FTop := AValue;
+  if FTop = AValue then exit;
+  FTop.Assign(AValue);
 end;
 
-procedure TDiaBox.SetWidth(AValue: TDiaPosition);
+procedure TDiaBox.SetWidth(const AValue: TDiaPosition);
 begin
-  if FWidth = AValue then Exit;
-  FWidth := AValue;
+  if FWidth = AValue then exit;
+  FWidth.Assign(AValue);
 end;
 
 { TDiagram }
@@ -736,6 +716,15 @@ end;
 
 { TDiaPosition }
 
+procedure TDiaPosition.Assign(const ASource: TDiaPosition);
+begin
+  Self.FPercentage := ASource.Percentage;
+  Self.FReverse := ASource.Reverse;
+  Self.FUnits := ASource.Units;
+  Self.FValue := ASource.Value;
+  Notify;
+end;
+
 function TDiaPosition.Calc(const A, B: TDiaPoint): TDiaPoint;
 var
   d: TDiagram;
@@ -796,50 +785,56 @@ begin
   Result.Y[duCentimeters] := dp.Y;
 end;
 
-procedure TDiaPosition.Changed(ASender: TDiaObject);
+class function TDiaPosition.Equals(const A, B: TDiaPosition): Boolean;
 begin
-  if ASender = Self then exit;
-  //
+  Result :=
+    (A.Percentage = B.Percentage) and
+    (A.Reverse = B.Reverse) and
+    (A.Units = B.Units) and
+    (A.Value = B.Value);
 end;
 
-constructor TDiaPosition.Create(AOwner: TDiaElement);
+constructor TDiaPosition.Init(AOwner: TDiaElement);
 begin
-  inherited Create;
   FOwner := AOwner;
+  FPercentage := false;
+  FReverse := false;
+  FUnits := duNone;
+  FValue := 0.0;
 end;
 
-procedure TDiaPosition.Notify(ASender: TDiaObject);
+procedure TDiaPosition.Notify;
 begin
   if Owner <> nil then
-    Owner.Notify(ASender);
+    Owner.Notify(Owner);
 end;
 
 procedure TDiaPosition.SetPercentage(AValue: Boolean);
 begin
   if FPercentage = AValue then Exit;
   FPercentage := AValue;
-  Notify(Self);
+  Notify;
 end;
 
 procedure TDiaPosition.SetReverse(AValue: Boolean);
 begin
   if FReverse = AValue then exit;
   FReverse := AValue;
-  Notify(Self);
+  Notify;
 end;
 
 procedure TDiaPosition.SetUnits(AValue: TDiaUnits);
 begin
   if FUnits = AValue then exit;
   FUnits := AValue;
-  Notify(Self);
+  Notify;
 end;
 
 procedure TDiaPosition.SetValue(AValue: Double);
 begin
   if FValue = AValue then exit;
   FValue := AValue;
-  Notify(Self);
+  Notify;
 end;
 
 end.
