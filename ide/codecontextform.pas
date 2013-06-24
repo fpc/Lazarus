@@ -350,8 +350,10 @@ begin
     // show buttons
     for i:=0 to FHints.Count-1 do begin
       Item:=TCodeContextItem(FHints[i]);
-      Item.CopyAllButton.BoundsRect:=Item.NewBounds;
-      Item.CopyAllButton.Visible:=Item.NewBounds.Right>0;
+      if Item.CopyAllButton <> nil then begin
+        Item.CopyAllButton.BoundsRect:=Item.NewBounds;
+        Item.CopyAllButton.Visible:=Item.NewBounds.Right>0;
+      end;
     end;
   finally
     if not KeepOpen then
