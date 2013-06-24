@@ -143,6 +143,7 @@ type
 
     property Owner: TDiaElement read FOwner;
   public
+    function Defined: Boolean; inline;
     property Percentage: Boolean read FPercentage write SetPercentage;
     property Reverse: Boolean read FReverse write SetReverse;
     property Units: TDiaUnits read FUnits write SetUnits;
@@ -531,13 +532,13 @@ begin
   tr := DiaPoint(dbsRight, dbsTop);
   bl := DiaPoint(dbsLeft, dbsBottom);
   br := DiaPoint(dbsRight, dbsBottom);
-  if (Left.Units <> duNone) and (Top.Units <> duNone) then
+  if Left.Defined and Top.Defined then
     FTopLeft := XY(Left.Calc(tl, tr), Top.Calc(tl, bl));
-  if (Right.Units <> duNone) and (Top.Units <> duNone) then
+  if Right.Defined and Top.Defined then
     FTopRight := XY(Right.Calc(tr, tl), Top.Calc(tr, br));
-  if (Left.Units <> duNone) and (Bottom.Units <> duNone) then
+  if Left.Defined and Bottom.Defined then
     FBottomLeft := XY(Left.Calc(tl, tr), Bottom.Calc(bl, tl));
-  if (Right.Units <> duNone) and (Bottom.Units <> duNone) then
+  if Right.Defined and Bottom.Defined then
     FBottomRight := XY(Right.Calc(br, bl), Bottom.Calc(br, tr));
   inherited;
 end;
@@ -783,6 +784,11 @@ begin
   Result.Y[duPixels] := ip.Y;
   Result.X[duCentimeters] := dp.X;
   Result.Y[duCentimeters] := dp.Y;
+end;
+
+function TDiaPosition.Defined: Boolean;
+begin
+  Result := Units <> duNone;
 end;
 
 class function TDiaPosition.Equals(const A, B: TDiaPosition): Boolean;
