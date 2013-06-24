@@ -1280,7 +1280,7 @@ procedure TvSVGVectorialReader.ReadNextPathCommand(ACurTokenType: TSVGTokenType;
   var i: Integer; var CurX, CurY: Double; AData: TvVectorialPage;
   ADoc: TvVectorialDocument);
 var
-  X, Y, X2, Y2, X3, Y3: Double;
+  X, Y, X2, Y2, X3, Y3, XQ, YQ: Double;
   LargeArcFlag, SweepFlag, LeftmostEllipse, ClockwiseArc: Boolean;
   lCurTokenType: TSVGTokenType;
   lDebugStr: String;
@@ -1475,35 +1475,42 @@ begin
   // --------------
   else if lCurTokenType in [sttQuadraticBezierTo, sttRelativeQuadraticBezierTo] then
   begin
-    X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-    Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
+    XQ := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+    YQ := FSVGPathTokenizer.Tokens.Items[i+2].Value;
     X := FSVGPathTokenizer.Tokens.Items[i+3].Value;
     Y := FSVGPathTokenizer.Tokens.Items[i+4].Value;
 
     // Careful that absolute coordinates require using ConvertSVGCoordinatesToFPVCoordinates
     if lCurTokenType in [sttRelativeQuadraticBezierTo] then
     begin
-      ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
+      ConvertSVGDeltaToFPVDelta(AData, XQ, YQ, XQ, YQ);
       ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+
+      XQ := XQ + CurX;
+      YQ := YQ + CurY;
+      X := X + CurX;
+      Y := Y + CurY;
     end
     else
     begin
-      ConvertSVGCoordinatesToFPVCoordinates(AData, X2, Y2, X2, Y2);
+      ConvertSVGCoordinatesToFPVCoordinates(AData, XQ, YQ, XQ, YQ);
       ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
     end;
 
-    if lCurTokenType = sttRelativeQuadraticBezierTo then
-    begin
-      AData.AddBezierToPath(X2 + CurX, Y2 + CurY, X2 + CurX, Y2 + CurY, X + CurX, Y + CurY);
-      CurX := CurX + X;
-      CurY := CurY + Y;
-    end
-    else
-    begin
-      AData.AddBezierToPath(X2, Y2, X2, Y2, X, Y);
-      CurX := X;
-      CurY := Y;
-    end;
+    // Convert quadratic to cubic bezier
+    // CP1 = QP0 + 2/3 *(QP1-QP0)
+    // CP2 = QP2 + 2/3 *(QP1-QP2)
+    // See http://stackoverflow.com/questions/3162645/convert-a-quadratic-bezier-to-a-cubic
+    // Just CP1=CP2=QP1 does not work! See svg/w3c/path2.svg
+    X2 := CurX + (2/3) * (XQ-CurX);
+    Y2 := CurY + (2/3) * (YQ-CurY);
+    //
+    X3 := X + (2/3) * (XQ-X);
+    Y3 := Y + (2/3) * (YQ-Y);
+
+    AData.AddBezierToPath(X2, Y2, X3, Y3, X, Y);
+    CurX := X;
+    CurY := Y;
 
     Inc(i, 5);
   end
