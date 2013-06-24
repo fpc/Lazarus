@@ -85,7 +85,7 @@ procedure DrawDiaLink(ASelf: TDiaLink);
 var
   id: IChartDrawer;
 var
-  startPos, endPos: TPoint;
+  startPos, endPos, p: TPoint;
   d: TDiaDecorator;
 begin
   if (ASelf.Start.Connector = nil) or (ASelf.Finish.Connector = nil) then exit;
@@ -96,12 +96,25 @@ begin
       id.Pen := (d as TDiaPenDecorator).Pen;
   startPos := ToImage(ASelf.Start.Connector.ActualPos);
   endPos := ToImage(ASelf.Finish.Connector.ActualPos);
-  id.Line(startPos, endPos);
+  case ASelf.Routing of
+    dlrStraight: begin
+      id.Line(startPos, endPos);
+      p := startPos;
+    end;
+    dlrXThenY: begin
+      p := Point(endPos.X, startPos.Y);
+      id.Polyline([startPos, p, endPos], 0, 3);
+    end;
+    dlrYThenX: begin
+      p := Point(startPos.X, endPos.Y);
+      id.Polyline([startPos, p, endPos], 0, 3);
+    end;
+  end;
   if ASelf.Start.Shape <> depsNone then
-    with startPos - endPos do
+    with p - endPos do
       DrawEndPoint(id, ASelf.Start, startPos, ArcTan2(Y, X));
   if ASelf.Finish.Shape <> depsNone then
-    with endPos - startPos do
+    with endPos - p do
       DrawEndPoint(id, ASelf.Finish, endPos, ArcTan2(Y, X));
 end;
 

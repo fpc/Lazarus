@@ -234,11 +234,15 @@ type
     property Width: TDiaPosition read FWidth write SetWidth;
   end;
 
+  TDiaLinkRouting = (dlrStraight, dlrXThenY, dlrYThenX);
+
   TDiaLink = class(TDiaElement)
   private
     FFinish: TDiaEndPoint;
+    FRouting: TDiaLinkRouting;
     FStart: TDiaEndPoint;
     procedure SetFinish(AValue: TDiaEndPoint);
+    procedure SetRouting(AValue: TDiaLinkRouting);
     procedure SetStart(AValue: TDiaEndPoint);
   protected
     procedure SetOwner(AValue: TDiagram); override;
@@ -251,6 +255,7 @@ type
   published
     property Start: TDiaEndPoint read FStart write SetStart;
     property Finish: TDiaEndPoint read FFinish write SetFinish;
+    property Routing: TDiaLinkRouting read FRouting write SetRouting;
   end;
 
   operator =(const A, B: TDiaPosition): Boolean; overload; inline;
@@ -407,6 +412,13 @@ begin
   inherited SetOwner(AValue);
   FStart.SetOwner(AValue);
   FFinish.SetOwner(AValue);
+end;
+
+procedure TDiaLink.SetRouting(AValue: TDiaLinkRouting);
+begin
+  if FRouting = AValue then exit;
+  FRouting := AValue;
+  Notify(Self);
 end;
 
 procedure TDiaLink.SetStart(AValue: TDiaEndPoint);
