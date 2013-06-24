@@ -3,7 +3,6 @@ object ComponentListForm: TComponentListForm
   Height = 467
   Top = 40
   Width = 300
-  ActiveControl = ListFilterEd
   Caption = 'Components'
   ClientHeight = 467
   ClientWidth = 300
@@ -44,22 +43,18 @@ object ComponentListForm: TComponentListForm
         ClientHeight = 366
         ClientWidth = 294
         TabOrder = 0
-        object ComponentsListbox: TListBox
+        object ListTree: TTreeView
           Left = 2
           Height = 362
           Top = 2
           Width = 290
           Align = alClient
-          ItemHeight = 0
-          OnClick = ComponentsClick
-          OnDblClick = ComponentsDblClick
-          OnDrawItem = ComponentsListboxDrawItem
-          OnKeyDown = ComponentsListboxKeyDown
-          ScrollWidth = 286
-          Sorted = True
-          Style = lbOwnerDrawFixed
+          DefaultItemHeight = 18
           TabOrder = 0
-          TopIndex = -1
+          OnClick = ComponentsClick
+          OnCustomDrawItem = TreeCustomDrawItem
+          OnDblClick = ComponentsDblClick
+          OnKeyDown = TreeKeyDown
         end
       end
     end
@@ -87,9 +82,10 @@ object ComponentListForm: TComponentListForm
           ReadOnly = True
           ShowLines = False
           TabOrder = 0
+          OnClick = ComponentsClick
           OnCustomDrawItem = TreeCustomDrawItem
           OnDblClick = ComponentsDblClick
-          OnKeyDown = PalletteTreeKeyDown
+          OnKeyDown = TreeKeyDown
           Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
         end
       end
@@ -117,9 +113,10 @@ object ComponentListForm: TComponentListForm
           Align = alClient
           ReadOnly = True
           TabOrder = 0
+          OnClick = ComponentsClick
           OnCustomDrawItem = TreeCustomDrawItem
           OnDblClick = ComponentsDblClick
-          OnKeyDown = InheritanceTreeKeyDown
+          OnKeyDown = TreeKeyDown
           Options = [tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
         end
       end
@@ -148,25 +145,6 @@ object ComponentListForm: TComponentListForm
       Caption = 'LabelSearch'
       ParentColor = False
     end
-    object ListFilterEd: TListFilterEdit
-      AnchorSideLeft.Control = LabelSearch
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = LabelSearch
-      AnchorSideTop.Side = asrCenter
-      Left = 82
-      Height = 24
-      Top = 2
-      Width = 169
-      UseFormActivate = True
-      ButtonWidth = 23
-      NumGlyphs = 1
-      BorderSpacing.Left = 5
-      Font.Color = clBtnShadow
-      MaxLength = 0
-      ParentFont = False
-      TabOrder = 0
-      FilteredListbox = ComponentsListbox
-    end
     object TreeFilterEd: TTreeFilterEdit
       AnchorSideLeft.Control = LabelSearch
       AnchorSideLeft.Side = asrBottom
@@ -181,7 +159,8 @@ object ComponentListForm: TComponentListForm
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 5
       MaxLength = 0
-      TabOrder = 1
+      TabOrder = 0
+      FilteredTreeview = ListTree
     end
   end
   object ButtonPanel: TPanel

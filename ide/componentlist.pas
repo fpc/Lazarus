@@ -43,11 +43,10 @@ type
   { TComponentListForm }
 
   TComponentListForm = class(TForm)
+    ListTree: TTreeView;
     UseAndCloseButton: TBitBtn;
     ButtonPanel: TPanel;
     LabelSearch: TLabel;
-    ComponentsListbox: TListBox;
-    ListFilterEd: TListFilterEdit;
     PageControl: TPageControl;
     Panel3: TPanel;
     Panel5: TPanel;
@@ -63,20 +62,19 @@ type
     procedure UseAndCloseButtonClick(Sender: TObject);
     procedure ComponentsDblClick(Sender: TObject);
     procedure ComponentsClick(Sender: TObject);
-    procedure ComponentsListboxDrawItem(Control: TWinControl; Index: Integer;
-      ARect: TRect; State: TOwnerDrawState);
+    //procedure ComponentsListboxDrawItem(Control: TWinControl; Index: Integer;
+    //  ARect: TRect; State: TOwnerDrawState);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure TreeCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
-    procedure ComponentsListboxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure InheritanceTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure PageControlChange(Sender: TObject);
-    procedure PalletteTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure TreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure UpdateComponentSelection(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     PrevPageIndex: Integer;
     FComponentList: TRegisteredCompList;
+    FKeepSelected: Boolean;
     procedure ClearSelection;
     procedure ComponentWasAdded;
     procedure FindAllLazarusComponents;
@@ -101,11 +99,11 @@ begin
   inherited Create(AOwner);
   FComponentList := TRegisteredCompList.Create;
   UseAndCloseButton.Caption := lisUseAndClose;
-  ComponentsListBox.ItemHeight     := ComponentPaletteImageHeight + 1;
+  ListTree.DefaultItemHeight       := ComponentPaletteImageHeight + 1;
   InheritanceTree.DefaultItemHeight:= ComponentPaletteImageHeight + 1;
   PalletteTree.DefaultItemHeight   := ComponentPaletteImageHeight + 1;
 
-  //Translations..
+  //Translations
   LabelSearch.Caption := lisMenuFind;
   Caption := lisCmpLstComponents;
   TabSheetListBox.Caption := lisCmpLstList;
@@ -115,11 +113,9 @@ begin
   //PLEASE add a defaultpage property in TPagecontrol
   PrevPageIndex := -1;
   PageControl.ActivePage := TabSheetListBox;
-  TreeFilterEd.Visible := False;
-
   FindAllLazarusComponents;
   UpdateComponentSelection(nil);
-  ListFilterEd.InvalidateFilter;
+  TreeFilterEd.InvalidateFilter;
   IDEComponentPalette.AddHandlerComponentAdded(@ComponentWasAdded);
 end;
 
@@ -139,26 +135,18 @@ end;
 
 procedure TComponentListForm.ClearSelection;
 begin
-  if ComponentsListbox.IsVisible then
-    ComponentsListbox.ItemIndex := -1
-  else if PalletteTree.IsVisible then
-    PalletteTree.Selected := Nil
-  else if InheritanceTree.IsVisible then
-    InheritanceTree.Selected := Nil;
+  ListTree.Selected := Nil;
+  PalletteTree.Selected := Nil;
+  InheritanceTree.Selected := Nil;
 end;
 
 function TComponentListForm.GetSelectedComponent: TRegisteredComponent;
-var
-  i: Integer;
 begin
   Result:=nil;
-  if ComponentsListbox.IsVisible then
+  if ListTree.IsVisible then
   begin
-    i := ComponentsListbox.ItemIndex;
-    if i>=0 then begin
-      Result := TRegisteredComponent(ComponentsListbox.Items.Objects[i]);
-      DebugLn(['*** Getting component ', Result.ComponentClass.ClassName, ' from index ', i]);
-    end;
+    if Assigned(ListTree.Selected) then
+      Result := TRegisteredComponent(ListTree.Selected.Data);
   end
   else if PalletteTree.IsVisible then
   begin
@@ -211,7 +199,7 @@ procedure TComponentListForm.UpdateComponentSelection(Sender: TObject);
 var
   AComponent: TRegisteredComponent;
   AClassName: string;
-  AClassList, List: TStringlist;
+  AClassList, List: TStringList;
   i, j, AIndex: Integer;
   ANode: TTreeNode;
   AClass: TClass;
@@ -219,18 +207,18 @@ begin
   if [csDestroying,csLoading]*ComponentState<>[] then exit;
   Screen.Cursor := crHourGlass;
   try
-    //First tabsheet (ComponentsListbox)
-    ComponentsListbox.Items.BeginUpdate;
+    //First tabsheet (List)
+    ListTree.BeginUpdate;
     try
-      ComponentsListbox.Items.Clear;
+      ListTree.Items.Clear;
       for i := 0 to FComponentList.Count-1 do
       begin
         AComponent := FComponentList[i];
         AClassName := AComponent.ComponentClass.ClassName;
-        ListFilterEd.Items.AddObject(AClassName, AComponent);
+        ANode := ListTree.Items.AddChildObject(Nil, AClassName, AComponent);
       end;
     finally
-      ComponentsListbox.Items.EndUpdate;
+      ListTree.EndUpdate;
     end;
 
     //Second tabsheet (palette layout)
@@ -254,8 +242,8 @@ begin
     end;
 
     //Third tabsheet (component inheritence)
-    List := TStringlist.Create;
-    AClassList := TStringlist.Create;
+    List := TStringList.Create;
+    AClassList := TStringList.Create;
     InheritanceTree.Items.BeginUpdate;
     try
       InheritanceTree.Items.Clear;
@@ -306,7 +294,7 @@ begin
     Screen.Cursor := crDefault;
   end;
 end;
-
+{
 procedure TComponentListForm.ComponentsListboxDrawItem(Control: TWinControl;
   Index: Integer; ARect: TRect; State: TOwnerDrawState);
 var
@@ -337,7 +325,7 @@ begin
             ARect.Top+(ARect.Bottom-ARect.Top-TxtH) div 2, CurStr);
   end;
 end;
-
+}
 procedure TComponentListForm.TreeCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
 var
@@ -384,13 +372,13 @@ begin
 end;
 
 procedure TComponentListForm.ComponentsDblClick(Sender: TObject);
-// This is used for all 3 lists / treeviews
+// This is used for all 3 treeviews
 begin
   UseAndCloseButtonClick(nil);       // Select and close this form
 end;
 
 procedure TComponentListForm.ComponentsClick(Sender: TObject);
-// This is used for all 3 lists / treeviews
+// This is used for all 3 treeviews
 var
   AComponent: TRegisteredComponent;
 begin
@@ -400,22 +388,7 @@ begin
   UpdateButtonState;
 end;
 
-procedure TComponentListForm.ComponentsListboxKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-begin
-  if Key = VK_RETURN then
-    if (ComponentsListbox.ItemIndex >= 0) then
-      ComponentsDblClick(Sender);
-end;
-
-procedure TComponentListForm.PalletteTreeKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-begin
-  if Key = VK_RETURN then
-    ComponentsDblClick(Sender);
-end;
-
-procedure TComponentListForm.InheritanceTreeKeyDown(Sender: TObject;
+procedure TComponentListForm.TreeKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_RETURN then
@@ -428,41 +401,23 @@ begin
     'TComponentListForm.PageControlChange: PageControl.PageIndex = PrevPageIndex = %d',
     [PrevPageIndex]));
   case PageControl.PageIndex of
-    0: begin
-      ListFilterEd.Visible := True;
-      ListFilterEd.SetFocus;
-      if PrevPageIndex > 0 then
-        ListFilterEd.Text := TreeFilterEd.Text;
-      ListFilterEd.InvalidateFilter;
-      TreeFilterEd.Visible := False;
-    end;
-    1: begin
-      TreeFilterEd.Visible := True;
-      TreeFilterEd.FilteredTreeview := PalletteTree;
-      TreeFilterEd.SetFocus;
-      if PrevPageIndex <= 0 then
-        TreeFilterEd.Text := ListFilterEd.Text;
-      TreeFilterEd.InvalidateFilter;
-      ListFilterEd.Visible := False;
-    end;
-    2: begin
-      TreeFilterEd.Visible := True;
-      TreeFilterEd.FilteredTreeview := InheritanceTree;
-      TreeFilterEd.SetFocus;
-      if PrevPageIndex <= 0 then
-        TreeFilterEd.Text := ListFilterEd.Text;
-      TreeFilterEd.InvalidateFilter;
-      ListFilterEd.Visible := False;
-    end;
+    0: TreeFilterEd.FilteredTreeview := ListTree;
+    1: TreeFilterEd.FilteredTreeview := PalletteTree;
+    2: TreeFilterEd.FilteredTreeview := InheritanceTree;
   end;
+  TreeFilterEd.InvalidateFilter;
   PrevPageIndex := PageControl.PageIndex;
 end;
 
 procedure TComponentListForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  // Using a dock manager...
-  if Parent<>nil then
-  begin
+  if Parent=nil then begin
+    ClearSelection;
+    if not fKeepSelected then
+      IDEComponentPalette.Selected := Nil;
+  end
+  else begin
+    // Using a dock manager...
     CloseAction := caNone;
     //todo: helper function in DockManager or IDEDockMaster for closing forms.
     // Only close the window if it's floating.
@@ -474,13 +429,14 @@ begin
       TCustomForm(HostDockSite).Close;
     end;
   end;
+  FKeepSelected := False;
 end;
 
 procedure TComponentListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 //Close the form on escape key like every other IDE dialog does
 begin
-  if (Key=VK_ESCAPE) and (Parent=nil) then
-    UseAndCloseButtonClick(nil);
+  if Key=VK_ESCAPE then
+    Close;
 end;
 
 procedure TComponentListForm.UseAndCloseButtonClick(Sender: TObject);
@@ -491,11 +447,9 @@ begin
   AComponent := GetSelectedComponent;
   if AComponent<>nil then begin
     IDEComponentPalette.Selected := AComponent;
-    ClearSelection;
+    FKeepSelected := True;
     Close;
   end;
-//  IDEComponentPalette.Selected := nil; // Remove component selection from palette.
-//  Close;
 end;
 
 end.
