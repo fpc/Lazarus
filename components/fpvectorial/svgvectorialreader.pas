@@ -879,6 +879,7 @@ procedure TvSVGVectorialReader.ApplyLayerStyles(ADestEntity: TvEntity);
 var
   lStringsKeys, lStringsValues: TStringList;
   i, j: Integer;
+  lCurKey, lCurValue: String;
 begin
   for i := 0 to FLayerStylesKeys.Count-1 do
   begin
@@ -886,12 +887,16 @@ begin
     lStringsValues := TStringList(FLayerStylesValues.Items[i]);
     for j := 0 to lStringsKeys.Count-1 do
     begin
+      lCurKey := lStringsKeys.Strings[j];
+      lCurValue := lStringsValues.Strings[j];
       if ADestEntity is TvEntityWithPen then
-        ReadSVGPenStyleWithKeyAndValue(lStringsKeys.Strings[j], lStringsValues.Strings[j], ADestEntity as TvEntityWithPen);
-      if ADestEntity is TvEntityWithPenAndBrush then
-        ReadSVGBrushStyleWithKeyAndValue(lStringsKeys.Strings[j], lStringsValues.Strings[j], ADestEntity as TvEntityWithPenAndBrush);
+        ReadSVGPenStyleWithKeyAndValue(lCurKey, lCurValue, ADestEntity as TvEntityWithPen);
+      // Unfortunately SVG uses 'fill' for the text color =/ so we need to hack
+      // our way out of this ambiguity with the brush fill
+      if (ADestEntity is TvEntityWithPenAndBrush) and (not (ADestEntity is TvText)) then
+        ReadSVGBrushStyleWithKeyAndValue(lCurKey, lCurValue, ADestEntity as TvEntityWithPenAndBrush);
       if ADestEntity is TvEntityWithPenBrushAndFont then
-        ReadSVGFontStyleWithKeyAndValue(lStringsKeys.Strings[j], lStringsValues.Strings[j], ADestEntity as TvEntityWithPenBrushAndFont);
+        ReadSVGFontStyleWithKeyAndValue(lCurKey, lCurValue, ADestEntity as TvEntityWithPenBrushAndFont);
     end;
   end;
 end;
@@ -981,6 +986,8 @@ begin
   lCircle.Pen.Style := psClear;
   lCircle.Brush.Style := bsSolid;
   lCircle.Brush.Color := colBlack;
+  // Apply the layer style
+  ApplyLayerStyles(lCircle);
 
   // read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -1029,6 +1036,8 @@ begin
   lEllipse.Pen.Style := psClear;
   lEllipse.Brush.Style := bsSolid;
   lEllipse.Brush.Color := colBlack;
+  // Apply the layer style
+  ApplyLayerStyles(lEllipse);
 
   // read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -1114,6 +1123,7 @@ begin
       {$else}
       lLayer.SetPenBrushAndFontElements += ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lLayer);
       lLayer.SetPenBrushAndFontElements += ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lLayer);
+      lLayer.SetPenBrushAndFontElements += ReadSVGFontStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lLayer);
       {$endif}
     end;
   end;
@@ -1184,6 +1194,8 @@ begin
   AData.AddMoveToPath(vx1, vy1);
   AData.AddLineToPath(vx2, vy2);
   lPath := AData.EndPath(True);
+  // Apply the layer style
+  ApplyLayerStyles(lPath);
   // Add the pen/brush
   ReadSVGStyle(lStyleStr, lPath);
   ReadSVGStyle(lStrokeStr, lPath);
@@ -1634,6 +1646,9 @@ begin
   lPath := AData.EndPath(True);
   Result := lPath;
 
+  // Apply the layer style
+  ApplyLayerStyles(lPath);
+
   // now read the other attributes
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
@@ -1671,6 +1686,8 @@ begin
   lRect.Pen.Style := psClear;
   lRect.Brush.Style := bsSolid;
   lRect.Brush.Color := colBlack;
+  // Apply the layer style
+  ApplyLayerStyles(lRect);
 
   // read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -1725,6 +1742,9 @@ begin
   ly := 0.0;
 
   lText := TvText.Create;
+
+  // Apply the layer style
+  ApplyLayerStyles(lText);
 
   // read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do

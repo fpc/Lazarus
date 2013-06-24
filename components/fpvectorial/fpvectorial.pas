@@ -2357,7 +2357,7 @@ function TvText.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
 var
   lStr: string;
 begin
-  lStr := Format('[%s] Name=%s X=%f Y=%f Text="%s" Color=%s Size=%d Name=%s Orientation=%f Bold=%s Italic=%s Underline=%s StrikeThrough=%s',
+  lStr := Format('[%s] Name=%s X=%f Y=%f Text="%s" Color=%s Size=%d Name=%s Orientation=%f Bold=%s Italic=%s Underline=%s StrikeThrough=%s TextAnchor=%s',
     [
     Self.ClassName, Name, X, Y, Value.Text,
     GenerateDebugStrForFPColor(Font.Color),
@@ -2365,8 +2365,9 @@ begin
     BoolToStr(Font.Bold),
     BoolToStr(Font.Italic),
     BoolToStr(Font.Underline),
-    BoolToStr(Font.StrikeThrough)
-    ]);
+    BoolToStr(Font.StrikeThrough),
+    GetEnumName(TypeInfo(TvTextAnchor), integer(TextAnchor))
+  ]);
   Result := ADestRoutine(lStr, APageItem);
 end;
 
