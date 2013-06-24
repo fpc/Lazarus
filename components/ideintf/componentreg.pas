@@ -610,9 +610,13 @@ begin
 end;
 
 destructor TBaseComponentPalette.Destroy;
+var
+  HandlerType: TComponentPaletteHandlerType;
 begin
   Clear;
   FItems.Free;
+  for HandlerType:=Low(HandlerType) to High(HandlerType) do
+    FHandlers[HandlerType].Free;
   inherited Destroy;
 end;
 
