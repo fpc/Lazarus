@@ -359,7 +359,7 @@ type
     procedure SortSubEditors(ParentRow: TOIPropertyGridRow);
     function CanExpandRow(Row: TOIPropertyGridRow): boolean;
 
-    procedure SetRowValue;
+    procedure SetRowValue(CheckFocus: boolean);
     procedure DoCallEdit(Edit: TOIQuickEdit = oiqeEdit);
     procedure RefreshValueEdit;
     procedure ToggleRow;
@@ -425,7 +425,7 @@ type
                                  DefItemHeight: integer);
     destructor Destroy;  override;
     function InitHints: boolean;
-    function CanEditRowValue: boolean;
+    function CanEditRowValue(CheckFocus: boolean): boolean;
     procedure SaveChanges;
     function ConsistencyCheck: integer;
     procedure EraseBackground(DC: HDC); override;
@@ -1288,7 +1288,7 @@ begin
   if s<=length(PropPath) then Result:=nil;
 end;
 
-procedure TOICustomPropertyGrid.SetRowValue;
+procedure TOICustomPropertyGrid.SetRowValue(CheckFocus: boolean);
 var
   CurRow: TOIPropertyGridRow;
   NewValue: string;
@@ -1296,7 +1296,7 @@ var
   OldChangeStep: integer;
 begin
   //debugln(['TOICustomPropertyGrid.SetRowValue A ',dbgs(FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[]),' FItemIndex=',dbgs(FItemIndex),' CanEditRowValue=',CanEditRowValue]);
-  if not CanEditRowValue or Rows[FItemIndex].IsReadOnly then exit;
+  if not CanEditRowValue(CheckFocus) or Rows[FItemIndex].IsReadOnly then exit;
 
   NewValue:=GetCurrentEditValue;
 
@@ -1356,7 +1356,7 @@ var
   CurRow:TOIPropertyGridRow;
   OldChangeStep: integer;
 begin
-  if not CanEditRowValue then exit;
+  if not CanEditRowValue(true) then exit;
 
   OldChangeStep:=fChangeStep;
   CurRow:=Rows[FItemIndex];
@@ -1424,7 +1424,7 @@ end;
 
 procedure TOICustomPropertyGrid.ValueEditExit(Sender: TObject);
 begin
-  SetRowValue;
+  SetRowValue(false);
 end;
 
 procedure TOICustomPropertyGrid.ValueEditChange(Sender: TObject);
@@ -1433,7 +1433,7 @@ begin
   if (pgsUpdatingEditControl in FStates) or not IsCurrentEditorAvailable then exit;
   CurRow:=Rows[FItemIndex];
   if paAutoUpdate in CurRow.Editor.GetAttributes then
-    SetRowValue;
+    SetRowValue(true);
 end;
 
 procedure TOICustomPropertyGrid.ValueEditMouseUp(Sender: TObject;
@@ -1458,7 +1458,7 @@ end;
 
 procedure TOICustomPropertyGrid.ValueCheckBoxExit(Sender: TObject);
 begin
-  SetRowValue;
+  SetRowValue(false);
 end;
 
 procedure TOICustomPropertyGrid.ValueCheckBoxClick(Sender: TObject);
@@ -1469,13 +1469,13 @@ begin
   ValueCheckBox.Caption:=BoolToStr(ValueCheckBox.Checked, True); //'True','False';
   CurRow:=Rows[FItemIndex];
   if paAutoUpdate in CurRow.Editor.GetAttributes then
-    SetRowValue;
+    SetRowValue(true);
 end;
 
 procedure TOICustomPropertyGrid.ValueComboBoxExit(Sender: TObject);
 begin
   if pgsUpdatingEditControl in FStates then exit;
-  SetRowValue;
+  SetRowValue(false);
 end;
 
 procedure TOICustomPropertyGrid.ValueComboBoxKeyDown(Sender: TObject;
@@ -1531,7 +1531,7 @@ begin
     exit;
 
   // save old edit value
-  SetRowValue;
+  SetRowValue(true);
 
   Include(FStates, pgsChangingItemIndex);
   if (FItemIndex >= 0) and (FItemIndex < FRows.Count) then
@@ -1923,12 +1923,12 @@ end;
 
 procedure TOICustomPropertyGrid.SetCurrentRowValue(const NewValue: string);
 begin
-  if not CanEditRowValue or Rows[FItemIndex].IsReadOnly then exit;
+  if not CanEditRowValue(false) or Rows[FItemIndex].IsReadOnly then exit;
   // SetRowValue reads the value from the current edit control and writes it
   // to the property editor
   // -> set the text in the current edit control without changing FLastEditValue
   SetCurrentEditValue(NewValue);
-  SetRowValue;
+  SetRowValue(false);
 end;
 
 procedure TOICustomPropertyGrid.SetItemIndexAndFocus(NewItemIndex: integer;
@@ -1946,15 +1946,18 @@ begin
   end;
 end;
 
-function TOICustomPropertyGrid.CanEditRowValue: boolean;
+function TOICustomPropertyGrid.CanEditRowValue(CheckFocus: boolean): boolean;
+var
+  FocusedControl: TWinControl;
 begin
   Result:=
     not GridIsUpdating and IsCurrentEditorAvailable
     and ((FCurrentEditorLookupRoot = nil)
       or (FPropertyEditorHook = nil)
       or (FPropertyEditorHook.LookupRoot = FCurrentEditorLookupRoot));
-  if Result then begin
-    if FindControl(GetFocus)<>FCurrentEdit then
+  if Result and CheckFocus then begin
+    FocusedControl:=FindControl(GetFocus);
+    if (FocusedControl<>nil) and not IsParentOf(FocusedControl) then
       Result:=false;
   end;
   if Result then begin
@@ -1972,7 +1975,7 @@ end;
 
 procedure TOICustomPropertyGrid.SaveChanges;
 begin
-  SetRowValue;
+  SetRowValue(true);
 end;
 
 function TOICustomPropertyGrid.GetHintTypeAt(RowIndex: integer; X: integer): TPropEditHint;
@@ -2192,7 +2195,7 @@ var
           if Column = oipgcName then
             DoTabKey
           else
-            SetRowValue;
+            SetRowValue(false);
           if FCurrentEdit is TCustomEdit then
             TCustomEdit(FCurrentEdit).SelectAll;
         end;
@@ -3009,7 +3012,7 @@ end;
 
 procedure TOICustomPropertyGrid.ValueComboBoxCloseUp(Sender: TObject);
 begin
-  SetRowValue;
+  SetRowValue(false);
 end;
 
 procedure TOICustomPropertyGrid.ValueComboBoxGetItems(Sender: TObject);
@@ -3240,7 +3243,7 @@ var
   CurRow: TOIPropertyGridRow;
   TypeKind : TTypeKind;
 begin
-  if not CanEditRowValue then exit;
+  if not CanEditRowValue(false) then exit;
 
   if FHintTimer <> nil then
     FHintTimer.Enabled := False;
@@ -3258,7 +3261,7 @@ begin
         ValueComboBox.ItemIndex := ValueComboBox.ItemIndex + 1
       else
         ValueComboBox.ItemIndex := 0;
-      SetRowValue;
+      SetRowValue(false);
       exit;
     end;
   end;
