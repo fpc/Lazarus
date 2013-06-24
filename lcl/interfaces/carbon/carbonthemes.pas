@@ -376,6 +376,7 @@ var
   WindowWidgetDrawInfo: HIThemeWindowWidgetDrawInfo;
   BtnRect: HIRect;
   WindowShape: HIShapeRef;
+  WindowRegion: WindowRegionCode;
   Offset: TPoint;
 begin
   WindowWidgetDrawInfo.version := 0;
@@ -390,21 +391,25 @@ begin
     WP_MDIMINBUTTON:
       begin
         WindowWidgetDrawInfo.widgetType := kThemeWidgetCollapseBox;
+        WindowRegion := kWindowCollapseBoxRgn;
       end;
     WP_MAXBUTTON:
       begin
         WindowWidgetDrawInfo.widgetType := kThemeWidgetZoomBox;
+        WindowRegion := kWindowZoomBoxRgn;
       end;
     WP_CLOSEBUTTON,
     WP_SMALLCLOSEBUTTON,
     WP_MDICLOSEBUTTON:
       begin
         WindowWidgetDrawInfo.widgetType := kThemeWidgetCloseBox;
+        WindowRegion := kWindowCloseBoxRgn;
       end;
     WP_RESTOREBUTTON,
     WP_MDIRESTOREBUTTON:
       begin
         WindowWidgetDrawInfo.widgetType := kThemeWidgetZoomBox;
+        WindowRegion := kWindowZoomBoxRgn;
       end;
     else
       Exit;
@@ -418,7 +423,7 @@ begin
   WindowDrawInfo.state := WindowWidgetDrawInfo.windowState;
   WindowDrawInfo.titleHeight := WindowWidgetDrawInfo.titleHeight;
   WindowDrawInfo.titleWidth := WindowWidgetDrawInfo.titleWidth;
-  HIThemeGetWindowShape(BtnRect, WindowDrawInfo, kWindowTitleBarRgn, WindowShape);
+  HIThemeGetWindowShape(BtnRect, WindowDrawInfo, WindowRegion, WindowShape);
   HIShapeGetBounds(WindowShape, BtnRect);
   Offset := CGRectToRect(BtnRect).TopLeft;
   OffsetRect(R, -Offset.X, -Offset.Y);
