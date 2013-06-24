@@ -268,6 +268,9 @@ type
     property Routing: TDiaLinkRouting read FRouting write SetRouting;
   end;
 
+  function DiaPos(
+    AValue: Double; AUnits: TDiaUnits = duNone;
+    AReverse: Boolean = false; APercentage: Boolean = false): TDiaPosition; inline;
   operator =(const A, B: TDiaPosition): Boolean; overload; inline;
 
 implementation
@@ -279,6 +282,17 @@ uses
 const
   DEFAULT_DPI = 72;
   CM_PER_INCH = 2.54;
+
+function DiaPos(
+  AValue: Double; AUnits: TDiaUnits;
+  AReverse: Boolean; APercentage: Boolean): TDiaPosition;
+begin
+  Result.Init(nil);
+  Result.Value := AValue;
+  Result.Units := AUnits;
+  Result.Reverse := AReverse;
+  Result.Percentage := APercentage;
+end;
 
 function PointDist(const A, B: TDoublePoint): Double; overload;
 begin
