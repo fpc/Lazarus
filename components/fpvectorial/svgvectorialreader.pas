@@ -76,6 +76,7 @@ type
     function ReadSVGFontStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenBrushAndFont): TvSetPenBrushAndFontElements;
     function IsAttributeFromStyle(AStr: string): Boolean;
     procedure ApplyLayerStyles(ADestEntity: TvEntity);
+    procedure ReadAndApplySVGTransformationMatrix(AMatrix: string; ADestEntity: TvEntity);
     //
     procedure ReadDefsFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     //
@@ -898,6 +899,35 @@ begin
       if ADestEntity is TvEntityWithPenBrushAndFont then
         ReadSVGFontStyleWithKeyAndValue(lCurKey, lCurValue, ADestEntity as TvEntityWithPenBrushAndFont);
     end;
+  end;
+end;
+
+// transform="matrix(0.860815 0 -0 1.07602 354.095 482.177)"=>matrix(a, b, c, d, e, f)
+// See http://apike.ca/prog_svg_transform.html
+procedure TvSVGVectorialReader.ReadAndApplySVGTransformationMatrix(
+  AMatrix: string; ADestEntity: TvEntity);
+var
+  lStrings: TStringList;
+  lMatrixElements: array[0..5] of Double;
+  lStr: string;
+  i: Integer;
+begin
+  lStrings := TStringList.Create;
+  try
+    lStrings.Delimiter := ' ';
+    lStr := Copy(AMatrix, 8, Length(AMatrix)-9);
+    lStrings.DelimitedText := lStr;
+    for i := 0 to 5 do
+    begin
+      lMatrixElements[i] := 0;
+      if i<=lStrings.Count-1 then
+        lMatrixElements[i] := StringWithUnitToFloat(lStrings.Strings[i]);
+    end;
+
+    ADestEntity.X := ADestEntity.X + lMatrixElements[4];
+    ADestEntity.Y := ADestEntity.Y + lMatrixElements[5];
+  finally
+    lStrings.Free;
   end;
 end;
 
@@ -1735,7 +1765,7 @@ var
   lx, ly: double;
   lText: TvText;
   i: Integer;
-  lNodeName: DOMString;
+  lNodeName, lNodeValue: DOMString;
   lCurNode: TDOMNode;
 begin
   lx := 0.0;
@@ -1750,16 +1780,23 @@ begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
     if  lNodeName = 'x' then
-      lx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      lx := lx + StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'y' then
-      ly := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      ly := ly + StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'id' then
-      lText.Name := ANode.Attributes.Item[i].NodeValue
+      lText.Name := lNodeValue
+    else if lNodeName = 'transform' then
+    begin
+      ReadAndApplySVGTransformationMatrix(lNodeValue, lText);
+      lx := lx + lText.X;
+      ly := ly + lText.Y;
+    end
     else if lNodeName = 'style' then
-      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lText)
+      ReadSVGStyle(lNodeValue, lText)
     else if IsAttributeFromStyle(lNodeName) then
-      ReadSVGFontStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lText);
+      ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, lText);
   end;
 
   // The text contents are inside as a child text, not as a attribute
