@@ -231,7 +231,8 @@ type
                            dltProject,
                            dltPackage
                           );
-  TDebuggerLocationFlag =  (dlfLoadError  // resolved but failed to load
+  TDebuggerLocationFlag =  (dlfLoadError,  // resolved but failed to load
+                            dlfSearchByFunctionName
                            );
   TDebuggerLocationFlags = set of TDebuggerLocationFlag;
 
@@ -239,10 +240,13 @@ type
 
   TDebuggerUnitInfo = class(TRefCountedObject)
   private
+    FSrcClassName: String;
     FFileName, FDbgFullName: String;
     FFlags: TDebuggerLocationFlags;
+    FFunctionName: String;
     FLocationName, FLocationOwnerName, FLocationFullFile: String;
     FLocationType: TDebuggerLocationType;
+    FUnitName: String;
     function GetFileName: String;
     function GetDbgFullName: String;
     function GetLocationFullFile: String;
@@ -253,8 +257,10 @@ type
     procedure SetLocationType(AValue: TDebuggerLocationType);
   public
     constructor Create(const AFileName: String; const AFullFileName: String);
+    constructor Create(const AUnitName, AClassName, AFunctionName: String);
     function DebugText: String;
     function IsEqual(const AFileName: String; const AFullFileName: String): boolean;
+    function IsEqual(const AUnitName, AClassName, AFunctionName: String): boolean;
     function IsEqual(AnOther: TDebuggerUnitInfo): boolean;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                     const APath: string); virtual;
@@ -267,6 +273,9 @@ type
     property LocationName: String read GetLocationName;
     property LocationFullFile: String read GetLocationFullFile write SetLocationFullFile;
     property Flags: TDebuggerLocationFlags read FFlags write FFlags;
+    property UnitName: String read FUnitName;
+    property SrcClassName: String read FSrcClassName;
+    property FunctionName: String read FFunctionName;
   end;
 
   { TDebuggerUnitInfoList }
@@ -291,6 +300,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     function GetUnitInfoFor(const AFileName: String; const AFullFileName: String): TDebuggerUnitInfo;
+    function GetUnitInfoByFunction(const AUnitName, AClassName, AFunctionName: String): TDebuggerUnitInfo;
     function IndexOf(AnInfo: TDebuggerUnitInfo; AddIfNotExists: Boolean = False): Integer;
     function Count: integer;
     property Items[Index: Integer]: TDebuggerUnitInfo read GetInfo; default;
@@ -3382,15 +3392,37 @@ var
 begin
   i := FList.Count - 1;
   while i >= 0 do begin
-    if FList[i].IsEqual(AFileName, AFullFileName) then begin
+    if (not(dlfSearchByFunctionName in FList[i].Flags)) and
+       FList[i].IsEqual(AFileName, AFullFileName)
+    then begin
       debugln(DBG_LOCATION_INFO, ['TDebuggerLocationProvider.GetLocationInfoFor  Found entry for: ', AFileName, ' / ', AFullFileName]);
-      exit(FList[i])
+      exit(FList[i]);
     end;
     dec(i);
   end;
   Result := TDebuggerUnitInfo.Create(AFileName, AFullFileName);
   FList.Add(Result);
   debugln(DBG_LOCATION_INFO, ['TDebuggerLocationProvider.GetLocationInfoFor  Created new entry (Cnt=',FList.Count,') for: ', AFileName, ' / ', AFullFileName]);
+end;
+
+function TDebuggerUnitInfoProvider.GetUnitInfoByFunction(const AUnitName,
+  AClassName, AFunctionName: String): TDebuggerUnitInfo;
+var
+  i: Integer;
+begin
+  i := FList.Count - 1;
+  while i >= 0 do begin
+    if (dlfSearchByFunctionName in FList[i].Flags) and
+       FList[i].IsEqual(AUnitName, AClassName, AFunctionName)
+    then begin
+      debugln(DBG_LOCATION_INFO, ['TDebuggerLocationProvider.GetLocationInfoFor  Found entry for: ', AUnitName, ' / ', AClassName, ' / ', AFunctionName]);
+      exit(FList[i]);
+    end;
+    dec(i);
+  end;
+  Result := TDebuggerUnitInfo.Create(AUnitName, AClassName, AFunctionName);
+  FList.Add(Result);
+  debugln(DBG_LOCATION_INFO, ['TDebuggerLocationProvider.GetLocationInfoFor  Created new entry (Cnt=',FList.Count,') for: ', AUnitName, ' / ', AClassName, ' / ', AFunctionName]);
 end;
 
 function TDebuggerUnitInfoProvider.IndexOf(AnInfo: TDebuggerUnitInfo;
@@ -3497,6 +3529,16 @@ begin
   FLocationType := dltUnknown;
 end;
 
+constructor TDebuggerUnitInfo.Create(const AUnitName, AClassName,
+  AFunctionName: String);
+begin
+  include(FFlags, dlfSearchByFunctionName);
+  FUnitName := AUnitName;
+  FSrcClassName := AClassName;
+  FFunctionName := AFunctionName;
+  FLocationType := dltUnknown;
+end;
+
 function TDebuggerUnitInfo.DebugText: String;
 var s: String;
 begin
@@ -3504,6 +3546,9 @@ begin
   Result
     := ' FileName="'+FFileName+'" '
     +  'DbgFullName="' + FDbgFullName+'" '
+    +  'UnitName="' + FUnitName+'" '
+    +  'ClassName="' + FSrcClassName+'" '
+    +  'FunctionName="' + FFunctionName+'" '
     +  'Flags="' + dbgs(FFlags)+'" '
     +  'LocationName="' + FLocationName+'" '
     +  'LocationOwnerName="' + FLocationOwnerName+'" '
@@ -3516,6 +3561,14 @@ function TDebuggerUnitInfo.IsEqual(const AFileName: String;
 begin
   Result := (FFileName = AFileName) and
             (FDbgFullName = AFullFileName);
+end;
+
+function TDebuggerUnitInfo.IsEqual(const AUnitName, AClassName,
+  AFunctionName: String): boolean;
+begin
+  Result := (FUnitName = AUnitName) and
+            (FSrcClassName = AClassName) and
+            (FFunctionName = AFunctionName);
 end;
 
 function TDebuggerUnitInfo.IsEqual(AnOther: TDebuggerUnitInfo): boolean;
@@ -3545,11 +3598,18 @@ begin
     FLocationType := dltUnknown;
   end;
 
+  if AConfig.GetValue(APath + 'ByFunction', False) then
+    include(FFlags, dlfSearchByFunctionName)
+  else
+    exclude(FFlags, dlfSearchByFunctionName);
   FFileName          := AConfig.GetValue(APath + 'File', '');
   FLocationOwnerName := AConfig.GetValue(APath + 'UnitOwner', '');
   FLocationName      := AConfig.GetValue(APath + 'UnitFile',  '');
   FDbgFullName       := AConfig.GetValue(APath + 'DbgFile',  '');
   FLocationFullFile := '';
+  FUnitName := AConfig.GetValue(APath + 'UnitName', '');
+  FSrcClassName := AConfig.GetValue(APath + 'SrcClassName', '');
+  FFunctionName := AConfig.GetValue(APath + 'FunctionName', '');
 end;
 
 procedure TDebuggerUnitInfo.SaveDataToXMLConfig(const AConfig: TXMLConfig;
@@ -3560,10 +3620,14 @@ begin
   WriteStr(s{%H-}, LocationType);
   AConfig.SetValue(APath + 'Type', s);
   AConfig.SetValue(APath + 'File', FileName);
+  AConfig.SetDeleteValue(APath + 'ByFunction',  dlfSearchByFunctionName in FFlags, False);
 
   AConfig.SetValue(APath + 'UnitOwner', LocationOwnerName);
   AConfig.SetValue(APath + 'UnitFile',  LocationName);
   AConfig.SetValue(APath + 'DbgFile',   FDbgFullName);
+  AConfig.SetDeleteValue(APath + 'UnitName',   FUnitName, '');
+  AConfig.SetDeleteValue(APath + 'SrcClassName',   FSrcClassName, '');
+  AConfig.SetDeleteValue(APath + 'FunctionName',   FFunctionName, '');
 end;
 
 { TSnapshotList }

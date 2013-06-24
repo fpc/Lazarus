@@ -39,7 +39,7 @@ unit GDBMIDebugger;
 interface
 
 uses
-  Classes, SysUtils, Controls, Math, Variants, LCLProc, LazClasses, LazLoggerBase, Dialogs,
+  Classes, SysUtils, strutils, Controls, Math, Variants, LCLProc, LazClasses, LazLoggerBase, Dialogs,
   DebugUtils, Debugger, FileUtil, CmdLineDebugger, GDBTypeInfo, Maps, LCLIntf, Forms,
 {$IFdef MSWindows}
   Windows,
@@ -6121,12 +6121,13 @@ var
 
   procedure UpdateEntry(AnEntry: TCallStackEntry; AArgInfo, AFrameInfo : TGDBMINameValueList);
   var
-    n, e: Integer;
+    i, j, n, e: Integer;
     Arguments: TStringList;
     List: TGDBMINameValueList;
     Arg: PGDBMINameValue;
     addr: TDbgPtr;
-    func, filename, fullname, line : String;
+    func, filename, fullname, line, cl, fn, un: String;
+    loc: TDebuggerUnitInfo;
   begin
     Arguments := TStringList.Create;
 
@@ -6157,11 +6158,68 @@ var
       line := AFrameInfo.Values['line'];
     end;
 
+    (*
+func="fpc_pushexceptaddr"
+func="_$CODETEMPLATESDLG$_Ld98"
+func="_$CODETEMPLATESDLG$_Ld98"
+func="??"
+    *)
+
+    j := pos('$', func);
+    if j > 1 then begin
+      un := '';
+      cl := '';
+      i := pos('_$__', func);
+      if i > 1 then begin
+        // CLASSES$_$TREADER_$__$$_READINTEGER$$LONGINT
+        // SYSTEM_TOBJECT_$__DISPATCH$formal
+        cl := copy(func, 1, i - 1); // unit and class
+
+        if copy(func, i + 4, 3) = '$$_' then
+          inc(i, 3);
+        j := PosEx('$', func, i + 4);
+        if j > 0
+        then j := j - (i + 4)
+        else j := MaxInt;
+        fn := copy(func, i + 4, j); // function
+
+        i := pos('$_$', cl);
+        if i > 1 then begin
+          un := copy(cl, 1, i - 1); // unit
+          delete(cl, 1, i + 2);     // class
+        end
+        else begin
+          i := pos('_', cl);
+          if posex('_', cl, i + 1) < 1 then begin
+            // Only one _ => split unit and class
+            un := copy(cl, 1, i - 1); // unit
+            delete(cl, 1, i);     // class
+          end;
+        end;
+      end
+      else begin
+        // SYSUTILS_COMPARETEXT$ANSISTRING$ANSISTRING$$LONGINT
+        fn := copy(func, 1, j - 1);
+        i := pos('_', fn);
+        if posex('_', fn, i + 1) < 1 then begin
+          // Only one _ => split unit and class
+          un := copy(fn, 1, i - 1); // unit
+          delete(fn, 1, i);     // class
+        end;
+      end;
+
+      //debugln([cl,' ## ', fn]);
+      loc := FTheDebugger.UnitInfoProvider.GetUnitInfoByFunction(un, cl, fn);
+    end
+    else begin
+      loc := FTheDebugger.UnitInfoProvider.GetUnitInfoFor(filename, fullname);
+    end;
+
     AnEntry.Init(
       addr,
       Arguments,
       func,
-      FTheDebugger.UnitInfoProvider.GetUnitInfoFor(filename, fullname),
+      loc,
       StrToIntDef(line, 0)
     );
 

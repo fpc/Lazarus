@@ -567,6 +567,13 @@ begin
   Result := Filename <> '';
   if Result then exit;
 
+  if dlfSearchByFunctionName in AUnitinfo.Flags then begin
+    //debuln(['need locatien for', AUnitinfo.UnitName, ', ', AUnitinfo.SrcClassName, ', ', AUnitinfo.FunctionName]);
+    //Result := '';
+    //AUnitinfo.LocationFullFile := Result;
+    //exit;
+  end;
+
   case AUnitinfo.LocationType of
     dltUnknown:
       begin
