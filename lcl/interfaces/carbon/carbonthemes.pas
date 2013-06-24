@@ -38,6 +38,7 @@ type
     function DrawRebarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
     function DrawToolBarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
     function DrawTreeviewElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
+    function DrawWindowElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
   public
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawEdge({%H-}DC: HDC; {%H-}Details: TThemedElementDetails; const {%H-}R: TRect; {%H-}Edge, {%H-}Flags: Cardinal; {%H-}AContentRect: PRect); override;
@@ -368,6 +369,69 @@ begin
   end;
 end;
 
+function TCarbonThemeServices.DrawWindowElement(DC: TCarbonDeviceContext;
+  Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
+var
+  WindowDrawInfo: HIThemeWindowDrawInfo;
+  WindowWidgetDrawInfo: HIThemeWindowWidgetDrawInfo;
+  BtnRect: HIRect;
+  WindowShape: HIShapeRef;
+  Offset: TPoint;
+begin
+  WindowWidgetDrawInfo.version := 0;
+  WindowWidgetDrawInfo.windowState := kThemeStateActive;
+  WindowWidgetDrawInfo.windowType := kThemeDocumentWindow;
+  WindowWidgetDrawInfo.widgetState := GetDrawState(Details);
+  WindowWidgetDrawInfo.titleHeight := 0;
+  WindowWidgetDrawInfo.titleWidth := 0;
+  WindowWidgetDrawInfo.attributes := kThemeWindowHasFullZoom or kThemeWindowHasCloseBox or kThemeWindowHasCollapseBox;
+  case Details.Part of
+    WP_MINBUTTON,
+    WP_MDIMINBUTTON:
+      begin
+        WindowWidgetDrawInfo.widgetType := kThemeWidgetCollapseBox;
+      end;
+    WP_MAXBUTTON:
+      begin
+        WindowWidgetDrawInfo.widgetType := kThemeWidgetZoomBox;
+      end;
+    WP_CLOSEBUTTON,
+    WP_SMALLCLOSEBUTTON,
+    WP_MDICLOSEBUTTON:
+      begin
+        WindowWidgetDrawInfo.widgetType := kThemeWidgetCloseBox;
+      end;
+    WP_RESTOREBUTTON,
+    WP_MDIRESTOREBUTTON:
+      begin
+        WindowWidgetDrawInfo.widgetType := kThemeWidgetZoomBox;
+      end;
+    else
+      Exit;
+  end;
+  // We have a button rectanle but carbon expects from us a titlebar rectangle,
+  // so we need to translate one coordinate to another
+  BtnRect := RectToCGRect(Types.Rect(0, 0, 100, 100));
+  WindowDrawInfo.version := 0;
+  WindowDrawInfo.windowType := WindowWidgetDrawInfo.windowType;
+  WindowDrawInfo.attributes := WindowWidgetDrawInfo.attributes;
+  WindowDrawInfo.state := WindowWidgetDrawInfo.windowState;
+  WindowDrawInfo.titleHeight := WindowWidgetDrawInfo.titleHeight;
+  WindowDrawInfo.titleWidth := WindowWidgetDrawInfo.titleWidth;
+  HIThemeGetWindowShape(BtnRect, WindowDrawInfo, kWindowTitleBarRgn, WindowShape);
+  HIShapeGetBounds(WindowShape, BtnRect);
+  Offset := CGRectToRect(BtnRect).TopLeft;
+  OffsetRect(R, -Offset.X, -Offset.Y);
+  BtnRect := RectToCGRect(R);
+  OSError(
+    HIThemeDrawTitleBarWidget(BtnRect, WindowWidgetDrawInfo, DC.CGContext,
+      kHIThemeOrientationNormal),
+    Self, 'DrawTreeviewElement', 'HIThemeDrawButton');
+
+  Result := CGRectToRect(BtnRect);
+  OffsetRect(Result, Offset.X, Offset.Y);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonThemeServices.InitThemes
   Returns: If the themes are initialized
@@ -411,6 +475,7 @@ begin
     teButton: Result := DrawButtonElement(DefaultContext, Details, BoundingRect, nil);
     teRebar: Result := DrawRebarElement(DefaultContext, Details, BoundingRect, nil);
     teToolBar: Result := DrawToolBarElement(DefaultContext, Details, BoundingRect, nil);
+    teWindow: Result := DrawWindowElement(DefaultContext, Details, BoundingRect, nil);
   end;
 end;
 
@@ -454,6 +519,7 @@ begin
       teRebar: DrawRebarElement(Context, Details, R, ClipRect);
       teToolBar: DrawToolBarElement(Context, Details, R, ClipRect);
       teTreeview: DrawTreeviewElement(Context, Details, R, ClipRect);
+      teWindow: DrawWindowElement(Context, Details, R, ClipRect);
     else
       inherited DrawElement(DC, Details, R, ClipRect);
     end;
