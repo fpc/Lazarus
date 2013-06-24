@@ -60,39 +60,49 @@ begin
   id.TextOut.Pos(ToImage(ASelf.FTopLeft) + Point(4, 4)).Text(ASelf.Caption).Done;
 end;
 
+procedure DrawEndPoint(
+  ADrawer: IChartDrawer; AEndPoint: TDiaEndPoint;
+  const APos: TPoint; AAngle: Double);
+var
+  da: Double;
+  diag: Integer;
+  pt1, pt2: TPoint;
+begin
+  ADrawer.SetPenParams(psSolid, $000000);
+  ADrawer.SetBrushColor($FFFFFF);
+  da := ArcTan2(AEndPoint.Width.Value, AEndPoint.Length.Value);
+
+  diag := -Round(Sqrt(Sqr(AEndPoint.Length.Value) + Sqr(AEndPoint.Width.Value)));
+  pt1 := APos + RotatePointX(diag, AAngle - da);
+  pt2 := APos + RotatePointX(diag, AAngle + da);
+  case AEndPoint.Shape of
+    depsClosedArrow: ADrawer.Polygon([pt1, APos, pt2], 0, 3);
+    depsOpenArrow: ADrawer.Polyline([pt1, APos, pt2], 0, 3);
+  end;
+end;
+
 procedure DrawDiaLink(ASelf: TDiaLink);
 var
   id: IChartDrawer;
 var
-  da: Double;
-  diag: Integer;
-  pt1, pt2, ptBase: TPoint;
-  Width: Integer = 10;
-  Length: Integer = 20;
   startPos, endPos: TPoint;
-  AAngle: float;
   d: TDiaDecorator;
 begin
-  if (ASelf.Start = nil) or (ASelf.Finish = nil) then exit;
+  if (ASelf.Start.Connector = nil) or (ASelf.Finish.Connector = nil) then exit;
   id := (ASelf.Owner.Context as TDiaContextDrawer).Drawer;
   id.PrepareSimplePen($000000);
   for d in ASelf.Decorators do
     if d is TDiaPenDecorator then
       id.Pen := (d as TDiaPenDecorator).Pen;
-  startPos := ToImage(ASelf.Start.ActualPos);
-  endPos := ToImage(ASelf.Finish.ActualPos);
+  startPos := ToImage(ASelf.Start.Connector.ActualPos);
+  endPos := ToImage(ASelf.Finish.Connector.ActualPos);
   id.Line(startPos, endPos);
-  if not ASelf.Arrow then exit;
-  id.SetPenParams(psSolid, $000000);
-  id.SetBrushColor($FFFFFF);
-  da := ArcTan2(Width, Length);
-
-  endPos := ToImage(ASelf.Finish.ActualPos);
-  AAngle := ArcTan2(endPos.Y - startPos.Y, endPos.X - startPos.X);
-  diag := -Round(Sqrt(Sqr(Length) + Sqr(Width)));
-  pt1 := endPos + RotatePointX(diag, AAngle - da);
-  pt2 := endPos + RotatePointX(diag, AAngle + da);
-  id.Polygon([pt1, endPos, pt2], 0, 3);
+  if ASelf.Start.Shape <> depsNone then
+    with startPos - endPos do
+      DrawEndPoint(id, ASelf.Start, startPos, ArcTan2(Y, X));
+  if ASelf.Finish.Shape <> depsNone then
+    with endPos - startPos do
+      DrawEndPoint(id, ASelf.Finish, endPos, ArcTan2(Y, X));
 end;
 
 { TDiaPenDecorator }

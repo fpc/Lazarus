@@ -109,7 +109,8 @@ type
     FOwner: TDiagram;
   private
     FDecorators: TDiaDecoratorList;
-    procedure SetOwner(AValue: TDiagram);
+  protected
+    procedure SetOwner(AValue: TDiagram); virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -213,25 +214,44 @@ type
     property Side: TDiaBoxSide read FSide write SetSide;
   end;
 
+  TDiaEndPointShape = (depsNone, depsOpenArrow, depsClosedArrow);
+
+  TDiaEndPoint = class(TDiaElement)
+  private
+    FConnector: TDiaConnector;
+    FLength: TDiaPosition;
+    FShape: TDiaEndPointShape;
+    FWidth: TDiaPosition;
+    procedure SetConnector(AValue: TDiaConnector);
+    procedure SetLength(AValue: TDiaPosition);
+    procedure SetShape(AValue: TDiaEndPointShape);
+    procedure SetWidth(AValue: TDiaPosition);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property Connector: TDiaConnector read FConnector write SetConnector;
+    property Length: TDiaPosition read FLength write SetLength;
+    property Shape: TDiaEndPointShape read FShape write SetShape;
+    property Width: TDiaPosition read FWidth write SetWidth;
+  end;
+
   TDiaLink = class(TDiaElement)
   private
-    FArrow: Boolean;
-    FDashes: Boolean;
-    FFinish: TDiaConnector;
-    FStart: TDiaConnector;
-    procedure SetArrow(AValue: Boolean);
-    procedure SetDashes(AValue: Boolean);
-    procedure SetFinish(AValue: TDiaConnector);
-    procedure SetStart(AValue: TDiaConnector);
+    FFinish: TDiaEndPoint;
+    FStart: TDiaEndPoint;
+    procedure SetFinish(AValue: TDiaEndPoint);
+    procedure SetStart(AValue: TDiaEndPoint);
+  protected
+    procedure SetOwner(AValue: TDiagram); override;
   public
     class var
       FInternalDraw: procedure (ASelf: TDiaLink);
+    constructor Create;
+    destructor Destroy; override;
     procedure Draw; override;
   published
-    property Start: TDiaConnector read FStart write SetStart;
-    property Finish: TDiaConnector read FFinish write SetFinish;
-    property Arrow: Boolean read FArrow write SetArrow;
-    property Dashes: Boolean read FDashes write SetDashes;
+    property Start: TDiaEndPoint read FStart write SetStart;
+    property Finish: TDiaEndPoint read FFinish write SetFinish;
   end;
 
 implementation
@@ -254,6 +274,50 @@ function WeightedAverage(
 begin
   Result.X := WeightedAverage(AP1.X, AP2.X, ACoeff);
   Result.Y := WeightedAverage(AP1.Y, AP2.Y, ACoeff);
+end;
+
+{ TDiaEndPoint }
+
+constructor TDiaEndPoint.Create;
+begin
+  inherited;
+  FLength := TDiaPosition.Create(Self);
+  FWidth := TDiaPosition.Create(Self);
+end;
+
+destructor TDiaEndPoint.Destroy;
+begin
+  FreeAndNil(FLength);
+  FreeAndNil(FWidth);
+  inherited;
+end;
+
+procedure TDiaEndPoint.SetConnector(AValue: TDiaConnector);
+begin
+  if FConnector = AValue then exit;
+  FConnector := AValue;
+  Notify(Self);
+end;
+
+procedure TDiaEndPoint.SetLength(AValue: TDiaPosition);
+begin
+  if FLength = AValue then exit;
+  FLength := AValue;
+  Notify(Self);
+end;
+
+procedure TDiaEndPoint.SetShape(AValue: TDiaEndPointShape);
+begin
+  if FShape = AValue then exit;
+  FShape := AValue;
+  Notify(Self);
+end;
+
+procedure TDiaEndPoint.SetWidth(AValue: TDiaPosition);
+begin
+  if FWidth = AValue then exit;
+  FWidth := AValue;
+  Notify(Self);
 end;
 
 { TDiaDecoratorEnumerator }
@@ -313,6 +377,20 @@ end;
 
 { TDiaLink }
 
+constructor TDiaLink.Create;
+begin
+  inherited;
+  FStart := TDiaEndPoint.Create;
+  FFinish := TDiaEndPoint.Create;
+end;
+
+destructor TDiaLink.Destroy;
+begin
+  FreeAndNil(FStart);
+  FreeAndNil(FFinish);
+  inherited;
+end;
+
 procedure TDiaLink.Draw;
 begin
   inherited;
@@ -320,28 +398,21 @@ begin
     FInternalDraw(Self);
 end;
 
-procedure TDiaLink.SetArrow(AValue: Boolean);
-begin
-  if FArrow = AValue then exit;
-  FArrow := AValue;
-  Notify(Self);
-end;
-
-procedure TDiaLink.SetDashes(AValue: Boolean);
-begin
-  if FDashes = AValue then exit;
-  FDashes := AValue;
-  Notify(Self);
-end;
-
-procedure TDiaLink.SetFinish(AValue: TDiaConnector);
+procedure TDiaLink.SetFinish(AValue: TDiaEndPoint);
 begin
   if FFinish = AValue then exit;
   FFinish := AValue;
   Notify(Self);
 end;
 
-procedure TDiaLink.SetStart(AValue: TDiaConnector);
+procedure TDiaLink.SetOwner(AValue: TDiagram);
+begin
+  inherited SetOwner(AValue);
+  FStart.SetOwner(AValue);
+  FFinish.SetOwner(AValue);
+end;
+
+procedure TDiaLink.SetStart(AValue: TDiaEndPoint);
 begin
   if FStart = AValue then exit;
   FStart := AValue;
