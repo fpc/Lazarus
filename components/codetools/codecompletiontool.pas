@@ -6312,7 +6312,7 @@ type
 
 var
   Parts: array[TPropPart] of TAtomPosition;
-  PartIsAtom: array[TPropPart] of boolean;
+  PartIsAtom: array[TPropPart] of boolean; // is single identifier
 
   procedure ReadSimpleSpec(SpecWord, SpecParam: TPropPart);
   // allowed after simple specifier like 'read':
@@ -6428,6 +6428,8 @@ var
   end;
   
   procedure ReadIndexSpecifier;
+  var
+    Last: TAtomPosition;
   begin
     if UpAtomIs('INDEX') then begin
       if Parts[ppIndexWord].StartPos>=1 then
@@ -6439,7 +6441,8 @@ var
         RaiseExceptionFmt(ctsIndexParameterExpectedButAtomFound,[GetAtom]);
       Parts[ppIndex].StartPos:=CurPos.StartPos;
       ReadConstant(true,false,[]);
-      Parts[ppIndex].EndPos:=LastAtoms.GetValueAt(0).EndPos;
+      Last:=LastAtoms.GetValueAt(0);
+      Parts[ppIndex].EndPos:=Last.EndPos;
       PartIsAtom[ppIndex]:=false;
     end;
   end;
@@ -6506,6 +6509,21 @@ var
         end;
       end else 
         RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
+    end;
+  end;
+
+  procedure ResolveIndexType;
+  var
+    ExprType: TExpressionType;
+    Params: TFindDeclarationParams;
+  begin
+    Params:=TFindDeclarationParams.Create;
+    try
+      Params.Flags:=fdfDefaultForExpressions;
+      Params.ContextNode:=PropNode;
+      IndexType:=FindTermTypeAsString(Parts[ppIndex],Params,ExprType);
+    finally
+      Params.Free;
     end;
   end;
   
@@ -6923,6 +6941,8 @@ begin
   // complete property
   BeautifyCodeOpts:=ASourceChangeCache.BeautifyCodeOptions;
   if CodeCompleteClassNode.Desc <> ctnDispinterface then begin
+    if Parts[ppIndex].StartPos>0 then
+      ResolveIndexType;
     CompleteReadSpecifier;
     CompleteWriteSpecifier;
     CompleteStoredSpecifier;
