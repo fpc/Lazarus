@@ -43,7 +43,11 @@ type
   TDiaUnits = (duNone, duAxis, duGraph, duPixels, duCentimeters);
   TDiaBoxSide = (dbsTop, dbsLeft, dbsRight, dbsBottom);
   TDiaCoordinate = array [duAxis .. High(TDiaUnits)] of Double;
-  TDiaPoint = record X, Y: TDiaCoordinate; end;
+  TDiaPoint = object
+  public
+    X, Y: TDiaCoordinate;
+    function AsUnits(AUnits: TDiaUnits): TDoublePoint; inline;
+  end;
 
   TDiaElement = class;
 
@@ -94,6 +98,8 @@ type
     procedure Draw;
     procedure Add(AElement: TDiaElement);
     procedure SetPixelBounds(const ARect: TRect);
+    function FindElementByPoint(
+      const APoint: TDoublePoint; AUnits: TDiaUnits): TDiaElement;
     procedure Changed(ASender: TDiaObject); override;
     procedure Notify(ASender: TDiaObject); override;
     property Context: TDiaContext read FContext write SetContext;
@@ -117,6 +123,8 @@ type
     procedure Add(AConnector: TDiaConnector);
     procedure Changed(ASender: TDiaObject); override;
     procedure Draw; virtual;
+    function IsPointInside(
+      const APoint: TDoublePoint; AUnits: TDiaUnits): Boolean; virtual;
     procedure Notify(ASender: TDiaObject); override;
     property Owner: TDiagram read FOwner;
     property Decorators: TDiaDecoratorList read FDecorators;
@@ -177,6 +185,8 @@ type
     constructor Create;
     procedure Draw; override;
     procedure Changed(ASender: TDiaObject); override;
+    function IsPointInside(
+      const APoint: TDoublePoint; AUnits: TDiaUnits): Boolean; override;
   public
     property Left: TDiaPosition read FLeft write SetLeft;
     property Top: TDiaPosition read FTop write SetTop;
@@ -285,6 +295,14 @@ end;
 operator = (const A, B: TDiaPosition): Boolean;
 begin
   Result := TDiaPosition.Equals(A, B);
+end;
+
+{ TDiaPoint }
+
+function TDiaPoint.AsUnits(AUnits: TDiaUnits): TDoublePoint;
+begin
+  Result.X := X[AUnits];
+  Result.Y := Y[AUnits];
 end;
 
 { TDiaEndPoint }
@@ -569,6 +587,17 @@ begin
     FInternalDraw(Self);
 end;
 
+function TDiaBox.IsPointInside(
+  const APoint: TDoublePoint; AUnits: TDiaUnits): Boolean;
+begin
+  Result := IsPointInPolygon(RoundPoint(APoint), [
+    RoundPoint(FTopLeft.AsUnits(AUnits)),
+    RoundPoint(FTopRight.AsUnits(AUnits)),
+    RoundPoint(FBottomRight.AsUnits(AUnits)),
+    RoundPoint(FBottomLeft.AsUnits(AUnits))
+  ]);
+end;
+
 procedure TDiaBox.SetBottom(const AValue: TDiaPosition);
 begin
   if FBottom = AValue then exit;
@@ -647,6 +676,14 @@ begin
     e.Draw;
 end;
 
+function TDiagram.FindElementByPoint(
+  const APoint: TDoublePoint; AUnits: TDiaUnits): TDiaElement;
+begin
+  for Result in FElements do
+    if Result.IsPointInside(APoint, AUnits) then exit;
+  Result := nil;
+end;
+
 function TDiagram.GetBounds(AIndex: TDiaBoxSide): TDiaCoordinate;
 begin
   Result := FBounds[AIndex];
@@ -711,6 +748,12 @@ end;
 procedure TDiaElement.Draw;
 begin
   //
+end;
+
+function TDiaElement.IsPointInside(
+  const APoint: TDoublePoint; AUnits: TDiaUnits): Boolean;
+begin
+  Result := false;
 end;
 
 procedure TDiaElement.Notify(ASender: TDiaObject);
