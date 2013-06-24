@@ -556,6 +556,10 @@ end;
 function TCarbonThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;
 const
   DefaultPushButtonWidth = 70;
+var
+  BtnRect: CGRect;
+  WindowDrawInfo: HIThemeWindowDrawInfo;
+  WindowShape: HIShapeRef;
 begin
   case Details.Element of
     teTreeView:
@@ -575,6 +579,26 @@ begin
           DefaultPushButtonWidth,
           GetCarbonThemeMetric(kThemeMetricPushButtonHeight)
         );
+      end else
+        Result := inherited GetDetailSize(Details);
+    teWindow:
+      if (Details.Part in [WP_MINBUTTON, WP_MDIMINBUTTON, WP_MAXBUTTON, WP_CLOSEBUTTON, WP_SMALLCLOSEBUTTON, WP_MDICLOSEBUTTON, WP_RESTOREBUTTON, WP_MDIRESTOREBUTTON]) then
+      begin
+        BtnRect := RectToCGRect(Types.Rect(0, 0, 100, 100));
+        WindowDrawInfo.version := 0;
+        WindowDrawInfo.windowType := kThemeDocumentWindow;
+        WindowDrawInfo.attributes := kThemeWindowHasFullZoom or kThemeWindowHasCloseBox or kThemeWindowHasCollapseBox;
+        WindowDrawInfo.state := kThemeStateActive;
+        WindowDrawInfo.titleHeight := 0;
+        WindowDrawInfo.titleWidth := 0;
+
+        HIThemeGetWindowShape(BtnRect, WindowDrawInfo, kWindowCloseBoxRgn, WindowShape);
+        HIShapeGetBounds(WindowShape, BtnRect);
+        with BtnRect.size do
+        begin
+          Result.cx := Round(width);
+          Result.cy := Round(height);
+        end;
       end else
         Result := inherited GetDetailSize(Details);
   else
