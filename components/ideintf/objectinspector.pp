@@ -1356,7 +1356,8 @@ var
   CurRow:TOIPropertyGridRow;
   OldChangeStep: integer;
 begin
-  if not CanEditRowValue(true) then exit;
+  //debugln(['TOICustomPropertyGrid.DoCallEdit ',dbgs(GetFocus),' ',DbgSName(FindControl(GetFocus))]);
+  if not CanEditRowValue(false) then exit;
 
   OldChangeStep:=fChangeStep;
   CurRow:=Rows[FItemIndex];
@@ -1957,7 +1958,8 @@ begin
       or (FPropertyEditorHook.LookupRoot = FCurrentEditorLookupRoot));
   if Result and CheckFocus then begin
     FocusedControl:=FindControl(GetFocus);
-    if (FocusedControl<>nil) and not IsParentOf(FocusedControl) then
+    if (FocusedControl<>nil) and (FocusedControl<>Self)
+    and (not IsParentOf(FocusedControl)) then
       Result:=false;
   end;
   if Result then begin
