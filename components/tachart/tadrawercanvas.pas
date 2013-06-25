@@ -292,10 +292,32 @@ begin
 end;
 
 procedure TCanvasDrawer.SetFont(AFont: TFPCustomFont);
+var
+  st: TFontStyles = [];
 begin
-  GetCanvas.Font.Assign(AFont);
-  if FMonochromeColor <> clTAColor then
-    GetCanvas.Font.Color := FMonochromeColor;
+  with GetCanvas.Font do begin
+    if AFont is TFont then
+      Assign(AFont)
+    else begin
+      BeginUpdate;
+      FPColor := AFont.FPColor;
+      Name := AFont.Name;
+      Size := AFont.Size;
+      Orientation := AFont.Orientation;
+      if AFont.Italic then
+        Include(st, fsItalic);
+      if AFont.Bold then
+        Include(st, fsBold);
+      if AFont.Underline then
+        Include(st, fsUnderline);
+      if AFont.StrikeTrough then
+        Include(st, fsStrikeOut);
+      Style := st;
+      EndUpdate;
+    end;
+    if FMonochromeColor <> clTAColor then
+      Color := FMonochromeColor;
+  end;
 end;
 
 procedure TCanvasDrawer.SetPen(APen: TFPCustomPen);
