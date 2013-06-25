@@ -582,6 +582,7 @@ end;
 
 constructor TDiaBox.Create;
 begin
+  inherited;
   FLeft.Init(Self);
   FRight.Init(Self);
   FTop.Init(Self);

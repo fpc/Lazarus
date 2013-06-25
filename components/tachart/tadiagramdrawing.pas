@@ -40,6 +40,16 @@ type
     property Brush: TFPCustomBrush read FBrush;
   end;
 
+  TDiaFontDecorator = class(TDiaDecorator, IDiaDrawerDecorator)
+  private
+    FFont: TFPCustomFont;
+  public
+    constructor Create(AOwner: TDiaDecoratorList);
+    destructor Destroy; override;
+    procedure Apply(ADrawer: IChartDrawer);
+    property Font: TFPCustomFont read FFont;
+  end;
+
   TDiaPenDecorator = class(TDiaDecorator, IDiaDrawerDecorator)
   private
     FPen: TFPCustomPen;
@@ -64,10 +74,14 @@ end;
 procedure DrawDiaBox(ASelf: TDiaBox);
 var
   id: IChartDrawer;
+  d: IDiaDecorator;
 begin
   id := (ASelf.Owner.Context as TDiaContextDrawer).Drawer;
   id.PrepareSimplePen($000000);
   id.SetBrushColor($FFFFFF);
+  for d in ASelf.Decorators do
+    if d is IDiaDrawerDecorator then
+      (d as IDiaDrawerDecorator).Apply(id);
   with ASelf do
     id.Polygon([
       ToImage(FTopLeft), ToImage(FTopRight),
@@ -155,6 +169,25 @@ destructor TDiaBrushDecorator.Destroy;
 begin
   FreeAndNil(FBrush);
   inherited;
+end;
+
+{ TDiaFontDecorator }
+
+procedure TDiaFontDecorator.Apply(ADrawer: IChartDrawer);
+begin
+  ADrawer.Font := Font;
+end;
+
+constructor TDiaFontDecorator.Create(AOwner: TDiaDecoratorList);
+begin
+  inherited Create(AOwner);
+  FFont := TFPCustomFont.Create;
+end;
+
+destructor TDiaFontDecorator.Destroy;
+begin
+  FreeAndNil(FFont);
+  inherited Destroy;
 end;
 
 { TDiaPenDecorator }
