@@ -30,11 +30,20 @@ type
     procedure Apply(ADrawer: IChartDrawer);
   end;
 
+  TDiaBrushDecorator = class(TDiaDecorator, IDiaDrawerDecorator)
+  private
+    FBrush: TFPCustomBrush;
+  public
+    constructor Create(AOwner: TDiaDecoratorList);
+    destructor Destroy; override;
+    procedure Apply(ADrawer: IChartDrawer);
+    property Brush: TFPCustomBrush read FBrush;
+  end;
+
   TDiaPenDecorator = class(TDiaDecorator, IDiaDrawerDecorator)
   private
     FPen: TFPCustomPen;
   public
-
     constructor Create(AOwner: TDiaDecoratorList);
     destructor Destroy; override;
     procedure Apply(ADrawer: IChartDrawer);
@@ -74,9 +83,13 @@ var
   da: Double;
   diag: Integer;
   pt1, pt2: TPoint;
+  d: IDiaDecorator;
 begin
   ADrawer.SetPenParams(psSolid, $000000);
   ADrawer.SetBrushColor($FFFFFF);
+  for d in AEndPoint.Decorators do
+    if d is IDiaDrawerDecorator then
+      (d as IDiaDrawerDecorator).Apply(ADrawer);
   da := ArcTan2(AEndPoint.Width.Value, AEndPoint.Length.Value);
 
   diag := -Round(Sqrt(Sqr(AEndPoint.Length.Value) + Sqr(AEndPoint.Width.Value)));
@@ -123,6 +136,25 @@ begin
   if ASelf.Finish.Shape <> depsNone then
     with endPos - p do
       DrawEndPoint(id, ASelf.Finish, endPos, ArcTan2(Y, X));
+end;
+
+{ TDiaBrushDecorator }
+
+procedure TDiaBrushDecorator.Apply(ADrawer: IChartDrawer);
+begin
+  ADrawer.Brush := Brush;
+end;
+
+constructor TDiaBrushDecorator.Create(AOwner: TDiaDecoratorList);
+begin
+  inherited Create(AOwner);
+  FBrush := TFPCustomBrush.Create;
+end;
+
+destructor TDiaBrushDecorator.Destroy;
+begin
+  FreeAndNil(FBrush);
+  inherited;
 end;
 
 { TDiaPenDecorator }
