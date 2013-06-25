@@ -311,7 +311,11 @@ begin
         Include(st, fsBold);
       if AFont.Underline then
         Include(st, fsUnderline);
+      {$IF (FPC_FULLVERSION<=20600) or (FPC_FULLVERSION=20602)}
       if AFont.StrikeTrough then
+      {$ELSE}
+      if AFont.StrikeThrough then
+      {$ENDIF}
         Include(st, fsStrikeOut);
       Style := st;
       EndUpdate;
