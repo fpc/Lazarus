@@ -879,7 +879,6 @@ var
   Boss: TCodeToolManager absolute Dest;
   Beauty: TBeautifyCodeOptions absolute Dest;
 begin
-  debugln(['TCodeToolsOptions.AssignTo ',DbgSName(Dest)]);
   if Dest is TCodeToolManager then
   begin
     // General - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
