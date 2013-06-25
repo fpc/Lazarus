@@ -1637,161 +1637,167 @@ var
   p: Integer;
   NodeBehind: TCodeTreeNode;
 begin
-  Node:=Context.Node;
-  //debugln(['TIdentCompletionTool.GatherContextKeywords ',Node.DescAsString]);
+  try
+    Node:=Context.Node;
+    //debugln(['TIdentCompletionTool.GatherContextKeywords ',Node.DescAsString]);
 
-  ReadPriorAtomSafe(CleanPos);
-  //debugln(['TIdentCompletionTool.GatherContextKeywords prioratom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
-  NodeInFront:=nil;
-  if CurPos.StartPos>0 then
-    NodeInFront:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+    ReadPriorAtomSafe(CleanPos);
+    //debugln(['TIdentCompletionTool.GatherContextKeywords prioratom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
+    NodeInFront:=nil;
+    if CurPos.StartPos>0 then
+      NodeInFront:=FindDeepestNodeAtPos(CurPos.StartPos,false);
 
-  NodeBehind:=nil;
-  MoveCursorToCleanPos(CleanPos);
-  ReadNextAtom;
-  //debugln(['TIdentCompletionTool.GatherContextKeywords nextatom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
-  if CurPos.StartPos>CleanPos then
-    NodeBehind:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+    NodeBehind:=nil;
+    MoveCursorToCleanPos(CleanPos);
+    ReadNextAtom;
+    //debugln(['TIdentCompletionTool.GatherContextKeywords nextatom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
+    if CurPos.StartPos>CleanPos then
+      NodeBehind:=FindDeepestNodeAtPos(CurPos.StartPos,false);
 
-  //debugln(['TIdentCompletionTool.GatherContextKeywords Node=',Node.DescAsString,' NodeInFront=',NodeInFront.DescAsString,' NodeBehind=',NodeBehind.DescAsString]);
+    //debugln(['TIdentCompletionTool.GatherContextKeywords Node=',Node.DescAsString,' NodeInFront=',NodeInFront.DescAsString,' NodeBehind=',NodeBehind.DescAsString]);
 
-  case Node.Desc of
-  ctnClass,ctnObject,ctnRecordType,ctnObjCCategory,ctnObjCClass,
-  ctnClassPrivate,ctnClassProtected,ctnClassPublic,ctnClassPublished:
-    begin
-      Add('public');
-      Add('private');
-      Add('protected');
-      Add('published');
-      Add('procedure');
-      Add('function');
-      Add('property');
-      if (Node.Desc=ctnClass) or (Node.Parent.Desc=ctnClass) then begin
-        Add('constructor');
-        Add('destructor');
-      end;
-      if (Node.Desc=ctnRecordType) or (Node.Parent.Desc=ctnRecordType) then begin
-        Add('case');
-      end;
-      if (Node.LastChild<>nil) and (CleanPos>Node.LastChild.StartPos)
-      and (Node.LastChild.EndPos>Node.LastChild.StartPos)
-      and (Node.LastChild.EndPos<Srclen) then begin
-        //debugln(['TIdentCompletionTool.GatherContextKeywords end of class section ',dbgstr(copy(Src,Node.LastChild.EndPos-10,10))]);
-        SubNode:=Node.LastChild;
-        if SubNode.Desc=ctnProperty then begin
-          CheckProperty(SubNode);
+    case Node.Desc of
+    ctnClass,ctnObject,ctnRecordType,ctnObjCCategory,ctnObjCClass,
+    ctnClassPrivate,ctnClassProtected,ctnClassPublic,ctnClassPublished:
+      begin
+        Add('public');
+        Add('private');
+        Add('protected');
+        Add('published');
+        Add('procedure');
+        Add('function');
+        Add('property');
+        if (Node.Desc=ctnClass) or (Node.Parent.Desc=ctnClass) then begin
+          Add('constructor');
+          Add('destructor');
+        end;
+        if (Node.Desc=ctnRecordType) or (Node.Parent.Desc=ctnRecordType) then begin
+          Add('case');
+        end;
+        if (Node.LastChild<>nil) and (CleanPos>Node.LastChild.StartPos)
+        and (Node.LastChild.EndPos>Node.LastChild.StartPos)
+        and (Node.LastChild.EndPos<Srclen) then begin
+          //debugln(['TIdentCompletionTool.GatherContextKeywords end of class section ',dbgstr(copy(Src,Node.LastChild.EndPos-10,10))]);
+          SubNode:=Node.LastChild;
+          if SubNode.Desc=ctnProperty then begin
+            CheckProperty(SubNode);
+          end;
+        end;
+        if NodeInFront<>nil then begin
+          if NodeInFront.Desc=ctnProcedure then
+            AddMethodSpecifiers;
         end;
       end;
-      if NodeInFront<>nil then begin
-        if NodeInFront.Desc=ctnProcedure then
-          AddMethodSpecifiers;
-      end;
-    end;
 
-  ctnClassInterface,ctnDispinterface,ctnObjCProtocol,ctnCPPClass:
-    begin
-      Add('procedure');
-      Add('function');
-    end;
-
-  ctnInterface,ctnImplementation:
-    begin
-      if (Node.FirstChild=nil)
-      or ((Node.FirstChild.Desc<>ctnUsesSection)
-        and (Node.FirstChild.StartPos>=CleanPos))
-      then
-        Add('uses');
-      Add('type');
-      Add('var');
-      Add('const');
-      Add('procedure');
-      Add('function');
-      Add('resourcestring');
-      if Node.Desc=ctnInterface then begin
-        Add('property');
+    ctnClassInterface,ctnDispinterface,ctnObjCProtocol,ctnCPPClass:
+      begin
+        Add('procedure');
+        Add('function');
       end;
+
+    ctnInterface,ctnImplementation:
+      begin
+        if (Node.FirstChild=nil)
+        or ((Node.FirstChild.Desc<>ctnUsesSection)
+          and (Node.FirstChild.StartPos>=CleanPos))
+        then
+          Add('uses');
+        Add('type');
+        Add('var');
+        Add('const');
+        Add('procedure');
+        Add('function');
+        Add('resourcestring');
+        if Node.Desc=ctnInterface then begin
+          Add('property');
+        end;
+        if (NodeBehind=nil)
+        or (NodeBehind.Desc in [ctnInitialization,ctnFinalization,ctnEndPoint,ctnBeginBlock])
+        then begin
+          if Node.Desc=ctnInterface then
+            Add('implementation');
+          Add('initialization');
+          Add('finalization');
+        end;
+      end;
+
+    ctnInitialization:
       if (NodeBehind=nil)
       or (NodeBehind.Desc in [ctnInitialization,ctnFinalization,ctnEndPoint,ctnBeginBlock])
       then begin
-        if Node.Desc=ctnInterface then
-          Add('implementation');
-        Add('initialization');
-        Add('finalization');
-      end;
-    end;
-
-  ctnInitialization:
-    if (NodeBehind=nil)
-    or (NodeBehind.Desc in [ctnInitialization,ctnFinalization,ctnEndPoint,ctnBeginBlock])
-    then begin
-      Add('finalization');
-      Add('begin');
-    end;
-
-  ctnProcedure:
-    begin
-      Add('begin');
-      Add('type');
-      Add('var');
-      Add('const');
-      Add('procedure');
-      Add('function');
-    end;
-
-  ctnProcedureHead:
-    begin
-      MoveCursorBehindProcName(Node);
-      p:=CurPos.StartPos;
-      while (p>=1) and (Src[p] in [' ',#9]) do dec(p);
-      if CleanPos>=p then
-        AddMethodSpecifiers;
-    end;
-
-  ctnVarDefinition:
-    if Node.Parent.Desc in [ctnClass,ctnObject,ctnRecordType,ctnObjCCategory,ctnObjCClass]
-      +AllClassBaseSections
-    then begin
-      Add('public');
-      Add('private');
-      Add('protected');
-      Add('published');
-      Add('procedure');
-      Add('function');
-      Add('property');
-      if [cmsObjectiveC1,cmsObjectiveC2]*Scanner.CompilerModeSwitches<>[] then
-      begin
-        Add('required');
-        Add('optional');
-      end;
-      if (Node.Desc=ctnClass) or (Node.Parent.Desc=ctnClass) then begin
-        Add('constructor');
-        Add('destructor');
-      end;
-      if (Node.Desc=ctnRecordType) or (Node.Parent.Desc=ctnRecordType) then begin
-        Add('case');
-      end;
-    end;
-
-  ctnTypeSection,ctnVarSection,ctnConstSection,ctnLabelSection,ctnResStrSection,
-  ctnLibrary,ctnProgram:
-    begin
-      Add('type');
-      Add('const');
-      Add('var');
-      Add('resourcestring');
-      Add('procedure');
-      Add('function');
-      Add('property');
-      if Node.Desc=ctnLibrary then begin
-        Add('initialization');
         Add('finalization');
         Add('begin');
       end;
+
+    ctnProcedure:
+      begin
+        Add('begin');
+        Add('type');
+        Add('var');
+        Add('const');
+        Add('procedure');
+        Add('function');
+      end;
+
+    ctnProcedureHead:
+      begin
+        MoveCursorBehindProcName(Node);
+        p:=CurPos.StartPos;
+        while (p>=1) and (Src[p] in [' ',#9]) do dec(p);
+        if CleanPos>=p then
+          AddMethodSpecifiers;
+      end;
+
+    ctnVarDefinition:
+      if Node.Parent.Desc in [ctnClass,ctnObject,ctnRecordType,ctnObjCCategory,ctnObjCClass]
+        +AllClassBaseSections
+      then begin
+        Add('public');
+        Add('private');
+        Add('protected');
+        Add('published');
+        Add('procedure');
+        Add('function');
+        Add('property');
+        if [cmsObjectiveC1,cmsObjectiveC2]*Scanner.CompilerModeSwitches<>[] then
+        begin
+          Add('required');
+          Add('optional');
+        end;
+        if (Node.Desc=ctnClass) or (Node.Parent.Desc=ctnClass) then begin
+          Add('constructor');
+          Add('destructor');
+        end;
+        if (Node.Desc=ctnRecordType) or (Node.Parent.Desc=ctnRecordType) then begin
+          Add('case');
+        end;
+      end;
+
+    ctnTypeSection,ctnVarSection,ctnConstSection,ctnLabelSection,ctnResStrSection,
+    ctnLibrary,ctnProgram:
+      begin
+        Add('type');
+        Add('const');
+        Add('var');
+        Add('resourcestring');
+        Add('procedure');
+        Add('function');
+        Add('property');
+        if Node.Desc=ctnLibrary then begin
+          Add('initialization');
+          Add('finalization');
+          Add('begin');
+        end;
+      end;
+
+    ctnProperty:
+      CheckProperty(Node);
+
     end;
-
-  ctnProperty:
-    CheckProperty(Node);
-
+  except
+    // ignore parser errors
+    on E: ECodeToolError do ;
+    on E: ELinkScannerError do ;
   end;
 end;
 
