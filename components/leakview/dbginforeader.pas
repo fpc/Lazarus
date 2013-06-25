@@ -9,7 +9,7 @@ interface
 
 function  OpenSymbolFile(AFileName: string): boolean;
 procedure CloseSymbolFile;
-function  GetLineInfo(addr:ptruint;var func,source:string;var line:longint) : boolean;
+function  GetLineInfo(addr:ptruint; out func,source:string; out line:longint) : boolean;
 
 implementation
 
@@ -162,7 +162,6 @@ end;
 function ReadNext() : Longint; inline;
 var
   bytesread : SizeInt;
-  b : Byte;
 begin
   ReadNext := -1;
   if EBufPos >= EBufCnt then begin
@@ -909,7 +908,7 @@ begin
   CloseExeFile(e);
 end;
 
-function GetLineInfo(addr: ptruint; var func, source: string; var line: longint): boolean;
+function GetLineInfo(addr: ptruint; out func, source: string; out line: longint): boolean;
 begin
   Result := False;
   if HasDwarf then

@@ -63,7 +63,7 @@ type
     // returns True, if information has been succesfully received, False otherwise
     // Fills LeakData record
     // if Traces is not nil, fill the list with TStackTrace object. User is responsible for freeing them
-    function GetLeakInfo(var LeakData: TLeakStatus; var Traces: TList): Boolean; virtual; abstract;
+    function GetLeakInfo(out LeakData: TLeakStatus; var Traces: TList): Boolean; virtual; abstract;
     function ResolveLeakInfo(AFileName: string; Traces: TList): Boolean; virtual; abstract;
   end;
 
@@ -113,7 +113,7 @@ type
     constructor Create(const ATRCFile: string);
     constructor CreateFromTxt(const AText: string);
     destructor Destroy; override;
-    function GetLeakInfo(var LeakData: TLeakStatus; var Traces: TList): Boolean; override;
+    function GetLeakInfo(out LeakData: TLeakStatus; var Traces: TList): Boolean; override;
     function ResolveLeakInfo(AFileName: string; Traces: TList): Boolean; override;
   end;
 
@@ -229,7 +229,7 @@ end;
 procedure ParseTraceLine(const s: string; var line: TStackLine);
 var
   i   : integer;
-  err : Integer;
+  {%H-}err : Integer;
   hex : string;
 begin
   i := Pos('$', s);
@@ -396,7 +396,7 @@ end;
 procedure THeapTrcInfo.ParseStackTrace(trace: TStackTrace);
 var
   i   : integer;
-  err : integer;
+  {%H-}err : integer;
   hex : string;
   NewLine: TStackLine;
 begin
@@ -438,7 +438,7 @@ begin
 end;
 
 
-function THeapTrcInfo.GetLeakInfo(var LeakData: TLeakStatus; var Traces: TList): Boolean;
+function THeapTrcInfo.GetLeakInfo(out LeakData: TLeakStatus; var Traces: TList): Boolean;
 var
   i: Integer;
 begin
@@ -481,6 +481,7 @@ var
   SrcLine: longint;
   BadAddresses: TStackLines;
 begin
+  Result := False;
   if not OpenSymbolFile(AFileName) then
     exit;
   BadAddresses := TStackLines.Create;
@@ -510,6 +511,7 @@ begin
   finally
     CloseSymbolFile;
     FreeAndNil(BadAddresses);
+    Result := True;
   end;
 end;
 

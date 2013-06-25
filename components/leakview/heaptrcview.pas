@@ -287,7 +287,7 @@ begin
       trace := TStackTrace(fItems[i]);
       nd := trvTraceInfo.Items.AddChildObject(nil, '+', trace);
       for j := 0 to trace.Count - 1 do begin
-        trvTraceInfo.Items.AddChildObject(nd, '-', Pointer(j));
+        trvTraceInfo.Items.AddChildObject(nd, '-', {%H-}Pointer(PtrInt(j)));
       end;
     end;
 
@@ -357,7 +357,7 @@ begin
   if not Assigned(nd) then Exit;
   if nd.Parent = nil then Exit;
 
-  idx := Integer(nd.Data);
+  idx := Integer({%H-}PtrInt(nd.Data));
   trace := TStackTrace(nd.Parent.Data);
   if not Assigned(trace) or (idx >= trace.Count) then Exit;
 
