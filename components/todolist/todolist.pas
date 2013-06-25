@@ -155,7 +155,7 @@ type
     procedure lvTodoClick(Sender: TObject);
     procedure lvTodoColumnClick(Sender : TObject; Column : TListColumn);
     procedure lvTodoCompare(Sender : TObject; Item1, Item2 : TListItem;
-      Data : Integer; var Compare : Integer);
+      {%H-}Data : Integer; var Compare : Integer);
     procedure SaveDialog1Show(Sender: TObject);
   private
     FBaseDirectory: string;
