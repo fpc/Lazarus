@@ -20,7 +20,7 @@ var
   { the input file to read DWARF/STABS debug info from, i.e. paramstr(0) }
   e : TExeFile;
   filename, dbgfn : string;
-  baseaddr : pointer;
+  //baseaddr : pointer;
   HasStabs, HasDwarf: Boolean;
 
 {%region ********************* lnfodwrf ************************************}
@@ -169,7 +169,7 @@ begin
     EBufCnt := EBUF_SIZE;
     if EBufCnt > limit - index then
       EBufCnt := limit - index;
-    blockread(e.f, EBuf, EBufCnt, bytesread);
+    blockread(e.f, EBuf, EBufCnt, bytesread{%H-});
     EBufCnt := bytesread;
   end;
   if EBufPos < EBufCnt then begin
@@ -184,7 +184,7 @@ end;
 { Reads the next size bytes into dest. Returns true if successful,
   false otherwise. Note that dest may be partially overwritten after
   returning false. }
-function ReadNext(var dest; size : SizeInt) : Boolean; inline;
+function ReadNext(var dest; size : SizeInt) : Boolean; //inline;
 var
   bytesread, totalread : SizeInt;
   r: Boolean;
@@ -199,7 +199,7 @@ begin
       EBufCnt := EBUF_SIZE;
       if EBufCnt > limit - index then
         EBufCnt := limit - index;
-      blockread(e.f, EBuf, EBufCnt, bytesread);
+      blockread(e.f, EBuf, EBufCnt, bytesread{%H-});
       EBufCnt := bytesread;
       if bytesread <= 0 then
         r := False;
@@ -264,7 +264,7 @@ end;
 { Reads an address from the current input stream }
 function ReadAddress() : PtrUInt;
 begin
-  ReadNext(ReadAddress, sizeof(ReadAddress));
+  ReadNext(ReadAddress{%H-}, sizeof(ReadAddress));
 end;
 
 
@@ -301,7 +301,7 @@ end;
 { Reads an unsigned Half from the current input stream }
 function ReadUHalf() : Word;
 begin
-  ReadNext(ReadUHalf, sizeof(ReadUHalf));
+  ReadNext(ReadUHalf{%H-}, sizeof(ReadUHalf));
 end;
 
 
@@ -462,7 +462,7 @@ begin
 
   found := false;
 
-  ReadNext(temp_length, sizeof(temp_length));
+  ReadNext(temp_length{%H-}, sizeof(temp_length));
   if (temp_length <> $ffffffff) then begin
     unit_length := temp_length + sizeof(temp_length)
   end else begin
@@ -477,7 +477,7 @@ begin
   DEBUG_WRITELN('Unit length: ', unit_length);
   if (temp_length <> $ffffffff) then begin
     DEBUG_WRITELN('32 bit DWARF detected');
-    ReadNext(header32, sizeof(header32));
+    ReadNext(header32{%H-}, sizeof(header32));
     header64.magic := $ffffffff;
     header64.unit_length := header32.unit_length;
     header64.version := header32.version;
@@ -500,7 +500,7 @@ begin
 
   inc(header_length, header64.length);
 
-  fillchar(numoptable, sizeof(numoptable), #0);
+  fillchar(numoptable{%H-}, sizeof(numoptable), #0);
   ReadNext(numoptable, header64.opcode_base-1);
   DEBUG_WRITELN('Opcode parameter count table');
   for i := 1 to header64.opcode_base-1 do begin
@@ -517,7 +517,7 @@ begin
   Seek(header_length);
 
   with header64 do begin
-    InitStateRegisters(state, default_is_stmt);
+    InitStateRegisters(state{%H-}, default_is_stmt);
   end;
   opcode := ReadNext();
   while (opcode <> -1) and (not found) do begin
@@ -711,7 +711,7 @@ var
   StabsFunctionRelative: boolean;
 
 type
-  pstab=^tstab;
+  //pstab=^tstab;
   tstab=packed record
     strpos  : longint;
     ntype   : byte;
@@ -765,7 +765,7 @@ begin
   fillchar(filestab,sizeof(tstab),0);
   fillchar(dirstab,sizeof(tstab),0);
   fillchar(linestab,sizeof(tstab),0);
-  fillchar(lastfunc,sizeof(tstab),0);
+  fillchar(lastfunc{%H-},sizeof(tstab),0);
   found:=false;
   system.seek(e.f,stabofs);
   stabsleft:=stabcnt;
@@ -774,7 +774,7 @@ begin
      stabscnt:=maxstabs
     else
      stabscnt:=stabsleft;
-    blockread(e.f,stabs,stabscnt*sizeof(tstab),res);
+    blockread(e.f,stabs,stabscnt*sizeof(tstab),res{%H-});
     stabscnt:=res div sizeof(tstab);
     for i:=0 to stabscnt-1 do
      begin
@@ -912,7 +912,7 @@ function GetLineInfo(addr: ptruint; out func, source: string; out line: longint)
 begin
   Result := False;
   if HasDwarf then
-    Result := GetLineInfoDwarf(addr, func, source, line);
+    Result := GetLineInfoDwarf(addr, func{%H-}, source{%H-}, line{%H-});
   if (not Result) and HasStabs then
     Result := GetLineInfoStabs(addr, func, source, line);
 end;
