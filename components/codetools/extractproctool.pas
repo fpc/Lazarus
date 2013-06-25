@@ -952,7 +952,7 @@ var
     if ProcType in [eptPublishedMethod,eptPrivateMethod,eptProtectedMethod,
       eptPublicMethod] then
     begin
-      if not CreateMissingProcBodies then
+      if not CreateMissingClassProcBodies(false) then
         RaiseException(ctsErrorDuringCreationOfNewProcBodies);
     end else begin
       TabWidth:=Beauty.TabWidth;

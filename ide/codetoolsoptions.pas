@@ -81,6 +81,8 @@ type
     FMethodInsertPolicy: TMethodInsertPolicy;
     FKeyWordPolicy : TWordPolicy;
     FIdentifierPolicy: TWordPolicy;
+    FUpdateAllMethodSignatures: boolean;
+    FUpdateMultiProcSignatures: boolean;
     FWordPolicyExceptions: TStringList;
     FDoNotSplitLineInFront: TAtomTypes;
     FDoNotSplitLineAfter: TAtomTypes;
@@ -154,10 +156,14 @@ type
       read FClassPartInsertPolicy write FClassPartInsertPolicy;
     property MixMethodsAndProperties: boolean
       read FMixMethodsAndProperties write FMixMethodsAndProperties;
+    property UpdateAllMethodSignatures: boolean
+      read FUpdateAllMethodSignatures write FUpdateAllMethodSignatures;
     property ForwardProcBodyInsertPolicy: TForwardProcBodyInsertPolicy
       read FForwardProcBodyInsertPolicy write FForwardProcBodyInsertPolicy;
     property KeepForwardProcOrder: boolean
       read FKeepForwardProcOrder write FKeepForwardProcOrder;
+    property UpdateMultiProcSignatures: boolean
+      read FUpdateMultiProcSignatures write FUpdateMultiProcSignatures;
     property ClassHeaderComments: boolean
       read FClassHeaderComments write FClassHeaderComments;
     property ClassImplementationComments: boolean
@@ -400,11 +406,15 @@ begin
       ClassPartInsertPolicyNames[cpipAlphabetically]));
     FMixMethodsAndProperties:=XMLConfig.GetValue(
       'CodeToolsOptions/MixMethodsAndProperties/Value',false);
+    FUpdateAllMethodSignatures:=XMLConfig.GetValue(
+      'CodeToolsOptions/UpdateAllMethodSignatures/Value',true);
     FForwardProcBodyInsertPolicy:=ForwardProcBodyInsertPolicyNameToPolicy(
       XMLConfig.GetValue('CodeToolsOptions/ForwardProcBodyInsertPolicy/Value',
         ForwardProcBodyInsertPolicyNames[fpipInFrontOfMethods]));
     FKeepForwardProcOrder:=XMLConfig.GetValue(
       'CodeToolsOptions/KeepForwardProcOrder/Value',true);
+    FUpdateMultiProcSignatures:=XMLConfig.GetValue(
+      'CodeToolsOptions/UpdateMultiProcSignatures/Value',true);
     FClassHeaderComments:=XMLConfig.GetValue(
       'CodeToolsOptions/ClassHeaderComments/Value',true);
     FClassImplementationComments:=XMLConfig.GetValue(
@@ -530,6 +540,9 @@ begin
     XMLConfig.SetDeleteValue(
       'CodeToolsOptions/MixMethodsAndProperties/Value',FMixMethodsAndProperties,
       false);
+    XMLConfig.SetDeleteValue(
+      'CodeToolsOptions/UpdateAllMethodSignatures/Value',FUpdateAllMethodSignatures,
+      true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/ForwardProcBodyInsertPolicy/Value',
       ForwardProcBodyInsertPolicyNames[FForwardProcBodyInsertPolicy],
       ForwardProcBodyInsertPolicyNames[fpipInFrontOfMethods]);
@@ -537,6 +550,9 @@ begin
       'CodeToolsOptions/KeepForwardProcOrder/Value',FKeepForwardProcOrder,true);
     XMLConfig.SetDeleteValue(
       'CodeToolsOptions/ClassHeaderComments/Value',FClassHeaderComments,true);
+    XMLConfig.SetDeleteValue(
+      'CodeToolsOptions/UpdateMultiProcSignatures/Value',FUpdateMultiProcSignatures,
+      true);
     XMLConfig.SetDeleteValue(
       'CodeToolsOptions/ClassImplementationComments/Value',
       FClassImplementationComments,true);
@@ -661,8 +677,10 @@ begin
     FLineLength:=CodeToolsOpts.FLineLength;
     FClassPartInsertPolicy:=CodeToolsOpts.FClassPartInsertPolicy;
     FMixMethodsAndProperties:=CodeToolsOpts.MixMethodsAndProperties;
+    FUpdateAllMethodSignatures:=CodeToolsOpts.UpdateAllMethodSignatures;
     FForwardProcBodyInsertPolicy:=CodeToolsOpts.ForwardProcBodyInsertPolicy;
     FKeepForwardProcOrder:=CodeToolsOpts.KeepForwardProcOrder;
+    FUpdateMultiProcSignatures:=CodeToolsOpts.UpdateMultiProcSignatures;
     FClassHeaderComments:=CodeToolsOpts.ClassHeaderComments;
     FClassImplementationComments:=CodeToolsOpts.ClassImplementationComments;
     FMethodInsertPolicy:=CodeToolsOpts.FMethodInsertPolicy;
@@ -713,8 +731,10 @@ begin
   FLineLength:=80;
   FClassPartInsertPolicy:=cpipLast;
   FMixMethodsAndProperties:=false;
+  FUpdateAllMethodSignatures:=true;
   FForwardProcBodyInsertPolicy:=fpipInFrontOfMethods;
   FKeepForwardProcOrder:=true;
+  FUpdateMultiProcSignatures:=true;
   FClassHeaderComments:=true;
   FClassImplementationComments:=true;
   FMethodInsertPolicy:=mipClassOrder;
@@ -780,8 +800,10 @@ begin
     and (FLineLength=CodeToolsOpts.FLineLength)
     and (FClassPartInsertPolicy=CodeToolsOpts.FClassPartInsertPolicy)
     and (FMixMethodsAndProperties=CodeToolsOpts.MixMethodsAndProperties)
+    and (FUpdateAllMethodSignatures=CodeToolsOpts.UpdateAllMethodSignatures)
     and (FForwardProcBodyInsertPolicy=CodeToolsOpts.ForwardProcBodyInsertPolicy)
     and (FKeepForwardProcOrder=CodeToolsOpts.KeepForwardProcOrder)
+    and (FUpdateMultiProcSignatures=CodeToolsOpts.UpdateMultiProcSignatures)
     and (FClassHeaderComments=CodeToolsOpts.ClassHeaderComments)
     and (FClassImplementationComments=CodeToolsOpts.ClassImplementationComments)
     and (FMethodInsertPolicy=CodeToolsOpts.FMethodInsertPolicy)
@@ -855,8 +877,9 @@ end;
 procedure TCodeToolsOptions.AssignTo(Dest: TPersistent);
 var
   Boss: TCodeToolManager absolute Dest;
-  BeautifyCodeOptions: TBeautifyCodeOptions absolute Dest;
+  Beauty: TBeautifyCodeOptions absolute Dest;
 begin
+  debugln(['TCodeToolsOptions.AssignTo ',DbgSName(Dest)]);
   if Dest is TCodeToolManager then
   begin
     // General - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -874,26 +897,28 @@ begin
   else
   if Dest is TBeautifyCodeOptions then
   begin
-    BeautifyCodeOptions.LineLength:=LineLength;
-    BeautifyCodeOptions.ClassPartInsertPolicy:=ClassPartInsertPolicy;
-    BeautifyCodeOptions.MixMethodsAndProperties:=MixMethodsAndProperties;
-    BeautifyCodeOptions.ForwardProcBodyInsertPolicy:=ForwardProcBodyInsertPolicy;
-    BeautifyCodeOptions.KeepForwardProcOrder:=KeepForwardProcOrder;
-    BeautifyCodeOptions.ClassHeaderComments:=ClassHeaderComments;
-    BeautifyCodeOptions.ClassImplementationComments:=ClassImplementationComments;
-    BeautifyCodeOptions.MethodInsertPolicy:=MethodInsertPolicy;
-    BeautifyCodeOptions.KeyWordPolicy:=KeyWordPolicy;
-    BeautifyCodeOptions.IdentifierPolicy:=IdentifierPolicy;
-    BeautifyCodeOptions.SetupWordPolicyExceptions(WordPolicyExceptions);
-    BeautifyCodeOptions.DoNotSplitLineInFront:=DoNotSplitLineInFront;
-    BeautifyCodeOptions.DoNotSplitLineAfter:=DoNotSplitLineAfter;
-    BeautifyCodeOptions.DoInsertSpaceInFront:=DoInsertSpaceInFront;
-    BeautifyCodeOptions.DoInsertSpaceAfter:=DoInsertSpaceAfter;
-    BeautifyCodeOptions.PropertyReadIdentPrefix:=PropertyReadIdentPrefix;
-    BeautifyCodeOptions.PropertyWriteIdentPrefix:=PropertyWriteIdentPrefix;
-    BeautifyCodeOptions.PropertyStoredIdentPostfix:=PropertyStoredIdentPostfix;
-    BeautifyCodeOptions.PrivateVariablePrefix:=PrivateVariablePrefix;
-    BeautifyCodeOptions.UsesInsertPolicy:=UsesInsertPolicy;
+    Beauty.LineLength:=LineLength;
+    Beauty.ClassPartInsertPolicy:=ClassPartInsertPolicy;
+    Beauty.MixMethodsAndProperties:=MixMethodsAndProperties;
+    Beauty.UpdateAllMethodSignatures:=UpdateAllMethodSignatures;
+    Beauty.ForwardProcBodyInsertPolicy:=ForwardProcBodyInsertPolicy;
+    Beauty.KeepForwardProcOrder:=KeepForwardProcOrder;
+    Beauty.UpdateMultiProcSignatures:=UpdateMultiProcSignatures;
+    Beauty.ClassHeaderComments:=ClassHeaderComments;
+    Beauty.ClassImplementationComments:=ClassImplementationComments;
+    Beauty.MethodInsertPolicy:=MethodInsertPolicy;
+    Beauty.KeyWordPolicy:=KeyWordPolicy;
+    Beauty.IdentifierPolicy:=IdentifierPolicy;
+    Beauty.SetupWordPolicyExceptions(WordPolicyExceptions);
+    Beauty.DoNotSplitLineInFront:=DoNotSplitLineInFront;
+    Beauty.DoNotSplitLineAfter:=DoNotSplitLineAfter;
+    Beauty.DoInsertSpaceInFront:=DoInsertSpaceInFront;
+    Beauty.DoInsertSpaceAfter:=DoInsertSpaceAfter;
+    Beauty.PropertyReadIdentPrefix:=PropertyReadIdentPrefix;
+    Beauty.PropertyWriteIdentPrefix:=PropertyWriteIdentPrefix;
+    Beauty.PropertyStoredIdentPostfix:=PropertyStoredIdentPostfix;
+    Beauty.PrivateVariablePrefix:=PrivateVariablePrefix;
+    Beauty.UsesInsertPolicy:=UsesInsertPolicy;
   end
   else
     inherited AssignTo(Dest);

@@ -1,13 +1,15 @@
-inherited CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
+object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
+  Left = 0
   Height = 377
+  Top = 0
   Width = 572
-  ClientHeight = 373
-  ClientWidth = 568
+  ClientHeight = 377
+  ClientWidth = 572
   TabOrder = 0
   Visible = False
   DesignLeft = 313
   DesignTop = 275
-  object ForwardProcsInsertPolicyRadioGroup: TRadioGroup[0]
+  object ForwardProcsInsertPolicyRadioGroup: TRadioGroup
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
@@ -15,7 +17,7 @@ inherited CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     Left = 6
     Height = 100
     Top = 6
-    Width = 556
+    Width = 560
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     BorderSpacing.Around = 6
@@ -30,19 +32,19 @@ inherited CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     ChildSizing.ControlsPerLine = 1
     TabOrder = 0
   end
-  object ForwardProcsKeepOrderCheckBox: TCheckBox[1]
+  object ForwardProcsKeepOrderCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ForwardProcsInsertPolicyRadioGroup
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 22
+    Height = 18
     Top = 112
-    Width = 239
+    Width = 235
     BorderSpacing.Around = 6
     Caption = 'ForwardProcsKeepOrderCheckBox'
     TabOrder = 1
   end
-  object UsesInsertPolicyRadioGroup: TRadioGroup[2]
+  object UsesInsertPolicyRadioGroup: TRadioGroup
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ForwardProcsKeepOrderCheckBox
     AnchorSideTop.Side = asrBottom
@@ -50,8 +52,8 @@ inherited CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 100
-    Top = 146
-    Width = 556
+    Top = 142
+    Width = 560
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
@@ -68,5 +70,17 @@ inherited CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     ChildSizing.ControlsPerLine = 1
     Constraints.MinHeight = 100
     TabOrder = 2
+  end
+  object UpdateMultiProcSignaturesCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = UsesInsertPolicyRadioGroup
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 18
+    Top = 248
+    Width = 252
+    BorderSpacing.Around = 6
+    Caption = 'UpdateMultiProcSignaturesCheckBox'
+    TabOrder = 3
   end
 end

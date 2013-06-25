@@ -51,6 +51,7 @@ type
     PropertyWriteIdentPrefixLabel: TLabel;
     SetPropertyVariablenameEdit: TEdit;
     SetPropertyVariablenameLabel: TLabel;
+    UpdateAllMethodSignaturesCheckBox: TCheckBox;
   private
     { private declarations }
   public
@@ -85,9 +86,6 @@ begin
     end;
   end;
 
-  with MixMethodsAndPropertiesCheckBox do
-    Caption:=dlgMixMethodsAndProperties;
-
   with MethodInsertPolicyRadioGroup do begin
     Caption:=dlgInsertMethods;
     with Items do begin
@@ -99,8 +97,11 @@ begin
     end;
   end;
 
+  MixMethodsAndPropertiesCheckBox.Caption:=dlgMixMethodsAndProperties;
+  UpdateAllMethodSignaturesCheckBox.Caption:=lisCTOUpdateAllMethodSignatures;
   ClassHeaderCommentsCheckBox.Caption:=lisHeaderCommentForClass;
   ClassImplementationCommentsCheckBox.Caption:=lisImplementationCommentForClass;
+
   PropertyCompletionGroupBox.Caption:=dlgPropertyCompletion;
   PropertyCompletionCheckBox.Caption:=dlgCompleteProperties;
   PropertyReadIdentPrefixLabel.Caption:=dlgCDTReadPrefix;
@@ -124,7 +125,7 @@ begin
     end;
 
     MixMethodsAndPropertiesCheckBox.Checked := MixMethodsAndProperties;
-
+    UpdateAllMethodSignaturesCheckBox.Checked:=UpdateAllMethodSignatures;
     ClassHeaderCommentsCheckBox.Checked := ClassHeaderComments;
     ClassImplementationCommentsCheckBox.Checked := ClassImplementationComments;
     case MethodInsertPolicy of
@@ -157,7 +158,7 @@ begin
     end;
 
     MixMethodsAndProperties := MixMethodsAndPropertiesCheckBox.Checked;
-
+    UpdateAllMethodSignatures:=UpdateAllMethodSignaturesCheckBox.Checked;
     ClassHeaderComments := ClassHeaderCommentsCheckBox.Checked;
     ClassImplementationComments := ClassImplementationCommentsCheckBox.Checked;
 

@@ -148,6 +148,7 @@ type
     // procedures
     ForwardProcBodyInsertPolicy: TForwardProcBodyInsertPolicy;
     KeepForwardProcOrder: boolean;
+    UpdateMultiProcSignatures: boolean;
     // classes, methods, properties
     ClassHeaderComments: boolean;
     ClassImplementationComments: boolean;
@@ -158,6 +159,7 @@ type
     PropertyWriteIdentPrefix: string;
     PropertyStoredIdentPostfix: string;
     PrivateVariablePrefix: string;
+    UpdateAllMethodSignatures: boolean;
     // uses section
     UsesInsertPolicy: TUsesInsertPolicy;
 
@@ -1248,6 +1250,8 @@ begin
   TabWidth:=8;
   ClassPartInsertPolicy:=cpipLast;
   MixMethodsAndProperties:=false;
+  UpdateAllMethodSignatures:=true;
+  UpdateMultiProcSignatures:=true;
   MethodInsertPolicy:=mipClassOrder;
   ForwardProcBodyInsertPolicy:=fpipBehindMethods;
   KeepForwardProcOrder:=true;

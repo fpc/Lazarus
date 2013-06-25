@@ -71,7 +71,7 @@ type
     function JumpToMethod(const ProcHead: string; Attr: TProcHeadAttributes;
         var NewPos: TCodeXYPosition; var NewTopLine: integer;
         IgnoreJumpCentered: boolean): boolean;
-    function FindNodeInTree(ATree: TAVLTree;
+    function FindNodeExtInTree(ATree: TAVLTree;
         const UpperCode: string): TCodeTreeNodeExtension;
     function CreateSubProcPath(StartNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): TStringList;
@@ -913,7 +913,7 @@ begin
   end;
 end;
 
-function TMethodJumpingCodeTool.FindNodeInTree(ATree: TAVLTree;
+function TMethodJumpingCodeTool.FindNodeExtInTree(ATree: TAVLTree;
   const UpperCode: string): TCodeTreeNodeExtension;
 var cmp: integer;
   ANode: TAVLTreeNode;

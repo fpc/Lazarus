@@ -1002,7 +1002,7 @@ begin
     {$ENDIF}
     if not InsertAllNewClassParts then
       RaiseException(ctsErrorDuringInsertingNewClassParts);
-    if not CreateMissingProcBodies then
+    if not CreateMissingClassProcBodies(false) then
       RaiseException(ctsErrorDuringCreationOfNewProcBodies);
     if not InsertAllNewUnitsToMainUsesSection then
       RaiseException(ctsErrorDuringInsertingNewUsesSection);

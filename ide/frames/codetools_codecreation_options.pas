@@ -35,6 +35,7 @@ type
   TCodetoolsCodeCreationOptionsFrame = class(TAbstractIDEOptionsEditor)
     ForwardProcsInsertPolicyRadioGroup: TRadioGroup;
     ForwardProcsKeepOrderCheckBox: TCheckBox;
+    UpdateMultiProcSignaturesCheckBox: TCheckBox;
     UsesInsertPolicyRadioGroup: TRadioGroup;
   private
   public
@@ -70,8 +71,9 @@ begin
     end;
   end;
 
-  with ForwardProcsKeepOrderCheckBox do
-    Caption:=dlgForwardProcsKeepOrder;
+  ForwardProcsKeepOrderCheckBox.Caption:=dlgForwardProcsKeepOrder;
+  UpdateMultiProcSignaturesCheckBox.Caption:=
+    lisCTOUpdateMultipleProcedureSignatures;
 
   with UsesInsertPolicyRadioGroup do begin
     Caption:=lisNewUnitsAreAddedToUsesSections;
@@ -101,6 +103,7 @@ begin
     end;
 
     ForwardProcsKeepOrderCheckBox.Checked := KeepForwardProcOrder;
+    UpdateMultiProcSignaturesCheckBox.Checked:=UpdateMultiProcSignatures;
 
     case UsesInsertPolicy of
     uipFirst:             UsesInsertPolicyRadioGroup.ItemIndex:=0;
@@ -126,6 +129,7 @@ begin
     end;
 
     KeepForwardProcOrder := ForwardProcsKeepOrderCheckBox.Checked;
+    UpdateMultiProcSignatures:=UpdateMultiProcSignaturesCheckBox.Checked;
 
     case UsesInsertPolicyRadioGroup.ItemIndex of
     0: UsesInsertPolicy:=uipFirst;

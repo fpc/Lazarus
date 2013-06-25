@@ -5781,6 +5781,9 @@ resourcestring
   lisUDFilter = '(Filter)';
   lisUDSearch = '(Search)';
   lisUDUnits2 = 'Units: %s';
+  lisCTOUpdateAllMethodSignatures = 'Update all method signatures';
+  lisCTOUpdateMultipleProcedureSignatures = 'Update multiple procedure '
+    +'signatures';
 
 implementation
 
