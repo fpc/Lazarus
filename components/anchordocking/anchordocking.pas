@@ -4171,7 +4171,7 @@ function TAnchorDockHostSite.HeaderNeedsShowing: boolean;
 begin
   Result:=(SiteType<>adhstLayout)
       and (not (Parent is TAnchorDockPage))
-      and DockMaster.ShowHeader;
+      and Assigned(DockMaster) and DockMaster.ShowHeader;
 end;
 
 procedure TAnchorDockHostSite.DoClose(var CloseAction: TCloseAction);
