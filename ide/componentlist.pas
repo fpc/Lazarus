@@ -33,8 +33,8 @@ interface
 
 uses
   Classes, SysUtils, LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
-  ComCtrls, ButtonPanel, Dialogs, Buttons, LazarusIDEStrConsts, ComponentReg,
-  PackageDefs, FormEditingIntf, PropEdits, ListFilterEdit, TreeFilterEdit, fgl, LCLProc;
+  ComCtrls, ButtonPanel, Buttons, LazarusIDEStrConsts, ComponentReg, PackageDefs,
+  FormEditingIntf, TreeFilterEdit, fgl, LCLProc;
 
 type
 
@@ -48,16 +48,17 @@ type
     ButtonPanel: TPanel;
     LabelSearch: TLabel;
     PageControl: TPageControl;
-    Panel3: TPanel;
+    FilterPanel: TPanel;
     Panel5: TPanel;
     Panel6: TPanel;
     Panel7: TPanel;
     TabSheetInheritance: TTabSheet;
-    TabSheetListBox: TTabSheet;
+    TabSheetList: TTabSheet;
     TabSheetPaletteTree: TTabSheet;
     InheritanceTree: TTreeView;
     PalletteTree: TTreeView;
     TreeFilterEd: TTreeFilterEdit;
+    procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure UseAndCloseButtonClick(Sender: TObject);
     procedure ComponentsDblClick(Sender: TObject);
@@ -98,21 +99,20 @@ constructor TComponentListForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FComponentList := TRegisteredCompList.Create;
-  UseAndCloseButton.Caption := lisUseAndClose;
-  ListTree.DefaultItemHeight       := ComponentPaletteImageHeight + 1;
-  InheritanceTree.DefaultItemHeight:= ComponentPaletteImageHeight + 1;
-  PalletteTree.DefaultItemHeight   := ComponentPaletteImageHeight + 1;
 
   //Translations
   LabelSearch.Caption := lisMenuFind;
   Caption := lisCmpLstComponents;
-  TabSheetListBox.Caption := lisCmpLstList;
+  TabSheetList.Caption := lisCmpLstList;
   TabSheetPaletteTree.Caption := lisCmpLstPalette;
   TabSheetInheritance.Caption := lisCmpLstInheritance;
+  UseAndCloseButton.Caption := lisUseAndClose;
 
-  //PLEASE add a defaultpage property in TPagecontrol
+  ListTree.DefaultItemHeight       := ComponentPaletteImageHeight + 1;
+  InheritanceTree.DefaultItemHeight:= ComponentPaletteImageHeight + 1;
+  PalletteTree.DefaultItemHeight   := ComponentPaletteImageHeight + 1;
   PrevPageIndex := -1;
-  PageControl.ActivePage := TabSheetListBox;
+  PageControl.ActivePage := TabSheetList;
   FindAllLazarusComponents;
   UpdateComponentSelection(nil);
   TreeFilterEd.InvalidateFilter;
@@ -130,7 +130,15 @@ end;
 
 procedure TComponentListForm.FormShow(Sender: TObject);
 begin
+  DebugLn(['*** TComponentListForm.FormShow, Parent=', Parent]);
+  ButtonPanel.Visible := Parent=Nil;
   UpdateButtonState;
+end;
+
+procedure TComponentListForm.FormActivate(Sender: TObject);
+begin
+  ButtonPanel.Visible := Parent=Nil;
+  DebugLn(['*** TComponentListForm.FormActivate, Parent=', Parent]);
 end;
 
 procedure TComponentListForm.ClearSelection;

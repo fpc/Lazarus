@@ -1,12 +1,13 @@
 object ComponentListForm: TComponentListForm
-  Left = 281
+  Left = 720
   Height = 467
-  Top = 40
+  Top = 39
   Width = 300
   Caption = 'Components'
   ClientHeight = 467
   ClientWidth = 300
   KeyPreview = True
+  OnActivate = FormActivate
   OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnShow = FormShow
@@ -14,38 +15,39 @@ object ComponentListForm: TComponentListForm
   LCLVersion = '1.1'
   object PageControl: TPageControl
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Panel3
+    AnchorSideTop.Control = FilterPanel
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel
     Left = 1
-    Height = 396
+    Height = 403
     Top = 29
     Width = 298
-    ActivePage = TabSheetListBox
+    ActivePage = TabSheetList
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 1
     TabIndex = 0
     TabOrder = 1
     OnChange = PageControlChange
-    object TabSheetListBox: TTabSheet
+    object TabSheetList: TTabSheet
       Caption = 'List'
-      ClientHeight = 366
+      ClientHeight = 373
       ClientWidth = 294
       object Panel7: TPanel
         Left = 0
-        Height = 366
+        Height = 373
         Top = 0
         Width = 294
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 2
-        ClientHeight = 366
+        ClientHeight = 373
         ClientWidth = 294
         TabOrder = 0
         object ListTree: TTreeView
           Left = 2
-          Height = 362
+          Height = 369
           Top = 2
           Width = 290
           Align = alClient
@@ -60,7 +62,7 @@ object ComponentListForm: TComponentListForm
     end
     object TabSheetPaletteTree: TTabSheet
       Caption = 'Palette'
-      ClientHeight = 366
+      ClientHeight = 373
       ClientWidth = 294
       object Panel5: TPanel
         Left = 0
@@ -92,7 +94,7 @@ object ComponentListForm: TComponentListForm
     end
     object TabSheetInheritance: TTabSheet
       Caption = 'Inheritance'
-      ClientHeight = 366
+      ClientHeight = 373
       ClientWidth = 294
       object Panel6: TPanel
         Left = 0
@@ -122,7 +124,7 @@ object ComponentListForm: TComponentListForm
       end
     end
   end
-  object Panel3: TPanel
+  object FilterPanel: TPanel
     AnchorSideRight.Side = asrBottom
     Left = 1
     Height = 28
@@ -135,8 +137,8 @@ object ComponentListForm: TComponentListForm
     ClientWidth = 300
     TabOrder = 0
     object LabelSearch: TLabel
-      AnchorSideLeft.Control = Panel3
-      AnchorSideTop.Control = Panel3
+      AnchorSideLeft.Control = FilterPanel
+      AnchorSideTop.Control = FilterPanel
       Left = 6
       Height = 16
       Top = 6
@@ -164,20 +166,20 @@ object ComponentListForm: TComponentListForm
     end
   end
   object ButtonPanel: TPanel
-    Left = 6
+    Left = 0
     Height = 34
-    Top = 428
-    Width = 290
-    Anchors = [akLeft, akRight, akBottom]
+    Top = 433
+    Width = 300
+    Align = alBottom
     ClientHeight = 34
-    ClientWidth = 290
+    ClientWidth = 300
     TabOrder = 2
     object UseAndCloseButton: TBitBtn
       AnchorSideTop.Control = ButtonPanel
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = ButtonPanel
       AnchorSideRight.Side = asrBottom
-      Left = 165
+      Left = 175
       Height = 30
       Top = 2
       Width = 115
