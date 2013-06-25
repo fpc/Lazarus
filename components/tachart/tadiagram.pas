@@ -122,6 +122,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    function DiaPoint(AX, AY: TDiaBoxSide): TDiaPoint; inline;
     procedure Add(AConnector: TDiaConnector);
     procedure Changed(ASender: TDiaObject); override;
     procedure Draw; virtual;
@@ -158,6 +159,22 @@ type
     property Reverse: Boolean read FReverse write SetReverse;
     property Units: TDiaUnits read FUnits write SetUnits;
     property Value: Double read FValue write SetValue;
+  end;
+
+  TDiaCenterElement = class(TDiaElement)
+  strict private
+    FActualPos: TDiaPoint;
+    FLeft: TDiaPosition;
+    FTop: TDiaPosition;
+    procedure SetLeft(AValue: TDiaPosition);
+    procedure SetTop(AValue: TDiaPosition);
+  public
+    constructor Create;
+    procedure Changed(ASender: TDiaObject); override;
+  public
+    property ActualPos: TDiaPoint read FActualPos;
+    property Left: TDiaPosition read FLeft write SetLeft;
+    property Top: TDiaPosition read FTop write SetTop;
   end;
 
   TDiaBox = class(TDiaElement)
@@ -214,6 +231,11 @@ type
     property ActualPos: TDiaPoint read FActualPos;
     property Element: TDiaElement read FElement;
     property Position: TDiaPosition read FPosition write SetPosition;
+  end;
+
+  TDiaCenterConnector = class(TDiaConnector)
+  public
+    procedure Changed(ASender: TDiaObject); override;
   end;
 
   TDiaBoxConnector = class(TDiaConnector)
@@ -285,6 +307,16 @@ const
   DEFAULT_DPI = 72;
   CM_PER_INCH = 2.54;
 
+function XY(const AX, AY: TDiaPoint): TDiaPoint;
+var
+  u: TDiaUnits;
+begin
+  for u in TDiaUnits do begin
+    Result.X[u] := AX.X[u];
+    Result.Y[u] := AY.Y[u];
+  end;
+end;
+
 function DiaPos(
   AValue: Double; AUnits: TDiaUnits;
   AReverse: Boolean; APercentage: Boolean): TDiaPosition;
@@ -311,6 +343,39 @@ end;
 operator = (const A, B: TDiaPosition): Boolean;
 begin
   Result := TDiaPosition.Equals(A, B);
+end;
+
+{ TDiaCenterElement }
+
+procedure TDiaCenterElement.Changed(ASender: TDiaObject);
+var
+  tl, tr, bl, br: TDiaPoint;
+begin
+  tl := DiaPoint(dbsLeft, dbsTop);
+  tr := DiaPoint(dbsRight, dbsTop);
+  bl := DiaPoint(dbsLeft, dbsBottom);
+  br := DiaPoint(dbsRight, dbsBottom);
+  if Left.Defined and Top.Defined then
+    FActualPos := XY(Left.Calc(tl, tr), Top.Calc(tl, bl));
+  inherited;
+end;
+
+constructor TDiaCenterElement.Create;
+begin
+  FLeft.Init(Self);
+  FTop.Init(Self);
+end;
+
+procedure TDiaCenterElement.SetLeft(AValue: TDiaPosition);
+begin
+  if FLeft = AValue then exit;
+  FLeft.Assign(AValue);
+end;
+
+procedure TDiaCenterElement.SetTop(AValue: TDiaPosition);
+begin
+  if FTop = AValue then exit;
+  FTop.Assign(AValue);
 end;
 
 { TDiaPoint }
@@ -453,6 +518,15 @@ begin
   Notify(Self);
 end;
 
+{ TDiaCenterConnector }
+
+procedure TDiaCenterConnector.Changed(ASender: TDiaObject);
+begin
+  inherited;
+  if Element is TDiaCenterElement then
+    FActualPos := (Element as TDiaCenterElement).ActualPos;
+end;
+
 { TDiaBoxConnector }
 
 procedure TDiaBoxConnector.Changed(ASender: TDiaObject);
@@ -545,23 +619,6 @@ end;
 { TDiaBox }
 
 procedure TDiaBox.Changed(ASender: TDiaObject);
-
-  function DiaPoint(AX, AY: TDiaBoxSide): TDiaPoint;
-  begin
-    Result.X := Owner[AX];
-    Result.Y := Owner[AY];
-  end;
-
-  function XY(const AX, AY: TDiaPoint): TDiaPoint;
-  var
-    u: TDiaUnits;
-  begin
-    for u in TDiaUnits do begin
-      Result.X[u] := AX.X[u];
-      Result.Y[u] := AY.Y[u];
-    end;
-  end;
-
 var
   tl, tr, bl, br: TDiaPoint;
 begin
@@ -751,6 +808,12 @@ destructor TDiaElement.Destroy;
 begin
   FreeAndNil(FDecorators);
   inherited;
+end;
+
+function TDiaElement.DiaPoint(AX, AY: TDiaBoxSide): TDiaPoint;
+begin
+  Result.X := Owner[AX];
+  Result.Y := Owner[AY];
 end;
 
 procedure TDiaElement.Draw;

@@ -18,8 +18,7 @@ uses
 
 function MakeBoxSideConnector(
   ABox: TDiaBox; ASide: TDiaBoxSide): TDiaBoxConnector;
-function MakeLink(
-  ADia: TDiagram; AConn1, AConn2: TDiaBoxConnector): TDiaLink;
+function MakeLink(ADia: TDiagram; AConn1, AConn2: TDiaConnector): TDiaLink;
 
 implementation
 
@@ -32,8 +31,7 @@ begin
   ABox.Add(Result);
 end;
 
-function MakeLink(
-  ADia: TDiagram; AConn1, AConn2: TDiaBoxConnector): TDiaLink;
+function MakeLink(ADia: TDiagram; AConn1, AConn2: TDiaConnector): TDiaLink;
 begin
   Result := TDiaLink.Create;
   Result.Start.Connector := AConn1;
