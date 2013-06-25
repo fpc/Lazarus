@@ -15,10 +15,10 @@ interface
 
 uses
   Types,
-  TAChartUtils, TATypes;
+  TAChartUtils;
 
 type
-  TDiaObject = class(TObject)
+  TDiaObject = class(TInterfacedObject)
   public
     procedure Notify(ASender: TDiaObject); virtual; abstract;
     procedure Changed(ASender: TDiaObject); virtual; abstract;
@@ -53,7 +53,10 @@ type
 
   TDiaDecoratorList = class;
 
-  TDiaDecorator = class(TDiaObject)
+  IDiaDecorator = interface
+  end;
+
+  TDiaDecorator = class(TDiaObject, IDiaDecorator)
   private
     FOwner: TDiaObject;
   public
@@ -65,12 +68,11 @@ type
 
   TDiaDecoratorList = class(TDiaObject)
   private
-    FDecorators: array of TDiaDecorator;
+    FDecorators: array of IDiaDecorator;
     FOwner: TDiaObject;
-    procedure Add(ADecorator: TDiaDecorator);
+    procedure Add(ADecorator: IDiaDecorator);
   public
     constructor Create(AOwner: TDiaObject);
-    destructor Destroy; override;
     property Owner: TDiaObject read FOwner;
     function GetEnumerator: TDiaDecoratorEnumerator;
   end;
@@ -80,9 +82,9 @@ type
     FPosition: Integer;
   public
     constructor Create(AList: TDiaDecoratorList);
-    function GetCurrent: TDiaDecorator;
+    function GetCurrent: IDiaDecorator;
     function MoveNext: Boolean;
-    property Current: TDiaDecorator read GetCurrent;
+    property Current: IDiaDecorator read GetCurrent;
   end;
 
   TDiagram = class(TDiaObject)
@@ -362,7 +364,7 @@ begin
   FPosition := -1;
 end;
 
-function TDiaDecoratorEnumerator.GetCurrent: TDiaDecorator;
+function TDiaDecoratorEnumerator.GetCurrent: IDiaDecorator;
 begin
   Result := FList.FDecorators[FPosition];
 end;
@@ -375,7 +377,7 @@ end;
 
 { TDiaDecoratorList }
 
-procedure TDiaDecoratorList.Add(ADecorator: TDiaDecorator);
+procedure TDiaDecoratorList.Add(ADecorator: IDiaDecorator);
 begin
   SetLength(FDecorators, Length(FDecorators) + 1);
   FDecorators[High(FDecorators)] := ADecorator;
@@ -385,15 +387,6 @@ end;
 constructor TDiaDecoratorList.Create(AOwner: TDiaObject);
 begin
   FOwner := AOwner;
-end;
-
-destructor TDiaDecoratorList.Destroy;
-var
-  d: TDiaDecorator;
-begin
-  for d in FDecorators do
-    d.Free;
-  inherited;
 end;
 
 function TDiaDecoratorList.GetEnumerator: TDiaDecoratorEnumerator;
@@ -488,7 +481,7 @@ end;
 
 procedure TDiaConnector.Changed(ASender: TDiaObject);
 begin
-  //
+  Unused(ASender);
 end;
 
 constructor TDiaConnector.Create;
@@ -499,7 +492,7 @@ end;
 procedure TDiaConnector.Notify(ASender: TDiaObject);
 begin
   if Element <> nil then
-    Element.Notify(Self);
+    Element.Notify(ASender);
 end;
 
 procedure TDiaConnector.SetElement(AValue: TDiaElement);

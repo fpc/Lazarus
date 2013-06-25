@@ -14,7 +14,7 @@ unit TADiagramDrawing;
 interface
 
 uses
-  FPCanvas,
+  Classes, FPCanvas,
   TADrawUtils, TADiagram;
 
 type
@@ -25,12 +25,19 @@ type
     property Drawer: IChartDrawer read FDrawer write FDrawer;
   end;
 
-  TDiaPenDecorator = class(TDiaDecorator)
+  IDiaDrawerDecorator = interface
+    ['{A2AB054F-D725-401D-A249-18BF03CFF6FA}']
+    procedure Apply(ADrawer: IChartDrawer);
+  end;
+
+  TDiaPenDecorator = class(TDiaDecorator, IDiaDrawerDecorator)
   private
     FPen: TFPCustomPen;
   public
+
     constructor Create(AOwner: TDiaDecoratorList);
     destructor Destroy; override;
+    procedure Apply(ADrawer: IChartDrawer);
     property Pen: TFPCustomPen read FPen;
   end;
 
@@ -42,7 +49,7 @@ uses
 
 function ToImage(const AP: TDiaPoint): TPoint; inline;
 begin
-  Result := Point(Round(AP.X[duPixels]), Round(AP.Y[duPixels]));
+  Result := RoundPoint(AP.AsUnits(duPixels));
 end;
 
 procedure DrawDiaBox(ASelf: TDiaBox);
@@ -84,16 +91,16 @@ end;
 procedure DrawDiaLink(ASelf: TDiaLink);
 var
   id: IChartDrawer;
-var
+  drawDecor: IDiaDrawerDecorator;
   startPos, endPos, p: TPoint;
-  d: TDiaDecorator;
+  d: IDiaDecorator;
 begin
   if (ASelf.Start.Connector = nil) or (ASelf.Finish.Connector = nil) then exit;
   id := (ASelf.Owner.Context as TDiaContextDrawer).Drawer;
   id.PrepareSimplePen($000000);
   for d in ASelf.Decorators do
-    if d is TDiaPenDecorator then
-      id.Pen := (d as TDiaPenDecorator).Pen;
+    if d is IDiaDrawerDecorator then
+      (d as IDiaDrawerDecorator).Apply(id);
   startPos := ToImage(ASelf.Start.Connector.ActualPos);
   endPos := ToImage(ASelf.Finish.Connector.ActualPos);
   case ASelf.Routing of
@@ -119,6 +126,11 @@ begin
 end;
 
 { TDiaPenDecorator }
+
+procedure TDiaPenDecorator.Apply(ADrawer: IChartDrawer);
+begin
+  ADrawer.Pen := Pen;
+end;
 
 constructor TDiaPenDecorator.Create(AOwner: TDiaDecoratorList);
 begin
