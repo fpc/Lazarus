@@ -8363,6 +8363,7 @@ begin
         OnlyNode:=nil
       else
         OnlyNode:=FCompletingCursorNode;
+      debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies Beauty.UpdateAllMethodSignatures=',Beauty.UpdateAllMethodSignatures,' ',OnlyNode<>nil]);
       if not UpdateProcBodySignatures(ClassProcs,ProcBodyNodes,ProcAttrDefToBody,
         ProcsCopied,OnlyNode)
       then exit;

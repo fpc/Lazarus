@@ -800,7 +800,7 @@ procedure TUnitDependenciesWindow.UnitsTVPopupMenuPopup(Sender: TObject);
 var
   TV: TTreeView;
 begin
-  TV:=Sender as TTreeView;
+  TV:=UnitsTVPopupMenu.PopupComponent as TTreeView;
   UnitsTVExpandAllMenuItem.Visible:=TV=AllUnitsTreeView;
 end;
 
