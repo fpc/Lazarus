@@ -788,7 +788,7 @@ procedure TCustomCodeTool.AtomIsIdentifierSaveE;
 
   procedure SaveRaiseIdentExpectedButEOFFound;
   begin
-    SaveRaiseExceptionFmt(ctsIdentExpectedButEOFFound,[GetAtom],true);
+    SaveRaiseExceptionFmt(ctsIdentExpectedButEOFFound,[GetAtom]);
   end;
 
 begin
@@ -806,14 +806,14 @@ function TCustomCodeTool.AtomIsCustomOperator(AllowIdentifier,
   begin
     if CurPos.StartPos>SrcLen then begin
       if SaveE then
-        SaveRaiseException(ctsOperatorExpectedButEOFFound,true)
+        SaveRaiseException(ctsOperatorExpectedButEOFFound)
       else
-        RaiseException(ctsOperatorExpectedButEOFFound,true)
+        RaiseException(ctsOperatorExpectedButEOFFound)
     end else begin
       if SaveE then
-        SaveRaiseExceptionFmt(ctsOperatorExpectedButAtomFound,[GetAtom],true)
+        SaveRaiseExceptionFmt(ctsOperatorExpectedButAtomFound,[GetAtom])
       else
-        RaiseExceptionFmt(ctsOperatorExpectedButAtomFound,[GetAtom],true)
+        RaiseExceptionFmt(ctsOperatorExpectedButAtomFound,[GetAtom])
     end;
   end;
 
@@ -1935,9 +1935,9 @@ var OpenBracket, AntiOpenBracket: TCommonAtomFlag;
   procedure RaiseBracketNotFound;
   begin
     if OpenBracket=cafRoundBracketOpen then
-      SaveRaiseExceptionFmt(ctsBracketNotFound,['('],true)
+      SaveRaiseExceptionFmt(ctsBracketNotFound,['('])
     else
-      SaveRaiseExceptionFmt(ctsBracketNotFound,['['],true);
+      SaveRaiseExceptionFmt(ctsBracketNotFound,['[']);
   end;
   
 begin
@@ -3090,20 +3090,20 @@ end;
 
 procedure TCustomCodeTool.SaveRaiseIdentExpectedButAtomFound;
 begin
-  SaveRaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom],true);
+  SaveRaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom]);
 end;
 
 procedure TCustomCodeTool.SaveRaiseBracketOpenExpectedButAtomFound;
 begin
-  SaveRaiseExceptionFmt(ctsBracketOpenExpectedButAtomFound,[GetAtom],true);
+  SaveRaiseExceptionFmt(ctsBracketOpenExpectedButAtomFound,[GetAtom]);
 end;
 
 procedure TCustomCodeTool.SaveRaiseBracketCloseExpectedButAtomFound;
 begin
   if CurPos.StartPos<SrcLen then
-    SaveRaiseExceptionFmt(ctsBracketCloseExpectedButAtomFound,[GetAtom],true)
+    SaveRaiseExceptionFmt(ctsBracketCloseExpectedButAtomFound,[GetAtom])
   else
-    SaveRaiseExceptionFmt(ctsBracketNotFound,[],true)
+    SaveRaiseExceptionFmt(ctsBracketNotFound,[])
 end;
 
 procedure TCustomCodeTool.ActivateGlobalWriteLock;

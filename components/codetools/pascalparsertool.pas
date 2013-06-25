@@ -503,7 +503,7 @@ end;
 function TPascalParserTool.UnexpectedKeyWord: boolean;
 begin
   Result:=false;
-  SaveRaiseExceptionFmt(ctsUnexpectedKeyword,[GetAtom],true);
+  SaveRaiseExceptionFmt(ctsUnexpectedKeyword,[GetAtom]);
 end;
 
 function TPascalParserTool.EndOfSourceExpected: boolean;
@@ -634,7 +634,7 @@ begin
             HasSourceType:=false;
             CurPos.EndPos:=CurPos.StartPos;
           end else
-            SaveRaiseExceptionFmt(ctsNoPascalCodeFound,[GetAtom],true);
+            SaveRaiseExceptionFmt(ctsNoPascalCodeFound,[GetAtom]);
         end;
         if CurNode=nil then
           CreateChildNode;
@@ -891,7 +891,7 @@ procedure TPascalParserTool.BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode);
   begin
     SaveRaiseException(
        'TPascalParserTool.BuildSubTreeForBeginBlock: begin expected, but '
-       +GetAtom+' found',true);
+       +GetAtom+' found');
   end;
 
 var
