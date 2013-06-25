@@ -265,18 +265,19 @@ end;
 
 procedure TCanvasDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
-  if ABrush is TBrush then
-    GetCanvas.Brush.Assign(ABrush)
-  else
-    with GetCanvas.Brush do begin
+  with GetCanvas.Brush do begin
+    if ABrush is TBrush then
+      Assign(ABrush)
+    else begin
       FPColor := ABrush.FPColor;
       Pattern := ABrush.Pattern;
       Style := ABrush.Style;
     end;
-  if FXor then
-    GetCanvas.Brush.Style := bsClear
-  else if FMonochromeColor <> clTAColor then
-    GetCanvas.Brush.Color := FMonochromeColor;
+    if FXor then
+      Style := bsClear
+    else if FMonochromeColor <> clTAColor then
+      Color := FMonochromeColor;
+  end;
 end;
 
 procedure TCanvasDrawer.SetBrushColor(AColor: TChartColor);
@@ -322,8 +323,8 @@ end;
 
 procedure TCanvasDrawer.SetPen(APen: TFPCustomPen);
 begin
-  if FXor then
-    with GetCanvas do begin
+  with GetCanvas do
+    if FXor then begin
       Brush.Style := bsClear;
       if APen = nil then
         Pen.Style := psSolid
@@ -336,19 +337,19 @@ begin
       else
         Pen.Width := APen.Width;
     end
-  else begin
-    if APen is TPen then
-      GetCanvas.Pen.Assign(APen)
-    else
-      with GetCanvas.Pen do begin
-        Color := FPColorToChartColor(APen.FPColor);
-        Style := APen.Style;
-        Width := APen.Width;
-        Mode := APen.Mode;
+    else begin
+      if APen is TPen then
+        Pen.Assign(APen)
+      else  begin
+        Pen.Color := FPColorToChartColor(APen.FPColor);
+        Pen.Style := APen.Style;
+        Pen.Width := APen.Width;
+        Pen.Mode := APen.Mode;
+        Pen.Pattern := APen.Pattern;
       end;
-    if FMonochromeColor <> clTAColor then
-      GetCanvas.Pen.Color := FMonochromeColor;
-  end;
+      if FMonochromeColor <> clTAColor then
+        Pen.Color := FMonochromeColor;
+    end;
 end;
 
 procedure TCanvasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
