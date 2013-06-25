@@ -265,7 +265,14 @@ end;
 
 procedure TCanvasDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
-  GetCanvas.Brush.Assign(ABrush);
+  if ABrush is TBrush then
+    GetCanvas.Brush.Assign(ABrush)
+  else
+    with GetCanvas.Brush do begin
+      FPColor := ABrush.FPColor;
+      Pattern := ABrush.Pattern;
+      Style := ABrush.Style;
+    end;
   if FXor then
     GetCanvas.Brush.Style := bsClear
   else if FMonochromeColor <> clTAColor then
