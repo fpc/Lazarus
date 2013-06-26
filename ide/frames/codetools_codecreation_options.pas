@@ -36,6 +36,7 @@ type
     ForwardProcsInsertPolicyRadioGroup: TRadioGroup;
     ForwardProcsKeepOrderCheckBox: TCheckBox;
     UpdateMultiProcSignaturesCheckBox: TCheckBox;
+    UpdateOtherProcSignaturesCaseCheckBox: TCheckBox;
     UsesInsertPolicyRadioGroup: TRadioGroup;
   private
   public
@@ -74,6 +75,8 @@ begin
   ForwardProcsKeepOrderCheckBox.Caption:=dlgForwardProcsKeepOrder;
   UpdateMultiProcSignaturesCheckBox.Caption:=
     lisCTOUpdateMultipleProcedureSignatures;
+  UpdateOtherProcSignaturesCaseCheckBox.Caption:=
+    lisUpdateOtherProcedureSignaturesWhenOnlyLetterCaseHa;
 
   with UsesInsertPolicyRadioGroup do begin
     Caption:=lisNewUnitsAreAddedToUsesSections;
@@ -104,6 +107,7 @@ begin
 
     ForwardProcsKeepOrderCheckBox.Checked := KeepForwardProcOrder;
     UpdateMultiProcSignaturesCheckBox.Checked:=UpdateMultiProcSignatures;
+    UpdateOtherProcSignaturesCaseCheckBox.Checked:=UpdateOtherProcSignaturesCase;
 
     case UsesInsertPolicy of
     uipFirst:             UsesInsertPolicyRadioGroup.ItemIndex:=0;
@@ -130,6 +134,7 @@ begin
 
     KeepForwardProcOrder := ForwardProcsKeepOrderCheckBox.Checked;
     UpdateMultiProcSignatures:=UpdateMultiProcSignaturesCheckBox.Checked;
+    UpdateOtherProcSignaturesCase:=UpdateOtherProcSignaturesCaseCheckBox.Checked;
 
     case UsesInsertPolicyRadioGroup.ItemIndex of
     0: UsesInsertPolicy:=uipFirst;

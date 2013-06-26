@@ -139,7 +139,8 @@ type
       const TheClassName: string);
     function UpdateProcBodySignature(ProcBodyNodes: TAVLTree;
       const BodyNodeExt: TCodeTreeNodeExtension;
-      ProcAttrCopyDefToBody: TProcHeadAttributes; var ProcsCopied: boolean): boolean;
+      ProcAttrCopyDefToBody: TProcHeadAttributes; var ProcsCopied: boolean;
+      CaseSensitive: boolean): boolean;
     function UpdateProcBodySignatures(ProcDefNodes, ProcBodyNodes: TAVLTree;
       ProcAttrCopyDefToBody: TProcHeadAttributes; out ProcsCopied: boolean;
       OnlyNode: TCodeTreeNode = nil): boolean;
@@ -7673,8 +7674,8 @@ end;
 
 function TCodeCompletionCodeTool.UpdateProcBodySignature(
   ProcBodyNodes: TAVLTree; const BodyNodeExt: TCodeTreeNodeExtension;
-  ProcAttrCopyDefToBody: TProcHeadAttributes; var ProcsCopied: boolean
-  ): boolean;
+  ProcAttrCopyDefToBody: TProcHeadAttributes; var ProcsCopied: boolean;
+  CaseSensitive: boolean): boolean;
 var
   OldProcCode: String;
   NewProcCode: String;
@@ -7698,7 +7699,7 @@ begin
   Indent:=Beauty.GetLineIndent(Src, InsertPos);
   NewProcCode:=Beauty.BeautifyProc(NewProcCode, Indent, false);
   OldProcCode:=ExtractProcHead(BodyNodeExt.Node, ProcAttrCopyDefToBody);
-  if CompareTextIgnoringSpace(NewProcCode, OldProcCode, true)<>0 then begin
+  if CompareTextIgnoringSpace(NewProcCode, OldProcCode, CaseSensitive)<>0 then begin
     // update body
     //debugln(['TCodeCompletionCodeTool.UpdateProcBodySignatures Old="',dbgstr(OldProcCode),'" New="',dbgstr(NewProcCode),'"']);
     ProcsCopied:=true;
@@ -7814,7 +7815,8 @@ begin
     for i:=0 to Bodies.Count-1 do begin
       BodyNodeExt:=TCodeTreeNodeExtension(Bodies[i]);
       if not UpdateProcBodySignature(ProcBodyNodes, BodyNodeExt,
-        ProcAttrCopyDefToBody, ProcsCopied)
+        ProcAttrCopyDefToBody, ProcsCopied,
+        FSourceChangeCache.BeautifyCodeOptions.UpdateOtherProcSignaturesCase)
       then
         exit(false);
     end;

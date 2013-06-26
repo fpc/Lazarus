@@ -5784,6 +5784,8 @@ resourcestring
   lisCTOUpdateAllMethodSignatures = 'Update all method signatures';
   lisCTOUpdateMultipleProcedureSignatures = 'Update multiple procedure '
     +'signatures';
+  lisUpdateOtherProcedureSignaturesWhenOnlyLetterCaseHa = 'Update other '
+    +'procedure signatures when only letter case has changed';
 
 implementation
 

@@ -37,9 +37,9 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     AnchorSideTop.Control = ForwardProcsInsertPolicyRadioGroup
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 18
+    Height = 24
     Top = 112
-    Width = 235
+    Width = 261
     BorderSpacing.Around = 6
     Caption = 'ForwardProcsKeepOrderCheckBox'
     TabOrder = 1
@@ -52,7 +52,7 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 100
-    Top = 142
+    Top = 148
     Width = 560
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -76,11 +76,24 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     AnchorSideTop.Control = UsesInsertPolicyRadioGroup
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 18
-    Top = 248
-    Width = 252
-    BorderSpacing.Around = 6
+    Height = 24
+    Top = 254
+    Width = 279
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     Caption = 'UpdateMultiProcSignaturesCheckBox'
     TabOrder = 3
+  end
+  object UpdateOtherProcSignaturesCaseCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = UpdateMultiProcSignaturesCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 24
+    Top = 278
+    Width = 315
+    BorderSpacing.Left = 6
+    Caption = 'UpdateOtherProcSignaturesCaseCheckBox'
+    TabOrder = 4
   end
 end

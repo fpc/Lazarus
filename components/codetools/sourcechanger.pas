@@ -149,6 +149,7 @@ type
     ForwardProcBodyInsertPolicy: TForwardProcBodyInsertPolicy;
     KeepForwardProcOrder: boolean;
     UpdateMultiProcSignatures: boolean;
+    UpdateOtherProcSignaturesCase: boolean; // when updating proc signatures not under cursor, fix case
     // classes, methods, properties
     ClassHeaderComments: boolean;
     ClassImplementationComments: boolean;
@@ -1252,6 +1253,7 @@ begin
   MixMethodsAndProperties:=false;
   UpdateAllMethodSignatures:=true;
   UpdateMultiProcSignatures:=true;
+  UpdateOtherProcSignaturesCase:=true;
   MethodInsertPolicy:=mipClassOrder;
   ForwardProcBodyInsertPolicy:=fpipBehindMethods;
   KeepForwardProcOrder:=true;
