@@ -389,6 +389,7 @@ type
   TADHeaderStyle = (
     adhsFrame3D,
     adhsLine,
+    adhsLines,
     adhsPoints
     );
 const
@@ -656,6 +657,7 @@ const
   ADHeaderStyleNames: array[TADHeaderStyle] of string = (
     'Frame3D',
     'Line',
+    'Lines',
     'Points'
     );
 
@@ -724,6 +726,28 @@ begin
       Canvas.Line(Center-1,r.Top+3,Center-1,r.Bottom-5);
       Canvas.Pen.Color:=clgray;
       Canvas.Line(Center,r.Top+3,Center,r.Bottom-5);
+    end;
+  adhsLines:
+    begin
+      InflateRect(r,-2,-2);
+      if Horizontal then
+      begin
+        lx:=0;
+        ly:=3;
+        r.Bottom:=r.top+(r.bottom-r.Top) div 3;
+        r.top:=r.bottom-ly;
+      end else
+      begin
+        lx:=3;
+        ly:=0;
+        r.Right:=r.Left+(r.Right-r.Left) div 3 ;
+        r.Left:=r.Right-lx;
+      end;
+      DrawEdge(Canvas.Handle,r, BDR_RAISEDINNER, BF_RECT );
+      OffsetRect(r,lx,ly);
+      DrawEdge(Canvas.Handle,r, BDR_RAISEDINNER, BF_RECT );
+      OffsetRect(r,lx,ly);
+      DrawEdge(Canvas.Handle,r, BDR_RAISEDINNER, BF_RECT );
     end;
   adhsPoints:
     if Horizontal then begin
