@@ -275,6 +275,92 @@ begin
   Result := '';
 end;
 
+function GetFileDescription(const AFilename: string): string;
+var
+  info: Stat;
+  // permissions
+  // user
+  // group
+  // size
+  // date
+  // time
+  mode: mode_t;
+begin
+  Result:='';
+  if not (FpStat(AFilename,info{%H-})=0) then exit;
+
+  // permissions
+  // file type
+  mode:= info.st_mode;
+  if STAT_IFLNK and mode=STAT_IFLNK then
+    Result:=Result+'l'
+  else
+  if STAT_IFDIR and mode=STAT_IFDIR then
+    Result:=Result+'d'
+  else
+  if STAT_IFBLK and mode=STAT_IFBLK then
+    Result:=Result+'b'
+  else
+  if STAT_IFCHR and mode=STAT_IFCHR then
+    Result:=Result+'c'
+  else
+    Result:=Result+'-';
+  // user permissions
+  if STAT_IRUSR and mode=STAT_IRUsr then
+    Result:=Result+'r'
+  else
+    Result:=Result+'-';
+  if STAT_IWUsr and mode=STAT_IWUsr then
+    Result:=Result+'w'
+  else
+    Result:=Result+'-';
+  if STAT_IXUsr and mode=STAT_IXUsr then
+    Result:=Result+'x'
+  else
+    Result:=Result+'-';
+  // group permissions
+  if STAT_IRGRP and mode=STAT_IRGRP then
+    Result:=Result+'r'
+  else
+    Result:=Result+'-';
+  if STAT_IWGRP and mode=STAT_IWGRP then
+    Result:=Result+'w'
+  else
+    Result:=Result+'-';
+  if STAT_IXGRP and mode=STAT_IXGRP then
+    Result:=Result+'x'
+  else
+    Result:=Result+'-';
+  // other permissions
+  if STAT_IROTH and mode=STAT_IROTH then
+    Result:=Result+'r'
+  else
+    Result:=Result+'-';
+  if STAT_IWOTH and mode=STAT_IWOTH then
+    Result:=Result+'w'
+  else
+    Result:=Result+'-';
+  if STAT_IXOTH and mode=STAT_IXOTH then
+    Result:=Result+'x'
+  else
+    Result:=Result+'-';
+
+
+  // user name
+  //Result:=Result+' Owner: '+IntToStr(info.uid)+'.'+IntToStr(info.gid);
+
+  // size
+  Result:=Result+lrsSize+IntToStr(info.st_size);
+
+  // date + time
+  Result:=Result+lrsModified;
+  try
+    Result:=Result+FormatDateTime('DD/MM/YYYY hh:mm',
+                           FileDateToDateTime(FileAgeUTF8(AFilename)));
+  except
+    Result:=Result+'?';
+  end;
+end;
 
 
 procedure InitLazFileUtils;

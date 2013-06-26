@@ -98,6 +98,8 @@ function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle; ov
 Function FileCreateUtf8(Const FileName : String; ShareMode : Integer; Rights : Cardinal) : THandle; overload;
 
 function FileSizeUtf8(const Filename: string): int64;
+function GetFileDescription(const AFilename: string): string;
+
 
 function GetAppConfigDirUTF8(Global: Boolean; Create: boolean = false): string;
 function GetAppConfigFileUTF8(Global: Boolean; SubDir: boolean = false;

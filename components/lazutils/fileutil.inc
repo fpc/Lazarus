@@ -93,6 +93,11 @@ begin
   Result := LazFileUtils.FileSizeUtf8(FileName);
 end;
 
+function GetFileDescription(const AFilename: string): string;
+begin
+  Result := LazFileUtils.GetFileDescription(AFilename);
+end;
+
 {$IFDEF darwin}
 function GetDarwinSystemFilename(Filename: string): string;
 var

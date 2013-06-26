@@ -1,20 +1,7 @@
 {%MainUnit fileutil.pas}
 
 
-{------------------------------------------------------------------------------
-  GetFileDescription
- ------------------------------------------------------------------------------}
-function GetFileDescription(const AFilename: string): string;
-begin
-  // date + time
-  Result:=lrsModified;
-  try
-    Result:=Result+FormatDateTime('DD/MM/YYYY hh:mm',
-                           FileDateToDateTime(FileAgeUTF8(AFilename)));
-  except
-    Result:=Result+'?';
-  end;
-end;
+
 
 {------------------------------------------------------------------------------
   function ReadAllLinks(const Filename: string;
