@@ -5038,17 +5038,31 @@ begin
       dx:=Max(0,(r.Right-r.Left-TxtH) div 2);
       dy:=Max(0,(r.Bottom-r.Top-TxtW) div 2);
       Canvas.Font.Orientation:=900;
-      Canvas.TextOut(r.Left+dx,r.Bottom-dy,Caption);
-      DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Right,r.Bottom-dy-TxtW-1),false);
-      DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Bottom-dy+1,r.Right,r.Bottom),false);
+      if TxtW<(r.Bottom-r.Top)then
+      begin
+        // text fits
+        Canvas.TextOut(r.Left+dx-3,r.Bottom-dy,Caption);
+        DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Right,r.Bottom-dy-TxtW-1),false);
+        DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Bottom-dy+1,r.Right,r.Bottom),false);
+      end else begin
+        // text does not fit
+        DrawADHeader(Canvas,DockMaster.HeaderStyle,r,false);
+      end;
     end else begin
       // horizontal
       dx:=Max(0,(r.Right-r.Left-TxtW) div 2);
       dy:=Max(0,(r.Bottom-r.Top-TxtH) div 2);
       Canvas.Font.Orientation:=0;
-      Canvas.TextOut(r.Left+dx,r.Top+dy,Caption);
-      DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Left+dx-1,r.Bottom),true);
-      DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left+dx+TxtW+2,r.Top,r.Right,r.Bottom),true);
+      if TxtW<(r.right-r.Left)then
+      begin
+        // text fits
+        Canvas.TextRect(r,dx+2,dy,Caption);
+        DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Left+dx-1,r.Bottom),true);
+        DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left+dx+TxtW+2,r.Top,r.Right,r.Bottom),true);
+      end else begin
+        // text does not fit
+        DrawADHeader(Canvas,DockMaster.HeaderStyle,r,true);
+      end;
     end;
   end else begin
     if Align in [alLeft,alRight] then
