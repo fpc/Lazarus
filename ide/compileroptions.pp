@@ -429,6 +429,11 @@ type
     property ErrorNames[errtype: TFPCErrorType]: string read GetErrorNames;
   end;
 
+const
+  DefaultMsgFileName = '$(FPCMsgFile)';
+
+type
+
   { TBaseCompilerOptions }
 
   TBaseCompilerOptions = class(TLazCompilerOptions)
@@ -1549,7 +1554,7 @@ begin
   // messages
   if fCompilerMessages.Count = 0 then fCompilerMessages.SetDefault;
   UseMsgFile := aXMLConfig.GetValue(p+'CompilerMessages/UseMsgFile/Value', False);
-  MsgFileName := aXMLConfig.GetValue(p+'CompilerMessages/MsgFileName/Value', '$(FPCMsgFile)');
+  MsgFileName := aXMLConfig.GetValue(p+'CompilerMessages/MsgFileName/Value', DefaultMsgFileName);
   if UseMsgFile and FileExistsCached(GetParsedMsgFilename) then
     fCompilerMessages.LoadMsgFile(GetParsedMsgFilename);
 
