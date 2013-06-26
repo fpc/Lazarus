@@ -48,16 +48,12 @@ type
     JumpingGroupBox: TGroupBox;
     IndentFileLabel: TLabel;
     SkipForwardDeclarationsCheckBox: TCheckBox;
-    SrcPathButton: TSpeedButton;
-    SrcPathEdit: TEdit;
-    SrcPathGroupBox: TGroupBox;
     procedure GeneralAutoIndentClick(Sender: TObject);
     procedure GeneralAutoIndentMouseEnter(Sender: TObject);
     procedure GeneralAutoIndentMouseLeave(Sender: TObject);
     procedure IndentOnLineBreakCheckBoxChange(Sender: TObject);
     procedure IndentFileButtonClick(Sender: TObject);
     procedure IndentOnPasteCheckBoxChange(Sender: TObject);
-    procedure SrcPathButtonClick(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
     procedure VisualizeIndentEnabled;
@@ -94,19 +90,6 @@ end;
 procedure TCodetoolsGeneralOptionsFrame.IndentOnPasteCheckBoxChange(Sender: TObject);
 begin
   VisualizeIndentEnabled;
-end;
-
-procedure TCodetoolsGeneralOptionsFrame.SrcPathButtonClick(Sender: TObject);
-begin
-  with TPathEditorDialog.Create(Self) do
-  try
-    Path := SrcPathEdit.Text;
-    Templates:=SetDirSeparators('/home/username/buggypackage');
-    if (ShowModal = mrOK) then
-      SrcPathEdit.Text := Path;
-  finally
-    Free;
-  end;
 end;
 
 procedure TCodetoolsGeneralOptionsFrame.VisualizeIndentEnabled;
@@ -151,7 +134,6 @@ end;
 procedure TCodetoolsGeneralOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   FDialog:=ADialog;
-  SrcPathGroupBox.Caption:=dlgAdditionalSrcPath;
 
   JumpingGroupBox.Caption:=dlgJumpingETC;
   AdjustTopLineDueToCommentCheckBox.Caption:=dlgAdjustTopLine;
@@ -175,7 +157,6 @@ procedure TCodetoolsGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptio
 begin
   with AOptions as TCodeToolsOptions do
   begin
-    SrcPathEdit.Text := SrcPath;
     AdjustTopLineDueToCommentCheckBox.Checked := AdjustTopLineDueToComment;
     JumpCenteredCheckBox.Checked := JumpCentered;
     CursorBeyondEOLCheckBox.Checked := CursorBeyondEOL;
@@ -192,7 +173,6 @@ procedure TCodetoolsGeneralOptionsFrame.WriteSettings(AOptions: TAbstractIDEOpti
 begin
   with AOptions as TCodeToolsOptions do
   begin
-    SrcPath := SrcPathEdit.Text;
     AdjustTopLineDueToComment := AdjustTopLineDueToCommentCheckBox.Checked;
     JumpCentered := JumpCenteredCheckBox.Checked;
     CursorBeyondEOL := CursorBeyondEOLCheckBox.Checked;

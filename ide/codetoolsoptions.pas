@@ -58,7 +58,6 @@ type
     FIdentComplShowHelp: boolean;
 
     // General
-    FSrcPath: string;
     FAdjustTopLineDueToComment: boolean;
     FJumpCentered: boolean;
     FCursorBeyondEOL: boolean;
@@ -129,7 +128,6 @@ type
     procedure CreateDefaultIndentationFile;
     
     // General
-    property SrcPath: string read FSrcPath write FSrcPath;
     property AdjustTopLineDueToComment: boolean
       read FAdjustTopLineDueToComment write FAdjustTopLineDueToComment;
     property JumpCentered: boolean read FJumpCentered write FJumpCentered;
@@ -375,7 +373,6 @@ begin
       debugln(lisCompilerNOTELoadingOldCodetoolsOptionsFile, FFileName);
 
     // General
-    FSrcPath:=XMLConfig.GetValue('CodeToolsOptions/SrcPath/Value','');
     FAdjustTopLineDueToComment:=XMLConfig.GetValue(
       'CodeToolsOptions/AdjustTopLineDueToComment/Value',true);
     FJumpCentered:=XMLConfig.GetValue('CodeToolsOptions/JumpCentered/Value',
@@ -507,7 +504,6 @@ begin
       CodeToolsOptionsVersion);
 
     // General
-    XMLConfig.SetDeleteValue('CodeToolsOptions/SrcPath/Value',FSrcPath,'');
     XMLConfig.SetDeleteValue('CodeToolsOptions/AdjustTopLineDueToComment/Value',
                              FAdjustTopLineDueToComment,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/JumpCentered/Value',
@@ -655,7 +651,6 @@ begin
   if CodeToolsOpts <> nil then
   begin
     // General
-    FSrcPath:=CodeToolsOpts.FSrcPath;
     FAdjustTopLineDueToComment:=CodeToolsOpts.FAdjustTopLineDueToComment;
     FJumpCentered:=CodeToolsOpts.FJumpCentered;
     FCursorBeyondEOL:=CodeToolsOpts.FCursorBeyondEOL;
@@ -714,7 +709,6 @@ procedure TCodeToolsOptions.Clear;
 // !!! Does not reset Filename !!!
 begin
   // General
-  FSrcPath:='';
   FAdjustTopLineDueToComment:=true;
   FJumpCentered:=true;
   FCursorBeyondEOL:=true;
@@ -781,8 +775,7 @@ function TCodeToolsOptions.IsEqual(CodeToolsOpts: TCodeToolsOptions): boolean;
 begin
   Result:=
     // General
-        (FSrcPath=CodeToolsOpts.FSrcPath)
-    and (FAdjustTopLineDueToComment=CodeToolsOpts.FAdjustTopLineDueToComment)
+        (FAdjustTopLineDueToComment=CodeToolsOpts.FAdjustTopLineDueToComment)
     and (FJumpCentered=CodeToolsOpts.FJumpCentered)
     and (FCursorBeyondEOL=CodeToolsOpts.FCursorBeyondEOL)
     and (AddInheritedCodeToOverrideMethod=CodeToolsOpts.AddInheritedCodeToOverrideMethod)
@@ -882,7 +875,6 @@ begin
   if Dest is TCodeToolManager then
   begin
     // General - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    SetAdditionalGlobalSrcPathToCodeToolBoss(SrcPath);
     Boss.AdjustTopLineDueToComment:=AdjustTopLineDueToComment;
     Boss.JumpCentered:=JumpCentered;
     Boss.CursorBeyondEOL:=CursorBeyondEOL;
