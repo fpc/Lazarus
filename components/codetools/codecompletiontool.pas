@@ -2980,6 +2980,7 @@ end;
 procedure TCodeCompletionCodeTool.DoDeleteNodes(StartNode: TCodeTreeNode);
 begin
   inherited DoDeleteNodes(StartNode);
+  FCompletingCursorNode:=nil;
   FreeClassInsertionList;
 end;
 
