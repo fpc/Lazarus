@@ -44,7 +44,7 @@ uses
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, ExtCtrls, FileUtil, LCLProc,
   LCLType, LCLIntf, LazLoggerBase, Laz2_XMLCfg,
   // SynEdit, codetools
-  SynEdit, CodeCache, CodeToolManager,
+  SynEdit, CodeCache, CodeToolManager, PascalParserTool, CodeTree,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
   CompOptsIntf, IDEDialogs,
@@ -560,6 +560,52 @@ function TDebugManager.GetFullFilename(const AUnitinfo: TDebuggerUnitInfo;
     debugln(DBG_LOCATION_INFO, ['ResolveFromDbg Final Filename=', Filename]);
   end;
 
+  function FindSrc: boolean;
+  var
+    SrcUnitName: String;
+    SrcInFilename: String;
+    SrcFilename: String;
+    Code: TCodeBuffer;
+    ProcDef: String;
+    CurCodeTool: TCodeTool;
+    CurCodeNode: TCodeTreeNode;
+    CodePos: TCodeXYPosition;
+  begin
+    Result:=false;
+    debugln(['TDebugManager.GetFullFilename searching Unit=', AUnitinfo.UnitName, ', Class=', AUnitinfo.SrcClassName, ', Func=', AUnitinfo.FunctionName]);
+    // search unit in project unit path
+    SrcUnitName := AUnitinfo.UnitName;
+    SrcInFilename := '';
+    SrcFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath('',
+      SrcUnitName,SrcInFilename);
+    if SrcFilename='' then exit;
+    // load unit
+    Code:=CodeToolBoss.LoadFile(SrcFilename,true,false);
+    if Code=nil then exit; // read error
+    // procedure declaration: classname.functionname
+    ProcDef:='';
+    if AUnitinfo.SrcClassName<>'' then
+      ProcDef:=AUnitinfo.SrcClassName+'.';
+    ProcDef:=ProcDef+AUnitinfo.FunctionName;
+    //debugln(['TDebugManager.GetFullFilename Code="',Code.Filename,'" ProcDef="',ProcDef,'"']);
+    // search proc in unit
+    if not CodeToolBoss.FindProcDeclaration(Code,ProcDef,CurCodeTool,CurCodeNode,
+      [phpWithoutParamList,phpWithoutBrackets,phpWithoutClassKeyword,phpWithoutSemicolon])
+    then begin
+      debugln(['TDebugManager.GetFullFilename not found: Code="',Code.Filename,'" ProcDef="',ProcDef,'"']);
+      exit;
+    end;
+    // get file, line, column
+    if CurCodeNode.Desc=ctnProcedure then
+      CurCodeNode:=CurCodeNode.FirstChild; // jump to Name instead of keyword 'procedure'
+    if not CurCodeTool.CleanPosToCaret(CurCodeNode.StartPos,CodePos) then
+      exit;
+    debugln(['TDebugManager.GetFullFilename found ',CodePos.Code.Filename,' Line=',CodePos.Y,' Col=',CodePos.X]);
+    AUnitinfo.LocationFullFile := CodePos.Code.Filename;
+    DumpStack;
+    Result:=true;
+  end;
+
 begin
   Result := False;
   if Destroying or (AUnitinfo = nil) then exit;
@@ -567,11 +613,9 @@ begin
   Result := Filename <> '';
   if Result then exit;
 
-  if dlfSearchByFunctionName in AUnitinfo.Flags then begin
-    //debuln(['need locatien for', AUnitinfo.UnitName, ', ', AUnitinfo.SrcClassName, ', ', AUnitinfo.FunctionName]);
-    //Result := '';
-    //AUnitinfo.LocationFullFile := Result;
-    //exit;
+  if (dlfSearchByFunctionName in AUnitinfo.Flags)
+  and (AUnitinfo.FunctionName<>'') then begin
+    if FindSrc then exit;
   end;
 
   case AUnitinfo.LocationType of

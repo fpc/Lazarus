@@ -77,7 +77,7 @@ type
         Attr: TProcHeadAttributes): TStringList;
     function FindSubProcPath(SubProcPath: TStrings; Attr: TProcHeadAttributes;
         SkipInterface: boolean): TCodeTreeNode;
-        
+
     function FindJumpPointForLinkerPos(
         const SourceFilename: string; SourceLine: integer;
         const MangledFunction, Identifier: string;
