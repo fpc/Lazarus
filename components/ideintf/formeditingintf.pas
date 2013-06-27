@@ -187,7 +187,6 @@ function TopFromDesignInfo(ADesignInfo: LongInt): SmallInt; inline;
 function LeftTopToDesignInfo(const ALeft, ATop: SmallInt): LongInt; inline;
 procedure DesignInfoToLeftTop(ADesignInfo: LongInt; out ALeft, ATop: SmallInt); inline;
 
-
 implementation
 
 

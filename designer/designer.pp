@@ -222,6 +222,7 @@ type
     procedure OnMirrorVerticalPopupMenuClick(Sender: TObject);
     procedure OnScalePopupMenuClick(Sender: TObject);
     procedure OnSizePopupMenuClick(Sender: TObject);
+    procedure OnResetPopupMenuClick(Sender: TObject);
     procedure OnAnchorEditorMenuClick(Sender: TObject);
     procedure OnTabOrderMenuClick(Sender: TObject);
     procedure OnOrderMoveToFrontMenuClick(Sender: TObject);
@@ -369,7 +370,8 @@ var
   DesignerMenuMirrorVertical: TIDEMenuCommand;
   DesignerMenuScale: TIDEMenuCommand;
   DesignerMenuSize: TIDEMenuCommand;
-  
+  DesignerMenuReset: TIDEMenuCommand;
+
   DesignerMenuAnchorEditor: TIDEMenuCommand;
   DesignerMenuTabOrder: TIDEMenuCommand;
     DesignerMenuOrderMoveToFront: TIDEMenuCommand;
@@ -534,6 +536,8 @@ begin
         'Scale',fdmScaleMenu, nil, nil, nil, 'scale');
     DesignerMenuSize:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
         'Size',fdmSizeMenu, nil, nil, nil, 'size');
+    DesignerMenuReset:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
+        'Reset','Reset ...', nil, nil, nil, '');
 
   // register tab and z-order section
   DesignerMenuSectionOrder:=RegisterIDEMenuSection(DesignerMenuRoot,'Order section');
@@ -2312,7 +2316,7 @@ end;
   Handles the keydown messages.  DEL deletes the selected controls, CTRL-ARROR
   moves the selection up one, SHIFT-ARROW resizes, etc.
 }
-Procedure TDesigner.KeyDown(Sender : TControl; var TheMessage: TLMKEY);
+procedure TDesigner.KeyDown(Sender: TControl; var TheMessage: TLMKEY);
 var
   Shift: TShiftState;
   Command: word;
@@ -2415,7 +2419,7 @@ end;
 
 
 {------------------------------------K E Y U P --------------------------------}
-Procedure TDesigner.KeyUp(Sender : TControl; var TheMessage: TLMKEY);
+procedure TDesigner.KeyUp(Sender: TControl; var TheMessage: TLMKEY);
 var
   Shift: TShiftState;
 Begin
@@ -2632,7 +2636,7 @@ Begin
   inherited Modified;
 end;
 
-Procedure TDesigner.RemovePersistentAndChilds(APersistent: TPersistent);
+procedure TDesigner.RemovePersistentAndChilds(APersistent: TPersistent);
 var
   i: integer;
   AWinControl: TWinControl;
@@ -3439,6 +3443,7 @@ begin
   DesignerMenuMirrorVertical.OnClick := @OnMirrorVerticalPopupMenuClick;
   DesignerMenuScale.OnClick := @OnScalePopupMenuClick;
   DesignerMenuSize.OnClick := @OnSizePopupMenuClick;
+  DesignerMenuReset.OnClick := @OnResetPopupMenuClick;
 
   DesignerMenuAnchorEditor.OnClick:=@OnAnchorEditorMenuClick;
   DesignerMenuTabOrder.OnClick:=@OnTabOrderMenuClick;
@@ -3553,6 +3558,7 @@ begin
   DesignerMenuMirrorVertical.Enabled := MultiCompsAreSelected and not OnlyNonVisualsAreSelected;
   DesignerMenuScale.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
   DesignerMenuSize.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
+  DesignerMenuReset.Enabled := CompsAreSelected;
 
   DesignerMenuAnchorEditor.Enabled := (FLookupRoot is TWinControl) and (TWinControl(FLookupRoot).ControlCount > 0);
   DesignerMenuTabOrder.Enabled := (FLookupRoot is TWinControl) and (TWinControl(FLookupRoot).ControlCount > 0);
@@ -3653,6 +3659,75 @@ begin
     end;
     ControlSelection.SizeComponents(HorizSizing,AWidth,VertSizing,AHeight);
     Modified;
+  end;
+end;
+
+procedure TDesigner.OnResetPopupMenuClick(Sender: TObject);
+var
+  ResetComps: TFPList;
+  HasChanged: Boolean;
+
+  procedure ResetControl(AControl: TControl; Recursive: boolean);
+  var
+    Ancestor: TControl;
+    i: Integer;
+    OldBounds: TRect;
+    NewBounds: TRect;
+  begin
+    if ResetComps.IndexOf(AControl)>=0 then exit;
+    ResetComps.Add(AControl);
+    Ancestor:=TControl(TheFormEditor.GetAncestorInstance(AControl));
+    if not (Ancestor is TControl) then exit;
+    OldBounds:=AControl.BoundsRect;
+    NewBounds:=Ancestor.BoundsRect;
+    if not CompareRect(@OldBounds,@NewBounds) then begin
+      AControl.BoundsRect:=NewBounds;
+      HasChanged:=true;
+    end;
+    if Recursive and (AControl is TWinControl) then begin
+      for i:=0 to TWinControl(AControl).ControlCount-1 do
+        ResetControl(TWinControl(AControl).Controls[i],true);
+    end;
+  end;
+
+var
+  MsgResult: TModalResult;
+  i: Integer;
+  Item: TSelectedControl;
+  AComponent: TComponent;
+  AncestorComponent: TComponent;
+begin
+  MsgResult:=IDEQuestionDialog(lisReset,
+    lisResetLeftTopWidthHeightOfSelectedComponentsToTheir,
+    mtConfirmation, [mrYes, lisSelected, mrYesToAll,
+      lisSelectedAndChildControls, mrCancel]);
+  if not (MsgResult in [mrYes,mrYesToAll]) then exit;
+  HasChanged:=false;
+  Form.DisableAutoSizing;
+  ResetComps:=TFPList.Create;
+  try
+    for i:=0 to ControlSelection.Count-1 do begin
+      Item:=ControlSelection[i];
+      if Item.IsTControl then begin
+        ResetControl(TControl(Item.Persistent),MsgResult=mrYesToAll);
+      end else if Item.IsTComponent then begin
+        AComponent:=TComponent(Item.Persistent);
+        if ResetComps.IndexOf(AComponent)>=0 then continue;
+        ResetComps.Add(AComponent);
+        if Item.IsNonVisualComponent then begin
+          AncestorComponent:=TheFormEditor.GetAncestorInstance(AComponent);
+          if AncestorComponent=nil then continue;
+          if AComponent.DesignInfo=AncestorComponent.DesignInfo then continue;
+          AComponent.DesignInfo:=AncestorComponent.DesignInfo;
+          HasChanged:=true;
+        end;
+      end;
+    end;
+  finally
+    ResetComps.Free;
+    Form.EnableAutoSizing;
+    if HasChanged then
+      Modified;
   end;
 end;
 

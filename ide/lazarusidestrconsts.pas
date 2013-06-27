@@ -2549,6 +2549,9 @@ resourcestring
   lisTheComponentEditorOfClassInvokedWithVerbHasCreated = 'The component '
     +'editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the '
     +'error:%s%s%s%s';
+  lisReset = 'Reset';
+  lisResetLeftTopWidthHeightOfSelectedComponentsToTheir = 'Reset Left, Top, '
+    +'Width, Height of selected components to their ancestor values?';
   lisTheComponentEditorOfClassHasCreatedTheError = 'The component editor of '
     +'class %s%s%s has created the error:%s%s%s%s';
   fdInvalidMultiselectionText='Multiselected components must be of a single form.';
@@ -5307,6 +5310,7 @@ resourcestring
   lisUnableToWriteTheProjectInfoFileError = 'Unable to write the project info '
     +'file%s%s%s%s.%sError: %s';
   lisSelected = 'Selected';
+  lisSelectedAndChildControls = 'Selected and child controls';
   lisDeleteRow = 'Delete row';
   lisDeleteSetting = 'Delete setting';
   lisDeleteBuildMode = 'Delete build mode';

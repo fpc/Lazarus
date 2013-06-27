@@ -1545,6 +1545,7 @@ begin
   
   if csInline in CurRoot.ComponentState then begin
     // inline/embedded components (e.g. nested frame)
+    // find the non inlined instance (the IDE always creates one, it may be hidden)
     CurRoot:=FindJITComponentByClass(TComponentClass(CurRoot.ClassType));
     if CurRoot=nil then exit;
     if CurRoot.FindComponent(AComponent.Name)=nil then exit;
@@ -1567,10 +1568,23 @@ end;
 
 function TCustomFormEditor.GetAncestorInstance(AComponent: TComponent
   ): TComponent;
+var
+  aRoot: TComponent;
 begin
   Result:=nil;
   if (AComponent=nil) or (AComponent.ClassType=TComponent) then exit;
-  Result:=FindJITComponentByClass(TComponentClass(AComponent.ClassParent));
+  if AComponent.Owner=nil then begin
+    // root component
+    Result:=FindJITComponentByClass(TComponentClass(AComponent.ClassParent));
+  end else if csInline in AComponent.ComponentState then begin
+    // inline/embedded components (e.g. nested frame)
+    Result:=FindJITComponentByClass(TComponentClass(AComponent.ClassType));
+  end else begin
+    // child component
+    aRoot:=GetAncestorLookupRoot(AComponent);
+    if aRoot=nil then exit;
+    Result:=aRoot.FindComponent(AComponent.Name);
+  end;
 end;
 
 function TCustomFormEditor.RegisterDesignerBaseClass(AClass: TComponentClass
