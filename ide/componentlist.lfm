@@ -1,13 +1,12 @@
 object ComponentListForm: TComponentListForm
-  Left = 720
+  Left = 368
   Height = 467
-  Top = 39
+  Top = 94
   Width = 300
   Caption = 'Components'
   ClientHeight = 467
   ClientWidth = 300
   KeyPreview = True
-  OnActivate = FormActivate
   OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnShow = FormShow
@@ -21,8 +20,8 @@ object ComponentListForm: TComponentListForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 1
-    Height = 403
-    Top = 29
+    Height = 409
+    Top = 28
     Width = 298
     ActivePage = TabSheetList
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -32,22 +31,22 @@ object ComponentListForm: TComponentListForm
     OnChange = PageControlChange
     object TabSheetList: TTabSheet
       Caption = 'List'
-      ClientHeight = 373
+      ClientHeight = 384
       ClientWidth = 294
       object Panel7: TPanel
         Left = 0
-        Height = 373
+        Height = 384
         Top = 0
         Width = 294
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 2
-        ClientHeight = 373
+        ClientHeight = 384
         ClientWidth = 294
         TabOrder = 0
         object ListTree: TTreeView
           Left = 2
-          Height = 369
+          Height = 380
           Top = 2
           Width = 290
           Align = alClient
@@ -127,22 +126,22 @@ object ComponentListForm: TComponentListForm
   object FilterPanel: TPanel
     AnchorSideRight.Side = asrBottom
     Left = 1
-    Height = 28
+    Height = 27
     Top = 0
     Width = 300
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 28
+    ClientHeight = 27
     ClientWidth = 300
     TabOrder = 0
     object LabelSearch: TLabel
       AnchorSideLeft.Control = FilterPanel
       AnchorSideTop.Control = FilterPanel
       Left = 6
-      Height = 16
+      Height = 15
       Top = 6
-      Width = 70
+      Width = 77
       BorderSpacing.Around = 6
       Caption = 'LabelSearch'
       ParentColor = False
@@ -152,10 +151,10 @@ object ComponentListForm: TComponentListForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = LabelSearch
       AnchorSideTop.Side = asrCenter
-      Left = 82
-      Height = 24
-      Top = 2
-      Width = 191
+      Left = 89
+      Height = 25
+      Top = 1
+      Width = 184
       ButtonWidth = 23
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
@@ -166,23 +165,28 @@ object ComponentListForm: TComponentListForm
     end
   end
   object ButtonPanel: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 34
-    Top = 433
+    Height = 29
+    Top = 438
     Width = 300
-    Align = alBottom
-    ClientHeight = 34
+    Anchors = [akLeft, akRight, akBottom]
+    AutoSize = True
+    ClientHeight = 29
     ClientWidth = 300
     TabOrder = 2
     object UseAndCloseButton: TBitBtn
       AnchorSideTop.Control = ButtonPanel
-      AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = ButtonPanel
       AnchorSideRight.Side = asrBottom
-      Left = 175
-      Height = 30
-      Top = 2
-      Width = 115
+      Left = 158
+      Height = 27
+      Top = 1
+      Width = 132
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Right = 9

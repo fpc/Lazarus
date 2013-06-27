@@ -58,7 +58,6 @@ type
     InheritanceTree: TTreeView;
     PalletteTree: TTreeView;
     TreeFilterEd: TTreeFilterEdit;
-    procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure UseAndCloseButtonClick(Sender: TObject);
     procedure ComponentsDblClick(Sender: TObject);
@@ -129,16 +128,20 @@ begin
 end;
 
 procedure TComponentListForm.FormShow(Sender: TObject);
+var
+  ParentParent: TWinControl;
 begin
-  DebugLn(['*** TComponentListForm.FormShow, Parent=', Parent]);
-  ButtonPanel.Visible := Parent=Nil;
-  UpdateButtonState;
-end;
-
-procedure TComponentListForm.FormActivate(Sender: TObject);
-begin
-  ButtonPanel.Visible := Parent=Nil;
-  DebugLn(['*** TComponentListForm.FormActivate, Parent=', Parent]);
+  ParentParent := Nil;
+  if Assigned(Parent) then
+    ParentParent := Parent.Parent;
+  DebugLn(['*** TComponentListForm.FormShow, Parent=', Parent, ', Parent.Parent=', ParentParent]);
+  ButtonPanel.Visible := ParentParent=Nil;
+  if ButtonPanel.Visible then begin
+    PageControl.AnchorSideBottom.Side := asrTop;
+    UpdateButtonState;
+  end
+  else
+    PageControl.AnchorSideBottom.Side := asrBottom;
 end;
 
 procedure TComponentListForm.ClearSelection;
