@@ -30,7 +30,7 @@
           <ahaMouseLink Foreground="clBlue" ForePriority="1500" BackPriority="2500" FramePriority="7500"/>
           <ahaFoldedCode Foreground="13408665" FrameColor="13408665" ForePriority="8000" BackPriority="8000" FramePriority="8000"/>
 		  <ahaSpecialVisibleChars  ForePriority="8100" BackPriority="8100" FramePriority="8100"/>
-          <ahaTopInfoHint Background="clActiveCaption" Foreground="clBlack" FrameColor="clMaroon" FrameStyle="slsDashed" FrameEdges="sfeBottom" ForePriority="8500" BackPriority="8500" FramePriority="8500"/>
+          <ahaTopInfoHint Background="clSkyBlue" Foreground="clBlack" FrameColor="clMaroon" FrameStyle="slsDashed" FrameEdges="sfeBottom" ForePriority="8500" BackPriority="8500" FramePriority="8500"/>
           <ahaIfDefBlockInactive Foreground="clSilver" ForeAlpha="165" ForePriority="9050" BackPriority="9050" FramePriority="9050"/>
           <ahaIfDefBlockActive  ForePriority="9000" BackPriority="9000" FramePriority="9000"/>
           <ahaIfDefBlockTmpActive  ForePriority="9000" BackPriority="9000" FramePriority="9000"/>
