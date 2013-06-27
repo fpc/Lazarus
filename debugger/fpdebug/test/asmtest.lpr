@@ -7,8 +7,9 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms
-  { add your units here }, AsmTestUnit;
+  Forms,
+  AsmTestUnit,
+  dbgdisasx86;
 
 begin
   Application.Initialize;

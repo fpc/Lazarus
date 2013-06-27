@@ -3653,6 +3653,7 @@ debugger/fpdebug/dbgsymbols.pas svneol=native#text/pascal
 debugger/fpdebug/dbgutil.pp svneol=native#text/pascal
 debugger/fpdebug/dbgwinextra.pp svneol=native#text/pascal
 debugger/fpdebug/fpd/README.txt svneol=native#text/plain
+debugger/fpdebug/fpd/fpd.lpi svneol=native#text/pascal
 debugger/fpdebug/fpd/fpd.lpr svneol=native#text/pascal
 debugger/fpdebug/fpd/fpdcommand.pas svneol=native#text/pascal
 debugger/fpdebug/fpd/fpdglobal.pas svneol=native#text/pascal

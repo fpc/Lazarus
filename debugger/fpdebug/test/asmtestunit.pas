@@ -6,8 +6,10 @@ unit AsmTestUnit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls, windisas,
-  ExtCtrls, LCLProc, Math;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ExtCtrls, LCLProc, Math,
+
+  DbgDisasX86;
 
 type
 

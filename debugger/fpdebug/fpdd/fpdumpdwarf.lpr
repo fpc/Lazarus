@@ -36,8 +36,8 @@ program FPDumpDwarf;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, Windows, SysUtils, WinDDwarf, WinDPETypes, WinDDwarfConst,
-  WinDSymbols, WinDLoader, maps;
+  Classes, Windows, SysUtils, maps,
+  DbgPETypes, DbgDwarfConst, DbgSymbols, DbgLoader, DbgDwarf;
 
 var
   n, idx: Integer;

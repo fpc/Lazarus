@@ -38,7 +38,7 @@ unit DbgSymbols;
 interface
 
 uses
-  Windows, Classes, SysUtils, DbgClasses, DbgWinExtra, DbgPETypes, DbgDwarf;
+  Windows, Classes, SysUtils, DbgClasses, DbgWinExtra, DbgPETypes, DbgDwarf, DbgUtil;
   
 
 procedure AddSymbols(AParent: TDbgSymbol; AModule: THandle);
