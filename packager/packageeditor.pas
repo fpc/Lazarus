@@ -2410,6 +2410,7 @@ begin
   if PackageEditorMenuRoot.MenuItem=FilesPopupMenu.Items then
     PackageEditorMenuRoot.MenuItem:=nil;
   PackageEditors.DoFreeEditor(LazPackage);
+  FLazPackage:=nil;
   FreeAndNil(FPlugins);
   for nt:=Low(TPENodeType) to High(TPENodeType) do
     FreeNodeData(nt);

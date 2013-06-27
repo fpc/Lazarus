@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, ComCtrls, FileUtil, LCLProc, Controls,
-  XMLRead, DOM, Process, StdCtrls, Forms, contnrs, fgl;
+  XMLRead, DOM, Process, StdCtrls, Forms, fgl;
 
 resourcestring
   rsAction = 'Action';

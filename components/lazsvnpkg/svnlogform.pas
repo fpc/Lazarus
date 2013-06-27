@@ -100,7 +100,7 @@ type
     procedure ChangeCursor(ACursor: TCursor);
   public
     { public declarations }
-    procedure Execute(Data: PtrInt);
+    procedure Execute({%H-}Data: PtrInt);
 
     property RepositoryPath: string read FRepositoryPath write FRepositoryPath;
   end;

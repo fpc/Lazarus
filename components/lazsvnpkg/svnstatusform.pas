@@ -64,7 +64,7 @@ type
   private
     FRepositoryPath: string;
     SVNStatus: TSVNStatus;
-    procedure Initialize(Data: PtrInt);
+    procedure Initialize({%H-}Data: PtrInt);
     procedure ExecuteSvnCommand(ACommand: String; AFile: String);
     procedure UpdateFilesListView;
     procedure ChangeCursor(ACursor: TCursor);
@@ -187,7 +187,6 @@ end;
 procedure TSVNStatusFrm.mnuShowDiffClick(Sender: TObject);
 
 begin
-  {$note implement opening file in source editor}
   if Assigned(SVNFileListView.Selected) then
   begin
     debugln('TSVNStatusFrm.mnuShowDiffClick Path=' ,SVNFileListView.Selected.SubItems[0]);

@@ -25,7 +25,7 @@ type
     FSVNCommandLine: string;
   public
     { public declarations }
-    procedure Execute(Data: PtrInt);
+    procedure Execute({%H-}Data: PtrInt);
     property SVNCommandLine: string read FSVNCommandLine write FSVNCommandLine;
   end; 
 

@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, StdCtrls, ButtonPanel, Process, Buttons, Menus, LCLProc;
+  ComCtrls, ButtonPanel, Process, Buttons, Menus, LCLProc;
 
 type
 
@@ -48,7 +48,7 @@ type
     procedure ProcessSVNUpdateOutput(var MemStream: TMemoryStream; var BytesRead: LongInt);
   public
     { public declarations }
-    procedure Execute(Data: PtrInt);
+    procedure Execute({%H-}Data: PtrInt);
 
     property RepositoryPath: string read FRepositoryPath write FrepositoryPath;
   end;
@@ -106,7 +106,6 @@ end;
 
 procedure TSVNUpdateFrm.mnuShowDiffClick(Sender: TObject);
 begin
-  {$note implement opening file in source editor}
   if Assigned(SVNUpdateListView.Selected) then
   begin
     if (SVNUpdateListView.Selected.Caption = rsAdded) or

@@ -40,13 +40,13 @@ type
     procedure FormShow(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
-    destructor Destroy; override;
   private
     FFileList: TStringList;
     FSwitches: string;
     FRepoBaseDir: string;
   public
-    procedure Execute(Data: PtrInt);
+    destructor Destroy; override;
+    procedure Execute({%H-}Data: PtrInt);
     {list of filenames with absolute path}
     property FileList: TStringList read FFileList write FFileList;
     {switches for the diff command}
