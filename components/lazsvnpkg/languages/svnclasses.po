@@ -153,6 +153,10 @@ msgstr ""
 msgid "Property status"
 msgstr ""
 
+#: svnclasses.rsrefresh
+msgid "Refresh"
+msgstr ""
+
 #: svnclasses.rsremove
 msgid "Remove from version control (keep local)"
 msgstr ""

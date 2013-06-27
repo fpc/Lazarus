@@ -78,6 +78,7 @@ resourcestring
   rsShowDiffPrev = 'Show Diff Against Previous Version';
   rsShowDiffHead = 'Show Diff Against HEAD';
   rsShowDiffCountRev = 'Show Last X Commits';
+  rsRefresh = 'Refresh';
   rsShowLog = 'Show log';
   rsSourceFileDoesNotBelongToTheProjectPleaseAddFirst = 'Source file does not '
     +'belong to the project. Please add first.';

@@ -361,6 +361,7 @@ begin
   mnuOpenPrevRevision.Caption := rsOpenPreviousRevisionInEditor;
 
   Label1.Caption:=rsShowDiffCountRev;
+  RefreshButton.Caption:=rsRefresh;
 end;
 
 procedure TSVNLogFrm.FormDestroy(Sender: TObject);

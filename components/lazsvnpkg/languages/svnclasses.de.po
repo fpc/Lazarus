@@ -167,6 +167,10 @@ msgstr "Projekteinstellungen"
 msgid "Property status"
 msgstr "Eigenschaftsstatus"
 
+#: svnclasses.rsrefresh
+msgid "Refresh"
+msgstr ""
+
 #: svnclasses.rsremove
 msgid "Remove from version control (keep local)"
 msgstr "Aus Versionskontrolle entfernen (lokal behalten)"

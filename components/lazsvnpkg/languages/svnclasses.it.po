@@ -168,6 +168,10 @@ msgstr "Opzioni del progetto"
 msgid "Property status"
 msgstr "Stato delle proprietà"
 
+#: svnclasses.rsrefresh
+msgid "Refresh"
+msgstr ""
+
 #: svnclasses.rsremove
 msgid "Remove from version control (keep local)"
 msgstr "Rimuovi dal controllo versione (tieni in locale)"

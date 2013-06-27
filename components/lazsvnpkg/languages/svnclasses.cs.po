@@ -162,6 +162,10 @@ msgstr "Volby projektu"
 msgid "Property status"
 msgstr ""
 
+#: svnclasses.rsrefresh
+msgid "Refresh"
+msgstr ""
+
 #: svnclasses.rsremove
 msgid "Remove from version control (keep local)"
 msgstr "Odsranit z verzování (udržet lokálně)"
@@ -229,3 +233,4 @@ msgstr "Aktualizovat"
 #: svnclasses.rsupdated
 msgid "Updated"
 msgstr "Aktualizováno"
+
