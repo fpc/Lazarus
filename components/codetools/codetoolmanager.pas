@@ -3793,6 +3793,10 @@ begin
   DebugLn('TCodeToolManager.CompleteCode A ',Code.Filename);
   {$ENDIF}
   Result:=false;
+  NewX := 0;
+  NewY := 0;
+  NewTopLine := 0;
+  NewCode := NIL;
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
