@@ -881,7 +881,7 @@ begin
   end;
   fPrevSelectedPath:=fSettings.MainPath;
   // use a template for compiler mode delphi for a single directory
-  fDirTemplate:=TDefineTemplate.Create('Delphi unit conversion',
+  fDirTemplate:=TDefineTemplate.Create(SettingDelphiModeTemplName,
     'Mode Delphi for single unit conversion', '', fSettings.MainPath, da_Directory);
   MacroName:=CompilerModeVars[cmDELPHI];
   s:='Define'+MacroName;
