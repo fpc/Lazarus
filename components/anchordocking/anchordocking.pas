@@ -116,7 +116,7 @@ type
   protected
     function GetDrawDetails: TThemedElementDetails; override;
     procedure CalculatePreferredSize(var PreferredWidth,
-           PreferredHeight: integer; WithThemeSpace: Boolean); override;
+           PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
   end;
 
   { TAnchorDockHeader
