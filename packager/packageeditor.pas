@@ -134,7 +134,7 @@ type
     penDependency
     );
 
-  TPENodeData = class
+  TPENodeData = class(TTFENodeData)
   public
     Typ: TPENodeType;
     Name: string; // file or package name
@@ -1088,11 +1088,22 @@ procedure TPackageEditorForm.FreeNodeData(Typ: TPENodeType);
 var
   NodeData: TPENodeData;
   n: TPENodeData;
+  AObject : TObject;
+  ANode : TTreeNode;
 begin
   NodeData:=FFirstNodeData[Typ];
   while NodeData<>nil do begin
     n:=NodeData;
     NodeData:=NodeData.Next;
+    If Assigned(n.Node) Then Begin
+      ANode := TTreeNode(n.Node);
+      If Assigned(ANode.Data) Then Begin
+        AObject := TObject(ANode.Data);
+        If AObject is TFileNameItem Then
+          AObject.Free;
+      end;
+      ANode.Data := NIL;
+    end;
     n.Free;
   end;
   FFirstNodeData[Typ]:=nil;

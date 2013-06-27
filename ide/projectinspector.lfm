@@ -23,7 +23,6 @@ object ProjectInspectorForm: TProjectInspectorForm
     RightClickSelect = True
     TabOrder = 0
     OnDblClick = ItemsTreeViewDblClick
-    OnGetImageIndex = ItemsTreeViewGetImageIndex
     OnKeyDown = ItemsTreeViewKeyDown
     OnSelectionChanged = ItemsTreeViewSelectionChanged
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
@@ -50,7 +49,6 @@ object ProjectInspectorForm: TProjectInspectorForm
       AutoSize = True
       Constraints.MinHeight = 25
       Constraints.MinWidth = 25
-      NumGlyphs = 0
       OnClick = OpenButtonClick
       ShowHint = True
       ParentShowHint = False
@@ -70,7 +68,6 @@ object ProjectInspectorForm: TProjectInspectorForm
       Constraints.MinHeight = 25
       Constraints.MinWidth = 25
       GroupIndex = 1
-      NumGlyphs = 0
       OnClick = DirectoryHierarchyButtonClick
       ShowHint = True
       ParentShowHint = False
@@ -90,7 +87,6 @@ object ProjectInspectorForm: TProjectInspectorForm
       Constraints.MinHeight = 25
       Constraints.MinWidth = 25
       GroupIndex = 2
-      NumGlyphs = 0
       OnClick = SortAlphabeticallyButtonClick
       ShowHint = True
       ParentShowHint = False
@@ -101,12 +97,12 @@ object ProjectInspectorForm: TProjectInspectorForm
       AnchorSideTop.Control = SortAlphabeticallyButton
       AnchorSideTop.Side = asrCenter
       Left = 91
-      Height = 22
-      Top = 3
+      Height = 21
+      Top = 4
       Width = 311
       UseFormActivate = True
       ButtonWidth = 23
-      NumGlyphs = 0
+      NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 3
       Font.Color = clBtnShadow

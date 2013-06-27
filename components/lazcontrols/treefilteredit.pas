@@ -20,12 +20,12 @@ uses
   Controls, ComCtrls, EditBtn, LCLType, FileUtil, LazUTF8, AvgLvlTree, fgl;
 
 type
-
   TImageIndexEvent = function (Str: String; Data: TObject;
                                var AIsEnabled: Boolean): Integer of object;
 
+  TTreeNodeList = specialize TFPGList<Pointer>;
+
   TTreeFilterEdit = class;
-  TTreeNodeList = specialize TFPGList<TTreeNode>;
 
   { TTreeFilterBranch }
 
@@ -45,7 +45,6 @@ type
     function CompareFNs(AFilename1,AFilename2: string): integer;
     procedure SortAndFilter;
     procedure ApplyFilter;
-    procedure FreeTVNodeData(Node: TTreeNode);
     procedure TVDeleteUnneededNodes(p: integer);
     procedure TVClearUnneededAndCreateHierachy(Filename: string);
   public
@@ -99,9 +98,16 @@ type
     property OnGetImageIndex: TImageIndexEvent read fOnGetImageIndex write fOnGetImageIndex;
   end;
 
+  { TTFENodeData - TreeFilterEditNodeData }
+
+  TTFENodeData = class
+  public
+    Node : TObject;
+  end;
+
   { TFileNameItem }
 
-  TFileNameItem = class
+  TFileNameItem = class(TTFENodeData)
   public
     Data: Pointer;
     Filename: string;
@@ -141,7 +147,6 @@ begin
   FreeAndNil(fNodeTextToDataMap);
   FreeAndNil(fSortedData);
   FreeAndNil(fOriginalData);
-  FreeTVNodeData(fRootNode);
   inherited Destroy;
 end;
 
@@ -197,9 +202,8 @@ var
   i: Integer;
   FileN, s: string;
   ena: Boolean;
+  AObject : TObject;
 begin
-  if fNodeTextToFullFilenameMap.Count > 0 then  // FilenameMap stores short filename -> long filename
-    FreeTVNodeData(fRootNode);    // Free node data now, it will be filled later.
   if Assigned(fRootNode) then
     fRootNode.DeleteChildren      // Delete old tree nodes.
   else
@@ -210,47 +214,33 @@ begin
     FileN:=fSortedData[i];
     if fOwner.ShowDirHierarchy then begin
       TVClearUnneededAndCreateHierachy(FileN);
-      TVNode:=fTVNodeStack[fTVNodeStack.Count-1];
+      TVNode:=TTreeNode(fTVNodeStack[fTVNodeStack.Count-1]);
     end
     else
       TVNode:=fOwner.fFilteredTreeview.Items.AddChild(fRootNode,FileN);
     // Save the long filename to Node.Data
+    AObject := TObject(fNodeTextToDataMap[FileN]);
+    if AObject.InheritsFrom(TTFENodeData) then
+      TTFENodeData(AObject).Node := TVNode;
     if fNodeTextToFullFilenameMap.Count > 0 then begin
       s:=FileN;
       if fNodeTextToFullFilenameMap.Contains(FileN) then
         s:=fNodeTextToFullFilenameMap[FileN];           // Full file name.
-      TVNode.Data:=TFileNameItem.Create(s,fNodeTextToDataMap[FileN]);
+      AObject := TFileNameItem.Create(s, AObject);
+      TTFENodeData(AObject).Node := TVNode;
     end;
+    TVNode.Data:=AObject;
     // Get ImageIndex for Node
     ena := True;
     if Assigned(fOwner.OnGetImageIndex) then
       fImgIndex:=fOwner.OnGetImageIndex(FileN, fSortedData.Objects[i], ena);
     TVNode.ImageIndex:=fImgIndex;
     TVNode.SelectedIndex:=fImgIndex;
-//    if Assigned(fSelectedPart) then
-//      TVNode.Selected:=fSelectedPart=fSortedData.Objects[i];
   end;
-  if fOwner.ShowDirHierarchy then      // TVDeleteUnneededNodes(0); ?
+  if fOwner.ShowDirHierarchy then
     fTVNodeStack.Free;
   if Assigned(fRootNode) then
     fRootNode.Expanded:=True;
-end;
-
-procedure TTreeFilterBranch.FreeTVNodeData(Node: TTreeNode);
-var
-  Child: TTreeNode;
-begin
-  if Node=nil then exit;
-  if (Node.Data<>nil) then begin
-    TObject(Node.Data).Free;
-    Node.Data:=nil;
-  end;
-  Child:=Node.GetFirstChild;
-  while Child<>nil do
-  begin
-    FreeTVNodeData(Child);                 // Recursive call.
-    Child:=Child.GetNextSibling;
-  end;
 end;
 
 procedure TTreeFilterBranch.TVDeleteUnneededNodes(p: integer);
@@ -260,7 +250,7 @@ var
   Node: TTreeNode;
 begin
   for i:=fTVNodeStack.Count-1 downto p do begin
-    Node:=fTVNodeStack[i];
+    Node:=TTreeNode(fTVNodeStack[i]);
     while Node.GetNextSibling<>nil do
       Node.GetNextSibling.Free;
   end;
@@ -288,7 +278,7 @@ begin
     end;
     //debugln(['ClearUnneededAndCreateHierachy FilePart=',FilePart,' Filename=',Filename,' p=',p]);
     if p < fTVNodeStack.Count then begin
-      Node:=fTVNodeStack[p];
+      Node:=TTreeNode(fTVNodeStack[p]);
       if (FilePart=Node.Text) and (Node.Data=nil) then begin
         // same sub directory
       end
@@ -309,7 +299,7 @@ begin
       Assert(p=fTVNodeStack.Count, Format('TVClearUnneededAndCreateHierachy: p (%d) > fTVNodeStack.Count (%d).',
                                           [p, fTVNodeStack.Count]));
       if p>0 then
-        Node:=fTVNodeStack[p-1]
+        Node:=TTreeNode(fTVNodeStack[p-1])
       else
         Node:=fRootNode;
       Assert(Assigned(Node), Format('TVClearUnneededAndCreateHierachy: Node=nil, p=%d', [p]));

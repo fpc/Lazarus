@@ -82,6 +82,17 @@ type
     );
   TProjectInspectorFlags = set of TProjectInspectorFlag;
 
+  TProjectNodeType = (pntFile, pntDependency);
+
+  TProjectNodeData = class(TTFENodeData)
+  public
+    Typ: TProjectNodeType;
+    Name: string; // file or package name
+    Data : TObject;
+    Removed : Boolean;
+    Next : TProjectNodeData;
+  end;
+
   { TProjectInspectorForm }
 
   TProjectInspectorForm = class(TForm)
@@ -103,7 +114,6 @@ type
     procedure DirectoryHierarchyButtonClick(Sender: TObject);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewDblClick(Sender: TObject);
-    procedure ItemsTreeViewGetImageIndex(Sender: TObject; Node: TTreeNode);
     procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure MoveDependencyUpClick(Sender: TObject);
@@ -148,6 +158,9 @@ type
     ImageIndexBinary: integer;
     ImageIndexDirectory: integer;
     FFlags: TProjectInspectorFlags;
+    FProjectNodeDataList : array [TProjectNodeType] of TProjectNodeData;
+    procedure FreeNodeData(Typ: TProjectNodeType);
+    function CreateNodeData(Typ: TProjectNodeType; aName: string; aRemoved: boolean): TProjectNodeData;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
     procedure SetIdleConnected(const AValue: boolean);
     procedure SetLazProject(const AValue: TProject);
@@ -193,7 +206,7 @@ type
     property ShowDirectoryHierarchy: boolean read FShowDirectoryHierarchy write SetShowDirectoryHierarchy;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
-  
+
 var
   ProjInspector: TProjectInspectorForm = nil;
 
@@ -211,11 +224,6 @@ uses
 procedure TProjectInspectorForm.ItemsTreeViewDblClick(Sender: TObject);
 begin
   OpenButtonClick(Self);
-end;
-
-procedure TProjectInspectorForm.ItemsTreeViewGetImageIndex(Sender: TObject; Node: TTreeNode);
-begin
-
 end;
 
 procedure TProjectInspectorForm.ItemsTreeViewKeyDown(Sender: TObject;
@@ -628,19 +636,29 @@ end;
 
 function TProjectInspectorForm.ChooseImageIndex(Str: String; Data: TObject;
                                                 var AIsEnabled: Boolean): Integer;
+Var
+  ANodeData : TProjectNodeData;
+  AObject : TObject;
 begin
-  if Data is TUnitInfo then begin
-    if FilenameIsPascalUnit(TUnitInfo(Data).Filename) then
+  Result := -1;
+  AObject := NIL;
+  ANodeData := TProjectNodeData(Data);
+  If Assigned(ANodeData) Then
+    AObject := ANodeData.Data;
+  if Not Assigned(AObject) Then
+    Exit;
+  if AObject is TUnitInfo then begin
+    if FilenameIsPascalUnit(TUnitInfo(AObject).Filename) then
       Result:=ImageIndexUnit
     else if (LazProject<>nil) and (LazProject.MainUnitinfo=Data) then
       Result:=ImageIndexProject
     else
       Result:=ImageIndexText;
   end
-  else if Data is TPkgDependency then begin
-    if TPkgDependency(Data).Removed then
+  else if AObject is TPkgDependency then begin
+    if TPkgDependency(AObject).Removed then
       Result:=ImageIndexRemovedRequired
-    else if TPkgDependency(Data).LoadPackageResult=lprSuccess then
+    else if TPkgDependency(AObject).LoadPackageResult=lprSuccess then
       Result:=ImageIndexRequired
     else
       Result:=ImageIndexConflict;
@@ -652,7 +670,10 @@ var
   CurFile: TUnitInfo;
   FilesBranch: TTreeFilterBranch;
   Filename: String;
+  ANodeData : TProjectNodeData;
 begin
+  FreeNodeData(pntFile);
+
   ItemsTreeView.BeginUpdate;
   try
     FilesBranch:=FilterEdit.GetBranch(FFilesNode);
@@ -665,8 +686,11 @@ begin
       CurFile:=LazProject.FirstPartOfProject;
       while CurFile<>nil do begin
         Filename:=CurFile.GetShortFilename(true);
-        if Filename<>'' then
-          FilesBranch.AddNodeData(Filename, CurFile, CurFile.Filename);
+        if Filename<>'' then Begin
+          ANodeData := CreateNodeData(pntFile, FileName, False);
+          ANodeData.Data := CurFile;
+          FilesBranch.AddNodeData(Filename, ANodeData, CurFile.Filename);
+        end;
         CurFile:=CurFile.NextPartOfProject;
       end;
     end;
@@ -681,7 +705,10 @@ var
   Dependency: TPkgDependency;
   RequiredBranch, RemovedBranch: TTreeFilterBranch;
   NodeText, AFilename: String;
+  ANodeData : TProjectNodeData;
 begin
+  FreeNodeData(pntDependency);
+
   ItemsTreeView.BeginUpdate;
   try
     RequiredBranch:=FilterEdit.GetBranch(DependenciesNode);
@@ -700,7 +727,9 @@ begin
             NodeText:=Format(lisPckEditDefault, [NodeText, AFilename]);
         end;
         // Add the required package under the branch
-        RequiredBranch.AddNodeData(NodeText, Dependency);
+        ANodeData := CreateNodeData(pntDependency, NodeText, False);
+        ANodeData.Data := Dependency;
+        RequiredBranch.AddNodeData(NodeText, ANodeData);
         Dependency:=Dependency.NextRequiresDependency;
       end;
 
@@ -717,7 +746,9 @@ begin
         RemovedBranch:=FilterEdit.GetBranch(RemovedDependenciesNode);
         // Add all removed dependencies under the branch
         while Dependency<>nil do begin
-          RemovedBranch.AddNodeData(Dependency.AsString, Dependency);
+          ANodeData := CreateNodeData(pntDependency, Dependency.AsString, True);
+          ANodeData.Data := Dependency;
+          RemovedBranch.AddNodeData(Dependency.AsString, ANodeData);
           Dependency:=Dependency.NextRequiresDependency;
         end;
       end;
@@ -793,15 +824,21 @@ function TProjectInspectorForm.GetSelectedFile: TUnitInfo;
 var
   CurNode: TTreeNode;
   Item: TFileNameItem;
+  ADataNode : TProjectNodeData;
+  AObject : TObject;
 begin
   Result:=nil;
+  AObject := NIL;
   if LazProject=nil then exit;
   CurNode:=ItemsTreeView.Selected;
   if (CurNode=nil) then exit;
   //debugln(['TProjectInspectorForm.GetCurrentFile ',DbgSName(TObject(CurNode.Data)),' ',CurNode.Text]);
-  if TObject(CurNode.Data) is TFileNameItem then
+  ADataNode := TProjectNodeData(CurNode.Data);
+  If Assigned(ADataNode) Then
+    AObject := ADataNode;
+  if Assigned(AObject) And (AObject is TFileNameItem) then
   begin
-    Item:=TFileNameItem(CurNode.Data);
+    Item:=TFileNameItem(AObject);
     //debugln(['TProjectInspectorForm.GetCurrentFile Item=',Item.Filename,' ',Item.IsDirectory]);
     Result:=LazProject.UnitInfoWithFilename(Item.Filename);
   end;
@@ -812,8 +849,10 @@ var
   CurNode: TTreeNode;
   Branch: TTreeFilterBranch;
   AnObject: TObject;
+  ADataNode : TProjectNodeData;
 begin
   Result:=nil;
+  AnObject := Nil;
   if LazProject=nil then exit;
   CurNode:=ItemsTreeView.Selected;
   if Assigned(CurNode) and Assigned(CurNode.Parent)
@@ -821,7 +860,9 @@ begin
   then begin
     Branch:=FilterEdit.GetExistingBranch(CurNode.Parent);
     Assert(Assigned(Branch));
-    AnObject := Branch.GetData(CurNode.Index);
+    ADataNode := TProjectNodeData(Branch.GetData(CurNode.Index));
+    If Assigned(ADataNode) Then
+      AnObject := ADataNode.Data;
     if (AnObject <> nil) and (AnObject is TPkgDependency) then
       Result := TPkgDependency(AnObject);
   end;
@@ -840,9 +881,13 @@ begin
 end;
 
 destructor TProjectInspectorForm.Destroy;
+var
+  nt: TProjectNodeType;
 begin
   IdleConnected:=false;
   LazProject:=nil;
+  for nt:=Low(TProjectNodeType) to High(TProjectNodeType) do
+    FreeNodeData(nt);
   inherited Destroy;
   if ProjInspector=Self then
     ProjInspector:=nil;
@@ -940,6 +985,41 @@ begin
   finally
     ItemsTreeView.EndUpdate;
   end;
+end;
+
+procedure TProjectInspectorForm.FreeNodeData(Typ: TProjectNodeType);
+var
+  NodeData,
+  n: TProjectNodeData;
+  AObject : TObject;
+  ANode : TTreeNode;
+begin
+  NodeData:=FProjectNodeDataList[Typ];
+  while NodeData<>nil do begin
+    n:=NodeData;
+    NodeData:=NodeData.Next;
+    If Assigned(n.Node) Then Begin
+      ANode := TTreeNode(n.Node);
+      If Assigned(ANode.Data) Then Begin
+        AObject := TObject(ANode.Data);
+        If AObject is TFileNameItem Then
+          AObject.Free;
+      end;
+      ANode.Data := NIL;
+    end;
+    n.Free;
+  end;
+  FProjectNodeDataList[Typ]:=nil;
+End;
+
+function TProjectInspectorForm.CreateNodeData(Typ: TProjectNodeType; aName: string; aRemoved: boolean): TProjectNodeData;
+Begin
+  Result := TProjectNodeData.Create;
+  Result.Name := aName;
+  Result.Typ := Typ;
+  Result.Removed := aRemoved;
+  Result.Next := FProjectNodeDataList[Typ];
+  FProjectNodeDataList[Typ] := Result;
 end;
 
 end.
