@@ -72,6 +72,7 @@ resourcestring
   lisOk = 'OK';
   lisMenuOk = '&OK';
   lisCancel = 'Cancel';
+  lisUnusedUnitsOf = 'Unused units of %s';
   lisNo = 'No';
   lisContinue = 'Continue';
   lisBreak = 'Break';
@@ -2169,6 +2170,7 @@ resourcestring
   dlgCCOTestMissingPPU = 'Test: Checking missing fpc ppu ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
+  lisUnableToOpen = 'Unable to open "%s"';
   lisCompilerDoesNotSupportTarget = 'Compiler "%s" does not support target %s-%s';
   lisInvalidMode = 'Invalid mode %s';
   lisTheProjectCompilerOptionsAndTheDirectivesInTheMain = 'The project '
@@ -5129,7 +5131,6 @@ resourcestring
   lisResult2 = 'Result:';
   lisTheIdentifierIsAUnitPleaseUseTheFileSaveAsFunction = 'The identifier is '
     +'a unit. Please use the File - Save as function to rename a unit.';
-  lisUnusedUnits = 'Unused units';
   lisRemoveSelectedUnits = 'Remove selected units';
   lisRemoveAllUnits = 'Remove all units';
   lisCEShowCodeObserver = 'Show observerations about';
@@ -5781,6 +5782,7 @@ resourcestring
   lisUDSearchNextUnitOfThisPhrase = 'Search next unit of this phrase';
   lisUDSearchPreviousUnitOfThisPhrase = 'Search previous unit of this phrase';
   lisUDExpandAllNodes = 'Expand all nodes';
+  lisShowUnusedUnits = 'Show unused units ...';
   lisUDCollapseAllNodes = 'Collapse all nodes';
   lisUDFilter = '(Filter)';
   lisUDSearch = '(Search)';

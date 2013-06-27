@@ -24,8 +24,8 @@
     IDE Window showing dependencies of units and packages.
 
   ToDo:
-    - every second: write parsed units
-    - resourcestrings
+    - show unit selected in TV on units graph
+    - show unused units dialog
 }
 unit UnitDependencies;
 
@@ -40,8 +40,8 @@ uses
   LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf,
   IDEImagesIntf, IDECommands, IDEDialogs,
   CodeToolManager, DefineTemplates, CodeToolsStructs,
-  CTUnitGraph, CTUnitGroupGraph, FileProcs,
-  LazarusIDEStrConsts;
+  CTUnitGraph, CTUnitGroupGraph, FileProcs, CodeCache,
+  LazarusIDEStrConsts, UnusedUnitsDlg;
 
 const
   GroupPrefixProject = '-Project-';
@@ -113,6 +113,7 @@ type
     StatsLabel: TLabel;
     StatusPanel: TPanel;
     Timer1: TTimer;
+    UnitsTVUnusedUnitsMenuItem: TMenuItem;
     UnitsTVCopyFilenameMenuItem: TMenuItem;
     UnitsTVCollapseAllMenuItem: TMenuItem;
     UnitsTVExpandAllMenuItem: TMenuItem;
@@ -175,6 +176,7 @@ type
     procedure UnitsTVCopyFilenameMenuItemClick(Sender: TObject);
     procedure UnitsTVExpandAllMenuItemClick(Sender: TObject);
     procedure UnitsTVPopupMenuPopup(Sender: TObject);
+    procedure UnitsTVUnusedUnitsMenuItemClick(Sender: TObject);
   private
     FCurrentUnit: TUGUnit;
     FIdleConnected: boolean;
@@ -799,9 +801,37 @@ end;
 procedure TUnitDependenciesWindow.UnitsTVPopupMenuPopup(Sender: TObject);
 var
   TV: TTreeView;
+  TVNode: TTreeNode;
+  UDNode: TUDNode;
 begin
   TV:=UnitsTVPopupMenu.PopupComponent as TTreeView;
   UnitsTVExpandAllMenuItem.Visible:=TV=AllUnitsTreeView;
+  TVNode:=TV.Selected;
+  if (TVNode<>nil) and (TObject(TVNode.Data) is TUDNode) then begin
+    UDNode:=TUDNode(TVNode.Data);
+    UnitsTVUnusedUnitsMenuItem.Enabled:=UDNode.Typ=udnUnit;
+  end else
+    UnitsTVUnusedUnitsMenuItem.Enabled:=false;
+end;
+
+procedure TUnitDependenciesWindow.UnitsTVUnusedUnitsMenuItemClick(Sender: TObject
+  );
+var
+  TV: TTreeView;
+  TVNode: TTreeNode;
+  UDNode: TUDNode;
+  Filename: String;
+  Code: TCodeBuffer;
+begin
+  TV:=TTreeView(UnitsTVPopupMenu.PopupComponent);
+  if not (TV is TTreeView) then exit;
+  TVNode:=TV.Selected;
+  if (TVNode=nil) or not (TObject(TVNode.Data) is TUDNode) then exit;
+  UDNode:=TUDNode(TVNode.Data);
+  if UDNode.Typ<>udnUnit then exit;
+  Filename:=GetFilename(UDNode);
+  Code:=CodeToolBoss.LoadFile(Filename,true,false);
+  ShowUnusedUnitsDialog(Code);
 end;
 
 procedure TUnitDependenciesWindow.SetIdleConnected(AValue: boolean);
@@ -1412,6 +1442,7 @@ begin
 
   // popup menu
   UnitsTVCopyFilenameMenuItem.Caption:=uemCopyFilename;
+  UnitsTVUnusedUnitsMenuItem.Caption:=lisShowUnusedUnits;
   UnitsTVExpandAllMenuItem.Caption:=lisUDExpandAllNodes;
   UnitsTVCollapseAllMenuItem.Caption:=lisUDCollapseAllNodes;
 

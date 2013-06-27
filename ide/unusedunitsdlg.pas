@@ -32,10 +32,9 @@ unit UnusedUnitsDlg;
 interface
 
 uses
-  Classes, LCLProc, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, Buttons,
-  SrcEditorIntf, LazIDEIntf, IDEImagesIntf,
-  CodeCache, CodeToolManager,
-  LazarusIDEStrConsts;
+  Classes, sysutils, LCLProc, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls,
+  Buttons, Dialogs, SrcEditorIntf, LazIDEIntf, IDEImagesIntf, IDEDialogs,
+  CodeCache, CodeToolManager, LazarusIDEStrConsts;
 
 type
 
@@ -53,11 +52,13 @@ type
     procedure RemoveSelectedBitBtnClick(Sender: TObject);
     procedure UnitsTreeViewSelectionChanged(Sender: TObject);
   private
+    FCode: TCodeBuffer;
     FUnits: TStrings;
     ImgIDInterface: LongInt;
     ImgIDImplementation: LongInt;
     ImgIDInitialization: LongInt;
     ImgIDNone: LongInt;
+    procedure SetCode(AValue: TCodeBuffer);
     procedure SetUnits(const AValue: TStrings);
     procedure RebuildUnitsTreeView;
     procedure UpdateButtons;
@@ -65,10 +66,12 @@ type
     function GetSelectedUnits: TStrings;
     function GetAllUnits: TStrings;
     property Units: TStrings read FUnits write SetUnits;
+    property Code: TCodeBuffer read FCode write SetCode;
   end;
 
 
 function ShowUnusedUnitsDialog: TModalResult;
+function ShowUnusedUnitsDialog(Code: TCodeBuffer): TModalResult;
 
 implementation
 
@@ -76,22 +79,29 @@ implementation
 
 function ShowUnusedUnitsDialog: TModalResult;
 var
-  UnusedUnitsDialog: TUnusedUnitsDialog;
   SrcEdit: TSourceEditorInterface;
   Code: TCodeBuffer;
-  Units: TStringList;
-  RemoveUnits: TStrings;
-  i: Integer;
-  DlgResult: TModalResult;
 begin
-  Result:=mrOk;
-  if not LazarusIDE.BeginCodeTools then exit;
-
   // get cursor position
   SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit=nil then exit;
   Code:=TCodeBuffer(SrcEdit.CodeToolsBuffer);
   if Code=nil then exit;
+  Result:=ShowUnusedUnitsDialog(Code);
+end;
+
+function ShowUnusedUnitsDialog(Code: TCodeBuffer): TModalResult;
+var
+  UnusedUnitsDialog: TUnusedUnitsDialog;
+  Units: TStringList;
+  RemoveUnits: TStrings;
+  i: Integer;
+  DlgResult: TModalResult;
+  SrcEdit: TSourceEditorInterface;
+begin
+  Result:=mrOk;
+  if Code=nil then exit;
+  if not LazarusIDE.BeginCodeTools then exit;
 
   UnusedUnitsDialog:=nil;
   RemoveUnits:=nil;
@@ -106,6 +116,7 @@ begin
 
     UnusedUnitsDialog:=TUnusedUnitsDialog.Create(nil);
     UnusedUnitsDialog.Units:=Units;
+    UnusedUnitsDialog.Code:=Code;
     DlgResult:=UnusedUnitsDialog.ShowModal;
     if DlgResult=mrOk then
       RemoveUnits:=UnusedUnitsDialog.GetSelectedUnits
@@ -114,6 +125,15 @@ begin
     else
       RemoveUnits:=nil;
     if (RemoveUnits<>nil) and (RemoveUnits.Count>0) then begin
+      LazarusIDE.DoOpenEditorFile(Code.Filename,-1,-1,[]);
+      SrcEdit:=SourceEditorManagerIntf.SourceEditorIntfWithFilename(Code.Filename);
+      if SrcEdit=nil then begin
+        IDEMessageDialog(lisCCOErrorCaption,
+          Format(lisUnableToOpen, [Code.Filename]),
+          mtError,[mbCancel]);
+        exit(mrCancel);
+      end;
+
       SrcEdit.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}('ShowUnusedUnitsDialog'){$ENDIF};
       try
         for i:=0 to RemoveUnits.Count-1 do begin
@@ -139,8 +159,6 @@ end;
 
 procedure TUnusedUnitsDialog.FormCreate(Sender: TObject);
 begin
-  Caption:=lisUnusedUnits;
-
   RemoveSelectedBitBtn.Caption:=lisRemoveSelectedUnits;
   RemoveAllBitBtn.Caption:=lisRemoveAllUnits;
   CancelBitBtn.Caption:=lisCancel;
@@ -177,6 +195,14 @@ begin
   if FUnits=AValue then exit;
   FUnits:=AValue;
   RebuildUnitsTreeView;
+end;
+
+procedure TUnusedUnitsDialog.SetCode(AValue: TCodeBuffer);
+begin
+  if FCode=AValue then Exit;
+  FCode:=AValue;
+  if FCode<>nil then
+    Caption:=Format(lisUnusedUnitsOf, [ExtractFilename(Code.Filename)]);
 end;
 
 procedure TUnusedUnitsDialog.RebuildUnitsTreeView;
