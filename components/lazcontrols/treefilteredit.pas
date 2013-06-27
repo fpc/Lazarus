@@ -23,8 +23,6 @@ type
   TImageIndexEvent = function (Str: String; Data: TObject;
                                var AIsEnabled: Boolean): Integer of object;
 
-  TTreeNodeList = specialize TFPGList<Pointer>;
-
   TTreeFilterEdit = class;
 
   { TTreeFilterBranch }
@@ -41,7 +39,7 @@ type
     // It is stored automatically if AFullFilename is passed to contructor.
     fNodeTextToFullFilenameMap: TStringToStringTree;
     fNodeTextToDataMap: TStringToPointerTree;
-    fTVNodeStack: TTreeNodeList;
+    fTVNodeStack: TList;
     function CompareFNs(AFilename1,AFilename2: string): integer;
     procedure SortAndFilter;
     procedure ApplyFilter;
@@ -202,14 +200,14 @@ var
   i: Integer;
   FileN, s: string;
   ena: Boolean;
-  AObject : TObject;
+  AObject: TObject;
 begin
   if Assigned(fRootNode) then
     fRootNode.DeleteChildren      // Delete old tree nodes.
   else
     fOwner.fFilteredTreeview.Items.Clear;
   if fOwner.ShowDirHierarchy then
-    fTVNodeStack:=TTreeNodeList.Create;
+    fTVNodeStack:=TList.Create;
   for i:=0 to fSortedData.Count-1 do begin
     FileN:=fSortedData[i];
     if fOwner.ShowDirHierarchy then begin
