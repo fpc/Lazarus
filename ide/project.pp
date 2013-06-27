@@ -49,7 +49,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, TypInfo, FPCAdds, LCLProc, LCLIntf, LCLType, Forms,
-  FileUtil, Laz2_XMLCfg, Controls, Dialogs, InterfaceBase, maps,
+  FileUtil, Laz2_XMLCfg, Controls, Dialogs, maps,
   // codetools
   CodeToolsConfig, ExprEval, FileProcs, DefineTemplates,
   BasicCodeTools, CodeToolsCfgScript, CodeToolManager, CodeCache,
@@ -955,6 +955,7 @@ type
 
     // package dependencies
     function FindDependencyByName(const PackageName: string): TPkgDependency;
+    function FindRemovedDependencyByName(const PkgName: string): TPkgDependency;
     function RequiredDepByIndex(Index: integer): TPkgDependency;
     function RemovedDepByIndex(Index: integer): TPkgDependency;
     procedure AddRequiredDependency(Dependency: TPkgDependency);
@@ -4710,6 +4711,12 @@ function TProject.FindDependencyByName(const PackageName: string
 begin
   Result:=FindDependencyByNameInList(FFirstRequiredDependency,pdlRequires,
                                      PackageName);
+end;
+
+function TProject.FindRemovedDependencyByName(const PkgName: string
+  ): TPkgDependency;
+begin
+  Result:=FindDependencyByNameInList(FFirstRemovedDependency,pdlRequires,PkgName);
 end;
 
 function TProject.RequiredDepByIndex(Index: integer): TPkgDependency;

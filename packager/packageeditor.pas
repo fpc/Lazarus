@@ -31,16 +31,12 @@ interface
 
 uses
   // LCL FCL
-  Classes, SysUtils, Math, Forms, Controls, StdCtrls, ComCtrls, Buttons,
-  LResources, Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil, AVL_Tree,
-  contnrs, Laz2_XMLCfg,
+  Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil,
+  contnrs,
   // IDEIntf CodeTools
-  IDEImagesIntf, MenuIntf, HelpIntfs, ExtCtrls, LazIDEIntf, ProjectIntf,
+  IDEImagesIntf, MenuIntf, ExtCtrls, LazIDEIntf, ProjectIntf,
   CodeToolsStructs, FormEditingIntf, TreeFilterEdit, PackageIntf,
-  IDEDialogs, IDEHelpIntf, IDEOptionsIntf,
-  // IDE
-  MainIntf, IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
-  IDEContextHelpEdit, CompilerOptions, ComponentReg,
+  IDEDialogs, IDEHelpIntf, IDEOptionsIntf, IDEProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions, ComponentReg,
   PackageDefs, AddToPackageDlg, PkgVirtualUnitEditor,
   MissingPkgFilesDlg, PackageSystem, CleanPkgDeps;
   
@@ -2066,7 +2062,7 @@ end;
 function TPackageEditorForm.GetNodeItem(NodeData: TPENodeData): TObject;
 begin
   Result:=nil;
-  if LazPackage=nil then exit;
+  if (LazPackage=nil) or (NodeData=nil) then exit;
   case NodeData.Typ of
   penFile:
     if NodeData.Removed then
