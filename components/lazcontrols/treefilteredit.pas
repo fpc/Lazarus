@@ -218,7 +218,7 @@ begin
       TVNode:=fOwner.fFilteredTreeview.Items.AddChild(fRootNode,FileN);
     // Save the long filename to Node.Data
     AObject := TObject(fNodeTextToDataMap[FileN]);
-    if AObject.InheritsFrom(TTFENodeData) then
+    If Assigned(AObject) And AObject.InheritsFrom(TTFENodeData) then
       TTFENodeData(AObject).Node := TVNode;
     if fNodeTextToFullFilenameMap.Count > 0 then begin
       s:=FileN;
