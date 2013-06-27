@@ -25,7 +25,6 @@
 
   ToDo:
     - show unit selected in TV on units graph
-    - show unused units dialog
 }
 unit UnitDependencies;
 
