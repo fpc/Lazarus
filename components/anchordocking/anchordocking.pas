@@ -5036,12 +5036,15 @@ begin
     if Align in [alLeft,alRight] then begin
       // vertical
       dx:=Max(0,(r.Right-r.Left-TxtH) div 2);
+      {$IFDEF LCLWin32}
+      dec(dx,2);
+      {$ENDIF}
       dy:=Max(0,(r.Bottom-r.Top-TxtW) div 2);
       Canvas.Font.Orientation:=900;
       if TxtW<(r.Bottom-r.Top)then
       begin
         // text fits
-        Canvas.TextOut(r.Left+dx-3,r.Bottom-dy,Caption);
+        Canvas.TextOut(r.Left+dx-1,r.Bottom-dy,Caption);
         DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Right,r.Bottom-dy-TxtW-1),false);
         DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Bottom-dy+1,r.Right,r.Bottom),false);
       end else begin
