@@ -120,6 +120,8 @@ type
     fImplUsedUnits: TUsedUnits;
     fOnCheckPackageDependency: TCheckUnitEvent;
     fOnCheckUnitForConversion: TCheckUnitEvent;
+    function HasUnit(aUnitName: string): Boolean;
+    procedure MaybeOpenPackage(aUnitName: string);
     function GetMissingUnitCount: integer;
   public
     constructor Create(ACTLink: TCodeToolLink; AFilename: string);
@@ -147,17 +149,16 @@ type
 implementation
 
 function Join(AList: TStringList): string;
-// Used in AddDelphiAndLCLSections. Could be moved to a more generic place.
+// Make a comma separated list from a StringList. Could be moved to a more generic place.
 var
   i: Integer;
 begin
   Result:='';
-  for i:=0 to AList.Count-1 do begin
+  for i:=0 to AList.Count-1 do
     if i<AList.Count-1 then
       Result:=Result+AList[i]+', '
     else
       Result:=Result+AList[i];
-  end;
 end;
 
 { TUsedUnits }
@@ -177,6 +178,7 @@ begin
   fUnitsToRenameKeys.CaseSensitive:=false;
   fUnitsToRenameVals:=TStringList.Create;
   fUnitsToRenameVals.CaseSensitive:=false;
+  fUnitsToRenameVals.Sorted:=True;
   fUnitsToFixCase:=TStringToStringTree.Create(true);
   fUnitsToComment:=TStringList.Create;
   fMissingUnits:=TStringList.Create;
@@ -280,24 +282,38 @@ end;
 procedure TUsedUnits.ToBeRenamedOrRemoved(AOldName, ANewName: string);
 // Replace a unit name with a new name or remove it if there is no new name.
 var
-  UnitInFileName: string;
+  sl: TStringList;
+  WillRemove: Boolean;
   i: Integer;
 begin
-  if ANewName<>'' then begin
-    fUnitsToRename[AOldName]:=ANewName;
-    fUnitsToRenameKeys.Add(AOldName);
-    fUnitsToRenameVals.Add(ANewName);
-    fCTLink.Settings.AddLogLine(Format(lisConvDelphiReplacedUnitInUsesSection,
-                                       [AOldName, ANewName]));
-    // If the unit is not found, open the package containing it.
-    UnitInFileName:='';
-    if fCTLink.CodeTool.DirectoryCache.FindUnitSourceInCompletePath(
-                                    ANewName,UnitInFileName,True,False) = '' then
-      if Assigned(fOwnerTool.OnCheckPackageDependency) then
-        if not fOwnerTool.OnCheckPackageDependency(ANewName) then
-          ;
-  end
-  else begin
+  WillRemove:=ANewName='';
+  if not WillRemove then begin
+    // ANewName can have comma separated list of units. Use only units that don't yet exist.
+    sl:=TStringList.Create;
+    try
+      sl.Delimiter:=',';
+      sl.DelimitedText:=ANewName;
+      for i:=sl.Count-1 downto 0 do begin
+        if fOwnerTool.HasUnit(sl[i]) then
+          sl.Delete(i)
+        else
+          fOwnerTool.MaybeOpenPackage(sl[i]);
+      end;
+      WillRemove:=sl.Count=0;
+      if not WillRemove then begin
+        // At least some new units will be used
+        ANewName:=Join(sl);
+        fUnitsToRename[AOldName]:=ANewName;
+        fUnitsToRenameKeys.Add(AOldName);
+        fUnitsToRenameVals.AddStrings(sl);
+        fCTLink.Settings.AddLogLine(Format(lisConvDelphiReplacedUnitInUsesSection,
+                                           [AOldName, ANewName]));
+      end;
+    finally
+      sl.Free;
+    end;
+  end;
+  if WillRemove then begin
     i:=Pos(' in ',AOldName);
     if i>1 then
       AOldName:=Copy(AOldName, 1, i-1);  // Strip the file name part.
@@ -605,6 +621,30 @@ begin
   end;
 end;
 
+function TUsedUnitsTool.HasUnit(aUnitName: string): Boolean;
+// Return True if a given unit already is used or will be used later.
+var
+  x: Integer;
+begin
+  Result := fMainUsedUnits.fExistingUnits.Find(aUnitName, x)
+         or fImplUsedUnits.fExistingUnits.Find(aUnitName, x)
+         or(fMainUsedUnits.fUnitsToAdd.IndexOf(aUnitName) > -1)
+         or fMainUsedUnits.fUnitsToRenameVals.Find(aUnitName, x)
+         or fImplUsedUnits.fUnitsToRenameVals.Find(aUnitName, x);
+end;
+
+procedure TUsedUnitsTool.MaybeOpenPackage(aUnitName: string);
+// Open a package containing a unit. Called when the unit is not found.
+var
+  s: String;
+begin
+  s:='';
+  if fCTLink.CodeTool.DirectoryCache.FindUnitSourceInCompletePath(aUnitName,s,True) = '' then
+    if Assigned(fOnCheckPackageDependency) then
+      if not fOnCheckPackageDependency(aUnitName) then
+        ;
+end;
+
 function TUsedUnitsTool.ConvertUsed: TModalResult;
 // Add, remove, rename and comment out unit names that were marked earlier.
 var
@@ -721,38 +761,11 @@ begin
 end;
 
 procedure TUsedUnitsTool.AddUnitIfNeeded(aUnitName: string);
-
-  // Return True if the rename (target) value contains aUnitName.
-  // The rename value can have many comma separated unit names.
-  function RenameValHasUnit(aUsedUnits: TUsedUnits): Boolean;
-  var
-    i: Integer;
-  begin
-    Result := False;
-    for i := 0 to aUsedUnits.fUnitsToRenameVals.Count-1 do
-      if Pos(aUnitName, aUsedUnits.fUnitsToRenameVals[i]) > 0 then
-        Exit(True);
-  end;
-
-var
-  UnitInFileName: String;
-  x: Integer;
 begin
-  if not ( fMainUsedUnits.fExistingUnits.Find(aUnitName, x)
-        or fImplUsedUnits.fExistingUnits.Find(aUnitName, x)
-        or (fMainUsedUnits.fUnitsToAdd.IndexOf(aUnitName) > -1)
-        or RenameValHasUnit(fMainUsedUnits)
-        or RenameValHasUnit(fImplUsedUnits) ) then
-  begin
+  if not HasUnit(aUnitName) then begin
     fMainUsedUnits.fUnitsToAdd.Add(aUnitName);
     fCTLink.Settings.AddLogLine('Added unit '+aUnitName+ ' to uses section');
-    // If the unit is not found, open the package containing it.
-    UnitInFileName:='';
-    if fCTLink.CodeTool.DirectoryCache.FindUnitSourceInCompletePath(
-                                   aUnitName,UnitInFileName,True,False) = '' then
-      if Assigned(fOnCheckPackageDependency) then
-        if not fOnCheckPackageDependency(aUnitName) then
-          ;
+    MaybeOpenPackage(aUnitName);
   end;
 end;
 
