@@ -8,6 +8,7 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: svnclasses.rsaction
 msgid "Action"
@@ -94,19 +95,16 @@ msgid "LazarusSVN Commit"
 msgstr "LazarusSVN Übertragung"
 
 #: svnclasses.rslazarussvndiff
-#, fuzzy
 #| msgid "%s - LazarusSVN Diff..."
 msgid "%s - LazarusSVN Diff ..."
 msgstr "%s - LazarusSVN Vergleich..."
 
 #: svnclasses.rslazarussvnlog
-#, fuzzy
 #| msgid "%s - LazarusSVN Log..."
 msgid "%s - LazarusSVN Log ..."
 msgstr "%s - LazarusSVN Protokoll..."
 
 #: svnclasses.rslazarussvnupdate
-#, fuzzy
 #| msgid "%s - LazarusSVN Update..."
 msgid "%s - LazarusSVN Update ..."
 msgstr "%s - LazarusSVN Aktualisierung..."
@@ -153,7 +151,9 @@ msgstr "Projekt ist aktiv"
 
 #: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
 msgid "Project is not active in SVN settings, please activate first."
-msgstr "Projekt ist in den SVN-Einstellungen nicht aktiviert, holen Sie das zunächst nach."
+msgstr ""
+"Projekt ist in den SVN-Einstellungen nicht aktiviert, holen Sie das zunächst "
+"nach."
 
 #: svnclasses.rsprojectname
 msgid "Project name"
@@ -169,7 +169,7 @@ msgstr "Eigenschaftsstatus"
 
 #: svnclasses.rsrefresh
 msgid "Refresh"
-msgstr ""
+msgstr "Aktualisieren"
 
 #: svnclasses.rsremove
 msgid "Remove from version control (keep local)"
@@ -200,7 +200,6 @@ msgid "Show diff"
 msgstr "Zeige Vergleich"
 
 #: svnclasses.rsshowdiffbase
-#, fuzzy
 #| msgid "Show diff of local changes"
 msgid "Show Diff of Local Changes"
 msgstr "Zeige Vergleich der lokalen Änderungen"
@@ -212,13 +211,11 @@ msgid "Show Last X Commits"
 msgstr "Zeige letzte x Übertragungen"
 
 #: svnclasses.rsshowdiffhead
-#, fuzzy
 #| msgid "Show diff against HEAD"
 msgid "Show Diff Against HEAD"
 msgstr "Zeige Vergleich mit HEAD"
 
 #: svnclasses.rsshowdiffprev
-#, fuzzy
 #| msgid "Show diff against previous version"
 msgid "Show Diff Against Previous Version"
 msgstr "Zeige Vergleich mit vorheriger Version"
@@ -246,4 +243,3 @@ msgstr "Aktualisierung"
 #: svnclasses.rsupdated
 msgid "Updated"
 msgstr "Aktualisiert"
-
