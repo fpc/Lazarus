@@ -1084,22 +1084,11 @@ procedure TPackageEditorForm.FreeNodeData(Typ: TPENodeType);
 var
   NodeData: TPENodeData;
   n: TPENodeData;
-  AObject : TObject;
-  ANode : TTreeNode;
 begin
   NodeData:=FFirstNodeData[Typ];
   while NodeData<>nil do begin
     n:=NodeData;
     NodeData:=NodeData.Next;
-    If Assigned(n.Node) Then Begin
-      ANode := TTreeNode(n.Node);
-      If Assigned(ANode.Data) Then Begin
-        AObject := TObject(ANode.Data);
-        If AObject is TFileNameItem Then
-          AObject.Free;
-      end;
-      ANode.Data := NIL;
-    end;
     n.Free;
   end;
   FFirstNodeData[Typ]:=nil;
@@ -1779,10 +1768,10 @@ var
 begin
   if LazPackage=nil then exit;
 
-  FreeNodeData(penFile);
-
   // files belonging to package
   FilesBranch:=FilterEdit.GetBranch(FFilesNode);
+  FilesBranch.Clear;
+  FreeNodeData(penFile);
   FilterEdit.SelectedPart:=FNextSelectedPart;
   FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
   FilterEdit.SortData:=SortAlphabetically;
@@ -1830,10 +1819,10 @@ var
 begin
   if LazPackage=nil then exit;
 
-  FreeNodeData(penDependency);
-
   // required packages
   RequiredBranch:=FilterEdit.GetBranch(FRequiredPackagesNode);
+  RequiredBranch.Clear;
+  FreeNodeData(penDependency);
   FilterEdit.SelectedPart:=FNextSelectedPart;
   CurDependency:=LazPackage.FirstRequiredDependency;
   while CurDependency<>nil do begin
@@ -2412,9 +2401,9 @@ begin
   PackageEditors.DoFreeEditor(LazPackage);
   FLazPackage:=nil;
   FreeAndNil(FPlugins);
+  inherited Destroy;
   for nt:=Low(TPENodeType) to High(TPENodeType) do
     FreeNodeData(nt);
-  inherited Destroy;
 end;
 
 { TPackageEditors }

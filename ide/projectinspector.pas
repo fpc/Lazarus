@@ -671,11 +671,11 @@ var
   Filename: String;
   ANodeData : TProjectNodeData;
 begin
-  FreeNodeData(pntFile);
-
   ItemsTreeView.BeginUpdate;
   try
     FilesBranch:=FilterEdit.GetBranch(FFilesNode);
+    FilesBranch.Clear;
+    FreeNodeData(pntFile);
     if LazProject<>nil then begin
       FilterEdit.SelectedPart:=FNextSelectedPart;
       FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
@@ -705,11 +705,11 @@ var
   NodeText, AFilename: String;
   ANodeData : TProjectNodeData;
 begin
-  FreeNodeData(pntDependency);
-
   ItemsTreeView.BeginUpdate;
   try
     RequiredBranch:=FilterEdit.GetBranch(DependenciesNode);
+    RequiredBranch.Clear;
+    FreeNodeData(pntDependency);
     Dependency:=Nil;
     if LazProject<>nil then begin
       // required packages
@@ -854,9 +854,9 @@ var
 begin
   IdleConnected:=false;
   LazProject:=nil;
+  inherited Destroy;
   for nt:=Low(TProjectNodeType) to High(TProjectNodeType) do
     FreeNodeData(nt);
-  inherited Destroy;
   if ProjInspector=Self then
     ProjInspector:=nil;
 end;
@@ -959,22 +959,11 @@ procedure TProjectInspectorForm.FreeNodeData(Typ: TProjectNodeType);
 var
   NodeData,
   n: TProjectNodeData;
-  AObject : TObject;
-  ANode : TTreeNode;
 begin
   NodeData:=FProjectNodeDataList[Typ];
   while NodeData<>nil do begin
     n:=NodeData;
     NodeData:=NodeData.Next;
-    If Assigned(n.Node) Then Begin
-      ANode := TTreeNode(n.Node);
-      If Assigned(ANode.Data) Then Begin
-        AObject := TObject(ANode.Data);
-        If AObject is TFileNameItem Then
-          AObject.Free;
-      end;
-      ANode.Data := NIL;
-    end;
     n.Free;
   end;
   FProjectNodeDataList[Typ]:=nil;

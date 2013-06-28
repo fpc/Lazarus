@@ -45,11 +45,14 @@ type
     procedure ApplyFilter;
     procedure TVDeleteUnneededNodes(p: integer);
     procedure TVClearUnneededAndCreateHierachy(Filename: string);
+    procedure FreeNodeData(ANode : TTreeNode);
+    procedure RemoveChildrenData(ARootNode : TTreeNode);
   public
     constructor Create(AOwner: TTreeFilterEdit; ARootNode: TTreeNode);
     destructor Destroy; override;
     procedure AddNodeData(ANodeText: string; AData: TObject; AFullFilename: string = '');
     function GetData(AIndex: integer): TObject;
+    procedure Clear;
   end;
 
   TBranchList = specialize TFPGObjectList<TTreeFilterBranch>;
@@ -141,6 +144,9 @@ end;
 
 destructor TTreeFilterBranch.Destroy;
 begin
+
+  Clear;
+
   FreeAndNil(fNodeTextToFullFilenameMap);
   FreeAndNil(fNodeTextToDataMap);
   FreeAndNil(fSortedData);
@@ -202,8 +208,10 @@ var
   ena: Boolean;
   AObject: TObject;
 begin
-  if Assigned(fRootNode) then
-    fRootNode.DeleteChildren      // Delete old tree nodes.
+  if Assigned(fRootNode) then Begin
+    Clear;
+    fRootNode.DeleteChildren;      // Delete old tree nodes.
+  end
   else
     fOwner.fFilteredTreeview.Items.Clear;
   if fOwner.ShowDirHierarchy then
@@ -315,6 +323,40 @@ begin
     end;
     inc(p);
   end;
+end;
+
+procedure TTreeFilterBranch.FreeNodeData(ANode : TTreeNode);
+Var
+  AObject : TObject;
+Begin
+  AObject := NIL;
+  If Assigned(ANode) And Assigned(ANode.Data) Then Begin
+    AObject := TObject(ANode.Data);
+    If Assigned(AObject) And AObject.InheritsFrom(TTFENodeData) Then
+      TTFENodeData(AObject).Node := NIL;
+    If Assigned(AObject) And (AObject is TFileNameItem) Then
+      AObject.Free;
+    ANode.Data := NIL;
+  end;
+end;
+
+procedure TTreeFilterBranch.RemoveChildrenData(ARootNode : TTreeNode);
+Var
+  ANode : TTreeNode;
+Begin
+  ANode := NIL;
+  FreeNodeData(ARootNode);
+  If Assigned(ARootNode) Then
+    ANode := ARootNode.GetFirstChild;
+  While Assigned(ANode) Do Begin
+    FreeNodeData(ANode);
+    ANode := ANode.GetNextSibling;
+  end;
+end;
+
+procedure TTreeFilterBranch.Clear;
+Begin
+  RemoveChildrenData(fRootNode);
 end;
 
 { TFileNameItem }
