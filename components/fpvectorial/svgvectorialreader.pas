@@ -65,7 +65,7 @@ type
     FSVGPathTokenizer: TSVGPathTokenizer;
     FLayerStylesKeys, FLayerStylesValues: TFPList; // of TStringList;
     // Defs section
-    DefsBrushes: TFPList; // of TvBrush
+    FBrushDefs: TFPList; // of TvEntityWithPenAndBrush;
     // debug symbols
     FPathNumber: Integer;
     function ReadSVGColor(AValue: string): TFPColor;
@@ -937,17 +937,71 @@ var
   lEntityName: DOMString;
   lBlock: TvBlock;
   lPreviousLayer: TvEntityWithSubEntities;
-  lNodeName: DOMString;
+  lAttrName, lAttrValue, lNodeName: DOMString;
   lLayerName: String;
   i: Integer;
-  lCurNode: TDOMNode;
+  lCurNode, lCurSubNode: TDOMNode;
+  lBrushEntity: TvEntityWithPenAndBrush;
 begin
   lCurNode := ANode.FirstChild;
   while Assigned(lCurNode) do
   begin
     lEntityName := LowerCase(lCurNode.NodeName);
     case lEntityName of
-      //'RadialGradient':
+      'RadialGradient':
+      begin
+        lBrushEntity := TvEntityWithPenAndBrush.Create;
+        lBrushEntity.Brush.Kind := bkRadialGradient;
+
+        // <radialGradient id="grad1" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+        for i := 0 to lCurNode.Attributes.Length - 1 do
+        begin
+          lAttrName := lCurNode.Attributes.Item[i].NodeName;
+          lAttrValue := lCurNode.Attributes.Item[i].NodeValue;
+          if lAttrName = 'id' then
+          begin
+            lBrushEntity.Name := lAttrValue;
+          end;
+          {else if lAttrName = 'cx' then
+          begin
+            lLayerName := lCurNode.Attributes.Item[i].NodeValue;
+            lBlock.Name := lLayerName;
+          end;
+          }
+        end;
+
+{        Gradient_cx, Gradient_cy, Gradient_r, Gradient_fx, Gradient_fy: Double;
+        Gradient_cx_Unit, Gradient_cy_Unit, Gradient_r_Unit, Gradient_fx_Unit, Gradient_fy_Unit: TvCoordinateUnit;
+        Gradient_colors: array of TFPColor;}
+
+        //  <stop offset="0%" style="stop-color:rgb(255,255,255); stop-opacity:0" />
+        //  <stop offset="100%" style="stop-color:rgb(0,0,255);stop-opacity:1" />
+        //</radialGradient>}
+        lCurSubNode := lCurNode.FirstChild;
+        while Assigned(lCurSubNode) do
+        begin
+          {lNodeName := LowerCase(lCurSubNode.NodeName);
+
+          for i := 0 to lCurSubNode.Attributes.Length - 1 do
+          begin
+            lAttrName := lCurSubNode.Attributes.Item[i].NodeName;
+            lAttrValue := lCurSubNode.Attributes.Item[i].NodeValue;
+            if lAttrName = 'offset' then
+            begin
+              //lOffset := lAttrName;
+            end;
+            else if lAttrName = 'cx' then
+            begin
+              lLayerName := lCurNode.Attributes.Item[i].NodeValue;
+              lBlock.Name := lLayerName;
+            end;
+          end;}
+
+          lCurSubNode := lCurSubNode.NextSibling;
+        end;
+
+        FBrushDefs.Add(lBrushEntity);
+      end;
       // Sometime entities are also put in the defs
       'circle', 'ellipse', 'g', 'line', 'path',
       'polygon', 'polyline', 'rect', 'text', 'use':
@@ -957,8 +1011,8 @@ begin
         // pre-load attribute reader, to get the block name
         for i := 0 to lCurNode.Attributes.Length - 1 do
         begin
-          lNodeName := lCurNode.Attributes.Item[i].NodeName;
-          if lNodeName = 'id' then
+          lAttrName := lCurNode.Attributes.Item[i].NodeName;
+          if lAttrName = 'id' then
           begin
             lLayerName := lCurNode.Attributes.Item[i].NodeValue;
             lBlock.Name := lLayerName;
@@ -1937,16 +1991,14 @@ begin
   FSVGPathTokenizer := TSVGPathTokenizer.Create;
   FLayerStylesKeys := TFPList.Create;
   FLayerStylesValues := TFPList.Create;
-
-  DefsBrushes := TFPList.Create;
+  FBrushDefs := TFPList.Create;
 end;
 
 destructor TvSVGVectorialReader.Destroy;
 begin
-  DefsBrushes.Free;
-
   FLayerStylesKeys.Free;
   FLayerStylesValues.Free;
+  FBrushDefs.Free;
   FSVGPathTokenizer.Free;
 
   inherited Destroy;

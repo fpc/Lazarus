@@ -103,8 +103,8 @@ type
   TvBrush = record
     Color: TFPColor;
     Style: TFPBrushStyle;
-    // Gradient filling support
     Kind: TvBrushKind;
+    // Gradient filling support
     Gradient_cx, Gradient_cy, Gradient_r, Gradient_fx, Gradient_fy: Double;
     Gradient_cx_Unit, Gradient_cy_Unit, Gradient_r_Unit, Gradient_fx_Unit, Gradient_fy_Unit: TvCoordinateUnit;
     Gradient_colors: array of TFPColor;
