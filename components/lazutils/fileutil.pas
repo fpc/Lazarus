@@ -47,7 +47,7 @@ unit FileUtil;
 interface
 
 uses
-  Classes, SysUtils, Masks, LazUtilsStrConsts, LazUTF8, LazFileUtils;
+  Classes, SysUtils, Masks, LazUTF8, LazFileUtils;
   
 {$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}
