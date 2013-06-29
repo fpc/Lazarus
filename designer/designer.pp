@@ -1543,7 +1543,7 @@ end;
 
 function TDesigner.HandleSetCursor(var TheMessage: TLMessage): boolean;
 begin
-  Result := Lo(TheMessage.LParam) = HTCLIENT;
+  Result := Lo(DWord(TheMessage.LParam)) = HTCLIENT;
   if Result then
   begin
     SetTempCursor(Form, LastFormCursor);
