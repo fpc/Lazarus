@@ -661,15 +661,58 @@ end;
 
 procedure TPkgGraphExplorerDlg.ShowPath(PathList: TFPList);
 // PathList is a list of TLazPackage and TPkgDependency
+
+  procedure SelectChild(var Node: TTreeNode; const NodeText: string);
+  var
+    i: Integer;
+    CurNode: TTreeNode;
+  begin
+    if Node=nil then begin
+      for i:=0 to PkgTreeView.Items.TopLvlCount-1 do begin
+        CurNode:=PkgTreeView.Items.TopLvlItems[i];
+        if SysUtils.CompareText(CurNode.Text,NodeText)=0 then begin
+          Node:=CurNode;
+          exit;
+        end;
+      end;
+    end
+    else begin
+      Node.Expanded:=true;
+      for i:=0 to Node.Count-1 do begin
+        if SysUtils.CompareText(Node[i].Text,NodeText)=0 then begin
+          Node:=Node[i];
+          exit;
+        end;
+      end;
+    end;
+    Node:=nil;
+  end;
+
 var
   AnObject: TObject;
+  i: Integer;
+  CurNode, LastNode: TTreeNode;
 begin
   LvlGraphControl1.BeginUpdate;
-  if (PathList.Count>0) then begin
-    AnObject:=TObject(PathList[PathList.Count-1]);
-    if AnObject is TLazPackage then
-      SelectPackage(TLazPackage(AnObject));
+  PkgTreeView.BeginUpdate;
+
+  CurNode:=nil;
+  LastNode:=nil;
+  for i:=0 to PathList.Count-1 do begin
+    AnObject:=TObject(PathList[i]);
+    LastNode:=CurNode;
+    if AnObject is TLazPackage then begin
+      SelectChild(CurNode,TLazPackage(AnObject).IDAsString);
+    end else if AnObject is TPkgDependency then begin
+      SelectChild(CurNode,TPkgDependency(AnObject).AsString);
+    end else
+      break;
+    if CurNode=nil then break;
   end;
+  if CurNode<>nil then Lastnode:=CurNode;
+  PkgTreeView.Selected:=LastNode;
+
+  PkgTreeView.EndUpdate;
   LvlGraphControl1.EndUpdate;
 end;
 
