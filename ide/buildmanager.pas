@@ -533,52 +533,27 @@ var
       Result := ExtractFileNameWithoutExt(Result) + '.app';
     end;
   end;
-
-  function ListToString(AList : TStringList) : String;
-  Var
-    I : Integer;
-  Begin
-    Result := '';
-    For I := 0 To AList.Count - 1 Do
-      If I < AList.Count - 1 Then
-        Result := Result + AList[I] + ' '
-      Else
-        Result := Result + AList[I];
-  end;
-
-Var
-  AStrList : TStringList;
-  AStr : String;
+  
 begin
-  AStrList := TStringList.Create;
-  AStr := '';
-
+  Result := '';
   if Project1=nil then exit;
+  if Project1.RunParameterOptions.UseLaunchingApplication then
+    Result := Project1.RunParameterOptions.LaunchingApplicationPathPlusParams;
 
-  if Project1.RunParameterOptions.UseLaunchingApplication then Begin
-    AStrList.Text := Project1.RunParameterOptions.LaunchingApplicationPathPlusParams;
-    AStr := ListToString(AStrList);
-  end;
-
-  if AStr=''
+  if Result=''
   then begin
-    AStrList.Text := Project1.RunParameterOptions.CmdLineParams;
-    AStr:= ListToString(AStrList);
-    if GlobalMacroList.SubstituteStr(AStr) then begin
+    Result:=Project1.RunParameterOptions.CmdLineParams;
+    if GlobalMacroList.SubstituteStr(Result) then begin
       TargetFileName:='"'+GetTargetFilename+'"';
-      if AStr='' then
-        AStr:=TargetFileName
+      if Result='' then
+        Result:=TargetFileName
       else
-        AStr:=TargetFilename+' '+AStr;
+        Result:=TargetFilename+' '+Result;
     end else
-      AStr:='';
+      Result:='';
   end else begin
-    if not GlobalMacroList.SubstituteStr(AStr) then AStr:='';
+    if not GlobalMacroList.SubstituteStr(Result) then Result:='';
   end;
-
-  Result := AStr;
-
-  FreeAndNil(AStrList);
 end;
 
 function TBuildManager.GetProjectPublishDir: string;

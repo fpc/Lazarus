@@ -69,32 +69,29 @@ type
   
   
   { THistoryList - a TStringList to store a history list }
-  THistoryListClass = class of THistoryList;
+  
   THistoryList = class(TStringList)
   private
+    FListType: TRecentListType;
     FMaxCount: integer;
     FName: string;
     procedure SetMaxCount(const AValue: integer);
     procedure SetName(const AValue: string);
-  protected
-    FListType: TRecentListType;
-    procedure AssignValues(Source : TPersistent);virtual;
   public
-    constructor Create(TheListType: TRecentListType);virtual;
+    constructor Create(TheListType: TRecentListType);
     destructor Destroy;  override;
     function Push(const Entry: string): integer;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);virtual;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);virtual;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure AppendEntry(const Entry: string);
     function IndexOf(const S: string): Integer; override;
-    class function CreateMe(ATheListType : TRecentListType; AName : String) : THistoryList;virtual;
-    procedure Assign(Source: TPersistent); override;
   public
     property Name: string read FName write SetName;
     property MaxCount: integer read FMaxCount write SetMaxCount;
     property ListType: TRecentListType read FListType;
   end;
-
+  
+  
   { THistoryLists - list of THistoryList }
   
   THistoryLists = class
@@ -113,8 +110,6 @@ type
     function GetList(const Name: string;
       CreateIfNotExists: boolean; ListType: TRecentListType): THistoryList;
     procedure Add(const ListName, Entry: string; ListType: TRecentListType);
-    class procedure RegisterHistoryListClass(AHistoryListClass : THistoryListClass; AHistoryListName : String);
-    class function GetHistoryListClass(AHistoryListName : String) : THistoryListClass;
     property Items[Index: integer]: THistoryList read GetItems;
   end;
   
@@ -775,16 +770,6 @@ end;
 
 { THistoryList }
 
-class function THistoryList.CreateMe(ATheListType : TRecentListType; AName : String) : THistoryList;
-Var
-  AHistoryList : THistoryList;
-begin
-  AHistoryList := THistoryList.Create(ATheListType);
-  AHistoryList.Name:= AName;
-
-  Result := AHistoryList;
-end;
-
 procedure THistoryList.SetMaxCount(const AValue: integer);
 begin
   if FMaxCount=AValue then exit;
@@ -806,25 +791,6 @@ end;
 destructor THistoryList.Destroy;
 begin
   inherited Destroy;
-end;
-
-procedure THistoryList.Assign(Source: TPersistent);
-begin
-  inherited;
-  If Source is THistoryList Then Begin
-    Self.FMaxCount := THistoryList(Source).FMaxCount;
-    Self.FName := THistoryList(Source).FName;
-    Self.FListType := THistoryList(Source).FListType;
-  end;
-end;
-
-procedure THistoryList.AssignValues(Source : TPersistent);
-Begin
-  If Source is THistoryList Then Begin
-    Self.FMaxCount := THistoryList(Source).FMaxCount;
-    Self.FName := THistoryList(Source).FName;
-    Self.FListType := THistoryList(Source).FListType;
-  end;
 end;
 
 function THistoryList.Push(const Entry: string): integer;
@@ -869,26 +835,6 @@ begin
 end;
 
 { THistoryLists }
-
-Var
-  AHistoryListClasses : TStringToPointerTree = NIL;
-
-class procedure THistoryLists.RegisterHistoryListClass(AHistoryListClass : THistoryListClass; AHistoryListName : String);
-Var
-  BHistoryListClass : Pointer;
-Begin
-  If Not AHistoryListClasses.GetData(AHistoryListName, BHistoryListClass) Then
-    AHistoryListClasses.Values[AHistoryListName] := AHistoryListClass;
-end;
-
-class function THistoryLists.GetHistoryListClass(AHistoryListName : String) : THistoryListClass;
-Var
-  BHistoryListClass : Pointer;
-Begin
-  Result := NIL;
-  If AHistoryListClasses.GetData(AHistoryListName, BHistoryListClass) Then
-    Result := THistoryListClass(BHistoryListClass);
-end;
 
 function THistoryLists.GetItems(Index: integer): THistoryList;
 begin
@@ -968,16 +914,13 @@ function THistoryLists.GetList(const Name: string; CreateIfNotExists: boolean;
   ListType: TRecentListType): THistoryList;
 var
   i: integer;
-  AClass : THistoryListClass;
 begin
   i:=IndexOfName(Name);
   if i>=0 then
     Result:=Items[i]
   else if CreateIfNotExists then begin
-    AClass := Self.GetHistoryListClass(Name);
-    If AClass = NIL Then
-      AClass := THistoryList;
-    Result:= AClass.CreateMe(ListType, Name);
+    Result:=THistoryList.Create(ListType);
+    Result.Name:=Name;
     FItems.Add(Result);
   end else
     Result:=nil;
@@ -1283,10 +1226,6 @@ end;
 
 initialization
   InputHistories:= nil;
-  AHistoryListClasses := TStringToPointerTree.Create(True);
-
-finalization
-  FreeAndNil(AHistoryListClasses);
 
 
 end.

@@ -50,17 +50,16 @@ uses
   Classes, SysUtils, LCLProc, Controls, Forms, Buttons, StdCtrls, ComCtrls,
   Dialogs, ExtCtrls, BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs,
   IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, FileUtil,
-  Laz2_XMLCfg, ButtonPanel, AdvHistoryList;
+  Laz2_XMLCfg, ButtonPanel;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old
     files and are able to convert them.
 }
 const
-  RunParamsOptionsVersion = 2;
+  RunParamsOptionsVersion = '1';
 
 type
-
   {
     the storage object for run parameters
   }
@@ -68,9 +67,6 @@ type
   { TRunParamsOptions }
 
   TRunParamsOptions = class(TAbstractRunParamsOptions)
-  private
-    FCmdLineParamsHistoryList,
-    FLaunchingApplicationHistoryList : TAdvHistoryList;
   public
     constructor Create;
     destructor Destroy; override;
@@ -80,8 +76,6 @@ type
     function Save(XMLConfig: TXMLConfig; const Path: string;
       UsePathDelim: TPathDelimSwitch): TModalResult;
     procedure AssignEnvironmentTo(Strings: TStrings); override;
-    property CmdLineParamsHistoryList : TAdvHistoryList read FCmdLineParamsHistoryList;
-    property LaunchingApplicationHistoryList : TAdvHistoryList read FLaunchingApplicationHistoryList;
   end;
 
   {
@@ -93,8 +87,6 @@ type
   TRunParamsOptsDlg = class(TForm)
     ButtonPanel: TButtonPanel;
     CmdLineParametersComboBox: TComboBox;
-    CmdLineParametersMemo: TMemo;
-    UseLaunchingApplicationMemo: TMemo;
     UseDisplayCheckBox: TCheckBox;
     DisplayEdit: TEdit;
     DisplayGroupBox: TGroupBox;
@@ -119,14 +111,10 @@ type
     Notebook: TPageControl;
     GeneralPage: TTabSheet;
     EnvVarsPage: TTabSheet;
-    procedure CmdLineParametersComboBoxSelect(Sender: TObject);
-    procedure CmdLineParametersMemoChange(Sender: TObject);
     procedure EnvVarsPageResize(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure HostApplicationBrowseBtnClick(Sender: TObject);
-    procedure UseLaunchingApplicationComboBoxSelect(Sender: TObject);
-    procedure UseLaunchingApplicationMemoChange(Sender: TObject);
     procedure WorkingDirectoryBtnClick(Sender: TObject);
     procedure UserOverridesAddButtonClick(Sender: TObject);
     procedure UserOverridesEditButtonClick(Sender: TObject);
@@ -142,7 +130,7 @@ type
     procedure FillUserOverridesListView;
     procedure SaveToOptions;
     procedure SaveUserOverrides;
-    procedure SetComboBoxText(AComboBox: TComboBox; AText: string);
+    procedure SetComboBoxText(AComboBox: TComboBox; AText: ansistring);
   public
     constructor Create(AnOwner: TComponent); override;
     property Options: TRunParamsOptions Read fOptions Write SetOptions;
@@ -227,23 +215,15 @@ end;
 constructor TRunParamsOptions.Create;
 begin
   inherited Create;
-
   fUserOverrides := TStringList.Create;
-
-  FCmdLineParamsHistoryList := TAdvHistoryList(TAdvHistoryList.CreateMe(rltCaseSensitive, hlCmdLineParamsHistoryList));
-  FLaunchingApplicationHistoryList := TAdvHistoryList(TAdvHistoryList.CreateMe(rltCaseSensitive, hlLaunchingApplicationHistoryList));
-
   Clear;
 end;
 
 destructor TRunParamsOptions.Destroy;
 begin
   fUserOverrides.Free;
-  FreeAndNil(FCmdLineParamsHistoryList);
-  FreeAndNil(FLaunchingApplicationHistoryList);
   inherited Destroy;
 end;
-
 
 procedure TRunParamsOptions.Clear;
 begin
@@ -260,9 +240,6 @@ begin
   // environment options
   fUserOverrides.Clear;
   fIncludeSystemVariables := False;
-
-  FCmdLineParamsHistoryList.Clear;
-  FLaunchingApplicationHistoryList.Clear;
 end;
 
 function TRunParamsOptions.Load(XMLConfig: TXMLConfig; const Path: string;
@@ -286,52 +263,20 @@ function TRunParamsOptions.Load(XMLConfig: TXMLConfig; const Path: string;
     end;
   end;
 
-Var
-  ARunParamsOptionsVersion : Integer;
 begin
-  // get format version to distinguish old formats
-  ARunParamsOptionsVersion := XMLConfig.GetValue(Path + 'RunParams/local/FormatVersion/Value',
-    RunParamsOptionsVersion);
-
   // local options
   fHostApplicationFilename := f(XMLConfig.GetValue(
     Path + 'RunParams/local/HostApplicationFilename/Value',
     fHostApplicationFilename));
-
+  fCmdLineParams := f(XMLConfig.GetValue(
+    Path + 'RunParams/local/CommandLineParams/Value', fCmdLineParams));
   fUseLaunchingApplication := XMLConfig.GetValue(
     Path + 'RunParams/local/LaunchingApplication/Use', fUseLaunchingApplication);
-
-  Case ARunParamsOptionsVersion Of
-    1 : Begin
-          fCmdLineParams := f(XMLConfig.GetValue(
-          Path + 'RunParams/local/CommandLineParams/Value', fCmdLineParams));
-
-          CmdLineParamsHistoryList.Values['Old value'] := fCmdLineParams;
-          CmdLineParamsHistoryList.Selected := 'Old value';
-
-          fLaunchingApplicationPathPlusParams :=
-            f(XMLConfig.GetValue(Path + 'RunParams/local/LaunchingApplication/PathPlusParams',
-                                 f(GetDefaultLaunchingApplicationPathPlusParams)));
-
-          LaunchingApplicationHistoryList.Values['Old value'] := fLaunchingApplicationPathPlusParams;
-          LaunchingApplicationHistoryList.Selected := 'Old value';
-        End;
-    2 : begin
-          FCmdLineParamsHistoryList.AdvLoadFromXMLConfig(XMLConfig, Path + 'RunParams/local/CommandLineParamsList');
-          If FCmdLineParamsHistoryList.Selected <> '' Then
-            fCmdLineParams := f(FCmdLineParamsHistoryList.Values[FCmdLineParamsHistoryList.Selected]);
-          FLaunchingApplicationHistoryList.AdvLoadFromXMLConfig(XMLConfig, Path + 'RunParams/local/LaunchingApplication/PathPlusParams/List');
-          if FLaunchingApplicationHistoryList.Selected <> '' Then
-            fLaunchingApplicationPathPlusParams := f(FLaunchingApplicationHistoryList.Values[FLaunchingApplicationHistoryList.Selected])
-          else
-            fLaunchingApplicationPathPlusParams := f(GetDefaultLaunchingApplicationPathPlusParams);
-        end;
-  end;
-
-
+  fLaunchingApplicationPathPlusParams :=
+    f(XMLConfig.GetValue(Path + 'RunParams/local/LaunchingApplication/PathPlusParams',
+                         f(GetDefaultLaunchingApplicationPathPlusParams)));
   fWorkingDirectory := f(XMLConfig.GetValue(
     Path + 'RunParams/local/WorkingDirectory/Value', fWorkingDirectory));
-
   fUseDisplay := XMLConfig.GetValue(Path + 'RunParams/local/Display/Use',
     fUseDisplay);
   fDisplay    := XMLConfig.GetValue(Path + 'RunParams/local/Display/Value', fDisplay);
@@ -367,8 +312,6 @@ function TRunParamsOptions.Save(XMLConfig: TXMLConfig; const Path: string;
     end;
   end;
 
-Var
-  APrevValue : String;
 begin
   // save a format version to distinguish old formats
   XMLConfig.SetValue(Path + 'RunParams/local/FormatVersion/Value',
@@ -377,26 +320,12 @@ begin
   // local options
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/HostApplicationFilename/Value',
     f(fHostApplicationFilename), '');
-
-  APrevValue := fCmdLineParams;
-  fCmdLineParams := '';
-
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/CommandLineParams/Value',
     f(fCmdLineParams), '');
-
-  fCmdLineParams := APrevValue;
-
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/LaunchingApplication/Use',
     fUseLaunchingApplication, False);
-
-  APrevValue := fLaunchingApplicationPathPlusParams;
-  fLaunchingApplicationPathPlusParams := '';
-
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/LaunchingApplication/PathPlusParams',
-    f(fLaunchingApplicationPathPlusParams), '');
-
-  fLaunchingApplicationPathPlusParams := APrevValue;
-
+    f(fLaunchingApplicationPathPlusParams), f(GetDefaultLaunchingApplicationPathPlusParams));
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/WorkingDirectory/Value',
     f(fWorkingDirectory), '');
   XMLConfig.SetDeleteValue(Path + 'RunParams/local/Display/Use',
@@ -408,9 +337,6 @@ begin
   SaveUserOverrides(Path + 'RunParams/environment/UserOverrides/');
   XMLConfig.SetDeleteValue(Path + 'RunParams/environment/IncludeSystemVariables/Value',
     fIncludeSystemVariables, False);
-
-  CmdLineParamsHistoryList.AdvSaveToXMLConfig(XMLConfig, Path + 'RunParams/local/CommandLineParamsList');
-  LaunchingApplicationHistoryList.AdvSaveToXMLConfig(XMLConfig, Path + 'RunParams/local/LaunchingApplication/PathPlusParams/List');
 
   Result := mrOk;
 end;
@@ -473,9 +399,6 @@ begin
   DisplayGroupBox.Caption := dlgRunODisplay;
   UseDisplayCheckBox.Caption := dlgRunOUsedisplay;
   DisplayEdit.Parent := DisplayGroupBox;
-
-  CmdLineParametersComboBox.Text := '';
-  UseLaunchingApplicationComboBox.Text := '';
 end;
 
 procedure TRunParamsOptsDlg.SetupEnvironmentPage;
@@ -527,29 +450,6 @@ begin
   UserOverridesListView.Column[1].Width := UserOverridesListView.Column[0].Width;
 end;
 
-procedure TRunParamsOptsDlg.CmdLineParametersMemoChange(Sender: TObject);
-Var
-  AValue : String;
-begin
-  AValue := CmdLineParametersComboBox.Text;
-  If AValue = '' Then Begin
-    SetComboBoxText(CmdLineParametersComboBox, 'Default');
-    AValue := CmdLineParametersComboBox.Text;
-  end;
-  If AValue <> '' Then Begin
-    fOptions.CmdLineParamsHistoryList.Values[AValue] := CmdLineParametersMemo.Lines.Text;
-  end;
-end;
-
-procedure TRunParamsOptsDlg.CmdLineParametersComboBoxSelect(Sender: TObject);
-Var
-  AValue : String;
-begin
-  AValue := CmdLineParametersComboBox.Text;
-  If AValue <> '' Then
-    CmdLineParametersMemo.Lines.Text := Foptions.CmdLineParamsHistoryList.Values[AValue];
-end;
-
 procedure TRunParamsOptsDlg.HelpButtonClick(Sender: TObject);
 begin
   LazarusHelp.ShowHelpForIDEControl(Self);
@@ -579,29 +479,6 @@ begin
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   end;
-end;
-
-procedure TRunParamsOptsDlg.UseLaunchingApplicationComboBoxSelect(
-  Sender: TObject);
-Var
-  AValue : String;
-begin
-  AValue := UseLaunchingApplicationComboBox.Text;
-  If AValue <> '' Then
-    UseLaunchingApplicationMemo.Text := Foptions.LaunchingApplicationHistoryList.Values[AValue];
-end;
-
-procedure TRunParamsOptsDlg.UseLaunchingApplicationMemoChange(Sender: TObject);
-Var
-  AValue : String;
-begin
-  AValue := UseLaunchingApplicationComboBox.Text;
-  If AValue = '' Then Begin
-    SetComboBoxText(UseLaunchingApplicationComboBox, 'Default');
-    AValue := UseLaunchingApplicationComboBox.Text;
-  end;
-  If AValue <> '' Then
-    fOptions.LaunchingApplicationHistoryList.Values[AValue] := UseLaunchingApplicationMemo.Lines.Text;
 end;
 
 procedure TRunParamsOptsDlg.WorkingDirectoryBtnClick(Sender: TObject);
@@ -683,36 +560,14 @@ procedure TRunParamsOptsDlg.SaveToOptions;
     InputHistories.HistoryLists.GetList(History,true,ListType).Assign(AComboBox.Items);
   end;
 
-  procedure SaveHistoryList(AHistoryList : THistoryList; History : String; ListType : TRecentListType);
-  begin
-    InputHistories.HistoryLists.GetList(History,true,ListType).Assign(AHistoryList);
-  end;
-
-  procedure SaveAdvHistoryList(AComboBox : TComboBox; AHistoryList : TAdvHistoryList; AMemo : TMemo);
-  Var
-    AValue : String;
-  begin
-    AValue := AComboBox.Text;
-    If (AValue = '') And (AMemo.Lines.Text <> '') Then
-      AValue := 'Default';
-    If AValue <> '' Then Begin
-      AHistoryList.Values[AValue] := AMemo.Lines.Text;
-      AHistoryList.Selected := AValue;
-    end;
-  end;
-
 begin
   // local
   fOptions.HostApplicationFilename := Trim(HostApplicationEdit.Text);
-
-  fOptions.CmdLineParams := Trim(CmdLineParametersMemo.Lines.Text);
-
+  fOptions.CmdLineParams := Trim(CmdLineParametersComboBox.Text);
   fOptions.UseLaunchingApplication := UseLaunchingApplicationCheckBox.Checked;
   fOptions.LaunchingApplicationPathPlusParams :=
-                                     Trim(UseLaunchingApplicationMemo.Lines.Text);
-
+                                     Trim(UseLaunchingApplicationComboBox.Text);
   fOptions.WorkingDirectory := Trim(WorkingDirectoryComboBox.Text);
-
   fOptions.UseDisplay := UseDisplayCheckBox.Checked;
   fOptions.Display    := Trim(DisplayEdit.Text);
   
@@ -720,16 +575,10 @@ begin
   SaveComboHistory(WorkingDirectoryComboBox,hlWorkingDirectory,rltFile);
 
   // history list: UseLaunchingApplicationComboBox
-  //SaveComboHistory(UseLaunchingApplicationComboBox,hlLaunchingApplication,rltFile);
-
-  SaveAdvHistoryList(CmdLineParametersComboBox, fOptions.CmdLineParamsHistoryList, CmdLineParametersMemo);
-  SaveAdvHistoryList(UseLaunchingApplicationComboBox, fOptions.LaunchingApplicationHistoryList, UseLaunchingApplicationMemo);
-
-  SaveHistoryList(fOptions.CmdLineParamsHistoryList, hlCmdLineParamsHistoryList, rltCaseSensitive);
-  SaveHistoryList(fOptions.LaunchingApplicationHistoryList, hlLaunchingApplicationHistoryList, rltCaseSensitive);
+  SaveComboHistory(UseLaunchingApplicationComboBox,hlLaunchingApplication,rltFile);
 
   // history list: CmdLineParametersComboBox
-  //SaveComboHistory(CmdLineParametersComboBox,hlCmdLineParameters,rltCaseSensitive);
+  SaveComboHistory(CmdLineParametersComboBox,hlCmdLineParameters,rltCaseSensitive);
 
   // environment
   SaveUserOverrides;
@@ -749,7 +598,7 @@ begin
   end;
 end;
 
-procedure TRunParamsOptsDlg.SetComboBoxText(AComboBox: TComboBox; AText: string);
+procedure TRunParamsOptsDlg.SetComboBoxText(AComboBox: TComboBox; AText: ansistring);
 var
   a: integer;
 begin
@@ -758,10 +607,8 @@ begin
     AComboBox.ItemIndex := a
   else
   begin
-    If AText <> '' Then Begin
-      AComboBox.Items.Add(AText);
-      AComboBox.ItemIndex := AComboBox.Items.IndexOf(AText);
-    end;
+    AComboBox.Items.Add(AText);
+    AComboBox.ItemIndex := AComboBox.Items.IndexOf(AText);
   end;
 end;
 
@@ -769,9 +616,6 @@ procedure TRunParamsOptsDlg.SetOptions(NewOptions: TRunParamsOptions);
 var
   List: THistoryList;
   S: String;
-  I : Integer;
-  AValue : String;
-  AAdvHistoryList : TAdvHistoryList;
 begin
   fOptions := NewOptions;
 
@@ -786,9 +630,8 @@ begin
 
   // UseLaunchingApplicationComboBox
   UseLaunchingApplicationCheckBox.Checked := fOptions.UseLaunchingApplication;
-
   List := InputHistories.HistoryLists.GetList(hlLaunchingApplication,true,rltFile);
-
+  List.AppendEntry(fOptions.LaunchingApplicationPathPlusParams);
   S := FindTerminalInPath;
   if S <> '' then
     List.AppendEntry(S);
@@ -800,39 +643,14 @@ begin
   if S <> '' then
     List.AppendEntry(S);
   {$ENDIF}
-  For I := 0 To List.Count - 1 Do Begin
-    AValue := Format('Old value #%d', [I + 1]);
-    fOptions.LaunchingApplicationHistoryList.Values[AValue] := List[I];
-  end;
-
-  AAdvHistoryList := TAdvHistoryList(InputHistories.HistoryLists.GetList(hlLaunchingApplicationHistoryList,true,rltCaseSensitive));
-
-  If AAdvHistoryList.Count > 0 Then
-    fOptions.LaunchingApplicationHistoryList.AssignKeyValue(AAdvHistoryList);
-
-  fOptions.LaunchingApplicationHistoryList.SetComboBox(UseLaunchingApplicationComboBox);
-  SetComboBoxText(UseLaunchingApplicationComboBox, fOptions.LaunchingApplicationHistoryList.Selected);
-
-  UseLaunchingApplicationMemo.Lines.Text:= fOptions.LaunchingApplicationHistoryList.Values[fOptions.FLaunchingApplicationHistoryList.Selected];
+  UseLaunchingApplicationComboBox.Items.Assign(List);
+  UseLaunchingApplicationComboBox.Text:=fOptions.LaunchingApplicationPathPlusParams;
 
   // CmdLineParametersComboBox
   List:=InputHistories.HistoryLists.GetList(hlCmdLineParameters,true,rltCaseSensitive);
-
-  For I := 0 To List.Count - 1 Do Begin
-    AValue := Format('Old value #%d', [I + 1]);
-    fOptions.CmdLineParamsHistoryList.Values[AValue] := List[I];
-  end;
-
-  AAdvHistoryList := TAdvHistoryList(InputHistories.HistoryLists.GetList(hlCmdLineParamsHistoryList,true,rltCaseSensitive));
-
-  If AAdvHistoryList.Count > 0 Then
-    fOptions.CmdLineParamsHistoryList.AssignKeyValue(AAdvHistoryList);
-
-  fOptions.CmdLineParamsHistoryList.SetComboBox(CmdLineParametersComboBox);
-  AValue := fOptions.CmdLineParamsHistoryList.Selected;
-  SetComboBoxText(CmdLineParametersComboBox, AValue);
-
-  CmdLineParametersMemo.Lines.Text := fOptions.CmdLineParamsHistoryList.Values[fOptions.CmdLineParamsHistoryList.Selected];
+  List.AppendEntry(fOptions.CmdLineParams);
+  CmdLineParametersComboBox.Items.Assign(List);
+  CmdLineParametersComboBox.Text := fOptions.CmdLineParams;
 
   UseDisplayCheckBox.Checked := fOptions.UseDisplay;
   DisplayEdit.Text := fOptions.Display;
