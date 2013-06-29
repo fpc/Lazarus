@@ -1,18 +1,18 @@
 object RunParamsOptsDlg: TRunParamsOptsDlg
-  Left = 443
-  Height = 501
-  Top = 176
-  Width = 500
+  Left = 411
+  Height = 597
+  Top = 122
+  Width = 496
   Caption = 'RunParamsOptsDlg'
-  ClientHeight = 501
-  ClientWidth = 500
+  ClientHeight = 597
+  ClientWidth = 496
   Position = poScreenCenter
   LCLVersion = '1.1'
   object Notebook: TPageControl
     Left = 0
-    Height = 456
+    Height = 552
     Top = 0
-    Width = 500
+    Width = 496
     ActivePage = GeneralPage
     Align = alClient
     BorderSpacing.Bottom = 6
@@ -20,110 +20,152 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
     TabOrder = 0
     object GeneralPage: TTabSheet
       Caption = 'GeneralPage'
-      ClientHeight = 423
-      ClientWidth = 496
+      ClientHeight = 527
+      ClientWidth = 492
       object DisplayGroupBox: TGroupBox
+        AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 86
-        Top = 234
-        Width = 484
+        Height = 71
+        Top = 374
+        Width = 480
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'DisplayGroupBox'
-        ClientHeight = 65
+        ClientHeight = 52
         ClientWidth = 476
         TabOrder = 3
         object DisplayEdit: TEdit
           Left = 6
           Height = 25
-          Top = 34
+          Top = 27
           Width = 464
           Align = alTop
-          BorderSpacing.Around = 6
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 3
+          BorderSpacing.Right = 6
           TabOrder = 1
           Text = 'DisplayEdit'
         end
         object UseDisplayCheckBox: TCheckBox
           Left = 6
-          Height = 22
-          Top = 6
+          Height = 21
+          Top = 3
           Width = 464
           Align = alTop
           BorderSpacing.Left = 6
-          BorderSpacing.Top = 6
+          BorderSpacing.Top = 3
           BorderSpacing.Right = 6
-          BorderSpacing.Bottom = 6
           Caption = 'UseDisplayCheckBox'
           TabOrder = 0
         end
       end
       object CmdLineParametersGroupBox: TGroupBox
+        AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 62
-        Top = 70
-        Width = 484
+        Height = 135
+        Top = 68
+        Width = 480
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'CmdLineParametersGroupBox'
-        ClientHeight = 41
+        ClientHeight = 116
         ClientWidth = 476
         TabOrder = 1
         object CmdLineParametersComboBox: TComboBox
           Left = 6
-          Height = 29
-          Top = 6
+          Height = 25
+          Top = 3
           Width = 464
           Align = alTop
-          BorderSpacing.Around = 6
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 3
+          BorderSpacing.Right = 6
           ItemHeight = 0
+          OnSelect = CmdLineParametersComboBoxSelect
           TabOrder = 0
           Text = 'CmdLineParametersComboBox'
         end
+        object CmdLineParametersMemo: TMemo
+          AnchorSideTop.Control = CmdLineParametersComboBox
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 82
+          Top = 31
+          Width = 464
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 3
+          BorderSpacing.Bottom = 3
+          OnChange = CmdLineParametersMemoChange
+          ScrollBars = ssAutoBoth
+          TabOrder = 1
+          WordWrap = False
+        end
       end
       object UseLaunchingApplicationGroupBox: TGroupBox
+        AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 90
-        Top = 138
-        Width = 484
+        Height = 159
+        Top = 209
+        Width = 480
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'UseLaunchingApplicationGroupBox'
-        ClientHeight = 69
+        ClientHeight = 140
         ClientWidth = 476
         TabOrder = 2
         object UseLaunchingApplicationCheckBox: TCheckBox
           Left = 6
-          Height = 22
-          Top = 6
+          Height = 21
+          Top = 3
           Width = 464
           Align = alTop
           BorderSpacing.Left = 6
-          BorderSpacing.Top = 6
+          BorderSpacing.Top = 3
           BorderSpacing.Right = 6
-          BorderSpacing.Bottom = 6
           Caption = 'UseLaunchingApplicationCheckBox'
           TabOrder = 0
         end
         object UseLaunchingApplicationComboBox: TComboBox
+          AnchorSideTop.Control = UseLaunchingApplicationCheckBox
+          AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 29
-          Top = 34
+          Height = 25
+          Top = 27
           Width = 464
-          Align = alTop
-          BorderSpacing.Around = 6
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 3
+          BorderSpacing.Right = 6
           ItemHeight = 0
+          OnSelect = UseLaunchingApplicationComboBoxSelect
           TabOrder = 1
           Text = 'UseLaunchingApplicationComboBox'
         end
+        object UseLaunchingApplicationMemo: TMemo
+          AnchorSideTop.Control = UseLaunchingApplicationComboBox
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 82
+          Top = 55
+          Width = 464
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 3
+          BorderSpacing.Bottom = 3
+          OnChange = UseLaunchingApplicationMemoChange
+          ScrollBars = ssAutoBoth
+          TabOrder = 2
+          WordWrap = False
+        end
       end
       object HostApplicationGroupBox: TGroupBox
+        AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 58
+        Height = 56
         Top = 6
-        Width = 484
+        Width = 480
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
@@ -137,10 +179,10 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = HostApplicationEdit
           AnchorSideBottom.Side = asrBottom
-          Left = 288
+          Left = 292
           Height = 25
           Top = 6
-          Width = 182
+          Width = 178
           Anchors = [akTop, akRight, akBottom]
           AutoSize = True
           BorderSpacing.Left = 6
@@ -157,7 +199,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           Left = 6
           Height = 25
           Top = 6
-          Width = 276
+          Width = 280
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           TabOrder = 0
@@ -165,15 +207,16 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         end
       end
       object WorkingDirectoryGroupBox: TGroupBox
+        AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 62
-        Top = 326
-        Width = 484
+        Height = 50
+        Top = 451
+        Width = 480
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'WorkingDirectoryGroupBox'
-        ClientHeight = 41
+        ClientHeight = 31
         ClientWidth = 476
         TabOrder = 4
         object WorkingDirectoryBtn: TButton
@@ -182,10 +225,10 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = WorkingDirectoryComboBox
           AnchorSideBottom.Side = asrBottom
-          Left = 327
-          Height = 29
+          Left = 330
+          Height = 22
           Top = 6
-          Width = 143
+          Width = 140
           Anchors = [akTop, akRight, akBottom]
           AutoSize = True
           BorderSpacing.Top = 6
@@ -199,11 +242,14 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AnchorSideTop.Control = WorkingDirectoryGroupBox
           AnchorSideRight.Control = WorkingDirectoryBtn
           Left = 6
-          Height = 29
-          Top = 6
-          Width = 315
+          Height = 25
+          Top = 3
+          Width = 318
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Around = 6
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 3
+          BorderSpacing.Right = 6
+          BorderSpacing.Bottom = 3
           ItemHeight = 0
           TabOrder = 0
           Text = 'WorkingDirectoryComboBox'
@@ -212,16 +258,16 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
     end
     object EnvVarsPage: TTabSheet
       Caption = 'EnvVarsPage'
-      ClientHeight = 423
-      ClientWidth = 496
+      ClientHeight = 527
+      ClientWidth = 489
       OnResize = EnvVarsPageResize
       object IncludeSystemVariablesCheckBox: TCheckBox
         AnchorSideLeft.Control = EnvVarsPage
         AnchorSideBottom.Control = EnvVarsPage
         Left = 6
-        Height = 22
-        Top = 395
-        Width = 484
+        Height = 21
+        Top = 500
+        Width = 477
         Align = alBottom
         BorderSpacing.Around = 6
         Caption = 'IncludeSystemVariablesCheckBox'
@@ -235,14 +281,14 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = IncludeSystemVariablesCheckBox
         Left = 6
-        Height = 160
+        Height = 265
         Top = 229
-        Width = 484
+        Width = 477
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'UserOverridesGroupBox'
-        ClientHeight = 139
-        ClientWidth = 476
+        ClientHeight = 246
+        ClientWidth = 473
         TabOrder = 1
         object UserOverridesListView: TListView
           AnchorSideLeft.Control = UserOverridesGroupBox
@@ -250,12 +296,14 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AnchorSideRight.Control = UserOverridesGroupBox
           AnchorSideBottom.Control = UserOverridesAddButton
           Left = 6
-          Height = 93
-          Top = 6
-          Width = 464
+          Height = 205
+          Top = 3
+          Width = 461
           Align = alTop
           Anchors = [akTop, akLeft, akRight, akBottom]
-          BorderSpacing.Around = 6
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 3
+          BorderSpacing.Right = 6
           Columns = <          
             item
               AutoSize = True
@@ -277,9 +325,9 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AnchorSideBottom.Control = UserOverridesGroupBox
           AnchorSideBottom.Side = asrBottom
           Left = 6
-          Height = 28
-          Top = 105
-          Width = 173
+          Height = 26
+          Top = 214
+          Width = 168
           Anchors = [akLeft, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
@@ -292,10 +340,10 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AnchorSideLeft.Side = asrBottom
           AnchorSideBottom.Control = UserOverridesGroupBox
           AnchorSideBottom.Side = asrBottom
-          Left = 381
-          Height = 28
-          Top = 105
-          Width = 172
+          Left = 371
+          Height = 26
+          Top = 214
+          Width = 168
           Anchors = [akLeft, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
@@ -308,10 +356,10 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AnchorSideLeft.Side = asrBottom
           AnchorSideBottom.Control = UserOverridesGroupBox
           AnchorSideBottom.Side = asrBottom
-          Left = 185
-          Height = 28
-          Top = 105
-          Width = 190
+          Left = 180
+          Height = 26
+          Top = 214
+          Width = 185
           Anchors = [akLeft, akBottom]
           AutoSize = True
           BorderSpacing.Around = 6
@@ -325,13 +373,13 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         Left = 6
         Height = 217
         Top = 6
-        Width = 484
+        Width = 477
         Align = alTop
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
         Caption = 'SystemVariablesGroupBox'
-        ClientHeight = 196
-        ClientWidth = 476
+        ClientHeight = 198
+        ClientWidth = 473
         TabOrder = 0
         object SystemVariablesListView: TListView
           AnchorSideLeft.Control = SystemVariablesGroupBox
@@ -339,11 +387,13 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AnchorSideRight.Control = SystemVariablesGroupBox
           AnchorSideBottom.Control = SystemVariablesGroupBox
           Left = 6
-          Height = 184
-          Top = 6
-          Width = 464
+          Height = 195
+          Top = 3
+          Width = 461
           Align = alClient
-          BorderSpacing.Around = 6
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 3
+          BorderSpacing.Right = 6
           Columns = <          
             item
               AutoSize = True
@@ -366,8 +416,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 33
-    Top = 462
-    Width = 488
+    Top = 558
+    Width = 484
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = OkButtonClick
