@@ -1776,7 +1776,9 @@ begin
       Parsing:=true;
       try
         ParsedValue:=UnparsedValue;
-        GlobalMacroList.SubstituteStr(ParsedValue);
+        if not GlobalMacroList.SubstituteStr(ParsedValue) then begin
+          debugln(['TEnvironmentOptions.GetParsedValue failed for ',dbgs(o)]);
+        end;
         ParseStamp:=CompilerParseStamp;
 
         case o of

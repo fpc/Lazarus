@@ -312,7 +312,7 @@ begin
             if InUse>MaxUsePerMacro then begin
               // circle detected
               Handled:=true;
-              MacroStr:='<CIRCLE:'+MacroName+'>';
+              MacroStr:='<CYCLE:'+MacroName+'>';
               break;
             end;
           end;
