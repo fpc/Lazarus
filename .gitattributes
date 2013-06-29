@@ -4858,6 +4858,7 @@ ide/addprofiledialog.lfm svneol=native#text/plain
 ide/addprofiledialog.pas svneol=native#text/plain
 ide/addtoprojectdlg.lfm svneol=native#text/plain
 ide/addtoprojectdlg.pas svneol=native#text/pascal
+ide/advhistorylist.pas svneol=native#text/pascal
 ide/applicationbundle.pas svneol=native#text/plain
 ide/basebuildmanager.pas svneol=native#text/plain
 ide/basedebugmanager.pas svneol=native#text/pascal
