@@ -1080,6 +1080,8 @@ end;
 
 function TIDEHelpDatabases.GetBaseDirectoryForBasePathObject(
   BasePathObject: TObject): string;
+var
+  s: String;
 begin
   Result:='';
   DebugLn('TIDEHelpDatabases.GetBaseDirectoryForBasePathObject BasePathObject=',dbgsName(BasePathObject));
@@ -1091,8 +1093,11 @@ begin
     Result:=TProject(BasePathObject).ProjectDirectory
   else if BasePathObject is TLazPackage then
     Result:=TLazPackage(BasePathObject).Directory;
-  if Result<>'' then
-    IDEMacros.SubstituteMacros(Result);
+  if Result<>'' then begin
+    s:=Result;
+    if not IDEMacros.SubstituteMacros(Result) then
+      debugln(['TIDEHelpDatabases.GetBaseDirectoryForBasePathObject macros failed "',s,'"']);
+  end;
   Result:=AppendPathDelim(Result);
 end;
 

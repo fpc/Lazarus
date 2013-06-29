@@ -232,7 +232,8 @@ type
 
 procedure BMLazConfMacroFunction(var s: string);
 begin
-  GlobalMacroList.SubstituteStr(s);
+  if not GlobalMacroList.SubstituteStr(s) then
+    debugln(['BMLazConfMacroFunction failed "',s,'"']);
 end;
 
 function CompareUnitFiles(UnitFile1, UnitFile2: PUnitFile): integer;

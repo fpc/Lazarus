@@ -3147,7 +3147,8 @@ end;
 function TProject.GetTitle: string;
 begin
   Result:=Title;
-  MacroEngine.SubstituteStr(Result);
+  if not MacroEngine.SubstituteStr(Result) then
+    debugln(['TProject.GetTitle failed Title="',Title,'"']);
 end;
 
 function TProject.TitleIsDefault(Fuzzy: boolean): boolean;
@@ -5292,7 +5293,8 @@ end;
 function TProject.GetPOOutDirectory: string;
 begin
   Result:=POOutputDirectory;
-  IDEMacros.SubstituteMacros(Result);
+  if not IDEMacros.SubstituteMacros(Result) then
+    debugln(['TProject.GetPOOutDirectory failed POOutputDirectory="',POOutputDirectory,'"']);
   Result:=TrimFilename(Result);
   if not FilenameIsAbsolute(Result) then
     Result:=TrimFilename(AppendPathDelim(ProjectDirectory)+Result);
@@ -6178,10 +6180,16 @@ begin
   Result:=s;
   if LazProject=nil then exit;
   //debugln(['TProjectCompilerOptions.SubstituteProjectMacros s="',s,'"']);
-  if PlatformIndependent then
-    LazProject.MacroEngine.SubstituteStr(Result,CompilerOptionMacroPlatformIndependent)
-  else
-    LazProject.MacroEngine.SubstituteStr(Result,CompilerOptionMacroNormal);
+  if PlatformIndependent then begin
+    if not LazProject.MacroEngine.SubstituteStr(Result,CompilerOptionMacroPlatformIndependent)
+    then
+      debugln(['TProjectCompilerOptions.SubstituteProjectMacros failed: "',CompilerOptionMacroPlatformIndependent,'"']);
+  end
+  else begin
+    if not LazProject.MacroEngine.SubstituteStr(Result,CompilerOptionMacroNormal)
+    then
+      debugln(['TProjectCompilerOptions.SubstituteProjectMacros failed: "',CompilerOptionMacroNormal,'"']);
+  end;
 end;
 
 procedure TProjectCompilerOptions.Assign(Source: TPersistent);
