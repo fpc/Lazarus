@@ -11,6 +11,8 @@
  *****************************************************************************
 
   Useful routines for managing UTF-8 strings
+
+  - all functions are thread safe unless explicitely stated
 }
 unit LazUTF8;
 

@@ -1,13 +1,16 @@
-unit lazutf8classes;
+unit LazUTF8Classes;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, lazutf8;
+  Classes, SysUtils, LazUTF8;
 
 type
+
+  { TFileStreamUTF8 }
+
   TFileStreamUTF8 = class(THandleStream)
   private
     FFileName: utf8string;
@@ -17,6 +20,8 @@ type
     destructor Destroy; override;
     property FileName: utf8string Read FFilename;
   end;
+
+  { TStringListUTF8 }
 
   TStringListUTF8 = class(TStringList)
   protected

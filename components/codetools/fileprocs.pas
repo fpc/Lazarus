@@ -22,6 +22,7 @@
 
   Abstract:
     - simple file functions and fpc additions
+    - all functions are thread safe unless explicitely stated
 }
 unit FileProcs;
 
@@ -43,7 +44,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LazUTF8, LazDbgLog, LazFileCache, LazFileUtils,
-  lazutf8classes, LazLogger, AVL_Tree, CodeToolsStrConsts;
+  LazUTF8Classes, LazLogger, AVL_Tree, CodeToolsStrConsts;
 
 type
   TFPCStreamSeekType = int64;
@@ -326,7 +327,7 @@ type
 function CompareCTMemStat(Stat1, Stat2: TCTMemStat): integer;
 function CompareNameWithCTMemStat(KeyAnsiString: Pointer; Stat: TCTMemStat): integer;
 
-function GetTicks: int64;
+function GetTicks: int64; // not thread-safe
 
 type
   TCTStackTracePointers = array of Pointer;
@@ -341,7 +342,7 @@ function CTGetStackTrace(UseCache: boolean): string;
 procedure CTGetStackTracePointers(var AStack: TCTStackTracePointers);
 function CTStackTraceAsString(const AStack: TCTStackTracePointers;
                             UseCache: boolean): string;
-function CTGetLineInfo(Addr: Pointer; UseCache: boolean): string;
+function CTGetLineInfo(Addr: Pointer; UseCache: boolean): string; // not thread safe
 function CompareCTLineInfoCacheItems(Data1, Data2: Pointer): integer;
 function CompareAddrWithCTLineInfoCacheItem(Addr, Item: Pointer): integer;
 

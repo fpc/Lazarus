@@ -1,3 +1,6 @@
+{
+  All functions are thread safe unless explicitely stated
+}
 unit LazFileUtils;
 
 {$mode objfpc}{$H+}
@@ -5,8 +8,7 @@ unit LazFileUtils;
 interface
 
 uses
-  Classes, SysUtils, LazUTF8,
-  SysConst, LazUtilsStrConsts;
+  Classes, SysUtils, SysConst, LazUTF8, LazUtilsStrConsts;
 
 {$IFDEF Windows}
   {$define CaseInsensitiveFilenames}
