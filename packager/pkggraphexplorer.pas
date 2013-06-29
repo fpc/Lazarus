@@ -72,6 +72,8 @@ type
     procedure InfoMemoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure PkgTreeViewDblClick(Sender: TObject);
+    procedure PkgTreeViewExpanding(Sender: TObject; Node: TTreeNode;
+      var AllowExpansion: Boolean);
     procedure PkgTreeViewSelectionChanged(Sender: TObject);
     procedure UninstallMenuItemClick(Sender: TObject);
   private
@@ -93,6 +95,7 @@ type
     function GetPackageImageIndex(Pkg: TLazPackage): integer;
     function GetSelectedPackage: TLazPackage;
     function FindPackage(const NodeText: string): TLazPackage;
+    function PackageAsNodeText(Pkg: TLazPackage): string;
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
@@ -109,7 +112,7 @@ type
     procedure UpdatePackageID(Pkg: TLazPackage);
     procedure UpdatePackageAdded(Pkg: TLazPackage);
     procedure SelectPackage(Pkg: TLazPackage);
-    function FindViewNodeWithText(const s: string): TLvlGraphNode;
+    function FindLvlGraphNodeWithText(const s: string): TLvlGraphNode;
     procedure ShowPath(PathList: TFPList);
   public
     property OnOpenPackage: TOnOpenPackage read FOnOpenPackage write FOnOpenPackage;
@@ -248,6 +251,63 @@ begin
     OnOpenPackage(Self,Pkg);
 end;
 
+procedure TPkgGraphExplorerDlg.PkgTreeViewExpanding(Sender: TObject;
+  Node: TTreeNode; var AllowExpansion: Boolean);
+var
+  TV: TTreeView;
+  Pkg: TLazPackage;
+  Dependency: TPkgDependency;
+  i: Integer;
+  CycleNode: TTreeNode;
+  SubNode: TTreeNode;
+  ImgIndex: Integer;
+  NodeText: String;
+  ReqPkg: TLazPackage;
+begin
+  TV:=PkgTreeView;
+  Pkg:=FindPackage(Node.Text);
+  //debugln(['TPkgGraphExplorerDlg.PkgTreeViewExpanding ',Node.Text,' Pkg=',Pkg<>nil]);
+  if (Pkg=nil) or (Pkg.FirstRequiredDependency=nil) then begin
+    AllowExpansion:=false;
+    Node.HasChildren:=false;
+    exit;
+  end;
+  i:=0;
+  Dependency:=Pkg.FirstRequiredDependency;
+  while Dependency<>nil do begin
+    ReqPkg:=Dependency.RequiredPackage;
+    if ReqPkg<>nil then
+      NodeText:=PackageAsNodeText(ReqPkg)
+    else
+      NodeText:=Dependency.AsString;
+    if Node.Count=i then
+      SubNode:=TV.Items.AddChild(Node,NodeText)
+    else begin
+      SubNode:=Node[i];
+      SubNode.Text:=NodeText;
+    end;
+    if ReqPkg<>nil then begin
+      CycleNode:=Node;
+      while (CycleNode<>nil) and (CycleNode.Text<>NodeText) do
+        CycleNode:=CycleNode.Parent;
+      if CycleNode<>nil then
+        ImgIndex:=ImgIndexCyclePackage
+      else
+        ImgIndex:=GetPackageImageIndex(ReqPkg);
+      SubNode.HasChildren:=ReqPkg.FirstRequiredDependency<>nil;
+    end else begin
+      ImgIndex:=ImgIndexMissingPackage;
+      SubNode.HasChildren:=false;
+    end;
+    SubNode.ImageIndex:=ImgIndex;
+    SubNode.SelectedIndex:=ImgIndex;
+    inc(i);
+    Dependency:=Dependency.NextRequiresDependency;
+  end;
+  while Node.Count>i do
+    Node[Node.Count-1].Free;
+end;
+
 procedure TPkgGraphExplorerDlg.PkgTreeViewSelectionChanged(Sender: TObject);
 var
   TVNode: TTreeNode;
@@ -332,6 +392,11 @@ begin
   end;
 end;
 
+function TPkgGraphExplorerDlg.PackageAsNodeText(Pkg: TLazPackage): string;
+begin
+  Result:=Pkg.IDAsString;
+end;
+
 procedure TPkgGraphExplorerDlg.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
@@ -412,9 +477,9 @@ begin
     while HiddenNode<>nil do begin
       CurPkg:=TLazPackage(HiddenNode.Data);
       if ViewNode=nil then
-        ViewNode:=PkgTreeView.Items.Add(nil,CurPkg.IDAsString)
+        ViewNode:=PkgTreeView.Items.Add(nil,PackageAsNodeText(CurPkg))
       else
-        ViewNode.Text:=CurPkg.IDAsString;
+        ViewNode.Text:=PackageAsNodeText(CurPkg);
       ViewNode.HasChildren:=CurPkg.FirstRequiredDependency<>nil;
       ViewNode.Expanded:=false;
       ViewNode.ImageIndex:=GetPackageImageIndex(CurPkg);
@@ -445,7 +510,7 @@ procedure TPkgGraphExplorerDlg.UpdateLvlGraph;
     while Dependency<>nil do begin
       if Dependency.RequiredPackage<>nil then
         LvlGraphControl1.Graph.GetEdge(LGNode,
-          LvlGraphControl1.Graph.GetNode(Dependency.RequiredPackage.IDAsString,true),true);
+          LvlGraphControl1.Graph.GetNode(PackageAsNodeText(Dependency.RequiredPackage),true),true);
       Dependency:=Dependency.NextRequiresDependency;
     end;
   end;
@@ -455,7 +520,6 @@ var
   CurPkg: TLazPackage;
   Cnt: Integer;
   i: Integer;
-  PkgName: String;
   ViewNode: TLvlGraphNode;
   OldSelected: String;
   ProjectNode: TLvlGraphNode;
@@ -493,8 +557,7 @@ begin
     AVLNode:=fSortedPackages.FindLowest;
     while AVLNode<>nil do begin
       CurPkg:=TLazPackage(AVLNode.Data);
-      PkgName:=CurPkg.IDAsString;
-      ViewNode:=LvlGraphControl1.Graph.GetNode(PkgName,true);
+      ViewNode:=LvlGraphControl1.Graph.GetNode(PackageAsNodeText(CurPkg),true);
       ViewNode.ImageIndex:=GetPackageImageIndex(CurPkg);
       AVLNode:=fSortedPackages.FindSuccessor(AVLNode);
     end;
@@ -510,7 +573,7 @@ begin
     AVLNode:=fSortedPackages.FindLowest;
     while AVLNode<>nil do begin
       CurPkg:=TLazPackage(AVLNode.Data);
-      ViewNode:=LvlGraphControl1.Graph.GetNode(CurPkg.IDAsString,true);
+      ViewNode:=LvlGraphControl1.Graph.GetNode(PackageAsNodeText(CurPkg),true);
       AddEdges(ViewNode,CurPkg.FirstRequiredDependency);
       AVLNode:=fSortedPackages.FindSuccessor(AVLNode);
     end;
@@ -575,7 +638,7 @@ end;
 procedure TPkgGraphExplorerDlg.SelectPackage(Pkg: TLazPackage);
 begin
   if Pkg=nil then exit;
-  LvlGraphControl1.SelectedNode:=FindViewNodeWithText(Pkg.IDAsString);
+  LvlGraphControl1.SelectedNode:=FindLvlGraphNodeWithText(PackageAsNodeText(Pkg));
 end;
 
 procedure TPkgGraphExplorerDlg.OpenDependencyOwner(DependencyOwner: TObject);
@@ -589,7 +652,7 @@ begin
   end;
 end;
 
-function TPkgGraphExplorerDlg.FindViewNodeWithText(const s: string
+function TPkgGraphExplorerDlg.FindLvlGraphNodeWithText(const s: string
   ): TLvlGraphNode;
 begin
   Result:=LvlGraphControl1.Graph.GetNode(s,false);

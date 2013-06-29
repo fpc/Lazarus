@@ -71,6 +71,7 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
       ReadOnly = True
       TabOrder = 1
       OnDblClick = PkgTreeViewDblClick
+      OnExpanding = PkgTreeViewExpanding
       OnSelectionChanged = PkgTreeViewSelectionChanged
       Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
