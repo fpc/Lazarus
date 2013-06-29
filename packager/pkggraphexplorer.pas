@@ -320,6 +320,7 @@ begin
   FUpdatingSelection:=true;
   LvlGraphControl1.SelectedNode:=LGNode;
   FUpdatingSelection:=false;
+  UpdateInfo;
 end;
 
 procedure TPkgGraphExplorerDlg.UninstallMenuItemClick(Sender: TObject);
