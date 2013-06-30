@@ -38,7 +38,7 @@ uses
   // components
   SynHighlighterLFM, SynEdit, SynEditMiscClasses, LFMTrees,
   // codetools
-  BasicCodeTools, CodeCache, CodeToolManager, CodeToolsStructs,
+  BasicCodeTools, CodeCache, CodeToolManager, CodeToolsStructs, CodeCompletionTool,
   // IDE
   IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf, DialogProcs,
   CustomFormEditor, LazarusIDEStrConsts, IDEProcs, OutputFilter,
@@ -273,6 +273,16 @@ var
       Result:=AIdent;
   end;
 
+  procedure InitClassCompletion;
+  begin
+    with fCTLink.CodeTool do begin
+      CodeCompleteClassNode:=FindClassNodeInInterface(TLFMObjectNode(fLFMTree.Root).TypeName,
+                                                      true,false,true);
+      CodeCompleteSrcChgCache:=fCTLink.SrcCache;
+      //BuildTree(lsrImplementationStart);
+    end;
+  end;
+
 var
   CurError: TLFMError;
   TheNode: TLFMTreeNode;
@@ -284,9 +294,11 @@ var
   ChgEntryRepl: TObjectList;
   OldIdent, NewIdent: string;
   StartPos, EndPos: integer;
+  HasCodeChanges: Boolean;
 begin
   Result:=mrOK;
   AutoInc:=0;
+  HasCodeChanges:=False;
   ChgEntryRepl:=TObjectList.Create;
   PropReplacements:=TStringToStringTree.Create(false);
   TypeReplacements:=TStringToStringTree.Create(false);
@@ -298,8 +310,20 @@ begin
     CurError:=fLFMTree.LastError;
     while CurError<>nil do begin
       TheNode:=CurError.FindContextNode;
-      if (TheNode<>nil) and (TheNode.Parent<>nil) then begin
-        if IsMissingType(CurError) then begin
+      if (TheNode<>nil) and (TheNode.Parent<>nil) then
+      begin
+        if CurError.ErrorType=lfmeIdentifierMissingInCode then
+        begin
+          // Missing component variable
+          ObjNode:=CurError.Node as TLFMObjectNode;
+          if not HasCodeChanges then
+            InitClassCompletion;
+          fCTLink.CodeTool.AddClassInsertion(UpperCase(ObjNode.Name),
+              ObjNode.Name+':'+ObjNode.TypeName+';',ObjNode.Name, ncpPublishedVars);
+          HasCodeChanges:=True;
+        end
+        else if IsMissingType(CurError) then
+        begin
           // Object type
           ObjNode:=CurError.Node as TLFMObjectNode;
           OldIdent:=ObjNode.TypeName;
@@ -338,6 +362,9 @@ begin
     // Apply replacements to LFM.
     if not ApplyReplacements(ChgEntryRepl) then
       exit(mrCancel);
+    if HasCodeChanges then
+      if not fCTLink.CodeTool.ApplyClassCompletion(false) then
+        exit(mrCancel);
     // Apply replacement types also to pascal source.
     if TypeReplacements.Tree.Count>0 then
       if not CodeToolBoss.RetypeClassVariables(fPascalBuffer,
@@ -552,7 +579,8 @@ begin
   until (Result in [mrOK, mrAbort]) or (LoopCount>MaxLoopCount);
 
   // Fix top offsets of some components in visual containers
-  if (Result=mrOK) and (fSettings.CoordOffsMode=rsEnabled) then begin
+  if (Result=mrOK) and (fSettings.CoordOffsMode=rsEnabled) then
+  begin
     FormFileTool:=TFormFileConverter.Create(fCTLink, fLFMBuffer);
     SrcCoordOffs:=TObjectList.Create;
     SrcNewProps:=TObjectList.Create;

@@ -2269,17 +2269,16 @@ var
       end;
     end;
     if (not Result) and ErrorOnNotFound then begin
-      if (IdentContext.Node<>nil) and (not IsPublished) then begin
+      if (IdentContext.Node<>nil) and (not IsPublished) then
         LFMTree.AddError(lfmeIdentifierNotPublished,LFMNode,
                          'identifier '+IdentName+' is not published in class '
                          +'"'+ClassContext.Tool.ExtractClassName(ClassContext.Node,false,true)+'"',
                          DefaultErrorPosition);
-      end else begin
-        LFMTree.AddError(lfmeIdentifierNotFound,LFMNode,
-                         'identifier '+IdentName+' not found in class '
-                         +'"'+ClassContext.Tool.ExtractClassName(ClassContext.Node,false,true)+'"',
-                         DefaultErrorPosition);
-      end;
+      //else  -- CheckLFMChildObject adds lfmeIdentifierMissingInCode error for this.
+      //  LFMTree.AddError(lfmeIdentifierNotFound,LFMNode,
+      //                   'identifier '+IdentName+' not found in class '
+      //                   +'"'+ClassContext.Tool.ExtractClassName(ClassContext.Node,false,true)+'"',
+      //                   DefaultErrorPosition);
     end;
   end;
   
@@ -2478,12 +2477,16 @@ var
     end else begin
       // try the object type
       ClassContext:=FindClassContext(LFMObject.TypeName);
-      if ClassContext.Node=nil then begin
+      if ClassContext.Node=nil then
         // object type not found
         LFMTree.AddError(lfmeIdentifierNotFound,LFMObject,
                          'type '+LFMObject.TypeName+' not found',
-                         LFMObject.TypeNamePosition);
-      end;
+                         LFMObject.TypeNamePosition)
+      else
+        // object type found but has no variable in code
+        LFMTree.AddError(lfmeIdentifierMissingInCode,LFMObject,
+           'no variable in code for '+LFMObjectName+', type '+LFMObject.TypeName,
+           LFMObject.TypeNamePosition);
     end;
     // check child LFM nodes
     if ClassContext.Node<>nil then
@@ -2493,8 +2496,7 @@ var
   end;
   
   function FindClassNodeForPropertyType(LFMProperty: TLFMPropertyNode;
-    DefaultErrorPosition: integer; const PropertyContext: TFindContext
-    ): TFindContext;
+    DefaultErrorPosition: integer; const PropertyContext: TFindContext): TFindContext;
   var
     Params: TFindDeclarationParams;
   begin

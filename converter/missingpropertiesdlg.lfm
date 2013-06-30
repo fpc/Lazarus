@@ -27,12 +27,12 @@ object FixLFMDialog: TFixLFMDialog
     Width = 408
     Align = alLeft
     Caption = 'LFM file'
-    ClientHeight = 450
+    ClientHeight = 449
     ClientWidth = 404
     TabOrder = 0
     inline LFMSynEdit: TSynEdit
       Left = 0
-      Height = 450
+      Height = 449
       Top = 0
       Width = 404
       Align = alClient
@@ -460,17 +460,31 @@ object FixLFMDialog: TFixLFMDialog
       )
       VisibleSpecialChars = [vscSpace, vscTabAtLast]
       ReadOnly = True
+      SelectedColor.FrameEdges = sfeAround
+      SelectedColor.BackPriority = 50
+      SelectedColor.ForePriority = 50
+      SelectedColor.FramePriority = 50
+      SelectedColor.BoldPriority = 50
+      SelectedColor.ItalicPriority = 50
+      SelectedColor.UnderlinePriority = 50
+      SelectedColor.StrikeOutPriority = 50
+      IncrementColor.FrameEdges = sfeAround
+      HighlightAllColor.FrameEdges = sfeAround
       BracketHighlightStyle = sbhsBoth
       BracketMatchColor.Background = clNone
       BracketMatchColor.Foreground = clNone
+      BracketMatchColor.FrameEdges = sfeAround
       BracketMatchColor.Style = [fsBold]
       FoldedCodeColor.Background = clNone
       FoldedCodeColor.Foreground = clGray
       FoldedCodeColor.FrameColor = clGray
+      FoldedCodeColor.FrameEdges = sfeAround
       MouseLinkColor.Background = clNone
       MouseLinkColor.Foreground = clBlue
+      MouseLinkColor.FrameEdges = sfeAround
       LineHighlightColor.Background = clNone
       LineHighlightColor.Foreground = clNone
+      LineHighlightColor.FrameEdges = sfeAround
       OnSpecialLineMarkup = LFMSynEditSpecialLineMarkup
       inline TSynGutterPartList
         object TSynGutterMarks
@@ -482,6 +496,7 @@ object FixLFMDialog: TFixLFMDialog
           MouseActions = <>
           MarkupInfo.Background = clBtnFace
           MarkupInfo.Foreground = clNone
+          MarkupInfo.FrameEdges = sfeAround
           DigitCount = 2
           ShowOnlyLineNumbersMultiplesOf = 1
           ZeroStart = False
@@ -496,6 +511,9 @@ object FixLFMDialog: TFixLFMDialog
         object TSynGutterSeparator
           Width = 2
           MouseActions = <>
+          MarkupInfo.Background = clWhite
+          MarkupInfo.Foreground = clGray
+          MarkupInfo.FrameEdges = sfeAround
         end
         object TSynGutterCodeFolding
           MouseActions = <          
@@ -526,6 +544,7 @@ object FixLFMDialog: TFixLFMDialog
             end>
           MarkupInfo.Background = clNone
           MarkupInfo.Foreground = clGray
+          MarkupInfo.FrameEdges = sfeAround
           MouseActionsExpanded = <          
             item
               ClickCount = ccAny
@@ -558,12 +577,12 @@ object FixLFMDialog: TFixLFMDialog
     Width = 756
     Align = alBottom
     Caption = 'Errors'
-    ClientHeight = 86
+    ClientHeight = 85
     ClientWidth = 752
     TabOrder = 1
     object ErrorsListBox: TListBox
       Left = 0
-      Height = 86
+      Height = 85
       Top = 0
       Width = 752
       Align = alClient
@@ -584,10 +603,10 @@ object FixLFMDialog: TFixLFMDialog
     ClientWidth = 756
     TabOrder = 2
     object CancelButton: TBitBtn
-      Left = 668
+      Left = 660
       Height = 33
       Top = 6
-      Width = 82
+      Width = 90
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -595,18 +614,16 @@ object FixLFMDialog: TFixLFMDialog
       Caption = 'Cancel'
       Kind = bkCancel
       ModalResult = 2
-      NumGlyphs = 0
       TabOrder = 0
     end
     object ReplaceAllButton: TBitBtn
       Left = 6
-      Height = 25
+      Height = 26
       Top = 6
-      Width = 182
+      Width = 224
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Fix unknown properties and types'
-      NumGlyphs = 0
       OnClick = ReplaceAllButtonClick
       TabOrder = 1
     end
@@ -618,7 +635,7 @@ object FixLFMDialog: TFixLFMDialog
     Width = 343
     Align = alClient
     Caption = 'Replacements'
-    ClientHeight = 450
+    ClientHeight = 449
     ClientWidth = 339
     TabOrder = 3
     object PropReplaceGrid: TStringGrid
@@ -669,7 +686,7 @@ object FixLFMDialog: TFixLFMDialog
     end
     object TypeReplaceGrid: TStringGrid
       Left = 0
-      Height = 224
+      Height = 223
       Top = 226
       Width = 339
       Align = alClient

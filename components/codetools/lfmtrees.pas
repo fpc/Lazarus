@@ -202,11 +202,12 @@ type
     lfmeParseError,
     lfmeMissingRoot,
     lfmeIdentifierNotFound,
+    lfmeIdentifierNotPublished,
+    lfmeIdentifierMissingInCode,
     lfmeObjectNameMissing,
     lfmeObjectIncompatible,
     lfmePropertyNameMissing,
     lfmePropertyHasNoSubProperties,
-    lfmeIdentifierNotPublished,
     lfmeEndNotFound
     );
   TLFMErrorTypes = set of TLFMErrorType;
@@ -304,11 +305,12 @@ const
     'ParseError',
     'MissingRoot',
     'IdentifierNotFound',
+    'IdentifierNotPublished',
+    'IdentifierMissingInCode',
     'ObjectNameMissing',
     'ObjectIncompatible',
     'PropertyNameMissing',
     'PropertyHasNoSubProperties',
-    'IdentifierNotPublished',
     'EndNotFound'
     );
     

@@ -239,10 +239,6 @@ type
                            SourceChangeCache: TSourceChangeCache): boolean;
   protected
     procedure DoDeleteNodes(StartNode: TCodeTreeNode); override;
-    property CodeCompleteClassNode: TCodeTreeNode
-                     read FCodeCompleteClassNode write SetCodeCompleteClassNode;
-    property CodeCompleteSrcChgCache: TSourceChangeCache
-                       read FSourceChangeCache write SetCodeCompleteSrcChgCache;
   public
     constructor Create;
     function CompleteCode(CursorPos: TCodeXYPosition; OldTopLine: integer;
@@ -373,6 +369,10 @@ type
     property AddInheritedCodeToOverrideMethod: boolean
                                         read FAddInheritedCodeToOverrideMethod
                                         write FAddInheritedCodeToOverrideMethod;
+    property CodeCompleteClassNode: TCodeTreeNode
+                     read FCodeCompleteClassNode write SetCodeCompleteClassNode;
+    property CodeCompleteSrcChgCache: TSourceChangeCache
+                       read FSourceChangeCache write SetCodeCompleteSrcChgCache;
 
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
@@ -532,7 +532,7 @@ procedure TCodeCompletionCodeTool.AddClassInsertion(
 { add an insert request entry to the list of insertions
   For example: a request to insert a new variable or a new method to the class
 
-  CleanDef:  The sceleton of the new insertion. e.g. the variablename or the
+  CleanDef:  The skeleton of the new insertion. e.g. the variablename or the
              method header without parameter names.
   Def:       The insertion code.
   IdentifierName: e.g. the variablename or the method name

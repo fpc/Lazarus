@@ -342,9 +342,9 @@ var
   OldType, NewType: String;
 begin
   Result:=false;
-  if fCTLink.CodeTool=nil then exit;
+  Assert(Assigned(fCTLink.CodeTool));
   with fCTLink.CodeTool do begin
-    if Scanner=nil then exit;
+    Assert(Assigned(Scanner));
     BuildTree(lsrImplementationStart);
     // Find the class name that the main class inherits from.
     ANode:=FindClassNodeInUnit(AClassName,true,false,false,false);
