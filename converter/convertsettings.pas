@@ -103,7 +103,7 @@ type
     function RenameDelphiToLazFile(const DelphiFilename, LazExt: string;
       out LazFilename: string; LowercaseFilename: Boolean): TModalResult; overload;
     function RenameFile(const SrcFilename, DestFilename: string): TModalResult;
-    function BackupFile(const AFilename: string): TModalResult;
+    function MaybeBackupFile(const AFilename: string): TModalResult;
     procedure ClearLog;
     function AddLogLine(const ALine: string): integer;
     function SaveLog: Boolean;
@@ -703,6 +703,8 @@ begin
         fTypeReplaceMode :=TReplaceModeAllow(TypeReplaceComboBox.ItemIndex);
         fFuncReplaceMode :=TReplaceModeShort(FuncReplaceComboBox.ItemIndex);
         fCoordOffsMode   :=TReplaceModeShort(CoordOffsComboBox.ItemIndex);
+        if fBackupFiles then
+          DeleteDirectory(BackupPath, True); // Delete old backup if there is any.
       end;
     end;
   finally
@@ -752,29 +754,29 @@ begin
   if LowercaseFilename then
     fn:=LowerCase(fn);
   // Rename in the same directory.
-  if fBackupFiles then begin
-    Result:=BackupFile(DelphiFilename); // Save before rename.
-    if Result<>mrOK then exit;
-  end;
+  Result:=MaybeBackupFile(DelphiFilename); // Save before rename.
+  if Result<>mrOK then exit;
   LazFilename:=MainPath+SubPath+fn+LazExt;
   Result:=RenameFileWithErrorDialogs(DelphiFilename,LazFilename,[mbAbort]);
 end;
 
 function TConvertSettings.RenameFile(const SrcFilename, DestFilename: string): TModalResult;
 begin
-//  Result:=mrOK;
-  if fBackupFiles then
-    BackupFile(SrcFilename); // Save before rename.
+  Result:=MaybeBackupFile(SrcFilename); // Save before rename.
+  if Result<>mrOK then exit;
   Result:=RenameFileWithErrorDialogs(SrcFilename,DestFilename,[mbAbort]);
 end;
 
-function TConvertSettings.BackupFile(const AFilename: string): TModalResult;
+function TConvertSettings.MaybeBackupFile(const AFilename: string): TModalResult;
 var
-  bp, fn: String;
+  BackupFN: String;
 begin
-  bp:=BackupPath;
-  fn:=ExtractFileName(AFilename);
-  Result:=CopyFileWithErrorDialogs(AFilename,bp+fn,[mbAbort]);
+  Result:=mrOK;
+  if fBackupFiles then begin
+    BackupFN:=BackupPath+ExtractFileName(AFilename);
+    if not FileExistsUTF8(BackupFN) then
+      Result:=CopyFileWithErrorDialogs(AFilename,BackupFN,[mbAbort]);
+  end;
 end;
 
 procedure TConvertSettings.ClearLog;

@@ -765,7 +765,7 @@ begin
   MissingIncludeFilesCodeXYPos:=Nil;
   OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
   LazarusIDE.OpenEditorsOnCodeToolChange:=False;
-  with fCTLink do
+  with fCTLink, fOwnerConverter do
   try
     if CodeTool.DirectoryCache=nil then exit;
     if CodeTool.FixIncludeFilenames(Code,SrcCache,FoundIncludeFiles,MissingIncludeFilesCodeXYPos)
@@ -773,12 +773,13 @@ begin
       if Assigned(FoundIncludeFiles) then begin
         Msg:='Repairing include files : ';
         for i:=0 to FoundIncludeFiles.Count-1 do begin
-          s:=CreateRelativePath(FoundIncludeFiles[i], fOwnerConverter.fSettings.MainPath);
+          fSettings.MaybeBackupFile(FoundIncludeFiles[i]);
+          s:=CreateRelativePath(FoundIncludeFiles[i], fSettings.MainPath);
           if i>0 then
             Msg:=Msg+'; ';
           Msg:=Msg+s;
         end;
-        fOwnerConverter.fSettings.AddLogLine(Msg);
+        fSettings.AddLogLine(Msg);
       end;
     end
     else begin
@@ -787,10 +788,10 @@ begin
           CodePos:=PCodeXYPosition(MissingIncludeFilesCodeXYPos[i]);
           Msg:=Format(lisConvDelphiMissingIncludeFile,
                  [CodePos^.Code.Filename,IntToStr(CodePos^.y),IntToStr(CodePos^.x)]);
-          fOwnerConverter.fSettings.AddLogLine(Msg);
+          fSettings.AddLogLine(Msg);
         end;
       end;
-      fOwnerConverter.fErrorMsg:='Problems when fixing include files in file '
+      fErrorMsg:='Problems when fixing include files in file '
                                 +fOrigUnitFilename;
       Result:=mrCancel;
     end;

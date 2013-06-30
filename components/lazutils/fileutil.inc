@@ -437,11 +437,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function DeleteDirectory(const DirectoryName: string;
-    OnlyChilds: boolean): boolean;
+  function DeleteDirectory(const DirectoryName: string; OnlyChilds: boolean): boolean;
  ------------------------------------------------------------------------------}
-function DeleteDirectory(const DirectoryName: string;
-  OnlyChildren: boolean): boolean;
+function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean): boolean;
 const
   //Don't follow symlinks on *nix, just delete them
   DeleteMask = faAnyFile {$ifdef unix} or faSymLink {$endif unix};
