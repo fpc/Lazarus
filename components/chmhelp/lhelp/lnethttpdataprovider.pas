@@ -64,10 +64,12 @@ implementation
 
 uses
   FPImage,
-  {fpreadgif,} // doesn't exist yet!
+  {$IF FPC_FULLVERSION>=20602} //fpreadgif exists since at least this version
+  FPReadgif,
+  {$ENDIF}
   FPReadbmp,
   FPReadxpm,
-  FPReadJPEg,
+  FPReadJPEG,
   FPReadpng,
   FPWritebmp,
   IntFGraphics;
