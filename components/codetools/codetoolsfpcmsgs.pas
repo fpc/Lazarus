@@ -42,7 +42,7 @@ unit CodeToolsFPCMsgs;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, AVL_Tree;
+  Classes, SysUtils, FileProcs, LazUTF8Classes, AVL_Tree;
 
 type
   TfmiSpecialItem = (
@@ -456,14 +456,14 @@ end;
 
 procedure TFPCMsgFile.LoadFromFile(const Filename: string);
 var
-  sl: TStringList;
+  sl: TStringListUTF8;
 begin
   {$IFDEF VerboseFPCMsgFile}
   debugln(['TFPCMsgFile.LoadFromFile START ',Filename]);
   {$ENDIF}
-  sl:=TStringList.Create;
+  sl:=TStringListUTF8.Create;
   try
-    sl.LoadFromFile(UTF8ToSys(Filename));
+    sl.LoadFromFile(Filename);
     LoadFromList(sl);
   finally
     sl.Free;

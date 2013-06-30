@@ -895,7 +895,7 @@ function dbgsFC(const Context: TFindContext): string;
 function PredefinedIdentToExprTypeDesc(Identifier: PChar): TExpressionTypeDesc;
 function dbgs(const Flags: TFindDeclarationFlags): string; overload;
 function dbgs(const Flags: TFoundDeclarationFlags): string; overload;
-
+function dbgs(const vat: TVariableAtomType): string; overload;
 
 implementation
 
@@ -930,6 +930,11 @@ begin
       Result:=Result+s;
     end;
   end;
+end;
+
+function dbgs(const vat: TVariableAtomType): string;
+begin
+  Result:=VariableAtomTypeNames[vat];
 end;
 
 function ListOfPFindContextToStr(const ListOfPFindContext: TFPList): string;
@@ -7726,9 +7731,9 @@ begin
   ExprType:=CleanExpressionType;
   repeat
     {$IFDEF ShowExprEval}
-    DebugLn('  FindExpressionTypeOfTerm ATOM CurAtomType=',
+    DebugLn(['  FindExpressionTypeOfTerm ATOM CurAtomType=',
       VariableAtomTypeNames[CurAtomType],' CurAtom="',GetAtom(CurAtom),'"',
-      ' ExprType=',ExprTypeToString(ExprType));
+      ' ExprType=',ExprTypeToString(ExprType)]);
     {$ENDIF}
     case CurAtomType of
     vatIdentifier, vatPreDefIdentifier: ResolveIdentifier;
@@ -8907,9 +8912,12 @@ begin
         Result:=vatIdentifier;
     end else
       Result:=vatIdentifier;
+  end else if (Src[CurPos.StartPos]='&') and (CurPos.StartPos<SrcLen)
+  and IsIdentStartChar[Src[CurPos.StartPos+1]] then begin
+    // &keyword
+    Result:=vatIdentifier;
   end
-  else if (CurPos.StartPos>=1) and (CurPos.StartPos<=SrcLen)
-  and (CurPos.StartPos=CurPos.EndPos-1) then begin
+  else if (CurPos.StartPos=CurPos.EndPos-1) then begin
     case Src[CurPos.StartPos] of
     '.': Result:=vatPoint;
     '^': Result:=vatUp;
