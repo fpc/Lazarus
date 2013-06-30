@@ -1328,19 +1328,16 @@ begin
   Result:=ifrProceedSearch;
 end;
 
-function TEventsCodeTool.CompleteComponent(AComponent,
-  AncestorComponent: TComponent;
+function TEventsCodeTool.CompleteComponent(AComponent, AncestorComponent: TComponent;
   SourceChangeCache: TSourceChangeCache): boolean;
 { - Adds all missing published variable declarations to the class definition
     in the source
 }
 var
-  UpperClassName: String;
   i: Integer;
   CurComponent: TComponent;
-  VarName: String;
-  UpperCurComponentName: String;
-  VarType: String;
+  VarName, VarType: String;
+  UpperClassName, UpperCompName: String;
 begin
   try
     Result:=false;
@@ -1361,14 +1358,12 @@ begin
       if VarName='' then continue;
       if (AncestorComponent<>nil)
       and (AncestorComponent.FindComponent(VarName)<>nil) then continue;
-      UpperCurComponentName:=UpperCaseStr(VarName);
+      UpperCompName:=UpperCaseStr(VarName);
       VarType:=CurComponent.ClassName;
       // add missing published variable
-      if VarExistsInCodeCompleteClass(UpperCurComponentName) then begin
-      end else begin
+      if not VarExistsInCodeCompleteClass(UpperCompName) then begin
         //DebugLn('[TEventsCodeTool.CompleteComponent] ADDING variable ',CurComponent.Name,':',CurComponent.ClassName);
-        AddClassInsertion(UpperCurComponentName,
-                VarName+':'+VarType+';',VarName,ncpPublishedVars);
+        AddClassInsertion(UpperCompName,VarName+':'+VarType+';',VarName,ncpPublishedVars);
       end;
     end;
     {$IFDEF CTDEBUG}

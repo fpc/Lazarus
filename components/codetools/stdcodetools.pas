@@ -2420,9 +2420,8 @@ var
 
     ChildContext:=CleanFindContext;
     IdentifierFound:=(not ContextIsDefault) and
-      FindLFMIdentifier(LFMObject,LFMObject.NamePosition,
-      LFMObjectName,RootContext,SearchAlsoInDefineProperties,ObjectsMustExist,
-      ChildContext);
+      FindLFMIdentifier(LFMObject,LFMObject.NamePosition,LFMObjectName,RootContext,
+          SearchAlsoInDefineProperties,ObjectsMustExist,ChildContext);
 
     //debugln(['CheckLFMChildObject LFMObjectName="',LFMObjectName,'" IdentifierFound=',IdentifierFound,' ObjectsMustExist=',ObjectsMustExist,' ',FindContextToString(ChildContext)]);
     if IdentifierFound and (ObjectsMustExist or (ChildContext.Node<>nil)) then
@@ -2436,16 +2435,13 @@ var
       // check if identifier is a variable or property
       VariableTypeName:='';
       if (ChildContext.Node.Desc=ctnVarDefinition) then begin
-        DefinitionNode:=ChildContext.Tool.FindTypeNodeOfDefinition(
-                                                             ChildContext.Node);
+        DefinitionNode:=ChildContext.Tool.FindTypeNodeOfDefinition(ChildContext.Node);
         if DefinitionNode<>nil then begin
-          VariableTypeName:=ChildContext.Tool.ExtractDefinitionNodeType(
-                                                             ChildContext.Node);
+          VariableTypeName:=ChildContext.Tool.ExtractDefinitionNodeType(ChildContext.Node);
         end;
       end else if (ChildContext.Node.Desc=ctnProperty) then begin
         DefinitionNode:=ChildContext.Node;
-        VariableTypeName:=
-               ChildContext.Tool.ExtractPropType(ChildContext.Node,false,false);
+        VariableTypeName:=ChildContext.Tool.ExtractPropType(ChildContext.Node,false,false);
       end;
       if DefinitionNode=nil then begin
         LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
@@ -2588,15 +2584,12 @@ var
     while CurLFMNode<>nil do begin
       //DebugLn('TStandardCodeTool.CheckLFM.CheckLFMObjectValues B ',CurLFMNode.ClassName);
       case CurLFMNode.TheType of
-      
-      lfmnObject:
-        CheckLFMChildObject(TLFMObjectNode(CurLFMNode),ClassContext,false,
-                            ContextIsDefault);
-
-      lfmnProperty:
-        if not ContextIsDefault then
-          CheckLFMProperty(TLFMPropertyNode(CurLFMNode),ClassContext);
-
+        lfmnObject:
+          CheckLFMChildObject(TLFMObjectNode(CurLFMNode),ClassContext,false,
+                              ContextIsDefault);
+        lfmnProperty:
+          if not ContextIsDefault then
+            CheckLFMProperty(TLFMPropertyNode(CurLFMNode),ClassContext);
       end;
       CurLFMNode:=CurLFMNode.NextSibling;
     end;

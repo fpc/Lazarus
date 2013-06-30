@@ -682,8 +682,7 @@ type
                                            read FOnFindDefineProperty
                                            write FOnFindDefineProperty;
     function FindLFMFileName(Code: TCodeBuffer): string;
-    function CheckLFM(UnitCode, LFMBuf: TCodeBuffer;
-          out LFMTree: TLFMTree;
+    function CheckLFM(UnitCode, LFMBuf: TCodeBuffer; out LFMTree: TLFMTree;
           RootMustBeClassInUnit, RootMustBeClassInIntf,
           ObjectsMustExist: boolean): boolean;
     function FindNextResourceFile(Code: TCodeBuffer;
