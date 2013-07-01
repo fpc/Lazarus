@@ -198,6 +198,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure ClearWithFree; // free Values with TObject(Value).Free
     procedure Remove(Key: Pointer);
     function Contains(const Key: Pointer): Boolean; inline;
     function GetFirst(out Key, Value: Pointer): Boolean;
@@ -2311,6 +2312,21 @@ begin
   Node:=FItems.FindLowest;
   while Node<>nil do begin
     Item:=PPointerToPointerItem(Node.Data);
+    Dispose(Item);
+    Node:=Node.Successor;
+  end;
+  FItems.Clear;
+end;
+
+procedure TPointerToPointerTree.ClearWithFree;
+var
+  Node: TAvgLvlTreeNode;
+  Item: PPointerToPointerItem;
+begin
+  Node:=FItems.FindLowest;
+  while Node<>nil do begin
+    Item:=PPointerToPointerItem(Node.Data);
+    TObject(Item^.Value).Free;
     Dispose(Item);
     Node:=Node.Successor;
   end;
