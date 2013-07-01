@@ -93,6 +93,7 @@ type
     procedure CloseAll; override;
     procedure OnIDERestoreWindows(Sender: TObject);
     function OnProjectClose(Sender: TObject; AProject: TLazProject): TModalResult;
+    procedure OnIDEClose(Sender: TObject);
     // menu items
     procedure RestoreDefaultLayoutClicked(Sender: TObject);
     procedure LoadLayoutFromFileClicked(Sender: TObject);
@@ -133,6 +134,7 @@ begin
 
   LazarusIDE.AddHandlerOnIDERestoreWindows(@IDEAnchorDockMaster.OnIDERestoreWindows);
   LazarusIDE.AddHandlerOnProjectClose(@IDEAnchorDockMaster.OnProjectClose);
+  LazarusIDE.AddHandlerOnIDEClose(@IDEAnchorDockMaster.OnIDEClose);
 
   // add menu section
   // As this procedure seems to be called too early, menuitems names will be
@@ -474,6 +476,11 @@ begin
   if AProject=nil then exit;
   // do not auto save user layout, the restore is not yet stable
   //SaveUserLayout;
+end;
+
+procedure TIDEAnchorDockMaster.OnIDEClose(Sender: TObject);
+begin
+  SaveSettings;
 end;
 
 procedure TIDEAnchorDockMaster.RestoreDefaultLayoutClicked(Sender: TObject);
