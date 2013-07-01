@@ -528,7 +528,8 @@ procedure LRSObjectResToText(Input, Output: TStream;
   var OriginalFormat: TLRSStreamOriginalFormat);
   
 function TestFormStreamFormat(Stream: TStream): TLRSStreamOriginalFormat;
-procedure FormDataToText(FormStream, TextStream: TStream);
+procedure FormDataToText(FormStream, TextStream: TStream;
+  aFormat: TLRSStreamOriginalFormat = sofUnknown);
 
 procedure DefineRectProperty(Filer: TFiler; const Name: string;
                              ARect, DefaultRect: PRect);
@@ -3028,21 +3029,23 @@ begin
   LRSObjectBinaryToText(Input, Output);
 end;
 
-procedure FormDataToText(FormStream, TextStream: TStream);
+procedure FormDataToText(FormStream, TextStream: TStream; aFormat: TLRSStreamOriginalFormat);
 begin
-  case TestFormStreamFormat(FormStream) of
-  sofBinary:
-    LRSObjectResourceToText(FormStream, TextStream);
+  if aFormat = sofUnknown then
+    aFormat := TestFormStreamFormat(FormStream);
+  case aFormat of
+    sofBinary:
+      LRSObjectResourceToText(FormStream, TextStream);
 
-  sofText:
-    begin
-      if TextStream is TMemoryStream then
-        TMemoryStream(TextStream).SetSize(TextStream.Position+FormStream.Size);
-      TextStream.CopyFrom(FormStream,FormStream.Size);
-    end;
+    sofText:
+      begin
+        if TextStream is TMemoryStream then
+          TMemoryStream(TextStream).SetSize(TextStream.Position+FormStream.Size);
+        TextStream.CopyFrom(FormStream,FormStream.Size);
+      end;
 
-  else
-    raise Exception.Create(rsInvalidFormObjectStream);
+    else
+      raise Exception.Create(rsInvalidFormObjectStream);
   end;
 end;
 

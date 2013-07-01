@@ -34,7 +34,7 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, Math, LCLProc, Forms, Controls, Grids, LResources, LConvEncoding,
-  Graphics, Dialogs, Buttons, StdCtrls, ExtCtrls, contnrs, FileUtil,
+  Graphics, Dialogs, Buttons, StdCtrls, ExtCtrls, contnrs, FileUtil, LCLType,
   // components
   SynHighlighterLFM, SynEdit, SynEditMiscClasses, LFMTrees,
   // codetools
@@ -56,6 +56,7 @@ type
   private
     fSettings: TConvertSettings;
     fOrigFormat: TLRSStreamOriginalFormat;
+    function FixWideString(aInStream, aOutStream: TMemoryStream): TModalResult;
     function GetLFMFilename(const DfmFilename: string; KeepCase: boolean): string;
   public
     constructor Create;
@@ -134,6 +135,8 @@ type
 
 implementation
 
+uses strutils;
+
 {$R *.lfm}
 
 function IsMissingType(LFMError: TLFMError): boolean;
@@ -186,15 +189,79 @@ begin
     Result:='';
 end;
 
+function TDFMConverter.FixWideString(aInStream, aOutStream: TMemoryStream): TModalResult;
+// Convert Windows WideString syntax (#xxx) to UTF8
+
+  function UnicodeNumber(const InS: string; Ind: integer): string;
+  // Convert the number to UTF8
+  var
+    c: Integer;
+  begin
+    c := StrToInt(copy(InS, Ind, 3));
+    if c > 255 then
+      Result := UnicodeToUTF8(c)
+    else
+      Result := SysToUTF8(chr(c)); // or use a function in lconvencoding.
+  end;
+
+  function CollectString(const InS: string; var Ind: integer): string;
+  // Collect a string composed of quoted strings and unicode numbers like #xxx
+  var
+    InQuote: Boolean;
+    ch: Char;
+  begin
+    Result:='';
+    InQuote:=False;
+    repeat
+      ch:=InS[Ind];
+      if ch in [#13,#10] then Break;
+      if ch = '''' then
+        InQuote:=not InQuote
+      else if InQuote then
+        Result:=Result+ch
+      else if ch = '#' then begin
+        Result:=Result+UnicodeNumber(InS, Ind+1);
+        Inc(Ind, 3);
+      end
+      else
+        Break;
+      Inc(Ind);
+    until False;
+    Result:=QuotedStr(Result);
+  end;
+
+var
+  InS, OutS: string;
+  i: Integer;
+begin
+  Result:=mrOk;
+  OutS:='';
+  aInStream.Position:=0;
+  SetLength(InS, aInStream.Size);
+  aInStream.Read(InS[1],length(InS));
+  i := 1;
+  while i < Length(InS) do begin
+    if InS[i] in ['''', '#'] then
+      OutS:=OutS+CollectString(InS, i)
+    else begin
+      OutS:=OutS+InS[i];
+      Inc(i);
+    end;
+  end;
+  // Write data to a new stream.
+  aOutStream.Write(OutS[1], Length(OutS));
+end;
+
 function TDFMConverter.ConvertDfmToLfm(const aFilename: string): TModalResult;
 var
-  DFMStream, LFMStream: TMemoryStream;
+  DFMStream, LFMStream, Utf8LFMStream: TMemoryStream;
 begin
   Result:=mrOk;
   DFMStream:=TMemoryStream.Create;
   LFMStream:=TMemoryStream.Create;
+  Utf8LFMStream:=TMemoryStream.Create;
   try
-    // Note: The file is copied from DFM file earlier.
+    // Note: The file is copied from DFM file earlier. Load it.
     try
       DFMStream.LoadFromFile(UTF8ToSys(aFilename));
     except
@@ -208,8 +275,9 @@ begin
       end;
     end;
     fOrigFormat:=TestFormStreamFormat(DFMStream);
+    // converting dfm file, without renaming unit -> keep case...
     try
-      FormDataToText(DFMStream,LFMStream);
+      FormDataToText(DFMStream, LFMStream, fOrigFormat);
     except
       on E: Exception do begin
         Result:=QuestionDlg(lisFormatError,
@@ -220,9 +288,11 @@ begin
         exit;
       end;
     end;
-    // converting dfm file, without renaming unit -> keep case...
+    // Convert Windows WideString syntax (#xxx) to UTF8
+    FixWideString(LFMStream, Utf8LFMStream);
+    // Save the converted file.
     try
-      LFMStream.SaveToFile(UTF8ToSys(aFilename));
+      Utf8LFMStream.SaveToFile(UTF8ToSys(aFilename));
     except
       on E: Exception do begin
         Result:=MessageDlg(lisCodeToolsDefsWriteError,
@@ -234,6 +304,7 @@ begin
       end;
     end;
   finally
+    Utf8LFMStream.Free;
     LFMSTream.Free;
     DFMStream.Free;
   end;
