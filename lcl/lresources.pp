@@ -2642,8 +2642,7 @@ begin
   end;
 end;
 
-procedure LRSObjectTextToBinary(Input, Output: TStream;
-  Links: TLRPositionLinks);
+procedure LRSObjectTextToBinary(Input, Output: TStream; Links: TLRPositionLinks);
 var
   parser: {$IFDEF DisableWindowsUnicodeSupport}TParser{$ELSE}TUTF8Parser{$ENDIF};
   OldDecimalSeparator: Char;
