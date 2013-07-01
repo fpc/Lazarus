@@ -414,7 +414,7 @@ begin
   fn:=ExtractFileName(RelPath);
   sUnitName:=ExtractFileNameOnly(fn);
   if (SubPath<>'') and (sUnitName<>'') then begin
-    DebugLn(['RelPath=',RelPath,'SubPath=',SubPath,'fn=',fn,'sUnitName=',sUnitName]);
+    //DebugLn(['RelPath=',RelPath,'SubPath=',SubPath,'fn=',fn,'sUnitName=',sUnitName]);
     // Map path by unit name.
     fConverter.fCachedUnitNames[sUnitName]:=SubPath;
     // Map real unit name by uppercase unit name.
