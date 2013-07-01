@@ -1682,11 +1682,17 @@ end;
 function TTreeNode.DisplayStateIconLeft: integer;
 var
   TV: TCustomTreeView;
+  ImgIndex: TImageIndex;
 begin
   Result := DisplayIconLeft;
   TV := TreeView;
-  if (TV <> nil) and (TV.Images <> nil) then
-    inc(Result, TV.Images.Width + 2);
+  if (TV = nil) or (TV.Images = nil) then exit;
+  if (TV.Selected=Self) then
+    ImgIndex:=SelectedIndex
+  else
+    ImgIndex:=ImageIndex;
+  if (ImgIndex<0) or (ImgIndex>=TV.Images.Count) then exit;
+  inc(Result, TV.Images.Width + 2);
 end;
 
 function TTreeNode.DisplayTextLeft: integer;
@@ -1695,8 +1701,9 @@ var
 begin
   Result := DisplayStateIconLeft;
   TV := TreeView;
-  if (TV <> nil) and (TV.StateImages <> nil) then
-    inc(Result, TV.StateImages.Width + 2);
+  if (TV = nil) or (TV.StateImages = nil) then exit;
+  if (StateIndex<0) or (StateIndex>=TV.StateImages.Count) then exit;
+  inc(Result, TV.StateImages.Width + 2);
 end;
 
 function TTreeNode.DisplayTextRight: integer;
@@ -4910,22 +4917,26 @@ begin
         ImgIndex := Node.SelectedIndex;
       end;
       if (ImgIndex >= 0) and (ImgIndex < Images.Count) then
+      begin
       	if Node.OverlayIndex < 0 then
           Images.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
              ImgIndex, Node.FNodeEffect)
       	else
           Images.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
              ImgIndex, Node.OverlayIndex, Node.FNodeEffect);
-      inc(x, Images.Width + 2);
+        inc(x, Images.Width + 2);
+      end;
     end;
 
     // draw state icon
     if (StateImages <> nil) and PaintImages then
     begin
       if (Node.StateIndex >= 0) and (Node.StateIndex < StateImages.Count) then
+      begin
         StateImages.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - StateImages.Height) div 2,
           Node.StateIndex, True);
-      inc(x, StateImages.Width + 2);
+        inc(x, StateImages.Width + 2);
+      end;
     end;
 
     // draw text
