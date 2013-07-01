@@ -125,8 +125,8 @@ type
 const
   AllDirectoryEntriesMask = '*';
   
-function GetAllFilesMask: string;
-function GetExeExt: string;
+function GetAllFilesMask: string; inline;
+function GetExeExt: string; inline;
 function SearchFileInPath(const Filename, BasePath, SearchPath,
   Delimiter: string; Flags: TSearchFileInPathFlags): string;
 function SearchAllFilesInPath(const Filename, BasePath, SearchPath,
