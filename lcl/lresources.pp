@@ -362,7 +362,7 @@ type
     procedure HandleNumber;
     procedure HandleHexNumber;
     function HandleQuotedString : string;
-    function HandleDecimalString(var ascii: Boolean): string;
+    function HandleDecimalString(var IsWideString: Boolean): string;
     procedure HandleString;
     procedure HandleMinus;
     procedure HandleUnknown;
@@ -5535,7 +5535,7 @@ begin
   end;
 end;
 
-function TUTF8Parser.HandleDecimalString(var ascii: Boolean): string;
+function TUTF8Parser.HandleDecimalString(var IsWideString: Boolean): string;
 var i : integer;
 begin
   Result:='';
@@ -5549,27 +5549,32 @@ begin
   end;
   if not TryStrToInt(Result,i) then
     i:=0;
-  if i > 127 then
-    ascii := False;
-  Result:=UnicodeToUTF8(i);
+  if i > 255 then begin
+    Result:=UnicodeToUTF8(i); // widestring
+    IsWideString:=true;
+  end else if i > 127 then
+    Result:=SysToUTF8(chr(i)) // windows codepage
+  else
+    Result:=chr(i); // ascii, does not happen
 end;
 
 procedure TUTF8Parser.HandleString;
 var
-  ascii: Boolean;
+  IsWideString: Boolean;
 begin
   fLastTokenStr:='';
-  ascii := True;
-  while true do
+  IsWideString := false;
+  while true do begin
     case fBuf[fPos] of
       '''' : fLastTokenStr:=fLastTokenStr+HandleQuotedString;
-      '#'  : fLastTokenStr:=fLastTokenStr+HandleDecimalString(ascii);
+      '#'  : fLastTokenStr:=fLastTokenStr+HandleDecimalString(IsWideString);
       else break;
     end;
-  if ascii then
-    fToken:=Classes.toString
+  end;
+  if IsWideString then
+    fToken:=toWString
   else
-    fToken:=toWString;
+    fToken:=Classes.toString;
 end;
 
 procedure TUTF8Parser.HandleMinus;
@@ -5715,7 +5720,7 @@ begin
   Result:=fLastTokenStr;
 end;
 
-Function TUTF8Parser.TokenFloat: Extended;
+function TUTF8Parser.TokenFloat: Extended;
 
 var errcode : word;
 
@@ -5725,7 +5730,7 @@ begin
     ErrorFmt(SParInvalidFloat,[fLastTokenStr]);
 end;
 
-Function TUTF8Parser.TokenInt: Int64;
+function TUTF8Parser.TokenInt: Int64;
 begin
   if not TryStrToInt64(fLastTokenStr,Result) then
     Result:=Int64(StrToQWord(fLastTokenStr)); //second chance for malformed files
