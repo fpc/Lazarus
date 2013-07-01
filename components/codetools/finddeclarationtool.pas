@@ -10099,8 +10099,18 @@ begin
           RaiseTermHasNoIterator;
         end;
       end;
-    xtNone,
     xtChar,
+    xtSmallInt,
+    xtShortInt,
+    xtByte,
+    xtWord,
+    xtBoolean,
+    xtByteBool,
+    xtWordBool,
+    xtLongBool,
+    xtQWordBool:
+      Result:=ExpressionTypeDescNames[TermExprType.Desc];
+    xtNone,
     xtWideChar,
     xtReal,
     xtSingle,
@@ -10112,11 +10122,6 @@ begin
     xtInt64,
     xtCardinal,
     xtQWord,
-    xtBoolean,
-    xtByteBool,
-    xtWordBool,
-    xtLongBool,
-    xtQWordBool,
     xtPointer,
     xtFile,
     xtText,
@@ -10125,10 +10130,6 @@ begin
     xtConstBoolean,
     xtLongint,
     xtLongWord,
-    xtWord,
-    xtSmallInt,
-    xtShortInt,
-    xtByte,
     xtCompilerFunc,
     xtVariant,
     xtNil:
