@@ -275,12 +275,12 @@ var
 
   procedure InitClassCompletion;
   begin
-    with fCTLink.CodeTool do begin
-      CodeCompleteClassNode:=FindClassNodeInInterface(TLFMObjectNode(fLFMTree.Root).TypeName,
-                                                      true,false,true);
-      CodeCompleteSrcChgCache:=fCTLink.SrcCache;
-      //BuildTree(lsrImplementationStart);
-    end;
+    with fCTLink.CodeTool do
+      if not Assigned(CodeCompleteClassNode) then begin // Do only at first time.
+        CodeCompleteClassNode:=FindClassNodeInInterface(
+                         TLFMObjectNode(fLFMTree.Root).TypeName,true,false,true);
+        CodeCompleteSrcChgCache:=fCTLink.SrcCache;
+      end;
   end;
 
 var
@@ -294,11 +294,10 @@ var
   ChgEntryRepl: TObjectList;
   OldIdent, NewIdent: string;
   StartPos, EndPos: integer;
-  HasCodeChanges: Boolean;
 begin
   Result:=mrOK;
   AutoInc:=0;
-  HasCodeChanges:=False;
+  fCTLink.CodeTool.CodeCompleteClassNode:=Nil;
   ChgEntryRepl:=TObjectList.Create;
   PropReplacements:=TStringToStringTree.Create(false);
   TypeReplacements:=TStringToStringTree.Create(false);
@@ -314,13 +313,11 @@ begin
       begin
         if CurError.ErrorType=lfmeIdentifierMissingInCode then
         begin
-          // Missing component variable
+          // Missing component variable, must be added to pascal sources
           ObjNode:=CurError.Node as TLFMObjectNode;
-          if not HasCodeChanges then
-            InitClassCompletion;
+          InitClassCompletion;
           fCTLink.CodeTool.AddClassInsertion(UpperCase(ObjNode.Name),
               ObjNode.Name+':'+ObjNode.TypeName+';',ObjNode.Name, ncpPublishedVars);
-          HasCodeChanges:=True;
         end
         else if IsMissingType(CurError) then
         begin
@@ -362,9 +359,11 @@ begin
     // Apply replacements to LFM.
     if not ApplyReplacements(ChgEntryRepl) then
       exit(mrCancel);
-    if HasCodeChanges then
-      if not fCTLink.CodeTool.ApplyClassCompletion(false) then
-        exit(mrCancel);
+    // Apply added variables to pascal class definition.
+    with fCTLink.CodeTool do
+      if Assigned(CodeCompleteClassNode) then
+        if not ApplyClassCompletion(false) then
+          exit(mrCancel);
     // Apply replacement types also to pascal source.
     if TypeReplacements.Tree.Count>0 then
       if not CodeToolBoss.RetypeClassVariables(fPascalBuffer,

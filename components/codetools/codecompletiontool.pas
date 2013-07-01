@@ -6306,8 +6306,7 @@ begin
     if not InsertAllNewClassParts then
       RaiseException(ctsErrorDuringInsertingNewClassParts);
     // insert all missing proc bodies
-    if AddMissingProcBodies
-    and (not CreateMissingClassProcBodies(true)) then
+    if AddMissingProcBodies and (not CreateMissingClassProcBodies(true)) then
       RaiseException(ctsErrorDuringCreationOfNewProcBodies);
     // apply the changes
     if not CodeCompleteSrcChgCache.Apply then
