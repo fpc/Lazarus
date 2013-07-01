@@ -30,8 +30,8 @@ unit LResources;
 interface
 
 uses
-  Classes, SysUtils, Types, RtlConsts, FileUtil,
-  FPCAdds, TypInfo, DynQueue, LCLProc, LCLStrConsts, LazConfigStorage;
+  Classes, SysUtils, Types, RtlConsts, FileUtil, FPCAdds, TypInfo, DynQueue,
+  LCLProc, LCLStrConsts, LazConfigStorage, LazUTF8Classes;
 
 {$DEFINE UseLRS}
 {$DEFINE UseRES}
@@ -1335,13 +1335,13 @@ end;
 function LFMtoLRSfile(const LFMfilename: string):boolean;
 // returns true if successful
 var
-  LFMFileStream, LRSFileStream: TFileStream;
+  LFMFileStream, LRSFileStream: TFileStreamUTF8;
   LFMMemStream, LRSMemStream: TMemoryStream;
   LRSfilename, LFMfilenameExt: string;
 begin
   Result:=true;
   try
-    LFMFileStream:=TFileStream.Create(UTF8ToSys(LFMfilename),fmOpenRead);
+    LFMFileStream:=TFileStreamUTF8.Create(LFMfilename,fmOpenRead);
     LFMMemStream:=TMemoryStream.Create;
     LRSMemStream:=TMemoryStream.Create;
     try
@@ -1354,7 +1354,7 @@ begin
       Result:=LFMtoLRSstream(LFMMemStream,LRSMemStream);
       if not Result then exit;
       LRSMemStream.Position:=0;
-      LRSFileStream:=TFileStream.Create(UTF8ToSys(LRSfilename),fmCreate);
+      LRSFileStream:=TFileStreamUTF8.Create(LRSfilename,fmCreate);
       try
         LRSFileStream.CopyFrom(LRSMemStream,LRSMemStream.Size);
       finally
@@ -2079,13 +2079,13 @@ end;
 function ReadLFMHeaderFromFile(const Filename: string; out LFMType,
   LFMComponentName, LFMClassName: String): boolean;
 var
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
   Header: string;
   Cnt: LongInt;
 begin
   Result:=false;
   try
-    fs:=TFileStream.Create(Filename,fmOpenRead);
+    fs:=TFileStreamUTF8.Create(Filename,fmOpenRead);
     try
       SetLength(Header,600);
       Cnt:=fs.Read(Header[1],length(Header));
