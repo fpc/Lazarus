@@ -74,8 +74,8 @@ type
     procedure IncreaseChangeStamp; inline;
     property ChangeStamp: int64 read FChangeStamp;
     property Modified: boolean read GetModified write SetModified;
-    procedure LoadOptions;
-    procedure SaveOptions;
+    procedure LoadSettings;
+    procedure SaveSettings;
     // layouts
     function GetUserLayoutFilename(Full: boolean): string;
     procedure LoadDefaultLayout;
@@ -154,7 +154,7 @@ begin
   // add options frame
   AnchorDockOptionsID:=RegisterIDEOptionsEditor(GroupEnvironment,TAnchorDockIDEFrame,
                                                 AnchorDockOptionsID)^.Index;
-  IDEAnchorDockMaster.LoadOptions;
+  IDEAnchorDockMaster.LoadSettings;
 end;
 
 { TIDEAnchorDockMaster }
@@ -561,7 +561,7 @@ begin
   LUIncreaseChangeStamp64(FChangeStamp);
 end;
 
-procedure TIDEAnchorDockMaster.LoadOptions;
+procedure TIDEAnchorDockMaster.LoadSettings;
 var
   Config: TConfigStorage;
 begin
@@ -574,12 +574,12 @@ begin
     end;
   except
     on E: Exception do begin
-      DebugLn(['TIDEAnchorDockMaster.LoadOptions failed: ',E.Message]);
+      DebugLn(['TIDEAnchorDockMaster.LoadSettings failed: ',E.Message]);
     end;
   end;
 end;
 
-procedure TIDEAnchorDockMaster.SaveOptions;
+procedure TIDEAnchorDockMaster.SaveSettings;
 var
   Config: TConfigStorage;
 begin
@@ -587,12 +587,13 @@ begin
     Config:=GetIDEConfigStorage(DefaultConfigFileName,false);
     try
       DockMaster.SaveSettingsToConfig(Config);
+      Config.WriteToDisk;
     finally
       Config.Free;
     end;
   except
     on E: Exception do begin
-      DebugLn(['TIDEAnchorDockMaster.SaveOptions failed: ',E.Message]);
+      DebugLn(['TIDEAnchorDockMaster.SaveSettings failed: ',E.Message]);
     end;
   end;
 end;
@@ -656,7 +657,7 @@ begin
   then begin
     DockMaster.LoadSettings(FSettings);
     IDEAnchorDockMaster.SaveUserLayout;
-    IDEAnchorDockMaster.SaveOptions;
+    IDEAnchorDockMaster.SaveSettings;
   end;
 end;
 
