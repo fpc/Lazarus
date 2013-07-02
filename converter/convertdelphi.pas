@@ -542,7 +542,6 @@ begin
   repeat
     CodeOk:=True;
     try
-      DebugLn('TDelphiUnit.CopyAndLoadFile: Creating UsedUnitsTool');
       // Create a tool for missing units.
       fUsedUnitsTool:=TUsedUnitsTool.Create(fCTLink, fOrigUnitFilename);
     except
@@ -551,9 +550,8 @@ begin
       if CodeFixed then
         Raise               // There was a second exception -> we are doomed!
       else begin
-        DebugLn('TDelphiUnit.CopyAndLoadFile exception: Replacing .type -> .&type');
-        with fPascalBuffer do
-          Source:=StringReplace(Source,'.type','.&type',[rfReplaceAll]);
+        if not fCTLink.DummyReplacements then
+          Raise;
         CodeOk := False;
         CodeFixed := True;  // Try replacements only once
       end;

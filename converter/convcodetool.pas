@@ -61,6 +61,7 @@ type
     constructor Create(ACode: TCodeBuffer);
     destructor Destroy; override;
     procedure ResetMainScanner;
+    function DummyReplacements: Boolean;
   public
     property CodeTool: TCodeTool read fCodeTool;
     property Code: TCodeBuffer read fCode;
@@ -138,6 +139,29 @@ end;
 procedure TCodeToolLink.ResetMainScanner;
 begin
   fSrcCache.MainScanner:=fCodeTool.Scanner;
+end;
+
+function TCodeToolLink.DummyReplacements: Boolean;
+// If Codetools cannot parse the code, do dummy replacement of some known problematic
+// syntax, currently only OleVariant.type. Most Codetools functions cannot
+// be used because the code is invalid, but TSourceChangeCache.ReplaceEx works.
+const
+  ReplString = '.type';
+var
+  p: Integer;
+begin
+  p:=1;
+  repeat
+    // find next '.type'
+    p:=PosEx(ReplString,fCode.Source,p);
+    if p<1 then break;
+    if not fSrcCache.ReplaceEx(gtNone,gtNone,1,1,fCode,p+1,p+1,'&') then
+      Exit(False);
+    inc(p,length(ReplString));
+  until false;
+  if not fSrcCache.Apply then
+    Exit(False);
+  Result:=True;
 end;
 
 { TConvDelphiCodeTool }
