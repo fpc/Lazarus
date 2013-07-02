@@ -22,11 +22,11 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
   end
   object HeaderAlignTopLabel: TLabel
     AnchorSideLeft.Control = DragThresholdLabel
-    AnchorSideTop.Control = HideHeaderCaptionForFloatingCheckBox
+    AnchorSideTop.Control = FilledHeaders
     AnchorSideTop.Side = asrBottom
     Left = 10
     Height = 15
-    Top = 263
+    Top = 301
     Width = 115
     BorderSpacing.Top = 10
     Caption = 'HeaderAlignTopLabel'
@@ -38,7 +38,7 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 10
     Height = 15
-    Top = 334
+    Top = 372
     Width = 114
     BorderSpacing.Top = 10
     Caption = 'HeaderAlignLeftLabel'
@@ -97,7 +97,7 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 10
     Height = 46
-    Top = 278
+    Top = 316
     Width = 396
     Frequency = 10
     Max = 150
@@ -117,7 +117,7 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 10
     Height = 46
-    Top = 349
+    Top = 387
     Width = 396
     Frequency = 10
     Max = 200
@@ -215,5 +215,27 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     BorderSpacing.Left = 10
     Caption = 'HeaderStyleLabel'
     ParentColor = False
+  end
+  object FlattenHeaders: TCheckBox
+    AnchorSideLeft.Control = HideHeaderCaptionForFloatingCheckBox
+    AnchorSideTop.Control = HideHeaderCaptionForFloatingCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 19
+    Top = 253
+    Width = 99
+    Caption = 'FlattenHeaders'
+    TabOrder = 9
+  end
+  object FilledHeaders: TCheckBox
+    AnchorSideLeft.Control = FlattenHeaders
+    AnchorSideTop.Control = FlattenHeaders
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 19
+    Top = 272
+    Width = 91
+    Caption = 'FilledHeaders'
+    TabOrder = 10
   end
 end

@@ -398,6 +398,8 @@ type
     FHeaderAlignTop: integer;
     FHeaderHint: string;
     FHeaderStyle: TADHeaderStyle;
+    FHeaderFlatten: boolean;
+    FHeaderFilled: boolean;
     FHideHeaderCaptionFloatingControl: boolean;
     FPageAreaInPercent: integer;
     FScaleOnResize: boolean;
@@ -418,6 +420,8 @@ type
     procedure SetShowHeader(AValue: boolean);
     procedure SetShowHeaderCaption(AValue: boolean);
     procedure SetSplitterWidth(AValue: integer);
+    procedure SetHeaderFlatten(AValue: boolean);
+    procedure SetHeaderFilled(AValue: boolean);
   public
     property DragTreshold: integer read FDragTreshold write SetDragTreshold;
     property DockOutsideMargin: integer read FDockOutsideMargin write SetDockOutsideMargin;
@@ -433,6 +437,8 @@ type
     property HideHeaderCaptionFloatingControl: boolean read FHideHeaderCaptionFloatingControl write SetHideHeaderCaptionFloatingControl;
     property AllowDragging: boolean read FAllowDragging write SetAllowDragging;
     property HeaderStyle: TADHeaderStyle read FHeaderStyle write SetHeaderStyle;
+    property HeaderFlatten: boolean read FHeaderFlatten write SetHeaderFlatten;
+    property HeaderFilled: boolean read FHeaderFilled write SetHeaderFilled;
     procedure IncreaseChangeStamp; inline;
     property ChangeStamp: integer read FChangeStamp;
     procedure LoadFromConfig(Config: TConfigStorage);
@@ -463,6 +469,8 @@ type
     FHeaderClass: TAnchorDockHeaderClass;
     FHeaderHint: string;
     FHeaderStyle: TADHeaderStyle;
+    FHeaderFlatten: boolean;
+    FHeaderFilled: boolean;
     FIdleConnected: Boolean;
     FManagerClass: TAnchorDockManagerClass;
     FOnCreateControl: TADCreateControlEvent;
@@ -509,6 +517,10 @@ type
     procedure SetHeaderStyle(AValue: TADHeaderStyle);
     procedure SetPageAreaInPercent(AValue: integer);
     procedure SetScaleOnResize(AValue: boolean);
+
+    procedure SetHeaderFlatten(AValue: boolean);
+    procedure SetHeaderFilled(AValue: boolean);
+
     procedure SetShowMenuItemShowHeader(AValue: boolean);
     procedure ShowHeadersButtonClick(Sender: TObject);
     procedure OptionsClick(Sender: TObject);
@@ -617,6 +629,9 @@ type
     property HeaderAlignLeft: integer read FHeaderAlignLeft write SetHeaderAlignLeft default 120; // move header to left, when (width/height)*100>=HeaderAlignLeft
     property HeaderHint: string read FHeaderHint write SetHeaderHint; // if empty it uses resourcestring adrsDragAndDockC
     property HeaderStyle: TADHeaderStyle read FHeaderStyle write SetHeaderStyle default adhsDefault;
+    property HeaderFlatten: boolean read FHeaderFlatten write SetHeaderFlatten default true;
+    property HeaderFilled: boolean read FHeaderFilled write SetHeaderFilled default true;
+
     property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
     property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize default true; // scale children when resizing a site
     property AllowDragging: boolean read FAllowDragging write SetAllowDragging default true;
@@ -1213,6 +1228,20 @@ procedure TAnchorDockSettings.SetScaleOnResize(AValue: boolean);
 begin
   if FScaleOnResize=AValue then Exit;
   FScaleOnResize:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.SetHeaderFlatten(AValue: boolean);
+begin
+  if FHeaderFlatten=AValue then Exit;
+  FHeaderFlatten:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.SetHeaderFilled(AValue: boolean);
+begin
+  if FHeaderFilled=AValue then Exit;
+  FHeaderFilled:=AValue;
   IncreaseChangeStamp;
 end;
 
@@ -2002,6 +2031,22 @@ begin
   OptionsChanged;
 end;
 
+procedure TAnchorDockMaster.SetHeaderFlatten(AValue: boolean);
+begin
+  if FHeaderFlatten=AValue then Exit;
+  FHeaderFlatten:=AValue;
+  OptionsChanged;
+  InvalidateHeaders;
+end;
+
+procedure TAnchorDockMaster.SetHeaderFilled(AValue: boolean);
+begin
+  if FHeaderFilled=AValue then Exit;
+  FHeaderFilled:=AValue;
+  OptionsChanged;
+  InvalidateHeaders;
+end;
+
 procedure TAnchorDockMaster.SetScaleOnResize(AValue: boolean);
 begin
   if FScaleOnResize=AValue then Exit;
@@ -2179,6 +2224,8 @@ begin
   FSiteClass:=TAnchorDockHostSite;
   FManagerClass:=TAnchorDockManager;
   FHeaderClass:=TAnchorDockHeader;
+  FHeaderFlatten:=true;
+  FHeaderFilled:=true;
   FPageControlClass:=TAnchorDockPageControl;
   FPageClass:=TAnchorDockPage;
   FRestoreLayouts:=TAnchorDockRestoreLayouts.Create;
@@ -2737,6 +2784,8 @@ begin
   HideHeaderCaptionFloatingControl := Settings.HideHeaderCaptionFloatingControl;
   AllowDragging                    := Settings.AllowDragging;
   HeaderStyle                      := Settings.HeaderStyle;
+  HeaderFlatten                    := Settings.HeaderFlatten;
+  HeaderFilled                     := Settings.HeaderFilled;
 end;
 
 procedure TAnchorDockMaster.SaveSettings(Settings: TAnchorDockSettings);
@@ -2754,6 +2803,8 @@ begin
   Settings.HideHeaderCaptionFloatingControl:=HideHeaderCaptionFloatingControl;
   Settings.AllowDragging:=AllowDragging;
   Settings.HeaderStyle:=HeaderStyle;
+  Settings.HeaderFlatten:=HeaderFlatten;
+  Settings.HeaderFilled:=HeaderFilled;
 end;
 
 function TAnchorDockMaster.SettingsAreEqual(Settings: TAnchorDockSettings
@@ -4937,11 +4988,16 @@ var
   dx,dy: Integer;
 begin
   r:=ClientRect;
-  case DockMaster.HeaderStyle of
+  Canvas.Brush.Color := clForm;
+  if DockMaster.HeaderFilled then
+     Canvas.FillRect(r);
+  if not DockMaster.HeaderFlatten then
+     Canvas.Frame3d(r,1,bvRaised);
+  {case DockMaster.HeaderStyle of
   adhsPoints: Canvas.Brush.Color := clForm;
   else Canvas.Frame3d(r,1,bvRaised);
   end;
-  Canvas.FillRect(r);
+  Canvas.FillRect(r);}
 
   if CloseButton.IsControlVisible and (CloseButton.Parent=Self) then begin
     if Align in [alLeft,alRight] then

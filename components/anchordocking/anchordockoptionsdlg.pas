@@ -46,6 +46,8 @@ type
   { TAnchorDockOptionsFrame }
 
   TAnchorDockOptionsFrame = class(TFrame)
+    FlattenHeaders: TCheckBox;
+    FilledHeaders: TCheckBox;
     DragThresholdLabel: TLabel;
     DragThresholdTrackBar: TTrackBar;
     HeaderAlignLeftLabel: TLabel;
@@ -251,6 +253,8 @@ begin
   TheSettings.ShowHeader:=ShowHeaderCheckBox.Checked;
   TheSettings.ShowHeaderCaption:=ShowHeaderCaptionCheckBox.Checked;
   TheSettings.HideHeaderCaptionFloatingControl:=HideHeaderCaptionForFloatingCheckBox.Checked;
+  TheSettings.HeaderFlatten:=FlattenHeaders.Checked;
+  TheSettings.HeaderFilled:=FilledHeaders.Checked;
 end;
 
 procedure TAnchorDockOptionsFrame.LoadFromSettings(
@@ -307,6 +311,9 @@ begin
     adrsHideHeaderCaptionsForSitesWithOnlyOneDockedControl;
   HideHeaderCaptionForFloatingCheckBox.Checked:=
     TheSettings.HideHeaderCaptionFloatingControl;
+
+  FlattenHeaders.Checked:=TheSettings.HeaderFlatten;
+  FilledHeaders.Checked:=TheSettings.HeaderFilled;
 end;
 
 end.
