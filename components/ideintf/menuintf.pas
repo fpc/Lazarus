@@ -364,6 +364,7 @@ var
     mnuWindow: TIDEMenuSection;
       itmWindowManagers: TIDEMenuSection;
       itmWindowLists: TIDEMenuSection;
+      itmCenterWindowLists: TIDEMenuSection;
       itmTabLists: TIDEMenuSection;
         itmTabListProject: TIDEMenuSection;
         itmTabListOther: TIDEMenuSection;

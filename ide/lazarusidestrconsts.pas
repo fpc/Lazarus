@@ -1174,6 +1174,7 @@ resourcestring
   lisAskBeforeSavingProjectSSession = 'Ask before saving project''s session';
   dlgEdFiles = 'Editor Files';
   dlgEnvProject = 'Tabs for project';
+  lisCenterALostWindow = 'Center a lost window';
   lisNumberOfFilesToConvert = 'Number of files to convert: %s';
   lisConvertEncoding = 'Convert Encoding';
   lisConvertProjectOrPackage = 'Convert project or package';

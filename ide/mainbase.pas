@@ -55,8 +55,8 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, LCLType, LCLProc, LCLIntf, StdCtrls, Buttons, Menus, ComCtrls,
-  SysUtils, Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms,
+  Math, Classes, LCLType, LCLProc, LCLIntf, StdCtrls, Buttons, Menus, ComCtrls,
+  SysUtils, types, Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms,
   CodeToolManager, CodeCache, AVL_Tree, SynEditKeyCmds, PackageIntf,
   // IDEIntf
   IDEImagesIntf, SrcEditorIntf, LazIDEIntf, MenuIntf,
@@ -81,8 +81,6 @@ type
   { TMainIDEBase }
 
   TMainIDEBase = class(TMainIDEInterface)
-    procedure mnuOpenProjectClicked(Sender: TObject); virtual; abstract;
-    procedure mnuOpenRecentClicked(Sender: TObject); virtual; abstract;
   private
     FToolStatus: TIDEToolStatus;
     FWindowMenuActiveForm: TCustomForm;
@@ -127,7 +125,10 @@ type
     procedure SetToolStatus(const AValue: TIDEToolStatus); virtual;
 
     procedure DoMnuWindowClicked(Sender: TObject);
+    procedure mnuOpenProjectClicked(Sender: TObject); virtual; abstract;
+    procedure mnuOpenRecentClicked(Sender: TObject); virtual; abstract;
     procedure mnuWindowItemClick(Sender: TObject); virtual;
+    procedure mnuCenterWindowItemClick(Sender: TObject); virtual;
     procedure mnuWindowSourceItemClick(Sender: TObject); virtual;
 
     procedure ConnectOutputFilter;
@@ -225,12 +226,54 @@ end;
 procedure TMainIDEBase.mnuWindowItemClick(Sender: TObject);
 var
   i: Integer;
+  Form: TCustomForm;
 begin
   i:=Screen.CustomFormCount-1;
   while (i>=0) do begin
-    if Screen.CustomForms[i].Caption=(Sender as TIDEMenuCommand).Caption then
+    Form:=Screen.CustomForms[i];
+    if Form.Caption=(Sender as TIDEMenuCommand).Caption then
     begin
-      IDEWindowCreators.ShowForm(Screen.CustomForms[i],true);
+      IDEWindowCreators.ShowForm(Form,true);
+      break;
+    end;
+    dec(i);
+  end;
+end;
+
+procedure TMainIDEBase.mnuCenterWindowItemClick(Sender: TObject);
+var
+  i: Integer;
+  Form: TCustomForm;
+  r, NewBounds: TRect;
+begin
+  i:=Screen.CustomFormCount-1;
+  while (i>=0) do begin
+    Form:=Screen.CustomForms[i];
+    if Form.Caption=(Sender as TIDEMenuCommand).Caption then
+    begin
+      // show
+      if not Form.IsVisible then
+        IDEWindowCreators.ShowForm(Form,true);
+      // move to monitor of main IDE bar
+      Form:=GetParentForm(Form);
+      if Form<>MainIDEBar then begin
+        // center on main IDE
+        Form.MakeFullyVisible(MainIDEBar.Monitor,true);
+        debugln(['TMainIDEBase.mnuCenterWindowItemClick ',DbgSName(Form),' ',dbgs(Form.BoundsRect)]);
+        r:=MainIDEBar.BoundsRect;
+        if Form.Width<MainIDEBar.Width then
+          NewBounds.Left:=(r.Left+r.Right-Form.Width) div 2
+        else
+          NewBounds.Left:=r.Left+50;
+        if Form.Height<MainIDEBar.Height then
+          NewBounds.Top:=(r.Top+r.Bottom-Form.Height) div 2
+        else
+          NewBounds.Top:=r.Top+50;
+        NewBounds.Right:=NewBounds.Left+Max(200,Form.Width);
+        NewBounds.Bottom:=NewBounds.Top+Max(200,Form.Height);
+        debugln(['TMainIDEBase.mnuCenterWindowItemClick New=',dbgs(NewBounds)]);
+        Form.BoundsRect:=NewBounds;
+      end;
       break;
     end;
     dec(i);
@@ -969,6 +1012,9 @@ begin
     CreateMenuItem(ParentMI,itmWindowManager,'itmWindowManager', lisDlgEditorWindowManager, 'pkg_files');
     // Populated later with a list of editor names
     CreateMenuSeparatorSection(mnuWindow,itmWindowLists,'itmWindowLists');
+    CreateMenuSeparatorSection(mnuWindow,itmCenterWindowLists,'itmCenterWindowLists');
+    itmCenterWindowLists.ChildsAsSubMenu:=true;
+    itmCenterWindowLists.Caption:=lisCenterALostWindow;
     CreateMenuSeparatorSection(mnuWindow,itmTabLists,'itmTabLists');
     CreateMenuSubSection(itmTabLists,itmTabListProject,'itmTabListProject', dlgEnvProject);
     CreateMenuSeparatorSection(itmTabLists, itmTabListPackage, 'itmTabListPackage');
@@ -1301,14 +1347,19 @@ begin
     if (AForm.Designer<>nil) and (WindowsList.IndexOf(AForm)<0) then
       WindowsList.Add(AForm);
   end;
-  // create menuitems
+  // create menuitems for all windows
   ItemCount := WindowsList.Count;
   for i:=0 to WindowsList.Count-1 do
   begin
+    // in the 'bring to front' list
     CurMenuItem := GetMenuItem(i, itmWindowLists);
     CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
     CurMenuItem.MenuItem.Checked := WindowMenuActiveForm = TCustomForm(WindowsList[i]);
     CurMenuItem.OnClick:=@mnuWindowItemClick;
+    // in the 'center' list
+    CurMenuItem := GetMenuItem(i, itmCenterWindowLists);
+    CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
+    CurMenuItem.OnClick:=@mnuCenterWindowItemClick;
   end;
   //create source page menuitems
   itmTabListProject.Visible := False;
@@ -1386,6 +1437,7 @@ begin
   end;
   // remove unused menuitems
   ClearMenuItem(ItemCount, itmWindowLists);
+  ClearMenuItem(ItemCount, itmCenterWindowLists);
   WindowsList.Free;           // clean up
 end;
 
