@@ -122,6 +122,11 @@ resourcestring
   adrsDockingAnchordocking = 'Docking / Anchordocking';
   adrsHeaderStyle = 'Header Style:';
 
+  adrsFlattenHeaders = 'Flatten headers';
+  adrsFlattenHeadersHint = 'Flat headers of docked controls';
+  adrsFilledHeaders = 'Filled headers';
+  adrsFilledHeadersHint = 'Fill headers of docked controls';
+
 implementation
 
 end.

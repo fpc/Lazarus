@@ -1287,6 +1287,8 @@ begin
   HideHeaderCaptionFloatingControl:=Config.GetValue('HideHeaderCaptionFloatingControl',true);
   AllowDragging:=Config.GetValue('AllowDragging',true);
   HeaderStyle:=StrToADHeaderStyle(Config.GetValue('HeaderStyle',ADHeaderStyleNames[adhsDefault]));
+  HeaderFlatten:=Config.GetValue('HeaderFlatten',true);
+  HeaderFilled:=Config.GetValue('HeaderFilled',true);
   Config.UndoAppendBasePath;
 end;
 
@@ -1306,6 +1308,8 @@ begin
   Config.SetDeleteValue('HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
   Config.SetDeleteValue('AllowDragging',AllowDragging,true);
   Config.SetDeleteValue('HeaderStyle',ADHeaderStyleNames[HeaderStyle],ADHeaderStyleNames[adhsDefault]);
+  Config.SetDeleteValue('HeaderFlatten',HeaderFlatten,true);
+  Config.SetDeleteValue('HeaderFilled',HeaderFilled,true);
   Config.UndoAppendBasePath;
 end;
 
@@ -1325,6 +1329,8 @@ begin
       and (HideHeaderCaptionFloatingControl=Settings.HideHeaderCaptionFloatingControl)
       and (AllowDragging=Settings.AllowDragging)
       and (HeaderStyle=Settings.HeaderStyle)
+      and (HeaderFlatten=Settings.HeaderFlatten)
+      and (HeaderFilled=Settings.HeaderFilled)
       ;
 end;
 

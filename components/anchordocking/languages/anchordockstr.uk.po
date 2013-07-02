@@ -113,6 +113,22 @@ msgstr "Помилка завантаження віконної схеми з �
 msgid "Error writing window layout to file \"%s\"%s%s"
 msgstr "Помилка запису віконної схеми в файл \"%s\"%s%s"
 
+#: anchordockstr.adrsfilledheaders
+msgid "Filled headers"
+msgstr ""
+
+#: anchordockstr.adrsfilledheadershint
+msgid "Fill headers of docked controls"
+msgstr ""
+
+#: anchordockstr.adrsflattenheaders
+msgid "Flatten headers"
+msgstr ""
+
+#: anchordockstr.adrsflattenheadershint
+msgid "Flat headers of docked controls"
+msgstr ""
+
 #: anchordockstr.adrsgeneraldockingoptions
 msgid "General docking options"
 msgstr "Загальні параметри стикування"

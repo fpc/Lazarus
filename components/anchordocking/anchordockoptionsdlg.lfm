@@ -225,6 +225,8 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     Top = 253
     Width = 99
     Caption = 'FlattenHeaders'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 9
   end
   object FilledHeaders: TCheckBox
@@ -236,6 +238,8 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     Top = 272
     Width = 91
     Caption = 'FilledHeaders'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 10
   end
 end

@@ -110,6 +110,22 @@ msgstr "Ошибка загрузки разбивки окна из файла 
 msgid "Error writing window layout to file \"%s\"%s%s"
 msgstr "Ошибка записи разбивки окна в файл \"%s\"%s%s"
 
+#: anchordockstr.adrsfilledheaders
+msgid "Filled headers"
+msgstr ""
+
+#: anchordockstr.adrsfilledheadershint
+msgid "Fill headers of docked controls"
+msgstr ""
+
+#: anchordockstr.adrsflattenheaders
+msgid "Flatten headers"
+msgstr ""
+
+#: anchordockstr.adrsflattenheadershint
+msgid "Flat headers of docked controls"
+msgstr ""
+
 #: anchordockstr.adrsgeneraldockingoptions
 msgid "General docking options"
 msgstr "Общие параметры стыковки"

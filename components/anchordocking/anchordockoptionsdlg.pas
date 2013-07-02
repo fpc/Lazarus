@@ -313,7 +313,12 @@ begin
     TheSettings.HideHeaderCaptionFloatingControl;
 
   FlattenHeaders.Checked:=TheSettings.HeaderFlatten;
+  FlattenHeaders.Caption:=adrsFlattenHeaders;
+  FlattenHeaders.Hint:=adrsFlattenHeadersHint;
+
   FilledHeaders.Checked:=TheSettings.HeaderFilled;
+  FilledHeaders.Caption:=adrsFilledHeaders;
+  FilledHeaders.Hint:=adrsFilledHeadersHint;
 end;
 
 end.

@@ -110,6 +110,22 @@ msgstr "Chyba načítání rozvržení oken ze souboru \"%s\"%s%s"
 msgid "Error writing window layout to file \"%s\"%s%s"
 msgstr "Chyba zapisování rozvržení oken do souboru \"%s\"%s%s"
 
+#: anchordockstr.adrsfilledheaders
+msgid "Filled headers"
+msgstr ""
+
+#: anchordockstr.adrsfilledheadershint
+msgid "Fill headers of docked controls"
+msgstr ""
+
+#: anchordockstr.adrsflattenheaders
+msgid "Flatten headers"
+msgstr ""
+
+#: anchordockstr.adrsflattenheadershint
+msgid "Flat headers of docked controls"
+msgstr ""
+
 #: anchordockstr.adrsgeneraldockingoptions
 msgid "General docking options"
 msgstr "Obecné volby ukotvení"
