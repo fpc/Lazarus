@@ -6224,10 +6224,8 @@ begin
     NeedSection:=true;
   end;
   if NeedSection then
-    NewCode:='var'+Beauty.LineEnd
-      +Beauty.GetIndentStr(Beauty.Indent)+NewCode;
-  NewCode:=Beauty.BeautifyStatement(NewCode,
-    Indent,[bcfIndentExistingLineBreaks]);
+    NewCode:='var'+Beauty.LineEnd+Beauty.GetIndentStr(Beauty.Indent)+NewCode;
+  NewCode:=Beauty.BeautifyStatement(NewCode,Indent,[bcfIndentExistingLineBreaks]);
 
   SourceChangeCache.BeginUpdate;
   try
