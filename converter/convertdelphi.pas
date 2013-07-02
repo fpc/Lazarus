@@ -698,7 +698,7 @@ begin
       if LfmFixer.ConvertAndRepair<>mrOK then begin
         LazarusIDE.DoJumpToCompilerMessage(-1,true);
         fOwnerConverter.fErrorMsg:='Problems when repairing form file '
-                                  +fOrigUnitFilename;
+                                  +ChangeFileExt(fOrigUnitFilename, '.lfm');
         exit(mrAbort);
       end;
     finally
