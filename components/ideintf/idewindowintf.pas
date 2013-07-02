@@ -1623,7 +1623,7 @@ begin
       if (csDesigning in AForm.ComponentState) and (AForm.Designer <> nil) then
         ARestoreVisible := AForm.Visible;
 
-      AForm.ShowOnTop;
+      AForm.EnsureVisible(true);
 
       if (csDesigning in AForm.ComponentState) and (AForm.Designer <> nil) then
         AForm.Visible := ARestoreVisible;
@@ -1640,7 +1640,7 @@ begin
           // issue #19769
           if AForm.Visible and not (fsModal in AForm.FormState) then
             AForm.Visible := False;
-          AForm.ShowOnTop;
+          AForm.EnsureVisible(true);
         end;
       end;
 
