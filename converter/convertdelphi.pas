@@ -504,6 +504,8 @@ begin
 end;
 
 function TDelphiUnit.CopyAndLoadFile: TModalResult;
+var
+  CodeOk, CodeFixed: Boolean;
 begin
   fOwnerConverter.fSettings.AddLogLine(Format(lisConvDelphiConvertingFile,
                                               [fOrigUnitFilename]));
@@ -536,8 +538,25 @@ begin
   // Fix include file names.
   Result:=FixIncludeFiles;
   if Result<>mrOK then exit;
-  // Create a tool for missing units.
-  fUsedUnitsTool:=TUsedUnitsTool.Create(fCTLink, fOrigUnitFilename);
+  CodeFixed:=False;
+  repeat
+    CodeOk:=True;
+    try
+      // Create a tool for missing units.
+      fUsedUnitsTool:=TUsedUnitsTool.Create(fCTLink, fOrigUnitFilename);
+    except
+      // If CodeTool's BuildTree raised exception, try dummy replacement for
+      //  some known problematic syntax, currently only OleVariant.type.
+      if CodeFixed then
+        Raise               // There was a second exception -> we are doomed!
+      else begin
+        with fPascalBuffer do
+          Source:=StringReplace(Source,'.type','.&type',[rfReplaceAll]);
+        CodeOk := False;
+        CodeFixed := True;  // Try replacements only once
+      end;
+    end;
+  until CodeOk;
   if fOwnerConverter is TConvertDelphiProjPack then
     with TConvertDelphiProjPack(fOwnerConverter) do begin
       fUsedUnitsTool.OnCheckPackageDependency:=@CheckPackageDep;
