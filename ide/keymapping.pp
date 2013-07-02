@@ -653,7 +653,7 @@ begin
     ecDiff                    : Result:= srkmecDiff;
 
     // window menu
-    ecWindowManager           : Result:= lisEditorWindowManager;
+    ecManageSourceEditors           : Result:= lisSourceEditorWindowManager;
 
     // help menu
     ecAboutLazarus            : Result:= lisAboutLazarus;
@@ -1231,7 +1231,7 @@ begin
   ecDiff:                SetSingle(VK_UNKNOWN,[]);
 
   // window menu
-  ecWindowManager:       SetSingle(VK_W,[ssShift,ssCtrl]);
+  ecManageSourceEditors:       SetSingle(VK_W,[ssShift,ssCtrl]);
 
   // help menu
   ecAboutLazarus:        SetSingle(VK_UNKNOWN,[]);
@@ -1665,7 +1665,7 @@ begin
   ecDiff:                SetSingle(VK_UNKNOWN,[]);
 
   // window menu
-  ecWindowManager:       SetSingle(VK_UNKNOWN,[]);
+  ecManageSourceEditors:       SetSingle(VK_UNKNOWN,[]);
 
   // help menu
   ecAboutLazarus:        SetSingle(VK_UNKNOWN,[]);
@@ -2288,7 +2288,7 @@ begin
   ecDiff:                SetSingle(VK_UNKNOWN,[]);
 
   // window menu
-  ecWindowManager:       SetSingle(VK_W,[ssShift,ssCtrl]);
+  ecManageSourceEditors:       SetSingle(VK_W,[ssShift,ssCtrl]);
 
   // help menu
   ecAboutLazarus:        SetSingle(VK_UNKNOWN,[]);
@@ -2955,7 +2955,7 @@ begin
   AddDefault(C, 'Convert encoding', lisConvertEncodingOfProjectsPackages, ecConvertEncoding);
   // window menu
 //  C:=Categories[AddCategory('WindowMenu',srkmCarWindowMenu,nil)];
-  AddDefault(C, 'Editor Window Manager', lisEditorWindowManager, ecWindowManager);
+  AddDefault(C, 'Editor Window Manager', lisSourceEditorWindowManager, ecManageSourceEditors);
 
   // help menu
   C:=Categories[AddCategory('HelpMenu',srkmCarHelpMenu,nil)];

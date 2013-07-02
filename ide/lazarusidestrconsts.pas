@@ -486,8 +486,8 @@ resourcestring
   lisMenuBuildLazarus = 'Build Lazarus with Current Profile';
   lisMenuBuildLazarusProf = 'Build Lazarus with Profile: %s';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus" ...';
-  lisDlgEditorWindowManager = 'Editor Window Manager ...';
-  lisEditorWindowManager = 'Editor Window Manager';
+  lisManageSourceEditors = 'Manage Source Editors ...';
+  lisSourceEditorWindowManager = 'Source Editor Window Manager';
   lisProjectCount = '%d projects';
   lisIncludeSubDirectories = 'Include subdirectories';
   lisIncludeAllSubDirectories = 'Include all subdirectories';

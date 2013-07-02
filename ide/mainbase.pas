@@ -1009,7 +1009,7 @@ begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuWindow,itmWindowManagers,'itmWindowManagers');
     ParentMI:=itmWindowManagers;
-    CreateMenuItem(ParentMI,itmWindowManager,'itmWindowManager', lisDlgEditorWindowManager, 'pkg_files');
+    CreateMenuItem(ParentMI,itmWindowManager,'itmWindowManager', lisManageSourceEditors, 'pkg_files');
     // Populated later with a list of editor names
     CreateMenuSeparatorSection(mnuWindow,itmWindowLists,'itmWindowLists');
     CreateMenuSeparatorSection(mnuWindow,itmCenterWindowLists,'itmCenterWindowLists');
@@ -1267,7 +1267,7 @@ begin
     itmToolConfigureBuildLazarus.Command:=GetCommand(ecConfigBuildLazarus);
 
     // window menu
-    itmWindowManager.Command:=GetCommand(ecWindowManager);
+    itmWindowManager.Command:=GetCommand(ecManageSourceEditors);
 
     // help menu
     itmHelpAboutLazarus.Command:=GetCommand(ecAboutLazarus);

@@ -90,7 +90,7 @@ begin
 
   PopulateList;          // Populate the list with all open editor file names
   // Captions
-  Caption:=lisEditorWindowManager;
+  Caption:=lisSourceEditorWindowManager;
   ActivateMenuItem.Caption:=lisActivate;
   CloseMenuItem.Caption:=lisClose;
   CheckAllCheckBox.Caption:=lisCheckAll;

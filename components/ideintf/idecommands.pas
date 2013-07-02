@@ -313,7 +313,7 @@ const
   ecBuildAdvancedLazarus    = ecFirstLazarus + 832;
 
   // window menu
-  ecWindowManager           = ecFirstLazarus + 840;
+  ecManageSourceEditors     = ecFirstLazarus + 840;
 
   // help menu
   ecAboutLazarus            = ecFirstLazarus + 900;
@@ -1478,7 +1478,7 @@ const
     (Value: ecBuildAdvancedLazarus;                   Name: 'ecBuildAdvancedLazarus'),
 
   // window menu
-    (Value: ecWindowManager;                          Name: 'ecWindowManager'),
+    (Value: ecManageSourceEditors;                          Name: 'ecWindowManager'),
 
   // help menu
     (Value: ecAboutLazarus;                           Name: 'ecAboutLazarus'),
