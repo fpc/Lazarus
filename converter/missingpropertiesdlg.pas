@@ -192,16 +192,20 @@ end;
 function TDFMConverter.FixWideString(aInStream, aOutStream: TMemoryStream): TModalResult;
 // Convert Windows WideString syntax (#xxx) to UTF8
 
-  function UnicodeNumber(const InS: string; Ind: integer): string;
+  function UnicodeNumber(const InS: string; var Ind: integer): string;
   // Convert the number to UTF8
   var
-    c: Integer;
+    Start, c: Integer;
   begin
-    c := StrToInt(copy(InS, Ind, 3));
-    if c > 255 then
-      Result := UnicodeToUTF8(c)
+    Inc(Ind);                            // Skip '#'
+    Start:=Ind;
+    while InS[Ind] in ['0'..'9'] do
+      Inc(Ind);                          // Collect numbers
+    c:=StrToInt(Copy(InS, Start, Ind-Start));
+    if c>255 then
+      Result:=UnicodeToUTF8(c)
     else
-      Result := SysToUTF8(chr(c)); // or use a function in lconvencoding.
+      Result:=SysToUTF8(chr(c));
   end;
 
   function CollectString(const InS: string; var Ind: integer): string;
@@ -215,17 +219,18 @@ function TDFMConverter.FixWideString(aInStream, aOutStream: TMemoryStream): TMod
     repeat
       ch:=InS[Ind];
       if ch in [#13,#10] then Break;
-      if ch = '''' then
-        InQuote:=not InQuote
-      else if InQuote then
-        Result:=Result+ch
-      else if ch = '#' then begin
-        Result:=Result+UnicodeNumber(InS, Ind+1);
-        Inc(Ind, 3);
+      if ch = '''' then begin
+        InQuote:=not InQuote;            // Toggle quote
+        Inc(Ind);
       end
+      else if InQuote then begin
+        Result:=Result+ch;               // Inside quotes copy characters as is.
+        Inc(Ind);
+      end
+      else if ch = '#' then
+        Result:=Result+UnicodeNumber(InS, Ind)
       else
         Break;
-      Inc(Ind);
     until False;
     Result:=QuotedStr(Result);
   end;
