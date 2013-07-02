@@ -2305,6 +2305,8 @@ begin
     nil,@CreateIDEWindow,'250','250','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwComponentList],
     nil,@CreateIDEWindow,'250','250','','');
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwEditorFileManager],
+    nil,@CreateIDEWindow,'200','200','','');
 end;
 
 procedure TMainIDE.RestoreIDEWindows;
@@ -4974,7 +4976,7 @@ end;
 
 procedure TMainIDE.mnuWindowManagerClicked(Sender: TObject);
 begin
-  ShowEditorFileManagerForm;
+  ShowEditorFileManagerForm(true);
 end;
 
 procedure TMainIDE.SaveEnvironment(Immediately: boolean);
@@ -6132,6 +6134,11 @@ begin
   begin
     DoShowComponentList(false);
     AForm:=ComponentListForm;
+  end
+  else if ItIs(NonModalIDEWindowNames[nmiwEditorFileManager]) then
+  begin
+    ShowEditorFileManagerForm(false);
+    AForm:=EditorFileManagerForm;
   end
   else if ItIs(DefaultObjectInspectorName) then
   begin

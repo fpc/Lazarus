@@ -5,9 +5,10 @@ unit EditorFileManager;
 interface
 
 uses
-  Classes, sysutils, Forms, Controls, CheckLst, ButtonPanel, StdCtrls,
-  Buttons, ExtCtrls, Menus, LCLProc, LCLType, IDEImagesIntf, LazIDEIntf,
-  IDEHelpIntf, SrcEditorIntf, SourceEditor, LazarusIDEStrConsts, ListFilterEdit;
+  Classes, sysutils, Forms, Controls, CheckLst, ButtonPanel, StdCtrls, Buttons,
+  ExtCtrls, Menus, LCLProc, LCLType, IDEImagesIntf, LazIDEIntf, IDEHelpIntf,
+  SrcEditorIntf, IDEWindowIntf, SourceEditor, LazarusIDEStrConsts,
+  ListFilterEdit;
 
 type
 
@@ -64,20 +65,20 @@ type
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
   end;
 
-procedure ShowEditorFileManagerForm;
+var
+  EditorFileManagerForm: TEditorFileManagerForm;
+
+procedure ShowEditorFileManagerForm(BringToFront: boolean);
 
 implementation
 
 {$R *.lfm}
 
-var
-  EditorFileManagerForm: TEditorFileManagerForm;
-
-procedure ShowEditorFileManagerForm;
+procedure ShowEditorFileManagerForm(BringToFront: boolean);
 begin
-  if EditorFileManagerForm = nil then
-    EditorFileManagerForm := TEditorFileManagerForm.Create(SourceEditorManager);
-  EditorFileManagerForm.Show;
+  if EditorFileManagerForm = Nil then
+    Application.CreateForm(TEditorFileManagerForm, EditorFileManagerForm);
+  IDEWindowCreators.ShowForm(EditorFileManagerForm,BringToFront);
 end;
 
 { TEditorFileManagerForm }

@@ -269,9 +269,7 @@ begin
   if UnitDependenciesWindow = Nil then
     Application.CreateForm(TUnitDependenciesWindow, UnitDependenciesWindow);
   if Show then
-  begin
     IDEWindowCreators.ShowForm(UnitDependenciesWindow,BringToFront);
-  end;
 end;
 
 function CompareUDBaseNodes(UDNode1, UDNode2: Pointer): integer;

@@ -81,7 +81,8 @@ type
     nmiwClipbrdHistoryName,
     nmiwPkgGraphExplorer,
     nmiwProjectInspector,
-    // extra
+    nmiwEditorFileManager,
+    // not shown at startup
     nmiwSearchResultsViewName,
     nmiwAnchorEditor,
     nmiwTabOrderEditor,
@@ -116,7 +117,8 @@ const
     'ClipBrdHistory',
     'PkgGraphExplorer',
     'ProjectInspector',
-    // extra
+    'EditorFileManager',
+    // not shown at startup
     'SearchResults',
     'AnchorEditor',
     'TabOrderEditor',
