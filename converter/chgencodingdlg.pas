@@ -311,7 +311,7 @@ begin
           end else begin
             Buf:=CodeToolBoss.LoadFile(CurFilename,true,false);
             if Buf<>nil then begin
-              DebugLn(['TChgEncodingDialog.GetFiles Filename=',CurFilename,' Encoding=',NormalizeEncoding(Buf.DiskEncoding)]);
+              //DebugLn(['TChgEncodingDialog.GetFiles Filename=',CurFilename,' Encoding=',NormalizeEncoding(Buf.DiskEncoding)]);
               CurEncoding:=NormalizeEncoding(Buf.DiskEncoding);
               Result:=True;
               if CurEncoding=NewEncoding then
