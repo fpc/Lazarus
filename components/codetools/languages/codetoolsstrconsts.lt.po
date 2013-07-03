@@ -809,7 +809,9 @@ msgid "source is not unit"
 msgstr "šaltinis nėra modulis"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-msgid "source not found: unit %s"
+#, fuzzy
+#| msgid "source not found: unit %s"
+msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "pirminis kodas nerastas: modulis %s"
 
 #: codetoolsstrconsts.ctssourceofunitnotfound

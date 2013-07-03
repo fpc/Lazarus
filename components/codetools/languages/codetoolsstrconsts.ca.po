@@ -808,7 +808,9 @@ msgid "source is not unit"
 msgstr "la font no és una unitat"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-msgid "source not found: unit %s"
+#, fuzzy
+#| msgid "source not found: unit %s"
+msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "no s'ha trobat la font: unitat %s"
 
 #: codetoolsstrconsts.ctssourceofunitnotfound

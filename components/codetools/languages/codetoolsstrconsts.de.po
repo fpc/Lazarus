@@ -810,7 +810,9 @@ msgid "source is not unit"
 msgstr "Quelle ist keine Unit"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-msgid "source not found: unit %s"
+#, fuzzy
+#| msgid "source not found: unit %s"
+msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "Quelltext nicht gefunden: Unit %s"
 
 #: codetoolsstrconsts.ctssourceofunitnotfound

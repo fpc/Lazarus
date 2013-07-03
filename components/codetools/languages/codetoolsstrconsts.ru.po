@@ -807,7 +807,9 @@ msgid "source is not unit"
 msgstr "исходный код не является модулем"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-msgid "source not found: unit %s"
+#, fuzzy
+#| msgid "source not found: unit %s"
+msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "не найден исходный код: модуль %s"
 
 #: codetoolsstrconsts.ctssourceofunitnotfound
