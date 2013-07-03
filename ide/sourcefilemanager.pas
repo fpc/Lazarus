@@ -3857,7 +3857,21 @@ var
   UnitFilename: String;
   PascalBuf: TCodeBuffer;
   i: integer;
+  LFMFilename: String;
+  SrcEdit: TSourceEditor;
 begin
+  if (LFMUnitInfo<>nil)
+  and FilenameIsPascalUnit(LFMUnitInfo.Filename) then begin
+    LFMFilename:=ChangeFileExt(LFMUnitInfo.Filename,'.lfm');
+    if FileExistsInIDE(LFMFilename,[])
+    and (OpenEditorFile(LFMFilename,-1,-1,nil,[])=mrOk)
+    and (SourceEditorManager.ActiveEditor<>nil)
+    then begin
+      SrcEdit:=SourceEditorManager.ActiveEditor;
+      LFMUnitInfo:=Project1.UnitInfoWithFilename(SrcEdit.FileName);
+    end;
+  end;
+
   // check, if a .lfm file is opened in the source editor
   if (LFMUnitInfo=nil) or
     ((CompareFileExt(LFMUnitInfo.Filename,'.lfm',false)<>0) and
