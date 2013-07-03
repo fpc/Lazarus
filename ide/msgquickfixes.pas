@@ -590,9 +590,8 @@ begin
         if (UsedByOwner is TIDEPackage)
         and (CompareTextCT(TIDEPackage(UsedByOwner).Name,PkgName)=0) then
         begin
-          // unit of package is not found by a unit of package
-          s+='. Check search path of package '+TIDEPackage(UsedByOwner).Name
-            +' and unit cycles.';
+          // two units of a package can not find each other
+          s+='. Check search path package '+TIDEPackage(UsedByOwner).Name+', try a clean rebuild, check implementation uses sections.';
         end else begin
           if PkgName<>'' then
             s+='. Check if package '+PkgName+' is in the dependencies';
