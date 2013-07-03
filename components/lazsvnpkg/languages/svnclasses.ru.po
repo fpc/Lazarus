@@ -166,7 +166,7 @@ msgstr "Статус свойства"
 
 #: svnclasses.rsrefresh
 msgid "Refresh"
-msgstr ""
+msgstr "Обновить"
 
 #: svnclasses.rsremove
 msgid "Remove from version control (keep local)"
