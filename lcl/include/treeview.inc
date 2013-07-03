@@ -4870,6 +4870,7 @@ begin
     Exit;
   NodeSelected := (Node.Selected) or (Node.MultiSelected);
   Canvas.Font.Color := Font.Color;
+  PaintImages := True;
   if IsCustomDrawn(dtItem, cdPrePaint) then
   begin
     DrawState := [];
@@ -4880,9 +4881,7 @@ begin
     if Node.MultiSelected then
       Include(DrawState, cdsMarked);
     if not CustomDrawItem(Node, DrawState, cdPrePaint, PaintImages) then Exit;
-  end
-  else
-    PaintImages := True;
+  end;
 
   VertMid := (NodeRect.Top + NodeRect.Bottom) div 2;
   HasExpandSign := ShowButtons and Node.HasChildren and ((tvoShowRoot in Options) or (Node.Parent <> nil));
@@ -4904,7 +4903,7 @@ begin
       DrawExpandSign(x - Indent + (Indent shr 1), VertMid, Node.Expanded);
 
     // draw icon
-    if (Images <> nil) and PaintImages then
+    if (Images <> nil) then
     begin
       if FSelectedNode <> Node then
       begin
@@ -4918,23 +4917,27 @@ begin
       end;
       if (ImgIndex >= 0) and (ImgIndex < Images.Count) then
       begin
-      	if Node.OverlayIndex < 0 then
-          Images.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
-             ImgIndex, Node.FNodeEffect)
-      	else
-          Images.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
-             ImgIndex, Node.OverlayIndex, Node.FNodeEffect);
+        if PaintImages then
+        begin
+      	  if Node.OverlayIndex < 0 then
+            Images.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
+               ImgIndex, Node.FNodeEffect)
+      	  else
+            Images.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
+               ImgIndex, Node.OverlayIndex, Node.FNodeEffect);
+        end;
         inc(x, Images.Width + 2);
       end;
     end;
 
     // draw state icon
-    if (StateImages <> nil) and PaintImages then
+    if (StateImages <> nil) then
     begin
       if (Node.StateIndex >= 0) and (Node.StateIndex < StateImages.Count) then
       begin
-        StateImages.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - StateImages.Height) div 2,
-          Node.StateIndex, True);
+        if PaintImages then
+          StateImages.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - StateImages.Height) div 2,
+            Node.StateIndex, True);
         inc(x, StateImages.Width + 2);
       end;
     end;
@@ -4959,6 +4962,7 @@ begin
     // draw insert mark
     DrawInsertMark;
   end;
+  PaintImages := true;
   if IsCustomDrawn(dtItem, cdPostPaint) then
   begin
     DrawState:=[];
@@ -4969,9 +4973,7 @@ begin
     if Node.MultiSelected then
       Include(DrawState,cdsMarked);
     if not CustomDrawItem(Node,DrawState,cdPostPaint,PaintImages) then exit;
-  end
-  else
-    PaintImages := true;
+  end;
 end;
 
 procedure TCustomTreeView.GetImageIndex(Node: TTreeNode);
