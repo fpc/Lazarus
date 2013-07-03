@@ -2495,22 +2495,12 @@ begin
 end;
 
 procedure TAnchorDockMaster.MakeVisible(AControl: TControl; SwitchPages: boolean);
-var
-  Form: TCustomForm;
 begin
   while AControl<>nil do begin
     AControl.Visible:=true;
     if SwitchPages and (AControl is TAnchorDockPage) then
       TAnchorDockPageControl(AControl.Parent).PageIndex:=
         TAnchorDockPage(AControl).PageIndex;
-    if AControl.Parent=nil then begin
-      if AControl is TCustomForm then begin
-        Form:=TCustomForm(AControl);
-        if Form.Monitor<>nil then
-          Form.MakeFullyVisible(nil,true);
-      end;
-      break;
-    end;
     AControl:=AControl.Parent;
   end;
 end;
