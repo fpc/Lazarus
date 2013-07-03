@@ -640,22 +640,20 @@ end;
 function CheckFPCSrcDirQuality(ADirectory: string; out Note: string;
   FPCVer: string): TSDFilenameQuality;
 
-  function SubDirExists(SubDir: string; var q: TSDFilenameQuality): boolean;
+  function SubDirExists(SubDir: string): boolean;
   begin
     SubDir:=SetDirSeparators(SubDir);
     if DirPathExistsCached(ADirectory+SubDir) then exit(true);
     Result:=false;
     Note:=Format(lisDirectoryNotFound2, [SubDir]);
-    q:=sddqIncomplete;
   end;
 
-  function SubFileExists(SubFile: string; var q: TSDFilenameQuality): boolean;
+  function SubFileExists(SubFile: string): boolean;
   begin
     SubFile:=SetDirSeparators(SubFile);
     if FileExistsCached(ADirectory+SubFile) then exit(true);
     Result:=false;
     Note:=Format(lisFileNotFound3, [SubFile]);
-    q:=sddqIncomplete;
   end;
 
 var
@@ -676,9 +674,10 @@ begin
     exit;
   end;
   ADirectory:=AppendPathDelim(ADirectory);
-  if not SubDirExists('rtl',Result) then exit;
-  if not SubDirExists('packages',Result) then exit;
-  if not SubFileExists('rtl/linux/system.pp',Result) then exit;
+  if not SubDirExists('rtl') then exit;
+  if not SubDirExists('packages') then exit;
+  Result:=sddqIncomplete;
+  if not SubFileExists('rtl/linux/system.pp') then exit;
   // check version
   if (FPCVer<>'') then
   begin
