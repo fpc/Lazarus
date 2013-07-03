@@ -123,8 +123,8 @@ resourcestring
   adrsHeaderStyle = 'Header Style:';
 
   adrsFlattenHeaders = 'Flatten headers';
-  adrsFlattenHeadersHint = 'Flat headers of docked controls';
-  adrsFilledHeaders = 'Filled headers';
+  adrsFlattenHeadersHint = 'Flatten headers of docked controls';
+  adrsFilledHeaders = 'Fill headers';
   adrsFilledHeadersHint = 'Fill headers of docked controls';
 
 implementation

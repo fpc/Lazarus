@@ -111,7 +111,7 @@ msgid "Error writing window layout to file \"%s\"%s%s"
 msgstr "Chyba zapisování rozvržení oken do souboru \"%s\"%s%s"
 
 #: anchordockstr.adrsfilledheaders
-msgid "Filled headers"
+msgid "Fill headers"
 msgstr ""
 
 #: anchordockstr.adrsfilledheadershint
@@ -123,7 +123,7 @@ msgid "Flatten headers"
 msgstr ""
 
 #: anchordockstr.adrsflattenheadershint
-msgid "Flat headers of docked controls"
+msgid "Flatten headers of docked controls"
 msgstr ""
 
 #: anchordockstr.adrsgeneraldockingoptions
