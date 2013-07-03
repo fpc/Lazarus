@@ -71,6 +71,8 @@ type
     SaveAndRebuildButton: TBitBtn;
     UninstallButton: TBitBtn;
     procedure AddToInstallButtonClick(Sender: TObject);
+    function AvailableFilterEditGetImageIndex(Str: String; Data: TObject;
+      var AIsEnabled: Boolean): Integer;
     procedure LPKParsingTimerTimer(Sender: TObject);
     procedure OnAllLPKParsed(Sender: TObject);
     procedure TreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
@@ -290,6 +292,12 @@ begin
   AddToInstall;
 end;
 
+function TInstallPkgSetDialog.AvailableFilterEditGetImageIndex(Str: String;
+  Data: TObject; var AIsEnabled: Boolean): Integer;
+begin
+  Result:=0;
+end;
+
 procedure TInstallPkgSetDialog.LPKParsingTimerTimer(Sender: TObject);
 begin
   UpdateAvailablePackages(false);
@@ -358,6 +366,7 @@ begin
     if Unknown then
       Images.Draw(CurCanvas,x,y,ImgIndexOverlayUnknown);
   end;
+  PaintImages:=false;
 end;
 
 procedure TInstallPkgSetDialog.AvailableTreeViewDblClick(Sender: TObject);
