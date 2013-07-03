@@ -650,6 +650,10 @@ msgstr "Répertoire %s"
 msgid "%s Project"
 msgstr "Projet %s"
 
+#: codetoolsstrconsts.ctsneededbymode
+msgid " (needed by mode \"%s\")"
+msgstr ""
+
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
 msgstr "On ne permet pas des définitions imbriqués %s"

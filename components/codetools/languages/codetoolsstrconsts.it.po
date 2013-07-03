@@ -647,6 +647,10 @@ msgstr "Directory %s"
 msgid "%s Project"
 msgstr "Progetto %s"
 
+#: codetoolsstrconsts.ctsneededbymode
+msgid " (needed by mode \"%s\")"
+msgstr ""
+
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
 msgstr "Le definizioni annidate %s non sono permesse"

@@ -650,6 +650,10 @@ msgstr " Direktori %s"
 msgid "%s Project"
 msgstr "%s Proyek"
 
+#: codetoolsstrconsts.ctsneededbymode
+msgid " (needed by mode \"%s\")"
+msgstr ""
+
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
 msgstr "Pengulangan definisi %s tidak dibolehkan"

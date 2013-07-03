@@ -650,6 +650,10 @@ msgstr "%s aplankas"
 msgid "%s Project"
 msgstr "%s projektas"
 
+#: codetoolsstrconsts.ctsneededbymode
+msgid " (needed by mode \"%s\")"
+msgstr ""
+
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
 msgstr "Įdėtinės %s apibrėžtys neleidžiamos"

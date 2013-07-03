@@ -121,6 +121,7 @@ ResourceString
   // find declaration
   ctsUnitNotFound = 'unit not found: %s';
   ctsSourceNotFoundUnit = 'source not found: unit %s. Check your FPC source directory.';
+  ctsNeededByMode = ' (needed by mode "%s")';
   ctsIdentifierNotFound = 'identifier not found: %s';
   ctsNotEnoughGenParams = 'Not enough actual generic parameters';
   ctsExpected = '"%s" expected';

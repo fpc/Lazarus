@@ -652,6 +652,10 @@ msgstr "%s 目录"
 msgid "%s Project"
 msgstr "%s 工程"
 
+#: codetoolsstrconsts.ctsneededbymode
+msgid " (needed by mode \"%s\")"
+msgstr ""
+
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
 msgstr "不允许嵌套定义 %s"

@@ -650,6 +650,10 @@ msgstr "Тека %s"
 msgid "%s Project"
 msgstr "Проект %s"
 
+#: codetoolsstrconsts.ctsneededbymode
+msgid " (needed by mode \"%s\")"
+msgstr ""
+
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
 msgstr "Вкладені %s визначення не дозволені"

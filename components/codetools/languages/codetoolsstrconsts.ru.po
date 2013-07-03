@@ -648,6 +648,10 @@ msgstr "Каталог %s"
 msgid "%s Project"
 msgstr "Проект %s"
 
+#: codetoolsstrconsts.ctsneededbymode
+msgid " (needed by mode \"%s\")"
+msgstr ""
+
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
 msgstr "Вложенные определения %s не разрешаются"
