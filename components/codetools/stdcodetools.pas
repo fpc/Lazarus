@@ -2100,7 +2100,7 @@ function TStandardCodeTool.CheckLFM(LFMBuf: TCodeBuffer; out LFMTree: TLFMTree;
   ObjectsMustExist: boolean): boolean;
 var
   RootContext: TFindContext;
-  
+
   function CheckLFMObjectValues(LFMObject: TLFMObjectNode;
     const ClassContext: TFindContext; ContextIsDefault: boolean): boolean; forward;
 
@@ -2269,19 +2269,20 @@ var
       end;
     end;
     if (not Result) and ErrorOnNotFound then begin
-      if (IdentContext.Node<>nil) and (not IsPublished) then
+      if (IdentContext.Node<>nil) and (not IsPublished) then begin
         LFMTree.AddError(lfmeIdentifierNotPublished,LFMNode,
                          'identifier '+IdentName+' is not published in class '
                          +'"'+ClassContext.Tool.ExtractClassName(ClassContext.Node,false,true)+'"',
                          DefaultErrorPosition);
-      //else  -- CheckLFMChildObject adds lfmeIdentifierMissingInCode error for this.
-      //  LFMTree.AddError(lfmeIdentifierNotFound,LFMNode,
-      //                   'identifier '+IdentName+' not found in class '
-      //                   +'"'+ClassContext.Tool.ExtractClassName(ClassContext.Node,false,true)+'"',
-      //                   DefaultErrorPosition);
+      end else begin
+        LFMTree.AddError(lfmeIdentifierNotFound,LFMNode,
+                         'identifier '+IdentName+' not found in class '
+                         +'"'+ClassContext.Tool.ExtractClassName(ClassContext.Node,false,true)+'"',
+                         DefaultErrorPosition);
+      end;
     end;
   end;
-  
+
   function FindClassNodeForLFMObject(LFMNode: TLFMTreeNode;
     DefaultErrorPosition: integer;
     StartTool: TFindDeclarationTool; DefinitionNode: TCodeTreeNode): TFindContext;
@@ -2356,7 +2357,7 @@ var
     if Context.Tool.CleanPosToCaret(Context.Node.StartPos,Caret) then
       Result:=Result+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')';
   end;
-  
+
   function FindClassContext(const ClassName: string): TFindContext;
   var
     Params: TFindDeclarationParams;
@@ -2407,7 +2408,7 @@ var
     IdentifierFound: Boolean;
   begin
     // find variable for object
-    
+
     // find identifier in Lookup Root
     LFMObjectName:=LFMObject.Name;
     //DebugLn('CheckChildObject A LFMObjectName="',LFMObjectName,'"');
@@ -2449,7 +2450,7 @@ var
                          LFMObject.NamePosition);
         exit;
       end;
-      
+
       // check if variable/property has a compatible type
       if (VariableTypeName<>'') then begin
         if (LFMObject.TypeName<>'')
@@ -2463,9 +2464,9 @@ var
                          LFMObject.NamePosition);
           exit;
         end;
-        
+
         // ToDo: check if variable/property type exists
-        
+
       end;
 
 
@@ -2477,16 +2478,11 @@ var
     end else begin
       // try the object type
       ClassContext:=FindClassContext(LFMObject.TypeName);
-      if ClassContext.Node=nil then
+      if ClassContext.Node=nil then begin
         // object type not found
         LFMTree.AddError(lfmeIdentifierNotFound,LFMObject,
-                         'type '+LFMObject.TypeName+' not found',
-                         LFMObject.TypeNamePosition)
-      else
-        // object type found but has no variable in code
-        LFMTree.AddError(lfmeIdentifierMissingInCode,LFMObject,
-           'no variable in code for '+LFMObjectName+', type '+LFMObject.TypeName,
-           LFMObject.TypeNamePosition);
+            'type '+LFMObject.TypeName+' not found',LFMObject.TypeNamePosition);
+      end;
     end;
     // check child LFM nodes
     if ClassContext.Node<>nil then
@@ -2494,7 +2490,7 @@ var
     else
       CheckLFMObjectValues(LFMObject,ParentContext,true);
   end;
-  
+
   function FindClassNodeForPropertyType(LFMProperty: TLFMPropertyNode;
     DefaultErrorPosition: integer; const PropertyContext: TFindContext): TFindContext;
   var
@@ -2548,7 +2544,7 @@ var
                        'property without name',LFMProperty.StartPos);
       exit;
     end;
-    
+
     // find every part of the property name
     SearchContext:=ParentContext;
     for i:=0 to LFMProperty.NameParts.Count-1 do begin
@@ -2597,7 +2593,7 @@ var
     end;
     Result:=true;
   end;
-  
+
   function CheckLFMRoot(RootLFMNode: TLFMTreeNode): boolean;
   var
     LookupRootLFMNode: TLFMObjectNode;
@@ -2605,7 +2601,7 @@ var
     RootClassNode: TCodeTreeNode;
   begin
     Result:=false;
-    
+
     //DebugLn('TStandardCodeTool.CheckLFM.CheckLFMRoot checking root ...');
     // get root object node
     if (RootLFMNode=nil) or (not (RootLFMNode is TLFMObjectNode)) then begin
@@ -2613,14 +2609,14 @@ var
       exit;
     end;
     LookupRootLFMNode:=TLFMObjectNode(RootLFMNode);
-    
+
     // get type name of root object
     LookupRootTypeName:=LookupRootLFMNode.TypeName;
     if LookupRootTypeName='' then begin
       LFMTree.AddError(lfmeMissingRoot,nil,'missing type of root object',1);
       exit;
     end;
-    
+
     // find root type
     if RootMustBeClassInIntf then begin
       RootClassNode:=FindClassNodeInInterface(LookupRootTypeName,true,false,false);
@@ -2644,7 +2640,7 @@ var
     end;
     Result:=CheckLFMObjectValues(LookupRootLFMNode,RootContext,false);
   end;
-  
+
 var
   CurRootLFMNode: TLFMTreeNode;
 begin
