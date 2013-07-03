@@ -274,9 +274,9 @@ msgid "New topic"
 msgstr "Новая тема"
 
 #: lazdemsg.shintmenunewfromfile
-#| msgid "New form file..."
-msgid "New from file..."
-msgstr "Новый из файла..."
+#| msgid "New from file..."
+msgid "New from file ..."
+msgstr "Новый из файла ..."
 
 #: lazdemsg.shinttoolbaradd
 msgid "Add"
@@ -446,8 +446,9 @@ msgid "&Help"
 msgstr "&Справка"
 
 #: lazdemsg.smenuhelpabout
-msgid "&About..."
-msgstr "&О программе..."
+#| msgid "&About..."
+msgid "&About ..."
+msgstr "&О программе ..."
 
 #: lazdemsg.smenuinsert
 msgid "&Insert"

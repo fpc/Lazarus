@@ -251,7 +251,7 @@ msgid "New topic"
 msgstr ""
 
 #: lazdemsg.shintmenunewfromfile
-msgid "New from file..."
+msgid "New from file ..."
 msgstr ""
 
 #: lazdemsg.shinttoolbaradd
@@ -420,7 +420,7 @@ msgid "&Help"
 msgstr ""
 
 #: lazdemsg.smenuhelpabout
-msgid "&About..."
+msgid "&About ..."
 msgstr ""
 
 #: lazdemsg.smenuinsert

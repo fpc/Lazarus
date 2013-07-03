@@ -261,8 +261,8 @@ msgstr "Nové téma"
 
 #: lazdemsg.shintmenunewfromfile
 #, fuzzy
-#| msgid "New from file ..."
-msgid "New from file..."
+#| msgid "New from file..."
+msgid "New from file ..."
 msgstr "Nový ze souboru ..."
 
 #: lazdemsg.shinttoolbaradd
@@ -432,8 +432,8 @@ msgstr "Nápověda"
 
 #: lazdemsg.smenuhelpabout
 #, fuzzy
-#| msgid "&About ..."
-msgid "&About..."
+#| msgid "&About..."
+msgid "&About ..."
 msgstr "O aplikaci ..."
 
 #: lazdemsg.smenuinsert

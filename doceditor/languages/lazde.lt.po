@@ -261,7 +261,9 @@ msgid "New topic"
 msgstr "Nauja tema"
 
 #: lazdemsg.shintmenunewfromfile
-msgid "New from file..."
+#, fuzzy
+#| msgid "New from file..."
+msgid "New from file ..."
 msgstr "Naujas, pagal failą..."
 
 #: lazdemsg.shinttoolbaradd
@@ -430,7 +432,9 @@ msgid "&Help"
 msgstr "Žin&ynas"
 
 #: lazdemsg.smenuhelpabout
-msgid "&About..."
+#, fuzzy
+#| msgid "&About..."
+msgid "&About ..."
 msgstr "&Apie..."
 
 #: lazdemsg.smenuinsert
