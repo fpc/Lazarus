@@ -25,7 +25,7 @@
     macros and reads include files. It builds one source and a link list. The
     resulting source is called the cleaned source. A link points from a position
     of the cleaned source to its position in the real source.
-    The link list makes it possible to change scanned code in the source files.
+    The link list makes it possible to find scanned code in the source files.
 }
 unit LinkScanner;
 
@@ -133,7 +133,8 @@ type
     lsrEnd // scan till 'end.'
     );
 
-  TCommentStyle = (CommentNone,
+  TCommentStyle = (
+    CommentNone,
     CommentCurly,  // {}
     CommentRound,  // (* *)
     CommentLine    // //
@@ -377,7 +378,7 @@ type
     FMainSourceFilename: string;
     FMainCode: pointer;
     FScanTill: TLinkScannerRange;
-    FNestedComments: boolean; // for speed reasons keep this is flag redundant with the CompilerModeSwitches
+    FNestedComments: boolean; // for speed reasons keep this flag redundant with the CompilerModeSwitches
     FStates: TLinkScannerStates;
     FHiddenUsedUnits: string; // comma separated
     // global write lock
@@ -3786,6 +3787,7 @@ begin
       FMissingIncludeFiles.Add(MissingIncludeFile);
     end;
     if (not IgnoreMissingIncludeFiles) then begin
+      // ToDo: add an event to let application improve the error message
       RaiseExceptionFmt(ctsIncludeFileNotFound,[AFilename])
     end else begin
       // add a dummy link
