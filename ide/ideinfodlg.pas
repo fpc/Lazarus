@@ -31,9 +31,10 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ComCtrls, LCLProc, LazHelpHTML, LazHelpIntf, DefineTemplates, EnvironmentOpts,
-  AboutFrm, LazConf, IDEHelpIntf, IDEWindowIntf, LazarusIDEStrConsts, Project,
-  SourceEditor, PackageSystem, PackageDefs;
+  ComCtrls, LCLProc, LazHelpHTML, LazHelpIntf, DefineTemplates, CodeToolManager,
+  EnvironmentOpts, AboutFrm, LazConf, IDEHelpIntf, IDEWindowIntf,
+  LazarusIDEStrConsts, Project, SourceEditor, InitialSetupDlgs, PackageSystem,
+  PackageDefs;
 
 type
 
@@ -226,18 +227,39 @@ begin
 end;
 
 procedure TIDEInfoDialog.GatherGlobalOptions(sl: TStrings);
+var
+  CfgCache: TFPCTargetConfigCache;
+  Note: string;
 begin
   sl.add('Global IDE options:');
   sl.Add('Primary config directory='+GetPrimaryConfigPath);
   sl.Add('Secondary config directory='+GetSecondaryConfigPath);
+
   sl.Add('LazarusDirectory='+EnvironmentOptions.LazarusDirectory);
   sl.Add('Real LazarusDirectory='+EnvironmentOptions.GetParsedLazarusDirectory);
+  if CheckLazarusDirectoryQuality(EnvironmentOptions.GetParsedLazarusDirectory,Note)<>sddqCompatible
+  then
+    sl.Add('WARNING: '+Note);
+
   sl.Add('CompilerFilename='+EnvironmentOptions.CompilerFilename);
   sl.Add('Real CompilerFilename='+EnvironmentOptions.GetParsedCompilerFilename);
+  if CheckCompilerQuality(EnvironmentOptions.GetParsedCompilerFilename,Note,
+                       CodeToolBoss.FPCDefinesCache.TestFilename)<>sddqCompatible
+  then
+    sl.Add('WARNING: '+Note);
+
   sl.Add('CompilerMessagesFilename='+EnvironmentOptions.CompilerMessagesFilename);
   sl.Add('Real CompilerMessagesFilename='+EnvironmentOptions.GetParsedCompilerMessagesFilename);
+
   sl.Add('FPC source directory='+EnvironmentOptions.FPCSourceDirectory);
   sl.Add('Real FPC source directory='+EnvironmentOptions.GetParsedFPCSourceDirectory);
+  CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+    EnvironmentOptions.GetParsedCompilerFilename,'','','',true);
+  if CheckFPCSrcDirQuality(EnvironmentOptions.GetParsedFPCSourceDirectory,Note,
+    CfgCache.GetFPCVer)<>sddqCompatible
+  then
+    sl.Add('WARNING: '+Note);
+
   sl.Add('Test directory='+EnvironmentOptions.TestBuildDirectory);
   sl.Add('Real Test directory='+EnvironmentOptions.GetParsedTestBuildDirectory);
   sl.Add('');

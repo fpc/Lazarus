@@ -9737,12 +9737,15 @@ begin
     ShowSetupDialog:=true;
     {$ENDIF}
 
+    // check lazarus directory
     if (not ShowSetupDialog)
     and (CheckLazarusDirectoryQuality(EnvironmentOptions.GetParsedLazarusDirectory,Note)<>sddqCompatible)
     then begin
       debugln(['Warning: incompatible Lazarus directory: ',EnvironmentOptions.GetParsedLazarusDirectory]);
       ShowSetupDialog:=true;
     end;
+
+    // check compiler
     if (not ShowSetupDialog)
     and (CheckCompilerQuality(EnvironmentOptions.GetParsedCompilerFilename,Note,
                          CodeToolBoss.FPCDefinesCache.TestFilename)=sddqInvalid)
@@ -9750,6 +9753,8 @@ begin
       debugln(['Warning: invalid compiler: ',EnvironmentOptions.GetParsedCompilerFilename]);
       ShowSetupDialog:=true;
     end;
+
+    // check FPC source directory
     if (not ShowSetupDialog) then
     begin
       CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
@@ -9761,12 +9766,16 @@ begin
         ShowSetupDialog:=true;
       end;
     end;
+
+    // check debugger
     if (not ShowSetupDialog)
     and (CheckDebuggerQuality(EnvironmentOptions.GetParsedDebuggerFilename, Note)<>sddqCompatible)
     then begin
       debugln(['Warning: missing GDB exe',EnvironmentOptions.GetParsedLazarusDirectory]);
       ShowSetupDialog:=true;
     end;
+
+    // show setup dialog
     if ShowSetupDialog then begin
       OldLazDir:=EnvironmentOptions.LazarusDirectory;
       if ShowInitialSetupDialog<>mrOk then
