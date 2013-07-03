@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-06-23 23:22+0400\n"
+"PO-Revision-Date: 2013-07-04 02:10+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -650,7 +650,7 @@ msgstr "Проект %s"
 
 #: codetoolsstrconsts.ctsneededbymode
 msgid " (needed by mode \"%s\")"
-msgstr ""
+msgstr " (требуется для режима \"%s\")"
 
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
@@ -811,10 +811,9 @@ msgid "source is not unit"
 msgstr "исходный код не является модулем"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-#, fuzzy
 #| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
-msgstr "не найден исходный код: модуль %s"
+msgstr "не найден исходный код: модуль %s. Проверьте путь к исходному коду FPC."
 
 #: codetoolsstrconsts.ctssourceofunitnotfound
 msgid "source of unit not found: %s"
