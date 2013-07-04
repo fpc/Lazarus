@@ -247,7 +247,7 @@ type
     csReplicatable,
     csNoStdEvents,           // standard events such as mouse, key, and click events are ignored.
     csDisplayDragImage,      // display images from dragimagelist during drag operation over control
-    csReflector,
+    csReflector,             // the controls respond to size, focus and dlg messages - it can be used as ActiveX control under Windows
     csActionClient,
     csMenuEvents,
     csNoFocus,               // control will not take focus when clicked with mouse.
