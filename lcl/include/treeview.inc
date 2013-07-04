@@ -4304,11 +4304,6 @@ begin
     Result := nil;
 end;
 
-procedure TCustomTreeView.WndProc(var Message: TLMessage);
-begin
-  inherited WndProc(Message);
-end;
-
 procedure TCustomTreeView.UpdateInsertMark(X,Y: integer);
 begin
   if (tvoAutoInsertMark in Options) and (not (csDesigning in ComponentState))
@@ -5360,11 +5355,6 @@ begin
   {$IFDEF VerboseDrag}
   DebugLn('TCustomTreeView.WMLButtonDown END ',Name,':',ClassName,' ');
   {$ENDIF}
-end;
-
-procedure TCustomTreeView.WMNotify(var AMessage: TLMNotify);
-begin
-  inherited WMNotify(AMessage);
 end;
 
 procedure TCustomTreeView.WMSetFocus(var Message: TLMSetFocus);

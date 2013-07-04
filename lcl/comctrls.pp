@@ -3121,13 +3121,11 @@ type
     procedure SetDragMode(Value: TDragMode); override;
     procedure SetOptions(NewOptions: TTreeViewOptions); virtual;
     procedure UpdateDefaultItemHeight; virtual;
-    procedure WndProc(var Message: TLMessage); override;
     procedure UpdateInsertMark(X,Y: integer); virtual;
     procedure DoSelectionChanged; virtual;
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
     procedure WMLButtonDown(var AMessage: TLMLButtonDown); message LM_LBUTTONDOWN;
-    procedure WMNotify(var AMessage: TLMNotify); message LM_NOTIFY;
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
     procedure Resize; override;
