@@ -232,32 +232,32 @@ type
 
   TControlStyleType = (
     csAcceptsControls,       // can have children in the designer
-    csCaptureMouse,
+    csCaptureMouse,          // auto capture mouse when clicked
     csDesignInteractive,     // wants mouse events in design mode
-    csClickEvents,
-    csFramed,
-    csSetCaption,
-    csOpaque,
-    csDoubleClicks,          // control understands mouse double clicks
-    csTripleClicks,          // control understands mouse triple clicks
-    csQuadClicks,            // control understands mouse quad clicks
-    csFixedWidth,
-    csFixedHeight,           // control cannot change it height (for example combobox)
-    csNoDesignVisible,       // control is invisible in the designer
-    csReplicatable,
+    csClickEvents,           // handles mouse events
+    csFramed,                // not implemented, has 3d frame
+    csSetCaption,            // if Name=Caption, changing the Name changes the Caption
+    csOpaque,                // the control paints its area completely
+    csDoubleClicks,          // understands mouse double clicks
+    csTripleClicks,          // understands mouse triple clicks
+    csQuadClicks,            // understands mouse quad clicks
+    csFixedWidth,            // cannot change its width
+    csFixedHeight,           // cannot change its height (for example combobox)
+    csNoDesignVisible,       // is invisible in the designer
+    csReplicatable,          // PaintTo works
     csNoStdEvents,           // standard events such as mouse, key, and click events are ignored.
     csDisplayDragImage,      // display images from dragimagelist during drag operation over control
-    csReflector,             // the controls respond to size, focus and dlg messages - it can be used as ActiveX control under Windows
-    csActionClient,
-    csMenuEvents,
+    csReflector,             // not implemented, the controls respond to size, focus and dlg messages - it can be used as ActiveX control under Windows
+    csActionClient,          // Action is set
+    csMenuEvents,            // not implemented
     csNoFocus,               // control will not take focus when clicked with mouse.
     csNeedsBorderPaint,      // not implemented
-    csParentBackground,      // not implemented
+    csParentBackground,      // tells WinXP to paint the theme background of parent on controls background
     csDesignNoSmoothResize,  // no WYSIWYG resizing in designer
-    csDesignFixedBounds,     // control can not be moved nor resized in designer
-    csHasDefaultAction,      // control implements useful ExecuteDefaultAction
-    csHasCancelAction,       // control implements useful ExecuteCancelAction
-    csNoDesignSelectable,    // control can not be selected at design time
+    csDesignFixedBounds,     // can not be moved nor resized in designer
+    csHasDefaultAction,      // implements useful ExecuteDefaultAction
+    csHasCancelAction,       // implements useful ExecuteCancelAction
+    csNoDesignSelectable,    // can not be selected at design time
     csOwnedChildrenNotSelectable, // child controls owned by this control are NOT selectable in the designer
     csAutoSize0x0,           // if the preferred size is 0x0 then control is shrinked ot 0x0
     csAutoSizeKeepChildLeft, // when AutoSize=true do not move children horizontally
@@ -2603,6 +2603,8 @@ function DbgS(a: TAlign): string; overload;
 function DbgS(a: TAnchorKind; Side: TAnchorSideReference): string; overload;
 function DbgS(p: TControlAutoSizePhase): string; overload;
 function DbgS(Phases: TControlAutoSizePhases): string; overload;
+function DbgS(cst: TControlStyleType): string; overload;
+function DbgS(cs: TControlStyle): string; overload;
 
 operator := (AVariant: Variant): TCaption;
 
@@ -2811,6 +2813,25 @@ begin
       Result:=Result+DbgS(p);
     end;
   end;
+  Result:='['+Result+']';
+end;
+
+function DbgS(cst: TControlStyleType): string;
+begin
+  Result:='';
+  WriteStr(Result,cst);
+end;
+
+function DbgS(cs: TControlStyle): string;
+var
+  cst: TControlStyleType;
+begin
+  Result:='';
+  for cst:=low(TControlStyleType) to high(TControlStyleType) do
+    if cst in cs then begin
+      if Result<>'' then Result+=',';
+      Result+=dbgs(cst);
+    end;
   Result:='['+Result+']';
 end;
 
