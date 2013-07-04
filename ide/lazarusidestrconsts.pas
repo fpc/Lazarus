@@ -2570,6 +2570,7 @@ resourcestring
   fdmScaleMenu='Scale ...';
   fdmSizeWord='Size';
   fdmSizeMenu='Size ...';
+  fdmResetMenu = 'Reset ...';
   fdmZOrder='Z-order';
   fdmOrder='Order';
   fdmOrderMoveTofront='Move to Front';

@@ -537,7 +537,7 @@ begin
     DesignerMenuSize:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
         'Size',fdmSizeMenu, nil, nil, nil, 'size');
     DesignerMenuReset:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
-        'Reset','Reset ...', nil, nil, nil, '');
+        'Reset', fdmResetMenu, nil, nil, nil, '');
 
   // register tab and z-order section
   DesignerMenuSectionOrder:=RegisterIDEMenuSection(DesignerMenuRoot,'Order section');
