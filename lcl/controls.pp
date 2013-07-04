@@ -253,7 +253,7 @@ type
     csNoFocus,               // control will not take focus when clicked with mouse.
     csNeedsBorderPaint,      // not implemented
     csParentBackground,      // tells WinXP to paint the theme background of parent on controls background
-    csDesignNoSmoothResize,  // no WYSIWYG resizing in designer
+    csDesignNoSmoothResize,  // when resizing control in the designer do not SetBounds while dragging
     csDesignFixedBounds,     // can not be moved nor resized in designer
     csHasDefaultAction,      // implements useful ExecuteDefaultAction
     csHasCancelAction,       // implements useful ExecuteCancelAction
