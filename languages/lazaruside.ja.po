@@ -3785,6 +3785,10 @@ msgstr "後ろに移動"
 msgid "Move to Front"
 msgstr "前に移動"
 
+#: lazarusidestrconsts.fdmresetmenu
+msgid "Reset ..."
+msgstr ""
+
 #: lazarusidestrconsts.fdmsaveformasxml
 #, fuzzy
 #| msgid "Save form as XML"
@@ -5184,6 +5188,10 @@ msgstr "ソースノードを表示"
 #| msgid "Nested procedures count treating as \"many\""
 msgid "Nested procedures count treated as \"many\""
 msgstr "「多い」と扱われるネストされた手続きの数"
+
+#: lazarusidestrconsts.liscenteralostwindow
+msgid "Center a lost window"
+msgstr ""
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
 #, fuzzy
@@ -7215,6 +7223,14 @@ msgstr "変数名"
 msgid "Templates"
 msgstr "テンプレート"
 
+#: lazarusidestrconsts.lisctoupdateallmethodsignatures
+msgid "Update all method signatures"
+msgstr ""
+
+#: lazarusidestrconsts.lisctoupdatemultipleproceduresignatures
+msgid "Update multiple procedure signatures"
+msgstr ""
+
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
 msgstr "マクロを選択してください。"
@@ -7968,10 +7984,6 @@ msgstr "大文字と小文字（例:Aとa）を区別する"
 msgid "Change Class ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisdlgeditorwindowmanager
-msgid "Editor Window Manager ..."
-msgstr "エディタウィンドウマネージャー ..."
-
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
 msgid "Export ..."
@@ -8149,10 +8161,6 @@ msgstr "ファイル型を編集"
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
 msgstr ""
-
-#: lazarusidestrconsts.liseditorwindowmanager
-msgid "Editor Window Manager"
-msgstr "エディタウィンドウマネージャー"
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -11148,6 +11156,10 @@ msgstr "ソース内の文字列定数"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "同じ値の文字列"
+
+#: lazarusidestrconsts.lismanagesourceeditors
+msgid "Manage Source Editors ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
@@ -15337,9 +15349,17 @@ msgstr "FPC バージョン2.4 以上が必要です。"
 msgid "Rescan"
 msgstr "最スキャン"
 
+#: lazarusidestrconsts.lisreset
+msgid "Reset"
+msgstr ""
+
 #: lazarusidestrconsts.lisresetallfilefilterstodefaults
 msgid "Reset all file filters to defaults?"
 msgstr "ファイルフィルタすべてをデフォルトに戻しますか"
+
+#: lazarusidestrconsts.lisresetlefttopwidthheightofselectedcomponentstotheir
+msgid "Reset Left, Top, Width, Height of selected components to their ancestor values?"
+msgstr ""
 
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"
@@ -15678,6 +15698,10 @@ msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr "選択済み"
 
+#: lazarusidestrconsts.lisselectedandchildcontrols
+msgid "Selected and child controls"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
 msgstr "（選択された下隣）"
@@ -15823,6 +15847,10 @@ msgstr "ステータスバーを表示"
 msgid "Show units"
 msgstr "ユニットを表示"
 
+#: lazarusidestrconsts.lisshowunusedunits
+msgid "Show unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisshowvaluehintswhiledebugging
 msgid "Show value hints while debugging"
 msgstr "デバッグ中に値ヒントを表示"
@@ -15950,6 +15978,10 @@ msgstr "ソースディレクトリ%s%s%s%sと行き先ディレクトリ%s%s%s%
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory %s%s%s does not exist."
 msgstr "ソースディレクトリ %s%s%s は存在しません"
+
+#: lazarusidestrconsts.lissourceeditorwindowmanager
+msgid "Source Editor Window Manager"
+msgstr ""
 
 #: lazarusidestrconsts.lissourcemodified
 msgid "Source modified"
@@ -17284,6 +17316,10 @@ msgstr "パッケージ%s%s%sを読み込めません"
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr "コンポーネントクラス %s%s%s を読み込めません。なぜならそれはそれ自身に依存しているからです。"
 
+#: lazarusidestrconsts.lisunabletoopen
+msgid "Unable to open \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletoopenancestorcomponent
 msgid "Unable to open ancestor component"
 msgstr "先祖コンポーネントを開けませんでした。"
@@ -17509,9 +17545,9 @@ msgstr "プロジェクト %sのユニットが見つかりません"
 msgid "Unsigned"
 msgstr "未署名"
 
-#: lazarusidestrconsts.lisunusedunits
-msgid "Unused units"
-msgstr "使われていないユニット"
+#: lazarusidestrconsts.lisunusedunitsof
+msgid "Unused units of %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
@@ -17521,6 +17557,10 @@ msgstr "普通でないコンパイラ名。ふつうfpc, ppc あるいは ppcro
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "上へ"
+
+#: lazarusidestrconsts.lisupdateotherproceduresignatureswhenonlylettercaseha
+msgid "Update other procedure signatures when only letter case has changed"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"

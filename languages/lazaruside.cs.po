@@ -3542,6 +3542,10 @@ msgstr "Přesunout dozadu"
 msgid "Move to Front"
 msgstr "Přesunout dopředu"
 
+#: lazarusidestrconsts.fdmresetmenu
+msgid "Reset ..."
+msgstr ""
+
 #: lazarusidestrconsts.fdmsaveformasxml
 msgid "Save Form as XML"
 msgstr "Uložit formulář jako XML"
@@ -4897,6 +4901,10 @@ msgstr "Ukázat uzly zdroje"
 #: lazarusidestrconsts.liscenestedproccount
 msgid "Nested procedures count treated as \"many\""
 msgstr "Počet vnořených procedur považován za \"příliš\""
+
+#: lazarusidestrconsts.liscenteralostwindow
+msgid "Center a lost window"
+msgstr ""
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
 msgid "Center control horizontally relative to the given sibling. BorderSpacing is ignored."
@@ -6872,6 +6880,14 @@ msgstr "Jméno proměnné"
 msgid "Templates"
 msgstr "Šablony"
 
+#: lazarusidestrconsts.lisctoupdateallmethodsignatures
+msgid "Update all method signatures"
+msgstr ""
+
+#: lazarusidestrconsts.lisctoupdatemultipleproceduresignatures
+msgid "Update multiple procedure signatures"
+msgstr ""
+
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
 msgstr "vyberte makro prosím"
@@ -7611,10 +7627,6 @@ msgstr "Rozlišovat velká a malá písmena např. A a a"
 msgid "Change Class ..."
 msgstr "Změnit třídu ..."
 
-#: lazarusidestrconsts.lisdlgeditorwindowmanager
-msgid "Editor Window Manager ..."
-msgstr "Návrhář správce oken ..."
-
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
 msgid "Export ..."
@@ -7792,10 +7804,6 @@ msgstr "Typy souborů editoru"
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
 msgstr "Návrhář maker"
-
-#: lazarusidestrconsts.liseditorwindowmanager
-msgid "Editor Window Manager"
-msgstr "Návrhář správce oken"
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -10685,6 +10693,10 @@ msgstr "Konstantní řetězec ve zdroji"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "Řetězec se stejnou hodnotou:"
+
+#: lazarusidestrconsts.lismanagesourceeditors
+msgid "Manage Source Editors ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
@@ -14548,9 +14560,17 @@ msgstr "Vyžaduje FPC 2.4 nebo vyšší. Jako zdroje Delphi"
 msgid "Rescan"
 msgstr "Přeskenovat"
 
+#: lazarusidestrconsts.lisreset
+msgid "Reset"
+msgstr ""
+
 #: lazarusidestrconsts.lisresetallfilefilterstodefaults
 msgid "Reset all file filters to defaults?"
 msgstr "Nastavit všechny souborové filtry na předvolené"
+
+#: lazarusidestrconsts.lisresetlefttopwidthheightofselectedcomponentstotheir
+msgid "Reset Left, Top, Width, Height of selected components to their ancestor values?"
+msgstr ""
 
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"
@@ -14877,6 +14897,10 @@ msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr "Vybrané"
 
+#: lazarusidestrconsts.lisselectedandchildcontrols
+msgid "Selected and child controls"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
 msgstr "(vybraný dolní soused)"
@@ -15022,6 +15046,10 @@ msgstr "Ukázat stavový pruh"
 msgid "Show units"
 msgstr "Ukázat jednotky"
 
+#: lazarusidestrconsts.lisshowunusedunits
+msgid "Show unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisshowvaluehintswhiledebugging
 msgid "Show value hints while debugging"
 msgstr "Ukázat pokyny hodnot během ladění"
@@ -15145,6 +15173,10 @@ msgstr "Zdrojový adresář %s%s%s%sa cílový adresář %s%s%s%sjsou stejné.%s
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory %s%s%s does not exist."
 msgstr "Zdrojový adresář %s%s%s neexistuje."
+
+#: lazarusidestrconsts.lissourceeditorwindowmanager
+msgid "Source Editor Window Manager"
+msgstr ""
 
 #: lazarusidestrconsts.lissourcemodified
 msgid "Source modified"
@@ -16447,6 +16479,10 @@ msgstr "Nelze přečíst balíček %s%s%s"
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr "Nelze načíst třídu komponenty %s%s%s, protože závisí na sobě samé."
 
+#: lazarusidestrconsts.lisunabletoopen
+msgid "Unable to open \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletoopenancestorcomponent
 msgid "Unable to open ancestor component"
 msgstr "Nelze otevřít komponentu předka"
@@ -16670,9 +16706,9 @@ msgstr "Jednotky nenalezeny v projektu %s"
 msgid "Unsigned"
 msgstr "Bez znaménka"
 
-#: lazarusidestrconsts.lisunusedunits
-msgid "Unused units"
-msgstr "Nepoužité jednotky"
+#: lazarusidestrconsts.lisunusedunitsof
+msgid "Unused units of %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
@@ -16682,6 +16718,10 @@ msgstr "Neobvyklé jméno překladače. Obvykle začíná fpc, ppc nebo ppcross.
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Nahoru"
+
+#: lazarusidestrconsts.lisupdateotherproceduresignatureswhenonlylettercaseha
+msgid "Update other procedure signatures when only letter case has changed"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"

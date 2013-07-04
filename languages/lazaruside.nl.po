@@ -3705,6 +3705,10 @@ msgstr "Breng naar achter"
 msgid "Move to Front"
 msgstr "Breng naar voren"
 
+#: lazarusidestrconsts.fdmresetmenu
+msgid "Reset ..."
+msgstr ""
+
 #: lazarusidestrconsts.fdmsaveformasxml
 #, fuzzy
 #| msgid "Save form as XML"
@@ -5087,6 +5091,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscenestedproccount
 msgid "Nested procedures count treated as \"many\""
+msgstr ""
+
+#: lazarusidestrconsts.liscenteralostwindow
+msgid "Center a lost window"
 msgstr ""
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
@@ -7083,6 +7091,14 @@ msgstr "Variabelenaam"
 msgid "Templates"
 msgstr "Templates"
 
+#: lazarusidestrconsts.lisctoupdateallmethodsignatures
+msgid "Update all method signatures"
+msgstr ""
+
+#: lazarusidestrconsts.lisctoupdatemultipleproceduresignatures
+msgid "Update multiple procedure signatures"
+msgstr ""
+
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
 msgstr "selecteer een macro"
@@ -7824,10 +7840,6 @@ msgstr "Maak onderscheid tussen hoofd- en kleine letters. Bijv. A en a"
 msgid "Change Class ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisdlgeditorwindowmanager
-msgid "Editor Window Manager ..."
-msgstr ""
-
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
 msgid "Export ..."
@@ -8004,10 +8016,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
-msgstr ""
-
-#: lazarusidestrconsts.liseditorwindowmanager
-msgid "Editor Window Manager"
 msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
@@ -10928,6 +10936,10 @@ msgstr "String constante in broncode"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "Strings met dezelfde waarde:"
+
+#: lazarusidestrconsts.lismanagesourceeditors
+msgid "Manage Source Editors ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
@@ -15045,8 +15057,16 @@ msgstr ""
 msgid "Rescan"
 msgstr ""
 
+#: lazarusidestrconsts.lisreset
+msgid "Reset"
+msgstr ""
+
 #: lazarusidestrconsts.lisresetallfilefilterstodefaults
 msgid "Reset all file filters to defaults?"
+msgstr ""
+
+#: lazarusidestrconsts.lisresetlefttopwidthheightofselectedcomponentstotheir
+msgid "Reset Left, Top, Width, Height of selected components to their ancestor values?"
 msgstr ""
 
 #: lazarusidestrconsts.lisresourceloaderror
@@ -15382,6 +15402,10 @@ msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr ""
 
+#: lazarusidestrconsts.lisselectedandchildcontrols
+msgid "Selected and child controls"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
 msgstr ""
@@ -15527,6 +15551,10 @@ msgstr ""
 msgid "Show units"
 msgstr "Toon units"
 
+#: lazarusidestrconsts.lisshowunusedunits
+msgid "Show unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisshowvaluehintswhiledebugging
 msgid "Show value hints while debugging"
 msgstr ""
@@ -15652,6 +15680,10 @@ msgstr ""
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory %s%s%s does not exist."
 msgstr "Bron directory %s%s%s bestaat niet"
+
+#: lazarusidestrconsts.lissourceeditorwindowmanager
+msgid "Source Editor Window Manager"
+msgstr ""
 
 #: lazarusidestrconsts.lissourcemodified
 msgid "Source modified"
@@ -16978,6 +17010,10 @@ msgstr ""
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr ""
 
+#: lazarusidestrconsts.lisunabletoopen
+msgid "Unable to open \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletoopenancestorcomponent
 msgid "Unable to open ancestor component"
 msgstr ""
@@ -17203,8 +17239,8 @@ msgstr ""
 msgid "Unsigned"
 msgstr ""
 
-#: lazarusidestrconsts.lisunusedunits
-msgid "Unused units"
+#: lazarusidestrconsts.lisunusedunitsof
+msgid "Unused units of %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
@@ -17215,6 +17251,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Naar boven"
+
+#: lazarusidestrconsts.lisupdateotherproceduresignatureswhenonlylettercaseha
+msgid "Update other procedure signatures when only letter case has changed"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-06-23 23:13+0400\n"
+"PO-Revision-Date: 2013-07-05 03:00+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3695,6 +3695,10 @@ msgstr "Поместить сзади"
 msgid "Move to Front"
 msgstr "Поместить cпереди"
 
+#: lazarusidestrconsts.fdmresetmenu
+msgid "Reset ..."
+msgstr "Сбросить ..."
+
 #: lazarusidestrconsts.fdmsaveformasxml
 #| msgid "Save form as XML"
 msgid "Save Form as XML"
@@ -5073,6 +5077,10 @@ msgstr "Показать элементы исходного кода"
 #| msgid "Nested procedures count treating as \"many\""
 msgid "Nested procedures count treated as \"many\""
 msgstr "\"Много\" вложенных процедур"
+
+#: lazarusidestrconsts.liscenteralostwindow
+msgid "Center a lost window"
+msgstr "Расположить потерянное окно по центру"
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
 #| msgid "Center control horizontally relative to the given sibling"
@@ -7076,6 +7084,14 @@ msgstr "Имя переменной"
 msgid "Templates"
 msgstr "Шаблоны"
 
+#: lazarusidestrconsts.lisctoupdateallmethodsignatures
+msgid "Update all method signatures"
+msgstr "Обновлять все сигнатуры методов"
+
+#: lazarusidestrconsts.lisctoupdatemultipleproceduresignatures
+msgid "Update multiple procedure signatures"
+msgstr "Обновлять все подходящие сигнатуры процедур"
+
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
 msgstr "Выберите макрос"
@@ -7823,10 +7839,6 @@ msgstr "Различать регистр букв, например, А и а"
 msgid "Change Class ..."
 msgstr "Сменить класс ..."
 
-#: lazarusidestrconsts.lisdlgeditorwindowmanager
-msgid "Editor Window Manager ..."
-msgstr "Управление вкладками редактора ..."
-
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
 msgid "Export ..."
@@ -8004,10 +8016,6 @@ msgstr "Типы файлов редактора"
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
 msgstr "Макросы редактора"
-
-#: lazarusidestrconsts.liseditorwindowmanager
-msgid "Editor Window Manager"
-msgstr "Управление вкладками редактора"
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -10957,6 +10965,10 @@ msgstr "Строковая константа в исходном коде"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "Строки с тем же значением:"
+
+#: lazarusidestrconsts.lismanagesourceeditors
+msgid "Manage Source Editors ..."
+msgstr "Управление редакторами исходного кода ..."
 
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
@@ -14999,9 +15011,17 @@ msgstr "Требует FPC версии 2.4 либо выше. Аналог ре
 msgid "Rescan"
 msgstr "Пересмотреть"
 
+#: lazarusidestrconsts.lisreset
+msgid "Reset"
+msgstr "Сброс"
+
 #: lazarusidestrconsts.lisresetallfilefilterstodefaults
 msgid "Reset all file filters to defaults?"
 msgstr "Установить значения файловых фильтров по умолчанию?"
+
+#: lazarusidestrconsts.lisresetlefttopwidthheightofselectedcomponentstotheir
+msgid "Reset Left, Top, Width, Height of selected components to their ancestor values?"
+msgstr "Сбросить свойства Left, Top, Width, Height выбранных компонентов к унаследованным значениям?"
 
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"
@@ -15332,7 +15352,11 @@ msgstr "Выберите файлы форм Delphi (*.dfm)"
 #: lazarusidestrconsts.lisselected
 msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
-msgstr "Выбор"
+msgstr "Выбранные"
+
+#: lazarusidestrconsts.lisselectedandchildcontrols
+msgid "Selected and child controls"
+msgstr "Выбранные и дочерние компоненты"
 
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
@@ -15479,6 +15503,10 @@ msgstr "Показывать строку состояния"
 msgid "Show units"
 msgstr "Показывать модули"
 
+#: lazarusidestrconsts.lisshowunusedunits
+msgid "Show unused units ..."
+msgstr "Показать неиспользуемые модули ..."
+
 #: lazarusidestrconsts.lisshowvaluehintswhiledebugging
 msgid "Show value hints while debugging"
 msgstr "Выводить подсказки со значениями во время отладки"
@@ -15604,6 +15632,10 @@ msgstr "Исходный каталог %s%s%s%sи каталог назначе
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory %s%s%s does not exist."
 msgstr "Каталог исходного кода %s%s%s не существует."
+
+#: lazarusidestrconsts.lissourceeditorwindowmanager
+msgid "Source Editor Window Manager"
+msgstr "Управление редакторами исходного кода"
 
 #: lazarusidestrconsts.lissourcemodified
 msgid "Source modified"
@@ -16926,6 +16958,10 @@ msgstr "Невозможно загрузить пакет %s%s%s"
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr "Невозможно загрузить класс компонента %s%s%s, так как он зависит сам от себя."
 
+#: lazarusidestrconsts.lisunabletoopen
+msgid "Unable to open \"%s\""
+msgstr "Невозможно открыть \"%s\""
+
 #: lazarusidestrconsts.lisunabletoopenancestorcomponent
 msgid "Unable to open ancestor component"
 msgstr "Невозможно открыть компонент-предок"
@@ -17150,9 +17186,9 @@ msgstr "Не найдены модули в проекте %s"
 msgid "Unsigned"
 msgstr "Беззнаковое"
 
-#: lazarusidestrconsts.lisunusedunits
-msgid "Unused units"
-msgstr "Неиспользуемые модули"
+#: lazarusidestrconsts.lisunusedunitsof
+msgid "Unused units of %s"
+msgstr "Неиспользуемые модули в %s"
 
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
@@ -17162,6 +17198,10 @@ msgstr "Необычное имя файла компилятора. Как пр
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Вверх"
+
+#: lazarusidestrconsts.lisupdateotherproceduresignatureswhenonlylettercaseha
+msgid "Update other procedure signatures when only letter case has changed"
+msgstr "Обновлять остальные сигнатуры процедур даже при изменении регистра"
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"

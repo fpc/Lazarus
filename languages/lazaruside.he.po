@@ -3761,6 +3761,10 @@ msgstr "לך לאחור"
 msgid "Move to Front"
 msgstr "לך לחזית"
 
+#: lazarusidestrconsts.fdmresetmenu
+msgid "Reset ..."
+msgstr ""
+
 #: lazarusidestrconsts.fdmsaveformasxml
 #, fuzzy
 #| msgid "Save form as XML"
@@ -5156,6 +5160,10 @@ msgstr "הראה צמתי קוד המקור"
 #| msgid "Nested procedures count treating as \"many\""
 msgid "Nested procedures count treated as \"many\""
 msgstr "מספר הפרוצדורות המקוננות מטופל כ many"
+
+#: lazarusidestrconsts.liscenteralostwindow
+msgid "Center a lost window"
+msgstr ""
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
 #, fuzzy
@@ -7185,6 +7193,14 @@ msgstr "שם משתנה"
 msgid "Templates"
 msgstr "תבניות"
 
+#: lazarusidestrconsts.lisctoupdateallmethodsignatures
+msgid "Update all method signatures"
+msgstr ""
+
+#: lazarusidestrconsts.lisctoupdatemultipleproceduresignatures
+msgid "Update multiple procedure signatures"
+msgstr ""
+
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
 msgstr "אנא בחר במקרו"
@@ -7940,10 +7956,6 @@ msgstr "הבחן בין אותיות גדולות וקטנות למשל A ו a"
 msgid "Change Class ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisdlgeditorwindowmanager
-msgid "Editor Window Manager ..."
-msgstr ""
-
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
 msgid "Export ..."
@@ -8120,10 +8132,6 @@ msgstr "סוגי הקבצים של העורך"
 
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
-msgstr ""
-
-#: lazarusidestrconsts.liseditorwindowmanager
-msgid "Editor Window Manager"
 msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
@@ -11114,6 +11122,10 @@ msgstr "מחרוזת קבועה בקוד"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "מחרוזת בעלת אותו ערך"
+
+#: lazarusidestrconsts.lismanagesourceeditors
+msgid "Manage Source Editors ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
@@ -15303,8 +15315,16 @@ msgstr "דורש FPC 2.4 ומעלה. כמו משאבי דלפי"
 msgid "Rescan"
 msgstr "סרוק מחדש"
 
+#: lazarusidestrconsts.lisreset
+msgid "Reset"
+msgstr ""
+
 #: lazarusidestrconsts.lisresetallfilefilterstodefaults
 msgid "Reset all file filters to defaults?"
+msgstr ""
+
+#: lazarusidestrconsts.lisresetlefttopwidthheightofselectedcomponentstotheir
+msgid "Reset Left, Top, Width, Height of selected components to their ancestor values?"
 msgstr ""
 
 #: lazarusidestrconsts.lisresourceloaderror
@@ -15644,6 +15664,10 @@ msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr "נבחר"
 
+#: lazarusidestrconsts.lisselectedandchildcontrols
+msgid "Selected and child controls"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
 msgstr "(שכן תחתון שנבחר)"
@@ -15789,6 +15813,10 @@ msgstr "הראה שורת מצב"
 msgid "Show units"
 msgstr "הראה יחידות"
 
+#: lazarusidestrconsts.lisshowunusedunits
+msgid "Show unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisshowvaluehintswhiledebugging
 #, fuzzy
 msgid "Show value hints while debugging"
@@ -15917,6 +15945,10 @@ msgstr "תיקיית המקור %s%s%s% ותיקיית היעד %s%s%s% זהות
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory %s%s%s does not exist."
 msgstr "תיקיית המקור %s%s%s לא קיימת"
+
+#: lazarusidestrconsts.lissourceeditorwindowmanager
+msgid "Source Editor Window Manager"
+msgstr ""
 
 #: lazarusidestrconsts.lissourcemodified
 msgid "Source modified"
@@ -17250,6 +17282,10 @@ msgstr "לא יכול לטעון חבילה %s%s%s"
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr "לא ניתן לטעון את המחלקה %s%s%s ברכיב, בגלל שהיא תלויה בעצמה."
 
+#: lazarusidestrconsts.lisunabletoopen
+msgid "Unable to open \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletoopenancestorcomponent
 msgid "Unable to open ancestor component"
 msgstr "לא ניתן לפתוח את רכיב האב"
@@ -17473,9 +17509,9 @@ msgstr ""
 msgid "Unsigned"
 msgstr "ללא סימן"
 
-#: lazarusidestrconsts.lisunusedunits
-msgid "Unused units"
-msgstr "יחידות שאינן בשימוש"
+#: lazarusidestrconsts.lisunusedunitsof
+msgid "Unused units of %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
@@ -17485,6 +17521,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "למעלה"
+
+#: lazarusidestrconsts.lisupdateotherproceduresignatureswhenonlylettercaseha
+msgid "Update other procedure signatures when only letter case has changed"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"

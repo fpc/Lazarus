@@ -3781,6 +3781,10 @@ msgstr "Sposta indietro"
 msgid "Move to Front"
 msgstr "Sposta in primo piano"
 
+#: lazarusidestrconsts.fdmresetmenu
+msgid "Reset ..."
+msgstr ""
+
 #: lazarusidestrconsts.fdmsaveformasxml
 #, fuzzy
 #| msgid "Save form as XML"
@@ -5178,6 +5182,10 @@ msgstr "Mostra nodi sorgente"
 #| msgid "Nested procedures count treating as \"many\""
 msgid "Nested procedures count treated as \"many\""
 msgstr "Conteggio procedure nidificate trattato come \"molte\""
+
+#: lazarusidestrconsts.liscenteralostwindow
+msgid "Center a lost window"
+msgstr ""
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
 #, fuzzy
@@ -7206,6 +7214,14 @@ msgstr "Nome variabile"
 msgid "Templates"
 msgstr "Modelli"
 
+#: lazarusidestrconsts.lisctoupdateallmethodsignatures
+msgid "Update all method signatures"
+msgstr ""
+
+#: lazarusidestrconsts.lisctoupdatemultipleproceduresignatures
+msgid "Update multiple procedure signatures"
+msgstr ""
+
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
 msgstr "prego selezionare una macro"
@@ -7959,10 +7975,6 @@ msgstr "Distingui tra lettere maiuscole e minuscole per es. tra A e a"
 msgid "Change Class ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisdlgeditorwindowmanager
-msgid "Editor Window Manager ..."
-msgstr ""
-
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
 msgid "Export ..."
@@ -8139,10 +8151,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
-msgstr ""
-
-#: lazarusidestrconsts.liseditorwindowmanager
-msgid "Editor Window Manager"
 msgstr ""
 
 #: lazarusidestrconsts.lisedoptsloadascheme
@@ -11129,6 +11137,10 @@ msgstr "Costante stringa nel sorgente"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "Stringhe con lo stesso valore:"
+
+#: lazarusidestrconsts.lismanagesourceeditors
+msgid "Manage Source Editors ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
@@ -15309,8 +15321,16 @@ msgstr "Necessario FPC 2.4 o più recente. Risorse in formato Delphi"
 msgid "Rescan"
 msgstr "Ri-ricerca"
 
+#: lazarusidestrconsts.lisreset
+msgid "Reset"
+msgstr ""
+
 #: lazarusidestrconsts.lisresetallfilefilterstodefaults
 msgid "Reset all file filters to defaults?"
+msgstr ""
+
+#: lazarusidestrconsts.lisresetlefttopwidthheightofselectedcomponentstotheir
+msgid "Reset Left, Top, Width, Height of selected components to their ancestor values?"
 msgstr ""
 
 #: lazarusidestrconsts.lisresourceloaderror
@@ -15650,6 +15670,10 @@ msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr "Selezionato"
 
+#: lazarusidestrconsts.lisselectedandchildcontrols
+msgid "Selected and child controls"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
 msgstr "(selezionato vicino sotto) "
@@ -15795,6 +15819,10 @@ msgstr "Mostra barra di stato"
 msgid "Show units"
 msgstr "Mostra le unit"
 
+#: lazarusidestrconsts.lisshowunusedunits
+msgid "Show unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisshowvaluehintswhiledebugging
 msgid "Show value hints while debugging"
 msgstr "Mostra i suggerimenti sui valori nel debugging"
@@ -15922,6 +15950,10 @@ msgstr "Le cartelle sorgente %s%s%s%se destinazione%s%s%s%s coincidono.%s%s%sFor
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory %s%s%s does not exist."
 msgstr "La cartella sorgente %s%s%s non esiste."
+
+#: lazarusidestrconsts.lissourceeditorwindowmanager
+msgid "Source Editor Window Manager"
+msgstr ""
 
 #: lazarusidestrconsts.lissourcemodified
 msgid "Source modified"
@@ -17258,6 +17290,10 @@ msgstr "Impossibile caricare il pacchetto %s%s%s"
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr "Non posso caricare la classe componente %s%s%s, perché dipende da se stessa."
 
+#: lazarusidestrconsts.lisunabletoopen
+msgid "Unable to open \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletoopenancestorcomponent
 msgid "Unable to open ancestor component"
 msgstr "Non posso aprire il componente antenato."
@@ -17483,9 +17519,9 @@ msgstr ""
 msgid "Unsigned"
 msgstr ""
 
-#: lazarusidestrconsts.lisunusedunits
-msgid "Unused units"
-msgstr "Unit non usate"
+#: lazarusidestrconsts.lisunusedunitsof
+msgid "Unused units of %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
@@ -17495,6 +17531,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Su"
+
+#: lazarusidestrconsts.lisupdateotherproceduresignatureswhenonlylettercaseha
+msgid "Update other procedure signatures when only letter case has changed"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"

@@ -3642,6 +3642,10 @@ msgstr "До попереднього"
 msgid "Move to Front"
 msgstr "Перемістити наперед"
 
+#: lazarusidestrconsts.fdmresetmenu
+msgid "Reset ..."
+msgstr ""
+
 #: lazarusidestrconsts.fdmsaveformasxml
 #| msgid "Save form as XML"
 msgid "Save Form as XML"
@@ -5013,6 +5017,10 @@ msgstr "Показати Вузли Початкоіого Коду"
 #| msgid "Nested procedures count treating as \"many\""
 msgid "Nested procedures count treated as \"many\""
 msgstr "К-сть вкладених процедур розглядається як \"багато\""
+
+#: lazarusidestrconsts.liscenteralostwindow
+msgid "Center a lost window"
+msgstr ""
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
 #| msgid "Center control horizontally relative to the given sibling"
@@ -7008,6 +7016,14 @@ msgstr "Назва змінної"
 msgid "Templates"
 msgstr "Шаблони"
 
+#: lazarusidestrconsts.lisctoupdateallmethodsignatures
+msgid "Update all method signatures"
+msgstr ""
+
+#: lazarusidestrconsts.lisctoupdatemultipleproceduresignatures
+msgid "Update multiple procedure signatures"
+msgstr ""
+
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
 msgstr "виберіть будь-ласка макрос"
@@ -7753,10 +7769,6 @@ msgstr "Розрізняти регістр букв, наприклад, А і 
 msgid "Change Class ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisdlgeditorwindowmanager
-msgid "Editor Window Manager ..."
-msgstr "Диспетчер Вікна Редактора ..."
-
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
 msgid "Export ..."
@@ -7934,10 +7946,6 @@ msgstr "Файлові типи Редактора"
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
 msgstr ""
-
-#: lazarusidestrconsts.liseditorwindowmanager
-msgid "Editor Window Manager"
-msgstr "Диспетчер Вікна Редактора"
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -10864,6 +10872,10 @@ msgstr "Рядкова константа в коді"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "Рядки з тим же значенням:"
+
+#: lazarusidestrconsts.lismanagesourceeditors
+msgid "Manage Source Editors ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
@@ -14853,9 +14865,17 @@ msgstr "Вимагає FPC 2.4 чи новіше. Як ресурси Delphi"
 msgid "Rescan"
 msgstr "Пересканувати"
 
+#: lazarusidestrconsts.lisreset
+msgid "Reset"
+msgstr ""
+
 #: lazarusidestrconsts.lisresetallfilefilterstodefaults
 msgid "Reset all file filters to defaults?"
 msgstr "Скинути всі фільтри до типових?"
+
+#: lazarusidestrconsts.lisresetlefttopwidthheightofselectedcomponentstotheir
+msgid "Reset Left, Top, Width, Height of selected components to their ancestor values?"
+msgstr ""
 
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"
@@ -15185,6 +15205,10 @@ msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr "Вибраний"
 
+#: lazarusidestrconsts.lisselectedandchildcontrols
+msgid "Selected and child controls"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
 msgstr "(вибраний нижній сусід)"
@@ -15330,6 +15354,10 @@ msgstr "Показувати рядок стану"
 msgid "Show units"
 msgstr "Показувати модулі"
 
+#: lazarusidestrconsts.lisshowunusedunits
+msgid "Show unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisshowvaluehintswhiledebugging
 msgid "Show value hints while debugging"
 msgstr "Виводити підказки зі значеннями під час налагодження"
@@ -15454,6 +15482,10 @@ msgstr "Початкова тека %s%s%s%s і тека призачення %s
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory %s%s%s does not exist."
 msgstr "Теки кодів %s%s%s не існує."
+
+#: lazarusidestrconsts.lissourceeditorwindowmanager
+msgid "Source Editor Window Manager"
+msgstr ""
 
 #: lazarusidestrconsts.lissourcemodified
 msgid "Source modified"
@@ -16757,6 +16789,10 @@ msgstr "Не можу завантажити пакунок %s%s%s"
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr "Неможливо завантажити клас компоненту  %s%s%s через те, що він залежить сам від себе. "
 
+#: lazarusidestrconsts.lisunabletoopen
+msgid "Unable to open \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletoopenancestorcomponent
 msgid "Unable to open ancestor component"
 msgstr "Не вдалося відкрити компонент предок"
@@ -16980,9 +17016,9 @@ msgstr "Модулі не знайдено в проекті %s"
 msgid "Unsigned"
 msgstr "Непідписаний"
 
-#: lazarusidestrconsts.lisunusedunits
-msgid "Unused units"
-msgstr "Невикористані модулі"
+#: lazarusidestrconsts.lisunusedunitsof
+msgid "Unused units of %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
@@ -16992,6 +17028,10 @@ msgstr "Незвичайне ім'я компілятора. Зазвичай в
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Вверх"
+
+#: lazarusidestrconsts.lisupdateotherproceduresignatureswhenonlylettercaseha
+msgid "Update other procedure signatures when only letter case has changed"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"

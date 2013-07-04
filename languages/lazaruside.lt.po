@@ -3662,6 +3662,10 @@ msgstr "Perkelti į galą"
 msgid "Move to Front"
 msgstr "Perkelti į priekį"
 
+#: lazarusidestrconsts.fdmresetmenu
+msgid "Reset ..."
+msgstr ""
+
 #: lazarusidestrconsts.fdmsaveformasxml
 #| msgid "Save form as XML"
 msgid "Save Form as XML"
@@ -5044,6 +5048,10 @@ msgstr "Rodyti pirminio kodo mazgus"
 #| msgid "Nested procedures count treating as \"many\""
 msgid "Nested procedures count treated as \"many\""
 msgstr "Įdėtinių procedūrų kiekis, kuri traktuojamas kaip „daugybė“"
+
+#: lazarusidestrconsts.liscenteralostwindow
+msgid "Center a lost window"
+msgstr ""
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
 #| msgid "Center control horizontally relative to the given sibling"
@@ -7044,6 +7052,14 @@ msgstr "Kintamojo pavadinimas"
 msgid "Templates"
 msgstr "Šablonai"
 
+#: lazarusidestrconsts.lisctoupdateallmethodsignatures
+msgid "Update all method signatures"
+msgstr ""
+
+#: lazarusidestrconsts.lisctoupdatemultipleproceduresignatures
+msgid "Update multiple procedure signatures"
+msgstr ""
+
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
 msgstr "pažymėkite makrokomandą"
@@ -7784,10 +7800,6 @@ msgstr "Ieškant skirti didžiąsias ir mažąsias raides"
 msgid "Change Class ..."
 msgstr "Pakeisti klasę…"
 
-#: lazarusidestrconsts.lisdlgeditorwindowmanager
-msgid "Editor Window Manager ..."
-msgstr "Rengyklės lango tvarkyklė…"
-
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
 msgid "Export ..."
@@ -7965,10 +7977,6 @@ msgstr "Rengyklės failų tipai"
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
 msgstr "Rengyklės makrokomandos"
-
-#: lazarusidestrconsts.liseditorwindowmanager
-msgid "Editor Window Manager"
-msgstr "Rengyklės lango tvarkyklė"
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -10909,6 +10917,10 @@ msgstr "Teksto konstanta pirminiame kode"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "Eilutės su tokia pat verte:"
+
+#: lazarusidestrconsts.lismanagesourceeditors
+msgid "Manage Source Editors ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
@@ -14925,9 +14937,17 @@ msgstr "Reikalingas 2.4 ar vėlesnės laidos FPC. Kaip ir Delphi ištekliai"
 msgid "Rescan"
 msgstr "Peržiūrėti iš naujo"
 
+#: lazarusidestrconsts.lisreset
+msgid "Reset"
+msgstr ""
+
 #: lazarusidestrconsts.lisresetallfilefilterstodefaults
 msgid "Reset all file filters to defaults?"
 msgstr "Atkurti numatytas filtrų nuostatas?"
+
+#: lazarusidestrconsts.lisresetlefttopwidthheightofselectedcomponentstotheir
+msgid "Reset Left, Top, Width, Height of selected components to their ancestor values?"
+msgstr ""
 
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"
@@ -15264,6 +15284,10 @@ msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr "Pažymėtas"
 
+#: lazarusidestrconsts.lisselectedandchildcontrols
+msgid "Selected and child controls"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
 msgstr "(pažymėtas apatinysis kaimynas)"
@@ -15409,6 +15433,10 @@ msgstr "Rodyti būsenos juostą"
 msgid "Show units"
 msgstr "Rodyti modulius"
 
+#: lazarusidestrconsts.lisshowunusedunits
+msgid "Show unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisshowvaluehintswhiledebugging
 msgid "Show value hints while debugging"
 msgstr "Derinant, rodyti vertes"
@@ -15534,6 +15562,10 @@ msgstr "Išeities %s%s%s%s ir paskirties %s%s%s%saplankai nesiskiria.%s%sGalbūt
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory %s%s%s does not exist."
 msgstr "Pirminio kodo aplankas %s%s%s neegzistuoja."
+
+#: lazarusidestrconsts.lissourceeditorwindowmanager
+msgid "Source Editor Window Manager"
+msgstr ""
 
 #: lazarusidestrconsts.lissourcemodified
 msgid "Source modified"
@@ -16857,6 +16889,10 @@ msgstr "Nepavyko įkelti paketą %s%s%s"
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr "Įkelti komponentės klasės %s%s%s nepavyks, nes ji turi priklausomybę pačiai sau."
 
+#: lazarusidestrconsts.lisunabletoopen
+msgid "Unable to open \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletoopenancestorcomponent
 msgid "Unable to open ancestor component"
 msgstr "Nepavyksta atverti tėvinės komponentės"
@@ -17081,9 +17117,9 @@ msgstr "Projekte „%s“ nepavyko rasti modulių"
 msgid "Unsigned"
 msgstr "Be ženklo"
 
-#: lazarusidestrconsts.lisunusedunits
-msgid "Unused units"
-msgstr "Nenaudojami moduliai"
+#: lazarusidestrconsts.lisunusedunitsof
+msgid "Unused units of %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
@@ -17093,6 +17129,10 @@ msgstr "Neįprastas kompiliatoriaus failo pavadinimas. Įprastai jis prasideda �
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Viršun"
+
+#: lazarusidestrconsts.lisupdateotherproceduresignatureswhenonlylettercaseha
+msgid "Update other procedure signatures when only letter case has changed"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"

@@ -3524,6 +3524,10 @@ msgstr "Siirrä taaimmaksi"
 msgid "Move to Front"
 msgstr "Siirrä päällimmäksi"
 
+#: lazarusidestrconsts.fdmresetmenu
+msgid "Reset ..."
+msgstr ""
+
 #: lazarusidestrconsts.fdmsaveformasxml
 msgid "Save Form as XML"
 msgstr "Tallenna lomake XML-tiedostona"
@@ -4877,6 +4881,10 @@ msgstr "Näytä lähdesolmut"
 #: lazarusidestrconsts.liscenestedproccount
 msgid "Nested procedures count treated as \"many\""
 msgstr "Sisäkkäisten proceduurien määränä käytetään \"monta\""
+
+#: lazarusidestrconsts.liscenteralostwindow
+msgid "Center a lost window"
+msgstr ""
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
 msgid "Center control horizontally relative to the given sibling. BorderSpacing is ignored."
@@ -6845,6 +6853,14 @@ msgstr "Muuttujan nimi"
 msgid "Templates"
 msgstr "Mallit"
 
+#: lazarusidestrconsts.lisctoupdateallmethodsignatures
+msgid "Update all method signatures"
+msgstr ""
+
+#: lazarusidestrconsts.lisctoupdatemultipleproceduresignatures
+msgid "Update multiple procedure signatures"
+msgstr ""
+
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
 msgstr "Valitse makro"
@@ -7583,10 +7599,6 @@ msgstr "Erottelee pienet ja isot kirjaimet (esim. A ja a )"
 msgid "Change Class ..."
 msgstr "Vaihda luokka ..."
 
-#: lazarusidestrconsts.lisdlgeditorwindowmanager
-msgid "Editor Window Manager ..."
-msgstr "Editorin ikkunoiden hallinta ..."
-
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
 msgid "Export ..."
@@ -7764,10 +7776,6 @@ msgstr "Editorin tiedostojen tyypit"
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
 msgstr "Editorin makrot"
-
-#: lazarusidestrconsts.liseditorwindowmanager
-msgid "Editor Window Manager"
-msgstr "Editorin ikkunoiden hallinta"
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
@@ -10648,6 +10656,10 @@ msgstr "Tekstivakio lähdekoodissa"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "Tekstit missä sama arvo:"
+
+#: lazarusidestrconsts.lismanagesourceeditors
+msgid "Manage Source Editors ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
@@ -14498,8 +14510,16 @@ msgstr ""
 msgid "Rescan"
 msgstr "Lue uudelleen"
 
+#: lazarusidestrconsts.lisreset
+msgid "Reset"
+msgstr ""
+
 #: lazarusidestrconsts.lisresetallfilefilterstodefaults
 msgid "Reset all file filters to defaults?"
+msgstr ""
+
+#: lazarusidestrconsts.lisresetlefttopwidthheightofselectedcomponentstotheir
+msgid "Reset Left, Top, Width, Height of selected components to their ancestor values?"
 msgstr ""
 
 #: lazarusidestrconsts.lisresourceloaderror
@@ -14826,6 +14846,10 @@ msgstr "Valitse Delphi form (lomake) tiedosto (*.dfm)"
 msgid "Selected"
 msgstr "Valittu"
 
+#: lazarusidestrconsts.lisselectedandchildcontrols
+msgid "Selected and child controls"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectedbottomneighbour
 msgid "(selected bottom neighbour)"
 msgstr "(valittu alapuolen naapuri)"
@@ -14971,6 +14995,10 @@ msgstr "Näytä statuspalkki"
 msgid "Show units"
 msgstr "Näytä käännösyksiköt"
 
+#: lazarusidestrconsts.lisshowunusedunits
+msgid "Show unused units ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisshowvaluehintswhiledebugging
 msgid "Show value hints while debugging"
 msgstr "Näytä arvot vihjeinä debuggaus-tilassa"
@@ -15094,6 +15122,10 @@ msgstr ""
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory %s%s%s does not exist."
 msgstr "Lähdekoodihakemistoa %s%s%s ei ole."
+
+#: lazarusidestrconsts.lissourceeditorwindowmanager
+msgid "Source Editor Window Manager"
+msgstr ""
 
 #: lazarusidestrconsts.lissourcemodified
 msgid "Source modified"
@@ -16395,6 +16427,10 @@ msgstr "Paketin %s%s%s lataaminen ei onnistu"
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr ""
 
+#: lazarusidestrconsts.lisunabletoopen
+msgid "Unable to open \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletoopenancestorcomponent
 msgid "Unable to open ancestor component"
 msgstr "Ei voi avata isä-komponenttia"
@@ -16618,9 +16654,9 @@ msgstr "Käännösyksiköitä ei löydy projektista %s"
 msgid "Unsigned"
 msgstr "Etumerkitön"
 
-#: lazarusidestrconsts.lisunusedunits
-msgid "Unused units"
-msgstr "Käyttämättömät käännösyksiköt"
+#: lazarusidestrconsts.lisunusedunitsof
+msgid "Unused units of %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
@@ -16630,6 +16666,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
 msgstr "Ylös"
+
+#: lazarusidestrconsts.lisupdateotherproceduresignatureswhenonlylettercaseha
+msgid "Update other procedure signatures when only letter case has changed"
+msgstr ""
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
