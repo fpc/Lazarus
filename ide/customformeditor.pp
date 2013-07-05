@@ -2075,7 +2075,7 @@ var
   JITList: TJITComponentList;
   i: Integer;
 begin
-  DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName]);
+  //DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName]);
   RegComp:=IDEComponentPalette.FindComponent(ComponentClassName);
   if RegComp<>nil then begin
     //DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName,' is registered as ',DbgSName(RegComp.ComponentClass)]);
