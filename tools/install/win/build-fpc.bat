@@ -36,7 +36,11 @@ FOR /F %%L IN ('%COMPILER% -iW') DO SET FPCFULLVERSION=%%L
 
 SET INSTALL_BASE=%BUILDDIR%\fpc\%FPCVERSION%
 SET INSTALL_BINDIR=%INSTALL_BASE%\bin\%FPCFULLTARGET%
-%MAKEEXE% compiler_install rtl_install packages_install utils_install INSTALL_PREFIX=%INSTALL_BASE% PP=%COMPILER% FPCMAKE=%SOURCE_DIR%\utils\fpcm\fpcmake.exe >> %LOGFILE%
+
+SET FPCMAKE=%SOURCE_DIR%\utils\fpcm\bin\%FPCFULLTARGET%\fpcmake.exe
+IF ("%FPCVERSION:~0,3%" == "2.6") SET FPCMAKE=%SOURCE_DIR%\utils\fpcm\fpcmake.exe
+
+%MAKEEXE% compiler_install rtl_install packages_install utils_install INSTALL_PREFIX=%INSTALL_BASE% PP=%COMPILER% FPCMAKE=%FPCMAKE% >> %LOGFILE%
 
 FOR /F %%L IN ('%INSTALL_BINDIR%\fpc.exe -PB') DO SET COMPILER=%%L
 
