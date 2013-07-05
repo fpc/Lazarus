@@ -283,6 +283,7 @@ type
     FMakeFileHistory: TStringList;
     FCompilerMessagesFileHistory: TStringList;
     FBuildMatrixOptions: TBuildMatrixOptions;
+    FUseBuildModes: Boolean;
     FIsGlobalMode: TStrToBoolEvent;
 
    // TODO: store per debuggerclass options
@@ -539,6 +540,7 @@ type
 
     // global build options
     property BuildMatrixOptions: TBuildMatrixOptions read FBuildMatrixOptions;
+    property UseBuildModes: Boolean read FUseBuildModes write FUseBuildModes;
 
     // Debugger
     procedure SaveDebuggerPropertiesList;
@@ -1188,6 +1190,7 @@ begin
         Cfg.AppendBasePath('BuildMatrix');
         FBuildMatrixOptions.LoadFromConfig(Cfg);
         Cfg.UndoAppendBasePath;
+        FUseBuildModes:=XMLConfig.GetValue(Path+'Build/UseBuildModes',false);
 
         // backup
         LoadBackupInfo(FBackupInfoProjectFiles
@@ -1532,6 +1535,7 @@ begin
         Cfg.AppendBasePath('BuildMatrix');
         FBuildMatrixOptions.SaveToConfig(Cfg,IsGlobalMode);
         Cfg.UndoAppendBasePath;
+        XMLConfig.SetDeleteValue(Path+'Build/UseBuildModes',FUseBuildModes,false);
 
         // backup
         SaveBackupInfo(FBackupInfoProjectFiles

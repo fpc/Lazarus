@@ -51,8 +51,7 @@ type
 
   TIDEOptionsDialog = class(TAbstractOptionsEditorDialog)
     BuildModeComboBox: TComboBox;
-    BuildModeInSessionCheckBox: TCheckBox;
-    BuildModeLabel: TLabel;
+    UseBuildModeCheckBox: TCheckBox;
     BuildModeManageButton: TButton;
     BuildModeSelectPanel: TPanel;
     ButtonPanel: TButtonPanel;
@@ -62,8 +61,8 @@ type
     EditorsPanel: TScrollBox;
     FilterEdit: TTreeFilterEdit;
     SettingsPanel: TPanel;
+    procedure UseBuildModeCheckBoxChange(Sender: TObject);
     procedure BuildModeComboBoxSelect(Sender: TObject);
-    procedure BuildModeInSessionCheckBoxChange(Sender: TObject);
     procedure BuildModeManageButtonClick(Sender: TObject);
     procedure CategoryTreeChange(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
@@ -97,7 +96,7 @@ type
     procedure SetSettings(const AValue: TIDEOptionsEditorSettings);
     function AllBuildModes: boolean;
     procedure UpdateBuildModeButtons;
-    procedure SetBuldModeVisibility(AVisibility: Boolean);
+    procedure SetBuildModeVisibility(AVisibility: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     function ShowModal: Integer; override;
@@ -133,11 +132,8 @@ begin
   FEditorsCreated := False;
   FEditorToOpen := nil;
   SettingsPanel.Constraints.MinHeight:=0;
-  SetBuldModeVisibility(False);
-  BuildModeLabel.Caption:=lisBuildMode;
-  BuildModeInSessionCheckBox.Caption:=lisInSession;
-  BuildModeInSessionCheckBox.Hint:=
-    lisEnableThisToStoreTheBuildModeInYourSessionLpsInste;
+  SetBuildModeVisibility(False);
+  UseBuildModeCheckBox.Caption:=lisBuildModes;
 
   IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
   Caption := dlgIDEOptions;
@@ -173,7 +169,7 @@ end;
 
 procedure TIDEOptionsDialog.IDEOptionsDialogKeyPress(Sender: TObject; var Key: char);
 begin
-  debugln(['TIDEOptionsDialog.IDEOptionsDialogKeyPress ',ord(Key)]);
+  //debugln(['TIDEOptionsDialog.IDEOptionsDialogKeyPress ',ord(Key)]);
 end;
 
 procedure TIDEOptionsDialog.CategoryTreeChange(Sender: TObject; Node: TTreeNode);
@@ -200,7 +196,7 @@ begin
     GroupClass := FindGroupClass(Node);
   end;
   // Show the Build Mode panel for project compiler options
-  SetBuldModeVisibility((GroupClass <> nil) and (GroupClass.InheritsFrom(TProjectCompilerOptions)));
+  SetBuildModeVisibility((GroupClass <> nil) and (GroupClass.InheritsFrom(TProjectCompilerOptions)));
   // Hide the old and show the new editor frame
   if Assigned(AEditor) then
     FNewLastSelected := AEditor.Rec;
@@ -216,32 +212,19 @@ begin
   end;
 end;
 
+procedure TIDEOptionsDialog.UseBuildModeCheckBoxChange(Sender: TObject);
+begin
+  EnvironmentOptions.UseBuildModes:=(Sender as TCheckBox).Checked;
+  UpdateBuildModeButtons;
+end;
+
 procedure TIDEOptionsDialog.BuildModeComboBoxSelect(Sender: TObject);
 begin
   if AllBuildModes then begin
     ShowMessage('This will allow changing all build modes at once. Not implemented yet.');
-    BuildModeInSessionCheckBox.Enabled:=false;
   end
   else begin
     SwitchBuildMode(BuildModeComboBox.Text,BuildModeSelectPanel.Visible);
-  end;
-end;
-
-procedure TIDEOptionsDialog.BuildModeInSessionCheckBoxChange(Sender: TObject);
-var
-  NewInSession: Boolean;
-begin
-  NewInSession:=BuildModeInSessionCheckBox.Checked;
-  if NewInSession and (Project1.ActiveBuildMode=Project1.BuildModes[0]) then
-  begin
-    IDEMessageDialog(lisCCOErrorCaption,
-      lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn,
-      mtError,[mbCancel]);
-    BuildModeInSessionCheckBox.Checked:=false;
-  end else begin
-    Project1.ActiveBuildMode.InSession:=BuildModeInSessionCheckBox.Checked;
-    if ModeMatrixFrame<>nil then
-      ModeMatrixFrame.UpdateModes;
   end;
 end;
 
@@ -613,13 +596,19 @@ begin
 end;
 
 procedure TIDEOptionsDialog.UpdateBuildModeButtons;
+var
+  ManyBuildModes: Boolean;
 begin
-  BuildModeInSessionCheckBox.Visible:=Project1.SessionStorage in pssHasSeparateSession;
-  BuildModeInSessionCheckBox.Enabled:=not AllBuildModes;
-  BuildModeInSessionCheckBox.Checked:=Project1.ActiveBuildMode.InSession;
+  ManyBuildModes:=Project1.BuildModes.Count > 1;
+  if ManyBuildModes then
+    EnvironmentOptions.UseBuildModes := True;
+  UseBuildModeCheckBox.Checked:=EnvironmentOptions.UseBuildModes;
+  UseBuildModeCheckBox.Visible := not ManyBuildModes;
+  BuildModeComboBox.Visible := EnvironmentOptions.UseBuildModes;
+  BuildModeManageButton.Visible := EnvironmentOptions.UseBuildModes;
 end;
 
-procedure TIDEOptionsDialog.SetBuldModeVisibility(AVisibility: Boolean);
+procedure TIDEOptionsDialog.SetBuildModeVisibility(AVisibility: Boolean);
 begin
   BuildModeSelectPanel.Visible := AVisibility;
   if AVisibility then

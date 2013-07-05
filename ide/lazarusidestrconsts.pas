@@ -5378,12 +5378,11 @@ resourcestring
   dlgIdeMacroValues = 'IDE Macro Values';
   lisBuildModes = 'Build modes';
   lisInSession = 'In session';
-  lisBuildMode = 'Build Mode';
-  lisEnableThisToStoreTheBuildModeInYourSessionLpsInste = 'Enable this to '
-    +'store the build mode in your session (.lps) instead of the lpi';
+  //lisEnableThisToStoreTheBuildModeInYourSessionLpsInste = 'Enable this to '
+  //  +'store the build mode in your session (.lps) instead of the lpi';
+  lisTheDefaultModeMustBeStoredInProject =
+    'The default mode must be stored in project, not in session.';
   lisThereMustBeAtLeastOneBuildMode = 'There must be at least one build mode.';
-  lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn = 'The first build '
-    +'mode is the default mode and must be stored in the project, not in the session.';
   lisDuplicateEntry = 'Duplicate entry';
   lisThereIsAlreadyABuildModeWithThisName = 'There is already a build mode '
     +'with this name.';
