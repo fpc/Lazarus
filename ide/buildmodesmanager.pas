@@ -30,10 +30,10 @@ unit BuildModesManager;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls,
-  Grids, Buttons, Menus, ButtonPanel, LCLProc, IDEOptionsIntf, IDEDialogs,
-  TransferMacros, Project, LazarusIDEStrConsts,
-  CompilerOptions, Compiler_ModeMatrix, BuildModeDiffDlg;
+  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, Grids, Buttons, Menus,
+  ButtonPanel, LCLProc, Graphics, IDEOptionsIntf, IDEDialogs, TransferMacros,
+  Project, LazarusIDEStrConsts, CompilerOptions, Compiler_ModeMatrix,
+  BuildModeDiffDlg;
 
 type
 
@@ -49,6 +49,9 @@ type
     BuildModesPopupMenu: TPopupMenu;
     BuildModesStringGrid: TStringGrid;
     ButtonPanel1: TButtonPanel;
+    NoteLabel: TLabel;
+    procedure BuildModesStringGridDrawCell(Sender: TObject; aCol,
+      aRow: Integer; aRect: TRect; aState: TGridDrawState);
     procedure CancelButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -78,7 +81,6 @@ type
     procedure UpdateBuildModeButtons;
     procedure SetShowSession(const AValue: boolean);
     procedure DoShowSession;
-    procedure UpdateDialogCaption;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -199,7 +201,6 @@ end;
 procedure TBuildModesForm.FormShow(Sender: TObject);
 begin
   // options dialog
-  UpdateDialogCaption;
   BuildModesGroupBox.Caption:=lisBuildModes;
   DoShowSession;
   // modes
@@ -350,9 +351,7 @@ begin
     if (aState=cbChecked) and (i=0) then
     begin
       Grid.Cells[aCol,aRow]:=Grid.Columns[aCol].ValueUnchecked;
-      IDEMessageDialog(lisCCOErrorCaption,
-        lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn,
-        mtError,[mbCancel]);
+      NoteLabel.Caption:=lisTheDefaultModeMustBeStoredInProject;
       exit;
     end;
     CurMode.InSession:=aState=cbChecked;
@@ -384,8 +383,8 @@ begin
     if b and (i=0) then
     begin
       NewValue:=OldValue;
-      IDEMessageDialog(lisCCOErrorCaption,lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn,
-                 mtError,[mbCancel]);
+      IDEMessageDialog(lisCCOErrorCaption,lisTheDefaultModeMustBeStoredInProject,
+                       mtError,[mbCancel]);
       exit;
     end;
     CurMode.InSession:=b;
@@ -412,7 +411,7 @@ begin
       CurMode.Identifier:=s;
     end;
   end;
-  UpdateDialogCaption;
+  NoteLabel.Caption:='';
 end;
 
 procedure TBuildModesForm.FillBuildModesGrid(aOnlyActiveState: Boolean);
@@ -461,7 +460,13 @@ begin
   end
   else
     CurMode:=nil;
-
+  // Dialog caption
+  if Project1<>nil then
+    Caption:=Format(dlgProjectOptionsFor,[Project1.GetTitleOrName])
+            + ', '+copy(Identifier,1,12)
+  else
+    Caption:='No project';
+  // Buttons
   BuildModeAddSpeedButton.Hint:=Format(lisAddNewBuildModeCopyingSettingsFrom, [Identifier]);
   BuildModeDeleteSpeedButton.Enabled:=(CurMode<>nil) and (fBuildModes.Count>1);
   BuildModeDeleteSpeedButton.Hint:=Format(lisDeleteMode, [Identifier]);
@@ -470,6 +475,7 @@ begin
   BuildModeMoveDownSpeedButton.Enabled:=i<BuildModesStringGrid.RowCount-2;
   BuildModeMoveDownSpeedButton.Hint:=Format(lisMoveOnePositionDown, [Identifier]);
   BuildModeDiffSpeedButton.Hint:=lisShowDifferencesBetweenModes;
+  NoteLabel.Caption:='';
 end;
 
 procedure TBuildModesForm.SetShowSession(const AValue: boolean);
@@ -514,21 +520,6 @@ begin
   Grid.EndUpdate(true);
 end;
 
-procedure TBuildModesForm.UpdateDialogCaption;
-var
-  s: String;
-begin
-  if Project1<>nil then
-  begin
-    s := Project1.GetTitleOrName;
-    s:=Format(dlgProjectOptionsFor, [s]);
-    if fBuildModes.Count>1 then
-      s:=s+', '+copy(fActiveBuildMode.GetCaption,1,12);
-  end else
-    s:='TBuildModesForm.UpdateDialogCaption: no project';
-  Caption:=s;
-end;
-
 function TBuildModesForm.GetSelectedBuildMode: TProjectBuildMode;
 var
   i: LongInt;
@@ -547,6 +538,19 @@ end;
 procedure TBuildModesForm.CancelButtonClick(Sender: TObject);
 begin
   ;
+end;
+
+procedure TBuildModesForm.BuildModesStringGridDrawCell(Sender: TObject; aCol,
+  aRow: Integer; aRect: TRect; aState: TGridDrawState);
+var
+  Canv: TCanvas;
+begin
+  if (aCol=1) and (aRow=1) then
+  begin
+    Canv := (Sender as TStringGrid).Canvas;
+//    Canv.Brush.Color := clWindow;
+    Canv.FillRect(aRect);
+  end;
 end;
 
 function TBuildModesForm.GetActiveBuildMode: TProjectBuildMode;
