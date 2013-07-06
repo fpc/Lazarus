@@ -270,11 +270,11 @@ type
     property NextSibling: TDOMNode read FNextSibling;
     property Attributes: TDOMNamedNodeMap read GetAttributes;
     property OwnerDocument: TDOMDocument read GetOwnerDocument;
-    function GetEnumerator: TDOMNodeEnumerator; // all children including grand children
+    function GetEnumerator: TDOMNodeEnumerator; // all children excluding grand children
     function GetEnumeratorAllChildren: TDOMNodeAllChildEnumerator; // all children including grand children
     function GetNextNode: TDOMNode; // first child, then next sibling, then next sibling of parent, ...
     function GetNextNodeSkipChildren: TDOMNode; // first next sibling, then next sibling of parent, ...
-    function GetPreviousNode: TDOMNode; // the reverse of GetNext
+    function GetPreviousNode: TDOMNode; // the reverse of GetNextNode
     function GetLastLeaf: TDOMNode; // get last child of last child of ...
     function GetLevel: SizeInt; // root node has 0
 
