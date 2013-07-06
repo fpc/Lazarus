@@ -542,15 +542,9 @@ end;
 
 procedure TBuildModesForm.BuildModesStringGridDrawCell(Sender: TObject; aCol,
   aRow: Integer; aRect: TRect; aState: TGridDrawState);
-var
-  Canv: TCanvas;
 begin
   if (aCol=1) and (aRow=1) then
-  begin
-    Canv := (Sender as TStringGrid).Canvas;
-//    Canv.Brush.Color := clWindow;
-    Canv.FillRect(aRect);
-  end;
+    (Sender as TStringGrid).Canvas.FillRect(aRect);
 end;
 
 function TBuildModesForm.GetActiveBuildMode: TProjectBuildMode;
