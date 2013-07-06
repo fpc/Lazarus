@@ -328,7 +328,7 @@ type
   { TIDESynGutterLOvProviderIDEMarks }
 
   TIDESynGutterLOvProviderIDEMarks = class(TSynGutterLOvProviderBookmarks)
-  // Bookmarsk and breakpoints
+  // Bookmarks and breakpoints
   private
     FBreakColor: TColor;
     FBreakDisabledColor: TColor;
