@@ -17,6 +17,8 @@ type
   private
     FCancelKind: TBitBtnKind;
     function CreateButtons(AVerticalLayout: Boolean; ASpacing: Integer): Integer;
+  protected
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   public
     IsSmallDevice: Boolean;
   
@@ -89,6 +91,16 @@ begin
     DefaultButton.Default := True;
 end;
 
+procedure TPromptDialog.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+  if (Shift = [ssModifier]) and (Key = VK_C) then
+  begin
+    Key := 0;
+    ClipBoard.AsText := MSG;
+  end;
+end;
+
 procedure TPromptDialog.Paint;
 var
   UseMaskHandle: HBitmap;
@@ -111,13 +123,14 @@ begin
 end;
 
 constructor TPromptDialog.CreateMessageDialog(const ACaption, aMsg: string;
-  DialogType : longint; TheButtons: PLongint; ButtonCount, DefaultIndex : Longint);
+  DialogType: Longint; TheButtons: PLongint; ButtonCount, DefaultIndex: Longint
+  );
 var
   curBtn: Integer;
   curKind: TBitBtnKind;
 begin
   inherited CreateNew(nil, 1);
-
+  KeyPreview := True; //needed for capturing Ctrl+C in KeyDown
   IsSmallDevice := (Screen.Width <= 300);
 
   AutoScroll := False;
