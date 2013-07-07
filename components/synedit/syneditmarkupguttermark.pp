@@ -36,6 +36,7 @@ type
     Priority: Integer;
     Markup: TSynSelectedColor;
   end;
+  PMarkSection = ^TMarkSection;
 
   { TSynEditMarkupMark }
 
@@ -95,6 +96,8 @@ var
   MLine: TSynEditMarkLine;
   i, j: Integer;
   s: string;
+  Markup: TSynEditMarkupMark;
+  Section: PMarkSection;
 begin
   MLine := TCustomSynEdit(SynEdit).Marks.Line[ARow];
   if MLine = nil then begin
@@ -105,21 +108,23 @@ begin
 
   j := 0;
   for i := 0 to MLine.Count - 1 do begin
-    if not ( (MLine[i] is TSynEditMarkupMark) and
-             (TSynEditMarkupMark(MLine[i]).SourceMarkup <> nil) )
-    then
+    if not (MLine[i] is TSynEditMarkupMark) then
+      continue;
+    Markup:=TSynEditMarkupMark(MLine[i]);
+    if Markup.SourceMarkup = nil then
       continue;
 
-    FRowData[i].Markup := TSynEditMarkupMark(MLine[i]).SourceMarkup;
-    FRowData[i].Priority := MLine[i].Priority;
+    Section := @FRowData[j];
+    Section^.Markup := Markup.SourceMarkup;
+    Section^.Priority := Markup.Priority;
 
-    s := Lines[MLine[i].Line - 1];
-    FRowData[i].StartX := LogicalToPhysicalPos
-      (Point(FWordBreaker.PrevBoundary(s, MLine[i].Column, True), MLine[i].Line)).x;
-    FRowData[i].EndX   := LogicalToPhysicalPos
-      (Point(FWordBreaker.NextBoundary(s, MLine[i].Column), MLine[i].Line)).x;
+    s := Lines[Markup.Line - 1];
+    Section^.StartX := LogicalToPhysicalPos
+      (Point(FWordBreaker.PrevBoundary(s, Markup.Column, True), Markup.Line)).x;
+    Section^.EndX   := LogicalToPhysicalPos
+      (Point(FWordBreaker.NextBoundary(s, Markup.Column), Markup.Line)).x;
 
-    if (FRowData[i].StartX > 0) and (FRowData[i].EndX > 0) then
+    if (Section^.StartX > 0) and (Section^.EndX > 0) then
       inc(j);
   end;
 
@@ -130,16 +135,18 @@ function TSynEditMarkupGutterMark.GetMarkupAttributeAtRowCol(const aRow: Integer
   const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
 var
   i, FoundPri: Integer;
+  Section: PMarkSection;
 begin
   FoundPri := 0;
   Result := nil;
   for i := 0 to length(FRowData) - 1 do begin
-    if (FRowData[i].StartX <= aStartCol.Physical) and (FRowData[i].EndX > aStartCol.Physical) and
-       ( (FRowData[i].Priority < FoundPri) or (i = 0) )
+    Section := @FRowData[i];
+    if (Section^.StartX <= aStartCol.Physical) and (Section^.EndX > aStartCol.Physical) and
+       ( (Section^.Priority < FoundPri) or (Result=nil) )
     then begin
-      Result := FRowData[i].Markup;
-      MarkupInfo.SetFrameBoundsPhys(FRowData[i].StartX, FRowData[i].EndX);
-      FoundPri := FRowData[i].Priority;
+      Result := Section^.Markup;
+      MarkupInfo.SetFrameBoundsPhys(Section^.StartX, Section^.EndX);
+      FoundPri := Section^.Priority;
     end;
   end;
 end;
@@ -147,19 +154,33 @@ end;
 procedure TSynEditMarkupGutterMark.GetNextMarkupColAfterRowCol(const aRow: Integer;
   const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo; out ANextPhys,
   ANextLog: Integer);
+// return the next StartX or EndX after aStartCol
+
+  procedure Improve(Col: integer); inline;
+  begin
+    if Col <= aStartCol.Physical then exit;
+    if Col > ANextPhys then exit;
+    ANextPhys:=Col;
+  end;
+
 var
   i: Integer;
+  Section: PMarkSection;
 begin
   ANextLog := -1;
-  ANextPhys := -1;
   if length(FRowData) = 0 then
+  begin
+    ANextPhys := -1;
     exit;
-  for i := 0 to length(FRowData) - 1 do begin
-    if FRowData[i].StartX < ANextPhys then
-      ANextPhys := FRowData[0].StartX;;
-    if FRowData[i].EndX < ANextPhys then
-      ANextPhys := FRowData[0].EndX;;
   end;
+  ANextPhys := High(ANextPhys);
+  for i := 0 to length(FRowData) - 1 do begin
+    Section := @FRowData[i];
+    Improve(Section^.StartX);
+    Improve(Section^.EndX);
+  end;
+  if ANextPhys = High(ANextPhys) then
+    ANextPhys := -1;
 end;
 
 end.
