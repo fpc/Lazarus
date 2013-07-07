@@ -367,7 +367,7 @@ type
                           var AIndex: Integer;
                           AStopAfterLine: Integer = -1; // AEndPoint may be set further down, for multi-line matches
                           ABackward : Boolean = False
-                         ): TPoint;  override; // returns searhed until point
+                         ): TPoint;  override; // returns searched until point
     function CreateTermsList: TSynSearchTermDict; virtual;
   public
     constructor Create(ASynEdit: TSynEditBase);
