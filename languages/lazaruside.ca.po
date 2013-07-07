@@ -4752,10 +4752,6 @@ msgstr ""
 msgid "Building Lazarus failed"
 msgstr ""
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build Mode"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr ""
@@ -8215,10 +8211,6 @@ msgstr "Permet Macroinstruccions"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = replace whole identifier, Disable = replace prefix"
-msgstr ""
-
-#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
-msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
 msgstr ""
 
 #: lazarusidestrconsts.lisenclose
@@ -15968,6 +15960,10 @@ msgstr "El depurador %s%s%s%sno existeix o no es executable. %s%s%sMira Entorn -
 msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
 msgstr ""
 
+#: lazarusidestrconsts.listhedefaultmodemustbestoredinproject
+msgid "The default mode must be stored in project, not in session."
+msgstr ""
+
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "No existeix el directori de destinació%s%s%s%s."
@@ -16047,11 +16043,6 @@ msgstr "No s'ha trobat el fitxer %s%s%s%s.%sEl voleu localitzar manualment ?%s"
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "No s'ha trobat el fitxer %s%s%s%s.Ignora, carregarà el projecte.%sAvorta n'aturarà la càrrega."
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr ""
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"

@@ -4825,10 +4825,6 @@ msgstr "בנה את ה IDE עם חבילות"
 msgid "Building Lazarus failed"
 msgstr "בניית לזארוס נכשלה"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build Mode"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "הבדלים בין אופני בניה"
@@ -8351,10 +8347,6 @@ msgstr "אפשר מאקרו"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = replace whole identifier, Disable = replace prefix"
-msgstr ""
-
-#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
-msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
 msgstr ""
 
 #: lazarusidestrconsts.lisenclose
@@ -16284,6 +16276,10 @@ msgstr "מנפה השגיאות אינו קיים או שאינו קובץ רי�
 msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
 msgstr ""
 
+#: lazarusidestrconsts.listhedefaultmodemustbestoredinproject
+msgid "The default mode must be stored in project, not in session."
+msgstr ""
+
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "תיקיית היעד %s%s%s%s אינה קיימת. "
@@ -16363,11 +16359,6 @@ msgstr "הקובץ %s%s%s%s לא נמצא. האם אתה רוצה למצוא א�
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "הקובץ %s%s%s%s לא נמצא. \"התעלם\" יגרום להמשך טעינת הפרוייקט, \"צא\" יעצור את הטעינה."
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr "אופן הבנייה הראשון הוא אופן ברירת המחדל וחייב להשמר בפרוייקט ולא ב session."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"

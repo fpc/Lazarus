@@ -4761,10 +4761,6 @@ msgstr "Créer l' IDE avec les paquets"
 msgid "Building Lazarus failed"
 msgstr "La création de Lazarus a échouée"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build Mode"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "Différences entre les modes de création"
@@ -8275,10 +8271,6 @@ msgstr "Permettre les macros"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = replace whole identifier, Disable = replace prefix"
-msgstr ""
-
-#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
-msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
 msgstr ""
 
 #: lazarusidestrconsts.lisenclose
@@ -16117,6 +16109,10 @@ msgstr "Le débogueur %s%s%s%sn'existe pas ou n'est pas exécutable. %s%sVoir En
 msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
 msgstr ""
 
+#: lazarusidestrconsts.listhedefaultmodemustbestoredinproject
+msgid "The default mode must be stored in project, not in session."
+msgstr ""
+
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "Le répertoire de destination %s%s%s%s n'existe pas."
@@ -16196,11 +16192,6 @@ msgstr "Le fichier %s%s%s%s n'a pas été trouvé.%sSouhaitez-vous le rechercher
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "Le fichier %s%s%s%s est introuvable.%sIgnorer continuera à charger le projet;%sAbandonner arrêtera le chargement."
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr "Le premier mode de création est le mode par défaut et doit être stockés dans le projet, pas dans la session."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"

@@ -4823,10 +4823,6 @@ msgstr "构建IDE和包"
 msgid "Building Lazarus failed"
 msgstr ""
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build Mode"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr ""
@@ -8314,10 +8310,6 @@ msgstr "允许宏"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = replace whole identifier, Disable = replace prefix"
-msgstr ""
-
-#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
-msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
 msgstr ""
 
 #: lazarusidestrconsts.lisenclose
@@ -16191,6 +16183,10 @@ msgstr "调试器 %s%s%s%s 不存在或者不是可执行程序.%s%s查看 环�
 msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
 msgstr ""
 
+#: lazarusidestrconsts.listhedefaultmodemustbestoredinproject
+msgid "The default mode must be stored in project, not in session."
+msgstr ""
+
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "目标目录 %s%s%s%s 不存在."
@@ -16270,11 +16266,6 @@ msgstr "文件 %s%s%s%s未找到.%s你想自己定位文件么 ?%s"
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "文件 %s%s%s%s未找到.%s点击 忽略 将继续装载工程,%s点击 中断 将停止装载."
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr ""
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"

@@ -4558,10 +4558,6 @@ msgstr "kokoa IDE paketteineen"
 msgid "Building Lazarus failed"
 msgstr "Lazaruksen kokoaminen epäonnistui"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build Mode"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "Koontamoodien erot"
@@ -7994,10 +7990,6 @@ msgstr "Salli makrot"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = replace whole identifier, Disable = replace prefix"
-msgstr ""
-
-#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
-msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
 msgstr ""
 
 #: lazarusidestrconsts.lisenclose
@@ -15442,6 +15434,10 @@ msgstr ""
 msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
 msgstr ""
 
+#: lazarusidestrconsts.listhedefaultmodemustbestoredinproject
+msgid "The default mode must be stored in project, not in session."
+msgstr ""
+
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "Kohdehakemistoa%s%s%s%s ei ole."
@@ -15521,10 +15517,6 @@ msgstr "Tiedostoa %s%s%s%sei löydy.%sTahdotko etsiä sen itse ?%s"
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "Tiedostoa %s%s%s%sei löytynyt.%sOhita-näppäimen nainallus jatkaa projektin lataamista,%sKeskeytä-näppäin keskeyttää sen."
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr "Ensimmäinen koontamoodi on oletusmoodi ja se pitää tallentaa projektiin, ei sessioon."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"

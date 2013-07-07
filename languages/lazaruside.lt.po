@@ -4718,10 +4718,6 @@ msgstr "kartu su IKA daryti ir paketus"
 msgid "Building Lazarus failed"
 msgstr "Lazarus darymas nepavyko"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build Mode"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "Darymo veiksenų skirtumai"
@@ -8196,10 +8192,6 @@ msgstr "Įgalinti makrokomandas"
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = replace whole identifier, Disable = replace prefix"
 msgstr "Įgalinti - reiškią pakeisti visą identifikatorių, o pasyvinti - pakeisti pefiksą"
-
-#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
-msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
-msgstr ""
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
@@ -15892,6 +15884,10 @@ msgstr "Nerasta derintuvė %s%s%s,%sarba ji nėra vykdomasis failas.%s%sŽvilgte
 msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
 msgstr "Įprastai derintuvės failo pavadinimas būna „%s“. Būtina nurodyti pilną adresą."
 
+#: lazarusidestrconsts.listhedefaultmodemustbestoredinproject
+msgid "The default mode must be stored in project, not in session."
+msgstr ""
+
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "Paskirties aplankas%s%s%s%s neegzistuoja."
@@ -15971,11 +15967,6 @@ msgstr "Failas %s%s%s%s nerastas.%sIeškosite patys?%s"
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "Failas %s%s%s%s nerastas.%sPaspaudus „Tęsti“ projektas bus įkeliamas toliau,%spaspaudus „Nutraukti“ įkėlimas bus nutrauktas."
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr "Pirmoji darymo veiksena yra numatytoji ir turi būti talpinama projekte, o ne sesijoje."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"

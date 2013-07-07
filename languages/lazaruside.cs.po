@@ -4577,10 +4577,6 @@ msgstr "sestavit IDE s balíčky"
 msgid "Building Lazarus failed"
 msgstr "Sestavení Lazarusu selhalo"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build Mode"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "Rozdíly mezi sestavovacími módy"
@@ -8023,10 +8019,6 @@ msgstr "Povolit makra"
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = replace whole identifier, Disable = replace prefix"
 msgstr "Povolit = nahrazení celého identifikátoru, Zakázat = nahrazení prefixu"
-
-#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
-msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
-msgstr ""
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
@@ -15493,6 +15485,10 @@ msgstr "Ladič %s%s%s%sneexistuje, nebo není spustitelný.%s%sZkontrolujte Nás
 msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
 msgstr "Spouštěcí program ladiče se obvykle jmenuje \"%s\". Prosím, zadejte celou cestu souboru."
 
+#: lazarusidestrconsts.listhedefaultmodemustbestoredinproject
+msgid "The default mode must be stored in project, not in session."
+msgstr ""
+
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "Cílový adresář%s%s%s%s neexistuje."
@@ -15572,11 +15568,6 @@ msgstr "Soubor %s%s%s%snebyl nalezen.%sChcete ho najít sami?%s"
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "Soubor %s%s%s%snebyl nalezen.%sZvolte Ignorovat pro pokračování v načítání projektu,%szvolte Zrušit pro zastavení načítání."
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr "První sestavovací mód je předvolený mód a musí být uložen v projektu, nikoliv v sezení."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"

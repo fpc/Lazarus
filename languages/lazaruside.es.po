@@ -4830,10 +4830,6 @@ msgstr "Construir IDE con paquetes"
 msgid "Building Lazarus failed"
 msgstr "Ha fallado la construcción de Lazarus"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build Mode"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "Diferencias entre modos de construcción"
@@ -8356,10 +8352,6 @@ msgstr "Activar Macros"
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = replace whole identifier, Disable = replace prefix"
 msgstr "Activar = reemplazar identificador entero, Desactivar = reemplazar prefijo"
-
-#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
-msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
-msgstr ""
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
@@ -16261,6 +16253,10 @@ msgstr "El depurador %s%s%s%sno existe o no es ejecutable.%s%sMire Herramientas 
 msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
 msgstr "El ejecutable del depurador normalmente tiene el nombre \"%s\". Por favor dar la ruta completa del archivo."
 
+#: lazarusidestrconsts.listhedefaultmodemustbestoredinproject
+msgid "The default mode must be stored in project, not in session."
+msgstr ""
+
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "El directorio de destino%s%s%s%s no existe."
@@ -16340,11 +16336,6 @@ msgstr "No se encontró el archivo %s%s%s%s.%s¿Quiere localizarlo usted mismo?%
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "No se ha encontrado el archivo %s%s%s%s.%sIgnorar seguirá­a cargando el proyecto,%sAbortar parará­a la carga."
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr "El primer modo de construcción es el modo predeterminado y debe ser almacenado en el proyecto, y no en la sesión."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"

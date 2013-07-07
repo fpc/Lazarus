@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-07-05 03:00+0400\n"
+"PO-Revision-Date: 2013-07-08 01:36+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4746,10 +4746,6 @@ msgstr "собрать IDE с пакетами"
 msgid "Building Lazarus failed"
 msgstr "Сборка Lazarus не удалась"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build Mode"
-msgstr "Режим сборки"
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "Различия между режимами сборки"
@@ -8235,10 +8231,6 @@ msgstr "Включить макросы"
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = replace whole identifier, Disable = replace prefix"
 msgstr "Включено = заменять идентификатор целиком; выключено = заменять префикс"
-
-#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
-msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
-msgstr "Включите для сохранения режима сборки в файле сеанса работы (.lps) вместо файла проекта (.lpi)"
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
@@ -15962,6 +15954,10 @@ msgstr "Отладчик %s%s%s%sне существует или не явля�
 msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
 msgstr "Исполнимый файл отладчика обычно называется \"%s\". Укажите полный путь к нему."
 
+#: lazarusidestrconsts.listhedefaultmodemustbestoredinproject
+msgid "The default mode must be stored in project, not in session."
+msgstr "Режим по умолчанию должен храниться в файле проекта, а не сеанса работы."
+
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "Каталог назначения%s%s%s%s не существует."
@@ -16041,11 +16037,6 @@ msgstr "Файл %s%s%s%sне найден.%sВы хотите найти его
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "Файл %s%s%s%sне найден.%sПропуск продолжит загрузку проекта,%sПрервать - остановит загрузку."
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr "Первый режим сборки является режимом сборки по умолчанию и должен храниться в проекте, а не в файле сеанса."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"

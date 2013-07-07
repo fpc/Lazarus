@@ -4750,10 +4750,6 @@ msgstr "IDE mit allen Packages kompilieren"
 msgid "Building Lazarus failed"
 msgstr "Neukompilieren von Lazarus fehlgeschlagen"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build Mode"
-msgstr "Erstellmodus"
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "Unterschiede zwischen den Erstellmodi"
@@ -8248,10 +8244,6 @@ msgstr "Makros einschalten"
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = replace whole identifier, Disable = replace prefix"
 msgstr "Aktivieren = ganzen Bezeichner ersetzen, Deaktivieren = Präfix ersetzen"
-
-#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
-msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
-msgstr "Aktivieren Sie dies, um den Erstellmodus in der Sitzungsdatei (.lps) anstatt der Projektdatei (.lpi) zu speichern"
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
@@ -16014,6 +16006,10 @@ msgstr "Der Debugger %s%s%s%sfehlt oder ist nicht ausführbar.%s%sSiehe: Einstel
 msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
 msgstr "Der Debugger hat typischerweise den Namen \"%s\". Bitte geben sie den vollständigen Dateipfad an."
 
+#: lazarusidestrconsts.listhedefaultmodemustbestoredinproject
+msgid "The default mode must be stored in project, not in session."
+msgstr ""
+
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "Das Zielverzeichnis%s%s%s%s ist nicht vorhanden."
@@ -16093,11 +16089,6 @@ msgstr "Die Datei %s%s%s%swurde nicht gefunden.%sWollen Sie selbst nach ihr such
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "Die Datei %s%s%s%swurde nicht gefunden.%s »Übergehen« lädt das Projekt weiter,%s»Abbruch« beendet den Ladevorgang."
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr "Der erste Erstellmodus ist der Vorgabemodus und muß im Projekt gespeichert werden, nicht in der Sitzung."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"

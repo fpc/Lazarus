@@ -4852,10 +4852,6 @@ msgstr "パッケージ付きのIDEを構築"
 msgid "Building Lazarus failed"
 msgstr "Lazarusの構築の失敗"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build Mode"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "構築モード間の違い"
@@ -8380,10 +8376,6 @@ msgstr "マクロを有効にする"
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = replace whole identifier, Disable = replace prefix"
 msgstr "有効 = 識別子全体を置換、無効 = 接頭語を置換"
-
-#: lazarusidestrconsts.lisenablethistostorethebuildmodeinyoursessionlpsinste
-msgid "Enable this to store the build mode in your session (.lps) instead of the lpi"
-msgstr ""
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
@@ -16316,6 +16308,10 @@ msgstr "デバッガ%s%s%s%sは存在しないか、実行ファイルではあ�
 msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
 msgstr ""
 
+#: lazarusidestrconsts.listhedefaultmodemustbestoredinproject
+msgid "The default mode must be stored in project, not in session."
+msgstr ""
+
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "行き先のディレクトリ%s%s%s%sは存在しません。"
@@ -16395,11 +16391,6 @@ msgstr "ファイル %s%s%sは見つかりませんでした。%sあなた自身
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "ファイル %s%s%sは見つかりませんでした。%s[無視]を選ぶとプロジェクトの読み込みを続け、%s[中止]を選ぶと読み込みを停止します。"
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr "第一構築モードは既定のモードで、セッションでなくプロジェクトに保管されなければなりません。"
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
