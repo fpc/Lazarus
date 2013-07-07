@@ -216,7 +216,7 @@ type
     FExtraMarkupLine: TSynEditMarkupSpecialLine;
     FExtraMarkupMgr: TSynEditMarkupManager;
     FTopInfoMarkup: TSynSelectedColor;
-    FUserWordsList: TList;
+    FUserWordsList: TFPList;
 
     function DoIfDefNodeStateRequest(Sender: TObject; LinePos,
       XStartPos: Integer; CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
@@ -1571,7 +1571,7 @@ end;
 constructor TIDESynEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FUserWordsList := TList.Create;
+  FUserWordsList := TFPList.Create;
   FTemplateEdit:=TSynPluginTemplateEdit.Create(Self);
   FSyncroEdit := TSynPluginSyncroEdit.Create(Self);
 
