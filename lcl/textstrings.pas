@@ -8,16 +8,10 @@
  ***************************************************************************/
 
  *****************************************************************************
- *                                                                           *
- *  This file is part of the Lazarus Component Library (LCL)                 *
- *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
- *  for details about the copyright.                                         *
- *                                                                           *
- *  This program is distributed in the hope that it will be useful,          *
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
- *                                                                           *
+  This file is part of the Lazarus Component Library (LCL)
+
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
  *****************************************************************************
 
   TTextStrings is a TStrings descendent that is optimized for handling the
@@ -41,6 +35,7 @@ type
     Line: string; // cached line as string
     TheObject: TObject; // user data
   end;
+  PTextLineRange = ^TTextLineRange;
 
   TTextStrings = class(TStrings)
   private
@@ -50,7 +45,7 @@ type
     FArraysValid: boolean;
     FLineCount: integer;
     FLineCapacity: integer;
-    FLineRanges: ^TTextLineRange;// array of TTextLineRange
+    FLineRanges: PTextLineRange;// array of TTextLineRange
     FText: string;
     FUpdateCount: integer;
     FChangedWhileUpdate: boolean;
@@ -67,7 +62,6 @@ type
     procedure PutObject(Index: Integer; AnObject: TObject); override;
     function GetLineLen(Index: integer; IncludeNewLineChars: boolean): integer; inline;
     function GetLineEnd(Index: integer; IncludeNewLineChars: boolean): integer;
-    function HasObjects: boolean;
     function CountLineEndings(const s: string): integer;
   public
     constructor Create;
@@ -127,7 +121,7 @@ begin
   if FLineCount>0 then begin
     ArraySize:=FLineCount*SizeOf(TTextLineRange);
     GetMem(FLineRanges,ArraySize);
-    FillChar(FLineRanges^,ArraySize,0);
+    FillByte(FLineRanges^,ArraySize,0);
     p:=1;
     line:=0;
     FLineRanges[line].StartPos:=1;
@@ -175,16 +169,18 @@ begin
 end;
 
 function TTextStrings.Get(Index: Integer): string;
+var
+  Line: PTextLineRange;
 begin
   if not FArraysValid then BuildArrays;
   if (Index<0) or (Index>=FLineCount) then
     Error(rsListIndexExceedsBounds, Index);
-  if (FLineRanges[Index].Line='')
-  and (FLineRanges[Index].StartPos<FLineRanges[Index].EndPos) then begin
-    FLineRanges[Index].Line:=copy(FText,FLineRanges[Index].StartPos,
-                         FLineRanges[Index].EndPos-FLineRanges[Index].StartPos);
+  Line:=@FLineRanges[Index];
+  if (Line^.Line='')
+  and (Line^.StartPos<Line^.EndPos) then begin
+    Line^.Line:=copy(FText,Line^.StartPos,Line^.EndPos-Line^.StartPos);
   end;
-  Result:=FLineRanges[Index].Line;
+  Result:=Line^.Line;
 end;
 
 procedure TTextStrings.ClearArrays;
@@ -281,17 +277,6 @@ begin
     Result:=FLineRanges[Index+1].StartPos;
 end;
 
-function TTextStrings.HasObjects: boolean;
-var
-  i: Integer;
-begin
-  if FArraysValid then
-    for i:=0 to FLineCount-1 do
-      if FLineRanges[i].TheObject<>nil then
-        exit(true);
-  Result:=false;
-end;
-
 function TTextStrings.CountLineEndings(const s: string): integer;
 var
   p: Integer;
@@ -340,20 +325,33 @@ begin
 end;
 
 procedure TTextStrings.Insert(Index: Integer; const S: string);
+
+  procedure RaiseOutOfBounds;
+  begin
+    raise EListError.Create('insert index '+IntToStr(Index)+' out of bounds '+IntToStr(FLineCount));
+  end;
+
 var
   NewStartPos: Integer;
   NewLineCharCount: Integer;
   NewLineLen: Integer;
   i: Integer;
   SEndsInNewLine: boolean;
+  Range: PTextLineRange;
 begin
   if not FArraysValid then BuildArrays;
   NewLineLen:=length(S);
   SEndsInNewLine:=(S<>'') and (S[NewLineLen] in [#10,#13]);
   if Index<FLineCount then
-    NewStartPos:=FLineRanges[Index].StartPos
-  else
-    NewStartPos:=length(FText);
+  begin
+    if Index<0 then
+      RaiseOutOfBounds;
+    NewStartPos:=FLineRanges[Index].StartPos;
+  end else begin
+    if Index>FLineCount then
+      RaiseOutOfBounds;
+    NewStartPos:=length(FText)+1;
+  end;
   NewLineCharCount:=0;
   if SEndsInNewLine then begin
     inc(NewLineCharCount);
@@ -384,9 +382,13 @@ begin
       inc(FLineRanges[i].EndPos,NewLineLen);
     end;
   end;
-  FLineRanges[Index].Line:=S;
-  FLineRanges[Index].EndPos:=NewStartPos+NewLineLen-NewLineCharCount;
   inc(FLineCount);
+  Range:=@FLineRanges[Index];
+  Pointer(Range^.Line):=nil;
+  Range^.Line:=S;
+  Range^.TheObject:=nil;
+  Range^.StartPos:=NewStartPos;
+  Range^.EndPos:=NewStartPos+NewLineLen-NewLineCharCount;
 end;
 
 procedure TTextStrings.Delete(Index: Integer);
@@ -697,40 +699,22 @@ begin
 end;
 
 procedure TTextStrings.AddStrings(TheStrings: TStrings);
-
-  function MustAddObjects: boolean;
-  var
-    i: Integer;
-  begin
-    if HasObjects then exit(true);
-    if TheStrings is TTextStrings then
-      Result:=TTextStrings(TheStrings).HasObjects
-    else
-    begin
-      for i:=0 to TheStrings.Count-1 do
-        if TheStrings.Objects[i]<>nil then
-          exit(true);
-      Result:=false;
-    end;
-  end;
-
 var
   s: String;
   i: Integer;
+  OldCount: Integer;
 begin
   if TheStrings.Count=0 then exit;
-  if MustAddObjects then
-  begin
-    for i:=0 to TheStrings.Count-1 do
-      AddObject(TheStrings[i],TheStrings.Objects[i]);
-  end else begin
-    if (FText<>'') and (not (FText[length(FText)] in [#10,#13])) then
-      s:=LineEnding
-    else
-      s:='';
-    FArraysValid:=false;
-    FText:=FText+s+TheStrings.Text;
-  end;
+  OldCount:=Count;
+  if (FText<>'') and (not (FText[length(FText)] in [#10,#13])) then
+    s:=LineEnding
+  else
+    s:='';
+  FArraysValid:=false;
+  FText:=FText+s+TheStrings.Text;
+  BuildArrays;
+  for i:=0 to TheStrings.Count-1 do
+    FLineRanges[i+OldCount].TheObject:=TheStrings.Objects[i];
 end;
 
 end.
