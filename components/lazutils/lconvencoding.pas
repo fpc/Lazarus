@@ -1409,7 +1409,7 @@ const
     #226#128#162,       // #149
     #226#128#147,       // #150
     #226#128#148,       // #151
-    '',                 // #152
+    #194#152,           // #152
     #226#132#162,       // #153
     #209#153,           // #154
     #226#128#186,       // #155
@@ -5189,7 +5189,7 @@ end;
 function UnicodeToCP1251(Unicode: cardinal): integer;
 begin
   case Unicode of
-  0..127: Result:=Unicode;
+  0..127,152: Result:=Unicode;
   160: Result:=160;
   164: Result:=164;
   166..167: Result:=Unicode;
