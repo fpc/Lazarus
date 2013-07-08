@@ -48,6 +48,8 @@ procedure TTestLConvEncoding.Test_CP_UTF8_CP;
 
 begin
   Test('1250',@CP1250ToUTF8,@UTF8ToCP1250);
+  Test('1251',@CP1251ToUTF8,@UTF8ToCP1251);
+  Test('866',@CP866ToUTF8,@UTF8ToCP866);
 end;
 
 initialization
