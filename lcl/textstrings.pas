@@ -35,6 +35,7 @@ type
     Line: string; // cached line as string
     TheObject: TObject; // user data
   end;
+  PTextLineRange = ^TTextLineRange;
 
   TTextStrings = class(TStrings)
   private
@@ -44,7 +45,7 @@ type
     FArraysValid: boolean;
     FLineCount: integer;
     FLineCapacity: integer;
-    FLineRanges: ^TTextLineRange;// array of TTextLineRange
+    FLineRanges: PTextLineRange;// array of TTextLineRange
     FText: string;
     FUpdateCount: integer;
     FChangedWhileUpdate: boolean;
@@ -61,7 +62,6 @@ type
     procedure PutObject(Index: Integer; AnObject: TObject); override;
     function GetLineLen(Index: integer; IncludeNewLineChars: boolean): integer; inline;
     function GetLineEnd(Index: integer; IncludeNewLineChars: boolean): integer;
-    function HasObjects: boolean;
     function CountLineEndings(const s: string): integer;
   public
     constructor Create;
@@ -169,16 +169,18 @@ begin
 end;
 
 function TTextStrings.Get(Index: Integer): string;
+var
+  Line: PTextLineRange;
 begin
   if not FArraysValid then BuildArrays;
   if (Index<0) or (Index>=FLineCount) then
     Error(rsListIndexExceedsBounds, Index);
-  if (FLineRanges[Index].Line='')
-  and (FLineRanges[Index].StartPos<FLineRanges[Index].EndPos) then begin
-    FLineRanges[Index].Line:=copy(FText,FLineRanges[Index].StartPos,
-                         FLineRanges[Index].EndPos-FLineRanges[Index].StartPos);
+  Line:=@FLineRanges[Index];
+  if (Line^.Line='')
+  and (Line^.StartPos<Line^.EndPos) then begin
+    Line^.Line:=copy(FText,Line^.StartPos,Line^.EndPos-Line^.StartPos);
   end;
-  Result:=FLineRanges[Index].Line;
+  Result:=Line^.Line;
 end;
 
 procedure TTextStrings.ClearArrays;
@@ -273,17 +275,6 @@ begin
     Result:=length(FText)+1
   else
     Result:=FLineRanges[Index+1].StartPos;
-end;
-
-function TTextStrings.HasObjects: boolean;
-var
-  i: Integer;
-begin
-  if FArraysValid then
-    for i:=0 to FLineCount-1 do
-      if FLineRanges[i].TheObject<>nil then
-        exit(true);
-  Result:=false;
 end;
 
 function TTextStrings.CountLineEndings(const s: string): integer;
@@ -691,40 +682,22 @@ begin
 end;
 
 procedure TTextStrings.AddStrings(TheStrings: TStrings);
-
-  function MustAddObjects: boolean;
-  var
-    i: Integer;
-  begin
-    if HasObjects then exit(true);
-    if TheStrings is TTextStrings then
-      Result:=TTextStrings(TheStrings).HasObjects
-    else
-    begin
-      for i:=0 to TheStrings.Count-1 do
-        if TheStrings.Objects[i]<>nil then
-          exit(true);
-      Result:=false;
-    end;
-  end;
-
 var
   s: String;
   i: Integer;
+  OldCount: Integer;
 begin
   if TheStrings.Count=0 then exit;
-  if MustAddObjects then
-  begin
-    for i:=0 to TheStrings.Count-1 do
-      AddObject(TheStrings[i],TheStrings.Objects[i]);
-  end else begin
-    if (FText<>'') and (not (FText[length(FText)] in [#10,#13])) then
-      s:=LineEnding
-    else
-      s:='';
-    FArraysValid:=false;
-    FText:=FText+s+TheStrings.Text;
-  end;
+  OldCount:=Count;
+  if (FText<>'') and (not (FText[length(FText)] in [#10,#13])) then
+    s:=LineEnding
+  else
+    s:='';
+  FArraysValid:=false;
+  FText:=FText+s+TheStrings.Text;
+  BuildArrays;
+  for i:=0 to TheStrings.Count-1 do
+    FLineRanges[i+OldCount].TheObject:=TheStrings.Objects[i];
 end;
 
 end.
