@@ -121,7 +121,7 @@ begin
   if FLineCount>0 then begin
     ArraySize:=FLineCount*SizeOf(TTextLineRange);
     GetMem(FLineRanges,ArraySize);
-    FillChar(FLineRanges^,ArraySize,0);
+    FillByte(FLineRanges^,ArraySize,0);
     p:=1;
     line:=0;
     FLineRanges[line].StartPos:=1;
@@ -325,20 +325,33 @@ begin
 end;
 
 procedure TTextStrings.Insert(Index: Integer; const S: string);
+
+  procedure RaiseOutOfBounds;
+  begin
+    raise EListError.Create('insert index '+IntToStr(Index)+' out of bounds '+IntToStr(FLineCount));
+  end;
+
 var
   NewStartPos: Integer;
   NewLineCharCount: Integer;
   NewLineLen: Integer;
   i: Integer;
   SEndsInNewLine: boolean;
+  Range: PTextLineRange;
 begin
   if not FArraysValid then BuildArrays;
   NewLineLen:=length(S);
   SEndsInNewLine:=(S<>'') and (S[NewLineLen] in [#10,#13]);
   if Index<FLineCount then
-    NewStartPos:=FLineRanges[Index].StartPos
-  else
-    NewStartPos:=length(FText);
+  begin
+    if Index<0 then
+      RaiseOutOfBounds;
+    NewStartPos:=FLineRanges[Index].StartPos;
+  end else begin
+    if Index>FLineCount then
+      RaiseOutOfBounds;
+    NewStartPos:=length(FText)+1;
+  end;
   NewLineCharCount:=0;
   if SEndsInNewLine then begin
     inc(NewLineCharCount);
@@ -369,9 +382,13 @@ begin
       inc(FLineRanges[i].EndPos,NewLineLen);
     end;
   end;
-  FLineRanges[Index].Line:=S;
-  FLineRanges[Index].EndPos:=NewStartPos+NewLineLen-NewLineCharCount;
   inc(FLineCount);
+  Range:=@FLineRanges[Index];
+  Pointer(Range^.Line):=nil;
+  Range^.Line:=S;
+  Range^.TheObject:=nil;
+  Range^.StartPos:=NewStartPos;
+  Range^.EndPos:=NewStartPos+NewLineLen-NewLineCharCount;
 end;
 
 procedure TTextStrings.Delete(Index: Integer);
