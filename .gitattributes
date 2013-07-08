@@ -7014,6 +7014,7 @@ test/lazutils/testlazloggercase.pas svneol=native#text/pascal
 test/lazutils/testlazutf8.pas svneol=native#text/plain
 test/lazutils/testlazutils.pas svneol=native#text/plain
 test/lazutils/testlazxml.pas svneol=native#text/plain
+test/lazutils/testlconvencoding.pas svneol=native#text/plain
 test/lazutils/testpaswstring.lpi svneol=native#text/plain
 test/lazutils/testpaswstring.pas svneol=native#text/plain
 test/lazutils/testunicode.lpi svneol=native#text/plain

@@ -23,7 +23,7 @@
             <Filename Value="runtests"/>
           </Target>
           <SearchPaths>
-            <OtherUnitFiles Value="bugs;lcltests;codetoolstests;lazutils"/>
+            <OtherUnitFiles Value="bugs;lcltests;codetoolstests;lazutils;lazutils"/>
             <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <Conditionals Value="if defined(EnableCTRange) then
@@ -56,6 +56,9 @@
           </Other>
         </CompilerOptions>
       </Item2>
+      <SharedMatrixOptions Count="1">
+        <Item1 ID="156948008718" Modes="EnableCTRange" Type="IDEMacro" MacroName="EnableCTRange" Value="true"/>
+      </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -83,7 +86,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="16">
+    <Units Count="17">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -164,6 +167,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestMethodJumpTool"/>
       </Unit15>
+      <Unit16>
+        <Filename Value="lazutils\testlconvencoding.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestLConvEncoding"/>
+      </Unit16>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
