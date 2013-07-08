@@ -117,6 +117,7 @@ var
   CharLen: integer;
   j: Integer;
   TableIndex: LongInt;
+  k: Integer;
 begin
   // single byte to UTF-8
   if ParamCount=0 then
@@ -146,6 +147,25 @@ begin
     end;
   end;
   SL.Free;
+  // fill up table
+  if ToEncoding='UTF-8' then begin
+    for i:=33 to 255 do begin
+      if Table[i]<>'' then continue;
+      j:=i;
+      k:=255;
+      s:=UnicodeToUTF8(j);
+      while (k>32) do begin
+        if Table[i]<>s then
+          dec(k)
+        else begin
+          inc(j);
+          s:=UnicodeToUTF8(j);
+          k:=255;
+        end;
+      end;
+      Table[i]:=s;
+    end;
+  end;
   CreateSortedTable;
 
   // write table: char to shortstring
