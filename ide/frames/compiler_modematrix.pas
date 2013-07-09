@@ -783,7 +783,7 @@ begin
       //debugln(['TCompOptModeMatrix.UpdateEnabledModesInGrid Option.Modes="',dbgstr(Option.Modes),'" ValueRow.GetNormalizedModes="',dbgstr(ValueRow.GetNormalizedModes),'"']);
       if Option.Modes<>ValueRow.GetNormalizedModes then begin
         HasChanged:=true;
-        ValueRow.Modes.Text:=Option.Modes;
+        ValueRow.ModeList.Text:=Option.Modes;
       end;
       inc(OptionIndex);
     end;

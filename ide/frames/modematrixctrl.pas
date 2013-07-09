@@ -107,7 +107,7 @@ type
 
   TGroupedMatrixValue = class(TGroupedMatrixRow)
   private
-    FModes: TStrings;
+    FModeList: TStrings;
     FTyp: string;
     FValue: string;
     procedure SetModes(AValue: TStrings);
@@ -121,7 +121,7 @@ type
     function Equals(Obj: TObject): boolean; override;
     property Value: string read FValue write SetValue;
     property Typ: string read FTyp write SetTyp;
-    property Modes: TStrings read FModes write SetModes;
+    property ModeList: TStrings read FModeList write SetModes;
     function GetNormalizedModes(IgnoreModes: TStrings = nil): string;
     function AsString: string; override;
   end;
@@ -403,8 +403,7 @@ begin
   Result:=fItems.Count;
 end;
 
-function TGroupedMatrixModes.Add(aCaption: string; aColor: TColor
-  ): TGroupedMatrixMode;
+function TGroupedMatrixModes.Add(aCaption: string; aColor: TColor): TGroupedMatrixMode;
 begin
   Result:=TGroupedMatrixMode.Create;
   Result.Caption:=aCaption;
@@ -590,7 +589,7 @@ begin
   Result:=TGroupedMatrixValue.Create(Self);
   Result.Typ:=aType;
   Result.Value:=AValue;
-  Result.Modes.Text:=ModesAsText;
+  Result.ModeList.Text:=ModesAsText;
   Result.ID:=aID;
   InternalAdd(ParentGroup,Result);
 end;
@@ -635,8 +634,8 @@ end;
 
 procedure TGroupedMatrixValue.SetModes(AValue: TStrings);
 begin
-  if FModes=AValue then Exit;
-  FModes.Assign(AValue);
+  if FModeList=AValue then Exit;
+  FModeList.Assign(AValue);
 end;
 
 procedure TGroupedMatrixValue.SetTyp(AValue: string);
@@ -662,19 +661,19 @@ begin
     aSource:=TGroupedMatrixValue(Source);
     Value:=aSource.Value;
     Typ:=aSource.Typ;
-    Modes:=aSource.Modes;
+    ModeList:=aSource.ModeList;
   end;
 end;
 
 constructor TGroupedMatrixValue.Create(aControl: TGroupedMatrix);
 begin
   inherited Create(aControl);
-  FModes:=TStringList.Create;
+  FModeList:=TStringList.Create;
 end;
 
 destructor TGroupedMatrixValue.Destroy;
 begin
-  FreeAndNil(FModes);
+  FreeAndNil(FModeList);
   inherited Destroy;
 end;
 
@@ -687,11 +686,11 @@ begin
   if not (Obj is TGroupedMatrixValue) then exit;
   if not (inherited Equals(Obj)) then exit;
   SrcValue:=TGroupedMatrixValue(Obj);
-  if SrcValue.Modes.Count<>Modes.Count then exit;
+  if SrcValue.ModeList.Count<>ModeList.Count then exit;
   if SrcValue.Typ<>Typ then exit;
   if SrcValue.Value<>Value then exit;
-  for i:=0 to Modes.Count-1 do
-    if SrcValue.Modes[i]<>Modes[i] then exit;
+  for i:=0 to ModeList.Count-1 do
+    if SrcValue.ModeList[i]<>ModeList[i] then exit;
   Result:=true;
 end;
 
@@ -701,8 +700,8 @@ var
   m: String;
 begin
   Result:='';
-  for i:=0 to Modes.Count-1 do begin
-    m:=Modes[i];
+  for i:=0 to ModeList.Count-1 do begin
+    m:=ModeList[i];
     if m='' then continue;
     if (IgnoreModes<>nil)
     and (IndexInStringList(IgnoreModes,cstCaseInsensitive,m)>=0) then
@@ -1245,11 +1244,11 @@ begin
   and (aRow>0) then begin
     MatRow:=Matrix.Rows[aRow-1];
     if MatRow is TGroupedMatrixValue then begin
-      //debugln(['TGroupedMatrixControl.GetCheckBoxState ',aCol,' ',aRow,' "',Modes[aCol-1],'" ',TGroupedMatrixValue(MatRow).Modes.Text]);
-      if IndexInStringList(TGroupedMatrixValue(MatRow).Modes,cstCaseInsensitive,Modes[aCol-1].Caption)>=0
+      //debugln(['TGroupedMatrixControl.GetCheckBoxState ',aCol,' ',aRow,' "',Modes[aCol-1],'" ',TGroupedMatrixValue(MatRow).ModeList.Text]);
+      if IndexInStringList(TGroupedMatrixValue(MatRow).ModeList,cstCaseInsensitive,Modes[aCol-1].Caption)>=0
       then begin
         aState:=cbChecked;
-        //debugln(['TGroupedMatrixControl.GetCheckBoxState ',aCol,' ',aRow,' "',Modes[aCol-1],'" ',TGroupedMatrixValue(MatRow).Modes.Text]);
+        //debugln(['TGroupedMatrixControl.GetCheckBoxState ',aCol,' ',aRow,' "',Modes[aCol-1],'" ',TGroupedMatrixValue(MatRow).ModeList.Text]);
       end else
         aState:=cbUnchecked;
     end;
@@ -1273,13 +1272,13 @@ begin
       if assigned(OnSetCheckboxState) then
         OnSetCheckboxState(Self, aCol, aRow, aState);
       ModeName:=Modes[aCol-1].Caption;
-      i:=IndexInStringList(ValueRow.Modes,cstCaseInsensitive,ModeName);
+      i:=IndexInStringList(ValueRow.ModeList,cstCaseInsensitive,ModeName);
       if (i<0) = (aState=cbUnchecked) then exit;
       StoreUndo;
       if i>=0 then begin
-        ValueRow.Modes.Delete(i);
+        ValueRow.ModeList.Delete(i);
       end else begin
-        ValueRow.Modes.Add(ModeName);
+        ValueRow.ModeList.Add(ModeName);
       end;
       InvalidateRow(aRow);
       EditingDone;
@@ -1518,7 +1517,7 @@ procedure TGroupedMatrixControl.DefaultDrawCell(aCol, aRow: Integer; var aRect: 
   procedure DrawActiveModeRow(ValueRow: TGroupedMatrixValue);
   begin
     if ActiveMode<0 then exit;
-    if IndexInStringList(ValueRow.Modes,cstCaseInsensitive,Modes[ActiveMode].Caption)<0
+    if IndexInStringList(ValueRow.ModeList,cstCaseInsensitive,Modes[ActiveMode].Caption)<0
     then
       exit;
     Canvas.GradientFill(Rect(aRect.Left,(aRect.Top+aRect.Bottom) div 2,aRect.Right,aRect.Bottom),
