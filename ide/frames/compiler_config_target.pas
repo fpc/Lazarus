@@ -344,16 +344,17 @@ begin
       TargetProcessorProcComboBox.Text := 'default';
     end else begin
       grpTargetPlatform.Visible:=true;
+      // Target OS
       i := TargetOSComboBox.Items.IndexOf(TargetOS);
       if i < 0 then
         i := 0;  // 0 is default
       TargetOSComboBox.ItemIndex := i;
-      TargetOSComboBox.Text := TargetOS;
+      // Target CPU family
       i := TargetCPUComboBox.Items.IndexOf(TargetCPU);
       if i < 0 then
         i := 0;  // 0 is default
       TargetCPUComboBox.ItemIndex := i;
-      TargetCPUComboBox.Text := TargetCPU;
+      // Target Processor
       TargetProcessorProcComboBox.Text := ProcessorToCaption(TargetProcessor);
 
       cmbSyntaxMode.Text := SyntaxModeToCaption(SyntaxMode);
