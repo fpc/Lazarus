@@ -1723,11 +1723,12 @@ begin
     // -> if there was an error and it was in a needed range, raise it again
     if LastErrorIsValid then begin
       // the error has happened in ScannedRange
+      if ExtractFileName(MainFilename)='blaunit.pas' then
+        debugln(['TLinkScanner.Scan ',MainFilename,' ScannedRange=',dbgs(ScannedRange),' Range=',dbgs(Range)]);
       if ord(ScannedRange)>ord(Range) then begin
-        // error was not in needed range
-      end else if (ScannedRange=Range)
-      and ((not IgnoreErrorAfterValid)
-          or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage))
+        // error is behind needed range => ok
+      end else if (not IgnoreErrorAfterValid)
+          or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage)
       then
         RaiseLastError;
     end;
