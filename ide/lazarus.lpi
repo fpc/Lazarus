@@ -66,7 +66,7 @@
         <PackageName Value="SynEdit"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="101">
+    <Units Count="102">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -490,6 +490,7 @@
         <Filename Value="frames/compiler_parsing_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CompilerParsingOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="compiler_parsing_options"/>
       </Unit60>
@@ -497,6 +498,7 @@
         <Filename Value="frames/compiler_codegen_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CompilerCodegenOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="compiler_codegen_options"/>
       </Unit61>
@@ -504,6 +506,7 @@
         <Filename Value="frames/compiler_linking_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CompilerLinkingOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="compiler_linking_options"/>
       </Unit62>
@@ -533,6 +536,7 @@
         <Filename Value="frames/compiler_compilation_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CompilerCompilationOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="compiler_compilation_options"/>
       </Unit66>
@@ -765,6 +769,14 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="Compiler_ModeMatrix"/>
       </Unit100>
+      <Unit101>
+        <Filename Value="frames/compiler_config_target.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="CompilerConfigTargetFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="compiler_config_target"/>
+      </Unit101>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

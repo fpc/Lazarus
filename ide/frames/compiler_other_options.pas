@@ -44,17 +44,14 @@ type
   { TCompilerOtherOptionsFrame }
 
   TCompilerOtherOptionsFrame = class(TAbstractIDEOptionsEditor)
-    chkConfigFile: TCheckBox;
-    chkCustomConfigFile: TCheckBox;
     ConditionalsSplitter: TSplitter;
-    edtConfigPath: TEdit;
-    grpConfigFile: TGroupBox;
     grpCustomOptions: TGroupBox;
     memCustomOptions: TMemo;
     ConditionalsGroupBox: TGroupBox;
     CondStatusbar: TStatusBar;
     CondSynEdit: TSynEdit;
-    procedure chkCustomConfigFileClick(Sender: TObject);
+    AllOptionsScrollBox: TScrollBox;
+    CustomSplitter: TSplitter;
     procedure CondSynEditChange(Sender: TObject);
     procedure CondSynEditKeyPress(Sender: TObject; var Key: char);
     procedure CondSynEditProcessUserCommand(Sender: TObject;
@@ -115,11 +112,6 @@ implementation
 {$R *.lfm}
 
 { TCompilerOtherOptionsFrame }
-
-procedure TCompilerOtherOptionsFrame.chkCustomConfigFileClick(Sender: TObject);
-begin
-  edtConfigPath.Enabled := chkCustomConfigFile.Checked;
-end;
 
 procedure TCompilerOtherOptionsFrame.CondSynEditChange(Sender: TObject);
 begin
@@ -614,40 +606,7 @@ begin
 end;
 
 function TCompilerOtherOptionsFrame.Check: Boolean;
-var
-  NewDontUseConfigFile: Boolean;
-  NewCustomConfigFile: Boolean;
-  NewConfigFilePath: String;
-  AdditionalConfig: String;
 begin
-  //debugln(['TCompilerOtherOptionsFrame.ReadSettings ',dbgs(Pointer(FCompOptions)),' ',FCompOptions=Project1.CompilerOptions]);
-
-  NewDontUseConfigFile := not chkConfigFile.Checked;
-  NewCustomConfigFile := chkCustomConfigFile.Checked;
-  NewConfigFilePath := edtConfigPath.Text;
-
-  if ((NewDontUseConfigFile <> CompOptions.DontUseConfigFile) or
-    (NewCustomConfigFile <> CompOptions.CustomConfigFile) or
-    (NewConfigFilePath <> CompOptions.ConfigFilePath)) and (not NewDontUseConfigFile) and
-    NewCustomConfigFile then
-  begin
-    // config file options changed
-    // and both additional and standard config files are used
-    AdditionalConfig := ExtractFilename(edtConfigPath.Text);
-    if (CompareFileNames(AdditionalConfig, 'fpc.cfg') = 0) or
-      (CompareFileNames(AdditionalConfig, 'ppc386.cfg') = 0) then
-    begin
-      if IDEMessageDialog(lisCOAmbiguousAdditionalCompilerConfigFile,
-        Format(lisCOClickOKIfAreSureToDoThat,
-        [BreakString(lisCOWarningTheAdditionalCompilerConfigFileHasTheSameNa,
-        60, 0), LineEnding+LineEnding]), mtWarning, [mbOK, mbCancel]) <> mrOk then
-      begin
-        Result := False;
-        exit;
-      end;
-    end;
-  end;
-
   Result := True;
 end;
 
@@ -658,10 +617,6 @@ end;
 
 procedure TCompilerOtherOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  grpConfigFile.Caption := dlgConfigFiles;
-  chkConfigFile.Caption := dlgUseFpcCfg + ' (If not checked: -n)';
-  chkCustomConfigFile.Caption := dlgUseCustomConfig + ' (@)';
-  edtConfigPath.Text := '';
   grpCustomOptions.Caption := lisCustomOptions2;
   memCustomOptions.Hint:=lisCustomOptHint;
 end;
@@ -674,14 +629,7 @@ begin
   FIsPackage:=CompOptions is TPkgCompilerOptions;
   //debugln(['TCompilerOtherOptionsFrame.ReadSettings ',dbgs(Pointer(FCompOptions)),' ',FCompOptions=Project1.CompilerOptions]);
 
-  with CompOptions do
-  begin
-    chkConfigFile.Checked := not DontUseConfigFile;
-    chkCustomConfigFile.Checked := CustomConfigFile;
-    edtConfigPath.Enabled := chkCustomConfigFile.Checked;
-    edtConfigPath.Text := ConfigFilePath;
-    memCustomOptions.Text := CustomOptions;
-  end;
+  memCustomOptions.Text := CompOptions.CustomOptions;
 
   Vars:=GetBuildMacroValues(CompOptions,false);
   if Vars<>nil then
@@ -705,16 +653,11 @@ var
   CurOptions: TBaseCompilerOptions;
 begin
   //debugln(['TCompilerOtherOptionsFrame.WriteSettings ',DbgSName(AOptions)]);
-  CurOptions:=AOptions as TBaseCompilerOptions;
-
+  CurOptions := AOptions as TBaseCompilerOptions;
   with CurOptions do
   begin
-    DontUseConfigFile := not chkConfigFile.Checked;
-    CustomConfigFile := chkCustomConfigFile.Checked;
-    ConfigFilePath := edtConfigPath.Text;
     CustomOptions := memCustomOptions.Text;
-
-    Conditionals:=CondSynEdit.Lines.Text;
+    Conditionals := CondSynEdit.Lines.Text;
   end;
 end;
 

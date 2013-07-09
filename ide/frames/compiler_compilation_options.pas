@@ -61,11 +61,10 @@ implementation
 
 function TCompilerCompilationOptionsFrame.GetTitle: string;
 begin
-  Result := dlgCOCompilation;
+  Result := dlgCOCompilerCommands;
 end;
 
-procedure TCompilerCompilationOptionsFrame.Setup(
-  ADialog: TAbstractOptionsEditorDialog);
+procedure TCompilerCompilationOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   chkCreateMakefile.Caption := dlgCOCreateMakefile;
 

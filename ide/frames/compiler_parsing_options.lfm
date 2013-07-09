@@ -2,52 +2,20 @@ object CompilerParsingOptionsFrame: TCompilerParsingOptionsFrame
   Left = 0
   Height = 410
   Top = 0
-  Width = 580
+  Width = 584
   ClientHeight = 410
-  ClientWidth = 580
+  ClientWidth = 584
   TabOrder = 0
   DesignLeft = 360
   DesignTop = 210
-  object grpSyntaxMode: TGroupBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 0
-    Height = 54
-    Top = 0
-    Width = 580
-    Anchors = [akTop, akLeft, akRight]
-    AutoSize = True
-    Caption = 'grpSyntaxMode'
-    ClientHeight = 38
-    ClientWidth = 576
-    TabOrder = 0
-    object cmbSyntaxMode: TComboBox
-      AnchorSideRight.Control = grpSyntaxMode
-      AnchorSideRight.Side = asrBottom
-      Left = 6
-      Height = 26
-      Top = 6
-      Width = 564
-      Align = alLeft
-      Anchors = [akTop, akLeft, akRight, akBottom]
-      BorderSpacing.Around = 6
-      ItemHeight = 0
-      Style = csDropDownList
-      TabOrder = 0
-    end
-  end
   object grpAsmStyle: TRadioGroup
-    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = grpSyntaxOptions
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 4
-    Top = 324
-    Width = 580
+    Height = 57
+    Top = 269
+    Width = 584
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
@@ -62,21 +30,18 @@ object CompilerParsingOptionsFrame: TCompilerParsingOptionsFrame
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
     Columns = 3
-    TabOrder = 2
+    TabOrder = 1
   end
   object grpSyntaxOptions: TCheckGroup
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = grpSyntaxMode
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
+    AnchorSideTop.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 258
-    Top = 60
-    Width = 580
+    Top = 5
+    Width = 584
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
-    BorderSpacing.Top = 6
+    BorderSpacing.Top = 5
     Caption = 'grpSyntaxOptions'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -86,6 +51,6 @@ object CompilerParsingOptionsFrame: TCompilerParsingOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    TabOrder = 1
+    TabOrder = 0
   end
 end

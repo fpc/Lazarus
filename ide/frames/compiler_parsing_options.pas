@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, IDEOptionsIntf, Project, CompilerOptions, LinkScanner,
+  StdCtrls, ExtCtrls, IDEOptionsIntf, Project, CompilerOptions, //LinkScanner,
   LazarusIDEStrConsts;
 
 type
@@ -14,9 +14,7 @@ type
   { TCompilerParsingOptionsFrame }
 
   TCompilerParsingOptionsFrame = class(TAbstractIDEOptionsEditor)
-    cmbSyntaxMode: TComboBox;
     grpAsmStyle: TRadioGroup;
-    grpSyntaxMode: TGroupBox;
     grpSyntaxOptions: TCheckGroup;
   public
     function GetTitle: string; override;
@@ -30,36 +28,6 @@ implementation
 
 {$R *.lfm}
 
-function SyntaxModeToCaption(const Mode: string): string;
-begin
-  if SysUtils.CompareText(Mode, 'ObjFPC') = 0 then
-    Result := lisObjectPascalDefault + ' (-Mobjfpc)'
-  else if SysUtils.CompareText(Mode, 'Delphi') = 0 then
-    Result := lisDelphi + ' (-Mdelphi)'
-  else if SysUtils.CompareText(Mode, 'tp') = 0 then
-    Result := lisTurboPascal + ' (-Mtp)'
-  else if SysUtils.CompareText(Mode, 'fpc') = 0 then
-    Result := lisFreePascal + ' (-Mfpc)'
-  else if SysUtils.CompareText(Mode, 'macpas') = 0 then
-    Result := lisMacPascal + ' (-Mmacpas)'
-  else
-    Result := '';
-end;
-
-function CaptionToSyntaxMode(const Caption: string): string;
-begin
-  if System.Pos('-Mdelphi', Caption) > 0 then
-    Result := 'Delphi'
-  else if System.Pos('-Mtp', Caption) > 0 then
-    Result := 'tp'
-  else if System.Pos('-Mmacpas', Caption) > 0 then
-    Result := 'macpas'
-  else if System.Pos('-Mfpc', Caption) > 0 then
-    Result := 'fpc'
-  else
-    Result := 'ObjFPC';
-end;
-
 { TCompilerParsingOptionsFrame }
 
 function TCompilerParsingOptionsFrame.GetTitle: string;
@@ -68,9 +36,6 @@ begin
 end;
 
 procedure TCompilerParsingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
-var
-  m: TCompilerMode;
-  s: string;
 begin
   with grpAsmStyle do
   begin
@@ -100,17 +65,6 @@ begin
     Items.Add(dlgStaticKeyword + ' (-St)');
     Items.Add(dlgCOAnsiStr + ' (-Sh, {$H+})');
   end;
-
-  grpSyntaxMode.Caption := lisSyntaxMode + ' (-M, {$MODE})';
-  cmbSyntaxMode.Items.BeginUpdate;
-  cmbSyntaxMode.Items.Clear;
-  for m := Low(TCompilerMode) to High(TCompilerMode) do
-  begin
-    s := SyntaxModeToCaption(CompilerModeNames[m]);
-    if s <> '' then
-      cmbSyntaxMode.Items.Add(s);
-  end;
-  cmbSyntaxMode.Items.EndUpdate;
 end;
 
 procedure TCompilerParsingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -133,8 +87,6 @@ begin
       Checked[6] := StaticKeyword;
       Checked[7] := UseAnsiStrings;
     end;
-
-    cmbSyntaxMode.Text := SyntaxModeToCaption(SyntaxMode);
   end;
 end;
 
@@ -155,8 +107,6 @@ begin
       StaticKeyword := Checked[6];
       UseAnsiStrings := Checked[7];
     end;
-
-    SyntaxMode := CaptionToSyntaxMode(cmbSyntaxMode.Text);
   end;
 end;
 

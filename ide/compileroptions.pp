@@ -1373,7 +1373,7 @@ var
     Result:=SwitchPathDelims(SearchPath,PathDelimChange);
     Result:=MinimizeSearchPath(Result);
   end;
-
+{
   procedure ReadSmaller;
   begin
     if FileVersion<2 then begin
@@ -1385,7 +1385,7 @@ var
     end else
       SmallerCode:=aXMLConfig.GetValue(p+'SmallerCode/Value',false);
   end;
-
+}
   procedure ReadSmartLinkUnit;
   begin
     if FileVersion<3 then
@@ -1471,7 +1471,6 @@ begin
   HeapSize := aXMLConfig.GetValue(p+'HeapSize/Value', 0);
   StackSize := aXMLConfig.GetValue(p+'StackSize/Value', 0);
   VerifyObjMethodCall := aXMLConfig.GetValue(p+'VerifyObjMethodCallValidity/Value', false);
-  ReadSmaller;
   if FileVersion<7 then begin
     i:=aXMLConfig.GetValue(p+'TargetProcessor/Value', 0);
     case i of
@@ -1483,9 +1482,10 @@ begin
     TargetProcessor := aXMLConfig.GetValue(p+'TargetProcessor/Value', '');
   TargetCPU := aXMLConfig.GetValue(p+'TargetCPU/Value', '');
   TargetOS := aXMLConfig.GetValue(p+'TargetOS/Value', '');
-  VariablesInRegisters := aXMLConfig.GetValue(p+'Optimizations/VariablesInRegisters/Value', false);
-  UncertainOptimizations := aXMLConfig.GetValue(p+'Optimizations/UncertainOptimizations/Value', false);
   OptimizationLevel := aXMLConfig.GetValue(p+'Optimizations/OptimizationLevel/Value', 1);
+  //VariablesInRegisters := aXMLConfig.GetValue(p+'Optimizations/VariablesInRegisters/Value', false);
+  //UncertainOptimizations := aXMLConfig.GetValue(p+'Optimizations/UncertainOptimizations/Value', false);
+  //ReadSmaller;
 
   { Linking }
   p:=Path+'Linking/';
@@ -1695,13 +1695,13 @@ begin
   aXMLConfig.SetDeleteValue(p+'HeapSize/Value', HeapSize,0);
   aXMLConfig.SetDeleteValue(p+'StackSize/Value', StackSize,0);
   aXMLConfig.SetDeleteValue(p+'VerifyObjMethodCallValidity/Value', VerifyObjMethodCall,false);
-  aXMLConfig.SetDeleteValue(p+'SmallerCode/Value', SmallerCode, false);
   aXMLConfig.SetDeleteValue(p+'TargetProcessor/Value', TargetProcessor,'');
   aXMLConfig.SetDeleteValue(p+'TargetCPU/Value', TargetCPU,'');
   aXMLConfig.SetDeleteValue(p+'TargetOS/Value', TargetOS,'');
-  aXMLConfig.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
-  aXMLConfig.SetDeleteValue(p+'Optimizations/UncertainOptimizations/Value', UncertainOptimizations,false);
   aXMLConfig.SetDeleteValue(p+'Optimizations/OptimizationLevel/Value', OptimizationLevel,1);
+  //aXMLConfig.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
+  //aXMLConfig.SetDeleteValue(p+'Optimizations/UncertainOptimizations/Value', UncertainOptimizations,false);
+  //aXMLConfig.SetDeleteValue(p+'SmallerCode/Value', SmallerCode, false);
 
   { Linking }
   p:=Path+'Linking/';
@@ -2742,8 +2742,8 @@ begin
 
   { Optimizations }
   OptimizeSwitches:='';
-  if SmallerCode then
-    OptimizeSwitches := OptimizeSwitches + 's';
+  //if SmallerCode then
+  //  OptimizeSwitches := OptimizeSwitches + 's';
   { OptimizationLevel     1 = Level 1    2 = Level 2    3 = Level 3 }
   case (OptimizationLevel) of
     1:  OptimizeSwitches := OptimizeSwitches + '1';
@@ -2754,12 +2754,11 @@ begin
     switches := switches + ' -O'+OptimizeSwitches;
 
   // uncertain
-  if (UncertainOptimizations) then
-    Switches := Switches + ' -OoUNCERTAIN';
-
+  //if (UncertainOptimizations) then
+  //  Switches := Switches + ' -OoUNCERTAIN';
   // registers
-  if (VariablesInRegisters) then
-    Switches := Switches + ' -OoREGVAR';
+  //if (VariablesInRegisters) then
+  //  Switches := Switches + ' -OoREGVAR';
 
   { Target OS }
   if (CurTargetOS<>'')
@@ -3176,13 +3175,13 @@ begin
   fStackChecks := false;
   fHeapSize := 0;
   fStackSize := 0;
-  FSmallerCode := false;
-  fTargetProc := '';
-  fTargetCPU := '';
-  fVarsInReg := false;
-  fUncertainOpt := false;
-  fOptLevel := 1;
   fTargetOS := '';
+  fTargetCPU := '';
+  fTargetProc := '';
+  fOptLevel := 1;
+  //fVarsInReg := false;
+  //fUncertainOpt := false;
+  //FSmallerCode := false;
 
   // linking
   fGenDebugInfo := True;
@@ -3292,13 +3291,13 @@ begin
   fHeapSize := CompOpts.fHeapSize;
   fStackSize := CompOpts.fStackSize;
   fEmulatedFloatOpcodes := CompOpts.fEmulatedFloatOpcodes;
-  FSmallerCode := CompOpts.FSmallerCode;
-  fTargetProc := CompOpts.fTargetProc;
-  fTargetCPU := CompOpts.fTargetCPU;
-  fVarsInReg := CompOpts.fVarsInReg;
-  fUncertainOpt := CompOpts.fUncertainOpt;
-  fOptLevel := CompOpts.fOptLevel;
   fTargetOS := CompOpts.fTargetOS;
+  fTargetCPU := CompOpts.fTargetCPU;
+  fTargetProc := CompOpts.fTargetProc;
+  fOptLevel := CompOpts.fOptLevel;
+  //fVarsInReg := CompOpts.fVarsInReg;
+  //fUncertainOpt := CompOpts.fUncertainOpt;
+  //FSmallerCode := CompOpts.FSmallerCode;
 
   // Linking
   fGenDebugInfo := CompOpts.fGenDebugInfo;
@@ -3446,13 +3445,13 @@ begin
   if Done(Tool.AddDiff('HeapSize',fHeapSize,CompOpts.fHeapSize)) then exit;
   if Done(Tool.AddDiff('StackSize',fStackSize,CompOpts.fStackSize)) then exit;
   if Done(Tool.AddDiff('EmulatedFloatOpcodes',fEmulatedFloatOpcodes,CompOpts.fEmulatedFloatOpcodes)) then exit;
-  if Done(Tool.AddDiff('SmallerCode',FSmallerCode,CompOpts.FSmallerCode)) then exit;
-  if Done(Tool.AddDiff('TargetProc',fTargetProc,CompOpts.fTargetProc)) then exit;
-  if Done(Tool.AddDiff('TargetCPU',fTargetCPU,CompOpts.fTargetCPU)) then exit;
-  if Done(Tool.AddDiff('VarsInReg',fVarsInReg,CompOpts.fVarsInReg)) then exit;
-  if Done(Tool.AddDiff('UncertainOpt',fUncertainOpt,CompOpts.fUncertainOpt)) then exit;
-  if Done(Tool.AddDiff('OptLevel',fOptLevel,CompOpts.fOptLevel)) then exit;
   if Done(Tool.AddDiff('TargetOS',fTargetOS,CompOpts.fTargetOS)) then exit;
+  if Done(Tool.AddDiff('TargetCPU',fTargetCPU,CompOpts.fTargetCPU)) then exit;
+  if Done(Tool.AddDiff('TargetProc',fTargetProc,CompOpts.fTargetProc)) then exit;
+  if Done(Tool.AddDiff('OptLevel',fOptLevel,CompOpts.fOptLevel)) then exit;
+  //if Done(Tool.AddDiff('VarsInReg',fVarsInReg,CompOpts.fVarsInReg)) then exit;
+  //if Done(Tool.AddDiff('UncertainOpt',fUncertainOpt,CompOpts.fUncertainOpt)) then exit;
+  //if Done(Tool.AddDiff('SmallerCode',FSmallerCode,CompOpts.FSmallerCode)) then exit;
 
   // linking
   if Tool<>nil then Tool.Path:='Linking';

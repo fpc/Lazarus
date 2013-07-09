@@ -8,63 +8,20 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
   TabOrder = 0
   DesignLeft = 434
   DesignTop = 276
-  object grpConfigFile: TGroupBox
-    Left = 0
-    Height = 114
-    Top = 0
-    Width = 594
-    Align = alTop
-    AutoSize = True
-    Caption = 'grpConfigFile'
-    ClientHeight = 97
-    ClientWidth = 590
-    TabOrder = 0
-    object chkConfigFile: TCheckBox
-      Left = 6
-      Height = 24
-      Top = 6
-      Width = 578
-      Align = alTop
-      BorderSpacing.Around = 6
-      Caption = 'chkConfigFile'
-      TabOrder = 0
-    end
-    object chkCustomConfigFile: TCheckBox
-      Left = 6
-      Height = 24
-      Top = 36
-      Width = 578
-      Align = alTop
-      BorderSpacing.Around = 6
-      Caption = 'chkCustomConfigFile'
-      OnClick = chkCustomConfigFileClick
-      TabOrder = 1
-    end
-    object edtConfigPath: TEdit
-      Left = 6
-      Height = 25
-      Top = 66
-      Width = 578
-      Align = alTop
-      BorderSpacing.Around = 6
-      TabOrder = 2
-      Text = 'edtConfigPath'
-    end
-  end
   object grpCustomOptions: TGroupBox
     Left = 0
-    Height = 170
-    Top = 120
+    Height = 77
+    Top = 158
     Width = 594
-    Align = alTop
+    Align = alBottom
     BorderSpacing.Top = 6
     Caption = 'grpCustomOptions'
-    ClientHeight = 153
+    ClientHeight = 58
     ClientWidth = 590
-    TabOrder = 1
+    TabOrder = 0
     object memCustomOptions: TMemo
       Left = 6
-      Height = 141
+      Height = 46
       Top = 6
       Width = 578
       Align = alClient
@@ -76,17 +33,18 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
   end
   object ConditionalsGroupBox: TGroupBox
     Left = 0
-    Height = 151
-    Top = 295
+    Height = 206
+    Top = 240
     Width = 594
-    Align = alClient
+    Align = alBottom
+    Anchors = [akTop, akLeft, akRight]
     Caption = 'ConditionalsGroupBox'
-    ClientHeight = 134
+    ClientHeight = 187
     ClientWidth = 590
-    TabOrder = 2
+    TabOrder = 1
     inline CondSynEdit: TSynEdit
       Left = 0
-      Height = 115
+      Height = 167
       Top = 0
       Width = 590
       Align = alClient
@@ -725,8 +683,8 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     end
     object CondStatusbar: TStatusBar
       Left = 0
-      Height = 19
-      Top = 115
+      Height = 20
+      Top = 167
       Width = 590
       Panels = <      
         item
@@ -745,9 +703,28 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 290
+    Top = 235
     Width = 594
-    Align = alTop
-    ResizeAnchor = akTop
+    Align = alBottom
+    ResizeAnchor = akBottom
+  end
+  object AllOptionsScrollBox: TScrollBox
+    Left = 0
+    Height = 147
+    Top = 0
+    Width = 594
+    HorzScrollBar.Page = 590
+    VertScrollBar.Page = 143
+    Align = alClient
+    TabOrder = 3
+  end
+  object CustomSplitter: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 147
+    Width = 594
+    Align = alBottom
+    ResizeAnchor = akBottom
   end
 end

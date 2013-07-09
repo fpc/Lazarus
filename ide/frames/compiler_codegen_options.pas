@@ -15,36 +15,30 @@ type
   { TCompilerCodegenOptionsFrame }
 
   TCompilerCodegenOptionsFrame = class(TAbstractIDEOptionsEditor)
-    Bevel1:TBevel;
     chkChecksIO: TCheckBox;
     chkChecksOverflow: TCheckBox;
     chkChecksRange: TCheckBox;
     chkChecksStack: TCheckBox;
-    chkOptSmaller: TCheckBox;
-    chkOptUncertain: TCheckBox;
-    chkOptVarsInReg: TCheckBox;
+    chkLinkSmart: TCheckBox;
+    chkOptionsLinkOpt: TCheckBox;
     chkSmartLinkUnit: TCheckBox;
     chkRelocatableUnit: TCheckBox;
     chkVerifyObjMethodCall: TCheckBox;
+    chkWin32GraphicApp: TCheckBox;
     edtHeapSize: TEdit;
+    edtOptionsLinkOpt: TEdit;
     edtStackSize: TEdit;
+    grpLinking: TGroupBox;
     grpChecks: TGroupBox;
     grpHeapStackSize: TGroupBox;
     grpOptimizations: TGroupBox;
     grpUnitStyle: TGroupBox;
-    grpTargetPlatform: TGroupBox;
     lbHeapSize: TLabel;
     lbStackSize: TLabel;
-    lblTargetCPU: TLabel;
-    lblTargetOS: TLabel;
-    lblTargetProcessorProc: TLabel;
     radOptLevel1: TRadioButton;
     radOptLevel2: TRadioButton;
     radOptLevel3: TRadioButton;
     radOptLevelNone: TRadioButton;
-    TargetCPUComboBox: TComboBox;
-    TargetOSComboBox: TComboBox;
-    TargetProcessorProcComboBox: TComboBox;
   private
     fIsPackage: boolean;
   public
@@ -59,58 +53,11 @@ implementation
 
 {$R *.lfm}
 
-function CaptionToOS(const OS: string): string;
-begin
-  Result:=LowerCase(OS);
-end;
-
-function CaptionToCPU(const CPU: string): string;
-begin
-  Result:=LowerCase(CPU);
-end;
-
-function ProcessorToCaption(const Processor: string): string;
-begin
-  if SysUtils.CompareText(Processor, '80386') = 0 then
-    Result := '386/486 (-Op80386)'
-  else if SysUtils.CompareText(Processor, 'pentium') = 0 then
-    Result := 'Pentium/Pentium MMX (-OpPENTIUM)'
-  else if SysUtils.CompareText(Processor, 'pentium2') = 0 then
-    Result := 'Pentium Pro/Pentium II/C6x86/K6 (-OpPENTIUM2)'
-  else if SysUtils.CompareText(Processor, 'pentium3') = 0 then
-    Result := 'Pentium III (-OpPENTIUM3)'
-  else if SysUtils.CompareText(Processor, 'pentium4') = 0 then
-    Result := 'Pentium IV (-OpPENTIUM4)'
-  else if SysUtils.CompareText(Processor, 'pentiumm') = 0 then
-    Result := 'Pentium M (-OpPENTIUMM)'
-  else
-    Result := '(' + lisDefault + ')';
-end;
-
-function CaptionToProcessor(const Caption: string): string;
-begin
-  if System.Pos('-Op80386', Caption) > 0 then
-    Result := '80386'
-  else if System.Pos('-OpPENTIUMM', Caption) > 0 then
-    Result := 'pentiumm'
-  else if System.Pos('-OpPENTIUM4', Caption) > 0 then
-    Result := 'pentium4'
-  else if System.Pos('-OpPENTIUM3', Caption) > 0 then
-    Result := 'pentium3'
-  else if System.Pos('-OpPENTIUM2', Caption) > 0 then
-    Result := 'pentium2'
-  else if System.Pos('-OpPENTIUM', Caption) > 0 then
-    Result := 'pentium'
-  else
-    Result := '';
-end;
-
-
 { TCompilerCodegenOptionsFrame }
 
 function TCompilerCodegenOptionsFrame.GetTitle: string;
 begin
-  Result := dlgCodeGeneration;
+  Result := dlgCompilationAndLinking;
 end;
 
 procedure TCompilerCodegenOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
@@ -132,101 +79,20 @@ begin
   edtHeapSize.Text := '';
   edtStackSize.Text := '';
 
-  grpTargetPlatform.Caption := dlgTargetPlatform;
-  lblTargetOS.Caption := dlgTargetOS + ' (-T)';
-
-  with TargetOSComboBox do
-  begin
-    with Items do
-    begin
-      Add('(' + lisDefault + ')');
-      Add('Darwin');
-      Add('FreeBSD');
-      Add('Linux');
-      Add('NetBSD');
-      Add('OpenBSD');
-      Add('Solaris');
-      Add('Win32');
-      Add('Win64');
-      Add('WinCE');
-      Add('aix');
-      Add('amiga');
-      Add('android');
-      Add('atari');
-      Add('beos');
-      Add('embedded');
-      Add('emx');
-      Add('gba');
-      Add('go32v2');
-      Add('haiku');
-      Add('iphonesim');
-      Add('java');
-      Add('macos');
-      Add('morphos');
-      Add('nds');
-      Add('netware');
-      Add('netwlibc');
-      Add('os2');
-      Add('palmos');
-      Add('qnx');
-      Add('symbian');
-      Add('watcom');
-      Add('wdosx');
-    end;
-    ItemIndex := 0;
-  end;
-
-  lblTargetCPU.Caption := dlgTargetCPUFamily + ' (-P)';
-
-  with TargetCPUComboBox do
-  begin
-    with Items do
-    begin
-      Add('(' + lisDefault + ')');
-      Add('arm');
-      Add('i386');
-      Add('m68k');
-      Add('powerpc');
-      Add('sparc');
-      Add('x86_64');
-      Add('mipsel');
-      Add('mips');
-      Add('jvm');
-    end;
-    ItemIndex := 0;
-  end;
-
-  lblTargetProcessorProc.Caption := dlgTargetProc;
-
-  with TargetProcessorProcComboBox do
-  begin
-    with Items do
-    begin
-      Clear;
-      Add(ProcessorToCaption(''));
-      Add(ProcessorToCaption('80386'));
-      Add(ProcessorToCaption('Pentium'));
-      Add(ProcessorToCaption('Pentium2'));
-      Add(ProcessorToCaption('Pentium3'));
-      Add(ProcessorToCaption('Pentium4'));
-      Add(ProcessorToCaption('PentiumM'));
-    end;
-    ItemIndex := 0;
-  end;
-
-  grpOptimizations.Caption := dlgOptimiz;
-  radOptLevelNone.Caption := dlgLevelNoneOpt + ' (none)';
+  grpOptimizations.Caption := dlgOptimizationLevels;
+  radOptLevelNone.Caption := dlgLevelNoneOpt;
   radOptLevel1.Caption := dlgLevel1Opt + ' (-O1)';
   radOptLevel2.Caption := dlgLevel2Opt + ' (-O2)';
   radOptLevel3.Caption := dlgLevel3Opt + ' (-O3)';
-  chkOptVarsInReg.Caption := dlgCOKeepVarsReg + ' (-OoREGVAR)';
-  chkOptUncertain.Caption := dlgUncertOpt + ' (-OoUNCERTAIN)';
-  chkOptSmaller.Caption := lisSmallerRatherThanFaster + ' (-Os)';
+
+  grpLinking.Caption := dlgCOLinking;
+  chkLinkSmart.Caption := dlgLinkSmart + ' (-XX)';
+  chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG)';
+  chkOptionsLinkOpt.Caption := dlgPassOptsLinker;
+  edtOptionsLinkOpt.Text := '';
 end;
 
 procedure TCompilerCodegenOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-var
-  i: longint;
 begin
   fIsPackage:=AOptions is TPkgCompilerOptions;
   with AOptions as TBaseCompilerOptions do
@@ -244,32 +110,9 @@ begin
     edtHeapSize.Text := IntToStr(HeapSize);
     edtStackSize.Text := IntToStr(StackSize);
 
-    if fIsPackage then begin
-      grpTargetPlatform.Visible:=false;
-      TargetOSComboBox.ItemIndex := 0;
-      TargetOSComboBox.Text := 'default';
-      TargetCPUComboBox.ItemIndex := 0;
-      TargetCPUComboBox.Text := 'default';
-      TargetProcessorProcComboBox.Text := 'default';
-    end else begin
-      grpTargetPlatform.Visible:=true;
-      i := TargetOSComboBox.Items.IndexOf(TargetOS);
-      if i < 0 then
-        i := 0;  // 0 is default
-      TargetOSComboBox.ItemIndex := i;
-      TargetOSComboBox.Text := TargetOS;
-      i := TargetCPUComboBox.Items.IndexOf(TargetCPU);
-      if i < 0 then
-        i := 0;  // 0 is default
-      TargetCPUComboBox.ItemIndex := i;
-      TargetCPUComboBox.Text := TargetCPU;
-
-      TargetProcessorProcComboBox.Text := ProcessorToCaption(TargetProcessor);
-    end;
-
-    chkOptVarsInReg.Checked := VariablesInRegisters;
-    chkOptUncertain.Checked := UncertainOptimizations;
-    chkOptSmaller.Checked := SmallerCode;
+    //chkOptVarsInReg.Checked := VariablesInRegisters;
+    //chkOptUncertain.Checked := UncertainOptimizations;
+    //chkOptSmaller.Checked := SmallerCode;
 
     case OptimizationLevel of
       1: radOptLevel1.Checked := True;
@@ -278,14 +121,20 @@ begin
       else
         radOptLevelNone.Checked := True;
     end;
+    grpLinking.Enabled := NeedsLinkerOpts;
+    chkLinkSmart.Checked := LinkSmart;
+    //chkLinkSmart.Enabled := NeedsLinkerOpts;
+    chkWin32GraphicApp.Checked := Win32GraphicApp;
+    //chkWin32GraphicApp.Enabled := NeedsLinkerOpts;
+    chkOptionsLinkOpt.Checked := PassLinkerOptions;
+    edtOptionsLinkOpt.Text := LinkerOptions;
+    //chkOptionsLinkOpt.Enabled := NeedsLinkerOpts;
   end;
 end;
 
 procedure TCompilerCodegenOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   hs, code: integer;
-  NewTargetOS: string;
-  NewTargetCPU: string;
 begin
   with AOptions as TBaseCompilerOptions do
   begin
@@ -310,24 +159,9 @@ begin
     else
       StackSize := hs;
 
-    if not fIsPackage then
-    begin
-      NewTargetOS := TargetOSComboBox.Text;
-      if TargetOSComboBox.Items.IndexOf(NewTargetOS) <= 0 then
-        NewTargetOS := '';
-      TargetOS := CaptionToOS(NewTargetOS);
-
-      NewTargetCPU := TargetCPUComboBox.Text;
-      if TargetCPUComboBox.Items.IndexOf(NewTargetCPU) <= 0 then
-        NewTargetCPU := '';
-      TargetCPU := CaptionToCPU(NewTargetCPU);
-
-      TargetProcessor := CaptionToProcessor(TargetProcessorProcComboBox.Text);
-    end;
-
-    VariablesInRegisters := chkOptVarsInReg.Checked;
-    UncertainOptimizations := chkOptUncertain.Checked;
-    SmallerCode := chkOptSmaller.Checked;
+    //VariablesInRegisters := chkOptVarsInReg.Checked;
+    //UncertainOptimizations := chkOptUncertain.Checked;
+    //SmallerCode := chkOptSmaller.Checked;
 
     if (radOptLevel1.Checked) then
       OptimizationLevel := 1
@@ -339,6 +173,11 @@ begin
       OptimizationLevel := 3
     else
       OptimizationLevel := 0;
+
+    Win32GraphicApp := chkWin32GraphicApp.Checked;
+    LinkSmart := chkLinkSmart.Checked;
+    PassLinkerOptions := chkOptionsLinkOpt.Checked;
+    LinkerOptions := edtOptionsLinkOpt.Text;
   end;
 end;
 

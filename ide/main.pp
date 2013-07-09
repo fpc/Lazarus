@@ -129,10 +129,10 @@ uses
   project_save_options, project_versioninfo_options, project_i18n_options,
   project_misc_options,
   // project compiler option frames
-  compiler_path_options, compiler_parsing_options, compiler_codegen_options,
-  compiler_linking_options, compiler_verbosity_options, compiler_messages_options,
-  Compiler_Other_Options, compiler_compilation_options, compiler_buildmacro_options,
-  Compiler_ModeMatrix,
+  compiler_path_options, compiler_config_target, compiler_parsing_options,
+  compiler_codegen_options, compiler_linking_options, compiler_verbosity_options,
+  compiler_messages_options, Compiler_Other_Options, compiler_compilation_options,
+  compiler_buildmacro_options, Compiler_ModeMatrix,
   // package option frames
   package_usage_options, package_description_options, package_integration_options,
   package_provides_options, package_i18n_options,

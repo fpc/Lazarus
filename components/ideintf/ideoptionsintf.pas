@@ -292,6 +292,7 @@ const
   GroupCompiler     = 100200;
     CompilerOptionsBuildModes            = 0100;
     CompilerOptionsSearchPaths           = 0200;
+    CompilerOptionsConfigTarget          = 0250;
     CompilerOptionsParsing               = 0300;
     CompilerOptionsCodeGeneration        = 0400;
     CompilerOptionsLinking               = 0500;

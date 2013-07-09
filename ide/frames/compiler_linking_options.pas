@@ -15,23 +15,16 @@ type
   TCompilerLinkingOptionsFrame = class(TAbstractIDEOptionsEditor)
     chkDebugGDB: TCheckBox;
     chkGenGProfCode: TCheckBox;
-    chkLinkSmart: TCheckBox;
-    chkOptionsLinkOpt: TCheckBox;
     chkSymbolsStrip: TCheckBox;
     chkUseExternalDbgSyms: TCheckBox;
     chkUseHeaptrc: TCheckBox;
     chkUseLineInfoUnit: TCheckBox;
     chkUseValgrind: TCheckBox;
-    chkWin32GraphicApp: TCheckBox;
     dropDbgSymbolType: TComboBox;
-    edtOptionsLinkOpt: TEdit;
-    grpDebug2: TGroupBox;
-    grpDebugging: TGroupBox;
-    grpLinkLibraries: TGroupBox;
-    grpOptions: TGroupBox;
+    grpOtherDebuggingInfo: TGroupBox;
+    grpInfoForGDB: TGroupBox;
     lblEmpty: TLabel;
     lblDbgSymbolType: TLabel;
-    TargetSpecificsGrpBox: TGroupBox;
     procedure chkDebugGDBChange(Sender: TObject);
   public
     function GetTitle: string; override;
@@ -78,24 +71,19 @@ end;
 
 procedure TCompilerLinkingOptionsFrame.chkDebugGDBChange(Sender: TObject);
 begin
-  grpDebugging.Enabled := chkDebugGDB.Checked;
+  grpInfoForGDB.Enabled := chkDebugGDB.Checked;
 end;
 
 function TCompilerLinkingOptionsFrame.GetTitle: string;
 begin
-  Result := dlgCOLinking;
+  Result := dlgCODebugging;
 end;
 
 procedure TCompilerLinkingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   // Setup the Linking Tab
-  with grpDebugging do
-  begin
-    AutoSize := True;
-    Caption := dlgCODebugging;
-  end;
-
-  grpDebug2.Caption := dlgCODebugging2;
+  grpInfoForGDB.Caption := dlgCOInfoForGDB;
+  grpOtherDebuggingInfo.Caption := dlgCOOtherDebuggingInfo;
 
   chkDebugGDB.Caption := dlgCOGDB;
   lblDbgSymbolType.Caption := dlgCOSymbolType;
@@ -112,16 +100,6 @@ begin
   chkGenGProfCode.Caption := dlgGPROF + ' (-pg)';
   chkSymbolsStrip.Caption := dlgCOStrip + ' (-Xs)';
   chkUseExternalDbgSyms.Caption := dlgExtSymb + ' (-Xg)';
-
-  grpLinkLibraries.Caption := dlgLinkLibraries;
-  chkLinkSmart.Caption := dlgLinkSmart + ' (-XX)';
-
-  TargetSpecificsGrpBox.Caption := lisCOTargetOSSpecificOptions;
-  chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG)';
-
-  grpOptions.Caption := dlgCOOpts + ' (-k)';
-  chkOptionsLinkOpt.Caption := dlgPassOptsLinker;
-  edtOptionsLinkOpt.Text := '';
 end;
 
 procedure TCompilerLinkingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -137,18 +115,8 @@ begin
     chkSymbolsStrip.Checked := StripSymbols;
     chkSymbolsStrip.Enabled := NeedsLinkerOpts;
     chkUseExternalDbgSyms.Checked := UseExternalDbgSyms;
-
-    chkLinkSmart.Checked := LinkSmart;
-    grpLinkLibraries.Enabled := NeedsLinkerOpts;
-
-    chkOptionsLinkOpt.Checked := PassLinkerOptions;
-    edtOptionsLinkOpt.Text := LinkerOptions;
-    chkWin32GraphicApp.Checked := Win32GraphicApp;
-    chkWin32GraphicApp.Enabled := NeedsLinkerOpts;
-    grpOptions.Enabled := NeedsLinkerOpts;
   end;
-
-  grpDebugging.Enabled := chkDebugGDB.Checked;
+  grpInfoForGDB.Enabled := chkDebugGDB.Checked;
 end;
 
 procedure TCompilerLinkingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -163,11 +131,6 @@ begin
     GenGProfCode := chkGenGProfCode.Checked;
     StripSymbols := chkSymbolsStrip.Checked;
     UseExternalDbgSyms := chkUseExternalDbgSyms.Checked;
-
-    PassLinkerOptions := chkOptionsLinkOpt.Checked;
-    LinkerOptions := edtOptionsLinkOpt.Text;
-    Win32GraphicApp := chkWin32GraphicApp.Checked;
-    LinkSmart := chkLinkSmart.Checked;
   end;
 end;
 
