@@ -147,11 +147,13 @@ procedure ParseResourceType(Code: TCodeBuffer; NestedComments: boolean;
       Inc(ds);
       i := IndexChar(ds^, -1, '''');
       SetLength(Result, i);
-      Move(ds^, Result[1], i);
+      if i>0 then
+        Move(ds^, Result[1], i);
     end else begin
       i := IndexChar(ds^, -1, '}');
       SetLength(Result, i);
-      Move(ds^, Result[1], i);
+      if i>0 then
+        Move(ds^, Result[1], i);
       Result := TrimRight(Result);
     end;
   end;
