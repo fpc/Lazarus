@@ -2257,8 +2257,10 @@ begin
           AddKeyWord('explicit_string_cast_loss');
           AddKeyWord('cvt_narrowing_string_lost');
         end else if (Directive='i') or (Directive='include') then begin
-          AddKeyWord('%Date%');
-          AddKeyWord('%FPCVersion%');
+          AddKeyWord('Date');
+          AddKeyWord('FPCTarget');
+          AddKeyWord('FPCVersion');
+          AddKeyWord('Time');
         end;
       end;
       exit;

@@ -1723,8 +1723,6 @@ begin
     // -> if there was an error and it was in a needed range, raise it again
     if LastErrorIsValid then begin
       // the error has happened in ScannedRange
-      if ExtractFileName(MainFilename)='blaunit.pas' then
-        debugln(['TLinkScanner.Scan ',MainFilename,' ScannedRange=',dbgs(ScannedRange),' Range=',dbgs(Range)]);
       if ord(ScannedRange)>ord(Range) then begin
         // error is behind needed range => ok
       end else if (not IgnoreErrorAfterValid)
@@ -2330,11 +2328,13 @@ begin
     begin
       CleanResult:=CursorToCleanPos(FIgnoreErrorAfterCursorPos,
                          FIgnoreErrorAfterCode,CleanedIgnoreErrorAfterPosition);
-      //DebugLn(['  CleanResult=',CleanResult,
-      //  ' CleanedIgnoreErrorAfterPosition=',CleanedIgnoreErrorAfterPosition,
-      //  ' FIgnoreErrorAfterCursorPos=',FIgnoreErrorAfterCursorPos,
-      //  ' CleanedLen=',CleanedLen,
-      //  ' LastErrorIsValid=',LastErrorIsValid]);
+      {$IFDEF ShowIgnoreErrorAfter}
+      DebugLn(['  CleanResult=',CleanResult,
+        ' CleanedIgnoreErrorAfterPosition=',CleanedIgnoreErrorAfterPosition,
+        ' FIgnoreErrorAfterCursorPos=',FIgnoreErrorAfterCursorPos,
+        ' CleanedLen=',CleanedLen,
+        ' LastErrorIsValid=',LastErrorIsValid]);
+      {$ENDIF}
       if (CleanResult=0) or (CleanResult=-1)
       or (not LastErrorIsValid) then begin
         Result:=true;
