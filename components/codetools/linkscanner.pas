@@ -3527,16 +3527,17 @@ end;
 function TLinkScanner.IncludeDirective: boolean;
 // {$i filename} or {$include filename}
 // filename can be 'filename with spaces'
-var IncFilename: string;
+var
+  IncFilename: string;
   DynamicExtension: Boolean;
 begin
   if StoreDirectives then
     FDirectives[FDirectivesCount-1].Kind:=lsdkInclude;
   inc(SrcPos);
   if (Src[SrcPos]='%') then begin
-    // ToDo: insert string constant: %date%, %fpcversion%
     UpdateCleanedSource(CommentStartPos-1);
     // insert ''
+    // ToDo: insert more useful string constant: %date%, %fpcversion%
     if 2>length(FCleanedSrc)-CleanedLen then begin
       // expand cleaned source string by at least 1024
       SetLength(FCleanedSrc,length(FCleanedSrc)+1024);

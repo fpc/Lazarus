@@ -2135,7 +2135,7 @@ begin
         AddKeyWord('Calling');
         AddKeyWord('CheckPointer');
         AddKeyWord('CodeAlign');
-        AddKeyWord('COerators');
+        AddKeyWord('COperators');
         AddKeyWord('DebugInfo');
         AddKeyWord('Define');
         AddKeyWord('ElIfC');
