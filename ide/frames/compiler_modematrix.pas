@@ -665,8 +665,9 @@ var
   begin
     if aTyp='' then
       aTyp:=Grid.TypeColumn.PickList.Names[0];
-    NewRow:=Grid.Matrix.AddValue(Group,Grid.Modes[Grid.ActiveMode].Caption,aTyp,
-      aValue,CreateBuildMatrixOptionGUID);
+    if EnvironmentOptions.UseBuildModes then
+      NewRow:=Grid.Matrix.AddValue(Group,Grid.Modes[Grid.ActiveMode].Caption,aTyp,
+                                   aValue,CreateBuildMatrixOptionGUID);
   end;
 
 begin
@@ -827,41 +828,47 @@ end;
 procedure TCompOptModeMatrixFrame.UpdateModes(UpdateGrid: boolean);
 var
   i: Integer;
-  BuildMode: TProjectBuildMode;
   aColor: TColor;
   GridHasChanged: Boolean;
-  aMode: TGroupedMatrixMode;
-  BuildModes: TProjectBuildModes;
   ValuesHaveChanged: Boolean;
+  aMode: TGroupedMatrixMode;
+  BuildMode: TProjectBuildMode;
+  BuildModes: TProjectBuildModes;
+  BuildModeCount: integer;
 begin
   GridHasChanged:=false;
   ValuesHaveChanged:=false;
 
   // add/update build modes
   BuildModes:=LazProject.BuildModes;
-  for i:=0 to BuildModes.Count-1 do begin
-    BuildMode:=BuildModes[i];
-    aColor:=clDefault;
-    if BuildMode.InSession then aColor:=SessionColor;
-    if i=Grid.Modes.Count then begin
-      Grid.Modes.Add(BuildMode.Identifier,aColor);
-      GridHasChanged:=true;
-    end
-    else begin
-      aMode:=Grid.Modes[i];
-      //debugln(['TCompOptModeMatrix.UpdateModes aMode.Caption=',aMode.Caption,' BuildMode.Identifier=',BuildMode.Identifier]);
-      if aMode.Caption<>BuildMode.Identifier then begin
-        aMode.Caption:=BuildMode.Identifier;
+  if EnvironmentOptions.UseBuildModes then begin
+    for i:=0 to BuildModes.Count-1 do begin
+      BuildMode:=BuildModes[i];
+      aColor:=clDefault;
+      if BuildMode.InSession then aColor:=SessionColor;
+      if i=Grid.Modes.Count then begin
+        Grid.Modes.Add(BuildMode.Identifier,aColor);
         GridHasChanged:=true;
-      end;
-      if aMode.Color<>aColor then begin
-        ValuesHaveChanged:=true;
-        aMode.Color:=aColor;
+      end
+      else begin
+        aMode:=Grid.Modes[i];
+        //debugln(['TCompOptModeMatrix.UpdateModes aMode.Caption=',aMode.Caption,' BuildMode.Identifier=',BuildMode.Identifier]);
+        if aMode.Caption<>BuildMode.Identifier then begin
+          aMode.Caption:=BuildMode.Identifier;
+          GridHasChanged:=true;
+        end;
+        if aMode.Color<>aColor then begin
+          ValuesHaveChanged:=true;
+          aMode.Color:=aColor;
+        end;
       end;
     end;
-  end;
-  // delete build modes
-  while Grid.Modes.Count>BuildModes.Count do begin
+    BuildModeCount:=BuildModes.Count;
+  end
+  else
+    BuildModeCount:=0;
+  // delete leftover build modes
+  while Grid.Modes.Count>BuildModeCount do begin
     Grid.Modes.Delete(Grid.Modes.Count-1);
     GridHasChanged:=true;
   end;
@@ -883,9 +890,11 @@ procedure TCompOptModeMatrixFrame.UpdateActiveMode;
 var
   i: Integer;
 begin
-  if LazProject=nil then exit;
-  i:=LazProject.BuildModes.IndexOf(LazProject.ActiveBuildMode);
-  if (i<0) or (i>=Grid.Modes.Count) then exit;
+  if EnvironmentOptions.UseBuildModes then
+    i:=LazProject.BuildModes.IndexOf(LazProject.ActiveBuildMode)
+  else
+    i:=-1;
+  if i>=Grid.Modes.Count then exit;
   Grid.ActiveMode:=i;
 end;
 

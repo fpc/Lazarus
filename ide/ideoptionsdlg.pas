@@ -598,6 +598,7 @@ end;
 procedure TIDEOptionsDialog.UpdateBuildModeButtons;
 var
   ManyBuildModes: Boolean;
+  ModeMatrix: TCompOptModeMatrixFrame;
 begin
   ManyBuildModes:=Project1.BuildModes.Count > 1;
   if ManyBuildModes then
@@ -606,6 +607,9 @@ begin
   UseBuildModeCheckBox.Visible := not ManyBuildModes;
   BuildModeComboBox.Visible := EnvironmentOptions.UseBuildModes;
   BuildModeManageButton.Visible := EnvironmentOptions.UseBuildModes;
+  ModeMatrix:=TCompOptModeMatrixFrame(FindEditor(TCompOptModeMatrixFrame));
+  if Assigned(ModeMatrix) then
+    ModeMatrix.UpdateModes;
 end;
 
 procedure TIDEOptionsDialog.SetBuildModeVisibility(AVisibility: Boolean);
