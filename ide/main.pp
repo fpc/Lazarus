@@ -130,7 +130,7 @@ uses
   project_misc_options,
   // project compiler option frames
   compiler_path_options, compiler_config_target, compiler_parsing_options,
-  compiler_codegen_options, compiler_linking_options, compiler_verbosity_options,
+  compiler_codegen_options, compiler_debugging_options, compiler_verbosity_options,
   compiler_messages_options, Compiler_Other_Options, compiler_compilation_options,
   compiler_buildmacro_options, Compiler_ModeMatrix,
   // package option frames

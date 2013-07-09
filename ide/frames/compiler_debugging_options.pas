@@ -1,4 +1,4 @@
-unit compiler_linking_options;
+unit compiler_debugging_options;
 
 {$mode objfpc}{$H+}
 

@@ -198,7 +198,7 @@ begin
     P.Sources.AddSrc('frames/compiler_codegen_options.pas');
     P.Sources.AddSrc('frames/compiler_compilation_options.pas');
     P.Sources.AddSrc('frames/compiler_config_target.pas');
-    P.Sources.AddSrc('frames/compiler_linking_options.pas');
+    P.Sources.AddSrc('frames/compiler_debugging_options.pas');
     P.Sources.AddSrc('frames/compiler_messages_options.pas');
     P.Sources.AddSrc('frames/compiler_other_options.pas');
     P.Sources.AddSrc('frames/compiler_parsing_options.pas');

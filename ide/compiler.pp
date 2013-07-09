@@ -43,8 +43,7 @@ uses
   IDEMsgIntf, LazIDEIntf, ProjectIntf, CompOptsIntf;
 
 type
-  TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
-      of object;
+  TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean) of object;
 
   {$IFDEF WithAsyncCompile}
   TBuildProjectData = class
