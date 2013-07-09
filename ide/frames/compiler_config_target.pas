@@ -18,26 +18,18 @@
  ***************************************************************************
 
   Abstract:
-    Frame to edit custom options and conditionals of compiler options
+    Frame to edit compiler config file, target and syntax mode
     (project+packages).
 }
 unit compiler_config_target;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE VerboseCOCondSynCompletion}
-
 interface
 
 uses
-  Classes, SysUtils, math, AVL_Tree, LazLogger, FileUtil,
-  Forms, Controls, Graphics, Dialogs, StdCtrls, LCLProc, ComCtrls, LCLType,
-  ExtCtrls,
-  CodeToolsCfgScript, KeywordFuncLists,
-  SynEdit, SynEditKeyCmds, SynCompletion,
-  IDEOptionsIntf, CompOptsIntf,
-  IDEDialogs, IDECommands, Project, CompilerOptions, LazarusIDEStrConsts,
-  SourceSynEditor, EditorOptions, PackageDefs, LinkScanner;
+  Classes, SysUtils, FileUtil, Controls, Dialogs, StdCtrls, LCLProc, IDEOptionsIntf,
+  IDEDialogs, CompilerOptions, LazarusIDEStrConsts, PackageDefs, LinkScanner;
 
 type
 
@@ -70,8 +62,6 @@ type
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
-    property IsPackage: boolean read FIsPackage;
-    property CompOptions: TBaseCompilerOptions read FCompOptions;
   end;
 
 implementation
@@ -185,9 +175,9 @@ begin
   NewCustomConfigFile := chkCustomConfigFile.Checked;
   NewConfigFilePath := edtConfigPath.Text;
 
-  if ((NewDontUseConfigFile <> CompOptions.DontUseConfigFile) or
-    (NewCustomConfigFile <> CompOptions.CustomConfigFile) or
-    (NewConfigFilePath <> CompOptions.ConfigFilePath)) and (not NewDontUseConfigFile) and
+  if ((NewDontUseConfigFile <> FCompOptions.DontUseConfigFile) or
+    (NewCustomConfigFile <> FCompOptions.CustomConfigFile) or
+    (NewConfigFilePath <> FCompOptions.ConfigFilePath)) and (not NewDontUseConfigFile) and
     NewCustomConfigFile then
   begin
     // config file options changed
@@ -325,10 +315,10 @@ var
   i: Integer;
 begin
   FCompOptions:=AOptions as TBaseCompilerOptions;
-  FIsPackage:=CompOptions is TPkgCompilerOptions;
+  FIsPackage:=FCompOptions is TPkgCompilerOptions;
   //debugln(['TCompilerConfigTargetFrame.ReadSettings ',dbgs(Pointer(FCompOptions)),' ',FCompOptions=Project1.CompilerOptions]);
 
-  with CompOptions do
+  with FCompOptions do
   begin
     chkConfigFile.Checked := not DontUseConfigFile;
     chkCustomConfigFile.Checked := CustomConfigFile;

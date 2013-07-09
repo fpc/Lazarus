@@ -5,9 +5,8 @@ unit compiler_compilation_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, IDEOptionsIntf, Project, CompilerOptions, LazarusIDEStrConsts,
-  ProjectIntf, CompOptsIntf, PackageDefs;
+  Controls, StdCtrls, IDEOptionsIntf, Project, CompilerOptions, CompOptsIntf,
+  PackageDefs, LazarusIDEStrConsts;
 
 type
 

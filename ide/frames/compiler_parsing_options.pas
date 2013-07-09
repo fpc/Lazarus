@@ -5,9 +5,7 @@ unit compiler_parsing_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, IDEOptionsIntf, Project, CompilerOptions, //LinkScanner,
-  LazarusIDEStrConsts;
+  ExtCtrls, IDEOptionsIntf, CompilerOptions, LazarusIDEStrConsts;
 
 type
 

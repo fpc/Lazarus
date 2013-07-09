@@ -25,18 +25,13 @@ unit Compiler_Other_Options;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE VerboseCOCondSynCompletion}
-
 interface
 
 uses
-  Classes, SysUtils, math, AVL_Tree, LazLogger, FileUtil,
-  Forms, Controls, Graphics, Dialogs, StdCtrls, LCLProc, ComCtrls, LCLType,
-  ExtCtrls,
-  CodeToolsCfgScript, KeywordFuncLists,
-  SynEdit, SynEditKeyCmds, SynCompletion,
-  IDEOptionsIntf, CompOptsIntf,
-  IDEDialogs, IDECommands, Project, CompilerOptions, LazarusIDEStrConsts,
+  Classes, SysUtils, math, AVL_Tree, LazLogger, Forms, Controls, Graphics,
+  Dialogs, StdCtrls, LCLProc, ComCtrls, LCLType, ExtCtrls, CodeToolsCfgScript,
+  KeywordFuncLists, SynEdit, SynEditKeyCmds, SynCompletion, IDEOptionsIntf,
+  CompOptsIntf, IDECommands, Project, CompilerOptions, LazarusIDEStrConsts,
   SourceSynEditor, EditorOptions, PackageDefs;
 
 type
@@ -56,8 +51,7 @@ type
     procedure CondSynEditKeyPress(Sender: TObject; var Key: char);
     procedure CondSynEditProcessUserCommand(Sender: TObject;
       var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
-    procedure CondSynEditStatusChange(Sender: TObject;
-      Changes: TSynStatusChanges);
+    procedure CondSynEditStatusChange(Sender: TObject; Changes: TSynStatusChanges);
   private
     FCompOptions: TBaseCompilerOptions;
     FIdleConnected: Boolean;
@@ -81,8 +75,7 @@ type
     procedure OnSynCompletionExecute(Sender: TObject);
     procedure OnSynCompletionKeyCompletePrefix(Sender: TObject);
     procedure OnSynCompletionKeyDelete(Sender: TObject);
-    procedure OnSynCompletionKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure OnSynCompletionKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnSynCompletionKeyNextChar(Sender: TObject);
     procedure OnSynCompletionKeyPrevChar(Sender: TObject);
     procedure OnSynCompletionSearchPosition(var Position: integer);
@@ -103,7 +96,6 @@ type
     property CompletionValues: TStrings read FCompletionValues;
     property CompletionHistory: TStrings read FCompletionHistory;
     property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
-    property IsPackage: boolean read FIsPackage;
     property CompOptions: TBaseCompilerOptions read FCompOptions;
   end;
 

@@ -6,8 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, ListFilterEdit, StdCtrls, CheckLst, Dialogs,
-  IDEOptionsIntf, LazarusIDEStrConsts, EnvironmentOpts, CompilerOptions,
-  IDEMsgIntf, IDEDialogs;
+  IDEOptionsIntf, LazarusIDEStrConsts, CompilerOptions, IDEMsgIntf, IDEDialogs;
 
 type
 
@@ -89,8 +88,7 @@ begin
   end;
 end;
 
-procedure TCompilerMessagesOptionsFrame.UseMsgFileCheckBoxChange(Sender: TObject
-  );
+procedure TCompilerMessagesOptionsFrame.UseMsgFileCheckBoxChange(Sender: TObject);
 begin
   MsgFileEdit.Enabled:=UseMsgFileCheckBox.Checked;
   MsgFileBrowseButton.Enabled:=UseMsgFileCheckBox.Checked;
@@ -106,7 +104,6 @@ destructor TCompilerMessagesOptionsFrame.Destroy;
 begin
   editMsgFilter.Items.Clear;
   chklistCompMsg.Clear;
-  chklistCompMsg.Items.Clear;
   TempMessages.Free;
   inherited Destroy;
 end;

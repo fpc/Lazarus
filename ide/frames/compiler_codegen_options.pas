@@ -5,10 +5,8 @@ unit compiler_codegen_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, LCLProc,
-  DefineTemplates, IDEOptionsIntf, Project, CompilerOptions,
-  LazarusIDEStrConsts, PackageDefs;
+  SysUtils, StdCtrls, IDEOptionsIntf, CompilerOptions, PackageDefs,
+  LazarusIDEStrConsts;
 
 type
 
@@ -39,8 +37,6 @@ type
     radOptLevel2: TRadioButton;
     radOptLevel3: TRadioButton;
     radOptLevelNone: TRadioButton;
-  private
-    fIsPackage: boolean;
   public
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -94,7 +90,6 @@ end;
 
 procedure TCompilerCodegenOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  fIsPackage:=AOptions is TPkgCompilerOptions;
   with AOptions as TBaseCompilerOptions do
   begin
     chkSmartLinkUnit.Checked := SmartLinkUnit;

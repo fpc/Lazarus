@@ -5,10 +5,9 @@ unit compiler_path_options;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Dialogs, Graphics,
-  Buttons, StdCtrls, LCLType, InterfaceBase,
-  IDEOptionsIntf, MacroIntf, IDEDialogs, CompOptsIntf,
-  Project, CompilerOptions, LazarusIDEStrConsts, PathEditorDlg, LazConf,
+  Classes, SysUtils, LCLProc, FileUtil, Controls, Dialogs, Graphics,
+  Buttons, StdCtrls, LCLType, IDEOptionsIntf, MacroIntf, IDEDialogs, CompOptsIntf,
+  Project, CompilerOptions, LazarusIDEStrConsts, PathEditorDlg,
   IDEProcs, CheckCompilerOpts, ShowCompilerOpts, MainIntf;
 
 type

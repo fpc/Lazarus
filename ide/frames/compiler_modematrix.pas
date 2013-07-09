@@ -284,8 +284,7 @@ begin
         debugln(['AssignBuildMatrixGroupToOptions Target expected Value, but found ',DbgSName(ValueRow)]);
         exit;
       end;
-      Option:=Options.Add(CaptionToBuildMatrixOptionType(ValueRow.Typ),
-                          Targets);
+      Option:=Options.Add(CaptionToBuildMatrixOptionType(ValueRow.Typ),Targets);
       Option.Modes:=ValueRow.GetNormalizedModes;
       Option.ID:=ValueRow.ID;
       if Option.Typ=bmotIDEMacro then begin

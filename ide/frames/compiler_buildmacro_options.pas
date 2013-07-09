@@ -93,7 +93,6 @@ type
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     property BuildMacros: TIDEBuildMacros read FBuildMacros write SetBuildMacros; // local copy
-    property MacrosOwner: TObject read FMacrosOwner;
     procedure LoadFromOptions(Options: TBaseCompilerOptions);
     procedure SaveToOptions(Options: TBaseCompilerOptions);
   end;
@@ -326,8 +325,7 @@ begin
     BuildMacro.Description:=BuildMacroDescriptionEdit.Text;
 end;
 
-procedure TCompOptBuildMacrosFrame.SetBuildMacros(
-  const AValue: TIDEBuildMacros);
+procedure TCompOptBuildMacrosFrame.SetBuildMacros(const AValue: TIDEBuildMacros);
 begin
   if FBuildMacros=AValue then exit;
   if AValue<>nil then
@@ -386,8 +384,8 @@ begin
   ValueTVNode.SelectedIndex:=ValueTVNode.ImageIndex;
 end;
 
-function TCompOptBuildMacrosFrame.GetNodeInfo(Node: TTreeNode; out
-  BuildMacro: TLazBuildMacro): TCBMNodeType;
+function TCompOptBuildMacrosFrame.GetNodeInfo(Node: TTreeNode;
+  out BuildMacro: TLazBuildMacro): TCBMNodeType;
 
   function GetNodeType(CurNode: TTreeNode): TCBMNodeType;
   var
@@ -412,8 +410,8 @@ begin
   Result:=GetNodeType(Node);
 end;
 
-function TCompOptBuildMacrosFrame.GetSelectedNode(out
-  aBuildMacro: TLazBuildMacro; out NodeType: TCBMNodeType): TTreeNode;
+function TCompOptBuildMacrosFrame.GetSelectedNode(out aBuildMacro: TLazBuildMacro;
+  out NodeType: TCBMNodeType): TTreeNode;
 begin
   Result:=BuildMacrosTreeView.Selected;
   NodeType:=GetNodeInfo(Result,aBuildMacro);
@@ -434,11 +432,11 @@ begin
     Result:=''
   else
     Result:='BuildMacro';
-  if (MacrosOwner=nil) then
+  if (FMacrosOwner=nil) then
     exit;
-  if MacrosOwner is TPkgCompilerOptions then
+  if FMacrosOwner is TPkgCompilerOptions then
   begin
-    Result:=TPkgCompilerOptions(MacrosOwner).LazPackage.Name;
+    Result:=TPkgCompilerOptions(FMacrosOwner).LazPackage.Name;
     if ord(PrefixType)>=ord(cbmpMedium) then
       Result:=Result+'_';
     if PrefixType=cbmpLong then

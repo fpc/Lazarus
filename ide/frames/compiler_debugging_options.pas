@@ -5,8 +5,7 @@ unit compiler_debugging_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, LCLProc,
-  StdCtrls, IDEOptionsIntf, Project, CompilerOptions, CompOptsIntf, LazarusIDEStrConsts;
+  StdCtrls, IDEOptionsIntf, CompilerOptions, CompOptsIntf, LazarusIDEStrConsts;
 
 type
 
