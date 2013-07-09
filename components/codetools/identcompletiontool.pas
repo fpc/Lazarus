@@ -2259,6 +2259,8 @@ begin
         end else if (Directive='i') or (Directive='include') then begin
           AddKeyWord('Date');
           AddKeyWord('FPCTarget');
+          AddKeyWord('FPCTargetOS');
+          AddKeyWord('FPCTargetCPU');
           AddKeyWord('FPCVersion');
           AddKeyWord('Time');
         end;
