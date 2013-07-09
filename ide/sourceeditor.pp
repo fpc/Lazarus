@@ -1087,6 +1087,7 @@ type
     function SomethingModified(Verbose: boolean = false): boolean;
     procedure HideHint;
     procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnUserInput(Sender: TObject; Msg: Cardinal);
     procedure LockAllEditorsInSourceChangeCache;
     procedure UnlockAllEditorsInSourceChangeCache;
     procedure BeginGlobalUpdate;
@@ -9928,8 +9929,6 @@ var
   j: Integer;
   Markling: TSourceMarkling;
 begin
-  CodeToolsToSrcEditTimer.Enabled:=true;
-
   SrcEdit:=ActiveEditor;
   if (SrcEdit<>nil)
   and (not SrcEdit.FSharedValues.FMarklingsValid) then
@@ -9957,6 +9956,11 @@ begin
     SrcEdit.EditorComponent.EndUpdate;
     SrcEdit.FSharedValues.FMarklingsValid:=true;
   end;
+end;
+
+procedure TSourceEditorManager.OnUserInput(Sender: TObject; Msg: Cardinal);
+begin
+  CodeToolsToSrcEditTimer.Enabled:=true;
 end;
 
 procedure TSourceEditorManager.LockAllEditorsInSourceChangeCache;
@@ -10291,6 +10295,7 @@ begin
     true,@GetDefaultLayout);
 
   Application.AddOnIdleHandler(@OnIdle);
+  Application.AddOnUserInputHandler(@OnUserInput);
 end;
 
 destructor TSourceEditorManager.Destroy;
