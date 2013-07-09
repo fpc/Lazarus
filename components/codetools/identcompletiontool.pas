@@ -2256,6 +2256,9 @@ begin
           AddKeyWord('explicit_string_cast');
           AddKeyWord('explicit_string_cast_loss');
           AddKeyWord('cvt_narrowing_string_lost');
+        end else if (Directive='i') or (Directive='include') then begin
+          AddKeyWord('%Date%');
+          AddKeyWord('%FPCVersion%');
         end;
       end;
       exit;

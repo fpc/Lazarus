@@ -3556,19 +3556,20 @@ begin
     and (IncFilename[length(IncFilename)]='''') then
       IncFilename:=copy(IncFilename,2,length(IncFilename)-2);
     DynamicExtension:=false;
-    if PascalCompiler<>pcDelphi then begin
-      // default is fpc behaviour (default extension is .pp)
+    if IncFilename<>'' then begin
       if ExtractFileExt(IncFilename)='' then begin
-        IncFilename:=IncFilename+'.pp';
-        DynamicExtension:=true;
+        if PascalCompiler=pcDelphi then begin
+          // delphi understands quoted include files and default extension is .pas
+          IncFilename:=IncFilename+'.pas';
+        end else begin
+          // default is fpc behaviour (default extension is .pp)
+          IncFilename:=IncFilename+'.pp';
+          DynamicExtension:=true;
+        end;
       end;
-    end else begin
-      // delphi understands quoted include files and default extension is .pas
-      if ExtractFileExt(IncFilename)='' then
-        IncFilename:=IncFilename+'.pas';
     end;
     {$IFDEF ShowUpdateCleanedSrc}
-    DebugLn('TLinkScanner.IncludeDirective A IncFilename=',IncFilename,' UpdatePos=',DbgS(CommentEndPos-1));
+    DebugLn('TLinkScanner.IncludeDirective A IncFilename="',IncFilename,'" UpdatePos=',DbgS(CommentEndPos-1));
     {$ENDIF}
     UpdateCleanedSource(CommentEndPos-1);
     // put old position on stack
