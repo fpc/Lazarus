@@ -1,55 +1,51 @@
 object Form1: TForm1
-  CAPTION = 'Form1'
-  CLIENTHEIGHT = 300
-  CLIENTWIDTH = 483
-  ONCREATE = Form1CREATE
-  ONDESTROY = Form1DESTROY
-  HORZSCROLLBAR.PAGE = 484
-  VERTSCROLLBAR.PAGE = 301
-  LEFT = 446
-  HEIGHT = 300
-  TOP = 257
-  WIDTH = 483
-  object OIGroupbox: TGROUPBOX
-    CAPTION = 'Root Component'
-    CLIENTHEIGHT = 104
-    CLIENTWIDTH = 172
-    PARENTCTL3D = False
-    TABORDER = 0
-    LEFT = 16
-    HEIGHT = 121
-    TOP = 24
-    WIDTH = 176
-    object SetOIRootFormButton: TBUTTON
-      CAPTION = 'Set Form as Root'
-      TABSTOP = True
-      TABORDER = 0
-      ONCLICK = SetOIRootFormButtonCLICK
-      LEFT = 15
-      HEIGHT = 25
-      TOP = 16
-      WIDTH = 139
+  Left = 210
+  Height = 321
+  Top = 297
+  Width = 473
+  HorzScrollBar.Page = 484
+  VertScrollBar.Page = 301
+  Caption = 'Form1'
+  ClientHeight = 321
+  ClientWidth = 473
+  OnCreate = Form1CREATE
+  OnDestroy = Form1DESTROY
+  LCLVersion = '1.1'
+  object OIGroupbox: TGroupBox
+    Left = 8
+    Height = 121
+    Top = 24
+    Width = 176
+    Caption = 'Root Component'
+    ClientHeight = 102
+    ClientWidth = 172
+    TabOrder = 0
+    object SetOIRootFormButton: TButton
+      Left = 15
+      Height = 25
+      Top = 16
+      Width = 139
+      Caption = 'Set Form as Root'
+      OnClick = SetOIRootFormButtonCLICK
+      TabOrder = 0
     end
-    object SetCompAsOIRootButton: TBUTTON
-      CAPTION = 'Set Component'
-      TABSTOP = True
-      TABORDER = 1
-      ONCLICK = SetCompAsOIRootButtonCLICK
-      LEFT = 15
-      HEIGHT = 25
-      TOP = 54
-      WIDTH = 139
+    object SetCompAsOIRootButton: TButton
+      Left = 15
+      Height = 25
+      Top = 54
+      Width = 139
+      Caption = 'Set Component'
+      OnClick = SetCompAsOIRootButtonCLICK
+      TabOrder = 1
     end
   end
-  object PropGridGroupbox: TGROUPBOX
-    CAPTION = 'PropertyGrid'
-    CLIENTHEIGHT = 244
-    CLIENTWIDTH = 253
-    PARENTCTL3D = False
-    TABORDER = 1
-    LEFT = 207
-    HEIGHT = 261
-    TOP = 24
-    WIDTH = 257
+  object PropGridGroupbox: TGroupBox
+    Left = 192
+    Height = 280
+    Top = 24
+    Width = 270
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = 'PropertyGrid'
+    TabOrder = 1
   end
 end

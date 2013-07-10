@@ -28,8 +28,8 @@ type
     PropertyGrid: TOIPropertyGrid;
     procedure Form1Create(Sender: TObject);
     procedure Form1Destroy(Sender: TObject);
-    procedure SetCompAsOIRootButtonClick(Sender: TObject);
     procedure SetOIRootFormButtonClick(Sender: TObject);
+    procedure SetCompAsOIRootButtonClick(Sender: TObject);
   private
     procedure SetObjectInspectorRoot(AComponent: TComponent);
   public
@@ -73,24 +73,24 @@ begin
   
   // select the Form1 in the ObjectInspector
   SetObjectInspectorRoot(Self);
+  TheObjectInspector.Show;         // For some reason this is not shown otherwise
 end;
 
 procedure TForm1.Form1Destroy(Sender: TObject);
 begin
-  // TheObjectInspector is owned by the Application and therefore destroyed
-  // automatically
+  // TheObjectInspector is owned by Application and therefore destroyed automatically
   ThePropertyEditorHook.Free;
   ARootComponent.Free;
-end;
-
-procedure TForm1.SetCompAsOIRootButtonClick(Sender: TObject);
-begin
-  SetObjectInspectorRoot(ARootComponent);
 end;
 
 procedure TForm1.SetOIRootFormButtonClick(Sender: TObject);
 begin
   SetObjectInspectorRoot(Self);
+end;
+
+procedure TForm1.SetCompAsOIRootButtonClick(Sender: TObject);
+begin
+  SetObjectInspectorRoot(ARootComponent);
 end;
 
 procedure TForm1.SetObjectInspectorRoot(AComponent: TComponent);
