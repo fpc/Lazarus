@@ -852,7 +852,9 @@ msgid "As-Is"
 msgstr "Kaip yra"
 
 #: lazarusidestrconsts.dlgcoasmstyle
-msgid "Assembler style:"
+#, fuzzy
+#| msgid "Assembler style:"
+msgid "Assembler style"
 msgstr "Asemblerio stilius:"
 
 #: lazarusidestrconsts.dlgcocfgcmpmessages
@@ -865,9 +867,9 @@ msgstr "Pranešimai"
 msgid "Checks"
 msgstr "Tikrinimai"
 
-#: lazarusidestrconsts.dlgcocompilation
-msgid "Compilation"
-msgstr "Kompiliacija"
+#: lazarusidestrconsts.dlgcocompilercommands
+msgid "Compiler Commands"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcoconditionals
 msgctxt "lazarusidestrconsts.dlgcoconditionals"
@@ -902,16 +904,11 @@ msgid "Generate debugging info for DBX (slows compiling)"
 msgstr "Kurti „DBX“ skirtą derinimo informaciją (sulėtins kompiliavimą)"
 
 #: lazarusidestrconsts.dlgcodebugging
-#| msgid "Debugging Info"
+#, fuzzy
+#| msgid "Debugging info"
 msgctxt "lazarusidestrconsts.dlgcodebugging"
-msgid "Debugging info"
-msgstr "Derinimo informacija"
-
-#: lazarusidestrconsts.dlgcodebugging2
-#| msgid "Debugging:"
-msgctxt "lazarusidestrconsts.dlgcodebugging2"
 msgid "Debugging"
-msgstr "Derinimas"
+msgstr "Derinimo informacija"
 
 #: lazarusidestrconsts.dlgcodebugpath
 msgid "Debugger path addition (none):"
@@ -942,11 +939,6 @@ msgstr "Pelė"
 msgid "Reverse fold-order in Popup"
 msgstr "Iškylančiame meniu lankstyti atvirkštine tvarka"
 
-#: lazarusidestrconsts.dlgcodegeneration
-#| msgid "Code generation"
-msgid "Code Generation"
-msgstr "Kodo generavimas"
-
 #: lazarusidestrconsts.dlgcodetoolsopts
 msgid "CodeTools Options"
 msgstr "CodeTools parinktys"
@@ -971,14 +963,14 @@ msgstr "Naudoti „Heaptrc“ modulį (žiūrima atminties nuotėkių)"
 msgid "Include files (-Fi):"
 msgstr "Įterpiami failai (-Fi):"
 
+#: lazarusidestrconsts.dlgcoinfoforgdb
+msgid "Info for GDB"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoinherited
 msgctxt "lazarusidestrconsts.dlgcoinherited"
 msgid "Inherited"
 msgstr "Paveldėta"
-
-#: lazarusidestrconsts.dlgcokeepvarsreg
-msgid "Keep certain variables in registers"
-msgstr "Registre laikyti dažniausiai naudojamus kintamuosius"
 
 #: lazarusidestrconsts.dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -1081,6 +1073,10 @@ msgstr ""
 msgid "Extend, if matched and caret in the middle of text (not at EOL)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcompilationandlinking
+msgid "Compilation and Linking"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcompilermessage
 #| msgid "Compiler Messages"
 msgid "Compiler messages"
@@ -1099,6 +1095,10 @@ msgstr "Kompiliatoriaus parinktys"
 msgid "Complete properties"
 msgstr "Užbaigti savybes"
 
+#: lazarusidestrconsts.dlgconfigandtarget
+msgid "Config and Target"
+msgstr ""
+
 #: lazarusidestrconsts.dlgconfigfiles
 #| msgid "Config Files:"
 msgid "Config files"
@@ -1109,14 +1109,14 @@ msgstr "Nustatymų failai"
 msgid "Normal code"
 msgstr "Normalų kodą"
 
-#: lazarusidestrconsts.dlgcoopts
-msgid "Options: "
-msgstr "Parinktys: "
-
 #: lazarusidestrconsts.dlgcoother
 msgctxt "lazarusidestrconsts.dlgcoother"
 msgid "Other"
 msgstr "Kiti"
+
+#: lazarusidestrconsts.dlgcootherdebugginginfo
+msgid "Other debugging info"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcooverflow
 msgid "Overflow"
@@ -2153,30 +2153,32 @@ msgid "Guid lines Left,Top"
 msgstr "Apatinė bei viršutinė orientavimo linija"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "Level 1 (quick and debugger friendly)"
+#, fuzzy
+#| msgid "Level 1 (quick and debugger friendly)"
+msgid "1 (quick, debugger friendly)"
 msgstr "1 lygis (įprastų instrukcijų sekos keičiamos greitesniais ekvivalentais)"
 
 #: lazarusidestrconsts.dlglevel2opt
-msgid "Level 2 (Level 1 + quick optimizations)"
+#, fuzzy
+#| msgid "Level 2 (Level 1 + quick optimizations)"
+msgid "2 (quick optimizations)"
 msgstr "2 lygis (1 lygis + registro duomenų bereikalingų pakartotinų įkėlimų eliminavimas)"
 
 #: lazarusidestrconsts.dlglevel3opt
-msgid "Level 3 (Level 2 + slow optimizations)"
+#, fuzzy
+#| msgid "Level 3 (Level 2 + slow optimizations)"
+msgid "3 (slow optimizations)"
 msgstr "3 lygis (2 lygis + kitos, ilgai daromos optimizacijos)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-#| msgid "Level 0 (no extra Optimizations)"
-msgid "Level 0 (no extra optimizations)"
+#, fuzzy
+#| msgid "Level 0 (no extra optimizations)"
+msgid "0 (no optimization)"
 msgstr "0 lygis (jokių papildomų optimizacijų)"
 
 #: lazarusidestrconsts.dlglinesplitting
 msgid "Line Splitting"
 msgstr "Eilučių laužymas"
-
-#: lazarusidestrconsts.dlglinklibraries
-#| msgid "Link Style"
-msgid "Link style"
-msgstr "Saistymo stilius"
 
 #: lazarusidestrconsts.dlglinksmart
 #| msgid "Link Smart"
@@ -2798,10 +2800,9 @@ msgstr "Naudoti numatytąsias Delphi nuostatas"
 msgid "Use default Lazarus settings"
 msgstr "Naudoti numatytąsias Lazarus nuostatas"
 
-#: lazarusidestrconsts.dlgoptimiz
-#| msgid "Optimizations:"
-msgid "Optimizations"
-msgstr "Optimizacija"
+#: lazarusidestrconsts.dlgoptimizationlevels
+msgid "Optimization levels"
+msgstr ""
 
 #: lazarusidestrconsts.dlgotherunitfiles
 #| msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
@@ -2830,8 +2831,9 @@ msgid "Extended Pascal Keyword Options"
 msgstr "Papildomos paskalio raktažodžių parinktys"
 
 #: lazarusidestrconsts.dlgpassoptslinker
-#| msgid "Pass Options To The Linker (Delimiter is space)"
-msgid "Pass options to linker (delimiter is space)"
+#, fuzzy
+#| msgid "Pass options to linker (delimiter is space)"
+msgid "Pass options to linker with \"-k\", delimiter is space"
 msgstr "Perduoti parinktis saistyklei (atskirta kabliataškiais)"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
@@ -3461,11 +3463,6 @@ msgstr "Tik poziciją"
 #: lazarusidestrconsts.dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
 msgstr "Eilučių galuose pašalinti tarpo simbolius"
-
-#: lazarusidestrconsts.dlguncertopt
-#| msgid "Uncertain Optimizations"
-msgid "Uncertain optimizations"
-msgstr "Neužtikrinta optimizacija"
 
 #: lazarusidestrconsts.dlgundoaftersave
 msgid "Undo after save"
@@ -6916,10 +6913,6 @@ msgstr "Rodyti visus pranešimus"
 #| msgid "Skip calling Compiler"
 msgid "Skip calling compiler"
 msgstr "Nešaukti kompiliatoriaus"
-
-#: lazarusidestrconsts.liscotargetosspecificoptions
-msgid "Target OS specific options"
-msgstr "Paskirties OS specifinės parinktys"
 
 #: lazarusidestrconsts.liscouldnotadditomainsource
 msgid "Could not add %s{$I %s%s} to main source!"
@@ -15473,10 +15466,6 @@ msgstr "Tęsti įkrovą praleidžiant failą"
 #: lazarusidestrconsts.lisskiploadinglastproject
 msgid "Skip loading last project"
 msgstr "Neįkelti paskutinio naudoto projekto"
-
-#: lazarusidestrconsts.lissmallerratherthanfaster
-msgid "smaller rather than faster"
-msgstr "geriau mažesnis nei greitesnis"
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"

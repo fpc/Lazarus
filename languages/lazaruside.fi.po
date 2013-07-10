@@ -827,7 +827,9 @@ msgid "As-Is"
 msgstr "Kuten on"
 
 #: lazarusidestrconsts.dlgcoasmstyle
-msgid "Assembler style:"
+#, fuzzy
+#| msgid "Assembler style:"
+msgid "Assembler style"
 msgstr "Assembler tyyli:"
 
 #: lazarusidestrconsts.dlgcocfgcmpmessages
@@ -839,9 +841,9 @@ msgstr "Viestit"
 msgid "Checks"
 msgstr "Tarkistukset"
 
-#: lazarusidestrconsts.dlgcocompilation
-msgid "Compilation"
-msgstr "Käännös"
+#: lazarusidestrconsts.dlgcocompilercommands
+msgid "Compiler Commands"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcoconditionals
 msgctxt "lazarusidestrconsts.dlgcoconditionals"
@@ -874,12 +876,10 @@ msgid "Generate debugging info for DBX (slows compiling)"
 msgstr "Lisää virheenjäljitystieto DBX:lle (hidastaa käännöstä)"
 
 #: lazarusidestrconsts.dlgcodebugging
-msgid "Debugging info"
-msgstr "Virheenjäljitystieto"
-
-#: lazarusidestrconsts.dlgcodebugging2
+#, fuzzy
+#| msgid "Debugging info"
 msgid "Debugging"
-msgstr "Virheenjäljitys"
+msgstr "Virheenjäljitystieto"
 
 #: lazarusidestrconsts.dlgcodebugpath
 msgid "Debugger path addition (none):"
@@ -910,10 +910,6 @@ msgstr "Hiiri"
 msgid "Reverse fold-order in Popup"
 msgstr "Käänteinen laskostusjärjestys popup-luettelossa"
 
-#: lazarusidestrconsts.dlgcodegeneration
-msgid "Code Generation"
-msgstr "Koodin generointi"
-
 #: lazarusidestrconsts.dlgcodetoolsopts
 msgid "CodeTools Options"
 msgstr "CodeTools asetukset"
@@ -934,14 +930,14 @@ msgstr "Käytä Heaptrc käännösyksikköä (tarkista muistivuodot)"
 msgid "Include files (-Fi):"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcoinfoforgdb
+msgid "Info for GDB"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoinherited
 msgctxt "lazarusidestrconsts.dlgcoinherited"
 msgid "Inherited"
 msgstr "Periytyneet"
-
-#: lazarusidestrconsts.dlgcokeepvarsreg
-msgid "Keep certain variables in registers"
-msgstr "Pidä jotkut muuttujat rekistereissä"
 
 #: lazarusidestrconsts.dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -1043,6 +1039,10 @@ msgstr ""
 msgid "Extend, if matched and caret in the middle of text (not at EOL)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcompilationandlinking
+msgid "Compilation and Linking"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcompilermessage
 msgid "Compiler messages"
 msgstr "Kääntäjän viestit"
@@ -1060,6 +1060,10 @@ msgstr "Kääntäjän asetukset"
 msgid "Complete properties"
 msgstr "Täydennyksen ominaisuudet"
 
+#: lazarusidestrconsts.dlgconfigandtarget
+msgid "Config and Target"
+msgstr ""
+
 #: lazarusidestrconsts.dlgconfigfiles
 msgid "Config files"
 msgstr "Asetustiedostot"
@@ -1068,14 +1072,14 @@ msgstr "Asetustiedostot"
 msgid "Normal code"
 msgstr "Tavallinen koodi"
 
-#: lazarusidestrconsts.dlgcoopts
-msgid "Options: "
-msgstr "Asetukset: "
-
 #: lazarusidestrconsts.dlgcoother
 msgctxt "lazarusidestrconsts.dlgcoother"
 msgid "Other"
 msgstr "Muu"
+
+#: lazarusidestrconsts.dlgcootherdebugginginfo
+msgid "Other debugging info"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcooverflow
 msgid "Overflow"
@@ -2084,28 +2088,32 @@ msgid "Guid lines Left,Top"
 msgstr "Ohjausviivat vasemmalla ja ylhäällä"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "Level 1 (quick and debugger friendly)"
+#, fuzzy
+#| msgid "Level 1 (quick and debugger friendly)"
+msgid "1 (quick, debugger friendly)"
 msgstr "Taso 1 (nopea ja helppo virheenjäljittimelle)"
 
 #: lazarusidestrconsts.dlglevel2opt
-msgid "Level 2 (Level 1 + quick optimizations)"
+#, fuzzy
+#| msgid "Level 2 (Level 1 + quick optimizations)"
+msgid "2 (quick optimizations)"
 msgstr "Taso 2 (Taso 1 + nopeita optimointeja)"
 
 #: lazarusidestrconsts.dlglevel3opt
-msgid "Level 3 (Level 2 + slow optimizations)"
+#, fuzzy
+#| msgid "Level 3 (Level 2 + slow optimizations)"
+msgid "3 (slow optimizations)"
 msgstr "Taso 3 (Taso 2 + hitaita optimointeja)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-msgid "Level 0 (no extra optimizations)"
+#, fuzzy
+#| msgid "Level 0 (no extra optimizations)"
+msgid "0 (no optimization)"
 msgstr "Taso 0 (ei optimointia)"
 
 #: lazarusidestrconsts.dlglinesplitting
 msgid "Line Splitting"
 msgstr "Rivin katkaisu"
-
-#: lazarusidestrconsts.dlglinklibraries
-msgid "Link style"
-msgstr "Linkitystyyli"
 
 #: lazarusidestrconsts.dlglinksmart
 msgid "Link smart"
@@ -2711,9 +2719,9 @@ msgstr "Käytä Delphin oletusasetuksia"
 msgid "Use default Lazarus settings"
 msgstr "Käytä Lazaruksen oletusasetuksia"
 
-#: lazarusidestrconsts.dlgoptimiz
-msgid "Optimizations"
-msgstr "Optimoinnit"
+#: lazarusidestrconsts.dlgoptimizationlevels
+msgid "Optimization levels"
+msgstr ""
 
 #: lazarusidestrconsts.dlgotherunitfiles
 msgid "Other unit files (-Fu) (delimiter is semicolon):"
@@ -2740,7 +2748,9 @@ msgid "Extended Pascal Keyword Options"
 msgstr "Laajennetut Pascalin avainsanojen asetukset"
 
 #: lazarusidestrconsts.dlgpassoptslinker
-msgid "Pass options to linker (delimiter is space)"
+#, fuzzy
+#| msgid "Pass options to linker (delimiter is space)"
+msgid "Pass options to linker with \"-k\", delimiter is space"
 msgstr "Välitä asetukset linkkerille (erota välilyönnillä)"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
@@ -3341,10 +3351,6 @@ msgstr "Vain sijainti"
 #: lazarusidestrconsts.dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
 msgstr "Poista välilyönnit rivin lopusta"
-
-#: lazarusidestrconsts.dlguncertopt
-msgid "Uncertain optimizations"
-msgstr "Epävarmat optimoinnit"
 
 #: lazarusidestrconsts.dlgundoaftersave
 msgid "Undo after save"
@@ -6718,10 +6724,6 @@ msgstr "Näytä kaikki viestit"
 #: lazarusidestrconsts.liscoskipcallingcompiler
 msgid "Skip calling compiler"
 msgstr ""
-
-#: lazarusidestrconsts.liscotargetosspecificoptions
-msgid "Target OS specific options"
-msgstr "Kohde käyttöjärjestelmän asetukset"
 
 #: lazarusidestrconsts.liscouldnotadditomainsource
 msgid "Could not add %s{$I %s%s} to main source!"
@@ -15034,10 +15036,6 @@ msgstr "Ohita tiedosto ja jatka lataamista"
 #: lazarusidestrconsts.lisskiploadinglastproject
 msgid "Skip loading last project"
 msgstr "Ohita viime projektin lataaminen"
-
-#: lazarusidestrconsts.lissmallerratherthanfaster
-msgid "smaller rather than faster"
-msgstr "pienempi mieluummin kuin nopeampi"
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"

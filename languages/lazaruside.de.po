@@ -855,7 +855,9 @@ msgid "As-Is"
 msgstr "as-is"
 
 #: lazarusidestrconsts.dlgcoasmstyle
-msgid "Assembler style:"
+#, fuzzy
+#| msgid "Assembler style:"
+msgid "Assembler style"
 msgstr "Assembler-Stil:"
 
 #: lazarusidestrconsts.dlgcocfgcmpmessages
@@ -869,9 +871,9 @@ msgstr "Meldungen"
 msgid "Checks"
 msgstr "Überprüfungen:"
 
-#: lazarusidestrconsts.dlgcocompilation
-msgid "Compilation"
-msgstr "Kompilierung"
+#: lazarusidestrconsts.dlgcocompilercommands
+msgid "Compiler Commands"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcoconditionals
 msgctxt "lazarusidestrconsts.dlgcoconditionals"
@@ -907,15 +909,8 @@ msgstr "Debugger-Informationen für DBX erzeugen (Verlangsamt das Kompilieren)"
 
 #: lazarusidestrconsts.dlgcodebugging
 #, fuzzy
-#| msgid "Debugging Info"
+#| msgid "Debugging info"
 msgctxt "lazarusidestrconsts.dlgcodebugging"
-msgid "Debugging info"
-msgstr "Debugger:"
-
-#: lazarusidestrconsts.dlgcodebugging2
-#, fuzzy
-#| msgid "Debugging:"
-msgctxt "lazarusidestrconsts.dlgcodebugging2"
 msgid "Debugging"
 msgstr "Debugger:"
 
@@ -948,11 +943,6 @@ msgstr "Maus"
 msgid "Reverse fold-order in Popup"
 msgstr "Umgek. Faltungsreihenfolge im Popup"
 
-#: lazarusidestrconsts.dlgcodegeneration
-#| msgid "Code generation"
-msgid "Code Generation"
-msgstr "Codegenerierung"
-
 #: lazarusidestrconsts.dlgcodetoolsopts
 msgid "CodeTools Options"
 msgstr "CodeTools-Einstellungen"
@@ -978,14 +968,14 @@ msgstr "Heaptrc-Unit verwenden"
 msgid "Include files (-Fi):"
 msgstr "Include-Dateien (-Fi):"
 
+#: lazarusidestrconsts.dlgcoinfoforgdb
+msgid "Info for GDB"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoinherited
 msgctxt "lazarusidestrconsts.dlgcoinherited"
 msgid "Inherited"
 msgstr "Vererbt"
-
-#: lazarusidestrconsts.dlgcokeepvarsreg
-msgid "Keep certain variables in registers"
-msgstr "Bestimmte Variablen in Registern halten"
 
 #: lazarusidestrconsts.dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -1088,6 +1078,10 @@ msgstr ""
 msgid "Extend, if matched and caret in the middle of text (not at EOL)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcompilationandlinking
+msgid "Compilation and Linking"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcompilermessage
 #| msgid "Compiler Messages"
 msgid "Compiler messages"
@@ -1106,6 +1100,10 @@ msgstr "Compilereinstellungen"
 msgid "Complete properties"
 msgstr "Vollständige Eigenschaften"
 
+#: lazarusidestrconsts.dlgconfigandtarget
+msgid "Config and Target"
+msgstr ""
+
 #: lazarusidestrconsts.dlgconfigfiles
 #| msgid "Config Files:"
 msgid "Config files"
@@ -1116,14 +1114,14 @@ msgstr "Konfigurationsdateien:"
 msgid "Normal code"
 msgstr "Normaler Quelltext"
 
-#: lazarusidestrconsts.dlgcoopts
-msgid "Options: "
-msgstr "Einstellungen: "
-
 #: lazarusidestrconsts.dlgcoother
 msgctxt "lazarusidestrconsts.dlgcoother"
 msgid "Other"
 msgstr "Andere"
+
+#: lazarusidestrconsts.dlgcootherdebugginginfo
+msgid "Other debugging info"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcooverflow
 msgid "Overflow"
@@ -2174,31 +2172,32 @@ msgid "Guid lines Left,Top"
 msgstr "Farbe für links, oben"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "Level 1 (quick and debugger friendly)"
+#, fuzzy
+#| msgid "Level 1 (quick and debugger friendly)"
+msgid "1 (quick, debugger friendly)"
 msgstr "Stufe 1 (schnell, debuggerfreundlich)"
 
 #: lazarusidestrconsts.dlglevel2opt
-msgid "Level 2 (Level 1 + quick optimizations)"
+#, fuzzy
+#| msgid "Level 2 (Level 1 + quick optimizations)"
+msgid "2 (quick optimizations)"
 msgstr "Stufe 2 (Stufe 1 + schnelle Opt.)"
 
 #: lazarusidestrconsts.dlglevel3opt
-msgid "Level 3 (Level 2 + slow optimizations)"
+#, fuzzy
+#| msgid "Level 3 (Level 2 + slow optimizations)"
+msgid "3 (slow optimizations)"
 msgstr "Stufe 3 (Stufe 2 + langsame Opt.)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-#| msgid "Level 0 (no extra Optimizations)"
-msgid "Level 0 (no extra optimizations)"
+#, fuzzy
+#| msgid "Level 0 (no extra optimizations)"
+msgid "0 (no optimization)"
 msgstr "Stufe 0 (keine weiteren Optimierungen)"
 
 #: lazarusidestrconsts.dlglinesplitting
 msgid "Line Splitting"
 msgstr "Zeilentrennung"
-
-#: lazarusidestrconsts.dlglinklibraries
-#, fuzzy
-#| msgid "Link Style"
-msgid "Link style"
-msgstr "Linker-Stil"
 
 #: lazarusidestrconsts.dlglinksmart
 #| msgid "Link Smart"
@@ -2823,10 +2822,9 @@ msgstr "Es gelten die Voreinstellungen von Delphi"
 msgid "Use default Lazarus settings"
 msgstr "Es gelten die Voreinstellungen von Lazarus"
 
-#: lazarusidestrconsts.dlgoptimiz
-#| msgid "Optimizations:"
-msgid "Optimizations"
-msgstr "Optimierungen"
+#: lazarusidestrconsts.dlgoptimizationlevels
+msgid "Optimization levels"
+msgstr ""
 
 #: lazarusidestrconsts.dlgotherunitfiles
 #| msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
@@ -2856,8 +2854,9 @@ msgid "Extended Pascal Keyword Options"
 msgstr "Erweiterte Pascal-Schlüsselwort-Einstellungen"
 
 #: lazarusidestrconsts.dlgpassoptslinker
-#| msgid "Pass Options To The Linker (Delimiter is space)"
-msgid "Pass options to linker (delimiter is space)"
+#, fuzzy
+#| msgid "Pass options to linker (delimiter is space)"
+msgid "Pass options to linker with \"-k\", delimiter is space"
 msgstr "Linker zusätzliche Einstellungen übergeben (Leerzeichen trennt)"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
@@ -3492,11 +3491,6 @@ msgstr "Nur Position"
 #: lazarusidestrconsts.dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
 msgstr "Abschneiden von Leerzeichen am Zeilenende"
-
-#: lazarusidestrconsts.dlguncertopt
-#| msgid "Uncertain Optimizations"
-msgid "Uncertain optimizations"
-msgstr "Unsichere Optimierungen"
 
 #: lazarusidestrconsts.dlgundoaftersave
 msgid "Undo after save"
@@ -6961,10 +6955,6 @@ msgstr "Alle Meldungen anzeigen"
 #| msgid "Skip calling Compiler"
 msgid "Skip calling compiler"
 msgstr "Aufruf des Compilers übergehen"
-
-#: lazarusidestrconsts.liscotargetosspecificoptions
-msgid "Target OS specific options"
-msgstr "Zielbetriebssystemspezifische Einstellungen"
 
 #: lazarusidestrconsts.liscouldnotadditomainsource
 msgid "Could not add %s{$I %s%s} to main source!"
@@ -15584,10 +15574,6 @@ msgstr "Datei übergehen und das Laden fortsetzen"
 #: lazarusidestrconsts.lisskiploadinglastproject
 msgid "Skip loading last project"
 msgstr "Das Laden des letzten Projekts übergehen"
-
-#: lazarusidestrconsts.lissmallerratherthanfaster
-msgid "smaller rather than faster"
-msgstr "Lieber kleiner als schneller"
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"

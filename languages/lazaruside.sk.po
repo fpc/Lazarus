@@ -857,7 +857,9 @@ msgid "As-Is"
 msgstr "Ako je"
 
 #: lazarusidestrconsts.dlgcoasmstyle
-msgid "Assembler style:"
+#, fuzzy
+#| msgid "Assembler style:"
+msgid "Assembler style"
 msgstr "Štýl Assembleru:"
 
 #: lazarusidestrconsts.dlgcocfgcmpmessages
@@ -871,9 +873,9 @@ msgstr "Správy"
 msgid "Checks"
 msgstr "Kontroly:"
 
-#: lazarusidestrconsts.dlgcocompilation
-msgid "Compilation"
-msgstr "Preklad"
+#: lazarusidestrconsts.dlgcocompilercommands
+msgid "Compiler Commands"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcoconditionals
 msgctxt "lazarusidestrconsts.dlgcoconditionals"
@@ -911,15 +913,8 @@ msgstr "Generovať ladiace informácie pre DBX (pomalší preklad)"
 
 #: lazarusidestrconsts.dlgcodebugging
 #, fuzzy
-#| msgid "Debugging Info"
+#| msgid "Debugging info"
 msgctxt "lazarusidestrconsts.dlgcodebugging"
-msgid "Debugging info"
-msgstr "Ladenie:"
-
-#: lazarusidestrconsts.dlgcodebugging2
-#, fuzzy
-#| msgid "Debugging:"
-msgctxt "lazarusidestrconsts.dlgcodebugging2"
 msgid "Debugging"
 msgstr "Ladenie:"
 
@@ -952,12 +947,6 @@ msgstr ""
 msgid "Reverse fold-order in Popup"
 msgstr ""
 
-#: lazarusidestrconsts.dlgcodegeneration
-#, fuzzy
-#| msgid "Code generation"
-msgid "Code Generation"
-msgstr "Kód"
-
 #: lazarusidestrconsts.dlgcodetoolsopts
 msgid "CodeTools Options"
 msgstr "Voľby CodeTools"
@@ -986,14 +975,14 @@ msgstr "Použiť jednotku Heaptrc"
 msgid "Include files (-Fi):"
 msgstr "Súbory include (-Fi)"
 
+#: lazarusidestrconsts.dlgcoinfoforgdb
+msgid "Info for GDB"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoinherited
 msgctxt "lazarusidestrconsts.dlgcoinherited"
 msgid "Inherited"
 msgstr "Zdedené"
-
-#: lazarusidestrconsts.dlgcokeepvarsreg
-msgid "Keep certain variables in registers"
-msgstr ""
 
 #: lazarusidestrconsts.dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -1096,6 +1085,10 @@ msgstr ""
 msgid "Extend, if matched and caret in the middle of text (not at EOL)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcompilationandlinking
+msgid "Compilation and Linking"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcompilermessage
 msgid "Compiler messages"
 msgstr ""
@@ -1113,6 +1106,10 @@ msgstr "Voľby prekladača"
 msgid "Complete properties"
 msgstr "Dokončovanie vlastností"
 
+#: lazarusidestrconsts.dlgconfigandtarget
+msgid "Config and Target"
+msgstr ""
+
 #: lazarusidestrconsts.dlgconfigfiles
 #, fuzzy
 #| msgid "Config Files:"
@@ -1125,14 +1122,14 @@ msgstr "Konfiguračné súbory"
 msgid "Normal code"
 msgstr "Normálny kód"
 
-#: lazarusidestrconsts.dlgcoopts
-msgid "Options: "
-msgstr "Voľby:"
-
 #: lazarusidestrconsts.dlgcoother
 msgctxt "lazarusidestrconsts.dlgcoother"
 msgid "Other"
 msgstr "Ostatné"
+
+#: lazarusidestrconsts.dlgcootherdebugginginfo
+msgid "Other debugging info"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcooverflow
 msgid "Overflow"
@@ -2187,32 +2184,30 @@ msgid "Guid lines Left,Top"
 msgstr "farba ľavej a hornej"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "Level 1 (quick and debugger friendly)"
+#, fuzzy
+#| msgid "Level 1 (quick and debugger friendly)"
+msgid "1 (quick, debugger friendly)"
 msgstr "Úroveň 1 (rýchle a priateľské debugeru)"
 
 #: lazarusidestrconsts.dlglevel2opt
-msgid "Level 2 (Level 1 + quick optimizations)"
+msgid "2 (quick optimizations)"
 msgstr ""
 
 #: lazarusidestrconsts.dlglevel3opt
-msgid "Level 3 (Level 2 + slow optimizations)"
+#, fuzzy
+#| msgid "Level 3 (Level 2 + slow optimizations)"
+msgid "3 (slow optimizations)"
 msgstr "Úroveň 3 (Úroveň 2 + pomalé optimalizácie)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
 #, fuzzy
-#| msgid "Level 0 (no extra Optimizations)"
-msgid "Level 0 (no extra optimizations)"
+#| msgid "Level 0 (no extra optimizations)"
+msgid "0 (no optimization)"
 msgstr "Úroveň 0 (bez zvláštnych optimalizácií)"
 
 #: lazarusidestrconsts.dlglinesplitting
 msgid "Line Splitting"
 msgstr "Rozdeľovanie riadkov"
-
-#: lazarusidestrconsts.dlglinklibraries
-#, fuzzy
-#| msgid "Link Style"
-msgid "Link style"
-msgstr "Spôsob linkovania:"
 
 #: lazarusidestrconsts.dlglinksmart
 #, fuzzy
@@ -2834,11 +2829,9 @@ msgstr ""
 msgid "Use default Lazarus settings"
 msgstr ""
 
-#: lazarusidestrconsts.dlgoptimiz
-#, fuzzy
-#| msgid "Optimizations:"
-msgid "Optimizations"
-msgstr "Optimalizácie:"
+#: lazarusidestrconsts.dlgoptimizationlevels
+msgid "Optimization levels"
+msgstr ""
 
 #: lazarusidestrconsts.dlgotherunitfiles
 #, fuzzy
@@ -2868,8 +2861,8 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker
 #, fuzzy
-#| msgid "Pass Options To The Linker (Delimiter is space)"
-msgid "Pass options to linker (delimiter is space)"
+#| msgid "Pass options to linker (delimiter is space)"
+msgid "Pass options to linker with \"-k\", delimiter is space"
 msgstr "Poslať voľby linkovaču (oddeľovač je medzera)"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
@@ -3520,12 +3513,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
 msgstr "Odstrániť zvyšné medzery"
-
-#: lazarusidestrconsts.dlguncertopt
-#, fuzzy
-#| msgid "Uncertain Optimizations"
-msgid "Uncertain optimizations"
-msgstr "Nespoľahlivé optimalizácie"
 
 #: lazarusidestrconsts.dlgundoaftersave
 msgid "Undo after save"
@@ -7007,10 +6994,6 @@ msgstr "Zobraziť všetky správy"
 #| msgid "Skip calling Compiler"
 msgid "Skip calling compiler"
 msgstr "Preskočiť volanie prekladača"
-
-#: lazarusidestrconsts.liscotargetosspecificoptions
-msgid "Target OS specific options"
-msgstr "Špecifické voľby cieľového OS"
 
 #: lazarusidestrconsts.liscouldnotadditomainsource
 msgid "Could not add %s{$I %s%s} to main source!"
@@ -15733,10 +15716,6 @@ msgstr "Preskočiť súbor a pokračovať v načítaní"
 #: lazarusidestrconsts.lisskiploadinglastproject
 msgid "Skip loading last project"
 msgstr "Preskočiť otváranie posledného projektu"
-
-#: lazarusidestrconsts.lissmallerratherthanfaster
-msgid "smaller rather than faster"
-msgstr "radšej menšie ako rýchlejšie"
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"

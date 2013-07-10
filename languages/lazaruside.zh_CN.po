@@ -857,7 +857,9 @@ msgid "As-Is"
 msgstr "当作是"
 
 #: lazarusidestrconsts.dlgcoasmstyle
-msgid "Assembler style:"
+#, fuzzy
+#| msgid "Assembler style:"
+msgid "Assembler style"
 msgstr "汇编风格:"
 
 #: lazarusidestrconsts.dlgcocfgcmpmessages
@@ -871,9 +873,9 @@ msgstr "信息"
 msgid "Checks"
 msgstr "检查:"
 
-#: lazarusidestrconsts.dlgcocompilation
-msgid "Compilation"
-msgstr "编辑"
+#: lazarusidestrconsts.dlgcocompilercommands
+msgid "Compiler Commands"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcoconditionals
 msgctxt "lazarusidestrconsts.dlgcoconditionals"
@@ -911,15 +913,8 @@ msgstr "为 DBX 产生调试信息(慢速编译)"
 
 #: lazarusidestrconsts.dlgcodebugging
 #, fuzzy
-#| msgid "Debugging Info"
+#| msgid "Debugging info"
 msgctxt "lazarusidestrconsts.dlgcodebugging"
-msgid "Debugging info"
-msgstr "调试:"
-
-#: lazarusidestrconsts.dlgcodebugging2
-#, fuzzy
-#| msgid "Debugging:"
-msgctxt "lazarusidestrconsts.dlgcodebugging2"
 msgid "Debugging"
 msgstr "调试:"
 
@@ -952,12 +947,6 @@ msgstr "鼠标"
 msgid "Reverse fold-order in Popup"
 msgstr ""
 
-#: lazarusidestrconsts.dlgcodegeneration
-#, fuzzy
-#| msgid "Code generation"
-msgid "Code Generation"
-msgstr "代码"
-
 #: lazarusidestrconsts.dlgcodetoolsopts
 msgid "CodeTools Options"
 msgstr "CodeTools 选项"
@@ -986,14 +975,14 @@ msgstr "Use Heaptrc 单元"
 msgid "Include files (-Fi):"
 msgstr "包含文件 (-Fi):"
 
+#: lazarusidestrconsts.dlgcoinfoforgdb
+msgid "Info for GDB"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoinherited
 msgctxt "lazarusidestrconsts.dlgcoinherited"
 msgid "Inherited"
 msgstr "继承的"
-
-#: lazarusidestrconsts.dlgcokeepvarsreg
-msgid "Keep certain variables in registers"
-msgstr "保存部分变量到寄存器"
 
 #: lazarusidestrconsts.dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -1096,6 +1085,10 @@ msgstr ""
 msgid "Extend, if matched and caret in the middle of text (not at EOL)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcompilationandlinking
+msgid "Compilation and Linking"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcompilermessage
 #, fuzzy
 #| msgid "Compiler Messages"
@@ -1115,6 +1108,10 @@ msgstr "编译选项"
 msgid "Complete properties"
 msgstr "自动完成属性"
 
+#: lazarusidestrconsts.dlgconfigandtarget
+msgid "Config and Target"
+msgstr ""
+
 #: lazarusidestrconsts.dlgconfigfiles
 #, fuzzy
 #| msgid "Config Files:"
@@ -1127,14 +1124,14 @@ msgstr "配置文件:"
 msgid "Normal code"
 msgstr "正常代码"
 
-#: lazarusidestrconsts.dlgcoopts
-msgid "Options: "
-msgstr "选项: "
-
 #: lazarusidestrconsts.dlgcoother
 msgctxt "lazarusidestrconsts.dlgcoother"
 msgid "Other"
 msgstr "其余的"
+
+#: lazarusidestrconsts.dlgcootherdebugginginfo
+msgid "Other debugging info"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcooverflow
 msgid "Overflow"
@@ -2195,32 +2192,32 @@ msgid "Guid lines Left,Top"
 msgstr "左边和上边的颜色"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "Level 1 (quick and debugger friendly)"
+#, fuzzy
+#| msgid "Level 1 (quick and debugger friendly)"
+msgid "1 (quick, debugger friendly)"
 msgstr "Level 1 (快速和交互调试)"
 
 #: lazarusidestrconsts.dlglevel2opt
-msgid "Level 2 (Level 1 + quick optimizations)"
+#, fuzzy
+#| msgid "Level 2 (Level 1 + quick optimizations)"
+msgid "2 (quick optimizations)"
 msgstr "Level 2 (Level 1 + 快速优化)"
 
 #: lazarusidestrconsts.dlglevel3opt
-msgid "Level 3 (Level 2 + slow optimizations)"
+#, fuzzy
+#| msgid "Level 3 (Level 2 + slow optimizations)"
+msgid "3 (slow optimizations)"
 msgstr "Level 3 (Level 2 + 慢速优化)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
 #, fuzzy
-#| msgid "Level 0 (no extra Optimizations)"
-msgid "Level 0 (no extra optimizations)"
+#| msgid "Level 0 (no extra optimizations)"
+msgid "0 (no optimization)"
 msgstr "Level 0 (无优化)"
 
 #: lazarusidestrconsts.dlglinesplitting
 msgid "Line Splitting"
 msgstr "分割行"
-
-#: lazarusidestrconsts.dlglinklibraries
-#, fuzzy
-#| msgid "Link Style"
-msgid "Link style"
-msgstr "连接类型:"
 
 #: lazarusidestrconsts.dlglinksmart
 #, fuzzy
@@ -2848,11 +2845,9 @@ msgstr "使用默认的Delphi设置"
 msgid "Use default Lazarus settings"
 msgstr "使用默认的Lazarus设置"
 
-#: lazarusidestrconsts.dlgoptimiz
-#, fuzzy
-#| msgid "Optimizations:"
-msgid "Optimizations"
-msgstr "优化:"
+#: lazarusidestrconsts.dlgoptimizationlevels
+msgid "Optimization levels"
+msgstr ""
 
 #: lazarusidestrconsts.dlgotherunitfiles
 #, fuzzy
@@ -2882,8 +2877,8 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker
 #, fuzzy
-#| msgid "Pass Options To The Linker (Delimiter is space)"
-msgid "Pass options to linker (delimiter is space)"
+#| msgid "Pass options to linker (delimiter is space)"
+msgid "Pass options to linker with \"-k\", delimiter is space"
 msgstr "传送选项到连接器 (空格分开)"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
@@ -3538,12 +3533,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
 msgstr "修剪行尾空格"
-
-#: lazarusidestrconsts.dlguncertopt
-#, fuzzy
-#| msgid "Uncertain Optimizations"
-msgid "Uncertain optimizations"
-msgstr "不确定的优化"
 
 #: lazarusidestrconsts.dlgundoaftersave
 msgid "Undo after save"
@@ -7033,10 +7022,6 @@ msgstr "显示所有信息"
 #| msgid "Skip calling Compiler"
 msgid "Skip calling compiler"
 msgstr "跳过调用编译器"
-
-#: lazarusidestrconsts.liscotargetosspecificoptions
-msgid "Target OS specific options"
-msgstr "目标操作系统特殊选项"
 
 #: lazarusidestrconsts.liscouldnotadditomainsource
 msgid "Could not add %s{$I %s%s} to main source!"
@@ -15765,10 +15750,6 @@ msgstr "跳过文件继续装载"
 #: lazarusidestrconsts.lisskiploadinglastproject
 msgid "Skip loading last project"
 msgstr "跳过装载最后的工程"
-
-#: lazarusidestrconsts.lissmallerratherthanfaster
-msgid "smaller rather than faster"
-msgstr "更小而非更快"
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"

@@ -850,7 +850,7 @@ msgid "As-Is"
 msgstr "Com és"
 
 #: lazarusidestrconsts.dlgcoasmstyle
-msgid "Assembler style:"
+msgid "Assembler style"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcocfgcmpmessages
@@ -864,9 +864,9 @@ msgstr ""
 msgid "Checks"
 msgstr "Comprovacions:"
 
-#: lazarusidestrconsts.dlgcocompilation
-msgid "Compilation"
-msgstr "Compilació"
+#: lazarusidestrconsts.dlgcocompilercommands
+msgid "Compiler Commands"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcoconditionals
 msgctxt "lazarusidestrconsts.dlgcoconditionals"
@@ -904,15 +904,8 @@ msgstr "Genera informació de depuració pel DBX (Compilació més lenta)"
 
 #: lazarusidestrconsts.dlgcodebugging
 #, fuzzy
-#| msgid "Debugging Info"
+#| msgid "Debugging info"
 msgctxt "lazarusidestrconsts.dlgcodebugging"
-msgid "Debugging info"
-msgstr "Depuració"
-
-#: lazarusidestrconsts.dlgcodebugging2
-#, fuzzy
-#| msgid "Debugging:"
-msgctxt "lazarusidestrconsts.dlgcodebugging2"
 msgid "Debugging"
 msgstr "Depuració"
 
@@ -945,12 +938,6 @@ msgstr ""
 msgid "Reverse fold-order in Popup"
 msgstr ""
 
-#: lazarusidestrconsts.dlgcodegeneration
-#, fuzzy
-#| msgid "Code generation"
-msgid "Code Generation"
-msgstr "Codi"
-
 #: lazarusidestrconsts.dlgcodetoolsopts
 msgid "CodeTools Options"
 msgstr "Opcions de les eines del codi"
@@ -979,14 +966,14 @@ msgstr "Utilitza unitat Heaptrc"
 msgid "Include files (-Fi):"
 msgstr "Fitxers Inclosos (-Fi):"
 
+#: lazarusidestrconsts.dlgcoinfoforgdb
+msgid "Info for GDB"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoinherited
 msgctxt "lazarusidestrconsts.dlgcoinherited"
 msgid "Inherited"
 msgstr "Heretat"
-
-#: lazarusidestrconsts.dlgcokeepvarsreg
-msgid "Keep certain variables in registers"
-msgstr ""
 
 #: lazarusidestrconsts.dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -1089,6 +1076,10 @@ msgstr ""
 msgid "Extend, if matched and caret in the middle of text (not at EOL)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcompilationandlinking
+msgid "Compilation and Linking"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcompilermessage
 msgid "Compiler messages"
 msgstr ""
@@ -1106,6 +1097,10 @@ msgstr "Opcions del compilador"
 msgid "Complete properties"
 msgstr "Completa les propietats"
 
+#: lazarusidestrconsts.dlgconfigandtarget
+msgid "Config and Target"
+msgstr ""
+
 #: lazarusidestrconsts.dlgconfigfiles
 #, fuzzy
 #| msgid "Config Files:"
@@ -1118,14 +1113,14 @@ msgstr "Fitxers de configuració:"
 msgid "Normal code"
 msgstr "Codi normal"
 
-#: lazarusidestrconsts.dlgcoopts
-msgid "Options: "
-msgstr "Opcions: "
-
 #: lazarusidestrconsts.dlgcoother
 msgctxt "lazarusidestrconsts.dlgcoother"
 msgid "Other"
 msgstr "Altres"
+
+#: lazarusidestrconsts.dlgcootherdebugginginfo
+msgid "Other debugging info"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcooverflow
 msgid "Overflow"
@@ -2176,32 +2171,26 @@ msgid "Guid lines Left,Top"
 msgstr "Color per esquerra, amunt"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "Level 1 (quick and debugger friendly)"
+msgid "1 (quick, debugger friendly)"
 msgstr ""
 
 #: lazarusidestrconsts.dlglevel2opt
-msgid "Level 2 (Level 1 + quick optimizations)"
+msgid "2 (quick optimizations)"
 msgstr ""
 
 #: lazarusidestrconsts.dlglevel3opt
-msgid "Level 3 (Level 2 + slow optimizations)"
+msgid "3 (slow optimizations)"
 msgstr ""
 
 #: lazarusidestrconsts.dlglevelnoneopt
 #, fuzzy
-#| msgid "Level 0 (no extra Optimizations)"
-msgid "Level 0 (no extra optimizations)"
+#| msgid "Level 0 (no extra optimizations)"
+msgid "0 (no optimization)"
 msgstr "Nivell 0 (sense optimitzacions extres)"
 
 #: lazarusidestrconsts.dlglinesplitting
 msgid "Line Splitting"
 msgstr "Divisió entre línies"
-
-#: lazarusidestrconsts.dlglinklibraries
-#, fuzzy
-#| msgid "Link Style"
-msgid "Link style"
-msgstr "Estil d'enllaçament"
 
 #: lazarusidestrconsts.dlglinksmart
 #, fuzzy
@@ -2821,11 +2810,9 @@ msgstr ""
 msgid "Use default Lazarus settings"
 msgstr ""
 
-#: lazarusidestrconsts.dlgoptimiz
-#, fuzzy
-#| msgid "Optimizations:"
-msgid "Optimizations"
-msgstr "Optimitzacions:"
+#: lazarusidestrconsts.dlgoptimizationlevels
+msgid "Optimization levels"
+msgstr ""
 
 #: lazarusidestrconsts.dlgotherunitfiles
 #, fuzzy
@@ -2855,8 +2842,8 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker
 #, fuzzy
-#| msgid "Pass Options To The Linker (Delimiter is space)"
-msgid "Pass options to linker (delimiter is space)"
+#| msgid "Pass options to linker (delimiter is space)"
+msgid "Pass options to linker with \"-k\", delimiter is space"
 msgstr "Passa les opcions a l'enllaçador (el delimitador és l'espai)"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
@@ -3489,12 +3476,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
 msgstr "Suprimeix els espais finals"
-
-#: lazarusidestrconsts.dlguncertopt
-#, fuzzy
-#| msgid "Uncertain Optimizations"
-msgid "Uncertain optimizations"
-msgstr "Optimitzacions incertes"
 
 #: lazarusidestrconsts.dlgundoaftersave
 msgid "Undo after save"
@@ -6936,10 +6917,6 @@ msgstr "Mostra tots els missatges"
 #| msgid "Skip calling Compiler"
 msgid "Skip calling compiler"
 msgstr "No cridis el compilador"
-
-#: lazarusidestrconsts.liscotargetosspecificoptions
-msgid "Target OS specific options"
-msgstr "Opcions especifiques del SO de destinació"
 
 #: lazarusidestrconsts.liscouldnotadditomainsource
 msgid "Could not add %s{$I %s%s} to main source!"
@@ -15545,10 +15522,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisskiploadinglastproject
 msgid "Skip loading last project"
-msgstr ""
-
-#: lazarusidestrconsts.lissmallerratherthanfaster
-msgid "smaller rather than faster"
 msgstr ""
 
 #: lazarusidestrconsts.lissmatches

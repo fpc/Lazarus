@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-07-08 01:36+0400\n"
+"PO-Revision-Date: 2013-07-11 00:56+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -866,8 +866,9 @@ msgid "As-Is"
 msgstr "Как-есть"
 
 #: lazarusidestrconsts.dlgcoasmstyle
-msgid "Assembler style:"
-msgstr "Стиль ассемблера:"
+#| msgid "Assembler style:"
+msgid "Assembler style"
+msgstr "Стиль ассемблера"
 
 #: lazarusidestrconsts.dlgcocfgcmpmessages
 msgctxt "lazarusidestrconsts.dlgcocfgcmpmessages"
@@ -879,9 +880,9 @@ msgstr "Сообщения"
 msgid "Checks"
 msgstr "Проверки"
 
-#: lazarusidestrconsts.dlgcocompilation
-msgid "Compilation"
-msgstr "Компиляция"
+#: lazarusidestrconsts.dlgcocompilercommands
+msgid "Compiler Commands"
+msgstr "Команды компилятора"
 
 #: lazarusidestrconsts.dlgcoconditionals
 msgctxt "lazarusidestrconsts.dlgcoconditionals"
@@ -916,14 +917,8 @@ msgid "Generate debugging info for DBX (slows compiling)"
 msgstr "Генерировать отладочную информацию для DBX (замедляет сборку)"
 
 #: lazarusidestrconsts.dlgcodebugging
-#| msgid "Debugging Info"
+#| msgid "Debugging info"
 msgctxt "lazarusidestrconsts.dlgcodebugging"
-msgid "Debugging info"
-msgstr "Отладочная информация"
-
-#: lazarusidestrconsts.dlgcodebugging2
-#| msgid "Debugging:"
-msgctxt "lazarusidestrconsts.dlgcodebugging2"
 msgid "Debugging"
 msgstr "Отладка"
 
@@ -956,11 +951,6 @@ msgstr "Мышь"
 msgid "Reverse fold-order in Popup"
 msgstr "Обратить порядок элементов во всплывающем меню"
 
-#: lazarusidestrconsts.dlgcodegeneration
-#| msgid "Code generation"
-msgid "Code Generation"
-msgstr "Генерация кода"
-
 #: lazarusidestrconsts.dlgcodetoolsopts
 msgid "CodeTools Options"
 msgstr "Параметры CodeTools"
@@ -985,14 +975,14 @@ msgstr "Использовать модуль Heaptrc (проверка на н�
 msgid "Include files (-Fi):"
 msgstr "Включаемые файлы (-Fi):"
 
+#: lazarusidestrconsts.dlgcoinfoforgdb
+msgid "Info for GDB"
+msgstr "Информация для GDB"
+
 #: lazarusidestrconsts.dlgcoinherited
 msgctxt "lazarusidestrconsts.dlgcoinherited"
 msgid "Inherited"
 msgstr "Унаследованные"
-
-#: lazarusidestrconsts.dlgcokeepvarsreg
-msgid "Keep certain variables in registers"
-msgstr "Хранить отдельные переменные в регистрах"
 
 #: lazarusidestrconsts.dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -1096,6 +1086,10 @@ msgstr "Добавлять строку при соответствии"
 msgid "Extend, if matched and caret in the middle of text (not at EOL)"
 msgstr "Добавлять строку при соответствии (курсор не в конце строки)"
 
+#: lazarusidestrconsts.dlgcompilationandlinking
+msgid "Compilation and Linking"
+msgstr "Компиляция и компоновка"
+
 #: lazarusidestrconsts.dlgcompilermessage
 #| msgid "Compiler Messages"
 msgid "Compiler messages"
@@ -1114,24 +1108,28 @@ msgstr "Параметры компилятора"
 msgid "Complete properties"
 msgstr "Завершать свойства"
 
+#: lazarusidestrconsts.dlgconfigandtarget
+msgid "Config and Target"
+msgstr "Настройка и целевая платформа"
+
 #: lazarusidestrconsts.dlgconfigfiles
 #| msgid "Config Files:"
 msgid "Config files"
-msgstr "Файлы настройки:"
+msgstr "Файлы настройки"
 
 #: lazarusidestrconsts.dlgconormal
 #| msgid "Normal Code"
 msgid "Normal code"
 msgstr "Нормальный код"
 
-#: lazarusidestrconsts.dlgcoopts
-msgid "Options: "
-msgstr "Параметры"
-
 #: lazarusidestrconsts.dlgcoother
 msgctxt "lazarusidestrconsts.dlgcoother"
 msgid "Other"
 msgstr "Другие"
+
+#: lazarusidestrconsts.dlgcootherdebugginginfo
+msgid "Other debugging info"
+msgstr "Прочая отладочная информация"
 
 #: lazarusidestrconsts.dlgcooverflow
 msgid "Overflow"
@@ -2179,30 +2177,28 @@ msgid "Guid lines Left,Top"
 msgstr "Левая и верхняя линии позиционирования"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "Level 1 (quick and debugger friendly)"
-msgstr "Уровень 1 (быстро и дружественно к отладчику)"
+#| msgid "Level 1 (quick and debugger friendly)"
+msgid "1 (quick, debugger friendly)"
+msgstr "1 (быстро и дружественно к отладчику)"
 
 #: lazarusidestrconsts.dlglevel2opt
-msgid "Level 2 (Level 1 + quick optimizations)"
-msgstr "Уровень 2 (уровень 1 + быстрые оптимизации)"
+#| msgid "Level 2 (Level 1 + quick optimizations)"
+msgid "2 (quick optimizations)"
+msgstr "2 (быстрые оптимизации)"
 
 #: lazarusidestrconsts.dlglevel3opt
-msgid "Level 3 (Level 2 + slow optimizations)"
-msgstr "Уровень 3 (уровень 2 + медленные оптимизации)"
+#| msgid "Level 3 (Level 2 + slow optimizations)"
+msgid "3 (slow optimizations)"
+msgstr "3 (медленные оптимизации)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-#| msgid "Level 0 (no extra Optimizations)"
-msgid "Level 0 (no extra optimizations)"
-msgstr "Уровень 0 (без особой оптимизации)"
+#| msgid "Level 0 (no extra optimizations)"
+msgid "0 (no optimization)"
+msgstr "0 (без оптимизации)"
 
 #: lazarusidestrconsts.dlglinesplitting
 msgid "Line Splitting"
 msgstr "Разрыв строк"
-
-#: lazarusidestrconsts.dlglinklibraries
-#| msgid "Link Style"
-msgid "Link style"
-msgstr "Стиль компоновки"
 
 #: lazarusidestrconsts.dlglinksmart
 #| msgid "Link Smart"
@@ -2828,10 +2824,9 @@ msgstr "Использовать параметры по умолчанию Delp
 msgid "Use default Lazarus settings"
 msgstr "Использовать параметры по умолчанию Lazarus"
 
-#: lazarusidestrconsts.dlgoptimiz
-#| msgid "Optimizations:"
-msgid "Optimizations"
-msgstr "Оптимизации"
+#: lazarusidestrconsts.dlgoptimizationlevels
+msgid "Optimization levels"
+msgstr "Уровни оптимизации"
 
 #: lazarusidestrconsts.dlgotherunitfiles
 #| msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
@@ -2861,9 +2856,9 @@ msgid "Extended Pascal Keyword Options"
 msgstr "Расширенные параметры ключевых слов Паскаля"
 
 #: lazarusidestrconsts.dlgpassoptslinker
-#| msgid "Pass Options To The Linker (Delimiter is space)"
-msgid "Pass options to linker (delimiter is space)"
-msgstr "Передавать параметры компоновщику (отделять пробелами)"
+#| msgid "Pass options to linker (delimiter is space)"
+msgid "Pass options to linker with \"-k\", delimiter is space"
+msgstr "Передавать параметры компоновщику с префиксом \"-k\" (разделитель - пробел)"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
 #| msgid "Highlight String keyword(s)"
@@ -3493,11 +3488,6 @@ msgstr "Только позиция курсора"
 #: lazarusidestrconsts.dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
 msgstr "Обрезать хвостовые пробелы"
-
-#: lazarusidestrconsts.dlguncertopt
-#| msgid "Uncertain Optimizations"
-msgid "Uncertain optimizations"
-msgstr "Ненадёжные оптимизации"
 
 #: lazarusidestrconsts.dlgundoaftersave
 msgid "Undo after save"
@@ -6948,10 +6938,6 @@ msgstr "Показывать все сообщения"
 #| msgid "Skip calling Compiler"
 msgid "Skip calling compiler"
 msgstr "Пропустить вызов компилятора"
-
-#: lazarusidestrconsts.liscotargetosspecificoptions
-msgid "Target OS specific options"
-msgstr "Частные параметры целевой ОС"
 
 #: lazarusidestrconsts.liscouldnotadditomainsource
 msgid "Could not add %s{$I %s%s} to main source!"
@@ -15543,10 +15529,6 @@ msgstr "Пропустить файл и продолжить загрузку"
 #: lazarusidestrconsts.lisskiploadinglastproject
 msgid "Skip loading last project"
 msgstr "Пропустить загрузку предыдущего проекта"
-
-#: lazarusidestrconsts.lissmallerratherthanfaster
-msgid "smaller rather than faster"
-msgstr "Приоритет размера над скоростью"
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"

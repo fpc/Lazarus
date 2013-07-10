@@ -863,7 +863,9 @@ msgid "As-Is"
 msgstr "あるがまま"
 
 #: lazarusidestrconsts.dlgcoasmstyle
-msgid "Assembler style:"
+#, fuzzy
+#| msgid "Assembler style:"
+msgid "Assembler style"
 msgstr "アセンブラスタイル"
 
 #: lazarusidestrconsts.dlgcocfgcmpmessages
@@ -877,9 +879,9 @@ msgstr "メッセージ"
 msgid "Checks"
 msgstr "チェック:"
 
-#: lazarusidestrconsts.dlgcocompilation
-msgid "Compilation"
-msgstr "コンパイル"
+#: lazarusidestrconsts.dlgcocompilercommands
+msgid "Compiler Commands"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcoconditionals
 msgctxt "lazarusidestrconsts.dlgcoconditionals"
@@ -917,15 +919,8 @@ msgstr "DBXのためのデバッグ情報を生成（コンパイルが遅くな
 
 #: lazarusidestrconsts.dlgcodebugging
 #, fuzzy
-#| msgid "Debugging Info"
+#| msgid "Debugging info"
 msgctxt "lazarusidestrconsts.dlgcodebugging"
-msgid "Debugging info"
-msgstr "デバッグ中:"
-
-#: lazarusidestrconsts.dlgcodebugging2
-#, fuzzy
-#| msgid "Debugging:"
-msgctxt "lazarusidestrconsts.dlgcodebugging2"
 msgid "Debugging"
 msgstr "デバッグ中:"
 
@@ -958,12 +953,6 @@ msgstr "マウス"
 msgid "Reverse fold-order in Popup"
 msgstr "ポップアップ時に折りたたみ順序を逆転"
 
-#: lazarusidestrconsts.dlgcodegeneration
-#, fuzzy
-#| msgid "Code generation"
-msgid "Code Generation"
-msgstr "コード生成"
-
 #: lazarusidestrconsts.dlgcodetoolsopts
 msgid "CodeTools Options"
 msgstr "コードツールオプション"
@@ -992,14 +981,14 @@ msgstr "Heaptrcユニットを使用"
 msgid "Include files (-Fi):"
 msgstr "インクルードファイル (-Fi):"
 
+#: lazarusidestrconsts.dlgcoinfoforgdb
+msgid "Info for GDB"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoinherited
 msgctxt "lazarusidestrconsts.dlgcoinherited"
 msgid "Inherited"
 msgstr "継承されたもの"
-
-#: lazarusidestrconsts.dlgcokeepvarsreg
-msgid "Keep certain variables in registers"
-msgstr "レジスタにいくつかの変数を保持"
 
 #: lazarusidestrconsts.dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -1102,6 +1091,10 @@ msgstr ""
 msgid "Extend, if matched and caret in the middle of text (not at EOL)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcompilationandlinking
+msgid "Compilation and Linking"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcompilermessage
 #, fuzzy
 #| msgid "Compiler Messages"
@@ -1121,6 +1114,10 @@ msgstr "コンパイラオプション"
 msgid "Complete properties"
 msgstr "プロパティを補完"
 
+#: lazarusidestrconsts.dlgconfigandtarget
+msgid "Config and Target"
+msgstr ""
+
 #: lazarusidestrconsts.dlgconfigfiles
 #, fuzzy
 #| msgid "Config Files:"
@@ -1133,14 +1130,14 @@ msgstr "設定ファイル:"
 msgid "Normal code"
 msgstr "通常のコード"
 
-#: lazarusidestrconsts.dlgcoopts
-msgid "Options: "
-msgstr "オプション:"
-
 #: lazarusidestrconsts.dlgcoother
 msgctxt "lazarusidestrconsts.dlgcoother"
 msgid "Other"
 msgstr "その他"
+
+#: lazarusidestrconsts.dlgcootherdebugginginfo
+msgid "Other debugging info"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcooverflow
 msgid "Overflow"
@@ -2204,32 +2201,32 @@ msgid "Guid lines Left,Top"
 msgstr "グリッドライン 左、上"
 
 #: lazarusidestrconsts.dlglevel1opt
-msgid "Level 1 (quick and debugger friendly)"
+#, fuzzy
+#| msgid "Level 1 (quick and debugger friendly)"
+msgid "1 (quick, debugger friendly)"
 msgstr "レベル 1（迅速かつデバッガ親和的）"
 
 #: lazarusidestrconsts.dlglevel2opt
-msgid "Level 2 (Level 1 + quick optimizations)"
+#, fuzzy
+#| msgid "Level 2 (Level 1 + quick optimizations)"
+msgid "2 (quick optimizations)"
 msgstr "レベル 2（レベル1 + 迅速最適化）"
 
 #: lazarusidestrconsts.dlglevel3opt
-msgid "Level 3 (Level 2 + slow optimizations)"
+#, fuzzy
+#| msgid "Level 3 (Level 2 + slow optimizations)"
+msgid "3 (slow optimizations)"
 msgstr "レベル 3（Level 2 + 緩慢最適化）"
 
 #: lazarusidestrconsts.dlglevelnoneopt
 #, fuzzy
-#| msgid "Level 0 (no extra Optimizations)"
-msgid "Level 0 (no extra optimizations)"
+#| msgid "Level 0 (no extra optimizations)"
+msgid "0 (no optimization)"
 msgstr "レベル 0(それ以外の最適化なし)"
 
 #: lazarusidestrconsts.dlglinesplitting
 msgid "Line Splitting"
 msgstr "行分割"
-
-#: lazarusidestrconsts.dlglinklibraries
-#, fuzzy
-#| msgid "Link Style"
-msgid "Link style"
-msgstr "リンクスタイル:"
 
 #: lazarusidestrconsts.dlglinksmart
 #, fuzzy
@@ -2865,11 +2862,9 @@ msgstr "Delphiのデフォルトの設定を使用"
 msgid "Use default Lazarus settings"
 msgstr "Lazarus のデフォルトの設定を使用"
 
-#: lazarusidestrconsts.dlgoptimiz
-#, fuzzy
-#| msgid "Optimizations:"
-msgid "Optimizations"
-msgstr "最適化:"
+#: lazarusidestrconsts.dlgoptimizationlevels
+msgid "Optimization levels"
+msgstr ""
 
 #: lazarusidestrconsts.dlgotherunitfiles
 #, fuzzy
@@ -2903,8 +2898,8 @@ msgstr "拡張されたPascalキーワードオプション"
 
 #: lazarusidestrconsts.dlgpassoptslinker
 #, fuzzy
-#| msgid "Pass Options To The Linker (Delimiter is space)"
-msgid "Pass options to linker (delimiter is space)"
+#| msgid "Pass options to linker (delimiter is space)"
+msgid "Pass options to linker with \"-k\", delimiter is space"
 msgstr "リンカにオプションを渡して下さい（区切り記号はスペース）"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
@@ -3567,12 +3562,6 @@ msgstr "位置のみ"
 #: lazarusidestrconsts.dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
 msgstr "末尾の空白を削除"
-
-#: lazarusidestrconsts.dlguncertopt
-#, fuzzy
-#| msgid "Uncertain Optimizations"
-msgid "Uncertain optimizations"
-msgstr "不確実な最適化"
 
 #: lazarusidestrconsts.dlgundoaftersave
 msgid "Undo after save"
@@ -7086,10 +7075,6 @@ msgstr "すべてのメッセージを表示"
 #| msgid "Skip calling Compiler"
 msgid "Skip calling compiler"
 msgstr "コンパイラ呼び出しをスキップ"
-
-#: lazarusidestrconsts.liscotargetosspecificoptions
-msgid "Target OS specific options"
-msgstr "対象OS固有オプション"
 
 #: lazarusidestrconsts.liscouldnotadditomainsource
 msgid "Could not add %s{$I %s%s} to main source!"
@@ -15888,10 +15873,6 @@ msgstr "そのファイルをとばして読み込みを続行"
 #: lazarusidestrconsts.lisskiploadinglastproject
 msgid "Skip loading last project"
 msgstr "最後のプロジェクトの読み込みをスキップ"
-
-#: lazarusidestrconsts.lissmallerratherthanfaster
-msgid "smaller rather than faster"
-msgstr "速度より最小化を優先"
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
