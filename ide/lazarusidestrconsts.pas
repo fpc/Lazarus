@@ -2002,7 +2002,7 @@ resourcestring
   lisSelectANode = 'Select a node';
   dlgShowCompilerOptions = 'Show compiler options';
   //dlgCOOpts = 'Options: ';
-  dlgCOAsmStyle = 'Assembler style:';
+  dlgCOAsmStyle = 'Assembler style';
   lisNoCompilerOptionsInherited = 'No compiler options inherited.';
   lisExcludedAtRunTime = '%s excluded at run time';
   lisAllInheritedOptions = 'All inherited options';
