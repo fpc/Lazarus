@@ -141,8 +141,7 @@ implementation
 
 {$R *.lfm}
 
-procedure FindSpecialCharsInPath(const Path: string; out
-  HasChars: TCCOSpecialChars);
+procedure FindSpecialCharsInPath(const Path: string; out HasChars: TCCOSpecialChars);
 var
   i: Integer;
 begin
@@ -182,8 +181,7 @@ end;
 
 { TCheckCompilerOptsDlg }
 
-procedure TCheckCompilerOptsDlg.ApplicationOnIdle(Sender: TObject;
-  var Done: Boolean);
+procedure TCheckCompilerOptsDlg.ApplicationOnIdle(Sender: TObject; var Done: Boolean);
 begin
   IdleConnected:=false;
   DoTestAll;
@@ -856,6 +854,7 @@ begin
   CompilerFiles:=nil;
   Target_PPUs:=nil;
   FPC_PPUs:=nil;
+  Screen.Cursor:=crHourGlass;
   try
     // do not confuse the user with cached data
     InvalidateFileStateCache();
@@ -953,6 +952,7 @@ begin
       AddMsg(lisCCOTestsSuccess,'',-1);
 
   finally
+    Screen.Cursor:=crDefault;
     CompilerFiles.Free;
     CompileTool.Free;
     FTest:=cotNone;
