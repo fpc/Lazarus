@@ -1,4 +1,4 @@
-object CompilerLinkingOptionsFrame: TCompilerLinkingOptionsFrame
+object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
   Left = 0
   Height = 552
   Top = 0

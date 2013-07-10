@@ -9,9 +9,9 @@ uses
 
 type
 
-  { TCompilerLinkingOptionsFrame }
+  { TCompilerDebuggingOptionsFrame }
 
-  TCompilerLinkingOptionsFrame = class(TAbstractIDEOptionsEditor)
+  TCompilerDebuggingOptionsFrame = class(TAbstractIDEOptionsEditor)
     chkDebugGDB: TCheckBox;
     chkGenGProfCode: TCheckBox;
     chkSymbolsStrip: TCheckBox;
@@ -66,21 +66,20 @@ begin
   end;
 end;
 
-{ TCompilerLinkingOptionsFrame }
+{ TCompilerDebuggingOptionsFrame }
 
-procedure TCompilerLinkingOptionsFrame.chkDebugGDBChange(Sender: TObject);
+procedure TCompilerDebuggingOptionsFrame.chkDebugGDBChange(Sender: TObject);
 begin
   grpInfoForGDB.Enabled := chkDebugGDB.Checked;
 end;
 
-function TCompilerLinkingOptionsFrame.GetTitle: string;
+function TCompilerDebuggingOptionsFrame.GetTitle: string;
 begin
   Result := dlgCODebugging;
 end;
 
-procedure TCompilerLinkingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+procedure TCompilerDebuggingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  // Setup the Linking Tab
   grpInfoForGDB.Caption := dlgCOInfoForGDB;
   grpOtherDebuggingInfo.Caption := dlgCOOtherDebuggingInfo;
 
@@ -101,7 +100,7 @@ begin
   chkUseExternalDbgSyms.Caption := dlgExtSymb + ' (-Xg)';
 end;
 
-procedure TCompilerLinkingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+procedure TCompilerDebuggingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TBaseCompilerOptions do
   begin
@@ -118,7 +117,7 @@ begin
   grpInfoForGDB.Enabled := chkDebugGDB.Checked;
 end;
 
-procedure TCompilerLinkingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+procedure TCompilerDebuggingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TBaseCompilerOptions do
   begin
@@ -133,16 +132,16 @@ begin
   end;
 end;
 
-class function TCompilerLinkingOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+class function TCompilerDebuggingOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result := TBaseCompilerOptions;
 end;
 
 initialization
-  RegisterIDEOptionsEditor(GroupCompiler, TCompilerLinkingOptionsFrame,
-    CompilerOptionsLinking);
-  RegisterIDEOptionsEditor(GroupPkgCompiler, TCompilerLinkingOptionsFrame,
-    CompilerOptionsLinking);
+  RegisterIDEOptionsEditor(GroupCompiler, TCompilerDebuggingOptionsFrame,
+    CompilerOptionsDebugging);
+  RegisterIDEOptionsEditor(GroupPkgCompiler, TCompilerDebuggingOptionsFrame,
+    CompilerOptionsDebugging);
 
 end.
 

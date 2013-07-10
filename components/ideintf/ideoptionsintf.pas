@@ -295,7 +295,7 @@ const
     CompilerOptionsConfigTarget          = 0250;
     CompilerOptionsParsing               = 0300;
     CompilerOptionsCodeGeneration        = 0400;
-    CompilerOptionsLinking               = 0500;
+    CompilerOptionsDebugging             = 0500;
     CompilerOptionsVerbosity             = 0600;
     CompilerOptionsMessages              = 0700;
     CompilerOptionsOther                 = 0800;
