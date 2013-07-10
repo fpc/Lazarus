@@ -195,8 +195,7 @@ begin
   end;
 end;
 
-procedure TCompilerCompilationOptionsFrame.WriteSettings(
-  AOptions: TAbstractIDEOptions);
+procedure TCompilerCompilationOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 
   function MakeCompileReasons(const ACompile, ABuild, ARun: TCheckBox): TCompileReasons;
   begin
@@ -212,41 +211,32 @@ begin
   Options.CreateMakefileOnBuild := chkCreateMakefile.Checked;
 
   Options.ExecuteBefore.Command := ExecuteBeforeCommandEdit.Text;
-  Options.ExecuteBefore.ScanForFPCMessages :=
-    ExecuteBeforeScanFPCCheckBox.Checked;
-  Options.ExecuteBefore.ScanForMakeMessages :=
-    ExecuteBeforeScanMakeCheckBox.Checked;
+  Options.ExecuteBefore.ScanForFPCMessages := ExecuteBeforeScanFPCCheckBox.Checked;
+  Options.ExecuteBefore.ScanForMakeMessages :=ExecuteBeforeScanMakeCheckBox.Checked;
   Options.ExecuteBefore.ShowAllMessages := ExecuteBeforeShowAllCheckBox.Checked;
   if Options.ExecuteBefore is TProjectCompilationToolOptions then
   begin
     TProjectCompilationToolOptions(Options.ExecuteBefore).CompileReasons :=
-      MakeCompileReasons(chkExecBeforeCompile,
-      chkExecBeforeBuild, chkExecBeforeRun);
+      MakeCompileReasons(chkExecBeforeCompile, chkExecBeforeBuild, chkExecBeforeRun);
   end;
 
   Options.CompilerPath := edtCompiler.Text;
   if Options is TProjectCompilerOptions then
   begin
     TProjectCompilerOptions(Options).CompileReasons :=
-      MakeCompileReasons(chkCompilerCompile, chkCompilerBuild,
-      chkCompilerRun);
+      MakeCompileReasons(chkCompilerCompile, chkCompilerBuild, chkCompilerRun);
   end
   else if Options is TPkgCompilerOptions then
-  begin
     TPkgCompilerOptions(Options).SkipCompiler := chkCompilerCompile.Checked;
-  end;
 
   Options.ExecuteAfter.Command := ExecuteAfterCommandEdit.Text;
-  Options.ExecuteAfter.ScanForFPCMessages :=
-    ExecuteAfterScanFPCCheckBox.Checked;
-  Options.ExecuteAfter.ScanForMakeMessages :=
-    ExecuteAfterScanMakeCheckBox.Checked;
+  Options.ExecuteAfter.ScanForFPCMessages := ExecuteAfterScanFPCCheckBox.Checked;
+  Options.ExecuteAfter.ScanForMakeMessages :=ExecuteAfterScanMakeCheckBox.Checked;
   Options.ExecuteAfter.ShowAllMessages := ExecuteAfterShowAllCheckBox.Checked;
   if Options.ExecuteAfter is TProjectCompilationToolOptions then
   begin
     TProjectCompilationToolOptions(Options.ExecuteAfter).CompileReasons :=
-      MakeCompileReasons(chkExecAfterCompile,
-      chkExecAfterBuild, chkExecAfterRun);
+      MakeCompileReasons(chkExecAfterCompile, chkExecAfterBuild, chkExecAfterRun);
   end;
 end;
 

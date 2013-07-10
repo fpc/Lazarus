@@ -121,9 +121,7 @@ uses
   debugger_general_options, debugger_eventlog_options,
   debugger_language_exceptions_options, debugger_signals_options,
   codeexplorer_update_options, codeexplorer_categories_options,
-  codeobserver_options,
-  help_general_options,
-  env_file_filters,
+  codeobserver_options, help_general_options, env_file_filters,
   // project option frames
   project_application_options, project_forms_options, project_lazdoc_options,
   project_save_options, project_versioninfo_options, project_i18n_options,
