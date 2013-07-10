@@ -185,6 +185,7 @@ Vincent Beuselinck
 Vincent Snijders
 Vladimir Serotyukov
 Vladimir Zhirov
+Vojtech Cihak
 Wanderlan Santos dos Anjos
 Wojciech Malinowski
 Yauheni Nazimau
