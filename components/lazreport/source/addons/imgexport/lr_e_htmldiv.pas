@@ -306,6 +306,12 @@ begin
       St := St + 'font-style:italic;';
     if fsUnderline in TfrMemoView(View).Font.Style then
       St := St + 'text-decoration:underline;';
+    St := St + 'text-align:';
+    case TfrMemoView(View).Alignment of
+      taLeftJustify: St := St + 'left;';
+      taCenter: St := St + 'center;';
+      taRightJustify: St := St + 'right;';
+    end;
   end;
   WriteString(Format(HTML_TEXT, [St, Text]));
 end;
