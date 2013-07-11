@@ -6,8 +6,8 @@
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
-        <IncludeFiles Value="$(LCLWidgetType);gtk3"/>
-        <OtherUnitFiles Value="$(LCLWidgetType);gtk3"/>
+        <IncludeFiles Value="$(LCLWidgetType)"/>
+        <OtherUnitFiles Value="$(LCLWidgetType)"/>
         <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
       <Conditionals Value="// LCLWidgetType
