@@ -79,7 +79,7 @@ type
   end;
 
   TETType = (ettNamedElement, ettOperand, ettOperator, ettDictionary,
-    ettVirtualMemorySnapshot, ettLiteralString);
+    ettVirtualMemorySnapshot, ettLiteralString, ettRawData);
 
   { TExpressionToken }
 
@@ -101,7 +101,8 @@ type
   end;
 
   TPostScriptScannerState = (ssSearchingToken, ssInComment, ssInDefinition,
-    ssInGroup, ssInExpressionElement, ssInArray, ssInDictionary);
+    ssInGroup, ssInExpressionElement, ssInArray, ssInDictionary,
+    ssReadingRawDataStart, ssReadingRawData);
 
   { TGraphicState }
 
@@ -409,6 +410,7 @@ var
   lCommentStateReturn: TPostScriptScannerState = ssSearchingToken;
   lIsEndOfLine: Boolean;
   lIsExpressionFinished: Boolean;
+  lTmpStr: string;
 begin
   // Check if the EPS file starts with a TIFF preview
   // See http://www.graphicsgroups.com/12-corel/f851f798a0e1ca7a.htm
@@ -656,7 +658,10 @@ begin
           else
           begin
             Tokens.Add(ExpressionToken);
-            State := ssSearchingToken;
+            if ExpressionToken.StrValue = 'image' then
+              State := ssReadingRawDataStart
+            else
+              State := ssSearchingToken;
           end;
           if (CurChar = '{') then AStream.Seek(-1, soFromCurrent)
           else if (CurChar = '[') then AStream.Seek(-1, soFromCurrent);
@@ -664,7 +669,33 @@ begin
         else
           ExpressionToken.StrValue := ExpressionToken.StrValue + CurChar;
       end;
+      // Raw data reading
+      ssReadingRawDataStart:
+      begin
+        if IsPostScriptSpace(Byte(CurChar)) then Continue;
 
+        ExpressionToken := TExpressionToken.Create;
+        ExpressionToken.Line := CurLine;
+        ExpressionToken.StrValue := CurChar;
+        ExpressionToken.ETType := ettRawData;
+        State := ssReadingRawData;
+      end;
+      // ASCII85 and Flate (compressed) go on until this appears: ~>
+      // ToDo: Check if this is valid for all raw data
+      ssReadingRawData:
+      begin
+        if IsPostScriptSpace(Byte(CurChar)) then Continue;
+
+        ExpressionToken.StrValue := ExpressionToken.StrValue + CurChar;
+
+        // Check if we are in the end of the raw data
+        lTmpStr := Copy(ExpressionToken.StrValue, Length(ExpressionToken.StrValue)-1, 2);
+        if lTmpStr = '~>' then
+        begin
+          Tokens.Add(ExpressionToken);
+          State := ssSearchingToken;
+        end;
+      end;
     end; // case
   end; // while
 
