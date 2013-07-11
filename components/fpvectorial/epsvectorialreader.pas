@@ -480,7 +480,7 @@ begin
             raise Exception.Create(Format('[TPSTokenizer.ReadFromStream] Unexpected char while searching for "<<" token: $%s in Line %d',
               [IntToHex(Byte(CurChar), 2), CurLine]));
         end
-        else if CurChar in ['a'..'z','A'..'Z','0'..'9','-','/'] then
+        else if CurChar in ['a'..'z','A'..'Z','0'..'9','-','/','('] then
         begin
           ExpressionToken := TExpressionToken.Create;
           ExpressionToken.Line := CurLine;
