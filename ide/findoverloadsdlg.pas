@@ -22,6 +22,13 @@
 
   Abstract:
     Find all alternative declarations of an identifier.
+
+  TCarbonControl = class(TCarbonWidget)
+    procedure TCarbonControl.CreateWidget(const AParams: TCreateParams);
+  TCarbonCustomCheckBox = class(TCarbonControl)
+  TCarbonCheckBox = class(TCarbonCustomCheckBox)
+    procedure TCarbonCheckBox.CreateWidget(const AParams: TCreateParams);
+
 }
 unit FindOverloadsDlg;
 

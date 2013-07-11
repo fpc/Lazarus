@@ -141,17 +141,15 @@ var
   WorkDir: String;
   fs: TFileStreamUTF8;
 begin
-  TargetOS:=BuildBoss.GetTargetOS;
-  TargetCPU:=BuildBoss.GetTargetCPU;
-  CompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
-  CompilerOptions:='';
-  Cfg:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
-                      CompilerFilename,CompilerOptions,TargetOS,TargetCPU,true);
   sl:=TStringList.Create;
   List:=nil;
   try
-    // fpc -i
     sl.Add('The IDE asks the compiler with the following command for the real OS/CPU:');
+    CompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
+    CompilerOptions:='';
+    Cfg:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+                        CompilerFilename,CompilerOptions,'','',true);
+    // fpc -i
     ExtraOptions:=Cfg.GetFPCInfoCmdLineOptions(CodeToolBoss.FPCDefinesCache.ExtraOptions);
     Params:=Trim('-iTOTP '+ExtraOptions);
     WorkDir:=GetCurrentDirUTF8;
@@ -168,6 +166,10 @@ begin
     sl.Add('');
 
     // fpc -va
+    TargetOS:=BuildBoss.GetTargetOS;
+    TargetCPU:=BuildBoss.GetTargetCPU;
+    Cfg:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+                        CompilerFilename,CompilerOptions,TargetOS,TargetCPU,true);
     TestFilename:=CodeToolBoss.FPCDefinesCache.TestFilename;
     Filename:=ExtractFileName(TestFilename);
     WorkDir:=ExtractFilePath(TestFilename);

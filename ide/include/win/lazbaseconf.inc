@@ -143,7 +143,7 @@ end;
 procedure InternalInit;
 begin
   DefaultDrive := ExtractFileDrive(ProgramDirectory);
-  DefaultFPCTarget:= GetDefaultTargetCPU + '-' + GetDefaultTargetOS;
+  DefaultFPCTarget:= GetCompiledTargetCPU + '-' + GetCompiledTargetOS;
   DefaultFPCVersion:= {$I %FPCVERSION%};
   // the last part of the path returned by GetAppConfigDir is the application
   // name. Replace that by 'lazarus', to make sure that lazbuild uses

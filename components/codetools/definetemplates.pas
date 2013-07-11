@@ -750,6 +750,8 @@ type
     property ChangeStamp: integer read FChangeStamp;
     function Find(CompilerFilename, CompilerOptions, TargetOS, TargetCPU: string;
                   CreateIfNotExists: boolean): TFPCTargetConfigCache;
+    procedure GetDefaultCompilerTarget(const CompilerFilename,CompilerOptions: string;
+                  out TargetOS, TargetCPU: string);
     function GetListing: string;
   end;
 
@@ -7486,6 +7488,22 @@ begin
     end;
   finally
     Cmp.Free;
+  end;
+end;
+
+procedure TFPCTargetConfigCaches.GetDefaultCompilerTarget(
+  const CompilerFilename, CompilerOptions: string; out TargetOS,
+  TargetCPU: string);
+var
+  Cfg: TFPCTargetConfigCache;
+begin
+  Cfg:=Find(CompilerFilename,CompilerOptions,'','',true);
+  if Cfg=nil then begin
+    TargetOS:='';
+    TargetCPU:='';
+  end else begin
+    TargetOS:=Cfg.RealTargetOS;
+    TargetCPU:=Cfg.RealTargetCPU;
   end;
 end;
 

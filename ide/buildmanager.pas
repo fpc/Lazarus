@@ -297,8 +297,8 @@ begin
   FFPCVerChangeStamp:=CTInvalidChangeStamp;
   MainBuildBoss:=Self;
   inherited Create(AOwner);
-  fTargetOS:=GetDefaultTargetOS;
-  fTargetCPU:=GetDefaultTargetCPU;
+  fTargetOS:=GetCompiledTargetOS;
+  fTargetCPU:=GetCompiledTargetCPU;
   fLCLWidgetType:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
   FUnitSetChangeStamp:=TFPCUnitSetCache.GetInvalidChangeStamp;
 
@@ -2186,7 +2186,7 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
       if Project1<>nil then
         s:=Project1.CompilerOptions.TargetOS;
       if s='' then
-        s:=GetDefaultTargetOS;
+        s:=GetCompiledTargetOS;
       Values.Values['TargetOS']:=s;
     end;
     // SrcOS
@@ -2205,7 +2205,7 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
       if Project1<>nil then
         s:=Project1.CompilerOptions.TargetCPU;
       if s='' then
-        s:=GetDefaultTargetCPU;
+        s:=GetCompiledTargetCPU;
       Values.Values['TargetCPU']:=s;
     end;
   end;
@@ -2418,7 +2418,7 @@ begin
   else
     fTargetOS:='';
   if (fTargetOS='') or (SysUtils.CompareText(fTargetOS,'default')=0) then
-    fTargetOS:=GetDefaultTargetOS;
+    fTargetOS:=GetCompiledTargetOS;
   fTargetOS:=GetFPCTargetOS(fTargetOS);
 
   // compute new TargetCPU
@@ -2429,7 +2429,7 @@ begin
   else
     fTargetCPU:='';
   if (fTargetCPU='') or (SysUtils.CompareText(fTargetCPU,'default')=0) then
-    fTargetCPU:=GetDefaultTargetCPU;
+    fTargetCPU:=GetCompiledTargetCPU;
   fTargetCPU:=GetFPCTargetCPU(fTargetCPU);
 
   FPCTargetChanged:=(OldTargetOS<>fTargetOS)
@@ -2471,9 +2471,9 @@ begin
     NewLCLWidgetSet:=LCLPlatformDirNames[BuildLazOpts.TargetPlatform];
   end;
   if (NewTargetOS='') or (NewTargetOS='default') then
-    NewTargetOS:=GetDefaultTargetOS;
+    NewTargetOS:=GetCompiledTargetOS;
   if (NewTargetCPU='') or (NewTargetCPU='default') then
-    NewTargetCPU:=GetDefaultTargetCPU;
+    NewTargetCPU:=GetCompiledTargetCPU;
   if ConsoleVerbosity>=0 then
     debugln(['TBuildManager.SetBuildTargetIDE OS=',NewTargetOS,' CPU=',NewTargetCPU,' WS=',NewLCLWidgetSet]);
   SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet,smsfsBackground,false);
@@ -2491,8 +2491,8 @@ begin
     NewLCLWidgetSet:=BuildLazOpts.TargetPlatform;
   end;
   //debugln(['TBuildManager.BuildTargetIDEIsDefault NewTargetOS=',NewTargetOS,' Default=',GetDefaultTargetOS,' NewTargetCPU=',NewTargetCPU,' default=',GetDefaultTargetCPU,' ws=',LCLPlatformDisplayNames[NewLCLWidgetSet],' default=',LCLPlatformDisplayNames[GetDefaultLCLWidgetType]]);
-  Result:=((NewTargetOS='') or (NewTargetOS=GetDefaultTargetOS))
-      and ((NewTargetCPU='') or (NewTargetCPU=GetDefaultTargetCPU))
+  Result:=((NewTargetOS='') or (NewTargetOS=GetCompiledTargetOS))
+      and ((NewTargetCPU='') or (NewTargetCPU=GetCompiledTargetCPU))
       and (NewLCLWidgetSet<>lpNoGUI);
 end;
 

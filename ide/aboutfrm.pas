@@ -27,7 +27,8 @@ interface
 uses
   Classes, SysUtils, FPCAdds, Forms, Controls, Graphics, Dialogs, LResources,
   LCLProc, StdCtrls, Buttons, LazConf, LazarusIDEStrConsts, ExtCtrls, ComCtrls,
-  EnvironmentOpts, Clipbrd, FileUtil, lazutf8classes, Menus, LCLIntf;
+  EnvironmentOpts, Clipbrd, FileUtil, lazutf8classes, DefineTemplates, Menus,
+  LCLIntf;
 
 type
 
@@ -161,7 +162,7 @@ begin
   RevisionLabel.Caption := lisSVNRevision+LazarusRevisionStr;
   BuildDateLabel.Caption := lisDate+': '+GetLocalizedBuildDate;
   FPCVersionLabel.Caption:= lisFPCVersion+{$I %FPCVERSION%};
-  PlatformLabel.Caption:=GetDefaultTargetCPU+'-'+GetDefaultTargetOS
+  PlatformLabel.Caption:=GetCompiledTargetCPU+'-'+GetCompiledTargetOS
                          +'-'+LCLPlatformDisplayNames[GetDefaultLCLWidgetType];
 
   VersionPage.Caption:=lisVersion;

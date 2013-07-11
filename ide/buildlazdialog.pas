@@ -47,7 +47,7 @@ uses
   Classes, SysUtils, LCLProc, LConvEncoding, Forms, Controls, LCLType, LCLIntf,
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, LazUTF8,
   LazLogger, lazutf8classes, Dialogs, InterfaceBase, Themes, CheckLst, Menus,
-  ComCtrls, DividerBevel, DefineTemplates,
+  ComCtrls, DividerBevel, DefineTemplates, CodeToolManager,
   // IDEIntf
   LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
   PackageIntf,
@@ -327,10 +327,10 @@ begin
     CmdLineParams:=' -w';
     // append target OS
     if Profile.TargetOS<>'' then
-      CmdLineParams+=' OS_TARGET='+Profile.FPCTargetOS;
+      CmdLineParams+=' OS_TARGET='+Profile.FPCTargetOS+' OS_SOURCE='+Profile.FPCTargetOS;
     // append target CPU
     if Profile.TargetCPU<>'' then
-      CmdLineParams+=' CPU_TARGET='+Profile.FPCTargetCPU;
+      CmdLineParams+=' CPU_TARGET='+Profile.FPCTargetCPU+' CPU_SOURCE='+Profile.FPCTargetCPU;
 
     Tool.ScanOutputForFPCMessages:=true;
     Tool.ScanOutputForMakeMessages:=true;
@@ -567,8 +567,12 @@ begin
   TargetFilename:='';
   UnitOutDir:='';
   TargetDirectory:='';
-  DefaultTargetOS:=GetDefaultTargetOS;
-  DefaultTargetCPU:=GetDefaultTargetCPU;
+  CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
+    EnvironmentOptions.GetParsedCompilerFilename,'',DefaultTargetOS,DefaultTargetCPU);
+  if DefaultTargetOS='' then
+    DefaultTargetOS:=GetCompiledTargetOS;
+  if DefaultTargetCPU='' then
+    DefaultTargetCPU:=GetCompiledTargetCPU;
   TargetOS:=Profile.FPCTargetOS;
   TargetCPU:=Profile.FPCTargetCPU;
   TargetLCLPlatform:=LCLPlatformDirNames[Profile.TargetPlatform];

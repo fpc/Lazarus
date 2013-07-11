@@ -1563,7 +1563,7 @@ begin
   writeln('or --os=<operating-system>');
   writeln(LongToConsole(Format(
     lisOverrideTheProjectOperatingSystemEGWin32LinuxDefau, [space,
-    LazConf.GetDefaultTargetOS])));
+    GetCompiledTargetOS])));
   writeln('');
   writeln('--widgetset=<widgetset>');
   writeln('or --ws=<widgetset>');
@@ -1574,7 +1574,7 @@ begin
   writeln('--cpu=<cpu>');
   writeln(LongToConsole(Format(
     lisOverrideTheProjectCpuEGI386X86_64PowerpcPowerpc_64, [space,
-    LazConf.GetDefaultTargetCPU])));
+    GetCompiledTargetCPU])));
   writeln('');
   writeln('--build-mode=<project/ide build mode>');
   writeln('or --bm=<project/ide build mode>');

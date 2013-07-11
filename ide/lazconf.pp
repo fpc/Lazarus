@@ -100,9 +100,6 @@ procedure GetDefaultMakeFilenames(List: TStrings); // list of standard paths of 
 function GetDefaultFPCSrcDirectories: TStringList;
 function GetDefaultLazarusSrcDirectories: TStringList;
 
-function GetDefaultTargetCPU: string;
-function GetDefaultTargetOS: string;
-
 // returns the standard executable extension (e.g '.exe')
 function GetExecutableExt(TargetOS: string = ''): string;
 function MakeStandardExeFilename(TargetOS, Filename: string): string;
@@ -371,7 +368,7 @@ end;
 function GetExecutableExt(TargetOS: string): string;
 begin
   if TargetOS='' then
-    TargetOS:=GetDefaultTargetOS;
+    TargetOS:=GetCompiledTargetOS;
   if (CompareText(copy(TargetOS,1,3), 'win') = 0)
   or (CompareText(copy(TargetOS,1,3), 'dos') = 0) then
     Result:='.exe'
@@ -385,7 +382,7 @@ var
 begin
   Result:=Filename;
   if TargetOS='' then
-    TargetOS:=GetDefaultTargetOS;
+    TargetOS:=GetCompiledTargetOS;
   StdExt:=GetExecutableExt(TargetOS);
   if StdExt='' then exit;
   Result:=ChangeFileExt(Result,StdExt);
@@ -394,7 +391,7 @@ end;
 function GetLibraryExt(TargetOS: string): string;
 begin
   if TargetOS='' then
-    TargetOS:=GetDefaultTargetOS;
+    TargetOS:=GetCompiledTargetOS;
   if CompareText(copy(TargetOS,1,3), 'win') = 0 then
     Result:='.dll'
   else if CompareText(TargetOS, 'darwin') = 0 then
@@ -414,7 +411,7 @@ var
   SrcOS: String;
 begin
   if TargetOS='' then
-    TargetOS:=GetDefaultTargetOS;
+    TargetOS:=GetCompiledTargetOS;
   Result:='';
   SrcOS:=GetDefaultSrcOSForTargetOS(TargetOS);
   if CompareText(SrcOS, 'unix') = 0 then
@@ -428,7 +425,7 @@ var
 begin
   Result:=Filename;
   if TargetOS='' then
-    TargetOS:=GetDefaultTargetOS;
+    TargetOS:=GetCompiledTargetOS;
   // change extension
   StdExt:=GetLibraryExt(TargetOS);
   if StdExt<>'' then
@@ -444,16 +441,6 @@ begin
   or (CompareText(TargetOS,'openbsd')=0)
   then
     Result:=ExtractFilePath(Result)+lowercase(ExtractFileName(Result));
-end;
-
-function GetDefaultTargetOS: string;
-begin
-  Result:=lowerCase({$I %FPCTARGETOS%});
-end;
-
-function GetDefaultTargetCPU: string;
-begin
-  Result:=lowerCase({$I %FPCTARGETCPU%});
 end;
 
 function GetDefaultCompilerFilename: string;

@@ -14,6 +14,9 @@
     </MacroValues>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
+      <SharedMatrixOptions Count="1">
+        <Item1 ID="037437114172" Modes="default" Type="IDEMacro" MacroName="LCLWidgetType" Value="nogui"/>
+      </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -80,6 +83,5 @@
       </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
-    <LCLWidgetType Value="nogui"/>
   </CompilerOptions>
 </CONFIG>

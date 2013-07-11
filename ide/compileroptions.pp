@@ -50,7 +50,7 @@ uses
   IDEOptionsIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, IDEMsgIntf, LazConf, TransferMacros,
-  ModeMatrixOpts, CompOptsModes;
+  ModeMatrixOpts, CompOptsModes, EnvironmentOpts;
 
 type
 
@@ -1855,7 +1855,7 @@ function TBaseCompilerOptions.CreateTargetFilename(
       PathName := ExtractFilePath(Result);
       //debugln ( 'Filename is ',FileName, ' in PrependDefaultType' );
       CurTargetOS:=TargetOS;
-      if CurTargetOS='' then CurTargetOS:=GetDefaultTargetOS;
+      if CurTargetOS='' then CurTargetOS:=GetCompiledTargetOS;
       aSrcOS:=GetDefaultSrcOSForTargetOS(CurTargetOS);
       if (CompareText(aSrcOS, 'unix') = 0)
       then begin
@@ -2411,6 +2411,9 @@ var
   CurTargetCPU: String;
   CurSrcOS: String;
   dit: TCompilerDbgSymbolType;
+  CompilerFilename: String;
+  DefaultTargetOS: string;
+  DefaultTargetCPU: string;
 begin
   CurMainSrcFile:=MainSourceFileName;
   if CurMainSrcFile='' then
@@ -2760,13 +2763,17 @@ begin
   //if (VariablesInRegisters) then
   //  Switches := Switches + ' -OoREGVAR';
 
+  CompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
+  CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
+    CompilerFilename,'',DefaultTargetOS,DefaultTargetCPU);
+
   { Target OS }
   if (CurTargetOS<>'')
-  and ((TargetOS<>'') or (CurTargetOS<>GetDefaultTargetOS)) then
+  and ((TargetOS<>'') or (CurTargetOS<>DefaultTargetOS)) then
     switches := switches + ' -T' + CurTargetOS;
   { Target CPU }
   if (CurTargetCPU<>'')
-  and ((TargetCPU<>'') or (CurTargetCPU<>GetDefaultTargetCPU)) then
+  and ((TargetCPU<>'') or (CurTargetCPU<>DefaultTargetCPU)) then
     switches := switches + ' -P' + CurTargetCPU;
   { TargetProcessor }
   if TargetProcessor<>'' then
