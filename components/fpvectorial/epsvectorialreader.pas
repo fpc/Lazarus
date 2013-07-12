@@ -44,6 +44,7 @@ type
     BoolValue: Boolean;
     Line: Integer; // To help debugging
     constructor Create; virtual;
+    procedure CopyDataFrom(ASrc: TPSToken); virtual;
     function Duplicate: TPSToken; virtual;
   end;
 
@@ -88,11 +89,15 @@ type
     ETType: TETType;
     function IsExpressionOperand: Boolean;
     procedure PrepareFloatValue;
+    procedure CopyDataFrom(ASrc: TPSToken); override;
     function Duplicate: TPSToken; override;
   end;
 
   { TDictionaryToken }
 
+  // TDictionaryToken is utilized for <..> dictionary definitions
+  // Do not confuse it with a directionary reference
+  // which is a TExpressionToken with ETType=ettDictionary!
   TDictionaryToken = class(TPSToken)
   public
     Childs: TPSTokens;
@@ -296,6 +301,14 @@ begin
   inherited Create;
 end;
 
+procedure TPSToken.CopyDataFrom(ASrc: TPSToken);
+begin
+  StrValue := ASrc.StrValue;
+  FloatValue := ASrc.FloatValue;
+  IntValue := ASrc.IntValue;
+  BoolValue := ASrc.BoolValue;
+end;
+
 function TPSToken.Duplicate: TPSToken;
 begin
   Result := TPSToken(Self.ClassType.Create);
@@ -361,6 +374,12 @@ begin
   begin
     FloatValue := StrToFloat(StrValue, FPointSeparator);
   end;
+end;
+
+procedure TExpressionToken.CopyDataFrom(ASrc: TPSToken);
+begin
+  inherited CopyDataFrom(ASrc);
+  if ASrc is TExpressionToken then ETType := TExpressionToken(ASrc).ETType;
 end;
 
 function TExpressionToken.Duplicate: TPSToken;
@@ -852,7 +871,8 @@ begin
       WriteLn(Format('[TvEPSVectorialReader.RunPostScript] Type: TExpressionToken Token: %s', [CurToken.StrValue]));
       {$endif}
 
-      if TExpressionToken(CurToken).ETType = ettOperand then
+      if (TExpressionToken(CurToken).ETType = ettOperand) or
+        (TExpressionToken(CurToken).ETType = ettDictionary) then
       begin
         Stack.Push(CurToken);
         Continue;
@@ -871,6 +891,15 @@ begin
 
       // If we got an array after the substitution, don't run it, just put it in the stack
       if CurToken is TArrayToken then
+      begin
+        Stack.Push(CurToken);
+        Continue;
+      end;
+
+      // sometimes the substitution results in a direct reference to a dictionary
+      // maybe sometimes to an operand too? In this cases don't try to run the code!
+      if (TExpressionToken(CurToken).ETType = ettOperand) or
+        (TExpressionToken(CurToken).ETType = ettDictionary) then
       begin
         Stack.Push(CurToken);
         Continue;
@@ -946,7 +975,7 @@ procedure TvEPSVectorialReader.ExecuteOperatorToken(AToken: TExpressionToken;
 var
   Param1, Param2: TPSToken;
 begin
-  if AToken.StrValue = '' then raise Exception.Create('[TvEPSVectorialReader.ProcessExpressionToken] Empty operator');
+  if AToken.StrValue = '' then raise Exception.Create(Format('[TvEPSVectorialReader.ProcessExpressionToken] Empty operator line=%d', [AToken.Line]));
 
   if ExecuteDictionaryOperators(AToken, AData, ADoc) then Exit;
 
@@ -2886,8 +2915,10 @@ function TvEPSVectorialReader.DictionarySubstituteOperator(
 var
   lIndex: Integer;
   SubstituteToken, NewToken: TPSToken;
+  lOldStrValue: string; // for debugging purposes
 begin
   Result := False;
+  lOldStrValue := ACurToken.StrValue;
   lIndex := ADictionary.IndexOf(ACurToken.StrValue);
   if lIndex >= 0 then
   begin
@@ -2897,8 +2928,7 @@ begin
 
     if SubstituteToken is TExpressionToken then
     begin
-      ACurToken.StrValue := SubstituteToken.StrValue;
-      ACurToken.FloatValue := SubstituteToken.FloatValue;
+      ACurToken.CopyDataFrom(SubstituteToken);
     end
     else if (SubstituteToken is TProcedureToken) or
       (SubstituteToken is TArrayToken) then
@@ -2906,8 +2936,12 @@ begin
       ACurToken := SubstituteToken;
     end;
 
-    if (not (SubstituteToken is TArrayToken)) and (ACurToken.StrValue = '') then
-      raise Exception.Create('[TvEPSVectorialReader.DictionarySubstituteOperator] The Dictionary substitution resulted in an empty value');
+    if (not (SubstituteToken is TArrayToken)) and
+       (not ((SubstituteToken is TExpressionToken) and (TExpressionToken(SubstituteToken).ETType = ettDictionary))) and
+       (not (SubstituteToken is TDictionaryToken)) and (ACurToken.StrValue = '') then
+      raise Exception.Create(Format('[TvEPSVectorialReader.DictionarySubstituteOperator] '
+       + 'The Dictionary substitution resulted in an empty value. SubstituteClass=%s Original StrValue=%s Line=%d',
+       [SubstituteToken.ClassName, lOldStrValue, ACurToken.Line]));
   end;
 end;
 

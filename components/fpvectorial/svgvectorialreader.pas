@@ -1953,6 +1953,11 @@ begin
     ValueStr := Copy(AStr, 1, Len-1);
     Result := StrToInt(ValueStr);
   end
+  else if UnitStr = 'pt' then
+  begin
+    ValueStr := Copy(AStr, 1, Len-2);
+    Result := StrToFloat(ValueStr, FPointSeparator);
+  end
   else // If there is no unit, just use StrToFloat
   begin
     Result := StrToFloat(AStr, FPointSeparator);
