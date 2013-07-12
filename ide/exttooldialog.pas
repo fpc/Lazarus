@@ -141,8 +141,7 @@ type
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
-    property ExtToolList: TExternalToolList 
-                                         read fExtToolList write SetExtToolList;
+    property ExtToolList: TExternalToolList read fExtToolList write SetExtToolList;
     property TransferMacros: TTransferMacroList
                                    read fTransferMacros write SetTransferMacros;
   end;
@@ -190,7 +189,8 @@ begin
 end;
 
 procedure TExternalToolList.Assign(Source: TExternalToolList);
-var i: integer;
+var
+  i: integer;
 begin
   if Source=Self then exit;
   Clear;
@@ -228,7 +228,8 @@ begin
 end;
 
 procedure TExternalToolList.Clear; 
-var i: integer;
+var
+  i: integer;
 begin
   for i:=0 to Count-1 do
     TExternalToolOptions(Items[i]).Free;
@@ -241,7 +242,8 @@ begin
 end;
 
 function TExternalToolList.Load(Config: TConfigStorage): TModalResult;
-var i: integer;
+var
+  i: integer;
   NewTool: TExternalToolOptions;
 begin
   Clear;
@@ -381,14 +383,11 @@ begin
         ErrorOccurred:=false;
         try
           TheOutputFilter.CompilerOptions:=CompilerOptions as TBaseCompilerOptions;
-          TheOutputFilter.Options:=[ofoExceptionOnError,
-                                    ofoMakeFilenamesAbsolute];
+          TheOutputFilter.Options:=[ofoExceptionOnError,ofoMakeFilenamesAbsolute];
           if ExtTool.ScanOutputForFPCMessages then
-            TheOutputFilter.Options:=TheOutputFilter.Options
-                                     +[ofoSearchForFPCMessages];
+            TheOutputFilter.Options:=TheOutputFilter.Options+[ofoSearchForFPCMessages];
           if ExtTool.ScanOutputForMakeMessages then
-            TheOutputFilter.Options:=TheOutputFilter.Options
-                                     +[ofoSearchForMakeMessages];
+            TheOutputFilter.Options:=TheOutputFilter.Options+[ofoSearchForMakeMessages];
           if ExtTool.ShowAllOutput then
             TheOutputFilter.Options:=TheOutputFilter.Options+[ofoShowAll];
           try
@@ -444,7 +443,8 @@ begin
 end;
 
 function TExternalToolList.Save(Config: TConfigStorage): TModalResult;
-var i: integer;
+var
+  i: integer;
 begin
   Config.SetValue('Count',Count);
   for i:=0 to Count-1 do begin
@@ -458,8 +458,7 @@ begin
   Result:=mrOk;
 end;
 
-function TExternalToolList.Save(Config: TConfigStorage; const Path: string
-  ): TModalResult;
+function TExternalToolList.Save(Config: TConfigStorage; const Path: string): TModalResult;
 begin
   if Path<>'' then
     Config.AppendBasePath(Path);
@@ -471,9 +470,9 @@ begin
   end;
 end;
 
-procedure TExternalToolList.SaveShortCuts(
-  KeyCommandRelationList: TKeyCommandRelationList);
-var i: integer;
+procedure TExternalToolList.SaveShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
+var
+  i: integer;
   KeyCommandRelation: TKeyCommandRelation;
 begin
   KeyCommandRelationList.ExtToolCount:=Count;
@@ -499,7 +498,8 @@ begin
 end;
 
 procedure TExternalToolList.FreeStoppedProcesses;
-var i: integer;
+var
+  i: integer;
   TheProcess: TProcess;
 begin
   if fRunningTools=nil then exit;
@@ -587,7 +587,8 @@ begin
 end;
 
 procedure TExternalToolDialog.Load;
-var i: integer;
+var
+  i: integer;
 begin
   Listbox.Items.BeginUpdate;
   Listbox.Items.Clear;
@@ -598,12 +599,12 @@ begin
 end;
 
 procedure TExternalToolDialog.AddButtonClick(Sender: TObject);
-var NewTool: TExternalToolOptions;
+var
+  NewTool: TExternalToolOptions;
 begin
   if fExtToolList.Count>=MaxExtTools then begin
     IDEMessageDialog(lisExtToolMaximumToolsReached,
-                  Format(lisExtToolThereIsAMaximumOfTools, [IntToStr(MaxExtTools
-                    )]),
+                  Format(lisExtToolThereIsAMaximumOfTools, [IntToStr(MaxExtTools)]),
                   mtInformation,[mbCancel]);
     exit;
   end;
@@ -693,7 +694,8 @@ begin
 end;
 
 procedure TExternalToolDialog.MoveUpButtonClick(Sender: TObject);
-var i: integer;
+var
+  i: integer;
 begin
   i:=Listbox.ItemIndex;
   if i<1 then exit;
@@ -704,7 +706,8 @@ begin
 end;
 
 procedure TExternalToolDialog.MoveDownButtonClick(Sender: TObject);
-var i: integer;
+var
+  i: integer;
 begin
   i:=Listbox.ItemIndex;
   if (i<0) or (i>=Listbox.Items.Count-1) then exit;
@@ -715,7 +718,8 @@ begin
 end;
 
 procedure TExternalToolDialog.EnableButtons;
-var i: integer;
+var
+  i: integer;
 begin
   i:=Listbox.ItemIndex;
   AddButton.Enabled:=fExtToolList.Count<MaxExtTools;

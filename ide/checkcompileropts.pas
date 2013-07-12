@@ -870,14 +870,10 @@ begin
     end;
     
     // check for non existing paths
-    CheckNonExistingSearchPaths('include search path',
-                                Options.GetIncludePath(false));
-    CheckNonExistingSearchPaths('library search path',
-                                Options.GetLibraryPath(false));
-    CheckNonExistingSearchPaths('unit search path',
-                                Options.GetUnitPath(false));
-    CheckNonExistingSearchPaths('source search path',
-                                Options.GetSrcPath(false));
+    CheckNonExistingSearchPaths('include search path',Options.GetIncludePath(false));
+    CheckNonExistingSearchPaths('library search path',Options.GetLibraryPath(false));
+    CheckNonExistingSearchPaths('unit search path',   Options.GetUnitPath(false));
+    CheckNonExistingSearchPaths('source search path', Options.GetSrcPath(false));
 
     // fetch compiler filename
     CompilerFilename:=Options.ParsedOpts.GetParsedValue(pcosCompilerPath);

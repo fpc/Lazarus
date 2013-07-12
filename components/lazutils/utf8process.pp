@@ -205,8 +205,7 @@ begin
   ProgramFilename:=FindFilenameOfCmd(ProgramFilename);
 
   if ProgramFilename='' then
-    raise EFOpenError.Create(Format(lrsProgramFileNotFound, [OldProgramFilename]
-      ));
+    raise EFOpenError.Create(Format(lrsProgramFileNotFound, [OldProgramFilename]));
   if not FileIsExecutable(ProgramFilename) then
     raise EFOpenError.Create(Format(lrsCanNotExecute, [ProgramFilename]));
 
