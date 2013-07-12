@@ -872,7 +872,8 @@ begin
       {$endif}
 
       if (TExpressionToken(CurToken).ETType = ettOperand) or
-        (TExpressionToken(CurToken).ETType = ettDictionary) then
+        (TExpressionToken(CurToken).ETType = ettDictionary) or
+        (TExpressionToken(CurToken).ETType = ettRawData) then
       begin
         Stack.Push(CurToken);
         Continue;
@@ -899,7 +900,8 @@ begin
       // sometimes the substitution results in a direct reference to a dictionary
       // maybe sometimes to an operand too? In this cases don't try to run the code!
       if (TExpressionToken(CurToken).ETType = ettOperand) or
-        (TExpressionToken(CurToken).ETType = ettDictionary) then
+        (TExpressionToken(CurToken).ETType = ettDictionary) or
+        (TExpressionToken(CurToken).ETType = ettRawData) then
       begin
         Stack.Push(CurToken);
         Continue;
@@ -1250,6 +1252,19 @@ var
 begin
   Result := False;
 
+  // any exec –          Execute arbitrary object
+  if AToken.StrValue = 'exec' then
+  begin
+    Param1 := TPSToken(Stack.Pop); // proc
+
+    if (Param1 is TProcedureToken) then
+      ExecuteProcedureToken(TProcedureToken(Param1), AData, ADoc);
+
+    if (Param1 is TExpressionToken) then
+      ExecuteOperatorToken(TExpressionToken(Param1), AData, ADoc);
+
+    Exit(True);
+  end;
   // Execute proc if bool is true
   if AToken.StrValue = 'if' then
   begin
@@ -1447,6 +1462,18 @@ begin
 
     Exit(True);
   end;
+  // any cvx any Make object executable
+  if AToken.StrValue = 'cvx' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+
+    if Param1 is TExpressionToken then
+      TExpressionToken(Param1).ETType := ettOperator;
+
+    Stack.Push(Param1);
+
+    Exit(True);
+  end;
   // tests whether the operand has the executable or the literal attribute, returning true
   // if it is executable or false if it is literal
   if AToken.StrValue = 'xcheck' then
@@ -1553,7 +1580,21 @@ begin
     AData.EndPath();
     Exit(True);
   end;
+  // – fill –        Fill current path with current color
+  if AToken.StrValue = 'fill' then
+  begin
+    {$ifdef FPVECTORIALDEBUG_PATHS}
+    WriteLn('[TvEPSVectorialReader.ExecutePaintingOperator] fill');
+    {$endif}
+    AData.SetBrushStyle(bsSolid);
+    AData.SetPenStyle(psSolid);
+    AData.SetClipPath(CurrentGraphicState.ClipPath, CurrentGraphicState.ClipMode);
+    AData.SetPenWidth(CurrentGraphicState.PenWidth);
+    AData.EndPath();
 
+    Exit(True);
+  end;
+  // – eofill –      Fill using even-odd rule
   if AToken.StrValue = 'eofill' then
   begin
     {$ifdef FPVECTORIALDEBUG_PATHS}
@@ -1564,6 +1605,14 @@ begin
     AData.SetClipPath(CurrentGraphicState.ClipPath, CurrentGraphicState.ClipMode);
     AData.SetPenWidth(CurrentGraphicState.PenWidth);
     AData.EndPath();
+
+    Exit(True);
+  end;
+  // dict image – Paint any sampled image
+  if AToken.StrValue = 'image' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    // ToDo: Draw the image
 
     Exit(True);
   end;
@@ -2316,6 +2365,24 @@ begin
     {$endif}
     Exit(True);
   end;
+  // – clip – Clip using nonzero winding number rule
+  //
+  // See the description on eoclip
+  //
+  if AToken.StrValue = 'clip' then
+  begin
+    {$ifdef FPVECTORIALDEBUG_PATHS}
+    WriteLn('[TvEPSVectorialReader.ExecutePathConstructionOperator] clip');
+    {$endif}
+    {$ifndef FPVECTORIALDEBUG_CLIP_REGION}
+    AData.SetPenStyle(psClear);
+    {$endif}
+    AData.SetBrushStyle(bsClear);
+    AData.EndPath();
+    CurrentGraphicState.ClipPath := AData.GetEntity(AData.GetEntitiesCount()-1) as TPath;
+    CurrentGraphicState.ClipMode := vcmNonzeroWindingRule;
+    Exit(True);
+  end;
   // – eoclip – Clip using even-odd rule
   //
   // intersects the inside of the current clipping path with the inside
@@ -2388,7 +2455,7 @@ end;
                                specified red, green, blue
   – currentrgbcolor red green blue Return current color as red, green, blue
   cyan magenta yellow black setcmykcolor – Set color space to DeviceCMYK and color to
-  specified cyan, magenta, yellow, black
+                                           specified cyan, magenta, yellow, black
   – currentcmykcolor cyan magenta yellow black
   Return current color as cyan, magenta,
   yellow, black
@@ -2396,7 +2463,7 @@ end;
 function TvEPSVectorialReader.ExecuteGraphicStateOperatorsDI(
   AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
 var
-  Param1, Param2, Param3: TPSToken;
+  Param1, Param2, Param3, Param4: TPSToken;
   lRed, lGreen, lBlue: Double;
   lGraphicState: TGraphicState;
 begin
@@ -2474,6 +2541,12 @@ begin
 
     Exit(True);
   end;
+  // array|name setcolorspace – Set color space
+  if AToken.StrValue = 'setcolorspace' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Exit(True);
+  end;
   // red green blue setrgbcolor –
   // sets the current color space in the graphics state to DeviceRGB and the current color
   // to the component values specified by red, green, and blue. Each component
@@ -2499,6 +2572,33 @@ begin
     {$ifdef FPVECTORIALDEBUG_COLORS}
     WriteLn(Format('[TvEPSVectorialReader.ExecuteGraphicStateOperatorsDI] setrgbcolor r=%f g=%f b=%f',
       [Param3.FloatValue, Param2.FloatValue, Param1.FloatValue]));
+    {$endif}
+
+    Exit(True);
+  end;
+  // cyan magenta yellow black setcmykcolor – Set color space to DeviceCMYK and color to
+  //                                          specified cyan, magenta, yellow, black
+  if AToken.StrValue = 'setcmykcolor' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Param2 := TPSToken(Stack.Pop);
+    Param3 := TPSToken(Stack.Pop);
+    Param4 := TPSToken(Stack.Pop);
+
+    {lRed := EnsureRange(Param3.FloatValue, 0, 1);
+    lGreen := EnsureRange(Param2.FloatValue, 0, 1);
+    lBlue := EnsureRange(Param1.FloatValue, 0, 1);
+
+    CurrentGraphicState.Color.Red := Round(lRed * $FFFF);
+    CurrentGraphicState.Color.Green := Round(lGreen * $FFFF);
+    CurrentGraphicState.Color.Blue := Round(lBlue * $FFFF);
+    CurrentGraphicState.Color.alpha := alphaOpaque;
+
+    AData.SetPenColor(CurrentGraphicState.Color);}
+
+    {$ifdef FPVECTORIALDEBUG_COLORS}
+    {WriteLn(Format('[TvEPSVectorialReader.ExecuteGraphicStateOperatorsDI] setrgbcolor r=%f g=%f b=%f',
+      [Param3.FloatValue, Param2.FloatValue, Param1.FloatValue]));}
     {$endif}
 
     Exit(True);
