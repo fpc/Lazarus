@@ -83,7 +83,7 @@ type
 
   TSynMacroEvent = class(TObject)
   protected
-    fRepeatCount: Byte;
+    fRepeatCount: Integer;
     function GetAsString : string; virtual; abstract;
     procedure InitEventParameters(aStr : string); virtual; abstract;
   public
@@ -100,7 +100,7 @@ type
     procedure SaveToWriter(aWriter: TSynMacroEventWriter); virtual; abstract;
     procedure Playback(aEditor: TCustomSynEdit); virtual; abstract;
     property AsString : string read GetAsString;
-    property RepeatCount : Byte read fRepeatCount write fRepeatCount;
+    property RepeatCount : Integer read fRepeatCount write fRepeatCount;
   end;
 
   TSynMacroEventClass = class of TSynMacroEvent;
@@ -973,7 +973,7 @@ end;
 procedure TSynBasicEvent.InitEventParameters(aStr: string);
 begin
   // basic events have no parameters but can contain an optional repeat count
-  RepeatCount := Byte(StrToIntDef(Trim(aStr), 1));
+  RepeatCount := StrToIntDef(Trim(aStr), 1);
 end;
 
 procedure TSynBasicEvent.Initialize(aCmd: TSynEditorCommand; const aChar: TUTF8Char;
@@ -1047,7 +1047,7 @@ begin
   else
     Key := ' ';
   Delete(aStr, 1, 1); // if possible delete the first character
-  RepeatCount := Byte(StrToIntDef(Trim(aStr), 1));
+  RepeatCount := StrToIntDef(Trim(aStr), 1);
 end;
 
 procedure TSynCharEvent.Initialize(aCmd: TSynEditorCommand; const aChar: TUTF8Char;
@@ -1138,7 +1138,7 @@ begin
     Position := Point(x, y);
     Delete(aStr, 1, c);
     aStr := Trim(aStr);
-    RepeatCount := Byte(StrToIntDef(aStr, 1));
+    RepeatCount := StrToIntDef(aStr, 1);
   end;
 end;
 
@@ -1230,7 +1230,7 @@ begin
   valStr := Copy(aStr, o+1, c-o-1);
   Value := StringReplace(valStr, '''''', '''', [rfReplaceAll]);
   Delete(aStr, 1, c);
-  RepeatCount := Byte(StrToIntDef(Trim(aStr), 1));
+  RepeatCount := StrToIntDef(Trim(aStr), 1);
 end;
 
 procedure TSynStringEvent.Initialize(aCmd: TSynEditorCommand; const aChar: TUTF8Char;
