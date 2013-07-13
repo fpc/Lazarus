@@ -31,22 +31,26 @@ uses
   Classes, SysUtils, math, AVL_Tree, LazLogger, Forms, Controls, Graphics,
   Dialogs, StdCtrls, LCLProc, ComCtrls, LCLType, ExtCtrls, CodeToolsCfgScript,
   KeywordFuncLists, SynEdit, SynEditKeyCmds, SynCompletion, IDEOptionsIntf,
-  CompOptsIntf, IDECommands, Project, CompilerOptions, LazarusIDEStrConsts,
-  SourceSynEditor, EditorOptions, PackageDefs;
+  CompOptsIntf, IDECommands, Project, CompilerOptions, Compiler, EnvironmentOpts,
+  LazarusIDEStrConsts, SourceSynEditor, EditorOptions, PackageDefs;
 
 type
 
   { TCompilerOtherOptionsFrame }
 
   TCompilerOtherOptionsFrame = class(TAbstractIDEOptionsEditor)
+    btnGetAll: TButton;
     ConditionalsSplitter: TSplitter;
+    AllOptionsGroupBox: TGroupBox;
     grpCustomOptions: TGroupBox;
+    lblStatus: TLabel;
     memCustomOptions: TMemo;
     ConditionalsGroupBox: TGroupBox;
     CondStatusbar: TStatusBar;
     CondSynEdit: TSynEdit;
-    AllOptionsScrollBox: TScrollBox;
     CustomSplitter: TSplitter;
+    sbAllOptions: TScrollBox;
+    procedure btnGetAllClick(Sender: TObject);
     procedure CondSynEditChange(Sender: TObject);
     procedure CondSynEditKeyPress(Sender: TObject; var Key: char);
     procedure CondSynEditProcessUserCommand(Sender: TObject;
@@ -65,6 +69,7 @@ type
     fSynCompletion: TSynCompletion;
     procedure SetIdleConnected(AValue: Boolean);
     procedure SetStatusMessage(const AValue: string);
+    function RenderAllOptions(aReader: TCompilerReader): TModalResult;
     procedure StartCompletion;
     procedure UpdateCompletionValues;
     function GetCondCursorWord: string;
@@ -104,6 +109,179 @@ implementation
 {$R *.lfm}
 
 { TCompilerOtherOptionsFrame }
+
+function TCompilerOtherOptionsFrame.RenderAllOptions(aReader: TCompilerReader): TModalResult;
+const
+  LeftEdit = 150;
+  LeftDescrEdit = 350;
+  LeftDescrBoolean = 200;
+var
+  Opt: TCompilerOptBase;
+  yLoc: Integer;
+  aContainer: TCustomControl;
+
+  function MakeHeaderLabel: TControl;
+  begin
+    Result := TLabel.Create(aContainer);
+    Result.Parent := aContainer;
+    Result.Top := yLoc;
+    Result.Left := Opt.Indentation*4;
+    Result.Caption := Opt.Option+#9#9+Opt.Description;
+  end;
+
+  function MakeOptionCntrl(aCntrlClass: TControlClass;
+    aTopOffs: integer=0; aIndentOffs: integer=0): TControl;
+  begin
+    Result := aCntrlClass.Create(aContainer);
+    Result.Parent := aContainer;
+    Result.Top := yLoc+aTopOffs;
+    Result.Left := (Opt.Indentation+aIndentOffs)*4;
+    Result.Caption := Opt.Option;
+  end;
+
+  function MakeCheckBox(aCapt: string; aIndentOffs: integer=0): TControl;
+  begin
+    Result := TCheckBox.Create(aContainer);
+    Result.Parent := aContainer;
+    Result.Top := yLoc;
+    Result.Left := (Opt.Indentation+aIndentOffs)*4;
+    Result.Caption := aCapt;
+  end;
+
+  function MakeEditCntrl(aLbl: TControl; aCntrlClass: TControlClass): TControl;
+  // TEdit or TComboBox
+  begin
+    Result := aCntrlClass.Create(aContainer);
+    Result.Parent := aContainer;
+    Result.AnchorSide[akTop].Control := aLbl;
+    Result.AnchorSide[akTop].Side := asrCenter;
+    Result.Left := LeftEdit;        // Now use Left instead of anchors
+//    Result.AnchorSide[akLeft].Control := Lbl;
+//    Result.AnchorSide[akLeft].Side := asrRight;
+//    Result.BorderSpacing.Left := 10;
+    Result.Anchors := [akLeft,akTop];
+  end;
+
+  procedure MakeDescrLabel(aCntrl: TControl; aLeft: integer);
+  // Description label after CheckBox / Edit control
+  var
+    Lbl: TControl;
+  begin
+    Lbl := TLabel.Create(aContainer);
+    Lbl.Parent := aContainer;
+    Lbl.Caption := Opt.Description;
+    Lbl.AnchorSide[akTop].Control := aCntrl;
+    Lbl.AnchorSide[akTop].Side := asrCenter;
+    Lbl.Left := aLeft;              // Now use Left instead of anchors
+//    Lbl.AnchorSide[akLeft].Control := aCntrl;
+//    Lbl.AnchorSide[akLeft].Side := asrRight;
+//    Lbl.BorderSpacing.Left := 30;
+    Lbl.Anchors := [akLeft,akTop];
+  end;
+
+  procedure AddChoices(aComboBox: TComboBox; aCategory: string);
+  // Add selection choices to ComboBox from data originating from "fpc -i".
+  var
+    i: Integer;
+  begin
+    with aReader.SupportedCategories do
+      if Find(aCategory, i) then
+        aComboBox.Items.Assign(Objects[i] as TStrings)
+      else
+        raise Exception.CreateFmt('AddChoices: Selection list for "%s" is not found.',
+                                  [aCategory]);
+  end;
+
+var
+  OptSet: TCompilerOptSet;
+  Cntrl, Lbl: TControl;
+  cb: TComboBox;
+  i, j: Integer;
+begin
+  Result := mrOK;
+  aContainer := sbAllOptions;
+  yLoc := 0;
+  for i := 0 to aReader.Options.Count-1 do begin
+    Opt := TCompilerOptBase(aReader.Options[i]);
+    case Opt.EditKind of
+      oeNone: begin                           // Label
+        Cntrl := MakeHeaderLabel;
+      end;
+      oeBoolean: begin                        // CheckBox
+        Cntrl := MakeOptionCntrl(TCheckBox);
+        MakeDescrLabel(Cntrl, LeftDescrBoolean);
+      end;
+      oeNumber, oeText: begin                 // Edit
+        Lbl := MakeOptionCntrl(TLabel, 3);
+        Cntrl := MakeEditCntrl(Lbl, TEdit);
+        MakeDescrLabel(Cntrl, LeftDescrEdit);
+      end;
+      oeList: begin                           // ComboBox
+        Lbl := MakeOptionCntrl(TLabel, 3);
+        Cntrl := MakeEditCntrl(Lbl, TComboBox);
+        cb := TComboBox(Cntrl);
+        cb.Style := csDropDownList;
+        case Opt.Option of
+          '-Ca<x>':     AddChoices(cb, 'ABI targets:');
+          '-Cf<x>':     AddChoices(cb, 'FPU instruction sets:');
+          '-Cp<x>':     AddChoices(cb, 'CPU instruction sets:');
+          '-Oo[NO]<x>': AddChoices(cb, 'Optimizations:');
+          '-Op<x>':     AddChoices(cb, 'CPU instruction sets:');
+          '-OW<x>':     AddChoices(cb, 'Whole Program Optimizations:');
+          '-Ow<x>':     AddChoices(cb, 'Whole Program Optimizations:');
+          else
+            raise Exception.Create('AddChoices: Unknown option ' + Opt.Option);
+        end;
+        MakeDescrLabel(Cntrl, LeftDescrEdit);
+      end
+      else
+        raise Exception.Create('TCompilerOptsRenderer.Render: Unknown EditKind.');
+    end;
+    Inc(yLoc, Cntrl.Height+2);
+    // Show the set of options
+    if Opt is TCompilerOptSet then begin
+      OptSet := TCompilerOptSet(Opt);
+      if OptSet.AllowNum then begin
+        Lbl := MakeOptionCntrl(TLabel, 3, 4);
+        Lbl.Caption := 'Number';
+        Cntrl := MakeEditCntrl(Lbl, TEdit);
+        Inc(yLoc, Cntrl.Height+2);
+      end;
+      for j := 0 to OptSet.OptionSet.Count-1 do begin
+        Cntrl := MakeCheckBox(OptSet.OptionSet[j], 4);
+        Inc(yLoc, Cntrl.Height+2);
+      end;
+    end;
+  end;
+end;
+
+procedure TCompilerOtherOptionsFrame.btnGetAllClick(Sender: TObject);
+var
+  Reader: TCompilerReader;
+  StartTime: TDateTime;
+begin
+  Reader := TCompilerReader.Create;
+  Screen.Cursor:=crHourGlass;
+  try
+    lblStatus.Caption := 'Reading Options ...';
+    Application.ProcessMessages;
+    Reader.CompilerExecutable := EnvironmentOptions.CompilerFilename;
+    if Reader.ReadAndParseOptions <> mrOK then
+      ShowMessage(Reader.ErrorMsg);
+    lblStatus.Caption := 'Rendering GUI ...';
+    Application.ProcessMessages;
+    StartTime := Now;
+    sbAllOptions.Anchors := [];
+    RenderAllOptions(Reader);
+    btnGetAll.Visible := False;
+    lblStatus.Visible := False;
+    sbAllOptions.Anchors := [akLeft,akTop, akRight, akBottom];
+    CondStatusbar.Panels[2].Text := 'Render took ' + FormatDateTime('hh:nn:ss', Now-StartTime);
+  finally
+    Screen.Cursor:=crDefault;
+    Reader.Free;
+  end;
+end;
 
 procedure TCompilerOtherOptionsFrame.CondSynEditChange(Sender: TObject);
 begin

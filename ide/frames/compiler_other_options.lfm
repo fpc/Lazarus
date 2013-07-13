@@ -708,16 +708,6 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     Align = alBottom
     ResizeAnchor = akBottom
   end
-  object AllOptionsScrollBox: TScrollBox
-    Left = 0
-    Height = 147
-    Top = 0
-    Width = 594
-    HorzScrollBar.Page = 590
-    VertScrollBar.Page = 143
-    Align = alClient
-    TabOrder = 3
-  end
   object CustomSplitter: TSplitter
     Cursor = crVSplit
     Left = 0
@@ -726,5 +716,52 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     Width = 594
     Align = alBottom
     ResizeAnchor = akBottom
+  end
+  object AllOptionsGroupBox: TGroupBox
+    Left = 0
+    Height = 147
+    Top = 0
+    Width = 594
+    Align = alClient
+    Caption = 'AllOptionsGroupBox'
+    ClientHeight = 128
+    ClientWidth = 590
+    TabOrder = 4
+    object sbAllOptions: TScrollBox
+      Left = 0
+      Height = 127
+      Top = 0
+      Width = 590
+      HorzScrollBar.Increment = 58
+      HorzScrollBar.Page = 586
+      HorzScrollBar.Smooth = True
+      HorzScrollBar.Tracking = True
+      VertScrollBar.Increment = 12
+      VertScrollBar.Page = 123
+      VertScrollBar.Smooth = True
+      VertScrollBar.Tracking = True
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      ClientHeight = 123
+      ClientWidth = 586
+      TabOrder = 0
+      object btnGetAll: TButton
+        Left = 6
+        Height = 25
+        Top = 6
+        Width = 105
+        AutoSize = True
+        Caption = 'Get all options'
+        OnClick = btnGetAllClick
+        TabOrder = 0
+      end
+      object lblStatus: TLabel
+        Left = 126
+        Height = 15
+        Top = 13
+        Width = 55
+        Caption = 'lblStatus'
+        ParentColor = False
+      end
+    end
   end
 end

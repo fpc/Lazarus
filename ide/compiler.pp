@@ -38,9 +38,9 @@ unit Compiler;
 interface
 
 uses
-  Classes, SysUtils, Process, LCLProc, Forms, Controls, FileUtil, InfoBuild,
+  Classes, SysUtils, Process, LCLProc, Forms, Controls, contnrs, strutils, FileUtil,
   LazarusIDEStrConsts, CompilerOptions, Project, OutputFilter, UTF8Process,
-  IDEMsgIntf, LazIDEIntf, ProjectIntf, CompOptsIntf;
+  InfoBuild, IDEMsgIntf, LazIDEIntf, ProjectIntf, CompOptsIntf;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean) of object;
@@ -92,6 +92,118 @@ type
     {$IFDEF WithAsyncCompile}
     property ASyncResult: TModalResult read FASyncResult;
     {$ENDIF}
+  end;
+
+  // Following classes are for compiler options parsed from "fpc -h" and "fpc -i".
+
+  TCompilerOptEditKind = (
+    oeNone,     // Only show the option header
+    oeBoolean,  // Typically use CheckBox
+    oeText,     // Textual value
+    oeNumber,   // Numeric value
+    oeList      // Pre-defined list of choices
+  );
+
+  { TCompilerOptBase }
+
+  TCompilerOptBase = class
+  private
+    fOption: string;                    // Option without the leading '-'
+    fEditKind: TCompilerOptEditKind;
+    fSelections: TStringList;           // Used if EditKind = oeList
+    fDescription: string;
+    fIndentation: integer;              // Indentation level in "fpc -h" output.
+    procedure ParseOption(aDescr: string; aIndent: integer);
+  protected
+    function GuessEditKind: TCompilerOptEditKind; virtual;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  public
+    property Option: string read fOption;
+    property EditKind: TCompilerOptEditKind read fEditKind;
+    property Description: string read fDescription;
+    property Indentation: integer read fIndentation;
+  end;
+
+  TCompilerOptBaseList = TObjectList;
+  TCompilerOptGroup = class;
+
+  { TCompilerOpt }
+
+  TCompilerOpt = class(TCompilerOptBase)
+  private
+    fOwnerGroup: TCompilerOptGroup;
+    procedure SetOwnerGroup(aOwnerGroup: TCompilerOptGroup);
+  public
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+  TCompilerOptList = TObjectList;
+
+  // A set of options. A combination of chars or numbers forllowing the option char.
+
+  { TCompilerOptSet }
+
+  TCompilerOptSet = class(TCompilerOpt)
+  private
+    // Any combination of these can form an option. Can contain number as <n>
+    fOptionSet: TStringList;
+    fAllowNum: Boolean;
+    function AddOption(aDescr: string; aIndent: integer): integer;
+  protected
+    function GuessEditKind: TCompilerOptEditKind; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  public
+    property OptionSet: TStringList read fOptionSet;
+    property AllowNum: Boolean read fAllowNum;
+  end;
+
+  // Group with explanation header. Actual options are not defined here.
+
+  { TCompilerOptGroup }
+
+  TCompilerOptGroup = class(TCompilerOptBase)
+  private
+    // List of options belonging to this group.
+    fCompilerOpts: TCompilerOptList;
+  protected
+    function GuessEditKind: TCompilerOptEditKind; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  public
+    property CompilerOpts: TCompilerOptList read fCompilerOpts;
+  end;
+
+  { TCompilerReader }
+
+  TCompilerReader = class
+  private
+    // Lists of selections parsed from "fpc -i". Contains supported technologies.
+    fSupportedCategories: TStringList;
+    // All options parsed from "fpc -h".
+    fOptions: TCompilerOptBaseList;
+    fCompilerExecutable: string;
+    fCompilerVersion: string;
+    fErrorMsg: String;
+    function ReadFpcWithParam(aParam: string; aLines: TStringList): TModalResult;
+    procedure ReadVersion(s: string);
+    function FindPrevGroup(aIndent: integer): TCompilerOptGroup;
+    function ParseI(aLines: TStringList): TModalResult;
+    function ParseH(aLines: TStringList): TModalResult;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function ReadAndParseOptions: TModalResult;
+  public
+    property SupportedCategories: TStringList read fSupportedCategories;
+    property Options: TCompilerOptBaseList read fOptions;
+    property CompilerExecutable: string read fCompilerExecutable write fCompilerExecutable;
+    property ErrorMsg: String read fErrorMsg;
   end;
 
 
@@ -271,6 +383,387 @@ begin
     OutputFilter.ReadConstLine(Msg, True);
 end;
 
+
+// Compiler options parsed from "fpc -h" and "fpc -i".
+
+function CalcIndentation(s: string): integer;
+begin
+  Result := 0;
+  while (Result < Length(s)) and (s[Result+1] = ' ') do
+    Inc(Result);
+end;
+
+
+{ TCompilerOptBase }
+
+procedure TCompilerOptBase.ParseOption(aDescr: string; aIndent: integer);
+var
+  i, Start: Integer;
+begin
+  fIndentation := aIndent;
+  // Separate the actual option and description from each other
+  Start := aIndent+1;
+  if (Length(aDescr) < aIndent) or (aDescr[Start] <> '-') then
+    raise Exception.Create('Option description does not start with "-"');
+  i := Start;
+  while (i < Length(aDescr)) and (aDescr[i] <> ' ') do
+    Inc(i);
+  fOption := Copy(aDescr, Start, i-Start);
+  while (i < Length(aDescr)) and (aDescr[i] = ' ') do
+    Inc(i);
+  fDescription := Copy(aDescr, i, Length(aDescr));
+  fEditKind := GuessEditKind;
+end;
+
+function TCompilerOptBase.GuessEditKind: TCompilerOptEditKind;
+var
+  i: Integer;
+begin
+  // Guess whether this option can be edited and what is the EditKind
+  Result := oeBoolean;                      // Default kind
+  if Pos('fpc -i', fDescription) > 0 then
+    Result := oeList                        // Values will be got later.
+  else begin
+    i := Length(fOption);
+    if (i > 2) and (fOption[i-2] = '<') and (fOption[i] = '>') then
+      case fOption[i-1] of
+        'x': Result:=oeText;              // <x>
+        'n': Result:=oeNumber;            // <n>
+      end;
+  end;
+end;
+
+constructor TCompilerOptBase.Create;
+begin
+  inherited Create;
+end;
+
+destructor TCompilerOptBase.Destroy;
+begin
+  inherited Destroy;
+end;
+
+{ TCompilerOpt }
+
+constructor TCompilerOpt.Create;
+begin
+  inherited Create;
+end;
+
+destructor TCompilerOpt.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TCompilerOpt.SetOwnerGroup(aOwnerGroup: TCompilerOptGroup);
+begin
+  fOwnerGroup := aOwnerGroup;
+  if Assigned(fOwnerGroup) then // 'TCompilerOpt.SetOwnerGroup: fOwnerGroup is not assigned.'
+    fOwnerGroup.fCompilerOpts.Add(Self);
+end;
+
+{ TCompilerOptSet }
+
+constructor TCompilerOptSet.Create;
+begin
+  inherited Create;
+  fOptionSet := TStringList.Create;
+end;
+
+destructor TCompilerOptSet.Destroy;
+begin
+  fOptionSet.Free;
+  inherited Destroy;
+end;
+
+function TCompilerOptSet.AddOption(aDescr: string; aIndent: integer): integer;
+// Set can have one letter options and <n> for numbers
+var
+  Opt1, Opt2: string;
+  i: Integer;
+begin
+  Opt1 := Copy(aDescr, aIndent+1, Length(aDescr));
+  if AnsiStartsStr('<n>', Opt1) then
+    fAllowNum := True             // Number will be added to GUI later
+  else begin
+    i := PosEx(':', Opt1, 4);
+    if (i > 0) and (Opt1[i-1]=' ') and (Opt1[i-2]<>' ') and (Opt1[i-3]=' ') then begin
+      // Found another option on the same line, like ' a :'
+      Opt2 := Copy(Opt1, i-2, Length(Opt1));
+      if Opt1[3] = ':' then
+        Opt1 := TrimRight(Copy(Opt1, 1, i-3))
+      else
+        Opt1 := '';
+    end;
+    if Opt1 <> '' then    // Can be empty when line in help output is split.
+      fOptionSet.Add(Opt1);
+    if Opt2 <> '' then
+      fOptionSet.Add(Opt2);
+  end;
+end;
+
+function TCompilerOptSet.GuessEditKind: TCompilerOptEditKind;
+begin
+  Result := oeNone;
+end;
+
+{ TCompilerOptGroup }
+
+constructor TCompilerOptGroup.Create;
+begin
+  inherited Create;
+  fCompilerOpts := TCompilerOptList.Create(False);
+end;
+
+destructor TCompilerOptGroup.Destroy;
+begin
+  fCompilerOpts.Free;
+  inherited Destroy;
+end;
+
+function TCompilerOptGroup.GuessEditKind: TCompilerOptEditKind;
+begin
+  Result:=inherited GuessEditKind;
+  if Result = oeBoolean then
+    Result := oeNone;
+end;
+
+
+{ TCompilerReader }
+
+constructor TCompilerReader.Create;
+begin
+  inherited Create;
+  fSupportedCategories := TStringList.Create;
+  fOptions := TCompilerOptBaseList.Create;
+end;
+
+destructor TCompilerReader.Destroy;
+var
+  i: Integer;
+begin
+  fOptions.Free;
+  for i := 0 to fSupportedCategories.Count-1 do
+    fSupportedCategories.Objects[i].Free;
+  fSupportedCategories.Free;
+  inherited Destroy;
+end;
+
+function TCompilerReader.ReadFpcWithParam(aParam: string; aLines: TStringList): TModalResult;
+// fpc -Fr$(FPCMsgFile) -h
+// fpc -Fr$(FPCMsgFile) -i
+var
+  proc: TProcessUTF8;
+  OutStream: TMemoryStream;
+
+  function ReadOutput: boolean;
+  // returns true if output was actually read
+  const
+    BufSize = 4096;
+  var
+    Buffer: array[0..BufSize-1] of byte;
+    ReadBytes: integer;
+  begin
+    Result := false;
+    while proc.Output.NumBytesAvailable>0 do begin
+      ReadBytes := proc.Output.Read(Buffer, BufSize);
+      OutStream.Write(Buffer, ReadBytes);
+      Result := true;
+    end;
+  end;
+
+  function GetOutput: string;
+  begin
+    SetLength(Result, OutStream.Size);
+    OutStream.Seek(0,soBeginning);
+    OutStream.Read(Result[1],Length(Result));
+  end;
+
+begin
+  proc := TProcessUTF8.Create(Nil);
+  OutStream := TMemoryStream.Create;
+  try
+    if fCompilerExecutable = '' then
+      fCompilerExecutable := 'fpc';        // Let's hope "fpc" is found in PATH.
+    proc.Executable := fCompilerExecutable;
+    proc.Parameters.Add(aParam);
+    proc.Options:= [poUsePipes, poStdErrToOutput];
+    //proc.ShowWindow := swoHide;
+    proc.ShowWindow := swoShowNormal;
+    //proc.CurrentDirectory := WorkingDir;
+    proc.Execute;
+    while proc.Running do begin
+      if not ReadOutput then
+        Sleep(100);
+    end;
+    ReadOutput;
+    Result := proc.ExitStatus;
+    if Result<>0 then begin
+      fErrorMsg := Format('fpc %s failed: Result %d' + LineEnding + '%s',
+                          [aParam, Result, GetOutput]);
+      Result := mrCancel;
+    end
+    else begin
+      OutStream.Seek(0,soBeginning);
+      aLines.LoadFromStream(OutStream);
+      Result := mrOK;
+    end;
+  finally
+    OutStream.Free;
+    proc.Free;
+  end;
+end;
+
+function TCompilerReader.ParseI(aLines: TStringList): TModalResult;
+const
+  Supported = 'Supported ';
+var
+  i: Integer;
+  s, Line, TrimmedLine: String;
+  Category: TStringList;
+begin
+  Result := mrOK;
+  Category := Nil;
+  for i := 0 to aLines.Count-1 do begin
+    Line := aLines[i];
+    TrimmedLine := Trim(Line);
+    if Assigned(Category) then begin
+      if TrimmedLine = '' then
+        Category := Nil             // End of category.
+      else begin
+        if Line[1] <> ' ' then
+          raise Exception.Create('TCompilerReader.ParseI: Line should start with a space.');
+        Category.Add(Trim(Line));
+      end;
+    end
+    else if AnsiStartsStr(Supported, Line) then begin
+      Category := TStringList.Create;
+      Category.Add('');      // First an empty string. Allows removing selection.
+      s := Copy(Line, Length(Supported)+1, Length(Line));
+      fSupportedCategories.AddObject(s, Category);
+    end;
+  end;
+  fSupportedCategories.Sorted := True;
+end;
+
+procedure TCompilerReader.ReadVersion(s: string);
+const
+  VersBegin = 'Free Pascal Compiler version ';
+var
+  i, Start: Integer;
+begin
+  if AnsiStartsStr(VersBegin, s) then begin
+    Start := Length(VersBegin);
+    i := PosEx(' ', s, Start+1);
+    if i > 0 then begin
+      fCompilerVersion := Copy(s, Start, i-Start);
+      // ToDo: the rest 2 fields are date and target CPU.
+    end;
+  end;
+end;
+
+function TCompilerReader.FindPrevGroup(aIndent: integer): TCompilerOptGroup;
+var
+  i: Integer;
+begin
+  for i := fOptions.Count-1 downto 0 do
+    if TCompilerOptBase(fOptions[i]).fIndentation < aIndent then
+      Exit(fOptions[i] as TCompilerOptGroup);
+  Result := Nil;
+end;
+
+function TCompilerReader.ParseH(aLines: TStringList): TModalResult;
+const
+  OptSetId = 'a combination of';
+var
+  i, ThisInd, NextInd: Integer;
+  ThisLine, NextLine: String;
+  Opt: TCompilerOptBase;
+  CurrentSet: TCompilerOptSet;
+  LastGroup: TCompilerOptGroup;
+begin
+  Result := mrOK;
+  CurrentSet := Nil;
+  LastGroup := Nil;
+  for i := 0 to aLines.Count-1 do begin
+    ThisLine := StringReplace(aLines[i],'-Agas-darwinAssemble','-Agas-darwin Assemble',[]);
+    ThisInd := CalcIndentation(ThisLine);
+    if ThisInd = 0 then begin
+      // Top header lines for compiler version etc.
+      ReadVersion(ThisLine);
+      Continue;
+    end;
+    if (Trim(ThisLine) = '') or (ThisInd > 30)
+    or (Pos(' -? ', ThisLine) > 0)
+    or (Pos(' -h ', ThisLine) > 0) then Continue;
+
+    if i < aLines.Count-1 then begin
+      NextLine := aLines[i+1];
+      NextInd := CalcIndentation(aLines[i+1]);
+    end
+    else begin
+      NextLine := '';
+      NextInd := -1;
+    end;
+    Opt := Nil;
+    if NextInd > ThisInd then begin
+      if Assigned(CurrentSet)
+      and ((Pos('  v : ', NextLine) > 0) or (NextInd > 30)) then begin
+        // A hack to deal with split lined in the help output.
+        NextInd := ThisInd;
+      end
+      else if Pos(OptSetId, ThisLine) > 0 then begin  // Header for sets
+        CurrentSet := TCompilerOptSet.Create;
+        CurrentSet.SetOwnerGroup(LastGroup);
+        Opt := CurrentSet;
+      end
+      else begin                                      // Group header for options
+        Assert(CurrentSet = Nil);
+        LastGroup := TCompilerOptGroup.Create;
+        Opt := LastGroup;
+      end;
+    end;
+    if NextInd <= ThisInd then begin
+      // This is an option
+      if Assigned(CurrentSet) then
+        CurrentSet.AddOption(ThisLine, ThisInd)    // Add it to a set
+      else begin
+        Opt := TCompilerOpt.Create;                // Add it under a group
+        TCompilerOpt(Opt).SetOwnerGroup(LastGroup);
+      end;
+      if (NextInd <> -1) and (NextInd < ThisInd) then begin
+        CurrentSet := Nil;               // Return from a group to a previous one
+        LastGroup := FindPrevGroup(NextInd);
+      end
+    end;
+    if Assigned(Opt) then begin
+      Opt.ParseOption(ThisLine, ThisInd);
+      fOptions.Add(Opt);
+    end;
+  end;
+end;
+
+function TCompilerReader.ReadAndParseOptions: TModalResult;
+var
+  Lines: TStringList;
+begin
+  Lines := TStringList.Create;
+  try
+    // FPC with option -i
+    Result := ReadFpcWithParam('-i', Lines);
+    if Result <> mrOK then Exit;
+    Result := ParseI(Lines);
+    if Result <> mrOK then Exit;
+
+    // FPC with option -h
+    Lines.Clear;
+    Result := ReadFpcWithParam('-h', Lines);
+    if Result <> mrOK then Exit;
+    Result := ParseH(Lines);
+  finally
+    Lines.Free;
+  end;
+end;
 
 end.
 
