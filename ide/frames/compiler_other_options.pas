@@ -272,9 +272,14 @@ begin
     Application.ProcessMessages;
     StartTime := Now;
     sbAllOptions.Anchors := [];
-    RenderAllOptions(Reader);
-    btnGetAll.Visible := False;
-    lblStatus.Visible := False;
+    DisableAutoSizing;
+    try
+      RenderAllOptions(Reader);
+      btnGetAll.Visible := False;
+      lblStatus.Visible := False;
+    finally
+      EnableAutoSizing;
+    end;
     sbAllOptions.Anchors := [akLeft,akTop, akRight, akBottom];
     CondStatusbar.Panels[2].Text := 'Render took ' + FormatDateTime('hh:nn:ss', Now-StartTime);
   finally
