@@ -289,8 +289,7 @@ begin
   IdleConnected:=true;
 end;
 
-procedure TCompilerOtherOptionsFrame.CondSynEditKeyPress(Sender: TObject;
-  var Key: char);
+procedure TCompilerOtherOptionsFrame.CondSynEditKeyPress(Sender: TObject; var Key: char);
 begin
   //debugln(['TCompilerOtherOptionsFrame.CondSynEditKeyPress ',ord(Key)]);
 end;
@@ -399,8 +398,7 @@ begin
   CondSynEdit.LogicalCaretXY:=XY;
 end;
 
-procedure TCompilerOtherOptionsFrame.OnSynCompletionSearchPosition(
-  var Position: integer);
+procedure TCompilerOtherOptionsFrame.OnSynCompletionSearchPosition(var Position: integer);
 var
   sl: TStringList;
   Prefix: String;
@@ -694,16 +692,16 @@ var
   EndX: integer;
   Line: string;
 begin
-  XY:=CondSynEdit.LogicalCaretXY;
+  XY := CondSynEdit.LogicalCaretXY;
   if (XY.Y>=1) and (XY.Y<=CondSynEdit.Lines.Count) then
   begin
     CondSynEdit.GetWordBoundsAtRowCol(XY,StartX,EndX);
     //debugln(['TCompOptBuildMacrosFrame.GetCondCursorWord ',StartX,' ',EndX,' ',XY.X]);
-    EndX:=Min(EndX,XY.X);
+    EndX := Min(EndX,XY.X);
     Line := CondSynEdit.Lines[XY.Y - 1];
-    Result:= Copy(Line, StartX, EndX - StartX);
+    Result := Copy(Line, StartX, EndX - StartX);
   end else
-    Result:='';
+    Result := '';
   //debugln(['TCompOptBuildMacrosFrame.GetCondCursorWord "',Result,'"']);
 end;
 
@@ -788,26 +786,26 @@ end;
 procedure TCompilerOtherOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   grpCustomOptions.Caption := lisCustomOptions2;
-  memCustomOptions.Hint:=lisCustomOptHint;
+  memCustomOptions.Hint := lisCustomOptHint;
 end;
 
 procedure TCompilerOtherOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   Vars: TCTCfgScriptVariables;
 begin
-  FCompOptions:=AOptions as TBaseCompilerOptions;
-  FIsPackage:=CompOptions is TPkgCompilerOptions;
+  FCompOptions := AOptions as TBaseCompilerOptions;
+  FIsPackage := CompOptions is TPkgCompilerOptions;
   //debugln(['TCompilerOtherOptionsFrame.ReadSettings ',dbgs(Pointer(FCompOptions)),' ',FCompOptions=Project1.CompilerOptions]);
 
   memCustomOptions.Text := CompOptions.CustomOptions;
 
-  Vars:=GetBuildMacroValues(CompOptions,false);
+  Vars := GetBuildMacroValues(CompOptions,false);
   if Vars<>nil then
     DefaultVariables.Assign(Vars)
   else
     DefaultVariables.Clear;
 
-  CondSynEdit.Lines.Text:=CompOptions.Conditionals;
+  CondSynEdit.Lines.Text := CompOptions.Conditionals;
   if FHighlighter=nil then
   begin
     FHighlighter := TPreviewPasSyn.Create(Self);
