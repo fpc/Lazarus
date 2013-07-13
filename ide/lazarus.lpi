@@ -66,7 +66,7 @@
         <PackageName Value="SynEdit"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="102">
+    <Units Count="103">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -779,6 +779,11 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="compiler_config_target"/>
       </Unit101>
+      <Unit102>
+        <Filename Value="../converter/convertdelphi.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ConvertDelphi"/>
+      </Unit102>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
