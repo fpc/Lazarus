@@ -95,12 +95,12 @@ type
 
   TProjectInspectorForm = class(TForm)
     BtnPanel: TPanel;
-    DirectoryHierarchyButton: TSpeedButton;
-    FilterEdit: TTreeFilterEdit;
     OpenButton: TSpeedButton;
+    DirectoryHierarchyButton: TSpeedButton;
+    SortAlphabeticallyButton: TSpeedButton;
+    FilterEdit: TTreeFilterEdit;
     ItemsTreeView: TTreeView;
     ItemsPopupMenu: TPopupMenu;
-    SortAlphabeticallyButton: TSpeedButton;
     // toolbar
     ToolBar: TToolBar;
     // toolbuttons
@@ -841,6 +841,8 @@ begin
   inherited Create(TheOwner);
   Name:=NonModalIDEWindowNames[nmiwProjectInspector];
   Caption:=lisMenuProjectInspector;
+  FShowDirectoryHierarchy := True;
+  DirectoryHierarchyButton.Down := FShowDirectoryHierarchy;
   FSortAlphabetically := True;
   SortAlphabeticallyButton.Down := FSortAlphabetically;
   KeyPreview:=true;
