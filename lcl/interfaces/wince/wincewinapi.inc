@@ -2951,7 +2951,7 @@ begin
 
   Result := False;
 
-  if AMenuHandle = 0 then
+  if (AMenuHandle = 0) or (MenuLCLObjectList.Count = 0) then
     lLCLMenu := nil
   else
   begin
