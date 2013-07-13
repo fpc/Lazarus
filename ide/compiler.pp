@@ -110,7 +110,6 @@ type
   private
     fOption: string;                    // Option without the leading '-'
     fEditKind: TCompilerOptEditKind;
-    fSelections: TStringList;           // Used if EditKind = oeList
     fDescription: string;
     fIndentation: integer;              // Indentation level in "fpc -h" output.
     procedure ParseOption(aDescr: string; aIndent: integer);
@@ -482,6 +481,7 @@ var
   Opt1, Opt2: string;
   i: Integer;
 begin
+  Result:=-1;
   Opt1 := Copy(aDescr, aIndent+1, Length(aDescr));
   if AnsiStartsStr('<n>', Opt1) then
     fAllowNum := True             // Number will be added to GUI later
@@ -498,7 +498,7 @@ begin
     if Opt1 <> '' then    // Can be empty when line in help output is split.
       fOptionSet.Add(Opt1);
     if Opt2 <> '' then
-      fOptionSet.Add(Opt2);
+      Result:=fOptionSet.Add(Opt2);
   end;
 end;
 
