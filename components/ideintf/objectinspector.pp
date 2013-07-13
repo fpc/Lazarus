@@ -3874,9 +3874,6 @@ constructor TObjectInspectorDlg.Create(AnOwner: TComponent);
       MainPopupMenu.Items.Add(Result);
   end;
 
-var
-  i: Integer;
-  s: String;
 begin
   inherited Create(AnOwner);
   FEnableHookGetSelection:= true;
@@ -5172,8 +5169,6 @@ var
   end;
 
 var
-  sHint, Capt: String;
-  i: Integer;
   b, AtLeastOneComponent, CanBeDeleted: Boolean;
   CurRow: TOIPropertyGridRow;
   Persistent: TPersistent;
