@@ -41,11 +41,11 @@ type
   TCompilerOtherOptionsFrame = class(TAbstractIDEOptionsEditor)
     btnGetAll: TButton;
     ConditionalsSplitter: TSplitter;
-    AllOptionsGroupBox: TGroupBox;
+    grpAllOptions: TGroupBox;
     grpCustomOptions: TGroupBox;
     lblStatus: TLabel;
     memCustomOptions: TMemo;
-    ConditionalsGroupBox: TGroupBox;
+    grpConditionals: TGroupBox;
     CondStatusbar: TStatusBar;
     CondSynEdit: TSynEdit;
     CustomSplitter: TSplitter;
@@ -745,8 +745,6 @@ begin
   fDefaultVariables:=TCTCfgScriptVariables.Create;
   fEngine:=TIDECfgScriptEngine.Create;
 
-  ConditionalsGroupBox.Caption:=lisConditionals;
-
   CondSynEdit.OnStatusChange:=@CondSynEditStatusChange;
 
   fSynCompletion:=TSynCompletion.Create(Self);
@@ -785,8 +783,10 @@ end;
 
 procedure TCompilerOtherOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
+  grpAllOptions.Caption := lisAllOptions;
   grpCustomOptions.Caption := lisCustomOptions2;
   memCustomOptions.Hint := lisCustomOptHint;
+  grpConditionals.Caption := lisConditionals;
 end;
 
 procedure TCompilerOtherOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

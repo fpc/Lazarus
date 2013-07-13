@@ -31,14 +31,14 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       TabOrder = 0
     end
   end
-  object ConditionalsGroupBox: TGroupBox
+  object grpConditionals: TGroupBox
     Left = 0
     Height = 206
     Top = 240
     Width = 594
     Align = alBottom
     Anchors = [akTop, akLeft, akRight]
-    Caption = 'ConditionalsGroupBox'
+    Caption = 'grpConditionals'
     ClientHeight = 187
     ClientWidth = 590
     TabOrder = 1
@@ -717,13 +717,13 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     Align = alBottom
     ResizeAnchor = akBottom
   end
-  object AllOptionsGroupBox: TGroupBox
+  object grpAllOptions: TGroupBox
     Left = 0
     Height = 147
     Top = 0
     Width = 594
     Align = alClient
-    Caption = 'AllOptionsGroupBox'
+    Caption = 'grpAllOptions'
     ClientHeight = 128
     ClientWidth = 590
     TabOrder = 4

@@ -2093,6 +2093,7 @@ resourcestring
   dlgConfigFiles = 'Config files';
   dlgUseFpcCfg = 'Use standard compiler config file (fpc.cfg)';
   dlgUseCustomConfig = 'Use additional compiler config file';
+  lisAllOptions = 'All Options';
   lisCustomOptions2 = 'Custom options';
   lisCustomOptHint = 'These options are passed directly to the compiler. Macros ' +
                      'are replaced, line breaks are replaced with single spaces.';
