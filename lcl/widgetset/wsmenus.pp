@@ -49,6 +49,8 @@ type
 
   TWSMenuItem = class(TWSLCLComponent)
   published
+    class function  OpenCommand: LongInt; virtual;
+    class procedure CloseCommand(ACommand: LongInt); virtual;
     class procedure AttachMenu(const AMenuItem: TMenuItem); virtual;
     class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; virtual;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); virtual;
@@ -99,7 +101,30 @@ function WSCheckMenuItem(const AMenuItem: TMenuItem;
 
 implementation
 
+{ Menu command management }
+
+var
+  CommandPool: TBits = nil;
+
+function UniqueCommand: LongInt;
+begin
+  if CommandPool = nil then
+    CommandPool := TBits.Create(16);
+  Result := CommandPool.OpenBit;
+  CommandPool[Result] := True;
+end;
+
 { TWSMenuItem }
+
+class function TWSMenuItem.OpenCommand: LongInt;
+begin
+  Result := UniqueCommand;
+end;
+
+class procedure TWSMenuItem.CloseCommand(ACommand: LongInt);
+begin
+  CommandPool[ACommand] := False;
+end;
 
 class procedure TWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 begin
@@ -232,4 +257,6 @@ begin
   Done := True;
 end;
 
+finalization
+  FreeThenNil(CommandPool);
 end.

@@ -45,6 +45,8 @@ type
       var AForm: TForm): Boolean;
     {$endif}
   published
+    class function OpenCommand: LongInt; override;
+    class procedure CloseCommand(ACommand: LongInt); override;
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
@@ -80,7 +82,7 @@ type
   end;
 
 const
-  // IDs corresponding to the file winceres.rc
+  // IDs corresponding to the file wincemenures.rc
   MenuBarID_Items  = 20000;
   MenuBarID_PopUp_Item = 20001;
   MenuBarID_Item_Popup = 20002;
@@ -90,6 +92,7 @@ const
   MenuBarID_Empty = 20006;
   MenuBarID_L = 1001;
   MenuBarID_R = 1002;
+  MenuBarID_BASE = 1003;
 var
   MenuItemsList: TStringList;
   MenuHandleList, MenuLCLObjectList: TFPList;
@@ -573,7 +576,6 @@ begin
   begin
     GetWindowRect(mbi.hwndMB, R);
     Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);
-
     if WR.Bottom > R.Top then
       SetWindowPos(wnd, 0, 0, 0, WR.Right - WR.Left, R.Top - WR.Top, SWP_NOZORDER or SWP_NOREPOSITION or SWP_NOMOVE);
   end;
@@ -887,6 +889,19 @@ begin
       Break;
     end;
 end;
+
+class function TWinCEWSMenuItem.OpenCommand: LongInt;
+begin
+  Result := inherited OpenCommand;
+  Result := Result + MenuBarID_BASE;
+end;
+
+class procedure TWinCEWSMenuItem.CloseCommand(ACommand: LongInt);
+begin
+  ACommand := ACommand - MenuBarID_BASE;
+  inherited CloseCommand(ACommand);
+end;
+
 {$endif}
 
 class procedure TWinCEWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);

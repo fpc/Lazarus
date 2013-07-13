@@ -111,7 +111,7 @@ begin
   FChecked := False;
   FVisible := True;
   FEnabled := True;
-  FCommand := UniqueCommand;
+  FCommand := TWSMenuItemClass(WidgetSetClass).OpenCommand;
   FImageIndex := -1;
   FBitmapIsValid := True;
   FRightJustify := False;
@@ -210,7 +210,7 @@ begin
     FreeAndNil(FMenuItemHandlers[HandlerType]);
   if FParent <> nil then
     FParent.FItems.Remove(Self);
-  if FCommand <> 0 then CommandPool[FCommand] := False;
+  if FCommand <> 0 then TWSMenuItemClass(WidgetSetClass).CloseCommand(FCommand);
   //debugln('TMenuItem.Destroy B ',dbgsName(Self));
   inherited Destroy;
 end;

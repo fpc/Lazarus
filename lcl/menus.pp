@@ -450,19 +450,6 @@ uses
   WSMenus,
   Forms {KeyDataToShiftState};
 
-{ Menu command management }
-
-var
-  CommandPool: TBits = nil;
-
-function UniqueCommand: LongInt;
-begin
-  if CommandPool = nil then
-    CommandPool := TBits.Create(16);
-  Result := CommandPool.OpenBit;
-  CommandPool[Result] := True;
-end;
-
 { Easy Menu building }
 
 procedure AddMenuItems(AMenu: TMenu; const Items: array of TMenuItem);
@@ -588,8 +575,5 @@ begin
   inc(FPosition);
   Result := FPosition < FMenuItem.Count;
 end;
-
-finalization
-  FreeThenNil(CommandPool);
 
 end.
