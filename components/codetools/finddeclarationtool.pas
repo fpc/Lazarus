@@ -1512,8 +1512,11 @@ begin
         and (NodeIsMethodBody(CursorNode.Parent)) then begin
           // if this is a procedure body, try to find the corresponding declaration
           NewNode:=FindCorrespondingProcNode(CursorNode.Parent);
-          if (NewNode<>nil) and (NewNode.StartPos<CursorNode.StartPos) then
-            CleanCursorPos:=NewNode.StartPos
+          if (NewNode<>nil) and (NewNode.Desc=ctnProcedure) then
+            NewNode:=NewNode.FirstChild;
+          if (NewNode<>nil) and (NewNode.StartPos<CursorNode.StartPos) then begin
+            CleanCursorPos:=NewNode.StartPos;
+          end
           else
             NewNode:=CursorNode;
         end;
