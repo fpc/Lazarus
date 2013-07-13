@@ -54,9 +54,6 @@ uses
   // IDE
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs, MainBar,
   InputHistory, ExtToolDialog, ExtToolEditDlg, EnvironmentOpts,
-  {$IFDEF win32}
-  CodeToolManager, // added for windres workaround
-  {$ENDIF}
   ApplicationBundle, CompilerOptions, BuildProfileManager,
   GenericListEditor, GenericCheckList, PackageSystem, PackageDefs;
 
