@@ -44,16 +44,16 @@ unit BuildLazDialog;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LConvEncoding, Forms, Controls, LCLType, LCLIntf,
-  Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, LazUTF8,
-  LazLogger, lazutf8classes, Dialogs, InterfaceBase, Themes, CheckLst, Menus,
+  Classes, SysUtils, LCLProc, Forms, Controls, LCLType, StdCtrls, ExtCtrls,
+  Buttons, FileUtil, LazUTF8,
+  LazLogger, lazutf8classes, Dialogs, InterfaceBase, CheckLst, Menus,
   ComCtrls, DividerBevel, DefineTemplates, CodeToolManager,
   // IDEIntf
   LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
   PackageIntf,
   // IDE
-  LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs, MainBar,
-  InputHistory, ExtToolDialog, ExtToolEditDlg, EnvironmentOpts,
+  LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
+  MainBar, ExtToolEditDlg, EnvironmentOpts,
   ApplicationBundle, CompilerOptions, BuildProfileManager,
   GenericListEditor, GenericCheckList, PackageSystem, PackageDefs;
 
