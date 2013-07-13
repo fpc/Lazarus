@@ -10,7 +10,7 @@ interface
 uses
   MacOSAll, // for CGContextRef
   LCLtype, LCLProc, Graphics, Controls,
-  CocoaAll, CocoaUtils,
+  CocoaAll, CocoaProc, CocoaUtils,
   SysUtils, Classes, Contnrs, Types, Math;
 
 type
@@ -1660,7 +1660,7 @@ var
 begin
   if Style = bvRaised then
   begin
-    GetThemeMetric(kThemeMetricPrimaryGroupBoxContentInset, D);
+    GetHiThemeMetric(kThemeMetricPrimaryGroupBoxContentInset, D);
 
     // draw frame as group box
     DrawInfo.version := 0;
@@ -1669,7 +1669,11 @@ begin
 
     for I := 1 to FrameWidth do
     begin
+      {$IFDEF NoCarbon}
+      // ToDo
+      {$ELSE}
       HIThemeDrawGroupBox(RectToCGRect(ARect), DrawInfo, CGContext, kHIThemeOrientationNormal);
+      {$ENDIF}
       InflateRect(ARect, -D, -D);
     end;
   end;
@@ -1880,11 +1884,15 @@ procedure TCocoaContext.DrawFocusRect(ARect: TRect);
 var
   AOutSet: SInt32;
 begin
+  {$IFDEF NoCarbon}
+  // ToDo
+  {$ELSE}
   // LCL thinks that focus cannot be drawn outside focus rects, but carbon do that
   // => correct rect
   GetThemeMetric(kThemeMetricFocusRectOutset, AOutSet);
   InflateRect(ARect, -AOutSet, -AOutSet);
   HIThemeDrawFocusRect(RectToCGRect(ARect), True, CGContext, kHIThemeOrientationNormal);
+  {$ENDIF}
 end;
 
 { TCocoaRegion }

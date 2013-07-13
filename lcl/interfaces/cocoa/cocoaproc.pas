@@ -63,6 +63,7 @@ function QDStyleToFontStyle(QDStyle: Integer): TFontStyles;}
 
 procedure FillStandardDescription(out Desc: TRawImageDescription);
 function GetHiThemeMetric(Metric: ThemeMetric; DefaultValue: Integer = 0): Integer;
+
 {
 function CreateCustomHIView(const ARect: HIRect; ControlStyle: TControlStyle = []): HIViewRef;
 
@@ -123,6 +124,8 @@ procedure RaiseCreateWidgetError(AControl: TWinControl);
 procedure RaiseColorSpaceError;
 procedure RaiseMemoryAllocationError;
 procedure RaiseContextCreationError;}
+
+function GetCurrentEventTime: double;
 
 implementation
 
@@ -620,9 +623,21 @@ end;
  ------------------------------------------------------------------------------}
 function GetHiThemeMetric(Metric: ThemeMetric; DefaultValue: Integer): Integer;
 begin
+  {$IFDEF NoCarbon}
+  // ToDo
+  Result := DefaultValue;;
+  {$ELSE}
   if GetThemeMetric(Metric, Result) <> noErr then
     Result := DefaultValue;
+  {$ENDIF}
 end;
+
+function GetCurrentEventTime: double;
+// returns seconds since system startup
+begin
+  Result := AbsoluteToDuration(UpTime) / 1000.0;
+end;
+
 (*
 {------------------------------------------------------------------------------
   Name:    CreateCustomHIView

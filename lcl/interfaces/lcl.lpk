@@ -47,6 +47,8 @@ else if LCLWidgetType='carbon' then begin
   IncPath := UnitPath;
 end else if LCLWidgetType='cocoa' then begin
   CustomOptions := '-dcocoa';
+  if TargetCPU&lt;>'i386' then
+    CustomOptions += ' -dNoCarbon';
 end else if LCLWidgetType='wince' then begin
   CustomOptions := '-dDisableChecks';
 end else if LCLWidgetType='fpgui' then begin

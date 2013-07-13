@@ -1424,15 +1424,35 @@ begin
     VK_CAPITAL:
       Result := ToggleMap[(Modifiers and NSAlphaShiftKeyMask) <> 0];
     VK_LBUTTON:
+      {$IFDEF NoCarbon}
+      Result:=DownMap[false]; // ToDo
+      {$ELSE}
       Result := DownMap[(GetCurrentEventButtonState and $01) <> 0];
+      {$ENDIF}
     VK_RBUTTON:
+      {$IFDEF NoCarbon}
+      Result:=DownMap[false]; // ToDo
+      {$ELSE}
       Result := DownMap[(GetCurrentEventButtonState and $02) <> 0];
+      {$ENDIF}
     VK_MBUTTON:
+      {$IFDEF NoCarbon}
+      Result:=DownMap[false]; // ToDo
+      {$ELSE}
       Result := DownMap[(GetCurrentEventButtonState and $03) <> 0];
+      {$ENDIF}
     VK_XBUTTON1:
+      {$IFDEF NoCarbon}
+      Result:=DownMap[false]; // ToDo
+      {$ELSE}
       Result := DownMap[(GetCurrentEventButtonState and $04) <> 0];
+      {$ENDIF}
     VK_XBUTTON2:
+      {$IFDEF NoCarbon}
+      Result:=DownMap[false]; // ToDo
+      {$ELSE}
       Result := DownMap[(GetCurrentEventButtonState and $05) <> 0];
+      {$ENDIF}
     else
       Result := 0;
   end;
