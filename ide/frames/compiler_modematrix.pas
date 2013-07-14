@@ -661,12 +661,16 @@ var
   NewRow: TGroupedMatrixValue;
 
   procedure CreateOption;
+  var
+    Capt: String;
   begin
     if aTyp='' then
       aTyp:=Grid.TypeColumn.PickList.Names[0];
     if EnvironmentOptions.UseBuildModes then
-      NewRow:=Grid.Matrix.AddValue(Group,Grid.Modes[Grid.ActiveMode].Caption,aTyp,
-                                   aValue,CreateBuildMatrixOptionGUID);
+      Capt:=Grid.Modes[Grid.ActiveMode].Caption
+    else
+      Capt:=LazProject.BuildModes[0].GetCaption;
+    NewRow:=Grid.Matrix.AddValue(Group,Capt,aTyp,aValue,CreateBuildMatrixOptionGUID);
   end;
 
 begin
