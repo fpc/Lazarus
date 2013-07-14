@@ -480,7 +480,7 @@ begin
   // Sometimes LM_CHAR is received instead of LM_SYSCHAR, maybe intentionally
   // (LCL handles it) or maybe sent by mistake. In either case exit.
   if (Message.Msg <> LM_SYSCHAR) or not FShowAccelChar then Exit;
-  if IsAccel(Message.CharCode, Caption) then
+  if Enabled and IsAccel(Message.CharCode, Caption) then
   begin
     Result := True;
     if GroupIndex <> 0 then
