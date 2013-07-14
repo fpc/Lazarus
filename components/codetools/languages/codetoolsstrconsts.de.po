@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-10-30 10:18+0100\n"
+"PO-Revision-Date: 2013-07-14 11:23-0000\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: German\n"
-"X-Poedit-Country: GERMANY\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"Language: de_DE\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: codetoolsstrconsts.crsbracketnotfound
 msgid "bracket ) not found"
@@ -262,7 +262,9 @@ msgstr "Designer-Units"
 
 #: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "ein Verzeichniseintrag in %s ist nicht vorhanden oder es ist ein toter Symlink"
+msgstr ""
+"ein Verzeichniseintrag in %s ist nicht vorhanden oder es ist ein toter "
+"Symlink"
 
 #: codetoolsstrconsts.ctsdircomponentisnotdir
 msgid "a directory component in %s is not a directory"
@@ -653,7 +655,7 @@ msgstr "Projekt %s"
 
 #: codetoolsstrconsts.ctsneededbymode
 msgid " (needed by mode \"%s\")"
-msgstr ""
+msgstr " (benötigt von Modus \"%s\")"
 
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
@@ -680,8 +682,12 @@ msgid "No scanner available"
 msgstr "Kein Scanner verfügbar"
 
 #: codetoolsstrconsts.ctsnoscannerfound
-msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
-msgstr "Kein Scanner für \"%s\" gefunden. Wenn das eine Include-Datei ist, öffnen Sie bitte zuerst die Haupt-Quelltextdatei."
+msgid ""
+"No scanner found for \"%s\". If this is an include file, please open the "
+"main source first."
+msgstr ""
+"Kein Scanner für \"%s\" gefunden. Wenn das eine Include-Datei ist, öffnen "
+"Sie bitte zuerst die Haupt-Quelltextdatei."
 
 #: codetoolsstrconsts.ctsnotenoughgenparams
 msgid "Not enough actual generic parameters"
@@ -693,11 +699,11 @@ msgstr "alte Methode nicht gefunden: %s"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound
 msgid "operand expected but %s found"
-msgstr ""
+msgstr "Operand erwartet aber %s gefunden"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound2
 msgid "operand expected, but %s found"
-msgstr ""
+msgstr "Operand erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutatomfound
 msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutatomfound"
@@ -814,10 +820,11 @@ msgid "source is not unit"
 msgstr "Quelle ist keine Unit"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-#, fuzzy
 #| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
-msgstr "Quelltext nicht gefunden: Unit %s"
+msgstr ""
+"Quelltext nicht gefunden: Unit %s. Überprüfen Sie das FPC-"
+"Quelltextverzeichnis."
 
 #: codetoolsstrconsts.ctssourceofunitnotfound
 msgid "source of unit not found: %s"
@@ -909,7 +916,8 @@ msgstr "unerwartetes Schlüsselwort \"%s\" in Begin..End gefunden"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordwhilereadingbackwards
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
-msgstr "unerwartetes Schlüsselwort \"%s\" beim Rückwärtslesen der Blocks gefunden"
+msgstr ""
+"unerwartetes Schlüsselwort \"%s\" beim Rückwärtslesen der Blocks gefunden"
 
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
@@ -962,4 +970,3 @@ msgstr "Widget-Verzeichnis"
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"
 msgstr "\"%s\" nicht gefunden"
-

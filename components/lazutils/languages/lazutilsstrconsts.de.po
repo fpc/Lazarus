@@ -8,14 +8,17 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
-msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
+msgctxt ""
+"lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
 msgid "a directory component in %s does not exist or is a dangling symlink"
 msgstr ""
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
-msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
+msgctxt ""
+"lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
 msgid "a directory component in %s does not exist or is a dangling symlink"
 msgstr ""
 
@@ -35,19 +38,19 @@ msgstr ""
 
 #: lazutilsstrconsts.lrscannotexecute
 msgid "can not execute %s"
-msgstr ""
+msgstr "kann %s nicht ausführen"
 
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"
-msgstr ""
+msgstr "Ungültige Anzahl von Funktionsargumenten"
 
 #: lazutilsstrconsts.lrsevalunknownfunction
 msgid "Unknown function: \"%s\""
-msgstr ""
+msgstr "Unbekannte Funktion: \"%s\""
 
 #: lazutilsstrconsts.lrsevalunknownvariable
 msgid "Unknown variable: \"%s\""
-msgstr ""
+msgstr "Unbekannte Variable: \"%s\""
 
 #: lazutilsstrconsts.lrsfiledoesnotexist
 msgid "file \"%s\" does not exist"
@@ -89,7 +92,7 @@ msgstr ""
 
 #: lazutilsstrconsts.lrsnumber
 msgid "number"
-msgstr ""
+msgstr "Anzahl"
 
 #: lazutilsstrconsts.lrsparserbadaxisname
 msgid "Invalid axis name"
@@ -125,7 +128,7 @@ msgstr ""
 
 #: lazutilsstrconsts.lrsprogramfilenotfound
 msgid "program file not found %s"
-msgstr ""
+msgstr "Programmdatei nicht gefunden %s"
 
 #: lazutilsstrconsts.lrsreadaccessdeniedfor
 msgid "read access denied for %s"
@@ -133,11 +136,11 @@ msgstr "Lesezugriff verweigert für %s"
 
 #: lazutilsstrconsts.lrsscannerexpectedvarname
 msgid "Expected variable name after \"$\""
-msgstr ""
+msgstr "Variablenname nach \"$\" erwartet"
 
 #: lazutilsstrconsts.lrsscannerinvalidchar
 msgid "Invalid character"
-msgstr ""
+msgstr "Ungültiges Zeichen"
 
 #: lazutilsstrconsts.lrsscannermalformedqname
 msgid "Expected \"*\" or local part after colon"
@@ -162,5 +165,4 @@ msgstr "Kann Konfigurationsverzeichnis \"%s\" nicht anlegen"
 
 #: lazutilsstrconsts.lrsvarnoconversion
 msgid "Conversion from %s to %s not possible"
-msgstr ""
-
+msgstr "Konvertierung von %s nach %s ist nicht möglich"

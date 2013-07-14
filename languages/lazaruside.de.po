@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-07-11 11:29-0000\n"
+"PO-Revision-Date: 2013-07-14 11:14-0000\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -994,7 +994,7 @@ msgstr "Include-Dateien (-Fi):"
 
 #: lazarusidestrconsts.dlgcoinfoforgdb
 msgid "Info for GDB"
-msgstr ""
+msgstr "Info für GDB"
 
 #: lazarusidestrconsts.dlgcoinherited
 msgctxt "lazarusidestrconsts.dlgcoinherited"
@@ -5364,7 +5364,7 @@ msgstr "Zählung der geschachtelten Prozeduren als »viele« behandeln"
 
 #: lazarusidestrconsts.liscenteralostwindow
 msgid "Center a lost window"
-msgstr ""
+msgstr "Fenster zentrieren"
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
 #| msgid "Center control horizontally relative to the given sibling"
@@ -11576,7 +11576,7 @@ msgstr "Strings mit gleichen Werten:"
 
 #: lazarusidestrconsts.lismanagesourceeditors
 msgid "Manage Source Editors ..."
-msgstr ""
+msgstr "Quelltexteditoren verwalten ..."
 
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
@@ -16724,7 +16724,7 @@ msgstr "Das Quellverzeichnis %s%s%s ist nicht vorhanden."
 
 #: lazarusidestrconsts.lissourceeditorwindowmanager
 msgid "Source Editor Window Manager"
-msgstr ""
+msgstr "Quelltexteditor-Fenstermanager"
 
 #: lazarusidestrconsts.lissourcemodified
 msgid "Source modified"
@@ -18832,7 +18832,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunusedunitsof
 msgid "Unused units of %s"
-msgstr ""
+msgstr "Ungenutzte Units von %s"
 
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
