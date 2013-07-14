@@ -2203,12 +2203,6 @@ var
             end;
           end;
           {$ENDIF}
-          {debugln('KeyActivatedAccelerator call TControl.DialogChar');
-          if TControl(AComponent).DialogChar(Msg.CharCode) then begin
-            debugln('KeyActivatedAccelerator C handled by LCL');
-            StopKeyEvent;
-            Result:=true;
-          end;}
         end;
       end;
     end;
