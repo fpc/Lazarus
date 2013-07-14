@@ -5718,6 +5718,8 @@ begin
   Result := False;
   for I := 0 to ControlCount - 1 do
   begin
+    // for Delphi compatibility send it to all controls,
+    // even those that can not focus or are disabled
     Result := Controls[I].DialogChar(Message);
     if Result then Exit;
   end;
