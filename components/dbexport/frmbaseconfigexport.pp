@@ -61,7 +61,6 @@ type
     Procedure OnOKClick(Sender : TObject);
     procedure ExporterToForm;
   private
-    { private declarations }
     FFieldMap : TExportFields;
     FFormatting : TCustomExportFormatSettings;
     procedure FormToExporter;
@@ -70,7 +69,6 @@ type
     procedure SelectField(F: TExportFieldItem);
     procedure ShowSelectedField;
   public
-    { public declarations }
     Property Exporter : TCustomDatasetExporter Read FExporter Write SetExporter;
   end; 
 
@@ -152,7 +150,15 @@ end;
 
 procedure TBaseConfigExportForm.OnOKClick(Sender: TObject);
 begin
-  FormToExporter;
+  ModalResult:=mrok;
+  if EFileName.Text <> '' then
+    FormToExporter
+  else
+    begin
+      MessageDlg('Information','Filename cannot be blank',mtInformation,[mbok],0);
+      EFileName.SetFocus;
+      ModalResult:=mrnone;
+    end;
 end;
 
 procedure TBaseConfigExportForm.CLBFieldsItemClick(Sender: TObject;
