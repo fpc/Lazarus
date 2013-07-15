@@ -2771,7 +2771,7 @@ Begin
   end;
 
   FEditPlugin := TSynEditPlugin1.Create(FEditor);
-  // IMPORTANT: when you change below, don't forget updating UnbindEditor
+  // IMPORTANT: when you add/remove events below, don't forget updating UnbindEditor
   FEditPlugin.OnLinesInserted := @LinesInserted;
   FEditPlugin.OnLinesDeleted := @LinesDeleted;
 end;
