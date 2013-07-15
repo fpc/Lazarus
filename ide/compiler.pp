@@ -151,7 +151,7 @@ type
 
   { TCompilerOptSet }
 
-  // A set of options. A combination of chars or numbers forllowing the option char.
+  // A set of options. A combination of chars or numbers following the option char.
   TCompilerOptSet = class(TCompilerOptGroup)
   private
   protected

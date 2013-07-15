@@ -192,7 +192,6 @@ var
 
   procedure RenderOneLevel(aParentGroup: TCompilerOptGroup);
   var
-    OptSet: TCompilerOptSet;
     Cntrl, Lbl: TControl;
     cb: TComboBox;
     i, NewLeft: Integer;
