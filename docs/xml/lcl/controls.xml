@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
   <package name="LCL">
     <!--
@@ -5808,7 +5808,7 @@ dmFindTarget: find child control under the mouse
       <!-- function Visibility: protected -->
       <element name="TControl.DialogChar">
         <short>Do something useful with accelerators etc.</short>
-        <descr/>
+        <descr>This method is called even if the control is disabled or hidden. For VCL compatibility.</descr>
         <errors/>
         <seealso/>
       </element>
