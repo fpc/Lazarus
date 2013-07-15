@@ -404,8 +404,8 @@ const
     TEditorOptionsDividerRecord =
     ( (Count: 0; Info: nil), // none
       (Count: 0; Info: nil), // text
-      (Count: 9; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsDividerInfoPas[0]), // Freepas
-      (Count: 9; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsDividerInfoPas[0]), // pas
+      (Count: 9; Info: @EditorOptionsDividerInfoPas[0]), // Freepas
+      (Count: 9; Info: @EditorOptionsDividerInfoPas[0]), // pas
       (Count: 0; Info: nil), // lfm
       (Count: 0; Info: nil), // xml
       (Count: 0; Info: nil), // html
@@ -601,11 +601,11 @@ const
     TEditorOptionsFoldRecord =
     ( (Count:  0; Info: nil), // none
       (Count:  0; Info: nil), // text
-      (Count: 23; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoPas[0]), // Freepas
-      (Count: 23; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoPas[0]), // pas
-      (Count:  3; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoLFM[0]), // lfm
-      (Count:  5; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoXML[0]), // xml
-      (Count:  3; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoHTML[0]), // html
+      (Count: 23; Info: @EditorOptionsFoldInfoPas[0]), // Freepas
+      (Count: 23; Info: @EditorOptionsFoldInfoPas[0]), // pas
+      (Count:  3; Info: @EditorOptionsFoldInfoLFM[0]), // lfm
+      (Count:  5; Info: @EditorOptionsFoldInfoXML[0]), // xml
+      (Count:  3; Info: @EditorOptionsFoldInfoHTML[0]), // html
       (Count:  0; Info: nil), // cpp
       (Count:  0; Info: nil), // perl
       (Count:  0; Info: nil), // java
@@ -614,7 +614,7 @@ const
       (Count:  0; Info: nil), // php
       (Count:  0; Info: nil), // sql
       (Count:  0; Info: nil), // jscript
-      (Count:  3; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoDiff[0]), // Diff
+      (Count:  3; Info: @EditorOptionsFoldInfoDiff[0]), // Diff
       (Count:  0; Info: nil), // Bat
       (Count:  0; Info: nil), // Ini
       (Count:  0; Info: nil)  // PO

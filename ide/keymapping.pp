@@ -3848,8 +3848,8 @@ begin
 end;
 
 initialization
-  RegisterKeyCmdIdentProcs({$IFDEF FPC}@{$ENDIF}IdentToIDECommand,
-                           {$IFDEF FPC}@{$ENDIF}IDECommandToIdent);
+  RegisterKeyCmdIdentProcs(@IdentToIDECommand,
+                           @IDECommandToIdent);
 
 end.
 

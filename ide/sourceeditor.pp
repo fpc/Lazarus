@@ -8588,12 +8588,12 @@ constructor TSynEditPlugin1.Create(AOwner: TComponent);
 Begin
   inherited Create(AOwner);
   FEnabled := True;
-  ViewedTextBuffer.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
+  ViewedTextBuffer.AddChangeHandler(senrLineCount, @LineCountChanged);
 end;
 
 destructor TSynEditPlugin1.Destroy;
 begin
-  ViewedTextBuffer.RemoveChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
+  ViewedTextBuffer.RemoveChangeHandler(senrLineCount, @LineCountChanged);
   inherited Destroy;
 end;
 

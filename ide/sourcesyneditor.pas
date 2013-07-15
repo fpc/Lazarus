@@ -1584,7 +1584,7 @@ begin
   TSynEditMarkupManager(MarkupMgr).AddMarkUp(FMarkupIfDef);
 
   FPaintArea := TSourceLazSynSurfaceManager.Create(Self, FPaintArea);
-  GetCaretObj.AddChangeHandler({$IFDEF FPC}@{$ENDIF}SrcSynCaretChanged);
+  GetCaretObj.AddChangeHandler(@SrcSynCaretChanged);
 
   FTopInfoDisplay := TSourceLazSynTopInfoView.Create;
   FTopInfoDisplay.NextView := ViewedTextBuffer.DisplayView;
@@ -1752,9 +1752,9 @@ procedure TIDESynGutterLOvProviderPascal.BufferChanged(Sender: TObject);
 begin
   TSynEditStringList(Sender).RemoveHanlders(self);
   TSynEditStringList(TextBuffer).AddGenericHandler(senrHighlightChanged,
-    TMethod({$IFDEF FPC}@{$ENDIF}HighlightChanged));
+    TMethod(@HighlightChanged));
   TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged,
-    TMethod({$IFDEF FPC}@{$ENDIF}BufferChanged));
+    TMethod(@BufferChanged));
   //LineCountChanged(nil, 0, 0);
   HighlightChanged(nil,-1,-1);
 end;
@@ -1932,9 +1932,9 @@ begin
   Color  := $D4D4D4;
   Color2 := $E8E8E8;
   TSynEditStringList(TextBuffer).AddGenericHandler(senrHighlightChanged,
-    TMethod({$IFDEF FPC}@{$ENDIF}HighlightChanged));
+    TMethod(@HighlightChanged));
   TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged,
-    TMethod({$IFDEF FPC}@{$ENDIF}BufferChanged));
+    TMethod(@BufferChanged));
 end;
 
 destructor TIDESynGutterLOvProviderPascal.Destroy;
@@ -2434,13 +2434,13 @@ begin
     AddPopUpItem(cLineCaption);
 
   If HasFolds then
-    AddPopUpItem(synfUnfoldAllInSelection).OnClick := {$IFDEF FPC}@{$ENDIF}PopClickedUnfoldAll;
+    AddPopUpItem(synfUnfoldAllInSelection).OnClick := @PopClickedUnfoldAll;
   If HasCollapsedComments then
-    AddPopUpItem(synfUnfoldCommentsInSelection).OnClick := {$IFDEF FPC}@{$ENDIF}PopClickedUnfoldComment;
+    AddPopUpItem(synfUnfoldCommentsInSelection).OnClick := @PopClickedUnfoldComment;
   If HasFoldableComments then
-    AddPopUpItem(synfFoldCommentsInSelection).OnClick := {$IFDEF FPC}@{$ENDIF}PopClickedFoldComment;
+    AddPopUpItem(synfFoldCommentsInSelection).OnClick := @PopClickedFoldComment;
   If HasHideableComments then
-    AddPopUpItem(synfHideCommentsInSelection).OnClick := {$IFDEF FPC}@{$ENDIF}PopClickedHideComment;
+    AddPopUpItem(synfHideCommentsInSelection).OnClick := @PopClickedHideComment;
 end;
 
 end.
