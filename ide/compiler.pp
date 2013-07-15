@@ -97,26 +97,31 @@ type
   // Following classes are for compiler options parsed from "fpc -h" and "fpc -i".
 
   TCompilerOptEditKind = (
-    oeNone,     // Only show the option header
-    oeBoolean,  // Typically use CheckBox
-    oeText,     // Textual value
-    oeNumber,   // Numeric value
-    oeList      // Pre-defined list of choices
+    oeNone,       // Only show the option header
+    oeBoolean,    // Typically use CheckBox
+    oeSetElem,    // One char element of a set, use CheckBox
+    oeSetNumber,  // Number element of a set, use Edit
+    oeText,       // Textual value
+    oeNumber,     // Numeric value
+    oeList        // Pre-defined list of choices
   );
 
-  { TCompilerOptBase }
+  TCompilerOptGroup = class;
 
-  TCompilerOptBase = class
+  { TCompilerOpt }
+
+  TCompilerOpt = class
   private
     fOption: string;                    // Option without the leading '-'
     fEditKind: TCompilerOptEditKind;
     fDescription: string;
     fIndentation: integer;              // Indentation level in "fpc -h" output.
+    fOwnerGroup: TCompilerOptGroup;
     procedure ParseOption(aDescr: string; aIndent: integer);
   protected
     function GuessEditKind: TCompilerOptEditKind; virtual;
   public
-    constructor Create;
+    constructor Create(aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
   public
     property Option: string read fOption;
@@ -125,73 +130,51 @@ type
     property Indentation: integer read fIndentation;
   end;
 
-  TCompilerOptBaseList = TObjectList;
-  TCompilerOptGroup = class;
-
-  { TCompilerOpt }
-
-  TCompilerOpt = class(TCompilerOptBase)
-  private
-    fOwnerGroup: TCompilerOptGroup;
-    procedure SetOwnerGroup(aOwnerGroup: TCompilerOptGroup);
-  public
-    constructor Create;
-    destructor Destroy; override;
-  end;
-
   TCompilerOptList = TObjectList;
-
-  // A set of options. A combination of chars or numbers forllowing the option char.
-
-  { TCompilerOptSet }
-
-  TCompilerOptSet = class(TCompilerOpt)
-  private
-    // Any combination of these can form an option. Can contain number as <n>
-    fOptionSet: TStringList;
-    fAllowNum: Boolean;
-    function AddOption(aDescr: string; aIndent: integer): integer;
-  protected
-    function GuessEditKind: TCompilerOptEditKind; override;
-  public
-    constructor Create;
-    destructor Destroy; override;
-  public
-    property OptionSet: TStringList read fOptionSet;
-    property AllowNum: Boolean read fAllowNum;
-  end;
-
-  // Group with explanation header. Actual options are not defined here.
 
   { TCompilerOptGroup }
 
-  TCompilerOptGroup = class(TCompilerOptBase)
+  // Group with explanation header. Actual options are not defined here.
+  TCompilerOptGroup = class(TCompilerOpt)
   private
     // List of options belonging to this group.
     fCompilerOpts: TCompilerOptList;
   protected
+    procedure AddOption(aDescr: string; aIndent: integer); virtual; abstract;
     function GuessEditKind: TCompilerOptEditKind; override;
   public
-    constructor Create;
+    constructor Create(aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
   public
     property CompilerOpts: TCompilerOptList read fCompilerOpts;
   end;
 
-  { TCompilerReader }
+  { TCompilerOptSet }
 
-  TCompilerReader = class
+  // A set of options. A combination of chars or numbers forllowing the option char.
+  TCompilerOptSet = class(TCompilerOptGroup)
+  private
+  protected
+    procedure AddOption(aDescr: string; aIndent: integer); override;
+    function GuessEditKind: TCompilerOptEditKind; override;
+  public
+    constructor Create(aOwnerGroup: TCompilerOptGroup);
+    destructor Destroy; override;
+  end;
+
+  { TCompilerOptReader }
+
+  TCompilerOptReader = class
   private
     // Lists of selections parsed from "fpc -i". Contains supported technologies.
     fSupportedCategories: TStringList;
-    // All options parsed from "fpc -h".
-    fOptions: TCompilerOptBaseList;
+    fRootOptGroup: TCompilerOptGroup;
     fCompilerExecutable: string;
     fCompilerVersion: string;
     fErrorMsg: String;
     function ReadFpcWithParam(aParam: string; aLines: TStringList): TModalResult;
     procedure ReadVersion(s: string);
-    function FindPrevGroup(aIndent: integer): TCompilerOptGroup;
+    //function FindPrevGroup(aIndent: integer): TCompilerOptGroup;
     function ParseI(aLines: TStringList): TModalResult;
     function ParseH(aLines: TStringList): TModalResult;
   public
@@ -200,7 +183,7 @@ type
     function ReadAndParseOptions: TModalResult;
   public
     property SupportedCategories: TStringList read fSupportedCategories;
-    property Options: TCompilerOptBaseList read fOptions;
+    property RootOptGroup: TCompilerOptGroup read fRootOptGroup;
     property CompilerExecutable: string read fCompilerExecutable write fCompilerExecutable;
     property ErrorMsg: String read fErrorMsg;
   end;
@@ -393,9 +376,9 @@ begin
 end;
 
 
-{ TCompilerOptBase }
+{ TCompilerOpt }
 
-procedure TCompilerOptBase.ParseOption(aDescr: string; aIndent: integer);
+procedure TCompilerOpt.ParseOption(aDescr: string; aIndent: integer);
 var
   i, Start: Integer;
 begin
@@ -414,7 +397,7 @@ begin
   fEditKind := GuessEditKind;
 end;
 
-function TCompilerOptBase.GuessEditKind: TCompilerOptEditKind;
+function TCompilerOpt.GuessEditKind: TCompilerOptEditKind;
 var
   i: Integer;
 begin
@@ -432,21 +415,12 @@ begin
   end;
 end;
 
-constructor TCompilerOptBase.Create;
+constructor TCompilerOpt.Create(aOwnerGroup: TCompilerOptGroup);
 begin
   inherited Create;
-end;
-
-destructor TCompilerOptBase.Destroy;
-begin
-  inherited Destroy;
-end;
-
-{ TCompilerOpt }
-
-constructor TCompilerOpt.Create;
-begin
-  inherited Create;
+  fOwnerGroup := aOwnerGroup;
+  if Assigned(aOwnerGroup) then
+    aOwnerGroup.fCompilerOpts.Add(Self);
 end;
 
 destructor TCompilerOpt.Destroy;
@@ -454,65 +428,12 @@ begin
   inherited Destroy;
 end;
 
-procedure TCompilerOpt.SetOwnerGroup(aOwnerGroup: TCompilerOptGroup);
-begin
-  fOwnerGroup := aOwnerGroup;
-  if Assigned(fOwnerGroup) then // 'TCompilerOpt.SetOwnerGroup: fOwnerGroup is not assigned.'
-    fOwnerGroup.fCompilerOpts.Add(Self);
-end;
-
-{ TCompilerOptSet }
-
-constructor TCompilerOptSet.Create;
-begin
-  inherited Create;
-  fOptionSet := TStringList.Create;
-end;
-
-destructor TCompilerOptSet.Destroy;
-begin
-  fOptionSet.Free;
-  inherited Destroy;
-end;
-
-function TCompilerOptSet.AddOption(aDescr: string; aIndent: integer): integer;
-// Set can have one letter options and <n> for numbers
-var
-  Opt1, Opt2: string;
-  i: Integer;
-begin
-  Result:=-1;
-  Opt1 := Copy(aDescr, aIndent+1, Length(aDescr));
-  if AnsiStartsStr('<n>', Opt1) then
-    fAllowNum := True             // Number will be added to GUI later
-  else begin
-    i := PosEx(':', Opt1, 4);
-    if (i > 0) and (Opt1[i-1]=' ') and (Opt1[i-2]<>' ') and (Opt1[i-3]=' ') then begin
-      // Found another option on the same line, like ' a :'
-      Opt2 := Copy(Opt1, i-2, Length(Opt1));
-      if Opt1[3] = ':' then
-        Opt1 := TrimRight(Copy(Opt1, 1, i-3))
-      else
-        Opt1 := '';
-    end;
-    if Opt1 <> '' then    // Can be empty when line in help output is split.
-      fOptionSet.Add(Opt1);
-    if Opt2 <> '' then
-      Result:=fOptionSet.Add(Opt2);
-  end;
-end;
-
-function TCompilerOptSet.GuessEditKind: TCompilerOptEditKind;
-begin
-  Result := oeNone;
-end;
-
 { TCompilerOptGroup }
 
-constructor TCompilerOptGroup.Create;
+constructor TCompilerOptGroup.Create(aOwnerGroup: TCompilerOptGroup);
 begin
-  inherited Create;
-  fCompilerOpts := TCompilerOptList.Create(False);
+  inherited Create(aOwnerGroup);
+  fCompilerOpts := TCompilerOptList.Create;
 end;
 
 destructor TCompilerOptGroup.Destroy;
@@ -528,28 +449,93 @@ begin
     Result := oeNone;
 end;
 
+{ TCompilerOptSet }
 
-{ TCompilerReader }
+constructor TCompilerOptSet.Create(aOwnerGroup: TCompilerOptGroup);
+begin
+  inherited Create(aOwnerGroup);
+end;
 
-constructor TCompilerReader.Create;
+destructor TCompilerOptSet.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TCompilerOptSet.AddOption(aDescr: string; aIndent: integer);
+// Set can have one letter options and <n> for numbers
+
+  procedure NewSetNumber(aDescr: string; aEditKind: TCompilerOptEditKind);
+  var
+    OptSet: TCompilerOpt;
+  begin
+    OptSet := TCompilerOpt.Create(Self);          // Add it under a group
+    OptSet.fIndentation := aIndent;
+    OptSet.fOption := 'Number';
+    OptSet.fDescription := aDescr;
+    OptSet.fEditKind := aEditKind;
+  end;
+
+  procedure NewSetElem(aDescr: string; aEditKind: TCompilerOptEditKind);
+  var
+    OptSet: TCompilerOpt;
+  begin
+    OptSet := TCompilerOpt.Create(Self);          // Add it under a group
+    OptSet.fIndentation := aIndent;
+    OptSet.fOption := aDescr;
+    OptSet.fEditKind := aEditKind;
+  end;
+
+var
+  Opt1, Opt2: string;
+  i: Integer;
+begin
+  Opt1 := Copy(aDescr, aIndent+1, Length(aDescr));
+  if AnsiStartsStr('<n>', Opt1) then
+    NewSetNumber(Opt1, oeSetNumber)
+  else begin
+    i := PosEx(':', Opt1, 4);
+    if (i > 0) and (Opt1[i-1]=' ') and (Opt1[i-2]<>' ') and (Opt1[i-3]=' ') then begin
+      // Found another option on the same line, like ' a :'
+      Opt2 := Copy(Opt1, i-2, Length(Opt1));
+      if Opt1[3] = ':' then
+        Opt1 := TrimRight(Copy(Opt1, 1, i-3))
+      else
+        Opt1 := '';
+    end;
+    if Opt1 <> '' then         // Can be empty when line in help output is split.
+      NewSetElem(Opt1, oeSetElem);
+    if Opt2 <> '' then
+      NewSetElem(Opt2, oeSetElem);
+  end;
+end;
+
+function TCompilerOptSet.GuessEditKind: TCompilerOptEditKind;
+begin
+  Result := oeNone;
+end;
+
+
+{ TCompilerOptReader }
+
+constructor TCompilerOptReader.Create;
 begin
   inherited Create;
   fSupportedCategories := TStringList.Create;
-  fOptions := TCompilerOptBaseList.Create;
+  fRootOptGroup := TCompilerOptGroup.Create(Nil);
 end;
 
-destructor TCompilerReader.Destroy;
+destructor TCompilerOptReader.Destroy;
 var
   i: Integer;
 begin
-  fOptions.Free;
+  fRootOptGroup.Free;
   for i := 0 to fSupportedCategories.Count-1 do
     fSupportedCategories.Objects[i].Free;
   fSupportedCategories.Free;
   inherited Destroy;
 end;
 
-function TCompilerReader.ReadFpcWithParam(aParam: string; aLines: TStringList): TModalResult;
+function TCompilerOptReader.ReadFpcWithParam(aParam: string; aLines: TStringList): TModalResult;
 // fpc -Fr$(FPCMsgFile) -h
 // fpc -Fr$(FPCMsgFile) -i
 var
@@ -614,7 +600,7 @@ begin
   end;
 end;
 
-function TCompilerReader.ParseI(aLines: TStringList): TModalResult;
+function TCompilerOptReader.ParseI(aLines: TStringList): TModalResult;
 const
   Supported = 'Supported ';
 var
@@ -646,7 +632,7 @@ begin
   fSupportedCategories.Sorted := True;
 end;
 
-procedure TCompilerReader.ReadVersion(s: string);
+procedure TCompilerOptReader.ReadVersion(s: string);
 const
   VersBegin = 'Free Pascal Compiler version ';
 var
@@ -662,29 +648,17 @@ begin
   end;
 end;
 
-function TCompilerReader.FindPrevGroup(aIndent: integer): TCompilerOptGroup;
-var
-  i: Integer;
-begin
-  for i := fOptions.Count-1 downto 0 do
-    if TCompilerOptBase(fOptions[i]).fIndentation < aIndent then
-      Exit(fOptions[i] as TCompilerOptGroup);
-  Result := Nil;
-end;
-
-function TCompilerReader.ParseH(aLines: TStringList): TModalResult;
+function TCompilerOptReader.ParseH(aLines: TStringList): TModalResult;
 const
   OptSetId = 'a combination of';
 var
   i, ThisInd, NextInd: Integer;
   ThisLine, NextLine: String;
-  Opt: TCompilerOptBase;
-  CurrentSet: TCompilerOptSet;
+  Opt: TCompilerOpt;
   LastGroup: TCompilerOptGroup;
 begin
   Result := mrOK;
-  CurrentSet := Nil;
-  LastGroup := Nil;
+  LastGroup := fRootOptGroup;
   for i := 0 to aLines.Count-1 do begin
     ThisLine := StringReplace(aLines[i],'-Agas-darwinAssemble','-Agas-darwin Assemble',[]);
     ThisInd := CalcIndentation(ThisLine);
@@ -705,45 +679,34 @@ begin
       NextLine := '';
       NextInd := -1;
     end;
-    Opt := Nil;
     if NextInd > ThisInd then begin
-      if Assigned(CurrentSet)
-      and ((Pos('  v : ', NextLine) > 0) or (NextInd > 30)) then begin
+      if (LastGroup is TCompilerOptSet)
+      and ((Pos('  v : ', NextLine) > 0) or (NextInd > 30)) then
         // A hack to deal with split lined in the help output.
-        NextInd := ThisInd;
-      end
-      else if Pos(OptSetId, ThisLine) > 0 then begin  // Header for sets
-        CurrentSet := TCompilerOptSet.Create;
-        CurrentSet.SetOwnerGroup(LastGroup);
-        Opt := CurrentSet;
-      end
-      else begin                                      // Group header for options
-        Assert(CurrentSet = Nil);
-        LastGroup := TCompilerOptGroup.Create;
-        Opt := LastGroup;
+        NextInd := ThisInd
+      else begin
+        if Pos(OptSetId, ThisLine) > 0 then     // Header for sets
+          LastGroup := TCompilerOptSet.Create(LastGroup)
+        else                                    // Group header for options
+          LastGroup := TCompilerOptGroup.Create(LastGroup);
+        LastGroup.ParseOption(ThisLine, ThisInd);
       end;
     end;
     if NextInd <= ThisInd then begin
       // This is an option
-      if Assigned(CurrentSet) then
-        CurrentSet.AddOption(ThisLine, ThisInd)    // Add it to a set
+      if (LastGroup is TCompilerOptSet) then    // Add it to a set (may add many)
+        LastGroup.AddOption(ThisLine, ThisInd)
       else begin
-        Opt := TCompilerOpt.Create;                // Add it under a group
-        TCompilerOpt(Opt).SetOwnerGroup(LastGroup);
+        Opt := TCompilerOpt.Create(LastGroup);  // Add it under a group
+        Opt.ParseOption(ThisLine, ThisInd);
       end;
-      if (NextInd <> -1) and (NextInd < ThisInd) then begin
-        CurrentSet := Nil;               // Return from a group to a previous one
-        LastGroup := FindPrevGroup(NextInd);
-      end
-    end;
-    if Assigned(Opt) then begin
-      Opt.ParseOption(ThisLine, ThisInd);
-      fOptions.Add(Opt);
+      if (NextInd <> -1) and (NextInd < ThisInd) then
+        LastGroup := LastGroup.fOwnerGroup;     // Return to a previous group
     end;
   end;
 end;
 
-function TCompilerReader.ReadAndParseOptions: TModalResult;
+function TCompilerOptReader.ReadAndParseOptions: TModalResult;
 var
   Lines: TStringList;
 begin

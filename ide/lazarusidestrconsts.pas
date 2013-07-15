@@ -2095,8 +2095,7 @@ resourcestring
   dlgUseCustomConfig = 'Use additional compiler config file';
   lisAllOptions = 'All Options';
   lisCustomOptions2 = 'Custom options';
-  lisCustomOptHint = 'These options are passed directly to the compiler. Macros ' +
-                     'are replaced, line breaks are replaced with single spaces.';
+  lisCustomOptHint = 'These options are passed directly to the compiler. Macros are replaced.';
   dlgCOConditionals = 'Conditionals';
   dlgStopAfterNrErr = 'Stop after number of errors:';
   dlgOtherUnitFiles = 'Other unit files (-Fu) (delimiter is semicolon):';

@@ -1,52 +1,32 @@
 object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
   Left = 0
-  Height = 446
+  Height = 373
   Top = 0
-  Width = 594
-  ClientHeight = 446
-  ClientWidth = 594
+  Width = 480
+  ClientHeight = 373
+  ClientWidth = 480
   TabOrder = 0
   DesignLeft = 434
   DesignTop = 276
-  object grpCustomOptions: TGroupBox
-    Left = 0
-    Height = 77
-    Top = 158
-    Width = 594
-    Align = alBottom
-    BorderSpacing.Top = 6
-    Caption = 'grpCustomOptions'
-    ClientHeight = 58
-    ClientWidth = 590
-    TabOrder = 0
-    object memCustomOptions: TMemo
-      Left = 6
-      Height = 46
-      Top = 6
-      Width = 578
-      Align = alClient
-      BorderSpacing.Around = 6
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 0
-    end
-  end
   object grpConditionals: TGroupBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 206
-    Top = 240
-    Width = 594
-    Align = alBottom
+    Height = 166
+    Top = 0
+    Width = 480
+    Align = alClient
     Anchors = [akTop, akLeft, akRight]
     Caption = 'grpConditionals'
-    ClientHeight = 187
-    ClientWidth = 590
-    TabOrder = 1
+    ClientHeight = 147
+    ClientWidth = 476
+    TabOrder = 0
     inline CondSynEdit: TSynEdit
+      AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 167
+      Height = 127
       Top = 0
-      Width = 590
+      Width = 476
       Align = alClient
       Font.Height = 9
       Font.Name = '-misc-dejavu sans mono-*-*-*-*-*-*-*-*-*-*-iso10646-1'
@@ -684,8 +664,8 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     object CondStatusbar: TStatusBar
       Left = 0
       Height = 20
-      Top = 167
-      Width = 590
+      Top = 127
+      Width = 476
       Panels = <      
         item
           Width = 80
@@ -699,69 +679,125 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       SimplePanel = False
     end
   end
-  object ConditionalsSplitter: TSplitter
-    Cursor = crVSplit
-    Left = 0
-    Height = 5
-    Top = 235
-    Width = 594
-    Align = alBottom
-    ResizeAnchor = akBottom
-  end
   object CustomSplitter: TSplitter
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 147
-    Width = 594
+    Top = 166
+    Width = 480
     Align = alBottom
     ResizeAnchor = akBottom
   end
   object grpAllOptions: TGroupBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 147
-    Top = 0
-    Width = 594
-    Align = alClient
+    Height = 202
+    Top = 171
+    Width = 480
+    Align = alBottom
     Caption = 'grpAllOptions'
-    ClientHeight = 128
-    ClientWidth = 590
-    TabOrder = 4
+    ClientHeight = 183
+    ClientWidth = 476
+    TabOrder = 2
     object sbAllOptions: TScrollBox
+      AnchorSideTop.Control = edOptionsFilter
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 127
-      Top = 0
-      Width = 590
-      HorzScrollBar.Increment = 58
-      HorzScrollBar.Page = 586
+      Height = 132
+      Top = 49
+      Width = 470
+      HorzScrollBar.Increment = 46
+      HorzScrollBar.Page = 466
       HorzScrollBar.Smooth = True
       HorzScrollBar.Tracking = True
       VertScrollBar.Increment = 12
-      VertScrollBar.Page = 123
+      VertScrollBar.Page = 128
       VertScrollBar.Smooth = True
       VertScrollBar.Tracking = True
       Anchors = [akTop, akLeft, akRight, akBottom]
-      ClientHeight = 123
-      ClientWidth = 586
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
-      object btnGetAll: TButton
-        Left = 6
-        Height = 25
-        Top = 6
-        Width = 105
-        AutoSize = True
-        Caption = 'Get all options'
-        OnClick = btnGetAllClick
-        TabOrder = 0
-      end
-      object lblStatus: TLabel
-        Left = 126
-        Height = 15
-        Top = 13
-        Width = 55
-        Caption = 'lblStatus'
-        ParentColor = False
-      end
+    end
+    object lblCustomOptions: TLabel
+      Left = 6
+      Height = 15
+      Top = 4
+      Width = 98
+      Caption = 'Custom options'
+      ParentColor = False
+    end
+    object edCustomOptions: TEdit
+      AnchorSideLeft.Control = lblCustomOptions
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = lblCustomOptions
+      AnchorSideTop.Side = asrCenter
+      Left = 110
+      Height = 25
+      Top = -1
+      Width = 360
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+      Text = 'edCustomOptions'
+    end
+    object btnResetOptionsFilter: TSpeedButton
+      AnchorSideLeft.Control = edOptionsFilter
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edOptionsFilter
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 104
+      Height = 25
+      Top = 24
+      Width = 29
+      OnClick = btnResetOptionsFilterClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object edOptionsFilter: TEdit
+      AnchorSideTop.Control = edCustomOptions
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 25
+      Top = 24
+      Width = 98
+      OnChange = edOptionsFilterChange
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+    end
+    object btnGetAllOptions: TButton
+      AnchorSideLeft.Control = btnResetOptionsFilter
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnResetOptionsFilter
+      AnchorSideTop.Side = asrCenter
+      Left = 183
+      Height = 25
+      Top = 24
+      Width = 105
+      AutoSize = True
+      BorderSpacing.Left = 50
+      Caption = 'Get all options'
+      OnClick = btnGetAllOptionsClick
+      TabOrder = 3
+    end
+    object lblStatus: TLabel
+      AnchorSideLeft.Control = btnGetAllOptions
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnGetAllOptions
+      AnchorSideTop.Side = asrCenter
+      Left = 300
+      Height = 15
+      Top = 29
+      Width = 55
+      BorderSpacing.Left = 12
+      Caption = 'lblStatus'
+      ParentColor = False
     end
   end
 end
