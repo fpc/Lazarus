@@ -40,10 +40,10 @@ type
   TSynEditStrings = class;
 
   TStringListLineCountEvent = procedure(Sender: TSynEditStrings;
-                                        Index, Count: Integer) of object;
+                                        aIndex, aCount: Integer) of object;
   TStringListLineEditEvent = procedure(Sender: TSynEditStrings;
-                                       LinePos, BytePos, Count, LineBrkCnt: Integer;
-                                       Text: String) of object;
+                                       aLinePos, aBytePos, aCount, aLineBrkCnt: Integer;
+                                       aText: String) of object;
 
   TSynEditNotifyReason = ( // TStringListLineCountEvent
                            senrLineCount,        // Lines Inserted or Deleted (if not empty, they will trigger senrLineChange too)
