@@ -692,9 +692,9 @@ end;
 
   Resize event handler.
  ------------------------------------------------------------------------------}
-procedure TCustomForm.WMSize(var Message: TLMSize);
+procedure TCustomForm.WMSize(var message: TLMSize);
 var
-  OldState: TWindowState;
+  NewState, OldState: TWindowState;
 begin
   {$IFDEF CHECK_POSITION}
   DebugLn(['[TCustomForm.WMSize] ',DbgSName(Self),' Message.SizeType=',Message.SizeType,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' AutoSizeDelayed=',AutoSizeDelayed]);
@@ -712,39 +712,26 @@ begin
   end;
 
   //DebugLn('Trace:WMSIZE in TCustomForm');
-  if not (csDesigning in ComponentState) then
-  begin
-    OldState := FWindowState;
-    case (Message.SizeType and not SIZE_SourceIsInterface) of
-      SIZE_RESTORED:
-        if Showing then
-          FWindowState := wsNormal;
-      SIZE_MINIMIZED:
-      begin
-        if Showing then
-          FWindowState := wsMinimized;
-        if (WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) <> LCL_CAPABILITY_NO)
-          and (Application.MainForm = Self) then
-            Application.Minimize;
-      end;
-      SIZE_MAXIMIZED:
-        if Showing then
-          FWindowState := wsMaximized;
-      SIZE_FULLSCREEN:
-        if Showing then
-          FWindowState := wsFullScreen;
-    end;
-    if OldState <> FWindowState then
+  OldState := FWindowState;
+  NewState := OldState;
+  case (Message.SizeType and not SIZE_SourceIsInterface) of
+    SIZE_RESTORED:
+      if Showing then
+        NewState := wsNormal;
+    SIZE_MINIMIZED:
     begin
-      if (OldState = wsMinimized) and (Application.MainForm = Self)
-        and (WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) <> LCL_CAPABILITY_NO) then
-      begin
-        Application.Restore;
-      end;
-      if Assigned(OnWindowStateChange) then
-        OnWindowStateChange(Self);
+      if Showing then
+        NewState := wsMinimized;
     end;
+    SIZE_MAXIMIZED:
+      if Showing then
+        NewState := wsMaximized;
+    SIZE_FULLSCREEN:
+      if Showing then
+        NewState := wsFullScreen;
   end;
+  if OldState <> NewState then
+    Resizing(NewState);
 
   inherited WMSize(Message);
 
@@ -1122,7 +1109,7 @@ end;
 
   Calls user handler
  ------------------------------------------------------------------------------}
-procedure TCustomForm.PaintWindow(DC : Hdc);
+procedure TCustomForm.PaintWindow(dc: Hdc);
 begin
   // Canvas.Lock;
   try
@@ -1153,6 +1140,25 @@ Begin
   end
   else
   inherited RequestAlign;
+end;
+
+procedure TCustomForm.Resizing(State: TWindowState);
+var
+  OldState: TWindowState;
+begin
+  if not (csDesigning in ComponentState) then
+  begin
+    OldState := FWindowState;
+    FWindowState := State;
+    if (State = wsMinimized) and (Application.MainForm = Self) and
+       (WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) <> LCL_CAPABILITY_NO) then
+        Application.Minimize;
+    if (OldState = wsMinimized) and (Application.MainForm = Self) and
+       (WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) <> LCL_CAPABILITY_NO) then
+      Application.Restore;
+    if Assigned(OnWindowStateChange) then
+      OnWindowStateChange(Self);
+  end;
 end;
 
 procedure TCustomForm.CalculatePreferredSize(var PreferredWidth,
@@ -2163,7 +2169,7 @@ end;
 {------------------------------------------------------------------------------
        TCustomForm Method WMCloseQuery
 ------------------------------------------------------------------------------}
-procedure TCustomForm.WMCloseQuery(var Message: TLMessage);
+procedure TCustomForm.WMCloseQuery(var message: TLMessage);
 begin
   Close;
   // Always return 0, because we destroy the window ourselves
@@ -2461,7 +2467,7 @@ begin
   Result := False;
 end;
 
-function TCustomForm.IsShortCut(var Message: TLMKey): boolean;
+function TCustomForm.IsShortcut(var Message: TLMKey): boolean;
 var
   I: integer;
 begin

@@ -532,6 +532,7 @@ type
     procedure Notification(AComponent: TComponent; Operation : TOperation);override;
     procedure PaintWindow(dc : Hdc); override;
     procedure RequestAlign; override;
+    procedure Resizing(State: TWindowState); virtual;
     procedure CalculatePreferredSize(var PreferredWidth,
            PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure SetZOrder(Topmost: Boolean); override;
