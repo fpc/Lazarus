@@ -703,18 +703,45 @@ var
   s: String;
   i: Integer;
   OldCount: Integer;
+  AddEachLine: Boolean;
 begin
   if TheStrings.Count=0 then exit;
-  OldCount:=Count;
-  if (FText<>'') and (not (FText[length(FText)] in [#10,#13])) then
-    s:=LineEnding
-  else
-    s:='';
-  FArraysValid:=false;
-  FText:=FText+s+TheStrings.Text;
-  BuildArrays;
-  for i:=0 to TheStrings.Count-1 do
-    FLineRanges[i+OldCount].TheObject:=TheStrings.Objects[i];
+  AddEachLine:=false;
+  if FArraysValid then begin
+    for i:=0 to FLineCount-1 do
+      if FLineRanges[i].TheObject<>nil then begin
+        // objects have to be kept
+        AddEachLine:=true;
+        break;
+      end;
+  end;
+  if not AddEachLine then begin
+    for i:=0 to TheStrings.Count-1 do begin
+      s:=TheStrings[i];
+      if (Pos(#10,s)>0) or (Pos(#13,s)>0) then begin
+        // TheStrings contains a line with line breaks (multi lines)
+        AddEachLine:=true;
+        break;
+      end;
+    end;
+  end;
+  if AddEachLine then begin
+    // append line by line, this can be very slow
+    for i:=0 to TheStrings.Count-1 do
+      AddObject(TheStrings[i],TheStrings.Objects[i]);
+  end else begin
+    // append the whole text at once
+    OldCount:=Count;
+    if (FText<>'') and (not (FText[length(FText)] in [#10,#13])) then
+      s:=LineEnding
+    else
+      s:='';
+    FArraysValid:=false;
+    FText:=FText+s+TheStrings.Text;
+    BuildArrays;
+    for i:=0 to TheStrings.Count-1 do
+      FLineRanges[i+OldCount].TheObject:=TheStrings.Objects[i];
+  end;
 end;
 
 end.
