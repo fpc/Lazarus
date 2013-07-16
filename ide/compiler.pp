@@ -463,7 +463,7 @@ end;
 procedure TCompilerOptSet.AddOptions(aDescr: string; aIndent: integer);
 // Set can have one letter options and <n> for numbers
 
-  procedure NewSetNumber(aDescr: string; aEditKind: TCompilerOptEditKind);
+  procedure NewSetNumber(aDescr: string);
   var
     OptSet: TCompilerOpt;
   begin
@@ -471,17 +471,17 @@ procedure TCompilerOptSet.AddOptions(aDescr: string; aIndent: integer);
     OptSet.fIndentation := aIndent;
     OptSet.fOption := 'Number';
     OptSet.fDescription := aDescr;
-    OptSet.fEditKind := aEditKind;
+    OptSet.fEditKind := oeSetNumber;
   end;
 
-  procedure NewSetElem(aDescr: string; aEditKind: TCompilerOptEditKind);
+  procedure NewSetElem(aDescr: string);
   var
     OptSet: TCompilerOpt;
   begin
     OptSet := TCompilerOpt.Create(Self);          // Add it under a group
     OptSet.fIndentation := aIndent;
     OptSet.fOption := aDescr;
-    OptSet.fEditKind := aEditKind;
+    OptSet.fEditKind := oeSetElem;
   end;
 
 var
@@ -490,7 +490,7 @@ var
 begin
   Opt1 := Copy(aDescr, aIndent+1, Length(aDescr));
   if AnsiStartsStr('<n>', Opt1) then
-    NewSetNumber(Opt1, oeSetNumber)
+    NewSetNumber(Opt1)
   else begin
     i := PosEx(':', Opt1, 4);
     if (i > 0) and (Opt1[i-1]=' ') and (Opt1[i-2]<>' ') and (Opt1[i-3]=' ') then begin
@@ -502,9 +502,9 @@ begin
         Opt1 := '';
     end;
     if Opt1 <> '' then         // Can be empty when line in help output is split.
-      NewSetElem(Opt1, oeSetElem);
+      NewSetElem(Opt1);
     if Opt2 <> '' then
-      NewSetElem(Opt2, oeSetElem);
+      NewSetElem(Opt2);
   end;
 end;
 
