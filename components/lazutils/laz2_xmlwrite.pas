@@ -737,6 +737,7 @@ begin
     wrtChr('"');
   end;
 *)
+  wrtStr(' encoding="UTF-8"');
   wrtStr('?>');
 
   // TODO: now handled as a regular PI, remove this?
