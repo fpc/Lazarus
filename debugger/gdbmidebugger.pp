@@ -2091,7 +2091,7 @@ var
       InLogWarning := True;
       Delete(Warning, 1, Length(LogWarning));
       Warning := MakePrintable(UnEscapeBackslashed(Trim(Warning), [uefOctal, uefTab, uefNewLine]));
-      DoDbgEvent(ecOutput, etOutputDebugString, Warning);
+      DoDbgEvent(ecOutput, etOutputDebugString, 'Debug Output: ' + Warning);
     end;
     if InLogWarning then
       FLogWarnings := FLogWarnings + Warning + LineEnding;
