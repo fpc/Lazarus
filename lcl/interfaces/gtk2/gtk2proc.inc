@@ -2256,16 +2256,21 @@ begin
   RememberKeyEventWasHandledByLCL(AEvent, ABeforeEvent);
 
   if TargetWidget = nil then Exit;
-  
-  //DebugLn(['HandleGTKKeyUpDown TargetWidget=',GetWidgetDebugReport(TargetWidget)]);
 
+  //DebugLn(['HandleGTKKeyUpDown TargetWidget=',GetWidgetDebugReport(TargetWidget)]);
 
   //DebugLn(['HandleGTKKeyUpDown TargetWidget=',GetWidgetDebugReport(TargetWidget),' ',DbgStr(EventString),' state=',AEvent^.state,' keyval=',AEvent^.keyval]);
   FillChar(Msg, SizeOf(Msg), 0);
 
   gdk_event_key_get_string(AEvent, EventString{%H-});
   //DebugLn(['HandleGTKKeyUpDown TargetWidget=',GetWidgetDebugReport(TargetWidget),' ',DbgStr(EventString),' state=',AEvent^.state,' keyval=',AEvent^.keyval]);
+
+  {$IfDef Gtk2LatinAccents}
+  gtk_im_context_filter_keypress (im_context, AEvent);
+  {$Else}
   CheckDeadKey;
+  {$EndIf}
+
   Flags := 0;
   SysKey := False;
   ShiftState := GTKEventStateToShiftState(AEvent^.state);
