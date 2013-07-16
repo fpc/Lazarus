@@ -140,7 +140,6 @@ type
     // List of options belonging to this group.
     fCompilerOpts: TCompilerOptList;
   protected
-    procedure AddOption(aDescr: string; aIndent: integer); virtual; abstract;
     function GuessEditKind: TCompilerOptEditKind; override;
   public
     constructor Create(aOwnerGroup: TCompilerOptGroup);
@@ -155,7 +154,7 @@ type
   TCompilerOptSet = class(TCompilerOptGroup)
   private
   protected
-    procedure AddOption(aDescr: string; aIndent: integer); override;
+    procedure AddOptions(aDescr: string; aIndent: integer);
     function GuessEditKind: TCompilerOptEditKind; override;
   public
     constructor Create(aOwnerGroup: TCompilerOptGroup);
@@ -461,7 +460,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TCompilerOptSet.AddOption(aDescr: string; aIndent: integer);
+procedure TCompilerOptSet.AddOptions(aDescr: string; aIndent: integer);
 // Set can have one letter options and <n> for numbers
 
   procedure NewSetNumber(aDescr: string; aEditKind: TCompilerOptEditKind);
@@ -695,7 +694,7 @@ begin
     if NextInd <= ThisInd then begin
       // This is an option
       if (LastGroup is TCompilerOptSet) then    // Add it to a set (may add many)
-        LastGroup.AddOption(ThisLine, ThisInd)
+        TCompilerOptSet(LastGroup).AddOptions(ThisLine, ThisInd)
       else begin
         Opt := TCompilerOpt.Create(LastGroup);  // Add it under a group
         Opt.ParseOption(ThisLine, ThisInd);
