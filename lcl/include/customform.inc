@@ -1281,8 +1281,8 @@ begin
   case P of
     poDesktopCenter:
       begin
-        X := (Screen.DesktopWidth - Width) div 2;
-        Y := (Screen.DesktopHeight - Height) div 2;
+        X := Screen.DesktopLeft + (Screen.DesktopWidth - Width) div 2;
+        Y := Screen.DesktopTop +(Screen.DesktopHeight - Height) div 2;
       end;
     poScreenCenter:
       begin

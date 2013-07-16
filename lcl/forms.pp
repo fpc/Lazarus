@@ -1067,12 +1067,13 @@ type
     property CustomFormZOrderCount: Integer read GetCustomFormZOrderCount;
     property CustomFormsZOrdered[Index: Integer]: TCustomForm
                                read GetCustomFormsZOrdered; // lower index means on top
+
     property DesktopLeft: Integer read GetDesktopLeft;
     property DesktopTop: Integer read GetDesktopTop;
-
     property DesktopHeight: Integer read GetDesktopHeight;
     property DesktopWidth: Integer read GetDesktopWidth;
     property DesktopRect: TRect read GetDesktopRect;
+
     property FocusedForm: TCustomForm read FFocusedForm;
     property FormCount: Integer read GetFormCount;
     property Forms[Index: Integer]: TForm read GetForms;
