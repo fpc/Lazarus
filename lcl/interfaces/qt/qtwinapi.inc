@@ -4011,6 +4011,14 @@ begin
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYSMSIZE         ');
       end;
+    SM_XVIRTUALSCREEN:
+      begin
+        Result := QWidget_x(QApplication_desktop);
+      end;
+    SM_YVIRTUALSCREEN:
+      begin
+        Result := QWidget_y(QApplication_desktop);
+      end;
     SM_CXVIRTUALSCREEN:
       begin
         Result := QWidget_width(QApplication_desktop);
