@@ -694,7 +694,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMSize(var message: TLMSize);
 var
-  NewState, OldState: TWindowState;
+  NewState: TWindowState;
 begin
   {$IFDEF CHECK_POSITION}
   DebugLn(['[TCustomForm.WMSize] ',DbgSName(Self),' Message.SizeType=',Message.SizeType,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' AutoSizeDelayed=',AutoSizeDelayed]);
@@ -712,26 +712,21 @@ begin
   end;
 
   //DebugLn('Trace:WMSIZE in TCustomForm');
-  OldState := FWindowState;
-  NewState := OldState;
-  case (Message.SizeType and not SIZE_SourceIsInterface) of
-    SIZE_RESTORED:
-      if Showing then
+  if (Message.SizeType and SIZE_SourceIsInterface) <> 0 then
+  begin
+    NewState := FWindowState;
+    case (Message.SizeType xor SIZE_SourceIsInterface) of
+      SIZE_RESTORED:
         NewState := wsNormal;
-    SIZE_MINIMIZED:
-    begin
-      if Showing then
+      SIZE_MINIMIZED:
         NewState := wsMinimized;
-    end;
-    SIZE_MAXIMIZED:
-      if Showing then
+      SIZE_MAXIMIZED:
         NewState := wsMaximized;
-    SIZE_FULLSCREEN:
-      if Showing then
+      SIZE_FULLSCREEN:
         NewState := wsFullScreen;
-  end;
-  if OldState <> NewState then
+    end;
     Resizing(NewState);
+  end;
 
   inherited WMSize(Message);
 
@@ -1146,18 +1141,21 @@ procedure TCustomForm.Resizing(State: TWindowState);
 var
   OldState: TWindowState;
 begin
-  if not (csDesigning in ComponentState) then
+  if Showing and not (csDesigning in ComponentState) then
   begin
     OldState := FWindowState;
     FWindowState := State;
-    if (State = wsMinimized) and (Application.MainForm = Self) and
-       (WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) <> LCL_CAPABILITY_NO) then
-        Application.Minimize;
-    if (OldState = wsMinimized) and (Application.MainForm = Self) and
-       (WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) <> LCL_CAPABILITY_NO) then
-      Application.Restore;
-    if Assigned(OnWindowStateChange) then
-      OnWindowStateChange(Self);
+    if OldState <> State then
+    begin
+      if (State = wsMinimized) and (Application.MainForm = Self) and
+         (WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) <> LCL_CAPABILITY_NO) then
+          Application.Minimize;
+      if (OldState = wsMinimized) and (Application.MainForm = Self) and
+         (WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) <> LCL_CAPABILITY_NO) then
+        Application.Restore;
+      if Assigned(OnWindowStateChange) then
+        OnWindowStateChange(Self);
+    end;
   end;
 end;
 
