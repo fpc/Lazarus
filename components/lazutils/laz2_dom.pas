@@ -31,7 +31,7 @@
 }
 
 
-unit laz2_DOM;
+unit Laz2_DOM;
 
 {$ifdef fpc}
 {$MODE objfpc}{$H+}
