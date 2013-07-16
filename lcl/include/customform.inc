@@ -1408,31 +1408,24 @@ begin
         if HostDockSite <> nil then Activate;
       end;
     LM_WINDOWPOSCHANGING:
-      if (not (csDesigning in ComponentState))
-      and (fsFirstShow in FFormState)
-      then begin
-        if  (Position in [poDefault, poDefaultPosOnly])
-        and (WindowState <> wsMaximized)
-        then
+      if (not (csDesigning in ComponentState)) and (fsFirstShow in FFormState) then
+      begin
+        if (Position in [poDefault, poDefaultPosOnly]) and (WindowState <> wsMaximized) then
           with PWindowPos(TheMessage.lParam)^ do
             flags := flags or SWP_NOMOVE;
 
-        if  (Position in [poDefault, poDefaultSizeOnly])
-        and (BorderStyle in [bsSizeable, bsSizeToolWin])
-        then
+        if (Position in [poDefault, poDefaultSizeOnly]) and (BorderStyle in [bsSizeable, bsSizeToolWin]) then
           with PWindowPos(TheMessage.lParam)^ do
             flags := flags or SWP_NOSIZE;
       end;
     LM_DRAWITEM:
       with PDrawItemStruct(TheMessage.LParam)^ do
       begin
-        if (CtlType = ODT_MENU) and Assigned(Menu)
-        then begin
+        if (CtlType = ODT_MENU) and Assigned(Menu) then
+        begin
           MenuItem := Menu.FindItem(itemID, fkCommand);
-          if MenuItem <> nil
-          then begin
+          if Assigned(MenuItem) then
             Exit;
-          end;
         end;
       end;
     end;
