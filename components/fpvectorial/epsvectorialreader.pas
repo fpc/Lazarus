@@ -44,7 +44,7 @@ type
     BoolValue: Boolean;
     Line: Integer; // To help debugging
     constructor Create; virtual;
-    procedure CopyDataFrom(ASrc: TPSToken); virtual;
+    procedure CopyDataFrom(ASrc: TPSToken; AKeepTokenType: Boolean); virtual;
     function Duplicate: TPSToken; virtual;
   end;
 
@@ -89,7 +89,7 @@ type
     ETType: TETType;
     function IsExpressionOperand: Boolean;
     procedure PrepareFloatValue;
-    procedure CopyDataFrom(ASrc: TPSToken); override;
+    procedure CopyDataFrom(ASrc: TPSToken; AKeepTokenType: Boolean); override;
     function Duplicate: TPSToken; override;
   end;
 
@@ -301,7 +301,7 @@ begin
   inherited Create;
 end;
 
-procedure TPSToken.CopyDataFrom(ASrc: TPSToken);
+procedure TPSToken.CopyDataFrom(ASrc: TPSToken; AKeepTokenType: Boolean);
 begin
   StrValue := ASrc.StrValue;
   FloatValue := ASrc.FloatValue;
@@ -376,10 +376,11 @@ begin
   end;
 end;
 
-procedure TExpressionToken.CopyDataFrom(ASrc: TPSToken);
+procedure TExpressionToken.CopyDataFrom(ASrc: TPSToken; AKeepTokenType: Boolean);
 begin
-  inherited CopyDataFrom(ASrc);
-  if ASrc is TExpressionToken then ETType := TExpressionToken(ASrc).ETType;
+  inherited CopyDataFrom(ASrc, AKeepTokenType);
+  if (ASrc is TExpressionToken) and (not AKeepTokenType) then
+    ETType := TExpressionToken(ASrc).ETType;
 end;
 
 function TExpressionToken.Duplicate: TPSToken;
@@ -3028,7 +3029,7 @@ begin
 
     if SubstituteToken is TExpressionToken then
     begin
-      ACurToken.CopyDataFrom(SubstituteToken);
+      ACurToken.CopyDataFrom(SubstituteToken, True);
     end
     else if (SubstituteToken is TProcedureToken) or
       (SubstituteToken is TArrayToken) then
