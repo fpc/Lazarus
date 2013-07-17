@@ -7028,6 +7028,7 @@ test/lazutils/testunicode.pas svneol=native#text/pascal
 test/lcltests/testmethodcompare.pas svneol=native#text/plain
 test/lcltests/testpen.pas svneol=native#text/plain
 test/lcltests/testpreferredsize.pas svneol=native#text/plain
+test/lcltests/testtextstrings.pas svneol=native#text/plain
 test/lcltests/testunicode.pas svneol=native#text/plain
 test/manual/lcl/textextent/mainform.lfm svneol=native#text/plain
 test/manual/lcl/textextent/mainform.pas svneol=native#text/plain

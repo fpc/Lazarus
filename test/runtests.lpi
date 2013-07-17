@@ -23,7 +23,7 @@
             <Filename Value="runtests"/>
           </Target>
           <SearchPaths>
-            <OtherUnitFiles Value="bugs;lcltests;codetoolstests;lazutils;lazutils"/>
+            <OtherUnitFiles Value="bugs;lcltests;codetoolstests;lazutils"/>
             <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <Conditionals Value="if defined(EnableCTRange) then
@@ -123,9 +123,9 @@
         <UnitName Value="TestPen"/>
       </Unit6>
       <Unit7>
-        <Filename Value="lcltests\testpreferredsize.pas"/>
+        <Filename Value="lcltests\testtextstrings.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestPreferredSize"/>
+        <UnitName Value="TestTextStrings"/>
       </Unit7>
       <Unit8>
         <Filename Value="codetoolstests\testbasiccodetools.pas"/>

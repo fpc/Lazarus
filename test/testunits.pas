@@ -35,7 +35,7 @@ uses
   TestBasicCodetools, TestCTXMLFixFragments, TestCTRangeScan, TestCTH2Pas,
   TestCompleteBlock, TestStdCodetools, TestMethodJumpTool, TestCfgScript,
   // lcltests
-  testunicode, testpen, TestPreferredSize
+  testunicode, testpen, TestPreferredSize, TestTextStrings
   {$IFNDEF NoSemiAutomatedTests}
   // semi-automatic tests
   , semiautotest, idesemiautotests, lclsemiautotests
