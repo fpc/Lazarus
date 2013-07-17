@@ -346,7 +346,7 @@ var
 
     // package menu
     mnuPackage: TIDEMenuSection;
-    mnuComponent: TIDEMenuSection; // for compatibility with older lazarus versions
+    mnuComponent: TIDEMenuSection; // = mnuPackage, for compatibility with older lazarus versions
       itmPkgOpening: TIDEMenuSection;
         itmPkgOpenRecent: TIDEMenuSection;
       itmPkgUnits: TIDEMenuSection;
