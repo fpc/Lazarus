@@ -2358,10 +2358,18 @@ begin
         // this is needed since we don't minimize the main form window
         // we only hide and show it back on mimize and restore in case MainFormOnTaskbar = False
         if (Window = Win32WidgetSet.AppHandle) and
-           Assigned(Application.MainForm) and Application.MainForm.HandleAllocated
+           Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
         begin
           lWinControl := Application.MainForm;
           Window := Application.MainFormHandle;
+          // lie LCL about the window state
+          if IsIconic(Win32WidgetSet.AppHandle) then
+            SizeType := SIZE_MINIMIZED or Size_SourceIsInterface
+          else
+          if IsZoomed(Window) then
+            SizeType := SIZE_MAXIMIZED or Size_SourceIsInterface
+          else
+            SizeType := SIZE_RESTORED or Size_SourceIsInterface;
         end;
 
         GetWindowSize(Window, NewWidth, NewHeight);
