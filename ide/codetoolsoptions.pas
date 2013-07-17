@@ -38,7 +38,7 @@ uses
   Classes, SysUtils, LazConf, FileUtil, Laz2_XMLCfg, lazutf8classes,
   LResources, Forms, Controls, Buttons, LclProc, ExtCtrls,
   Dialogs, CodeToolManager, DefineTemplates, SourceChanger, SynEdit,
-  IDEOptionsIntf, IDEOptionDefs, EditDefineTree, LazarusIDEStrConsts, IDEProcs;
+  IDEOptionsIntf, IDEOptionDefs, LazarusIDEStrConsts, IDEProcs;
 
 const
   DefaultIndentationFilename = 'laz_indentation.pas'; // in directory GetPrimaryConfigPath

@@ -554,7 +554,7 @@ var
   begin
     Result := false;
     while proc.Output.NumBytesAvailable>0 do begin
-      ReadBytes := proc.Output.Read(Buffer, BufSize);
+      ReadBytes := proc.Output.Read(Buffer{%H-}, BufSize);
       OutStream.Write(Buffer, ReadBytes);
       Result := true;
     end;
