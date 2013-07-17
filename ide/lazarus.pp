@@ -89,6 +89,7 @@ begin
   LazarusRevisionStr:=RevisionStr;
   Application.Title:='Lazarus';
   OnGetApplicationName:=@GetLazarusApplicationName;
+  Application.MainFormOnTaskBar := True;
   Application.Initialize;
   TMainIDE.ParseCmdLineOptions;
   if not SetupMainIDEInstance then exit;
