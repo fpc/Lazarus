@@ -21,11 +21,12 @@ interface
 
 uses
   Classes, SysUtils, LazHelpIntf, LazConfigStorage, HelpIntfs,
-  Dialogs, Forms, LazLogger, FileUtil, LHelpControl;
+  Dialogs, Forms, LazLogger, FileUtil, LHelpControl, LResources;
 
 const
   CHMMimeType = 'application/chm';
   CHMPathParam = 'path';
+
 type
   { TCHMHelpDatabase
 
@@ -356,5 +357,7 @@ begin
   Storage.SetDeleteValue('Filename',Filename, '');
 end;
 
+initialization
+  {$I lazhelpchm.lrs}
 end.
 
