@@ -2665,7 +2665,7 @@ begin
   Result:='<div class="header">';
   // add declaration
   CTHint:=Tool.GetSmartHint(Node,XYPos,false);
-  Result:=Result+'  '+SourceToFPDocHint(CTHint);
+  Result:=Result+'  <nobr>'+SourceToFPDocHint(CTHint)+'</nobr>';
 
   // add link to declaration
   Result:=Result+'<br>'+LineEnding;
