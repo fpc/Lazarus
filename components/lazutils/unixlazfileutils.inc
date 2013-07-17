@@ -111,10 +111,6 @@ begin
   Rslt.Name:=SysToUTF8(Rslt.Name);
 end;
 
-procedure FindCloseUTF8(var F: TSearchrec);
-begin
-  SysUtils.FindClose(F);
-end;
 
 function ExpandFileNameUtf8(const FileName: string; {const} BaseDir: String = ''): String;
 var

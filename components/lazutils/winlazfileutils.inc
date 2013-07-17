@@ -10,7 +10,6 @@ var
   _FindFirstUtf8       : function(const Path: string; Attr: Longint;
                                   out Rslt: TSearchRec): Longint;
   _FindNextUtf8        : function(var Rslt: TSearchRec): Longint;
-  _FindCloseUtf8       : procedure(var F: TSearchrec);
   _FileGetAttrUtf8     : function(const FileName: String): Longint;
   _FileSetAttrUtf8     : function(const Filename: String; Attr: longint): Longint;
   _DeleteFileUtf8      : function(const FileName: String): Boolean;
@@ -125,13 +124,6 @@ begin
   Result := _FindNextUtf8(Rslt);
 end;
 
-procedure FindCloseUTF8(var F: TSearchrec);
-begin
-  SysUtils.FindClose(F);
-end;
-
-
-
 
 // ******** Start of AnsiString specific implementations ************
 
@@ -237,10 +229,6 @@ begin
   Rslt.Name:=SysToUTF8(Rslt.Name);
 end;
 
-procedure FindCloseAnsi(var F: TSearchrec);
-begin
-  SysUtils.FindClose(F);
-end;
 
 
 {$endif WinCE}
@@ -558,10 +546,6 @@ begin
     Result := Integer(GetLastError);
 end;
 
-procedure FindCloseWide(var F: TSearchrec);
-begin
-  Windows.FindClose(f.FindHandle);
-end;
 
 // ******** End of WideString specific implementations ************
 
@@ -880,7 +864,6 @@ begin
     _RemoveDirUtf8 := @RemoveDirAnsi;
     _FindFirstUtf8 := @FindFirstAnsi;
     _FindNextUtf8 := @FindNextAnsi;
-    _FindCloseUtf8 := @FindCloseAnsi;
   end
   else
   {$endif}
@@ -901,6 +884,5 @@ begin
     _RemoveDirUtf8 := @RemoveDirWide;
     _FindFirstUtf8 := @FindFirstWide;
     _FindNextUtf8 := @FindNextWide;
-    _FindCloseUtf8 := @FindCloseWide;
   end;
 end;

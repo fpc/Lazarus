@@ -80,7 +80,7 @@ function DirectoryExistsUTF8(const Directory: string): Boolean;
 function ExpandFileNameUTF8(const FileName: string; {const} BaseDir: string = ''): string;
 function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
 function FindNextUTF8(var Rslt: TSearchRec): Longint;
-procedure FindCloseUTF8(var F: TSearchrec);
+procedure FindCloseUTF8(var F: TSearchrec); inline;
 function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
 function FileGetAttrUTF8(const FileName: String): Longint;
 function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;

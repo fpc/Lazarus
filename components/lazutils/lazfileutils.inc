@@ -352,3 +352,8 @@ begin
   if TryCreateRelativePath(FileName, Basedirectory, UsePointDirectory, AlwaysRequireSharedBaseFolder, RelPath) then
     Result := RelPath;
 end;
+
+procedure FindCloseUTF8(var F: TSearchrec);
+begin
+  SysUtils.FindClose(F);
+end;
