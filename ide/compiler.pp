@@ -117,6 +117,7 @@ type
     fDescription: string;
     fIndentation: integer;              // Indentation level in "fpc -h" output.
     fOwnerGroup: TCompilerOptGroup;
+    fVisible: Boolean;                  // Used for filtering.
     procedure ParseOption(aDescr: string; aIndent: integer);
   protected
     function GuessEditKind: TCompilerOptEditKind; virtual;
@@ -128,6 +129,7 @@ type
     property EditKind: TCompilerOptEditKind read fEditKind;
     property Description: string read fDescription;
     property Indentation: integer read fIndentation;
+    property Visible: Boolean read fVisible write fVisible;
   end;
 
   TCompilerOptList = TObjectList;
@@ -180,6 +182,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function ReadAndParseOptions: TModalResult;
+    function FilterOptions(aFilter: string): Boolean;
   public
     property SupportedCategories: TStringList read fSupportedCategories;
     property RootOptGroup: TCompilerOptGroup read fRootOptGroup;
@@ -725,6 +728,37 @@ begin
   finally
     Lines.Free;
   end;
+end;
+
+function FilterOneOpt(aOpt: TCompilerOpt; aFilt: string): Boolean;
+begin
+  Result := (aFilt='') or (Pos(aFilt,UTF8LowerCase(aOpt.Option))>0)
+                       or (Pos(aFilt,UTF8LowerCase(aOpt.Description))>0);
+end;
+
+function TCompilerOptReader.FilterOptions(aFilter: string): Boolean;
+// Filter all options recursively, setting their Visible flag as needed.
+// Returns True if Option(group) or child options have visible items.
+
+  function FilterOptionsSub(aRoot: TCompilerOpt): Boolean;
+  var
+    Children: TCompilerOptList;
+    i: Integer;
+  begin
+    // Filter the root item
+    aRoot.Visible := FilterOneOpt(aRoot, aFilter);
+    // Filter children in a group
+    if aRoot is TCompilerOptGroup then
+    begin
+      Children := TCompilerOptGroup(aRoot).CompilerOpts;
+      for i := 0 to Children.Count-1 do           // Recursive call for children.
+        aRoot.Visible := FilterOptionsSub(TCompilerOpt(Children[i])) or aRoot.Visible;
+    end;
+    Result := aRoot.Visible;
+  end;
+
+begin
+  Result := FilterOptionsSub(fRootOptGroup);
 end;
 
 end.

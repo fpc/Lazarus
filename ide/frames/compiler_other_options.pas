@@ -198,10 +198,7 @@ var
   begin
     for i := 0 to aParentGroup.CompilerOpts.Count-1 do begin
       Opt := TCompilerOpt(aParentGroup.CompilerOpts[i]);
-      if (edOptionsFilter.Text <> '')
-      and (Pos(edOptionsFilter.Text, Opt.Option) = 0)
-      and (Pos(edOptionsFilter.Text, Opt.Description) = 0) then Continue;
-
+      if not Opt.Visible then Continue;         // Maybe filtered out
       case Opt.EditKind of
         oeNone: begin                           // Label
           Cntrl := MakeHeaderLabel;
@@ -254,13 +251,16 @@ begin
   Container := sbAllOptions;
   Container.DisableAutoSizing;
   try
+    // First filter and set Visible flag.
+    FOptionsReader.FilterOptions(edOptionsFilter.Text);
+    // Then create and place new controls in GUI
     FGeneratedControls.Clear;
-    // Create and place new controls
     yLoc := 0;
     RenderOneLevel(FOptionsReader.RootOptGroup);
     FEffectiveFilter:=edOptionsFilter.Text;
   finally
     Container.EnableAutoSizing;
+    Container.Invalidate;
   end;
 end;
 
