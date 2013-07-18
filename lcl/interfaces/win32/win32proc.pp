@@ -48,6 +48,7 @@ Type
     List: TStrings;
     StayOnTopList: TFPList;   // a list of windows that were normalized when showing modal
     MaxLength: integer;
+    RestoreState: LongInt;       // restore window state
     MouseX, MouseY: smallint; // noticing spurious WM_MOUSEMOVE messages
     DispInfoTextA: array [0..LV_DISP_INFO_COUNT-1] of AnsiString; // buffer for ListView LVN_GETDISPINFO notification
     DispInfoTextW: array [0..LV_DISP_INFO_COUNT-1] of WideString; // it's recommended to keep buffer unchanged

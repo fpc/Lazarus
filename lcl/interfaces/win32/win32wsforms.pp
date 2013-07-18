@@ -365,6 +365,32 @@ begin
         SetMinMaxInfo(WinControl, PMINMAXINFO(LParam)^);
         Exit(CallDefaultWindowProc(Window, Msg, WParam, LParam));
       end;
+    WM_SHOWWINDOW:
+      begin
+        // this happens when parent window is being minized/restored
+        // an example of parent window can be an Application.Handle window if MainFormOnTaskBar = False
+        case LParam of
+          SW_PARENTCLOSING:
+          begin
+            if IsIconic(Window) then
+              Info^.RestoreState := SW_SHOWMINNOACTIVE
+            else
+            if IsZoomed(Window) then
+              Info^.RestoreState := SW_SHOWMAXIMIZED
+            else
+              Info^.RestoreState := SW_SHOWNOACTIVATE;
+          end;
+          SW_PARENTOPENING:
+          begin
+            if Info^.RestoreState <> 0 then
+            begin
+              Windows.ShowWindow(Window, Info^.RestoreState);
+              Info^.RestoreState := 0;
+              Exit(CallDefaultWindowProc(Window, Msg, WParam, LParam));
+            end;
+          end;
+        end;
+      end;
   end;
   Result := WindowProc(Window, Msg, WParam, LParam);
 end;
