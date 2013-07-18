@@ -208,8 +208,7 @@ begin
   DeleteSelected;
 end;
 
-procedure TCondForm.ListBoxKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TCondForm.ListBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_DELETE then begin
     DeleteSelected;
@@ -279,8 +278,10 @@ var
   p, p1: Integer;
   IsElse, IsTwo, HasNewline: Boolean;
   Tail, Indent: string;
+
   function ifdef(s:string):string;
   begin
+    Result :='';
     if (s <>'') and (s[1] = '!') then begin
       if IsPascal then
         Result := 'N'
@@ -293,6 +294,7 @@ var
     else
       Result := '#if' + Result + 'def ' + s;
   end;
+
 begin
   Result := Text;
   cond := ShowConDefDlg;
