@@ -40,6 +40,7 @@ type
 
   TCustomColorBox = class(TCustomComboBox)
   private
+    FColorRectWidth: Integer;
     FDefaultColorColor: TColor;
     FNoneColorColor: TColor;
     FOnGetColors: TGetColorsEvent;
@@ -48,6 +49,7 @@ type
     function GetColor(Index : Integer): TColor;
     function GetColorName(Index: Integer): string;
     function GetSelected: TColor;
+    procedure SetColorRectWidth(AValue: Integer);
     procedure SetDefaultColorColor(const AValue: TColor);
     procedure SetNoneColorColor(const AValue: TColor);
     procedure SetSelected(Value: TColor);
@@ -64,7 +66,7 @@ type
     function PickCustomColor: Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-
+    property ColorRectWidth: Integer read FColorRectWidth write SetColorRectWidth default 14;
     property Style: TColorBoxStyle read FStyle write SetStyle
       default [cbStandardColors, cbExtendedColors, cbSystemColors];
     property Colors[Index: Integer]: TColor read GetColor;
@@ -79,6 +81,7 @@ type
 
   TColorBox = class(TCustomColorBox)
   published
+    property ColorRectWidth;
     property DefaultColorColor;
     property NoneColorColor;
     property Selected;
@@ -353,6 +356,7 @@ begin
   inherited Style := csOwnerDrawFixed;
   inherited ReadOnly := True;
 
+  FColorRectWidth := 14;
   FStyle := [cbStandardColors, cbExtendedColors, cbSystemColors];
   FNoneColorColor := clBlack;
   FDefaultColorColor := clBlack;
@@ -386,6 +390,13 @@ begin
   end
   else
     Result := FSelected;
+end;
+
+procedure TCustomColorBox.SetColorRectWidth(AValue: Integer);
+begin
+  if FColorRectWidth = AValue then Exit;
+  FColorRectWidth := AValue;
+  Invalidate;
 end;
 
 procedure TCustomColorBox.SetDefaultColorColor(const AValue: TColor);
@@ -540,7 +551,7 @@ begin
   r.top := Rect.top + 3;
   r.bottom := Rect.bottom - 3;
   r.left := Rect.left + 3;
-  r.right := r.left + 14;
+  r.right := r.left + FColorRectWidth;
   Exclude(State, odPainted);
 
   with Canvas do
@@ -567,7 +578,7 @@ begin
     Pen.Color := PenColor;
   end;
   r := Rect;
-  r.left := r.left + 20;
+  r.left := r.left + FColorRectWidth + 4;
 
   inherited DrawItem(Index, BidiFlipRect(r, Rect, UseRightToLeftAlignment), State);
 end;
