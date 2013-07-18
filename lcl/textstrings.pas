@@ -742,8 +742,12 @@ begin
     FArraysValid:=false;
     FText:=FText+s+TheStrings.Text;
     BuildArrays;
-    for i:=0 to TheStrings.Count-1 do
-      FLineRanges[i+OldCount].TheObject:=TheStrings.Objects[i];
+    for i:=0 to TheStrings.Count-1 do begin
+      if i+OldCount<Count then
+        FLineRanges[i+OldCount].TheObject:=TheStrings.Objects[i]
+      else
+        AddObject('',TheStrings.Objects[i]);
+    end;
   end;
 end;
 
