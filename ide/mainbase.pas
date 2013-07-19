@@ -269,10 +269,11 @@ begin
           NewBounds.Top:=(r.Top+r.Bottom-Form.Height) div 2
         else
           NewBounds.Top:=r.Top+50;
-        NewBounds.Right:=NewBounds.Left+Max(200,Form.Width);
-        NewBounds.Bottom:=NewBounds.Top+Max(200,Form.Height);
+        NewBounds.Right:=NewBounds.Left+Max(70,Form.Width);
+        NewBounds.Bottom:=NewBounds.Top+Max(70,Form.Height);
         debugln(['TMainIDEBase.mnuCenterWindowItemClick New=',dbgs(NewBounds)]);
         Form.BoundsRect:=NewBounds;
+        Form.WindowState:=wsNormal;
       end;
       break;
     end;
