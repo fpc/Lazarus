@@ -56,7 +56,7 @@ uses
   IpConst;
 
 const
-  IpFileOpenFailed = Handle(-1);
+  IpFileOpenFailed = THandle(-1);
 
 { TIpMemMapStream  }
 type
