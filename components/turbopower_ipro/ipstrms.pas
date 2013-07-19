@@ -56,7 +56,7 @@ uses
   IpConst;
 
 const
-  IpFileOpenFailed = LCLType.Handle(-1);
+  IpFileOpenFailed = Handle(-1);
 
 { TIpMemMapStream  }
 type
