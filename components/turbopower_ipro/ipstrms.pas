@@ -41,18 +41,16 @@ unit IpStrms;
 interface
 
 uses
-  {$IFDEF IP_LAZARUS}
   SysUtils,
   Classes,
+  {$IFDEF IP_LAZARUS}
   FPCAdds,
   LCLType,
   GraphType,
   LCLIntf,
   FileUtil,
   {$ELSE}
-  Windows,
-  SysUtils,
-  Classes,
+  Windows, // put Windows behind Classes because of THandle
   {$ENDIF}
   IpUtils,
   IpConst;
