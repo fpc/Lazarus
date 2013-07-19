@@ -291,7 +291,7 @@ begin
   writeln('  --nowarnurl=<string> : do not warn for URLs starting with this. Can be given multiple times.');
   writeln('  <inputfile> : wiki page in xml format, can be given multiple times');
   writeln('     Duplicates are ignored.');
-  writeln('     You can use globbing, like "wikixml/*.html". You must quote such parameters on console/shell.');
+  writeln('     You can use globbing, like "wikixml/*.xml". You must quote such parameters on console/shell.');
   writeln;
   writeln('Options for --format=fpdoc :');
   writeln('  --root=<fpdoc xml root node> : default: ',FPDocConverter.RootName);
@@ -306,6 +306,7 @@ begin
   writeln;
   writeln('Examples:');
   writeln('  ',ParamStrUTF8(0),' --format=fpdoc --outputdir=fpdoc wikipage1.xml wikipage2.xml');
+  writeln('  ',ParamStrUTF8(0),' --format=html --outputdir=html --css=html/wiki.css "wikixml/*.xml"');
 end;
 
 var
