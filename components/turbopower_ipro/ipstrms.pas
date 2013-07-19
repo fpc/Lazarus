@@ -42,6 +42,8 @@ interface
 
 uses
   {$IFDEF IP_LAZARUS}
+  SysUtils,
+  Classes,
   FPCAdds,
   LCLType,
   GraphType,
@@ -49,14 +51,14 @@ uses
   FileUtil,
   {$ELSE}
   Windows,
-  {$ENDIF}
   SysUtils,
   Classes,
+  {$ENDIF}
   IpUtils,
   IpConst;
 
 const
-  IpFileOpenFailed = -1;
+  IpFileOpenFailed = LCLType.Handle(-1);
 
 { TIpMemMapStream  }
 type
