@@ -338,6 +338,7 @@ var
   i: Integer;
   SEndsInNewLine: boolean;
   Range: PTextLineRange;
+  NewCapacity: Integer;
 begin
   if not FArraysValid then BuildArrays;
   NewLineLen:=length(S);
@@ -369,10 +370,12 @@ begin
   // adjust arrays
   if FLineCount=FLineCapacity then begin
     if FLineCapacity<8 then
-      FLineCapacity:=8
+      NewCapacity:=8
     else
-      FLineCapacity:=FLineCapacity shl 1;
-    ReAllocMem(FLineRanges,SizeOf(TTextLineRange)*FLineCapacity);
+      NewCapacity:=FLineCapacity shl 1;
+    ReAllocMem(FLineRanges,SizeOf(TTextLineRange)*NewCapacity);
+    FillByte(FLineRanges[FLineCapacity],SizeOf(TTextLineRange)*(NewCapacity-FLineCapacity),0);
+    FLineCapacity:=NewCapacity;
   end;
   if Index<FLineCount then begin
     System.Move(FLineRanges[Index],FLineRanges[Index+1],
@@ -384,9 +387,7 @@ begin
   end;
   inc(FLineCount);
   Range:=@FLineRanges[Index];
-  Pointer(Range^.Line):=nil;
   Range^.Line:=S;
-  Range^.TheObject:=nil;
   Range^.StartPos:=NewStartPos;
   Range^.EndPos:=NewStartPos+NewLineLen-NewLineCharCount;
 end;
@@ -415,6 +416,8 @@ begin
       dec(FLineRanges[i].EndPos,OldLineLen);
     end;
   end;
+  // clear last element (this helps finding bugs)
+  FillByte(FLineRanges[FLineCount],SizeOf(TTextLineRange),0);
 end;
 
 procedure TTextStrings.Exchange(Index1, Index2: Integer);
@@ -739,8 +742,12 @@ begin
     FArraysValid:=false;
     FText:=FText+s+TheStrings.Text;
     BuildArrays;
-    for i:=0 to TheStrings.Count-1 do
-      FLineRanges[i+OldCount].TheObject:=TheStrings.Objects[i];
+    for i:=0 to TheStrings.Count-1 do begin
+      if i+OldCount<Count then
+        FLineRanges[i+OldCount].TheObject:=TheStrings.Objects[i]
+      else
+        AddObject('',TheStrings.Objects[i]);
+    end;
   end;
 end;
 
