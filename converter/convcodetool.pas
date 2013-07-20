@@ -142,23 +142,27 @@ begin
 end;
 
 function TCodeToolLink.DummyReplacements: Boolean;
-// If Codetools cannot parse the code, do dummy replacement of some known problematic
-// syntax, currently only OleVariant.type. Most Codetools functions cannot
-// be used because the code is invalid, but TSourceChangeCache.ReplaceEx works.
-const
-  ReplString = '.type';
+// If Codetools cannot parse the code, do dummy replacement for all reserved words:
+//  '.'+ReservedWord -> '.&'+ReservedWord, needed for OleVariant.
+// Most Codetools functions cannot be used because the code is invalid,
+//  but TSourceChangeCache.ReplaceEx works.
 var
-  p: Integer;
+  p, i: Integer;
+  s: string;
 begin
-  p:=1;
-  repeat
-    // find next '.type'
-    p:=PosEx(ReplString,fCode.Source,p);
-    if p<1 then break;
-    if not fSrcCache.ReplaceEx(gtNone,gtNone,1,1,fCode,p+1,p+1,'&') then
-      Exit(False);
-    inc(p,length(ReplString));
-  until false;
+  // Reserved words are in WordIsKeyWord list in CodeTools.
+  for i:=0 to WordIsKeyWord.Count-1 do begin
+    s:='.'+LowerCase(WordIsKeyWord.GetItem(i).KeyWord);
+    p:=1;
+    repeat
+      p:=PosEx(s,fCode.Source,p);     // find next '.'+ReservedWord
+      if p<1 then break;
+      if not fSrcCache.ReplaceEx(gtNone,gtNone,1,1,fCode,p+1,p+1,'&') then
+        Exit(False);
+      inc(p,length(s));
+    until false;
+  end;
+  // Apply the changes in buffer
   if not fSrcCache.Apply then
     Exit(False);
   Result:=True;
