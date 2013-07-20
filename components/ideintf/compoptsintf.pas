@@ -387,22 +387,22 @@ type
     property UseExternalDbgSyms: Boolean read FUseExternalDbgSyms write SetUseExternalDbgSyms;
 
     // messages:
-    property ShowErrors: Boolean read fShowErrors write SetShowErrors;
-    property ShowWarn: Boolean read fShowWarn write SetShowWarn;
-    property ShowNotes: Boolean read fShowNotes write SetShowNotes;
-    property ShowHints: Boolean read fShowHints write SetShowHints;
-    property ShowGenInfo: Boolean read fShowGenInfo write SetShowGenInfo;
-    property ShowLineNum: Boolean read fShowLineNum write SetShowLineNum;
-    property ShowAll: Boolean read fShowAll write SetShowAll;
+    property ShowErrors: Boolean read fShowErrors write SetShowErrors; // -ve
+    property ShowWarn: Boolean read fShowWarn write SetShowWarn; // -vw
+    property ShowNotes: Boolean read fShowNotes write SetShowNotes; // -vn
+    property ShowHints: Boolean read fShowHints write SetShowHints; // -vh
+    property ShowGenInfo: Boolean read fShowGenInfo write SetShowGenInfo; // -vi
+    property ShowLineNum: Boolean read fShowLineNum write SetShowLineNum; // -vl
     property ShowAllProcsOnError: Boolean
-      read fShowAllProcsOnError write SetShowAllProcsOnError;
-    property ShowDebugInfo: Boolean read fShowDebugInfo write SetShowDebugInfo;
-    property ShowUsedFiles: Boolean read fShowUsedFiles write SetShowUsedFiles;
-    property ShowTriedFiles: Boolean read fShowTriedFiles write SetShowTriedFiles;
-    property ShowCompProc: Boolean read fShowCompProc write SetShowCompProc;
-    property ShowCond: Boolean read fShowCond write SetShowCond;
-    property ShowExecInfo: Boolean read fShowExecInfo write SetShowExecInfo;
-    property ShowNothing: Boolean read fShowNothing write SetShowNothing;
+      read fShowAllProcsOnError write SetShowAllProcsOnError; // -vb
+    property ShowAll: Boolean read fShowAll write SetShowAll; // -va
+    property ShowDebugInfo: Boolean read fShowDebugInfo write SetShowDebugInfo; // -vd
+    property ShowUsedFiles: Boolean read fShowUsedFiles write SetShowUsedFiles; // -vu
+    property ShowTriedFiles: Boolean read fShowTriedFiles write SetShowTriedFiles; // -vt
+    property ShowCompProc: Boolean read fShowCompProc write SetShowCompProc; // -vp
+    property ShowCond: Boolean read fShowCond write SetShowCond; // -vc
+    property ShowExecInfo: Boolean read fShowExecInfo write SetShowExecInfo; // -vx
+    property ShowNothing: Boolean read fShowNothing write SetShowNothing; // -v0
     property ShowSummary: Boolean read FShowSummary write SetShowSummary;
     property ShowHintsForUnusedUnitsInMainSrc: Boolean
       read fShowHintsForUnusedUnitsInMainSrc write SetShowHintsForUnusedUnitsInMainSrc;
