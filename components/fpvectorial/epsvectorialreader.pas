@@ -231,7 +231,7 @@ begin
   for i := 0 to Childs.Count-1 do
   begin
     CurToken := TPSToken(Childs.Items[i]);
-    if i div 2 = 0 then
+    if i mod 2 = 0 then
     begin
       Names.Add(CurToken.StrValue);
     end
@@ -463,12 +463,15 @@ var
   ArrayToken, NewArrayToken: TArrayToken;
   DictionaryToken: TDictionaryToken;
   Len: Integer;
-  lScannerStateReturn: TPostScriptScannerState = ssSearchingToken;
-  lCommentStateReturn: TPostScriptScannerState = ssSearchingToken;
+  lReturnState: TStack; // of TPostScriptScannerState
+  lExpressionStateReturn: TPostScriptScannerState;
   lIsEndOfLine: Boolean;
   lIsExpressionFinished: Boolean;
   lTmpStr: string;
 begin
+  lReturnState := TStack.Create;
+  try
+
   // Check if the EPS file starts with a TIFF preview
   // See http://www.graphicsgroups.com/12-corel/f851f798a0e1ca7a.htm
   // 00000000: c5d0 d3c6 930b 0000 55f2 0000 0000 0000  ........U.......
@@ -506,7 +509,7 @@ begin
           CommentToken.Line := CurLine;
           CommentToken.StrValue := '%';
           State := ssInComment;
-          lCommentStateReturn := ssSearchingToken;
+          lReturnState.Push(Pointer(PtrInt(ssSearchingToken)));
 //          {$ifdef FPVECTORIALDEBUG}
 //          WriteLn(Format('Starting Comment at Line %d', [CurLine]));
 //          {$endif}
@@ -521,7 +524,7 @@ begin
         else if CurChar = '[' then
         begin
           ArrayToken := TArrayToken.Create;
-          lScannerStateReturn := ssInArray;
+          lReturnState.Push(Pointer(PtrInt(ssSearchingToken)));
           State := ssInArray;
         end
         else if CurChar = '<' then
@@ -531,7 +534,7 @@ begin
           begin
             DictionaryToken := TDictionaryToken.Create;
             State := ssInDictionary;
-            lScannerStateReturn := ssInDictionary;
+            lReturnState.Push(Pointer(PtrInt(ssSearchingToken)));
           end
           else
             raise Exception.Create(Format('[TPSTokenizer.ReadFromStream] Unexpected char while searching for "<<" token: $%s in Line %d',
@@ -554,6 +557,7 @@ begin
             else
               ExpressionToken.ETType := ettOperator;
           end;
+          lReturnState.Push(Pointer(PtrInt(ssSearchingToken)));
           State := ssInExpressionElement;
         end
         else if lIsEndOfLine then Continue
@@ -570,7 +574,7 @@ begin
         if lIsEndOfLine then
         begin
           Tokens.Add(CommentToken);
-          State := lCommentStateReturn;
+          State := TPostScriptScannerState(lReturnState.Pop());
 //          {$ifdef FPVECTORIALDEBUG}
 //          WriteLn(Format('Adding Comment "%s" at Line %d', [CommentToken.StrValue, CurLine]));
 //          {$endif}
@@ -586,7 +590,7 @@ begin
           CommentToken.Line := CurLine;
           CommentToken.StrValue := '%';
           State := ssInComment;
-          lCommentStateReturn := ssInArray;
+          lReturnState.Push(Pointer(PtrInt(ssInArray)));
         end
         // Another array inside the array
         else if (CurChar = '[') then
@@ -596,6 +600,7 @@ begin
           NewArrayToken.Parent := ArrayToken;
           ArrayToken.ArrayData.Add(NewArrayToken);
           ArrayToken := NewArrayToken;
+          lReturnState.Push(Pointer(PtrInt(ssInArray)));
         end
         else if (CurChar = ']') then
         begin
@@ -603,8 +608,7 @@ begin
           if ArrayToken.Parent = nil then
           begin
             Tokens.Add(ArrayToken);
-            lScannerStateReturn:= ssSearchingToken;
-            State := ssSearchingToken;
+            State := TPostScriptScannerState(lReturnState.Pop());
           end
           else
           begin
@@ -626,6 +630,7 @@ begin
             else
               ExpressionToken.ETType := ettOperator;
           end;
+          lReturnState.Push(Pointer(PtrInt(ssInArray)));
           State := ssInExpressionElement;
         end
         else if lIsEndOfLine then Continue
@@ -664,8 +669,7 @@ begin
           if CurChar = '>' then
           begin
             Tokens.Add(DictionaryToken);
-            lScannerStateReturn:= ssSearchingToken;
-            State := ssSearchingToken;
+            State := TPostScriptScannerState(lReturnState.Pop());
           end
           else
             raise Exception.Create(Format('[TPSTokenizer.ReadFromStream] ssInDictionary: Unexpected char while searching for ">>" token: $%s in Line %d',
@@ -686,7 +690,14 @@ begin
             else
               ExpressionToken.ETType := ettOperator;
           end;
+          lReturnState.Push(Pointer(PtrInt(ssInDictionary)));
           State := ssInExpressionElement;
+        end
+        else if CurChar = '[' then
+        begin
+          ArrayToken := TArrayToken.Create;
+          lReturnState.Push(Pointer(PtrInt(ssInDictionary)));
+          State := ssInArray;
         end
         else if lIsEndOfLine then Continue
         else if IsPostScriptSpace(Byte(CurChar)) then Continue;
@@ -702,12 +713,14 @@ begin
         if lIsExpressionFinished then
         begin
           ExpressionToken.PrepareFloatValue();
-          if lScannerStateReturn = ssInArray then
+          if lReturnState.Count = 0 then lExpressionStateReturn := ssSearchingToken
+          else lExpressionStateReturn := TPostScriptScannerState(lReturnState.Pop());
+          if lExpressionStateReturn = ssInArray then
           begin
             ArrayToken.ArrayData.Add(ExpressionToken);
             State := ssInArray;
           end
-          else if lScannerStateReturn = ssInDictionary then
+          else if lExpressionStateReturn = ssInDictionary then
           begin
             DictionaryToken.Childs.Add(ExpressionToken);
             State := ssInDictionary;
@@ -720,8 +733,10 @@ begin
             else
               State := ssSearchingToken;
           end;
-          if (CurChar = '{') then AStream.Seek(-1, soFromCurrent)
-          else if (CurChar = '[') then AStream.Seek(-1, soFromCurrent);
+          if (CurChar in ['{', '[', '}', ']', '<', '>', '%']) then
+          begin
+            AStream.Seek(-1, soFromCurrent);
+          end;
         end
         else
           ExpressionToken.StrValue := ExpressionToken.StrValue + CurChar;
@@ -761,6 +776,10 @@ begin
   if State = ssInExpressionElement then
   begin
     Tokens.Add(ExpressionToken);
+  end;
+
+  finally
+    lReturnState.Free;
   end;
 end;
 
@@ -1697,7 +1716,8 @@ begin
     if TExpressionToken(ANextToken).ETType <> ettRawData then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Image contents is not a raw data.');
     lImageDataStr := TExpressionToken(ANextToken).StrValue;
 
-    if TDictionaryToken(Param1).Names.Find('ASCII85Decode', lFindIndex) then
+    lFindIndex := TDictionaryToken(Param1).Names.IndexOf('ASCII85Decode');
+    if lFindIndex > 0 then
     begin
       SetLength(lImageData, (Length(lImageDataStr)*4) div 5);
 
@@ -1708,13 +1728,14 @@ begin
         lImageDataPtr^ := (Byte(lImageDataStr[i])-33)*85*85*85*85
          + (Byte(lImageDataStr[i+1])-33)*85*85*85 + (Byte(lImageDataStr[i+2])-33)*85*85
          + (Byte(lImageDataStr[i+3])-33)*85       + (Byte(lImageDataStr[i+4])-33);
+        lImageDataPtr^ := NToBE(lImageDataPtr^);
 
         Inc(i, 5);
       end;
-
     end;
 
-    if TDictionaryToken(Param1).Names.Find('FlateDecode', lFindIndex) then
+    lFindIndex := TDictionaryToken(Param1).Names.IndexOf('FlateDecode');
+    if lFindIndex > 0 then
     begin
       if Length(lImageData) = 0 then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: no byte array prepared for FlateDecode. ASCII85Decode is missing.');
     end;
@@ -1723,15 +1744,18 @@ begin
     lImageWidth := 0;
     lImageHeight := 0;
     lImageBitsPerComponent := 0;
-    if TDictionaryToken(Param1).Names.Find('Width', lFindIndex) then
+    lFindIndex := TDictionaryToken(Param1).Names.IndexOf('Width');
+    if lFindIndex > 0 then
     begin
       lImageWidth := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]).IntValue;
     end;
-    if TDictionaryToken(Param1).Names.Find('Height', lFindIndex) then
+    lFindIndex := TDictionaryToken(Param1).Names.IndexOf('Height');
+    if lFindIndex > 0 then
     begin
       lImageHeight := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]).IntValue;
     end;
-    if TDictionaryToken(Param1).Names.Find('BitsPerComponent', lFindIndex) then
+    lFindIndex := TDictionaryToken(Param1).Names.IndexOf('BitsPerComponent');
+    if lFindIndex > 0 then
     begin
       lImageBitsPerComponent := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]).IntValue;
     end;
