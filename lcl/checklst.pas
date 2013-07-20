@@ -273,7 +273,7 @@ procedure TCustomCheckListBox.KeyDown(var Key: Word; Shift: TShiftState);
 var
   Index: Integer;
 begin
-  if (Key = VK_SPACE) and (Shift=[]) then
+  if (Key = VK_SPACE) and (Shift=[]) and (ItemIndex >= 0) then
   begin
     Index := ItemIndex;
     Checked[Index] := not Checked[Index];

@@ -112,12 +112,12 @@ begin
   CellClass:=PLCLIntfCellRendererClass(gtk_object_get_class(cell));
   CellClass^.DefaultGtkGetSize(cell, Widget, cell_area, x_offset, y_offset,
                                width, height);
-  //DebugLn(['LCLIntfCellRenderer_GetSize ',GetWidgetDebugReport(Widget)]);
+  // DebugLn(['LCLIntfCellRenderer_GetSize ',GetWidgetDebugReport(Widget)]);
   AWinControl := GetControl(cell, widget);
   if [csDestroying,csLoading]*AWinControl.ComponentState<>[] then exit;
 
   if AWinControl is TCustomListbox then
-    if TCustomListbox(AWinControl).Style < lbOwnerDrawVariable then
+    if TCustomListbox(AWinControl).Style < lbOwnerDrawFixed then
       exit;
   if AWinControl is TCustomCombobox then
     if TCustomCombobox(AWinControl).Style < csOwnerDrawVariable then

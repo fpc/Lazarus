@@ -177,6 +177,7 @@ type
     class procedure SetScrollWidth(const ACustomListBox: TCustomListBox; const AScrollWidth: Integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const {%H-}AExtendedSelect,
                                      AMultiSelect: boolean); override;
+    class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
     class procedure SetSorted(const {%H-}ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
@@ -625,6 +626,20 @@ begin
   end;
 end;
 
+class procedure TGtk2WSCustomListBox.SetStyle(
+  const ACustomListBox: TCustomListBox);
+var
+  AStyle: PtrInt;
+  Widget: PGtkWidget;
+begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'SetStyle') then
+    Exit;
+  Widget := GetWidgetInfo({%H-}Pointer(ACustomListBox.Handle), True)^.CoreWidget;
+  AStyle := PtrInt(g_object_get_data(PGObject(Widget), 'lclcustomlistboxstyle'));
+  if (AStyle <> Ord(ACustomListBox.Style)) then
+    RecreateWnd(ACustomListBox);
+end;
+
 class procedure TGtk2WSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox;
   AList: TStrings; ASorted: boolean);
 begin
@@ -750,9 +765,18 @@ begin
     True : gtk_tree_selection_set_mode(Selection, GTK_SELECTION_MULTIPLE);
     False: gtk_tree_selection_set_mode(Selection, GTK_SELECTION_SINGLE);
   end;
+
+  if TListBox(AWinControl).Style = lbOwnerDrawFixed then
+  begin
+    gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
+    gtk_tree_view_set_fixed_height_mode(PGtkTreeView(TVWidget), True);
+  end;
+
   
   g_signal_connect_after(Selection, 'changed',
     G_CALLBACK(@gtk2ListBoxSelectionChangedAfter), WidgetInfo);
+
+  g_object_set_data(PGObject(TVWidget), 'lclcustomlistboxstyle', gPointer(Ord(TListBox(AWinControl).Style)));
 
   // Sets the callbacks
   SetCallbacks(p, WidgetInfo);
