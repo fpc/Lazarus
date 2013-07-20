@@ -66,7 +66,8 @@ type
     xtkRoundOpen, xtkSemiColon, xtkShiftLeft, xtkShiftLeftAssign, xtkShiftRight,
     xtkShiftRightAssign, xtkSquareClose, xtkSquareOpen, xtkSubtract,
     xtkSubtractAssign, xtkUnsignShiftRight, xtkUnsignShiftRightAssign, xtkXor,
-    xtkXorAssign, xtkComma);
+    xtkXorAssign, xtkComma,
+    xtkNonSymbol);
 
   TRangeState = (rsANil, rsComment, rsDocument, rsUnknown);
 
@@ -1317,7 +1318,10 @@ end;
 
 function TSynJavaSyn.GetExtTokenID: TxtkTokenKind;
 begin
-  Result := FExtTokenID;
+  if FTokenID = tkSymbol then
+    Result := FExtTokenID
+  else
+    Result := xtkNonSymbol;
 end;
 
 function TSynJavaSyn.GetTokenAttribute: TSynHighlighterAttributes;
