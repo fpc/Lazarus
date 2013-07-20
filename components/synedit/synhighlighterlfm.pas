@@ -176,9 +176,6 @@ function LoadLFMFile2Strings(const AFile: string; AStrings: TStrings;
   var WasText: boolean): integer;
 var
   Src, Dest: TStream;
-{$IFDEF SYN_COMPILER_5_UP}
-  origFormat: TStreamOriginalFormat;
-{$ENDIF}
 begin
   Result := 0;
   WasText := FALSE;
@@ -188,13 +185,7 @@ begin
     try
       Dest := TMemoryStream.Create;
       try
-{$IFDEF SYN_COMPILER_5_UP}
-        origFormat := sofUnknown;                                               //riceball 2000-11-17
-        ObjectResourceToText(Src, Dest, origFormat);
-        WasText := origFormat = sofText;
-{$ELSE}
         ObjectResourceToText(Src, Dest);
-{$ENDIF}
         Dest.Seek(0, soFromBeginning);
         AStrings.LoadFromStream(Dest);
       finally
