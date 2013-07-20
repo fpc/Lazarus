@@ -8,7 +8,7 @@ object ExampleManagerForm: TExampleManagerForm
   ClientWidth = 870
   OnClose = FormClose
   OnCreate = FormCreate
-  Position = poDesktopCenter
+  Position = poScreenCenter
   LCLVersion = '1.1'
   object ProjectsGroupBox: TGroupBox
     Left = 0
