@@ -183,6 +183,7 @@ type
     destructor Destroy; override;
     function ReadAndParseOptions: TModalResult;
     function FilterOptions(aFilter: string): Boolean;
+    function CopyNonDefaultOptions(aStrings: TStrings): integer;
   public
     property SupportedCategories: TStringList read fSupportedCategories;
     property RootOptGroup: TCompilerOptGroup read fRootOptGroup;
@@ -759,6 +760,39 @@ function TCompilerOptReader.FilterOptions(aFilter: string): Boolean;
 
 begin
   Result := FilterOptionsSub(fRootOptGroup);
+end;
+
+function TCompilerOptReader.CopyNonDefaultOptions(aStrings: TStrings): integer;
+// Copy options to a list if they have a non-default value (True for boolean).
+
+  function CopyOptionsSub(aRoot: TCompilerOpt): integer;
+  var
+    Children: TCompilerOptList;
+    i, Res: Integer;
+    s: string;
+  begin
+    if aRoot is TCompilerOptGroup then
+    begin
+      Children := TCompilerOptGroup(aRoot).CompilerOpts;
+      if aRoot is TCompilerOptSet then
+      begin                  // TCompilerOptSet
+        for i := 0 to Children.Count-1 do // Collect subitems of a set to one option.
+          s := s + TCompilerOpt(Children[i]).Option;
+        aStrings.Add(s);
+      end
+      else begin             // TCompilerOptGroup
+        for i := 0 to Children.Count-1 do         // Recursive call for children.
+          Res := CopyOptionsSub(TCompilerOpt(Children[i]));
+      end;
+    end
+    else begin               // TCompilerOpt
+      aStrings.Add(aRoot.Option);
+    end;
+    Result := Res;
+  end;
+
+begin
+  Result := CopyOptionsSub(fRootOptGroup);
 end;
 
 end.

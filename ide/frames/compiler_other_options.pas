@@ -835,14 +835,6 @@ begin
   FIsPackage := CompOptions is TPkgCompilerOptions;
   //debugln(['TCompilerOtherOptionsFrame.ReadSettings ',dbgs(Pointer(FCompOptions)),' ',FCompOptions=Project1.CompilerOptions]);
 
-  edCustomOptions.Text := CompOptions.CustomOptions;
-
-  Vars := GetBuildMacroValues(CompOptions,false);
-  if Vars<>nil then
-    DefaultVariables.Assign(Vars)
-  else
-    DefaultVariables.Clear;
-
   CondSynEdit.Lines.Text := CompOptions.Conditionals;
   if FHighlighter=nil then
   begin
@@ -851,6 +843,18 @@ begin
   end;
   EditorOpts.ReadHighlighterSettings(FHighlighter, '');
   EditorOpts.GetSynEditSettings(CondSynEdit);
+
+  Vars := GetBuildMacroValues(CompOptions,false);
+  if Vars<>nil then
+    DefaultVariables.Assign(Vars)
+  else
+    DefaultVariables.Clear;
+
+  // Custom Options
+  edCustomOptions.Text := CompOptions.CustomOptions;
+  // All Options
+  FOptionsReader.CopyNonDefaultOptions(CompOptions.AllOptions);
+
   UpdateStatusBar;
 end;
 
@@ -862,8 +866,8 @@ begin
   CurOptions := AOptions as TBaseCompilerOptions;
   with CurOptions do
   begin
-    CustomOptions := edCustomOptions.Text;
     Conditionals := CondSynEdit.Lines.Text;
+    CustomOptions := edCustomOptions.Text;
   end;
 end;
 

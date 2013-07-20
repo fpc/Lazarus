@@ -434,6 +434,21 @@ const
 
 type
 
+  TBaseCompilerOptions = class;
+
+  { TAllOptionsList }
+
+  TAllOptionsList = class(TStringList)
+  private
+    FOwner: TBaseCompilerOptions;
+  protected
+    procedure InsertItem(Index: Integer; const S: string); override;
+  public
+    constructor Create(AOwner: TBaseCompilerOptions);
+    destructor Destroy; override;
+    procedure Delete(Index: Integer); override;
+  end;
+
   { TBaseCompilerOptions }
 
   TBaseCompilerOptions = class(TLazCompilerOptions)
@@ -443,6 +458,7 @@ type
     fInheritedOptParseStamps: integer;
     FParsedOpts: TParsedCompilerOptions;
     FStorePathDelim: TPathDelimSwitch;
+    FAllOptions: TAllOptionsList;
 
     // Compilation
     fExecuteBefore: TCompilationToolOptions;
@@ -458,6 +474,7 @@ type
     procedure OnItemChanged(Sender: TObject);
     procedure SetCreateMakefileOnBuild(AValue: boolean);
   protected
+    function GetAllOptions: TStrings; override;
     function GetCompilerPath: String;
     function GetBaseDirectory: string;
     function GetCustomOptions: string; override;
@@ -1053,6 +1070,32 @@ begin
 end;
 
 
+{ TAllOptionsList }
+
+constructor TAllOptionsList.Create(AOwner: TBaseCompilerOptions);
+begin
+  inherited Create;
+  FOwner:=AOwner;
+end;
+
+destructor TAllOptionsList.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TAllOptionsList.InsertItem(Index: Integer; const S: string);
+begin
+  inherited InsertItem(Index, S);
+  FOwner.IncreaseChangeStamp;
+end;
+
+procedure TAllOptionsList.Delete(Index: Integer);
+begin
+  inherited Delete(Index);
+  FOwner.IncreaseChangeStamp;
+end;
+
+
 { TBaseCompilerOptions }
 
 {------------------------------------------------------------------------------
@@ -1063,13 +1106,14 @@ constructor TBaseCompilerOptions.Create(const AOwner: TObject;
 begin
   inherited Create(AOwner);
   FParsedOpts := TParsedCompilerOptions.Create(Self);
+  FAllOptions := TAllOptionsList.Create(Self);
   FExecuteBefore := AToolClass.Create(Self);
-  FExecuteBefore.OnChanged:=@OnItemChanged;
+  FExecuteBefore.OnChanged := @OnItemChanged;
   FExecuteAfter := AToolClass.Create(Self);
-  fExecuteAfter.OnChanged:=@OnItemChanged;
+  fExecuteAfter.OnChanged := @OnItemChanged;
   fBuildMacros := TIDEBuildMacros.Create(Self);
   FCompilerMessages:=TCompilerMessagesList.Create;
-  FCompilerMessages.OnChanged:=@OnItemChanged;
+  FCompilerMessages.OnChanged := @OnItemChanged;
   Clear;
 end;
 
@@ -1087,6 +1131,7 @@ begin
   FreeAndNil(fBuildMacros);
   FreeThenNil(fExecuteBefore);
   FreeThenNil(fExecuteAfter);
+  FreeThenNil(FAllOptions);
   FreeThenNil(FParsedOpts);
   inherited Destroy;
 end;
@@ -1238,6 +1283,11 @@ begin
   IncreaseChangeStamp;
 end;
 
+function TBaseCompilerOptions.GetAllOptions: TStrings;
+begin
+  Result:=FAllOptions;
+end;
+
 function TBaseCompilerOptions.GetCompilerPath: String;
 begin
   Result:=ParsedOpts.Values[pcosCompilerPath].UnparsedValue;
@@ -1357,10 +1407,10 @@ end;
 procedure TBaseCompilerOptions.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
   const Path: string);
 var
-  p: String;
+  p, s: String;
   b, PathDelimChange: boolean;
   FileVersion: Integer;
-  i: LongInt;
+  i, Cnt: LongInt;
   dit: TCompilerDbgSymbolType;
 
   function f(const Filename: string): string;
@@ -1571,13 +1621,12 @@ begin
     with aXMLConfig do begin
       // ErrorNames should be stored, because the Message file is not read (or parsed)
       // on project opening. So errors needs to be initialized properly from the CompilerOptions.xml
-      fCompilerMessages.fErrorNames[etHint]:=GetValue(p+'fCompilerMessages/ErrorNames/Hint', FPCErrorTypeNames[etHint]);
-      fCompilerMessages.fErrorNames[etNote]:=GetValue(p+'fCompilerMessages/ErrorNames/Note', FPCErrorTypeNames[etNote]);
-      fCompilerMessages.fErrorNames[etWarning]:=GetValue(p+'fCompilerMessages/ErrorNames/Warning', FPCErrorTypeNames[etWarning]);
-      fCompilerMessages.fErrorNames[etError]:=GetValue(p+'fCompilerMessages/ErrorNames/Error', FPCErrorTypeNames[etError]);
-      fCompilerMessages.fErrorNames[etFatal]:=GetValue(p+'fCompilerMessages/ErrorNames/Fatal', FPCErrorTypeNames[etFatal]);
+      fCompilerMessages.fErrorNames[etHint]   :=GetValue(p+'CompilerMessages/ErrorNames/Hint', FPCErrorTypeNames[etHint]);
+      fCompilerMessages.fErrorNames[etNote]   :=GetValue(p+'CompilerMessages/ErrorNames/Note', FPCErrorTypeNames[etNote]);
+      fCompilerMessages.fErrorNames[etWarning]:=GetValue(p+'CompilerMessages/ErrorNames/Warning', FPCErrorTypeNames[etWarning]);
+      fCompilerMessages.fErrorNames[etError]  :=GetValue(p+'CompilerMessages/ErrorNames/Error', FPCErrorTypeNames[etError]);
+      fCompilerMessages.fErrorNames[etFatal]  :=GetValue(p+'CompilerMessages/ErrorNames/Fatal', FPCErrorTypeNames[etFatal]);
     end;
-
 
   { Other }
   p:=Path+'Other/';
@@ -1588,6 +1637,14 @@ begin
     CustomConfigFile := aXMLConfig.GetValue(p+'ConfigFile/CustomConfigFile/Value', false);
   ConfigFilePath := f(aXMLConfig.GetValue(p+'ConfigFile/ConfigFilePath/Value', 'extrafpc.cfg'));
   CustomOptions := LineBreaksToSystemLineBreaks(aXMLConfig.GetValue(p+'CustomOptions/Value', ''));
+  // All options
+  AllOptions.Clear;
+  Cnt:=aXMLConfig.GetValue(p+'AllOptions/Count', 0);
+  for i:=0 to Cnt-1 do begin
+    s:=aXMLConfig.GetValue(p+'AllOptions/Item'+IntToStr(i)+'/', '');
+    if s<>'' then
+      AllOptions.Add(s);
+  end;
 
   { Compilation }
   CompilerPath := f(aXMLConfig.GetValue(p+'CompilerPath/Value','$(CompPath)'));
@@ -1772,6 +1829,10 @@ begin
   aXMLConfig.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', f(ConfigFilePath),'extrafpc.cfg');
   aXMLConfig.SetDeleteValue(p+'CustomOptions/Value',
                             LineBreaksToSystemLineBreaks(CustomOptions),''); // do not touch / \ characters
+  // All options
+  aXMLConfig.SetDeleteValue(p+'AllOptions/Count', AllOptions.Count, 0);
+  for i:=0 to AllOptions.Count-1 do
+    aXMLConfig.SetDeleteValue(p+'AllOptions/Item'+IntToStr(i)+'/', AllOptions[i], '');
 
   { Compilation }
   aXMLConfig.SetDeleteValue(p+'CompilerPath/Value', f(CompilerPath),'');
@@ -1779,7 +1840,6 @@ begin
   ExecuteAfter.SaveToXMLConfig(aXMLConfig,p+'ExecuteAfter/',UsePathDelim);
   aXMLConfig.SetDeleteValue(p+'CreateMakefileOnBuild/Value',
                                CreateMakefileOnBuild,false);
-
   // write
   Modified := False;
 end;
@@ -3724,8 +3784,7 @@ begin
   end;
 end;
 
-function TAdditionalCompilerOptions.
-  GetBaseCompilerOptions: TBaseCompilerOptions;
+function TAdditionalCompilerOptions.GetBaseCompilerOptions: TBaseCompilerOptions;
 begin
   Result:=nil;
 end;
