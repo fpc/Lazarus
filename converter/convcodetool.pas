@@ -147,21 +147,25 @@ function TCodeToolLink.DummyReplacements: Boolean;
 // Most Codetools functions cannot be used because the code is invalid,
 //  but TSourceChangeCache.ReplaceEx works.
 var
-  p, i: Integer;
-  s: string;
+  p, AStart: Integer;
+  Src: string;
+  LastWasPoint: Boolean;
 begin
-  // Reserved words are in WordIsKeyWord list in CodeTools.
-  for i:=0 to WordIsKeyWord.Count-1 do begin
-    s:='.'+LowerCase(WordIsKeyWord.GetItem(i).KeyWord);
-    p:=1;
-    repeat
-      p:=PosEx(s,fCode.Source,p);     // find next '.'+ReservedWord
-      if p<1 then break;
-      if not fSrcCache.ReplaceEx(gtNone,gtNone,1,1,fCode,p+1,p+1,'&') then
+  p:=1;
+  LastWasPoint:=false;
+  Src:=fCode.Source;
+  repeat
+    ReadRawNextPascalAtom(Src,p,AStart,false);
+    if p>length(Src) then break;
+    // Reserved words are in WordIsKeyWord list in CodeTools.
+    if LastWasPoint and WordIsKeyWord.DoIdentifier(@Src[AStart]) then
+    begin
+      // '.'+ReservedWord was found
+      if not fSrcCache.ReplaceEx(gtNone,gtNone,1,1,fCode,AStart,AStart,'&') then
         Exit(False);
-      inc(p,length(s));
-    until false;
-  end;
+    end;
+    LastWasPoint:=Src[AStart]='.';
+  until false;
   // Apply the changes in buffer
   if not fSrcCache.Apply then
     Exit(False);
