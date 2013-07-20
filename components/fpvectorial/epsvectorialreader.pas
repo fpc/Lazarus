@@ -1620,10 +1620,11 @@ function TvEPSVectorialReader.ExecutePaintingOperator(AToken: TExpressionToken;
 var
   Param1, Param2: TPSToken;
   // image operator data
-  lFindIndex: Integer;
+  i, lFindIndex: Integer;
   lDataSource, lImageDataStr: String;
   lImageWidth, lImageHeight, lImageBitsPerComponent: Integer;
   lImageData: array of Byte;
+  lImageDataPtr: PCardinal;
 begin
   Result := False;
 
@@ -1698,9 +1699,18 @@ begin
 
     if TDictionaryToken(Param1).Names.Find('ASCII85Decode', lFindIndex) then
     begin
-      {SetLength(lImageData, Length(lImageDataStr));
-      for i := 1 to Length(lImageDataStr) do
-        lImageData[i-1] := Byte(lImageDataStr[i]);}
+      SetLength(lImageData, (Length(lImageDataStr)*4) div 5);
+
+      i := 1;
+      while i <= Length(lImageDataStr)-4 do
+      begin
+        lImageDataPtr := @(lImageData[(i-1)*4 div 5]);
+        lImageDataPtr^ := (Byte(lImageDataStr[i])-33)*85*85*85*85
+         + (Byte(lImageDataStr[i+1])-33)*85*85*85 + (Byte(lImageDataStr[i+2])-33)*85*85
+         + (Byte(lImageDataStr[i+3])-33)*85       + (Byte(lImageDataStr[i+4])-33);
+
+        Inc(i, 5);
+      end;
 
     end;
 
