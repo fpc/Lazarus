@@ -1359,10 +1359,10 @@ end;
 procedure TBaseCompilerOptions.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
   const Path: string);
 var
-  p, s: String;
+  p: String;
   b, PathDelimChange: boolean;
   FileVersion: Integer;
-  i, Cnt: LongInt;
+  i: LongInt;
   dit: TCompilerDbgSymbolType;
 
   function f(const Filename: string): string;

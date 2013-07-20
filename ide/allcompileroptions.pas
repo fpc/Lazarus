@@ -34,7 +34,7 @@ type
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure RenderAndFilterOptions;
   public
-    constructor Create(aCustomOptions: TMemo);
+    constructor CreateWithMemo(aCustomOptions: TMemo);
     destructor Destroy; override;
   public
     property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
@@ -49,7 +49,7 @@ implementation
 
 { TfrmAllCompilerOptions }
 
-constructor TfrmAllCompilerOptions.Create(aCustomOptions: TMemo);
+constructor TfrmAllCompilerOptions.CreateWithMemo(aCustomOptions: TMemo);
 begin
   inherited Create(Nil);
   fCustomOptions := aCustomOptions;

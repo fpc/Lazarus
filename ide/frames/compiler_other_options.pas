@@ -112,7 +112,7 @@ procedure TCompilerOtherOptionsFrame.btnAllOptionsClick(Sender: TObject);
 var
   AllOpts: TfrmAllCompilerOptions;
 begin
-  AllOpts := TfrmAllCompilerOptions.Create(memoCustomOptions);
+  AllOpts := TfrmAllCompilerOptions.CreateWithMemo(memoCustomOptions);
   try
     if AllOpts.ShowModal = mrOK then
       ;
