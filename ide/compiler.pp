@@ -776,6 +776,7 @@ function TCompilerOptReader.CopyNonDefaultOptions(aStrings: TStrings): integer;
       Children := TCompilerOptGroup(aRoot).CompilerOpts;
       if aRoot is TCompilerOptSet then
       begin                  // TCompilerOptSet
+        s := '';
         for i := 0 to Children.Count-1 do // Collect subitems of a set to one option.
           s := s + TCompilerOpt(Children[i]).Option;
         aStrings.Add(s);

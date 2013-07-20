@@ -688,7 +688,7 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     Align = alBottom
     ResizeAnchor = akBottom
   end
-  object grpAllOptions: TGroupBox
+  object grpCustomOptions: TGroupBox
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
@@ -696,108 +696,57 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     Top = 171
     Width = 480
     Align = alBottom
-    Caption = 'grpAllOptions'
+    Caption = 'grpCustomOptions'
     ClientHeight = 183
     ClientWidth = 476
     TabOrder = 2
-    object sbAllOptions: TScrollBox
-      AnchorSideTop.Control = edOptionsFilter
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Side = asrBottom
+    object memoCustomOptions: TMemo
+      AnchorSideLeft.Control = grpCustomOptions
+      AnchorSideRight.Control = btnAllOptions
+      AnchorSideBottom.Control = grpCustomOptions
+      AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 132
-      Top = 49
-      Width = 470
-      HorzScrollBar.Increment = 46
-      HorzScrollBar.Page = 466
-      HorzScrollBar.Smooth = True
-      HorzScrollBar.Tracking = True
-      VertScrollBar.Increment = 12
-      VertScrollBar.Page = 128
-      VertScrollBar.Smooth = True
-      VertScrollBar.Tracking = True
+      Height = 179
+      Top = 4
+      Width = 375
       Anchors = [akTop, akLeft, akRight, akBottom]
-      ParentShowHint = False
-      ShowHint = True
+      BorderSpacing.Right = 6
       TabOrder = 0
     end
-    object lblCustomOptions: TLabel
-      Left = 6
-      Height = 15
-      Top = 4
-      Width = 98
-      Caption = 'Custom options'
-      ParentColor = False
-    end
-    object edCustomOptions: TEdit
-      AnchorSideLeft.Control = lblCustomOptions
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = lblCustomOptions
-      AnchorSideTop.Side = asrCenter
-      Left = 110
-      Height = 25
-      Top = -1
-      Width = 360
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 6
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 1
-      Text = 'edCustomOptions'
-    end
-    object btnResetOptionsFilter: TSpeedButton
-      AnchorSideLeft.Control = edOptionsFilter
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = edOptionsFilter
+    object btnAllOptions: TButton
+      AnchorSideRight.Control = grpCustomOptions
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Side = asrBottom
-      Left = 104
+      Left = 381
       Height = 25
-      Top = 24
-      Width = 29
-      OnClick = btnResetOptionsFilterClick
-      ShowHint = True
-      ParentShowHint = False
-    end
-    object edOptionsFilter: TEdit
-      AnchorSideTop.Control = edCustomOptions
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 25
-      Top = 24
-      Width = 98
-      OnChange = edOptionsFilterChange
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 2
-    end
-    object btnGetAllOptions: TButton
-      AnchorSideLeft.Control = btnResetOptionsFilter
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = btnResetOptionsFilter
-      AnchorSideTop.Side = asrCenter
-      Left = 183
-      Height = 25
-      Top = 24
-      Width = 105
+      Top = 4
+      Width = 95
+      Anchors = [akTop, akRight]
       AutoSize = True
-      BorderSpacing.Left = 50
-      Caption = 'Get all options'
-      OnClick = btnGetAllOptionsClick
-      TabOrder = 3
+      Caption = 'All options ...'
+      OnClick = btnAllOptionsClick
+      TabOrder = 1
     end
-    object lblStatus: TLabel
-      AnchorSideLeft.Control = btnGetAllOptions
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = btnGetAllOptions
-      AnchorSideTop.Side = asrCenter
-      Left = 300
+    object Label1: TLabel
+      AnchorSideLeft.Control = btnAllOptions
+      Left = 381
       Height = 15
-      Top = 29
-      Width = 55
-      BorderSpacing.Left = 12
-      Caption = 'lblStatus'
+      Top = 28
+      Width = 38
+      Caption = 'Under'
+      Font.Color = clMaroon
       ParentColor = False
+      ParentFont = False
+    end
+    object Label2: TLabel
+      AnchorSideLeft.Control = btnAllOptions
+      Left = 381
+      Height = 15
+      Top = 44
+      Width = 91
+      Caption = 'construction...'
+      Font.Color = clMaroon
+      ParentColor = False
+      ParentFont = False
     end
   end
 end
