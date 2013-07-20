@@ -253,7 +253,6 @@ type
     fCustomConfigFile: Boolean;
     fConfigFilePath: String;
   protected
-    function GetAllOptions: TStrings; virtual; abstract;
     function GetCustomOptions: string; virtual; abstract;
     function GetDebugPath: string; virtual; abstract;
     function GetIncludePaths: String; virtual; abstract;
@@ -266,7 +265,6 @@ type
     procedure SetCompilerPath(const AValue: String); virtual; abstract;
     procedure SetConditionals(const AValue: string); virtual; abstract;
     procedure SetCustomOptions(const AValue: string); virtual; abstract;
-    //procedure SetAllOptions(const AValue: TStrings); virtual; abstract;
     procedure SetDebugPath(const AValue: string); virtual; abstract;
     procedure SetIncludePaths(const AValue: String); virtual; abstract;
     procedure SetLibraryPaths(const AValue: String); virtual; abstract;
@@ -418,7 +416,6 @@ type
     property CustomConfigFile: Boolean read fCustomConfigFile write SetCustomConfigFile;
     property ConfigFilePath: String read fConfigFilePath write SetConfigFilePath;
     property CustomOptions: string read GetCustomOptions write SetCustomOptions;
-    property AllOptions: TStrings read GetAllOptions; // write SetAllOptions;
 
     // execute other
     procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); virtual; abstract; // disable normal compile and call this instead

@@ -436,19 +436,6 @@ type
 
   TBaseCompilerOptions = class;
 
-  { TAllOptionsList }
-
-  TAllOptionsList = class(TStringList)
-  private
-    FOwner: TBaseCompilerOptions;
-  protected
-    procedure InsertItem(Index: Integer; const S: string); override;
-  public
-    constructor Create(AOwner: TBaseCompilerOptions);
-    destructor Destroy; override;
-    procedure Delete(Index: Integer); override;
-  end;
-
   { TBaseCompilerOptions }
 
   TBaseCompilerOptions = class(TLazCompilerOptions)
@@ -458,7 +445,6 @@ type
     fInheritedOptParseStamps: integer;
     FParsedOpts: TParsedCompilerOptions;
     FStorePathDelim: TPathDelimSwitch;
-    FAllOptions: TAllOptionsList;
 
     // Compilation
     fExecuteBefore: TCompilationToolOptions;
@@ -474,7 +460,6 @@ type
     procedure OnItemChanged(Sender: TObject);
     procedure SetCreateMakefileOnBuild(AValue: boolean);
   protected
-    function GetAllOptions: TStrings; override;
     function GetCompilerPath: String;
     function GetBaseDirectory: string;
     function GetCustomOptions: string; override;
@@ -1070,32 +1055,6 @@ begin
 end;
 
 
-{ TAllOptionsList }
-
-constructor TAllOptionsList.Create(AOwner: TBaseCompilerOptions);
-begin
-  inherited Create;
-  FOwner:=AOwner;
-end;
-
-destructor TAllOptionsList.Destroy;
-begin
-  inherited Destroy;
-end;
-
-procedure TAllOptionsList.InsertItem(Index: Integer; const S: string);
-begin
-  inherited InsertItem(Index, S);
-  FOwner.IncreaseChangeStamp;
-end;
-
-procedure TAllOptionsList.Delete(Index: Integer);
-begin
-  inherited Delete(Index);
-  FOwner.IncreaseChangeStamp;
-end;
-
-
 { TBaseCompilerOptions }
 
 {------------------------------------------------------------------------------
@@ -1106,7 +1065,6 @@ constructor TBaseCompilerOptions.Create(const AOwner: TObject;
 begin
   inherited Create(AOwner);
   FParsedOpts := TParsedCompilerOptions.Create(Self);
-  FAllOptions := TAllOptionsList.Create(Self);
   FExecuteBefore := AToolClass.Create(Self);
   FExecuteBefore.OnChanged := @OnItemChanged;
   FExecuteAfter := AToolClass.Create(Self);
@@ -1131,7 +1089,6 @@ begin
   FreeAndNil(fBuildMacros);
   FreeThenNil(fExecuteBefore);
   FreeThenNil(fExecuteAfter);
-  FreeThenNil(FAllOptions);
   FreeThenNil(FParsedOpts);
   inherited Destroy;
 end;
@@ -1281,11 +1238,6 @@ begin
   if FCreateMakefileOnBuild=AValue then Exit;
   FCreateMakefileOnBuild:=AValue;
   IncreaseChangeStamp;
-end;
-
-function TBaseCompilerOptions.GetAllOptions: TStrings;
-begin
-  Result:=FAllOptions;
 end;
 
 function TBaseCompilerOptions.GetCompilerPath: String;
@@ -1637,14 +1589,6 @@ begin
     CustomConfigFile := aXMLConfig.GetValue(p+'ConfigFile/CustomConfigFile/Value', false);
   ConfigFilePath := f(aXMLConfig.GetValue(p+'ConfigFile/ConfigFilePath/Value', 'extrafpc.cfg'));
   CustomOptions := LineBreaksToSystemLineBreaks(aXMLConfig.GetValue(p+'CustomOptions/Value', ''));
-  // All options
-  AllOptions.Clear;
-  Cnt:=aXMLConfig.GetValue(p+'AllOptions/Count', 0);
-  for i:=0 to Cnt-1 do begin
-    s:=aXMLConfig.GetValue(p+'AllOptions/Item'+IntToStr(i)+'/', '');
-    if s<>'' then
-      AllOptions.Add(s);
-  end;
 
   { Compilation }
   CompilerPath := f(aXMLConfig.GetValue(p+'CompilerPath/Value','$(CompPath)'));
@@ -1829,10 +1773,6 @@ begin
   aXMLConfig.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', f(ConfigFilePath),'extrafpc.cfg');
   aXMLConfig.SetDeleteValue(p+'CustomOptions/Value',
                             LineBreaksToSystemLineBreaks(CustomOptions),''); // do not touch / \ characters
-  // All options
-  aXMLConfig.SetDeleteValue(p+'AllOptions/Count', AllOptions.Count, 0);
-  for i:=0 to AllOptions.Count-1 do
-    aXMLConfig.SetDeleteValue(p+'AllOptions/Item'+IntToStr(i)+'/', AllOptions[i], '');
 
   { Compilation }
   aXMLConfig.SetDeleteValue(p+'CompilerPath/Value', f(CompilerPath),'');
