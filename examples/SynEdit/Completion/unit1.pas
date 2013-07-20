@@ -56,6 +56,14 @@ begin
 end;
 
 procedure TForm1.DoExecute(Sender: TObject);
+(* Filter the initial list, to match the pre-fix.
+
+   Depending on chkExec.Checked entries may be:
+   - filtered to match the pre-fix
+   - displayed always
+
+   This is called once, when the completion dropdown is initially shown
+*)
   procedure Add(s: String);
   begin
     if pos(lowercase(SynCompletion1.CurrentString), lowercase(s)) = 1 then
@@ -81,6 +89,14 @@ begin
 end;
 
 procedure TForm1.DoSearchPosition(var APosition: integer);
+(* Filter the list, to match the pre-fix.
+   See TForm1.chkSearchChange, this event is removed, if filtering is not needed.
+
+   Only display entries that match the prefix.
+   APosition is the index, of the entry that will be selected.
+
+   This is called everytime the user changes the pre-fix, while the completion is already open
+*)
   procedure Add(s: String);
   begin
     if pos(lowercase(SynCompletion1.CurrentString), lowercase(s)) = 1 then
