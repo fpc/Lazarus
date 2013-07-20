@@ -59,7 +59,7 @@ implementation
 
 uses
 {Units of package "Images For Lazarus"}
-  LazPNM, LazJPG, LazTGA, LazPNG, LazXPM, LazBMP;
+  LazJPG, LazTGA; //, LazPNM, LazPNG, LazXPM, LazBMP;
 
 { TImagesExampleForm }
 
@@ -189,19 +189,19 @@ end;
 initialization
 //  LazPNG.Register;
 //  LazXPM.Register;
-  LazBMP.Register;
-  LazPNM.Register;
+//  LazBMP.Register;
+//  LazPNM.Register;
   LazTGA.Register;
-  LazJPG.Register;
+//  LazJPG.Register;
   {$I mainform.lrs}
 
 finalization
 //  LazPNG.UnRegister;
 //  LazXPM.UnRegister;
-  LazBMP.UnRegister;
-  LazPNM.UnRegister;
+//  LazBMP.UnRegister;
+//  LazPNM.UnRegister;
   LazTGA.UnRegister;
-  LazJPG.UnRegister;
+//  LazJPG.UnRegister;
 
 end.
 

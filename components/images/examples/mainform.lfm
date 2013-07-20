@@ -1,85 +1,83 @@
 object ImagesExampleForm: TImagesExampleForm
-  Caption = 'Example for package "Images For Lazarus"'
-  ClientHeight = 416
-  ClientWidth = 425
-  PixelsPerInch = 95
-  HorzScrollBar.Page = 426
-  VertScrollBar.Page = 417
   Left = 516
   Height = 416
   Top = 160
   Width = 425
+  HorzScrollBar.Page = 426
+  VertScrollBar.Page = 417
+  Caption = 'Example for package "Images For Lazarus"'
+  ClientHeight = 416
+  ClientWidth = 425
+  LCLVersion = '1.1'
   object ImageGroupBox: TGroupBox
+    Left = 0
+    Height = 336
+    Top = 0
+    Width = 425
     Align = alTop
     Anchors = [akTop, akLeft, akBottom]
     Caption = '...'
-    ClientHeight = 315
+    ClientHeight = 317
     ClientWidth = 421
-    ParentColor = True
-    ParentCtl3D = False
     TabOrder = 0
-    Height = 336
-    Width = 425
     object Image1: TImage
+      Left = 0
+      Height = 317
+      Top = 0
+      Width = 421
       Align = alClient
       AutoSize = True
       Center = True
       Transparent = True
-      Height = 315
-      Width = 421
     end
   end
   object LoadJPEGButton: TButton
+    Left = 229
+    Height = 25
+    Top = 346
+    Width = 173
     Anchors = [akLeft, akBottom]
     Caption = 'Load JPEG from file'
     OnClick = LoadJPEGButtonClick
     TabOrder = 1
-    Left = 229
-    Height = 25
-    Top = 346
-    Width = 173
   end
   object SaveJPEGButton: TButton
+    Left = 229
+    Height = 25
+    Top = 380
+    Width = 173
     Anchors = [akLeft, akBottom]
     Caption = 'Save as JPEG to file'
     OnClick = SaveJPEGButtonClick
     TabOrder = 2
-    Left = 229
-    Height = 25
-    Top = 380
-    Width = 173
   end
   object LoadImageButton: TButton
-    Anchors = [akLeft, akBottom]
-    Caption = 'Load Image'
-    OnClick = LoadImageButtonClick
-    TabOrder = 3
     Left = 24
     Height = 25
     Top = 346
     Width = 163
+    Anchors = [akLeft, akBottom]
+    Caption = 'Load Image'
+    OnClick = LoadImageButtonClick
+    TabOrder = 3
   end
   object SaveImageButton: TButton
-    Anchors = [akLeft, akBottom]
-    Caption = 'Save Image'
-    OnClick = SaveImageButtonClick
-    TabOrder = 4
     Left = 24
     Height = 25
     Top = 380
     Width = 163
+    Anchors = [akLeft, akBottom]
+    Caption = 'Save Image'
+    OnClick = SaveImageButtonClick
+    TabOrder = 4
   end
   object OpenPictureDialog1: TOpenPictureDialog
-    Filter = 'All files (*)|*|Graphic (*.png;*.xpm;*.bmp)|*.png;*.xpm;*.bmp|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp'
-    Title = 'Open existing file'
     Filter = 'All files (*)|*|Graphic (*.png;*.xpm;*.bmp)|*.png;*.xpm;*.bmp|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp'
     FilterIndex = 0
     left = 88
     top = 64
   end
   object SavePictureDialog1: TSavePictureDialog
-    Filter = 'All files (*)|*|Graphic (*.png;*.xpm;*.bmp)|*.png;*.xpm;*.bmp|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp'
-    Title = 'Save file as'
     Filter = 'All files (*)|*|Graphic (*.png;*.xpm;*.bmp)|*.png;*.xpm;*.bmp|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp'
     FilterIndex = 0
     left = 88
