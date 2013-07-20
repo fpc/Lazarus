@@ -80,13 +80,15 @@ type
   end;
 
   TETType = (ettNamedElement, ettOperand, ettOperator, ettDictionary,
-    ettVirtualMemorySnapshot, ettLiteralString, ettRawData);
+    ettVirtualMemorySnapshot, ettLiteralString, ettRawData, ettInvalid);
 
   { TExpressionToken }
 
   TExpressionToken = class(TPSToken)
   public
     ETType: TETType;
+    SubstituteETType: TETType; // utilized when the token is substituted
+    constructor Create; override;
     function IsExpressionOperand: Boolean;
     procedure PrepareFloatValue;
     procedure CopyDataFrom(ASrc: TPSToken; AKeepTokenType: Boolean); override;
@@ -336,6 +338,12 @@ end;
 
 { TExpressionToken }
 
+constructor TExpressionToken.Create;
+begin
+  inherited Create;
+  SubstituteETType := ettInvalid;
+end;
+
 function TExpressionToken.IsExpressionOperand: Boolean;
 begin
   if StrValue = '' then Exit(False);
@@ -381,6 +389,7 @@ begin
   inherited CopyDataFrom(ASrc, AKeepTokenType);
   if (ASrc is TExpressionToken) and (not AKeepTokenType) then
     ETType := TExpressionToken(ASrc).ETType;
+  SubstituteETType := TExpressionToken(ASrc).ETType;
 end;
 
 function TExpressionToken.Duplicate: TPSToken;
@@ -978,7 +987,12 @@ procedure TvEPSVectorialReader.ExecuteOperatorToken(AToken: TExpressionToken;
 var
   Param1, Param2: TPSToken;
 begin
-  if AToken.StrValue = '' then raise Exception.Create(Format('[TvEPSVectorialReader.ProcessExpressionToken] Empty operator line=%d', [AToken.Line]));
+  if AToken.StrValue = '' then
+  begin
+    // A clean exit if the token was substituted by something else which cannot be executed
+    if AToken.SubstituteETType <> ettInvalid then Exit;
+    raise Exception.Create(Format('[TvEPSVectorialReader.ProcessExpressionToken] Empty operator line=%d', [AToken.Line]));
+  end;
 
   if ExecuteDictionaryOperators(AToken, AData, ADoc) then Exit;
 
