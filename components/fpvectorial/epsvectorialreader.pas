@@ -103,8 +103,12 @@ type
   TDictionaryToken = class(TPSToken)
   public
     Childs: TPSTokens;
+    //
+    Names: TStringList;
+    Values: TPSTokens; // does not contain own references, don't free contents!
     constructor Create; override;
     destructor Destroy; override;
+    procedure TransformToListOfNamedValues();
   end;
 
   TPostScriptScannerState = (ssSearchingToken, ssInComment, ssInDefinition,
@@ -161,7 +165,7 @@ type
     procedure RunPostScript(ATokens: TPsTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     //
     procedure ExecuteProcedureToken(AToken: TProcedureToken; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    procedure ExecuteOperatorToken(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ExecuteOperatorToken(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument; ANextToken: TPSToken);
     function  ExecuteArithmeticAndMathOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
     function  ExecutePathConstructionOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
     function  ExecuteGraphicStateOperatorsDI(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
@@ -170,7 +174,7 @@ type
     function  ExecuteMiscellaneousOperators(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
     function  ExecuteStackManipulationOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
     function  ExecuteControlOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
-    function  ExecutePaintingOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
+    function  ExecutePaintingOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument; ANextToken: TPSToken): Boolean;
     function  ExecuteDeviceSetupAndOutputOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
     function  ExecuteArrayOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
     function  ExecuteStringOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
@@ -205,13 +209,37 @@ begin
   inherited Create;
 
   Childs := TPSTokens.Create;
+  Names := TStringList.Create;
+  Values := TPSTokens.Create;
 end;
 
 destructor TDictionaryToken.Destroy;
 begin
+  Names.Free;
+  Values.Free;
+  //
   Childs.Free;
 
   inherited Destroy;
+end;
+
+procedure TDictionaryToken.TransformToListOfNamedValues;
+var
+  i: Integer;
+  CurToken: TPSToken;
+begin
+  for i := 0 to Childs.Count-1 do
+  begin
+    CurToken := TPSToken(Childs.Items[i]);
+    if i div 2 = 0 then
+    begin
+      Names.Add(CurToken.StrValue);
+    end
+    else
+    begin
+      Values.Add(Pointer(CurToken));
+    end;
+  end;
 end;
 
 { TArrayToken }
@@ -829,7 +857,7 @@ procedure TvEPSVectorialReader.RunPostScript(ATokens: TPsTokens;
 var
   i: Integer;
   lSubstituted: Boolean;
-  CurToken: TPSToken;
+  CurToken, NextToken: TPSToken;
 begin
   {$ifdef FPVECTORIALDEBUG_CODEFLOW}
   WriteLn('[TvEPSVectorialReader.RunPostScript] START');
@@ -844,6 +872,9 @@ begin
   for i := 0 to ATokens.Count - 1 do
   begin
     CurToken := TPSToken(ATokens.Items[i]);
+    // a preview of the next token is sometimes utilized
+    if i < ATokens.Count-1 then NextToken := TPSToken(ATokens.Items[i+1])
+    else NextToken := nil;
 
 {    if CurToken.StrValue = 'setrgbcolor' then
     begin
@@ -919,9 +950,18 @@ begin
 
       // If we got a procedure from the substitution, run it!
       if CurToken is TProcedureToken then ExecuteProcedureToken(TProcedureToken(CurToken), AData, ADoc)
-      else ExecuteOperatorToken(TExpressionToken(CurToken), AData, ADoc);
+      else ExecuteOperatorToken(TExpressionToken(CurToken), AData, ADoc, NextToken);
 
       if ExitCalled then Break;
+    end;
+
+    if CurToken is TDictionaryToken then
+    begin
+      {$ifdef FPVECTORIALDEBUG_CODEFLOW}
+      //WriteLn(Format('[TvEPSVectorialReader.RunPostScript] Type: TProcedureToken Token: %s', [CurToken.StrValue]));
+      {$endif}
+      Stack.Push(CurToken);
+      Continue;
     end;
   end;
   {$ifdef FPVECTORIALDEBUG_CODEFLOW}
@@ -983,7 +1023,7 @@ begin
 end;
 
 procedure TvEPSVectorialReader.ExecuteOperatorToken(AToken: TExpressionToken;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+  AData: TvVectorialPage; ADoc: TvVectorialDocument; ANextToken: TPSToken);
 var
   Param1, Param2: TPSToken;
 begin
@@ -1010,7 +1050,7 @@ begin
 
   if ExecuteMiscellaneousOperators(AToken, AData, ADoc) then Exit;
 
-  if ExecutePaintingOperator(AToken, AData, ADoc) then Exit;
+  if ExecutePaintingOperator(AToken, AData, ADoc, ANextToken) then Exit;
 
   if ExecuteDeviceSetupAndOutputOperator(AToken, AData, ADoc) then Exit;
 
@@ -1276,7 +1316,7 @@ begin
       ExecuteProcedureToken(TProcedureToken(Param1), AData, ADoc);
 
     if (Param1 is TExpressionToken) then
-      ExecuteOperatorToken(TExpressionToken(Param1), AData, ADoc);
+      ExecuteOperatorToken(TExpressionToken(Param1), AData, ADoc, nil); // ToDo: Add next token for image
 
     Exit(True);
   end;
@@ -1576,9 +1616,14 @@ end;
     numstring rectclip –
 }
 function TvEPSVectorialReader.ExecutePaintingOperator(AToken: TExpressionToken;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument; ANextToken: TPSToken): Boolean;
 var
   Param1, Param2: TPSToken;
+  // image operator data
+  lFindIndex: Integer;
+  lDataSource, lImageDataStr: String;
+  lImageWidth, lImageHeight, lImageBitsPerComponent: Integer;
+  lImageData: array of Byte;
 begin
   Result := False;
 
@@ -1627,7 +1672,61 @@ begin
   if AToken.StrValue = 'image' then
   begin
     Param1 := TPSToken(Stack.Pop);
-    // ToDo: Draw the image
+
+    // Decode the dictionary into a list of names
+    if not (Param1 is TDictionaryToken) then
+      raise Exception.Create(Format('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Param1 is not a dictionary but should be. Param1.ClassName=%s', [Param1.ClassName]));
+    TDictionaryToken(Param1).TransformToListOfNamedValues();
+
+    // Read the source of the data
+    if TDictionaryToken(Param1).Names.Find('DataSource', lFindIndex) then
+    begin
+      lDataSource := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]).StrValue;
+      if not (lDataSource = 'currentfile') then
+        raise Exception.Create(Format('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Unimplemented data source: %s', [lDataSource]));
+    end
+    else
+    begin
+      // suppose that the source is the current file
+    end;
+
+    // Decode the image
+    if ANextToken = nil then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Image contents expected but nothing found.');
+    if not (ANextToken is TExpressionToken) then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Image contents is not a TExpressionToken.');
+    if TExpressionToken(ANextToken).ETType <> ettRawData then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Image contents is not a raw data.');
+    lImageDataStr := TExpressionToken(ANextToken).StrValue;
+
+    if TDictionaryToken(Param1).Names.Find('ASCII85Decode', lFindIndex) then
+    begin
+      {SetLength(lImageData, Length(lImageDataStr));
+      for i := 1 to Length(lImageDataStr) do
+        lImageData[i-1] := Byte(lImageDataStr[i]);}
+
+    end;
+
+    if TDictionaryToken(Param1).Names.Find('FlateDecode', lFindIndex) then
+    begin
+      if Length(lImageData) = 0 then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: no byte array prepared for FlateDecode. ASCII85Decode is missing.');
+    end;
+
+    // Dictionary information
+    lImageWidth := 0;
+    lImageHeight := 0;
+    lImageBitsPerComponent := 0;
+    if TDictionaryToken(Param1).Names.Find('Width', lFindIndex) then
+    begin
+      lImageWidth := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]).IntValue;
+    end;
+    if TDictionaryToken(Param1).Names.Find('Height', lFindIndex) then
+    begin
+      lImageHeight := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]).IntValue;
+    end;
+    if TDictionaryToken(Param1).Names.Find('BitsPerComponent', lFindIndex) then
+    begin
+      lImageBitsPerComponent := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]).IntValue;
+    end;
+
+    // Draw the image
 
     Exit(True);
   end;
