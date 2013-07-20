@@ -64,7 +64,7 @@ type
   TValidateEvent = procedure(Sender: TObject;
                              KeyChar: TUTF8Char;
                              Shift: TShiftState) of object;
-  TSynBaseCompletionSearchPosition = procedure(var Position :integer) of object;
+  TSynBaseCompletionSearchPosition = procedure(var APosition :integer) of object;
   
   TSynBaseCompletionForm = class;
   
