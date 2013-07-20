@@ -53,7 +53,7 @@ begin
     Items.Add(dlgShowGeneralInfo + ' (-vi)');
     Items.Add(dlgShowCompilingLineNumbers + ' (-vl)');
     Items.Add(dlgShowCompiledProcedures + ' (-vp)');
-    Items.Add(dlgShowProcsError + ' (-vb)');
+    Items.Add(dlgShowFullFileNames + ' (-vb)');
     Items.Add(dlgShowConditionals + ' (-vc)');
     Items.Add(dlgShowEverything + ' (-va)');
     Items.Add(dlgShowExecutableInfo + ' (-vx)');

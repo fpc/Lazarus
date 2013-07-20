@@ -2077,7 +2077,7 @@ resourcestring
   dlgShowNotes = 'Show notes';
   dlgShowHint = 'Show hints';
   dlgShowGeneralInfo = 'Show general info';
-  dlgShowProcsError = 'Show all procs on error';
+  dlgShowFullFileNames = 'Show full file names';
   dlgShowEverything ='Show everything';
   dlgShowSummary ='Show summary';
   dlgShowDebugInfo = 'Show debug info';
