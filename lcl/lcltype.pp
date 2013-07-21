@@ -85,6 +85,7 @@ type
   TOnShowSelectItemDialogResult = procedure (ASelectedItem: Integer) of object;
 
   {$ifndef WINDOWS}
+  PInt = ^integer;
   THandle = type PtrUInt; // define our own, because the SysUtils.THandle = System.THandle is a longint
   HANDLE = THandle;
   PHandle = ^THandle;
