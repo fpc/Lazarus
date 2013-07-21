@@ -1987,7 +1987,7 @@ begin
       FSource.NextChar;
       if (wc = Delim) and (FSource.FEntity = start) then
         Break;
-      if (wc = #10) or (wc = #9) or (wc = #13) then
+      if (not FPreserveWhitespace) and (ord(wc) in [9,10,13]) then
         wc := #32;
       BufAppend(FValue, wc);
     end
