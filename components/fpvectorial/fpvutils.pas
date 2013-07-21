@@ -25,11 +25,12 @@ uses
   {$ifdef USE_LCL_CANVAS}
   Graphics, LCLIntf, LCLType,
   {$endif}
-  fpvectorial, fpimage;
+  fpvectorial, fpimage, zstream;
 
 type
   T10Strings = array[0..9] of shortstring;
   TPointsArray = array of TPoint;
+  TFPVUByteArray = array of Byte;
 
   TNumericalEquation = function (AParameter: Double): Double of object; // return the error
 
@@ -54,6 +55,9 @@ function Rotate3DPointInXY(P, RotCenter: T3DPoint; alpha:double): T3DPoint;
 // Numerical Calculus
 function SolveNumericallyAngle(ANumericalEquation: TNumericalEquation;
   ADesiredMaxError: Double; ADesiredMaxIterations: Integer = 10): Double;
+// Compression/Decompression
+procedure DeflateBytes(var ASource, ADest: TFPVUByteArray);
+procedure DeflateStream(ASource, ADest: TStream);
 // LCL-related routines
 {$ifdef USE_LCL_CANVAS}
 function ConvertPathToRegion(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double): HRGN;
@@ -374,6 +378,53 @@ begin
     Result := lParam1
   else
     Result := lParam2
+end;
+
+procedure DeflateBytes(var ASource, ADest: TFPVUByteArray);
+var
+  SourceMem, DestMem: TMemoryStream;
+  i: Integer;
+begin
+  SourceMem := TMemoryStream.Create;
+  DestMem := TMemoryStream.Create;
+  try
+    // copy the source to the stream
+    for i := 0 to Length(ASource)-1 do
+      SourceMem.WriteByte(ASource[i]);
+    SourceMem.Position := 0;
+
+    DeflateStream(SourceMem, DestMem);
+
+    // copy the dest from the stream
+    DestMem.Position := 0;
+    SetLength(ADest, DestMem.Size);
+    for i := 0 to DestMem.Size-1 do
+      ADest[i] := DestMem.ReadByte();
+  finally
+    SourceMem.Free;
+    DestMem.Free;
+  end;
+end;
+
+procedure DeflateStream(ASource, ADest: TStream);
+var
+  DeCompressionStream: TDecompressionStream;
+  i: Integer;
+  Buf: array[0..1023]of Byte;
+  FirstChar: Char;
+begin
+  ASource.Read(FirstChar, 1);
+
+  if FirstChar <> #120 then
+    raise Exception.Create('File is not a zLib archive');
+
+  DecompressionStream := TDecompressionStream.Create(ASource);
+  repeat
+    i := DecompressionStream.Read(Buf, SizeOf(Buf));
+    if i <> 0 then ADest.Write(Buf, i);
+  until i <= 0;
+
+  DecompressionStream.Free;
 end;
 
 function ConvertPathToRegion(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double): HRGN;

@@ -1639,10 +1639,12 @@ function TvEPSVectorialReader.ExecutePaintingOperator(AToken: TExpressionToken;
 var
   Param1, Param2: TPSToken;
   // image operator data
-  i, lFindIndex: Integer;
+  lRasterImage: TvRasterImage;
+  lColor: TFPColor;
+  i, x, y, lFindIndex: Integer;
   lDataSource, lImageDataStr: String;
   lImageWidth, lImageHeight, lImageBitsPerComponent: Integer;
-  lImageData: array of Byte;
+  lImageData, lImageDataCompressed: array of Byte;
   lImageDataPtr: PCardinal;
 begin
   Result := False;
@@ -1738,6 +1740,8 @@ begin
     if lFindIndex > 0 then
     begin
       if Length(lImageData) = 0 then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: no byte array prepared for FlateDecode. ASCII85Decode is missing.');
+      lImageDataCompressed := lImageData;
+      DeflateBytes(lImageDataCompressed, lImageData);
     end;
 
     // Dictionary information
@@ -1760,7 +1764,22 @@ begin
       lImageBitsPerComponent := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]).IntValue;
     end;
 
-    // Draw the image
+    // Read the image
+    lRasterImage := TvRasterImage.Create;
+    lRasterImage.CreateRGB888Image(lImageWidth, lImageHeight);
+    if (lImageWidth+lImageWidth*lImageWidth)*3 > Length(lImageData) then
+      raise Exception.Create(Format('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: image data too small. Expected=%d Found=%d', [Length(lImageData), (lImageWidth+lImageWidth*lImageWidth)*3]));
+    for x := 0 to lImageWidth - 1 do
+      for y := 0 to lImageHeight - 1 do
+      begin
+        lColor.Red := lImageData[(x+y*lImageWidth)*3] * $101;
+        lColor.Green := lImageData[(x+y*lImageWidth)*3+1] * $101;
+        lColor.Blue := lImageData[(x+y*lImageWidth)*3+2] * $101;
+        lRasterImage.RasterImage.Colors[x, y] := lColor;
+      end;
+    lRasterImage.Width := lImageWidth;
+    lRasterImage.Height := lImageHeight;
+    AData.AddEntity(lRasterImage);
 
     Exit(True);
   end;

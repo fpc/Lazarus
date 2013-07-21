@@ -33,7 +33,7 @@ uses
   // LCL
   lazutf8
   {$ifdef USE_LCL_CANVAS}
-  , Graphics, LCLIntf, LCLType
+  , Graphics, LCLIntf, LCLType, intfgraphics, graphtype
   {$endif}
   ;
 
@@ -543,6 +543,7 @@ type
   public
     RasterImage: TFPCustomImage;
     Top, Left, Width, Height: Double;
+    procedure CreateRGB888Image(AWidth, AHeight: Cardinal);
     procedure InitializeWithConvertionOf3DPointsToHeightMap(APage: TvVectorialPage; AWidth, AHeight: Integer);
   end;
 
@@ -3037,6 +3038,24 @@ begin
 end;
 
 { TvRasterImage }
+
+procedure TvRasterImage.CreateRGB888Image(AWidth, AHeight: Cardinal);
+{$ifdef USE_LCL_CANVAS}
+var
+  AImage: TLazIntfImage;
+  lRawImage: TRawImage;
+{$endif}
+begin
+{$ifdef USE_LCL_CANVAS}
+  lRawImage.Init;
+  lRawImage.Description.Init_BPP24_R8G8B8_BIO_TTB(AWidth, AHeight);
+  lRawImage.CreateData(True);
+  AImage := TLazIntfImage.Create(0,0);
+  AImage.SetRawImage(lRawImage);
+
+  RasterImage := AImage;
+{$endif}
+end;
 
 procedure TvRasterImage.InitializeWithConvertionOf3DPointsToHeightMap(APage: TvVectorialPage; AWidth, AHeight: Integer);
 var
