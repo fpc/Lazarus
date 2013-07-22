@@ -39,7 +39,7 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     Left = 6
     Height = 24
     Top = 112
-    Width = 261
+    Width = 217
     BorderSpacing.Around = 6
     Caption = 'ForwardProcsKeepOrderCheckBox'
     TabOrder = 1
@@ -78,7 +78,7 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     Left = 6
     Height = 24
     Top = 254
-    Width = 279
+    Width = 231
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'UpdateMultiProcSignaturesCheckBox'
@@ -91,9 +91,51 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     Left = 6
     Height = 24
     Top = 278
-    Width = 315
+    Width = 261
     BorderSpacing.Left = 6
     Caption = 'UpdateOtherProcSignaturesCaseCheckBox'
     TabOrder = 4
+  end
+  object TemplateFileLabel: TLabel
+    AnchorSideLeft.Control = UpdateOtherProcSignaturesCaseCheckBox
+    AnchorSideTop.Control = TemplateFileEdit
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 15
+    Top = 307
+    Width = 100
+    Caption = 'TemplateFileLabel'
+    ParentColor = False
+  end
+  object TemplateFileEdit: TEdit
+    AnchorSideLeft.Control = TemplateFileLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = UpdateOtherProcSignaturesCaseCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = TemplateFileBrowseButton
+    Left = 106
+    Height = 25
+    Top = 302
+    Width = 439
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 5
+    Text = 'TemplateFileEdit'
+  end
+  object TemplateFileBrowseButton: TButton
+    AnchorSideTop.Control = TemplateFileEdit
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = TemplateFileEdit
+    AnchorSideBottom.Side = asrBottom
+    Left = 545
+    Height = 25
+    Top = 302
+    Width = 21
+    Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 6
+    Caption = '...'
+    OnClick = TemplateFileBrowseButtonClick
+    TabOrder = 6
   end
 end

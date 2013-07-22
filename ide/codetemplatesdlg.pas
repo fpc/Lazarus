@@ -502,6 +502,7 @@ var
   CaretXY: TPoint;
   p: integer;
   i: Integer;
+  Indent : String;
 begin
   List:=TStringList.Create;
   try
@@ -529,9 +530,10 @@ begin
       exit;
     end;
 
+    Indent := StringOfChar(' ',CodeToolBoss.IndentSize);
     Value:='';
     for i:=0 to List.Count-1 do
-      Value:=Value+List[i]+': ;'+LineEnding;
+      Value:=Value+ Indent + List[i]+': ;'+LineEnding;
   finally
     List.Free;
   end;
@@ -1230,7 +1232,7 @@ begin
   TemplateSynEdit.Lines.BeginUpdate;
   TemplateSynEdit.Lines.Clear;
 
-  //debugln('TCodeTemplateDialog.ShowCurCodeTemplate A a=',dbgs(a));
+  // debugln('TCodeTemplateDialog.ShowCurCodeTemplate A a=',dbgs(a));
   if a >= 0
   then begin
     EditTemplateGroupBox.Caption:=dbgstr(SynAutoComplete.Completions[a])

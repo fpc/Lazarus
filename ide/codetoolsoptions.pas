@@ -38,10 +38,12 @@ uses
   Classes, SysUtils, LazConf, FileUtil, Laz2_XMLCfg, lazutf8classes,
   LResources, Forms, Controls, Buttons, LclProc, ExtCtrls,
   Dialogs, CodeToolManager, DefineTemplates, SourceChanger, SynEdit,
-  IDEOptionsIntf, IDEOptionDefs, LazarusIDEStrConsts, IDEProcs;
+  IDEOptionsIntf, MacroIntf, IDEOptionDefs, LazarusIDEStrConsts, IDEProcs;
 
 const
   DefaultIndentationFilename = 'laz_indentation.pas'; // in directory GetPrimaryConfigPath
+  DefaultCodeCompletionFilename =
+    '$(LazarusDir)'+PathDelim+'components'+PathDelim+'codetools'+PathDelim+'codecompletiontemplates.xml';
 
 type
 
@@ -106,7 +108,12 @@ type
     fIndentationFilename: String;
     FIndentContextSensitive: boolean;
 
+    // code completion templates
+    FCodeCompletionTemplateFileName : String;
+
+    procedure SetCodeCompletionTemplateFileName(aValue: String);
     procedure SetFilename(const AValue: string);
+    procedure SetSetPropertyVariablename(aValue: string);
   public
     class function GetGroupCaption:string; override;
     class function GetInstance: TAbstractIDEOptions; override;
@@ -194,7 +201,7 @@ type
     property PrivateVariablePrefix: string
       read FPrivateVariablePrefix write FPrivateVariablePrefix;
     property SetPropertyVariablename: string
-      read FSetPropertyVariablename write FSetPropertyVariablename;
+      read FSetPropertyVariablename write SetSetPropertyVariablename;
     property UsesInsertPolicy: TUsesInsertPolicy
       read FUsesInsertPolicy write FUsesInsertPolicy;
       
@@ -221,6 +228,10 @@ type
       read fIndentationFileName write fIndentationFileName;
     property IndentContextSensitive: boolean read FIndentContextSensitive
       write FIndentContextSensitive;
+
+    // code completion templates
+    property CodeCompletionTemplateFileName : String read FCodeCompletionTemplateFileName
+                                                     write SetCodeCompletionTemplateFileName;
   end;
 
 var
@@ -482,6 +493,11 @@ begin
     FIndentContextSensitive :=
       XMLConfig.GetValue('CodeToolsOptions/Indentation/ContextSensitive',true);
 
+    // code completion templates
+    FCodeCompletionTemplateFileName :=
+      XMLConfig.GetValue('CodeToolsOptions/CodeCompletionTemplate/FileName'
+      , DefaultCodeCompletionFilename);
+
     XMLConfig.Free;
   except
     on E: Exception do begin
@@ -619,6 +635,10 @@ begin
     XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/ContextSensitive'
       , FIndentContextSensitive, true);
 
+    // code completion templates
+    XMLConfig.SetDeleteValue('CodeToolsOptions/CodeCompletionTemplate/FileName'
+      , FCodeCompletionTemplateFileName, DefaultCodeCompletionFilename);
+
     XMLConfig.Flush;
     XMLConfig.Free;
   except
@@ -626,6 +646,13 @@ begin
       DebugLn('[TCodeToolsOptions.Save]  error writing "',FFilename,'": ',E.Message);
     end;
   end;
+end;
+
+procedure TCodeToolsOptions.SetCodeCompletionTemplateFileName(aValue: String);
+begin
+  aValue:=TrimFilename(aValue);
+  if FCodeCompletionTemplateFileName=aValue then Exit;
+  FCodeCompletionTemplateFileName:=aValue;
 end;
 
 procedure TCodeToolsOptions.SetFilename(const AValue: string);
@@ -641,9 +668,16 @@ begin
                              GetPrimaryConfigPath+'/'+DefaultCodeToolsOptsFile);
   CopySecondaryConfigFile(DefaultCodeToolsOptsFile);
   if (not FileExistsCached(ConfFileName)) then begin
+    debugln('Looking for code tools config file:  "' + ConfFileName + '"');
     debugln(UTF8ToConsole(lisCompilerNOTECodetoolsConfigFileNotFoundUsingDefaults));
   end;
   FFilename:=ConfFilename;
+end;
+
+procedure TCodeToolsOptions.SetSetPropertyVariablename(aValue: string);
+begin
+  if FSetPropertyVariablename=aValue then Exit;
+  FSetPropertyVariablename:=aValue;
 end;
 
 procedure TCodeToolsOptions.Assign(Source: TPersistent);
@@ -770,6 +804,9 @@ begin
   fIndentationFilename:=
     TrimFilename(GetPrimaryConfigPath+PathDelim+DefaultIndentationFilename);
   FIndentContextSensitive:=true;
+
+  // code completion templates
+  fCodeCompletionTemplateFileName := DefaultCodeCompletionFilename;
 end;
 
 procedure TCodeToolsOptions.ClearGlobalDefineTemplates;
@@ -882,6 +919,7 @@ procedure TCodeToolsOptions.AssignTo(Dest: TPersistent);
 var
   Boss: TCodeToolManager absolute Dest;
   Beauty: TBeautifyCodeOptions absolute Dest;
+  aFilename: String;
 begin
   if Dest is TCodeToolManager then
   begin
@@ -895,6 +933,13 @@ begin
     // CreateCode - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     AssignTo(Boss.SourceChangeCache.BeautifyCodeOptions);
     Boss.SetPropertyVariablename:=SetPropertyVariablename;
+    //
+    aFilename:=CodeCompletionTemplateFileName;
+    IDEMacros.SubstituteMacros(aFilename);
+    aFilename:=TrimFilename(aFilename);
+    if (aFilename<>'') and not FilenameIsAbsolute(aFilename) then
+      aFilename:=TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+aFilename);
+    Boss.CodeCompletionTemplateFileName:=aFilename;
   end
   else
   if Dest is TBeautifyCodeOptions then

@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  BasicCodeTools,
+  BasicCodeTools, CodeToolManager,
   SynEditAutoComplete, SynPluginTemplateEdit, SynPluginSyncronizedEditBase, SynEdit,
   MacroIntf, LazIDEIntf, SrcEditorIntf;
 
@@ -113,6 +113,10 @@ function ExecuteCodeTemplate(SrcEdit: TSourceEditorInterface;
 implementation
 
 {$R *.lfm}
+
+
+
+
 
 const
   MaxLevel = 10; // prevent cycling
@@ -463,12 +467,12 @@ var
   Pattern: String;
   LineText: String;
   Parser: TLazTemplateParser;
+  CodeToolBossOriginalIndent : Integer; // So I don't break anything else (hopefully)
 begin
   Result:=false;
   //debugln('ExecuteCodeTemplate ',dbgsName(SrcEdit),' ',dbgsName(SrcEdit.EditorControl));
   AEditor:=SrcEdit.EditorControl as TSynEdit;
   Pattern:=TemplateValue;
-
   Parser := TLazTemplateParser.Create(Pattern);
   AEditor.BeginUpdate;
   try
@@ -498,8 +502,17 @@ begin
     Parser.EnableMacros := Attributes.IndexOfName(CodeTemplateEnableMacros)>=0;
     Parser.KeepSubIndent := Attributes.IndexOfName(CodeTemplateKeepSubIndent)>=0;
     Parser.Indent := BaseIndent;
-    LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
-    if not Parser.SubstituteCodeMacros(SrcEdit) then exit;
+    CodeToolBossOriginalIndent := CodeToolBoss.IndentSize;
+    if Parser.KeepSubIndent then
+      CodeToolBoss.IndentSize := BaseIndent // Use additional indentation
+    else
+      CodeToolBoss.IndentSize := 0; // Use current indentation
+    try
+      LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
+      if not Parser.SubstituteCodeMacros(SrcEdit) then exit;
+    finally
+      CodeToolBoss.IndentSize := CodeToolBossOriginalIndent;
+    end;
 
     s:=AEditor.Lines[p.y-1];
     if TokenStartX>length(s) then

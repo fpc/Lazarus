@@ -25,7 +25,7 @@ unit codetools_classcompletion_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, ExtCtrls, StdCtrls,
+  Classes, SysUtils, FileUtil, Forms, ExtCtrls, StdCtrls, Buttons, Dialogs,
   SourceChanger, CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
 
 type
@@ -53,7 +53,6 @@ type
     SetPropertyVariablenameLabel: TLabel;
     UpdateAllMethodSignaturesCheckBox: TCheckBox;
   private
-    { private declarations }
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;

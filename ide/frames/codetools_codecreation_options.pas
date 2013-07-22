@@ -25,8 +25,9 @@ unit codetools_codecreation_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, ExtCtrls, StdCtrls,
-  SourceChanger, CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
+  Classes, SysUtils, FileUtil, Forms, ExtCtrls, StdCtrls, Dialogs,
+  SourceChanger, CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf,
+  IDEDialogs;
 
 type
 
@@ -35,9 +36,13 @@ type
   TCodetoolsCodeCreationOptionsFrame = class(TAbstractIDEOptionsEditor)
     ForwardProcsInsertPolicyRadioGroup: TRadioGroup;
     ForwardProcsKeepOrderCheckBox: TCheckBox;
+    TemplateFileBrowseButton: TButton;
+    TemplateFileEdit: TEdit;
+    TemplateFileLabel: TLabel;
     UpdateMultiProcSignaturesCheckBox: TCheckBox;
     UpdateOtherProcSignaturesCaseCheckBox: TCheckBox;
     UsesInsertPolicyRadioGroup: TRadioGroup;
+    procedure TemplateFileBrowseButtonClick(Sender: TObject);
   private
   public
     function GetTitle: String; override;
@@ -52,6 +57,26 @@ implementation
 {$R *.lfm}
 
 { TCodetoolsCodeCreationOptionsFrame }
+
+procedure TCodetoolsCodeCreationOptionsFrame.TemplateFileBrowseButtonClick(
+  Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+begin
+  OpenDialog:=TOpenDialog.Create(nil);
+  try
+    InitIDEFileDialog(OpenDialog);
+    OpenDialog.Title:=lisChooseAFileWithCodeToolsTemplates;
+    OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
+    OpenDialog.Filter:=lisCodetoolsTemplateFile+' (*.xml)|*.xml|'+dlgAllFiles+
+      '|'+GetAllFilesMask;
+    if OpenDialog.Execute then
+      TemplateFileEdit.Text:=OpenDialog.FileName;
+  finally
+    StoreIDEFileDialog(OpenDialog);
+    OpenDialog.Free;
+  end;
+end;
 
 function TCodetoolsCodeCreationOptionsFrame.GetTitle: String;
 begin
@@ -73,10 +98,6 @@ begin
   end;
 
   ForwardProcsKeepOrderCheckBox.Caption:=dlgForwardProcsKeepOrder;
-  UpdateMultiProcSignaturesCheckBox.Caption:=
-    lisCTOUpdateMultipleProcedureSignatures;
-  UpdateOtherProcSignaturesCaseCheckBox.Caption:=
-    lisUpdateOtherProcedureSignaturesWhenOnlyLetterCaseHa;
 
   with UsesInsertPolicyRadioGroup do begin
     Caption:=lisNewUnitsAreAddedToUsesSections;
@@ -90,6 +111,13 @@ begin
       EndUpdate;
     end;
   end;
+
+  UpdateMultiProcSignaturesCheckBox.Caption:=
+    lisCTOUpdateMultipleProcedureSignatures;
+  UpdateOtherProcSignaturesCaseCheckBox.Caption:=
+    lisUpdateOtherProcedureSignaturesWhenOnlyLetterCaseHa;
+
+  TemplateFileLabel.Caption:=lisTemplateFile;
 end;
 
 procedure TCodetoolsCodeCreationOptionsFrame.ReadSettings(
@@ -106,8 +134,6 @@ begin
     end;
 
     ForwardProcsKeepOrderCheckBox.Checked := KeepForwardProcOrder;
-    UpdateMultiProcSignaturesCheckBox.Checked:=UpdateMultiProcSignatures;
-    UpdateOtherProcSignaturesCaseCheckBox.Checked:=UpdateOtherProcSignaturesCase;
 
     case UsesInsertPolicy of
     uipFirst:             UsesInsertPolicyRadioGroup.ItemIndex:=0;
@@ -118,6 +144,11 @@ begin
       //uipAlphabetically:
                           UsesInsertPolicyRadioGroup.ItemIndex:=4;
     end;
+
+    UpdateMultiProcSignaturesCheckBox.Checked:=UpdateMultiProcSignatures;
+    UpdateOtherProcSignaturesCaseCheckBox.Checked:=UpdateOtherProcSignaturesCase;
+
+    TemplateFileEdit.Text:=CodeCompletionTemplateFileName;
   end;
 end;
 
@@ -133,8 +164,6 @@ begin
     end;
 
     KeepForwardProcOrder := ForwardProcsKeepOrderCheckBox.Checked;
-    UpdateMultiProcSignatures:=UpdateMultiProcSignaturesCheckBox.Checked;
-    UpdateOtherProcSignaturesCase:=UpdateOtherProcSignaturesCaseCheckBox.Checked;
 
     case UsesInsertPolicyRadioGroup.ItemIndex of
     0: UsesInsertPolicy:=uipFirst;
@@ -143,6 +172,11 @@ begin
     3: UsesInsertPolicy:=uipLast;
     else UsesInsertPolicy:=uipAlphabetically;
     end;
+
+    UpdateMultiProcSignatures:=UpdateMultiProcSignaturesCheckBox.Checked;
+    UpdateOtherProcSignaturesCase:=UpdateOtherProcSignaturesCaseCheckBox.Checked;
+
+    CodeCompletionTemplateFileName:=TemplateFileEdit.Text;
   end;
 end;
 

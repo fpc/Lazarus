@@ -77,6 +77,7 @@ interface
 {off $DEFINE VerboseCompleteMethod}
 {off $DEFINE VerboseCompleteLocalVarAssign}
 {off $DEFINE VerboseCompleteEventAssign}
+{$DEFINE UseXMLTemplates}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -85,7 +86,7 @@ uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   CodeCache, CustomCodeTool, PascalParserTool, MethodJumpTool,
   FindDeclarationTool, KeywordFuncLists, CodeToolsStructs, BasicCodeTools,
-  LinkScanner, SourceChanger, CodeGraph, AVL_Tree;
+  LinkScanner, SourceChanger, CodeGraph, AVL_Tree, codecompletiontemplater;
 
 type
   TNewClassPart = (ncpPrivateProcs, ncpPrivateVars,
@@ -137,6 +138,7 @@ type
     fNewMainUsesSectionUnits: TAVLTree; // tree of AnsiString
     procedure AddNewPropertyAccessMethodsToClassProcs(ClassProcs: TAVLTree;
       const TheClassName: string);
+    procedure SetSetPropertyVariablename(AValue: string);
     function UpdateProcBodySignature(ProcBodyNodes: TAVLTree;
       const BodyNodeExt: TCodeTreeNodeExtension;
       ProcAttrCopyDefToBody: TProcHeadAttributes; var ProcsCopied: boolean;
@@ -363,7 +365,7 @@ type
   public
     // Options
     property SetPropertyVariablename: string read FSetPropertyVariablename
-                                             write FSetPropertyVariablename;
+                                             write SetSetPropertyVariablename;
     property CompleteProperties: boolean read FCompleteProperties
                                          write FCompleteProperties;
     property AddInheritedCodeToOverrideMethod: boolean
@@ -454,6 +456,12 @@ procedure TCodeCompletionCodeTool.SetCodeCompleteSrcChgCache(
 begin
   FSourceChangeCache:=AValue;
   FSourceChangeCache.MainScanner:=Scanner;
+end;
+
+procedure TCodeCompletionCodeTool.SetSetPropertyVariablename(aValue: string);
+begin
+  if FSetPropertyVariablename=aValue then Exit;
+  FSetPropertyVariablename:=aValue;
 end;
 
 function TCodeCompletionCodeTool.OnTopLvlIdentifierFound(
@@ -1067,8 +1075,17 @@ begin
       +'invalid target for a var');
   end;
 
-  InsertTxt:=VariableName+':'+VariableType+';';
+{$IFDEF UseXMLTemplates}
+  if ( Expander <> nil ) and Expander.TemplateExists('PrettyColon') then
+  begin
+    InsertTxt:=VariableName+Expander.Expand('PrettyColon','','',[],[])+VariableType+';';
+  end
+  else
+{$ENDIF}
+  begin
+    InsertTxt:=VariableName+':'+VariableType+';';
   //DebugLn(['TCodeCompletionCodeTool.AddLocalVariable C InsertTxt="',InsertTxt,'" ParentNode=',ParentNode.DescAsString,' HeaderNode=',HeaderNode.DescAsString,' OtherSectionNode=',OtherSectionNode.DescAsString,' VarSectionNode=',VarSectionNode.DescAsString,' CursorNode=',CursorNode.DescAsString]);
+  end;
 
   if (VarSectionNode<>nil) then begin
     // there is already a var section
@@ -2641,6 +2658,9 @@ var
   Params: TFindDeclarationParams;
   ParamName: String;
   // create param list without brackets
+  {$IFDEF UseXMLTemplates}
+  Colon : String;
+  {$ENDIF}
 begin
   Result:='';
   CleanList:='';
@@ -2684,8 +2704,20 @@ begin
         Result:=Result+';';
         CleanList:=CleanList+';';
       end;
-      Result:=Result+ParamName+':'+ParamType;
-      CleanList:=CleanList+ParamType;
+      {$IFDEF UseXMLTemplates}
+      if assigned( Expander ) and Expander.TemplateExists('PrettyColon') then
+      begin
+        Colon := Expander.Expand('PrettyColon', '','', // Doesn't use linebreak or indentation
+                                 [], [] );
+        Result:=Result+ParamName+Colon+ParamType;
+        CleanList:=CleanList+Colon+ParamType;
+      end
+      else
+      {$ENDIF UseXMLTemplates}
+      begin
+        Result:=Result+ParamName+':'+ParamType;
+        CleanList:=CleanList+':'+ParamType;
+      end;
       // next
       MoveCursorToCleanPos(ExprEndPos);
       ReadNextAtom;
@@ -2806,7 +2838,20 @@ const
 
     // prepend 'procedure' keyword
     if IsFunction then
-      ProcCode:='function '+ProcCode+':'+FuncType+';'
+    begin
+      {$IFDEF UseXMLTemplates}
+      if ( Expander <> nil ) and Expander.TemplateExists('PrettyColon') then
+      begin
+        ProcCode:= 'function '+ProcCode+
+                   Expander.Expand('PrettyColon','','',[],[])
+                   +FuncType+';';
+      end
+      else
+      {$ENDIF}
+      begin
+        ProcCode:='function '+ProcCode+':'+FuncType+';';
+      end;
+    end
     else
       ProcCode:='procedure '+ProcCode+';';
     CleanProcHead:=CleanProcHead+';';
@@ -2998,6 +3043,15 @@ begin
   CodeCompleteSrcChgCache:=SourceChangeCache;
   // check if variable already exists
   if not VarExistsInCodeCompleteClass(UpperCaseStr(VarName)) then begin
+  {$IFDEF UseXMLTemplates}
+    if ( Expander <> nil ) and Expander.TemplateExists('PrettyColon') then
+    begin
+      AddClassInsertion(UpperCaseStr(VarName),
+                        VarName+Expander.Expand('PrettyColon','','',[],[])+VarType+';',VarName,ncpPublishedVars);
+
+    end
+  else
+  {$ENDIF}
     AddClassInsertion(UpperCaseStr(VarName),
                       VarName+':'+VarType+';',VarName,ncpPublishedVars);
     if not InsertAllNewClassParts then
@@ -5803,6 +5857,9 @@ var
   SrcVar: String;
   i: Integer;
   Beauty: TBeautifyCodeOptions;
+  {$IFDEF UseXMLTemplates}
+  NodeExtsStr: String;
+  {$ENDIF}
 begin
   Result:=false;
   NewPos:=CleanCodeXYPosition;
@@ -5812,67 +5869,114 @@ begin
   Beauty:=SourceChanger.BeautifyCodeOptions;
   aClassName:=ExtractClassName(ClassNode,false);
   CleanDef:=ProcName+'('+ParamType+');';
-  Def:='procedure '+ProcName+'('+ParamName+':'+ParamType+');';
-  if OverrideMod then Def:=Def+'override;';
+  {$IFDEF UseXMLTemplates}
+  if assigned( Expander ) and Expander.TemplateExists('AssignMethodDef') then
+  begin
+    Def := Expander.Expand('AssignMethodDef', '','', // Doesn't use linebreak or indentation
+                           ['ProcName',  'ParamName',  'ParamType', 'Override' ],
+                           [ ProcName,    ParamName,    ParamType,   OverrideMod ] );
+  end else
+  {$ENDIF UseXMLTemplates}
+  begin
+    Def:='procedure '+ProcName+'('+ParamName+':'+ParamType+');';
+    if OverrideMod then Def:=Def+'override;';
+  end;
   SrcVar:=ParamName;
   // create the proc header
   SameType:=CompareIdentifiers(PChar(aClassName),PChar(ParamType))=0;
   e:=SourceChanger.BeautifyCodeOptions.LineEnd;
   Indent:=0;
   IndentStep:=SourceChanger.BeautifyCodeOptions.Indent;
-  ProcBody:='procedure '+aClassName+'.'+ProcName+'('+ParamName+':'+ParamType+');'+e;
-  if not SameType then begin
-    // add local variable
-    SrcVar:=LocalVarName;
-    if SrcVar='' then
-      SrcVar:='aSource';
-    if CompareIdentifiers(PChar(SrcVar),PChar(ParamName))=0 then begin
-      if CompareIdentifiers(PChar(SrcVar),'aSource')=0 then
-        SrcVar:='aSrc'
-      else
+  {$IFDEF UseXMLTemplates}
+  if assigned(Expander) and Expander.TemplateExists('AssignMethod') then begin
+    if not SameType then begin
+      // add local variable
+      SrcVar:=LocalVarName;
+      if SrcVar='' then
         SrcVar:='aSource';
+      if CompareIdentifiers(PChar(SrcVar),PChar(ParamName))=0 then begin
+        if CompareIdentifiers(PChar(SrcVar),'aSource')=0 then
+          SrcVar:='aSrc'
+        else
+          SrcVar:='aSource';
+        end;
+      end;
+      // add assignments
+      NodeExtsStr := '';
+     if MemberNodeExts<>nil then begin
+       for i:=0 to MemberNodeExts.Count-1 do
+       begin
+         NodeExt:=TCodeTreeNodeExtension(MemberNodeExts[i]);
+         NodeExtsStr := NodeExtsStr + NodeExt.Txt + '?';
+       end;
+     end;
+     ProcBody := Expander.Expand( 'AssignMethod',e,GetIndentStr(Indent),
+                                 ['ClassName', 'ProcName', 'ParamName',  'ParamType',
+                                   'SameType',  'SrcVar',   'Inherited0', 'Inherited1',
+                                   'NodeExt' ],
+                                  [ aClassName,  ProcName,   ParamName,    ParamType,
+                                    SameType,    SrcVar,
+                                    CallInherited and (not CallInheritedOnlyInElse),
+                                    CallInherited and CallInheritedOnlyInElse,
+                                    NodeExtsStr ] );
+    end
+  else
+  {$ENDIF UseXMLTemplates}
+  begin
+    ProcBody:='procedure '+aClassName+'.'+ProcName+'('+ParamName+':'+ParamType+');'+e;
+    if not SameType then begin
+      // add local variable
+      SrcVar:=LocalVarName;
+      if SrcVar='' then
+        SrcVar:='aSource';
+      if CompareIdentifiers(PChar(SrcVar),PChar(ParamName))=0 then begin
+        if CompareIdentifiers(PChar(SrcVar),'aSource')=0 then
+          SrcVar:='aSrc'
+        else
+          SrcVar:='aSource';
+      end;
+      ProcBody:=ProcBody+'var'+e
+         +Beauty.GetIndentStr(Indent+IndentStep)+SrcVar+':'+aClassName+';'+e;
     end;
-    ProcBody:=ProcBody+'var'+e
-       +Beauty.GetIndentStr(Indent+IndentStep)+SrcVar+':'+aClassName+';'+e;
-  end;
-  ProcBody:=ProcBody+'begin'+e;
-  inc(Indent,IndentStep);
-
-  // call inherited
-  if CallInherited and (not CallInheritedOnlyInElse) then
-    ProcBody:=ProcBody
-      +Beauty.GetIndentStr(Indent)+'inherited '+ProcName+'('+ParamName+');'+e;
-
-  if not SameType then begin
-    // add a parameter check to the new procedure
-    ProcBody:=ProcBody
-        +Beauty.GetIndentStr(Indent)+'if '+ParamName+' is '+aClassName+' then'+e
-        +Beauty.GetIndentStr(Indent)+'begin'+e;
+    ProcBody:=ProcBody+'begin'+e;
     inc(Indent,IndentStep);
-    ProcBody:=ProcBody+Beauty.GetIndentStr(Indent)+SrcVar+':='+aClassName+'('+ParamName+');'+e;
-  end;
 
-  // add assignments
-  if MemberNodeExts<>nil then begin
-    for i:=0 to MemberNodeExts.Count-1 do begin
-      NodeExt:=TCodeTreeNodeExtension(MemberNodeExts[i]);
-      // add assignment
-      ProcBody:=ProcBody+Beauty.GetIndentStr(Indent)+NodeExt.Txt+':='+SrcVar+'.'+NodeExt.Txt+';'+e;
-    end;
-  end;
+    // call inherited
+    if CallInherited and (not CallInheritedOnlyInElse) then
+      ProcBody:=ProcBody
+        +Beauty.GetIndentStr(Indent)+'inherited '+ProcName+'('+ParamName+');'+e;
 
-  if not SameType then begin
-    // close if block
-    dec(Indent,IndentStep);
-    if CallInherited and CallInheritedOnlyInElse then begin
-      ProcBody:=ProcBody+Beauty.GetIndentStr(Indent)+'end else'+e
-          +Beauty.GetIndentStr(Indent+IndentStep)+'inherited '+ProcName+'('+ParamName+');'+e;
-    end else begin
-      ProcBody:=ProcBody+Beauty.GetIndentStr(Indent)+'end;'+e
+    if not SameType then begin
+      // add a parameter check to the new procedure
+      ProcBody:=ProcBody
+          +Beauty.GetIndentStr(Indent)+'if '+ParamName+' is '+aClassName+' then'+e
+          +Beauty.GetIndentStr(Indent)+'begin'+e;
+      inc(Indent,IndentStep);
+      ProcBody:=ProcBody+Beauty.GetIndentStr(Indent)+SrcVar+':='+aClassName+'('+ParamName+');'+e;
     end;
+
+    // add assignments
+    if MemberNodeExts<>nil then begin
+      for i:=0 to MemberNodeExts.Count-1 do begin
+        NodeExt:=TCodeTreeNodeExtension(MemberNodeExts[i]);
+        // add assignment
+        ProcBody:=ProcBody+Beauty.GetIndentStr(Indent)+NodeExt.Txt+':='+SrcVar+'.'+NodeExt.Txt+';'+e;
+      end;
+    end;
+
+    if not SameType then begin
+      // close if block
+      dec(Indent,IndentStep);
+      if CallInherited and CallInheritedOnlyInElse then begin
+        ProcBody:=ProcBody+Beauty.GetIndentStr(Indent)+'end else'+e
+            +Beauty.GetIndentStr(Indent+IndentStep)+'inherited '+ProcName+'('+ParamName+');'+e;
+      end else begin
+        ProcBody:=ProcBody+Beauty.GetIndentStr(Indent)+'end;'+e
+      end;
+    end;
+    // close procedure body
+    ProcBody:=ProcBody+'end;';
   end;
-  // close procedure body
-  ProcBody:=ProcBody+'end;';
 
   if not InitClassCompletion(ClassNode,SourceChanger) then exit;
   ProcBody:=SourceChanger.BeautifyCodeOptions.BeautifyStatement(ProcBody,0);
@@ -6851,19 +6955,33 @@ var
               end;
             
             }
-            ProcBody:=
-              'procedure '
-              +ExtractClassName(PropNode.Parent.Parent,false)+'.'+AccessParam
-              +'('+SetPropertyVariablename+':'+PropType+');'
-              +BeautifyCodeOpts.LineEnd
-              +'begin'+BeautifyCodeOpts.LineEnd
-              +BeautifyCodeOpts.GetIndentStr(BeautifyCodeOpts.Indent)
-                +'if '+VariableName+'='+SetPropertyVariablename+' then Exit;'
+            {$IFDEF UseXMLTemplates}
+            if assigned(Expander) and Expander.TemplateExists('SetterMethod') then
+            begin
+              debugln(['CompleteWriteSpecifier ', 'USING template for SetterMethod']);
+              ProcBody := Expander.Expand( 'SetterMethod',
+                                           BeautifyCodeOpts.LineEnd,
+                                           GetIndentStr(BeautifyCodeOpts.Indent),
+                                           ['ClassName',                                   'AccessParam','PropVarName',           'PropType','VarName'],
+                                           [ExtractClassName(PropNode.Parent.Parent,false), AccessParam,  SetPropertyVariablename, PropType,  VariableName] );
+            end
+            else
+            {$ENDIF}
+            begin
+              ProcBody:=
+                'procedure '
+                +ExtractClassName(PropNode.Parent.Parent,false)+'.'+AccessParam
+                +'('+SetPropertyVariablename+':'+PropType+');'
                 +BeautifyCodeOpts.LineEnd
-              +BeautifyCodeOpts.GetIndentStr(BeautifyCodeOpts.Indent)
-                +VariableName+':='+SetPropertyVariablename+';'
-                +BeautifyCodeOpts.LineEnd
-              +'end;';
+                +'begin'+BeautifyCodeOpts.LineEnd
+                +BeautifyCodeOpts.GetIndentStr(BeautifyCodeOpts.Indent)
+                  +'if '+VariableName+'='+SetPropertyVariablename+' then Exit;'
+                  +BeautifyCodeOpts.LineEnd
+                +BeautifyCodeOpts.GetIndentStr(BeautifyCodeOpts.Indent)
+                  +VariableName+':='+SetPropertyVariablename+';'
+                  +BeautifyCodeOpts.LineEnd
+                +'end;';
+            end;
             if IsClassProp then
               ProcBody:='class '+ProcBody;
           end;
@@ -8920,7 +9038,6 @@ begin
   FCompleteProperties:=true;
   FAddInheritedCodeToOverrideMethod:=true;
 end;
-
 
 end.
 

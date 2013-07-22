@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="CodeTools"/>
@@ -29,7 +29,7 @@
     <License Value="GPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="60">
+    <Files Count="61">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -269,8 +269,12 @@
       </Item59>
       <Item60>
         <Filename Value="ctunitgroupgraph.pas"/>
-        <UnitName Value="ctunitgroupgraph"/>
+        <UnitName Value="CTUnitGroupGraph"/>
       </Item60>
+      <Item61>
+        <Filename Value="codecompletiontemplater.pas"/>
+        <UnitName Value="codecompletiontemplater"/>
+      </Item61>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

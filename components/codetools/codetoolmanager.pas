@@ -46,7 +46,7 @@ uses
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
   ExprEval, LinkScanner, KeywordFuncLists, FindOverloads, CodeBeautifier,
   FindDeclarationCache, DirectoryCacher, AVL_Tree,
-  PPUCodeTools, LFMTrees, DirectivesTree,
+  PPUCodeTools, LFMTrees, DirectivesTree, codecompletiontemplater,
   PascalParserTool, CodeToolsConfig, CustomCodeTool, FindDeclarationTool,
   IdentCompletionTool, StdCodeTools, ResourceCodeTool, CodeToolsStructs,
   CTUnitGraph, CodeTemplatesTool, ExtractProcTool;
@@ -88,6 +88,7 @@ type
     FCatchExceptions: boolean;
     FChangeStep: integer;
     FCheckFilesOnDisk: boolean;
+    FCodeCompletionTemplateFileName: String;
     FCodeNodeTreeChangeStep: integer;
     FCompleteProperties: boolean;
     FCurCodeTool: TCodeTool; // current codetool
@@ -141,8 +142,10 @@ type
     procedure SetAbortable(const AValue: boolean);
     procedure SetAddInheritedCodeToOverrideMethod(const AValue: boolean);
     procedure SetCheckFilesOnDisk(NewValue: boolean);
+    procedure SetCodeCompletionTemplateFileName(AValue: String);
     procedure SetCompleteProperties(const AValue: boolean);
     procedure SetIndentSize(NewValue: integer);
+    procedure SetSetPropertyVariablename(AValue: string);
     procedure SetTabWidth(const AValue: integer);
     procedure SetUseTabs(AValue: boolean);
     procedure SetVisibleEditorLines(NewValue: integer);
@@ -279,7 +282,7 @@ type
     property IndentSize: integer read FIndentSize write SetIndentSize;
     property JumpCentered: boolean read FJumpCentered write SetJumpCentered;
     property SetPropertyVariablename: string
-                   read FSetPropertyVariablename write FSetPropertyVariablename;
+                   read FSetPropertyVariablename write SetSetPropertyVariablename;
     property VisibleEditorLines: integer
                            read FVisibleEditorLines write SetVisibleEditorLines;
     property TabWidth: integer read FTabWidth write SetTabWidth;
@@ -289,6 +292,10 @@ type
     property AddInheritedCodeToOverrideMethod: boolean
                                       read FAddInheritedCodeToOverrideMethod
                                       write SetAddInheritedCodeToOverrideMethod;
+
+    // code completion templates
+    property CodeCompletionTemplateFileName : String read FCodeCompletionTemplateFileName
+                                                     write SetCodeCompletionTemplateFileName;
 
     // source changing
     procedure BeginUpdate;
@@ -5431,6 +5438,29 @@ begin
     FCurCodeTool.CheckFilesOnDisk:=NewValue;
 end;
 
+procedure TCodeToolManager.SetCodeCompletionTemplateFileName(AValue: String);
+var
+  OldValue: String;
+  Code: TCodeBuffer;
+begin
+  AValue:=CleanAndExpandFilename(AValue);
+  if FCodeCompletionTemplateFileName=AValue then Exit;
+  OldValue:=FCodeCompletionTemplateFileName;
+  FCodeCompletionTemplateFileName:=AValue;
+  if CompareFilenames(FCodeCompletionTemplateFileName,OldValue)=0 then exit;
+  if (FCodeCompletionTemplateFileName<>'') then
+    Code:=LoadFile(FCodeCompletionTemplateFileName,true,false)
+  else
+    Code:=nil;
+  if Code<>nil then begin
+    if Expander=nil then
+      Expander:=TTemplateExpander.Create;
+    Expander.Code:=Code;
+  end else begin
+    FreeAndNil(Expander);
+  end;
+end;
+
 procedure TCodeToolManager.SetCompleteProperties(const AValue: boolean);
 begin
   if CompleteProperties=AValue then exit;
@@ -5477,6 +5507,12 @@ begin
   FJumpCentered:=NewValue;
   if FCurCodeTool<>nil then
     FCurCodeTool.JumpCentered:=NewValue;
+end;
+
+procedure TCodeToolManager.SetSetPropertyVariablename(aValue: string);
+begin
+  if FSetPropertyVariablename=aValue then Exit;
+  FSetPropertyVariablename:=aValue;
 end;
 
 procedure TCodeToolManager.SetCursorBeyondEOL(NewValue: boolean);

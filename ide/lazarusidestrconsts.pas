@@ -1346,6 +1346,7 @@ resourcestring
   dlgDelTemplate = 'Delete template ';
   dlgChsCodeTempl = 'Choose code template file (*.dci)';
   dlgAllFiles = 'All files';
+  lisCodetoolsTemplateFile = 'Codetools template file';
   lisExecutable = 'Executable';
   lisEditorFileTypes = 'Editor file types';
   lisPkgMgrNew = 'new';
@@ -1994,6 +1995,8 @@ resourcestring
   dlgCOCfgCmpMessages = 'Messages';
   lisChooseAnFPCMessageFile = 'Choose an FPC message file';
   lisFPCMessageFile = 'FPC message file';
+  lisChooseAFileWithCodeToolsTemplates = 'Choose a file with CodeTools '
+    +'templates';
   dlgCOOther = 'Other';
   dlgCOInherited = 'Inherited';
   dlgCOCompilerCommands = 'Compiler Commands';
@@ -5796,6 +5799,7 @@ resourcestring
     +'signatures';
   lisUpdateOtherProcedureSignaturesWhenOnlyLetterCaseHa = 'Update other '
     +'procedure signatures when only letter case has changed';
+  lisTemplateFile = 'Template file';
 
 implementation
 

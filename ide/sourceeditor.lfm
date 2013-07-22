@@ -1,4 +1,4 @@
-inherited SourceNotebook: TSourceNotebook
+object SourceNotebook: TSourceNotebook
   Left = 533
   Height = 300
   Top = 374
@@ -8,10 +8,11 @@ inherited SourceNotebook: TSourceNotebook
   ClientHeight = 300
   ClientWidth = 400
   OnMouseUp = FormMouseUp
-  object StatusBar: TStatusBar[0]
+  LCLVersion = '1.1'
+  object StatusBar: TStatusBar
     Left = 0
-    Height = 23
-    Top = 277
+    Height = 21
+    Top = 279
     Width = 400
     Panels = <    
       item
