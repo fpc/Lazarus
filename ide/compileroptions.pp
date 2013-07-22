@@ -1375,7 +1375,7 @@ var
     Result:=SwitchPathDelims(SearchPath,PathDelimChange);
     Result:=MinimizeSearchPath(Result);
   end;
-{
+
   procedure ReadSmaller;
   begin
     if FileVersion<2 then begin
@@ -1387,7 +1387,7 @@ var
     end else
       SmallerCode:=aXMLConfig.GetValue(p+'SmallerCode/Value',false);
   end;
-}
+
   procedure ReadSmartLinkUnit;
   begin
     if FileVersion<3 then
@@ -1485,9 +1485,9 @@ begin
   TargetCPU := aXMLConfig.GetValue(p+'TargetCPU/Value', '');
   TargetOS := aXMLConfig.GetValue(p+'TargetOS/Value', '');
   OptimizationLevel := aXMLConfig.GetValue(p+'Optimizations/OptimizationLevel/Value', 1);
-  //VariablesInRegisters := aXMLConfig.GetValue(p+'Optimizations/VariablesInRegisters/Value', false);
-  //UncertainOptimizations := aXMLConfig.GetValue(p+'Optimizations/UncertainOptimizations/Value', false);
-  //ReadSmaller;
+  VariablesInRegisters := aXMLConfig.GetValue(p+'Optimizations/VariablesInRegisters/Value', false);
+  UncertainOptimizations := aXMLConfig.GetValue(p+'Optimizations/UncertainOptimizations/Value', false);
+  ReadSmaller;
 
   { Linking }
   p:=Path+'Linking/';
@@ -1700,9 +1700,9 @@ begin
   aXMLConfig.SetDeleteValue(p+'TargetCPU/Value', TargetCPU,'');
   aXMLConfig.SetDeleteValue(p+'TargetOS/Value', TargetOS,'');
   aXMLConfig.SetDeleteValue(p+'Optimizations/OptimizationLevel/Value', OptimizationLevel,1);
-  //aXMLConfig.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
-  //aXMLConfig.SetDeleteValue(p+'Optimizations/UncertainOptimizations/Value', UncertainOptimizations,false);
-  //aXMLConfig.SetDeleteValue(p+'SmallerCode/Value', SmallerCode, false);
+  aXMLConfig.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
+  aXMLConfig.SetDeleteValue(p+'Optimizations/UncertainOptimizations/Value', UncertainOptimizations,false);
+  aXMLConfig.SetDeleteValue(p+'SmallerCode/Value', SmallerCode, false);
 
   { Linking }
   p:=Path+'Linking/';
@@ -2745,8 +2745,8 @@ begin
 
   { Optimizations }
   OptimizeSwitches:='';
-  //if SmallerCode then
-  //  OptimizeSwitches := OptimizeSwitches + 's';
+  if SmallerCode then
+    OptimizeSwitches := OptimizeSwitches + 's';
   { OptimizationLevel     1 = Level 1    2 = Level 2    3 = Level 3 }
   case (OptimizationLevel) of
     1:  OptimizeSwitches := OptimizeSwitches + '1';
@@ -2757,11 +2757,12 @@ begin
     switches := switches + ' -O'+OptimizeSwitches;
 
   // uncertain
-  //if (UncertainOptimizations) then
-  //  Switches := Switches + ' -OoUNCERTAIN';
+  if (UncertainOptimizations) then
+    Switches := Switches + ' -OoUNCERTAIN';
+
   // registers
-  //if (VariablesInRegisters) then
-  //  Switches := Switches + ' -OoREGVAR';
+  if (VariablesInRegisters) then
+    Switches := Switches + ' -OoREGVAR';
 
   CompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
   CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
@@ -3186,9 +3187,9 @@ begin
   fTargetCPU := '';
   fTargetProc := '';
   fOptLevel := 1;
-  //fVarsInReg := false;
-  //fUncertainOpt := false;
-  //FSmallerCode := false;
+  fVarsInReg := false;
+  fUncertainOpt := false;
+  FSmallerCode := false;
 
   // linking
   fGenDebugInfo := True;
@@ -3302,9 +3303,9 @@ begin
   fTargetCPU := CompOpts.fTargetCPU;
   fTargetProc := CompOpts.fTargetProc;
   fOptLevel := CompOpts.fOptLevel;
-  //fVarsInReg := CompOpts.fVarsInReg;
-  //fUncertainOpt := CompOpts.fUncertainOpt;
-  //FSmallerCode := CompOpts.FSmallerCode;
+  fVarsInReg := CompOpts.fVarsInReg;
+  fUncertainOpt := CompOpts.fUncertainOpt;
+  FSmallerCode := CompOpts.FSmallerCode;
 
   // Linking
   fGenDebugInfo := CompOpts.fGenDebugInfo;
@@ -3456,9 +3457,9 @@ begin
   if Done(Tool.AddDiff('TargetCPU',fTargetCPU,CompOpts.fTargetCPU)) then exit;
   if Done(Tool.AddDiff('TargetProc',fTargetProc,CompOpts.fTargetProc)) then exit;
   if Done(Tool.AddDiff('OptLevel',fOptLevel,CompOpts.fOptLevel)) then exit;
-  //if Done(Tool.AddDiff('VarsInReg',fVarsInReg,CompOpts.fVarsInReg)) then exit;
-  //if Done(Tool.AddDiff('UncertainOpt',fUncertainOpt,CompOpts.fUncertainOpt)) then exit;
-  //if Done(Tool.AddDiff('SmallerCode',FSmallerCode,CompOpts.FSmallerCode)) then exit;
+  if Done(Tool.AddDiff('VarsInReg',fVarsInReg,CompOpts.fVarsInReg)) then exit;
+  if Done(Tool.AddDiff('UncertainOpt',fUncertainOpt,CompOpts.fUncertainOpt)) then exit;
+  if Done(Tool.AddDiff('SmallerCode',FSmallerCode,CompOpts.FSmallerCode)) then exit;
 
   // linking
   if Tool<>nil then Tool.Path:='Linking';

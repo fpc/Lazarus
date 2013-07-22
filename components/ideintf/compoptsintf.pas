@@ -158,9 +158,9 @@ type
     procedure SetUseHeaptrc(const AValue: Boolean);
     procedure SetUseLineInfoUnit(const AValue: Boolean);
     procedure SetUseValgrind(const AValue: Boolean);
-    //procedure SetUncertainOpt(const AValue: Boolean);
-    //procedure SetVarsInReg(const AValue: Boolean);
-    //procedure SetSmallerCode(const AValue: boolean);
+    procedure SetUncertainOpt(const AValue: Boolean);
+    procedure SetVarsInReg(const AValue: Boolean);
+    procedure SetSmallerCode(const AValue: boolean);
     procedure SetVerifyObjMethodCall(const AValue: boolean);
     procedure SetWin32GraphicApp(const AValue: boolean);
     procedure SetWriteFPCLogo(const AValue: Boolean);
@@ -205,9 +205,9 @@ type
     fTargetCPU: string;
     fTargetProc: string;
     fOptLevel: Integer;
-    //fVarsInReg: Boolean;
-    //fUncertainOpt: Boolean;
-    //FSmallerCode: boolean;
+    fVarsInReg: Boolean;
+    fUncertainOpt: Boolean;
+    FSmallerCode: boolean;
 
     // Linking:
     fGenDebugInfo: Boolean;
@@ -364,9 +364,9 @@ type
     property TargetCPU: string read fTargetCPU write SetTargetCPU; // general type
     property TargetProcessor: String read fTargetProc write SetTargetProc; // specific
     property OptimizationLevel: Integer read fOptLevel write SetOptLevel;
-    //property VariablesInRegisters: Boolean read fVarsInReg write SetVarsInReg;
-    //property UncertainOptimizations: Boolean read fUncertainOpt write SetUncertainOpt;
-    //property SmallerCode: boolean read FSmallerCode write SetSmallerCode;
+    property VariablesInRegisters: Boolean read fVarsInReg write SetVarsInReg;
+    property UncertainOptimizations: Boolean read fUncertainOpt write SetUncertainOpt;
+    property SmallerCode: boolean read FSmallerCode write SetSmallerCode;
 
     // linking:
     property GenerateDebugInfo: Boolean read fGenDebugInfo write SetGenDebugInfo;
@@ -596,14 +596,14 @@ begin
   fShowWarn:=AValue;
   IncreaseChangeStamp;
 end;
-{
+
 procedure TLazCompilerOptions.SetSmallerCode(const AValue: boolean);
 begin
   if FSmallerCode=AValue then exit;
   FSmallerCode:=AValue;
   IncreaseChangeStamp;
 end;
-}
+
 procedure TLazCompilerOptions.SetSmartLinkUnit(const AValue: Boolean);
 begin
   if fSmartLinkUnit=AValue then exit;
@@ -798,14 +798,14 @@ begin
   FTargetFilenameAppplyConventions:=AValue;
   IncreaseChangeStamp;
 end;
-{
+
 procedure TLazCompilerOptions.SetUncertainOpt(const AValue: Boolean);
 begin
   if fUncertainOpt=AValue then exit;
   fUncertainOpt:=AValue;
   IncreaseChangeStamp;
 end;
-}
+
 procedure TLazCompilerOptions.SetUseAnsiStr(const AValue: Boolean);
 begin
   if fUseAnsiStr=AValue then exit;
@@ -840,14 +840,14 @@ begin
   fUseValgrind:=AValue;
   IncreaseChangeStamp;
 end;
-{
+
 procedure TLazCompilerOptions.SetVarsInReg(const AValue: Boolean);
 begin
   if fVarsInReg=AValue then exit;
   fVarsInReg:=AValue;
   IncreaseChangeStamp;
 end;
-}
+
 procedure TLazCompilerOptions.SetVerifyObjMethodCall(const AValue: boolean);
 begin
   if FVerifyObjMethodCall=AValue then exit;
