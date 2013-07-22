@@ -112,10 +112,14 @@ procedure TCompilerOtherOptionsFrame.btnAllOptionsClick(Sender: TObject);
 var
   AllOpts: TfrmAllCompilerOptions;
 begin
-  AllOpts := TfrmAllCompilerOptions.CreateWithMemo(memoCustomOptions);
+  AllOpts := TfrmAllCompilerOptions.Create(Nil);
   try
+    AllOpts.CustomOptions := memoCustomOptions.Lines;
     if AllOpts.ShowModal = mrOK then
-      ;
+    begin
+      AllOpts.OptionsReader.ToCustomOptions(memoCustomOptions.Lines);
+      memoCustomOptions.Invalidate;
+    end;
   finally
     AllOpts.Free;
   end;

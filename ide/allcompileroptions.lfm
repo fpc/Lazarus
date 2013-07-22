@@ -70,7 +70,6 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
     TabOrder = 2
-    OnClick = ButtonPanel1Click
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object cbShowModified: TCheckBox

@@ -21,11 +21,10 @@ type
     edOptionsFilter: TEdit;
     sbAllOptions: TScrollBox;
     procedure btnResetOptionsFilterClick(Sender: TObject);
-    procedure ButtonPanel1Click(Sender: TObject);
     procedure edOptionsFilterChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
-    fCustomOptions: TMemo;
+    FCustomOptions: TStrings;
     FIdleConnected: Boolean;
     FOptionsReader: TCompilerOptReader;
     FGeneratedControls: TComponentList;
@@ -33,11 +32,14 @@ type
     procedure SetIdleConnected(AValue: Boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure RenderAndFilterOptions;
+  private
+    property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
   public
-    constructor CreateWithMemo(aCustomOptions: TMemo);
+    constructor Create(TheOwner: TComponent);
     destructor Destroy; override;
   public
-    property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
+    property CustomOptions: TStrings read FCustomOptions write FCustomOptions;
+    property OptionsReader: TCompilerOptReader read FOptionsReader;
   end;
 
 var
@@ -49,10 +51,9 @@ implementation
 
 { TfrmAllCompilerOptions }
 
-constructor TfrmAllCompilerOptions.CreateWithMemo(aCustomOptions: TMemo);
+constructor TfrmAllCompilerOptions.Create(TheOwner: TComponent);
 begin
-  inherited Create(Nil);
-  fCustomOptions := aCustomOptions;
+  inherited Create(TheOwner);
   FOptionsReader := TCompilerOptReader.Create;
   FGeneratedControls := TComponentList.Create;
 end;
@@ -78,13 +79,6 @@ begin
   //btnGetAllOptions.Caption := 'Get all options';
   //btnGetAllOptions.Hint := 'Read available options using "fpc -i" and "fpc -h"';
   //lblStatus.Caption := '';
-end;
-
-procedure TfrmAllCompilerOptions.ButtonPanel1Click(Sender: TObject);
-begin
-  // All Options
-  //FOptionsReader.CopyNonDefaultOptions(CompOptions.AllOptions);
-
 end;
 
 procedure TfrmAllCompilerOptions.edOptionsFilterChange(Sender: TObject);
@@ -119,6 +113,7 @@ begin
     FOptionsReader.CompilerExecutable := EnvironmentOptions.CompilerFilename;
     if FOptionsReader.ReadAndParseOptions <> mrOK then
       ShowMessage(FOptionsReader.ErrorMsg);
+    FOptionsReader.FromCustomOptions(FCustomOptions);
     RenderAndFilterOptions;
     edOptionsFilter.Enabled := True;
   finally
@@ -138,23 +133,14 @@ var
   yLoc: Integer;
   Container: TCustomControl;
 
-  function MakeHeaderLabel: TControl;
-  begin
-    Result := TLabel.Create(Nil); // Container
-    Result.Parent := Container;
-    Result.Top := yLoc;
-    Result.Left := Opt.Indentation*4;
-    Result.Caption := Opt.Option+#9#9+Opt.Description;
-    FGeneratedControls.Add(Result);
-  end;
-
-  function MakeOptionCntrl(aCntrlClass: TControlClass; aTopOffs: integer=0): TControl;
+  function MakeOptionCntrl(aCntrlClass: TControlClass; aCaption: string;
+    aTopOffs: integer=0): TControl;
   begin
     Result := aCntrlClass.Create(Nil);
     Result.Parent := Container;
     Result.Top := yLoc+aTopOffs;
     Result.Left := Opt.Indentation*4;
-    Result.Caption := Opt.Option;
+    Result.Caption := aCaption;
     FGeneratedControls.Add(Result);
   end;
 
@@ -206,13 +192,15 @@ var
   begin
     for i := 0 to aParentGroup.CompilerOpts.Count-1 do begin
       Opt := TCompilerOpt(aParentGroup.CompilerOpts[i]);
-      if not Opt.Visible then Continue;         // Maybe filtered out
+      if Opt.Ignored or not Opt.Visible then Continue;  // Maybe filtered out
       case Opt.EditKind of
-        oeNone: begin                           // Label
-          Cntrl := MakeHeaderLabel;
+        oeGroup, oeSet: begin                   // Label for group or set
+          Cntrl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix+#9#9+Opt.Description);
         end;
         oeBoolean: begin                        // CheckBox
-          Cntrl := MakeOptionCntrl(TCheckBox);
+          Cntrl := MakeOptionCntrl(TCheckBox, Opt.Option);
+          Assert((Opt.Value='') or (Opt.Value='True'), 'Wrong value in Boolean option '+Opt.Option);
+          TCheckBox(Cntrl).Checked := Opt.Value<>'';
           if Length(Opt.Option) > 10 then
             NewLeft := LeftDescrBoolean + (Length(Opt.Option)-10)*8
           else
@@ -220,29 +208,34 @@ var
           MakeDescrLabel(Cntrl, NewLeft);
         end;
         oeSetElem: begin                        // Sub-item for set, CheckBox
-          Cntrl := MakeOptionCntrl(TCheckBox);
+          Cntrl := MakeOptionCntrl(TCheckBox, Opt.Option+Opt.Description);
+          Assert((Opt.Value='') or (Opt.Value='True'), 'Wrong value in Boolean option '+Opt.Option);
+          TCheckBox(Cntrl).Checked := Opt.Value<>'';
         end;
         oeNumber, oeText, oeSetNumber: begin    // Edit
-          Lbl := MakeOptionCntrl(TLabel, 3);
+          Lbl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix, 3);
           Cntrl := MakeEditCntrl(Lbl, TEdit);
+          TEdit(Cntrl).Text := Opt.Value;
           MakeDescrLabel(Cntrl, LeftDescrEdit);
         end;
         oeList: begin                           // ComboBox
-          Lbl := MakeOptionCntrl(TLabel, 3);
+          Lbl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix, 3);
           Cntrl := MakeEditCntrl(Lbl, TComboBox);
           cb := TComboBox(Cntrl);
           cb.Style := csDropDownList;
+          // ToDo: Move this logic to parser data so values can be validated better.
           case Opt.Option of
-            '-Ca<x>':     AddChoices(cb, 'ABI targets:');
-            '-Cf<x>':     AddChoices(cb, 'FPU instruction sets:');
-            '-Cp<x>':     AddChoices(cb, 'CPU instruction sets:');
-            '-Oo[NO]<x>': AddChoices(cb, 'Optimizations:');
-            '-Op<x>':     AddChoices(cb, 'CPU instruction sets:');
-            '-OW<x>':     AddChoices(cb, 'Whole Program Optimizations:');
-            '-Ow<x>':     AddChoices(cb, 'Whole Program Optimizations:');
+            '-Ca':     AddChoices(cb, 'ABI targets:');
+            '-Cf':     AddChoices(cb, 'FPU instruction sets:');
+            '-Cp':     AddChoices(cb, 'CPU instruction sets:');
+            '-Oo[NO]': AddChoices(cb, 'Optimizations:');
+            '-Op':     AddChoices(cb, 'CPU instruction sets:');
+            '-OW':     AddChoices(cb, 'Whole Program Optimizations:');
+            '-Ow':     AddChoices(cb, 'Whole Program Optimizations:');
             else
               raise Exception.Create('AddChoices: Unknown option ' + Opt.Option);
           end;
+          cb.Text := Opt.Value;
           MakeDescrLabel(Cntrl, LeftDescrEdit);
         end
         else

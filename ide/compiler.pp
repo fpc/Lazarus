@@ -97,7 +97,8 @@ type
   // Following classes are for compiler options parsed from "fpc -h" and "fpc -i".
 
   TCompilerOptEditKind = (
-    oeNone,       // Only show the option header
+    oeGroup,      // A header for a group
+    oeSet,        // A header for a set
     oeBoolean,    // Typically use CheckBox
     oeSetElem,    // One char element of a set, use CheckBox
     oeSetNumber,  // Number element of a set, use Edit
@@ -113,23 +114,28 @@ type
   TCompilerOpt = class
   private
     fOption: string;                    // Option without the leading '-'
+    fSuffix: string;                    // <x> or similar suffix of option.
+    fValue: string;                     // Data entered by user, 'True' for Boolean.
     fEditKind: TCompilerOptEditKind;
     fDescription: string;
     fIndentation: integer;              // Indentation level in "fpc -h" output.
     fOwnerGroup: TCompilerOptGroup;
     fVisible: Boolean;                  // Used for filtering.
-    procedure ParseOption(aDescr: string; aIndent: integer);
+    fIgnored: Boolean;                  // Pretend this option does not exist.
   protected
-    function GuessEditKind: TCompilerOptEditKind; virtual;
+    procedure ParseOption(aDescr: string; aIndent: integer); virtual;
   public
     constructor Create(aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
   public
     property Option: string read fOption;
+    property Suffix: string read fSuffix;
+    property Value: string read fValue write fValue;
     property EditKind: TCompilerOptEditKind read fEditKind;
     property Description: string read fDescription;
     property Indentation: integer read fIndentation;
     property Visible: Boolean read fVisible write fVisible;
+    property Ignored: Boolean read fIgnored write fIgnored;
   end;
 
   TCompilerOptList = TObjectList;
@@ -142,10 +148,12 @@ type
     // List of options belonging to this group.
     fCompilerOpts: TCompilerOptList;
   protected
-    function GuessEditKind: TCompilerOptEditKind; override;
+    procedure ParseOption(aDescr: string; aIndent: integer); override;
   public
     constructor Create(aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
+    function FindOption(aOptStr: string): TCompilerOpt;
+    function SelectOption(aOptAndValue: string): Boolean;
   public
     property CompilerOpts: TCompilerOptList read fCompilerOpts;
   end;
@@ -155,12 +163,15 @@ type
   // A set of options. A combination of chars or numbers following the option char.
   TCompilerOptSet = class(TCompilerOptGroup)
   private
+    fHasNumber: Boolean;
   protected
     procedure AddOptions(aDescr: string; aIndent: integer);
-    function GuessEditKind: TCompilerOptEditKind; override;
+    procedure ParseOption(aDescr: string; aIndent: integer); override;
   public
     constructor Create(aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
+    function CollectSelectedOptions: string;
+    procedure SelectOptions(aOptStr: string);
   end;
 
   { TCompilerOptReader }
@@ -183,7 +194,8 @@ type
     destructor Destroy; override;
     function ReadAndParseOptions: TModalResult;
     function FilterOptions(aFilter: string): Boolean;
-    function CopyNonDefaultOptions(aStrings: TStrings): integer;
+    function FromCustomOptions(aStrings: TStrings): TModalResult;
+    function ToCustomOptions(aStrings: TStrings): TModalResult;
   public
     property SupportedCategories: TStringList read fSupportedCategories;
     property RootOptGroup: TCompilerOptGroup read fRootOptGroup;
@@ -378,8 +390,26 @@ begin
     Inc(Result);
 end;
 
+function IgnoredOption(aOpt: string): Boolean;
+begin
+  Result := aOpt = '-F';                // Ignore all file names and paths
+end;
+
 
 { TCompilerOpt }
+
+constructor TCompilerOpt.Create(aOwnerGroup: TCompilerOptGroup);
+begin
+  inherited Create;
+  fOwnerGroup := aOwnerGroup;
+  if Assigned(aOwnerGroup) then
+    aOwnerGroup.fCompilerOpts.Add(Self);
+end;
+
+destructor TCompilerOpt.Destroy;
+begin
+  inherited Destroy;
+end;
 
 procedure TCompilerOpt.ParseOption(aDescr: string; aIndent: integer);
 var
@@ -397,38 +427,23 @@ begin
   while (i < Length(aDescr)) and (aDescr[i] = ' ') do
     Inc(i);
   fDescription := Copy(aDescr, i, Length(aDescr));
-  fEditKind := GuessEditKind;
-end;
-
-function TCompilerOpt.GuessEditKind: TCompilerOptEditKind;
-var
-  i: Integer;
-begin
   // Guess whether this option can be edited and what is the EditKind
-  Result := oeBoolean;                      // Default kind
-  if Pos('fpc -i', fDescription) > 0 then
-    Result := oeList                        // Values will be got later.
-  else begin
-    i := Length(fOption);
-    if (i > 2) and (fOption[i-2] = '<') and (fOption[i] = '>') then
-      case fOption[i-1] of
-        'x': Result:=oeText;              // <x>
-        'n': Result:=oeNumber;            // <n>
-      end;
+  fEditKind := oeBoolean;                  // Default kind
+  i := Length(fOption);
+  if (i > 3) and (fOption[i-2] = '<') and (fOption[i] = '>') then
+  begin
+    case fOption[i-1] of
+      'x': fEditKind:=oeText;              // <x>
+      'n': fEditKind:=oeNumber;            // <n>
+    end;
+    // Move <x> in the end to Suffix. We need the pure option later.
+    fSuffix := Copy(fOption, i-2, i);
+    fOption := Copy(fOption, 1, i-3);
   end;
-end;
-
-constructor TCompilerOpt.Create(aOwnerGroup: TCompilerOptGroup);
-begin
-  inherited Create;
-  fOwnerGroup := aOwnerGroup;
-  if Assigned(aOwnerGroup) then
-    aOwnerGroup.fCompilerOpts.Add(Self);
-end;
-
-destructor TCompilerOpt.Destroy;
-begin
-  inherited Destroy;
+  if Pos('fpc -i', fDescription) > 0 then
+    fEditKind := oeList;                   // Values will be got later.
+  if fOwnerGroup.fIgnored or IgnoredOption(fOption) then
+    fIgnored := True;
 end;
 
 { TCompilerOptGroup }
@@ -445,11 +460,74 @@ begin
   inherited Destroy;
 end;
 
-function TCompilerOptGroup.GuessEditKind: TCompilerOptEditKind;
+function TCompilerOptGroup.FindOption(aOptStr: string): TCompilerOpt;
+
+  function FindOptionSub(aRoot: TCompilerOpt): TCompilerOpt;
+  var
+    Children: TCompilerOptList;
+    i: Integer;
+  begin
+    Result := Nil;
+    if aRoot is TCompilerOptGroup then
+    begin
+      Children := TCompilerOptGroup(aRoot).CompilerOpts;
+      if aRoot is TCompilerOptSet then
+      begin                  // TCompilerOptSet
+        if AnsiStartsStr(aRoot.Option, aOptStr) then
+        begin
+          with TCompilerOptSet(aRoot) do
+            SelectOptions(Copy(aOptStr, Length(aRoot.Option)+1, Length(aOptStr)));
+          Result := aRoot;
+        end;
+      end
+      else begin             // TCompilerOptGroup
+        for i := 0 to Children.Count-1 do         // Recursive call for children.
+        begin
+          Result := FindOptionSub(TCompilerOpt(Children[i]));
+          if Assigned(Result) then Break;
+        end;
+      end;
+    end
+    else begin               // TCompilerOpt
+      if aRoot.Option = aOptStr then
+        Result := aRoot;
+    end;
+  end;
+
 begin
-  Result:=inherited GuessEditKind;
-  if Result = oeBoolean then
-    Result := oeNone;
+  Result := FindOptionSub(Self);
+end;
+
+function TCompilerOptGroup.SelectOption(aOptAndValue: string): Boolean;
+var
+  Opt: TCompilerOpt;
+  OptStr, Param: string;
+  OptLen: integer;
+begin
+  Opt := FindOption(aOptAndValue);
+  if Assigned(Opt) then
+    Opt.Value := 'True'
+  else begin
+    // Option was not found, try separating the parameter.
+    // ToDo: figure out the length in a more clever way.
+    if AnsiStartsStr('-d', aOptAndValue)
+    or AnsiStartsStr('-u', aOptAndValue) then
+      OptLen := 2
+    else
+      OptLen := 3;
+    OptStr := Copy(aOptAndValue, 1, OptLen);
+    Param := Copy(aOptAndValue, OptLen+1, Length(aOptAndValue));
+    Opt := FindOption(OptStr);
+    if Assigned(Opt) then
+      Opt.Value := Param;
+  end;
+  Result := Assigned(Opt);
+end;
+
+procedure TCompilerOptGroup.ParseOption(aDescr: string; aIndent: integer);
+begin
+  inherited ParseOption(aDescr, aIndent);
+  fEditKind := oeGroup;
 end;
 
 { TCompilerOptSet }
@@ -464,6 +542,47 @@ begin
   inherited Destroy;
 end;
 
+function TCompilerOptSet.CollectSelectedOptions: string;
+// Collect subitems of a set to one option.
+var
+  Opt: TCompilerOpt;
+  i: Integer;
+  s: string;
+begin
+  Result := '';
+  s := '';
+  for i := 0 to fCompilerOpts.Count-1 do
+  begin
+    Opt := TCompilerOpt(fCompilerOpts[i]);
+    if Opt.Value <> '' then
+      s := s + Opt.Option;
+  end;
+  if s <> '' then
+    Result := Option + s;
+end;
+
+procedure TCompilerOptSet.SelectOptions(aOptStr: string);
+// Select options in this set based on the given characters.
+var
+  i, j: Integer;
+  OptChar: string;
+  Opt: TCompilerOpt;
+begin
+  for i := 1 to Length(aOptStr) do
+  begin
+    OptChar := aOptStr[i];
+    for j := 0 to fCompilerOpts.Count-1 do
+    begin
+      Opt := TCompilerOpt(fCompilerOpts[j]);
+      if Opt.Option = OptChar then
+      begin
+        Opt.Value := 'True';
+        Break;
+      end;
+    end;
+  end;
+end;
+
 procedure TCompilerOptSet.AddOptions(aDescr: string; aIndent: integer);
 // Set can have one letter options and <n> for numbers
 
@@ -476,6 +595,7 @@ procedure TCompilerOptSet.AddOptions(aDescr: string; aIndent: integer);
     OptSet.fOption := 'Number';
     OptSet.fDescription := aDescr;
     OptSet.fEditKind := oeSetNumber;
+    fHasNumber := True;
   end;
 
   procedure NewSetElem(aDescr: string);
@@ -484,7 +604,8 @@ procedure TCompilerOptSet.AddOptions(aDescr: string; aIndent: integer);
   begin
     OptSet := TCompilerOpt.Create(Self);          // Add it under a group
     OptSet.fIndentation := aIndent;
-    OptSet.fOption := aDescr;
+    OptSet.fOption := aDescr[1];
+    OptSet.fDescription := Copy(aDescr, 2, Length(aDescr));
     OptSet.fEditKind := oeSetElem;
   end;
 
@@ -497,7 +618,8 @@ begin
     NewSetNumber(Opt1)
   else begin
     i := PosEx(':', Opt1, 4);
-    if (i > 0) and (Opt1[i-1]=' ') and (Opt1[i-2]<>' ') and (Opt1[i-3]=' ') then begin
+    if (i > 0) and (Opt1[i-1]=' ') and (Opt1[i-2]<>' ') and (Opt1[i-3]=' ') then
+    begin
       // Found another option on the same line, like ' a :'
       Opt2 := Copy(Opt1, i-2, Length(Opt1));
       if Opt1[3] = ':' then
@@ -512,9 +634,10 @@ begin
   end;
 end;
 
-function TCompilerOptSet.GuessEditKind: TCompilerOptEditKind;
+procedure TCompilerOptSet.ParseOption(aDescr: string; aIndent: integer);
 begin
-  Result := oeNone;
+  inherited ParseOption(aDescr, aIndent);
+  fEditKind := oeSet;
 end;
 
 
@@ -554,7 +677,8 @@ var
     ReadBytes: integer;
   begin
     Result := false;
-    while proc.Output.NumBytesAvailable>0 do begin
+    while proc.Output.NumBytesAvailable>0 do
+    begin
       ReadBytes := proc.Output.Read(Buffer{%H-}, BufSize);
       OutStream.Write(Buffer, ReadBytes);
       Result := true;
@@ -581,13 +705,13 @@ begin
     proc.ShowWindow := swoShowNormal;
     //proc.CurrentDirectory := WorkingDir;
     proc.Execute;
-    while proc.Running do begin
+    while proc.Running do
       if not ReadOutput then
         Sleep(100);
-    end;
     ReadOutput;
     Result := proc.ExitStatus;
-    if Result<>0 then begin
+    if Result<>0 then
+    begin
       fErrorMsg := Format('fpc %s failed: Result %d' + LineEnding + '%s',
                           [aParam, Result, GetOutput]);
       Result := mrCancel;
@@ -613,10 +737,12 @@ var
 begin
   Result := mrOK;
   Category := Nil;
-  for i := 0 to aLines.Count-1 do begin
+  for i := 0 to aLines.Count-1 do
+  begin
     Line := aLines[i];
     TrimmedLine := Trim(Line);
-    if Assigned(Category) then begin
+    if Assigned(Category) then
+    begin
       if TrimmedLine = '' then
         Category := Nil             // End of category.
       else begin
@@ -625,7 +751,8 @@ begin
         Category.Add(Trim(Line));
       end;
     end
-    else if AnsiStartsStr(Supported, Line) then begin
+    else if AnsiStartsStr(Supported, Line) then
+    begin
       Category := TStringList.Create;
       Category.Add('');      // First an empty string. Allows removing selection.
       s := Copy(Line, Length(Supported)+1, Length(Line));
@@ -641,13 +768,13 @@ const
 var
   i, Start: Integer;
 begin
-  if AnsiStartsStr(VersBegin, s) then begin
+  if AnsiStartsStr(VersBegin, s) then
+  begin
     Start := Length(VersBegin);
     i := PosEx(' ', s, Start+1);
-    if i > 0 then begin
+    if i > 0 then
       fCompilerVersion := Copy(s, Start, i-Start);
       // ToDo: the rest 2 fields are date and target CPU.
-    end;
   end;
 end;
 
@@ -662,12 +789,13 @@ var
 begin
   Result := mrOK;
   LastGroup := fRootOptGroup;
-  for i := 0 to aLines.Count-1 do begin
+  for i := 0 to aLines.Count-1 do
+  begin
     ThisLine := StringReplace(aLines[i],'-Agas-darwinAssemble','-Agas-darwin Assemble',[]);
     ThisInd := CalcIndentation(ThisLine);
-    if ThisInd = 0 then begin
-      // Top header lines for compiler version etc.
-      ReadVersion(ThisLine);
+    if ThisInd = 0 then
+    begin
+      ReadVersion(ThisLine);        // Top header lines for compiler version etc.
       Continue;
     end;
     if (Trim(ThisLine) = '') or (ThisInd > 30)
@@ -682,7 +810,8 @@ begin
       NextLine := '';
       NextInd := -1;
     end;
-    if NextInd > ThisInd then begin
+    if NextInd > ThisInd then
+    begin
       if (LastGroup is TCompilerOptSet)
       and ((Pos('  v : ', NextLine) > 0) or (NextInd > 30)) then
         // A hack to deal with split lined in the help output.
@@ -695,7 +824,8 @@ begin
         LastGroup.ParseOption(ThisLine, ThisInd);
       end;
     end;
-    if NextInd <= ThisInd then begin
+    if NextInd <= ThisInd then
+    begin
       // This is an option
       if (LastGroup is TCompilerOptSet) then    // Add it to a set (may add many)
         TCompilerOptSet(LastGroup).AddOptions(ThisLine, ThisInd)
@@ -762,10 +892,28 @@ begin
   Result := FilterOptionsSub(fRootOptGroup);
 end;
 
-function TCompilerOptReader.CopyNonDefaultOptions(aStrings: TStrings): integer;
+function TCompilerOptReader.FromCustomOptions(aStrings: TStrings): TModalResult;
+var
+  i, CommentPos: Integer;
+  s: String;
+  Opt: TCompilerOpt;
+begin
+  Result := mrOK;
+  for i := 0 to aStrings.Count-1 do
+  begin
+    s := Trim(aStrings[i]);
+    if s = '' then Continue;
+    CommentPos := Pos('//', s);
+    if CommentPos > 0 then         // Remove the possible comment.
+      s := TrimRight(Copy(s, 1, CommentPos));
+    fRootOptGroup.SelectOption(s);
+  end;
+end;
+
+function TCompilerOptReader.ToCustomOptions(aStrings: TStrings): TModalResult;
 // Copy options to a list if they have a non-default value (True for boolean).
 
-  function CopyOptionsSub(aRoot: TCompilerOpt): integer;
+  function CopyOptions(aRoot: TCompilerOpt): integer;
   var
     Children: TCompilerOptList;
     i, Res: Integer;
@@ -776,24 +924,30 @@ function TCompilerOptReader.CopyNonDefaultOptions(aStrings: TStrings): integer;
       Children := TCompilerOptGroup(aRoot).CompilerOpts;
       if aRoot is TCompilerOptSet then
       begin                  // TCompilerOptSet
-        s := '';
-        for i := 0 to Children.Count-1 do // Collect subitems of a set to one option.
-          s := s + TCompilerOpt(Children[i]).Option;
-        aStrings.Add(s);
+        s := TCompilerOptSet(aRoot).CollectSelectedOptions;
+        if s <> '' then
+          aStrings.Add(s);
       end
       else begin             // TCompilerOptGroup
         for i := 0 to Children.Count-1 do         // Recursive call for children.
-          Res := CopyOptionsSub(TCompilerOpt(Children[i]));
+          Res := CopyOptions(TCompilerOpt(Children[i]));
       end;
     end
     else begin               // TCompilerOpt
-      aStrings.Add(aRoot.Option);
+      if aRoot.Value <> '' then
+      begin
+        if aRoot.Value = 'True' then
+          aStrings.Add(aRoot.Option)
+        else
+          aStrings.Add(aRoot.Option + aRoot.Value);
+      end;
     end;
     Result := Res;
   end;
 
 begin
-  Result := CopyOptionsSub(fRootOptGroup);
+  aStrings.Clear;
+  Result := CopyOptions(fRootOptGroup);
 end;
 
 end.
