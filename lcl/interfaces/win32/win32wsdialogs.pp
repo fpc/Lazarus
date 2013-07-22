@@ -1310,7 +1310,7 @@ begin
       lpszTitle := PWideChar(Title);
       ulFlags := BIF_RETURNONLYFSDIRS;
       if not (ofOldStyleDialog in Options) then
-         ulFlags := ulFlags + BIF_NEWDIALOGSTYLE;
+         ulFlags := ulFlags + BIF_USENEWUI;
       lpfn := @BrowseForFolderCallback;
       // this value will be passed to callback proc as lpData
       lParam := Windows.LParam(PWideChar(InitialDirW));
