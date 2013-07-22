@@ -136,7 +136,7 @@ type
     function GetLine(Index: integer): string; // 0-based
     function GetLineLength(Index: integer): integer; // 0-based
     procedure GetLineRange(Index: integer; out LineRange: TLineRange);
-    function GetLineStart(Index: integer): integer;
+    function GetLineStart(Index: integer): integer; // 1-based
     property Items[Index: integer]: TSourceLogEntry
        read GetItems write SetItems; default;
     function Count: integer; // # Items

@@ -3,7 +3,7 @@ $(AttributesStart)
 EnableMakros=true
 RemoveChar=true
 $(AttributesEnd)
-$Param(VariableName): array[0..$Param(HighNumber)] of $Param(String);
+$Param(VariableName): array[0..$Param(HighNumber)] of $Param(Type);
 |
 [arrayc | array declaration (const)]
 $(AttributesStart)
@@ -81,14 +81,14 @@ $(AttributesStart)
 EnableMakros=true
 RemoveChar=true
 $(AttributesEnd)
-for $Param(CounterVar) := $Param(0) to $Param(Count) - 1 do
+for $Param(CounterVar) := $Param(0) to Pred($Param(Count)) do
   |
 [forb | for statement]
 $(AttributesStart)
 EnableMakros=true
 RemoveChar=true
 $(AttributesEnd)
-for $Param(CounterVar) := $Param(0) to $Param(Count) - 1 do
+for $Param(CounterVar) := $Param(0) to Pred($Param(Count)) do
 begin
   |
 end;
