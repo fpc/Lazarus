@@ -199,9 +199,11 @@ end;
 
 function TTextStrings.GetObject(Index: Integer): TObject;
 begin
-  if FArraysValid then
-    Result:=FLineRanges[Index].TheObject
-  else
+  if FArraysValid then begin
+    if (Index<0) or (Index>=FLineCount) then
+      Error(rsListIndexExceedsBounds, Index);
+    Result:=FLineRanges[Index].TheObject;
+  end else
     Result:=nil;
 end;
 
@@ -217,6 +219,8 @@ var
   NewEndPos: Integer;
 begin
   if not FArraysValid then BuildArrays;
+  if (Index<0) or (Index>=FLineCount) then
+    Error(rsListIndexExceedsBounds, Index);
   OldStartPos:=FLineRanges[Index].StartPos;
   OldEndPos:=FLineRanges[Index].EndPos;
   NewLineLen:=length(s);
@@ -256,6 +260,8 @@ end;
 procedure TTextStrings.PutObject(Index: Integer; AnObject: TObject);
 begin
   if not FArraysValid then BuildArrays;
+  if (Index<0) or (Index>=FLineCount) then
+    Error(rsListIndexExceedsBounds, Index);
   FLineRanges[Index].TheObject:=AnObject;
 end;
 
@@ -380,6 +386,7 @@ begin
   if Index<FLineCount then begin
     System.Move(FLineRanges[Index],FLineRanges[Index+1],
                 (FLineCount-Index)*SizeOf(TTextLineRange));
+    FillByte(FLineRanges[Index],SizeOf(TTextLineRange),0);
     for i:=Index+1 to FLineCount do begin
       inc(FLineRanges[i].StartPos,NewLineLen);
       inc(FLineRanges[i].EndPos,NewLineLen);
@@ -399,6 +406,8 @@ var
   i: Integer;
 begin
   if not FArraysValid then BuildArrays;
+  if (Index<0) or (Index>=FLineCount) then
+    Error(rsListIndexExceedsBounds, Index);
   // adjust text
   OldLineLen:=GetLineLen(Index,true);
   if OldLineLen>0 then begin
@@ -416,7 +425,7 @@ begin
       dec(FLineRanges[i].EndPos,OldLineLen);
     end;
   end;
-  // clear last element (this helps finding bugs)
+  // clear last element
   FillByte(FLineRanges[FLineCount],SizeOf(TTextLineRange),0);
 end;
 
@@ -532,6 +541,7 @@ var
   i: LongInt;
   Obj: TObject;
   LineShortLen: LongInt;
+  Line: PTextLineRange;
 begin
   // check values
   if CurIndex=NewIndex then exit;
@@ -577,10 +587,11 @@ begin
     // put current line at new position
     i:=SrcPos3-LineLen;
     System.Move(LineStr[1],FText[i],LineLen);
-    FLineRanges[NewIndex].StartPos:=i;
-    FLineRanges[NewIndex].EndPos:=i+LineShortLen;
-    FLineRanges[NewIndex].Line:=''; // this will be updated on demand
-    FLineRanges[NewIndex].TheObject:=Obj;
+    Line:=@FLineRanges[NewIndex];
+    Line^.StartPos:=i;
+    Line^.EndPos:=i+LineShortLen;
+    Pointer(Line^.Line):=nil; // this will be updated on demand, see Get
+    Line^.TheObject:=Obj;
   end else begin
     // move to lower index
     if (CurIndex=FLineCount-1) and (FLineRanges[CurIndex].EndPos>length(FText))
@@ -608,10 +619,11 @@ begin
                 SizeOf(TTextLineRange)*(CurIndex-NewIndex));
     // put current line at new position
     System.Move(LineStr[1],FText[SrcPos1],LineLen);
-    FLineRanges[NewIndex].StartPos:=SrcPos1;
-    FLineRanges[NewIndex].EndPos:=SrcPos1+LineShortLen;
-    FLineRanges[NewIndex].Line:=''; // this will be updated on demand
-    FLineRanges[NewIndex].TheObject:=Obj;
+    Line:=@FLineRanges[NewIndex];
+    Line^.StartPos:=SrcPos1;
+    Line^.EndPos:=SrcPos1+LineShortLen;
+    Pointer(Line^.Line):=nil; // this will be updated on demand, see Get
+    Line^.TheObject:=Obj;
   end;
 end;
 
