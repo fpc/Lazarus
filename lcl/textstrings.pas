@@ -199,9 +199,11 @@ end;
 
 function TTextStrings.GetObject(Index: Integer): TObject;
 begin
-  if FArraysValid then
-    Result:=FLineRanges[Index].TheObject
-  else
+  if FArraysValid then begin
+    if (Index<0) or (Index>=FLineCount) then
+      Error(rsListIndexExceedsBounds, Index);
+    Result:=FLineRanges[Index].TheObject;
+  end else
     Result:=nil;
 end;
 
@@ -217,6 +219,8 @@ var
   NewEndPos: Integer;
 begin
   if not FArraysValid then BuildArrays;
+  if (Index<0) or (Index>=FLineCount) then
+    Error(rsListIndexExceedsBounds, Index);
   OldStartPos:=FLineRanges[Index].StartPos;
   OldEndPos:=FLineRanges[Index].EndPos;
   NewLineLen:=length(s);
@@ -256,6 +260,8 @@ end;
 procedure TTextStrings.PutObject(Index: Integer; AnObject: TObject);
 begin
   if not FArraysValid then BuildArrays;
+  if (Index<0) or (Index>=FLineCount) then
+    Error(rsListIndexExceedsBounds, Index);
   FLineRanges[Index].TheObject:=AnObject;
 end;
 
@@ -399,6 +405,8 @@ var
   i: Integer;
 begin
   if not FArraysValid then BuildArrays;
+  if (Index<0) or (Index>=FLineCount) then
+    Error(rsListIndexExceedsBounds, Index);
   // adjust text
   OldLineLen:=GetLineLen(Index,true);
   if OldLineLen>0 then begin
