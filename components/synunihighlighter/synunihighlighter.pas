@@ -51,12 +51,8 @@ interface
 
 uses
   SysUtils,
-{$IFDEF SYN_CLX}
-  Types, QGraphics,
-{$ELSE}
   ////TL Windows,
   Graphics, Registry,
-{$ENDIF}
   Classes, FileUtil,
   SynEditTypes,
   GraphType, ////TL 2003-06-11: Added for TFontStyles
@@ -341,9 +337,7 @@ type
     function GetRange: Pointer; override;
     function GetToken: string; override;
     ////TL Added the following 3 lines... and the implementation procedure
-    {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override; ////TL: Added 2003-06-11
-    {$ENDIF}
 
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenID: Integer;
@@ -352,7 +346,7 @@ type
     function IsKeyword(const AKeyword: string): boolean; override;              // DJLP 2000-08-09
     procedure Next; override;
     procedure ResetRange; override;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer); override; ////TL: Replaced line below 2003-06-12
+    procedure SetLine(const NewValue: String; LineNumber:Integer); override; ////TL: Replaced line below 2003-06-12
     ////TL replaced by line above procedure SetLine(NewValue: string; LineNumber: Integer); ////TL override;
     procedure SetRange(Value: Pointer); override;
     procedure Reset;
@@ -1620,7 +1614,7 @@ begin
 end;
 
 ////TL Replaced to reflect declaration: procedure TSynUniSyn.SetLine(NewValue: string; LineNumber: Integer);
-procedure TSynUniSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer);
+procedure TSynUniSyn.SetLine(const NewValue: String; LineNumber:Integer);
 var
  l,i:integer;
 begin
@@ -1716,14 +1710,12 @@ begin
 end;
 
 ////TL 2003-06-12: Added the following to satisfy abstract method override
-{$IFDEF SYN_LAZARUS}
 procedure TSynUniSyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;
 end;
-{$ENDIF}
 
 function TSynUniSyn.GetTokenID: Integer;
 begin

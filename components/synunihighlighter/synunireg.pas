@@ -12,13 +12,8 @@ interface
 {$I SynEdit.inc}
 
 uses
-{$IFDEF SYN_COMPILER_6_UP}
-  DesignIntf,
-  DesignEditors,
-{$ELSE}
   ////TL DsgnIntf,
   componenteditors, ////TL added
-{$ENDIF}
   Classes,
   SynEditStrConst,
   SynUniHighlighter,

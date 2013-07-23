@@ -50,20 +50,6 @@ unit SynUniDesigner;
 interface
 
 uses
-{$IFDEF SYN_CLX}
-  Types,
-  kTextDrawer,
-  QGraphics,
-  QControls,
-  QForms,
-  QExtCtrls,
-  QStdCtrls,
-  QComCtrls,
-  QImgList,
-  QDialogs,
-  QMenus,
-{$ELSE}
-  ////TL Windows,
   LMessages,
   Graphics,
   Registry,
@@ -77,7 +63,6 @@ uses
   Menus,
   GraphType, ////TL Added for TFontStyles
   LCLType,   ////TL Added for vk_* key declarations
-{$ENDIF}
   Classes, FileUtil,
   SysUtils,
   SynEdit,
@@ -85,11 +70,7 @@ uses
   SynUniHighlighter;
 
 type
-{$IFDEF SYN_CLX}
-  TNodeText = WideString;
-{$ELSE}
   TNodeText = String;
-{$ENDIF}
 
   CClass=class of TControl;
 
@@ -180,17 +161,6 @@ type
 
 implementation
 
-{$IFDEF SYN_CLX}
-uses
-  Qt;
-
-const
-  vk_F1 = Key_F1;
-  vk_F2 = Key_F2;
-  vk_Return = Key_Return;
-  vk_Delete = Key_Delete;
-{$ENDIF}
-
 Function GetFontStyle(bold, italic, underline, strikeout:boolean):TFontStyles;
 begin
   result:=[];
@@ -244,11 +214,7 @@ begin
   ////TL added 2 @ prefixes
   f.OnKeyPress:=@FormKeyPress;
 {$WARNING TODO Fix UTF8BIDI issue}
-  {$IFDEF SYN_LAZARUS}
   f.OnUTF8KeyPress:=nil;
-  {$ELSE}
-  f.OnUTF8KeyPress:=@FormUTF8KeyPress;
-  {$ENDIF}
   f.OnKeyDown:=@FormKeyDown;
   f.caption:='Unihighlighter Designer (c) Fantasist, Vit (2002)';
 
@@ -262,17 +228,12 @@ begin
   pTop.Height:=184;
 
   CreateComponent(TControl(pLeft), TPanel, pTop, alLeft);
-  {$IFDEF SYN_LAZARUS}
   pLeft.Width:=200;
-  {$ENDIF}
 
   ImageList:=TImageList.create(F);
   b:=TBitmap.create;
   b.Width:=16;
   b.Height:=16;
-  {$IFNDEF SYN_LAZARUS}
-  b.canvas.Font.Name:='Marlett';
-  {$ENDIF}
   b.canvas.Font.color:=clRed;
   b.canvas.Font.Size:=14;
   b.canvas.TextOut(1,1,#52);
@@ -281,9 +242,6 @@ begin
   b:=TBitmap.create;
   b.Width:=16;
   b.Height:=16;
-  {$IFNDEF SYN_LAZARUS}
-  b.canvas.Font.Name:='Marlett';
-  {$ENDIF}
   b.canvas.Font.color:=clGreen;
   b.canvas.Font.Size:=14;
   b.canvas.TextOut(1,1,#52);
@@ -292,9 +250,6 @@ begin
   b:=TBitmap.create;
   b.Width:=16;
   b.Height:=16;
-  {$IFNDEF SYN_LAZARUS}
-  b.canvas.Font.Name:='Marlett';
-  {$ENDIF}
   b.canvas.Font.Size:=14;
   b.canvas.Font.color:=clblue;
   b.canvas.TextOut(1,1,#104);
@@ -306,19 +261,15 @@ begin
   Tree.Align:=alClient;
   Tree.Parent:=pLeft;
   Tree.Images:=ImageList;
-{$IFNDEF SYN_CLX}
   Tree.HideSelection:=false;
   Tree.RightClickSelect:=True;
-{$ENDIF}
   ////TL added @ prefixes
   Tree.OnEdited:=@TreeEdited;
   Tree.OnKeyDown:=@TreeKeyDown;
   Tree.OnMouseUp:=@TreeMouseUp;
 
   CreateComponent(TControl(pAttri), TPanel, pTop, alRight);
-  {$IFDEF SYN_LAZARUS}
   pAttri.Anchors:=[akRight];
-  {$ENDIF}
   pAttri.Width:=200;
   pAttri.BevelInner := bvRaised;
   pAttri.BevelOuter := bvLowered;
@@ -331,21 +282,12 @@ begin
   Lc.Font.Color := clGreen;
   Lc.Font.Style := [fsBold];
 
-  {$IFDEF SYN_LAZARUS}
   CreateLabel(pAttri, 10, 43, 66, 13, 'Foreground');
   CreateLabel(pAttri, 10, 66, 66, 13, 'Background');
   CreateLabel(pAttri, 10, 90, 66, 13, 'Bold');
   CreateLabel(pAttri, 10, 113, 66, 13, 'Italic');
   CreateLabel(pAttri, 10, 137, 66, 13, 'Underline');
   CreateLabel(pAttri, 10, 160, 66, 13, 'StrikeOut');
-  {$ELSE}
-  CreateLabel(pAttri, 22, 43, 54, 13, 'Foreground');
-  CreateLabel(pAttri, 18, 66, 58, 13, 'Background');
-  CreateLabel(pAttri, 55, 90, 21, 13, 'Bold');
-  CreateLabel(pAttri, 54, 113, 22, 13, 'Italic');
-  CreateLabel(pAttri, 31, 137, 45, 13, 'Underline');
-  CreateLabel(pAttri, 32, 160, 44, 13, 'StrikeOut');
-  {$ENDIF}
 
   CreatePanel(pDef, pAttri, 79, 19, 58, 161);
   pDef.BevelInner := bvLowered;
@@ -406,19 +348,10 @@ begin
   pProp.BevelInner:= bvLowered;
 
   CreateComponent(TControl(PageControl), TNotebook, pProp, alClient);
-  {$IFDEF SYN_LAZARUS}
   //PageControl.ShowTabs:=false;
-  {$ENDIF}
 
-  {$IFDEF SYN_LAZARUS}
   PageControl.Pages.Add('');
   RootRange:=PageControl.Page[0];
-  {$ELSE}
-  CreateComponent(TControl(RootRange), TPage, PageControl, alClient);
-  ////TL!! Oh boy... I'm not sure that a TPage is going to cut it as a TTabsheet
-  ////TL!! RootRange.PageControl:=PageControl;
-  ////TL!! RootRange.TabVisible:=false;
-  {$ENDIF}
 
   CreateCheckBox(cCaseSensitiveRt,RootRange, 10,10, 140, 17);
   cCaseSensitiveRt.Caption:='Case Sensitive';
@@ -449,15 +382,8 @@ begin
   AddKeywordRt.OnClick:=@DoAddKeyword;
 
 
-  {$IFDEF SYN_LAZARUS}
   PageControl.Pages.Add('');
   Range:=PageControl.Page[1];
-  {$ELSE}
-  CreateComponent(TControl(Range), TPage, PageControl, alClient);
-  ////TL!! Oops, again... I'm not sure that a TPage is going to work as a TTabsheet
-  ////TL!! Range.PageControl:=PageControl;
-  ////TL!! Range.TabVisible:=false;
-  {$ENDIF}
   CreateCheckBox(cCaseSensitiveRg,Range, 10,10, 140, 17);
   cCaseSensitiveRg.OnClick:=@RangeChange;
   cCaseSensitiveRg.Caption:='Case Sensitive';
@@ -494,9 +420,6 @@ begin
   EDelimitersRg.Top:=116;
   EDelimitersRg.Left:=60;
   EDelimitersRg.Width:=115;
-  {$IFNDEF SYN_LAZARUS}
-  EDelimitersRg.font.Name:='FixedSys';
-  {$ENDIF}
   EDelimitersRg.Anchors:=[akLeft,akRight, akTop];
 //  EDelimitersRg.font.Charset:=255;
   EDelimitersRg.OnChange:=@RangeChange;
@@ -516,19 +439,10 @@ begin
   AddKeyword.Caption:='Add Keywords';
   AddKeyword.OnClick:=@DoAddKeyword;
 
-  {$IFDEF SYN_LAZARUS}
   PageControl.Pages.Add('');
   KeyWords:=PageControl.Page[2];
-  {$ELSE}
-  ////TL! CreateComponent(TControl(KeyWords), TTabsheet, PageControl, alClient);
-  CreateComponent(TControl(KeyWords), TPage, PageControl, alClient);
-  ////TL! KeyWords.PageControl:=PageControl;
-  ////TL! KeyWords.TabVisible:=false;
-  {$ENDIF}
   CreateComponent(TControl(pMemo), TPanel, KeyWords, alRight);
-  {$IFDEF SYN_LAZARUS}
   pMemo.Anchors:=[akRight];
-  {$ENDIF}
   pMemo.Width:=100;
   pMemo.BevelInner:=bvLowered;
 
@@ -742,9 +656,7 @@ begin
     try
       ////TL!! Not there with TColorDialog: CustomColors.text:='ColorA='+inttohex((Sender as TPanel).color,6)+#13#10+'ColorB=FFFFEE'+#13#10+'ColorC=EEFFFF'+#13#10+'ColorD=EEFFEE'+#13#10+'ColorE=EEEEFF'+#13#10+'ColorF=FFEEEE'+#13#10+'ColorG=EEEEEE'+#13#10+'ColorH=FFEEAA'+#13#10+'ColorJ=FFAAEE'+#13#10+'ColorK=AAFFEE'+#13#10+'ColorI=AAEEFF'+#13#10+'ColorL=EEFFAA'+#13#10+'ColorM=EEAAFF'+#13#10+'ColorN=AAAAAA'+#13#10+'ColorO=DDDDDD'+#13#10+'ColorP=999999';
       Color:=(Sender as TPanel).color;
-{$IFNDEF SYN_CLX}
       ////TL!! Not there with TColorDialog: Options:=[cdFullOpen];
-{$ENDIF}
       if Execute then
         begin
           (Sender as TPanel).color:=color;
