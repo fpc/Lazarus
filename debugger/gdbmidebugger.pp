@@ -1190,6 +1190,7 @@ type
   private
     FCommandList: TList;
     FParentFPList: Array of TGDBMIDebuggerParentFrameCache;
+    FParentFPListChangeStamp: Integer;
     procedure DoEvaluationDestroyed(Sender: TObject);
   protected
     function  GetParentFPList(AThreadId: Integer): PGDBMIDebuggerParentFrameCache;
@@ -1197,6 +1198,7 @@ type
     procedure Changed;
     procedure Clear;
     procedure InternalRequestData(AWatchValue: TCurrentWatchValue); override;
+    property  ParentFPListChangeStamp: Integer read FParentFPListChangeStamp;
   public
     constructor Create(const ADebugger: TDebugger);
     destructor Destroy; override;
@@ -6365,6 +6367,7 @@ begin
     DoChange(FSourceIndex[n]);
 
   FSourceIndex.Clear;
+  //FRequestedSources.Clear;
 end;
 
 procedure TGDBMILineInfo.AddInfo(const ASource: String; const AResult: TGDBMIExecResult);
@@ -7990,7 +7993,8 @@ begin
       dcEnvironment: Result := GDBEnvironment(String(AParams[0].VAnsiString), AParams[1].VBoolean);
       dcDisassemble: Result := GDBDisassemble(AParams[0].VQWord^, AParams[1].VBoolean, TDbgPtr(AParams[2].VPointer^),
                                               String(AParams[3].VPointer^), String(AParams[4].VPointer^),
-                                              String(AParams[5].VPointer^), Integer(AParams[6].VPointer^));
+                                              String(AParams[5].VPointer^), Integer(AParams[6].VPointer^))
+                                              {%H-};
       dcStepOverInstr: Result := GDBStepOverInstr;
       dcStepIntoInstr: Result := GDBStepIntoInstr;
       {$IFDEF DBG_ENABLE_TERMINAL}
@@ -9375,6 +9379,10 @@ end;
 procedure TGDBMIWatches.DoStateChange(const AOldState: TDBGState);
 begin
   SetLength(FParentFPList, 0);
+  if FParentFPListChangeStamp = high(FParentFPListChangeStamp) then
+    FParentFPListChangeStamp := low(FParentFPListChangeStamp)
+  else
+    inc(FParentFPListChangeStamp);
   inherited DoStateChange(AOldState);
 end;
 
@@ -12427,6 +12435,17 @@ var
 
   function SelectParentFrame(var aFrameIdx: Integer): Boolean;
   var
+    CurPFPListChangeStamp: Integer;
+
+    function ParentSearchCanContinue: Boolean;
+    begin
+      Result :=
+        (not (dcsCanceled in SeenStates)) and
+        (CurPFPListChangeStamp = TGDBMIWatches(FTheDebugger.Watches).ParentFPListChangeStamp) and // State changed: FrameCache is no longer valid
+        (FTheDebugger.State <> dsError);
+    end;
+
+  var
     R: TGDBMIExecResult;
     List: TGDBMINameValueList;
     ParentFp, Fp, LastFp: String;
@@ -12435,6 +12454,8 @@ var
     ParentFpNum, FpNum, FpDiff, LastFpDiff: QWord;
     FpDir: Integer;
   begin
+    Result := False;
+    CurPFPListChangeStamp := TGDBMIWatches(FTheDebugger.Watches).ParentFPListChangeStamp;
     if FWatchValue <> nil
     then ThreadId := FWatchValue.ThreadId
     else ThreadId := FTheDebugger.FCurrentThreadId;
@@ -12460,6 +12481,8 @@ var
           List := TGDBMINameValueList.Create(R);
           ParentFP := List.Values['value'];
         end;
+        if not ParentSearchCanContinue then
+          exit;
         if ParentFp = '' then begin
           FrameCache^.ParentFPList[aFrameIdx].parentfp := '-'; // mark as no parentfp
           Exit(False);
@@ -12499,6 +12522,8 @@ var
             FrameCache^.ParentFPList[aFrameIdx].Fp := '-'; // mark as no Fp (not accesible)
             Exit(False);
           end;
+          if not ParentSearchCanContinue then
+            exit;
           FStackFrameChanged := True; // Force UnSelectContext() to restore current frame
           FTheDebugger.FInternalStackFrame := aFrameIdx;
 
@@ -12509,6 +12534,8 @@ var
               FrameCache^.ParentFPList[aFrameIdx].Fp := '-'; // mark as no Fp (not accesible)
               Exit(False);
             end;
+            if not ParentSearchCanContinue then
+              exit;
             List.Init(R.Values);
             Fp := List.Values['value'];
             if Fp = ''
