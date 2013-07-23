@@ -855,20 +855,18 @@ begin
 end;
 
 procedure TCodeCache.OnBufferSetScanner(Sender: TCodeBuffer);
+var
+  Scanner: TLinkScanner;
 begin
-  with Sender do begin
-    if Scanner<>nil then begin
-      Scanner.OnGetSource:={$ifdef FPC}@{$endif}Self.OnScannerGetSource;
-      Scanner.OnGetFileName:={$ifdef FPC}@{$endif}Self.OnScannerGetFileName;
-      Scanner.OnLoadSource:={$ifdef FPC}@{$endif}Self.OnScannerLoadSource;
-      Scanner.OnCheckFileOnDisk:=
-          {$ifdef FPC}@{$endif}Self.OnScannerCheckFileOnDisk;
-      Scanner.OnIncludeCode:={$ifdef FPC}@{$endif}Self.OnScannerIncludeCode;
-      Scanner.OnGetSourceStatus:=
-          {$ifdef FPC}@{$endif}Self.OnScannerGetSourceStatus;
-      Scanner.OnDeleteSource:={$ifdef FPC}@{$endif}Self.OnScannerDeleteSource;
-    end;
-  end;
+  if Scanner=nil then exit;
+  Scanner:=Sender.Scanner;
+  Scanner.OnGetSource:=@Self.OnScannerGetSource;
+  Scanner.OnGetFileName:=@Self.OnScannerGetFileName;
+  Scanner.OnLoadSource:=@Self.OnScannerLoadSource;
+  Scanner.OnCheckFileOnDisk:=@Self.OnScannerCheckFileOnDisk;
+  Scanner.OnIncludeCode:=@Self.OnScannerIncludeCode;
+  Scanner.OnGetSourceStatus:=@Self.OnScannerGetSourceStatus;
+  Scanner.OnDeleteSource:=@Self.OnScannerDeleteSource;
 end;
 
 procedure TCodeCache.OnBufferSetFileName(Sender: TCodeBuffer;
