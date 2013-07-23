@@ -117,7 +117,13 @@ begin
   UpdateOtherProcSignaturesCaseCheckBox.Caption:=
     lisUpdateOtherProcedureSignaturesWhenOnlyLetterCaseHa;
 
+  {$IFDEF EnableCodeCompleteTemplates}
   TemplateFileLabel.Caption:=lisTemplateFile;
+  {$ELSE}
+  TemplateFileLabel.Enabled:=false;
+  TemplateFileEdit.Enabled:=false;
+  TemplateFileBrowseButton.Enabled:=false;
+  {$ENDIF}
 end;
 
 procedure TCodetoolsCodeCreationOptionsFrame.ReadSettings(

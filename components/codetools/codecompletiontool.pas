@@ -77,7 +77,7 @@ interface
 {off $DEFINE VerboseCompleteMethod}
 {off $DEFINE VerboseCompleteLocalVarAssign}
 {off $DEFINE VerboseCompleteEventAssign}
-{$DEFINE UseXMLTemplates}
+{off $DEFINE EnableCodeCompleteTemplates}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -1075,7 +1075,7 @@ begin
       +'invalid target for a var');
   end;
 
-{$IFDEF UseXMLTemplates}
+{$IFDEF EnableCodeCompleteTemplates}
   if ( Expander <> nil ) and Expander.TemplateExists('PrettyColon') then
   begin
     InsertTxt:=VariableName+Expander.Expand('PrettyColon','','',[],[])+VariableType+';';
@@ -2658,7 +2658,7 @@ var
   Params: TFindDeclarationParams;
   ParamName: String;
   // create param list without brackets
-  {$IFDEF UseXMLTemplates}
+  {$IFDEF EnableCodeCompleteTemplates}
   Colon : String;
   {$ENDIF}
 begin
@@ -2704,7 +2704,7 @@ begin
         Result:=Result+';';
         CleanList:=CleanList+';';
       end;
-      {$IFDEF UseXMLTemplates}
+      {$IFDEF EnableCodeCompleteTemplates}
       if assigned( Expander ) and Expander.TemplateExists('PrettyColon') then
       begin
         Colon := Expander.Expand('PrettyColon', '','', // Doesn't use linebreak or indentation
@@ -2713,7 +2713,7 @@ begin
         CleanList:=CleanList+Colon+ParamType;
       end
       else
-      {$ENDIF UseXMLTemplates}
+      {$ENDIF EnableCodeCompleteTemplates}
       begin
         Result:=Result+ParamName+':'+ParamType;
         CleanList:=CleanList+':'+ParamType;
@@ -2839,7 +2839,7 @@ const
     // prepend 'procedure' keyword
     if IsFunction then
     begin
-      {$IFDEF UseXMLTemplates}
+      {$IFDEF EnableCodeCompleteTemplates}
       if ( Expander <> nil ) and Expander.TemplateExists('PrettyColon') then
       begin
         ProcCode:= 'function '+ProcCode+
@@ -3043,7 +3043,7 @@ begin
   CodeCompleteSrcChgCache:=SourceChangeCache;
   // check if variable already exists
   if not VarExistsInCodeCompleteClass(UpperCaseStr(VarName)) then begin
-  {$IFDEF UseXMLTemplates}
+  {$IFDEF EnableCodeCompleteTemplates}
     if ( Expander <> nil ) and Expander.TemplateExists('PrettyColon') then
     begin
       AddClassInsertion(UpperCaseStr(VarName),
@@ -5857,7 +5857,7 @@ var
   SrcVar: String;
   i: Integer;
   Beauty: TBeautifyCodeOptions;
-  {$IFDEF UseXMLTemplates}
+  {$IFDEF EnableCodeCompleteTemplates}
   NodeExtsStr: String;
   {$ENDIF}
 begin
@@ -5869,14 +5869,14 @@ begin
   Beauty:=SourceChanger.BeautifyCodeOptions;
   aClassName:=ExtractClassName(ClassNode,false);
   CleanDef:=ProcName+'('+ParamType+');';
-  {$IFDEF UseXMLTemplates}
+  {$IFDEF EnableCodeCompleteTemplates}
   if assigned( Expander ) and Expander.TemplateExists('AssignMethodDef') then
   begin
     Def := Expander.Expand('AssignMethodDef', '','', // Doesn't use linebreak or indentation
                            ['ProcName',  'ParamName',  'ParamType', 'Override' ],
                            [ ProcName,    ParamName,    ParamType,   OverrideMod ] );
   end else
-  {$ENDIF UseXMLTemplates}
+  {$ENDIF EnableCodeCompleteTemplates}
   begin
     Def:='procedure '+ProcName+'('+ParamName+':'+ParamType+');';
     if OverrideMod then Def:=Def+'override;';
@@ -5887,7 +5887,7 @@ begin
   e:=SourceChanger.BeautifyCodeOptions.LineEnd;
   Indent:=0;
   IndentStep:=SourceChanger.BeautifyCodeOptions.Indent;
-  {$IFDEF UseXMLTemplates}
+  {$IFDEF EnableCodeCompleteTemplates}
   if assigned(Expander) and Expander.TemplateExists('AssignMethod') then begin
     if not SameType then begin
       // add local variable
@@ -5921,7 +5921,7 @@ begin
                                     NodeExtsStr ] );
     end
   else
-  {$ENDIF UseXMLTemplates}
+  {$ENDIF EnableCodeCompleteTemplates}
   begin
     ProcBody:='procedure '+aClassName+'.'+ProcName+'('+ParamName+':'+ParamType+');'+e;
     if not SameType then begin
@@ -6955,7 +6955,7 @@ var
               end;
             
             }
-            {$IFDEF UseXMLTemplates}
+            {$IFDEF EnableCodeCompleteTemplates}
             if assigned(Expander) and Expander.TemplateExists('SetterMethod') then
             begin
               debugln(['CompleteWriteSpecifier ', 'USING template for SetterMethod']);
