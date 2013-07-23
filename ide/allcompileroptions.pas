@@ -35,7 +35,7 @@ type
   private
     property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
   public
-    constructor Create(TheOwner: TComponent);
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   public
     property CustomOptions: TStrings read FCustomOptions write FCustomOptions;

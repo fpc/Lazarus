@@ -896,7 +896,6 @@ function TCompilerOptReader.FromCustomOptions(aStrings: TStrings): TModalResult;
 var
   i, CommentPos: Integer;
   s: String;
-  Opt: TCompilerOpt;
 begin
   Result := mrOK;
   for i := 0 to aStrings.Count-1 do
