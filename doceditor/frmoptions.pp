@@ -57,7 +57,7 @@ type
     SEMaxRecentUsed: TSpinEdit;
     tabGeneral: TTabSheet;
     tabDesktop: TTabSheet;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure OptionsFormShow(Sender: TObject);
   private

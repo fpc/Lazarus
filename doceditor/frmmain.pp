@@ -36,6 +36,8 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    AInsertEnumerateList: TAction;
+    AInsertItemizeList: TAction;
     AInsertQuickLink: TAction;
     AInsertPrintShort: TAction;
     AExtraBuild: TAction;
@@ -70,8 +72,8 @@ type
     EditPaste1: TEditPaste;
     EditSelectAll1: TEditSelectAll;
     EditUndo1: TEditUndo;
-    ILMain: TImageList;
     ILElements: TImageList;
+    ILMain: TImageList;
     LIBuild: TMenuItem;
     MenuItem1: TMenuItem;
     MenuItem10: TMenuItem;
@@ -86,6 +88,9 @@ type
     MenuItem19: TMenuItem;
     MenuItem20: TMenuItem;
     MenuItem21: TMenuItem;
+    Lists: TMenuItem;
+    ItemizeList: TMenuItem;
+    EnumerateList: TMenuItem;
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
@@ -133,7 +138,10 @@ type
     TBSaveAs: TToolButton;
     TBSave: TToolButton;
     ToolButton11: TToolButton;
+    ToolButton12: TToolButton;
     ToolButton13: TToolButton;
+    ToolButton14: TToolButton;
+    TBOpen: TToolButton;
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     ToolButton4: TToolButton;
@@ -148,7 +156,10 @@ type
     procedure AExtraOptionsExecute(Sender: TObject);
     procedure AFormatParagraphHint(var HintStr: string; var CanShow: Boolean);
     procedure AHelpAboutExecute(Sender: TObject);
+    procedure AInsertEnumerateListExecute(Sender: TObject);
+    procedure AInsertItemizeListExecute(Sender: TObject);
     procedure ApplicationProperties1Hint(Sender: TObject);
+    procedure ASaveUpdate(Sender: TObject);
     procedure CanFormat(Sender: TObject);
     procedure AInsertLinkExecute(Sender: TObject);
     procedure AInsertLinkUpdate(Sender: TObject);
@@ -195,6 +206,8 @@ type
     Procedure InsertLink;
     Procedure InsertTable;
     procedure InsertPrintShortLink;
+    procedure InsertEnumerateList;
+    procedure InsertItemizeList;
     Procedure ShowAbout;
     Procedure GetCurrentFiles(List : TStrings);
     Procedure ApplyOptions;
@@ -212,7 +225,7 @@ implementation
 
 uses
  lazdeopts, lazdemsg, inifiles, frmmakeskel, frmOptions, frmNewNode,
- frmLink, frmTable, frmAbout, frmBuild;
+ frmLink, frmTable, frmAbout, frmBuild, frmlists;
 
 {$R *.lfm}
 
@@ -220,10 +233,6 @@ uses
 
 Const
   mbYesNo = [mbYes, mbNo];
-
-var
-  NewNodeNames : Array[TNodeType] of String
-            = (sNewFile,sNewPackage,sNewModule,sNewElement,sNewTopic);
 
 function MessageDlg(Fmt: string; Args : Array of const; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
@@ -283,7 +292,20 @@ begin
 end;
 
 procedure TMainForm.AExtraBuildExecute(Sender: TObject);
+var r: Integer;
 begin
+  if Currenteditor.Modified then
+  begin
+    r := MessageDlg(sSaveBeforeBuildQuestion,[Currenteditor.FileName, sLineBreak],
+      mtConfirmation,mbYesNoCancel,0);
+    if r = mrYes then
+    begin
+      SaveEditor(Currenteditor);
+      Currenteditor.Update;
+    end
+    else if r = mrCancel then Exit;
+  end;
+
   with TBuildForm.Create(Self) do
   try
     FileName := FRecentBuildSettingsFile;
@@ -325,9 +347,24 @@ begin
   ShowAbout;
 end;
 
+procedure TMainForm.AInsertEnumerateListExecute(Sender: TObject);
+begin
+  InsertEnumerateList;
+end;
+
+procedure TMainForm.AInsertItemizeListExecute(Sender: TObject);
+begin
+  InsertItemizeList;
+end;
+
 procedure TMainForm.ApplicationProperties1Hint(Sender: TObject);
 begin
   StatusBar1.SimpleText:=Application.Hint;
+end;
+
+procedure TMainForm.ASaveUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=(CurrentEditor <> nil) and (CurrentEditor.Modified);
 end;
 
 procedure TMainForm.CanFormat(Sender: TObject);
@@ -407,7 +444,10 @@ var
 begin
   E:=CurrentEditor;
   If (E<>Nil) then
+  begin
     SaveEditor(E);
+    Currenteditor.Update;
+  end;
 end;
 
 procedure TMainForm.DoFormat(Sender: TObject);
@@ -568,15 +608,20 @@ begin
   AInsertTable.Caption:=SMenuInsertTable;
   AInsertPrintShort.Caption:=SMenuInsertShortDescLink;
   AInsertQuickLink.Caption:=SMenuInsertQuickLink;
+  Lists.Caption := SMenuInsertList;
+  AInsertPrintShort.Caption:=SHintInsertPrintShortLink;
+  AInsertItemizeList.Caption:=SMenuInsertItemizeList;
+  AInsertEnumerateList.Caption:=SMenuInsertEnumerateList;
 
   AInsertPackage.Hint:=SHintInsertPackage;
   AInsertModule.Hint:=SHintInsertModule;
   AInsertElement.Hint:=SHintInsertElement;
-  AInsertTopic.Hint:=ShintInsertTable;
+  AInsertTopic.Hint:=SHintInsertTopic;
   AInsertLink.Hint:=SHintInsertLink;
   AInsertTable.Hint:=ShintInsertTable;
   AInsertPrintShort.Hint:=SHintInsertPrintShortLink;
-
+  AInsertItemizeList.Hint:=SHintInsertItemizeList;
+  AInsertEnumerateList.Hint:=SHintInsertEnumerateList;
   //Extra menu
   MIExtra.Caption:=SMenuExtra;
   AExtraOptions.Caption:=SMenuExtraOptions;
@@ -853,36 +898,42 @@ begin
     OpenFile(SkeletonData.OutPutFile)
 end;
 
-Procedure TMainForm.InsertNode (NT : TNodeType) ;
+Procedure TMainForm.InsertNode(NT : TNodeType) ;
 
 Var
-  S : AnsiString;
-
+  S: AnsiString;
 begin
   If (CurrentEditor<>Nil) then
     With TNewNodeForm.Create(Self) do
       Try
-        S:=NewNodeNames[nt];
         Case nt of
-          ntPackage : S:=S+SForFile+ExtractFileName(CurrentEditor.FileName);
+          ntPackage: S:=sNewPackage+SForFile+ExtractFileName(CurrentEditor.FileName);
           ntModule: If (CurrentEditor.CurrentPackage<>Nil) then
-                       S:=S+SForPackage+CurrentEditor.CurrentPackage['name'];
+                       S:=sNewModule+SForPackage+CurrentEditor.CurrentPackage['name'];
           ntElement: begin
                      If (CurrentEditor.CurrentModule<>Nil) then
-                        S:=S+SForModule+CurrentEditor.CurrentModule['name'];
-                     If Assigned(CurrentEditor.CurrentElement) then
-                       ENodeName.SelText:=CurrentEditor.CurrentElement['name'];
+                        S:=sNewElement+SForModule+CurrentEditor.CurrentModule['name'];
+                     If Assigned(CurrentEditor.CurrentElement) and
+                       (CurrentEditor.CurrentElement <> CurrentEditor.CurrentModule) then
+                       begin
+                         ENodeName.Text:=CurrentEditor.CurrentElement['name'] + '.' + 'NewElement';
+                         ENodeName.SelStart:= Length(CurrentEditor.CurrentElement['name']) + 1;
+                         ENodeName.SelLength := Length('NewElement');
+                       end
+                       else
+                         ENodeName.SelText:= 'NewElement';
                      end;
           ntTopic : begin
                     if (CurrentEditor.CurrentTopic<>Nil) then
-                        S:=S+SForTopic+CurrentEditor.CurrentPackage['name']
+                        S:=sNewTopic+SForTopic+CurrentEditor.CurrentPackage['name']
                     else if (CurrentEditor.CurrentModule<>Nil) then
-                       S:=S+SForModule+CurrentEditor.CurrentModule['name']
+                       S:=sNewTopic+SForModule+CurrentEditor.CurrentModule['name']
                     else if (CurrentEditor.CurrentPackage<>Nil) then
-                        S:=S+SForPackage+CurrentEditor.CurrentPackage['name']
+                        S:=sNewTopic+SForPackage+CurrentEditor.CurrentPackage['name']
                     end;
         end;
         Caption:=S;
+        LENodeName.Caption := sNodeName;
         S:='';
         If ShowModal=mrOK Then
           begin
@@ -905,6 +956,8 @@ begin
     With TLinkForm.Create(Self) do
       Try
         Caption:=SInsertLink;
+        LLinkTarget.Caption := SLinkTarget;
+        LELinkText.Caption := SLinkText;
         Link:=CurrentEditor.CurrentSelection;
         Links.BeginUpdate;
         Try
@@ -926,6 +979,9 @@ begin
   with TTableForm.Create(Self) do
     try
       Caption:=SInsertTable;
+      LSERows.Caption := STableRows;
+      LSEColumns.Caption := STableCols;
+      CBUseHeaderRow.Caption := STableHeader;
       SERows.Text:=IntToStr(3);
       SEColumns.Text:=IntToStr(3);
       If ShowModal=mrOK Then
@@ -947,6 +1003,8 @@ begin
     with TLinkForm.Create(Self) do
       try
         Caption             := SInsertPrintShortLink;
+        LELinkText.Caption  := SLinkText;
+        LLinkTarget.Caption := SLinkTarget;
         ELinkText.Visible   := False;
         ELinkText.Enabled   := False;
         LELinkText.Visible  := False;
@@ -964,6 +1022,32 @@ begin
       finally
         free;
       end;
+  end;
+end;
+
+procedure TMainForm.InsertEnumerateList;
+begin
+  with TListForm.Create(Self) do
+  try
+    Caption:=SInsertEnumerateList;
+    speItemsCount.Value:=3;
+    If ShowModal=mrOK Then
+      CurrentEditor.InsertEnumerateList(speItemsCount.Value);
+  Finally
+    Free;
+  end;
+end;
+
+procedure TMainForm.InsertItemizeList;
+begin
+  with TListForm.Create(Self) do
+  try
+    Caption:=SInsertItemizeList;
+    speItemsCount.Value:=3;
+    If ShowModal=mrOK Then
+      CurrentEditor.InsertItemizeList(speItemsCount.Value);
+  Finally
+    Free;
   end;
 end;
 

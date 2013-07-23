@@ -1,28 +1,28 @@
 object TableForm: TTableForm
-  Left = 339
-  Height = 139
-  Top = 162
-  Width = 451
+  Left = 385
+  Height = 100
+  Top = 217
+  Width = 320
   HorzScrollBar.Page = 281
   VertScrollBar.Page = 96
+  AutoSize = True
   BorderStyle = bsDialog
   Caption = 'Insert new table'
-  ClientHeight = 139
-  ClientWidth = 451
+  ClientHeight = 100
+  ClientWidth = 320
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.1'
   object LSERows: TLabel
     AnchorSideLeft.Control = CBUseHeaderRow
-    AnchorSideBottom.Control = SEColumns
+    AnchorSideTop.Control = SERows
+    AnchorSideTop.Side = asrCenter
     AnchorSideBottom.Side = asrBottom
     Left = 12
-    Height = 18
-    Top = 40
-    Width = 50
+    Height = 13
+    Top = 33
+    Width = 26
     Alignment = taRightJustify
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.Left = 6
-    BorderSpacing.Right = 6
+    BorderSpacing.Around = 6
     Caption = '&Rows'
     FocusControl = SERows
     Layout = tlCenter
@@ -31,14 +31,14 @@ object TableForm: TTableForm
   object LSEColumns: TLabel
     AnchorSideLeft.Control = SERows
     AnchorSideLeft.Side = asrBottom
-    AnchorSideBottom.Control = SEColumns
+    AnchorSideTop.Control = SEColumns
+    AnchorSideTop.Side = asrCenter
     AnchorSideBottom.Side = asrBottom
-    Left = 186
-    Height = 18
-    Top = 40
-    Width = 74
+    Left = 162
+    Height = 13
+    Top = 33
+    Width = 40
     Alignment = taRightJustify
-    Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 24
     BorderSpacing.Right = 6
     Caption = 'Co&lumns'
@@ -50,9 +50,9 @@ object TableForm: TTableForm
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 19
+    Height = 17
     Top = 6
-    Width = 129
+    Width = 96
     AllowGrayed = True
     BorderSpacing.Around = 6
     Caption = 'Use &header row'
@@ -63,9 +63,9 @@ object TableForm: TTableForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = CBUseHeaderRow
     AnchorSideTop.Side = asrBottom
-    Left = 68
-    Height = 27
-    Top = 31
+    Left = 44
+    Height = 21
+    Top = 29
     Width = 94
     BorderSpacing.Around = 6
     TabOrder = 1
@@ -75,19 +75,30 @@ object TableForm: TTableForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = CBUseHeaderRow
     AnchorSideTop.Side = asrBottom
-    Left = 266
-    Height = 27
-    Top = 31
+    Left = 208
+    Height = 21
+    Top = 29
     Width = 102
     BorderSpacing.Around = 6
     TabOrder = 2
   end
   object ButtonPanel1: TButtonPanel
+    AnchorSideTop.Control = SERows
+    AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 40
-    Top = 93
-    Width = 439
+    Height = 38
+    Top = 56
+    Width = 308
+    Anchors = [akTop, akLeft, akRight]
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 3
-    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowButtons = [pbOK, pbCancel]
   end
 end

@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  FileUtil, Buttons, ComCtrls, EditBtn, ExtCtrls, ActnList, Grids, Process,
+  FileUtil, Buttons, ComCtrls, EditBtn, ExtCtrls, ActnList, Grids,
   UTF8Process;
 
 type
@@ -69,6 +69,7 @@ type
     CBWarnNoNode: TCheckBox;
     CBAutoTOC: TCheckBox;
     CBAutoIndex: TCheckBox;
+    EAdditionalParams: TEdit;
     ETargetOS: TEdit;
     ETargetCPU: TEdit;
     EOutput: TEditButton;
@@ -76,6 +77,7 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
+    Label4: TLabel;
     LTargetCPU: TLabel;
     LCBPackage: TLabel;
     LCBFormat: TLabel;
@@ -186,11 +188,16 @@ Const
   KeyTargetCPU = 'TargetCPU';
   KeyHideProtected = 'HideProtected';
   KeyShowPrivate   = 'ShowPrivate';
+  KeyCHMAutoTOC = 'CHMAutoTOC';
+  KeyCHMAutoIndex = 'CHMAutoIndex';
+  KeyCHMMakeSearchable = 'CHMMakeSearchable';
+  KeyAdditionalParams = 'AdditionalParams';
 
   DefaultFormat        = 'html';
   DefaultContent       = False;
   DefaultHideProtected = False;
   DefaultShowPrivate   = False;
+
   DefaultTargetOS      = '';
   DefaultTargetCPU     = '';
   DefaultImport        = '';
@@ -215,7 +222,6 @@ end;
 
 procedure TBuildForm.ABuildExecute(Sender: TObject);
 begin
-  if Sender=nil then ;
   BuildDocs;
 end;
 
@@ -388,6 +394,7 @@ begin
   CBHideProtected.Caption:=sHideProtectedMethods;//'&Hide protected methods';
   Label2.Caption:=sImportContentFile;//'Import content file';
   Label3.Caption:=sTargetOS; //'Target OS';
+  Label4.Caption:=sAdditionalParams; //'Additional parameters';
   LTargetCPU.Caption:=sCPU;  //'CPU';
   CBShowPrivate.Caption:=sShowPrivateMethods;//'Show p&rivate methods';
   CBWarnNoNode.Caption:=sWarnIfNoDocumentationNodeFound;//'Warn if no documentation node found';
@@ -408,8 +415,10 @@ begin
 end;
 
 procedure TBuildForm.EOutputButtonClick(Sender: TObject);
+var ft: String;
 begin
-  if (lowercase(cbFormat.text)='html') then
+  ft := lowercase(cbFormat.text);
+  if (ft='html') then
     With TSelectDirectoryDialog.Create(Self) do
       begin
       Title:=SSelectOutputDirectory;
@@ -421,7 +430,14 @@ begin
      With TSaveDialog.Create(Self) do
        begin
        Title:=SSelectOutputFile;
-       // Set filter ?
+       if ft = 'chm' then
+         Filter := 'Compressed HTML files (*.chm)|*.chm'
+       else if ft = 'latex' then
+         Filter := 'Latex files (*.tex)|*.tex'
+       else if ft = 'man' then
+         Filter := 'UNIX man page files (*.man)|*.man'
+       else if ft = 'txt' then
+         Filter := 'Plane text (*.txt)|*.txt';
        FileName:=Eoutput.Text;
        If Execute then
          EOutput.Text:=FileName
@@ -465,6 +481,11 @@ begin
       WriteBool  (SGlobal,KeyHideProtected,CBHideProtected.Checked);
       WriteBool  (SGLobal,KeyShowPrivate,CBShowPrivate.Checked);
       WriteString(SGlobal,KeyImport,FEImportFIle.Text);
+      WriteBool  (SGlobal,KeyCHMAutoTOC, CBAutoTOC.Checked);
+      WriteBool  (SGlobal,KeyCHMAutoIndex, CBAutoIndex.Checked);
+      WriteBool  (SGlobal,KeyCHMMakeSearchable, CBMakeSearchable.Checked);
+      WriteString(SGlobal,KeyAdditionalParams,EAdditionalParams.Text);
+
       ACount:=DescrFileCount;
       WriteInteger(SDescr,KeyCount,ACount);
       For I:=1 to ACount do
@@ -505,6 +526,10 @@ begin
       CBShowPrivate.Checked:=ReadBool(SGLobal,KeyShowPrivate,DefaultShowPrivate);
       FEImportFIle.Text:=ReadString(SGlobal,KeyImport,DefaultImport);
       ACount:=ReadInteger(SDescr,KeyCount,0);
+      CBAutoTOC.Checked := ReadBool(SGLobal, KeyCHMAutoTOC, CBAutoTOC.Checked);
+      CBAutoIndex.Checked := ReadBool(SGLobal, KeyCHMAutoIndex, CBAutoIndex.Checked);
+      CBMakeSearchable.Checked := ReadBool(SGLobal, KeyCHMMakeSearchable, CBMakeSearchable.Checked);
+      EAdditionalParams.Text := ReadString(SGlobal,KeyAdditionalParams,'');
       ClearDescr;
       For I:=1 to ACount do
         begin
@@ -617,6 +642,7 @@ end;
 Procedure TBuildForm.SetSourceOptions(Index : Integer; const ASource, AOptions: String);
 begin
   FOptions[Index]:=ASource+'='+AOptions;
+  DisplaySources;
 end;
 
 Procedure TBuildForm.GetSourceOptions(Index : Integer;
@@ -737,14 +763,15 @@ begin
     Result:=Result+' --cputarget='+ETargetCPU.Text;
   For I:=1 to DescrFileCount do
     Result:=Result+' --descr='+DescrFile(I-1);
-
   for i:=1 to SourceFileCount do
   begin
     GetSourceOptions(I-1,FN,O);
     if (O<>'') then
-      FN:=FN+' '+O;
+      FN:='"' + FN+' '+O + '"';
     Result:=Result+' --input='+FN+'';
   end;
+  if (EAdditionalParams.Text<>'') then
+    Result:=Result+' '+EAdditionalParams.Text;
 end;
 
 

@@ -46,16 +46,19 @@ ResourceString
   SNew         = 'New';
   SInsertLink  = 'Insert link';
   SInsertTable = 'Insert table';
+  SInsertItemizeList = 'Insert itemize list';
+  SInsertEnumerateList = 'Insert enumerate list';
   SInsertPrintShortLink = 'Insert short description link';
+  SInsertExampleCode = 'Insert example code';
   SForFile     = ' in file ';
   SForPackage  = ' in package ';
   SForModule   = ' in module ';
-  SForTopic    = ' in topic';
-  //SLinkTarget  = 'Link target';
-  //SLinkText    = 'Link text';
-  //STableRows   = 'Rows';
-  //STableCols   = 'Columns';
-  //STableHeader = 'Use header row';
+  SForTopic    = ' in topic ';
+  SLinkTarget  = 'Link target';
+  SLinkText    = 'Link text';
+  STableRows   = 'Rows';
+  STableCols   = 'Columns';
+  STableHeader = 'Use header row';
   SPackages    = 'Packages';
   SFileModified = 'Document "%s" was modified, would you like to save it?';
   SDeletePackage = 'Are you sure you want to delete package "%s" ?';
@@ -69,7 +72,6 @@ ResourceString
   SNoElement = 'No element selected';
   SDataForElement = 'Documentation for element "%s":';
   SShortDescription = 'Short';
-  //SDescription = 'Description';
   SErrors = 'Errors';
   SSeeAlso = 'See Also';
   SCodeExample = 'Example code File';
@@ -94,6 +96,7 @@ ResourceString
   sNewModule             = 'New module';
   sNewElement            = 'New element';
   sNewTopic              = 'New topic';
+  sNodeName              = 'Node name';
 
   //Build Form strings
   SAddDescriptionFile    = 'Select a new description file';
@@ -124,9 +127,13 @@ ResourceString
   sImportContentFile     = 'Import content file';
   sTargetOS              = 'Target OS';
   sCPU                   = 'CPU';
+  sAdditionalParams      = 'Additional parameters for fpdoc';
   sShowPrivateMethods    = 'Show p&rivate methods';
   sWarnIfNoDocumentationNodeFound = 'Warn if no documentation node found';
 
+  sSaveBeforeBuildQuestion = 'You must save changes in "%s" before building. Save?%s' +
+                             'If you press "No" - last changes will not use';
+                             // Please correct this phrase, if it necessary!
 { ---------------------------------------------------------------------
     Menu strings
   ---------------------------------------------------------------------}
@@ -151,6 +158,9 @@ ResourceString
   SMenuInsertShortDescLink  = '&Short description link';
   SMenuInsertQuickLink      = '&Quick Link';
   SMenuInsertPrintShort = 'Insert short desc link';
+  SMenuInsertList    = 'Insert list';
+  SMenuInsertItemizeList = 'Itemize list';
+  SMenuInsertEnumerateList = 'Enumerate list';
 
   SMenuFormat           = 'Format';
   SMenuFormatBold       = '&Bold';
@@ -200,6 +210,8 @@ ResourceString
   SHintInsertLink    = 'Insert link';
   ShintInsertTable   = 'Insert table';
   SHintInsertPrintShortLink = 'Insert a short description link';
+  SHintInsertItemizeList = 'Insert itemize list';
+  SHintInsertEnumerateList = 'Insert enumerate list';
 
   SMarkSelection     = 'Mark selection %s';
 

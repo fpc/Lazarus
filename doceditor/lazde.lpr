@@ -12,15 +12,15 @@ uses
   frmLink,
   frmTable,
   frmabout,
-  pkeditor,
-  eleditor,
+  freditor,
   fpdeutil,
   frmexample,
   frmbuild,
   frmsource,
   lazdemsg,
-  lazdeopts,
-  pgeditor;
+  lazdeopts, 
+  frpeditor, 
+  frmlists;
 
 {$R lazde.res}
 

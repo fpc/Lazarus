@@ -11,7 +11,7 @@ object MakeSkelForm: TMakeSkelForm
   ClientWidth = 486
   OnShow = CheckEnabled
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.1'
   object Label1: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = EPackage
@@ -84,6 +84,7 @@ object MakeSkelForm: TMakeSkelForm
     Top = 88
     Width = 449
     DialogOptions = []
+    Filter = 'Source file (*.pas)|*.pas|All files|*.*'
     FilterIndex = 0
     HideDirectories = False
     ButtonWidth = 23
@@ -107,6 +108,7 @@ object MakeSkelForm: TMakeSkelForm
     DialogKind = dkSave
     DialogTitle = 'Select file to save to'
     DialogOptions = []
+    Filter = 'Skel file (*.xml)|*.xml|All files|*.*'
     FilterIndex = 0
     HideDirectories = False
     ButtonWidth = 23
@@ -155,11 +157,15 @@ object MakeSkelForm: TMakeSkelForm
     Top = 349
     Width = 474
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     OKButton.Enabled = False
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 6
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

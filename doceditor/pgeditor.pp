@@ -52,7 +52,7 @@ unit pgEditor;
 interface
 
 uses SysUtils,Classes,dom,xmlread,xmlwrite,Forms,Controls,FileUtil,extctrls,
-     comctrls,Dialogs,menus,pkeditor,eleditor,fpdeutil;
+     comctrls,Dialogs,menus,freditor,frpeditor,fpdeutil;
 
 type
   TEditorPageNew = class(TFrame)
@@ -65,8 +65,8 @@ Type
   TEditorPage = Class(TTabSheet)
   Private
     FDocument : TXMLDocument;
-    FPackages : TCustomPackageEditor;
-    FElement : TCustomElementEditor;
+    FPackages : TPackageEditor;
+    FElement : TElementEditor;
     FSplitter : TSplitter;
     FFileNAme : String;
     Procedure ElementSelected(Node : TDomElement) ;
@@ -106,13 +106,16 @@ Type
     Procedure InsertLink(LinkTarget,LinkText : String);
     Procedure InsertTable(Cols,Rows : Integer; UseHeader : Boolean);
     Procedure InsertShortPrintLink(pLinkTarget: string);
+    Procedure InsertItemizeList(ItemsCount: Integer);
+    Procedure InsertEnumerateList(ItemsCount: Integer);
     Procedure NewPackage(APackageName : String);
     Procedure NewModule(AModuleName : String);
     Procedure NewTopic(ATopicName : String);
-    Procedure NewElement(AElementName : String);
+    procedure NewElement(AElementName: String);
     Procedure GetElementList(List : TStrings);
     function  GetInitialDir: String;
     Procedure ClearDocument;
+    procedure UpdateTree;
     Function CanInsertTag(TagType : TTagType) : Boolean;
     Property FileName : String Read FFileName;
     Property CurrentSelection : String Read GetCurrentSelection;
@@ -126,7 +129,7 @@ Type
 
 implementation
 
-uses frmnewnode,lazdeopts,lazdemsg;
+uses lazdeopts,lazdemsg;
 
 {$R *.lfm}
 
@@ -171,6 +174,11 @@ begin
     end;
 end;
 
+procedure TEditorPage.UpdateTree;
+begin
+  FPackages.UpdateTree;
+end;
+
 function TEditorPage.CanInsertTag(TagType: TTagType): Boolean;
 begin
   Result:=FElement.CanInsertTag(TagType);
@@ -188,6 +196,7 @@ begin
     SetFileName(FN);
     ReadXMLFile(FDocument,F);
     DisplayDocument(AStartNode);
+    FPackages.ExpandTree;
   finally
     F.Free;
   end;
@@ -230,6 +239,7 @@ begin
   If FElement.Modified then FElement.Save;
   WriteXMLFile(FDocument, FN);
   Modified :=False;
+  FElement.Refresh;
 end;
 
 function TEditorPage.FindElementNode(AParent : TDomElement; Const ANodeName : String; Const AElementName : string) : TDomElement;
@@ -266,7 +276,6 @@ function TEditorPage.FindElement(Const ElementName : String; Out PE,ME : TDomEle
   end;
 
 Var
-  P : Integer;
   PN,N : String;
 
 begin
@@ -392,6 +401,16 @@ begin
   FElement.InsertPrintShortLink(pLinkTarget);
 end;
 
+procedure TEditorPage.InsertItemizeList(ItemsCount: Integer);
+begin
+  Felement.InsertItemizeList(ItemsCount);
+end;
+
+procedure TEditorPage.InsertEnumerateList(ItemsCount: Integer);
+begin
+  Felement.InsertEnumerateList(ItemsCount);
+end;
+
 
 Function TEditorPage.GetCurrentSelection : String;
 
@@ -509,7 +528,7 @@ begin
       M:=Nil;
     If M<>Nil then
       CurrentModule:=M;  
-    end;  
+    end;
   If (M=Nil) then  
     Raise Exception.CreateFmt(SErrNoModuleForElement,[AElementName]);
   E:=FDocument.CreateElement('element');

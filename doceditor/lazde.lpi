@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -48,12 +48,12 @@
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="eleditor.pp"/>
+        <Filename Value="freditor.pp"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="CustomElementEditorNew"/>
+        <ComponentName Value="ElemEditorFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="ElEditor"/>
+        <UnitName Value="freditor"/>
       </Unit1>
       <Unit2>
         <Filename Value="fpdeutil.pp"/>
@@ -151,19 +151,20 @@
         <UnitName Value="LazDEOpts"/>
       </Unit14>
       <Unit15>
-        <Filename Value="pgeditor.pp"/>
+        <Filename Value="frpeditor.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="EditorPageNew"/>
+        <ComponentName Value="PackEditorFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="pgEditor"/>
+        <UnitName Value="frpeditor"/>
       </Unit15>
       <Unit16>
-        <Filename Value="pkeditor.pp"/>
+        <Filename Value="frmlists.pp"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="ListForm"/>
         <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="PkEditor"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="frmlists"/>
       </Unit16>
     </Units>
   </ProjectOptions>
@@ -176,11 +177,13 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <Parsing>
-      <SyntaxOptions>
-        <UseAnsiStrings Value="False"/>
-      </SyntaxOptions>
-    </Parsing>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
     <Other>
       <ConfigFile>
         <StopAfterErrCount Value="10"/>
