@@ -31,6 +31,9 @@ type
     FEffectiveFilter: string;
     procedure SetIdleConnected(AValue: Boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure CheckBoxClick(Sender: TObject);
+    procedure EditChange(Sender: TObject);
+    procedure ComboChange(Sender: TObject);
     procedure RenderAndFilterOptions;
   private
     property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
@@ -76,9 +79,6 @@ begin
   btnResetOptionsFilter.Hint := 'Clear the filter for options';
   FEffectiveFilter:=#1; // Set an impossible value first, makes sure options are filtered.
   IdleConnected := True;
-  //btnGetAllOptions.Caption := 'Get all options';
-  //btnGetAllOptions.Hint := 'Read available options using "fpc -i" and "fpc -h"';
-  //lblStatus.Caption := '';
 end;
 
 procedure TfrmAllCompilerOptions.edOptionsFilterChange(Sender: TObject);
@@ -119,8 +119,44 @@ begin
   finally
     Screen.Cursor:=crDefault;
   end;
-  //sbAllOptions.Anchors := [];
-  //sbAllOptions.Anchors := [akLeft,akTop, akRight, akBottom];
+end;
+
+procedure TfrmAllCompilerOptions.CheckBoxClick(Sender: TObject);
+var
+  cb: TCheckBox;
+  Opt: TCompilerOpt;
+begin
+  cb := Sender as TCheckBox;
+  Opt := FOptionsReader.FindOptionById(cb.Tag);
+  if Assigned(Opt) then
+  begin
+    if cb.Checked then
+      Opt.Value := 'True'
+    else
+      Opt.Value := '';
+  end;
+end;
+
+procedure TfrmAllCompilerOptions.EditChange(Sender: TObject);
+var
+  ed: TEdit;
+  Opt: TCompilerOpt;
+begin
+  ed := Sender as TEdit;
+  Opt := FOptionsReader.FindOptionById(ed.Tag);
+  if Assigned(Opt) then
+    Opt.Value := ed.Text;
+end;
+
+procedure TfrmAllCompilerOptions.ComboChange(Sender: TObject);
+var
+  cb: TComboBox;
+  Opt: TCompilerOpt;
+begin
+  cb := Sender as TComboBox;
+  Opt := FOptionsReader.FindOptionById(cb.Tag);
+  if Assigned(Opt) then
+    Opt.Value := cb.Text;
 end;
 
 procedure TfrmAllCompilerOptions.RenderAndFilterOptions;
@@ -141,6 +177,7 @@ var
     Result.Top := yLoc+aTopOffs;
     Result.Left := Opt.Indentation*4;
     Result.Caption := aCaption;
+    Result.Tag := Opt.Id;
     FGeneratedControls.Add(Result);
   end;
 
@@ -153,6 +190,7 @@ var
     Result.AnchorSide[akTop].Side := asrCenter;
     Result.Left := LeftEdit;        // Now use Left instead of anchors
     Result.Anchors := [akLeft,akTop];
+    Result.Tag := Opt.Id;
     FGeneratedControls.Add(Result);
   end;
 
@@ -205,17 +243,20 @@ var
             NewLeft := LeftDescrBoolean + (Length(Opt.Option)-10)*8
           else
             NewLeft := LeftDescrBoolean;
+          Cntrl.OnClick := @CheckBoxClick;
           MakeDescrLabel(Cntrl, NewLeft);
         end;
         oeSetElem: begin                        // Sub-item for set, CheckBox
           Cntrl := MakeOptionCntrl(TCheckBox, Opt.Option+Opt.Description);
           Assert((Opt.Value='') or (Opt.Value='True'), 'Wrong value in Boolean option '+Opt.Option);
           TCheckBox(Cntrl).Checked := Opt.Value<>'';
+          Cntrl.OnClick := @CheckBoxClick;
         end;
         oeNumber, oeText, oeSetNumber: begin    // Edit
           Lbl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix, 3);
           Cntrl := MakeEditCntrl(Lbl, TEdit);
           TEdit(Cntrl).Text := Opt.Value;
+          TEdit(Cntrl).OnChange := @EditChange;
           MakeDescrLabel(Cntrl, LeftDescrEdit);
         end;
         oeList: begin                           // ComboBox
@@ -236,6 +277,7 @@ var
               raise Exception.Create('AddChoices: Unknown option ' + Opt.Option);
           end;
           cb.Text := Opt.Value;
+          cb.OnChange := @ComboChange;
           MakeDescrLabel(Cntrl, LeftDescrEdit);
         end
         else

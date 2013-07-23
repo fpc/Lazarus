@@ -113,7 +113,8 @@ type
 
   TCompilerOpt = class
   private
-    fOption: string;                    // Option without the leading '-'
+    fId: integer;                       // Identification.
+    fOption: string;                    // Option without the leading '-'.
     fSuffix: string;                    // <x> or similar suffix of option.
     fValue: string;                     // Data entered by user, 'True' for Boolean.
     fEditKind: TCompilerOptEditKind;
@@ -128,6 +129,7 @@ type
     constructor Create(aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
   public
+    property Id: integer read fId;
     property Option: string read fOption;
     property Suffix: string read fSuffix;
     property Value: string read fValue write fValue;
@@ -153,6 +155,7 @@ type
     constructor Create(aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
     function FindOption(aOptStr: string): TCompilerOpt;
+    function FindOptionById(aId: integer): TCompilerOpt;
     function SelectOption(aOptAndValue: string): Boolean;
   public
     property CompilerOpts: TCompilerOptList read fCompilerOpts;
@@ -194,6 +197,7 @@ type
     destructor Destroy; override;
     function ReadAndParseOptions: TModalResult;
     function FilterOptions(aFilter: string): Boolean;
+    function FindOptionById(aId: integer): TCompilerOpt;
     function FromCustomOptions(aStrings: TStrings): TModalResult;
     function ToCustomOptions(aStrings: TStrings): TModalResult;
   public
@@ -383,6 +387,15 @@ end;
 
 // Compiler options parsed from "fpc -h" and "fpc -i".
 
+var
+  OptionIdCounter: integer;
+
+function NextOptionId: integer;
+begin
+  Result := OptionIdCounter;
+  Inc(OptionIdCounter);
+end;
+
 function CalcIndentation(s: string): integer;
 begin
   Result := 0;
@@ -395,7 +408,6 @@ begin
   Result := aOpt = '-F';                // Ignore all file names and paths
 end;
 
-
 { TCompilerOpt }
 
 constructor TCompilerOpt.Create(aOwnerGroup: TCompilerOptGroup);
@@ -404,6 +416,7 @@ begin
   fOwnerGroup := aOwnerGroup;
   if Assigned(aOwnerGroup) then
     aOwnerGroup.fCompilerOpts.Add(Self);
+  fId := NextOptionId;
 end;
 
 destructor TCompilerOpt.Destroy;
@@ -490,6 +503,33 @@ function TCompilerOptGroup.FindOption(aOptStr: string): TCompilerOpt;
     end
     else begin               // TCompilerOpt
       if aRoot.Option = aOptStr then
+        Result := aRoot;
+    end;
+  end;
+
+begin
+  Result := FindOptionSub(Self);
+end;
+
+function TCompilerOptGroup.FindOptionById(aId: integer): TCompilerOpt;
+
+  function FindOptionSub(aRoot: TCompilerOpt): TCompilerOpt;
+  var
+    Children: TCompilerOptList;
+    i: Integer;
+  begin
+    Result := Nil;
+    if aRoot is TCompilerOptGroup then
+    begin
+      Children := TCompilerOptGroup(aRoot).CompilerOpts;
+      for i := 0 to Children.Count-1 do         // Recursive call for children.
+      begin
+        Result := FindOptionSub(TCompilerOpt(Children[i]));
+        if Assigned(Result) then Break;
+      end;
+    end
+    else begin               // TCompilerOpt
+      if aRoot.fId = aId then
         Result := aRoot;
     end;
   end;
@@ -843,6 +883,7 @@ function TCompilerOptReader.ReadAndParseOptions: TModalResult;
 var
   Lines: TStringList;
 begin
+  OptionIdCounter := 0;
   Lines := TStringList.Create;
   try
     // FPC with option -i
@@ -890,6 +931,11 @@ function TCompilerOptReader.FilterOptions(aFilter: string): Boolean;
 
 begin
   Result := FilterOptionsSub(fRootOptGroup);
+end;
+
+function TCompilerOptReader.FindOptionById(aId: integer): TCompilerOpt;
+begin
+  Result := fRootOptGroup.FindOptionById(aId);
 end;
 
 function TCompilerOptReader.FromCustomOptions(aStrings: TStrings): TModalResult;
