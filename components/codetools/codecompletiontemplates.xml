@@ -14,7 +14,7 @@ end;
 </template>
 
 <template name="AssignMethodDef">
-procedure <ProcName/>(<ParamName/>: <ParamType/> );<if var="Override"> override;</if>
+procedure <ProcName/>(<ParamName/>: <ParamType/>);<if var="Override"> override;</if>
 </template>
 
 <template name="AssignMethod">
