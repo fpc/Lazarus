@@ -1780,6 +1780,9 @@ begin
       Parsing:=true;
       try
         ParsedValue:=UnparsedValue;
+        if (ParsedValue='') and (o=eopCompilerMessagesFilename) then
+          ParsedValue:=SetDirSeparators('$(FPCSrcDir)/compiler/msg/errore.msg');
+
         if not GlobalMacroList.SubstituteStr(ParsedValue) then begin
           debugln(['TEnvironmentOptions.GetParsedValue failed for ',dbgs(o),' Value="',UnparsedValue,'"']);
         end;
