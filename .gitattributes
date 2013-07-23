@@ -652,6 +652,7 @@ components/chmhelp/packages/help/Makefile.fpc svneol=native#text/plain
 components/chmhelp/packages/help/design/lazhelpchm.bat svneol=native#text/plain
 components/chmhelp/packages/help/design/lazhelpchm.sh svneol=native#text/plain
 components/chmhelp/packages/help/design/lazhelpchm.txt svneol=native#text/plain
+components/chmhelp/packages/help/design/tchmhelpdatabase.png -text svneol=unset#image/png
 components/chmhelp/packages/help/lazhelpchm.lrs svneol=native#text/plain
 components/chmhelp/packages/help/lazhelpchm.pas svneol=native#text/plain
 components/chmhelp/packages/help/lhelpcontrol.pas svneol=native#text/plain
