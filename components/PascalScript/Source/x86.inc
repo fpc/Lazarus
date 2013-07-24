@@ -253,6 +253,7 @@ var
   pp: ^Byte;
 {$IFDEF FPC}
   IsConstructor,IsVirtualCons: Boolean;
+  MethodData: TMethod;
 {$ENDIF}
 
   EAX, EDX, ECX: Longint;
@@ -464,9 +465,15 @@ var
 
         btProcPtr:
           begin
+{$IFDEF FPC}
+            MethodData := MKMethod(Self, Longint(FVar.Dta^));
+            TempStr := StringOfChar(AnsiChar(#0),4);
+            Pointer((@TempStr[1])^) := @MethodData;
+{$ELSE}
             tempstr := StringOfChar(AnsiChar(#0),8);
             TMethod((@TempStr[1])^) := MKMethod(Self, Longint(FVar.Dta^));
             UseReg := false;
+{$ENDIF}
           end;
 
         {$IFNDEF PS_NOINT64}bts64:
