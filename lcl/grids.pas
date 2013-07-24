@@ -298,6 +298,7 @@ type
     procedure AddEditor(aEditor: TWinControl; aAlign: TAlign; ActiveCtrl:boolean);
     procedure SetFocus; override;
     property MaxLength: Integer read GetMaxLength write SetMaxLength;
+    property ActiveControl: TWinControl read GetActiveControl;
   end;
 
 
