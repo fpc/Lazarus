@@ -5,9 +5,8 @@ unit EMScriptMacro;
 interface
 
 uses
-  Classes, SysUtils, SrcEditorIntf, IDECommands, IDEMsgIntf, Controls, SynEdit,
-  SynEditKeyCmds, EMScriptClasses, Laz2_XMLCfg, LazLoggerBase, uPSCompiler, uPSRuntime,
-  uPSUtils, uPSC_std, uPSR_std, uPSDebugger;
+  Classes, SysUtils, SrcEditorIntf, IDEMsgIntf, Controls, SynEdit, EMScriptClasses, Laz2_XMLCfg, uPSRuntime,
+  uPSUtils, LazLoggerBase;
 
 type
 
@@ -37,7 +36,7 @@ type
     procedure Compile;
     procedure FixBeginEnd;
   public
-    constructor Create(aOwner: TComponent); override;
+    constructor Create({%H-}aOwner: TComponent); override;
     destructor Destroy; override;
     procedure AssignEventsFrom(AMacroRecorder: TEditorMacro); override;
 
@@ -54,141 +53,23 @@ type
   end;
 
 
-  { TEMSTPSExec }
-
-  TEMSTPSExec = class(TPSDebugExec)
-  public
-    SynEdit: TCustomSynEdit;
-    procedure AddECFuncToExecEnum(const s: String);
-  end;
-
-  { TEMSPSPascalCompiler }
-
-  TEMSPSPascalCompiler = class(TPSPascalCompiler)
-  public
-    procedure AddECFuncToCompEnum(const s: String);
-  end;
-
 implementation
 
 var
   TheCompiler: TEMSPSPascalCompiler;
   TheExec: TEMSTPSExec;
-  TheCLassImp: TPSRuntimeClassImporter;
-
-
-function HandleEcCommandFoo({%H-}Caller: TPSExec; p: TPSExternalProcRec; {%H-}Global, Stack: TPSStack): Boolean;
-var
-  i: integer;
-  pt: TPoint;
-  e: TEMSTPSExec;
-begin
-  i := PtrUint(p.Ext2);
-  e := TEMSTPSExec(p.Ext1);
-  case i of
-    ecGotoXY, ecSelGotoXY:
-      begin
-        pt.x := Stack.GetInt(-1);
-        pt.y := Stack.GetInt(-2);
-        e.SynEdit.CommandProcessor(i, '', @pt);
-      end;
-    ecChar:
-      e.SynEdit.CommandProcessor(i, Stack.GetAnsiString(-1), nil);
-    else
-      e.SynEdit.CommandProcessor(i, '', nil);
-  end;
-  Result := True;
-end;
-
-function HandleGetCaller({%H-}Caller: TPSExec; p: TPSExternalProcRec; {%H-}Global, Stack: TPSStack): Boolean;
-var
-  e: TEMSTPSExec;
-begin
-  e := TEMSTPSExec(p.Ext1);
-  Stack.SetClass(-1, e.SynEdit);
-  Result := True;
-end;
-
-function CompilerOnUses(Sender: TPSPascalCompiler; const Name: TbtString): Boolean;
-begin
-  if Name = 'SYSTEM' then
-  begin
-    SIRegisterTObject(Sender);
-    //SIRegister_Std(Sender);
-    if Sender is TEMSPSPascalCompiler then begin
-      GetEditorCommandValues(@TEMSPSPascalCompiler(Sender).AddECFuncToCompEnum);
-      GetIDEEditorCommandValues(@TEMSPSPascalCompiler(Sender).AddECFuncToCompEnum);
-    end;
-
-    CompRegisterBasics(TheCompiler);
-    CompRegisterTSynEdit(TheCompiler);
-    Sender.AddFunction('function Caller: TSynEdit;');
-    CompRegisterTClipboard(TheCompiler);
-
-    Result := True;
-  end else
-    Result := False;
-end;
-
-procedure AddECFuncToExec;
-begin
-  GetEditorCommandValues(@TheExec.AddECFuncToExecEnum);
-  GetIDEEditorCommandValues(@TheExec.AddECFuncToExecEnum);
-  ExecRegisterBasics(TheExec);
-  ExecRegisterTSynEdit(TheCLassImp);
-  TheExec.RegisterFunctionName('CALLER', @HandleGetCaller, TheExec, nil);
-  ExecRegisterTClipboard(TheCLassImp, TheExec);
-end;
-
 
 { Create global objects }
 
 procedure CreateCompiler;
 begin
   TheCompiler := TEMSPSPascalCompiler.Create;
-  TheCompiler.OnUses := @CompilerOnUses;
-  TheCompiler.BooleanShortCircuit := True;
 end;
 
 procedure CreateExec;
 begin
   TheExec := TEMSTPSExec.Create;
-  TheCLassImp := TPSRuntimeClassImporter.Create;
-  RIRegisterTObject(TheCLassImp);
-  // ## RIRegister_Std(CL);
-
-  AddECFuncToExec;
-
-  RegisterClassLibraryRuntime(TheExec, TheCLassImp);
 end;
-
-{ TEMSPSPascalCompiler }
-
-procedure TEMSPSPascalCompiler.AddECFuncToCompEnum(const s: String);
-begin
-  if (s = 'ecSynMacroPlay') or (s = 'ecSynMacroRecord') then exit;
-
-  if (s = 'ecGotoXY') or (s = 'ecSelGotoXY') then
-    AddFunction('procedure '+s+'(X, Y: Integer);')
-  else
-  if  (s = 'ecChar') then
-    AddFunction('procedure '+s+'(s: string);')
-    // ecString
-  else
-    AddFunction('procedure '+s+';');
-end;
-
-{ TEMSTPSExec }
-
-procedure TEMSTPSExec.AddECFuncToExecEnum(const s: String);
-var
-  i: longint;
-begin
-  i := 0;
-  if not IdentToEditorCommand(s, i) then exit;
-  TheExec.RegisterFunctionName(UpperCase(s), @HandleEcCommandFoo, self, Pointer(PtrUInt(i)));
-end;
-
 
 { TEMSEditorMacro }
 
@@ -413,7 +294,6 @@ initialization
 
 finalization
   FreeAndNil(TheExec);
-  FreeAndNil(TheCLassImp);
   FreeAndNil(TheCompiler);
 
 end.

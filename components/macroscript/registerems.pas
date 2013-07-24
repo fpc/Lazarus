@@ -13,11 +13,8 @@ implementation
 
 procedure Register;
 begin
-end;
-
-initialization
-  // Register is to late
   EditorMacroPlayerClass := TEMSEditorMacro;
+end;
 
 end.
 

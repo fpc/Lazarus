@@ -1271,9 +1271,6 @@ begin
 
   SetupIDEMsgQuickFixItems;
   EditorOpts.Load;
-  EditorMacroListViewer.LoadGlobalInfo;
-  // Defered till created
-  //EditorMacroListViewer.OnKeyMapReloaded := @SourceEditorManager.ReloadEditorOptions;
 
   ExternalTools.LoadShortCuts(EditorOpts.KeyMap);
 
@@ -1426,6 +1423,9 @@ begin
 
   // load installed packages
   PkgBoss.LoadInstalledPackages;
+
+  EditorMacroListViewer.LoadGlobalInfo; // Must be after packages are loaded/registered.
+
   FormEditor1.RegisterFrame;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create INSTALLED COMPONENTS');{$ENDIF}
 

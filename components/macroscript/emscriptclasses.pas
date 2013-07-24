@@ -12,26 +12,182 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, SynEdit, SynEditTypes, LazLoggerBase, Clipbrd, Dialogs, Controls,
-  uPSCompiler, uPSRuntime, uPSUtils;
+  Classes, SysUtils, SynEdit, SynEditTypes, SynEditKeyCmds, LazLoggerBase, IDECommands,
+  Clipbrd, Dialogs, Controls, uPSCompiler, uPSRuntime, uPSUtils, uPSDebugger, uPSR_std,
+  uPSC_std;
 
 type
   TEMScriptBadParamException = Exception;
 
+  { TEMSTPSExec }
+
+  TEMSTPSExec = class(TPSDebugExec)
+  public
+    SynEdit: TCustomSynEdit;
+    CLassImp: TPSRuntimeClassImporter;
+
+    constructor Create;
+    destructor Destroy; override;
+
+    procedure AddECFuncToExecEnum(const s: String); // ec... commands
+    procedure AddFuncToExec;
+    procedure AddTestFuncToExec;
+  end;
+
+  { TEMSPSPascalCompiler }
+
+  TEMSPSPascalCompiler = class(TPSPascalCompiler)
+  public
+    procedure AddECFuncToCompEnum(const s: String);
+    constructor Create;
+  end;
+
+
+
 procedure CompRegisterBasics(AComp: TPSPascalCompiler);
-procedure ExecRegisterBasics(AExec: TPSExec);
+procedure ExecRegisterBasics(AExec: TEMSTPSExec);
 
 procedure CompRegisterTSynEdit(AComp: TPSPascalCompiler);
-procedure ExecRegisterTSynEdit(cl: TPSRuntimeClassImporter);
+procedure ExecRegisterTSynEdit(AExec: TEMSTPSExec);
 
 procedure CompRegisterTClipboard(AComp: TPSPascalCompiler);
-procedure ExecRegisterTClipboard(cl: TPSRuntimeClassImporter; AExec: TPSExec);
+procedure ExecRegisterTClipboard(AExec: TEMSTPSExec);
+
+procedure CompRegisterSelfTests(AComp: TPSPascalCompiler);
+procedure ExecRegisterSelfTests(AExec: TEMSTPSExec);
 
 implementation
 
 {$IFDEF NeedTPointFix}
 type TPoint2 = record x,y,a,b,c: Longint; end;
 {$ENDIF}
+
+{ TEMSPSPascalCompiler }
+
+function CompilerOnUses(Sender: TPSPascalCompiler; const Name: TbtString): Boolean;
+begin
+  if Name = 'SYSTEM' then
+  begin
+    SIRegisterTObject(Sender);
+    //SIRegister_Std(Sender);
+    if Sender is TEMSPSPascalCompiler then begin
+      GetEditorCommandValues(@TEMSPSPascalCompiler(Sender).AddECFuncToCompEnum);
+      GetIDEEditorCommandValues(@TEMSPSPascalCompiler(Sender).AddECFuncToCompEnum);
+      CompRegisterBasics(TEMSPSPascalCompiler(Sender));
+      CompRegisterTSynEdit(TEMSPSPascalCompiler(Sender));
+      Sender.AddFunction('function Caller: TSynEdit;');
+      CompRegisterTClipboard(TEMSPSPascalCompiler(Sender));
+    end;
+
+    Result := True;
+  end else
+    Result := False;
+end;
+
+function TestCompilerOnUses(Sender: TPSPascalCompiler; const Name: TbtString): Boolean;
+begin
+  Result := CompilerOnUses(Sender, Name);
+  if Result then
+    CompRegisterSelfTests(TEMSPSPascalCompiler(Sender));
+end;
+
+procedure TEMSPSPascalCompiler.AddECFuncToCompEnum(const s: String);
+begin
+  if (s = 'ecSynMacroPlay') or (s = 'ecSynMacroRecord') then exit;
+
+  if (s = 'ecGotoXY') or (s = 'ecSelGotoXY') then
+    AddFunction('procedure '+s+'(X, Y: Integer);')
+  else
+  if  (s = 'ecChar') then
+    AddFunction('procedure '+s+'(s: string);')
+    // ecString
+  else
+    AddFunction('procedure '+s+';');
+end;
+
+constructor TEMSPSPascalCompiler.Create;
+begin
+  inherited Create;
+  OnUses := @CompilerOnUses;
+  BooleanShortCircuit := True;
+end;
+
+{ TEMSTPSExec }
+
+function HandleGetCaller({%H-}Caller: TPSExec; p: TPSExternalProcRec; {%H-}Global, Stack: TPSStack): Boolean;
+var
+  e: TEMSTPSExec;
+begin
+  e := TEMSTPSExec(p.Ext1);
+  Stack.SetClass(-1, e.SynEdit);
+  Result := True;
+end;
+
+function HandleEcCommandFoo({%H-}Caller: TPSExec; p: TPSExternalProcRec; {%H-}Global, Stack: TPSStack): Boolean;
+var
+  i: integer;
+  pt: TPoint;
+  e: TEMSTPSExec;
+begin
+  i := PtrUint(p.Ext2);
+  e := TEMSTPSExec(p.Ext1);
+  case i of
+    ecGotoXY, ecSelGotoXY:
+      begin
+        pt.x := Stack.GetInt(-1);
+        pt.y := Stack.GetInt(-2);
+        e.SynEdit.CommandProcessor(i, '', @pt);
+      end;
+    ecChar:
+      e.SynEdit.CommandProcessor(i, Stack.GetAnsiString(-1), nil);
+    else
+      e.SynEdit.CommandProcessor(i, '', nil);
+  end;
+  Result := True;
+end;
+
+constructor TEMSTPSExec.Create;
+begin
+  inherited Create;
+  CLassImp := TPSRuntimeClassImporter.Create;
+  RIRegisterTObject(CLassImp);
+  // ## RIRegister_Std(CL);
+  AddFuncToExec;
+  RegisterClassLibraryRuntime(Self, CLassImp);
+end;
+
+destructor TEMSTPSExec.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(CLassImp);
+end;
+
+procedure TEMSTPSExec.AddECFuncToExecEnum(const s: String);
+var
+  i: longint;
+begin
+  i := 0;
+  if not IdentToEditorCommand(s, i) then exit;
+  RegisterFunctionName(UpperCase(s), @HandleEcCommandFoo, self, Pointer(PtrUInt(i)));
+end;
+
+procedure TEMSTPSExec.AddFuncToExec;
+begin
+  GetEditorCommandValues(@AddECFuncToExecEnum);
+  GetIDEEditorCommandValues(@AddECFuncToExecEnum);
+  ExecRegisterBasics(Self);
+  ExecRegisterTSynEdit(Self);
+  RegisterFunctionName('CALLER', @HandleGetCaller, Self, nil);
+  ExecRegisterTClipboard(Self);
+end;
+
+procedure TEMSTPSExec.AddTestFuncToExec;
+begin
+  ExecRegisterSelfTests(Self);
+end;
+
+
+{%region RegisterBasics}
 
 Function EMS_MessageDlg(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint): Integer;
 begin
@@ -141,7 +297,7 @@ begin
   AComp.AddDelphiFunction(Decltest_ord_mt);
 end;
 
-function ExecBasicHandler(Caller: TPSExec; p: TPSExternalProcRec; Global, Stack: TPSStack): Boolean;
+function ExecBasicHandler({%H-}Caller: TPSExec; p: TPSExternalProcRec; {%H-}Global, Stack: TPSStack): Boolean;
   function GetSetFromStack(Idx: Integer): Cardinal;
   var
     val: PPSVariant;
@@ -252,7 +408,7 @@ begin
   end;
 end;
 
-procedure ExecRegisterBasics(AExec: TPSExec);
+procedure ExecRegisterBasics(AExec: TEMSTPSExec);
 begin
   {$IFnDEF PasMacroNoNativeCalls}
   AExec.RegisterDelphiFunction(FuncPoint, 'POINT', cdRegister);
@@ -285,9 +441,11 @@ begin
   {$ENDIF}
 end;
 
-{   SynEdit   }
-{%region SynEdit}
+{%endregion RegisterBasics}
 
+{%region RegisterTSynEdit}
+
+  {%region SynEdit class wrappers}
 
     // Caret
 procedure TSynEdit_CaretXY_W(Self: TSynEdit; P: TPoint);        begin   Self.CaretXY := P;   end;
@@ -462,7 +620,7 @@ begin
   Result := PhysicalLineLength(Line, Index);
 end;
 
-{%endregion}
+  {%endregion}
 
 procedure CompRegisterTSynEdit(AComp: TPSPascalCompiler);
 begin
@@ -534,9 +692,9 @@ begin
   end;
 end;
 
-procedure ExecRegisterTSynEdit(cl: TPSRuntimeClassImporter);
+procedure ExecRegisterTSynEdit(AExec: TEMSTPSExec);
 begin
-  with Cl.Add(TSynEdit) do
+  with AExec.CLassImp.Add(TSynEdit) do
   begin
     // Caret
     RegisterPropertyHelper(@TSynEdit_CaretXY_R, @TSynEdit_CaretXY_W, 'CARETXY');
@@ -587,7 +745,9 @@ begin
   end;
 end;
 
-(*   ClipBoard   *)
+{%endregion RegisterTSynEdit}
+
+{%region RegisterTClipboard}
 
 function HandleGetClipboard({%H-}Caller: TPSExec; {%H-}p: TPSExternalProcRec; {%H-}Global, Stack: TPSStack): Boolean;
 //var
@@ -613,9 +773,9 @@ begin
   AComp.AddFunction('function Clipboard: TClipboard;');
 end;
 
-procedure ExecRegisterTClipboard(cl: TPSRuntimeClassImporter; AExec: TPSExec);
+procedure ExecRegisterTClipboard(AExec: TEMSTPSExec);
 begin
-  with Cl.Add(TClipboard) do
+  with AExec.CLassImp.Add(TClipboard) do
   begin
     RegisterPropertyHelper(@TClipboard_AsText_R, @TClipboard_AsText_W, 'ASTEXT');
   end;
@@ -623,5 +783,20 @@ begin
   AExec.RegisterFunctionName('CLIPBOARD', @HandleGetClipboard, AExec, nil);
 end;
 
+{%endregion RegisterTClipboard}
+
+{%region RegisterSelfTests}
+
+procedure CompRegisterSelfTests(AComp: TPSPascalCompiler);
+begin
+
+end;
+
+procedure ExecRegisterSelfTests(AExec: TEMSTPSExec);
+begin
+
+end;
+
+{%endregion RegisterSelfTests}
 
 end.
