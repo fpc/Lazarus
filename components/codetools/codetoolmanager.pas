@@ -6054,6 +6054,7 @@ finalization
   OnFindOwnerOfCodeTreeNode:=nil;
   CodeToolBoss.Free;
   CodeToolBoss:=nil;
+  FreeAndNil(Expander);
   {$IFDEF CTDEBUG}
   DebugLn('codetoolmanager.pas - finalization finished');
   {$ENDIF}
