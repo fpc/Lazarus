@@ -856,17 +856,17 @@ end;
 
 procedure TCodeCache.OnBufferSetScanner(Sender: TCodeBuffer);
 var
-  Scanner: TLinkScanner;
+  s: TLinkScanner;
 begin
-  if Scanner=nil then exit;
-  Scanner:=Sender.Scanner;
-  Scanner.OnGetSource:=@Self.OnScannerGetSource;
-  Scanner.OnGetFileName:=@Self.OnScannerGetFileName;
-  Scanner.OnLoadSource:=@Self.OnScannerLoadSource;
-  Scanner.OnCheckFileOnDisk:=@Self.OnScannerCheckFileOnDisk;
-  Scanner.OnIncludeCode:=@Self.OnScannerIncludeCode;
-  Scanner.OnGetSourceStatus:=@Self.OnScannerGetSourceStatus;
-  Scanner.OnDeleteSource:=@Self.OnScannerDeleteSource;
+  s:=Sender.Scanner;
+  if s=nil then exit;
+  s.OnGetSource:=@Self.OnScannerGetSource;
+  s.OnGetFileName:=@Self.OnScannerGetFileName;
+  s.OnLoadSource:=@Self.OnScannerLoadSource;
+  s.OnCheckFileOnDisk:=@Self.OnScannerCheckFileOnDisk;
+  s.OnIncludeCode:=@Self.OnScannerIncludeCode;
+  s.OnGetSourceStatus:=@Self.OnScannerGetSourceStatus;
+  s.OnDeleteSource:=@Self.OnScannerDeleteSource;
 end;
 
 procedure TCodeCache.OnBufferSetFileName(Sender: TCodeBuffer;
