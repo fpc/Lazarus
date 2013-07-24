@@ -811,7 +811,7 @@ var
   Line: String;
 begin
   if (KeyName <> '') and (Value <> '') then
-    Line := KeyName + '=' + Value
+    Line := KeyName + Strings.NameValueSeparator + Value
   else
     Line := '';
   if (Row > Strings.Count) or ((Row - FixedRows) >= Strings.Count)
@@ -1051,7 +1051,7 @@ begin
     Cells[1,I]:=AValue;
   end
   else
-    Strings.Add(Key+'='+AValue);
+    Strings.Add(Key + Strings.NameValueSeparator + AValue);
 end;
 
 procedure TValueListEditor.ShowColumnTitles;
@@ -1277,7 +1277,7 @@ begin
     if (Key = '') and (KeyValue = '') then
       Line := ''
     else
-      Line := Key + '=' + KeyValue;
+      Line := Key + Strings.NameValueSeparator + KeyValue;
     // Empty grid: don't add a the line '' to Strings!
     if (Strings.Count = 0) and (Line = '') then Exit;
     if I>=Strings.Count then
