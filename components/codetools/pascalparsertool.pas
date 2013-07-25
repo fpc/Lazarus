@@ -236,7 +236,7 @@ type
     procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
         ScanRange: TLinkScannerRange;
         const CursorPos: TCodeXYPosition; out CleanCursorPos: integer;
-        BuildTreeFlags: TBuildTreeFlags);
+        BuildTreeFlags: TBuildTreeFlags = []);
     procedure BuildTreeAndGetCleanPos(const CursorPos: TCodeXYPosition;
         out CleanCursorPos: integer; BuildTreeFlags: TBuildTreeFlags = []);
     procedure BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode); virtual;

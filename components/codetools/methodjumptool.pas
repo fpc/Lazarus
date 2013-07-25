@@ -334,7 +334,8 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TMethodJumpingCodeTool.FindJumpPoint START  CursorPos=',dbgs(CursorPos.X),',',dbgs(CursorPos.Y));
   {$ENDIF}
-  BuildTreeAndGetCleanPos(CursorPos,CleanCursorPos);
+  BuildTreeAndGetCleanPos(trTillRange,lsrInitializationStart,
+    CursorPos,CleanCursorPos);
   {debugln(['TMethodJumpingCodeTool.FindJumpPoint Clean Src START:']);
   debugln(DbgText(Src));
   debugln(['TMethodJumpingCodeTool.FindJumpPoint Clean Src END']);
