@@ -65,8 +65,8 @@ function PredefinedClipboardFormat(
 
 function MsgKeyDataToShiftState(KeyData: PtrInt): TShiftState;
 
-function GetTickCount: DWord;
-function GetTickCount64: QWord;
+function GetTickCount: DWord; inline;
+function GetTickCount64: QWord; inline;
 
 {$IFDEF DebugLCL}
 function GetTickStep: DWord;
