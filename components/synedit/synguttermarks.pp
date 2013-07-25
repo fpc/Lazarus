@@ -28,7 +28,7 @@ type
                        var aFirstCustomColumnIdx: integer): Boolean;
     Procedure PaintLine(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect); virtual;
 
-    property ColumnWidth: Integer read FColumnWidth;
+    property ColumnWidth: Integer read FColumnWidth; // initialized in Paint
     property ColumnCount: Integer read FColumnCount;
   public
     constructor Create(AOwner: TComponent); override;
@@ -168,7 +168,7 @@ begin
     then
       aFirstCustomColumnIdx := j; // first none-bookmark column
 
-    if j > ColumnCount then break;
+    if j >= ColumnCount then break;
     LastMarkIsBookmark := MLine[j].IsBookmark;
   end;
 end;
