@@ -1076,13 +1076,17 @@ procedure TValueListEditor.AdjustColumnWidths;
 // If key column is fixed in width then adjust only the second column,
 //  otherwise adjust both columns propertionally.
 var
-  CW: Integer;
+  CW, AWidth: Integer;
 begin
   CW := ClientWidth;
   if  (doKeyColFixed in DisplayOptions) then
   begin
     //AutoSizeColumn(0);
-    ColWidths[1] := CW - ColWidths[0];
+    If ColWidths[0] > CW Then
+      ColWidths[0] := CW - 1;
+    AWidth := CW - ColWidths[0];
+    If AWidth > 0 Then
+      ColWidths[1] := AWidth;
   end
   else
   begin
