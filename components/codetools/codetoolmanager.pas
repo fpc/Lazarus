@@ -1936,7 +1936,7 @@ begin
   try
     Paths.Add(CleanDef);
     try
-      FCurCodeTool.BuildTree(lsrEnd);
+      FCurCodeTool.BuildTree(lsrInitializationStart);
       Node:=FCurCodeTool.FindSubProcPath(Paths,Attr,false);
       Result:=Node<>nil;
     except

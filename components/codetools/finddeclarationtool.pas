@@ -1742,7 +1742,7 @@ begin
   ActivateGlobalWriteLock;
   Params:=TFindDeclarationParams.Create;
   try
-    BuildTree(lsrEnd);
+    BuildTree(lsrInitializationStart);
 
     //DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath ',Src]);
 

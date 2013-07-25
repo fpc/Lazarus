@@ -161,7 +161,8 @@ type
         const FoundContext: TFindContext): TIdentifierFoundResult;
     procedure RemoveNewMainUsesSectionUnit(p: PChar);
   protected
-    procedure CheckWholeUnitParsed(var Node1, Node2: TCodeTreeNode);
+    procedure CheckWholeUnitParsed(var Node1, Node2: TCodeTreeNode;
+      Range: TLinkScannerRange = lsrEnd);
     procedure FreeClassInsertionList;
     procedure InsertNewClassParts(PartType: TNewClassPart);
     function InsertAllNewClassParts: boolean;
@@ -458,7 +459,7 @@ begin
   FSourceChangeCache.MainScanner:=Scanner;
 end;
 
-procedure TCodeCompletionCodeTool.SetSetPropertyVariablename(aValue: string);
+procedure TCodeCompletionCodeTool.SetSetPropertyVariablename(AValue: string);
 begin
   if FSetPropertyVariablename=aValue then Exit;
   FSetPropertyVariablename:=aValue;
@@ -499,20 +500,20 @@ begin
   if s='' then ;
 end;
 
-procedure TCodeCompletionCodeTool.CheckWholeUnitParsed(
-  var Node1, Node2: TCodeTreeNode);
+procedure TCodeCompletionCodeTool.CheckWholeUnitParsed(var Node1,
+  Node2: TCodeTreeNode; Range: TLinkScannerRange);
 var
   Pos1: Integer;
   Pos2: Integer;
 begin
   //DebugLn(['TCodeCompletionCodeTool.CheckWholeUnitParsed ',EndOfSourceFound,' LastErrorMessage="',LastErrorMessage,'" LastErrorCurPos=',dbgs(LastErrorCurPos)]);
-  if (ScannedRange=lsrEnd) and (not LastErrorValid) then exit;
+  if (ScannedRange>=Range) and (not LastErrorValid) then exit;
   Pos1:=0;
   Pos2:=0;
   if Node1<>nil then Pos1:=Node1.StartPos;
   if Node2<>nil then Pos2:=Node2.StartPos;
   ClearIgnoreErrorAfter;
-  BuildTree(lsrEnd); // parse whole unit
+  BuildTree(Range);
   if Node1<>nil then Node1:=FindDeepestNodeAtPos(Pos1,true);
   if Node2<>nil then Node2:=FindDeepestNodeAtPos(Pos2,true);
 end;
@@ -2899,7 +2900,7 @@ const
   begin
     Result:=false;
     // reparse code and find jump point into new proc
-    BuildTree(lsrEnd);
+    BuildTree(lsrInitializationStart);
     NewProcNode:=FindSubProcPath(SubProcPath,ShortProcFormat,true);
     if NewProcNode=nil then begin
       debugln(['FindJumpPointToNewProc FindSubProcPath failed, SubProcPath="',SubProcPath.Text,'"']);
@@ -5200,7 +5201,7 @@ begin
   if OnlyInterface then
     BuildTree(lsrImplementationStart)
   else
-    BuildTree(lsrEnd);
+    BuildTree(lsrInitializationStart);
 
   // find all unit identifiers (excluding sub types)
   TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
@@ -5502,7 +5503,7 @@ begin
   Result:=false;
   AllEmpty:=false;
   if (AClassName<>'') and (CursorPos.Y<1) then begin
-    BuildTree(lsrEnd);
+    BuildTree(lsrInitializationStart);
     CursorNode:=FindClassNodeInInterface(AClassName,true,false,true);
     CodeCompleteClassNode:=CursorNode;
   end else begin
@@ -6382,7 +6383,7 @@ var
   ClassNode: TCodeTreeNode;
 begin
   Result:=false;
-  BuildTree(lsrEnd);
+  BuildTree(lsrInitializationStart);
   if ScannedRange<>lsrEnd then exit;
   if (SourceChangeCache=nil) or (Scanner=nil) then exit;
   ClassNode:=FindClassNodeInUnit(AClassName,true,false,false,true);

@@ -1215,7 +1215,7 @@ var SectionNode, CurProcNode: TCodeTreeNode;
   CurProcHead: string;
 begin
   Result:=false;
-  BuildTree(lsrEnd);
+  BuildTree(lsrInitializationStart);
   SectionNode:=Tree.Root;
   while (SectionNode<>nil) do begin
     if SectionNode.Desc in [ctnProgram,ctnImplementation] then begin

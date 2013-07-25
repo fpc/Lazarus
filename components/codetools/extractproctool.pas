@@ -1000,7 +1000,7 @@ var
   begin
     Result:=false;
     // reparse code and find jump point into new proc
-    BuildTree(lsrEnd);
+    BuildTree(lsrInitializationStart);
     NewProcNode:=FindSubProcPath(SubProcPath,ShortProcFormat,true);
     {$IFDEF CTDebug}
     DebugLn('FindJumpPointToNewProc A found=',dbgs(NewProcNode<>nil));

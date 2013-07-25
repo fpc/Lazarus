@@ -484,7 +484,7 @@ var SectionNode, ANode: TCodeTreeNode;
 begin
   Result:=nil;
   if (AMethodName='') or (AClassName='') then exit;
-  if BuildTreeBefore then BuildTree(lsrEnd);
+  if BuildTreeBefore then BuildTree(lsrInitializationStart);
   // find implementation node
   SectionNode:=Tree.Root;
   while SectionNode<>nil do begin
@@ -701,7 +701,7 @@ begin
   Result:=false;
   ActivateGlobalWriteLock;
   try
-    BuildTree(lsrEnd);
+    BuildTree(lsrInitializationStart);
     ClassNode:=FindClassNodeInInterface(AClassName,true,false,ErrorOnNotFound);
     if ClassNode=nil then begin
       DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody class not found: ',AClassName]);
@@ -820,7 +820,7 @@ function TEventsCodeTool.CreateMethod(const AClassName,
 var AClassNode: TCodeTreeNode;
 begin
   Result:=false;
-  BuildTree(lsrEnd);
+  BuildTree(lsrInitializationStart);
   AClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
   Result:=CreateMethod(AClassNode,AMethodName,ATypeInfo,
                        APropertyUnitName,APropertyPath,
@@ -1047,7 +1047,7 @@ begin
     PChar(AUnitName))=0)
   then begin
     // search in this unit
-    BuildTree(lsrEnd);
+    BuildTree(lsrInitializationStart);
     FindContext.Node:=FindClassNodeInUnit(AClassName,true,false,false,
                                           ExceptionOnNotFound);
     if FindContext.Node=nil then begin

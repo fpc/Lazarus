@@ -540,7 +540,7 @@ type
     IsUnit: boolean;
     SourceName: string;
 
-    ScannedRange: TLinkScannerRange;
+    ScannedRange: TLinkScannerRange; // excluding the section with a syntax error
 
     function MainFilename: string;
     property ChangeStep: integer read FChangeStep; // see CTInvalidChangeStamp
@@ -1723,7 +1723,7 @@ begin
     // -> if there was an error and it was in a needed range, raise it again
     if LastErrorIsValid then begin
       // the error has happened in ScannedRange
-      if ord(ScannedRange)>ord(Range) then begin
+      if ord(ScannedRange)>=ord(Range) then begin
         // error is behind needed range => ok
       end else if (not IgnoreErrorAfterValid)
           or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage)
