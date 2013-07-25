@@ -121,7 +121,7 @@ begin
     Section^.Priority := Markup.Priority;
 
     if s='' then
-      s := Lines[ARow];
+      s := Lines[ARow-1];
     if s='' then break;
 
     x := FWordBreaker.PrevBoundary(s, Markup.Column, True);
