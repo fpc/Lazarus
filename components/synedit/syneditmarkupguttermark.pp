@@ -98,6 +98,7 @@ var
   s: string;
   Markup: TSynEditMarkupMark;
   Section: PMarkSection;
+  x: Integer;
 begin
   MLine := TCustomSynEdit(SynEdit).Marks.Line[ARow];
   if MLine = nil then begin
@@ -107,6 +108,7 @@ begin
   SetLength(FRowData, MLine.Count);
 
   j := 0;
+  s := '';
   for i := 0 to MLine.Count - 1 do begin
     if not (MLine[i] is TSynEditMarkupMark) then
       continue;
@@ -118,13 +120,22 @@ begin
     Section^.Markup := Markup.SourceMarkup;
     Section^.Priority := Markup.Priority;
 
-    s := Lines[Markup.Line - 1];
-    Section^.StartX := LogicalToPhysicalPos
-      (Point(FWordBreaker.PrevBoundary(s, Markup.Column, True), Markup.Line)).x;
-    Section^.EndX   := LogicalToPhysicalPos
-      (Point(FWordBreaker.NextBoundary(s, Markup.Column), Markup.Line)).x;
+    if s='' then
+      s := Lines[ARow];
+    if s='' then break;
 
-    if (Section^.StartX > 0) and (Section^.EndX > 0) then
+    x := FWordBreaker.PrevBoundary(s, Markup.Column, True);
+    if x < 1 then
+      x := 1;
+    Section^.StartX := LogicalToPhysicalPos(Point(x, ARow)).x;
+
+    x := FWordBreaker.NextBoundary(s, Markup.Column);
+    if x < 1 then
+      x := length(s) + 1;
+    Section^.EndX   := LogicalToPhysicalPos(Point(x, ARow)).x;
+
+    if (Section^.StartX > 0) and (Section^.EndX > 0) and (Section^.StartX<Section^.EndX)
+    then
       inc(j);
   end;
 
