@@ -62,7 +62,7 @@ type
     FTree: TAvgLvlTree;
   public
     constructor Create(Tree: TAvgLvlTree; aLowToHigh: boolean = true);
-    function GetEnumerator: TAvgLvlTreeNodeEnumerator;
+    function GetEnumerator: TAvgLvlTreeNodeEnumerator; inline;
     function MoveNext: Boolean;
     property Current: TAvgLvlTreeNode read FCurrent;
     property LowToHigh: boolean read FLowToHigh;
@@ -186,6 +186,22 @@ type
   end;
   PPointerToPointerItem = ^TPointerToPointerItem;
 
+  { TPointerToPointerEnumerator }
+
+  TPointerToPointerEnumerator = class
+  protected
+    FHighToLow: boolean;
+    FTree: TAvgLvlTree;
+    FCurrent: TAvgLvlTreeNode;
+    function GetCurrent: PPointerToPointerItem; inline;
+  public
+    constructor Create(Tree: TAvgLvlTree);
+    function GetEnumerator: TPointerToPointerEnumerator; inline;
+    function MoveNext: Boolean;
+    property Current: PPointerToPointerItem read GetCurrent;
+    property HighToLow: boolean read FHighToLow;
+  end;
+
   TPointerToPointerTree = class
   private
     FItems: TAvgLvlTree;
@@ -208,6 +224,10 @@ type
     property Count: SizeInt read GetCount;
     property Values[const Key: Pointer]: Pointer read GetValues write SetValues; default;
     property Tree: TAvgLvlTree read FItems; // tree of PPointerToPointerItem
+
+    // enumerators
+    function GetEnumerator: TPointerToPointerEnumerator;
+    function GetEnumeratorHighToLow: TPointerToPointerEnumerator;
   end;
 
 
@@ -306,44 +326,6 @@ type
   public
     property Current: PStringToStringItem read GetCurrent;
   end;
-
-  {$IFDEF DisableNewStringToStringTree}
-  { TOldStringToStringTree }
-
-  TOldStringToStringTree = class
-  private
-    FCompareItems: TListSortCompare;
-    FCompareNameWithItem: TListSortCompare;
-    FItems: TAvgLvlTree;
-    function GetCount: Integer;
-    function GetValues(const Name: string): string;
-    procedure SetValues(const Name: string; const AValue: string);
-    function FindNode(const Name: string): TAvgLvlTreeNode;
-    function GetNode(Node: TAvgLvlTreeNode; out Name, Value: string): Boolean;
-  public
-    constructor Create(CaseSensitive: boolean);
-    constructor Create(const ACompareItems, ACompareNameWithItem: TListSortCompare);
-    destructor Destroy; override;
-    procedure Clear;
-    procedure Assign(Src: TOldStringToStringTree);
-    function Contains(const Name: string): Boolean;
-    procedure Delete(const Name: string);
-    procedure Add(const Name, Value, Delimiter: string);
-    procedure AddNameValues(List: TStrings);
-    procedure AddValues(List: TStrings); inline; deprecated;
-    procedure AddNames(List: TStrings);
-    function GetFirst(out Name, Value: string): Boolean;
-    function GetLast(out Name, Value: string): Boolean;
-    function GetNext(const Name: string; out NextName, NextValue: string): Boolean;
-    function GetPrev(const Name: string; out PrevName, PrevValue: string): Boolean;
-    property Count: Integer read GetCount;
-    property Values[const Name: string]: string read GetValues write SetValues; default;
-    property Tree: TAvgLvlTree read FItems;
-    property CompareItems: TListSortCompare read FCompareItems;
-    property CompareNameWithItem: TListSortCompare read FCompareNameWithItem;
-  end;
-  TStringToStringTree = TOldStringToStringTree;
-  {$ENDIF}
 
   { TStringToStringTree }
 
@@ -458,6 +440,39 @@ begin
   Result:=CompareText(AnsiString(Key),PStringMapItem(Data)^.Name);
 end;
 
+{ TPointerToPointerEnumerator }
+
+function TPointerToPointerEnumerator.GetCurrent: PPointerToPointerItem;
+begin
+  Result:=PPointerToPointerItem(FCurrent.Data);
+end;
+
+constructor TPointerToPointerEnumerator.Create(Tree: TAvgLvlTree);
+begin
+  FTree:=Tree;
+end;
+
+function TPointerToPointerEnumerator.GetEnumerator: TPointerToPointerEnumerator;
+begin
+  Result:=Self;
+end;
+
+function TPointerToPointerEnumerator.MoveNext: Boolean;
+begin
+  if FHighToLow then begin
+    if FCurrent<>nil then
+      FCurrent:=FCurrent.Precessor
+    else
+      FCurrent:=FTree.FindHighest;
+  end else begin
+    if FCurrent<>nil then
+      FCurrent:=FCurrent.Successor
+    else
+      FCurrent:=FTree.FindLowest;
+  end;
+  Result:=FCurrent<>nil;
+end;
+
 { TAvgLvlTreeNodeEnumerator }
 
 constructor TAvgLvlTreeNodeEnumerator.Create(Tree: TAvgLvlTree;
@@ -487,6 +502,8 @@ begin
   end;
   Result:=FCurrent<>nil;
 end;
+
+{ TStringToPointerTree }
 
 function TStringToPointerTree.GetValues(const s: string): Pointer;
 var
@@ -2044,197 +2061,6 @@ begin
   Result:=inherited NodeToReportStr(aNode)+' LeftCount='+IntToStr(TIndexedAVLTreeNode(aNode).LeftCount);
 end;
 
-{$IFDEF DisableNewStringToStringTree}
-{ TOldStringToStringTree }
-
-function TOldStringToStringTree.GetCount: Integer;
-begin
-  Result:=FItems.Count;
-end;
-
-function TOldStringToStringTree.GetValues(const Name: string): string;
-var
-  Node: TAvgLvlTreeNode;
-begin
-  Node:=FindNode(Name);
-  if Node<>nil then
-    Result:=PStringToStringItem(Node.Data)^.Value
-  else
-    Result:='';
-end;
-
-procedure TOldStringToStringTree.SetValues(const Name: string; const AValue: string);
-var
-  NewItem: PStringToStringItem;
-  Node: TAvgLvlTreeNode;
-begin
-  Node:=FindNode(Name);
-  if (Node<>nil) then
-    PStringToStringItem(Node.Data)^.Value:=AValue
-  else begin
-    New(NewItem);
-    NewItem^.Name:=Name;
-    NewItem^.Value:=AValue;
-    FItems.Add(NewItem);
-  end;
-end;
-
-function TOldStringToStringTree.FindNode(const Name: string): TAvgLvlTreeNode;
-begin
-   Result:=FItems.FindKey(Pointer(Name),FCompareNameWithItem);
-end;
-
-function TOldStringToStringTree.GetNode(Node: TAvgLvlTreeNode;
-  out Name, Value: string): Boolean;
-var
-  Item: PStringToStringItem;
-begin
-  if Node<>nil then begin
-    Item:=PStringToStringItem(Node.Data);
-    Name:=Item^.Name;
-    Value:=Item^.Value;
-    Result:=true;
-  end else begin
-    Name:='';
-    Value:='';
-    Result:=false;
-  end;
-end;
-
-constructor TOldStringToStringTree.Create(CaseSensitive: boolean);
-begin
-  if CaseSensitive then
-    Create(@CompareStringToStringItems,@CompareAnsiStringWithStrToStrItem)
-  else
-    Create(@CompareStringToStringItemsI,@CompareAnsiStringWithStrToStrItemI);
-end;
-
-constructor TOldStringToStringTree.Create(const ACompareItems,
-  ACompareNameWithItem: TListSortCompare);
-begin
-  FCompareItems:=ACompareItems;
-  FCompareNameWithItem:=ACompareNameWithItem;
-  FItems:=TAvgLvlTree.Create(FCompareItems);
-end;
-
-destructor TOldStringToStringTree.Destroy;
-begin
-  Clear;
-  FItems.Free;
-  inherited Destroy;
-end;
-
-procedure TOldStringToStringTree.Clear;
-var
-  Node: TAvgLvlTreeNode;
-  Item: PStringToStringItem;
-begin
-  Node:=FItems.FindLowest;
-  while Node<>nil do begin
-    Item:=PStringToStringItem(Node.Data);
-    Dispose(Item);
-    Node:=Node.FindSuccessor;
-  end;
-  FItems.Clear;
-end;
-
-procedure TOldStringToStringTree.Assign(Src: TOldStringToStringTree);
-var
-  Node: TAvgLvlTreeNode;
-  Item: PStringToStringItem;
-begin
-  Clear;
-  if Src=nil then exit;
-  Node:=Src.Tree.FindLowest;
-  while Node<>nil do begin
-    Item:=PStringToStringItem(Node.Data);
-    Values[Item^.Name]:=Item^.Value;
-    Node:=Node.FindSuccessor;
-  end;
-end;
-
-function TOldStringToStringTree.Contains(const Name: string): Boolean;
-begin
-  Result:=FindNode(Name)<>nil;
-end;
-
-procedure TOldStringToStringTree.Delete(const Name: string);
-var
-  Node: TAvgLvlTreeNode;
-  Item: PStringToStringItem;
-begin
-  Node:=FindNode(Name);
-  if Node=nil then exit;
-  Item:=PStringToStringItem(Node.Data);
-  FItems.Delete(Node);
-  Dispose(Item);
-end;
-
-procedure TOldStringToStringTree.Add(const Name, Value, Delimiter: string);
-var
-  OldValue: string;
-begin
-  OldValue:=Values[Name];
-  if OldValue<>'' then
-    OldValue:=OldValue+Delimiter;
-  OldValue:=OldValue+Value;
-  Values[Name]:=OldValue;
-end;
-
-procedure TOldStringToStringTree.AddNameValues(List: TStrings);
-var
-  i: Integer;
-begin
-  for i:=0 to List.Count-1 do
-    Values[List.Names[i]]:=List.ValueFromIndex[i];
-end;
-
-procedure TOldStringToStringTree.AddValues(List: TStrings);
-begin
-  AddNames(List);
-end;
-
-procedure TOldStringToStringTree.AddNames(List: TStrings);
-var
-  i: Integer;
-begin
-  for i:=0 to List.Count-1 do
-    Values[List[i]]:='';
-end;
-
-function TOldStringToStringTree.GetFirst(out Name, Value: string): Boolean;
-begin
-  Result:=GetNode(Tree.FindLowest,Name,Value);
-end;
-
-function TOldStringToStringTree.GetLast(out Name, Value: string): Boolean;
-begin
-  Result:=GetNode(Tree.FindHighest,Name,Value);
-end;
-
-function TOldStringToStringTree.GetNext(const Name: string; out NextName,
-  NextValue: string): Boolean;
-var
-  Node: TAvgLvlTreeNode;
-begin
-  Node:=FindNode(Name);
-  if Node<>nil then
-    Node:=Node.FindSuccessor;
-  Result:=GetNode(Node,NextName,NextValue);
-end;
-
-function TOldStringToStringTree.GetPrev(const Name: string; out PrevName,
-  PrevValue: string): Boolean;
-var
-  Node: TAvgLvlTreeNode;
-begin
-  Node:=FindNode(Name);
-  if Node<>nil then
-    Node:=Node.FindPrecessor;
-  Result:=GetNode(Node,PrevName,PrevValue);
-end;
-{$ENDIF}
-
 { TPointerToPointerTree }
 
 function TPointerToPointerTree.GetCount: SizeInt;
@@ -2380,6 +2206,18 @@ begin
   if Node<>nil then
     Node:=Node.Precessor;
   Result:=GetNode(Node,PrevKey,PrevValue);
+end;
+
+function TPointerToPointerTree.GetEnumerator: TPointerToPointerEnumerator;
+begin
+  Result:=TPointerToPointerEnumerator.Create(Tree);
+end;
+
+function TPointerToPointerTree.
+  GetEnumeratorHighToLow: TPointerToPointerEnumerator;
+begin
+  Result:=TPointerToPointerEnumerator.Create(Tree);
+  Result.fHighToLow:=true;
 end;
 
 { TCustomStringMapEnumerator }
