@@ -20,6 +20,10 @@ type
     FHasError: Boolean;
     FErrorMsg: String;
     FKeyBinding: TEditorMacroKeyBinding;
+    FPrivateCompiler: TEMSPSPascalCompiler;
+    FPrivateExec: TEMSTPSExec;
+    function GetCompiler: TEMSPSPascalCompiler;
+    function GetExec: TEMSTPSExec;
   protected
     function  GetMacroName: String; override;
     procedure SetMacroName(AValue: string); override;
@@ -35,6 +39,8 @@ type
 
     procedure Compile;
     procedure FixBeginEnd;
+    property Compiler: TEMSPSPascalCompiler read GetCompiler;
+    property Exec: TEMSTPSExec read GetExec;
   public
     constructor Create({%H-}aOwner: TComponent); override;
     destructor Destroy; override;
@@ -50,6 +56,10 @@ type
     function  IsEmpty: Boolean; override;
     function  IsInvalid: Boolean; override;
     function  IsRecording({%H-}AnEditor: TWinControl): Boolean; override;
+
+    procedure MakeTestable;
+    property PrivateCompiler: TEMSPSPascalCompiler read FPrivateCompiler write FPrivateCompiler;
+    property PrivateExec: TEMSTPSExec read FPrivateExec write FPrivateExec;
   end;
 
 
@@ -72,6 +82,20 @@ begin
 end;
 
 { TEMSEditorMacro }
+
+function TEMSEditorMacro.GetCompiler: TEMSPSPascalCompiler;
+begin
+  Result := FPrivateCompiler;
+  if Result = nil then
+    Result := TheCompiler;
+end;
+
+function TEMSEditorMacro.GetExec: TEMSTPSExec;
+begin
+  Result := FPrivateExec;
+  if Result = nil then
+    Result := TheExec;
+end;
 
 function TEMSEditorMacro.GetMacroName: String;
 begin
@@ -122,21 +146,21 @@ begin
     Compile;
     if IsInvalid then exit;
 
-    TheCompiler.GetOutput({%H-}s);
-    if not TheExec.LoadData(s) then // Load the data from the Data string.
+    Compiler.GetOutput({%H-}s);
+    if not Exec.LoadData(s) then // Load the data from the Data string.
       exit;
-    TheCompiler.GetDebugOutput({%H-}s2);
-    TheExec.LoadDebugData(s2);
+    Compiler.GetDebugOutput({%H-}s2);
+    Exec.LoadDebugData(s2);
 
-    TheExec.SynEdit := aEditor as TCustomSynEdit;
+    Exec.SynEdit := aEditor as TCustomSynEdit;
     try
-      TheExec.RunScript;
+      Exec.RunScript;
     except
       on e: Exception do
         IDEMessagesWindow.AddMsg(Format('%s: %s', [e.ClassName, e.Message]), '', -1);
     end;
-    if TheExec.ExceptionCode <> erNoError then begin
-      ExObj := TheExec.ExceptionObject;
+    if Exec.ExceptionCode <> erNoError then begin
+      ExObj := Exec.ExceptionObject;
       if ExObj <> nil then
         s := ExObj.ClassName
       else
@@ -145,9 +169,9 @@ begin
       i := 0;
       x := 0;
       y := 0;
-      TheExec.TranslatePositionEx(TheExec.ExceptionProcNo, TheExec.ExceptionPos, i, x, y, s2);
+      Exec.TranslatePositionEx(Exec.ExceptionProcNo, Exec.ExceptionPos, i, x, y, s2);
       if IDEMessagesWindow <> nil then
-        IDEMessagesWindow.AddMsg(Format('%s: "%s" at %d/%d', [s, TheExec.ExceptionString, x,y]), '', -1);
+        IDEMessagesWindow.AddMsg(Format('%s: "%s" at %d/%d', [s, Exec.ExceptionString, x,y]), '', -1);
     end;
 
   finally
@@ -178,13 +202,13 @@ var
 begin
   FHasError := False;
   FErrorMsg := '';
-  TheCompiler.Clear;
+  Compiler.Clear;
 
 
-  if not TheCompiler.Compile(FSource) then
+  if not Compiler.Compile(FSource) then
   begin
-    for i := 0 to TheCompiler.MsgCount -1 do
-      FErrorMsg := FErrorMsg + TheCompiler.Msg[i].MessageToString + LineEnding;
+    for i := 0 to Compiler.MsgCount -1 do
+      FErrorMsg := FErrorMsg + Compiler.Msg[i].MessageToString + LineEnding;
     FHasError := True;
   end;
 end;
@@ -207,6 +231,8 @@ destructor TEMSEditorMacro.Destroy;
 begin
   inherited Destroy;
   FreeAndNil(FKeyBinding);
+  FreeAndNil(FPrivateExec);
+  FreeAndNil(FPrivateCompiler);
 end;
 
 procedure TEMSEditorMacro.AssignEventsFrom(AMacroRecorder: TEditorMacro);
@@ -286,6 +312,16 @@ end;
 function TEMSEditorMacro.IsRecording(AnEditor: TWinControl): Boolean;
 begin
   Result := False;
+end;
+
+procedure TEMSEditorMacro.MakeTestable;
+begin
+  FreeAndNil(FPrivateExec);
+  FreeAndNil(FPrivateCompiler);
+  TheCompiler := TEMSPSPascalCompiler.Create;
+  TheCompiler.AddSelfTests;
+  TheExec := TEMSTPSExec.Create;
+  TheExec.AddSelfTests;
 end;
 
 initialization

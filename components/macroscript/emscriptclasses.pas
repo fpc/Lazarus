@@ -22,24 +22,30 @@ type
   { TEMSTPSExec }
 
   TEMSTPSExec = class(TPSDebugExec)
-  public
-    SynEdit: TCustomSynEdit;
-    CLassImp: TPSRuntimeClassImporter;
+  private
+    FCLassImp: TPSRuntimeClassImporter;
+    FSynEdit: TCustomSynEdit;
 
+    procedure AddFuncToExec;
+    procedure AddECFuncToExecEnum(const s: String); // ec... commands
+  public
     constructor Create;
     destructor Destroy; override;
 
-    procedure AddECFuncToExecEnum(const s: String); // ec... commands
-    procedure AddFuncToExec;
-    procedure AddTestFuncToExec;
+    procedure AddSelfTests;
+    property SynEdit: TCustomSynEdit read FSynEdit write FSynEdit;
   end;
 
   { TEMSPSPascalCompiler }
 
   TEMSPSPascalCompiler = class(TPSPascalCompiler)
-  public
+  private
+    FSelfTests: Boolean;
     procedure AddECFuncToCompEnum(const s: String);
+  public
     constructor Create;
+
+    procedure AddSelfTests;
   end;
 
 
@@ -65,30 +71,32 @@ type TPoint2 = record x,y,a,b,c: Longint; end;
 { TEMSPSPascalCompiler }
 
 function CompilerOnUses(Sender: TPSPascalCompiler; const Name: TbtString): Boolean;
+var
+  S: TEMSPSPascalCompiler;
 begin
   if Name = 'SYSTEM' then
   begin
     SIRegisterTObject(Sender);
     //SIRegister_Std(Sender);
+
     if Sender is TEMSPSPascalCompiler then begin
-      GetEditorCommandValues(@TEMSPSPascalCompiler(Sender).AddECFuncToCompEnum);
-      GetIDEEditorCommandValues(@TEMSPSPascalCompiler(Sender).AddECFuncToCompEnum);
-      CompRegisterBasics(TEMSPSPascalCompiler(Sender));
-      CompRegisterTSynEdit(TEMSPSPascalCompiler(Sender));
-      Sender.AddFunction('function Caller: TSynEdit;');
-      CompRegisterTClipboard(TEMSPSPascalCompiler(Sender));
+      S := TEMSPSPascalCompiler(Sender);
+      // ec... commands
+      GetEditorCommandValues(@S.AddECFuncToCompEnum);
+      GetIDEEditorCommandValues(@S.AddECFuncToCompEnum);
+
+      CompRegisterBasics(S);
+      CompRegisterTSynEdit(S);
+      S.AddFunction('function Caller: TSynEdit;');
+      CompRegisterTClipboard(S);
+
+      if S.FSelfTests then
+        CompRegisterSelfTests(S);
     end;
 
     Result := True;
   end else
     Result := False;
-end;
-
-function TestCompilerOnUses(Sender: TPSPascalCompiler; const Name: TbtString): Boolean;
-begin
-  Result := CompilerOnUses(Sender, Name);
-  if Result then
-    CompRegisterSelfTests(TEMSPSPascalCompiler(Sender));
 end;
 
 procedure TEMSPSPascalCompiler.AddECFuncToCompEnum(const s: String);
@@ -110,6 +118,12 @@ begin
   inherited Create;
   OnUses := @CompilerOnUses;
   BooleanShortCircuit := True;
+  FSelfTests := False;
+end;
+
+procedure TEMSPSPascalCompiler.AddSelfTests;
+begin
+  FSelfTests := True;
 end;
 
 { TEMSTPSExec }
@@ -149,17 +163,17 @@ end;
 constructor TEMSTPSExec.Create;
 begin
   inherited Create;
-  CLassImp := TPSRuntimeClassImporter.Create;
-  RIRegisterTObject(CLassImp);
+  FCLassImp := TPSRuntimeClassImporter.Create;
+  RIRegisterTObject(FCLassImp);
   // ## RIRegister_Std(CL);
   AddFuncToExec;
-  RegisterClassLibraryRuntime(Self, CLassImp);
+  RegisterClassLibraryRuntime(Self, FCLassImp);
 end;
 
 destructor TEMSTPSExec.Destroy;
 begin
   inherited Destroy;
-  FreeAndNil(CLassImp);
+  FreeAndNil(FCLassImp);
 end;
 
 procedure TEMSTPSExec.AddECFuncToExecEnum(const s: String);
@@ -181,7 +195,7 @@ begin
   ExecRegisterTClipboard(Self);
 end;
 
-procedure TEMSTPSExec.AddTestFuncToExec;
+procedure TEMSTPSExec.AddSelfTests;
 begin
   ExecRegisterSelfTests(Self);
 end;
@@ -420,10 +434,6 @@ begin
   AExec.RegisterDelphiFunction(FuncShowMessagePos, 'ShowMessagePos', cdRegister);
   AExec.RegisterDelphiFunction(FuncInputBox, 'InputBox', cdRegister);
   AExec.RegisterDelphiFunction(FuncInputQuery, 'InputQuery', cdRegister);
-
-  // for tests
-  AExec.RegisterDelphiFunction(Functest_ord_mb, 'test_ord_mb', cdRegister);
-  AExec.RegisterDelphiFunction(Functest_ord_mt, 'test_ord_mt', cdRegister);
   {$ELSE}
   AExec.RegisterFunctionName('POINT',             @ExecBasicHandler, Pointer(0), nil);
 
@@ -434,10 +444,6 @@ begin
   AExec.RegisterFunctionName('ShowMessagePos',    @ExecBasicHandler, Pointer(54), nil);
   AExec.RegisterFunctionName('InputBox',          @ExecBasicHandler, Pointer(55), nil);
   AExec.RegisterFunctionName('InputQuery',        @ExecBasicHandler, Pointer(56), nil);
-
-  // for tests
-  AExec.RegisterFunctionName('test_ord_mb',       @ExecBasicHandler, Pointer(900), nil);
-  AExec.RegisterFunctionName('test_ord_mt',       @ExecBasicHandler, Pointer(901), nil);
   {$ENDIF}
 end;
 
@@ -694,7 +700,7 @@ end;
 
 procedure ExecRegisterTSynEdit(AExec: TEMSTPSExec);
 begin
-  with AExec.CLassImp.Add(TSynEdit) do
+  with AExec.FCLassImp.Add(TSynEdit) do
   begin
     // Caret
     RegisterPropertyHelper(@TSynEdit_CaretXY_R, @TSynEdit_CaretXY_W, 'CARETXY');
@@ -775,7 +781,7 @@ end;
 
 procedure ExecRegisterTClipboard(AExec: TEMSTPSExec);
 begin
-  with AExec.CLassImp.Add(TClipboard) do
+  with AExec.FCLassImp.Add(TClipboard) do
   begin
     RegisterPropertyHelper(@TClipboard_AsText_R, @TClipboard_AsText_W, 'ASTEXT');
   end;
@@ -794,7 +800,14 @@ end;
 
 procedure ExecRegisterSelfTests(AExec: TEMSTPSExec);
 begin
-
+  // for tests
+  {$IFnDEF PasMacroNoNativeCalls}
+  AExec.RegisterDelphiFunction(Functest_ord_mb, 'test_ord_mb', cdRegister);
+  AExec.RegisterDelphiFunction(Functest_ord_mt, 'test_ord_mt', cdRegister);
+  {$ELSE}
+  AExec.RegisterFunctionName('test_ord_mb',       @ExecBasicHandler, Pointer(900), nil);
+  AExec.RegisterFunctionName('test_ord_mt',       @ExecBasicHandler, Pointer(901), nil);
+  {$ENDIF}
 end;
 
 {%endregion RegisterSelfTests}

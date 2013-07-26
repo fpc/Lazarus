@@ -64,6 +64,7 @@ procedure TTestCase1.TestBasics;
 begin
   FTestSyn := TSynEdit.Create(nil);
   FTestMacro := TEMSEditorMacro.Create(nil);
+  FTestMacro.MakeTestable;
   try
     DoTestSimple('SizeOf(TPoint)',   '',
                  'var p: TPoint; begin if SizeOf(p) = ' +IntToStr(SizeOf(TPoint)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd); end.',
@@ -159,6 +160,7 @@ procedure TTestCase1.TestSynProcs;
 begin
   FTestSyn := TSynEdit.Create(nil);
   FTestMacro := TEMSEditorMacro.Create(nil);
+  FTestMacro.MakeTestable;
   try
     {%region Text / point / ecXXX *}
 
@@ -583,6 +585,7 @@ procedure TTestCase1.TestInteractiv;
 begin
   FTestSyn := TSynEdit.Create(nil);
   FTestMacro := TEMSEditorMacro.Create(nil);
+  FTestMacro.MakeTestable;
   try
 
     DoTestSimple('ShowMessage',   'Y',
