@@ -6089,8 +6089,7 @@ procedure TProjectCompilerOptions.SaveToXMLConfig(AXMLConfig: TXMLConfig;
 begin
   inherited SaveToXMLConfig(AXMLConfig,Path);
   
-  SaveXMLCompileReasons(AXMLConfig, Path+'CompileReasons/', FCompileReasons,
-                        crAll);
+  SaveXMLCompileReasons(AXMLConfig, Path+'CompileReasons/', FCompileReasons, crAll);
   //debugln(['TProjectCompilerOptions.SaveToXMLConfig ',Path+'CompileReasons/ ',crCompile in FCompileReasons]);
 end;
 

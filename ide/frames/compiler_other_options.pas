@@ -117,7 +117,7 @@ begin
     AllOpts.CustomOptions := memoCustomOptions.Lines;
     if AllOpts.ShowModal = mrOK then
     begin
-      AllOpts.OptionsReader.ToCustomOptions(memoCustomOptions.Lines);
+      AllOpts.ToCustomOptions(memoCustomOptions.Lines);
       memoCustomOptions.Invalidate;
     end;
   finally

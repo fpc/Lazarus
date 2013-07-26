@@ -114,7 +114,7 @@ type
   TCompilerOpt = class
   private
     fId: integer;                       // Identification.
-    fOption: string;                    // Option without the leading '-'.
+    fOption: string;                    // Option with the leading '-'.
     fSuffix: string;                    // <x> or similar suffix of option.
     fValue: string;                     // Data entered by user, 'True' for Boolean.
     fEditKind: TCompilerOptEditKind;
@@ -199,7 +199,7 @@ type
     function FilterOptions(aFilter: string): Boolean;
     function FindOptionById(aId: integer): TCompilerOpt;
     function FromCustomOptions(aStrings: TStrings): TModalResult;
-    function ToCustomOptions(aStrings: TStrings): TModalResult;
+    function ToCustomOptions(aStrings: TStrings; aUseComments: Boolean): TModalResult;
   public
     property SupportedCategories: TStringList read fSupportedCategories;
     property RootOptGroup: TCompilerOptGroup read fRootOptGroup;
@@ -405,7 +405,10 @@ end;
 
 function IgnoredOption(aOpt: string): Boolean;
 begin
-  Result := aOpt = '-F';                // Ignore all file names and paths
+  if Length(aOpt) < 2 then Exit;
+  // Ignore : all file names and paths
+  //          executable path
+  Result := aOpt[2] in ['F', 'e'];
 end;
 
 { TCompilerOpt }
@@ -550,8 +553,9 @@ begin
   else begin
     // Option was not found, try separating the parameter.
     // ToDo: figure out the length in a more clever way.
-    if AnsiStartsStr('-d', aOptAndValue)
-    or AnsiStartsStr('-u', aOptAndValue) then
+    Assert((Length(aOptAndValue)>2) and (aOptAndValue[1]='-'),
+           'TCompilerOptGroup.SelectOption: Invalid option & value');
+    if aOptAndValue[2] in ['e', 'd', 'u', 'I', 'k', 'o'] then
       OptLen := 2
     else
       OptLen := 3;
@@ -940,23 +944,42 @@ end;
 
 function TCompilerOptReader.FromCustomOptions(aStrings: TStrings): TModalResult;
 var
-  i, CommentPos: Integer;
+  i, j, CommentPos: Integer;
   s: String;
+  sl: TStringList;
 begin
   Result := mrOK;
-  for i := 0 to aStrings.Count-1 do
-  begin
-    s := Trim(aStrings[i]);
-    if s = '' then Continue;
-    CommentPos := Pos('//', s);
-    if CommentPos > 0 then         // Remove the possible comment.
-      s := TrimRight(Copy(s, 1, CommentPos));
-    fRootOptGroup.SelectOption(s);
+  sl := TStringList.Create;
+  try
+    for i := 0 to aStrings.Count-1 do
+    begin
+      s := Trim(aStrings[i]);
+      if s = '' then Continue;
+      CommentPos := Pos('//', s);
+      if CommentPos > 0 then         // Remove possible comment.
+        s := TrimRight(Copy(s, 1, CommentPos));
+      sl.StrictDelimiter := True;
+      sl.Delimiter := ' ';
+      sl.DelimitedText := s;         // Split the line with space as a separator.
+      for j := 0 to sl.Count-1 do
+        fRootOptGroup.SelectOption(sl[j]);
+    end;
+  finally
+    sl.Free;
   end;
 end;
 
-function TCompilerOptReader.ToCustomOptions(aStrings: TStrings): TModalResult;
+function TCompilerOptReader.ToCustomOptions(aStrings: TStrings;
+  aUseComments: Boolean): TModalResult;
 // Copy options to a list if they have a non-default value (True for boolean).
+
+  function PossibleComment(aRoot: TCompilerOpt): string;
+  begin
+    if aUseComments then
+      Result := '    // ' + aRoot.Description
+    else
+      Result := '';
+  end;
 
   function CopyOptions(aRoot: TCompilerOpt): integer;
   var
@@ -971,7 +994,7 @@ function TCompilerOptReader.ToCustomOptions(aStrings: TStrings): TModalResult;
       begin                  // TCompilerOptSet
         s := TCompilerOptSet(aRoot).CollectSelectedOptions;
         if s <> '' then
-          aStrings.Add(s);
+          aStrings.Add(s + PossibleComment(aRoot));
       end
       else begin             // TCompilerOptGroup
         for i := 0 to Children.Count-1 do         // Recursive call for children.
@@ -982,9 +1005,9 @@ function TCompilerOptReader.ToCustomOptions(aStrings: TStrings): TModalResult;
       if aRoot.Value <> '' then
       begin
         if aRoot.Value = 'True' then
-          aStrings.Add(aRoot.Option)
+          aStrings.Add(aRoot.Option + PossibleComment(aRoot))
         else
-          aStrings.Add(aRoot.Option + aRoot.Value);
+          aStrings.Add(aRoot.Option + aRoot.Value + PossibleComment(aRoot));
       end;
     end;
     Result := Res;

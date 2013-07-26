@@ -40,6 +40,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    function ToCustomOptions(aStrings: TStrings): TModalResult;
   public
     property CustomOptions: TStrings read FCustomOptions write FCustomOptions;
     property OptionsReader: TCompilerOptReader read FOptionsReader;
@@ -69,6 +70,11 @@ begin
   inherited Destroy;
 end;
 
+function TfrmAllCompilerOptions.ToCustomOptions(aStrings: TStrings): TModalResult;
+begin
+  Result := OptionsReader.ToCustomOptions(aStrings, cbUseComments.Checked);
+end;
+
 procedure TfrmAllCompilerOptions.FormShow(Sender: TObject);
 begin
   Caption:=lisAllOptions;
@@ -96,8 +102,8 @@ end;
 
 procedure TfrmAllCompilerOptions.SetIdleConnected(AValue: Boolean);
 begin
-  if FIdleConnected=AValue then exit;
-  FIdleConnected:=AValue;
+  if FIdleConnected = AValue then exit;
+  FIdleConnected := AValue;
   if FIdleConnected then
     Application.AddOnIdleHandler(@OnIdle)
   else
@@ -107,7 +113,7 @@ end;
 procedure TfrmAllCompilerOptions.OnIdle(Sender: TObject; var Done: Boolean);
 begin
   IdleConnected := False;
-  Screen.Cursor:=crHourGlass;
+  Screen.Cursor := crHourGlass;
   try
     edOptionsFilter.Enabled := False;
     FOptionsReader.CompilerExecutable := EnvironmentOptions.CompilerFilename;
@@ -117,7 +123,7 @@ begin
     RenderAndFilterOptions;
     edOptionsFilter.Enabled := True;
   finally
-    Screen.Cursor:=crDefault;
+    Screen.Cursor := crDefault;
   end;
 end;
 
