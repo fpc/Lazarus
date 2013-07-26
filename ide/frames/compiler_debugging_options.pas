@@ -12,6 +12,10 @@ type
   { TCompilerDebuggingOptionsFrame }
 
   TCompilerDebuggingOptionsFrame = class(TAbstractIDEOptionsEditor)
+    chkChecksIO: TCheckBox;
+    chkChecksOverflow: TCheckBox;
+    chkChecksRange: TCheckBox;
+    chkChecksStack: TCheckBox;
     chkDebugGDB: TCheckBox;
     chkGenGProfCode: TCheckBox;
     chkSymbolsStrip: TCheckBox;
@@ -19,7 +23,10 @@ type
     chkUseHeaptrc: TCheckBox;
     chkUseLineInfoUnit: TCheckBox;
     chkUseValgrind: TCheckBox;
+    chkVerifyObjMethodCall: TCheckBox;
+    chkAssertion: TCheckBox;
     dropDbgSymbolType: TComboBox;
+    grpChecks: TGroupBox;
     grpOtherDebuggingInfo: TGroupBox;
     grpInfoForGDB: TGroupBox;
     lblEmpty: TLabel;
@@ -80,6 +87,14 @@ end;
 
 procedure TCompilerDebuggingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
+  grpChecks.Caption := dlgCOChecksAndAssertion;
+  chkChecksIO.Caption := 'I/O (-Ci)';
+  chkChecksRange.Caption := dlgCORange + ' (-Cr)';
+  chkChecksOverflow.Caption := dlgCOOverflow + ' (-Co)';
+  chkChecksStack.Caption := dlgCOStack + ' (-Ct)';
+  chkVerifyObjMethodCall.Caption := lisVerifyMethodCalls + ' (-CR)';
+  chkAssertion.Caption := dlgAssertCode + ' (-Sa)';
+
   grpInfoForGDB.Caption := dlgCOInfoForGDB;
   grpOtherDebuggingInfo.Caption := dlgCOOtherDebuggingInfo;
 
@@ -104,6 +119,13 @@ procedure TCompilerDebuggingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOpti
 begin
   with AOptions as TBaseCompilerOptions do
   begin
+    chkChecksIO.Checked := IOChecks;
+    chkChecksRange.Checked := RangeChecks;
+    chkChecksOverflow.Checked := OverflowChecks;
+    chkChecksStack.Checked := StackChecks;
+    chkVerifyObjMethodCall.Checked := VerifyObjMethodCall;
+    chkAssertion.Checked := IncludeAssertionCode;
+
     chkDebugGDB.Checked := GenerateDebugInfo;
     dropDbgSymbolType.ItemIndex := SymbolToIndex(DebugInfoType);
     chkUseLineInfoUnit.Checked := UseLineInfoUnit;
@@ -121,6 +143,13 @@ procedure TCompilerDebuggingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOpt
 begin
   with AOptions as TBaseCompilerOptions do
   begin
+    IOChecks := chkChecksIO.Checked;
+    RangeChecks := chkChecksRange.Checked;
+    OverflowChecks := chkChecksOverflow.Checked;
+    StackChecks := chkChecksStack.Checked;
+    VerifyObjMethodCall := chkVerifyObjMethodCall.Checked;
+    IncludeAssertionCode := chkAssertion.Checked;
+
     GenerateDebugInfo := chkDebugGDB.Checked;
     DebugInfoType := IndexToSymbol(dropDbgSymbolType.ItemIndex);
     UseLineInfoUnit := chkUseLineInfoUnit.Checked;

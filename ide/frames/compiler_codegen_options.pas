@@ -13,24 +13,21 @@ type
   { TCompilerCodegenOptionsFrame }
 
   TCompilerCodegenOptionsFrame = class(TAbstractIDEOptionsEditor)
-    chkChecksIO: TCheckBox;
-    chkChecksOverflow: TCheckBox;
-    chkChecksRange: TCheckBox;
-    chkChecksStack: TCheckBox;
+    chkOptSmaller: TCheckBox;
     chkLinkSmart: TCheckBox;
     chkOptionsLinkOpt: TCheckBox;
     chkSmartLinkUnit: TCheckBox;
     chkRelocatableUnit: TCheckBox;
-    chkVerifyObjMethodCall: TCheckBox;
     chkWin32GraphicApp: TCheckBox;
     edtHeapSize: TEdit;
     edtOptionsLinkOpt: TEdit;
     edtStackSize: TEdit;
-    grpLinking: TGroupBox;
-    grpChecks: TGroupBox;
-    grpHeapStackSize: TGroupBox;
     grpOptimizations: TGroupBox;
+    grpLinking: TGroupBox;
+    grpHeapStackSize: TGroupBox;
+    grpOptimizationLevels: TGroupBox;
     grpUnitStyle: TGroupBox;
+    Label1: TLabel;
     lbHeapSize: TLabel;
     lbStackSize: TLabel;
     radOptLevel1: TRadioButton;
@@ -62,24 +59,20 @@ begin
   chkSmartLinkUnit.Caption := dlgCOSmartLinkable + ' (-CX)';
   chkRelocatableUnit.Caption := dlgCORelocatable + ' (-WR)';
 
-  grpChecks.Caption := dlgCOChecks;
-  chkChecksIO.Caption := 'I/O (-Ci)';
-  chkChecksRange.Caption := dlgCORange + ' (-Cr)';
-  chkChecksOverflow.Caption := dlgCOOverflow + ' (-Co)';
-  chkChecksStack.Caption := dlgCOStack + ' (-Ct)';
-  chkVerifyObjMethodCall.Caption := lisVerifyMethodCalls + ' (-CR)';
-
   grpHeapStackSize.Caption := dlgHeapAndStackSize;
   lbHeapSize.Caption := dlgHeapSize + ' (-Ch)';
   lbStackSize.Caption := dlgStackSize + ' (-Cs)';
   edtHeapSize.Text := '';
   edtStackSize.Text := '';
 
-  grpOptimizations.Caption := dlgOptimizationLevels;
+  grpOptimizationLevels.Caption := dlgOptimizationLevels;
   radOptLevelNone.Caption := dlgLevelNoneOpt;
   radOptLevel1.Caption := dlgLevel1Opt + ' (-O1)';
   radOptLevel2.Caption := dlgLevel2Opt + ' (-O2)';
   radOptLevel3.Caption := dlgLevel3Opt + ' (-O3)';
+
+  grpOptimizations.Caption := dlgOtherOptimizations;
+  chkOptSmaller.Caption := lisSmallerRatherThanFaster + ' (-Os)';
 
   grpLinking.Caption := dlgCOLinking;
   chkLinkSmart.Caption := dlgLinkSmart + ' (-XX)';
@@ -95,19 +88,13 @@ begin
     chkSmartLinkUnit.Checked := SmartLinkUnit;
     chkRelocatableUnit.Checked := RelocatableUnit;
 
-    chkChecksIO.Checked := IOChecks;
-    chkChecksRange.Checked := RangeChecks;
-    chkChecksOverflow.Checked := OverflowChecks;
-    chkChecksStack.Checked := StackChecks;
-    chkVerifyObjMethodCall.Checked := VerifyObjMethodCall;
-
     grpHeapStackSize.Visible := NeedsLinkerOpts;
     edtHeapSize.Text := IntToStr(HeapSize);
     edtStackSize.Text := IntToStr(StackSize);
 
     //chkOptVarsInReg.Checked := VariablesInRegisters;
     //chkOptUncertain.Checked := UncertainOptimizations;
-    //chkOptSmaller.Checked := SmallerCode;
+    chkOptSmaller.Checked := SmallerCode;
 
     case OptimizationLevel of
       1: radOptLevel1.Checked := True;
@@ -136,12 +123,6 @@ begin
     SmartLinkUnit := chkSmartLinkUnit.Checked;
     RelocatableUnit := chkRelocatableUnit.Checked;
 
-    IOChecks := chkChecksIO.Checked;
-    RangeChecks := chkChecksRange.Checked;
-    OverflowChecks := chkChecksOverflow.Checked;
-    StackChecks := chkChecksStack.Checked;
-    VerifyObjMethodCall := chkVerifyObjMethodCall.Checked;
-
     Val(edtHeapSize.Text, hs, code);
     if (code <> 0) then
       HeapSize := 0
@@ -156,7 +137,7 @@ begin
 
     //VariablesInRegisters := chkOptVarsInReg.Checked;
     //UncertainOptimizations := chkOptUncertain.Checked;
-    //SmallerCode := chkOptSmaller.Checked;
+    SmallerCode := chkOptSmaller.Checked;
 
     if (radOptLevel1.Checked) then
       OptimizationLevel := 1

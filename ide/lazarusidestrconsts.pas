@@ -2031,7 +2031,7 @@ resourcestring
   dlgCOUnitStyle = 'Unit style';
   dlgCOSmartLinkable = 'Smart linkable';
   dlgCORelocatable = 'Relocatable';
-  dlgCOChecks = 'Checks';
+  dlgCOChecksAndAssertion = 'Checks and assertion';
   dlgCORange = 'Range';
   dlgCOOverflow = 'Overflow';
   dlgCOStack = 'Stack';
@@ -2045,8 +2045,8 @@ resourcestring
   dlgTargetPlatform = 'Target platform';
   dlgOptimizationLevels = 'Optimization levels';
   //dlgCOKeepVarsReg = 'Keep certain variables in registers';
-  //dlgUncertOpt = 'Uncertain optimizations';
-  //lisSmallerRatherThanFaster = 'smaller rather than faster';
+  dlgOtherOptimizations = 'Other optimizations';
+  lisSmallerRatherThanFaster = 'Smaller rather than faster';
   dlgLevelNoneOpt = '0 (no optimization)';
   dlgLevel1Opt = '1 (quick, debugger friendly)';
   dlgLevel2Opt = '2 (quick optimizations)';

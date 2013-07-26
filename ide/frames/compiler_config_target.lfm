@@ -154,32 +154,4 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       TabOrder = 2
     end
   end
-  object grpSyntaxMode: TGroupBox
-    Left = 0
-    Height = 56
-    Top = 250
-    Width = 594
-    Align = alTop
-    Anchors = [akTop]
-    AutoSize = True
-    BorderSpacing.Top = 11
-    Caption = 'grpSyntaxMode'
-    ClientHeight = 37
-    ClientWidth = 590
-    TabOrder = 2
-    object cmbSyntaxMode: TComboBox
-      AnchorSideRight.Control = grpSyntaxMode
-      AnchorSideRight.Side = asrBottom
-      Left = 6
-      Height = 25
-      Top = 6
-      Width = 578
-      Align = alLeft
-      Anchors = [akTop, akLeft, akRight, akBottom]
-      BorderSpacing.Around = 6
-      ItemHeight = 0
-      Style = csDropDownList
-      TabOrder = 0
-    end
-  end
 end

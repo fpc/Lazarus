@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Controls, Dialogs, StdCtrls, LCLProc, IDEOptionsIntf,
-  IDEDialogs, CompilerOptions, LazarusIDEStrConsts, PackageDefs, LinkScanner;
+  IDEDialogs, CompilerOptions, LazarusIDEStrConsts, PackageDefs;
 
 type
 
@@ -38,10 +38,8 @@ type
   TCompilerConfigTargetFrame = class(TAbstractIDEOptionsEditor)
     chkConfigFile: TCheckBox;
     chkCustomConfigFile: TCheckBox;
-    cmbSyntaxMode: TComboBox;
     edtConfigPath: TEdit;
     grpConfigFile: TGroupBox;
-    grpSyntaxMode: TGroupBox;
     grpTargetPlatform: TGroupBox;
     lblTargetCPU: TLabel;
     lblTargetOS: TLabel;
@@ -80,17 +78,17 @@ end;
 
 function ProcessorToCaption(const Processor: string): string;
 begin
-  if SysUtils.CompareText(Processor, '80386') = 0 then
+  if CompareText(Processor, '80386') = 0 then
     Result := '386/486 (-Op80386)'
-  else if SysUtils.CompareText(Processor, 'pentium') = 0 then
+  else if CompareText(Processor, 'pentium') = 0 then
     Result := 'Pentium/Pentium MMX (-OpPENTIUM)'
-  else if SysUtils.CompareText(Processor, 'pentium2') = 0 then
+  else if CompareText(Processor, 'pentium2') = 0 then
     Result := 'Pentium Pro/Pentium II/C6x86/K6 (-OpPENTIUM2)'
-  else if SysUtils.CompareText(Processor, 'pentium3') = 0 then
+  else if CompareText(Processor, 'pentium3') = 0 then
     Result := 'Pentium III (-OpPENTIUM3)'
-  else if SysUtils.CompareText(Processor, 'pentium4') = 0 then
+  else if CompareText(Processor, 'pentium4') = 0 then
     Result := 'Pentium IV (-OpPENTIUM4)'
-  else if SysUtils.CompareText(Processor, 'pentiumm') = 0 then
+  else if CompareText(Processor, 'pentiumm') = 0 then
     Result := 'Pentium M (-OpPENTIUMM)'
   else
     Result := '(' + lisDefault + ')';
@@ -98,50 +96,20 @@ end;
 
 function CaptionToProcessor(const Caption: string): string;
 begin
-  if System.Pos('-Op80386', Caption) > 0 then
+  if Pos('-Op80386', Caption) > 0 then
     Result := '80386'
-  else if System.Pos('-OpPENTIUMM', Caption) > 0 then
+  else if Pos('-OpPENTIUMM', Caption) > 0 then
     Result := 'pentiumm'
-  else if System.Pos('-OpPENTIUM4', Caption) > 0 then
+  else if Pos('-OpPENTIUM4', Caption) > 0 then
     Result := 'pentium4'
-  else if System.Pos('-OpPENTIUM3', Caption) > 0 then
+  else if Pos('-OpPENTIUM3', Caption) > 0 then
     Result := 'pentium3'
-  else if System.Pos('-OpPENTIUM2', Caption) > 0 then
+  else if Pos('-OpPENTIUM2', Caption) > 0 then
     Result := 'pentium2'
-  else if System.Pos('-OpPENTIUM', Caption) > 0 then
+  else if Pos('-OpPENTIUM', Caption) > 0 then
     Result := 'pentium'
   else
     Result := '';
-end;
-
-function SyntaxModeToCaption(const Mode: string): string;
-begin
-  if SysUtils.CompareText(Mode, 'ObjFPC') = 0 then
-    Result := lisObjectPascalDefault + ' (-Mobjfpc)'
-  else if SysUtils.CompareText(Mode, 'Delphi') = 0 then
-    Result := lisDelphi + ' (-Mdelphi)'
-  else if SysUtils.CompareText(Mode, 'tp') = 0 then
-    Result := lisTurboPascal + ' (-Mtp)'
-  else if SysUtils.CompareText(Mode, 'fpc') = 0 then
-    Result := lisFreePascal + ' (-Mfpc)'
-  else if SysUtils.CompareText(Mode, 'macpas') = 0 then
-    Result := lisMacPascal + ' (-Mmacpas)'
-  else
-    Result := '';
-end;
-
-function CaptionToSyntaxMode(const Caption: string): string;
-begin
-  if System.Pos('-Mdelphi', Caption) > 0 then
-    Result := 'Delphi'
-  else if System.Pos('-Mtp', Caption) > 0 then
-    Result := 'tp'
-  else if System.Pos('-Mmacpas', Caption) > 0 then
-    Result := 'macpas'
-  else if System.Pos('-Mfpc', Caption) > 0 then
-    Result := 'fpc'
-  else
-    Result := 'ObjFPC';
 end;
 
 
@@ -206,9 +174,6 @@ begin
 end;
 
 procedure TCompilerConfigTargetFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
-var
-  m: TCompilerMode;
-  s: string;
 begin
   // Config
   grpConfigFile.Caption := dlgConfigFiles;
@@ -297,17 +262,6 @@ begin
     end;
     ItemIndex := 0;
   end;
-
-  grpSyntaxMode.Caption := lisSyntaxMode + ' (-M, {$MODE})';
-  cmbSyntaxMode.Items.BeginUpdate;
-  cmbSyntaxMode.Items.Clear;
-  for m := Low(TCompilerMode) to High(TCompilerMode) do
-  begin
-    s := SyntaxModeToCaption(CompilerModeNames[m]);
-    if s <> '' then
-      cmbSyntaxMode.Items.Add(s);
-  end;
-  cmbSyntaxMode.Items.EndUpdate;
 end;
 
 procedure TCompilerConfigTargetFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -346,8 +300,6 @@ begin
       TargetCPUComboBox.ItemIndex := i;
       // Target Processor
       TargetProcessorProcComboBox.Text := ProcessorToCaption(TargetProcessor);
-
-      cmbSyntaxMode.Text := SyntaxModeToCaption(SyntaxMode);
     end;
   end;
 end;
@@ -378,8 +330,6 @@ begin
         NewTargetCPU := '';
       TargetCPU := CaptionToCPU(NewTargetCPU);
       TargetProcessor := CaptionToProcessor(TargetProcessorProcComboBox.Text);
-
-      SyntaxMode := CaptionToSyntaxMode(cmbSyntaxMode.Text);
     end;
   end;
 end;
