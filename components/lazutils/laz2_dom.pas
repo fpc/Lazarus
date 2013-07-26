@@ -852,7 +852,7 @@ const
   stduri_xml: DOMString = 'http://www.w3.org/XML/1998/namespace';
   stduri_xmlns: DOMString = 'http://www.w3.org/2000/xmlns/';
 
-function StrToXMLValue(const s: string): string; // removes #0
+function StrToXMLValue(const s: string): string; // removes #0, encodes <>&'"
 function XMLValueToStr(const s: string): string; // reverse of StrToXMLValue (except for invalid #0)
 function EncodeLesserAndGreaterThan(const s: string): string;
 
