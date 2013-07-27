@@ -123,7 +123,7 @@ type
     fOwnerGroup: TCompilerOptGroup;
     fVisible: Boolean;                  // Used for filtering.
     fIgnored: Boolean;                  // Pretend this option does not exist.
-    procedure Filter(aFilt: string);
+    procedure Filter(aFilter: string; aOnlySelected: Boolean);
   protected
     procedure ParseOption(aDescr: string; aIndent: integer); virtual;
   public
@@ -197,7 +197,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function ReadAndParseOptions: TModalResult;
-    function FilterOptions(aFilter: string): Boolean;
+    function FilterOptions(aFilter: string; aOnlySelected: Boolean): Boolean;
     function FindOptionById(aId: integer): TCompilerOpt;
     function FromCustomOptions(aStrings: TStrings): TModalResult;
     function ToCustomOptions(aStrings: TStrings; aUseComments: Boolean): TModalResult;
@@ -463,23 +463,26 @@ begin
     fIgnored := True;
 end;
 
-procedure TCompilerOpt.Filter(aFilt: string);
-//var
-//  iOpt, iDes: SizeInt;
+procedure TCompilerOpt.Filter(aFilter: string; aOnlySelected: Boolean);
+var
+  //iOpt, iDes: SizeInt;
+  HideNonSelected: Boolean;
 begin
-  Visible := not fIgnored
-    and ( (aFilt='') or (Pos(aFilt,UTF8LowerCase(fOption))>0)
-                     or (Pos(aFilt,UTF8LowerCase(fDescription))>0) );
+  HideNonSelected := (fValue='') and aOnlySelected;
+  Visible := not (fIgnored or HideNonSelected)
+    and ( (aFilter='') or (Pos(aFilter,UTF8LowerCase(fOption))>0)
+                       or (Pos(aFilter,UTF8LowerCase(fDescription))>0) );
 {
-  if aFilt = '' then
-    Visible := not fIgnored
+  if aFilter = '' then
+    Visible := not (fIgnored or HideNonSelected)
   else begin
-    iOpt := Pos(aFilt,UTF8LowerCase(fOption));
-    iDes := Pos(aFilt,UTF8LowerCase(fDescription));
-    Visible := not fIgnored and ( (iOpt>0) or (iDes>0) );
+    iOpt := Pos(aFilter,UTF8LowerCase(fOption));
+    iDes := Pos(aFilter,UTF8LowerCase(fDescription));
+    Visible := not (fIgnored or HideNonSelected) and ( (iOpt>0) or (iDes>0) );
     if Visible then
-      DebugLn(['TCompilerOpt.Filter match "', aFilt, '": iOpt=', iOpt,
-        ', iDes=', iDes, ', Ignore=', fIgnored, ', Opt'=fOption, ', Descr=', fDescription]);
+      DebugLn(['TCompilerOpt.Filter match "', aFilter, '": iOpt=', iOpt,
+        ', iDes=', iDes, ', Ignore=', fIgnored, ', aOnlySelected=', aOnlySelected,
+        ', Opt'=fOption, ', Descr=', fDescription]);
   end;
 }
 end;
@@ -928,7 +931,7 @@ begin
   end;
 end;
 
-function TCompilerOptReader.FilterOptions(aFilter: string): Boolean;
+function TCompilerOptReader.FilterOptions(aFilter: string; aOnlySelected: Boolean): Boolean;
 // Filter all options recursively, setting their Visible flag as needed.
 // Returns True if Option(group) or child options have visible items.
 
@@ -938,7 +941,7 @@ function TCompilerOptReader.FilterOptions(aFilter: string): Boolean;
     i: Integer;
   begin
     // Filter the root item
-    aRoot.Filter(aFilter);                        // Sets Visible flag
+    aRoot.Filter(aFilter, aOnlySelected);         // Sets Visible flag
     // Filter children in a group
     if aRoot is TCompilerOptGroup then
     begin

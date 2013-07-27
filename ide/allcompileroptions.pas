@@ -30,6 +30,7 @@ type
     FOptionsReader: TCompilerOptReader;
     FGeneratedControls: TComponentList;
     FEffectiveFilter: string;
+    FEffectiveShowModified: Boolean;
     FInitialRender: Boolean;
     procedure SetIdleConnected(AValue: Boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
@@ -105,7 +106,7 @@ end;
 
 procedure TfrmAllCompilerOptions.cbShowModifiedClick(Sender: TObject);
 begin
-  ;
+  IdleConnected := True;
 end;
 
 procedure TfrmAllCompilerOptions.SetIdleConnected(AValue: Boolean);
@@ -308,17 +309,19 @@ var
   end;
 
 begin
-  if FEffectiveFilter = edOptionsFilter.Text then Exit;
+  if (FEffectiveFilter = edOptionsFilter.Text)
+  and (FEffectiveShowModified = cbShowModified.Checked) then Exit;
   Container := sbAllOptions;
   Container.DisableAutoSizing;
   try
     // First filter and set Visible flag.
-    FOptionsReader.FilterOptions(edOptionsFilter.Text);
+    FOptionsReader.FilterOptions(edOptionsFilter.Text, cbShowModified.Checked);
     // Then create and place new controls in GUI
     FGeneratedControls.Clear;
     yLoc := 0;
     RenderOneLevel(FOptionsReader.RootOptGroup);
     FEffectiveFilter := edOptionsFilter.Text;
+    FEffectiveShowModified := cbShowModified.Checked;
     {$IFDEF AllOptsFocusFilter}
     if not FInitialRender then
       FocusControl(edOptionsFilter);
