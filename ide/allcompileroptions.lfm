@@ -83,6 +83,7 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
     Width = 143
     BorderSpacing.Left = 29
     Caption = 'Show only modified'
+    OnClick = cbShowModifiedClick
     TabOrder = 3
   end
   object cbUseComments: TCheckBox

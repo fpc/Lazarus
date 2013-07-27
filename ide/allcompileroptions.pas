@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   contnrs, Buttons, ButtonPanel, EditBtn,
-  EnvironmentOpts, Compiler, LazarusIDEStrConsts;
+  FileProcs, EnvironmentOpts, Compiler, LazarusIDEStrConsts;
 
 type
 
@@ -21,6 +21,7 @@ type
     edOptionsFilter: TEdit;
     sbAllOptions: TScrollBox;
     procedure btnResetOptionsFilterClick(Sender: TObject);
+    procedure cbShowModifiedClick(Sender: TObject);
     procedure edOptionsFilterChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
@@ -29,6 +30,7 @@ type
     FOptionsReader: TCompilerOptReader;
     FGeneratedControls: TComponentList;
     FEffectiveFilter: string;
+    FInitialRender: Boolean;
     procedure SetIdleConnected(AValue: Boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure CheckBoxClick(Sender: TObject);
@@ -84,13 +86,14 @@ begin
   btnResetOptionsFilter.Enabled := False;
   btnResetOptionsFilter.Hint := 'Clear the filter for options';
   FEffectiveFilter:=#1; // Set an impossible value first, makes sure options are filtered.
+  FInitialRender := True;
   IdleConnected := True;
 end;
 
 procedure TfrmAllCompilerOptions.edOptionsFilterChange(Sender: TObject);
 begin
   btnResetOptionsFilter.Enabled := edOptionsFilter.Text<>'';
-  // ToDo : Filter the list of options
+  // Filter the list of options in OnIdle handler
   IdleConnected := True;
 end;
 
@@ -98,6 +101,11 @@ procedure TfrmAllCompilerOptions.btnResetOptionsFilterClick(Sender: TObject);
 begin
   edOptionsFilter.Text := '';
   btnResetOptionsFilter.Enabled := False;
+end;
+
+procedure TfrmAllCompilerOptions.cbShowModifiedClick(Sender: TObject);
+begin
+  ;
 end;
 
 procedure TfrmAllCompilerOptions.SetIdleConnected(AValue: Boolean);
@@ -116,10 +124,14 @@ begin
   Screen.Cursor := crHourGlass;
   try
     edOptionsFilter.Enabled := False;
-    FOptionsReader.CompilerExecutable := EnvironmentOptions.CompilerFilename;
-    if FOptionsReader.ReadAndParseOptions <> mrOK then
-      ShowMessage(FOptionsReader.ErrorMsg);
-    FOptionsReader.FromCustomOptions(FCustomOptions);
+    with FOptionsReader do
+      if RootOptGroup.CompilerOpts.Count = 0 then
+      begin
+        CompilerExecutable := EnvironmentOptions.CompilerFilename;
+        if ReadAndParseOptions <> mrOK then
+          ShowMessage(ErrorMsg);
+        FromCustomOptions(FCustomOptions);
+      end;
     RenderAndFilterOptions;
     edOptionsFilter.Enabled := True;
   finally
@@ -306,7 +318,12 @@ begin
     FGeneratedControls.Clear;
     yLoc := 0;
     RenderOneLevel(FOptionsReader.RootOptGroup);
-    FEffectiveFilter:=edOptionsFilter.Text;
+    FEffectiveFilter := edOptionsFilter.Text;
+    {$IFDEF AllOptsFocusFilter}
+    if not FInitialRender then
+      FocusControl(edOptionsFilter);
+    {$ENDIF}
+    FInitialRender := False;
   finally
     Container.EnableAutoSizing;
     Container.Invalidate;
