@@ -2,14 +2,14 @@
 #
 #   Makefile.fpc for cairocanvas_pkg 0.0
 #
-#   This file was generated on 06/03/2013
+#   This file was generated on 27-7-13
 
 [package]
 name=cairocanvas_pkg
 version=0.0
 
 [compiler]
-unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
 options= -MObjFPC -Scghi -O1 -g -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
