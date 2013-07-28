@@ -105,12 +105,12 @@ begin
     end;
     grpLinking.Enabled := NeedsLinkerOpts;
     chkLinkSmart.Checked := LinkSmart;
-    //chkLinkSmart.Enabled := NeedsLinkerOpts;
+    chkLinkSmart.Enabled := NeedsLinkerOpts;
     chkWin32GraphicApp.Checked := Win32GraphicApp;
-    //chkWin32GraphicApp.Enabled := NeedsLinkerOpts;
+    chkWin32GraphicApp.Enabled := NeedsLinkerOpts;
     chkOptionsLinkOpt.Checked := PassLinkerOptions;
+    chkOptionsLinkOpt.Enabled := NeedsLinkerOpts;
     edtOptionsLinkOpt.Text := LinkerOptions;
-    //chkOptionsLinkOpt.Enabled := NeedsLinkerOpts;
   end;
 end;
 

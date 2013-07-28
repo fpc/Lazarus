@@ -32,34 +32,36 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, Grids, Buttons, Menus,
   ButtonPanel, LCLProc, Graphics, IDEOptionsIntf, IDEDialogs, TransferMacros,
-  Project, LazarusIDEStrConsts, CompilerOptions, Compiler_ModeMatrix,
-  BuildModeDiffDlg;
+  Project, CompOptsIntf, CompilerOptions, Compiler_ModeMatrix,
+  BuildModeDiffDlg, LazarusIDEStrConsts;
 
 type
 
   { TBuildModesForm }
 
   TBuildModesForm = class(TForm)
-    BuildModeAddSpeedButton: TSpeedButton;
-    BuildModeDeleteSpeedButton: TSpeedButton;
-    BuildModeDiffSpeedButton: TSpeedButton;
-    BuildModeMoveDownSpeedButton: TSpeedButton;
-    BuildModeMoveUpSpeedButton: TSpeedButton;
+    AddSpeedButton: TSpeedButton;
+    DeleteSpeedButton: TSpeedButton;
+    DiffSpeedButton: TSpeedButton;
+    MoveDownSpeedButton: TSpeedButton;
+    MoveUpSpeedButton: TSpeedButton;
     BuildModesGroupBox: TGroupBox;
     BuildModesPopupMenu: TPopupMenu;
     BuildModesStringGrid: TStringGrid;
+    btnCreateDefaultModes: TButton;
     ButtonPanel1: TButtonPanel;
     NoteLabel: TLabel;
+    procedure btnCreateDefaultModesClick(Sender: TObject);
     procedure BuildModesStringGridDrawCell(Sender: TObject; aCol,
       aRow: Integer; aRect: TRect; aState: TGridDrawState);
     procedure CancelButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure BuildModeDiffSpeedButtonClick(Sender: TObject);
-    procedure BuildModeAddSpeedButtonClick(Sender: TObject);
-    procedure BuildModeDeleteSpeedButtonClick(Sender: TObject);
-    procedure BuildModeMoveDownSpeedButtonClick(Sender: TObject);
-    procedure BuildModeMoveUpSpeedButtonClick(Sender: TObject);
+    procedure DiffSpeedButtonClick(Sender: TObject);
+    procedure AddSpeedButtonClick(Sender: TObject);
+    procedure DeleteSpeedButtonClick(Sender: TObject);
+    procedure MoveDownSpeedButtonClick(Sender: TObject);
+    procedure MoveUpSpeedButtonClick(Sender: TObject);
     procedure BuildModesCheckboxToggled(Sender: TObject;
       aCol, aRow: Integer; aState: TCheckboxState);
     procedure BuildModesStringGridSelection(Sender: TObject;
@@ -103,6 +105,10 @@ procedure UpdateBuildModeCombo(aCombo: TComboBox);
 
 implementation
 
+const
+  DebugModeName = 'Debug';
+  ReleaseModeName = 'Release';
+
 {$R *.lfm}
 
 function ShowBuildModesDlg(aShowSession: Boolean): TModalResult;
@@ -137,12 +143,11 @@ begin
   end;
 end;
 
-procedure SwitchBuildMode(aBuildModeID: string;
-  LoadSaveProjectOptions: boolean);
+procedure SwitchBuildMode(aBuildModeID: string; LoadSaveProjectOptions: boolean);
 begin
   if LoadSaveProjectOptions then
     OnSaveIDEOptionsHook(Nil, Project1.CompilerOptions);    // Save changes
-  Project1.ActiveBuildModeID := aBuildModeID;             // Switch
+  Project1.ActiveBuildModeID := aBuildModeID;               // Switch
   IncreaseBuildMacroChangeStamp;
   if LoadSaveProjectOptions then
     OnLoadIDEOptionsHook(Nil, Project1.CompilerOptions);    // Load options
@@ -207,20 +212,74 @@ begin
   FillBuildModesGrid;
   UpdateBuildModeButtons;
 
-  BuildModeAddSpeedButton.LoadGlyphFromLazarusResource('laz_add');
-  BuildModeDeleteSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
-  BuildModeMoveUpSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
-  BuildModeMoveDownSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
-  BuildModeDiffSpeedButton.LoadGlyphFromLazarusResource('menu_tool_diff');
+  AddSpeedButton.LoadGlyphFromLazarusResource('laz_add');
+  DeleteSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
+  MoveUpSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
+  MoveDownSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
+  DiffSpeedButton.LoadGlyphFromLazarusResource('menu_tool_diff');
 end;
 
-procedure TBuildModesForm.BuildModeDiffSpeedButtonClick(Sender: TObject);
+procedure TBuildModesForm.DiffSpeedButtonClick(Sender: TObject);
 begin
   // show diff dialog
   ShowBuildModeDiffDialog(BuildModes,GetSelectedBuildMode);
 end;
 
-procedure TBuildModesForm.BuildModeAddSpeedButtonClick(Sender: TObject);
+procedure TBuildModesForm.btnCreateDefaultModesClick(Sender: TObject);
+var
+  CurMode: TProjectBuildMode;
+
+  procedure AssignAndSetBooleans(aMode: TProjectBuildMode; IsDebug: Boolean);
+  begin
+    if CurMode<>nil then
+      aMode.Assign(CurMode);               // clone from currently selected mode
+    with aMode.CompilerOptions do
+    begin
+      // Smart linking
+      SmartLinkUnit:=not IsDebug;
+      LinkSmart:=not IsDebug;
+      // Checks
+      IOChecks:=IsDebug;
+      RangeChecks:=IsDebug;
+      OverflowChecks:=IsDebug;
+      StackChecks:=IsDebug;
+      IncludeAssertionCode:=IsDebug;
+      // Debug flags
+      GenerateDebugInfo:=IsDebug;
+      UseHeaptrc:=IsDebug;
+      // ToDo: TrashVariables:=IsDebug;
+    end;
+  end;
+
+var
+  DMode, RMode: TProjectBuildMode;
+  i: Integer;
+begin
+  i:=BuildModesStringGrid.Row-1;
+  if (i>=0) then
+    CurMode:=fBuildModes[i]
+  else
+    CurMode:=nil;
+  // Create Debug DMode
+  DMode:=fBuildModes.Add(DebugModeName);
+  AssignAndSetBooleans(DMode, True);
+  DMode.CompilerOptions.OptimizationLevel:=1;       // Optimization
+  DMode.CompilerOptions.DebugInfoType:=dsDwarf2Set; // Debug
+
+  // Create Release DMode
+  RMode:=fBuildModes.Add(ReleaseModeName);
+  AssignAndSetBooleans(RMode, False);
+  RMode.CompilerOptions.OptimizationLevel:=3;       // Optimization
+  RMode.CompilerOptions.DebugInfoType:=dsAuto;      // Debug
+
+  fActiveBuildMode:=DMode;          // activate Debug mode
+  FillBuildModesGrid;               // show
+  // select identifier
+  BuildModesStringGrid.Col:=fModeNameCol;
+  BuildModesStringGrid.Row:=BuildModesStringGrid.RowCount-1;
+end;
+
+procedure TBuildModesForm.AddSpeedButtonClick(Sender: TObject);
 var
   i: Integer;
   NewName, Identifier: String;
@@ -245,7 +304,7 @@ begin
   until fBuildModes.Find(NewName)=nil;
   // create new mode
   NewMode:=fBuildModes.Add(NewName);
-  // clone
+  // clone from currently selected mode
   if CurMode<>nil then
     NewMode.Assign(CurMode);
   fActiveBuildMode:=NewMode; // activate
@@ -256,7 +315,7 @@ begin
   BuildModesStringGrid.EditorMode:=true;
 end;
 
-procedure TBuildModesForm.BuildModeDeleteSpeedButtonClick(Sender: TObject);
+procedure TBuildModesForm.DeleteSpeedButtonClick(Sender: TObject);
 var
   i: Integer;
   CurMode: TProjectBuildMode;
@@ -294,7 +353,7 @@ begin
     Grid.Row:=i;
 end;
 
-procedure TBuildModesForm.BuildModeMoveDownSpeedButtonClick(Sender: TObject);
+procedure TBuildModesForm.MoveDownSpeedButtonClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -307,7 +366,7 @@ begin
   BuildModesStringGrid.Row:=i+1;
 end;
 
-procedure TBuildModesForm.BuildModeMoveUpSpeedButtonClick(Sender: TObject);
+procedure TBuildModesForm.MoveUpSpeedButtonClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -467,15 +526,19 @@ begin
   else
     Caption:='No project';
   // Buttons
-  BuildModeAddSpeedButton.Hint:=Format(lisAddNewBuildModeCopyingSettingsFrom, [Identifier]);
-  BuildModeDeleteSpeedButton.Enabled:=(CurMode<>nil) and (fBuildModes.Count>1);
-  BuildModeDeleteSpeedButton.Hint:=Format(lisDeleteMode, [Identifier]);
-  BuildModeMoveUpSpeedButton.Enabled:=(CurMode<>nil) and (i>0);
-  BuildModeMoveUpSpeedButton.Hint:=Format(lisMoveOnePositionUp, [Identifier]);
-  BuildModeMoveDownSpeedButton.Enabled:=i<BuildModesStringGrid.RowCount-2;
-  BuildModeMoveDownSpeedButton.Hint:=Format(lisMoveOnePositionDown, [Identifier]);
-  BuildModeDiffSpeedButton.Hint:=lisShowDifferencesBetweenModes;
+  AddSpeedButton.Hint:=Format(lisAddNewBuildModeCopyingSettingsFrom, [Identifier]);
+  DeleteSpeedButton.Enabled:=(CurMode<>nil) and (fBuildModes.Count>1);
+  DeleteSpeedButton.Hint:=Format(lisDeleteMode, [Identifier]);
+  MoveUpSpeedButton.Enabled:=(CurMode<>nil) and (i>0);
+  MoveUpSpeedButton.Hint:=Format(lisMoveOnePositionUp, [Identifier]);
+  MoveDownSpeedButton.Enabled:=i<BuildModesStringGrid.RowCount-2;
+  MoveDownSpeedButton.Hint:=Format(lisMoveOnePositionDown, [Identifier]);
+  DiffSpeedButton.Hint:=lisShowDifferencesBetweenModes;
   NoteLabel.Caption:='';
+  btnCreateDefaultModes.Caption:='Create Debug and Release modes';
+  btnCreateDefaultModes.Hint:='';
+  btnCreateDefaultModes.Enabled := (fBuildModes.Find(DebugModeName)=Nil)
+                               and (fBuildModes.Find(ReleaseModeName)=Nil);
 end;
 
 procedure TBuildModesForm.SetShowSession(const AValue: boolean);

@@ -24,15 +24,16 @@ object BuildModesForm: TBuildModesForm
     ClientWidth = 596
     TabOrder = 0
     object BuildModesStringGrid: TStringGrid
-      AnchorSideTop.Control = BuildModeAddSpeedButton
+      AnchorSideTop.Control = AddSpeedButton
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 264
-      Top = 22
+      Height = 263
+      Top = 23
       Width = 596
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       AutoFillColumns = True
+      BorderSpacing.Top = 1
       ColCount = 3
       Columns = <      
         item
@@ -66,55 +67,55 @@ object BuildModesForm: TBuildModesForm
         198
       )
     end
-    object BuildModeAddSpeedButton: TSpeedButton
+    object AddSpeedButton: TSpeedButton
       AnchorSideLeft.Control = BuildModesGroupBox
       AnchorSideTop.Control = BuildModesGroupBox
       Left = 0
       Height = 22
       Top = 0
       Width = 23
-      OnClick = BuildModeAddSpeedButtonClick
+      OnClick = AddSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
     end
-    object BuildModeDeleteSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = BuildModeAddSpeedButton
+    object DeleteSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = AddSpeedButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BuildModesGroupBox
       Left = 23
       Height = 22
       Top = 0
       Width = 23
-      OnClick = BuildModeDeleteSpeedButtonClick
+      OnClick = DeleteSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
     end
-    object BuildModeMoveUpSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = BuildModeDeleteSpeedButton
+    object MoveUpSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = DeleteSpeedButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BuildModesGroupBox
       Left = 46
       Height = 22
       Top = 0
       Width = 23
-      OnClick = BuildModeMoveUpSpeedButtonClick
+      OnClick = MoveUpSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
     end
-    object BuildModeMoveDownSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = BuildModeMoveUpSpeedButton
+    object MoveDownSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = MoveUpSpeedButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BuildModesGroupBox
       Left = 69
       Height = 22
       Top = 0
       Width = 23
-      OnClick = BuildModeMoveDownSpeedButtonClick
+      OnClick = MoveDownSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
     end
-    object BuildModeDiffSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = BuildModeMoveDownSpeedButton
+    object DiffSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = MoveDownSpeedButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BuildModesGroupBox
       Left = 102
@@ -122,17 +123,32 @@ object BuildModesForm: TBuildModesForm
       Top = 0
       Width = 23
       BorderSpacing.Left = 10
-      OnClick = BuildModeDiffSpeedButtonClick
+      OnClick = DiffSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
     end
     object NoteLabel: TLabel
+      AnchorSideTop.Control = DiffSpeedButton
+      AnchorSideTop.Side = asrCenter
       Left = 160
       Height = 15
-      Top = 3
+      Top = 4
       Width = 63
       Caption = 'NoteLabel'
       ParentColor = False
+    end
+    object btnCreateDefaultModes: TButton
+      AnchorSideTop.Control = NoteLabel
+      AnchorSideTop.Side = asrCenter
+      Left = 362
+      Height = 25
+      Top = -1
+      Width = 228
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      Caption = 'Create Debug and Release modes'
+      OnClick = btnCreateDefaultModesClick
+      TabOrder = 1
     end
   end
   object ButtonPanel1: TButtonPanel
