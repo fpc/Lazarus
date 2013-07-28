@@ -486,24 +486,24 @@ var
 { MessageDlg }
 
 function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
-            Buttons: TMsgDlgButtons; HelpCtx: Longint): TModalResult;
+            Buttons: TMsgDlgButtons; HelpCtx: Longint): TModalResult; overload;
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
-            Buttons: TMsgDlgButtons; HelpCtx: Longint): TModalResult;
+            Buttons: TMsgDlgButtons; HelpCtx: Longint): TModalResult; overload;
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
-            Buttons: TMsgDlgButtons; HelpCtx: Longint; DefaultButton: TMsgDlgBtn): TModalResult;
+            Buttons: TMsgDlgButtons; HelpCtx: Longint; DefaultButton: TMsgDlgBtn): TModalResult; overload;
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
-            Buttons: TMsgDlgButtons; const HelpKeyword: string): TModalResult;
+            Buttons: TMsgDlgButtons; const HelpKeyword: string): TModalResult; overload;
 function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType;
-            Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): TModalResult;
+            Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): TModalResult; overload;
 function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer;
-            const HelpFileName: string): TModalResult;
+            const HelpFileName: string): TModalResult; overload;
 function CreateMessageDialog(const Msg: string; DlgType: TMsgDlgType;
-            Buttons: TMsgDlgButtons): TForm;
+            Buttons: TMsgDlgButtons): TForm; overload;
 function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
-            Buttons: array of const; HelpCtx: Longint): TModalResult;
+            Buttons: array of const; HelpCtx: Longint): TModalResult; overload;
 function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
-            Buttons: array of const; const HelpKeyword: string): TModalResult;
+            Buttons: array of const; const HelpKeyword: string): TModalResult; overload;
 
             
 procedure ShowMessage(const aMsg: string);
