@@ -51,6 +51,8 @@ type
     vfGCodeAvisoCNCPrototipoV5, vfGCodeAvisoCNCPrototipoV6,
     { Formula formats }
     vfMathML,
+    { Text Document formats }
+    vfODT,
     { Raster Image formats }
     vfRAW
     );
@@ -88,6 +90,7 @@ type
   TvCustomVectorialWriter = class;
   TvCustomVectorialReader = class;
   TvVectorialPage = class;
+  TvTextDocumentPage = class;
 
   { Pen, Brush and Font }
 
@@ -751,6 +754,30 @@ type
   public
   end;
 
+  {@@
+    TvRichText represents a sequence of elements ordered as characters.
+    The elements might be richly formatted text, but also any other elements.
+
+    The basic element to build the sequence is TvText. Note that the X, Y positions
+    of elements will be all adjusted to fit the TvRichText area
+  }
+
+  TvRichTextAutoExpand = (rtaeNone, etaeWidth, etaeHeight);
+
+  { TvRichText }
+
+  TvRichText = class(TvEntityWithSubEntities)
+  public
+    Width, Height: Double;
+    AutoExpand: TvRichTextAutoExpand;
+    constructor Create; override;
+    destructor Destroy; override;
+    function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+  end;
+
   { TvVectorialDocument }
 
   TvVectorialDocument = class
@@ -792,6 +819,7 @@ type
     function GetCurrentPage: TvVectorialPage;
     procedure SetCurrentPage(AIndex: Integer);
     function AddPage(): TvVectorialPage;
+    function AddTextPage(): TvTextDocumentPage;
     { Data removing methods }
     procedure Clear; virtual;
     { Debug methods }
@@ -825,7 +853,7 @@ type
     { Base methods }
     constructor Create(AOwner: TvVectorialDocument); virtual;
     destructor Destroy; override;
-    procedure Assign(ASource: TvVectorialPage);
+    procedure Assign(ASource: TvVectorialPage); virtual;
     { Data reading methods }
     function  GetEntity(ANum: Cardinal): TvEntity;
     function  GetEntitiesCount: Integer;
@@ -886,6 +914,18 @@ type
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer);
     //
     property Entities[AIndex: Cardinal]: TvEntity read GetEntity;
+  end;
+
+  { TvTextDocumentPage }
+
+  TvTextDocumentPage = class(TvVectorialPage)
+  public
+    Footer, Header: TvRichText;
+    MainText: TvRichText;
+    { Base methods }
+    constructor Create(AOwner: TvVectorialDocument); override;
+    destructor Destroy; override;
+    procedure Assign(ASource: TvVectorialPage); override;
   end;
 
   {@@ TvVectorialReader class reference type }
@@ -3908,6 +3948,36 @@ begin
   end;
 end;
 
+{ TvRichText }
+
+constructor TvRichText.Create;
+begin
+  inherited Create;
+end;
+
+destructor TvRichText.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TvRichText.TryToSelect(APos: TPoint; var ASubpart: Cardinal
+  ): TvFindEntityResult;
+begin
+  Result:=inherited TryToSelect(APos, ASubpart);
+end;
+
+procedure TvRichText.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo;
+  ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
+begin
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+end;
+
+function TvRichText.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+begin
+  Result:=inherited GenerateDebugTree(ADestRoutine, APageItem);
+end;
+
 { TvVectorialPage }
 
 procedure TvVectorialPage.ClearTmpPath;
@@ -4581,7 +4651,24 @@ begin
   end;
 end;
 
-{ TsWorksheet }
+{ TvTextDocumentPage }
+
+constructor TvTextDocumentPage.Create(AOwner: TvVectorialDocument);
+begin
+  inherited Create(AOwner);
+end;
+
+destructor TvTextDocumentPage.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TvTextDocumentPage.Assign(ASource: TvVectorialPage);
+begin
+  inherited Assign(ASource);
+end;
+
+{ TvVectorialDocument }
 
 {@@
   Constructor.
@@ -4873,6 +4960,13 @@ end;
 function TvVectorialDocument.AddPage: TvVectorialPage;
 begin
   Result := TvVectorialPage.Create(Self);
+  FPages.Add(Result);
+  if FCurrentPageIndex < 0 then FCurrentPageIndex := FPages.Count-1;
+end;
+
+function TvVectorialDocument.AddTextPage: TvTextDocumentPage;
+begin
+  Result := TvTextDocumentPage.Create(Self);
   FPages.Add(Result);
   if FCurrentPageIndex < 0 then FCurrentPageIndex := FPages.Count-1;
 end;

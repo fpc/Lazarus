@@ -1273,6 +1273,7 @@ components/fpvectorial/lasvectorialreader.pas svneol=native#text/plain
 components/fpvectorial/lazvectorialreader.pas svneol=native#text/plain
 components/fpvectorial/mathmlvectorialreader.pas svneol=native#text/plain
 components/fpvectorial/odgvectorialreader.pas svneol=native#text/pascal
+components/fpvectorial/odtvectorialwriter.pas svneol=native#text/plain
 components/fpvectorial/pdfvectorialreader.pas svneol=native#text/plain
 components/fpvectorial/pdfvrlexico.pas svneol=native#text/plain
 components/fpvectorial/pdfvrsemantico.pas svneol=native#text/plain

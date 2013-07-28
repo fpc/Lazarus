@@ -49,7 +49,7 @@ interface
 
 uses
   Classes, SysUtils, math,
-  zipper, {NOTE: fpszipper is the latest zipper.pp Change to standard zipper when FPC 2.8 is released}
+  zipper, {NOTE: might require zipper from FPC 2.6.2+ }
   xmlread, DOM, AVL_Tree,
   fpimage, fpcanvas, fgl,
   fpvectorial, fpvutils, lazutf8;
