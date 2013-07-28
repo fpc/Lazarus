@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   contnrs, Buttons, ButtonPanel, EditBtn,
-  FileProcs, EnvironmentOpts, Compiler, LazarusIDEStrConsts;
+  LCLProc, FileProcs, EnvironmentOpts, Compiler, LazarusIDEStrConsts;
 
 type
 
@@ -315,7 +315,8 @@ begin
   Container.DisableAutoSizing;
   try
     // First filter and set Visible flag.
-    FOptionsReader.FilterOptions(edOptionsFilter.Text, cbShowModified.Checked);
+    FOptionsReader.FilterOptions(UTF8LowerCase(edOptionsFilter.Text),
+                                 cbShowModified.Checked);
     // Then create and place new controls in GUI
     FGeneratedControls.Clear;
     yLoc := 0;
