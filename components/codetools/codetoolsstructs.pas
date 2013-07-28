@@ -985,7 +985,7 @@ end;
 
 constructor TStringTree.Create;
 begin
-  Tree:=TAVLTree.Create(@CompareAnsiStringPtrs);
+  Tree:=TMTAVLTree.Create(@CompareAnsiStringPtrs);
 end;
 
 destructor TStringTree.Destroy;
