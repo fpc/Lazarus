@@ -538,7 +538,7 @@ begin
   NoteLabel.Caption:='';
   btnCreateDefaultModes.Caption:='Create Debug and Release modes';
   btnCreateDefaultModes.Hint:='';
-  btnCreateDefaultModes.Enabled := (fBuildModes.Find(DebugModeName)=Nil)
+  btnCreateDefaultModes.Visible := (fBuildModes.Find(DebugModeName)=Nil)
                                and (fBuildModes.Find(ReleaseModeName)=Nil);
 end;
 
