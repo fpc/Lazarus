@@ -246,6 +246,7 @@ var
       IncludeAssertionCode:=IsDebug;
       // Debug flags
       GenerateDebugInfo:=IsDebug;
+      UseExternalDbgSyms:=IsDebug;
       UseHeaptrc:=IsDebug;
       // ToDo: TrashVariables:=IsDebug;
     end;
