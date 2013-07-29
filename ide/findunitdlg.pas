@@ -41,7 +41,11 @@ uses
   // IDEIntf
   LazIDEIntf, TextTools, IDEMsgIntf, PackageIntf,
   // IDE
-  DialogProcs, PackageDefs, Project, IDEProcs, LazarusIDEStrConsts, MsgQuickFixes,
+  DialogProcs, PackageDefs, Project, IDEProcs, LazarusIDEStrConsts,
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
+  MsgQuickFixes,
+  {$ENDIF}
   PackageLinks, PackageSystem, BasePkgManager;
 
 type

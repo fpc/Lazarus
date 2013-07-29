@@ -84,6 +84,9 @@ uses
   // compile
   Compiler, CompilerOptions, CheckCompilerOpts, BuildProjectDlg,
   ApplicationBundle, ImExportCompilerOpts, InfoBuild,
+  {$IFDEF EnableNewExtTools}
+  ExtTools,
+  {$ENDIF}
   // projects
   ProjectResources, Project, ProjectDefs, NewProjectDlg, 
   PublishProjectDlg, ProjectInspector, PackageDefs,
@@ -102,7 +105,12 @@ uses
   // source editing
   SourceEditor, CodeToolsOptions, IDEOptionDefs, CheckLFMDlg,
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
-  SourceEditProcs, MsgQuickFixes, ViewUnit_dlg, FPDocEditWindow,
+  SourceEditProcs, ViewUnit_dlg, FPDocEditWindow,
+  {$IFDEF EnableNewExtTools}
+  etQuickFixes,
+  {$ELSE}
+  MsgQuickFixes,
+  {$ENDIF}
   // converter
   ChgEncodingDlg, ConvertDelphi, ConvCodeTool, MissingPropertiesDlg, LazXMLForms,
   // environment option frames
@@ -382,7 +390,9 @@ type
     procedure mnuSetBuildModeClick(Sender: TObject); // event for drop down items
   private
     function DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
+    {$IFNDEF EnableNewExtTools}
     function ExternalTools: TExternalToolList;
+    {$ENDIF}
   public
     // Global IDE events
     procedure OnProcessIDECommand(Sender: TObject; Command: word;
@@ -623,10 +633,14 @@ type
     procedure JumpHistoryViewSelectionChanged(sender: TObject);
 
     // External Tools events
+    {$IFDEF EnableNewExtTools}
+    procedure FPCMsgFilePoolLoadFile(aFilename: string; out s: string);
+    {$ELSE}
     procedure OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
                                          var Abort: boolean);
     procedure OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
                                         ErrorOccurred: boolean);
+    {$ENDIF}
 
     procedure OnGetLayout(Sender: TObject; aFormName: string;
             out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
@@ -683,6 +697,9 @@ type
     procedure SetupFormEditor;
     procedure SetupSourceNotebook;
     procedure SetupCodeMacros;
+    {$IFDEF EnableNewExtTools}
+    procedure SetupExternalTools;
+    {$ENDIF}
     procedure SetupControlSelection;
     procedure SetupIDECommands;
     procedure SetupIDEMsgQuickFixItems;
@@ -1256,8 +1273,10 @@ begin
     end;
   end;
 
+  {$IFNDEF EnableNewExtTools}
   ExternalTools.OnNeedsOutputFilter := @OnExtToolNeedsOutputFilter;
   ExternalTools.OnFreeOutputFilter := @OnExtToolFreeOutputFilter;
+  {$ENDIF}
   UpdateDefaultPasFileExt;
   LoadFileDialogFilter;
 
@@ -1348,6 +1367,10 @@ begin
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create CODETOOLS');{$ENDIF}
 
+  {$IFDEF EnableNewExtTools}
+  SetupExternalTools;
+  {$ENDIF}
+
   // build and position the MainIDE form
   Application.CreateForm(TMainIDEBar,MainIDEBar);
   MainIDEBar.OnActive:=@OnMainBarActive;
@@ -1378,8 +1401,8 @@ begin
     IDEDockMaster.MakeIDEWindowDockSite(MainIDEBar);
 
   HiddenWindowsOnRun:=TFPList.Create;
-
   LastActivatedWindows:=TFPList.Create;
+
   // menu
   MainIDEBar.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Create'){$ENDIF};
   try
@@ -1467,6 +1490,9 @@ end;
 destructor TMainIDE.Destroy;
 begin
   ToolStatus:=itExiting;
+  {$IFDEF EnableNewExtTools}
+  ExternalTools.TerminateAll;
+  {$ENDIF}
 
   DebugLn('[TMainIDE.Destroy] A ');
 
@@ -2094,6 +2120,20 @@ begin
   CreateStandardCodeMacros;
 end;
 
+{$IFDEF EnableNewExtTools}
+procedure TMainIDE.SetupExternalTools;
+begin
+  // setup the external tool queue
+  ExternalTools:=TExternalTools.Create(Self);
+  RegisterFPCParser;
+  RegisterMakeParser;
+  ExternalToolList.RegisterParser(TDefaultParser);
+
+  FPCMsgFilePool:=TFPCMsgFilePool.Create(nil);
+  FPCMsgFilePool.OnLoadFile:=@FPCMsgFilePoolLoadFile;
+end;
+{$ENDIF}
+
 procedure TMainIDE.SetupControlSelection;
 begin
   TheControlSelection:=TControlSelection.Create;
@@ -2125,10 +2165,14 @@ end;
 
 procedure TMainIDE.SetupIDEMsgQuickFixItems;
 begin
+  {$IFDEF EnableNewExtTools}
+  IDEQuickFixes:=TIDEQuickFixes.Create(Self);
+  {$ELSE}
   InitStandardIDEQuickFixItems;
   InitCodeBrowserQuickFixItems;
   InitFindUnitQuickFixItems;
   InitInspectChecksumChangedQuickFixItems;
+  {$ENDIF}
 end;
 
 procedure TMainIDE.SetupStartProject;
@@ -12801,6 +12845,26 @@ begin
     PkgBoss.OnProjectInspectorOpen(Sender);
 end;
 
+{$IFDEF EnableNewExtTools}
+procedure TMainIDE.FPCMsgFilePoolLoadFile(aFilename: string; out s: string);
+// Note: called by any thread
+var
+  fs: TFileStreamUTF8;
+  Encoding: String;
+begin
+  s:='';
+  fs := TFileStreamUTF8.Create(aFilename, fmOpenRead or fmShareDenyNone);
+  try
+    SetLength(s,fs.Size);
+    if s<>'' then
+      fs.Read(s[1],length(s));
+    Encoding:=GuessEncoding(s);
+    s:=ConvertEncoding(s,Encoding,EncodingUTF8);
+  finally
+    fs.Free;
+  end;
+end;
+{$ELSE}
 procedure TMainIDE.OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
   var Abort: boolean);
 begin
@@ -12825,6 +12889,7 @@ begin
   if ErrorOccurred then
     DoJumpToCompilerMessage(-1,true);
 end;
+{$ENDIF}
 
 procedure TMainIDE.OnGetLayout(Sender: TObject; aFormName: string; out
   aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);

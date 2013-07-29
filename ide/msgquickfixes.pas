@@ -43,6 +43,10 @@
 *)
 unit MsgQuickFixes;
 
+{$IFDEF EnableNewExtTools}
+  {$ERROR deprecated}
+{$ENDIF}
+
 {$mode objfpc}{$H+}
 
 interface

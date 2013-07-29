@@ -55,7 +55,12 @@ uses
   IDEHelpIntf, PackageIntf, TextTools, IDECommands, LazIDEIntf,
   // IDE
   Project, DialogProcs, PackageSystem, PackageDefs, LazarusIDEStrConsts,
-  IDEOptionDefs, MsgQuickFixes, BasePkgManager, AddToProjectDlg,
+  IDEOptionDefs,
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
+  MsgQuickFixes,
+  {$ENDIF}
+  BasePkgManager, AddToProjectDlg,
   EnvironmentOpts;
 
 

@@ -669,12 +669,15 @@ const
     'Run'
     );
 
+{$IFNDEF EnableNewExtTools}
 type
   TRunCompilerWithOptions = function(ExtTool: TIDEExternalToolOptions;
                 ACompilerOptions: TBaseCompilerOptions): TModalResult of object;
 var
-  OnParseString: TParseStringEvent = nil;
   RunCompilerWithOptions: TRunCompilerWithOptions = nil;
+{$ENDIF}
+var
+  OnParseString: TParseStringEvent = nil;
 
 function EnumToStr(opt: TParsedCompilerOptString): string;
 function ParseString(Options: TParsedCompilerOptions;
@@ -4143,7 +4146,10 @@ function TCompilationToolOptions.Execute(const WorkingDir, ToolTitle: string
   ): TModalResult;
 var
   ProgramFilename, Params: string;
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
   ExtTool: TIDEExternalToolOptions;
+  {$ENDIF}
   Filename: String;
   CurCommand: String;
 begin

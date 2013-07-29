@@ -169,6 +169,17 @@ const
       'Never'
     );
 
+{$IFDEF EnableNewExtTools}
+type
+  TBaseExternalToolMenuItems = class
+  public
+    function Load(Config: TConfigStorage; const Path: string): TModalResult; virtual; abstract;
+    function Save(Config: TConfigStorage; const Path: string): TModalResult; virtual; abstract;
+  end;
+  TExternalToolMenuItemsClass = class of TBaseExternalToolMenuItems;
+var
+  ExternalToolMenuItemsClass: TExternalToolMenuItemsClass; // set by ExtToolDialog
+{$ELSE}
 type
   TBaseExternalToolList = class(TList)
   public
@@ -182,6 +193,7 @@ type
   TExternalToolListClass = class of TBaseExternalToolList;
 var
   ExternalToolListClass: TExternalToolListClass; // set by ExtToolDialog
+{$ENDIF}
 
 type
   TEnvOptParseType = (
@@ -323,7 +335,11 @@ type
     FBackupInfoOtherFiles: TBackupInfo;
     
     // external tools
+    {$IFDEF EnableNewExtTools}
+    fExternalToolMenuItems: TBaseExternalToolMenuItems;
+    {$ELSE}
     fExternalTools: TBaseExternalToolList;
+    {$ENDIF}
     
     // naming conventions
     fPascalFileExtension: TPascalExtType;
@@ -593,8 +609,12 @@ type
                                                write FBackupInfoOtherFiles;
        
     // external tools
+    {$IFDEF EnableNewExtTools}
+    property ExternalToolMenuItems: TBaseExternalToolMenuItems read fExternalToolMenuItems;
+    {$ELSE}
     property ExternalTools: TBaseExternalToolList read fExternalTools
                                                   write fExternalTools;
+    {$ENDIF}
 
     // naming conventions
     property PascalFileExtension: TPascalExtType read fPascalFileExtension
@@ -889,7 +909,11 @@ begin
   end;
   
   // external tools
+  {$IFDEF EnableNewExtTools}
+  fExternalToolMenuItems:=ExternalToolMenuItemsClass.Create;
+  {$ELSE}
   fExternalTools:=ExternalToolListClass.Create;
+  {$ENDIF}
   
   // naming
   fPascalFileExtension:=petPAS;
@@ -911,7 +935,11 @@ var
   i: Integer;
 begin
   FreeAndNil(FBuildMatrixOptions);
+  {$IFDEF EnableNewExtTools}
+  FreeAndNil(fExternalToolMenuItems);
+  {$ELSE}
   FreeAndNil(fExternalTools);
+  {$ENDIF}
   FreeAndNil(FRecentOpenFiles);
   FreeAndNil(FRecentProjectFiles);
   FreeAndNil(FRecentPackageFiles);
@@ -1293,7 +1321,11 @@ begin
       end;
 
       // external tools
+      {$IFDEF EnableNewExtTools}
+      fExternalToolMenuItems.Load(FConfigStore,Path+'ExternalTools/');
+      {$ELSE}
       fExternalTools.Load(FConfigStore,Path+'ExternalTools/');
+      {$ENDIF}
 
       // naming
       LoadPascalFileExt(Path+'');
@@ -1628,7 +1660,11 @@ begin
       XMLConfig.SetValue(Path+'Recent/AlreadyPopulated', FAlreadyPopulatedRecentFiles);
 
       // external tools
+      {$IFDEF EnableNewExtTools}
+      fExternalToolMenuItems.Save(FConfigStore,Path+'ExternalTools/');
+      {$ELSE}
       fExternalTools.Save(FConfigStore,Path+'ExternalTools/');
+      {$ENDIF}
 
       // naming
       XMLConfig.SetDeleteValue(Path+'Naming/PascalFileExtension',
