@@ -1,5 +1,5 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Makefile Value="True"/>
-  <Params Value=" -Fu../../packager/units/%(CPU_TARGET)-%(OS_TARGET);../lazutils/lib/%(CPU_TARGET)-%(OS_TARGET);../../lcl/units/%(CPU_TARGET)-%(OS_TARGET);../../lcl/units/%(CPU_TARGET)-%(OS_TARGET)/%(LCL_PLATFORM);../lazcontrols/lib/%(CPU_TARGET)-%(OS_TARGET)/%(LCL_PLATFORM);../ideintf/units/%(CPU_TARGET)-%(OS_TARGET)/%(LCL_PLATFORM);.  -MObjFPC -Scgi -O1 -g -gl -vewnhi -l runtimetypeinfocontrols.pas"/>
+  <Makefile Value="2"/>
+  <Params Value=" -Fu../../packager/units/$(CPU_TARGET)-$(OS_TARGET);../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET);../../lcl/units/$(CPU_TARGET)-$(OS_TARGET);../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);.  -MObjFPC -Scgi -O1 -g -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM) runtimetypeinfocontrols.pas"/>
 </CONFIG>

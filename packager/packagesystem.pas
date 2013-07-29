@@ -46,7 +46,7 @@ uses
 {$ENDIF}
   // FPC + LCL
   Classes, SysUtils, FileProcs, FileUtil, LCLProc, Forms, Controls, Dialogs,
-  Laz2_XMLCfg, InterfaceBase,
+  Laz2_XMLCfg, LazLogger, InterfaceBase,
   // codetools
   AVL_Tree, DefineTemplates, CodeCache,
   BasicCodeTools, CodeToolsStructs, NonPascalCodeTools, SourceChanger,
@@ -61,6 +61,10 @@ uses
   DialogProcs, IDETranslations, CompilerOptions, PackageLinks, PackageDefs,
   ComponentReg, ProjectIntf;
   
+const
+  MakefileCompileVersion = 2;
+  // 2 : changed macro format from %() to $()
+
 type
   TFindPackageFlag = (
     fpfSearchInInstalledPckgs,
@@ -2665,6 +2669,8 @@ var
   StateFileAge: Integer;
   stats: PPkgLastCompileStats;
   o: TPkgOutputDir;
+  MakefileValue: String;
+  MakefileVersion: Integer;
 begin
   o:=APackage.GetOutputDirType;
   stats:=@APackage.LastCompile[o];
@@ -2690,7 +2696,18 @@ begin
         stats^.Params:=XMLConfig.GetValue('Params/Value','');
         stats^.Complete:=XMLConfig.GetValue('Complete/Value',true);
         stats^.MainPPUExists:=XMLConfig.GetValue('Complete/MainPPUExists',true);
-        stats^.ViaMakefile:=XMLConfig.GetValue('Makefile/Value',false);
+        MakefileValue:=XMLConfig.GetValue('Makefile/Value','');
+        if (MakefileValue='') then
+          stats^.ViaMakefile:=false
+        else begin
+          stats^.ViaMakefile:=true;
+          MakefileVersion:=StrToIntDef(MakefileValue,0);
+          if MakefileVersion<2 then begin
+            // old versions used %(
+            stats^.CompilerFilename:=StringReplace(stats^.CompilerFilename,'%(','$(',[rfReplaceAll]);
+            stats^.Params:=StringReplace(stats^.Params,'%(','$(',[rfReplaceAll]);
+          end;
+        end;
         if stats^.ViaMakefile then begin
           DoDirSeparators(stats^.CompilerFilename);
           DoDirSeparators(stats^.Params);
@@ -3045,6 +3062,8 @@ begin
   LastParams:=APackage.GetLastCompilerParams(o);
   if Stats^.ViaMakefile then begin
     // the package was compiled via Makefile/fpmake
+    debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile Last=',LastParams]);
+
     CurPaths:=nil;
     LastPaths:=nil;
     try
@@ -3578,7 +3597,7 @@ begin
   try
     XMLConfig:=TXMLConfig.Create(TargetCompiledFile);
     try
-      XMLConfig.SetValue('Makefile/Value',True);
+      XMLConfig.SetValue('Makefile/Value',MakefileCompileVersion);
       s:='';
       if UnitPath<>'' then
         s:=s+' -Fu'+SwitchPathDelims(UnitPath,pdsUnix);
@@ -3621,7 +3640,7 @@ var
     repeat
       p:=Pos(SearchTxt,s);
       if p<=1 then break;
-      s:=copy(s,1,p-1)+ReplaceTxt+copy(s,p+length(SearchTxt),length(s));
+      ReplaceSubstring(s,p,length(SearchTxt),ReplaceTxt);
     until false;
   end;
 
@@ -3636,6 +3655,14 @@ var
     Result:=ConvertPIMacrosToMakefileMacros(s);
     Result:=CreateRelativeSearchPath(TrimSearchPath(Result,''),APackage.Directory);
     Replace(Result,';',' ');
+    if PathDelimNeedsReplace then
+      Replace(Result,PathDelim,'/');
+  end;
+
+  function ConvertLazarusToMakefileCompiledSearchPath(const s: string): string;
+  begin
+    Result:=ConvertPIMacrosToMakefileMacros(s);
+    Result:=CreateRelativeSearchPath(TrimSearchPath(Result,''),APackage.Directory);
     if PathDelimNeedsReplace then
       Replace(Result,PathDelim,'/');
   end;
@@ -3672,6 +3699,8 @@ var
   IncPath: String;
   MakefileCompiledFilename: String;
   OtherOptions: String;
+  FormUnitPath: String;
+  FormIncPath: String;
 begin
   Result:=mrCancel;
   PathDelimNeedsReplace:=PathDelim<>'/';
@@ -3701,13 +3730,6 @@ begin
   OtherOptions:=APackage.CompilerOptions.MakeOptionsString(
                               [ccloDoNotAppendOutFileOption,ccloNoMacroParams]);
 
-  Result:=WriteMakefileCompiled(APackage,MakefileCompiledFilename,UnitPath,
-    IncPath,OtherOptions);
-  if Result<>mrOK then exit;
-
-  //DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
-  UnitPath:=ConvertLazarusToMakefileSearchPath(UnitPath);
-  IncPath:=ConvertLazarusToMakefileSearchPath(IncPath);
   // remove path delimiter at the end, or else it will fail on windows
   UnitOutputPath:=ConvertLazarusToMakefileDirectory(
                                                 ChompPathDelim(UnitOutputPath));
@@ -3721,6 +3743,21 @@ begin
     else
       OtherOptions:=CustomOptions;
   debugln(['TLazPackageGraph.WriteMakeFile Other="',OtherOptions,'"']);
+
+  // ---- Makefile.compiled ----------------------------------------------------
+
+  //DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
+  FormUnitPath:=ConvertLazarusToMakefileCompiledSearchPath(UnitPath);
+  FormIncPath:=ConvertLazarusToMakefileCompiledSearchPath(IncPath);
+  Result:=WriteMakefileCompiled(APackage,MakefileCompiledFilename,FormUnitPath,
+    FormIncPath,OtherOptions);
+  if Result<>mrOK then exit;
+
+  // ---- Makefile.fpc ---------------------------------------------------------
+
+  //DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
+  FormUnitPath:=ConvertLazarusToMakefileSearchPath(UnitPath);
+  FormIncPath:=ConvertLazarusToMakefileSearchPath(IncPath);
 
   e:=LineEnding;
   s:='';
@@ -3737,9 +3774,9 @@ begin
   s:=s+'[compiler]'+e;
   s:=s+'unittargetdir='+UnitOutputPath+e;
   if UnitPath<>'' then
-    s:=s+'unitdir='+UnitPath+e;
+    s:=s+'unitdir='+FormUnitPath+e;
   if IncPath<>'' then
-    s:=s+'includedir='+IncPath+e;
+    s:=s+'includedir='+FormIncPath+e;
   s:=s+'options='+OtherOptions+e;
   s:=s+''+e;
   s:=s+'[target]'+e;

@@ -3720,9 +3720,9 @@ function TLazPackage.GetLastCompilerParams(o: TPkgOutputDir): string;
 begin
   Result:=LastCompile[o].Params;
   if LastCompile[o].ViaMakefile then begin
-    Result:=StringReplace(Result,'%(CPU_TARGET)','$(TargetCPU)',[rfReplaceAll]);
-    Result:=StringReplace(Result,'%(OS_TARGET)','$(TargetOS)',[rfReplaceAll]);
-    Result:=StringReplace(Result,'%(LCL_PLATFORM)','$(LCLWidgetType)',[rfReplaceAll]);
+    Result:=StringReplace(Result,'$(CPU_TARGET)','$(TargetCPU)',[rfReplaceAll]);
+    Result:=StringReplace(Result,'$(OS_TARGET)','$(TargetOS)',[rfReplaceAll]);
+    Result:=StringReplace(Result,'$(LCL_PLATFORM)','$(LCLWidgetType)',[rfReplaceAll]);
     Result:=SubstitutePkgMacros(Result,false);
   end;
 end;
