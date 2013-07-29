@@ -10,13 +10,13 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
   DesignTop = 542
   object grpConfigFile: TGroupBox
     Left = 0
-    Height = 110
+    Height = 107
     Top = 0
     Width = 594
     Align = alTop
     AutoSize = True
     Caption = 'grpConfigFile'
-    ClientHeight = 91
+    ClientHeight = 88
     ClientWidth = 590
     TabOrder = 0
     object chkConfigFile: TCheckBox
@@ -35,18 +35,26 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       Top = 33
       Width = 578
       Align = alTop
-      BorderSpacing.Around = 6
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
       Caption = 'chkCustomConfigFile'
       OnClick = chkCustomConfigFileClick
       TabOrder = 1
     end
     object edtConfigPath: TEdit
-      Left = 6
+      AnchorSideLeft.Control = chkCustomConfigFile
+      AnchorSideTop.Control = chkCustomConfigFile
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = chkCustomConfigFile
+      AnchorSideRight.Side = asrBottom
+      Left = 25
       Height = 25
-      Top = 60
-      Width = 578
-      Align = alTop
-      BorderSpacing.Around = 6
+      Top = 57
+      Width = 559
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 19
+      BorderSpacing.Top = 3
+      BorderSpacing.Bottom = 6
       TabOrder = 2
       Text = 'edtConfigPath'
     end
@@ -55,7 +63,7 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
     AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 118
-    Top = 121
+    Top = 118
     Width = 594
     Align = alTop
     AutoSize = True
