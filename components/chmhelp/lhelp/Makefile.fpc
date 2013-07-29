@@ -21,7 +21,7 @@ unitdir=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
           $(LAZDIR)/packager/units/$(CPU_TARGET)-$(OS_TARGET) \
           $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
           $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
-          $(LAZDIR)/components/cairocanvas/lib/$(CPU_TARGET)-$(OS_TARGET) \
+          $(LAZDIR)/components/cairocanvas/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
           $(LAZDIR)/components/turbopower_ipro/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
           $(LAZDIR)/components/printers/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
           ../packages/help/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
