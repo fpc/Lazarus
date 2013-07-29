@@ -21,6 +21,7 @@ type
     chkSymbolsStrip: TCheckBox;
     chkUseExternalDbgSyms: TCheckBox;
     chkUseHeaptrc: TCheckBox;
+    chkTrashVariables: TCheckBox;
     chkUseLineInfoUnit: TCheckBox;
     chkUseValgrind: TCheckBox;
     chkVerifyObjMethodCall: TCheckBox;
@@ -29,7 +30,6 @@ type
     grpChecks: TGroupBox;
     grpOtherDebuggingInfo: TGroupBox;
     grpInfoForGDB: TGroupBox;
-    lblEmpty: TLabel;
     lblDbgSymbolType: TLabel;
     procedure chkDebugGDBChange(Sender: TObject);
   public
@@ -108,11 +108,12 @@ begin
   dropDbgSymbolType.Items.Add(dlgCOSymbolTypeStabs+ ' (-gs)');                   // 3: stabs
   dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf3+ ' (-gw3)');
   chkUseLineInfoUnit.Caption := dlgLNumsBct + ' (-gl)';
-  chkUseHeaptrc.Caption := dlgCOHeaptrc + ' (-gh)';
   chkUseValgrind.Caption := dlgCOValgrind + ' (-gv)';
+  chkUseExternalDbgSyms.Caption := dlgExtSymb + ' (-Xg)';
+  chkUseHeaptrc.Caption := dlgCOHeaptrc + ' (-gh)';
+  chkTrashVariables.Caption := dlgCOTrashVariables + ' (-gt)';
   chkGenGProfCode.Caption := dlgGPROF + ' (-pg)';
   chkSymbolsStrip.Caption := dlgCOStrip + ' (-Xs)';
-  chkUseExternalDbgSyms.Caption := dlgExtSymb + ' (-Xg)';
 end;
 
 procedure TCompilerDebuggingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -129,12 +130,13 @@ begin
     chkDebugGDB.Checked := GenerateDebugInfo;
     dropDbgSymbolType.ItemIndex := SymbolToIndex(DebugInfoType);
     chkUseLineInfoUnit.Checked := UseLineInfoUnit;
-    chkUseHeaptrc.Checked := UseHeaptrc;
     chkUseValgrind.Checked := UseValgrind;
+    chkUseExternalDbgSyms.Checked := UseExternalDbgSyms;
+    chkUseHeaptrc.Checked := UseHeaptrc;
+    chkTrashVariables.Checked := TrashVariables;
     chkGenGProfCode.Checked := GenGProfCode;
     chkSymbolsStrip.Checked := StripSymbols;
     chkSymbolsStrip.Enabled := NeedsLinkerOpts;
-    chkUseExternalDbgSyms.Checked := UseExternalDbgSyms;
   end;
   grpInfoForGDB.Enabled := chkDebugGDB.Checked;
 end;
@@ -153,11 +155,12 @@ begin
     GenerateDebugInfo := chkDebugGDB.Checked;
     DebugInfoType := IndexToSymbol(dropDbgSymbolType.ItemIndex);
     UseLineInfoUnit := chkUseLineInfoUnit.Checked;
-    UseHeaptrc := chkUseHeaptrc.Checked;
     UseValgrind := chkUseValgrind.Checked;
+    UseExternalDbgSyms := chkUseExternalDbgSyms.Checked;
+    UseHeaptrc := chkUseHeaptrc.Checked;
+    TrashVariables := chkTrashVariables.Checked;
     GenGProfCode := chkGenGProfCode.Checked;
     StripSymbols := chkSymbolsStrip.Checked;
-    UseExternalDbgSyms := chkUseExternalDbgSyms.Checked;
   end;
 end;
 

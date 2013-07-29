@@ -1494,6 +1494,7 @@ begin
   GenerateDebugInfo := aXMLConfig.GetValue(p+'Debugging/GenerateDebugInfo/Value', FileVersion >= 11); // Default = True, since version 11 (was False before)
   UseLineInfoUnit := aXMLConfig.GetValue(p+'Debugging/UseLineInfoUnit/Value', true);
   UseHeaptrc := aXMLConfig.GetValue(p+'Debugging/UseHeaptrc/Value', false);
+  TrashVariables := aXMLConfig.GetValue(p+'Debugging/TrashVariables/Value', false);
   UseValgrind := aXMLConfig.GetValue(p+'Debugging/UseValgrind/Value', false);
 
   if (FileVersion < 11) and (aXMLConfig.GetValue(p+'Debugging/DebugInfoType/Value', '') = '') then begin
@@ -1713,6 +1714,7 @@ begin
   aXMLConfig.DeletePath(p+'Debugging/GenerateDwarf'); // old deprecated setting
   aXMLConfig.SetDeleteValue(p+'Debugging/UseLineInfoUnit/Value', UseLineInfoUnit,true);
   aXMLConfig.SetDeleteValue(p+'Debugging/UseHeaptrc/Value', UseHeaptrc,false);
+  aXMLConfig.SetDeleteValue(p+'Debugging/TrashVariables/Value', TrashVariables,false);
   aXMLConfig.SetDeleteValue(p+'Debugging/UseValgrind/Value', UseValgrind,false);
   aXMLConfig.SetDeleteValue(p+'Debugging/GenGProfCode/Value', GenGProfCode,false);
   aXMLConfig.SetDeleteValue(p+'Debugging/StripSymbols/Value', StripSymbols,false);
@@ -2819,6 +2821,10 @@ begin
       switches := switches + ' -g-h'; // heaptrc, without -g
   end;
 
+  { Trash variables }
+  if (TrashVariables) then
+    switches := switches + ' -gt';
+
   { Generate code gprof }
   if (GenGProfCode) then
     switches := switches + ' -pg';
@@ -3467,6 +3473,7 @@ begin
   if Done(Tool.AddDiff('DebugInfoType',DebugInfoTypeStr,CompOpts.DebugInfoTypeStr)) then exit;
   if Done(Tool.AddDiff('UseLineInfoUnit',fUseLineInfoUnit,CompOpts.fUseLineInfoUnit)) then exit;
   if Done(Tool.AddDiff('UseHeaptrc',fUseHeaptrc,CompOpts.fUseHeaptrc)) then exit;
+  if Done(Tool.AddDiff('TrashVariables',fTrashVariables,CompOpts.fTrashVariables)) then exit;
   if Done(Tool.AddDiff('UseValgrind',fUseValgrind,CompOpts.fUseValgrind)) then exit;
   if Done(Tool.AddDiff('GenGProfCode',fGenGProfCode,CompOpts.fGenGProfCode)) then exit;
   if Done(Tool.AddDiff('StripSymbols',fStripSymbols,CompOpts.fStripSymbols)) then exit;

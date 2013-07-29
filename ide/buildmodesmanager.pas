@@ -248,12 +248,12 @@ var
       GenerateDebugInfo:=IsDebug;
       UseExternalDbgSyms:=IsDebug;
       UseHeaptrc:=IsDebug;
-      // ToDo: TrashVariables:=IsDebug;
+      TrashVariables:=IsDebug;
     end;
   end;
 
 var
-  DMode, RMode: TProjectBuildMode;
+  NewMode: TProjectBuildMode;
   i: Integer;
 begin
   i:=BuildModesStringGrid.Row-1;
@@ -261,19 +261,20 @@ begin
     CurMode:=fBuildModes[i]
   else
     CurMode:=nil;
-  // Create Debug DMode
-  DMode:=fBuildModes.Add(DebugModeName);
-  AssignAndSetBooleans(DMode, True);
-  DMode.CompilerOptions.OptimizationLevel:=1;       // Optimization
-  DMode.CompilerOptions.DebugInfoType:=dsDwarf2Set; // Debug
 
-  // Create Release DMode
-  RMode:=fBuildModes.Add(ReleaseModeName);
-  AssignAndSetBooleans(RMode, False);
-  RMode.CompilerOptions.OptimizationLevel:=3;       // Optimization
-  RMode.CompilerOptions.DebugInfoType:=dsAuto;      // Debug
+  // Create Debug mode
+  NewMode:=fBuildModes.Add(DebugModeName);
+  AssignAndSetBooleans(NewMode, True);
+  NewMode.CompilerOptions.OptimizationLevel:=1;       // Optimization
+  NewMode.CompilerOptions.DebugInfoType:=dsDwarf2Set; // Debug
+  fActiveBuildMode:=NewMode;                          // activate Debug mode
 
-  fActiveBuildMode:=DMode;          // activate Debug mode
+  // Create Release mode
+  NewMode:=fBuildModes.Add(ReleaseModeName);
+  AssignAndSetBooleans(NewMode, False);
+  NewMode.CompilerOptions.OptimizationLevel:=3;       // Optimization
+  NewMode.CompilerOptions.DebugInfoType:=dsAuto;      // Debug
+
   FillBuildModesGrid;               // show
   // select identifier
   BuildModesStringGrid.Col:=fModeNameCol;

@@ -2065,6 +2065,7 @@ resourcestring
   dlgCODBX = 'Generate debugging info for DBX (slows compiling)';
   dlgLNumsBct = 'Display line numbers in run-time error backtraces';
   dlgCOHeaptrc = 'Use Heaptrc unit (check for mem-leaks)';
+  dlgCOTrashVariables = 'Trash variables';
   dlgCOValgrind = 'Generate code for valgrind';
   dlgGPROF = 'Generate code for gprof';
   dlgCOStrip = 'Strip symbols from executable';

@@ -156,6 +156,7 @@ type
     procedure SetUseAnsiStr(const AValue: Boolean);
     procedure SetUseExternalDbgSyms(const AValue: Boolean);
     procedure SetUseHeaptrc(const AValue: Boolean);
+    procedure SetTrashVariables(const AValue: Boolean);
     procedure SetUseLineInfoUnit(const AValue: Boolean);
     procedure SetUseValgrind(const AValue: Boolean);
     procedure SetUncertainOpt(const AValue: Boolean);
@@ -214,6 +215,7 @@ type
     FDebugInfoType: TCompilerDbgSymbolType;
     fUseLineInfoUnit: Boolean;
     fUseHeaptrc: Boolean;
+    fTrashVariables: Boolean;
     fUseValgrind: Boolean;
     fGenGProfCode: Boolean;
     fStripSymbols: Boolean;
@@ -375,6 +377,7 @@ type
     property GenerateDwarf: Boolean read GetGenerateDwarf write SetGenerateDwarf; deprecated 'use DebugInfoType';
     property UseLineInfoUnit: Boolean read fUseLineInfoUnit write SetUseLineInfoUnit;
     property UseHeaptrc: Boolean read fUseHeaptrc write SetUseHeaptrc;
+    property TrashVariables: Boolean read fTrashVariables write SetTrashVariables;
     property UseValgrind: Boolean read fUseValgrind write SetUseValgrind;
     property GenGProfCode: Boolean read fGenGProfCode write SetGenGProfCode;
     property StripSymbols: Boolean read fStripSymbols write SetStripSymbols;
@@ -824,6 +827,13 @@ procedure TLazCompilerOptions.SetUseHeaptrc(const AValue: Boolean);
 begin
   if fUseHeaptrc=AValue then exit;
   fUseHeaptrc:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetTrashVariables(const AValue: Boolean);
+begin
+  if fTrashVariables=AValue then exit;
+  fTrashVariables:=AValue;
   IncreaseChangeStamp;
 end;
 
