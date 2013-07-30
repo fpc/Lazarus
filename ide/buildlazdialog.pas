@@ -1145,24 +1145,13 @@ procedure TConfigureBuildLazarusDlg.CompileAdvancedButtonClick(Sender: TObject);
 // mrCancel=do nothing
 var
   EditForm: TGenericCheckListForm;
-  btnBuild: TBitBtn;
   i, ind: Integer;
 begin
   PrepareClose;
-  EditForm:=TGenericCheckListForm.Create(Nil);
+  // Add a button for building all.
+  EditForm:=TGenericCheckListForm.CreateWithActionButton(lisBuild, 'menu_build');
   try
     EditForm.Caption:=lisLazBuildSelectProfilesToBuild;
-    // Button for save and compile
-    btnBuild:=TBitBtn.Create(EditForm.ButtonPanel1);
-    btnBuild.Caption:=lisBuild;
-    btnBuild.Kind:=bkCustom;
-    btnBuild.ModalResult:=mrYes;
-    btnBuild.Align:=alRight;
-    btnBuild.BorderSpacing.Left:=6;
-    btnBuild.BorderSpacing.Right:=6;
-    btnBuild.Parent:=EditForm.ButtonPanel1;
-    btnBuild.LoadGlyphFromLazarusResource('menu_build');
-    btnBuild.AutoSize:=True;
     // Copy profile names to checkboxlist and check the previously selected ones.
     for i:=0 to fProfiles.Count-1 do begin
       ind:=EditForm.CheckListBox1.Items.Add(fProfiles[i].Name);
