@@ -6,6 +6,7 @@
      ./runtests --format=plain --suite=TestReplaceSubstring
      ./runtests --format=plain --suite=TestSplitCmdLineParams
      ./runtests --format=plain --suite=TestExpandFilename
+     ./runtests --format=plain --suite=TestMergeCmdLineParams
 }
 unit TestLazUtils;
 
@@ -26,6 +27,7 @@ type
     procedure TestReplaceSubstring;
     procedure TestSplitCmdLineParams;
     procedure TestExpandFilename;
+    procedure TestMergeCmdLineParams;
   end;
 
 implementation
@@ -107,6 +109,37 @@ begin
   AssertEquals('basedir','/opt/ide',ExpandFileNameUTF8('ide','/opt/'));
   AssertEquals('basedir','/opt/ide',ExpandFileNameUTF8('ide','/opt'));
   AssertEquals('basedir','/ide',ExpandFileNameUTF8('/ide','/opt'));
+end;
+
+procedure TTestLazUtils.TestMergeCmdLineParams;
+
+  procedure t(Title, Param, Expected: string);
+  var
+    l: TStringList;
+    Actual: String;
+  begin
+    l:=TStringList.Create;
+    try
+      l.Add(Param);
+      Actual:=MergeCmdLineParams(l);
+      AssertEquals(Title,'['+Expected+']','['+Actual+']');
+    finally
+      l.Free;
+    end;
+  end;
+
+begin
+  t('empty','','''''');
+  t('word','a','a');
+  t('space',' ',''' ''');
+  t('two words','a b','''a b''');
+  t('single quot','"','''"''');
+  t('two quots','"a"','''"a"''');
+  t('single apos','''','"''"');
+  t('two apos','''a''','"''a''"');
+  t('quot apos','"''','''"''"''"');
+  t('wordquot','a"','''a"''');
+  t('null#0char','null'#0'char','null');
 end;
 
 initialization

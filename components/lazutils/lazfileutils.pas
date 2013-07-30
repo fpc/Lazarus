@@ -120,6 +120,7 @@ function GetDarwinSystemFilename(Filename: string): string;
 
 procedure SplitCmdLineParams(const Params: string; ParamList: TStrings;
                              ReadBackslash: boolean = false);
+function StrToCmdLineParam(const Param: string): string;
 function MergeCmdLineParams(ParamList: TStrings): string;
 
 type
@@ -1078,59 +1079,115 @@ begin
   end;
 end;
 
+function StrToCmdLineParam(const Param: string): string;
+{ <empty> -> ''
+  word -> word
+  word1 word2 -> 'word1 word2'
+  word's -> "word's"
+  a" -> 'a"'
+  "a" -> '"a"'
+  'a' -> "'a'"
+  #0 character -> cut the rest
+}
+const
+  NoQuot = ' ';
+  AnyQuot = '*';
+var
+  Quot: Char;
+  p: PChar;
+  i: Integer;
+begin
+  Result:=Param;
+  if Result='' then
+    Result:=''''''
+  else begin
+    p:=PChar(Result);
+    Quot:=NoQuot;
+    repeat
+      case p^ of
+      #0:
+        begin
+          i:=p-PChar(Result);
+          if i<length(Result) then
+            Delete(Result,i+1,length(Result));
+          case Quot of
+          AnyQuot: Result:=''''+Result+'''';
+          '''': Result+='''';
+          '"':  Result+='"';
+          end;
+          break;
+        end;
+      ' ',#9,#10,#13:
+        begin
+          if Quot=NoQuot then
+            Quot:=AnyQuot;
+          inc(p);
+        end;
+      '''':
+        begin
+          case Quot of
+          NoQuot,AnyQuot:
+            begin
+              // need "
+              Quot:='"';
+              i:=p-PChar(Result);
+              System.Insert('"',Result,1);
+              p:=PChar(Result)+i+1;
+            end;
+          '"':
+            inc(p);
+          '''':
+            begin
+              // ' within a '
+              // => end ', start "
+              i:=p-PChar(Result)+1;
+              System.Insert('''"',Result,i);
+              p:=PChar(Result)+i+1;
+              Quot:='"';
+            end;
+          end;
+        end;
+      '"':
+        begin
+          case Quot of
+          NoQuot,AnyQuot:
+            begin
+              // need '
+              Quot:='''';
+              i:=p-PChar(Result);
+              System.Insert('''',Result,1);
+              p:=PChar(Result)+i+1;
+            end;
+          '''':
+            inc(p);
+          '"':
+            begin
+              // " within a "
+              // => end ", start '
+              i:=p-PChar(Result)+1;
+              System.Insert('"''',Result,i);
+              p:=PChar(Result)+i+1;
+              Quot:='''';
+            end;
+          end;
+        end;
+      else
+        inc(p);
+      end;
+    until false;
+  end;
+end;
+
 function MergeCmdLineParams(ParamList: TStrings): string;
 var
   i: Integer;
-  HasSpace: Boolean;
-  HasApos: Boolean;
-  HasQuot: Boolean;
-  Param: String;
-  j: Integer;
 begin
   Result:='';
   if ParamList=nil then exit;
   for i:=0 to ParamList.Count-1 do
   begin
-    Param:=ParamList[i];
-    if Param='' then
-      Param:='""'
-    else begin
-
-    end;
-
-    HasSpace:=false;
-    HasApos:=false;
-    HasQuot:=false;
-    for j:=1 to length(Param) do begin
-      case Param[i] of
-      ' ',#9,#10,#13: HasSpace:=true;
-      '''': HasApos:=true;
-      '"': HasQuot:=true;
-      end;
-    end;
-    if HasQuot then begin
-      if HasApos then begin
-
-      end else begin
-        // quot, no apos
-
-      end;
-    end else begin
-      // no quot
-      if HasApos then begin
-        // apos, no quot
-
-      end else begin
-        if HasSpace or (Param='') then begin
-          // no quot, no apos, has space -> quote
-          Param:=''''+Param+'''';
-        end else begin
-          // simple parameter => pass unaltered
-        end;
-      end;
-    end;
     if i>0 then Result+=' ';
-    Result+=Param;
+    Result+=StrToCmdLineParam(ParamList[i]);
   end;
 end;
 
