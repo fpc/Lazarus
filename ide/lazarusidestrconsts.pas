@@ -194,7 +194,7 @@ resourcestring
   lisOpenProject2 = 'Open project';
   lisFileHasNoProject = 'File has no project';
   lisTheFileIsNotALazarusProjectCreateANewProjectForThi = 'The file %s%s%s is '
-    +'not a lazarus project.%sCreate a new project for this %s?';
+    +'not a Lazarus project.%sCreate a new project for this %s?';
   lisCreateProject = 'Create project';
   lisKMSaveProject = 'Save project';
   lisKMCloseProject = 'Close project';
@@ -525,7 +525,7 @@ resourcestring
   // main
   lisChooseProgramSourcePpPasLpr = 'Choose program source (*.pp,*.pas,*.lpr)';
   lisProgramSourceMustHaveAPascalExtensionLikePasPpOrLp = 'Program source '
-    +'must have a pascal extension like .pas, .pp or .lpr';
+    +'must have a Pascal extension like .pas, .pp or .lpr';
   lisCompilerOptionsForProject = 'Compiler Options for Project: %s';
   lisChooseDelphiUnit = 'Choose Delphi unit (*.pas)';
   lisChooseDelphiProject = 'Choose Delphi project (*.dpr)';
@@ -611,7 +611,7 @@ resourcestring
     +'does not exist.';
   lisRenameFile = 'Rename file?';
   lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC = 'This looks like a '
-    +'pascal file.%sIt is recommended to use lower case filenames, to avoid '
+    +'Pascal file.%sIt is recommended to use lower case filenames, to avoid '
     +'various problems on some filesystems and different compilers.%sRename '
     +'it to lowercase?';
   lisRenameToLowercase = 'Rename to lowercase';
@@ -650,9 +650,9 @@ resourcestring
     +'to create it?%s';
   lisProjectInfoFileDetected = 'Project info file detected';
   lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP = 'The file %s seems '
-    +'to be the program file of an existing lazarus Project.';
+    +'to be the program file of an existing Lazarus Project.';
   lisTheFileSeemsToBeAProgramCloseCurrentProject = 'The file %s%s%s%sseems to '
-    +'be a program. Close current project and create a new lazarus project '
+    +'be a program. Close current project and create a new Lazarus project '
     +'for this program?%s"No" will load the file as normal source.';
   lisProgramDetected = 'Program detected';
   lisUnableToConvertTextFormDataOfFileIntoBinaryStream = 'Unable to convert '
@@ -667,7 +667,7 @@ resourcestring
   lisisAnInvalidProjectNamePleaseChooseAnotherEGProject = '%s%s%s is an '
     +'invalid project name.%sPlease choose another (e.g. project1.lpi)';
   lisTheNameIsNotAValidPascalIdentifier = 'The name %s%s%s is not a valid '
-    +'pascal identifier.';
+    +'Pascal identifier.';
   lisChooseADifferentName = 'Choose a different name';
   lisTheProjectInfoFileIsEqualToTheProjectMainSource = 'The project info '
     +'file %s%s%s%sis equal to the project main source file!';
@@ -744,8 +744,8 @@ resourcestring
   lisNoProgramFileSFound = 'No program file %s%s%s found.';
   lisErrorInitializingProgramSErrorS = 'Error initializing program%s%s%s%s%sError: %s';
   lisNotNow = 'Not now';
-  lisYouCanNotBuildLazarusWhileDebuggingOrCompiling = 'You can not build '
-    +'lazarus while debugging or compiling.';
+  lisYouCanNotBuildLazarusWhileDebuggingOrCompiling = 'You cannot build '
+    +'Lazarus while debugging or compiling.';
   lisUnableToSaveFile = 'Unable to save file %s%s%s';
   lisReadError = 'Read Error';
   lisUnableToReadFile2 = 'Unable to read file %s%s%s!';
@@ -784,7 +784,7 @@ resourcestring
     +'file %s%s%s.%sIf it belongs to your project, check search path '
     +'in%sProject -> Compiler Options -> Search Paths -> Other Unit Files.'
     +' If this file belongs to a package, check the appropriate package compiler'
-    +' options. If this file belongs to lazarus, make sure compiling clean.'
+    +' options. If this file belongs to Lazarus, make sure compiling clean.'
     +' If the file belongs to FPC then check fpc.cfg.'
     +' If unsure, check Project -> CompilerOptions -> Test';
   lisNOTECouldNotCreateDefineTemplateForFreePascal = 'NOTE: Could not create '
@@ -795,7 +795,7 @@ resourcestring
     +'a registered component class.%sUnable to paste.';
   lisControlNeedsParent = 'Control needs parent';
   lisTheClassIsATControlAndCanNotBePastedOntoANonContro = 'The class %s%s%s '
-    +'is a TControl and can not be pasted onto a non control.%sUnable to paste.';
+    +'is a TControl and cannot be pasted onto a non control.%sUnable to paste.';
   lisConversionError = 'Conversion error';
   lisUnableToConvertComponentTextIntoBinaryFormat = 'Unable to convert '
     +'component text into binary format:%s%s';
@@ -813,7 +813,7 @@ resourcestring
     +'ResourceString section in this or any of the used units.';
   lisComponentNameIsNotAValidIdentifier = 'Component name %s%s%s is not a '
     +'valid identifier';
-  lisComponentNameIsAPascalKeyword = 'Component name "%s" is a pascal keyword.';
+  lisComponentNameIsAPascalKeyword = 'Component name "%s" is a Pascal keyword.';
   lisOwnerIsAlreadyUsedByTReaderTWriterPleaseChooseAnot = '''Owner'' is '
     +'already used by TReader/TWriter. Please choose another name.';
   lisDuplicateNameAComponentNamedAlreadyExistsInTheInhe = 'Duplicate name: A '
@@ -852,7 +852,7 @@ resourcestring
     +'method. Please fix the error shown in the message window.';
   lisStopDebugging = 'Stop Debugging?';
   lisStopTheDebugging = 'Stop the debugging?';
-  lisCannotFindLazarusStarter = 'Cannot find lazarus starter:%s%s';
+  lisCannotFindLazarusStarter = 'Cannot find Lazarus starter:%s%s';
   lisInfoBuildLines  = 'Lines:';
   lisInfoBuildErrors = 'Errors:';
   lisInfoBuildHint = 'Hints:';
@@ -975,7 +975,7 @@ resourcestring
   lisCancelRenaming = 'Cancel renaming';
   lisAbortAll = 'Abort all';
   lisInvalidPascalIdentifierCap = 'Invalid Pascal Identifier';
-  lisInvalidPascalIdentifierText = 'The name "%s" is not a valid pascal identifier.';
+  lisInvalidPascalIdentifierText = 'The name "%s" is not a valid Pascal identifier.';
   lisCopyError = 'Copy Error';
 
   lisCloseAllTabsTitle = 'Close Source Editor Window';
@@ -1149,17 +1149,17 @@ resourcestring
   lisPVUTheUnitnameIsUsedWhenTheIDEExtendsUsesClauses = 'The unitname is used '
     +'when the IDE extends uses clauses';
   lisPEInvalidUnitFilename = 'Invalid unit filename';
-  lisPVUAPascalUnitMustHaveTheExtensionPpOrPas = 'A pascal unit must have the '
+  lisPVUAPascalUnitMustHaveTheExtensionPpOrPas = 'A Pascal unit must have the '
     +'extension .pp or .pas';
-  lisPEAPascalUnitMustHaveTheExtensionPpOrPas = 'A pascal unit must have the '
+  lisPEAPascalUnitMustHaveTheExtensionPpOrPas = 'A Pascal unit must have the '
     +'extension .pp or .pas';
   lisPEInvalidUnitname = 'Invalid unitname';
   lisPVUTheUnitnameIsNotAValidPascalIdentifier = 'The unitname is not a valid '
-    +'pascal identifier.';
+    +'Pascal identifier.';
   lisPVUUnitnameAndFilenameDoNotMatchExampleUnit1PasAndUni = 'Unitname and '
     +'Filename do not match.%sExample: unit1.pas and Unit1';
   lisPETheUnitnameIsNotAValidPascalIdentifier = 'The unitname is not a valid '
-    +'pascal identifier.';
+    +'Pascal identifier.';
   lisPEConflictFound = 'Conflict found';
   lisPVUThereIsAlreadyAnUnitWithThisNameFile = 'There is already an unit with '
     +'this name.%sFile: %s';
@@ -1268,8 +1268,8 @@ resourcestring
   dlgRuberbandSelectionColor = 'Rubberband Selection';
   dlgRuberbandCreationColor = 'Rubberband Creation';
   dlgRubberbandSelectsGrandChildren = 'Select grandchildren';
-  dlgPasExt = 'Default pascal extension';
-  dlgCharCaseFileAct = 'Save As - auto rename pascal files lower case';
+  dlgPasExt = 'Default Pascal extension';
+  dlgCharCaseFileAct = 'Save As - auto rename Pascal files lower case';
   
   dlgAmbigFileAct = 'Ambiguous file action:';
   dlgEnvAsk = 'Ask';
@@ -1377,7 +1377,7 @@ resourcestring
   dlgBlockGroupOptions = 'Selection';
   dlgAlwaysVisibleCursor = 'Always visible cursor';
   dlgAutoIndent = 'Auto indent';
-  dlgAutoIndentLink = '(Setup smart indent)';
+  dlgAutoIndentLink = '(Set up smart indent)';
   dlgAutoHideCursor  = 'Hide mouse when typing';
   dlgGroupUndo = 'Group Undo';
   dlgHalfPageScroll = 'Half page scroll';
@@ -1666,9 +1666,9 @@ resourcestring
   dlgEdOff = 'Off';
   dlgEdInvert = 'Invert';
   dlgEdIdComlet = 'Identifier completion';
-  dlgEdCompleteBlocks = 'Add close statement for pascal blocks';
+  dlgEdCompleteBlocks = 'Add close statement for Pascal blocks';
   lisShowValueHintsWhileDebugging = 'Show value hints while debugging';
-  lisDebugHintAutoTypeCastClass = 'Automatic type-cast for objects';
+  lisDebugHintAutoTypeCastClass = 'Automatic typecast for objects';
   dlgTooltipEval = 'Tooltip expression evaluation';
   dlgTooltipTools = 'Tooltip symbol Tools';
   dlgMarkupGroup = 'Highlight of Word under Caret';
@@ -1800,10 +1800,10 @@ resourcestring
 
   dlgMouseFoldExpFoldOne    = 'Fold One (All Expanded)';
   dlgMouseFoldExpFoldAll    = 'Fold All (All Expanded)';
-  dlgMouseFoldColFoldOne    = 'Fold One (Some Colapsed)';
-  dlgMouseFoldColFoldAll    = 'Fold All (Some Colapsed)';
-  dlgMouseFoldColUnFoldOne  = 'Unfold One (Some Colapsed)';
-  dlgMouseFoldColUnFoldAll  = 'Unfold All (Some Colapsed)';
+  dlgMouseFoldColFoldOne    = 'Fold One (Some Collapsed)';
+  dlgMouseFoldColFoldAll    = 'Fold All (Some Collapsed)';
+  dlgMouseFoldColUnFoldOne  = 'Unfold One (Some Collapsed)';
+  dlgMouseFoldColUnFoldAll  = 'Unfold All (Some Collapsed)';
 
   dlgMouseFoldGroup1        = 'Setting 1';
   dlgMouseFoldGroup2        = 'Setting 2';
@@ -2120,7 +2120,7 @@ resourcestring
     +'standard config filenames the Free Pascal compiler is looking for. This '
     +'can result in ONLY parsing the additional config and skipping the '
     +'standard config.';
-  lisCOClickOKIfAreSureToDoThat = '%s%sClick OK if you are sure to do that.';
+  lisCOClickOKIfAreSureToDoThat = '%s%sClick OK if you definitely want to do that.';
   lisCOCallOn = 'Call on:';
   dlgCOCreateMakefile = 'Create Makefile';
   lisCOExecuteAfter = 'Execute after';
@@ -2153,7 +2153,7 @@ resourcestring
   lisCCOInvalidSearchPath = 'Invalid search path';
   lisCCOSkip = 'Skip';
   dlgCCOTestCheckingCompiler = 'Test: Checking compiler ...';
-  lisDoesNotExists = '%s does not exists: %s';
+  lisDoesNotExists = '%s does not exist: %s';
   lisCCOInvalidCompiler = 'Invalid compiler';
   lisCCOCompilerNotAnExe = 'The compiler "%s" is not an executable file.%sDetails: %s';
   lisCCOAmbiguousCompiler = 'Ambiguous compiler';
@@ -2168,7 +2168,7 @@ resourcestring
   lisCCOCheckTestDir = 'Please check the Test directory under %s'
     +'Tools -> Options -> Files -> Directory for building test projects';
   lisCCOUnableToCreateTestFile = 'Unable to create Test File';
-  lisCCOUnableToCreateTestPascalFile = 'Unable to create Test pascal file "%s".';
+  lisCCOUnableToCreateTestPascalFile = 'Unable to create Test Pascal file "%s".';
   dlgCCOTestToolCompilingEmptyFile = 'Test: Compiling an empty file';
   lisCCORelUnitPathFoundInCfg = 'relative unit path found in fpc cfg: %s';
   dlgCCOTestCheckingCompilerConfig = 'Test: Checking compiler configuration ...';
@@ -2227,14 +2227,14 @@ resourcestring
     +'does not look correct:%s%s';
   lisTheLazarusDirectoryDoesNotLookCorrect = 'The Lazarus directory "%s" does '
     +'not look correct:%s%s';
-  lisTheContainsANotExistingDirectory = 'The %s contains a not existing '
+  lisTheContainsANotExistingDirectory = 'The %s contains a nonexistent '
     +'directory:%s%s';
   lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems = 'The project does '
     +'not use the LCL unit interfaces, which is required by LCLBase.%sYou will '
     +'get strange linker errors if you use the LCL without interfaces.';
   lisAddUnitInterfaces = 'Add unit interfaces';
   lisCCODatesDiffer = 'The dates of the .ppu files of FPC'
-    +' differ more than one hour.%s'
+    +' differ by more than one hour.%s'
     +'This can mean, they are from two different installations.%s'
     +'File1: %s%s'
     +'File2: %s';
@@ -2535,7 +2535,7 @@ resourcestring
   lisUEFontWith = 'Font without UTF-8';
   lisUETheCurre = 'The current editor font does not support UTF-8, but your '
     +'system seems to use it.%sThat means non ASCII characters will probably '
-    +'be shown incorrect.%sYou can select another font in the editor options.';
+    +'be shown incorrectly.%sYou can select another font in the editor options.';
   lisUEDoNotSho = 'Do not show this message again.';
   uemHighlighter = 'Highlighter';
   uemEncoding = 'Encoding';
@@ -2545,7 +2545,7 @@ resourcestring
   lisInvalidMultiselection = 'Invalid multiselection';
   lisUnableConvertBinaryStreamToText = 'Unable convert binary stream to text';
   lisUnableToStreamSelectedComponents = 'Unable to stream selected components';
-  lisCanNotCopyTopLevelComponent = 'Can not copy top level component.';
+  lisCanNotCopyTopLevelComponent = 'Cannot copy top level component.';
   lisCopyingAWholeFormIsNotImplemented = 'Copying a whole form is not implemented.';
   lisThereWasAnErrorDuringWritingTheSelectedComponent = 'There was an error '
     +'during writing the selected component %s:%s:%s%s';
@@ -2570,7 +2570,7 @@ resourcestring
   lisTheComponentIsInheritedFromToDeleteAnInheritedComp = 'The component %s '
     +'is inherited from %s.%sTo delete an inherited component open the '
     +'ancestor and delete it there.';
-  lisTheRootComponentCanNotBeDeleted = 'The root component can not be deleted.';
+  lisTheRootComponentCanNotBeDeleted = 'The root component cannot be deleted.';
   fdmAlignMenu='Align ...';
   fdmMirrorHorizontal='Mirror Horizontal';
   fdmMirrorVertical='Mirror Vertical';
@@ -2963,7 +2963,7 @@ resourcestring
 
   // tools menu
   srkmecExtToolSettings           = 'External tools settings';
-  srkmecBuildLazarus              = 'Build lazarus';
+  srkmecBuildLazarus              = 'Build Lazarus';
   srkmecExtTool                   = 'External tool %d';
   srkmecEnvironmentOptions        = 'IDE options';
   lisKMEditCodeTemplates          = 'Edit Code Templates';
@@ -3051,7 +3051,7 @@ resourcestring
   lisKeyCatCustom       = 'Custom commands';
 
   // Languages
-  rsLanguageAutomatic    = 'Automatic (or english)';
+  rsLanguageAutomatic    = 'Automatic (or English)';
   rsLanguageEnglish      = 'English';
   rsLanguageGerman       = 'German';
   rsLanguageSpanish      = 'Spanish';
@@ -3083,7 +3083,7 @@ resourcestring
   // Doc Editor
   lisDocumentationEditor = 'Documentation Editor';
    
-  // Build lazarus dialog
+  // Build Lazarus dialog
   lisConfirmLazarusRebuild = 'Do you want to rebuild Lazarus with profile: %s?';
   lisConfirmation = 'Confirmation';
   lisPkgTheProjectOverridesTheOutputDirectoryOfTheFollowin = 'The project '
@@ -3094,7 +3094,7 @@ resourcestring
   lisCleanLazarusSource = 'Clean Lazarus Source';
   lisMakeNotFound = 'Make not found';
   lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa = 'The program %smake%'
-    +'s was not found.%sThis tool is needed to build lazarus.%s';
+    +'s was not found.%sThis tool is needed to build Lazarus.%s';
   lisIDE = 'IDE';
   lisConfigureBuildLazarus = 'Configure %sBuild Lazarus%s';
   lisLazBuildBuildComponentsSynEditCodeTools = 'Build components (SynEdit, CodeTools)';
@@ -3230,11 +3230,11 @@ resourcestring
   lisConflict = 'Conflict';
   lisThereIsAlreadyAPackageInTheList = 'There is already a package %s in the list';
   lisNotADesigntimePackage = 'Not a designtime package';
-  lisThePackageCanNotBeInstalledBecauseItRequiresWhichI = 'The package %s can not be '
+  lisThePackageCanNotBeInstalledBecauseItRequiresWhichI = 'The package %s cannot be '
     +'installed, because it requires the package "%s", which is a runtime only package.';
   lisUninstall = 'Uninstall %s';
   lisThePackageIsNotADesignTimePackageItCanNotBeInstall = 'The package %s is '
-    +'not a design time package. It can not be installed in the IDE';
+    +'not a design time package. It cannot be installed in the IDE';
   lisUninstallImpossible = 'Uninstall impossible';
   lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh = 'The package %s can '
     +'not be uninstalled, because it is needed by the IDE itself.';
@@ -3243,7 +3243,7 @@ resourcestring
     +'file %s%s%s%s%s';
   lisCodeToolsDefsNodeIsReadonly = 'Node is readonly';
   lisCodeToolsDefsAutoGeneratedNodesCanNotBeEdited = 'Auto generated nodes '
-    +'can not be edited.';
+    +'cannot be edited.';
   lisCodeToolsDefsInvalidPreviousNode = 'Invalid previous node';
   lisCodeToolsDefsPreviousNodeCanNotContainChildNodes = 'Previous node can '
     +'not contain child nodes.';
@@ -3347,15 +3347,15 @@ resourcestring
   lisCodeToolsDefsprojectSpecific = '%s, project specific';
   lisCodeToolsDefsnoneSelected = 'none selected';
   lisCodeToolsDefsInvalidParent = 'Invalid parent';
-  lisACanNotHoldTControlsYouCanOnlyPutNonVisualComponen = 'A %s can not hold '
+  lisACanNotHoldTControlsYouCanOnlyPutNonVisualComponen = 'A %s cannot hold '
     +'TControls.%sYou can only put non visual components on it.';
   lisUpdateReferences = 'Update references?';
   lisTheUnitIsUsedByOtherFilesUpdateReferencesAutomatic = 'The unit %s is '
     +'used by other files.%sUpdate references automatically?';
-  lisCodeToolsDefsAutoCreatedNodesReadOnly = 'Auto created nodes can not be '
+  lisCodeToolsDefsAutoCreatedNodesReadOnly = 'Auto created nodes cannot be '
     +'edited,%snor can they have non auto created child nodes.';
   lisCodeToolsDefsInvalidParentNode = 'Invalid parent node';
-  lisCodeToolsDefsParentNodeCanNotContainCh = 'Parent node can not contain child nodes.';
+  lisCodeToolsDefsParentNodeCanNotContainCh = 'Parent node cannot contain child nodes.';
   lisCodeToolsDefsNewNode = 'NewNode';
 
   // code template dialog
@@ -3482,7 +3482,7 @@ resourcestring
   lisTMFunctionExtractFileNameExtension = 'Function: extract file name+extension';
   lisTMFunctionExtractFileNameOnly = 'Function: extract file name only';
   lisTMFunctionAppendPathDelimiter = 'Function: append path delimiter';
-  lisTMFunctionChompPathDelimiter = 'Function: chomp path delimiter';
+  lisTMFunctionChompPathDelimiter = 'Function: remove trailing path delimiter';
   lisTMunknownMacro = '(unknown macro: %s)';
   
   // System Variables Override Dialog
@@ -3547,7 +3547,7 @@ resourcestring
   lisChooseOneOfTheseItemsToCreateANewPackage = 'Choose one of these items to '
     +'create a new Package';
   lisPackage = 'Package';
-  lisNewDlgCreateANewPascalUnit = 'Create a new pascal unit.';
+  lisNewDlgCreateANewPascalUnit = 'Create a new Pascal unit.';
   lisNewDlgCreateANewUnitWithALCLForm = 'Create a new unit with a LCL form.';
   lisNewDlgCreateANewUnitWithADataModule = 'Create a new unit with a datamodule.';
   lisNewDlgCreateANewUnitWithAFrame = 'Create a new unit with a frame.';
@@ -3565,7 +3565,7 @@ resourcestring
   // file checks
   lisUnableToCreateFile = 'Unable to create file';
   lisUnableToCreateFile4 = 'Unable to create file %s';
-  lisCanNotCreateFile = 'Can not create file %s%s%s';
+  lisCanNotCreateFile = 'Cannot create file %s%s%s';
   lisExtendUnitPath = 'Extend unit path?';
   lisTheDirectoryIsNotYetInTheUnitPathAddIt = 'The directory %s%s%s is not '
     +'yet in the unit path.%sAdd it?';
@@ -3633,9 +3633,9 @@ resourcestring
     +'invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10';
   lisProjAddTheMaximumVersionIsInvalid = 'The Maximum Version %s%s%s is '
     +'invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10';
-  lisProjAddInvalidPascalUnitName = 'Invalid pascal unit name';
+  lisProjAddInvalidPascalUnitName = 'Invalid Pascal unit name';
   lisProjAddTheUnitNameIsNotAValidPascalIdentifier = 'The unit name %s%s%s is '
-    +'not a valid pascal identifier.';
+    +'not a valid Pascal identifier.';
   lisProjAddUnitNameAlreadyExists = 'Unit name already exists';
   lisProjAddTheUnitNameAlreadyExistsInTheProject = 'The unit name %s%s%s '
     +'already exists in the project%swith file: %s%s%s.';
@@ -3681,7 +3681,7 @@ resourcestring
   lisRunToFailed = 'Run-to failed';
   lisDbgMangNoDebuggerSpecified = 'No debugger specified';
   lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo = 'There is no '
-    +'debugger specified.%sSetting breakpoints have no effect until you setup '
+    +'debugger specified.%sSetting breakpoints have no effect until you set up '
     +'a Debugger in the debugger options dialog in the menu.';
   lisDbgMangSetTheBreakpointAnyway = 'Set the breakpoint anyway';
   lisLaunchingApplicationInvalid = 'Launching application invalid';
@@ -3860,7 +3860,7 @@ resourcestring
   lisPkgMangThePackageIsCompiledAutomaticallyAndItsOutputDirec = 'The package '
     +'%s is compiled automatically and its output directory is "%s", which is '
     +'in the default unit search path of the compiler. The package uses other '
-    +'packages which also uses the default unit search of the compiler. This '
+    +'packages which also use the default unit search of the compiler. This '
     +'creates an endless loop.%sYou can fix this issue%sby removing the path from '
     +'your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of '
     +'this package%sor by removing dependencies.';
@@ -3925,10 +3925,10 @@ resourcestring
   lisUnitInPackage = '%s unit %s in package %s%s';
   lisPkgMangSkipThisPackage = 'Skip this package';
   lisPkgMangInvalidFileExtension = 'Invalid file extension';
-  lisPkgMangTheFileIsNotALazarusPackage = 'The file %s%s%s is not a lazarus package.';
+  lisPkgMangTheFileIsNotALazarusPackage = 'The file %s%s%s is not a Lazarus package.';
   lisPkgMangInvalidPackageFilename = 'Invalid package filename';
   lisPkgMangThePackageFileNameInIsNotAValidLazarusPackageName = 'The package '
-    +'file name %s%s%s in%s%s%s%s is not a valid lazarus package name.';
+    +'file name %s%s%s in%s%s%s%s is not a valid Lazarus package name.';
   lisPkgMangFileNotFound = 'File %s%s%s not found.';
   lisPkgMangErrorReadingPackage = 'Error Reading Package';
   lisPkgUnableToReadPackageFileError = 'Unable to read package file %s%s%s.%sError: %s';
@@ -3972,9 +3972,9 @@ resourcestring
   lisPkgMangFileIsAlreadyInPackage = 'File is already in package';
   lisPkgMangTheFileIsAlreadyInThePackage = 'The file %s%s%s%sis already in '
     +'the package %s.';
-  lisPkgMangPackageIsNoDesigntimePackage = 'Package is no designtime package';
+  lisPkgMangPackageIsNoDesigntimePackage = 'Package is not a designtime package';
   lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages = 'The package %'
-    +'s is a runtime only package.%sRuntime only packages can not be '
+    +'s is a runtime only package.%sRuntime only packages cannot be '
     +'installed in the IDE.';
   lisPkgMangAutomaticallyInstalledPackages = 'Automatically installed packages';
   lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac2 = 'Installing '
@@ -3983,23 +3983,23 @@ resourcestring
     +'the package %s will automatically install the package:';
   lisPkgMangRebuildLazarus = 'Rebuild Lazarus?';
   lisPkgMangThePackageWasMarkedForInstallationCurrentlyLazarus = 'The package %'
-    +'s%s%s was marked for installation.%sCurrently lazarus only supports '
+    +'s%s%s was marked for installation.%sCurrently Lazarus only supports '
     +'static linked packages. The real installation needs rebuilding and '
-    +'restarting of lazarus.%s%sDo you want to rebuild Lazarus now?';
+    +'restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?';
   lisPkgMangPackageIsRequired = 'Package is required';
   lisPkgMangThePackageIsRequiredByWhichIsMarkedForInstallation = 'The package %'
     +'s is required by %s, which is marked for installation.%sSee package graph.';
   lisPkgMangUninstallPackage = 'Uninstall package?';
   lisPkgMangUninstallPackage2 = 'Uninstall package %s?';
   lisPkgMangThePackageWasMarkedCurrentlyLazarus = 'The package %s%s%s was '
-    +'marked.%sCurrently lazarus only supports static linked packages. The '
-    +'real un-installation needs rebuilding and restarting of lazarus.%s%'
+    +'marked.%sCurrently Lazarus only supports static linked packages. The '
+    +'real un-installation needs rebuilding and restarting of Lazarus.%s%'
     +'sDo you want to rebuild Lazarus now?';
   lisPkgMangThisIsAVirtualPackageItHasNoSourceYetPleaseSaveThe = 'This is a '
     +'virtual package. It has no source yet. Please save the package first.';
   lisPkgMangPleaseCompileThePackageFirst = 'Please compile the package first.';
   lisPkgMangThePackageIsMarkedForInstallationButCanNotBeFound = 'The package %'
-    +'s%s%s is marked for installation, but can not be found.%sRemove '
+    +'s%s%s is marked for installation, but cannot be found.%sRemove '
     +'dependency from the installation list of packages?';
   lisERRORInvalidBuildMode = 'ERROR: invalid build mode "%s"';
   lisAvailableProjectBuildModes = 'Available project build modes:';
@@ -4007,8 +4007,8 @@ resourcestring
     +'default build mode.';
   lisPkgMangstaticPackagesConfigFile = 'static packages config file';
   lisPkgMangUnableToCreateTargetDirectoryForLazarus = 'Unable to create '
-    +'target directory for lazarus:%s%s%s%s.%sThis directory is needed for '
-    +'the new changed lazarus IDE with your custom packages.';
+    +'target directory for Lazarus:%s%s%s%s.%sThis directory is needed for '
+    +'the new changed Lazarus IDE with your custom packages.';
   lisPkgMangCompilingPackage = 'Compiling package %s';
   lisPkgMangErrorUpdatingPoFilesFailedForPackage = 'Error: updating po files '
     +'failed for package %s';
@@ -4023,7 +4023,7 @@ resourcestring
     +' not found in the lpk file.%sProbably this lpk file was not used for '
     +'building this IDE. Or the package misuses the procedure RegisterUnit.';
   lisPkgSysUnitWasRemovedFromPackageLpk = 'Unit "%s" was removed from package (lpk)';
-  lisPkgSysCanNotRegisterComponentsWithoutUnit = 'Can not register components '
+  lisPkgSysCanNotRegisterComponentsWithoutUnit = 'Cannot register components '
     +'without unit';
   lisPkgSysInvalidComponentClass = 'Invalid component class';
   lisPkgSysComponentClassAlreadyDefined = 'Component Class %s%s%s already defined';
@@ -4043,7 +4043,7 @@ resourcestring
   lisPkgSysSynEditTheEditorComponentUsedByLazarus = 'SynEdit - the editor '
     +'component used by Lazarus. http://sourceforge.net/projects/synedit/';
   lisPkgSysCodeToolsToolsAndFunctionsToParseBrowseAndEditPasc = 'CodeTools - '
-    +'tools and functions to parse, browse and edit pascal sources';
+    +'tools and functions to parse, browse and edit Pascal sources';
   lisPkgSysThisIsTheDefaultPackageUsedOnlyForComponents = 'This is the '
     +'default package. Used only for components without a package. These '
     +'components are outdated.';
@@ -4101,7 +4101,7 @@ resourcestring
   lisA2PFileAlreadyExistsInThePackage = 'File %s%s%s already exists in the package.';
   lisA2PAmbiguousUnitName = 'Ambiguous Unit Name';
   lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent = 'The unit name %s%s%s '
-    +'is the same as an registered component.%sUsing this can cause strange '
+    +'is the same as a registered component.%sUsing this can cause strange '
     +'error messages.';
   lisA2PExistingFile2 = 'Existing file: %s%s%s';
   lisA2PFileAlreadyExists = 'File already exists';
@@ -4113,8 +4113,8 @@ resourcestring
     +'is lower than the Minimim Version.';
   lisA2PThePackageNameIsInvalidPleaseChooseAnExisting = 'The package name %s%s%'
     +'s is invalid.%sPlease choose an existing package.';
-  lisA2PThePackageHasAlreadyADependencyForThe = 'The package has already a '
-    +'dependency for the package %s%s%s.';
+  lisA2PThePackageHasAlreadyADependencyForThe = 'The package already has a '
+    +'dependency on the package %s%s%s.';
   lisA2PNoPackageFoundForDependencyPleaseChooseAnExisting = 'No package found '
     +'for dependency %s%s%s.%sPlease choose an existing package.';
   lisA2PInvalidUnitName = 'Invalid Unit Name';
@@ -4123,11 +4123,11 @@ resourcestring
   lisA2PFileAlreadyInPackage = 'File already in package';
   lisA2PTheFileIsAlreadyInThePackage = 'The file %s%s%s is already in the package.';
   lisA2PInvalidFile = 'Invalid file';
-  lisA2PAPascalUnitMustHaveTheExtensionPPOrPas = 'A pascal unit must have the '
+  lisA2PAPascalUnitMustHaveTheExtensionPPOrPas = 'A Pascal unit must have the '
     +'extension .pp or .pas';
   lisA2PInvalidAncestorType = 'Invalid Ancestor Type';
   lisA2PTheAncestorTypeIsNotAValidPascalIdentifier = 'The ancestor type %s%s%'
-    +'s is not a valid pascal identifier.';
+    +'s is not a valid Pascal identifier.';
   lisA2PPageNameTooLong = 'Page Name too long';
   lisA2PThePageNameIsTooLongMax100Chars = 'The page name %s%s%s is too long ('
     +'max 100 chars).';
@@ -4136,7 +4136,7 @@ resourcestring
     +'does not correspond to the filename.';
   lisA2PInvalidClassName = 'Invalid Class Name';
   lisA2PTheClassNameIsNotAValidPascalIdentifier = 'The class name %s%s%s is '
-    +'not a valid pascal identifier.';
+    +'not a valid Pascal identifier.';
   lisA2PInvalidCircularDependency = 'Invalid Circular Dependency';
   lisA2PTheClassNameAndAncestorTypeAreTheSame = 'The class name %s%s%s and '
     +'ancestor type %s%s%s are the same.';
@@ -4323,7 +4323,7 @@ resourcestring
   lisPckOptsDesigntime = 'Designtime';
   lisPckOptsRuntime = 'Runtime';
   lisPckOptsDesigntimeAndRuntime = 'Designtime and runtime';
-  lisRuntimeOnlyCanNotBeInstalledInIDE = 'Runtime only, can not be installed in IDE';
+  lisRuntimeOnlyCanNotBeInstalledInIDE = 'Runtime only, cannot be installed in IDE';
   lisPckOptsUpdateRebuild = 'Update / Rebuild';
   lisPckOptsAutomaticallyRebuildAsNeeded = 'Automatically rebuild as needed';
   lisPckOptsAutoRebuildWhenRebuildingAll = 'Auto rebuild when rebuilding all';
@@ -4353,7 +4353,7 @@ resourcestring
   lisLpkIsMissing = 'lpk is missing';
   lisPckExplInstallOnNextStart = 'Install on next start';
   lisPckExplUninstallOnNextStart = 'Uninstall on next start (unless needed by an installed package)';
-  lisPckExplBase = 'Base, can not be uninstalled';
+  lisPckExplBase = 'Base, cannot be uninstalled';
 
   // project inspector
   lisProjInspConfirmDeletingDependency = 'Confirm deleting dependency';
@@ -4431,13 +4431,13 @@ resourcestring
     +'form) file contains invalid properties. This means for example it '
     +'contains some properties/classes, which do not exist in the current '
     +'LCL. The normal fix is to remove these properties from the lfm and fix '
-    +'the pascal code manually.';
+    +'the Pascal code manually.';
   lisFixLFMFile = 'Fix LFM file';
   lisMissingEvents = 'Missing Events';
   lisTheFollowingMethodsUsedByAreNotInTheSourceRemoveTh = 'The following methods '
     +'used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?';
   lisLFMFileContainsInvalidProperties = 'The LFM file contains unknown'
-    +' properties/classes which do not exist in LCL. They can be replaced or removed.';
+    +' properties/classes which do not exist in the LCL. They can be replaced or removed.';
 
   // extract proc dialog
   lisNoCodeSelected = 'No code selected';
@@ -5131,7 +5131,7 @@ resourcestring
   lisValue2 = 'Value%s';
   lisDeleteValue = 'Delete value %s%s%s';
   lisInvalidMacroTheMacroMustBeAPascalIdentifie = 'Invalid '
-    +'macro %s%s%s. The macro name must be a pascal identifier.';
+    +'macro %s%s%s. The macro name must be a Pascal identifier.';
   lisThereIsAlreadyAMacroWithTheName = 'There is already a macro '
     +'with the name %s%s%s.';  
   lisDuplicateFoundOfValue = 'Duplicate found of value %s%s%s.';
@@ -5233,8 +5233,8 @@ resourcestring
   lisNoLFMFile = 'No LFM file';
   lisThisFunctionNeedsAnOpenLfmFileInTheSourceEditor = 'This function needs '
     +'an open .lfm file in the source editor.';
-  lisNoPascalFile = 'No pascal file';
-  lisUnableToFindPascalUnitPasPpForLfmFile = 'Unable to find pascal unit (.'
+  lisNoPascalFile = 'No Pascal file';
+  lisUnableToFindPascalUnitPasPpForLfmFile = 'Unable to find Pascal unit (.'
     +'pas,.pp) for .lfm file%s%s%s%s';
   lisLFMIsOk = 'LFM is ok';
   lisClassesAndPropertiesExistValuesWereNotChecked = 'Classes and properties '
@@ -5267,7 +5267,7 @@ resourcestring
   lisOFESwitchToObjectInspectorFavoritesTabAfterAsking = 'Switch to Object '
     +'Inspector Favorites tab after asking for component name';
   lisEmpty = 'Empty';
-  lisNotAValidPascalIdentifier = 'Not a valid pascal identifier';
+  lisNotAValidPascalIdentifier = 'Not a valid Pascal identifier';
   lisThereIsAlreadyAComponentWithThisName = 'There is already a component '
     +'with this name';
   lisTheOwnerHasThisName = 'The owner has this name';
@@ -5277,7 +5277,7 @@ resourcestring
   lisChooseANameForTheNewComponent = 'Choose a name for the new component';
   lisTheComponentNameMustBeUniqueInAllComponentsOnTheFo = 'The component name '
     +'must be unique in all components on the form/datamodule.The name is '
-    +'compared case insensitive like a normal pascal identifier.';
+    +'compared case insensitive like a normal Pascal identifier.';
   lisAskForFileNameOnNewFile = 'Ask for file name on new file';
   lisSuggestDefaultNameOfNewFileInLowercase = 'Suggest default name of new '
     +'file in lowercase';
@@ -5285,7 +5285,7 @@ resourcestring
     +'suggested default file name to lowercase';
   lisIndentation = 'Indentation';
   lisExampleFile = 'Example file:';
-  lisChooseAPascalFileForIndentationExamples = 'Choose a pascal file for '
+  lisChooseAPascalFileForIndentationExamples = 'Choose a Pascal file for '
     +'indentation examples';
   lisContextSensitive = 'Context sensitive';
   lisImitateIndentationOfCurrentUnitProjectOrPackage = 'Imitate indentation '
@@ -5299,8 +5299,8 @@ resourcestring
   lisTheNewIncludeFileIsNotYetInTheIncludeSearchPathAdd = 'The new include '
     +'file is not yet in the include search path.%sAdd directory %s?';
   lisOnBreakLineIEReturnOrEnterKey = 'On break line (i.e. return or enter key)';
-  lisSetupDefaultIndentation = '(Setup default indentation)';
-  lisIndentationForPascalSources = 'Indentation for pascal sources';
+  lisSetupDefaultIndentation = '(Set up default indentation)';
+  lisIndentationForPascalSources = 'Indentation for Pascal sources';
   lisOnPasteFromClipboard = 'On paste from clipboard';
   lisImpossible = 'Impossible';
   lisAProjectUnitCanNotBeUsedByOtherPackagesProjects = 'A project unit can '
@@ -5416,7 +5416,7 @@ resourcestring
   lisMMDoesNotOverrideOutDirFU = 'Does not override OutDir (-FU)';
   lisMMOverrideOutDirFU = 'Override OutDir (-FU): %s';
   lisBuildModeDiffMode = 'Mode:';
-  lisBuildModeDiffDifferencesToOtherBuildModes = 'Differences to other build modes';
+  lisBuildModeDiffDifferencesToOtherBuildModes = 'Differences from other build modes';
 
   //IDE info dialog
   lisIDEInfoInformationAboutTheIDE = 'Information about the IDE';
@@ -5711,10 +5711,10 @@ resourcestring
     +'projects, but are not compiled into the project. The compiler will not '
     +'find units of this package when compiling the project.';
   lisRunTimePackagesCanBeUsedByProjectsTheyCanNotBeInst = '"Run time" packages'
-    +' can be used by projects. They can not be installed in the IDE, unless '
+    +' can be used by projects. They cannot be installed in the IDE, unless '
     +'some design time package requires them.';
   lisRunTimeOnlyPackagesAreOnlyForProjectsTheyCanNotBeI = '"Run time only" '
-    +'packages are only for projects. They can not be installed in the IDE, '
+    +'packages are only for projects. They cannot be installed in the IDE, '
     +'not even indirectly.';
   lisPckEditCleanUpDependencies = 'Clean up dependencies ...';
   lisPkgCleanUpPackageDependencies = 'Clean up package dependencies';
@@ -5783,12 +5783,12 @@ resourcestring
   lisUDAllUnits = 'All units';
   lisUDShowNodesForDirectories = 'Show nodes for directories';
   lisUDShowNodesForProjectAndPackages = 'Show nodes for project and packages';
-  lisUDSearchNextOccurrenceOfThisPhrase = 'Search next occurrence of this phrase';
-  lisUDSearchPreviousOccurrenceOfThisPhrase = 'Search previous occurrence of '
+  lisUDSearchNextOccurrenceOfThisPhrase = 'Find next occurrence of this phrase';
+  lisUDSearchPreviousOccurrenceOfThisPhrase = 'Find previous occurrence of '
     +'this phrase';
   lisUDSelectedUnits = 'Selected units';
-  lisUDSearchNextUnitOfThisPhrase = 'Search next unit of this phrase';
-  lisUDSearchPreviousUnitOfThisPhrase = 'Search previous unit of this phrase';
+  lisUDSearchNextUnitOfThisPhrase = 'Find next unit with this phrase';
+  lisUDSearchPreviousUnitOfThisPhrase = 'Find previous unit with this phrase';
   lisUDExpandAllNodes = 'Expand all nodes';
   lisShowUnusedUnits = 'Show unused units ...';
   lisUDCollapseAllNodes = 'Collapse all nodes';
