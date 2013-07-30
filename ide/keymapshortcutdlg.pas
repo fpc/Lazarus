@@ -84,7 +84,6 @@ type
 
 function ShowKeyMappingEditForm(Index: integer;
                 AKeyCommandRelationList: TKeyCommandRelationList): TModalResult;
-function ShowKeyMappingGrabForm(out Key: TIDEShortCut; AllowSequence: boolean = false): TModalResult;
 
 implementation
 
@@ -101,22 +100,6 @@ begin
     ShortCutDialog.ShowSequence:=true;
     ShortCutDialog.SetRelation(AKeyCommandRelationList,Index);
     Result:=ShortCutDialog.ShowModal;
-  finally
-    ShortCutDialog.Free;
-  end;
-end;
-
-function ShowKeyMappingGrabForm(out Key: TIDEShortCut; AllowSequence: boolean): TModalResult;
-var
-  ShortCutDialog: TShortCutDialog;
-begin
-  ShortCutDialog:=TShortCutDialog.Create(nil);
-  try
-    ShortCutDialog.ShowSecondary:=false;
-    ShortCutDialog.ShowSequence:=AllowSequence;
-    ShortCutDialog.Caption:=lisChooseAKey;
-    Result:=ShortCutDialog.ShowModal;
-    Key:=ShortCutDialog.PrimaryShortCut;
   finally
     ShortCutDialog.Free;
   end;

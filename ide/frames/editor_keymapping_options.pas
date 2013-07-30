@@ -245,13 +245,22 @@ end;
 
 procedure TEditorKeymappingOptionsFrame.FindKeyButtonClick(Sender: TObject);
 var
-  KeyFilter: TIDEShortCut;
+  ShortCutDialog: TShortCutDialog;
 begin
-  if ShowKeyMappingGrabForm(KeyFilter) = mrOK then begin
-    KeyMapKeyFilter := KeyFilter;
-    UpdateKeyFilterButton;
-    FilterEdit.Filter:='';         // Allow only one of the filters to be active.
-    FilterEdit.InvalidateFilter;
+  ShortCutDialog := TShortCutDialog.Create(nil);
+  try
+    ShortCutDialog.ShowSecondary:=False;
+    ShortCutDialog.ShowSequence:=False;
+    ShortCutDialog.Caption:=lisChooseAKey;
+    ShortCutDialog.PrimaryShortCut := KeyMapKeyFilter;
+    if ShortCutDialog.ShowModal = mrOK then begin
+      KeyMapKeyFilter := ShortCutDialog.PrimaryShortCut;
+      UpdateKeyFilterButton;
+      FilterEdit.Filter:='';       // Allow only one of the filters to be active.
+      FilterEdit.InvalidateFilter;
+    end;
+  finally
+    ShortCutDialog.Free;
   end;
 end;
 
@@ -547,7 +556,7 @@ end;
 procedure TEditorKeymappingOptionsFrame.UpdateKeyFilterButton;
 begin
   if IDEShortCutEmpty(KeyMapKeyFilter) then
-    FindKeyButton.Caption:=lisFindKeyCombination
+    FindKeyButton.Caption := lisFindKeyCombination
   else
     FindKeyButton.Caption:=
       Format(lisFilter3, [KeyAndShiftStateToEditorKeyString(KeyMapKeyFilter)]);
