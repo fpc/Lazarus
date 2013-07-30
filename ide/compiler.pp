@@ -409,9 +409,9 @@ begin
     Inc(Result);
 end;
 
-function IgnoredOption(aOpt: string): Boolean;
+function IsIgnoredOption(aOpt: string): Boolean;
 begin
-  if Length(aOpt) < 2 then Exit;
+  if Length(aOpt) < 2 then Exit(False);
   // Ignore : all file names and paths
   //          executable path
   Result := aOpt[2] in ['F', 'e'];
@@ -464,7 +464,7 @@ begin
   end;
   if Pos('fpc -i', fDescription) > 0 then
     fEditKind := oeList;                   // Values will be got later.
-  if fOwnerGroup.fIgnored or IgnoredOption(fOption) then
+  if fOwnerGroup.fIgnored or IsIgnoredOption(fOption) then
     fIgnored := True;
 end;
 
