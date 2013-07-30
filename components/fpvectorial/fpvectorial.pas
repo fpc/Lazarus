@@ -90,7 +90,7 @@ type
   TvCustomVectorialWriter = class;
   TvCustomVectorialReader = class;
   TvVectorialPage = class;
-  TvTextDocumentPage = class;
+  TvTextPageSequence = class;
 
   { Pen, Brush and Font }
 
@@ -819,7 +819,7 @@ type
     function GetCurrentPage: TvVectorialPage;
     procedure SetCurrentPage(AIndex: Integer);
     function AddPage(): TvVectorialPage;
-    function AddTextPage(): TvTextDocumentPage;
+    function AddTextPageSequence(): TvTextPageSequence;
     { Data removing methods }
     procedure Clear; virtual;
     { Debug methods }
@@ -916,9 +916,9 @@ type
     property Entities[AIndex: Cardinal]: TvEntity read GetEntity;
   end;
 
-  { TvTextDocumentPage }
+  { TvTextPageSequence }
 
-  TvTextDocumentPage = class(TvVectorialPage)
+  TvTextPageSequence = class(TvVectorialPage)
   public
     Footer, Header: TvRichText;
     MainText: TvRichText;
@@ -4651,19 +4651,19 @@ begin
   end;
 end;
 
-{ TvTextDocumentPage }
+{ TvTextPageSequence }
 
-constructor TvTextDocumentPage.Create(AOwner: TvVectorialDocument);
+constructor TvTextPageSequence.Create(AOwner: TvVectorialDocument);
 begin
   inherited Create(AOwner);
 end;
 
-destructor TvTextDocumentPage.Destroy;
+destructor TvTextPageSequence.Destroy;
 begin
   inherited Destroy;
 end;
 
-procedure TvTextDocumentPage.Assign(ASource: TvVectorialPage);
+procedure TvTextPageSequence.Assign(ASource: TvVectorialPage);
 begin
   inherited Assign(ASource);
 end;
@@ -4964,9 +4964,9 @@ begin
   if FCurrentPageIndex < 0 then FCurrentPageIndex := FPages.Count-1;
 end;
 
-function TvVectorialDocument.AddTextPage: TvTextDocumentPage;
+function TvVectorialDocument.AddTextPageSequence: TvTextPageSequence;
 begin
-  Result := TvTextDocumentPage.Create(Self);
+  Result := TvTextPageSequence.Create(Self);
   FPages.Add(Result);
   if FCurrentPageIndex < 0 then FCurrentPageIndex := FPages.Count-1;
 end;

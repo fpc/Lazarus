@@ -69,7 +69,7 @@ type
     procedure WriteSettings;
     procedure WriteStyles;
     procedure WriteDocument(AData: TvVectorialDocument);
-    procedure WritePage(ACurPage: TvTextDocumentPage);
+    procedure WritePage(ACurPage: TvTextPageSequence);
     // Routines to write parts of those files
     function WriteStylesXMLAsString: string;
     //
@@ -97,34 +97,45 @@ const
   OPENDOC_PATH_METAINF_MANIFEST = 'META-INF' + '/' + 'manifest.xml';
 
   { OpenDocument schemas constants }
-  SCHEMAS_XMLNS_OFFICE   = 'urn:oasis:names:tc:opendocument:xmlns:office:1.0';
-  SCHEMAS_XMLNS_DCTERMS  = 'http://purl.org/dc/terms/';
-  SCHEMAS_XMLNS_META     = 'urn:oasis:names:tc:opendocument:xmlns:meta:1.0';
   SCHEMAS_XMLNS          = 'http://schemas.openxmlformats.org/officeDocument/2006/extended-properties';
+  SCHEMAS_XMLNS_CALCEXT  = 'urn:org:documentfoundation:names:experimental:calc:xmlns:calcext:1.0';
+  SCHEMAS_XMLNS_CHART    = 'urn:oasis:names:tc:opendocument:xmlns:chart:1.0';
   SCHEMAS_XMLNS_CONFIG   = 'urn:oasis:names:tc:opendocument:xmlns:config:1.0';
-  SCHEMAS_XMLNS_OOO      = 'http://openoffice.org/2004/office';
-  SCHEMAS_XMLNS_MANIFEST = 'urn:oasis:names:tc:opendocument:xmlns:manifest:1.0';
+  SCHEMAS_XMLNS_CSS3T    = 'http://www.w3.org/TR/css3-text/';
+  SCHEMAS_XMLNS_DC       = 'http://purl.org/dc/elements/1.1/';
+  SCHEMAS_XMLNS_DCTERMS  = 'http://purl.org/dc/terms/';
+  SCHEMAS_XMLNS_DOM      = 'http://www.w3.org/2001/xml-events';
+  SCHEMAS_XMLNS_DR3D     = 'urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0';
+  SCHEMAS_XMLNS_DRAW     = 'urn:oasis:names:tc:opendocument:xmlns:drawing:1.0';
+  SCHEMAS_XMLNS_DRAWOOO  = 'http://openoffice.org/2010/draw';
+  SCHEMAS_XMLNS_FIELD    = 'urn:openoffice:names:experimental:ooo-ms-interop:xmlns:field:1.0';
   SCHEMAS_XMLNS_FO       = 'urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0';
+  SCHEMAS_XMLNS_FORM     = 'urn:oasis:names:tc:opendocument:xmlns:form:1.0';
+  SCHEMAS_XMLNS_FORMX    = 'urn:openoffice:names:experimental:ooxml-odf-interop:xmlns:form:1.0';
+  SCHEMAS_XMLNS_GRDDL    = 'http://www.w3.org/2003/g/data-view#';
+  SCHEMAS_XMLNS_MANIFEST = 'urn:oasis:names:tc:opendocument:xmlns:manifest:1.0';
+  SCHEMAS_XMLNS_MATH     = 'http://www.w3.org/1998/Math/MathML';
+  SCHEMAS_XMLNS_META     = 'urn:oasis:names:tc:opendocument:xmlns:meta:1.0';
+  SCHEMAS_XMLNS_NUMBER   = 'urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0';
+  SCHEMAS_XMLNS_OF       = 'urn:oasis:names:tc:opendocument:xmlns:of:1.2';
+  SCHEMAS_XMLNS_OFFICE   = 'urn:oasis:names:tc:opendocument:xmlns:office:1.0';
+  SCHEMAS_XMLNS_OFFICEOOO= 'http://openoffice.org/2009/office';
+  SCHEMAS_XMLNS_OOO      = 'http://openoffice.org/2004/office';
+  SCHEMAS_XMLNS_OOOC     = 'http://openoffice.org/2004/calc';
+  SCHEMAS_XMLNS_OOOW     = 'http://openoffice.org/2004/writer';
+  SCHEMAS_XMLNS_RPT      = 'http://openoffice.org/2005/report';
+  SCHEMAS_XMLNS_SCRIPT   = 'urn:oasis:names:tc:opendocument:xmlns:script:1.0';
   SCHEMAS_XMLNS_STYLE    = 'urn:oasis:names:tc:opendocument:xmlns:style:1.0';
   SCHEMAS_XMLNS_SVG      = 'urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0';
   SCHEMAS_XMLNS_TABLE    = 'urn:oasis:names:tc:opendocument:xmlns:table:1.0';
+  SCHEMAS_XMLNS_TABLEOOO = 'http://openoffice.org/2009/table';
   SCHEMAS_XMLNS_TEXT     = 'urn:oasis:names:tc:opendocument:xmlns:text:1.0';
   SCHEMAS_XMLNS_V        = 'urn:schemas-microsoft-com:vml';
-  SCHEMAS_XMLNS_NUMBER   = 'urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0';
-  SCHEMAS_XMLNS_CHART    = 'urn:oasis:names:tc:opendocument:xmlns:chart:1.0';
-  SCHEMAS_XMLNS_DR3D     = 'urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0';
-  SCHEMAS_XMLNS_MATH     = 'http://www.w3.org/1998/Math/MathML';
-  SCHEMAS_XMLNS_FORM     = 'urn:oasis:names:tc:opendocument:xmlns:form:1.0';
-  SCHEMAS_XMLNS_SCRIPT   = 'urn:oasis:names:tc:opendocument:xmlns:script:1.0';
-  SCHEMAS_XMLNS_OOOW     = 'http://openoffice.org/2004/writer';
-  SCHEMAS_XMLNS_OOOC     = 'http://openoffice.org/2004/calc';
-  SCHEMAS_XMLNS_DOM      = 'http://www.w3.org/2001/xml-events';
   SCHEMAS_XMLNS_XFORMS   = 'http://www.w3.org/2002/xforms';
+  SCHEMAS_XMLNS_XHTML    = 'http://www.w3.org/1999/xhtml';
+  SCHEMAS_XMLNS_XLINK    = 'http://www.w3.org/1999/xlink';
   SCHEMAS_XMLNS_XSD      = 'http://www.w3.org/2001/XMLSchema';
   SCHEMAS_XMLNS_XSI      = 'http://www.w3.org/2001/XMLSchema-instance';
-  SCHEMAS_XMLNS_GRDDL    = 'http://www.w3.org/2003/g/data-view#';
-  SCHEMAS_XMLNS_XLINK    = 'http://www.w3.org/1999/xlink';
-  SCHEMAS_XMLNS_DC       = 'http://purl.org/dc/elements/1.1/';
 
   // SVG requires hardcoding a DPI value
 
@@ -492,10 +503,193 @@ end;
 
 procedure TvODTVectorialWriter.WriteDocument(AData: TvVectorialDocument);
 begin
+  FContent :=
+   XML_HEADER + LineEnding +
+   '<office:document-content xmlns:office="' + SCHEMAS_XMLNS_OFFICE + '"' +
+     ' xmlns:style="' + SCHEMAS_XMLNS_STYLE + '"' +
+     ' xmlns:text="' + SCHEMAS_XMLNS_TEXT + '"' +
+     ' xmlns:table="' + SCHEMAS_XMLNS_TABLE + '"' +
+     ' xmlns:draw="' + SCHEMAS_XMLNS_DRAW + '"' +
+     ' xmlns:fo="' + SCHEMAS_XMLNS_FO + '"' +
+     ' xmlns:xlink="' + SCHEMAS_XMLNS_XLINK + '"' +
+     ' xmlns:dc="' + SCHEMAS_XMLNS_DC + '"' +
+     ' xmlns:meta="' + SCHEMAS_XMLNS_META + '"' +
+     ' xmlns:number="' + SCHEMAS_XMLNS_NUMBER + '"' +
+     ' xmlns:svg="' + SCHEMAS_XMLNS_SVG + '"' +
+     ' xmlns:chart="' + SCHEMAS_XMLNS_CHART + '"' +
+     ' xmlns:dr3D="' + SCHEMAS_XMLNS_DR3D + '"' +
+     ' xmlns:math="' + SCHEMAS_XMLNS_MATH + '"' +
+     ' xmlns:form="' + SCHEMAS_XMLNS_FORM + '"' +
+     ' xmlns:script="' + SCHEMAS_XMLNS_SCRIPT + '"' +
+     ' xmlns:ooo="' + SCHEMAS_XMLNS_OOO + '"' +
+     ' xmlns:oooc="' + SCHEMAS_XMLNS_OOOC + '"' +
+     ' xmlns:xforms="' + SCHEMAS_XMLNS_XFORMS + '"' +
+     ' xmlns:xsi="' + SCHEMAS_XMLNS_XSI + '"' +
+     ' xmlns:rpt="' + SCHEMAS_XMLNS_RPT + '"' +
+     ' xmlns:of="' + SCHEMAS_XMLNS_OF + '"' +
+     ' xmlns:xhtml="' + SCHEMAS_XMLNS_XHTML + '"' +
+     ' xmlns:grddl="' + SCHEMAS_XMLNS_GRDDL + '"' +
+     ' xmlns:officeooo="' + SCHEMAS_XMLNS_OFFICEOOO + '"' +
+     ' xmlns:tableooo="' + SCHEMAS_XMLNS_TABLEOOO + '"' +
+     ' xmlns:drawooo="' + SCHEMAS_XMLNS_DRAWOOO + '"' +
+     ' xmlns:calcext="' + SCHEMAS_XMLNS_CALCEXT + '"' +
+     ' xmlns:field="' + SCHEMAS_XMLNS_FIELD + '"' +
+     ' xmlns:formx="' + SCHEMAS_XMLNS_FORMX + '"' +
+     ' xmlns:css3t="' + SCHEMAS_XMLNS_CSS3T + '"' +
+     ' office:version="1.2">' + LineEnding;
+  FContent := FContent +
+     '  <office:scripts />' + LineEnding;
 
+{  <office:font-face-decls>
+    <style:font-face style:name="Mangal1" svg:font-family="Mangal" />
+    <style:font-face style:name="OpenSymbol" svg:font-family="OpenSymbol" />
+    <style:font-face style:name="Times New Roman" svg:font-family="'Times New Roman'" style:font-family-generic="roman" style:font-pitch="variable" />
+    <style:font-face style:name="Arial" svg:font-family="Arial" style:font-family-generic="swiss" style:font-pitch="variable" />
+    <style:font-face style:name="Mangal" svg:font-family="Mangal" style:font-family-generic="system" style:font-pitch="variable" />
+    <style:font-face style:name="Microsoft YaHei" svg:font-family="'Microsoft YaHei'" style:font-family-generic="system" style:font-pitch="variable" />
+    <style:font-face style:name="SimSun" svg:font-family="SimSun" style:font-family-generic="system" style:font-pitch="variable" />
+  </office:font-face-decls>
+  <office:automatic-styles>
+    <style:style style:name="P1" style:family="paragraph" style:parent-style-name="Heading_20_2">
+      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />
+    </style:style>
+    <style:style style:name="P2" style:family="paragraph" style:parent-style-name="Heading_20_1">
+      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />
+    </style:style>
+    <style:style style:name="P3" style:family="paragraph" style:parent-style-name="Standard">
+      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />
+    </style:style>
+    <style:style style:name="P4" style:family="paragraph" style:parent-style-name="Standard" style:list-style-name="L1">
+      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />
+    </style:style>
+    <style:style style:name="P5" style:family="paragraph" style:parent-style-name="Text_20_body">
+      <style:text-properties officeooo:rsid="00072f3e" />
+    </style:style>
+    <text:list-style style:name="L1">
+      <text:list-level-style-bullet text:level="1" text:style-name="Bullet_20_Symbols" text:bullet-char="•">
+        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.667cm" fo:text-indent="-0.635cm" fo:margin-left="1.667cm" />
+        </style:list-level-properties>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="2" text:style-name="Bullet_20_Symbols" text:bullet-char="◦">
+        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.302cm" fo:text-indent="-0.635cm" fo:margin-left="2.302cm" />
+        </style:list-level-properties>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="3" text:style-name="Bullet_20_Symbols" text:bullet-char="▪">
+        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.937cm" fo:text-indent="-0.635cm" fo:margin-left="2.937cm" />
+        </style:list-level-properties>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="4" text:style-name="Bullet_20_Symbols" text:bullet-char="•">
+        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="3.572cm" fo:text-indent="-0.635cm" fo:margin-left="3.572cm" />
+        </style:list-level-properties>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="5" text:style-name="Bullet_20_Symbols" text:bullet-char="◦">
+        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="4.207cm" fo:text-indent="-0.635cm" fo:margin-left="4.207cm" />
+        </style:list-level-properties>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="6" text:style-name="Bullet_20_Symbols" text:bullet-char="▪">
+        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="4.842cm" fo:text-indent="-0.635cm" fo:margin-left="4.842cm" />
+        </style:list-level-properties>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="7" text:style-name="Bullet_20_Symbols" text:bullet-char="•">
+        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="5.477cm" fo:text-indent="-0.635cm" fo:margin-left="5.477cm" />
+        </style:list-level-properties>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="8" text:style-name="Bullet_20_Symbols" text:bullet-char="◦">
+        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="6.112cm" fo:text-indent="-0.635cm" fo:margin-left="6.112cm" />
+        </style:list-level-properties>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="9" text:style-name="Bullet_20_Symbols" text:bullet-char="▪">
+        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="6.747cm" fo:text-indent="-0.635cm" fo:margin-left="6.747cm" />
+        </style:list-level-properties>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="10" text:style-name="Bullet_20_Symbols" text:bullet-char="•">
+        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="7.382cm" fo:text-indent="-0.635cm" fo:margin-left="7.382cm" />
+        </style:list-level-properties>
+      </text:list-level-style-bullet>
+    </text:list-style>
+  </office:automatic-styles>
+  }
+  FContent := FContent +
+     '    <office:body>' + LineEnding;
+
+{
+    <office:text>
+      <text:sequence-decls>
+        <text:sequence-decl text:display-outline-level="0" text:name="Illustration" />
+        <text:sequence-decl text:display-outline-level="0" text:name="Table" />
+        <text:sequence-decl text:display-outline-level="0" text:name="Text" />
+        <text:sequence-decl text:display-outline-level="0" text:name="Drawing" />
+      </text:sequence-decls>
+      <text:h text:style-name="P2" text:outline-level="1">Lazarus</text:h>
+      <text:p text:style-name="P5">Lazarus is a free and open source development tool for the Free Pascal compiler, which is also free and open source.</text:p>
+      <text:h text:style-name="P1" text:outline-level="2">Overview</text:h>
+      <text:p text:style-name="P3">Lazarus is a free cross-platform visual integrated development environment (IDE) for rapid application development (RAD) using the Free Pascal compiler supported dialects of Object Pascal. Developers use Lazarus to create native code console and graphical user interface (GUI) applications for the desktop along with mobile devices, web applications, web services, and visual components and function libraries (.so, .dll, etc) for use by other programs for any platform the Free Pascal compiler supports( Mac, Unix, Linux, Windows, etc).</text:p>
+      <text:p text:style-name="P3" />
+      <text:p text:style-name="P3">Lazarus provides a highly visual development environment for the creation of rich user interfaces, application logic, and other supporting code artifacts. Along with the customary project management features, the Lazarus IDE also provides features that includes but are not limited to:</text:p>
+      <text:p text:style-name="P3" />
+      <text:list xml:id="list5792477270030595966" text:style-name="L1">
+        <text:list-item>
+          <text:p text:style-name="P4">A What You See Is What You Get (WYSIWYG) visual windows layout designer</text:p>
+        </text:list-item>
+        <text:list-item>
+          <text:p text:style-name="P4">An extensive set of GUI widgets or visual components such as edit boxes, buttons, dialogs, menus, etc.</text:p>
+        </text:list-item>
+        <text:list-item>
+          <text:p text:style-name="P4">An extensive set of non visual components for common behaviors such as persistence of application settings</text:p>
+        </text:list-item>
+        <text:list-item>
+          <text:p text:style-name="P4">A set of data connectivity components for MySQL, PostgresSQL, FireBird, Oracle, SQL Lite, Sybase, and others</text:p>
+        </text:list-item>
+        <text:list-item>
+          <text:p text:style-name="P4">Data aware widget set that allows the developer to see data in visual components in the designer to assist with development</text:p>
+        </text:list-item>
+        <text:list-item>
+          <text:p text:style-name="P4">Interactive code debugger</text:p>
+        </text:list-item>
+        <text:list-item>
+          <text:p text:style-name="P4">Code completion</text:p>
+        </text:list-item>
+        <text:list-item>
+          <text:p text:style-name="P4">Code templates</text:p>
+        </text:list-item>
+        <text:list-item>
+          <text:p text:style-name="P4">Syntax highlighting</text:p>
+        </text:list-item>
+        <text:list-item>
+          <text:p text:style-name="P4">Context sensitive help</text:p>
+        </text:list-item>
+        <text:list-item>
+          <text:p text:style-name="P4">Text resource manager for internationalization</text:p>
+        </text:list-item>
+        <text:list-item>
+          <text:p text:style-name="P4">Automatic code formatting</text:p>
+        </text:list-item>
+        <text:list-item>
+          <text:p text:style-name="P4">The ability to create custom components</text:p>
+        </text:list-item>
+      </text:list>
+      <text:p text:style-name="P3" />
+      <text:p text:style-name="P3">Lazarus inherits three features from its use of the Free Pascal compiler: compile and execution speed, and cross-compilation. The Free Pascal compiler benefits from the Pascal language structure, which is rigid, and the steady advancements of Pascal compiler design, spanning several decades, to compile large applications quickly, often seconds.</text:p>
+    </office:text>
+}
+
+  FContent := FContent +
+     '  </office:body>' + LineEnding;
+  FContent := FContent +
+     '</office:document-content>' + LineEnding;
 end;
 
-procedure TvODTVectorialWriter.WritePage(ACurPage: TvTextDocumentPage);
+procedure TvODTVectorialWriter.WritePage(ACurPage: TvTextPageSequence);
 begin
 
 end;
