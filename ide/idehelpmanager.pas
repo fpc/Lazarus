@@ -45,7 +45,11 @@ uses
   IDEMsgIntf, PackageIntf, LazIDEIntf, HelpIntfs, IDEHelpIntf,
   // IDE
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
-  ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, MainBar, OutputFilter,
+  ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, MainBar,
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
+  OutputFilter,
+  {$ENDIF}
   IDEFPDocFileSearch, PackageDefs, PackageSystem,
   HelpOptions, MainIntf, LazConf, HelpFPCMessages, CodeHelp,
   IDEContextHelpEdit, IDEWindowHelp;

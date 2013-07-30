@@ -14,6 +14,10 @@
 }
 unit OutputFilter;
 
+{$IFDEF EnableNewExtTools}
+  {$ERROR deprecated}
+{$ENDIF}
+
 {$mode objfpc}
 {$H+}
 

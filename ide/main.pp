@@ -109,7 +109,7 @@ uses
   {$IFDEF EnableNewExtTools}
   etQuickFixes,
   {$ELSE}
-  MsgQuickFixes,
+  OutputFilter, MsgQuickFixes,
   {$ENDIF}
   // converter
   ChgEncodingDlg, ConvertDelphi, ConvCodeTool, MissingPropertiesDlg, LazXMLForms,
@@ -147,7 +147,7 @@ uses
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, InspectChksumChangedDlg,
   IdeOptionsDlg, EditDefineTree, PublishModule, EnvironmentOpts, TransferMacros,
   KeyMapping, IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg,
-  OutputFilter, JumpHistoryView, ExampleManager,
+  JumpHistoryView, ExampleManager,
   BuildLazDialog, BuildProfileManager, BuildManager, CheckCompOptsForNewUnitDlg,
   MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   IDEFPCInfo, IDEInfoDlg, IDEInfoNeedBuild, ProcessList, InitialSetupDlgs,
@@ -697,9 +697,6 @@ type
     procedure SetupFormEditor;
     procedure SetupSourceNotebook;
     procedure SetupCodeMacros;
-    {$IFDEF EnableNewExtTools}
-    procedure SetupExternalTools;
-    {$ENDIF}
     procedure SetupControlSelection;
     procedure SetupIDECommands;
     procedure SetupIDEMsgQuickFixItems;
@@ -1368,7 +1365,7 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create CODETOOLS');{$ENDIF}
 
   {$IFDEF EnableNewExtTools}
-  SetupExternalTools;
+  MainBuildBoss.SetupExternalTools;
   {$ENDIF}
 
   // build and position the MainIDE form
@@ -2119,20 +2116,6 @@ procedure TMainIDE.SetupCodeMacros;
 begin
   CreateStandardCodeMacros;
 end;
-
-{$IFDEF EnableNewExtTools}
-procedure TMainIDE.SetupExternalTools;
-begin
-  // setup the external tool queue
-  ExternalTools:=TExternalTools.Create(Self);
-  RegisterFPCParser;
-  RegisterMakeParser;
-  ExternalToolList.RegisterParser(TDefaultParser);
-
-  FPCMsgFilePool:=TFPCMsgFilePool.Create(nil);
-  FPCMsgFilePool.OnLoadFile:=@FPCMsgFilePoolLoadFile;
-end;
-{$ENDIF}
 
 procedure TMainIDE.SetupControlSelection;
 begin

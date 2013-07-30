@@ -35,18 +35,18 @@ type
 
   TMessageLineUrgency = (
     mluNone,
-    mluProgress, // time and statistics about the run
-    mluDebug,   // extreme verbosity, only useful for tool authors
-    mluVerbose3, // all infos
-    mluVerbose2, // almost all infos
-    mluVerbose, // extra infos
-    mluHint,  // tool found something unusual
-    mluNote,  // maybe wrong or unnecessary
-    mluWarn,  // probably something is wrong
+    mluProgress,  // time and statistics about the run
+    mluDebug,     // extreme verbosity, only useful for tool authors
+    mluVerbose3,  // all infos
+    mluVerbose2,  // almost all infos
+    mluVerbose,   // extra infos
+    mluHint,      // tool found something unusual
+    mluNote,      // maybe wrong or unnecessary
+    mluWarning,   // probably something is wrong
     mluImportant, // message has no urgency level, but should be shown
-    mluError, // tool could not finish, some tools can still continue
-    mluFatal, // critical error in input, tool had to abort
-    mluPanic  // bug in tool
+    mluError,     // tool could not finish, some tools can still continue
+    mluFatal,     // critical error in input, tool had to abort
+    mluPanic      // bug in tool
     );
   TMessageLineUrgencies = set of TMessageLineUrgency;
 const
@@ -59,7 +59,7 @@ const
     'Verbose',
     'Hint',
     'Note',
-    'Warn',
+    'Warning',
     'Misc',
     'Error',
     'Fatal',
@@ -518,45 +518,6 @@ type
 
 var
   ExternalToolList: TIDEExternalTools = nil; // will be set by the IDE
-
-type
-  TMsgQuickFixes = class;
-
-  { TMsgQuickFix }
-
-  TMsgQuickFix = class(TComponent)
-  protected
-  public
-    procedure CreateMenuItems(Fixes: TMsgQuickFixes); virtual;
-    procedure JumpTo({%H-}Msg: TMessageLine; var {%H-}Handled: boolean); virtual;
-    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); virtual;
-  end;
-  TMsgQuickFixClass = class of TMsgQuickFix;
-
-  { TMsgQuickFixes }
-
-  TMsgQuickFixes = class(TComponent)
-  private
-    function GetLines(Index: integer): TMessageLine; inline;
-    function GetQuickFixes(Index: integer): TMsgQuickFix; inline;
-  protected
-    fMsg: TFPList; // list of TMessageLine
-    fItems: TObjectList; // list of TMsgQuickFix
-  public
-    constructor Create(aOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure RegisterQuickFix(Fix: TMsgQuickFix);
-    procedure UnregisterQuickFix(Fix: TMsgQuickFix);
-    function Count: integer; inline;
-    property Items[Index: integer]: TMsgQuickFix read GetQuickFixes; default;
-    function LineCount: integer; inline;
-    property Lines[Index: integer]: TMessageLine read GetLines;
-    function AddMenuItem(Fix: TMsgQuickFix; Msg: TMessageLine; aCaption: string;
-      aTag: PtrInt = 0): TMenuItem; virtual; abstract;
-  end;
-
-var
-  MsgQuickFixes: TMsgQuickFixes = nil; // set by IDE
 
 function CompareMsgLinesSrcPos(MsgLine1, MsgLine2: Pointer): integer;
 
@@ -1928,117 +1889,6 @@ begin
   finally
     LeaveCriticalSection;
   end;
-end;
-
-
-{ TMsgQuickFix }
-
-procedure TMsgQuickFix.QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine);
-var
-  i: Integer;
-begin
-  // this is purely an example
-
-  if Msg<>nil then begin
-    if Msg.MsgID=-11111 then begin
-      // fix the cause for the message
-      // ...
-      // mark message as handled
-      Msg.MarkFixed;
-    end;
-  end else begin
-    // example for fixing multiple messages at once
-    for i:=0 to Fixes.LineCount-1 do begin
-      Msg:=Fixes.Lines[i];
-      if Msg.MsgID=-11111 then begin
-        // fix the cause for the message
-        // ...
-        // mark message as handled
-        Msg.MarkFixed;
-      end;
-    end;
-  end;
-end;
-
-procedure TMsgQuickFix.CreateMenuItems(Fixes: TMsgQuickFixes);
-var
-  i: Integer;
-  Msg: TMessageLine;
-begin
-  // this is an example how to check the selected messages
-  for i:=0 to Fixes.LineCount-1 do begin
-    Msg:=Fixes.Lines[i];
-    // here are some examples how to test if a message fits
-    if (Msg.Urgency<mluWarn)
-    and (Msg.MsgID=-11111)
-    and (Msg.Line>0)
-    and (Msg.Column>0)
-    and (Msg.SubTool=SubToolFPC)
-    and (Msg.GetFullFilename<>'')
-    and (Pos('LazarusExample',Msg.Msg)>0)
-    then
-      // this message can be quick fixed => add a menu item
-      Fixes.AddMenuItem(Self,Msg,'Change this or that to fix this item');
-  end;
-end;
-
-procedure TMsgQuickFix.JumpTo(Msg: TMessageLine; var Handled: boolean);
-begin
-
-end;
-
-{ TMsgQuickFixes }
-
-// inline
-function TMsgQuickFixes.GetLines(Index: integer): TMessageLine;
-begin
-  Result:=TMessageLine(fMsg[index]);
-end;
-
-// inline
-function TMsgQuickFixes.GetQuickFixes(Index: integer): TMsgQuickFix;
-begin
-  Result:=TMsgQuickFix(fItems[Index]);
-end;
-
-// inline
-function TMsgQuickFixes.Count: integer;
-begin
-  Result:=fItems.Count;
-end;
-
-// inline
-function TMsgQuickFixes.LineCount: integer;
-begin
-  Result:=fMsg.Count;
-end;
-
-constructor TMsgQuickFixes.Create(aOwner: TComponent);
-begin
-  inherited Create(aOwner);
-  fItems:=TObjectList.create(true);
-  fMsg:=TFPList.Create;
-end;
-
-destructor TMsgQuickFixes.Destroy;
-begin
-  FreeAndNil(fMsg);
-  FreeAndNil(fItems);
-  inherited Destroy;
-  if MsgQuickFixes=Self then
-    MsgQuickFixes:=nil;
-end;
-
-procedure TMsgQuickFixes.RegisterQuickFix(Fix: TMsgQuickFix);
-begin
-  if fItems.IndexOf(Fix)>=0 then
-    raise Exception.Create('quick fix already registered');
-  fItems.Add(Fix);
-end;
-
-procedure TMsgQuickFixes.UnregisterQuickFix(Fix: TMsgQuickFix);
-begin
-  fItems.Remove(Fix);
 end;
 
 end.

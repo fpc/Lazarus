@@ -374,7 +374,7 @@ type
     MsgText  : String;        // message text
     DefIgnored : Boolean;     // is message ignored by default (based on the message file)
     State    : TCompilerMessageState;  // user state of the message
-    MsgType  : TFPCErrorType; // type of message (error, warning, etc)
+    MsgType  : {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF}; // type of message (error, warning, etc)
     constructor Create(AOwner: TCompilerMessagesList);
 //    function GetUserText: string; overload;
 //    function GetUserText(const ReplaceParams: array of string): string; overload;
@@ -391,7 +391,7 @@ type
   protected
     fUsedMsgFile: string;
     fUpdating   : Integer;
-    FErrorNames : array [TFPCErrorType] of string;
+    FErrorNames : array [{$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF}] of string;
 
     procedure ClearHash;
     procedure AddHash(Msg: TCompilerMessageConfig);
@@ -403,7 +403,7 @@ type
     procedure GetStateArray(var b: array of TCompilerMessageState);    // array must be large enough
     procedure SetStateArray(const b: array of TCompilerMessageState);  // to store b[MaxMsgIndex], or function fail
     function GetCount: Integer;
-    function GetErrorNames(errtype: TFPCErrorType): string;
+    function GetErrorNames(errtype: {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF}): string;
     procedure IncreaseChangeStamp;
     property ChangeStamp: int64 read FChangeStamp;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
@@ -415,7 +415,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     function LoadMsgFile(const FileName: string): Boolean;
-    function Add(AMsgIndex: Integer; AMsgType: TFPCErrorType; const AMsgText: string;
+    function Add(AMsgIndex: Integer; AMsgType: {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF}; const AMsgText: string;
       DefIgnored: Boolean = false; AState: TCompilerMessageState = msDefault): TCompilerMessageConfig;
     procedure SetDefault(KeepState: Boolean=true);
 //    function GetParams(MsgIndex: Integer; var prms: array of string; out PrmCount: Integer): Integer;
@@ -426,7 +426,7 @@ type
     property MsgState[i: Integer]: TCompilerMessageState read GetMsgState write SetMsgState;
     property Count: Integer read GetCount;
     property UsedMsgFile : string read fUsedMsgFile;
-    property ErrorNames[errtype: TFPCErrorType]: string read GetErrorNames;
+    property ErrorNames[errtype: {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF}]: string read GetErrorNames;
   end;
 
 const
@@ -1407,6 +1407,19 @@ var
       LinkSmart := aXMLConfig.GetValue(p+'LinkSmart/Value', false);
   end;
 
+  procedure ReadMsgErrorName(t: {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF};
+    const aPath, SubPath: string);
+  begin
+    fCompilerMessages.fErrorNames[t]:=
+      aXMLConfig.GetValue(aPath+'CompilerMessages/ErrorNames/'+SubPath,
+      {$IFDEF EnableNewExtTools}
+      MessageLineUrgencyNames[t]
+      {$ELSE}
+      FPCErrorTypeNames[t]
+      {$ENDIF}
+      );
+  end;
+
 begin
   { Load the compiler options from the XML file }
   p:=Path;
@@ -1573,16 +1586,15 @@ begin
         State := msOn;
   end;
 
-  if UseMsgFile then
-    with aXMLConfig do begin
-      // ErrorNames should be stored, because the Message file is not read (or parsed)
-      // on project opening. So errors needs to be initialized properly from the CompilerOptions.xml
-      fCompilerMessages.fErrorNames[etHint]   :=GetValue(p+'CompilerMessages/ErrorNames/Hint', FPCErrorTypeNames[etHint]);
-      fCompilerMessages.fErrorNames[etNote]   :=GetValue(p+'CompilerMessages/ErrorNames/Note', FPCErrorTypeNames[etNote]);
-      fCompilerMessages.fErrorNames[etWarning]:=GetValue(p+'CompilerMessages/ErrorNames/Warning', FPCErrorTypeNames[etWarning]);
-      fCompilerMessages.fErrorNames[etError]  :=GetValue(p+'CompilerMessages/ErrorNames/Error', FPCErrorTypeNames[etError]);
-      fCompilerMessages.fErrorNames[etFatal]  :=GetValue(p+'CompilerMessages/ErrorNames/Fatal', FPCErrorTypeNames[etFatal]);
-    end;
+  if UseMsgFile then begin
+    // ErrorNames should be stored, because the Message file is not read (or parsed)
+    // on project opening. So errors needs to be initialized properly from the CompilerOptions.xml
+    ReadMsgErrorName({$IFDEF EnableNewExtTools}mluHint{$ELSE}etHint{$ENDIF},p,'Hint');
+    ReadMsgErrorName({$IFDEF EnableNewExtTools}mluNote{$ELSE}etNote{$ENDIF},p,'Note');
+    ReadMsgErrorName({$IFDEF EnableNewExtTools}mluWarning{$ELSE}etWarning{$ENDIF},p,'Earning');
+    ReadMsgErrorName({$IFDEF EnableNewExtTools}mluError{$ELSE}etError{$ENDIF},p,'Error');
+    ReadMsgErrorName({$IFDEF EnableNewExtTools}mluFatal{$ELSE}etFatal{$ENDIF},p,'Fatal');
+  end;
 
   { Other }
   p:=Path+'Other/';
@@ -1637,6 +1649,19 @@ var
   function f(const AFilename: string): string;
   begin
     Result:=SwitchPathDelims(AFilename,UsePathDelim);
+  end;
+
+  procedure WriteMsgErrorName(t: {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF};
+    const aPath, SubPath: string);
+  begin
+    aXMLConfig.SetDeleteValue(aPath+'CompilerMessages/ErrorNames/'+SubPath,
+      CompilerMessages.ErrorNames[t],
+      {$IFDEF EnableNewExtTools}
+      MessageLineUrgencyNames[t]
+      {$ELSE}
+      FPCErrorTypeNames[t]
+      {$ENDIF}
+      );
   end;
 
 var
@@ -1765,11 +1790,11 @@ begin
   aXMLConfig.SetDeleteValue(p+'CompilerMessages/UseMsgFile/Value', UseMsgFile, False);
   aXMLConfig.SetDeleteValue(p+'CompilerMessages/MsgFileName/Value', MsgFileName, '$(FPCMsgFile)');
 
-  aXMLConfig.SetDeleteValue(p+'CompilerMessages/ErrorNames/Hint',    CompilerMessages.ErrorNames[etHint],    FPCErrorTypeNames[etHint]);
-  aXMLConfig.SetDeleteValue(p+'CompilerMessages/ErrorNames/Note',    CompilerMessages.ErrorNames[etNote],    FPCErrorTypeNames[etNote]);
-  aXMLConfig.SetDeleteValue(p+'CompilerMessages/ErrorNames/Warning', CompilerMessages.ErrorNames[etWarning], FPCErrorTypeNames[etWarning]);
-  aXMLConfig.SetDeleteValue(p+'CompilerMessages/ErrorNames/Error',   CompilerMessages.ErrorNames[etError],   FPCErrorTypeNames[etError]);
-  aXMLConfig.SetDeleteValue(p+'CompilerMessages/ErrorNames/Fatal',   CompilerMessages.ErrorNames[etFatal],   FPCErrorTypeNames[etFatal]);
+  WriteMsgErrorName({$IFDEF EnableNewExtTools}mluHint{$ELSE}etHint{$ENDIF},p,'Hint');
+  WriteMsgErrorName({$IFDEF EnableNewExtTools}mluNote{$ELSE}etNote{$ENDIF},p,'Note');
+  WriteMsgErrorName({$IFDEF EnableNewExtTools}mluWarning{$ELSE}etWarning{$ENDIF},p,'Earning');
+  WriteMsgErrorName({$IFDEF EnableNewExtTools}mluError{$ELSE}etError{$ENDIF},p,'Error');
+  WriteMsgErrorName({$IFDEF EnableNewExtTools}mluFatal{$ELSE}etFatal{$ENDIF},p,'Fatal');
 
   { Other }
   p:=Path+'Other/';

@@ -63,7 +63,11 @@ uses
   IDECommands, IDEMsgIntf, IDEWindowIntf,
   // IDE
   LazConf, LazarusIDEStrConsts, ProjectDefs, Project, PublishModule,
-  BuildLazDialog, Compiler, ComponentReg, OutputFilter,
+  BuildLazDialog, Compiler, ComponentReg,
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
+  OutputFilter,
+  {$ENDIF}
   TransferMacros, ObjectInspector, PropEdits, IDEDefs, MsgView,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
   Debugger, IDEOptionDefs, CodeToolsDefines, Splash, Designer,

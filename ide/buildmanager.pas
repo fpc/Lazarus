@@ -45,7 +45,13 @@ uses
   // IDE
   LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions, InputHistory,
   EditDefineTree, ProjectResources, MiscOptions, LazConf, EnvironmentOpts,
-  TransferMacros, CompilerOptions, OutputFilter, Compiler, FPCSrcScan,
+  TransferMacros, CompilerOptions,
+  {$IFDEF EnableNewExtTools}
+  ExtTools,
+  {$ELSE}
+  OutputFilter,
+  {$ENDIF}
+  Compiler, FPCSrcScan,
   PackageDefs, PackageSystem, Project, ProjectIcon,
   ModeMatrixOpts, BaseBuildManager, ApplicationBundle;
   
@@ -159,6 +165,9 @@ type
     destructor Destroy; override;
     procedure SetupTransferMacros;
     procedure TranslateMacros;
+    {$IFDEF EnableNewExtTools}
+    procedure SetupExternalTools;
+    {$ENDIF}
     procedure SetupCompilerInterface;
     procedure SetupInputHistories;
 
@@ -312,6 +321,10 @@ end;
 
 destructor TBuildManager.Destroy;
 begin
+  {$IFDEF EnableNewExtTools}
+  FreeAndNil(ExternalTools);
+  {$ENDIF}
+
   GetBuildMacroValues:=nil;
   OnAppendCustomOption:=nil;
   OnBackupFileInteractive:=nil;
@@ -461,6 +474,20 @@ begin
   tr('MakeDir',lisTMFunctionAppendPathDelimiter);
   tr('MakeFile',lisTMFunctionChompPathDelimiter);
 end;
+
+{$IFDEF EnableNewExtTools}
+procedure TBuildManager.SetupExternalTools;
+begin
+  // setup the external tool queue
+  ExternalTools:=TExternalTools.Create(Self);
+  RegisterFPCParser;
+  RegisterMakeParser;
+  ExternalToolList.RegisterParser(TDefaultParser);
+
+  FPCMsgFilePool:=TFPCMsgFilePool.Create(nil);
+  FPCMsgFilePool.OnLoadFile:=@FPCMsgFilePoolLoadFile;
+end;
+{$ENDIF}
 
 procedure TBuildManager.SetupCompilerInterface;
 begin

@@ -39,7 +39,12 @@ interface
 
 uses
   Classes, SysUtils, Process, LCLProc, Forms, Controls, contnrs, strutils, FileUtil,
-  LazarusIDEStrConsts, CompilerOptions, Project, OutputFilter, UTF8Process,
+  LazarusIDEStrConsts, CompilerOptions, Project,
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
+  OutputFilter,
+  {$ENDIF}
+  UTF8Process,
   InfoBuild, IDEMsgIntf, LazIDEIntf, ProjectIntf, CompOptsIntf;
 
 type

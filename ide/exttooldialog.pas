@@ -46,7 +46,12 @@ uses
   CompOptsIntf, ProjectIntf,
   EnvironmentOpts,
   ExtToolEditDlg, KeyMapping, TransferMacros, IDEProcs, LazFileUtils,
-  InfoBuild, CompilerOptions, OutputFilter, LazarusIDEStrConsts, IDEOptionDefs;
+  InfoBuild, CompilerOptions,
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
+  OutputFilter,
+  {$ENDIF}
+  LazarusIDEStrConsts, IDEOptionDefs;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;

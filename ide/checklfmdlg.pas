@@ -39,7 +39,12 @@ uses
   SynEditMiscClasses, LFMTrees,
   // IDE
   PropEdits, IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf,
-  CustomFormEditor, LazarusIDEStrConsts, OutputFilter, IDEProcs, IDEOptionDefs,
+  CustomFormEditor, LazarusIDEStrConsts,
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
+  OutputFilter,
+  {$ENDIF}
+  IDEProcs, IDEOptionDefs,
   EditorOptions, ExtCtrls, JITForms, PropEditUtils;
 
 type
