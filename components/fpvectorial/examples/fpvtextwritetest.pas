@@ -15,6 +15,9 @@ uses
 var
   Vec: TvVectorialDocument;
   Page: TvTextPageSequence;
+
+{$R *.res}
+
 begin
   Vec := TvVectorialDocument.Create;
   try

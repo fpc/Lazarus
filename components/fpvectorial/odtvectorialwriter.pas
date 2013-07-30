@@ -502,6 +502,10 @@ xmlns:css3t="http://www.w3.org/TR/css3-text/" office:version="1.2">}
 end;
 
 procedure TvODTVectorialWriter.WriteDocument(AData: TvVectorialDocument);
+var
+  i: Integer;
+  CurPage: TvVectorialPage;
+  CurTextPage: TvTextPageSequence absolute CurPage;
 begin
   FContent :=
    XML_HEADER + LineEnding +
@@ -539,38 +543,43 @@ begin
      ' office:version="1.2">' + LineEnding;
   FContent := FContent +
      '  <office:scripts />' + LineEnding;
+  FContent := FContent +
+     '  <office:font-face-decls>' + LineEnding +
+     '    <style:font-face style:name="Mangal1" svg:font-family="Mangal" />' + LineEnding +
+     '    <style:font-face style:name="OpenSymbol" svg:font-family="OpenSymbol" />' + LineEnding +
+     '    <style:font-face style:name="Times New Roman" svg:font-family="''Times New Roman''" style:font-family-generic="roman" style:font-pitch="variable" />' + LineEnding +
+     '    <style:font-face style:name="Arial" svg:font-family="Arial" style:font-family-generic="swiss" style:font-pitch="variable" />' + LineEnding +
+     '    <style:font-face style:name="Mangal" svg:font-family="Mangal" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
+     '    <style:font-face style:name="Microsoft YaHei" svg:font-family="''Microsoft YaHei''" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
+     '    <style:font-face style:name="SimSun" svg:font-family="SimSun" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
+     '  </office:font-face-decls>' + LineEnding;
+  FContent := FContent +
+     '  <office:automatic-styles>' + LineEnding +
+     '    <style:style style:name="P1" style:family="paragraph" style:parent-style-name="Heading_20_2">' + LineEnding +
+     '      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />' + LineEnding +
+     '    </style:style>' + LineEnding +
+     '    <style:style style:name="P2" style:family="paragraph" style:parent-style-name="Heading_20_1">' + LineEnding +
+     '      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />' + LineEnding +
+     '    </style:style>' + LineEnding +
+     '    <style:style style:name="P3" style:family="paragraph" style:parent-style-name="Standard">' + LineEnding +
+     '      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />' + LineEnding +
+     '    </style:style>' + LineEnding +
+     '    <style:style style:name="P4" style:family="paragraph" style:parent-style-name="Standard" style:list-style-name="L1">' + LineEnding +
+     '      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />' + LineEnding +
+     '    </style:style>' + LineEnding +
+     '    <style:style style:name="P5" style:family="paragraph" style:parent-style-name="Text_20_body">' + LineEnding +
+     '      <style:text-properties officeooo:rsid="00072f3e" />' + LineEnding +
+     '    </style:style>' + LineEnding +
+     //
+     '    <text:list-style style:name="L1">' + LineEnding +
+     '      <text:list-level-style-bullet text:level="1" text:style-name="Bullet_20_Symbols" text:bullet-char="•">' + LineEnding +
+     '        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
+     '          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.667cm" fo:text-indent="-0.635cm" fo:margin-left="1.667cm" />' + LineEnding +
+     '        </style:list-level-properties>' + LineEnding +
+     '      </text:list-level-style-bullet>' + LineEnding +
+     '    </text:list-style>' + LineEnding +
 
-{  <office:font-face-decls>
-    <style:font-face style:name="Mangal1" svg:font-family="Mangal" />
-    <style:font-face style:name="OpenSymbol" svg:font-family="OpenSymbol" />
-    <style:font-face style:name="Times New Roman" svg:font-family="'Times New Roman'" style:font-family-generic="roman" style:font-pitch="variable" />
-    <style:font-face style:name="Arial" svg:font-family="Arial" style:font-family-generic="swiss" style:font-pitch="variable" />
-    <style:font-face style:name="Mangal" svg:font-family="Mangal" style:font-family-generic="system" style:font-pitch="variable" />
-    <style:font-face style:name="Microsoft YaHei" svg:font-family="'Microsoft YaHei'" style:font-family-generic="system" style:font-pitch="variable" />
-    <style:font-face style:name="SimSun" svg:font-family="SimSun" style:font-family-generic="system" style:font-pitch="variable" />
-  </office:font-face-decls>
-  <office:automatic-styles>
-    <style:style style:name="P1" style:family="paragraph" style:parent-style-name="Heading_20_2">
-      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />
-    </style:style>
-    <style:style style:name="P2" style:family="paragraph" style:parent-style-name="Heading_20_1">
-      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />
-    </style:style>
-    <style:style style:name="P3" style:family="paragraph" style:parent-style-name="Standard">
-      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />
-    </style:style>
-    <style:style style:name="P4" style:family="paragraph" style:parent-style-name="Standard" style:list-style-name="L1">
-      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />
-    </style:style>
-    <style:style style:name="P5" style:family="paragraph" style:parent-style-name="Text_20_body">
-      <style:text-properties officeooo:rsid="00072f3e" />
-    </style:style>
-    <text:list-style style:name="L1">
-      <text:list-level-style-bullet text:level="1" text:style-name="Bullet_20_Symbols" text:bullet-char="•">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.667cm" fo:text-indent="-0.635cm" fo:margin-left="1.667cm" />
-        </style:list-level-properties>
-      </text:list-level-style-bullet>
+{
       <text:list-level-style-bullet text:level="2" text:style-name="Bullet_20_Symbols" text:bullet-char="◦">
         <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
           <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.302cm" fo:text-indent="-0.635cm" fo:margin-left="2.302cm" />
@@ -616,20 +625,44 @@ begin
           <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="7.382cm" fo:text-indent="-0.635cm" fo:margin-left="7.382cm" />
         </style:list-level-properties>
       </text:list-level-style-bullet>
-    </text:list-style>
-  </office:automatic-styles>
   }
+     '  </office:automatic-styles>' + LineEnding;
+
   FContent := FContent +
      '    <office:body>' + LineEnding;
 
+  for i := 0 to AData.GetPageCount()-1 do
+  begin
+    CurPage := AData.GetPage(i);
+    if CurPage is TvTextPageSequence then
+    begin
+      FContent := FContent +
+         '    <office:text>' + LineEnding;
+
+      WritePage(CurTextPage);
+
+      FContent := FContent +
+         '    </office:text>' + LineEnding;
+    end;
+  end;
+
+  FContent := FContent +
+     '  </office:body>' + LineEnding;
+  FContent := FContent +
+     '</office:document-content>' + LineEnding;
+end;
+
+procedure TvODTVectorialWriter.WritePage(ACurPage: TvTextPageSequence);
+begin
 {
-    <office:text>
       <text:sequence-decls>
         <text:sequence-decl text:display-outline-level="0" text:name="Illustration" />
         <text:sequence-decl text:display-outline-level="0" text:name="Table" />
         <text:sequence-decl text:display-outline-level="0" text:name="Text" />
         <text:sequence-decl text:display-outline-level="0" text:name="Drawing" />
       </text:sequence-decls>
+}
+{
       <text:h text:style-name="P2" text:outline-level="1">Lazarus</text:h>
       <text:p text:style-name="P5">Lazarus is a free and open source development tool for the Free Pascal compiler, which is also free and open source.</text:p>
       <text:h text:style-name="P1" text:outline-level="2">Overview</text:h>
@@ -680,17 +713,7 @@ begin
       </text:list>
       <text:p text:style-name="P3" />
       <text:p text:style-name="P3">Lazarus inherits three features from its use of the Free Pascal compiler: compile and execution speed, and cross-compilation. The Free Pascal compiler benefits from the Pascal language structure, which is rigid, and the steady advancements of Pascal compiler design, spanning several decades, to compile large applications quickly, often seconds.</text:p>
-    </office:text>
 }
-
-  FContent := FContent +
-     '  </office:body>' + LineEnding;
-  FContent := FContent +
-     '</office:document-content>' + LineEnding;
-end;
-
-procedure TvODTVectorialWriter.WritePage(ACurPage: TvTextPageSequence);
-begin
 
 end;
 
