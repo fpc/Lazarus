@@ -44,6 +44,7 @@ resourcestring
   lisLazarus = 'Lazarus';
   lisAdd  = 'Add';
   lisBtnAdd = '&Add';
+  lisApply = 'Apply';
   lisInsert = 'Insert';
   lisChange  = 'Change';
   lisDelete  = 'Delete';
@@ -2131,7 +2132,6 @@ resourcestring
   lisCOShowAllMessages = 'Show all messages';
   dlgUnitOutp = 'Unit output directory (-FU):';
   lisCOdefault = 'default (%s)';
-  dlgButApply = 'Apply';
   dlgCOShowOptions = '&Show Options';
   dlgCOLoadSave = 'Load/Save';
   dlgMainViewForms = 'View Project Forms';

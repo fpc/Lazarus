@@ -167,7 +167,7 @@ begin
     TopLabel.Caption := dlgTopPos;
     WidthLabel.Caption := dlgWidthPos;
     HeightLabel.Caption := DlgHeightPos;
-    ApplyButton.Caption := dlgButApply;
+    ApplyButton.Caption := lisApply;
     GetWindowPositionButton.Caption := dlgGetPosition;
     SplitLabel.Caption := dlgWidthPos;
 

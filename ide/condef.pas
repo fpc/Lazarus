@@ -244,7 +244,7 @@ begin
   RemoveBtn.LoadGlyphFromLazarusResource('laz_delete');
   btnSave.Caption := lisSave;
   btnSave.LoadGlyphFromStock(idButtonSave);
-  btnOk.Caption := dlgButApply;
+  btnOk.Caption := lisApply;
   //if btnSave.Glyph.Empty then
   //  btnSave.LoadGlyphFromLazarusResource('laz_save');
   try
