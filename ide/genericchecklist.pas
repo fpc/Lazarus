@@ -32,19 +32,9 @@ implementation
 { TGenericCheckListForm }
 
 procedure TGenericCheckListForm.FormCreate(Sender: TObject);
-var
-  BitButtonYes: TBitBtn;
 begin
-  ButtonPanel1.OKButton.Caption:=lisMenuOk;
-  ButtonPanel1.CancelButton.Caption:=lisCancel;
-
-  // save and compile
-  BitButtonYes:=TBitBtn.Create(ButtonPanel1);
-  BitButtonYes.Kind:=bkCustom;
-  BitButtonYes.ModalResult:=mrYes;
-  BitButtonYes.Caption:=lisBuild;
-  BitButtonYes.Align:=alRight;
-  BitButtonYes.Parent:=ButtonPanel1;
+  //ButtonPanel1.OKButton.Caption:=lisMenuOk;
+  //ButtonPanel1.CancelButton.Caption:=lisCancel;
 end;
 
 end.
