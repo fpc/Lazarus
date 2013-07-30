@@ -10,8 +10,9 @@ unit TestBasicSynEdit;
 interface
 
 uses
-  Classes, SysUtils, testregistry, LCLProc, LCLType, Forms, TestBase,
-  SynEdit, SynEditTextTrimmer, SynEditKeyCmds, LazSynEditText, SynEditPointClasses;
+  Classes, SysUtils, testregistry, LCLProc, LCLType, Forms, TestBase, SynEdit,
+  SynEditTextTrimmer, SynEditKeyCmds, LazSynEditText, SynEditPointClasses,
+  SynEditMiscClasses;
 
 type
 
@@ -34,6 +35,7 @@ type
     procedure TestCaretObject;
     procedure TestCaretAutoMove;
     procedure TestCaretDeleteWord_LastWord;
+    procedure TestWordBreaker;
   end;
 
 implementation
@@ -1672,6 +1674,570 @@ begin
   //                                                            6, 14);
   {%endregion}
 
+end;
+
+procedure TTestBasicSynEdit.TestWordBreaker;
+var
+  WBrker: TSynWordBreaker;
+begin
+  WBrker := TSynWordBreaker.Create;
+  WBrker.IdentChars := ['a'..'z', 'A'..'Z', '0'..'9']; // not used
+  WBrker.WhiteChars := [' ', #9];
+  WBrker.WordBreakChars := [',', '.', '-', ';' ,':'];
+
+  AssertEquals('', True,  WBrker.IsInWord('abc  123  ... aa', 1));
+  AssertEquals('', True,  WBrker.IsInWord('abc  123  ... aa', 2));
+  AssertEquals('', True,  WBrker.IsInWord('abc  123  ... aa', 3));
+  AssertEquals('', True,  WBrker.IsInWord('abc  123  ... aa', 4));
+  AssertEquals('', False, WBrker.IsInWord('abc  123  ... aa', 5));
+  AssertEquals('', True,  WBrker.IsInWord('abc  123  ... aa', 6));
+  AssertEquals('', True,  WBrker.IsInWord('abc  123  ... aa', 7));
+  AssertEquals('', True,  WBrker.IsInWord('abc  123  ... aa', 9));
+  AssertEquals('', False, WBrker.IsInWord('abc  123  ... aa', 10));
+  AssertEquals('', False, WBrker.IsInWord('abc  123  ... aa', 11)); // before ...
+  AssertEquals('', True,  WBrker.IsInWord('abc  123  ... aa', 15)); // |aa
+  AssertEquals('', True,  WBrker.IsInWord('abc  123  ... aa', 17)); // at eol
+  AssertEquals('', False, WBrker.IsInWord('abc  123  ... aa', 18));
+  AssertEquals('', False, WBrker.IsInWord('abc  123  ... aa', 19));
+  AssertEquals('', False, WBrker.IsInWord('abc  123  ... aa', 0));
+  AssertEquals('', False, WBrker.IsInWord('abc  123  ... aa', -1));
+  AssertEquals('', False, WBrker.IsInWord(' ', 1));
+  AssertEquals('', False, WBrker.IsInWord(' ', 2));
+  AssertEquals('', False, WBrker.IsInWord('', 1));
+  AssertEquals('', False, WBrker.IsInWord('...', 1));
+  AssertEquals('', False, WBrker.IsInWord('...', 2));
+  AssertEquals('', False, WBrker.IsInWord('...', 4));
+  AssertEquals('', False, WBrker.IsInWord('..aa', 2));
+  AssertEquals('', True,  WBrker.IsInWord('..aa', 3));
+  AssertEquals('', True,  WBrker.IsInWord('..aa', 4));
+  AssertEquals('', True,  WBrker.IsInWord('..aa', 5));
+
+
+  AssertEquals('', True,  WBrker.IsAtWordStart('abc  123  ... aa', 1));
+  AssertEquals('', False, WBrker.IsAtWordStart('abc  123  ... aa', 2));
+  AssertEquals('', False, WBrker.IsAtWordStart('abc  123  ... aa', 3));
+  AssertEquals('', False, WBrker.IsAtWordStart('abc  123  ... aa', 4));
+  AssertEquals('', False, WBrker.IsAtWordStart('abc  123  ... aa', 5));
+  AssertEquals('', True,  WBrker.IsAtWordStart('abc  123  ... aa', 6));
+  AssertEquals('', False, WBrker.IsAtWordStart('abc  123  ... aa', 7));
+  AssertEquals('', False, WBrker.IsAtWordStart('abc  123  ... aa', 9));
+  AssertEquals('', False, WBrker.IsAtWordStart('abc  123  ... aa', 10));
+  AssertEquals('', False, WBrker.IsAtWordStart('abc  123  ... aa', 11)); // before ...
+  AssertEquals('', True,  WBrker.IsAtWordStart('abc  123  ... aa', 15)); // |aa
+  AssertEquals('', False, WBrker.IsAtWordStart('abc  123  ... aa', 17)); // at eol
+  AssertEquals('', False, WBrker.IsAtWordStart('abc  123  ... aa', 18));
+  AssertEquals('', False, WBrker.IsAtWordStart('abc  123  ... aa', 19));
+  AssertEquals('', False, WBrker.IsAtWordStart('abc  123  ... aa', 0));
+  AssertEquals('', False, WBrker.IsAtWordStart('abc  123  ... aa', -1));
+  AssertEquals('', False, WBrker.IsAtWordStart(' ', 1));
+  AssertEquals('', False, WBrker.IsAtWordStart('', 1));
+  AssertEquals('', False, WBrker.IsAtWordStart(' ', 2));
+  AssertEquals('', False, WBrker.IsAtWordStart('...', 1));
+  AssertEquals('', True,  WBrker.IsAtWordStart('..aa', 3));
+
+  AssertEquals('', False, WBrker.IsAtWordEnd('abc  123  ... aa', 1));
+  AssertEquals('', False, WBrker.IsAtWordEnd('abc  123  ... aa', 2));
+  AssertEquals('', False, WBrker.IsAtWordEnd('abc  123  ... aa', 3));
+  AssertEquals('', True,  WBrker.IsAtWordEnd('abc  123  ... aa', 4));
+  AssertEquals('', False, WBrker.IsAtWordEnd('abc  123  ... aa', 5));
+  AssertEquals('', False, WBrker.IsAtWordEnd('abc  123  ... aa', 6));
+  AssertEquals('', False, WBrker.IsAtWordEnd('abc  123  ... aa', 7));
+  AssertEquals('', True,  WBrker.IsAtWordEnd('abc  123  ... aa', 9));
+  AssertEquals('', False, WBrker.IsAtWordEnd('abc  123  ... aa', 10));
+  AssertEquals('', False, WBrker.IsAtWordEnd('abc  123  ... aa', 11)); // before ...
+  AssertEquals('', False, WBrker.IsAtWordEnd('abc  123  ... aa', 15)); // |aa
+  AssertEquals('', True,  WBrker.IsAtWordEnd('abc  123  ... aa', 17)); // at eol
+  AssertEquals('', False, WBrker.IsAtWordEnd('abc  123  ... aa', 18));
+  AssertEquals('', False, WBrker.IsAtWordEnd('abc  123  ... aa', 19));
+  AssertEquals('', False, WBrker.IsAtWordEnd('abc  123  ... aa', 0));
+  AssertEquals('', False, WBrker.IsAtWordEnd('abc  123  ... aa', -1));
+  AssertEquals('', False, WBrker.IsAtWordEnd(' ', 1));
+  AssertEquals('', False, WBrker.IsAtWordEnd(' ', 2));
+  AssertEquals('', False, WBrker.IsAtWordEnd('', 1));
+  AssertEquals('', False, WBrker.IsAtWordEnd('...', 1));
+  AssertEquals('', False, WBrker.IsAtWordEnd('..aa', 3));
+
+  AssertEquals('', 6, WBrker.NextWordStart('abc  123  ... aa', 1, False));
+  AssertEquals('', 6, WBrker.NextWordStart('abc  123  ... aa', 2, False));
+  AssertEquals('', 6, WBrker.NextWordStart('abc  123  ... aa', 3, False));
+  AssertEquals('', 6, WBrker.NextWordStart('abc  123  ... aa', 4, False)); // abc|
+  AssertEquals('', 6, WBrker.NextWordStart('abc  123  ... aa', 5, False));
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 6, False)); // |123
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 7, False)); // 1|23
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 8, False));
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 9, False)); // 123|
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 10, False));
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 11, False)); // |...
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 12, False));
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 13, False));
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 14, False)); // ...|
+  AssertEquals('',-1, WBrker.NextWordStart('abc  123  ... aa', 15, False));
+  AssertEquals('',-1, WBrker.NextWordStart('abc  123  ... aa', 16, False));
+  AssertEquals('',-1, WBrker.NextWordStart('abc  123  ... aa', 17, False)); // at eol
+  AssertEquals('',-1, WBrker.NextWordStart('abc  123  ... aa', 18, False));
+  AssertEquals('',-1, WBrker.NextWordStart('abc  123  ... aa', 19, False));
+  AssertEquals('',-1, WBrker.NextWordStart('abc  123  ... aa', 0, False));
+  AssertEquals('',-1, WBrker.NextWordStart('abc  123  ... aa', -1, False));
+  AssertEquals('',-1, WBrker.NextWordStart('', 1, False));
+  AssertEquals('',-1, WBrker.NextWordStart(' ', 1, False));
+  AssertEquals('',-1, WBrker.NextWordStart(' ', 2, False));
+  AssertEquals('',3,  WBrker.NextWordStart('..aa', 1, False));
+  AssertEquals('',3,  WBrker.NextWordStart('..aa', 2, False));
+  AssertEquals('',-1, WBrker.NextWordStart('..aa', 3, False));
+  AssertEquals('',-1, WBrker.NextWordStart('..aa', 4, False));
+  AssertEquals('', 3, WBrker.NextWordStart('a a 1', 1, False));
+  AssertEquals('', 3, WBrker.NextWordStart('a a 1', 2, False));
+  AssertEquals('', 5, WBrker.NextWordStart('a a 1', 3, False));
+  AssertEquals('', 5, WBrker.NextWordStart('a a 1', 4, False));
+  AssertEquals('',-1, WBrker.NextWordStart('a a 1', 5, False));
+  AssertEquals('',-1, WBrker.NextWordStart('a a 1', 6, False));
+  AssertEquals('', 2, WBrker.NextWordStart(' a ', 1, False));
+  AssertEquals('',-1, WBrker.NextWordStart(' a ', 2, False));
+  AssertEquals('',-1, WBrker.NextWordStart(' a ', 3, False));
+  AssertEquals('',-1, WBrker.NextWordStart(' a ', 4, False));
+
+  AssertEquals('', 1, WBrker.NextWordStart('abc  123  ... aa', 1, True));
+  AssertEquals('', 6, WBrker.NextWordStart('abc  123  ... aa', 2, True));
+  AssertEquals('', 6, WBrker.NextWordStart('abc  123  ... aa', 3, True));
+  AssertEquals('', 6, WBrker.NextWordStart('abc  123  ... aa', 4, True)); // abc|
+  AssertEquals('', 6, WBrker.NextWordStart('abc  123  ... aa', 5, True));
+  AssertEquals('', 6, WBrker.NextWordStart('abc  123  ... aa', 6, True)); // |123
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 7, True)); // 1|23
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 8, True));
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 9, True)); // 123|
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 10, True));
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 11, True)); // |...
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 12, True));
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 13, True));
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 14, True)); // ...|
+  AssertEquals('',15, WBrker.NextWordStart('abc  123  ... aa', 15, True));
+  AssertEquals('',-1, WBrker.NextWordStart('abc  123  ... aa', 16, True));
+  AssertEquals('',-1, WBrker.NextWordStart('abc  123  ... aa', 17, True)); // at eol
+  AssertEquals('',-1, WBrker.NextWordStart('abc  123  ... aa', 18, True));
+  AssertEquals('',-1, WBrker.NextWordStart('abc  123  ... aa', 19, True));
+  AssertEquals('',-1, WBrker.NextWordStart('abc  123  ... aa', 0, True));
+  AssertEquals('',-1, WBrker.NextWordStart('abc  123  ... aa', -1, True));
+  AssertEquals('',-1, WBrker.NextWordStart('', 1, True));
+  AssertEquals('',-1, WBrker.NextWordStart(' ', 1, True));
+  AssertEquals('',-1, WBrker.NextWordStart(' ', 2, True));
+  AssertEquals('',3,  WBrker.NextWordStart('..aa', 1, True));
+  AssertEquals('',3,  WBrker.NextWordStart('..aa', 2, True));
+  AssertEquals('',3,  WBrker.NextWordStart('..aa', 3, True));
+  AssertEquals('',-1, WBrker.NextWordStart('..aa', 4, True));
+  AssertEquals('', 1, WBrker.NextWordStart('a a 1', 1, True));
+  AssertEquals('', 3, WBrker.NextWordStart('a a 1', 2, True));
+  AssertEquals('', 3, WBrker.NextWordStart('a a 1', 3, True));
+  AssertEquals('', 5, WBrker.NextWordStart('a a 1', 4, True));
+  AssertEquals('', 5, WBrker.NextWordStart('a a 1', 5, True));
+  AssertEquals('',-1, WBrker.NextWordStart('a a 1', 6, True));
+  AssertEquals('', 2, WBrker.NextWordStart(' a ', 1, True));
+  AssertEquals('', 2, WBrker.NextWordStart(' a ', 2, True));
+  AssertEquals('',-1, WBrker.NextWordStart(' a ', 3, True));
+  AssertEquals('',-1, WBrker.NextWordStart(' a ', 4, True));
+
+  AssertEquals('', 4, WBrker.NextWordEnd('abc  123  ... aa', 1, False));
+  AssertEquals('', 4, WBrker.NextWordEnd('abc  123  ... aa', 2, False));
+  AssertEquals('', 4, WBrker.NextWordEnd('abc  123  ... aa', 3, False));
+  AssertEquals('', 9, WBrker.NextWordEnd('abc  123  ... aa', 4, False)); // abc|
+  AssertEquals('', 9, WBrker.NextWordEnd('abc  123  ... aa', 5, False));
+  AssertEquals('', 9, WBrker.NextWordEnd('abc  123  ... aa', 6, False)); // |123
+  AssertEquals('', 9, WBrker.NextWordEnd('abc  123  ... aa', 7, False)); // 1|23
+  AssertEquals('', 9, WBrker.NextWordEnd('abc  123  ... aa', 8, False));
+  AssertEquals('',17, WBrker.NextWordEnd('abc  123  ... aa', 9, False)); // 123|
+  AssertEquals('',17, WBrker.NextWordEnd('abc  123  ... aa', 10, False));
+  AssertEquals('',17, WBrker.NextWordEnd('abc  123  ... aa', 11, False)); // |...
+  AssertEquals('',17, WBrker.NextWordEnd('abc  123  ... aa', 12, False));
+  AssertEquals('',17, WBrker.NextWordEnd('abc  123  ... aa', 13, False));
+  AssertEquals('',17, WBrker.NextWordEnd('abc  123  ... aa', 14, False)); // ...|
+  AssertEquals('',17, WBrker.NextWordEnd('abc  123  ... aa', 15, False));
+  AssertEquals('',17, WBrker.NextWordEnd('abc  123  ... aa', 16, False));
+  AssertEquals('',-1, WBrker.NextWordEnd('abc  123  ... aa', 17, False)); // at eol
+  AssertEquals('',-1, WBrker.NextWordEnd('abc  123  ... aa', 18, False));
+  AssertEquals('',-1, WBrker.NextWordEnd('abc  123  ... aa', 19, False));
+  AssertEquals('',-1, WBrker.NextWordEnd('abc  123  ... aa', 0, False));
+  AssertEquals('',-1, WBrker.NextWordEnd('abc  123  ... aa', -1, False));
+  AssertEquals('',-1, WBrker.NextWordEnd('', 1, False));
+  AssertEquals('',-1, WBrker.NextWordEnd(' ', 1, False));
+  AssertEquals('',-1, WBrker.NextWordEnd(' ', 2, False));
+  AssertEquals('',5,  WBrker.NextWordEnd('..aa', 1, False));
+  AssertEquals('',5,  WBrker.NextWordEnd('..aa', 2, False));
+  AssertEquals('',5,  WBrker.NextWordEnd('..aa', 3, False));
+  AssertEquals('',5,  WBrker.NextWordEnd('..aa', 4, False));
+  AssertEquals('',-1, WBrker.NextWordEnd('..aa', 5, False));
+  AssertEquals('', 2, WBrker.NextWordEnd('a a 1', 1, False));
+  AssertEquals('', 4, WBrker.NextWordEnd('a a 1', 2, False));
+  AssertEquals('', 4, WBrker.NextWordEnd('a a 1', 3, False));
+  AssertEquals('', 6, WBrker.NextWordEnd('a a 1', 4, False));
+  AssertEquals('', 6, WBrker.NextWordEnd('a a 1', 5, False));
+  AssertEquals('',-1, WBrker.NextWordEnd('a a 1', 6, False));
+  AssertEquals('', 3, WBrker.NextWordEnd(' a ', 1, False));
+  AssertEquals('', 3, WBrker.NextWordEnd(' a ', 2, False));
+  AssertEquals('',-1, WBrker.NextWordEnd(' a ', 3, False));
+  AssertEquals('',-1, WBrker.NextWordEnd(' a ', 4, False));
+
+  AssertEquals('', 4, WBrker.NextWordEnd('abc  123  ... aa', 1, True));
+  AssertEquals('', 4, WBrker.NextWordEnd('abc  123  ... aa', 2, True));
+  AssertEquals('', 4, WBrker.NextWordEnd('abc  123  ... aa', 3, True));
+  AssertEquals('', 4, WBrker.NextWordEnd('abc  123  ... aa', 4, True)); // abc|
+  AssertEquals('', 9, WBrker.NextWordEnd('abc  123  ... aa', 5, True));
+  AssertEquals('', 9, WBrker.NextWordEnd('abc  123  ... aa', 6, True)); // |123
+  AssertEquals('', 9, WBrker.NextWordEnd('abc  123  ... aa', 7, True)); // 1|23
+  AssertEquals('', 9, WBrker.NextWordEnd('abc  123  ... aa', 8, True));
+  AssertEquals('', 9, WBrker.NextWordEnd('abc  123  ... aa', 9, True)); // 123|
+  AssertEquals('',17, WBrker.NextWordEnd('abc  123  ... aa', 10, True));
+  AssertEquals('',17, WBrker.NextWordEnd('abc  123  ... aa', 11, True)); // |...
+  AssertEquals('',17, WBrker.NextWordEnd('abc  123  ... aa', 12, True));
+  AssertEquals('',17, WBrker.NextWordEnd('abc  123  ... aa', 13, True));
+  AssertEquals('',17, WBrker.NextWordEnd('abc  123  ... aa', 14, True)); // ...|
+  AssertEquals('',17, WBrker.NextWordEnd('abc  123  ... aa', 15, True));
+  AssertEquals('',17, WBrker.NextWordEnd('abc  123  ... aa', 16, True));
+  AssertEquals('',17, WBrker.NextWordEnd('abc  123  ... aa', 17, True)); // at eol
+  AssertEquals('',-1, WBrker.NextWordEnd('abc  123  ... aa', 18, True));
+  AssertEquals('',-1, WBrker.NextWordEnd('abc  123  ... aa', 19, True));
+  AssertEquals('',-1, WBrker.NextWordEnd('abc  123  ... aa', 0, True));
+  AssertEquals('',-1, WBrker.NextWordEnd('abc  123  ... aa', -1, True));
+  AssertEquals('',-1, WBrker.NextWordEnd('', 1, True));
+  AssertEquals('',-1, WBrker.NextWordEnd(' ', 1, True));
+  AssertEquals('',-1, WBrker.NextWordEnd(' ', 2, True));
+  AssertEquals('',5,  WBrker.NextWordEnd('..aa', 1, True));
+  AssertEquals('',5,  WBrker.NextWordEnd('..aa', 2, True));
+  AssertEquals('',5,  WBrker.NextWordEnd('..aa', 3, True));
+  AssertEquals('',5,  WBrker.NextWordEnd('..aa', 4, True));
+  AssertEquals('',5, WBrker.NextWordEnd('..aa', 5, True));
+  AssertEquals('', 2, WBrker.NextWordEnd('a a 1', 1, True));
+  AssertEquals('', 2, WBrker.NextWordEnd('a a 1', 2, True));
+  AssertEquals('', 4, WBrker.NextWordEnd('a a 1', 3, True));
+  AssertEquals('', 4, WBrker.NextWordEnd('a a 1', 4, True));
+  AssertEquals('', 6, WBrker.NextWordEnd('a a 1', 5, True));
+  AssertEquals('', 6, WBrker.NextWordEnd('a a 1', 6, True));
+  AssertEquals('', 3, WBrker.NextWordEnd(' a ', 1, True));
+  AssertEquals('', 3, WBrker.NextWordEnd(' a ', 2, True));
+  AssertEquals('', 3, WBrker.NextWordEnd(' a ', 3, True));
+  AssertEquals('',-1, WBrker.NextWordEnd(' a ', 4, True));
+
+  AssertEquals('',-1, WBrker.PrevWordStart('abc  123  ... aa', 1, False));
+  AssertEquals('', 1, WBrker.PrevWordStart('abc  123  ... aa', 2, False));
+  AssertEquals('', 1, WBrker.PrevWordStart('abc  123  ... aa', 3, False));
+  AssertEquals('', 1, WBrker.PrevWordStart('abc  123  ... aa', 4, False)); // abc|
+  AssertEquals('', 1, WBrker.PrevWordStart('abc  123  ... aa', 5, False));
+  AssertEquals('', 1, WBrker.PrevWordStart('abc  123  ... aa', 6, False)); // |123
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 7, False)); // 1|23
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 8, False));
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 9, False)); // 123|
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 10, False));
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 11, False)); // |...
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 12, False));
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 13, False));
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 14, False)); // ...|
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 15, False));
+  AssertEquals('',15, WBrker.PrevWordStart('abc  123  ... aa', 16, False));
+  AssertEquals('',15, WBrker.PrevWordStart('abc  123  ... aa', 17, False)); // at eol
+  AssertEquals('',-1, WBrker.PrevWordStart('abc  123  ... aa', 18, False));
+  AssertEquals('',-1, WBrker.PrevWordStart('abc  123  ... aa', 19, False));
+  AssertEquals('',-1, WBrker.PrevWordStart('abc  123  ... aa', 0, False));
+  AssertEquals('',-1, WBrker.PrevWordStart('abc  123  ... aa', -1, False));
+  AssertEquals('',-1, WBrker.PrevWordStart('', 1, False));
+  AssertEquals('',-1, WBrker.PrevWordStart(' ', 1, False));
+  AssertEquals('',-1, WBrker.PrevWordStart(' ', 2, False));
+  AssertEquals('',-1, WBrker.PrevWordStart('..aa', 1, False));
+  AssertEquals('',-1, WBrker.PrevWordStart('..aa', 2, False));
+  AssertEquals('',-1, WBrker.PrevWordStart('..aa', 3, False));
+  AssertEquals('', 3, WBrker.PrevWordStart('..aa', 4, False));
+  AssertEquals('', 3, WBrker.PrevWordStart('..aa', 5, False));
+  AssertEquals('',-1, WBrker.PrevWordStart('a a 1', 1, False));
+  AssertEquals('', 1, WBrker.PrevWordStart('a a 1', 2, False));
+  AssertEquals('', 1, WBrker.PrevWordStart('a a 1', 3, False));
+  AssertEquals('', 3, WBrker.PrevWordStart('a a 1', 4, False));
+  AssertEquals('', 3, WBrker.PrevWordStart('a a 1', 5, False));
+  AssertEquals('', 5, WBrker.PrevWordStart('a a 1', 6, False));
+  AssertEquals('',-1, WBrker.PrevWordStart(' a ', 1, False));
+  AssertEquals('',-1, WBrker.PrevWordStart(' a ', 2, False));
+  AssertEquals('', 2, WBrker.PrevWordStart(' a ', 3, False));
+  AssertEquals('', 2, WBrker.PrevWordStart(' a ', 4, False));
+
+  AssertEquals('', 1, WBrker.PrevWordStart('abc  123  ... aa', 1, True));
+  AssertEquals('', 1, WBrker.PrevWordStart('abc  123  ... aa', 2, True));
+  AssertEquals('', 1, WBrker.PrevWordStart('abc  123  ... aa', 3, True));
+  AssertEquals('', 1, WBrker.PrevWordStart('abc  123  ... aa', 4, True)); // abc|
+  AssertEquals('', 1, WBrker.PrevWordStart('abc  123  ... aa', 5, True));
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 6, True)); // |123
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 7, True)); // 1|23
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 8, True));
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 9, True)); // 123|
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 10, True));
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 11, True)); // |...
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 12, True));
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 13, True));
+  AssertEquals('', 6, WBrker.PrevWordStart('abc  123  ... aa', 14, True)); // ...|
+  AssertEquals('',15, WBrker.PrevWordStart('abc  123  ... aa', 15, True));
+  AssertEquals('',15, WBrker.PrevWordStart('abc  123  ... aa', 16, True));
+  AssertEquals('',15, WBrker.PrevWordStart('abc  123  ... aa', 17, True)); // at eol
+  AssertEquals('',-1, WBrker.PrevWordStart('abc  123  ... aa', 18, True));
+  AssertEquals('',-1, WBrker.PrevWordStart('abc  123  ... aa', 19, True));
+  AssertEquals('',-1, WBrker.PrevWordStart('abc  123  ... aa', 0, True));
+  AssertEquals('',-1, WBrker.PrevWordStart('abc  123  ... aa', -1, True));
+  AssertEquals('',-1, WBrker.PrevWordStart('', 1, True));
+  AssertEquals('',-1, WBrker.PrevWordStart(' ', 1, True));
+  AssertEquals('',-1, WBrker.PrevWordStart(' ', 2, True));
+  AssertEquals('',-1, WBrker.PrevWordStart('..aa', 1, True));
+  AssertEquals('',-1, WBrker.PrevWordStart('..aa', 2, True));
+  AssertEquals('', 3, WBrker.PrevWordStart('..aa', 3, True));
+  AssertEquals('', 3, WBrker.PrevWordStart('..aa', 4, True));
+  AssertEquals('', 3, WBrker.PrevWordStart('..aa', 5, True));
+  AssertEquals('', 1, WBrker.PrevWordStart('a a 1', 1, True));
+  AssertEquals('', 1, WBrker.PrevWordStart('a a 1', 2, True));
+  AssertEquals('', 3, WBrker.PrevWordStart('a a 1', 3, True));
+  AssertEquals('', 3, WBrker.PrevWordStart('a a 1', 4, True));
+  AssertEquals('', 5, WBrker.PrevWordStart('a a 1', 5, True));
+  AssertEquals('', 5, WBrker.PrevWordStart('a a 1', 6, True));
+  AssertEquals('',-1, WBrker.PrevWordStart(' a ', 1, True));
+  AssertEquals('', 2, WBrker.PrevWordStart(' a ', 2, True));
+  AssertEquals('', 2, WBrker.PrevWordStart(' a ', 3, True));
+  AssertEquals('', 2, WBrker.PrevWordStart(' a ', 4, True));
+
+  AssertEquals('', -1, WBrker.PrevWordEnd('abc  123  ... aa', 1, False));
+  AssertEquals('', -1, WBrker.PrevWordEnd('abc  123  ... aa', 2, False));
+  AssertEquals('', -1, WBrker.PrevWordEnd('abc  123  ... aa', 3, False));
+  AssertEquals('', -1, WBrker.PrevWordEnd('abc  123  ... aa', 4, False)); // abc|
+  AssertEquals('', 4, WBrker.PrevWordEnd('abc  123  ... aa', 5, False));
+  AssertEquals('',4, WBrker.PrevWordEnd('abc  123  ... aa', 6, False)); // |123
+  AssertEquals('',4, WBrker.PrevWordEnd('abc  123  ... aa', 7, False)); // 1|23
+  AssertEquals('',4, WBrker.PrevWordEnd('abc  123  ... aa', 8, False));
+  AssertEquals('',4, WBrker.PrevWordEnd('abc  123  ... aa', 9, False)); // 123|
+  AssertEquals('',9, WBrker.PrevWordEnd('abc  123  ... aa', 10, False));
+  AssertEquals('',9, WBrker.PrevWordEnd('abc  123  ... aa', 11, False)); // |...
+  AssertEquals('',9, WBrker.PrevWordEnd('abc  123  ... aa', 12, False));
+  AssertEquals('',9, WBrker.PrevWordEnd('abc  123  ... aa', 13, False));
+  AssertEquals('',9, WBrker.PrevWordEnd('abc  123  ... aa', 14, False)); // ...|
+  AssertEquals('',9, WBrker.PrevWordEnd('abc  123  ... aa', 15, False));
+  AssertEquals('',9, WBrker.PrevWordEnd('abc  123  ... aa', 16, False));
+  AssertEquals('',9, WBrker.PrevWordEnd('abc  123  ... aa', 17, False)); // at eol
+  AssertEquals('',-1, WBrker.PrevWordEnd('abc  123  ... aa', 18, False));
+  AssertEquals('',-1, WBrker.PrevWordEnd('abc  123  ... aa', 19, False));
+  AssertEquals('',-1, WBrker.PrevWordEnd('abc  123  ... aa', 0, False));
+  AssertEquals('',-1, WBrker.PrevWordEnd('abc  123  ... aa', -1, False));
+  AssertEquals('',-1, WBrker.PrevWordEnd('', 1, False));
+  AssertEquals('',-1, WBrker.PrevWordEnd(' ', 1, False));
+  AssertEquals('',-1, WBrker.PrevWordEnd(' ', 2, False));
+  AssertEquals('',-1,  WBrker.PrevWordEnd('..aa', 1, False));
+  AssertEquals('',-1,  WBrker.PrevWordEnd('..aa', 2, False));
+  AssertEquals('',-1, WBrker.PrevWordEnd('..aa', 3, False));
+  AssertEquals('',-1, WBrker.PrevWordEnd('..aa', 4, False));
+  AssertEquals('',-1, WBrker.PrevWordEnd('..aa', 5, False));
+  AssertEquals('',-1, WBrker.PrevWordEnd('a a 1', 1, False));
+  AssertEquals('',-1, WBrker.PrevWordEnd('a a 1', 2, False));
+  AssertEquals('', 2, WBrker.PrevWordEnd('a a 1', 3, False));
+  AssertEquals('', 2, WBrker.PrevWordEnd('a a 1', 4, False));
+  AssertEquals('', 4, WBrker.PrevWordEnd('a a 1', 5, False));
+  AssertEquals('', 4, WBrker.PrevWordEnd('a a 1', 6, False));
+  AssertEquals('',-1, WBrker.PrevWordEnd(' a ', 1, False));
+  AssertEquals('',-1, WBrker.PrevWordEnd(' a ', 2, False));
+  AssertEquals('',-1, WBrker.PrevWordEnd(' a ', 3, False));
+  AssertEquals('', 3, WBrker.PrevWordEnd(' a ', 4, False));
+
+  AssertEquals('', -1, WBrker.PrevWordEnd('abc  123  ... aa', 1, True));
+  AssertEquals('', -1, WBrker.PrevWordEnd('abc  123  ... aa', 2, True));
+  AssertEquals('', -1, WBrker.PrevWordEnd('abc  123  ... aa', 3, True));
+  AssertEquals('', 4, WBrker.PrevWordEnd('abc  123  ... aa', 4, True)); // abc|
+  AssertEquals('', 4, WBrker.PrevWordEnd('abc  123  ... aa', 5, True));
+  AssertEquals('', 4, WBrker.PrevWordEnd('abc  123  ... aa', 6, True)); // |123
+  AssertEquals('', 4, WBrker.PrevWordEnd('abc  123  ... aa', 7, True)); // 1|23
+  AssertEquals('', 4, WBrker.PrevWordEnd('abc  123  ... aa', 8, True));
+  AssertEquals('', 9, WBrker.PrevWordEnd('abc  123  ... aa', 9, True)); // 123|
+  AssertEquals('', 9, WBrker.PrevWordEnd('abc  123  ... aa', 10, True));
+  AssertEquals('', 9, WBrker.PrevWordEnd('abc  123  ... aa', 11, True)); // |...
+  AssertEquals('', 9, WBrker.PrevWordEnd('abc  123  ... aa', 12, True));
+  AssertEquals('', 9, WBrker.PrevWordEnd('abc  123  ... aa', 13, True));
+  AssertEquals('', 9, WBrker.PrevWordEnd('abc  123  ... aa', 14, True)); // ...|
+  AssertEquals('', 9, WBrker.PrevWordEnd('abc  123  ... aa', 15, True));
+  AssertEquals('', 9, WBrker.PrevWordEnd('abc  123  ... aa', 16, True));
+  AssertEquals('',17, WBrker.PrevWordEnd('abc  123  ... aa', 17, True)); // at eol
+  AssertEquals('',-1, WBrker.PrevWordEnd('abc  123  ... aa', 18, True));
+  AssertEquals('',-1, WBrker.PrevWordEnd('abc  123  ... aa', 19, True));
+  AssertEquals('',-1, WBrker.PrevWordEnd('abc  123  ... aa', 0, True));
+  AssertEquals('',-1, WBrker.PrevWordEnd('abc  123  ... aa', -1, True));
+  AssertEquals('',-1, WBrker.PrevWordEnd('', 1, True));
+  AssertEquals('',-1, WBrker.PrevWordEnd(' ', 1, True));
+  AssertEquals('',-1, WBrker.PrevWordEnd(' ', 2, True));
+  AssertEquals('',-1,  WBrker.PrevWordEnd('..aa', 1, True));
+  AssertEquals('',-1,  WBrker.PrevWordEnd('..aa', 2, True));
+  AssertEquals('',-1,  WBrker.PrevWordEnd('..aa', 3, True));
+  AssertEquals('',-1, WBrker.PrevWordEnd('..aa', 4, True));
+  AssertEquals('', 5, WBrker.PrevWordEnd('..aa', 5, True));
+  AssertEquals('',-1, WBrker.PrevWordEnd('a a 1', 1, True));
+  AssertEquals('', 2, WBrker.PrevWordEnd('a a 1', 2, True));
+  AssertEquals('', 2, WBrker.PrevWordEnd('a a 1', 3, True));
+  AssertEquals('', 4, WBrker.PrevWordEnd('a a 1', 4, True));
+  AssertEquals('', 4, WBrker.PrevWordEnd('a a 1', 5, True));
+  AssertEquals('', 6, WBrker.PrevWordEnd('a a 1', 6, True));
+  AssertEquals('',-1, WBrker.PrevWordEnd(' a ', 1, True));
+  AssertEquals('',-1, WBrker.PrevWordEnd(' a ', 2, True));
+  AssertEquals('', 3, WBrker.PrevWordEnd(' a ', 3, True));
+  AssertEquals('', 3, WBrker.PrevWordEnd(' a ', 4, True));
+
+
+  AssertEquals('', 4, WBrker.NextBoundary('abc  123  ... aa', 1, False));
+  AssertEquals('', 4, WBrker.NextBoundary('abc  123  ... aa', 2, False));
+  AssertEquals('', 4, WBrker.NextBoundary('abc  123  ... aa', 3, False));
+  AssertEquals('', 6, WBrker.NextBoundary('abc  123  ... aa', 4, False)); // abc|
+  AssertEquals('', 6, WBrker.NextBoundary('abc  123  ... aa', 5, False));
+  AssertEquals('', 9, WBrker.NextBoundary('abc  123  ... aa', 6, False)); // |123
+  AssertEquals('', 9, WBrker.NextBoundary('abc  123  ... aa', 7, False)); // 1|23
+  AssertEquals('', 9, WBrker.NextBoundary('abc  123  ... aa', 8, False));
+  AssertEquals('',11, WBrker.NextBoundary('abc  123  ... aa', 9, False)); // 123|
+  AssertEquals('',11, WBrker.NextBoundary('abc  123  ... aa', 10, False));
+  AssertEquals('',14, WBrker.NextBoundary('abc  123  ... aa', 11, False)); // |...
+  AssertEquals('',14, WBrker.NextBoundary('abc  123  ... aa', 12, False));
+  AssertEquals('',14, WBrker.NextBoundary('abc  123  ... aa', 13, False));
+  AssertEquals('',15, WBrker.NextBoundary('abc  123  ... aa', 14, False)); // ...|
+  AssertEquals('',17, WBrker.NextBoundary('abc  123  ... aa', 15, False));
+  AssertEquals('',17, WBrker.NextBoundary('abc  123  ... aa', 16, False));
+  AssertEquals('',-1, WBrker.NextBoundary('abc  123  ... aa', 17, False)); // at eol
+  AssertEquals('',-1, WBrker.NextBoundary('abc  123  ... aa', 18, False));
+  AssertEquals('',-1, WBrker.NextBoundary('abc  123  ... aa', 19, False));
+  AssertEquals('',-1, WBrker.NextBoundary('abc  123  ... aa', 0, False));
+  AssertEquals('',-1, WBrker.NextBoundary('abc  123  ... aa', -1, False));
+  AssertEquals('',-1, WBrker.NextBoundary('', 1, False));
+  AssertEquals('',-1, WBrker.NextBoundary(' ', 1, False));
+  AssertEquals('',-1, WBrker.NextBoundary(' ', 2, False));
+  AssertEquals('',3,  WBrker.NextBoundary('..aa', 1, False));
+  AssertEquals('',3,  WBrker.NextBoundary('..aa', 2, False));
+  AssertEquals('',5, WBrker.NextBoundary('..aa', 3, False));
+  AssertEquals('',5, WBrker.NextBoundary('..aa', 4, False));
+  AssertEquals('',-1, WBrker.NextBoundary('..aa', 5, False));
+  AssertEquals('', 2, WBrker.NextBoundary('a a 1', 1, False));
+  AssertEquals('', 3, WBrker.NextBoundary('a a 1', 2, False));
+  AssertEquals('', 4, WBrker.NextBoundary('a a 1', 3, False));
+  AssertEquals('', 5, WBrker.NextBoundary('a a 1', 4, False));
+  AssertEquals('', 6, WBrker.NextBoundary('a a 1', 5, False));
+  AssertEquals('',-1, WBrker.NextBoundary('a a 1', 6, False));
+  AssertEquals('', 2, WBrker.NextBoundary(' a ', 1, False));
+  AssertEquals('', 3, WBrker.NextBoundary(' a ', 2, False));
+  AssertEquals('',-1, WBrker.NextBoundary(' a ', 3, False));
+  AssertEquals('',-1, WBrker.NextBoundary(' a ', 4, False));
+
+  AssertEquals('', 1, WBrker.NextBoundary('abc  123  ... aa', 1, True));
+  AssertEquals('', 4, WBrker.NextBoundary('abc  123  ... aa', 2, True));
+  AssertEquals('', 4, WBrker.NextBoundary('abc  123  ... aa', 3, True));
+  AssertEquals('', 4, WBrker.NextBoundary('abc  123  ... aa', 4, True)); // abc|
+  AssertEquals('', 6, WBrker.NextBoundary('abc  123  ... aa', 5, True));
+  AssertEquals('', 6, WBrker.NextBoundary('abc  123  ... aa', 6, True)); // |123
+  AssertEquals('', 9, WBrker.NextBoundary('abc  123  ... aa', 7, True)); // 1|23
+  AssertEquals('', 9, WBrker.NextBoundary('abc  123  ... aa', 8, True));
+  AssertEquals('', 9, WBrker.NextBoundary('abc  123  ... aa', 9, True)); // 123|
+  AssertEquals('',11, WBrker.NextBoundary('abc  123  ... aa', 10, True));
+  AssertEquals('',11, WBrker.NextBoundary('abc  123  ... aa', 11, True)); // |...
+  AssertEquals('',14, WBrker.NextBoundary('abc  123  ... aa', 12, True));
+  AssertEquals('',14, WBrker.NextBoundary('abc  123  ... aa', 13, True));
+  AssertEquals('',14, WBrker.NextBoundary('abc  123  ... aa', 14, True)); // ...|
+  AssertEquals('',15, WBrker.NextBoundary('abc  123  ... aa', 15, True));
+  AssertEquals('',17, WBrker.NextBoundary('abc  123  ... aa', 16, True));
+  AssertEquals('',17, WBrker.NextBoundary('abc  123  ... aa', 17, True)); // at eol
+  AssertEquals('',-1, WBrker.NextBoundary('abc  123  ... aa', 18, True));
+  AssertEquals('',-1, WBrker.NextBoundary('abc  123  ... aa', 19, True));
+  AssertEquals('',-1, WBrker.NextBoundary('abc  123  ... aa', 0, True));
+  AssertEquals('',-1, WBrker.NextBoundary('abc  123  ... aa', -1, True));
+  AssertEquals('',-1, WBrker.NextBoundary('', 1, True));
+  AssertEquals('',-1, WBrker.NextBoundary(' ', 1, True));
+  AssertEquals('',-1, WBrker.NextBoundary(' ', 2, True));
+  AssertEquals('',1,  WBrker.NextBoundary('..aa', 1, True));
+  AssertEquals('',3,  WBrker.NextBoundary('..aa', 2, True));
+  AssertEquals('',3, WBrker.NextBoundary('..aa', 3, True));
+  AssertEquals('',5, WBrker.NextBoundary('..aa', 4, True));
+  AssertEquals('',5, WBrker.NextBoundary('..aa', 5, True));
+  AssertEquals('', 1, WBrker.NextBoundary('a a 1', 1, True));
+  AssertEquals('', 2, WBrker.NextBoundary('a a 1', 2, True));
+  AssertEquals('', 3, WBrker.NextBoundary('a a 1', 3, True));
+  AssertEquals('', 4, WBrker.NextBoundary('a a 1', 4, True));
+  AssertEquals('', 5, WBrker.NextBoundary('a a 1', 5, True));
+  AssertEquals('', 6, WBrker.NextBoundary('a a 1', 6, True));
+  AssertEquals('', 2, WBrker.NextBoundary(' a ', 1, True));
+  AssertEquals('', 2, WBrker.NextBoundary(' a ', 2, True));
+  AssertEquals('', 3, WBrker.NextBoundary(' a ', 3, True));
+  AssertEquals('',-1, WBrker.NextBoundary(' a ', 4, True));
+
+  AssertEquals('',-1, WBrker.PrevBoundary('abc  123  ... aa', 1, False));
+  AssertEquals('', 1, WBrker.PrevBoundary('abc  123  ... aa', 2, False));
+  AssertEquals('', 1, WBrker.PrevBoundary('abc  123  ... aa', 3, False));
+  AssertEquals('', 1, WBrker.PrevBoundary('abc  123  ... aa', 4, False)); // abc|
+  AssertEquals('', 4, WBrker.PrevBoundary('abc  123  ... aa', 5, False));
+  AssertEquals('', 4, WBrker.PrevBoundary('abc  123  ... aa', 6, False)); // |123
+  AssertEquals('', 6, WBrker.PrevBoundary('abc  123  ... aa', 7, False)); // 1|23
+  AssertEquals('', 6, WBrker.PrevBoundary('abc  123  ... aa', 8, False));
+  AssertEquals('', 6, WBrker.PrevBoundary('abc  123  ... aa', 9, False)); // 123|
+  AssertEquals('', 9, WBrker.PrevBoundary('abc  123  ... aa', 10, False));
+  AssertEquals('', 9, WBrker.PrevBoundary('abc  123  ... aa', 11, False)); // |...
+  AssertEquals('',11, WBrker.PrevBoundary('abc  123  ... aa', 12, False));
+  AssertEquals('',11, WBrker.PrevBoundary('abc  123  ... aa', 13, False));
+  AssertEquals('',11, WBrker.PrevBoundary('abc  123  ... aa', 14, False)); // ...|
+  AssertEquals('',14, WBrker.PrevBoundary('abc  123  ... aa', 15, False));
+  AssertEquals('',15, WBrker.PrevBoundary('abc  123  ... aa', 16, False));
+  AssertEquals('',15, WBrker.PrevBoundary('abc  123  ... aa', 17, False)); // at eol
+  AssertEquals('',-1, WBrker.PrevBoundary('abc  123  ... aa', 18, False));
+  AssertEquals('',-1, WBrker.PrevBoundary('abc  123  ... aa', 19, False));
+  AssertEquals('',-1, WBrker.PrevBoundary('abc  123  ... aa', 0, False));
+  AssertEquals('',-1, WBrker.PrevBoundary('abc  123  ... aa', -1, False));
+  AssertEquals('',-1, WBrker.PrevBoundary('', 1, False));
+  AssertEquals('',-1, WBrker.PrevBoundary(' ', 1, False));
+  AssertEquals('',-1, WBrker.PrevBoundary(' ', 2, False));
+  AssertEquals('',-1,  WBrker.PrevBoundary('..aa', 1, False));
+  AssertEquals('',1,  WBrker.PrevBoundary('..aa', 2, False));
+  AssertEquals('',1, WBrker.PrevBoundary('..aa', 3, False));
+  AssertEquals('',3, WBrker.PrevBoundary('..aa', 4, False));
+  AssertEquals('',3, WBrker.PrevBoundary('..aa', 5, False));
+  AssertEquals('',-1, WBrker.PrevBoundary('a a 1', 1, False));
+  AssertEquals('', 1, WBrker.PrevBoundary('a a 1', 2, False));
+  AssertEquals('', 2, WBrker.PrevBoundary('a a 1', 3, False));
+  AssertEquals('', 3, WBrker.PrevBoundary('a a 1', 4, False));
+  AssertEquals('', 4, WBrker.PrevBoundary('a a 1', 5, False));
+  AssertEquals('', 5, WBrker.PrevBoundary('a a 1', 6, False));
+  AssertEquals('',-1, WBrker.PrevBoundary(' a ', 1, False));
+  AssertEquals('',-1, WBrker.PrevBoundary(' a ', 2, False));
+  AssertEquals('', 2, WBrker.PrevBoundary(' a ', 3, False));
+  AssertEquals('', 3, WBrker.PrevBoundary(' a ', 4, False));
+
+  AssertEquals('', 1, WBrker.PrevBoundary('abc  123  ... aa', 1, True));
+  AssertEquals('', 1, WBrker.PrevBoundary('abc  123  ... aa', 2, True));
+  AssertEquals('', 1, WBrker.PrevBoundary('abc  123  ... aa', 3, True));
+  AssertEquals('', 4, WBrker.PrevBoundary('abc  123  ... aa', 4, True)); // abc|
+  AssertEquals('', 4, WBrker.PrevBoundary('abc  123  ... aa', 5, True));
+  AssertEquals('', 6, WBrker.PrevBoundary('abc  123  ... aa', 6, True)); // |123
+  AssertEquals('', 6, WBrker.PrevBoundary('abc  123  ... aa', 7, True)); // 1|23
+  AssertEquals('', 6, WBrker.PrevBoundary('abc  123  ... aa', 8, True));
+  AssertEquals('', 9, WBrker.PrevBoundary('abc  123  ... aa', 9, True)); // 123|
+  AssertEquals('', 9, WBrker.PrevBoundary('abc  123  ... aa', 10, True));
+  AssertEquals('',11, WBrker.PrevBoundary('abc  123  ... aa', 11, True)); // |...
+  AssertEquals('',11, WBrker.PrevBoundary('abc  123  ... aa', 12, True));
+  AssertEquals('',11, WBrker.PrevBoundary('abc  123  ... aa', 13, True));
+  AssertEquals('',14, WBrker.PrevBoundary('abc  123  ... aa', 14, True)); // ...|
+  AssertEquals('',15, WBrker.PrevBoundary('abc  123  ... aa', 15, True));
+  AssertEquals('',15, WBrker.PrevBoundary('abc  123  ... aa', 16, True));
+  AssertEquals('',17, WBrker.PrevBoundary('abc  123  ... aa', 17, True)); // at eol
+  AssertEquals('',-1, WBrker.PrevBoundary('abc  123  ... aa', 18, True));
+  AssertEquals('',-1, WBrker.PrevBoundary('abc  123  ... aa', 19, True));
+  AssertEquals('',-1, WBrker.PrevBoundary('abc  123  ... aa', 0, True));
+  AssertEquals('',-1, WBrker.PrevBoundary('abc  123  ... aa', -1, True));
+  AssertEquals('',-1, WBrker.PrevBoundary('', 1, True));
+  AssertEquals('',-1, WBrker.PrevBoundary(' ', 1, True));
+  AssertEquals('',-1, WBrker.PrevBoundary(' ', 2, True));
+  AssertEquals('',1,  WBrker.PrevBoundary('..aa', 1, True));
+  AssertEquals('',1,  WBrker.PrevBoundary('..aa', 2, True));
+  AssertEquals('',3, WBrker.PrevBoundary('..aa', 3, True));
+  AssertEquals('',3, WBrker.PrevBoundary('..aa', 4, True));
+  AssertEquals('',5, WBrker.PrevBoundary('..aa', 5, True));
+  AssertEquals('', 1, WBrker.PrevBoundary('a a 1', 1, True));
+  AssertEquals('', 2, WBrker.PrevBoundary('a a 1', 2, True));
+  AssertEquals('', 3, WBrker.PrevBoundary('a a 1', 3, True));
+  AssertEquals('', 4, WBrker.PrevBoundary('a a 1', 4, True));
+  AssertEquals('', 5, WBrker.PrevBoundary('a a 1', 5, True));
+  AssertEquals('', 6, WBrker.PrevBoundary('a a 1', 6, True));
+  AssertEquals('',-1, WBrker.PrevBoundary(' a ', 1, True));
+  AssertEquals('', 2, WBrker.PrevBoundary(' a ', 2, True));
+  AssertEquals('', 3, WBrker.PrevBoundary(' a ', 3, True));
+  AssertEquals('', 3, WBrker.PrevBoundary(' a ', 4, True));
+
+
+  FreeAndNil(WBrker);
 end;
 
 
