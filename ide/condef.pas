@@ -53,9 +53,8 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls, Forms, LCLProc, Dialogs,
-  StdCtrls, Buttons, FileUtil, Laz2_XMLCfg, ButtonPanel,
-  IDEHelpIntf,
-  LazarusIDEStrConsts, IDEProcs;
+  StdCtrls, Buttons, FileUtil, Laz2_XMLCfg, ButtonPanel, ExtCtrls,
+  IDEHelpIntf, LazarusIDEStrConsts, IDEProcs, strutils;
 
 type
 
@@ -63,8 +62,12 @@ type
 
   TCondForm = class(TForm)
     AddBtn: TBitBtn;
-    AddInverse: TButton;
-    ButtonPanel: TButtonPanel;
+    AddInverse: TBitBtn;
+    btnHelp: TBitBtn;
+    btmCancel: TBitBtn;
+    btnSave: TBitBtn;
+    btnOk: TBitBtn;
+    ButtonPanel: TPanel;
     FirstLabel: TLabel;
     FirstTest: TComboBox;
     ListBox: TListBox;
@@ -74,18 +77,24 @@ type
     SecondTest: TComboBox;
     procedure AddBtnClick(Sender: TObject);
     procedure AddInverseCLICK(Sender: TObject);
+    procedure btnSaveClick(Sender: TObject);
+    procedure OKButtonClick(Sender: TObject);
+    procedure TestEditChange(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
-    procedure CondFormCLOSE(Sender: TObject; var CloseAction: TCloseAction);
     procedure CondFormCREATE(Sender: TObject);
+    procedure ListBoxClick(Sender: TObject);
     procedure ListBoxDblClick(Sender: TObject);
     procedure RemoveBtnClick(Sender: TObject);
-    procedure ListBoxKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure ListBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
-  public
-    Choice, First, Second, FS: string;
+  private
+    StoredChoice, StoredFirst, StoredSecond: string;
+    FS: string;
+    function SplitActiveRow(var aFirst, aSecond: string): Boolean;
     procedure DeleteSelected;
-    procedure SaveChoices;
+    procedure UpdateButtons;
+    function IsChanged: Boolean;
+    procedure SaveIfChanged;
     function CreateXMLConfig: TXMLConfig;
   end;
 
@@ -102,174 +111,19 @@ uses
 
 function ShowConDefDlg: string;
 var
-  DialogResult: Integer;
   CondForm: TCondForm;
 begin
   Result := '';
   CondForm := TCondForm.Create(nil);
   try
     CondForm.ActiveControl := CondForm.ListBox;
-    DialogResult := CondForm.ShowModal;
-    if DialogResult <> mrOK then
+    if CondForm.ShowModal <> mrOK then
       Result := ''
     else
       Result := CondForm.FS;
   finally
     CondForm.Free;
   end
-end;
-
-procedure TCondForm.AddBtnClick(Sender: TObject);
-begin
-  ListBox.Items.Add(FirstTest.Text+','+SecondTest.Text);
-end;
-
-procedure TCondForm.AddInverseCLICK(Sender: TObject);
-begin
-  ListBox.Items.Add('!'+FirstTest.Text+','+SecondTest.Text);
-end;
-
-procedure TCondForm.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
-end;
-
-procedure TCondForm.CondFormCLOSE(Sender: TObject; var CloseAction: TCloseAction);
-var
-  SChanged: Boolean;
-  i: Integer;
-  procedure SUpdate(var s: string; n: string);
-  begin
-    if s <> n then begin
-      SChanged := True;
-      s := n;
-    end;
-  end;
-begin
-  SChanged := False;
-  with ListBox do begin
-    SUpdate(Choice,Items.CommaText);
-    if ItemIndex >= 0 then begin
-      FS := Items[ItemIndex];
-      i := Pos(',', FS);
-      if i > 0 then begin
-        SUpdate(First, Copy(FS, 1, i-1));
-        SUpdate(Second, Copy(FS, i+1, Length(FS)));
-      end
-    end;
-  end;
-  if SChanged then
-    SaveChoices;
-end;
-
-procedure TCondForm.CondFormCREATE(Sender: TObject);
-var
-  i: Integer;
-  XMLConfig: TXMLConfig;
-begin
-  NewTestGroupBox.Caption := rsCreateNewDefine;
-  Caption := rsConditionalDefines;
-  AddBtn.Caption := lisBtnAdd;
-  AddInverse.Caption := rsAddInverse;
-  RemoveBtn.Caption := lisBtnRemove;
-  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
-  try
-    XMLConfig:=CreateXMLConfig;
-    try
-      Choice := XMLConfig.GetValue('condef/Choice', '"MSWINDOWS,UNIX","MSWINDOWS,ELSE","FPC,NONE","FPC,ELSE","DEBUG,NONE"');
-      First := XMLConfig.GetValue('condef/First', 'MSWINDOWS');
-      Second := XMLConfig.GetValue('condef/Second', 'UNIX');
-    finally
-      XMLConfig.Free;
-    end;
-  except
-    on E: Exception do begin
-      debugln('TCondForm.CondFormCREATE ',E.Message);
-    end;
-  end;
-  with ListBox do begin
-    Items.CommaText := Choice;
-    i := Items.IndexOf(First+','+Second);
-    if i < 0 then begin
-      Items.Add(First+','+Second);
-      ItemIndex := 0;
-    end else
-      ItemIndex := i;
-  end;
-end;
-
-procedure TCondForm.ListBoxDblClick(Sender: TObject);
-begin
-  ModalResult := mrOK;
-end;
-
-procedure TCondForm.RemoveBtnClick(Sender: TObject);
-begin
-  DeleteSelected;
-end;
-
-procedure TCondForm.ListBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  if Key = VK_DELETE then begin
-    DeleteSelected;
-    Key := 0;
-  end;
-end;
-
-procedure TCondForm.FormShow(Sender: TObject);
-begin
-  if SecondTest.Items.Count < 10 then
-    SecondTest.Items.AddStrings(FirstTest.Items);
-end;
-
-procedure TCondForm.DeleteSelected;
-var
-  i: Integer;
-begin
-  with ListBox.Items do
-    for i := Count-1 downto 0 do
-      if ListBox.Selected[i] then
-        Delete(i);
-end;
-
-procedure TCondForm.SaveChoices;
-var
-  XMLConfig: TXMLConfig;
-begin
-  try
-    InvalidateFileStateCache;
-    XMLConfig:=CreateXMLConfig;
-    try
-      XMLConfig.SetValue('condef/Choice', Choice);
-      XMLConfig.SetValue('condef/First', First);
-      XMLConfig.SetValue('condef/Second', Second);
-      XMLConfig.Flush;
-    finally
-      XMLConfig.Free;
-    end;
-  except
-    on E: Exception do begin
-      debugln('TCondForm.SaveChoices ',E.Message);
-    end;
-  end;
-end;
-
-function TCondForm.CreateXMLConfig: TXMLConfig;
-var
-  ConfFileName: String;
-begin
-  Result:=nil;
-  ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/condef.xml');
-  try
-    if (not FileExistsUTF8(ConfFileName)) then
-      Result:=TXMLConfig.CreateClean(ConfFileName)
-    else
-      Result:=TXMLConfig.Create(ConfFileName);
-  except
-    on E: Exception do begin
-      debugln('TCondForm.CreateXMLConfig ',E.Message);
-    end;
-  end;
 end;
 
 function AddConditional(Text: string; IsPascal: Boolean):string;
@@ -370,6 +224,229 @@ begin
       Result := Result + ' */' + LineEnding;
     end;
     Result := Result + Tail;
+  end;
+end;
+
+{ TCondForm }
+
+procedure TCondForm.CondFormCREATE(Sender: TObject);
+var
+  i: Integer;
+  XMLConfig: TXMLConfig;
+begin
+  NewTestGroupBox.Caption := rsCreateNewDefine;
+  Caption := rsConditionalDefines;
+  AddBtn.Caption := lisBtnAdd;
+  AddBtn.LoadGlyphFromLazarusResource('laz_add');
+  AddInverse.Caption := rsAddInverse;
+  AddInverse.LoadGlyphFromLazarusResource('pkg_issues');
+  RemoveBtn.Caption := lisBtnRemove;
+  RemoveBtn.LoadGlyphFromLazarusResource('laz_delete');
+  btnSave.Caption := lisSave;
+  btnSave.LoadGlyphFromStock(idButtonSave);
+  btnOk.Caption := dlgButApply;
+  //if btnSave.Glyph.Empty then
+  //  btnSave.LoadGlyphFromLazarusResource('laz_save');
+  try
+    XMLConfig:=CreateXMLConfig;
+    try
+      StoredChoice := XMLConfig.GetValue('condef/Choice',
+        '"MSWINDOWS,UNIX","MSWINDOWS,ELSE","FPC,NONE","FPC,ELSE","DEBUG,NONE"');
+      StoredFirst := XMLConfig.GetValue('condef/First', 'MSWINDOWS');
+      StoredSecond := XMLConfig.GetValue('condef/Second', 'UNIX');
+    finally
+      XMLConfig.Free;
+    end;
+  except
+    on E: Exception do begin
+      debugln('TCondForm.CondFormCREATE ',E.Message);
+    end;
+  end;
+  with ListBox do begin
+    Items.CommaText := StoredChoice;
+    i := Items.IndexOf(StoredFirst+','+StoredSecond);
+    if i < 0 then begin
+      Items.Add(StoredFirst+','+StoredSecond);
+      ItemIndex := 0;
+    end else
+      ItemIndex := i;
+  end;
+end;
+
+procedure TCondForm.FormShow(Sender: TObject);
+begin
+  if SecondTest.Items.Count < 10 then
+    SecondTest.Items.AddStrings(FirstTest.Items);
+  ListBoxClick(Nil);
+end;
+
+function TCondForm.SplitActiveRow(var aFirst, aSecond: string): Boolean;
+var
+  i: integer;
+  Line: string;
+begin
+  Result := False;
+  aFirst := '';
+  aSecond := '';
+  with ListBox do
+    if ItemIndex >= 0 then begin
+      Line := Items[ItemIndex];
+      i := Pos(',', Line);
+      if i > 0 then begin
+        Result := True;
+        aFirst := Copy(Line, 1, i-1);
+        aSecond := Copy(Line, i+1, Length(Line));
+      end
+    end;
+end;
+
+procedure TCondForm.AddBtnClick(Sender: TObject);
+begin
+  ListBox.Items.Add(FirstTest.Text+','+SecondTest.Text);
+  ListBox.ItemIndex := ListBox.Items.Count-1;
+  UpdateButtons;
+end;
+
+procedure TCondForm.AddInverseCLICK(Sender: TObject);
+begin
+  ListBox.Items.Add('!'+FirstTest.Text+','+SecondTest.Text);
+  ListBox.ItemIndex := ListBox.Items.Count-1;
+  UpdateButtons;
+end;
+
+procedure TCondForm.TestEditChange(Sender: TObject);
+begin
+  UpdateButtons;
+end;
+
+procedure TCondForm.btnSaveClick(Sender: TObject);
+begin
+  SaveIfChanged;
+  Close;
+end;
+
+procedure TCondForm.OKButtonClick(Sender: TObject);
+begin
+  SaveIfChanged;
+  with ListBox do
+    FS := Items[ItemIndex];  // Return selected row to caller.
+end;
+
+procedure TCondForm.HelpButtonClick(Sender: TObject);
+begin
+  LazarusHelp.ShowHelpForIDEControl(Self);
+end;
+
+procedure TCondForm.ListBoxClick(Sender: TObject);
+var
+  ff, ss: string;
+begin
+  if SplitActiveRow(ff, ss) then begin
+    FirstTest.Text := ff;
+    SecondTest.Text := ss;
+    UpdateButtons;
+  end;
+end;
+
+procedure TCondForm.ListBoxDblClick(Sender: TObject);
+begin
+  ModalResult := mrOK;
+end;
+
+procedure TCondForm.RemoveBtnClick(Sender: TObject);
+begin
+  DeleteSelected;
+end;
+
+procedure TCondForm.ListBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_DELETE then begin
+    DeleteSelected;
+    Key := 0;
+  end;
+end;
+
+procedure TCondForm.DeleteSelected;
+var
+  i: Integer;
+begin
+  with ListBox.Items do
+    for i := Count-1 downto 0 do
+      if ListBox.Selected[i] then begin
+        Delete(i);
+        UpdateButtons;
+      end;
+end;
+
+procedure TCondForm.UpdateButtons;
+var
+  s: string;
+begin
+  s := FirstTest.Text+','+SecondTest.Text;
+  AddBtn.Enabled := ListBox.Items.IndexOf(s) = -1;
+  s := '!'+s;
+  AddInverse.Enabled := not AnsiStartsStr('!', FirstTest.Text)
+                        and (ListBox.Items.IndexOf(s) = -1);
+  RemoveBtn.Enabled := ListBox.SelCount > 0;
+  btnSave.Enabled := IsChanged;
+  btnOk.Enabled := ListBox.SelCount > 0;
+end;
+
+function TCondForm.IsChanged: Boolean;
+var
+  ff, ss: string;
+begin
+  if StoredChoice <> ListBox.Items.CommaText then
+    Exit(True);
+  if SplitActiveRow(ff, ss) then begin
+    if StoredFirst <> ff then
+      Exit(True);
+    if StoredSecond <> ss then
+      Exit(True);
+  end;
+  Result := False;
+end;
+
+procedure TCondForm.SaveIfChanged;
+var
+  ff, ss: string;
+  XMLConfig: TXMLConfig;
+begin
+  if btnSave.Enabled then        // Is enabled only if there are changes
+    try
+      SplitActiveRow(ff, ss);
+      InvalidateFileStateCache;
+      XMLConfig:=CreateXMLConfig;
+      try
+        XMLConfig.SetValue('condef/Choice', ListBox.Items.CommaText);
+        XMLConfig.SetValue('condef/First', ff);
+        XMLConfig.SetValue('condef/Second', ss);
+        XMLConfig.Flush;
+      finally
+        XMLConfig.Free;
+      end;
+    except
+      on E: Exception do begin
+        debugln('TCondForm.SaveIfChanged ',E.Message);
+      end;
+    end;
+end;
+
+function TCondForm.CreateXMLConfig: TXMLConfig;
+var
+  ConfFileName: String;
+begin
+  Result:=nil;
+  ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/condef.xml');
+  try
+    if (not FileExistsUTF8(ConfFileName)) then
+      Result:=TXMLConfig.CreateClean(ConfFileName)
+    else
+      Result:=TXMLConfig.Create(ConfFileName);
+  except
+    on E: Exception do begin
+      debugln('TCondForm.CreateXMLConfig ',E.Message);
+    end;
   end;
 end;
 
