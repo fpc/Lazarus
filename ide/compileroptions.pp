@@ -4171,12 +4171,13 @@ function TCompilationToolOptions.Execute(const WorkingDir, ToolTitle: string
   ): TModalResult;
 var
   ProgramFilename, Params: string;
+  Filename: String;
+  CurCommand: String;
   {$IFDEF EnableNewExtTools}
+  Tool: TAbstractExternalTool;
   {$ELSE}
   ExtTool: TIDEExternalToolOptions;
   {$ENDIF}
-  Filename: String;
-  CurCommand: String;
 begin
   CurCommand:=GetParsedCommand;
   if CurCommand='' then begin
@@ -4193,6 +4194,12 @@ begin
     if Filename<>'' then ProgramFilename:=Filename;
   end;
 
+  {$IFDEF EnableNewExtTools}
+  Tool:=ExternalToolList.Add(ToolTitle);
+  Tool.Process.Executable:=ProgramFilename;
+  Tool.Process.CurrentDirectory:=WorkingDir;
+  Tool.Process.Parameters;
+  {$ELSE}
   ExtTool:=TIDEExternalToolOptions.Create;
   try
     ExtTool.Filename:=ProgramFilename;
@@ -4210,6 +4217,7 @@ begin
     // clean up
     ExtTool.Free;
   end;
+  {$ENDIF}
 end;
 
 procedure TCompilationToolOptions.IncreaseChangeStamp;

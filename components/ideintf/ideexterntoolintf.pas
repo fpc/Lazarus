@@ -326,6 +326,7 @@ type
     property ExitStatus: integer read FExitStatus write FExitStatus;
     property MinUrgency: TMessageLineUrgency read FMinUrgency write FMinUrgency default DefaultETViewMinUrgency; // hide messages below this
     property MessageLineClass: TMessageLineClass read FMessageLineClass;
+    function HasFinished: boolean; virtual; // not running, no pending messages
   public
     // needs critical section
     property PendingLines: TMessageLines read FPendingLines write FPendingLines;
@@ -353,8 +354,9 @@ type
                                           FirstNewMsgLine: integer) of object;
 
   TExternalToolHandler = (
+    ethNewOutput,
     ethStopped,
-    ethNewOutput
+    ethAllViewsUpdated
     );
 
   TIDEExternalTools = class;
@@ -367,6 +369,7 @@ type
   TAbstractExternalTool = class(TComponent)
   private
     FData: TObject;
+    FEnvironmentOverrides: TStrings;
     FEstimatedLoad: int64;
     FExitStatus: integer;
     FFreeData: boolean;
@@ -377,9 +380,12 @@ type
     FTitle: string;
     FTools: TIDEExternalTools;
     FViews: TFPList; // list of TExtToolView
+    function GetCmdLineParams: string;
     function GetParserCount: integer;
     function GetParsers(Index: integer): TExtToolParser;
     function GetViews(Index: integer): TExtToolView;
+    procedure SetCmdLineParams(aParams: string);
+    procedure SetEnvironmentOverrides(AValue: TStrings);
     procedure SetGroup(AValue: TExternalToolGroup);
     procedure SetTitle(const AValue: string);
     procedure AddHandler(HandlerType: TExternalToolHandler;
@@ -417,18 +423,25 @@ type
 
     // handlers
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
-    procedure AddHandlerOnStopped(const OnStopped: TNotifyEvent;
-                                  AsFirst: boolean = true);  // called in main thread
-    procedure RemoveHandlerOnStopped(const OnStopped: TNotifyEvent);
     procedure AddHandlerOnNewOutput(const OnNewOutput: TExternalToolNewOutputEvent;
                                     AsFirst: boolean = true); // called in main thread
     procedure RemoveHandlerOnNewOutput(const OnNewOutput: TExternalToolNewOutputEvent);
+    procedure AddHandlerOnStopped(const OnStopped: TNotifyEvent;
+                                  AsFirst: boolean = true);  // called in main thread
+    procedure RemoveHandlerOnStopped(const OnStopped: TNotifyEvent);
+    procedure AddHandlerOnAllViewsUpdated(const OnViewsUpdated: TNotifyEvent;
+                                  AsFirst: boolean = true);  // called in main thread
+    procedure RemoveHandlerOnAllViewsUpdated(const OnViewsUpdated: TNotifyEvent);
 
     // process
     property Process: TProcessUTF8 read FProcess;
+    property EnvironmentOverrides: TStrings read FEnvironmentOverrides
+      write SetEnvironmentOverrides; // if not empty, then this and IDE's environemnt will be merged and replace Process.Environment
+    property CmdLineParams: string read GetCmdLineParams write SetCmdLineParams;
     property Stage: TExternalToolStage read FStage;
     procedure Execute; virtual; abstract;
     procedure Terminate; virtual; abstract;
+    procedure WaitForExit; virtual; abstract;
     property Terminated: boolean read FTerminated;
     property ExitStatus: integer read FExitStatus write FExitStatus;
     property ErrorMessage: string read FErrorMessage write FErrorMessage; // error executing tool
@@ -452,11 +465,12 @@ type
     // viewers
     function ViewCount: integer;
     property Views[Index: integer]: TExtToolView read GetViews;
-    function AddView(View: TExtToolView): integer; // will *not* be freed on destroy
-    procedure DeleteView(View: TExtToolView); // disconnect and free
-    procedure RemoveView(View: TExtToolView); // disconnect without free
-    function IndexOfView(View: TExtToolView): integer; // needs Enter/LeaveCriticalSection
-    procedure ClearViews(Delete: boolean = false);
+    function AddView(View: TExtToolView): integer; // (main thread) will *not* be freed on destroy
+    procedure DeleteView(View: TExtToolView); // (main thread) disconnect and free
+    procedure RemoveView(View: TExtToolView); // (main thread) disconnect without free
+    function IndexOfView(View: TExtToolView): integer;
+    procedure ClearViews(Delete: boolean = false); // (main thread)
+    function FindUnfinishedView: TExtToolView;
 
     // dependencies
     procedure AddExecuteBefore(Tool: TAbstractExternalTool); virtual; abstract;
@@ -724,6 +738,11 @@ begin
   Result:=FParsers.Count;
 end;
 
+function TAbstractExternalTool.GetCmdLineParams: string;
+begin
+
+end;
+
 function TAbstractExternalTool.GetParsers(Index: integer): TExtToolParser;
 begin
   Result:=TExtToolParser(FParsers[Index]);
@@ -732,6 +751,26 @@ end;
 function TAbstractExternalTool.GetViews(Index: integer): TExtToolView;
 begin
   Result:=TExtToolView(FViews[Index]);
+end;
+
+procedure TAbstractExternalTool.SetCmdLineParams(aParams: string);
+var
+  sl: TStringList;
+begin
+  sl:=TStringList.Create;
+  try
+    SplitCmdLineParams(aParams,sl,PathDelim<>'\');
+    Process.Parameters:=sl;
+  finally
+    sl.Free;
+  end;
+end;
+
+procedure TAbstractExternalTool.SetEnvironmentOverrides(AValue: TStrings);
+begin
+  if (FEnvironmentOverrides=AValue)
+  or (FEnvironmentOverrides.Equals(AValue)) then Exit;
+  FEnvironmentOverrides.Assign(AValue);
 end;
 
 procedure TAbstractExternalTool.SetGroup(AValue: TExternalToolGroup);
@@ -797,6 +836,7 @@ begin
   FViews:=TFPList.Create;
   FStage:=etsInit;
   FEstimatedLoad:=1;
+  FEnvironmentOverrides:=TStringList.Create;
 end;
 
 destructor TAbstractExternalTool.Destroy;
@@ -814,6 +854,7 @@ begin
     FWorkerMessages.Clear;
     FreeAndNil(FParsers);
     FreeAndNil(FViews);
+    FreeAndNil(FEnvironmentOverrides);
     inherited Destroy;
   finally
     LeaveCriticalsection;
@@ -862,6 +903,18 @@ procedure TAbstractExternalTool.RemoveHandlerOnStopped(
   const OnStopped: TNotifyEvent);
 begin
   RemoveHandler(ethStopped,TMethod(OnStopped));
+end;
+
+procedure TAbstractExternalTool.AddHandlerOnAllViewsUpdated(
+  const OnViewsUpdated: TNotifyEvent; AsFirst: boolean);
+begin
+  AddHandler(ethAllViewsUpdated,TMethod(OnViewsUpdated),AsFirst);
+end;
+
+procedure TAbstractExternalTool.RemoveHandlerOnAllViewsUpdated(
+  const OnViewsUpdated: TNotifyEvent);
+begin
+  RemoveHandler(ethAllViewsUpdated,TMethod(OnViewsUpdated));
 end;
 
 procedure TAbstractExternalTool.AddHandlerOnNewOutput(
@@ -991,6 +1044,17 @@ begin
   finally
     LeaveCriticalSection;
   end;
+end;
+
+function TAbstractExternalTool.FindUnfinishedView: TExtToolView;
+var
+  i: Integer;
+begin
+  for i:=0 to ViewCount-1 do begin
+    Result:=Views[i];
+    if not Result.HasFinished then exit;
+  end;
+  Result:=nil;
 end;
 
 { TExtToolParser }
@@ -1886,6 +1950,19 @@ begin
   try
     FLines.ConsistencyCheck;
     FPendingLines.ConsistencyCheck;
+  finally
+    LeaveCriticalSection;
+  end;
+end;
+
+function TExtToolView.HasFinished: boolean;
+begin
+  Result:=false;
+  EnterCriticalSection;
+  try
+    if Running then exit;
+    if PendingLines.Count>0 then exit;
+    Result:=true;
   finally
     LeaveCriticalSection;
   end;

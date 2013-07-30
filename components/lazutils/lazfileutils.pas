@@ -120,6 +120,7 @@ function GetDarwinSystemFilename(Filename: string): string;
 
 procedure SplitCmdLineParams(const Params: string; ParamList: TStrings;
                              ReadBackslash: boolean = false);
+function MergeCmdLineParams(ParamList: TStrings): string;
 
 type
   TInvalidateFileStateCacheEvent = procedure(const Filename: string);
@@ -1077,6 +1078,61 @@ begin
   end;
 end;
 
+function MergeCmdLineParams(ParamList: TStrings): string;
+var
+  i: Integer;
+  HasSpace: Boolean;
+  HasApos: Boolean;
+  HasQuot: Boolean;
+  Param: String;
+  j: Integer;
+begin
+  Result:='';
+  if ParamList=nil then exit;
+  for i:=0 to ParamList.Count-1 do
+  begin
+    Param:=ParamList[i];
+    if Param='' then
+      Param:='""'
+    else begin
+
+    end;
+
+    HasSpace:=false;
+    HasApos:=false;
+    HasQuot:=false;
+    for j:=1 to length(Param) do begin
+      case Param[i] of
+      ' ',#9,#10,#13: HasSpace:=true;
+      '''': HasApos:=true;
+      '"': HasQuot:=true;
+      end;
+    end;
+    if HasQuot then begin
+      if HasApos then begin
+
+      end else begin
+        // quot, no apos
+
+      end;
+    end else begin
+      // no quot
+      if HasApos then begin
+        // apos, no quot
+
+      end else begin
+        if HasSpace or (Param='') then begin
+          // no quot, no apos, has space -> quote
+          Param:=''''+Param+'''';
+        end else begin
+          // simple parameter => pass unaltered
+        end;
+      end;
+    end;
+    if i>0 then Result+=' ';
+    Result+=Param;
+  end;
+end;
 
 {
   Returns
