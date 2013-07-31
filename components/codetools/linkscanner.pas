@@ -730,6 +730,8 @@ var
   PSourceLinkMemManager: TPSourceLinkMemManager;
   PSourceChangeStepMemManager: TPSourceChangeStepMemManager;
 
+function StrToCompilerMode(const aName: string): TCompilerMode;
+
 procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TFPList);
 function IndexOfCodeInUniqueList(ACode: Pointer;
                                  UniqueSortedCodeList: TList): integer;
@@ -829,6 +831,14 @@ end;
 function dbgs(s: TLSDirectiveKind): string;
 begin
   WriteStr(Result,s);
+end;
+
+function StrToCompilerMode(const aName: string): TCompilerMode;
+begin
+  for Result:=low(Result) to high(Result) do
+    if SysUtils.CompareText(aName,CompilerModeNames[Result])=0 then
+      exit;
+  Result:=cmFPC;
 end;
 
 procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TFPList);
