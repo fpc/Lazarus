@@ -62,12 +62,15 @@ type
     // Strings with the contents of files
     FMeta, FSettings, FStyles, FContent, FMimetype: string;
     FMetaInfManifest: string;
+    // helper routines
+    function StyleNameToODTStyleName(AData: TvVectorialDocument; AStyleIndex: Integer; AToContentAutoStyle: Boolean): string;
+    function FloatToODTText(AFloat: Double): string;
     // Routines to write those files
     procedure WriteMimetype;
     procedure WriteMetaInfManifest;
     procedure WriteMeta;
     procedure WriteSettings;
-    procedure WriteStyles;
+    procedure WriteStyles(AData: TvVectorialDocument);
     procedure WriteDocument(AData: TvVectorialDocument);
     procedure WritePage(ACurPage: TvTextPageSequence);
     // Routines to write parts of those files
@@ -147,6 +150,27 @@ const
 
   FLOAT_MILIMETERS_PER_PIXEL = 0.2822; // DPI 90 = 1 / 90 inches per pixel
   FLOAT_PIXELS_PER_MILIMETER = 3.5433; // DPI 90 = 1 / 90 inches per pixel
+
+function TvODTVectorialWriter.StyleNameToODTStyleName(
+  AData: TvVectorialDocument; AStyleIndex: Integer; AToContentAutoStyle: Boolean): string;
+var
+  lStyle: TvStyle;
+begin
+  lStyle := AData.GetStyle(AStyleIndex);
+  if AToContentAutoStyle then
+  begin
+    Result := 'P' + IntToStr(AStyleIndex);
+  end
+  else
+  begin
+    Result := StringReplace(lStyle.Name, ' ', '_', [rfReplaceAll, rfIgnoreCase]);
+  end;
+end;
+
+function TvODTVectorialWriter.FloatToODTText(AFloat: Double): string;
+begin
+  Result := FloatToStr(AFloat, FPointSeparator);
+end;
 
 procedure TvODTVectorialWriter.WriteMimetype;
 begin
@@ -308,45 +332,53 @@ begin
    '</office:document-settings>';
 end;
 
-procedure TvODTVectorialWriter.WriteStyles;
+procedure TvODTVectorialWriter.WriteStyles(AData: TvVectorialDocument);
+var
+  i: Integer;
+  CurStyle: TvStyle;
+  lTextPropsStr, lParagraphPropsStr, lCurStyleTmpStr: string;
 begin
   FStyles :=
    XML_HEADER + LineEnding +
    '<office:document-styles xmlns:office="' + SCHEMAS_XMLNS_OFFICE + '"' +
-     ' xmlns:fo="' + SCHEMAS_XMLNS_FO + '"' +
      ' xmlns:style="' + SCHEMAS_XMLNS_STYLE + '"' +
-     ' xmlns:svg="' + SCHEMAS_XMLNS_SVG + '"' +
-     ' xmlns:table="' + SCHEMAS_XMLNS_TABLE + '"' +
      ' xmlns:text="' + SCHEMAS_XMLNS_TEXT + '"' +
-     ' xmlns:v="' + SCHEMAS_XMLNS_V + '"' +
-     '>' + LineEnding +
-{
-xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0"
-xmlns:xlink="http://www.w3.org/1999/xlink"
-xmlns:dc="http://purl.org/dc/elements/1.1/"
-xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0"
-xmlns:number="urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0"
-xmlns:chart="urn:oasis:names:tc:opendocument:xmlns:chart:1.0"
-xmlns:dr3d="urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0"
-xmlns:math="http://www.w3.org/1998/Math/MathML"
-xmlns:form="urn:oasis:names:tc:opendocument:xmlns:form:1.0"
-xmlns:script="urn:oasis:names:tc:opendocument:xmlns:script:1.0"
-xmlns:ooo="http://openoffice.org/2004/office"
-xmlns:ooow="http://openoffice.org/2004/writer"
-xmlns:oooc="http://openoffice.org/2004/calc"
-xmlns:dom="http://www.w3.org/2001/xml-events"
-xmlns:rpt="http://openoffice.org/2005/report"
-xmlns:of="urn:oasis:names:tc:opendocument:xmlns:of:1.2"
-xmlns:xhtml="http://www.w3.org/1999/xhtml"
-xmlns:grddl="http://www.w3.org/2003/g/data-view#"
-xmlns:officeooo="http://openoffice.org/2009/office"
-xmlns:tableooo="http://openoffice.org/2009/table"
-xmlns:drawooo="http://openoffice.org/2010/draw"
-xmlns:calcext="urn:org:documentfoundation:names:experimental:calc:xmlns:calcext:1.0"
-xmlns:css3t="http://www.w3.org/TR/css3-text/" office:version="1.2">}
+     ' xmlns:table="' + SCHEMAS_XMLNS_TABLE + '"' +
+     ' xmlns:draw="' + SCHEMAS_XMLNS_DRAW + '"' +
+     ' xmlns:fo="' + SCHEMAS_XMLNS_FO + '"' +
+     ' xmlns:xlink="' + SCHEMAS_XMLNS_XLINK + '"' +
+     ' xmlns:dc="' + SCHEMAS_XMLNS_DC + '"' +
+     ' xmlns:meta="' + SCHEMAS_XMLNS_META + '"' +
+     ' xmlns:number="' + SCHEMAS_XMLNS_NUMBER + '"' +
+     ' xmlns:svg="' + SCHEMAS_XMLNS_SVG + '"' +
+     ' xmlns:chart="' + SCHEMAS_XMLNS_CHART + '"' +
+     ' xmlns:dr3d="' + SCHEMAS_XMLNS_DR3D + '"' +
+     ' xmlns:math="' + SCHEMAS_XMLNS_MATH + '"' +
+     ' xmlns:form="' + SCHEMAS_XMLNS_FORM + '"' +
+     ' xmlns:script="' + SCHEMAS_XMLNS_SCRIPT + '"' +
+     ' xmlns:ooo="' + SCHEMAS_XMLNS_OOO + '"' +
+     ' xmlns:ooow="' + SCHEMAS_XMLNS_OOOW + '"' +
+     ' xmlns:oooc="' + SCHEMAS_XMLNS_OOOC + '"' +
+     ' xmlns:dom="' + SCHEMAS_XMLNS_DOM + '"' +
+     ' xmlns:rpt="' + SCHEMAS_XMLNS_RPT + '"' +
+     ' xmlns:of="' + SCHEMAS_XMLNS_OF + '"' +
+     ' xmlns:xhtml="' + SCHEMAS_XMLNS_XHTML + '"' +
+     ' xmlns:grddl="' + SCHEMAS_XMLNS_GRDDL + '"' +
+     ' xmlns:officeooo="' + SCHEMAS_XMLNS_OFFICEOOO + '"' +
+     ' xmlns:tableooo="' + SCHEMAS_XMLNS_TABLEOOO + '"' +
+     ' xmlns:drawooo="' + SCHEMAS_XMLNS_DRAWOOO + '"' +
+     ' xmlns:calcext="' + SCHEMAS_XMLNS_CALCEXT + '"' +
+     ' xmlns:css3t="' + SCHEMAS_XMLNS_CSS3T + '"' +
+     ' office:version="1.2">' + LineEnding;
+  FStyles := FStyles +
    '<office:font-face-decls>' + LineEnding +
-   '  <style:font-face style:name="Arial" svg:font-family="Arial" />' + LineEnding +
+   '  <style:font-face style:name="Mangal1" svg:font-family="Mangal" />' + LineEnding +
+   '  <style:font-face style:name="OpenSymbol" svg:font-family="OpenSymbol" />' + LineEnding +
    '  <style:font-face style:name="Times New Roman" svg:font-family="Times New Roman" style:font-family-generic="roman" style:font-pitch="variable" />' + LineEnding +
+   '  <style:font-face style:name="Arial" svg:font-family="Arial" />' + LineEnding +
+   '  <style:font-face style:name="Mangal" svg:font-family="Mangal" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
+   '  <style:font-face style:name="Microsoft YaHei" svg:font-family="''Microsoft YaHei''" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
+   '  <style:font-face style:name="SimSun" svg:font-family="SimSun" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
    '</office:font-face-decls>' + LineEnding +
 
    // up to here done +/-
@@ -374,10 +406,11 @@ xmlns:css3t="http://www.w3.org/TR/css3-text/" office:version="1.2">}
    '    <style:footer />' + LineEnding +
    '    <style:footer-left style:display="false" />' + LineEnding +
    '  </style:master-page>' + LineEnding +
-   '</office:master-styles>' + LineEnding +
-   '</office:document-styles>';
-{
-  <office:styles>
+   '</office:master-styles>' + LineEnding;
+
+  FStyles := FStyles +
+   '<office:styles>' + LineEnding;
+  {
     <style:default-style style:family="graphic">
       <style:graphic-properties svg:stroke-color="#3465af" draw:fill-color="#729fcf" fo:wrap-option="no-wrap" draw:shadow-offset-x="0.3cm" draw:shadow-offset-y="0.3cm" draw:start-line-spacing-horizontal="0.283cm" draw:start-line-spacing-vertical="0.283cm" draw:end-line-spacing-horizontal="0.283cm" draw:end-line-spacing-vertical="0.283cm" style:flow-with-text="false" />
       <style:paragraph-properties style:text-autospace="ideograph-alpha" style:line-break="strict" style:writing-mode="lr-tb" style:font-independent-line-spacing="false">
@@ -395,13 +428,53 @@ xmlns:css3t="http://www.w3.org/TR/css3-text/" office:version="1.2">}
     <style:default-style style:family="table-row">
       <style:table-row-properties fo:keep-together="auto" />
     </style:default-style>
-    <style:style style:name="Standard" style:family="paragraph" style:class="text" />
+    }
+
+  FStyles := FStyles +
+   '  <style:style style:name="Standard" style:family="paragraph" style:class="text" />' + LineEnding;
+
+  for i := 0 to AData.GetStyleCount() - 1 do
+  begin
+    lTextPropsStr := '';
+    lParagraphPropsStr := '';
+    CurStyle := AData.GetStyle(i);
+
+    if spbfFontSize in CurStyle.SetElements then
+    begin
+      lTextPropsStr := lTextPropsStr + ' fo:font-size="'+IntToStr(CurStyle.Font.Size)+'pt" ';
+      lTextPropsStr := lTextPropsStr + ' fo:font-size-asian="'+IntToStr(CurStyle.Font.Size)+'pt" ';
+      lTextPropsStr := lTextPropsStr + ' fo:font-size-complex="'+IntToStr(CurStyle.Font.Size)+'pt" ';
+    end;
+    if spbfFontName in CurStyle.SetElements then
+    begin
+      lTextPropsStr := lTextPropsStr + ' style:font-name="'+CurStyle.Font.Name+'" ';
+      lTextPropsStr := lTextPropsStr + ' style:font-name-asian="Microsoft YaHei" ';
+      lTextPropsStr := lTextPropsStr + ' style:font-name-complex="Mangal" ';
+    end;
+    if (spbfFontBold in CurStyle.SetElements) and CurStyle.Font.Bold then
+    begin
+      lTextPropsStr := lTextPropsStr + ' fo:font-weight="bold" ';
+      lTextPropsStr := lTextPropsStr + ' style:font-weight-asian="bold" ';
+      lTextPropsStr := lTextPropsStr + ' style:font-weight-complex="bold" ';
+    end;
+    if (spbfFontItalic in CurStyle.SetElements) and CurStyle.Font.Italic then
+    begin
+      lTextPropsStr := lTextPropsStr + ' fo:font-style="italic" ';
+      lTextPropsStr := lTextPropsStr + ' style:font-style-asian="italic" ';
+      lTextPropsStr := lTextPropsStr + ' style:font-style-complex="italic" ';
+    end;
+
+    lCurStyleTmpStr := // tmp string to help see the text in the debugger
+     '  <style:style style:name="'+StyleNameToODTStyleName(AData, i, False)+'" style:display-name="'+ CurStyle.Name +'" style:family="paragraph" style:parent-style-name="Standard" style:class="text">' + LineEnding +
+     '    <style:paragraph-properties fo:margin-top="'+FloatToODTText(CurStyle.MarginTop)+'mm" fo:margin-bottom="'+FloatToODTText(CurStyle.MarginTop)+'mm" style:contextual-spacing="false" />' + LineEnding +
+     '    <style:text-properties '+lTextPropsStr+' />' + LineEnding +
+     '  </style:style>' + LineEnding;
+    FStyles := FStyles + lCurStyleTmpStr;
+
+{
     <style:style style:name="Heading" style:family="paragraph" style:parent-style-name="Standard" style:next-style-name="Text_20_body" style:class="text">
       <style:paragraph-properties fo:margin-top="0.423cm" fo:margin-bottom="0.212cm" style:contextual-spacing="false" fo:keep-with-next="always" />
       <style:text-properties style:font-name="Arial" fo:font-size="14pt" style:font-name-asian="Microsoft YaHei" style:font-size-asian="14pt" style:font-name-complex="Mangal" style:font-size-complex="14pt" />
-    </style:style>
-    <style:style style:name="Text_20_body" style:display-name="Text body" style:family="paragraph" style:parent-style-name="Standard" style:class="text">
-      <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.212cm" style:contextual-spacing="false" />
     </style:style>
     <style:style style:name="List" style:family="paragraph" style:parent-style-name="Text_20_body" style:class="list">
       <style:text-properties style:font-size-asian="12pt" style:font-name-complex="Mangal1" />
@@ -426,6 +499,10 @@ xmlns:css3t="http://www.w3.org/TR/css3-text/" office:version="1.2">}
     <style:style style:name="Internet_20_link" style:display-name="Internet link" style:family="text">
       <style:text-properties fo:color="#000080" fo:language="zxx" fo:country="none" style:text-underline-style="solid" style:text-underline-width="auto" style:text-underline-color="font-color" style:language-asian="zxx" style:country-asian="none" style:language-complex="zxx" style:country-complex="none" />
     </style:style>
+}
+  end;
+
+{
     <style:style style:name="Bullet_20_Symbols" style:display-name="Bullet Symbols" style:family="text">
       <style:text-properties style:font-name="OpenSymbol" style:font-name-asian="OpenSymbol" style:font-name-complex="OpenSymbol" />
     </style:style>
@@ -497,8 +574,9 @@ xmlns:css3t="http://www.w3.org/TR/css3-text/" office:version="1.2">}
   <office:master-styles>
     <style:master-page style:name="Standard" style:page-layout-name="Mpm1" />
   </office:master-styles>
-</office:document-styles>
 }
+  FStyles := FStyles +
+   '</office:document-styles>';
 end;
 
 procedure TvODTVectorialWriter.WriteDocument(AData: TvVectorialDocument);
@@ -751,7 +829,7 @@ begin
   WriteMetaInfManifest();
   WriteMeta();
   WriteSettings();
-  WriteStyles();
+  WriteStyles(AData);
   WriteDocument(AData);
 
   { Write the data to streams }

@@ -5016,23 +5016,22 @@ procedure TvVectorialDocument.AddStandardTextDocumentStyles;
 var
   lCurStyle: TvStyle;
 begin
+  lCurStyle := AddStyle();
   lCurStyle.Name := 'Text Body';
   lCurStyle.Font.Size := 12;
   lCurStyle.Font.Name := 'Times New Roman';
+  lCurStyle.SetElements := [spbfFontSize, spbfFontName];
   lCurStyle.MarginTop := 0;
   lCurStyle.MarginBottom := 2.12;
-  lCurStyle.SetElements := [spbfFontSize, spbfFontName];
 
   lCurStyle := AddStyle();
   lCurStyle.Name := 'Heading 1';
   lCurStyle.Font.Size := 16;
   lCurStyle.Font.Name := 'Arial';
   lCurStyle.Font.Bold := True;
-  lCurStyle.MarginTop := 4.23;
-  lCurStyle.MarginBottom := 2.12;
-  lCurStyle.MarginTop := 4.23;
-  lCurStyle.MarginBottom := 2.12;
   lCurStyle.SetElements := [spbfFontSize, spbfFontName, spbfFontBold, spbfFontItalic];
+  lCurStyle.MarginTop := 4.23;
+  lCurStyle.MarginBottom := 2.12;
 
   lCurStyle := AddStyle();
   lCurStyle.Name := 'Heading 2';
@@ -5041,6 +5040,8 @@ begin
   lCurStyle.Font.Bold := True;
   lCurStyle.Font.Italic := True;
   lCurStyle.SetElements := [spbfFontSize, spbfFontName, spbfFontBold, spbfFontItalic];
+  lCurStyle.MarginTop := 4.23;
+  lCurStyle.MarginBottom := 2.12;
 end;
 
 function TvVectorialDocument.GetStyleCount: Integer;
