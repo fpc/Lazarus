@@ -2,9 +2,9 @@ unit LazLoggerBase;
 {$mode objfpc}{$H+}
 
 (*
-  - All globas variables, initialization and finalization uses TObject instead
+  - All global variables, initialization and finalization use TObject instead
     of TLazLogger.
-    This means, using the unit, without calling any of the functions, will not
+    This means: using the unit (without calling any of the functions) will not
     make any reference to the classes, and they should be smart-linked away.
 *)
 
@@ -16,7 +16,7 @@ uses
 type
 
   TLazLoggerLogGroupFlag =
-  ( lgfAddedByParamParser,        // Not added via Register. This is a placeholder for the enabled-state given by the user, via cmd-line
+  ( lgfAddedByParamParser,        // Not added via Register. This is a placeholder for the enabled-state given by the user, via command line
     lgfNoDefaultEnabledSpecified  // Registered without default
 
   );

@@ -111,9 +111,10 @@ type
     // A param on the commandline, that may contain the name (if not already set)
     // example/default: --debug-log=
     property  ParamForLogFileName: String read FParamForLogFileName write SetParamForLogFileName;
-    // Environment to specify log file name (* replaced by param(0))
+    // Environment variable used to specify log file name 
+    // * is replaced by param(0) - the application name without extension
     // example/default: *_debuglog
-    property  EnvironmentForLogFileName: String read FEnvironmentForLogFileName write SetEnvironmentForLogFileName; // "*" will be replaced by appname
+    property  EnvironmentForLogFileName: String read FEnvironmentForLogFileName write SetEnvironmentForLogFileName; 
 
     property  OnDebugLn: TLazLoggerWriteEvent read FOnDebugLn write FOnDebugLn;
     property  OnDbgOut:  TLazLoggerWriteEvent read FOnDbgOut write FOnDbgOut;
