@@ -530,9 +530,11 @@ type
                           UnitLinkListValid: boolean; var UnitLinkList: string;
                           Owner: TObject): TDefineTemplate; deprecated;
     function CreateFPCCommandLineDefines(const Name, CmdLine: string;
-                                         RecursiveDefines: boolean;
-                                         Owner: TObject;
-                                         AlwaysCreate: boolean = false): TDefineTemplate;
+                                 RecursiveDefines: boolean;
+                                 Owner: TObject;
+                                 AlwaysCreate: boolean = false;
+                                 AddPaths: boolean = false
+                                 ): TDefineTemplate;
     // Lazarus templates
     function CreateLazarusSrcTemplate(
                           const LazarusSrcDir, WidgetType, ExtraOptions: string;
@@ -1925,11 +1927,11 @@ var
     IfTargetOSIsNotSrcOS.AddChild(RTLSrcOSDir);
     RTLSrcOSDir.AddChild(TDefineTemplate.Create('Include Path',
       'include path',
-      ExternalMacroStart+'IncPath',IncPathMacro+';inc',
+      IncludePathMacroName,IncPathMacro+';inc',
       da_Define));
     RTLSrcOSDir.AddChild(TDefineTemplate.Create('Include Path',
       'include path to TargetProcessor directories',
-      ExternalMacroStart+'IncPath',IncPathMacro+';'+TargetProcessor,
+      IncludePathMacroName,IncPathMacro+';'+TargetProcessor,
       da_Define));
     ParentDefTempl.AddChild(IfTargetOSIsNotSrcOS);
 
@@ -1943,7 +1945,7 @@ var
     IfTargetOSIsNotSrcOS2.AddChild(RTLSrcOS2Dir);
     RTLSrcOS2Dir.AddChild(TDefineTemplate.Create('Include Path',
       'include path to TargetProcessor directories',
-      ExternalMacroStart+'IncPath',IncPathMacro+';'+TargetProcessor,
+      IncludePathMacroName,IncPathMacro+';'+TargetProcessor,
       da_DefineRecurse));
     ParentDefTempl.AddChild(IfTargetOSIsNotSrcOS2);
   end;
@@ -1997,7 +1999,7 @@ begin
       ctsSrcPathInitialization,ExternalMacroStart+'SrcPath','',da_DefineRecurse);
     MainDir.AddChild(DefTempl);
     DefTempl:=TDefineTemplate.Create('Reset UnitPath',
-      ctsUnitPathInitialization,ExternalMacroStart+'UnitPath','',da_DefineRecurse);
+      ctsUnitPathInitialization,UnitPathMacroName,'',da_DefineRecurse);
     MainDir.AddChild(DefTempl);
 
     // rtl
@@ -2020,7 +2022,7 @@ begin
     RTLDir.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,
       ['objpas, inc,'+TargetProcessor+','+SrcOS]),
-      ExternalMacroStart+'IncPath',s,da_DefineRecurse));
+      IncludePathMacroName,s,da_DefineRecurse));
 
     // if solaris or darwin or beos then define FPC_USE_LIBC
     IFTempl:=TDefineTemplate.Create('IF darwin or solaris or beos',
@@ -2035,7 +2037,7 @@ begin
       '',''''+SrcOS+'''=''win''',da_If);
     IFTempl.AddChild(TDefineTemplate.Create('Include Path',
         Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
-        ExternalMacroStart+'IncPath',
+        IncludePathMacroName,
         IncPathMacro
         +';'+Dir+'rtl'+DS+'win'+DS+'wininc'
         +';'+Dir+'rtl'+DS+'win',
@@ -2047,7 +2049,7 @@ begin
       '',''''+TargetOSMacro+'''=''iphonesim''',da_If);
     IFTempl.AddChild(TDefineTemplate.Create('Include Path',
         Format(ctsIncludeDirectoriesPlusDirs,['unix,bsd,darwin']),
-        ExternalMacroStart+'IncPath',
+        IncludePathMacroName,
         IncPathMacro
         +';'+Dir+'rtl'+DS+'unix'
         +';'+Dir+'rtl'+DS+'bsd'
@@ -2067,7 +2069,7 @@ begin
       ;
     RTLOSDir.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,[TargetProcessor]),
-      ExternalMacroStart+'IncPath',
+      IncludePathMacroName,
       s,da_DefineRecurse));
     s:=SrcPathMacro
       +';'+Dir+'rtl'+DS+'objpas'+DS;
@@ -2083,7 +2085,7 @@ begin
     MainDir.AddChild(FCLDir);
     FCLDir.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,['inc,'+SrcOS]),
-      ExternalMacroStart+'IncPath',
+      IncludePathMacroName,
       d(   DefinePathMacro+'/inc/'
       +';'+DefinePathMacro+'/classes/'
       +';'+DefinePathMacro+'/'+TargetOSMacro+DS // TargetOS before SrcOS !
@@ -2120,7 +2122,7 @@ begin
     FCLBaseDir.AddChild(FCLBaseSrcDir);
     FCLBaseSrcDir.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,['inc,'+SrcOS]),
-      ExternalMacroStart+'IncPath',
+      IncludePathMacroName,
       d(   DefinePathMacro+'/inc/'
       +';'+DefinePathMacro+'/'+TargetOSMacro+DS // TargetOS before SrcOS !
       +';'+DefinePathMacro+'/'+SrcOS+DS
@@ -2139,7 +2141,7 @@ begin
     FCLSubDir.AddChild(FCLSubSrcDir);
     FCLSubSrcDir.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,['inc,'+SrcOS]),
-      ExternalMacroStart+'IncPath',
+      IncludePathMacroName,
       d(   DefinePathMacro+'/'+TargetOSMacro+DS // TargetOS before SrcOS !
       +';'+DefinePathMacro+'/'+SrcOS+DS
       +';'+IncPathMacro)
@@ -2152,7 +2154,7 @@ begin
     // packages/fcl-async/src
     PackagesFCLAsyncDir.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,['packages/fcl-async/src']),
-      ExternalMacroStart+'IncPath',
+      IncludePathMacroName,
       d(   DefinePathMacro+'/src/'
       +';'+IncPathMacro)
       ,da_DefineRecurse));
@@ -2164,7 +2166,7 @@ begin
     // packages/fcl-extra/src
     PackagesFCLExtraDir.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,['packages/fcl-extra/src']),
-      ExternalMacroStart+'IncPath',
+      IncludePathMacroName,
       d(   DefinePathMacro+'/src/'+SrcOS
       +';'+IncPathMacro)
       ,da_DefineRecurse));
@@ -2179,7 +2181,7 @@ begin
     PackagesExtraDir.AddChild(PkgExtraGraphDir);
     PkgExtraGraphDir.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,['inc']),
-      ExternalMacroStart+'IncPath',
+      IncludePathMacroName,
       d(   DefinePathMacro+'/inc/'
       +';'+IncPathMacro)
       ,da_DefineRecurse));
@@ -2190,7 +2192,7 @@ begin
     PackagesExtraDir.AddChild(PkgExtraAMunitsDir);
     PkgExtraAMunitsDir.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,['inc']),
-      ExternalMacroStart+'IncPath',
+      IncludePathMacroName,
       d(   DefinePathMacro+'/inc/'
       +';'+IncPathMacro)
       ,da_DefineRecurse));
@@ -2223,7 +2225,7 @@ begin
       ExternalMacroStart+'SrcPath',
       SrcPathMacro+';'+Dir+TargetProcessor,da_Define));
     CompilerDir.AddChild(TDefineTemplate.Create('IncPath','IncPath addition',
-      ExternalMacroStart+'IncPath',
+      IncludePathMacroName,
       IncPathMacro+';'+Dir+'compiler',da_DefineRecurse));
     MainDir.AddChild(CompilerDir);
 
@@ -5640,11 +5642,11 @@ var
     IfTargetOSIsNotSrcOS.AddChild(RTLSrcOSDir);
     RTLSrcOSDir.AddChild(TDefineTemplate.Create('Include Path',
       'include path',
-      ExternalMacroStart+'IncPath',IncPathMacro+';inc',
+      IncludePathMacroName,IncPathMacro+';inc',
       da_Define));
     RTLSrcOSDir.AddChild(TDefineTemplate.Create('Include Path',
       'include path to TargetProcessor directories',
-      ExternalMacroStart+'IncPath',IncPathMacro+';'+TargetProcessor,
+      IncludePathMacroName,IncPathMacro+';'+TargetProcessor,
       da_Define));
     ParentDefTempl.AddChild(IfTargetOSIsNotSrcOS);
 
@@ -5658,7 +5660,7 @@ var
     IfTargetOSIsNotSrcOS2.AddChild(RTLSrcOS2Dir);
     RTLSrcOS2Dir.AddChild(TDefineTemplate.Create('Include Path',
       'include path to TargetProcessor directories',
-      ExternalMacroStart+'IncPath',IncPathMacro+';'+TargetProcessor,
+      IncludePathMacroName,IncPathMacro+';'+TargetProcessor,
       da_DefineRecurse));
     ParentDefTempl.AddChild(IfTargetOSIsNotSrcOS2);
   end;
@@ -5842,7 +5844,7 @@ begin
   // include path addition
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
     Format(ctsSetsIncPathTo,['include, include/TargetOS, include/SrcOS']),
-    ExternalMacroStart+'IncPath',
+    IncludePathMacroName,
     d(LazarusSrcDir+'/ide/include;'
       +LazarusSrcDir+'/ide/include/'+TargetOS+';'
       +LazarusSrcDir+'/ide/include/'+SrcOS),
@@ -5874,7 +5876,7 @@ begin
     ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
     Format(ctsIncludeDirectoriesPlusDirs,['include']),
-    ExternalMacroStart+'IncPath',
+    IncludePathMacroName,
     d('../ide/include;../ide/include/'+TargetOS),
     da_Define));
   // <LazarusSrcDir>/designer/units
@@ -5948,7 +5950,7 @@ begin
     ,da_DefineRecurse));
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
     Format(ctsIncludeDirectoriesPlusDirs,['include']),
-    ExternalMacroStart+'IncPath',
+    IncludePathMacroName,
     d('../ide/include;../ide/include/'+TargetOS),
     da_Define));
   // <LazarusSrcDir>/packager/frames
@@ -6267,7 +6269,8 @@ begin
 end;
 
 function TDefinePool.CreateFPCCommandLineDefines(const Name, CmdLine: string;
-  RecursiveDefines: boolean; Owner: TObject; AlwaysCreate: boolean): TDefineTemplate;
+  RecursiveDefines: boolean; Owner: TObject; AlwaysCreate: boolean;
+  AddPaths: boolean): TDefineTemplate;
 
   procedure CreateMainTemplate;
   begin
@@ -6568,82 +6571,102 @@ function TDefinePool.CreateFPCCommandLineDefines(const Name, CmdLine: string;
   end;
 
 var
-  StartPos, EndPos: Integer;
   s: string;
   CompilerMode: String;
   m: Integer;
+  UnitPath: String;
+  IncPath: String;
+  Params: TStrings;
+  i: Integer;
+  Param: String;
+  p: PChar;
 begin
   Result:=nil;
   if AlwaysCreate then
     CreateMainTemplate;
-  EndPos:=1;
   CompilerMode:='';
-  while ReadNextFPCParameter(CmdLine,EndPos,StartPos) do begin
-    if (StartPos<length(CmdLine)) and (CmdLine[StartPos]='-') then begin
+  UnitPath:='';
+  IncPath:='';
+  Params:=TStringList.Create;
+  try
+    SplitCmdLineParams(CmdLine,Params);
+    for i:=0 to Params.Count-1 do begin
+      Param:=Params[i];
+      if Param='' then continue;
+      p:=PChar(Param);
+      if p^<>'-' then continue;
       // a parameter
-      case CmdLine[StartPos+1] of
+      case p[1] of
+      'F':
+        case p[2] of
+        'u':
+          UnitPath+=';'+copy(Param,4,length(Param));
+        'i':
+          IncPath+=';'+copy(Param,4,length(Param));
+        end;
 
       'd':
         begin
           // define
-          s:=copy(CmdLine,StartPos+2,EndPos-StartPos-2);
-          AddDefine(s);
+          AddDefine(copy(Param,3,255));
         end;
 
       'u':
         begin
           // undefine
-          s:=copy(CmdLine,StartPos+2,EndPos-StartPos-2);
-          AddUndefine(s);
+          AddUndefine(copy(Param,3,255));
         end;
 
       'S':
         begin
           // syntax
-          inc(StartPos,2);
-          while StartPos<EndPos do begin
-            case CmdLine[StartPos] of
+          inc(p,2);
+          repeat
+            case p^ of
             '2': CompilerMode:='ObjFPC';
             'd': CompilerMode:='Delphi';
             'o': CompilerMode:='TP';
             'p': CompilerMode:='GPC';
+            else break;
             end;
-            inc(StartPos);
-          end;
+            inc(p);
+          until false;
         end;
 
       'M':
         begin
           // syntax
-          inc(StartPos,2);
-          CompilerMode:=copy(CmdLine,StartPos,EndPos-StartPos);
+          CompilerMode:=copy(Param,3,255);
         end;
 
       'W':
-        begin
-          inc(StartPos,2);
-          if StartPos<EndPos then begin
-            case CmdLine[StartPos] of
-            'p':
-              begin
-                s:=FindControllerUnit(copy(CmdLine,StartPos+1,EndPos-StartPos-1));
+        case p[1] of
+        'p':
+          begin
+            s:=FindControllerUnit(copy(Param,4,255));
 
-                // controller unit
-                if s<>'' then
-                  AddDefine('Define '+MacroControllerUnit,
-                    ctsDefine+MacroControllerUnit,MacroControllerUnit,
-                    s);
-              end;
-            end;
+            // controller unit
+            if s<>'' then
+              AddDefine('Define '+MacroControllerUnit,
+                ctsDefine+MacroControllerUnit,MacroControllerUnit,
+                s);
           end;
         end;
 
       end;
     end;
+  finally
+    Params.Free;
   end;
   if CompilerMode<>'' then begin
     for m:=low(FPCSyntaxModes) to high(FPCSyntaxModes) do
       AddDefineUndefine('FPC_'+FPCSyntaxModes[m],SysUtils.CompareText(CompilerMode,FPCSyntaxModes[m])=0);
+  end;
+  if AddPaths then begin
+    if UnitPath<>'' then
+      AddDefine('UnitPath','UnitPath addition',UnitPathMacroName,UnitPathMacro+UnitPath);
+    if IncPath<>'' then
+      AddDefine('IncPath','IncPath addition',IncludePathMacroName,IncludePathMacro+IncPath);
   end;
 
   Result.SetDefineOwner(Owner,true);
