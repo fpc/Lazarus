@@ -676,6 +676,8 @@ procedure TCompilerOptSet.AddOptions(aDescr: string; aIndent: integer);
   var
     OptSet: TCompilerOpt;
   begin
+    // Ignore -vl and -vs
+    if (fOption = '-v') and (aDescr[1] in ['l', 's']) then Exit;
     OptSet := TCompilerOpt.Create(Self);          // Add it under a group
     OptSet.fIndentation := aIndent;
     OptSet.fOption := aDescr[1];
