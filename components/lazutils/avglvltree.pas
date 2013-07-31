@@ -343,9 +343,9 @@ type
     procedure Add(const Name, Value: string); inline;
     procedure Add(const Name, Value, Delimiter: string);
     procedure AddNameValues(List: TStrings);
-    procedure AddValues(List: TStrings); inline; deprecated;
+    procedure AddValues(List: TStrings); inline; deprecated; // use AddNames
     procedure AddNames(List: TStrings);
-    procedure Delete(const Name: string); inline; deprecated;
+    procedure Delete(const Name: string); inline; deprecated; // use Remove
     property Values[const s: string]: string read GetValues write SetValues; default;
     function AsText: string;
     procedure Assign(Source: TCustomStringMap); override;
