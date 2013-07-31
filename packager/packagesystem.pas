@@ -146,7 +146,11 @@ type
     function OpenDependencyWithPackageLink(Dependency: TPkgDependency;
                        PkgLink: TPackageLink; ShowAbort: boolean): TModalResult;
     function DeleteAmbiguousFiles(const Filename: string): TModalResult;
+    {$IFDEF EnableNewExtTools}
+    procedure AddMessage(TheUrgency: TMessageLineUrgency; const Msg, Filename: string);
+    {$ELSE}
     procedure AddMessage(const Msg, Directory: string);
+    {$ENDIF}
     function OutputDirectoryIsWritable(APackage: TLazPackage; Directory: string;
                                        Verbose: boolean): boolean;
     function GetPackageCompilerParams(APackage: TLazPackage): string;
@@ -640,6 +644,16 @@ begin
     Result:=mrOk;
 end;
 
+{$IFDEF EnableNewExtTools}
+procedure TLazPackageGraph.AddMessage(TheUrgency: TMessageLineUrgency;
+  const Msg, Filename: string);
+begin
+  if Assigned(IDEMessagesWindow) then
+    IDEMessagesWindow.AddCustomMessage(TheUrgency,Msg,Filename)
+  else
+    DebugLn(['TLazPackageGraph.AddMessage ',MessageLineUrgencyNames[TheUrgency],' Msg="',Msg,'" Filename="',Filename,'"']);
+end;
+{$ELSE}
 procedure TLazPackageGraph.AddMessage(const Msg, Directory: string);
 begin
   if Assigned(IDEMessagesWindow) then
@@ -647,6 +661,7 @@ begin
   else
     DebugLn(['TLazPackageGraph.AddMessage Msg="',Msg,'" Directory="',Directory,'"']);
 end;
+{$ENDIF}
 
 function TLazPackageGraph.OutputDirectoryIsWritable(APackage: TLazPackage;
   Directory: string; Verbose: boolean): boolean;
@@ -3316,7 +3331,11 @@ function TLazPackageGraph.CompilePackage(APackage: TLazPackage;
   end;
 
 var
+  {$IFDEF EnableNewExtTools}
+  PkgCompileTool: TAbstractExternalTool;
+  {$ELSE}
   PkgCompileTool: TIDEExternalToolOptions;
+  {$ENDIF}
   CompilerFilename: String;
   EffectiveCompilerParams: String;
   CompilePolicy: TPackageUpdatePolicy;

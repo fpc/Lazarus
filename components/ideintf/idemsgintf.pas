@@ -60,6 +60,34 @@ type
 var
   MsgQuickFixes: TMsgQuickFixes = nil; // set by IDE
 
+type
+  TIDEMessagesWindowInterface = class(TForm)
+  protected
+    function GetViews(Index: integer): TExtToolView; virtual; abstract;
+  public
+    procedure Clear; virtual; abstract; // clears all finished views
+
+    function ViewCount: integer; virtual; abstract;
+    property Views[Index: integer]: TExtToolView read GetViews;
+    function GetView(aCaption: string; CreateIfNotExist: boolean): TExtToolView; virtual; abstract;
+    function FindUnfinishedView: TExtToolView; virtual; abstract;
+    procedure DeleteView(View: TExtToolView); virtual; abstract; // free view
+    function IndexOfView(View: TExtToolView): integer; virtual; abstract;
+
+    function SelectFirstUrgentMessage(aMinUrgency: TMessageLineUrgency;
+      WithSrcPos: boolean): boolean; virtual; abstract;
+    function SelectNextUrgentMessage(aMinUrgency: TMessageLineUrgency;
+      WithSrcPos, Downwards: boolean): boolean; virtual; abstract;
+
+    function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
+      aFilename: string = ''; LineNumber: integer = 0; Column: integer = 0;
+      const ViewCaption: string = ''): TMessageLine; virtual; abstract;
+    function GetSelectedLine: TMessageLine; virtual; abstract;
+  end;
+
+var
+  IDEMessagesWindow: TIDEMessagesWindowInterface = nil;// initialized by the IDE
+
 implementation
 
 { TMsgQuickFix }

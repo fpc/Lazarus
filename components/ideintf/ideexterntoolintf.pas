@@ -740,7 +740,7 @@ end;
 
 function TAbstractExternalTool.GetCmdLineParams: string;
 begin
-
+  Result:=MergeCmdLineParams(Process.Parameters);
 end;
 
 function TAbstractExternalTool.GetParsers(Index: integer): TExtToolParser;
@@ -759,7 +759,7 @@ var
 begin
   sl:=TStringList.Create;
   try
-    SplitCmdLineParams(aParams,sl,PathDelim<>'\');
+    SplitCmdLineParams(aParams,sl);
     Process.Parameters:=sl;
   finally
     sl.Free;
@@ -1961,6 +1961,7 @@ begin
   EnterCriticalSection;
   try
     if Running then exit;
+    if (Tool<>nil) and (Tool.Stage<>etsStopped) then exit;
     if PendingLines.Count>0 then exit;
     Result:=true;
   finally

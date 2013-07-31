@@ -50,6 +50,9 @@ uses
   IDEOptionsIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, IDEMsgIntf, LazConf, TransferMacros,
+  {$IFDEF EnableNewExtTools}
+  etFPCMsgParser,
+  {$ENDIF}
   ModeMatrixOpts, CompOptsModes, EnvironmentOpts;
 
 type
@@ -730,6 +733,14 @@ implementation
 
 const
   CompilerOptionsVersion = 11;
+  {$IFDEF EnableNewExtTools}
+  etNone = mluNone;
+  etHint = mluHint;
+  etNote = mluNote;
+  etWarning = mluWarning;
+  etError = mluError;
+  etFatal = mluFatal;
+  {$ENDIF}
 
 function EnumToStr(opt: TParsedCompilerOptString): string;
 begin
@@ -4198,7 +4209,19 @@ begin
   Tool:=ExternalToolList.Add(ToolTitle);
   Tool.Process.Executable:=ProgramFilename;
   Tool.Process.CurrentDirectory:=WorkingDir;
-  Tool.Process.Parameters;
+  Tool.CmdLineParams:=Params;
+  if ScanForFPCMessages then
+    Tool.AddParsers(SubToolFPC);
+  if ScanForMakeMessages then
+    Tool.AddParsers(SubToolMake);
+  if ShowAllMessages then
+    Tool.AddParsers(SubToolDefault);
+  Tool.Execute;
+  Tool.WaitForExit;
+  if Tool.ErrorMessage<>'' then
+    Result:=mrCancel
+  else
+    Result:=mrOk;
   {$ELSE}
   ExtTool:=TIDEExternalToolOptions.Create;
   try
@@ -4592,7 +4615,7 @@ begin
   Result := fItems.Count;
 end;
 
-function TCompilerMessagesList.GetErrorNames(errtype: TFPCErrorType): string;
+function TCompilerMessagesList.GetErrorNames(errtype: {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF}): string;
 begin
   Result := FErrorNames[errtype];
 end;
@@ -4634,7 +4657,7 @@ procedure TCompilerMessagesList.Assign(Src: TCompilerMessagesList);
 var
   i   : Integer;
   m   : TCompilerMessageConfig;
-  err : TFPCErrorType;
+  err : {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF};
 begin
   if Equals(Src) then
     Exit;
@@ -4723,6 +4746,12 @@ function TCompilerMessagesList.LoadMsgFile(const FileName: string): Boolean;
     else Result := s;
   end;
 
+  {$IFDEF EnableNewExtTools}
+  function StrToErrType(const msgtype: String): TMessageLineUrgency;
+  begin
+    Result:=FPCMsgTypeToUrgency(msgtype);
+  end;
+  {$ELSE}
   function StrToErrType(const msgtype: String): TFPCErrorType;
   begin
     if length(msgtype)<>1 then
@@ -4738,6 +4767,7 @@ function TCompilerMessagesList.LoadMsgFile(const FileName: string): Boolean;
         Result:=etNone;
       end;
   end;
+  {$ENDIF}
 
 var
   temp    : TStringList;
@@ -4749,7 +4779,7 @@ var
   i       : Integer;
   lst     : Boolean;
   b       : array of TCompilerMessageState;
-  err     : TFPCErrorType;
+  err     : {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF};
 const
   idxFatal   = 01012;
   idxError   = 01013;
@@ -4782,15 +4812,15 @@ begin
 
           if (midx >= idxFatal) and (midx<= idxHint) then begin
             case midx of
-              idxFatal: err := etFatal;
-              idxError: err := etError;
-              idxWarning: err := etWarning;
-              idxNote: err := etNote;
-              idxHint: err := etHint;
+              idxFatal: err := {$IFDEF EnableNewExtTools}mluFatal{$ELSE}etFatal{$ENDIF};
+              idxError: err := {$IFDEF EnableNewExtTools}mluError{$ELSE}etError{$ENDIF};
+              idxWarning: err := {$IFDEF EnableNewExtTools}mluWarning{$ELSE}etWarning{$ENDIF};
+              idxNote: err := {$IFDEF EnableNewExtTools}mluNote{$ELSE}etNote{$ENDIF};
+              idxHint: err := {$IFDEF EnableNewExtTools}mluHint{$ELSE}etHint{$ENDIF};
             else
-              err := etNone;
+              err := {$IFDEF EnableNewExtTools}mluNone{$ELSE}etNone{$ENDIF};
             end;
-            if err <> etNone then begin
+            if err <> {$IFDEF EnableNewExtTools}mluNone{$ELSE}etNone{$ENDIF} then begin
               mtext := Trim(mtext);
               if (length(mtext)>1) and (mtext[length(mtext)]=':') then
                 FErrorNames[err]:=Copy(mtext, 1, length(mtext)-1)
@@ -4813,34 +4843,13 @@ begin
     Result := false;
   end;
 end;
-{
-function IntToStrLen(i:Integer; len: integer; FillCh: Char = '0'): string;
-var
-  s : string;
-  j : integer;
-begin
-  if len <= 0 then begin
-    Result := '';
-    Exit;
-  end;
-  s := IntToStr(i);
-  if length(s)>= len then
-    Result := s
-  else begin
-    SetLength(Result, len);
-    FillChar(Result[1], len, FillCh);
-    j := (len - length(s)) + 1;
-    Move(s[1], Result[j], length(s));
-  end;
-end;
-}
+
 function TCompilerMessagesList.Add(AMsgIndex: Integer;
-  AMsgType: TFPCErrorType; const AMsgText: string; DefIgnored: Boolean = false;
+  AMsgType: {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF};
+  const AMsgText: string; DefIgnored: Boolean = false;
   AState: TCompilerMessageState = msDefault): TCompilerMessageConfig;
 var
   msgconf : TCompilerMessageConfig;
-//  prm   : array of string;
-//  cnt   : Integer;
 begin
   msgconf := FindHash(AMsgIndex);
   if not Assigned(msgConf) then begin
@@ -4853,15 +4862,13 @@ begin
   msgconf.MsgText := AMsgText;
   msgconf.DefIgnored := DefIgnored;
   msgconf.State := AState;
-//  SetLength(prm, MaxMsgParams);
-//  GetParams(AMsgIndex, prm, cnt);
   Result := msgconf;
 end;
 
 procedure TCompilerMessagesList.SetDefault(KeepState: Boolean);
 var
   b   : array of TCompilerMessageState;
-  err : TFPCErrorType;
+  err : {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF};
 begin
   if KeepState then begin
     SetLength(b, MaxMsgIndex);
@@ -4870,8 +4877,12 @@ begin
   BeginUpdate;
   try
     Clear;
-    for err := low(TFPCErrorType) to High(TFPCErrorType) do
+    for err := low(err) to High(err) do
+      {$IFDEF EnableNewExtTools}
+      FErrorNames[err]:=MessageLineUrgencyNames[err];
+      {$ELSE}
       FErrorNames[err]:=FPCErrorTypeNames[err];
+      {$ENDIF}
 
     Add(02005,etWarning,'Comment level $1 found');
     Add(02008,etNote,'Ignored compiler switch "$1"');

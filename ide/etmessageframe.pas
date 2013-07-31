@@ -463,6 +463,8 @@ type
     MessagesCtrl: TMessagesCtrl;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+
+    // Views
     function ViewCount: integer;
     property Views[Index: integer]: TLMsgWndView read GetViews;
     function GetView(aCaption: string; CreateIfNotExist: boolean): TLMsgWndView;
@@ -470,10 +472,13 @@ type
     procedure DeleteView(View: TLMsgWndView); // free view
     function IndexOfView(View: TLMsgWndView): integer;
     procedure ClearViews; // deletes/frees all views
+
+    // source marks
     procedure CreateMarksForFile(aSynEdit: TSynEdit; aFilename: string;
       DeleteOld: boolean);
     procedure ApplySrcChangeds(Changes: TETSrcChanges);
-    function GetDefaultSearchText: string;
+
+    // message lines
     function SelectFirstUrgentMessage(aMinUrgency: TMessageLineUrgency;
       WithSrcPos: boolean): boolean;
     function SelectNextUrgentMessage(aMinUrgency: TMessageLineUrgency;
@@ -481,6 +486,9 @@ type
     function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
       aFilename: string = ''; LineNumber: integer = 0; Column: integer = 0;
       const ViewCaption: string = CustomViewCaption): TMessageLine;
+
+    // misc
+    function GetDefaultSearchText: string;
   end;
 
 function CompareHideMsgType(HideMsgType1, HideMsgType2: Pointer): integer;
@@ -2496,7 +2504,7 @@ begin
   for i:=0 to ViewCount-1 do begin
     Result:=Views[i];
     //debugln(['TMessagesCtrl.FindUnfinishedView ',i,' ',ViewCount,' caption="',Result.Caption,'" Result.Tool=',dbgsname(Result.Tool)]);
-    if (Result.Tool<>nil) and (Result.Tool.Stage<>etsStopped) then exit;
+    if not Result.HasFinished then exit;
   end;
   Result:=nil;
 end;

@@ -156,6 +156,7 @@ var
   FPCMsgFilePool: TFPCMsgFilePool = nil;
 
 function FPCMsgToMsgUrgency(Msg: TFPCMsgItem): TMessageLineUrgency;
+function FPCMsgTypeToUrgency(const Typ: string): TMessageLineUrgency;
 function TranslateFPCMsg(const Src, SrcPattern, TargetPattern: string): string;
 function GetFPCMsgValue1(const Src, Pattern: string; out Value1: string): boolean;
 
@@ -163,37 +164,36 @@ procedure RegisterFPCParser;
 
 implementation
 
-function FPCMsgToMsgUrgency(Msg: TFPCMsgItem): TMessageLineUrgency;
-
-  function TypToUrgency(const Typ: string): TMessageLineUrgency;
-  begin
+function FPCMsgTypeToUrgency(const Typ: string): TMessageLineUrgency;
+begin
+  Result:=mluNone;
+  if (Typ='') or (length(Typ)<>1) then exit;
+  case UpChars[Typ[1]] of
+  'F': Result:=mluFatal;
+  'E': Result:=mluError;
+  'W': Result:=mluWarning;
+  'N': Result:=mluNote;
+  'H': Result:=mluHint;
+  'I': Result:=mluVerbose;  // info
+  'L': Result:=mluProgress; // line number
+  'C': Result:=mluVerbose;  // conditional: like IFDEFs
+  'U': Result:=mluVerbose2; // used: found files
+  'T': Result:=mluVerbose3; // tried: tried paths, general information
+  'D': Result:=mluDebug;
+  'X': Result:=mluProgress; // e.g. Size of Code
+  'O': Result:=mluProgress; // e.g., "press enter to continue"
+  else
     Result:=mluNone;
-    if (Typ='') or (length(Typ)<>1) then exit;
-    case UpChars[Typ[1]] of
-    'F': Result:=mluFatal;
-    'E': Result:=mluError;
-    'W': Result:=mluWarn;
-    'N': Result:=mluNote;
-    'H': Result:=mluHint;
-    'I': Result:=mluVerbose;  // info
-    'L': Result:=mluProgress; // line number
-    'C': Result:=mluVerbose;  // conditional: like IFDEFs
-    'U': Result:=mluVerbose2; // used: found files
-    'T': Result:=mluVerbose3; // tried: tried paths, general information
-    'D': Result:=mluDebug;
-    'X': Result:=mluProgress; // e.g. Size of Code
-    'O': Result:=mluProgress; // e.g., "press enter to continue"
-    else
-      Result:=mluNone;
-    end;
   end;
+end;
 
+function FPCMsgToMsgUrgency(Msg: TFPCMsgItem): TMessageLineUrgency;
 begin
   Result:=mluNone;
   if Msg=nil then exit;
-  Result:=TypToUrgency(Msg.ShownTyp);
+  Result:=FPCMsgTypeToUrgency(Msg.ShownTyp);
   if Result<>mluNone then exit;
-  Result:=TypToUrgency(Msg.Typ);
+  Result:=FPCMsgTypeToUrgency(Msg.Typ);
   if Result=mluNone then begin
     //debugln(['FPCMsgToMsgUrgency Msg.ShownTyp="',Msg.ShownTyp,'" Msg.Typ="',Msg.Typ,'"']);
     Result:=mluVerbose3;
@@ -846,7 +846,7 @@ begin
   else if ReadString(p,'Error: ') then
     MsgType:=mluError
   else if ReadString(p,'Warn: ') then
-    MsgType:=mluWarn
+    MsgType:=mluWarning
   else if ReadString(p,'Note: ') then
     MsgType:=mluNote
   else if ReadString(p,'Hint: ') then
@@ -1036,7 +1036,7 @@ begin
   if CompStr('Closing script ppas.sh',p) then begin
     MsgLine:=CreateMsgLine;
     MsgLine.SubTool:=SubToolFPCLinker;
-    MsgLine.Urgency:=mluWarn;
+    MsgLine.Urgency:=mluWarning;
     MsgLine.Msg:=OldStart;
     AddMsgLine(MsgLine);
     exit(true);
@@ -1047,7 +1047,7 @@ begin
   if CompStr('.o(',p) then begin
     MsgLine:=CreateMsgLine;
     MsgLine.SubTool:=SubToolFPCLinker;
-    MsgLine.Urgency:=mluWarn;
+    MsgLine.Urgency:=mluWarning;
     MsgLine.Msg:=OldStart;
     AddMsgLine(MsgLine);
     exit(true);
@@ -1057,7 +1057,7 @@ begin
     Result:=true;
     MsgLine:=CreateMsgLine;
     MsgLine.SubTool:=SubToolFPCLinker;
-    MsgLine.Urgency:=mluWarn;
+    MsgLine.Urgency:=mluWarning;
     MsgLine.Msg:=OldStart;
     AddMsgLine(MsgLine);
     exit(true);
@@ -1066,7 +1066,7 @@ begin
     Result:=true;
     MsgLine:=CreateMsgLine;
     MsgLine.SubTool:=SubToolFPCLinker;
-    MsgLine.Urgency:=mluWarn;
+    MsgLine.Urgency:=mluWarning;
     MsgLine.Msg:=OldStart;
     AddMsgLine(MsgLine);
     exit(true);
@@ -1147,7 +1147,7 @@ begin
   Result:=true;
   MsgLine:=CreateMsgLine;
   MsgLine.SubTool:='windres';
-  MsgLine.Urgency:=mluWarn;
+  MsgLine.Urgency:=mluWarning;
   p := wPos + 7;
   if CompStr('.exe', p) then
     inc(p, 4);
@@ -1311,7 +1311,7 @@ begin
   end else if ReadString(p,'Note:') then begin
     MsgType:=mluNote;
   end else if ReadString(p,'Warn:') then begin
-    MsgType:=mluWarn;
+    MsgType:=mluWarning;
   end else if ReadString(p,'Error:') then begin
     MsgType:=mluError;
   end else if ReadString(p,'Fatal:') then begin
