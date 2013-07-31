@@ -132,9 +132,19 @@ type
   TvSetPenBrushAndFontElement = (
     spbfPenColor, spbfPenStyle, spbfPenWidth,
     spbfBrushColor, spbfBrushStyle, spbfBrushGradient,
-    spbfFontColor, spbfFontSize
+    spbfFontColor, spbfFontSize, spbfFontName, spbfFontBold, spbfFontItalic
     );
   TvSetPenBrushAndFontElements = set of TvSetPenBrushAndFontElement;
+
+  TvStyle = class
+    Name: string;
+    Pen: TvPen;
+    Brush: TvBrush;
+    Font: TvFont;
+    SetElements: TvSetPenBrushAndFontElements;
+    //
+    MarginTop, MarginBottom, MarginLeft, MarginRight: Double; // in mm
+  end;
 
   { Coordinates and polyline segments }
 
@@ -770,8 +780,10 @@ type
   public
     Width, Height: Double;
     AutoExpand: TvRichTextAutoExpand;
+    Style: string;
     constructor Create; override;
     destructor Destroy; override;
+    function AddText: TvText;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -784,6 +796,7 @@ type
   private
     FOnProgress: TvProgressEvent;
     FPages: TFPList;
+    FStyles: TFPList;
     FCurrentPageIndex: Integer;
     function CreateVectorialWriter(AFormat: TvVectorialFormat): TvCustomVectorialWriter;
     function CreateVectorialReader(AFormat: TvVectorialFormat): TvCustomVectorialReader;
@@ -820,6 +833,11 @@ type
     procedure SetCurrentPage(AIndex: Integer);
     function AddPage(): TvVectorialPage;
     function AddTextPageSequence(): TvTextPageSequence;
+    { Style methods }
+    function AddStyle(): TvStyle;
+    procedure AddStandardTextDocumentStyles;
+    function GetStyleCount: Integer;
+    function GetStyle(AIndex: Integer): TvStyle;
     { Data removing methods }
     procedure Clear; virtual;
     { Debug methods }
@@ -926,6 +944,8 @@ type
     constructor Create(AOwner: TvVectorialDocument); override;
     destructor Destroy; override;
     procedure Assign(ASource: TvVectorialPage); override;
+    { Data writing methods }
+    function AddParagraph: TvRichText;
   end;
 
   {@@ TvVectorialReader class reference type }
@@ -3960,6 +3980,12 @@ begin
   inherited Destroy;
 end;
 
+function TvRichText.AddText: TvText;
+begin
+  Result := TvText.Create;
+  AddEntity(Result);
+end;
+
 function TvRichText.TryToSelect(APos: TPoint; var ASubpart: Cardinal
   ): TvFindEntityResult;
 begin
@@ -4668,6 +4694,12 @@ begin
   inherited Assign(ASource);
 end;
 
+function TvTextPageSequence.AddParagraph: TvRichText;
+begin
+  Result := TvRichText.Create;
+  AddEntity(Result);
+end;
+
 { TvVectorialDocument }
 
 {@@
@@ -4679,6 +4711,7 @@ begin
 
   FPages := TFPList.Create;
   FCurrentPageIndex := -1;
+  FStyles := TFPList.Create;
 end;
 
 {@@
@@ -4690,6 +4723,8 @@ begin
 
   FPages.Free;
   FPages := nil;
+  FStyles.Free;
+  FStyles := nil;
 
   inherited Destroy;
 end;
@@ -4969,6 +5004,53 @@ begin
   Result := TvTextPageSequence.Create(Self);
   FPages.Add(Result);
   if FCurrentPageIndex < 0 then FCurrentPageIndex := FPages.Count-1;
+end;
+
+function TvVectorialDocument.AddStyle: TvStyle;
+begin
+  Result := TvStyle.Create;
+  FStyles.Add(Result);
+end;
+
+procedure TvVectorialDocument.AddStandardTextDocumentStyles;
+var
+  lCurStyle: TvStyle;
+begin
+  lCurStyle.Name := 'Text Body';
+  lCurStyle.Font.Size := 12;
+  lCurStyle.Font.Name := 'Times New Roman';
+  lCurStyle.MarginTop := 0;
+  lCurStyle.MarginBottom := 2.12;
+  lCurStyle.SetElements := [spbfFontSize, spbfFontName];
+
+  lCurStyle := AddStyle();
+  lCurStyle.Name := 'Heading 1';
+  lCurStyle.Font.Size := 16;
+  lCurStyle.Font.Name := 'Arial';
+  lCurStyle.Font.Bold := True;
+  lCurStyle.MarginTop := 4.23;
+  lCurStyle.MarginBottom := 2.12;
+  lCurStyle.MarginTop := 4.23;
+  lCurStyle.MarginBottom := 2.12;
+  lCurStyle.SetElements := [spbfFontSize, spbfFontName, spbfFontBold, spbfFontItalic];
+
+  lCurStyle := AddStyle();
+  lCurStyle.Name := 'Heading 2';
+  lCurStyle.Font.Size := 14;
+  lCurStyle.Font.Name := 'Arial';
+  lCurStyle.Font.Bold := True;
+  lCurStyle.Font.Italic := True;
+  lCurStyle.SetElements := [spbfFontSize, spbfFontName, spbfFontBold, spbfFontItalic];
+end;
+
+function TvVectorialDocument.GetStyleCount: Integer;
+begin
+  Result := FStyles.Count;
+end;
+
+function TvVectorialDocument.GetStyle(AIndex: Integer): TvStyle;
+begin
+  Result := TvStyle(FStyles.Items[AIndex]);
 end;
 
 {@@

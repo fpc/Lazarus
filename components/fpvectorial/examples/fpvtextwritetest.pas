@@ -12,24 +12,24 @@ program fpvtextwritetest;
 uses
   fpvectorial, odtvectorialwriter, fpvutils, fpvectorialpkg;
 
+{$R *.res}
+
 var
   Vec: TvVectorialDocument;
   Page: TvTextPageSequence;
-
-{$R *.res}
-
+  CurParagraph: TvRichText;
 begin
   Vec := TvVectorialDocument.Create;
   try
     // A4 -> 210mm x 297mm
     Vec.Width := 210;
     Vec.Height := 297;
-    Page := Vec.AddTextPageSequence();
+    Vec.AddStandardTextDocumentStyles();
 
     // First page sequence
-    {Page.StartPath(0, 20);
-    Page.AddLineToPath(30, 30);
-    Page.EndPath();}
+    Page := Vec.AddTextPageSequence();
+    CurParagraph := Page.AddParagraph();
+
 
     Vec.WriteToFile('text_output.odt', vfODT);
   finally
