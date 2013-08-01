@@ -344,8 +344,10 @@ function TUsesGraph.Parse(IgnoreErrors: boolean; out Completed: boolean;
     if UsedFiles=nil then exit;
     for i:=0 to UsedFiles.Count-1 do begin
       Filename:=UsedFiles[i];
+      if not FilenameIsPascalUnit(Filename) then continue;
       // check if already used
       if CurUnit.IndexOfUses(Filename)>=0 then continue;
+      if not UnitCanFindTarget(Filename) then continue;
       // add connection
       NewUnit:=GetUnit(Filename,true);
       if CurUnit.UsesUnits=nil then
@@ -357,8 +359,7 @@ function TUsesGraph.Parse(IgnoreErrors: boolean; out Completed: boolean;
         NewUnit.UsedByUnits:=TFPList.Create;
       NewUnit.UsedByUnits.Add(NewUses);
       // put new file on queue
-      if UnitCanFindTarget(Filename) then
-        AddStartUnit(Filename);
+      AddStartUnit(Filename);
     end;
   end;
 
