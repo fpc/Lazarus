@@ -1996,8 +1996,7 @@ resourcestring
   dlgCOCfgCmpMessages = 'Messages';
   lisChooseAnFPCMessageFile = 'Choose an FPC message file';
   lisFPCMessageFile = 'FPC message file';
-  lisChooseAFileWithCodeToolsTemplates = 'Choose a file with CodeTools '
-    +'templates';
+  lisChooseAFileWithCodeToolsTemplates = 'Choose a file with CodeTools templates';
   dlgCOOther = 'Other';
   dlgCOInherited = 'Inherited';
   dlgCOCompilerCommands = 'Compiler Commands';

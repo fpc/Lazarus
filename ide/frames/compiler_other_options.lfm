@@ -710,7 +710,9 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       Width = 375
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Right = 6
+      ScrollBars = ssAutoBoth
       TabOrder = 0
+      WordWrap = False
     end
     object Label1: TLabel
       AnchorSideRight.Control = grpCustomOptions
