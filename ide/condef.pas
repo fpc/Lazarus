@@ -383,10 +383,11 @@ var
   s: string;
 begin
   s := FirstTest.Text+','+SecondTest.Text;
-  AddBtn.Enabled := ListBox.Items.IndexOf(s) = -1;
-  s := '!'+s;
-  AddInverse.Enabled := not AnsiStartsStr('!', FirstTest.Text)
-                        and (ListBox.Items.IndexOf(s) = -1);
+  AddBtn.Enabled := (FirstTest.Text <> '') and (ListBox.Items.IndexOf(s) = -1);
+  s := '!' + s;
+  AddInverse.Enabled := (FirstTest.Text <> '')
+                    and (FirstTest.Text[1] <> '!')
+                    and (ListBox.Items.IndexOf(s) = -1);
   RemoveBtn.Enabled := ListBox.SelCount > 0;
   btnSave.Enabled := IsChanged;
   btnOk.Enabled := ListBox.SelCount > 0;
