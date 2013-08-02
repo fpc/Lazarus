@@ -418,9 +418,10 @@ end;
 function IsIgnoredOption(aOpt: string): Boolean;
 begin
   if Length(aOpt) < 2 then Exit(False);
-  // Ignore : all file names and paths
-  //          executable path
-  Result := aOpt[2] in ['F', 'e'];
+  // Ignore : * all file names and paths
+  //          * executable path
+  //          * define and undefine
+  Result := aOpt[2] in ['F', 'e', 'd', 'u'];
 end;
 
 { TCompilerOpt }
