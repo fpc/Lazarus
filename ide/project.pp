@@ -1018,11 +1018,9 @@ type
                                       write SetActiveBuildModeID;
     property ActiveWindowIndexAtStart: integer read FActiveWindowIndexAtStart
                                                write FActiveWindowIndexAtStart;
-    property AutoCreateForms: boolean
-                                   read FAutoCreateForms write FAutoCreateForms;
-    property AutoOpenDesignerFormsDisabled: boolean
-                                         read FAutoOpenDesignerFormsDisabled
-                                         write SetAutoOpenDesignerFormsDisabled;
+    property AutoCreateForms: boolean read FAutoCreateForms write FAutoCreateForms;
+    property AutoOpenDesignerFormsDisabled: boolean read FAutoOpenDesignerFormsDisabled
+                                                    write SetAutoOpenDesignerFormsDisabled;
     property Bookmarks: TProjectBookmarkList read FBookmarks write FBookmarks;
     property BuildModes: TProjectBuildModes read FBuildModes;
     property BuildModesBackup: TProjectBuildModes read FBuildModesBackup;
@@ -1036,14 +1034,11 @@ type
     property FirstAutoRevertLockedUnit: TUnitInfo read GetFirstAutoRevertLockedUnit;
     property FirstLoadedUnit: TUnitInfo read GetFirstLoadedUnit;
     property FirstPartOfProject: TUnitInfo read GetFirstPartOfProject;
-    property FirstRemovedDependency: TPkgDependency
-                                                   read FFirstRemovedDependency;
-    property FirstRequiredDependency: TPkgDependency
-                                                  read FFirstRequiredDependency;
+    property FirstRemovedDependency: TPkgDependency read FFirstRemovedDependency;
+    property FirstRequiredDependency: TPkgDependency read FFirstRequiredDependency;
     property FirstUnitWithComponent: TUnitInfo read GetFirstUnitWithComponent;
     property FirstUnitWithEditorIndex: TUnitInfo read GetFirstUnitWithEditorIndex;
-    property JumpHistory: TProjectJumpHistory
-                                           read FJumpHistory write FJumpHistory;
+    property JumpHistory: TProjectJumpHistory read FJumpHistory write FJumpHistory;
     property LastCompilerFileDate: integer read FLastCompilerFileDate
                                           write FLastCompilerFileDate;
     property LastCompilerFilename: string read FLastCompilerFilename
@@ -1061,21 +1056,18 @@ type
                                                  write FOnChangeProjectInfoFile;
     property OnEndUpdate: TEndUpdateProjectEvent read FOnEndUpdate write FOnEndUpdate;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
-    property OnGetTestDirectory: TOnProjectGetTestDirectory
-                             read FOnGetTestDirectory write FOnGetTestDirectory;
+    property OnGetTestDirectory: TOnProjectGetTestDirectory read FOnGetTestDirectory
+                                                            write FOnGetTestDirectory;
     property OnLoadProjectInfo: TOnLoadProjectInfo read FOnLoadProjectInfo
                                                    write FOnLoadProjectInfo;
     property OnSaveProjectInfo: TOnSaveProjectInfo read FOnSaveProjectInfo
                                                    write FOnSaveProjectInfo;
     property OnSaveUnitSessionInfo: TOnSaveUnitSessionInfoInfo
       read FOnSaveUnitSessionInfo write FOnSaveUnitSessionInfo;
-    property POOutputDirectory: string read FPOOutputDirectory
-                                       write SetPOOutputDirectory;
+    property POOutputDirectory: string read FPOOutputDirectory write SetPOOutputDirectory;
     property ProjectDirectory: string read fProjectDirectory;
-    property ProjectInfoFile: string
-                               read GetProjectInfoFile write SetProjectInfoFile;
-    property PublishOptions: TPublishProjectOptions
-                                     read FPublishOptions write FPublishOptions;
+    property ProjectInfoFile: string read GetProjectInfoFile write SetProjectInfoFile;
+    property PublishOptions: TPublishProjectOptions read FPublishOptions write FPublishOptions;
     property ProjResources: TProjectResources read GetProjResources;
 
     property RunParameterOptions: TRunParamsOptions read GetRunParameterOptions;
@@ -1084,8 +1076,7 @@ type
     property StateFlags: TLazProjectStateFlags read FStateFlags write FStateFlags;
     property SessionStorePathDelim: TPathDelimSwitch read FSessionStorePathDelim write FSessionStorePathDelim;
     property StorePathDelim: TPathDelimSwitch read FStorePathDelim write SetStorePathDelim;
-    property TargetFilename: string
-                                 read GetTargetFilename write SetTargetFilename;
+    property TargetFilename: string read GetTargetFilename write SetTargetFilename;
     property Units[Index: integer]: TUnitInfo read GetUnits;
     property UpdateLock: integer read FUpdateLock;
     property UseAsDefault: Boolean read FUseAsDefault write FUseAsDefault; // for dialog only (used to store options once)
@@ -2612,12 +2603,12 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
   const OverrideProjectInfoFile: string;
   GlobalMatrixOptions: TBuildMatrixOptions): TModalResult;
 
-  procedure SaveFlags(XMLConfig: TXMLConfig; const Path: string);
+  procedure SaveFlags(aConfig: TXMLConfig; const Path: string);
   var f: TProjectFlag;
   begin
     for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
-      xmlconfig.SetDeleteValue(Path+'General/Flags/'
-            +ProjectFlagNames[f]+'/Value', f in Flags,f in DefaultProjectFlags);
+      aConfig.SetDeleteValue(Path+'General/Flags/'
+            +ProjectFlagNames[f]+'/Value', f in Flags, f in DefaultProjectFlags);
     end;
   end;
   
@@ -2660,7 +2651,7 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
     Result:=true;
   end;
 
-  procedure SaveSessionEnabledNonSessionMatrixOptions(XMLConfig: TXMLConfig;
+  procedure SaveSessionEnabledNonSessionMatrixOptions(aConfig: TXMLConfig;
     const Path: string; MatrixOptions: TBuildMatrixOptions; var Cnt: integer);
   var
     i: Integer;
@@ -2680,13 +2671,13 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
         inc(Cnt);
         SubPath:=Path+'Item'+IntToStr(Cnt)+'/';
         //debugln(['SaveSessionEnabledNonSessionMatrixOptions ModeID="',CurMode.Identifier,'" OptionID="',MatrixOption.ID,'" ',MatrixOption.AsString]);
-        XMLConfig.SetDeleteValue(SubPath+'Mode',CurMode.Identifier,'');
-        XMLConfig.SetDeleteValue(SubPath+'Option',MatrixOption.ID,'');
+        aConfig.SetDeleteValue(SubPath+'Mode',CurMode.Identifier,'');
+        aConfig.SetDeleteValue(SubPath+'Option',MatrixOption.ID,'');
       end;
     end;
   end;
 
-  procedure SaveMacroValuesAtOldPlace(XMLConfig: TXMLConfig; const Path: string;
+  procedure SaveMacroValuesAtOldPlace(aConfig: TXMLConfig; const Path: string;
     aMode: TProjectBuildMode);
   var
     Cnt: Integer;
@@ -2706,8 +2697,8 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
         then begin
           inc(Cnt);
           SubPath:=Path+'Macro'+IntToStr(i+1)+'/';
-          XMLConfig.SetDeleteValue(SubPath+'Name',MatrixOption.MacroName,'');
-          XMLConfig.SetDeleteValue(SubPath+'Value',MatrixOption.Value,'');
+          aConfig.SetDeleteValue(SubPath+'Name',MatrixOption.MacroName,'');
+          aConfig.SetDeleteValue(SubPath+'Value',MatrixOption.Value,'');
         end;
       end;
     end;
@@ -2717,10 +2708,10 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
     Cnt:=0;
     SaveAtOldPlace(BuildModes.SessionMatrixOptions);
     SaveAtOldPlace(BuildModes.SharedMatrixOptions);
-    XMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
+    aConfig.SetDeleteValue(Path+'Count',Cnt,0);
   end;
 
-  procedure SaveBuildModes(XMLConfig: TXMLConfig; const Path: string;
+  procedure SaveBuildModes(aConfig: TXMLConfig; const Path: string;
     SaveData, SaveSession: boolean);
   var
     CurMode: TProjectBuildMode;
@@ -2734,8 +2725,8 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
       // save the default build mode under the old xml path to let old IDEs
       // open new projects
       CurMode:=BuildModes[0];
-      SaveMacroValuesAtOldPlace(XMLConfig,Path+'MacroValues/',CurMode);
-      CurMode.CompilerOptions.SaveToXMLConfig(XMLConfig,'CompilerOptions/'); // no Path!
+      SaveMacroValuesAtOldPlace(aConfig,Path+'MacroValues/',CurMode);
+      CurMode.CompilerOptions.SaveToXMLConfig(aConfig,'CompilerOptions/'); // no Path!
       // Note: the 0.9.29 reader already supports fetching the default build
       //       mode from the BuildModes, so in one or two releases we can switch
     end;
@@ -2750,20 +2741,20 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
       begin
         inc(Cnt);
         SubPath:=Path+'BuildModes/Item'+IntToStr(Cnt)+'/';
-        XMLConfig.SetDeleteValue(SubPath+'Name',CurMode.Identifier,'');
-        XMLConfig.SetDeleteValue(SubPath+'Default',i=0,false);
+        aConfig.SetDeleteValue(SubPath+'Name',CurMode.Identifier,'');
+        aConfig.SetDeleteValue(SubPath+'Default',i=0,false);
         if i>0 then
         begin
-          SaveMacroValuesAtOldPlace(XMLConfig,SubPath+'MacroValues/',CurMode);
-          CurMode.CompilerOptions.SaveToXMLConfig(XMLConfig,SubPath+'CompilerOptions/');
+          SaveMacroValuesAtOldPlace(aConfig,SubPath+'MacroValues/',CurMode);
+          CurMode.CompilerOptions.SaveToXMLConfig(aConfig,SubPath+'CompilerOptions/');
         end;
       end;
     end;
-    XMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
+    aConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
 
     if SaveData then
     begin
-      BuildModes.SharedMatrixOptions.SaveToXMLConfig(XMLConfig,
+      BuildModes.SharedMatrixOptions.SaveToXMLConfig(aConfig,
         Path+'BuildModes/SharedMatrixOptions/',@BuildModes.IsSharedMode);
     end;
 
@@ -2771,38 +2762,39 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
     if SaveSession then
     begin
       // save what mode is currently active in the session
-      XMLConfig.SetDeleteValue(Path+'BuildModes/Active',
+      aConfig.SetDeleteValue(Path+'BuildModes/Active',
         ActiveBuildMode.Identifier,'default');
 
       // save matrix options of session
-      BuildModes.SessionMatrixOptions.SaveToXMLConfig(XMLConfig,
+      BuildModes.SessionMatrixOptions.SaveToXMLConfig(aConfig,
         Path+'BuildModes/SessionMatrixOptions/',nil);
 
       // save what matrix options are enabled in session build modes
       Cnt:=0;
       SubPath:=Path+'BuildModes/SessionEnabledMatrixOptions/';
-      SaveSessionEnabledNonSessionMatrixOptions(XMLConfig,
+      SaveSessionEnabledNonSessionMatrixOptions(aConfig,
         SubPath,BuildModes.SharedMatrixOptions,Cnt);
-      SaveSessionEnabledNonSessionMatrixOptions(XMLConfig,
+      SaveSessionEnabledNonSessionMatrixOptions(aConfig,
         SubPath,GlobalMatrixOptions,Cnt);
-      XMLConfig.SetDeleteValue(SubPath+'Count',Cnt,0);
+      aConfig.SetDeleteValue(SubPath+'Count',Cnt,0);
     end;
   end;
 
-  procedure SaveUnits(XMLConfig: TXMLConfig; const Path: string;
+  procedure SaveUnits(aConfig: TXMLConfig; const Path: string;
     SaveData, SaveSession: boolean);
-  var i, SaveUnitCount: integer;
+  var
+    i, SaveUnitCount: integer;
   begin
     SaveUnitCount:=0;
     for i:=0 to UnitCount-1 do begin
       if UnitMustBeSaved(i,SaveData,SaveSession) then begin
         Units[i].SaveToXMLConfig(
-          xmlconfig,Path+'Units/Unit'+IntToStr(SaveUnitCount)+'/',
+          aConfig,Path+'Units/Unit'+IntToStr(SaveUnitCount)+'/',
           SaveData,SaveSession,fCurStorePathDelim);
         inc(SaveUnitCount);
       end;
     end;
-    xmlconfig.SetDeleteValue(Path+'Units/Count',SaveUnitCount,0);
+    aConfig.SetDeleteValue(Path+'Units/Count',SaveUnitCount,0);
   end;
 
   procedure SaveSessionInfo(aConfig: TXMLConfig; const Path: string);
@@ -2834,7 +2826,7 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
 var
   CfgFilename: String;
   Path: String;
-  xmlconfig: TXMLConfig;
+  XMLConfig: TXMLConfig;
   SaveSessionInfoInLPI: Boolean;
   CurSessionFilename: String; // only set if session should be saved to a separate file
   CurFlags: TProjectWriteFlags;
@@ -2909,7 +2901,7 @@ begin
   if WriteLPI then begin
     repeat
       try
-        xmlconfig := TCodeBufXMLConfig.CreateWithCache(CfgFilename,false);
+        XMLConfig := TCodeBufXMLConfig.CreateWithCache(CfgFilename,false);
       except
         on E: Exception do begin
           DebugLn('Error: ', E.Message);
@@ -2925,40 +2917,38 @@ begin
       try
         Path:='ProjectOptions/';
         // format
-        xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
-        xmlconfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[fCurStorePathDelim],'/');
+        XMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
+        XMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[fCurStorePathDelim],'/');
         SaveFlags(XMLConfig,Path);
-        xmlconfig.SetDeleteValue(Path+'General/SessionStorage/Value',
+        XMLConfig.SetDeleteValue(Path+'General/SessionStorage/Value',
                                  ProjectSessionStorageNames[SessionStorage],
                                  ProjectSessionStorageNames[DefaultProjectSessionStorage]);
 
         // general properties
-        xmlconfig.SetValue(Path+'General/MainUnit/Value', MainUnitID); // always write a value to support opening by older IDEs (<=0.9.28). This can be changed in a few released.
-        xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
+        XMLConfig.SetValue(Path+'General/MainUnit/Value', MainUnitID); // always write a value to support opening by older IDEs (<=0.9.28). This can be changed in a few released.
+        XMLConfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
                                  AutoCreateForms,true);
-        xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
-        xmlconfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
+        XMLConfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
+        XMLConfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
 
         // fpdoc
-        xmlconfig.SetDeleteValue(Path+'LazDoc/Paths',
+        XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',
            SwitchPathDelims(CreateRelativeSearchPath(FPDocPaths,ProjectDirectory),
-                            fCurStorePathDelim),
-           '');
-        xmlconfig.SetDeleteValue(Path+'LazDoc/PackageName',FPDocPackageName,'');
+                            fCurStorePathDelim), '');
+        XMLConfig.SetDeleteValue(Path+'LazDoc/PackageName',FPDocPackageName,'');
 
         // i18n
-        xmlconfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
-        xmlconfig.SetDeleteValue(Path+'i18n/EnableI18N/LFM', EnableI18NForLFM, true);
-        xmlconfig.SetDeleteValue(Path+'i18n/OutDir/Value',
+        XMLConfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
+        XMLConfig.SetDeleteValue(Path+'i18n/EnableI18N/LFM', EnableI18NForLFM, true);
+        XMLConfig.SetDeleteValue(Path+'i18n/OutDir/Value',
            SwitchPathDelims(CreateRelativePath(POOutputDirectory,ProjectDirectory),
-                            fCurStorePathDelim) ,
-           '');
+                            fCurStorePathDelim), '');
 
         // Resources
-        ProjResources.WriteToProjectFile(xmlconfig, Path);
+        ProjResources.WriteToProjectFile(XMLConfig, Path);
 
         // save custom data
-        SaveStringToStringTree(xmlconfig,CustomData,Path+'CustomData/');
+        SaveStringToStringTree(XMLConfig,CustomData,Path+'CustomData/');
 
         // Save the macro values and compiler options
         SaveBuildModes(XMLConfig,Path,true,SaveSessionInfoInLPI);
@@ -2991,7 +2981,7 @@ begin
 
         // save lpi to disk
         //debugln(['TProject.WriteProject ',DbgSName(xmlconfig),' CfgFilename=',CfgFilename]);
-        xmlconfig.Flush;
+        XMLConfig.Flush;
         Modified:=false;
         if SaveSessionInfoInLPI then
           SessionModified:=false;
@@ -3004,7 +2994,7 @@ begin
             mtError,[mbRetry,mbAbort]);
         end;
       end;
-      if CompareFilenames(ProjectInfoFile,xmlconfig.Filename)=0 then begin
+      if CompareFilenames(ProjectInfoFile,XMLConfig.Filename)=0 then begin
         // update file buffer
         fProjectInfoFileBuffer:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
         fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
@@ -3014,10 +3004,10 @@ begin
           fProjectInfoFileBufChangeStamp:=CTInvalidChangeStamp;
       end;
       try
-        xmlconfig.Free;
+        XMLConfig.Free;
       except
       end;
-      xmlconfig:=nil;
+      XMLConfig:=nil;
     until Result<>mrRetry;
   end;
 
@@ -3034,7 +3024,7 @@ begin
     SessionSaveResult:=mrCancel;
     repeat
       try
-        xmlconfig := TCodeBufXMLConfig.CreateWithCache(CurSessionFilename,false);
+        XMLConfig := TCodeBufXMLConfig.CreateWithCache(CurSessionFilename,false);
       except
         on E: Exception do begin
           DebugLn('ERROR: ',E.Message);
@@ -3050,9 +3040,9 @@ begin
       try
         Path:='ProjectSession/';
         fCurStorePathDelim:=SessionStorePathDelim;
-        xmlconfig.SetDeleteValue(Path+'PathDelim/Value',
+        XMLConfig.SetDeleteValue(Path+'PathDelim/Value',
                                 PathDelimSwitchToDelim[fCurStorePathDelim],'/');
-        xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
+        XMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
 
         // Save the session build modes
         SaveBuildModes(XMLConfig,Path,false,true);
@@ -3078,10 +3068,10 @@ begin
         end;
       end;
       try
-        xmlconfig.Free;
+        XMLConfig.Free;
       except
       end;
-      xmlconfig:=nil;
+      XMLConfig:=nil;
     until SessionSaveResult<>mrRetry;
     if (Result=mrOk) and (SessionSaveResult<>mrOk) then
       Result:=SessionSaveResult;
@@ -5846,8 +5836,7 @@ begin
   end;
 end;
 
-function TProject.ProjectUnitWithShortFilename(const ShortFilename: string
-  ): TUnitInfo;
+function TProject.ProjectUnitWithShortFilename(const ShortFilename: string): TUnitInfo;
 begin
   Result:=fFirst[uilPartOfProject];
   while Result<>nil do begin
@@ -5889,9 +5878,8 @@ begin
   case SessionStorage of
   pssInProjectInfo: ProjectSessionFile:=ProjectInfoFile;
   pssInProjectDir: ProjectSessionFile:=ChangeFileExt(ProjectInfoFile,'.lps');
-  pssInIDEConfig: ProjectSessionFile:=
-                               AppendPathDelim(GetProjectSessionsConfigPath)
-                               +ExtractFileNameOnly(ProjectInfoFile)+'.lps';
+  pssInIDEConfig: ProjectSessionFile:=AppendPathDelim(GetProjectSessionsConfigPath)
+                                     +ExtractFileNameOnly(ProjectInfoFile)+'.lps';
   pssNone: ProjectSessionFile:='';
   end;
 end;
