@@ -52,9 +52,9 @@ interface
 *)
 
 uses
-  Classes, SysUtils, Graphics, Controls, Forms, LCLProc, Dialogs,
-  StdCtrls, Buttons, FileUtil, Laz2_XMLCfg, ButtonPanel, ExtCtrls,
-  IDEHelpIntf, LazarusIDEStrConsts, IDEProcs, strutils;
+  Classes, SysUtils, Controls, Forms, LCLProc, LCLType, LazConf,
+  StdCtrls, Buttons, FileUtil, Laz2_XMLCfg, ExtCtrls,
+  IDEHelpIntf, LazarusIDEStrConsts, IDEProcs;
 
 type
 
@@ -105,9 +105,6 @@ function AddConditional(Text: string; IsPascal: Boolean):string;
 implementation
 
 {$R *.lfm}
-
-uses
-  LCLType, LazConf;
 
 function ShowConDefDlg: string;
 var
