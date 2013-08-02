@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <PathDelim Value="\"/>
@@ -23,7 +23,7 @@ This package requires: PascalScript from REM Objects (http://www.remobjects.com/
 
 Extends the Editors macro recorder and player. Macros can be written in pascal script. They also have access to additional properties and methods."/>
     <License Value="GPL"/>
-    <Files Count="3">
+    <Files Count="4">
       <Item1>
         <Filename Value="registerems.pas"/>
         <HasRegisterProc Value="True"/>
@@ -37,6 +37,10 @@ Extends the Editors macro recorder and player. Macros can be written in pascal s
         <Filename Value="emscriptclasses.pas"/>
         <UnitName Value="EMScriptClasses"/>
       </Item3>
+      <Item4>
+        <Filename Value="emsselftest.pas"/>
+        <UnitName Value="emsselftest"/>
+      </Item4>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="4">

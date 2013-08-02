@@ -5,8 +5,9 @@ unit EMScriptMacro;
 interface
 
 uses
-  Classes, SysUtils, SrcEditorIntf, IDEMsgIntf, Controls, SynEdit, EMScriptClasses, Laz2_XMLCfg, uPSRuntime,
-  uPSUtils, LazLoggerBase;
+  Classes, SysUtils, SrcEditorIntf, IDEMsgIntf, Controls, SynEdit,
+  EMScriptClasses, Laz2_XMLCfg, uPSRuntime, uPSUtils,
+  LazLoggerBase;
 
 type
 
@@ -24,6 +25,8 @@ type
     FPrivateExec: TEMSTPSExec;
     function GetCompiler: TEMSPSPascalCompiler;
     function GetExec: TEMSTPSExec;
+    procedure SetCompiler(AValue: TEMSPSPascalCompiler);
+    procedure SetExec(AValue: TEMSTPSExec);
   protected
     function  GetMacroName: String; override;
     procedure SetMacroName(AValue: string); override;
@@ -39,8 +42,8 @@ type
 
     procedure Compile;
     procedure FixBeginEnd;
-    property Compiler: TEMSPSPascalCompiler read GetCompiler;
-    property Exec: TEMSTPSExec read GetExec;
+    property Compiler: TEMSPSPascalCompiler read GetCompiler write SetCompiler;
+    property Exec: TEMSTPSExec read GetExec write SetExec;
   public
     constructor Create({%H-}aOwner: TComponent); override;
     destructor Destroy; override;
@@ -57,7 +60,6 @@ type
     function  IsInvalid: Boolean; override;
     function  IsRecording({%H-}AnEditor: TWinControl): Boolean; override;
 
-    procedure MakeTestable;
     property PrivateCompiler: TEMSPSPascalCompiler read FPrivateCompiler write FPrivateCompiler;
     property PrivateExec: TEMSTPSExec read FPrivateExec write FPrivateExec;
   end;
@@ -66,19 +68,19 @@ type
 implementation
 
 var
-  TheCompiler: TEMSPSPascalCompiler;
-  TheExec: TEMSTPSExec;
+  GlobalCompiler: TEMSPSPascalCompiler;
+  GlobalExec: TEMSTPSExec;
 
 { Create global objects }
 
 procedure CreateCompiler;
 begin
-  TheCompiler := TEMSPSPascalCompiler.Create;
+  GlobalCompiler := TEMSPSPascalCompiler.Create;
 end;
 
 procedure CreateExec;
 begin
-  TheExec := TEMSTPSExec.Create;
+  GlobalExec := TEMSTPSExec.Create;
 end;
 
 { TEMSEditorMacro }
@@ -87,14 +89,26 @@ function TEMSEditorMacro.GetCompiler: TEMSPSPascalCompiler;
 begin
   Result := FPrivateCompiler;
   if Result = nil then
-    Result := TheCompiler;
+    Result := GlobalCompiler;
 end;
 
 function TEMSEditorMacro.GetExec: TEMSTPSExec;
 begin
   Result := FPrivateExec;
   if Result = nil then
-    Result := TheExec;
+    Result := GlobalExec;
+end;
+
+procedure TEMSEditorMacro.SetCompiler(AValue: TEMSPSPascalCompiler);
+begin
+  FreeAndNil(FPrivateCompiler);
+  FPrivateCompiler := AValue;
+end;
+
+procedure TEMSEditorMacro.SetExec(AValue: TEMSTPSExec);
+begin
+  FreeAndNil(FPrivateExec);
+  FPrivateExec := AValue;
 end;
 
 function TEMSEditorMacro.GetMacroName: String;
@@ -314,23 +328,13 @@ begin
   Result := False;
 end;
 
-procedure TEMSEditorMacro.MakeTestable;
-begin
-  FreeAndNil(FPrivateExec);
-  FreeAndNil(FPrivateCompiler);
-  TheCompiler := TEMSPSPascalCompiler.Create;
-  TheCompiler.AddSelfTests;
-  TheExec := TEMSTPSExec.Create;
-  TheExec.AddSelfTests;
-end;
-
 initialization
   CreateCompiler;
   CreateExec;
 
 finalization
-  FreeAndNil(TheExec);
-  FreeAndNil(TheCompiler);
+  FreeAndNil(GlobalExec);
+  FreeAndNil(GlobalCompiler);
 
 end.
 

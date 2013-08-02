@@ -7,7 +7,7 @@ unit EditorMacroScript;
 interface
 
 uses
-  RegisterEMS, EMScriptMacro, EMScriptClasses, LazarusPackageIntf;
+  RegisterEMS, EMScriptMacro, EMScriptClasses, EMSSelfTest, LazarusPackageIntf;
 
 implementation
 

@@ -5,8 +5,8 @@ unit TestScriptProcs;
 interface
 
 uses
-  Classes, SysUtils, SynEdit, EMScriptMacro, Controls, Dialogs, Clipbrd, fpcunit, testutils,
-  testregistry;
+  Classes, SysUtils, SynEdit, EMScriptMacro, EMSSelfTest, Controls, Dialogs,
+  Clipbrd, fpcunit, testutils, testregistry;
 
 type
 
@@ -23,6 +23,7 @@ type
   published
     procedure TestBasics;
     procedure TestSynProcs;
+    procedure TestSelfTest;
     procedure TestInteractiv;
   end;
 
@@ -63,8 +64,7 @@ end;
 procedure TTestCase1.TestBasics;
 begin
   FTestSyn := TSynEdit.Create(nil);
-  FTestMacro := TEMSEditorMacro.Create(nil);
-  FTestMacro.MakeTestable;
+  FTestMacro := TEMSelfTestEditorMacro.Create(nil);
   try
     DoTestSimple('SizeOf(TPoint)',   '',
                  'var p: TPoint; begin if SizeOf(p) = ' +IntToStr(SizeOf(TPoint)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd); end.',
@@ -159,8 +159,7 @@ end;
 procedure TTestCase1.TestSynProcs;
 begin
   FTestSyn := TSynEdit.Create(nil);
-  FTestMacro := TEMSEditorMacro.Create(nil);
-  FTestMacro.MakeTestable;
+  FTestMacro := TEMSelfTestEditorMacro.Create(nil);
   try
     {%region Text / point / ecXXX *}
 
@@ -581,11 +580,15 @@ begin
   end;
 end;
 
+procedure TTestCase1.TestSelfTest;
+begin
+  AssertTrue(DoSelfTest);
+end;
+
 procedure TTestCase1.TestInteractiv;
 begin
   FTestSyn := TSynEdit.Create(nil);
-  FTestMacro := TEMSEditorMacro.Create(nil);
-  FTestMacro.MakeTestable;
+  FTestMacro := TEMSelfTestEditorMacro.Create(nil);
   try
 
     DoTestSimple('ShowMessage',   'Y',

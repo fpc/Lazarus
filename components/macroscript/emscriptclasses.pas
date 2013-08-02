@@ -22,17 +22,15 @@ type
   { TEMSTPSExec }
 
   TEMSTPSExec = class(TPSDebugExec)
-  private
+  protected
     FCLassImp: TPSRuntimeClassImporter;
     FSynEdit: TCustomSynEdit;
 
-    procedure AddFuncToExec;
+    procedure AddFuncToExec; virtual;
     procedure AddECFuncToExecEnum(const s: String); // ec... commands
   public
     constructor Create;
     destructor Destroy; override;
-
-    procedure AddSelfTests;
     property SynEdit: TCustomSynEdit read FSynEdit write FSynEdit;
   end;
 
@@ -40,29 +38,31 @@ type
 
   TEMSPSPascalCompiler = class(TPSPascalCompiler)
   private
-    FSelfTests: Boolean;
     procedure AddECFuncToCompEnum(const s: String);
   public
     constructor Create;
-
-    procedure AddSelfTests;
   end;
 
+{$IFDEF PasMacroNoNativeCalls}
+  PPoint = ^TPoint;
 
+function GetSetFromStack(Stack: TPSStack; Idx: Integer): Cardinal;
+function GetEnumFromStack(Stack: TPSStack; Idx: Integer): Cardinal;
+function GetVarPointFromStack(Stack: TPSStack; Idx: Integer): PPoint;
+function GetPointFromStack(Stack: TPSStack; Idx: Integer): TPoint;
+{$ENDIF}
 
-procedure CompRegisterBasics(AComp: TPSPascalCompiler);
-procedure ExecRegisterBasics(AExec: TEMSTPSExec);
-
-procedure CompRegisterTSynEdit(AComp: TPSPascalCompiler);
-procedure ExecRegisterTSynEdit(AExec: TEMSTPSExec);
-
-procedure CompRegisterTClipboard(AComp: TPSPascalCompiler);
-procedure ExecRegisterTClipboard(AExec: TEMSTPSExec);
-
-procedure CompRegisterSelfTests(AComp: TPSPascalCompiler);
-procedure ExecRegisterSelfTests(AExec: TEMSTPSExec);
 
 implementation
+
+procedure CompRegisterBasics(AComp: TPSPascalCompiler); forward;
+procedure ExecRegisterBasics(AExec: TEMSTPSExec); forward;
+
+procedure CompRegisterTSynEdit(AComp: TPSPascalCompiler); forward;
+procedure ExecRegisterTSynEdit(AExec: TEMSTPSExec); forward;
+
+procedure CompRegisterTClipboard(AComp: TPSPascalCompiler); forward;
+procedure ExecRegisterTClipboard(AExec: TEMSTPSExec); forward;
 
 {$IFDEF NeedTPointFix}
 type TPoint2 = record x,y,a,b,c: Longint; end;
@@ -89,9 +89,6 @@ begin
       CompRegisterTSynEdit(S);
       S.AddFunction('function Caller: TSynEdit;');
       CompRegisterTClipboard(S);
-
-      if S.FSelfTests then
-        CompRegisterSelfTests(S);
     end;
 
     Result := True;
@@ -118,12 +115,6 @@ begin
   inherited Create;
   OnUses := @CompilerOnUses;
   BooleanShortCircuit := True;
-  FSelfTests := False;
-end;
-
-procedure TEMSPSPascalCompiler.AddSelfTests;
-begin
-  FSelfTests := True;
 end;
 
 { TEMSTPSExec }
@@ -195,12 +186,6 @@ begin
   ExecRegisterTClipboard(Self);
 end;
 
-procedure TEMSTPSExec.AddSelfTests;
-begin
-  ExecRegisterSelfTests(Self);
-end;
-
-
 {%region RegisterBasics}
 
 Function EMS_MessageDlg(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint): Integer;
@@ -238,16 +223,6 @@ begin
   Result.Y := AY;
 end;
 
-function test_ord_mt(AType: TMsgDlgType): Integer;
-begin
-  Result := ord(AType);
-end;
-
-function test_ord_mb(ABtn: TMsgDlgBtn): Integer;
-begin
-  Result := ord(ABtn);
-end;
-
 const
   DeclMessageDlg        = 'Function MessageDlg(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint): Integer';
   DeclMessageDlgPos     = 'Function MessageDlgPos(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer';
@@ -267,11 +242,6 @@ const
 
   DeclPoint = 'function Point(AX, AY: Integer): TPoint;';
   FuncPoint: function(AX, AY: Integer): {$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF} = @EMS_Point; // @Classes.Point;
-
-  Decltest_ord_mt = 'function test_ord_mt(AType: TMsgDlgType): Integer;';
-  Decltest_ord_mb = 'function test_ord_mb(ABtn: TMsgDlgBtn): Integer;';
-  Functest_ord_mt: function(AType: TMsgDlgType): Integer = @test_ord_mt;
-  Functest_ord_mb: function(ABtn: TMsgDlgBtn): Integer = @test_ord_mb;
 
 procedure CompRegisterBasics(AComp: TPSPascalCompiler);
   procedure AddConst(const Name, FType: TbtString; I: Integer);
@@ -305,35 +275,77 @@ begin
   AComp.AddDelphiFunction(DeclShowMessagePos);
   AComp.AddDelphiFunction(DeclInputBox);
   AComp.AddDelphiFunction(DeclInputQuery);
-
-  // for tests
-  AComp.AddDelphiFunction(Decltest_ord_mb);
-  AComp.AddDelphiFunction(Decltest_ord_mt);
 end;
 
-function ExecBasicHandler({%H-}Caller: TPSExec; p: TPSExternalProcRec; {%H-}Global, Stack: TPSStack): Boolean;
-  function GetSetFromStack(Idx: Integer): Cardinal;
-  var
-    val: PPSVariant;
-    dat: Pointer;
-  begin
-    if Idx < 0 then Idx := Idx + Stack.Count;
-    val := Stack[Idx];
-    if val^.FType.BaseType <> btSet then raise TEMScriptBadParamException.Create('Invalid set');
-    dat := @PPSVariantData(val)^.Data;
-    Result := tbtu32(dat^);
-  end;
-  function GetEnumFromStack(Idx: Integer): Cardinal;
-  var
-    val: PPSVariant;
-    dat: Pointer;
-  begin
-    if Idx < 0 then Idx := Idx + Stack.Count;
-    val := Stack[Idx];
-    if val^.FType.BaseType <> btEnum then raise TEMScriptBadParamException.Create('Invalid set');
-    dat := @PPSVariantData(val)^.Data;
-    Result := tbtu32(dat^);
-  end;
+{$IFDEF PasMacroNoNativeCalls}
+function GetSetFromStack(Stack: TPSStack; Idx: Integer): Cardinal;
+var
+  val: PPSVariant;
+  dat: Pointer;
+begin
+  if Idx < 0 then Idx := Idx + Stack.Count;
+  val := Stack[Idx];
+  if val^.FType.BaseType <> btSet then raise TEMScriptBadParamException.Create('Invalid set');
+  dat := @PPSVariantData(val)^.Data;
+  Result := tbtu32(dat^);
+end;
+
+function GetEnumFromStack(Stack: TPSStack; Idx: Integer): Cardinal;
+var
+  val: PPSVariant;
+  dat: Pointer;
+begin
+  if Idx < 0 then Idx := Idx + Stack.Count;
+  val := Stack[Idx];
+  if val^.FType.BaseType <> btEnum then raise TEMScriptBadParamException.Create('Invalid set');
+  dat := @PPSVariantData(val)^.Data;
+  Result := tbtu32(dat^);
+end;
+
+function GetVarPointFromStack(Stack: TPSStack; Idx: Integer): PPoint;
+var
+  res: PPSVariant;
+  data: Pointer;
+  typerec: TPSTypeRec;
+begin
+  if Idx < 0 then Idx := Idx + Stack.Count;
+  res := Stack[Idx];
+  typerec := res^.FType;
+
+  if typerec.BaseType = btPointer then begin
+    typerec := PPSVariantPointer(res)^.DestType;
+    Result := PPSVariantPointer(res)^.DataDest;
+  end
+  else
+    Result := @(PPSVariantRecord(res)^.data);
+
+  if typerec.BaseType <> btRecord then raise TEMScriptBadParamException.Create('Invalid result type for "point(x,y)"');
+  if typerec.RealSize <> SizeOf({$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF}) then raise TEMScriptBadParamException.Create('Invalid result size for "point(x,y)"');
+  if Result = nil then raise TEMScriptBadParamException.Create('Invalid result data for "point(x,y)"');
+end;
+
+function GetPointFromStack(Stack: TPSStack; Idx: Integer): TPoint;
+var
+  res: PPSVariant;
+  data: Pointer;
+  typerec: TPSTypeRec;
+begin
+  if Idx < 0 then Idx := Idx + Stack.Count;
+  res := Stack[Idx];
+  typerec := res^.FType;
+
+  if typerec.BaseType <> btRecord then raise TEMScriptBadParamException.Create('Invalid result type for "point(x,y)"');
+  if typerec.RealSize <> SizeOf({$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF}) then raise TEMScriptBadParamException.Create('Invalid result size for "point(x,y)"');
+
+  data := @(PPSVariantRecord(res)^.data);
+  if data = nil then raise TEMScriptBadParamException.Create('Invalid result data for "point(x,y)"');
+
+  Result := PPoint(data)^;
+
+end;
+
+function ExecBasicHandler({%H-}Caller: TPSExec; p: TPSExternalProcRec;
+  {%H-}Global, Stack: TPSStack): Boolean;
 var
   res: PPSVariant;
   data: Pointer;
@@ -345,33 +357,21 @@ begin
   case Longint(p.Ext1) of
     0: begin // POINT()
         if Stack.Count < 3 then raise TEMScriptBadParamException.Create('Invalid param count for "Point"');;
-        res := Stack[Stack.Count-1];
-        typerec := res^.FType;
-
-        if typerec.BaseType = btPointer then begin
-          typerec := PPSVariantPointer(res)^.DestType;
-          data := PPSVariantPointer(res)^.DataDest;
-        end
-        else
-          data := @(PPSVariantRecord(res)^.data);
-
-        if typerec.BaseType <> btRecord then raise TEMScriptBadParamException.Create('Invalid result type for "point(x,y)"');
-        if typerec.RealSize <> SizeOf(TPoint) then raise TEMScriptBadParamException.Create('Invalid result size for "point(x,y)"');
-        if data = nil then raise TEMScriptBadParamException.Create('Invalid result data for "point(x,y)"');
+        data := GetVarPointFromStack(Stack, -1);
         TPoint(data^) := Point(Stack.GetInt(-2), Stack.GetInt(-3));
       end;
     50: begin // MessageDlg(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint): Integer';
         if Stack.Count < 5 then raise TEMScriptBadParamException.Create('Invalid param count for "MessageDlg"');;
         Stack.SetInt(-1,
           MessageDlg(Stack.GetAnsiString(-2), TMsgDlgType(Stack.GetUInt(-3)),
-            TMsgDlgButtons(GetSetFromStack(-4)), Stack.GetInt(-5))
+            TMsgDlgButtons(GetSetFromStack(Stack, -4)), Stack.GetInt(-5))
         );
       end;
     51: begin // MessageDlgPos(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer
         if Stack.Count < 7 then raise TEMScriptBadParamException.Create('Invalid param count for "MessageDlgPos"');;
         Stack.SetInt(-1,
           MessageDlgPos(Stack.GetAnsiString(-2), TMsgDlgType(Stack.GetUInt(-3)),
-            TMsgDlgButtons(GetSetFromStack(-4)), Stack.GetInt(-5),
+            TMsgDlgButtons(GetSetFromStack(Stack, -4)), Stack.GetInt(-5),
             Stack.GetInt(-6), Stack.GetInt(-7) )
         );
       end;
@@ -379,7 +379,7 @@ begin
         if Stack.Count < 8 then raise TEMScriptBadParamException.Create('Invalid param count for "MessageDlgPosHelp"');;
         Stack.SetInt(-1,
           MessageDlgPosHelp(Stack.GetAnsiString(-2), TMsgDlgType(Stack.GetUInt(-3)),
-            TMsgDlgButtons(GetSetFromStack(-4)), Stack.GetInt(-5),
+            TMsgDlgButtons(GetSetFromStack(Stack, -4)), Stack.GetInt(-5),
             Stack.GetInt(-6), Stack.GetInt(-7), Stack.GetAnsiString(-8))
         );
       end;
@@ -408,19 +408,11 @@ begin
         );
         tbtstring(temp.Dta^) := s;
       end;
-    900: begin // test_ord_mb(ABtn: TMsgDlgBtn): Integer;
-        if Stack.Count < 2 then raise TEMScriptBadParamException.Create('Invalid param count for "test_ord_mb"');
-        Stack.SetInt(-1, test_ord_mb(TMsgDlgBtn(Stack.GetUInt(-2))) );
-      end;
-    901: begin // test_ord_mt(AType: TMsgDlgType): Integer;
-        if Stack.Count < 2 then raise TEMScriptBadParamException.Create('Invalid param count for "test_ord_mt"');
-        //  Stack[Stack.Count-2]^.FType.ExportName = 'TMSGDLGTYPE'
-        Stack.SetInt(-1, test_ord_mt(TMsgDlgType(Stack.GetUInt(-2))) );
-      end;
     else
       Result := False;
   end;
 end;
+{$ENDIF}
 
 procedure ExecRegisterBasics(AExec: TEMSTPSExec);
 begin
@@ -790,26 +782,5 @@ begin
 end;
 
 {%endregion RegisterTClipboard}
-
-{%region RegisterSelfTests}
-
-procedure CompRegisterSelfTests(AComp: TPSPascalCompiler);
-begin
-
-end;
-
-procedure ExecRegisterSelfTests(AExec: TEMSTPSExec);
-begin
-  // for tests
-  {$IFnDEF PasMacroNoNativeCalls}
-  AExec.RegisterDelphiFunction(Functest_ord_mb, 'test_ord_mb', cdRegister);
-  AExec.RegisterDelphiFunction(Functest_ord_mt, 'test_ord_mt', cdRegister);
-  {$ELSE}
-  AExec.RegisterFunctionName('test_ord_mb',       @ExecBasicHandler, Pointer(900), nil);
-  AExec.RegisterFunctionName('test_ord_mt',       @ExecBasicHandler, Pointer(901), nil);
-  {$ENDIF}
-end;
-
-{%endregion RegisterSelfTests}
 
 end.
