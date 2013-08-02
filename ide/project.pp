@@ -3217,7 +3217,7 @@ var
     MatrixOption.EnableMode(ModeID);
   end;
 
-  procedure LoadSessionEnabledNonSessionMatrixOptions(XMLConfig: TXMLConfig;
+  procedure LoadSessionEnabledNonSessionMatrixOptions(aConfig: TXMLConfig;
     const Path: string);
   var
     Cnt: integer;
@@ -3231,15 +3231,15 @@ var
       GlobalMatrixOptions.DisableModes(@BuildModes.IsSessionMode);
     BuildModes.SharedMatrixOptions.DisableModes(@BuildModes.IsSessionMode);
     // load
-    Cnt:=XMLConfig.GetValue(Path+'Count',0);
+    Cnt:=aConfig.GetValue(Path+'Count',0);
     for i:=1 to Cnt do begin
       SubPath:=Path+'Item'+IntToStr(i)+'/';
-      ModeID:=XMLConfig.GetValue(SubPath+'Mode','');
+      ModeID:=aConfig.GetValue(SubPath+'Mode','');
       if (ModeID='') or (not BuildModes.IsSessionMode(ModeID)) then begin
         debugln(['LoadSessionEnabledNonSessionMatrixOptions not a session Mode="',dbgstr(ModeID),'" at ',SubPath]);
         continue;
       end;
-      OptionID:=XMLConfig.GetValue(SubPath+'Option','');
+      OptionID:=aConfig.GetValue(SubPath+'Option','');
       if OptionID='' then begin
         debugln(['LoadSessionEnabledNonSessionMatrixOptions invalid option at ',SubPath]);
         continue;
@@ -3295,7 +3295,7 @@ var
     end;
   end;
 
-  procedure LoadOldMacroValues(XMLConfig: TXMLConfig; const Path: string;
+  procedure LoadOldMacroValues(aConfig: TXMLConfig; const Path: string;
     CurMode: TProjectBuildMode);
   var
     Cnt: Integer;
@@ -3305,19 +3305,19 @@ var
     MacroValue: String;
   begin
     // load macro values of old IDE (<1.1)
-    Cnt:=XMLConfig.GetValue(Path+'Count',0);
+    Cnt:=aConfig.GetValue(Path+'Count',0);
     //debugln(['LoadOldMacroValues Cnt=',Cnt]);
     for i:=1 to Cnt do begin
       SubPath:=Path+'Macro'+IntToStr(i)+'/';
-      MacroName:=XMLConfig.GetValue(SubPath+'Name','');
+      MacroName:=aConfig.GetValue(SubPath+'Name','');
       if (MacroName='') or not IsValidIdent(MacroName) then continue;
-      MacroValue:=XMLConfig.GetValue(SubPath+'Value','');
+      MacroValue:=aConfig.GetValue(SubPath+'Value','');
       //debugln(['LoadOldMacroValues Mode="',CurMode.Identifier,'" ',MacroName,'="',MacroValue,'" session=',CurMode.InSession]);
       AddMatrixMacro(MacroName,MacroValue,CurMode.Identifier,CurMode.InSession);
     end;
   end;
 
-  procedure LoadBuildModes(XMLConfig: TXMLConfig; const Path: string;
+  procedure LoadBuildModes(aConfig: TXMLConfig; const Path: string;
     LoadData: boolean);
   var
     CompOptsPath: String;
@@ -3340,7 +3340,7 @@ var
     // load matrices
     if LoadData then begin
       // load matrix options of project (not session)
-      BuildModes.SharedMatrixOptions.LoadFromXMLConfig(XMLConfig,
+      BuildModes.SharedMatrixOptions.LoadFromXMLConfig(aConfig,
                                         Path+'BuildModes/SharedMatrixOptions/');
       //debugln(['LoadBuildModes BuildModes.SharedMatrixOptions.Count=',BuildModes.SharedMatrixOptions.Count]);
       //for i:=0 to BuildModes.SharedMatrixOptions.Count-1 do
@@ -3348,17 +3348,17 @@ var
     end;
     if (not LoadData) and (not LoadParts) then begin
       // load matrix options of session
-      BuildModes.SessionMatrixOptions.LoadFromXMLConfig(XMLConfig,
+      BuildModes.SessionMatrixOptions.LoadFromXMLConfig(aConfig,
                                        Path+'BuildModes/SessionMatrixOptions/');
     end;
 
     // load build modes
-    Cnt:=XMLConfig.GetValue(Path+'BuildModes/Count',0);
+    Cnt:=aConfig.GetValue(Path+'BuildModes/Count',0);
     //debugln(['LoadBuildModes Cnt=',Cnt,' LoadData=',LoadData]);
     if Cnt>0 then begin
       for i:=1 to Cnt do begin
         SubPath:=Path+'BuildModes/Item'+IntToStr(i)+'/';
-        ModeIdentifier:=XMLConfig.GetValue(SubPath+'Name','');
+        ModeIdentifier:=aConfig.GetValue(SubPath+'Name','');
         if LoadData and (i=1) then begin
           // load the default mode (it already exists)
           CurMode:=BuildModes[0];
@@ -3367,13 +3367,13 @@ var
           // add another mode
           CurMode:=BuildModes.Add(ModeIdentifier);
 
-        if LoadData and (i=1) and XMLConfig.GetValue(SubPath+'Default',false) then
+        if LoadData and (i=1) and aConfig.GetValue(SubPath+'Default',false) then
         begin
           // this is the default mode and it is stored at the old xml path
           CompOptsPath:='CompilerOptions/';
           // due to an old bug, the XML path can be 'CompilerOptions/' or ''
           if (FileVersion<3)
-          and (XMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
+          and (aConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
             CompOptsPath:='';
           MacroValsPath:=Path+'MacroValues/';
         end else begin
@@ -3382,8 +3382,8 @@ var
         end;
 
         CurMode.InSession:=not LoadData;
-        LoadOldMacroValues(XMLConfig,MacroValsPath,CurMode);
-        CurMode.CompilerOptions.LoadFromXMLConfig(XMLConfig,CompOptsPath);
+        LoadOldMacroValues(aConfig,MacroValsPath,CurMode);
+        CurMode.CompilerOptions.LoadFromXMLConfig(aConfig,CompOptsPath);
       end;
 
     end else if LoadData then begin
@@ -3391,35 +3391,35 @@ var
       CompOptsPath:='CompilerOptions/';
       // due to a bug in an old version, the XML path can be 'CompilerOptions/' or ''
       if (FileVersion<3)
-      and (XMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
+      and (aConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
         CompOptsPath:='';
       MacroValsPath:=Path+'MacroValues/';
       CurMode:=BuildModes[0];
-      LoadOldMacroValues(XMLConfig,MacroValsPath,CurMode);
-      if XMLConfig.GetValue(CompOptsPath+'Version/Value', 0)<10 then begin
+      LoadOldMacroValues(aConfig,MacroValsPath,CurMode);
+      if aConfig.GetValue(CompOptsPath+'Version/Value', 0)<10 then begin
         // LCLWidgetType was not a macro but a property of its own
-        s := XMLConfig.GetValue(CompOptsPath+'LCLWidgetType/Value', '');
+        s := aConfig.GetValue(CompOptsPath+'LCLWidgetType/Value', '');
         if (s<>'') and (SysUtils.CompareText(s,'default')<>0) then
           AddMatrixMacro('LCLWidgetType',s,'default',false);
       end;
-      CurMode.CompilerOptions.LoadFromXMLConfig(XMLConfig,CompOptsPath);
+      CurMode.CompilerOptions.LoadFromXMLConfig(aConfig,CompOptsPath);
     end;
 
     if (not LoadData) and (not LoadParts) then begin
       // load what matrix options are enabled in session build modes
       SubPath:=Path+'BuildModes/SessionEnabledMatrixOptions/';
-      LoadSessionEnabledNonSessionMatrixOptions(XMLConfig,SubPath);
+      LoadSessionEnabledNonSessionMatrixOptions(aConfig,SubPath);
     end;
 
     // set active mode
-    ActiveIdentifier:=XMLConfig.GetValue(Path+'BuildModes/Active','default');
+    ActiveIdentifier:=aConfig.GetValue(Path+'BuildModes/Active','default');
     CurMode:=BuildModes.Find(ActiveIdentifier);
     if CurMode=nil then
       CurMode:=BuildModes[0];
     ActiveBuildMode:=CurMode;
   end;
 
-  function ReadOldProjectType(XMLConfig: TXMLConfig;
+  function ReadOldProjectType(aConfig: TXMLConfig;
     const Path: string): TOldProjectType;
 
     function OldProjectTypeNameToType(const s: string): TOldProjectType;
@@ -3431,13 +3431,13 @@ var
 
   begin
     if FileVersion<=4 then
-      Result := OldProjectTypeNameToType(xmlconfig.GetValue(
+      Result := OldProjectTypeNameToType(aConfig.GetValue(
                                           Path+'General/ProjectType/Value', ''))
     else
       Result := ptCustomProgram;
   end;
 
-  procedure LoadFlags(XMLConfig: TXMLConfig; const Path: string);
+  procedure LoadFlags(aConfig: TXMLConfig; const Path: string);
   
     procedure SetFlag(f: TProjectFlag; Value: boolean);
     begin
@@ -3449,13 +3449,13 @@ var
     OldProjectType: TOldProjectType;
     DefFlags: TProjectFlags;
   begin
-    OldProjectType:=ReadOldProjectType(XMLConfig,Path);
+    OldProjectType:=ReadOldProjectType(aConfig,Path);
     DefFlags:=DefaultProjectFlags;
     if FileVersion<7 then
       Exclude(DefFlags,pfLRSFilesInOutputDirectory);
     FFlags:=[];
     for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
-      SetFlag(f,xmlconfig.GetValue(
+      SetFlag(f,aConfig.GetValue(
              Path+'General/Flags/'+ProjectFlagNames[f]+'/Value',f in DefFlags));
     end;
     if FileVersion<=3 then begin
@@ -3469,21 +3469,21 @@ var
     FFlags:=FFlags-[pfUseDefaultCompilerOptions];
   end;
 
-  procedure LoadCustomDefines(XMLConfig: TXMLConfig; const Path: string; Merge: boolean);
+  procedure LoadCustomDefines(aConfig: TXMLConfig; const Path: string; Merge: boolean);
   var
     Cnt, i: Integer;
     s: String;
   begin
-    Cnt := XMLConfig.GetValue(Path+'CustomDefines/Count', 0);
+    Cnt := aConfig.GetValue(Path+'CustomDefines/Count', 0);
     for i := 0 to Cnt-1 do
     begin
-      s := XMLConfig.GetValue(Path+'CustomDefines/Define'+IntToStr(i)+'/Value', '');
+      s := aConfig.GetValue(Path+'CustomDefines/Define'+IntToStr(i)+'/Value', '');
       if s <> '' then
         FCustomDefines.Add(s);
     end;
   end;
 
-  procedure LoadSessionInfo(XMLConfig: TXMLConfig; const Path: string; Merge: boolean);
+  procedure LoadSessionInfo(aConfig: TXMLConfig; const Path: string; Merge: boolean);
   var
     NewUnitInfo: TUnitInfo;
     NewUnitCount, i, j: integer;
@@ -3493,10 +3493,10 @@ var
     MergeUnitInfo: Boolean;
   begin
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
-    NewUnitCount:=xmlconfig.GetValue(Path+'Units/Count',0);
+    NewUnitCount:=aConfig.GetValue(Path+'Units/Count',0);
     for i := 0 to NewUnitCount - 1 do begin
       SubPath:=Path+'Units/Unit'+IntToStr(i)+'/';
-      NewUnitFilename:=XMLConfig.GetValue(SubPath+'Filename/Value','');
+      NewUnitFilename:=aConfig.GetValue(SubPath+'Filename/Value','');
       OnLoadSaveFilename(NewUnitFilename,true);
       // load unit and add it
       OldUnitInfo:=UnitInfoWithFilename(NewUnitFilename);
@@ -3516,7 +3516,7 @@ var
         MergeUnitInfo:=false;
       end;
 
-      NewUnitInfo.LoadFromXMLConfig(xmlconfig,SubPath,MergeUnitInfo,Merge,FileVersion);
+      NewUnitInfo.LoadFromXMLConfig(aConfig,SubPath,MergeUnitInfo,Merge,FileVersion);
       if i=NewMainUnitID then begin
         MainUnitID:=IndexOf(NewUnitInfo);
         NewMainUnitID:=-1;
@@ -3524,8 +3524,7 @@ var
     end;
 
     // load editor info
-    i := xmlconfig.GetValue(
-       Path+'General/ActiveEditorIndexAtStart/Value', -1);
+    i := aConfig.GetValue(Path+'General/ActiveEditorIndexAtStart/Value', -1);
     if (i >= 0) then begin
       // Load old Config => No WindowIndex
       j := AllEditorsInfoCount - 1;
@@ -3536,18 +3535,18 @@ var
       end;
     end;
 
-    ActiveWindowIndexAtStart := xmlconfig.GetValue(
+    ActiveWindowIndexAtStart := aConfig.GetValue(
        Path+'General/ActiveWindowIndexAtStart/Value', 0);
-    FSkipCheckLCLInterfaces:=xmlconfig.GetValue(
+    FSkipCheckLCLInterfaces:=aConfig.GetValue(
        Path+'SkipCheckLCLInterfaces/Value',false);
-    FJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
-    CleanOutputFileMask:=xmlconfig.GetValue(Path+'Build/CleanOutputFileMask/Value',
+    FJumpHistory.LoadFromXMLConfig(aConfig,Path+'');
+    CleanOutputFileMask:=aConfig.GetValue(Path+'Build/CleanOutputFileMask/Value',
                  DefaultProjectCleanOutputFileMask);
-    CleanSourcesFileMask:=xmlconfig.GetValue(Path+'Build/CleanSourcesFileMask/Value',
+    CleanSourcesFileMask:=aConfig.GetValue(Path+'Build/CleanSourcesFileMask/Value',
                  DefaultProjectCleanSourcesFileMask);
 
     // load custom session data
-    LoadStringToStringTree(xmlconfig,CustomSessionData,Path+'CustomSessionData/');
+    LoadStringToStringTree(aConfig,CustomSessionData,Path+'CustomSessionData/');
   end;
   
   procedure LoadDefaultSession;
@@ -3594,7 +3593,7 @@ var
   
 var
   Path: String;
-  xmlconfig: TXMLConfig;
+  XMLConfig: TXMLConfig;
 begin
   Result := mrCancel;
   LoadParts:=prfLoadParts in ReadFlags;
@@ -3603,7 +3602,7 @@ begin
     if LoadParts then begin
       // read only parts of the lpi, keep other values
       try
-        xmlconfig := TCodeBufXMLConfig.CreateWithCache(NewProjectInfoFile,true)
+        XMLConfig := TCodeBufXMLConfig.CreateWithCache(NewProjectInfoFile,true)
       except
         on E: Exception do begin
           IDEMessageDialog(lisUnableToReadLpi,
@@ -3624,9 +3623,9 @@ begin
         fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
         {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject A reading lpi');{$ENDIF}
         if fProjectInfoFileBuffer=nil then
-          xmlconfig := TCodeBufXMLConfig.CreateWithCache(ProjectInfoFile,false)
+          XMLConfig := TCodeBufXMLConfig.CreateWithCache(ProjectInfoFile,false)
         else begin
-          xmlconfig := TCodeBufXMLConfig.CreateWithCache(ProjectInfoFile,false,true,
+          XMLConfig := TCodeBufXMLConfig.CreateWithCache(ProjectInfoFile,false,true,
                                                    fProjectInfoFileBuffer.Source);
           fProjectInfoFileBufChangeStamp:=fProjectInfoFileBuffer.ChangeStep;
         end;
@@ -3657,7 +3656,7 @@ begin
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
       FileVersion:= XMLConfig.GetValue(Path+'Version/Value',0);
       if (Fileversion=0) and (not LoadParts)
-      and (xmlconfig.GetValue(Path+'Units/Count',0)=0) then
+      and (XMLConfig.GetValue(Path+'Units/Count',0)=0) then
       begin
         if IDEMessageDialog(lisStrangeLpiFile,
           Format(lisTheFileDoesNotLookLikeALpiFile, [ProjectInfoFile]),
@@ -3679,31 +3678,30 @@ begin
       //   Changing the default value to 0 avoids the redundancy and
       //   automatically fixes broken lpi files.
       if not LoadParts then begin
-        NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', 0);
-        Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
-        UseAppBundle := xmlconfig.GetValue(Path+'General/UseAppBundle/Value', True);
-        AutoCreateForms := xmlconfig.GetValue(
-           Path+'General/AutoCreateForms/Value', true);
+        NewMainUnitID := XMLConfig.GetValue(Path+'General/MainUnit/Value', 0);
+        Title := XMLConfig.GetValue(Path+'General/Title/Value', '');
+        UseAppBundle := XMLConfig.GetValue(Path+'General/UseAppBundle/Value', True);
+        AutoCreateForms := XMLConfig.GetValue(Path+'General/AutoCreateForms/Value', true);
       end;
 
       // fpdoc
       if not LoadParts then begin
-        FPDocPaths := SwitchPathDelims(xmlconfig.GetValue(Path+'LazDoc/Paths', ''),
+        FPDocPaths := SwitchPathDelims(XMLConfig.GetValue(Path+'LazDoc/Paths', ''),
                                fPathDelimChanged);
-        FPDocPackageName:=xmlconfig.GetValue(Path+'LazDoc/PackageName','');
+        FPDocPackageName:=XMLConfig.GetValue(Path+'LazDoc/PackageName','');
       end;
 
       // i18n
       if not LoadParts then begin
         if FileVersion<6 then begin
           POOutputDirectory := SwitchPathDelims(
-                     xmlconfig.GetValue(Path+'RST/OutDir', ''),fPathDelimChanged);
+                     XMLConfig.GetValue(Path+'RST/OutDir', ''),fPathDelimChanged);
           EnableI18N := POOutputDirectory <> '';
         end else begin
-          EnableI18N := xmlconfig.GetValue(Path+'i18n/EnableI18N/Value', False);
-          EnableI18NForLFM := xmlconfig.GetValue(Path+'i18n/EnableI18N/LFM', True);
+          EnableI18N := XMLConfig.GetValue(Path+'i18n/EnableI18N/Value', False);
+          EnableI18NForLFM := XMLConfig.GetValue(Path+'i18n/EnableI18N/LFM', True);
           POOutputDirectory := SwitchPathDelims(
-               xmlconfig.GetValue(Path+'i18n/OutDir/Value', ''),fPathDelimChanged);
+               XMLConfig.GetValue(Path+'i18n/OutDir/Value', ''),fPathDelimChanged);
         end;
         {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
       end;
@@ -3713,11 +3711,11 @@ begin
 
       // Resources
       if not LoadParts then
-        ProjResources.ReadFromProjectFile(xmlconfig, Path);
+        ProjResources.ReadFromProjectFile(XMLConfig, Path);
 
       // load custom data
       if not LoadParts then
-        LoadStringToStringTree(xmlconfig,CustomData,Path+'CustomData/');
+        LoadStringToStringTree(XMLConfig,CustomData,Path+'CustomData/');
       
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
       if not LoadParts then begin
@@ -3733,7 +3731,7 @@ begin
 
       // load the Run and Build parameter Options
       if not LoadParts then
-        RunParameterOptions.Load(xmlconfig,Path,fPathDelimChanged);
+        RunParameterOptions.Load(XMLConfig,Path,fPathDelimChanged);
 
       // load the Publish Options
       if not LoadParts then
@@ -3756,11 +3754,11 @@ begin
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
       fPathDelimChanged:=false;
       try
-        xmlconfig.Modified:=false;
-        xmlconfig.Free;
+        XMLConfig.Modified:=false;
+        XMLConfig.Free;
       except
       end;
-      xmlconfig:=nil;
+      XMLConfig:=nil;
     end;
 
     // load session file (if available)
@@ -3770,7 +3768,7 @@ begin
       if FileExistsUTF8(ProjectSessionFile) then begin
         //DebugLn('TProject.ReadProject loading Session ProjectSessionFile=',ProjectSessionFile);
         try
-          xmlconfig := TCodeBufXMLConfig.CreateWithCache(ProjectSessionFile);
+          XMLConfig := TCodeBufXMLConfig.CreateWithCache(ProjectSessionFile);
 
           Path:='ProjectSession/';
           SessionStorePathDelim:=CheckPathDelim(
@@ -3803,12 +3801,12 @@ begin
 
         fPathDelimChanged:=false;
         try
-          xmlconfig.Modified:=false;
-          xmlconfig.Free;
+          XMLConfig.Modified:=false;
+          XMLConfig.Free;
         except
         end;
         fCurStorePathDelim:=StorePathDelim;
-        xmlconfig:=nil;
+        XMLConfig:=nil;
       end else begin
         // there is no .lps file -> create some defaults
         LoadDefaultSession;

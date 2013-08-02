@@ -44,8 +44,7 @@ uses
   {$ELSE}
   OutputFilter,
   {$ENDIF}
-  UTF8Process,
-  InfoBuild, IDEMsgIntf, LazIDEIntf, ProjectIntf, CompOptsIntf;
+  UTF8Process, InfoBuild, IDEMsgIntf, CompOptsIntf;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean) of object;

@@ -5,9 +5,8 @@ unit AllCompilerOptions;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  contnrs, Buttons, ButtonPanel, EditBtn,
-  LCLProc, FileProcs, EnvironmentOpts, Compiler, LazarusIDEStrConsts;
+  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, contnrs, Buttons,
+  ButtonPanel, EditBtn, LCLProc, EnvironmentOpts, Compiler, LazarusIDEStrConsts;
 
 type
 

@@ -25,9 +25,8 @@ unit CustomDefines;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, Forms, LCLProc, Dialogs,
-  StdCtrls, Buttons, FileUtil, ButtonPanel, ExtCtrls, CheckLst, strutils,
-  IDEHelpIntf, LazarusIDEStrConsts, IDEProcs, Compiler;
+  Classes, Forms, StdCtrls, Buttons, ButtonPanel, CheckLst, LCLType,
+  IDEHelpIntf, LazarusIDEStrConsts, Compiler;
 
 type
 
@@ -64,14 +63,9 @@ implementation
 
 {$R *.lfm}
 
-uses
-  LCLType, LazConf;
-
 { TCustomDefinesForm }
 
 procedure TCustomDefinesForm.FormCreate(Sender: TObject);
-var
-  i: Integer;
 begin
   Caption := lisLazBuildDefines;
   gbNewDefine.Caption := lisCodeToolsDefsDefine;
