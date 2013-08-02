@@ -280,8 +280,7 @@ begin
   if Assigned(FOnTabDragOver) then
     FOnTabDragOver(Self,Source,X,Y,State,Accept);
 
-  if ((state = dsDragLeave) or (TabId < 0)) and
-     (FDragOverIndex >= 0)
+  if ((state = dsDragLeave) or (TabId < 0)) and (FDragOverIndex >= 0)
   then begin
     InvalidateRect(FDragOverTabRect);
     InvalidateRect(FDragNextToTabRect);
@@ -501,7 +500,7 @@ begin
     Accept := True;
     if Assigned(FOnTabDragOverEx) then
       FOnTabDragOverEx(Self, Source, Src.DraggingTabIndex, TabId, Ctrl, Accept);
- 	if Accept then
+    if Accept then
       FOnTabDragDropEx(Self, Source, Src.DraggingTabIndex, TabId, Ctrl, FTabDragged);
   end;
 
