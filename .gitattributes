@@ -2405,6 +2405,7 @@ components/macroscript/editormacroscript.lpk svneol=native#text/pascal
 components/macroscript/editormacroscript.pas svneol=native#text/pascal
 components/macroscript/emscriptclasses.pas svneol=native#text/pascal
 components/macroscript/emscriptmacro.pas svneol=native#text/pascal
+components/macroscript/emsselftest.pas svneol=native#text/pascal
 components/macroscript/registerems.pas svneol=native#text/pascal
 components/macroscript/test/TestMacroScript.lpi svneol=native#text/plain
 components/macroscript/test/TestMacroScript.lpr svneol=native#text/plain
