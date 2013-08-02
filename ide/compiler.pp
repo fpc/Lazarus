@@ -187,11 +187,16 @@ type
 
   TCompilerOptReader = class
   private
+    // Defines (-d...) are separated from custom options and stored here.
+    fDefines: TStringList;
+    // All options except for defines.
+    fOtherOptions: TStringList;
     // Lists of selections parsed from "fpc -i". Contains supported technologies.
     fSupportedCategories: TStringList;
+    // Hierarchy of options parsed from "fpc -h".
     fRootOptGroup: TCompilerOptGroup;
-    fCompilerExecutable: string;
-    fCompilerVersion: string;
+    fCompilerExecutable: string;         // Copiler path must be set by caller.
+    fCompilerVersion: string;            // Parsed from "fpc -h".
     fErrorMsg: String;
     function ReadFpcWithParam(aParam: string; aLines: TStringList): TModalResult;
     procedure ReadVersion(s: string);
@@ -207,6 +212,8 @@ type
     function FromCustomOptions(aStrings: TStrings): TModalResult;
     function ToCustomOptions(aStrings: TStrings; aUseComments: Boolean): TModalResult;
   public
+    property Defines: TStringList read fDefines;
+    property OtherOptions: TStringList read fOtherOptions;
     property SupportedCategories: TStringList read fSupportedCategories;
     property RootOptGroup: TCompilerOptGroup read fRootOptGroup;
     property CompilerExecutable: string read fCompilerExecutable write fCompilerExecutable;
@@ -722,6 +729,8 @@ end;
 constructor TCompilerOptReader.Create;
 begin
   inherited Create;
+  fDefines := TStringList.Create;
+  fOtherOptions := TStringList.Create;
   fSupportedCategories := TStringList.Create;
   fRootOptGroup := TCompilerOptGroup.Create(Nil);
 end;
@@ -734,6 +743,8 @@ begin
   for i := 0 to fSupportedCategories.Count-1 do
     fSupportedCategories.Objects[i].Free;
   fSupportedCategories.Free;
+  fOtherOptions.Free;
+  fDefines.Free;
   inherited Destroy;
 end;
 
@@ -971,6 +982,7 @@ end;
 function TCompilerOptReader.FromCustomOptions(aStrings: TStrings): TModalResult;
 var
   i, j, CommentPos: Integer;
+  HasDefine: Boolean;
   s: String;
   sl: TStringList;
 begin
@@ -984,11 +996,20 @@ begin
       CommentPos := Pos('//', s);
       if CommentPos > 0 then         // Remove possible comment.
         s := TrimRight(Copy(s, 1, CommentPos));
+      HasDefine := Pos('-d', s) > 0;
+      if not HasDefine then
+        fOtherOptions.Add(s); // Don't split the line for other options if no defines.
       sl.StrictDelimiter := True;
       sl.Delimiter := ' ';
       sl.DelimitedText := s;         // Split the line with space as a separator.
       for j := 0 to sl.Count-1 do
-        fRootOptGroup.SelectOption(sl[j]);
+        if AnsiStartsStr('-d', sl[j]) then
+          fDefines.Add(sl[j])
+        else begin
+          fRootOptGroup.SelectOption(sl[j]);
+          if HasDefine then
+            fOtherOptions.Add(sl[j]);
+        end;
     end;
   finally
     sl.Free;
@@ -1007,10 +1028,10 @@ function TCompilerOptReader.ToCustomOptions(aStrings: TStrings;
       Result := '';
   end;
 
-  function CopyOptions(aRoot: TCompilerOpt): integer;
+  procedure CopyOptions(aRoot: TCompilerOpt);
   var
     Children: TCompilerOptList;
-    i, Res: Integer;
+    i: Integer;
     s: string;
   begin
     if aRoot is TCompilerOptGroup then
@@ -1024,7 +1045,7 @@ function TCompilerOptReader.ToCustomOptions(aStrings: TStrings;
       end
       else begin             // TCompilerOptGroup
         for i := 0 to Children.Count-1 do         // Recursive call for children.
-          Res := CopyOptions(TCompilerOpt(Children[i]));
+          CopyOptions(TCompilerOpt(Children[i]));
       end;
     end
     else begin               // TCompilerOpt
@@ -1036,12 +1057,13 @@ function TCompilerOptReader.ToCustomOptions(aStrings: TStrings;
           aStrings.Add(aRoot.Option + aRoot.Value + PossibleComment(aRoot));
       end;
     end;
-    Result := Res;
   end;
 
 begin
+  Result := mrOK;
   aStrings.Clear;
-  Result := CopyOptions(fRootOptGroup);
+  CopyOptions(fRootOptGroup);
+  aStrings.AddStrings(fDefines);
 end;
 
 end.

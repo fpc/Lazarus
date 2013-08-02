@@ -3144,7 +3144,6 @@ resourcestring
   lisLazBuildABOChooseOutputDir = 'Choose output directory of the IDE executable ';
   lisLazBuildDefines = 'Defines';
   lisLazBuildEditDefines = 'Edit Defines';
-  lisLazBuildEditDefinesDialogCaption = 'Edit Defines';
   lisLazBuildNameOfTheActiveProfile = 'Name of the active profile';
   lisLazBuildManageProfiles2 = 'Manage profiles';
   lisLazBuildDefinesWithoutD = 'Defines without -d';
@@ -5371,6 +5370,8 @@ resourcestring
   lisHintADefaultValueCanBeDefinedInTheConditionals = 'Hint: A default value '
     +'can be defined in the conditionals.';
   lisConditionals = 'Conditionals';
+  lisDlgAllOptions = 'All options ...';
+  lisDlgDefines = 'Defines ...';
   lisWithIncludes = '%s, with includes %s';
   lisWithIncludes2 = ', with includes ';
   lisParsed = ', parsed ';

@@ -702,7 +702,6 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     TabOrder = 2
     object memoCustomOptions: TMemo
       AnchorSideLeft.Control = grpCustomOptions
-      AnchorSideRight.Control = btnAllOptions
       AnchorSideBottom.Control = grpCustomOptions
       AnchorSideBottom.Side = asrBottom
       Left = 0
@@ -713,11 +712,38 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       BorderSpacing.Right = 6
       TabOrder = 0
     end
-    object btnAllOptions: TButton
+    object Label1: TLabel
+      AnchorSideRight.Control = grpCustomOptions
+      AnchorSideRight.Side = asrBottom
+      Left = 417
+      Height = 15
+      Top = 30
+      Width = 38
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 21
+      Caption = 'Under'
+      Font.Color = clMaroon
+      ParentColor = False
+      ParentFont = False
+    end
+    object Label2: TLabel
+      AnchorSideRight.Control = grpCustomOptions
+      AnchorSideRight.Side = asrBottom
+      Left = 385
+      Height = 15
+      Top = 45
+      Width = 91
+      Anchors = [akTop, akRight]
+      Caption = 'construction...'
+      Font.Color = clMaroon
+      ParentColor = False
+      ParentFont = False
+    end
+    object btnAllOptions: TBitBtn
       AnchorSideRight.Control = grpCustomOptions
       AnchorSideRight.Side = asrBottom
       Left = 381
-      Height = 25
+      Height = 26
       Top = 4
       Width = 95
       Anchors = [akTop, akRight]
@@ -726,27 +752,21 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       OnClick = btnAllOptionsClick
       TabOrder = 1
     end
-    object Label1: TLabel
-      AnchorSideLeft.Control = btnAllOptions
-      Left = 381
-      Height = 15
-      Top = 28
-      Width = 38
-      Caption = 'Under'
-      Font.Color = clMaroon
-      ParentColor = False
-      ParentFont = False
-    end
-    object Label2: TLabel
-      AnchorSideLeft.Control = btnAllOptions
-      Left = 381
-      Height = 15
-      Top = 44
-      Width = 91
-      Caption = 'construction...'
-      Font.Color = clMaroon
-      ParentColor = False
-      ParentFont = False
+    object btnDefines: TBitBtn
+      AnchorSideTop.Control = btnAllOptions
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = btnAllOptions
+      AnchorSideRight.Side = asrBottom
+      Left = 399
+      Height = 26
+      Top = 70
+      Width = 77
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Top = 40
+      Caption = 'Defines ...'
+      OnClick = btnDefinesClick
+      TabOrder = 2
     end
   end
 end

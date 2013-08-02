@@ -15,7 +15,6 @@ type
   TGenericListEditForm = class(TForm)
     ButtonPanel1: TButtonPanel;
     Memo1: TMemo;
-    procedure FormCreate(Sender:TObject);
   private
 
   public
@@ -28,14 +27,6 @@ var
 implementation
 
 {$R *.lfm}
-
-{ TGenericListEditForm }
-
-procedure TGenericListEditForm.FormCreate(Sender:TObject);
-begin
-  ButtonPanel1.OKButton.Caption:=lisMenuOk;
-  ButtonPanel1.CancelButton.Caption:=lisCancel;
-end;
 
 end.
 

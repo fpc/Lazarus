@@ -33,14 +33,15 @@ uses
   CodeToolsCfgScript, KeywordFuncLists, LazarusIDEStrConsts,
   IDEOptionsIntf, CompOptsIntf, IDECommands, Project,
   CompilerOptions, AllCompilerOptions, EditorOptions, PackageDefs,
-  SynEdit, SynEditKeyCmds, SynCompletion, SourceSynEditor;
+  SynEdit, SynEditKeyCmds, SynCompletion, SourceSynEditor, CustomDefines;
 
 type
 
   { TCompilerOtherOptionsFrame }
 
   TCompilerOtherOptionsFrame = class(TAbstractIDEOptionsEditor)
-    btnAllOptions: TButton;
+    btnDefines: TBitBtn;
+    btnAllOptions: TBitBtn;
     grpCustomOptions: TGroupBox;
     grpConditionals: TGroupBox;
     CondStatusbar: TStatusBar;
@@ -50,6 +51,7 @@ type
     Label2: TLabel;
     memoCustomOptions: TMemo;
     procedure btnAllOptionsClick(Sender: TObject);
+    procedure btnDefinesClick(Sender: TObject);
     procedure CondSynEditChange(Sender: TObject);
     procedure CondSynEditKeyPress(Sender: TObject; var Key: char);
     procedure CondSynEditProcessUserCommand(Sender: TObject;
@@ -117,11 +119,31 @@ begin
     AllOpts.CustomOptions := memoCustomOptions.Lines;
     if AllOpts.ShowModal = mrOK then
     begin
+      // Synchronize with custom options memo
       AllOpts.ToCustomOptions(memoCustomOptions.Lines);
       memoCustomOptions.Invalidate;
     end;
   finally
     AllOpts.Free;
+  end;
+end;
+
+procedure TCompilerOtherOptionsFrame.btnDefinesClick(Sender: TObject);
+var
+  EditForm: TCustomDefinesForm;
+begin
+  EditForm:=TCustomDefinesForm.Create(Nil);
+  try
+    EditForm.DefinesCheckList.Items.Assign(Project1.CustomDefines);
+    EditForm.FromCustomOptions(memoCustomOptions.Lines);
+    if EditForm.ShowModal=mrOK then
+    begin
+      Project1.CustomDefines.Assign(EditForm.DefinesCheckList.Items);
+      // Synchronize with custom options memo
+      EditForm.ToCustomOptions(memoCustomOptions.Lines);
+    end;
+  finally
+    EditForm.Free;
   end;
 end;
 
@@ -138,9 +160,8 @@ begin
   //debugln(['TCompilerOtherOptionsFrame.CondSynEditKeyPress ',ord(Key)]);
 end;
 
-procedure TCompilerOtherOptionsFrame.CondSynEditProcessUserCommand(
-  Sender: TObject; var Command: TSynEditorCommand; var AChar: TUTF8Char;
-  Data: pointer);
+procedure TCompilerOtherOptionsFrame.CondSynEditProcessUserCommand(Sender: TObject;
+  var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
 begin
   if (Command=ecWordCompletion) or (Command=ecIdentCompletion) then
     StartCompletion;
@@ -630,6 +651,8 @@ begin
   grpCustomOptions.Caption := lisCustomOptions2;
   memoCustomOptions.Hint := lisCustomOptHint;
   grpConditionals.Caption := lisConditionals;
+  btnAllOptions.Caption := lisDlgAllOptions;
+  btnDefines.Caption := lisDlgDefines;
 end;
 
 procedure TCompilerOtherOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
