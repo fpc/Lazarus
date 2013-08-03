@@ -629,7 +629,7 @@ begin
   if not WSCheckHandleAllocated(ACustomListBox, 'SetStyle') then
     Exit;
   Widget := GetWidgetInfo({%H-}Pointer(ACustomListBox.Handle), True)^.CoreWidget;
-  AStyle := PtrInt(g_object_get_data(PGObject(Widget), 'lclcustomlistboxstyle'));
+  AStyle := {%H-}PtrInt(g_object_get_data(PGObject(Widget), 'lclcustomlistboxstyle'));
   if (AStyle <> Ord(ACustomListBox.Style)) then
     RecreateWnd(ACustomListBox);
 end;
@@ -770,7 +770,7 @@ begin
   g_signal_connect_after(Selection, 'changed',
     G_CALLBACK(@gtk2ListBoxSelectionChangedAfter), WidgetInfo);
 
-  g_object_set_data(PGObject(TVWidget), 'lclcustomlistboxstyle', gPointer(Ord(TListBox(AWinControl).Style)));
+  g_object_set_data(PGObject(TVWidget), 'lclcustomlistboxstyle', {%H-}gPointer(Ord(TListBox(AWinControl).Style)));
 
   // Sets the callbacks
   SetCallbacks(p, WidgetInfo);
