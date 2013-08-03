@@ -35,24 +35,23 @@ uses
   Classes, SysUtils, AVL_Tree,
   // LCL
   LConvEncoding, InterfaceBase, LCLProc, Dialogs, FileUtil, Laz2_XMLCfg,
-  LazUTF8, Forms, Controls,
+  LazUTF8, LazUTF8Classes, Forms, Controls,
   // codetools
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
   FileProcs, CodeToolsCfgScript, CodeToolsStructs,
   // IDEIntf
   SrcEditorIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
-  CompOptsIntf, LazIDEIntf, MacroDefIntf,
+  CompOptsIntf, LazIDEIntf, MacroDefIntf, IDEMsgIntf,
   // IDE
   LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions, InputHistory,
   EditDefineTree, ProjectResources, MiscOptions, LazConf, EnvironmentOpts,
   TransferMacros, CompilerOptions,
   {$IFDEF EnableNewExtTools}
-  ExtTools,
+  ExtTools, etMakeMsgParser, etFPCMsgParser,
   {$ELSE}
   OutputFilter,
   {$ENDIF}
-  Compiler, FPCSrcScan,
-  PackageDefs, PackageSystem, Project, ProjectIcon,
+  Compiler, FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon,
   ModeMatrixOpts, BaseBuildManager, ApplicationBundle;
   
 type
@@ -129,8 +128,12 @@ type
     function CTMacroFuncProjectUnitPath(Data: Pointer): boolean;
     function CTMacroFuncProjectIncPath(Data: Pointer): boolean;
     function CTMacroFuncProjectSrcPath(Data: Pointer): boolean;
+    {$IFDEF EnableNewExtTools}
+    procedure FPCMsgFilePoolLoadFile(aFilename: string; out s: string);
+    {$ELSE}
     function OnRunCompilerWithOptions(ExtTool: TIDEExternalToolOptions;
                            CompOptions: TBaseCompilerOptions): TModalResult;
+    {$ENDIF}
     procedure SetUnitSetCache(const AValue: TFPCUnitSetCache);
   protected
     fTargetOS: string;
@@ -227,7 +230,9 @@ type
 var
   MainBuildBoss: TBuildManager = nil;
   TheCompiler: TCompiler = nil;
+  {$IFNDEF EnableNewExtTools}
   TheOutputFilter: TOutputFilter = nil;
+  {$ENDIF}
 
 implementation
 
@@ -311,7 +316,9 @@ begin
   FUnitSetChangeStamp:=TFPCUnitSetCache.GetInvalidChangeStamp;
 
   OnBackupFileInteractive:=@BackupFile;
+  {$IFNDEF EnableNewExtTools}
   RunCompilerWithOptions:=@OnRunCompilerWithOptions;
+  {$ENDIF}
 
   GetBuildMacroValues:=@OnGetBuildMacroValues;
   OnAppendCustomOption:=@AppendMatrixCustomOption;
@@ -322,12 +329,13 @@ destructor TBuildManager.Destroy;
 begin
   {$IFDEF EnableNewExtTools}
   FreeAndNil(ExternalTools);
+  {$ELSE}
+  RunCompilerWithOptions:=nil;
   {$ENDIF}
 
   GetBuildMacroValues:=nil;
   OnAppendCustomOption:=nil;
   OnBackupFileInteractive:=nil;
-  RunCompilerWithOptions:=nil;
 
   FreeAndNil(FFPCSrcScans);
 
@@ -1205,9 +1213,15 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
   begin
     Result:=mrOk;
     if Compiling then begin
+      {$IFDEF EnableNewExtTools}
+      IDEMessagesWindow.AddCustomMessage(mluError,
+        Format('ambiguous file found: %s%s%s. Source file is: %s%s%s',
+        ['"', AmbiguousFilename, '"', '"', AFilename, '"']));
+      {$ELSE}
       TheOutputFilter.ReadConstLine(
         Format(lisWarningAmbiguousFileFoundSourceFileIs,
         ['"', AmbiguousFilename, '"', '"', AFilename, '"']), true);
+      {$ENDIF}
     end;
   end;
 
@@ -2100,6 +2114,27 @@ begin
   end;
 end;
 
+{$IFDEF EnableNewExtTools}
+procedure TBuildManager.FPCMsgFilePoolLoadFile(aFilename: string; out s: string
+  );
+// Note: called by any thread
+var
+  fs: TFileStreamUTF8;
+  Encoding: String;
+begin
+  s:='';
+  fs := TFileStreamUTF8.Create(aFilename, fmOpenRead or fmShareDenyNone);
+  try
+    SetLength(s,fs.Size);
+    if s<>'' then
+      fs.Read(s[1],length(s));
+    Encoding:=GuessEncoding(s);
+    s:=ConvertEncoding(s,Encoding,EncodingUTF8);
+  finally
+    fs.Free;
+  end;
+end;
+{$ELSE EnableNewExtTools}
 function TBuildManager.OnRunCompilerWithOptions(
   ExtTool: TIDEExternalToolOptions; CompOptions: TBaseCompilerOptions): TModalResult;
 begin
@@ -2110,6 +2145,7 @@ begin
   if LazarusIDE<>nil then
     LazarusIDE.DoCheckFilesOnDisk;
 end;
+{$ENDIF EnableNewExtTools}
 
 procedure TBuildManager.SetUnitSetCache(const AValue: TFPCUnitSetCache);
 begin

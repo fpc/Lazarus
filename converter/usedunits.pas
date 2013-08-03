@@ -33,7 +33,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Dialogs,
   // IDE
-  LazarusIDEStrConsts, IDEMsgIntf,
+  LazarusIDEStrConsts, IDEMsgIntf, IDEExternToolIntf,
   // codetools
   CodeToolManager, StdCodeTools, CodeTree, CodeCache, CodeToolsStructs, AVL_Tree,
   LinkScanner, KeywordFuncLists, SourceChanger, CodeAtom, CodeToolsStrConsts,

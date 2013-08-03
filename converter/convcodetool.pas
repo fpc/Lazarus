@@ -35,7 +35,7 @@ uses
   Classes, SysUtils, FileProcs, Forms, Controls, DialogProcs, Dialogs,
   contnrs, strutils,
   // IDE
-  LazarusIDEStrConsts, LazIDEIntf, FormEditor, IDEMsgIntf,
+  LazarusIDEStrConsts, LazIDEIntf, FormEditor, IDEMsgIntf, IDEExternToolIntf,
   // codetools
   CodeToolManager, StdCodeTools, CodeTree, CodeAtom,
   FindDeclarationTool, PascalReaderTool, PascalParserTool, LFMTrees,
@@ -520,8 +520,7 @@ begin
         fCTLink.ResetMainScanner;
         if not fCTLink.SrcCache.Replace(gtNone, gtNone,
                             FuncInfo.StartPos, FuncInfo.EndPos, NewFunc) then exit;
-        fCTLink.fSettings.AddLogLine('Replaced call '+s);
-        fCTLink.fSettings.AddLogLine('                  with '+NewFunc);
+        fCTLink.fSettings.AddLogLine('Replaced call '+s+' with '+NewFunc);
         // Add the required unit name to uses section if needed.
         if Assigned(AddUnitEvent) and (FuncInfo.UnitName<>'') then
           AddUnitEvent(FuncInfo.UnitName);

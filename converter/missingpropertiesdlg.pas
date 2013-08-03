@@ -41,7 +41,11 @@ uses
   BasicCodeTools, CodeCache, CodeToolManager, CodeToolsStructs, CodeCompletionTool,
   // IDE
   IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf, DialogProcs,
-  CustomFormEditor, LazarusIDEStrConsts, IDEProcs, OutputFilter,
+  CustomFormEditor, LazarusIDEStrConsts, IDEProcs,
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
+  OutputFilter,
+  {$ENDIF}
   EditorOptions, CheckLFMDlg, IDEMsgIntf, Project,
   // Converter
   ConverterTypes, ConvertSettings, ReplaceNamesUnit,

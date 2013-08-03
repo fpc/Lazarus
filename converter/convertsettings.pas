@@ -33,8 +33,8 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, IDEProcs,
   StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, ButtonPanel, ComCtrls,
   LazarusIDEStrConsts, CodeToolsStructs, CodeToolManager, CodeCache,
-  DividerBevel, BaseIDEIntf, IDEMsgIntf, AVL_Tree, LazConfigStorage,
-  ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
+  DividerBevel, BaseIDEIntf, IDEMsgIntf, IDEExternToolIntf, AVL_Tree,
+  LazConfigStorage, ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
 
 type
 
@@ -105,7 +105,7 @@ type
     function RenameFile(const SrcFilename, DestFilename: string): TModalResult;
     function MaybeBackupFile(const AFilename: string): TModalResult;
     procedure ClearLog;
-    function AddLogLine(const ALine: string): integer;
+    function AddLogLine(const ALine: string {$IFDEF EnableNewExtTools}; Urgency: TMessageLineUrgency = mluHint{$ENDIF}): integer;
     function SaveLog: Boolean;
   public
     property MainFilenames: TStringlist read fMainFilenames;
@@ -785,10 +785,18 @@ begin
   fLog.Clear;
 end;
 
-function TConvertSettings.AddLogLine(const ALine: string): integer;
+function TConvertSettings.AddLogLine(
+  const ALine: string
+  {$IFDEF EnableNewExtTools}; Urgency: TMessageLineUrgency{$ENDIF}
+  ): integer;
 begin
+  {$IFDEF EnableNewExtTools}
+  IDEMessagesWindow.AddCustomMessage(Urgency,aLine); // Show in message window
+  Result:=fLog.Add(MessageLineUrgencyNames[Urgency]+': '+ALine);// and store for log.
+  {$ELSE}
   IDEMessagesWindow.AddMsg(ALine, '', -1);   // Show in message window
   Result:=fLog.Add(ALine);                   // and store for log.
+  {$ENDIF}
 end;
 
 function TConvertSettings.SaveLog: Boolean;
@@ -801,7 +809,11 @@ begin
   Code.Assign(fLog);
   Result:=SaveCodeBuffer(Code)=mrOk;
   if Result then
+    {$IFDEF EnableNewExtTools}
+    IDEMessagesWindow.AddCustomMessage(mluHint,'This log was saved to '+aFilename); // Show in message window
+    {$ELSE}
     IDEMessagesWindow.AddMsg('This log was saved to '+aFilename, '', -1);
+    {$ENDIF}
 end;
 
 function TConvertSettings.GetBackupPath: String;

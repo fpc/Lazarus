@@ -47,9 +47,9 @@ uses
   {$ELSE}
   MsgView,
   {$ENDIF}
-  InputHistory, CheckLFMDlg, LCLMemManager,
-  CodeToolManager, CodeToolsStructs, ConvCodeTool, CodeCache, CodeTree,
-  FindDeclarationTool, BasicCodeTools, SynEdit, UnitResources;
+  InputHistory, CheckLFMDlg, LCLMemManager, CodeToolManager, CodeToolsStructs,
+  ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool, BasicCodeTools,
+  SynEdit, UnitResources, IDEExternToolIntf;
 
 
 type
@@ -974,7 +974,11 @@ begin
       if EMacro <> nil then begin
         EMacro.SetFromSource(AEditor.SourceText);
         if EMacro.IsInvalid and (EMacro.ErrorMsg <> '') then
+          {$IFDEF EnableNewExtTools}
+          IDEMessagesWindow.AddCustomMessage(mluError,EMacro.ErrorMsg);
+          {$ELSE}
           MessagesView.AddMsg(EMacro.ErrorMsg, '', -1);
+          {$ENDIF}
       end;
       MacroListViewer.UpdateDisplay;
       AnUnitInfo.ClearModifieds;

@@ -136,7 +136,9 @@ type
     procedure mnuCenterWindowItemClick(Sender: TObject); virtual;
     procedure mnuWindowSourceItemClick(Sender: TObject); virtual;
 
+    {$IFNDEF EnableNewExtTools}
     procedure ConnectOutputFilter;
+    {$ENDIF}
     procedure UpdateWindowMenu;
 
   public
@@ -297,6 +299,7 @@ begin
   SourceEditorManager.ShowActiveWindowOnTop(True);
 end;
 
+{$IFNDEF EnableNewExtTools}
 procedure TMainIDEBase.ConnectOutputFilter;
 begin
   TheOutputFilter.OnAddFilteredLine:=@MessagesView.AddMsg;
@@ -305,6 +308,7 @@ begin
   TheOutputFilter.OnBeginUpdate:=@MessagesView.BeginUpdateNotification;
   TheOutputFilter.OnEndUpdate:=@MessagesView.EndUpdateNotification;
 end;
+{$ENDIF}
 
 procedure TMainIDEBase.SetToolStatus(const AValue: TIDEToolStatus);
 begin
