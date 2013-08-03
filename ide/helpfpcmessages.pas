@@ -39,9 +39,9 @@ interface
 uses
   Classes, SysUtils, fgl, LCLProc, Dialogs, FileUtil, TextTools, MacroIntf,
   LazarusIDEStrConsts, LazConfigStorage, HelpIntfs, IDEHelpIntf, BaseIDEIntf,
-  IDEMsgIntf, IDEDialogs, LazHelpIntf, LazHelpHTML, StdCtrls, ButtonPanel,
-  ExtCtrls, Forms, Controls, Graphics, LCLIntf, CodeToolsFPCMsgs, FileProcs,
-  CodeToolManager, CodeCache, DefineTemplates;
+  IDEMsgIntf, IDEDialogs, IDEExternToolIntf, LazHelpIntf, LazHelpHTML, StdCtrls,
+  ButtonPanel, ExtCtrls, Forms, Controls, Graphics, LCLIntf, CodeToolsFPCMsgs,
+  FileProcs, CodeToolManager, CodeCache, DefineTemplates;
   
 const
   lihcFPCMessages = 'Free Pascal Compiler messages';
@@ -710,14 +710,22 @@ end;
 
 procedure TEditIDEMsgHelpDialog.UpdateCurMessage;
 var
+  {$IFDEF EnableNewExtTools}
+  Line: TMessageLine;
+  {$ELSE}
   Line: TIDEMessageLine;
+  {$ENDIF}
   sl: TStringList;
   MsgFile: TFPCMsgFile;
   FPCMsg: TFPCMsgItem;
 begin
   CurMsg:='';
   CurFPCId:=-1;
+  {$IFDEF EnableNewExtTools}
   Line:=IDEMessagesWindow.GetSelectedLine;
+  {$ELSE}
+  Line:=IDEMessagesWindow.GetSelectedLine;
+  {$ENDIF}
   if Line=nil then begin
     CurMsgMemo.Text:='(no message selected)';
     CurMsgMemo.Enabled:=false;
@@ -726,17 +734,29 @@ begin
     sl:=TStringList.Create;
     try
       sl.Add('Msg='+Line.Msg);
+      {$IFDEF EnableNewExtTools}
+      sl.Add('MsgID='+IntToStr(Line.MsgID));
+      {$ENDIF}
       MsgFile:=FPCMsgHelpDB.GetMsgFile;
       if MsgFile<>nil then begin
+        FPCMsg:=nil;
+        {$IFDEF EnableNewExtTools}
+        if Line.MsgID>0 then
+          FPCMsg:=MsgFile.FindWithID(Line.MsgID);
+        {$ELSE}
         FPCMsg:=MsgFile.FindWithMessage(Line.Msg);
+        {$ENDIF}
         if FPCMsg<>nil then begin
           CurFPCId:=FPCMsg.ID;
           sl.Add('FPC Msg='+FPCMsg.GetName);
         end;
       end;
+      {$IFDEF EnableNewExtTools}
+      {$ELSE}
       sl.Add('Directory='+Line.Directory);
       if Line.Parts<>nil then
         sl.AddStrings(Line.Parts);
+      {$ENDIF}
       CurMsgMemo.Text:=sl.Text;
     finally
       sl.Free;

@@ -10450,7 +10450,7 @@ var
 begin
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if ActiveSrcEdit=nil then exit;
-  debugln(['TMainIDE.DoFindDeclarationAtCursor ',ActiveSrcEdit.Filename,' ',GetParentForm(ActiveSrcEdit.EditorComponent).Name]);
+  //debugln(['TMainIDE.DoFindDeclarationAtCursor ',ActiveSrcEdit.Filename,' ',GetParentForm(ActiveSrcEdit.EditorComponent).Name]);
   DoFindDeclarationAtCaret(ActiveSrcEdit.EditorComponent.LogicalCaretXY);
 end;
 
