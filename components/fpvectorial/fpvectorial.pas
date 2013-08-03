@@ -558,6 +558,8 @@ type
     Top, Left, Width, Height: Double;
     procedure CreateRGB888Image(AWidth, AHeight: Cardinal);
     procedure InitializeWithConvertionOf3DPointsToHeightMap(APage: TvVectorialPage; AWidth, AHeight: Integer);
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   { TvPoint }
@@ -3162,6 +3164,31 @@ begin
       RasterImage.Colors[lPos.X, lPos.Y] := lValue;
     end;
   end;
+end;
+
+procedure TvRasterImage.Render(ADest: TFPCustomCanvas;
+  ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double;
+  AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  lFinalX, lFinalY: Integer;
+begin
+  if (RasterImage = nil) then Exit;
+  if (RasterImage.Width = 0) or (RasterImage.Height = 0) then Exit;
+
+  lFinalX := CoordToCanvasX(X);
+  lFinalY := CoordToCanvasY(Y);
+  ADest.Draw(lFinalX, lFinalY, RasterImage);
 end;
 
 { TvArrow }

@@ -46,6 +46,7 @@ type
     constructor Create; virtual;
     procedure CopyDataFrom(ASrc: TPSToken; AKeepTokenType: Boolean); virtual;
     function Duplicate: TPSToken; virtual;
+    procedure PrepareIntValue;
   end;
 
   TCommentToken = class(TPSToken)
@@ -346,6 +347,11 @@ begin
   Result.FloatValue := FloatValue;
   Result.IntValue := IntValue;
   Result.Line := Line;
+end;
+
+procedure TPSToken.PrepareIntValue;
+begin
+  if IntValue = 0 then IntValue := Round(FloatValue);
 end;
 
 { TProcedureToken }
@@ -1645,6 +1651,7 @@ var
   lDataSource, lImageDataStr: String;
   lImageWidth, lImageHeight, lImageBitsPerComponent: Integer;
   lImageData, lImageDataCompressed: array of Byte;
+  lCurDictToken: TPSToken;
 begin
   Result := False;
 
@@ -1741,17 +1748,23 @@ begin
     lFindIndex := TDictionaryToken(Param1).Names.IndexOf('Width');
     if lFindIndex > 0 then
     begin
-      lImageWidth := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]).IntValue;
+      lCurDictToken := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]);
+      lCurDictToken.PrepareIntValue();
+      lImageWidth := lCurDictToken.IntValue;
     end;
     lFindIndex := TDictionaryToken(Param1).Names.IndexOf('Height');
     if lFindIndex > 0 then
     begin
-      lImageHeight := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]).IntValue;
+      lCurDictToken := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]);
+      lCurDictToken.PrepareIntValue();
+      lImageHeight := lCurDictToken.IntValue;
     end;
     lFindIndex := TDictionaryToken(Param1).Names.IndexOf('BitsPerComponent');
     if lFindIndex > 0 then
     begin
-      lImageBitsPerComponent := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]).IntValue;
+      lCurDictToken := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]);
+      lCurDictToken.PrepareIntValue();
+      lImageBitsPerComponent := lCurDictToken.IntValue;
     end;
 
     // Read the image
@@ -1762,6 +1775,7 @@ begin
     for x := 0 to lImageWidth - 1 do
       for y := 0 to lImageHeight - 1 do
       begin
+        lColor.Alpha := alphaOpaque;
         lColor.Red := lImageData[(x+y*lImageWidth)*3] * $101;
         lColor.Green := lImageData[(x+y*lImageWidth)*3+1] * $101;
         lColor.Blue := lImageData[(x+y*lImageWidth)*3+2] * $101;
