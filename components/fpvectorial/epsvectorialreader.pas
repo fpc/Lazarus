@@ -124,7 +124,7 @@ type
   public
     Color: TFPColor;
     TranslateX, TranslateY: Double;
-    ScaleX, ScaleY: Double; // not used currently
+    ScaleX, ScaleY: Double;
     ClipPath: TPath;
     ClipMode: TvClipMode;
     OverPrint: Boolean; // not used currently
@@ -150,6 +150,7 @@ type
     //
     PenWidth: Integer;
     //
+    constructor Create;
     function Duplicate: TGraphicState;
     procedure CTMNeeded;
     procedure SetCTM(ANewCTM: TArrayToken);
@@ -205,6 +206,7 @@ type
     function  ExecuteErrorOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
     //
     procedure PostScriptCoordsToFPVectorialCoords(AParam1, AParam2: TPSToken; var APosX, APosY: Double);
+    procedure PostScriptCoordsToFPVectorialCoordsWithCGS(AParam1, AParam2: TPSToken; var APosX, APosY: Double);
     function DictionarySubstituteOperator(ADictionary: TStringList; var ACurToken: TPSToken): Boolean;
   public
     { General reading methods }
@@ -319,6 +321,14 @@ begin
 end;
 
 { TGraphicState }
+
+constructor TGraphicState.Create;
+begin
+  inherited Create;
+
+  ScaleX := 1;
+  ScaleY := 1;
+end;
 
 function TGraphicState.Duplicate: TGraphicState;
 begin
@@ -2524,8 +2534,7 @@ begin
     Param1 := TPSToken(Stack.Pop);
     Param2 := TPSToken(Stack.Pop);
     PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
-    PosX2 := PosX + CurrentGraphicState.TranslateX;
-    PosY2 := PosY + CurrentGraphicState.TranslateY;
+    PostScriptCoordsToFPVectorialCoordsWithCGS(Param1, Param2, PosX2, PosY2);
     {$ifdef FPVECTORIALDEBUG_PATHS}
     WriteLn(Format('[TvEPSVectorialReader.ExecutePathConstructionOperator] moveto %f, %f CurrentGraphicState.Translate %f, %f Resulting Value %f, %f',
       [PosX, PosY, CurrentGraphicState.TranslateX, CurrentGraphicState.TranslateY, PosX2, PosY2]));
@@ -2539,10 +2548,9 @@ begin
   begin
     Param1 := TPSToken(Stack.Pop);
     Param2 := TPSToken(Stack.Pop);
-    PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
-    PosX2 := PosX + CurrentGraphicState.TranslateX;
-    PosY2 := PosY + CurrentGraphicState.TranslateY;
+    PostScriptCoordsToFPVectorialCoordsWithCGS(Param1, Param2, PosX2, PosY2);
     {$ifdef FPVECTORIALDEBUG_PATHS}
+    PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX, PosY);
     WriteLn(Format('[TvEPSVectorialReader.ExecutePathConstructionOperator] lineto %f, %f Resulting value %f, %f', [PosX, PosY, PosX2, PosY2]));
     {$endif}
     AData.AddLineToPath(PosX2, PosY2);
@@ -2574,9 +2582,9 @@ begin
     Param4 := TPSToken(Stack.Pop); // x2
     Param5 := TPSToken(Stack.Pop); // y1
     Param6 := TPSToken(Stack.Pop); // x1
-    PostScriptCoordsToFPVectorialCoords(Param5, Param6, PosX, PosY);
-    PostScriptCoordsToFPVectorialCoords(Param3, Param4, PosX2, PosY2);
-    PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX3, PosY3);
+    PostScriptCoordsToFPVectorialCoordsWithCGS(Param5, Param6, PosX, PosY);
+    PostScriptCoordsToFPVectorialCoordsWithCGS(Param3, Param4, PosX2, PosY2);
+    PostScriptCoordsToFPVectorialCoordsWithCGS(Param1, Param2, PosX3, PosY3);
     AData.AddBezierToPath(PosX, PosY, PosX2, PosY2, PosX3, PosY3);
     Exit(True);
   end;
@@ -3312,6 +3320,14 @@ procedure TvEPSVectorialReader.PostScriptCoordsToFPVectorialCoords(AParam1,
 begin
   APosX := AParam2.FloatValue;
   APosY := AParam1.FloatValue;
+end;
+
+procedure TvEPSVectorialReader.PostScriptCoordsToFPVectorialCoordsWithCGS(
+  AParam1, AParam2: TPSToken; var APosX, APosY: Double);
+begin
+  PostScriptCoordsToFPVectorialCoords(AParam1, AParam2, APosX, APosY);
+  APosX := APosX * CurrentGraphicState.ScaleX + CurrentGraphicState.TranslateX;
+  APosY := APosY * CurrentGraphicState.ScaleY + CurrentGraphicState.TranslateY;
 end;
 
 // Returns true if a dictionary substitution was executed

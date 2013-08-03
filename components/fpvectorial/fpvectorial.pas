@@ -555,12 +555,13 @@ type
   TvRasterImage = class(TvNamedEntity)
   public
     RasterImage: TFPCustomImage;
-    Top, Left, Width, Height: Double;
+    Width, Height: Double;
     destructor Destroy; override;
     procedure CreateRGB888Image(AWidth, AHeight: Cardinal);
     procedure InitializeWithConvertionOf3DPointsToHeightMap(APage: TvVectorialPage; AWidth, AHeight: Integer);
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   { TvPoint }
@@ -3219,6 +3220,23 @@ begin
   {$endif}
 
   //ADest.Draw(lFinalX, lFinalY, RasterImage); doesnt work
+end;
+
+function TvRasterImage.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  lStr: string;
+begin
+  Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
+  // Add the debug info in a sub-item
+  if RasterImage <> nil then
+  begin
+    lStr := Format('[TvRasterImage] Width=%f Height=%f RasterImage.Width=%d RasterImage.Height=%d',
+      [Width, Height,
+       RasterImage.Width, RasterImage.Height
+      ]);
+    ADestRoutine(lStr, Result);
+  end;
 end;
 
 { TvArrow }
