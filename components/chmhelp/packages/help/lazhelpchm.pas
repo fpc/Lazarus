@@ -7,7 +7,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    Methods and types for simple CHM help using chm viewer "lhelp".
+    Methods and types for CHM help using chm viewer "lhelp".
 }
 unit LazHelpCHM;
 

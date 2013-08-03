@@ -5,7 +5,7 @@ object HelpForm: THelpForm
   Width = 758
   ActiveControl = Panel1
   Caption = 'LHelp'
-  ClientHeight = 515
+  ClientHeight = 516
   ClientWidth = 758
   Icon.Data = {
     7E04000000000100010010100000010020006804000016000000280000001000
@@ -52,7 +52,7 @@ object HelpForm: THelpForm
   OnKeyUp = FormKeyUp
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   Visible = True
   object Panel1: TPanel
     Left = 0
@@ -105,7 +105,6 @@ object HelpForm: THelpForm
         8B000000000000000000B07522006780280037221A005E392A00683B2C009129
         1B000000000038AB3E000000000068BC74000000000000000000
       }
-      NumGlyphs = 0
       OnClick = ForwardToolBtnClick
     end
     object BackBttn: TSpeedButton
@@ -150,7 +149,6 @@ object HelpForm: THelpForm
         8B00000000000000000053575500535755005659580000000000000000000000
         0000000000000000000000000000000000000000000000000000
       }
-      NumGlyphs = 0
       OnClick = BackToolBtnClick
     end
     object HomeBttn: TSpeedButton
@@ -235,13 +233,12 @@ object HelpForm: THelpForm
         EA00E4E7EA00E4E7EA00E4E7EA00E4E7EA00E4E7EA00E4E7EA00E4E7EA00E4E7
         EA00E4E7EA00E4E7EA00E4E7EA00E4E7EA00E4E7EA00E4E7EA00
       }
-      NumGlyphs = 0
       OnClick = HomeToolBtnClick
     end
   end
   object PageControl: TPageControl
     Left = 0
-    Height = 483
+    Height = 484
     Top = 32
     Width = 758
     Align = alClient

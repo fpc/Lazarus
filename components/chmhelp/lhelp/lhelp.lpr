@@ -1,5 +1,7 @@
 { Copyright (C) <2005> <Andrew Haines> lhelp.lpr
 
+  Lhelp CHM help viewer application
+
   This source is free software; you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free
   Software Foundation; either version 2 of the License, or (at your option)
@@ -21,12 +23,8 @@ program lhelp;
 
 uses
   Interfaces, // this includes the LCL widgetset
-  SysUtils,
-  Classes,
-  Controls,
-  Dialogs,
-  Forms
-  { add your units here }, SimpleIPC, TurboPowerIPro, chmpopup, lhelpcontrolpkg, lhelpcore;
+  SysUtils, Classes, Controls, Dialogs, Forms,
+  SimpleIPC, TurboPowerIPro, chmpopup, lhelpcontrolpkg, lhelpcore;
 
 var
  X: Integer;
@@ -40,14 +38,15 @@ begin
     if LowerCase(ParamStr(X)) = '--help' then 
     begin
       S := TStringList.Create;
-      S.Add('  LHelp Options:');
+      S.Add('  LHelp options:');
       S.Add('');
-      S.Add('    Usage: lhelp [[filename] [--context id] [--ipcname lhelp-myapp]]');
+      S.Add('    Usage: lhelp [[filename] [--context id] [--hide] [--ipcname lhelp-myapp]]');
       S.Add('');
       S.Add('    --help     :  Show this information');
+      S.Add('    --hide     :  Start hidden but accept communications via IPC');
       S.Add('    --context  :  Show the help information related');
       S.Add('                  to this context');
-      S.Add('    --ipcname  :  The name of the ipc server to listen on for');
+      S.Add('    --ipcname  :  The name of the IPC server to listen on for');
       S.Add('                  programs who wish to control the viewer');
 
       if TextRec(Output).Mode = fmClosed then
@@ -60,13 +59,20 @@ begin
     end;
   Application.CreateForm(THelpForm, HelpForm);
   Application.CreateForm(THelpPopupForm, HelpPopupForm);
+
   try
   Application.Run;
   except
-    // try to remove stale names pipes so that a new instance can use them
+    // try to remove stale named pipes so that a new instance can use them
     if IPCServer <> nil then
     try
     FreeAndNil(IPCServer);
+    except
+    end;
+
+    if IPCClient <> nil then
+    try
+    FreeAndNil(IPCClient);
     except
     end;
   end;

@@ -1,4 +1,8 @@
-{ Copyright (C) <2005> <Andrew Haines> lazchmhelp.pas
+{ Copyright (C) <2005-2013> <Andrew Haines>, Lazarus contributors
+
+  lazchmhelp.pas
+
+  Lazarus IDE support for lhelp/chm help files. Can start and control lhelp application.
 
   This source is free software; you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free
@@ -41,7 +45,7 @@ type
   TChmHelpViewer = class(THelpViewer)
   private
     fHelpExe: String;
-    fHelpLabel: String;
+    fHelpLabel: String; //ID used for SimpleIPC identification
     fHelpConnection: TLHelpConnection;
     fCHMSearchPath: String;
     fHelpExeParams: String;
@@ -77,6 +81,7 @@ type
     function GetHelpFilesPath: String; // macros resolved, see property HelpFilesPath
   published
     property HelpEXE: String read fHelpEXE write SetHelpEXE; // with macros, see GetHelpEXE
+    // ID used for SimpleIPC communication with the help viewer
     property HelpLabel: String read GetHelpLabel write SetHelpLabel;
     property HelpFilesPath: String read fCHMSearchPath write SetChmsFilePath; // directories separated with semicolon, with macros, see GetHelpFilesPath
     property HelpExeParams: String read fHelpExeParams write fHelpExeParams;
@@ -115,8 +120,12 @@ end;
 
 function TChmHelpViewer.GetHelpLabel: String;
 begin
+  // fHelpLable is used for SimpleIPC server id;
+  // lhelp protocol specifies server-dependent constant string
+  // followed by string representation of last 5 digits of the processID
+  // padded with 00000 at the right
   if Length(fHelpLabel) = 0 then
-    fHelpLabel := 'lazhelp';
+    fHelpLabel := 'lazhelp'+copy(inttostr(GetProcessID)+'00000',1,5);
   Result := fHelpLabel;
 end;
 
@@ -418,6 +427,7 @@ end;
 
 procedure TChmHelpViewer.ShowAllHelp(Sender: TObject);
 var
+  Response: TLHelpResponse;
   SearchPath: String; //; delimited list of directories
   HelpExeFileName: String;
 begin
@@ -434,13 +444,27 @@ begin
   end;
 
   SearchPath := GetHelpFilesPath;
-  // Start up server if needed
+  // Start up help viewer if needed - and tell it to hide
   if not(fHelpConnection.ServerRunning) then
   begin
-    fHelpConnection.StartHelpServer(HelpLabel, HelpExeFileName);
+    fHelpConnection.StartHelpServer(HelpLabel, HelpExeFileName, true);
+    Response:=fHelpConnection.RunMiscCommand(mrVersion);
+    if Response<>srSuccess then
+    begin
+      debugln('Help viewer does not support our protocol version.');
+    end
+    else
+    begin
+      // Open all chm files after it has started, while still hidden
+      OpenAllCHMsInSearchPath(SearchPath);
+      // Instruct viewer to show its GUI
+      Response:=fHelpConnection.RunMiscCommand(mrShow);
+      if Response<>srSuccess then
+      begin
+        debugln('Help viewer failed to respond to mrShow command.');
+      end;
+    end;
   end;
-  // Open all chm files after it has started
-  OpenAllCHMsInSearchPath(SearchPath);
 end;
 
 function TChmHelpViewer.ShowNode(Node: THelpNode; var ErrMsg: string
@@ -569,7 +593,7 @@ procedure TChmHelpViewer.Load(Storage: TConfigStorage);
 begin
   HelpEXE:=Storage.GetValue('CHMHelp/Exe','');
   HelpExeParams := Storage.GetValue('CHMHelp/ExeParams','');
-  HelpLabel:=Storage.GetValue('CHMHelp/Name','lazhelp');
+  HelpLabel:=Storage.GetValue('CHMHelp/Name','lazhelp')+inttostr(GetProcessID);
   HelpFilesPath := Storage.GetValue('CHMHelp/FilesPath','');
 end;
 

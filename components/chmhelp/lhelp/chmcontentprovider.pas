@@ -5,9 +5,6 @@ unit chmcontentprovider;
 {$Note Compiling lhelp with search support}
 {$DEFINE CHM_SEARCH}
 
-//{$else}
-//{$Note Compiling lhelp *without* search support since your fpc version is not new enough}
-//{$endif}
 {$if (fpc_version=2) and (fpc_release>4)}
 {$Note Compiling lhelp *with* binary index and toc support}
 {$DEFINE CHM_BINARY_INDEX_TOC}
@@ -15,7 +12,7 @@ unit chmcontentprovider;
 
 
 {off $DEFINE CHM_DEBUG_TIME}
-{off $DEFINE CHM_SEARCH}
+
 
 interface
 
@@ -540,10 +537,8 @@ begin
   fStatusBar.SimpleText:= '';
 
   {$IFDEF CHM_DEBUG_TIME}
-  writeln('Eind: ',FormatDateTime('hh:nn:ss.zzz', Now));
+  writeln('End: ',FormatDateTime('hh:nn:ss.zzz', Now));
   {$ENDIF}
-
-
 
   {$IFDEF CHM_SEARCH}
   i := 0;

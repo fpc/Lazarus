@@ -4,8 +4,7 @@ unit LHelpControl;
 Starts, stops and controls external help viewer via IPC.
 This is used to display context-sensitive help in Lazarus, and could be used in applications to do the same.
 
-This unit serves as reference implementation and documentation of the protocol used to communicate with help viewers.
-
+Also contains definitions used by both Lazarus IDE and help viewers.
 Currently, the only help viewer that supports this protocol is the lhelp CHM help viewer.
 }
 
@@ -25,12 +24,16 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileUtil, LazLogger, SimpleIPC, process, UTF8Process;
 
+const
+  PROTOCOL_VERSION='1'; //IDE<>LHelp communication protocol version. Please update when breaking compatibility
 type
-  TRequestType = (rtFile, rtUrl, rtContext);
+  TRequestType = (rtFile, rtUrl, rtContext, rtMisc {window handling etc});
+  TMiscRequests = (mrShow, mrVersion, mrClose);
 
-  TLHelpResponse = (srNoAnswer, srUnknown, srSuccess, srInvalidFile, srInvalidURL, srInvalidContext);
+  TLHelpResponse = (srError, srNoAnswer, srUnknown, srSuccess, srInvalidFile, srInvalidURL, srInvalidContext);
 
   TFileRequest = record
+    // Opening files
     RequestType: TRequestType;
     FileName: array[0..512] of char;
   end;
@@ -42,6 +45,11 @@ type
     FileRequest: TFileRequest;
     HelpContext: THelpContext;
   end;
+  TMiscRequest = record
+    // In this record, the FileName array may have a meaning specific to the request ID.
+    FileRequest: TFileRequest;
+    RequestID: TMiscRequests;
+  end;
 
   TProcedureOfObject = procedure of object;
   
@@ -52,22 +60,26 @@ type
     FProcessWhileWaiting: TProcedureOfObject;
     fServerOut: TSimpleIPCClient; // sends messages to lhelp
     fServerIn:  TSimpleIPCServer; // recieves messages from lhelp
+    // Wait for help viewer to respond in a reasonable timeframe and return the response
     function  WaitForMsgResponse: TLHelpResponse;
+    // Send a message to the help viewer
     function  SendMessage(Stream: TStream): TLHelpResponse;
   public
     constructor Create;
     destructor Destroy; override;
     // Checks whether the server is running using SimpleIPC
     function ServerRunning: Boolean;
-    // Starts server
+    // Starts remote server (help viewer); if Hide specified, asks the help server to hide itself/run minimized while starting
     // Server must support a switch --ipcname that accepts the NameForServer argument to identify it for SimpleIPC
-    function StartHelpServer(NameForServer: String; ServerEXE: String = ''): Boolean;
+    function StartHelpServer(NameForServer: String; ServerEXE: String = '';Hide: boolean=false): Boolean;
     // Shows URL in the HelpFileName file by sending a TUrlRequest
     function OpenURL(HelpFileName: String; Url: String): TLHelpResponse;
     // Shows help for Context in the HelpFileName file by sending a TContextRequest request
     function OpenContext(HelpFileName: String; Context: THelpContext): TLHelpResponse;
     // Opens HelpFileName by sending a TContextRequest
     function OpenFile(HelpFileName: String): TLHelpResponse;
+    // Requests to run command on viewer by sending a TMiscrequest
+    function RunMiscCommand(CommandID: TMiscRequests): TLHelpResponse;
     property ProcessWhileWaiting: TProcedureOfObject read FProcessWhileWaiting write FProcessWhileWaiting;
   end;
 
@@ -169,7 +181,7 @@ begin
 end;
 
 function TLHelpConnection.StartHelpServer(NameForServer: String;
-  ServerEXE: String): Boolean;
+  ServerEXE: String; Hide: boolean=false): Boolean;
 var
   X: Integer;
   Cmd: String;
@@ -184,7 +196,8 @@ begin
   fServerOut.Active := False;
   fServerOut.ServerID := NameForServer;
   if not ServerRunning then begin
-    Cmd:= ServerExe + ' --ipcname ' + NameForServer;
+    Cmd := ServerExe + ' --ipcname ' + NameForServer;
+    if Hide then Cmd := Cmd + ' --hide';
     {$IFDEF darwin}
     if DirectoryExistsUTF8(ServerEXE+'.app') then
       ServerEXE+='.app';
@@ -259,6 +272,30 @@ begin
     FileRequest.RequestType := rtFile;
     FileRequest.FileName := HelpFileName+#0;
     Stream.Write(FileRequest, SizeOf(FileRequest));
+    Result := SendMessage(Stream);
+  finally
+    Stream.Free;
+  end;
+end;
+
+function TLHelpConnection.RunMiscCommand(CommandID: TMiscRequests): TLHelpResponse;
+var
+  MiscRequest : TMiscRequest;
+  Stream: TMemoryStream;
+begin
+  Stream := TMemoryStream.Create;
+  try
+    MiscRequest.FileRequest.RequestType := rtMisc;
+    MiscRequest.FileRequest.FileName := ''+#0; //i
+    //CommandID is ord(TMiscRequests)
+    MiscRequest.RequestID:=CommandID;
+    case CommandID of
+      mrClose: ; //do nothing
+      mrShow: ;  //do nothing
+      mrVersion:
+        MiscRequest.FileRequest.FileName := PROTOCOL_VERSION+#0;
+    end;
+    Stream.Write(MiscRequest, SizeOf(MiscRequest));
     Result := SendMessage(Stream);
   finally
     Stream.Free;

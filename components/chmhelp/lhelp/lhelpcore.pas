@@ -1,4 +1,6 @@
-{ Copyright (C) 2005  Andrew Haines
+{ Copyright (C) 2005-2013  Andrew Haines, Lazarus contributors
+
+  Main form for lhelp. Includes processing/data communication.
 
   This source is free software; you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free
@@ -95,27 +97,46 @@ type
   private
     { private declarations }
     fServerName: String;
+    // Receives commands from IDE
     fInputIPC: TSimpleIPCServer;
+    // Sends responses back to IDE
+    // only used if lhelp started with --ipcname to indicate
+    // IPC communication method should be used
     fOutputIPC: TSimpleIPCClient;
     fServerTimer: TTimer;
     fContext: LongInt; // used once when we are started on the command line with --context
     fConfig: TXMLConfig;
     FHasShowed: Boolean;
+    fHide: boolean; //If yes, start with content hidden. Otherwise start normally
+    // Load preferences; separate preferences per coupled server/IDE
     procedure LoadPreferences(AIPCName: String);
-    procedure SavePreferences({%H-}AIPCName: String);
+    // Saves preferences. Uses existing config loaded by LoadPreferences
+    procedure SavePreferences;
     procedure AddRecentFile(AFileName: String);
     procedure ContentTitleChange({%H-}sender: TObject);
     procedure OpenRecentItemClick(Sender: TObject);
+    // Send response back to server (IDE)
+    // Used to acknowledge commands from the server
     procedure SendResponse(Response: DWord);
+    // Wait for message from server (IDE) and process
     procedure ServerMessage(Sender: TObject);
+    // Parse any given command line options
     procedure ReadCommandLineOptions;
-    procedure StartServer(ServerName: String);
-    procedure StopServer;
-    function  OpenURL(const AURL: String; AContext: THelpContext=-1): DWord;
+    // Start simple IPC server/client
+    // ServerName can be the variable passed to --ipcname
+    // It is used both for starting up the local server and to ID the remote server
+    procedure StartComms(ServerName: String);
+    // Stop simple IPC server/client
+    procedure StopComms;
+    // Open specified URL in viewer window
+    function OpenURL(const AURL: String; AContext: THelpContext=-1): DWord;
+    // Open specified URL - presumably used to queue URLs for delayed opening
     procedure LateOpenURL(Url: PStringItem);
     function ActivePage: TContentTab;
+    // Update UI visibility
     procedure RefreshState;
     procedure ShowError(AError: String);
+    // Set keyup handler for control (and any child controls)
     procedure SetKeyUp(AControl: TControl);
   public
     { public declarations }
@@ -124,8 +145,12 @@ type
 
 var
   HelpForm: THelpForm;
+  IPCClient: TSimpleIPCClient;
   IPCServer: TSimpleIPCServer;
-const INVALID_FILE_TYPE = 1;
+
+const
+  INVALID_FILE_TYPE = 1;
+  VERSION_STAMP = '2013-07-31'; //used in displaying about form etc
 
 implementation
 
@@ -160,14 +185,15 @@ begin
     f.BorderStyle := bsDialog;
     f.Position := poMainFormCenter;
     f.Constraints.MinWidth := 150;
-    f.Constraints.MaxWidth := 250;
+    f.Constraints.MaxWidth := 350;
     l := TLabel.Create(f);
     l.Parent := f;;
     l.Align := alTop;
     l.BorderSpacing.Around := 6;
     l.Caption := 'LHelp (CHM file viewer)' + LineEnding +
-      'Ver. 2009.06.08' + LineEnding +
-      'Copyright (C) Andrew Haines';
+      'Version ' + VERSION_STAMP + LineEnding +
+      'Copyright (C) Andrew Haines, ' + LineEnding +
+      'Lazarus contributors';
     l.AutoSize := True;
     l.WordWrap := True;
     b := TButton.Create(f);
@@ -236,7 +262,7 @@ begin
   URLSAllowed := Trim(URLSALLowed);
 
   fRes:='';
-  if InputQuery('Please Enter a URL', 'Supported URL type(s): (' +URLSAllowed+ ')', fRes) then
+  if InputQuery('Please enter a URL', 'Supported URL type(s): (' +URLSAllowed+ ')', fRes) then
   begin
     if OpenURL(fRes) = ord(srSuccess) then
       AddRecentFile(fRes);
@@ -249,17 +275,19 @@ begin
   Visible:= False;
   Application.ProcessMessages;
   FileMenuCloseItemClick(Sender);
-  StopServer;
-  SavePreferences(fServerName);
+  StopComms;
+  SavePreferences;
 end;
 
 procedure THelpForm.FormCreate(Sender: TObject);
 begin
   fContext := -1;
+  fHide := false;
   ReadCommandLineOptions;
   LoadPreferences(fServerName);
+  // Only start IPC if server name passed in --ipcname
   if fServerName <> '' then begin
-    StartServer(fServerName);
+    StartComms(fServerName);
   end;
   RefreshState;
   SetKeyUp(Self);
@@ -279,7 +307,6 @@ begin
   if FHasShowed then
     Exit;
   FHasShowed := True;
-
 end;
 
 procedure THelpForm.ForwardToolBtnClick(Sender: TObject);
@@ -319,11 +346,16 @@ procedure THelpForm.LoadPreferences(AIPCName: String);
 var
   PrefFile: String;
   RecentCount: Integer;
+  ServerPart: String;
   i: Integer;
 begin
   PrefFile := GetAppConfigDirUTF8(False);
   ForceDirectoriesUTF8(PrefFile);
-  PrefFile:=Format('%slhelp-%s.conf',[IncludeTrailingPathDelimiter(PrefFile), AIPCName]);
+  // --ipcname passes a server ID that consists of a
+  // a server-dependent constant together with a process ID.
+  // Strip out the process ID to get fixed config file names for one server
+  ServerPart := Copy(AIPCName, 1, length(AIPCName)-5); //strip out PID
+  PrefFile:=Format('%slhelp-%s.conf',[IncludeTrailingPathDelimiter(PrefFile), ServerPart]);
 
   fConfig := TXMLConfig.Create(Self);
   fConfig.Filename:=PrefFile;
@@ -333,6 +365,9 @@ begin
   Width  := fConfig.GetValue('Position/Width/Value',  Width);
   Height := fConfig.GetValue('Position/Height/Value', Height);
 
+  if fConfig.GetValue('Position/Maximized',false)=true then
+    Windowstate:=wsMaximized;
+
   OpenDialog1.FileName := fConfig.GetValue('LastFileOpen/Value', OpenDialog1.FileName);
 
   RecentCount:= fConfig.GetValue('Recent/ItemCount/Value', 0);
@@ -341,7 +376,7 @@ begin
     AddRecentFile(fConfig.GetValue('Recent/Item'+IntToStr(i)+'/Value',''));
 end;
 
-procedure THelpForm.SavePreferences(AIPCName: String);
+procedure THelpForm.SavePreferences;
 var
   i: Integer;
 begin
@@ -351,6 +386,10 @@ begin
     fConfig.SetValue('Position/Top/Value',    Top);
     fConfig.SetValue('Position/Width/Value',  Width);
     fConfig.SetValue('Position/Height/Value', Height);
+  end
+  else
+  begin
+    fConfig.SetValue('Position/Maximized', true);
   end;
 
   fConfig.SetValue('LastFileOpen/Value', OpenDialog1.FileName);
@@ -412,31 +451,27 @@ procedure THelpForm.SendResponse(Response: DWord);
 var
   Stream: TMemoryStream;
 begin
-  fOutputIPC := TSimpleIPCClient.Create(nil);
-  fOutputIPC.ServerID := fServerName+'client';
-  if fOutputIPC.ServerRunning {$IFDEF STALE_PIPE_WORKAROUND} and not IPCPipeIsStale(fOutputIPC){$ENDIF}
-  then
-    fOutputIPC.Active := True;
-
   Stream := TMemoryStream.Create;
-  Stream.WriteDWord(Response);
+  try
+    Stream.WriteDWord(Response);
 
-  if fOutputIPC.Active then
-    fOutputIPC.SendMessage(mtUnknown, Stream);
-
-  if fOutputIPC.Active then
-    fOutputIPC.Active := False;
-  FreeAndNil(fOutputIPC);
+    if assigned(fOutputIPC) and fOutputIPC.Active then
+      fOutputIPC.SendMessage(mtUnknown, Stream);
+  finally
+    Stream.Free;
+  end;
 end;
 
 procedure THelpForm.ServerMessage(Sender: TObject);
 var
   UrlReq: TUrlRequest;
-  FileReq:TFileRequest;
+  FileReq: TFileRequest;
   ConReq: TContextRequest;
+  MiscReq: TMiscRequest;
+  MustClose: boolean=false;
   Stream: TStream;
   Res: LongWord;
-  Url: String;
+  Url: String='';
 begin
   if fInputIPC.PeekMessage(5, True) then begin
     Stream := fInputIPC.MsgData;
@@ -470,13 +505,48 @@ begin
                     Url := 'file://'+FileReq.FileName;
                     Res := OpenURL(Url, ConReq.HelpContext);
                   end;
+      rtMisc    : begin
+                    Stream.Position := 0;
+                    FillByte(MiscReq{%H-},SizeOf(MiscReq),0);
+                    Stream.Read(MiscReq, SizeOf(MiscReq));
+                    case MiscReq.RequestID of
+                      mrClose:
+                      begin
+                        MustClose:=true;
+                        Res:= ord(srSuccess);
+                      end;
+                      mrShow:
+                      begin
+                        fHide := false;
+                        PageControl.Visible:=true;
+                        Res := ord(srSuccess);
+                      end;
+                      mrVersion:
+                      begin
+                        //Protocol version encoded in the filename
+                        // Verify what we support
+                        if strtointdef(FileReq.FileName,0)=strtointdef(PROTOCOL_VERSION,0) then
+                          Res := ord(srSuccess)
+                        else
+                          Res := ord(srError); //version not supported
+                      end
+                      else {Unknown}
+                        Res := ord(srUnknown);
+                    end;
+                  end;
     end;
-    if Res = Ord(srSuccess) then
+    if (URL<>'') and (Res = Ord(srSuccess)) then
       AddRecentFile(Url);
     SendResponse(Res);
-    Self.SendToBack;
-    Self.BringToFront;
-    Self.ShowOnTop;
+    if MustClose then
+      Application.Terminate;
+
+    if (MustClose=false) and (fHide=false) then
+    begin
+      Self.SendToBack;
+      Self.BringToFront;
+      Self.ShowOnTop;
+    end;
   end;
 end;
 
@@ -499,7 +569,7 @@ begin
         IsHandled[X] := True;
         inc(X);
       end;
-    end else  if LowerCase(ParamStrUTF8(X)) = '--context' then begin
+    end else if LowerCase(ParamStrUTF8(X)) = '--context' then begin
       IsHandled[X] := True;
       inc(X);
       if (X <= ParamCount) then
@@ -507,11 +577,16 @@ begin
           IsHandled[X] := True;
           inc(X);
         end;
+    end else if LowerCase(ParamStrUTF8(X)) = '--hide' then begin
+      IsHandled[X] := True;
+      inc(X);
+      fHide:=true;
     end else begin
       IsHandled[X]:=copy(ParamStrUTF8(X),1,1)='-'; // ignore other parameters
       inc(X);
     end;
   end;
+
   // Loop through a second time for the url
   for X := 1 to ParamCount do
     if not IsHandled[X] then begin
@@ -535,9 +610,13 @@ begin
     end;
 end;
 
-procedure THelpForm.StartServer(ServerName: String);
-begin
+procedure THelpForm.StartComms(ServerName: String);
+// Starts IPC server and client for two-way communication with
+// controlling program (e.g. Lazarus IDE).
 
+// Only useful if IPC serverID is passed through the --ipcname
+// command.
+begin
   fInputIPC := TSimpleIPCServer.Create(nil);
   fInputIPC.ServerID := ServerName;
   fInputIPC.Global := True;
@@ -550,20 +629,38 @@ begin
   fServerTimer.Enabled := True;
   ServerMessage(nil);
 
-
+  fOutputIPC := TSimpleIPCClient.Create(nil);
+  fOutputIPC.ServerID := ServerName+'client';
+  try
+    if fOutputIPC.ServerRunning {$IFDEF STALE_PIPE_WORKAROUND} and not IPCPipeIsStale(fOutputIPC){$ENDIF}
+    then
+      fOutputIPC.Active := True;
+  except
+    fOutputIPC.Active := False;
+  end;
+  IPCClient := fOutputIPC;
 end;
 
-procedure THelpForm.StopServer;
+procedure THelpForm.StopComms;
 begin
-   if fInputIPC = nil then
-     exit;
+   if fInputIPC <> nil then
+   begin
+     if fInputIPC.Active then
+       fInputIPC.Active := False;
 
-   if fInputIPC.Active then
-     fInputIPC.Active := False;
+     FreeAndNil(fInputIPC);
+     IPCServer := nil;
+     FreeAndNil(fServerTimer);
+   end;
 
-   FreeAndNil(fInputIPC);
-   IPCServer := nil;
-   FreeAndNil(fServerTimer);
+   if fOutputIPC <> nil then
+   begin
+     if fOutputIPC.Active then
+       fOutputIPC.Active := False;
+
+     FreeAndNil(fOutputIPC);
+     IPCClient := nil;
+   end;
 end;
 
 function THelpForm.OpenURL(const AURL: String; AContext: THelpContext): DWord;
@@ -598,7 +695,6 @@ begin
    Exit;
  end;
 
- 
  for I := 0 to PageControl.PageCount-1 do begin
    if fRealContentProvider.ClassName = TContentTab(PageControl.Pages[I]).ContentProvider.ClassName then begin
      fPage := TContentTab(PageControl.Pages[I]);
@@ -615,7 +711,7 @@ begin
 
  if fPage = nil then
  begin
-   //no page was found already to handle this content so create one
+   //no existing page that can handle this content, so create one
    fPage := TContentTab.Create(PageControl);
    fPage.ContentProvider := fRealContentProvider.Create(fPage, ImageList1);
    fPAge.ContentProvider.OnTitleChange:=@ContentTitleChange;
@@ -634,7 +730,8 @@ begin
  else
    Result := Ord(srInvalidFile);
 
- ShowOnTop;
+ if not fHide then
+   ShowOnTop;
 end;
 
 
@@ -659,7 +756,25 @@ procedure THelpForm.RefreshState;
 var
   en: Boolean;
 begin
-  en := Assigned(ActivePage);
+  if fHide then
+  begin
+    en := false;
+    // Hide content page
+    // todo: even though this code perhaps will hide the content window,
+    // starting laz+pressing f1 will show content while loading all chms
+    if Assigned(ActivePage) then
+      with TChmContentProvider(ActivePage.ContentProvider) do
+      begin
+        ActivePage.Visible:=false;
+        Visible:=false;
+        //todo: are these necessary
+        TabsControl.Visible := false;
+        Splitter.Visible := false;
+      end;
+  end
+  else
+    en := Assigned(ActivePage);
+
   BackBttn.Enabled := en;
   ForwardBttn.Enabled := en;
   HomeBttn.Enabled := en;
@@ -685,7 +800,7 @@ begin
   if (AControl = nil) or not (AControl.InheritsFrom(TWinControl)) then
     Exit;
   for i := 0 to WCont.ControlCount-1 do
-      SetKeyUp(WCont.Controls[i]);
+    SetKeyUp(WCont.Controls[i]);
   WCont.OnKeyUp:=@FormKeyUp;
 end;
 
@@ -705,6 +820,7 @@ end;
 finalization
   if IPCServer <> nil then
     FreeAndNil(IPCServer);
-
+  if IPCClient <> nil then
+    FreeAndNil(IPCClient);
 end.
 
