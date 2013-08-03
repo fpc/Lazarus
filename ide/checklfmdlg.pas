@@ -44,8 +44,8 @@ uses
   {$ELSE}
   OutputFilter,
   {$ENDIF}
-  IDEProcs, IDEOptionDefs,
-  EditorOptions, ExtCtrls, JITForms, PropEditUtils, IDEMsgIntf;
+  IDEProcs, IDEOptionDefs, EditorOptions, ExtCtrls, JITForms, PropEditUtils,
+  IDEMsgIntf, IDEExternToolIntf;
 
 type
 
@@ -412,20 +412,20 @@ end;
 procedure TLFMChecker.WriteUnitError(Code: TCodeBuffer; X, Y: integer;
   const ErrorMessage: string);
 var
-  Dir: String;
   Filename: String;
-  Msg: String;
 begin
   if (not ShowMessages) or (IDEMessagesWindow=nil) then exit;
   if Code=nil then
     Code:=fPascalBuffer;
-  Dir:=ExtractFilePath(Code.Filename);
   Filename:=ExtractFilename(Code.Filename);
-  Msg:=Filename
+  {$IFDEF EnableNewExtTools}
+  IDEMessagesWindow.AddCustomMessage(mluError,ErrorMessage,Filename,Y,X);
+  {$ELSE}
+  IDEMessagesWindow.AddMsg(Filename
        +'('+IntToStr(Y)+','+IntToStr(X)+')'
-       +' Error: '
-       +ErrorMessage;
-  IDEMessagesWindow.AddMsg(Msg,Dir,-1);
+       +' Error: '+ErrorMessage,
+       ExtractFilePath(Code.Filename),-1);
+  {$ENDIF}
   Application.ProcessMessages;
 end;
 
@@ -438,20 +438,21 @@ end;
 procedure TLFMChecker.WriteLFMErrors;
 var
   CurError: TLFMError;
-  Dir: String;
-  Msg: String;
   Filename: String;
 begin
   if (not ShowMessages) or (IDEMessagesWindow=nil) then exit;
   CurError:=fLFMTree.FirstError;
-  Dir:=ExtractFilePath(fLFMBuffer.Filename);
   Filename:=ExtractFilename(fLFMBuffer.Filename);
   while CurError<>nil do begin
-    Msg:=Filename
+    {$IFDEF EnableNewExtTools}
+    IDEMessagesWindow.AddCustomMessage(mluError,CurError.ErrorMessage,
+      Filename,CurError.Caret.Y,CurError.Caret.X);
+    {$ELSE}
+    IDEMessagesWindow.AddMsg(Filename
          +'('+IntToStr(CurError.Caret.Y)+','+IntToStr(CurError.Caret.X)+')'
-         +' Error: '
-         +CurError.ErrorMessage;
-    IDEMessagesWindow.AddMsg(Msg,Dir,-1);
+         +' Error: '+CurError.ErrorMessage,
+         ExtractFilePath(fLFMBuffer.Filename),-1);
+    {$ENDIF}
     CurError:=CurError.NextError;
   end;
   Application.ProcessMessages;
