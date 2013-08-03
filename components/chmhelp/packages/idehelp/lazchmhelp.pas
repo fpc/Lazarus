@@ -131,10 +131,10 @@ end;
 
 procedure TChmHelpViewer.OpenAllCHMsInSearchPath(const SearchPath: String);
 var
-  SearchPathList: TStringlist; //SearchPath as a stringlist
   CHMFiles: TStringList;
+  SearchPaths: TStringList; // SearchPath split to a StringList
+  SearchFiles: TStringList; // Files found in SearchPath
   i: integer;
-  DirCounter: integer;
 begin
   { Alternative:
     Open registered chm help files (no online html help etc)
@@ -155,17 +155,19 @@ begin
    end;
    }
   // Just open all CHM files in all directories+subdirs in ;-delimited searchpath:
-  SearchPathList:=TStringList.Create;
+  SearchPaths:=TStringList.Create;
   CHMFiles:=TStringList.Create;
   try
     CHMFiles.Sorted:=true;
     CHMFiles.Duplicates:=dupIgnore;
-    SearchPathList.Delimiter:=';';
-    SearchPathList.StrictDelimiter:=false;
-    SearchPathList.DelimitedText:=SearchPath;
-    for DirCounter := 0 to SearchPathList.Count-1 do begin
+    SearchPaths.Delimiter:=';';
+    SearchPaths.StrictDelimiter:=false;
+    SearchPaths.DelimitedText:=SearchPath;
+    for i := 0 to SearchPaths.Count-1 do begin
       // Note: FindAllFiles has a SearchPath parameter that is a *single* directory,
-      CHMFiles.AddStrings(FindAllFiles(SearchPathList[DirCounter], '', true));
+      SearchFiles := FindAllFiles(SearchPaths[i]);
+      CHMFiles.AddStrings(SearchFiles);
+      SearchFiles.Free;
     end;
     for i := 0 to CHMFiles.Count-1 do begin
       if UpperCase(ExtractFileExt(CHMFiles[i]))='.CHM' then begin
@@ -176,7 +178,7 @@ begin
     end;
   finally
     CHMFiles.Free;
-    SearchPathList.Free;
+    SearchPaths.Free;
   end;
 end;
 
