@@ -129,7 +129,6 @@ type
     function CTMacroFuncProjectUnitPath(Data: Pointer): boolean;
     function CTMacroFuncProjectIncPath(Data: Pointer): boolean;
     function CTMacroFuncProjectSrcPath(Data: Pointer): boolean;
-    procedure OnCmdLineCreate(var CmdLine: string; var Abort: boolean);
     function OnRunCompilerWithOptions(ExtTool: TIDEExternalToolOptions;
                            CompOptions: TBaseCompilerOptions): TModalResult;
     procedure SetUnitSetCache(const AValue: TFPCUnitSetCache);
@@ -492,10 +491,11 @@ end;
 procedure TBuildManager.SetupCompilerInterface;
 begin
   TheCompiler := TCompiler.Create;
+  {$IFNDEF EnableNewExtTools}
   with TheCompiler do begin
-    OnCommandLineCreate:=@OnCmdLineCreate;
     OutputFilter:=TheOutputFilter;
   end;
+  {$ENDIF}
 end;
 
 procedure TBuildManager.SetupInputHistories;
@@ -2098,12 +2098,6 @@ begin
     FuncData^.Result:=Project1.CompilerOptions.GetSrcPath(false);
     Result:=true;
   end;
-end;
-
-procedure TBuildManager.OnCmdLineCreate(var CmdLine: string; var Abort: boolean);
-// replace all transfer macros in command line
-begin
-  Abort:=not GlobalMacroList.SubstituteStr(CmdLine);
 end;
 
 function TBuildManager.OnRunCompilerWithOptions(

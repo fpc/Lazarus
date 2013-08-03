@@ -107,7 +107,7 @@ type
       read fOnNeedsOutputFilter write fOnNeedsOutputFilter;
   end;
 {$ENDIF EnableNewExtTools}
-
+type
   { TExternalToolDialog -
     the dialog to edit all external tools }
 

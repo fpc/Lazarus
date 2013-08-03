@@ -44,7 +44,7 @@ uses
   {$ELSE}
   OutputFilter,
   {$ENDIF}
-  UTF8Process, InfoBuild, IDEMsgIntf, CompOptsIntf;
+  UTF8Process, InfoBuild, IDEMsgIntf, CompOptsIntf, IDEExternToolIntf;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean) of object;
@@ -54,8 +54,10 @@ type
   TCompiler = class(TObject)
   private
     FOnCmdLineCreate : TOnCmdLineCreate;
+    {$IFNDEF EnableNewExtTools}
     FOutputFilter: TOutputFilter;
     FTheProcess: TProcessUTF8;
+    {$ENDIF}
   public
     constructor Create;
     destructor Destroy; override;
@@ -64,10 +66,10 @@ type
                      BuildAll, SkipLinking, SkipAssembler: boolean
                     ): TModalResult;
     procedure WriteError(const Msg: string);
-    property OnCommandLineCreate: TOnCmdLineCreate read FOnCmdLineCreate
-                                                   write FOnCmdLineCreate;
+    {$IFNDEF EnableNewExtTools}
     property OutputFilter: TOutputFilter read FOutputFilter write FOutputFilter;
     property TheProcess: TProcessUTF8 read FTheProcess;
+    {$ENDIF}
   end;
 
   // Following classes are for compiler options parsed from "fpc -h" and "fpc -i".
@@ -211,7 +213,9 @@ end;
 ------------------------------------------------------------------------------}
 destructor TCompiler.Destroy;
 begin
+  {$IFNDEF EnableNewExtTools}
   FreeAndNil(FTheProcess);
+  {$ENDIF}
   inherited Destroy;
 end;
 
@@ -225,6 +229,9 @@ function TCompiler.Compile(AProject: TProject;
 var
   CmdLine : String;
   Abort : Boolean;
+  {$IFDEF EnableNewExtTools}
+  Tool: TAbstractExternalTool;
+  {$ENDIF}
 begin
   Result:=mrCancel;
   if ConsoleVerbosity>=0 then
@@ -233,27 +240,18 @@ begin
   // if we want to show the compile progress, it's now time to show the dialog
   CompileProgress.Show;
 
-  CmdLine := CompilerFilename;
-
-  if Assigned(FOnCmdLineCreate) then begin
-    Abort:=false;
-    FOnCmdLineCreate(CmdLine,Abort);
-    if Abort then begin
-      Result:=mrAbort;
-      exit;
-    end;
-  end;
   try
-    CheckIfFileIsExecutable(CmdLine);
+    CheckIfFileIsExecutable(CompilerFilename);
   except
     on E: Exception do begin
       WriteError(Format(lisCompilerErrorInvalidCompiler, [E.Message]));
-      if CmdLine='' then begin
+      if CompilerFilename='' then begin
         WriteError(lisCompilerHintYouCanSetTheCompilerPath);
       end;
       exit;
     end;
   end;
+  CmdLine := '';
   if BuildAll then
     CmdLine := CmdLine+' -B';
   if SkipLinking and SkipAssembler then
@@ -262,7 +260,7 @@ begin
     CmdLine := CmdLine+' -Cn';
 
   if CompilerParams<>'' then
-  CmdLine := CmdLine+' '+CompilerParams;
+    CmdLine := CmdLine+' '+CompilerParams;
   if Assigned(FOnCmdLineCreate) then begin
     Abort:=false;
     FOnCmdLineCreate(CmdLine,Abort);
@@ -274,6 +272,18 @@ begin
   if ConsoleVerbosity>=0 then
     DebugLn('[TCompiler.Compile] CmdLine="',CmdLine,'"');
 
+  {$IFDEF EnableNewExtTools}
+  Tool:=ExternalToolList.Add('Compling Project');
+  Tool.Process.Executable:=CompilerFilename;
+  Tool.CmdLineParams:=CmdLine;
+  Tool.Process.CurrentDirectory:=WorkingDir;
+  Tool.AddParsers(SubToolFPC);
+  Tool.AddParsers(SubToolMake);
+  Tool.Execute;
+  Tool.WaitForExit;
+  if Tool.ErrorMessage='' then
+    Result:=mrOK;
+  {$ELSE}
   try
     if TheProcess=nil then
       FTheProcess := TOutputFilterProcess.Create(nil);
@@ -321,6 +331,7 @@ begin
       exit;
     end;
   end;
+  {$ENDIF}
   if ConsoleVerbosity>=0 then
     DebugLn('[TCompiler.Compile] end');
 end;
@@ -328,10 +339,14 @@ end;
 procedure TCompiler.WriteError(const Msg: string);
 begin
   DebugLn('TCompiler.WriteError ',Msg);
+  {$IFDEF EnableNewExtTools}
+  if IDEMessagesWindow<>nil then
+    IDEMessagesWindow.AddCustomMessage(mluError,Msg);
+  {$ELSE}
   if OutputFilter <> nil then
     OutputFilter.ReadConstLine(Msg, True);
+  {$ENDIF}
 end;
-
 
 // Compiler options parsed from "fpc -h" and "fpc -i".
 

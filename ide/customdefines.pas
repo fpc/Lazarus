@@ -25,7 +25,7 @@ unit CustomDefines;
 interface
 
 uses
-  Classes, Forms, StdCtrls, Buttons, ButtonPanel, CheckLst, LCLType,
+  Classes, Forms, StdCtrls, Buttons, ButtonPanel, CheckLst, LCLType, Controls,
   IDEHelpIntf, LazarusIDEStrConsts, Compiler;
 
 type
@@ -169,6 +169,7 @@ begin
     end;
     DefinesCheckList.Checked[ListInd] := True;
   end;
+  Result:=mrOK;
 end;
 
 function TCustomDefinesForm.ToCustomOptions(aStrings: TStrings): TModalResult;
@@ -184,6 +185,7 @@ begin
       if Checked[i] then begin
         aStrings.Add('-d' + Items[i]);
       end;
+  Result:=mrOk;
 end;
 
 end.

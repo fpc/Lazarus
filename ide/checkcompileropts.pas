@@ -105,11 +105,9 @@ type
     function DoTestAll: TModalResult;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    function RunTool(ExtTool: TExternalToolOptions; ShowAbort: Boolean): TModalResult;
     procedure Add(const Msg, CurDir: String; ProgressLine: boolean;
                   OriginalIndex: integer);
     procedure AddMsg(const Msg, CurDir: String; OriginalIndex: integer);
-    procedure AddProgress(Line: TIDEScanMessageLine);
     procedure AddHint(const Msg: string);
     procedure AddWarning(const Msg: string);
     procedure AddMsg(const Level: TCompilerCheckMsgLvl; const Msg: string);
@@ -301,7 +299,11 @@ var
   TestDir: String;
   BogusFilename: String;
   CmdLineParams: String;
+  {$IFDEF EnableNewExtTools}
+  CompileTool: TAbstractExternalTool;
+  {$ELSE}
   CompileTool: TExternalToolOptions;
+  {$ENDIF}
 begin
   // compile bogus file
   FTest:=cotCompileBogusFiles;
@@ -330,7 +332,16 @@ begin
     CmdLineParams:=Options.MakeOptionsString(BogusFilename,
               [ccloAddVerboseAll,ccloDoNotAppendOutFileOption,ccloAbsolutePaths])
               +' '+BogusFilename;
-
+    {$IFDEF EnableNewExtTools}
+    CompileTool:=ExternalToolList.Add(dlgCCOTestToolCompilingEmptyFile);
+    CompileTool.AddParsers(SubToolFPC);
+    CompileTool.AddParsers(SubToolMake);
+    CompileTool.Process.CurrentDirectory:=TestDir;
+    CompileTool.Process.Executable:=CompilerFilename;
+    CompileTool.CmdLineParams:=CmdLineParams;
+    CompileTool.Execute;
+    CompileTool.WaitForExit;
+    {$ELSE}
     CompileTool:=TExternalToolOptions.Create;
     CompileTool.Title:=dlgCCOTestToolCompilingEmptyFile;
     CompileTool.ScanOutputForFPCMessages:=true;
@@ -338,9 +349,10 @@ begin
     CompileTool.WorkingDirectory:=TestDir;
     CompileTool.Filename:=CompilerFilename;
     CompileTool.CmdLineParams:=CmdLineParams;
-
-    Result:=RunTool(CompileTool,false);
+    TestMemo.Lines.Text:=CompileTool.Filename+' '+CompileTool.CmdLineParams;
+    Result:=EnvironmentOptions.ExternalTools.Run(CompileTool,MacroList,false);
     FreeThenNil(CompileTool);
+    {$ENDIF}
   finally
     DeleteFileUTF8(BogusFilename);
   end;
@@ -836,7 +848,11 @@ end;
 function TCheckCompilerOptsDlg.DoTestAll: TModalResult;
 var
   CompilerFilename: String;
+  {$IFDEF EnableNewExtTools}
+  CompileTool: TAbstractExternalTool;
+  {$ELSE}
   CompileTool: TExternalToolOptions;
+  {$ENDIF}
   CompilerFiles: TStrings;
   FPCCfgUnitPath: string;
   TargetUnitPath: String;
@@ -976,13 +992,6 @@ begin
   inherited Destroy;
 end;
 
-function TCheckCompilerOptsDlg.RunTool(ExtTool: TExternalToolOptions;
-  ShowAbort: Boolean): TModalResult;
-begin
-  TestMemo.Lines.Text:=ExtTool.Filename+' '+ExtTool.CmdLineParams;
-  Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,MacroList,ShowAbort);
-end;
-
 procedure TCheckCompilerOptsDlg.Add(const Msg, CurDir: String;
   ProgressLine: boolean; OriginalIndex: integer);
 var
@@ -1004,11 +1013,6 @@ procedure TCheckCompilerOptsDlg.AddMsg(const Msg, CurDir: String;
   OriginalIndex: integer);
 begin
   Add(Msg,CurDir,false,OriginalIndex);
-end;
-
-procedure TCheckCompilerOptsDlg.AddProgress(Line: TIDEScanMessageLine);
-begin
-  Add(Line.Line,Line.WorkingDirectory,false,Line.LineNumber);
 end;
 
 procedure TCheckCompilerOptsDlg.AddHint(const Msg: string);
