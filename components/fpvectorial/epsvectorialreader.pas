@@ -23,6 +23,7 @@ unit epsvectorialreader;
 {.$define FPVECTORIALDEBUG_CONTROL}
 {.$define FPVECTORIALDEBUG_ARITHMETIC}
 {.$define FPVECTORIALDEBUG_CLIP_REGION}
+{$define FPVECTORIAL_IMAGE_DICTIONARY_DEBUG}
 
 interface
 
@@ -129,6 +130,8 @@ type
     OverPrint: Boolean; // not used currently
     ColorSpaceName: string;
     // Current Transformation Matrix
+    //
+    // See http://www.useragentman.com/blog/2011/01/07/css3-matrix-transform-for-the-mathematically-challenged/
     // This has 6 numbers, which means this:
     //                      (a  c  e)
     // [a, b, c, d, e, f] = (b  d  f)
@@ -636,8 +639,15 @@ begin
           ArrayToken.ResolveOperators();
           if ArrayToken.Parent = nil then
           begin
-            Tokens.Add(ArrayToken);
             State := TPostScriptScannerState(lReturnState.Pop());
+            if State = ssInDictionary then
+            begin
+              DictionaryToken.Childs.Add(ArrayToken);
+            end
+            else
+            begin
+              Tokens.Add(ArrayToken);
+            end;
           end
           else
           begin
@@ -1776,7 +1786,9 @@ begin
   if TExpressionToken(ANextToken).ETType <> ettRawData then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Image contents is not a raw data.');
   lImageDataStr := TExpressionToken(ANextToken).StrValue;
   SetLength(lImageDataStr, Length(lImageDataStr)-2); // Remove the final ~>
+  {$ifdef FPVECTORIAL_DEFLATE_DEBUG}
   FPVUDebugLn('[image] ImageDataStr='+lImageDataStr);
+  {$endif}
 
   lFindIndex := TDictionaryToken(Param1).Names.IndexOf('ASCII85Decode');
   if lFindIndex > 0 then
@@ -1800,6 +1812,15 @@ begin
   lImageBitsPerComponent := 0;
   lImageMatrix := nil;
   lFindIndex := TDictionaryToken(Param1).Names.IndexOf('ImageType');
+  // debug dump all dictionary names
+  {$ifdef FPVECTORIAL_IMAGE_DICTIONARY_DEBUG}
+  FPVUDebug('TDictionaryToken(Param1).Names=');
+  for i := 0 to TDictionaryToken(Param1).Names.Count-1 do
+  begin
+    FPVUDebug(TDictionaryToken(Param1).Names.Strings[i]+' ');
+  end;
+  FPVUDebugLn('');
+  {$endif}
   if lFindIndex > 0 then
   begin
     lCurDictToken := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]);

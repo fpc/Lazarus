@@ -13,6 +13,7 @@ unit fpvutils;
 
 {$define USE_LCL_CANVAS}
 {.$define FPVECTORIAL_BEZIERTOPOINTS_DEBUG}
+{.$define FPVECTORIAL_DEFLATE_DEBUG}
 
 {$ifdef fpc}
   {$mode delphi}
@@ -55,6 +56,7 @@ procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMul
 function Rotate2DPoint(P, RotCenter: TPoint; alpha:double): TPoint;
 function Rotate3DPointInXY(P, RotCenter: T3DPoint; alpha:double): T3DPoint;
 // Transformation matrix operations
+// See http://www.useragentman.com/blog/2011/01/07/css3-matrix-transform-for-the-mathematically-challenged/
 procedure ConvertTransformationMatrixToOperations(AA, AB, AC, AD, AE, AF: Double; out ATranslateX, ATranslateY, AScaleX, AScaleY, ASkewX, ASkewY, ARotate: Double);
 procedure InvertMatrixOperations(var ATranslateX, ATranslateY, AScaleX, AScaleY, ASkewX, ASkewY, ARotate: Double);
 // Numerical Calculus
@@ -448,13 +450,19 @@ begin
   DestMem := TMemoryStream.Create;
   try
     // copy the source to the stream
+    {$ifdef FPVECTORIAL_DEFLATE_DEBUG}
     FPVUDebug('[DeflateBytes] ASource= ');
+    {$endif}
     for i := 0 to Length(ASource)-1 do
     begin
       SourceMem.WriteByte(ASource[i]);
+      {$ifdef FPVECTORIAL_DEFLATE_DEBUG}
       FPVUDebug(Format('%.2x ', [ASource[i]]));
+      {$endif}
     end;
+    {$ifdef FPVECTORIAL_DEFLATE_DEBUG}
     FPVUDebugLn('');
+    {$endif}
     SourceMem.Position := 0;
 
     DeflateStream(SourceMem, DestMem);
