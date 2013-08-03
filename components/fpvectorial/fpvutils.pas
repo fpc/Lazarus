@@ -54,6 +54,9 @@ procedure AddBezierToPoints(P1, P2, P3, P4: T3DPoint; var Points: TPointsArray);
 procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);
 function Rotate2DPoint(P, RotCenter: TPoint; alpha:double): TPoint;
 function Rotate3DPointInXY(P, RotCenter: T3DPoint; alpha:double): T3DPoint;
+// Transformation matrix operations
+procedure ConvertTransformationMatrixToOperations(AA, AB, AC, AD, AE, AF: Double; out ATranslateX, ATranslateY, AScaleX, AScaleY, ASkewX, ASkewY, ARotate: Double);
+procedure InvertMatrixOperations(var ATranslateX, ATranslateY, AScaleX, AScaleY, ASkewX, ASkewY, ARotate: Double);
 // Numerical Calculus
 function SolveNumericallyAngle(ANumericalEquation: TNumericalEquation;
   ADesiredMaxError: Double; ADesiredMaxIterations: Integer = 10): Double;
@@ -328,7 +331,52 @@ begin
   result.y := Round(-p.x*sinus + p.y*cosinus) +  RotCenter.y;
 end;
 
+// Current Transformation Matrix
+// This has 6 numbers, which means this:
+//                      (a  c  e)
+// [a, b, c, d, e, f] = (b  d  f)
+//                      (0  0  1)
+// scale(Num)  => a,d=Num  rest=0
+// scaleX(Num) => a=Num  d=1 rest=0
+// scaleY(Num) => a=1  d=Num rest=0
+// TranslateX(Num) => a,d=1 e=Num rest=0
+// TranslateY(Num) => a,d=1 f=Num rest=0
+// Translate(NumX,NumY)  => a,d=1 e=NumX f=NumY rest=0
+// skewX(TX) => a=1 b=0 c=tan(TX) d=1 rest=0
+// skewY(TY) => a=1 b=tan(TY) c=0 d=1 rest=0
+// skew(TX,TY) => a=1 b=tan(TY) c=tan(TX) d=1 rest=0
+// rotate(T) => a=cos(T) b=sin(T) c=-sin(T) d=cos(T) rest=0
+procedure ConvertTransformationMatrixToOperations(AA, AB, AC, AD, AE,
+  AF: Double; out ATranslateX, ATranslateY, AScaleX, AScaleY, ASkewX, ASkewY,
+  ARotate: Double);
+begin
+  ATranslateX := 0;
+  ATranslateY := 0;
+  AScaleX := 1;
+  AScaleY := 1;
+  ASkewX := 0;
+  ASkewY := 0;
+  ARotate := 0;
+
+  ATranslateX := AE;
+  ATranslateY := AF;
+  AScaleX := AA;
+  AScaleY := AD;
+end;
+
 {$ifdef USE_LCL_CANVAS}
+
+procedure InvertMatrixOperations(var ATranslateX, ATranslateY, AScaleX,
+  AScaleY, ASkewX, ASkewY, ARotate: Double);
+begin
+  ATranslateX := -1 * ATranslateX;
+  ATranslateY := -1 * ATranslateY;
+  AScaleX := 1 / AScaleX;
+  AScaleY := 1 / AScaleY;
+  ASkewX := -1 * ATranslateX;
+  ASkewY := -1 * ATranslateX;
+  ARotate := -1 * ATranslateX;
+end;
 
 function SolveNumericallyAngle(ANumericalEquation: TNumericalEquation;
   ADesiredMaxError: Double; ADesiredMaxIterations: Integer = 10): Double;

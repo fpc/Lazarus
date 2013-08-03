@@ -66,6 +66,7 @@ type
     procedure FreeToken(AToken, AData: Pointer);
     procedure AddNumber(ANumber: Double);
     procedure AddIdentityMatrix;
+    function GetNumber(AIndex: Integer): Double;
     procedure ResolveOperators;
   end;
 
@@ -126,7 +127,22 @@ type
     ClipPath: TPath;
     ClipMode: TvClipMode;
     OverPrint: Boolean; // not used currently
+    ColorSpaceName: string;
     // Current Transformation Matrix
+    // This has 6 numbers, which means this:
+    //                      (a  c  e)
+    // [a, b, c, d, e, f] = (b  d  f)
+    //                      (0  0  1)
+    // scale(Num)  => a,d=Num  rest=0
+    // scaleX(Num) => a=Num  d=1 rest=0
+    // scaleY(Num) => a=1  d=Num rest=0
+    // TranslateX(Num) => a,d=1 e=Num rest=0
+    // TranslateY(Num) => a,d=1 f=Num rest=0
+    // Translate(NumX,NumY)  => a,d=1 e=NumX f=NumY rest=0
+    // skewX(TX) => a=1 b=0 c=tan(TX) d=1 rest=0
+    // skewY(TY) => a=1 b=tan(TY) c=0 d=1 rest=0
+    // skew(TX,TY) => a=1 b=tan(TY) c=tan(TX) d=1 rest=0
+    // rotate(T) => a=cos(T) b=sin(T) c=-sin(T) d=cos(T) rest=0
     CTM: TArrayToken;
     //
     PenWidth: Integer;
@@ -160,7 +176,6 @@ type
     Dictionary: TStringList;
     ExitCalled: Boolean;
     CurrentGraphicState: TGraphicState;
-    ColorSpaceName: string;
     //
     procedure DebugStack();
     //
@@ -290,6 +305,11 @@ begin
   AddNumber(0);
 end;
 
+function TArrayToken.GetNumber(AIndex: Integer): Double;
+begin
+  Result := TPSToken(ArrayData.Items[AIndex]).FloatValue;
+end;
+
 procedure TArrayToken.ResolveOperators;
 begin
 
@@ -308,6 +328,7 @@ begin
   Result.ClipPath := ClipPath;
   Result.ClipMode := ClipMode;
   Result.OverPrint := OverPrint;
+  Result.ColorSpaceName := ColorSpaceName;
   if CTM <> nil then
     Result.CTM := TArrayToken(CTM.Duplicate());
   Result.PenWidth := PenWidth;
@@ -1721,10 +1742,13 @@ var
   lColor: TFPColor;
   i, x, y, lFindIndex: Integer;
   lDataSource, lImageDataStr: String;
-  lImageWidth, lImageHeight, lImageBitsPerComponent: Integer;
+  lImageType, lImageWidth, lImageHeight, lImageBitsPerComponent: Integer;
   lImageData, lImageDataCompressed: array of Byte;
   lCurDictToken: TPSToken;
   lColorC, lColorM, lColorY, lColorK: Double;
+  lImageMatrix: TArrayToken;
+  lMatrixTranslateX, lMatrixTranslateY, lMatrixScaleX, lMatrixScaleY,
+    lMatrixSkewX, lMatrixSkewY, lMatrixRotate: Double;
 begin
   Result := False;
   Param1 := TPSToken(Stack.Pop);
@@ -1770,9 +1794,18 @@ begin
   end;
 
   // Dictionary information
+  lImageType := 1;
   lImageWidth := 0;
   lImageHeight := 0;
   lImageBitsPerComponent := 0;
+  lImageMatrix := nil;
+  lFindIndex := TDictionaryToken(Param1).Names.IndexOf('ImageType');
+  if lFindIndex > 0 then
+  begin
+    lCurDictToken := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]);
+    lCurDictToken.PrepareIntValue();
+    lImageType := lCurDictToken.IntValue;
+  end;
   lFindIndex := TDictionaryToken(Param1).Names.IndexOf('Width');
   if lFindIndex > 0 then
   begin
@@ -1794,13 +1827,16 @@ begin
     lCurDictToken.PrepareIntValue();
     lImageBitsPerComponent := lCurDictToken.IntValue;
   end;
+  lFindIndex := TDictionaryToken(Param1).Names.IndexOf('ImageMatrix');
+  if lFindIndex > 0 then
+  begin
+    lImageMatrix := TArrayToken(TDictionaryToken(Param1).Values[lFindIndex]);
+  end;
 
   // Read the image
   lRasterImage := TvRasterImage.Create;
   lRasterImage.CreateRGB888Image(lImageWidth, lImageHeight);
-  lRasterImage.Width := lImageWidth;
-  lRasterImage.Height := lImageHeight;
-  if ColorSpaceName = 'DeviceCMYK' then
+  if CurrentGraphicState.ColorSpaceName = 'DeviceCMYK' then
   begin
     if (lImageWidth*lImageHeight)*4 > Length(lImageData) then
       raise Exception.Create(Format('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: image data too small. Expected=%d Found=%d', [Length(lImageData), (lImageWidth*lImageHeight)*4]));
@@ -1832,6 +1868,47 @@ begin
         lRasterImage.RasterImage.Colors[x, y] := lColor;
       end;
   end;
+
+  // Get information from the ImageMatrix
+  // for example:   1  b c   d     f
+  // /ImageMatrix [163 0 0 -134 0 134]
+  //                       (163   0    0  )
+  // means that we have:   ( 0  -134  134 )
+  //                       ( 0    0    1  )
+  // which means:
+  // TranslateY(134)
+  // scaleX(163)
+  // scaleY(-134)
+  // all inverted, since the matrix is user->image
+  // and we want image->user
+  if lImageMatrix <> nil then
+  begin
+    ConvertTransformationMatrixToOperations(
+      lImageMatrix.GetNumber(0), lImageMatrix.GetNumber(1),
+      lImageMatrix.GetNumber(2), lImageMatrix.GetNumber(3),
+      lImageMatrix.GetNumber(4), lImageMatrix.GetNumber(5),
+      lMatrixTranslateX, lMatrixTranslateY, lMatrixScaleX, lMatrixScaleY,
+      lMatrixSkewX, lMatrixSkewY, lMatrixRotate);
+    InvertMatrixOperations(
+      lMatrixTranslateX, lMatrixTranslateY, lMatrixScaleX, lMatrixScaleY,
+      lMatrixSkewX, lMatrixSkewY, lMatrixRotate);
+  end
+  else
+  begin
+    lMatrixTranslateX := 0;
+    lMatrixTranslateY := 0;
+    lMatrixScaleX := 1;
+    lMatrixScaleY := 1;
+    lMatrixSkewX := 0;
+    lMatrixSkewY := 0;
+    lMatrixRotate := 0;
+  end;
+
+  // Image data read from the CurrentGraphicState
+  lRasterImage.X := CurrentGraphicState.TranslateX + lMatrixTranslateX;
+  lRasterImage.Y := CurrentGraphicState.TranslateY + lMatrixTranslateY;
+  lRasterImage.Width := lImageWidth * CurrentGraphicState.ScaleX * lMatrixScaleX;
+  lRasterImage.Height := lImageHeight * CurrentGraphicState.ScaleY * lMatrixScaleY;
   AData.AddEntity(lRasterImage);
 
   Exit(True);
@@ -2751,7 +2828,7 @@ begin
   if AToken.StrValue = 'setcolorspace' then
   begin
     Param1 := TPSToken(Stack.Pop);
-    ColorSpaceName := Param1.StrValue;
+    CurrentGraphicState.ColorSpaceName := Param1.StrValue;
     Exit(True);
   end;
   // red green blue setrgbcolor –
