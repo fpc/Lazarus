@@ -686,7 +686,7 @@ begin
   if fLFMBuffer<>nil then begin
     fOwnerConverter.fSettings.AddLogLine(Format(lisConvDelphiRepairingFormFile,
                                                 [fLFMBuffer.Filename]));
-    LfmFixer:=TLFMFixer.Create(fCTLink,fLFMBuffer,Nil);
+    LfmFixer:=TLFMFixer.Create(fCTLink,fLFMBuffer);
     try
       LfmFixer.Settings:=fOwnerConverter.fSettings;
       LfmFixer.UsedUnitsTool:=fUsedUnitsTool;

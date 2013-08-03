@@ -90,8 +90,7 @@ type
     function FixMissingComponentClasses(aMissingTypes: TStringList): TModalResult; override;
     procedure LoadLFM;
   public
-    constructor Create(ACTLink: TCodeToolLink; ALFMBuffer: TCodeBuffer;
-                       const AOnOutput: TOnAddFilteredLine);
+    constructor Create(ACTLink: TCodeToolLink; ALFMBuffer: TCodeBuffer);
     destructor Destroy; override;
     function ConvertAndRepair: TModalResult;
   public
@@ -318,10 +317,9 @@ end;
 
 { TLFMFixer }
 
-constructor TLFMFixer.Create(ACTLink: TCodeToolLink; ALFMBuffer: TCodeBuffer;
-  const AOnOutput: TOnAddFilteredLine);
+constructor TLFMFixer.Create(ACTLink: TCodeToolLink; ALFMBuffer: TCodeBuffer);
 begin
-  inherited Create(ACTLink.Code, ALFMBuffer, AOnOutput);
+  inherited Create(ACTLink.Code, ALFMBuffer);
   fCTLink:=ACTLink;
   fHasMissingProperties:=false;
   fHasMissingObjectTypes:=false;

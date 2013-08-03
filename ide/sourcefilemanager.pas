@@ -3920,8 +3920,9 @@ begin
   ArrangeSourceEditorAndMessageView(false);
 
   // parse the LFM file and the pascal unit
-  LFMChecker:=TLFMChecker.Create(PascalBuf,LFMUnitInfo.Source,@MessagesView.AddMsg);
+  LFMChecker:=TLFMChecker.Create(PascalBuf,LFMUnitInfo.Source);
   try
+    LFMChecker.ShowMessages:=true;
     LFMChecker.RootMustBeClassInUnit:=true;
     LFMChecker.RootMustBeClassInIntf:=true;
     LFMChecker.ObjectsMustExist:=true;

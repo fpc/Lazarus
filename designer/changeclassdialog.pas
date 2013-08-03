@@ -222,7 +222,7 @@ var
 
   function CheckProperties: boolean;
   begin
-    Result:=RepairLFMBuffer(UnitCode,LFMBuffer,nil,false,false,false)=mrOk;
+    Result:=RepairLFMBuffer(UnitCode,LFMBuffer,false,false,false)=mrOk;
     if not Result and (CodeToolBoss.ErrorMessage<>'') then
       MainIDEInterface.DoJumpToCodeToolBossError;
   end;

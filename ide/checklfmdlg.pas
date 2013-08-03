@@ -45,7 +45,7 @@ uses
   OutputFilter,
   {$ENDIF}
   IDEProcs, IDEOptionDefs,
-  EditorOptions, ExtCtrls, JITForms, PropEditUtils;
+  EditorOptions, ExtCtrls, JITForms, PropEditUtils, IDEMsgIntf;
 
 type
 
@@ -53,7 +53,7 @@ type
 
   TLFMChecker = class
   private
-    fOnOutput: TOnAddFilteredLine;
+    fShowMessages: boolean;
     procedure WriteUnitError(Code: TCodeBuffer; X, Y: integer; const ErrorMessage: string);
     procedure WriteCodeToolsError;
     function CheckUnit: boolean;
@@ -83,15 +83,14 @@ type
                              const NewText: string);
     function ApplyReplacements(LFMChangeList: TList): boolean;
   public
-    constructor Create(APascalBuffer, ALFMBuffer: TCodeBuffer;
-                       const AOnOutput: TOnAddFilteredLine);
+    constructor Create(APascalBuffer, ALFMBuffer: TCodeBuffer);
     destructor Destroy; override;
     function Repair: TModalResult;
     function AutomaticFixIsPossible: boolean;
   public
     property PascalBuffer: TCodeBuffer read fPascalBuffer;
     property LFMBuffer: TCodeBuffer read fLFMBuffer;
-    property OnOutput: TOnAddFilteredLine read fOnOutput;
+    property ShowMessages: boolean read fShowMessages write fShowMessages;
     property RootMustBeClassInUnit: boolean read fRootMustBeClassInUnit
                                            write fRootMustBeClassInUnit;
     property RootMustBeClassInIntf: boolean read fRootMustBeClassInIntf
@@ -134,7 +133,6 @@ function QuickCheckLFMBuffer({%H-}PascalBuffer, LFMBuffer: TCodeBuffer;
   ): TModalResult;
 // Now this is just a wrapper for designer/changeclassdialog. Could be moved there.
 function RepairLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
-  const OnOutput: TOnAddFilteredLine;
   RootMustBeClassInUnit, RootMustBeClassInIntf,
   ObjectsMustExist: boolean): TModalResult;
 // dangling events
@@ -253,13 +251,12 @@ begin
 end;
 
 function RepairLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
-  const OnOutput: TOnAddFilteredLine;
   RootMustBeClassInUnit, RootMustBeClassInIntf,
   ObjectsMustExist: boolean): TModalResult;
 var
   LFMChecker: TLFMChecker;
 begin
-  LFMChecker:=TLFMChecker.Create(PascalBuffer,LFMBuffer,OnOutput);
+  LFMChecker:=TLFMChecker.Create(PascalBuffer,LFMBuffer);
   try
     LFMChecker.RootMustBeClassInUnit:=RootMustBeClassInUnit;
     LFMChecker.RootMustBeClassInIntf:=RootMustBeClassInIntf;
@@ -358,12 +355,10 @@ end;
 
 { TLFMChecker }
 
-constructor TLFMChecker.Create(APascalBuffer, ALFMBuffer: TCodeBuffer;
-                             const AOnOutput: TOnAddFilteredLine);
+constructor TLFMChecker.Create(APascalBuffer, ALFMBuffer: TCodeBuffer);
 begin
   fPascalBuffer:=APascalBuffer;
   fLFMBuffer:=ALFMBuffer;
-  fOnOutput:=AOnOutput;
   fRootMustBeClassInIntf:=false;
   fObjectsMustExist:=false;
 end;
@@ -421,7 +416,7 @@ var
   Filename: String;
   Msg: String;
 begin
-  if not Assigned(fOnOutput) then exit;
+  if (not ShowMessages) or (IDEMessagesWindow=nil) then exit;
   if Code=nil then
     Code:=fPascalBuffer;
   Dir:=ExtractFilePath(Code.Filename);
@@ -430,7 +425,7 @@ begin
        +'('+IntToStr(Y)+','+IntToStr(X)+')'
        +' Error: '
        +ErrorMessage;
-  fOnOutput(Msg,Dir,-1,nil);
+  IDEMessagesWindow.AddMsg(Msg,Dir,-1);
   Application.ProcessMessages;
 end;
 
@@ -447,7 +442,7 @@ var
   Msg: String;
   Filename: String;
 begin
-  if not Assigned(fOnOutput) then exit;
+  if (not ShowMessages) or (IDEMessagesWindow=nil) then exit;
   CurError:=fLFMTree.FirstError;
   Dir:=ExtractFilePath(fLFMBuffer.Filename);
   Filename:=ExtractFilename(fLFMBuffer.Filename);
@@ -456,7 +451,7 @@ begin
          +'('+IntToStr(CurError.Caret.Y)+','+IntToStr(CurError.Caret.X)+')'
          +' Error: '
          +CurError.ErrorMessage;
-    fOnOutput(Msg,Dir,-1,nil);
+    IDEMessagesWindow.AddMsg(Msg,Dir,-1);
     CurError:=CurError.NextError;
   end;
   Application.ProcessMessages;
