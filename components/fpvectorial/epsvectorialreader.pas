@@ -1645,7 +1645,6 @@ var
   lDataSource, lImageDataStr: String;
   lImageWidth, lImageHeight, lImageBitsPerComponent: Integer;
   lImageData, lImageDataCompressed: array of Byte;
-  lImageDataPtr: PCardinal;
 begin
   Result := False;
 
@@ -1717,23 +1716,13 @@ begin
     if not (ANextToken is TExpressionToken) then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Image contents is not a TExpressionToken.');
     if TExpressionToken(ANextToken).ETType <> ettRawData then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Image contents is not a raw data.');
     lImageDataStr := TExpressionToken(ANextToken).StrValue;
+    SetLength(lImageDataStr, Length(lImageDataStr)-2); // Remove the final ~>
+    FPVUDebugLn('[image] ImageDataStr='+lImageDataStr);
 
     lFindIndex := TDictionaryToken(Param1).Names.IndexOf('ASCII85Decode');
     if lFindIndex > 0 then
     begin
-      SetLength(lImageData, (Length(lImageDataStr)*4) div 5);
-
-      i := 1;
-      while i <= Length(lImageDataStr)-4 do
-      begin
-        lImageDataPtr := @(lImageData[(i-1)*4 div 5]);
-        lImageDataPtr^ := (Byte(lImageDataStr[i])-33)*85*85*85*85
-         + (Byte(lImageDataStr[i+1])-33)*85*85*85 + (Byte(lImageDataStr[i+2])-33)*85*85
-         + (Byte(lImageDataStr[i+3])-33)*85       + (Byte(lImageDataStr[i+4])-33);
-        lImageDataPtr^ := NToBE(lImageDataPtr^);
-
-        Inc(i, 5);
-      end;
+      DecodeASCII85(lImageDataStr, lImageData);
     end;
 
     lFindIndex := TDictionaryToken(Param1).Names.IndexOf('FlateDecode');
@@ -1741,6 +1730,7 @@ begin
     begin
       if Length(lImageData) = 0 then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: no byte array prepared for FlateDecode. ASCII85Decode is missing.');
       lImageDataCompressed := lImageData;
+      SetLength(lImageData, 0);
       DeflateBytes(lImageDataCompressed, lImageData);
     end;
 

@@ -34,6 +34,8 @@ type
 
   TNumericalEquation = function (AParameter: Double): Double of object; // return the error
 
+  TFPVUDebugOutCallback = procedure (AStr: string) of object;
+
 // Color Conversion routines
 function FPColorToRGBHexString(AColor: TFPColor): string;
 function RGBToFPColor(AR, AG, AB: byte): TFPColor; inline;
@@ -58,10 +60,19 @@ function SolveNumericallyAngle(ANumericalEquation: TNumericalEquation;
 // Compression/Decompression
 procedure DeflateBytes(var ASource, ADest: TFPVUByteArray);
 procedure DeflateStream(ASource, ADest: TStream);
+// ASCII85
+procedure DecodeASCII85(ASource: string; var ADest: TFPVUByteArray);
+// Debug
+procedure FPVUDebug(AStr: string);
+procedure FPVUDebugLn(AStr: string);
 // LCL-related routines
 {$ifdef USE_LCL_CANVAS}
 function ConvertPathToRegion(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double): HRGN;
 {$endif}
+
+var
+  FPVUDebugOutCallback: TFPVUDebugOutCallback; // executes DebugLn
+  FPVDebugBuffer: string;
 
 implementation
 
@@ -389,8 +400,13 @@ begin
   DestMem := TMemoryStream.Create;
   try
     // copy the source to the stream
+    FPVUDebug('[DeflateBytes] ASource= ');
     for i := 0 to Length(ASource)-1 do
+    begin
       SourceMem.WriteByte(ASource[i]);
+      FPVUDebug(Format('%.2x ', [ASource[i]]));
+    end;
+    FPVUDebugLn('');
     SourceMem.Position := 0;
 
     DeflateStream(SourceMem, DestMem);
@@ -409,7 +425,7 @@ end;
 procedure DeflateStream(ASource, ADest: TStream);
 var
   DeCompressionStream: TDecompressionStream;
-  i: Integer;
+  readCount: Integer;
   Buf: array[0..1023]of Byte;
   FirstChar: Char;
 begin
@@ -418,13 +434,97 @@ begin
   if FirstChar <> #120 then
     raise Exception.Create('File is not a zLib archive');
 
+  ASource.Position := 0;
   DecompressionStream := TDecompressionStream.Create(ASource);
   repeat
-    i := DecompressionStream.Read(Buf, SizeOf(Buf));
-    if i <> 0 then ADest.Write(Buf, i);
-  until i <= 0;
+    readCount := DecompressionStream.Read(Buf, SizeOf(Buf));
+    if readCount <> 0 then ADest.Write(Buf, readCount);
+  until readCount < SizeOf(Buf);
 
   DecompressionStream.Free;
+end;
+
+procedure DecodeASCII85(ASource: string; var ADest: TFPVUByteArray);
+var
+  CurSrcPos, CurDestPos: Integer;
+  lDataDWordPtr: PCardinal;
+  lDataCurChar: Char;
+begin
+  SetLength(ADest, 0);
+  CurDestPos := 0;
+
+  CurSrcPos := 1;
+  while CurSrcPos <= Length(ASource) do
+  begin
+    lDataCurChar := ASource[CurSrcPos];
+
+    // Compressed block of zeroes
+    if lDataCurChar = 'z' then
+    begin
+      SetLength(ADest, Length(ADest)+4);
+      ADest[CurDestPos] := 0;
+      ADest[CurDestPos+1] := 0;
+      ADest[CurDestPos+2] := 0;
+      ADest[CurDestPos+3] := 0;
+      Inc(CurDestPos, 4);
+      Inc(CurSrcPos, 1);
+      Continue;
+    end;
+
+    // Common block of data: 5 input bytes generate 4 output bytes
+    SetLength(ADest, Length(ADest)+4);
+    lDataDWordPtr := @(ADest[CurDestPos]);
+    if CurSrcPos+4 <= Length(ASource) then
+    begin
+      lDataDWordPtr^ := (Byte(ASource[CurSrcPos])-33)*85*85*85*85
+       + (Byte(ASource[CurSrcPos+1])-33)*85*85*85 + (Byte(ASource[CurSrcPos+2])-33)*85*85
+       + (Byte(ASource[CurSrcPos+3])-33)*85       + (Byte(ASource[CurSrcPos+4])-33);
+      lDataDWordPtr^ := NToBE(lDataDWordPtr^);
+    end
+    else if CurSrcPos+3 <= Length(ASource) then
+    begin
+      lDataDWordPtr^ := (Byte(ASource[CurSrcPos])-33)*85*85*85*85
+       + (Byte(ASource[CurSrcPos+1])-33)*85*85*85 + (Byte(ASource[CurSrcPos+2])-33)*85*85
+       + (Byte(ASource[CurSrcPos+3])-33)*85       + (Byte('u')-33);
+      lDataDWordPtr^ := NToBE(lDataDWordPtr^);
+      SetLength(ADest, Length(ADest)-1);
+    end
+    else if CurSrcPos+2 <= Length(ASource) then
+    begin
+      lDataDWordPtr^ := (Byte(ASource[CurSrcPos])-33)*85*85*85*85
+       + (Byte(ASource[CurSrcPos+1])-33)*85*85*85 + (Byte(ASource[CurSrcPos+2])-33)*85*85
+       + (Byte('u')-33)*85       + (Byte('u')-33);
+      lDataDWordPtr^ := NToBE(lDataDWordPtr^);
+      SetLength(ADest, Length(ADest)-2);
+    end
+    else if CurSrcPos+1 <= Length(ASource) then
+    begin
+      lDataDWordPtr^ := (Byte(ASource[CurSrcPos])-33)*85*85*85*85
+       + (Byte(ASource[CurSrcPos+1])-33)*85*85*85 + (Byte('u')-33)*85*85
+       + (Byte('u')-33)*85       + (Byte('u')-33);
+      lDataDWordPtr^ := NToBE(lDataDWordPtr^);
+      SetLength(ADest, Length(ADest)-3);
+    end
+    else
+    begin
+      raise Exception.Create('[DecodeASCII85] Too few bytes remaining to decode!');
+    end;
+
+    Inc(CurDestPos, 4);
+    Inc(CurSrcPos, 5);
+  end;
+end;
+
+procedure FPVUDebug(AStr: string);
+begin
+  FPVDebugBuffer := FPVDebugBuffer + AStr;
+end;
+
+procedure FPVUDebugLn(AStr: string);
+begin
+  if Assigned(FPVUDebugOutCallback) then
+    FPVUDebugOutCallback(FPVDebugBuffer + AStr);
+  FPVDebugBuffer := '';
 end;
 
 function ConvertPathToRegion(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double): HRGN;
