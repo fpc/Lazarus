@@ -3335,13 +3335,14 @@ var
   PkgCompileTool: TAbstractExternalTool;
   {$ELSE}
   PkgCompileTool: TIDEExternalToolOptions;
+  BlockBegan: Boolean;
+  CompileResult: TModalResult;
   {$ENDIF}
   CompilerFilename: String;
   EffectiveCompilerParams: String;
   CompilePolicy: TPackageUpdatePolicy;
-  BlockBegan: Boolean;
   NeedBuildAllFlag: Boolean;
-  CompileResult, MsgResult: TModalResult;
+  MsgResult: TModalResult;
   SrcPPUFile: String;
   SrcPPUFileExists: Boolean;
   CompilerParams: String;
@@ -3390,9 +3391,12 @@ begin
       end;
     end;
 
+    {$IFDEF EnableNewExtTools}
+    {$ELSE}
     BlockBegan:=IDEMessagesWindow<>nil;
     if BlockBegan then
       IDEMessagesWindow.BeginBlock;
+    {$ENDIF}
     try
       if (LazarusIDE<>nil) then
         LazarusIDE.MainBarSubTitle:=APackage.Name;
@@ -3479,6 +3483,30 @@ begin
             EffectiveCompilerParams:='-B';
         end;
 
+        {$IFDEF EnableNewExtTools}
+        PkgCompileTool:=ExternalToolList.Add(Format(lisPkgMangCompilingPackage, [APackage.IDAsString]));
+        PkgCompileTool.AddParsers(SubToolFPC);
+        PkgCompileTool.AddParsers(SubToolMake);
+        PkgCompileTool.Process.CurrentDirectory:=APackage.Directory;
+        PkgCompileTool.Process.Executable:=CompilerFilename;
+        PkgCompileTool.CmdLineParams:=EffectiveCompilerParams;
+        PkgCompileTool.Execute;
+        PkgCompileTool.WaitForExit;
+        // check if main ppu file was created
+        SrcPPUFile:=APackage.GetSrcPPUFilename;
+        SrcPPUFileExists:=(SrcPPUFile<>'') and FileExistsUTF8(SrcPPUFile);
+        // write state file
+        Result:=SavePackageCompiledState(APackage,
+                          CompilerFilename,CompilerParams,
+                          PkgCompileTool.ErrorMessage='',SrcPPUFileExists,true);
+        if Result<>mrOk then begin
+          DebugLn(['TLazPackageGraph.CompilePackage SavePackageCompiledState failed: ',APackage.IDAsString]);
+          exit;
+        end;
+        if PkgCompileTool.ErrorMessage<>'' then
+          exit(mrCancel);
+
+        {$ELSE}
         PkgCompileTool:=TIDEExternalToolOptions.Create;
         try
           PkgCompileTool.Title:=Format(lisPkgMangCompilingPackage, [APackage.IDAsString]);
@@ -3511,16 +3539,22 @@ begin
           // clean up
           PkgCompileTool.Free;
         end;
+        {$ENDIF}
       end;
 
       // update .po files
       if (APackage.POOutputDirectory<>'') then begin
         Result:=ConvertPackageRSTFiles(APackage);
         if Result<>mrOk then begin
+          DebugLn('TLazPackageGraph.CompilePackage ConvertPackageRSTFiles failed: ',APackage.IDAsString);
+          {$IFDEF EnableNewExtTools}
+          IDEMessagesWindow.AddCustomMessage(mluError,
+            'Updating po files failed for package '+APackage.IDAsString);
+          {$ELSE}
           IDEMessagesWindow.AddMsg(Format(
             lisPkgMangErrorUpdatingPoFilesFailedForPackage, [APackage.IDAsString
             ]), APackage.Directory, -1);
-          DebugLn('TLazPackageGraph.CompilePackage ConvertPackageRSTFiles failed: ',APackage.IDAsString);
+          {$ENDIF}
           exit;
         end;
       end;
@@ -3530,10 +3564,14 @@ begin
         Result:=APackage.CompilerOptions.ExecuteAfter.Execute(
                                   APackage.Directory,'Executing command after');
         if Result<>mrOk then begin
+          DebugLn(['TLazPackageGraph.CompilePackage ExecuteAfter failed: ',APackage.IDAsString]);
+          {$IFDEF EnableNewExtTools}
+          // messages window already contains error message
+          {$ELSE}
           IDEMessagesWindow.AddMsg(Format(
             lisIDEInfoErrorRunningCompileAfterToolFailedForPackage, [APackage.
             IDAsString]), APackage.Directory, -1);
-          DebugLn(['TLazPackageGraph.CompilePackage ExecuteAfter failed: ',APackage.IDAsString]);
+          {$ENDIF}
           exit;
         end;
       end;
@@ -3541,8 +3579,10 @@ begin
     finally
       if (LazarusIDE<>nil) then
         LazarusIDE.MainBarSubTitle:='';
+      {$IFNDEF EnableNewExtTools}
       if BlockBegan and (IDEMessagesWindow<>nil) then
         IDEMessagesWindow.EndBlock;
+      {$ENDIF}
       if Result<>mrOk then begin
         if (APackage.AutoInstall<>pitNope)
         and (OnUninstallPackage<>nil)
@@ -3711,7 +3751,11 @@ var
   MakefileFPCFilename: String;
   UnitOutputPath: String;
   UnitPath: String;
+  {$IFDEF EnableNewExtTools}
+  FPCMakeTool: TAbstractExternalTool;
+  {$ELSE}
   FPCMakeTool: TIDEExternalToolOptions;
+  {$ENDIF}
   CodeBuffer: TCodeBuffer;
   MainSrcFile: String;
   CustomOptions: String;
@@ -3720,6 +3764,7 @@ var
   OtherOptions: String;
   FormUnitPath: String;
   FormIncPath: String;
+  Executable: String;
 begin
   Result:=mrCancel;
   PathDelimNeedsReplace:=PathDelim<>'/';
@@ -3878,14 +3923,29 @@ begin
     exit;
   end;
 
+  Executable:=FindFPCTool('fpcmake'+GetExecutableExt,
+                                  EnvironmentOptions.GetParsedCompilerFilename);
+  if not FileIsExecutableCached(Executable) then
+    Executable:='fpcmake'+GetExecutableExt;
+
   // call fpcmake to create the Makefile
+  {$IFDEF EnableNewExtTools}
+  FPCMakeTool:=ExternalToolList.Add(
+    Format(lisIDEInfoCreatingMakefileForPackage, [APackage.IDAsString]));
+  FPCMakeTool.Process.CurrentDirectory:=APackage.Directory;
+  FPCMakeTool.Process.Executable:=Executable;
+  FPCMakeTool.CmdLineParams:='-q -TAll';
+  FPCMakeTool.EnvironmentOverrides.Add(
+                      'FPCDIR='+EnvironmentOptions.GetParsedFPCSourceDirectory);
+  FPCMakeTool.Execute;
+  FPCMakeTool.WaitForExit;
+  {$ELSE}
   FPCMakeTool:=TIDEExternalToolOptions.Create;
   try
     FPCMakeTool.Title:=Format(lisIDEInfoCreatingMakefileForPackage, [APackage.
       IDAsString]);
     FPCMakeTool.WorkingDirectory:=APackage.Directory;
-    FPCMakeTool.Filename:=FindFPCTool('fpcmake'+GetExecutableExt,
-                                      EnvironmentOptions.GetParsedCompilerFilename);
+    FPCMakeTool.Filename:=Executable;
     FPCMakeTool.CmdLineParams:='-q -TAll';
     FPCMakeTool.EnvironmentOverrides.Add(
                             'FPCDIR='+EnvironmentOptions.GetParsedFPCSourceDirectory);
@@ -3907,6 +3967,7 @@ begin
     // clean up
     FPCMakeTool.Free;
   end;
+  {$ENDIF}
 
   Result:=mrOk;
 end;
@@ -4430,9 +4491,13 @@ begin
         end;
 
         if (CurUnitName='') or (not IsValidUnitName(CurUnitName)) then begin
+          {$IFDEF EnableNewExtTools}
+          AddMessage(mluError,Format('invalid unit name in package %s',[APackage.IDAsString]),CurFile.Filename);
+          {$ELSE}
           AddMessage(Format(lisIDEInfoWARNINGUnitNameInvalidPackage, [CurFile.
             Filename, APackage.IDAsString]),
              APackage.Directory);
+          {$ENDIF}
           continue;
         end;
 

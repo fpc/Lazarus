@@ -22,6 +22,10 @@
 }
 unit EditMsgScannersDlg;
 
+{$IFDEF EnableNewExtTools}
+  {$Error}
+{$ENDIF}
+
 {$mode objfpc}{$H+}
 
 interface

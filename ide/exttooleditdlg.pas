@@ -42,13 +42,103 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileUtil,
-  LCLType, Controls, Forms, Buttons, StdCtrls,
-  Dialogs, ExtCtrls, LCLProc, ButtonPanel,
-  IDEMsgIntf, IDEExternToolIntf, IDEHelpIntf,
-  PropEdits, IDEDialogs, TransferMacros, LazarusIDEStrConsts,
-  EditMsgScannersDlg;
+  Classes, SysUtils, contnrs, FileUtil, LazConfigStorage, LazUTF8, LCLType,
+  Controls, Forms, Buttons, StdCtrls, Dialogs, ExtCtrls, LCLProc, ButtonPanel,
+  IDEMsgIntf, IDEExternToolIntf, IDEHelpIntf, PropEdits, IDEDialogs,
+  IDECommands, FileProcs, TransferMacros, LazarusIDEStrConsts, EnvironmentOpts,
+  KeyMapping, IDEProcs
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
+  ,EditMsgScannersDlg
+  {$ENDIF}
+  ;
 
+{$IFDEF EnableNewExtTools}
+const
+  ExternalToolOptionsVersion = 3;
+  // 3: changed ScanOutputForFPCMessages to scanner SubToolFPC
+  //    changed ScanOutputForMakeMessages to scanner SubToolMake
+type
+
+  { TExternalToolMenuItem - the options of an external tool in the IDE menu Tools }
+
+  TExternalToolMenuItem = class(TComponent)
+  private
+    FChangeStamp: integer;
+    fCmdLineParams: string;
+    FEnvironmentOverrides: TStringList;
+    fFilename: string;
+    FHideMainForm: boolean;
+    FKey: word;
+    FScanners: TStrings;
+    FShift: TShiftState;
+    fTitle: string;
+    fWorkingDirectory: string;
+    fSavedChangeStamp: integer;
+    function GetHasScanner(aName: string): boolean;
+    function GetModified: boolean;
+    procedure SetChangeStamp(AValue: integer);
+    procedure SetCmdLineParams(AValue: string);
+    procedure SetEnvironmentOverrides(AValue: TStringList);
+    procedure SetFilename(AValue: string);
+    procedure SetHasScanner(aName: string; AValue: boolean);
+    procedure SetHideMainForm(AValue: boolean);
+    procedure SetModified(AValue: boolean);
+    procedure SetScanners(AValue: TStrings);
+    procedure SetTitle(AValue: string);
+    procedure SetWorkingDirectory(AValue: string);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Clear;
+    function Equals(Obj: TObject): boolean; override;
+    procedure Assign(Source: TPersistent); override;
+    function Load(Config: TConfigStorage; CfgVersion: integer): TModalResult; virtual;
+    function Save(Config: TConfigStorage): TModalResult; virtual;
+    property CmdLineParams: string read fCmdLineParams write SetCmdLineParams;
+    property Filename: string read fFilename write SetFilename;
+    property Title: string read fTitle write SetTitle;
+    property WorkingDirectory: string read fWorkingDirectory write SetWorkingDirectory;
+    property EnvironmentOverrides: TStringList read FEnvironmentOverrides write SetEnvironmentOverrides;
+    property HideMainForm: boolean read FHideMainForm write SetHideMainForm default true;
+    property Scanners: TStrings read FScanners write SetScanners;
+    property HasScanner[aName: string]: boolean read GetHasScanner write SetHasScanner;
+    property Modified: boolean read GetModified write SetModified;
+    property ChangeStamp: integer read FChangeStamp write SetChangeStamp;
+    procedure IncreaseChangeStamp; inline;
+  public
+    // these properties are saved in the keymappings, not in the config
+    property Key: word read FKey write FKey;
+    property Shift: TShiftState read FShift write FShift;
+  end;
+
+  { TExternalToolMenuItems }
+
+  TExternalToolMenuItems = class(TBaseExternalToolMenuItems)
+  private
+    fItems: TObjectList; // list of TExternalToolMenuItem
+    function GetItems(Index: integer): TExternalToolMenuItem; inline;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear; inline;
+    function Equals(Obj: TObject): boolean; override;
+    procedure Assign(Src: TExternalToolMenuItems);
+    procedure Add(Item: TExternalToolMenuItem);
+    procedure Insert(Index: integer; Item: TExternalToolMenuItem);
+    procedure Move(CurIndex, NewIndex: integer);
+    function Load(Config: TConfigStorage): TModalResult;
+    function Load(Config: TConfigStorage; const Path: string): TModalResult;
+      override;
+    function Save(Config: TConfigStorage): TModalResult;
+    function Save(Config: TConfigStorage; const Path: string): TModalResult;
+      override;
+    procedure LoadShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
+    procedure SaveShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
+    function Count: integer; inline;
+    property Items[Index: integer]: TExternalToolMenuItem read GetItems; default;
+  end;
+{$ELSE}
 type
   { TExternalToolOptions }
 
@@ -63,8 +153,10 @@ type
     property Key: word read fKey write fKey;
     property Shift: TShiftState read fShift write fShift;
   end;
+{$ENDIF}
 
-  { TExternalToolOptionDlg - the editor dialog for a single external tool}
+type
+  { TExternalToolOptionDlg - the editor dialog for a single external tool }
 
   TExternalToolOptionDlg = class(TForm)
     ButtonPanel: TButtonPanel;
@@ -97,7 +189,7 @@ type
     procedure OpenButtonClick({%H-}sender : TOBject);
     procedure ScannersButtonClick(Sender: TObject);
   private
-    fOptions: TExternalToolOptions;
+    fOptions: {$IFDEF EnableNewExtTools}TExternalToolMenuItem{$ELSE}TExternalToolOptions{$ENDIF};
     fTransferMacros: TTransferMacroList;
     fScanners: TStrings;
     fKeyBox: TShortCutGrabBox;
@@ -107,24 +199,24 @@ type
     procedure UpdateButtons;
     function ScannersToString(List: TStrings): string;
     procedure SetComboBox(AComboBox: TComboBox; const AValue: string);
-    procedure SetOptions(TheOptions: TExternalToolOptions);
+    procedure SetOptions(TheOptions: {$IFDEF EnableNewExtTools}TExternalToolMenuItem{$ELSE}TExternalToolOptions{$ENDIF});
     procedure SetTransferMacros(TransferMacroList: TTransferMacroList);
   public
-    property Options: TExternalToolOptions read fOptions write SetOptions;
+    property Options: {$IFDEF EnableNewExtTools}TExternalToolMenuItem{$ELSE}TExternalToolOptions{$ENDIF} read fOptions write SetOptions;
     property MacroList: TTransferMacroList
            read fTransferMacros write SetTransferMacros;
   end;
 
 
 function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
-  ExternalToolOptions: TExternalToolOptions):TModalResult;
+  ExternalToolOptions: {$IFDEF EnableNewExtTools}TExternalToolMenuItem{$ELSE}TExternalToolOptions{$ENDIF}):TModalResult;
   
 implementation
 
 {$R *.lfm}
 
 function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
-  ExternalToolOptions: TExternalToolOptions):TModalResult;
+  ExternalToolOptions: {$IFDEF EnableNewExtTools}TExternalToolMenuItem{$ELSE}TExternalToolOptions{$ENDIF}):TModalResult;
 var ExternalToolOptionDlg: TExternalToolOptionDlg;
 begin
   Result:=mrCancel;
@@ -140,6 +232,401 @@ begin
   end;
 end;
 
+{$IFDEF EnableNewExtTools}
+{ TExternalToolMenuItem }
+
+// inline
+procedure TExternalToolMenuItem.IncreaseChangeStamp;
+begin
+  CTIncreaseChangeStamp(FChangeStamp);
+end;
+
+function TExternalToolMenuItem.GetModified: boolean;
+begin
+  Result:=FChangeStamp=fSavedChangeStamp;
+end;
+
+function TExternalToolMenuItem.GetHasScanner(aName: string): boolean;
+begin
+  Result:=IndexInStringList(FScanners,cstCaseInsensitive,aName)>=0;
+end;
+
+procedure TExternalToolMenuItem.SetChangeStamp(AValue: integer);
+begin
+  if FChangeStamp=AValue then Exit;
+  FChangeStamp:=AValue;
+end;
+
+procedure TExternalToolMenuItem.SetCmdLineParams(AValue: string);
+begin
+  AValue:=UTF8Trim(AValue,[]);
+  if fCmdLineParams=AValue then Exit;
+  fCmdLineParams:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TExternalToolMenuItem.SetEnvironmentOverrides(AValue: TStringList);
+begin
+  if (FEnvironmentOverrides=AValue) or FEnvironmentOverrides.Equals(AValue) then Exit;
+  FEnvironmentOverrides.Assign(AValue);
+  IncreaseChangeStamp;
+end;
+
+procedure TExternalToolMenuItem.SetFilename(AValue: string);
+begin
+  AValue:=TrimFilename(AValue);
+  if fFilename=AValue then Exit;
+  fFilename:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TExternalToolMenuItem.SetHasScanner(aName: string; AValue: boolean);
+var
+  i: Integer;
+begin
+  i:=IndexInStringList(FScanners,cstCaseInsensitive,aName);
+  if i>=0 then begin
+    if AValue then exit;
+    FScanners.Add(aName);
+  end else begin
+    if not AValue then exit;
+    FScanners.Delete(i);
+  end;
+  IncreaseChangeStamp;
+end;
+
+procedure TExternalToolMenuItem.SetHideMainForm(AValue: boolean);
+begin
+  if FHideMainForm=AValue then Exit;
+  FHideMainForm:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TExternalToolMenuItem.SetModified(AValue: boolean);
+begin
+  if AValue then
+    IncreaseChangeStamp
+  else
+    fSavedChangeStamp:=FChangeStamp;
+end;
+
+procedure TExternalToolMenuItem.SetScanners(AValue: TStrings);
+begin
+  if (FScanners=AValue) or FScanners.Equals(AValue) then Exit;
+  FScanners.Assign(AValue);
+  IncreaseChangeStamp;
+end;
+
+procedure TExternalToolMenuItem.SetTitle(AValue: string);
+begin
+  AValue:=UTF8Trim(AValue,[]);
+  if fTitle=AValue then Exit;
+  fTitle:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TExternalToolMenuItem.SetWorkingDirectory(AValue: string);
+begin
+  AValue:=TrimFilename(AValue);
+  if fWorkingDirectory=AValue then Exit;
+  fWorkingDirectory:=AValue;
+  IncreaseChangeStamp;
+end;
+
+constructor TExternalToolMenuItem.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FEnvironmentOverrides:=TStringList.Create;
+  FScanners:=TStringList.Create;
+  fSavedChangeStamp:=CTInvalidChangeStamp;
+  Clear;
+end;
+
+destructor TExternalToolMenuItem.Destroy;
+begin
+  FreeAndNil(FEnvironmentOverrides);
+  FreeAndNil(FScanners);
+  inherited Destroy;
+end;
+
+procedure TExternalToolMenuItem.Clear;
+begin
+  CmdLineParams:='';
+  if FEnvironmentOverrides.Count>0 then
+  begin
+    IncreaseChangeStamp;
+    FEnvironmentOverrides.Clear;
+  end;
+  Filename:='';
+  HideMainForm:=true;
+  if FScanners.Count>0 then
+  begin
+    FScanners.Clear;
+    IncreaseChangeStamp;
+  end;
+  Title:='';
+  WorkingDirectory:='';
+end;
+
+function TExternalToolMenuItem.Equals(Obj: TObject): boolean;
+var
+  Src: TExternalToolMenuItem;
+begin
+  if Obj is TExternalToolMenuItem then begin
+    Src:=TExternalToolMenuItem(Obj);
+    Result:=(CmdLineParams=Src.CmdLineParams)
+      and EnvironmentOverrides.Equals(Src.EnvironmentOverrides)
+      and (Filename=Src.Filename)
+      and (HideMainForm=Src.HideMainForm)
+      and Scanners.Equals(Src.Scanners)
+      and (Title=Src.Title)
+      and (WorkingDirectory=Src.WorkingDirectory)
+      and (Key=Src.Key)
+      and (Shift=Src.Shift);
+  end else
+    Result:=inherited;
+end;
+
+procedure TExternalToolMenuItem.Assign(Source: TPersistent);
+var
+  Src: TExternalToolMenuItem;
+begin
+  if Equals(Source) then exit;
+  if Source is TExternalToolMenuItem then begin
+    Src:=TExternalToolMenuItem(Source);
+    CmdLineParams:=Src.CmdLineParams;
+    EnvironmentOverrides:=Src.EnvironmentOverrides;
+    Filename:=Src.Filename;
+    HideMainForm:=Src.HideMainForm;
+    Scanners:=Src.Scanners;
+    Title:=Src.Title;
+    Key:=Src.Key;
+    Shift:=Src.Shift;
+  end else
+    inherited;
+end;
+
+function TExternalToolMenuItem.Load(Config: TConfigStorage; CfgVersion: integer
+  ): TModalResult;
+begin
+  Clear;
+  fTitle:=Config.GetValue('Title/Value','');
+  fFilename:=Config.GetValue('Filename/Value','');
+  fCmdLineParams:=Config.GetValue('CmdLineParams/Value','');
+  fWorkingDirectory:=Config.GetValue('WorkingDirectory/Value','');
+  Config.GetValue('EnvironmentOverrides/',FEnvironmentOverrides);
+  HideMainForm:=Config.GetValue('HideMainForm/Value',true);
+
+  if CfgVersion<3 then
+  begin
+    if Config.GetValue('ScanOutputForFPCMessages/Value',false) then
+      FScanners.Add(SubToolFPC);
+    if Config.GetValue('ScanOutputForMakeMessages/Value',false) then
+      FScanners.Add(SubToolMake);
+    if Config.GetValue('ShowAllOutput/Value',false) then
+      FScanners.Add(SubToolDefault);
+  end else
+    Config.GetValue('Scanners/',FScanners);
+
+  Modified:=false;
+  Result:=mrOk;
+end;
+
+function TExternalToolMenuItem.Save(Config: TConfigStorage): TModalResult;
+begin
+  Config.SetDeleteValue('Title/Value',Title,'');
+  Config.SetDeleteValue('Filename/Value',Filename,'');
+  Config.SetDeleteValue('CmdLineParams/Value',CmdLineParams,'');
+  Config.SetDeleteValue('WorkingDirectory/Value',WorkingDirectory,'');
+  Config.SetValue('EnvironmentOverrides/',FEnvironmentOverrides);
+  Config.SetValue('Scanners/',FScanners);
+  Config.SetDeleteValue('HideMainForm/Value',HideMainForm,true);
+  Modified:=false;
+end;
+
+{ TExternalToolMenuItems }
+
+// inline
+function TExternalToolMenuItems.Count: integer;
+begin
+  Result:=fItems.Count;
+end;
+
+// inline
+function TExternalToolMenuItems.GetItems(Index: integer): TExternalToolMenuItem;
+begin
+  Result:=TExternalToolMenuItem(fItems[Index]);
+end;
+
+// inline
+procedure TExternalToolMenuItems.Clear;
+begin
+  fItems.Clear;
+end;
+
+constructor TExternalToolMenuItems.Create;
+begin
+  fItems:=TObjectList.Create(true);
+end;
+
+destructor TExternalToolMenuItems.Destroy;
+begin
+  Clear;
+  FreeAndNil(fItems);
+  inherited Destroy;
+end;
+
+function TExternalToolMenuItems.Equals(Obj: TObject): boolean;
+var
+  Src: TExternalToolMenuItems;
+  i: Integer;
+begin
+  if Obj=Self then exit;
+  if Obj is TExternalToolMenuItems then begin
+    Src:=TExternalToolMenuItems(Obj);
+    Result:=false;
+    if Count<>Src.Count then exit;
+    for i:=0 to Count-1 do
+      if not Items[i].Equals(Src[i]) then exit;
+    Result:=true;
+  end else
+    Result:=inherited Equals(Obj);
+end;
+
+procedure TExternalToolMenuItems.Assign(Src: TExternalToolMenuItems);
+var
+  Item: TExternalToolMenuItem;
+  i: Integer;
+begin
+  if Equals(Src) then exit;
+  Clear;
+  for i:=0 to Src.Count-1 do begin
+    Item:=TExternalToolMenuItem.Create(nil);
+    Item.Assign(Src[i]);
+    Add(Item);
+  end;
+end;
+
+procedure TExternalToolMenuItems.Add(Item: TExternalToolMenuItem);
+begin
+  fItems.Add(Item);
+end;
+
+procedure TExternalToolMenuItems.Insert(Index: integer;
+  Item: TExternalToolMenuItem);
+begin
+  fItems.Insert(Index,Item);
+end;
+
+procedure TExternalToolMenuItems.Move(CurIndex, NewIndex: integer);
+begin
+  fItems.Move(CurIndex,NewIndex);
+end;
+
+function TExternalToolMenuItems.Load(Config: TConfigStorage): TModalResult;
+var
+  i: integer;
+  NewTool: TExternalToolMenuItem;
+  NewCount: Integer;
+  CfgVersion: Integer;
+begin
+  Clear;
+  NewCount:=Config.GetValue('Count',0);
+  CfgVersion:=Config.GetValue('Version',0);
+  for i:=1 to NewCount do begin
+    NewTool:=TExternalToolMenuItem.Create(nil);
+    fItems.Add(NewTool);
+    Config.AppendBasePath('Tool'+IntToStr(i)+'/');
+    try
+      if NewTool.Load(Config,CfgVersion)<>mrOk then exit;
+    finally
+      Config.UndoAppendBasePath;
+    end;
+  end;
+  Result:=mrOk;
+end;
+
+function TExternalToolMenuItems.Load(Config: TConfigStorage; const Path: string
+  ): TModalResult;
+begin
+  if Path<>'' then
+    Config.AppendBasePath(Path);
+  try
+    Result:=Load(Config);
+  finally
+    if Path<>'' then
+      Config.UndoAppendBasePath;
+  end;
+end;
+
+function TExternalToolMenuItems.Save(Config: TConfigStorage): TModalResult;
+var
+  i: integer;
+begin
+  Config.SetValue('Version',ExternalToolOptionsVersion);
+  Config.SetValue('Count',Count);
+  for i:=1 to Count do begin
+    Config.AppendBasePath('Tool'+IntToStr(i)+'/');
+    try
+      if Items[i-1].Save(Config)<>mrOk then exit;
+    finally
+      Config.UndoAppendBasePath;
+    end;
+  end;
+  Result:=mrOk;
+end;
+
+function TExternalToolMenuItems.Save(Config: TConfigStorage; const Path: string
+  ): TModalResult;
+begin
+  if Path<>'' then
+    Config.AppendBasePath(Path);
+  try
+    Result:=Save(Config);
+  finally
+    if Path<>'' then
+      Config.UndoAppendBasePath;
+  end;
+end;
+
+procedure TExternalToolMenuItems.LoadShortCuts(
+  KeyCommandRelationList: TKeyCommandRelationList);
+var
+  i: integer;
+  KeyCommandRelation: TKeyCommandRelation;
+begin
+  for i:=0 to Count-1 do begin
+    KeyCommandRelation:=KeyCommandRelationList.FindByCommand(ecExtToolFirst+i);
+    if KeyCommandRelation<>nil then begin
+      Items[i].Key:=KeyCommandRelation.ShortcutA.Key1;
+      Items[i].Shift:=KeyCommandRelation.ShortcutA.Shift1;
+    end else begin
+      Items[i].Key:=VK_UNKNOWN;
+      Items[i].Shift:=[];
+    end;
+  end;
+end;
+
+procedure TExternalToolMenuItems.SaveShortCuts(
+  KeyCommandRelationList: TKeyCommandRelationList);
+var
+  i: integer;
+  KeyCommandRelation: TKeyCommandRelation;
+begin
+  KeyCommandRelationList.ExtToolCount:=Count;
+  for i:=0 to Count-1 do begin
+    KeyCommandRelation:=KeyCommandRelationList.FindByCommand(ecExtToolFirst+i);
+    if KeyCommandRelation<>nil then begin
+      KeyCommandRelation.ShortcutA:=IDEShortCut(Items[i].Key,Items[i].Shift,
+                                           VK_UNKNOWN,[]);
+    end else begin
+      DebugLn('[TExternalToolMenuItems.SaveShortCuts] Error: '
+        +'unable to save shortcut for external tool "',Items[i].Title,'"');
+    end;
+  end;
+end;
+{$ENDIF}
+
 { TExternalToolOptionDlg }
 
 procedure TExternalToolOptionDlg.OpenButtonClick(sender : TOBject);
@@ -150,10 +637,13 @@ End;
 
 procedure TExternalToolOptionDlg.ScannersButtonClick(Sender: TObject);
 begin
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
   if ShowEditMsgScannersDialog('Edit tool '+copy(TitleEdit.Text,1,20),
     fScanners)=mrOk
   then
     UpdateButtons;
+  {$ENDIF}
 end;
 
 procedure TExternalToolOptionDlg.SaveToOptions;
@@ -164,20 +654,28 @@ begin
   fOptions.WorkingDirectory:=WorkingDirEdit.Text;
   fOptions.Key:=fKeyBox.Key;
   fOptions.Shift:=fKeyBox.ShiftState;
+  FOptions.HideMainForm := chkHideMainForm.Checked;
+  {$IFDEF EnableNewExtTools}
+
+  {$ELSE}
   fOptions.ScanOutputForFPCMessages:=OptionScanOutputForFPCMessagesCheckBox.Checked;
   fOptions.ScanOutputForMakeMessages:=OptionScanOutputForMakeMessagesCheckBox.Checked;
-  FOptions.HideMainForm := chkHideMainForm.Checked;
   fOptions.Scanners:=fScanners;
+  {$ENDIF}
 end;
 
 procedure TExternalToolOptionDlg.UpdateButtons;
 begin
+  {$IFDEF EnableNewExtTools}
+  ScannersButton.Visible:=false;
+  {$ELSE}
   if IDEMsgScanners.Count>0 then begin
     ScannersButton.Visible:=true;
     ScannersButton.Caption:=Format(lisetEditCustomScanners, [ScannersToString(fScanners)]);
   end else begin
     ScannersButton.Visible:=false;
   end;
+  {$ENDIF}
 end;
 
 function TExternalToolOptionDlg.ScannersToString(List: TStrings): string;
@@ -208,8 +706,13 @@ begin
   WorkingDirEdit.Text:=fOptions.WorkingDirectory;
   fKeyBox.Key:=fOptions.Key;
   fKeyBox.ShiftState:=fOptions.Shift;
+  {$IFDEF EnableNewExtTools}
+  OptionScanOutputForFPCMessagesCheckBox.Checked:=fOptions.HasScanner[SubToolFPC];
+  OptionScanOutputForMakeMessagesCheckBox.Checked:=fOptions.HasScanner[SubToolMake];
+  {$ELSE}
   OptionScanOutputForFPCMessagesCheckBox.Checked:=fOptions.ScanOutputForFPCMessages;
   OptionScanOutputForMakeMessagesCheckBox.Checked:=fOptions.ScanOutputForMakeMessages;
+  {$ENDIF}
   chkHideMainForm.Checked:=FOptions.HideMainForm;
   fScanners.Assign(fOptions.Scanners);
   UpdateButtons;
@@ -276,7 +779,7 @@ begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-procedure TExternalToolOptionDlg.SetOptions(TheOptions: TExternalToolOptions);
+procedure TExternalToolOptionDlg.SetOptions(TheOptions: {$IFDEF EnableNewExtTools}TExternalToolMenuItem{$ELSE}TExternalToolOptions{$ENDIF});
 begin
   if fOptions=TheOptions then exit;
   fOptions.Assign(TheOptions);
