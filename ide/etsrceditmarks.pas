@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, math, SynGutterLineOverview, SynEditMarkupGutterMark,
   SynEditMarks, SynEditMiscClasses, SynEditTypes, SynEdit, LazSynEditText,
-  LazLogger, LazFileUtils, AvgLvlTree, Graphics, Controls, Forms,
+  LazLogger, LazFileUtils, AvgLvlTree, Graphics, Controls, Forms, ImgList,
   IDEExternToolIntf;
 
 type
@@ -86,7 +86,7 @@ type
 
   TETMarks = class(TComponent)
   private
-    FImageList: TImageList;
+    FImageList: TCustomImageList;
     fMarkStyles: array[TMessageLineUrgency] of TETMarkStyle;
     FOnGetSynEditOfFile: TOnGetSynEditOfFile;
     FPriority: integer;
@@ -96,7 +96,7 @@ type
     destructor Destroy; override;
     function CreateMark(MsgLine: TMessageLine; aSynEdit: TSynEdit = nil): TETMark;
     procedure RemoveMarks(aSynEdit: TSynEdit);
-    property ImageList: TImageList read FImageList write FImageList; // must have same Width/Height as the TSynEdits bookmarkimages
+    property ImageList: TCustomImageList read FImageList write FImageList; // must have same Width/Height as the TSynEdits bookmarkimages
     property OnGetSynEditOfFile: TOnGetSynEditOfFile read FOnGetSynEditOfFile write FOnGetSynEditOfFile;
     property MarkStyles[Urgency: TMessageLineUrgency]: TETMarkStyle read GetMarkStyles;
     property Priority: integer read FPriority write FPriority;
@@ -128,7 +128,7 @@ type
     function AsString: string;
   end;
 
-  { TETSrcChanges }
+  { TETSrcChanges - edits of single file}
 
   TETSrcChanges = class
   private
@@ -155,7 +155,7 @@ type
     procedure WriteDebugReport(Title: string);
   end;
 
-  { TETMultiSrcChanges }
+  { TETMultiSrcChanges - edits of all files }
 
   TETMultiSrcChanges = class
   private
@@ -727,7 +727,7 @@ end;
 function TETSrcChanges.Add(Action: TETSrcChangeAction; FromPosY, FromPosX,
   ToPosY, ToPosX: integer): TETSrcChange;
 
-  procedure RaiseFromBehindFrom;
+  procedure RaiseFromBehindToPos;
   begin
     raise Exception.CreateFmt('TETSrcChanges.Add FromPos=%s,%s behind ToPos=%s,%s',[FromPosY,FromPosX,ToPosY,ToPosX]);
   end;
@@ -783,7 +783,7 @@ begin
 
   // consistency check
   if IsCaretInFront(ToPosY,ToPosX,FromPosY,FromPosX) then
-    RaiseFromBehindFrom;
+    RaiseFromBehindToPos;
 
   Result:=TETSrcChange.Create(Action, FromPosY, FromPosX, ToPosY, ToPosX);
 
@@ -922,7 +922,8 @@ begin
   end else if aLineBrkCnt<0 then begin
     // delete line breaks / empty lines
     FChanges.Add(etscaDelete,aLinePos,aBytePos,aLinePos-aLineBrkCnt,1);
-  end;
+  end else
+    exit;
   SyncQueued:=true;
 end;
 
@@ -967,7 +968,7 @@ begin
     fMarkStyles[u]:=TETMarkStyle.Create(u,clNone);
   fMarkStyles[mluHint].Color:=clGreen;
   fMarkStyles[mluNote].Color:=clGreen;
-  fMarkStyles[mluWarn].Color:=clYellow;
+  fMarkStyles[mluWarning].Color:=clYellow;
   fMarkStyles[mluError].Color:=clRed;
   fMarkStyles[mluFatal].Color:=clRed;
   fMarkStyles[mluPanic].Color:=clRed;

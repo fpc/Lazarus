@@ -41,7 +41,13 @@ uses
   SourceEditor, EditorOptions, CustomFormEditor, FormEditor, EmptyMethodsDlg,
   BaseDebugManager, ControlSelection, TransferMacros, EnvironmentOpts,
   BuildManager, Designer, EditorMacroListViewer, KeywordFuncLists,
-  FindRenameIdentifier, MsgView, InputHistory, CheckLFMDlg, LCLMemManager,
+  FindRenameIdentifier,
+  {$IFDEF EnableNewExtTools}
+  etMessagesWnd,
+  {$ELSE}
+  MsgView,
+  {$ENDIF}
+  InputHistory, CheckLFMDlg, LCLMemManager,
   CodeToolManager, CodeToolsStructs, ConvCodeTool, CodeCache, CodeTree,
   FindDeclarationTool, BasicCodeTools, SynEdit, UnitResources;
 

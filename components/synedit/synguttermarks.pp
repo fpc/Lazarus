@@ -5,8 +5,8 @@ unit SynGutterMarks;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LCLType, LCLIntf, LCLProc, Controls, math,
-  SynGutterBase, SynEditMiscClasses, SynEditMarks;
+  Classes, SysUtils, Graphics, LCLType, LCLIntf, LCLProc, Controls, ImgList,
+  math, SynGutterBase, SynEditMiscClasses, SynEditMarks;
 
 type
 
@@ -77,7 +77,7 @@ var
 
   procedure DoPaintMark(CurMark: TSynEditMark; aRect: TRect);
   var
-    img: TImageList;
+    img: TCustomImageList;
   begin
     if CurMark.InternalImage or
        ( (not assigned(FBookMarkOpt.BookmarkImages)) and

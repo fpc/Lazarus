@@ -107,9 +107,9 @@ uses
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
   SourceEditProcs, ViewUnit_dlg, FPDocEditWindow,
   {$IFDEF EnableNewExtTools}
-  etQuickFixes,
+  etQuickFixes, etMessagesWnd,
   {$ELSE}
-  OutputFilter, MsgQuickFixes,
+  OutputFilter, MsgQuickFixes, MsgView,
   {$ENDIF}
   // converter
   ChgEncodingDlg, ConvertDelphi, ConvCodeTool, MissingPropertiesDlg, LazXMLForms,
@@ -143,7 +143,7 @@ uses
   package_usage_options, package_description_options, package_integration_options,
   package_provides_options, package_i18n_options,
   // rest of the ide
-  Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
+  Splash, IDEDefs, LazarusIDEStrConsts, LazConf, SearchResultView,
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, InspectChksumChangedDlg,
   IdeOptionsDlg, EditDefineTree, PublishModule, EnvironmentOpts, TransferMacros,
   KeyMapping, IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg,

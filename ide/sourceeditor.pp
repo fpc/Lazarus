@@ -63,7 +63,13 @@ uses
   IDEDialogs, LazarusIDEStrConsts, IDECommands, EditorOptions,
   EnvironmentOpts, WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
   IDEHelpManager, MacroPromptDlg, TransferMacros, CodeContextForm,
-  SrcEditHintFrm, MsgView, InputHistory,
+  SrcEditHintFrm,
+  {$IFDEF EnableNewExtTools}
+  etMessagesWnd,
+  {$ELSE}
+  MsgView,
+  {$ENDIF}
+  InputHistory,
   CodeMacroPrompt, CodeTemplatesDlg, CodeToolsOptions,
   SortSelectionDlg, EncloseSelectionDlg, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,

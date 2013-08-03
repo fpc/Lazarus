@@ -2475,7 +2475,7 @@ function TMessagesCtrl.GetHeaderText(View: TLMsgWndView): string;
       //debugln(['GetStats cat=',dbgs(c),' count=',Lines.UrgencyCounts[c]]);
       if c>=mluError then
         inc(ErrCnt,Lines.UrgencyCounts[c])
-      else if c=mluWarn then
+      else if c=mluWarning then
         inc(WarnCnt,Lines.UrgencyCounts[c])
       else if c in [mluHint,mluNote] then
         inc(HintCnt,Lines.UrgencyCounts[c]);
@@ -2971,7 +2971,7 @@ begin
 
   MinUrgency:=MessagesCtrl.ActiveFilter.MinUrgency;
   HideWarningsMenuItem.Checked:=MinUrgency in [mluError..mluPanic];
-  HideNotesMenuItem.Checked:=MinUrgency in [mluWarn,mluImportant];
+  HideNotesMenuItem.Checked:=MinUrgency in [mluWarning,mluImportant];
   HideHintsMenuItem.Checked:=MinUrgency=mluNote;
   HideVerboseMenuItem.Checked:=MinUrgency=mluHint;
   HideDebugMenuItem.Checked:=MinUrgency in [mluProgress..mluVerbose];
@@ -3147,7 +3147,7 @@ begin
   if Sender=HideWarningsMenuItem then
     MinUrgency:=mluError
   else if Sender=HideNotesMenuItem then
-    MinUrgency:=mluWarn
+    MinUrgency:=mluWarning
   else if Sender=HideHintsMenuItem then
     MinUrgency:=mluNote
   else if Sender=HideVerboseMenuItem then
@@ -3391,7 +3391,7 @@ begin
     UrgencyStyles[mluVerbose].SetValues('Ausfuerhlich',5,clDefault);
     UrgencyStyles[mluHint].SetValues('Hinweis',4,clDefault);
     UrgencyStyles[mluNote].SetValues('Note',3,clDefault);
-    UrgencyStyles[mluWarn].SetValues('Warnung',2,clDefault);
+    UrgencyStyles[mluWarning].SetValues('Warnung',2,clDefault);
     UrgencyStyles[mluImportant].SetValues('Sonstiges',4,clDefault);
     UrgencyStyles[mluError].SetValues('Fehler',1,clDefault);
     UrgencyStyles[mluFatal].SetValues('Fatal',0,clDefault);

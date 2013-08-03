@@ -65,10 +65,11 @@ uses
   LazConf, LazarusIDEStrConsts, ProjectDefs, Project, PublishModule,
   BuildLazDialog, Compiler, ComponentReg,
   {$IFDEF EnableNewExtTools}
+  etMessagesWnd,
   {$ELSE}
-  OutputFilter,
+  OutputFilter, MsgView,
   {$ENDIF}
-  TransferMacros, ObjectInspector, PropEdits, IDEDefs, MsgView,
+  TransferMacros, ObjectInspector, PropEdits, IDEDefs,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
   Debugger, IDEOptionDefs, CodeToolsDefines, Splash, Designer,
   SourceEditor, BuildManager, FindInFilesDlg,

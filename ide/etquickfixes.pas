@@ -30,8 +30,8 @@ unit etQuickFixes;
 interface
 
 uses
-  Classes, SysUtils, IDEExternToolIntf, Menus, CodeToolManager, CodeCache,
-  LazLogger, AvgLvlTree, LazFileUtils;
+  Classes, SysUtils, IDEExternToolIntf, IDEMsgIntf, Menus, CodeToolManager,
+  CodeCache, LazLogger, AvgLvlTree, LazFileUtils;
 
 type
 

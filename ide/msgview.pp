@@ -32,6 +32,10 @@
 }
 unit MsgView;
 
+{$IFDEF EnableNewExtTools}
+  {$Error obsolete}
+{$ENDIF}
+
 {$mode objfpc}{$H+}
 
 interface

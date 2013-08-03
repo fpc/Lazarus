@@ -45,10 +45,11 @@ uses
   IDEMsgIntf, PackageIntf, LazIDEIntf, HelpIntfs, IDEHelpIntf,
   // IDE
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
-  ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, MainBar,
+  ObjInspExt, EnvironmentOpts, AboutFrm, Project, MainBar,
   {$IFDEF EnableNewExtTools}
+  etMessagesWnd,
   {$ELSE}
-  OutputFilter,
+  OutputFilter, MsgView,
   {$ENDIF}
   IDEFPDocFileSearch, PackageDefs, PackageSystem,
   HelpOptions, MainIntf, LazConf, HelpFPCMessages, CodeHelp,

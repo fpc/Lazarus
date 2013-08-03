@@ -66,7 +66,7 @@
         <PackageName Value="SynEdit"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="108">
+    <Units Count="109">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -797,7 +797,9 @@
       <Unit105>
         <Filename Value="etmessageframe.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="MessagesFrame"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
         <UnitName Value="etMessageFrame"/>
       </Unit105>
       <Unit106>
@@ -810,6 +812,14 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="etSrcEditMarks"/>
       </Unit107>
+      <Unit108>
+        <Filename Value="etmessageswnd.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MessagesView"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="etMessagesWnd"/>
+      </Unit108>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

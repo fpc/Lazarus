@@ -1410,8 +1410,12 @@ begin
     if ADocFile.DocErrorMsg<>'' then begin
       if not (chofQuiet in Flags) then begin
         // for example: Filename(y,x) Error: description
+        {$IFDEF EnableNewExtTools}
+        IDEMessagesWindow.addcu
+        {$ELSE}
         IDEMessagesWindow.AddMsg(ADocFile.DocErrorMsg,
                               ExtractFilePath(ADocFile.CodeBuffer.Filename),-1);
+        {$ENDIF}
       end;
       // no update needed
       exit(chprFailed);

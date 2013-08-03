@@ -11,7 +11,8 @@ unit SynEditMarks;
 interface
 
 uses
-  Classes, Controls, SysUtils, math, SynEditMiscClasses, LazSynEditText, LCLProc;
+  Classes, Controls, SysUtils, math, SynEditMiscClasses, LazSynEditText,
+  LCLProc, ImgList;
 
 type
 
@@ -49,7 +50,7 @@ type
 
   TSynEditMark = class
   private
-    FImageList: TImageList;
+    FImageList: TCustomImageList;
     FMarkLine: TSynEditMarkLine;
     FMarkList: TSynEditMarkList;
     FLine: Integer; // Only valid, if not part of a TSynEditMarkLine
@@ -103,7 +104,7 @@ type
     property ImageIndex: integer read FImage write SetImage;
     // ImageList:     If assigned, then use instead of "BookMarkOpt.BookmarkImages"
     //                Must have same width as "BookMarkOpt.BookmarkImages"
-    property ImageList: TImageList read FImageList write FImageList;
+    property ImageList: TCustomImageList read FImageList write FImageList;
   end;
 
   { TSynEditMarkLine }
