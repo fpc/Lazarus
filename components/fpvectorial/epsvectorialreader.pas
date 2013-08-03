@@ -1936,10 +1936,16 @@ begin
   end;
 
   // Image data read from the CurrentGraphicState
-  lRasterImage.X := CurrentGraphicState.TranslateX + lMatrixTranslateX;
-  lRasterImage.Y := CurrentGraphicState.TranslateY + lMatrixTranslateY;
+  lRasterImage.X := CurrentGraphicState.TranslateX;// + lMatrixTranslateX) * CurrentGraphicState.ScaleX * lMatrixScaleX;
+  lRasterImage.Y := CurrentGraphicState.TranslateY;//- lMatrixTranslateY;// * CurrentGraphicState.ScaleY * lMatrixScaleY;
   lRasterImage.Width := lImageWidth * CurrentGraphicState.ScaleX * lMatrixScaleX;
   lRasterImage.Height := lImageHeight * CurrentGraphicState.ScaleY * lMatrixScaleY;
+  // EPS X,Y position of the image is the lower-left corner, but FPVectorial uses top-left
+  lRasterImage.Y := lRasterImage.Y + Abs(lRasterImage.Height);
+  // Height again if the image was stretched with inversion
+  //if lRasterImage.Height < 0 then
+  //  lRasterImage.Y := lRasterImage.Y - lRasterImage.Height;
+
   AData.AddEntity(lRasterImage);
 
   Exit(True);
@@ -2776,7 +2782,7 @@ function TvEPSVectorialReader.ExecuteGraphicStateOperatorsDI(
   AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
 var
   Param1, Param2, Param3, Param4: TPSToken;
-  lRed, lGreen, lBlue: Double;
+  lRed, lGreen, lBlue, lColorC, lColorM, lColorY, lColorK: Double;
   lGraphicState: TGraphicState;
 begin
   Result := False;
@@ -2898,16 +2904,17 @@ begin
     Param3 := TPSToken(Stack.Pop);
     Param4 := TPSToken(Stack.Pop);
 
-    {lRed := EnsureRange(Param3.FloatValue, 0, 1);
-    lGreen := EnsureRange(Param2.FloatValue, 0, 1);
-    lBlue := EnsureRange(Param1.FloatValue, 0, 1);
+    lColorC := EnsureRange(Param4.FloatValue, 0, 1);
+    lColorM := EnsureRange(Param3.FloatValue, 0, 1);
+    lColorY := EnsureRange(Param2.FloatValue, 0, 1);
+    lColorK := EnsureRange(Param1.FloatValue, 0, 1);
 
-    CurrentGraphicState.Color.Red := Round(lRed * $FFFF);
-    CurrentGraphicState.Color.Green := Round(lGreen * $FFFF);
-    CurrentGraphicState.Color.Blue := Round(lBlue * $FFFF);
+    CurrentGraphicState.Color.Red := Round($FF * (1-lColorC) * (1-lColorK) * $101);
+    CurrentGraphicState.Color.Green := Round($FF * (1-lColorM) * (1-lColorK) * $101);
+    CurrentGraphicState.Color.Blue := Round($FF * (1-lColorY) * (1-lColorK) * $101);
     CurrentGraphicState.Color.alpha := alphaOpaque;
 
-    AData.SetPenColor(CurrentGraphicState.Color);}
+    AData.SetPenColor(CurrentGraphicState.Color);
 
     {$ifdef FPVECTORIALDEBUG_COLORS}
     {WriteLn(Format('[TvEPSVectorialReader.ExecuteGraphicStateOperatorsDI] setrgbcolor r=%f g=%f b=%f',
@@ -3326,8 +3333,9 @@ procedure TvEPSVectorialReader.PostScriptCoordsToFPVectorialCoordsWithCGS(
   AParam1, AParam2: TPSToken; var APosX, APosY: Double);
 begin
   PostScriptCoordsToFPVectorialCoords(AParam1, AParam2, APosX, APosY);
-  APosX := APosX * CurrentGraphicState.ScaleX + CurrentGraphicState.TranslateX;
-  APosY := APosY * CurrentGraphicState.ScaleY + CurrentGraphicState.TranslateY;
+  // Using CurrentGraphicState.ScaleX here breaks radat.eps
+  APosX := APosX {* CurrentGraphicState.ScaleX} + CurrentGraphicState.TranslateX;
+  APosY := APosY {* CurrentGraphicState.ScaleY} + CurrentGraphicState.TranslateY;
 end;
 
 // Returns true if a dictionary substitution was executed

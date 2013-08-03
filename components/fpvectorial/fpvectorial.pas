@@ -545,6 +545,8 @@ type
    If the Width and Height differ from the same data in the image, then
    the raster image will be stretched.
 
+   X,Y represents the top-left corner of the image
+
    Note that TFPCustomImage does not implement a storage, so the property
    RasterImage should be filled with either a FPImage.TFPMemoryImage or with
    a TLazIntfImage. The property RasterImage might be nil.
