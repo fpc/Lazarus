@@ -324,6 +324,7 @@ var
     {$ELSE}
     if Tool=nil then
       Tool:=TExternalToolOptions.Create;
+    Tool.Title:=CurTitle;
     Tool.Filename:=Executable;
     Tool.WorkingDirectory:=WorkingDirectory;
     Tool.ScanOutputForFPCMessages:=true;
