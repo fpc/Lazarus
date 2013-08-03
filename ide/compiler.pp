@@ -49,53 +49,25 @@ uses
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean) of object;
 
-  {$IFDEF WithAsyncCompile}
-  TBuildProjectData = class
-  public
-    Reason: TCompileReason;
-    Flags: TProjectBuildFlags;
-    CompilerFilename: String;
-    CompilerParams: String;
-  end;
-  {$ENDIF}
-
   { TCompiler }
 
   TCompiler = class(TObject)
   private
-    {$IFDEF WithAsyncCompile}
-    FASyncResult: TModalResult;
-    {$ENDIF}
     FOnCmdLineCreate : TOnCmdLineCreate;
     FOutputFilter: TOutputFilter;
     FTheProcess: TProcessUTF8;
-    {$IFDEF WithAsyncCompile}
-    FFinishedCallback: TNotifyEvent;
-    procedure CompilationFinished(Sender: TObject);
-    {$ENDIF}
-  {$IFDEF WithAsyncCompile}
-  public
-    // Values stored by caller, to be rtrieved on callback
-    CallerData: TObject;
-  {$ENDIF}
   public
     constructor Create;
     destructor Destroy; override;
     function Compile(AProject: TProject;
                      const WorkingDir, CompilerFilename, CompilerParams: string;
                      BuildAll, SkipLinking, SkipAssembler: boolean
-                     {$IFDEF WithAsyncCompile}
-                     ; aFinishedCallback: TNotifyEvent = nil
-                     {$ENDIF}
                     ): TModalResult;
     procedure WriteError(const Msg: string);
     property OnCommandLineCreate: TOnCmdLineCreate read FOnCmdLineCreate
                                                    write FOnCmdLineCreate;
     property OutputFilter: TOutputFilter read FOutputFilter write FOutputFilter;
     property TheProcess: TProcessUTF8 read FTheProcess;
-    {$IFDEF WithAsyncCompile}
-    property ASyncResult: TModalResult read FASyncResult;
-    {$ENDIF}
   end;
 
   // Following classes are for compiler options parsed from "fpc -h" and "fpc -i".
@@ -249,17 +221,12 @@ end;
 function TCompiler.Compile(AProject: TProject;
   const WorkingDir, CompilerFilename, CompilerParams: string;
   BuildAll, SkipLinking, SkipAssembler: boolean
-  {$IFDEF WithAsyncCompile} ; aFinishedCallback: TNotifyEvent = nil {$ENDIF}
   ): TModalResult;
 var
   CmdLine : String;
   Abort : Boolean;
 begin
   Result:=mrCancel;
-  {$IFDEF WithAsyncCompile}
-  FASyncResult:= mrNone;
-  FFinishedCallback := aFinishedCallback;
-  {$ENDIF}
   if ConsoleVerbosity>=0 then
     DebugLn('TCompiler.Compile WorkingDir="',WorkingDir,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
 
@@ -323,24 +290,16 @@ begin
             WorkingDir, -1);
         OutputFilter.Options:=[ofoSearchForFPCMessages,ofoExceptionOnError];
         OutputFilter.CompilerOptions:=AProject.CompilerOptions;
-        {$IFDEF WithAsyncCompile}
-        if aFinishedCallback <> nil then
-        begin
-          OutputFilter.ExecuteAsyncron(TheProcess, @CompilationFinished, Self);
-        end
-        else
-        {$ENDIF}
-          if not OutputFilter.Execute(TheProcess,Self) then
-            if OutputFilter.Aborted then
-              Result := mrAbort
-            else
-              Result := mrCancel;
+        if not OutputFilter.Execute(TheProcess,Self) then
+          if OutputFilter.Aborted then
+            Result := mrAbort
+          else
+            Result := mrCancel;
       end else begin
         TheProcess.Execute;
       end;
     finally
       if TheProcess.Running
-      {$IFDEF WithAsyncCompile} and ((OutputFilter = nil) or (aFinishedCallback = nil)) {$ENDIF}
       then begin
         TheProcess.WaitOnExit;
         if not (TheProcess.ExitStatus in [0,1]) then  begin
@@ -365,29 +324,6 @@ begin
   if ConsoleVerbosity>=0 then
     DebugLn('[TCompiler.Compile] end');
 end;
-
-{$IFDEF WithAsyncCompile}
-procedure TCompiler.CompilationFinished(Sender: TObject);
-begin
-  if OutputFilter.Aborted then
-    FASyncrResult := mrAbort
-  else
-    FASyncResult := mrOK;
-  if TheProcess.Running then
-  begin
-    TheProcess.WaitOnExit;
-    if (FASyncResult = mrOk) and not (TheProcess.ExitStatus in [0,1]) then
-    begin
-      WriteError(Format(listCompilerInternalError, [TheProcess.ExitStatus]));
-      FASyncResult := mrCancel;
-    end;
-  end;
-  DebugLn('[TCompiler.Compile] Async end');
-
-  if Assigned(FFinishedCallback) then
-    FFinishedCallback(Self);
-end;
-{$ENDIF}
 
 procedure TCompiler.WriteError(const Msg: string);
 begin
