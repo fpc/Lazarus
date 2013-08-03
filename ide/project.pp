@@ -3737,8 +3737,7 @@ begin
       if not LoadParts then
         PublishOptions.LoadFromXMLConfig(xmlconfig,
                                        Path+'PublishOptions/',fPathDelimChanged);
-
-      // load session info
+      // load custom defines
       if not LoadParts then
         LoadCustomDefines(XMLConfig,Path,false);
 
