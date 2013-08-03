@@ -442,6 +442,7 @@ begin
   Config.SetValue('Scanners/',FScanners);
   Config.SetDeleteValue('HideMainForm/Value',HideMainForm,true);
   Modified:=false;
+  Result:=mrOk;
 end;
 
 { TExternalToolMenuItems }
@@ -625,7 +626,28 @@ begin
     end;
   end;
 end;
-{$ENDIF}
+{$ELSE EnableNewExtTools}
+{ TExternalToolOptions }
+
+procedure TExternalToolOptions.Assign(Source: TPersistent);
+var
+  Src: TExternalToolOptions;
+begin
+  if Source is TExternalToolOptions then begin
+    Src:=TExternalToolOptions(Source);
+    fKey:=Src.fKey;
+    fShift:=Src.fShift;
+  end;
+  inherited Assign(Source);
+end;
+
+procedure TExternalToolOptions.Clear;
+begin
+  fKey:=VK_UNKNOWN;
+  fShift:=[];
+  inherited Clear;
+end;
+{$ENDIF EnableNewExtTools}
 
 { TExternalToolOptionDlg }
 
@@ -765,7 +787,7 @@ begin
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=lisCancel;
 
-  fOptions:=TExternalToolOptions.Create;
+  fOptions:={$IFDEF EnableNewExtTools}TExternalToolMenuItem.Create(nil){$ELSE}TExternalToolOptions.Create{$ENDIF};
 end;
 
 procedure TExternalToolOptionDlg.FormDestroy(Sender: TObject);
@@ -864,27 +886,6 @@ begin
                   mtError, [mbCancel]);
     ModalResult:=mrCancel;
   end;
-end;
-
-{ TExternalToolOptions }
-
-procedure TExternalToolOptions.Assign(Source: TPersistent);
-var
-  Src: TExternalToolOptions;
-begin
-  if Source is TExternalToolOptions then begin
-    Src:=TExternalToolOptions(Source);
-    fKey:=Src.fKey;
-    fShift:=Src.fShift;
-  end;
-  inherited Assign(Source);
-end;
-
-procedure TExternalToolOptions.Clear;
-begin
-  fKey:=VK_UNKNOWN;
-  fShift:=[];
-  inherited Clear;
 end;
 
 end.

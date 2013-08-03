@@ -80,7 +80,7 @@ type
       WithSrcPos, Downwards: boolean): boolean; virtual; abstract;
 
     function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
-      aFilename: string = ''; LineNumber: integer = 0; Column: integer = 0;
+      aSrcFilename: string = ''; LineNumber: integer = 0; Column: integer = 0;
       const ViewCaption: string = ''): TMessageLine; virtual; abstract;
     function GetSelectedLine: TMessageLine; virtual; abstract;
   end;

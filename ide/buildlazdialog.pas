@@ -50,7 +50,7 @@ uses
   ComCtrls, DividerBevel, DefineTemplates, CodeToolManager,
   // IDEIntf
   LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
-  PackageIntf,
+  PackageIntf, IDEExternToolIntf,
   // IDE
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   MainBar, ExtToolEditDlg, EnvironmentOpts,
@@ -146,7 +146,8 @@ type
 function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
 
 function MakeLazarus(Profile: TBuildLazarusProfile;
-  ExternalTools: TBaseExternalToolList; Macros: TTransferMacroList;
+  {$IFNDEF EnableNewExtTools}ExternalTools: TBaseExternalToolList;{$ENDIF}
+  Macros: TTransferMacroList;
   const PackageOptions, CompilerPath, MakePath: string;
   Flags: TBuildLazarusFlags; var ProfileChanged: boolean): TModalResult;
 
@@ -190,7 +191,8 @@ begin
 end;
 
 function MakeLazarus(Profile: TBuildLazarusProfile;
-  ExternalTools: TBaseExternalToolList; Macros: TTransferMacroList;
+  {$IFNDEF EnableNewExtTools}ExternalTools: TBaseExternalToolList;{$ENDIF}
+  Macros: TTransferMacroList;
   const PackageOptions, CompilerPath, MakePath: string;
   Flags: TBuildLazarusFlags; var ProfileChanged: boolean): TModalResult;
 
@@ -284,14 +286,61 @@ function MakeLazarus(Profile: TBuildLazarusProfile;
   end;
 
 var
+  {$IFDEF EnableNewExtTools}
+  Tool: TAbstractExternalTool;
+  {$ELSE}
   Tool: TExternalToolOptions;
-  ExtraOptions: String;
+  {$ENDIF}
   WorkingDirectory: String;
+  Executable: String;
+  EnvironmentOverrides: TStringList;
+  CmdLineParams: String;
+
+  function Run(CurTitle, Cmd: string): TModalResult;
+  var
+    Params: String;
+  begin
+    Params:=UTF8Trim(CmdLineParams,[]);
+    if Macros<>nil then
+      Macros.SubstituteStr(Params);
+    if Params<>'' then
+      Params:=Cmd+' '+Params
+    else
+      Params:=Cmd;
+    {$IFDEF EnableNewExtTools}
+    Tool:=ExternalToolList.Add(CurTitle);
+    Tool.Process.Executable:=Executable;
+    Tool.AddParsers(SubToolFPC);
+    Tool.AddParsers(SubToolMake);
+    Tool.Process.CurrentDirectory:=WorkingDirectory;
+    Tool.EnvironmentOverrides:=EnvironmentOverrides;
+    Tool.CmdLineParams:=Params;
+    Tool.Execute;
+    Tool.WaitForExit;
+    if Tool.ErrorMessage='' then
+      exit(mrOk)
+    else
+      exit(mrCancel);
+    {$ELSE}
+    if Tool=nil then
+      Tool:=TExternalToolOptions.Create;
+    Tool.Filename:=Executable;
+    Tool.WorkingDirectory:=WorkingDirectory;
+    Tool.ScanOutputForFPCMessages:=true;
+    Tool.ScanOutputForMakeMessages:=true;
+    Tool.CmdLineParams:=Params;
+    Tool.EnvironmentOverrides.Assign(EnvironmentOverrides);
+    Result:=ExternalTools.Run(Tool,Macros,false);
+    {$ENDIF}
+  end;
+
+var
+  ExtraOptions: String;
   OutputDirRedirected, UpdateRevisionInc: boolean;
   IdeBuildMode: TIdeBuildMode;
-  CmdLineParams: String;
   Dir: String;
   LazExeFilename: string;
+  Cmd: String;
 begin
   Result:=mrCancel;
 
@@ -299,20 +348,22 @@ begin
     LazarusIDE.MainBarSubTitle:=Profile.Name;
   IdeBuildMode:=Profile.IdeBuildMode;
 
-  Tool:=TExternalToolOptions.Create;
+  EnvironmentOverrides:=TStringList.Create;
+  Tool:=nil;
   try
     // setup external tool
-    Tool.Filename:=MakePath;
-    Tool.EnvironmentOverrides.Values['LCL_PLATFORM']:=
+    EnvironmentOverrides.Values['LCL_PLATFORM']:=
       LCLPlatformDirNames[Profile.TargetPlatform];
-    Tool.EnvironmentOverrides.Values['LANG']:= 'en_US';
+    EnvironmentOverrides.Values['LANG']:= 'en_US';
     if CompilerPath<>'' then
-      Tool.EnvironmentOverrides.Values['PP']:=CompilerPath;
-    if (Tool.Filename<>'') and (not FileExistsUTF8(Tool.Filename)) then
-      Tool.Filename:=FindDefaultExecutablePath(Tool.Filename);
-    if (Tool.Filename='') or (not FileExistsUTF8(Tool.Filename)) then begin
-      Tool.Filename:=FindDefaultMakePath;
-      if (Tool.Filename='') or (not FileExistsUTF8(Tool.Filename)) then begin
+      EnvironmentOverrides.Values['PP']:=CompilerPath;
+
+    Executable:=MakePath;
+    if (Executable<>'') and (not FileExistsUTF8(Executable)) then
+      Executable:=FindDefaultExecutablePath(Executable);
+    if (Executable='') or (not FileExistsUTF8(Executable)) then begin
+      Executable:=FindDefaultMakePath;
+      if (Executable='') or (not FileExistsUTF8(Executable)) then begin
         IDEMessageDialog(lisMakeNotFound,
                    Format(lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa,
                           ['"', '"', LineEnding, LineEnding]),
@@ -320,6 +371,7 @@ begin
         exit;
       end;
     end;
+
     // add -w option to print leaving/entering messages of "make"
     CmdLineParams:=' -w';
     // append target OS
@@ -328,9 +380,6 @@ begin
     // append target CPU
     if Profile.TargetCPU<>'' then
       CmdLineParams+=' CPU_TARGET='+Profile.FPCTargetCPU+' CPU_SOURCE='+Profile.FPCTargetCPU;
-
-    Tool.ScanOutputForFPCMessages:=true;
-    Tool.ScanOutputForMakeMessages:=true;
 
     // clean up
     if (IdeBuildMode<>bmBuild) and (not (blfDontClean in Flags)) then begin
@@ -364,14 +413,11 @@ begin
       end;
 
       // call make to clean up
-      Tool.Title:=lisCleanLazarusSource;
-      Tool.WorkingDirectory:=WorkingDirectory;
       if (IdeBuildMode=bmCleanBuild) or (blfOnlyIDE in Flags) then
-        Tool.CmdLineParams:='cleanide'
+        Cmd:='cleanide'
       else
-        Tool.CmdLineParams:='cleanlaz';
-      Tool.CmdLineParams:=Tool.CmdLineParams+CmdLineParams;
-      Result:=ExternalTools.Run(Tool,Macros,false);
+        Cmd:='cleanlaz';
+      Result:=Run(lisCleanLazarusSource,Cmd);
       if Result<>mrOk then exit;
 
       ApplyCleanOnce;
@@ -382,12 +428,10 @@ begin
       WorkingDirectory:=EnvironmentOptions.GetParsedLazarusDirectory;
       if blfDontClean in Flags then
         IdeBuildMode:=bmBuild;
-      Tool.Title:=lisIDE;
-      Tool.WorkingDirectory:=WorkingDirectory;
       if IdeBuildMode=bmBuild then
-        Tool.CmdLineParams:='idepkg'
+        Cmd:='idepkg'
       else
-        Tool.CmdLineParams:='cleanide ide';
+        Cmd:='cleanide ide';
       // append extra Profile
       ExtraOptions:='';
       Result:=CreateIDEMakeOptions(Profile,Macros,PackageOptions,Flags,
@@ -400,14 +444,13 @@ begin
         exit(mrCancel);
 
       if ExtraOptions<>'' then
-        Tool.EnvironmentOverrides.Values['OPT'] := ExtraOptions;
+        EnvironmentOverrides.Values['OPT'] := ExtraOptions;
       if not UpdateRevisionInc then begin
         CheckRevisionInc;
-        Tool.EnvironmentOverrides.Values['USESVN2REVISIONINC'] := '0';
+        EnvironmentOverrides.Values['USESVN2REVISIONINC'] := '0';
       end;
-      Tool.CmdLineParams:=Tool.CmdLineParams+CmdLineParams;
       // run
-      Result:=ExternalTools.Run(Tool,Macros,false);
+      Result:=Run(lisIDE,Cmd);
       // clean only once. If building failed the user must first fix the error
       // before a clean build is needed.
       ApplyCleanOnce;
@@ -419,7 +462,10 @@ begin
     end;
     Result:=mrOk;
   finally
+    EnvironmentOverrides.Free;
+    {$IFNDEF EnableNewExtTools}
     Tool.Free;
+    {$ENDIF}
     if LazarusIDE<>nil then
       LazarusIDE.MainBarSubTitle:='';
   end;
@@ -683,14 +729,22 @@ begin
       if not (Result in [mrOk,mrIgnore]) then begin
         debugln(['CreateBuildLazarusOptions CreateApplicationBundle failed']);
         if IDEMessagesWindow<>nil then
+          {$IFDEF EnableNewExtTools}
+          IDEMessagesWindow.AddCustomMessage(mluError,'to create application bundle '+BundleDir);
+          {$ELSE}
           IDEMessagesWindow.AddMsg('Error: failed to create application bundle '+BundleDir,TargetDirectory,-1);
+          {$ENDIF}
         exit;
       end;
       Result:=CreateAppBundleSymbolicLink(CurTargetFilename);
       if not (Result in [mrOk,mrIgnore]) then begin
         debugln(['CreateBuildLazarusOptions CreateAppBundleSymbolicLink failed']);
         if IDEMessagesWindow<>nil then
+          {$IFDEF EnableNewExtTools}
+          IDEMessagesWindow.AddCustomMessage(mluError,'to create application bundle symlink to '+CurTargetFilename);
+          {$ELSE}
           IDEMessagesWindow.AddMsg('Error: failed to create application bundle symlink to '+CurTargetFilename,TargetDirectory,-1);
+          {$ENDIF}
         exit;
       end;
     end;
