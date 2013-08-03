@@ -133,6 +133,7 @@ type
     procedure IncreaseChangeStamp;
     procedure MarkFixed;
     function HasSourcePosition: boolean;
+    procedure GetAttributes(List: TStrings);
   public
     property Index: integer read FIndex; // index in Lines  (Note: Lines can have more or less lines than the raw output)
     property Urgency: TMessageLineUrgency read FUrgency write SetUrgency;
@@ -1758,6 +1759,20 @@ end;
 function TMessageLine.HasSourcePosition: boolean;
 begin
   Result:=(Line>0) and (Column>0) and (GetFullFilename<>'');
+end;
+
+procedure TMessageLine.GetAttributes(List: TStrings);
+begin
+  List.Assign(fAttributes);
+  List.Values['Urgency']:=MessageLineUrgencyNames[Urgency];
+  List.Values['SubTool']:=SubTool;
+  List.Values['SubType']:=IntToStr(SubType);
+  List.Values['File']:=Filename;
+  List.Values['Line']:=IntToStr(Line);
+  List.Values['Col']:=IntToStr(Column);
+  List.Values['Msg']:=Msg;
+  List.Values['MsgID']:=IntToStr(MsgID);
+  List.Values['OriginalLine']:=OriginalLine;
 end;
 
 { TExtToolView }

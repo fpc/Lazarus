@@ -351,8 +351,10 @@ type
     procedure StartIdentCompletionBox(JumpToError: boolean);
     procedure StartWordCompletionBox(JumpToError: boolean);
 
+    {$IFNDEF EnableNewExtTools}
     procedure LinesInserted(sender: TObject; FirstLine, Count: Integer);
     procedure LinesDeleted(sender: TObject; FirstLine, Count: Integer);
+    {$ENDIF}
 
     function GetFilename: string; override;
     function GetEditorControl: TWinControl; override;
@@ -2778,8 +2780,11 @@ Begin
 
   FEditPlugin := TSynEditPlugin1.Create(FEditor);
   // IMPORTANT: when you add/remove events below, don't forget updating UnbindEditor
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
   FEditPlugin.OnLinesInserted := @LinesInserted;
   FEditPlugin.OnLinesDeleted := @LinesDeleted;
+  {$ENDIF}
 end;
 
 destructor TSourceEditor.Destroy;
@@ -5565,6 +5570,7 @@ begin
   Result := FEditor.GetWordAtRowCol(ACaretPos);
 end;
 
+{$IFNDEF EnableNewExtTools}
 procedure TSourceEditor.LinesDeleted(sender: TObject; FirstLine, Count: Integer
   );
 begin
@@ -5582,6 +5588,7 @@ begin
   if (Self = FSharedValues.SharedEditors[0]) then
     MessagesView.SrcEditLinesInsertedDeleted(Filename,FirstLine,Count);
 end;
+{$ENDIF}
 
 procedure TSourceEditor.SetVisible(Value: boolean);
 begin

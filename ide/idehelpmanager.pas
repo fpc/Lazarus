@@ -43,6 +43,7 @@ uses
   PropEdits, ObjectInspector, FormEditingIntf, ProjectIntf, TextTools,
   IDEDialogs, LazHelpIntf, LazHelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf,
   IDEMsgIntf, PackageIntf, LazIDEIntf, HelpIntfs, IDEHelpIntf,
+  IDEExternToolIntf,
   // IDE
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   ObjInspExt, EnvironmentOpts, AboutFrm, Project, MainBar,
@@ -210,7 +211,11 @@ type
     function ShowHelpForSourcePosition(const Filename: string;
                                        const CodePos: TPoint;
                                        var ErrMsg: string): TShowHelpResult; override;
+    {$IFDEF EnableNewExtTools}
+    procedure ShowHelpForMessage; override;
+    {$ELSE}
     procedure ShowHelpForMessage(Line: integer); override;
+    {$ENDIF}
     procedure ShowHelpForObjectInspector(Sender: TObject); override;
     procedure ShowHelpForIDEControl(Sender: TControl); override;
 
@@ -1567,8 +1572,21 @@ begin
     CacheWasUsed,AnOwner);
 end;
 
+{$IFDEF EnableNewExtTools}
+procedure TIDEHelpManager.ShowHelpForMessage;
+var
+  Line: TMessageLine;
+  Parts: TStringList;
+begin
+  if IDEMessagesWindow=nil then exit;
+  Line:=IDEMessagesWindow.GetSelectedLine;
+  if Line=nil then exit;
+  Parts:=TStringList.Create;
+  Line.GetAttributes(Parts);
+  ShowHelpOrErrorForMessageLine(Line.Msg,Parts);
+end;
+{$ELSE EnableNewExtTools}
 procedure TIDEHelpManager.ShowHelpForMessage(Line: integer);
-
   function ParseMessage(MsgItem: TIDEMessageLine): TStringList;
   begin
     Result:=TStringList.Create;
@@ -1576,7 +1594,6 @@ procedure TIDEHelpManager.ShowHelpForMessage(Line: integer);
     if MsgItem.Parts<>nil then
       Result.Assign(MsgItem.Parts);
   end;
-
 var
   MsgItem: TIDEMessageLine;
   MessageParts: TStringList;
@@ -1594,6 +1611,7 @@ begin
     ShowHelpOrErrorForMessageLine(MsgItem.Msg,MessageParts);
   end;
 end;
+{$ENDIF EnableNewExtTools}
 
 procedure TIDEHelpManager.ShowHelpForObjectInspector(Sender: TObject);
 var

@@ -50,7 +50,7 @@ uses
   SynHighlighterPas,
   // IDEIntf
   IDECommands, IDEMsgIntf, MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf,
-  IDEDialogs, IDEHelpIntf, LazIDEIntf,
+  IDEDialogs, IDEHelpIntf, LazIDEIntf, IDEExternToolIntf,
   // IDE
   EditorOptions, LazarusIDEStrConsts, CompilerOptions, IDEProcs, PackageDefs,
   EnvironmentOpts, TransferMacros, PackageSystem, DialogProcs, KeyMapping;
@@ -1411,7 +1411,8 @@ begin
       if not (chofQuiet in Flags) then begin
         // for example: Filename(y,x) Error: description
         {$IFDEF EnableNewExtTools}
-        IDEMessagesWindow.addcu
+        IDEMessagesWindow.AddCustomMessage(mluError,ADocFile.DocErrorMsg,
+          ADocFile.CodeBuffer.Filename,0,0,'FPDoc');
         {$ELSE}
         IDEMessagesWindow.AddMsg(ADocFile.DocErrorMsg,
                               ExtractFilePath(ADocFile.CodeBuffer.Filename),-1);
@@ -1456,7 +1457,12 @@ begin
         DebugLn(['TCodeHelpManager.LoadFPDocFile ',E.Message]);
         if not (chofQuiet in Flags) then begin
           // for example: Filename(y,x) Error: description
+          {$IFDEF EnableNewExtTools}
+          IDEMessagesWindow.AddCustomMessage(mluError,ADocFile.DocErrorMsg,
+            CurFilename,0,0,'FPDoc');
+          {$ELSE}
           IDEMessagesWindow.AddMsg(ADocFile.DocErrorMsg,ExtractFilePath(CurFilename),-1);
+          {$ENDIF}
         end;
       end;
       on E: Exception do begin
