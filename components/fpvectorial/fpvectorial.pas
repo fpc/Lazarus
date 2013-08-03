@@ -556,6 +556,7 @@ type
   public
     RasterImage: TFPCustomImage;
     Top, Left, Width, Height: Double;
+    destructor Destroy; override;
     procedure CreateRGB888Image(AWidth, AHeight: Cardinal);
     procedure InitializeWithConvertionOf3DPointsToHeightMap(APage: TvVectorialPage; AWidth, AHeight: Integer);
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
@@ -3101,6 +3102,12 @@ end;
 
 { TvRasterImage }
 
+destructor TvRasterImage.Destroy;
+begin
+  if Assigned(RasterImage) then RasterImage.Free;
+  inherited Destroy;
+end;
+
 procedure TvRasterImage.CreateRGB888Image(AWidth, AHeight: Cardinal);
 {$ifdef USE_LCL_CANVAS}
 var
@@ -3112,7 +3119,7 @@ begin
   lRawImage.Init;
   lRawImage.Description.Init_BPP24_R8G8B8_BIO_TTB(AWidth, AHeight);
   lRawImage.CreateData(True);
-  AImage := TLazIntfImage.Create(0,0);
+  AImage := TLazIntfImage.Create(AWidth, AHeight);
   AImage.SetRawImage(lRawImage);
 
   RasterImage := AImage;
@@ -3181,14 +3188,37 @@ procedure TvRasterImage.Render(ADest: TFPCustomCanvas;
   end;
 
 var
-  lFinalX, lFinalY: Integer;
+  lFinalX, lFinalY, lFinalW, lFinalH: Integer;
+  {$ifdef USE_LCL_CANVAS}
+  lBitmap: TBitmap;
+  {$endif}
 begin
   if (RasterImage = nil) then Exit;
   if (RasterImage.Width = 0) or (RasterImage.Height = 0) then Exit;
 
   lFinalX := CoordToCanvasX(X);
   lFinalY := CoordToCanvasY(Y);
-  ADest.Draw(lFinalX, lFinalY, RasterImage);
+
+  {$ifdef USE_LCL_CANVAS}
+  lBitmap := TBitmap.Create;
+  try
+    lBitmap.LoadFromIntfImage(TLazIntfImage(RasterImage));
+
+    // without stretch support
+    //TCanvas(ADest).Draw(lFinalX, lFinalY, lBitmap);
+
+    // with stretch support
+    lFinalW := Round(RasterImage.Width * AMulX);
+    if lFinalW < 0 then lFinalW := lFinalW * -1;
+    lFinalH := Round(RasterImage.Height * AMulY);
+    if lFinalH < 0 then lFinalH := lFinalH * -1;
+    TCanvas(ADest).StretchDraw(Bounds(lFinalX, lFinalY, lFinalW, lFinalH), lBitmap);
+  finally
+    lBitmap.Free;
+  end;
+  {$endif}
+
+  //ADest.Draw(lFinalX, lFinalY, RasterImage); doesnt work
 end;
 
 { TvArrow }
