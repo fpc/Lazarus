@@ -160,6 +160,7 @@ type
     Dictionary: TStringList;
     ExitCalled: Boolean;
     CurrentGraphicState: TGraphicState;
+    ColorSpaceName: string;
     //
     procedure DebugStack();
     //
@@ -176,6 +177,7 @@ type
     function  ExecuteStackManipulationOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
     function  ExecuteControlOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
     function  ExecutePaintingOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument; ANextToken: TPSToken): Boolean;
+    function  ExecuteImageOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument; ANextToken: TPSToken): Boolean;
     function  ExecuteDeviceSetupAndOutputOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
     function  ExecuteArrayOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
     function  ExecuteStringOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
@@ -1644,14 +1646,6 @@ function TvEPSVectorialReader.ExecutePaintingOperator(AToken: TExpressionToken;
   AData: TvVectorialPage; ADoc: TvVectorialDocument; ANextToken: TPSToken): Boolean;
 var
   Param1, Param2: TPSToken;
-  // image operator data
-  lRasterImage: TvRasterImage;
-  lColor: TFPColor;
-  i, x, y, lFindIndex: Integer;
-  lDataSource, lImageDataStr: String;
-  lImageWidth, lImageHeight, lImageBitsPerComponent: Integer;
-  lImageData, lImageDataCompressed: array of Byte;
-  lCurDictToken: TPSToken;
 begin
   Result := False;
 
@@ -1699,93 +1693,7 @@ begin
   // dict image – Paint any sampled image
   if AToken.StrValue = 'image' then
   begin
-    Param1 := TPSToken(Stack.Pop);
-
-    // Decode the dictionary into a list of names
-    if not (Param1 is TDictionaryToken) then
-      raise Exception.Create(Format('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Param1 is not a dictionary but should be. Param1.ClassName=%s', [Param1.ClassName]));
-    TDictionaryToken(Param1).TransformToListOfNamedValues();
-
-    // Read the source of the data
-    if TDictionaryToken(Param1).Names.Find('DataSource', lFindIndex) then
-    begin
-      lDataSource := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]).StrValue;
-      if not (lDataSource = 'currentfile') then
-        raise Exception.Create(Format('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Unimplemented data source: %s', [lDataSource]));
-    end
-    else
-    begin
-      // suppose that the source is the current file
-    end;
-
-    // Decode the image
-    if ANextToken = nil then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Image contents expected but nothing found.');
-    if not (ANextToken is TExpressionToken) then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Image contents is not a TExpressionToken.');
-    if TExpressionToken(ANextToken).ETType <> ettRawData then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Image contents is not a raw data.');
-    lImageDataStr := TExpressionToken(ANextToken).StrValue;
-    SetLength(lImageDataStr, Length(lImageDataStr)-2); // Remove the final ~>
-    FPVUDebugLn('[image] ImageDataStr='+lImageDataStr);
-
-    lFindIndex := TDictionaryToken(Param1).Names.IndexOf('ASCII85Decode');
-    if lFindIndex > 0 then
-    begin
-      DecodeASCII85(lImageDataStr, lImageData);
-    end;
-
-    lFindIndex := TDictionaryToken(Param1).Names.IndexOf('FlateDecode');
-    if lFindIndex > 0 then
-    begin
-      if Length(lImageData) = 0 then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: no byte array prepared for FlateDecode. ASCII85Decode is missing.');
-      lImageDataCompressed := lImageData;
-      SetLength(lImageData, 0);
-      DeflateBytes(lImageDataCompressed, lImageData);
-    end;
-
-    // Dictionary information
-    lImageWidth := 0;
-    lImageHeight := 0;
-    lImageBitsPerComponent := 0;
-    lFindIndex := TDictionaryToken(Param1).Names.IndexOf('Width');
-    if lFindIndex > 0 then
-    begin
-      lCurDictToken := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]);
-      lCurDictToken.PrepareIntValue();
-      lImageWidth := lCurDictToken.IntValue;
-    end;
-    lFindIndex := TDictionaryToken(Param1).Names.IndexOf('Height');
-    if lFindIndex > 0 then
-    begin
-      lCurDictToken := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]);
-      lCurDictToken.PrepareIntValue();
-      lImageHeight := lCurDictToken.IntValue;
-    end;
-    lFindIndex := TDictionaryToken(Param1).Names.IndexOf('BitsPerComponent');
-    if lFindIndex > 0 then
-    begin
-      lCurDictToken := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]);
-      lCurDictToken.PrepareIntValue();
-      lImageBitsPerComponent := lCurDictToken.IntValue;
-    end;
-
-    // Read the image
-    lRasterImage := TvRasterImage.Create;
-    lRasterImage.CreateRGB888Image(lImageWidth, lImageHeight);
-    if (lImageWidth+lImageWidth*lImageWidth)*3 > Length(lImageData) then
-      raise Exception.Create(Format('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: image data too small. Expected=%d Found=%d', [Length(lImageData), (lImageWidth+lImageWidth*lImageWidth)*3]));
-    for x := 0 to lImageWidth - 1 do
-      for y := 0 to lImageHeight - 1 do
-      begin
-        lColor.Alpha := alphaOpaque;
-        lColor.Red := lImageData[(x+y*lImageWidth)*3] * $101;
-        lColor.Green := lImageData[(x+y*lImageWidth)*3+1] * $101;
-        lColor.Blue := lImageData[(x+y*lImageWidth)*3+2] * $101;
-        lRasterImage.RasterImage.Colors[x, y] := lColor;
-      end;
-    lRasterImage.Width := lImageWidth;
-    lRasterImage.Height := lImageHeight;
-    AData.AddEntity(lRasterImage);
-
-    Exit(True);
+    Result := ExecuteImageOperator(AToken, AData, ADoc, ANextToken);
   end;
   //x y width height rectclip –
   //  numarray rectclip –
@@ -1800,6 +1708,133 @@ begin
     Param1 := TPSToken(Stack.Pop);
     Exit(True);
   end;
+end;
+
+// The "image" operator is very complex, so we have a separate routine only for it =)
+function TvEPSVectorialReader.ExecuteImageOperator(AToken: TExpressionToken;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument; ANextToken: TPSToken
+  ): Boolean;
+var
+  Param1, Param2: TPSToken;
+  // image operator data
+  lRasterImage: TvRasterImage;
+  lColor: TFPColor;
+  i, x, y, lFindIndex: Integer;
+  lDataSource, lImageDataStr: String;
+  lImageWidth, lImageHeight, lImageBitsPerComponent: Integer;
+  lImageData, lImageDataCompressed: array of Byte;
+  lCurDictToken: TPSToken;
+  lColorC, lColorM, lColorY, lColorK: Double;
+begin
+  Result := False;
+  Param1 := TPSToken(Stack.Pop);
+
+  // Decode the dictionary into a list of names
+  if not (Param1 is TDictionaryToken) then
+    raise Exception.Create(Format('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Param1 is not a dictionary but should be. Param1.ClassName=%s', [Param1.ClassName]));
+  TDictionaryToken(Param1).TransformToListOfNamedValues();
+
+  // Read the source of the data
+  if TDictionaryToken(Param1).Names.Find('DataSource', lFindIndex) then
+  begin
+    lDataSource := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]).StrValue;
+    if not (lDataSource = 'currentfile') then
+      raise Exception.Create(Format('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Unimplemented data source: %s', [lDataSource]));
+  end
+  else
+  begin
+    // suppose that the source is the current file
+  end;
+
+  // Decode the image
+  if ANextToken = nil then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Image contents expected but nothing found.');
+  if not (ANextToken is TExpressionToken) then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Image contents is not a TExpressionToken.');
+  if TExpressionToken(ANextToken).ETType <> ettRawData then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: Image contents is not a raw data.');
+  lImageDataStr := TExpressionToken(ANextToken).StrValue;
+  SetLength(lImageDataStr, Length(lImageDataStr)-2); // Remove the final ~>
+  FPVUDebugLn('[image] ImageDataStr='+lImageDataStr);
+
+  lFindIndex := TDictionaryToken(Param1).Names.IndexOf('ASCII85Decode');
+  if lFindIndex > 0 then
+  begin
+    DecodeASCII85(lImageDataStr, lImageData);
+  end;
+
+  lFindIndex := TDictionaryToken(Param1).Names.IndexOf('FlateDecode');
+  if lFindIndex > 0 then
+  begin
+    if Length(lImageData) = 0 then raise Exception.Create('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: no byte array prepared for FlateDecode. ASCII85Decode is missing.');
+    lImageDataCompressed := lImageData;
+    SetLength(lImageData, 0);
+    DeflateBytes(lImageDataCompressed, lImageData);
+  end;
+
+  // Dictionary information
+  lImageWidth := 0;
+  lImageHeight := 0;
+  lImageBitsPerComponent := 0;
+  lFindIndex := TDictionaryToken(Param1).Names.IndexOf('Width');
+  if lFindIndex > 0 then
+  begin
+    lCurDictToken := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]);
+    lCurDictToken.PrepareIntValue();
+    lImageWidth := lCurDictToken.IntValue;
+  end;
+  lFindIndex := TDictionaryToken(Param1).Names.IndexOf('Height');
+  if lFindIndex > 0 then
+  begin
+    lCurDictToken := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]);
+    lCurDictToken.PrepareIntValue();
+    lImageHeight := lCurDictToken.IntValue;
+  end;
+  lFindIndex := TDictionaryToken(Param1).Names.IndexOf('BitsPerComponent');
+  if lFindIndex > 0 then
+  begin
+    lCurDictToken := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]);
+    lCurDictToken.PrepareIntValue();
+    lImageBitsPerComponent := lCurDictToken.IntValue;
+  end;
+
+  // Read the image
+  lRasterImage := TvRasterImage.Create;
+  lRasterImage.CreateRGB888Image(lImageWidth, lImageHeight);
+  lRasterImage.Width := lImageWidth;
+  lRasterImage.Height := lImageHeight;
+  if ColorSpaceName = 'DeviceCMYK' then
+  begin
+    if (lImageWidth*lImageHeight)*4 > Length(lImageData) then
+      raise Exception.Create(Format('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: image data too small. Expected=%d Found=%d', [Length(lImageData), (lImageWidth*lImageHeight)*4]));
+    for x := 0 to lImageWidth - 1 do
+      for y := 0 to lImageHeight - 1 do
+      begin
+        lColorC := lImageData[(x+y*lImageWidth)*4] / $FF;
+        lColorM := lImageData[(x+y*lImageWidth)*4+1] / $FF;
+        lColorY := lImageData[(x+y*lImageWidth)*4+2] / $FF;
+        lColorK := lImageData[(x+y*lImageWidth)*4+3] / $FF;
+        lColor.Alpha := alphaOpaque;
+        lColor.Red := Round($FF * (1-lColorC) * (1-lColorK) * $101);
+        lColor.Green := Round($FF * (1-lColorM) * (1-lColorK) * $101);
+        lColor.Blue := Round($FF * (1-lColorY) * (1-lColorK) * $101);
+        lRasterImage.RasterImage.Colors[x, y] := lColor;
+      end;
+  end
+  else
+  begin
+    if (lImageWidth*lImageHeight)*3 > Length(lImageData) then
+      raise Exception.Create(Format('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: image data too small. Expected=%d Found=%d', [Length(lImageData), (lImageWidth*lImageHeight)*3]));
+    for x := 0 to lImageWidth - 1 do
+      for y := 0 to lImageHeight - 1 do
+      begin
+        lColor.Alpha := alphaOpaque;
+        lColor.Red := lImageData[(x+y*lImageWidth)*3] * $101;
+        lColor.Green := lImageData[(x+y*lImageWidth)*3+1] * $101;
+        lColor.Blue := lImageData[(x+y*lImageWidth)*3+2] * $101;
+        lRasterImage.RasterImage.Colors[x, y] := lColor;
+      end;
+  end;
+  AData.AddEntity(lRasterImage);
+
+  Exit(True);
 end;
 
 { Device Setup and Output Operators
@@ -2716,6 +2751,7 @@ begin
   if AToken.StrValue = 'setcolorspace' then
   begin
     Param1 := TPSToken(Stack.Pop);
+    ColorSpaceName := Param1.StrValue;
     Exit(True);
   end;
   // red green blue setrgbcolor –
