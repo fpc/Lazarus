@@ -5,6 +5,9 @@
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
  *****************************************************************************
+
+  Note:
+    The functions of this unit are thread-safe.
 }
 unit LConvEncoding;
 
