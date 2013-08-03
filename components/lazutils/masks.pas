@@ -271,6 +271,7 @@ var
   end;
 
 begin
+  fCaseSensitive:=CaseSensitive;
   SetLength(FMask.Chars, 0);
   FMask.MinLength := 0;
   FMask.MaxLength := 0;
