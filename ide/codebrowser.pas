@@ -53,10 +53,12 @@ uses
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage,
   IDEHelpIntf, PackageIntf, TextTools, IDECommands, LazIDEIntf,
+  IDEExternToolIntf,
   // IDE
   Project, DialogProcs, PackageSystem, PackageDefs, LazarusIDEStrConsts,
   IDEOptionDefs,
   {$IFDEF EnableNewExtTools}
+  etFPCMsgParser,
   {$ELSE}
   MsgQuickFixes,
   {$ENDIF}
@@ -370,7 +372,19 @@ type
     property VisibleIdentifiers: PtrInt read FVisibleIdentifiers write SetVisibleIdentifiers;
     property UpdateNeeded: boolean read FUpdateNeeded write SetUpdateNeeded;
   end;
-  
+
+{$IFDEF EnableNewExtTools}
+type
+
+  { TQuickFixIdentifierNotFound_Search }
+
+  TQuickFixIdentifierNotFound_Search = class(TMsgQuickFix)
+  public
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+  end;
+{$ELSE}
+type
   { TQuickFixIdentifierNotFound_Search - add menu item to open codebrowser }
 
   TQuickFixIdentifierNotFound_Search = class(TIDEMsgQuickFixItem)
@@ -379,7 +393,7 @@ type
     function IsApplicable(Line: TIDEMessageLine): boolean; override;
     procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
   end;
-
+{$ENDIF}
 var
   CodeBrowserView: TCodeBrowserView = nil;
   
@@ -429,7 +443,7 @@ end;
 
 procedure InitCodeBrowserQuickFixItems;
 begin
-  RegisterIDEMsgQuickFix(TQuickFixIdentifierNotFound_Search.Create);
+  RegisterIDEMsgQuickFix(TQuickFixIdentifierNotFound_Search.Create{$IFDEF EnableNewExtTools}(nil){$ENDIF});
 end;
 
 procedure CreateCodeBrowser;
@@ -3206,6 +3220,73 @@ end;
 
 { TQuickFixIdentifierNotFound_Search }
 
+{$IFDEF EnableNewExtTools}
+procedure TQuickFixIdentifierNotFound_Search.CreateMenuItems(
+  Fixes: TMsgQuickFixes);
+var
+  Msg: TMessageLine;
+  Code: TCodeBuffer;
+begin
+  if Fixes.LineCount<>1 then exit;
+  Msg:=Fixes.Lines[0];
+  if not Msg.HasSourcePosition then exit;
+  if Msg.SubTool<>SubToolFPC then exit;
+  if Msg.MsgID<>5000 then exit;
+  Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
+  if Code=nil then exit;
+  Fixes.AddMenuItem(Self,Msg,lisQuickFixSearchIdentifier);
+end;
+
+procedure TQuickFixIdentifierNotFound_Search.QuickFix(Fixes: TMsgQuickFixes;
+  Msg: TMessageLine);
+var
+  Identifier: String;
+  KnownFilename: String;
+  Caret: TPoint;
+  Filename: String;
+begin
+  if not Msg.HasSourcePosition then exit;
+  if not LazarusIDE.BeginCodeTools then begin
+    DebugLn(['TQuickFixIdentifierNotFound_Search.Execute failed because IDE busy']);
+    exit;
+  end;
+
+  // get identifier
+  if not REMatches(Msg.Msg,'Identifier not found "([a-z_0-9]+)"','I') then begin
+    DebugLn('TQuickFixIdentifierNotFound_Search invalid message ',Msg.Msg);
+    exit;
+  end;
+  Identifier:=REVar(1);
+  DebugLn(['TQuickFixIdentifierNotFound_Search.Execute Identifier=',Identifier]);
+
+  if (Identifier='') or (not IsValidIdent(Identifier)) then begin
+    DebugLn(['TQuickFixIdentifierNotFound_Search.Execute not an identifier "',dbgstr(Identifier),'"']);
+    exit;
+  end;
+
+  Filename:=Msg.GetFullFilename;
+  KnownFilename:= LazarusIDE.FindSourceFile(Filename, Project1.ProjectDirectory,
+                    [fsfSearchForProject, fsfUseIncludePaths, fsfMapTempToVirtualFiles]);
+  Caret:=Point(Msg.Line,Msg.Column);
+
+  if (KnownFilename <> '') and (KnownFilename <> Filename) then begin
+    if LazarusIDE.DoOpenFileAndJumpToPos(KnownFilename,Caret,-1,-1,-1,OpnFlagsPlainFile)<>mrOk
+    then
+    if LazarusIDE.DoOpenFileAndJumpToPos(Filename,Caret,-1,-1,-1,OpnFlagsPlainFile)<>mrOk
+    then exit;
+  end
+  else
+  if LazarusIDE.DoOpenFileAndJumpToPos(Filename,Caret,-1,-1,-1,OpnFlagsPlainFile
+    )<>mrOk
+  then exit;
+
+  // start code browser
+  CreateCodeBrowser;
+  CodeBrowserView.SetScopeToCurUnitOwner(true,true);
+  CodeBrowserView.SetFilterToSimpleIdentifier(Identifier);
+  IDEWindowCreators.ShowForm(CodeBrowserView,true);
+end;
+{$ELSE}
 constructor TQuickFixIdentifierNotFound_Search.Create;
 begin
   Name:='Search identifier: Error: Identifier not found "identifier"';
@@ -3291,6 +3372,7 @@ begin
     IDEWindowCreators.ShowForm(CodeBrowserView,true);
   end;
 end;
+{$ENDIF EnableNewExtTools}
 
 end.
 

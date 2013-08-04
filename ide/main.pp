@@ -4640,6 +4640,10 @@ begin
 
   if ObjectInspector1<>nil then
     TheEnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);
+  {$IFDEF EnableNewExtTools}
+  if MessagesView<>nil then
+    TheEnvironmentOptions.MsgViewDblClickJumps:=MessagesView.DblClickJumps;
+  {$ENDIF}
 end;
 
 procedure TMainIDE.PackageTranslated(APackage: TLazPackage);
@@ -4653,6 +4657,10 @@ procedure TMainIDE.LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOption
 begin
   if ObjectInspector1<>nil then
     TheEnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
+  {$IFDEF EnableNewExtTools}
+  if MessagesView<>nil then
+    MessagesView.DblClickJumps:=TheEnvironmentOptions.MsgViewDblClickJumps;
+  {$ENDIF}
 end;
 
 procedure TMainIDE.OnLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);

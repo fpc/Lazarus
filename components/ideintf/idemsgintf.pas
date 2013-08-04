@@ -30,7 +30,7 @@ type
   protected
   public
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); virtual;
-    procedure JumpTo({%H-}Msg: TMessageLine; var {%H-}Handled: boolean); virtual;
+    procedure JumpTo({%H-}Msg: TMessageLine; var {%H-}Handled: boolean); virtual; // called when user (double) clicks on message
     procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); virtual;
   end;
   TMsgQuickFixClass = class of TMsgQuickFix;
@@ -59,6 +59,8 @@ type
 
 var
   MsgQuickFixes: TMsgQuickFixes = nil; // set by IDE
+
+procedure RegisterIDEMsgQuickFix(Fix: TMsgQuickFix);
 
 type
   TIDEMessagesWindowInterface = class(TForm)
@@ -89,6 +91,11 @@ var
   IDEMessagesWindow: TIDEMessagesWindowInterface = nil;// initialized by the IDE
 
 implementation
+
+procedure RegisterIDEMsgQuickFix(Fix: TMsgQuickFix);
+begin
+  MsgQuickFixes.RegisterQuickFix(Fix);
+end;
 
 { TMsgQuickFix }
 

@@ -31,7 +31,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, IDEMsgIntf, IDEImagesIntf, IDEExternToolIntf,
-  Forms, Controls, Graphics, Dialogs, etMessageFrame, etSrcEditMarks;
+  LazIDEIntf, Forms, Controls, Graphics, Dialogs, etMessageFrame,
+  etSrcEditMarks, etQuickFixes;
 
 type
 
@@ -50,8 +51,11 @@ type
     ImgIDWarning: integer;
     ImgIDError: integer;
     ImgIDFatal: integer;
+    function GetDblClickJumps: boolean;
+    procedure SetDblClickJumps(AValue: boolean);
   public
     SourceMarks: TETMarks;
+    property DblClickJumps: boolean read GetDblClickJumps write SetDblClickJumps;
   end;
 
 var
@@ -109,7 +113,28 @@ end;
 function TMessagesView.OnOpenMessage(Sender: TObject; Msg: TMessageLine
   ): boolean;
 begin
+  // ask quickfixes
+  if IDEQuickFixes.OpenMsg(Msg) then exit;
+  if Msg.GetFullFilename<>'' then begin
+    // ToDo: open file in source editor and mark it as error
+    LazarusIDE.DoOpenFileAndJumpToPos(Msg.GetFullFilename,
+      Point(Msg.Line,Msg.Column),-1,-1,-1,OpnFlagsPlainFile);
+  end;
+end;
 
+procedure TMessagesView.SetDblClickJumps(AValue: boolean);
+begin
+  if AValue then
+    MessagesFrame1.MessagesCtrl.Options:=
+      MessagesFrame1.MessagesCtrl.Options-[mcoSingleClickOpensFile]
+  else
+    MessagesFrame1.MessagesCtrl.Options:=
+      MessagesFrame1.MessagesCtrl.Options+[mcoSingleClickOpensFile]
+end;
+
+function TMessagesView.GetDblClickJumps: boolean;
+begin
+  Result:=not (mcoSingleClickOpensFile in MessagesFrame1.MessagesCtrl.Options);
 end;
 
 end.

@@ -60,6 +60,7 @@ type
     procedure ClearLines;
     function AddMenuItem(Fix: TMsgQuickFix; Msg: TMessageLine; aCaption: string;
       aTag: PtrInt=0): TMenuItem; override;
+    function OpenMsg(Msg: TMessageLine): boolean;
     property ParentMenuItem: TMenuItem read FParentMenuItem write FParentMenuItem;
   end;
 
@@ -308,6 +309,18 @@ begin
   Result.Tag:=aTag;
   Result.OnClick:=@MenuItemClick;
   ParentMenuItem.Add(Result);
+end;
+
+function TIDEQuickFixes.OpenMsg(Msg: TMessageLine): boolean;
+var
+  i: Integer;
+begin
+  Result:=false;
+  if Msg=nil then exit;
+  for i:=0 to Count-1 do begin
+    Items[i].JumpTo(Msg,Result);
+    if Result then exit;
+  end;
 end;
 
 end.
