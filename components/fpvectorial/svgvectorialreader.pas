@@ -962,7 +962,7 @@ begin
           ConvertTransformationMatrixToOperations(MA, MB, MC, MD, ME, MF,
             lMTranslateX, lMTranslateY, lMScaleX, lMScaleY, lMSkewX, lMSkewY, lMRotate);
 
-          ADestEntity.Move(lMTranslateX, lMTranslateY);
+          ADestEntity.Move(lMTranslateX, -1 * lMTranslateY);
           ADestEntity.Scale(lMScaleX, lMScaleY);
         end
         else if lFunctionName = 'scale' then
@@ -971,7 +971,7 @@ begin
         end
         else if lFunctionName = 'translate' then
         begin
-          ADestEntity.Move(lMatrixElements[0], lMatrixElements[1]);
+          ADestEntity.Move(lMatrixElements[0], -1 * lMatrixElements[1]);
         end
         else if lFunctionName = 'rotate' then
         begin
@@ -1080,13 +1080,15 @@ begin
 end;
 
 // transform="matrix(0.860815 0 -0 1.07602 354.095 482.177)"=>matrix(a, b, c, d, e, f)
+// Looks like that some Apps separate the matrix elements with spaces
+// But Inkscape uses commas! transform="matrix(1.2,0,0,1.2,9.48633,-2.25781)"
 // See http://apike.ca/prog_svg_transform.html
 procedure TvSVGVectorialReader.ReadSVGTransformationMatrix(
   AMatrix: string; out AA, AB, AC, AD, AE, AF: Double);
 var
   lMatrixElements: array of Double;
 begin
-  lMatrixElements := ReadSpaceSeparatedFloats(AMatrix, '');
+  lMatrixElements := ReadSpaceSeparatedFloats(AMatrix, ',');
 
   AA := lMatrixElements[0];
   AB := lMatrixElements[1];
@@ -2208,6 +2210,11 @@ begin
       ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lInsert);
     end;
   end;
+
+  // We need to add this hack here, otherwise the Height is added twice
+  // to inserted items: Once in the Insert and yet another time in the
+  // coordinates of the inserted item!
+  lInsert.Y := lInsert.Y - AData.Height;
 
   Result := lInsert;
 end;
