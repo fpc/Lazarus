@@ -27,6 +27,10 @@ msgstr "Pridėti visus"
 msgid "Select a new description file"
 msgstr "Parinkite naują aprašo failą"
 
+#: lazdemsg.sadditionalparams
+msgid "Additional parameters for fpdoc"
+msgstr ""
+
 #: lazdemsg.sbuild
 msgctxt "lazdemsg.sbuild"
 msgid "&Build"
@@ -162,7 +166,9 @@ msgid " in package "
 msgstr " pakete "
 
 #: lazdemsg.sfortopic
-msgid " in topic"
+#, fuzzy
+#| msgid " in topic"
+msgid " in topic "
 msgstr " temoje "
 
 #: lazdemsg.shideprotectedmethods
@@ -231,6 +237,16 @@ msgctxt "lazdemsg.shintinsertelement"
 msgid "New element"
 msgstr "Naujas elementas"
 
+#: lazdemsg.shintinsertenumeratelist
+msgctxt "lazdemsg.shintinsertenumeratelist"
+msgid "Insert numbered list"
+msgstr ""
+
+#: lazdemsg.shintinsertitemizelist
+msgctxt "lazdemsg.shintinsertitemizelist"
+msgid "Insert bulleted list"
+msgstr ""
+
 #: lazdemsg.shintinsertlink
 msgctxt "lazdemsg.shintinsertlink"
 msgid "Insert link"
@@ -291,6 +307,20 @@ msgstr "Apie šią programą"
 msgid "Import content file"
 msgstr "Importuoti turinio failą"
 
+#: lazdemsg.sinsertenumeratelist
+msgctxt "lazdemsg.sinsertenumeratelist"
+msgid "Insert numbered list"
+msgstr ""
+
+#: lazdemsg.sinsertexamplecode
+msgid "Insert example code"
+msgstr ""
+
+#: lazdemsg.sinsertitemizelist
+msgctxt "lazdemsg.sinsertitemizelist"
+msgid "Insert bulleted list"
+msgstr ""
+
 #: lazdemsg.sinsertlink
 msgctxt "lazdemsg.sinsertlink"
 msgid "Insert link"
@@ -312,6 +342,14 @@ msgstr "Lazarus dokumentacijos rengyklė"
 #: lazdemsg.slinksto
 msgid " links to "
 msgstr " saitas į "
+
+#: lazdemsg.slinktarget
+msgid "Link target"
+msgstr ""
+
+#: lazdemsg.slinktext
+msgid "Link text"
+msgstr ""
 
 #: lazdemsg.sload
 msgid "&Load"
@@ -445,9 +483,23 @@ msgstr "Į&terpti"
 msgid "&Element"
 msgstr "&Elementą"
 
+#: lazdemsg.smenuinsertenumeratelist
+msgctxt "lazdemsg.smenuinsertenumeratelist"
+msgid "Numbered list"
+msgstr ""
+
+#: lazdemsg.smenuinsertitemizelist
+msgctxt "lazdemsg.smenuinsertitemizelist"
+msgid "Bulleted list"
+msgstr ""
+
 #: lazdemsg.smenuinsertlink
 msgid "&Link"
 msgstr "&Saitą"
+
+#: lazdemsg.smenuinsertlist
+msgid "List"
+msgstr ""
 
 #: lazdemsg.smenuinsertmodule
 msgid "&Module"
@@ -518,6 +570,10 @@ msgstr "Naujas paketas"
 msgctxt "lazdemsg.snewtopic"
 msgid "New topic"
 msgstr "Nauja tema"
+
+#: lazdemsg.snodename
+msgid "Node name"
+msgstr ""
 
 #: lazdemsg.snoelement
 msgid "No element selected"
@@ -617,6 +673,10 @@ msgctxt "lazdemsg.ssave"
 msgid "&Save"
 msgstr "Į&rašyti"
 
+#: lazdemsg.ssavebeforebuildquestion
+msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
+msgstr ""
+
 #: lazdemsg.sseealso
 msgid "See Also"
 msgstr "Taip pat žiūrėkite"
@@ -656,6 +716,18 @@ msgstr "Pradiniai kodai"
 #: lazdemsg.sstartnodenotfound
 msgid "Start element \"%s\" could not be found"
 msgstr "Pradžios elementas „%s“ nerastas"
+
+#: lazdemsg.stablecols
+msgid "Columns"
+msgstr ""
+
+#: lazdemsg.stableheader
+msgid "Use header row"
+msgstr ""
+
+#: lazdemsg.stablerows
+msgid "Rows"
+msgstr ""
 
 #: lazdemsg.stargetos
 msgid "Target OS"

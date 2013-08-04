@@ -26,6 +26,10 @@ msgstr "Aggiungi tutti"
 msgid "Select a new description file"
 msgstr "Seleziona un nuovo file di descrizione"
 
+#: lazdemsg.sadditionalparams
+msgid "Additional parameters for fpdoc"
+msgstr ""
+
 #: lazdemsg.sbuild
 msgctxt "lazdemsg.sbuild"
 msgid "&Build"
@@ -161,7 +165,9 @@ msgid " in package "
 msgstr " nel pacchetto "
 
 #: lazdemsg.sfortopic
-msgid " in topic"
+#, fuzzy
+#| msgid " in topic"
+msgid " in topic "
 msgstr " nell'argomento"
 
 #: lazdemsg.shideprotectedmethods
@@ -230,6 +236,16 @@ msgctxt "lazdemsg.shintinsertelement"
 msgid "New element"
 msgstr "Nuovo elemento"
 
+#: lazdemsg.shintinsertenumeratelist
+msgctxt "lazdemsg.shintinsertenumeratelist"
+msgid "Insert numbered list"
+msgstr ""
+
+#: lazdemsg.shintinsertitemizelist
+msgctxt "lazdemsg.shintinsertitemizelist"
+msgid "Insert bulleted list"
+msgstr ""
+
 #: lazdemsg.shintinsertlink
 msgctxt "lazdemsg.shintinsertlink"
 msgid "Insert link"
@@ -290,6 +306,20 @@ msgstr "Informazioni su questo programma"
 msgid "Import content file"
 msgstr "Importa il file del contenuto"
 
+#: lazdemsg.sinsertenumeratelist
+msgctxt "lazdemsg.sinsertenumeratelist"
+msgid "Insert numbered list"
+msgstr ""
+
+#: lazdemsg.sinsertexamplecode
+msgid "Insert example code"
+msgstr ""
+
+#: lazdemsg.sinsertitemizelist
+msgctxt "lazdemsg.sinsertitemizelist"
+msgid "Insert bulleted list"
+msgstr ""
+
 #: lazdemsg.sinsertlink
 msgctxt "lazdemsg.sinsertlink"
 msgid "Insert link"
@@ -311,6 +341,14 @@ msgstr "Editor della Documentazione di Lazarus"
 #: lazdemsg.slinksto
 msgid " links to "
 msgstr " collegamenti a "
+
+#: lazdemsg.slinktarget
+msgid "Link target"
+msgstr ""
+
+#: lazdemsg.slinktext
+msgid "Link text"
+msgstr ""
 
 #: lazdemsg.sload
 msgid "&Load"
@@ -444,9 +482,23 @@ msgstr "&Inserisci"
 msgid "&Element"
 msgstr "&Elemento"
 
+#: lazdemsg.smenuinsertenumeratelist
+msgctxt "lazdemsg.smenuinsertenumeratelist"
+msgid "Numbered list"
+msgstr ""
+
+#: lazdemsg.smenuinsertitemizelist
+msgctxt "lazdemsg.smenuinsertitemizelist"
+msgid "Bulleted list"
+msgstr ""
+
 #: lazdemsg.smenuinsertlink
 msgid "&Link"
 msgstr "&Collegamento"
+
+#: lazdemsg.smenuinsertlist
+msgid "List"
+msgstr ""
 
 #: lazdemsg.smenuinsertmodule
 msgid "&Module"
@@ -517,6 +569,10 @@ msgstr "Nuovo pacchetto"
 msgctxt "lazdemsg.snewtopic"
 msgid "New topic"
 msgstr "Nuovo argomento"
+
+#: lazdemsg.snodename
+msgid "Node name"
+msgstr ""
 
 #: lazdemsg.snoelement
 msgid "No element selected"
@@ -616,6 +672,10 @@ msgctxt "lazdemsg.ssave"
 msgid "&Save"
 msgstr "&Salva"
 
+#: lazdemsg.ssavebeforebuildquestion
+msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
+msgstr ""
+
 #: lazdemsg.sseealso
 msgid "See Also"
 msgstr "Vedi anche"
@@ -654,6 +714,18 @@ msgstr "Sorgenti"
 
 #: lazdemsg.sstartnodenotfound
 msgid "Start element \"%s\" could not be found"
+msgstr ""
+
+#: lazdemsg.stablecols
+msgid "Columns"
+msgstr ""
+
+#: lazdemsg.stableheader
+msgid "Use header row"
+msgstr ""
+
+#: lazdemsg.stablerows
+msgid "Rows"
 msgstr ""
 
 #: lazdemsg.stargetos

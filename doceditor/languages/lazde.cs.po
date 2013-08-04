@@ -26,6 +26,10 @@ msgstr "Přidat vše"
 msgid "Select a new description file"
 msgstr "Vybrat nový popisující soubor"
 
+#: lazdemsg.sadditionalparams
+msgid "Additional parameters for fpdoc"
+msgstr ""
+
 #: lazdemsg.sbuild
 msgctxt "lazdemsg.sbuild"
 msgid "&Build"
@@ -161,7 +165,7 @@ msgid " in package "
 msgstr ""
 
 #: lazdemsg.sfortopic
-msgid " in topic"
+msgid " in topic "
 msgstr ""
 
 #: lazdemsg.shideprotectedmethods
@@ -230,6 +234,16 @@ msgctxt "lazdemsg.shintinsertelement"
 msgid "New element"
 msgstr "Nový element"
 
+#: lazdemsg.shintinsertenumeratelist
+msgctxt "lazdemsg.shintinsertenumeratelist"
+msgid "Insert numbered list"
+msgstr ""
+
+#: lazdemsg.shintinsertitemizelist
+msgctxt "lazdemsg.shintinsertitemizelist"
+msgid "Insert bulleted list"
+msgstr ""
+
 #: lazdemsg.shintinsertlink
 msgctxt "lazdemsg.shintinsertlink"
 msgid "Insert link"
@@ -290,6 +304,20 @@ msgstr "O aplikaci"
 msgid "Import content file"
 msgstr "Importovat soubor s obsahem"
 
+#: lazdemsg.sinsertenumeratelist
+msgctxt "lazdemsg.sinsertenumeratelist"
+msgid "Insert numbered list"
+msgstr ""
+
+#: lazdemsg.sinsertexamplecode
+msgid "Insert example code"
+msgstr ""
+
+#: lazdemsg.sinsertitemizelist
+msgctxt "lazdemsg.sinsertitemizelist"
+msgid "Insert bulleted list"
+msgstr ""
+
 #: lazdemsg.sinsertlink
 msgctxt "lazdemsg.sinsertlink"
 msgid "Insert link"
@@ -311,6 +339,14 @@ msgstr "Editor dokumentace pro Lazarus"
 #: lazdemsg.slinksto
 msgid " links to "
 msgstr " odkazy na"
+
+#: lazdemsg.slinktarget
+msgid "Link target"
+msgstr ""
+
+#: lazdemsg.slinktext
+msgid "Link text"
+msgstr ""
 
 #: lazdemsg.sload
 msgid "&Load"
@@ -444,9 +480,23 @@ msgstr "Vložit"
 msgid "&Element"
 msgstr "Elemet"
 
+#: lazdemsg.smenuinsertenumeratelist
+msgctxt "lazdemsg.smenuinsertenumeratelist"
+msgid "Numbered list"
+msgstr ""
+
+#: lazdemsg.smenuinsertitemizelist
+msgctxt "lazdemsg.smenuinsertitemizelist"
+msgid "Bulleted list"
+msgstr ""
+
 #: lazdemsg.smenuinsertlink
 msgid "&Link"
 msgstr "Odkaz"
+
+#: lazdemsg.smenuinsertlist
+msgid "List"
+msgstr ""
 
 #: lazdemsg.smenuinsertmodule
 msgid "&Module"
@@ -517,6 +567,10 @@ msgstr "Nový balíček"
 msgctxt "lazdemsg.snewtopic"
 msgid "New topic"
 msgstr "Nové téma"
+
+#: lazdemsg.snodename
+msgid "Node name"
+msgstr ""
 
 #: lazdemsg.snoelement
 msgid "No element selected"
@@ -616,6 +670,10 @@ msgctxt "lazdemsg.ssave"
 msgid "&Save"
 msgstr "Uložit"
 
+#: lazdemsg.ssavebeforebuildquestion
+msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
+msgstr ""
+
 #: lazdemsg.sseealso
 msgid "See Also"
 msgstr "Podívejte se také na"
@@ -655,6 +713,18 @@ msgstr "Zdroje"
 #: lazdemsg.sstartnodenotfound
 msgid "Start element \"%s\" could not be found"
 msgstr "Úvodní element \"%s\" nebyl nalezen"
+
+#: lazdemsg.stablecols
+msgid "Columns"
+msgstr ""
+
+#: lazdemsg.stableheader
+msgid "Use header row"
+msgstr ""
+
+#: lazdemsg.stablerows
+msgid "Rows"
+msgstr ""
 
 #: lazdemsg.stargetos
 msgid "Target OS"
