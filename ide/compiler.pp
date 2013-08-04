@@ -287,7 +287,7 @@ begin
   try
     if TheProcess=nil then
       FTheProcess := TOutputFilterProcess.Create(nil);
-    TheProcess.CommandLine := CmdLine;
+    TheProcess.CommandLine := CompilerFilename+CmdLine;
     TheProcess.Options:= [poUsePipes, poStdErrToOutput];
     TheProcess.ShowWindow := swoHide;
     Result:=mrOk;
