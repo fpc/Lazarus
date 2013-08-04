@@ -3745,7 +3745,6 @@ debugger/watchesdlg.lfm svneol=native#text/plain
 debugger/watchesdlg.pp svneol=native#text/pascal
 debugger/watchpropertydlg.lfm svneol=native#text/plain
 debugger/watchpropertydlg.pp svneol=native#text/pascal
-designer/abstracteditor.pp svneol=native#text/pascal
 designer/aligncompsdlg.lfm svneol=native#text/plain
 designer/aligncompsdlg.pp svneol=native#text/pascal
 designer/anchoreditor.lfm svneol=native#text/plain
