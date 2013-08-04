@@ -67,19 +67,21 @@ implementation
 {$R *.lfm}
 
 function ShowOpenLoadedPkgDlg(out OpenPackage: TLazPackage): TModalResult;
+var
+  Dlg: TOpenLoadedPackagesDlg;
 begin
   OpenPackage:=nil;
-  with TOpenLoadedPackagesDlg.Create(nil) do
+  Dlg:=TOpenLoadedPackagesDlg.Create(nil);
   try
-    UpdatePackageList;
-    UpdateSelection;
-    Result:=ShowModal;
-    if (Result=mrOK) and (Package<>nil) then
-      OpenPackage:=Package
+    Dlg.UpdatePackageList;
+    Dlg.UpdateSelection;
+    Result:=Dlg.ShowModal;
+    if (Result=mrOK) and (Dlg.Package<>nil) then
+      OpenPackage:=Dlg.Package
     else
       OpenPackage:=nil;
   finally
-    Free;
+    Dlg.Free;
   end;
 end;
 
