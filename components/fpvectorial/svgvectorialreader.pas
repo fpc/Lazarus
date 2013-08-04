@@ -1105,6 +1105,7 @@ var
   i: Integer;
   lCurNode, lCurSubNode: TDOMNode;
   lBrushEntity: TvEntityWithPenAndBrush;
+  lCurEntity: TvEntity;
 begin
   lCurNode := ANode.FirstChild;
   while Assigned(lCurNode) do
@@ -1186,7 +1187,9 @@ begin
         AData.AddEntity(lBlock);
         AData.SetCurrentLayer(lBlock);
         //
-        ReadEntityFromNode(lCurNode, AData, ADoc);
+        lCurEntity := ReadEntityFromNode(lCurNode, AData, ADoc);
+        if lCurEntity <> nil then
+          AData.AddEntity(lCurEntity);
         //
         AData.SetCurrentLayer(lPreviousLayer);
       end;
