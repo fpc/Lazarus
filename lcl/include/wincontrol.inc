@@ -7498,6 +7498,11 @@ begin
   Exclude(FWinControlFlags,wcfCreatingChildHandles);
 end;
 
+function TWinControl.GetMouseCapture: Boolean;
+begin
+  Result:=HandleAllocated and (GetCaptureControl=Self);
+end;
+
 {------------------------------------------------------------------------------
   function TWinControl.ParentHandlesAllocated: boolean;
   

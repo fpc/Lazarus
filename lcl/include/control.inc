@@ -1749,7 +1749,7 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.GetMouseCapture : Boolean;
 begin
-  Result := GetCaptureControl = Self;
+  Result := (Parent<>nil) and Parent.HandleAllocated and (GetCaptureControl = Self);
 end;
 
 function TControl.GetTBDockHeight: Integer;
