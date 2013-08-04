@@ -142,7 +142,7 @@ procedure TDlgCompPagesPopup.BuildList;
 var
   isSubItem: boolean;
 
-  procedure AddMenu(var aGroupNode: TTreeNode; aGroupTitle, aPageTitle: string);
+  procedure AddGroup(var aGroupNode: TTreeNode; aGroupTitle, aPageTitle: string);
   var
     PageNode: TTreeNode;
   begin
@@ -175,38 +175,37 @@ begin
   for i:=0 to MainIDEBar.ComponentPageControl.PageCount-1 do
   begin
     isSubItem:=false;
-    //xPageIndex:=MainIDEBar.ComponentPageControl.Page[i].PageIndex;
     PageCapt:=MainIDEBar.ComponentPageControl.Page[i].Caption;
 
  //====================================================================
     if AnsiStartsText('Indy', PageCapt) then
-      AddMenu(fPopupItemIndy, 'Indy pages', PageCapt)
+      AddGroup(fPopupItemIndy, 'Indy pages', PageCapt)
     else if AnsiStartsText('GLScene', PageCapt) then
-      AddMenu(fPopupItemGLScene, 'GLScene pages', PageCapt)
+      AddGroup(fPopupItemGLScene, 'GLScene pages', PageCapt)
     else if AnsiStartsText('Cindy', PageCapt) then
-      AddMenu(fPopupItemCindy, 'Cindy pages', PageCapt)
+      AddGroup(fPopupItemCindy, 'Cindy pages', PageCapt)
     else if AnsiStartsText('Extra', PageCapt) then
-      AddMenu(fPopupItemExtra, 'Extra pages', PageCapt)
+      AddGroup(fPopupItemExtra, 'Extra pages', PageCapt)
     else if AnsiStartsText('BGRA', PageCapt) then
-      AddMenu(fPopupItemBGRA, 'BGRA pages', PageCapt)
+      AddGroup(fPopupItemBGRA, 'BGRA pages', PageCapt)
     else if AnsiStartsText('DCP', PageCapt) then
-      AddMenu(fPopupItemDCP, 'DCP pages', PageCapt)
+      AddGroup(fPopupItemDCP, 'DCP pages', PageCapt)
     else if AnsiStartsText('RX', PageCapt) then
-      AddMenu(fPopupItemRX, 'RX pages', PageCapt)
+      AddGroup(fPopupItemRX, 'RX pages', PageCapt)
     else if AnsiStartsText('ACS', PageCapt) then
-      AddMenu(fPopupItemACS, 'Audio ACS pages', PageCapt)
+      AddGroup(fPopupItemACS, 'Audio ACS pages', PageCapt)
     else if AnsiStartsText('ASIO/VST', PageCapt) then
-      AddMenu(fPopupItemASIOVST, 'Audio ASIO-VST pages', PageCapt)
+      AddGroup(fPopupItemASIOVST, 'Audio ASIO-VST pages', PageCapt)
     else if AnsiStartsText('Virtual Controls', PageCapt) then
-      AddMenu(fPopupItemVirtual, 'Virtual Controls pages', PageCapt)
+      AddGroup(fPopupItemVirtual, 'Virtual Controls pages', PageCapt)
     else if AnsiStartsText('PascalSCADA', PageCapt) then
-      AddMenu(fPopupItemSCADA, 'PascalSCADA pages', PageCapt)
+      AddGroup(fPopupItemSCADA, 'PascalSCADA pages', PageCapt)
     else if AnsiStartsText('FZControls', PageCapt) then
-      AddMenu(fPopupItemFZControls, 'FZControls pages', PageCapt)
+      AddGroup(fPopupItemFZControls, 'FZControls pages', PageCapt)
     else if AnsiStartsText('LuiControls', PageCapt) then
-      AddMenu(fPopupItemLuiControls, 'LuiControls pages', PageCapt)
+      AddGroup(fPopupItemLuiControls, 'LuiControls pages', PageCapt)
     else if AnsiStartsText('Shapes', PageCapt) then
-      AddMenu(fPopupItemShapes, 'Shapes pages', PageCapt)
+      AddGroup(fPopupItemShapes, 'Shapes pages', PageCapt)
     ;
 //====================================================================
 
