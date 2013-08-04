@@ -962,7 +962,11 @@ begin
           ConvertTransformationMatrixToOperations(MA, MB, MC, MD, ME, MF,
             lMTranslateX, lMTranslateY, lMScaleX, lMScaleY, lMSkewX, lMSkewY, lMRotate);
 
-          ADestEntity.Move(lMTranslateX, -1 * lMTranslateY);
+          ConvertSVGDeltaToFPVDelta(nil,
+            lMTranslateX, lMTranslateY,
+            lMTranslateX, lMTranslateY);
+
+          ADestEntity.Move(lMTranslateX, lMTranslateY);
           ADestEntity.Scale(lMScaleX, lMScaleY);
         end
         else if lFunctionName = 'scale' then
@@ -971,7 +975,10 @@ begin
         end
         else if lFunctionName = 'translate' then
         begin
-          ADestEntity.Move(lMatrixElements[0], -1 * lMatrixElements[1]);
+          ConvertSVGDeltaToFPVDelta(nil,
+            lMatrixElements[0], lMatrixElements[1],
+            lMatrixElements[0], lMatrixElements[1]);
+          ADestEntity.Move(lMatrixElements[0], lMatrixElements[1]);
         end
         else if lFunctionName = 'rotate' then
         begin
@@ -1337,6 +1344,7 @@ function TvSVGVectorialReader.ReadImageFromNode(ANode: TDOMNode;
 var
   lImage: TvRasterImage;
   lx, ly, lw, lh: Double;
+  lTransformX, lTransformY, lTransformW, lTransformH: Double;
   i: Integer;
   lNodeName, lNodeValue: DOMString;
   lImageDataParts: TStringList;
@@ -1350,6 +1358,8 @@ begin
   ly := 0;
   lw := 0;
   lh := 0;
+  lImage.Width := 1000;
+  lImage.Height := 1000;
 
   // Apply the layer style
   //ApplyLayerStyles(lEllipse);
@@ -1406,14 +1416,22 @@ begin
     end;
   end;
 
-  // Record translate data
-  lx := lx + lImage.X;
-  ly := ly + lImage.Y;
+  // Record the transform data
+  lTransformX := lImage.X;
+  lTransformY := lImage.Y;
+  lTransformW := lImage.Width / 1000;
+  lTransformH := lImage.Height / 1000;
 
   ConvertSVGCoordinatesToFPVCoordinates(
         AData, lx, ly, lImage.X, lImage.Y);
   ConvertSVGDeltaToFPVDelta(
         AData, lw, lh, lImage.Width, lImage.Height);
+
+  // And re-apply the transform data
+  lImage.X := lImage.X + lTransformX;
+  lImage.Y := lImage.Y + lTransformY;
+  lImage.Width := lImage.Width * lTransformW;
+  lImage.Height := lImage.Height * lTransformW;
 
   // Apply the layer style
   ApplyLayerStyles(lImage);
