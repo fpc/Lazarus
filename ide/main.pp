@@ -5810,7 +5810,8 @@ begin
       // add package units
       FirstDependency:=APackage.FirstRequiredDependency;
       AddPackage(APackage);
-    end;
+    end else
+      FirstDependency:=nil;
     // add all units of all used packages
     PackageGraph.GetAllRequiredPackages(nil,FirstDependency,PkgList);
     if PkgList<>nil then

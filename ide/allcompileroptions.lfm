@@ -1,7 +1,7 @@
 object frmAllCompilerOptions: TfrmAllCompilerOptions
-  Left = 338
+  Left = 311
   Height = 497
-  Top = 112
+  Top = 189
   Width = 622
   Caption = 'frmAllCompilerOptions'
   ClientHeight = 497
@@ -40,15 +40,15 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 0
-    Height = 419
+    Height = 424
     Top = 25
     Width = 616
     HorzScrollBar.Increment = 61
-    HorzScrollBar.Page = 612
+    HorzScrollBar.Page = 614
     HorzScrollBar.Smooth = True
     HorzScrollBar.Tracking = True
-    VertScrollBar.Increment = 41
-    VertScrollBar.Page = 415
+    VertScrollBar.Increment = 42
+    VertScrollBar.Page = 422
     VertScrollBar.Smooth = True
     VertScrollBar.Tracking = True
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -58,8 +58,8 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 41
-    Top = 450
+    Height = 36
+    Top = 455
     Width = 610
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -78,9 +78,9 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
     AnchorSideTop.Control = btnResetOptionsFilter
     AnchorSideTop.Side = asrCenter
     Left = 156
-    Height = 21
-    Top = 2
-    Width = 143
+    Height = 24
+    Top = 0
+    Width = 133
     BorderSpacing.Left = 29
     Caption = 'Show only modified'
     OnClick = cbShowModifiedClick
@@ -90,10 +90,10 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
     AnchorSideLeft.Control = cbShowModified
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = cbShowModified
-    Left = 328
-    Height = 21
-    Top = 2
-    Width = 233
+    Left = 318
+    Height = 24
+    Top = 0
+    Width = 206
     BorderSpacing.Left = 29
     Caption = 'Use comments in custom options'
     TabOrder = 4
