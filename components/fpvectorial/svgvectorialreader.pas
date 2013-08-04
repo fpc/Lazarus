@@ -19,6 +19,8 @@ uses
   fpvectorial, fpvutils, lazutf8, TypInfo;
 
 type
+  TDoubleArray = array of Double;
+
   TSVGTokenType = (
     // moves
     sttMoveTo, sttRelativeMoveTo,
@@ -39,6 +41,7 @@ type
   TSVGToken = class
     TokenType: TSVGTokenType;
     Value: Float;
+    StrValue: string; // filled only by TokenizeFunctions
   end;
 
   TSVGTokenList = specialize TFPGList<TSVGToken>;
@@ -54,6 +57,7 @@ type
     Destructor Destroy; override;
     procedure AddToken(AStr: string);
     procedure TokenizePathString(AStr: string);
+    procedure TokenizeFunctions(AStr: string);
     function DebugOutTokensAsString: string;
   end;
 
@@ -74,9 +78,11 @@ type
     function ReadSVGPenStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
     function ReadSVGBrushStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush): TvSetPenBrushAndFontElements;
     function ReadSVGFontStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenBrushAndFont): TvSetPenBrushAndFontElements;
+    function ReadSVGGeneralStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
     function IsAttributeFromStyle(AStr: string): Boolean;
     procedure ApplyLayerStyles(ADestEntity: TvEntity);
-    procedure ReadAndApplySVGTransformationMatrix(AMatrix: string; ADestEntity: TvEntity);
+    function ReadSpaceSeparatedFloats(AInput: string): TDoubleArray;
+    procedure ReadSVGTransformationMatrix(AMatrix: string; out AA, AB, AC, AD, AE, AF: Double);
     //
     procedure ReadDefsFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     //
@@ -182,7 +188,7 @@ begin
   begin
     lToken.TokenType := sttFloatValue;
     try
-    lToken.Value := StrToFloat(AStr, FPointSeparator);
+      lToken.Value := StrToFloat(AStr, FPointSeparator);
     except
       on MyException: Exception do
       begin
@@ -252,6 +258,57 @@ begin
           end;
         end;
 
+        lTmpStr := lTmpStr + lCurChar;
+      end;
+
+      Inc(i);
+    end;
+    1: // Removing spaces
+    begin
+      if AStr[i] <> Str_Space then lState := 0
+      else Inc(i);
+    end;
+    end;
+  end;
+
+  // If there is a token still to be added, add it now
+  if (lState = 0) and (lTmpStr <> '') then AddToken(lTmpStr);
+end;
+
+procedure TSVGPathTokenizer.TokenizeFunctions(AStr: string);
+const
+  Str_Space: Char = ' ';
+  Str_Start_Params: Char = '(';
+  Str_End_Params: Char = ')';
+  ListOfCommandLetters: set of Char = ['a'..'d', 'f'..'z', 'A'..'D', 'F'..'Z'];
+var
+  i: Integer;
+  lTmpStr: string = '';
+  lState: Integer;
+  lFirstTmpStrChar, lCurChar: Char;
+  lToken: TSVGToken;
+begin
+  lState := 0;
+
+  i := 1;
+  while i <= Length(AStr) do
+  begin
+    case lState of
+    0: // Adding to the tmp string
+    begin
+      lCurChar := AStr[i];
+      if lCurChar in [Str_Space, Str_Start_Params, Str_End_Params] then
+      begin
+        lState := 1;
+        // Add the token
+        lToken := TSVGToken.Create;
+        lToken.StrValue := lTmpStr;
+        Tokens.Add(lToken);
+        //
+        lTmpStr := '';
+      end
+      else
+      begin
         lTmpStr := lTmpStr + lCurChar;
       end;
 
@@ -711,6 +768,7 @@ begin
       lStyleKeyStr := Copy(lStr, 0, lPosEqual-1);
       lStyleValueStr := Copy(lStr, lPosEqual+1, Length(lStr));
       ReadSVGPenStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
+      ReadSVGGeneralStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
       if AUseFillAsPen and (lStyleKeyStr = 'fill') then
         Result := Result + ReadSVGPenStyleWithKeyAndValue('stroke', lStyleValueStr, ADestEntity)
       else if ADestEntity is TvText then
@@ -864,11 +922,75 @@ begin
   end;
 end;
 
+function TvSVGVectorialReader.ReadSVGGeneralStyleWithKeyAndValue(AKey,
+  AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
+var
+  // transform
+  MA, MB, MC, MD, ME, MF: Double;
+  lMTranslateX, lMTranslateY, lMScaleX, lMScaleY, lMSkewX, lMSkewY, lMRotate: Double;
+  lTokenizer: TSVGPathTokenizer;
+  i: Integer;
+  lFunctionName, lParamStr: string;
+var
+  lMatrixElements: array of Double;
+begin
+  // Examples:
+  // transform="matrix(0.860815 0 -0 1.07602 339.302 489.171)"
+  // transform="scale(0.24) translate(0, 35)"
+  // transform="rotate(90)"
+  if AKey = 'transform' then
+  begin
+    lTokenizer := TSVGPathTokenizer.Create;
+    try
+      lTokenizer.TokenizeFunctions(AValue);
+
+      i := 0;
+      while i < lTokenizer.Tokens.Count-1 do
+      begin
+        lFunctionName := lTokenizer.Tokens.Items[i].StrValue;
+        lParamStr := lTokenizer.Tokens.Items[i+1].StrValue;
+        lMatrixElements := ReadSpaceSeparatedFloats(lParamStr);
+
+        if lFunctionName = 'matrix' then
+        begin
+          ReadSVGTransformationMatrix(lParamStr, MA, MB, MC, MD, ME, MF);
+
+          ConvertTransformationMatrixToOperations(MA, MB, MC, MD, ME, MF,
+            lMTranslateX, lMTranslateY, lMScaleX, lMScaleY, lMSkewX, lMSkewY, lMRotate);
+
+          ADestEntity.Move(lMTranslateX, lMTranslateY);
+          ADestEntity.Scale(lMScaleX, lMScaleY);
+        end
+        else if lFunctionName = 'scale' then
+        begin
+          ;
+        end
+        else if lFunctionName = 'translate' then
+        begin
+          ADestEntity.Move(lMatrixElements[0], lMatrixElements[1]);
+        end
+        else if lFunctionName = 'rotate' then
+        begin
+          ADestEntity.Rotate(lMatrixElements[0], Make3DPoint(0, 0, 0));
+        end;
+
+        Inc(i, 2);
+      end;
+    finally
+      lTokenizer.Free;
+    end;
+  end;
+end;
+
 function TvSVGVectorialReader.IsAttributeFromStyle(AStr: string): Boolean;
 begin
-  Result := (AStr = 'stroke') or (AStr = 'stroke-width') or
+  Result :=
+    // pen
+    (AStr = 'stroke') or (AStr = 'stroke-width') or
     (AStr = 'stroke-dasharray') or (AStr = 'stroke-opacity') or
     (AStr = 'stroke-linecap') or
+    // general
+    (AStr = 'transform') or
     // brush
     (AStr = 'fill') or (AStr = 'fill-opacity') or
     // font
@@ -902,33 +1024,44 @@ begin
   end;
 end;
 
-// transform="matrix(0.860815 0 -0 1.07602 354.095 482.177)"=>matrix(a, b, c, d, e, f)
-// See http://apike.ca/prog_svg_transform.html
-procedure TvSVGVectorialReader.ReadAndApplySVGTransformationMatrix(
-  AMatrix: string; ADestEntity: TvEntity);
+function TvSVGVectorialReader.ReadSpaceSeparatedFloats(AInput: string
+  ): TDoubleArray;
 var
   lStrings: TStringList;
-  lMatrixElements: array[0..5] of Double;
-  lStr: string;
+  lMatrixElements: array of Double;
   i: Integer;
 begin
   lStrings := TStringList.Create;
   try
     lStrings.Delimiter := ' ';
-    lStr := Copy(AMatrix, 8, Length(AMatrix)-9);
-    lStrings.DelimitedText := lStr;
-    for i := 0 to 5 do
+    lStrings.DelimitedText := AInput;
+    SetLength(lMatrixElements, lStrings.Count);
+    for i := 0 to lStrings.Count-1 do
     begin
-      lMatrixElements[i] := 0;
-      if i<=lStrings.Count-1 then
-        lMatrixElements[i] := StringWithUnitToFloat(lStrings.Strings[i]);
+      lMatrixElements[i] := StringWithUnitToFloat(lStrings.Strings[i]);
     end;
 
-    ADestEntity.X := ADestEntity.X + lMatrixElements[4];
-    ADestEntity.Y := ADestEntity.Y + lMatrixElements[5];
+    Result := lMatrixElements;
   finally
     lStrings.Free;
   end;
+end;
+
+// transform="matrix(0.860815 0 -0 1.07602 354.095 482.177)"=>matrix(a, b, c, d, e, f)
+// See http://apike.ca/prog_svg_transform.html
+procedure TvSVGVectorialReader.ReadSVGTransformationMatrix(
+  AMatrix: string; out AA, AB, AC, AD, AE, AF: Double);
+var
+  lMatrixElements: array of Double;
+begin
+  lMatrixElements := ReadSpaceSeparatedFloats(AMatrix);
+
+  AA := lMatrixElements[0];
+  AB := lMatrixElements[1];
+  AC := lMatrixElements[2];
+  AD := lMatrixElements[3];
+  AE := lMatrixElements[4];
+  AF := lMatrixElements[5];
 end;
 
 procedure TvSVGVectorialReader.ReadDefsFromNode(ANode: TDOMNode;
@@ -1091,6 +1224,7 @@ begin
     begin
       ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lCircle);
       ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lCircle);
+      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lCircle);
     end;
   end;
 
@@ -1143,6 +1277,7 @@ begin
     begin
       ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lEllipse);
       ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lEllipse);
+      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lEllipse);
     end;
   end;
 
@@ -1242,7 +1377,7 @@ var
   i: Integer;
   lNodeName: DOMString;
   lPath: TPath;
-  lStyleStr, lStrokeStr, lStrokeWidthStr: DOMString;
+  lStyleStr: DOMString;
 begin
   x1 := 0.0;
   y1 := 0.0;
@@ -1260,13 +1395,7 @@ begin
     else if lNodeName = 'x2' then
       x2 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'y2' then
-      y2 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
-    else if lNodeName = 'style' then
-      lStyleStr := ANode.Attributes.Item[i].NodeValue
-    else if lNodeName = 'stroke' then
-      lStrokeStr := ANode.Attributes.Item[i].NodeValue
-    else if lNodeName = 'stroke-width' then
-      lStrokeWidthStr := ANode.Attributes.Item[i].NodeValue;
+      y2 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue);
   end;
 
   ConvertSVGCoordinatesToFPVCoordinates(
@@ -1278,12 +1407,22 @@ begin
   AData.AddMoveToPath(vx1, vy1);
   AData.AddLineToPath(vx2, vy2);
   lPath := AData.EndPath(True);
+
   // Apply the layer style
   ApplyLayerStyles(lPath);
-  // Add the pen/brush
-  ReadSVGStyle(lStyleStr, lPath);
-  ReadSVGStyle(lStrokeStr, lPath);
-  ReadSVGStyle(lStrokeWidthStr, lPath);
+
+  // Add the entity styles
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if lNodeName = 'style' then
+      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lPath)
+    else if IsAttributeFromStyle(lNodeName) then
+    begin
+      ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
+      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
+    end;
+  end;
   //
   Result := lPath;
 end;
@@ -1327,6 +1466,7 @@ begin
     begin
       ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
       ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
+      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
     end;
   end;
 end;
@@ -1745,6 +1885,7 @@ begin
     begin
       ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
       ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
+      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
     end;
   end;
 end;
@@ -1797,6 +1938,7 @@ begin
     begin
       ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lRect);
       ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lRect);
+      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lRect);
     end;
   end;
 
@@ -1841,16 +1983,13 @@ begin
       ly := ly + StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'id' then
       lText.Name := lNodeValue
-    else if lNodeName = 'transform' then
-    begin
-      ReadAndApplySVGTransformationMatrix(lNodeValue, lText);
-      lx := lx + lText.X;
-      ly := ly + lText.Y;
-    end
     else if lNodeName = 'style' then
       ReadSVGStyle(lNodeValue, lText)
     else if IsAttributeFromStyle(lNodeName) then
+    begin
       ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, lText);
+      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lText);
+    end;
   end;
 
   // The text contents are inside as a child text, not as a attribute
@@ -1859,6 +1998,10 @@ begin
     lTextStr := Anode.FirstChild.NodeValue;
   // Add the first line
   lText.Value.Add(lTextStr);
+
+  // Recover the position if there was a transformation matrix
+  lx := lx + lText.X;
+  ly := lx + lText.Y;
 
   // Set the coordinates
   ConvertSVGCoordinatesToFPVCoordinates(
@@ -2036,6 +2179,7 @@ var
   ANode: TDOMElement;
   i: Integer;
   lCurEntity: TvEntity;
+  lViewBox: TDoubleArray;
 begin
   FPathNumber := 0;
 
@@ -2056,7 +2200,13 @@ begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
-    if lNodeName = 'style' then
+    if lNodeName = 'viewBox' then
+    begin
+      lViewBox := ReadSpaceSeparatedFloats(ANode.Attributes.Item[i].NodeValue);
+      AData.Width := lViewBox[2] - lViewBox[0];
+      AData.Height := lViewBox[3] - lViewBox[1];
+    end
+    else if lNodeName = 'style' then
     begin
       {$ifdef SVG_MERGE_LAYER_STYLES}
       ReadSVGStyleToStyleLists(ANode.Attributes.Item[i].NodeValue, lLayerStyleKeys, lLayerStyleValues);

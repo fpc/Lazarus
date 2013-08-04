@@ -348,6 +348,11 @@ end;
 // skewY(TY) => a=1 b=tan(TY) c=0 d=1 rest=0
 // skew(TX,TY) => a=1 b=tan(TY) c=tan(TX) d=1 rest=0
 // rotate(T) => a=cos(T) b=sin(T) c=-sin(T) d=cos(T) rest=0
+//
+// Example:
+// 0.860815 0 -0 1.07602 339.302 489.171
+// Which has a Scale and Translate
+//
 procedure ConvertTransformationMatrixToOperations(AA, AB, AC, AD, AE,
   AF: Double; out ATranslateX, ATranslateY, AScaleX, AScaleY, ASkewX, ASkewY,
   ARotate: Double);
@@ -360,6 +365,7 @@ begin
   ASkewY := 0;
   ARotate := 0;
 
+  // This is valid if AB=AC=0
   ATranslateX := AE;
   ATranslateY := AF;
   AScaleX := AA;

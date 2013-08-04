@@ -3063,8 +3063,8 @@ begin
       Exit(True);
     end;
 
-    CurrentGraphicState.ScaleX := Param2.FloatValue;
-    CurrentGraphicState.ScaleY := Param1.FloatValue;
+    CurrentGraphicState.ScaleX := CurrentGraphicState.ScaleX * Param2.FloatValue;
+    CurrentGraphicState.ScaleY := CurrentGraphicState.ScaleY * Param1.FloatValue;
     {$ifdef FPVECTORIALDEBUG_PATHS}
     WriteLn(Format('[TvEPSVectorialReader.ExecuteGraphicStateOperatorsDI] scale %f %f',
      [CurrentGraphicState.ScaleX, CurrentGraphicState.ScaleY]));

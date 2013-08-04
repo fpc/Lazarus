@@ -290,6 +290,7 @@ type
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); virtual;
     function  GetSubpartCount: Integer; virtual;
     procedure PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double); virtual;
+    procedure Scale(ADeltaScaleX, ADeltaScaleY: Double); virtual;
     procedure Rotate(AAngle: Double; ABase: T3DPoint); virtual; // Angle in radians
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
@@ -351,6 +352,7 @@ type
     constructor Create; override;
     procedure ApplyFontToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; AMulX: Double = 1.0);
     procedure AssignFont(AFont: TvFont);
+    procedure Scale(ADeltaScaleX, ADeltaScaleY: Double); override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
@@ -1528,6 +1530,11 @@ begin
 
 end;
 
+procedure TvEntity.Scale(ADeltaScaleX, ADeltaScaleY: Double);
+begin
+
+end;
+
 procedure TvEntity.Rotate(AAngle: Double; ABase: T3DPoint);
 begin
 
@@ -1708,6 +1715,13 @@ begin
   Font.Italic := AFont.Italic;
   Font.Underline := AFont.Underline;
   Font.StrikeThrough := AFont.StrikeThrough;
+end;
+
+procedure TvEntityWithPenBrushAndFont.Scale(ADeltaScaleX, ADeltaScaleY: Double);
+begin
+  inherited Scale(ADeltaScaleX, ADeltaScaleY);
+
+  Font.Size := Round(Font.Size * ADeltaScaleX);
 end;
 
 procedure TvEntityWithPenBrushAndFont.Render(ADest: TFPCustomCanvas;
