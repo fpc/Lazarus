@@ -3759,7 +3759,6 @@ designer/designer.pp svneol=native#text/pascal
 designer/designermenu.lfm svneol=native#text/plain
 designer/designermenu.pp svneol=native#text/pascal
 designer/designerprocs.pas svneol=native#text/pascal
-designer/filesystem.pp svneol=native#text/pascal
 designer/framedesigner.pas svneol=native#text/pascal
 designer/jitforms.pp svneol=native#text/pascal
 designer/menueditorform.lfm svneol=native#text/pascal
