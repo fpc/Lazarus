@@ -4925,6 +4925,8 @@ ide/componentlist.lfm svneol=native#text/pascal
 ide/componentlist.pas svneol=native#text/pascal
 ide/componentpalette.pas svneol=native#text/pascal
 ide/compoptsmodes.pas svneol=native#text/plain
+ide/comppagespopup.lfm svneol=native#text/plain
+ide/comppagespopup.pas svneol=native#text/pascal
 ide/condef.lfm svneol=native#text/plain
 ide/condef.pas svneol=native#text/pascal
 ide/customdefines.lfm svneol=native#text/plain
@@ -5554,6 +5556,7 @@ images/lazdoc/insertremark.png -text
 images/lazdoc/insertvartag.png -text
 images/lprfile.ico -text svneol=unset#image/x-icon
 images/mainicon.ico -text svneol=unset#image/ico
+images/menu/SelCompPage.png -text svneol=unset#image/png
 images/menu/menu_abort_build.png -text svneol=unset#image/png
 images/menu/menu_build.png -text svneol=unset#image/png
 images/menu/menu_build_all.png -text svneol=unset#image/png
