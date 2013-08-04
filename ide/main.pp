@@ -5891,26 +5891,25 @@ begin
       AnUnitInfo := nil;
       for UEntry in UnitList do
       begin
-        if UEntry.Selected then
+        if not UEntry.Selected then continue;
+        AnUnitInfo := Project1.Units[UEntry.ID];
+        if AnUnitInfo.OpenEditorInfoCount > 0 then
         begin
-          AnUnitInfo := Project1.Units[UEntry.ID];
-          if AnUnitInfo.OpenEditorInfoCount > 0 then
-          begin
-            SourceEditorManager.ActiveEditor := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
-          end else
-          begin
-            if Project1.MainUnitInfo = AnUnitInfo then
-              Result:=SourceFileMgr.OpenMainUnit(-1,-1,[])
-            else
-              Result:=DoOpenEditorFile(AnUnitInfo.Filename,-1,-1,[ofOnlyIfExists]);
-            if Result=mrAbort then exit;
-          end;
-          if OnlyForms and (AnUnitInfo.ComponentName<>'') then
-          begin
-            AForm := GetDesignerFormOfSource(AnUnitInfo,true);
-            if AForm <> nil then
-              ShowDesignerForm(AForm);
-          end;
+          SourceEditorManager.ActiveEditor :=
+            TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
+        end else
+        begin
+          if Project1.MainUnitInfo = AnUnitInfo then
+            Result:=SourceFileMgr.OpenMainUnit(-1,-1,[])
+          else
+            Result:=DoOpenEditorFile(AnUnitInfo.Filename,-1,-1,[ofOnlyIfExists]);
+          if Result=mrAbort then exit;
+        end;
+        if OnlyForms and (AnUnitInfo.ComponentName<>'') then
+        begin
+          AForm := GetDesignerFormOfSource(AnUnitInfo,true);
+          if AForm <> nil then
+            ShowDesignerForm(AForm);
         end;
       end;  { for }
       if (AnUnitInfo <> nil) and (not OnlyForms) then
@@ -6681,6 +6680,7 @@ Begin
     begin
       if UEntry.Selected then
       begin
+        if UEntry.ID<0 then continue;
         AnUnitInfo:=Project1.Units[UEntry.ID];
         if AnUnitInfo.IsPartOfProject then
           UnitInfos.Add(AnUnitInfo);

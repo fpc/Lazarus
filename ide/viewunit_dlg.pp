@@ -132,6 +132,8 @@ type
     procedure SetIdleConnected(AValue: boolean);
     procedure SetItemType(AValue: TIDEProjectItem);
     procedure SetSortAlphabetically(const AValue: boolean);
+    procedure ShowEntries;
+    procedure UpdateEntries;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure Init(const aCaption: string;
@@ -298,7 +300,6 @@ procedure TViewUnitDialog.Init(const aCaption: string; AllowMultiSelect,
   EnableMultiSelect: Boolean; aItemType: TIDEProjectItem;
   TheEntries: TViewUnitEntries; aStartFilename: string);
 var
-  UEntry: TViewUnitsEntry;
   SearchPath: String;
   p: Integer;
   Dir: String;
@@ -309,18 +310,11 @@ begin
   mniMultiselect.Enabled := AllowMultiSelect;
   mniMultiselect.Checked := EnableMultiSelect;
   ListBox.MultiSelect := mniMultiselect.Enabled;
-  // Data items
-  for UEntry in fEntries do
-    FilterEdit.Items.Add(UEntry.Name);
-  FilterEdit.InvalidateFilter;
-  // Initial selection
-  for UEntry in fEntries do
-    if UEntry.Selected then
-      FilterEdit.SelectionList.Add(UEntry.Name);
+  ShowEntries;
 
   if aStartFilename<>'' then begin
     // init search for units
-    // -> get unit search path
+    // -> get unit search path and fill fSearchDirectories
     fStartFilename:=TrimFilename(aStartFilename);
     SearchPath:=CodeToolBoss.GetCompleteSrcPathForDirectory(ExtractFilePath(fStartFilename));
     p:=1;
@@ -365,16 +359,14 @@ procedure TViewUnitDialog.OnIdle(Sender: TObject; var Done: Boolean);
     piComponent:
       begin
         CompClass:=FindLFMBaseClass(aFilename);
-        if CompClass<>pfcbcNone then begin
-          fFoundFiles[aFilename]:=ExtractFileName(aFilename);
-        end;
+        if CompClass=pfcbcNone then exit;
+        fFoundFiles[aFilename]:=ExtractFileName(aFilename);
       end;
     piFrame:
       begin
         CompClass:=FindLFMBaseClass(aFilename);
-        if CompClass<>pfcbcFrame then begin
-          fFoundFiles[aFilename]:=ExtractFileName(aFilename);
-        end;
+        if CompClass<>pfcbcFrame then exit;
+        fFoundFiles[aFilename]:=ExtractFileName(aFilename);
       end;
     end;
   end;
@@ -424,7 +416,8 @@ begin
         fSearchDirectories.Remove(aFilename);
         CheckDirectory(aFilename);
       end else begin
-        // ToDo: update entries from fFoundFiles
+        // update entries from fFoundFiles
+        UpdateEntries;
         IdleConnected:=false;
         exit;
       end;
@@ -503,6 +496,36 @@ begin
   SortAlphabeticallySpeedButton.Down:=SortAlphabetically;
   FilterEdit.SortData:=SortAlphabetically;
   FilterEdit.InvalidateFilter;
+end;
+
+procedure TViewUnitDialog.ShowEntries;
+var
+  UEntry: TViewUnitsEntry;
+begin
+  DisableAutoSizing;
+  try
+    // Data items
+    FilterEdit.Items.Clear;
+    for UEntry in fEntries do
+      FilterEdit.Items.Add(UEntry.Name);
+    FilterEdit.InvalidateFilter;
+    // Initial selection
+    for UEntry in fEntries do
+      if UEntry.Selected then
+        FilterEdit.SelectionList.Add(UEntry.Name);
+  finally
+    EnableAutoSizing;
+  end;
+end;
+
+procedure TViewUnitDialog.UpdateEntries;
+var
+  F2SItem: PStringToStringTreeItem;
+begin
+  fEntries.Clear;
+  for F2SItem in fFoundFiles do
+    fEntries.Add(F2SItem^.Value,F2SItem^.Name,-1,false);
+  ShowEntries;
 end;
 
 procedure TViewUnitDialog.SetItemType(AValue: TIDEProjectItem);
