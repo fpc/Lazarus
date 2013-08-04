@@ -2167,7 +2167,7 @@ const
 // Predefined Resource Types
 //==============================================
 type
-  {$ifdef UNICODE}
+  {$if defined(FPC_OS_UNICODE) or (defined(VER2_6) and defined(UNICODE))}
   TResourceType = PWideChar;
   {$else}
   TResourceType = PChar;

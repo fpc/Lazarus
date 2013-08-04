@@ -2830,8 +2830,8 @@ begin
   Result:='';
   for cst:=low(TControlStyleType) to high(TControlStyleType) do
     if cst in cs then begin
-      if Result<>'' then Result+=',';
-      Result+=dbgs(cst);
+      if Result<>'' then Result:=Result+',';
+      Result:=Result+dbgs(cst);
     end;
   Result:='['+Result+']';
 end;
