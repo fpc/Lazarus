@@ -26,8 +26,7 @@ type
 
   { TMsgQuickFix }
 
-  TMsgQuickFix = class(TComponent)
-  protected
+  TMsgQuickFix = class
   public
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); virtual;
     procedure JumpTo({%H-}Msg: TMessageLine; var {%H-}Handled: boolean); virtual; // called when user (double) clicks on message

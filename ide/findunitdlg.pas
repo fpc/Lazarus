@@ -39,10 +39,11 @@ uses
   // codetools
   CodeToolsStrConsts, CodeCache, CodeToolManager,
   // IDEIntf
-  LazIDEIntf, TextTools, IDEMsgIntf, PackageIntf,
+  LazIDEIntf, TextTools, IDEMsgIntf, PackageIntf, IDEExternToolIntf,
   // IDE
   DialogProcs, PackageDefs, Project, IDEProcs, LazarusIDEStrConsts,
   {$IFDEF EnableNewExtTools}
+  etFPCMsgParser,
   {$ELSE}
   MsgQuickFixes,
   {$ENDIF}
@@ -109,7 +110,7 @@ type
     function CheckPackageOnDisk(PkgFilename: string): boolean;
     function FindQuickFixAddRequirement(PkgName: string): TQuickFixMissingUnitAddRequirement;
   public
-    procedure InitWithMsg(Msg: TIDEMessageLine; Line: string; aCode: TCodeBuffer;
+    procedure InitWithMsg(Line: string; aCode: TCodeBuffer;
                           aMissingUnitName: string);
     property Code: TCodeBuffer read FCode;
     property MissingUnitName: string read FMissingUnitName;
@@ -117,6 +118,27 @@ type
     property MainOwnerName: string read FMainOwnerName;
   end;
 
+{$IFDEF EnableNewExtTools}
+type
+  { TQuickFixUnitNotFound_Search - add menu item to open this search dialog }
+
+  TQuickFixUnitNotFound_Search = class(TMsgQuickFix)
+  public
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+  end;
+
+  { TQuickFixIncludeNotFound_Search - add menu item to open this search dialog }
+
+  TQuickFixIncludeNotFound_Search = class(TMsgQuickFix)
+  public
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+    function IsCodetoolsErrorIncludeFileNotFound(Msg: string;
+                                              out IncludeFile: string): boolean;
+  end;
+{$ELSE}
+type
   { TQuickFixUnitNotFound_Search - add menu item to open this search dialog }
 
   TQuickFixUnitNotFound_Search = class(TIDEMsgQuickFixItem)
@@ -136,6 +158,7 @@ type
     function IsApplicable(Line: TIDEMessageLine): boolean; override;
     procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
   end;
+{$ENDIF}
 
 procedure InitFindUnitQuickFixItems;
 
@@ -148,6 +171,62 @@ begin
   RegisterIDEMsgQuickFix(TQuickFixUnitNotFound_Search.Create);
 end;
 
+{$IFDEF EnableNewExtTools}
+{ TQuickFixUnitNotFound_Search }
+
+procedure TQuickFixUnitNotFound_Search.CreateMenuItems(Fixes: TMsgQuickFixes);
+var
+  Msg: TMessageLine;
+begin
+  if Fixes.LineCount<>1 then exit;
+  Msg:=Fixes.Lines[0];
+  if (Msg.SubTool<>SubToolFPC)
+  or (Msg.MsgID<>10022) // Can't find unit $1 used by $2
+  then exit;
+  Fixes.AddMenuItem(Self,Msg,'Search Unit');
+end;
+
+procedure TQuickFixUnitNotFound_Search.QuickFix(Fixes: TMsgQuickFixes;
+  Msg: TMessageLine);
+var
+  AnUnitName: String;
+  CodeBuf: TCodeBuffer;
+  Dlg: TFindUnitDialog;
+begin
+  // get unitname
+  if not REMatches(Msg.Msg,'Can''t find unit ([a-z_0-9]+) ','I') then begin
+    DebugLn('TQuickFixUnitNotFound_Search invalid message ',Msg.Msg);
+    exit;
+  end;
+  AnUnitName:=REVar(1);
+  DebugLn(['TQuickFixUnitNotFound_Search.Execute Unit=',AnUnitName]);
+
+  if (AnUnitName='') or (not IsValidIdent(AnUnitName)) then begin
+    DebugLn(['TQuickFixUnitNotFound_Search.Execute not an identifier "',dbgstr(AnUnitName),'"']);
+    exit;
+  end;
+
+  if not LazarusIDE.BeginCodeTools then begin
+    DebugLn(['TQuickFixUnitNotFound_Search.Execute failed because IDE busy']);
+    exit;
+  end;
+
+  CodeBuf:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
+  if CodeBuf=nil then begin
+    debugln(['TQuickFixUnitNotFound_Search.QuickFix can not open file "',Msg.GetFullFilename,'"']);
+    exit;
+  end;
+
+  // show dialog
+  Dlg:=TFindUnitDialog.Create(nil);
+  try
+    Dlg.InitWithMsg(Msg.Msg,CodeBuf,AnUnitName);
+    Dlg.ShowModal;
+  finally
+    Dlg.Free;
+  end;
+end;
+{$ELSE EnableNewExtTools}
 { TQuickFixUnitNotFound_Search }
 
 constructor TQuickFixUnitNotFound_Search.Create;
@@ -207,13 +286,14 @@ begin
     // show dialog
     Dlg:=TFindUnitDialog.Create(nil);
     try
-      Dlg.InitWithMsg(Msg,Msg.Msg,CodeBuf,AnUnitName);
+      Dlg.InitWithMsg(Msg.Msg,CodeBuf,AnUnitName);
       Dlg.ShowModal;
     finally
       Dlg.Free;
     end;
   end;
 end;
+{$ENDIF}
 
 { TFindUnitDialog }
 
@@ -490,7 +570,7 @@ begin
   Result:=nil;
 end;
 
-procedure TFindUnitDialog.InitWithMsg(Msg: TIDEMessageLine; Line: string;
+procedure TFindUnitDialog.InitWithMsg(Line: string;
   aCode: TCodeBuffer; aMissingUnitName: string);
 
   procedure AddPaths(ParentTVNode: TTreeNode; PathTitle, BaseDir, Paths: string;
@@ -603,35 +683,70 @@ begin
   Caption:='Remove unit from uses clause';
 end;
 
+{$IFDEF EnableNewExtTools}
 { TQuickFixIncludeNotFound_Search }
 
+procedure TQuickFixIncludeNotFound_Search.CreateMenuItems(Fixes: TMsgQuickFixes
+  );
+var
+  IncludeFile: string;
+  Msg: TMessageLine;
+begin
+  if Fixes.LineCount<>1 then exit;
+  Msg:=Fixes.Lines[0];
+  if (Msg.SubTool<>SubToolFPC)
+  or (Msg.MsgID<>2013) // Can't open include file "$1"
+  then begin
+    if not IsCodetoolsErrorIncludeFileNotFound(Msg.Msg,IncludeFile) then
+      exit;
+  end;
+  Fixes.AddMenuItem(Self,Msg,'Search Include File');
+end;
+
+procedure TQuickFixIncludeNotFound_Search.QuickFix(Fixes: TMsgQuickFixes;
+  Msg: TMessageLine);
+var
+  IncludeFilename: string;
+  CodeBuf: TCodeBuffer;
+  Dlg: TFindUnitDialog;
+begin
+  DebugLn(['TQuickFixIncludeNotFound_Search.Execute ']);
+  if not LazarusIDE.BeginCodeTools then begin
+    DebugLn(['TQuickFixIncludeNotFound_Search.Execute failed because IDE busy']);
+    exit;
+  end;
+
+  CodeBuf:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
+  if CodeBuf=nil then begin
+    debugln(['TQuickFixIncludeNotFound_Search.QuickFix can not load file "',Msg.GetFullFilename,'"']);
+    exit;
+  end;
+
+  // get include file name
+  if not IsCodetoolsErrorIncludeFileNotFound(Msg.Msg,IncludeFilename) then
+  begin
+    GetFPCMsgValue1(Msg.Msg,'Can''t open include file "$1"',IncludeFilename);
+  end;
+  DebugLn(['TQuickFixIncludeNotFound_Search.Execute include file=',IncludeFilename]);
+  if IncludeFilename='' then
+    exit;
+
+  // show dialog
+  Dlg:=TFindUnitDialog.Create(nil);
+  try
+    Dlg.InitWithMsg(Msg.Msg,CodeBuf,IncludeFilename);
+    Dlg.ShowModal;
+  finally
+    Dlg.Free;
+  end;
+end;
+
+{$ELSE EnableNewExtTools}
 constructor TQuickFixIncludeNotFound_Search.Create;
 begin
   Name:='Search include file: Error: include file not found';
   Caption:=lisSearchUnit;
   Steps:=[imqfoMenuItem];
-end;
-
-function TQuickFixIncludeNotFound_Search.IsCodetoolsErrorIncludeFileNotFound(
-  Msg: string; out IncludeFile: string): boolean;
-var
-  SearchStr: String;
-  p: integer;
-  StartPos: LongInt;
-begin
-  IncludeFile:='';
-  // check for codetools 'include file not found'
-  SearchStr:=ctsIncludeFileNotFound;
-  p:=System.Pos('%',SearchStr);
-  if p>0 then SearchStr:=copy(SearchStr,1,p-1);
-  SearchStr:=SearchStr+': '+SearchStr; // e.g.: ': include file not found "'
-  p:=System.Pos(SearchStr,Msg);
-  if p<1 then exit(false);
-  Result:=true;
-  inc(p,length(SearchStr));
-  StartPos:=p;
-  while (p<=length(Msg)) and (Msg[p]<>'"') do inc(p);
-  IncludeFile:=copy(Msg,StartPos,p-StartPos);
 end;
 
 function TQuickFixIncludeNotFound_Search.IsApplicable(Line: TIDEMessageLine
@@ -672,12 +787,35 @@ begin
     // show dialog
     Dlg:=TFindUnitDialog.Create(nil);
     try
-      Dlg.InitWithMsg(Msg,Msg.Msg,CodeBuf,IncludeFilename);
+      Dlg.InitWithMsg(Msg.Msg,CodeBuf,IncludeFilename);
       Dlg.ShowModal;
     finally
       Dlg.Free;
     end;
   end;
+end;
+{$ENDIF}
+
+function TQuickFixIncludeNotFound_Search.IsCodetoolsErrorIncludeFileNotFound(
+  Msg: string; out IncludeFile: string): boolean;
+var
+  SearchStr: String;
+  p: integer;
+  StartPos: LongInt;
+begin
+  IncludeFile:='';
+  // check for codetools 'include file not found'
+  SearchStr:=ctsIncludeFileNotFound;
+  p:=System.Pos('%',SearchStr);
+  if p>0 then SearchStr:=copy(SearchStr,1,p-1);
+  SearchStr:=SearchStr+': '+SearchStr; // e.g.: ': include file not found "'
+  p:=System.Pos(SearchStr,Msg);
+  if p<1 then exit(false);
+  Result:=true;
+  inc(p,length(SearchStr));
+  StartPos:=p;
+  while (p<=length(Msg)) and (Msg[p]<>'"') do inc(p);
+  IncludeFile:=copy(Msg,StartPos,p-StartPos);
 end;
 
 end.

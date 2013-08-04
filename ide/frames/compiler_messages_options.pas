@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, ListFilterEdit, StdCtrls, CheckLst, Dialogs,
-  IDEOptionsIntf, LazarusIDEStrConsts, CompilerOptions, IDEMsgIntf, IDEDialogs;
+  IDEOptionsIntf, IDEMsgIntf, IDEExternToolIntf,
+  LazarusIDEStrConsts, CompilerOptions, IDEDialogs;
 
 type
 
@@ -122,12 +123,9 @@ begin
 end;
 
 procedure TCompilerMessagesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-const     // todo: should be translated
-  MsgTypeStr: array [TFPCErrorType] of String = ('-','H','N','W','E','F','P');
 var
   topidx, i: Integer;
   m: TCompilerMessageConfig;
-  s: String;
   CompOpts: TBaseCompilerOptions;
 begin
   CompOpts:=AOptions as TBaseCompilerOptions;
@@ -143,10 +141,13 @@ begin
   for i := 0 to TempMessages.Count - 1 do
   begin
     m := TempMessages.Msg[i];
-    if m.MsgType in [etNote, etHint, etWarning] then
-    begin
-      s := Format('(%s) %s', [MsgTypeStr[m.MsgType], m.MsgText]);
-      editMsgFilter.Items.AddObject(s, m);
+    case m.MsgType of
+    {$IFDEF EnableNewExtTools}mluHint{$ELSE}etHint{$ENDIF}:
+      editMsgFilter.Items.AddObject('(H) '+m.MsgText, m);
+    {$IFDEF EnableNewExtTools}mluNote{$ELSE}etNote{$ENDIF}:
+      editMsgFilter.Items.AddObject('(N) '+m.MsgText, m);
+    {$IFDEF EnableNewExtTools}mluWarning{$ELSE}etWarning{$ENDIF}:
+      editMsgFilter.Items.AddObject('(W) '+m.MsgText, m);
     end;
   end;
   editMsgFilter.InvalidateFilter;

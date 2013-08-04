@@ -240,7 +240,7 @@ begin
   fMenuItemToInfo:=TPointerToPointerTree.Create;
 
   // init standard quickfixes
-  IDEQuickFixes.RegisterQuickFix(TQuickFix_Hide.Create(nil));
+  IDEQuickFixes.RegisterQuickFix(TQuickFix_Hide.Create);
 end;
 
 destructor TIDEQuickFixes.Destroy;

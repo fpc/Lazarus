@@ -443,7 +443,7 @@ end;
 
 procedure InitCodeBrowserQuickFixItems;
 begin
-  RegisterIDEMsgQuickFix(TQuickFixIdentifierNotFound_Search.Create{$IFDEF EnableNewExtTools}(nil){$ENDIF});
+  RegisterIDEMsgQuickFix(TQuickFixIdentifierNotFound_Search.Create);
 end;
 
 procedure CreateCodeBrowser;

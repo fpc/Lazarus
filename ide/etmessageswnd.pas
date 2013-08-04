@@ -113,12 +113,17 @@ end;
 function TMessagesView.OnOpenMessage(Sender: TObject; Msg: TMessageLine
   ): boolean;
 begin
+  Result:=false;
   // ask quickfixes
-  if IDEQuickFixes.OpenMsg(Msg) then exit;
+  if IDEQuickFixes.OpenMsg(Msg) then exit(true);
   if Msg.GetFullFilename<>'' then begin
     // ToDo: open file in source editor and mark it as error
-    LazarusIDE.DoOpenFileAndJumpToPos(Msg.GetFullFilename,
-      Point(Msg.Line,Msg.Column),-1,-1,-1,OpnFlagsPlainFile);
+    if LazarusIDE.DoOpenFileAndJumpToPos(Msg.GetFullFilename,
+      Point(Msg.Line,Msg.Column),-1,-1,-1,OpnFlagsPlainFile)<>mrOk
+    then
+      exit;
+    // ToDo: set error line in source editor
+    Result:=true;
   end;
 end;
 
