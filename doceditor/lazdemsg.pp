@@ -46,8 +46,8 @@ ResourceString
   SNew         = 'New';
   SInsertLink  = 'Insert link';
   SInsertTable = 'Insert table';
-  SInsertItemizeList = 'Insert bulleted list';
-  SInsertEnumerateList = 'Insert numbered list';
+  SInsertBulletedList = 'Insert bulleted list';
+  SInsertNumberedList = 'Insert numbered list';
   SInsertPrintShortLink = 'Insert short description link';
   SInsertExampleCode = 'Insert example code';
   SForFile     = ' in file ';
@@ -158,8 +158,8 @@ ResourceString
   SMenuInsertQuickLink      = '&Quick Link';
   SMenuInsertPrintShort = 'Insert short desc link';
   SMenuInsertList    = 'List';
-  SMenuInsertItemizeList = 'Bulleted list';
-  SMenuInsertEnumerateList = 'Numbered list';
+  SMenuInsertBulletedList = 'Bulleted list';
+  SMenuInsertNumberedList = 'Numbered list';
 
   SMenuFormat           = 'Format';
   SMenuFormatBold       = '&Bold';
@@ -209,8 +209,8 @@ ResourceString
   SHintInsertLink    = 'Insert link';
   ShintInsertTable   = 'Insert table';
   SHintInsertPrintShortLink = 'Insert a short description link';
-  SHintInsertItemizeList = 'Insert bulleted list';
-  SHintInsertEnumerateList = 'Insert numbered list';
+  SHintInsertBulletedList = 'Insert bulleted list';
+  SHintInsertNumberedList = 'Insert numbered list';
 
   SMarkSelection     = 'Mark selection %s';
 

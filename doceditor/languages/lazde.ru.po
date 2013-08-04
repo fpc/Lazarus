@@ -244,20 +244,15 @@ msgstr "Подчёркнутый"
 msgid "Variable"
 msgstr "Переменная"
 
+#: lazdemsg.shintinsertbulletedlist
+msgctxt "lazdemsg.shintinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr "Вставить маркированный список"
+
 #: lazdemsg.shintinsertelement
 msgctxt "lazdemsg.shintinsertelement"
 msgid "New element"
 msgstr "Новый элемент"
-
-#: lazdemsg.shintinsertenumeratelist
-msgctxt "lazdemsg.shintinsertenumeratelist"
-msgid "Insert numbered list"
-msgstr "Вставить нумерованный список"
-
-#: lazdemsg.shintinsertitemizelist
-msgctxt "lazdemsg.shintinsertitemizelist"
-msgid "Insert bulleted list"
-msgstr "Вставить маркированный список"
 
 #: lazdemsg.shintinsertlink
 msgctxt "lazdemsg.shintinsertlink"
@@ -268,6 +263,11 @@ msgstr "Вставить ссылку"
 msgctxt "lazdemsg.shintinsertmodule"
 msgid "New module"
 msgstr "Новый модуль"
+
+#: lazdemsg.shintinsertnumberedlist
+msgctxt "lazdemsg.shintinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr "Вставить нумерованный список"
 
 #: lazdemsg.shintinsertpackage
 msgctxt "lazdemsg.shintinsertpackage"
@@ -319,24 +319,24 @@ msgctxt "lazdemsg.simportcontentfile"
 msgid "Import content file"
 msgstr "Импортировать файл содержимого"
 
-#: lazdemsg.sinsertenumeratelist
-msgctxt "lazdemsg.sinsertenumeratelist"
-msgid "Insert numbered list"
-msgstr "Вставить нумерованный список"
+#: lazdemsg.sinsertbulletedlist
+msgctxt "lazdemsg.sinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr "Вставить маркированный список"
 
 #: lazdemsg.sinsertexamplecode
 msgid "Insert example code"
 msgstr "Вставить образец кода"
 
-#: lazdemsg.sinsertitemizelist
-msgctxt "lazdemsg.sinsertitemizelist"
-msgid "Insert bulleted list"
-msgstr "Вставить маркированный список"
-
 #: lazdemsg.sinsertlink
 msgctxt "lazdemsg.sinsertlink"
 msgid "Insert link"
 msgstr "Вставить ссылку"
+
+#: lazdemsg.sinsertnumberedlist
+msgctxt "lazdemsg.sinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr "Вставить нумерованный список"
 
 #: lazdemsg.sinsertprintshortlink
 msgid "Insert short description link"
@@ -491,19 +491,14 @@ msgstr "&О программе ..."
 msgid "&Insert"
 msgstr "&Вставка"
 
+#: lazdemsg.smenuinsertbulletedlist
+msgctxt "lazdemsg.smenuinsertbulletedlist"
+msgid "Bulleted list"
+msgstr "Маркированный список"
+
 #: lazdemsg.smenuinsertelement
 msgid "&Element"
 msgstr "&Элемент"
-
-#: lazdemsg.smenuinsertenumeratelist
-msgctxt "lazdemsg.smenuinsertenumeratelist"
-msgid "Numbered list"
-msgstr "Нумерованный список"
-
-#: lazdemsg.smenuinsertitemizelist
-msgctxt "lazdemsg.smenuinsertitemizelist"
-msgid "Bulleted list"
-msgstr "Маркированный список"
 
 #: lazdemsg.smenuinsertlink
 msgid "&Link"
@@ -517,6 +512,11 @@ msgstr "Список"
 #: lazdemsg.smenuinsertmodule
 msgid "&Module"
 msgstr "&Модуль"
+
+#: lazdemsg.smenuinsertnumberedlist
+msgctxt "lazdemsg.smenuinsertnumberedlist"
+msgid "Numbered list"
+msgstr "Нумерованный список"
 
 #: lazdemsg.smenuinsertpackage
 msgctxt "lazdemsg.smenuinsertpackage"

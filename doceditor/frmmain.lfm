@@ -7,7 +7,7 @@ object MainForm: TMainForm
   VertScrollBar.Page = 523
   ActiveControl = Splitter1
   Caption = 'MainForm'
-  ClientHeight = 525
+  ClientHeight = 524
   ClientWidth = 602
   Menu = MMain
   OnCloseQuery = MainFormCloseQuery
@@ -125,12 +125,12 @@ object MainForm: TMainForm
     object ToolButton12: TToolButton
       Left = 347
       Top = 2
-      Action = AInsertItemizeList
+      Action = AInsertBulletedList
     end
     object ToolButton14: TToolButton
       Left = 371
       Top = 2
-      Action = AInsertEnumerateList
+      Action = AInsertNumberedList
     end
     object ToolButton1: TToolButton
       Left = 395
@@ -147,20 +147,20 @@ object MainForm: TMainForm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 20
-    Top = 505
+    Height = 23
+    Top = 501
     Width = 602
     Panels = <>
   end
   object Splitter1: TSplitter
     Left = 0
-    Height = 479
+    Height = 475
     Top = 26
     Width = 5
   end
   object PCFiles: TPageControl
     Left = 5
-    Height = 479
+    Height = 475
     Top = 26
     Width = 597
     Align = alClient
@@ -810,8 +810,8 @@ object MainForm: TMainForm
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
         }
         ImageIndex = 25
-        object ItemizeList: TMenuItem
-          Action = AInsertItemizeList
+        object BulletedList: TMenuItem
+          Action = AInsertBulletedList
           Bitmap.Data = {
             36040000424D3604000000000000360000002800000010000000100000000100
             2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -849,8 +849,8 @@ object MainForm: TMainForm
             FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
           }
         end
-        object EnumerateList: TMenuItem
-          Action = AInsertEnumerateList
+        object NumberedList: TMenuItem
+          Action = AInsertNumberedList
           Bitmap.Data = {
             36040000424D3604000000000000360000002800000010000000100000000100
             2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -1272,16 +1272,16 @@ object MainForm: TMainForm
       OnExecute = QuickLinkClick
       OnUpdate = AInsertShortPrintLinkUpdate
     end
-    object AInsertItemizeList: TAction
-      Caption = 'ItemizeList'
+    object AInsertBulletedList: TAction
+      Caption = 'BulletedList'
       ImageIndex = 23
-      OnExecute = AInsertItemizeListExecute
+      OnExecute = AInsertBulletedListExecute
       OnUpdate = AInsertTableUpdate
     end
-    object AInsertEnumerateList: TAction
-      Caption = 'EnumerateList'
+    object AInsertNumberedList: TAction
+      Caption = 'NumberedList'
       ImageIndex = 24
-      OnExecute = AInsertEnumerateListExecute
+      OnExecute = AInsertNumberedListExecute
       OnUpdate = AInsertTableUpdate
     end
   end

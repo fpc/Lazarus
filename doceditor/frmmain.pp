@@ -36,8 +36,8 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
-    AInsertEnumerateList: TAction;
-    AInsertItemizeList: TAction;
+    AInsertNumberedList: TAction;
+    AInsertBulletedList: TAction;
     AInsertQuickLink: TAction;
     AInsertPrintShort: TAction;
     AExtraBuild: TAction;
@@ -89,8 +89,8 @@ type
     MenuItem20: TMenuItem;
     MenuItem21: TMenuItem;
     Lists: TMenuItem;
-    ItemizeList: TMenuItem;
-    EnumerateList: TMenuItem;
+    BulletedList: TMenuItem;
+    NumberedList: TMenuItem;
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
@@ -156,8 +156,8 @@ type
     procedure AExtraOptionsExecute(Sender: TObject);
     procedure AFormatParagraphHint(var HintStr: string; var CanShow: Boolean);
     procedure AHelpAboutExecute(Sender: TObject);
-    procedure AInsertEnumerateListExecute(Sender: TObject);
-    procedure AInsertItemizeListExecute(Sender: TObject);
+    procedure AInsertNumberedListExecute(Sender: TObject);
+    procedure AInsertBulletedListExecute(Sender: TObject);
     procedure ApplicationProperties1Hint(Sender: TObject);
     procedure ASaveUpdate(Sender: TObject);
     procedure CanFormat(Sender: TObject);
@@ -347,12 +347,12 @@ begin
   ShowAbout;
 end;
 
-procedure TMainForm.AInsertEnumerateListExecute(Sender: TObject);
+procedure TMainForm.AInsertNumberedListExecute(Sender: TObject);
 begin
   InsertEnumerateList;
 end;
 
-procedure TMainForm.AInsertItemizeListExecute(Sender: TObject);
+procedure TMainForm.AInsertBulletedListExecute(Sender: TObject);
 begin
   InsertItemizeList;
 end;
@@ -609,8 +609,8 @@ begin
   AInsertPrintShort.Caption:=SMenuInsertShortDescLink;
   AInsertQuickLink.Caption:=SMenuInsertQuickLink;
   Lists.Caption := SMenuInsertList;
-  AInsertItemizeList.Caption:=SMenuInsertItemizeList;
-  AInsertEnumerateList.Caption:=SMenuInsertEnumerateList;
+  AInsertBulletedList.Caption:=SMenuInsertBulletedList;
+  AInsertNumberedList.Caption:=SMenuInsertNumberedList;
 
   AInsertPackage.Hint:=SHintInsertPackage;
   AInsertModule.Hint:=SHintInsertModule;
@@ -619,8 +619,8 @@ begin
   AInsertLink.Hint:=SHintInsertLink;
   AInsertTable.Hint:=ShintInsertTable;
   AInsertPrintShort.Hint:=SHintInsertPrintShortLink;
-  AInsertItemizeList.Hint:=SHintInsertItemizeList;
-  AInsertEnumerateList.Hint:=SHintInsertEnumerateList;
+  AInsertBulletedList.Hint:=SHintInsertBulletedList;
+  AInsertNumberedList.Hint:=SHintInsertNumberedList;
   //Extra menu
   MIExtra.Caption:=SMenuExtra;
   AExtraOptions.Caption:=SMenuExtraOptions;
@@ -1028,7 +1028,7 @@ procedure TMainForm.InsertEnumerateList;
 begin
   with TListForm.Create(Self) do
   try
-    Caption:=SInsertEnumerateList;
+    Caption:=SInsertNumberedList;
     speItemsCount.Value:=3;
     If ShowModal=mrOK Then
       CurrentEditor.InsertEnumerateList(speItemsCount.Value);
@@ -1041,7 +1041,7 @@ procedure TMainForm.InsertItemizeList;
 begin
   with TListForm.Create(Self) do
   try
-    Caption:=SInsertItemizeList;
+    Caption:=SInsertBulletedList;
     speItemsCount.Value:=3;
     If ShowModal=mrOK Then
       CurrentEditor.InsertItemizeList(speItemsCount.Value);

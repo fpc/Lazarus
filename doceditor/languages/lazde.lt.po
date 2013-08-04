@@ -232,20 +232,15 @@ msgstr "Pabrauktas"
 msgid "Variable"
 msgstr "Kintamasis"
 
+#: lazdemsg.shintinsertbulletedlist
+msgctxt "lazdemsg.shintinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr ""
+
 #: lazdemsg.shintinsertelement
 msgctxt "lazdemsg.shintinsertelement"
 msgid "New element"
 msgstr "Naujas elementas"
-
-#: lazdemsg.shintinsertenumeratelist
-msgctxt "lazdemsg.shintinsertenumeratelist"
-msgid "Insert numbered list"
-msgstr ""
-
-#: lazdemsg.shintinsertitemizelist
-msgctxt "lazdemsg.shintinsertitemizelist"
-msgid "Insert bulleted list"
-msgstr ""
 
 #: lazdemsg.shintinsertlink
 msgctxt "lazdemsg.shintinsertlink"
@@ -256,6 +251,11 @@ msgstr "Įterpti saitą"
 msgctxt "lazdemsg.shintinsertmodule"
 msgid "New module"
 msgstr "Naujas modulis"
+
+#: lazdemsg.shintinsertnumberedlist
+msgctxt "lazdemsg.shintinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr ""
 
 #: lazdemsg.shintinsertpackage
 msgctxt "lazdemsg.shintinsertpackage"
@@ -307,24 +307,24 @@ msgstr "Apie šią programą"
 msgid "Import content file"
 msgstr "Importuoti turinio failą"
 
-#: lazdemsg.sinsertenumeratelist
-msgctxt "lazdemsg.sinsertenumeratelist"
-msgid "Insert numbered list"
+#: lazdemsg.sinsertbulletedlist
+msgctxt "lazdemsg.sinsertbulletedlist"
+msgid "Insert bulleted list"
 msgstr ""
 
 #: lazdemsg.sinsertexamplecode
 msgid "Insert example code"
 msgstr ""
 
-#: lazdemsg.sinsertitemizelist
-msgctxt "lazdemsg.sinsertitemizelist"
-msgid "Insert bulleted list"
-msgstr ""
-
 #: lazdemsg.sinsertlink
 msgctxt "lazdemsg.sinsertlink"
 msgid "Insert link"
 msgstr "Įterpti saitą"
+
+#: lazdemsg.sinsertnumberedlist
+msgctxt "lazdemsg.sinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr ""
 
 #: lazdemsg.sinsertprintshortlink
 msgid "Insert short description link"
@@ -479,19 +479,14 @@ msgstr "&Apie..."
 msgid "&Insert"
 msgstr "Į&terpti"
 
+#: lazdemsg.smenuinsertbulletedlist
+msgctxt "lazdemsg.smenuinsertbulletedlist"
+msgid "Bulleted list"
+msgstr ""
+
 #: lazdemsg.smenuinsertelement
 msgid "&Element"
 msgstr "&Elementą"
-
-#: lazdemsg.smenuinsertenumeratelist
-msgctxt "lazdemsg.smenuinsertenumeratelist"
-msgid "Numbered list"
-msgstr ""
-
-#: lazdemsg.smenuinsertitemizelist
-msgctxt "lazdemsg.smenuinsertitemizelist"
-msgid "Bulleted list"
-msgstr ""
 
 #: lazdemsg.smenuinsertlink
 msgid "&Link"
@@ -504,6 +499,11 @@ msgstr ""
 #: lazdemsg.smenuinsertmodule
 msgid "&Module"
 msgstr "&Modulį"
+
+#: lazdemsg.smenuinsertnumberedlist
+msgctxt "lazdemsg.smenuinsertnumberedlist"
+msgid "Numbered list"
+msgstr ""
 
 #: lazdemsg.smenuinsertpackage
 msgctxt "lazdemsg.smenuinsertpackage"
