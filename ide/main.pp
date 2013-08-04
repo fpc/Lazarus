@@ -6765,6 +6765,10 @@ var
 begin
   Result:=mrCancel;
   TestDir:=GetTestBuildDirectory;
+  if (TestDir<>'') then begin
+    Result:=ForceDirectoryInteractive(TestDir,[]);
+    if Result<>mrOk then exit;
+  end;
   if (TestDir='')
   or (not DirPathExists(TestDir)) then begin
     if (TestDir<>'') then begin

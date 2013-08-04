@@ -93,11 +93,7 @@ end;
 
 function GetDefaultTestBuildDirectory: string;
 begin
-  Result:='/tmp/';
-  if not DirPathExists(Result) then begin
-    if DirPathExists('/var/tmp/') then
-      Result:='/var/tmp/';
-  end;
+  Result:='~/tmp/';
 end;
 
 procedure GetDefaultCompilerFilenames(List: TStrings);
@@ -114,6 +110,7 @@ end;
 
 procedure GetDefaultTestBuildDirs(List: TStrings);
 begin
+  AddFilenameToList(List,'~/tmp/');
   AddFilenameToList(List,'/tmp/');
   AddFilenameToList(List,'/var/tmp/');
 end;
