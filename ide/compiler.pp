@@ -270,7 +270,7 @@ begin
     end;
   end;
   if ConsoleVerbosity>=0 then
-    DebugLn('[TCompiler.Compile] CmdLine="',CmdLine,'"');
+    DebugLn('[TCompiler.Compile] CmdLine="',CompilerFilename+CmdLine,'"');
 
   {$IFDEF EnableNewExtTools}
   Tool:=ExternalToolList.Add('Compling Project');
