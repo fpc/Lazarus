@@ -42,7 +42,8 @@ uses
   LazarusIdeStrConsts, IDEProcs, CustomFormEditor, LCLType, LCLIntf, LMessages,
   ExtCtrls, ButtonPanel, Menus, StrUtils, AVL_Tree, ImgList, ComCtrls,
   PackageDefs, IDEWindowIntf, IDEHelpIntf, IDEImagesIntf, ListFilterEdit,
-  CodeToolsStructs, CodeToolManager, lazutf8sysutils, LazFileUtils, LazLogger;
+  CodeToolsStructs, CodeToolManager, FileProcs, lazutf8sysutils, LazFileUtils,
+  LazLogger;
 
 type
   TIDEProjectItem = (
@@ -51,12 +52,15 @@ type
     piFrame
   );
 
+  { TViewUnitsEntry }
+
   TViewUnitsEntry = class
   public
     Name: string;
     ID: integer;
     Selected: boolean;
-    constructor Create(const AName: string; AnID: integer; ASelected: boolean);
+    Filename: string;
+    constructor Create(const AName, AFilename: string; AnID: integer; ASelected: boolean);
   end;
 
   { TViewUnitDialog }
@@ -124,35 +128,35 @@ var
   i: integer;
 begin
   ViewUnitDialog:=TViewUnitDialog.Create(nil);
-  with ViewUnitDialog do
   try
-    Init(aCaption,AllowMultiSelect,CheckMultiSelect,ItemType,Entries,
+    ViewUnitDialog.Init(aCaption,AllowMultiSelect,CheckMultiSelect,ItemType,Entries,
          StartFilename);
     // Show the dialog
-    Result:=ShowModal;
+    Result:=ViewUnitDialog.ShowModal;
     if Result=mrOk then begin
       // Return new selections from the dialog
-      FilterEdit.StoreSelection;
+      ViewUnitDialog.FilterEdit.StoreSelection;
       for i:=0 to Entries.Count-1 do begin
         UEntry:=TViewUnitsEntry(Entries.Objects[i]);
-        UEntry.Selected:=FilterEdit.SelectionList.IndexOf(UEntry.Name)>-1;
+        UEntry.Selected:=ViewUnitDialog.FilterEdit.SelectionList.IndexOf(UEntry.Name)>-1;
       end;
-      CheckMultiSelect := mniMultiselect.Checked;
+      CheckMultiSelect := ViewUnitDialog.mniMultiselect.Checked;
     end;
   finally
-    Free;
+    ViewUnitDialog.Free;
   end;
 end;
 
 { TViewUnitsEntry }
 
-constructor TViewUnitsEntry.Create(const AName: string; AnID: integer;
-  ASelected: boolean);
+constructor TViewUnitsEntry.Create(const AName, AFilename: string;
+  AnID: integer; ASelected: boolean);
 begin
   inherited Create;
   Name := AName;
   ID := AnID;
   Selected := ASelected;
+  Filename := AFilename;
 end;
 
 { TViewUnitDialog }
@@ -229,6 +233,7 @@ procedure TViewUnitDialog.OnIdle(Sender: TObject; var Done: Boolean);
   var
     CompClass: TPFComponentBaseClass;
   begin
+    //debugln(['CheckFile ',aFilename]);
     case ItemType of
     piUnit:
       begin
@@ -252,8 +257,29 @@ procedure TViewUnitDialog.OnIdle(Sender: TObject; var Done: Boolean);
   end;
 
   procedure CheckDirectory(aDirectory: string);
+  var
+    Files: TStrings;
+    i: Integer;
+    aFilename: String;
   begin
-    DebugLn(['CheckDirectory ',aDirectory]);
+    aDirectory:=AppendPathDelim(aDirectory);
+    //DebugLn(['CheckDirectory ',aDirectory]);
+    Files:=nil;
+    try
+      CodeToolBoss.DirectoryCachePool.GetListing(aDirectory,Files,false);
+      if Files=nil then exit;
+      for i:=0 to Files.Count-1 do begin
+        aFilename:=Files[i];
+        if not FilenameIsPascalUnit(aFilename) then continue;
+        aFilename:=aDirectory+aFilename;
+        if (ItemType in [piComponent,piFrame])
+        and (not FileExistsCached(ChangeFileExt(aFilename,'.lfm'))) then
+          continue;
+        fSearchFiles[aFilename]:='';
+      end;
+    finally
+      Files.Free;
+    end;
   end;
 
 var
@@ -266,20 +292,21 @@ begin
     AVLNode:=fSearchFiles.Tree.FindLowest;
     if AVLNode<>nil then begin
       aFilename:=fSearchFiles.GetNodeData(AVLNode)^.Name;
-      CheckFile(aFilename);
       fSearchFiles.Remove(aFilename);
+      CheckFile(aFilename);
     end else begin
       AVLNode:=fSearchDirectories.Tree.FindLowest;
       if AVLNode<>nil then begin
         aFilename:=fSearchDirectories.GetNodeData(AVLNode)^.Name;
-        CheckDirectory(aFilename);
         fSearchDirectories.Remove(aFilename);
-      end else
-        break;
+        CheckDirectory(aFilename);
+      end else begin
+        // ToDo: update entries from fFoundFiles
+        IdleConnected:=false;
+        exit;
+      end;
     end;
   end;
-  // ToDo: update entries from fFoundFiles
-  IdleConnected:=false;
 end;
 
 procedure TViewUnitDialog.FormDestroy(Sender: TObject);

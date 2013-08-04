@@ -335,7 +335,6 @@ function FindLFMBaseClass(aFilename: string): TPFComponentBaseClass;
 var
   LFMFilename: String;
   LFMType: String;
-  LFMComponentName: String;
   LFMClassName: String;
   Code: TCodeBuffer;
   Tool: TCodeTool;
@@ -344,6 +343,7 @@ var
   i: Integer;
   Context: PFindContext;
   AClassName: String;
+  LFMCode: TCodeBuffer;
 begin
   Result:=pfcbcNone;
   if not FilenameIsPascalUnit(aFilename) then exit;
@@ -351,8 +351,10 @@ begin
   LFMFilename:=ChangeFileExt(aFilename,'.lfm');
   if not FileExistsCached(LFMFilename) then exit;
   if not FileExistsCached(aFilename) then exit;
-  if not ReadLFMHeaderFromFile(LFMFilename,LFMType,LFMComponentName,LFMClassName)
-  then exit;
+  LFMCode:=CodeToolBoss.LoadFile(LFMFilename,true,false);
+  if LFMCode=nil then exit;
+  ReadLFMHeader(LFMCode.Source,LFMClassName,LFMType);
+  if LFMClassName='' then exit;
   Code:=CodeToolBoss.LoadFile(aFilename,true,false);
   if Code=nil then exit;
   if not CodeToolBoss.Explore(Code,Tool,false,true) then exit;

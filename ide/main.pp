@@ -5634,8 +5634,8 @@ begin
         if (ItemType = piComponent) or
            ((ItemType = piFrame) and (CurUnitInfo.ResourceBaseClass = pfcbcFrame)) then
           ItemList.AddObject(CurUnitInfo.Unit_Name,
-            TViewUnitsEntry.Create(CurUnitInfo.ComponentName, i,
-                                   CurUnitInfo = ActiveUnitInfo));
+            TViewUnitsEntry.Create(CurUnitInfo.ComponentName, CurUnitInfo.Filename,
+                                   i, CurUnitInfo = ActiveUnitInfo));
       end else if FilenameIsAbsolute(CurUnitInfo.Filename)
       and FilenameIsPascalSource(CurUnitInfo.Filename)
       and FileExistsCached(CurUnitInfo.Filename) then begin
@@ -5649,7 +5649,7 @@ begin
           if anUnitName='' then
             anUnitName:=ExtractFileNameOnly(LFMFilename);
           ItemList.AddObject(anUnitName,
-            TViewUnitsEntry.Create(LFMComponentName, i,
+            TViewUnitsEntry.Create(LFMComponentName, CurUnitInfo.Filename, i,
                                    CurUnitInfo = ActiveUnitInfo));
         end;
       end;
@@ -5661,7 +5661,8 @@ begin
         AUnitName := ExtractFileName(CurUnitInfo.Filename);
         if ItemList.IndexOf(AUnitName) = -1 then
           ItemList.AddObject(AUnitName,
-            TViewUnitsEntry.Create(AUnitName, i, CurUnitInfo = ActiveUnitInfo));
+            TViewUnitsEntry.Create(AUnitName, CurUnitInfo.Filename,
+                                   i, CurUnitInfo = ActiveUnitInfo));
       end
       else
       if Project1.MainUnitID = i then
@@ -5673,7 +5674,8 @@ begin
           if (AUnitName <> '') and (ItemList.IndexOf(AUnitName) = -1) then
           begin
             ItemList.AddObject(AUnitName,
-              TViewUnitsEntry.Create(AUnitName, i, MainUnitInfo = ActiveUnitInfo));
+              TViewUnitsEntry.Create(AUnitName, MainUnitInfo.Filename,
+                                     i, MainUnitInfo = ActiveUnitInfo));
           end;
         end;
       end;
@@ -5762,6 +5764,7 @@ var
   AnUnitName: String;
   AFilename: String;
   UnitList: TStringList;
+  Entry: TViewUnitsEntry;
 begin
   Result:=mrCancel;
   GetCurrentUnit(ActiveSourceEditor, ActiveUnitInfo);
@@ -5818,19 +5821,19 @@ begin
     i:=0;
     for S2SItem in UnitToFilename do begin
       AnUnitName:=S2SItem^.Name;
-      UnitList.AddObject(AnUnitName,TViewUnitsEntry.Create(AnUnitName,i,false));
+      AFilename:=S2SItem^.Value;
+      UnitList.AddObject(AnUnitName,TViewUnitsEntry.Create(AnUnitName,AFilename,i,false));
       inc(i);
     end;
     // show dialog
-    Result := ShowViewUnitsDlg(UnitList, MultiSelect, MultiSelectCheckedState, DlgCaption, ItemType, ActiveUnitInfo.Filename);
+    Result := ShowViewUnitsDlg(UnitList, MultiSelect, MultiSelectCheckedState,
+                               DlgCaption, ItemType, ActiveUnitInfo.Filename);
 
     // create list of selected files
-    i:=0;
-    for S2SItem in UnitToFilename do begin
-      AFilename:=S2SItem^.Value;
-      if TViewUnitsEntry(UnitList.Objects[i]).Selected then
-        Files.Add(AFilename);
-      inc(i);
+    for i:=0 to UnitList.Count-1 do begin
+      Entry:=TViewUnitsEntry(UnitList.Objects[i]);
+      if Entry.Selected then
+        Files.Add(Entry.Filename);
     end;
 
   finally
@@ -6676,7 +6679,8 @@ Begin
       if (AnUnitInfo.IsPartOfProject) and (i<>Project1.MainUnitID) then
       begin
         AName := Project1.RemoveProjectPathFromFilename(AnUnitInfo.FileName);
-        ViewUnitEntries.AddObject(AName, TViewUnitsEntry.Create(AName,i,false));
+        ViewUnitEntries.AddObject(AName,
+                     TViewUnitsEntry.Create(AName,AnUnitInfo.FileName,i,false));
       end;
     end;
     if ShowViewUnitsDlg(ViewUnitEntries, true, MultiSelectCheckedState,
