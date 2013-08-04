@@ -1133,7 +1133,6 @@ type
     function GetClientHeight: Integer;
     function GetClientWidth: Integer;
     function GetLRDockWidth: Integer;
-    function GetMouseCapture: Boolean;
     function GetTBDockHeight: Integer;
     function GetText: TCaption;
     function GetUndockHeight: Integer;
@@ -1353,6 +1352,7 @@ type
     procedure SetParentComponent(NewParentComponent: TComponent); override;
     procedure WndProc(var TheMessage: TLMessage); virtual;
     procedure ParentFormHandleInitialized; virtual; // called by ChildHandlesCreated of parent form
+    function GetMouseCapture: Boolean; virtual;
     procedure CaptureChanged; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function CanTab: Boolean; virtual;
@@ -2065,6 +2065,7 @@ type
     procedure MainWndProc(var Msg: TLMessage);
     procedure ParentFormHandleInitialized; override;
     procedure ChildHandlesCreated; virtual;// called after children handles are created
+    function GetMouseCapture: Boolean; override;
     procedure RealSetText(const AValue: TCaption); override;
     procedure RemoveFocus(Removing: Boolean);
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); override;
