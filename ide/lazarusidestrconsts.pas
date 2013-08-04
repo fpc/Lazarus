@@ -2056,7 +2056,7 @@ resourcestring
   dlgCOInfoForGDB = 'Info for GDB';
   dlgCOOtherDebuggingInfo = 'Other debugging info';
   dlgCOGDB = 'Generate debugging info for GDB (slower / increases exe-size)';
-  dlgCOSymbolType = 'Choose type of debug info';
+  dlgCOSymbolType = 'Type of debug info';
   dlgCOSymbolTypeAuto = 'Automatic';
   dlgCOSymbolTypeStabs = 'Stabs';
   dlgCOSymbolTypeDwarf2 = 'Dwarf2';

@@ -9,19 +9,21 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
   DesignLeft = 290
   DesignTop = 90
   object grpUnitStyle: TGroupBox
-    AnchorSideLeft.Control = grpOptimizationLevels
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = grpOptimizationLevels
+    AnchorSideLeft.Control = grpOptimizations
+    AnchorSideTop.Control = grpOptimizations
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = grpHeapStackSize
     AnchorSideBottom.Side = asrBottom
-    Left = 155
-    Height = 70
-    Top = 0
+    Left = 0
+    Height = 82
+    Top = 211
     Width = 154
+    Anchors = [akTop, akLeft, akBottom]
     AutoSize = True
-    BorderSpacing.Left = 15
+    BorderSpacing.Top = 5
     Caption = 'grpUnitStyle'
-    ClientHeight = 51
+    ClientHeight = 63
     ClientWidth = 150
     TabOrder = 0
     object chkSmartLinkUnit: TCheckBox
@@ -51,19 +53,21 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
   end
   object grpHeapStackSize: TGroupBox
     AnchorSideLeft.Control = grpUnitStyle
-    AnchorSideTop.Control = grpUnitStyle
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = grpOptimizations
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
-    Left = 155
-    Height = 84
-    Top = 75
+    Left = 161
+    Height = 82
+    Top = 211
     Width = 172
     AutoSize = True
+    BorderSpacing.Left = 7
     BorderSpacing.Top = 5
     Caption = 'grpHeapStackSize'
     ChildSizing.TopBottomSpacing = 6
-    ClientHeight = 65
+    ClientHeight = 63
     ClientWidth = 168
     TabOrder = 1
     object edtHeapSize: TEdit
@@ -103,13 +107,13 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 82
       Height = 25
-      Top = 34
+      Top = 32
       Width = 80
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
-      BorderSpacing.Top = 3
+      BorderSpacing.Top = 1
       BorderSpacing.Right = 6
-      BorderSpacing.Bottom = 3
+      BorderSpacing.Bottom = 1
       TabOrder = 1
       Text = 'edtStackSize'
     end
@@ -119,7 +123,7 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 15
-      Top = 39
+      Top = 37
       Width = 70
       Caption = 'lbStackSize'
       ParentColor = False
@@ -131,11 +135,11 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
     Left = 0
     Height = 118
     Top = 0
-    Width = 140
+    Width = 241
     AutoSize = True
     Caption = 'grpOptimizationLevels'
     ClientHeight = 99
-    ClientWidth = 136
+    ClientWidth = 237
     TabOrder = 2
     object radOptLevelNone: TRadioButton
       AnchorSideLeft.Control = grpOptimizationLevels
@@ -158,9 +162,9 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
       Left = 6
       Height = 21
       Top = 27
-      Width = 105
+      Width = 231
       BorderSpacing.Top = 3
-      Caption = 'radOptLevel1'
+      Caption = '1 (quick, debugger friendly) (-O1)'
       TabOrder = 1
     end
     object radOptLevel2: TRadioButton
@@ -190,12 +194,13 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
     end
   end
   object grpLinking: TGroupBox
-    AnchorSideTop.Control = grpOptimizations
+    AnchorSideLeft.Control = grpUnitStyle
+    AnchorSideTop.Control = grpUnitStyle
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 118
-    Top = 198
+    Top = 298
     Width = 166
     AutoSize = True
     BorderSpacing.Top = 5
@@ -258,16 +263,17 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
     end
   end
   object grpOptimizations: TGroupBox
+    AnchorSideLeft.Control = grpOptimizationLevels
     AnchorSideTop.Control = grpOptimizationLevels
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 70
+    Height = 83
     Top = 123
     Width = 159
     AutoSize = True
     BorderSpacing.Top = 5
     Caption = 'grpOptimizations'
-    ClientHeight = 51
+    ClientHeight = 64
     ClientWidth = 155
     TabOrder = 4
     object Label1: TLabel
@@ -279,7 +285,7 @@ object CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
       Top = 30
       Width = 149
       BorderSpacing.Top = 6
-      BorderSpacing.Bottom = 6
+      BorderSpacing.Bottom = 19
       Caption = 'ToDo: more optimization'
       ParentColor = False
     end
