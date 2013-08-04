@@ -127,7 +127,7 @@ begin
     with FOptionsReader do
       if RootOptGroup.CompilerOpts.Count = 0 then
       begin
-        CompilerExecutable := EnvironmentOptions.CompilerFilename;
+        CompilerExecutable := EnvironmentOptions.GetParsedCompilerFilename;
         if ReadAndParseOptions <> mrOK then
           ShowMessage(ErrorMsg);
         FromCustomOptions(FCustomOptions);
