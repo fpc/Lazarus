@@ -26,6 +26,7 @@ uses
   {$ifdef USE_LCL_CANVAS}
   Graphics, LCLIntf, LCLType,
   {$endif}
+  base64,
   fpvectorial, fpimage, zstream;
 
 type
@@ -65,8 +66,11 @@ function SolveNumericallyAngle(ANumericalEquation: TNumericalEquation;
 // Compression/Decompression
 procedure DeflateBytes(var ASource, ADest: TFPVUByteArray);
 procedure DeflateStream(ASource, ADest: TStream);
-// ASCII85
+// Binary to Text encodings
 procedure DecodeASCII85(ASource: string; var ADest: TFPVUByteArray);
+procedure DecodeBase64(ASource: string; ADest: TStream);
+// Byte array to stream conversion
+procedure ByteArrayToStream(ASource: TFPVUByteArray; ADest: TStream);
 // Debug
 procedure FPVUDebug(AStr: string);
 procedure FPVUDebugLn(AStr: string);
@@ -575,6 +579,29 @@ begin
     Inc(CurDestPos, 4);
     Inc(CurSrcPos, 5);
   end;
+end;
+
+procedure DecodeBase64(ASource: string; ADest: TStream);
+var
+  lSourceStream: TStringStream;
+  lDecoder: TBase64DecodingStream;
+begin
+  lSourceStream := TStringStream.Create(ASource);
+  lDecoder := TBase64DecodingStream.Create(lSourceStream);
+  try
+    ADest.CopyFrom(lDecoder, lDecoder.Size);
+  finally
+    lDecoder.Free;
+    lSourceStream.Free;
+  end;
+end;
+
+procedure ByteArrayToStream(ASource: TFPVUByteArray; ADest: TStream);
+var
+  i: Integer;
+begin
+  for i := 0 to Length(ASource)-1 do
+    ADest.WriteByte(ASource[i]);
 end;
 
 procedure FPVUDebug(AStr: string);

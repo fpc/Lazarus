@@ -16,6 +16,8 @@ interface
 uses
   Classes, SysUtils, math,
   fpimage, fpcanvas, laz2_xmlread, laz2_dom, fgl,
+  // image data formats
+  fpreadpng,
   fpvectorial, fpvutils, lazutf8, TypInfo;
 
 type
@@ -78,10 +80,11 @@ type
     function ReadSVGPenStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
     function ReadSVGBrushStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush): TvSetPenBrushAndFontElements;
     function ReadSVGFontStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenBrushAndFont): TvSetPenBrushAndFontElements;
-    function ReadSVGGeneralStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
+    function ReadSVGGeneralStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntity): TvSetPenBrushAndFontElements;
     function IsAttributeFromStyle(AStr: string): Boolean;
     procedure ApplyLayerStyles(ADestEntity: TvEntity);
-    function ReadSpaceSeparatedFloats(AInput: string): TDoubleArray;
+    function ReadSpaceSeparatedFloats(AInput: string; AOtherSeparators: string): TDoubleArray;
+    function ReadSpaceSeparatedStrings(AInput: string; AOtherSeparators: string): TStringList;
     procedure ReadSVGTransformationMatrix(AMatrix: string; out AA, AB, AC, AD, AE, AF: Double);
     //
     procedure ReadDefsFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
@@ -89,6 +92,7 @@ type
     function ReadEntityFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadCircleFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadEllipseFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+    function ReadImageFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     procedure ReadLayerFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     function ReadLineFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
     function ReadPathFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
@@ -923,7 +927,7 @@ begin
 end;
 
 function TvSVGVectorialReader.ReadSVGGeneralStyleWithKeyAndValue(AKey,
-  AValue: string; ADestEntity: TvEntityWithPen): TvSetPenBrushAndFontElements;
+  AValue: string; ADestEntity: TvEntity): TvSetPenBrushAndFontElements;
 var
   // transform
   MA, MB, MC, MD, ME, MF: Double;
@@ -949,7 +953,7 @@ begin
       begin
         lFunctionName := lTokenizer.Tokens.Items[i].StrValue;
         lParamStr := lTokenizer.Tokens.Items[i+1].StrValue;
-        lMatrixElements := ReadSpaceSeparatedFloats(lParamStr);
+        lMatrixElements := ReadSpaceSeparatedFloats(lParamStr, ',');
 
         if lFunctionName = 'matrix' then
         begin
@@ -1024,17 +1028,25 @@ begin
   end;
 end;
 
-function TvSVGVectorialReader.ReadSpaceSeparatedFloats(AInput: string
-  ): TDoubleArray;
+function TvSVGVectorialReader.ReadSpaceSeparatedFloats(AInput: string;
+  AOtherSeparators: string): TDoubleArray;
 var
   lStrings: TStringList;
+  lInputStr: string;
   lMatrixElements: array of Double;
   i: Integer;
 begin
   lStrings := TStringList.Create;
   try
     lStrings.Delimiter := ' ';
-    lStrings.DelimitedText := AInput;
+    // now other separator too
+    lInputStr := AInput;
+    for i := 1 to Length(AOtherSeparators) do
+    begin
+      lInputStr := StringReplace(lInputStr, AOtherSeparators[i], ' ', [rfReplaceAll]);
+    end;
+    //
+    lStrings.DelimitedText := lInputStr;
     SetLength(lMatrixElements, lStrings.Count);
     for i := 0 to lStrings.Count-1 do
     begin
@@ -1047,6 +1059,24 @@ begin
   end;
 end;
 
+function TvSVGVectorialReader.ReadSpaceSeparatedStrings(AInput: string;
+  AOtherSeparators: string): TStringList;
+var
+  i: Integer;
+  lInputStr: String;
+begin
+  Result := TStringList.Create;
+  Result.Delimiter := ' ';
+  // now other separator too
+  lInputStr := AInput;
+  for i := 1 to Length(AOtherSeparators) do
+  begin
+    lInputStr := StringReplace(lInputStr, AOtherSeparators[i], ' ', [rfReplaceAll]);
+  end;
+  //
+  Result.DelimitedText := lInputStr;
+end;
+
 // transform="matrix(0.860815 0 -0 1.07602 354.095 482.177)"=>matrix(a, b, c, d, e, f)
 // See http://apike.ca/prog_svg_transform.html
 procedure TvSVGVectorialReader.ReadSVGTransformationMatrix(
@@ -1054,7 +1084,7 @@ procedure TvSVGVectorialReader.ReadSVGTransformationMatrix(
 var
   lMatrixElements: array of Double;
 begin
-  lMatrixElements := ReadSpaceSeparatedFloats(AMatrix);
+  lMatrixElements := ReadSpaceSeparatedFloats(AMatrix, '');
 
   AA := lMatrixElements[0];
   AB := lMatrixElements[1];
@@ -1177,6 +1207,7 @@ begin
     'circle': Result := ReadCircleFromNode(ANode, AData, ADoc);
     'ellipse': Result := ReadEllipseFromNode(ANode, AData, ADoc);
     'g': ReadLayerFromNode(ANode, AData, ADoc);
+    'image': Result := ReadImageFromNode(ANode, AData, ADoc);
     'line': Result := ReadLineFromNode(ANode, AData, ADoc);
     'path': Result := ReadPathFromNode(ANode, AData, ADoc);
     'polygon', 'polyline': Result := ReadPolyFromNode(ANode, AData, ADoc);
@@ -1192,7 +1223,7 @@ var
   cx, cy, cr, dtmp: double;
   lCircle: TvCircle;
   i: Integer;
-  lNodeName: DOMString;
+  lNodeName, lNodeValue: DOMString;
 begin
   cx := 0.0;
   cy := 0.0;
@@ -1210,21 +1241,22 @@ begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeName;
     if  lNodeName = 'cx' then
-      cx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      cx := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'cy' then
-      cy := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      cy := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'r' then
-      cr := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      cr := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'id' then
-      lCircle.Name := ANode.Attributes.Item[i].NodeValue
+      lCircle.Name := lNodeValue
     else if lNodeName = 'style' then
-      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lCircle)
+      ReadSVGStyle(lNodeValue, lCircle)
     else if IsAttributeFromStyle(lNodeName) then
     begin
-      ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lCircle);
-      ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lCircle);
-      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lCircle);
+      ReadSVGPenStyleWithKeyAndValue(lNodeName, lNodeValue, lCircle);
+      ReadSVGBrushStyleWithKeyAndValue(lNodeName, lNodeValue, lCircle);
+      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lCircle);
     end;
   end;
 
@@ -1242,7 +1274,7 @@ var
   cx, cy, crx, cry: double;
   lEllipse: TvEllipse;
   i: Integer;
-  lNodeName: DOMString;
+  lNodeName, lNodeValue: DOMString;
 begin
   cx := 0.0;
   cy := 0.0;
@@ -1261,23 +1293,24 @@ begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeName;
     if  lNodeName = 'cx' then
-      cx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      cx := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'cy' then
-      cy := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      cy := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'rx' then
-      crx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      crx := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'ry' then
-      cry := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+      cry := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'id' then
       lEllipse.Name := ANode.Attributes.Item[i].NodeValue
     else if lNodeName = 'style' then
-      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lEllipse)
+      ReadSVGStyle(lNodeValue, lEllipse)
     else if IsAttributeFromStyle(lNodeName) then
     begin
-      ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lEllipse);
-      ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lEllipse);
-      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lEllipse);
+      ReadSVGPenStyleWithKeyAndValue(lNodeName, lNodeValue, lEllipse);
+      ReadSVGBrushStyleWithKeyAndValue(lNodeName, lNodeValue, lEllipse);
+      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lEllipse);
     end;
   end;
 
@@ -1287,6 +1320,95 @@ begin
         AData, crx, cry, lEllipse.HorzHalfAxis, lEllipse.VertHalfAxis);
 
   Result := lEllipse;
+end;
+
+// <image width="92.5" x="0" y="0" height="76.0429"
+//  xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKMAAACGCAYAA
+//  ACxDToF......" clip-path="url(#Clip0)" transform="matrix(1 0 0 1 0 0)"/>
+function TvSVGVectorialReader.ReadImageFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+var
+  lImage: TvRasterImage;
+  lx, ly, lw, lh: Double;
+  i: Integer;
+  lNodeName, lNodeValue: DOMString;
+  lImageDataParts: TStringList;
+  lImageDataBase64: string;
+  lImageData: array of Byte;
+  lImageDataStream: TMemoryStream;
+  lImageReader: TFPCustomImageReader;
+begin
+  lImage := TvRasterImage.Create;
+  lx := 0;
+  ly := 0;
+  lw := 0;
+  lh := 0;
+
+  // Apply the layer style
+  //ApplyLayerStyles(lEllipse);
+
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
+    if  lNodeName = 'x' then
+      lx := StringWithUnitToFloat(lNodeValue)
+    else if lNodeName = 'y' then
+      ly := StringWithUnitToFloat(lNodeValue)
+    else if lNodeName = 'width' then
+      lw := StringWithUnitToFloat(lNodeValue)
+    else if lNodeName = 'height' then
+      lh := StringWithUnitToFloat(lNodeValue)
+    else if lNodeName = 'xlink:href' then
+    begin
+      lImageDataParts := ReadSpaceSeparatedStrings(lNodeValue, ':;,');
+      try
+        if (lImageDataParts.Strings[0] = 'data') and
+           (lImageDataParts.Strings[1] = 'image/png') and
+           (lImageDataParts.Strings[2] = 'base64') then
+        begin
+          lImageReader := TFPReaderPNG.Create;
+          lImageDataStream := TMemoryStream.Create;
+          try
+            lImageDataBase64 := lImageDataParts.Strings[3];
+            DecodeBase64(lImageDataBase64, lImageDataStream);
+            lImageDataStream.Position := 0;
+            lImage.CreateRGB888Image(10, 10);
+            lImage.RasterImage.LoadFromStream(lImageDataStream, lImageReader);
+          finally
+            lImageDataStream.Free;
+            lImageReader.Free;
+          end;
+        end
+        else
+          raise Exception.Create('[TvSVGVectorialReader.ReadImageFromNode] Unimplemented image format');
+      finally
+        lImageDataParts.Free;
+      end;
+    end
+    else if lNodeName = 'id' then
+      lImage.Name := lNodeValue
+{    else if lNodeName = 'style' then
+      ReadSVGStyle(lNodeValue, lImage)}
+    else if IsAttributeFromStyle(lNodeName) then
+    begin
+      //ReadSVGPenStyleWithKeyAndValue(lNodeName, lNodeValue, lImage);
+      //ReadSVGBrushStyleWithKeyAndValue(lNodeName, lNodeValue, lImage);
+      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lImage);
+    end;
+  end;
+
+  // Record translate data
+  lx := lx + lImage.X;
+  ly := ly + lImage.Y;
+
+  ConvertSVGCoordinatesToFPVCoordinates(
+        AData, lx, ly, lImage.X, lImage.Y);
+  ConvertSVGDeltaToFPVDelta(
+        AData, lw, lh, lImage.Width, lImage.Height);
+
+  Result := lImage;
 end;
 
 procedure TvSVGVectorialReader.ReadLayerFromNode(ANode: TDOMNode;
@@ -2037,7 +2159,7 @@ var
   lXLink: DOMString = '';
   lInsertedEntity: TvEntity;
   i: Integer;
-  lNodeName: DOMString;
+  lNodeName, lNodeValue: DOMString;
 begin
   Result := nil;
 
@@ -2061,6 +2183,24 @@ begin
 
   lInsert := TvInsert.Create;
   lInsert.InsertEntity := lInsertedEntity;
+
+  // Apply the styles
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
+    {if lNodeName = 'style' then
+      ReadSVGStyle(lNodeValue, lText)
+    else} if IsAttributeFromStyle(lNodeName) then
+    begin
+      {ReadSVGPenStyleWithKeyAndValue(lNodeName, lNodeValue, lText);
+      ReadSVGBrushStyleWithKeyAndValue(lNodeName, lNodeValue, lText);
+      ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, lText);}
+      ReadSVGGeneralStyleWithKeyAndValue(lNodeName, lNodeValue, lInsert);
+    end;
+  end;
+
   Result := lInsert;
 end;
 
@@ -2175,7 +2315,7 @@ var
   {$ifdef SVG_MERGE_LAYER_STYLES}
   lLayerStyleKeys, lLayerStyleValues: TStringList;
   {$endif}
-  lNodeName: DOMString;
+  lNodeName, lNodeValue: DOMString;
   ANode: TDOMElement;
   i: Integer;
   lCurEntity: TvEntity;
@@ -2200,23 +2340,24 @@ begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
     if lNodeName = 'viewBox' then
     begin
-      lViewBox := ReadSpaceSeparatedFloats(ANode.Attributes.Item[i].NodeValue);
+      lViewBox := ReadSpaceSeparatedFloats(lNodeValue, '');
       AData.Width := lViewBox[2] - lViewBox[0];
       AData.Height := lViewBox[3] - lViewBox[1];
     end
     else if lNodeName = 'style' then
     begin
       {$ifdef SVG_MERGE_LAYER_STYLES}
-      ReadSVGStyleToStyleLists(ANode.Attributes.Item[i].NodeValue, lLayerStyleKeys, lLayerStyleValues);
+      ReadSVGStyleToStyleLists(lNodeValue, lLayerStyleKeys, lLayerStyleValues);
       {$endif}
     end
     else if IsAttributeFromStyle(lNodeName) then
     begin
       {$ifdef SVG_MERGE_LAYER_STYLES}
       lLayerStyleKeys.Add(lNodeName);
-      lLayerStyleValues.Add(ANode.Attributes.Item[i].NodeValue);
+      lLayerStyleValues.Add(lNodeValue);
       {$endif}
     end;
   end;
