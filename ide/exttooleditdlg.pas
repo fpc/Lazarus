@@ -126,6 +126,7 @@ type
     procedure Assign(Src: TExternalToolMenuItems);
     procedure Add(Item: TExternalToolMenuItem);
     procedure Insert(Index: integer; Item: TExternalToolMenuItem);
+    procedure Delete(Index: integer);
     procedure Move(CurIndex, NewIndex: integer);
     function Load(Config: TConfigStorage): TModalResult;
     function Load(Config: TConfigStorage; const Path: string): TModalResult;
@@ -138,6 +139,9 @@ type
     function Count: integer; inline;
     property Items[Index: integer]: TExternalToolMenuItem read GetItems; default;
   end;
+
+var
+  ExternalToolMenuItems: TExternalToolMenuItems = nil;
 {$ELSE}
 type
   { TExternalToolOptions }
@@ -472,6 +476,8 @@ end;
 
 destructor TExternalToolMenuItems.Destroy;
 begin
+  if ExternalToolMenuItems=Self then
+    ExternalToolMenuItems:=nil;
   Clear;
   FreeAndNil(fItems);
   inherited Destroy;
@@ -517,6 +523,11 @@ procedure TExternalToolMenuItems.Insert(Index: integer;
   Item: TExternalToolMenuItem);
 begin
   fItems.Insert(Index,Item);
+end;
+
+procedure TExternalToolMenuItems.Delete(Index: integer);
+begin
+  fItems.Delete(Index);
 end;
 
 procedure TExternalToolMenuItems.Move(CurIndex, NewIndex: integer);

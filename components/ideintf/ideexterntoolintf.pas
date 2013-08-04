@@ -79,8 +79,7 @@ type
     );
   TMessageLineFlags = set of TMessageLineFlag;
 
-  { TMessageLine
-    Access needs Lines.Tool.Enter/LeaveCriticalSection }
+  { TMessageLine }
 
   TMessageLine = packed class
   private
@@ -176,8 +175,7 @@ type
     property MaxLine: integer read FMaxLine;
   end;
 
-  { TMessageLines
-    Access needs Tool.Enter/LeaveCriticalSection }
+  { TMessageLines }
 
   TETMarksFixedEvent = procedure(ListOfTMessageLine: TFPList) of object;
 
@@ -235,7 +233,7 @@ type
   { TExtToolParser
     Read the output of a tool, for example the output of the Free Pascal compiler.
     It does not filter. Some parsers can work together, for example make and fpc.
-    Usage: Tool.AddParser('fpc');
+    Usage: Tool.AddParsers('fpc');
     }
   TExtToolParser = class(TComponent)
   private
@@ -270,7 +268,7 @@ type
   TMakeParser = class(TExtToolParser)
   end;
 
-  { TDefaultParser - simple parser for simple text output, no filter at all }
+  { TDefaultParser - simple parser for simple text output, no filtering }
 
   TDefaultParser = class(TExtToolParser)
   public
@@ -283,8 +281,7 @@ type
 const
   DefaultETViewMinUrgency = mluHint;
 type
-  { TExtToolView
-    Access needs Enter/LeaveCriticalSection }
+  { TExtToolView }
 
   TExtToolView = class(TComponent)
   private
@@ -1985,7 +1982,7 @@ begin
 end;
 
 end.
-{$ELSE}
+{$ELSE EnableNewExtTools}
 interface
 
 uses

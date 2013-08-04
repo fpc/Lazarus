@@ -625,7 +625,9 @@ type
       Scanner: TLinkScanner);
 
     // MessagesView events
+    {$IFNDEF EnableNewExtTools}
     procedure MessagesViewSelectionChanged(sender: TObject);
+    {$ENDIF}
 
     // SearchResultsView events
     procedure SearchResultsViewSelectionChanged(sender: TObject);
@@ -693,7 +695,9 @@ type
     procedure SetupDialogs;
     procedure SetupComponentPalette;
     procedure SetupHints;
+    {$IFNDEF EnableNewExtTools}
     procedure SetupOutputFilter;
+    {$ENDIF}
     procedure SetupObjectInspector;
     procedure SetupFormEditor;
     procedure SetupSourceNotebook;
@@ -839,7 +843,9 @@ type
 
     // external tools
     function PrepareForCompile: TModalResult; override;
+    {$IFNDEF EnableNewExtTools}
     function OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
+    {$ENDIF}
     function DoRunExternalTool(Index: integer; ShowAbort: Boolean): TModalResult;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoExampleManager: TModalResult; override;
@@ -964,8 +970,13 @@ type
     function DoConvertDelphiPackage(const DelphiFilename: string): TModalResult;
 
     // message view
-    function DoJumpToCompilerMessage(Index:integer;
-                                     FocusEditor: boolean): boolean; override;
+    function DoJumpToCompilerMessage(
+      {$IFDEF EnableNewExtTools}
+      Msg: TMessageLine;
+      {$ELSE}
+      Index:integer;
+      {$ENDIF}
+      FocusEditor: boolean): boolean; override;
     procedure DoJumpToNextError(DirectionDown: boolean); override;
     procedure DoShowMessagesView(BringToFront: boolean = true); override;
 
@@ -1289,7 +1300,12 @@ begin
   SetupIDEMsgQuickFixItems;
   EditorOpts.Load;
 
+  {$IFDEF EnableNewExtTools}
+  ExternalToolMenuItems:=TExternalToolMenuItems(EnvironmentOptions.ExternalToolMenuItems);
+  ExternalToolMenuItems.LoadShortCuts(EditorOpts.KeyMap);
+  {$ELSE}
   ExternalTools.LoadShortCuts(EditorOpts.KeyMap);
+  {$ENDIF}
 
   MiscellaneousOptions := TMiscellaneousOptions.Create;
   MiscellaneousOptions.Load;
@@ -1327,6 +1343,7 @@ begin
   FWaitForClose := False;
 
   SetupDialogs;
+  {$IFNDEF EnableNewExtTools}
   RunExternalTool:=@OnRunExternalTool;
   {$IFDEF UseAsyncProcess}
   if Widgetset.GetLCLCapability(lcAsyncProcess) = 1 then
@@ -1335,6 +1352,7 @@ begin
     TOutputFilterProcess := TProcessUTF8;
   {$ELSE}
   TOutputFilterProcess := TProcessUTF8;
+  {$ENDIF}
   {$ENDIF}
 
   MainBuildBoss:=TBuildManager.Create(nil);
@@ -1431,7 +1449,9 @@ begin
   HelpBoss.ConnectMainBarEvents;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create MANAGERS');{$ENDIF}
   // setup the IDE components
+  {$IFNDEF EnableNewExtTools}
   SetupOutputFilter;
+  {$ENDIF}
   MainBuildBoss.SetupCompilerInterface;
   SetupObjectInspector;
   SetupFormEditor;
@@ -1532,7 +1552,13 @@ begin
   // free IDE parts
   FreeFormEditor;
   FreeTextConverters;
+  {$IFDEF EnableNewExtTools}
+  FreeThenNil(IDEQuickFixes);
+  {$ELSE}
   FreeStandardIDEQuickFixItems;
+  FreeThenNil(IDEMsgScanners);
+  FreeThenNil(TheOutputFilter);
+  {$ENDIF}
   FreeThenNil(GlobalDesignHook);
   FreeThenNil(LPKInfoCache);
   FreeThenNil(PkgBoss);
@@ -1541,8 +1567,6 @@ begin
   FreeThenNil(TheCompiler);
   FreeThenNil(HiddenWindowsOnRun);
   FreeThenNil(LastActivatedWindows);
-  FreeThenNil(IDEMsgScanners);
-  FreeThenNil(TheOutputFilter);
   FreeThenNil(GlobalMacroList);
   FreeThenNil(IDEMacros);
   FreeThenNil(IDECodeMacros);
@@ -1577,7 +1601,9 @@ end;
 procedure TMainIDE.CreateOftenUsedForms;
 begin
   MessagesView:=TMessagesView.Create(nil);
+  {$IFNDEF EnableNewExtTools}
   MessagesView.OnSelectionChanged := @MessagesViewSelectionChanged;
+  {$ENDIF}
 
   LazFindReplaceDialog:=TLazFindReplaceDialog.Create(nil);
 end;
@@ -2030,12 +2056,14 @@ begin
   end;
 end;
 
+{$IFNDEF EnableNewExtTools}
 procedure TMainIDE.SetupOutputFilter;
 begin
   TheOutputFilter:=TOutputFilter.Create;
   TheOutputFilter.OnGetIncludePath:=@CodeToolBoss.GetIncludePathForDirectory;
   IDEMsgScanners:=TMessageScanners.Create;
 end;
+{$ENDIF}
 
 procedure TMainIDE.SetupObjectInspector;
 begin
@@ -3136,7 +3164,7 @@ begin
 
   ecContextHelp:
     if Sender=MessagesView then
-      HelpBoss.ShowHelpForMessage(-1)
+      HelpBoss.ShowHelpForMessage{$IFDEF EnableNewExtTools}(){$ELSE}(-1){$ENDIF}
     else if Sender is TObjectInspectorDlg then
       HelpBoss.ShowHelpForObjectInspector(Sender);
   ecEditContextHelp:
@@ -4374,12 +4402,14 @@ end;
 
 procedure TMainIDE.mnuToolConfigureClicked(Sender: TObject);
 begin
-  if ShowExtToolDialog(ExternalTools,GlobalMacroList)=mrOk then
+  if ShowExtToolDialog(
+    {$IFDEF EnableNewExtTools}ExternalToolMenuItems{$ELSE}ExternalTools{$ENDIF},
+    GlobalMacroList)=mrOk then
   begin
     // save to environment options
     SaveEnvironment(true);
     // save shortcuts to editor options
-    ExternalTools.SaveShortCuts(EditorOpts.KeyMap);
+    {$IFDEF EnableNewExtTools}ExternalToolMenuItems{$ELSE}ExternalTools{$ENDIF}.SaveShortCuts(EditorOpts.KeyMap);
     EditorOpts.Save;
     UpdateHighlighters(True);
     SourceEditorManager.ReloadEditorOptions;
@@ -6866,7 +6896,7 @@ var
   NeedBuildAllFlag: Boolean;
   UnitOutputDirectory: String;
   TargetExeName: String;
-  err : TFPCErrorType;
+  err: TFPCErrorType;
   TargetExeDirectory: String;
   FPCVersion, FPCRelease, FPCPatch: integer;
   Note: String;
@@ -7083,10 +7113,13 @@ begin
         OldToolStatus := ToolStatus;  // It can still be itDebugger, if the debugger is still stopping. Prevent any "Run" command after building, until the debugger is clear
         ToolStatus:=itBuilder;
 
+        {$IFDEF EnableNewExtTools}
+        {$ELSE}
         ConnectOutputFilter;
         for err := Low(TFPCErrorType) to High(TFPCErrorType) do
           with Project1.CompilerOptions.CompilerMessages do 
             TheOutputFilter.ErrorTypeName[err] := ErrorNames[err];
+        {$ENDIF}
 
         // compile
         CompilerFilename:=Project1.GetCompilerFilename;
@@ -7180,7 +7213,7 @@ function TMainIDE.DoAbortBuild: TModalResult;
 begin
   Result:=mrOk;
   if ToolStatus<>itBuilder then exit;
-  TheOutputFilter.StopExecute:=true;
+  AbortBuild;
 end;
 
 procedure TMainIDE.DoQuickCompile;
@@ -8080,12 +8113,14 @@ begin
     MainBuildBoss.RescanCompilerDefines(false,false,false,false);
 end;
 
+{$IFNDEF EnableNewExtTools}
 function TMainIDE.OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
 begin
   SourceEditorManager.ClearErrorLines;
   Result:=ExternalTools.Run(Tool,GlobalMacroList,false);
   DoCheckFilesOnDisk;
 end;
+{$ENDIF}
 
 function TMainIDE.DoCheckSyntax: TModalResult;
 var
@@ -8521,8 +8556,12 @@ end;
 
 procedure TMainIDE.AbortBuild;
 begin
+  {$IFDEF EnableNewExtTools}
+  ExternalTools.TerminateAll;
+  {$ELSE}
   if TheOutputFilter<>nil then
     TheOutputFilter.StopExecute:=true;
+  {$ENDIF}
 end;
 
 procedure TMainIDE.UpdateCaption;
@@ -8841,7 +8880,12 @@ begin
   ErrType:=FPCErrorTypeNameToType(ALine.Parts.Values['Type']);
 end;
 
-function TMainIDE.DoJumpToCompilerMessage(Index:integer;
+function TMainIDE.DoJumpToCompilerMessage(
+  {$IFDEF EnableNewExtTools}
+  Msg: TMessageLine;
+  {$ELSE}
+  Index:integer;
+  {$ENDIF}
   FocusEditor: boolean): boolean;
 var
   MaxMessages: integer;
@@ -11141,10 +11185,12 @@ end;
 
 //-----------------------------------------------------------------------------
 
+{$IFNDEF EnableNewExtTools}
 procedure TMainIDE.MessagesViewSelectionChanged(sender: TObject);
 begin
   DoJumpToCompilerMessage(TMessagesView(Sender).SelectedMessageIndex,True);
 end;
+{$ENDIF}
 
 procedure TMainIDE.SearchResultsViewSelectionChanged(sender: TObject);
 begin

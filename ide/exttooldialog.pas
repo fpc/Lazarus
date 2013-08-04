@@ -603,9 +603,13 @@ end;
 
 function TExternalToolDialog.ToolDescription(Index: integer): string;
 begin
+  {$IFDEF EnableNewExtTools}
+  Result:=fExtToolList[Index].Title;
+  {$ELSE}
   Result:=fExtToolList[Index].ShortDescription;
   if Result='' then
     Result:=fExtToolList[Index].Title;
+  {$ENDIF}
   if Result='' then
     Result:=ExtractFilename(fExtToolList[Index].Filename);
   //DebugLn(['TExternalToolDialog.ToolDescription Index=',Index,' Result=',Result,' Cmd="',fExtToolList[Index].Filename,' ',fExtToolList[Index].CmdLineParams,'"']);
@@ -638,7 +642,7 @@ begin
     exit;
   end;
   {$IFDEF EnableNewExtTools}
-  NewTool:=TExternalToolMenuItem.Create;
+  NewTool:=TExternalToolMenuItem.Create(nil);
   {$ELSE}
   NewTool:=TExternalToolOptions.Create;
   {$ENDIF}
@@ -668,7 +672,7 @@ begin
     OldTool := fExtToolList.Items[Listbox.ItemIndex];
     If Assigned(OldTool) Then Begin
       {$IFDEF EnableNewExtTools}
-      NewTool:=TExternalToolMenuItem.Create;
+      NewTool:=TExternalToolMenuItem.Create(nil);
       {$ELSE}
       NewTool:=TExternalToolOptions.Create;
       {$ENDIF}
@@ -783,7 +787,9 @@ begin
   EnableButtons;
 end;
 
+{$IFNDEF EnableNewExtTools}
 initialization
   ExternalToolListClass:=TExternalToolList;
+{$ENDIF}
 
 end.

@@ -53,8 +53,25 @@ type
     ImgIDFatal: integer;
     function GetDblClickJumps: boolean;
     procedure SetDblClickJumps(AValue: boolean);
+  protected
+    function GetViews(Index: integer): TExtToolView; override;
   public
     SourceMarks: TETMarks;
+    function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
+      aSrcFilename: string=''; LineNumber: integer=0; Column: integer=0;
+      const ViewCaption: string=''): TMessageLine; override;
+    procedure Clear; override;
+    procedure DeleteView(View: TExtToolView); override;
+    function FindUnfinishedView: TExtToolView; override;
+    function GetSelectedLine: TMessageLine; override;
+    function GetView(aCaption: string; CreateIfNotExist: boolean
+      ): TExtToolView; override;
+    function IndexOfView(View: TExtToolView): integer; override;
+    function SelectFirstUrgentMessage(aMinUrgency: TMessageLineUrgency;
+      WithSrcPos: boolean): boolean; override;
+    function SelectNextUrgentMessage(aMinUrgency: TMessageLineUrgency;
+      WithSrcPos, Downwards: boolean): boolean; override;
+    function ViewCount: integer; override;
     property DblClickJumps: boolean read GetDblClickJumps write SetDblClickJumps;
   end;
 
@@ -135,6 +152,71 @@ begin
   else
     MessagesFrame1.MessagesCtrl.Options:=
       MessagesFrame1.MessagesCtrl.Options+[mcoSingleClickOpensFile]
+end;
+
+function TMessagesView.GetViews(Index: integer): TExtToolView;
+begin
+  Result:=MessagesFrame1.Views[Index];
+end;
+
+function TMessagesView.AddCustomMessage(TheUrgency: TMessageLineUrgency;
+  Msg: string; aSrcFilename: string; LineNumber: integer; Column: integer;
+  const ViewCaption: string): TMessageLine;
+begin
+  Result:=MessagesFrame1.AddCustomMessage(TheUrgency,Msg,aSrcFilename,
+    LineNumber,Column,ViewCaption);
+end;
+
+procedure TMessagesView.Clear;
+begin
+  MessagesFrame1.ClearViews;
+end;
+
+procedure TMessagesView.DeleteView(View: TExtToolView);
+begin
+  if View is TLMsgWndView then
+    MessagesFrame1.DeleteView(TLMsgWndView(View));
+end;
+
+function TMessagesView.FindUnfinishedView: TExtToolView;
+begin
+  Result:=MessagesFrame1.FindUnfinishedView;
+end;
+
+function TMessagesView.GetSelectedLine: TMessageLine;
+begin
+  Result:=MessagesFrame1.MessagesCtrl.GetSelectedMsg;
+end;
+
+function TMessagesView.GetView(aCaption: string; CreateIfNotExist: boolean
+  ): TExtToolView;
+begin
+  Result:=MessagesFrame1.GetView(aCaption,CreateIfNotExist);
+end;
+
+function TMessagesView.IndexOfView(View: TExtToolView): integer;
+begin
+  if View is TLMsgWndView then
+    Result:=MessagesFrame1.IndexOfView(TLMsgWndView(View))
+  else
+    Result:=-1;
+end;
+
+function TMessagesView.SelectFirstUrgentMessage(
+  aMinUrgency: TMessageLineUrgency; WithSrcPos: boolean): boolean;
+begin
+  Result:=MessagesFrame1.SelectFirstUrgentMessage(aMinUrgency,WithSrcPos);
+end;
+
+function TMessagesView.SelectNextUrgentMessage(
+  aMinUrgency: TMessageLineUrgency; WithSrcPos, Downwards: boolean): boolean;
+begin
+  Result:=MessagesFrame1.SelectNextUrgentMessage(aMinUrgency,WithSrcPos,Downwards);
+end;
+
+function TMessagesView.ViewCount: integer;
+begin
+  Result:=MessagesFrame1.ViewCount;
 end;
 
 function TMessagesView.GetDblClickJumps: boolean;

@@ -285,7 +285,12 @@ type
     // progress and error messages
     function ShowProgress(const SomeText: string;
                           Step, MaxStep: integer): boolean; virtual; abstract; // False if canceled by user
-    function DoJumpToCompilerMessage(Index:integer;
+    function DoJumpToCompilerMessage(
+                              {$IFDEF EnableNewExtTools}
+                              Msg: TMessageLine; // if nil then it jumps to first message
+                              {$ELSE}
+                              Index:integer;
+                              {$ENDIF}
                               FocusEditor: boolean): boolean; virtual; abstract;
     procedure DoJumpToNextError(DirectionDown: boolean); virtual; abstract;
     procedure DoShowMessagesView(BringToFront: boolean = true); virtual; abstract;
