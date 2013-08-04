@@ -59,7 +59,8 @@ uses
   MemCheck,
 {$ENDIF}
   // fpc packages
-  Math, Classes, SysUtils, Process, AsyncProcess, TypInfo, types, strutils, AVL_Tree,
+  Math, Classes, SysUtils, Process, AsyncProcess, TypInfo, types, strutils,
+  AVL_Tree, contnrs,
   // lazutils
   LazUTF8, Laz2_XMLCfg, AvgLvlTree,
   // lcl
@@ -944,7 +945,7 @@ type
     procedure DoJumpToGuessedMisplacedIFDEF(FindNextUTF8: boolean);
 
     procedure DoGotoIncludeDirective;
-    function SelectProjectItems(ItemList: TStringList;
+    function SelectProjectItems(ItemList: TViewUnitEntries;
                                 ItemType: TIDEProjectItem;
                                 MultiSelect: boolean;
                                 var MultiSelectCheckedState: Boolean): TModalResult;
@@ -5603,7 +5604,7 @@ begin
   Result:=SourceFileMgr.OpenEditorFile(AFileName, PageIndex, WindowIndex, AEditorInfo, Flags);
 end;
 
-function TMainIDE.SelectProjectItems(ItemList: TStringList;
+function TMainIDE.SelectProjectItems(ItemList: TViewUnitEntries;
   ItemType: TIDEProjectItem; MultiSelect: boolean;
   var MultiSelectCheckedState: Boolean): TModalResult;
 var
@@ -5633,9 +5634,8 @@ begin
       begin
         if (ItemType = piComponent) or
            ((ItemType = piFrame) and (CurUnitInfo.ResourceBaseClass = pfcbcFrame)) then
-          ItemList.AddObject(CurUnitInfo.Unit_Name,
-            TViewUnitsEntry.Create(CurUnitInfo.ComponentName, CurUnitInfo.Filename,
-                                   i, CurUnitInfo = ActiveUnitInfo));
+          ItemList.Add(CurUnitInfo.ComponentName,
+                       CurUnitInfo.Filename, i, CurUnitInfo = ActiveUnitInfo);
       end else if FilenameIsAbsolute(CurUnitInfo.Filename)
       and FilenameIsPascalSource(CurUnitInfo.Filename)
       and FileExistsCached(CurUnitInfo.Filename) then begin
@@ -5648,9 +5648,8 @@ begin
           anUnitName:=CurUnitInfo.Unit_Name;
           if anUnitName='' then
             anUnitName:=ExtractFileNameOnly(LFMFilename);
-          ItemList.AddObject(anUnitName,
-            TViewUnitsEntry.Create(LFMComponentName, CurUnitInfo.Filename, i,
-                                   CurUnitInfo = ActiveUnitInfo));
+          ItemList.Add(LFMComponentName, CurUnitInfo.Filename,
+            i, CurUnitInfo = ActiveUnitInfo);
         end;
       end;
     end else
@@ -5659,10 +5658,9 @@ begin
       if (CurUnitInfo.FileName <> '') then
       begin
         AUnitName := ExtractFileName(CurUnitInfo.Filename);
-        if ItemList.IndexOf(AUnitName) = -1 then
-          ItemList.AddObject(AUnitName,
-            TViewUnitsEntry.Create(AUnitName, CurUnitInfo.Filename,
-                                   i, CurUnitInfo = ActiveUnitInfo));
+        if ItemList.Find(AUnitName) = nil then
+          ItemList.Add(AUnitName, CurUnitInfo.Filename,
+                       i, CurUnitInfo = ActiveUnitInfo);
       end
       else
       if Project1.MainUnitID = i then
@@ -5671,11 +5669,10 @@ begin
         if pfMainUnitIsPascalSource in Project1.Flags then
         begin
           AUnitName := ExtractFileName(MainUnitInfo.Filename);
-          if (AUnitName <> '') and (ItemList.IndexOf(AUnitName) = -1) then
+          if (AUnitName <> '') and (ItemList.Find(AUnitName) = nil) then
           begin
-            ItemList.AddObject(AUnitName,
-              TViewUnitsEntry.Create(AUnitName, MainUnitInfo.Filename,
-                                     i, MainUnitInfo = ActiveUnitInfo));
+            ItemList.Add(AUnitName, MainUnitInfo.Filename,
+                         i, MainUnitInfo = ActiveUnitInfo);
           end;
         end;
       end;
@@ -5763,7 +5760,7 @@ var
   S2SItem: PStringToStringTreeItem;
   AnUnitName: String;
   AFilename: String;
-  UnitList: TStringList;
+  UnitList: TViewUnitEntries;
   Entry: TViewUnitsEntry;
 begin
   Result:=mrCancel;
@@ -5773,7 +5770,7 @@ begin
   UnitPath:=CodeToolBoss.GetCompleteSrcPathForDirectory(ExtractFilePath(ActiveUnitInfo.Filename));
   PkgList:=nil;
   UnitToFilename:=TStringToStringTree.Create(false);
-  UnitList:=TStringList.Create;
+  UnitList:=TViewUnitEntries.Create;
   try
     // fetch owner of active unit
     AProject:=nil;
@@ -5822,23 +5819,19 @@ begin
     for S2SItem in UnitToFilename do begin
       AnUnitName:=S2SItem^.Name;
       AFilename:=S2SItem^.Value;
-      UnitList.AddObject(AnUnitName,TViewUnitsEntry.Create(AnUnitName,AFilename,i,false));
+      UnitList.Add(AnUnitName,AFilename,i,false);
       inc(i);
     end;
     // show dialog
     Result := ShowViewUnitsDlg(UnitList, MultiSelect, MultiSelectCheckedState,
                                DlgCaption, ItemType, ActiveUnitInfo.Filename);
-
     // create list of selected files
-    for i:=0 to UnitList.Count-1 do begin
-      Entry:=TViewUnitsEntry(UnitList.Objects[i]);
+    for Entry in UnitList do begin
       if Entry.Selected then
         Files.Add(Entry.Filename);
     end;
 
   finally
-    for i := 0 to UnitList.Count-1 do
-      TViewUnitsEntry(UnitList.Objects[i]).Free;
     UnitList.Free;
     PkgList.Free;
     Owners.Free;
@@ -5883,25 +5876,24 @@ const
   UseItemType: array[Boolean] of TIDEProjectItem = (piUnit, piComponent);
   MultiSelectCheckedState: Array [Boolean] of Boolean = (True,True);
 var
-  UnitList: TStringList;
-  i: integer;
+  UnitList: TViewUnitEntries;
   AForm: TCustomForm;
   AnUnitInfo: TUnitInfo;
+  UEntry: TViewUnitsEntry;
 begin
   if Project1=nil then exit(mrCancel);
-  UnitList := TStringList.Create;
-  UnitList.Sorted := True;
+  UnitList := TViewUnitEntries.Create;
   try
     if SelectProjectItems(UnitList, UseItemType[OnlyForms],
       true, MultiSelectCheckedState[OnlyForms]) = mrOk then
     begin
       { This is where we check what the user selected. }
       AnUnitInfo := nil;
-      for i := 0 to UnitList.Count-1 do
+      for UEntry in UnitList do
       begin
-        if TViewUnitsEntry(UnitList.Objects[i]).Selected then
+        if UEntry.Selected then
         begin
-          AnUnitInfo := Project1.Units[TViewUnitsEntry(UnitList.Objects[i]).ID];
+          AnUnitInfo := Project1.Units[UEntry.ID];
           if AnUnitInfo.OpenEditorInfoCount > 0 then
           begin
             SourceEditorManager.ActiveEditor := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
@@ -5925,8 +5917,6 @@ begin
         SourceEditorManager.ShowActiveWindowOnTop(True);
     end;  { if ShowViewUnitDlg... }
   finally
-    for i := 0 to UnitList.Count-1 do
-      TViewUnitsEntry(UnitList.Objects[i]).Free;
     UnitList.Free;
   end;
   Result := mrOk;
@@ -6660,17 +6650,17 @@ end;
 
 function TMainIDE.DoRemoveFromProjectDialog: TModalResult;
 var
-  ViewUnitEntries: TStringList;
+  ViewUnitEntries: TViewUnitEntries;
   i:integer;
   AName: string;
   AnUnitInfo: TUnitInfo;
   UnitInfos: TFPList;
+  UEntry: TViewUnitsEntry;
 const
   MultiSelectCheckedState: Boolean = true;
 Begin
   if Project1=nil then exit(mrCancel);
-  ViewUnitEntries := TStringList.Create;
-  ViewUnitEntries.Sorted := True;
+  ViewUnitEntries := TViewUnitEntries.Create;
   UnitInfos:=nil;
   try
     for i := 0 to Project1.UnitCount-1 do
@@ -6679,8 +6669,7 @@ Begin
       if (AnUnitInfo.IsPartOfProject) and (i<>Project1.MainUnitID) then
       begin
         AName := Project1.RemoveProjectPathFromFilename(AnUnitInfo.FileName);
-        ViewUnitEntries.AddObject(AName,
-                     TViewUnitsEntry.Create(AName,AnUnitInfo.FileName,i,false));
+        ViewUnitEntries.Add(AName,AnUnitInfo.FileName,i,false);
       end;
     end;
     if ShowViewUnitsDlg(ViewUnitEntries, true, MultiSelectCheckedState,
@@ -6688,11 +6677,11 @@ Begin
       exit(mrOk);
     { This is where we check what the user selected. }
     UnitInfos:=TFPList.Create;
-    for i:=0 to ViewUnitEntries.Count-1 do
+    for UEntry in ViewUnitEntries do
     begin
-      if TViewUnitsEntry(ViewUnitEntries.Objects[i]).Selected then
+      if UEntry.Selected then
       begin
-        AnUnitInfo:=Project1.Units[TViewUnitsEntry(ViewUnitEntries.Objects[i]).ID];
+        AnUnitInfo:=Project1.Units[UEntry.ID];
         if AnUnitInfo.IsPartOfProject then
           UnitInfos.Add(AnUnitInfo);
       end;
@@ -6703,8 +6692,6 @@ Begin
       Result:=mrOk;
   finally
     UnitInfos.Free;
-    for i := 0 to ViewUnitEntries.Count-1 do
-      TViewUnitsEntry(ViewUnitEntries.Objects[i]).Free;
     ViewUnitEntries.Free;
   end;
 end;

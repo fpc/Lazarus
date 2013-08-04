@@ -40,7 +40,7 @@ interface
 uses
   SysUtils, Classes, Math, Controls, Forms, Dialogs, Buttons, StdCtrls,
   LazarusIdeStrConsts, IDEProcs, CustomFormEditor, LCLType, LCLIntf, LMessages,
-  ExtCtrls, ButtonPanel, Menus, StrUtils, AVL_Tree, ImgList, ComCtrls,
+  ExtCtrls, ButtonPanel, Menus, StrUtils, AVL_Tree, contnrs, ImgList, ComCtrls,
   PackageDefs, IDEWindowIntf, IDEHelpIntf, IDEImagesIntf, ListFilterEdit,
   CodeToolsStructs, CodeToolManager, FileProcs, lazutf8sysutils, LazFileUtils,
   LazLogger;
@@ -61,6 +61,37 @@ type
     Selected: boolean;
     Filename: string;
     constructor Create(const AName, AFilename: string; AnID: integer; ASelected: boolean);
+  end;
+
+  { TViewUnitsEntryEnumerator }
+
+  TViewUnitsEntryEnumerator = class
+  private
+    FTree: TAVLTree;
+    FCurrent: TAVLTreeNode;
+    function GetCurrent: TViewUnitsEntry;
+  public
+    constructor Create(Tree: TAVLTree);
+    function MoveNext: boolean;
+    property Current: TViewUnitsEntry read GetCurrent;
+  end;
+
+  { TViewUnitEntries }
+
+  TViewUnitEntries = class
+  private
+    fItems: TStringToPointerTree; // tree of TViewUnitsEntry
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function Add(AName, AFilename: string; AnID: integer; ASelected: boolean): TViewUnitsEntry;
+    function Find(const aName: string): TViewUnitsEntry; inline;
+    function Count: integer; inline;
+    function GetFiles: TStringList;
+    function GetNames: TStringList;
+    function GetEntries: TFPList;
+    function GetEnumerator: TViewUnitsEntryEnumerator;
   end;
 
   { TViewUnitDialog }
@@ -97,6 +128,7 @@ type
     fSearchDirectories: TFilenameToStringTree; // queued directories to search
     fSearchFiles: TFilenameToStringTree; // queued files to search
     fFoundFiles: TFilenameToStringTree; // filename to caption
+    fEntries: TViewUnitEntries;
     procedure SetIdleConnected(AValue: boolean);
     procedure SetItemType(AValue: TIDEProjectItem);
     procedure SetSortAlphabetically(const AValue: boolean);
@@ -104,28 +136,27 @@ type
     constructor Create(TheOwner: TComponent); override;
     procedure Init(const aCaption: string;
       AllowMultiSelect, EnableMultiSelect: Boolean; aItemType: TIDEProjectItem;
-      Entries: TStringList; aStartFilename: string = '');
+      TheEntries: TViewUnitEntries; aStartFilename: string = '');
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
     property ItemType: TIDEProjectItem read FItemType write SetItemType;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
 
 // Entries is a list of TViewUnitsEntry(s)
-function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
+function ShowViewUnitsDlg(Entries: TViewUnitEntries; AllowMultiSelect: boolean;
   var CheckMultiSelect: Boolean; const aCaption: string; ItemType: TIDEProjectItem;
-  StartFilename: string = ''): TModalResult;
+  StartFilename: string = '' // if StartFilename is given the Entries are automatically updated
+  ): TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
+function ShowViewUnitsDlg(Entries: TViewUnitEntries; AllowMultiSelect: boolean;
   var CheckMultiSelect: Boolean; const aCaption: string;
   ItemType: TIDEProjectItem; StartFilename: string): TModalResult;
 var
   ViewUnitDialog: TViewUnitDialog;
-  UEntry: TViewUnitsEntry;
-  i: integer;
 begin
   ViewUnitDialog:=TViewUnitDialog.Create(nil);
   try
@@ -134,17 +165,113 @@ begin
     // Show the dialog
     Result:=ViewUnitDialog.ShowModal;
     if Result=mrOk then begin
-      // Return new selections from the dialog
-      ViewUnitDialog.FilterEdit.StoreSelection;
-      for i:=0 to Entries.Count-1 do begin
-        UEntry:=TViewUnitsEntry(Entries.Objects[i]);
-        UEntry.Selected:=ViewUnitDialog.FilterEdit.SelectionList.IndexOf(UEntry.Name)>-1;
-      end;
       CheckMultiSelect := ViewUnitDialog.mniMultiselect.Checked;
     end;
   finally
     ViewUnitDialog.Free;
   end;
+end;
+
+{ TViewUnitsEntryEnumerator }
+
+function TViewUnitsEntryEnumerator.GetCurrent: TViewUnitsEntry;
+begin
+  Result:=TViewUnitsEntry(PStringToPointerTreeItem(FCurrent.Data)^.Value);
+end;
+
+constructor TViewUnitsEntryEnumerator.Create(Tree: TAVLTree);
+begin
+  FTree:=Tree;
+end;
+
+function TViewUnitsEntryEnumerator.MoveNext: boolean;
+begin
+  if FCurrent=nil then
+    FCurrent:=FTree.FindLowest
+  else
+    FCurrent:=FTree.FindSuccessor(FCurrent);
+  Result:=FCurrent<>nil;
+end;
+
+{ TViewUnitEntries }
+
+// inline
+function TViewUnitEntries.Count: integer;
+begin
+  Result:=fItems.Count;
+end;
+
+// inline
+function TViewUnitEntries.Find(const aName: string): TViewUnitsEntry;
+begin
+  Result:=TViewUnitsEntry(fItems[aName]);
+end;
+
+function TViewUnitEntries.GetFiles: TStringList;
+var
+  S2PItem: PStringToPointerTreeItem;
+begin
+  Result:=TStringList.Create;
+  for S2PItem in fItems do
+    Result.Add(TViewUnitsEntry(S2PItem^.Value).Filename);
+end;
+
+function TViewUnitEntries.GetNames: TStringList;
+var
+  S2PItem: PStringToPointerTreeItem;
+begin
+  Result:=TStringList.Create;
+  for S2PItem in fItems do
+    Result.Add(TViewUnitsEntry(S2PItem^.Value).Name);
+end;
+
+function TViewUnitEntries.GetEntries: TFPList;
+var
+  S2PItem: PStringToPointerTreeItem;
+begin
+  Result:=TFPList.Create;
+  for S2PItem in fItems do
+    Result.Add(TViewUnitsEntry(S2PItem^.Value));
+end;
+
+function TViewUnitEntries.GetEnumerator: TViewUnitsEntryEnumerator;
+begin
+  Result:=TViewUnitsEntryEnumerator.Create(fItems.Tree);
+end;
+
+constructor TViewUnitEntries.Create;
+begin
+  fItems:=TStringToPointerTree.create(false);
+end;
+
+destructor TViewUnitEntries.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TViewUnitEntries.Clear;
+var
+  S2PItem: PStringToPointerTreeItem;
+begin
+  for S2PItem in fItems do
+    TViewUnitsEntry(S2PItem^.Value).Free;
+  fItems.Clear;
+end;
+
+function TViewUnitEntries.Add(AName, AFilename: string; AnID: integer;
+  ASelected: boolean): TViewUnitsEntry;
+var
+  i: Integer;
+begin
+  if Find(AName)<>nil then begin
+    i:=2;
+    while Find(AName+'('+IntToStr(i)+')')<>nil do
+      inc(i);
+    AName:=AName+'('+IntToStr(i)+')';
+  end;
+  Result:=TViewUnitsEntry.Create(AName,AFilename,AnID,ASelected);
+  fItems[AName]:=Result;
 end;
 
 { TViewUnitsEntry }
@@ -168,10 +295,9 @@ begin
 end;
 
 procedure TViewUnitDialog.Init(const aCaption: string; AllowMultiSelect,
-  EnableMultiSelect: Boolean; aItemType: TIDEProjectItem; Entries: TStringList;
-  aStartFilename: string);
+  EnableMultiSelect: Boolean; aItemType: TIDEProjectItem;
+  TheEntries: TViewUnitEntries; aStartFilename: string);
 var
-  i: Integer;
   UEntry: TViewUnitsEntry;
   SearchPath: String;
   p: Integer;
@@ -179,21 +305,18 @@ var
 begin
   Caption:=aCaption;
   ItemType:=aItemType;
+  fEntries:=TheEntries;
   mniMultiselect.Enabled := AllowMultiSelect;
   mniMultiselect.Checked := EnableMultiSelect;
   ListBox.MultiSelect := mniMultiselect.Enabled;
   // Data items
-  for i:=0 to Entries.Count-1 do begin
-    UEntry:=TViewUnitsEntry(Entries.Objects[i]);
+  for UEntry in fEntries do
     FilterEdit.Items.Add(UEntry.Name);
-  end;
   FilterEdit.InvalidateFilter;
   // Initial selection
-  for i:=0 to Entries.Count-1 do begin
-    UEntry:=TViewUnitsEntry(Entries.Objects[i]);
+  for UEntry in fEntries do
     if UEntry.Selected then
       FilterEdit.SelectionList.Add(UEntry.Name);
-  end;
 
   if aStartFilename<>'' then begin
     // init search for units
@@ -333,8 +456,16 @@ begin
 end;
 
 procedure TViewUnitDialog.OKButtonClick(Sender: TObject);
+var
+  S2PItem: PStringToPointerTreeItem;
+  Entry: TViewUnitsEntry;
 Begin
   IDEDialogLayoutList.SaveLayout(Self);
+  FilterEdit.StoreSelection;
+  for S2PItem in fEntries.fItems do begin
+    Entry:=TViewUnitsEntry(S2PItem^.Value);
+    Entry.Selected:=FilterEdit.SelectionList.IndexOf(Entry.Name)>-1;
+  end;
   ModalResult := mrOK;
 End;
 
