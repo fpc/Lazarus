@@ -1431,7 +1431,9 @@ begin
   lImage.X := lImage.X + lTransformX;
   lImage.Y := lImage.Y + lTransformY;
   lImage.Width := lImage.Width * lTransformW;
-  lImage.Height := lImage.Height * lTransformW;
+  lImage.Height := lImage.Height * lTransformH;
+  // Strange hack: No idea why it works ... but helped wmtboc
+  lImage.X := lImage.X - lImage.Width;
 
   // Apply the layer style
   ApplyLayerStyles(lImage);

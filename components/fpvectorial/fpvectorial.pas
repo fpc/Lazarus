@@ -3225,9 +3225,9 @@ begin
     //TCanvas(ADest).Draw(lFinalX, lFinalY, lBitmap);
 
     // with stretch support
-    lFinalW := Round(RasterImage.Width * AMulX);
+    lFinalW := Round(Width * AMulX);
     if lFinalW < 0 then lFinalW := lFinalW * -1;
-    lFinalH := Round(RasterImage.Height * AMulY);
+    lFinalH := Round(Height * AMulY);
     if lFinalH < 0 then lFinalH := lFinalH * -1;
     TCanvas(ADest).StretchDraw(Bounds(lFinalX, lFinalY, lFinalW, lFinalH), lBitmap);
   finally
