@@ -93,7 +93,7 @@ uses
   // help manager
   IDEContextHelpEdit, IDEHelpIntf, IDEHelpManager, CodeHelp, HelpOptions,
   // designer
-  JITForms, ComponentPalette, ComponentList,
+  JITForms, ComponentPalette, ComponentList, CompPagesPopup,
   ObjInspExt, Designer, FormEditor, CustomFormEditor,
   ControlSelection, AnchorEditor, TabOrderDlg, MenuEditorForm,
   // LRT stuff
@@ -429,13 +429,13 @@ type
     procedure DoProjectOptionsBeforeRead(Sender: TObject);
     procedure DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
     procedure OnCompilerOptionsDialogTest(Sender: TObject);
-    function DoTestCompilerSettings(
-                            TheCompilerOptions: TCompilerOptions): TModalResult;
-    function OnCheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions
-        ): TModalResult;
+    function DoTestCompilerSettings(TheCompilerOptions: TCompilerOptions): TModalResult;
+    function OnCheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions): TModalResult;
 
     // ComponentPalette events
     procedure ComponentPaletteClassSelected(Sender: TObject);
+    // Copied from CodeTyphon
+    procedure SelComponentPageButtonClick(Sender: TObject);
 
     // SourceNotebook events
     procedure OnSrcNoteBookActivated(Sender: TObject);
@@ -1911,6 +1911,7 @@ procedure TMainIDE.SetupSpeedButtons;
   end;
 
 begin
+  // Panel for buttons on the left
   MainIDEBar.pnlSpeedButtons := TPanel.Create(OwningComponent);
   with MainIDEBar.pnlSpeedButtons do 
   begin
@@ -1920,6 +1921,18 @@ begin
     Caption := '';
     BevelOuter := bvNone;
     AutoSize := true;
+    Visible := EnvironmentOptions.IDESpeedButtonsVisible;
+  end;
+  // Panel on right side of component palette
+  MainIDEBar.pnlRightSpeedButtons := TPanel.Create(OwningComponent);
+  with MainIDEBar.pnlRightSpeedButtons do
+  begin
+    Name := 'pnlRightSpeedButtons';
+    Parent := MainIDEBar;
+    Align := alRight;
+    Caption := '';
+    BevelOuter := bvNone;
+    Width:=28;
     Visible := EnvironmentOptions.IDESpeedButtonsVisible;
   end;
 
@@ -1955,6 +1968,19 @@ begin
   MainIDEBar.BuildModeSpeedButton.Style:=tbsDropDown;
   MainIDEBar.BuildModeSpeedButton.DropdownMenu:=MainIDEBar.SetBuildModePopupMenu;
   MainIDEBar.SetBuildModePopupMenu.OnPopup := @SetBuildModePopupMenuPopup;
+
+  // Copied from CodeTyphon
+  MainIDEBar.SelComponentPageButton:=TSpeedButton.Create(MainIDEBar.pnlRightSpeedButtons);
+  with MainIDEBar.SelComponentPageButton do
+  begin
+    Name:='PalettePageSelectBtn';
+    Parent:=MainIDEBar.pnlRightSpeedButtons;
+    LoadGlyphFromLazarusResource('SelCompPage');
+    Flat := True;
+    Hint := 'Click to Select Palette Page';
+    SetBounds(1,27,26,26);
+    OnClick := @SelComponentPageButtonClick;
+  end;
 end;
 
 procedure TMainIDE.SetupDialogs;
@@ -4973,6 +4999,26 @@ begin
     Exit;
   end;
   DoShowDesignerFormOfCurrentSrc;
+end;
+
+procedure TMainIDE.SelComponentPageButtonClick(Sender: TObject);
+var
+  zPos: TPoint;
+  btn: TSpeedButton;
+begin
+  btn := Sender as TSpeedButton;
+  zPos:=point(btn.Width,btn.Height);
+  zPos:=btn.ClientToScreen(zPos);
+  if DlgCompPagesPopup=nil then
+    Application.CreateForm(TDlgCompPagesPopup, DlgCompPagesPopup);
+  if not DlgCompPagesPopup.Visible then
+  begin
+    DlgCompPagesPopup.Left:=zPos.x-(DlgCompPagesPopup.Width div 2);
+    DlgCompPagesPopup.Top:=zPos.y-5;
+    DlgCompPagesPopup.FixBounds;
+    DlgCompPagesPopup.Show;
+  end else
+    DlgCompPagesPopup.Close;
 end;
 
 procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);

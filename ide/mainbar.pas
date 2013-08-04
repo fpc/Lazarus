@@ -73,6 +73,7 @@ type
       StepIntoSpeedButton  : TToolButton;
       StepOverSpeedButton  : TToolButton;
       StepOutSpeedButton   : TToolButton;
+    pnlRightSpeedButtons   : TPanel;
 
     NewUnitFormPopupMenu : TPopupMenu;
       NewUFSetDefaultMenuItem: TMenuItem;
@@ -368,6 +369,7 @@ type
 
     // component palette
     ComponentPageControl: TPageControl;
+    SelComponentPageButton: TSpeedButton;
     GlobalMouseSpeedButton: TSpeedButton;
   private
     FOldWindowState: TWindowState;

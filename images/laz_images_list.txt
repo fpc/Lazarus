@@ -113,6 +113,7 @@ menu/menu_view_todo.png
 menu/menu_view_toggle_form_unit.png
 menu/menu_view_units.png
 menu/menu_view_unit_info.png
+menu/SelCompPage.png
 states/state12x12_error.png
 states/state12x12_fatal.png
 states/state12x12_hint.png
