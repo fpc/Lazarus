@@ -1024,6 +1024,8 @@ begin
         ReadSVGBrushStyleWithKeyAndValue(lCurKey, lCurValue, ADestEntity as TvEntityWithPenAndBrush);
       if ADestEntity is TvEntityWithPenBrushAndFont then
         ReadSVGFontStyleWithKeyAndValue(lCurKey, lCurValue, ADestEntity as TvEntityWithPenBrushAndFont);
+      // transform
+      ReadSVGGeneralStyleWithKeyAndValue(lCurKey, lCurValue, ADestEntity);
     end;
   end;
 end;
@@ -1410,6 +1412,9 @@ begin
         AData, lx, ly, lImage.X, lImage.Y);
   ConvertSVGDeltaToFPVDelta(
         AData, lw, lh, lImage.Width, lImage.Height);
+
+  // Apply the layer style
+  ApplyLayerStyles(lImage);
 
   Result := lImage;
 end;
