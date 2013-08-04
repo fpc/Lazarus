@@ -25,7 +25,7 @@ uses
 {$R lazde.res}
 
 begin
-  Application.Title:='Lazarus documentation editor.';
+  Application.Title:='Lazarus documentation editor';
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.Run;

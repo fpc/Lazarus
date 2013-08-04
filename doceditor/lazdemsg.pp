@@ -46,8 +46,8 @@ ResourceString
   SNew         = 'New';
   SInsertLink  = 'Insert link';
   SInsertTable = 'Insert table';
-  SInsertItemizeList = 'Insert itemize list';
-  SInsertEnumerateList = 'Insert enumerate list';
+  SInsertItemizeList = 'Insert bulleted list';
+  SInsertEnumerateList = 'Insert numbered list';
   SInsertPrintShortLink = 'Insert short description link';
   SInsertExampleCode = 'Insert example code';
   SForFile     = ' in file ';
@@ -131,9 +131,8 @@ ResourceString
   sShowPrivateMethods    = 'Show p&rivate methods';
   sWarnIfNoDocumentationNodeFound = 'Warn if no documentation node found';
 
-  sSaveBeforeBuildQuestion = 'You must save changes in "%s" before building. Save?%s' +
-                             'If you press "No" - last changes will not use';
-                             // Please correct this phrase, if it necessary!
+  sSaveBeforeBuildQuestion = 'You have unsaved changes in "%s".%s' +
+                             'They should be saved in order to be visible in built documentation. Save them?';
 { ---------------------------------------------------------------------
     Menu strings
   ---------------------------------------------------------------------}
@@ -158,9 +157,9 @@ ResourceString
   SMenuInsertShortDescLink  = '&Short description link';
   SMenuInsertQuickLink      = '&Quick Link';
   SMenuInsertPrintShort = 'Insert short desc link';
-  SMenuInsertList    = 'Insert list';
-  SMenuInsertItemizeList = 'Itemize list';
-  SMenuInsertEnumerateList = 'Enumerate list';
+  SMenuInsertList    = 'List';
+  SMenuInsertItemizeList = 'Bulleted list';
+  SMenuInsertEnumerateList = 'Numbered list';
 
   SMenuFormat           = 'Format';
   SMenuFormatBold       = '&Bold';
@@ -210,8 +209,8 @@ ResourceString
   SHintInsertLink    = 'Insert link';
   ShintInsertTable   = 'Insert table';
   SHintInsertPrintShortLink = 'Insert a short description link';
-  SHintInsertItemizeList = 'Insert itemize list';
-  SHintInsertEnumerateList = 'Insert enumerate list';
+  SHintInsertItemizeList = 'Insert bulleted list';
+  SHintInsertEnumerateList = 'Insert numbered list';
 
   SMarkSelection     = 'Mark selection %s';
 

@@ -609,7 +609,6 @@ begin
   AInsertPrintShort.Caption:=SMenuInsertShortDescLink;
   AInsertQuickLink.Caption:=SMenuInsertQuickLink;
   Lists.Caption := SMenuInsertList;
-  AInsertPrintShort.Caption:=SHintInsertPrintShortLink;
   AInsertItemizeList.Caption:=SMenuInsertItemizeList;
   AInsertEnumerateList.Caption:=SMenuInsertEnumerateList;
 
