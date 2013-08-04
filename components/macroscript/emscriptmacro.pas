@@ -5,9 +5,9 @@ unit EMScriptMacro;
 interface
 
 uses
-  Classes, SysUtils, SrcEditorIntf, IDEMsgIntf, Controls, SynEdit,
-  EMScriptClasses, Laz2_XMLCfg, uPSRuntime, uPSUtils,
-  LazLoggerBase;
+  Classes, SysUtils, SrcEditorIntf, IDEMsgIntf, LazIDEIntf, IDEOptionsIntf,
+  Controls, SynEdit, EMScriptClasses, EMSStrings, Laz2_XMLCfg, uPSRuntime,
+  uPSUtils, LazLoggerBase, LazFileUtils;
 
 type
 
@@ -64,12 +64,52 @@ type
     property PrivateExec: TEMSTPSExec read FPrivateExec write FPrivateExec;
   end;
 
+  { TEMSConfig }
+
+  TEMSConfig = class(TAbstractIDEEnvironmentOptions)
+  private
+    FSelfTestActive: Boolean;
+    FSelfTestFailed: Integer; // stores EMSVersion that failed
+  protected
+    function GetXmlConf: TRttiXMLConfig;
+  public
+    constructor Create;
+    procedure Init;
+    procedure Load;
+    procedure Save;
+
+    class function GetGroupCaption: string; override;
+    class function GetInstance: TAbstractIDEOptions; override;
+  published
+    property SelfTestActive: Boolean read FSelfTestActive write FSelfTestActive;
+    property SelfTestFailed: Integer read FSelfTestFailed write FSelfTestFailed;
+  end;
+
+function GetEMSConf: TEMSConfig;
+
+const
+  EMSVersion = 1;
 
 implementation
 
 var
   GlobalCompiler: TEMSPSPascalCompiler;
   GlobalExec: TEMSTPSExec;
+  ConfFile: TEMSConfig = nil;
+  ConfFileName: String = '';
+
+const
+  DefaultConfFileName = 'editormacroscript.cfg';
+
+function GetConfFileName: String;
+begin
+  Result := ConfFileName;
+  if Result <> '' then
+    exit;
+  ConfFileName := AppendPathDelim(LazarusIDE.GetPrimaryConfigPath) + DefaultConfFileName;
+  LazarusIDE.CopySecondaryConfigFile(DefaultConfFileName);
+  Result := ConfFileName;
+end;
 
 { Create global objects }
 
@@ -81,6 +121,81 @@ end;
 procedure CreateExec;
 begin
   GlobalExec := TEMSTPSExec.Create;
+end;
+
+function GetEMSConf: TEMSConfig;
+begin
+  Result := ConfFile;
+  if Result <> nil then
+    exit;
+
+  ConfFile := TEMSConfig.Create;
+  Result := ConfFile;
+end;
+
+{ TEMSConfig }
+
+function TEMSConfig.GetXmlConf: TRttiXMLConfig;
+var
+  fn: String;
+begin
+  fn := GetConfFileName;
+  if (not FileExistsUTF8(fn)) then
+    Result := TRttiXMLConfig.CreateClean(fn)
+  else
+    Result := TRttiXMLConfig.Create(fn);
+end;
+
+constructor TEMSConfig.Create;
+begin
+  Init;
+end;
+
+procedure TEMSConfig.Init;
+begin
+  FSelfTestActive := False;
+  SelfTestFailed := 0;
+end;
+
+procedure TEMSConfig.Load;
+var
+  def: TEMSConfig;
+  cfg: TRttiXMLConfig;
+begin
+  cfg := GetXmlConf;
+  def := TEMSConfig.Create;
+  try
+    cfg.ReadObject('EMS/Settings/', Self, def);
+  finally
+    cfg.Free;
+    def.Free;
+  end;
+end;
+
+procedure TEMSConfig.Save;
+var
+  def: TEMSConfig;
+  cfg: TRttiXMLConfig;
+begin
+  cfg := GetXmlConf;
+  def := TEMSConfig.Create;
+  try
+    cfg.WriteObject('EMS/Settings/', Self, def);
+    cfg.Flush;
+  finally
+    cfg.Free;
+    def.Free;
+  end;
+end;
+
+class function TEMSConfig.GetGroupCaption: string;
+begin
+  Result := EMSEditorMacroTitle;
+end;
+
+class function TEMSConfig.GetInstance: TAbstractIDEOptions;
+begin
+  Result := GetEMSConf;
 end;
 
 { TEMSEditorMacro }
@@ -335,6 +450,7 @@ initialization
 finalization
   FreeAndNil(GlobalExec);
   FreeAndNil(GlobalCompiler);
+  FreeAndNil(ConfFile);
 
 end.
 

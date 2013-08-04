@@ -40,6 +40,9 @@ type
 
   function DoSelfTest: Boolean;
 
+var
+  SelfTestErrorMsg: String;
+
 implementation
 
 {%region RegisterSelfTests}
@@ -528,7 +531,8 @@ var
   end;
 
 begin
-  Result := True;
+  Result := False;
+  SelfTestErrorMsg := '';
   try
     try
     m := TEMSelfTestEditorMacro.Create(nil);
@@ -762,12 +766,16 @@ begin
             'Test XYZ XYZde 123'
             );
 
+      Result := True;
     finally
       FreeAndNil(m);
       FreeAndNil(syn);
     end;
   except
-    Result := False;
+    on E: Exception do begin
+        SelfTestErrorMsg := E.Message;
+        Result := False;
+      end;
   end;
 end;
 
