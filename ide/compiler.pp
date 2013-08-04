@@ -769,35 +769,45 @@ function TCompilerOptReader.ParseI(aLines: TStringList): TModalResult;
 const
   Supported = 'Supported ';
 var
-  i: Integer;
+  i, j: Integer;
   s, Line, TrimmedLine: String;
-  Category: TStringList;
+  Category, sl: TStringList;
 begin
   Result := mrOK;
   Category := Nil;
-  for i := 0 to aLines.Count-1 do
-  begin
-    Line := aLines[i];
-    TrimmedLine := Trim(Line);
-    if Assigned(Category) then
+  sl := TStringList.Create;
+  try
+    sl.StrictDelimiter := True;
+    sl.Delimiter := ',';
+    for i := 0 to aLines.Count-1 do
     begin
-      if TrimmedLine = '' then
-        Category := Nil             // End of category.
-      else begin
-        if Line[1] <> ' ' then
-          raise Exception.Create('TCompilerReader.ParseI: Line should start with a space.');
-        Category.Add(Trim(Line));
+      Line := aLines[i];
+      TrimmedLine := Trim(Line);
+      if Assigned(Category) then
+      begin
+        if TrimmedLine = '' then
+          Category := Nil             // End of category.
+        else begin
+          if Line[1] <> ' ' then
+            raise Exception.Create('TCompilerReader.ParseI: Line should start with a space.');
+          sl.Clear;
+          sl.DelimitedText := Trim(Line);
+          for j := 0 to sl.Count-1 do
+            Category.Add(sl[j]);
+        end;
+      end
+      else if AnsiStartsStr(Supported, Line) then
+      begin
+        Category := TStringList.Create;
+        Category.Add('');      // First an empty string. Allows removing selection.
+        s := Copy(Line, Length(Supported)+1, Length(Line));
+        fSupportedCategories.AddObject(s, Category);
       end;
-    end
-    else if AnsiStartsStr(Supported, Line) then
-    begin
-      Category := TStringList.Create;
-      Category.Add('');      // First an empty string. Allows removing selection.
-      s := Copy(Line, Length(Supported)+1, Length(Line));
-      fSupportedCategories.AddObject(s, Category);
     end;
+    fSupportedCategories.Sorted := True;
+  finally
+    sl.Free;
   end;
-  fSupportedCategories.Sorted := True;
 end;
 
 procedure TCompilerOptReader.ReadVersion(s: string);
