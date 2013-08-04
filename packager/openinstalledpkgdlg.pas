@@ -60,20 +60,21 @@ type
     procedure UpdatePackageList;
   end;
   
-function ShowOpenLoadedPkgDlg(var OpenPackage: TLazPackage): TModalResult;
+function ShowOpenLoadedPkgDlg(out OpenPackage: TLazPackage): TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowOpenLoadedPkgDlg(var OpenPackage: TLazPackage): TModalResult;
+function ShowOpenLoadedPkgDlg(out OpenPackage: TLazPackage): TModalResult;
 begin
+  OpenPackage:=nil;
   with TOpenLoadedPackagesDlg.Create(nil) do
   try
     UpdatePackageList;
     UpdateSelection;
     Result:=ShowModal;
-    if Result=mrOK then
+    if (Result=mrOK) and (Package<>nil) then
       OpenPackage:=Package
     else
       OpenPackage:=nil;
