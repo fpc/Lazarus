@@ -44,7 +44,8 @@ uses
   {$ELSE}
   OutputFilter,
   {$ENDIF}
-  UTF8Process, InfoBuild, IDEMsgIntf, CompOptsIntf, IDEExternToolIntf;
+  UTF8Process, InfoBuild, IDEMsgIntf, CompOptsIntf, IDEExternToolIntf,
+  DefineTemplates;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean) of object;
@@ -703,66 +704,19 @@ function TCompilerOptReader.ReadFpcWithParam(aParam: string; aLines: TStringList
 // fpc -Fr$(FPCMsgFile) -h
 // fpc -Fr$(FPCMsgFile) -i
 var
-  proc: TProcessUTF8;
-  OutStream: TMemoryStream;
-
-  function ReadOutput: boolean;
-  // returns true if output was actually read
-  const
-    BufSize = 4096;
-  var
-    Buffer: array[0..BufSize-1] of byte;
-    ReadBytes: integer;
-  begin
-    Result := false;
-    while proc.Output.NumBytesAvailable>0 do
-    begin
-      ReadBytes := proc.Output.Read(Buffer{%H-}, BufSize);
-      OutStream.Write(Buffer, ReadBytes);
-      Result := true;
-    end;
-  end;
-
-  function GetOutput: string;
-  begin
-    SetLength(Result, OutStream.Size);
-    OutStream.Seek(0,soBeginning);
-    OutStream.Read(Result[1],Length(Result));
-  end;
-
+  Lines: TStringList;
 begin
-  proc := TProcessUTF8.Create(Nil);
-  OutStream := TMemoryStream.Create;
-  try
-    if fCompilerExecutable = '' then
-      fCompilerExecutable := 'fpc';        // Let's hope "fpc" is found in PATH.
-    proc.Executable := fCompilerExecutable;
-    proc.Parameters.Add(aParam);
-    proc.Options:= [poUsePipes, poStdErrToOutput];
-    //proc.ShowWindow := swoHide;
-    proc.ShowWindow := swoShowNormal;
-    //proc.CurrentDirectory := WorkingDir;
-    proc.Execute;
-    while proc.Running do
-      if not ReadOutput then
-        Sleep(100);
-    ReadOutput;
-    Result := proc.ExitStatus;
-    if Result<>0 then
-    begin
-      fErrorMsg := Format('fpc %s failed: Result %d' + LineEnding + '%s',
-                          [aParam, Result, GetOutput]);
-      Result := mrCancel;
-    end
-    else begin
-      OutStream.Seek(0,soBeginning);
-      aLines.LoadFromStream(OutStream);
-      Result := mrOK;
-    end;
-  finally
-    OutStream.Free;
-    proc.Free;
-  end;
+  if fCompilerExecutable = '' then
+    fCompilerExecutable := 'fpc';        // Let's hope "fpc" is found in PATH.
+
+  Lines:=RunTool(fCompilerExecutable,aParam);
+  if Lines<>nil then
+  begin
+    aLines.AddStrings(Lines);
+    Lines.Free;
+    Result:=mrOk;
+  end else
+    Result:=mrCancel;
 end;
 
 function TCompilerOptReader.ParseI(aLines: TStringList): TModalResult;
