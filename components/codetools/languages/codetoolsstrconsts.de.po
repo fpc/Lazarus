@@ -262,9 +262,7 @@ msgstr "Designer-Units"
 
 #: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr ""
-"ein Verzeichniseintrag in %s ist nicht vorhanden oder es ist ein toter "
-"Symlink"
+msgstr "ein Verzeichniseintrag in %s ist nicht vorhanden oder es ist ein toter Symlink"
 
 #: codetoolsstrconsts.ctsdircomponentisnotdir
 msgid "a directory component in %s is not a directory"
@@ -682,12 +680,8 @@ msgid "No scanner available"
 msgstr "Kein Scanner verfügbar"
 
 #: codetoolsstrconsts.ctsnoscannerfound
-msgid ""
-"No scanner found for \"%s\". If this is an include file, please open the "
-"main source first."
-msgstr ""
-"Kein Scanner für \"%s\" gefunden. Wenn das eine Include-Datei ist, öffnen "
-"Sie bitte zuerst die Haupt-Quelltextdatei."
+msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
+msgstr "Kein Scanner für \"%s\" gefunden. Wenn das eine Include-Datei ist, öffnen Sie bitte zuerst die Haupt-Quelltextdatei."
 
 #: codetoolsstrconsts.ctsnotenoughgenparams
 msgid "Not enough actual generic parameters"
@@ -822,9 +816,7 @@ msgstr "Quelle ist keine Unit"
 #: codetoolsstrconsts.ctssourcenotfoundunit
 #| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
-msgstr ""
-"Quelltext nicht gefunden: Unit %s. Überprüfen Sie das FPC-"
-"Quelltextverzeichnis."
+msgstr "Quelltext nicht gefunden: Unit %s. Überprüfen Sie das FPC-Quelltextverzeichnis."
 
 #: codetoolsstrconsts.ctssourceofunitnotfound
 msgid "source of unit not found: %s"
@@ -916,8 +908,7 @@ msgstr "unerwartetes Schlüsselwort \"%s\" in Begin..End gefunden"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordwhilereadingbackwards
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
-msgstr ""
-"unerwartetes Schlüsselwort \"%s\" beim Rückwärtslesen der Blocks gefunden"
+msgstr "unerwartetes Schlüsselwort \"%s\" beim Rückwärtslesen der Blocks gefunden"
 
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
@@ -970,3 +961,4 @@ msgstr "Widget-Verzeichnis"
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"
 msgstr "\"%s\" nicht gefunden"
+
