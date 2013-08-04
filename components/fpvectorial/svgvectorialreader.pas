@@ -301,7 +301,7 @@ begin
     0: // Adding to the tmp string
     begin
       lCurChar := AStr[i];
-      if lCurChar in [Str_Space, Str_Start_Params, Str_End_Params] then
+      if lCurChar in [Str_Start_Params, Str_End_Params] then
       begin
         lState := 1;
         // Add the token
