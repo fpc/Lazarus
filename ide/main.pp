@@ -10905,8 +10905,13 @@ var ActiveSrcEdit: TSourceEditor;
       Line := ActiveSrcEdit.EditorComponent.Lines.Strings[XY.Y - 1];
       Len := Length(Line);
       if (XY.X >= 1) and (XY.X <= Len + 1) then begin
-        StopChars := [',',';',':','[',']','{','}','(',')',' ','''','"','`'
+        StopChars := [',',';',':','[',']','{','}','(',')','''','"','`'
                      ,'#','%','=','>'];
+        Stop := XY.X;
+        while (Stop >= 1) and (not (Line[Stop] in ['''','"','`'])) do
+          dec(Stop);
+        if Stop<1 then
+          StopChars:=StopChars+[' ',#9]; // no quotes in front => use spaces as boundaries
         Stop := XY.X;
         while (Stop <= Len) and (not (Line[Stop] in StopChars)) do
           Inc(Stop);
