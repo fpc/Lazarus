@@ -28,8 +28,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure TreeView1Click(Sender: TObject);
   private
-    fDirForPkgs:string;
-    //----------------------------------
     fPopupItemIndy,
     fPopupItemGLScene,
     fPopupItemCindy,
