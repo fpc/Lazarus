@@ -5660,56 +5660,6 @@ var
     end;
   end;
 
-  function CheckLFMBaseClass(aFilename: string): TPFComponentBaseClass;
-  var
-    LFMFilename: String;
-    LFMType: String;
-    LFMComponentName: String;
-    LFMClassName: String;
-    Code: TCodeBuffer;
-    Tool: TCodeTool;
-    ClassNode: TCodeTreeNode;
-    ListOfPFindContext: TFPList;
-    i: Integer;
-    Context: PFindContext;
-    AClassName: String;
-  begin
-    Result:=pfcbcNone;
-    if not FilenameIsPascalUnit(aFilename) then exit;
-    if not FilenameIsAbsolute(aFilename) then exit;
-    LFMFilename:=ChangeFileExt(aFilename,'.lfm');
-    if not FileExistsCached(LFMFilename) then exit;
-    if not FileExistsCached(aFilename) then exit;
-    if not ReadLFMHeaderFromFile(LFMFilename,LFMType,LFMComponentName,LFMClassName)
-    then exit;
-    Code:=CodeToolBoss.LoadFile(aFilename,true,false);
-    if Code=nil then exit;
-    if not CodeToolBoss.Explore(Code,Tool,false,true) then exit;
-    try
-      ClassNode:=Tool.FindClassNodeInInterface(LFMClassName,true,false,false);
-      if ClassNode=nil then exit;
-      ListOfPFindContext:=nil;
-      try
-        Tool.FindClassAndAncestors(ClassNode,ListOfPFindContext,false);
-        if ListOfPFindContext=nil then exit;
-        for i:=0 to ListOfPFindContext.Count-1 do begin
-          Context:=PFindContext(ListOfPFindContext[i]);
-          AClassName:=Context^.Tool.ExtractClassName(Context^.Node,false);
-          //debugln(['CheckLFMBaseClass ',AClassName]);
-          if CompareText(AClassName,'TFrame')=0 then
-            exit(pfcbcFrame)
-          else if CompareText(AClassName,'TForm')=0 then
-            exit(pfcbcForm)
-          else if CompareText(AClassName,'TDataModule')=0 then
-            exit(pfcbcDataModule);
-        end;
-      finally
-        FreeListOfPFindContext(ListOfPFindContext);
-      end;
-    except
-    end;
-  end;
-
   procedure AddUnit(AnUnitName,AFilename: string);
   var
     LFMFilename: String;
@@ -5747,7 +5697,7 @@ var
       if not ResourceFits(PkgFile.ResourceBaseClass) then begin
         if PkgFile.ResourceBaseClass<>pfcbcNone then continue;
         // unknown resource class => check file
-        PkgFile.ResourceBaseClass:=CheckLFMBaseClass(PkgFile.Filename);
+        PkgFile.ResourceBaseClass:=FindLFMBaseClass(PkgFile.Filename);
         if not ResourceFits(PkgFile.ResourceBaseClass) then continue;
       end;
       AddUnit(PkgFile.Unit_Name,PkgFile.Filename);
@@ -5801,7 +5751,7 @@ begin
         if not ResourceFits(AnUnitInfo.ResourceBaseClass) then begin
           if AnUnitInfo.ResourceBaseClass<>pfcbcNone then continue;
           // unknown resource class => check file
-          AnUnitInfo.ResourceBaseClass:=CheckLFMBaseClass(AnUnitInfo.Filename);
+          AnUnitInfo.ResourceBaseClass:=FindLFMBaseClass(AnUnitInfo.Filename);
           if not ResourceFits(AnUnitInfo.ResourceBaseClass) then continue;
         end;
         AddUnit(AnUnitInfo.Unit_Name,AnUnitInfo.Filename);
@@ -5826,7 +5776,7 @@ begin
       inc(i);
     end;
     // show dialog
-    Result := ShowViewUnitsDlg(UnitList, MultiSelect, MultiSelectCheckedState, DlgCaption, ItemType);
+    Result := ShowViewUnitsDlg(UnitList, MultiSelect, MultiSelectCheckedState, DlgCaption, ItemType, ActiveUnitInfo.Filename);
 
     // create list of selected files
     i:=0;
@@ -6684,7 +6634,7 @@ Begin
       end;
     end;
     if ShowViewUnitsDlg(ViewUnitEntries, true, MultiSelectCheckedState,
-          lisRemoveFromProject, IDEImages.LoadImage(16, 'item_unit')) <> mrOk then
+          lisRemoveFromProject, piUnit) <> mrOk then
       exit(mrOk);
     { This is where we check what the user selected. }
     UnitInfos:=TFPList.Create;

@@ -39,9 +39,10 @@ interface
 
 uses
   SysUtils, Classes, Math, Controls, Forms, Dialogs, Buttons, StdCtrls,
-  LazarusIdeStrConsts, LCLType, LCLIntf, LMessages,
-  ExtCtrls, ButtonPanel, Menus, StrUtils, ImgList,
-  IDEWindowIntf, IDEHelpIntf, IDEImagesIntf, ListFilterEdit;
+  LazarusIdeStrConsts, IDEProcs, CustomFormEditor, LCLType, LCLIntf, LMessages,
+  ExtCtrls, ButtonPanel, Menus, StrUtils, AVL_Tree, ImgList, ComCtrls,
+  PackageDefs, IDEWindowIntf, IDEHelpIntf, IDEImagesIntf, ListFilterEdit,
+  CodeToolsStructs, CodeToolManager, lazutf8sysutils, LazFileUtils, LazLogger;
 
 type
   TIDEProjectItem = (
@@ -69,10 +70,14 @@ type
     mniMultiSelect: TMenuItem;
     OptionsBitBtn: TSpeedButton;
     popListBox: TPopupMenu;
+    ProgressBar1: TProgressBar;
     RemoveBitBtn: TSpeedButton;
     SortAlphabeticallySpeedButton: TSpeedButton;
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure ListboxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure SortAlphabeticallySpeedButtonClick(Sender: TObject);
     procedure OKButtonClick(Sender :TObject);
     procedure HelpButtonClick(Sender: TObject);
@@ -80,26 +85,39 @@ type
     procedure ListboxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MultiselectCheckBoxClick(Sender :TObject);
   private
+    FIdleConnected: boolean;
+    FItemType: TIDEProjectItem;
     FSortAlphabetically: boolean;
     FImageIndex: Integer;
+    fStartFilename: string;
+    fSearchDirectories: TFilenameToStringTree; // queued directories to search
+    fSearchFiles: TFilenameToStringTree; // queued files to search
+    fFoundFiles: TFilenameToStringTree; // filename to caption
+    procedure SetIdleConnected(AValue: boolean);
+    procedure SetItemType(AValue: TIDEProjectItem);
     procedure SetSortAlphabetically(const AValue: boolean);
   public
     constructor Create(TheOwner: TComponent); override;
+    procedure Init(const aCaption: string;
+      AllowMultiSelect, EnableMultiSelect: Boolean; aItemType: TIDEProjectItem;
+      Entries: TStringList; aStartFilename: string = '');
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
+    property ItemType: TIDEProjectItem read FItemType write SetItemType;
+    property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
 
 // Entries is a list of TViewUnitsEntry(s)
 function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
-  var CheckMultiSelect: Boolean; const aCaption: string; aImageIndex: Integer): TModalResult;
-function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
-  var CheckMultiSelect: Boolean; const aCaption: string; ItemType: TIDEProjectItem): TModalResult;
+  var CheckMultiSelect: Boolean; const aCaption: string; ItemType: TIDEProjectItem;
+  StartFilename: string = ''): TModalResult;
 
 implementation
 
 {$R *.lfm}
 
 function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
-  var CheckMultiSelect: Boolean; const aCaption: string; aImageIndex: Integer): TModalResult;
+  var CheckMultiSelect: Boolean; const aCaption: string;
+  ItemType: TIDEProjectItem; StartFilename: string): TModalResult;
 var
   ViewUnitDialog: TViewUnitDialog;
   UEntry: TViewUnitsEntry;
@@ -108,23 +126,8 @@ begin
   ViewUnitDialog:=TViewUnitDialog.Create(nil);
   with ViewUnitDialog do
   try
-    Caption:=aCaption;
-    mniMultiselect.Enabled := AllowMultiSelect;
-    mniMultiselect.Checked := CheckMultiSelect;
-    ListBox.MultiSelect := mniMultiselect.Enabled;
-    if aImageIndex > -1 then FImageIndex:=aImageIndex; // otherwise FImageIndex will stay "0"
-    // Data items
-    for i:=0 to Entries.Count-1 do begin
-      UEntry:=TViewUnitsEntry(Entries.Objects[i]);
-      FilterEdit.Items.Add(UEntry.Name);
-    end;
-    FilterEdit.InvalidateFilter;
-    // Initial selection
-    for i:=0 to Entries.Count-1 do begin
-      UEntry:=TViewUnitsEntry(Entries.Objects[i]);
-      if UEntry.Selected then
-        FilterEdit.SelectionList.Add(UEntry.Name);
-    end;
+    Init(aCaption,AllowMultiSelect,CheckMultiSelect,ItemType,Entries,
+         StartFilename);
     // Show the dialog
     Result:=ShowModal;
     if Result=mrOk then begin
@@ -139,20 +142,6 @@ begin
   finally
     Free;
   end;
-end;
-
-function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
-  var CheckMultiSelect: Boolean; const aCaption: string;
-  ItemType: TIDEProjectItem): TModalResult;
-var
-  i: Integer;
-begin
-  case ItemType of
-    piComponent: i := IDEImages.LoadImage(16, 'item_form');
-    piFrame:    i := IDEImages.LoadImage(16, 'tpanel');
-  else i:=IDEImages.LoadImage(16, 'item_unit');
-  end;
-  Result:=ShowViewUnitsDlg(Entries,AllowMultiSelect,CheckMultiSelect,aCaption,i);
 end;
 
 { TViewUnitsEntry }
@@ -172,13 +161,49 @@ constructor TViewUnitDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   IDEDialogLayoutList.ApplyLayout(Self,450,300);
-  //ActiveControl:=FilterEdit;
-  mniMultiSelect.Caption := dlgMultiSelect;
-  ButtonPanel.OKButton.Caption:=lisMenuOk;
-  ButtonPanel.HelpButton.Caption:=lisMenuHelp;
-  ButtonPanel.CancelButton.Caption:=lisCancel;
-  SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;
-  SortAlphabeticallySpeedButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
+end;
+
+procedure TViewUnitDialog.Init(const aCaption: string; AllowMultiSelect,
+  EnableMultiSelect: Boolean; aItemType: TIDEProjectItem; Entries: TStringList;
+  aStartFilename: string);
+var
+  i: Integer;
+  UEntry: TViewUnitsEntry;
+  SearchPath: String;
+  p: Integer;
+  Dir: String;
+begin
+  Caption:=aCaption;
+  ItemType:=aItemType;
+  mniMultiselect.Enabled := AllowMultiSelect;
+  mniMultiselect.Checked := EnableMultiSelect;
+  ListBox.MultiSelect := mniMultiselect.Enabled;
+  // Data items
+  for i:=0 to Entries.Count-1 do begin
+    UEntry:=TViewUnitsEntry(Entries.Objects[i]);
+    FilterEdit.Items.Add(UEntry.Name);
+  end;
+  FilterEdit.InvalidateFilter;
+  // Initial selection
+  for i:=0 to Entries.Count-1 do begin
+    UEntry:=TViewUnitsEntry(Entries.Objects[i]);
+    if UEntry.Selected then
+      FilterEdit.SelectionList.Add(UEntry.Name);
+  end;
+
+  if aStartFilename<>'' then begin
+    // init search for units
+    // -> get unit search path
+    fStartFilename:=TrimFilename(aStartFilename);
+    SearchPath:=CodeToolBoss.GetCompleteSrcPathForDirectory(ExtractFilePath(fStartFilename));
+    p:=1;
+    while p<=length(SearchPath) do begin
+      Dir:=GetNextDirectoryInSearchPath(SearchPath,p);
+      if Dir<>'' then
+        fSearchDirectories[Dir]:='';
+    end;
+    IdleConnected:=fSearchDirectories.Count>0;
+  end;
 end;
 
 procedure TViewUnitDialog.SortAlphabeticallySpeedButtonClick(Sender: TObject);
@@ -196,6 +221,88 @@ begin
     IDEImages.Images_16.Draw(Canvas, 1, ARect.Top, FImageIndex);
     Canvas.TextRect(ARect, ARect.Left + 20, ARect.Top, Items[Index]);
   end;
+end;
+
+procedure TViewUnitDialog.OnIdle(Sender: TObject; var Done: Boolean);
+
+  procedure CheckFile(aFilename: string);
+  var
+    CompClass: TPFComponentBaseClass;
+  begin
+    case ItemType of
+    piUnit:
+      begin
+        fFoundFiles[aFilename]:=ExtractFileName(aFilename);
+      end;
+    piComponent:
+      begin
+        CompClass:=FindLFMBaseClass(aFilename);
+        if CompClass<>pfcbcNone then begin
+          fFoundFiles[aFilename]:=ExtractFileName(aFilename);
+        end;
+      end;
+    piFrame:
+      begin
+        CompClass:=FindLFMBaseClass(aFilename);
+        if CompClass<>pfcbcFrame then begin
+          fFoundFiles[aFilename]:=ExtractFileName(aFilename);
+        end;
+      end;
+    end;
+  end;
+
+  procedure CheckDirectory(aDirectory: string);
+  begin
+    DebugLn(['CheckDirectory ',aDirectory]);
+  end;
+
+var
+  AVLNode: TAVLTreeNode;
+  StartTime: int64;
+  aFilename: String;
+begin
+  StartTime:=int64(GetTickCount64);
+  while Abs(StartTime-int64(GetTickCount64))<100 do begin
+    AVLNode:=fSearchFiles.Tree.FindLowest;
+    if AVLNode<>nil then begin
+      aFilename:=fSearchFiles.GetNodeData(AVLNode)^.Name;
+      CheckFile(aFilename);
+      fSearchFiles.Remove(aFilename);
+    end else begin
+      AVLNode:=fSearchDirectories.Tree.FindLowest;
+      if AVLNode<>nil then begin
+        aFilename:=fSearchDirectories.GetNodeData(AVLNode)^.Name;
+        CheckDirectory(aFilename);
+        fSearchDirectories.Remove(aFilename);
+      end else
+        break;
+    end;
+  end;
+  // ToDo: update entries from fFoundFiles
+  IdleConnected:=false;
+end;
+
+procedure TViewUnitDialog.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(fSearchDirectories);
+  FreeAndNil(fSearchFiles);
+  FreeAndNil(fFoundFiles);
+  IdleConnected:=false;
+end;
+
+procedure TViewUnitDialog.FormCreate(Sender: TObject);
+begin
+  fSearchDirectories:=TFilenameToStringTree.Create(false);
+  fSearchFiles:=TFilenameToStringTree.Create(false);
+  fFoundFiles:=TFilenameToStringTree.Create(false);
+
+  //ActiveControl:=FilterEdit;
+  mniMultiSelect.Caption := dlgMultiSelect;
+  ButtonPanel.OKButton.Caption:=lisMenuOk;
+  ButtonPanel.HelpButton.Caption:=lisMenuHelp;
+  ButtonPanel.CancelButton.Caption:=lisCancel;
+  SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;
+  SortAlphabeticallySpeedButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
 end;
 
 procedure TViewUnitDialog.OKButtonClick(Sender: TObject);
@@ -238,6 +345,33 @@ begin
   SortAlphabeticallySpeedButton.Down:=SortAlphabetically;
   FilterEdit.SortData:=SortAlphabetically;
   FilterEdit.InvalidateFilter;
+end;
+
+procedure TViewUnitDialog.SetItemType(AValue: TIDEProjectItem);
+begin
+  if FItemType=AValue then Exit;
+  FItemType:=AValue;
+  case ItemType of
+    piComponent: FImageIndex := IDEImages.LoadImage(16, 'item_form');
+    piFrame:    FImageIndex := IDEImages.LoadImage(16, 'tpanel');
+  else FImageIndex:=IDEImages.LoadImage(16, 'item_unit');
+  end;
+  if FImageIndex<0 then FImageIndex:=0;
+end;
+
+procedure TViewUnitDialog.SetIdleConnected(AValue: boolean);
+begin
+  if FIdleConnected=AValue then Exit;
+  FIdleConnected:=AValue;
+  if IdleConnected then begin
+    Application.AddOnIdleHandler(@OnIdle);
+    ProgressBar1.Visible:=true;
+    ProgressBar1.Style:=pbstMarquee;
+  end
+  else begin
+    Application.RemoveOnIdleHandler(@OnIdle);
+    ProgressBar1.Visible:=false;
+  end;
 end;
 
 end.

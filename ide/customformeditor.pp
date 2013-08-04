@@ -44,12 +44,13 @@ uses
   LCLProc, Graphics, Controls, Forms, Menus, Dialogs,
   // IDEIntf
   PropEdits, PropEditUtils, ObjectInspector, IDECommands, FormEditingIntf,
-  UnitResources,
+  UnitResources, IDEOptionsIntf,
   // IDE
   LazarusIDEStrConsts, ControlSelection, Project, JITForms, MainIntf,
   CustomNonFormDesigner, NonControlDesigner, FrameDesigner, ComponentReg,
-  IDEProcs, ComponentEditors, IDEOptionsIntf, IDEDialogs, KeyMapping,
-  EditorOptions, EnvironmentOpts, DesignerProcs;
+  IDEProcs, ComponentEditors, IDEDialogs, CodeCache, CodeToolManager, CodeTree,
+  FindDeclarationTool, KeyMapping, EditorOptions, EnvironmentOpts,
+  DesignerProcs, PackageDefs;
 
 const
   OrdinalTypes = [tkInteger,tkChar,tkEnumeration,tkbool];
@@ -308,6 +309,8 @@ function ComparePersClassNameAndDefPropCacheItem(Key: Pointer;
 
 function TryFreeComponent(var AComponent: TComponent): boolean;
 
+function FindLFMBaseClass(aFilename: string): TPFComponentBaseClass;
+
 procedure RegisterStandardClasses;
 
 var
@@ -326,6 +329,56 @@ function ComparePersClassNameAndDefPropCacheItem(Key: Pointer;
                                      Item: TDefinePropertiesCacheItem): integer;
 begin
   Result:=CompareText(AnsiString(Key),Item.PersistentClassname);
+end;
+
+function FindLFMBaseClass(aFilename: string): TPFComponentBaseClass;
+var
+  LFMFilename: String;
+  LFMType: String;
+  LFMComponentName: String;
+  LFMClassName: String;
+  Code: TCodeBuffer;
+  Tool: TCodeTool;
+  ClassNode: TCodeTreeNode;
+  ListOfPFindContext: TFPList;
+  i: Integer;
+  Context: PFindContext;
+  AClassName: String;
+begin
+  Result:=pfcbcNone;
+  if not FilenameIsPascalUnit(aFilename) then exit;
+  if not FilenameIsAbsolute(aFilename) then exit;
+  LFMFilename:=ChangeFileExt(aFilename,'.lfm');
+  if not FileExistsCached(LFMFilename) then exit;
+  if not FileExistsCached(aFilename) then exit;
+  if not ReadLFMHeaderFromFile(LFMFilename,LFMType,LFMComponentName,LFMClassName)
+  then exit;
+  Code:=CodeToolBoss.LoadFile(aFilename,true,false);
+  if Code=nil then exit;
+  if not CodeToolBoss.Explore(Code,Tool,false,true) then exit;
+  ClassNode:=Tool.FindClassNodeInInterface(LFMClassName,true,false,false);
+  if ClassNode=nil then exit;
+  ListOfPFindContext:=nil;
+  try
+    try
+      Tool.FindClassAndAncestors(ClassNode,ListOfPFindContext,false);
+    except
+    end;
+    if ListOfPFindContext=nil then exit;
+    for i:=0 to ListOfPFindContext.Count-1 do begin
+      Context:=PFindContext(ListOfPFindContext[i]);
+      AClassName:=Context^.Tool.ExtractClassName(Context^.Node,false);
+      //debugln(['CheckLFMBaseClass ',AClassName]);
+      if CompareText(AClassName,'TFrame')=0 then
+        exit(pfcbcFrame)
+      else if CompareText(AClassName,'TForm')=0 then
+        exit(pfcbcForm)
+      else if CompareText(AClassName,'TDataModule')=0 then
+        exit(pfcbcDataModule);
+    end;
+  finally
+    FreeListOfPFindContext(ListOfPFindContext);
+  end;
 end;
 
 procedure RegisterStandardClasses;
