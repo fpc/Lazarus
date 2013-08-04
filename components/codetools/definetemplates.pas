@@ -1228,7 +1228,11 @@ var
   OutLen: Integer;
   LineStart, i: Integer;
 begin
-  if not FileIsExecutable(Filename) then exit(nil);
+  Result:=nil;
+  if not FileIsExecutable(Filename) then
+    exit(nil);
+  if (WorkingDirectory<>'') and not DirPathExists(WorkingDirectory) then
+    exit(nil);
   Result:=TStringList.Create;
   try
     buf:='';
