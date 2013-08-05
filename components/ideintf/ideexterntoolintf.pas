@@ -372,6 +372,7 @@ type
     FExitStatus: integer;
     FFreeData: boolean;
     FGroup: TExternalToolGroup;
+    FResolveMacrosOnExecute: boolean;
     FWorkerDirectory: string;
     FWorkerMessages: TMessageLines;
     FParsers: TFPList; // list of TExtToolParser
@@ -436,6 +437,9 @@ type
     property EnvironmentOverrides: TStrings read FEnvironmentOverrides
       write SetEnvironmentOverrides; // if not empty, then this and IDE's environemnt will be merged and replace Process.Environment
     property CmdLineParams: string read GetCmdLineParams write SetCmdLineParams;
+    function ResolveMacros: boolean; virtual; abstract; // resolve macros in Process.Executable, Process.CurrentDirectory, Process.Params, Process.Environment on Execute
+    property ResolveMacrosOnExecute: boolean read FResolveMacrosOnExecute
+      write FResolveMacrosOnExecute;
     property Stage: TExternalToolStage read FStage;
     procedure Execute; virtual; abstract;
     procedure Terminate; virtual; abstract;

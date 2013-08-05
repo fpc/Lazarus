@@ -4184,17 +4184,13 @@ var
   ProgramFilename, Params: string;
   Filename: String;
   CurCommand: String;
-  {$IFDEF EnableNewExtTools}
-  Tool: TAbstractExternalTool;
-  {$ELSE}
   ExtTool: TIDEExternalToolOptions;
-  {$ENDIF}
 begin
+  Result:=mrCancel;
+
   CurCommand:=GetParsedCommand;
-  if CurCommand='' then begin
-    Result:=mrOk;
-    exit;
-  end;
+  if CurCommand='' then
+    exit(mrOk);
 
   if SourceEditorManagerIntf<>nil then
     SourceEditorManagerIntf.ClearErrorLines;
@@ -4205,42 +4201,35 @@ begin
     if Filename<>'' then ProgramFilename:=Filename;
   end;
 
-  {$IFDEF EnableNewExtTools}
-  Tool:=ExternalToolList.Add(ToolTitle);
-  Tool.Process.Executable:=ProgramFilename;
-  Tool.Process.CurrentDirectory:=WorkingDir;
-  Tool.CmdLineParams:=Params;
-  if ScanForFPCMessages then
-    Tool.AddParsers(SubToolFPC);
-  if ScanForMakeMessages then
-    Tool.AddParsers(SubToolMake);
-  if ShowAllMessages then
-    Tool.AddParsers(SubToolDefault);
-  Tool.Execute;
-  Tool.WaitForExit;
-  if Tool.ErrorMessage<>'' then
-    Result:=mrCancel
-  else
-    Result:=mrOk;
-  {$ELSE}
   ExtTool:=TIDEExternalToolOptions.Create;
   try
+    ExtTool.Title:=ToolTitle;
+    ExtTool.WorkingDirectory:=WorkingDir;
+    ExtTool.CmdLineParams:=Params;
+    {$IFDEF EnableNewExtTools}
+    ExtTool.Executable:=ProgramFilename;
+    if ScanForFPCMessages then
+      ExtTool.Scanners.Add(SubToolFPC);
+    if ScanForMakeMessages then
+      ExtTool.Scanners.Add(SubToolMake);
+    if ExtTool.Scanners.Count=0 then
+      ExtTool.Scanners.Add(SubToolDefault);
+    // run
+    if RunExternalTool(ExtTool) then
+      Result:=mrOk;
+    {$ELSE}
     ExtTool.Filename:=ProgramFilename;
     ExtTool.ScanOutputForFPCMessages:=ScanForFPCMessages;
     ExtTool.ScanOutputForMakeMessages:=ScanForMakeMessages;
     ExtTool.ScanOutput:=true;
     ExtTool.ShowAllOutput:=ShowAllMessages;
-    ExtTool.Title:=ToolTitle;
-    ExtTool.WorkingDirectory:=WorkingDir;
-    ExtTool.CmdLineParams:=Params;
-
     // run
     Result:=RunExternalTool(ExtTool);
+    {$ENDIF}
   finally
     // clean up
     ExtTool.Free;
   end;
-  {$ENDIF}
 end;
 
 procedure TCompilationToolOptions.IncreaseChangeStamp;

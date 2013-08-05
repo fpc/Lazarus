@@ -542,49 +542,22 @@ function TExternalToolMenuItems.Run(Index: integer; ShowAbort: boolean
   ): TModalResult;
 var
   Item: TExternalToolMenuItem;
-
-  function ResolveMacros(const Value: string; out NewValue: string): boolean;
-  begin
-    NewValue:=Value;
-    Result:=GlobalMacroList.SubstituteStr(NewValue);
-    if not Result then exit;
-    Run:=IDEMessageDialogAb('Invalid macro','Invalid macro in tool "'+Item.Title+'":'#13+Value,
-      mtError,[mbCancel],ShowAbort);
-  end;
-
-var
-  Tool: TAbstractExternalTool;
-  Executable: String;
-  CmdLineParams: string;
-  WorkingDirectory: string;
-  i: Integer;
-  s: String;
-  EnvironmentOverrides: TStringList;
+  Tool: TIDEExternalToolOptions;
 begin
   Result:=mrCancel;
   Item:=Items[Index];
-  if not ResolveMacros(Item.Filename,Executable) then exit;
-  if not ResolveMacros(Item.CmdLineParams,CmdLineParams) then exit;
-  if not ResolveMacros(Item.WorkingDirectory,WorkingDirectory) then exit;
-  EnvironmentOverrides:=TStringList.Create;
+
+  Tool:=TIDEExternalToolOptions.Create;
   try
-    for i:=0 to Item.EnvironmentOverrides.Count-1 do begin
-      if not ResolveMacros(Item.EnvironmentOverrides[i],s) then exit;
-      if s<>'' then
-        EnvironmentOverrides.Add(s);
-    end;
-    Tool:=ExternalToolList.Add(Item.Title);
-    Tool.Process.Executable:=Item.Title;
-    Tool.Process.CurrentDirectory:=WorkingDirectory;
-    Tool.CmdLineParams:=CmdLineParams;
-    for i:=0 to Item.Scanners.Count-1 do
-      Tool.AddParsers(Item.Scanners[i]);
-    Tool.EnvironmentOverrides:=EnvironmentOverrides;
-    Tool.Execute;
-    if Tool.ParserCount>0 then
-      Tool.WaitForExit;
+    Tool.Executable:=Item.Filename;
+    Tool.WorkingDirectory:=Item.WorkingDirectory;
+    Tool.CmdLineParams:=Item.CmdLineParams;
+    Tool.EnvironmentOverrides:=Item.EnvironmentOverrides;
+    Tool.Scanners:=Item.Scanners;
+    Tool.ResolveMacros:=true;
+    if not RunExternalTool(Tool) then exit;
   finally
-    EnvironmentOverrides.Free;
+    Tool.Free;
   end;
 end;
 
