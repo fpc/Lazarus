@@ -2954,7 +2954,7 @@ help:
 	@$(ECHO) "   codetools      build package CodeTools, requires lazutils"
 	@$(ECHO) "   lcl            build package LCL, requires lazutils"
 	@$(ECHO) "   tools          build lazres, svn2revisioninc, updatepofiles, lrstolfm, requires LCL with nogui widgetset"
-	@$(ECHO) "   basecomponents build lazcontrols, synedit, ideintf, syneditdsgn for the LCL_PLATFORM, requires lcl"
+	@$(ECHO) "   basecomponents build lazcontrols, synedit, ideintf for the LCL_PLATFORM, requires lcl"
 	@$(ECHO) "   bigidecomponents build many extra packages for the LCL_PLATFORM, requires basecomponents"
 	@$(ECHO) "   lhelp          build lhelp, requires bigidecomponents"
 	@$(ECHO) "   starter        build startlazarus, requires basecomponents"
@@ -3004,7 +3004,6 @@ basecomponents:
 	$(MAKE) -C components/lazcontrols
 	$(MAKE) -C components/synedit
 	$(MAKE) -C components/ideintf
-	$(MAKE) -C components/synedit/design
 bigidecomponents:
 	$(MAKE) -C components bigide
 tools:
