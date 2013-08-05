@@ -234,12 +234,21 @@ begin
 end;
 
 function ExtractFileNameOnly(const AFilename: string): string;
-var ExtLen: integer;
+var
+  StartPos: Integer;
+  ExtPos: Integer;
 begin
-  // beware: filename.ext1.ext2
-  Result:=ExtractFilename(AFilename);
-  ExtLen:=length(ExtractFileExt(Result));
-  Result:=copy(Result,1,length(Result)-ExtLen);
+  StartPos:=length(AFilename)+1;
+  while (StartPos>1)
+  and (AFilename[StartPos-1]<>PathDelim)
+  {$IFDEF Windows}and (AFilename[StartPos-1]<>':'){$ENDIF}
+  do
+    dec(StartPos);
+  ExtPos:=length(AFilename);
+  while (ExtPos>=StartPos) and (AFilename[ExtPos]<>'.') do
+    dec(ExtPos);
+  if (ExtPos<StartPos) then ExtPos:=length(AFilename)+1;
+  Result:=copy(AFilename,StartPos,ExtPos-StartPos);
 end;
 
 {$IFDEF darwin}

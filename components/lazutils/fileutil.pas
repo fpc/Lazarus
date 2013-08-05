@@ -23,21 +23,6 @@ maintain compatibility with Delphi's FileUtil unit.
 
 File routines that specifically deal with UTF8 filenames should go into
 the LazFileUtils unit.
-ATM we have too much duplicate code in FileUtil, LazFileUtils and LazUtf8
-
-ToDo:
- - copy all Utf8 file routines to LazFileUtils and
-   in FileUtil inline them to LazFileutils counterparts
-   (The windows implementation of current FileUtil functions
-   deals better with unicode characters outside current codepage,
-   then the old implementations in LazFileUtils that only call Utf8ToSys and vice versa)
-   (This part is in progres...)
- - At a later stage, we might declare the FileUtil versions ot these routines as deprecated
-   and remove them at some point in time
- - Any other functions/procedures that are needed in LazFileUtils too, should be moved
-   to LazFileUtils, and in Fileutil inlined to use LazileUtils counterparts
-
-DO NOT ADD MORE UTF8 RELATED (FILE) ROUTINES TO THIS UNIT !
 
 ***************************************************************************** }
 unit FileUtil;
@@ -97,7 +82,7 @@ function DirectoryIsWritable(const DirectoryName: string): boolean; inline;
 const
   PascalFileExt: array[1..3] of string = ('.pas','.pp','.p');
 
-function ExtractFileNameOnly(const AFilename: string): string;
+function ExtractFileNameOnly(const AFilename: string): string; inline;
 function ExtractFileNameWithoutExt(const AFilename: string): string;
 function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean): integer; overload; inline;
 function CompareFileExt(const Filename, Ext: string): integer; overload; inline;
