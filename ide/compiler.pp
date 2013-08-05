@@ -540,7 +540,7 @@ function TCompilerOptGroup.SelectOption(aOptAndValue: string): Boolean;
 var
   Opt: TCompilerOpt;
   OptStr, Param: string;
-  OptLen: integer;
+  OptLen, ParamLen: integer;
 begin
   Opt := FindOption(aOptAndValue);
   if Assigned(Opt) then
@@ -555,7 +555,15 @@ begin
     else
       OptLen := 3;
     OptStr := Copy(aOptAndValue, 1, OptLen);
-    Param := Copy(aOptAndValue, OptLen+1, Length(aOptAndValue));
+    ParamLen := Length(aOptAndValue) - OptLen;
+    if (ParamLen > 0)
+    and (aOptAndValue[OptLen+1] in ['''', '"'])
+    and (aOptAndValue[Length(aOptAndValue)] in ['''', '"']) then
+    begin
+      Inc(OptLen);                // Strip quotes
+      Dec(ParamLen, 2);
+    end;
+    Param := Copy(aOptAndValue, OptLen+1, ParamLen);
     Opt := FindOption(OptStr);
     if Assigned(Opt) then
       Opt.Value := Param;
@@ -945,6 +953,49 @@ begin
   Result := fRootOptGroup.FindOptionById(aId);
 end;
 
+function SplitBySpace(aStr: string; aStrings: TStrings): Boolean;
+var
+  i, Start: Integer;
+  QuoteChar: Char;
+
+  procedure CopyStr;
+  begin
+    if (Start > -1) and (i > Start) then
+      aStrings.Add(Copy(aStr, Start, i-Start));
+  end;
+
+begin
+  aStrings.Clear;
+  QuoteChar := #0;
+  Start := -1;
+  i := 1;
+  while i <= Length(aStr) do
+  begin
+    if (QuoteChar = #0) and (aStr[i] in [' ', #9]) then
+    begin
+      CopyStr;                         // Copy previous value.
+      while (i <= Length(aStr)) and (aStr[i] in [' ', #9]) do
+        Inc(i);                        // Move to next string.
+    end
+    else begin
+      Start := i;                      // Move to next separator.
+      while i <= Length(aStr) do
+      begin
+        if (aStr[i] in ['''', '"']) then
+        begin
+          if QuoteChar = #0 then       // Toggle quote on/off.
+            QuoteChar := aStr[i]
+          else
+            QuoteChar := #0;
+        end
+        else if (QuoteChar = #0) and (aStr[i] in [' ', #9]) then Break;
+        Inc(i);
+      end;
+    end;
+  end;
+  CopyStr;
+end;
+
 function TCompilerOptReader.FromCustomOptions(aStrings: TStrings): TModalResult;
 var
   i, j, CommentPos: Integer;
@@ -965,9 +1016,7 @@ begin
       HasDefine := Pos('-d', s) > 0;
       if not HasDefine then
         fOtherOptions.Add(s); // Don't split the line for other options if no defines.
-      sl.StrictDelimiter := True;
-      sl.Delimiter := ' ';
-      sl.DelimitedText := s;         // Split the line with space as a separator.
+      SplitBySpace(s, sl);
       for j := 0 to sl.Count-1 do
         if AnsiStartsStr('-d', sl[j]) then
           fDefines.Add(sl[j])
@@ -992,6 +1041,16 @@ function TCompilerOptReader.ToCustomOptions(aStrings: TStrings;
       Result := '    // ' + aRoot.Description
     else
       Result := '';
+  end;
+
+  function QuoteIfNeeded(aStr: string): string;
+  begin
+    if (aStr <> '') and (Pos(' ', aStr) > 0)
+    and not (aStr[1] in ['''', '"'])
+    and not (aStr[Length(aStr)] in ['''', '"']) then
+      Result := '"' + aStr + '"'
+    else
+      Result := aStr;
   end;
 
   procedure CopyOptions(aRoot: TCompilerOpt);
@@ -1020,7 +1079,7 @@ function TCompilerOptReader.ToCustomOptions(aStrings: TStrings;
         if aRoot.Value = 'True' then
           aStrings.Add(aRoot.Option + PossibleComment(aRoot))
         else
-          aStrings.Add(aRoot.Option + aRoot.Value + PossibleComment(aRoot));
+          aStrings.Add(aRoot.Option + QuoteIfNeeded(aRoot.Value) + PossibleComment(aRoot));
       end;
     end;
   end;
