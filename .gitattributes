@@ -148,6 +148,8 @@ components/PascalScript/Samples/TestApp/TestApplication.dpr -text svneol=unset#a
 components/PascalScript/Samples/TestApp/TestApplication.res -text
 components/PascalScript/Samples/TestApp/fMain.dfm -text
 components/PascalScript/Samples/TestApp/fMain.pas svneol=native#text/pascal
+components/PascalScript/Source/Makefile svneol=native#text/plain
+components/PascalScript/Source/Makefile.fpc svneol=native#text/plain
 components/PascalScript/Source/PascalScript.inc svneol=native#text/pascal
 components/PascalScript/Source/PascalScriptFPC.inc svneol=native#text/pascal
 components/PascalScript/Source/PascalScript_Core_Ext_Reg.pas svneol=native#text/pascal
