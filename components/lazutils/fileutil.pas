@@ -135,7 +135,7 @@ function FindDiskFilename(const Filename: string): string;
 function FindDiskFileCaseInsensitive(const Filename: string): string;
 function FindDefaultExecutablePath(const Executable: string): string;
 {$IFDEF darwin}
-function GetDarwinSystemFilename(Filename: string): string;
+function GetDarwinSystemFilename(Filename: string): string; inline;
 {$ENDIF}
 
 type
