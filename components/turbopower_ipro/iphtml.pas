@@ -11414,7 +11414,7 @@ begin
             CurHeight := tmHeight;
           end;
         end;
-        CanBreak := CanBreak and not CurProps.NoBreak;
+        CanBreak := CanBreak and (Assigned(CurProps) and (not CurProps.NoBreak));
         if (Size.cx <= W) then begin {!!.10}
           if CanBreak then
             LastBreakPoint := i;
