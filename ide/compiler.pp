@@ -175,7 +175,6 @@ type
     fCompilerExecutable: string;         // Copiler path must be set by caller.
     fCompilerVersion: string;            // Parsed from "fpc -h".
     fErrorMsg: String;
-    function ReadFpcWithParam(aParam: string; aLines: TStringList): TModalResult;
     procedure ReadVersion(s: string);
     //function FindPrevGroup(aIndent: integer): TCompilerOptGroup;
     function ParseI(aLines: TStringList): TModalResult;
@@ -773,25 +772,6 @@ begin
   inherited Destroy;
 end;
 
-function TCompilerOptReader.ReadFpcWithParam(aParam: string; aLines: TStringList): TModalResult;
-// fpc -Fr$(FPCMsgFile) -h
-// fpc -Fr$(FPCMsgFile) -i
-var
-  Lines: TStringList;
-begin
-  if fCompilerExecutable = '' then
-    fCompilerExecutable := 'fpc';        // Let's hope "fpc" is found in PATH.
-
-  Lines:=RunTool(fCompilerExecutable,aParam);
-  if Lines<>nil then
-  begin
-    aLines.AddStrings(Lines);
-    Lines.Free;
-    Result:=mrOk;
-  end else
-    Result:=mrCancel;
-end;
-
 function TCompilerOptReader.ParseI(aLines: TStringList): TModalResult;
 const
   Supported = 'Supported ';
@@ -915,22 +895,29 @@ begin
 end;
 
 function TCompilerOptReader.ReadAndParseOptions: TModalResult;
+// fpc -Fr$(FPCMsgFile) -h
+// fpc -Fr$(FPCMsgFile) -i
 var
   Lines: TStringList;
 begin
   OptionIdCounter := 0;
-  Lines := TStringList.Create;
+  if fCompilerExecutable = '' then
+    fCompilerExecutable := 'fpc';        // Let's hope "fpc" is found in PATH.
+
+  // FPC with option -i
+  Lines:=RunTool(fCompilerExecutable, '-i');
   try
-    // FPC with option -i
-    Result := ReadFpcWithParam('-i', Lines);
-    if Result <> mrOK then Exit;
+    if Lines = Nil then Exit(mrCancel);
     Result := ParseI(Lines);
     if Result <> mrOK then Exit;
+  finally
+    Lines.Free;
+  end;
 
-    // FPC with option -h
-    Lines.Clear;
-    Result := ReadFpcWithParam('-h', Lines);
-    if Result <> mrOK then Exit;
+  // FPC with option -h
+  Lines:=RunTool(fCompilerExecutable, '-h');
+  try
+    if Lines = Nil then Exit(mrCancel);
     Result := ParseH(Lines);
   finally
     Lines.Free;
