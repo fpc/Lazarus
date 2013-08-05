@@ -906,7 +906,8 @@ begin
   FindCloseUTF8(FileInfo);
 end;
 
-function FindDefaultExecutablePath(const Executable: string): string;
+function FindDefaultExecutablePath(const Executable: string;
+  const BaseDir: string): string;
 begin
   if FilenameIsAbsolute(Executable) then begin
     Result:=Executable;
@@ -918,13 +919,13 @@ begin
     end;
     {$ENDIF}
   end else begin
-    Result:=SearchFileInPath(Executable,'',
+    Result:=SearchFileInPath(Executable,BaseDir,
                              GetEnvironmentVariableUTF8('PATH'), PathSeparator,
                              [sffDontSearchInBasePath]);
     if Result<>'' then exit;
     {$IFDEF Windows}
     if ExtractFileExt(Executable)='' then begin
-      Result:=SearchFileInPath(Executable+'.exe','',
+      Result:=SearchFileInPath(Executable+'.exe',BaseDir,
                                GetEnvironmentVariableUTF8('PATH'), PathSeparator,
                                [sffDontSearchInBasePath]);
       if Result<>'' then exit;
