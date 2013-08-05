@@ -184,8 +184,8 @@ procedure TfrmAllCompilerOptions.RenderAndFilterOptions;
 const
   LeftEdit = 120;
   LeftDescrEdit = 250;
-  LeftDescrBoolean = 120;
-  LeftDescrGroup = 100;
+  LeftDescrBoolean = 140;
+  LeftDescrGroup = 110;
 var
   Opt: TCompilerOpt;
   yLoc: Integer;
@@ -249,26 +249,22 @@ var
   var
     Cntrl, Lbl: TControl;
     cb: TComboBox;
-    i, NewLeft: Integer;
+    i: Integer;
   begin
     for i := 0 to aParentGroup.CompilerOpts.Count-1 do begin
       Opt := TCompilerOpt(aParentGroup.CompilerOpts[i]);
       if Opt.Ignored or not Opt.Visible then Continue;  // Maybe filtered out
       case Opt.EditKind of
         oeGroup, oeSet: begin                   // Label for group or set
-          Cntrl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix{+#9#9+Opt.Description});
-          MakeDescrLabel(Cntrl, LeftDescrGroup);
+          Cntrl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix);
+          MakeDescrLabel(Cntrl, Opt.CalcLeft(LeftDescrGroup, 7));
         end;
         oeBoolean: begin                        // CheckBox
           Cntrl := MakeOptionCntrl(TCheckBox, Opt.Option);
           Assert((Opt.Value='') or (Opt.Value='True'), 'Wrong value in Boolean option '+Opt.Option);
           TCheckBox(Cntrl).Checked := Opt.Value<>'';
-          if Length(Opt.Option) > 9 then
-            NewLeft := LeftDescrBoolean + (Length(Opt.Option)-9)*8
-          else
-            NewLeft := LeftDescrBoolean;
           Cntrl.OnClick := @CheckBoxClick;
-          MakeDescrLabel(Cntrl, NewLeft);
+          MakeDescrLabel(Cntrl, Opt.CalcLeft(LeftDescrBoolean, 11));
         end;
         oeSetElem: begin                        // Sub-item for set, CheckBox
           Cntrl := MakeOptionCntrl(TCheckBox, Opt.Option+Opt.Description);

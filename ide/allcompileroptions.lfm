@@ -11,7 +11,7 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
   object edOptionsFilter: TEdit
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 25
+    Height = 26
     Top = 0
     Width = 98
     OnChange = edOptionsFilterChange
@@ -40,15 +40,15 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 0
-    Height = 424
-    Top = 25
+    Height = 419
+    Top = 26
     Width = 616
     HorzScrollBar.Increment = 61
-    HorzScrollBar.Page = 614
+    HorzScrollBar.Page = 612
     HorzScrollBar.Smooth = True
     HorzScrollBar.Tracking = True
-    VertScrollBar.Increment = 42
-    VertScrollBar.Page = 422
+    VertScrollBar.Increment = 41
+    VertScrollBar.Page = 415
     VertScrollBar.Smooth = True
     VertScrollBar.Tracking = True
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -58,8 +58,8 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 36
-    Top = 455
+    Height = 40
+    Top = 451
     Width = 610
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -78,9 +78,9 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
     AnchorSideTop.Control = btnResetOptionsFilter
     AnchorSideTop.Side = asrCenter
     Left = 156
-    Height = 24
-    Top = 0
-    Width = 133
+    Height = 22
+    Top = 1
+    Width = 166
     BorderSpacing.Left = 29
     Caption = 'Show only modified'
     OnClick = cbShowModifiedClick
@@ -90,10 +90,10 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
     AnchorSideLeft.Control = cbShowModified
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = cbShowModified
-    Left = 318
-    Height = 24
-    Top = 0
-    Width = 206
+    Left = 351
+    Height = 22
+    Top = 1
+    Width = 270
     BorderSpacing.Left = 29
     Caption = 'Use comments in custom options'
     TabOrder = 4

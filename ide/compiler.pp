@@ -108,6 +108,7 @@ type
   public
     constructor Create(aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
+    function CalcLeft(aDefaultLeft, aLimit: integer): integer;
   public
     property Id: integer read fId;
     property Option: string read fOption;
@@ -457,6 +458,17 @@ begin
 }
 end;
 
+function TCompilerOpt.CalcLeft(aDefaultLeft, aLimit: integer): integer;
+var
+  Len: Integer;
+begin
+  Len := (fIndentation div 2) + Length(fOption);      // Approximation
+  if Len > aLimit then
+    Result := aDefaultLeft + (Len-aLimit)*8
+  else
+    Result := aDefaultLeft;
+end;
+
 { TCompilerOptGroup }
 
 constructor TCompilerOptGroup.Create(aOwnerGroup: TCompilerOptGroup);
@@ -722,7 +734,9 @@ begin
         Opt1 := '';
     end;
     if Opt1 <> '' then         // Can be empty when line in help output is split.
-      NewSetElem(Opt1);
+      NewSetElem(Opt1)
+    else if fCompilerOpts.Count > 0 then
+      aIndent := TCompilerOpt(fCompilerOpts[0]).Indentation;
     if Opt2 <> '' then
       NewSetElem(Opt2);
   end;
