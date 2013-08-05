@@ -370,10 +370,14 @@ end;
 function IsIgnoredOption(aOpt: string): Boolean;
 begin
   if Length(aOpt) < 2 then Exit(False);
-  // Ignore : * all file names and paths
+  // Ignore : * information
+  //          * all file names and paths
   //          * executable path
+  //          * change name of produced executable
   //          * define and undefine
-  Result := aOpt[2] in ['F', 'e', 'd', 'u'];
+  //          * set language mode
+  //          * target operating system
+  Result := aOpt[2] in ['i', 'F', 'e', 'o', 'd', 'u', 'M', 'T'];
 end;
 
 { TCompilerOpt }
@@ -588,7 +592,10 @@ begin
   begin
     Opt := TCompilerOpt(fCompilerOpts[i]);
     if Opt.Value <> '' then
-      s := s + Opt.Option;
+      case Opt.EditKind of
+        oeSetElem: s := s + Opt.Option;
+        oeSetNumber: s := s + Opt.Value;
+      end;
   end;
   if s <> '' then
     Result := Option + s;
