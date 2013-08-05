@@ -562,6 +562,7 @@ type
 
     property Title: string read fTitle write fTitle;
     property Executable: string read FExecutable write FExecutable;
+    property Filename: string read FExecutable write FExecutable; deprecated;
     property CmdLineParams: string read fCmdLineParams write fCmdLineParams;
     property WorkingDirectory: string read fWorkingDirectory write fWorkingDirectory;
     property EnvironmentOverrides: TStringList read FEnvironmentOverrides write SetEnvironmentOverrides;

@@ -7554,7 +7554,9 @@ begin
     exit;
   end;
 
+  {$IFNDEF EnableNewExtTools}
   MessagesView.BeginBlock;
+  {$ENDIF}
   ProfileChanged:=false;
   with MiscellaneousOptions do
   try
@@ -7567,10 +7569,12 @@ begin
       PkgCompileFlags:=PkgCompileFlags+[pcfCompileDependenciesClean];
       if BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild then begin
         SourceEditorManager.ClearErrorLines;
-        Result:=MakeLazarus(BuildLazProfiles.Current,ExternalTools,GlobalMacroList,
-                             '',EnvironmentOptions.GetParsedCompilerFilename,
-                             EnvironmentOptions.GetParsedMakeFilename, [blfDontBuild],
-                             ProfileChanged);
+        Result:=MakeLazarus(BuildLazProfiles.Current,
+                         {$IFNDEF EnableNewExtTools}ExternalTools,{$ENDIF}
+                         GlobalMacroList,
+                         '',EnvironmentOptions.GetParsedCompilerFilename,
+                         EnvironmentOptions.GetParsedMakeFilename, [blfDontBuild],
+                         ProfileChanged);
         if Result<>mrOk then begin
           DebugLn('TMainIDE.DoBuildLazarus: Clean all failed.');
           exit;
@@ -7622,10 +7626,12 @@ begin
     // make lazarus ide
     SourceEditorManager.ClearErrorLines;
     IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean];
-    Result:=MakeLazarus(BuildLazProfiles.Current,ExternalTools,GlobalMacroList,
-                         PkgOptions,EnvironmentOptions.GetParsedCompilerFilename,
-                         EnvironmentOptions.GetParsedMakeFilename,IDEBuildFlags,
-                         ProfileChanged);
+    Result:=MakeLazarus(BuildLazProfiles.Current,
+                        {$IFNDEF EnableNewExtTools}ExternalTools,{$ENDIF}
+                        GlobalMacroList,
+                        PkgOptions,EnvironmentOptions.GetParsedCompilerFilename,
+                        EnvironmentOptions.GetParsedMakeFilename,IDEBuildFlags,
+                        ProfileChanged);
     if Result<>mrOk then exit;
 
     if ProfileChanged then
@@ -7634,7 +7640,9 @@ begin
     MainBuildBoss.SetBuildTargetProject1(true);
 
     DoCheckFilesOnDisk;
+    {$IFNDEF EnableNewExtTools}
     MessagesView.EndBlock;
+    {$ENDIF}
 
     if Result in [mrOK, mrIgnore] then
       CompileProgress.Ready(lisinfoBuildSuccess)
@@ -7643,10 +7651,12 @@ begin
   end;
 end;
 
+{$IFNDEF EnableNewExtTools}
 function TMainIDE.ExternalTools: TExternalToolList;
 begin
   Result:=TExternalToolList(EnvironmentOptions.ExternalTools);
 end;
+{$ENDIF}
 
 function TMainIDE.DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult;
 begin
@@ -7728,7 +7738,7 @@ var
   BuildScan: TIDEDirBuildScanFlags;
   ProgramFilename: string;
   Params: string;
-  ExtTool: TExternalToolOptions;
+  ExtTool: TIDEExternalToolOptions;
   Filename: String;
 begin
   Result:=mrCancel;
@@ -7775,18 +7785,30 @@ begin
       exit;
     end;
 
-    ExtTool:=TExternalToolOptions.Create;
+    ExtTool:=TIDEExternalToolOptions.Create;
     try
+      ExtTool.Title:='Build File '+ActiveUnitInfo.Filename;
+      ExtTool.WorkingDirectory:=BuildWorkingDir;
+      ExtTool.CmdLineParams:=Params;
+      {$IFDEF EnableNewExtTools}
+      ExtTool.Executable:=ProgramFilename;
+      if idedbsfFPC in BuildScan then
+        ExtTool.Scanners.Add(SubToolFPC);
+      if idedbsfMake in BuildScan then
+        ExtTool.Scanners.Add(SubToolMake);
+      ExtTool.Scanners.Add(SubToolDefault);
+      if RunExternalTool(ExtTool) then
+        Result:=mrOk
+      else
+        Result:=mrCancel;
+      {$ELSE}
       ExtTool.Filename:=ProgramFilename;
       ExtTool.ScanOutputForFPCMessages:=idedbsfFPC in BuildScan;
       ExtTool.ScanOutputForMakeMessages:=idedbsfMake in BuildScan;
       ExtTool.ScanOutput:=true;
-      ExtTool.Title:='Build File '+ActiveUnitInfo.Filename;
-      ExtTool.WorkingDirectory:=BuildWorkingDir;
-      ExtTool.CmdLineParams:=Params;
-
       // run
       Result:=ExternalTools.Run(ExtTool,GlobalMacroList,true);
+      {$ENDIF}
     finally
       // clean up
       ExtTool.Free;
@@ -7794,12 +7816,8 @@ begin
   finally
     DirectiveList.Free;
   end;
-  Result:=mrOk;
 
-  {if AReason <> crRun then
-    CompileProgress.Ready
-  else}
-    CompileProgress.Close;
+  CompileProgress.Close;
 end;
 
 function TMainIDE.DoRunFile: TModalResult;
@@ -7816,7 +7834,7 @@ var
   RunCommand: String;
   ProgramFilename: string;
   Params: string;
-  ExtTool: TExternalToolOptions;
+  ExtTool: TIDEExternalToolOptions;
   Filename: String;
   DirectiveList: TStringList;
 begin
@@ -7870,6 +7888,7 @@ begin
     SourceEditorManager.ClearErrorLines;
 
     SplitCmdLine(RunCommand,ProgramFilename,Params);
+    {$IFNDEF EnableNewExtTools}
     if not FilenameIsAbsolute(ProgramFilename) then begin
       Filename:=FindProgram(ProgramFilename,RunWorkingDir,true);
       if Filename<>'' then ProgramFilename:=Filename;
@@ -7878,16 +7897,24 @@ begin
       Result:=mrCancel;
       exit;
     end;
+    {$ENDIF}
 
-    ExtTool:=TExternalToolOptions.Create;
+    ExtTool:=TIDEExternalToolOptions.Create;
     try
-      ExtTool.Filename:=ProgramFilename;
       ExtTool.Title:='Run File '+ActiveUnitInfo.Filename;
       ExtTool.WorkingDirectory:=RunWorkingDir;
       ExtTool.CmdLineParams:=Params;
-
+      {$IFDEF EnableNewExtTools}
+      ExtTool.Executable:=ProgramFilename;
+      if RunExternalTool(ExtTool) then
+        Result:=mrOk
+      else
+        Result:=mrCancel;
+      {$ELSE}
+      ExtTool.Filename:=ProgramFilename;
       // run
       Result:=ExternalTools.Run(ExtTool,GlobalMacroList,false);
+      {$ENDIF}
     finally
       // clean up
       ExtTool.Free;
@@ -7895,7 +7922,6 @@ begin
   finally
     DirectiveList.Free;
   end;
-  Result:=mrOk;
 end;
 
 function TMainIDE.DoConfigBuildFile: TModalResult;
