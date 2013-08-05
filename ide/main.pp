@@ -843,7 +843,9 @@ type
 
     // external tools
     function PrepareForCompile: TModalResult; override;
-    function OnRunExternalTool(Tool: TIDEExternalToolOptions): {$IFDEF EnableNewExtTools}boolean{$ELSE}TModalResult{$ENDIF};
+    {$IFNDEF EnableNewExtTools}
+    function OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
+    {$ENDIF}
     function DoRunExternalTool(Index: integer; ShowAbort: Boolean): TModalResult;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoExampleManager: TModalResult; override;
@@ -1341,8 +1343,8 @@ begin
   FWaitForClose := False;
 
   SetupDialogs;
-  RunExternalTool:=@OnRunExternalTool;
   {$IFNDEF EnableNewExtTools}
+  RunExternalTool:=@OnRunExternalTool;
   {$IFDEF UseAsyncProcess}
   if Widgetset.GetLCLCapability(lcAsyncProcess) = 1 then
     TOutputFilterProcess := TAsyncProcess
@@ -4647,7 +4649,13 @@ var
 begin
   if not (Sender is TIDEMenuItem) then exit;
   Index:=itmCustomTools.IndexOf(TIDEMenuItem(Sender))-1;
-  if (Index<0) or (Index>=ExternalTools.Count) then exit;
+  if (Index<0)
+  {$IFDEF EnableNewExtTools}
+  or (Index>=ExternalToolMenuItems.Count)
+  {$ELSE}
+  or (Index>=ExternalTools.Count)
+  {$ENDIF}
+  then exit;
   DoRunExternalTool(Index,false);
 end;
 
@@ -8105,13 +8113,21 @@ var
   var
     CurMenuItem: TIDEMenuItem;
     i, Index: integer;
+    {$IFDEF EnableNewExtTools}
+    ExtTool: TExternalToolMenuItem;
+    {$ELSE}
     ExtTool: TExternalToolOptions;
+    {$ENDIF}
   begin
     i:=1;
     Index:=0;
     while (i<itmCustomTools.Count) do begin
       CurMenuItem:=itmCustomTools[i];
+      {$IFDEF EnableNewExtTools}
+      ExtTool:=ExternalToolMenuItems[Index];
+      {$ELSE}
       ExtTool:=ExternalTools[Index];
+      {$ENDIF}
       CurMenuItem.Caption:=ExtTool.Title;
       if CurMenuItem is TIDEMenuCommand then
         TIDEMenuCommand(CurMenuItem).Command:=
@@ -8123,7 +8139,11 @@ var
   end;
 
 begin
+  {$IFDEF EnableNewExtTools}
+  ToolCount:=ExternalToolMenuItems.Count;
+  {$ELSE}
   ToolCount:=ExternalTools.Count;
+  {$ENDIF}
   CreateToolMenuItems;
   SetToolMenuItems;
 end;
@@ -8148,12 +8168,14 @@ begin
     MainBuildBoss.RescanCompilerDefines(false,false,false,false);
 end;
 
-function TMainIDE.OnRunExternalTool(Tool: TIDEExternalToolOptions): {$IFDEF EnableNewExtTools}boolean{$ELSE}TModalResult{$ENDIF};
+{$IFNDEF EnableNewExtTools}
+function TMainIDE.OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
 begin
   SourceEditorManager.ClearErrorLines;
   Result:=ExternalTools.Run(Tool,GlobalMacroList,false);
   DoCheckFilesOnDisk;
 end;
+{$ENDIF}
 
 function TMainIDE.DoCheckSyntax: TModalResult;
 var
@@ -8179,9 +8201,13 @@ begin
     NewTopLine,ErrorMsg) then
   begin
     SourceFileMgr.ArrangeSourceEditorAndMessageView(false);
+    {$IFDEF EnableNewExtTools}
+    MessagesView.AddCustomMessage(mluImportant,lisMenuQuickSyntaxCheckOk);
+    {$ELSE}
     MessagesView.ClearTillLastSeparator;
     MessagesView.AddSeparator;
     MessagesView.AddMsg(lisMenuQuickSyntaxCheckOk,'',-1);
+    {$ENDIF}
   end else begin
     DoJumpToCodeToolBossError;
   end;
@@ -8454,7 +8480,7 @@ function TMainIDE.DoPublishModule(Options: TPublishModuleOptions;
 var
   SrcDir, DestDir: string;
   NewProjectFilename: string;
-  Tool: TExternalToolOptions;
+  Tool: TIDEExternalToolOptions;
   CommandAfter, CmdAfterExe, CmdAfterParams: string;
   CurProject: TProject;
   TempCmd: String;
@@ -8566,7 +8592,7 @@ begin
   // execute 'CommandAfter'
   if (CmdAfterExe<>'') then begin
     if FileIsExecutableCached(CmdAfterExe) then begin
-      Tool:=TExternalToolOptions.Create;
+      Tool:=TIDEExternalToolOptions.Create;
       Tool.Filename:=CmdAfterExe;
       Tool.Title:=lisCommandAfterPublishingModule;
       Tool.WorkingDirectory:=DestDir;
