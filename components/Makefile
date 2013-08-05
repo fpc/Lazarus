@@ -1472,6 +1472,8 @@ bigide:
 	$(MAKE) -C externhelp
 	$(MAKE) -C tdbf
 	$(MAKE) -C sqldb
+	$(MAKE) -C PascalScript/Source
+	$(MAKE) -C macroscript
 all: bigide
 clean:
 	$(MAKE) -C lazutils clean
@@ -1501,4 +1503,6 @@ clean:
 	$(MAKE) -C externhelp clean
 	$(MAKE) -C tdbf clean
 	$(MAKE) -C sqldb clean
+	$(MAKE) -C PascalScript/Source
+	$(MAKE) -C macroscript
 cleanall: clean

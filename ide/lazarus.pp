@@ -67,6 +67,7 @@ uses
     FPCUnitTestRunner, FPCUnitIDE, ProjTemplates, TAChartLazarusPkg,
     TodoListLaz,
     SQLDBLaz, DBFLaz,
+    pascalscript, EditorMacroScript,
   {$ENDIF}
   MainBase;
 
