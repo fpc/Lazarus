@@ -16,7 +16,7 @@ interface
 
 uses
   Classes, SysUtils, typinfo, contnrs, UTF8Process, AvgLvlTree,
-  LazMethodList, LazLogger, LazFileUtils, LazFileCache, Menus;
+  LazMethodList, LazLogger, LazFileUtils, LazFileCache, Menus, LCLProc;
 
 const
   SubToolFPC = 'FPC';
@@ -531,6 +531,48 @@ type
 var
   ExternalToolList: TIDEExternalTools = nil; // will be set by the IDE
 
+type
+  { TIDEExternalToolOptions }
+
+  TETMacroFunction = function(var aValue: string): boolean of object;
+
+  TIDEExternalToolOptions = class
+  private
+    fCmdLineParams: string;
+    FCustomMacroFunction: TETMacroFunction;
+    FEnvironmentOverrides: TStringList;
+    FExecutable: string;
+    FQuiet: boolean;
+    FResolveMacros: boolean;
+    FScanners: TStrings;
+    fTitle: string;
+    fWorkingDirectory: string;
+    procedure SetEnvironmentOverrides(AValue: TStringList);
+    procedure SetScanners(AValue: TStrings);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Assign(Source: TIDEExternalToolOptions);
+    function Equals(Obj: TObject): boolean; override;
+    procedure Clear;
+
+    property Title: string read fTitle write fTitle;
+    property Executable: string read FExecutable write FExecutable;
+    property CmdLineParams: string read fCmdLineParams write fCmdLineParams;
+    property WorkingDirectory: string read fWorkingDirectory write fWorkingDirectory;
+    property EnvironmentOverrides: TStringList read FEnvironmentOverrides write SetEnvironmentOverrides;
+    property Scanners: TStrings read FScanners write SetScanners;
+    property ResolveMacros: boolean read FResolveMacros write FResolveMacros default true;
+    property CustomMacroFunction: TETMacroFunction read FCustomMacroFunction write FCustomMacroFunction;
+    property Quiet: boolean read FQuiet write FQuiet; // no user dialogs about errors
+  end;
+
+type
+  TRunExternalTool = function(Tool: TIDEExternalToolOptions): boolean of object;
+
+var
+  RunExternalTool: TRunExternalTool = nil;// set by the IDE
+
 function CompareMsgLinesSrcPos(MsgLine1, MsgLine2: Pointer): integer;
 
 function dbgs(u: TMessageLineUrgency): string; overload;
@@ -591,6 +633,80 @@ function dbgs(s: TExternalToolStage): string;
 begin
   Result:='';
   WriteStr(Result,s);
+end;
+
+{ TIDEExternalToolOptions }
+
+procedure TIDEExternalToolOptions.SetEnvironmentOverrides(AValue: TStringList);
+begin
+  if FEnvironmentOverrides.Equals(AValue) then Exit;
+  FEnvironmentOverrides.Assign(AValue);
+end;
+
+procedure TIDEExternalToolOptions.SetScanners(AValue: TStrings);
+begin
+  if FScanners.Equals(AValue) then Exit;
+  FScanners.Assign(AValue);
+end;
+
+constructor TIDEExternalToolOptions.Create;
+begin
+  ResolveMacros:=true;
+  FEnvironmentOverrides:=TStringList.Create;
+  FScanners:=TStringList.Create;
+end;
+
+destructor TIDEExternalToolOptions.Destroy;
+begin
+  FreeAndNil(FEnvironmentOverrides);
+  FreeAndNil(FScanners);
+  inherited Destroy;
+end;
+
+procedure TIDEExternalToolOptions.Assign(Source: TIDEExternalToolOptions);
+begin
+  Title:=Source.Title;
+  Executable:=Source.Executable;
+  CmdLineParams:=Source.CmdLineParams;
+  WorkingDirectory:=Source.WorkingDirectory;
+  EnvironmentOverrides:=Source.EnvironmentOverrides;
+  Scanners:=Source.Scanners;
+  ResolveMacros:=Source.ResolveMacros;
+  CustomMacroFunction:=Source.CustomMacroFunction;
+  Quiet:=Source.Quiet;
+end;
+
+function TIDEExternalToolOptions.Equals(Obj: TObject): boolean;
+var
+  Source: TIDEExternalToolOptions;
+begin
+  if Obj=Self then exit(true);
+  if Obj is TIDEExternalToolOptions then begin
+    Source:=TIDEExternalToolOptions(Obj);
+    Result:=(Title=Source.Title)
+      and (Executable=Source.Executable)
+      and (CmdLineParams=Source.CmdLineParams)
+      and (WorkingDirectory=Source.WorkingDirectory)
+      and EnvironmentOverrides.Equals(Source.EnvironmentOverrides)
+      and Scanners.Equals(Source.Scanners)
+      and (ResolveMacros=Source.ResolveMacros)
+      and CompareMethods(TMethod(CustomMacroFunction),TMethod(Source.CustomMacroFunction))
+      and (Quiet=Source.Quiet);
+  end else
+    Result:=inherited Equals(Obj);
+end;
+
+procedure TIDEExternalToolOptions.Clear;
+begin
+  fCmdLineParams:='';
+  FCustomMacroFunction:=nil;
+  FEnvironmentOverrides.Clear;
+  FExecutable:='';
+  FResolveMacros:=true;
+  FScanners.Clear;
+  fTitle:='';
+  fWorkingDirectory:='';
+  FQuiet:=false;
 end;
 
 { TExternalToolGroup }
@@ -949,6 +1065,11 @@ function TAbstractExternalTool.AddParser(ParserClass: TExtToolParserClass
 var
   i: Integer;
 begin
+  for i:=0 to ParserCount-1 do begin
+    Result:=Parsers[i];
+    if Result.ClassType=ParserClass then
+      exit;
+  end;
   Result:=ParserClass.Create(nil);
   i:=0;
   while (i<FParsers.Count) and (Parsers[i].Priority>=ParserClass.Priority) do

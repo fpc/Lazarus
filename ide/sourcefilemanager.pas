@@ -3943,7 +3943,7 @@ begin
           mtInformation,[mbOk],'');
       end;
     end else begin
-      MainIDE.DoJumpToCompilerMessage({$IFDEF EnableNewExtTools}nil{$ELSE}-1{$ENDIF},true);
+      MainIDE.DoJumpToCompilerMessage(true);
       Result:=mrAbort;
       exit;
     end;

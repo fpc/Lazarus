@@ -694,7 +694,7 @@ begin
       LfmFixer.RootMustBeClassInIntf:=true;
       LfmFixer.ObjectsMustExist:=true;
       if LfmFixer.ConvertAndRepair<>mrOK then begin
-        LazarusIDE.DoJumpToCompilerMessage({$IFDEF EnableNewExtTools}nil{$ELSE}-1{$ENDIF},true);
+        LazarusIDE.DoJumpToCompilerMessage(true);
         fOwnerConverter.fErrorMsg:='Problems when repairing form file '
                                   +ChangeFileExt(fOrigUnitFilename, '.lfm');
         exit(mrAbort);

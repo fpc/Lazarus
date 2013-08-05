@@ -843,9 +843,7 @@ type
 
     // external tools
     function PrepareForCompile: TModalResult; override;
-    {$IFNDEF EnableNewExtTools}
-    function OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
-    {$ENDIF}
+    function OnRunExternalTool(Tool: TIDEExternalToolOptions): {$IFDEF EnableNewExtTools}boolean{$ELSE}TModalResult{$ENDIF};
     function DoRunExternalTool(Index: integer; ShowAbort: Boolean): TModalResult;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoExampleManager: TModalResult; override;
@@ -970,13 +968,13 @@ type
     function DoConvertDelphiPackage(const DelphiFilename: string): TModalResult;
 
     // message view
-    function DoJumpToCompilerMessage(
+    function DoJumpToCompilerMessage(FocusEditor: boolean;
       {$IFDEF EnableNewExtTools}
-      Msg: TMessageLine;
+      Msg: TMessageLine = nil
       {$ELSE}
-      Index:integer;
+      Index:integer = -1
       {$ENDIF}
-      FocusEditor: boolean): boolean; override;
+      ): boolean; override;
     procedure DoJumpToNextError(DirectionDown: boolean); override;
     procedure DoShowMessagesView(BringToFront: boolean = true); override;
 
@@ -1343,8 +1341,8 @@ begin
   FWaitForClose := False;
 
   SetupDialogs;
-  {$IFNDEF EnableNewExtTools}
   RunExternalTool:=@OnRunExternalTool;
+  {$IFNDEF EnableNewExtTools}
   {$IFDEF UseAsyncProcess}
   if Widgetset.GetLCLCapability(lcAsyncProcess) = 1 then
     TOutputFilterProcess := TAsyncProcess
@@ -6896,7 +6894,9 @@ var
   NeedBuildAllFlag: Boolean;
   UnitOutputDirectory: String;
   TargetExeName: String;
+  {$IFNDEF EnableNewExtTools}
   err: TFPCErrorType;
+  {$ENDIF}
   TargetExeDirectory: String;
   FPCVersion, FPCRelease, FPCPatch: integer;
   Note: String;
@@ -6928,7 +6928,9 @@ begin
 
   // show messages
   IDEWindowCreators.ShowForm(MessagesView,EnvironmentOptions.MsgViewFocus);
+  {$IFNDEF EnableNewExtTools}
   MessagesView.BeginBlock;
+  {$ENDIF}
   try
     Result:=DoSaveForBuild(AReason);
     if Result<>mrOk then begin
@@ -7145,7 +7147,7 @@ begin
           Project1.LastCompilerFilename:=CompilerFilename;
           Project1.LastCompilerParams:=CompilerParams;
           Project1.LastCompilerFileDate:=FileAgeCached(CompilerFilename);
-          DoJumpToCompilerMessage(-1,not EnvironmentOptions.ShowCompileDialog);
+          DoJumpToCompilerMessage(not EnvironmentOptions.ShowCompileDialog);
           CompileProgress.Ready(lisInfoBuildError);
           debugln(['TMainIDE.DoBuildProject Compile failed']);
           exit;
@@ -7195,15 +7197,18 @@ begin
     end;
 
     Project1.ProjResources.DoAfterBuild(AReason, Project1.IsVirtual);
+    {$IFNDEF EnableNewExtTools}
     // add success message
     MessagesView.AddMsg(Format(lisProjectSuccessfullyBuilt, ['"',
                                         Project1.GetTitleOrName, '"']),'',-1);
+    {$ENDIF}
     CompileProgress.Ready(lisInfoBuildSuccess);
   finally
     // check sources
     DoCheckFilesOnDisk;
-
+    {$IFNDEF EnableNewExtTools}
     MessagesView.EndBlock;
+    {$ENDIF}
   end;
   IDEWindowCreators.ShowForm(MessagesView,EnvironmentOptions.MsgViewFocus);
   Result:=mrOk;
@@ -7484,7 +7489,11 @@ end;
 function TMainIDE.DoRunExternalTool(Index: integer; ShowAbort: Boolean): TModalResult;
 begin
   SourceEditorManager.ClearErrorLines;
+  {$IFDEF EnableNewExtTools}
+  Result:=ExternalToolMenuItems.Run(Index,ShowAbort);
+  {$ELSE}
   Result:=ExternalTools.Run(Index,GlobalMacroList,ShowAbort);
+  {$ENDIF}
   DoCheckFilesOnDisk;
 end;
 
@@ -8113,14 +8122,12 @@ begin
     MainBuildBoss.RescanCompilerDefines(false,false,false,false);
 end;
 
-{$IFNDEF EnableNewExtTools}
-function TMainIDE.OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
+function TMainIDE.OnRunExternalTool(Tool: TIDEExternalToolOptions): {$IFDEF EnableNewExtTools}boolean{$ELSE}TModalResult{$ENDIF};
 begin
   SourceEditorManager.ClearErrorLines;
   Result:=ExternalTools.Run(Tool,GlobalMacroList,false);
   DoCheckFilesOnDisk;
 end;
-{$ENDIF}
 
 function TMainIDE.DoCheckSyntax: TModalResult;
 var
@@ -8880,13 +8887,13 @@ begin
   ErrType:=FPCErrorTypeNameToType(ALine.Parts.Values['Type']);
 end;
 
-function TMainIDE.DoJumpToCompilerMessage(
+function TMainIDE.DoJumpToCompilerMessage(FocusEditor: boolean;
   {$IFDEF EnableNewExtTools}
-  Msg: TMessageLine;
+  Msg: TMessageLine
   {$ELSE}
-  Index:integer;
+  Index:integer
   {$ENDIF}
-  FocusEditor: boolean): boolean;
+  ): boolean;
 var
   MaxMessages: integer;
   Filename, SearchedFilename: string;
@@ -9032,7 +9039,7 @@ begin
     end;
   end;
   MessagesView.SelectedMessageIndex:=Index;
-  DoJumpToCompilerMessage(Index,true);
+  DoJumpToCompilerMessage(true,Index);
 end;
 
 function TMainIDE.DoJumpToSearchResult(FocusEditor: boolean): boolean;
@@ -11188,7 +11195,7 @@ end;
 {$IFNDEF EnableNewExtTools}
 procedure TMainIDE.MessagesViewSelectionChanged(sender: TObject);
 begin
-  DoJumpToCompilerMessage(TMessagesView(Sender).SelectedMessageIndex,True);
+  DoJumpToCompilerMessage(True,TMessagesView(Sender).SelectedMessageIndex);
 end;
 {$ENDIF}
 
@@ -12916,7 +12923,7 @@ begin
   if ToolStatus=itBuilder then
     ToolStatus:=itNone;
   if ErrorOccurred then
-    DoJumpToCompilerMessage(-1,true);
+    DoJumpToCompilerMessage(true);
 end;
 {$ENDIF}
 

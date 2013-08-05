@@ -124,10 +124,15 @@ type
     procedure Clear; inline;
     function Equals(Obj: TObject): boolean; override;
     procedure Assign(Src: TExternalToolMenuItems);
+    function Count: integer; inline;
+    property Items[Index: integer]: TExternalToolMenuItem read GetItems; default;
     procedure Add(Item: TExternalToolMenuItem);
     procedure Insert(Index: integer; Item: TExternalToolMenuItem);
     procedure Delete(Index: integer);
     procedure Move(CurIndex, NewIndex: integer);
+    // run
+    function Run(Index: integer; ShowAbort: boolean): TModalResult;
+    // load/save
     function Load(Config: TConfigStorage): TModalResult;
     function Load(Config: TConfigStorage; const Path: string): TModalResult;
       override;
@@ -136,8 +141,6 @@ type
       override;
     procedure LoadShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
     procedure SaveShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
-    function Count: integer; inline;
-    property Items[Index: integer]: TExternalToolMenuItem read GetItems; default;
   end;
 
 var
@@ -533,6 +536,56 @@ end;
 procedure TExternalToolMenuItems.Move(CurIndex, NewIndex: integer);
 begin
   fItems.Move(CurIndex,NewIndex);
+end;
+
+function TExternalToolMenuItems.Run(Index: integer; ShowAbort: boolean
+  ): TModalResult;
+var
+  Item: TExternalToolMenuItem;
+
+  function ResolveMacros(const Value: string; out NewValue: string): boolean;
+  begin
+    NewValue:=Value;
+    Result:=GlobalMacroList.SubstituteStr(NewValue);
+    if not Result then exit;
+    Run:=IDEMessageDialogAb('Invalid macro','Invalid macro in tool "'+Item.Title+'":'#13+Value,
+      mtError,[mbCancel],ShowAbort);
+  end;
+
+var
+  Tool: TAbstractExternalTool;
+  Executable: String;
+  CmdLineParams: string;
+  WorkingDirectory: string;
+  i: Integer;
+  s: String;
+  EnvironmentOverrides: TStringList;
+begin
+  Result:=mrCancel;
+  Item:=Items[Index];
+  if not ResolveMacros(Item.Filename,Executable) then exit;
+  if not ResolveMacros(Item.CmdLineParams,CmdLineParams) then exit;
+  if not ResolveMacros(Item.WorkingDirectory,WorkingDirectory) then exit;
+  EnvironmentOverrides:=TStringList.Create;
+  try
+    for i:=0 to Item.EnvironmentOverrides.Count-1 do begin
+      if not ResolveMacros(Item.EnvironmentOverrides[i],s) then exit;
+      if s<>'' then
+        EnvironmentOverrides.Add(s);
+    end;
+    Tool:=ExternalToolList.Add(Item.Title);
+    Tool.Process.Executable:=Item.Title;
+    Tool.Process.CurrentDirectory:=WorkingDirectory;
+    Tool.CmdLineParams:=CmdLineParams;
+    for i:=0 to Item.Scanners.Count-1 do
+      Tool.AddParsers(Item.Scanners[i]);
+    Tool.EnvironmentOverrides:=EnvironmentOverrides;
+    Tool.Execute;
+    if Tool.ParserCount>0 then
+      Tool.WaitForExit;
+  finally
+    EnvironmentOverrides.Free;
+  end;
 end;
 
 function TExternalToolMenuItems.Load(Config: TConfigStorage): TModalResult;
