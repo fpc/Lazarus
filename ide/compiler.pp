@@ -547,7 +547,7 @@ begin
     // Option was not found, try separating the parameter.
     // ToDo: figure out the length in a more clever way.
     Assert((Length(aOptAndValue)>2) and (aOptAndValue[1]='-'),
-           'TCompilerOptGroup.SelectOption: Invalid option & value');
+           'TCompilerOptGroup.SelectOption: Invalid option & value '+aOptAndValue);
     if aOptAndValue[2] in ['e', 'd', 'u', 'I', 'k', 'o'] then
       OptLen := 2
     else

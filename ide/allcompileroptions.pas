@@ -126,11 +126,14 @@ begin
     edOptionsFilter.Enabled := False;
     with FOptionsReader do
       if RootOptGroup.CompilerOpts.Count = 0 then
-      begin
+      try
         CompilerExecutable := EnvironmentOptions.GetParsedCompilerFilename;
         if ReadAndParseOptions <> mrOK then
           ShowMessage(ErrorMsg);
         FromCustomOptions(FCustomOptions);
+      except
+        on E: Exception do
+          ShowMessage('Error parsing options: '+E.Message);
       end;
     RenderAndFilterOptions;
     edOptionsFilter.Enabled := True;
