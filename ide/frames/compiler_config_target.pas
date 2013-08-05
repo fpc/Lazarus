@@ -38,7 +38,9 @@ type
   TCompilerConfigTargetFrame = class(TAbstractIDEOptionsEditor)
     chkConfigFile: TCheckBox;
     chkCustomConfigFile: TCheckBox;
+    chkWin32GraphicApp: TCheckBox;
     edtConfigPath: TEdit;
+    grbTargetOptions: TGroupBox;
     grpConfigFile: TGroupBox;
     grpTargetPlatform: TGroupBox;
     lblTargetCPU: TLabel;
@@ -180,10 +182,10 @@ begin
   chkConfigFile.Caption := dlgUseFpcCfg + ' (If not checked: -n)';
   chkCustomConfigFile.Caption := dlgUseCustomConfig + ' (@)';
   edtConfigPath.Text := '';
-  // Target
+
+  // Target platform
   grpTargetPlatform.Caption := dlgTargetPlatform;
   lblTargetOS.Caption := dlgTargetOS + ' (-T)';
-
   with TargetOSComboBox do
   begin
     with Items do
@@ -226,7 +228,6 @@ begin
   end;
 
   lblTargetCPU.Caption := dlgTargetCPUFamily + ' (-P)';
-
   with TargetCPUComboBox do
   begin
     with Items do
@@ -246,7 +247,6 @@ begin
   end;
 
   lblTargetProcessorProc.Caption := dlgTargetProc;
-
   with TargetProcessorProcComboBox do
   begin
     with Items do
@@ -262,6 +262,10 @@ begin
     end;
     ItemIndex := 0;
   end;
+
+  // Target options
+  grbTargetOptions.Caption := 'Target-specific options';
+  chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG)';
 end;
 
 procedure TCompilerConfigTargetFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -278,7 +282,6 @@ begin
     chkCustomConfigFile.Checked := CustomConfigFile;
     edtConfigPath.Enabled := chkCustomConfigFile.Checked;
     edtConfigPath.Text := ConfigFilePath;
-
     if fIsPackage then begin
       grpTargetPlatform.Visible:=false;
       TargetOSComboBox.ItemIndex := 0;
@@ -301,6 +304,8 @@ begin
       // Target Processor
       TargetProcessorProcComboBox.Text := ProcessorToCaption(TargetProcessor);
     end;
+    chkWin32GraphicApp.Checked := Win32GraphicApp;
+    chkWin32GraphicApp.Enabled := NeedsLinkerOpts;
   end;
 end;
 
@@ -317,20 +322,19 @@ begin
     DontUseConfigFile := not chkConfigFile.Checked;
     CustomConfigFile := chkCustomConfigFile.Checked;
     ConfigFilePath := edtConfigPath.Text;
-
     if not fIsPackage then
     begin
       NewTargetOS := TargetOSComboBox.Text;
       if TargetOSComboBox.Items.IndexOf(NewTargetOS) <= 0 then
         NewTargetOS := '';
       TargetOS := CaptionToOS(NewTargetOS);
-
       NewTargetCPU := TargetCPUComboBox.Text;
       if TargetCPUComboBox.Items.IndexOf(NewTargetCPU) <= 0 then
         NewTargetCPU := '';
       TargetCPU := CaptionToCPU(NewTargetCPU);
       TargetProcessor := CaptionToProcessor(TargetProcessorProcComboBox.Text);
     end;
+    Win32GraphicApp := chkWin32GraphicApp.Checked;
   end;
 end;
 

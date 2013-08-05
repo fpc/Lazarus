@@ -29,13 +29,13 @@ object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 122
+    Height = 125
     Top = 139
     Width = 701
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     Caption = 'grpInfoForGDB'
-    ClientHeight = 103
+    ClientHeight = 106
     ClientWidth = 697
     TabOrder = 1
     object chkUseLineInfoUnit: TCheckBox
@@ -80,7 +80,7 @@ object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
       Width = 691
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 3
-      BorderSpacing.Bottom = 3
+      BorderSpacing.Bottom = 6
       Caption = 'chkUseExternalDbgSyms'
       TabOrder = 3
     end
@@ -119,14 +119,14 @@ object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 118
-    Top = 266
+    Height = 121
+    Top = 269
     Width = 701
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 5
     Caption = 'grpOtherDebuggingInfo'
-    ClientHeight = 99
+    ClientHeight = 102
     ClientWidth = 697
     TabOrder = 2
     object chkUseHeaptrc: TCheckBox
@@ -167,7 +167,7 @@ object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
       Width = 691
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 3
-      BorderSpacing.Bottom = 3
+      BorderSpacing.Bottom = 6
       Caption = 'chkSymbolsStrip'
       TabOrder = 2
     end
@@ -230,6 +230,7 @@ object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
       Top = 54
       Width = 143
       BorderSpacing.Top = 3
+      BorderSpacing.Bottom = 6
       Caption = 'chkChecksOverflow'
       TabOrder = 2
     end

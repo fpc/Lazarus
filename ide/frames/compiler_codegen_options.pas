@@ -18,7 +18,6 @@ type
     chkOptionsLinkOpt: TCheckBox;
     chkSmartLinkUnit: TCheckBox;
     chkRelocatableUnit: TCheckBox;
-    chkWin32GraphicApp: TCheckBox;
     edtHeapSize: TEdit;
     edtOptionsLinkOpt: TEdit;
     edtStackSize: TEdit;
@@ -27,7 +26,6 @@ type
     grpHeapStackSize: TGroupBox;
     grpOptimizationLevels: TGroupBox;
     grpUnitStyle: TGroupBox;
-    Label1: TLabel;
     lbHeapSize: TLabel;
     lbStackSize: TLabel;
     radOptLevel1: TRadioButton;
@@ -76,7 +74,6 @@ begin
 
   grpLinking.Caption := dlgCOLinking;
   chkLinkSmart.Caption := dlgLinkSmart + ' (-XX)';
-  chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG)';
   chkOptionsLinkOpt.Caption := dlgPassOptsLinker;
   edtOptionsLinkOpt.Text := '';
 end;
@@ -106,8 +103,6 @@ begin
     grpLinking.Enabled := NeedsLinkerOpts;
     chkLinkSmart.Checked := LinkSmart;
     chkLinkSmart.Enabled := NeedsLinkerOpts;
-    chkWin32GraphicApp.Checked := Win32GraphicApp;
-    chkWin32GraphicApp.Enabled := NeedsLinkerOpts;
     chkOptionsLinkOpt.Checked := PassLinkerOptions;
     chkOptionsLinkOpt.Enabled := NeedsLinkerOpts;
     edtOptionsLinkOpt.Text := LinkerOptions;
@@ -150,7 +145,6 @@ begin
     else
       OptimizationLevel := 0;
 
-    Win32GraphicApp := chkWin32GraphicApp.Checked;
     LinkSmart := chkLinkSmart.Checked;
     PassLinkerOptions := chkOptionsLinkOpt.Checked;
     LinkerOptions := edtOptionsLinkOpt.Text;
