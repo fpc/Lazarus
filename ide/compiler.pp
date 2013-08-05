@@ -147,6 +147,8 @@ type
   TCompilerOptSet = class(TCompilerOptGroup)
   private
     fHasNumber: Boolean;
+    function SetNumberOpt(aValue: string): Boolean;
+    function SetBooleanOpt(aValue: string): Boolean;
   protected
     procedure AddOptions(aDescr: string; aIndent: integer);
     procedure ParseOption(aDescr: string; aIndent: integer); override;
@@ -546,8 +548,8 @@ begin
   else begin
     // Option was not found, try separating the parameter.
     // ToDo: figure out the length in a more clever way.
-    Assert((Length(aOptAndValue)>2) and (aOptAndValue[1]='-'),
-           'TCompilerOptGroup.SelectOption: Invalid option & value '+aOptAndValue);
+    if (Length(aOptAndValue) < 3) or (aOptAndValue[1] <> '-') then
+      raise Exception.Create('Invalid option & value ' + aOptAndValue);
     if aOptAndValue[2] in ['e', 'd', 'u', 'I', 'k', 'o'] then
       OptLen := 2
     else
@@ -601,24 +603,66 @@ begin
     Result := Option + s;
 end;
 
+function TCompilerOptSet.SetNumberOpt(aValue: string): Boolean;
+// Find a numeric value in the set and update its value. Return True on success.
+var
+  i: Integer;
+  Opt: TCompilerOpt;
+begin
+  for i := 0 to fCompilerOpts.Count-1 do
+  begin
+    Opt := TCompilerOpt(fCompilerOpts[i]);
+    if Opt.EditKind = oeSetNumber then
+    begin
+      Opt.Value := aValue;
+      Exit(True);           // Found and updated.
+    end;
+  end;
+  Result := False;          // Not found.
+end;
+
+function TCompilerOptSet.SetBooleanOpt(aValue: string): Boolean;
+// Find a single letter value in the set and update its value. Return True on success.
+var
+  i: Integer;
+  Opt: TCompilerOpt;
+begin
+  for i := 0 to fCompilerOpts.Count-1 do
+  begin
+    Opt := TCompilerOpt(fCompilerOpts[i]);
+    if (Opt.EditKind = oeSetElem) and (Opt.Option = aValue) then
+    begin
+      Opt.Value := 'True';
+      Exit(True);           // Found and updated.
+    end;
+  end;
+  Result := False;          // Not found.
+end;
+
 procedure TCompilerOptSet.SelectOptions(aOptStr: string);
 // Select options in this set based on the given characters.
 var
-  i, j: Integer;
-  OptChar: string;
-  Opt: TCompilerOpt;
+  i, Start: Integer;
+  OneOpt: string;
 begin
-  for i := 1 to Length(aOptStr) do
+  i := 1;
+  while i <= Length(aOptStr) do
   begin
-    OptChar := aOptStr[i];
-    for j := 0 to fCompilerOpts.Count-1 do
+    Start := i;
+    if aOptStr[i] in ['0'..'9'] then
+      while (aOptStr[i] in ['0'..'9']) and (i <= Length(aOptStr)) do
+        Inc(i)
+    else
+      Inc(i);
+    OneOpt := Copy(aOptStr, Start, i-Start);
+    if OneOpt[1] in ['0'..'9'] then
     begin
-      Opt := TCompilerOpt(fCompilerOpts[j]);
-      if Opt.Option = OptChar then
-      begin
-        Opt.Value := 'True';
-        Break;
-      end;
+      if not SetNumberOpt(OneOpt) then
+        raise Exception.CreateFmt('Numeric value is not allowed for set %s.', [fOption]);
+    end
+    else begin
+      if not SetBooleanOpt(OneOpt) then
+        raise Exception.CreateFmt('Option %s is not found in set %s.', [OneOpt, fOption]);
     end;
   end;
 end;
