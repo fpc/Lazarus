@@ -157,10 +157,10 @@ end;
 
 procedure TfrmAllCompilerOptions.EditChange(Sender: TObject);
 var
-  ed: TEdit;
+  ed: TCustomEdit;
   Opt: TCompilerOpt;
 begin
-  ed := Sender as TEdit;
+  ed := Sender as TCustomEdit;
   Opt := FOptionsReader.FindOptionById(ed.Tag);
   if Assigned(Opt) then
     Opt.Value := ed.Text;
@@ -180,8 +180,9 @@ end;
 procedure TfrmAllCompilerOptions.RenderAndFilterOptions;
 const
   LeftEdit = 120;
-  LeftDescrEdit = 230;
-  LeftDescrBoolean = 150;
+  LeftDescrEdit = 250;
+  LeftDescrBoolean = 120;
+  LeftDescrGroup = 100;
 var
   Opt: TCompilerOpt;
   yLoc: Integer;
@@ -207,6 +208,7 @@ var
     Result.AnchorSide[akTop].Control := aLbl;
     Result.AnchorSide[akTop].Side := asrCenter;
     Result.Left := LeftEdit;        // Now use Left instead of anchors
+    Result.Width := 125;
     Result.Anchors := [akLeft,akTop];
     Result.Tag := Opt.Id;
     FGeneratedControls.Add(Result);
@@ -251,14 +253,15 @@ var
       if Opt.Ignored or not Opt.Visible then Continue;  // Maybe filtered out
       case Opt.EditKind of
         oeGroup, oeSet: begin                   // Label for group or set
-          Cntrl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix+#9#9+Opt.Description);
+          Cntrl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix{+#9#9+Opt.Description});
+          MakeDescrLabel(Cntrl, LeftDescrGroup);
         end;
         oeBoolean: begin                        // CheckBox
           Cntrl := MakeOptionCntrl(TCheckBox, Opt.Option);
           Assert((Opt.Value='') or (Opt.Value='True'), 'Wrong value in Boolean option '+Opt.Option);
           TCheckBox(Cntrl).Checked := Opt.Value<>'';
-          if Length(Opt.Option) > 10 then
-            NewLeft := LeftDescrBoolean + (Length(Opt.Option)-10)*8
+          if Length(Opt.Option) > 9 then
+            NewLeft := LeftDescrBoolean + (Length(Opt.Option)-9)*8
           else
             NewLeft := LeftDescrBoolean;
           Cntrl.OnClick := @CheckBoxClick;
@@ -273,8 +276,10 @@ var
         oeNumber, oeText, oeSetNumber: begin    // Edit
           Lbl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix, 3);
           Cntrl := MakeEditCntrl(Lbl, TEdit);
-          TEdit(Cntrl).Text := Opt.Value;
-          TEdit(Cntrl).OnChange := @EditChange;
+          if Opt.EditKind <> oeText then
+            TCustomEdit(Cntrl).Width := 80;
+          TCustomEdit(Cntrl).Text := Opt.Value;
+          TCustomEdit(Cntrl).OnChange := @EditChange;
           MakeDescrLabel(Cntrl, LeftDescrEdit);
         end;
         oeList: begin                           // ComboBox
