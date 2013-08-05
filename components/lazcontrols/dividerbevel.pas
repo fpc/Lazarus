@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, LResources, Forms, Controls, Graphics, Dialogs, Types,
-  LCLType, LCLIntf, LCLProc, math, GraphType, ExtCtrls;
+  LCLType, LCLIntf, LCLProc, Math, GraphType, ComCtrls, ExtCtrls;
 
 type
   { TDividerBevel }
@@ -28,21 +28,24 @@ type
     FBevelWidth: Integer;
     FCaptionSpacing: Integer;
     FLeftIndent: Integer;
-    FTextHeight, FTextWidth: Integer;
-    FBevelTop: Integer;
-    FBevelHeight: Integer;
-    FNeedCalcSize: Boolean;
+    FOrientation: TTrackBarOrientation;
     FTransparent: Boolean;
-    procedure CalcSize;
     procedure SetBevelStyle(AValue: TBevelStyle);
     procedure SetBevelWidth(AValue: Integer);
     procedure SetCaptionSpacing(const AValue: Integer);
     procedure SetLeftIndent(const AValue: Integer);
+    procedure SetOrientation(AValue: TTrackBarOrientation);
     procedure SetTransparent(AValue: Boolean);
   protected
+    FBevelHeight: Integer;
+    FBevelTop: Integer;
+    FNeedCalcSize: Boolean;
+    FTextExtent: TSize;
     class function GetControlClassDefaultSize: TSize; override;
+    procedure CalcSize;
     procedure Paint; override;
     procedure FontChanged(Sender: TObject); override;
+    procedure SetAutoSize(Value: Boolean); override;
     procedure TextChanged; override;
     procedure CalculatePreferredSize(
                          var PreferredWidth, PreferredHeight: Integer;
@@ -52,16 +55,21 @@ type
   published
     property Caption;
     property Align;
-    property AutoSize;
+    property AutoSize default True;
     property Anchors;
     property BevelStyle: TBevelStyle read FBevelStyle write SetBevelStyle default bsLowered;
     property BevelWidth: Integer read FBevelWidth write SetBevelWidth default -1;
     property BiDiMode;
     property BorderSpacing;
+    property CaptionSpacing: Integer read FCaptionSpacing write SetCaptionSpacing
+             default 10;
     property Color;
     property Constraints;
     property Font;
     property Hint;
+    property LeftIndent: Integer read FLeftIndent write SetLeftIndent default 60;
+    property Orientation: TTrackBarOrientation read FOrientation write SetOrientation
+             default trHorizontal;
     property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
@@ -80,10 +88,6 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
-  published
-    property CaptionSpacing: Integer read FCaptionSpacing write SetCaptionSpacing
-             default 10;
-    property LeftIndent: Integer read FLeftIndent write SetLeftIndent default 60;
 end;
 
 procedure Register;
@@ -93,30 +97,10 @@ implementation
 procedure Register;
 begin
   {$I dividerbevel_icon.lrs}
-  RegisterComponents('LazControls',[TDividerBevel]);
+  RegisterComponents('LazControls', [TDividerBevel]);
 end;
 
 { TDividerBevel }
-
-procedure TDividerBevel.CalcSize;
-var
-  TextExt: TSize;
-begin
-  if not FNeedCalcSize then exit;
-  FNeedCalcSize := False;
-  if Caption = '' then
-    TextExt := Canvas.TextExtent(' ')
-  else
-    TextExt := Canvas.TextExtent(Caption);
-  FTextHeight := TextExt.cy;
-  FTextWidth := TextExt.cx;
-  if FBevelWidth < 0 then
-    FBevelHeight := Max(3, FTextHeight div 5)
-  else
-    FBevelHeight := FBevelWidth;
-  FTextHeight := Max(FTextHeight, FBevelHeight + 2);
-  FBevelTop := (FTextHeight - FBevelHeight) div 2 + 1;
-end;
 
 procedure TDividerBevel.SetBevelStyle(AValue: TBevelStyle);
 begin
@@ -129,7 +113,11 @@ procedure TDividerBevel.SetBevelWidth(AValue: Integer);
 begin
   if FBevelWidth = AValue then Exit;
   FBevelWidth := AValue;
-  FNeedCalcSize := True;
+  if AutoSize then begin
+    InvalidatePreferredSize;
+    AdjustSize;
+  end else
+    FNeedCalcSize := True;
   Invalidate;
 end;
 
@@ -147,6 +135,19 @@ begin
   Invalidate;
 end;
 
+procedure TDividerBevel.SetOrientation(AValue: TTrackBarOrientation);
+begin
+  if FOrientation = AValue then Exit;
+  FOrientation := AValue;
+  if not (csLoading in ComponentState) then SetBounds(Left, Top, Height, Width);
+  if AutoSize then
+    begin
+      InvalidatePreferredSize;
+      AdjustSize;
+    end;
+  Invalidate;
+end;
+
 procedure TDividerBevel.SetTransparent(AValue: Boolean);
 begin
   if FTransparent = AValue then Exit;
@@ -160,10 +161,26 @@ begin
   Result.CY := 17;
 end;
 
+procedure TDividerBevel.CalcSize;
+begin
+  if not FNeedCalcSize then exit;
+  FNeedCalcSize := False;
+  if Caption = '' then
+    FTextExtent := Canvas.TextExtent(' ')
+  else
+    FTextExtent := Canvas.TextExtent(Caption);
+  if FBevelWidth < 0 then
+    FBevelHeight := Max(3, FTextExtent.cy div 5)
+  else
+    FBevelHeight := FBevelWidth;
+  FBevelTop := Max((FTextExtent.cy - FBevelHeight) div 2, 0);
+end;
+
 procedure TDividerBevel.Paint;
 var
   aBevel: TGraphicsBevelCut;
-  aIndent, aRight: Integer;
+  aHorizontal: Boolean;
+  aIndent, aRight, j: Integer;
   PaintRect: TRect;
 begin
   CalcSize;
@@ -172,47 +189,87 @@ begin
     Canvas.Brush.Style := bsSolid;
     Canvas.FillRect(ClientRect);
   end;
+
   if FBevelStyle = bsLowered then
     aBevel := bvLowered
   else
     aBevel := bvRaised;
-  Canvas.Pen.Color := Font.Color;
-  PaintRect.Top := FBevelTop;
-  PaintRect.Bottom := FBevelTop + FBevelHeight;
-  PaintRect.Left := 0;
+  aHorizontal := (Orientation = trHorizontal);
+
+  if aHorizontal then begin
+    PaintRect.Left := 0;
+    PaintRect.Top := FBevelTop;
+    PaintRect.Bottom := PaintRect.Top + FBevelHeight;
+  end else begin
+    PaintRect.Left := FBevelTop;
+    PaintRect.Top := 0;
+    PaintRect.Right := PaintRect.Left + FBevelHeight;
+  end;
+
   if Caption = '' then begin
-    PaintRect.Right := Width;
+    if aHorizontal then
+      PaintRect.Right := Width
+    else
+      PaintRect.Bottom := Height;
     Canvas.Frame3D(PaintRect, 1, aBevel);
     exit;
   end;
 
   if FLeftIndent > 0 then
-    aIndent := FLeftIndent + FCaptionSpacing
+    aIndent := FLeftIndent
   else
-    aIndent := 0;
+    if FLeftIndent = 0 then
+      aIndent := 0
+    else begin
+      j := 2*FCaptionSpacing + FTextExtent.cx;
+      if aHorizontal then
+        aIndent := (Width - j) div 2
+      else
+        aIndent := (Height - j) div 2;
+    end;
 
-  if not IsRightToLeft then
-    aRight := FLeftIndent
-  else
-    aRight := Width - FTextWidth - FCaptionSpacing - aIndent;
+  if not IsRightToLeft or not aHorizontal then
+    aRight := aIndent
+  else begin
+    aRight := Width - FTextExtent.cx - FCaptionSpacing - aIndent;
+    if aIndent > 0 then dec(aRight, FCaptionSpacing);
+  end;
   if aRight > 0 then begin
-    PaintRect.Right := aRight;
+    if aHorizontal then
+      PaintRect.Right := aRight
+    else
+      PaintRect.Bottom := aRight;
     Canvas.Frame3D(PaintRect, 1, aBevel);
   end;
 
-  PaintRect.Top := FBevelTop;
-  PaintRect.Bottom := FBevelTop + FBevelHeight;
-  PaintRect.Left := aRight + FTextWidth + FCaptionSpacing;
-  if aIndent > 0 then
-    PaintRect.Left := PaintRect.Left + FCaptionSpacing;
-  PaintRect.Right := Width;
+  if aIndent > 0 then inc(aIndent, FCaptionSpacing);
+  if aHorizontal then begin
+    PaintRect.Left := aRight + FCaptionSpacing + FTextExtent.cx;
+    if aIndent <> 0 then inc(PaintRect.Left, FCaptionSpacing);
+    PaintRect.Top := FBevelTop;
+    PaintRect.Right := Width;
+    PaintRect.Bottom := FBevelTop + FBevelHeight;
+  end else begin
+    PaintRect.Left := FBevelTop;
+    PaintRect.Top := aRight + FCaptionSpacing + FTextExtent.cx;
+    if aIndent <> 0 then inc(PaintRect.Top, FCaptionSpacing);
+    PaintRect.Right := FBevelTop + FBevelHeight;
+    PaintRect.Bottom := Height;
+  end;
   Canvas.Frame3D(PaintRect, 1, aBevel);
 
   Canvas.Brush.Style := bsClear;
-  if not IsRightToLeft then
-    Canvas.TextOut(aIndent, 0, Caption)
-  else
-    Canvas.TextOut(Width - FTextWidth - aIndent, 0, Caption)
+  j := Max((FBevelHeight - FTextExtent.cy) div 2, 0);
+  if aHorizontal then begin
+    Canvas.Font.Orientation := 0;
+    if not IsRightToLeft then
+      Canvas.TextOut(aIndent, j, Caption)
+    else
+      Canvas.TextOut(Width - FTextExtent.cx - aIndent, j, Caption);
+  end else begin
+    Canvas.Font.Orientation := 900;
+    Canvas.TextOut(j, aIndent + FTextExtent.cx, Caption);
+  end;
 end;
 
 procedure TDividerBevel.FontChanged(Sender: TObject);
@@ -220,6 +277,15 @@ begin
   inherited FontChanged(Sender);
   FNeedCalcSize := True;
   Invalidate;
+end;
+
+procedure TDividerBevel.SetAutoSize(Value: Boolean);
+begin
+  inherited SetAutoSize(Value);
+  if Value then begin
+    InvalidatePreferredSize;
+    AdjustSize;
+  end;
 end;
 
 procedure TDividerBevel.TextChanged;
@@ -234,27 +300,30 @@ procedure TDividerBevel.CalculatePreferredSize(var PreferredWidth, PreferredHeig
 begin
   FNeedCalcSize := True;
   CalcSize;
-  if FLeftIndent > 0 then
-    PreferredWidth := FTextWidth + 2*(FLeftIndent + FCaptionSpacing)
-  else
-    PreferredWidth := 2*FTextWidth + FCaptionSpacing;
-  PreferredHeight := FTextHeight;
+  if Orientation = trHorizontal then begin
+    PreferredHeight := Max(FTextExtent.cy, FBevelHeight);
+    PreferredWidth := 0;
+  end else begin
+    PreferredHeight := 0;
+    PreferredWidth := Max(FTextExtent.cy, FBevelHeight);
+  end;
 end;
 
 constructor TDividerBevel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := [csSetCaption];
   FBevelStyle := bsLowered;
   FBevelWidth := -1;
   FCaptionSpacing := 10;
+  FLeftIndent := 60;
+  FOrientation := trHorizontal;
   FTransparent := True;
-  LeftIndent := 60;
   FNeedCalcSize := True;
   if (AOwner = nil) or not (csLoading in AOwner.ComponentState) then
     Font.Style := Font.Style + [fsBold];
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
+  AutoSize := True;
 end;
 
 end.
