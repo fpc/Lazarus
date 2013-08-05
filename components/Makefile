@@ -1503,6 +1503,6 @@ clean:
 	$(MAKE) -C externhelp clean
 	$(MAKE) -C tdbf clean
 	$(MAKE) -C sqldb clean
-	$(MAKE) -C PascalScript/Source
-	$(MAKE) -C macroscript
+	$(MAKE) -C PascalScript/Source clean
+	$(MAKE) -C macroscript clean
 cleanall: clean
