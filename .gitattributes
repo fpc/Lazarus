@@ -149,6 +149,7 @@ components/PascalScript/Samples/TestApp/TestApplication.res -text
 components/PascalScript/Samples/TestApp/fMain.dfm -text
 components/PascalScript/Samples/TestApp/fMain.pas svneol=native#text/pascal
 components/PascalScript/Source/Makefile svneol=native#text/plain
+components/PascalScript/Source/Makefile.compiled svneol=native#text/plain
 components/PascalScript/Source/Makefile.fpc svneol=native#text/plain
 components/PascalScript/Source/PascalScript.inc svneol=native#text/pascal
 components/PascalScript/Source/PascalScriptFPC.inc svneol=native#text/pascal
@@ -2404,6 +2405,7 @@ components/macfiles/macapplicationres.pas svneol=native#text/plain
 components/macfiles/macosfiles.lpk svneol=native#text/plain
 components/macfiles/macosfiles.pas svneol=native#text/plain
 components/macroscript/Makefile svneol=native#text/plain
+components/macroscript/Makefile.compiled svneol=native#text/plain
 components/macroscript/Makefile.fpc svneol=native#text/plain
 components/macroscript/editormacroscript.lpk svneol=native#text/pascal
 components/macroscript/editormacroscript.pas svneol=native#text/pascal
