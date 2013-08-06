@@ -193,11 +193,12 @@ type
     mcoShowStats, // show numbers of errors, warnings and hints in view header line
     mcoShowTranslated, // show translation (e.g. messages from German message file)
     mcoShowMessageID,  // show message ID
-    mcoAutoOpenFirstError // when all views stopped, open first error
+    mcoAutoOpenFirstError, // when all views stopped, open first error
+    mcoShowMsgIcons
     );
   TMsgCtrlOptions = set of TMsgCtrlOption;
 const
-  MCDefaultOptions = [mcoShowStats,mcoShowTranslated,mcoAutoOpenFirstError];
+  MCDefaultOptions = [mcoShowStats,mcoShowTranslated,mcoAutoOpenFirstError,mcoShowMsgIcons];
 
 type
 
@@ -327,6 +328,7 @@ type
     function SearchNext(StartView: TLMsgWndView; StartLine: integer;
       SkipStart, Downwards: boolean;
       out View: TLMsgWndView; out LineNumber: integer): boolean;
+    procedure Select(Msg: TMessageLine; DoScroll: boolean);
     function SelectNextOccurence(Downwards: boolean): boolean;
     function SelectNextShown(Offset: integer): boolean;
     function SelectLast(DoScroll, FullyVisible: boolean): boolean;
@@ -479,10 +481,12 @@ type
     procedure ApplySrcChangeds(Changes: TETSrcChanges);
 
     // message lines
+    procedure SelectMsgLine(Msg: TMessageLine; DoScroll: boolean);
     function SelectFirstUrgentMessage(aMinUrgency: TMessageLineUrgency;
       WithSrcPos: boolean): boolean;
     function SelectNextUrgentMessage(aMinUrgency: TMessageLineUrgency;
       WithSrcPos, Downwards: boolean): boolean;
+    procedure ClearCustomMessages(const ViewCaption: string='');
     function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
       aFilename: string = ''; LineNumber: integer = 0; Column: integer = 0;
       const ViewCaption: string = CustomViewCaption): TMessageLine;
@@ -1448,7 +1452,7 @@ begin
   if FOptions=NewOptions then Exit;
   ChangedOptions:=(FOptions-NewOptions)+(NewOptions-FOptions);
   FOptions:=NewOptions;
-  if [mcoShowStats,mcoShowTranslated,mcoShowMessageID]*ChangedOptions<>[] then
+  if [mcoShowStats,mcoShowTranslated,mcoShowMessageID,mcoShowMsgIcons]*ChangedOptions<>[] then
     Invalidate;
 end;
 
@@ -1842,7 +1846,8 @@ begin
           SecondLineIsNotSelectedMessage:=true;
       end;
       ImgIndex:=fUrgencyStyles[Line.Urgency].ImageIndex;
-      if (Images<>nil) and (ImgIndex>=0) and (ImgIndex<Images.Count) then begin
+      if (Images<>nil) and (mcoShowMsgIcons in Options)
+      and (ImgIndex>=0) and (ImgIndex<Images.Count) then begin
         Images.Draw(Canvas,
           NodeRect.Left + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
           ImgIndex, gdeNormal);
@@ -2134,6 +2139,22 @@ begin
       exit(true);
     end;
   until not Next;
+end;
+
+procedure TMessagesCtrl.Select(Msg: TMessageLine; DoScroll: boolean);
+begin
+  BeginUpdate;
+  if (Msg=nil) or (Msg.Lines=nil) or (not (Msg.Lines.Owner is TLMsgWndView))
+  then begin
+    SelectedView:=nil;
+    SelectedLine:=-1;
+  end else begin
+    SelectedView:=TLMsgWndView(Msg.Lines.Owner);
+    SelectedLine:=Msg.Index;
+    if DoScroll then
+      ScrollToLine(SelectedView,SelectedLine,true);
+  end;
+  EndUpdate;
 end;
 
 function TMessagesCtrl.SelectNextOccurence(Downwards: boolean): boolean;
@@ -3494,6 +3515,11 @@ begin
   MessagesCtrl.ApplySrcChanges(Changes);
 end;
 
+procedure TMessagesFrame.SelectMsgLine(Msg: TMessageLine; DoScroll: boolean);
+begin
+  MessagesCtrl.Select(Msg,DoScroll);
+end;
+
 function TMessagesFrame.GetDefaultSearchText: string;
 begin
   Result:='(Search)';
@@ -3509,6 +3535,17 @@ function TMessagesFrame.SelectNextUrgentMessage(
   aMinUrgency: TMessageLineUrgency; WithSrcPos, Downwards: boolean): boolean;
 begin
   Result:=MessagesCtrl.SelectNextUrgentMessage(aMinUrgency,WithSrcPos,Downwards);
+end;
+
+procedure TMessagesFrame.ClearCustomMessages(const ViewCaption: string);
+var
+  View: TLMsgWndView;
+begin
+  View:=GetView(ViewCaption,false);
+  if (View=nil) or (View.Lines.Count=0) then exit;
+  View.Lines.Clear;
+  MessagesCtrl.UpdateScrollBar(true);
+  MessagesCtrl.Invalidate;
 end;
 
 function TMessagesFrame.AddCustomMessage(TheUrgency: TMessageLineUrgency;

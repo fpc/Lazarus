@@ -75,6 +75,7 @@ type
     procedure DeleteView(View: TExtToolView); virtual; abstract; // free view
     function IndexOfView(View: TExtToolView): integer; virtual; abstract;
 
+    procedure SelectMsgLine(Msg: TMessageLine); virtual; abstract;
     function SelectFirstUrgentMessage(aMinUrgency: TMessageLineUrgency;
       WithSrcPos: boolean): boolean; virtual; abstract;
     function SelectNextUrgentMessage(aMinUrgency: TMessageLineUrgency;

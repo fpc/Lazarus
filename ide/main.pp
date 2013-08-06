@@ -7843,7 +7843,9 @@ var
   ProgramFilename: string;
   Params: string;
   ExtTool: TIDEExternalToolOptions;
+  {$IFNDEF EnableNewExtTools}
   Filename: String;
+  {$ENDIF}
   DirectiveList: TStringList;
 begin
   Result:=mrCancel;
@@ -8202,6 +8204,7 @@ begin
   begin
     SourceFileMgr.ArrangeSourceEditorAndMessageView(false);
     {$IFDEF EnableNewExtTools}
+    MessagesView.ClearCustomMessages;
     MessagesView.AddCustomMessage(mluImportant,lisMenuQuickSyntaxCheckOk);
     {$ELSE}
     MessagesView.ClearTillLastSeparator;
@@ -8593,16 +8596,23 @@ begin
   if (CmdAfterExe<>'') then begin
     if FileIsExecutableCached(CmdAfterExe) then begin
       Tool:=TIDEExternalToolOptions.Create;
-      Tool.Filename:=CmdAfterExe;
       Tool.Title:=lisCommandAfterPublishingModule;
       Tool.WorkingDirectory:=DestDir;
       Tool.CmdLineParams:=CmdAfterParams;
+      {$IFDEF EnableNewExtTools}
+      Tool.Executable:=CmdAfterExe;
+      if RunExternalTool(Tool) then
+        Result:=mrOk
+      else
+        Result:=mrCancel;
+      {$ELSE}
+      Tool.Filename:=CmdAfterExe;
       Result:=ExternalTools.Run(Tool,GlobalMacroList,false);
       if Result<>mrOk then exit;
+      {$ENDIF}
     end else begin
       ShowErrorForCommandAfter;
-      Result:=mrCancel;
-      exit;
+      exit(mrCancel);
     end;
   end;
 end;
@@ -8925,6 +8935,7 @@ begin
   end;
 end;
 
+{$IFNDEF EnableNewExtTools}
 function GetFPCMessage(ALine: TLazMessageLine; var FileName: String;
   var CaretPos: TPoint; var ErrType: TFPCErrorType): Boolean;
 begin
@@ -8938,6 +8949,7 @@ begin
     Exit;
   ErrType:=FPCErrorTypeNameToType(ALine.Parts.Values['Type']);
 end;
+{$ENDIF}
 
 function TMainIDE.DoJumpToCompilerMessage(FocusEditor: boolean;
   {$IFDEF EnableNewExtTools}
@@ -8947,21 +8959,45 @@ function TMainIDE.DoJumpToCompilerMessage(FocusEditor: boolean;
   {$ENDIF}
   ): boolean;
 var
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
   MaxMessages: integer;
+  MsgType: TFPCErrorType;
+  MsgLine: TLazMessageLine;
+  CurDir: string;
+  NewFilename: String;
+  {$ENDIF}
   Filename, SearchedFilename: string;
   LogCaretXY: TPoint;
   TopLine: integer;
-  MsgType: TFPCErrorType;
   SrcEdit: TSourceEditor;
   OpenFlags: TOpenFlags;
-  CurDir: string;
-  NewFilename: String;
   AnUnitInfo: TUnitInfo;
   AnEditorInfo: TUnitEditorInfo;
-  MsgLine: TLazMessageLine;
 begin
   Result:=false;
 
+  {$IFDEF EnableNewExtTools}
+  if Msg=nil then begin
+    if MessagesView.SelectFirstUrgentMessage(mluError,true) then
+      Msg:=MessagesView.GetSelectedLine;
+    if (Msg=nil) and MessagesView.SelectFirstUrgentMessage(mluError,false) then
+      Msg:=MessagesView.GetSelectedLine;
+    if Msg=nil then exit;
+  end else begin
+    MessagesView.SelectMsgLine(Msg);
+  end;
+  Msg:=MessagesView.GetSelectedLine;
+  if Msg=nil then exit;
+
+  // first try the plugins
+  if IDEQuickFixes.OpenMsg(Msg) then exit;
+
+  Filename:=Msg.GetFullFilename;
+  LogCaretXY.Y:=Msg.Line;
+  LogCaretXY.X:=Msg.Column;
+
+  {$ELSE}
   MaxMessages:=MessagesView.VisibleItemCount;
   if Index>=MaxMessages then exit;
   if (Index<0) then begin
@@ -8983,77 +9019,80 @@ begin
   // first try the plugins
   if MessagesView.ExecuteMsgLinePlugin(imqfoJump) then exit;
 
-  // default: jump to source position
+  // jump to source position
   MsgLine:=MessagesView.VisibleItems[Index];
-  if GetFPCMessage(MsgLine,Filename,LogCaretXY,MsgType) then begin
-    //debugln(['TMainIDE.DoJumpToCompilerMessage Index=',Index,' MsgFile=',MsgLine.Filename,' MsgY=',MsgLine.LineNumber,' File=',Filename,' XY=',dbgs(LogCaretXY),' ',MsgLine.Parts.Text]);
-    CurDir:=MsgLine.Directory;
-    if (not FilenameIsAbsolute(Filename)) and (CurDir<>'') then begin
-      // the directory was just hidden, re-append it
-      NewFilename:=AppendPathDelim(CurDir)+Filename;
-      if FileExistsUTF8(NewFilename) then
-        Filename:=NewFilename;
-    end;
+  if not GetFPCMessage(MsgLine,Filename,LogCaretXY,MsgType) then exit;
+  //debugln(['TMainIDE.DoJumpToCompilerMessage Index=',Index,' MsgFile=',MsgLine.Filename,' MsgY=',MsgLine.LineNumber,' File=',Filename,' XY=',dbgs(LogCaretXY),' ',MsgLine.Parts.Text]);
+  CurDir:=MsgLine.Directory;
+  if (not FilenameIsAbsolute(Filename)) and (CurDir<>'') then begin
+    // the directory was just hidden, re-append it
+    NewFilename:=AppendPathDelim(CurDir)+Filename;
+    if FileExistsUTF8(NewFilename) then
+      Filename:=NewFilename;
+  end;
+  {$ENDIF}
 
-    OpenFlags:=[ofOnlyIfExists,ofRegularFile];
-    if MainBuildBoss.IsTestUnitFilename(Filename) then begin
-      SearchedFilename := ExtractFileName(Filename);
+  OpenFlags:=[ofOnlyIfExists,ofRegularFile];
+  if MainBuildBoss.IsTestUnitFilename(Filename) then begin
+    SearchedFilename := ExtractFileName(Filename);
+    Include(OpenFlags,ofVirtualFile);
+  end else begin
+    SearchedFilename := FindUnitFile(Filename);
+    if not FilenameIsAbsolute(SearchedFilename) then
       Include(OpenFlags,ofVirtualFile);
-    end else begin
-      SearchedFilename := FindUnitFile(Filename);
-      if not FilenameIsAbsolute(SearchedFilename) then
-        Include(OpenFlags,ofVirtualFile);
-    end;
+  end;
 
-    if SearchedFilename<>'' then begin
-      // open the file in the source editor
-      AnUnitInfo := nil;
-      if Project1<>nil then
-        AnUnitInfo:=Project1.UnitInfoWithFilename(SearchedFilename);
-      AnEditorInfo := nil;
-      if AnUnitInfo <> nil then
-        AnEditorInfo := SourceFileMgr.GetAvailableUnitEditorInfo(AnUnitInfo, LogCaretXY);
-      if AnEditorInfo <> nil then begin
-        SourceEditorManager.ActiveEditor := TSourceEditor(AnEditorInfo.EditorComponent);
-        Result := True;
-      end
-      else
-        Result:=(DoOpenEditorFile(SearchedFilename,-1,-1,OpenFlags)=mrOk);
-      if Result then begin
-        // set caret position
-        SourceEditorManager.AddJumpPointClicked(Self);
-        SrcEdit:=SourceEditorManager.ActiveEditor;
-        if LogCaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
-          LogCaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
-        if LogCaretXY.X<1 then
-          LogCaretXY.X:=1;
-        TopLine:=LogCaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
-        if TopLine<1 then TopLine:=1;
-        if FocusEditor then begin
-          IDEWindowCreators.ShowForm(MessagesView,true);
-          SourceEditorManager.ShowActiveWindowOnTop(True);
-        end;
-        SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
-        SrcEdit.EditorComponent.TopLine:=TopLine;
-        SrcEdit.CenterCursorHoriz(hcmSoftKeepEOL);
-        SrcEdit.ErrorLine:=LogCaretXY.Y;
+  if SearchedFilename<>'' then begin
+    // open the file in the source editor
+    AnUnitInfo := nil;
+    if Project1<>nil then
+      AnUnitInfo:=Project1.UnitInfoWithFilename(SearchedFilename);
+    AnEditorInfo := nil;
+    if AnUnitInfo <> nil then
+      AnEditorInfo := SourceFileMgr.GetAvailableUnitEditorInfo(AnUnitInfo, LogCaretXY);
+    if AnEditorInfo <> nil then begin
+      SourceEditorManager.ActiveEditor := TSourceEditor(AnEditorInfo.EditorComponent);
+      Result := True;
+    end
+    else
+      Result:=(DoOpenEditorFile(SearchedFilename,-1,-1,OpenFlags)=mrOk);
+    if Result then begin
+      // set caret position
+      SourceEditorManager.AddJumpPointClicked(Self);
+      SrcEdit:=SourceEditorManager.ActiveEditor;
+      if LogCaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
+        LogCaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
+      if LogCaretXY.X<1 then
+        LogCaretXY.X:=1;
+      TopLine:=LogCaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
+      if TopLine<1 then TopLine:=1;
+      if FocusEditor then begin
+        IDEWindowCreators.ShowForm(MessagesView,true);
+        SourceEditorManager.ShowActiveWindowOnTop(True);
       end;
-    end else begin
-      if FilenameIsAbsolute(Filename) then begin
-        IDEMessageDialog(lisInformation, Format(lisUnableToFindFile, ['"',
-          Filename, '"']), mtInformation,[mbOk])
-      end else if Filename<>'' then begin
-        IDEMessageDialog(lisInformation, Format(
-          lisUnableToFindFileCheckSearchPathInProjectCompilerOption, ['"',
-          Filename, '"', LineEnding, LineEnding]),
-          mtInformation,[mbOk]);
-      end;
+      SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
+      SrcEdit.EditorComponent.TopLine:=TopLine;
+      SrcEdit.CenterCursorHoriz(hcmSoftKeepEOL);
+      SrcEdit.ErrorLine:=LogCaretXY.Y;
+    end;
+  end else begin
+    if FilenameIsAbsolute(Filename) then begin
+      IDEMessageDialog(lisInformation, Format(lisUnableToFindFile, ['"',
+        Filename, '"']), mtInformation,[mbOk])
+    end else if Filename<>'' then begin
+      IDEMessageDialog(lisInformation, Format(
+        lisUnableToFindFileCheckSearchPathInProjectCompilerOption, ['"',
+        Filename, '"', LineEnding, LineEnding]),
+        mtInformation,[mbOk]);
     end;
   end;
 end;
 
 procedure TMainIDE.DoJumpToNextError(DirectionDown: boolean);
 var
+  {$IFDEF EnableNewExtTools}
+  Msg: TMessageLine;
+  {$ELSE}
   Index: integer;
   MaxMessages: integer;
   Filename: string;
@@ -9061,7 +9100,15 @@ var
   MsgType: TFPCErrorType;
   OldIndex: integer;
   RoundCount: Integer;
+  {$ENDIF}
 begin
+  {$IFDEF EnableNewExtTools}
+  if not MessagesView.SelectNextUrgentMessage(mluError,true,DirectionDown) then
+    exit;
+  Msg:=MessagesView.GetSelectedLine;
+  if Msg=nil then exit;
+  DoJumpToCompilerMessage(true,Msg);
+  {$ELSE}
   // search relevant message (next error, fatal or panic)
   MaxMessages:=MessagesView.VisibleItemCount;
   OldIndex:=MessagesView.SelectedMessageIndex;
@@ -9092,6 +9139,7 @@ begin
   end;
   MessagesView.SelectedMessageIndex:=Index;
   DoJumpToCompilerMessage(true,Index);
+  {$ENDIF}
 end;
 
 function TMainIDE.DoJumpToSearchResult(FocusEditor: boolean): boolean;
@@ -9169,10 +9217,14 @@ end;
 procedure TMainIDE.DoShowMessagesView(BringToFront: boolean);
 begin
   //debugln('TMainIDE.DoShowMessagesView');
+  {$IFDEF EnableNewExtTools}
+  MessagesView.HideMessagesIcons:=EnvironmentOptions.HideMessagesIcons;
+  {$ELSE}
   if EnvironmentOptions.HideMessagesIcons then
     MessagesView.MessageTreeView.Images := nil
   else
     MessagesView.MessageTreeView.Images := IDEImages.Images_12;
+  {$ENDIF}
 
   // don't move the messagesview, if it was already visible.
   IDEWindowCreators.ShowForm(MessagesView,BringToFront);
@@ -10487,6 +10539,9 @@ var
   ErrorTopLine: integer;
   AnUnitInfo: TUnitInfo;
   AnEditorInfo: TUnitEditorInfo;
+  {$IFDEF EnableNewExtTools}
+  Msg: TMessageLine;
+  {$ENDIF}
 begin
   if CodeToolBoss.ErrorMessage='' then begin
     SourceFileMgr.UpdateSourceNames;
@@ -10496,6 +10551,15 @@ begin
   // syntax error -> show error and jump
   // show error in message view
   SourceFileMgr.ArrangeSourceEditorAndMessageView(false);
+  {$IFDEF EnableNewExtTools}
+  MessagesView.ClearCustomMessages;
+  if CodeToolBoss.ErrorCode<>nil then begin
+    Msg:=MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,
+      CodeToolBoss.ErrorCode.Filename,CodeToolBoss.ErrorLine,CodeToolBoss.ErrorColumn);
+    Msg.Flags:=Msg.Flags+[mlfLeftToken];
+  end else
+    MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage);
+  {$ELSE}
   MessagesView.ClearTillLastSeparator;
   MessagesView.AddSeparator;
   if CodeToolBoss.ErrorCode<>nil then begin
@@ -10508,6 +10572,7 @@ begin
   end else
     MessagesView.AddMsg(CodeToolBoss.ErrorMessage,Project1.ProjectDirectory,-1);
   MessagesView.SelectedMessageIndex:=MessagesView.MsgCount-1;
+  {$ENDIF}
 
   // jump to error in source editor
   if CodeToolBoss.ErrorCode<>nil then begin
@@ -12445,7 +12510,9 @@ begin
     SaveEnvironment(true);
 
   GetDefaultProcessList.FreeStoppedProcesses;
+  {$IFNDEF EnableNewExtTools}
   ExternalTools.FreeStoppedProcesses;
+  {$ENDIF}
   if (SplashForm<>nil) then FreeThenNil(SplashForm);
 
   if Assigned(FDesignerToBeFreed) then begin

@@ -52,11 +52,14 @@ type
     ImgIDError: integer;
     ImgIDFatal: integer;
     function GetDblClickJumps: boolean;
+    function GetHideMessagesIcons: boolean;
     procedure SetDblClickJumps(AValue: boolean);
+    procedure SetHideMessagesIcons(AValue: boolean);
   protected
     function GetViews(Index: integer): TExtToolView; override;
   public
     SourceMarks: TETMarks;
+    procedure ClearCustomMessages(const ViewCaption: string='');
     function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
       aSrcFilename: string=''; LineNumber: integer=0; Column: integer=0;
       const ViewCaption: string=''): TMessageLine; override;
@@ -67,12 +70,14 @@ type
     function GetView(aCaption: string; CreateIfNotExist: boolean
       ): TExtToolView; override;
     function IndexOfView(View: TExtToolView): integer; override;
+    procedure SelectMsgLine(Msg: TMessageLine); override;
     function SelectFirstUrgentMessage(aMinUrgency: TMessageLineUrgency;
       WithSrcPos: boolean): boolean; override;
     function SelectNextUrgentMessage(aMinUrgency: TMessageLineUrgency;
       WithSrcPos, Downwards: boolean): boolean; override;
     function ViewCount: integer; override;
     property DblClickJumps: boolean read GetDblClickJumps write SetDblClickJumps;
+    property HideMessagesIcons: boolean read GetHideMessagesIcons write SetHideMessagesIcons;
   end;
 
 var
@@ -154,9 +159,22 @@ begin
       MessagesFrame1.MessagesCtrl.Options+[mcoSingleClickOpensFile]
 end;
 
+procedure TMessagesView.SetHideMessagesIcons(AValue: boolean);
+begin
+  if AValue then
+    MessagesFrame1.MessagesCtrl.Options:=MessagesFrame1.MessagesCtrl.Options+[]
+  else
+    MessagesFrame1.MessagesCtrl.Options:=MessagesFrame1.MessagesCtrl.Options-[];
+end;
+
 function TMessagesView.GetViews(Index: integer): TExtToolView;
 begin
   Result:=MessagesFrame1.Views[Index];
+end;
+
+procedure TMessagesView.ClearCustomMessages(const ViewCaption: string);
+begin
+  MessagesFrame1.ClearCustomMessages(ViewCaption);
 end;
 
 function TMessagesView.AddCustomMessage(TheUrgency: TMessageLineUrgency;
@@ -202,6 +220,11 @@ begin
     Result:=-1;
 end;
 
+procedure TMessagesView.SelectMsgLine(Msg: TMessageLine);
+begin
+  MessagesFrame1.SelectMsgLine(Msg,true);
+end;
+
 function TMessagesView.SelectFirstUrgentMessage(
   aMinUrgency: TMessageLineUrgency; WithSrcPos: boolean): boolean;
 begin
@@ -222,6 +245,11 @@ end;
 function TMessagesView.GetDblClickJumps: boolean;
 begin
   Result:=not (mcoSingleClickOpensFile in MessagesFrame1.MessagesCtrl.Options);
+end;
+
+function TMessagesView.GetHideMessagesIcons: boolean;
+begin
+  Result:=mcoShowMsgIcons in MessagesFrame1.MessagesCtrl.Options;
 end;
 
 end.
