@@ -232,19 +232,6 @@ var
     FGeneratedControls.Add(Lbl);
   end;
 
-  procedure AddChoices(aComboBox: TComboBox; aCategory: string);
-  // Add selection choices to ComboBox from data originating from "fpc -i".
-  var
-    i: Integer;
-  begin
-    with FOptionsReader.SupportedCategories do
-      if Find(aCategory, i) then
-        aComboBox.Items.Assign(Objects[i] as TStrings)
-      else
-        raise Exception.CreateFmt('AddChoices: Selection list for "%s" is not found.',
-                                  [aCategory]);
-  end;
-
   procedure RenderOneLevel(aParentGroup: TCompilerOptGroup);
   var
     Cntrl, Lbl: TControl;
@@ -286,18 +273,8 @@ var
           Cntrl := MakeEditCntrl(Lbl, TComboBox);
           cb := TComboBox(Cntrl);
           cb.Style := csDropDownList;
-          // ToDo: Move this logic to parser data so values can be validated better.
-          case Opt.Option of
-            '-Ca':     AddChoices(cb, 'ABI targets:');
-            '-Cf':     AddChoices(cb, 'FPU instruction sets:');
-            '-Cp':     AddChoices(cb, 'CPU instruction sets:');
-            '-Oo[NO]': AddChoices(cb, 'Optimizations:');
-            '-Op':     AddChoices(cb, 'CPU instruction sets:');
-            '-OW':     AddChoices(cb, 'Whole Program Optimizations:');
-            '-Ow':     AddChoices(cb, 'Whole Program Optimizations:');
-            else
-              raise Exception.Create('AddChoices: Unknown option ' + Opt.Option);
-          end;
+          if Assigned(Opt.Choices) then
+            cb.Items.Assign(Opt.Choices);
           cb.Text := Opt.Value;
           cb.OnChange := @ComboChange;
           MakeDescrLabel(Cntrl, LeftDescrEdit);

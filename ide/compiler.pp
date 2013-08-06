@@ -102,9 +102,12 @@ type
     fOwnerGroup: TCompilerOptGroup;
     fVisible: Boolean;                  // Used for filtering.
     fIgnored: Boolean;                  // Pretend this option does not exist.
+    fChoices: TStrings;                 // Choices got from "fpc -i"
+    procedure AddChoices(aCategory: string);
     procedure Filter(aFilter: string; aOnlySelected: Boolean);
   protected
-    procedure ParseOption(aDescr: string; aIndent: integer); virtual;
+    procedure ParseEditKind; virtual;
+    procedure ParseOption(aDescr: string; aIndent: integer);
   public
     constructor Create(aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
@@ -119,6 +122,7 @@ type
     property Indentation: integer read fIndentation;
     property Visible: Boolean read fVisible write fVisible;
     property Ignored: Boolean read fIgnored write fIgnored;
+    property Choices: TStrings read fChoices;
   end;
 
   TCompilerOptList = TObjectList;
@@ -131,7 +135,7 @@ type
     // List of options belonging to this group.
     fCompilerOpts: TCompilerOptList;
   protected
-    procedure ParseOption(aDescr: string; aIndent: integer); override;
+    procedure ParseEditKind; override;
   public
     constructor Create(aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
@@ -147,12 +151,11 @@ type
   // A set of options. A combination of chars or numbers following the option char.
   TCompilerOptSet = class(TCompilerOptGroup)
   private
-    fHasNumber: Boolean;
     function SetNumberOpt(aValue: string): Boolean;
     function SetBooleanOpt(aValue: string): Boolean;
   protected
     procedure AddOptions(aDescr: string; aIndent: integer);
-    procedure ParseOption(aDescr: string; aIndent: integer); override;
+    procedure ParseEditKind; override;
   public
     constructor Create(aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
@@ -176,7 +179,7 @@ type
     fCompilerVersion: string;            // Parsed from "fpc -h".
     fErrorMsg: String;
     procedure ReadVersion(s: string);
-    //function FindPrevGroup(aIndent: integer): TCompilerOptGroup;
+    procedure AddGroupItems(aGroup: TCompilerOptGroup; aItems: TStrings);
     function ParseI(aLines: TStringList): TModalResult;
     function ParseH(aLines: TStringList): TModalResult;
   public
@@ -199,6 +202,8 @@ type
 
 implementation
 
+var
+  CurrentCategories: TStringList;    // To pass categories to options parser.
 
 { TCompiler }
 
@@ -382,6 +387,26 @@ begin
   Result := aOpt[2] in ['i', 'F', 'e', 'o', 'd', 'u', 'M', 'T'];
 end;
 
+function IsGroup(aOpt: string; var aCategoryList: TStrings): Boolean;
+// This option should be a group instead of a selection list.
+var
+  i: Integer;
+  Category: string;
+begin
+  if AnsiStartsStr('-Oo', aOpt) then
+    Category := 'Optimizations:'
+  else if AnsiStartsStr('-OW', aOpt) or AnsiStartsStr('-Ow', aOpt) then
+    Category := 'Whole Program Optimizations:'
+  ;
+  Result := Category <> '';
+  if Result then
+    if CurrentCategories.Find(Category, i) then
+      aCategoryList := CurrentCategories.Objects[i] as TStrings
+    else
+      raise Exception.CreateFmt('No list of options found for "%s".', [Category]);
+end;
+
+
 { TCompilerOpt }
 
 constructor TCompilerOpt.Create(aOwnerGroup: TCompilerOptGroup);
@@ -398,39 +423,71 @@ begin
   inherited Destroy;
 end;
 
-procedure TCompilerOpt.ParseOption(aDescr: string; aIndent: integer);
+procedure TCompilerOpt.AddChoices(aCategory: string);
+// Add selection choices for this option. Data originates from "fpc -i".
 var
-  i, Start: Integer;
+  i: Integer;
 begin
-  fIndentation := aIndent;
-  // Separate the actual option and description from each other
-  Start := aIndent+1;
-  if (Length(aDescr) < aIndent) or (aDescr[Start] <> '-') then
-    raise Exception.Create('Option description does not start with "-"');
-  i := Start;
-  while (i < Length(aDescr)) and (aDescr[i] <> ' ') do
-    Inc(i);
-  fOption := Copy(aDescr, Start, i-Start);
-  while (i < Length(aDescr)) and (aDescr[i] = ' ') do
-    Inc(i);
-  fDescription := Copy(aDescr, i, Length(aDescr));
+  if CurrentCategories.Find(aCategory, i) then
+    fChoices := CurrentCategories.Objects[i] as TStrings
+  else
+    raise Exception.CreateFmt('No selection list for "%s" found.', [aCategory]);
+end;
+
+procedure TCompilerOpt.ParseEditKind;
+begin
   // Guess whether this option can be edited and what is the EditKind
   fEditKind := oeBoolean;                  // Default kind
-  i := Length(fOption);
-  if (i > 3) and (fOption[i-2] = '<') and (fOption[i] = '>') then
-  begin
-    case fOption[i-1] of
+  if (Length(fSuffix) = 3) and (fSuffix[1] = '<') and (fSuffix[3] = '>') then
+    case fSuffix[2] of
       'x': fEditKind:=oeText;              // <x>
       'n': fEditKind:=oeNumber;            // <n>
     end;
+  if Pos('fpc -i', fDescription) > 0 then
+  begin
+    fEditKind := oeList;                   // Values will be got later.
+    case fOption of
+      '-Ca': AddChoices('ABI targets:');
+      '-Cf': AddChoices('FPU instruction sets:');
+      '-Cp': AddChoices('CPU instruction sets:');
+  //      '-Oo', '-Oo[NO]': AddChoices('Optimizations:');
+      '-Op': AddChoices('CPU instruction sets:');
+  //      '-OW': AddChoices('Whole Program Optimizations:');
+  //      '-Ow': AddChoices('Whole Program Optimizations:');
+      else
+        raise Exception.Create('Don''t know where to get selection list for option '+fOption);
+    end;
+  end;
+end;
+
+procedure TCompilerOpt.ParseOption(aDescr: string; aIndent: integer);
+var
+  i: Integer;
+begin
+  fIndentation := aIndent;
+  // Separate the actual option and description from each other
+  if aDescr[1] <> '-' then
+    raise Exception.Create('Option description does not start with "-"');
+  i := 1;
+  while (i < Length(aDescr)) and (aDescr[i] <> ' ') do
+    Inc(i);
+  fOption := Copy(aDescr, 1, i-1);
+  while (i < Length(aDescr)) and (aDescr[i] = ' ') do
+    Inc(i);
+  fDescription := Copy(aDescr, i, Length(aDescr));
+  i := Length(fOption);
+  if (i > 3) and (fOption[i-2] = '<') and (fOption[i] = '>') then
+  begin
     // Move <x> in the end to Suffix. We need the pure option later.
     fSuffix := Copy(fOption, i-2, i);
     fOption := Copy(fOption, 1, i-3);
+    i := Length(fOption);
+    if Copy(fOption, i-3, 4) = '[NO]' then
+      SetLength(fOption, i-4);
   end;
-  if Pos('fpc -i', fDescription) > 0 then
-    fEditKind := oeList;                   // Values will be got later.
   if fOwnerGroup.fIgnored or IsIgnoredOption(fOption) then
     fIgnored := True;
+  ParseEditKind;
 end;
 
 procedure TCompilerOpt.Filter(aFilter: string; aOnlySelected: Boolean);
@@ -582,9 +639,8 @@ begin
   Result := Assigned(Opt);
 end;
 
-procedure TCompilerOptGroup.ParseOption(aDescr: string; aIndent: integer);
+procedure TCompilerOptGroup.ParseEditKind;
 begin
-  inherited ParseOption(aDescr, aIndent);
   fEditKind := oeGroup;
 end;
 
@@ -698,7 +754,6 @@ procedure TCompilerOptSet.AddOptions(aDescr: string; aIndent: integer);
     OptSet.fOption := 'Number';
     OptSet.fDescription := aDescr;
     OptSet.fEditKind := oeSetNumber;
-    fHasNumber := True;
   end;
 
   procedure NewSetElem(aDescr: string);
@@ -718,20 +773,21 @@ var
   Opt1, Opt2: string;
   i: Integer;
 begin
-  Opt1 := Copy(aDescr, aIndent+1, Length(aDescr));
-  if AnsiStartsStr('<n>', Opt1) then
-    NewSetNumber(Opt1)
+  if AnsiStartsStr('<n>', aDescr) then
+    NewSetNumber(aDescr)
   else begin
-    i := PosEx(':', Opt1, 4);
-    if (i > 0) and (Opt1[i-1]=' ') and (Opt1[i-2]<>' ') and (Opt1[i-3]=' ') then
+    i := PosEx(':', aDescr, 4);
+    if (i > 0) and (aDescr[i-1]=' ') and (aDescr[i-2]<>' ') and (aDescr[i-3]=' ') then
     begin
       // Found another option on the same line, like ' a :'
-      Opt2 := Copy(Opt1, i-2, Length(Opt1));
-      if Opt1[3] = ':' then
-        Opt1 := TrimRight(Copy(Opt1, 1, i-3))
+      Opt2 := Copy(aDescr, i-2, Length(aDescr));
+      if aDescr[3] = ':' then
+        Opt1 := TrimRight(Copy(aDescr, 1, i-3))
       else
         Opt1 := '';
-    end;
+    end
+    else
+      Opt1 := aDescr;
     if Opt1 <> '' then         // Can be empty when line in help output is split.
       NewSetElem(Opt1)
     else if fCompilerOpts.Count > 0 then
@@ -741,9 +797,8 @@ begin
   end;
 end;
 
-procedure TCompilerOptSet.ParseOption(aDescr: string; aIndent: integer);
+procedure TCompilerOptSet.ParseEditKind;
 begin
-  inherited ParseOption(aDescr, aIndent);
   fEditKind := oeSet;
 end;
 
@@ -757,6 +812,8 @@ begin
   fOtherOptions := TStringList.Create;
   fSupportedCategories := TStringList.Create;
   fRootOptGroup := TCompilerOptGroup.Create(Nil);
+  // Categories are passed to options parser through a global variable.
+  CurrentCategories := fSupportedCategories;
 end;
 
 destructor TCompilerOptReader.Destroy;
@@ -833,6 +890,20 @@ begin
   end;
 end;
 
+procedure TCompilerOptReader.AddGroupItems(aGroup: TCompilerOptGroup; aItems: TStrings);
+var
+  Opt: TCompilerOpt;
+  i: Integer;
+begin
+  for i := 1 to aItems.Count-1 do        // Skip the first empty item.
+  begin
+    Opt := TCompilerOpt.Create(aGroup);  // Add it under a group
+    Opt.fOption := aGroup.Option + aItems[i];
+    Opt.fIndentation := aGroup.Indentation+4;
+    Opt.fEditKind := oeBoolean;
+  end;
+end;
+
 function TCompilerOptReader.ParseH(aLines: TStringList): TModalResult;
 const
   OptSetId = 'a combination of';
@@ -840,7 +911,8 @@ var
   i, ThisInd, NextInd: Integer;
   ThisLine, NextLine: String;
   Opt: TCompilerOpt;
-  LastGroup: TCompilerOptGroup;
+  LastGroup, SubGroup: TCompilerOptGroup;
+  GroupItems: TStrings;
 begin
   Result := mrOK;
   LastGroup := fRootOptGroup;
@@ -848,12 +920,13 @@ begin
   begin
     ThisLine := StringReplace(aLines[i],'-Agas-darwinAssemble','-Agas-darwin Assemble',[]);
     ThisInd := CalcIndentation(ThisLine);
+    ThisLine := Trim(ThisLine);
     if ThisInd = 0 then
     begin
       ReadVersion(ThisLine);        // Top header lines for compiler version etc.
       Continue;
     end;
-    if (Trim(ThisLine) = '') or (ThisInd > 30)
+    if (ThisLine = '') or (ThisInd > 30)
     or (Pos(' -? ', ThisLine) > 0)
     or (Pos(' -h ', ThisLine) > 0) then Continue;
 
@@ -872,9 +945,9 @@ begin
         // A hack to deal with split lined in the help output.
         NextInd := ThisInd
       else begin
-        if Pos(OptSetId, ThisLine) > 0 then     // Header for sets
+        if Pos(OptSetId, ThisLine) > 0 then       // Header for sets
           LastGroup := TCompilerOptSet.Create(LastGroup)
-        else                                    // Group header for options
+        else                                      // Group header for options
           LastGroup := TCompilerOptGroup.Create(LastGroup);
         LastGroup.ParseOption(ThisLine, ThisInd);
       end;
@@ -882,14 +955,22 @@ begin
     if NextInd <= ThisInd then
     begin
       // This is an option
-      if (LastGroup is TCompilerOptSet) then    // Add it to a set (may add many)
+      if (LastGroup is TCompilerOptSet) then      // Add it to a set (may add many)
         TCompilerOptSet(LastGroup).AddOptions(ThisLine, ThisInd)
       else begin
-        Opt := TCompilerOpt.Create(LastGroup);  // Add it under a group
-        Opt.ParseOption(ThisLine, ThisInd);
+        if IsGroup(ThisLine, GroupItems) then
+        begin
+          SubGroup := TCompilerOptGroup.Create(LastGroup);
+          SubGroup.ParseOption(ThisLine, ThisInd);
+          AddGroupItems(SubGroup, GroupItems);
+        end
+        else begin
+          Opt := TCompilerOpt.Create(LastGroup);  // Add it under a group
+          Opt.ParseOption(ThisLine, ThisInd);
+        end;
       end;
       if (NextInd <> -1) and (NextInd < ThisInd) then
-        LastGroup := LastGroup.fOwnerGroup;     // Return to a previous group
+        LastGroup := LastGroup.fOwnerGroup;       // Return to a previous group
     end;
   end;
 end;
