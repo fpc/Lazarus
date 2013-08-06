@@ -1255,7 +1255,7 @@ begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
-    lNodeValue := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
     if  lNodeName = 'cx' then
       cx := StringWithUnitToFloat(lNodeValue)
     else if lNodeName = 'cy' then
