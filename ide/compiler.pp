@@ -927,8 +927,8 @@ begin
       Continue;
     end;
     if (ThisLine = '') or (ThisInd > 30)
-    or (Pos(' -? ', ThisLine) > 0)
-    or (Pos(' -h ', ThisLine) > 0) then Continue;
+    or (Pos('-? ', ThisLine) > 0)
+    or (Pos('-h ', ThisLine) > 0) then Continue;
 
     if i < aLines.Count-1 then begin
       NextLine := aLines[i+1];
