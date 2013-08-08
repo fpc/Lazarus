@@ -139,13 +139,8 @@ begin
   // ask quickfixes
   if IDEQuickFixes.OpenMsg(Msg) then exit(true);
   if Msg.GetFullFilename<>'' then begin
-    // ToDo: open file in source editor and mark it as error
-    if LazarusIDE.DoOpenFileAndJumpToPos(Msg.GetFullFilename,
-      Point(Msg.Line,Msg.Column),-1,-1,-1,OpnFlagsPlainFile)<>mrOk
-    then
-      exit;
-    // ToDo: set error line in source editor
-    Result:=true;
+    // open file in source editor and mark it as error
+    Result:=LazarusIDE.DoJumpToCompilerMessage(true,Msg);
   end;
 end;
 

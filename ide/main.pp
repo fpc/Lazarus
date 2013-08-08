@@ -4824,6 +4824,14 @@ var
       EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
   end;
 
+  procedure UpdateMessagesView;
+  begin
+    {$IFDEF EnableNewExtTools}
+    MessagesView.HideMessagesIcons:=EnvironmentOptions.HideMessagesIcons;
+    MessagesView.DblClickJumps:=EnvironmentOptions.MsgViewDblClickJumps;
+    {$ENDIF}
+  end;
+
 begin
   if Restore then exit;
   // invalidate cached substituted macros
@@ -4853,6 +4861,7 @@ begin
   // update environment
   UpdateDesigners;
   UpdateObjectInspector;
+  UpdateMessagesView;
   SetupHints;
   Application.ShowButtonGlyphs := EnvironmentOptions.ShowButtonGlyphs;
   Application.ShowMenuGlyphs := EnvironmentOptions.ShowMenuGlyphs;
