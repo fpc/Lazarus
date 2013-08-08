@@ -1119,6 +1119,9 @@ else
       <!-- function result Visibility: default -->
       <element name="FindAllFiles.Result">
         <short>List of found files.</short>
+        <descr>List (TStringList) of found files.
+        The StringList is instantiated by the FindAllFiles function, so you should not instatiate it before calling
+        the function.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="FindAllFiles.SearchPath">
@@ -1126,7 +1129,10 @@ else
       </element>
       <!-- argument Visibility: default -->
       <element name="FindAllFiles.SearchMask">
-        <short>Mask which file should match.</short>
+        <short>A list of masks, separated by a semicolon (;) to which found files should match.</short>
+        <descr>A list of masks, separated by a semicolon (;) to which found files should match.
+        The mask can contain wildcards like * and ? and it also supports sets like [a-d,x].
+        See the Masks unit fo more details.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="FindAllFiles.SearchSubDirs">
