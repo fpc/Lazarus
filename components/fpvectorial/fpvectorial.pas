@@ -136,14 +136,23 @@ type
     );
   TvSetPenBrushAndFontElements = set of TvSetPenBrushAndFontElement;
 
+  TvStyleKind = (vskTextBody, vskHeading);
+
+  { TvStyle }
+
   TvStyle = class
     Name: string;
+    Parent: TvStyle; // Can be nil
+    Kind: TvStyleKind;
+    //
     Pen: TvPen;
     Brush: TvBrush;
     Font: TvFont;
     SetElements: TvSetPenBrushAndFontElements;
     //
     MarginTop, MarginBottom, MarginLeft, MarginRight: Double; // in mm
+    //
+    function GetKind: TvStyleKind; // takes care of parenting
   end;
 
   { Coordinates and polyline segments }
@@ -788,7 +797,7 @@ type
   public
     Width, Height: Double;
     AutoExpand: TvRichTextAutoExpand;
-    Style: string;
+    Style: TvStyle;
     constructor Create; override;
     destructor Destroy; override;
     function AddText: TvText;
@@ -843,9 +852,10 @@ type
     function AddTextPageSequence(): TvTextPageSequence;
     { Style methods }
     function AddStyle(): TvStyle;
-    procedure AddStandardTextDocumentStyles;
+    procedure AddStandardODTTextDocumentStyles;
     function GetStyleCount: Integer;
     function GetStyle(AIndex: Integer): TvStyle;
+    function FindStyleIndex(AStyle: TvStyle): Integer;
     { Data removing methods }
     procedure Clear; virtual;
     { Debug methods }
@@ -1105,6 +1115,14 @@ begin
   Result.X := AX;
   Result.Y := AY;
   Result.Z := 0;
+end;
+
+{ TvStyle }
+
+function TvStyle.GetKind: TvStyleKind;
+begin
+  if Parent = nil then Result := Kind
+  else Result := Parent.GetKind();
 end;
 
 { T2DEllipticalArcSegment }
@@ -5103,36 +5121,87 @@ begin
   FStyles.Add(Result);
 end;
 
-procedure TvVectorialDocument.AddStandardTextDocumentStyles;
+procedure TvVectorialDocument.AddStandardODTTextDocumentStyles;
 var
-  lCurStyle: TvStyle;
+  lTextBody, lBaseHeading, lCurStyle: TvStyle;
 begin
-  lCurStyle := AddStyle();
-  lCurStyle.Name := 'Text Body';
-  lCurStyle.Font.Size := 12;
-  lCurStyle.Font.Name := 'Times New Roman';
-  lCurStyle.SetElements := [spbfFontSize, spbfFontName];
-  lCurStyle.MarginTop := 0;
-  lCurStyle.MarginBottom := 2.12;
+  //<style:style style:name="Text_20_body" style:display-name="Text body" style:family="paragraph" style:parent-style-name="Standard" style:class="text">
+  //  <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.212cm" style:contextual-spacing="false" />
+  //</style:style>
+  lTextBody := AddStyle();
+  lTextBody.Name := 'Text Body';
+  lTextBody.Kind := vskTextBody;
+  lTextBody.Font.Size := 12;
+  lTextBody.Font.Name := 'Times New Roman';
+  lTextBody.SetElements := [spbfFontSize, spbfFontName];
+  lTextBody.MarginTop := 0;
+  lTextBody.MarginBottom := 2.12;
 
+  // Headings
+
+  //  <style:style style:name="Heading" style:family="paragraph" style:parent-style-name="Standard" style:next-style-name="Text_20_body" style:class="text">
+  //    <style:paragraph-properties fo:margin-top="0.423cm" fo:margin-bottom="0.212cm" style:contextual-spacing="false" fo:keep-with-next="always" />
+  //    <style:text-properties style:font-name="Arial" fo:font-size="14pt" style:font-name-asian="Microsoft YaHei" style:font-size-asian="14pt" style:font-name-complex="Mangal" style:font-size-complex="14pt" />
+  //  </style:style>
+  lBaseHeading := AddStyle();
+  lBaseHeading.Name := 'Text Body';
+  lBaseHeading.Kind := vskHeading;
+  lBaseHeading.Font.Size := 14;
+  lBaseHeading.Font.Name := 'Arial';
+  lBaseHeading.SetElements := [spbfFontSize, spbfFontName];
+  lBaseHeading.MarginTop := 4.23;
+  lBaseHeading.MarginBottom := 2.12;
+
+  //<style:style style:name="Heading_20_1" style:display-name="Heading 1" style:family="paragraph" style:parent-style-name="Heading" style:next-style-name="Text_20_body" style:default-outline-level="1" style:class="text">
+  //  <style:text-properties fo:font-size="115%" fo:font-weight="bold" style:font-size-asian="115%" style:font-weight-asian="bold" style:font-size-complex="115%" style:font-weight-complex="bold" />
+  //</style:style>
   lCurStyle := AddStyle();
   lCurStyle.Name := 'Heading 1';
-  lCurStyle.Font.Size := 16;
-  lCurStyle.Font.Name := 'Arial';
+  lCurStyle.Parent := lBaseHeading;
+  lCurStyle.Font.Size := Round(1.15 * lBaseHeading.Font.Size);
   lCurStyle.Font.Bold := True;
-  lCurStyle.SetElements := [spbfFontSize, spbfFontName, spbfFontBold, spbfFontItalic];
-  lCurStyle.MarginTop := 4.23;
-  lCurStyle.MarginBottom := 2.12;
+  lCurStyle.SetElements := [spbfFontSize, spbfFontBold];
 
+  //<style:style style:name="Heading_20_2" style:display-name="Heading 2" style:family="paragraph" style:parent-style-name="Heading" style:next-style-name="Text_20_body" style:default-outline-level="2" style:class="text">
+  //  <style:text-properties fo:font-size="14pt" fo:font-style="italic" fo:font-weight="bold" style:font-size-asian="14pt" style:font-style-asian="italic" style:font-weight-asian="bold" style:font-size-complex="14pt" style:font-style-complex="italic" style:font-weight-complex="bold" />
+  //</style:style>
   lCurStyle := AddStyle();
   lCurStyle.Name := 'Heading 2';
+  lCurStyle.Parent := lBaseHeading;
   lCurStyle.Font.Size := 14;
-  lCurStyle.Font.Name := 'Arial';
   lCurStyle.Font.Bold := True;
   lCurStyle.Font.Italic := True;
-  lCurStyle.SetElements := [spbfFontSize, spbfFontName, spbfFontBold, spbfFontItalic];
-  lCurStyle.MarginTop := 4.23;
-  lCurStyle.MarginBottom := 2.12;
+  lCurStyle.SetElements := [spbfFontSize, spbfFontBold, spbfFontItalic];
+
+  //<style:style style:name="Heading_20_3" style:display-name="Heading 3" style:family="paragraph" style:parent-style-name="Heading" style:next-style-name="Text_20_body" style:default-outline-level="3" style:class="text">
+  //  <style:text-properties fo:font-size="14pt" fo:font-weight="bold" style:font-size-asian="14pt" style:font-weight-asian="bold" style:font-size-complex="14pt" style:font-weight-complex="bold" />
+  //</style:style>
+  lCurStyle := AddStyle();
+  lCurStyle.Name := 'Heading 3';
+  lCurStyle.Parent := lBaseHeading;
+  lCurStyle.Font.Size := 14;
+  lCurStyle.Font.Bold := True;
+  lCurStyle.SetElements := [spbfFontSize, spbfFontName, spbfFontBold];
+
+  {
+  <style:style style:name="List" style:family="paragraph" style:parent-style-name="Text_20_body" style:class="list">
+    <style:text-properties style:font-size-asian="12pt" style:font-name-complex="Mangal1" />
+  </style:style>
+  <style:style style:name="Caption" style:family="paragraph" style:parent-style-name="Standard" style:class="extra">
+    <style:paragraph-properties fo:margin-top="0.212cm" fo:margin-bottom="0.212cm" style:contextual-spacing="false" text:number-lines="false" text:line-number="0" />
+    <style:text-properties fo:font-size="12pt" fo:font-style="italic" style:font-size-asian="12pt" style:font-style-asian="italic" style:font-name-complex="Mangal1" style:font-size-complex="12pt" style:font-style-complex="italic" />
+  </style:style>
+  <style:style style:name="Index" style:family="paragraph" style:parent-style-name="Standard" style:class="index">
+    <style:paragraph-properties text:number-lines="false" text:line-number="0" />
+    <style:text-properties style:font-size-asian="12pt" style:font-name-complex="Mangal1" />
+  </style:style>
+  <style:style style:name="Internet_20_link" style:display-name="Internet link" style:family="text">
+    <style:text-properties fo:color="#000080" fo:language="zxx" fo:country="none" style:text-underline-style="solid" style:text-underline-width="auto" style:text-underline-color="font-color" style:language-asian="zxx" style:country-asian="none" style:language-complex="zxx" style:country-complex="none" />
+  </style:style>
+  <style:style style:name="Bullet_20_Symbols" style:display-name="Bullet Symbols" style:family="text">
+    <style:text-properties style:font-name="OpenSymbol" style:font-name-asian="OpenSymbol" style:font-name-complex="OpenSymbol" />
+  </style:style>
+  }
 end;
 
 function TvVectorialDocument.GetStyleCount: Integer;
@@ -5143,6 +5212,15 @@ end;
 function TvVectorialDocument.GetStyle(AIndex: Integer): TvStyle;
 begin
   Result := TvStyle(FStyles.Items[AIndex]);
+end;
+
+function TvVectorialDocument.FindStyleIndex(AStyle: TvStyle): Integer;
+var
+  i: Integer;
+begin
+  Result := -1;
+  for i := 0 to GetStyleCount()-1 do
+    if GetStyle(i) = AStyle then Exit(i);
 end;
 
 {@@

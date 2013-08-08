@@ -63,7 +63,7 @@ type
     FMeta, FSettings, FStyles, FContent, FMimetype: string;
     FMetaInfManifest: string;
     // helper routines
-    function StyleNameToODTStyleName(AData: TvVectorialDocument; AStyleIndex: Integer; AToContentAutoStyle: Boolean): string;
+    function StyleNameToODTStyleName(AData: TvVectorialDocument; AStyleIndex: Integer; AToContentAutoStyle: Boolean = False): string;
     function FloatToODTText(AFloat: Double): string;
     // Routines to write those files
     procedure WriteMimetype;
@@ -73,6 +73,8 @@ type
     procedure WriteStyles(AData: TvVectorialDocument);
     procedure WriteDocument(AData: TvVectorialDocument);
     procedure WritePage(ACurPage: TvTextPageSequence);
+    //
+    procedure WriteParagraph(AEntity: TvRichText; ACurPage: TvTextPageSequence);
     // Routines to write parts of those files
     function WriteStylesXMLAsString: string;
     //
@@ -336,7 +338,7 @@ procedure TvODTVectorialWriter.WriteStyles(AData: TvVectorialDocument);
 var
   i: Integer;
   CurStyle: TvStyle;
-  lTextPropsStr, lParagraphPropsStr, lCurStyleTmpStr: string;
+  lTextPropsStr, lParagraphPropsStr, lCurStyleTmpStr, CurStyleParent: string;
 begin
   FStyles :=
    XML_HEADER + LineEnding +
@@ -439,6 +441,9 @@ begin
     lParagraphPropsStr := '';
     CurStyle := AData.GetStyle(i);
 
+    if CurStyle.Parent = nil then CurStyleParent := 'Standard'
+    else CurStyleParent := StyleNameToODTStyleName(AData, AData.FindStyleIndex(CurStyle.Parent), False);
+
     if spbfFontSize in CurStyle.SetElements then
     begin
       lTextPropsStr := lTextPropsStr + ' fo:font-size="'+IntToStr(CurStyle.Font.Size)+'pt" ';
@@ -465,7 +470,7 @@ begin
     end;
 
     lCurStyleTmpStr := // tmp string to help see the text in the debugger
-     '  <style:style style:name="'+StyleNameToODTStyleName(AData, i, False)+'" style:display-name="'+ CurStyle.Name +'" style:family="paragraph" style:parent-style-name="Standard" style:class="text">' + LineEnding +
+     '  <style:style style:name="'+StyleNameToODTStyleName(AData, i, False)+'" style:display-name="'+ CurStyle.Name +'" style:family="paragraph" style:parent-style-name="'+CurStyleParent+'" style:class="text">' + LineEnding +
      '    <style:paragraph-properties fo:margin-top="'+FloatToODTText(CurStyle.MarginTop)+'mm" fo:margin-bottom="'+FloatToODTText(CurStyle.MarginTop)+'mm" style:contextual-spacing="false" />' + LineEnding +
      '    <style:text-properties '+lTextPropsStr+' />' + LineEnding +
      '  </style:style>' + LineEnding;
@@ -499,82 +504,98 @@ begin
     <style:style style:name="Internet_20_link" style:display-name="Internet link" style:family="text">
       <style:text-properties fo:color="#000080" fo:language="zxx" fo:country="none" style:text-underline-style="solid" style:text-underline-width="auto" style:text-underline-color="font-color" style:language-asian="zxx" style:country-asian="none" style:language-complex="zxx" style:country-complex="none" />
     </style:style>
+    <style:style style:name="Bullet_20_Symbols" style:display-name="Bullet Symbols" style:family="text">
+      <style:text-properties style:font-name="OpenSymbol" style:font-name-asian="OpenSymbol" style:font-name-complex="OpenSymbol" />
+    </style:style>
 }
   end;
 
 {
-    <style:style style:name="Bullet_20_Symbols" style:display-name="Bullet Symbols" style:family="text">
-      <style:text-properties style:font-name="OpenSymbol" style:font-name-asian="OpenSymbol" style:font-name-complex="OpenSymbol" />
-    </style:style>
-    <text:outline-style style:name="Outline">
-      <text:outline-level-style text:level="1" style:num-format="">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="0.762cm" fo:text-indent="-0.762cm" fo:margin-left="0.762cm" />
-        </style:list-level-properties>
-      </text:outline-level-style>
-      <text:outline-level-style text:level="2" style:num-format="">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.016cm" fo:text-indent="-1.016cm" fo:margin-left="1.016cm" />
-        </style:list-level-properties>
-      </text:outline-level-style>
-      <text:outline-level-style text:level="3" style:num-format="">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.27cm" fo:text-indent="-1.27cm" fo:margin-left="1.27cm" />
-        </style:list-level-properties>
-      </text:outline-level-style>
-      <text:outline-level-style text:level="4" style:num-format="">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.524cm" fo:text-indent="-1.524cm" fo:margin-left="1.524cm" />
-        </style:list-level-properties>
-      </text:outline-level-style>
-      <text:outline-level-style text:level="5" style:num-format="">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.778cm" fo:text-indent="-1.778cm" fo:margin-left="1.778cm" />
-        </style:list-level-properties>
-      </text:outline-level-style>
-      <text:outline-level-style text:level="6" style:num-format="">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.032cm" fo:text-indent="-2.032cm" fo:margin-left="2.032cm" />
-        </style:list-level-properties>
-      </text:outline-level-style>
-      <text:outline-level-style text:level="7" style:num-format="">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.286cm" fo:text-indent="-2.286cm" fo:margin-left="2.286cm" />
-        </style:list-level-properties>
-      </text:outline-level-style>
-      <text:outline-level-style text:level="8" style:num-format="">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.54cm" fo:text-indent="-2.54cm" fo:margin-left="2.54cm" />
-        </style:list-level-properties>
-      </text:outline-level-style>
-      <text:outline-level-style text:level="9" style:num-format="">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.794cm" fo:text-indent="-2.794cm" fo:margin-left="2.794cm" />
-        </style:list-level-properties>
-      </text:outline-level-style>
-      <text:outline-level-style text:level="10" style:num-format="">
-        <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-          <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="3.048cm" fo:text-indent="-3.048cm" fo:margin-left="3.048cm" />
-        </style:list-level-properties>
-      </text:outline-level-style>
-    </text:outline-style>
-    <text:notes-configuration text:note-class="footnote" style:num-format="1" text:start-value="0" text:footnotes-position="page" text:start-numbering-at="document" />
-    <text:notes-configuration text:note-class="endnote" style:num-format="i" text:start-value="0" />
-    <text:linenumbering-configuration text:number-lines="false" text:offset="0.499cm" style:num-format="1" text:number-position="left" text:increment="5" />
-  </office:styles>
-  <office:automatic-styles>
-    <style:page-layout style:name="Mpm1">
-      <style:page-layout-properties fo:page-width="21.001cm" fo:page-height="29.7cm" style:num-format="1" style:print-orientation="portrait" fo:margin-top="2cm" fo:margin-bottom="2cm" fo:margin-left="2cm" fo:margin-right="2cm" style:writing-mode="lr-tb" style:footnote-max-height="0cm">
-        <style:footnote-sep style:width="0.018cm" style:distance-before-sep="0.101cm" style:distance-after-sep="0.101cm" style:line-style="solid" style:adjustment="left" style:rel-width="25%" style:color="#000000" />
-      </style:page-layout-properties>
-      <style:header-style />
-      <style:footer-style />
-    </style:page-layout>
-  </office:automatic-styles>
-  <office:master-styles>
-    <style:master-page style:name="Standard" style:page-layout-name="Mpm1" />
-  </office:master-styles>
-}
+  <text:outline-style style:name="Outline">
+    <text:outline-level-style text:level="1" style:num-format="">
+      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="0.762cm" fo:text-indent="-0.762cm" fo:margin-left="0.762cm" />
+      </style:list-level-properties>
+    </text:outline-level-style>
+    <text:outline-level-style text:level="2" style:num-format="">
+      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.016cm" fo:text-indent="-1.016cm" fo:margin-left="1.016cm" />
+      </style:list-level-properties>
+    </text:outline-level-style>
+    <text:outline-level-style text:level="3" style:num-format="">
+      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.27cm" fo:text-indent="-1.27cm" fo:margin-left="1.27cm" />
+      </style:list-level-properties>
+    </text:outline-level-style>
+    <text:outline-level-style text:level="4" style:num-format="">
+      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.524cm" fo:text-indent="-1.524cm" fo:margin-left="1.524cm" />
+      </style:list-level-properties>
+    </text:outline-level-style>
+    <text:outline-level-style text:level="5" style:num-format="">
+      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.778cm" fo:text-indent="-1.778cm" fo:margin-left="1.778cm" />
+      </style:list-level-properties>
+    </text:outline-level-style>
+    <text:outline-level-style text:level="6" style:num-format="">
+      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.032cm" fo:text-indent="-2.032cm" fo:margin-left="2.032cm" />
+      </style:list-level-properties>
+    </text:outline-level-style>
+    <text:outline-level-style text:level="7" style:num-format="">
+      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.286cm" fo:text-indent="-2.286cm" fo:margin-left="2.286cm" />
+      </style:list-level-properties>
+    </text:outline-level-style>
+    <text:outline-level-style text:level="8" style:num-format="">
+      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.54cm" fo:text-indent="-2.54cm" fo:margin-left="2.54cm" />
+      </style:list-level-properties>
+    </text:outline-level-style>
+    <text:outline-level-style text:level="9" style:num-format="">
+      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.794cm" fo:text-indent="-2.794cm" fo:margin-left="2.794cm" />
+      </style:list-level-properties>
+    </text:outline-level-style>
+    <text:outline-level-style text:level="10" style:num-format="">
+      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
+        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="3.048cm" fo:text-indent="-3.048cm" fo:margin-left="3.048cm" />
+      </style:list-level-properties>
+    </text:outline-level-style>
+  </text:outline-style>
+  }
+  FStyles := FStyles +
+   '  <text:notes-configuration text:note-class="footnote" style:num-format="1" text:start-value="0" text:footnotes-position="page" text:start-numbering-at="document" />' + LineEnding;
+  FStyles := FStyles +
+   '  <text:notes-configuration text:note-class="endnote" style:num-format="i" text:start-value="0" />' + LineEnding;
+  FStyles := FStyles +
+   '  <text:linenumbering-configuration text:number-lines="false" text:offset="0.499cm" style:num-format="1" text:number-position="left" text:increment="5" />' + LineEnding;
+  FStyles := FStyles +
+   '</office:styles>' + LineEnding;
+  FStyles := FStyles +
+   '<office:automatic-styles>' + LineEnding;
+  FStyles := FStyles +
+   '  <style:page-layout style:name="Mpm1">' + LineEnding;
+  FStyles := FStyles +
+   '    <style:page-layout-properties fo:page-width="21.001cm" fo:page-height="29.7cm" style:num-format="1" style:print-orientation="portrait" fo:margin-top="2cm" fo:margin-bottom="2cm" fo:margin-left="2cm" fo:margin-right="2cm" style:writing-mode="lr-tb" style:footnote-max-height="0cm">' + LineEnding;
+  FStyles := FStyles +
+   '      <style:footnote-sep style:width="0.018cm" style:distance-before-sep="0.101cm" style:distance-after-sep="0.101cm" style:line-style="solid" style:adjustment="left" style:rel-width="25%" style:color="#000000" />' + LineEnding;
+  FStyles := FStyles +
+   '    </style:page-layout-properties>' + LineEnding;
+  FStyles := FStyles +
+   '    <style:header-style />' + LineEnding;
+  FStyles := FStyles +
+   '    <style:footer-style />' + LineEnding;
+  FStyles := FStyles +
+   '  </style:page-layout>' + LineEnding;
+  FStyles := FStyles +
+   '</office:automatic-styles>' + LineEnding;
+  FStyles := FStyles +
+   '<office:master-styles>' + LineEnding;
+  FStyles := FStyles +
+   '  <style:master-page style:name="Standard" style:page-layout-name="Mpm1" />' + LineEnding;
+  FStyles := FStyles +
+   '</office:master-styles>' + LineEnding;
   FStyles := FStyles +
    '</office:document-styles>';
 end;
@@ -731,17 +752,60 @@ begin
 end;
 
 procedure TvODTVectorialWriter.WritePage(ACurPage: TvTextPageSequence);
+var
+  i: Integer;
+  lCurEntity: TvEntity;
 begin
+  FContent := FContent +
+   '    <text:sequence-decls>' + LineEnding;
+  FContent := FContent +
+   '      <text:sequence-decl text:display-outline-level="0" text:name="Illustration" />' + LineEnding;
+  FContent := FContent +
+   '      <text:sequence-decl text:display-outline-level="0" text:name="Table" />' + LineEnding;
+  FContent := FContent +
+   '      <text:sequence-decl text:display-outline-level="0" text:name="Text" />' + LineEnding;
+  FContent := FContent +
+   '      <text:sequence-decl text:display-outline-level="0" text:name="Drawing" />' + LineEnding;
+  FContent := FContent +
+   '    </text:sequence-decls>' + LineEnding;
+
+  for i := 0 to ACurPage.GetEntitiesCount()-1 do
+  begin
+    lCurEntity := ACurPage.GetEntity(i);
+
+    if not (lCurEntity is TvRichText) then Continue;
+
+    WriteParagraph(TvRichText(lCurEntity), ACurPage);
+  end;
+end;
+
+procedure TvODTVectorialWriter.WriteParagraph(AEntity: TvRichText;
+  ACurPage: TvTextPageSequence);
+var
+  EntityKindName, AEntityStyleName: string;
+begin
+  if AEntity.Style = nil then
+  begin
+    EntityKindName := 'p';
+    AEntityStyleName := 'Standard';
+  end
+  else
+  begin
+    case AEntity.Style.GetKind() of
+    vskHeading: EntityKindName := 'h';
+    else // vskTextBody;
+      EntityKindName := 'p';
+    end;
+
+    AEntityStyleName := AEntity.Style.Name;
+  end;
+
+  FContent := FContent +
+    '    <text:'+EntityKindName+' text:style-name="'+AEntityStyleName+'" >' +
+    '      ' +
+    '</text:'+EntityKindName+'>' + LineEnding;
 {
-      <text:sequence-decls>
-        <text:sequence-decl text:display-outline-level="0" text:name="Illustration" />
-        <text:sequence-decl text:display-outline-level="0" text:name="Table" />
-        <text:sequence-decl text:display-outline-level="0" text:name="Text" />
-        <text:sequence-decl text:display-outline-level="0" text:name="Drawing" />
-      </text:sequence-decls>
-}
-{
-      <text:h text:style-name="P2" text:outline-level="1">Lazarus</text:h>
+      <text:h text:style-name="P2" text:outline-level="1">Laza<text:span text:style-name="T1">ru</text:span>s</text:h>
       <text:p text:style-name="P5">Lazarus is a free and open source development tool for the Free Pascal compiler, which is also free and open source.</text:p>
       <text:h text:style-name="P1" text:outline-level="2">Overview</text:h>
       <text:p text:style-name="P3">Lazarus is a free cross-platform visual integrated development environment (IDE) for rapid application development (RAD) using the Free Pascal compiler supported dialects of Object Pascal. Developers use Lazarus to create native code console and graphical user interface (GUI) applications for the desktop along with mobile devices, web applications, web services, and visual components and function libraries (.so, .dll, etc) for use by other programs for any platform the Free Pascal compiler supports( Mac, Unix, Linux, Windows, etc).</text:p>

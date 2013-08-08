@@ -24,7 +24,7 @@ begin
     // A4 -> 210mm x 297mm
     Vec.Width := 210;
     Vec.Height := 297;
-    Vec.AddStandardTextDocumentStyles();
+    Vec.AddStandardODTTextDocumentStyles();
 
     // First page sequence
     Page := Vec.AddTextPageSequence();
