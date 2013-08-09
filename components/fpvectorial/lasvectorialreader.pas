@@ -186,7 +186,7 @@ var
   i: Integer;
 begin
   // Get the first page
-  lPage := AData.GetPage(0);
+  lPage := AData.GetPageAsVectorial(0);
   lCreationDate := Now;
 
   // Write our LAS 1.0 header

@@ -229,7 +229,7 @@ begin
 
   // Now data
   AStrings.Add('  <g id="layer1">');
-  lPage := AData.GetPage(0);
+  lPage := AData.GetPageAsVectorial(0);
   WriteEntities(AStrings, lPage, AData);
   AStrings.Add('  </g>');
 

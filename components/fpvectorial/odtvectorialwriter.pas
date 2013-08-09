@@ -63,7 +63,8 @@ type
     FMeta, FSettings, FStyles, FContent, FMimetype: string;
     FMetaInfManifest: string;
     // helper routines
-    function StyleNameToODTStyleName(AData: TvVectorialDocument; AStyleIndex: Integer; AToContentAutoStyle: Boolean = False): string;
+    function StyleNameToODTStyleName(AData: TvVectorialDocument; AStyleIndex: Integer; AToContentAutoStyle: Boolean = False): string; overload;
+    function StyleNameToODTStyleName(AData: TvVectorialDocument; AStyle: TvStyle; AToContentAutoStyle: Boolean = False): string; overload;
     function FloatToODTText(AFloat: Double): string;
     // Routines to write those files
     procedure WriteMimetype;
@@ -72,9 +73,10 @@ type
     procedure WriteSettings;
     procedure WriteStyles(AData: TvVectorialDocument);
     procedure WriteDocument(AData: TvVectorialDocument);
-    procedure WritePage(ACurPage: TvTextPageSequence);
+    procedure WritePage(ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
     //
-    procedure WriteParagraph(AEntity: TvParagraph; ACurPage: TvTextPageSequence);
+    procedure WriteParagraph(AEntity: TvParagraph; ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
+    procedure WriteTextSpan(AEntity: TvText; ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
     // Routines to write parts of those files
     function WriteStylesXMLAsString: string;
     //
@@ -167,6 +169,16 @@ begin
   begin
     Result := StringReplace(lStyle.Name, ' ', '_', [rfReplaceAll, rfIgnoreCase]);
   end;
+end;
+
+function TvODTVectorialWriter.StyleNameToODTStyleName(
+  AData: TvVectorialDocument; AStyle: TvStyle; AToContentAutoStyle: Boolean
+  ): string;
+var
+  lStyleIndex: Integer;
+begin
+  lStyleIndex := AData.FindStyleIndex(AStyle);
+  StyleNameToODTStyleName(AData, lStyleIndex, AToContentAutoStyle);
 end;
 
 function TvODTVectorialWriter.FloatToODTText(AFloat: Double): string;
@@ -456,26 +468,58 @@ begin
       lTextPropsStr := lTextPropsStr + ' style:font-name-asian="Microsoft YaHei" ';
       lTextPropsStr := lTextPropsStr + ' style:font-name-complex="Mangal" ';
     end;
-    if (spbfFontBold in CurStyle.SetElements) and CurStyle.Font.Bold then
+    if (spbfFontBold in CurStyle.SetElements) then
     begin
-      lTextPropsStr := lTextPropsStr + ' fo:font-weight="bold" ';
-      lTextPropsStr := lTextPropsStr + ' style:font-weight-asian="bold" ';
-      lTextPropsStr := lTextPropsStr + ' style:font-weight-complex="bold" ';
+      if CurStyle.Font.Bold then
+      begin
+        lTextPropsStr := lTextPropsStr + ' fo:font-weight="bold" ';
+        lTextPropsStr := lTextPropsStr + ' style:font-weight-asian="bold" ';
+        lTextPropsStr := lTextPropsStr + ' style:font-weight-complex="bold" ';
+      end
+      else
+      begin
+        lTextPropsStr := lTextPropsStr + ' fo:font-weight="normal" ';
+        lTextPropsStr := lTextPropsStr + ' style:font-weight-asian="normal" ';
+        lTextPropsStr := lTextPropsStr + ' style:font-weight-complex="normal" ';
+      end;
     end;
-    if (spbfFontItalic in CurStyle.SetElements) and CurStyle.Font.Italic then
+    if (spbfFontItalic in CurStyle.SetElements) then
     begin
-      lTextPropsStr := lTextPropsStr + ' fo:font-style="italic" ';
-      lTextPropsStr := lTextPropsStr + ' style:font-style-asian="italic" ';
-      lTextPropsStr := lTextPropsStr + ' style:font-style-complex="italic" ';
+      if CurStyle.Font.Italic then
+      begin
+        lTextPropsStr := lTextPropsStr + ' fo:font-style="italic" ';
+        lTextPropsStr := lTextPropsStr + ' style:font-style-asian="italic" ';
+        lTextPropsStr := lTextPropsStr + ' style:font-style-complex="italic" ';
+      end
+      else
+      begin
+        // ToDo
+      end;
     end;
 
-    lCurStyleTmpStr := // tmp string to help see the text in the debugger
-     '  <style:style style:name="'+StyleNameToODTStyleName(AData, i, False)+'" style:display-name="'+ CurStyle.Name +'" style:family="paragraph" style:parent-style-name="'+CurStyleParent+'" style:class="text">' + LineEnding +
-     '    <style:paragraph-properties fo:margin-top="'+FloatToODTText(CurStyle.MarginTop)+'mm" fo:margin-bottom="'+FloatToODTText(CurStyle.MarginTop)+'mm" style:contextual-spacing="false" />' + LineEnding +
-     '    <style:text-properties '+lTextPropsStr+' />' + LineEnding +
-     '  </style:style>' + LineEnding;
-    FStyles := FStyles + lCurStyleTmpStr;
-
+    if CurStyle.GetKind() = vskTextSpan then
+    begin
+      {
+      <style:style style:name="MT2" style:family="text">
+        <style:text-properties fo:font-style="italic" fo:font-weight="normal" officeooo:rsid="0009f49c" style:font-style-asian="italic" style:font-weight-asian="normal" style:font-style-complex="italic" style:font-weight-complex="normal" />
+      </style:style>
+      }
+      lCurStyleTmpStr := // tmp string to help see the text in the debugger
+       '  <style:style style:name="'+StyleNameToODTStyleName(AData, i, False)+'" style:display-name="'+ CurStyle.Name +'" style:family="text" style:parent-style-name="'+CurStyleParent+'" >' + LineEnding +
+       '    <style:text-properties '+lTextPropsStr+' />' + LineEnding +
+       '  </style:style>' + LineEnding;
+      FStyles := FStyles + lCurStyleTmpStr;
+    end
+    // Paragraph kind
+    else
+    begin
+      lCurStyleTmpStr := // tmp string to help see the text in the debugger
+       '  <style:style style:name="'+StyleNameToODTStyleName(AData, i, False)+'" style:display-name="'+ CurStyle.Name +'" style:family="paragraph" style:parent-style-name="'+CurStyleParent+'" style:class="text">' + LineEnding +
+       '    <style:paragraph-properties fo:margin-top="'+FloatToODTText(CurStyle.MarginTop)+'mm" fo:margin-bottom="'+FloatToODTText(CurStyle.MarginTop)+'mm" style:contextual-spacing="false" />' + LineEnding +
+       '    <style:text-properties '+lTextPropsStr+' />' + LineEnding +
+       '  </style:style>' + LineEnding;
+      FStyles := FStyles + lCurStyleTmpStr;
+    end;
 {
     <style:style style:name="Heading" style:family="paragraph" style:parent-style-name="Standard" style:next-style-name="Text_20_body" style:class="text">
       <style:paragraph-properties fo:margin-top="0.423cm" fo:margin-bottom="0.212cm" style:contextual-spacing="false" fo:keep-with-next="always" />
@@ -728,7 +772,7 @@ begin
      '  </office:automatic-styles>' + LineEnding;
 
   FContent := FContent +
-     '    <office:body>' + LineEnding;
+     '  <office:body>' + LineEnding;
 
   for i := 0 to AData.GetPageCount()-1 do
   begin
@@ -738,7 +782,7 @@ begin
       FContent := FContent +
          '    <office:text>' + LineEnding;
 
-      WritePage(CurTextPage);
+      WritePage(CurTextPage, AData);
 
       FContent := FContent +
          '    </office:text>' + LineEnding;
@@ -751,7 +795,7 @@ begin
      '</office:document-content>' + LineEnding;
 end;
 
-procedure TvODTVectorialWriter.WritePage(ACurPage: TvTextPageSequence);
+procedure TvODTVectorialWriter.WritePage(ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
 var
   i: Integer;
   lCurEntity: TvEntity;
@@ -775,14 +819,16 @@ begin
 
     if not (lCurEntity is TvParagraph) then Continue;
 
-    WriteParagraph(TvParagraph(lCurEntity), ACurPage);
+    WriteParagraph(TvParagraph(lCurEntity), ACurPage, AData);
   end;
 end;
 
 procedure TvODTVectorialWriter.WriteParagraph(AEntity: TvParagraph;
-  ACurPage: TvTextPageSequence);
+  ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
 var
   EntityKindName, AEntityStyleName: string;
+  i: Integer;
+  lCurEntity: TvEntity;
 begin
   if AEntity.Style = nil then
   begin
@@ -797,12 +843,22 @@ begin
       EntityKindName := 'p';
     end;
 
-    AEntityStyleName := AEntity.Style.Name;
+    AEntityStyleName := StyleNameToODTStyleName(AData, AEntity.Style, False);
   end;
 
   FContent := FContent +
-    '    <text:'+EntityKindName+' text:style-name="'+AEntityStyleName+'" >' +
-    '      ' +
+    '    <text:'+EntityKindName+' text:style-name="'+AEntityStyleName+'" >';
+
+  for i := 0 to AEntity.GetEntitiesCount()-1 do
+  begin
+    lCurEntity := AEntity.GetEntity(i);
+
+    if not (lCurEntity is TvText) then Continue;
+
+    WriteTextSpan(TvText(lCurEntity), ACurPage, AData);
+  end;
+
+  FContent := FContent +
     '</text:'+EntityKindName+'>' + LineEnding;
 {
       <text:h text:style-name="P2" text:outline-level="1">Laza<text:span text:style-name="T1">ru</text:span>s</text:h>
@@ -857,6 +913,34 @@ begin
       <text:p text:style-name="P3">Lazarus inherits three features from its use of the Free Pascal compiler: compile and execution speed, and cross-compilation. The Free Pascal compiler benefits from the Pascal language structure, which is rigid, and the steady advancements of Pascal compiler design, spanning several decades, to compile large applications quickly, often seconds.</text:p>
 }
 
+end;
+
+procedure TvODTVectorialWriter.WriteTextSpan(AEntity: TvText;
+  ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
+var
+  AEntityStyleName: string;
+begin
+  if AEntity.Style = nil then
+  begin
+    AEntityStyleName := 'Standard';
+  end
+  else
+  begin
+    AEntityStyleName := StyleNameToODTStyleName(AData, AEntity.Style, False);
+  end;
+  {
+  <text:p text:style-name="P2">
+    Lazaru
+    <text:span text:style-name="T2">s is a fre</text:span>
+    e and open sou
+    <text:span text:style-name="T5">rce development tool for</text:span>
+    the Free Pascal compiler, which is also free and open source.
+  </text:p>
+  }
+  // Note that here we write only text spans!
+
+  FContent := FContent +
+    '<text:span text:style-name="'+AEntityStyleName+'">'+AEntity.Value.Text+'</text:span>';
 end;
 
 function TvODTVectorialWriter.WriteStylesXMLAsString: string;

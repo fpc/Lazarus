@@ -137,7 +137,11 @@ type
     );
   TvSetPenBrushAndFontElements = set of TvSetPenBrushAndFontElement;
 
-  TvStyleKind = (vskTextBody, vskHeading);
+  TvStyleKind = (
+    // Paragraph kinds
+    vskTextBody, vskHeading,
+    // Text-span kind
+    vskTextSpan);
 
   { TvStyle }
 
@@ -808,7 +812,7 @@ type
     Style: TvStyle;
     constructor Create; override;
     destructor Destroy; override;
-    function AddText: TvText;
+    function AddText(AText: string): TvText;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -874,11 +878,12 @@ type
     procedure GuessDocumentSize();
     procedure GuessGoodZoomLevel(AScreenSize: Integer = 500);
     { Page methods }
-    function GetPageAsBaseClass(AIndex: Integer): TvPage;
-    function GetPage(AIndex: Integer): TvVectorialPage;
+    function GetPage(AIndex: Integer): TvPage;
+    function GetPageAsVectorial(AIndex: Integer): TvVectorialPage;
     function GetPageAsText(AIndex: Integer): TvTextPageSequence;
     function GetPageCount: Integer;
-    function GetCurrentPage: TvVectorialPage;
+    function GetCurrentPage: TvPage;
+    function GetCurrentPageAsVectorial: TvVectorialPage;
     procedure SetCurrentPage(AIndex: Integer);
     function AddPage(): TvVectorialPage;
     function AddTextPageSequence(): TvTextPageSequence;
@@ -4204,9 +4209,10 @@ begin
   inherited Destroy;
 end;
 
-function TvParagraph.AddText: TvText;
+function TvParagraph.AddText(AText: string): TvText;
 begin
   Result := TvText.Create;
+  Result.Value.Text := AText;;
   AddEntity(Result);
 end;
 
@@ -4242,7 +4248,8 @@ end;
 
 function TvRichText.AddParagraph: TvParagraph;
 begin
-
+  Result := TvParagraph.Create;
+  AddEntity(Result);
 end;
 
 function TvRichText.TryToSelect(APos: TPoint; var ASubpart: Cardinal
@@ -5276,7 +5283,7 @@ var
   i, j: Integer;
   lEntity: TvEntity;
   lLeft, lTop, lRight, lBottom: Double;
-  CurPage: TvVectorialPage;
+  CurPage: TvPage;
 begin
   lLeft := 0;
   lTop := 0;
@@ -5302,16 +5309,16 @@ begin
   ZoomLevel := AScreenSize / Height;
 end;
 
-function TvVectorialDocument.GetPageAsBaseClass(AIndex: Integer): TvPage;
+function TvVectorialDocument.GetPage(AIndex: Integer): TvPage;
 begin
   Result := TvPage(FPages.Items[AIndex]);
 end;
 
-function TvVectorialDocument.GetPage(AIndex: Integer): TvVectorialPage;
+function TvVectorialDocument.GetPageAsVectorial(AIndex: Integer): TvVectorialPage;
 var
   lPage: TvPage;
 begin
-  lPage := GetPageAsBaseClass(AIndex);
+  lPage := GetPage(AIndex);
   if (Assigned(lPage) and (lPage is TvVectorialPage)) then
     Result := TvVectorialPage(lPage)
   else
@@ -5322,7 +5329,7 @@ function TvVectorialDocument.GetPageAsText(AIndex: Integer): TvTextPageSequence;
 var
   lPage: TvPage;
 begin
-  lPage := GetPageAsBaseClass(AIndex);
+  lPage := GetPage(AIndex);
   if (Assigned(lPage) and (lPage is TvTextPageSequence)) then
     Result := TvTextPageSequence(lPage)
   else
@@ -5334,12 +5341,23 @@ begin
   Result := FPages.Count;
 end;
 
-function TvVectorialDocument.GetCurrentPage: TvVectorialPage;
+function TvVectorialDocument.GetCurrentPage: TvPage;
 begin
   if FCurrentPageIndex >= 0 then
     Result := GetPage(FCurrentPageIndex)
   else
     Result := nil;
+end;
+
+function TvVectorialDocument.GetCurrentPageAsVectorial: TvVectorialPage;
+var
+  lCurPage: TvPage;
+begin
+  lCurPage := GetCurrentPage();
+  if (lCurPage <> nil) and (lCurPage is TvVectorialPage) then
+    Result := TvVectorialPage(lCurPage)
+  else
+    Result := nil
 end;
 
 procedure TvVectorialDocument.SetCurrentPage(AIndex: Integer);

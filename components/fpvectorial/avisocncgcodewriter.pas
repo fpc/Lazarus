@@ -107,7 +107,7 @@ procedure TvAvisoCNCGCodeWriter.WriteToStrings(AStrings: TStrings;
 var
   lPage: TvVectorialPage;
 begin
-  lPage := AData.GetPage(0);
+  lPage := AData.GetPageAsVectorial(0);
   WritePageToStrings(AStrings, lPage);
 end;
 
