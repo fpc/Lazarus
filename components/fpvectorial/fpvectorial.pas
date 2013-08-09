@@ -860,6 +860,8 @@ type
     ZoomLevel: Double; // 1 = 100%
     { Selection fields }
     SelectedElement: TvEntity;
+    // List of common styles, for conveniently finding them
+    StyleTextBody, StyleHeading1, StyleHeading2, StyleHeading3: TvStyle;
     { Base methods }
     constructor Create; virtual;
     destructor Destroy; override;
@@ -889,7 +891,7 @@ type
     function AddTextPageSequence(): TvTextPageSequence;
     { Style methods }
     function AddStyle(): TvStyle;
-    procedure AddStandardODTTextDocumentStyles;
+    procedure AddStandardODTTextDocumentStyles();
     function GetStyleCount: Integer;
     function GetStyle(AIndex: Integer): TvStyle;
     function FindStyleIndex(AStyle: TvStyle): Integer;
@@ -5385,7 +5387,7 @@ begin
   FStyles.Add(Result);
 end;
 
-procedure TvVectorialDocument.AddStandardODTTextDocumentStyles;
+procedure TvVectorialDocument.AddStandardODTTextDocumentStyles();
 var
   lTextBody, lBaseHeading, lCurStyle: TvStyle;
 begin
@@ -5400,6 +5402,7 @@ begin
   lTextBody.SetElements := [spbfFontSize, spbfFontName];
   lTextBody.MarginTop := 0;
   lTextBody.MarginBottom := 2.12;
+  StyleTextBody := lTextBody;
 
   // Headings
 
@@ -5408,7 +5411,7 @@ begin
   //    <style:text-properties style:font-name="Arial" fo:font-size="14pt" style:font-name-asian="Microsoft YaHei" style:font-size-asian="14pt" style:font-name-complex="Mangal" style:font-size-complex="14pt" />
   //  </style:style>
   lBaseHeading := AddStyle();
-  lBaseHeading.Name := 'Text Body';
+  lBaseHeading.Name := 'Heading';
   lBaseHeading.Kind := vskHeading;
   lBaseHeading.Font.Size := 14;
   lBaseHeading.Font.Name := 'Arial';
@@ -5425,6 +5428,7 @@ begin
   lCurStyle.Font.Size := Round(1.15 * lBaseHeading.Font.Size);
   lCurStyle.Font.Bold := True;
   lCurStyle.SetElements := [spbfFontSize, spbfFontBold];
+  StyleHeading1 := lCurStyle;
 
   //<style:style style:name="Heading_20_2" style:display-name="Heading 2" style:family="paragraph" style:parent-style-name="Heading" style:next-style-name="Text_20_body" style:default-outline-level="2" style:class="text">
   //  <style:text-properties fo:font-size="14pt" fo:font-style="italic" fo:font-weight="bold" style:font-size-asian="14pt" style:font-style-asian="italic" style:font-weight-asian="bold" style:font-size-complex="14pt" style:font-style-complex="italic" style:font-weight-complex="bold" />
@@ -5436,6 +5440,7 @@ begin
   lCurStyle.Font.Bold := True;
   lCurStyle.Font.Italic := True;
   lCurStyle.SetElements := [spbfFontSize, spbfFontBold, spbfFontItalic];
+  StyleHeading2 := lCurStyle;
 
   //<style:style style:name="Heading_20_3" style:display-name="Heading 3" style:family="paragraph" style:parent-style-name="Heading" style:next-style-name="Text_20_body" style:default-outline-level="3" style:class="text">
   //  <style:text-properties fo:font-size="14pt" fo:font-weight="bold" style:font-size-asian="14pt" style:font-weight-asian="bold" style:font-size-complex="14pt" style:font-weight-complex="bold" />
@@ -5446,6 +5451,7 @@ begin
   lCurStyle.Font.Size := 14;
   lCurStyle.Font.Bold := True;
   lCurStyle.SetElements := [spbfFontSize, spbfFontName, spbfFontBold];
+  StyleHeading3 := lCurStyle;
 
   {
   <style:style style:name="List" style:family="paragraph" style:parent-style-name="Text_20_body" style:class="list">
