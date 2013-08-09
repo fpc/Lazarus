@@ -101,7 +101,7 @@ end;
 {$IFDEF darwin}
 function GetDarwinSystemFilename(Filename: string): string;
 begin
-  Result := LazFileUtils.GetDarwinSystemFilename(AFilename);
+  Result := LazFileUtils.GetDarwinSystemFilename(Filename);
 end;
 {$ENDIF}
 

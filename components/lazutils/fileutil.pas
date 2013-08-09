@@ -262,9 +262,6 @@ uses
 {$IFDEF windows}
   Windows;
 {$ELSE}
-  {$IFDEF darwin}
-  MacOSAll,
-  {$ENDIF}
   Unix, BaseUnix;
 {$ENDIF}
 
