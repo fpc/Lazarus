@@ -89,6 +89,7 @@ const
 type
   TvCustomVectorialWriter = class;
   TvCustomVectorialReader = class;
+  TvPage = class;
   TvVectorialPage = class;
   TvTextPageSequence = class;
 
@@ -418,6 +419,7 @@ type
   TvText = class(TvEntityWithPenBrushAndFont)
   public
     Value: TStringList;
+    Style: TvStyle; // can be nil!
     constructor Create; override;
     destructor Destroy; override;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
@@ -731,12 +733,17 @@ type
     //
     function GetFirstEntity: TvEntity;
     function GetNextEntity: TvEntity;
-    procedure AddEntity(AEntity: TvEntity);
+    function GetEntitiesCount: Integer;
+    function GetEntity(AIndex: Integer): TvEntity;
+    function AddEntity(AEntity: TvEntity): Integer;
+    function  DeleteEntity(AIndex: Cardinal): Boolean;
+    function  RemoveEntity(AEntity: TvEntity; AFreeAfterRemove: Boolean = True): Boolean;
     procedure Rotate(AAngle: Double; ABase: T3DPoint); override;
     procedure Clear; override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+    function FindEntityWithReference(AEntity: TvEntity): Integer;
     function FindEntityWithNameAndType(AName: string; AType: TvEntityClass {= TvEntity}; ARecursively: Boolean = False): TvEntity;
   end;
 
@@ -782,18 +789,19 @@ type
   end;
 
   {@@
-    TvRichText represents a sequence of elements ordered as characters.
-    The elements might be richly formatted text, but also any other elements.
+    TvParagraph represents a sequence of elements ordered as characters
+    in a paragraph.
+    The elements might be richly formatted text, but also images.
 
     The basic element to build the sequence is TvText. Note that the X, Y positions
-    of elements will be all adjusted to fit the TvRichText area
+    of elements will be all adjusted to fit the TvParagraph area
   }
 
   TvRichTextAutoExpand = (rtaeNone, etaeWidth, etaeHeight);
 
-  { TvRichText }
+  { TvParagraph }
 
-  TvRichText = class(TvEntityWithSubEntities)
+  TvParagraph = class(TvEntityWithSubEntities)
   public
     Width, Height: Double;
     AutoExpand: TvRichTextAutoExpand;
@@ -801,6 +809,28 @@ type
     constructor Create; override;
     destructor Destroy; override;
     function AddText: TvText;
+    function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+  end;
+
+  {@@
+    TvRichText represents a sequence of text paragraphs.
+
+    The basic element to build the sequence is TvParagraph. Note that the X, Y positions
+    of elements will be all adjusted to fit the TvRichText area
+  }
+
+  { TvRichText }
+
+  TvRichText = class(TvEntityWithSubEntities)
+  public
+    Width, Height: Double;
+    AutoExpand: TvRichTextAutoExpand;
+    constructor Create; override;
+    destructor Destroy; override;
+    function AddParagraph: TvParagraph;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -844,7 +874,9 @@ type
     procedure GuessDocumentSize();
     procedure GuessGoodZoomLevel(AScreenSize: Integer = 500);
     { Page methods }
+    function GetPageAsBaseClass(AIndex: Integer): TvPage;
     function GetPage(AIndex: Integer): TvVectorialPage;
+    function GetPageAsText(AIndex: Integer): TvTextPageSequence;
     function GetPageCount: Integer;
     function GetCurrentPage: TvVectorialPage;
     procedure SetCurrentPage(AIndex: Integer);
@@ -864,9 +896,33 @@ type
     property OnProgress: TvProgressEvent read FOnProgress write FOnprogress;
   end;
 
+  { TvPage }
+
+  TvPage = class
+  public
+    { Base methods }
+    constructor Create(AOwner: TvVectorialDocument); virtual;
+    destructor Destroy; override;
+    procedure Assign(ASource: TvPage); virtual;
+    { Data reading methods }
+    function  GetEntity(ANum: Cardinal): TvEntity; virtual; abstract;
+    function  GetEntitiesCount: Integer; virtual; abstract;
+    function  GetLastEntity(): TvEntity; virtual; abstract;
+    function  FindAndSelectEntity(Pos: TPoint): TvFindEntityResult; virtual; abstract;
+    function  FindEntityWithNameAndType(AName: string; AType: TvEntityClass {= TvEntity}; ARecursively: Boolean = False): TvEntity; virtual; abstract;
+    { Data removing methods }
+    procedure Clear; virtual; abstract;
+    function  DeleteEntity(AIndex: Cardinal): Boolean; virtual; abstract;
+    function  RemoveEntity(AEntity: TvEntity; AFreeAfterRemove: Boolean = True): Boolean; virtual; abstract;
+    { Data writing methods }
+    function AddEntity(AEntity: TvEntity): Integer; virtual; abstract;
+    { Debug methods }
+    procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); virtual; abstract;
+  end;
+
   { TvVectorialPage }
 
-  TvVectorialPage = class
+  TvVectorialPage = class(TvPage)
   private
     FEntities: TFPList; // of TvEntity
     FTmpPath: TPath;
@@ -887,9 +943,9 @@ type
     //
     Owner: TvVectorialDocument;
     { Base methods }
-    constructor Create(AOwner: TvVectorialDocument); virtual;
+    constructor Create(AOwner: TvVectorialDocument); override;
     destructor Destroy; override;
-    procedure Assign(ASource: TvVectorialPage); virtual;
+    procedure Assign(ASource: TvPage); override;
     { Data reading methods }
     function  GetEntity(ANum: Cardinal): TvEntity;
     function  GetEntitiesCount: Integer;
@@ -897,11 +953,11 @@ type
     function  FindAndSelectEntity(Pos: TPoint): TvFindEntityResult;
     function  FindEntityWithNameAndType(AName: string; AType: TvEntityClass {= TvEntity}; ARecursively: Boolean = False): TvEntity;
     { Data removing methods }
-    procedure Clear; virtual;
-    function  DeleteEntity(AIndex: Cardinal): Boolean;
-    function  RemoveEntity(AEntity: TvEntity; AFreeAfterRemove: Boolean = True): Boolean;
+    procedure Clear; override;
+    function  DeleteEntity(AIndex: Cardinal): Boolean; override;
+    function  RemoveEntity(AEntity: TvEntity; AFreeAfterRemove: Boolean = True): Boolean; override;
     { Data writing methods }
-    function AddEntity(AEntity: TvEntity): Integer;
+    function AddEntity(AEntity: TvEntity): Integer; override;
     function  AddPathCopyMem(APath: TPath; AOnlyCreate: Boolean = False): TPath;
     procedure StartPath(AX, AY: Double); overload;
     procedure StartPath(); overload;
@@ -947,23 +1003,37 @@ type
     procedure Render(ADest: TFPCustomCanvas;
       ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
     { Debug methods }
-    procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer);
+    procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); override;
     //
     property Entities[AIndex: Cardinal]: TvEntity read GetEntity;
   end;
 
   { TvTextPageSequence }
 
-  TvTextPageSequence = class(TvVectorialPage)
+  {@@ Represents a sequence of text pages up to a page break }
+
+  TvTextPageSequence = class(TvPage)
   public
     Footer, Header: TvRichText;
     MainText: TvRichText;
     { Base methods }
     constructor Create(AOwner: TvVectorialDocument); override;
     destructor Destroy; override;
-    procedure Assign(ASource: TvVectorialPage); override;
+    procedure Assign(ASource: TvPage); override;
+    { Data reading methods }
+    function  GetEntity(ANum: Cardinal): TvEntity; override;
+    function  GetEntitiesCount: Integer; override;
+    function  GetLastEntity(): TvEntity; override;
+    function  FindAndSelectEntity(Pos: TPoint): TvFindEntityResult; override;
+    function  FindEntityWithNameAndType(AName: string; AType: TvEntityClass {= TvEntity}; ARecursively: Boolean = False): TvEntity; override;
+    { Data removing methods }
+    procedure Clear; override;
+    function  DeleteEntity(AIndex: Cardinal): Boolean; override;
+    function  RemoveEntity(AEntity: TvEntity; AFreeAfterRemove: Boolean = True): Boolean; override;
     { Data writing methods }
-    function AddParagraph: TvRichText;
+    function AddEntity(AEntity: TvEntity): Integer; override;
+    { Data writing methods }
+    function AddParagraph: TvParagraph;
   end;
 
   {@@ TvVectorialReader class reference type }
@@ -3892,10 +3962,43 @@ begin
   Inc(FCurIndex);
 end;
 
-procedure TvEntityWithSubEntities.AddEntity(AEntity: TvEntity);
+function TvEntityWithSubEntities.GetEntitiesCount: Integer;
+begin
+  Result := FElements.Count;
+end;
+
+function TvEntityWithSubEntities.GetEntity(AIndex: Integer): TvEntity;
+begin
+  Result := TvEntity(FElements.Items[AIndex]);
+end;
+
+function TvEntityWithSubEntities.AddEntity(AEntity: TvEntity): Integer;
 begin
   //AEntity.Parent := Self;
-  FElements.Add(AEntity);
+  Result := FElements.Add(AEntity);
+end;
+
+function TvEntityWithSubEntities.DeleteEntity(AIndex: Cardinal): Boolean;
+var
+  lEntity: TvEntity;
+begin
+  lEntity := FElements.Items[AIndex];
+  FElements.Remove(lEntity);
+  lEntity.Free;
+  Result := True;
+end;
+
+function TvEntityWithSubEntities.RemoveEntity(AEntity: TvEntity;
+  AFreeAfterRemove: Boolean): Boolean;
+var
+  lIndex: Integer;
+begin
+  Result := False;
+  lIndex := FindEntityWithReference(AEntity);
+  if lIndex < 0 then Exit;
+  if AFreeAfterRemove then DeleteEntity(lIndex)
+  else FElements.Remove(AEntity);
+  Result := True;
 end;
 
 procedure TvEntityWithSubEntities.Rotate(AAngle: Double; ABase: T3DPoint);
@@ -3971,6 +4074,18 @@ begin
   begin
     lCurEntity.GenerateDebugTree(ADestRoutine, Result);
     lCurEntity := GetNextEntity();
+  end;
+end;
+
+function TvEntityWithSubEntities.FindEntityWithReference(AEntity: TvEntity
+  ): Integer;
+var
+  i: Integer;
+begin
+  Result := -1;
+  for i := 0 to FElements.Count - 1 do
+  begin
+    if TvEntity(FElements.Items[i]) = AEntity then Exit(i);
   end;
 end;
 
@@ -4077,6 +4192,42 @@ begin
   end;
 end;
 
+{ TvParagraph }
+
+constructor TvParagraph.Create;
+begin
+  inherited Create;
+end;
+
+destructor TvParagraph.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TvParagraph.AddText: TvText;
+begin
+  Result := TvText.Create;
+  AddEntity(Result);
+end;
+
+function TvParagraph.TryToSelect(APos: TPoint; var ASubpart: Cardinal
+  ): TvFindEntityResult;
+begin
+  Result:=inherited TryToSelect(APos, ASubpart);
+end;
+
+procedure TvParagraph.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo;
+  ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
+begin
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+end;
+
+function TvParagraph.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+begin
+  Result:=inherited GenerateDebugTree(ADestRoutine, APageItem);
+end;
+
 { TvRichText }
 
 constructor TvRichText.Create;
@@ -4089,10 +4240,9 @@ begin
   inherited Destroy;
 end;
 
-function TvRichText.AddText: TvText;
+function TvRichText.AddParagraph: TvParagraph;
 begin
-  Result := TvText.Create;
-  AddEntity(Result);
+
 end;
 
 function TvRichText.TryToSelect(APos: TPoint; var ASubpart: Cardinal
@@ -4111,6 +4261,23 @@ function TvRichText.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
   APageItem: Pointer): Pointer;
 begin
   Result:=inherited GenerateDebugTree(ADestRoutine, APageItem);
+end;
+
+{ TvPage }
+
+constructor TvPage.Create(AOwner: TvVectorialDocument);
+begin
+  inherited Create;
+end;
+
+destructor TvPage.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TvPage.Assign(ASource: TvPage);
+begin
+
 end;
 
 { TvVectorialPage }
@@ -4142,7 +4309,7 @@ end;
 
 constructor TvVectorialPage.Create(AOwner: TvVectorialDocument);
 begin
-  inherited Create;
+  inherited Create(AOwner);
 
   FEntities := TFPList.Create;
   FTmpPath := TPath.Create;
@@ -4169,14 +4336,16 @@ begin
   inherited Destroy;
 end;
 
-procedure TvVectorialPage.Assign(ASource: TvVectorialPage);
+procedure TvVectorialPage.Assign(ASource: TvPage);
 var
   i: Integer;
+  AVecSource: TvVectorialPage absolute ASource;
 begin
+  if not (ASource is TvVectorialPage) then Exit;
   Clear;
 
-  for i := 0 to ASource.GetEntitiesCount - 1 do
-    Self.AddEntity(ASource.GetEntity(i));
+  for i := 0 to AVecSource.GetEntitiesCount - 1 do
+    Self.AddEntity(AVecSource.GetEntity(i));
 end;
 
 function TvVectorialPage.GetEntity(ANum: Cardinal): TvEntity;
@@ -4791,22 +4960,77 @@ end;
 constructor TvTextPageSequence.Create(AOwner: TvVectorialDocument);
 begin
   inherited Create(AOwner);
+
+  Footer := TvRichText.Create;
+  Header := TvRichText.Create;
+  MainText := TvRichText.Create;
 end;
 
 destructor TvTextPageSequence.Destroy;
 begin
+  Footer.Free;
+  Header.Free;
+  MainText.Free;
+
   inherited Destroy;
 end;
 
-procedure TvTextPageSequence.Assign(ASource: TvVectorialPage);
+procedure TvTextPageSequence.Assign(ASource: TvPage);
 begin
   inherited Assign(ASource);
 end;
 
-function TvTextPageSequence.AddParagraph: TvRichText;
+function TvTextPageSequence.GetEntity(ANum: Cardinal): TvEntity;
 begin
-  Result := TvRichText.Create;
-  AddEntity(Result);
+  Result := MainText.GetEntity(ANum);
+end;
+
+function TvTextPageSequence.GetEntitiesCount: Integer;
+begin
+  Result := MainText.GetEntitiesCount();
+end;
+
+function TvTextPageSequence.GetLastEntity: TvEntity;
+begin
+
+end;
+
+function TvTextPageSequence.FindAndSelectEntity(Pos: TPoint
+  ): TvFindEntityResult;
+begin
+
+end;
+
+function TvTextPageSequence.FindEntityWithNameAndType(AName: string;
+  AType: TvEntityClass; ARecursively: Boolean): TvEntity;
+begin
+
+end;
+
+procedure TvTextPageSequence.Clear;
+begin
+  MainText.Clear;
+end;
+
+function TvTextPageSequence.DeleteEntity(AIndex: Cardinal): Boolean;
+begin
+  Result := MainText.DeleteEntity(AIndex);
+end;
+
+function TvTextPageSequence.RemoveEntity(AEntity: TvEntity;
+  AFreeAfterRemove: Boolean): Boolean;
+begin
+  MainText.Clear;
+end;
+
+function TvTextPageSequence.AddEntity(AEntity: TvEntity): Integer;
+begin
+  Result := MainText.AddEntity(AEntity);
+end;
+
+function TvTextPageSequence.AddParagraph: TvParagraph;
+begin
+  Result := MainText.AddParagraph();
 end;
 
 { TvVectorialDocument }
@@ -5078,9 +5302,31 @@ begin
   ZoomLevel := AScreenSize / Height;
 end;
 
-function TvVectorialDocument.GetPage(AIndex: Integer): TvVectorialPage;
+function TvVectorialDocument.GetPageAsBaseClass(AIndex: Integer): TvPage;
 begin
-  Result := TvVectorialPage(FPages.Items[AIndex]);
+  Result := TvPage(FPages.Items[AIndex]);
+end;
+
+function TvVectorialDocument.GetPage(AIndex: Integer): TvVectorialPage;
+var
+  lPage: TvPage;
+begin
+  lPage := GetPageAsBaseClass(AIndex);
+  if (Assigned(lPage) and (lPage is TvVectorialPage)) then
+    Result := TvVectorialPage(lPage)
+  else
+    Result := nil;
+end;
+
+function TvVectorialDocument.GetPageAsText(AIndex: Integer): TvTextPageSequence;
+var
+  lPage: TvPage;
+begin
+  lPage := GetPageAsBaseClass(AIndex);
+  if (Assigned(lPage) and (lPage is TvTextPageSequence)) then
+    Result := TvTextPageSequence(lPage)
+  else
+    Result := nil;
 end;
 
 function TvVectorialDocument.GetPageCount: Integer;
@@ -5230,11 +5476,11 @@ end;
 procedure TvVectorialDocument.Clear;
 var
   i: integer;
-  p: TvVectorialPage;
+  p: TvPage;
 begin
   for i:=FPages.Count-1 downto 0 do
   begin
-    p := TvVectorialPage(FPages[i]);
+    p := TvPage(FPages[i]);
     p.Clear;
     FreeAndNil(p);
   end;
@@ -5245,12 +5491,12 @@ end;
 procedure TvVectorialDocument.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc);
 var
   i: integer;
-  p: TvVectorialPage;
+  p: TvPage;
   lPageItem: Pointer;
 begin
   for i:=0 to FPages.Count-1 do
   begin
-    p := TvVectorialPage(FPages[i]);
+    p := TvPage(FPages[i]);
     lPageItem := ADestRoutine(Format('Page %d', [i]), nil);
     p.GenerateDebugTree(ADestRoutine, lPageItem);
   end;

@@ -17,7 +17,7 @@ uses
 var
   Vec: TvVectorialDocument;
   Page: TvTextPageSequence;
-  CurParagraph: TvRichText;
+  CurParagraph: TvParagraph;
 begin
   Vec := TvVectorialDocument.Create;
   try

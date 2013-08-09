@@ -74,7 +74,7 @@ type
     procedure WriteDocument(AData: TvVectorialDocument);
     procedure WritePage(ACurPage: TvTextPageSequence);
     //
-    procedure WriteParagraph(AEntity: TvRichText; ACurPage: TvTextPageSequence);
+    procedure WriteParagraph(AEntity: TvParagraph; ACurPage: TvTextPageSequence);
     // Routines to write parts of those files
     function WriteStylesXMLAsString: string;
     //
@@ -603,7 +603,7 @@ end;
 procedure TvODTVectorialWriter.WriteDocument(AData: TvVectorialDocument);
 var
   i: Integer;
-  CurPage: TvVectorialPage;
+  CurPage: TvPage;
   CurTextPage: TvTextPageSequence absolute CurPage;
 begin
   FContent :=
@@ -773,13 +773,13 @@ begin
   begin
     lCurEntity := ACurPage.GetEntity(i);
 
-    if not (lCurEntity is TvRichText) then Continue;
+    if not (lCurEntity is TvParagraph) then Continue;
 
-    WriteParagraph(TvRichText(lCurEntity), ACurPage);
+    WriteParagraph(TvParagraph(lCurEntity), ACurPage);
   end;
 end;
 
-procedure TvODTVectorialWriter.WriteParagraph(AEntity: TvRichText;
+procedure TvODTVectorialWriter.WriteParagraph(AEntity: TvParagraph;
   ACurPage: TvTextPageSequence);
 var
   EntityKindName, AEntityStyleName: string;
