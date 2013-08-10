@@ -3548,7 +3548,6 @@ resourcestring
   lisChooseOneOfTheseItemsToCreateANewPackage = 'Choose one of these items to '
     +'create a new Package';
   lisPackage = 'Package';
-  lisNewDlgCreateANewPascalUnit = 'Create a new Pascal unit.';
   lisNewDlgCreateANewUnitWithALCLForm = 'Create a new unit with a LCL form.';
   lisNewDlgCreateANewUnitWithADataModule = 'Create a new unit with a datamodule.';
   lisNewDlgCreateANewUnitWithAFrame = 'Create a new unit with a frame.';
