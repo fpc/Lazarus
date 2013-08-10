@@ -2,11 +2,11 @@
   Copyright (c) 2007 by Henry Vermaak (henry.vermaak@gmail.com) }
 
 {$ifndef darwin}
-  {$fatal This code is Darwin specific at the moment!}
+  {$WARNING This code is Darwin specific at the moment!}
 {$endif}
 
 {$ifndef cpu32}
-  {$fatal This code is 32bit specific at the moment!}
+  {$WARNING This code is 32bit specific at the moment!}
 {$endif}
 
 // FPC does not always push a copy of r3 - r10 to the stack (24(r1) - 52(r1)
@@ -266,6 +266,15 @@ var
   end;
 
 begin
+
+{$ifndef darwin}
+  raise exception.create('This code is Darwin specific at the moment!');
+{$endif}
+
+{$ifndef cpu32}
+  raise exception.create('This code is 32bit specific at the moment!');
+{$endif}
+
   if (Integer(CallingConv) and 64) <> 0 then begin
     IsConstructor := true;
     CAllingConv := TPSCallingConvention(Integer(CallingConv) and not 64);

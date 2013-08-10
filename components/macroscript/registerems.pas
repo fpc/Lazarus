@@ -22,6 +22,7 @@ begin
   RegisterIDEOptionsGroup(OptionsGroup, TEMSConfig);
   RegisterIDEOptionsEditor(OptionsGroup, TEMSIdeOptionsFrame, 1);
 
+  if not EMSSupported then exit;
 
   conf := GetEMSConf;
   conf.Load;

@@ -9754,7 +9754,12 @@ end;
   {$elseif defined(CPUX86_64)}
     {$include x64.inc}
   {$else}
-    {$fatal Pascal Script is not supported for your architecture at the moment!}
+    {$WARNING Pascal Script is not supported for your architecture at the moment!}
+    function TPSExec.InnerfuseCall(_Self, Address: Pointer; CallingConv: TPSCallingConvention; Params: TPSList; res: PPSVariantIFC): Boolean;
+    begin
+      raise exception.create('This code is not supported on this CPU at the moment!');
+      Result := True;
+    end;
   {$ifend}
 {$ELSE}
 {$include x86.inc}
@@ -11487,7 +11492,7 @@ end;
 {$ENDIF}
 
 {$ifdef fpc}
-  {$if defined(cpupowerpc) or defined(cpuarm) or defined(cpu64)}
+  {$if defined(cpupowerpc) or defined(cpuarm) or defined(cpu64) or defined(cpusparc)}
     {$define empty_methods_handler}
   {$ifend}
 {$endif}

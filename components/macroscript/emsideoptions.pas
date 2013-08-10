@@ -58,6 +58,12 @@ procedure TEMSIdeOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   cfg: TEMSConfig;
 begin
+  if not EMSSupported then begin
+    lblStatus.Caption := EMSNotSupported;
+    btnActivate.Enabled := True;
+    exit;
+  end;
+
   cfg := GetEMSConf;
 
   if cfg.SelfTestFailed >= EMSVersion then begin

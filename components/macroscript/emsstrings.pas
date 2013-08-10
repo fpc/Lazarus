@@ -15,6 +15,7 @@ resourcestring
   EMSStatusTitle = 'Status';
   EMSEditorMacroTitle = 'Editor Macro Script';
   EMSBtnTestAgain = 'Test again';
+  EMSNotSupported = 'Scripting not active. Not supported on this platform or CPU';
   EMSNotActive = 'Scripting not active. Selftest failed';
   EMSActive = 'Scripting active';
   EMSPending = 'Scripting not active. Selftest will run next time the IDE is '

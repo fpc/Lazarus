@@ -9,6 +9,15 @@ uses
   Controls, SynEdit, EMScriptClasses, EMSStrings, Laz2_XMLCfg, uPSRuntime,
   uPSUtils, LazLoggerBase, LazFileUtils;
 
+{$if defined(cpupowerpc)}
+  {$ifNdef darwin}  {$DEFINE PasScriptNotAvail } {$ifend}
+  {$ifNdef cpu32}  {$DEFINE PasScriptNotAvail } {$ifend}
+{$ifend}
+{$if defined(cpusparc) }  {$DEFINE PasScriptNotAvail } {$ifend}
+
+const
+  EMSSupported = {$IFDEF PasScriptNotAvail} False {$ELSE} True {$ENDIF} ;
+
 type
 
   { TEMSEditorMacro }
