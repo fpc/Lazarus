@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-06-23 23:21+0400\n"
+"PO-Revision-Date: 2013-08-11 02:43+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -512,15 +512,15 @@ msgstr "Выделение"
 
 #: syneditstrconst.syns_emcstartselectlines
 msgid "Selection (lines)"
-msgstr ""
+msgstr "Выделение (строки)"
 
 #: syneditstrconst.syns_emcstartselecttokens
 msgid "Selection (tokens) "
-msgstr ""
+msgstr "Выделение (элементы)"
 
 #: syneditstrconst.syns_emcstartselectwords
 msgid "Selection (words)"
-msgstr ""
+msgstr "Выделение (слова)"
 
 #: syneditstrconst.syns_emcsyneditcommand
 msgid "IDE Command"
