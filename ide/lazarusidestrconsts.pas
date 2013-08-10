@@ -5368,7 +5368,6 @@ resourcestring
   lisNoMacroSelected = 'No macro selected';
   lisMacro = 'Macro %s';
   lisAddNewMacro = 'Add new macro';
-  lisNoErrors = 'No errors';
   lisHintADefaultValueCanBeDefinedInTheConditionals = 'Hint: A default value '
     +'can be defined in the conditionals.';
   lisConditionals = 'Conditionals';

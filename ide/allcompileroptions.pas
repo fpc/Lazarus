@@ -5,8 +5,8 @@ unit AllCompilerOptions;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, contnrs, Buttons,
-  ButtonPanel, EditBtn, LCLProc, EnvironmentOpts, Compiler, LazarusIDEStrConsts;
+  Classes, SysUtils, Forms, Controls, StdCtrls, Buttons, ButtonPanel, EditBtn,
+  contnrs, LCLProc, Compiler, LazarusIDEStrConsts;
 
 type
 
@@ -24,7 +24,6 @@ type
     procedure edOptionsFilterChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
-    FCustomOptions: TStrings;
     FIdleConnected: Boolean;
     FOptionsReader: TCompilerOptReader;
     FGeneratedControls: TComponentList;
@@ -44,8 +43,7 @@ type
     destructor Destroy; override;
     function ToCustomOptions(aStrings: TStrings): TModalResult;
   public
-    property CustomOptions: TStrings read FCustomOptions write FCustomOptions;
-    property OptionsReader: TCompilerOptReader read FOptionsReader;
+    property OptionsReader: TCompilerOptReader read FOptionsReader write FOptionsReader;
   end;
 
 var
@@ -60,7 +58,6 @@ implementation
 constructor TfrmAllCompilerOptions.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FOptionsReader := TCompilerOptReader.Create;
   FGeneratedControls := TComponentList.Create;
 end;
 
@@ -68,13 +65,12 @@ destructor TfrmAllCompilerOptions.Destroy;
 begin
   FGeneratedControls.Clear;
   FreeAndNil(FGeneratedControls);
-  FreeAndNil(FOptionsReader);
   inherited Destroy;
 end;
 
 function TfrmAllCompilerOptions.ToCustomOptions(aStrings: TStrings): TModalResult;
 begin
-  Result := OptionsReader.ToCustomOptions(aStrings, cbUseComments.Checked);
+  Result := FOptionsReader.ToCustomOptions(aStrings, cbUseComments.Checked);
 end;
 
 procedure TfrmAllCompilerOptions.FormShow(Sender: TObject);
@@ -124,17 +120,6 @@ begin
   Screen.Cursor := crHourGlass;
   try
     edOptionsFilter.Enabled := False;
-    with FOptionsReader do
-      if RootOptGroup.CompilerOpts.Count = 0 then
-      try
-        CompilerExecutable := EnvironmentOptions.GetParsedCompilerFilename;
-        if ReadAndParseOptions <> mrOK then
-          ShowMessage(ErrorMsg);
-        FromCustomOptions(FCustomOptions);
-      except
-        on E: Exception do
-          ShowMessage('Error parsing options: '+E.Message);
-      end;
     RenderAndFilterOptions;
     edOptionsFilter.Enabled := True;
   finally

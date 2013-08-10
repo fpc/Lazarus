@@ -31,8 +31,8 @@ uses
   Classes, SysUtils, math, AVL_Tree, LazLogger, Forms, Controls, Graphics,
   Dialogs, StdCtrls, LCLProc, ComCtrls, LCLType, ExtCtrls, Buttons,
   CodeToolsCfgScript, KeywordFuncLists, LazarusIDEStrConsts,
-  IDEOptionsIntf, CompOptsIntf, IDECommands, Project,
-  CompilerOptions, AllCompilerOptions, EditorOptions, PackageDefs,
+  IDEOptionsIntf, CompOptsIntf, IDECommands, Project, EnvironmentOpts,
+  CompilerOptions, AllCompilerOptions, Compiler, EditorOptions, PackageDefs,
   SynEdit, SynEditKeyCmds, SynCompletion, SourceSynEditor, CustomDefines;
 
 type
@@ -68,6 +68,7 @@ type
     FStatusMessage: string;
     fEngine: TIDECfgScriptEngine;
     fSynCompletion: TSynCompletion;
+    FOptionsReader: TCompilerOptReader;
     procedure SetIdleConnected(AValue: Boolean);
     procedure SetStatusMessage(const AValue: string);
     procedure StartCompletion;
@@ -102,6 +103,7 @@ type
     property CompletionHistory: TStrings read FCompletionHistory;
     property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
     property CompOptions: TBaseCompilerOptions read FCompOptions;
+    property OptionsReader: TCompilerOptReader read FOptionsReader;
   end;
 
 implementation
@@ -114,9 +116,10 @@ procedure TCompilerOtherOptionsFrame.btnAllOptionsClick(Sender: TObject);
 var
   AllOpts: TfrmAllCompilerOptions;
 begin
+  FOptionsReader.FromCustomOptions(memoCustomOptions.Lines);
   AllOpts := TfrmAllCompilerOptions.Create(Nil);
   try
-    AllOpts.CustomOptions := memoCustomOptions.Lines;
+    AllOpts.OptionsReader:=FOptionsReader;
     if AllOpts.ShowModal = mrOK then
     begin
       // Synchronize with custom options memo
@@ -134,6 +137,7 @@ var
 begin
   EditForm:=TCustomDefinesForm.Create(Nil);
   try
+    EditForm.OptionsReader:=FOptionsReader;
     EditForm.DefinesCheckList.Items.Assign(Project1.CustomDefines);
     EditForm.FromCustomOptions(memoCustomOptions.Lines);
     if EditForm.ShowModal=mrOK then
@@ -141,6 +145,7 @@ begin
       Project1.CustomDefines.Assign(EditForm.DefinesCheckList.Items);
       // Synchronize with custom options memo
       EditForm.ToCustomOptions(memoCustomOptions.Lines);
+      memoCustomOptions.Invalidate;
     end;
   finally
     EditForm.Free;
@@ -577,7 +582,7 @@ begin
   if fEngine.ErrorCount>0 then begin
     StatusMessage:=fEngine.GetErrorStr(0);
   end else begin
-    StatusMessage:=lisNoErrors;
+    StatusMessage:='';
   end;
 end;
 
@@ -600,6 +605,22 @@ procedure TCompilerOtherOptionsFrame.OnIdle(Sender: TObject; var Done: Boolean);
 begin
   IdleConnected := False;
   UpdateMessages;
+  Screen.Cursor := crHourGlass;
+  try
+    with FOptionsReader do
+      if RootOptGroup.CompilerOpts.Count = 0 then      // Read only once
+      try
+        CompilerExecutable := EnvironmentOptions.GetParsedCompilerFilename;
+        if ReadAndParseOptions <> mrOK then
+          ShowMessage(ErrorMsg);
+        //FromCustomOptions(FCustomOptions);
+      except
+        on E: Exception do
+          ShowMessage('Error parsing options: '+E.Message);
+      end;
+  finally
+    Screen.Cursor := crDefault;
+  end;
 end;
 
 constructor TCompilerOtherOptionsFrame.Create(TheOwner: TComponent);
@@ -625,10 +646,13 @@ begin
   fSynCompletion.OnKeyPrevChar:=@OnSynCompletionKeyPrevChar;
   fSynCompletion.OnKeyDelete:=@OnSynCompletionKeyDelete;
   fSynCompletion.OnKeyDown:=@OnSynCompletionKeyDown;
+
+  FOptionsReader := TCompilerOptReader.Create;
 end;
 
 destructor TCompilerOtherOptionsFrame.Destroy;
 begin
+  FreeAndNil(FOptionsReader);
   FreeAndNil(FCompletionHistory);
   FreeAndNil(FCompletionValues);
   FreeAndNil(fDefaultVariables);
@@ -653,6 +677,7 @@ begin
   grpConditionals.Caption := lisConditionals;
   btnAllOptions.Caption := lisDlgAllOptions;
   btnDefines.Caption := lisDlgDefines;
+  IdleConnected := True;
 end;
 
 procedure TCompilerOtherOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

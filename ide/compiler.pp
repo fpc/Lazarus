@@ -45,7 +45,7 @@ uses
   OutputFilter,
   {$ENDIF}
   UTF8Process, InfoBuild, IDEMsgIntf, CompOptsIntf, IDEExternToolIntf,
-  DefineTemplates;
+  DefineTemplates, LazFileUtils;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean) of object;
@@ -142,6 +142,7 @@ type
     function FindOption(aOptStr: string): TCompilerOpt;
     function FindOptionById(aId: integer): TCompilerOpt;
     function SelectOption(aOptAndValue: string): Boolean;
+    procedure DeselectAll;
   public
     property CompilerOpts: TCompilerOptList read fCompilerOpts;
   end;
@@ -169,8 +170,6 @@ type
   private
     // Defines (-d...) are separated from custom options and stored here.
     fDefines: TStringList;
-    // All options except for defines.
-    fOtherOptions: TStringList;
     // Lists of selections parsed from "fpc -i". Contains supported technologies.
     fSupportedCategories: TStringList;
     // Hierarchy of options parsed from "fpc -h".
@@ -192,7 +191,6 @@ type
     function ToCustomOptions(aStrings: TStrings; aUseComments: Boolean): TModalResult;
   public
     property Defines: TStringList read fDefines;
-    property OtherOptions: TStringList read fOtherOptions;
     property SupportedCategories: TStringList read fSupportedCategories;
     property RootOptGroup: TCompilerOptGroup read fRootOptGroup;
     property CompilerExecutable: string read fCompilerExecutable write fCompilerExecutable;
@@ -639,6 +637,27 @@ begin
   Result := Assigned(Opt);
 end;
 
+procedure TCompilerOptGroup.DeselectAll;
+
+  procedure DeselectSub(aRoot: TCompilerOpt);
+  var
+    Children: TCompilerOptList;
+    i: Integer;
+  begin
+    if aRoot is TCompilerOptGroup then
+    begin
+      Children := TCompilerOptGroup(aRoot).CompilerOpts;
+      for i := 0 to Children.Count-1 do         // Recursive call for children.
+        DeselectSub(TCompilerOpt(Children[i]));
+    end
+    else                // TCompilerOpt
+      aRoot.Value := '';
+  end;
+
+begin
+  DeselectSub(Self);
+end;
+
 procedure TCompilerOptGroup.ParseEditKind;
 begin
   fEditKind := oeGroup;
@@ -809,7 +828,6 @@ constructor TCompilerOptReader.Create;
 begin
   inherited Create;
   fDefines := TStringList.Create;
-  fOtherOptions := TStringList.Create;
   fSupportedCategories := TStringList.Create;
   fRootOptGroup := TCompilerOptGroup.Create(Nil);
   // Categories are passed to options parser through a global variable.
@@ -824,7 +842,6 @@ begin
   for i := 0 to fSupportedCategories.Count-1 do
     fSupportedCategories.Objects[i].Free;
   fSupportedCategories.Free;
-  fOtherOptions.Free;
   fDefines.Free;
   inherited Destroy;
 end;
@@ -1035,78 +1052,28 @@ begin
   Result := fRootOptGroup.FindOptionById(aId);
 end;
 
-function SplitBySpace(aStr: string; aStrings: TStrings): Boolean;
-var
-  i, Start: Integer;
-  QuoteChar: Char;
-
-  procedure CopyStr;
-  begin
-    if (Start > -1) and (i > Start) then
-      aStrings.Add(Copy(aStr, Start, i-Start));
-  end;
-
-begin
-  aStrings.Clear;
-  QuoteChar := #0;
-  Start := -1;
-  i := 1;
-  while i <= Length(aStr) do
-  begin
-    if (QuoteChar = #0) and (aStr[i] in [' ', #9]) then
-    begin
-      CopyStr;                         // Copy previous value.
-      while (i <= Length(aStr)) and (aStr[i] in [' ', #9]) do
-        Inc(i);                        // Move to next string.
-    end
-    else begin
-      Start := i;                      // Move to next separator.
-      while i <= Length(aStr) do
-      begin
-        if (aStr[i] in ['''', '"']) then
-        begin
-          if QuoteChar = #0 then       // Toggle quote on/off.
-            QuoteChar := aStr[i]
-          else
-            QuoteChar := #0;
-        end
-        else if (QuoteChar = #0) and (aStr[i] in [' ', #9]) then Break;
-        Inc(i);
-      end;
-    end;
-  end;
-  CopyStr;
-end;
-
 function TCompilerOptReader.FromCustomOptions(aStrings: TStrings): TModalResult;
 var
   i, j, CommentPos: Integer;
-  HasDefine: Boolean;
   s: String;
   sl: TStringList;
 begin
   Result := mrOK;
+  fRootOptGroup.DeselectAll;
+  fDefines.Clear;
   sl := TStringList.Create;
   try
     for i := 0 to aStrings.Count-1 do
     begin
       s := Trim(aStrings[i]);
       if s = '' then Continue;
-      CommentPos := Pos('//', s);
-      if CommentPos > 0 then         // Remove possible comment.
-        s := TrimRight(Copy(s, 1, CommentPos));
-      HasDefine := Pos('-d', s) > 0;
-      if not HasDefine then
-        fOtherOptions.Add(s); // Don't split the line for other options if no defines.
-      SplitBySpace(s, sl);
+      sl.Clear;
+      SplitCmdLineParams(s, sl);
       for j := 0 to sl.Count-1 do
         if AnsiStartsStr('-d', sl[j]) then
           fDefines.Add(sl[j])
-        else begin
+        else
           fRootOptGroup.SelectOption(sl[j]);
-          if HasDefine then
-            fOtherOptions.Add(sl[j]);
-        end;
     end;
   finally
     sl.Free;
@@ -1123,16 +1090,6 @@ function TCompilerOptReader.ToCustomOptions(aStrings: TStrings;
       Result := '    // ' + aRoot.Description
     else
       Result := '';
-  end;
-
-  function QuoteIfNeeded(aStr: string): string;
-  begin
-    if (aStr <> '') and (Pos(' ', aStr) > 0)
-    and not (aStr[1] in ['''', '"'])
-    and not (aStr[Length(aStr)] in ['''', '"']) then
-      Result := '"' + aStr + '"'
-    else
-      Result := aStr;
   end;
 
   procedure CopyOptions(aRoot: TCompilerOpt);
@@ -1161,7 +1118,7 @@ function TCompilerOptReader.ToCustomOptions(aStrings: TStrings;
         if aRoot.Value = 'True' then
           aStrings.Add(aRoot.Option + PossibleComment(aRoot))
         else
-          aStrings.Add(aRoot.Option + QuoteIfNeeded(aRoot.Value) + PossibleComment(aRoot));
+          aStrings.Add(aRoot.Option + StrToCmdLineParam(aRoot.Value) + PossibleComment(aRoot));
       end;
     end;
   end;

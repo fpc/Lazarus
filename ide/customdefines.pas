@@ -56,6 +56,7 @@ type
   public
     function FromCustomOptions(aStrings: TStrings): TModalResult;
     function ToCustomOptions(aStrings: TStrings): TModalResult;
+    property OptionsReader: TCompilerOptReader read FOptionsReader write FOptionsReader;
   end;
 
 
@@ -73,7 +74,6 @@ begin
   AddBtn.LoadGlyphFromLazarusResource('laz_add');
   RemoveBtn.Caption := lisBtnRemove;
   RemoveBtn.LoadGlyphFromLazarusResource('laz_delete');
-  FOptionsReader := TCompilerOptReader.Create;
 end;
 
 procedure TCustomDefinesForm.FormShow(Sender: TObject);
@@ -84,7 +84,7 @@ end;
 
 procedure TCustomDefinesForm.FormDestroy(Sender: TObject);
 begin
-  FOptionsReader.Free;
+
 end;
 
 procedure TCustomDefinesForm.AddBtnClick(Sender: TObject);
@@ -176,15 +176,13 @@ function TCustomDefinesForm.ToCustomOptions(aStrings: TStrings): TModalResult;
 var
   i: Integer;
 begin
-  // First add all options except defines.
-  aStrings.Clear;
-  aStrings.AddStrings(FOptionsReader.OtherOptions);
-  // Then add checked defines from the GUI.
-  with DefinesCheckList do
-    for i := 0 to Count-1 do
-      if Checked[i] then begin
-        aStrings.Add('-d' + Items[i]);
-      end;
+  // First update defines to OptionsReader.
+  FOptionsReader.Defines.Clear;
+  for i := 0 to DefinesCheckList.Count-1 do
+    if DefinesCheckList.Checked[i] then
+      FOptionsReader.Defines.Add('-d' + DefinesCheckList.Items[i]);
+  // Then add all options and defines.
+  FOptionsReader.ToCustomOptions(aStrings, False);
   Result:=mrOk;
 end;
 
