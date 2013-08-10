@@ -1054,7 +1054,7 @@ end;
 
 function TCompilerOptReader.FromCustomOptions(aStrings: TStrings): TModalResult;
 var
-  i, j, CommentPos: Integer;
+  i, j: Integer;
   s: String;
   sl: TStringList;
 begin
