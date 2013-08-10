@@ -514,6 +514,18 @@ msgstr "Zeilenmodus"
 msgid "Selection"
 msgstr "Auswahl"
 
+#: syneditstrconst.syns_emcstartselectlines
+msgid "Selection (lines)"
+msgstr ""
+
+#: syneditstrconst.syns_emcstartselecttokens
+msgid "Selection (tokens) "
+msgstr ""
+
+#: syneditstrconst.syns_emcstartselectwords
+msgid "Selection (words)"
+msgstr ""
+
 #: syneditstrconst.syns_emcsyneditcommand
 msgid "IDE Command"
 msgstr "IDE-Kommando"
