@@ -7216,6 +7216,8 @@ var
       end else begin
         // only search in special context
         Params.Flags:=Params.Flags+[fdfIgnoreUsedUnits];
+        if Context.Node.Desc=ctnImplementation then
+          Params.Flags:=Params.Flags+[fdfSearchInParentNodes];
       end;
 
       // check identifier for overloaded procs
