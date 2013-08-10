@@ -58,7 +58,12 @@ type
   TLinePos = type integer; // 1..high(Integer);
   TLineIdx = type integer; // 0..high(Integer);
 
-  TSynCoordinateMappingFlag = (scmLimitToLines, scmIncludePartVisible);
+  TSynCoordinateMappingFlag = (
+    scmLimitToLines,
+    scmIncludePartVisible,
+    scmForceLeftSidePos   // do return the caret pos to the (logical) left of the char, even if the pixel is over the right half.
+                          // TODO: RTL
+  );
   TSynCoordinateMappingFlags = set of TSynCoordinateMappingFlag;
 
   PSynSelectionMode = ^TSynSelectionMode;

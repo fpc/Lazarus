@@ -91,6 +91,7 @@ type
     FSelectionMode:       TSynSelectionMode;
     FStartLinePos: Integer; // 1 based
     FStartBytePos: Integer; // 1 based
+    FAltStartLinePos, FAltStartBytePos: Integer; // 1 based // Alternate, for min selection
     FEndLinePos: Integer; // 1 based
     FEndBytePos: Integer; // 1 based
     FPersistent: Boolean;
@@ -105,6 +106,7 @@ type
     function  AdjustBytePosToCharacterStart(Line: integer; BytePos: integer): integer;
     function  GetFirstLineBytePos: TPoint;
     function  GetLastLineBytePos: TPoint;
+    procedure SetAutoExtend(AValue: Boolean);
     procedure SetCaret(const AValue: TSynEditCaret);
     procedure SetEnabled(const Value : Boolean);
     procedure SetActiveSelectionMode(const Value: TSynSelectionMode);
@@ -112,6 +114,7 @@ type
     procedure SetPersistent(const AValue: Boolean);
     procedure SetSelectionMode      (const AValue: TSynSelectionMode);
     function  GetStartLineBytePos: TPoint;
+    procedure ConstrainStartLineBytePos(var Value: TPoint);
     procedure SetStartLineBytePos(Value: TPoint);
     procedure AdjustStartLineBytePos(Value: TPoint);
     function  GetEndLineBytePos: TPoint;
@@ -134,6 +137,7 @@ type
     function  SelAvail: Boolean;
     function  SelCanContinue(ACaret: TSynEditCaret): Boolean;
     function  IsBackwardSel: Boolean; // SelStart < SelEnd ?
+    procedure BeginMinimumSelection; // current selection will be minimum while follow caret (autoExtend) // until next setSelStart or end of follow
     procedure SortSelectionPoints;
     procedure IgnoreNextCaretMove;
     procedure IncPersistentLock;
@@ -165,7 +169,7 @@ type
     property  Persistent: Boolean read FPersistent write SetPersistent;
     // automatically Start/Extend selection if caret moves
     // (depends if caret was at block border or not)
-    property  AutoExtend: Boolean read FAutoExtend write FAutoExtend;
+    property  AutoExtend: Boolean read FAutoExtend write SetAutoExtend;
     property  StickyAutoExtend: Boolean read FStickyAutoExtend write FStickyAutoExtend;
     property  Hide: Boolean read FHide write SetHide;
   end;
@@ -1432,6 +1436,38 @@ begin
 end;
 
 procedure TSynEditSelection.DoCaretChanged(Sender: TObject);
+
+  procedure SwapAltStart;
+  var
+    x, y: Integer;
+  begin
+    if FAltStartLinePos < FStartLinePos then
+      FInvalidateLinesMethod(FAltStartLinePos, FStartLinePos)
+    else
+      FInvalidateLinesMethod(FStartLinePos, FAltStartLinePos);
+    y := FAltStartLinePos;
+    x := FAltStartBytePos;
+    FAltStartLinePos := FStartLinePos;
+    FAltStartBytePos := FStartBytePos;
+    FStartLinePos := y;
+    FStartBytePos := x;
+  end;
+
+  procedure FixMinimumSelection;
+  begin
+    if FAltStartLinePos < 0 then exit;
+    case ComparePoints(Point(FAltStartBytePos, FAltStartLinePos), StartLineBytePos) of
+      -1: begin // alt is before start
+          if ComparePoints(StartLineBytePos, EndLineBytePos) <= 0 then
+            SwapAltStart;
+        end;
+      1: begin // start is before alt
+          if ComparePoints(StartLineBytePos, EndLineBytePos) >= 0 then
+            SwapAltStart;
+        end;
+    end;
+  end;
+
 var
   f: Boolean;
 begin
@@ -1451,11 +1487,16 @@ begin
 
   if FAutoExtend or FStickyAutoExtend then begin
     f := FStickyAutoExtend;
-    if (not FHide) and (FCaret.WasAtLineByte(EndLineBytePos)) then
-      SetEndLineBytePos(FCaret.LineBytePos)
+    if (not FHide) and (FCaret.WasAtLineByte(EndLineBytePos)) then begin
+      SetEndLineBytePos(FCaret.LineBytePos);
+      FixMinimumSelection;
+    end
     else
-    if (not FHide) and (FCaret.WasAtLineByte(StartLineBytePos)) then
-      AdjustStartLineBytePos(FCaret.LineBytePos)
+    if (not FHide) and (FCaret.WasAtLineByte(StartLineBytePos)) then begin
+      AdjustStartLineBytePos(FCaret.LineBytePos);
+      FAltStartLinePos := -1;
+      FAltStartBytePos := -1;
+    end
     else begin
       StartLineBytePos := Point(FCaret.OldCharPos, FCaret.OldLinePos);
       EndLineBytePos := FCaret.LineBytePos;
@@ -1848,6 +1889,23 @@ begin
   if not Enabled then SetStartLineBytePos(StartLineBytePos);
 end;
 
+procedure TSynEditSelection.ConstrainStartLineBytePos(var Value: TPoint);
+begin
+  Value.y := MinMax(Value.y, 1, fLines.Count);
+
+  if (FCaret = nil) or FCaret.AllowPastEOL then
+    Value.x := Max(Value.x, 1)
+  else
+    Value.x := MinMax(Value.x, 1, length(Lines[Value.y - 1])+1);
+
+  if (ActiveSelectionMode = smNormal) then begin
+    if (Value.y >= 1) and (Value.y <= FLines.Count) then
+      Value.x := AdjustBytePosToCharacterStart(Value.y,Value.x)
+    else
+      Value.x := 1;
+  end;
+end;
+
 procedure TSynEditSelection.SetStartLineBytePos(Value : TPoint);
 // logical position (byte)
 var
@@ -1855,17 +1913,12 @@ var
   WasAvail: boolean;
 begin
   FStickyAutoExtend := False;
+  FAltStartLinePos := -1;
+  FAltStartBytePos := -1;
   WasAvail := SelAvail;
-  Value.y := MinMax(Value.y, 1, fLines.Count);
-  if (FCaret = nil) or FCaret.AllowPastEOL then
-    Value.x := Max(Value.x, 1)
-  else
-    Value.x := MinMax(Value.x, 1, length(Lines[Value.y - 1])+1);
-  if (ActiveSelectionMode = smNormal) then
-    if (Value.y >= 1) and (Value.y <= FLines.Count) then
-      Value.x := AdjustBytePosToCharacterStart(Value.y,Value.x)
-    else
-      Value.x := 1;
+
+  ConstrainStartLineBytePos(Value);
+
   if SelAvail then begin
     if FStartLinePos < FEndLinePos then begin
       nInval1 := Min(Value.Y, FStartLinePos);
@@ -1880,6 +1933,7 @@ begin
   FHide := False;
   FStartLinePos := Value.Y;
   FStartBytePos := Value.X;
+
   FEndLinePos := Value.Y;
   FEndBytePos := Value.X;
   if FCaret <> nil then
@@ -1891,16 +1945,7 @@ end;
 procedure TSynEditSelection.AdjustStartLineBytePos(Value: TPoint);
 begin
   if FEnabled then begin
-    Value.y := MinMax(Value.y, 1, fLines.Count);
-    if (FCaret = nil) or FCaret.AllowPastEOL then
-      Value.x := Max(Value.x, 1)
-    else
-      Value.x := MinMax(Value.x, 1, length(Lines[Value.y - 1])+1);
-    if (ActiveSelectionMode = smNormal) then
-      if (Value.y >= 1) and (Value.y <= FLines.Count) then
-        Value.x := AdjustBytePosToCharacterStart(Value.y,Value.x)
-      else
-        Value.x := 1;
+    ConstrainStartLineBytePos(Value);
 
     if (Value.X <> FStartBytePos) or (Value.Y <> FStartLinePos) then begin
       if (ActiveSelectionMode = smColumn) and (Value.X <> FStartBytePos) then
@@ -1909,6 +1954,7 @@ begin
       else
       if (ActiveSelectionMode <> smColumn) or (FStartBytePos <> FEndBytePos) then
         FInvalidateLinesMethod(FStartLinePos, Value.Y);
+
       FStartLinePos := Value.Y;
       FStartBytePos := Value.X;
       if FCaret <> nil then
@@ -2034,6 +2080,12 @@ begin
     Result := EndLineBytePos;
 end;
 
+procedure TSynEditSelection.SetAutoExtend(AValue: Boolean);
+begin
+  if FAutoExtend = AValue then Exit;
+  FAutoExtend := AValue;
+end;
+
 procedure TSynEditSelection.SetCaret(const AValue: TSynEditCaret);
 begin
   if FCaret = AValue then exit;
@@ -2071,6 +2123,18 @@ function TSynEditSelection.IsBackwardSel: Boolean;
 begin
   Result := (FStartLinePos > FEndLinePos)
     or ((FStartLinePos = FEndLinePos) and (FStartBytePos > FEndBytePos));
+end;
+
+procedure TSynEditSelection.BeginMinimumSelection;
+begin
+  if SelAvail then begin
+    FAltStartLinePos := FEndLinePos;
+    FAltStartBytePos := FEndBytePos;
+  end
+  else begin
+    FAltStartLinePos := -1;
+    FAltStartBytePos := -1;
+  end;
 end;
 
 procedure TSynEditSelection.SortSelectionPoints;

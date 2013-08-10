@@ -421,6 +421,9 @@ resourcestring
   SYNS_emcWheelZoomOut             = 'Wheel zoom out';
   SYNS_emcWheelZoomIn              = 'Wheel zoom in';
   SYNS_emcWheelZoomNorm            = 'Wheel zoom default';
+  SYNS_emcStartSelectTokens        = 'Selection (tokens) ';
+  SYNS_emcStartSelectWords         = 'Selection (words)';
+  SYNS_emcStartSelectLines         = 'Selection (lines)';
 
   SYNS_emcContextMenuCaretMove_opt = '"Move caret, when selection exists", Never, "Click outside", Always';
   SYNS_emcWheelScroll_opt          = 'Speed,"System settings",Lines,Pages,"Pages (less one line)"';

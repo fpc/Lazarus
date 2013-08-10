@@ -735,6 +735,9 @@ type
   TMouseOptButtonActionOld = (
     mbaNone,
     mbaSelect, mbaSelectColumn, mbaSelectLine,
+    //mbaSelectTokens,
+    mbaSelectWords,
+    //mbaSelectLines,
     mbaSelectSetWord, mbaSelectSetLineSmart, mbaSelectSetLineFull, mbaSelectSetPara,
     mbaPaste,
     mbaDeclarationJump,
@@ -3255,8 +3258,8 @@ begin
   FCustomSavedActions  := False;
   FGutterLeft          := moGLDownClick;
   // left multi
-  FTextDoubleLeftClick       := mbaSelectSetWord;
-  FTextTripleLeftClick      := mbaSelectSetLineSmart;
+  FTextDoubleLeftClick       := mbaSelectWords;
+  FTextTripleLeftClick       := mbaSelectSetLineSmart;
   FTextQuadLeftClick         := mbaSelectSetPara;
   FTextShiftDoubleLeftClick  := mbaNone;
   FTextAltDoubleLeftClick    := mbaNone;
@@ -3396,6 +3399,12 @@ procedure TEditorMouseOptions.ResetTextToDefault;
         mbaSelect:       AddSelCommand(emcStartSelections);
         mbaSelectColumn: AddSelCommand(emcStartColumnSelections);
         mbaSelectLine:   AddSelCommand(emcStartLineSelections);
+        //mbaSelectTokens: AddSelCommand(emcStartSelectTokens);
+        //mbaSelectWords:  AddSelCommand(emcStartSelectWords);
+        //mbaSelectLines:  AddSelCommand(emcStartSelectLines);
+        //mbaSelectTokens: AddCommand(emcStartSelectTokens, True, AButton, AClickCount, cdDown, AShift, AShiftMask, emcoSelectionStart);
+        mbaSelectWords:  AddCommand(emcStartSelectWords,  True, AButton, AClickCount, cdDown, AShift, AShiftMask, emcoSelectionStart);
+        //mbaSelectLines:  AddCommand(emcStartSelectLines,  True, AButton, AClickCount, cdDown, AShift, AShiftMask, emcoSelectionStart);
         mbaSelectSetWord:
             AddCommand(emcSelectWord,       True,  AButton, AClickCount, ADir, AShift, AShiftMask);
         mbaSelectSetLineSmart:

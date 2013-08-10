@@ -1491,8 +1491,11 @@ resourcestring
   dlfMouseSimpleButtonSelContinuePlain = 'Continue %0:s';
   dlfMouseSimpleButtonSelContinue      = 'Continue %0:s (Bound to: %1:s)';
   dlfMouseSimpleButtonSelect           = 'Select text';
-  dlfMouseSimpleButtonSelectColumn     = 'Select text (Columns)';
-  dlfMouseSimpleButtonSelectLine       = 'Select text (Lines)';
+  dlfMouseSimpleButtonSelectColumn     = 'Select text (Column mode)';
+  dlfMouseSimpleButtonSelectLine       = 'Select text (Line mode)';
+  dlfMouseSimpleButtonSelectByToken    = 'Select text (tokens)';
+  dlfMouseSimpleButtonSelectByWord     = 'Select text (words)';
+  dlfMouseSimpleButtonSelectByLine     = 'Select text (lines)';
   dlfMouseSimpleButtonSetWord          = 'Select current Word';
   dlfMouseSimpleButtonSetLineSmart     = 'Select current Line (Text)';
   dlfMouseSimpleButtonSetLineFull      = 'Select current Line (Full)';

@@ -559,6 +559,9 @@ procedure TEditorMouseOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
       ACombo.Items.Add(dlfMouseSimpleButtonSelectColumn);      // mbaSelectColumn,
       ACombo.Items.Add(dlfMouseSimpleButtonSelectLine);        // mbaSelectLine,
     end;
+    //ACombo.Items.Add(dlfMouseSimpleButtonSelectByToken);     // mbaSelectTokens,
+    ACombo.Items.Add(dlfMouseSimpleButtonSelectByWord);      // mbaSelectWords,
+    //ACombo.Items.Add(dlfMouseSimpleButtonSelectByLine);      // mbaSelectLines,
     ACombo.Items.Add(dlfMouseSimpleButtonSetWord);           // mbaSelectSetWord,
     ACombo.Items.Add(dlfMouseSimpleButtonSetLineSmart);      // mbaSelectSetLineSmart,
     ACombo.Items.Add(dlfMouseSimpleButtonSetLineFull);       // mbaSelectSetLineFull,

@@ -262,7 +262,11 @@ const
   emcWheelZoomIn              = TSynEditorMouseCommand(25);
   emcWheelZoomNorm            = TSynEditorMouseCommand(26);
 
-  emcMax = 26;
+  emcStartSelectTokens        =  TSynEditorMouseCommand(27);    // Start BlockSelection, word/token wise
+  emcStartSelectWords         =  TSynEditorMouseCommand(28);    // Start BlockSelection, wordwise
+  emcStartSelectLines         =  TSynEditorMouseCommand(29);    // Start BlockSelection, linewise (but not line mode)
+
+  emcMax = 29;
 
   emcPluginFirst = 20000;
 
@@ -311,7 +315,7 @@ const
 implementation
 
 const
-  SynMouseCommandNames: array [0..24] of TIdentMapEntry = (
+  SynMouseCommandNames: array [0..27] of TIdentMapEntry = (
     (Value: emcNone; Name: 'emcNone'),
     (Value: emcStartSelections; Name: 'emcStartSelections'),
     (Value: emcStartColumnSelections; Name: 'emcStartColumnSelections'),
@@ -344,7 +348,11 @@ const
 
     (Value: emcWheelZoomOut;     Name: 'emcWheelZoomOut'),
     (Value: emcWheelZoomIn;      Name: 'emcWheelZoomIn'),
-    (Value: emcWheelZoomNorm;    Name: 'emcWheelZoomNorm')
+    (Value: emcWheelZoomNorm;    Name: 'emcWheelZoomNorm'),
+
+    (Value: emcStartSelectTokens;  Name: 'emcStartSelectTokens'),
+    (Value: emcStartSelectWords;   Name: 'emcStartSelectWords'),
+    (Value: emcStartSelectLines;   Name: 'emcStartSelectLines')
 
   );
 
@@ -391,6 +399,10 @@ begin
     emcWheelZoomOut:          Result := SYNS_emcWheelZoomOut;
     emcWheelZoomIn:           Result := SYNS_emcWheelZoomIn;
     emcWheelZoomNorm:         Result := SYNS_emcWheelZoomNorm;
+
+    emcStartSelectTokens:     Result := SYNS_emcStartSelectTokens;
+    emcStartSelectWords:      Result := SYNS_emcStartSelectWords;
+    emcStartSelectLines:      Result := SYNS_emcStartSelectLines;
 
     else Result := ''
   end;

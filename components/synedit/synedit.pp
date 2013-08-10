@@ -448,6 +448,7 @@ type
     FInternalBlockSelection: TSynEditSelection;
     FOnChangeUpdating: TChangeUpdatingEvent;
     FMouseSelectionMode: TSynSelectionMode;
+    FMouseSelectionCmd: TSynEditorMouseCommand;
     fMarkupManager : TSynEditMarkupManager;
     fMarkupHighAll : TSynEditMarkupHighlightAll;
     fMarkupHighCaret : TSynEditMarkupHighlightAllCaret;
@@ -2926,6 +2927,8 @@ var
   Handled: Boolean;
   ClipHelper: TSynClipboardStream;
   i, j: integer;
+  p1, p2: TPoint;
+  s: String;
 begin
   AnAction := nil;
   Result := False;
@@ -2991,18 +2994,66 @@ begin
 
     case ACommand of
       emcNone: ; // do nothing, but result := true
-      emcStartSelections, emcStartColumnSelections, emcStartLineSelections:
+      emcStartSelections, emcStartColumnSelections, emcStartLineSelections,
+      emcStartSelectTokens, emcStartSelectWords, emcStartSelectLines:
         begin
+          FMouseSelectionCmd := emcNone;
           FBlockSelection.AutoExtend := AnAction.Option = emcoSelectionContinue;
           FCaret.ChangeOnTouch;
           MoveCaret;
+          FMouseSelectionMode := FBlockSelection.SelectionMode;
           case ACommand of
             emcStartColumnSelections:
               FMouseSelectionMode := smColumn;
             emcStartLineSelections:
                 FMouseSelectionMode := smLine;
-            else
-              FMouseSelectionMode := FBlockSelection.SelectionMode;
+            emcStartSelectTokens, emcStartSelectWords, emcStartSelectLines: begin
+                FMouseSelectionCmd := ACommand;
+                AnInfo.NewCaret.LineCharPos := PixelsToRowColumn(Point(AnInfo.MouseX, AnInfo.MouseY), [scmLimitToLines, scmForceLeftSidePos]);
+                s := AnInfo.NewCaret.LineText;
+                i := length(s) + 1;
+                p1 := AnInfo.NewCaret.LineBytePos;
+                if (p1.X >= i) then
+                  p1.X := Max(1, i - 1);
+                p2 := p1;
+                if (AnAction.Option = emcoSelectionContinue) and SelAvail then
+                  p1 := FBlockSelection.StartLineBytePos;
+                if p2.X = i then begin
+                  p2 := Point(1, Min(FTheLinesView.Count, p2.Y + 1));
+                end
+                else begin
+                  case ACommand of
+                    emcStartSelectTokens: begin
+                        if (AnAction.Option <> emcoSelectionContinue) or (not SelAvail) then
+                          p1.X := Max(1, FWordBreaker.PrevBoundary(s, p1.X, True));
+                        p2.X := FWordBreaker.NextBoundary(s, p2.X);
+                        if p2.X < 1 then p2.X := i;
+                      end;
+                    emcStartSelectWords: begin
+                        if (AnAction.Option <> emcoSelectionContinue) or (not SelAvail) then
+                          p1.X := Max(1, Max(FWordBreaker.PrevWordEnd(s, p1.X, True),
+                                             FWordBreaker.PrevWordStart(s, p1.X, True)));
+                        j := FWordBreaker.NextWordStart(s, p2.X);
+                        if j < 1 then j := i;
+                        p2.X := FWordBreaker.NextWordEnd(s, p2.X);
+                        if p2.X < 1 then p2.X := i;
+                        p2.X := Min(p2.X, j);
+                      end;
+                    emcStartSelectLines: begin
+                        if (AnAction.Option <> emcoSelectionContinue) or (not SelAvail) then
+                          p1.X := 1;
+                        p2 := Point(1, Min(FTheLinesView.Count, p1.Y + 1));
+                      end;
+                  end;
+                end;
+                if (AnAction.Option <> emcoSelectionContinue) or (not SelAvail) then
+                  FBlockSelection.StartLineBytePos := p1;
+                FBlockSelection.AutoExtend := True;
+                FCaret.ChangeOnTouch;
+                FCaret.LineBytePos := p2;
+                FBlockSelection.EndLineBytePos := p2; // caret might be locked
+                FBlockSelection.BeginMinimumSelection;
+              end;
           end;
           if (AnAction.Option = emcoSelectionContinue) then begin
             // only set ActiveSelectionMode if we continue an existing selection
@@ -3299,6 +3350,11 @@ begin
 end;
 
 procedure TCustomSynEdit.MouseMove(Shift: TShiftState; X, Y: Integer);
+var
+  forw: Boolean;
+  s: String;
+  i, j: Integer;
+  p1: TPoint;
 begin
   Exclude(FStateFlags, sfHideCursor);
   inherited MouseMove(Shift, x, y);
@@ -3340,6 +3396,44 @@ begin
       FBlockSelection.IncPersistentLock;
     FInternalCaret.AssignFrom(FCaret);
     FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
+
+    if (fStateFlags * [sfMouseSelecting, sfIsDragging] = [sfMouseSelecting]) and
+       (FMouseSelectionCmd in [emcStartSelectTokens, emcStartSelectWords, emcStartSelectLines])
+    then begin
+      FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y), [scmForceLeftSidePos]);
+      forw := ComparePoints(FInternalCaret.LineBytePos, FBlockSelection.StartLineBytePos) >= 0;
+      s := FInternalCaret.LineText;
+      i := length(s) + 1;
+      p1 := FInternalCaret.LineBytePos;
+      case FMouseSelectionCmd of
+        emcStartSelectTokens: begin
+            if forw then
+              p1.X := FWordBreaker.NextBoundary(s, p1.X)
+            else
+              p1.X := Max(1, FWordBreaker.PrevBoundary(s, p1.X, True));
+          end;
+        emcStartSelectWords: begin
+            if forw then begin
+              j := FWordBreaker.NextWordStart(s, p1.X);
+              if j < 1 then j := i;
+              p1.X := FWordBreaker.NextWordEnd(s, p1.X);
+              if p1.X < 1 then p1.X := i;
+              p1.X := Min(p1.X, j);
+            end
+            else
+              p1.X := Max(1, Max(FWordBreaker.PrevWordEnd(s, p1.X, True),
+                                 FWordBreaker.PrevWordStart(s, p1.X, True)));
+          end;
+        emcStartSelectLines: begin
+            if forw then
+              p1.X := i
+            else
+              p1.X := 1;
+          end;
+        end;
+        if p1.X < 1 then p1.X := i;
+        FInternalCaret.LineBytePos := p1;
+    end;
 
     // compare to Bounds => Padding area does not scroll
     if ( (X >= FTextArea.Bounds.Left)   or (LeftChar <= 1) ) and
