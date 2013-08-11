@@ -666,8 +666,6 @@ resourcestring
   lisInvalidProjectFilename = 'Invalid project filename';
   lisisAnInvalidProjectNamePleaseChooseAnotherEGProject = '%s%s%s is an '
     +'invalid project name.%sPlease choose another (e.g. project1.lpi)';
-  lisTheNameIsNotAValidPascalIdentifier = 'The name %s%s%s is not a valid '
-    +'Pascal identifier.';
   lisChooseADifferentName = 'Choose a different name';
   lisTheProjectInfoFileIsEqualToTheProjectMainSource = 'The project info '
     +'file %s%s%s%sis equal to the project main source file!';
@@ -1347,7 +1345,7 @@ resourcestring
   dlgDelTemplate = 'Delete template ';
   dlgChsCodeTempl = 'Choose code template file (*.dci)';
   dlgAllFiles = 'All files';
-  lisCodetoolsTemplateFile = 'Codetools template file';
+  lisCodetoolsTemplateFile = 'CodeTools template file';
   lisExecutable = 'Executable';
   lisEditorFileTypes = 'Editor file types';
   lisPkgMgrNew = 'new';
@@ -3235,7 +3233,7 @@ resourcestring
     +'installed, because it requires the package "%s", which is a runtime only package.';
   lisUninstall = 'Uninstall %s';
   lisThePackageIsNotADesignTimePackageItCanNotBeInstall = 'The package %s is '
-    +'not a design time package. It cannot be installed in the IDE';
+    +'not a design time package. It cannot be installed in the IDE.';
   lisUninstallImpossible = 'Uninstall impossible';
   lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh = 'The package %s can '
     +'not be uninstalled, because it is needed by the IDE itself.';
@@ -5235,7 +5233,7 @@ resourcestring
     +'an open .lfm file in the source editor.';
   lisNoPascalFile = 'No Pascal file';
   lisUnableToFindPascalUnitPasPpForLfmFile = 'Unable to find Pascal unit (.'
-    +'pas,.pp) for .lfm file%s%s%s%s';
+    +'pas, .pp) for .lfm file%s%s%s%s';
   lisLFMIsOk = 'LFM is ok';
   lisClassesAndPropertiesExistValuesWereNotChecked = 'Classes and properties '
     +'exist. Values were not checked.';
