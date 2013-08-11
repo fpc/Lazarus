@@ -615,7 +615,7 @@ begin
     // Option was not found, try separating the parameter.
     // ToDo: figure out the length in a more clever way.
     if (Length(aOptAndValue) < 3) or (aOptAndValue[1] <> '-') then
-      raise Exception.Create('Invalid option & value ' + aOptAndValue);
+      raise Exception.CreateFmt('Invalid option or value "%s".', [aOptAndValue]);
     if aOptAndValue[2] in ['e', 'd', 'u', 'I', 'k', 'o'] then
       OptLen := 2
     else

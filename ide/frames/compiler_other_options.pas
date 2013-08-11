@@ -116,18 +116,23 @@ procedure TCompilerOtherOptionsFrame.btnAllOptionsClick(Sender: TObject);
 var
   AllOpts: TfrmAllCompilerOptions;
 begin
-  FOptionsReader.FromCustomOptions(memoCustomOptions.Lines);
-  AllOpts := TfrmAllCompilerOptions.Create(Nil);
   try
-    AllOpts.OptionsReader:=FOptionsReader;
-    if AllOpts.ShowModal = mrOK then
-    begin
-      // Synchronize with custom options memo
-      AllOpts.ToCustomOptions(memoCustomOptions.Lines);
-      memoCustomOptions.Invalidate;
+    FOptionsReader.FromCustomOptions(memoCustomOptions.Lines);
+    AllOpts := TfrmAllCompilerOptions.Create(Nil);
+    try
+      AllOpts.OptionsReader:=FOptionsReader;
+      if AllOpts.ShowModal = mrOK then
+      begin
+        // Synchronize with custom options memo
+        AllOpts.ToCustomOptions(memoCustomOptions.Lines);
+        memoCustomOptions.Invalidate;
+      end;
+    finally
+      AllOpts.Free;
     end;
-  finally
-    AllOpts.Free;
+  except
+    on E: Exception do
+      ShowMessage('Error parsing custom options: '+E.Message);
   end;
 end;
 
@@ -613,7 +618,6 @@ begin
         CompilerExecutable := EnvironmentOptions.GetParsedCompilerFilename;
         if ReadAndParseOptions <> mrOK then
           ShowMessage(ErrorMsg);
-        //FromCustomOptions(FCustomOptions);
       except
         on E: Exception do
           ShowMessage('Error parsing options: '+E.Message);
