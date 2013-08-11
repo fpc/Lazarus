@@ -1976,7 +1976,7 @@ var
     ErrMsg:=ErrMsg+' Error: '+ErrorTool.ErrorMsg+' ('+ErrorTool.Caption+')';
     DebugLn(['TH2PasConverter.ConvertFile Failed: ',ErrMsg]);
     IDEMessagesWindow.AddMsg(ErrMsg,BaseDir,-1);
-    LazarusIDE.DoJumpToCompilerMessage(IDEMessagesWindow.LinesCount-1,true);
+    LazarusIDE.DoJumpToCompilerMessage(true, IDEMessagesWindow.LinesCount-1);
     Result:=mrAbort;
   end;
 

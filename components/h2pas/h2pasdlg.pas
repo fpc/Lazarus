@@ -1125,7 +1125,7 @@ begin
     exit;
   end;
   
-  LazarusIDE.DoJumpToCompilerMessage(MsgLine,true);
+  LazarusIDE.DoJumpToCompilerMessage(true, MsgLine);
 end;
 
 function TH2PasDialog.SaveSettings: TModalResult;
