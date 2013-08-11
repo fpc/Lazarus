@@ -6393,6 +6393,7 @@ begin
     FMain.AddChild(FSrcDirectories);
   end;
 
+  Changed:=false;
   IfValue:='defined(#ProjectSrcMark'+Project.IDAsWord+')';
   if Project=Project1 then
     IfValue:=IfValue+' or defined('+UseDefaultsFlagName+')';

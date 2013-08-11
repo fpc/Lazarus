@@ -4319,6 +4319,7 @@ begin
       da_Block);
     FMain.AddChild(FSrcDirectories);
   end;
+  Changed:=false;
   if FSrcDirIfDef=nil then begin
     FSrcDirIfDef:=TDefineTemplate.Create('Source Directory Additions',
       'Additional defines for package source directories',
