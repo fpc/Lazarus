@@ -3204,7 +3204,7 @@ begin
     Result:=0;
     OnCompare(Node1.TreeView,Node1, Node2, Result);
   end else
-    Result := AnsiCompareStr(Node1.Text,Node2.Text);
+    Result := Utf8CompareStr(Node1.Text,Node2.Text);
 end;
 
 procedure TCustomTreeView.SetAutoExpand(Value: Boolean);

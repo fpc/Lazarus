@@ -8124,7 +8124,7 @@ begin
   begin
     // don't allow disabled and don't search wincontrols - they receive their
     // message themself
-    Child := ControlAtPos(ScreenToClient(SmallPointToPoint(Message.Pos)), []);
+    Child := ControlAtPos(ScreenToClient(SmallPointToPoint(Message.Pos)), [capfHasScrollOffset]);
     if Assigned(Child) then
       with Message do
       begin

@@ -128,9 +128,13 @@ type
     property Tag;
     property ToolTips;
     property Visible;
+    property OnAdvancedCustomDraw;
+    property OnAdvancedCustomDrawItem;
     property OnChange;
     property OnChanging;
     property OnClick;
+    property OnCustomDraw;
+    property OnCustomDrawItem;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
