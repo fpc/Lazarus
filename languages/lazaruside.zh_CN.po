@@ -99,12 +99,24 @@ msgstr ""
 msgid "Select text"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttonselectbyline
+msgid "Select text (lines)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselectbytoken
+msgid "Select text (tokens)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselectbyword
+msgid "Select text (words)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttonselectcolumn
-msgid "Select text (Columns)"
+msgid "Select text (Column mode)"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselectline
-msgid "Select text (Lines)"
+msgid "Select text (Line mode)"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetfreebookmark
@@ -604,7 +616,7 @@ msgid "Auto indent"
 msgstr "自动缩进"
 
 #: lazarusidestrconsts.dlgautoindentlink
-msgid "(Setup smart indent)"
+msgid "(Set up smart indent)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgautoindenttype
@@ -706,10 +718,6 @@ msgstr "Free Pascal编译信息文件 (*.msg)|*.msg|所有文件 (*.*)|*.*"
 #: lazarusidestrconsts.dlgbuildmodes
 msgid "Build Modes"
 msgstr ""
-
-#: lazarusidestrconsts.dlgbutapply
-msgid "Apply"
-msgstr "应用"
 
 #: lazarusidestrconsts.dlgcasesensitive
 #, fuzzy
@@ -816,7 +824,9 @@ msgid "Center cursor line"
 msgstr "光标所在行中部"
 
 #: lazarusidestrconsts.dlgcharcasefileact
-msgid "Save As - auto rename pascal files lower case"
+#, fuzzy
+#| msgid "Save As - auto rename pascal files lower case"
+msgid "Save As - auto rename Pascal files lower case"
 msgstr "另存为- 自动重命名pascal文件为小写"
 
 #: lazarusidestrconsts.dlgcheckconsistency
@@ -867,11 +877,9 @@ msgctxt "lazarusidestrconsts.dlgcocfgcmpmessages"
 msgid "Messages"
 msgstr "信息"
 
-#: lazarusidestrconsts.dlgcochecks
-#, fuzzy
-#| msgid "Checks:"
-msgid "Checks"
-msgstr "检查:"
+#: lazarusidestrconsts.dlgcochecksandassertion
+msgid "Checks and assertion"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcocompilercommands
 msgid "Compiler Commands"
@@ -1202,7 +1210,7 @@ msgid "Strip symbols from executable"
 msgstr "从可执行程序中除去符号,可以减小程序体积(Strip Symbol)"
 
 #: lazarusidestrconsts.dlgcosymboltype
-msgid "Choose type of debug info"
+msgid "Type of debug info"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcosymboltypeauto
@@ -1224,6 +1232,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcosymboltypestabs
 msgid "Stabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcotrashvariables
+msgid "Trash variables"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcounitstyle
@@ -1422,7 +1434,7 @@ msgid "Code Templates"
 msgstr "代码模板"
 
 #: lazarusidestrconsts.dlgedcompleteblocks
-msgid "Add close statement for pascal blocks"
+msgid "Add close statement for Pascal blocks"
 msgstr ""
 
 #: lazarusidestrconsts.dlgedcustomext
@@ -2438,19 +2450,27 @@ msgid "Right"
 msgstr "右"
 
 #: lazarusidestrconsts.dlgmousefoldcolfoldall
-msgid "Fold All (Some Colapsed)"
+#, fuzzy
+#| msgid "Fold All (Some Colapsed)"
+msgid "Fold All (Some Collapsed)"
 msgstr "折叠所有(部分收起)"
 
 #: lazarusidestrconsts.dlgmousefoldcolfoldone
-msgid "Fold One (Some Colapsed)"
+#, fuzzy
+#| msgid "Fold One (Some Colapsed)"
+msgid "Fold One (Some Collapsed)"
 msgstr "折叠一个(部分收起)"
 
 #: lazarusidestrconsts.dlgmousefoldcolunfoldall
-msgid "Unfold All (Some Colapsed)"
+#, fuzzy
+#| msgid "Unfold All (Some Colapsed)"
+msgid "Unfold All (Some Collapsed)"
 msgstr "展开所有(部分收起)"
 
 #: lazarusidestrconsts.dlgmousefoldcolunfoldone
-msgid "Unfold One (Some Colapsed)"
+#, fuzzy
+#| msgid "Unfold One (Some Colapsed)"
+msgid "Unfold One (Some Collapsed)"
 msgstr "展开一个(部分收起)"
 
 #: lazarusidestrconsts.dlgmousefoldexpfoldall
@@ -2849,6 +2869,10 @@ msgstr "使用默认的Lazarus设置"
 msgid "Optimization levels"
 msgstr ""
 
+#: lazarusidestrconsts.dlgotheroptimizations
+msgid "Other optimizations"
+msgstr ""
+
 #: lazarusidestrconsts.dlgotherunitfiles
 #, fuzzy
 #| msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
@@ -2864,7 +2888,9 @@ msgid "Hints for component palette"
 msgstr "组件面板提示"
 
 #: lazarusidestrconsts.dlgpasext
-msgid "Default pascal extension"
+#, fuzzy
+#| msgid "Default pascal extension"
+msgid "Default Pascal extension"
 msgstr "默认 Pascal 后缀"
 
 #: lazarusidestrconsts.dlgpasextkeywords
@@ -3288,6 +3314,10 @@ msgstr "显示所有"
 msgid "Show executable info (Win32 only)"
 msgstr "显示可执行程序信息 (只适用于 Win32 平台)"
 
+#: lazarusidestrconsts.dlgshowfullfilenames
+msgid "Show full file names"
+msgstr ""
+
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"
 msgstr "显示基本信息 "
@@ -3317,10 +3347,6 @@ msgstr "显示注释"
 #: lazarusidestrconsts.dlgshownothing
 msgid "Show nothing (only errors)"
 msgstr "只显示错误"
-
-#: lazarusidestrconsts.dlgshowprocserror
-msgid "Show all procs on error"
-msgstr "错误时显示所有过程"
 
 #: lazarusidestrconsts.dlgshowscrollhint
 msgctxt "lazarusidestrconsts.dlgshowscrollhint"
@@ -3880,8 +3906,10 @@ msgid "Ancestor Type"
 msgstr "父类"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
+#, fuzzy
+#| msgid "A pascal unit must have the extension .pp or .pas"
 msgctxt "lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas"
-msgid "A pascal unit must have the extension .pp or .pas"
+msgid "A Pascal unit must have the extension .pp or .pas"
 msgstr "一个Pascal单元必须具有.pp或.pas扩展名"
 
 #: lazarusidestrconsts.lisa2pbrokendependencies
@@ -4025,7 +4053,9 @@ msgid "The ancestor type %s%s%s has the same name as%sthe unit %s%s%s."
 msgstr "祖先类型 %s%s%s 的名字 %s 与单元名称相同 %s%s%s."
 
 #: lazarusidestrconsts.lisa2ptheancestortypeisnotavalidpascalidentifier
-msgid "The ancestor type %s%s%s is not a valid pascal identifier."
+#, fuzzy
+#| msgid "The ancestor type %s%s%s is not a valid pascal identifier."
+msgid "The ancestor type %s%s%s is not a valid Pascal identifier."
 msgstr "祖先类型 %s%s%s 是无效的 Pascal 标识符."
 
 #: lazarusidestrconsts.lisa2ptheclassnameandancestortypearethesame
@@ -4041,7 +4071,9 @@ msgid "The class name %s%s%s has the same name as%sthe unit %s%s%s."
 msgstr "类名 %s%s%s 与%s单元名%s%s%s 相同."
 
 #: lazarusidestrconsts.lisa2ptheclassnameisnotavalidpascalidentifier
-msgid "The class name %s%s%s is not a valid pascal identifier."
+#, fuzzy
+#| msgid "The class name %s%s%s is not a valid pascal identifier."
+msgid "The class name %s%s%s is not a valid Pascal identifier."
 msgstr "类名 %s%s%s 不是一个有效的 pascal 标识符r."
 
 #: lazarusidestrconsts.lisa2pthefileisalreadyinthepackage
@@ -4072,7 +4104,9 @@ msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pthepackagehasalreadyadependencyforthe
-msgid "The package has already a dependency for the package %s%s%s."
+#, fuzzy
+#| msgid "The package has already a dependency for the package %s%s%s."
+msgid "The package already has a dependency on the package %s%s%s."
 msgstr "包已经对于包 %s%s%s 有依赖关系."
 
 #: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
@@ -4100,7 +4134,9 @@ msgid "The unit name %s%s%s does not correspond to the filename."
 msgstr "单元名 %s%s%s 和文件名不一致"
 
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
-msgid "The unit name %s%s%s is the same as an registered component.%sUsing this can cause strange error messages."
+#, fuzzy
+#| msgid "The unit name %s%s%s is the same as an registered component.%sUsing this can cause strange error messages."
+msgid "The unit name %s%s%s is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "单元名 %s%s%s 和已经注册的组件名字相同 .%s使用这个将导致一些奇怪的错误."
 
 #: lazarusidestrconsts.lisa2punitfilename
@@ -4178,7 +4214,9 @@ msgid "Official:"
 msgstr "官方网站:"
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
+#, fuzzy
+#| msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
+msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
 msgstr "%s 不能包含 TControls类.%s你只能在上面放置非可见组件. "
 
 #: lazarusidestrconsts.lisacknowledgements
@@ -4397,6 +4435,10 @@ msgstr "所有文件"
 msgid "All inherited options"
 msgstr ""
 
+#: lazarusidestrconsts.lisalloptions
+msgid "All Options"
+msgstr ""
+
 #: lazarusidestrconsts.lisallowfunctio
 msgid "Allow Function Calls"
 msgstr "允许函数调用"
@@ -4520,6 +4562,11 @@ msgstr "应用程序类名(&A)"
 #: lazarusidestrconsts.lisapplicationprogramdescriptor
 msgid "A graphical Free Pascal application using the cross-platform LCL library for its GUI."
 msgstr ""
+
+#: lazarusidestrconsts.lisapply
+msgctxt "lazarusidestrconsts.lisapply"
+msgid "Apply"
+msgstr "应用"
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
@@ -4817,7 +4864,7 @@ msgid "Differences between build modes"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencestootherbuildmodes
-msgid "Differences to other build modes"
+msgid "Differences from other build modes"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodediffmode
@@ -4881,15 +4928,21 @@ msgid "Cannot compile project"
 msgstr ""
 
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
-msgid "Can not copy top level component."
+#, fuzzy
+#| msgid "Can not copy top level component."
+msgid "Cannot copy top level component."
 msgstr "不能复制最高层的组件."
 
 #: lazarusidestrconsts.liscannotcreatefile
-msgid "Can not create file %s%s%s"
+#, fuzzy
+#| msgid "Can not create file %s%s%s"
+msgid "Cannot create file %s%s%s"
 msgstr "不能创建文件 %s%s%s"
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
-msgid "Cannot find lazarus starter:%s%s"
+#, fuzzy
+#| msgid "Cannot find lazarus starter:%s%s"
+msgid "Cannot find Lazarus starter:%s%s"
 msgstr "找不到 Lazarus 启动程序:%s%s"
 
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
@@ -4944,7 +4997,9 @@ msgid "Copy output to clipboard"
 msgstr "复制输出到剪贴板"
 
 #: lazarusidestrconsts.lisccodatesdiffer
-msgid "The dates of the .ppu files of FPC differ more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
+#, fuzzy
+#| msgid "The dates of the .ppu files of FPC differ more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
+msgid "The dates of the .ppu files of FPC differ by more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
 msgstr "FPC的 .ppu 文件日期不同.%s这可能说明它们来自两个不同版本的FPC安装.%sFile1: %s%sFile2: %s"
 
 #: lazarusidestrconsts.lisccoerrorcaption
@@ -5039,7 +5094,9 @@ msgid "Unable to create Test File"
 msgstr "不能建立测试文件"
 
 #: lazarusidestrconsts.lisccounabletocreatetestpascalfile
-msgid "Unable to create Test pascal file \"%s\"."
+#, fuzzy
+#| msgid "Unable to create Test pascal file \"%s\"."
+msgid "Unable to create Test Pascal file \"%s\"."
 msgstr "不能建立测试Pascal文件\"%s\"."
 
 #: lazarusidestrconsts.lisccounabletogetfiledate
@@ -5460,6 +5517,10 @@ msgstr ""
 msgid "Choose a different name"
 msgstr "选择不同的名字"
 
+#: lazarusidestrconsts.lischooseafilewithcodetoolstemplates
+msgid "Choose a file with CodeTools templates"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseafpdoclink
 msgid "Choose a FPDoc link"
 msgstr ""
@@ -5481,7 +5542,7 @@ msgid "Choose an FPC message file"
 msgstr ""
 
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
-msgid "Choose a pascal file for indentation examples"
+msgid "Choose a Pascal file for indentation examples"
 msgstr ""
 
 #: lazarusidestrconsts.lischoosecompilermessages
@@ -5735,7 +5796,9 @@ msgid "Call on:"
 msgstr "调用:"
 
 #: lazarusidestrconsts.liscoclickokifaresuretodothat
-msgid "%s%sClick OK if you are sure to do that."
+#, fuzzy
+#| msgid "%s%sClick OK if you are sure to do that."
+msgid "%s%sClick OK if you definitely want to do that."
 msgstr "%s%s请点击以确认."
 
 #: lazarusidestrconsts.liscocommand
@@ -5950,7 +6013,9 @@ msgid "Action: %s"
 msgstr "动作: %s"
 
 #: lazarusidestrconsts.liscodetoolsdefsautocreatednodesreadonly
-msgid "Auto created nodes can not be edited,%snor can they have non auto created child nodes."
+#, fuzzy
+#| msgid "Auto created nodes can not be edited,%snor can they have non auto created child nodes."
+msgid "Auto created nodes cannot be edited,%snor can they have non auto created child nodes."
 msgstr "自动产生的节点不能被编辑,%s也不能自动产生子节点."
 
 #: lazarusidestrconsts.liscodetoolsdefsautogenerated
@@ -5958,7 +6023,9 @@ msgid "%s, auto generated"
 msgstr "%s, 自动生成"
 
 #: lazarusidestrconsts.liscodetoolsdefsautogeneratednodescannotbeedited
-msgid "Auto generated nodes can not be edited."
+#, fuzzy
+#| msgid "Auto generated nodes can not be edited."
+msgid "Auto generated nodes cannot be edited."
 msgstr "自动产生的节点不能被编辑."
 
 #: lazarusidestrconsts.liscodetoolsdefsblock
@@ -6222,7 +6289,9 @@ msgid "none selected"
 msgstr "没有选择任何东西"
 
 #: lazarusidestrconsts.liscodetoolsdefsparentnodecannotcontainch
-msgid "Parent node can not contain child nodes."
+#, fuzzy
+#| msgid "Parent node can not contain child nodes."
+msgid "Parent node cannot contain child nodes."
 msgstr "父节点不能包含子节点"
 
 #: lazarusidestrconsts.liscodetoolsdefspreviousnodecannotcontainchildnodes
@@ -6383,6 +6452,10 @@ msgstr "字符串常数"
 msgid "Symbol"
 msgstr "符号"
 
+#: lazarusidestrconsts.liscodetoolstemplatefile
+msgid "CodeTools template file"
+msgstr ""
+
 #: lazarusidestrconsts.liscoexecuteafter
 msgid "Execute after"
 msgstr "执行后"
@@ -6502,7 +6575,7 @@ msgid "Extend right only"
 msgstr ""
 
 #: lazarusidestrconsts.liscomponentnameisapascalkeyword
-msgid "Component name \"%s\" is a pascal keyword."
+msgid "Component name \"%s\" is a Pascal keyword."
 msgstr ""
 
 #: lazarusidestrconsts.liscomponentnameiskeyword
@@ -7185,7 +7258,7 @@ msgid "Cursor row in current editor"
 msgstr "当前代码编辑器中光标所在行"
 
 #: lazarusidestrconsts.liscustomopthint
-msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
+msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
 msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions
@@ -7367,7 +7440,9 @@ msgid "Set the breakpoint anyway"
 msgstr "强制设置断点"
 
 #: lazarusidestrconsts.lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
-msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
+#, fuzzy
+#| msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
+msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "没有详细的调试器.%s设置断点没有任何作用,除非你在调试器选项中设置了一个调试器."
 
 #: lazarusidestrconsts.lisdbgwinpower
@@ -7412,7 +7487,7 @@ msgid "%s (debugging ...)"
 msgstr "%s (正在调试...)"
 
 #: lazarusidestrconsts.lisdebughintautotypecastclass
-msgid "Automatic type-cast for objects"
+msgid "Automatic typecast for objects"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
@@ -7896,8 +7971,16 @@ msgstr "一些文件已经更改:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "区分大小写,例如: A 和 a"
 
+#: lazarusidestrconsts.lisdlgalloptions
+msgid "All options ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgchangeclass
 msgid "Change Class ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisdlgdefines
+msgid "Defines ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdlgexport
@@ -7925,7 +8008,9 @@ msgid "Documentation Editor"
 msgstr "文件编辑器"
 
 #: lazarusidestrconsts.lisdoesnotexists
-msgid "%s does not exists: %s"
+#, fuzzy
+#| msgid "%s does not exists: %s"
+msgid "%s does not exist: %s"
 msgstr "%s 不存在：%s"
 
 #: lazarusidestrconsts.lisdonotchange
@@ -9490,7 +9575,7 @@ msgid "Indentation"
 msgstr ""
 
 #: lazarusidestrconsts.lisindentationforpascalsources
-msgid "Indentation for pascal sources"
+msgid "Indentation for Pascal sources"
 msgstr ""
 
 #: lazarusidestrconsts.lisindex
@@ -9745,7 +9830,7 @@ msgid "Invalid line, column in message%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
-msgid "Invalid macro %s%s%s. The macro name must be a pascal identifier."
+msgid "Invalid macro %s%s%s. The macro name must be a Pascal identifier."
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmacrothenameisakeyword
@@ -9777,7 +9862,9 @@ msgid "Invalid Pascal Identifier"
 msgstr "无效的 Pascal 标识符"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiertext
-msgid "The name \"%s\" is not a valid pascal identifier."
+#, fuzzy
+#| msgid "The name \"%s\" is not a valid pascal identifier."
+msgid "The name \"%s\" is not a valid Pascal identifier."
 msgstr "命名 \"%s\" 不是一个有效的 pascal 标识符."
 
 #: lazarusidestrconsts.lisinvalidprocname
@@ -10606,11 +10693,6 @@ msgctxt "lazarusidestrconsts.lislazbuildeditdefines"
 msgid "Edit Defines"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildeditdefinesdialogcaption
-msgctxt "lazarusidestrconsts.lislazbuildeditdefinesdialogcaption"
-msgid "Edit Defines"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildeditlistofdefineswhichcanbeusedbyanyprofile
 msgid "Edit list of defines which can be used by any profile"
 msgstr ""
@@ -10804,7 +10886,7 @@ msgid "LFM file"
 msgstr "LFM 文件"
 
 #: lazarusidestrconsts.lislfmfilecontainsinvalidproperties
-msgid "The LFM file contains unknown properties/classes which do not exist in LCL. They can be replaced or removed."
+msgid "The LFM file contains unknown properties/classes which do not exist in the LCL. They can be replaced or removed."
 msgstr ""
 
 #: lazarusidestrconsts.lislfmfilecorrupt
@@ -12534,10 +12616,6 @@ msgstr "创建一个新的空文本文件."
 msgid "Create a new graphical application.%sThe application source is maintained by Lazarus."
 msgstr "创建一个新的应用程序.%s 程序将使用 Lazarus 维护."
 
-#: lazarusidestrconsts.lisnewdlgcreateanewpascalunit
-msgid "Create a new pascal unit."
-msgstr "创建一个新的 pascal 单元"
-
 #: lazarusidestrconsts.lisnewdlgcreateanewprogram
 #, fuzzy
 #| msgid "Create a new program.%sThe program file is maintained by Lazarus."
@@ -12640,10 +12718,6 @@ msgstr "没有节点选择"
 msgid "No compiler options inherited."
 msgstr "没有任何编译选项继承"
 
-#: lazarusidestrconsts.lisnoerrors
-msgid "No errors"
-msgstr ""
-
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr ""
@@ -12681,7 +12755,7 @@ msgid "no node selected"
 msgstr "没有节点被选中"
 
 #: lazarusidestrconsts.lisnopascalfile
-msgid "No pascal file"
+msgid "No Pascal file"
 msgstr ""
 
 #: lazarusidestrconsts.lisnoprogramfilesfound
@@ -12711,7 +12785,7 @@ msgid "Not an install package"
 msgstr ""
 
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
-msgid "Not a valid pascal identifier"
+msgid "Not a valid Pascal identifier"
 msgstr ""
 
 #: lazarusidestrconsts.lisnotebooktabposbottom
@@ -13433,7 +13507,7 @@ msgid "View Package Source"
 msgstr "查看包的源代码"
 
 #: lazarusidestrconsts.lispckexplbase
-msgid "Base, can not be uninstalled"
+msgid "Base, cannot be uninstalled"
 msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
@@ -13617,8 +13691,10 @@ msgid "Progress"
 msgstr "进度"
 
 #: lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas
+#, fuzzy
+#| msgid "A pascal unit must have the extension .pp or .pas"
 msgctxt "lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas"
-msgid "A pascal unit must have the extension .pp or .pas"
+msgid "A Pascal unit must have the extension .pp or .pas"
 msgstr "一个Pascal单元必须具有.pp或.pas扩展名"
 
 #: lazarusidestrconsts.lispecollapsedirectory
@@ -13722,8 +13798,10 @@ msgid "There is already an unit with this name.%sFile: %s"
 msgstr "已经有一个单元是这个名字.%sFile: %s"
 
 #: lazarusidestrconsts.lispetheunitnameisnotavalidpascalidentifier
+#, fuzzy
+#| msgid "The unitname is not a valid pascal identifier."
 msgctxt "lazarusidestrconsts.lispetheunitnameisnotavalidpascalidentifier"
-msgid "The unitname is not a valid pascal identifier."
+msgid "The unitname is not a valid Pascal identifier."
 msgstr "单元名是无效的Pascal标识号."
 
 #: lazarusidestrconsts.lispeunitname
@@ -14010,7 +14088,9 @@ msgid "Package %s%s%s has no valid output directory:%s%s%s%s"
 msgstr "包 %s%s%s 没有正确的输出目录:%s%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangpackageisnodesigntimepackage
-msgid "Package is no designtime package"
+#, fuzzy
+#| msgid "Package is no designtime package"
+msgid "Package is not a designtime package"
 msgstr "包不是一个设计时包"
 
 #: lazarusidestrconsts.lispkgmangpackageisrequired
@@ -14093,7 +14173,9 @@ msgid "The file %s%s%s%sis already in the package %s."
 msgstr "文件 %s%s%s%s已经在包 %s 中."
 
 #: lazarusidestrconsts.lispkgmangthefileisnotalazaruspackage
-msgid "The file %s%s%s is not a lazarus package."
+#, fuzzy
+#| msgid "The file %s%s%s is not a lazarus package."
+msgid "The file %s%s%s is not a Lazarus package."
 msgstr "文件 %s%s%s 不是 lazarus 包."
 
 #: lazarusidestrconsts.lispkgmangthefilenamedoesnotcorrespondtothepackage
@@ -14129,19 +14211,25 @@ msgid "The package %s%s%s failed to compile.%sRemove it from the installation li
 msgstr "编译包 %s%s%s 失败.%s从安装列表删除么?"
 
 #: lazarusidestrconsts.lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
-msgid "The package file name %s%s%s in%s%s%s%s is not a valid lazarus package name."
+#, fuzzy
+#| msgid "The package file name %s%s%s in%s%s%s%s is not a valid lazarus package name."
+msgid "The package file name %s%s%s in%s%s%s%s is not a valid Lazarus package name."
 msgstr "文件 %s%s%s 在包 %s%s%s%s 中的不是一个有效的 Lazarus 包名."
 
 #: lazarusidestrconsts.lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
-msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
+#, fuzzy
+#| msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
+msgid "The package %s is a runtime only package.%sRuntime only packages cannot be installed in the IDE."
 msgstr "包 %s 是一个运行包.%s运行包不能安装到 IDE."
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
-msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
+msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
-msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
+#, fuzzy
+#| msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
+msgid "The package %s%s%s is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
 msgstr "包 %s%s%s 已经标记为安装, 但是没有找到.%s从安装列表中移除依赖关系?"
 
 #: lazarusidestrconsts.lispkgmangthepackageisrequiredbywhichismarkedforinstallation
@@ -14157,11 +14245,15 @@ msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
 msgstr "包名 %s%s%s 关于文件%s %s%s%s 是无效的."
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
-msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
+#, fuzzy
+#| msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
+msgid "The package %s%s%s was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgstr "包 %s%s%s 已经被标记.%s当前 lazarus 只提供静态链接包. 真正的安装和卸载需要重新构建 lazarus 并启动.%s%s你想马上重新构建 Lazarus 么?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
-msgid "The package %s%s%s was marked for installation.%sCurrently lazarus only supports static linked packages. The real installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
+#, fuzzy
+#| msgid "The package %s%s%s was marked for installation.%sCurrently lazarus only supports static linked packages. The real installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
+msgid "The package %s%s%s was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgstr "包 %s%s%s 已经标记为安装.%s现在lazarus只提供静态链接这些包.实际安装需要重新编译并且重新启动 lazarus.%s%s你想马上重新编译 Lazarus 吗?"
 
 #: lazarusidestrconsts.lispkgmangtheprojectrequiresthepackagebutitwasnotfound
@@ -14219,7 +14311,9 @@ msgid "Unable to create package source directory %s%s%s%sfor package %s."
 msgstr "无法创建输出目录 %s%s%s%s, 该目录是包源代码 %s 输出目录."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatetargetdirectoryforlazarus
-msgid "Unable to create target directory for lazarus:%s%s%s%s.%sThis directory is needed for the new changed lazarus IDE with your custom packages."
+#, fuzzy
+#| msgid "Unable to create target directory for lazarus:%s%s%s%s.%sThis directory is needed for the new changed lazarus IDE with your custom packages."
+msgid "Unable to create target directory for Lazarus:%s%s%s%s.%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgstr "无法为 Lazarus 创建目标目录:%s%s%s%s.%s当你的 lazarus IDE 使用你自定义的包时需要这个目录."
 
 #: lazarusidestrconsts.lispkgmangunabletodeletefile
@@ -14294,11 +14388,15 @@ msgid "Select a package"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
-msgid "Can not register components without unit"
+#, fuzzy
+#| msgid "Can not register components without unit"
+msgid "Cannot register components without unit"
 msgstr "没有单元无法注册组件"
 
 #: lazarusidestrconsts.lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
-msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
+#, fuzzy
+#| msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
+msgid "CodeTools - tools and functions to parse, browse and edit Pascal sources"
 msgstr "CodeTools - 解析、浏览和编辑pascal源代码的工具和函数"
 
 #: lazarusidestrconsts.lispkgsyscomponentclassalreadydefined
@@ -14584,7 +14682,9 @@ msgid "A Free Pascal command line program with some useful settings added."
 msgstr ""
 
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
-msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
+#, fuzzy
+#| msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
+msgid "Program source must have a Pascal extension like .pas, .pp or .lpr"
 msgstr "程序源代码必须有一个 pascal 后缀,例如 .pas, .pp 或者 .lpr"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
@@ -14610,7 +14710,9 @@ msgid "Invalid packagename"
 msgstr "无效包名"
 
 #: lazarusidestrconsts.lisprojaddinvalidpascalunitname
-msgid "Invalid pascal unit name"
+#, fuzzy
+#| msgid "Invalid pascal unit name"
+msgid "Invalid Pascal unit name"
 msgstr "无效 pascal 单元名"
 
 #: lazarusidestrconsts.lisprojaddinvalidversion
@@ -14673,7 +14775,9 @@ msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgstr "名叫%s%s%s的单元已经存在并位于所选%s中的文件: %s%s%s. "
 
 #: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-msgid "The unit name %s%s%s is not a valid pascal identifier."
+#, fuzzy
+#| msgid "The unit name %s%s%s is not a valid pascal identifier."
+msgid "The unit name %s%s%s is not a valid Pascal identifier."
 msgstr "单元名 %s%s%s 不是有效的 pascal 标识符."
 
 #: lazarusidestrconsts.lisprojaddtoproject
@@ -14924,8 +15028,10 @@ msgid "Save .lrs files in the output directory"
 msgstr "保存.lrs文件到输出目录"
 
 #: lazarusidestrconsts.lispvuapascalunitmusthavetheextensionpporpas
+#, fuzzy
+#| msgid "A pascal unit must have the extension .pp or .pas"
 msgctxt "lazarusidestrconsts.lispvuapascalunitmusthavetheextensionpporpas"
-msgid "A pascal unit must have the extension .pp or .pas"
+msgid "A Pascal unit must have the extension .pp or .pas"
 msgstr "一个pascal单元必须以 .pp 或者 .pas 为后缀"
 
 #: lazarusidestrconsts.lispvueditvirtualunit
@@ -14938,8 +15044,10 @@ msgid "There is already an unit with this name.%sFile: %s"
 msgstr "已经有一个单元使用了这个名字.%s文件: %s"
 
 #: lazarusidestrconsts.lispvutheunitnameisnotavalidpascalidentifier
+#, fuzzy
+#| msgid "The unitname is not a valid pascal identifier."
 msgctxt "lazarusidestrconsts.lispvutheunitnameisnotavalidpascalidentifier"
-msgid "The unitname is not a valid pascal identifier."
+msgid "The unitname is not a valid Pascal identifier."
 msgstr "单元名不是一个有效的 pascal 标识符."
 
 #: lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses
@@ -15315,15 +15423,15 @@ msgid "Run"
 msgstr "运行"
 
 #: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
-msgid "Runtime only, can not be installed in IDE"
+msgid "Runtime only, cannot be installed in IDE"
 msgstr ""
 
 #: lazarusidestrconsts.lisruntimeonlypackagesareonlyforprojectstheycannotbei
-msgid "\"Run time only\" packages are only for projects. They can not be installed in the IDE, not even indirectly."
+msgid "\"Run time only\" packages are only for projects. They cannot be installed in the IDE, not even indirectly."
 msgstr ""
 
 #: lazarusidestrconsts.lisruntimepackagescanbeusedbyprojectstheycannotbeinst
-msgid "\"Run time\" packages can be used by projects. They can not be installed in the IDE, unless some design time package requires them."
+msgid "\"Run time\" packages can be used by projects. They cannot be installed in the IDE, unless some design time package requires them."
 msgstr ""
 
 #: lazarusidestrconsts.lisruntofailed
@@ -15613,7 +15721,7 @@ msgid "Set default"
 msgstr "设为默认"
 
 #: lazarusidestrconsts.lissetupdefaultindentation
-msgid "(Setup default indentation)"
+msgid "(Set up default indentation)"
 msgstr ""
 
 #: lazarusidestrconsts.lissetvalue
@@ -15750,6 +15858,10 @@ msgstr "跳过文件继续装载"
 #: lazarusidestrconsts.lisskiploadinglastproject
 msgid "Skip loading last project"
 msgstr "跳过装载最后的工程"
+
+#: lazarusidestrconsts.lissmallerratherthanfaster
+msgid "Smaller rather than faster"
+msgstr ""
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
@@ -16050,6 +16162,10 @@ msgstr ""
 msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
 msgstr ""
 
+#: lazarusidestrconsts.listemplatefile
+msgid "Template file"
+msgstr ""
+
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "测试目录"
@@ -16059,7 +16175,9 @@ msgid "The Application Bundle was created for \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
-msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
+#, fuzzy
+#| msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
+msgid "The class %s%s%s is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgstr "类 %s%s%s 是 TControl 类,无法粘贴到非control类.%s无法粘贴. "
 
 #: lazarusidestrconsts.listhecodetoolsfoundanerror
@@ -16099,7 +16217,7 @@ msgid "The component %s is inherited from %s.%sTo rename an inherited component 
 msgstr ""
 
 #: lazarusidestrconsts.listhecomponentnamemustbeuniqueinallcomponentsonthefo
-msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."
+msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal Pascal identifier."
 msgstr ""
 
 #: lazarusidestrconsts.listheconfigurationwillbedowngradedconverted
@@ -16107,7 +16225,7 @@ msgid "The configuration will be downgraded/converted."
 msgstr ""
 
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
-msgid "The %s contains a not existing directory:%s%s"
+msgid "The %s contains a nonexistent directory:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.listhecontainsastarcharacterlazarususesthisasnormalch
@@ -16217,7 +16335,7 @@ msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
 msgstr ""
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
-msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
+msgid "The file %s%s%s is not a Lazarus project.%sCreate a new project for this %s?"
 msgstr ""
 
 #: lazarusidestrconsts.listhefilemaskisinvalid
@@ -16229,11 +16347,15 @@ msgid "The file mask \"%s\" is not a valid regular expression."
 msgstr ""
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
-msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
+#, fuzzy
+#| msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
+msgid "The file %s%s%s%sseems to be a program. Close current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "文件 %s%s%s%s看起来是一个程序. 关闭当前工程并为此创建一个工程?%s\"No\" 将以一个正常的源代码文件装载."
 
 #: lazarusidestrconsts.listhefileseemstobetheprogramfileofanexistinglazarusp
-msgid "The file %s seems to be the program file of an existing lazarus Project."
+#, fuzzy
+#| msgid "The file %s seems to be the program file of an existing lazarus Project."
+msgid "The file %s seems to be the program file of an existing Lazarus Project."
 msgstr "文件 %s%s%s%s 看起来是一个已经存在的 Lazarus 工程."
 
 #: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
@@ -16301,7 +16423,9 @@ msgid "The Lazarus directory was not found.%sYou will not be able to create LCL 
 msgstr "未找到 Lazarus 目录.%s你将无法创建 LCL 应用程序.%s请检查 环境 -> 环境选项 -> 文件"
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
-msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the pascal code manually."
+#, fuzzy
+#| msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the pascal code manually."
+msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."
 msgstr "LFM (Lazarus form) 文件包含无效的属性. 这就意味着可能包含一些 LCL 中间没有的属性和类. 一般的解决方法是从 lfm 文件移除这些属性和方法,并且手动修改代码."
 
 #: lazarusidestrconsts.listhemacrodoesnotbeginwith
@@ -16311,10 +16435,6 @@ msgstr ""
 #: lazarusidestrconsts.listhemakeexecutabletypicallyhasthename
 msgid "The \"make\" executable typically has the name \"%s\". It is needed for building the IDE. Please give the full file path."
 msgstr ""
-
-#: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
-msgid "The name %s%s%s is not a valid pascal identifier."
-msgstr "名字 %s%s%s 不是一个有效的 pascal 标识符."
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
 msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
@@ -16377,7 +16497,7 @@ msgid "The package already contains a unit with this name."
 msgstr "包已经包含了这个单元."
 
 #: lazarusidestrconsts.listhepackagecannotbeinstalledbecauseitrequireswhichi
-msgid "The package %s can not be installed, because it requires the package \"%s\", which is a runtime only package."
+msgid "The package %s cannot be installed, because it requires the package \"%s\", which is a runtime only package."
 msgstr ""
 
 #: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
@@ -16393,7 +16513,7 @@ msgid "The package %s is already in the list"
 msgstr ""
 
 #: lazarusidestrconsts.listhepackageisnotadesigntimepackageitcannotbeinstall
-msgid "The package %s is not a design time package. It can not be installed in the IDE"
+msgid "The package %s is not a design time package. It cannot be installed in the IDE."
 msgstr ""
 
 #: lazarusidestrconsts.listhepathofmakeisnotcorrect
@@ -16401,7 +16521,9 @@ msgid "The path of \"make\" is not correct: \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
+#, fuzzy
+#| msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
+msgid "The program %smake%s was not found.%sThis tool is needed to build Lazarus.%s"
 msgstr "程序 %smake%s 未找到.%s构建 Lazarus 这个工具是必须的.%s"
 
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
@@ -16503,7 +16625,9 @@ msgid "There was an error while copying the component stream to clipboard:%s%s"
 msgstr "复制组件流到剪切板发生一个错误:%s%s"
 
 #: lazarusidestrconsts.listherootcomponentcannotbedeleted
-msgid "The root component can not be deleted."
+#, fuzzy
+#| msgid "The root component can not be deleted."
+msgid "The root component cannot be deleted."
 msgstr "根组件无法删除."
 
 #: lazarusidestrconsts.listhesefileswillbedeleted
@@ -16575,7 +16699,9 @@ msgid "this help message"
 msgstr "帮助信息"
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
-msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
+#, fuzzy
+#| msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
+msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "这个好像是一个 pascal 文件.%s建议将文件名小写来消除某些文件系统上和不同编译器上会发生的问题 .%s重命名为小写么?"
 
 #: lazarusidestrconsts.listhisprojecthasnomainsourcefile
@@ -16661,7 +16787,9 @@ msgid "Function: append path delimiter"
 msgstr "功能: 附加路径分隔符"
 
 #: lazarusidestrconsts.listmfunctionchomppathdelimiter
-msgid "Function: chomp path delimiter"
+#, fuzzy
+#| msgid "Function: chomp path delimiter"
+msgid "Function: remove trailing path delimiter"
 msgstr "功能: 以分隔符分离路径"
 
 #: lazarusidestrconsts.listmfunctionextractfileextension
@@ -16801,19 +16929,19 @@ msgid "(Search)"
 msgstr ""
 
 #: lazarusidestrconsts.lisudsearchnextoccurrenceofthisphrase
-msgid "Search next occurrence of this phrase"
+msgid "Find next occurrence of this phrase"
 msgstr ""
 
 #: lazarusidestrconsts.lisudsearchnextunitofthisphrase
-msgid "Search next unit of this phrase"
+msgid "Find next unit with this phrase"
 msgstr ""
 
 #: lazarusidestrconsts.lisudsearchpreviousoccurrenceofthisphrase
-msgid "Search previous occurrence of this phrase"
+msgid "Find previous occurrence of this phrase"
 msgstr ""
 
 #: lazarusidestrconsts.lisudsearchpreviousunitofthisphrase
-msgid "Search previous unit of this phrase"
+msgid "Find previous unit with this phrase"
 msgstr ""
 
 #: lazarusidestrconsts.lisudselectedunits
@@ -16899,7 +17027,9 @@ msgid "Search string '%s' not found!"
 msgstr "字符串 '%s' 没有找到!"
 
 #: lazarusidestrconsts.lisuethecurre
-msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
+#, fuzzy
+#| msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
+msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrectly.%sYou can select another font in the editor options."
 msgstr "当前编辑器字体不支持 UTF-8, 但是你的系统好像使用它.%s这意味着非ASCII 码可能不能正常得显示. %s你可以在编辑器选项中选择另一种字体"
 
 #: lazarusidestrconsts.lisuiclearincludedbyreference
@@ -17110,7 +17240,7 @@ msgid "Unable to find file %s%s%s."
 msgstr "无法找到文件 %s%s%s."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
+msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to Lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindinlfmstream
@@ -17122,7 +17252,7 @@ msgid "Unable to find method."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
-msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
+msgid "Unable to find Pascal unit (.pas, .pp) for .lfm file%s%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
@@ -17804,7 +17934,9 @@ msgid "You can download FPC and the FPC sources from http://sourceforge.net/proj
 msgstr ""
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
-msgid "You can not build lazarus while debugging or compiling."
+#, fuzzy
+#| msgid "You can not build lazarus while debugging or compiling."
+msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "在调试或编译时不能构建 Lazarus."
 
 #: lazarusidestrconsts.locwndsrceditor
@@ -18027,7 +18159,9 @@ msgid "Arabic"
 msgstr "阿拉伯语"
 
 #: lazarusidestrconsts.rslanguageautomatic
-msgid "Automatic (or english)"
+#, fuzzy
+#| msgid "Automatic (or english)"
+msgid "Automatic (or English)"
 msgstr "自动(或者英语)"
 
 #: lazarusidestrconsts.rslanguagecatalan
@@ -18367,7 +18501,9 @@ msgid "build file"
 msgstr "构建文件"
 
 #: lazarusidestrconsts.srkmecbuildlazarus
-msgid "Build lazarus"
+#, fuzzy
+#| msgid "Build lazarus"
+msgid "Build Lazarus"
 msgstr "构建 Lazarus"
 
 #: lazarusidestrconsts.srkmecchar

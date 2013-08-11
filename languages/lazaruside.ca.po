@@ -96,12 +96,24 @@ msgstr ""
 msgid "Select text"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttonselectbyline
+msgid "Select text (lines)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselectbytoken
+msgid "Select text (tokens)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselectbyword
+msgid "Select text (words)"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttonselectcolumn
-msgid "Select text (Columns)"
+msgid "Select text (Column mode)"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselectline
-msgid "Select text (Lines)"
+msgid "Select text (Line mode)"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetfreebookmark
@@ -601,7 +613,7 @@ msgid "Auto indent"
 msgstr ""
 
 #: lazarusidestrconsts.dlgautoindentlink
-msgid "(Setup smart indent)"
+msgid "(Set up smart indent)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgautoindenttype
@@ -701,10 +713,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgbuildmodes
 msgid "Build Modes"
 msgstr ""
-
-#: lazarusidestrconsts.dlgbutapply
-msgid "Apply"
-msgstr "Aplica"
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
@@ -809,7 +817,9 @@ msgid "Center cursor line"
 msgstr "Centra la línia del cursor"
 
 #: lazarusidestrconsts.dlgcharcasefileact
-msgid "Save As - auto rename pascal files lower case"
+#, fuzzy
+#| msgid "Save As - auto rename pascal files lower case"
+msgid "Save As - auto rename Pascal files lower case"
 msgstr "Anomena i desa - fica el nom dels fitxers Pascal en minúscules"
 
 #: lazarusidestrconsts.dlgcheckconsistency
@@ -858,11 +868,9 @@ msgctxt "lazarusidestrconsts.dlgcocfgcmpmessages"
 msgid "Messages"
 msgstr ""
 
-#: lazarusidestrconsts.dlgcochecks
-#, fuzzy
-#| msgid "Checks:"
-msgid "Checks"
-msgstr "Comprovacions:"
+#: lazarusidestrconsts.dlgcochecksandassertion
+msgid "Checks and assertion"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcocompilercommands
 msgid "Compiler Commands"
@@ -1191,7 +1199,7 @@ msgid "Strip symbols from executable"
 msgstr "Elimina els símbols de l'executable"
 
 #: lazarusidestrconsts.dlgcosymboltype
-msgid "Choose type of debug info"
+msgid "Type of debug info"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcosymboltypeauto
@@ -1213,6 +1221,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcosymboltypestabs
 msgid "Stabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcotrashvariables
+msgid "Trash variables"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcounitstyle
@@ -1409,7 +1421,7 @@ msgid "Code Templates"
 msgstr "Plantilles del codi"
 
 #: lazarusidestrconsts.dlgedcompleteblocks
-msgid "Add close statement for pascal blocks"
+msgid "Add close statement for Pascal blocks"
 msgstr ""
 
 #: lazarusidestrconsts.dlgedcustomext
@@ -2405,19 +2417,19 @@ msgid "Right"
 msgstr "Dreta"
 
 #: lazarusidestrconsts.dlgmousefoldcolfoldall
-msgid "Fold All (Some Colapsed)"
+msgid "Fold All (Some Collapsed)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmousefoldcolfoldone
-msgid "Fold One (Some Colapsed)"
+msgid "Fold One (Some Collapsed)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmousefoldcolunfoldall
-msgid "Unfold All (Some Colapsed)"
+msgid "Unfold All (Some Collapsed)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmousefoldcolunfoldone
-msgid "Unfold One (Some Colapsed)"
+msgid "Unfold One (Some Collapsed)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmousefoldexpfoldall
@@ -2814,6 +2826,10 @@ msgstr ""
 msgid "Optimization levels"
 msgstr ""
 
+#: lazarusidestrconsts.dlgotheroptimizations
+msgid "Other optimizations"
+msgstr ""
+
 #: lazarusidestrconsts.dlgotherunitfiles
 #, fuzzy
 #| msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
@@ -2829,7 +2845,9 @@ msgid "Hints for component palette"
 msgstr "Suggeriments per a la paleta de components"
 
 #: lazarusidestrconsts.dlgpasext
-msgid "Default pascal extension"
+#, fuzzy
+#| msgid "Default pascal extension"
+msgid "Default Pascal extension"
 msgstr "Extensió Pascal predeterminada"
 
 #: lazarusidestrconsts.dlgpasextkeywords
@@ -3235,6 +3253,10 @@ msgstr "Mostra-ho tot"
 msgid "Show executable info (Win32 only)"
 msgstr "Mostra informació per l'executable (sols Win32)"
 
+#: lazarusidestrconsts.dlgshowfullfilenames
+msgid "Show full file names"
+msgstr ""
+
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"
 msgstr "Mostra l'informació general"
@@ -3264,10 +3286,6 @@ msgstr "Mostra les notes"
 #: lazarusidestrconsts.dlgshownothing
 msgid "Show nothing (only errors)"
 msgstr "No mostris res (només els errors)"
-
-#: lazarusidestrconsts.dlgshowprocserror
-msgid "Show all procs on error"
-msgstr "Mostra tots els processos quan es trobi un error"
 
 #: lazarusidestrconsts.dlgshowscrollhint
 msgctxt "lazarusidestrconsts.dlgshowscrollhint"
@@ -3814,7 +3832,7 @@ msgstr "Tipus d'avantpassat"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
 msgctxt "lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas"
-msgid "A pascal unit must have the extension .pp or .pas"
+msgid "A Pascal unit must have the extension .pp or .pas"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pbrokendependencies
@@ -3958,7 +3976,9 @@ msgid "The ancestor type %s%s%s has the same name as%sthe unit %s%s%s."
 msgstr "El tipus avantpassat %s%s%s té el mateix nom que%s la unitat %s%s%s."
 
 #: lazarusidestrconsts.lisa2ptheancestortypeisnotavalidpascalidentifier
-msgid "The ancestor type %s%s%s is not a valid pascal identifier."
+#, fuzzy
+#| msgid "The ancestor type %s%s%s is not a valid pascal identifier."
+msgid "The ancestor type %s%s%s is not a valid Pascal identifier."
 msgstr "El tipus avantpassat %s%s%s no és un identificador pascal vàlid."
 
 #: lazarusidestrconsts.lisa2ptheclassnameandancestortypearethesame
@@ -3974,7 +3994,9 @@ msgid "The class name %s%s%s has the same name as%sthe unit %s%s%s."
 msgstr "El nom de classe %s%s%s té el mateix nom que%s la unitat %s%s%s."
 
 #: lazarusidestrconsts.lisa2ptheclassnameisnotavalidpascalidentifier
-msgid "The class name %s%s%s is not a valid pascal identifier."
+#, fuzzy
+#| msgid "The class name %s%s%s is not a valid pascal identifier."
+msgid "The class name %s%s%s is not a valid Pascal identifier."
 msgstr "El nom de classe %s%s%s no és un identificador pascal vàlid."
 
 #: lazarusidestrconsts.lisa2pthefileisalreadyinthepackage
@@ -4005,7 +4027,9 @@ msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pthepackagehasalreadyadependencyforthe
-msgid "The package has already a dependency for the package %s%s%s."
+#, fuzzy
+#| msgid "The package has already a dependency for the package %s%s%s."
+msgid "The package already has a dependency on the package %s%s%s."
 msgstr "El paquet ja té una dependència pel paquet %s%s%s."
 
 #: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
@@ -4033,7 +4057,9 @@ msgid "The unit name %s%s%s does not correspond to the filename."
 msgstr "El nom d'unitat %s%s%s no correspon al nom de fitxer."
 
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
-msgid "The unit name %s%s%s is the same as an registered component.%sUsing this can cause strange error messages."
+#, fuzzy
+#| msgid "The unit name %s%s%s is the same as an registered component.%sUsing this can cause strange error messages."
+msgid "The unit name %s%s%s is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "El nom d'unitat %s%s%s és el mateix que el d'un component registrat.%sUtilitzar-lo pot causar missatges d'error estranys."
 
 #: lazarusidestrconsts.lisa2punitfilename
@@ -4109,7 +4135,9 @@ msgid "Official:"
 msgstr ""
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
+#, fuzzy
+#| msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
+msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
 msgstr "Un %s no pot manegar TControls. %sNomés hi podeu posar components no visuals."
 
 #: lazarusidestrconsts.lisacknowledgements
@@ -4328,6 +4356,10 @@ msgstr "Tots els arxius"
 msgid "All inherited options"
 msgstr ""
 
+#: lazarusidestrconsts.lisalloptions
+msgid "All Options"
+msgstr ""
+
 #: lazarusidestrconsts.lisallowfunctio
 msgid "Allow Function Calls"
 msgstr ""
@@ -4451,6 +4483,11 @@ msgstr ""
 #: lazarusidestrconsts.lisapplicationprogramdescriptor
 msgid "A graphical Free Pascal application using the cross-platform LCL library for its GUI."
 msgstr ""
+
+#: lazarusidestrconsts.lisapply
+msgctxt "lazarusidestrconsts.lisapply"
+msgid "Apply"
+msgstr "Aplica"
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
@@ -4738,7 +4775,7 @@ msgid "Differences between build modes"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencestootherbuildmodes
-msgid "Differences to other build modes"
+msgid "Differences from other build modes"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodediffmode
@@ -4802,15 +4839,21 @@ msgid "Cannot compile project"
 msgstr ""
 
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
-msgid "Can not copy top level component."
+#, fuzzy
+#| msgid "Can not copy top level component."
+msgid "Cannot copy top level component."
 msgstr "No es pot copiar el component de nivell superior."
 
 #: lazarusidestrconsts.liscannotcreatefile
-msgid "Can not create file %s%s%s"
+#, fuzzy
+#| msgid "Can not create file %s%s%s"
+msgid "Cannot create file %s%s%s"
 msgstr "No es pot crear el fitxer %s%s%s"
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
-msgid "Cannot find lazarus starter:%s%s"
+#, fuzzy
+#| msgid "Cannot find lazarus starter:%s%s"
+msgid "Cannot find Lazarus starter:%s%s"
 msgstr "No es pot trobar l'iniciador del Lazarus:%s%s"
 
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
@@ -4863,7 +4906,7 @@ msgid "Copy output to clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.lisccodatesdiffer
-msgid "The dates of the .ppu files of FPC differ more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
+msgid "The dates of the .ppu files of FPC differ by more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisccoerrorcaption
@@ -4956,7 +4999,7 @@ msgid "Unable to create Test File"
 msgstr ""
 
 #: lazarusidestrconsts.lisccounabletocreatetestpascalfile
-msgid "Unable to create Test pascal file \"%s\"."
+msgid "Unable to create Test Pascal file \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisccounabletogetfiledate
@@ -5369,6 +5412,10 @@ msgstr ""
 msgid "Choose a different name"
 msgstr "Tria un nom diferent"
 
+#: lazarusidestrconsts.lischooseafilewithcodetoolstemplates
+msgid "Choose a file with CodeTools templates"
+msgstr ""
+
 #: lazarusidestrconsts.lischooseafpdoclink
 msgid "Choose a FPDoc link"
 msgstr ""
@@ -5390,7 +5437,7 @@ msgid "Choose an FPC message file"
 msgstr ""
 
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
-msgid "Choose a pascal file for indentation examples"
+msgid "Choose a Pascal file for indentation examples"
 msgstr ""
 
 #: lazarusidestrconsts.lischoosecompilermessages
@@ -5644,7 +5691,9 @@ msgid "Call on:"
 msgstr "Marqueu:"
 
 #: lazarusidestrconsts.liscoclickokifaresuretodothat
-msgid "%s%sClick OK if you are sure to do that."
+#, fuzzy
+#| msgid "%s%sClick OK if you are sure to do that."
+msgid "%s%sClick OK if you definitely want to do that."
 msgstr "%s%sClica D'Acord si estàs segur de fer-ho."
 
 #: lazarusidestrconsts.liscocommand
@@ -5853,7 +5902,9 @@ msgid "Action: %s"
 msgstr "Acció: %s"
 
 #: lazarusidestrconsts.liscodetoolsdefsautocreatednodesreadonly
-msgid "Auto created nodes can not be edited,%snor can they have non auto created child nodes."
+#, fuzzy
+#| msgid "Auto created nodes can not be edited,%snor can they have non auto created child nodes."
+msgid "Auto created nodes cannot be edited,%snor can they have non auto created child nodes."
 msgstr "Els nodes generats automàticament ni es poden editar, %sni poden tenir nodes fills"
 
 #: lazarusidestrconsts.liscodetoolsdefsautogenerated
@@ -5861,7 +5912,9 @@ msgid "%s, auto generated"
 msgstr "%s, generat automàticament"
 
 #: lazarusidestrconsts.liscodetoolsdefsautogeneratednodescannotbeedited
-msgid "Auto generated nodes can not be edited."
+#, fuzzy
+#| msgid "Auto generated nodes can not be edited."
+msgid "Auto generated nodes cannot be edited."
 msgstr "Els nodes generats automàticament no poden ser editats"
 
 #: lazarusidestrconsts.liscodetoolsdefsblock
@@ -6125,7 +6178,9 @@ msgid "none selected"
 msgstr "cap de seleccionat"
 
 #: lazarusidestrconsts.liscodetoolsdefsparentnodecannotcontainch
-msgid "Parent node can not contain child nodes."
+#, fuzzy
+#| msgid "Parent node can not contain child nodes."
+msgid "Parent node cannot contain child nodes."
 msgstr "El node pare no pot contenir nodes fills"
 
 #: lazarusidestrconsts.liscodetoolsdefspreviousnodecannotcontainchildnodes
@@ -6282,6 +6337,10 @@ msgstr "Constant alfanumèrica"
 msgid "Symbol"
 msgstr "Símbol"
 
+#: lazarusidestrconsts.liscodetoolstemplatefile
+msgid "CodeTools template file"
+msgstr ""
+
 #: lazarusidestrconsts.liscoexecuteafter
 msgid "Execute after"
 msgstr "Executa després de"
@@ -6401,7 +6460,7 @@ msgid "Extend right only"
 msgstr ""
 
 #: lazarusidestrconsts.liscomponentnameisapascalkeyword
-msgid "Component name \"%s\" is a pascal keyword."
+msgid "Component name \"%s\" is a Pascal keyword."
 msgstr ""
 
 #: lazarusidestrconsts.liscomponentnameiskeyword
@@ -7080,7 +7139,7 @@ msgid "Cursor row in current editor"
 msgstr "La línia del cursor en l'editor actual"
 
 #: lazarusidestrconsts.liscustomopthint
-msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
+msgid "These options are passed to the compiler after comments are deleted and macros are replaced."
 msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions
@@ -7262,7 +7321,9 @@ msgid "Set the breakpoint anyway"
 msgstr ""
 
 #: lazarusidestrconsts.lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
-msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
+#, fuzzy
+#| msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
+msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "No s'hi ha especificat cap depurador.%sEstablir punts de parada no tindrà cap efecte fins que configures un depurador al dialeg d'opcións del depurador en el menú."
 
 #: lazarusidestrconsts.lisdbgwinpower
@@ -7307,7 +7368,7 @@ msgid "%s (debugging ...)"
 msgstr "%s (s'està depurant ...)"
 
 #: lazarusidestrconsts.lisdebughintautotypecastclass
-msgid "Automatic type-cast for objects"
+msgid "Automatic typecast for objects"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
@@ -7789,8 +7850,16 @@ msgstr "Alguns fitxers han canviat al disc:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Distingeix entre lletres grans i petites p.ex. A i a"
 
+#: lazarusidestrconsts.lisdlgalloptions
+msgid "All options ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgchangeclass
 msgid "Change Class ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisdlgdefines
+msgid "Defines ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdlgexport
@@ -7818,7 +7887,7 @@ msgid "Documentation Editor"
 msgstr "Editor de documentació"
 
 #: lazarusidestrconsts.lisdoesnotexists
-msgid "%s does not exists: %s"
+msgid "%s does not exist: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisdonotchange
@@ -9373,7 +9442,7 @@ msgid "Indentation"
 msgstr ""
 
 #: lazarusidestrconsts.lisindentationforpascalsources
-msgid "Indentation for pascal sources"
+msgid "Indentation for Pascal sources"
 msgstr ""
 
 #: lazarusidestrconsts.lisindex
@@ -9620,7 +9689,7 @@ msgid "Invalid line, column in message%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
-msgid "Invalid macro %s%s%s. The macro name must be a pascal identifier."
+msgid "Invalid macro %s%s%s. The macro name must be a Pascal identifier."
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmacrothenameisakeyword
@@ -9652,7 +9721,9 @@ msgid "Invalid Pascal Identifier"
 msgstr "L'identificador de Pascal no és vàlid"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiertext
-msgid "The name \"%s\" is not a valid pascal identifier."
+#, fuzzy
+#| msgid "The name \"%s\" is not a valid pascal identifier."
+msgid "The name \"%s\" is not a valid Pascal identifier."
 msgstr "El nom \"%s\" no és un identificador vàlid de Pascal"
 
 #: lazarusidestrconsts.lisinvalidprocname
@@ -10435,11 +10506,6 @@ msgctxt "lazarusidestrconsts.lislazbuildeditdefines"
 msgid "Edit Defines"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildeditdefinesdialogcaption
-msgctxt "lazarusidestrconsts.lislazbuildeditdefinesdialogcaption"
-msgid "Edit Defines"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildeditlistofdefineswhichcanbeusedbyanyprofile
 msgid "Edit list of defines which can be used by any profile"
 msgstr ""
@@ -10631,7 +10697,7 @@ msgid "LFM file"
 msgstr "Fitxer LFM"
 
 #: lazarusidestrconsts.lislfmfilecontainsinvalidproperties
-msgid "The LFM file contains unknown properties/classes which do not exist in LCL. They can be replaced or removed."
+msgid "The LFM file contains unknown properties/classes which do not exist in the LCL. They can be replaced or removed."
 msgstr ""
 
 #: lazarusidestrconsts.lislfmfilecorrupt
@@ -12335,10 +12401,6 @@ msgstr "Crea un nou fitxer de text buit."
 msgid "Create a new graphical application.%sThe application source is maintained by Lazarus."
 msgstr "Crea una nova aplicació gràfica.%sEl Lazarus manté el fitxer del programa"
 
-#: lazarusidestrconsts.lisnewdlgcreateanewpascalunit
-msgid "Create a new pascal unit."
-msgstr "Crea una nova unitat Pascal."
-
 #: lazarusidestrconsts.lisnewdlgcreateanewprogram
 #, fuzzy
 #| msgid "Create a new program.%sThe program file is maintained by Lazarus."
@@ -12439,10 +12501,6 @@ msgstr "No hi ha codi seleccionat"
 msgid "No compiler options inherited."
 msgstr "No s'han heretat les opcions del compilador"
 
-#: lazarusidestrconsts.lisnoerrors
-msgid "No errors"
-msgstr ""
-
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr ""
@@ -12480,7 +12538,7 @@ msgid "no node selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisnopascalfile
-msgid "No pascal file"
+msgid "No Pascal file"
 msgstr ""
 
 #: lazarusidestrconsts.lisnoprogramfilesfound
@@ -12508,7 +12566,7 @@ msgid "Not an install package"
 msgstr ""
 
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
-msgid "Not a valid pascal identifier"
+msgid "Not a valid Pascal identifier"
 msgstr ""
 
 #: lazarusidestrconsts.lisnotebooktabposbottom
@@ -13226,7 +13284,7 @@ msgid "View Package Source"
 msgstr "Mostra les fonts dels paquets"
 
 #: lazarusidestrconsts.lispckexplbase
-msgid "Base, can not be uninstalled"
+msgid "Base, cannot be uninstalled"
 msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
@@ -13411,7 +13469,7 @@ msgstr "Progrés"
 
 #: lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas
 msgctxt "lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas"
-msgid "A pascal unit must have the extension .pp or .pas"
+msgid "A Pascal unit must have the extension .pp or .pas"
 msgstr ""
 
 #: lazarusidestrconsts.lispecollapsedirectory
@@ -13514,7 +13572,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispetheunitnameisnotavalidpascalidentifier
 msgctxt "lazarusidestrconsts.lispetheunitnameisnotavalidpascalidentifier"
-msgid "The unitname is not a valid pascal identifier."
+msgid "The unitname is not a valid Pascal identifier."
 msgstr ""
 
 #: lazarusidestrconsts.lispeunitname
@@ -13801,7 +13859,9 @@ msgid "Package %s%s%s has no valid output directory:%s%s%s%s"
 msgstr "El paquet %s%s%s no té un directori de sortida vàlid:%s%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangpackageisnodesigntimepackage
-msgid "Package is no designtime package"
+#, fuzzy
+#| msgid "Package is no designtime package"
+msgid "Package is not a designtime package"
 msgstr "El paquet no és un paquet de temps de disseny"
 
 #: lazarusidestrconsts.lispkgmangpackageisrequired
@@ -13884,7 +13944,9 @@ msgid "The file %s%s%s%sis already in the package %s."
 msgstr "El fitxer %s%s%s%sja és al paquet %s."
 
 #: lazarusidestrconsts.lispkgmangthefileisnotalazaruspackage
-msgid "The file %s%s%s is not a lazarus package."
+#, fuzzy
+#| msgid "The file %s%s%s is not a lazarus package."
+msgid "The file %s%s%s is not a Lazarus package."
 msgstr "El fitxer %s%s%s no és un paquet Lazarus."
 
 #: lazarusidestrconsts.lispkgmangthefilenamedoesnotcorrespondtothepackage
@@ -13920,19 +13982,25 @@ msgid "The package %s%s%s failed to compile.%sRemove it from the installation li
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
-msgid "The package file name %s%s%s in%s%s%s%s is not a valid lazarus package name."
+#, fuzzy
+#| msgid "The package file name %s%s%s in%s%s%s%s is not a valid lazarus package name."
+msgid "The package file name %s%s%s in%s%s%s%s is not a valid Lazarus package name."
 msgstr "El nom de fitxer de paquet %s%s%s en %s%s%s no és un nom de paquet Lazarus vàlid."
 
 #: lazarusidestrconsts.lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
-msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
+#, fuzzy
+#| msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
+msgid "The package %s is a runtime only package.%sRuntime only packages cannot be installed in the IDE."
 msgstr "El paquet %s és només un paquet de temps d'execució.%sAquests tipus de paquets no poden ser instal·lats a l'IDE."
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
-msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
+msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
-msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
+#, fuzzy
+#| msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
+msgid "The package %s%s%s is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
 msgstr "No s'ha pogut trobar el paquet marcat per instal·lar %s%s%s.%sVoleu eliminar la dependència de la llista de paquets de la instal·lació?"
 
 #: lazarusidestrconsts.lispkgmangthepackageisrequiredbywhichismarkedforinstallation
@@ -13948,11 +14016,15 @@ msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
 msgstr "El nom del paquet %s%s%s del%sfitxer %s%s%s no és vàlid."
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
-msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
+#, fuzzy
+#| msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
+msgid "The package %s%s%s was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgstr "S'ha marcat el paquet %s%s%s.%sActualment el Lazarus només en permet en paquets enllaçats estàticament. La des-instal·lació real necessita el remuntatge i reinici del Lazarus.%s%sVoleu remuntar el Lazarus ara?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
-msgid "The package %s%s%s was marked for installation.%sCurrently lazarus only supports static linked packages. The real installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
+#, fuzzy
+#| msgid "The package %s%s%s was marked for installation.%sCurrently lazarus only supports static linked packages. The real installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
+msgid "The package %s%s%s was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgstr "S'ha marcat per instal·lar el paquet  %s%s%s.%sActualment el Lazarus només en permet en paquets enllaçats estàticament. La instal·lació real necessita el remuntatge i reinici del Lazarus.%s%sVoleu remuntar el Lazarus ara?"
 
 #: lazarusidestrconsts.lispkgmangtheprojectrequiresthepackagebutitwasnotfound
@@ -14010,7 +14082,9 @@ msgid "Unable to create package source directory %s%s%s%sfor package %s."
 msgstr "No es pot crear el directori sortida font %s%s%s%s pel paquet %s."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatetargetdirectoryforlazarus
-msgid "Unable to create target directory for lazarus:%s%s%s%s.%sThis directory is needed for the new changed lazarus IDE with your custom packages."
+#, fuzzy
+#| msgid "Unable to create target directory for lazarus:%s%s%s%s.%sThis directory is needed for the new changed lazarus IDE with your custom packages."
+msgid "Unable to create target directory for Lazarus:%s%s%s%s.%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgstr "No es pot crear el directori destinació del Lazarus:%s%s%s%s.%sAquest directori el necessita el nou IDE Lazarus amb els vostres paquets personalitzats."
 
 #: lazarusidestrconsts.lispkgmangunabletodeletefile
@@ -14085,11 +14159,13 @@ msgid "Select a package"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
-msgid "Can not register components without unit"
+#, fuzzy
+#| msgid "Can not register components without unit"
+msgid "Cannot register components without unit"
 msgstr "No es poden registrar els components sense unitat"
 
 #: lazarusidestrconsts.lispkgsyscodetoolstoolsandfunctionstoparsebrowseandeditpasc
-msgid "CodeTools - tools and functions to parse, browse and edit pascal sources"
+msgid "CodeTools - tools and functions to parse, browse and edit Pascal sources"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgsyscomponentclassalreadydefined
@@ -14373,7 +14449,9 @@ msgid "A Free Pascal command line program with some useful settings added."
 msgstr ""
 
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
-msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
+#, fuzzy
+#| msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
+msgid "Program source must have a Pascal extension like .pas, .pp or .lpr"
 msgstr "El codi font del programa ha de tenir una extensió pascal com .pas, .pp o .lpr"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
@@ -14399,7 +14477,9 @@ msgid "Invalid packagename"
 msgstr "El nom del paquet no és vàlid"
 
 #: lazarusidestrconsts.lisprojaddinvalidpascalunitname
-msgid "Invalid pascal unit name"
+#, fuzzy
+#| msgid "Invalid pascal unit name"
+msgid "Invalid Pascal unit name"
 msgstr "El nom de la unitat pascal no és vàlid"
 
 #: lazarusidestrconsts.lisprojaddinvalidversion
@@ -14462,7 +14542,9 @@ msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgstr "El nom d'unitat %s%s%s ja existeix en la selecció%s en el fitxer: %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-msgid "The unit name %s%s%s is not a valid pascal identifier."
+#, fuzzy
+#| msgid "The unit name %s%s%s is not a valid pascal identifier."
+msgid "The unit name %s%s%s is not a valid Pascal identifier."
 msgstr "El nom d'unitat %s%s%s no és un identificador pascal vàlid."
 
 #: lazarusidestrconsts.lisprojaddtoproject
@@ -14713,8 +14795,10 @@ msgid "Save .lrs files in the output directory"
 msgstr ""
 
 #: lazarusidestrconsts.lispvuapascalunitmusthavetheextensionpporpas
+#, fuzzy
+#| msgid "A pascal unit must have the extension .pp or .pas"
 msgctxt "lazarusidestrconsts.lispvuapascalunitmusthavetheextensionpporpas"
-msgid "A pascal unit must have the extension .pp or .pas"
+msgid "A Pascal unit must have the extension .pp or .pas"
 msgstr "Una unitat Pascal ha de tenir l'extensió .pp o .pas"
 
 #: lazarusidestrconsts.lispvueditvirtualunit
@@ -14728,7 +14812,7 @@ msgstr "Ja existeix una unitat amb aquest nom.%sArxiu: %s"
 
 #: lazarusidestrconsts.lispvutheunitnameisnotavalidpascalidentifier
 msgctxt "lazarusidestrconsts.lispvutheunitnameisnotavalidpascalidentifier"
-msgid "The unitname is not a valid pascal identifier."
+msgid "The unitname is not a valid Pascal identifier."
 msgstr ""
 
 #: lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses
@@ -15092,15 +15176,15 @@ msgid "Run"
 msgstr "Executa"
 
 #: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
-msgid "Runtime only, can not be installed in IDE"
+msgid "Runtime only, cannot be installed in IDE"
 msgstr ""
 
 #: lazarusidestrconsts.lisruntimeonlypackagesareonlyforprojectstheycannotbei
-msgid "\"Run time only\" packages are only for projects. They can not be installed in the IDE, not even indirectly."
+msgid "\"Run time only\" packages are only for projects. They cannot be installed in the IDE, not even indirectly."
 msgstr ""
 
 #: lazarusidestrconsts.lisruntimepackagescanbeusedbyprojectstheycannotbeinst
-msgid "\"Run time\" packages can be used by projects. They can not be installed in the IDE, unless some design time package requires them."
+msgid "\"Run time\" packages can be used by projects. They cannot be installed in the IDE, unless some design time package requires them."
 msgstr ""
 
 #: lazarusidestrconsts.lisruntofailed
@@ -15386,7 +15470,7 @@ msgid "Set default"
 msgstr ""
 
 #: lazarusidestrconsts.lissetupdefaultindentation
-msgid "(Setup default indentation)"
+msgid "(Set up default indentation)"
 msgstr ""
 
 #: lazarusidestrconsts.lissetvalue
@@ -15522,6 +15606,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisskiploadinglastproject
 msgid "Skip loading last project"
+msgstr ""
+
+#: lazarusidestrconsts.lissmallerratherthanfaster
+msgid "Smaller rather than faster"
 msgstr ""
 
 #: lazarusidestrconsts.lissmatches
@@ -15819,6 +15907,10 @@ msgstr ""
 msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
 msgstr ""
 
+#: lazarusidestrconsts.listemplatefile
+msgid "Template file"
+msgstr ""
+
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "Directori de proves"
@@ -15828,7 +15920,9 @@ msgid "The Application Bundle was created for \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
-msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
+#, fuzzy
+#| msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
+msgid "The class %s%s%s is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgstr "La classe %s%s%s és un TControl i no pot ser enganxat dins un no-control%sNo s'ha pogut enganxar."
 
 #: lazarusidestrconsts.listhecodetoolsfoundanerror
@@ -15868,7 +15962,7 @@ msgid "The component %s is inherited from %s.%sTo rename an inherited component 
 msgstr ""
 
 #: lazarusidestrconsts.listhecomponentnamemustbeuniqueinallcomponentsonthefo
-msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."
+msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal Pascal identifier."
 msgstr ""
 
 #: lazarusidestrconsts.listheconfigurationwillbedowngradedconverted
@@ -15876,7 +15970,7 @@ msgid "The configuration will be downgraded/converted."
 msgstr ""
 
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
-msgid "The %s contains a not existing directory:%s%s"
+msgid "The %s contains a nonexistent directory:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.listhecontainsastarcharacterlazarususesthisasnormalch
@@ -15986,7 +16080,7 @@ msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
 msgstr ""
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
-msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
+msgid "The file %s%s%s is not a Lazarus project.%sCreate a new project for this %s?"
 msgstr ""
 
 #: lazarusidestrconsts.listhefilemaskisinvalid
@@ -15998,11 +16092,13 @@ msgid "The file mask \"%s\" is not a valid regular expression."
 msgstr ""
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
-msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
+#, fuzzy
+#| msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
+msgid "The file %s%s%s%sseems to be a program. Close current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "El fitxer %s%s%s%ssembla ser un programa. voleu tancar el projecte actual i crear un nou projecte Lazarus per aquest programa?%s\"No\" carregarà el fitxer com un codi font normal."
 
 #: lazarusidestrconsts.listhefileseemstobetheprogramfileofanexistinglazarusp
-msgid "The file %s seems to be the program file of an existing lazarus Project."
+msgid "The file %s seems to be the program file of an existing Lazarus Project."
 msgstr ""
 
 #: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
@@ -16070,7 +16166,9 @@ msgid "The Lazarus directory was not found.%sYou will not be able to create LCL 
 msgstr "No s'ha trobat el directori Lazarus.%sNo prodreu crear aplicacions LCL.%sSi us plau, comproveu Entorn -> Opcions de l'Entorn -> Fitxers"
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
-msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the pascal code manually."
+#, fuzzy
+#| msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the pascal code manually."
+msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."
 msgstr "El fitxer LFM (Lazarus Form) conté propietats no vàlides. Això vol dir, per exemple, que conté algunes propietats/classes les quals no existeixen en la LCL actual. La manera normal de corregir això és eliminar aquestes propietats de la LFM i corregir manualment el codi pascal."
 
 #: lazarusidestrconsts.listhemacrodoesnotbeginwith
@@ -16080,10 +16178,6 @@ msgstr ""
 #: lazarusidestrconsts.listhemakeexecutabletypicallyhasthename
 msgid "The \"make\" executable typically has the name \"%s\". It is needed for building the IDE. Please give the full file path."
 msgstr ""
-
-#: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
-msgid "The name %s%s%s is not a valid pascal identifier."
-msgstr "El nom %s%s%s no és un identificador pascal vàlid."
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
 msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
@@ -16146,7 +16240,7 @@ msgid "The package already contains a unit with this name."
 msgstr ""
 
 #: lazarusidestrconsts.listhepackagecannotbeinstalledbecauseitrequireswhichi
-msgid "The package %s can not be installed, because it requires the package \"%s\", which is a runtime only package."
+msgid "The package %s cannot be installed, because it requires the package \"%s\", which is a runtime only package."
 msgstr ""
 
 #: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
@@ -16162,7 +16256,7 @@ msgid "The package %s is already in the list"
 msgstr ""
 
 #: lazarusidestrconsts.listhepackageisnotadesigntimepackageitcannotbeinstall
-msgid "The package %s is not a design time package. It can not be installed in the IDE"
+msgid "The package %s is not a design time package. It cannot be installed in the IDE."
 msgstr ""
 
 #: lazarusidestrconsts.listhepathofmakeisnotcorrect
@@ -16170,7 +16264,9 @@ msgid "The path of \"make\" is not correct: \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
+#, fuzzy
+#| msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
+msgid "The program %smake%s was not found.%sThis tool is needed to build Lazarus.%s"
 msgstr "No s'ha trobat el programa %sMake%s.%sEs necessita aquesta eina per muntar el Lazarus.%s"
 
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
@@ -16272,7 +16368,9 @@ msgid "There was an error while copying the component stream to clipboard:%s%s"
 msgstr "S'ha produït un error mentre es copiava l'afluent del component al porta-retalls:%s%s"
 
 #: lazarusidestrconsts.listherootcomponentcannotbedeleted
-msgid "The root component can not be deleted."
+#, fuzzy
+#| msgid "The root component can not be deleted."
+msgid "The root component cannot be deleted."
 msgstr "No es pot eliminar el component arrel."
 
 #: lazarusidestrconsts.listhesefileswillbedeleted
@@ -16344,7 +16442,9 @@ msgid "this help message"
 msgstr "aquest missatge d'ajuda"
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
-msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
+#, fuzzy
+#| msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
+msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "Sembla un arxiu pascal.%sS'hi recomana utilitzar minúscules per evitar problemes diversos amb alguns sistemes d'arxius i diferents compiladors.%sCanviar-li el nom a minúscules?"
 
 #: lazarusidestrconsts.listhisprojecthasnomainsourcefile
@@ -16430,7 +16530,9 @@ msgid "Function: append path delimiter"
 msgstr "Funció: afegir el delimitador de la trajectòria"
 
 #: lazarusidestrconsts.listmfunctionchomppathdelimiter
-msgid "Function: chomp path delimiter"
+#, fuzzy
+#| msgid "Function: chomp path delimiter"
+msgid "Function: remove trailing path delimiter"
 msgstr "Funció: eliminar el delimitador de la trajectòria"
 
 #: lazarusidestrconsts.listmfunctionextractfileextension
@@ -16570,19 +16672,19 @@ msgid "(Search)"
 msgstr ""
 
 #: lazarusidestrconsts.lisudsearchnextoccurrenceofthisphrase
-msgid "Search next occurrence of this phrase"
+msgid "Find next occurrence of this phrase"
 msgstr ""
 
 #: lazarusidestrconsts.lisudsearchnextunitofthisphrase
-msgid "Search next unit of this phrase"
+msgid "Find next unit with this phrase"
 msgstr ""
 
 #: lazarusidestrconsts.lisudsearchpreviousoccurrenceofthisphrase
-msgid "Search previous occurrence of this phrase"
+msgid "Find previous occurrence of this phrase"
 msgstr ""
 
 #: lazarusidestrconsts.lisudsearchpreviousunitofthisphrase
-msgid "Search previous unit of this phrase"
+msgid "Find previous unit with this phrase"
 msgstr ""
 
 #: lazarusidestrconsts.lisudselectedunits
@@ -16668,7 +16770,9 @@ msgid "Search string '%s' not found!"
 msgstr "No s'ha trobat la cadena '%s'"
 
 #: lazarusidestrconsts.lisuethecurre
-msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
+#, fuzzy
+#| msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
+msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrectly.%sYou can select another font in the editor options."
 msgstr "La font de l'editor actual no soport UTF-8, però pareix que el teu sistema està utilitzant-la.%sAçò implica que els caràcters no ASCII probablement no s'hi voran corrèctament.%sPodries sel·leccionar un altra font a les opcions de l'editor."
 
 #: lazarusidestrconsts.lisuiclearincludedbyreference
@@ -16879,7 +16983,7 @@ msgid "Unable to find file %s%s%s."
 msgstr "No es pot trobar el fitxer %s%s%s."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
+msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to Lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindinlfmstream
@@ -16891,7 +16995,7 @@ msgid "Unable to find method."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
-msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
+msgid "Unable to find Pascal unit (.pas, .pp) for .lfm file%s%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
@@ -17563,7 +17667,9 @@ msgid "You can download FPC and the FPC sources from http://sourceforge.net/proj
 msgstr ""
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
-msgid "You can not build lazarus while debugging or compiling."
+#, fuzzy
+#| msgid "You can not build lazarus while debugging or compiling."
+msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "No podeu muntar el lazarus mentre s'està depurant o compilant."
 
 #: lazarusidestrconsts.locwndsrceditor
@@ -17782,7 +17888,9 @@ msgid "Arabic"
 msgstr "Aràbic"
 
 #: lazarusidestrconsts.rslanguageautomatic
-msgid "Automatic (or english)"
+#, fuzzy
+#| msgid "Automatic (or english)"
+msgid "Automatic (or English)"
 msgstr "Automàtic (o Anglès)"
 
 #: lazarusidestrconsts.rslanguagecatalan
@@ -18122,7 +18230,9 @@ msgid "build file"
 msgstr "munta el fitxer"
 
 #: lazarusidestrconsts.srkmecbuildlazarus
-msgid "Build lazarus"
+#, fuzzy
+#| msgid "Build lazarus"
+msgid "Build Lazarus"
 msgstr "Munta el Lazarus"
 
 #: lazarusidestrconsts.srkmecchar
