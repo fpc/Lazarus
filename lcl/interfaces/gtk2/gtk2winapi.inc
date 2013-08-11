@@ -1357,6 +1357,7 @@ var
   AttrListTemporary: Boolean;
   Attr: PPangoAttribute;
   CurFont: PPangoLayout;
+  TmpStr: PChar;
 begin
   {$IFDEF VerboseFonts}
   DebugLn('TGtk2WidgetSet.CreateFontIndirectEx A Name=',LogFont.lfFaceName,' Height=',dbgs(LogFont.lfHeight),' LongName=',LongFontName);
@@ -1467,7 +1468,9 @@ begin
       if (pango_font_description_get_style (PangoDesc) = PANGO_STYLE_NORMAL)
           and (lfItalic <> 0) then
         pango_font_description_set_style(PangoDesc, PANGO_STYLE_ITALIC);
-      aStyle := pango_font_description_to_string(PangoDesc);
+      TmpStr := pango_font_description_to_string(PangoDesc);
+      aStyle := TmpStr;
+      g_free(TmpStr);
       if (aSize=0) and (lfHeight<>0) then
       begin
         // a size is not specified, try to calculate one based on lfHeight
