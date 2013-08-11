@@ -909,7 +909,6 @@ begin
     Add('PUBLIC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('REGISTER'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('RTLPROC'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('RTLPROC'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SAFECALL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SAVEREGISTERS',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('STDCALL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
