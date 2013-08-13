@@ -37,6 +37,9 @@ uses
 
 type
 
+  TIdleAction = (iaCompilerOpts, iaMessages);
+  TIdleActions = set of TIdleAction;
+
   { TCompilerOtherOptionsFrame }
 
   TCompilerOtherOptionsFrame = class(TAbstractIDEOptionsEditor)
@@ -59,7 +62,7 @@ type
     procedure CondSynEditStatusChange(Sender: TObject; Changes: TSynStatusChanges);
   private
     FCompOptions: TBaseCompilerOptions;
-    FIdleConnected: Boolean;
+    FIdleConnected: TIdleActions;
     FIsPackage: boolean;
     FCompletionHistory: TStrings;
     FCompletionValues: TStrings;
@@ -69,7 +72,7 @@ type
     fEngine: TIDECfgScriptEngine;
     fSynCompletion: TSynCompletion;
     FOptionsReader: TCompilerOptReader;
-    procedure SetIdleConnected(AValue: Boolean);
+    procedure SetIdleConnected(AValue: TIdleActions);
     procedure SetStatusMessage(const AValue: string);
     procedure StartCompletion;
     procedure UpdateCompletionValues;
@@ -88,6 +91,8 @@ type
     procedure OnSynCompletionUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure OnSynCompletionValidate(Sender: TObject; KeyChar: TUTF8Char;
       Shift: TShiftState);
+  protected
+    procedure SetVisible(Value: Boolean); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -101,7 +106,7 @@ type
     property DefaultVariables: TCTCfgScriptVariables read FDefaultVariables;
     property CompletionValues: TStrings read FCompletionValues;
     property CompletionHistory: TStrings read FCompletionHistory;
-    property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
+    property IdleConnected: TIdleActions read FIdleConnected write SetIdleConnected;
     property CompOptions: TBaseCompilerOptions read FCompOptions;
     property OptionsReader: TCompilerOptReader read FOptionsReader;
   end;
@@ -162,7 +167,7 @@ end;
 procedure TCompilerOtherOptionsFrame.CondSynEditChange(Sender: TObject);
 begin
   UpdateStatusBar;
-  IdleConnected := True;
+  IdleConnected := IdleConnected + [iaMessages];
 end;
 
 procedure TCompilerOtherOptionsFrame.CondSynEditKeyPress(Sender: TObject; var Key: char);
@@ -348,6 +353,14 @@ begin
   fSynCompletion.Deactivate;
 end;
 
+procedure TCompilerOtherOptionsFrame.SetVisible(Value: Boolean);
+begin
+  inherited SetVisible(Value);
+  // Read all compiler options when the page is shown for the first time.
+  if Value then
+    IdleConnected := IdleConnected + [iaCompilerOpts];
+end;
+
 procedure TCompilerOtherOptionsFrame.SetStatusMessage(const AValue: string);
 begin
   if FStatusMessage=AValue then exit;
@@ -355,11 +368,11 @@ begin
   CondStatusbar.Panels[2].Text := FStatusMessage;
 end;
 
-procedure TCompilerOtherOptionsFrame.SetIdleConnected(AValue: Boolean);
+procedure TCompilerOtherOptionsFrame.SetIdleConnected(AValue: TIdleActions);
 begin
   if FIdleConnected=AValue then exit;
   FIdleConnected:=AValue;
-  if FIdleConnected then
+  if FIdleConnected <> [] then
     Application.AddOnIdleHandler(@OnIdle)
   else
     Application.RemoveOnIdleHandler(@OnIdle);
@@ -607,23 +620,31 @@ begin
 end;
 
 procedure TCompilerOtherOptionsFrame.OnIdle(Sender: TObject; var Done: Boolean);
+var
+  OldIdleConnected: TIdleActions;
 begin
-  IdleConnected := False;
-  UpdateMessages;
-  Screen.Cursor := crHourGlass;
-  try
-    with FOptionsReader do
-      if RootOptGroup.CompilerOpts.Count = 0 then      // Read only once
-      try
-        CompilerExecutable := EnvironmentOptions.GetParsedCompilerFilename;
-        if ReadAndParseOptions <> mrOK then
-          ShowMessage(ErrorMsg);
-      except
-        on E: Exception do
-          ShowMessage('Error parsing options: '+E.Message);
-      end;
-  finally
-    Screen.Cursor := crDefault;
+  OldIdleConnected := IdleConnected;
+  IdleConnected := [];
+  // Messages
+  if iaMessages in OldIdleConnected then
+    UpdateMessages;
+  // Read all compiler options only once
+  if (iaCompilerOpts in OldIdleConnected)
+  and (FOptionsReader.RootOptGroup.CompilerOpts.Count = 0) then
+  begin
+    Screen.Cursor := crHourGlass;
+    try
+    try
+      FOptionsReader.CompilerExecutable := EnvironmentOptions.GetParsedCompilerFilename;
+      if FOptionsReader.ReadAndParseOptions <> mrOK then
+        ShowMessage(FOptionsReader.ErrorMsg);
+    except
+      on E: Exception do
+        ShowMessage('Error parsing options: '+E.Message);
+    end;
+    finally
+      Screen.Cursor := crDefault;
+    end;
   end;
 end;
 
@@ -681,7 +702,6 @@ begin
   grpConditionals.Caption := lisConditionals;
   btnAllOptions.Caption := lisDlgAllOptions;
   btnDefines.Caption := lisDlgDefines;
-  IdleConnected := True;
 end;
 
 procedure TCompilerOtherOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
