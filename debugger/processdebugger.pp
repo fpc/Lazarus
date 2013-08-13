@@ -91,7 +91,8 @@ end;
 procedure TProcessDebugger.ProcessDestroyed(Sender: TObject);
 begin
   FProcess := nil;
-  SetState(dsStop);
+  if State <> dsIdle then
+    SetState(dsStop);
 end;
 
 function TProcessDebugger.ProcessEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
@@ -111,8 +112,12 @@ begin
     Exit;
   end;
 
+  SetState(dsInit);
   FProcess := TDBGProcess.Create(nil);
   try
+    TDBGProcess(FProcess).OnDestroy := @ProcessDestroyed;
+    GetDefaultProcessList.Add(FProcess);
+
     FProcess.CommandLine := UTF8ToSys('"'+FileName + '" ' + Arguments);
     FProcess.CurrentDirectory := UTF8ToSys(WorkingDir);
     FProcess.Environment.Assign(Environment);
@@ -120,13 +125,12 @@ begin
     then FProcess.Options:= [poNewConsole]
     else FProcess.Options:= [poNoConsole];
     FProcess.ShowWindow := swoShowNormal;
-    TDBGProcess(FProcess).OnDestroy := @ProcessDestroyed;
     FProcess.Execute;
-    GetDefaultProcessList.Add(FProcess);
   except
     on E: exception do begin
       MessageDlg('Debugger', Format('Exception while creating process: %s', [E.Message]), mtError, [mbOK], 0);
       Result := False;
+      SetState(dsIdle);
       Exit;
     end;
   end;
