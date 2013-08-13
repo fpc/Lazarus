@@ -301,6 +301,7 @@ type
     FStartCodeFoldBlockLevel: integer;
     FPasStartLevel: Smallint;
     fRange: TRangeStates;
+    FOldRange: TRangeStates;
     FStringKeywordMode: TSynPasStringMode;
     FSynPasRangeInfo: TSynPasRangeInfo;
     FAtLineStart: Boolean; // Line had only spaces or comments sofar
@@ -1179,7 +1180,15 @@ end;
 
 function TSynPasSyn.Func40: TtkTokenKind;
 begin
-  if KeyComp('Packed') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Packed') then begin
+    Result := tkKey;
+    if (fRange * [rsProperty, rsAfterEqualOrColon] =  [rsAfterEqualOrColon]) and
+       (PasCodeFoldRange.BracketNestLevel = 0)
+    then
+      FOldRange := FOldRange - [rsAfterEqualOrColon]; // Keep flag in FRange
+  end
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func41: TtkTokenKind;
@@ -3036,7 +3045,6 @@ end;
 procedure TSynPasSyn.Next;
 var
   IsAtCaseLabel: Boolean;
-  OldRange: TRangeStates;
 begin
   fAsmStart := False;
   fTokenPos := Run;
@@ -3059,7 +3067,7 @@ begin
       else if rsSlash in fRange then
         SlashContinueProc
       else begin
-        OldRange := fRange;
+        FOldRange := fRange;
         //if rsAtEqual in fRange then
         //  fRange := fRange + [rsAfterEqualOrColon] - [rsAtEqual]
         //else
@@ -3078,15 +3086,15 @@ begin
              not(rsAtClosingBracket in fRange)
           then
             fRange := fRange - [rsAfterClass];
-          if rsAfterEqualOrColon in OldRange then
+          if rsAfterEqualOrColon in FOldRange then
             fRange := fRange - [rsAfterEqualOrColon];
-          if rsAtPropertyOrReadWrite in OldRange then
+          if rsAtPropertyOrReadWrite in FOldRange then
             fRange := fRange - [rsAtPropertyOrReadWrite];
           fRange := fRange - [rsAtClosingBracket];
-          if rsAfterClassField in OldRange then
+          if rsAfterClassField in FOldRange then
             fRange := fRange - [rsAfterClassField];
           if rsAtClass in fRange then begin
-            if OldRange * [rsAtClass, rsAfterClass] <> [] then
+            if FOldRange * [rsAtClass, rsAfterClass] <> [] then
               fRange := fRange + [rsAfterClass] - [rsAtClass]
             else
               fRange := fRange + [rsAfterClass];

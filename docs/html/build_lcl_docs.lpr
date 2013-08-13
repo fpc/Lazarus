@@ -1,5 +1,8 @@
 program update_lcl_docs;
 
+{ Runs FPC's fpdoc document generator to generate LCL documentation,
+  e.g. in CHM format }
+
 {$mode objfpc}{$H+}
 {$IFDEF MSWINDOWS}
 {$APPTYPE console}
@@ -11,6 +14,7 @@ uses
 var
   fpdoc: String = 'fpdoc';
   ArgParams: String;
+  CSSFile: String;
   EnvParams: String;
   fpdocfooter: String;
   FPCDocsPath: String;
@@ -41,6 +45,8 @@ procedure PrintHelp;
 begin
   WriteLn('Usage for '+ ExtractFileName(ParamStr(0)), ':');
   WriteLn;
+  Writeln('    --css-file <value> (CHM format only) CSS file to be used by fpdoc');
+  Writeln('                       for the layout of the help pages.');
   WriteLn('    --fpdoc <value>    The full path to fpdoc to use. Default is "fpdoc"');
   WriteLn('    --fpcdocs <value>  The directory that contains the fcl and rtl .xct files.');
   WriteLn('                       Use this to make help that contains links to the rtl and fcl');
@@ -52,7 +58,7 @@ begin
   WriteLn('    --showcmd          Print the command that would be run instead if running it.');
   WriteLn('    --warnings         Show warnings while working.');
   WriteLn;
-  WriteLn('The following are Environment variables that will override the above params if set:');
+  WriteLn('The following are environment variables that will override the above params if set:');
   WriteLn('     FPDOCFORMAT, FPDOCPARAMS, FPDOC, FPDOCFOOTER, FPCDOCS, RTLLINKPREFIX, FCLLINKPREFIX');
   WriteLn;
   Halt(0);
@@ -81,9 +87,11 @@ begin
   Options[6].Name:='footer';
   Options[6].Has_arg:=1;
   Options[7].Name:='warnings';
+  Options[8].Name:='css-file';
+  Options[8].Has_arg:=1;
   OptIndex:=0;
   repeat
-    c := GetLongOpts('help:arg:fpdoc:outfmt:showcmd:fpcdocs:footer:warnings', @Options[0], OptIndex);
+    c := GetLongOpts('help:arg:fpdoc:outfmt:showcmd:fpcdocs:footer:warnings:css-file', @Options[0], OptIndex);
     case c of
       #0:
          begin
@@ -97,6 +105,7 @@ begin
              5:  FPCDocsPath := OptArg;
              6:  fpdocfooter := OptArg;
              7:  WarningsCount:=0;
+             8:  CssFile := OptArg;
            else
              WriteLn('Unknown Value: ', OptIndex);
            end;
@@ -112,7 +121,7 @@ end;
   
 procedure InitVars;
 begin
-  // see if any are set or set then to a default value
+  // see if any are set or set them to a default value
   GetEnvDef(OutFormat,   OutFormat,  'FPDOCFORMAT');
   GetEnvDef(EnvParams,   '',         'FPDOCPARAMS');
 
@@ -149,15 +158,16 @@ begin
       RTLPrefix := ','+RTLPrefix;
     if (FCLPrefix<>'') and (FCLPrefix[1]<>',') then
       FCLPrefix := ','+FCLPrefix;
-    ArgParams:=ArgParams+ '--import='+TrimFilename(FPCDocsPath+PathDelim+'rtl.xct')+RTLPrefix
-                        +' --import='+TrimFilename(FPCDocsPath+PathDelim+'fcl.xct')+FCLPrefix;
+    ArgParams:=ArgParams+ ' --import='+TrimFilename(FPCDocsPath+PathDelim+'rtl.xct')+RTLPrefix
+                        + ' --import='+TrimFilename(FPCDocsPath+PathDelim+'fcl.xct')+FCLPrefix;
   end;
   
   if OutFormat='chm' then
   begin
+    if CSSFile='' then CSSFile:='..'+PathDelim+'fpdoc.css'; //css file is chm only
     ArgParams:=ArgParams+' --output='+ ChangeFileExt(PackageName, '.chm')
                           +' --auto-toc --auto-index --make-searchable'
-                          +' --css-file=..'+PathDelim+'fpdoc.css ';
+                          +' --css-file='+CSSFile+' ';
   end;
   
   ArgParams:=ArgParams+' --format='+OutFormat+' ';

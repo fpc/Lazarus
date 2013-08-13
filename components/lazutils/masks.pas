@@ -368,7 +368,7 @@ var
 begin
   FMasks := TObjectList.Create(True);
   
-  S := TParseStringList.Create(AValue, ASeparator + ' ');
+  S := TParseStringList.Create(AValue, ASeparator);
   try
     for I := 0 to S.Count - 1 do
       FMasks.Add(TMask.Create(S[I]));
