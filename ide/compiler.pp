@@ -45,7 +45,7 @@ uses
   OutputFilter,
   {$ENDIF}
   UTF8Process, InfoBuild, IDEMsgIntf, CompOptsIntf, IDEExternToolIntf,
-  DefineTemplates, LazFileUtils;
+  DefineTemplates, TransferMacros, LazFileUtils;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean) of object;
@@ -997,13 +997,17 @@ function TCompilerOptReader.ReadAndParseOptions: TModalResult;
 // fpc -Fr$(FPCMsgFile) -i
 var
   Lines: TStringList;
+  ParsedTarget: String;
 begin
   OptionIdCounter := 0;
   if fCompilerExecutable = '' then
     fCompilerExecutable := 'fpc';        // Let's hope "fpc" is found in PATH.
-
+  ParsedTarget := '-T$(TargetOS) -P$(TargetCPU)';
+  if not GlobalMacroList.SubstituteStr(ParsedTarget) then
+    raise Exception.CreateFmt('ReadAndParseOptions: Cannot substitute macros "%s".',
+                              [ParsedTarget]);
   // FPC with option -i
-  Lines:=RunTool(fCompilerExecutable, '-i');
+  Lines:=RunTool(fCompilerExecutable, ParsedTarget + ' -i');
   try
     if Lines = Nil then Exit(mrCancel);
     Result := ParseI(Lines);
@@ -1011,9 +1015,8 @@ begin
   finally
     Lines.Free;
   end;
-
   // FPC with option -h
-  Lines:=RunTool(fCompilerExecutable, '-h');
+  Lines:=RunTool(fCompilerExecutable, ParsedTarget + ' -h');
   try
     if Lines = Nil then Exit(mrCancel);
     Result := ParseH(Lines);
