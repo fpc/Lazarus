@@ -1055,6 +1055,9 @@ begin
   Result := fRootOptGroup.FindOptionById(aId);
 end;
 
+const
+  CommentId = '-dLazIdeComment_';
+
 function TCompilerOptReader.FromCustomOptions(aStrings: TStrings): TModalResult;
 var
   i, j: Integer;
@@ -1070,11 +1073,15 @@ begin
     begin
       s := Trim(aStrings[i]);
       if s = '' then Continue;
+
       sl.Clear;
       SplitCmdLineParams(s, sl);
       for j := 0 to sl.Count-1 do
         if AnsiStartsStr('-d', sl[j]) then
-          fDefines.Add(sl[j])
+        begin
+          if not AnsiStartsStr(CommentId, sl[j]) then
+            fDefines.Add(sl[j])
+        end
         else
           fRootOptGroup.SelectOption(sl[j]);
     end;
@@ -1088,9 +1095,23 @@ function TCompilerOptReader.ToCustomOptions(aStrings: TStrings;
 // Copy options to a list if they have a non-default value (True for boolean).
 
   function PossibleComment(aRoot: TCompilerOpt): string;
+  var
+    i: Integer;
+    ch: Char;
   begin
     if aUseComments then
-      Result := '    // ' + aRoot.Description
+    begin
+      // ToDo: Show "//" comment and change to a define when storing.
+      // Result := '    // ' + aRoot.Description
+      Result := '  ' + CommentId;
+      for i := 1 to Length(aRoot.Description) do
+      begin
+        ch := aRoot.Description[i];
+        if ch in [' '] then
+          ch := '_';           // Change illegal characters to '_'
+        Result := Result + ch;
+      end;
+    end
     else
       Result := '';
   end;

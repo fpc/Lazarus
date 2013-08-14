@@ -96,7 +96,6 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
     Width = 233
     BorderSpacing.Left = 29
     Caption = 'Use comments in custom options'
-    Enabled = False
     TabOrder = 4
   end
 end

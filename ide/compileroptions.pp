@@ -1616,6 +1616,7 @@ begin
     CustomConfigFile := aXMLConfig.GetValue(p+'ConfigFile/CustomConfigFile/Value', false);
   ConfigFilePath := f(aXMLConfig.GetValue(p+'ConfigFile/ConfigFilePath/Value', 'extrafpc.cfg'));
   CustomOptions := LineBreaksToSystemLineBreaks(aXMLConfig.GetValue(p+'CustomOptions/Value', ''));
+  UseCommentsInCustomOptions := aXMLConfig.GetValue(p+'ConfigFile/UseCommentsInCustomOptions/Value', false);
 
   { Compilation }
   CompilerPath := f(aXMLConfig.GetValue(p+'CompilerPath/Value','$(CompPath)'));
@@ -1814,6 +1815,7 @@ begin
   aXMLConfig.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', f(ConfigFilePath),'extrafpc.cfg');
   aXMLConfig.SetDeleteValue(p+'CustomOptions/Value',
                             LineBreaksToSystemLineBreaks(CustomOptions),''); // do not touch / \ characters
+  aXMLConfig.SetDeleteValue(p+'ConfigFile/UseCommentsInCustomOptions/Value', UseCommentsInCustomOptions,false);
 
   { Compilation }
   aXMLConfig.SetDeleteValue(p+'CompilerPath/Value', f(CompilerPath),'');

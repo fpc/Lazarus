@@ -72,6 +72,7 @@ type
     fEngine: TIDECfgScriptEngine;
     fSynCompletion: TSynCompletion;
     FOptionsReader: TCompilerOptReader;
+    FUseComments: boolean;
     procedure SetIdleConnected(AValue: TIdleActions);
     procedure SetStatusMessage(const AValue: string);
     procedure StartCompletion;
@@ -107,7 +108,6 @@ type
     property CompletionValues: TStrings read FCompletionValues;
     property CompletionHistory: TStrings read FCompletionHistory;
     property IdleConnected: TIdleActions read FIdleConnected write SetIdleConnected;
-    property CompOptions: TBaseCompilerOptions read FCompOptions;
     property OptionsReader: TCompilerOptReader read FOptionsReader;
   end;
 
@@ -125,10 +125,12 @@ begin
     FOptionsReader.FromCustomOptions(memoCustomOptions.Lines);
     AllOpts := TfrmAllCompilerOptions.Create(Nil);
     try
-      AllOpts.OptionsReader:=FOptionsReader;
+      AllOpts.OptionsReader := FOptionsReader;
+      AllOpts.cbUseComments.Checked := FUseComments;
       if AllOpts.ShowModal = mrOK then
       begin
         // Synchronize with custom options memo
+        FUseComments := AllOpts.cbUseComments.Checked;
         AllOpts.ToCustomOptions(memoCustomOptions.Lines);
         memoCustomOptions.Invalidate;
       end;
@@ -531,10 +533,10 @@ begin
       AddWord(ParsedCompilerOptsUsageVars[pcouv]);
 
   // add build macros and values
-  if CompOptions.BuildMacros<>nil then begin
-    for i:=0 to CompOptions.BuildMacros.Count-1 do
+  if FCompOptions.BuildMacros<>nil then begin
+    for i:=0 to FCompOptions.BuildMacros.Count-1 do
     begin
-      Macro:=CompOptions.BuildMacros[i];
+      Macro:=FCompOptions.BuildMacros[i];
       AddWord(Macro.Identifier);
       for j:=0 to Macro.Values.Count-1 do
         AddWord(Macro.Values[j]);
@@ -709,10 +711,10 @@ var
   Vars: TCTCfgScriptVariables;
 begin
   FCompOptions := AOptions as TBaseCompilerOptions;
-  FIsPackage := CompOptions is TPkgCompilerOptions;
+  FIsPackage := FCompOptions is TPkgCompilerOptions;
   //debugln(['TCompilerOtherOptionsFrame.ReadSettings ',dbgs(Pointer(FCompOptions)),' ',FCompOptions=Project1.CompilerOptions]);
 
-  CondSynEdit.Lines.Text := CompOptions.Conditionals;
+  CondSynEdit.Lines.Text := FCompOptions.Conditionals;
   if FHighlighter=nil then
   begin
     FHighlighter := TPreviewPasSyn.Create(Self);
@@ -721,14 +723,15 @@ begin
   EditorOpts.ReadHighlighterSettings(FHighlighter, '');
   EditorOpts.GetSynEditSettings(CondSynEdit);
 
-  Vars := GetBuildMacroValues(CompOptions,false);
+  Vars := GetBuildMacroValues(FCompOptions,false);
   if Vars<>nil then
     DefaultVariables.Assign(Vars)
   else
     DefaultVariables.Clear;
 
   // Custom Options
-  memoCustomOptions.Text := CompOptions.CustomOptions;
+  memoCustomOptions.Text := FCompOptions.CustomOptions;
+  FUseComments := FCompOptions.UseCommentsInCustomOptions;
 
   UpdateStatusBar;
 end;
@@ -743,6 +746,7 @@ begin
   begin
     Conditionals := CondSynEdit.Lines.Text;
     CustomOptions := memoCustomOptions.Text;
+    UseCommentsInCustomOptions := FUseComments;
   end;
 end;
 
