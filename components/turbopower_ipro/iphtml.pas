@@ -5257,7 +5257,7 @@ begin
     if Background <> '' then begin
       if BgPicture = nil then
         Owner.DoGetImage(Self, Owner.BuildPath(Background), BgPicture);
-      if BgPicture <> nil then begin
+      if (BgPicture <> nil) and (BgPicture.Height>0) and (BgPicture.Width>0) then begin
         MaxX := MaxI2(PageRect.Right, Owner.ClientRect.Right);           {!!.02}
         MaxY := MaxI2(PageRect.Bottom, Owner.ClientRect.Bottom);         {!!.02}
         Y := 0;
@@ -16869,8 +16869,6 @@ end;
 
 procedure TIpHtmlPropA.SetKnownSizeOfSpace(const Size: TSize);
 begin
-  if Size.cx = 0 then
-    raise EIpHtmlException.Create(SHtmlInternal);              {!!.02}
   FKnownSizeOfSpace := Size;
   FSizeOfSpaceKnown := True;
 end;
