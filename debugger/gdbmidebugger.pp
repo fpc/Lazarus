@@ -6123,12 +6123,12 @@ var
 
   procedure UpdateEntry(AnEntry: TCallStackEntry; AArgInfo, AFrameInfo : TGDBMINameValueList);
   var
-    i, j, n, e: Integer;
+    i, j, n, e, NameEnd: Integer;
     Arguments: TStringList;
     List: TGDBMINameValueList;
     Arg: PGDBMINameValue;
     addr: TDbgPtr;
-    func, filename, fullname, line, cl, fn, un: String;
+    func, filename, fullname, line, cl, fn, fa, un: String;
     loc: TDebuggerUnitInfo;
   begin
     Arguments := TStringList.Create;
@@ -6171,19 +6171,21 @@ func="??"
     if j > 1 then begin
       un := '';
       cl := '';
+      fa := '';
       i := pos('_$__', func);
       if i > 1 then begin
         // CLASSES$_$TREADER_$__$$_READINTEGER$$LONGINT
         // SYSTEM_TOBJECT_$__DISPATCH$formal
+        // UNIT1_TFORM1_$__FORMCLOSE$TOBJECT$TCLOSEACTION
         cl := copy(func, 1, i - 1); // unit and class
 
         if copy(func, i + 4, 3) = '$$_' then
           inc(i, 3);
-        j := PosEx('$', func, i + 4);
-        if j > 0
-        then j := j - (i + 4)
-        else j := MaxInt;
-        fn := copy(func, i + 4, j); // function
+        NameEnd := PosEx('$', func, i + 4);
+        if NameEnd > 0
+        then NameEnd := NameEnd - (i + 4)
+        else NameEnd := MaxInt;
+        fn := copy(func, i + 4, NameEnd); // function
 
         i := pos('$_$', cl);
         if i > 1 then begin
@@ -6201,7 +6203,8 @@ func="??"
       end
       else begin
         // SYSUTILS_COMPARETEXT$ANSISTRING$ANSISTRING$$LONGINT
-        fn := copy(func, 1, j - 1);
+        NameEnd := j;
+        fn := copy(func, 1, NameEnd - 1);
         i := pos('_', fn);
         if posex('_', fn, i + 1) < 1 then begin
           // Only one _ => split unit and class
@@ -6210,8 +6213,15 @@ func="??"
         end;
       end;
 
+      inc(NameEnd, 1);
+      if copy(func, NameEnd, 1) = '$' then
+        inc(NameEnd, 1);
+      if (length(func) >= NameEnd) and (func[NameEnd] in ['a'..'z', 'A'..'Z']) then
+        fa := copy(func, NameEnd, MaxInt); // args
+      fa := AnsiReplaceText(fa, '$', ',');
+
       //debugln([cl,' ## ', fn]);
-      loc := FTheDebugger.UnitInfoProvider.GetUnitInfoByFunction(un, cl, fn);
+      loc := FTheDebugger.UnitInfoProvider.GetUnitInfoByFunction(un, cl, fn, fa);
     end
     else begin
       loc := FTheDebugger.UnitInfoProvider.GetUnitInfoFor(filename, fullname);
