@@ -744,7 +744,7 @@ begin
   begin
     Start := i;
     if aOptStr[i] in ['0'..'9'] then
-      while (aOptStr[i] in ['0'..'9']) and (i <= Length(aOptStr)) do
+      while (i <= Length(aOptStr)) and (aOptStr[i] in ['0'..'9']) do
         Inc(i)
     else
       Inc(i);
