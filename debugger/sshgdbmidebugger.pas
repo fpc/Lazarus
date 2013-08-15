@@ -84,6 +84,7 @@ type
     property EncodeCurrentDirPath;
     property EncodeExeFileName;
     property InternalStartBreak;
+    property UseAsyncCommandMode;
   end;
 
 implementation
