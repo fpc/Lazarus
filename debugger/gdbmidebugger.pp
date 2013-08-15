@@ -2112,7 +2112,6 @@ var
   idx: Integer;
 begin
   Result := True;
-debugln(['PROCESS-RUN ----- ', DbgS(self), ' ',ClassName, ' ', DebugText]);
   AResult.State := dsNone;
   InLogWarning := False;
   FGotStopped := False;
@@ -2159,7 +2158,6 @@ debugln(['PROCESS-RUN ----- ', DbgS(self), ' ',ClassName, ' ', DebugText]);
       break;
 
   end;
-debugln('DONE RUN');
 end;
 
 function TGDBMIDebuggerCommandExecuteBase.ParseBreakInsertError(var AText: String; out
@@ -7926,7 +7924,6 @@ begin
   if FCurrentCmdIsAsync and (FCurrentCommand <> nil) then begin
     FCurrentCommand.ExecuteCommand('interrupt', []);
     FCurrentCommand.ExecuteCommand('info program', []); // trigger "*stopped..." msg. This may be deferred to the cmd after the "interupt"
-debugln(['PAUSE ----- ', DbgS(FCurrentCommand), ' ',FCurrentCommand.ClassName, ' ', FCurrentCommand.DebugText]);
     exit;
   end;
 
@@ -10712,7 +10709,6 @@ var
       4: begin
         FGotStopped := True;
         //AStoppedParams := Line;
-debugln(['PROCESS-cmd ----- ', DbgS(self), ' ',ClassName, ' ', DebugText]);
       end;
     else
       //TODO: should that better be dsError ?
