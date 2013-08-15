@@ -88,8 +88,6 @@ var
   ShowCodeNodeInfoCommand: TIDECommand;
   CmdCatView: TIDECommandCategory;
   ViewCodyWindowCommand: TIDECommand;
-  {$IFDEF EnableCodyExperiments}
-  {$ENDIF}
 begin
   CodyOptions:=TCodyMiscOptions.Create;
   CodyOptions.LoadSafe;
