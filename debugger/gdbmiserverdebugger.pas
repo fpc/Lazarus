@@ -44,6 +44,7 @@ type
     function CreateCommandInit: TGDBMIDebuggerCommandInitDebugger; override;
     function CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; override;
     procedure InterruptTarget; override;
+    function NeedReset: Boolean; override;
   public
     class function CreateProperties: TDebuggerProperties; override;  // Creates debuggerproperties
     class function Caption: String; override;
@@ -173,6 +174,11 @@ begin
   end;
 
   inherited InterruptTarget;
+end;
+
+function TGDBMIServerDebugger.NeedReset: Boolean;
+begin
+  Result := True;
 end;
 
 class function TGDBMIServerDebugger.CreateProperties: TDebuggerProperties;

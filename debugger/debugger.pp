@@ -2864,6 +2864,7 @@ type
     function GetLocation: TDBGLocationRec; virtual;
     procedure LockCommandProcessing; virtual;
     procedure UnLockCommandProcessing; virtual;
+    function  NeedReset: Boolean; virtual;
     procedure AddNotifyEvent(AReason: TDebuggerNotifyReason; AnEvent: TNotifyEvent);
     procedure RemoveNotifyEvent(AReason: TDebuggerNotifyReason; AnEvent: TNotifyEvent);
   public
@@ -6308,6 +6309,11 @@ end;
 procedure TDebugger.UnLockCommandProcessing;
 begin
   // nothing
+end;
+
+function TDebugger.NeedReset: Boolean;
+begin
+  Result := False;
 end;
 
 procedure TDebugger.AddNotifyEvent(AReason: TDebuggerNotifyReason; AnEvent: TNotifyEvent);
