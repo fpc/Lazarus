@@ -479,11 +479,13 @@ begin
   then FOutputBuf := '';
   FFlushAfterRead := False;
 
-  if ((DBG_CMD_ECHO_FULL <> nil) and (DBG_CMD_ECHO_FULL^.Enabled))
-  then debugln(DBG_CMD_ECHO_FULL, '<< TCmdLineDebugger.ReadLn "',Result,'"')
-  else if (length(Result) < 300)
-  then debugln(DBG_CMD_ECHO, '<< TCmdLineDebugger.ReadLn "',Result,'"')
-  else debugln(DBG_CMD_ECHO, ['<< TCmdLineDebugger.ReadLn "',copy(Result, 1, 200), '" ..(',length(Result)-250,').. "',copy(Result, length(Result)-99, 100),'"']);
+  if not( FReadLineTimedOut and (Result = '') ) then begin
+    if ((DBG_CMD_ECHO_FULL <> nil) and (DBG_CMD_ECHO_FULL^. Enabled))
+    then debugln(DBG_CMD_ECHO_FULL, '<< TCmdLineDebugger.ReadLn "',Result,'"')
+    else if (length(Result) < 300)
+    then debugln(DBG_CMD_ECHO, '<< TCmdLineDebugger.ReadLn "',Result,'"')
+    else debugln(DBG_CMD_ECHO, ['<< TCmdLineDebugger.ReadLn "',copy(Result, 1, 200), '" ..(',length(Result)-250,').. "',copy(Result, length(Result)-99, 100),'"']);
+  end;
 end;
 
 procedure TCmdLineDebugger.SendCmdLn(const ACommand: String); overload;

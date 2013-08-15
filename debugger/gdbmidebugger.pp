@@ -231,14 +231,15 @@ type
     FQueueRunLevel: Integer;
     FState : TGDBMIDebuggerCommandState;
     FSeenStates: TGDBMIDebuggerCommandStates;
-    FTheDebugger: TGDBMIDebugger; // Set during Execute
     FLastExecCommand: String;
     FLastExecResult: TGDBMIExecResult;
     FLogWarnings, FFullCmdReply: String;
+    FGotStopped: Boolean; // used in ProcessRunning
     function GetDebuggerProperties: TGDBMIDebuggerPropertiesBase;
     function GetDebuggerState: TDBGState;
     function GetTargetInfo: PGDBMITargetInfo;
   protected
+    FTheDebugger: TGDBMIDebugger; // Set during Execute
     procedure SetDebuggerState(const AValue: TDBGState);
     procedure SetDebuggerErrorState(const AMsg: String; const AInfo: String = '');
     function  ErrorStateMessage: String; virtual;
@@ -659,6 +660,9 @@ type
     function  CreateCommandInit: TGDBMIDebuggerCommandInitDebugger; virtual;
     function  CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; virtual;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
+    property  CurrentCmdIsAsync: Boolean read FCurrentCmdIsAsync;
+    property  CurrentCommand: TGDBMIDebuggerCommand read FCurrentCommand;
+
     procedure ClearCommandQueue;
     function  GetIsIdle: Boolean; override;
     procedure ResetStateToIdle; override;
@@ -700,6 +704,8 @@ type
     //LockCommandProcessing also takes care to run the queue, if unlocked and not already running
     procedure LockCommandProcessing; override;
     procedure UnLockCommandProcessing; override;
+
+    property AsyncModeEnabled: Boolean read FAsyncModeEnabled;
 
     // internal testing
     procedure TestCmd(const ACommand: String); override;
@@ -1921,7 +1927,7 @@ end;
 function TGDBMIDebuggerCommandExecuteBase.ProcessRunning(var AStoppedParams: String; out
   AResult: TGDBMIExecResult): Boolean;
 var
-  InLogWarning, GotStopped: Boolean;
+  InLogWarning: Boolean;
 
   function DoExecAsync(var Line: String): Boolean;
   var
@@ -1935,10 +1941,10 @@ var
     case StringCase(S, ['stopped', 'started', 'disappeared', 'running']) of
       0: begin // stopped
           AStoppedParams := Line;
-          GotStopped := True;
+          FGotStopped := True;
         end;
       1: ; // Known, but undocumented classes
-      2: GotStopped := True;
+      2: FGotStopped := True;
       3: begin // running,thread-id="1"  // running,thread-id="all"
           if (FTheDebugger.Threads.Monitor <> nil) and
              (FTheDebugger.Threads.Monitor.CurrentThreads <> nil)
@@ -2106,14 +2112,19 @@ var
   idx: Integer;
 begin
   Result := True;
+debugln(['PROCESS-RUN ----- ', DbgS(self), ' ',ClassName, ' ', DebugText]);
   AResult.State := dsNone;
   InLogWarning := False;
-  GotStopped := False;
+  FGotStopped := False;
   FLogWarnings := '';
   while FTheDebugger.DebugProcessRunning do
   begin
-    S := FTheDebugger.ReadLine;
-    if S = '(gdb) ' then Break;
+    S := FTheDebugger.ReadLine(50);
+    if (S = '(gdb) ') or
+       ( (S = '') and
+         (self is TGDBMIDebuggerCommandExecute) and (TGDBMIDebuggerCommandExecute(self).FDidKillNow) )
+    then
+      Break;
 
     while S <> '' do
     begin
@@ -2133,7 +2144,7 @@ begin
         then begin
           DebugLn(DBG_VERBOSE, '[DBGTGT] ', Copy(S, 1, idx - 1));
           Delete(S, 1, idx - 1);
-          GotStopped := True;
+          FGotStopped := True;
           Continue;
         end
         else begin
@@ -2144,10 +2155,11 @@ begin
       Break;
     end;
 
-    if FTheDebugger.FAsyncModeEnabled and GotStopped then
+    if FTheDebugger.FAsyncModeEnabled and FGotStopped then
       break;
 
   end;
+debugln('DONE RUN');
 end;
 
 function TGDBMIDebuggerCommandExecuteBase.ParseBreakInsertError(var AText: String; out
@@ -5800,8 +5812,7 @@ begin
 
         FTheDebugger.FCurrentCmdIsAsync := False;
         s := GDBMIExecCommandMap[FCurrentExecCmd] + FCurrentExecArg;
-        if TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).UseAsyncCommandMode and
-           FTheDebugger.FCommandAsyncState[FCurrentExecCmd]
+        if FTheDebugger.FAsyncModeEnabled and FTheDebugger.FCommandAsyncState[FCurrentExecCmd]
         then begin
           if not ExecuteCommand(s + ' &', FResult) then
             exit;
@@ -5945,7 +5956,7 @@ begin
   then SetDebuggerState(dsStop);
 
   // Now give the ProcessRunning in the current DoExecute something
-  FTheDebugger.SendCmdLn('print 1');
+  //FTheDebugger.SendCmdLn('print 1');
 end;
 
 { TGDBMIDebuggerCommandLineSymbolInfo }
@@ -7911,9 +7922,11 @@ procedure TGDBMIDebugger.InterruptTarget;
 begin
   debugln(DBGMI_QUEUE_DEBUG, ['TGDBMIDebugger.InterruptTarget: TargetPID=', TargetPID]);
 
-  if FAsyncModeEnabled then begin
-  //if FCurrentCmdIsAsync and (FCurrentCommand <> nil) then begin
+  //if FAsyncModeEnabled then begin
+  if FCurrentCmdIsAsync and (FCurrentCommand <> nil) then begin
     FCurrentCommand.ExecuteCommand('interrupt', []);
+    FCurrentCommand.ExecuteCommand('info program', []); // trigger "*stopped..." msg. This may be deferred to the cmd after the "interupt"
+debugln(['PAUSE ----- ', DbgS(FCurrentCommand), ' ',FCurrentCommand.ClassName, ' ', FCurrentCommand.DebugText]);
     exit;
   end;
 
@@ -10679,7 +10692,7 @@ var
 
     OldResult := CurRes;
     Result := True;
-    case StringCase(ResultClass, ['done', 'running', 'exit', 'error']) of
+    case StringCase(ResultClass, ['done', 'running', 'exit', 'error', 'stopped']) of
       0: begin // done
       end;
       1: begin // running
@@ -10695,6 +10708,11 @@ var
         and (pos('not being run', Line) > 0)
         then AResult.State := dsStop
         else AResult.State := dsError;
+      end;
+      4: begin
+        FGotStopped := True;
+        //AStoppedParams := Line;
+debugln(['PROCESS-cmd ----- ', DbgS(self), ' ',ClassName, ' ', DebugText]);
       end;
     else
       //TODO: should that better be dsError ?
@@ -10809,6 +10827,11 @@ var
       end;
 
       DoDbgEvent(ecProcess, etProcessStart, 'Process Start: ' + FTheDebugger.FileName);
+    end
+    else
+    if S = 'stopped' then begin
+      FGotStopped := True;
+      // StoppedParam ??
     end
     else
       DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unexpected async-record: ', Line);

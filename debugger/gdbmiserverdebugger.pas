@@ -43,6 +43,7 @@ type
   protected
     function CreateCommandInit: TGDBMIDebuggerCommandInitDebugger; override;
     function CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; override;
+    procedure InterruptTarget; override;
   public
     class function CreateProperties: TDebuggerProperties; override;  // Creates debuggerproperties
     class function Caption: String; override;
@@ -76,6 +77,9 @@ type
 
 implementation
 
+resourcestring
+  GDBMiSNoAsyncMode = 'GDB does not support async mode';
+
 type
 
   { TGDBMIServerDebuggerCommandInitDebugger }
@@ -107,6 +111,12 @@ var
 begin
   Result := inherited DoExecute;
   if (not FSuccess) then exit;
+
+  if not TGDBMIDebugger(FTheDebugger).AsyncModeEnabled then begin
+    SetDebuggerErrorState(GDBMiSNoAsyncMode);
+    FSuccess := False;
+    exit;
+  end;
 
   // TODO: Maybe should be done in CommandStart, But Filename, and Environment will be done beforle Start
   FSuccess := ExecuteCommand(Format('target remote %s:%s',
@@ -154,6 +164,15 @@ function TGDBMIServerDebugger.CreateCommandStartDebugging(
   AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging;
 begin
   Result:= TGDBMIServerDebuggerCommandStartDebugging.Create(Self, AContinueCommand);
+end;
+
+procedure TGDBMIServerDebugger.InterruptTarget;
+begin
+  if not( CurrentCmdIsAsync and (CurrentCommand <> nil) ) then begin
+    exit;
+  end;
+
+  inherited InterruptTarget;
 end;
 
 class function TGDBMIServerDebugger.CreateProperties: TDebuggerProperties;
