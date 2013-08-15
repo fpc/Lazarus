@@ -6184,7 +6184,7 @@ func="??"
         NameEnd := PosEx('$', func, i + 4);
         if NameEnd > 0
         then NameEnd := NameEnd - (i + 4)
-        else NameEnd := MaxInt;
+        else NameEnd := length(func) + 1;
         fn := copy(func, i + 4, NameEnd); // function
 
         i := pos('$_$', cl);
