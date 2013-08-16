@@ -171,7 +171,7 @@ type
     property EncodeCurrentDirPath;
     property EncodeExeFileName;
     property InternalStartBreak;
-    //property UseAsyncCommandMode;
+    property UseAsyncCommandMode;
   end;
 
   TGDBMIDebugger = class;
