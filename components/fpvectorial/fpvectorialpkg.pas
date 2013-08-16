@@ -12,7 +12,8 @@ uses
   dxfvectorialreader, epsvectorialreader, lasvectorialreader, 
   lazvectorialreader, mathmlvectorialreader, odgvectorialreader, 
   rawvectorialreadwrite, svgvectorialreader, svgvectorialwriter, 
-  svgzvectorialreader, odtvectorialwriter, LazarusPackageIntf;
+  svgzvectorialreader, odtvectorialwriter, docxvectorialwriter, 
+  LazarusPackageIntf;
 
 implementation
 

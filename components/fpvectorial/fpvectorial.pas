@@ -52,7 +52,7 @@ type
     { Formula formats }
     vfMathML,
     { Text Document formats }
-    vfODT,
+    vfODT, vfDOCX,
     { Raster Image formats }
     vfRAW
     );
