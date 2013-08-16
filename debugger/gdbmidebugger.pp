@@ -70,7 +70,8 @@ type
   // The internal ExecCommand of the new Commands (object queue)
   TGDBMICommandFlag = (
     cfCheckState, // Copy CmdResult to DebuggerState, EXCEPT dsError,dsNone (e.g copy dsRun, dsPause, dsStop, dsIdle)
-    cfCheckError  // Copy CmdResult to DebuggerState, ONLY if dsError
+    cfCheckError, // Copy CmdResult to DebuggerState, ONLY if dsError
+    cfTryAsync    // try with " &"
   );
   TGDBMICommandFlags = set of TGDBMICommandFlag;
 
@@ -323,6 +324,8 @@ type
     procedure DoFinished;
     function  Execute: Boolean;
     procedure Cancel;
+    function  KillNow: Boolean; virtual;
+
     function  DebugText: String; virtual;
     property  State: TGDBMIDebuggerCommandState read FState;
     property  OnExecuted: TNotifyEvent read FOnExecuted write FOnExecuted;
@@ -396,9 +399,15 @@ type
   { TGDBMIDebuggerCommandExecuteBase }
 
   TGDBMIDebuggerCommandExecuteBase = class(TGDBMIDebuggerCommand)
+  private
+    FCanKillNow, FDidKillNow: Boolean;
   protected
     function ProcessRunning(var AStoppedParams: String; out AResult: TGDBMIExecResult): Boolean;
     function ParseBreakInsertError(var AText: String; out AnId: Integer): Boolean;
+    function  ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean; virtual;
+  public
+    constructor Create(AOwner: TGDBMIDebugger);
+    function KillNow: Boolean; override;
   end;
 
   { TGDBMIDebuggerCommandStartBase }
@@ -460,14 +469,13 @@ type
     FExecType: TGDBMIExecCommandType;
     FCurrentExecCmd:  TGDBMIExecCommandType;
     FCurrentExecArg: String;
-    FCanKillNow, FDidKillNow: Boolean;
     FRunToSrc: String;
     FRunToLine: Integer;
     FStepBreakPoint: Integer;
   protected
     procedure DoLockQueueExecute; override;
     procedure DoUnockQueueExecute; override;
-    function  ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean;
+    function  ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean; override;
     {$IFDEF MSWindows}
     function FixThreadForSigTrap: Boolean;
     {$ENDIF}
@@ -478,7 +486,6 @@ type
     function  DebugText: String; override;
     property  Result: TGDBMIExecResult read FResult;
     property  NextExecQueued: Boolean read FNextExecQueued;
-    function  KillNow: Boolean;
   end;
 
   { TGDBMIDebuggerCommandKill }
@@ -2120,8 +2127,7 @@ begin
   begin
     S := FTheDebugger.ReadLine(50);
     if (S = '(gdb) ') or
-       ( (S = '') and
-         (self is TGDBMIDebuggerCommandExecute) and (TGDBMIDebuggerCommandExecute(self).FDidKillNow) )
+       ( (S = '') and FDidKillNow )
     then
       Break;
 
@@ -2190,6 +2196,50 @@ begin
 
   Delete(AText, i, i2 - i);
   Result := True;
+end;
+
+function TGDBMIDebuggerCommandExecuteBase.ProcessStopped(const AParams: String;
+  const AIgnoreSigIntState: Boolean): Boolean;
+begin
+  Result := False;
+end;
+
+constructor TGDBMIDebuggerCommandExecuteBase.Create(AOwner: TGDBMIDebugger);
+begin
+  FCanKillNow := False;
+  inherited Create(AOwner);
+end;
+
+function TGDBMIDebuggerCommandExecuteBase.KillNow: Boolean;
+var
+  StoppedParams: String;
+  R: TGDBMIExecResult;
+begin
+  Result := False;
+  if not FCanKillNow then exit;
+  // only here, if we are in ProcessRunning
+  FDidKillNow := True;
+
+  FTheDebugger.GDBPause(True);
+  FTheDebugger.CancelAllQueued; // before ProcessStopped
+  Result := ProcessRunning(StoppedParams, R);
+  if ProcessResultTimedOut then begin
+    // the uter Processrunning should stop, due to process no longer running
+    FTheDebugger.DebugProcess.Terminate(0);
+    Result := True;
+    exit;
+  end;
+  if StoppedParams <> ''
+  then ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
+
+  ExecuteCommand('kill', [], 1500);
+  Result := ExecuteCommand('info program', [], R);
+  Result := Result and (Pos('not being run', R.Values) > 0);
+  if Result
+  then SetDebuggerState(dsStop);
+
+  // Now give the ProcessRunning in the current DoExecute something
+  //FTheDebugger.SendCmdLn('print 1');
 end;
 
 
@@ -4405,6 +4455,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
     BrkErr: Boolean;
   begin
     Result := 0; // Target PID
+    FDidKillNow := False;
     RunToMainState := msEntryPoint;
     case DebuggerProperties.InternalStartBreak of
       gdsbDefault:  RunToMainState := msDefault;
@@ -4434,7 +4485,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       end;
 
       // RUN
-      if not ExecuteCommand(Cmd, R)
+      if not ExecuteCommand(Cmd, R, [cfTryAsync])
       then begin
         SetDebuggerErrorState(Format(gdbmiCommandStartMainRunError, [LineEnding]),
                               ErrorStateInfo);
@@ -4445,8 +4496,14 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       s2 := '';
       if R.State = dsRun
       then begin
+        if not (rfAsyncFailed in R.Flags) then begin
+          FCanKillNow := True;
+          FTheDebugger.FCurrentCmdIsAsync := True;
+        end;
         ProcessRunning(s2, R);
-        if pos('reason="exited-normally"', s2) > 0 then begin
+        FCanKillNow := False;
+        FTheDebugger.FCurrentCmdIsAsync := False;
+        if (pos('reason="exited-normally"', s2) > 0) or FDidKillNow then begin
           // app has already run
           R.State := dsStop;
           break;
@@ -4476,6 +4533,8 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
     if DebuggerState = dsError then
       exit;
 
+    if FDidKillNow then
+      exit;
     if R.State = dsStop
     then begin
       debugln(DBG_WARNINGS, 'Debugger INIT failed. App has already run');
@@ -5790,6 +5849,7 @@ var
   NextExecCmdObj: TGDBMIDebuggerCommandExecute;
   R: TGDBMIExecResult;
   s: String;
+  AFlags: TGDBMICommandFlags;
 begin
   Result := True;
   FCanKillNow := False;
@@ -5810,23 +5870,18 @@ begin
 
         FTheDebugger.FCurrentCmdIsAsync := False;
         s := GDBMIExecCommandMap[FCurrentExecCmd] + FCurrentExecArg;
-        if FTheDebugger.FAsyncModeEnabled and FTheDebugger.FCommandAsyncState[FCurrentExecCmd]
-        then begin
-          if not ExecuteCommand(s + ' &', FResult) then
-            exit;
-          if (FResult.State = dsError) then //and (pos('async', lowercase(FResult.Values)) > 0) then
-          begin
-            FTheDebugger.FCommandAsyncState[FCurrentExecCmd] := False;
-            if not ExecuteCommand(s, FResult) then
-              exit;
-          end
+        AFlags := [];
+        if FTheDebugger.FAsyncModeEnabled and FTheDebugger.FCommandAsyncState[FCurrentExecCmd] then
+          AFlags := [cfTryAsync];
+        if not ExecuteCommand(s, FResult, AFlags) then
+          exit;
+        if (cfTryAsync in AFlags) and (FResult.State <> dsError) then begin
+          if (rfAsyncFailed in FResult.Flags) then
+            FTheDebugger.FCommandAsyncState[FCurrentExecCmd] := False
           else
             FTheDebugger.FCurrentCmdIsAsync := True;
-        end
-        else begin
-          if not ExecuteCommand(s, FResult) then
-            exit;
         end;
+
         if CheckResultForError(FResult)
         then exit;
         RunWarnings := FLogWarnings;
@@ -5923,38 +5978,6 @@ end;
 function TGDBMIDebuggerCommandExecute.DebugText: String;
 begin
   Result := Format('%s: %s', [ClassName, GDBMIExecCommandMap[FCurrentExecCmd]]);
-end;
-
-function TGDBMIDebuggerCommandExecute.KillNow: Boolean;
-var
-  StoppedParams: String;
-  R: TGDBMIExecResult;
-begin
-  Result := False;
-  if not FCanKillNow then exit;
-  // only here, if we are in ProcessRunning
-  FDidKillNow := True;
-
-  FTheDebugger.GDBPause(True);
-  FTheDebugger.CancelAllQueued; // before ProcessStopped
-  Result := ProcessRunning(StoppedParams, R);
-  if ProcessResultTimedOut then begin
-    // the uter Processrunning should stop, due to process no longer running
-    FTheDebugger.DebugProcess.Terminate(0);
-    Result := True;
-    exit;
-  end;
-  if StoppedParams <> ''
-  then ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
-
-  ExecuteCommand('kill', [], 1500);
-  Result := ExecuteCommand('info program', [], R);
-  Result := Result and (Pos('not being run', R.Values) > 0);
-  if Result
-  then SetDebuggerState(dsStop);
-
-  // Now give the ProcessRunning in the current DoExecute something
-  //FTheDebugger.SendCmdLn('print 1');
 end;
 
 { TGDBMIDebuggerCommandLineSymbolInfo }
@@ -6807,7 +6830,9 @@ begin
   try
     CancelAllQueued;
     if (DebugProcess <> nil) and DebugProcess.Running then begin
-      if State = dsRun then GDBPause(True);
+      if FCurrentCommand <> Nil then
+        FCurrentCommand.KillNow;
+      if (State = dsRun) then GDBPause(True);
       ExecuteCommand('-gdb-exit', [], []);
     end;
     inherited Done;
@@ -7779,9 +7804,7 @@ begin
     Exit;
   end;
 
-  if (FCurrentCommand is TGDBMIDebuggerCommandExecute)
-  and TGDBMIDebuggerCommandExecute(FCurrentCommand).KillNow
-  then begin
+  if FCurrentCommand.KillNow then begin
     debugln(DBG_VERBOSE, ['KillNow did stop']);
     Result := True;
     exit;
@@ -10599,9 +10622,20 @@ function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
   end;
 
 begin
+  AResult.Flags := [];
+
+  if cfTryAsync in AFlags then begin
+    if FTheDebugger.FAsyncModeEnabled then begin
+      Result := ExecuteCommand(ACommand + ' &', AResult, AFlags - [cfTryAsync], ATimeOut);
+      if (not Result) or (AResult.State <> dsError) then
+        exit;
+    end;
+
+    AResult.Flags := [rfAsyncFailed];
+  end;
+
   AResult.Values := '';
   AResult.State := dsNone;
-  AResult.Flags := [];
   FLastExecCommand := ACommand;
   FLastExecwasTimeOut := False;
 
@@ -10611,7 +10645,6 @@ begin
   try
     FTheDebugger.FErrorHandlingFlags := FTheDebugger.FErrorHandlingFlags
       + [ehfDeferReadWriteError] - [ehfGotReadError, ehfGotWriteError];
-
     FTheDebugger.SendCmdLn(ACommand);
     if ehfGotWriteError in FTheDebugger.FErrorHandlingFlags then begin
       ProcessResult(AResult, 50); // not expecting anything
@@ -11734,6 +11767,11 @@ begin
   DoCancel;
   DoOnCanceled;
   SetCommandState(dcsCanceled);
+end;
+
+function TGDBMIDebuggerCommand.KillNow: Boolean;
+begin
+  Result := False;
 end;
 
 function TGDBMIDebuggerCommand.DebugText: String;

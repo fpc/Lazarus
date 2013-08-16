@@ -41,9 +41,10 @@ uses
 type
 
   TGDBMIResultFlags = set of (
-    rfNoMI         // flag is set if the output is not MI formatted
+    rfNoMI,        // flag is set if the output is not MI formatted
                    // some MI functions return normal output
                    // some normal functions return MI output
+    rfAsyncFailed  //
   );
 
   TGDBMIExecResult = record
