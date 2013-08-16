@@ -81,6 +81,7 @@ type
     property MaxDisplayLengthForString;
     property TimeoutForEval;
     property WarnOnTimeOut;
+    property WarnOnInternalError;
     property EncodeCurrentDirPath;
     property EncodeExeFileName;
     property InternalStartBreak;

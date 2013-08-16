@@ -135,6 +135,7 @@ type
     FMaxDisplayLengthForString: Integer;
     FTimeoutForEval: Integer;
     FUseAsyncCommandMode: Boolean;
+    FWarnOnInternalError: Boolean;
     FWarnOnTimeOut: Boolean;
     procedure SetMaxDisplayLengthForString(AValue: Integer);
     procedure SetTimeoutForEval(const AValue: Integer);
@@ -150,6 +151,7 @@ type
     property MaxDisplayLengthForString: Integer read FMaxDisplayLengthForString write SetMaxDisplayLengthForString;
     property TimeoutForEval: Integer read FTimeoutForEval write SetTimeoutForEval;
     property WarnOnTimeOut: Boolean  read FWarnOnTimeOut write SetWarnOnTimeOut;
+    property WarnOnInternalError: Boolean  read FWarnOnInternalError write FWarnOnInternalError;
     property EncodeCurrentDirPath: TGDBMIDebuggerFilenameEncoding
              read FEncodeCurrentDirPath write FEncodeCurrentDirPath default gdfeDefault;
     property EncodeExeFileName: TGDBMIDebuggerFilenameEncoding
@@ -168,6 +170,7 @@ type
     property MaxDisplayLengthForString;
     property TimeoutForEval;
     property WarnOnTimeOut;
+    property WarnOnInternalError;
     property EncodeCurrentDirPath;
     property EncodeExeFileName;
     property InternalStartBreak;
@@ -6644,6 +6647,7 @@ begin
   FTimeoutForEval := -1;
   {$ENDIF}
   FWarnOnTimeOut := True;
+  FWarnOnInternalError := True;
   FEncodeCurrentDirPath := gdfeDefault;
   FEncodeExeFileName := gdfeDefault;
   FInternalStartBreak := gdsbDefault;
@@ -10804,6 +10808,15 @@ var
     then begin
       TargetInfo^.TargetFlags := TargetInfo^.TargetFlags - [tfHasSymbols];
       DoDbgEvent(ecDebugger, etDefault, Format('File ''%s'' has no debug symbols', [FTheDebugger.FileName]));
+    end;
+    if (Pos('internal-error:', LowerCase(Line)) > 0) or
+       (Pos('internal to gdb has been detected', LowerCase(Line)) > 0) or
+       (Pos('further debugging may prove unreliable', LowerCase(Line)) > 0)
+    then begin
+      DoDbgEvent(ecDebugger, etDefault, Format('GDB has encountered an internal error: %s', [Line]));
+      if DebuggerProperties.WarnOnInternalError
+      then MessageDlg('Warning', 'GDB has encountered an internal error: ' + Line,
+                      mtWarning, [mbOK], 0);
     end;
     DebugLn(DBG_VERBOSE, '[Debugger] Log output: ', Line);
     if Line = '&"kill\n"'
