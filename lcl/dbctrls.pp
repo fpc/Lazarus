@@ -680,6 +680,8 @@ Type
     property AutoSize;
     property BiDiMode;
     property BorderSpacing;
+    property BorderStyle;
+    property CharCase;
     property Color;
     property DataField;
     property DataSource;
