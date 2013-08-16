@@ -1239,7 +1239,7 @@ begin
             EnvironmentOptions.DebuggerShowStopMessage:=false;
         end;
 
-        if EnvironmentOptions.DebuggerResetAfterRun then
+        if EnvironmentOptions.DebuggerResetAfterRun or FDebugger.NeedReset then
           ResetDebugger
         else
           FDebugger.FileName := '';  // SetState(dsIdle) via ResetStateToIdle
@@ -2213,6 +2213,7 @@ begin
     if (FDebugger <> nil)
     and (not (FDebugger.ClassType = NewDebuggerClass) // exact class match
           or (FDebugger.ExternalDebugger <> EnvironmentOptions.GetParsedDebuggerFilename)
+          or (FDebugger.State in [dsError])
         )
     then begin
       // the current debugger is the wrong type -> free it
