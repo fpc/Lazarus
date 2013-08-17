@@ -61,7 +61,7 @@ type
     FPointSeparator: TFormatSettings;
     // Strings with the contents of files
     FMeta, FSettings, FStyles, FContent, FMimetype: string;
-    FMetaInfManifest: string;
+    FMetaInfManifest, FManifestRDF: string;
     // helper routines
     function StyleNameToODTStyleName(AData: TvVectorialDocument; AStyleIndex: Integer; AToContentAutoStyle: Boolean = False): string; overload;
     function StyleNameToODTStyleName(AData: TvVectorialDocument; AStyle: TvStyle; AToContentAutoStyle: Boolean = False): string; overload;
@@ -69,6 +69,7 @@ type
     // Routines to write those files
     procedure WriteMimetype;
     procedure WriteMetaInfManifest;
+    procedure WriteManifestRDF;
     procedure WriteMeta;
     procedure WriteSettings;
     procedure WriteStyles(AData: TvVectorialDocument);
@@ -76,7 +77,8 @@ type
     procedure WritePage(ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
     //
     procedure WriteParagraph(AEntity: TvParagraph; ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
-    procedure WriteTextSpan(AEntity: TvText; ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
+    procedure WriteTextSpan(AEntity: TvText; AParagraph: TvParagraph;
+      ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
     // Routines to write parts of those files
     function WriteStylesXMLAsString: string;
     //
@@ -102,6 +104,7 @@ const
   OPENDOC_PATH_MIMETYPE  = 'mimetype';
   OPENDOC_PATH_METAINF = 'META-INF' + '/';
   OPENDOC_PATH_METAINF_MANIFEST = 'META-INF' + '/' + 'manifest.xml';
+  OPENDOC_PATH_MANIFESTRDF = 'manifest.rdf';
 
   { OpenDocument schemas constants }
   SCHEMAS_XMLNS          = 'http://schemas.openxmlformats.org/officeDocument/2006/extended-properties';
@@ -178,7 +181,7 @@ var
   lStyleIndex: Integer;
 begin
   lStyleIndex := AData.FindStyleIndex(AStyle);
-  StyleNameToODTStyleName(AData, lStyleIndex, AToContentAutoStyle);
+  Result := StyleNameToODTStyleName(AData, lStyleIndex, AToContentAutoStyle);
 end;
 
 function TvODTVectorialWriter.FloatToODTText(AFloat: Double): string;
@@ -202,6 +205,29 @@ begin
    '  <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="meta.xml" />' + LineEnding +
    '  <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="settings.xml" />' + LineEnding +
    '</manifest:manifest>';
+end;
+
+procedure TvODTVectorialWriter.WriteManifestRDF;
+begin
+  FManifestRDF :=
+   XML_HEADER + LineEnding +
+   '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">' + LineEnding +
+   '  <rdf:Description rdf:about="styles.xml">' + LineEnding +
+   '    <rdf:type rdf:resource="http://docs.oasis-open.org/ns/office/1.2/meta/odf#StylesFile"/>' + LineEnding +
+   '  </rdf:Description>' + LineEnding +
+   '  <rdf:Description rdf:about="">' + LineEnding +
+   '    <ns0:hasPart xmlns:ns0="http://docs.oasis-open.org/ns/office/1.2/meta/pkg#" rdf:resource="styles.xml"/>' + LineEnding +
+   '  </rdf:Description>' + LineEnding +
+   '  <rdf:Description rdf:about="content.xml">' + LineEnding +
+   '    <rdf:type rdf:resource="http://docs.oasis-open.org/ns/office/1.2/meta/odf#ContentFile"/>' + LineEnding +
+   '  </rdf:Description>' + LineEnding +
+   '  <rdf:Description rdf:about="">' + LineEnding +
+   '    <ns0:hasPart xmlns:ns0="http://docs.oasis-open.org/ns/office/1.2/meta/pkg#" rdf:resource="content.xml"/>' + LineEnding +
+   '  </rdf:Description>' + LineEnding +
+   '  <rdf:Description rdf:about="">' + LineEnding +
+   '    <rdf:type rdf:resource="http://docs.oasis-open.org/ns/office/1.2/meta/pkg#Document"/>' + LineEnding +
+   '  </rdf:Description>' + LineEnding +
+   '</rdf:RDF>' + LineEnding;
 end;
 
 procedure TvODTVectorialWriter.WriteMeta;
@@ -855,7 +881,7 @@ begin
 
     if not (lCurEntity is TvText) then Continue;
 
-    WriteTextSpan(TvText(lCurEntity), ACurPage, AData);
+    WriteTextSpan(TvText(lCurEntity), AEntity, ACurPage, AData);
   end;
 
   FContent := FContent +
@@ -915,18 +941,20 @@ begin
 
 end;
 
-procedure TvODTVectorialWriter.WriteTextSpan(AEntity: TvText;
+procedure TvODTVectorialWriter.WriteTextSpan(AEntity: TvText; AParagraph: TvParagraph;
   ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
 var
   AEntityStyleName: string;
+  lStyle: TvStyle;
 begin
-  if AEntity.Style = nil then
+  lStyle := AEntity.GetCombinedStyle(AParagraph);
+  if lStyle = nil then
   begin
     AEntityStyleName := 'Standard';
   end
   else
   begin
-    AEntityStyleName := StyleNameToODTStyleName(AData, AEntity.Style, False);
+    AEntityStyleName := StyleNameToODTStyleName(AData, lStyle, False);
   end;
   {
   <text:p text:style-name="P2">
@@ -969,12 +997,13 @@ var
   FZip: TZipper;
   // Streams with the contents of files
   FSMeta, FSSettings, FSStyles, FSContent, FSMimetype: TStringStream;
-  FSMetaInfManifest: TStringStream;
+  FSMetaInfManifest, FSManifestRDF: TStringStream;
 begin
   { Fill the strings with the contents of the files }
 
   WriteMimetype();
   WriteMetaInfManifest();
+  WriteManifestRDF();
   WriteMeta();
   WriteSettings();
   WriteStyles(AData);
@@ -988,6 +1017,7 @@ begin
   FSContent := TStringStream.Create(FContent);
   FSMimetype := TStringStream.Create(FMimetype);
   FSMetaInfManifest := TStringStream.Create(FMetaInfManifest);
+  FSManifestRDF := TStringStream.Create(FManifestRDF);
 
   { Now compress the files }
 
@@ -1001,6 +1031,7 @@ begin
     FZip.Entries.AddFileEntry(FSContent, OPENDOC_PATH_CONTENT);
     FZip.Entries.AddFileEntry(FSMimetype, OPENDOC_PATH_MIMETYPE);
     FZip.Entries.AddFileEntry(FSMetaInfManifest, OPENDOC_PATH_METAINF_MANIFEST);
+    FZip.Entries.AddFileEntry(FSManifestRDF, OPENDOC_PATH_MANIFESTRDF);
 
     FZip.ZipAllFiles;
   finally
@@ -1011,6 +1042,7 @@ begin
     FSContent.Free;
     FSMimetype.Free;
     FSMetaInfManifest.Free;
+    FSManifestRDF.Free;
   end;
 end;
 

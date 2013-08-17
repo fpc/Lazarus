@@ -158,6 +158,9 @@ type
     MarginTop, MarginBottom, MarginLeft, MarginRight: Double; // in mm
     //
     function GetKind: TvStyleKind; // takes care of parenting
+    procedure Clear();
+    procedure CopyFrom(AFrom: TvStyle);
+    procedure ApplyOver(AFrom: TvStyle);
   end;
 
   { Coordinates and polyline segments }
@@ -372,6 +375,16 @@ type
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
+  { TvEntityWithStyle }
+
+  TvEntityWithStyle = class(TvEntityWithPenBrushAndFont)
+  public
+    Style: TvStyle; // can be nil!
+    constructor Create; override;
+    destructor Destroy; override;
+    function GetCombinedStyle(AParent: TvEntityWithStyle): TvStyle;
+  end;
+
   TvClipMode = (vcmNonzeroWindingRule, vcmEvenOddRule);
 
   TPath = class(TvEntityWithPenAndBrush)
@@ -420,10 +433,9 @@ type
 
   { TvText }
 
-  TvText = class(TvEntityWithPenBrushAndFont)
+  TvText = class(TvEntityWithStyle)
   public
     Value: TStringList;
-    Style: TvStyle; // can be nil!
     constructor Create; override;
     destructor Destroy; override;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
@@ -724,7 +736,7 @@ type
 
   { TvEntityWithSubEntities }
 
-  TvEntityWithSubEntities = class(TvEntityWithPenBrushAndFont)
+  TvEntityWithSubEntities = class(TvEntityWithStyle)
   private
     FCurIndex: Integer;
     procedure CallbackDeleteElement(data,arg:pointer);
@@ -809,7 +821,6 @@ type
   public
     Width, Height: Double;
     AutoExpand: TvRichTextAutoExpand;
-    Style: TvStyle;
     constructor Create; override;
     destructor Destroy; override;
     function AddText(AText: string): TvText;
@@ -1200,6 +1211,58 @@ function TvStyle.GetKind: TvStyleKind;
 begin
   if Parent = nil then Result := Kind
   else Result := Parent.GetKind();
+end;
+
+procedure TvStyle.Clear;
+begin
+  Name := '';
+  Parent := nil;
+  Kind := vskTextBody;
+  //
+  {Pen.Color := col;
+  Brush := nil;
+  Font := nil;}
+  SetElements := [];
+  //
+  MarginTop := 0;
+  MarginBottom := 0;
+  MarginLeft := 0;
+  MarginRight := 0;
+  //
+end;
+
+procedure TvStyle.CopyFrom(AFrom: TvStyle);
+begin
+  Clear();
+  ApplyOver(AFrom);
+end;
+
+procedure TvStyle.ApplyOver(AFrom: TvStyle);
+begin
+  if AFrom = nil then Exit;
+
+  if spbfPenColor in AFrom.SetElements then
+    Pen.Color := AFrom.Pen.Color;
+  if spbfPenStyle in AFrom.SetElements then
+    Pen.Style := AFrom.Pen.Style;
+  if spbfPenWidth in AFrom.SetElements then
+    Pen.Width := AFrom.Pen.Width;
+  if spbfBrushColor in AFrom.SetElements then
+    Brush.Color := AFrom.Brush.Color;
+  if spbfBrushStyle in AFrom.SetElements then
+    Brush.Style := AFrom.Brush.Style;
+  {if spbfBrushGradient in AFrom.SetElements then
+    Brush.Gra := AFrom.Brush.Style;}
+  if spbfFontColor in AFrom.SetElements then
+    Font.Color := AFrom.Font.Color;
+  if spbfFontSize in AFrom.SetElements then
+    Font.Size := AFrom.Font.Size;
+  if spbfFontName in AFrom.SetElements then
+    Font.Name := AFrom.Font.Name;
+  if spbfFontBold in AFrom.SetElements then
+    Font.Bold := AFrom.Font.Bold;
+  if spbfFontItalic in AFrom.SetElements then
+    Font.Italic := AFrom.Font.Italic;
 end;
 
 { T2DEllipticalArcSegment }
@@ -1844,6 +1907,25 @@ begin
     BoolToStr(Font.StrikeThrough)
     ]);
   ADestRoutine(lStr, Result);
+end;
+
+{ TvEntityWithStyle }
+
+constructor TvEntityWithStyle.Create;
+begin
+  inherited Create;
+end;
+
+destructor TvEntityWithStyle.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TvEntityWithStyle.GetCombinedStyle(AParent: TvEntityWithStyle
+  ): TvStyle;
+begin
+  if (AParent <> nil) and (Style = nil) then Result := AParent.Style
+  else Result := Style;
 end;
 
 { TPath }
