@@ -91,12 +91,14 @@ begin
   Application.Title:='Lazarus';
   OnGetApplicationName:=@GetLazarusApplicationName;
 
+  {$IFDEF Windows}
   // on windows when MainFormOnTaskBar = True the main form becomes
   // the parent of all other forms and therefore it always shows under
   // other forms. For Lazarus the main form is the component palette form 
   // and it is not a desired behavior to see it always under other windows.
   // So until we have a good docking solution let's have a dummy taskbar windows on windows.
   Application.{%H-}MainFormOnTaskBar := False;
+  {$ENDIF}
 
   Application.Initialize;
   TMainIDE.ParseCmdLineOptions;
