@@ -30,14 +30,24 @@ unit etQuickFixes;
 interface
 
 uses
-  Classes, SysUtils, IDEExternToolIntf, IDEMsgIntf, Menus, CodeToolManager,
-  CodeCache, LazLogger, AvgLvlTree, LazFileUtils;
+  Classes, SysUtils, IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, IDEDialogs,
+  Menus, Dialogs, etFPCMsgParser, CodeToolManager, CodeCache, CodeTree,
+  CodeAtom, BasicCodeTools, LazLogger, AvgLvlTree, LazFileUtils;
 
 type
 
-  { TQuickFix_Hide }
+  { TQuickFix_Hide - hide via IDE directive %H- }
 
   TQuickFix_Hide = class(TMsgQuickFix)
+  public
+    function IsApplicable(Msg: TMessageLine): boolean;
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+  end;
+
+  { TQuickFixIdentifierNotFoundAddLocal }
+
+  TQuickFixIdentifierNotFoundAddLocal = class(TMsgQuickFix)
   public
     function IsApplicable(Msg: TMessageLine): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
@@ -76,6 +86,129 @@ type
     Fix: TMsgQuickFix;
     Msg: TMessageLine;
   end;
+
+procedure ShowError(Msg: string);
+begin
+  IDEMessageDialog('QuickFix error',Msg,mtError,[mbCancel]);
+end;
+
+function IsIdentifierInCode(Code: TCodeBuffer; X,Y: integer;
+  Identifier, ErrorMsg: string): boolean;
+var
+  p: integer;
+  IdentStart: integer;
+  IdentEnd: integer;
+begin
+  Result:=false;
+  if Code=nil then begin
+    ShowError(ErrorMsg+' (Code=nil)');
+    exit;
+  end;
+  Code.LineColToPosition(Y,X,p);
+  if p<1 then begin
+    ShowError(ErrorMsg+' (position outside of source');
+    exit;
+  end;
+  GetIdentStartEndAtPosition(Code.Source,p,IdentStart,IdentEnd);
+  if SysUtils.CompareText(Identifier,copy(Code.Source,IdentStart,IdentEnd-IdentStart))<>0
+  then begin
+    ShowError(ErrorMsg);
+    exit;
+  end;
+  Result:=true;
+end;
+
+{ TQuickFixIdentifierNotFoundAddLocal }
+
+function TQuickFixIdentifierNotFoundAddLocal.IsApplicable(Msg: TMessageLine
+  ): boolean;
+var
+  Code: TCodeBuffer;
+  Tool: TCodeTool;
+  CleanPos: integer;
+  Node: TCodeTreeNode;
+  Identifier: String;
+begin
+  Result:=false;
+  if (Msg.SubTool<>SubToolFPC)
+  or (Msg.MsgID<>5000) // identifier not found "$1"
+  or (not Msg.HasSourcePosition)
+  then exit;
+  Identifier:=TFPCParser.GetFPCMsgValue1(Msg);
+  if not IsValidIdent(Identifier) then exit;
+
+  // check if message position is at end of identifier
+  // (FPC gives position of end of identifier)
+  Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
+  if Code=nil then exit;
+  if not CodeToolBoss.Explore(Code,Tool,false) then exit;
+  if Tool.CaretToCleanPos(CodeXYPosition(Msg.Column,Msg.Line,Code),CleanPos)<>0 then exit;
+  Node:=Tool.FindDeepestNodeAtPos(CleanPos,false);
+  if Node=nil then exit;
+  if not (Node.Desc in AllPascalStatements) then exit;
+  Tool.MoveCursorToCleanPos(CleanPos);
+  Tool.ReadPriorAtom;
+  if not Tool.AtomIs(Identifier) then exit;
+  Tool.ReadPriorAtom;
+  if (Tool.CurPos.Flag in [cafPoint,cafRoundBracketClose,cafEdgedBracketClose,
+                           cafEnd])
+  then exit;
+  Result:=true;
+end;
+
+procedure TQuickFixIdentifierNotFoundAddLocal.CreateMenuItems(
+  Fixes: TMsgQuickFixes);
+var
+  Msg: TMessageLine;
+  Identifier: String;
+begin
+  if Fixes.LineCount<>1 then exit;
+  Msg:=Fixes.Lines[0];
+  if not IsApplicable(Msg) then exit;
+  Identifier:=TFPCParser.GetFPCMsgValue1(Msg);
+  if Identifier='' then exit;
+  Fixes.AddMenuItem(Self,Msg,'Create local variable "'+Identifier+'"');
+  // ToDo: add private/public variable
+end;
+
+procedure TQuickFixIdentifierNotFoundAddLocal.QuickFix(Fixes: TMsgQuickFixes;
+  Msg: TMessageLine);
+var
+  Identifier: String;
+  Code: TCodeBuffer;
+  NewCode: TCodeBuffer;
+  NewX: integer;
+  NewY: integer;
+  NewTopLine: integer;
+begin
+  if Msg=nil then exit;
+  Identifier:=TFPCParser.GetFPCMsgValue1(Msg);
+  if Identifier='' then exit;
+
+  if not LazarusIDE.BeginCodeTools then begin
+    DebugLn(['TQuickFixIdentifierNotFoundAddLocal.Execute failed because IDE busy']);
+    exit;
+  end;
+
+  Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
+  if Code=nil then exit;
+
+  if not IsIdentifierInCode(Code,Msg.Column,Msg.Line,Identifier,
+    Identifier+' not found in '+Code.Filename
+       +' at line '+IntToStr(Msg.Line)+', column '+IntToStr(Msg.Column)+'.'
+       +LineEnding+'Maybe the message is outdated.')
+  then exit;
+
+  if not CodeToolBoss.CreateVariableForIdentifier(Code,Msg.Column,Msg.Line,-1,
+             NewCode,NewX,NewY,NewTopLine)
+  then begin
+    LazarusIDE.DoJumpToCodeToolBossError;
+    exit;
+  end;
+
+  // success
+  Msg.MarkFixed;
+end;
 
 { TQuickFix_Hide }
 
@@ -152,9 +285,10 @@ function TQuickFix_Hide.IsApplicable(Msg: TMessageLine): boolean;
 begin
   Result:=false;
   if (Msg.Urgency>=mluError)
-  or (Msg.Line<1) or (Msg.Column<1)
+  or (Msg.SubTool<>SubToolFPC)
+  or (not Msg.HasSourcePosition)
   or (mlfHiddenByIDEDirective in Msg.Flags)
-  or (Msg.GetFullFilename='') then exit;
+  then exit;
   Result:=true;
 end;
 

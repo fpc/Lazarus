@@ -143,6 +143,7 @@ type
     procedure ReadLine(Line: string; OutputIndex: integer; var Handled: boolean); override;
     function LongenFilename(aFilename: string): string;
     procedure ImproveMessages(aSynchronized: boolean); override;
+    function GetFPCMsgIDPattern(MsgID: integer): string; override;
     class function IsSubTool(const SubTool: string): boolean; override;
     class function DefaultSubTool: string; override;
     class function GetMsgExample(SubTool: string; MsgID: integer): string;
@@ -150,6 +151,8 @@ type
     class function GetMsgHint(SubTool: string; MsgID: integer): string;
       override;
     class function Priority: integer; override;
+    class function GetFPCMsgPattern(Msg: TMessageLine): string; override;
+    class function GetFPCMsgValue1(Msg: TMessageLine): string; override;
   end;
 
 var
@@ -1697,6 +1700,38 @@ end;
 class function TIDEFPCParser.Priority: integer;
 begin
   Result:=SubToolFPCPriority;
+end;
+
+function TIDEFPCParser.GetFPCMsgIDPattern(MsgID: integer): string;
+var
+  MsgItem: TFPCMsgItem;
+begin
+  Result:='';
+  if MsgID<=0 then exit;
+  if MsgFile=nil then exit;
+  MsgItem:=MsgFile.GetMsg(MsgID);
+  if MsgItem=nil then exit;
+  Result:=MsgItem.Pattern;
+end;
+
+class function TIDEFPCParser.GetFPCMsgPattern(Msg: TMessageLine): string;
+var
+  aFPCParser: TFPCParser;
+begin
+  Result:='';
+  if Msg.MsgID<=0 then exit;
+  aFPCParser:=GetFPCParser(Msg);
+  if aFPCParser=nil then exit;
+  Result:=aFPCParser.GetFPCMsgIDPattern(Msg.MsgID);
+end;
+
+class function TIDEFPCParser.GetFPCMsgValue1(Msg: TMessageLine): string;
+begin
+  Result:='';
+  if Msg.MsgID<=0 then exit;
+  if Msg.SubTool<>SubToolFPC then exit;
+  if not etFPCMsgParser.GetFPCMsgValue1(Msg.Msg,GetFPCMsgPattern(Msg),Result) then
+    Result:='';
 end;
 
 finalization

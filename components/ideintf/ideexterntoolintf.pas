@@ -253,6 +253,7 @@ type
     class function IsSubTool(const SubTool: string): boolean; virtual;
     class function GetMsgExample({%H-}SubTool: string; {%H-}MsgID: integer): string; virtual;
     class function GetMsgHint({%H-}SubTool: string; {%H-}MsgID: integer): string; virtual;
+    class function GetMsgParser(Msg: TMessageLine; ParserClass: TClass): TExtToolParser;
     class function DefaultSubTool: string; virtual; abstract;
     class function Priority: integer; virtual; // higher comes first
   end;
@@ -261,6 +262,11 @@ type
   { TFPCParser - standard parser for Free Pascal messages, implemented by IDE }
 
   TFPCParser = class(TExtToolParser)
+  public
+    class function GetFPCParser(Msg: TMessageLine): TFPCParser;
+    function GetFPCMsgIDPattern(MsgID: integer): string; virtual; abstract;
+    class function GetFPCMsgPattern(Msg: TMessageLine): string; virtual; abstract;
+    class function GetFPCMsgValue1(Msg: TMessageLine): string; virtual; abstract;
   end;
 
   { TMakeParser - standard parser for 'make' messages, implemented by IDE }
@@ -463,6 +469,7 @@ type
     procedure RemoveParser(Parser: TExtToolParser); // disconnect without free
     function IndexOfParser(Parser: TExtToolParser): integer;
     procedure ClearParsers(Delete: boolean = true);
+    function FindParser(aParserClass: TExtToolParserClass): TExtToolParser;
 
     // viewers
     function ViewCount: integer;
@@ -530,6 +537,7 @@ type
     property Parsers[Index: integer]: TExtToolParserClass read GetParsers; // (main thread)
     function GetMsgExample(SubTool: string; MsgID: integer): string; virtual; // (main thread)
     function GetMsgHint(SubTool: string; MsgID: integer): string; virtual; // (main thread)
+    function GetMsgTool(Msg: TMessageLine): TAbstractExternalTool; virtual; abstract;
   end;
 
 var
@@ -638,6 +646,13 @@ function dbgs(s: TExternalToolStage): string;
 begin
   Result:='';
   WriteStr(Result,s);
+end;
+
+{ TFPCParser }
+
+class function TFPCParser.GetFPCParser(Msg: TMessageLine): TFPCParser;
+begin
+  Result:=TFPCParser(GetMsgParser(Msg,TFPCParser));
 end;
 
 { TIDEExternalToolOptions }
@@ -1109,6 +1124,18 @@ begin
       RemoveParser(Parsers[ParserCount-1]);
 end;
 
+function TAbstractExternalTool.FindParser(aParserClass: TExtToolParserClass
+  ): TExtToolParser;
+var
+  i: Integer;
+begin
+  for i:=0 to ParserCount-1 do begin
+    Result:=Parsers[i];
+    if Result.InheritsFrom(aParserClass) then exit;
+  end;
+  Result:=nil;
+end;
+
 function TAbstractExternalTool.ViewCount: integer;
 begin
   Result:=FViews.Count;
@@ -1237,6 +1264,18 @@ class function TExtToolParser.GetMsgHint(SubTool: string; MsgID: integer
   ): string;
 begin
   Result:='';
+end;
+
+class function TExtToolParser.GetMsgParser(Msg: TMessageLine;
+  ParserClass: TClass): TExtToolParser;
+var
+  aTool: TAbstractExternalTool;
+begin
+  Result:=nil;
+  if ExternalToolList=nil then exit;
+  aTool:=ExternalToolList.GetMsgTool(Msg);
+  if aTool=nil then exit;
+  Result:=aTool.FindParser(TExtToolParserClass(ParserClass));
 end;
 
 class function TExtToolParser.Priority: integer;

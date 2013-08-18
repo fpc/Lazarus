@@ -725,7 +725,7 @@ begin
   // get include file name
   if not IsCodetoolsErrorIncludeFileNotFound(Msg.Msg,IncludeFilename) then
   begin
-    GetFPCMsgValue1(Msg.Msg,'Can''t open include file "$1"',IncludeFilename);
+    IncludeFilename:=TFPCParser.GetFPCMsgValue1(Msg);
   end;
   DebugLn(['TQuickFixIncludeNotFound_Search.Execute include file=',IncludeFilename]);
   if IncludeFilename='' then

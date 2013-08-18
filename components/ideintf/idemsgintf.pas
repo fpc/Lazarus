@@ -30,7 +30,7 @@ type
   public
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); virtual;
     procedure JumpTo({%H-}Msg: TMessageLine; var {%H-}Handled: boolean); virtual; // called when user (double) clicks on message
-    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); virtual;
+    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); virtual; // Msg=nil means fix all Fixes.Lines
   end;
   TMsgQuickFixClass = class of TMsgQuickFix;
 
