@@ -4381,7 +4381,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
   end;
   {$ENDIF}
 
-  function RunToMain(EntryPoint: String): integer;
+  procedure RunToMain(EntryPoint: String);
   type
     TRunToMainType = (mtMain, mtMainAddr, mtEntry, mtAddZero);
     TRunToMainState = (
@@ -4451,6 +4451,22 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       end;
     end;
 
+  function ParseLogForPid(ALogTxt: String): Integer;
+  var
+    s: String;
+  begin
+    s := GetPart(['=thread-group-started,'], [LineEnding], ALogTxt, True, False);
+    if s <> '' then
+      s := GetPart(['pid="'], ['"'], s, True, False);
+    if s <> '' then begin
+      Result := StrToIntDef(s, 0);
+      if Result <> 0 then exit;
+    end;
+
+    s := GetPart(['process '], [' local', ']'], ALogTxt, True);
+    Result := StrToIntDef(s, 0);
+  end;
+
   var
     R: TGDBMIExecResult;
     Cmd, s, s2, rval: String;
@@ -4458,7 +4474,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
     List: TGDBMINameValueList;
     BrkErr: Boolean;
   begin
-    Result := 0; // Target PID
+    TargetInfo^.TargetPID := 0;
     FDidKillNow := False;
     RunToMainState := msEntryPoint;
     case DebuggerProperties.InternalStartBreak of
@@ -4496,6 +4512,8 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
         exit;
       end;
       s := r.Values + FLogWarnings;
+      if TargetInfo^.TargetPID = 0 then
+        TargetInfo^.TargetPID := ParseLogForPid(s);
 
       s2 := '';
       if R.State = dsRun
@@ -4504,6 +4522,8 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
           FCanKillNow := True;
           FTheDebugger.FCurrentCmdIsAsync := True;
         end;
+        if (TargetInfo^.TargetPID <> 0) then
+          FCanKillNow := True;
         ProcessRunning(s2, R);
         FCanKillNow := False;
         FTheDebugger.FCurrentCmdIsAsync := False;
@@ -4606,17 +4626,12 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
          ~"[Switching to Thread 807407400 (LWP 100073)]\n"
 
     *)
-    s := GetPart(['=thread-group-started,'], [LineEnding], rval, True, False);
-    if s <> '' then
-      s := GetPart(['pid="'], ['"'], s, True, False);
-    if s <> '' then begin
-      Result := StrToIntDef(s, 0);
-      if Result <> 0 then exit;
-    end;
+    if TargetInfo^.TargetPID <> 0 then
+      exit;
 
-    s := GetPart(['process '], [' local', ']'], rval, True);
-    Result := StrToIntDef(s, 0);
-    if Result <> 0 then exit;
+    TargetInfo^.TargetPID := ParseLogForPid(rval);
+    if TargetInfo^.TargetPID <> 0 then
+      exit;
 
     (* PID via "info program"
 
@@ -4635,30 +4650,30 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
     then begin
       s := GetPart(['child process ', 'child thread ', 'lwp '], [' ', '.', ')'],
                    R.Values, True);
-      Result := StrToIntDef(s, 0);
-      if Result <> 0 then exit;
+      TargetInfo^.TargetPID := StrToIntDef(s, 0);
+      if TargetInfo^.TargetPID <> 0 then exit;
     end;
 
     // apple
     if ExecuteCommand('info pid', [], R, [cfCheckState]) and (R.State <> dsError)
     then begin
       List := TGDBMINameValueList.Create(R);
-      Result := StrToIntDef(List.Values['process-id'], 0);
+      TargetInfo^.TargetPID := StrToIntDef(List.Values['process-id'], 0);
       List.Free;
-      if Result <> 0 then exit;
+      if TargetInfo^.TargetPID <> 0 then exit;
     end;
 
     // apple / MacPort 7.1 / 32 bit dwarf
     if ExecuteCommand('info threads', [], R, [cfCheckState]) and (R.State <> dsError)
     then begin
       s := GetPart(['of process '], [' '], R.Values, True);
-      Result := StrToIntDef(s, 0);
-      if Result <> 0 then exit;
+      TargetInfo^.TargetPID := StrToIntDef(s, 0);
+      if TargetInfo^.TargetPID <> 0 then exit;
 
       // returned by gdb server (maybe others)
       s := GetPart(['Thread '], [' '], R.Values, True);
-      Result := StrToIntDef(s, 0);
-      if Result <> 0 then exit;
+      TargetInfo^.TargetPID := StrToIntDef(s, 0);
+      if TargetInfo^.TargetPID <> 0 then exit;
     end;
 
     // no PID found
@@ -4741,7 +4756,7 @@ begin
     (* We need a breakpoint at entry-point or main, to continue initialization
        "main" could map to more than one location, so we try entry point first
     *)
-    TargetInfo^.TargetPID := RunToMain(EntryPoint);
+    RunToMain(EntryPoint);
 
     if DebuggerState = dsStop
     then begin
@@ -7863,6 +7878,7 @@ procedure TGDBMIDebugger.Init;
 var
   Options: String;
   Cmd: TGDBMIDebuggerCommandInitDebugger;
+  env: TStringList;
 begin
   Exclude(FDebuggerFlags, dfForceBreakDetected);
   LockRelease;
@@ -7877,7 +7893,9 @@ begin
     if Length(TGDBMIDebuggerPropertiesBase(GetProperties).Debugger_Startup_Options) > 0
     then Options := Options + ' ' + TGDBMIDebuggerPropertiesBase(GetProperties).Debugger_Startup_Options;
 
-    DebuggerEnvironment := EnvironmentAsStringList;
+    env := EnvironmentAsStringList;
+    DebuggerEnvironment := env;
+    env.Free;
     DebuggerEnvironment.Values['LANG'] := 'C'; // try to prevent GDB from using localized messages
 
     if CreateDebugProcess(Options)
