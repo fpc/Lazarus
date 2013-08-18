@@ -39,8 +39,9 @@ unit GDBMIDebugger;
 interface
 
 uses
-  Classes, SysUtils, strutils, Controls, Math, Variants, LCLProc, LazClasses, LazLoggerBase, Dialogs,
-  DebugUtils, Debugger, FileUtil, CmdLineDebugger, GDBTypeInfo, Maps, LCLIntf, Forms,
+  Classes, SysUtils, strutils, Controls, Math, Variants, LCLProc, LazClasses, LazLoggerBase,
+  Dialogs, DebugUtils, Debugger, FileUtil, BaseIDEIntf, CmdLineDebugger, GDBTypeInfo, Maps,
+  LCLIntf, Forms,
 {$IFdef MSWindows}
   Windows,
 {$ENDIF}
@@ -7875,6 +7876,9 @@ begin
 
     if Length(TGDBMIDebuggerPropertiesBase(GetProperties).Debugger_Startup_Options) > 0
     then Options := Options + ' ' + TGDBMIDebuggerPropertiesBase(GetProperties).Debugger_Startup_Options;
+
+    DebuggerEnvironment := EnvironmentAsStringList;
+    DebuggerEnvironment.Values['LANG'] := 'C'; // try to prevent GDB from using localized messages
 
     if CreateDebugProcess(Options)
     then begin
