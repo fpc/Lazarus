@@ -133,8 +133,9 @@ type
   TvSetPenBrushAndFontElement = (
     spbfPenColor, spbfPenStyle, spbfPenWidth,
     spbfBrushColor, spbfBrushStyle, spbfBrushGradient,
-    spbfFontColor, spbfFontSize, spbfFontName, spbfFontBold, spbfFontItalic
-    );
+    spbfFontColor, spbfFontSize, spbfFontName, spbfFontBold, spbfFontItalic,
+    spbfFontUnderline, spbfFontStrikeThrough, spbfAlignment);
+
   TvSetPenBrushAndFontElements = set of TvSetPenBrushAndFontElement;
 
   TvStyleKind = (
@@ -143,12 +144,15 @@ type
     // Text-span kind
     vskTextSpan);
 
+  TvStyleAlignment = (vsaLeft, vsaRight, vsaJustifed, vsaCenter);
+
   { TvStyle }
 
   TvStyle = class
     Name: string;
     Parent: TvStyle; // Can be nil
     Kind: TvStyleKind;
+    Alignment: TvStyleAlignment;
     //
     Pen: TvPen;
     Brush: TvBrush;
@@ -1032,6 +1036,7 @@ type
 
   TvTextPageSequence = class(TvPage)
   public
+    Width, Height: Double; // in millimeters, may be 0 to use TvVectorialDocument defaults
     Footer, Header: TvRichText;
     MainText: TvRichText;
     { Base methods }
@@ -1218,6 +1223,8 @@ begin
   Name := '';
   Parent := nil;
   Kind := vskTextBody;
+  Alignment := vsaLeft;
+
   //
   {Pen.Color := col;
   Brush := nil;
@@ -1263,6 +1270,14 @@ begin
     Font.Bold := AFrom.Font.Bold;
   if spbfFontItalic in AFrom.SetElements then
     Font.Italic := AFrom.Font.Italic;
+  If spbfFontUnderline in AFrom.SetElements then
+    Font.Underline := AFrom.Font.Underline;
+  If spbfFontStrikeThrough in AFrom.SetElements then
+    Font.StrikeThrough := AFrom.Font.StrikeThrough;
+  If spbfAlignment in AFrom.SetElements then
+    Alignment := AFrom.Alignment;
+
+  SetElements:=AFrom.SetElements;
 end;
 
 { T2DEllipticalArcSegment }
@@ -5481,7 +5496,8 @@ begin
   lTextBody.Kind := vskTextBody;
   lTextBody.Font.Size := 12;
   lTextBody.Font.Name := 'Times New Roman';
-  lTextBody.SetElements := [spbfFontSize, spbfFontName];
+  lTextBody.Alignment := vsaJustifed;
+  lTextBody.SetElements := [spbfFontSize, spbfFontName, spbfAlignment];
   lTextBody.MarginTop := 0;
   lTextBody.MarginBottom := 2.12;
   StyleTextBody := lTextBody;
