@@ -7809,7 +7809,7 @@ begin
     Exit;
   end;
 
-  if FCurrentCommand.KillNow then begin
+  if (FCurrentCommand <> nil) and FCurrentCommand.KillNow then begin
     debugln(DBG_VERBOSE, ['KillNow did stop']);
     Result := True;
     exit;
