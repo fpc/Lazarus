@@ -181,6 +181,7 @@ type
     // Todo: FCustomHighlighter is only ever set to false, and not stored in XML
     FCustomHighlighter: boolean; // do not change highlighter on file extension change
     FSyntaxHighlighter: TLazSyntaxHighlighter;
+    procedure SetFoldState(AValue: String);
     procedure SetPageIndex(const AValue: Integer);
     procedure SetIsVisibleTab(const AValue: Boolean);
     procedure SetWindowIndex(const AValue: Integer);
@@ -200,7 +201,7 @@ type
     property WindowIndex: Integer read FWindowIndex write SetWindowIndex;
     property TopLine: Integer read FTopLine write FTopLine;
     property CursorPos: TPoint read FCursorPos write FCursorPos;
-    property FoldState: String read FFoldState write FFoldState;
+    property FoldState: String read FFoldState write SetFoldState;
     property IsLocked: Boolean read FIsLocked  write FIsLocked;
     property CustomHighlighter: Boolean read FCustomHighlighter write FCustomHighlighter; // SetCustomHighlighter
     property SyntaxHighlighter: TLazSyntaxHighlighter read FSyntaxHighlighter write FSyntaxHighlighter; // SetSyntaxHighlighter
@@ -1214,6 +1215,13 @@ begin
   if FPageIndex = AValue then exit;
   FPageIndex := AValue;
   FUnitInfo.UpdatePageIndex;
+  FUnitInfo.SessionModified := True;
+end;
+
+procedure TUnitEditorInfo.SetFoldState(AValue: String);
+begin
+  if FFoldState = AValue then Exit;
+  FFoldState := AValue;
   FUnitInfo.SessionModified := True;
 end;
 
