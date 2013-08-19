@@ -5193,8 +5193,12 @@ procedure TAnchorDockCloseButton.CalculatePreferredSize(var PreferredWidth,
 begin
   with ThemeServices.GetDetailSize(ThemeServices.GetElementDetails(twSmallCloseButtonNormal)) do
   begin
-    PreferredWidth:=cx+2;
-    PreferredHeight:=cy+2;
+    PreferredWidth:=cx;
+    PreferredHeight:=cy;
+    {$IF defined(LCLGtk2) or defined(Carbon)}
+    inc(PreferredWidth,2);
+    inc(PreferredHeight,2);
+    {$ENDIF}
   end;
 end;
 
