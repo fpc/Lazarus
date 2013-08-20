@@ -7054,7 +7054,9 @@ begin
       if FCurrentCommand <> Nil then
         FCurrentCommand.KillNow;
       if (State = dsRun) then GDBPause(True);
-      ExecuteCommand('-gdb-exit', [], []);
+      // fire and forget. Donst wait on the queue.
+      SendCmdLn('kill');
+      SendCmdLn('-gdb-exit');
     end;
     inherited Done;
   finally
