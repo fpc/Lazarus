@@ -624,6 +624,11 @@ end;
 procedure TCompilerOtherOptionsFrame.OnIdle(Sender: TObject; var Done: Boolean);
 var
   OldIdleConnected: TIdleActions;
+  {$IFDEF TimeAllCompilerOptions}
+  StartTime, EndTime: TDateTime;
+  fs: TFormatSettings;
+  ms: String;
+  {$ENDIF}
 begin
   OldIdleConnected := IdleConnected;
   IdleConnected := [];
@@ -634,6 +639,9 @@ begin
   if (iaCompilerOpts in OldIdleConnected)
   and (FOptionsReader.RootOptGroup.CompilerOpts.Count = 0) then
   begin
+    {$IFDEF TimeAllCompilerOptions}
+    StartTime := Now;
+    {$ENDIF}
     Screen.Cursor := crHourGlass;
     try
     try
@@ -647,6 +655,13 @@ begin
     finally
       Screen.Cursor := crDefault;
     end;
+    {$IFDEF TimeAllCompilerOptions}
+    EndTime := Now-StartTime;
+    ms := FormatDateTime('zzz', EndTime);
+    fs.TimeSeparator := ':';
+    ShowMessage(Format('Reading compiler options took: %s.%s',
+                       [FormatDateTime('nn:ss', EndTime, fs), ms]));
+    {$ENDIF}
   end;
 end;
 

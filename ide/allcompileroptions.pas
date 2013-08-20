@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, Buttons, ButtonPanel, EditBtn,
-  contnrs, LCLProc, Compiler, LazarusIDEStrConsts;
+  Dialogs, contnrs, LCLProc, Compiler, LazarusIDEStrConsts;
 
 type
 
@@ -115,8 +115,17 @@ begin
 end;
 
 procedure TfrmAllCompilerOptions.OnIdle(Sender: TObject; var Done: Boolean);
+{$IFDEF TimeAllCompilerOptions}
+var
+  StartTime, EndTime: TDateTime;
+  fs: TFormatSettings;
+  ms: string;
+{$ENDIF}
 begin
   IdleConnected := False;
+  {$IFDEF TimeAllCompilerOptions}
+  StartTime := Now;
+  {$ENDIF}
   Screen.Cursor := crHourGlass;
   try
     edOptionsFilter.Enabled := False;
@@ -125,6 +134,16 @@ begin
   finally
     Screen.Cursor := crDefault;
   end;
+  {$IFDEF TimeAllCompilerOptions}
+  if FInitialRender then begin
+    EndTime := Now-StartTime;
+    ms := FormatDateTime('zzz', EndTime);
+    fs.TimeSeparator := ':';
+    ShowMessage(Format('Rendering compiler options GUI took: %s.%s',
+                       [FormatDateTime('nn:ss', EndTime, fs), ms]));
+  end;
+  {$ENDIF}
+  FInitialRender := False;
 end;
 
 procedure TfrmAllCompilerOptions.CheckBoxClick(Sender: TObject);
@@ -292,7 +311,6 @@ begin
     if not FInitialRender then
       FocusControl(edOptionsFilter);
     {$ENDIF}
-    FInitialRender := False;
   finally
     Container.EnableAutoSizing;
     Container.Invalidate;
