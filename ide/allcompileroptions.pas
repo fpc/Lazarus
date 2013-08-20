@@ -29,7 +29,7 @@ type
     FGeneratedControls: TComponentList;
     FEffectiveFilter: string;
     FEffectiveShowModified: Boolean;
-    FInitialRender: Boolean;
+    FRenderedOnce: Boolean;
     procedure SetIdleConnected(AValue: Boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure CheckBoxClick(Sender: TObject);
@@ -82,7 +82,7 @@ begin
   btnResetOptionsFilter.Enabled := False;
   btnResetOptionsFilter.Hint := 'Clear the filter for options';
   FEffectiveFilter:=#1; // Set an impossible value first, makes sure options are filtered.
-  FInitialRender := True;
+  FRenderedOnce := False;
   IdleConnected := True;
 end;
 
@@ -123,27 +123,29 @@ var
 {$ENDIF}
 begin
   IdleConnected := False;
-  {$IFDEF TimeAllCompilerOptions}
-  StartTime := Now;
-  {$ENDIF}
   Screen.Cursor := crHourGlass;
   try
     edOptionsFilter.Enabled := False;
+    {$IFDEF TimeAllCompilerOptions}
+    StartTime := Now;
+    {$ENDIF}
     RenderAndFilterOptions;
+    {$IFDEF TimeAllCompilerOptions}
+    EndTime := Now-StartTime;
+    {$ENDIF}
     edOptionsFilter.Enabled := True;
   finally
     Screen.Cursor := crDefault;
   end;
   {$IFDEF TimeAllCompilerOptions}
-  if FInitialRender then begin
-    EndTime := Now-StartTime;
+  if not FRenderedOnce then begin
     ms := FormatDateTime('zzz', EndTime);
     fs.TimeSeparator := ':';
     ShowMessage(Format('Rendering compiler options GUI took: %s.%s',
                        [FormatDateTime('nn:ss', EndTime, fs), ms]));
   end;
   {$ENDIF}
-  FInitialRender := False;
+  FRenderedOnce := True;
 end;
 
 procedure TfrmAllCompilerOptions.CheckBoxClick(Sender: TObject);
@@ -308,7 +310,7 @@ begin
     FEffectiveFilter := edOptionsFilter.Text;
     FEffectiveShowModified := cbShowModified.Checked;
     {$IFDEF AllOptsFocusFilter}
-    if not FInitialRender then
+    if not not FInitialRender then
       FocusControl(edOptionsFilter);
     {$ENDIF}
   finally
