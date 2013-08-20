@@ -61,18 +61,14 @@ type
     SignalText: String;  // Signal text if we hit one
   end;
 
-  TGDBMICmdFlags = set of (
-    cfNoMiCommand, // the command is not a MI command
-    cfIgnoreState, // ignore the result state of the command
-    cfIgnoreError, // ignore errors
-    cfExternal     // the command is a result from a user action
-  );
-
   // The internal ExecCommand of the new Commands (object queue)
   TGDBMICommandFlag = (
     cfCheckState, // Copy CmdResult to DebuggerState, EXCEPT dsError,dsNone (e.g copy dsRun, dsPause, dsStop, dsIdle)
     cfCheckError, // Copy CmdResult to DebuggerState, ONLY if dsError
-    cfTryAsync    // try with " &"
+    cfTryAsync,   // try with " &"
+    //used for old commands, TGDBMIDebuggerSimpleCommand.Create
+    cfscIgnoreState, // ignore the result state of the command
+    cfscIgnoreError  // ignore errors
   );
   TGDBMICommandFlags = set of TGDBMICommandFlag;
 
@@ -382,18 +378,17 @@ type
   TGDBMIDebuggerSimpleCommand = class(TGDBMIDebuggerCommand)
   private
     FCommand: String;
-    FFlags: TGDBMICmdFlags;
+    FFlags: TGDBMICommandFlags;
     FCallback: TGDBMICallback;
     FTag: PtrInt;
     FResult: TGDBMIExecResult;
   protected
-    procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); override;
     function  DoExecute: Boolean; override;
   public
     constructor Create(AOwner: TGDBMIDebugger;
                        const ACommand: String;
                        const AValues: array of const;
-                       const AFlags: TGDBMICmdFlags;
+                       const AFlags: TGDBMICommandFlags;
                        const ACallback: TGDBMICallback;
                        const ATag: PtrInt);
     function  DebugText: String; override;
@@ -650,9 +645,9 @@ type
 
     // All ExecuteCommand functions are wrappers for the real (full) implementation
     // ExecuteCommandFull is never called directly
-    function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; var AResult: TGDBMIExecResult): Boolean; overload;
-    function  ExecuteCommandFull(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt; var AResult: TGDBMIExecResult): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICommandFlags): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICommandFlags; var AResult: TGDBMIExecResult): Boolean; overload;
+    function  ExecuteCommandFull(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICommandFlags; const ACallback: TGDBMICallback; const ATag: PtrInt; var AResult: TGDBMIExecResult): Boolean; overload;
     procedure RunQueue;
     procedure QueueCommand(const ACommand: TGDBMIDebuggerCommand; ForceQueue: Boolean = False);
     procedure UnQueueCommand(const ACommand: TGDBMIDebuggerCommand);
@@ -3021,7 +3016,7 @@ begin
   for n := Low(FModifiedToUpdate) to High(FModifiedToUpdate) do
     FModifiedToUpdate[n] := False;
 
-  ExecuteCommand('-data-list-changed-registers', [cfIgnoreError], R);
+  ExecuteCommand('-data-list-changed-registers', [cfscIgnoreError], R);
   if R.State = dsError then Exit;
 
   List := TGDBMINameValueList.Create(R, ['changed-registers']);
@@ -7298,7 +7293,7 @@ begin
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
-  const AValues: array of const; const AFlags: TGDBMICmdFlags): Boolean;
+  const AValues: array of const; const AFlags: TGDBMICommandFlags): Boolean;
 var
   R: TGDBMIExecResult;
 begin
@@ -7306,14 +7301,14 @@ begin
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
-  const AValues: array of const; const AFlags: TGDBMICmdFlags;
+  const AValues: array of const; const AFlags: TGDBMICommandFlags;
   var AResult: TGDBMIExecResult): Boolean;
 begin
   Result := ExecuteCommandFull(ACommand, AValues, AFlags, nil, 0, AResult);
 end;
 
 function TGDBMIDebugger.ExecuteCommandFull(const ACommand: String;
-  const AValues: array of const; const AFlags: TGDBMICmdFlags;
+  const AValues: array of const; const AFlags: TGDBMICommandFlags;
   const ACallback: TGDBMICallback; const ATag: PtrInt;
   var AResult: TGDBMIExecResult): Boolean;
 var
@@ -7702,10 +7697,10 @@ begin
   if ASet then
   begin
     S := EscapeGDBCommand(AVariable);
-    ExecuteCommand('-gdb-set env %s', [S], [cfIgnoreState, cfExternal]);
+    ExecuteCommand('-gdb-set env %s', [S], [cfscIgnoreState]);
   end else begin
     S := AVariable;
-    ExecuteCommand('unset env %s', [GetPart([], ['='], S, False, False)], [cfNoMiCommand, cfIgnoreState, cfExternal]);
+    ExecuteCommand('unset env %s', [GetPart([], ['='], S, False, False)], [cfscIgnoreState]);
   end;
 end;
 
@@ -7738,7 +7733,7 @@ begin
     if not ConvertPascalExpression(S) then Exit(False);
   end;
 
-  Result := ExecuteCommand('-gdb-set var %s := %s', [AExpression, S], [cfIgnoreError, cfExternal], R)
+  Result := ExecuteCommand('-gdb-set var %s := %s', [AExpression, S], [cfscIgnoreError], R)
         and (R.State <> dsError);
 
   TGDBMILocals(Locals).Changed;
@@ -7866,13 +7861,13 @@ begin
     Exit;
   end;
 
-  Result := ExecuteCommand('-symbol-list-lines %s', [ASource], [cfIgnoreError, cfExternal], R)
+  Result := ExecuteCommand('-symbol-list-lines %s', [ASource], [cfscIgnoreError], R)
         and (R.State <> dsError);
   // if we have an .inc file then search for filename only since there are some
   // problems with locating file by full path in gdb in case only relative file
   // name is stored
   if not Result then
-    Result := ExecuteCommand('-symbol-list-lines %s', [ExtractFileName(ASource)], [cfIgnoreError, cfExternal], R)
+    Result := ExecuteCommand('-symbol-list-lines %s', [ExtractFileName(ASource)], [cfscIgnoreError], R)
           and (R.State <> dsError);
 
   if not Result then Exit;
@@ -8499,7 +8494,7 @@ end;
 
 procedure TGDBMIDebugger.TestCmd(const ACommand: String);
 begin
-  ExecuteCommand(ACommand, [], [cfIgnoreError]);
+  ExecuteCommand(ACommand, [], [cfscIgnoreError]);
 end;
 
 {%region      *****  BreakPoints  *****  }
@@ -11204,15 +11199,8 @@ end;
 
 { TGDBMIDebuggerSimpleCommand }
 
-procedure TGDBMIDebuggerSimpleCommand.DoStateChanged(OldState: TGDBMIDebuggerCommandState);
-begin
-  inherited DoStateChanged(OldState);
-  if (State = dcsQueued) and (cfExternal in FFlags)
-  then DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Execution of external command "', FCommand, '" while queue exists');
-end;
-
 constructor TGDBMIDebuggerSimpleCommand.Create(AOwner: TGDBMIDebugger;
-  const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags;
+  const ACommand: String; const AValues: array of const; const AFlags: TGDBMICommandFlags;
   const ACallback: TGDBMICallback; const ATag: PtrInt);
 begin
   inherited Create(AOwner);
@@ -11237,8 +11225,8 @@ begin
   then exit;
 
   if (FResult.State <> dsNone)
-  and not (cfIgnoreState in FFlags)
-  and ((FResult.State <> dsError) or not (cfIgnoreError in FFlags))
+  and not (cfscIgnoreState in FFlags)
+  and ((FResult.State <> dsError) or not (cfscIgnoreError in FFlags))
   then SetDebuggerState(FResult.State);
 
   if Assigned(FCallback)
