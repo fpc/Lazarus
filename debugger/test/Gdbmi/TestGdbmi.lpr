@@ -4,7 +4,7 @@ program TestGdbmi;
 
 uses
   Interfaces, Forms, GuiTestRunner, CompileHelpers,
-  TestGdbType, TestDisAss,
+  TestGdbType, TestInstructionQueue, TestDisAss,
   TestGDBMIControl,
   TestBase, TestException, Testwatches, TestBreakPoint, TestEnvironment, TestArgV;
 

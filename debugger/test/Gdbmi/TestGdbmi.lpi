@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -46,7 +46,7 @@
         <PackageName Value="FCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="12">
+    <Units Count="13">
       <Unit0>
         <Filename Value="TestGdbmi.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -108,6 +108,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestArgV"/>
       </Unit11>
+      <Unit12>
+        <Filename Value="testinstructionqueue.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestInstructionQueue"/>
+      </Unit12>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -152,6 +157,7 @@
       </Item3>
       <Item4>
         <Name Value="EAssertionFailedError"/>
+        <Enabled Value="False"/>
       </Item4>
       <Item5>
         <Name Value="EReadError"/>

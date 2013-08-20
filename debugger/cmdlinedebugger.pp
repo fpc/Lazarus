@@ -70,7 +70,7 @@ type
     procedure SendCmdLn(const ACommand: String); virtual; overload;
     procedure SendCmdLn(const ACommand: String; Values: array of const); overload;
     procedure SetLineEnds(ALineEnds: TStringDynArray);
-    property ReadLineTimedOut: Boolean read FReadLineTimedOut;
+    function  ReadLineTimedOut: Boolean; virtual;
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
@@ -525,6 +525,11 @@ begin
     FLineEnds[0] := LineEnding;
   end
   else FLineEnds := ALineEnds;
+end;
+
+function TCmdLineDebugger.ReadLineTimedOut: Boolean;
+begin
+  Result := FReadLineTimedOut;
 end;
 
 procedure TCmdLineDebugger.TestCmd(const ACommand: String);

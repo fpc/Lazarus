@@ -1254,6 +1254,7 @@ initialization
   DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS', True )^.Enabled := True;
   DebugLogger.FindOrRegisterLogGroup('DBG_DISASSEMBLER', True  )^.Enabled := True;
   DebugLogger.FindOrRegisterLogGroup('DBGMI_TYPE_INFO', True  )^.Enabled := True;
+  DebugLogger.FindOrRegisterLogGroup('DBGMI_TIMEOUT_DEBUG', True  )^.Enabled := True;
 
 
   AppDir := AppendPathDelim(ExtractFilePath(Paramstr(0)));

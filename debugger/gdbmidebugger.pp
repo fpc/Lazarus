@@ -41,7 +41,7 @@ interface
 uses
   Classes, SysUtils, strutils, Controls, Math, Variants, LCLProc, LazClasses, LazLoggerBase,
   Dialogs, DebugUtils, Debugger, FileUtil, BaseIDEIntf, CmdLineDebugger, GDBTypeInfo, Maps,
-  LCLIntf, Forms,
+  GDBMIDebugInstructions, LCLIntf, Forms,
 {$IFdef MSWindows}
   Windows,
 {$ENDIF}
@@ -179,6 +179,32 @@ type
   end;
 
   TGDBMIDebugger = class;
+  TGDBMIDebuggerCommand = class;
+
+  { TGDBMIDebuggerInstruction }
+
+  TGDBMIDebuggerInstruction = class(TGDBInstruction)
+  private
+    FCmd: TGDBMIDebuggerCommand;
+    FFullCmdReply: String;
+    FHasResult: Boolean;
+    FInLogWarning: Boolean;
+    FLogWarnings: String;
+    FResultData: TGDBMIExecResult;
+  protected
+    function ProcessInputFromGdb(const AData: String): Boolean; override;
+    procedure HandleNoGdbRunning; override;
+    procedure HandleReadError; override;
+    procedure HandleTimeOut; override;
+    function GetTimeOutVerifier: TGDBInstruction; override;
+    procedure Init; override;
+  public
+    property ResultData: TGDBMIExecResult read FResultData;
+    property HasResult: Boolean read FHasResult; // seen a "^foo" msg from gdb
+    property FullCmdReply: String read FFullCmdReply;
+    property LogWarnings: String read FLogWarnings;
+    property Cmd: TGDBMIDebuggerCommand read FCmd write FCmd;
+  end;
 
   { TGDBMIDebuggerCommand }
 
@@ -284,7 +310,6 @@ type
                              ATimeOut: Integer = -1
                             ): Boolean; overload;
     procedure DoTimeoutFeedback;
-    function  ProcessResult(var AResult: TGDBMIExecResult; ATimeOut: Integer = -1): Boolean;
     function  ProcessGDBResultStruct(S: String; Opts: TGDBMIProcessResultOpts = []): String; // Must have at least one flag for structs
     function  ProcessGDBResultText(S: String; Opts: TGDBMIProcessResultOpts = []): String;
     function  GetStackDepth(MaxDepth: integer): Integer;
@@ -548,8 +573,9 @@ type
 
   { TGDBMIDebugger }
 
-  TGDBMIDebugger = class(TCmdLineDebugger)
+  TGDBMIDebugger = class(TGDBMICmdLineDebugger) // TODO: inherit from TDebugger direct
   private
+    FInstructionQueue: TGDBInstructionQueue;
     FCommandQueue: TGDBMIDebuggerCommandList;
     FCurrentCommand: TGDBMIDebuggerCommand;
     FCommandQueueExecLock: Integer;
@@ -641,7 +667,6 @@ type
     function  StartDebugging(AContinueCommand: TGDBMIDebuggerCommand = nil): Boolean;
 
   protected
-    FErrorHandlingFlags: set of (ehfDeferReadWriteError, ehfGotReadError, ehfGotWriteError);
     FNeedStateToIdle: Boolean;
     {$IFDEF MSWindows}
     FPauseRequestInThreadID: Cardinal;
@@ -679,8 +704,6 @@ type
     procedure ResetStateToIdle; override;
     procedure DoState(const OldState: TDBGState); override;
     procedure DoBeforeState(const OldState: TDBGState); override;
-    procedure DoReadError; override;
-    procedure DoWriteError; override;
     function LineEndPos(const s: string; out LineEndLen: integer): integer; override;
     procedure DoThreadChanged;
     property  TargetPID: Integer read FTargetInfo.TargetPID;
@@ -1566,6 +1589,311 @@ begin
   then Result := 8;
 end;
 
+{ TGDBMIDebuggerInstruction }
+
+function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boolean;
+
+  function DoResultRecord(Line: String; CurRes: Boolean): Boolean;
+  var
+    ResultClass: String;
+    OldResult: Boolean;
+  begin
+    ResultClass := GetPart('^', ',', Line);
+
+    if Line = ''
+    then begin
+      if FResultData.Values <> ''
+      then Include(FResultData.Flags, rfNoMI);
+    end
+    else begin
+      FResultData.Values := Line;
+    end;
+
+    OldResult := CurRes;
+    Result := True;
+    case StringCase(ResultClass, ['done', 'running', 'exit', 'error', 'stopped']) of
+      0: begin // done
+      end;
+      1: begin // running
+        FResultData.State := dsRun;
+      end;
+      2: begin // exit
+        FResultData.State := dsIdle;
+      end;
+      3: begin // error
+        DebugLn(DBG_WARNINGS, 'TGDBMIDebugger.ProcessResult Error: ', Line);
+        // todo: implement with values
+        if  (pos('msg=', Line) > 0)
+        and (pos('not being run', Line) > 0)
+        then FResultData.State := dsStop
+        else FResultData.State := dsError;
+      end;
+      4: begin
+        FCmd.FGotStopped := True;
+        //AStoppedParams := Line;
+      end;
+    else
+      //TODO: should that better be dsError ?
+      if OldResult and (FResultData.State in [dsError, dsStop]) and
+         (copy(ResultClass,1,6) = 'error"')
+      then begin
+        // Gdb 6.3.5 on Mac, does sometime return a 2nd mis-formatted error line
+        // The line seems truncated, it simply is (note the misplaced quote): ^error"
+        DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unknown result class (IGNORING): ', ResultClass);
+      end
+      else begin
+        Result := False;
+        DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unknown result class: ', ResultClass);
+      end;
+    end;
+  end;
+
+  procedure DoConsoleStream(Line: String);
+  var
+    len: Integer;
+  begin
+    // check for symbol info
+    if Pos('no debugging symbols', Line) > 0
+    then begin
+      FCmd.TargetInfo^.TargetFlags := FCmd.TargetInfo^.TargetFlags - [tfHasSymbols];
+      FCmd.DoDbgEvent(ecDebugger, etDefault, Format('File ''%s'' has no debug symbols', [FCmd.FTheDebugger.FileName]));
+    end
+    else begin
+      // Strip surrounding ~" "
+      len := Length(Line) - 3;
+      if len < 0 then Exit;
+      Line := Copy(Line, 3, len);
+      // strip trailing \n (unless it is escaped \\n)
+      if (len >= 2) and (Line[len - 1] = '\') and (Line[len] = 'n')
+      then begin
+        if len = 2
+        then Line := LineEnding
+        else if Line[len - 2] <> '\'
+        then begin
+          SetLength(Line, len - 2);
+          Line := Line + LineEnding;
+        end;
+      end;
+
+      FResultData.Values := FResultData.Values + Line;
+    end;
+  end;
+
+  procedure DoTargetStream(const Line: String);
+  begin
+    DebugLn(DBG_VERBOSE, '[Debugger] Target output: ', Line);
+  end;
+
+  procedure DoLogStream(const Line: String);
+  const
+    LogWarning = '&"Warning:\n"';
+  begin
+    // check for symbol info
+    if Pos('No symbol table is loaded.  Use the \"file\" command.', Line) > 0
+    then begin
+      FCmd.TargetInfo^.TargetFlags := FCmd.TargetInfo^.TargetFlags - [tfHasSymbols];
+      FCmd.DoDbgEvent(ecDebugger, etDefault, Format('File ''%s'' has no debug symbols', [FCmd.FTheDebugger.FileName]));
+    end;
+    if (Pos('internal-error:', LowerCase(Line)) > 0) or
+       (Pos('internal to gdb has been detected', LowerCase(Line)) > 0) or
+       (Pos('further debugging may prove unreliable', LowerCase(Line)) > 0)
+    then begin
+      FCmd.DoDbgEvent(ecDebugger, etDefault, Format('GDB has encountered an internal error: %s', [Line]));
+      if FCmd.DebuggerProperties.WarnOnInternalError
+      then MessageDlg('Warning', 'GDB has encountered an internal error: ' + Line,
+                      mtWarning, [mbOK], 0);
+    end;
+    DebugLn(DBG_VERBOSE, '[Debugger] Log output: ', Line);
+    if Line = '&"kill\n"'
+    then FResultData.State := dsStop
+    else if LeftStr(Line, 8) = '&"Error '
+    then FResultData.State := dsError;
+    if copy(Line, 1, length(FLogWarnings)) = FLogWarnings
+    then FInLogWarning := True;
+    if FInLogWarning
+    then FLogWarnings := FLogWarnings + copy(Line, 3, length(Line)-5) + LineEnding;
+    if copy(Line, 1, length(FLogWarnings)) = '&"\n"'
+    then FInLogWarning := False;
+  end;
+
+  procedure DoExecAsync(Line: String);
+  var
+    S: String;
+    ct: TCurrentThreads;
+    i: Integer;
+    t: TThreadEntry;
+  begin
+    S := GetPart(['*'], [','], Line);
+    if S = 'running'
+    then begin
+      if (FCmd.FTheDebugger.Threads.Monitor <> nil) and
+         (FCmd.FTheDebugger.Threads.Monitor.CurrentThreads <> nil)
+      then begin
+        ct := FCmd.FTheDebugger.Threads.Monitor.CurrentThreads;
+        S := GetPart('thread-id="', '"', Line);
+        if s = 'all' then begin
+          for i := 0 to  ct.Count - 1 do
+            ct[i].ThreadState := 'running'; // TODO enum?
+        end
+        else begin
+          S := S + ',';
+          while s <> '' do begin
+            i := StrToIntDef(GetPart('', ',', s), -1);
+            if (s <> '') and (s[1] = ',') then delete(s, 1, 1)
+            else begin
+              debugln(DBG_WARNINGS, 'GDBMI: Error parsing threads');
+              break
+            end;
+            if i < 0 then Continue;
+            t := ct.EntryById[i];
+            if t <> nil then
+              t.ThreadState := 'running'; // TODO enum?
+          end;
+        end;
+        FCmd.FTheDebugger.Threads.Changed;
+      end;
+
+      FCmd.DoDbgEvent(ecProcess, etProcessStart, 'Process Start: ' + FCmd.FTheDebugger.FileName);
+    end
+    else
+    if S = 'stopped' then begin
+      FCmd.FGotStopped := True;
+      // StoppedParam ??
+    end
+    else
+      DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unexpected async-record: ', Line);
+  end;
+
+  procedure DoMsgAsync(Line: String);
+  var
+    S: String;
+    i, x: Integer;
+    ct: TCurrentThreads;
+    t: TThreadEntry;
+  begin
+    S := GetPart('=', ',', Line, False, False);
+    x := StringCase(S, ['thread-created', 'thread-exited', 'thread-group-started']);
+    case x of // thread-group-exited // thread-group-added,id="i1"
+      0,1: begin
+          i := StrToIntDef(GetPart(',id="', '"', Line, False, False), -1);
+          if (i > 0) and (FCmd.FTheDebugger.Threads.Monitor <> nil) and
+             (FCmd.FTheDebugger.Threads.Monitor.CurrentThreads <> nil)
+          then begin
+            ct := FCmd.FTheDebugger.Threads.Monitor.CurrentThreads;
+            t := ct.EntryById[i];
+            case x of
+              0: begin
+                  if t = nil then begin
+                    t := TThreadEntry.Create(0, 0, nil, '', nil, 0, i, '', 'unknown');
+                    ct.Add(t);
+                    t.Free;
+                  end
+                  else
+                    debugln(DBG_WARNINGS, 'GDBMI: Duplicate thread');
+                end;
+              1: begin
+                  if t <> nil then begin
+                    ct.Remove(t);
+                  end
+                  else
+                    debugln(DBG_WARNINGS, 'GDBMI: Missing thread');
+                end;
+            end;
+            FCmd.FTheDebugger.Threads.Changed;
+          end;
+        end;
+      2: begin  // thread-group-started // needed in RunToMain
+          // Todo, store in seperate field
+          if FCmd is TGDBMIDebuggerCommandStartDebugging then
+            FLogWarnings := FLogWarnings + Line + LineEnding;
+        end;
+    end;
+
+     FCmd.FTheDebugger.DoNotifyAsync(Line);
+  end;
+
+  procedure DoStatusAsync(const Line: String);
+  begin
+    DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unexpected async-record: ', Line);
+  end;
+
+begin
+  Result := True;
+  FFullCmdReply := FFullCmdReply + AData + LineEnding;
+  if AData = '(gdb) ' then begin
+    MarkAsSuccess;
+    exit;
+  end;
+  //if (AData = '^exit') and (FCmd = '-gdb-exit') then begin
+  //  // no (gdb) expected
+  //  MarkAsSuccess;
+  //end;
+
+  if AData <> ''
+  then case AData[1] of
+    '^': FHasResult := DoResultRecord(AData, Result);
+    '~': DoConsoleStream(AData);
+    '@': DoTargetStream(AData);
+    '&': DoLogStream(AData);
+    '*': DoExecAsync(AData);
+    '+': DoStatusAsync(AData);
+    '=': DoMsgAsync(AData);
+  else
+    DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unknown record: ', AData);
+  end;
+  {$IFDEF VerboseIDEToDo}{$message warning condition should also check end-of-file reached for process output stream}{$ENDIF}
+end;
+
+procedure TGDBMIDebuggerInstruction.HandleNoGdbRunning;
+begin
+  if FHasResult and (Command = '-gdb-exit') then begin
+    // no (gdb) expected
+    MarkAsSuccess;
+  end
+  else
+    inherited HandleNoGdbRunning;
+end;
+
+procedure TGDBMIDebuggerInstruction.HandleReadError;
+begin
+  if FHasResult and (Command = '-gdb-exit') then begin
+    // no (gdb) expected
+    MarkAsSuccess;
+  end
+  else
+    inherited HandleReadError;
+end;
+
+procedure TGDBMIDebuggerInstruction.HandleTimeOut;
+begin
+  if FHasResult and (Command = '-gdb-exit') then begin
+    // no (gdb) expected
+    MarkAsSuccess;
+  end
+  else
+    inherited HandleTimeOut;
+end;
+
+function TGDBMIDebuggerInstruction.GetTimeOutVerifier: TGDBInstruction;
+begin
+  if FHasResult and (Command = '-gdb-exit') then
+    Result := nil
+  else
+    Result := inherited GetTimeOutVerifier;
+end;
+
+procedure TGDBMIDebuggerInstruction.Init;
+begin
+  inherited Init;
+  FHasResult := False;
+  FResultData.Values := '';
+  FResultData.Flags := [];
+  FResultData.State := dsNone;
+  FFullCmdReply := '';
+  FLogWarnings := '';
+  FInLogWarning := False;
+end;
+
 { TGDBMIDebuggerCommandStartBase }
 
 procedure TGDBMIDebuggerCommandStartBase.SetTargetInfo(const AFileType: String);
@@ -1944,7 +2272,7 @@ var
         AResult.State := dsIdle;
       end;
       3: begin // error
-        DebugLn(DBG_WARNINGS, 'TGDBMIDebugger.ProcessResult Error: ', Line);
+        DebugLn(DBG_WARNINGS, 'TGDBMIDebugger.ProcessRunning Error: ', Line);
         // todo: implement with values
         if  (pos('msg=', Line) > 0)
         and (pos('not being run', Line) > 0)
@@ -6608,6 +6936,7 @@ begin
   FRunErrorBreak   := TGDBMIInternalBreakPoint.Create('FPC_RUNERROR');
   FExceptionBreak  := TGDBMIInternalBreakPoint.Create('FPC_RAISEEXCEPTION');
 
+  FInstructionQueue := TGDBInstructionQueue.Create(Self);
   FCommandQueue := TGDBMIDebuggerCommandList.Create;
   FTargetInfo.TargetPID := 0;
   FTargetInfo.TargetFlags := [];
@@ -6699,6 +7028,7 @@ begin
   ClearCommandQueue;
   //RemoveRunQueueASync;
   FreeAndNil(FCommandQueue);
+  FreeAndNil(FInstructionQueue);
   ClearSourceInfo;
   FreeAndNil(FSourceNames);
   FreeAndNil(FThreadGroups);
@@ -6802,20 +7132,6 @@ procedure TGDBMIDebugger.DoBeforeState(const OldState: TDBGState);
 begin
   inherited DoBeforeState(OldState);
   Threads.CurrentThreads.CurrentThreadId := FCurrentThreadId; // TODO: Works only because CurrentThreadId is always valid
-end;
-
-procedure TGDBMIDebugger.DoReadError;
-begin
-  include(FErrorHandlingFlags, ehfGotReadError);
-  if not(ehfDeferReadWriteError in FErrorHandlingFlags)
-  then inherited DoReadError;
-end;
-
-procedure TGDBMIDebugger.DoWriteError;
-begin
-  include(FErrorHandlingFlags, ehfGotWriteError);
-  if not(ehfDeferReadWriteError in FErrorHandlingFlags)
-  then inherited DoWriteError;
 end;
 
 function TGDBMIDebugger.LineEndPos(const s: string; out LineEndLen: integer): integer;
@@ -9739,68 +10055,11 @@ end;
 function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
   out AResult: TGDBMIExecResult; AFlags: TGDBMICommandFlags = [];
   ATimeOut: Integer = -1): Boolean;
-
-  function RevorerTimeOut: Boolean;
-  var
-    R, R2: TGDBMIExecResult;
-    List: TGDBMINameValueList;
-    Got7: Boolean;
-  begin
-    Result := False;
-    List := nil;
-    try
-      AResult.State := dsError;
-      // send 2 commands: - if the "7" is received, it could be the original command
-      //                  - but if the "1" is received, after the "7" we know we are in sync
-      FTheDebugger.SendCmdLn('-data-evaluate-expression 7');
-      FTheDebugger.SendCmdLn('-data-evaluate-expression 1');
-
-      // Not expected to reach it's timeout, so we can use a high value.
-      if not ProcessResult(R, Max(2*ATimeOut, 2500))
-      then exit;
-
-      // Got either:  Result for origonal "ACommand" (could be "7" too)   OR   got "7"
-      List := TGDBMINameValueList.Create(R);
-      Got7 := List.Values['value'] = '7';
-
-      // Check next result,
-      if not ProcessResult(R2, 500)
-      then exit;
-
-      // Got either:  "7"  OR  "1"
-      // "1" => never got original result, but recovery was ok
-      // "7" again => maybe recovery, must be followed by a "1" then
-      List.Init(R2.Values);
-
-      if Got7 and (List.Values['value'] = '1')
-      then begin
-        // timeout, without value, but recovery
-        Result := True;
-        DoDbgEvent(ecDebugger, etDefault, Format(gdbmiTimeOutForCmd, [ACommand]));
-        // TODO: use feedback dialog
-        FLastExecwasTimeOut := True;
-        DoTimeoutFeedback;
-      end
-      else
-      if List.Values['value'] = '7'
-      then begin
-        // Got a 2nd "7", check for a "1"
-        if not ProcessResult(R2, 500)
-        then exit;
-        List.Init(R2.Values);
-        if not(List.Values['value'] = '1')
-        then exit;
-        // full recovery, even got orig result
-        Result := True;
-        AResult := R;
-      end;
-    finally
-      FreeAndNil(List);
-    end;
-  end;
-
+var
+  Instr: TGDBMIDebuggerInstruction;
+  ASyncFailed: Boolean;
 begin
-  AResult.Flags := [];
+  ASyncFailed := False;
 
   if cfTryAsync in AFlags then begin
     if FTheDebugger.FAsyncModeEnabled then begin
@@ -9809,11 +10068,9 @@ begin
         exit;
     end;
 
-    AResult.Flags := [rfAsyncFailed];
+    ASyncFailed := True;
   end;
 
-  AResult.Values := '';
-  AResult.State := dsNone;
   FLastExecCommand := ACommand;
   FLastExecwasTimeOut := False;
 
@@ -9821,22 +10078,29 @@ begin
   then ATimeOut := DefaultTimeOut;
 
   try
-    FTheDebugger.FErrorHandlingFlags := FTheDebugger.FErrorHandlingFlags
-      + [ehfDeferReadWriteError] - [ehfGotReadError, ehfGotWriteError];
-    FTheDebugger.SendCmdLn(ACommand);
-    if ehfGotWriteError in FTheDebugger.FErrorHandlingFlags then begin
-      ProcessResult(AResult, 50); // not expecting anything
-      Result := False;
-    end
-    else begin
-      Result := ProcessResult(AResult, ATimeOut);
-      FLastExecResult := AResult;
+    Instr := TGDBMIDebuggerInstruction.Create(ACommand, [], ATimeOut);
+    Instr.Cmd := Self;
+    FTheDebugger.FInstructionQueue.RunInstruction(Instr);
 
-      if ProcessResultTimedOut then
-      Result := RevorerTimeOut;
+    Result := Instr.IsSuccess and Instr.FHasResult;
+    AResult := Instr.ResultData;
+    if ASyncFailed then
+      AResult.Flags := [rfAsyncFailed];
+    FLastExecResult := AResult;
+    FLogWarnings := Instr.LogWarnings;  // TODO: Do not clear in time-out handling
+    FFullCmdReply := Instr.FullCmdReply; // TODO: Do not clear in time-out handling
+
+    if (ifeTimedOut in Instr.ErrorFlags) then begin
+      AResult.State := dsError;
+      FLastExecwasTimeOut := True;
+    end;
+    if (ifeRecoveredTimedOut in Instr.ErrorFlags) then begin
+      // TODO: use feedback dialog
+      DoDbgEvent(ecDebugger, etDefault, Format(gdbmiTimeOutForCmd, [ACommand]));
+      DoTimeoutFeedback;
     end;
   finally
-    Exclude(FTheDebugger.FErrorHandlingFlags, ehfDeferReadWriteError);
+    Instr.Free;
   end;
 
   if not Result
@@ -9876,272 +10140,6 @@ begin
   if DebuggerProperties.WarnOnTimeOut
   then MessageDlg('Warning', 'A timeout occured, the debugger will try to continue, but further error may occur later',
                   mtWarning, [mbOK], 0);
-end;
-
-function TGDBMIDebuggerCommand.ProcessResult(var AResult: TGDBMIExecResult;ATimeOut: Integer = -1): Boolean;
-var
-  InLogWarning: Boolean;
-
-  function DoResultRecord(Line: String; CurRes: Boolean): Boolean;
-  var
-    ResultClass: String;
-    OldResult: Boolean;
-  begin
-    ResultClass := GetPart('^', ',', Line);
-
-    if Line = ''
-    then begin
-      if AResult.Values <> ''
-      then Include(AResult.Flags, rfNoMI);
-    end
-    else begin
-      AResult.Values := Line;
-    end;
-
-    OldResult := CurRes;
-    Result := True;
-    case StringCase(ResultClass, ['done', 'running', 'exit', 'error', 'stopped']) of
-      0: begin // done
-      end;
-      1: begin // running
-        AResult.State := dsRun;
-      end;
-      2: begin // exit
-        AResult.State := dsIdle;
-      end;
-      3: begin // error
-        DebugLn(DBG_WARNINGS, 'TGDBMIDebugger.ProcessResult Error: ', Line);
-        // todo: implement with values
-        if  (pos('msg=', Line) > 0)
-        and (pos('not being run', Line) > 0)
-        then AResult.State := dsStop
-        else AResult.State := dsError;
-      end;
-      4: begin
-        FGotStopped := True;
-        //AStoppedParams := Line;
-      end;
-    else
-      //TODO: should that better be dsError ?
-      if OldResult and (AResult.State in [dsError, dsStop]) and
-         (copy(ResultClass,1,6) = 'error"')
-      then begin
-        // Gdb 6.3.5 on Mac, does sometime return a 2nd mis-formatted error line
-        // The line seems truncated, it simply is (note the misplaced quote): ^error"
-        DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unknown result class (IGNORING): ', ResultClass);
-      end
-      else begin
-        Result := False;
-        DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unknown result class: ', ResultClass);
-      end;
-    end;
-  end;
-
-  procedure DoConsoleStream(Line: String);
-  var
-    len: Integer;
-  begin
-    // check for symbol info
-    if Pos('no debugging symbols', Line) > 0
-    then begin
-      TargetInfo^.TargetFlags := TargetInfo^.TargetFlags - [tfHasSymbols];
-      DoDbgEvent(ecDebugger, etDefault, Format('File ''%s'' has no debug symbols', [FTheDebugger.FileName]));
-    end
-    else begin
-      // Strip surrounding ~" "
-      len := Length(Line) - 3;
-      if len < 0 then Exit;
-      Line := Copy(Line, 3, len);
-      // strip trailing \n (unless it is escaped \\n)
-      if (len >= 2) and (Line[len - 1] = '\') and (Line[len] = 'n')
-      then begin
-        if len = 2
-        then Line := LineEnding
-        else if Line[len - 2] <> '\'
-        then begin
-          SetLength(Line, len - 2);
-          Line := Line + LineEnding;
-        end;
-      end;
-
-      AResult.Values := AResult.Values + Line;
-    end;
-  end;
-
-  procedure DoTargetStream(const Line: String);
-  begin
-    DebugLn(DBG_VERBOSE, '[Debugger] Target output: ', Line);
-  end;
-
-  procedure DoLogStream(const Line: String);
-  const
-    LogWarning = '&"Warning:\n"';
-  begin
-    // check for symbol info
-    if Pos('No symbol table is loaded.  Use the \"file\" command.', Line) > 0
-    then begin
-      TargetInfo^.TargetFlags := TargetInfo^.TargetFlags - [tfHasSymbols];
-      DoDbgEvent(ecDebugger, etDefault, Format('File ''%s'' has no debug symbols', [FTheDebugger.FileName]));
-    end;
-    if (Pos('internal-error:', LowerCase(Line)) > 0) or
-       (Pos('internal to gdb has been detected', LowerCase(Line)) > 0) or
-       (Pos('further debugging may prove unreliable', LowerCase(Line)) > 0)
-    then begin
-      DoDbgEvent(ecDebugger, etDefault, Format('GDB has encountered an internal error: %s', [Line]));
-      if DebuggerProperties.WarnOnInternalError
-      then MessageDlg('Warning', 'GDB has encountered an internal error: ' + Line,
-                      mtWarning, [mbOK], 0);
-    end;
-    DebugLn(DBG_VERBOSE, '[Debugger] Log output: ', Line);
-    if Line = '&"kill\n"'
-    then AResult.State := dsStop
-    else if LeftStr(Line, 8) = '&"Error '
-    then AResult.State := dsError;
-    if copy(Line, 1, length(LogWarning)) = LogWarning
-    then InLogWarning := True;
-    if InLogWarning
-    then FLogWarnings := FLogWarnings + copy(Line, 3, length(Line)-5) + LineEnding;
-    if copy(Line, 1, length(LogWarning)) = '&"\n"'
-    then InLogWarning := False;
-  end;
-
-  procedure DoExecAsync(Line: String);
-  var
-    S: String;
-    ct: TCurrentThreads;
-    i: Integer;
-    t: TThreadEntry;
-  begin
-    S := GetPart(['*'], [','], Line);
-    if S = 'running'
-    then begin
-      if (FTheDebugger.Threads.Monitor <> nil) and
-         (FTheDebugger.Threads.Monitor.CurrentThreads <> nil)
-      then begin
-        ct := FTheDebugger.Threads.Monitor.CurrentThreads;
-        S := GetPart('thread-id="', '"', Line);
-        if s = 'all' then begin
-          for i := 0 to  ct.Count - 1 do
-            ct[i].ThreadState := 'running'; // TODO enum?
-        end
-        else begin
-          S := S + ',';
-          while s <> '' do begin
-            i := StrToIntDef(GetPart('', ',', s), -1);
-            if (s <> '') and (s[1] = ',') then delete(s, 1, 1)
-            else begin
-              debugln(DBG_WARNINGS, 'GDBMI: Error parsing threads');
-              break
-            end;
-            if i < 0 then Continue;
-            t := ct.EntryById[i];
-            if t <> nil then
-              t.ThreadState := 'running'; // TODO enum?
-          end;
-        end;
-        FTheDebugger.Threads.Changed;
-      end;
-
-      DoDbgEvent(ecProcess, etProcessStart, 'Process Start: ' + FTheDebugger.FileName);
-    end
-    else
-    if S = 'stopped' then begin
-      FGotStopped := True;
-      // StoppedParam ??
-    end
-    else
-      DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unexpected async-record: ', Line);
-  end;
-
-  procedure DoMsgAsync(var Line: String);
-  var
-    S: String;
-    i, x: Integer;
-    ct: TCurrentThreads;
-    t: TThreadEntry;
-  begin
-    S := GetPart('=', ',', Line, False, False);
-    x := StringCase(S, ['thread-created', 'thread-exited', 'thread-group-started']);
-    case x of // thread-group-exited // thread-group-added,id="i1"
-      0,1: begin
-          i := StrToIntDef(GetPart(',id="', '"', Line, False, False), -1);
-          if (i > 0) and (FTheDebugger.Threads.Monitor <> nil) and
-             (FTheDebugger.Threads.Monitor.CurrentThreads <> nil)
-          then begin
-            ct := FTheDebugger.Threads.Monitor.CurrentThreads;
-            t := ct.EntryById[i];
-            case x of
-              0: begin
-                  if t = nil then begin
-                    t := TThreadEntry.Create(0, 0, nil, '', nil, 0, i, '', 'unknown');
-                    ct.Add(t);
-                    t.Free;
-                  end
-                  else
-                    debugln(DBG_WARNINGS, 'GDBMI: Duplicate thread');
-                end;
-              1: begin
-                  if t <> nil then begin
-                    ct.Remove(t);
-                  end
-                  else
-                    debugln(DBG_WARNINGS, 'GDBMI: Missing thread');
-                end;
-            end;
-            FTheDebugger.Threads.Changed;
-          end;
-        end;
-      2: begin  // thread-group-started // needed in RunToMain
-          // Todo, store in seperate field
-          if self is TGDBMIDebuggerCommandStartDebugging then
-            FLogWarnings := FLogWarnings + Line + LineEnding;
-        end;
-    end;
-
-     FTheDebugger.DoNotifyAsync(Line);
-  end;
-
-  procedure DoStatusAsync(const Line: String);
-  begin
-    DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unexpected async-record: ', Line);
-  end;
-
-var
-  S: String;
-begin
-  Result := False;
-  FProcessResultTimedOut := False;
-  AResult.Values := '';
-  AResult.Flags := [];
-  AResult.State := dsNone;
-  InLogWarning := False;
-  FLogWarnings := '';  // TODO: Do not clear in time-out handling
-  FFullCmdReply := ''; // TODO: Do not clear in time-out handling
-  repeat
-    S := FTheDebugger.ReadLine(ATimeOut);
-    FFullCmdReply := FFullCmdReply + s + LineEnding;
-    if S = '(gdb) ' then Break;
-
-    if s <> ''
-    then case S[1] of
-      '^': Result := DoResultRecord(S, Result);
-      '~': DoConsoleStream(S);
-      '@': DoTargetStream(S);
-      '&': DoLogStream(S);
-      '*': DoExecAsync(S);
-      '+': DoStatusAsync(S);
-      '=': DoMsgAsync(S);
-    else
-      DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unknown record: ', S);
-    end;
-    {$IFDEF VerboseIDEToDo}{$message warning condition should also check end-of-file reached for process output stream}{$ENDIF}
-    if FTheDebugger.ReadLineTimedOut
-    then begin
-      FProcessResultTimedOut := True;
-      Result := False;
-      break;
-    end;
-  until not FTheDebugger.DebugProcessRunning;
 end;
 
 function TGDBMIDebuggerCommand.ProcessGDBResultStruct(S: String;
