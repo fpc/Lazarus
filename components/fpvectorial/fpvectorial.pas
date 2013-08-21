@@ -835,6 +835,7 @@ type
   TvParagraph = class(TvEntityWithSubEntities)
   public
     Width, Height: Double;
+    Level: Integer; // Only utilized if it is inside a TvBulletList. zero is the first level, 1 the second, and so on
     AutoExpand: TvRichTextAutoExpand;
     constructor Create; override;
     destructor Destroy; override;
@@ -843,6 +844,27 @@ type
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+  end;
+
+  {@@
+    TvBulletList represents a list of bullets texts, like:
+
+    * First level
+      - Second level
+    * First level again
+
+    The basic element to build the sequence is TvBulletListText
+  }
+
+  TvBulletList = class(TvEntityWithSubEntities)
+  public
+    {constructor Create; override;
+    destructor Destroy; override;}
+    function AddItem(ALevel: Integer; ASimpleText: string): TvParagraph;
+    {function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;}
   end;
 
   {@@
@@ -860,7 +882,10 @@ type
     AutoExpand: TvRichTextAutoExpand;
     constructor Create; override;
     destructor Destroy; override;
+    // Data writing methods
     function AddParagraph: TvParagraph;
+    function AddBulletList: TvBulletList;
+    //
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -1068,6 +1093,7 @@ type
     function AddEntity(AEntity: TvEntity): Integer; override;
     { Data writing methods }
     function AddParagraph: TvParagraph;
+    function AddBulletList: TvBulletList;
   end;
 
   {@@ TvVectorialReader class reference type }
@@ -4370,6 +4396,17 @@ begin
   Result:=inherited GenerateDebugTree(ADestRoutine, APageItem);
 end;
 
+{ TvBulletList }
+
+function TvBulletList.AddItem(ALevel: Integer; ASimpleText: string): TvParagraph;
+begin
+  Result := TvParagraph.Create;
+  Result.Level := ALevel;
+  if ASimpleText <> '' then
+    Result.AddText(ASimpleText);
+  AddEntity(Result);
+end;
+
 { TvRichText }
 
 constructor TvRichText.Create;
@@ -4385,6 +4422,12 @@ end;
 function TvRichText.AddParagraph: TvParagraph;
 begin
   Result := TvParagraph.Create;
+  AddEntity(Result);
+end;
+
+function TvRichText.AddBulletList: TvBulletList;
+begin
+  Result := TvBulletList.Create;
   AddEntity(Result);
 end;
 
@@ -5174,6 +5217,11 @@ end;
 function TvTextPageSequence.AddParagraph: TvParagraph;
 begin
   Result := MainText.AddParagraph();
+end;
+
+function TvTextPageSequence.AddBulletList: TvBulletList;
+begin
+  Result := MainText.AddBulletList();
 end;
 
 { TvVectorialDocument }

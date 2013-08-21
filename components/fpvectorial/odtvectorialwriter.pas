@@ -79,6 +79,7 @@ type
     procedure WriteParagraph(AEntity: TvParagraph; ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
     procedure WriteTextSpan(AEntity: TvText; AParagraph: TvParagraph;
       ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
+    procedure WriteBulletList(AEntity: TvBulletList; ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
     // Routines to write parts of those files
     function WriteStylesXMLAsString: string;
     //
@@ -564,8 +565,6 @@ begin
 }
   end;
 
-   // up to here done +/-
-
   FStyles := FStyles +
    '  <text:outline-style style:name="Outline">' + LineEnding +
    '    <text:outline-level-style text:level="1" style:num-format="">' + LineEnding +
@@ -634,29 +633,24 @@ begin
   // ----------------------------
 
   FStyles := FStyles +
-   '<office:automatic-styles>' + LineEnding;
-  FStyles := FStyles +
-   '  <style:page-layout style:name="Mpm1">' + LineEnding;
-  FStyles := FStyles +
-   '    <style:page-layout-properties fo:page-width="21.001cm" fo:page-height="29.7cm" style:num-format="1" style:print-orientation="portrait" fo:margin-top="2cm" fo:margin-bottom="2cm" fo:margin-left="2cm" fo:margin-right="2cm" style:writing-mode="lr-tb" style:footnote-max-height="0cm">' + LineEnding;
-  FStyles := FStyles +
-   '      <style:footnote-sep style:width="0.018cm" style:distance-before-sep="0.101cm" style:distance-after-sep="0.101cm" style:line-style="solid" style:adjustment="left" style:rel-width="25%" style:color="#000000" />' + LineEnding;
-  FStyles := FStyles +
-   '    </style:page-layout-properties>' + LineEnding;
-  FStyles := FStyles +
-   '    <style:header-style />' + LineEnding;
-  FStyles := FStyles +
-   '    <style:footer-style />' + LineEnding;
-  FStyles := FStyles +
-   '  </style:page-layout>' + LineEnding;
-  FStyles := FStyles +
+   '<office:automatic-styles>' + LineEnding +
+   '  <style:page-layout style:name="Mpm1">' + LineEnding +
+   '    <style:page-layout-properties fo:page-width="21.001cm" fo:page-height="29.7cm" style:num-format="1" style:print-orientation="portrait" fo:margin-top="2cm" fo:margin-bottom="2cm" fo:margin-left="2cm" fo:margin-right="2cm" style:writing-mode="lr-tb" style:footnote-max-height="0cm">' + LineEnding +
+   '      <style:footnote-sep style:width="0.018cm" style:distance-before-sep="0.101cm" style:distance-after-sep="0.101cm" style:line-style="solid" style:adjustment="left" style:rel-width="25%" style:color="#000000" />' + LineEnding +
+   '    </style:page-layout-properties>' + LineEnding +
+   '    <style:header-style />' + LineEnding +
+   '    <style:footer-style />' + LineEnding +
+   '  </style:page-layout>' + LineEnding +
+   '  <style:style style:name="List_0" style:family="paragraph" style:parent-style-name="Standard" style:list-style-name="L1">' + LineEnding +
+   // <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />
+   '  </style:style>' + LineEnding +
    '</office:automatic-styles>' + LineEnding;
+
   FStyles := FStyles +
-   '<office:master-styles>' + LineEnding;
-  FStyles := FStyles +
-   '  <style:master-page style:name="Standard" style:page-layout-name="Mpm1" />' + LineEnding;
-  FStyles := FStyles +
+   '<office:master-styles>' + LineEnding +
+   '  <style:master-page style:name="Standard" style:page-layout-name="Mpm1" />' + LineEnding +
    '</office:master-styles>' + LineEnding;
+
   FStyles := FStyles +
    '</office:document-styles>';
 end;
@@ -834,9 +828,10 @@ begin
   begin
     lCurEntity := ACurPage.GetEntity(i);
 
-    if not (lCurEntity is TvParagraph) then Continue;
-
-    WriteParagraph(TvParagraph(lCurEntity), ACurPage, AData);
+    if (lCurEntity is TvParagraph) then
+      WriteParagraph(TvParagraph(lCurEntity), ACurPage, AData);
+    if (lCurEntity is TvBulletList) then
+      WriteBulletList(TvBulletList(lCurEntity), ACurPage, AData);
   end;
 end;
 
@@ -870,9 +865,8 @@ begin
   begin
     lCurEntity := AEntity.GetEntity(i);
 
-    if not (lCurEntity is TvText) then Continue;
-
-    WriteTextSpan(TvText(lCurEntity), AEntity, ACurPage, AData);
+    if (lCurEntity is TvText) then
+      WriteTextSpan(TvText(lCurEntity), AEntity, ACurPage, AData);
   end;
 
   FContent := FContent +
@@ -960,6 +954,45 @@ begin
 
   FContent := FContent +
     '<text:span text:style-name="'+AEntityStyleName+'">'+AEntity.Value.Text+'</text:span>';
+end;
+
+procedure TvODTVectorialWriter.WriteBulletList(AEntity: TvBulletList;
+  ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
+var
+  i, j: Integer;
+  lCurEntity, lCurSubEntity: TvEntity;
+  lCurParagraph: TvParagraph;
+begin
+  FContent := FContent +
+    '    <text:list  text:style-name="L1">' + LineEnding; // xml:id="list14840052221"
+
+  for i := 0 to AEntity.GetEntitiesCount()-1 do
+  begin
+    lCurEntity := AEntity.GetEntity(i);
+
+    if (lCurEntity is TvParagraph) then
+    begin
+      lCurParagraph := lCurEntity as TvParagraph;
+      FContent := FContent +
+        '      <text:list-item>' + LineEnding +
+        '        <text:p text:style-name="List_'+IntToStr(lCurParagraph.Level)+'">';
+
+
+      for j := 0 to lCurParagraph.GetEntitiesCount()-1 do
+      begin
+        lCurSubEntity := lCurParagraph.GetEntity(j);
+
+        if (lCurSubEntity is TvText) then
+          WriteTextSpan(TvText(lCurSubEntity), lCurParagraph, ACurPage, AData);
+      end;
+
+      FContent := FContent + '</text:p>' + LineEnding +
+        '      </text:list-item>' + LineEnding;
+    end;
+  end;
+
+  FContent := FContent +
+    '    </text:list>' + LineEnding;
 end;
 
 function TvODTVectorialWriter.WriteStylesXMLAsString: string;
