@@ -39,6 +39,7 @@ uses
 
 type
   TvVectorialFormat = (
+    vfUnknown,
     { Multi-purpose document formats }
     vfPDF, vfSVG, vfSVGZ, vfCorelDrawCDR, vfWindowsMetafileWMF, vfODG,
     { CAD formats }
@@ -131,13 +132,20 @@ type
     StrikeThrough: boolean;
   end;
 
-  TvSetPenBrushAndFontElement = (
+  TvSetStyleElement = (
+    // Pen, Brush and Font
     spbfPenColor, spbfPenStyle, spbfPenWidth,
     spbfBrushColor, spbfBrushStyle, spbfBrushGradient,
     spbfFontColor, spbfFontSize, spbfFontName, spbfFontBold, spbfFontItalic,
-    spbfFontUnderline, spbfFontStrikeThrough, spbfAlignment);
+    spbfFontUnderline, spbfFontStrikeThrough, spbfAlignment,
+    //
+    sseMarginTop, sseMarginBottom, sseMarginLeft, sseMarginRight
+    );
 
-  TvSetPenBrushAndFontElements = set of TvSetPenBrushAndFontElement;
+  TvSetStyleElements = set of TvSetStyleElement;
+  // for backwards compatibility, obsolete
+  TvSetPenBrushAndFontElement = TvSetStyleElement;
+  TvSetPenBrushAndFontElements = TvSetStyleElements;
 
   TvStyleKind = (
     // Paragraph kinds
@@ -158,14 +166,16 @@ type
     Pen: TvPen;
     Brush: TvBrush;
     Font: TvFont;
-    SetElements: TvSetPenBrushAndFontElements;
     //
     MarginTop, MarginBottom, MarginLeft, MarginRight: Double; // in mm
+    //
+    SetElements: TvSetStyleElements;
     //
     function GetKind: TvStyleKind; // takes care of parenting
     procedure Clear();
     procedure CopyFrom(AFrom: TvStyle);
     procedure ApplyOver(AFrom: TvStyle);
+    function CreateStyleCombinedWithParent: TvStyle;
   end;
 
   { Coordinates and polyline segments }
@@ -907,7 +917,7 @@ type
     function AddTextPageSequence(): TvTextPageSequence;
     { Style methods }
     function AddStyle(): TvStyle;
-    procedure AddStandardODTTextDocumentStyles();
+    procedure AddStandardTextDocumentStyles(AFormat: TvVectorialFormat);
     function GetStyleCount: Integer;
     function GetStyle(AIndex: Integer): TvStyle;
     function FindStyleIndex(AStyle: TvStyle): Integer;
@@ -1249,18 +1259,26 @@ procedure TvStyle.ApplyOver(AFrom: TvStyle);
 begin
   if AFrom = nil then Exit;
 
+  // Pen
+
   if spbfPenColor in AFrom.SetElements then
     Pen.Color := AFrom.Pen.Color;
   if spbfPenStyle in AFrom.SetElements then
     Pen.Style := AFrom.Pen.Style;
   if spbfPenWidth in AFrom.SetElements then
     Pen.Width := AFrom.Pen.Width;
+
+  // Brush
+
   if spbfBrushColor in AFrom.SetElements then
     Brush.Color := AFrom.Brush.Color;
   if spbfBrushStyle in AFrom.SetElements then
     Brush.Style := AFrom.Brush.Style;
   {if spbfBrushGradient in AFrom.SetElements then
     Brush.Gra := AFrom.Brush.Style;}
+
+  // Font
+
   if spbfFontColor in AFrom.SetElements then
     Font.Color := AFrom.Font.Color;
   if spbfFontSize in AFrom.SetElements then
@@ -1278,7 +1296,25 @@ begin
   If spbfAlignment in AFrom.SetElements then
     Alignment := AFrom.Alignment;
 
-  SetElements:=AFrom.SetElements;
+  // Style
+
+  if sseMarginTop in AFrom.SetElements then
+    MarginTop := AFrom.MarginTop;
+  If sseMarginBottom in AFrom.SetElements then
+    MarginBottom := AFrom.MarginBottom;
+  If sseMarginLeft in AFrom.SetElements then
+    MarginLeft := AFrom.MarginLeft;
+  If sseMarginRight in AFrom.SetElements then
+    MarginRight := AFrom.MarginRight;
+
+  SetElements := AFrom.SetElements + SetElements;
+end;
+
+function TvStyle.CreateStyleCombinedWithParent: TvStyle;
+begin
+  Result := TvStyle.Create;
+  Result.CopyFrom(Self);
+  if Parent <> nil then Result.ApplyOver(Parent);
 end;
 
 { T2DEllipticalArcSegment }
@@ -5487,7 +5523,7 @@ begin
   FStyles.Add(Result);
 end;
 
-procedure TvVectorialDocument.AddStandardODTTextDocumentStyles();
+procedure TvVectorialDocument.AddStandardTextDocumentStyles(AFormat: TvVectorialFormat);
 var
   lTextBody, lBaseHeading, lCurStyle: TvStyle;
 begin
@@ -5516,7 +5552,7 @@ begin
   lBaseHeading.Kind := vskHeading;
   lBaseHeading.Font.Size := 14;
   lBaseHeading.Font.Name := 'Arial';
-  lBaseHeading.SetElements := [spbfFontSize, spbfFontName];
+  lBaseHeading.SetElements := [spbfFontSize, spbfFontName, sseMarginTop, sseMarginBottom];
   lBaseHeading.MarginTop := 4.23;
   lBaseHeading.MarginBottom := 2.12;
 

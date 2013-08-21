@@ -376,7 +376,8 @@ procedure TvODTVectorialWriter.WriteStyles(AData: TvVectorialDocument);
 var
   i: Integer;
   CurStyle: TvStyle;
-  lTextPropsStr, lParagraphPropsStr, lCurStyleTmpStr, CurStyleParent: string;
+  lTextPropsStr, lParagraphPropsStr, lCurStyleTmpStr, CurStyleParent,
+    lMarginStr: string;
 begin
   FStyles :=
    XML_HEADER + LineEnding +
@@ -419,56 +420,33 @@ begin
    '  <style:font-face style:name="Mangal" svg:font-family="Mangal" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
    '  <style:font-face style:name="Microsoft YaHei" svg:font-family="''Microsoft YaHei''" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
    '  <style:font-face style:name="SimSun" svg:font-family="SimSun" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
-   '</office:font-face-decls>' + LineEnding +
+   '</office:font-face-decls>';
 
-   // up to here done +/-
-
-   '<office:styles>' + LineEnding +
-   '  <style:style style:name="Default" style:family="table-cell">' + LineEnding +
-   '    <style:text-properties fo:font-size="10" style:font-name="Arial" />' + LineEnding +
-   '  </style:style>' + LineEnding +
-   '</office:styles>' + LineEnding +
-   '<office:automatic-styles>' + LineEnding +
-   '  <style:page-layout style:name="pm1">' + LineEnding +
-   '    <style:page-layout-properties fo:margin-top="1.25cm" fo:margin-bottom="1.25cm" fo:margin-left="1.905cm" fo:margin-right="1.905cm" />' + LineEnding +
-   '    <style:header-style>' + LineEnding +
-   '    <style:header-footer-properties fo:min-height="0.751cm" fo:margin-left="0cm" fo:margin-right="0cm" fo:margin-bottom="0.25cm" fo:margin-top="0cm" />' + LineEnding +
-   '    </style:header-style>' + LineEnding +
-   '    <style:footer-style>' + LineEnding +
-   '    <style:header-footer-properties fo:min-height="0.751cm" fo:margin-left="0cm" fo:margin-right="0cm" fo:margin-top="0.25cm" fo:margin-bottom="0cm" />' + LineEnding +
-   '    </style:footer-style>' + LineEnding +
-   '  </style:page-layout>' + LineEnding +
-   '</office:automatic-styles>' + LineEnding +
-   '<office:master-styles>' + LineEnding +
-   '  <style:master-page style:name="Default" style:page-layout-name="pm1">' + LineEnding +
-   '    <style:header />' + LineEnding +
-   '    <style:header-left style:display="false" />' + LineEnding +
-   '    <style:footer />' + LineEnding +
-   '    <style:footer-left style:display="false" />' + LineEnding +
-   '  </style:master-page>' + LineEnding +
-   '</office:master-styles>' + LineEnding;
+  // ----------------------------
+  // Styles
+  // ----------------------------
 
   FStyles := FStyles +
    '<office:styles>' + LineEnding;
-  {
-    <style:default-style style:family="graphic">
-      <style:graphic-properties svg:stroke-color="#3465af" draw:fill-color="#729fcf" fo:wrap-option="no-wrap" draw:shadow-offset-x="0.3cm" draw:shadow-offset-y="0.3cm" draw:start-line-spacing-horizontal="0.283cm" draw:start-line-spacing-vertical="0.283cm" draw:end-line-spacing-horizontal="0.283cm" draw:end-line-spacing-vertical="0.283cm" style:flow-with-text="false" />
-      <style:paragraph-properties style:text-autospace="ideograph-alpha" style:line-break="strict" style:writing-mode="lr-tb" style:font-independent-line-spacing="false">
-        <style:tab-stops />
-      </style:paragraph-properties>
-      <style:text-properties style:use-window-font-color="true" fo:font-size="12pt" fo:language="fi" fo:country="FI" style:letter-kerning="true" style:font-size-asian="10.5pt" style:language-asian="zh" style:country-asian="CN" style:font-size-complex="12pt" style:language-complex="hi" style:country-complex="IN" />
-    </style:default-style>
-    <style:default-style style:family="paragraph">
-      <style:paragraph-properties fo:hyphenation-ladder-count="no-limit" style:text-autospace="ideograph-alpha" style:punctuation-wrap="hanging" style:line-break="strict" style:tab-stop-distance="1.251cm" style:writing-mode="page" />
-      <style:text-properties style:use-window-font-color="true" style:font-name="Times New Roman" fo:font-size="12pt" fo:language="fi" fo:country="FI" style:letter-kerning="true" style:font-name-asian="SimSun" style:font-size-asian="10.5pt" style:language-asian="zh" style:country-asian="CN" style:font-name-complex="Mangal" style:font-size-complex="12pt" style:language-complex="hi" style:country-complex="IN" fo:hyphenate="false" fo:hyphenation-remain-char-count="2" fo:hyphenation-push-char-count="2" />
-    </style:default-style>
-    <style:default-style style:family="table">
-      <style:table-properties table:border-model="collapsing" />
-    </style:default-style>
-    <style:default-style style:family="table-row">
-      <style:table-row-properties fo:keep-together="auto" />
-    </style:default-style>
-    }
+
+  FStyles := FStyles +
+   '  <style:default-style style:family="graphic">' + LineEnding +
+   '    <style:graphic-properties svg:stroke-color="#3465af" draw:fill-color="#729fcf" fo:wrap-option="no-wrap" draw:shadow-offset-x="0.3cm" draw:shadow-offset-y="0.3cm" draw:start-line-spacing-horizontal="0.283cm" draw:start-line-spacing-vertical="0.283cm" draw:end-line-spacing-horizontal="0.283cm" draw:end-line-spacing-vertical="0.283cm" style:flow-with-text="false" />' + LineEnding +
+   '    <style:paragraph-properties style:text-autospace="ideograph-alpha" style:line-break="strict" style:writing-mode="lr-tb" style:font-independent-line-spacing="false">' + LineEnding +
+   '      <style:tab-stops />' + LineEnding +
+   '    </style:paragraph-properties>' + LineEnding +
+   '    <style:text-properties style:use-window-font-color="true" fo:font-size="12pt" fo:language="fi" fo:country="FI" style:letter-kerning="true" style:font-size-asian="10.5pt" style:language-asian="zh" style:country-asian="CN" style:font-size-complex="12pt" style:language-complex="hi" style:country-complex="IN" />' + LineEnding +
+   '  </style:default-style>' + LineEnding +
+   '  <style:default-style style:family="paragraph">' + LineEnding +
+   '    <style:paragraph-properties fo:hyphenation-ladder-count="no-limit" style:text-autospace="ideograph-alpha" style:punctuation-wrap="hanging" style:line-break="strict" style:tab-stop-distance="1.251cm" style:writing-mode="page" />' + LineEnding +
+   '    <style:text-properties style:use-window-font-color="true" style:font-name="Times New Roman" fo:font-size="12pt" fo:language="fi" fo:country="FI" style:letter-kerning="true" style:font-name-asian="SimSun" style:font-size-asian="10.5pt" style:language-asian="zh" style:country-asian="CN" style:font-name-complex="Mangal" style:font-size-complex="12pt" style:language-complex="hi" style:country-complex="IN" fo:hyphenate="false" fo:hyphenation-remain-char-count="2" fo:hyphenation-push-char-count="2" />' + LineEnding +
+   '  </style:default-style>' + LineEnding +
+   '  <style:default-style style:family="table">' + LineEnding +
+   '    <style:table-properties table:border-model="collapsing" />' + LineEnding +
+   '  </style:default-style>' + LineEnding +
+   '  <style:default-style style:family="table-row">' + LineEnding +
+   '    <style:table-row-properties fo:keep-together="auto" />' + LineEnding +
+   '  </style:default-style>' + LineEnding;
 
   FStyles := FStyles +
    '  <style:style style:name="Standard" style:family="paragraph" style:class="text" />' + LineEnding;
@@ -539,9 +517,15 @@ begin
     // Paragraph kind
     else
     begin
+      lMarginStr := '';
+      if sseMarginTop in CurStyle.SetElements then
+        lMarginStr := lMarginStr + 'fo:margin-top="'+FloatToODTText(CurStyle.MarginTop)+'mm" ';
+      if sseMarginBottom in CurStyle.SetElements then
+        lMarginStr := lMarginStr + 'fo:margin-bottom="'+FloatToODTText(CurStyle.MarginTop)+'mm" ';
+
       lCurStyleTmpStr := // tmp string to help see the text in the debugger
        '  <style:style style:name="'+StyleNameToODTStyleName(AData, i, False)+'" style:display-name="'+ CurStyle.Name +'" style:family="paragraph" style:parent-style-name="'+CurStyleParent+'" style:class="text">' + LineEnding +
-       '    <style:paragraph-properties fo:margin-top="'+FloatToODTText(CurStyle.MarginTop)+'mm" fo:margin-bottom="'+FloatToODTText(CurStyle.MarginTop)+'mm" style:contextual-spacing="false" />' + LineEnding +
+       '    <style:paragraph-properties '+lMarginStr+' style:contextual-spacing="false" />' + LineEnding +
        '    <style:text-properties '+lTextPropsStr+' />' + LineEnding +
        '  </style:style>' + LineEnding;
       FStyles := FStyles + lCurStyleTmpStr;
@@ -580,60 +564,62 @@ begin
 }
   end;
 
-{
-  <text:outline-style style:name="Outline">
-    <text:outline-level-style text:level="1" style:num-format="">
-      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="0.762cm" fo:text-indent="-0.762cm" fo:margin-left="0.762cm" />
-      </style:list-level-properties>
-    </text:outline-level-style>
-    <text:outline-level-style text:level="2" style:num-format="">
-      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.016cm" fo:text-indent="-1.016cm" fo:margin-left="1.016cm" />
-      </style:list-level-properties>
-    </text:outline-level-style>
-    <text:outline-level-style text:level="3" style:num-format="">
-      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.27cm" fo:text-indent="-1.27cm" fo:margin-left="1.27cm" />
-      </style:list-level-properties>
-    </text:outline-level-style>
-    <text:outline-level-style text:level="4" style:num-format="">
-      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.524cm" fo:text-indent="-1.524cm" fo:margin-left="1.524cm" />
-      </style:list-level-properties>
-    </text:outline-level-style>
-    <text:outline-level-style text:level="5" style:num-format="">
-      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.778cm" fo:text-indent="-1.778cm" fo:margin-left="1.778cm" />
-      </style:list-level-properties>
-    </text:outline-level-style>
-    <text:outline-level-style text:level="6" style:num-format="">
-      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.032cm" fo:text-indent="-2.032cm" fo:margin-left="2.032cm" />
-      </style:list-level-properties>
-    </text:outline-level-style>
-    <text:outline-level-style text:level="7" style:num-format="">
-      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.286cm" fo:text-indent="-2.286cm" fo:margin-left="2.286cm" />
-      </style:list-level-properties>
-    </text:outline-level-style>
-    <text:outline-level-style text:level="8" style:num-format="">
-      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.54cm" fo:text-indent="-2.54cm" fo:margin-left="2.54cm" />
-      </style:list-level-properties>
-    </text:outline-level-style>
-    <text:outline-level-style text:level="9" style:num-format="">
-      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.794cm" fo:text-indent="-2.794cm" fo:margin-left="2.794cm" />
-      </style:list-level-properties>
-    </text:outline-level-style>
-    <text:outline-level-style text:level="10" style:num-format="">
-      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">
-        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="3.048cm" fo:text-indent="-3.048cm" fo:margin-left="3.048cm" />
-      </style:list-level-properties>
-    </text:outline-level-style>
-  </text:outline-style>
-  }
+   // up to here done +/-
+
+  FStyles := FStyles +
+   '  <text:outline-style style:name="Outline">' + LineEnding +
+   '    <text:outline-level-style text:level="1" style:num-format="">' + LineEnding +
+   '      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
+   '        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="0.762cm" fo:text-indent="-0.762cm" fo:margin-left="0.762cm" />' + LineEnding +
+   '      </style:list-level-properties>' + LineEnding +
+   '    </text:outline-level-style>' + LineEnding +
+   '    <text:outline-level-style text:level="2" style:num-format="">' + LineEnding +
+   '      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
+   '        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.016cm" fo:text-indent="-1.016cm" fo:margin-left="1.016cm" />' + LineEnding +
+   '      </style:list-level-properties>' + LineEnding +
+   '    </text:outline-level-style>' + LineEnding +
+   '    <text:outline-level-style text:level="3" style:num-format="">' + LineEnding +
+   '      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
+   '        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.27cm" fo:text-indent="-1.27cm" fo:margin-left="1.27cm" />' + LineEnding +
+   '      </style:list-level-properties>' + LineEnding +
+   '    </text:outline-level-style>' + LineEnding +
+   '    <text:outline-level-style text:level="4" style:num-format="">' + LineEnding +
+   '      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
+   '        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.524cm" fo:text-indent="-1.524cm" fo:margin-left="1.524cm" />' + LineEnding +
+   '      </style:list-level-properties>' + LineEnding +
+   '    </text:outline-level-style>' + LineEnding +
+   '    <text:outline-level-style text:level="5" style:num-format="">' + LineEnding +
+   '      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
+   '        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="1.778cm" fo:text-indent="-1.778cm" fo:margin-left="1.778cm" />' + LineEnding +
+   '      </style:list-level-properties>' + LineEnding +
+   '    </text:outline-level-style>' + LineEnding +
+   '    <text:outline-level-style text:level="6" style:num-format="">' + LineEnding +
+   '      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
+   '        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.032cm" fo:text-indent="-2.032cm" fo:margin-left="2.032cm" />' + LineEnding +
+   '      </style:list-level-properties>' + LineEnding +
+   '    </text:outline-level-style>' + LineEnding +
+   '    <text:outline-level-style text:level="7" style:num-format="">' + LineEnding +
+   '      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
+   '        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.286cm" fo:text-indent="-2.286cm" fo:margin-left="2.286cm" />' + LineEnding +
+   '      </style:list-level-properties>' + LineEnding +
+   '    </text:outline-level-style>' + LineEnding +
+   '    <text:outline-level-style text:level="8" style:num-format="">' + LineEnding +
+   '      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
+   '        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.54cm" fo:text-indent="-2.54cm" fo:margin-left="2.54cm" />' + LineEnding +
+   '      </style:list-level-properties>' + LineEnding +
+   '    </text:outline-level-style>' + LineEnding +
+   '    <text:outline-level-style text:level="9" style:num-format="">' + LineEnding +
+   '      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
+   '        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="2.794cm" fo:text-indent="-2.794cm" fo:margin-left="2.794cm" />' + LineEnding +
+   '      </style:list-level-properties>' + LineEnding +
+   '    </text:outline-level-style>' + LineEnding +
+   '    <text:outline-level-style text:level="10" style:num-format="">' + LineEnding +
+   '      <style:list-level-properties text:list-level-position-and-space-mode="label-alignment">' + LineEnding +
+   '        <style:list-level-label-alignment text:label-followed-by="listtab" text:list-tab-stop-position="3.048cm" fo:text-indent="-3.048cm" fo:margin-left="3.048cm" />' + LineEnding +
+   '      </style:list-level-properties>' + LineEnding +
+   '    </text:outline-level-style>' + LineEnding +
+   '  </text:outline-style>' + LineEnding;
+
   FStyles := FStyles +
    '  <text:notes-configuration text:note-class="footnote" style:num-format="1" text:start-value="0" text:footnotes-position="page" text:start-numbering-at="document" />' + LineEnding;
   FStyles := FStyles +
@@ -642,6 +628,11 @@ begin
    '  <text:linenumbering-configuration text:number-lines="false" text:offset="0.499cm" style:num-format="1" text:number-position="left" text:increment="5" />' + LineEnding;
   FStyles := FStyles +
    '</office:styles>' + LineEnding;
+
+  // ----------------------------
+  // Automatic Styles
+  // ----------------------------
+
   FStyles := FStyles +
    '<office:automatic-styles>' + LineEnding;
   FStyles := FStyles +
