@@ -33,19 +33,18 @@ interface
 
 uses
   // LCL+FCL
-  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, LResources, LConvEncoding,
-  FileUtil, contnrs, IniFiles, AVL_Tree,
+  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, LConvEncoding,
+  FileUtil, contnrs, IniFiles,
   // codetools
-  CodeToolManager, DefineTemplates, CodeAtom, CodeCache, LinkScanner,
-  FileProcs, CodeToolsStructs, FindDeclarationTool,
+  CodeToolManager, DefineTemplates, CodeCache, LinkScanner, FileProcs, CodeToolsStructs,
   // IDEIntf
-  ComponentReg, IDEMsgIntf, MainIntf, LazIDEIntf, PackageIntf, ProjectIntf,
+  ComponentReg, LazIDEIntf, PackageIntf, ProjectIntf,
   // IDE
   IDEProcs, Project, ProjectDefs, DialogProcs, IDEDialogs, EditorOptions, CompilerOptions,
   PackageDefs, PackageSystem, PackageEditor, BasePkgManager, LazarusIDEStrConsts,
   // Converter
   ConverterTypes, ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg,
-  UsedUnits, ReplaceNamesUnit;
+  UsedUnits;
 
 const
   SettingDelphiModeTemplName = 'Setting Delphi Mode';
