@@ -2678,7 +2678,7 @@ end;
 procedure TDebugManager.Inspect(const AExpression: String);
 begin
   if Destroying then Exit;
-  ViewDebugDialog(ddtInspect);
+  ViewDebugDialog(ddtInspect); // TODO: If not yet open, this will get Expression from SourceEdit, and trigger uneeded eval.
   if FDialogs[ddtInspect] <> nil then
   begin
     TIDEInspectDlg(FDialogs[ddtInspect]).Execute(AExpression);

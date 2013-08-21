@@ -204,6 +204,7 @@ begin
 
   // No timeout
   Instr := TTestGDBInstruction.Create('-test-send', [], 100);
+  Instr.AddReference;
   Dbg.TestInit;
   dbg.FTest := Self;
   Dbg.FTestData := @TestControl1[0];
@@ -211,10 +212,11 @@ begin
   AssertTrue('ifrComleted', Instr.ResultFlags * [ifrComleted, ifrFailed] = [ifrComleted]);
   AssertTrue('no error', Instr.ErrorFlags = []);
   AssertEquals('data', '^done,foo'+LineEnding, Instr.FInput);
-  Instr.Free;
+  Instr.ReleaseReference;
 
   // Recover timeout
   Instr := TTestGDBInstruction.Create('-test-send', [], 100);
+  Instr.AddReference;
   Dbg.TestInit;
   dbg.FTest := Self;
   Dbg.FTestData := @TestControl2[0];
@@ -222,10 +224,11 @@ begin
   AssertTrue('ifrComleted', Instr.ResultFlags * [ifrComleted, ifrFailed] = [ifrComleted]);
   AssertTrue('no error, but warning', Instr.ErrorFlags = [ifeRecoveredTimedOut]);
   AssertEquals('data', '^done,foo'+LineEnding, Instr.FInput);
-  Instr.Free;
+  Instr.ReleaseReference;
 
   // late (gdb) / no timeout
   Instr := TTestGDBInstruction.Create('-test-send', [], 100);
+  Instr.AddReference;
   Dbg.TestInit;
   dbg.FTest := Self;
   Dbg.FTestData := @TestControl3[0];
@@ -233,10 +236,11 @@ begin
   AssertTrue('ifrComleted', Instr.ResultFlags * [ifrComleted, ifrFailed] = [ifrComleted]);
   AssertTrue('no error', Instr.ErrorFlags = []);
   AssertEquals('data', '^done,foo'+LineEnding, Instr.FInput);
-  Instr.Free;
+  Instr.ReleaseReference;
 
   // late response + (gdb) / no timeout
   Instr := TTestGDBInstruction.Create('-test-send', [], 100);
+  Instr.AddReference;
   Dbg.TestInit;
   dbg.FTest := Self;
   Dbg.FTestData := @TestControl3A[0];
@@ -244,17 +248,18 @@ begin
   AssertTrue('ifrComleted', Instr.ResultFlags * [ifrComleted, ifrFailed] = [ifrComleted]);
   AssertTrue('no error', Instr.ErrorFlags = []);
   AssertEquals('data', '^done,foo'+LineEnding, Instr.FInput);
-  Instr.Free;
+  Instr.ReleaseReference;
 
   // timeout
   Instr := TTestGDBInstruction.Create('-test-send', [], 100);
+  Instr.AddReference;
   Dbg.TestInit;
   dbg.FTest := Self;
   Dbg.FTestData := @TestControl4[0];
   Queue.RunInstruction(Instr);
   AssertTrue('ifrFailed', Instr.ResultFlags * [ifrComleted, ifrFailed] = [ifrFailed]);
   AssertTrue('error', Instr.ErrorFlags = [ifeTimedOut]);
-  Instr.Free;
+  Instr.ReleaseReference;
 
 
   Queue.Free;

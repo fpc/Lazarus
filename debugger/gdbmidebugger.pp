@@ -66,6 +66,8 @@ type
     cfCheckState, // Copy CmdResult to DebuggerState, EXCEPT dsError,dsNone (e.g copy dsRun, dsPause, dsStop, dsIdle)
     cfCheckError, // Copy CmdResult to DebuggerState, ONLY if dsError
     cfTryAsync,   // try with " &"
+    cfNoThreadContext,
+    cfNoStackContext,
     //used for old commands, TGDBMIDebuggerSimpleCommand.Create
     cfscIgnoreState, // ignore the result state of the command
     cfscIgnoreError  // ignore errors
@@ -245,6 +247,14 @@ type
   );
   TGDBMIProcessResultOpts = set of TGDBMIProcessResultOpt;
 
+  TGDBMICommandContextKind = (ccNotRequired, ccUseGlobal, ccUseLocal);
+  TGDBMICommandContext = record
+    ThreadContext: TGDBMICommandContextKind;
+    ThreadId: Integer;
+    StackContext: TGDBMICommandContextKind;
+    StackFrame: Integer;
+  end;
+
   TGDBMIDebuggerCommand = class(TRefCountedObject)
   private
     FDefaultTimeOut: Integer;
@@ -267,6 +277,11 @@ type
     function GetTargetInfo: PGDBMITargetInfo;
   protected
     FTheDebugger: TGDBMIDebugger; // Set during Execute
+    FContext: TGDBMICommandContext;
+    function  ContextThreadId: Integer;   // does not check validy, only ccUseGlobal or ccUseLocal
+    function  ContextStackFrame: Integer; // does not check validy, only ccUseGlobal or ccUseLocal
+    procedure CopyGlobalContextToLocal;
+
     procedure SetDebuggerState(const AValue: TDBGState);
     procedure SetDebuggerErrorState(const AMsg: String; const AInfo: String = '');
     function  ErrorStateMessage: String; virtual;
@@ -595,7 +610,7 @@ type
 
     // Internal Current values
     FCurrentStackFrame, FCurrentThreadId: Integer; // User set values
-    FInternalStackFrame, FInternalThreadId: Integer; // Internal (update for every temporary change)
+    FCurrentStackFrameValid, FCurrentThreadIdValid: Boolean; // Internal (update for every temporary change)
     FCurrentLocation: TDBGLocationRec;
 
     // GDB info (move to ?)
@@ -790,7 +805,7 @@ implementation
 
 var
   DBGMI_QUEUE_DEBUG, DBGMI_STRUCT_PARSER, DBG_VERBOSE, DBG_WARNINGS,
-  DBG_DISASSEMBLER: PLazLoggerLogGroup;
+  DBG_DISASSEMBLER, DBG_THREAD_AND_FRAME: PLazLoggerLogGroup;
 
 
 const
@@ -1199,7 +1214,6 @@ type
     FTypeInfo: TGDBType;
     FValidity: TDebuggerDataState;
     FTypeInfoAutoDestroy: Boolean;
-    FThreadChanged, FStackFrameChanged: Boolean;
     function GetTypeInfo: TGDBType;
     procedure DoWatchFreed(Sender: TObject);
   protected
@@ -1252,7 +1266,6 @@ type
     procedure DoCallstackFreed(Sender: TObject);
   protected
     FCallstack: TCurrentCallStack;
-    FThreadChanged: Boolean;
     function  SelectThread: Boolean;
     procedure UnSelectThread;
   public
@@ -2435,8 +2448,10 @@ begin
   if StoppedParams <> ''
   then ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
 
-  ExecuteCommand('kill', [], 1500);
-  Result := ExecuteCommand('info program', [], R);
+  ExecuteCommand('kill', [cfNoThreadContext], 1500);
+  FTheDebugger.FCurrentStackFrameValid := False;
+  FTheDebugger.FCurrentThreadIdValid   := False;
+  Result := ExecuteCommand('info program', [cfNoThreadContext], R);
   Result := Result and (Pos('not being run', R.Values) > 0);
   if Result
   then SetDebuggerState(dsStop);
@@ -2500,6 +2515,9 @@ var
 begin
   Result := True;
   FSuccess := False;
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
+
   //Cleanup our own breakpoints
   FTheDebugger.FExceptionBreak.Clear(Self);
   FTheDebugger.FBreakErrorBreak.Clear(Self);
@@ -2594,6 +2612,9 @@ var
   R: TGDBMIExecResult;
 begin
   Result := True;
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
+
   FSuccess := ExecuteCommand('-gdb-set confirm off', R);
   FSuccess := FSuccess and (r.State <> dsError);
   if (not FSuccess) then exit;
@@ -2625,8 +2646,8 @@ end;
 function TGDBMIDebuggerCommandStackSetCurrent.DoExecute: Boolean;
 begin
   Result := True;
-  ExecuteCommand('-stack-select-frame %d', [FNewCurrent], []);
-  FTheDebugger.FInternalStackFrame := FNewCurrent;
+  //ExecuteCommand('-stack-select-frame %d', [FNewCurrent], []);
+  DebugLn(DBG_THREAD_AND_FRAME, ['TGDBMIDebuggerCommandStackSetCurrent: STACK wanted ', FNewCurrent]);
 end;
 
 constructor TGDBMIDebuggerCommandStackSetCurrent.Create(AOwner: TGDBMIDebugger;
@@ -2649,28 +2670,15 @@ begin
 end;
 
 function TGDBMIDebuggerCommandStack.SelectThread: Boolean;
-var
-  R: TGDBMIExecResult;
-  t: Integer;
 begin
   Result := True;
-  FThreadChanged := False;
-  if (FCallstack = nil) or (dcsCanceled in SeenStates) then exit;
-  t := FCallstack.ThreadId;
-  if t = FTheDebugger.FCurrentThreadId then exit;
-  FThreadChanged := True;
-  Result := ExecuteCommand('-thread-select %d', [t], R);
-  FTheDebugger.FInternalThreadId := t;
-  Result := Result and (R.State <> dsError);
+  FContext.ThreadContext := ccUseLocal;
+  FContext.ThreadId := FCallstack.ThreadId;
 end;
 
 procedure TGDBMIDebuggerCommandStack.UnSelectThread;
-var
-  R: TGDBMIExecResult;
 begin
-  if not FThreadChanged then exit;
-  ExecuteCommand('-thread-select %d', [FTheDebugger.FCurrentThreadId], R);
-  FTheDebugger.FInternalThreadId := FTheDebugger.FCurrentThreadId;
+  FContext.ThreadContext := ccUseGlobal;
 end;
 
 constructor TGDBMIDebuggerCommandStack.Create(AOwner: TGDBMIDebugger;
@@ -2711,11 +2719,16 @@ var
   CmdRes: Boolean;
 begin
   Result := True;
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
+
   // not supported yet
   // ExecuteCommand('-exec-abort');
   CmdRes := ExecuteCommand('kill', [], [], 1500); // Hardcoded timeout
+  FTheDebugger.FCurrentStackFrameValid := False;
+  FTheDebugger.FCurrentThreadIdValid   := False;
   if CmdRes
-  then CmdRes := ExecuteCommand('info program', R, [], 1500); // Hardcoded timeout
+  then CmdRes := ExecuteCommand('info program', R, [cfNoThreadContext], 1500); // Hardcoded timeout
   if (not CmdRes)
   or (Pos('not being run', R.Values) <= 0)
   then begin
@@ -2729,15 +2742,12 @@ end;
 { TGDBMIDebuggerCommandChangeThread }
 
 function TGDBMIDebuggerCommandChangeThread.DoExecute: Boolean;
-var
-  R: TGDBMIExecResult;
 begin
   Result := True;
-  FSuccess := ExecuteCommand('-thread-select %d', [FNewId], R);
-  if FSuccess then
-    FSuccess := R.State <> dsError;
+  FSuccess := True;
   FTheDebugger.FCurrentThreadId := FNewId;
-  FTheDebugger.FInternalThreadId:= FNewId;
+  FTheDebugger.FCurrentThreadIdValid := True;
+  DebugLn(DBG_THREAD_AND_FRAME, ['TGDBMIDebuggerCommandChangeThread THREAD wanted ', FTheDebugger.FCurrentThreadId]);
 end;
 
 constructor TGDBMIDebuggerCommandChangeThread.Create(AOwner: TGDBMIDebugger; ANewId: Integer);
@@ -2782,6 +2792,7 @@ begin
   CurrentThreads.SetValidity(ddsValid);
   CurrentThreads.CurrentThreadId := Cmd.CurrentThreadId;
   Debugger.FCurrentThreadId := CurrentThreads.CurrentThreadId;
+  Debugger.FCurrentThreadIdValid := True;
 end;
 
 procedure TGDBMIThreads.DoChangeThreadsDestroyed(Sender: TObject);
@@ -2927,6 +2938,8 @@ begin
 *)
 
   Result := True;
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
 
   if not ExecuteCommand('-thread-info', R)
   then exit;
@@ -2936,9 +2949,13 @@ begin
   ArgList := TGDBMINameValueList.Create;
   try
     FCurrentThreadId := StrToIntDef(List.Values['current-thread-id'], -1);
-    FTheDebugger.FInternalThreadId := FTheDebugger.FCurrentThreadId;
     if FCurrentThreadId < 0 then exit;
     FSuccess := True;
+
+    // update queue if needed // clear current stackframe
+    if FTheDebugger.FInstructionQueue.CurrentThreadId <> FCurrentThreadId then
+      FTheDebugger.FInstructionQueue.SetKnownThread(FCurrentThreadId);
+
 
     List.SetPath('threads');
     SetLength(FThreads, List.Count);
@@ -3010,6 +3027,8 @@ var
   n, idx: Integer;
 begin
   Result := True;
+  FContext.StackContext := ccNotRequired;
+
   if length(FModifiedToUpdate) = 0
   then exit;
 
@@ -4342,6 +4361,8 @@ var
   RngBefore, RngAfter: TDBGDisassemblerEntryRange;
 begin
   Result := True;
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
 
   if FEndAddr < FStartAddr
   then FEndAddr := FStartAddr;
@@ -5024,6 +5045,8 @@ begin
   // Caller will never Release it. So TGDBMIDebuggerCommandStartDebugging must do this
   FContinueCommand := AContinueCommand;
   FSuccess := False;
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
 end;
 
 destructor TGDBMIDebuggerCommandStartDebugging.Destroy;
@@ -5193,6 +5216,8 @@ begin
   inherited Create(AOwner);
   FSuccess := False;
   FProcessID := AProcessID;
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
 end;
 
 function TGDBMIDebuggerCommandAttach.DebugText: String;
@@ -5207,6 +5232,9 @@ var
   R: TGDBMIExecResult;
 begin
   Result := True;
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
+
   if not ExecuteCommand('detach', R) then
     R.State := dsError;
   if R.State = dsError then begin
@@ -5260,9 +5288,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
         i := FindStackFrame(Fp, 0, cnt);
         if i >= 0 then begin
           FTheDebugger.FCurrentStackFrame := i;
-        end
-        else begin
-          ExecuteCommand('-stack-select-frame %u', [FTheDebugger.FCurrentStackFrame], R);
+          DebugLn(DBG_THREAD_AND_FRAME, ['ProcessStopped GetLocation found fp Stack(Internal) = ', FTheDebugger.FCurrentStackFrame]);
         end;
 
         if FTheDebugger.FCurrentStackFrame <> 0
@@ -5276,7 +5302,6 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
           Result.FuncName    := FTheDebugger.FCurrentLocation.FuncName;
           Result.SrcLine     := FTheDebugger.FCurrentLocation.SrcLine;
         end;
-        FTheDebugger.FInternalStackFrame := FTheDebugger.FCurrentStackFrame;
       end;
 
       if (Result.SrcLine = -1) or (Result.SrcFile = '') then begin
@@ -5610,9 +5635,11 @@ begin
   List2 := nil;
 
   FTheDebugger.FCurrentStackFrame :=  0;
-  FTheDebugger.FInternalStackFrame := 0;
   FTheDebugger.FCurrentThreadId := StrToIntDef(List.Values['thread-id'], -1);
-  FTheDebugger.FInternalThreadId := FTheDebugger.FCurrentThreadId;
+  FTheDebugger.FCurrentThreadIdValid := True;
+  FTheDebugger.FCurrentStackFrameValid := True;
+
+  FTheDebugger.FInstructionQueue.SetKnownThreadAndFrame(FTheDebugger.FCurrentThreadId, 0);
   FTheDebugger.FCurrentLocation.Address := 0;
   FTheDebugger.FCurrentLocation.SrcFile := '';
   FTheDebugger.FCurrentLocation.SrcFullName := '';
@@ -5747,7 +5774,7 @@ var
   n, ID1, ID2: Integer;
 begin
   Result := False;
-  if not ExecuteCommand('info program', R)
+  if not ExecuteCommand('info program', R, [cfNoThreadContext])
   then exit;
   S := GetPart(['.0x'], ['.'], R.Values, True, False); // From the line "using child thread"
   if PtrInt(StrToQWordDef('$'+S, 0)) <> FTheDebugger.FPauseRequestInThreadID
@@ -5771,9 +5798,10 @@ begin
     List.Free;
   end;
 
-  Result := ExecuteCommand('-thread-select %d', [ID2], []);
+  Result := True; // ExecuteCommand('-thread-select %d', [ID2], []);
   FTheDebugger.FCurrentThreadId := ID2;
-  FTheDebugger.FInternalThreadId := FTheDebugger.FCurrentThreadId;
+  FTheDebugger.FCurrentThreadIdValid := True;
+  DebugLn(DBG_THREAD_AND_FRAME, ['FixThreadForSigTrap Thread(Internal) = ', FTheDebugger.FCurrentThreadId]);
 end;
 {$ENDIF}
 
@@ -5937,7 +5965,7 @@ const
     List := TGDBMINameValueList.Create('');
     try
       repeat
-        if not ExecuteCommand('-stack-list-frames %d %d', [Result, Result], R)
+        if not ExecuteCommand('-stack-list-frames %d %d', [Result, Result], R, [cfNoStackContext])
         or (R.State = dsError)
         then begin
           Result := -1;
@@ -6024,9 +6052,9 @@ var
           if i > 0
           then begin
             // must use none gdbmi commands
-            if (not ExecuteCommand('frame %d', [i], R)) or (R.State = dsError)
+            if (not ExecuteCommand('frame %d', [i], R, [cfNoStackContext])) or (R.State = dsError)
             then i := -3; // error to user
-            if (i < 0) or (not ExecuteCommand('break', [i], R)) or (R.State = dsError)
+            if (i < 0) or (not ExecuteCommand('break', [i], R, [cfNoStackContext])) or (R.State = dsError)
             then i := -3; // error to user
 
             FStepBreakPoint := StrToIntDef(GetPart(['Breakpoint '], [' at '], R.Values), -1);
@@ -6086,6 +6114,8 @@ begin
            (FExecType in [ectStepOver, ectStepInto, ectStepOut, ectStepOverInstruction, ectStepIntoInstruction])
         then FP := GetPtrValue('$fp', []);
 
+        FTheDebugger.FCurrentStackFrameValid := False;
+        FTheDebugger.FCurrentThreadIdValid   := False;
         FTheDebugger.FCurrentCmdIsAsync := False;
         s := GDBMIExecCommandMap[FCurrentExecCmd] + FCurrentExecArg;
         AFlags := [];
@@ -6205,6 +6235,9 @@ var
   Src: String;
 begin
   Result := True;
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
+
   ExecuteCommand('-symbol-list-lines %s', [FSource], FResult);
 
   if (FResult.State = dsError) and not(dcsCanceled in SeenStates)
@@ -6242,6 +6275,8 @@ var
   n, idx: Integer;
 begin
   Result := True;
+  FContext.StackContext := ccNotRequired;
+
   if length(FRegistersToUpdate) = 0
   then exit;
 
@@ -6294,6 +6329,9 @@ var
   n: Integer;
 begin
   Result := True;
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
+
   ExecuteCommand('-data-list-register-names', R);
   if R.State = dsError then Exit;
 
@@ -6318,6 +6356,8 @@ var
   i, cnt: longint;
 begin
   Result := True;
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
   FDepth := -1;
   try
     if not SelectThread then exit;
@@ -6495,7 +6535,7 @@ func="??"
     i, lvl : Integer;
     ResultList, SubList: TGDBMINameValueList;
   begin
-    ExecuteCommand(ACmd, [AStart, AStop], R);
+    ExecuteCommand(ACmd, [AStart, AStop], R, [cfNoStackContext]);
 
     if R.State = dsError
     then begin
@@ -6568,6 +6608,7 @@ var
   StartIdx, EndIdx: Integer;
 begin
   Result := True;
+  FContext.StackContext := ccNotRequired;
   if (FCallstack = nil) or (dcsCanceled in SeenStates) then exit;
 
   It := TMapIterator.Create(FCallstack.RawEntries);
@@ -6902,6 +6943,8 @@ var
   Cmd: TGDBMIDebuggerCommandChangeFilename;
 begin
   Result := False;
+  FCurrentStackFrameValid := False; // not running => not valid
+  FCurrentThreadIdValid   := False;
   S := ConvertToGDBPath(UTF8ToSys(FileName), cgptExeName);
 
   Cmd := TGDBMIDebuggerCommandChangeFilename.Create(Self, S);
@@ -7055,6 +7098,8 @@ begin
         FCurrentCommand.KillNow;
       if (State = dsRun) then GDBPause(True);
       // fire and forget. Donst wait on the queue.
+      FCurrentStackFrameValid := False;
+      FCurrentThreadIdValid   := False;
       SendCmdLn('kill');
       SendCmdLn('-gdb-exit');
     end;
@@ -7109,6 +7154,8 @@ begin
     else CancelAfterStop;
   end;
   if (State = dsError) and (DebugProcessRunning) then begin
+    FCurrentStackFrameValid := False;
+    FCurrentThreadIdValid   := False;
     SendCmdLn('kill'); // try to kill the debugged process. bypass all queues.
     DebugProcess.Terminate(0);
   end;
@@ -7699,10 +7746,10 @@ begin
   if ASet then
   begin
     S := EscapeGDBCommand(AVariable);
-    ExecuteCommand('-gdb-set env %s', [S], [cfscIgnoreState]);
+    ExecuteCommand('-gdb-set env %s', [S], [cfscIgnoreState, cfNoThreadContext]);
   end else begin
     S := AVariable;
-    ExecuteCommand('unset env %s', [GetPart([], ['='], S, False, False)], [cfscIgnoreState]);
+    ExecuteCommand('unset env %s', [GetPart([], ['='], S, False, False)], [cfscIgnoreState, cfNoThreadContext]);
   end;
 end;
 
@@ -7863,13 +7910,13 @@ begin
     Exit;
   end;
 
-  Result := ExecuteCommand('-symbol-list-lines %s', [ASource], [cfscIgnoreError], R)
+  Result := ExecuteCommand('-symbol-list-lines %s', [ASource], [cfscIgnoreError, cfNoThreadContext], R)
         and (R.State <> dsError);
   // if we have an .inc file then search for filename only since there are some
   // problems with locating file by full path in gdb in case only relative file
   // name is stored
   if not Result then
-    Result := ExecuteCommand('-symbol-list-lines %s', [ExtractFileName(ASource)], [cfscIgnoreError], R)
+    Result := ExecuteCommand('-symbol-list-lines %s', [ExtractFileName(ASource)], [cfscIgnoreError, cfNoThreadContext], R)
           and (R.State <> dsError);
 
   if not Result then Exit;
@@ -8160,8 +8207,8 @@ begin
 
   //if FAsyncModeEnabled then begin
   if FCurrentCmdIsAsync and (FCurrentCommand <> nil) then begin
-    FCurrentCommand.ExecuteCommand('interrupt', []);
-    FCurrentCommand.ExecuteCommand('info program', []); // trigger "*stopped..." msg. This may be deferred to the cmd after the "interupt"
+    FCurrentCommand.ExecuteCommand('interrupt', [cfNoThreadContext]);
+    FCurrentCommand.ExecuteCommand('info program', [cfNoThreadContext]); // trigger "*stopped..." msg. This may be deferred to the cmd after the "interupt"
     exit;
   end;
 
@@ -8467,6 +8514,8 @@ var
   Cmd: TGDBMIDebuggerCommandStartDebugging;
 begin
   // We expect to be run immediately, no queue
+  FCurrentStackFrameValid := False;
+  FCurrentThreadIdValid   := False;
   Cmd := CreateCommandStartDebugging(AContinueCommand);
   Cmd.AddReference;
   QueueCommand(Cmd);
@@ -8633,6 +8682,9 @@ end;
 function TGDBMIDebuggerCommandBreakInsert.DoExecute: Boolean;
 begin
   Result := True;
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
+
   FValid := False;
   DefaultTimeOut := DebuggerProperties.TimeoutForEval;
   try
@@ -8716,6 +8768,9 @@ end;
 function TGDBMIDebuggerCommandBreakRemove.DoExecute: Boolean;
 begin
   Result := True;
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
+
   DefaultTimeOut := DebuggerProperties.TimeoutForEval;
   try
   ExecBreakDelete(FBreakId);
@@ -8741,6 +8796,9 @@ end;
 function TGDBMIDebuggerCommandBreakUpdate.DoExecute: Boolean;
 begin
   Result := True;
+  FContext.ThreadContext := ccNotRequired;
+  FContext.StackContext := ccNotRequired;
+
   DefaultTimeOut := DebuggerProperties.TimeoutForEval;
   try
   if FUpdateExpression
@@ -9247,7 +9305,7 @@ begin
   FLocals.Clear;
   // args
   ExecuteCommand('-stack-list-arguments 1 %0:d %0:d',
-    [FTheDebugger.FCurrentStackFrame], R);
+    [FTheDebugger.FCurrentStackFrame], R, [cfNoStackContext]);
   if R.State <> dsError
   then begin
     List := TGDBMINameValueList.Create(R, ['stack-args', 'frame']);
@@ -9833,7 +9891,6 @@ begin
   end;
 
   TGDBMIDebugger(Debugger).FCurrentStackFrame := 0;
-  TGDBMIDebugger(Debugger).FInternalStackFrame := 0;
   tid := Debugger.Threads.Monitor.CurrentThreads.CurrentThreadId;
   cs := TCurrentCallStack(CurrentCallStackList.EntriesForThreads[tid]);
   idx := cs.CurrentIndex;  // CURRENT
@@ -9958,6 +10015,43 @@ begin
   Result := @FTheDebugger.FTargetInfo;
 end;
 
+function TGDBMIDebuggerCommand.ContextThreadId: Integer;
+begin
+  if FContext.ThreadContext = ccUseGlobal then
+    Result := FTheDebugger.FCurrentThreadId
+  else
+    Result := FContext.ThreadId;
+end;
+
+function TGDBMIDebuggerCommand.ContextStackFrame: Integer;
+begin
+  if FContext.StackContext = ccUseGlobal then
+    Result := FTheDebugger.FCurrentStackFrame
+  else
+    Result := FContext.StackFrame;
+end;
+
+procedure TGDBMIDebuggerCommand.CopyGlobalContextToLocal;
+begin
+  if FContext.ThreadContext = ccUseGlobal then begin
+    if FTheDebugger.FCurrentThreadIdValid then begin
+      FContext.ThreadContext := ccUseLocal;
+      FContext.ThreadId := FTheDebugger.FCurrentThreadId
+    end
+    else
+      debugln(DBG_VERBOSE, ['CopyGlobalContextToLocal: FAILED thread, global data is not valid']);
+  end;
+
+  if FContext.StackContext = ccUseGlobal then begin
+    if FTheDebugger.FCurrentStackFrameValid then begin
+      FContext.StackContext := ccUseLocal;
+      FContext.StackFrame := FTheDebugger.FCurrentStackFrame;
+    end
+    else
+      debugln(DBG_VERBOSE, ['CopyGlobalContextToLocal: FAILED stackframe, global data is not valid']);
+  end;
+end;
+
 procedure TGDBMIDebuggerCommand.SetDebuggerState(const AValue: TDBGState);
 begin
   FTheDebugger.SetState(AValue);
@@ -10075,7 +10169,19 @@ begin
   then ATimeOut := DefaultTimeOut;
 
   try
-    Instr := TGDBMIDebuggerInstruction.Create(ACommand, [], ATimeOut);
+    if (cfNoThreadContext in AFlags) or (FContext.ThreadContext = ccNotRequired) or
+       ((FContext.ThreadContext = ccUseGlobal) and (not FTheDebugger.FCurrentThreadIdValid))
+    then
+      Instr := TGDBMIDebuggerInstruction.Create(ACommand, [], ATimeOut)
+    else
+    if (cfNoStackContext in AFlags) or (FContext.StackContext = ccNotRequired) or
+       ((FContext.StackContext = ccUseGlobal) and (not FTheDebugger.FCurrentStackFrameValid))
+    then
+      Instr := TGDBMIDebuggerInstruction.Create(ACommand, ContextThreadId, [], ATimeOut)
+    else
+      Instr := TGDBMIDebuggerInstruction.Create(ACommand, ContextThreadId,
+                 ContextStackFrame, [], ATimeOut);
+    Instr.AddReference;
     Instr.Cmd := Self;
     FTheDebugger.FInstructionQueue.RunInstruction(Instr);
 
@@ -10097,7 +10203,7 @@ begin
       DoTimeoutFeedback;
     end;
   finally
-    Instr.Free;
+    Instr.ReleaseReference;
   end;
 
   if not Result
@@ -10349,9 +10455,9 @@ var
   List: TGDBMINameValueList;
 begin
   Result := -1;
-  if (MaxDepth < 0) and (not ExecuteCommand('-stack-info-depth', R))
+  if (MaxDepth < 0) and (not ExecuteCommand('-stack-info-depth', R, [cfNoStackContext]))
   then exit;
-  if (MaxDepth >= 0) and (not ExecuteCommand('-stack-info-depth %d', [MaxDepth], R))
+  if (MaxDepth >= 0) and (not ExecuteCommand('-stack-info-depth %d', [MaxDepth], R, [cfNoStackContext]))
   then exit;
   if R.State = dsError
   then exit;
@@ -10367,6 +10473,7 @@ var
   R: TGDBMIExecResult;
   List: TGDBMINameValueList;
   Cur, Prv: QWord;
+  CurContext: TGDBMICommandContext;
 begin
   // Result;
   // -1 : Not found
@@ -10375,13 +10482,10 @@ begin
   Cur := 0;
   List := TGDBMINameValueList.Create('');
   try
+    CurContext := FContext;
+    FContext.StackContext := ccUseLocal;
     repeat
-      if not ExecuteCommand('-stack-select-frame %u', [Result], R)
-      or (R.State = dsError)
-      then begin
-        Result := -1;
-        break;
-      end;
+      FContext.StackFrame := Result;
 
       if not ExecuteCommand('-data-evaluate-expression $fp', R)
       or (R.State = dsError)
@@ -10422,6 +10526,7 @@ begin
     Result := -1;
   finally
     List.Free;
+    FContext := CurContext;
   end;
 end;
 
@@ -10431,7 +10536,7 @@ var
   List: TGDBMINameValueList;
 begin
   Result := '';
-  if ExecuteCommand('-stack-list-frames %d %d', [AIndex, AIndex], R)
+  if ExecuteCommand('-stack-list-frames %d %d', [AIndex, AIndex], R, [cfNoStackContext])
   then begin
     List := TGDBMINameValueList.Create(R, ['stack']);
     Result := List.Values['frame'];
@@ -10609,11 +10714,10 @@ begin
         exit;
       end;
 
-      i := FTheDebugger.FTypeRequestCache.IndexOf
-        (FTheDebugger.FInternalThreadId, FTheDebugger.FInternalStackFrame, AReq^);
+      i := FTheDebugger.FTypeRequestCache.IndexOf(ContextThreadId, ContextStackFrame, AReq^);
       if i >= 0 then begin
-        debugln(DBGMI_QUEUE_DEBUG, ['DBG TypeRequest-Cache: Found entry for T=',  FTheDebugger.FInternalThreadId,
-          ' F=', FTheDebugger.FInternalStackFrame, ' R="', AReq^.Request,'"']);
+        debugln(DBGMI_QUEUE_DEBUG, ['DBG TypeRequest-Cache: Found entry for T=',  ContextThreadId,
+          ' F=', ContextStackFrame, ' R="', AReq^.Request,'"']);
         CReq := FTheDebugger.FTypeRequestCache.Request[i];
         AReq^.Result := CReq.Result;
         AReq^.Error := CReq.Error;
@@ -10633,8 +10737,7 @@ begin
           AReq^.Error := R.Values;
         end;
 
-        FTheDebugger.FTypeRequestCache.Add
-          (FTheDebugger.FInternalThreadId, FTheDebugger.FInternalStackFrame, AReq^);
+        FTheDebugger.FTypeRequestCache.Add(ContextThreadId, ContextStackFrame, AReq^);
       end;
 
       AReq := AReq^.Next;
@@ -10870,6 +10973,8 @@ begin
   FQueueRunLevel := -1;
   FState := dcsNone;
   FTheDebugger := AOwner;
+  FContext.StackContext := ccUseGlobal;
+  FContext.ThreadContext := ccUseGlobal;
   FDefaultTimeOut := -1;
   FPriority := 0;
   FProperties := [];
@@ -11223,7 +11328,7 @@ end;
 function TGDBMIDebuggerSimpleCommand.DoExecute: Boolean;
 begin
   Result := True;
-  if not ExecuteCommand(FCommand, FResult)
+  if not ExecuteCommand(FCommand, FResult, FFlags)
   then exit;
 
   if (FResult.State <> dsNone)
@@ -11691,17 +11796,14 @@ var
     R: TGDBMIExecResult;
     List: TGDBMINameValueList;
     ParentFp, Fp, LastFp: String;
-    i, j, ThreadId: Integer;
+    i, j: Integer;
     FrameCache: PGDBMIDebuggerParentFrameCache;
     ParentFpNum, FpNum, FpDiff, LastFpDiff: QWord;
     FpDir: Integer;
   begin
     Result := False;
     CurPFPListChangeStamp := TGDBMIWatches(FTheDebugger.Watches).ParentFPListChangeStamp;
-    if FWatchValue <> nil
-    then ThreadId := FWatchValue.ThreadId
-    else ThreadId := FTheDebugger.FCurrentThreadId;
-    FrameCache := TGDBMIWatches(FTheDebugger.Watches).GetParentFPList(ThreadId);
+    FrameCache := TGDBMIWatches(FTheDebugger.Watches).GetParentFPList(ContextThreadId);
     List := nil;
     try
 
@@ -11758,16 +11860,8 @@ var
         end;
 
         if (Fp = '') or (Fp = ParentFP) then begin
-          if not ExecuteCommand('-stack-select-frame %u', [aFrameIdx], R)
-          or (R.State = dsError)
-           then begin
-            FrameCache^.ParentFPList[aFrameIdx].Fp := '-'; // mark as no Fp (not accesible)
-            Exit(False);
-          end;
-          if not ParentSearchCanContinue then
-            exit;
-          FStackFrameChanged := True; // Force UnSelectContext() to restore current frame
-          FTheDebugger.FInternalStackFrame := aFrameIdx;
+          FContext.StackContext := ccUseLocal;
+          FContext.StackFrame := aFrameIdx;
 
           if (Fp = '') then begin
             if not ExecuteCommand('-data-evaluate-expression $fp', R)
@@ -12407,11 +12501,7 @@ var
   frameidx: Integer;
   {$IFDEF DBG_WITH_GDB_WATCHES} R: TGDBMIExecResult; {$ENDIF}
 begin
-  if not SelectContext then begin
-    FTextValue:='<Error>';
-    FValidity := ddsError;
-    exit;
-  end;
+  SelectContext;
   try
     FTextValue:='';
     FTypeInfo:=nil;
@@ -12448,7 +12538,7 @@ begin
 
     ResultList := TGDBMINameValueList.Create('');
     // keep the internal stackframe => same as requested by watch
-    frameidx := TGDBMIDebugger(FTheDebugger).FInternalStackFrame;
+    frameidx := ContextStackFrame;
     DefaultTimeOut := DebuggerProperties.TimeoutForEval;
     try
       repeat
@@ -12475,43 +12565,24 @@ begin
 end;
 
 function TGDBMIDebuggerCommandEvaluate.SelectContext: Boolean;
-var
-  R: TGDBMIExecResult;
-  t, f: Integer;
 begin
   Result := True;
-  FThreadChanged := False;
-  FStackFrameChanged := False;
-  if FWatchValue = nil then exit;
-  t := FWatchValue.ThreadId;
-  f := FWatchValue.StackFrame;
-
-  if t <> FTheDebugger.FCurrentThreadId then begin
-    FThreadChanged := True;
-    Result := ExecuteCommand('-thread-select %d', [t], R);
-    FTheDebugger.FInternalThreadId := t;
-    Result := Result and (R.State <> dsError);
+  if FWatchValue = nil then begin
+    CopyGlobalContextToLocal;
+    exit;
   end;
-  if not Result then exit;
 
-  if (f <> FTheDebugger.FCurrentStackFrame) or FThreadChanged then begin
-    FStackFrameChanged := True;
-    Result := ExecuteCommand('-stack-select-frame %d', [f], R);
-    FTheDebugger.FInternalStackFrame := f;
-    Result := Result and (R.State <> dsError);
-  end;
+  FContext.ThreadContext := ccUseLocal;
+  FContext.ThreadId := FWatchValue.ThreadId;
+
+  FContext.StackContext := ccUseLocal;
+  FContext.StackFrame := FWatchValue.StackFrame;
 end;
 
 procedure TGDBMIDebuggerCommandEvaluate.UnSelectContext;
-var
-  R: TGDBMIExecResult;
 begin
-  if FThreadChanged
-  then ExecuteCommand('-thread-select %d', [FTheDebugger.FCurrentThreadId], R);
-  FTheDebugger.FInternalThreadId := FTheDebugger.FCurrentThreadId;
-  if FStackFrameChanged
-  then ExecuteCommand('-stack-select-frame %d', [FTheDebugger.FCurrentStackFrame], R);
-  FTheDebugger.FInternalStackFrame := FTheDebugger.FCurrentStackFrame;
+  FContext.ThreadContext := ccUseGlobal;
+  FContext.StackContext := ccUseGlobal;
 end;
 
 constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebugger; AExpression: String;
@@ -12560,5 +12631,6 @@ initialization
   DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
   DBG_DISASSEMBLER := DebugLogger.FindOrRegisterLogGroup('DBG_DISASSEMBLER' {$IFDEF DBG_DISASSEMBLER} , True {$ENDIF} );
+  DBG_THREAD_AND_FRAME := DebugLogger.FindOrRegisterLogGroup('DBG_THREAD_AND_FRAME' {$IFDEF DBG_THREAD_AND_FRAME} , True {$ENDIF} );
 
 end.
