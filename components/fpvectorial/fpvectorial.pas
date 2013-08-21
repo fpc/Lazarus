@@ -970,11 +970,11 @@ type
     destructor Destroy; override;
     procedure Assign(ASource: TvPage); override;
     { Data reading methods }
-    function  GetEntity(ANum: Cardinal): TvEntity;
-    function  GetEntitiesCount: Integer;
-    function  GetLastEntity(): TvEntity;
-    function  FindAndSelectEntity(Pos: TPoint): TvFindEntityResult;
-    function  FindEntityWithNameAndType(AName: string; AType: TvEntityClass {= TvEntity}; ARecursively: Boolean = False): TvEntity;
+    function  GetEntity(ANum: Cardinal): TvEntity; override;
+    function  GetEntitiesCount: Integer; override;
+    function  GetLastEntity(): TvEntity; override;
+    function  FindAndSelectEntity(Pos: TPoint): TvFindEntityResult; override;
+    function  FindEntityWithNameAndType(AName: string; AType: TvEntityClass {= TvEntity}; ARecursively: Boolean = False): TvEntity; override;
     { Data removing methods }
     procedure Clear; override;
     function  DeleteEntity(AIndex: Cardinal): Boolean; override;
