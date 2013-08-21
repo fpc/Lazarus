@@ -83,6 +83,7 @@ const
   STR_RAW_EXTENSION = '.raw';
   STR_MATHML_EXTENSION = '.mathml';
   STR_ODG_EXTENSION = '.odg';
+  STR_DOCX_EXTENSION = '.docx';
 
   STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE = 'Ćą';
 
@@ -5368,6 +5369,7 @@ begin
   else if AnsiCompareText(lExt, STR_RAW_EXTENSION) = 0 then Result := vfRAW
   else if AnsiCompareText(lExt, STR_MATHML_EXTENSION) = 0 then Result := vfMathML
   else if AnsiCompareText(lExt, STR_ODG_EXTENSION) = 0 then Result := vfODG
+  else if AnsiCompareText(lExt, STR_DOCX_EXTENSION) = 0 then Result := vfDOCX
   else
     raise Exception.Create('TvVectorialDocument.GetFormatFromExtension: The extension (' + lExt + ') doesn''t match any supported formats.');
 end;
@@ -5405,7 +5407,8 @@ end;
 
 procedure TvVectorialDocument.GuessGoodZoomLevel(AScreenSize: Integer);
 begin
-  ZoomLevel := AScreenSize / Height;
+  If Height<>0 Then
+    ZoomLevel := AScreenSize / Height;
 end;
 
 function TvVectorialDocument.GetPage(AIndex: Integer): TvPage;
