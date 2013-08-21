@@ -60,19 +60,8 @@ type
     FTimeOut: Integer;
     procedure SendCommandDataToGDB(AQueue: TGDBInstructionQueue); virtual;
     function  ProcessInputFromGdb(const AData: String): Boolean; virtual; abstract; // True if data was handled
-    function IsCompleted: boolean; virtual;                                        // No more InputFromGdb required
-
-    procedure MarkAsSuccess;
-    procedure HandleWriteError(ASender: TGDBInstruction); virtual;
-    procedure HandleReadError; virtual;
-    procedure HandleTimeOut; virtual;
-    procedure HandleRecoveredTimeOut; virtual;
-    procedure HandleNoGdbRunning; virtual;
-    procedure HandleContentError; virtual;
-    procedure HandleError(AnError: TGDBInstructionErrorFlag; AMarkAsFailed: Boolean = True); virtual;
 
     function  GetTimeOutVerifier: TGDBInstruction; virtual;
-    function  DebugText: String;
     procedure Init; virtual;
     procedure InternalCreate(ACommand: String;
                              AThread, AFrame: Integer; // ifRequiresThread, ifRequiresStackFrame will always be included
@@ -95,6 +84,18 @@ type
                        ATimeOut: Integer = 0
                       );
     function IsSuccess: Boolean;
+    function IsCompleted: boolean; virtual;                                        // No more InputFromGdb required
+
+    procedure MarkAsSuccess;
+    procedure HandleWriteError(ASender: TGDBInstruction); virtual;
+    procedure HandleReadError; virtual;
+    procedure HandleTimeOut; virtual;
+    procedure HandleRecoveredTimeOut; virtual;
+    procedure HandleNoGdbRunning; virtual;
+    procedure HandleContentError; virtual;
+    procedure HandleError(AnError: TGDBInstructionErrorFlag; AMarkAsFailed: Boolean = True); virtual;
+    function  DebugText: String;
+
     property Command: String read FCommand;
     property ThreadId: Integer read FThreadId;
     property StackFrame: Integer read FStackFrame;
@@ -200,6 +201,8 @@ type
                                              const TheInstruction: TGDBInstruction); virtual;
     function GetSelectThreadInstruction(AThreadId: Integer): TGDBInstruction; virtual;
     function GetSelectFrameInstruction(AFrame: Integer): TGDBInstruction; virtual;
+
+    property Debugger: TGDBMICmdLineDebugger read FDebugger;
   public
     constructor Create(ADebugger: TGDBMICmdLineDebugger);
     procedure InvalidateThredAndFrame(AStackFrameOnly: Boolean = False);

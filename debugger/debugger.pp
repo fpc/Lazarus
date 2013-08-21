@@ -6070,11 +6070,15 @@ end;
 procedure TThreads.Add(AThread: TThreadEntry);
 begin
   FList.Add(TThreadEntry.CreateCopy(AThread));
+  if FList.Count = 1 then
+    FCurrentThreadId := AThread.ThreadId;
 end;
 
 procedure TThreads.Remove(AThread: TThreadEntry);
 begin
   FList.Remove(AThread);
+  if FCurrentThreadId = AThread.ThreadId then
+    FCurrentThreadId := 0;
   AThread.Free;
 end;
 

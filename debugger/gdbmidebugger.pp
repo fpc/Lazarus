@@ -204,6 +204,15 @@ type
     property Cmd: TGDBMIDebuggerCommand read FCmd write FCmd;
   end;
 
+  { TGDBMIDbgInstructionQueue }
+
+  TGDBMIDbgInstructionQueue = class(TGDBInstructionQueue)
+  protected
+    procedure HandleGdbDataBeforeInstruction(var AData: String; var SkipData: Boolean;
+      const TheInstruction: TGDBInstruction); override;
+    function Debugger: TGDBMIDebugger; reintroduce;
+  end;
+
   { TGDBMIDebuggerCommand }
 
   TGDBMIDebuggerCommandState =
@@ -585,7 +594,7 @@ type
 
   TGDBMIDebugger = class(TGDBMICmdLineDebugger) // TODO: inherit from TDebugger direct
   private
-    FInstructionQueue: TGDBInstructionQueue;
+    FInstructionQueue: TGDBMIDbgInstructionQueue;
     FCommandQueue: TGDBMIDebuggerCommandList;
     FCurrentCommand: TGDBMIDebuggerCommand;
     FCommandQueueExecLock: Integer;
@@ -677,7 +686,7 @@ type
     function  StartDebugging(AContinueCommand: TGDBMIDebuggerCommand = nil): Boolean;
 
   protected
-    FNeedStateToIdle: Boolean;
+    FNeedStateToIdle, FNeedReset: Boolean;
     {$IFDEF MSWindows}
     FPauseRequestInThreadID: Cardinal;
     {$ENDIF}
@@ -753,6 +762,7 @@ type
 
     // internal testing
     procedure TestCmd(const ACommand: String); override;
+    function NeedReset: Boolean; override;
   end;
 
 
@@ -1597,6 +1607,68 @@ begin
   then Result := 8;
 end;
 
+{ TGDBMIDbgInstructionQueue }
+
+procedure TGDBMIDbgInstructionQueue.HandleGdbDataBeforeInstruction(var AData: String;
+  var SkipData: Boolean; const TheInstruction: TGDBInstruction);
+
+  procedure DoLogStream(const Line: String);
+  begin
+    // check for symbol info
+    if Pos('No symbol table is loaded.  Use the \"file\" command.', Line) > 0
+    then begin
+      Debugger.TargetFlags := Debugger.TargetFlags - [tfHasSymbols];
+      Debugger.DoDbgEvent(ecDebugger, etDefault, Format('File ''%s'' has no debug symbols', [Debugger.FileName]));
+    end;
+
+    // check internal error
+    if (Pos('internal-error:', LowerCase(Line)) > 0) or
+       (Pos('internal to gdb has been detected', LowerCase(Line)) > 0) or
+       (Pos('further debugging may prove unreliable', LowerCase(Line)) > 0)
+    then begin
+      Debugger.DoDbgEvent(ecDebugger, etDefault, Format('GDB has encountered an internal error: %s', [AData]));
+      if TGDBMIDebuggerProperties(Debugger.GetProperties).WarnOnInternalError
+      then begin
+        if Debugger.OnFeedback(Debugger,
+            Format('GDB has encountered an internal error: %0:s' +
+                   'Press "Ok" to continue debugging. This may NOT be safe.%0:s' +
+                   'Press "Stop" to end the debug session.', [LineEnding]),
+            Format('While executing the command: %0:s"%2:s"%0:sgdb reported:%0:s"%1:s"%0:s',
+                   [LineEnding, Line, TheInstruction.DebugText]),
+            ftWarning, [frOk, frStop]
+          ) = frStop
+        then begin
+          try
+            Debugger.CancelAllQueued;
+          finally
+            Debugger.FNeedReset := True;
+            Debugger.Stop;
+          end;
+        end;
+      end;
+    end;
+
+  end;
+
+begin
+  if AData <> ''
+  then case AData[1] of
+    //'~': DoConsoleStream(AData);
+    //'@': DoTargetStream(AData);
+    '&': DoLogStream(AData);
+    //'*': DoExecAsync(AData);
+    //'+': DoStatusAsync(AData);
+    //'=': DoMsgAsync(AData);
+  end;
+
+  inherited HandleGdbDataBeforeInstruction(AData, SkipData, TheInstruction);
+end;
+
+function TGDBMIDbgInstructionQueue.Debugger: TGDBMIDebugger;
+begin
+  Result := TGDBMIDebugger(inherited Debugger);
+end;
+
 { TGDBMIDebuggerInstruction }
 
 function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boolean;
@@ -1694,34 +1766,19 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
 
   procedure DoLogStream(const Line: String);
   const
-    LogWarning = '&"Warning:\n"';
+    LogWarning = '&"warning:"';
   begin
-    // check for symbol info
-    if Pos('No symbol table is loaded.  Use the \"file\" command.', Line) > 0
-    then begin
-      FCmd.TargetInfo^.TargetFlags := FCmd.TargetInfo^.TargetFlags - [tfHasSymbols];
-      FCmd.DoDbgEvent(ecDebugger, etDefault, Format('File ''%s'' has no debug symbols', [FCmd.FTheDebugger.FileName]));
-    end;
-    if (Pos('internal-error:', LowerCase(Line)) > 0) or
-       (Pos('internal to gdb has been detected', LowerCase(Line)) > 0) or
-       (Pos('further debugging may prove unreliable', LowerCase(Line)) > 0)
-    then begin
-      FCmd.DoDbgEvent(ecDebugger, etDefault, Format('GDB has encountered an internal error: %s', [Line]));
-      if FCmd.DebuggerProperties.WarnOnInternalError
-      then MessageDlg('Warning', 'GDB has encountered an internal error: ' + Line,
-                      mtWarning, [mbOK], 0);
-    end;
     DebugLn(DBG_VERBOSE, '[Debugger] Log output: ', Line);
     if Line = '&"kill\n"'
     then FResultData.State := dsStop
     else if LeftStr(Line, 8) = '&"Error '
     then FResultData.State := dsError;
-    if copy(Line, 1, length(FLogWarnings)) = FLogWarnings
+    if LowerCase(copy(Line, 1, length(FLogWarnings))) = FLogWarnings
     then FInLogWarning := True;
     if FInLogWarning
     then FLogWarnings := FLogWarnings + copy(Line, 3, length(Line)-5) + LineEnding;
-    if copy(Line, 1, length(FLogWarnings)) = '&"\n"'
-    then FInLogWarning := False;
+    if Line = '&"\n"' then
+      FInLogWarning := False;
   end;
 
   procedure DoExecAsync(Line: String);
@@ -1837,17 +1894,20 @@ begin
   //  MarkAsSuccess;
   //end;
 
-  if AData <> ''
-  then case AData[1] of
-    '^': FHasResult := DoResultRecord(AData, Result);
-    '~': DoConsoleStream(AData);
-    '@': DoTargetStream(AData);
-    '&': DoLogStream(AData);
-    '*': DoExecAsync(AData);
-    '+': DoStatusAsync(AData);
-    '=': DoMsgAsync(AData);
-  else
-    DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unknown record: ', AData);
+  if AData <> '' then begin
+    if AData[1] <> '&' then
+      FInLogWarning := False;
+    case AData[1] of
+      '^': FHasResult := DoResultRecord(AData, Result);
+      '~': DoConsoleStream(AData);
+      '@': DoTargetStream(AData);
+      '&': DoLogStream(AData);
+      '*': DoExecAsync(AData);
+      '+': DoStatusAsync(AData);
+      '=': DoMsgAsync(AData);
+    else
+      DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unknown record: ', AData);
+    end;
   end;
   {$IFDEF VerboseIDEToDo}{$message warning condition should also check end-of-file reached for process output stream}{$ENDIF}
 end;
@@ -2326,8 +2386,19 @@ var
     end;
     if InLogWarning then
       FLogWarnings := FLogWarnings + Warning + LineEnding;
-    if Copy(Line, 1, 5) = '&"\n"' then
+    if Line = '&"\n"' then
       InLogWarning := False;
+(*
+<< TCmdLineDebugger.ReadLn "&"Warning:\n""
+  << TCmdLineDebugger.ReadLn "&"Cannot insert breakpoint 11.\n""
+  << TCmdLineDebugger.ReadLn "&"Error accessing memory address 0x760: Input/output error.\n""
+  << TCmdLineDebugger.ReadLn "&"\n""
+
+
+  << TCmdLineDebugger.ReadLn "&"warning: Bad debug information detected: Attempt to read 592 bytes from registers.\n""
+  << TCmdLineDebugger.ReadLn "^done,stack-args=[frame={level="5",args=[{name="ADDR",value="131"},{name="FUNC",value="']A'#0#131#0#0#0'l'#248#202#7#156#248#202#7#132#245#202#7#140#245#202#7'2kA'#0#6#2#0#0#27#0#0#0'#'#0#0#0'#'#0#0#0" ..(493).. ",{name="PTEXT",value="<value optimized out>"}]},frame={level="8",args=[]},frame={level="9",args=[]}]"
+
+*)
   end;
 
 var
@@ -2349,6 +2420,8 @@ begin
 
     while S <> '' do
     begin
+      if S[1] <> '&' then
+        InLogWarning := False;
       case S[1] of
         '^': DoResultRecord(S);
         '~': DoConsoleStream(S);
@@ -4754,7 +4827,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
         end;
         R.State := dsRun; // restore cmd state
         s := s + s2 + R.Values;
-        Cmd := '-exec-continue'; // untill we hit one of the breakpoints
+        Cmd := '-exec-continue'; // until we hit one of the breakpoints
       end;
 
       rval := rval + s;
@@ -6974,7 +7047,7 @@ begin
   FRunErrorBreak   := TGDBMIInternalBreakPoint.Create('FPC_RUNERROR');
   FExceptionBreak  := TGDBMIInternalBreakPoint.Create('FPC_RAISEEXCEPTION');
 
-  FInstructionQueue := TGDBInstructionQueue.Create(Self);
+  FInstructionQueue := TGDBMIDbgInstructionQueue.Create(Self);
   FCommandQueue := TGDBMIDebuggerCommandList.Create;
   FTargetInfo.TargetPID := 0;
   FTargetInfo.TargetFlags := [];
@@ -6990,6 +7063,7 @@ begin
   FMaxLineForUnitCache := TStringList.Create;
   FInProcessStopped := False;
   FNeedStateToIdle := False;
+  FNeedReset := False;
 
 
 {$IFdef MSWindows}
@@ -8546,6 +8620,11 @@ end;
 procedure TGDBMIDebugger.TestCmd(const ACommand: String);
 begin
   ExecuteCommand(ACommand, [], [cfscIgnoreError]);
+end;
+
+function TGDBMIDebugger.NeedReset: Boolean;
+begin
+  Result := FNeedReset;
 end;
 
 {%region      *****  BreakPoints  *****  }
@@ -10170,7 +10249,8 @@ begin
 
   try
     if (cfNoThreadContext in AFlags) or (FContext.ThreadContext = ccNotRequired) or
-       ((FContext.ThreadContext = ccUseGlobal) and (not FTheDebugger.FCurrentThreadIdValid))
+       ((FContext.ThreadContext = ccUseGlobal) and (not FTheDebugger.FCurrentThreadIdValid)) or
+       (ContextThreadId = 0) // TODO: 0 is not valid => use current
     then
       Instr := TGDBMIDebuggerInstruction.Create(ACommand, [], ATimeOut)
     else
