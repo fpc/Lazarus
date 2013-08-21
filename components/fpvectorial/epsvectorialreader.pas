@@ -616,7 +616,7 @@ begin
         if lIsEndOfLine then
         begin
           Tokens.Add(CommentToken);
-          State := TPostScriptScannerState(lReturnState.Pop());
+          State := TPostScriptScannerState(PtrUint(lReturnState.Pop()));
 //          {$ifdef FPVECTORIALDEBUG}
 //          WriteLn(Format('Adding Comment "%s" at Line %d', [CommentToken.StrValue, CurLine]));
 //          {$endif}
@@ -649,7 +649,7 @@ begin
           ArrayToken.ResolveOperators();
           if ArrayToken.Parent = nil then
           begin
-            State := TPostScriptScannerState(lReturnState.Pop());
+            State := TPostScriptScannerState(PtrUint(lReturnState.Pop()));
             if State = ssInDictionary then
             begin
               DictionaryToken.Childs.Add(ArrayToken);
@@ -718,7 +718,7 @@ begin
           if CurChar = '>' then
           begin
             Tokens.Add(DictionaryToken);
-            State := TPostScriptScannerState(lReturnState.Pop());
+            State := TPostScriptScannerState(PtrUint(lReturnState.Pop()));
           end
           else
             raise Exception.Create(Format('[TPSTokenizer.ReadFromStream] ssInDictionary: Unexpected char while searching for ">>" token: $%s in Line %d',
@@ -763,7 +763,7 @@ begin
         begin
           ExpressionToken.PrepareFloatValue();
           if lReturnState.Count = 0 then lExpressionStateReturn := ssSearchingToken
-          else lExpressionStateReturn := TPostScriptScannerState(lReturnState.Pop());
+          else lExpressionStateReturn := TPostScriptScannerState(PtrUint(lReturnState.Pop()));
           if lExpressionStateReturn = ssInArray then
           begin
             ArrayToken.ArrayData.Add(ExpressionToken);
