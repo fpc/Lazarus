@@ -191,12 +191,12 @@ type
     FResultData: TGDBMIExecResult;
   protected
     function ProcessInputFromGdb(const AData: String): Boolean; override;
-    procedure HandleNoGdbRunning; override;
-    procedure HandleReadError; override;
-    procedure HandleTimeOut; override;
     function GetTimeOutVerifier: TGDBInstruction; override;
     procedure Init; override;
   public
+    procedure HandleNoGdbRunning; override;
+    procedure HandleReadError; override;
+    procedure HandleTimeOut; override;
     property ResultData: TGDBMIExecResult read FResultData;
     property HasResult: Boolean read FHasResult; // seen a "^foo" msg from gdb
     property FullCmdReply: String read FFullCmdReply;
@@ -809,6 +809,16 @@ resourcestring
     + 'This may be caused by missing debug info.';
   gdbmiCommandStartMainRunNoPIDError = 'The debugger failed to get the application''s PID.%0:s'
     + 'This may be caused by missing debug info.';
+  gdbmiGDBInternalError = 'GDB has encountered an internal error: %0:sPress "Ok" to continue '
+    +'debugging. This may NOT be safe.%0:sPress "Stop" to end the debug session.';
+  gdbmiGDBInternalErrorInfo = 'While executing the command: %0:s"%2:s"%0:sgdb reported:%0:s"%'
+    +'1:s"%0:s';
+  gdbmiEventLogGDBInternalError = 'GDB has encountered an internal error: %s';
+  gdbmiEventLogNoSymbols = 'File ''%s'' has no debug symbols';
+  gdbmiEventLogProcessStart = 'Process Start: %s';
+  gdbmiEventLogDebugOutput = 'Debug Output: %s';
+  gdbmiEventLogProcessExitNormally = 'Process Exit: normally';
+  gdbmiEventLogProcessExitCode = 'Process Exit: %s';
 
 
 implementation
@@ -1612,13 +1622,24 @@ end;
 procedure TGDBMIDbgInstructionQueue.HandleGdbDataBeforeInstruction(var AData: String;
   var SkipData: Boolean; const TheInstruction: TGDBInstruction);
 
+  procedure DoConsoleStream(Line: String);
+  begin
+    // check for symbol info
+    if Pos('no debugging symbols', Line) > 0
+    then begin
+      Debugger.TargetFlags := Debugger.TargetFlags - [tfHasSymbols];
+      Debugger.DoDbgEvent(ecDebugger, etDefault, Format(gdbmiEventLogNoSymbols, [Debugger.FileName]));
+    end;
+  end;
+
   procedure DoLogStream(const Line: String);
   begin
     // check for symbol info
     if Pos('No symbol table is loaded.  Use the \"file\" command.', Line) > 0
     then begin
       Debugger.TargetFlags := Debugger.TargetFlags - [tfHasSymbols];
-      Debugger.DoDbgEvent(ecDebugger, etDefault, Format('File ''%s'' has no debug symbols', [Debugger.FileName]));
+      Debugger.DoDbgEvent(ecDebugger, etDefault,
+        Format(gdbmiEventLogNoSymbols, [Debugger.FileName]));
     end;
 
     // check internal error
@@ -1626,15 +1647,13 @@ procedure TGDBMIDbgInstructionQueue.HandleGdbDataBeforeInstruction(var AData: St
        (Pos('internal to gdb has been detected', LowerCase(Line)) > 0) or
        (Pos('further debugging may prove unreliable', LowerCase(Line)) > 0)
     then begin
-      Debugger.DoDbgEvent(ecDebugger, etDefault, Format('GDB has encountered an internal error: %s', [AData]));
+      Debugger.DoDbgEvent(ecDebugger, etDefault,
+        Format(gdbmiEventLogGDBInternalError, [AData]));
       if TGDBMIDebuggerProperties(Debugger.GetProperties).WarnOnInternalError
       then begin
         if Debugger.OnFeedback(Debugger,
-            Format('GDB has encountered an internal error: %0:s' +
-                   'Press "Ok" to continue debugging. This may NOT be safe.%0:s' +
-                   'Press "Stop" to end the debug session.', [LineEnding]),
-            Format('While executing the command: %0:s"%2:s"%0:sgdb reported:%0:s"%1:s"%0:s',
-                   [LineEnding, Line, TheInstruction.DebugText]),
+            Format(gdbmiGDBInternalError, [LineEnding]),
+            Format(gdbmiGDBInternalErrorInfo, [LineEnding, Line, TheInstruction.DebugText]),
             ftWarning, [frOk, frStop]
           ) = frStop
         then begin
@@ -1653,7 +1672,7 @@ procedure TGDBMIDbgInstructionQueue.HandleGdbDataBeforeInstruction(var AData: St
 begin
   if AData <> ''
   then case AData[1] of
-    //'~': DoConsoleStream(AData);
+    '~': DoConsoleStream(AData);
     //'@': DoTargetStream(AData);
     '&': DoLogStream(AData);
     //'*': DoExecAsync(AData);
@@ -1732,31 +1751,23 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
   var
     len: Integer;
   begin
-    // check for symbol info
-    if Pos('no debugging symbols', Line) > 0
+    // Strip surrounding ~" "
+    len := Length(Line) - 3;
+    if len < 0 then Exit;
+    Line := Copy(Line, 3, len);
+    // strip trailing \n (unless it is escaped \\n)
+    if (len >= 2) and (Line[len - 1] = '\') and (Line[len] = 'n')
     then begin
-      FCmd.TargetInfo^.TargetFlags := FCmd.TargetInfo^.TargetFlags - [tfHasSymbols];
-      FCmd.DoDbgEvent(ecDebugger, etDefault, Format('File ''%s'' has no debug symbols', [FCmd.FTheDebugger.FileName]));
-    end
-    else begin
-      // Strip surrounding ~" "
-      len := Length(Line) - 3;
-      if len < 0 then Exit;
-      Line := Copy(Line, 3, len);
-      // strip trailing \n (unless it is escaped \\n)
-      if (len >= 2) and (Line[len - 1] = '\') and (Line[len] = 'n')
+      if len = 2
+      then Line := LineEnding
+      else if Line[len - 2] <> '\'
       then begin
-        if len = 2
-        then Line := LineEnding
-        else if Line[len - 2] <> '\'
-        then begin
-          SetLength(Line, len - 2);
-          Line := Line + LineEnding;
-        end;
+        SetLength(Line, len - 2);
+        Line := Line + LineEnding;
       end;
-
-      FResultData.Values := FResultData.Values + Line;
     end;
+
+    FResultData.Values := FResultData.Values + Line;
   end;
 
   procedure DoTargetStream(const Line: String);
@@ -1818,7 +1829,8 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
         FCmd.FTheDebugger.Threads.Changed;
       end;
 
-      FCmd.DoDbgEvent(ecProcess, etProcessStart, 'Process Start: ' + FCmd.FTheDebugger.FileName);
+      FCmd.DoDbgEvent(ecProcess, etProcessStart,
+        Format(gdbmiEventLogProcessStart, [FCmd.FTheDebugger.FileName]));
     end
     else
     if S = 'stopped' then begin
@@ -2382,7 +2394,7 @@ var
       InLogWarning := True;
       Delete(Warning, 1, Length(LogWarning));
       Warning := MakePrintable(UnEscapeBackslashed(Trim(Warning), [uefOctal, uefTab, uefNewLine]));
-      DoDbgEvent(ecOutput, etOutputDebugString, 'Debug Output: ' + Warning);
+      DoDbgEvent(ecOutput, etOutputDebugString, Format(gdbmiEventLogDebugOutput, [Warning]));
     end;
     if InLogWarning then
       FLogWarnings := FLogWarnings + Warning + LineEnding;
@@ -5721,7 +5733,7 @@ begin
     Reason := List.Values['reason'];
     if (Reason = 'exited-normally')
     then begin
-      DoDbgEvent(ecProcess, etProcessExit, 'Process Exit: normally');
+      DoDbgEvent(ecProcess, etProcessExit, gdbmiEventLogProcessExitNormally);
       SetDebuggerState(dsStop);
       Exit;
     end;
@@ -5729,7 +5741,8 @@ begin
     if Reason = 'exited'
     then begin
       FTheDebugger.SetExitCode(StrToIntDef(List.Values['exit-code'], 0));
-      DoDbgEvent(ecProcess, etProcessExit, 'Process Exit: ' + List.Values['exit-code']);
+      DoDbgEvent(ecProcess, etProcessExit, Format(gdbmiEventLogProcessExitCode, [List.Values['exi'
+        +'t-code']]));
       SetDebuggerState(dsStop);
       Exit;
     end;
