@@ -6077,8 +6077,12 @@ end;
 procedure TThreads.Remove(AThread: TThreadEntry);
 begin
   FList.Remove(AThread);
-  if FCurrentThreadId = AThread.ThreadId then
-    FCurrentThreadId := 0;
+  if FCurrentThreadId = AThread.ThreadId then begin
+    if FList.Count > 0 then
+      FCurrentThreadId := Entries[0].ThreadId
+    else
+      FCurrentThreadId := 0;
+  end;
   AThread.Free;
 end;
 
