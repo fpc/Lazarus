@@ -109,6 +109,8 @@ var
  ------------------------------------------------------------------------------}
 function TCmdLineDebugger.WaitForHandles(const AHandles: array of Integer; var ATimeOut: Integer): Integer;
 {$IFDEF UNIX}
+const
+  IDLE_STEP_COUNT=50;
 var
   n, R, Max, Count: Integer;
   TimeOut: Integer;
@@ -142,7 +144,7 @@ begin
   then t := GetTickCount64;
 
   // wait for all handles
-  Step:=0;
+  Step:=IDLE_STEP_COUNT-1;
   repeat
     FDSWait := FDS;
     TimeOut := 10;
@@ -169,7 +171,7 @@ begin
 
     ProcessWhileWaitForHandles;
     inc(Step);
-    if Step=50 then begin
+    if Step=IDLE_STEP_COUNT then begin
       Step:=0;
       Application.Idle(false);
     end;
@@ -196,6 +198,8 @@ begin
 end;
 {$ELSE linux}
 {$IFdef MSWindows}
+const
+  IDLE_STEP_COUNT = 20;
 var
   PipeHandle: Integer;
   TotalBytesAvailable: dword;
@@ -205,7 +209,7 @@ var
   t, t2, t3: DWord;
 begin
   Result := 0;
-  Step:=0;
+  Step:=IDLE_STEP_COUNT-1;
   if ATimeOut > 0
   then t := GetTickCount;
 
@@ -248,7 +252,7 @@ begin
     ProcessWhileWaitForHandles;
     // process messages
     inc(Step);
-    if Step=20 then begin
+    if Step=IDLE_STEP_COUNT then begin
       Step:=0;
       Application.Idle(false);
     end;
