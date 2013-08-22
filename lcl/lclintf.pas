@@ -47,7 +47,7 @@ uses
   {$IFDEF UNIX}Unix, {$ENDIF}
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
   Types, Math, Classes, SysUtils, LCLType, LCLProc, GraphType, InterfaceBase,
-  LResources, FileUtil, UTF8Process, Maps, LMessages, lazutf8sysutils;
+  LResources, FileUtil, UTF8Process, Maps, LMessages, lazutf8sysutils, LCLStrConsts;
 
 {$ifdef Trace}
   {$ASSERTIONS ON}
@@ -59,8 +59,7 @@ uses
 // All interface communication (Our additions)
 {$I lclintfh.inc}
 
-function PredefinedClipboardFormat(
-  AFormat: TPredefinedClipboardFormat): TClipboardFormat;
+function PredefinedClipboardFormat(AFormat: TPredefinedClipboardFormat): TClipboardFormat;
 
 
 function MsgKeyDataToShiftState(KeyData: PtrInt): TShiftState;
@@ -178,12 +177,14 @@ end;
 {$ENDIF}
 
 
-function PredefinedClipboardFormat(AFormat: TPredefinedClipboardFormat
-  ): TClipboardFormat;
+function PredefinedClipboardFormat(AFormat: TPredefinedClipboardFormat): TClipboardFormat;
 begin
-  if FPredefinedClipboardFormats[AFormat]=0 then
+  if FPredefinedClipboardFormats[AFormat]=0 then begin
+    if WidgetSet=nil then
+      raise Exception.Create(rsNoWidgetSet);
     FPredefinedClipboardFormats[AFormat]:=
       ClipboardRegisterFormat(PredefinedClipboardMimeTypes[AFormat]);
+  end;
   Result:=FPredefinedClipboardFormats[AFormat];
 end;
 
