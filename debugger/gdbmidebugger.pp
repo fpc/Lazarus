@@ -303,6 +303,8 @@ type
     procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); virtual;
     procedure DoLockQueueExecute; virtual;
     procedure DoUnLockQueueExecute; virtual;
+    procedure DoLockQueueExecuteForInstr; virtual;
+    procedure DoUnLockQueueExecuteForInstr; virtual;
     function  DoExecute: Boolean; virtual; abstract;
     procedure DoOnExecuted;
     procedure DoCancel; virtual;
@@ -910,6 +912,10 @@ type
   private
     FLocals: TCurrentLocals;
   protected
+    procedure DoLockQueueExecute; override;
+    procedure DoUnLockQueueExecute; override;
+    procedure DoLockQueueExecuteForInstr; override;
+    procedure DoUnLockQueueExecuteForInstr; override;
     function DoExecute: Boolean; override;
   public
     constructor Create(AOwner: TGDBMIDebugger; ALocals: TCurrentLocals);
@@ -1234,9 +1240,14 @@ type
     FTypeInfo: TGDBType;
     FValidity: TDebuggerDataState;
     FTypeInfoAutoDestroy: Boolean;
+    FLockFlag: Boolean;
     function GetTypeInfo: TGDBType;
     procedure DoWatchFreed(Sender: TObject);
   protected
+    procedure DoLockQueueExecute; override;
+    procedure DoUnLockQueueExecute; override;
+    procedure DoLockQueueExecuteForInstr; override;
+    procedure DoUnLockQueueExecuteForInstr; override;
     function DoExecute: Boolean; override;
     function SelectContext: Boolean;
     procedure UnSelectContext;
@@ -1286,6 +1297,10 @@ type
     procedure DoCallstackFreed(Sender: TObject);
   protected
     FCallstack: TCurrentCallStack;
+    procedure DoLockQueueExecute; override;
+    procedure DoUnLockQueueExecute; override;
+    procedure DoLockQueueExecuteForInstr; override;
+    procedure DoUnLockQueueExecuteForInstr; override;
   public
     constructor Create(AOwner: TGDBMIDebugger; ACallstack: TCurrentCallStack);
     destructor Destroy; override;
@@ -2696,6 +2711,26 @@ begin
   debugln(DBGMI_QUEUE_DEBUG, ['DoCallstackFreed: ', DebugText]);
   FCallstack := nil;
   Cancel;
+end;
+
+procedure TGDBMIDebuggerCommandStack.DoLockQueueExecute;
+begin
+  //
+end;
+
+procedure TGDBMIDebuggerCommandStack.DoUnLockQueueExecute;
+begin
+  //
+end;
+
+procedure TGDBMIDebuggerCommandStack.DoLockQueueExecuteForInstr;
+begin
+  ///
+end;
+
+procedure TGDBMIDebuggerCommandStack.DoUnLockQueueExecuteForInstr;
+begin
+  //
 end;
 
 constructor TGDBMIDebuggerCommandStack.Create(AOwner: TGDBMIDebugger;
@@ -6339,6 +6374,7 @@ begin
   FContext.ThreadId := FCallstack.ThreadId;
 
   FDepth := -1;
+
   ExecuteCommand('-stack-info-depth', R);
   List := TGDBMINameValueList.Create(R);
   cnt := StrToIntDef(List.Values['depth'], -1);
@@ -7481,7 +7517,8 @@ begin
     or ( (FCommandQueue.Count > 0)
         and (FCommandQueue[0].QueueRunLevel >= 0)
         and (FCommandQueue[0].QueueRunLevel < FInExecuteCount)
-       );
+       )
+    or ( (p > FCommandQueue[0].Priority) and (FCommandQueueExecLock = 0) );
 
   if (ACommand is TGDBMIDebuggerCommandExecute) then begin
     // Execute-commands, must be queued at the end. They have QueueRunLevel, so they only run in the outer loop
@@ -9218,6 +9255,26 @@ end;
 {%region      *****  Locals  *****  }
 { TGDBMIDebuggerCommandLocals }
 
+procedure TGDBMIDebuggerCommandLocals.DoLockQueueExecute;
+begin
+  //
+end;
+
+procedure TGDBMIDebuggerCommandLocals.DoUnLockQueueExecute;
+begin
+  //
+end;
+
+procedure TGDBMIDebuggerCommandLocals.DoLockQueueExecuteForInstr;
+begin
+  //
+end;
+
+procedure TGDBMIDebuggerCommandLocals.DoUnLockQueueExecuteForInstr;
+begin
+  //
+end;
+
 function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
 
   procedure AddLocals(const AParams: String);
@@ -10092,6 +10149,16 @@ begin
   FTheDebugger.QueueExecuteUnlock;
 end;
 
+procedure TGDBMIDebuggerCommand.DoLockQueueExecuteForInstr;
+begin
+  FTheDebugger.QueueExecuteLock;
+end;
+
+procedure TGDBMIDebuggerCommand.DoUnLockQueueExecuteForInstr;
+begin
+  FTheDebugger.QueueExecuteUnlock;
+end;
+
 procedure TGDBMIDebuggerCommand.DoOnExecuted;
 begin
   if assigned(FOnExecuted) then
@@ -10143,7 +10210,7 @@ begin
   then ATimeOut := DefaultTimeOut;
 
   try
-    FTheDebugger.QueueExecuteLock;
+    DoLockQueueExecuteForInstr;
 
     if (cfNoThreadContext in AFlags) or (FContext.ThreadContext = ccNotRequired) or
        ((FContext.ThreadContext = ccUseGlobal) and (not FTheDebugger.FCurrentThreadIdValid)) or
@@ -10180,7 +10247,7 @@ begin
       DoTimeoutFeedback;
     end;
   finally
-    FTheDebugger.QueueExecuteUnlock;
+    DoUnLockQueueExecuteForInstr;
     Instr.ReleaseReference;
   end;
 
@@ -11334,6 +11401,29 @@ begin
   Cancel;
 end;
 
+procedure TGDBMIDebuggerCommandEvaluate.DoLockQueueExecute;
+begin
+  FLockFlag := FWatchValue = nil;
+  //if FLockFlag then
+  //  inherited DoLockQueueExecute;
+end;
+
+procedure TGDBMIDebuggerCommandEvaluate.DoUnLockQueueExecute;
+begin
+  //if FLockFlag then
+  //  inherited DoUnLockQueueExecute;
+end;
+
+procedure TGDBMIDebuggerCommandEvaluate.DoLockQueueExecuteForInstr;
+begin
+  //
+end;
+
+procedure TGDBMIDebuggerCommandEvaluate.DoUnLockQueueExecuteForInstr;
+begin
+  //
+end;
+
 function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
 var
   TypeInfoFlags: TGDBTypeCreationFlags;
@@ -12480,6 +12570,7 @@ var
   {$IFDEF DBG_WITH_GDB_WATCHES} R: TGDBMIExecResult; {$ENDIF}
 begin
   SelectContext;
+
   try
     FTextValue:='';
     FTypeInfo:=nil;
@@ -12575,6 +12666,7 @@ begin
   FEvalFlags := [];
   FTypeInfoAutoDestroy := True;
   FValidity := ddsValid;
+  FLockFlag := False;
 end;
 
 constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebugger;
