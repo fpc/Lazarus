@@ -1286,8 +1286,6 @@ type
     procedure DoCallstackFreed(Sender: TObject);
   protected
     FCallstack: TCurrentCallStack;
-    function  SelectThread: Boolean;
-    procedure UnSelectThread;
   public
     constructor Create(AOwner: TGDBMIDebugger; ACallstack: TCurrentCallStack);
     destructor Destroy; override;
@@ -2700,18 +2698,6 @@ begin
   Cancel;
 end;
 
-function TGDBMIDebuggerCommandStack.SelectThread: Boolean;
-begin
-  Result := True;
-  FContext.ThreadContext := ccUseLocal;
-  FContext.ThreadId := FCallstack.ThreadId;
-end;
-
-procedure TGDBMIDebuggerCommandStack.UnSelectThread;
-begin
-  FContext.ThreadContext := ccUseGlobal;
-end;
-
 constructor TGDBMIDebuggerCommandStack.Create(AOwner: TGDBMIDebugger;
   ACallstack: TCurrentCallStack);
 begin
@@ -2865,6 +2851,11 @@ begin
 
   Debugger.FCurrentThreadId := ANewId;
   Debugger.FCurrentThreadIdValid := True;
+
+  Debugger.DoThreadChanged;
+  if CurrentThreads <> nil
+  then CurrentThreads.CurrentThreadId := ANewId;
+
   DebugLn(DBG_THREAD_AND_FRAME, ['TGDBMIThreads THREAD wanted ', Debugger.FCurrentThreadId]);
 end;
 
@@ -6341,39 +6332,37 @@ var
   i, cnt: longint;
 begin
   Result := True;
-  FContext.ThreadContext := ccNotRequired;
-  FContext.StackContext := ccNotRequired;
-  FDepth := -1;
-  try
-    if not SelectThread then exit;
+  if (FCallstack = nil) or (dcsCanceled in SeenStates) then exit;
 
-    ExecuteCommand('-stack-info-depth', R);
-    List := TGDBMINameValueList.Create(R);
-    cnt := StrToIntDef(List.Values['depth'], -1);
-    FreeAndNil(List);
-    if cnt = -1 then
-    begin
-      { In case of error some stackframes still can be accessed.
-        Trying to find out how many...
-        We try maximum 40 frames, because sometimes a corrupt stack and a bug in
-        gdb may cooperate, so that -stack-info-depth X returns always X }
-      i:=0;
-      repeat
-        inc(i);
-        ExecuteCommand('-stack-info-depth %d', [i], R);
-        List := TGDBMINameValueList.Create(R);
-        cnt := StrToIntDef(List.Values['depth'], -1);
-        FreeAndNil(List);
-        if (cnt = -1) then begin
-          // no valid stack-info-depth found, so the previous was the last valid one
-          cnt:=i - 1;
-        end;
-      until (cnt<i) or (i=40);
-    end;
-    FDepth := cnt;
-  finally
-    UnSelectThread;
+  FContext.StackContext := ccNotRequired;
+  FContext.ThreadContext := ccUseLocal;
+  FContext.ThreadId := FCallstack.ThreadId;
+
+  FDepth := -1;
+  ExecuteCommand('-stack-info-depth', R);
+  List := TGDBMINameValueList.Create(R);
+  cnt := StrToIntDef(List.Values['depth'], -1);
+  FreeAndNil(List);
+  if cnt = -1 then
+  begin
+    { In case of error some stackframes still can be accessed.
+      Trying to find out how many...
+      We try maximum 40 frames, because sometimes a corrupt stack and a bug in
+      gdb may cooperate, so that -stack-info-depth X returns always X }
+    i:=0;
+    repeat
+      inc(i);
+      ExecuteCommand('-stack-info-depth %d', [i], R);
+      List := TGDBMINameValueList.Create(R);
+      cnt := StrToIntDef(List.Values['depth'], -1);
+      FreeAndNil(List);
+      if (cnt = -1) then begin
+        // no valid stack-info-depth found, so the previous was the last valid one
+        cnt:=i - 1;
+      end;
+    until (cnt<i) or (i=40);
   end;
+  FDepth := cnt;
 end;
 
 function TGDBMIDebuggerCommandStackDepth.DebugText: String;
@@ -6593,8 +6582,12 @@ var
   StartIdx, EndIdx: Integer;
 begin
   Result := True;
-  FContext.StackContext := ccNotRequired;
   if (FCallstack = nil) or (dcsCanceled in SeenStates) then exit;
+
+  FContext.StackContext := ccNotRequired;
+  FContext.ThreadContext := ccUseLocal;
+  FContext.ThreadId := FCallstack.ThreadId;
+
 
   It := TMapIterator.Create(FCallstack.RawEntries);
   try
@@ -9297,6 +9290,12 @@ var
   List: TGDBMINameValueList;
 begin
   Result := True;
+
+  FContext.ThreadContext := ccUseLocal;
+  FContext.ThreadId := FLocals.ThreadId;
+  FContext.StackContext := ccUseLocal;
+  FContext.StackFrame := FLocals.StackFrame;
+
   FLocals.Clear;
   // args
   ExecuteCommand('-stack-list-arguments 1 %0:d %0:d',
