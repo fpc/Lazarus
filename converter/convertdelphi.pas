@@ -545,7 +545,7 @@ begin
       fUsedUnitsTool:=TUsedUnitsTool.Create(fCTLink, fOrigUnitFilename);
     except
       // If CodeTool's BuildTree raised exception, try dummy replacement for
-      //  some known problematic syntax, currently only OleVariant.type.
+      //  some known problematic syntax, currently only OleVariant members.
       if CodeFixed then
         Raise               // There was a second exception -> we are doomed!
       else begin
