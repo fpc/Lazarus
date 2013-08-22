@@ -33,14 +33,15 @@ type
   TGDBInstructionResultFlags = set of TGDBInstructionResultFlag;
 
   TGDBInstructionErrorFlag = (
-    ifeContentError,
-    ifeWriteError,
+    ifeContentError,  // the imput from gdb was not in the expected format
+    ifeWriteError,    // writing to gdb (pipe) failed
     ifeReadError,
     ifeGdbNotRunning,
     ifeTimedOut,
-    ifeRecoveredTimedOut,
+    ifeRecoveredTimedOut, // not an error
     ifeInvalidStackFrame,
-    ifeInvalidThreadId
+    ifeInvalidThreadId,
+    ifeQueueContextError  // The thread or stack command went ok, but something else interfered with setting th econtext
   );
   TGDBInstructionErrorFlags = set of TGDBInstructionErrorFlag;
 
@@ -126,15 +127,16 @@ type
     procedure SendCommandDataToGDB(AQueue: TGDBInstructionQueue); override;
     function ProcessInputFromGdb(const AData: String): Boolean; override;
 
-    procedure HandleWriteError(ASender: TGDBInstruction); override;
-    procedure HandleReadError; override;
-    procedure HandleTimeOut; override;
-    procedure HandleNoGdbRunning; override;
     function GetTimeOutVerifier: TGDBInstruction; override;
     function DebugText: String;
   public
     constructor Create(ARunnigInstruction: TGDBInstruction);
     destructor Destroy; override;
+
+    procedure HandleWriteError(ASender: TGDBInstruction); override;
+    procedure HandleReadError; override;
+    procedure HandleTimeOut; override;
+    procedure HandleNoGdbRunning; override;
   end;
 
   { TGDBInstructionChangeThread }
@@ -147,11 +149,12 @@ type
   protected
     procedure SendCommandDataToGDB(AQueue: TGDBInstructionQueue); override;
     function ProcessInputFromGdb(const AData: String): Boolean; override;
-    procedure HandleError(AnError: TGDBInstructionErrorFlag; AMarkAsFailed: Boolean = True);
-      override;
     function DebugText: String;
   public
     constructor Create(AQueue: TGDBInstructionQueue; AThreadId: Integer);
+
+    procedure HandleError(AnError: TGDBInstructionErrorFlag; AMarkAsFailed: Boolean = True);
+      override;
   end;
 
   { TGDBInstructionChangeStackFrame }
@@ -184,6 +187,7 @@ type
     FCurrentInstruction: TGDBInstruction;
     FCurrentStackFrame: Integer;
     FCurrentThreadId: Integer;
+    FExeCurInstructionStamp: Int64;
     FDebugger: TGDBMICmdLineDebugger;
     FFlags: TGDBInstructionQueueFlags;
 
@@ -727,53 +731,87 @@ end;
 procedure TGDBInstructionQueue.ExecuteCurrentInstruction;
 var
   ExeInstr, HelpInstr: TGDBInstruction;
+  CurStamp: Int64;
 begin
   if FCurrentInstruction = nil then
     exit;
 
+  if FExeCurInstructionStamp = high(FExeCurInstructionStamp) then
+    FExeCurInstructionStamp := low(FExeCurInstructionStamp)
+  else
+    inc(FExeCurInstructionStamp);
+
   ExeInstr := FCurrentInstruction;
   ExeInstr.AddReference;
   try
+    while true do begin
+      CurStamp := FExeCurInstructionStamp;
 
-    if not HasCorrectThreadIdFor(ExeInstr) then begin
-      HelpInstr := GetSelectThreadInstruction(ExeInstr.ThreadId);
-      DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Changing Thread from: ', FCurrentThreadId, ' - ', dbgs(FFlags),
-        ' to ', ExeInstr.ThreadId, ' using [', HelpInstr.DebugText, '] for [', ExeInstr.DebugText, ']']);
-      HelpInstr.AddReference;
-      try
-        FCurrentInstruction := HelpInstr;
-        FCurrentInstruction.SendCommandDataToGDB(Self);
-        FinishCurrentInstruction;
-        if not HelpInstr.IsSuccess then begin
-          DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Changing Thread FAILED']);
-          ExeInstr.HandleError(ifeInvalidThreadId);
+      if not HasCorrectThreadIdFor(ExeInstr) then begin
+        HelpInstr := GetSelectThreadInstruction(ExeInstr.ThreadId);
+        DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Changing Thread from: ', FCurrentThreadId, ' - ', dbgs(FFlags),
+          ' to ', ExeInstr.ThreadId, ' using [', HelpInstr.DebugText, '] for [', ExeInstr.DebugText, ']']);
+        HelpInstr.AddReference;
+        try
+          FCurrentInstruction := HelpInstr;
+          FCurrentInstruction.SendCommandDataToGDB(Self);
+          FinishCurrentInstruction;
+          if not HelpInstr.IsSuccess then begin
+            DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Changing Thread FAILED']);
+            ExeInstr.HandleError(ifeInvalidThreadId);
+            exit;
+          end;
+        finally
+          HelpInstr.ReleaseReference;
+        end;
+      end;
+
+      if not HasCorrectThreadIdFor(ExeInstr) then begin
+        if CurStamp = FExeCurInstructionStamp then begin
+          DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Thread was interuppted, FAILING']);
+          ExeInstr.HandleError(ifeQueueContextError);
           exit;
         end;
-      finally
-        HelpInstr.ReleaseReference;
+
+        DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Thread was interuppted, repeating']);
+        continue;
       end;
-    end;
-    if not HasCorrectFrameFor(ExeInstr) then begin
-      HelpInstr := GetSelectFrameInstruction(ExeInstr.StackFrame);
-      DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Changing Stack from: ', FCurrentStackFrame, ' - ', dbgs(FFlags),
-        ' to ', ExeInstr.StackFrame, ' using [', HelpInstr.DebugText, '] for [', ExeInstr.DebugText, ']']);
-      HelpInstr.AddReference;
-      try
-        FCurrentInstruction := HelpInstr;
-        FCurrentInstruction.SendCommandDataToGDB(Self);
-        FinishCurrentInstruction;
-        if not HelpInstr.IsSuccess then begin
-          DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Changing Stackframe FAILED']);
-          ExeInstr.HandleError(ifeInvalidStackFrame);
+
+
+      if not HasCorrectFrameFor(ExeInstr) then begin
+        HelpInstr := GetSelectFrameInstruction(ExeInstr.StackFrame);
+        DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Changing Stack from: ', FCurrentStackFrame, ' - ', dbgs(FFlags),
+          ' to ', ExeInstr.StackFrame, ' using [', HelpInstr.DebugText, '] for [', ExeInstr.DebugText, ']']);
+        HelpInstr.AddReference;
+        try
+          FCurrentInstruction := HelpInstr;
+          FCurrentInstruction.SendCommandDataToGDB(Self);
+          FinishCurrentInstruction;
+          if not HelpInstr.IsSuccess then begin
+            DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Changing Stackframe FAILED']);
+            ExeInstr.HandleError(ifeInvalidStackFrame);
+            exit;
+          end;
+        finally
+          HelpInstr.ReleaseReference;
+        end;
+      end;
+
+      if not (HasCorrectThreadIdFor(ExeInstr) and HasCorrectFrameFor(ExeInstr)) then begin
+        if CurStamp = FExeCurInstructionStamp then begin
+          DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Stack was interuppted, FAILING']);
+          ExeInstr.HandleError(ifeQueueContextError);
           exit;
         end;
-      finally
-        HelpInstr.ReleaseReference;
-      end;
-    end;
 
+        DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Stack was interuppted, repeating']);
+        continue;
+      end;
+
+      break;
+    end; // while true
   finally
-    if ExeInstr.RefCount > 1 then
+    if (ExeInstr.RefCount > 1) and (not ExeInstr.IsCompleted) then
       FCurrentInstruction := ExeInstr
     else
       FCurrentInstruction := nil;
@@ -808,8 +846,19 @@ begin
       // If it does, it has not (yet) read any data.
       // Therefore, if it does, another nested call to readline will work, and data will be returned in the correct order.
       // If a nested readline reads all data, then the outer will have nothing to return.
-      // TODO: need a flag, so the outer will immediately return empty.
-      // TODO: also need a ReadlineCallCounter, to detect inner nested calls
+
+      if (FCurrentInstruction = nil) or (FCurrentInstruction.IsCompleted) then begin
+        if s <> '' then begin
+          //Should not happen
+          DebugLn(DBG_VERBOSE, ['TGDB_IQ: Got Data, but command was finished. Cmd: ', ExeInstr.DebugText, ' Data: ', S]);
+        end;
+        if not FDebugger.ReadLineWasAbortedByNested then
+          DebugLn(DBG_VERBOSE, ['TGDB_IQ: Missing instruction. Not flagged as nested. Cmd: ', ExeInstr.DebugText, ' Data: ', S]);
+        break;
+      end;
+
+      if FDebugger.ReadLineWasAbortedByNested and (S = '') then
+        Continue;
 
       Skip := False;
       HandleGdbDataBeforeInstruction(S, Skip, FCurrentInstruction);

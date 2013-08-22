@@ -53,7 +53,8 @@ type
     FReading: Boolean;       // Set if we are in the ReadLine loop
     FFlushAfterRead: Boolean;// Set if we should flush after finished reading
     FPeekOffset: Integer;    // Count the number of lines we have peeked
-    FReadLineTimedOut: Boolean;
+    FReadLineTimedOut, FReadLineWasAbortedByNested: Boolean;
+    FReadLineCallStamp: Int64;
     function WaitForHandles(const AHandles: array of Integer; var ATimeOut: Integer): Integer; overload;
     function WaitForHandles(const AHandles: array of Integer): Integer; overload;
   protected
@@ -71,6 +72,7 @@ type
     procedure SendCmdLn(const ACommand: String; Values: array of const); overload;
     procedure SetLineEnds(ALineEnds: TStringDynArray);
     function  ReadLineTimedOut: Boolean; virtual;
+    property  ReadLineWasAbortedByNested: Boolean read FReadLineWasAbortedByNested;
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
@@ -117,8 +119,10 @@ var
   FDSWait, FDS: TFDSet;
   Step: Integer;
   t, t2, t3: QWord;
+  CurCallStamp: Int64;
 begin
   Result := 0;
+  CurCallStamp := FReadLineCallStamp;
   Max := 0;
   Count := High(AHandles);
   if Count < 0 then Exit;
@@ -152,6 +156,9 @@ begin
     // R = -1 on error, 0 on timeout, >0 on success and is number of handles
     // FDSWait is changed, and indicates what descriptors have changed
     R := FpSelect(Max + 1, @FDSWait, nil, nil, TimeOut);
+
+    if CurCallStamp <> FReadLineCallStamp then
+      exit;
 
     if (ATimeOut > 0) then begin
       t2 := GetTickCount64;
@@ -207,8 +214,10 @@ var
   n: integer;
   Step: Integer;
   t, t2, t3: DWord;
+  CurCallStamp: Int64;
 begin
   Result := 0;
+  CurCallStamp := FReadLineCallStamp;
   Step:=IDLE_STEP_COUNT-1;
   if ATimeOut > 0
   then t := GetTickCount;
@@ -232,6 +241,9 @@ begin
         end;
       end;
     end;
+
+    if CurCallStamp <> FReadLineCallStamp then
+      exit;
 
     if (ATimeOut > 0) then begin
       t2 := GetTickCount;
@@ -404,6 +416,7 @@ var
   WaitSet: Integer;
   {%H-}LineEndMatch: String;
   LineEndIdx, LineEndLen, PeekCount: Integer;
+  CurCallStamp: Int64;
 begin
 //  WriteLN('[TCmdLineDebugger.GetOutput] Enter');
 
@@ -411,6 +424,12 @@ begin
 // TODO: Fix multiple peeks
   Result := '';
   FReadLineTimedOut := False;
+  FReadLineWasAbortedByNested := False;
+  if FReadLineCallStamp = high(FReadLineCallStamp) then
+    FReadLineCallStamp := low(FReadLineCallStamp)
+  else
+    inc(FReadLineCallStamp);
+  CurCallStamp := FReadLineCallStamp;
 
   if not APeek
   then FPeekOffset := 0;
@@ -445,6 +464,12 @@ begin
     then break;
 
     WaitSet := WaitForHandles([FDbgProcess.Output.Handle], ATimeOut);
+
+    if CurCallStamp <> FReadLineCallStamp then begin
+      // nested call: return empty, even if data exists
+      FReadLineWasAbortedByNested := True; // this is true for all outer calls too.
+      break;
+    end;
 
     if (ATimeOut = 0)
     then FReadLineTimedOut := True;
