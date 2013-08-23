@@ -1959,6 +1959,9 @@ begin
     if csNoFocus in LCLObject.ControlStyle then
       setFocusPolicy(QtNoFocus)
     else
+    if (Self is TQtTabWidget) then
+      setFocusPolicy(QtTabFocus)
+    else
       setFocusPolicy(QtClickFocus);
   end;
 
