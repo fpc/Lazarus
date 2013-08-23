@@ -8539,6 +8539,31 @@ function TFindDeclarationTool.CheckSrcIdentifier(
   const FoundContext: TFindContext): TIdentifierFoundResult;
 // this is a TOnIdentifierFound function
 //   if identifier found is a proc then it searches for the best overloaded proc
+
+  function CallHasEmptyParamsAndFoundProcFits: boolean;
+  var
+    FirstParameterNode: TCodeTreeNode;
+    TargetTool: TFindDeclarationTool;
+  begin
+    Result:=false;
+    FirstParameterNode:=FoundContext.Tool.GetFirstParameterNode(
+                                              FoundContext.Node);
+    if (FirstParameterNode<>nil)
+    and ((FirstParameterNode.SubDesc and ctnsHasDefaultValue)=0) then begin
+      // found proc needs at least one parameter
+      exit;
+    end;
+    // FoundContext is a proc with no or only default params
+    TargetTool:=Params.IdentifierTool;
+    TargetTool.MoveCursorToCleanPos(Params.Identifier);
+    TargetTool.ReadNextAtom; // read identifier
+    TargetTool.ReadNextAtom; // read bracket
+    if TargetTool.CurPos.Flag<>cafRoundBracketOpen then exit;
+    TargetTool.ReadNextAtom; // read bracket close
+    if TargetTool.CurPos.Flag<>cafRoundBracketClose then exit;
+    Result:=true;
+  end;
+
 var
   FirstParameterNode, StartContextNode: TCodeTreeNode;
   ParamCompatibility: TTypeCompatibility;
@@ -8588,6 +8613,22 @@ begin
       ' NO SOURCE to check params'
       );
       {$ENDIF}
+      Result:=ifrSuccess;
+      exit;
+    end;
+
+    if (not (fdfCollect in Params.Flags))
+    and CallHasEmptyParamsAndFoundProcFits then begin
+      // call has brackets without params (e.g. writeln() )
+      // and found proc fits exactly
+      // => stop search
+      {$IF defined(ShowFoundIdentifier) or defined(ShowProcSearch)}
+      debugln(['TFindDeclarationTool.CheckSrcIdentifier call is () and found proc fits exactly',
+        ' Ident=',GetIdentifier(Params.Identifier),
+        ' ',FoundContext.Tool.CleanPosToStr(FoundContext.Node.StartPos)
+        ]);
+      {$ENDIF}
+      Params.SetResult(FoundContext);
       Result:=ifrSuccess;
       exit;
     end;
