@@ -199,13 +199,45 @@ const
     end;
   end;
 
+  procedure AddFile(aFilename: string);
+  var
+    Ext: String;
+  begin
+    debugln(['AddFile ',aFilename]);
+    Ext:=lowercase(ExtractFileExt(aFilename));
+    if Ext='.lpk' then begin
+      if IndexOfFilename(LPKFilenames,aFilename)>=0 then
+        E('duplicate lpk:'+aFilename); // duplicate lpk, compilation order is unclear => error
+      LPKFilenames.Add(aFilename);
+    end
+    else if FilenameIsPascalUnit(aFilename) then begin
+      if IndexOfFilename(UnitFilenames,aFilename)>=0 then
+        exit; // duplicate unit is ok => ignore
+      UnitFilenames.Add(aFilename);
+    end else
+      E('only lpk and units are supported, invalid file:'+aFilename);
+  end;
+
+  procedure AddFiles(Pattern: string);
+  var
+    Info: TSearchRec;
+  begin
+    if FindFirstUTF8(Pattern,faAnyFile,Info)=0 then begin
+      repeat
+        if (Info.Name='.') or (Info.Name='..') then continue;
+        if (faDirectory and Info.Attr)>0 then continue;
+        AddFile(ExtractFilePath(Pattern)+Info.Name);
+      until FindNextUTF8(Info)<>0;
+    end;
+    FindCloseUTF8(Info);
+  end;
+
 var
   ErrorMsg: String;
   i: Integer;
   Param: String;
   S2SItem: PStringToStringItem;
   Filename: String;
-  Ext: String;
   Option: string;
   p: SizeInt;
 begin
@@ -234,22 +266,16 @@ begin
       RemoveComments:=true
     else if Param[1]<>'-' then begin
       Filename:=TrimAndExpandFilename(Param);
-      if not FileExistsUTF8(Filename) then
-        E('file not found: '+Param);
-      if DirPathExists(Filename) then
-        E('file is a directory: '+Param);
-      Ext:=lowercase(ExtractFileExt(Filename));
-      if Ext='.lpk' then begin
-        if IndexOfFilename(LPKFilenames,Filename)>=0 then
-          E('duplicate lpk:'+Param); // duplicate lpk, compilation order is unclear => error
-        LPKFilenames.Add(Filename);
-      end
-      else if FilenameIsPascalUnit(Filename) then begin
-        if IndexOfFilename(UnitFilenames,Filename)>=0 then
-          continue; // duplicate unit is ok => ignore
-        UnitFilenames.Add(Filename);
-      end else
-        E('only lpk and units are supported, invalid file:'+Param);
+      if (Pos('*',ExtractFileName(Filename))>0) or (Pos('?',ExtractFileName(Filename))>0)
+      then begin
+        AddFiles(Filename);
+      end else begin
+        if not FileExistsUTF8(Filename) then
+          E('file not found: '+Param);
+        if DirPathExists(Filename) then
+          E('file is a directory: '+Param);
+        AddFile(Filename);
+      end;
     end else if (length(Param)=2) and (Pos(Param[2]+':',ShortOpts)>0) then begin
       // e.g. -t <target>
       Option:=Param[2];
@@ -293,8 +319,6 @@ begin
   end;
   if (LPKFilenames.Count=0) and (UnitFilenames.Count=0) then
     E('you must pass at least one lpk or pas file',true);
-
-  ApplyDefines;
 
   for i:=0 to LPKFilenames.Count-1 do
     ConvertLPK(LPKFilenames[i]);
@@ -464,6 +488,7 @@ begin
   writeln('  ',ExeName,' [options] [unit1.pas unit2.pp ...] [pkg1.lpk pk2.lpk ..]');
   writeln;
   writeln('Description:');
+  writeln('  If the file names contain * or ? it will be used as mask.');
   writeln('  If you pass a lpk file, this tool will set "compile manually"');
   writeln('  and appends "-Ur" to the compiler options.');
   writeln('  You can pass multiple lpk files and they will be edited in this order.');
