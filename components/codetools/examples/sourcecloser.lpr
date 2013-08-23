@@ -414,6 +414,8 @@ var
   EndPos: Integer;
   CodeList: TFPList;
   i: Integer;
+  StartCodePos: TCodePosition;
+  EndCodePos: TCodePosition;
 begin
   debugln(['Converting unit: ',UnitFilename]);
   ApplyDefines;
@@ -441,7 +443,13 @@ begin
     EndPos:=Node.StartPos;
     Node:=Node.NextBrother;
   end;
-  if not Changer.Replace(gtNone,gtNone,StartPos,EndPos,'') then
+  if not Tool.CleanPosToCodePos(StartPos,StartCodePos) then
+    E('unable to delete implementation of "'+UnitFilename+'" (invalid startpos '+Tool.CleanPosToStr(StartPos,true)+')');
+  if not Tool.CleanPosToCodePos(EndPos,EndCodePos) then
+    E('unable to delete implementation of "'+UnitFilename+'" (invalid endpos '+Tool.CleanPosToStr(EndPos,true)+')');
+  if StartCodePos.Code<>EndCodePos.Code then
+    E('unable to delete implementation of "'+UnitFilename+'" from '+Tool.CleanPosToStr(StartPos,true)+' to '+Tool.CleanPosToStr(EndPos,true));
+  if not Changer.ReplaceEx(gtNone,gtNone,0,0,StartCodePos.Code,StartCodePos.P,EndCodePos.P,'') then
     E('unable to delete implementation of "'+UnitFilename+'"');
 
   // apply changes and write changes to disk
