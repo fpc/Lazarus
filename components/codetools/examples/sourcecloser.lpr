@@ -1,4 +1,5 @@
 { Command line utility to create closed source Lazarus packages.
+  Run with -h to see help
 
   Copyright (C) 2013 Mattias Gaertner mattias@freepascal.org
 
@@ -516,7 +517,12 @@ begin
   //writeln('         For example: --target=targetos=linux,targetcpu=i386,lclwidgettype=gtk2');
   writeln;
   writeln('Environment variables:');
-  writeln('  ');
+  writeln('  PP            path to compiler,');
+  writeln('                e.g. C:\lazarus\fpc\2.6.2\bin\i386-win32\fpc.exe');
+  writeln('                The compiler is queried for the current defines for the');
+  writeln('                target platform.');
+  writeln('  FPCTARGET     target os, e.g. win32');
+  writeln('  FPCTARGETCPU  target cpu, e.g. i386');
 end;
 
 function TSourceCloser.TargetCount: integer;
