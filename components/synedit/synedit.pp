@@ -1179,6 +1179,9 @@ type
     property OnMouseLink: TSynMouseLinkEvent read FOnMouseLink write FOnMouseLink;
     property OnMouseEnter;
     property OnMouseLeave;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
 // ToDo Docking
     property OnStartDock;
     property OnStartDrag;
@@ -7101,13 +7104,22 @@ end;
 procedure TCustomSynEdit.WMMouseWheel(var Message: TLMMouseEvent);
 var
   lState: TShiftState;
+  MousePos: TPoint;
 begin
   if ((sfHorizScrollbarVisible in fStateFlags) and (Message.Y > ClientHeight)) or
      ((sfVertScrollbarVisible in fStateFlags) and (Message.X > ClientWidth))
    then begin
-     inherited;
+     // mouse is over scrollbar
+     inherited; // include OnMouseWheel...;
      exit;
    end;
+
+  MousePos.X := Message.X;
+  MousePos.Y := Message.Y;
+  if DoMouseWheel(lState, Message.WheelDelta, MousePos) then begin
+    Message.Result := 1; // handled
+    exit;
+  end;
 
   lState := Message.State - [ssCaps, ssNum, ssScroll]; // Remove unreliable states, see http://bugs.freepascal.org/view.php?id=20065
 
