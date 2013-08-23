@@ -394,6 +394,8 @@ type
                         ddsError                       // Error, but got some Value to display (e.g. error msg)
                        );
 
+  TNullableBool = (nbUnknown, nbTrue, nbFalse);
+
   { TDebuggerDataMonitor }
 
   TDebuggerDataMonitor = class
@@ -1795,6 +1797,8 @@ type
     procedure Assign(AnOther: TCallStack);
     procedure PrepareRange({%H-}AIndex, {%H-}ACount: Integer); virtual;
     procedure ChangeCurrentIndex(ANewIndex: Integer); virtual;
+    function HasAtLeastCount(ARequiredMinCount: Integer): TNullableBool; virtual; // Can be faster than getting the full count
+    function CountLimited(ALimit: Integer): Integer;
     property Count: Integer read GetCount write SetCount;
     property CurrentIndex: Integer read GetCurrent write SetCurrent;
     property Entries[AIndex: Integer]: TCallStackEntry read GetEntry;
@@ -1833,13 +1837,13 @@ type
   TCurrentCallStack = class(TCallStack)
   private
     FMonitor: TCallStackMonitor;
-    FCountValidity: TDebuggerDataState;
+    FCountValidity, FAtLeastCountValidity: TDebuggerDataState;
     FCurrentValidity: TDebuggerDataState;
     FNewCurrentIndex: Integer;
     FPreparing: Boolean;
     FSnapShot: TCallStack;
     FEntries: TMap;        // list of created entries
-    FCount: Integer;
+    FCount, FAtLeastCount, FAtLeastCountOld: Integer;
     FLowestUnknown, FHighestUnknown: Integer;
     procedure SetSnapShot(const AValue: TCallStack);
   protected
@@ -1860,6 +1864,7 @@ type
     procedure ChangeCurrentIndex(ANewIndex: Integer); override;
     procedure DoEntriesCreated;
     procedure DoEntriesUpdated;
+    function HasAtLeastCount(ARequiredMinCount: Integer): TNullableBool; override;
     property LowestUnknown: Integer read FLowestUnknown;
     property HighestUnknown: Integer read FHighestUnknown;
     property RawEntries: TMap read FEntries;
@@ -1867,6 +1872,7 @@ type
     property SnapShot: TCallStack read FSnapShot write SetSnapShot;
   public
     procedure SetCountValidity(AValidity: TDebuggerDataState);
+    procedure SetHasAtLeastCountInfo(AValidity: TDebuggerDataState; AMinCount: Integer = -1);
     procedure SetCurrentValidity(AValidity: TDebuggerDataState);
   end;
 
@@ -1896,6 +1902,7 @@ type
     procedure SetSupplier(const AValue: TCallStackSupplier);
   protected
     procedure RequestCount(ACallstack: TCallStack);
+    procedure RequestAtLeastCount(ACallstack: TCallStack; ARequiredMinCount: Integer);
     procedure RequestCurrent(ACallstack: TCallStack);
     procedure RequestEntries(ACallstack: TCallStack);
     procedure UpdateCurrentIndex;
@@ -1922,6 +1929,7 @@ type
     procedure SetMonitor(const AValue: TCallStackMonitor);
   protected
     procedure RequestCount(ACallstack: TCurrentCallStack); virtual;
+    procedure RequestAtLeastCount(ACallstack: TCurrentCallStack; ARequiredMinCount: Integer); virtual;
     procedure RequestCurrent(ACallstack: TCurrentCallStack); virtual;
     procedure RequestEntries(ACallstack: TCurrentCallStack); virtual;
     procedure CurrentChanged;
@@ -4189,7 +4197,7 @@ begin
 
     if not(smrCallStack in FRequestsDone) then begin
       i := FThreads.CurrentThreads.CurrentThreadId;
-      k := FCallStack.CurrentCallStackList.EntriesForThreads[i].Count;
+      k := FCallStack.CurrentCallStackList.EntriesForThreads[i].CountLimited(5);
       if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
       if (k > 0) or (smrCallStackCnt in FRequestsDone) then begin
         // Since DoDebuggerIdle was re-entered
@@ -4210,7 +4218,7 @@ begin
     if not(smrCallStackCnt in FRequestsDone) then begin
       include(FRequestsDone, smrCallStackCnt);
       i := FThreads.CurrentThreads.CurrentThreadId;
-      FCallStack.CurrentCallStackList.EntriesForThreads[i].Count;
+      FCallStack.CurrentCallStackList.EntriesForThreads[i].CountLimited(5);
       if (not(FCurrentState in [dsPause, dsInternalPause])) or
          (Debugger = nil) or ( (not Debugger.IsIdle) and (not AForce) )
       then exit;
@@ -5196,15 +5204,20 @@ begin
   FEntries.Clear;
 
   FCount := -1;
+  FAtLeastCount := -1;
+  FAtLeastCountOld := -1;
 end;
 
 constructor TCurrentCallStack.Create(AMonitor: TCallStackMonitor);
 begin
   FCount := 0;
+  FAtLeastCount := 0;
+  FAtLeastCountOld := -1;
   FEntries:= TMap.Create(its4, SizeOf(TCallStackEntry));
   FMonitor := AMonitor;
   FPreparing := False;
   FCountValidity := ddsUnknown;
+  FAtLeastCountValidity := ddsUnknown;
   FCurrentValidity := ddsUnknown;
   FLowestUnknown :=  -1;
   FHighestUnknown := -1;
@@ -5221,7 +5234,17 @@ end;
 procedure TCurrentCallStack.Assign(AnOther: TCallStack);
 begin
   inherited Assign(AnOther);
-  FCount := AnOther.Count;
+  if AnOther is TCurrentCallStack then begin
+    FCount := TCurrentCallStack(AnOther).FCount;
+    FCountValidity := TCurrentCallStack(AnOther).FCountValidity;
+    FAtLeastCount := TCurrentCallStack(AnOther).FAtLeastCount;
+    FAtLeastCountOld := TCurrentCallStack(AnOther).FAtLeastCountOld;
+  end
+  else begin
+    FCount := AnOther.Count;
+    FAtLeastCount := -1;
+    FAtLeastCountOld := -1;
+  end;
 end;
 
 procedure TCurrentCallStack.SetSnapShot(const AValue: TCallStack);
@@ -5255,14 +5278,15 @@ procedure TCurrentCallStack.SetCount(ACount: Integer);
 begin
   if FCount = ACount then exit;
   FCount := ACount;
-  if FCountValidity =ddsValid then
+  FAtLeastCount := ACount;
+  if FCountValidity = ddsValid then
     FMonitor.NotifyChange;
 end;
 
 function TCurrentCallStack.GetEntry(AIndex: Integer): TCallStackEntry;
 begin
   if (AIndex < 0)
-  or (AIndex >= Count) then IndexError(Aindex);
+  or (AIndex >= CountLimited(AIndex+1)) then IndexError(Aindex);
 
   Result := nil;
   if FEntries.GetData(AIndex, Result) then Exit;
@@ -5357,6 +5381,49 @@ begin
   FMonitor.NotifyChange;
 end;
 
+function TCurrentCallStack.HasAtLeastCount(ARequiredMinCount: Integer): TNullableBool;
+begin
+  if FCountValidity = ddsValid then begin
+   Result := inherited HasAtLeastCount(ARequiredMinCount);
+   exit;
+  end;
+
+  if FAtLeastCountOld >= ARequiredMinCount then begin
+    Result := nbTrue;
+    exit;
+  end;
+
+  if (FAtLeastCountValidity = ddsValid) and (FAtLeastCount < ARequiredMinCount) then begin
+    FAtLeastCountOld := FAtLeastCount;
+    FAtLeastCountValidity := ddsUnknown;
+  end;
+
+  case FAtLeastCountValidity of
+    ddsUnknown:   begin
+        Result := nbUnknown;
+        if FCountValidity in [ddsRequested, ddsEvaluating] then
+          exit;
+
+        FAtLeastCountValidity := ddsRequested;
+        FMonitor.RequestAtLeastCount(self, ARequiredMinCount);
+        if FAtLeastCountValidity = ddsValid then begin
+          if ARequiredMinCount <= FAtLeastCount then
+            Result := nbTrue
+          else
+            Result := nbFalse;
+        end;
+      end;
+    ddsRequested, ddsEvaluating: Result := nbUnknown;
+    ddsValid: begin
+        if ARequiredMinCount <= FAtLeastCount then
+          Result := nbTrue
+        else
+          Result := nbFalse;
+      end;
+    ddsInvalid, ddsError:        Result := nbFalse;
+  end;
+end;
+
 procedure TCurrentCallStack.SetCountValidity(AValidity: TDebuggerDataState);
 begin
   if FCountValidity = AValidity then exit;
@@ -5365,12 +5432,23 @@ begin
   FMonitor.NotifyChange;
 end;
 
+procedure TCurrentCallStack.SetHasAtLeastCountInfo(AValidity: TDebuggerDataState;
+  AMinCount: Integer);
+begin
+  if (FAtLeastCountValidity = AValidity) then exit;
+  DebugLn(DBG_DATA_MONITORS, ['DebugDataMonitor: TCurrentCallStack.SetCountMinValidity: FThreadId=', FThreadId, ' AValidity=',dbgs(AValidity)]);
+  FAtLeastCountOld := -1;
+  FAtLeastCountValidity := AValidity;
+  FAtLeastCount := AMinCount;
+  FMonitor.NotifyChange;
+end;
+
 procedure TCurrentCallStack.SetCurrentValidity(AValidity: TDebuggerDataState);
 begin
   if FCurrentValidity = AValidity then exit;
   DebugLn(DBG_DATA_MONITORS, ['DebugDataMonitor: TCurrentCallStack.SetCurrentValidity: FThreadId=', FThreadId, ' AValidity=',dbgs(AValidity)]);
   FCurrentValidity := AValidity;
-  if FCountValidity =ddsValid then
+  if FCurrentValidity = ddsValid then
     FMonitor.NotifyChange;
   FMonitor.NotifyCurrent;
 end;
@@ -7508,7 +7586,7 @@ begin
   else
   begin
     Debugger.DoDbgEvent(ecBreakpoint, etBreakpointMessage, Format('Breakpoint Call Stack: Log %d stack frames', [Limit]));
-    Count := Min(CallStack.Count, Limit);
+    Count := CallStack.CountLimited(Limit);
     CallStack.PrepareRange(0, Count);
   end;
 
@@ -9458,7 +9536,7 @@ end;
 function TCallStack.GetEntry(AIndex: Integer): TCallStackEntry;
 begin
   if (AIndex < 0)
-  or (AIndex >= Count) then IndexError(Aindex);
+  or (AIndex >= CountLimited(AIndex+1)) then IndexError(Aindex);
 
   Result := TCallStackEntry(FList[AIndex]);
 end;
@@ -9528,6 +9606,23 @@ begin
   CurrentIndex := ANewIndex;
 end;
 
+function TCallStack.HasAtLeastCount(ARequiredMinCount: Integer): TNullableBool;
+begin
+  if ARequiredMinCount <= Count then
+    Result := nbTrue
+  else
+    Result := nbFalse;
+end;
+
+function TCallStack.CountLimited(ALimit: Integer): Integer;
+begin
+  case HasAtLeastCount(ALimit) of
+    nbUnknown: Result := 0;
+    nbTrue:    Result := ALimit;
+    nbFalse:   Result := Count;
+  end;
+end;
+
 procedure TCallStack.SetCount(ACount: Integer);
 begin
   // can not set count
@@ -9595,6 +9690,13 @@ procedure TCallStackMonitor.RequestCount(ACallstack: TCallStack);
 begin
   if (Supplier <> nil) and (ACallstack is TCurrentCallStack)
   then Supplier.RequestCount(TCurrentCallStack(ACallstack));
+end;
+
+procedure TCallStackMonitor.RequestAtLeastCount(ACallstack: TCallStack;
+  ARequiredMinCount: Integer);
+begin
+  if (Supplier <> nil) and (ACallstack is TCurrentCallStack)
+  then Supplier.RequestAtLeastCount(TCurrentCallStack(ACallstack), ARequiredMinCount);
 end;
 
 procedure TCallStackMonitor.RequestCurrent(ACallstack: TCallStack);
@@ -9714,6 +9816,12 @@ end;
 procedure TCallStackSupplier.RequestCount(ACallstack: TCurrentCallStack);
 begin
   ACallstack.SetCountValidity(ddsInvalid);
+end;
+
+procedure TCallStackSupplier.RequestAtLeastCount(ACallstack: TCurrentCallStack;
+  ARequiredMinCount: Integer);
+begin
+  RequestCount(ACallstack);
 end;
 
 procedure TCallStackSupplier.RequestCurrent(ACallstack: TCurrentCallStack);

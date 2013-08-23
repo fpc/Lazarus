@@ -1319,11 +1319,14 @@ type
   TGDBMIDebuggerCommandStackDepth = class(TGDBMIDebuggerCommandStack)
   private
     FDepth: Integer;
+    FLimit: Integer;
   protected
     function DoExecute: Boolean; override;
   public
+    constructor Create(AOwner: TGDBMIDebugger; ACallstack: TCurrentCallStack);
     function DebugText: String; override;
     property Depth: Integer read FDepth;
+    property Limit: Integer read FLimit write FLimit;
   end;
 
   { TGDBMICallStack }
@@ -1331,12 +1334,15 @@ type
   TGDBMICallStack = class(TCallStackSupplier)
   private
     FCommandList: TList;
+    FDepthEvalCmdObj: TGDBMIDebuggerCommandStackDepth;
+    FLimitSeen: Integer;
     procedure DoDepthCommandExecuted(Sender: TObject);
     //procedure DoFramesCommandExecuted(Sender: TObject);
     procedure DoCommandDestroyed(Sender: TObject);
   protected
     procedure Clear;
     procedure RequestCount(ACallstack: TCurrentCallStack); override;
+    procedure RequestAtLeastCount(ACallstack: TCurrentCallStack; ARequiredMinCount: Integer); override;
     procedure RequestCurrent(ACallstack: TCurrentCallStack); override;
     procedure RequestEntries(ACallstack: TCurrentCallStack); override;
     procedure UpdateCurrentIndex; override;
@@ -6380,7 +6386,10 @@ begin
 
   FDepth := -1;
 
-  ExecuteCommand('-stack-info-depth', R);
+  if FLimit > 0 then
+    ExecuteCommand('-stack-info-depth %d', [FLimit], R)
+  else
+    ExecuteCommand('-stack-info-depth', R);
   List := TGDBMINameValueList.Create(R);
   cnt := StrToIntDef(List.Values['depth'], -1);
   FreeAndNil(List);
@@ -6390,6 +6399,7 @@ begin
       Trying to find out how many...
       We try maximum 40 frames, because sometimes a corrupt stack and a bug in
       gdb may cooperate, so that -stack-info-depth X returns always X }
+    FLimit := 0; // this is a final result
     i:=0;
     repeat
       inc(i);
@@ -6401,9 +6411,16 @@ begin
         // no valid stack-info-depth found, so the previous was the last valid one
         cnt:=i - 1;
       end;
-    until (cnt<i) or (i=40);
+    until (cnt < i) or (i = 40);
   end;
   FDepth := cnt;
+end;
+
+constructor TGDBMIDebuggerCommandStackDepth.Create(AOwner: TGDBMIDebugger;
+  ACallstack: TCurrentCallStack);
+begin
+  inherited Create(AOwner, ACallstack);
+  FLimit := 0;
 end;
 
 function TGDBMIDebuggerCommandStackDepth.DebugText: String;
@@ -9827,19 +9844,24 @@ var
   Cmd: TGDBMIDebuggerCommandStackDepth;
 begin
   FCommandList.Remove(Sender);
+  FDepthEvalCmdObj := nil;
   Cmd := TGDBMIDebuggerCommandStackDepth(Sender);
   if Cmd.Callstack = nil then exit;
   if Cmd.Depth < 0 then begin
     Cmd.Callstack.SetCountValidity(ddsInvalid);
+    Cmd.Callstack.SetHasAtLeastCountInfo(ddsInvalid);
   end else begin
-    Cmd.Callstack.Count := Cmd.Depth;
-    Cmd.Callstack.SetCountValidity(ddsValid);
+    if (Cmd.Limit > 0) and not(Cmd.Depth < Cmd.Limit) then begin
+      Cmd.Callstack.SetHasAtLeastCountInfo(ddsValid, Cmd.Depth);
+    end
+    else begin
+      Cmd.Callstack.Count := Cmd.Depth;
+      Cmd.Callstack.SetCountValidity(ddsValid);
+    end;
   end;
 end;
 
 procedure TGDBMICallStack.RequestCount(ACallstack: TCurrentCallStack);
-var
-  DepthEvalCmdObj: TGDBMIDebuggerCommandStackDepth;
 begin
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause])
   then begin
@@ -9847,12 +9869,52 @@ begin
     exit;
   end;
 
-  DepthEvalCmdObj := TGDBMIDebuggerCommandStackDepth.Create(TGDBMIDebugger(Debugger), ACallstack);
-  DepthEvalCmdObj.OnExecuted := @DoDepthCommandExecuted;
-  DepthEvalCmdObj.OnDestroy   := @DoCommandDestroyed;
-  DepthEvalCmdObj.Priority := GDCMD_PRIOR_STACK;
-  FCommandList.Add(DepthEvalCmdObj);
-  TGDBMIDebugger(Debugger).QueueCommand(DepthEvalCmdObj);
+  if (FDepthEvalCmdObj <> nil) and (FDepthEvalCmdObj .State = dcsQueued) then begin
+    FDepthEvalCmdObj.Limit := -1;
+    exit;
+  end;
+
+  FDepthEvalCmdObj := TGDBMIDebuggerCommandStackDepth.Create(TGDBMIDebugger(Debugger), ACallstack);
+  FDepthEvalCmdObj.OnExecuted := @DoDepthCommandExecuted;
+  FDepthEvalCmdObj.OnDestroy   := @DoCommandDestroyed;
+  FDepthEvalCmdObj.Priority := GDCMD_PRIOR_STACK;
+  FCommandList.Add(FDepthEvalCmdObj);
+  TGDBMIDebugger(Debugger).QueueCommand(FDepthEvalCmdObj);
+  (* DoDepthCommandExecuted may be called immediately at this point *)
+end;
+
+procedure TGDBMICallStack.RequestAtLeastCount(ACallstack: TCurrentCallStack;
+  ARequiredMinCount: Integer);
+begin
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause])
+  then begin
+    ACallstack.SetCountValidity(ddsInvalid);
+    exit;
+  end;
+
+  // avoid calling with many small minimum
+  // FLimitSeen starts at 11;
+  FLimitSeen := Max(FLimitSeen, Min(ARequiredMinCount, 51)); // remember, if the user has asked for more
+  if ARequiredMinCount <= 11 then
+    ARequiredMinCount := 11
+  else
+    ARequiredMinCount := Max(ARequiredMinCount, FLimitSeen);
+
+  if (FDepthEvalCmdObj <> nil) and (FDepthEvalCmdObj .State = dcsQueued) then begin
+    if FDepthEvalCmdObj.Limit <= 0 then
+      exit;
+    if FDepthEvalCmdObj.Limit < ARequiredMinCount then
+      FDepthEvalCmdObj.Limit := ARequiredMinCount;
+    exit;
+  end;
+
+  FDepthEvalCmdObj := TGDBMIDebuggerCommandStackDepth.Create(TGDBMIDebugger(Debugger), ACallstack);
+  FDepthEvalCmdObj.Limit := ARequiredMinCount;
+  FDepthEvalCmdObj.OnExecuted := @DoDepthCommandExecuted;
+  FDepthEvalCmdObj.OnDestroy   := @DoCommandDestroyed;
+  FDepthEvalCmdObj.Priority := GDCMD_PRIOR_STACK;
+  FCommandList.Add(FDepthEvalCmdObj);
+  TGDBMIDebugger(Debugger).QueueCommand(FDepthEvalCmdObj);
   (* DoDepthCommandExecuted may be called immediately at this point *)
 end;
 
@@ -9887,6 +9949,8 @@ end;
 procedure TGDBMICallStack.DoCommandDestroyed(Sender: TObject);
 begin
   FCommandList.Remove(Sender);
+  if FDepthEvalCmdObj = Sender then
+    FDepthEvalCmdObj := nil;
 end;
 
 procedure TGDBMICallStack.Clear;
@@ -9900,6 +9964,7 @@ begin
       Cancel;
     end;
   FCommandList.Clear;
+  FDepthEvalCmdObj := nil;
 end;
 
 procedure TGDBMICallStack.UpdateCurrentIndex;
@@ -9944,6 +10009,7 @@ end;
 constructor TGDBMICallStack.Create(const ADebugger: TDebugger);
 begin
   FCommandList := TList.Create;
+  FLimitSeen := 11;
   inherited Create(ADebugger);
 end;
 

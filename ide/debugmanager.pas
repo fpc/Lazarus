@@ -1271,7 +1271,7 @@ var
   NewSource: TCodeBuffer;
   Editor: TSourceEditor;
   SrcLine: Integer;
-  i, TId: Integer;
+  c, i, TId: Integer;
   StackEntry: TCallStackEntry;
   Flags: TJumpToCodePosFlags;
   CurrentSourceUnitInfo: TDebuggerUnitInfo;
@@ -1290,7 +1290,8 @@ begin
     // TODO: Only below the frame supplied by debugger
     i:=0;
     TId := Threads.CurrentThreads.CurrentThreadId;
-    while (i < CallStack.CurrentCallStackList.EntriesForThreads[TId].Count) do
+    c := CallStack.CurrentCallStackList.EntriesForThreads[TId].CountLimited(30);
+    while (i < c) do
     begin
       StackEntry := CallStack.CurrentCallStackList.EntriesForThreads[TId].Entries[i];
       if StackEntry.Line > 0

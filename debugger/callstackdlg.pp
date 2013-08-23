@@ -272,7 +272,7 @@ var
   n: Integer;
   Item: TListItem;
   Entry: TCallStackEntry;
-  First, Count: Integer;
+  First, Count, MaxCnt: Integer;
   Source: String;
   Snap: TSnapshot;
   CStack: TCallStack;
@@ -297,10 +297,11 @@ begin
 
     FInUpdateView := True; // ignore change triggered by count, if there is a change event, then Count will be updated already
     CStack := GetSelectedCallstack;
-    if CStack <> nil then CStack.Count; // trigger the update-notification, if executed immediately
+    MaxCnt := FViewStart + FViewLimit + 1;
+    if CStack <> nil then CStack.CountLimited(MaxCnt); // trigger the update-notification, if executed immediately
     FInUpdateView := False;
 
-    if (CStack = nil) or ((Snap <> nil) and (CStack.Count = 0)) then begin
+    if (CStack = nil) or ((Snap <> nil) and (CStack.CountLimited(MaxCnt) = 0)) then begin
       lvCallStack.Items.Clear;
       Item := lvCallStack.Items.Add;
       Item.SubItems.Add('');
@@ -310,7 +311,7 @@ begin
       exit;
     end;
 
-    if (CStack.Count=0)
+    if (CStack.CountLimited(MaxCnt)=0)
     then begin
       txtGoto.Text:= '0';
       lvCallStack.Items.Clear;
@@ -320,10 +321,10 @@ begin
 
     if Snap <> nil then begin
       First := 0;
-      Count := CStack.Count;
+      Count := CStack.CountLimited(MaxCnt);
     end else begin
       First := FViewStart;
-      if First + FViewLimit <= CStack.Count
+      if First + FViewLimit <= CStack.CountLimited(MaxCnt)
       then Count := FViewLimit
       else Count := CStack.Count - First;
     end;
@@ -467,7 +468,7 @@ begin
   if CurItem = nil then Exit;
 
   idx := FViewStart + CurItem.Index;
-  if idx >= GetSelectedCallstack.Count then Exit;
+  if idx >= GetSelectedCallstack.CountLimited(idx+1) then Exit;
 
   Result := GetSelectedCallstack.Entries[idx];
 end;
@@ -519,8 +520,9 @@ begin
     DisableAllActions;
     if (Item <> nil) and (BreakPoints <> nil) then
     begin
+      GetSelectedCallstack.CountLimited(lvCallStack.Items[lvCallStack.Items.Count - 1].Index+1); // get max limit
       idx := FViewStart + Item.Index;
-      if idx >= GetSelectedCallstack.Count then Exit;
+      if idx >= GetSelectedCallstack.CountLimited(idx+1) then Exit;
       Entry := GetSelectedCallstack.Entries[idx];
       if not DebugBoss.GetFullFilename(Entry.UnitInfo, FileName, False) then
         Exit;
@@ -682,10 +684,11 @@ begin
   if (BreakPoints = nil) or (Stack = nil) then
     Exit;
 
+  Stack.CountLimited(lvCallStack.Items[lvCallStack.Items.Count - 1].Index+1);
   for i := 0 to lvCallStack.Items.Count - 1 do
   begin
     idx := FViewStart + lvCallStack.Items[i].Index;
-    if idx >= Stack.Count then
+    if idx >= Stack.CountLimited(idx+1) then
       Continue;
     Entry := Stack.Entries[idx];
     if Entry <> nil then
@@ -767,7 +770,7 @@ begin
   ToolButtonPower.Down := True;
   ToolButtonPowerClick(nil);
 
-  if (AStart > GetSelectedCallstack.Count - FViewLimit)
+  if (AStart > GetSelectedCallstack.CountLimited(AStart+FViewLimit+1) - FViewLimit)
   then AStart := GetSelectedCallstack.Count - FViewLimit;
   if AStart < 0 then AStart := 0;
   if FViewStart = AStart then Exit;
@@ -790,7 +793,7 @@ begin
   ToolButtonPowerClick(nil);
   if FViewLimit = AValue then Exit;
   if (GetSelectedCallstack <> nil)
-  and (FViewStart + FViewLimit >= GetSelectedCallstack.Count)
+  and (FViewStart + FViewLimit >= GetSelectedCallstack.CountLimited(FViewStart + FViewLimit+1))
   and (AValue > FViewLimit)
   then begin
     FViewStart := GetSelectedCallstack.Count - AValue;
@@ -808,7 +811,7 @@ end;
 procedure TCallStackDlg.GotoIndex(AIndex: Integer);
 begin
   if AIndex < 0 then Exit;
-  if AIndex >= GetSelectedCallstack.Count then Exit;
+  if AIndex >= GetSelectedCallstack.CountLimited(AIndex+1) then Exit;
   
 
 end;
