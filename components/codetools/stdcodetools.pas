@@ -1634,7 +1634,7 @@ begin
     Result:=true;
     exit;
   end;
-  BuildTree(lsrEnd); // Should be lsrImplementationUsesSectionEnd
+  BuildTree(lsrInitializationStart);
   SourceChangeCache.MainScanner:=Scanner;
   if not CommentUnitsInUsesSection(FindMainUsesSection) then exit;
   if not CommentUnitsInUsesSection(FindImplementationUsesSection) then exit;
