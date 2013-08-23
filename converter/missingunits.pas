@@ -92,11 +92,11 @@ var
 
   procedure AddUnitsToListBox(AMissingUnits: TStrings);
   var
-    i: Integer;
+    i, Ind: Integer;
   begin         // Add missing units to CheckListBox.
     for i:=0 to AMissingUnits.Count-1 do begin
-      UNFDialog.MissingUnitsCheckListBox.Items.Append(AMissingUnits[i]);
-      UNFDialog.MissingUnitsCheckListBox.Checked[i]:=true;
+      Ind:=UNFDialog.MissingUnitsCheckListBox.Items.Add(AMissingUnits[i]);
+      UNFDialog.MissingUnitsCheckListBox.Checked[Ind]:=true;
     end;
   end;
 
