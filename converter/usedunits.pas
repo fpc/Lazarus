@@ -36,7 +36,7 @@ uses
   LazarusIDEStrConsts, IDEMsgIntf, IDEExternToolIntf,
   // codetools
   CodeToolManager, StdCodeTools, CodeTree, CodeCache, CodeToolsStructs, AVL_Tree,
-  LinkScanner, KeywordFuncLists, SourceChanger, CodeAtom, CodeToolsStrConsts,
+  LinkScanner, KeywordFuncLists, SourceChanger, CodeAtom, CodeToolsStrConsts, FileProcs,
   // Converter
   ConverterTypes, ConvCodeTool, ConvertSettings, ReplaceNamesUnit;
 
@@ -72,6 +72,7 @@ type
     function ParentBlockNode: TCodeTreeNode; virtual; abstract;
     // Uses node in either Main or Implementation section.
     function UsesSectionNode: TCodeTreeNode; virtual; abstract;
+    procedure ParseToUsesSectionEnd; virtual; abstract;
   public
     constructor Create(ACTLink: TCodeToolLink; aOwnerTool: TUsedUnitsTool);
     destructor Destroy; override;
@@ -91,6 +92,7 @@ type
   protected
     function ParentBlockNode: TCodeTreeNode; override;
     function UsesSectionNode: TCodeTreeNode; override;
+    procedure ParseToUsesSectionEnd; override;
   public
     constructor Create(ACTLink: TCodeToolLink; aOwnerTool: TUsedUnitsTool);
     destructor Destroy; override;
@@ -103,6 +105,7 @@ type
   protected
     function ParentBlockNode: TCodeTreeNode; override;
     function UsesSectionNode: TCodeTreeNode; override;
+    procedure ParseToUsesSectionEnd; override;
   public
     constructor Create(ACTLink: TCodeToolLink; aOwnerTool: TUsedUnitsTool);
     destructor Destroy; override;
@@ -357,10 +360,7 @@ var
     Result:=True;
     with fCTLink do begin
       ResetMainScanner;
-      if fUsesSection=usMain then
-        CodeTool.BuildTree(lsrMainUsesSectionEnd)
-      else
-        CodeTool.BuildTree(lsrImplementationUsesSectionEnd);
+      ParseToUsesSectionEnd;
       // Calls either FindMainUsesSection or FindImplementationUsesSection
       UsesNode:=UsesSectionNode;
       Assert(Assigned(UsesNode),
@@ -397,10 +397,7 @@ begin
     // Add LCL and Delphi sections for output.
     if (LclOnlyUnits.Count=0) and (DelphiOnlyUnits.Count=0) then Exit(True);
     fCTLink.ResetMainScanner;
-    if fUsesSection=usMain then
-      fCTLink.CodeTool.BuildTree(lsrMainUsesSectionEnd)
-    else
-      fCTLink.CodeTool.BuildTree(lsrImplementationUsesSectionEnd);
+    ParseToUsesSectionEnd;
     UsesNode:=UsesSectionNode;
     if Assigned(UsesNode) then begin      //uses section exists
       EndChar:=',';
@@ -478,11 +475,9 @@ var
 begin
   Result:=false;
   for i:=0 to fUnitsToRemove.Count-1 do begin
-    fCTLink.ResetMainScanner;
-    if fUsesSection=usMain then
-      fCTLink.CodeTool.BuildTree(lsrMainUsesSectionEnd)
-    else
-      fCTLink.CodeTool.BuildTree(lsrImplementationUsesSectionEnd);
+    DebugLn('TUsedUnits.RemoveUnits: '+fUnitsToRemove[i]);
+    //fCTLink.ResetMainScanner;
+    ParseToUsesSectionEnd;
     if not fCTLink.CodeTool.RemoveUnitFromUsesSection(UsesSectionNode,
                          UpperCaseStr(fUnitsToRemove[i]), fCTLink.SrcCache) then
       exit;
@@ -519,6 +514,11 @@ begin
   Result:=fCTLink.CodeTool.FindMainUsesSection(IsPackage);
 end;
 
+procedure TMainUsedUnits.ParseToUsesSectionEnd;
+begin
+  fCTLink.CodeTool.BuildTree(lsrMainUsesSectionEnd)
+end;
+
 { TImplUsedUnits }
 
 constructor TImplUsedUnits.Create(ACTLink: TCodeToolLink; aOwnerTool: TUsedUnitsTool);
@@ -540,6 +540,11 @@ end;
 function TImplUsedUnits.UsesSectionNode: TCodeTreeNode;
 begin
   Result:=fCTLink.CodeTool.FindImplementationUsesSection;
+end;
+
+procedure TImplUsedUnits.ParseToUsesSectionEnd;
+begin
+  fCTLink.CodeTool.BuildTree(lsrImplementationUsesSectionEnd);
 end;
 
 { TUsedUnitsTool }
