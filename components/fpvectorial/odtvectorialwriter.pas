@@ -39,6 +39,9 @@ Example of content.xml structure:
 </office:body>
 </office:document-content>
 
+Validator for ODF 1.0
+http://opendocumentfellowship.com/validator
+
 AUTHORS: Felipe Monteiro de Carvalho
 }
 unit odtvectorialwriter;
@@ -199,7 +202,7 @@ procedure TvODTVectorialWriter.WriteMetaInfManifest;
 begin
   FMetaInfManifest :=
    XML_HEADER + LineEnding +
-   '<manifest:manifest xmlns:manifest="' + SCHEMAS_XMLNS_MANIFEST + '" manifest:version="1.2" >' + LineEnding +
+   '<manifest:manifest xmlns:manifest="' + SCHEMAS_XMLNS_MANIFEST + '"  >' + LineEnding + // manifest:version="1.2"
    '  <manifest:file-entry manifest:full-path="/" manifest:media-type="application/vnd.oasis.opendocument.text" />' + LineEnding + // manifest:version="1.2"
    '  <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="content.xml" />' + LineEnding +
    '  <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="styles.xml" />' + LineEnding +
@@ -421,7 +424,7 @@ begin
    '  <style:font-face style:name="Mangal" svg:font-family="Mangal" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
    '  <style:font-face style:name="Microsoft YaHei" svg:font-family="''Microsoft YaHei''" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
    '  <style:font-face style:name="SimSun" svg:font-family="SimSun" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
-   '</office:font-face-decls>';
+   '</office:font-face-decls>' + LineEnding;
 
   // ----------------------------
   // Styles
@@ -811,18 +814,13 @@ var
   i: Integer;
   lCurEntity: TvEntity;
 begin
-  FContent := FContent +
+{  FContent := FContent +
    '    <text:sequence-decls>' + LineEnding;
-  FContent := FContent +
-   '      <text:sequence-decl text:display-outline-level="0" text:name="Illustration" />' + LineEnding;
-  FContent := FContent +
-   '      <text:sequence-decl text:display-outline-level="0" text:name="Table" />' + LineEnding;
-  FContent := FContent +
-   '      <text:sequence-decl text:display-outline-level="0" text:name="Text" />' + LineEnding;
-  FContent := FContent +
-   '      <text:sequence-decl text:display-outline-level="0" text:name="Drawing" />' + LineEnding;
-  FContent := FContent +
-   '    </text:sequence-decls>' + LineEnding;
+   '      <text:sequence-decl text:display-outline-level="0" text:name="Illustration" />' + LineEnding +
+   '      <text:sequence-decl text:display-outline-level="0" text:name="Table" />' + LineEnding +
+   '      <text:sequence-decl text:display-outline-level="0" text:name="Text" />' + LineEnding +
+   '      <text:sequence-decl text:display-outline-level="0" text:name="Drawing" />' + LineEnding +
+   '    </text:sequence-decls>' + LineEnding;}
 
   for i := 0 to ACurPage.GetEntitiesCount()-1 do
   begin
