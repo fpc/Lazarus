@@ -131,6 +131,8 @@ type
     function FindMissingUnits(var MissingUnits: TStrings; FixCase: boolean;
                               SearchImplementation: boolean;
                               SourceChangeCache: TSourceChangeCache): boolean;
+    function CommentUnitsInUsesSection(MissingUnits: TStrings;
+      SourceChangeCache: TSourceChangeCache; UsesNode: TCodeTreeNode): boolean;
     function CommentUnitsInUsesSections(MissingUnits: TStrings;
                                 SourceChangeCache: TSourceChangeCache): boolean;
     function FindUnusedUnits(Units: TStrings): boolean;
@@ -1542,102 +1544,101 @@ begin
     Result:=true;
 end;
 
-function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
-  SourceChangeCache: TSourceChangeCache): boolean;
-  
+function TStandardCodeTool.CommentUnitsInUsesSection(MissingUnits: TStrings;
+  SourceChangeCache: TSourceChangeCache; UsesNode: TCodeTreeNode): boolean;
+// Examples:
+// 1. uses {a,} b, c;    commenting one unit not at end
+// 2. uses a, {b,} c;    commenting one unit not at end
+// 3. uses {a, b,} c;    commenting several units not at end
+// 4. uses a{, b, c} ;   commenting units at end
+// 5. {uses a, b, c;}    commenting all units
+// 6. uses {a,} b{, c};  commenting several units
+
   procedure Comment(StartPos, EndPos: integer);
   begin
     //debugln(['Comment ',dbgstr(copy(Src,StartPos,EndPos-StartPos))]);
     CommentCode(StartPos,EndPos,SourceChangeCache,false);
   end;
 
-  function CommentUnitsInUsesSection(UsesNode: TCodeTreeNode): boolean;
-  // Examples:
-  // 1. uses {a,} b, c;    commenting one unit not at end
-  // 2. uses a, {b,} c;    commenting one unit not at end
-  // 3. uses {a, b,} c;    commenting several units not at end
-  // 4. uses a{, b, c} ;   commenting units at end
-  // 5. {uses a, b, c;}    commenting all units
-  // 6. uses {a,} b{, c};  commenting several units
-  var
-    i: Integer;
-    CurUnitName: String;
-    CommentCurUnit: Boolean;
-    FirstCommentUnitStart: Integer;
-    LastCommaAfterCommentUnitsStart: Integer;
-    LastNormalUnitEnd: Integer;
-    LastCommentUnitEnd: Integer;
-    Node: TCodeTreeNode;
-  begin
-    Result:=true;
-    if UsesNode=nil then exit;
-    FirstCommentUnitStart:=-1;
-    LastCommaAfterCommentUnitsStart:=-1;
-    LastNormalUnitEnd:=-1;
-    LastCommentUnitEnd:=-1;
-    Node:=UsesNode.FirstChild;
-    while Node<>nil do begin
-      // check if unit should be commented
-      CurUnitName:=ExtractUsedUnitName(Node);
-      // Note: CurPos is now on atom behind used unit, i.e. comma or semicolon
-      i:=MissingUnits.Count-1;
-      while (i>=0)
-      and (CompareIdentifiers(PChar(Pointer(MissingUnits[i])),
-                              PChar(Pointer(CurUnitName)))<>0) do
-        dec(i);
-      CommentCurUnit:=i>=0;
-      //debugln('CommentUnitsInUsesSection CurUnitName="',CurUnitName,'" CommentCurUnit=',dbgs(CommentCurUnit));
-      
-      if CommentCurUnit then begin
-        // unit should be commented
-        if FirstCommentUnitStart<1 then FirstCommentUnitStart:=Node.StartPos;
-        LastCommentUnitEnd:=Node.EndPos;
-      end else begin
-        // unit should be kept
-        LastNormalUnitEnd:=Node.EndPos;
-        if FirstCommentUnitStart>=1 then begin
-          // there are some units to be commented
-          // See examples: 1., 2., 3. and 6.
-          Comment(FirstCommentUnitStart,LastCommaAfterCommentUnitsStart);
-          FirstCommentUnitStart:=-1;
-          LastCommentUnitEnd:=-1;
-          LastCommaAfterCommentUnitsStart:=-1;
-        end;
-      end;
-      
-      if CommentCurUnit then
-        LastCommaAfterCommentUnitsStart:=CurPos.EndPos;
-        
-      if CurPos.Flag<>cafComma then begin
-        if CommentCurUnit then begin
-          // last unit must be commented
-          if LastNormalUnitEnd>=1 then begin
-            // comment last unit and keep some units in front
-            // See example: 4.
-            Comment(LastNormalUnitEnd,LastCommentUnitEnd);
-          end else begin
-            // all units should be commented
-            // See example: 5.
-            Comment(UsesNode.StartPos,CurPos.EndPos);
-          end;
-        end;
-        break;
-      end;
-      
-      Node:=Node.NextBrother;
-    end;
-  end;
-  
+var
+  i: Integer;
+  CurUnitName: String;
+  CommentCurUnit: Boolean;
+  FirstCommentUnitStart: Integer;
+  LastCommaAfterCommentUnitsStart: Integer;
+  LastNormalUnitEnd: Integer;
+  LastCommentUnitEnd: Integer;
+  Node: TCodeTreeNode;
 begin
-  Result:=false;
-  if (MissingUnits=nil) or (MissingUnits.Count=0) then begin
-    Result:=true;
-    exit;
+  Result:=true;
+  if UsesNode=nil then exit;
+  FirstCommentUnitStart:=-1;
+  LastCommaAfterCommentUnitsStart:=-1;
+  LastNormalUnitEnd:=-1;
+  LastCommentUnitEnd:=-1;
+  Node:=UsesNode.FirstChild;
+  while Node<>nil do begin
+    // check if unit should be commented
+    CurUnitName:=ExtractUsedUnitName(Node);
+    // Note: CurPos is now on atom behind used unit, i.e. comma or semicolon
+    i:=MissingUnits.Count-1;
+    while (i>=0)
+    and (CompareIdentifiers(PChar(Pointer(MissingUnits[i])),
+                            PChar(Pointer(CurUnitName)))<>0) do
+      dec(i);
+    CommentCurUnit:=i>=0;
+    //debugln('CommentUnitsInUsesSection CurUnitName="',CurUnitName,'" CommentCurUnit=',dbgs(CommentCurUnit));
+
+    if CommentCurUnit then begin
+      // unit should be commented
+      if FirstCommentUnitStart<1 then FirstCommentUnitStart:=Node.StartPos;
+      LastCommentUnitEnd:=Node.EndPos;
+    end else begin
+      // unit should be kept
+      LastNormalUnitEnd:=Node.EndPos;
+      if FirstCommentUnitStart>=1 then begin
+        // there are some units to be commented
+        // See examples: 1., 2., 3. and 6.
+        Comment(FirstCommentUnitStart,LastCommaAfterCommentUnitsStart);
+        FirstCommentUnitStart:=-1;
+        LastCommentUnitEnd:=-1;
+        LastCommaAfterCommentUnitsStart:=-1;
+      end;
+    end;
+
+    if CommentCurUnit then
+      LastCommaAfterCommentUnitsStart:=CurPos.EndPos;
+
+    if CurPos.Flag<>cafComma then begin
+      if CommentCurUnit then begin
+        // last unit must be commented
+        if LastNormalUnitEnd>=1 then begin
+          // comment last unit and keep some units in front
+          // See example: 4.
+          Comment(LastNormalUnitEnd,LastCommentUnitEnd);
+        end else begin
+          // all units should be commented
+          // See example: 5.
+          Comment(UsesNode.StartPos,CurPos.EndPos);
+        end;
+      end;
+      break;
+    end;
+
+    Node:=Node.NextBrother;
   end;
+end;
+
+function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
+  SourceChangeCache: TSourceChangeCache): boolean;
+begin
+  if (MissingUnits=nil) or (MissingUnits.Count=0) then
+    exit(true);
+  Result:=false;
   BuildTree(lsrInitializationStart);
   SourceChangeCache.MainScanner:=Scanner;
-  if not CommentUnitsInUsesSection(FindMainUsesSection) then exit;
-  if not CommentUnitsInUsesSection(FindImplementationUsesSection) then exit;
+  if not CommentUnitsInUsesSection(MissingUnits, SourceChangeCache, FindMainUsesSection) then exit;
+  if not CommentUnitsInUsesSection(MissingUnits, SourceChangeCache, FindImplementationUsesSection) then exit;
   if not SourceChangeCache.Apply then exit;
   Result:=true;
 end;

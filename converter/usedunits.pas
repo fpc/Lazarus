@@ -680,10 +680,17 @@ begin
       if not fImplUsedUnits.AddDelphiAndLCLSections then exit;
     end
     else begin // Lazarus only multi- or single-platform -> comment out units if needed.
-      if not CodeTool.CommentUnitsInUsesSections(fMainUsedUnits.fUnitsToComment,
-                                                 SrcCache) then exit;
-      if not CodeTool.CommentUnitsInUsesSections(fImplUsedUnits.fUnitsToComment,
-                                                 SrcCache) then exit;
+      if fMainUsedUnits.fUnitsToComment.Count+fImplUsedUnits.fUnitsToComment.Count > 0 then
+      begin
+        CodeTool.BuildTree(lsrInitializationStart);
+        if fMainUsedUnits.fUnitsToComment.Count > 0 then
+          if not CodeTool.CommentUnitsInUsesSection(fMainUsedUnits.fUnitsToComment,
+            SrcCache, CodeTool.FindMainUsesSection) then exit;
+        if fImplUsedUnits.fUnitsToComment.Count > 0 then
+          if not CodeTool.CommentUnitsInUsesSection(fImplUsedUnits.fUnitsToComment,
+            SrcCache, CodeTool.FindImplementationUsesSection) then exit;
+        if not SrcCache.Apply then exit;
+      end;
       // Add more units meant for only LCL.
       with fMainUsedUnits do begin
         for i:=0 to fUnitsToAddForLCL.Count-1 do
