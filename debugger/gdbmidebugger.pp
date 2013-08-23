@@ -6056,10 +6056,15 @@ var
 // TODO: move to queue
             // must use none gdbmi commands
             FContext.ThreadContext := ccUseGlobal;
-            if (not ExecuteCommand('frame %d', [i], R, [cfNoStackContext])) or (R.State = dsError)
-            then i := -3; // error to user
-            if (i < 0) or (not ExecuteCommand('break', [i], R, [cfNoStackContext])) or (R.State = dsError)
-            then i := -3; // error to user
+            FTheDebugger.QueueExecuteLock; // force queue
+            try
+              if (not ExecuteCommand('frame %d', [i], R, [cfNoStackContext])) or (R.State = dsError)
+              then i := -3; // error to user
+              if (i < 0) or (not ExecuteCommand('break', [i], R, [cfNoStackContext])) or (R.State = dsError)
+              then i := -3; // error to user
+            finally
+              FTheDebugger.QueueExecuteUnlock;
+            end;
 
             FStepBreakPoint := StrToIntDef(GetPart(['Breakpoint '], [' at '], R.Values), -1);
             if FStepBreakPoint < 0
