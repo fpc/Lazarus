@@ -6842,7 +6842,6 @@ begin
     AddInfo(Cmd.Source, Cmd.Result);
 
   idx := FRequestedSources.IndexOf(Cmd.Source);
-debugln(['TGDBMILineInfo.DoGetLineSymbolsFinished REMOVE ', idx]);
   if idx >= 0
   then FRequestedSources.Delete(idx);
 
@@ -6854,7 +6853,6 @@ procedure TGDBMILineInfo.Request(const ASource: String);
 var
   idx: Integer;
 begin
-debugln(['TGDBMILineInfo.Request Add ', FRequestedSources.IndexOf(ASource), ' ', ASource]);
   if (ASource = '') or (Debugger = nil) or (FRequestedSources.IndexOf(ASource) >= 0)
   then Exit;
 
@@ -6862,9 +6860,7 @@ debugln(['TGDBMILineInfo.Request Add ', FRequestedSources.IndexOf(ASource), ' ',
   if (idx <> -1) and (FSourceMaps[idx].Map <> nil) then Exit; // already present
 
   // add empty entry, to prevent further requests
-debugln(['TGDBMILineInfo.Request Add now']);
   FRequestedSources.Add(ASource);
-debugln(['TGDBMILineInfo.Request Added']);
 
   // Need to interupt debugger
   if Debugger.State = dsRun
