@@ -33,7 +33,7 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics,
-  Dialogs, Buttons, StdCtrls, FileUtil, CheckLst, Menus,
+  Dialogs, Buttons, StdCtrls, FileUtil, CheckLst, Menus, ExtCtrls,
   // Components
   SynEdit, CodeAtom, CodeCache, CodeToolManager, DefineTemplates,
   // IDEIntf
@@ -47,21 +47,24 @@ type
   { TMissingUnitsDialog }
 
   TMissingUnitsDialog = class(TForm)
+    AbortButton: TBitBtn;
+    ChoicesLabel: TLabel;
+    CommentButton: TBitBtn;
+    ButtonPanel: TPanel;
+    Info1Label: TLabel;
+    Info2Label: TLabel;
+    Info3Label: TLabel;
+    MissingUnitsCheckListBox: TCheckListBox;
+    MissingUnitsGroupBox: TGroupBox;
+    InfoPanel: TPanel;
+    SearchButton: TBitBtn;
     SkipButton: TBitBtn;
+    Splitter1: TSplitter;
     UnselectMenuItem: TMenuItem;
     SelectMenuItem: TMenuItem;
     SaveDialog1: TSaveDialog;
     SaveMenuItem: TMenuItem;
-    MissingUnitsCheckListBox: TCheckListBox;
-    CommentButton: TBitBtn;
-    ChoicesLabel: TLabel;
-    Info1Label: TLabel;
-    Info2Label: TLabel;
-    Info3Label: TLabel;
     PopupMenu1: TPopupMenu;
-    SearchButton: TBitBtn;
-    AbortButton: TBitBtn;
-    MissingUnitsInfoLabel: TLabel;
     procedure SaveMenuItemClick(Sender: TObject);
     procedure SelectMenuItemClick(Sender: TObject);
     procedure UnselectMenuItemClick(Sender: TObject);
@@ -126,10 +129,13 @@ begin
   UNFDialog:=TMissingUnitsDialog.Create(nil);
   with UNFDialog do begin
     Caption:=UnitsTitle;
-    SearchButton.Caption:=lisMissingUnitsSearch;
-    SkipButton.Caption:=lisMissingUnitsSkip;
-    MissingUnitsInfoLabel.Caption:=lisTheseUnitsWereNotFound;
+    MissingUnitsGroupBox.Caption:=lisTheseUnitsWereNotFound;
     ChoicesLabel.Caption:=lisMissingUnitsChoices;
+    SearchButton.Caption:=lisMissingUnitsSearch;
+    SearchButton.LoadGlyphFromLazarusResource('menu_search_find');
+    SkipButton.Caption:=lisMissingUnitsSkip;
+    SkipButton.LoadGlyphFromLazarusResource('debugger_current_line_breakpoint');
+    CommentButton.LoadGlyphFromLazarusResource('menu_comment'); // or insertremark
     if ATargetDelphi then begin
       CommentButton.Caption:=lisMissingUnitsForDelphi;
       Info1Label.Caption:=lisMissingUnitsInfo1b;
@@ -143,13 +149,15 @@ begin
     // Add missing units to CheckListBox.
     AddUnitsToListBox(AMainMissingUnits);
     AddUnitsToListBox(AImplMissingUnits);
-    // Show dialog and delete the entries that user has unchecked.
+    // Show dialog and remove the entries that user has unchecked.
     // Missing units will be searched again later.
     Result:=ShowModal;
-    if Result=mrOK then begin
+    if Result in [mrOK, mrIgnore] then begin   // mrIgnore means "skip"
       for i:=0 to MissingUnitsCheckListBox.Count-1 do begin
-        if not MissingUnitsCheckListBox.Checked[i] then begin
+        // Remove all when Skip was clicked.
+        if (Result=mrIgnore) or not MissingUnitsCheckListBox.Checked[i] then begin
           s:=MissingUnitsCheckListBox.Items[i];
+          // Remove either from main or implementation sections list.
           if not RemoveFromMissing(s, AMainMissingUnits) then begin
             ImplRemoved:=RemoveFromMissing(s, AImplMissingUnits);
             Assert(ImplRemoved, 'Error with Missing Units in AskMissingUnits.');

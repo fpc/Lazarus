@@ -726,7 +726,7 @@ begin
     Result:=AskMissingUnits(MainUsedUnits.MissingUnits, ImplUsedUnits.MissingUnits,
         ExtractFileName(fLazUnitFilename), fOwnerConverter.fSettings.SupportDelphi);
     case Result of
-      // mrOK means: comment out.
+      // mrOK means: Comment out.
       mrOK: begin
         if fOwnerConverter is TConvertDelphiProjPack then
           MoveMissingToComment(fOwnerConverter.fAllCommentedUnits)
@@ -756,14 +756,13 @@ begin
         end;
         Result:=mrOK;        // Caller will check for Result<>mrOK
       end;
-      // Skip this unit.
-      mrIgnore: Exit;
+      // mrIgnore means: Skip this unit. The missing units list is already cleared.
+      mrIgnore:
+        Result:=mrOK;
       // Abort the whole conversion.
-      mrAbort: begin
+      mrAbort:
         fOwnerConverter.fErrorMsg:='User selected to end conversion with file '
                                   +fOrigUnitFilename;
-        Exit;
-      end;
     end;
   until not TryAgain;
 end;
