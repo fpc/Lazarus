@@ -18,13 +18,13 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     Align = alClient
     Anchors = [akTop, akLeft, akRight]
     Caption = 'grpConditionals'
-    ClientHeight = 149
+    ClientHeight = 147
     ClientWidth = 476
     TabOrder = 0
     inline CondSynEdit: TSynEdit
       AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 130
+      Height = 127
       Top = 0
       Width = 476
       Align = alClient
@@ -663,8 +663,8 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     end
     object CondStatusbar: TStatusBar
       Left = 0
-      Height = 19
-      Top = 130
+      Height = 20
+      Top = 127
       Width = 476
       Panels = <      
         item
@@ -696,7 +696,7 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     Width = 480
     Align = alBottom
     Caption = 'grpCustomOptions'
-    ClientHeight = 185
+    ClientHeight = 183
     ClientWidth = 476
     TabOrder = 2
     object memoCustomOptions: TMemo
@@ -705,54 +705,22 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       AnchorSideBottom.Control = grpCustomOptions
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 181
+      Height = 179
       Top = 4
-      Width = 388
+      Width = 375
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Right = 6
       ScrollBars = ssAutoBoth
       TabOrder = 0
       WordWrap = False
     end
-    object Label1: TLabel
-      AnchorSideTop.Control = btnAllOptions
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = grpCustomOptions
-      AnchorSideRight.Side = asrBottom
-      Left = 421
-      Height = 15
-      Top = 32
-      Width = 34
-      Anchors = [akTop, akRight]
-      BorderSpacing.Top = 1
-      BorderSpacing.Right = 21
-      Caption = 'Under'
-      Font.Color = clMaroon
-      ParentColor = False
-      ParentFont = False
-    end
-    object Label2: TLabel
-      AnchorSideTop.Control = Label1
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = grpCustomOptions
-      AnchorSideRight.Side = asrBottom
-      Left = 397
-      Height = 15
-      Top = 47
-      Width = 79
-      Anchors = [akTop, akRight]
-      Caption = 'construction...'
-      Font.Color = clMaroon
-      ParentColor = False
-      ParentFont = False
-    end
     object btnAllOptions: TBitBtn
       AnchorSideRight.Control = grpCustomOptions
       AnchorSideRight.Side = asrBottom
-      Left = 394
-      Height = 27
+      Left = 381
+      Height = 26
       Top = 4
-      Width = 82
+      Width = 95
       Anchors = [akTop, akRight]
       AutoSize = True
       Caption = 'All options ...'
@@ -765,13 +733,13 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = btnAllOptions
       AnchorSideRight.Side = asrBottom
-      Left = 394
-      Height = 27
-      Top = 71
-      Width = 82
+      Left = 381
+      Height = 26
+      Top = 36
+      Width = 95
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
-      BorderSpacing.Top = 40
+      BorderSpacing.Top = 6
       Caption = 'Defines ...'
       OnClick = btnDefinesClick
       TabOrder = 2

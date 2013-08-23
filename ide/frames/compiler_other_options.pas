@@ -50,8 +50,6 @@ type
     CondStatusbar: TStatusBar;
     CondSynEdit: TSynEdit;
     CustomSplitter: TSplitter;
-    Label1: TLabel;
-    Label2: TLabel;
     memoCustomOptions: TMemo;
     procedure btnAllOptionsClick(Sender: TObject);
     procedure btnDefinesClick(Sender: TObject);
