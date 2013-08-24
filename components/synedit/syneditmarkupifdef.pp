@@ -895,7 +895,7 @@ end;
 
 function TSynMarkupHighIfDefEntry.UncommentedNodeType: TSynMarkupIfdefNodeType;
 begin
-  Result := NodeType;
+  Result := FNodeType; 
 end;
 
 procedure TSynMarkupHighIfDefEntry.MakeCommented;
@@ -1274,7 +1274,9 @@ end;
 procedure TSynMarkupHighIfDefEntry.ClearAll;
 begin
   ClearPeers;
+  RemoveNodeStateFromLine;
   FNodeFlags := [];
+  ApplyNodeStateToLine;
 end;
 
 { TSynMarkupHighIfDefLinesNode }
@@ -2044,6 +2046,8 @@ var
 
 begin
   // Line nodes vill be invalidated in DoHighlightChanged
+XXXCurTree := self; try
+
   IncChangeStep;
 
   if aLineBrkCnt > 0 then begin
@@ -2248,6 +2252,7 @@ begin
 
   end;
 
+finally XXXCurTree := nil; end;
 end;
 
 procedure TSynMarkupHighIfDefLinesTree.DoHighlightChanged(Sender: TSynEditStrings; AIndex,

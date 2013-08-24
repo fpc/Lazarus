@@ -57,6 +57,7 @@ type
     function TestText8: TStringArray;
     function TestText9: TStringArray;
     function TestText10: TStringArray;
+    function TestText11: TStringArray;
 
     procedure CheckOpenCloseCount(AName: String; ALine: Integer;
       AExpOpenCnt, AExpCloseCnt: Integer);
@@ -672,6 +673,36 @@ begin
   AddLine('{$IFDEF a}'                                            );
   AddLine('//'                                                      );
   AddLine(''                                                      );
+end;
+
+function TTestMarkupIfDef.TestText11: TStringArray;
+  procedure AddLine(s: String);
+  begin
+    SetLength(Result, Length(Result)+1);
+    Result[Length(Result)-1] := s;
+  end;
+begin
+  // 1
+  AddLine('//'                                                    );
+  AddLine('  {$if defined(cpu86)}  ');
+  AddLine('  // a');
+  AddLine('  {$elseif defined(cpupowerpc)}  ');
+  //5
+  AddLine('    // disabled  ');
+  AddLine('  {$elseif defined(cpupowerpc)}  ');
+  AddLine('    // enabled (invalid)  ');
+  AddLine('  {$elseif defined(cpuarm)}  ');
+  AddLine('    // enabled (invalid)  ');
+  // 10
+  AddLine('  {$elseif defined(CPUX86_64)}  ');
+  AddLine('    // enabled (invalid)  ');
+  AddLine('  {$else}  ');
+  AddLine('    // enabled (invalid)  ');
+  AddLine('  {$ifend}  ');
+  //16
+  AddLine(''                                                      );
+  AddLine(''                                                      );
+
 end;
 
 procedure TTestMarkupIfDef.CheckOpenCloseCount(AName: String; ALine: Integer; AExpOpenCnt,
@@ -2169,7 +2200,6 @@ begin
     CheckNodesXY('Insert IFDEF into empty text', 3, [1,11], 0);
   {%endregion  Insert IFDEF into empty text }
 
-
   {%region  }
     n := '';
     ReCreateEditForTreeTest(TestText8);
@@ -2204,6 +2234,56 @@ FTestTree.DebugPrint(true);DebugLn('-----');
 
 
     SynEdit.TextBetweenPoints[point(14,2),point(1, 3)] := '';
+
+  {%endregion   }
+
+
+
+  {%region  }
+
+
+    n := '';
+    ReCreateEditForTreeTest(TestText11);
+    FTestTree.ValidateRange( 1, 16, FOpenings);
+
+    FTestTree.SetNodeState( 2, 3, idnEnabled);
+    FTestTree.SetNodeState( 4, 3, idnDisabled);
+    FTestTree.SetNodeState( 6, 3, idnInvalid);
+    FTestTree.SetNodeState( 8, 3, idnInvalid);
+
+    FTestTree.ValidateRange( 1, 16, FOpenings);
+//FTestTree.DebugPrint(true);DebugLn('-----');
+
+    //SynEdit.TextBetweenPoints[point( 7,3),point( 1,4)] := ''; // JOIN LINES
+    SynEdit.TestTypeText(1, 4, #8, true);
+    
+    
+    FTestTree.ValidateRange( 1, 16, FOpenings);
+    FTestTree.SetNodeState( 2, 3, idnEnabled);
+    //FTestTree.SetNodeState( 4, 3, idnDisabled);
+    FTestTree.SetNodeState( 5, 3, idnInvalid);
+    FTestTree.SetNodeState( 7, 3, idnInvalid);
+    FTestTree.ValidateRange( 1, 16, FOpenings);
+
+    SynEdit.Undo; // RESTORE LINEBREAK
+    SynEdit.SimulatePaintText;
+DebugLn('----- undone');FTestTree.DebugPrint(true);DebugLn('-----');
+
+    FTestTree.ValidateRange( 1, 16, FOpenings);
+DebugLn('----- valid');FTestTree.DebugPrint(true);DebugLn('-----');
+    FTestTree.SetNodeState( 2, 3, idnEnabled);
+FTestTree.DebugPrint(true);DebugLn('-----');
+    FTestTree.SetNodeState( 4, 3, idnDisabled);
+DebugLn('----- disabled');FTestTree.DebugPrint(true);DebugLn('-----');
+    FTestTree.SetNodeState( 6, 3, idnInvalid);
+    FTestTree.SetNodeState( 8, 3, idnInvalid);
+    FTestTree.ValidateRange( 1, 16, FOpenings);
+
+//FTestTree.DebugPrint(true);DebugLn('-----');
+    SynEdit.TextBetweenPoints[point( 1,4),point( 1,5)] := '';
+    FTestTree.ValidateRange( 1, 16, FOpenings);
+
+
 
   {%endregion   }
 
