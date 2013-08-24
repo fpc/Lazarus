@@ -584,7 +584,7 @@ type
     snIncrementalFind,
     snWarnedFont,
     snUpdateStatusBarNeeded,
-    snNotbookPageChangedNeeded
+    snNotebookPageChangedNeeded
     );
   TSourceNotebookStates = set of TSourceNotebookState;
 
@@ -668,7 +668,7 @@ type
     function GetNotebookPages: TStrings;
     function GetPageCount: Integer;
     function GetPageIndex: Integer;
-    procedure SetPageIndex(const AValue: Integer);
+    procedure SetPageIndex(AValue: Integer);
 
     procedure UpdateHighlightMenuItems;
     procedure UpdateLineEndingMenuItems;
@@ -6394,26 +6394,31 @@ begin
     Result := -1
 end;
 
-procedure TSourceNotebook.SetPageIndex(const AValue: Integer);
+procedure TSourceNotebook.SetPageIndex(AValue: Integer);
 begin
   DebugLnEnter(SRCED_PAGES, ['>> TSourceNotebook.SetPageIndex Cur-PgIdx=', PageIndex, ' FPageIndex=', FPageIndex, ' Value=', AValue, ' FUpdateLock=', FUpdateLock]);
-  if PageIndex = AValue then begin
+  AValue := Max(0, Min(AValue, FNotebook.PageCount-1));
+  if (fPageIndex = AValue) and (FNotebook.PageIndex = AValue) then begin
     //debugln(['>> TSourceNotebook.SetPageIndex PageIndex=', PageIndex, ' FPageIndex=', FPageIndex, ' Value=', AValue, ' FUpdateLock=', FUpdateLock]);
+    //DumpStack;
     exit;
   end;
   FPageIndex := AValue;
   if FUpdateLock = 0 then begin
     DebugBoss.LockCommandProcessing;
     try
-      FPageIndex := Max(0, Min(FPageIndex, FNotebook.PageCount-1));
+      FPageIndex := AValue;
       if Assigned(Manager) and (FNotebook.PageIndex = FPageIndex) then
         DoActiveEditorChanged;
       // make sure the statusbar is updated
-      Include(States, snNotbookPageChangedNeeded);
-      FNotebook.PageIndex := FPageIndex;
-      if snNotbookPageChangedNeeded in States then
-        NotebookPageChanged(nil);
-      HistorySetMostRecent(FNotebook.Pages[FPageIndex]);
+      if FNotebook.PageIndex <> FPageIndex then
+      begin
+        Include(States, snNotebookPageChangedNeeded);
+        FNotebook.PageIndex := FPageIndex;
+        if snNotebookPageChangedNeeded in States then
+          NotebookPageChanged(nil);
+        HistorySetMostRecent(FNotebook.Pages[FPageIndex]);
+      end;
     finally
       DebugBoss.UnLockCommandProcessing;
     end;
@@ -8010,14 +8015,14 @@ var
   TopLine: Integer;
 Begin
   if (not assigned(Manager)) or (FUpdateLock > 0) Then begin
-    Include(States, snNotbookPageChangedNeeded);
+    Include(States, snNotebookPageChangedNeeded);
     exit;
   end;
   DebugLnEnter(SRCED_PAGES, ['>> TSourceNotebook.NotebookPageChanged PageIndex=', PageIndex, ' AutoFocusLock=', fAutoFocusLock]);
 
   DebugBoss.LockCommandProcessing;
   try
-    Exclude(States, snNotbookPageChangedNeeded);
+    Exclude(States, snNotebookPageChangedNeeded);
     SrcEdit:=GetActiveSE;
     if (FHintWindow <> nil) and FHintWindow.Visible then
       HideHint;
