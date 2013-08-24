@@ -45,7 +45,7 @@ uses
   OutputFilter,
   {$ENDIF}
   UTF8Process, InfoBuild, IDEMsgIntf, CompOptsIntf, IDEExternToolIntf,
-  DefineTemplates, TransferMacros, LazFileUtils;
+  DefineTemplates, TransferMacros, EnvironmentOpts, LazFileUtils;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean) of object;
@@ -194,7 +194,24 @@ type
     property SupportedCategories: TStringList read fSupportedCategories;
     property RootOptGroup: TCompilerOptGroup read fRootOptGroup;
     property CompilerExecutable: string read fCompilerExecutable write fCompilerExecutable;
-    property ErrorMsg: String read fErrorMsg;
+    property ErrorMsg: String read fErrorMsg write fErrorMsg;
+  end;
+
+  { TCompilerOptThread }
+
+  TCompilerOptThread = class(TThread)
+  private
+    fReader: TCompilerOptReader;
+    fReadTime: TDateTime;
+    function GetErrorMsg: string;
+  protected
+    procedure Execute; override;
+  public
+    constructor Create(aReader: TCompilerOptReader);
+    destructor Destroy; override;
+  public
+    property ReadTime: TDateTime read fReadTime;
+    property ErrorMsg: string read GetErrorMsg;
   end;
 
 
@@ -1000,6 +1017,7 @@ var
   ParsedTarget: String;
 begin
   OptionIdCounter := 0;
+  fErrorMsg := '';
   if fCompilerExecutable = '' then
     fCompilerExecutable := 'fpc';        // Let's hope "fpc" is found in PATH.
   ParsedTarget := '-T$(TargetOS) -P$(TargetCPU)';
@@ -1073,7 +1091,6 @@ begin
     begin
       s := Trim(aStrings[i]);
       if s = '' then Continue;
-
       sl.Clear;
       SplitCmdLineParams(s, sl);
       for j := 0 to sl.Count-1 do
@@ -1153,6 +1170,41 @@ begin
   CopyOptions(fRootOptGroup);
   aStrings.AddStrings(fDefines);
 end;
+
+{ TCompilerOptThread }
+
+constructor TCompilerOptThread.Create(aReader: TCompilerOptReader);
+begin
+  inherited Create(True);
+  //FreeOnTerminate:=True;
+  fReader:=aReader;
+end;
+
+destructor TCompilerOptThread.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TCompilerOptThread.GetErrorMsg: string;
+begin
+  Result := fReader.ErrorMsg;
+end;
+
+procedure TCompilerOptThread.Execute;
+var
+  StartTime: TDateTime;
+begin
+  StartTime := Now;
+  try
+    fReader.CompilerExecutable := EnvironmentOptions.GetParsedCompilerFilename;
+    fReader.ReadAndParseOptions;
+  except
+    on E: Exception do
+      fReader.ErrorMsg := 'Error parsing options: '+E.Message;
+  end;
+  fReadTime := Now-StartTime;
+end;
+
 
 end.
 

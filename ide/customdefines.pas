@@ -50,13 +50,22 @@ type
     procedure RemoveBtnClick(Sender: TObject);
     procedure DefinesCheckListKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
+    FIdleConnected: Boolean;
     FOptionsReader: TCompilerOptReader;
+    FOptionsThread: TCompilerOptThread;
+    FCustomOptions: TStrings;
+    procedure SetIdleConnected(AValue: Boolean);
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure DeleteSelected;
     procedure UpdateButtons;
+  private
+    property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
   public
-    function FromCustomOptions(aStrings: TStrings): TModalResult;
     function ToCustomOptions(aStrings: TStrings): TModalResult;
+  public
     property OptionsReader: TCompilerOptReader read FOptionsReader write FOptionsReader;
+    property OptionsThread: TCompilerOptThread read FOptionsThread write FOptionsThread;
+    property CustomOptions: TStrings read FCustomOptions write FCustomOptions;
   end;
 
 
@@ -80,6 +89,7 @@ procedure TCustomDefinesForm.FormShow(Sender: TObject);
 begin
   DefinesCheckListClick(Nil);
   ActiveControl := DefinesCheckList;
+  IdleConnected := True;
 end;
 
 procedure TCustomDefinesForm.FormDestroy(Sender: TObject);
@@ -106,10 +116,9 @@ end;
 
 procedure TCustomDefinesForm.DefinesCheckListClick(Sender: TObject);
 begin
-  with DefinesCheckList do begin
+  with DefinesCheckList do
     if ItemIndex > -1 then
       edDefine.Text := Items[ItemIndex];
-  end;
   UpdateButtons;
 end;
 
@@ -125,9 +134,48 @@ end;
 
 procedure TCustomDefinesForm.DefinesCheckListKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  if Key = VK_DELETE then begin
+  if Key = VK_DELETE then
+  begin
     DeleteSelected;
     Key := 0;
+  end;
+end;
+
+procedure TCustomDefinesForm.SetIdleConnected(AValue: Boolean);
+begin
+  if FIdleConnected = AValue then exit;
+  FIdleConnected := AValue;
+  if FIdleConnected then
+    Application.AddOnIdleHandler(@OnIdle)
+  else
+    Application.RemoveOnIdleHandler(@OnIdle);
+end;
+
+procedure TCustomDefinesForm.OnIdle(Sender: TObject; var Done: Boolean);
+var
+  s: String;
+  i, ListInd: Integer;
+begin
+  IdleConnected := False;
+  Screen.Cursor := crHourGlass;
+  try
+    FOptionsThread.WaitFor;            // Make sure the options are read.
+    // Parse and separate defines from other options.
+    FOptionsReader.FromCustomOptions(FCustomOptions);
+    // Check the found defines in the GUI.
+    for i := 0 to FOptionsReader.Defines.Count-1 do
+    begin
+      s := Copy(FOptionsReader.Defines[i], 3, MaxInt); // Skip '-d'.
+      ListInd := DefinesCheckList.Items.IndexOf(s);
+      if ListInd = -1 then
+      begin
+        DefinesCheckList.Items.Add(s);
+        ListInd := DefinesCheckList.Items.Count-1;
+      end;
+      DefinesCheckList.Checked[ListInd] := True;
+    end;
+  finally
+    Screen.Cursor := crDefault;
   end;
 end;
 
@@ -137,7 +185,8 @@ var
 begin
   with DefinesCheckList.Items do
     for i := Count-1 downto 0 do
-      if DefinesCheckList.Selected[i] then begin
+      if DefinesCheckList.Selected[i] then
+      begin
         Delete(i);
         UpdateButtons;
       end;
@@ -148,28 +197,6 @@ begin
   AddBtn.Enabled := (edDefine.Text <> '')
                 and (DefinesCheckList.Items.IndexOf(edDefine.Text) = -1);
   RemoveBtn.Enabled := DefinesCheckList.SelCount > 0;
-end;
-
-function TCustomDefinesForm.FromCustomOptions(aStrings: TStrings): TModalResult;
-var
-  s: String;
-  i, ListInd: Integer;
-begin
-  // Parse and separate defines from other options.
-  FOptionsReader.FromCustomOptions(aStrings);
-  // Check the found defines in the GUI.
-  for i := 0 to FOptionsReader.Defines.Count-1 do
-  begin
-    s := Copy(FOptionsReader.Defines[i], 3, MaxInt); // Skip '-d'.
-    ListInd := DefinesCheckList.Items.IndexOf(s);
-    if ListInd = -1 then
-    begin
-      DefinesCheckList.Items.Add(s);
-      ListInd := DefinesCheckList.Items.Count-1;
-    end;
-    DefinesCheckList.Checked[ListInd] := True;
-  end;
-  Result:=mrOK;
 end;
 
 function TCustomDefinesForm.ToCustomOptions(aStrings: TStrings): TModalResult;

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, Buttons, ButtonPanel, EditBtn,
-  Dialogs, contnrs, LCLProc, Compiler, LazarusIDEStrConsts;
+  Dialogs, contnrs, LCLProc, ComCtrls, Compiler, LazarusIDEStrConsts;
 
 type
 
@@ -19,6 +19,7 @@ type
     cbUseComments: TCheckBox;
     edOptionsFilter: TEdit;
     sbAllOptions: TScrollBox;
+    StatusBar1: TStatusBar;
     procedure btnResetOptionsFilterClick(Sender: TObject);
     procedure cbShowModifiedClick(Sender: TObject);
     procedure edOptionsFilterChange(Sender: TObject);
@@ -26,6 +27,7 @@ type
   private
     FIdleConnected: Boolean;
     FOptionsReader: TCompilerOptReader;
+    FOptionsThread: TCompilerOptThread;
     FGeneratedControls: TComponentList;
     FEffectiveFilter: string;
     FEffectiveShowModified: Boolean;
@@ -44,6 +46,7 @@ type
     function ToCustomOptions(aStrings: TStrings): TModalResult;
   public
     property OptionsReader: TCompilerOptReader read FOptionsReader write FOptionsReader;
+    property OptionsThread: TCompilerOptThread read FOptionsThread write FOptionsThread;
   end;
 
 var
@@ -115,36 +118,38 @@ begin
 end;
 
 procedure TfrmAllCompilerOptions.OnIdle(Sender: TObject; var Done: Boolean);
-{$IFDEF TimeAllCompilerOptions}
+
+  function FormatTimeWithMs(aTime: TDateTime): string;
+  var
+    fs: TFormatSettings;
+  begin
+    fs.TimeSeparator := ':';
+    Result := FormatDateTime('nn:ss', aTime, fs)+'.'+FormatDateTime('zzz', aTime);
+  end;
+
 var
-  StartTime, EndTime: TDateTime;
-  fs: TFormatSettings;
-  ms: string;
-{$ENDIF}
+  StartTime: TDateTime;
+  ReadTimeStr, RenderTimeStr: string;
 begin
   IdleConnected := False;
   Screen.Cursor := crHourGlass;
   try
     edOptionsFilter.Enabled := False;
-    {$IFDEF TimeAllCompilerOptions}
-    StartTime := Now;
-    {$ENDIF}
-    RenderAndFilterOptions;
-    {$IFDEF TimeAllCompilerOptions}
-    EndTime := Now-StartTime;
-    {$ENDIF}
-    edOptionsFilter.Enabled := True;
+    FOptionsThread.WaitFor;            // Make sure the options are read.
+    if FOptionsReader.ErrorMsg <> '' then
+      StatusBar1.SimpleText := FOptionsReader.ErrorMsg
+    else begin
+      StartTime := Now;
+      RenderAndFilterOptions;
+      edOptionsFilter.Enabled := True;
+      RenderTimeStr := FormatTimeWithMs(Now-StartTime);
+      ReadTimeStr := FormatTimeWithMs(FOptionsThread.ReadTime);
+      StatusBar1.SimpleText := Format('Time for reading options: %s, rendering GUI: %s',
+                                      [ReadTimeStr, RenderTimeStr]);
+    end;
   finally
     Screen.Cursor := crDefault;
   end;
-  {$IFDEF TimeAllCompilerOptions}
-  if not FRenderedOnce then begin
-    ms := FormatDateTime('zzz', EndTime);
-    fs.TimeSeparator := ':';
-    ShowMessage(Format('Rendering compiler options GUI took: %s.%s',
-                       [FormatDateTime('nn:ss', EndTime, fs), ms]));
-  end;
-  {$ENDIF}
   FRenderedOnce := True;
 end;
 

@@ -31,14 +31,11 @@ uses
   Classes, SysUtils, math, AVL_Tree, LazLogger, Forms, Controls, Graphics,
   Dialogs, StdCtrls, LCLProc, ComCtrls, LCLType, ExtCtrls, Buttons,
   CodeToolsCfgScript, KeywordFuncLists, LazarusIDEStrConsts,
-  IDEOptionsIntf, CompOptsIntf, IDECommands, Project, EnvironmentOpts,
+  IDEOptionsIntf, CompOptsIntf, IDECommands, Project,
   CompilerOptions, AllCompilerOptions, Compiler, EditorOptions, PackageDefs,
   SynEdit, SynEditKeyCmds, SynCompletion, SourceSynEditor, CustomDefines;
 
 type
-
-  TIdleAction = (iaCompilerOpts, iaMessages);
-  TIdleActions = set of TIdleAction;
 
   { TCompilerOtherOptionsFrame }
 
@@ -60,7 +57,7 @@ type
     procedure CondSynEditStatusChange(Sender: TObject; Changes: TSynStatusChanges);
   private
     FCompOptions: TBaseCompilerOptions;
-    FIdleConnected: TIdleActions;
+    FIdleConnected: Boolean;
     FIsPackage: boolean;
     FCompletionHistory: TStrings;
     FCompletionValues: TStrings;
@@ -70,8 +67,9 @@ type
     fEngine: TIDECfgScriptEngine;
     fSynCompletion: TSynCompletion;
     FOptionsReader: TCompilerOptReader;
+    FOptionsThread: TCompilerOptThread;
     FUseComments: boolean;
-    procedure SetIdleConnected(AValue: TIdleActions);
+    procedure SetIdleConnected(AValue: Boolean);
     procedure SetStatusMessage(const AValue: string);
     procedure StartCompletion;
     procedure UpdateCompletionValues;
@@ -105,7 +103,7 @@ type
     property DefaultVariables: TCTCfgScriptVariables read FDefaultVariables;
     property CompletionValues: TStrings read FCompletionValues;
     property CompletionHistory: TStrings read FCompletionHistory;
-    property IdleConnected: TIdleActions read FIdleConnected write SetIdleConnected;
+    property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
     property OptionsReader: TCompilerOptReader read FOptionsReader;
   end;
 
@@ -124,6 +122,7 @@ begin
     AllOpts := TfrmAllCompilerOptions.Create(Nil);
     try
       AllOpts.OptionsReader := FOptionsReader;
+      AllOpts.OptionsThread := FOptionsThread;
       AllOpts.cbUseComments.Checked := FUseComments;
       if AllOpts.ShowModal = mrOK then
       begin
@@ -145,12 +144,13 @@ procedure TCompilerOtherOptionsFrame.btnDefinesClick(Sender: TObject);
 var
   EditForm: TCustomDefinesForm;
 begin
-  EditForm:=TCustomDefinesForm.Create(Nil);
+  EditForm := TCustomDefinesForm.Create(Nil);
   try
-    EditForm.OptionsReader:=FOptionsReader;
+    EditForm.OptionsReader := FOptionsReader;
+    EditForm.OptionsThread := FOptionsThread;
+    EditForm.CustomOptions := memoCustomOptions.Lines;
     EditForm.DefinesCheckList.Items.Assign(Project1.CustomDefines);
-    EditForm.FromCustomOptions(memoCustomOptions.Lines);
-    if EditForm.ShowModal=mrOK then
+    if EditForm.ShowModal = mrOK then
     begin
       Project1.CustomDefines.Assign(EditForm.DefinesCheckList.Items);
       // Synchronize with custom options memo
@@ -167,7 +167,7 @@ end;
 procedure TCompilerOtherOptionsFrame.CondSynEditChange(Sender: TObject);
 begin
   UpdateStatusBar;
-  IdleConnected := IdleConnected + [iaMessages];
+  IdleConnected := True;
 end;
 
 procedure TCompilerOtherOptionsFrame.CondSynEditKeyPress(Sender: TObject; var Key: char);
@@ -357,8 +357,12 @@ procedure TCompilerOtherOptionsFrame.SetVisible(Value: Boolean);
 begin
   inherited SetVisible(Value);
   // Read all compiler options when the page is shown for the first time.
-  if Value then
-    IdleConnected := IdleConnected + [iaCompilerOpts];
+  if Value and (FOptionsReader.RootOptGroup.CompilerOpts.Count = 0)
+  and not Assigned(fOptionsThread) then
+  begin
+    fOptionsThread := TCompilerOptThread.Create(FOptionsReader);
+    fOptionsThread.Start;
+  end;
 end;
 
 procedure TCompilerOtherOptionsFrame.SetStatusMessage(const AValue: string);
@@ -368,11 +372,11 @@ begin
   CondStatusbar.Panels[2].Text := FStatusMessage;
 end;
 
-procedure TCompilerOtherOptionsFrame.SetIdleConnected(AValue: TIdleActions);
+procedure TCompilerOtherOptionsFrame.SetIdleConnected(AValue: Boolean);
 begin
   if FIdleConnected=AValue then exit;
   FIdleConnected:=AValue;
-  if FIdleConnected <> [] then
+  if FIdleConnected then
     Application.AddOnIdleHandler(@OnIdle)
   else
     Application.RemoveOnIdleHandler(@OnIdle);
@@ -620,47 +624,9 @@ begin
 end;
 
 procedure TCompilerOtherOptionsFrame.OnIdle(Sender: TObject; var Done: Boolean);
-var
-  OldIdleConnected: TIdleActions;
-  {$IFDEF TimeAllCompilerOptions}
-  StartTime, EndTime: TDateTime;
-  fs: TFormatSettings;
-  ms: String;
-  {$ENDIF}
 begin
-  OldIdleConnected := IdleConnected;
-  IdleConnected := [];
-  // Messages
-  if iaMessages in OldIdleConnected then
-    UpdateMessages;
-  // Read all compiler options only once
-  if (iaCompilerOpts in OldIdleConnected)
-  and (FOptionsReader.RootOptGroup.CompilerOpts.Count = 0) then
-  begin
-    {$IFDEF TimeAllCompilerOptions}
-    StartTime := Now;
-    {$ENDIF}
-    Screen.Cursor := crHourGlass;
-    try
-    try
-      FOptionsReader.CompilerExecutable := EnvironmentOptions.GetParsedCompilerFilename;
-      if FOptionsReader.ReadAndParseOptions <> mrOK then
-        ShowMessage(FOptionsReader.ErrorMsg);
-    except
-      on E: Exception do
-        ShowMessage('Error parsing options: '+E.Message);
-    end;
-    finally
-      Screen.Cursor := crDefault;
-    end;
-    {$IFDEF TimeAllCompilerOptions}
-    EndTime := Now-StartTime;
-    ms := FormatDateTime('zzz', EndTime);
-    fs.TimeSeparator := ':';
-    ShowMessage(Format('Reading compiler options took: %s.%s',
-                       [FormatDateTime('nn:ss', EndTime, fs), ms]));
-    {$ENDIF}
-  end;
+  IdleConnected := False;
+  UpdateMessages;
 end;
 
 constructor TCompilerOtherOptionsFrame.Create(TheOwner: TComponent);
@@ -692,6 +658,7 @@ end;
 
 destructor TCompilerOtherOptionsFrame.Destroy;
 begin
+  FreeAndNil(fOptionsThread);
   FreeAndNil(FOptionsReader);
   FreeAndNil(FCompletionHistory);
   FreeAndNil(FCompletionValues);
