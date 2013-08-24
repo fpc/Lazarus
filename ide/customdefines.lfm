@@ -14,26 +14,26 @@ object CustomDefinesForm: TCustomDefinesForm
   LCLVersion = '1.1'
   object gbNewDefine: TGroupBox
     Left = 6
-    Height = 78
+    Height = 79
     Top = 6
     Width = 329
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'gbNewDefine'
-    ClientHeight = 59
+    ClientHeight = 60
     ClientWidth = 325
     TabOrder = 0
     object AddBtn: TBitBtn
-      AnchorSideTop.Side = asrBottom
+      AnchorSideTop.Control = RemoveBtn
       AnchorSideRight.Control = RemoveBtn
       Left = 163
       Height = 26
-      Top = 33
+      Top = 31
       Width = 75
       Anchors = [akTop, akRight]
       AutoSize = True
-      BorderSpacing.Around = 6
+      BorderSpacing.Right = 6
       Caption = '&Add'
       Constraints.MinHeight = 25
       Constraints.MinWidth = 75
@@ -42,16 +42,18 @@ object CustomDefinesForm: TCustomDefinesForm
     end
     object RemoveBtn: TBitBtn
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = AddBtn
-      AnchorSideRight.Control = gbNewDefine
+      AnchorSideTop.Control = edDefine
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = edDefine
       AnchorSideRight.Side = asrBottom
       Left = 244
       Height = 26
-      Top = 33
+      Top = 31
       Width = 75
       Anchors = [akTop, akRight]
       AutoSize = True
-      BorderSpacing.Right = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 3
       Caption = '&Remove'
       Constraints.MinHeight = 25
       Constraints.MinWidth = 75
@@ -74,8 +76,8 @@ object CustomDefinesForm: TCustomDefinesForm
   end
   object DefinesCheckList: TCheckListBox
     Left = 6
-    Height = 183
-    Top = 90
+    Height = 182
+    Top = 91
     Width = 329
     Align = alClient
     Anchors = [akTop, akBottom]
