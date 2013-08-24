@@ -5647,6 +5647,7 @@ var
   i: Integer;
   n: TComponent;
 begin
+  FPageIndex:=-1;
   i := 1;
   n := AOwner.FindComponent(NonModalIDEWindowNames[nmiwSourceNoteBookName]);
   while (n <> nil) do begin
@@ -6396,6 +6397,10 @@ end;
 procedure TSourceNotebook.SetPageIndex(const AValue: Integer);
 begin
   DebugLnEnter(SRCED_PAGES, ['>> TSourceNotebook.SetPageIndex Cur-PgIdx=', PageIndex, ' FPageIndex=', FPageIndex, ' Value=', AValue, ' FUpdateLock=', FUpdateLock]);
+  if PageIndex = AValue then begin
+    //debugln(['>> TSourceNotebook.SetPageIndex PageIndex=', PageIndex, ' FPageIndex=', FPageIndex, ' Value=', AValue, ' FUpdateLock=', FUpdateLock]);
+    exit;
+  end;
   FPageIndex := AValue;
   if FUpdateLock = 0 then begin
     DebugBoss.LockCommandProcessing;
