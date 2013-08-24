@@ -12,6 +12,10 @@ msgstr ""
 "X-Poedit-Country: china\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: syneditstrconst.syns_attrannotation
+msgid "Annotation"
+msgstr ""
+
 #: syneditstrconst.syns_attrasp
 msgid "Asp"
 msgstr ""

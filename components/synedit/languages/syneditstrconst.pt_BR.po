@@ -9,6 +9,10 @@ msgstr ""
 "Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 
+#: syneditstrconst.syns_attrannotation
+msgid "Annotation"
+msgstr ""
+
 #: syneditstrconst.syns_attrasp
 msgid "Asp"
 msgstr "Asp"

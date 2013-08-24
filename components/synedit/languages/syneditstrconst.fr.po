@@ -9,6 +9,10 @@ msgstr ""
 "Last-Translator: Beuselinck Vincent <vincent@beuselinck.fr>\n"
 "Language-Team: \n"
 
+#: syneditstrconst.syns_attrannotation
+msgid "Annotation"
+msgstr ""
+
 #: syneditstrconst.syns_attrasp
 msgid "Asp"
 msgstr ""

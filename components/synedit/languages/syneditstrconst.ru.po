@@ -9,6 +9,10 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
+#: syneditstrconst.syns_attrannotation
+msgid "Annotation"
+msgstr ""
+
 #: syneditstrconst.syns_attrasp
 msgid "Asp"
 msgstr "ASP"

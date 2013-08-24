@@ -1,6 +1,10 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: syneditstrconst.syns_attrannotation
+msgid "Annotation"
+msgstr ""
+
 #: syneditstrconst.syns_attrasp
 msgid "Asp"
 msgstr ""

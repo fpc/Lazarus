@@ -54,7 +54,7 @@ uses
 
 type
   TtkTokenKind = (tkComment, tkDocument, tkIdentifier, tkInvalid, tkKey,
-    tkNull, tkNumber, tkSpace, tkString, tkSymbol, tkUnknown);
+    tkNull, tkNumber, tkSpace, tkString, tkSymbol, tkUnknown, tkAnnotation);
 
   TxtkTokenKind = (
     xtkAdd, xtkAddAssign, xtkAnd, xtkAndAssign, xtkAssign, xtkBitComplement,
@@ -99,6 +99,7 @@ type
     fSpaceAttri: TSynHighlighterAttributes;
     fStringAttri: TSynHighlighterAttributes;
     fSymbolAttri: TSynHighlighterAttributes;
+    fAnnotationAttri: TSynHighlighterAttributes;
     function KeyHash(ToHash: PChar): Integer;
     function KeyComp(const aKey: String): Boolean;
     function Func17: TtkTokenKind;
@@ -149,7 +150,7 @@ type
     procedure CommentProc;
     procedure AndSymbolProc;
     procedure AsciiCharProc;
-    procedure AtSymbolProc;
+    procedure AnnotationProc;
     procedure BraceCloseProc;
     procedure BraceOpenProc;
     procedure CRProc;
@@ -211,6 +212,8 @@ type
     procedure ResetRange; override;
     property ExtTokenID: TxtkTokenKind read GetExtTokenID;
   published
+    property AnnotationAttri: TSynHighlighterAttributes read fAnnotationAttri
+      write fAnnotationAttri;
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
       write fCommentAttri;
     property DocumentAttri: TSynHighlighterAttributes read fDocumentAttri
@@ -605,7 +608,7 @@ begin
     case I of
       '&': fProcTable[I] := @AndSymbolProc;
       #39: fProcTable[I] := @AsciiCharProc;
-      '@': fProcTable[I] := @AtSymbolProc;
+      '@': fProcTable[I] := @AnnotationProc;
       '}': fProcTable[I] := @BraceCloseProc;
       '{': fProcTable[I] := @BraceOpenProc;
       #13: fProcTable[I] := @CRProc;
@@ -650,6 +653,8 @@ end;
 constructor TSynJavaSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  fAnnotationAttri := TSynHighlighterAttributes.Create(@SYNS_AttrAnnotation, SYNS_XML_AttrAnnotation);
+  AddAttribute(fAnnotationAttri);
   fCommentAttri := TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
   fCommentAttri.Style := [fsItalic];
   AddAttribute(fCommentAttri);
@@ -768,10 +773,11 @@ begin
   if FLine[Run] <> #0 then inc(Run);
 end;
 
-procedure TSynJavaSyn.AtSymbolProc;
+procedure TSynJavaSyn.AnnotationProc;
 begin
-  fTokenID := tkInvalid;
   inc(Run);
+  fTokenID := tkAnnotation;
+  while Identifiers[fLine[Run]] do inc(Run);
 end;
 
 procedure TSynJavaSyn.BraceCloseProc;
@@ -1252,6 +1258,7 @@ end;
 procedure TSynJavaSyn.Next;
 begin
   fTokenPos := Run;
+  FExtTokenID := xtkNonSymbol;
   Case fRange of
     rsComment: CommentProc;
     rsDocument: CommentProc;
@@ -1327,6 +1334,7 @@ end;
 function TSynJavaSyn.GetTokenAttribute: TSynHighlighterAttributes;
 begin
   case fTokenID of
+    tkAnnotation: Result := fAnnotationAttri;
     tkComment: Result := fCommentAttri;
     tkDocument: Result := fDocumentAttri;
     tkIdentifier: Result := fIdentifierAttri;

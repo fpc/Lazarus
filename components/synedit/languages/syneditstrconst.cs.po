@@ -11,6 +11,10 @@ msgstr ""
 "Language: cs\n"
 "X-Generator: Poedit 1.5.4\n"
 
+#: syneditstrconst.syns_attrannotation
+msgid "Annotation"
+msgstr ""
+
 #: syneditstrconst.syns_attrasp
 msgid "Asp"
 msgstr "Asp"

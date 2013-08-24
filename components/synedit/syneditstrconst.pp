@@ -56,6 +56,7 @@ resourcestring
   SYNS_AttrASP                  =  'Asp';
   SYNS_AttrCDATA                =  'CDATA';
   SYNS_AttrDOCTYPE              =  'DOCTYPE';
+  SYNS_AttrAnnotation           =  'Annotation';
   SYNS_AttrAssembler            =  'Assembler';
   SYNS_AttrAttributeName        =  'Attribute Name';
   SYNS_AttrAttributeValue       =  'Attribute Value';
@@ -170,6 +171,7 @@ const
   SYNS_XML_AttrASP                  =  'Asp';
   SYNS_XML_AttrCDATA                =  'CDATA';
   SYNS_XML_AttrDOCTYPE              =  'DOCTYPE';
+  SYNS_XML_AttrAnnotation           =  'Annotation';
   SYNS_XML_AttrAssembler            =  'Assembler';
   SYNS_XML_AttrAttributeName        =  'Attribute Name';
   SYNS_XML_AttrAttributeValue       =  'Attribute Value';
