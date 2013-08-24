@@ -5509,11 +5509,11 @@ begin
       until (ADirective^.SrcPos<>SrcPos) or (TCodeBuffer(ADirective^.Code)<>Code)
         or (i > Scanner.DirectiveCount);
       dec(i);
-      if (ActiveCnt=1) and (InactiveCnt=0) and (SkippedCnt=0) then
+      if (ActiveCnt>0) and (InactiveCnt=0) and (SkippedCnt=0) then
         SynState:=idnEnabled
-      else if (InactiveCnt=1) and (ActiveCnt=0) and (SkippedCnt=0) then
+      else if (ActiveCnt=0) and (InactiveCnt+SkippedCnt>0) then
         SynState:=idnDisabled
-      else if (InactiveCnt>0) or (ActiveCnt>0) then
+      else if (ActiveCnt>0) then
         SynState:=idnTempEnabled
       else
         SynState:=idnInvalid;

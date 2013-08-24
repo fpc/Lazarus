@@ -267,9 +267,9 @@ const
 
 type
   TLSDirectiveState = (
-    lsdsActive,
-    lsdsInactive,// e.g. an IfDef which code was skipped
-    lsdsSkipped // has inactive parent
+    lsdsActive, // was executed
+    lsdsInactive,// was executed, but expression result was false and following code was skipped
+    lsdsSkipped // was not executed
     );
   TLSDirectiveStates = set of TLSDirectiveState;
 
