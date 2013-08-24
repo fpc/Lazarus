@@ -589,8 +589,13 @@ type
   TSourceNotebookStates = set of TSourceNotebookState;
 
   TSourceNotebookUpdateFlag = (
-    ufPageNames, ufTabsAndPage, ufStatusBar, ufProjectFiles,
-    ufFocusEditor, ufActiveEditorChanged
+    ufPageNames,
+    ufTabsAndPage,
+    ufStatusBar,
+    ufProjectFiles,
+    ufFocusEditor,
+    ufActiveEditorChanged,
+    ufPageIndexChanged
   );
   TSourceNotebookUpdateFlags = set of TSourceNotebookUpdateFlag;
 
@@ -610,6 +615,7 @@ type
     FIsClosing: Boolean;
     FSrcEditsSortedForFilenames: TAvgLvlTree; // TSourceEditorInterface sorted for Filename
     TabPopUpMenu, SrcPopUpMenu, DbgPopUpMenu: TPopupMenu;
+    procedure ApplyPageIndex;
     procedure ExecuteEditorItemClick(Sender: TObject);
   protected
     procedure CompleteCodeMenuItemClick(Sender: TObject);
@@ -5775,6 +5781,7 @@ Begin
   {$IFDEF IDE_MEM_CHECK}
   CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] B ');
   {$ENDIF}
+  FPageIndex:=-1;
   with FNotebook do Begin
     Name:='SrcEditNotebook';
     Parent := Self;
@@ -6404,25 +6411,10 @@ begin
     exit;
   end;
   FPageIndex := AValue;
-  if FUpdateLock = 0 then begin
-    DebugBoss.LockCommandProcessing;
-    try
-      FPageIndex := AValue;
-      if Assigned(Manager) and (FNotebook.PageIndex = FPageIndex) then
-        DoActiveEditorChanged;
-      // make sure the statusbar is updated
-      if FNotebook.PageIndex <> FPageIndex then
-      begin
-        Include(States, snNotebookPageChangedNeeded);
-        FNotebook.PageIndex := FPageIndex;
-        if snNotebookPageChangedNeeded in States then
-          NotebookPageChanged(nil);
-        HistorySetMostRecent(FNotebook.Pages[FPageIndex]);
-      end;
-    finally
-      DebugBoss.UnLockCommandProcessing;
-    end;
-  end;
+  if FUpdateLock = 0 then
+    ApplyPageIndex
+  else
+    Include(FUpdateFlags,ufPageIndexChanged);
   DebugLnExit(SRCED_PAGES, ['<< TSourceNotebook.SetPageIndex ']);
 end;
 
@@ -6841,7 +6833,7 @@ begin
   dec(FUpdateLock);
   if FUpdateLock = 0 then begin
     DebugLnEnter(SRCED_LOCK, ['>> TSourceNotebook.DecUpdateLockInternal UpdateFlags=', dbgs(FUpdateFlags), ' PageIndex=', FPageIndex]);
-    PageIndex := FPageIndex;
+    if (ufPageIndexChanged in FUpdateFlags) or (PageIndex<>FPageIndex) then ApplyPageIndex;
     if (ufPageNames in FUpdateFlags)    then UpdatePageNames;
     if (ufTabsAndPage in FUpdateFlags)  then UpdateTabsAndPageTitle;
     if (ufStatusBar in FUpdateFlags)    then UpdateStatusBar;
@@ -6888,7 +6880,6 @@ begin
     // make sure to select another page in the NoteBook, otherwise the
     // widgetset will choose one and will send a message
     // if this is the current page, switch to right APageIndex (if possible)
-    //todo: determine whether we can use SetPageIndex instead
     if PageIndex = APageIndex then begin
       if EditorOpts.UseTabHistory then
         FPageIndex := HistoryGetTopPageIndex
@@ -7657,6 +7648,25 @@ begin
   Editor := TSourceEditor((sender as TIDEMenuCommand).UserTag);
   SourceEditorManager.ActiveEditor :=Editor;
   SourceEditorManager.ShowActiveWindowOnTop(True);
+end;
+
+procedure TSourceNotebook.ApplyPageIndex;
+begin
+  Exclude(FUpdateFlags,ufPageIndexChanged);
+  DebugBoss.LockCommandProcessing;
+  try
+    FPageIndex:=Max(0,Min(FPageIndex,FNotebook.PageCount-1));
+    if Assigned(Manager) and (FNotebook.PageIndex = FPageIndex) then
+      DoActiveEditorChanged;
+    // make sure the statusbar is updated
+    Include(States, snNotebookPageChangedNeeded);
+    FNotebook.PageIndex := FPageIndex;
+    if snNotebookPageChangedNeeded in States then
+      NotebookPageChanged(nil);
+    HistorySetMostRecent(FNotebook.Pages[FPageIndex]);
+  finally
+    DebugBoss.UnLockCommandProcessing;
+  end;
 end;
 
 procedure TSourceNotebook.CloseTabClicked(Sender: TObject);
