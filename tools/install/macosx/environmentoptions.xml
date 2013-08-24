@@ -24,7 +24,7 @@
         <Item1 Value="/usr/bin/make"/>
       </History>
     </MakeFilename>
-    <TestBuildDirectory Value="$ENV(TMPDIR)">
+    <TestBuildDirectory Value="~/tmp/">
       <History Count="3">
         <Item1 Value="/tmp/"/>
         <Item2 Value="/var/tmp/"/>
