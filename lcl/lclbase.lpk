@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="LCLBase"/>
@@ -29,7 +29,7 @@
 "/>
     <License Value="modified LGPL-2
 "/>
-    <Version Major="1" Release="11"/>
+    <Version Major="1" Release="12"/>
     <Files Count="292">
       <Item1>
         <Filename Value="barchart.pp"/>

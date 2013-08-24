@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -23,7 +23,7 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
-      <RevisionNr Value="10"/>
+      <RevisionNr Value="12"/>
       <CharSet Value="04B0"/>
       <StringTable ProductName="Lazarus IDE" ProductVersion="1.0.10"/>
     </VersionInfo>
