@@ -4140,13 +4140,13 @@ procedure TLinkScanner.SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
 var
   p: PChar;
 begin
+  if FDirectivesCount>0 then
+    FDirectives[FDirectivesCount-1].State:=lsdsInactive;
   if FSkippingDirectives<>lssdNone then begin
     FSkippingDirectives:=SkippingUntil;
     exit;
   end;
   FSkippingDirectives:=SkippingUntil;
-  if FDirectivesCount>0 then
-    FDirectives[FDirectivesCount-1].State:=lsdsInactive;
 
   SrcPos:=CommentEndPos;
   {$IFDEF ShowUpdateCleanedSrc}
@@ -4259,6 +4259,8 @@ begin
     RaiseException(Values.ErrorMsg)
   end else if ExprResult then begin
     // expression evaluates to true => stop skipping and parse block
+    if FDirectivesCount>0 then
+      FDirectives[FDirectivesCount-1].State:=lsdsActive;
     if FSkippingDirectives<>lssdNone then begin
       {$IFDEF ShowUpdateCleanedSrc}
       debugln(['TLinkScanner.InternalIfDirective skipped front, using ELIFC part']);
@@ -4267,8 +4269,6 @@ begin
     end;
   end else begin
     // expression evaluates to false => skip this block
-    if StoreDirectives then
-      FDirectives[FDirectivesCount-1].State:=lsdsInactive;
     SkipTillEndifElse(lssdTillElse);
   end;
 end;
