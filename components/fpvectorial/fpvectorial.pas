@@ -856,7 +856,7 @@ type
       - Second level
     * First level again
 
-    The basic element to build the sequence is TvBulletListText
+    The basic element to build the sequence is TvParagraph
   }
 
   { TvBulletList }
