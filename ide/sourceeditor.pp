@@ -5439,7 +5439,7 @@ procedure TSourceEditor.UpdateIfDefNodeStates(Force: Boolean = False);
 {off $DEFINE VerboseUpdateIfDefNodeStates}
 {$IFDEF VerboseUpdateIfDefNodeStates}
 const
-  VFilePattern='directives';
+  VFilePattern='blaunit';
   VMinY=1;
   VMaxY=70;
 {$ENDIF}
@@ -5509,10 +5509,6 @@ begin
       until (ADirective^.SrcPos<>SrcPos) or (TCodeBuffer(ADirective^.Code)<>Code)
         or (i > Scanner.DirectiveCount);
       dec(i);
-      {$IFDEF VerboseUpdateIfDefNodeStates}
-      if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) then
-        debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' SET SynState=',dbgs(SynState)]);
-      {$ENDIF}
       if (ActiveCnt=1) and (InactiveCnt=0) and (SkippedCnt=0) then
         SynState:=idnEnabled
       else if (InactiveCnt=1) and (ActiveCnt=0) and (SkippedCnt=0) then
@@ -5521,6 +5517,10 @@ begin
         SynState:=idnTempEnabled
       else
         SynState:=idnInvalid;
+      {$IFDEF VerboseUpdateIfDefNodeStates}
+      if (Pos(VFilePattern,Code.Filename)>0) and (Y>=VMinY) and (Y<=VMaxY) then
+        debugln(['TSourceEditor.UpdateIfDefNodeStates y=',y,' x=',x,' Counts:Inactive=',InactiveCnt,' Active=',ActiveCnt,' Skipped=',SkippedCnt,' SET SynState=',dbgs(SynState)]);
+      {$ENDIF}
       EditorComponent.SetIfdefNodeState(Y,X,SynState);
     end;
   finally
