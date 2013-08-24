@@ -520,7 +520,7 @@ begin
     DisableAllActions;
     if (Item <> nil) and (BreakPoints <> nil) then
     begin
-      GetSelectedCallstack.CountLimited(lvCallStack.Items[lvCallStack.Items.Count - 1].Index+1); // get max limit
+      GetSelectedCallstack.CountLimited(FViewStart + FViewLimit + 1); // get max limit
       idx := FViewStart + Item.Index;
       if idx >= GetSelectedCallstack.CountLimited(idx+1) then Exit;
       Entry := GetSelectedCallstack.Entries[idx];
@@ -684,7 +684,7 @@ begin
   if (BreakPoints = nil) or (Stack = nil) then
     Exit;
 
-  Stack.CountLimited(lvCallStack.Items[lvCallStack.Items.Count - 1].Index+1);
+  Stack.CountLimited(FViewStart + FViewLimit + 1);
   for i := 0 to lvCallStack.Items.Count - 1 do
   begin
     idx := FViewStart + lvCallStack.Items[i].Index;
