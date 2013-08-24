@@ -41,6 +41,8 @@ Example of content.xml structure:
 
 Validator for ODF 1.0
 http://opendocumentfellowship.com/validator
+Validator for ODF 1.2
+http://odf-validator2.rhcloud.com/odf-validator2/
 
 AUTHORS: Felipe Monteiro de Carvalho
 }
@@ -59,6 +61,7 @@ uses
 type
   { TvODTVectorialWriter }
 
+  // Writes ODT 1.2
   TvODTVectorialWriter = class(TvCustomVectorialWriter)
   private
     FPointSeparator: TFormatSettings;
@@ -202,12 +205,13 @@ procedure TvODTVectorialWriter.WriteMetaInfManifest;
 begin
   FMetaInfManifest :=
    XML_HEADER + LineEnding +
-   '<manifest:manifest xmlns:manifest="' + SCHEMAS_XMLNS_MANIFEST + '"  >' + LineEnding + // manifest:version="1.2"
+   '<manifest:manifest xmlns:manifest="' + SCHEMAS_XMLNS_MANIFEST + '"  manifest:version="1.2">' + LineEnding +
    '  <manifest:file-entry manifest:full-path="/" manifest:media-type="application/vnd.oasis.opendocument.text" />' + LineEnding + // manifest:version="1.2"
    '  <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="content.xml" />' + LineEnding +
    '  <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="styles.xml" />' + LineEnding +
    '  <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="meta.xml" />' + LineEnding +
    '  <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="settings.xml" />' + LineEnding +
+   '  <manifest:file-entry manifest:full-path="manifest.rdf" manifest:media-type="application/rdf+xml"/>' + LineEnding +
    '</manifest:manifest>';
 end;
 
@@ -245,7 +249,7 @@ begin
      ' xmlns:grddl="' + SCHEMAS_XMLNS_GRDDL + '"' +
      ' xmlns:meta="' + SCHEMAS_XMLNS_META + '"' +
      ' xmlns="' + SCHEMAS_XMLNS + '"' +
-     ' xmlns:ex="' + SCHEMAS_XMLNS + '">' + LineEnding + // office:version="1.2"
+     ' xmlns:ex="' + SCHEMAS_XMLNS + '" office:version="1.2">' + LineEnding +
    '  <office:meta>' + LineEnding +
 //    <meta:creation-date>2013-07-21T09:29:41.06</meta:creation-date>
 //    <dc:date>2013-07-21T20:13:32.29</dc:date>
@@ -262,7 +266,7 @@ begin
    '<office:document-settings xmlns:office="' + SCHEMAS_XMLNS_OFFICE + '"' +
      ' xmlns:xlink="' + SCHEMAS_XMLNS_XLINK + '"' +
      ' xmlns:config="' + SCHEMAS_XMLNS_CONFIG + '"' +
-     ' xmlns:ooo="' + SCHEMAS_XMLNS_OOO + '">' + LineEnding + // office:version="1.2">
+     ' xmlns:ooo="' + SCHEMAS_XMLNS_OOO + '" office:version="1.2">' + LineEnding +
    '<office:settings>' + LineEnding +
    '  <config:config-item-set config:name="ooo:view-settings">' + LineEnding +
    '    <config:config-item config:name="ViewAreaTop" config:type="int">0</config:config-item>' + LineEnding +
@@ -562,10 +566,11 @@ begin
     <style:style style:name="Internet_20_link" style:display-name="Internet link" style:family="text">
       <style:text-properties fo:color="#000080" fo:language="zxx" fo:country="none" style:text-underline-style="solid" style:text-underline-width="auto" style:text-underline-color="font-color" style:language-asian="zxx" style:country-asian="none" style:language-complex="zxx" style:country-complex="none" />
     </style:style>
-    <style:style style:name="Bullet_20_Symbols" style:display-name="Bullet Symbols" style:family="text">
-      <style:text-properties style:font-name="OpenSymbol" style:font-name-asian="OpenSymbol" style:font-name-complex="OpenSymbol" />
-    </style:style>
-}
+    }
+    FStyles := FStyles +
+     '  <style:style style:name="Bullet_20_Symbols" style:display-name="Bullet Symbols" style:family="text">' + LineEnding +
+     '    <style:text-properties style:font-name="OpenSymbol" style:font-name-asian="OpenSymbol" style:font-name-complex="OpenSymbol" />' + LineEnding +
+     '  </style:style>' + LineEnding;
   end;
 
   FStyles := FStyles +
@@ -712,8 +717,8 @@ begin
      '  </office:font-face-decls>' + LineEnding;
   FContent := FContent +
      '  <office:automatic-styles>' + LineEnding +
-     '    <style:style style:name="P1" style:family="paragraph" style:parent-style-name="Heading_20_2">' + LineEnding +
-     '      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />' + LineEnding +
+{     '    <style:style style:name="P1" style:family="paragraph" style:parent-style-name="Heading_20_2">' + LineEnding +
+     '      <style:text-properties  />' + LineEnding + //officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e"
      '    </style:style>' + LineEnding +
      '    <style:style style:name="P2" style:family="paragraph" style:parent-style-name="Heading_20_1">' + LineEnding +
      '      <style:text-properties officeooo:rsid="00072f3e" officeooo:paragraph-rsid="00072f3e" />' + LineEnding +
@@ -726,7 +731,7 @@ begin
      '    </style:style>' + LineEnding +
      '    <style:style style:name="P5" style:family="paragraph" style:parent-style-name="Text_20_body">' + LineEnding +
      '      <style:text-properties officeooo:rsid="00072f3e" />' + LineEnding +
-     '    </style:style>' + LineEnding +
+     '    </style:style>' + LineEnding +}
      //
      '    <text:list-style style:name="L1">' + LineEnding +
      '      <text:list-level-style-bullet text:level="1" text:style-name="Bullet_20_Symbols" text:bullet-char="•">' + LineEnding +
@@ -814,13 +819,13 @@ var
   i: Integer;
   lCurEntity: TvEntity;
 begin
-{  FContent := FContent +
-   '    <text:sequence-decls>' + LineEnding;
+  FContent := FContent +
+   '    <text:sequence-decls>' + LineEnding +
    '      <text:sequence-decl text:display-outline-level="0" text:name="Illustration" />' + LineEnding +
    '      <text:sequence-decl text:display-outline-level="0" text:name="Table" />' + LineEnding +
    '      <text:sequence-decl text:display-outline-level="0" text:name="Text" />' + LineEnding +
    '      <text:sequence-decl text:display-outline-level="0" text:name="Drawing" />' + LineEnding +
-   '    </text:sequence-decls>' + LineEnding;}
+   '    </text:sequence-decls>' + LineEnding;
 
   for i := 0 to ACurPage.GetEntitiesCount()-1 do
   begin
@@ -836,10 +841,11 @@ end;
 procedure TvODTVectorialWriter.WriteParagraph(AEntity: TvParagraph;
   ACurPage: TvTextPageSequence; AData: TvVectorialDocument);
 var
-  EntityKindName, AEntityStyleName: string;
+  EntityKindName, AEntityStyleName, lOutlineLevel: string;
   i: Integer;
   lCurEntity: TvEntity;
 begin
+  lOutlineLevel := '';
   if AEntity.Style = nil then
   begin
     EntityKindName := 'p';
@@ -848,7 +854,11 @@ begin
   else
   begin
     case AEntity.Style.GetKind() of
-    vskHeading: EntityKindName := 'h';
+    vskHeading:
+    begin
+      EntityKindName := 'h';
+      lOutlineLevel := 'text:outline-level="'+IntToStr(AEntity.Style.HeadingLevel)+'" ';
+    end;
     else // vskTextBody;
       EntityKindName := 'p';
     end;
@@ -857,7 +867,7 @@ begin
   end;
 
   FContent := FContent +
-    '    <text:'+EntityKindName+' text:style-name="'+AEntityStyleName+'" >';
+    '    <text:'+EntityKindName+' text:style-name="'+AEntityStyleName+'" ' + lOutlineLevel +'>';
 
   for i := 0 to AEntity.GetEntitiesCount()-1 do
   begin
@@ -971,10 +981,18 @@ begin
     if (lCurEntity is TvParagraph) then
     begin
       lCurParagraph := lCurEntity as TvParagraph;
-      FContent := FContent +
-        '      <text:list-item>' + LineEnding +
-        '        <text:p text:style-name="List_'+IntToStr(lCurParagraph.Level)+'">';
-
+      if lCurParagraph.Style <> nil then
+      begin
+        FContent := FContent +
+          '      <text:list-item>' + LineEnding +
+          '        <text:p text:style-name="List_'+IntToStr(lCurParagraph.Style.ListLevel)+'">';
+      end
+      else
+      begin
+        FContent := FContent +
+          '      <text:list-item>' + LineEnding +
+          '        <text:p text:style-name="List_0">';
+      end;
 
       for j := 0 to lCurParagraph.GetEntitiesCount()-1 do
       begin

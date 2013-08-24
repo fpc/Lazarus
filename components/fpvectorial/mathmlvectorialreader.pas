@@ -112,7 +112,7 @@ begin
     lSubNodeName := lMFracRow.NodeName;
     if lSubNodeName = 'mrow' then
     begin
-      lFormula := TvFormula.Create;
+      lFormula := TvFormula.Create(APage);
       ReadFormulaFromNodeChildren(lMFracRow, APage, lFormula);
     end
     else
@@ -121,7 +121,7 @@ begin
     lSubNodeName := lMFracRow.NodeName;
     if lSubNodeName = 'mrow' then
     begin
-      lFormulaBottom := TvFormula.Create;
+      lFormulaBottom := TvFormula.Create(APage);
       ReadFormulaFromNodeChildren(lMFracRow, APage, lFormulaBottom);
     end
     else
@@ -136,7 +136,7 @@ begin
   // or just: ...elements...
   else if lNodeName = 'msqrt' then
   begin
-    lFormula := TvFormula.Create;
+    lFormula := TvFormula.Create(APage);
 
     lMFracRow := ANode.FirstChild;
     lSubNodeName := lMFracRow.NodeName;
@@ -195,7 +195,7 @@ begin
   begin
     lFormElem := AFormula.AddElementWithKind(fekFormula);
 
-    lFormula := TvFormula.Create;
+    lFormula := TvFormula.Create(APage);
     // Read all elements
     ReadFormulaFromNodeChildren(ANode, APage, lFormula);
     lFormElem.Formula := lFormula;
@@ -287,13 +287,13 @@ begin
       lStr := lCurNode.NodeName;
       if lStr = 'mrow' then
       begin
-        lFormula := TvFormula.Create;
+        lFormula := TvFormula.Create(lPage);
         ReadFormulaFromNodeChildren(lCurNode, lPage, lFormula);
         lPage.AddEntity(lFormula);
       end
       else if lStr = 'mstack' then
       begin
-        lFormula := TvVerticalFormulaStack.Create;
+        lFormula := TvVerticalFormulaStack.Create(lPage);
         ReadFormulaFromNodeChildren(lCurNode, lPage, lFormula);
         lPage.AddEntity(lFormula);
       end

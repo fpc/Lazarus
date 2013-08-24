@@ -1865,7 +1865,7 @@ begin
   end;
 
   // Read the image
-  lRasterImage := TvRasterImage.Create;
+  lRasterImage := TvRasterImage.Create(nil);
   lRasterImage.CreateRGB888Image(lImageWidth, lImageHeight);
   if CurrentGraphicState.ColorSpaceName = 'DeviceCMYK' then
   begin

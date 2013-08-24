@@ -1125,7 +1125,7 @@ begin
     case lEntityName of
       'RadialGradient':
       begin
-        lBrushEntity := TvEntityWithPenAndBrush.Create;
+        lBrushEntity := TvEntityWithPenAndBrush.Create(nil);
         lBrushEntity.Brush.Kind := bkRadialGradient;
 
         // <radialGradient id="grad1" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
@@ -1181,7 +1181,7 @@ begin
       'circle', 'ellipse', 'g', 'line', 'path',
       'polygon', 'polyline', 'rect', 'text', 'use':
       begin
-        lBlock := TvBlock.Create;
+        lBlock := TvBlock.Create(nil);
 
         // pre-load attribute reader, to get the block name
         for i := 0 to lCurNode.Attributes.Length - 1 do
@@ -1243,7 +1243,7 @@ begin
   cy := 0.0;
   cr := 0.0;
 
-  lCircle := TvCircle.Create;
+  lCircle := TvCircle.Create(nil);
   // SVG entities start without any pen drawing, but with a black brush
   lCircle.Pen.Style := psClear;
   lCircle.Brush.Style := bsSolid;
@@ -1295,7 +1295,7 @@ begin
   crx := 0.0;
   cry := 0.0;
 
-  lEllipse := TvEllipse.Create;
+  lEllipse := TvEllipse.Create(nil);
   // SVG entities start without any pen drawing, but with a black brush
   lEllipse.Pen.Style := psClear;
   lEllipse.Brush.Style := bsSolid;
@@ -1353,7 +1353,7 @@ var
   lImageDataStream: TMemoryStream;
   lImageReader: TFPCustomImageReader;
 begin
-  lImage := TvRasterImage.Create;
+  lImage := TvRasterImage.Create(nil);
   lx := 0;
   ly := 0;
   lw := 0;
@@ -2059,7 +2059,7 @@ begin
   lrx := 0.0;
   lry := 0.0;
 
-  lRect := TvRectangle.Create;
+  lRect := TvRectangle.Create(nil);
   // SVG entities start without any pen drawing, but with a black brush
   lRect.Pen.Style := psClear;
   lRect.Brush.Style := bsSolid;
@@ -2120,7 +2120,7 @@ begin
   lx := 0.0;
   ly := 0.0;
 
-  lText := TvText.Create;
+  lText := TvText.Create(nil);
 
   // Apply the layer style
   ApplyLayerStyles(lText);
@@ -2212,7 +2212,7 @@ begin
   lInsertedEntity := AData.FindEntityWithNameAndType(lXLink, TvEntity, True);
   if lInsertedEntity = nil then Exit; // nothing to insert, give up!
 
-  lInsert := TvInsert.Create;
+  lInsert := TvInsert.Create(nil);
   lInsert.InsertEntity := lInsertedEntity;
 
   // Apply the styles

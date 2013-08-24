@@ -957,7 +957,7 @@ var
   i: Integer;
 begin
   Result := nil;
-  lPolygon := TvPolygon.Create;
+  lPolygon := TvPolygon.Create(nil);
   SetLength(lPolygon.Points, 3);
 
   for i := 0 to ATokens.Count - 1 do
@@ -1077,7 +1077,7 @@ begin
   {$endif}
   if AOnlyCreate then
   begin
-    Result := TPath.Create;
+    Result := TPath.Create(AData);
     Result.AppendMoveToSegment(LineStartX, LineStartY);
     Result.AppendLineToSegment(LineEndX, LineEndY);
   end
@@ -1654,7 +1654,7 @@ begin
   if lBlock = nil then Exit;
 
   // write the data
-  Result := TvInsert.Create;
+  Result := TvInsert.Create(AData);
   Result.X := PosX;
   Result.Y := PosY;
   Result.Z := PosZ;
@@ -1734,7 +1734,7 @@ begin
   Str := ConvertDXFStringToUTF8(Str);
 
   //
-  Result := TvText.Create;
+  Result := TvText.Create(AData);
   Result.Value.Text := Str;
   Result.X := PosX;
   Result.Y := PosY;
@@ -2018,7 +2018,7 @@ var
   lArrow: TvArrow;
   LElementColor: TFPColor;
 begin
-  lArrow := TvArrow.Create;
+  lArrow := TvArrow.Create(AData);
   curPoint := 0;
   LElementColor := colBlack;
   Result := nil;

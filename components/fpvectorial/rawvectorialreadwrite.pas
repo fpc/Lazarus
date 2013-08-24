@@ -65,7 +65,7 @@ begin
     end;
 
   lPage := AData.AddPage();
-  lRasterImage := TvRasterImage.Create;
+  lRasterImage := TvRasterImage.Create(nil);
   lRasterImage.RasterImage := AImage;
   lPage.AddEntity(lRasterImage);
 end;

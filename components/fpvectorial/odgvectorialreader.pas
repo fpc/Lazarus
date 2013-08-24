@@ -610,7 +610,7 @@ var
   i: Integer;
   lNodeName, lNodeValue: DOMString;
 begin
-  lStyle := TODGStyle.Create;
+  lStyle := TODGStyle.Create(AData);
 
   // Read attributes of the main style tag
   // <style:style style:name="gr4" style:family="graphic" style:parent-style-name="standard">;
@@ -795,8 +795,8 @@ begin
   lWidth := 0.0;
   lHeight := 0.0;
 
-  lGroup := TvEntityWithSubEntities.Create;
-  lPath := TPath.Create;
+  lGroup := TvEntityWithSubEntities.Create(AData);
+  lPath := TPath.Create(Adata);
   lGroup.AddEntity(lPath);
 
   // read the attributes
@@ -838,7 +838,7 @@ begin
     begin
       if lCurNode.FirstChild <> nil then
       begin
-        lText := TvText.Create;
+        lText := TvText.Create(AData);
         lNodeValue := lCurNode.FirstChild.NodeValue;
         lText.Value.Add(lNodeValue);
         lGroup.AddEntity(lText);
@@ -876,7 +876,7 @@ begin
   crx := 0.0;
   cry := 0.0;
 
-  lEllipse := TvEllipse.Create;
+  lEllipse := TvEllipse.Create(AData);
   // SVG entities start without any pen drawing, but with a black brush
   lEllipse.Pen.Style := psClear;
   lEllipse.Brush.Style := bsSolid;
@@ -947,7 +947,7 @@ begin
   x2 := 0.0;
   y2 := 0.0;
 
-  lPath := TPath.Create;
+  lPath := TPath.Create(nil);
 
   // read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -1004,7 +1004,7 @@ begin
   lWidth := 0.0;
   lHeight := 0.0;
 
-  lPath := TPath.Create;
+  lPath := TPath.Create(nil);
 
   // read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do

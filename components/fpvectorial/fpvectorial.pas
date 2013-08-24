@@ -162,6 +162,8 @@ type
     Parent: TvStyle; // Can be nil
     Kind: TvStyleKind;
     Alignment: TvStyleAlignment;
+    HeadingLevel: Integer;
+    ListLevel: Integer; // Only utilized if it is inside a TvBulletList. zero is the first level, 1 the second, and so on
     //
     Pen: TvPen;
     Brush: TvBrush;
@@ -339,8 +341,10 @@ type
   TvNamedEntity = class(TvEntity)
   protected
     FExtraDebugStr: string;
+    FPage: TvPage;
   public
     Name: string;
+    constructor Create(APage: TvPage); virtual;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
@@ -351,7 +355,7 @@ type
     {@@ The global Pen for the entire entity. In the case of paths, individual
         elements might be able to override this setting. }
     Pen: TvPen;
-    constructor Create; override;
+    constructor Create(APage: TvPage); override;
     procedure ApplyPenToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo);
     procedure AssignPen(APen: TvPen);
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
@@ -365,7 +369,7 @@ type
     {@@ The global Brush for the entire entity. In the case of paths, individual
         elements might be able to override this setting. }
     Brush: TvBrush;
-    constructor Create; override;
+    constructor Create(APage: TvPage); override;
     procedure ApplyBrushToCanvas(ADest: TFPCustomCanvas);
     procedure AssignBrush(ABrush: TvBrush);
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
@@ -381,7 +385,7 @@ type
   public
     Font: TvFont;
     TextAnchor: TvTextAnchor;
-    constructor Create; override;
+    constructor Create(APage: TvPage); override;
     procedure ApplyFontToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; AMulX: Double = 1.0);
     procedure AssignFont(AFont: TvFont);
     procedure Scale(ADeltaScaleX, ADeltaScaleY: Double); override;
@@ -395,7 +399,7 @@ type
   TvEntityWithStyle = class(TvEntityWithPenBrushAndFont)
   public
     Style: TvStyle; // can be nil!
-    constructor Create; override;
+    constructor Create(APage: TvPage); override;
     destructor Destroy; override;
     function GetCombinedStyle(AParent: TvEntityWithStyle): TvStyle;
   end;
@@ -415,7 +419,7 @@ type
     CurPoint: TPathSegment; // Used in PrepareForSequentialReading and Next
     ClipPath: TPath;
     ClipMode: TvClipMode;
-    constructor Create; override;
+    constructor Create(APage: TvPage); override;
     destructor Destroy; override;
     procedure Clear; override;
     procedure Assign(ASource: TPath);
@@ -451,7 +455,7 @@ type
   TvText = class(TvEntityWithStyle)
   public
     Value: TStringList;
-    constructor Create; override;
+    constructor Create(APage: TvPage); override;
     destructor Destroy; override;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
@@ -711,7 +715,7 @@ type
     SpacingBetweenElementsX, SpacingBetweenElementsY: Integer;
   public
     Top, Left, Width, Height: Double;
-    constructor Create; override;
+    constructor Create(APage: TvPage); override;
     destructor Destroy; override;
     //
     function GetFirstElement: TvFormulaElement;
@@ -759,7 +763,7 @@ type
     FElements: TFPList; // of TvEntity
   public
     SetPenBrushAndFontElements: TvSetPenBrushAndFontElements;// This is not currently implemented!
-    constructor Create; override;
+    constructor Create(APage: TvPage); override;
     destructor Destroy; override;
     //
     function GetFirstEntity: TvEntity;
@@ -835,9 +839,8 @@ type
   TvParagraph = class(TvEntityWithSubEntities)
   public
     Width, Height: Double;
-    Level: Integer; // Only utilized if it is inside a TvBulletList. zero is the first level, 1 the second, and so on
     AutoExpand: TvRichTextAutoExpand;
-    constructor Create; override;
+    constructor Create(APage: TvPage); override;
     destructor Destroy; override;
     function AddText(AText: string): TvText;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
@@ -856,10 +859,12 @@ type
     The basic element to build the sequence is TvBulletListText
   }
 
+  { TvBulletList }
+
   TvBulletList = class(TvEntityWithSubEntities)
   public
-    {constructor Create; override;
-    destructor Destroy; override;}
+    constructor Create(APage: TvPage);
+    destructor Destroy; override;
     function AddItem(ALevel: Integer; ASimpleText: string): TvParagraph;
     {function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
@@ -880,7 +885,7 @@ type
   public
     Width, Height: Double;
     AutoExpand: TvRichTextAutoExpand;
-    constructor Create; override;
+    constructor Create(APage: TvPage); override;
     destructor Destroy; override;
     // Data writing methods
     function AddParagraph: TvParagraph;
@@ -913,6 +918,7 @@ type
     SelectedElement: TvEntity;
     // List of common styles, for conveniently finding them
     StyleTextBody, StyleHeading1, StyleHeading2, StyleHeading3: TvStyle;
+    StyleBulletList1, StyleBulletList2, StyleBulletList3: TvStyle;
     { Base methods }
     constructor Create; virtual;
     destructor Destroy; override;
@@ -943,6 +949,7 @@ type
     { Style methods }
     function AddStyle(): TvStyle;
     procedure AddStandardTextDocumentStyles(AFormat: TvVectorialFormat);
+    function GetBulletListStyle(ALevel: Integer): TvStyle;
     function GetStyleCount: Integer;
     function GetStyle(AIndex: Integer): TvStyle;
     function FindStyleIndex(AStyle: TvStyle): Integer;
@@ -957,6 +964,8 @@ type
   { TvPage }
 
   TvPage = class
+  protected
+    FOwner: TvVectorialDocument;
   public
     { Base methods }
     constructor Create(AOwner: TvVectorialDocument); virtual;
@@ -1823,6 +1832,12 @@ end;
 
 { TvNamedEntity }
 
+constructor TvNamedEntity.Create(APage: TvPage);
+begin
+  inherited Create;
+  FPage := APage;
+end;
+
 function TvNamedEntity.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
   APageItem: Pointer): Pointer;
 var
@@ -1834,9 +1849,9 @@ end;
 
 { TvEntityWithPen }
 
-constructor TvEntityWithPen.Create;
+constructor TvEntityWithPen.Create(APage: TvPage);
 begin
-  inherited Create;
+  inherited Create(APage);
   Pen.Style := psSolid;
   Pen.Color := colBlack;
   Pen.Width := 1;
@@ -1865,9 +1880,9 @@ end;
 
 { TvEntityWithPenAndBrush }
 
-constructor TvEntityWithPenAndBrush.Create;
+constructor TvEntityWithPenAndBrush.Create(APage: TvPage);
 begin
-  inherited Create;
+  inherited Create(APage);
   Brush.Style := bsClear;
   Brush.Color := colBlue;
 end;
@@ -1910,9 +1925,9 @@ end;
 
 { TvEntityWithPenBrushAndFont }
 
-constructor TvEntityWithPenBrushAndFont.Create;
+constructor TvEntityWithPenBrushAndFont.Create(APage: TvPage);
 begin
-  inherited Create;
+  inherited Create(APage);
   Font.Color := colBlack;
 end;
 
@@ -1989,9 +2004,9 @@ end;
 
 { TvEntityWithStyle }
 
-constructor TvEntityWithStyle.Create;
+constructor TvEntityWithStyle.Create(APage: TvPage);
 begin
-  inherited Create;
+  inherited Create(APage);
 end;
 
 destructor TvEntityWithStyle.Destroy;
@@ -2008,9 +2023,9 @@ end;
 
 { TPath }
 
-constructor TPath.Create;
+constructor TPath.Create(APage: TvPage);
 begin
-  inherited Create;
+  inherited Create(APage);
   FCurMoveSubPartIndex := -1;
 end;
 
@@ -2604,9 +2619,9 @@ end;
 
 { TvText }
 
-constructor TvText.Create;
+constructor TvText.Create(APage: TvPage);
 begin
-  inherited Create;
+  inherited Create(APage);
   Value := TStringList.Create;
   Font.Color := colBlack;
 end;
@@ -3897,9 +3912,9 @@ begin
   TvFormulaElement(data).Free;
 end;
 
-constructor TvFormula.Create;
+constructor TvFormula.Create(APage: TvPage);
 begin
-  inherited Create;
+  inherited Create(APage);
   FElements := TFPList.Create;
   SpacingBetweenElementsX := 5;
   SpacingBetweenElementsY := 1; // elements already give a fair amount of vertical spacing in their own area
@@ -3946,12 +3961,12 @@ begin
   case AKind of
     fekFraction, fekPower, fekSubscript, fekSummation:
     begin
-      Result.Formula := TvFormula.Create;
-      Result.AdjacentFormula := TvFormula.Create;
+      Result.Formula := TvFormula.Create(FPage);
+      Result.AdjacentFormula := TvFormula.Create(FPage);
     end;
     fekRoot:
     begin
-      Result.Formula := TvFormula.Create;
+      Result.Formula := TvFormula.Create(FPage);
     end;
   end;
 end;
@@ -4103,9 +4118,9 @@ begin
   TvEntity(data).Free;
 end;
 
-constructor TvEntityWithSubEntities.Create;
+constructor TvEntityWithSubEntities.Create(APage: TvPage);
 begin
-  inherited Create;
+  inherited Create(APage);
   FElements := TFPList.Create;
 end;
 
@@ -4361,9 +4376,9 @@ end;
 
 { TvParagraph }
 
-constructor TvParagraph.Create;
+constructor TvParagraph.Create(APage: TvPage);
 begin
-  inherited Create;
+  inherited Create(APage);
 end;
 
 destructor TvParagraph.Destroy;
@@ -4373,7 +4388,7 @@ end;
 
 function TvParagraph.AddText(AText: string): TvText;
 begin
-  Result := TvText.Create;
+  Result := TvText.Create(FPage);
   Result.Value.Text := AText;;
   AddEntity(Result);
 end;
@@ -4398,10 +4413,21 @@ end;
 
 { TvBulletList }
 
+constructor TvBulletList.Create(APage: TvPage);
+begin
+  inherited Create(APage);
+end;
+
+destructor TvBulletList.Destroy;
+begin
+  inherited Destroy;
+end;
+
 function TvBulletList.AddItem(ALevel: Integer; ASimpleText: string): TvParagraph;
 begin
-  Result := TvParagraph.Create;
-  Result.Level := ALevel;
+  Result := TvParagraph.Create(FPage);
+  if FPage <> nil then
+    Result.Style := FPage.FOwner.GetBulletListStyle(ALevel);
   if ASimpleText <> '' then
     Result.AddText(ASimpleText);
   AddEntity(Result);
@@ -4409,9 +4435,9 @@ end;
 
 { TvRichText }
 
-constructor TvRichText.Create;
+constructor TvRichText.Create(APage: TvPage);
 begin
-  inherited Create;
+  inherited Create(APage);
 end;
 
 destructor TvRichText.Destroy;
@@ -4421,13 +4447,13 @@ end;
 
 function TvRichText.AddParagraph: TvParagraph;
 begin
-  Result := TvParagraph.Create;
+  Result := TvParagraph.Create(FPage);
   AddEntity(Result);
 end;
 
 function TvRichText.AddBulletList: TvBulletList;
 begin
-  Result := TvBulletList.Create;
+  Result := TvBulletList.Create(FPage);
   AddEntity(Result);
 end;
 
@@ -4454,6 +4480,7 @@ end;
 constructor TvPage.Create(AOwner: TvVectorialDocument);
 begin
   inherited Create;
+  FOwner := AOwner;
 end;
 
 destructor TvPage.Destroy;
@@ -4498,7 +4525,7 @@ begin
   inherited Create(AOwner);
 
   FEntities := TFPList.Create;
-  FTmpPath := TPath.Create;
+  FTmpPath := TPath.Create(Self);
   Owner := AOwner;
   Clear();
   BackgroundColor := colWhite;
@@ -4665,7 +4692,7 @@ var
   lPath: TPath;
   Len: Integer;
 begin
-  lPath := TPath.Create;
+  lPath := TPath.Create(Self);
   lPath.Assign(APath);
   Result := lPath;
   if not AOnlyCreate then AddEntity(lPath);
@@ -4895,7 +4922,7 @@ function TvVectorialPage.AddText(AX, AY, AZ: Double; FontName: string;
 var
   lText: TvText;
 begin
-  lText := TvText.Create;
+  lText := TvText.Create(Self);
   lText.Value.Text := AText;
   lText.X := AX;
   lText.Y := AY;
@@ -4920,7 +4947,7 @@ function TvVectorialPage.AddCircle(ACenterX, ACenterY, ARadius: Double; AOnlyCre
 var
   lCircle: TvCircle;
 begin
-  lCircle := TvCircle.Create;
+  lCircle := TvCircle.Create(Self);
   lCircle.X := ACenterX;
   lCircle.Y := ACenterY;
   lCircle.Radius := ARadius;
@@ -4933,7 +4960,7 @@ function TvVectorialPage.AddCircularArc(ACenterX, ACenterY, ARadius,
 var
   lCircularArc: TvCircularArc;
 begin
-  lCircularArc := TvCircularArc.Create;
+  lCircularArc := TvCircularArc.Create(Self);
   lCircularArc.X := ACenterX;
   lCircularArc.Y := ACenterY;
   lCircularArc.Radius := ARadius;
@@ -4949,7 +4976,7 @@ function TvVectorialPage.AddEllipse(CenterX, CenterY, HorzHalfAxis,
 var
   lEllipse: TvEllipse;
 begin
-  lEllipse := TvEllipse.Create;
+  lEllipse := TvEllipse.Create(Self);
   lEllipse.X := CenterX;
   lEllipse.Y := CenterY;
   lEllipse.HorzHalfAxis := HorzHalfAxis;
@@ -4963,7 +4990,7 @@ function TvVectorialPage.AddBlock(AName: string; AX, AY, AZ: Double): TvBlock;
 var
   lBlock: TvBlock;
 begin
-  lBlock := TvBlock.Create;
+  lBlock := TvBlock.Create(Self);
   lBlock.X := AX;
   lBlock.Y := AY;
   lBlock.Name := AName;
@@ -4975,7 +5002,7 @@ function TvVectorialPage.AddInsert(AX, AY, AZ: Double; AInsertEntity: TvEntity):
 var
   lInsert: TvInsert;
 begin
-  lInsert := TvInsert.Create;
+  lInsert := TvInsert.Create(Self);
   lInsert.X := AX;
   lInsert.Y := AY;
   lInsert.InsertEntity := AInsertEntity;
@@ -4985,7 +5012,7 @@ end;
 
 function TvVectorialPage.AddLayer(AName: string): TvLayer;
 begin
-  Result := TvLayer.Create;
+  Result := TvLayer.Create(Self);
   Result.Name := AName;
   AddEntity(Result);
 end;
@@ -5018,7 +5045,7 @@ function TvVectorialPage.AddAlignedDimension(BaseLeft, BaseRight, DimLeft,
 var
   lDim: TvAlignedDimension;
 begin
-  lDim := TvAlignedDimension.Create;
+  lDim := TvAlignedDimension.Create(Self);
   lDim.BaseLeft := BaseLeft;
   lDim.BaseRight := BaseRight;
   lDim.DimensionLeft := DimLeft;
@@ -5032,7 +5059,7 @@ function TvVectorialPage.AddRadialDimension(AIsDiameter: Boolean; ACenter,
 var
   lDim: TvRadialDimension;
 begin
-  lDim := TvRadialDimension.Create;
+  lDim := TvRadialDimension.Create(Self);
   lDim.IsDiameter := AIsDiameter;
   lDim.Center := ACenter;
   lDim.DimensionLeft := ADimLeft;
@@ -5045,7 +5072,7 @@ function TvVectorialPage.AddArcDimension(AArcValue, AArcRadius: Double; ABaseLef
 var
   lDim: TvArcDimension;
 begin
-  lDim := TvArcDimension.Create;
+  lDim := TvArcDimension.Create(Self);
   lDim.BaseLeft := ABaseLeft;
   lDim.BaseRight := ABaseRight;
   lDim.DimensionLeft := ADimLeft;
@@ -5147,9 +5174,9 @@ constructor TvTextPageSequence.Create(AOwner: TvVectorialDocument);
 begin
   inherited Create(AOwner);
 
-  Footer := TvRichText.Create;
-  Header := TvRichText.Create;
-  MainText := TvRichText.Create;
+  Footer := TvRichText.Create(Self);
+  Header := TvRichText.Create(Self);
+  MainText := TvRichText.Create(Self);
 end;
 
 destructor TvTextPageSequence.Destroy;
@@ -5610,6 +5637,7 @@ begin
   lCurStyle := AddStyle();
   lCurStyle.Name := 'Heading 1';
   lCurStyle.Parent := lBaseHeading;
+  lCurStyle.HeadingLevel := 1;
   lCurStyle.Font.Size := Round(1.15 * lBaseHeading.Font.Size);
   lCurStyle.Font.Bold := True;
   lCurStyle.SetElements := [spbfFontSize, spbfFontBold];
@@ -5621,6 +5649,7 @@ begin
   lCurStyle := AddStyle();
   lCurStyle.Name := 'Heading 2';
   lCurStyle.Parent := lBaseHeading;
+  lCurStyle.HeadingLevel := 2;
   lCurStyle.Font.Size := 14;
   lCurStyle.Font.Bold := True;
   lCurStyle.Font.Italic := True;
@@ -5633,6 +5662,7 @@ begin
   lCurStyle := AddStyle();
   lCurStyle.Name := 'Heading 3';
   lCurStyle.Parent := lBaseHeading;
+  lCurStyle.HeadingLevel := 3;
   lCurStyle.Font.Size := 14;
   lCurStyle.Font.Bold := True;
   lCurStyle.SetElements := [spbfFontSize, spbfFontName, spbfFontBold];
@@ -5657,6 +5687,29 @@ begin
     <style:text-properties style:font-name="OpenSymbol" style:font-name-asian="OpenSymbol" style:font-name-complex="OpenSymbol" />
   </style:style>
   }
+
+  // ---------------------------------
+  // Bullet List Items
+  // ---------------------------------
+
+  lCurStyle := AddStyle();
+  lCurStyle.Name := 'Bullet List Item 1';
+  //lCurStyle.Parent := ;
+  lCurStyle.ListLevel := 1;
+  StyleBulletList1 := lCurStyle;
+
+  //, StyleBulletList2, StyleBulletList3
+end;
+
+function TvVectorialDocument.GetBulletListStyle(ALevel: Integer): TvStyle;
+begin
+  case ALevel of
+  0: Result := StyleBulletList1;
+  1: Result := StyleBulletList2;
+  2: Result := StyleBulletList3;
+  else
+    Result := nil;
+  end;
 end;
 
 function TvVectorialDocument.GetStyleCount: Integer;
