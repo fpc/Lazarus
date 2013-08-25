@@ -1015,7 +1015,6 @@ function TCompilerOptReader.ReadAndParseOptions: TModalResult;
 var
   Lines: TStringList;
   ParsedTarget: String;
-  i: Integer;
 begin
   OptionIdCounter := 0;
   fErrorMsg := '';
