@@ -1064,34 +1064,37 @@ var
   procedure AddHelp(Args: array of const);
   var
     i: Integer;
+    s: String;
   begin
+    s:='';
     for i := Low(Args) to High(Args) do
     begin
       case Args[i].VType of
-        vtInteger: AHelp.Add(dbgs(Args[i].vinteger));
-        vtInt64: AHelp.Add(dbgs(Args[i].VInt64^));
-        vtQWord: AHelp.Add(dbgs(Args[i].VQWord^));
-        vtBoolean: AHelp.Add(dbgs(Args[i].vboolean));
-        vtExtended: AHelp.Add(dbgs(Args[i].VExtended^));
+        vtInteger: s+=dbgs(Args[i].vinteger);
+        vtInt64: s+=dbgs(Args[i].VInt64^);
+        vtQWord: s+=dbgs(Args[i].VQWord^);
+        vtBoolean: s+=dbgs(Args[i].vboolean);
+        vtExtended: s+=dbgs(Args[i].VExtended^);
 {$ifdef FPC_CURRENCY_IS_INT64}
         // fpc 2.x has troubles in choosing the right dbgs()
         // so we convert here
-        vtCurrency: AHelp.Add(dbgs(int64(Args[i].vCurrency^)/10000, 4));
+        vtCurrency: s+=dbgs(int64(Args[i].vCurrency^)/10000, 4);
 {$else}
-        vtCurrency: AHelp.Add(dbgs(Args[i].vCurrency^));
+        vtCurrency: s+=dbgs(Args[i].vCurrency^);
 {$endif}
-        vtString: AHelp.Add(Args[i].VString^);
-        vtAnsiString: AHelp.Add(AnsiString(Args[i].VAnsiString));
-        vtChar: AHelp.Add(Args[i].VChar);
-        vtPChar: AHelp.Add(Args[i].VPChar);
-        vtPWideChar: AHelp.Add(Args[i].VPWideChar);
-        vtWideChar: AHelp.Add(Args[i].VWideChar{%H-});
-        vtWidestring: AHelp.Add(WideString(Args[i].VWideString){%H-});
-        vtObject: AHelp.Add(DbgSName(Args[i].VObject));
-        vtClass: AHelp.Add(DbgSName(Args[i].VClass));
-        vtPointer: AHelp.Add(Dbgs(Args[i].VPointer));
+        vtString: s+=Args[i].VString^;
+        vtAnsiString: s+=AnsiString(Args[i].VAnsiString);
+        vtChar: s+=Args[i].VChar;
+        vtPChar: s+=Args[i].VPChar;
+        vtPWideChar: s+=Args[i].VPWideChar;
+        vtWideChar: s+=Args[i].VWideChar{%H-};
+        vtWidestring: s+=WideString(Args[i].VWideString){%H-};
+        vtObject: s+=DbgSName(Args[i].VObject);
+        vtClass: s+=DbgSName(Args[i].VClass);
+        vtPointer: s+=Dbgs(Args[i].VPointer);
       end;
     end;
+    AHelp.Add(s);
   end;
 
   procedure WriteHelp(const AText: string);
