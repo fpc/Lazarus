@@ -5424,7 +5424,7 @@ resourcestring
   lisConvDelphiConvertDelphiUnit = 'Convert Delphi unit';
   lisConvDelphiConvertDelphiProject = 'Convert Delphi project';
   lisConvDelphiConvertDelphiPackage = 'Convert Delphi package';
-  lisConvDelphiFindAllUnitFiles = '*** Find all unit files ***';
+  lisConvDelphiFoundAllUnitFiles = 'Found all unit files';
   lisConvDelphiRepairingFormFiles = '*** Fixing used units and Repairing form files ***';
   lisConvDelphiConvertingProjPackUnits = '*** Converting unit files belonging to project/package ***';
   lisConvDelphiConvertingFoundUnits = '*** Converting unit files found during conversion ***';

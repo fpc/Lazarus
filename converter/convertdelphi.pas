@@ -1602,10 +1602,6 @@ begin
   MisUnits:=nil;
   NormalUnits:=nil;
   try
-    fSettings.AddLogLine('');
-    fSettings.AddLogLine(lisConvDelphiFindAllUnitFiles);
-    DebugLn('');
-    DebugLn('TConvertDelphiProject.FindAllUnits: '+lisConvDelphiFindAllUnitFiles);
     if not CodeToolBoss.FindDelphiProjectUnits(fMainUnitConverter.fPascalBuffer,
                                          FoundUnits, MisUnits, NormalUnits) then
     begin
@@ -1615,6 +1611,8 @@ begin
       exit(mrCancel);
     end;
     try        // Add all units to the project
+      fSettings.AddLogLine(lisConvDelphiFoundAllUnitFiles);
+      DebugLn('TConvertDelphiProject.FindAllUnits: '+lisConvDelphiFoundAllUnitFiles);
       for i:=0 to FoundUnits.Count-1 do begin
         CurFilename:=FoundUnits[i];
         p:=System.Pos(' in ',CurFilename);
@@ -1942,10 +1940,6 @@ begin
   MisUnits:=nil;
   NormalUnits:=nil;
   try
-    fSettings.AddLogLine('');
-    fSettings.AddLogLine(lisConvDelphiFindAllUnitFiles);
-    DebugLn('');
-    DebugLn('TConvertDelphiPackage.FindAllUnits: '+lisConvDelphiFindAllUnitFiles);
     if not CodeToolBoss.FindDelphiPackageUnits(fMainUnitConverter.fPascalBuffer,
                                          FoundUnits, MisUnits, NormalUnits) then
     begin
@@ -1955,6 +1949,8 @@ begin
       exit(mrCancel);
     end;
     try
+      fSettings.AddLogLine(lisConvDelphiFoundAllUnitFiles);
+      DebugLn('TConvertDelphiPackage.FindAllUnits: '+lisConvDelphiFoundAllUnitFiles);
       // Add all units to the package
       for i:=0 to FoundUnits.Count-1 do begin
         CurFilename:=FoundUnits[i];
