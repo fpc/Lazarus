@@ -1015,22 +1015,18 @@ function TCompilerOptReader.ReadAndParseOptions: TModalResult;
 var
   Lines: TStringList;
   ParsedTarget: String;
-  t: array[0..5] of TDateTime;
   i: Integer;
 begin
   OptionIdCounter := 0;
   fErrorMsg := '';
-  t[0]:=Now;
   if fCompilerExecutable = '' then
     fCompilerExecutable := 'fpc';        // Let's hope "fpc" is found in PATH.
   ParsedTarget := '-T$(TargetOS) -P$(TargetCPU)';
   if not GlobalMacroList.SubstituteStr(ParsedTarget) then
     raise Exception.CreateFmt('ReadAndParseOptions: Cannot substitute macros "%s".',
                               [ParsedTarget]);
-  t[1]:=Now;
   // FPC with option -i
   Lines:=RunTool(fCompilerExecutable, ParsedTarget + ' -i');
-  t[2]:=Now;
   try
     if Lines = Nil then Exit(mrCancel);
     Result := ParseI(Lines);
@@ -1038,20 +1034,13 @@ begin
   finally
     Lines.Free;
   end;
-  t[3]:=Now;
   // FPC with option -h
   Lines:=RunTool(fCompilerExecutable, ParsedTarget + ' -h');
-  t[4]:=Now;
   try
     if Lines = Nil then Exit(mrCancel);
     Result := ParseH(Lines);
   finally
     Lines.Free;
-  end;
-  t[5]:=Now;
-  debugln(['TCompilerOptReader.ReadAndParseOptions ']);
-  for i:=1 to high(t) do begin
-    debugln(['  ',i,' ',round((t[i]-t[i-1])*86400*1000)]);
   end;
 end;
 
@@ -1215,7 +1204,6 @@ begin
       fReader.ErrorMsg := 'Error parsing options: '+E.Message;
   end;
   fReadTime := Now-StartTime;
-  debugln(['TCompilerOptThread.Execute ',round(fReadTime*86400*1000)]);
 end;
 
 
