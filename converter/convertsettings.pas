@@ -503,18 +503,13 @@ begin
   MapReplacement('.*dll.*',             '');
   MapReplacement('^Q(.+)',              '$1');         // Kylix unit names.
   // Tnt* third party components.
-  MapReplacement('TntClasses',          'Classes');
-  MapReplacement('TntForms',            'Forms');
-  MapReplacement('TntSysUtils',         'SysUtils');
   MapReplacement('TntLXStringGrids',    'Grids');
   MapReplacement('TntLXCombos',         '');
   MapReplacement('TntLXDataSet',        '');
   MapReplacement('TntLXVarArrayDataSet','');
   MapReplacement('TntLXLookupCtrls',    '');
   MapReplacement('^TntLX(.+)',          '$1');
-  MapReplacement('^Tnt([^L][^X].+)',    '$1');
-  // from Mattias: ^Tnt(([^L]|.[^X]).+)  or  ^Tnt(([^L]|L[^X]).*|L$)
-  // from Alexander Klenin: ^Tnt(?!LX)(.+)$
+  MapReplacement('^Tnt(([^L]|L[^X]).*)','$1');
 
   // Map Delphi types to LCL types.
   TheMap:=fReplaceTypes;
