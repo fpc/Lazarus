@@ -40,15 +40,15 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 0
-    Height = 397
+    Height = 419
     Top = 25
     Width = 616
     HorzScrollBar.Increment = 61
     HorzScrollBar.Page = 612
     HorzScrollBar.Smooth = True
     HorzScrollBar.Tracking = True
-    VertScrollBar.Increment = 39
-    VertScrollBar.Page = 393
+    VertScrollBar.Increment = 41
+    VertScrollBar.Page = 415
     VertScrollBar.Smooth = True
     VertScrollBar.Tracking = True
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -59,7 +59,7 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 41
-    Top = 428
+    Top = 450
     Width = 610
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -97,12 +97,5 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
     BorderSpacing.Left = 29
     Caption = 'Use comments in custom options'
     TabOrder = 4
-  end
-  object StatusBar1: TStatusBar
-    Left = 0
-    Height = 22
-    Top = 475
-    Width = 622
-    Panels = <>
   end
 end

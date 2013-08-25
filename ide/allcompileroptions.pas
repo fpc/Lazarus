@@ -19,7 +19,6 @@ type
     cbUseComments: TCheckBox;
     edOptionsFilter: TEdit;
     sbAllOptions: TScrollBox;
-    StatusBar1: TStatusBar;
     procedure btnResetOptionsFilterClick(Sender: TObject);
     procedure cbShowModifiedClick(Sender: TObject);
     procedure edOptionsFilterChange(Sender: TObject);
@@ -129,7 +128,6 @@ procedure TfrmAllCompilerOptions.OnIdle(Sender: TObject; var Done: Boolean);
 
 var
   StartTime: TDateTime;
-  ReadTimeStr, RenderTimeStr: string;
 begin
   IdleConnected := False;
   Screen.Cursor := crHourGlass;
@@ -137,15 +135,14 @@ begin
     edOptionsFilter.Enabled := False;
     FOptionsThread.WaitFor;            // Make sure the options are read.
     if FOptionsReader.ErrorMsg <> '' then
-      StatusBar1.SimpleText := FOptionsReader.ErrorMsg
+      DebugLn(FOptionsReader.ErrorMsg)
     else begin
       StartTime := Now;
       RenderAndFilterOptions;
       edOptionsFilter.Enabled := True;
-      RenderTimeStr := FormatTimeWithMs(Now-StartTime);
-      ReadTimeStr := FormatTimeWithMs(FOptionsThread.ReadTime);
-      StatusBar1.SimpleText := Format('Time for reading options: %s, rendering GUI: %s',
-                                      [ReadTimeStr, RenderTimeStr]);
+      DebugLn(Format('AllCompilerOptions: Time for reading options: %s, rendering GUI: %s',
+                     [FormatTimeWithMs(FOptionsThread.ReadTime),
+                      FormatTimeWithMs(Now-StartTime)]));
     end;
   finally
     Screen.Cursor := crDefault;
