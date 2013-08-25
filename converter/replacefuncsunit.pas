@@ -271,6 +271,7 @@ begin
     Param:=fParams[ParamPos-1];
     RE:=TRegExpr.Create;
     try
+      RE.ModifierI:=True;
       RE.Expression:=Str;
       if RE.Exec(Param) then begin
         fReplFunc:=Repl;

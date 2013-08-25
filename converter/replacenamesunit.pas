@@ -228,6 +228,7 @@ begin
     RE:=TRegExpr.Create;
     MapNames:=TStringList.Create;
     try
+      RE.ModifierI:=True;
       fStringToStringMap.GetNames(MapNames);
       for i:=0 to MapNames.Count-1 do begin
         Key:=MapNames[i]; // fMapNames has names extracted from fStringToStringMap.
