@@ -503,6 +503,9 @@ begin
   MapReplacement('.*dll.*',             '');
   MapReplacement('^Q(.+)',              '$1');         // Kylix unit names.
   // Tnt* third party components.
+  MapReplacement('TntClasses',          'Classes');
+  MapReplacement('TntForms',            'Forms');
+  MapReplacement('TntSysUtils',         'SysUtils');
   MapReplacement('TntLXStringGrids',    'Grids');
   MapReplacement('TntLXCombos',         '');
   MapReplacement('TntLXDataSet',        '');
