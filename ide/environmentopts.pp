@@ -47,8 +47,9 @@ uses
   IDEOptionDefs, TransferMacros, ModeMatrixOpts, Debugger;
 
 const
-  EnvOptsVersion: integer = 107;
+  EnvOptsVersion: integer = 108;
   // 107: added Lazarus version
+  // 108 added LastCalledByLazarusFullPath
 
   {$IFDEF Windows}
   DefaultMakefilename = '$Path($(CompPath))make.exe';
@@ -297,6 +298,9 @@ type
     FBuildMatrixOptions: TBuildMatrixOptions;
     FUseBuildModes: Boolean;
     FIsGlobalMode: TStrToBoolEvent;
+
+    // Primary-conyfig vurification
+    FLastCalledByLazarusFullPath: String;
 
    // TODO: store per debuggerclass options
     // Maybe these should go to a new TDebuggerOptions class
@@ -553,6 +557,8 @@ type
                                               write SetCompilerMessagesFilename;
     property CompilerMessagesFileHistory: TStringList read FCompilerMessagesFileHistory
                                                      write FCompilerMessagesFileHistory;
+    // Primary-conyfig vurification
+    property LastCalledByLazarusFullPath: String read FLastCalledByLazarusFullPath write FLastCalledByLazarusFullPath;
 
     // global build options
     property BuildMatrixOptions: TBuildMatrixOptions read FBuildMatrixOptions;
@@ -1214,6 +1220,10 @@ begin
         LoadRecentList(XMLConfig, FCompilerMessagesFileHistory,
            Path+'CompilerMessagesFilename/History/',rltFile);
 
+        // Primary-conyfig vurification
+        FLastCalledByLazarusFullPath:=XMLConfig.GetValue(
+           Path+'LastCalledByLazarusFullPath/Value','');
+
         // global buid options
         Cfg.AppendBasePath('BuildMatrix');
         FBuildMatrixOptions.LoadFromConfig(Cfg);
@@ -1562,6 +1572,10 @@ begin
            Path+'CompilerMessagesFilename/Value',CompilerMessagesFilename,'');
         SaveRecentList(XMLConfig,FCompilerMessagesFileHistory,
            Path+'CompilerMessagesFilename/History/');
+
+        // Primary-conyfig vurification
+        XMLConfig.SetDeleteValue(
+           Path+'LastCalledByLazarusFullPath/Value',FLastCalledByLazarusFullPath,'');
 
         // global buid options
         Cfg.AppendBasePath('BuildMatrix');

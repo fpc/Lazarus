@@ -1203,10 +1203,28 @@ end;
 
 procedure TMainIDE.LoadGlobalOptions;
 // load environment, miscellaneous, editor and codetools options
+  function GetSecondConfDirWarning: String;
+  var
+    StartFile: String;
+  begin
+    Result:=Format(lisIfYouWantToUseTwoDifferentLazarusVersionsYouMustSt,
+              [LineEnding, LineEnding, LineEnding]);
+    StartFile:=Application.ExeName;
+    if StartedByStartLazarus then
+      StartFile:=ExtractFilePath(StartFile)+'startlazarus'+GetExeExt;
+    {$IFDEF Windows}
+      Result+=StartFile+' --pcp=C:\test_lazarus\configs';
+    {$ELSE}
+      {$IFDEF darwin}
+      Result+='open '+StartFile+' --pcp=~/.lazarus_test';
+      {$ELSE}
+      Result+=StartFile+' --pcp=~/.lazarus_test';
+      {$ENDIF}
+    {$ENDIF}
+  end;
 var
   EnvOptsCfgExisted: boolean;
-  s: String;
-  StartFile: String;
+  s, s2: String;
   OldVer: String;
   NowVer: String;
   IsUpgrade: boolean;
@@ -1220,6 +1238,44 @@ begin
     OnAfterWrite := @DoEnvironmentOptionsAfterWrite;
     CreateConfig;
     Load(false);
+
+    s := ExtractFileName(ParamStrUTF8(0));
+    s2 := s;
+    s := AppendPathDelim(ProgramDirectory(False)) + s;
+    s2 := AppendPathDelim(AppendPathDelim(GetPrimaryConfigPath) + 'bin') + s2;
+    if (EnvironmentOptions.LastCalledByLazarusFullPath = '') then begin
+      if (s <> s2) then begin // do not set to exe in pcp
+        EnvironmentOptions.LastCalledByLazarusFullPath := s;
+        SaveEnvironment(False);
+      end;
+    end
+    else 
+    if (EnvironmentOptions.LastCalledByLazarusFullPath <> s) and
+       (EnvironmentOptions.LastCalledByLazarusFullPath <> s2) and
+       (s <> s2) // we can NOT check, if we enly have the path inside the PCP
+    then begin
+      MsgResult := IDEQuestionDialog(lisIncorrectConfigurationDirectoryFound,
+          Format(lisIDEConficurationFoundMayBelongToOtherLazarus,
+          [LineEnding, GetSecondConfDirWarning, GetPrimaryConfigPath,
+           EnvironmentOptions.LastCalledByLazarusFullPath, s]),
+        mtWarning, [mrOK, lisUpdateInfo, mrIgnore, mrAbort]);
+
+      case MsgResult of
+        mrOk: begin
+            EnvironmentOptions.LastCalledByLazarusFullPath := s;
+            SaveEnvironment(False);
+          end;
+        mrIgnore: ;
+        else
+          begin
+            Application.Terminate;
+            exit;
+          end;
+      end;
+    end;
+
+
+
     if Application.HasOption('language') then
     begin
       debugln('TMainIDE.LoadGlobalOptions overriding language with command line: ',
@@ -1259,20 +1315,7 @@ begin
       s+=lisTheConfigurationWillBeDowngradedConverted;
     s+=LineEnding
       +LineEnding;
-    s+=Format(lisIfYouWantToUseTwoDifferentLazarusVersionsYouMustSt,
-              [LineEnding, LineEnding, LineEnding]);
-    StartFile:=Application.ExeName;
-    if StartedByStartLazarus then
-      StartFile:=ExtractFilePath(StartFile)+'startlazarus'+GetExeExt;
-    {$IFDEF Windows}
-      s+=StartFile+' --pcp=C:\test_lazarus\configs';
-    {$ELSE}
-      {$IFDEF darwin}
-      s+='open '+StartFile+' --pcp=~/.lazarus_test';
-      {$ELSE}
-      s+=StartFile+' --pcp=~/.lazarus_test';
-      {$ENDIF}
-    {$ENDIF}
+    s+=GetSecondConfDirWarning;
     if IsUpgrade then
       MsgResult:=IDEQuestionDialog(lisUpgradeConfiguration, s, mtConfirmation, [
         mrOK, lisUpgrade, mrAbort])
