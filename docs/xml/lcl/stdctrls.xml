@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="LCL">
     <!--
@@ -3221,7 +3221,8 @@ Qt and Carbon have not implemented it.</descr>
       <element name="TMemo.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <element name="TMemo.Font" link="#LCL.Controls.TControl.Font"/>
       <element name="TMemo.HideSelection" link="TCustomMemo.HideSelection"/>
-      <element name="TMemo.Lines" link="#LCL.StdCtrls.TCustomMemo.Lines"/>
+      <element name="TMemo.Lines" link="#LCL.StdCtrls.TCustomMemo.Lines"><short>The text of the memo.</short><seealso>TStrings</seealso>
+      </element>
       <element name="TMemo.MaxLength" link="#LCL.StdCtrls.TCustomEdit.MaxLength"/>
       <element name="TMemo.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange"/>
       <element name="TMemo.OnClick" link="#LCL.Controls.TControl.OnClick"/>
