@@ -1,7 +1,7 @@
 Extending the IDE (Overview)
 ============================
 
-The online pages are more uptodate and have more examples:
+The online pages are more up to date and have more examples:
 http://wiki.lazarus.freepascal.org/Extending_the_IDE
 
 

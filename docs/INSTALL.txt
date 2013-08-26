@@ -5,19 +5,19 @@ Lazarus provides two main parts:
 - LCL - the Lazarus Component Library
 - IDE - the RAD tool (editor, form designer, GUI for debugger and compiler, ...)
 
-What is required for lazarus:
-- FreePascal - the FreePascal Compiler plus packages plus fpc sources.
-               IMPORTANT: try to get the same version of the compiler sources
-                          as the installed compiler.
+What is required for Lazarus:
+- FreePascal - the FreePascal Compiler plus packages plus FPC sources.
+  IMPORTANT: try to get the same version of the compiler sources
+             as the installed compiler.
 - Under Linux/xxxBSD: gtk2 libaries - Most distributions already install them.
-     See www.gtk.org.
+  See www.gtk.org.
 
 
 The FAQ - Frequently Asked Question is available at www.lazarus.freepascal.org
   and some can be found in the file 'FAQ'.
 
 
-The following will describe how to get FreePascal and how to install lazarus
+The following will describe how to get FreePascal and how to install Lazarus
 properly:
 
 ================================================================================
@@ -27,47 +27,47 @@ properly:
 1.1 This is the short version. For more details, see the following sections.
 
   Lazarus is intended to be a development tool. Therefore it is designed, that
-  any normal user can easily install his local copy. This means, lazarus does
-  not need to be installed as root and it does not any symlinks or configuration
-  entries. You can literally just unpack it into a directory of your choice and
-  compile it.
+  any normal user can easily install his local copy. This means Lazarus does
+  not need to be installed as root and it does not create any symlinks or 
+	configuration entries. You can literally just unpack it into a directory of 
+	your choice and compile it.
 
 
 1.2 Under Linux/BSD:
 
-  Make sure, that you have installed X, gtk2 and gtk2-devel.
+  Make sure that you have installed X, gtk2 and gtk2-devel.
 
   Fedora:
     yum install gtk2 gtk2-devel
 
   Debian/Ubuntu:
-    apt-get install lazarus
+    apt-get install lazarus #will pull in required gtk dependencies
 
   Download and install FreePascal. Either the rpm, tgz or the daily snapshot.
-  You need at least fpc 2.4.2 (2.4.2 is the stable version of fpc, the 2.5.1 is
-  the development version).
+  You need at least FPC 2.6.2 (2.6.2 is the stable version of FPC; uneven 
+	versions like 2.7.1 are development versions).
 
-  To compile lazarus (LCL + IDE) go to your unpacked lazarus source and do:
+  To compile Lazarus (LCL + IDE) go to your unpacked Lazarus source and do:
   []$ make clean all
 
-  You don't need "./configure" and you don't need "make install". You now have
-  already a complete lazarus. You can start the IDE with "./lazarus".
+  You don't need "./configure" and you don't need "make install". You now 
+	already have a complete Lazarus. You can start the IDE with "./lazarus".
   The "make install" as root will just copy the files and set some nice symlinks
   and desktop entries.
 
 
 1.3 Under Mac OS X:
 
-  What you need: Apple Developer-tools
-  The Developer-tools are included on the original OSX installation-CDs, or
-  download at ADC (free registration required)
+  What you need: Apple Developer tools
+  The Developer tools are included on the original OSX installation CDs, or
+  can be downloaded at ADC (free registration required)
   http://developer.apple.com/.
 
   Download and install FreePascal. Either the dmg or the daily snapshot.
-  You need at least fpc 2.4.2 (2.4.2 is the stable version of fpc, the 2.5.1 is
-  the development version).
+  You need at least FPC 2.6.2 (2.6.2 is the stable version of FPC; uneven 
+	versions like 2.7.1 are development versions).
 
-  To compile lazarus (LCL + IDE) go to your unpacked lazarus source and do:
+  To compile Lazarus (LCL + IDE) go to your unpacked Lazarus source and do:
   []$ make clean all
 
   You don't need "./configure" and you don't need "make install". You now have
@@ -81,34 +81,34 @@ properly:
 --------------------------------------------------------------------------------
 2.1 Installing FreePascal under Linux:
 
-  Lazarus requires a fpc (FreePascal) version 2.4.2 (or newer) and it requires
-  both the compiled fpc libs (binaries) and the fpc sources. Most of the Linux
-  distributions contain packages for FreePascal (look for fpc). Use your package
+  Lazarus requires FPC (Free Pascal) version 2.6.2 (or newer) and it requires
+  both the compiled FPC libs (binaries) and the FPC sources. Most of the Linux
+  distributions contain packages for FreePascal (look for FPC). Use your package
   manager to install them.
 
-  The fpc binaries:
-  At the lazarus downloads section (www.lazarus.freepascal.org
+  The FPC binaries:
+  At the Lazarus downloads section (www.lazarus.freepascal.org
   or http://sourceforge.net/project/showfiles.php?group_id=89339) you can get
-  the rpm/deb of the freepascal compiler(compiler / linux) and its packages.
-  Or if you don't have a rpm system, you can download and install the tars from
-  the www.freepascal.org.
+  the rpm/deb of the Free Pascal compiler(compiler / linux) and its packages.
+  Alternatively, if you don't have a rpm system, you can download and install 
+	the tars from www.freepascal.org.
   If you want to compile the binaries for yourself see the BSD section.
 
-  The fpc sources:
-  The easiest way to get the freepascal sources is via svn. Of course you can
+  The FPC sources:
+  The easiest way to get the Free Pascal sources is via svn. Of course you can
   also download it as whole, see http://www.freepascal.org/develop.html
-  for the daily snapshot of the release tree (2.5.x).
+  for the daily snapshot of the release tree (2.7.x).
 
-  The fpc sources via svn:
-  Create a directory, where you would like to put the sources. You don't need
-  to be root to do this. Any normal user can do this.
+  The FPC sources via svn:
+  Create a directory where you would like to put the sources. You don't need
+  to be root to do this.
   First create a directory for fpc (e.g. /home/username/freepascal) then do
   the following:
 
   []$ bash
   []$ svn checkout http://svn.freepascal.org/svn/fpc/trunk fpc
 
-  This will create a directory fpc, which can be later used in the IDE.
+  This will create a directory fpc, which can later be used in the IDE.
 
   Hint:
   To download/update the latest changes you can simply do
@@ -121,16 +121,17 @@ properly:
 --------------------------------------------------------------------------------
 2.2 Installing FreePascal under Windows:
 
-  If you use the windows installer for lazarus, then you don't need to install 
-  FreePascal separately, because the installer already contains the necessary
+  If you use the Windows installer for lazarus, then you don't need to install 
+  Free Pascal separately, because the installer already contains the necessary
   files.
     
   See http://www.freepascal.org/down-win32.html. You can find a list of mirrors
-  at http://www.freepascal.org/sdown.html. Download for example fpc as one big
-  file, unzip it and run the install.exe. Then extend your PATH variable to the
-  fpc directory. For example under win98: Edit autoexec.bat and add the line
+  at http://www.freepascal.org/sdown.html. Download for example FPC as one big
+  file, unzip it and run install.exe. Then extend your PATH variable to the
+  FPC directory. For example under Windows 98: 
+	Edit autoexec.bat and add the line
   PATH=%PATH%;C:\pp\bin\bin\win32
-  Then restart win98.
+  Then restart Windows.
 
   ToDo: explain how to download fpc sources and build the compiler
 
@@ -142,12 +143,12 @@ properly:
  
  Effectively, you need:
 
- - a file with all sources, or two (fpc and lazarus)
-    (1) e.g. for fpc  ftp://ftp.freepascal.org/fpc/dist/Linux/separate/sources.tar
+ - a file with all sources, or two (FPC and Lazarus)
+    (1) e.g. for FPC ftp://ftp.freepascal.org/fpc/dist/Linux/separate/sources.tar
      preferably an export (no SVN/ dirs). The above file misses this
     (2) Lazarus source snapshot.
-  - _any_ starting compiler from the 2.4.2 branch) You can do a check by parsing
- 	  the output of 'fpc -v'  if it is 2.4.x or 2.5.x it is ok.
+  - _any_ starting compiler from the 2.6.2 branch) You can do a check by parsing
+ 	  the output of 'fpc -v'  if it is 2.6.2, it is ok.
   - dependant packages. (for FreeBSD that is gtk2, and
     GNU make, iconv and gettext)
 
@@ -193,16 +194,16 @@ properly:
 
 
 --------------------------------------------------------------------------------
-2.4 Installing FPC on Mac OS X
+2.4 Installing FPC on Mac OSX
 
   Read 1.3 first.
 
   Information:
   http://www.freepascal.org/fpcmac.html#TargetDarwin
 
-  Download the latest Mac OS X dmg package.
-  Since fpc for Mac OS X is under heavy development, it s recommended to use
-  the latest fpc from svn.
+  Download the latest Mac OSX dmg package.
+  Since FPC for Mac OSX is under heavy development, it s recommended to use
+  the latest FPC from svn.
 
   Open a terminal and type (without the []$)
   
@@ -233,48 +234,48 @@ properly:
 3. Installing Lazarus
 
 --------------------------------------------------------------------------------
-3.1 Installing Lazarus under Linux/BSD/MacOSX:
+3.1 Installing Lazarus under Linux/BSD/Mac OSX:
 
-  Because the whole lazarus stuff is installed into one directory, uninstall
-  is very easy and you don't need to be root to install lazarus.
+  Because the whole Lazarus stuff is installed into one directory, uninstall
+  is very easy and you don't need to be root to install Lazarus.
   You can get tgz/zip files from the downloads section or you can download it
   directly via svn.
   
   Hint: Most Linux distributions contain a Lazarus package. Go to your package
         manager and install it.
 
-  Downloading lazarus svn: svn provides an easy way to update your sources by
+  Downloading Lazarus svn: svn provides an easy way to update your sources by
   only downloading the changes. This is the recommended way and saves you a lot
-  of time. A connection to the internet is needed for this:
+  of time. A connection to the internet is needed for this.
   You don't to be root. Lazarus does not need any special permissions, neither
   during installation nor at runtime.
-  First create a directory for lazarus (e.g. /home/username/freepascal) then do
+  First create a directory for Lazarus (e.g. /home/username/freepascal) then do
   the following:
   
-  connect to the svn server (note: lazarus and freepascal use the same server)
+  connect to the svn server (note: Lazarus and Free Pascal use the same server)
   
   []$ svn checkout http://svn.freepascal.org/svn/lazarus/trunk lazarus
 
-  compile lazarus:
+  compile Lazarus:
 
   []$ cd lazarus
   []$ make          (gmake on BSD)
 
-  If fpc is installed correct, the compilation should work without problems. If
-  not, see FAQ.
-  Start lazarus
+  If FPC is installed correctly, the compilation should work without problems.
+	If not, see the FAQ.
+  Start Lazarus:
 
   []$ ./lazarus
 
-  The IDE should start. If you started lazarus in a terminal, you can see some
+  The IDE should start. If you started Lazarus in a terminal, you can see some
   notes about missing settings. This is normal at first start.
-  The IDE automatically tries to find out where the freepascal compiler and its
+  The IDE automatically tries to find out where the Free Pascal compiler and its
   sources are installed by searching in the most common directories.
   Check the paths:
     Use the IDE menu to go to
       Environment -> Environment Options -> Files
 
-    The 'FPC Source directory' should point to your fpc source directory. This
+    The 'FPC Source directory' should point to your FPC source directory. This
     directory normally ends with /fpc/ or /fpcsrc/ (e.g. /usr/share/fpcsrc or
     /home/username/freepascal/fpc) and
     contains directories like 'compiler', 'docs', 'fcl', 'rtl' and 'packages'.
@@ -283,13 +284,14 @@ properly:
 
 
   Hint:
-  To update lazarus you can use
+  To update Lazarus you can use
 
   []$ cd /home/username/freepascal/lazarus
   []$ svn up
   []$ make clean all   (gmake on BSD)
   
-  This will rebuild lazarus and create a minimal IDE with only the basic packages.
+  This will rebuild Lazarus and create a minimal IDE with only the basic 
+	packages.
   
   []$ make idepkg
 
@@ -298,32 +300,26 @@ properly:
 3.1 Installing Lazarus under Windows:
 
   Just download and install the .exe file. You can get the files from:
-  http://sourceforge.net/project/showfiles.php?group_id=89339 (stable release) or
+  http://sourceforge.net/project/showfiles.php?group_id=89339 (stable release)
+	or
   http://snapshots.lazarus.shikami.org/lazarus/ (snapshots)
 
 
-  Thx to Joe for this Step-by-step description:
+  Thanks to Joe for this Step-by-step description:
 
-  You have to download the lazarus source:
+  You have to download the Lazarus source:
   ftp://ftp.freepascal.org/pub/fpc/source/lazarus.zip
 
   Then unzip it to c:\lazarus for example.
-  You have to install at least fpc 2.4.2. It compiles to me and lazarus.exe
-  works. The path to my fpc is: c:\pp\bin\win32. In this directory you
-  can find a lot of exe (make, grep, ppc386, and so on).
+  You have to install at least FPC 2.6.2, e.g. in
+	c:\pp\bin\win32. 
+	In this directory you can find a lot of exes (make, grep, ppc386, and so on).
 
   Open a command line. Start->Run...>command or choose MS-DOS icon.
   Type:
   cd c:\lazarus
-  set path=c:\pp\bin\win32;c:\lazarus  //of course change the first to
-                                       //the path of yours
+	rem of course adjust to your path:
+  set path=c:\pp\bin\win32;c:\lazarus  
   make
 
-  If you are lucky then you can type: lazarus.exe
-
-  If you extracted lazarus to another drive, eg.: d:\lazarus. It can happen
-  that you need the gnu utility to make it. If you have it, you can take its
-  path to set path=...;<gmakepath> but it is simpler not to choose drive d:\
-
-  That's all.
-
+  If you are lucky then you can type: lazarus.exe  

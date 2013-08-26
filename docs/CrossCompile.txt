@@ -1,4 +1,4 @@
-Hints to cross compile under linux/xxxBSD
+Hints to cross compile under Linux/xxxBSD
 =========================================
 
 
@@ -7,24 +7,26 @@ Thanks to Vincent Snijders for the hints.
 ================================================================================
 
 A.
-for fpc 2.0 and up. On linux and bsd to other platforms like windows.
+For FPC 2.0 and up. On Linux and BSD to other platforms.
+(Note: not necessary for cross-compiling to Windows as FPC has had an internal 
+linker for this platform).s
 
 Abstract:
-  The following describes how to setup the binutils, fpc and lazarus for
+  The following describes how to setup the binutils, FPC and Lazarus for
   crosscompiling to other targets. Once you have these cross files you can
   switch easily in the Lazarus IDE between any of the target platforms.
 
 IMPORTANT: The FPC units must have the same date/version for all platforms,
   because you will use only one compiler. That means:
-  Whenever you update your FPC, you must update all other cross fpc units too.
-  The scripts will help you doing this.
+  Whenever you update your FPC, you must update all other cross FPC units too.
+  The scripts will help you to do this.
 
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 A.1
 
 Requirements:
-  An installed and working fpc. Preferrably the latest stable release.
+  An installed and working fpc. Preferably the latest stable release.
   A good internet connection or manually downloaded FPC sources and binutils.
 
 The following steps don't need the root user. They can be done as normal user.
@@ -77,13 +79,13 @@ TODO: write, where you can get the fpc 'install' directory sources.
 
 ================================================================================
 
-What the lazarus scripts do / Doing it by hand:
+What the Lazarus scripts do / Doing it by hand:
 
 
-1. Download the fpc sources
+1. Download the FPC sources
 
-  IMPORTANT: Your current FPC must be the same version/date as the fpc sources.
-  If your installed fpc is different, you can compile a new fpc from the
+  IMPORTANT: Your current FPC must be the same version/date as the FPC sources.
+  If your installed FPC is different, you can compile a new FPC from the
   sources.
 
 
@@ -127,7 +129,7 @@ What the lazarus scripts do / Doing it by hand:
 
 3. Cross build binutils
 
-  In the fpc source directory there is a script to build the binutils for all
+  In the FPC source directory there is a script to build the binutils for all
   cross platforms: install/cross/buildcrossbinutils
   Create a copy of the script:
 
@@ -151,7 +153,7 @@ What the lazarus scripts do / Doing it by hand:
   The script will automatically combine this to ~/download/binutils-2.14.tar.gz.
   The other variables define what target platforms you have. The default is to
   build quite a lot, so compilation will take some time (hours).
-  For cross compile to windows, you need only
+  For cross compile to Windows, you need only
 
   TARGETS_WIN="mingw32"
   
@@ -175,9 +177,9 @@ What the lazarus scripts do / Doing it by hand:
   without failed targets.
 
 
-4. Cross build fpc
+4. Cross build FPC
 
-  In the fpc source directory there is a script to build the fpc snapshot for
+  In the FPC source directory there is a script to build the FPC snapshot for
   all cross platforms: install/cross/buildcrosssnapshot
   Create a copy of the script:
 
@@ -204,7 +206,7 @@ What the lazarus scripts do / Doing it by hand:
 
   []$ sh buildcrosssnapshot.sh
 
-  This will create the fpc binaries under
+  This will create the FPC binaries under
   ~/freepascal/binutils/cross/destination/.
 
 

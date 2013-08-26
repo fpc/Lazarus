@@ -1,6 +1,6 @@
-This text is for people knowing Delphi and it describes the differences.
+This text is for people who know Delphi; it describes differences with Delphi.
 
-The online document is more uptodate:
+The online document is more up to date:
 http://wiki.lazarus.freepascal.org/Lazarus_Documentation#Coming_from_Delphi
 
 
@@ -8,7 +8,7 @@ Delphi -> Lazarus
 =================
 
 Lazarus is an Rapid Application Development (RAD) tool like Delphi. That means
-it comes with a visual component library and an IDE. The lazarus component
+it comes with a visual component library and an IDE. The Lazarus component
 library (LCL) is very similar to Delphi's VCL. Most units, classes and
 properties have the same name and functionality. This makes porting easy. But
 Lazarus is *not* an 'open source Delphi clone'. So don't expect 100%
@@ -16,9 +16,9 @@ compatibility.
 
 The biggest differences:
 Lazarus is completely open source, is written platform independent and uses the
-mighty FreePascal compiler (FPC). FPC runs on more than 15 platforms. But not
-all packages and libs are ported, so Lazarus currently runs on Linux,
-Free/Open/NetBSD and the win32 port is under heavy development.
+mighty FreePascal compiler (FPC). FPC runs on more than 15 platforms. However, 
+not all packages and libs are ported, so Lazarus currently runs on Linux,
+Free/Open/NetBSD and win32.
 
 Lazarus is not complete, as is this text. We are always searching for new
 developers, packagers, porters, documentation writers, ... .

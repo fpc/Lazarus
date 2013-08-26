@@ -15,7 +15,7 @@ components/Makefile.fpc   package directories
 ide/lazarus.pp            package names
 
 
-Do not forget update the ide/Makefile and components/Makefile.
+Do not forget to update the ide/Makefile and components/Makefile.
 
 Compiling the bigide:
 

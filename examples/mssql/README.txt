@@ -3,6 +3,8 @@ Example program for the MS SQL Server and Sybase connectors in Lazarus.
 
 These connectors require the FreeTDS shared library (dblib.dll/.so/.dylib), which at least on Windows requires libiconv2.dll for UTF8 support.
 These can be downloaded via www.freetds.org and are provided by a lot of Linux distributions.
+As a courtesy, FreePascal has a downloadable version for Windows at:
+ftp://ftp.freepascal.org/fpc/contrib/windows/
 
 The program will ask you for a database type (Sybase or MS SQL Server), username, password, server etc. and then connect.
 Then it will query the server for database server information and show the results in a dbgrid.

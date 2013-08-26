@@ -22,8 +22,8 @@ customform
   Registering custom form descendants in the IDE.
 
 daemon
-  Package to create programs that run as daemon under linux or service under
-  windows.
+  Package to create programs that run as daemon under Linux or service under
+  Windows.
 
 datadict
   Support for data dictionaries for the IDE and applications.
@@ -41,7 +41,7 @@ filebrowser
   A file browser window for the IDE.
 
 fpcunit
-  template for a fpcunit gui test runner
+  Template for a fpcunit GUI test runner.
 
 fpweb
   Units that support web server and web client programming.
@@ -65,7 +65,7 @@ lazthread
    ?
 
 leakview
-  Extends the IDE with a graphical viewer for the heaptrc output.
+  Extends the IDE with a graphical viewer for heaptrc output.
 
 pochecker
   Validates translated PO files.
@@ -89,7 +89,7 @@ opengl
   An OpenGL control.
 
 paradox
-  Support for paradox databases.
+  Support for Paradox databases.
 	
 PascalScript
   Version of RemObjects Pascal Script adapted for use in the Lazarus IDE.
@@ -130,7 +130,7 @@ synedit
   The text editor control used by the IDE.
 
 synunihighlighter
-  An universal highlighter for synedit.
+  A universal highlighter for synedit.
 
 tachart
   A control for graphs and plots.
