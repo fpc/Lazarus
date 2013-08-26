@@ -5653,7 +5653,7 @@ var
   i: Integer;
   n: TComponent;
 begin
-  FPageIndex:=-1;
+  FPageIndex := -1;
   i := 1;
   n := AOwner.FindComponent(NonModalIDEWindowNames[nmiwSourceNoteBookName]);
   while (n <> nil) do begin
@@ -5781,7 +5781,7 @@ Begin
   {$IFDEF IDE_MEM_CHECK}
   CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] B ');
   {$ENDIF}
-  FPageIndex:=-1;
+  FPageIndex := -1;
   with FNotebook do Begin
     Name:='SrcEditNotebook';
     Parent := Self;
@@ -6022,7 +6022,7 @@ begin
       PageCtrl:=TPageControl(PopM.PopupComponent);
       PageI:=PageCtrl.TabIndexAtClientPos(PageCtrl.ScreenToClient(PopM.PopupPoint));
       if (PageI>=0) and (PageI<PageCtrl.PageCount) then
-        PageIndex:=PageI  // Todo: This should be in MouseDown / or both, whichever is first
+        PageIndex := PageI  // Todo: This should be in MouseDown / or both, whichever is first
       else
         DebugLn(['TSourceNotebook.TabPopUpMenuPopup: Popup PageIndex=', PageI]);
     end;
@@ -6404,12 +6404,12 @@ end;
 procedure TSourceNotebook.SetPageIndex(AValue: Integer);
 begin
   DebugLnEnter(SRCED_PAGES, ['>> TSourceNotebook.SetPageIndex Cur-PgIdx=', PageIndex, ' FPageIndex=', FPageIndex, ' Value=', AValue, ' FUpdateLock=', FUpdateLock]);
-  AValue := Max(0, Min(AValue, FNotebook.PageCount-1));
   if (fPageIndex = AValue) and (FNotebook.PageIndex = AValue) then begin
     //debugln(['>> TSourceNotebook.SetPageIndex PageIndex=', PageIndex, ' FPageIndex=', FPageIndex, ' Value=', AValue, ' FUpdateLock=', FUpdateLock]);
     //DumpStack;
     exit;
   end;
+  //debugln(['>> TSourceNotebook.SetPageIndex CHANGE PageIndex=', PageIndex, ' FPageIndex=', FPageIndex, ' Value=', AValue, ' FUpdateLock=', FUpdateLock]);
   FPageIndex := AValue;
   if FUpdateLock = 0 then
     ApplyPageIndex
@@ -6865,9 +6865,12 @@ begin
   if FNotebook.Visible then
     NotebookPages.Insert(Index, S)
   else begin
+    if Index<>0 then
+      RaiseGDBException('');
     IDEWindowCreators.ShowForm(Self,false);
     FNotebook.Visible := True;
     NotebookPages[Index] := S;
+    FPageIndex := -1;
   end;
   UpdateTabsAndPageTitle;
 end;
@@ -6876,6 +6879,7 @@ procedure TSourceNotebook.NoteBookDeletePage(APageIndex: Integer);
 begin
   DebugLnEnter(SRCED_PAGES, ['TSourceNotebook.NoteBookDeletePage ', APageIndex]);
   HistoryRemove(FNotebook.Pages[APageIndex]);
+  //debugln(['TSourceNotebook.NoteBookDeletePage APageIndex=',APageIndex,' PageIndex=',PageIndex,' PageCount=',PageCount]);
   if PageCount > 1 then begin
     // make sure to select another page in the NoteBook, otherwise the
     // widgetset will choose one and will send a message
@@ -6892,10 +6896,14 @@ begin
         else
           FPageIndex := APageIndex - 1;
       FNoteBook.PageIndex := FPageIndex;
+      Include(FUpdateFlags,ufPageIndexChanged);
     end;
     NotebookPages.Delete(APageIndex);
-  end else
+  end else begin
+    FPageIndex := -1;
     FNotebook.Visible := False;
+  end;
+  //debugln(['TSourceNotebook.NoteBookDeletePage END PageIndex=',PageIndex,' FPageIndex=',FPageIndex]);
   UpdateTabsAndPageTitle;
   DebugLnExit(SRCED_PAGES, ['TSourceNotebook.NoteBookDeletePage ']);
 end;
@@ -7655,7 +7663,8 @@ begin
   Exclude(FUpdateFlags,ufPageIndexChanged);
   DebugBoss.LockCommandProcessing;
   try
-    FPageIndex:=Max(0,Min(FPageIndex,FNotebook.PageCount-1));
+    //debugln(['TSourceNotebook.ApplyPageIndex FPageIndex=',FPageIndex]);
+    FPageIndex := Max(0,Min(FPageIndex,FNotebook.PageCount-1));
     if Assigned(Manager) and (FNotebook.PageIndex = FPageIndex) then
       DoActiveEditorChanged;
     // make sure the statusbar is updated
@@ -8156,7 +8165,7 @@ begin
 
   ecGotoEditor1..ecGotoEditor9,ecGotoEditor0:
     if PageCount>Command-ecGotoEditor1 then
-      PageIndex:=Command-ecGotoEditor1;
+      PageIndex := Command-ecGotoEditor1;
 
   ecToggleFormUnit:
     ToggleFormUnitClicked(Self);
