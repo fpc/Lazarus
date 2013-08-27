@@ -38,7 +38,8 @@ unit IDECmdLine;
 interface
 
 uses 
-  Classes, SysUtils, FileUtil, LazFileUtils, LazConf, LCLProc;
+  Classes, SysUtils, FileUtil, LazFileUtils, LazUTF8Classes, BaseIDEIntf,
+  LazLogger, LazConf, LCLProc;
 
 const
   ShowSetupDialogOptLong='--setup';
@@ -72,7 +73,81 @@ procedure ParseNoGuiCmdLineParams;
 
 function ExtractCmdLineFilenames : TStrings;
 
+// options from CFG file
+function GetCfgFileContent: TStrings;
+function GetParamsAndCfgFile: TStrings;
+function ParamsAndCfgCount: Integer;
+function ParamsAndCfgStr(Idx: Integer): String;
+
+
 implementation
+
+var
+  CfgFileName: String = '';
+  CfgFileDone: Boolean = False;
+  CfgFileContent: TStrings = nil;
+  ParamsAndCfgFileContent: TStrings = nil;
+
+function GetCfgFileContent: TStrings;
+begin
+  Result := CfgFileContent;
+  if CfgFileDone then
+    exit;
+  CfgFileDone := True;
+  CfgFileName := AppendPathDelim(ProgramDirectory) + 'lazarus.cfg';
+  if FileExistsUTF8(CfgFileName) then begin
+  DebugLn(['using config file ', CfgFileName]);
+    CfgFileContent := TStringListUTF8.Create;
+    CfgFileContent.LoadFromFile(CfgFileName);
+  end;
+  Result := CfgFileContent;
+end;
+
+function GetParamsAndCfgFile: TStrings;
+var
+  Cfg: TStrings;
+  i: Integer;
+  s: String;
+  Warn: String;
+begin
+  Result := ParamsAndCfgFileContent;
+  if Result <> nil then
+    exit;
+  ParamsAndCfgFileContent := TStringList.Create;
+  ParamsAndCfgFileContent.Add(ParamStrUTF8(0));
+
+  Cfg := GetCfgFileContent;
+  if Cfg <> nil then begin
+    Warn := '';
+    // insert Cfg at start. For duplicates the latest occurenc takes precedence
+    for i := 0 to Cfg.Count - 1 do begin
+      s := Cfg[i];
+      if (s <> '') and (s[1] = '-') then
+        ParamsAndCfgFileContent.Add(Cfg[i])
+      else
+      if (s <> '') then
+        Warn := Warn + s + LineEnding;
+    end;
+  end;
+
+  for i := 1 to Paramcount do
+    ParamsAndCfgFileContent.Add(ParamStrUTF8(i));
+
+  Result := ParamsAndCfgFileContent;
+end;
+
+function ParamsAndCfgCount: Integer;
+begin
+  Result := GetParamsAndCfgFile.Count;
+end;
+
+function ParamsAndCfgStr(Idx: Integer): String;
+begin
+  if (Idx < 0) or (Idx >= GetParamsAndCfgFile.Count) then
+    Result := ''
+  else
+    Result := GetParamsAndCfgFile[Idx];
+end;
 
 procedure ParseCommandLine(aCmdLineParams: TStrings; out IDEPid: Integer; out
   ShowSplashScreen: boolean);
@@ -86,8 +161,8 @@ var
 begin
   IDEPid := 0;
   HasDebugLog := False;
-  for i := 1 to ParamCount do begin
-    Param := ParamStrUTF8(i);
+  for i := 1 to ParamsAndCfgCount do begin
+    Param := ParamsAndCfgStr(i);
     if SysUtils.CompareText(LeftStr(Param, length(DebugLogOpt)), DebugLogOpt) = 0 then
       HasDebugLog := HasDebugLog or (length(Param) > length(DebugLogOpt));
     if (Param=LazarusDebugOpt) and (not HasDebugLog) then begin
@@ -167,7 +242,7 @@ var
 begin
   Result := false;
   i:=1;
-  while (i <= ParamCount) and (Result = false) do
+  while (i <= ParamsAndCfgCount) and (Result = false) do
   begin
     Result := ParamIsOption(i, '--help') or
               ParamIsOption(i, '-help')  or
@@ -179,7 +254,7 @@ end;
 
 function IsVersionRequested: boolean;
 begin
-  Result := (ParamCount=1) and
+  Result := (ParamsAndCfgCount=1) and
             (ParamIsOption(1, '--version') or
              ParamIsOption(1, '-v'));
 end;
@@ -193,7 +268,7 @@ begin
   Result := '';
   AValue := '';
   i := 1;
-  while i <= ParamCount do
+  while i <= ParamsAndCfgCount do
   begin
     if ParamIsOptionPlusValue(i, LanguageOpt, AValue) = true then
     begin
@@ -206,7 +281,7 @@ end;
 
 function ParamIsOption(ParamIndex : integer; const Option : string) : boolean;
 begin
-  Result:=SysUtils.CompareText(ParamStrUTF8(ParamIndex),Option) = 0;
+  Result:=SysUtils.CompareText(ParamsAndCfgStr(ParamIndex),Option) = 0;
 end;
 
 function ParamIsOptionPlusValue(ParamIndex : integer;
@@ -214,7 +289,7 @@ function ParamIsOptionPlusValue(ParamIndex : integer;
 var
   p : String;
 begin
- p      := ParamStrUTF8(ParamIndex);
+ p      := ParamsAndCfgStr(ParamIndex);
  Result := SysUtils.CompareText(LeftStr(p, length(Option)), Option) = 0;
  if Result then
    AValue := copy(p, length(Option) + 1, length(p))
@@ -227,9 +302,9 @@ var
   i      : integer;
   AValue : String;
 begin
-  for i:= 1 to ParamCount do
+  for i:= 1 to ParamsAndCfgCount do
   begin
-    //DebugLn(['ParseNoGuiCmdLineParams ',i,' "',ParamStrUTF8(i),'"']);
+    //DebugLn(['ParseNoGuiCmdLineParams ',i,' "',ParamsAndCfgStr(i),'"']);
     if ParamIsOptionPlusValue(i, PrimaryConfPathOptLong, AValue) then
       SetPrimaryConfigPath(AValue)
     else if ParamIsOptionPlusValue(i, PrimaryConfPathOptShort, AValue) then
@@ -248,9 +323,9 @@ var
   
 begin
   Result := nil;
-  for i := 1 to ParamCount do
+  for i := 1 to ParamsAndCfgCount do
    begin
-     Filename := ParamStrUTF8(i);
+     Filename := ParamsAndCfgStr(i);
      if (Filename = '') or (Filename[1] = '-') then
        continue;
      if Result = nil then
@@ -259,5 +334,22 @@ begin
     end;
 end;
 
+procedure InitLogger;
+var
+  i      : integer;
+  AValue : String;
+begin
+  for i:= 1 to ParamsAndCfgCount do
+  begin
+    if ParamIsOptionPlusValue(i, DebugLogOpt, AValue) then
+      LazLogger.DebugLogger.LogName := AValue;
+  end;
+end;
+
+initialization
+  InitLogger;
+finalization
+  FreeAndNil(CfgFileContent);
+  FreeAndNil(ParamsAndCfgFileContent);
 end.
 

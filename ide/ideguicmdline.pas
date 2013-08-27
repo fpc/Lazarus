@@ -158,9 +158,9 @@ var
   i: Integer;
 begin
   ParseNoGuiCmdLineParams;
-  for i:= 1 to ParamCount do
+  for i:= 1 to ParamsAndCfgCount do
   begin
-    //DebugLn(['ParseGuiCmdLineParams ',i,' "',ParamStrUTF8(i),'"']);
+    //DebugLn(['ParseGuiCmdLineParams ',i,' "',ParamsAndCfgStr(i),'"']);
     if ParamIsOption(i, NoSplashScreenOptLong) or
         ParamIsOption(i, NoSplashScreenOptShort)    then
       ShowSplashScreen := false
@@ -241,8 +241,8 @@ function SetupMainIDEInstance: boolean;
     sl:=TStringListUTF8.Create;
     try
       sl.Add('Show');
-      for i:=1 to Paramcount do begin
-        Param:=ParamStrUTF8(i);
+      for i:=1 to ParamsAndCfgCount do begin
+        Param:=ParamsAndCfgStr(i);
         if (Param='') or (Param[1]='-') then continue;
         sl.Add('Open '+Param);
       end;
