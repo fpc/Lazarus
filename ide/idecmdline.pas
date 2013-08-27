@@ -123,9 +123,9 @@ begin
     for i := 0 to Cfg.Count - 1 do begin
       s := Cfg[i];
       if (s <> '') and (s[1] = '-') then
-        ParamsAndCfgFileContent.Add(Cfg[i])
+        ParamsAndCfgFileContent.Add(Trim(Cfg[i]))
       else
-      if (s <> '') then
+      if (s <> '') and (s[1] <> '#') then
         Warn := Warn + s + LineEnding;
     end;
   end;
