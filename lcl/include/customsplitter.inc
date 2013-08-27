@@ -426,7 +426,7 @@ begin
         CurMaxShrink := Max(0, GetControlSize(CurResizeControl) - GetControlConstraintsMinSize(CurResizeControl));
         // calculate how much the CurResizeControl can be enlarged
         CurMaxEnlarge := Max(0, GetControlConstraintsMaxSize(CurResizeControl) - GetControlSize(CurResizeControl));
-        if CurMaxEnlarge=0 then
+        if (CurMaxEnlarge=0) and (GetControlConstraintsMaxSize(CurResizeControl)=0) then
         begin
           CurMaxEnlarge := GetParentsClientSize;
           if GetControlMinPos(CurResizeControl) < 0 then
@@ -439,16 +439,16 @@ begin
            (CurResizeControl.AnchorSide[akTop].Control = Self) then
         begin
           // splitter is left or top of CurResizeControl
-          if CurMaxEnlarge > 0 then
+          if CurMaxEnlarge >= 0 then
             OffsetMaxLower := Min(OffsetMaxLower, CurMaxEnlarge);
-          if CurMaxShrink > 0 then
+          if CurMaxShrink >= 0 then
             OffsetMaxUpper := Min(OffsetMaxUpper, CurMaxShrink);
         end else
         begin
           // splitter is right or bottom of CurResizeControl
-          if CurMaxShrink > 0 then
+          if CurMaxShrink >= 0 then
             OffsetMaxLower := Min(OffsetMaxLower, CurMaxShrink);
-          if CurMaxEnlarge > 0 then
+          if CurMaxEnlarge >= 0 then
             OffsetMaxUpper := Min(OffsetMaxUpper, CurMaxEnlarge);
         end;
       end;
