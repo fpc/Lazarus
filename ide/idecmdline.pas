@@ -82,11 +82,15 @@ const
 var
   i     : Integer;
   Param : string;
+  HasDebugLog: Boolean;
 begin
   IDEPid := 0;
+  HasDebugLog := False;
   for i := 1 to ParamCount do begin
     Param := ParamStrUTF8(i);
-    if Param=LazarusDebugOpt then begin
+    if SysUtils.CompareText(LeftStr(Param, length(DebugLogOpt)), DebugLogOpt) = 0 then
+      HasDebugLog := HasDebugLog or (length(Param) > length(DebugLogOpt));
+    if (Param=LazarusDebugOpt) and (not HasDebugLog) then begin
       aCmdLineParams.Add('--debug-log=' +
                          AppendPathDelim(UTF8ToSys(GetPrimaryConfigPath)) + 'debug.log');
     end;
