@@ -7920,7 +7920,7 @@ tools/install/win/lazarus.fr.isl svneol=native#text/plain
 tools/install/win/lazarus.pt_BR.isl svneol=native#text/plain
 tools/install/win/lazarus.ru.isl svneol=native#text/plain
 tools/install/win/lazarus_install_cheetah.bmp -text svneol=unset#image/bmp
-tools/install/win/lazarus_install_cheetah_small.bmp -text svneol=unset#image/bmp
+tools/install/win/lazgear.bmp -text
 tools/install/win/readme.txt svneol=native#text/plain
 tools/install/win/svn2revisioninc.bat svneol=native#text/x-msdos-program
 tools/jsonviewer/README.txt svneol=native#text/plain
