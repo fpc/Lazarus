@@ -30,9 +30,10 @@ unit etFPCMsgParser;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, KeywordFuncLists, IDEExternToolIntf,
-  CodeToolsFPCMsgs, CodeToolsStructs, CodeCache, CodeToolManager, LazUTF8,
-  etMakeMsgParser;
+  Classes, SysUtils, strutils, FileProcs, KeywordFuncLists, IDEExternToolIntf,
+  PackageIntf, LazIDEIntf, ProjectIntf, CodeToolsFPCMsgs, CodeToolsStructs,
+  CodeCache, CodeToolManager, DirectoryCacher, BasicCodeTools, LazUTF8,
+  etMakeMsgParser, EnvironmentOpts;
 
 type
   TFPCMsgFilePool = class;
@@ -128,6 +129,13 @@ type
     function CheckForLoadFromUnit(p: PChar): Boolean;
     function CheckForWindresErrors(p: PChar): boolean;
     function CreateMsgLine: TMessageLine;
+    procedure ImproveMsgHiddenByIDEDirective(const SourceOK: Boolean;
+      var MsgLine: TMessageLine);
+    procedure ImproveMsgSenderNotUsed(const MsgLine: TMessageLine);
+    procedure ImproveMsgUnitNotUsed(aSynchronized: boolean;
+      const aFilename: String; var MsgLine: TMessageLine);
+    procedure ImproveMsgUnitNotFound(aSynchronized: boolean;
+      var MsgLine: TMessageLine);
     procedure Translate(p: PChar; MsgItem, TranslatedItem: TFPCMsgItem;
         out TranslatedMsg: String; out MsgType: TMessageLineUrgency);
   public
@@ -153,15 +161,21 @@ type
     class function Priority: integer; override;
     class function GetFPCMsgPattern(Msg: TMessageLine): string; override;
     class function GetFPCMsgValue1(Msg: TMessageLine): string; override;
+    class function GetFPCMsgValues(Msg: TMessageLine; out Value1, Value2: string): boolean; override;
   end;
 
 var
   FPCMsgFilePool: TFPCMsgFilePool = nil;
 
+// thread safe
 function FPCMsgToMsgUrgency(Msg: TFPCMsgItem): TMessageLineUrgency;
 function FPCMsgTypeToUrgency(const Typ: string): TMessageLineUrgency;
 function TranslateFPCMsg(const Src, SrcPattern, TargetPattern: string): string;
 function GetFPCMsgValue1(const Src, Pattern: string; out Value1: string): boolean;
+function GetFPCMsgValues(Src, Pattern: string; out Value1, Value2: string): boolean;
+
+// not thread safe
+function IsFileInIDESrcDir(Filename: string): boolean; // (main thread)
 
 procedure RegisterFPCParser;
 
@@ -368,6 +382,55 @@ begin
     Value1:=copy(Src,p,length(Src)-length(Pattern)+2);
     Result:=true;
   end;
+end;
+
+function GetFPCMsgValues(Src, Pattern: string; out Value1, Value2: string
+  ): boolean;
+{ Pattern: 'Unit $1 was not found but $2 exists'
+  Src:     'Unit dialogprocs was not found but dialogpr exists'
+  Value1:  'dialogprocs'
+  Value1:  'dialogpr'
+  Not supported: '$1$2'
+}
+var
+  p1: SizeInt;
+  LastPattern: String;
+  p2: SizeInt;
+  MiddlePattern: String;
+  SrcP1Behind: Integer;
+  SrcP2: Integer;
+begin
+  Result:=false;
+  Value1:='';
+  Value2:='';
+  p1:=Pos('$1',Pattern);
+  if p1<1 then exit;
+  p2:=Pos('$2',Pattern);
+  if p2<=p1+2 then exit;
+  if LeftStr(Pattern,p1)<>LeftStr(Src,p1) then exit;
+  LastPattern:=RightStr(Pattern,length(Pattern)-p2-1);
+  if RightStr(Src,length(LastPattern))<>LastPattern then exit;
+  MiddlePattern:=copy(Pattern,p1+2,p2-p1-2);
+  SrcP1Behind:=PosEx(MiddlePattern,Src,p1+2);
+  if SrcP1Behind<1 then exit;
+  Value1:=copy(Src,p1,SrcP1Behind-p1);
+  SrcP2:=SrcP1Behind+length(MiddlePattern);
+  Value2:=copy(Src,SrcP2,length(Src)-SrcP2-length(LastPattern)+1);
+  Result:=true;
+end;
+
+function IsFileInIDESrcDir(Filename: string): boolean;
+var
+  LazDir: String;
+begin
+  Filename:=TrimFilename(Filename);
+  if not FilenameIsAbsolute(Filename) then exit(false);
+  LazDir:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory);
+  Result:=FileIsInPath(Filename,LazDir+'ide')
+       or FileIsInPath(Filename,LazDir+'debugger')
+       or FileIsInPath(Filename,LazDir+'packager')
+       or FileIsInPath(Filename,LazDir+'converter')
+       or FileIsInPath(Filename,LazDir+'designer');
 end;
 
 procedure RegisterFPCParser;
@@ -1187,6 +1250,304 @@ begin
   Result.MsgID:=fMsgID;
 end;
 
+procedure TIDEFPCParser.ImproveMsgHiddenByIDEDirective(const SourceOK: Boolean;
+  var MsgLine: TMessageLine);
+var
+  p: PChar;
+  X: Integer;
+  Y: Integer;
+begin
+  // check for {%H-}
+  X:=MsgLine.Column;
+  Y:=MsgLine.Line;
+  if SourceOK and (not (mlfHiddenByIDEDirectiveValid in MsgLine.Flags)) then
+  begin
+    if (y<=fLastSource.LineCount) and (x-1<=fLastSource.GetLineLength(y-1))
+    then begin
+      p:=PChar(fLastSource.Source)+fLastSource.GetLineStart(y-1)+x-2;
+      //debugln(['TFPCParser.ImproveMessages ',aFilename,' ',Y,',',X,' ',copy(fLastSource.GetLine(y-1),1,x-1),'|',copy(fLastSource.GetLine(y-1),x,100),' p=',p[0],p[1],p[2]]);
+      if ((p^='{') and (p[1]='%') and (p[2]='H') and (p[3]='-'))
+      or ((x>5) and (p[-5]='{') and (p[-4]='%') and (p[-3]='H') and (p[-2]='-')
+        and (p[-1]='}'))
+      then begin
+        //debugln(['TFPCParser.ImproveMessages HIDDEN ',aFilename,' ',Y,',',X,' ',MsgLine.Msg]);
+        MsgLine.Flags:=MsgLine.Flags+[mlfHiddenByIDEDirective,
+          mlfHiddenByIDEDirectiveValid];
+      end;
+    end;
+    MsgLine.Flags:=MsgLine.Flags+[mlfHiddenByIDEDirectiveValid];
+  end;
+end;
+
+procedure TIDEFPCParser.ImproveMsgSenderNotUsed(const MsgLine: TMessageLine);
+begin
+  // check for Sender not used
+  if (MsgLine.MsgID=5024) // parameter $1 not used
+  and (MsgLine.Urgency>mluVerbose)
+  and (MsgLine.Msg='Parameter "Sender" not used') then begin
+    // almost always not important
+    MsgLine.Urgency:=mluVerbose;
+  end;
+end;
+
+procedure TIDEFPCParser.ImproveMsgUnitNotUsed(aSynchronized: boolean;
+  const aFilename: String; var MsgLine: TMessageLine);
+// check for Unit not used message in main sources
+// and change urgency to merely 'verbose'
+begin
+  if (MsgLine.MsgID<>5023) // Unit $1 not used
+  or (MsgLine.Urgency<=mluVerbose) then exit;
+  //debugln(['TIDEFPCParser.ImproveMsgUnitNotUsed ',aSynchronized,' ',MsgLine.Msg]);
+  // unit not used
+  if FilenameIsAbsolute(aFilename)
+  and ((CompareFileExt(aFilename, 'lpr', false)=0)
+    or FileExists(ChangeFileExt(aFilename, '.lpk'), aSynchronized))
+  then begin
+    // a lpk/lpr does not use a unit => almost always not important
+    MsgLine.Urgency:=mluVerbose;
+  end else begin
+    if aSynchronized then begin
+      // ToDo: check if this is the main unit of a project/package
+      MsgLine.Urgency:=mluVerbose;
+    end else begin
+      NeedSynchronize:=true;
+    end;
+  end;
+end;
+
+procedure TIDEFPCParser.ImproveMsgUnitNotFound(aSynchronized: boolean;
+  var MsgLine: TMessageLine);
+
+  procedure FixSourcePos(CodeBuf: TCodeBuffer; MissingUnitname: string);
+  var
+    InPos: Integer;
+    NamePos: Integer;
+    Tool: TCodeTool;
+    Caret: TCodeXYPosition;
+    NewFilename: String;
+  begin
+    {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+    debugln(['TIDEFPCParser.ImproveMsgUnitNotFound File=',CodeBuf.Filename]);
+    {$ENDIF}
+    LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
+    if not CodeToolBoss.FindUnitInAllUsesSections(CodeBuf,MissingUnitname,NamePos,InPos)
+    then begin
+      DebugLn('QuickFixUnitNotFoundPosition failed due to syntax errors or '+MissingUnitname+' is not used in '+CodeBuf.Filename);
+      exit;
+    end;
+    Tool:=CodeToolBoss.CurCodeTool;
+    if Tool=nil then exit;
+    if not Tool.CleanPosToCaret(NamePos,Caret) then exit;
+    if (Caret.X>0) and (Caret.Y>0) then begin
+      //DebugLn('QuickFixUnitNotFoundPosition Line=',dbgs(Line),' Col=',dbgs(Col));
+      NewFilename:=Caret.Code.Filename;
+      MsgLine.SetSourcePosition(NewFilename,Caret.Y,Caret.X);
+    end;
+  end;
+
+  procedure FindPPUInInstalledPkgs(MissingUnitname: string;
+    var PPUFilename, PkgName: string);
+  var
+    i: Integer;
+    Pkg: TIDEPackage;
+    DirCache: TCTDirectoryCache;
+    UnitOutDir: String;
+  begin
+    // search ppu in installed packages
+    for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
+      Pkg:=PackageEditingInterface.GetPackages(i);
+      if Pkg.AutoInstall=pitNope then continue;
+      UnitOutDir:=Pkg.LazCompilerOptions.GetUnitOutputDirectory(false);
+      //debugln(['TQuickFixUnitNotFoundPosition.Execute ',Pkg.Name,' UnitOutDir=',UnitOutDir]);
+      if FilenameIsAbsolute(UnitOutDir) then begin
+        DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(UnitOutDir,true,false);
+        PPUFilename:=DirCache.FindFile(MissingUnitname+'.ppu',ctsfcLoUpCase);
+        //debugln(['TQuickFixUnitNotFoundPosition.Execute ShortPPU=',PPUFilename]);
+        if PPUFilename<>'' then begin
+          PkgName:=Pkg.Name;
+          PPUFilename:=AppendPathDelim(DirCache.Directory)+PPUFilename;
+          break;
+        end;
+      end;
+    end;
+  end;
+
+  procedure FindPackage(MissingUnitname: string; var PkgName: string;
+    OnlyInstalled: boolean);
+  var
+    i: Integer;
+    Pkg: TIDEPackage;
+    j: Integer;
+    PkgFile: TLazPackageFile;
+  begin
+    if PkgName='' then begin
+      // search unit in installed packages
+      for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
+        Pkg:=PackageEditingInterface.GetPackages(i);
+        if OnlyInstalled and (Pkg.AutoInstall=pitNope) then continue;
+        if CompareTextCT(Pkg.Name,MissingUnitname)=0 then begin
+          PkgName:=Pkg.Name;
+          break;
+        end;
+        for j:=0 to Pkg.FileCount-1 do begin
+          PkgFile:=Pkg.Files[j];
+          if not FilenameIsPascalUnit(PkgFile.Filename) then continue;
+          if CompareTextCT(ExtractFileNameOnly(PkgFile.Filename),MissingUnitname)<>0
+          then continue;
+          PkgName:=Pkg.Name;
+          break;
+        end;
+      end;
+    end;
+  end;
+
+var
+  MissingUnitName: string;
+  UsedByUnit: string;
+  Filename: String;
+  NewFilename: String;
+  CodeBuf: TCodeBuffer;
+  Owners: TFPList;
+  UsedByOwner: TObject;
+  PPUFilename: String;
+  PkgName: String;
+  OnlyInstalled: Boolean;
+  s: String;
+begin
+  if (not aSynchronized)
+  or (MsgLine.MsgID<>10022) // Can't find unit $1 used by $2
+  then exit;
+
+  if not TFPCParser.GetFPCMsgValues(MsgLine,MissingUnitName,UsedByUnit) then
+    exit;
+
+  {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+  debugln(['TIDEFPCParser.ImproveMsgUnitNotFound Missing="',MissingUnitname,'" used by "',UsedByUnit,'"']);
+  {$ENDIF}
+
+  CodeBuf:=nil;
+  Filename:=MsgLine.GetFullFilename;
+  if (CompareFilenames(ExtractFileName(Filename),'staticpackages.inc')=0)
+  and IsFileInIDESrcDir(Filename) then begin
+    // common case: when building the IDE a package unit is missing
+    // staticpackages.inc(1,1) Fatal: Can't find unit sqldblaz used by Lazarus
+    // change to lazarus.pp(1,1)
+    Filename:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+'ide'+PathDelim+'lazarus.pp';
+    MsgLine.SetSourcePosition(Filename,1,1);
+    MsgLine.Msg:='Can''t find a valid '+MissingUnitname+'.ppu';
+  end else if SysUtils.CompareText(ExtractFileNameOnly(Filename),UsedByUnit)<>0
+  then begin
+    // the message belongs to another unit
+    NewFilename:='';
+    if FilenameIsAbsolute(Filename) then
+    begin
+      // For example: /path/laz/main.pp(1,1) Fatal: Can't find unit lazreport used by lazarus
+      // => search source 'lazarus' in directory
+      NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitInDirectory(
+                                     ExtractFilePath(Filename),UsedByUnit,true);
+    end;
+    if NewFilename='' then begin
+      NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit);
+      if NewFilename='' then begin
+        {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+        debugln(['TIDEFPCParser.ImproveMsgUnitNotFound unit not found: ',UsedByUnit);
+        {$ENDIF}
+      end;
+    end;
+    if NewFilename<>'' then
+      Filename:=NewFilename;
+  end;
+
+  if Filename<>'' then begin
+    CodeBuf:=CodeToolBoss.LoadFile(Filename,false,false);
+    if CodeBuf=nil then begin
+      {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+      debugln(['TIDEFPCParser.ImproveMsgUnitNotFound unable to load unit: ',Filename);
+      {$ENDIF}
+    end;
+  end else begin
+    {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+    debugln(['TIDEFPCParser.ImproveMsgUnitNotFound unable to locate UsedByUnit: ',UsedByUnit);
+    {$ENDIF}
+  end;
+
+  // fix line and column
+  Owners:=nil;
+  UsedByOwner:=nil;
+  try
+    if CodeBuf<>nil then begin
+      FixSourcePos(CodeBuf,MissingUnitname);
+      Owners:=PackageEditingInterface.GetOwnersOfUnit(CodeBuf.Filename);
+      if (Owners<>nil) and (Owners.Count>0) then
+        UsedByOwner:=TObject(Owners[0]);
+    end;
+
+    // if the ppu exists then improve the message
+    {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+    debugln(['TIDEFPCParser.ImproveMsgUnitNotFound Filename=',CodeBuf.Filename]);
+    {$ENDIF}
+    if FilenameIsAbsolute(CodeBuf.Filename) then begin
+      PPUFilename:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
+                        ExtractFilePath(CodeBuf.Filename),MissingUnitname);
+      {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+      debugln(['TQuickFixUnitNotFoundPosition.Execute PPUFilename=',PPUFilename,' IsFileInIDESrcDir=',IsFileInIDESrcDir(Dir+'test')]);
+      {$ENDIF}
+      PkgName:='';
+      OnlyInstalled:=IsFileInIDESrcDir(CodeBuf.Filename);
+      if OnlyInstalled and (PPUFilename='') then begin
+        FindPPUInInstalledPkgs(MissingUnitname,PPUFilename,PkgName);
+      end;
+
+      FindPackage(MissingUnitname,PkgName,OnlyInstalled);
+      if PPUFilename<>'' then begin
+        // there is a ppu file in the unit path
+        if PPUFilename<>'' then begin
+          // there is a ppu file, but the compiler didn't like it
+          // => change message
+          s:='Can not find '+MissingUnitname;
+          if UsedByUnit<>'' then
+            s+=' used by '+UsedByUnit;
+          s+=', ppu='+CreateRelativePath(PPUFilename,ExtractFilePath(CodeBuf.Filename));
+          if PkgName<>'' then
+            s+=', package '+PkgName;
+        end else if PkgName<>'' then begin
+          // ppu is missing, but the package is known
+          // => change message
+          s:='Can''t find ppu of unit '+MissingUnitname;
+          if UsedByUnit<>'' then
+            s+=' used by '+UsedByUnit;
+          s+='. Maybe package '+PkgName+' needs a clean rebuild.';
+        end;
+      end else begin
+        // there is no ppu file in the unit path
+        s:='Can not find unit '+MissingUnitname;
+        if UsedByUnit<>'' then
+          s+=' used by '+UsedByUnit;
+        if (UsedByOwner is TIDEPackage)
+        and (CompareTextCT(TIDEPackage(UsedByOwner).Name,PkgName)=0) then
+        begin
+          // two units of a package can not find each other
+          s+='. Check search path package '+TIDEPackage(UsedByOwner).Name+', try a clean rebuild, check implementation uses sections.';
+        end else begin
+          if PkgName<>'' then
+            s+='. Check if package '+PkgName+' is in the dependencies';
+          if UsedByOwner is TLazProject then
+            s+=' of the project inspector'
+          else if UsedByOwner is TIDEPackage then
+            s+=' of package '+TIDEPackage(UsedByOwner).Name;
+        end;
+        s+='.';
+      end;
+      MsgLine.Msg:=s;
+      {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+      debugln(['TIDEFPCParser.ImproveMsgUnitNotFound Msg.Msg="',Msg.Msg,'"']);
+      {$ENDIF}
+    end;
+  finally
+    Owners.Free;
+  end;
+end;
+
 procedure TIDEFPCParser.Translate(p: PChar; MsgItem, TranslatedItem: TFPCMsgItem;
   out TranslatedMsg: String; out MsgType: TMessageLineUrgency);
 begin
@@ -1558,7 +1919,6 @@ var
   aFilename: String;
   Y: Integer;
   X: Integer;
-  p: PChar;
   Code: TCodeBuffer;
   SourceOK: Boolean;
 begin
@@ -1595,50 +1955,10 @@ begin
         end;
       end;
 
-      // check for {%H-}
-      if SourceOK and (not (mlfHiddenByIDEDirectiveValid in MsgLine.Flags)) then
-      begin
-        if (y<=fLastSource.LineCount) and (x-1<=fLastSource.GetLineLength(y-1))
-        then begin
-          p:=PChar(fLastSource.Source)+fLastSource.GetLineStart(y-1)+x-2;
-          //debugln(['TFPCParser.ImproveMessages ',aFilename,' ',Y,',',X,' ',copy(fLastSource.GetLine(y-1),1,x-1),'|',copy(fLastSource.GetLine(y-1),x,100),' p=',p[0],p[1],p[2]]);
-          if ((p^='{') and (p[1]='%') and (p[2]='H') and (p[3]='-'))
-          or ((x>5) and (p[-5]='{') and (p[-4]='%') and (p[-3]='H') and (p[-2]='-') and (p[-1]='}'))
-          then begin
-            //debugln(['TFPCParser.ImproveMessages HIDDEN ',aFilename,' ',Y,',',X,' ',MsgLine.Msg]);
-            MsgLine.Flags:=MsgLine.Flags+[mlfHiddenByIDEDirective,mlfHiddenByIDEDirectiveValid];
-          end;
-        end;
-        MsgLine.Flags:=MsgLine.Flags+[mlfHiddenByIDEDirectiveValid];
-      end;
-
-      if (MsgLine.MsgID=5023) // Unit $1 not used
-      and (MsgLine.Urgency>mluVerbose) then begin
-        //debugln(['TIDEFPCParser.ImproveMessages ',aSynchronized,' ',MsgLine.Msg]);
-        // unit not used
-        if FilenameIsAbsolute(aFilename)
-        and ((CompareFileExt(aFilename,'lpr',false)=0)
-          or FileExists(ChangeFileExt(aFilename,'.lpk'),aSynchronized))
-        then begin
-          // a lpk/lpr does not use a unit => almost always not important
-          MsgLine.Urgency:=mluVerbose;
-        end else begin
-          if aSynchronized then begin
-            // ToDo: check if this is the main unit of a project/package
-            MsgLine.Urgency:=mluVerbose;
-          end else begin
-            NeedSynchronize:=true;
-          end;
-        end;
-      end;
-
-      // check for Sender not used
-      if (MsgLine.MsgID=5024) // parameter $1 not used
-      and (MsgLine.Urgency>mluVerbose)
-      and (MsgLine.Msg='Parameter "Sender" not used') then begin
-        // almost always not important
-        MsgLine.Urgency:=mluVerbose;
-      end;
+      ImproveMsgHiddenByIDEDirective(SourceOK, MsgLine);
+      ImproveMsgUnitNotFound(aSynchronized, MsgLine);
+      ImproveMsgUnitNotUsed(aSynchronized, aFilename, MsgLine);
+      ImproveMsgSenderNotUsed(MsgLine);
     end;
   end;
   fLastWorkerImprovedMessage[aSynchronized]:=Tool.WorkerMessages.Count-1;
@@ -1732,6 +2052,15 @@ begin
   if Msg.SubTool<>SubToolFPC then exit;
   if not etFPCMsgParser.GetFPCMsgValue1(Msg.Msg,GetFPCMsgPattern(Msg),Result) then
     Result:='';
+end;
+
+class function TIDEFPCParser.GetFPCMsgValues(Msg: TMessageLine; out Value1,
+  Value2: string): boolean;
+begin
+  Result:=false;
+  if Msg.MsgID<=0 then exit;
+  if Msg.SubTool<>SubToolFPC then exit;
+  Result:=etFPCMsgParser.GetFPCMsgValues(Msg.Msg,GetFPCMsgPattern(Msg),Value1,Value2);
 end;
 
 finalization

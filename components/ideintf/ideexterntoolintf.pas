@@ -267,6 +267,7 @@ type
     function GetFPCMsgIDPattern(MsgID: integer): string; virtual; abstract;
     class function GetFPCMsgPattern(Msg: TMessageLine): string; virtual; abstract;
     class function GetFPCMsgValue1(Msg: TMessageLine): string; virtual; abstract;
+    class function GetFPCMsgValues(Msg: TMessageLine; out Value1, Value2: string): boolean; virtual; abstract;
   end;
 
   { TMakeParser - standard parser for 'make' messages, implemented by IDE }

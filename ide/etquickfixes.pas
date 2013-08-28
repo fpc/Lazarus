@@ -21,7 +21,25 @@
   Author: Mattias Gaertner
 
   Abstract:
-    Standard Quick Fixes - small tools to fix (compiler) messages.
+    Standard Quick Fixes - tools to fix (compiler) messages.
+
+  ToDo:
+    - TQuickFixIdentifierNotFoundAddLocal: extend with add private/public
+    - There is no method in an ancestor class to be overriden:
+      1. option: if the ancestor has a function with the same name: update the parameter list
+      2. option: remove the method
+      3. option: add a virtual method to the ancestor
+    - complete function implementations with missing parameters
+    - private variable not used => remove
+    - Hint: Local variable "Path" does not seem to be initialized
+         auto add begin+end
+         Pointer:=nil
+         integer:=0
+         string:=''
+         record: FillByte(p %H-,SizeOf(p),0)
+         set:=[]
+         enum:=low(enum);
+
 }
 unit etQuickFixes;
 
@@ -31,8 +49,9 @@ interface
 
 uses
   Classes, SysUtils, IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, IDEDialogs,
-  Menus, Dialogs, etFPCMsgParser, CodeToolManager, CodeCache, CodeTree,
-  CodeAtom, BasicCodeTools, LazLogger, AvgLvlTree, LazFileUtils;
+  Menus, Dialogs, Controls, etFPCMsgParser, AbstractsMethodsDlg,
+  CodeToolManager, CodeCache, CodeTree, CodeAtom, BasicCodeTools, LazLogger,
+  AvgLvlTree, LazFileUtils;
 
 type
 
@@ -48,6 +67,35 @@ type
   { TQuickFixIdentifierNotFoundAddLocal }
 
   TQuickFixIdentifierNotFoundAddLocal = class(TMsgQuickFix)
+  public
+    function IsApplicable(Msg: TMessageLine): boolean;
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+  end;
+
+  { TQuickFixLocalVariableNotUsed_Remove }
+
+  TQuickFixLocalVariableNotUsed_Remove = class(TMsgQuickFix)
+  public
+    function IsApplicable(Msg: TMessageLine): boolean;
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+  end;
+
+  { TQuickFixUnitNotFound_Remove }
+
+  TQuickFixUnitNotFound_Remove = class(TMsgQuickFix)
+  public
+    function IsApplicable(Msg: TMessageLine): boolean;
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+  end;
+
+  { TQuickFixClassWithAbstractMethods
+    Quick fix for example:
+    Warning: Constructing a class "TClassA" with abstract methods }
+
+  TQuickFixClassWithAbstractMethods = class(TMsgQuickFix)
   public
     function IsApplicable(Msg: TMessageLine): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
@@ -116,6 +164,255 @@ begin
     exit;
   end;
   Result:=true;
+end;
+
+{ TQuickFixLocalVariableNotUsed_Remove }
+
+function TQuickFixLocalVariableNotUsed_Remove.IsApplicable(Msg: TMessageLine
+  ): boolean;
+var
+  Code: TCodeBuffer;
+  Tool: TCodeTool;
+  CleanPos: integer;
+  Node: TCodeTreeNode;
+  Identifier: String;
+begin
+  Result:=false;
+  if (Msg.SubTool<>SubToolFPC)
+  or (Msg.MsgID<>5025) // Local variable "$1" not used
+  or (not Msg.HasSourcePosition)
+  then exit;
+  Identifier:=TFPCParser.GetFPCMsgValue1(Msg);
+  if not IsValidIdent(Identifier) then exit;
+
+  // check if message position is at end of identifier
+  // (FPC gives position of end of identifier)
+  Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
+  if Code=nil then exit;
+  if not CodeToolBoss.Explore(Code,Tool,false) then exit;
+  if Tool.CaretToCleanPos(CodeXYPosition(Msg.Column,Msg.Line,Code),CleanPos)<>0 then exit;
+  Node:=Tool.FindDeepestNodeAtPos(CleanPos,false);
+  if Node=nil then exit;
+  if not (Node.Desc in AllPascalStatements) then exit;
+  Tool.MoveCursorToCleanPos(CleanPos);
+  Tool.ReadPriorAtom;
+  if not Tool.AtomIs(Identifier) then exit;
+  Tool.ReadPriorAtom;
+  if (Tool.CurPos.Flag in [cafPoint,cafRoundBracketClose,cafEdgedBracketClose,
+                           cafEnd])
+  then exit;
+  Result:=true;
+end;
+
+procedure TQuickFixLocalVariableNotUsed_Remove.CreateMenuItems(
+  Fixes: TMsgQuickFixes);
+var
+  Msg: TMessageLine;
+  Identifier: String;
+begin
+  if Fixes.LineCount<>1 then exit;
+  Msg:=Fixes.Lines[0];
+  if not IsApplicable(Msg) then exit;
+  Identifier:=TFPCParser.GetFPCMsgValue1(Msg);
+  if Identifier='' then exit;
+  Fixes.AddMenuItem(Self,Msg,'Remove local variable "'+Identifier+'"');
+end;
+
+procedure TQuickFixLocalVariableNotUsed_Remove.QuickFix(Fixes: TMsgQuickFixes;
+  Msg: TMessageLine);
+var
+  Identifier: String;
+  Code: TCodeBuffer;
+begin
+  if Msg=nil then exit;
+  Identifier:=TFPCParser.GetFPCMsgValue1(Msg);
+  if Identifier='' then exit;
+
+  if not LazarusIDE.BeginCodeTools then begin
+    DebugLn(['TQuickFixLocalVariableNotUsed_Remove failed because IDE busy']);
+    exit;
+  end;
+
+  Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
+  if Code=nil then exit;
+
+  if not IsIdentifierInCode(Code,Msg.Column,Msg.Line,Identifier,
+    Identifier+' not found in '+Code.Filename
+       +' at line '+IntToStr(Msg.Line)+', column '+IntToStr(Msg.Column)+'.'
+       +LineEnding+'Maybe the message is outdated.')
+  then exit;
+
+  if not CodeToolBoss.RemoveIdentifierDefinition(Code,Msg.Column,Msg.Line) then
+  begin
+    DebugLn(['TQuickFixLocalVariableNotUsed_Remove remove failed']);
+    LazarusIDE.DoJumpToCodeToolBossError;
+    exit;
+  end;
+
+  // message fixed
+  Msg.MarkFixed;
+end;
+
+{ TQuickFixClassWithAbstractMethods }
+
+function TQuickFixClassWithAbstractMethods.IsApplicable(Msg: TMessageLine
+  ): boolean;
+var
+  aClassName: string;
+  aMethodName: string;
+begin
+  Result:=false;
+  if (Msg.SubTool<>SubToolFPC)
+  or (Msg.MsgID<>4046) // Constructing a class "$1" with abstract method "$2"
+  or (not Msg.HasSourcePosition)
+  then exit;
+  if not TFPCParser.GetFPCMsgValues(Msg,aClassName,aMethodName) then begin
+    debugln(['TQuickFixClassWithAbstractMethods.IsApplicable can not extract values: ',Msg.Msg]);
+    exit;
+  end;
+  Result:=true;
+end;
+
+procedure TQuickFixClassWithAbstractMethods.CreateMenuItems(
+  Fixes: TMsgQuickFixes);
+var
+  Msg: TMessageLine;
+  aClassName: string;
+  aMethodName: string;
+begin
+  if Fixes.LineCount<>1 then exit;
+  Msg:=Fixes.Lines[0];
+  if not IsApplicable(Msg) then exit;
+  if not TFPCParser.GetFPCMsgValues(Msg,aClassName,aMethodName) then exit;
+  Fixes.AddMenuItem(Self,Msg,'Show abstract methods of "'+aClassName+'"');
+end;
+
+procedure TQuickFixClassWithAbstractMethods.QuickFix(Fixes: TMsgQuickFixes;
+  Msg: TMessageLine);
+var
+  Code: TCodeBuffer;
+  aClassName: string;
+  aMethodName: string;
+  Tool: TCodeTool;
+  NewCode: TCodeBuffer;
+  NewX: integer;
+  NewY: integer;
+  NewTopLine: integer;
+begin
+  if not IsApplicable(Msg) then exit;
+  if not TFPCParser.GetFPCMsgValues(Msg,aClassName,aMethodName) then begin
+    debugln(['TQuickFixClassWithAbstractMethods.QuickFix invalid message ',Msg.Msg]);
+    exit;
+  end;
+
+  if not LazarusIDE.BeginCodeTools then begin
+    DebugLn(['TQuickFixClassWithAbstractMethods failed because IDE busy']);
+    exit;
+  end;
+
+  Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
+  if Code=nil then exit;
+
+  // find the class
+
+  // build the tree
+  CodeToolBoss.Explore(Code,Tool,false,true);
+  if Tool=nil then begin
+    DebugLn(['TQuickFixClassWithAbstractMethods no tool for ',Code.Filename]);
+    ShowError('QuickFix: ClassWithAbstractMethods no tool for '+Code.Filename);
+    exit;
+  end;
+
+  if not CodeToolBoss.FindDeclarationOfIdentifier(Code,Msg.Column,Msg.Line,
+    @aClassName[1],NewCode,NewX,NewY,NewTopLine)
+  then begin
+    if CodeToolBoss.ErrorMessage<>'' then begin
+      LazarusIDE.DoJumpToCodeToolBossError
+    end else begin
+      IDEMessageDialog('Class not found',
+        'Class '+aClassName+' not found at '
+        +Code.Filename+'('+IntToStr(Msg.Line)+','+IntToStr(Msg.Column)+')',
+        mtError,[mbCancel]);
+    end;
+    exit;
+  end;
+  //DebugLn(['TQuickFixClassWithAbstractMethods Declaration at ',NewCode.Filename,' ',NewX,',',NewY]);
+
+  if LazarusIDE.DoOpenFileAndJumpToPos(NewCode.Filename,
+    Point(NewX,NewY),NewTopLine,-1,-1,[])<>mrOK
+  then begin
+    DebugLn(['TQuickFixClassWithAbstractMethods failed opening ',NewCode.Filename]);
+    ShowError('QuickFix: ClassWithAbstractMethods failed opening '+NewCode.Filename);
+    exit;
+  end;
+
+  ShowAbstractMethodsDialog;
+end;
+
+{ TQuickFixUnitNotFound_Remove }
+
+function TQuickFixUnitNotFound_Remove.IsApplicable(Msg: TMessageLine): boolean;
+var
+  Unit1: string;
+  Unit2: string;
+begin
+  Result:=false;
+  if (Msg.SubTool<>SubToolFPC)
+  or (not Msg.HasSourcePosition)
+  or ((Msg.MsgID<>5023) // Unit "$1" not used in $2
+  and (Msg.MsgID<>10022) // Can't find unit $1 used by $2
+  and (Msg.MsgID<>10023)) // Unit $1 was not found but $2 exists
+  then exit;
+  if not TFPCParser.GetFPCMsgValues(Msg,Unit1,Unit2) then begin
+    debugln(['TQuickFixUnitNotFound_Remove.IsApplicable failed to extract unit names: ',Msg.Msg]);
+    exit;
+  end;
+  Result:=true;
+end;
+
+procedure TQuickFixUnitNotFound_Remove.CreateMenuItems(Fixes: TMsgQuickFixes);
+var
+  Msg: TMessageLine;
+  Unit1: String;
+  Unit2: string;
+begin
+  if Fixes.LineCount<>1 then exit;
+  Msg:=Fixes.Lines[0];
+  if not IsApplicable(Msg) then exit;
+  if not TFPCParser.GetFPCMsgValues(Msg,Unit1,Unit2) then exit;
+  Fixes.AddMenuItem(Self,Msg,'Remove uses "'+Unit1+'"');
+end;
+
+procedure TQuickFixUnitNotFound_Remove.QuickFix(Fixes: TMsgQuickFixes;
+  Msg: TMessageLine);
+var
+  MissingUnitName: string;
+  SrcUnitName: string;
+  Code: TCodeBuffer;
+begin
+  if not IsApplicable(Msg) then exit;
+  if not TFPCParser.GetFPCMsgValues(Msg,MissingUnitName,SrcUnitName) then begin
+    debugln(['TQuickFixUnitNotFound_Remove.QuickFix invalid message ',Msg.Msg]);
+    exit;
+  end;
+
+  if not LazarusIDE.BeginCodeTools then begin
+    DebugLn(['TQuickFixUnitNotFound_Remove failed because IDE busy']);
+    exit;
+  end;
+
+  Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
+  if Code=nil then exit;
+
+  if not CodeToolBoss.RemoveUnitFromAllUsesSections(Code,MissingUnitName) then
+  begin
+    DebugLn(['TQuickFixUnitNotFound_Remove RemoveUnitFromAllUsesSections failed']);
+    LazarusIDE.DoJumpToCodeToolBossError;
+    exit;
+  end;
+
+  // success
+  Msg.MarkFixed;
 end;
 
 { TQuickFixIdentifierNotFoundAddLocal }
