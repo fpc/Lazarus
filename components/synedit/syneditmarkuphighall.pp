@@ -155,7 +155,6 @@ type
   public
     constructor Create(ASynEdit : TSynEditBase);
     destructor Destroy; override;
-    procedure IncPaintLock; override;
     procedure DecPaintLock; override;
 
     // AFirst/ ALast are 1 based
@@ -1851,15 +1850,6 @@ destructor TSynEditMarkupHighlightAllBase.Destroy;
 begin
   FoldView := nil;
   inherited Destroy;
-end;
-
-procedure TSynEditMarkupHighlightAllBase.IncPaintLock;
-begin
-  if FPaintLock = 0 then begin
-    FNeedValidatePaint := False;
-    FNeedValidate := False;
-  end;
-  inherited IncPaintLock;
 end;
 
 procedure TSynEditMarkupHighlightAllBase.DecPaintLock;
