@@ -21,17 +21,22 @@ EnableISX=true
 #define OutputFileName GetEnv('OutputFileName')
 [Setup]
 AppName={#AppName}
+; AddId: registry/uninstall info: Max 127 char
+AppId={code:GetAppId}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
+AppPublisher=Lazarus Team
 AppPublisherURL=http://www.lazarus.freepascal.org/
 AppSupportURL=http://www.lazarus.freepascal.org/
 AppUpdatesURL=http://www.lazarus.freepascal.org/
 ArchitecturesInstallIn64BitMode=x64
 DefaultDirName={code:GetDefDir|{sd}\lazarus}
 DefaultGroupName={#AppName}
-InternalCompressLevel=ultra
 OutputBaseFilename={#OutputFileName}
-SolidCompression=true
+InternalCompressLevel=ultra
+;InternalCompressLevel=ultra64
+;Compression=lzma2/ultra64
+SolidCompression=yes
 VersionInfoVersion={#FileVersion}
 VersionInfoTextVersion={#AppVersion}-{#SetupDate}
 ShowLanguageDialog=yes
@@ -39,8 +44,9 @@ WizardImageFile=lazarus_install_cheetah.bmp
 WizardSmallImageFile=lazarus_install_cheetah_small.bmp
 WizardImageStretch=false
 ShowTasksTreeLines=true
-WindowVisible=true
 PrivilegesRequired=none
+; since appid can change, UsePreviousLanguage must be off
+UsePreviousLanguage=no
 
 [Files]
 Source: {#BuildDir}\image\*.*; DestDir: {app}; Flags: recursesubdirs
@@ -51,6 +57,33 @@ Filename: {app}\Lazarus Forums.url; Section: InternetShortcut; Key: URL; String:
 Filename: {app}\Lazarus Wiki Help.url; Section: InternetShortcut; Key: URL; String: http://wiki.lazarus.freepascal.org/index.php/Main_Page
 
 [Code]
+
+var
+  InitDone: String;
+  
+procedure InitializeWizard();
+begin
+  InitDone := '1';
+end;
+
+function GetAppId(param:string): String;
+var
+  s: String;
+begin
+  Result := 'lazarus'; 
+  if InitDone = '' then
+    exit;
+  s := AddBackslash(WizardDirValue) + 'lazarus.cfg';
+  if FileExists(s) then
+  begin
+	// Secondary
+    s := RemoveBackslashUnlessRoot(Lowercase(WizardDirValue));
+    Result := 'lazarus_sec_'+GetSHA1OfString(s) + '_' + IntToStr(length(s));
+  end
+  else
+    Result := 'lazarus';
+end;
+
 function NextButtonClick(CurPage: Integer): Boolean;
 var
 	folder: String;

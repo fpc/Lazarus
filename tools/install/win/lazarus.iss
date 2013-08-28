@@ -22,6 +22,8 @@ EnableISX=true
 [Setup]
 AllowNoIcons=yes
 AppName={#AppName}
+; AddId: registry/uninstall info: Max 127 char
+AppId={code:GetAppId}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
 AppPublisher=Lazarus Team
@@ -43,12 +45,14 @@ ShowLanguageDialog=yes
 WizardImageFile=lazarus_install_cheetah.bmp
 WizardSmallImageFile=lazarus_install_cheetah_small.bmp
 WizardImageStretch=false
-ShowTasksTreeLines=yes
+ShowTasksTreeLines=true
 TimeStampRounding=0
 PrivilegesRequired=none
 ChangesAssociations=yes
 ; prevent checkbox pre-set (for delete user conf). Latest inno supports unchecked checkedonce
 UsePreviousTasks=no
+; since appid can change, UsePreviousLanguage must be off
+UsePreviousLanguage=no
 UninstallDisplayIcon={app}\lazarus.exe
 
 [Tasks]
@@ -77,16 +81,16 @@ Name: association/associatepas; Description: {code:GetAssociateDesc|.pas}; Types
 Name: association/associatepp; Description: {code:GetAssociateDesc|.pp}; Types: custom full
 
 [InstallDelete]
-Name: {localappdata}\lazarus\*.xml; Type: files; Tasks: delusersettings
-Name: {localappdata}\lazarus\*.cfg; Type: files; Tasks: delusersettings
-Name: {localappdata}\lazarus\lazarus.dci; Type: files; Tasks: delusersettings
-Name: {localappdata}\lazarus\compilertest.pas; Type: files; Tasks: delusersettings
-Name: {localappdata}\lazarus\easydocklayout.lyt; Type: files; Tasks: delusersettings
-Name: {localappdata}\lazarus\laz_indentation.pas; Type: files; Tasks: delusersettings
-Name: {localappdata}\lazarus\staticpackages.inc; Type: files; Tasks: delusersettings
-Name: {localappdata}\lazarus\unitdictionarycodyunitdictionary*.tmp; Type: files; Tasks: delusersettings
-Name: {localappdata}\lazarus\projectsessions\*.lps; Type: files; Tasks: delusersettings
-Name: {localappdata}\lazarus\userschemes\*.xml; Type: files; Tasks: delusersettings
+Name: {code:GetPCPForDelete}*.xml; Type: files; Tasks: delusersettings
+Name: {code:GetPCPForDelete}*.cfg; Type: files; Tasks: delusersettings
+Name: {code:GetPCPForDelete}lazarus.dci; Type: files; Tasks: delusersettings
+Name: {code:GetPCPForDelete}compilertest.pas; Type: files; Tasks: delusersettings
+Name: {code:GetPCPForDelete}easydocklayout.lyt; Type: files; Tasks: delusersettings
+Name: {code:GetPCPForDelete}laz_indentation.pas; Type: files; Tasks: delusersettings
+Name: {code:GetPCPForDelete}staticpackages.inc; Type: files; Tasks: delusersettings
+Name: {code:GetPCPForDelete}unitdictionarycodyunitdictionary*.tmp; Type: files; Tasks: delusersettings
+Name: {code:GetPCPForDelete}projectsessions\*.lps; Type: files; Tasks: delusersettings
+Name: {code:GetPCPForDelete}userschemes\*.xml; Type: files; Tasks: delusersettings
 #if FPCTargetOS=="win32"
 #include "RemovedFiles32.iss"
 #endif
@@ -263,26 +267,67 @@ Name: sl; MessagesFile: compiler:Languages\Slovenian.isl
 
 [Code]
 type
-  TUninstallState = (uiUnknown, UIDone, UIOtherNeeded, uiDestNeeded);
-var 
+  TUninstallState = (
+    uiUnknown,
+    UIDone,         // There IS no uninstaller, OR it was already executed during this install
+    UIOtherNeeded,  // The uninstaller ('Inno Setup: App Path') points to a different Path than "WizardFolder"
+                    // Uninstall for OTHER folder NEEDED
+    uiDestNeeded,   // Uninstaller for "WizardFolder" found
+                    // Uninstall for DESTINATION folder NEEDED
+    uiInconsistent  // Path of uninstaller and lazarus to be removed, do not match
+  );
+  TCfgFileState = (csNoFile, csUnreadable, csParsedOk);
+
+var
   wpAskUnistall: TWizardPage;
   wpLabel1, wpLabel2, wpLabel3, wpLabel4: TNewStaticText;
   wpCheckBox: TNewCheckBox;
   wpButton: TNewButton;
   
+  wpAskConfDir: TInputDirWizardPage;
+  CheckSecondInstall: TCheckBox;
+  CheckSecondLabel: TLabel;
+  
   UninstallState, UninstallDoneState: TUninstallState;
-  OldPath, OldName, UnInstaller: String;
+  UnInstallerInAppPath: Boolean; // The uninstaller is in the directory that it will remove
+
+  OldPath,              // Registry 'Inno Setup: App Path'
+  OldName,              // Registry 'DisplayName'
+  UnInstaller: String;  // Registry 'UninstallString'
   PathEqual: Boolean;
 
+  IsSecondaryUpdate: Boolean;
+  SecondPCP: String;
+  NewCFGFile: TStringList;
 
-function GetUninstallData(s: String): String; // 'UninstallString'
+  UninstDir: String;
+  CFGFileForUninstDir: TStringList;
+
+function GetAppId(param:string): String;
 var
-  Path: String;
+  s: String;
 begin
-  Path := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\lazarus_is1');
-  Result := '';
-  if not RegQueryStringValue(HKLM, Path, s, Result) then
-    RegQueryStringValue(HKCU, Path, s, Result);
+  if ( (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) ) or IsSecondaryUpdate then
+  begin
+	// Secondary
+    s := RemoveBackslashUnlessRoot(Lowercase(WizardDirValue));
+    Result := 'lazarus_sec_'+GetSHA1OfString(s) + '_' + IntToStr(length(s));
+  end
+  else
+    Result := 'lazarus';
+end;
+
+function GetPCPForDelete(param:string): String;
+begin
+  if ( (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) ) then
+  begin
+    if SecondPCP = '' then
+      Result := AddBackslash(WizardDirValue) // some fallback
+    else
+      Result := AddBackslash(SecondPCP);
+  end
+  else
+    Result := ExpandConstant('{localappdata}\lazarus\');
 end;
 
 function IsDirEmpty(s: String): Boolean;
@@ -299,6 +344,25 @@ begin
   FindClose(FindRec);
 end;
 
+function SaveCustomMessage(AMsgId, ADefaulText: String): String;
+begin
+  try
+    Result := CustomMessage(AMsgId);
+  except
+    Result := ADefaulText;
+  end;
+end;
+
+function GetUninstallData(ARegName: String): String; // Get one entry from registry e.g. 'UninstallString'
+var
+  Path: String;
+begin
+  Path := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\'+GetAppId('')+'_is1');
+  Result := '';
+  if not RegQueryStringValue(HKLM, Path, ARegName, Result) then
+    RegQueryStringValue(HKCU, Path, ARegName, Result);
+end;
+
 procedure UpdateUninstallInfo;
 begin 
   OldPath := '';
@@ -312,17 +376,99 @@ begin
   begin
     OldPath := RemoveQuotes((GetUninstallData('Inno Setup: App Path')));
 	OldName := GetUninstallData('DisplayName');
-    PathEqual := (OldPath <> '') and (CompareText(RemoveBackslashUnlessRoot(OldPath), RemoveBackslashUnlessRoot(WizardDirValue)) = 0);
+
+    PathEqual := (OldPath <> '') and
+                 (CompareText(RemoveBackslashUnlessRoot(OldPath), RemoveBackslashUnlessRoot(WizardDirValue)) = 0);
 	if PathEqual then
       UninstallState := uiDestNeeded
 	else
       UninstallState := uiOtherNeeded;
+
+    UnInstallerInAppPath := (CompareText(RemoveBackslashUnlessRoot(OldPath), RemoveBackslashUnlessRoot(ExtractFilePath(UnInstaller))) = 0);
+    if (not UnInstallerInAppPath) and
+       ( (CompareText(RemoveBackslashUnlessRoot(OldPath), RemoveBackslashUnlessRoot(WizardDirValue)) = 0) or
+         (CompareText(RemoveBackslashUnlessRoot(ExtractFilePath(UnInstaller)), RemoveBackslashUnlessRoot(WizardDirValue)) = 0)
+       )
+    then
+      UninstallState := uiInconsistent;
 
   end
   else
   begin
     UninstallState := uiDone;
   end;
+end;
+  
+
+function LoadCFGFile(AFolder: String; var AList: TStringList): Boolean;
+var
+  cfgfile: String;
+begin
+  if AList = nil then
+    AList := TStringList.Create
+  else
+    AList.Clear;
+
+  cfgfile := AddBackslash(AFolder) + 'lazarus.cfg';
+  Result := FileExists(cfgfile);
+  if not Result then
+    exit;
+  AList.LoadFromFile(cfgfile);
+end;
+
+procedure CreateCFGFile(APCP: String; var AList: TStringList);
+var
+  cfgfile: String;
+begin
+  if AList = nil then
+    AList := TStringList.Create
+  else
+    AList.Clear;
+  AList.add('--primary-config-path=' + APCP);
+end;
+
+function ParseCFGFile(AFolder: String; var APrimConfDir: String): TCfgFileState;
+var
+  s, cfgfile: String;
+  i: Integer;
+  l: TStringList;
+begin
+  cfgfile := AddBackslash(AFolder) + 'lazarus.cfg';
+
+  Result := csNoFile;
+  if not FileExists(cfgfile) then
+    exit;
+
+  Result := csUnreadable;
+  l := TStringList.Create;
+  l.LoadFromFile(cfgfile);
+  for i := 0 to l.Count - 1 do
+    if copy(l[i], 1, 6) = '--pcp=' then
+      s := copy(l[i], 7, length(l[i]))
+    else
+    if copy(l[i], 1, 22) = '--primary-config-path=' then
+      s := copy(l[i], 23, length(l[i]));
+  l.Free;
+
+  if s = '' then
+    exit;
+
+  if (s[1] = '"') and (s[length(s)] = '"') then
+    s := copy(s, 2, length(s)-2)
+  else
+  if (s[1] = '''') and (s[length(s)] = '''') then
+    s := copy(s, 2, length(s)-2)
+
+  if s = '' then
+    exit;
+
+  if (not FileExists(AddBackslash(s) + 'environmentoptions.xml')) and
+     (not IsDirEmpty(s))
+  then
+    exit;
+
+  Result := csParsedOk;
+  APrimConfDir := s;
 end;
 
 procedure CurPageChanged(CurPageID: Integer);
@@ -343,7 +489,28 @@ begin
 	m.ScrollBars := ssVertical;
 	
 	m.Text := Format(CustomMessage('DuringInstall'), [#13#10]);
+  end;
+  
+  if (CurPageID = wpSelectDir) and (CheckSecondInstall = nil)  then
+  begin
+    WizardForm.DirEdit.Parent.Handle;
+	
+	CheckSecondInstall := TCheckBox.Create(WizardForm);
+    CheckSecondInstall.Parent:=WizardForm.DirEdit.Parent;
+    CheckSecondInstall.Top := WizardForm.DirEdit.Top + WizardForm.DirEdit.Height + 10;
+    CheckSecondInstall.Left := WizardForm.DirEdit.Left;
+    CheckSecondInstall.Width := WizardForm.DirEdit.Parent.Width - WizardForm.DirEdit.Left;
+	CheckSecondInstall.Caption := CustomMessage('CheckSecondClick');
 
+	CheckSecondLabel := TLabel.Create(WizardForm);
+    CheckSecondLabel.Parent:=WizardForm.DirEdit.Parent;
+	CheckSecondLabel.AutoSize := False;
+	CheckSecondLabel.WordWrap := True;
+    CheckSecondLabel.Top := CheckSecondInstall.Top + CheckSecondInstall.Height + 10;
+    CheckSecondLabel.Left := WizardForm.DirEdit.Left;
+    CheckSecondLabel.Width := WizardForm.DirEdit.Parent.Width - WizardForm.DirEdit.Left;
+	CheckSecondLabel.Height := WizardForm.DirEdit.Parent.Height - CheckSecondLabel.Top - 15;
+	CheckSecondLabel.Caption := CustomMessage('CheckSecondInfo');
   end;
 end;
 
@@ -352,43 +519,182 @@ var
     s, folder: String;
     FolderEmpty: Boolean;
 begin
-  // by default go to next page
-  Result := true;
-  
-  // if curpage is wpSelectDir check is filesystem
-  if CurPage = wpSelectDir then
-  begin
-    folder := WizardDirValue;
+	// by default go to next page
+	Result := true;
 
-    if Pos( ' ', folder ) > 0 then
-    begin
-	  try 
-		s := CustomMessage('FolderHasSpaces');
-	  except
-		s := 'Selected folder contains spaces, please select a folder without spaces in it.';
-	  end;
-      MsgBox(s, mbInformation, MB_OK );
-      Result := false;
-      exit;
-    end;
+	// if curpage is wpSelectDir check is filesystem
+	if (CurPage = wpSelectDir) then 
+	begin
+        IsSecondaryUpdate := False;
+		folder := WizardDirValue;
 
-	UpdateUninstallInfo;
-    UnInstaller := RemoveQuotes(GetUninstallData('UninstallString'));
-    FolderEmpty := IsDirEmpty(folder);
-    
-    if ((UninstallState = uiDone) or (UninstallState = UIOtherNeeded)) and not(FolderEmpty) then begin
-      // Dir NOT empty
-	    try 
-		  s := CustomMessage('FolderNotEmpty');
-		except
-		  s := 'The target folder is not empty. Continue with installation?';
+		if Pos( ' ', folder ) > 0 then
+		begin
+			MsgBox(SaveCustomMessage('FolderHasSpaces', 'Selected folder contains spaces, please select a folder without spaces in it.'),
+                   mbInformation, MB_OK );
+			Result := false;
+			exit;
 		end;
-        Result := MsgBox(s, mbConfirmation, MB_YESNO) = IDYES;
+
+		FolderEmpty := IsDirEmpty(folder);
+		UpdateUninstallInfo;
+
+        if FolderEmpty then
+          exit;
+
+		if ( (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) ) then
+		begin
+		    // Secondary
+            // ALways set "SecondPCP", if avail
+            case ParseCFGFile(folder, SecondPCP) of
+              csNoFile: begin
+				  Result := False;
+                  MsgBox(Format(CustomMessage('FolderForSecondNoFile'), [#13#10]), mbConfirmation, MB_OK);
+                  exit;
+                end;
+              csUnreadable: begin
+				  Result := False;
+                  MsgBox(Format(CustomMessage('FolderForSecondBadFile'), [#13#10]), mbConfirmation, MB_OK);
+                  exit;
+                end;
+              csParsedOk: begin
+// TODO ask, depending on uninstaller availability
+			      if (UninstallState = UIOtherNeeded) or (UninstallState = uiInconsistent)
+                  then begin
+                    MsgBox(Format(CustomMessage('FolderForSecondBadUninstall'), [#13#10]), mbConfirmation, MB_OK);
+				    Result := False;
+                    exit;
+                  end
+                  else
+			      if ((UninstallState = uiDone) or (UninstallState = UIOtherNeeded)) or
+                     (UninstallState = uiInconsistent)
+                  then begin
+                    Result := MsgBox(Format(CustomMessage('FolderForSecondUpgrading'), [#13#10, SecondPCP]), mbConfirmation, MB_YESNO) = IDYES;
+                    IsSecondaryUpdate := True;
+                  end;
+                end;
+            end;
+
+          // MUST always be loaded, if leaving this page
+          LoadCFGFile(folder, NewCFGFile);
+		end
+
+        else
+		begin
+			if ((UninstallState = uiDone) or (UninstallState = UIOtherNeeded)) or
+               (UninstallState = uiInconsistent)
+            then
+			begin
+				// Dir NOT empty
+				Result := MsgBox(SaveCustomMessage('FolderNotEmpty', 'The target folder is not empty. Continue with installation?'),
+                                 mbConfirmation, MB_YESNO) = IDYES;
+			end;
+            if Result and
+               (ParseCFGFile(folder, SecondPCP) = csParsedOk)
+            then begin
+              IsSecondaryUpdate := True;
+              LoadCFGFile(folder, NewCFGFile);
+            end;
+		end;
+	end;
+
+    if CurPage = wpAskConfDir.ID then begin
+      s := wpAskConfDir.Values[0];
+      if (not IsDirEmpty(s)) then begin
+        MsgBox(Format(CustomMessage('FolderForConfNotEmpty'), [#13#10]), mbConfirmation, MB_OK);
+		Result := False;
+        exit;
+      end;
+
+      SecondPCP := s;
+      CreateCFGFile(SecondPCP, NewCFGFile);
     end;
-	if not Result then exit;
-  
+
+    if CurPage = wpInfoAfter then begin
+      if (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) then begin
+        if (NewCFGFile = nil) or (not FileExists(AddBackslash(WizardDirValue) + 'lazarus.cfg')) then
+          MsgBox('Something went wrong. The secondary config folder was not setup. Repeat the installation.', mbConfirmation, MB_OK);
+   end;
+    end;
+end;
+
+function ShouldSkipPage(PageId: Integer): Boolean;
+begin
+  Result := False
+  if PageId = wpAskConfDir.ID then
+    Result := (IsSecondaryUpdate) or
+              ( (CheckSecondInstall = nil) or (not CheckSecondInstall.Checked) );
+
+  // UnInst uses: SkipAskUninst()
+end;
+
+function UpdateReadyMemo(Space, NewLine,
+  MemoUserInfoInfo, MemoDirInfo, MemoTypeInfo, MemoComponentsInfo, MemoGroupInfo,
+  MemoTasksInfo: String): String;
+begin
+  Result := '';
+  if MemoUserInfoInfo <> '' then
+    Result := Result + MemoUserInfoInfo + NewLine;
+  if MemoDirInfo <> '' then
+    Result := Result + MemoDirInfo + NewLine;
+  if MemoTypeInfo <> '' then
+    Result := Result + MemoTypeInfo + NewLine;
+  if MemoComponentsInfo <> '' then
+    Result := Result + MemoComponentsInfo + NewLine;
+  if MemoGroupInfo <> '' then
+    Result := Result + MemoGroupInfo + NewLine;
+  if MemoTasksInfo <> '' then
+    Result := Result + MemoTasksInfo + NewLine;
+  if (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) then begin
+    if IsSecondaryUpdate then
+      Result := Result + Format(SaveCustomMessage('SecondTaskUpdate', ''), [NewLine, Space, SecondPCP])
+    else
+      Result := Result + Format(SaveCustomMessage('SecondTaskCreate', ''), [NewLine, Space, SecondPCP]);
+  end
+  else
+  if IsSecondaryUpdate then
+    Result := Result + Format(SaveCustomMessage('SecondTaskUpdate', ''), [NewLine, Space, SecondPCP]);
+end;
+
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+begin
+  Result := '';
+  if (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) then begin
+    if (NewCFGFile <> nil) then
+      try
+        NewCFGFile.SaveToFile(AddBackslash(WizardDirValue) + 'lazarus.cfg')
+      except
+        Result := 'Internal Error (1): Could not save CFG'
+      end
+    else begin
+      Result := 'Internal Error (2)'
+    end;
+  end
+  else
+  if (UninstallDoneState <> uiUnknown) and (IsSecondaryUpdate) and
+     (not FileExists(AddBackslash(WizardDirValue) + 'lazarus.cfg'))
+  then begin
+    // cfg was uninstalled / restore
+    if (NewCFGFile <> nil) then
+      try
+        NewCFGFile.SaveToFile(AddBackslash(WizardDirValue) + 'lazarus.cfg')
+      except
+        Result := 'Internal Error (3): Could not restore CFG for secondary install'
+      end
+    else
+    if (UninstDir = WizardDirValue) and (CFGFileForUninstDir <> nil) and
+       (CFGFileForUninstDir.count > 0)
+    then begin
+      try
+        CFGFileForUninstDir.SaveToFile(AddBackslash(WizardDirValue) + 'lazarus.cfg')
+      except
+        Result := 'Internal Error (4): Could not restore CFG for secondary install'
+      end
+    end
+    else begin
+      Result := 'Internal Error (5): Could not restore CFG for secondary install'
+    end;
   end;
-    
 end;
 
 function GetDefDir( def: String ) : String;
@@ -479,38 +785,78 @@ begin
   UnInstUpdateGUI;
   //UpdateUninstallInfo;
   
-  //FolderEmpty := IsDirEmpty(WizardDirValue);
+  // OldName, Registry 'DisplayName'
+  // OldPath,  Registry 'Inno Setup: App Path'
+  // UnInstaller
 
-  if UninstallState = uiDestNeeded then begin
-	wpLabel2.Font.Color := clDefault;
-    wpCheckBox.Visible := False;
-	try 
-      InitAskUninstall(FmtMessage(CustomMessage('OldInDestFolder1'), [OldName]), 
-	                   CustomMessage('OldInDestFolder2'), CustomMessage('OldInDestFolder3'), CustomMessage('OldInDestFolder4'));
-	except
-      InitAskUninstall(
-	    'Another installation of "'+OldName+'" exists in the destination folder. If you wish to uninstall first, please use the button below.',
-	    '',
-	    '',
-	    ''
-	  );
-	end;
-  end
-  else
-  begin	
-	wpLabel2.Font.Color := clRed;
-    wpCheckBox.Visible := True;
-	try 
-      InitAskUninstall(FmtMessage(CustomMessage('OldInOtherFolder1'), [OldName, OldPath]), 
-	                   CustomMessage('OldInOtherFolder2'), CustomMessage('OldInOtherFolder3'), CustomMessage('OldInOtherFolder4'));
-	except
-      InitAskUninstall(
-      'Another installation of "'+OldName+'" was found at "'+OldPath+'". Please use the button below to uninstall it now. If you wish to keep it, please tick the checkbox to continue.',
-	    'Note: Using multiple copies of Lazarus is not supported by this installer.',
-	    'Using several installations of Lazarus can lead to conflicts in files shared by all of the installations, such as the IDE configuration.',
-	    'If you wish to use more than one installation, then you must do additional setup after this installation finished. Please see the Lazarus web page for this, and how to use --primary-config-path'
-	  );
-	end;
+  case UninstallState of
+    uiDestNeeded: begin
+	    wpLabel2.Font.Color := clDefault;
+        wpCheckBox.Visible := False;
+        if IsSecondaryUpdate then
+          InitAskUninstall(Format(SaveCustomMessage('OldSecondInDestFolder1', ''),
+                                                {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+	                       Format(SaveCustomMessage('OldSecondInDestFolder2', ''),
+                                                {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+                           Format(SaveCustomMessage('OldSecondInDestFolder3', ''),
+                                                {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+                           Format(SaveCustomMessage('OldSecondInDestFolder4', ''),
+                                                {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]))
+        else
+          InitAskUninstall(Format(SaveCustomMessage('OldInDestFolder1', ''),
+                                                {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+	                       Format(SaveCustomMessage('OldInDestFolder2', ''), {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+                           Format(SaveCustomMessage('OldInDestFolder3', ''), {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+                           Format(SaveCustomMessage('OldInDestFolder4', ''), {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]));
+      end;
+    UIOtherNeeded: begin
+	    wpLabel2.Font.Color := clRed;
+	    wpLabel2.Font.Color := clRed;
+        wpCheckBox.Visible := True;
+        //if IsSecondaryUpdate then
+        //  InitAskUninstall(Format(SaveCustomMessage('InOtherFolder1', ''),
+        //                                        {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+	       //                Format(SaveCustomMessage('OldSecondInOtherFolder2', ''),
+        //                                        {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+        //                   Format(SaveCustomMessage('OldSecondInOtherFolder3', ''),
+        //                                        {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+        //                   Format(SaveCustomMessage('OldSecondInOtherFolder4', ''),
+        //                                        {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]));
+        //else
+          InitAskUninstall(Format(SaveCustomMessage('OldInOtherFolder1', ''),
+                                                {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+	                       Format(SaveCustomMessage('OldInOtherFolder2', ''),
+                                                {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+                           Format(SaveCustomMessage('OldInOtherFolder3', ''),
+                                                {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+                           Format(SaveCustomMessage('OldInOtherFolder4', ''),
+                                                {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]));
+        //end;
+      end;
+    uiInconsistent: begin
+	    wpLabel1.Font.Color := clRed;
+	    wpLabel2.Font.Color := clRed;
+        wpCheckBox.Visible := True;
+        //if IsSecondaryUpdate then
+        //  InitAskUninstall(Format(SaveCustomMessage('OldSecondInBadFolder1', ''),
+        //                                        {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+	       //                Format(SaveCustomMessage('OldSecondInBadFolder2', ''),
+        //                                        {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+        //                   Format(SaveCustomMessage('OldSecondInBadFolder3', ''),
+        //                                        {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+        //                   Format(SaveCustomMessage('OldSecondInBadFolder4', ''),
+        //                                        {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]));
+        //else
+          InitAskUninstall(Format(SaveCustomMessage('OldInBadFolder1', ''),
+                                                {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+	                       Format(SaveCustomMessage('OldInBadFolder2', ''),
+                                                {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+                           Format(SaveCustomMessage('OldInBadFolder3', ''),
+                                                {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]),
+                           Format(SaveCustomMessage('OldInBadFolder4', ''),
+                                                {}[#13#10, OldName, OldPath, UnInstaller, SecondPCP]));
+        //end;
+      end;
   end;
 
 end;
@@ -527,7 +873,15 @@ begin
   UnInstaller := RemoveQuotes(GetUninstallData('UninstallString'));
   
   b := (UnInstaller <> '') and FileExists(UnInstaller);
-  if b then b := Exec(UnInstaller, '/SILENT /NORESTART','', SW_SHOW, ewWaitUntilTerminated, i);
+  if b then begin
+    LoadCFGFile(WizardDirValue, CFGFileForUninstDir);
+    UninstDir := WizardDirValue;
+
+    if UninstallState = uiInconsistent then
+      b := Exec(UnInstaller, '/VERBOSE /NORESTART','', SW_SHOW, ewWaitUntilTerminated, i)
+    else
+      b := Exec(UnInstaller, '/SILENT /NORESTART','', SW_SHOW, ewWaitUntilTerminated, i);
+  end;
   if not b then  
     MsgBox('Uninstall failed.', mbConfirmation, MB_OK)
   else begin
@@ -633,6 +987,27 @@ begin
   UninstallState := uiUnknown;
   UninstallDoneState := uiUnknown;
  
+  /////////////////////////
+  wpAskConfDir := CreateInputDirPage(wpSelectDir,
+  CustomMessage('SecondConfCapt'), CustomMessage('SecondConfCapt2'),
+  CustomMessage('SecondConfBody'),
+  False, 'laz_conf');
+  wpAskConfDir.Add('Folder for config');
+  
 end;
+
+//function InitializeUninstall(): Boolean;
+//var i: integer;
+//begin
+//  Result := True;
+//  for i := 0 to ParamCount - 1 do
+//    if ParamStr(i) = '/VERBOSE' then
+//      Result :=
+//        MsgBox(Format(CustomMessage('UninstVerbose'),
+//                      {}[RemoveQuotes(GetUninstallData('Inno Setup: App Path')),
+//                       GetUninstallData('DisplayName')]),
+//               mbConfirmation, MB_YESNO) = IDYES;
+//
+//end;
 
 
