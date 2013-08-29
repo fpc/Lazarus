@@ -295,6 +295,7 @@ var
   OldName,              // Registry 'DisplayName'
   UnInstaller: String;  // Registry 'UninstallString'
   PathEqual: Boolean;
+  ForcePrimaryAppId: BOolean;
 
   IsSecondaryUpdate: Boolean;
   SecondPCP: String;
@@ -302,6 +303,18 @@ var
 
   UninstDir: String;
   CFGFileForUninstDir: TStringList;
+
+function dbgsBool(b: Boolean): String; begin Result := 'False'; if b then Result := 'True'; end;
+function dbgsUiState(u: TUninstallState): String;
+begin
+  case u of
+    uiUnknown:      Result := 'uiUnknown';
+    UIDone:         Result := 'UIDone';
+    UIOtherNeeded:  Result := 'UIOtherNeeded';
+    uiDestNeeded:   Result := 'uiDestNeeded';
+    uiInconsistent: Result := 'uiInconsistent';
+  end;
+end;
 
 function GetDefDir( def: String ) : String;
 begin
@@ -338,6 +351,9 @@ begin
   end
   else
     Result := 'lazarus';
+  if ForcePrimaryAppId then
+    Result := 'lazarus';
+  Log('App-Id='+Result);
 end;
 
 function GetPCPForDelete(param:string): String;
@@ -351,6 +367,7 @@ begin
   end
   else
     Result := ExpandConstant('{localappdata}\lazarus\');
+  Log('PrimConf for Delete='+Result);
 end;
 
 function IsDirEmpty(s: String): Boolean;
@@ -387,7 +404,8 @@ begin
 end;
 
 procedure UpdateUninstallInfo;
-begin 
+begin
+  Log('Enter UninstallState '+dbgsUiState(UninstallState));
   OldPath := '';
   OldName := '';
   UnInstaller := '';
@@ -418,8 +436,23 @@ begin
   end
   else
   begin
-    UninstallState := uiDone;
+	if ( (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) ) or IsSecondaryUpdate then
+    begin
+      ForcePrimaryAppId := True;
+      Log('REDO UninstallState '+GetUninstallData('Inno Setup: App Path')+' // '+WizardDirValue);
+      if CompareText(RemoveBackslashUnlessRoot(RemoveQuotes(GetUninstallData('Inno Setup: App Path'))),
+           RemoveBackslashUnlessRoot(WizardDirValue)) = 0
+      then
+        UpdateUninstallInfo // use the plain installer
+      else
+        UninstallState := uiDone;
+      ForcePrimaryAppId := False;
+    end
+    else
+      UninstallState := uiDone;
   end;
+
+  Log('UninstallState is now '+dbgsUiState(UninstallState)+', OldPath='+OldPath+' OldName='+OldName+' UnInstaller='+UnInstaller);
 end;
   
 
@@ -459,8 +492,10 @@ begin
   cfgfile := AddBackslash(AFolder) + 'lazarus.cfg';
 
   Result := csNoFile;
-  if not FileExists(cfgfile) then
+  if not FileExists(cfgfile) then begin
+    Log('ParseCFGFile not existent');
     exit;
+  end;
 
   Result := csUnreadable;
   l := TStringList.Create;
@@ -487,11 +522,14 @@ begin
 
   if (not FileExists(AddBackslash(s) + 'environmentoptions.xml')) and
      (not IsDirEmpty(s))
-  then
+  then begin
+    Log('ParseCFGFile unreadable');
     exit;
+  end;
 
   Result := csParsedOk;
   APrimConfDir := s;
+  Log('ParseCFGFile OK');
 end;
 
 procedure CurPageChanged(CurPageID: Integer);
@@ -536,7 +574,7 @@ begin
 	CheckSecondLabel.Caption := CustomMessage('CheckSecondInfo');
   end;
 
-  if CurPage = wpInfoAfter then begin
+  if CurPageID = wpInfoAfter then begin
     if (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) then begin
       if (NewCFGFile = nil) or (not FileExists(AddBackslash(WizardDirValue) + 'lazarus.cfg')) then
         MsgBox('Something went wrong. The secondary config folder was not setup. Repeat the installation.', mbConfirmation, MB_OK);
@@ -555,6 +593,7 @@ begin
 	// if curpage is wpSelectDir check is filesystem
 	if (CurPage = wpSelectDir) then 
 	begin
+        Log('NextButton in SelectDir');
         IsSecondaryUpdate := False;
 		folder := WizardDirValue;
 
@@ -601,6 +640,7 @@ begin
                   then begin
                     Result := MsgBox(Format(CustomMessage('FolderForSecondUpgrading'), [#13#10, SecondPCP]), mbConfirmation, MB_YESNO) = IDYES;
                     IsSecondaryUpdate := True;
+                    UpdateUninstallInfo;
                   end;
                 end;
             end;
@@ -624,11 +664,13 @@ begin
             then begin
               IsSecondaryUpdate := True;
               LoadCFGFile(folder, NewCFGFile);
+              UpdateUninstallInfo;
             end;
 		end;
 	end;
 
     if CurPage = wpAskConfDir.ID then begin
+      Log('NextButton in AskConfDir');
       s := wpAskConfDir.Values[0];
       if (not IsDirEmpty(s)) then begin
         MsgBox(Format(CustomMessage('FolderForConfNotEmpty'), [#13#10]), mbConfirmation, MB_OK);
@@ -645,9 +687,14 @@ end;
 function ShouldSkipPage(PageId: Integer): Boolean;
 begin
   Result := False
-  if PageId = wpAskConfDir.ID then
+  if PageId = wpAskConfDir.ID then begin
+    Log('ShouldSkip  AskConfDir  IsSecondaryUpdate='+dbgsBool(IsSecondaryUpdate)+
+       '  Check='+dbgsBool((CheckSecondInstall <> nil) and (CheckSecondInstall.Checked))
+       );
+
     Result := (IsSecondaryUpdate) or
               ( (CheckSecondInstall = nil) or (not CheckSecondInstall.Checked) );
+  end;
 
   // UnInst uses: SkipAskUninst()
 end;
@@ -747,7 +794,11 @@ end;
 procedure UnInstUpdateGUI;
 begin
   UpdateUninstallInfo;
-  
+    Log('UnInstUpdateGUI UninstallState='+dbgsUiState(UninstallState)+
+       ' IsSecondaryUpdate='+dbgsBool(IsSecondaryUpdate)+
+       '  Check='+dbgsBool((CheckSecondInstall <> nil) and (CheckSecondInstall.Checked))
+       );
+
   WizardForm.NextButton.Enabled := (UninstallState = uiDone) or (UninstallState = uiDestNeeded) or wpCheckBox.Checked;
   wpCheckBox.Enabled := not(UninstallState = uiDone);
   wpButton.Enabled := not(UninstallState = uiDone);  
@@ -760,6 +811,11 @@ end;
 
 function SkipAskUninst(Sender: TWizardPage): Boolean;
 begin
+    Log('SkipAskUninst UninstallState='+dbgsUiState(UninstallState)+
+       ', OldPath='+OldPath+' OldName='+OldName+' UnInstaller='+UnInstaller +
+       ' IsSecondaryUpdate='+dbgsBool(IsSecondaryUpdate)+
+       '  Check='+dbgsBool((CheckSecondInstall <> nil) and (CheckSecondInstall.Checked))
+       );
   Result := UninstallState = uiDone;
   if Result Then exit;
   
@@ -896,6 +952,7 @@ procedure InitializeWizard();
 var
   s, s2 : String;
 begin
+  ForcePrimaryAppId := False;
 
   try 
     s := CustomMessage('AskUninstallTitle1');
