@@ -303,6 +303,29 @@ var
   UninstDir: String;
   CFGFileForUninstDir: TStringList;
 
+function GetDefDir( def: String ) : String;
+begin
+  if Pos( ' ', def ) > 0 then
+  begin
+    def := Copy( def, 1, Pos( ' ', def ) - 1 ) + '\NoFolderSpace';
+  end;
+  Result := def;
+end;
+
+procedure UpdateEnvironmentOptions();
+var
+  FileName, Content: string;
+  s: Ansistring;
+begin
+  FileName := ExpandConstant(CurrentFileName);
+  LoadStringFromFile(FileName, s);
+  Content := s;
+  StringChange(Content, '%Temp%', GetTempDir);
+  StringChange(Content, '%LazDir%', ExpandConstant('{app}'));
+  StringChange(Content, '%FpcBinDir%', ExpandConstant('{app}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\'));
+  SaveStringToFile(FileName, Content, False);
+end;
+
 function GetAppId(param:string): String;
 var
   s: String;
@@ -512,6 +535,13 @@ begin
 	CheckSecondLabel.Height := WizardForm.DirEdit.Parent.Height - CheckSecondLabel.Top - 15;
 	CheckSecondLabel.Caption := CustomMessage('CheckSecondInfo');
   end;
+
+  if CurPage = wpInfoAfter then begin
+    if (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) then begin
+      if (NewCFGFile = nil) or (not FileExists(AddBackslash(WizardDirValue) + 'lazarus.cfg')) then
+        MsgBox('Something went wrong. The secondary config folder was not setup. Repeat the installation.', mbConfirmation, MB_OK);
+    end;
+  end;
 end;
 
 function NextButtonClick(CurPage: Integer): Boolean;
@@ -610,12 +640,6 @@ begin
       CreateCFGFile(SecondPCP, NewCFGFile);
     end;
 
-    if CurPage = wpInfoAfter then begin
-      if (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) then begin
-        if (NewCFGFile = nil) or (not FileExists(AddBackslash(WizardDirValue) + 'lazarus.cfg')) then
-          MsgBox('Something went wrong. The secondary config folder was not setup. Repeat the installation.', mbConfirmation, MB_OK);
-   end;
-    end;
 end;
 
 function ShouldSkipPage(PageId: Integer): Boolean;
@@ -695,49 +719,6 @@ begin
       Result := 'Internal Error (5): Could not restore CFG for secondary install'
     end;
   end;
-end;
-
-function GetDefDir( def: String ) : String;
-begin
-  if Pos( ' ', def ) > 0 then
-  begin
-    def := Copy( def, 1, Pos( ' ', def ) - 1 ) + '\NoFolderSpace';
-  end;
-  Result := def;
-end;
-
-procedure UpdateEnvironmentOptions();
-var
-  FileName, Content: string;
-  s: Ansistring;
-begin
-  FileName := ExpandConstant(CurrentFileName);
-  LoadStringFromFile(FileName, s);
-  Content := s;
-  StringChange(Content, '%Temp%', GetTempDir);
-  StringChange(Content, '%LazDir%', ExpandConstant('{app}'));
-  StringChange(Content, '%FpcBinDir%', ExpandConstant('{app}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\'));
-  SaveStringToFile(FileName, Content, False);
-end;
-
-function IsHKLMWriteable(): boolean;
-begin
-  Result := IsAdminLoggedOn or IsPowerUserLoggedOn;
-end;
-
-function IsHKLMNotWriteable: boolean;
-begin
-  Result := not IsHKLMWriteable();
-end;
-
-function GetAssociateDesc(const ext: string): string;
-var
-  AmpersandPos: integer;
-begin
-  Result := FmtMessage(CustomMessage('AssocFileExtension'), ['Lazarus',ext]);
-  AmpersandPos := pos('&', Result);
-  if AmpersandPos>0 then
-    Delete(Result, AmpersandPos, 1);
 end;
 
 procedure InitAskUninstall(s1, s2, s3, s4: String);
@@ -994,6 +975,26 @@ begin
   False, 'laz_conf');
   wpAskConfDir.Add('Folder for config');
   
+end;
+
+function IsHKLMWriteable(): boolean;
+begin
+  Result := IsAdminLoggedOn or IsPowerUserLoggedOn;
+end;
+
+function IsHKLMNotWriteable: boolean;
+begin
+  Result := not IsHKLMWriteable();
+end;
+
+function GetAssociateDesc(const ext: string): string;
+var
+  AmpersandPos: integer;
+begin
+  Result := FmtMessage(CustomMessage('AssocFileExtension'), ['Lazarus',ext]);
+  AmpersandPos := pos('&', Result);
+  if AmpersandPos>0 then
+    Delete(Result, AmpersandPos, 1);
 end;
 
 //function InitializeUninstall(): Boolean;

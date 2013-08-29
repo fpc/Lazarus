@@ -20,6 +20,7 @@ FolderNotEmpty2=The target folder is not empty.
 FolderForSecondNoFile=The target folder is not empty and does not contains an upgradable secondary Lazarus installation.%0:sPlease choose an empty folder, or an folder with an existing secondary Lazarus installation for updating.
 FolderForSecondBadFile=The target folder is not empty. The installer could not detect if it contains an upgradable secondary Lazarus installation%0:sPlease choose an empty folder, or an folder with an existing secondary Lazarus installation for updating.
 FolderForSecondUpgrading=The target folder is not empty.%0:sIt contains a secondary Lazarus installation using the following folder for configuration:%0:s%1:s%0:s%0:sContinue with installation?
+FolderForSecondUpgradingPrimary=The target folder is not empty.%0:sIt contains a default (none secondary) Lazarus installation%0:sIf you continue, it will be changed into a secondary installation%0:s%0:s%0:sContinue with installation?
 
 FolderForSecondBadUninstall=The target folder is not empty. The installer could not verify if it is safe to use.%0:sPlease choose an empty folder, or an folder with an existing secondary Lazarus installation for updating.
 
