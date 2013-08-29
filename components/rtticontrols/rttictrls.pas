@@ -2883,6 +2883,7 @@ function TTICustomCalendar.LinkTestEditor(const ATestEditor: TPropertyEditor
   ): Boolean;
 begin
   Result:=(ATestEditor is TDatePropertyEditor)
+       or (ATestEditor is TDateTimePropertyEditor)
        or (ATestEditor is TStringPropertyEditor);
 end;
 
