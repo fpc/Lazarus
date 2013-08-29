@@ -574,10 +574,44 @@ begin
 	CheckSecondLabel.Caption := CustomMessage('CheckSecondInfo');
   end;
 
-  if CurPageID = wpInfoAfter then begin
+  if CurPageID = wpFinished then begin
+
     if (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) then begin
-      if (NewCFGFile = nil) or (not FileExists(AddBackslash(WizardDirValue) + 'lazarus.cfg')) then
-        MsgBox('Something went wrong. The secondary config folder was not setup. Repeat the installation.', mbConfirmation, MB_OK);
+      if (NewCFGFile <> nil) then
+        try
+          NewCFGFile.SaveToFile(AddBackslash(WizardDirValue) + 'lazarus.cfg')
+          ForceDirectories(SecondPCP);
+        except
+          MsgBox('Internal Error (1): Could not save CFG for secondary install', mbConfirmation, MB_OK);
+        end
+      else begin
+        MsgBox('Internal Error (2): Could not save CFG for secondary install', mbConfirmation, MB_OK);
+      end;
+    end
+    else
+    if (UninstallDoneState <> uiUnknown) and (IsSecondaryUpdate) and
+       (not FileExists(AddBackslash(WizardDirValue) + 'lazarus.cfg'))
+    then begin
+      // cfg was uninstalled / restore
+      if (NewCFGFile <> nil) then
+        try
+          NewCFGFile.SaveToFile(AddBackslash(WizardDirValue) + 'lazarus.cfg')
+        except
+          MsgBox('Internal Error (3): Could not restore CFG for secondary install', mbConfirmation, MB_OK);
+        end
+      else
+      if (UninstDir = WizardDirValue) and (CFGFileForUninstDir <> nil) and
+         (CFGFileForUninstDir.count > 0)
+      then begin
+        try
+          CFGFileForUninstDir.SaveToFile(AddBackslash(WizardDirValue) + 'lazarus.cfg')
+        except
+          MsgBox('Internal Error (4): Could not restore CFG for secondary install', mbConfirmation, MB_OK);
+        end
+      end
+      else begin
+        MsgBox('Internal Error (5): Could not restore CFG for secondary install', mbConfirmation, MB_OK);
+      end;
     end;
   end;
 end;
@@ -732,43 +766,6 @@ function PrepareToInstall(var NeedsRestart: Boolean): String;
 begin
   Result := '';
   ForcePrimaryAppId := False;
-
-  if (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) then begin
-    if (NewCFGFile <> nil) then
-      try
-        NewCFGFile.SaveToFile(AddBackslash(WizardDirValue) + 'lazarus.cfg')
-      except
-        Result := 'Internal Error (1): Could not save CFG'
-      end
-    else begin
-      Result := 'Internal Error (2)'
-    end;
-  end
-  else
-  if (UninstallDoneState <> uiUnknown) and (IsSecondaryUpdate) and
-     (not FileExists(AddBackslash(WizardDirValue) + 'lazarus.cfg'))
-  then begin
-    // cfg was uninstalled / restore
-    if (NewCFGFile <> nil) then
-      try
-        NewCFGFile.SaveToFile(AddBackslash(WizardDirValue) + 'lazarus.cfg')
-      except
-        Result := 'Internal Error (3): Could not restore CFG for secondary install'
-      end
-    else
-    if (UninstDir = WizardDirValue) and (CFGFileForUninstDir <> nil) and
-       (CFGFileForUninstDir.count > 0)
-    then begin
-      try
-        CFGFileForUninstDir.SaveToFile(AddBackslash(WizardDirValue) + 'lazarus.cfg')
-      except
-        Result := 'Internal Error (4): Could not restore CFG for secondary install'
-      end
-    end
-    else begin
-      Result := 'Internal Error (5): Could not restore CFG for secondary install'
-    end;
-  end;
 end;
 
 procedure InitAskUninstall(s1, s2, s3, s4: String);
