@@ -38,7 +38,7 @@ SET INSTALL_BASE=%BUILDDIR%\fpc\%FPCVERSION%
 SET INSTALL_BINDIR=%INSTALL_BASE%\bin\%FPCFULLTARGET%
 
 SET FPCMAKE=%SOURCE_DIR%\utils\fpcm\bin\%FPCFULLTARGET%\fpcmake.exe
-IF ("%FPCVERSION:~0,3%" == "2.6") SET FPCMAKE=%SOURCE_DIR%\utils\fpcm\fpcmake.exe
+IF "%FPCVERSION:~0,3%" == "2.6" SET FPCMAKE=%SOURCE_DIR%\utils\fpcm\fpcmake.exe
 
 %MAKEEXE% compiler_install rtl_install packages_install utils_install INSTALL_PREFIX=%INSTALL_BASE% PP=%COMPILER% FPCMAKE=%FPCMAKE% >> %LOGFILE%
 

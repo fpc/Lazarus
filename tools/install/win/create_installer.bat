@@ -149,6 +149,7 @@ del %INSTALL_BINDIR%\gdb.exe
 
 :: exit if no compiler has been made
 if not exist %INSTALL_BINDIR%\fpc.exe goto WARNING_NO_COMPILER_MADE
+if not exist %INSTALL_BINDIR%\fpcmkcfg.exe goto WARNING_NO_COMPILER_MADE
 
 %INSTALL_BINDIR%\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
 
