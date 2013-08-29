@@ -903,7 +903,7 @@ begin
   then
     raise EPrinter.CreateFmt('GetPrinterType failed : %s',
         [SysErrorMessage(GetLastError)]);
-  if PPRINTER_INFO_4(InfoPrt)^.Attributes = PRINTER_ATTRIBUTE_NETWORK then
+  if (PPRINTER_INFO_4(InfoPrt)^.Attributes and PRINTER_ATTRIBUTE_NETWORK)<>0 then
      Result := ptNetwork;
   finally
     FreeMem(InfoPrt);
