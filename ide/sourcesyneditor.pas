@@ -1334,6 +1334,10 @@ end;
 { TIDESynEditor }
 
 procedure TIDESynEditor.SrcSynCaretChanged(Sender: TObject);
+  function RealTopLine: Integer;
+  begin
+    Result := TopLine - TSourceLazSynSurfaceManager(FPaintArea).TopLineCount;
+  end;
 var
   InfCnt, i, t, ListCnt: Integer;
   InfList: array [0..1] of
@@ -1351,7 +1355,7 @@ begin
   try
     ListCnt := 0;
 
-    if CaretY >= TopLine then begin
+    if CaretY >= RealTopLine then begin
       List := TextView.FoldProvider.NestedFoldsList;
       List.ResetFilter;
       List.Clear;
@@ -1394,8 +1398,8 @@ begin
       end;
     end;
 
-    if TopLine <> FTopInfoLastTopLine then
-      ListCnt := Min(ListCnt, Max(0, CaretY - TopLine));
+    if TopLine <> FTopInfoLastTopLine then // if Sender = nil;
+      ListCnt := Min(ListCnt, Max(0, CaretY - RealTopLine));
 
     t := TopLine + ListCnt - TSourceLazSynSurfaceManager(FPaintArea).TopLineCount;
     if (CaretY >= TopLine) and (CaretY < t) then
