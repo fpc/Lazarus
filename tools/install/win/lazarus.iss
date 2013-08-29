@@ -589,6 +589,7 @@ var
 begin
 	// by default go to next page
 	Result := true;
+    ForcePrimaryAppId := False;
 
 	// if curpage is wpSelectDir check is filesystem
 	if (CurPage = wpSelectDir) then 
@@ -730,6 +731,8 @@ end;
 function PrepareToInstall(var NeedsRestart: Boolean): String;
 begin
   Result := '';
+  ForcePrimaryAppId := False;
+
   if (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) then begin
     if (NewCFGFile <> nil) then
       try
