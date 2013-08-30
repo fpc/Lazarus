@@ -73,13 +73,13 @@ begin
   with FMap do
   begin
     for i := 0 to 255 do begin
-      ID := i shl 24;
+      ID := dword(i) shl 24;
       AInt:=i;
       Add(ID,AInt);
     end;
     for i := 0 to 255 do begin
       AInt:= 0;
-      ID := i shl 24;
+      ID := dword(i) shl 24;
       GetData(ID,AInt);
       AssertEquals('Wrong entry for '+ IntToStr(i), i, AInt);
     end;
