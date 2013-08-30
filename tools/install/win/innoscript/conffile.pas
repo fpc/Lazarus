@@ -1,10 +1,4 @@
 
-type
-  TCfgFileState = (csNoFile, csUnreadable, csParsedOk);
-
-var
-  NewCFGFile: TStringList;
-
 function LoadCFGFile(AFolder: String; var AList: TStringList): Boolean;
 var
   cfgfile: String;
@@ -32,30 +26,19 @@ begin
   AList.add('--primary-config-path=' + APCP);
 end;
 
-function ParseCFGFile(AFolder: String; var APrimConfDir: String): TCfgFileState;
+function ParseCFGList(AConfig: TStringList; var APrimConfDir: String): TCfgFileState;
 var
-  s, cfgfile: String;
+  s: String;
   i: Integer;
-  l: TStringList;
 begin
-  cfgfile := AddBackslash(AFolder) + 'lazarus.cfg';
-
-  Result := csNoFile;
-  if not FileExists(cfgfile) then begin
-    Log('ParseCFGFile not existent');
-    exit;
-  end;
-
   Result := csUnreadable;
-  l := TStringList.Create;
-  l.LoadFromFile(cfgfile);
-  for i := 0 to l.Count - 1 do
-    if copy(l[i], 1, 6) = '--pcp=' then
-      s := copy(l[i], 7, length(l[i]))
+  for i := 0 to AConfig.Count - 1 do
+    if copy(AConfig[i], 1, 6) = '--pcp=' then
+      s := copy(AConfig[i], 7, length(AConfig[i]))
     else
-    if copy(l[i], 1, 22) = '--primary-config-path=' then
-      s := copy(l[i], 23, length(l[i]));
-  l.Free;
+    if copy(AConfig[i], 1, 22) = '--primary-config-path=' then
+      s := copy(AConfig[i], 23, length(AConfig[i]));
+//  AConfig.Free;
 
   if s = '' then
     exit;
@@ -79,5 +62,25 @@ begin
   Result := csParsedOk;
   APrimConfDir := s;
   Log('ParseCFGFile OK');
+end;
+
+function ParseCFGFile(AFolder: String; var APrimConfDir: String): TCfgFileState;
+var
+  s, cfgfile: String;
+  i: Integer;
+  l: TStringList;
+begin
+  cfgfile := AddBackslash(AFolder) + 'lazarus.cfg';
+
+  Result := csNoFile;
+  if not FileExists(cfgfile) then begin
+    Log('ParseCFGFile not existent');
+    exit;
+  end;
+
+  l := TStringList.Create;
+  l.LoadFromFile(cfgfile);
+  Result := ParseCFGList(l, APrimConfDir);
+  l.Free;
 end;
 

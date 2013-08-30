@@ -20,8 +20,10 @@ var
   UnInstaller: String;  // Registry 'UninstallString'
   PathEqual: Boolean;
 
-  UninstDir: String;
+  UninstDir: String;  // The directory from which lazarus was uninstalled
   CFGFileForUninstDir: TStringList;
+  CFGPathForUninstDir: String; // the PCP
+  CFGStateForUninstDir: TCfgFileState;
 
 var
   wpAskUnistall: TWizardPage;
@@ -38,6 +40,41 @@ begin
     uiDestNeeded:   Result := 'uiDestNeeded';
     uiInconsistent: Result := 'uiInconsistent';
   end;
+end;
+
+function DidRunUninstaller: Boolean;
+begin
+  Result := (UninstallDoneState <> uiUnknown);
+end;
+
+// check if: unistall was run, and run in AFolder, and did have a lazarus.cfg file
+function HasSavedConfigFromUninstall(AFolder: String): Boolean;
+begin
+  Result := DidRunUninstaller and
+            (UninstDir = AFolder) and
+            (CFGFileForUninstDir <> nil) and
+            (CFGFileForUninstDir.Count > 0); // only if content
+end;
+
+function GetSavedConfigFromUninstall(AFolder: String): TStringList;
+begin
+  Result := nil;
+  if HasSavedConfigFromUninstall(AFolder) then
+    Result :=  CFGFileForUninstDir;
+end;
+
+function GetSavedPCPFromUninstall(AFolder: String): String;
+begin
+  Result := '';
+  if HasSavedConfigFromUninstall(AFolder) then
+    Result :=  CFGPathForUninstDir;
+end;
+
+function GetSavedStateFromUninstall(AFolder: String): TCfgFileState;
+begin
+  Result := csNoFile;
+  if HasSavedConfigFromUninstall(AFolder) then
+    Result :=  CFGStateForUninstDir;
 end;
 
 function GetUninstallData(ARegName: String): String; // Get one entry from registry e.g. 'UninstallString'
@@ -89,7 +126,7 @@ begin
   end
   else
   begin
-	if ( (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) ) or IsSecondaryUpdate then
+	if (IsSecondaryCheckBoxChecked) or IsSecondaryUpdate then
     begin
       ForcePrimaryAppId := True;
       Log('REDO UninstallState '+GetUninstallData('Inno Setup: App Path')+' // '+WizardDirValue);
@@ -138,7 +175,7 @@ begin
   UpdateUninstallInfo;
     Log('UnInstUpdateGUI UninstallState='+dbgsUiState(UninstallState)+
        ' IsSecondaryUpdate='+dbgsBool(IsSecondaryUpdate)+
-       '  Check='+dbgsBool((CheckSecondInstall <> nil) and (CheckSecondInstall.Checked))
+       '  Check='+dbgsBool(IsSecondaryCheckBoxChecked)
        );
 
   WizardForm.NextButton.Enabled := (UninstallState = uiDone) or (UninstallState = uiDestNeeded) or wpCheckBox.Checked;
@@ -156,7 +193,7 @@ begin
     Log('SkipAskUninst UninstallState='+dbgsUiState(UninstallState)+
        ', OldPath='+OldPath+' OldName='+OldName+' UnInstaller='+UnInstaller +
        ' IsSecondaryUpdate='+dbgsBool(IsSecondaryUpdate)+
-       '  Check='+dbgsBool((CheckSecondInstall <> nil) and (CheckSecondInstall.Checked))
+       '  Check='+dbgsBool(IsSecondaryCheckBoxChecked)
        );
   Result := UninstallState = uiDone;
   if Result Then exit;
@@ -253,8 +290,11 @@ begin
 
   b := (UnInstaller <> '') and FileExists(UnInstaller);
   if b then begin
-    LoadCFGFile(WizardDirValue, CFGFileForUninstDir);
-    UninstDir := WizardDirValue;
+    if PathEqual then begin
+      LoadCFGFile(OldPath, CFGFileForUninstDir);
+      CFGStateForUninstDir := ParseCFGList(CFGFileForUninstDir, CFGPathForUninstDir);
+      UninstDir := OldPath;
+    end;
 
     if UninstallState = uiInconsistent then
       b := Exec(UnInstaller, '/VERBOSE /NORESTART','', SW_SHOW, ewWaitUntilTerminated, i)

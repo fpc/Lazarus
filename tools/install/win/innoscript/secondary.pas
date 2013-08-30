@@ -2,6 +2,83 @@
 var
   wpAskConfDir: TInputDirWizardPage;
 
+  // Additional Elements on TargetDir wizard page
+  CheckSecondInstall: TCheckBox;  //   Also used by GetAppId
+  CheckSecondLabel: TLabel;
+
+  CfgLoadedFromDir: String;  // The directory from which lazarus was uninstalled
+  CFGFileForLoadedFromDir: TStringList;
+  CFGPathForLoadedFromDir: String; // the PCP
+  CFGStateForLoadedFromDir: TCfgFileState;
+
+Procedure ClearExistingConfigForFolder;
+begin
+  CfgLoadedFromDir := '';
+  if CFGFileForLoadedFromDir <> nil then
+    CFGFileForLoadedFromDir.Clear;
+  CFGPathForLoadedFromDir := '';
+  CFGStateForLoadedFromDir := csNoFile;
+end;
+
+Procedure LoadExistingConfigForFolder(AFolder: String);
+begin
+  CfgLoadedFromDir := AFolder;
+  LoadCFGFile(AFolder, CFGFileForLoadedFromDir);
+  CFGStateForLoadedFromDir := ParseCFGList(CFGFileForLoadedFromDir, CFGPathForLoadedFromDir);
+end;
+
+function HasConfigLoadedFromDir(AFolder: String; FallBackToUninstallDir: Boolean): Boolean;
+begin
+  Result := (CfgLoadedFromDir = AFolder) and
+            (CFGFileForLoadedFromDir <> nil) and
+            (CFGFileForLoadedFromDir.Count > 0); // only if content
+  if (not Result) and FallBackToUninstallDir then
+    Result := HasSavedConfigFromUninstall(AFolder);
+end;
+
+// Did the loadedconf contain a pcp?
+function HasPCPLoadedFromDir(AFolder: String; FallBackToUninstallDir: Boolean): Boolean;
+begin
+  Result := False;
+  if HasConfigLoadedFromDir(AFolder, False) then
+    Result :=  CFGPathForLoadedFromDir <> ''
+  else
+  if FallBackToUninstallDir and HasSavedConfigFromUninstall(AFolder) then
+    Result := GetSavedPCPFromUninstall(AFolder) <> '';
+end;
+
+function GetConfigLoadedFromDir(AFolder: String; FallBackToUninstallDir: Boolean): TStringList;
+begin
+  Result := nil;
+  if HasConfigLoadedFromDir(AFolder, False) then
+    Result :=  CFGFileForLoadedFromDir
+  else
+  if FallBackToUninstallDir and HasSavedConfigFromUninstall(AFolder) then
+    Result := GetSavedConfigFromUninstall(AFolder);
+end;
+
+function GetPCPLoadedFromDir(AFolder: String; FallBackToUninstallDir: Boolean): String;
+begin
+  Result := '';
+  if HasConfigLoadedFromDir(AFolder, False) then
+    Result :=  CFGPathForLoadedFromDir
+  else
+  if FallBackToUninstallDir and HasSavedConfigFromUninstall(AFolder) then
+    Result := GetSavedPCPFromUninstall(AFolder);
+end;
+
+function GetStateLoadedFromDir(AFolder: String; FallBackToUninstallDir: Boolean): TCfgFileState;
+begin
+  Result := csNoFile;
+  if HasConfigLoadedFromDir(AFolder, False) then
+    Result :=  CFGStateForLoadedFromDir
+  else
+  if FallBackToUninstallDir and HasSavedConfigFromUninstall(AFolder) then
+    Result := GetSavedStateFromUninstall(AFolder);
+end;
+
+
+
 Procedure AddSecondaryCheckBoxToTargetDirWizzard;
 begin
   if (CheckSecondInstall <> nil) then
@@ -40,12 +117,26 @@ begin
   wpAskConfDir.Add('Folder for config');
 end;
 
-Procedure CreateOrSaveConfigFile;
+function IsSecondaryCheckBoxChecked: Boolean;
 begin
-  if (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) then begin
-    if (NewCFGFile <> nil) then
+  Result := (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked);
+end;
+
+Procedure CreateOrSaveConfigFile;
+var
+  CfgFile: TStringList;
+begin
+  if not (IsSecondaryCheckBoxChecked or IsSecondaryUpdate) then
+    exit;
+
+  if IsSecondaryCheckBoxChecked then begin
+    CfgFile := GetConfigLoadedFromDir(WizardDirValue, True);
+    if (GetPCPLoadedFromDir(WizardDirValue, True) <> SecondPCP) or (CfgFile = nil) then
+      CreateCFGFile(SecondPCP, CfgFile);
+
+    if (SecondPCP <> '') then
       try
-        NewCFGFile.SaveToFile(AddBackslash(WizardDirValue) + 'lazarus.cfg')
+        CfgFile.SaveToFile(AddBackslash(WizardDirValue) + 'lazarus.cfg')
         ForceDirectories(SecondPCP);
       except
         MsgBox('Internal Error (1): Could not save CFG for secondary install', mbConfirmation, MB_OK);
@@ -54,30 +145,35 @@ begin
       MsgBox('Internal Error (2): Could not save CFG for secondary install', mbConfirmation, MB_OK);
     end;
   end
+
   else
-  if (UninstallDoneState <> uiUnknown) and (IsSecondaryUpdate) and
+  // NO checkbox.checked
+  if (DidRunUninstaller) and (IsSecondaryUpdate) and
      (not FileExists(AddBackslash(WizardDirValue) + 'lazarus.cfg'))
   then begin
     // cfg was uninstalled / restore
-    if (NewCFGFile <> nil) then
+    CfgFile := GetConfigLoadedFromDir(WizardDirValue, True);
+
+    if (CfgFile <> nil) then
       try
-        NewCFGFile.SaveToFile(AddBackslash(WizardDirValue) + 'lazarus.cfg')
+        CfgFile.SaveToFile(AddBackslash(WizardDirValue) + 'lazarus.cfg')
       except
         MsgBox('Internal Error (3): Could not restore CFG for secondary install', mbConfirmation, MB_OK);
       end
     else
-    if (UninstDir = WizardDirValue) and (CFGFileForUninstDir <> nil) and
-       (CFGFileForUninstDir.count > 0)
-    then begin
-      try
-        CFGFileForUninstDir.SaveToFile(AddBackslash(WizardDirValue) + 'lazarus.cfg')
-      except
-        MsgBox('Internal Error (4): Could not restore CFG for secondary install', mbConfirmation, MB_OK);
-      end
-    end
-    else begin
+    begin
       MsgBox('Internal Error (5): Could not restore CFG for secondary install', mbConfirmation, MB_OK);
     end;
-  end;
+  end
+
+  else
+// NO checkbox.checked
+  if (IsSecondaryUpdate) and
+    (not FileExists(AddBackslash(WizardDirValue) + 'lazarus.cfg'))
+  then begin
+    // where is the config gone ???????
+      MsgBox('Internal Error (4): Pre-Existing Configfile was removed?', mbConfirmation, MB_OK);
+  end
+  ;
 end;
 

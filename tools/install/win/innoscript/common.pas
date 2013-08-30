@@ -5,7 +5,7 @@ function GetAppId(param:string): String;
 var
   s: String;
 begin
-  if ( (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) ) or IsSecondaryUpdate then
+  if (IsSecondaryCheckBoxChecked) or IsSecondaryUpdate then
   begin
 	// Secondary
     s := RemoveBackslashUnlessRoot(Lowercase(WizardDirValue));
@@ -23,7 +23,7 @@ function GetPCPForDelete(param:string): String;
 // Name: {code:GetPCPForDelete}*.xml; Type: files; Tasks: delusersettings
 // ... delete primary conf
 begin
-  if ( (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) ) then
+  if (IsSecondaryCheckBoxChecked) then // or IsSecondaryUpdate
   begin
     if SecondPCP = '' then
       Result := AddBackslash(WizardDirValue) // some fallback

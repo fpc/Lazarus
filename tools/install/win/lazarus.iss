@@ -266,23 +266,30 @@ Name: ru; MessagesFile: lazarus.ru.isl
 Name: sl; MessagesFile: compiler:Languages\Slovenian.isl
 
 [Code]
+type
+  TCfgFileState = (csNoFile, csUnreadable, csParsedOk);
+
 var
   ForcePrimaryAppId: Boolean;  // GetAppId should ignore secondary
 
-  // Additional Elements on TargetDir wizard page
-  CheckSecondInstall: TCheckBox;  //   Also used by GetAppId
-  CheckSecondLabel: TLabel;
-
   IsSecondaryUpdate: Boolean;     //   Also used by GetAppId
 
+  // User Selected
   SecondPCP: String; // used by common.GetPCPForDelete
+
+function IsSecondaryCheckBoxChecked: Boolean; forward;                          // in secondary.pas
+function DidRunUninstaller: Boolean; forward;                                   // in uninst.pas
+function HasSavedConfigFromUninstall(AFolder: String): Boolean; forward;        // in uninst.pas
+function GetSavedConfigFromUninstall(AFolder: String): TStringList; forward;    // in uninst.pas
+function GetSavedPCPFromUninstall(AFolder: String): String; forward;            // in uninst.pas
+function GetSavedStateFromUninstall(AFolder: String): TCfgFileState; forward;   // in uninst.pas
 
 
 #include "innoscript\common.pas"
-#include "innoscript\conffile.pas"   ; // Check/Load lazarus.cfg file // Create TStringList data
-#include "innoscript\uninst.pas"     ; // Uninstall of previous installation
-#include "innoscript\about.pas"      ; // Info displayed during install progress
+#include "innoscript\conffile.pas"
 #include "innoscript\secondary.pas"
+#include "innoscript\uninst.pas"
+#include "innoscript\about.pas"
 
 
 procedure CurPageChanged(CurPageID: Integer);
@@ -311,6 +318,7 @@ begin
 	begin
         Log('NextButton in SelectDir');
         IsSecondaryUpdate := False;
+        ClearExistingConfigForFolder;
 		folder := WizardDirValue;
 
 		if Pos( ' ', folder ) > 0 then
@@ -322,16 +330,21 @@ begin
 		end;
 
 		FolderEmpty := IsDirEmpty(folder);
+        LoadExistingConfigForFolder(folder);
+        IsSecondaryUpdate := HasPCPLoadedFromDir(folder, True); // check for uninstalled file too
+        SecondPCP := GetPCPLoadedFromDir(folder, True);
+// TODO:
+// If we came back AFTER running uninstall,
+// AND changed the folder for and back (ending with the uninstall folder selected)
+// TEHN we should ask, if the uninstalled (todo uninstall cfg file) should be restored?
 		UpdateUninstallInfo;
 
         if FolderEmpty then
           exit;
 
-		if ( (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) ) then
-		begin
-		    // Secondary
-            // ALways set "SecondPCP", if avail
-            case ParseCFGFile(folder, SecondPCP) of
+		if (IsSecondaryCheckBoxChecked) then
+		begin    // Secondary
+            case GetStateLoadedFromDir(folder, True) of
               csNoFile: begin
 				  Result := False;
                   MsgBox(Format(CustomMessage('FolderForSecondNoFile'), [#13#10]), mbConfirmation, MB_OK);
@@ -355,33 +368,24 @@ begin
                      (UninstallState = uiInconsistent)
                   then begin
                     Result := MsgBox(Format(CustomMessage('FolderForSecondUpgrading'), [#13#10, SecondPCP]), mbConfirmation, MB_YESNO) = IDYES;
-                    IsSecondaryUpdate := True;
-                    UpdateUninstallInfo;
                   end;
                 end;
             end;
-
-          // MUST always be loaded, if leaving this page
-          LoadCFGFile(folder, NewCFGFile);
 		end
 
         else
 		begin
+            // Dir NOT empty: do not warn, if uiDestNeeded => folder content is updatable lazarus
 			if ((UninstallState = uiDone) or (UninstallState = UIOtherNeeded)) or
                (UninstallState = uiInconsistent)
-            then
-			begin
-				// Dir NOT empty
-				Result := MsgBox(SaveCustomMessage('FolderNotEmpty', 'The target folder is not empty. Continue with installation?'),
-                                 mbConfirmation, MB_YESNO) = IDYES;
-			end;
-            if Result and
-               (ParseCFGFile(folder, SecondPCP) = csParsedOk)
             then begin
-              IsSecondaryUpdate := True;
-              LoadCFGFile(folder, NewCFGFile);
-              UpdateUninstallInfo;
-            end;
+                if IsSecondaryUpdate then
+                    Result := MsgBox(Format(SaveCustomMessage('FolderForSecondUpgrading', 'The target folder is not empty.%0:sIt contains a secondary Lazarus installation using the following folder for configuration:%0:s%1:s%0:s%0:sContinue with installation?'),
+                                           {}[#13#10, SecondPCP]), mbConfirmation, MB_YESNO) = IDYES
+                else
+				    Result := MsgBox(SaveCustomMessage('FolderNotEmpty', 'The target folder is not empty. Continue with installation?'),
+                                     mbConfirmation, MB_YESNO) = IDYES;
+			end;
 		end;
 	end;
 
@@ -395,7 +399,6 @@ begin
       end;
 
       SecondPCP := s;
-      CreateCFGFile(SecondPCP, NewCFGFile);
     end;
 
 end;
@@ -405,11 +408,10 @@ begin
   Result := False
   if PageId = wpAskConfDir.ID then begin
     Log('ShouldSkip  AskConfDir  IsSecondaryUpdate='+dbgsBool(IsSecondaryUpdate)+
-       '  Check='+dbgsBool((CheckSecondInstall <> nil) and (CheckSecondInstall.Checked))
+       '  Check='+dbgsBool(IsSecondaryCheckBoxChecked)
        );
 
-    Result := (IsSecondaryUpdate) or
-              ( (CheckSecondInstall = nil) or (not CheckSecondInstall.Checked) );
+    Result := (not IsSecondaryCheckBoxChecked) or IsSecondaryUpdate;
   end;
   // UnInst uses: SkipAskUninst()
 end;
@@ -431,7 +433,7 @@ begin
     Result := Result + MemoGroupInfo + NewLine;
   if MemoTasksInfo <> '' then
     Result := Result + MemoTasksInfo + NewLine;
-  if (CheckSecondInstall <> nil) and (CheckSecondInstall.Checked) then begin
+  if (IsSecondaryCheckBoxChecked) then begin
     if IsSecondaryUpdate then
       Result := Result + Format(SaveCustomMessage('SecondTaskUpdate', ''), [NewLine, Space, SecondPCP])
     else
