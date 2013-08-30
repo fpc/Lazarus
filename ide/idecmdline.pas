@@ -117,25 +117,25 @@ begin
       aCmdLineParams.Add(Param);
     end;
   end;
-  // make sure that command line parameters are still
-  // double quoted, if they contain spaces
-  for i := 0 to aCmdLineParams.Count -1 do
-  begin
-    if pos(' ',aCmdLineParams[i])>0 then
-      aCmdLineParams[i] := '"' + aCmdLineParams[i] + '"';
-  end;
 end;
 
 function GetCommandLineParameters(aCmdLineParams : TStrings; isStartLazarus : Boolean = False) : String;
 var
   i: Integer;
+  s: String;
 begin
   if isStartLazarus then
     Result := ' --no-splash-screen --started-by-startlazarus'
   else
     Result := '';
-  for i := 0 to aCmdLineParams.Count - 1 do
-    Result := Result + ' ' + aCmdLineParams[i];
+  for i := 0 to aCmdLineParams.Count - 1 do begin
+    s := aCmdLineParams[i];
+    // make sure that command line parameters are still
+    // double quoted, if they contain spaces
+    if pos(' ', s) > 0 then
+      s := '"' + s + '"';
+    Result := Result + ' ' + s;
+  end;
 end;
 
 function ExtractPrimaryConfigPath(aCmdLineParams: TStrings): string;

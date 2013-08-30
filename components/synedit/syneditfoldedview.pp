@@ -3890,9 +3890,13 @@ begin
 
     if IsText then
     begin           (* *** Decode from Text for XML *** *)
-      FoldHelper.Decompress;
+      try
+        FoldHelper.Decompress;
+      except
+        exit;
+      end;
       if not FoldHelper.VerifyChecksum then
-        raise ESynEditError.Create('fold checksum error');
+        exit; //raise ESynEditError.Create('fold checksum error');
 
       i := 0;
       while not FoldHelper.EOF do begin
