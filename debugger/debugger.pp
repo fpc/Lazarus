@@ -39,7 +39,7 @@ interface
 
 uses
   TypInfo, Classes, SysUtils, Laz2_XMLCfg, math, FileUtil, LazLoggerBase, LazClasses,
-  LCLProc, LazConfigStorage, IDEProcs, DebugUtils, maps;
+  LCLProc, LazConfigStorage, DebugUtils, maps;
 
 type
   // datatype pointing to data on the target
@@ -6014,14 +6014,10 @@ begin
   FExternalDebugger := AExternalDebugger;
 
   list := TStringList.Create;
-  list.Sorted := True;
-  list.Duplicates := dupIgnore;
   list.OnChange := @DebuggerEnvironmentChanged;
   FDebuggerEnvironment := list;
 
   list := TStringList.Create;
-  list.Sorted := True;
-  list.Duplicates := dupIgnore;
   list.OnChange := @EnvironmentChanged;
   FEnvironment := list;
   FCurEnvironment := TStringList.Create;

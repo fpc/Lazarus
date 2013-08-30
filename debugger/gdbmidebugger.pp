@@ -39,8 +39,9 @@ unit GDBMIDebugger;
 interface
 
 uses
-  Classes, SysUtils, Controls, Math, Variants, LCLProc, LazClasses, LazLoggerBase, Dialogs,
-  DebugUtils, Debugger, FileUtil, CmdLineDebugger, GDBTypeInfo, Maps, LCLIntf, Forms,
+  Classes, SysUtils, Controls, Math, Variants, LCLProc, LazClasses, LazLoggerBase,
+  Dialogs, DebugUtils, Debugger, FileUtil, BaseIDEIntf, CmdLineDebugger, GDBTypeInfo, Maps,
+  LCLIntf, Forms,
 {$IFdef MSWindows}
   Windows,
 {$ENDIF}
@@ -6244,7 +6245,9 @@ begin
     CancelAllQueued;
     if (DebugProcess <> nil) and DebugProcess.Running then begin
       if State = dsRun then GDBPause(True);
-      ExecuteCommand('-gdb-exit', [], []);
+      // fire and forget. Donst wait on the queue.
+      SendCmdLn('kill');
+      SendCmdLn('-gdb-exit');
     end;
     inherited Done;
   finally
@@ -7243,6 +7246,9 @@ begin
 
     if Length(TGDBMIDebuggerProperties(GetProperties).Debugger_Startup_Options) > 0
     then Options := Options + ' ' + TGDBMIDebuggerProperties(GetProperties).Debugger_Startup_Options;
+
+    DebuggerEnvironment := EnvironmentAsStringList;
+    DebuggerEnvironment.Values['LANG'] := 'C'; // try to prevent GDB from using localized messages
 
     if CreateDebugProcess(Options)
     then begin
