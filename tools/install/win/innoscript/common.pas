@@ -109,7 +109,7 @@ end;
 //            other = distance to parent
 // AHeight: negative = distance to parent bottom
 //          0 = ignore
-Procedure AddComponentToPage(AControl: TControl; AControlAbove: TWinControl;
+Procedure AddComponentToPage(AControl, AControlAbove: TControl;
   ATopDistance, ALeftDistance, ARightDistance, AHeight: Integer);
 begin
   AControl.Parent := AControlAbove.Parent;

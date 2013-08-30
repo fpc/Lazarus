@@ -291,6 +291,8 @@ function GetSavedStateFromUninstall(AFolder: String): TCfgFileState; forward;   
 #include "innoscript\uninst.pas"
 #include "innoscript\about.pas"
 
+var
+  HasBeenOnGroupSelect: Boolean;
 
 procedure CurPageChanged(CurPageID: Integer);
 begin
@@ -302,6 +304,23 @@ begin
 
   if CurPageID = wpFinished then
     CreateOrSaveConfigFile;
+
+  if CurPageId = wpSelectTasks then begin
+    // desktop item
+    // index 0 is the caption/ 1 the checkbox
+    WizardForm.TasksList.ItemEnabled[0] := not(IsSecondaryCheckBoxChecked or  IsSecondaryUpdate);
+    WizardForm.TasksList.ItemEnabled[1] := not(IsSecondaryCheckBoxChecked or  IsSecondaryUpdate);
+  end;
+
+  if CurPageId = wpSelectProgramGroup then begin
+    if not HasBeenOnGroupSelect then
+      if (IsSecondaryCheckBoxChecked or IsSecondaryUpdate) and
+         (CompareText(WizardForm.GroupEdit.Text, 'Lazarus') = 0)
+        then
+          WizardForm.GroupEdit.Text := 'Lazarus 2';
+    HasBeenOnGroupSelect := True;
+  end;
+
 end;
 
 function NextButtonClick(CurPage: Integer): Boolean;
@@ -336,7 +355,7 @@ begin
 // TODO:
 // If we came back AFTER running uninstall,
 // AND changed the folder for and back (ending with the uninstall folder selected)
-// TEHN we should ask, if the uninstalled (todo uninstall cfg file) should be restored?
+// THEN we should ask, if the uninstalled (todo uninstall cfg file) should be restored?
 		UpdateUninstallInfo;
 
         if FolderEmpty then
@@ -400,7 +419,6 @@ begin
 
       SecondPCP := s;
     end;
-
 end;
 
 function ShouldSkipPage(PageId: Integer): Boolean;
@@ -455,6 +473,7 @@ var
   s, s2 : String;
 begin
   ForcePrimaryAppId := False;
+  HasBeenOnGroupSelect := False;
 
   InitializeUninstallInfo;
   CreateUninstallWizardPage;
